@@ -1,7 +1,10 @@
 //! Answers that hand back a file the request already supplied in the
 //! conversation, instead of re-reading it from disk.
 
-use super::{ChatMessage, file_read_task_for, FileReadTask, FileReadMode, file_read_final_answer, seed, same_path};
+use super::{
+    ChatMessage, FileReadMode, FileReadTask, file_read_final_answer, file_read_task_for, same_path,
+    seed,
+};
 
 pub(super) fn extract_jsonish_value(content: &str, key: &str) -> Option<String> {
     let line_prefix = format!("{key}=");
@@ -13,12 +16,13 @@ pub(super) fn extract_jsonish_value(content: &str, key: &str) -> Option<String> 
         return Some(value.to_owned());
     }
     if let Ok(value) = serde_json::from_str::<serde_json::Value>(content)
-        && let Some(found) = value.get(key) {
-            return Some(match found {
-                serde_json::Value::String(text) => text.clone(),
-                other => other.to_string(),
-            });
-        }
+        && let Some(found) = value.get(key)
+    {
+        return Some(match found {
+            serde_json::Value::String(text) => text.clone(),
+            other => other.to_string(),
+        });
+    }
     let quoted_key = format!("\"{key}\"");
     let start = content.find(&quoted_key)?;
     let after_key = &content[start + quoted_key.len()..];
@@ -102,12 +106,11 @@ fn supplied_file_final_answer(
             )],
             path,
         ),
-        FileReadMode::ExtractValue(_) | FileReadMode::Summary | FileReadMode::Audit => {
-            file_read_final_answer(
-                mode,
-                &[(path.to_owned(), content.to_owned())],
-                request,
-            )
+        FileReadMode::ExtractValue(_)
+        | FileReadMode::Summary
+        | FileReadMode::Audit
+        | FileReadMode::LineSlice(_) => {
+            file_read_final_answer(mode, &[(path.to_owned(), content.to_owned())], request)
         }
     }
 }

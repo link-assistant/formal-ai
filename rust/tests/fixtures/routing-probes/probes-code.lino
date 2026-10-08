@@ -175,16 +175,12 @@ routing_probes
     intent execution_failure
     prompt "Write a Python script that calls missing_helper()"
     adversarial true
-    js_misroute write_script_python
-    rust_misroute write_script_python
   probe p106
     lane execution_failure
     language en
     intent execution_failure
     prompt "Write a Python script that calls not_defined_anywhere()"
     adversarial true
-    js_misroute write_script_python
-    rust_misroute write_script_python
   probe p107
     lane execution_failure
     language en
@@ -196,8 +192,6 @@ routing_probes
     intent execution_failure
     prompt "Write a Python script that calls undefined_helper()"
     adversarial true
-    js_misroute write_script_python
-    rust_misroute write_script_python
   probe p119
     lane format_conversion
     language en
@@ -276,8 +270,6 @@ routing_probes
     intent format_conversion
     prompt "Convert to JSON: {""word_counts"": {""lines"": 4}}"
     adversarial true
-    js_misroute text_manipulation
-    rust_misroute unknown
   probe p132
     lane format_conversion
     language ru

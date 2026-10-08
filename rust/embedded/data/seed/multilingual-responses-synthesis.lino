@@ -786,7 +786,7 @@ multilingual_responses
   response response_execution_failure_en
     intent execution_failure
     language en
-    text "Execution status: failed in isolated sandbox.\n```python\nundefined_function()\n```\nTraceback (most recent call last):\n  File 'main.py', line 1, in <module>\nNameError: name 'undefined_function' is not defined.\nThe failure trace is appended to the action log; see the trace link."
+    text "Execution status: failed in isolated sandbox.\n```python\n{function}()\n```\nTraceback (most recent call last):\n  File 'main.py', line 1, in <module>\nNameError: name '{function}' is not defined.\nThe failure trace is appended to the action log; see the trace link."
   response response_unit_incompatibility_en
     intent unit_incompatibility
     language en

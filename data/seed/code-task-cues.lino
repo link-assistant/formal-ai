@@ -128,6 +128,14 @@ cues
     phrase "конвертируй csv"
     phrase "переведи csv в json"
 cues
+  intent format_conversion
+    role json_target
+    phrase "convert to json"
+    phrase "convert this to json"
+    phrase "преобразуй в json"
+    phrase "конвертируй в json"
+    phrase "переведи в json"
+cues
   intent code_explanation
     phrase "explain this code"
     phrase "explain the code"
@@ -1226,3 +1234,98 @@ test_cases
     case
       input "[-5, -1, -2]"
       output "-1"
+# Issue 1173 R1173-3: the callables a script language provides without a
+# definition. The undefined_call claim operand (rust/src/capability_routing/
+# claim_operands.rs, js/worker/formal_ai_worker_claim_operands.js) skips a
+# call of one of these, so only a call of a function nothing defines is
+# reported as a failing run. Each `word` is a verbatim, lowercased identifier.
+map
+  name script_builtin_callable
+    entry
+      word print
+    entry
+      word input
+    entry
+      word len
+    entry
+      word range
+    entry
+      word int
+    entry
+      word str
+    entry
+      word float
+    entry
+      word bool
+    entry
+      word list
+    entry
+      word dict
+    entry
+      word set
+    entry
+      word tuple
+    entry
+      word sorted
+    entry
+      word sum
+    entry
+      word min
+    entry
+      word max
+    entry
+      word abs
+    entry
+      word round
+    entry
+      word open
+    entry
+      word type
+    entry
+      word isinstance
+    entry
+      word enumerate
+    entry
+      word zip
+    entry
+      word map
+    entry
+      word filter
+    entry
+      word repr
+    entry
+      word format
+    entry
+      word help
+    entry
+      word exit
+    entry
+      word alert
+    entry
+      word fetch
+    entry
+      word parseint
+    entry
+      word parsefloat
+    entry
+      word settimeout
+    entry
+      word setinterval
+    entry
+      word require
+    entry
+      word eval
+    entry
+      word string
+    entry
+      word number
+    entry
+      word boolean
+    entry
+      word array
+    entry
+      word object
+    entry
+      word date
+    entry
+      word promise

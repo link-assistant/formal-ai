@@ -163,6 +163,8 @@ roles
     kind predicate
   coding_bound_cue
     kind predicate
+  coding_bug_fix_request
+    kind meaning
   coding_condition_subject_kind
     kind predicate
   coding_declaration_noun
@@ -171,6 +173,8 @@ roles
     kind predicate
   coding_documentation_fact_query
     kind predicate
+  coding_expectation_cue
+    kind meaning
   coding_experiment_artifact_kind
     kind predicate
   coding_fragment
@@ -351,6 +355,8 @@ roles
     kind meaning
   file_analysis_gap_marker
     kind meaning
+  file_contents_source_cue
+    kind predicate
   file_edit_action_cue
     kind predicate
   file_edit_anchor_context_cue
@@ -379,9 +385,15 @@ roles
     kind predicate
   file_naming_obligation
     kind meaning
+  file_overwrite_consent
+    kind meaning
   file_read_action_cue
     kind predicate
+  file_section_noun
+    kind predicate
   file_text_unit
+    kind meaning
+  file_whole_write_action
     kind meaning
   file_write_action_cue
     kind predicate
@@ -405,6 +417,8 @@ roles
     kind meaning
   frame_filler_word
     kind meaning
+  function_call_verb
+    kind predicate
   function_declaration_keyword
     kind predicate
   game_tracker_domain
@@ -469,10 +483,20 @@ roles
     kind meaning
   line_adjacent_below
     kind meaning
+  line_containment_cue
+    kind predicate
   line_move_action
+    kind meaning
+  line_ordinal
+    kind predicate
+  line_ordinal_last
     kind meaning
   line_range_connector
     kind meaning
+  line_slice_head_cue
+    kind predicate
+  line_slice_tail_cue
+    kind predicate
   line_swap_action
     kind meaning
   links_notation_format
@@ -544,6 +568,10 @@ roles
   memory_substitution_connector
     kind meaning
   memory_substitution_directive
+    kind meaning
+  module_export_marker
+    kind meaning
+  module_export_question
     kind meaning
   monetary_concept
     kind predicate
@@ -1005,6 +1033,10 @@ roles
     kind meaning
   word_problem_relation
     kind predicate
+  workspace_content_search_form
+    kind meaning
+  workspace_content_search_noise
+    kind meaning
   workspace_inspection_action
     kind predicate
   writing_system

@@ -585,16 +585,37 @@ function textAfterColon(prompt) {
     .trim();
 }
 
+// Issue #918 (R918-2): the replacement, input-context and input-continuation
+// cues are the text_* tables of data/seed/handler-rules.lino. A row's value
+// says how its key is read: `ends_with` at the end of the normalized text,
+// anything else anywhere in the lowercased text; a replacement cue's value is
+// the order it quotes its operands in. Mirrors text_cue_matches in
+// rust/src/solver_handlers/text_manipulation.rs.
+const TEXT_CUE_SUFFIX_READING = "ends_with";
+const TEXT_CUE_OPERANDS_IN_ORDER = "operands_in_order";
+const TEXT_CUE_TARGET_FOLLOWS = "target_follows_cue";
+
+function textCueMatches(table, text, reading = "") {
+  const entry = handlerRulesTables()[table];
+  const raw = String(text || "").toLowerCase();
+  const normalized = normalizePrompt(text);
+  return (entry ? entry.rows : []).some(([cue, value]) =>
+    cue !== "" && (reading === "" || value === reading) &&
+    (value === TEXT_CUE_SUFFIX_READING ? normalized.endsWith(cue) : raw.includes(cue)));
+}
+
 function isReplaceTextPrompt(normalized) {
-  const text = String(normalized || "");
-  return (
-    text.includes("replace") ||
-    text.includes("instead") ||
-    text.includes("вместо") ||
-    text.includes("замен") ||
-    text.includes("बदल") ||
-    text.includes("替换")
-  );
+  return textCueMatches("text_replacement_cue", normalized);
+}
+
+// The two operands of a replacement as {from, to}: quoted target first,
+// unless a cue that names its target after it sits between them ("cat"
+// instead of "dog"). Mirrors replacement_operands.
+function replacementOperands(prompt, first, second) {
+  const gap = String(prompt || "").slice(first.end, second.start);
+  return textCueMatches("text_replacement_cue", gap, TEXT_CUE_TARGET_FOLLOWS)
+    ? { from: second.text, to: first.text }
+    : { from: first.text, to: second.text };
 }
 
 function lastAssistantTextArtifact(history) {
@@ -613,31 +634,11 @@ function containsReplacementKeyword(text) {
 }
 
 function inputContextBeforeFirstQuote(text) {
-  if (containsReplacementKeyword(text)) return false;
-  const normalized = normalizePrompt(text);
-  const raw = String(text || "").toLowerCase();
-  return (
-    normalized.endsWith("in") ||
-    normalized.includes("text") ||
-    normalized.includes("текст") ||
-    raw.includes("पाठ") ||
-    raw.includes("टेक्स्ट") ||
-    raw.includes("在") ||
-    raw.includes("文本") ||
-    raw.includes("内容")
-  );
+  return !containsReplacementKeyword(text) && textCueMatches("text_input_context_cue", text);
 }
 
 function containsInputContinuation(text) {
-  const normalized = normalizePrompt(text);
-  const raw = String(text || "").toLowerCase();
-  return (
-    normalized.includes("in") ||
-    normalized.includes("text") ||
-    normalized.includes("текст") ||
-    raw.includes("में") ||
-    raw.includes("中")
-  );
+  return textCueMatches("text_input_continuation_cue", text);
 }
 
 function looksLikeInputFirstReplacement(prompt, quoted) {
@@ -648,7 +649,8 @@ function looksLikeInputFirstReplacement(prompt, quoted) {
   const betweenSecondThird = source.slice(quoted[1].end, quoted[2].start);
   return (
     inputContextBeforeFirstQuote(beforeFirst) ||
-    containsReplacementKeyword(betweenFirstSecond) ||
+    textCueMatches("text_replacement_cue", betweenFirstSecond, TEXT_CUE_OPERANDS_IN_ORDER) ||
+    textCueMatches("text_replacement_cue", betweenSecondThird, TEXT_CUE_TARGET_FOLLOWS) ||
     (containsInputContinuation(betweenFirstSecond) &&
       containsReplacementKeyword(betweenSecondThird))
   );
@@ -914,15 +916,13 @@ function parseTextManipulationRequest(prompt, normalized, history = []) {
   // operation asked of the framing.
   const framing = textRequestFraming(prompt, quoted);
   let input = "";
-  if (isReplaceTextPrompt(normalized)) {
-    if (quoted.length < 2) return null;
-    if (quoted.length >= 3 && looksLikeInputFirstReplacement(prompt, quoted)) {
-      operations.push({ slug: "replace_text", from: quoted[1].text, to: quoted[2].text });
-      input = quoted[0].text;
-    } else {
-      operations.push({ slug: "replace_text", from: quoted[0].text, to: quoted[1].text });
-      input = (quoted[2] && quoted[2].text) || textAfterColon(prompt) || fallbackInput;
-    }
+  if (isReplaceTextPrompt(normalized) && quoted.length >= 2) {
+    const inputFirst = quoted.length >= 3 && looksLikeInputFirstReplacement(prompt, quoted);
+    const [first, second] = inputFirst ? [quoted[1], quoted[2]] : [quoted[0], quoted[1]];
+    operations.push({ slug: "replace_text", ...replacementOperands(prompt, first, second) });
+    input = inputFirst
+      ? quoted[0].text
+      : (quoted[2] && quoted[2].text) || textAfterColon(prompt) || fallbackInput;
   } else if (quoted.length && textOperationMatches("count_occurrences", framing)) {
     operations.push({ slug: "count_occurrences", needle: quoted[0].text });
     input = (quoted[1] && quoted[1].text) || textAfterColon(prompt) || fallbackInput;

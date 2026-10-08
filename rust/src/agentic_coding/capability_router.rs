@@ -560,8 +560,12 @@ fn plan_routed_capability_step_in(
     // refused answered as a one-file cat of the operand that survived).
     // Every observing capability defers the same way: "Create a directory
     // named src." routed to `list_dir` on the word "directory" and answered
-    // with a listing instead of `mkdir src` (PR #1188 dogfooding).
-    if (capability == Capability::ReadMany || OBSERVING_SLUGS.contains(&decided))
+    // with a listing instead of `mkdir src` (PR #1188 dogfooding). A run
+    // defers too: "Rename the file a to b" is the shell arm's verified recipe,
+    // never a bare `mv` (PR #1188 G24).
+    if (capability == Capability::ReadMany
+        || capability == Capability::Run
+        || OBSERVING_SLUGS.contains(&decided))
         && super::shell_command::names_mutating_shell_intent(routed_task)
     {
         return None;
@@ -760,7 +764,9 @@ fn arguments_for(capability: Capability, task: &str) -> String {
             let pattern = wildcard_token(task).unwrap_or("*");
             json!({"pattern": pattern, "path": "."}).to_string()
         }
-        Capability::ListDir => json!({"path": "."}).to_string(),
+        Capability::ListDir => {
+            json!({"path": super::directory_listing::listed_directory(task)}).to_string()
+        }
         Capability::Todo => json!({
             "todos": [{"content": task, "status": "pending"}],
             "plan": [{"step": task, "status": "pending"}],
@@ -816,7 +822,14 @@ fn shell_fallback(capability: Capability, task: &str) -> Option<String> {
             command.push('\'');
             Some(command)
         }
-        Capability::ListDir => Some(String::from("ls")),
+        Capability::ListDir => {
+            let directory = super::directory_listing::listed_directory(task);
+            Some(if directory == "." {
+                String::from("ls")
+            } else {
+                format!("ls {}", shell_quote(&directory))
+            })
+        }
         Capability::ReadMany => {
             let paths = file_tokens(task);
             (!paths.is_empty()).then(|| {

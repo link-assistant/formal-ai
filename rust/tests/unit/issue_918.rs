@@ -467,7 +467,14 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // `setting` (the key of a configuration file whose value changes) and
     // `typo` (a misspelling whose correction is discovered, not stated), so
     // the floor moves from 103 to 106.
-    assert_eq!(coding_records, 106, "coding-path regression floor");
+    // PR #1188 then added seven, each with all five fields: the edit composer's
+    // `coding_declaration` and `function_declaration` (a function named by
+    // identifier is removed whole), `function_call` (the undefined-call
+    // routing claim), `coding_bug_fix_request` and `coding_expectation_cue`
+    // (a stated expectation drives the fix), and `module_export_question` and
+    // `module_export_marker` (what a module exports), so the floor moves from
+    // 106 to 113.
+    assert_eq!(coding_records, 113, "coding-path regression floor");
     assert_eq!(committed_gaps(root), expected_gaps);
     // The floor moves with the closure, not with the handlers: every gap added
     // under issue #1021 is a `closure-generated-*.lino` record for a token the

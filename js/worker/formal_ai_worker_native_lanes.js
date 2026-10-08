@@ -491,3 +491,69 @@ function tryResponseLanguageDemonstration(prompt) {
     evidence: [`language_to:${target}`, "response:response_language_demonstration"],
   };
 }
+
+/**
+ * The learnable-source registry of data/seed/learning-sources.lino (issue
+ * #499): each declared source (host, keywords, capability) and the shared
+ * directive cues. Mirrors `learning_sources` in rust/src/seed.rs.
+ * @returns {{sources: Array<object>, directiveCues: string[]}}
+ */
+function learningSourceRegistry() {
+  const registry = { sources: [], directiveCues: [] };
+  const text = seedRawText(SEED_RAW, "learning-sources.lino");
+  const root = text ? parseLinoTree(text).children[0] : null;
+  for (const child of root ? root.children : []) {
+    if (child.name === "source") {
+      registry.sources.push({
+        id: child.value,
+        capability: childValue(child, "capability"),
+        host: childValue(child, "host"),
+        keywords: child.children.filter((entry) => entry.name === "keyword").map((entry) => entry.value),
+      });
+    } else if (child.name === "directive") {
+      for (const entry of child.children.filter((cue) => cue.name === "cue")) registry.directiveCues.push(entry.value);
+    }
+  }
+  return registry;
+}
+
+/**
+ * The declared source a learning directive points at: the prompt carries a
+ * directive cue and the source's host or one of its keywords. Mirrors
+ * `LearningSources::match_directive` in rust/src/seed.rs.
+ * @param {string} lowercased
+ * @returns {object|null}
+ */
+function matchLearningDirective(lowercased) {
+  const registry = learningSourceRegistry();
+  if (!registry.directiveCues.some((cue) => cue && lowercased.includes(cue))) return null;
+  return registry.sources.find((source) => (source.host && lowercased.includes(source.host))
+    || source.keywords.some((keyword) => keyword && lowercased.includes(keyword))) || null;
+}
+
+/**
+ * `learn_from_source` precedence row (issue 1173 R3, browser twin of
+ * `try_learn_from_source` in rust/src/retrieval_procedures.rs): a directive
+ * that points the engine at a declared learnable source is acknowledged
+ * with the seeded intro. The learning loop that ingests the source runs in
+ * the native engine, so the browser states that from a seeded template
+ * instead of a report it cannot compute.
+ * @param {string} prompt
+ * @returns {object|null}
+ */
+function tryLearnFromSource(prompt) {
+  const source = matchLearningDirective(nativeLaneLowercase(prompt));
+  if (source === null) return null;
+  const language = detectLanguage(prompt);
+  const intro = textTransformLocalizedResponse("learn_from_source", language) || "";
+  const summary = nativeLaneRender(textTransformLocalizedResponse("learn_from_source_browser_summary", language) || "", {
+    source: source.id.split("_").join(" "),
+    capability: source.capability,
+  });
+  return {
+    intent: "learn_from_source",
+    content: intro ? `${intro}\n\n${summary}` : summary,
+    confidence: 1,
+    evidence: ["handler:learn_from_source", `learning_source:${source.id}`, `learning_capability:${source.capability}`, "response:learn_from_source"],
+  };
+}

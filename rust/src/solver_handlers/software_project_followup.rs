@@ -11,7 +11,9 @@ use std::fmt::Write as _;
 
 use crate::engine::{SymbolicAnswer, normalize_prompt, stable_id};
 use crate::event_log::EventLog;
-use crate::seed;
+use crate::language::detect as detect_language;
+use crate::rule_interpreter::{handler_policy, handler_table_value};
+use crate::seed::{self, Slot, fill_template_once, response_for};
 use crate::solver_handlers::finalize_simple;
 use crate::solver_helpers::{last_assistant_turn, last_user_turn};
 
@@ -36,13 +38,39 @@ impl FollowUpKind {
         }
     }
 
-    const fn action(self) -> &'static str {
+    /// The seed role whose surfaces recognise the kind.
+    const fn role(self) -> &'static str {
         match self {
-            Self::Verification => "test",
-            Self::Execution => "run",
-            Self::Demonstration => "show",
+            Self::Verification => seed::ROLE_SOFTWARE_FOLLOWUP_VERIFICATION,
+            Self::Execution => seed::ROLE_SOFTWARE_FOLLOWUP_EXECUTION,
+            Self::Demonstration => seed::ROLE_SOFTWARE_FOLLOWUP_DEMONSTRATION,
         }
     }
+
+    /// The verb the kind renders: the row of the
+    /// `software_project_followup_action` table keyed by its role (issue #918).
+    fn action(self) -> &'static str {
+        handler_table_value("software_project_followup_action", self.role()).unwrap_or_default()
+    }
+}
+
+/// A value of the `software_project_followup` policy of
+/// `data/seed/handler-rules.lino` (issue #918).
+fn follow_up_policy(key: &str) -> String {
+    handler_policy("software_project_followup", key).unwrap_or_default()
+}
+
+/// The seeded `software_project_followup_<name>` sentence with its slots filled.
+///
+/// The sentence is read in `language`, in English when the seed has no
+/// translation. Twin of `softwareFollowUpText` in
+/// `js/worker/formal_ai_worker_12.js`.
+fn follow_up_text(name: &str, language: &str, values: &[(&str, &str)]) -> String {
+    let intent = format!("software_project_followup_{name}");
+    let template = response_for(&intent, language)
+        .or_else(|| response_for(&intent, "en"))
+        .unwrap_or_default();
+    fill_template_once(&template, values)
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -80,7 +108,8 @@ pub fn try_software_project_followup(
     let (meaning, approved) = prior_software_project_dialogue(log)?;
     let follow_up = detect_follow_up(prompt, normalized)?;
     record_follow_up(log, &meaning, &follow_up, approved);
-    let body = render_follow_up_response(&meaning, &follow_up, approved);
+    let language = detect_language(prompt).slug();
+    let body = render_follow_up_response(&meaning, &follow_up, approved, language);
     Some(finalize_simple(
         prompt,
         log,
@@ -116,20 +145,12 @@ fn detect_follow_up(prompt: &str, normalized: &str) -> Option<SoftwareProjectFol
 /// whole whitespace tokens — because many are multi-word phrases ("run the
 /// tests", "show me"); a token-boundary match would never find them.
 fn follow_up_kind(normalized: &str) -> Option<FollowUpKind> {
-    for (role, kind) in [
-        (
-            seed::ROLE_SOFTWARE_FOLLOWUP_VERIFICATION,
-            FollowUpKind::Verification,
-        ),
-        (
-            seed::ROLE_SOFTWARE_FOLLOWUP_EXECUTION,
-            FollowUpKind::Execution,
-        ),
-        (
-            seed::ROLE_SOFTWARE_FOLLOWUP_DEMONSTRATION,
-            FollowUpKind::Demonstration,
-        ),
+    for kind in [
+        FollowUpKind::Verification,
+        FollowUpKind::Execution,
+        FollowUpKind::Demonstration,
     ] {
+        let role = kind.role();
         let mentioned = seed::lexicon().meanings_with_role(role).any(|meaning| {
             meaning
                 .words()
@@ -168,18 +189,20 @@ fn extract_target_site(prompt: &str) -> Option<String> {
 /// Capture the clause after a show-me/print/display opener so the follow-up
 /// records what the user wants surfaced (e.g. "the top 10 most frequent words").
 ///
-/// The recognized openers carry the [`seed::ROLE_OUTPUT_DISPLAY_REQUEST`] role;
-/// each is a prefix whose text before the `…` slot is the marker, tried in
-/// declaration order so the longer "show me " wins over the bare "show ". A
-/// marker is matched anywhere in the prompt, and the clause that follows — read
-/// from the original-case prompt, stopped at the first sentence-ending
-/// punctuation and capped at twelve words — is returned. No per-language marker
-/// list lives here; the surfaces come from
-/// `data/seed/meanings-software-project.lino`.
+/// The recognized openers are the prefix forms of the
+/// [`seed::ROLE_OUTPUT_DISPLAY_REQUEST`] role; each text before the `…` slot is
+/// a marker, tried in declaration order so the longer "show me " wins over the
+/// bare "show ". A marker is matched anywhere in the prompt, and the clause that
+/// follows — read from the original-case prompt, stopped at the first
+/// sentence-ending punctuation and capped at the policy `output_word_limit` —
+/// is returned. Issue #918: bare and circumfix forms are not openers (a bare
+/// "print" matched inside "printing", the Hindi circumfix lead "जो " anywhere),
+/// and the browser twin reads the same prefix forms instead of its own list.
 fn extract_expected_output(prompt: &str) -> Option<String> {
     let lower = prompt.to_lowercase();
+    let limit = follow_up_policy("output_word_limit").parse().unwrap_or(0);
     let forms = seed::lexicon().role_word_forms(seed::ROLE_OUTPUT_DISPLAY_REQUEST);
-    for form in &forms {
+    for form in forms.iter().filter(|form| form.slot() == Slot::Prefix) {
         let marker = form.before_slot();
         let Some(start) = lower.find(marker).map(|index| index + marker.len()) else {
             continue;
@@ -188,7 +211,7 @@ fn extract_expected_output(prompt: &str) -> Option<String> {
         let stop = tail.find(['.', '?', '\n', ';']).unwrap_or(tail.len());
         let clause = tail[..stop]
             .split_whitespace()
-            .take(12)
+            .take(limit)
             .collect::<Vec<_>>()
             .join(" ");
         if !clause.is_empty() {
@@ -222,7 +245,7 @@ fn record_follow_up(
         if approved { "approved" } else { "proposed" }.to_owned(),
     );
     for gate in follow_up_gates() {
-        log.append("approval_gate", gate.to_owned());
+        log.append("approval_gate", gate);
     }
 }
 
@@ -240,65 +263,79 @@ fn follow_up_meaning_id(
     stable_id("software_project_followup", &key)
 }
 
-const fn follow_up_gates() -> [&'static str; 3] {
-    ["generated_code", "test_execution", "network_access"]
+fn follow_up_gates() -> Vec<String> {
+    follow_up_policy("gates")
+        .split_whitespace()
+        .map(str::to_owned)
+        .collect()
 }
 
 fn follow_up_reasoning_steps(
     meaning: &SoftwareProjectMeaning,
     follow_up: &SoftwareProjectFollowUp,
+    language: &str,
 ) -> Vec<String> {
-    let mut steps = vec![format!(
-        "Recognize \"{}\" as a {} request that exercises the {} from the active plan, not a fact lookup.",
-        follow_up.kind.action(),
-        follow_up.kind.label(),
-        meaning.artifact
+    let mut steps = vec![follow_up_text(
+        "step_recognize",
+        language,
+        &[
+            ("action", follow_up.kind.action()),
+            ("kind", follow_up.kind.label()),
+            ("artifact", meaning.artifact),
+        ],
     )];
     if let Some(site) = &follow_up.target_site {
-        steps.push(format!(
-            "Bind the test target to {site} and keep live fetches behind the network_access gate.",
+        steps.push(follow_up_text(
+            "step_bind_site",
+            language,
+            &[("site", site.as_str())],
         ));
     }
     if let Some(output) = &follow_up.expected_output {
-        steps.push(format!(
-            "Record the expected output as \"{output}\" so the test harness can assert it.",
+        steps.push(follow_up_text(
+            "step_record_output",
+            language,
+            &[("output", output.as_str())],
         ));
     }
-    steps.push(String::from(
-        "Drive the artifact through a deterministic fixture before any host API or network call.",
-    ));
-    steps.push(String::from(
-        "Keep code execution behind approval gates because the sandbox cannot run untrusted code.",
-    ));
+    steps.push(follow_up_text("step_fixture", language, &[]));
+    steps.push(follow_up_text("step_gates", language, &[]));
     steps
 }
 
 fn follow_up_plan_steps(
     meaning: &SoftwareProjectMeaning,
     follow_up: &SoftwareProjectFollowUp,
+    language: &str,
 ) -> Vec<String> {
     let site = follow_up
         .target_site
         .clone()
-        .unwrap_or_else(|| String::from("the requested target"));
+        .unwrap_or_else(|| follow_up_text("default_target", language, &[]));
     let mut steps = vec![
-        format!(
-            "Generate the {} core plus a deterministic test harness with a captured {site} fixture.",
-            meaning.artifact
+        follow_up_text(
+            "plan_generate",
+            language,
+            &[("artifact", meaning.artifact), ("site", site.as_str())],
         ),
-        String::from(
-            "Assert each requirement (parsing, extraction, counting, summary) against the fixture.",
-        ),
+        follow_up_text("plan_assert", language, &[]),
     ];
     if let Some(output) = &follow_up.expected_output {
-        steps.push(format!("Surface {output} from the fixture run."));
+        steps.push(follow_up_text(
+            "plan_surface",
+            language,
+            &[("output", output.as_str())],
+        ));
     }
-    steps.push(format!(
-        "Run the {} test command once the generated_code gate is approved.",
-        meaning.implementation_language
+    steps.push(follow_up_text(
+        "plan_run",
+        language,
+        &[("language", meaning.implementation_language)],
     ));
-    steps.push(format!(
-        "Promote the run to live {site} only after the test_execution and network_access gates pass.",
+    steps.push(follow_up_text(
+        "plan_promote",
+        language,
+        &[("site", site.as_str())],
     ));
     steps
 }
@@ -307,16 +344,19 @@ fn render_follow_up_response(
     meaning: &SoftwareProjectMeaning,
     follow_up: &SoftwareProjectFollowUp,
     approved: bool,
+    language: &str,
 ) -> String {
-    let mut body = String::new();
-    let _ = writeln!(
-        body,
-        "Recorded a {} follow-up for the {} from the active plan.",
-        follow_up.kind.label(),
-        meaning.artifact
+    let mut body = follow_up_text(
+        "recorded",
+        language,
+        &[
+            ("kind", follow_up.kind.label()),
+            ("artifact", meaning.artifact),
+        ],
     );
-    body.push('\n');
-    body.push_str("Formalized meaning:\n```lino\n");
+    body.push_str("\n\n");
+    body.push_str(&follow_up_text("heading_meaning", language, &[]));
+    body.push_str("\n```lino\n");
     body.push_str("software_project_followup\n");
     let _ = writeln!(
         body,
@@ -345,31 +385,32 @@ fn render_follow_up_response(
     );
     body.push_str("  approval_required true\n");
     for gate in follow_up_gates() {
-        let _ = writeln!(body, "  approval_gate {}", lino_string(gate));
+        let _ = writeln!(body, "  approval_gate {}", lino_string(&gate));
     }
-    body.push_str("```\n\nReasoning steps:\n");
-    for (index, step) in follow_up_reasoning_steps(meaning, follow_up)
+    let _ = writeln!(
+        body,
+        "```\n\n{}",
+        follow_up_text("heading_reasoning", language, &[])
+    );
+    for (index, step) in follow_up_reasoning_steps(meaning, follow_up, language)
         .iter()
         .enumerate()
     {
         let _ = writeln!(body, "{}. {step}", index + 1);
     }
-    body.push_str("\nVerification plan:\n");
-    for (index, step) in follow_up_plan_steps(meaning, follow_up).iter().enumerate() {
+    let _ = writeln!(body, "\n{}", follow_up_text("heading_plan", language, &[]));
+    for (index, step) in follow_up_plan_steps(meaning, follow_up, language)
+        .iter()
+        .enumerate()
+    {
         let _ = writeln!(body, "{}. {step}", index + 1);
     }
     body.push('\n');
-    if approved {
-        body.push_str(
-            "The plan is approved, so the generated starter already includes this test harness. \
-             Running it live needs the test_execution and network_access gates.",
-        );
-    } else {
-        body.push_str(
-            "Reply `approve plan` to generate the artifact plus this test harness. Running it live \
-             against the target needs the test_execution and network_access gates.",
-        );
-    }
+    body.push_str(&follow_up_text(
+        if approved { "approved" } else { "proposed" },
+        language,
+        &[],
+    ));
     body
 }
 

@@ -382,18 +382,19 @@ function trySoftwareProjectRequest(prompt, history = []) {
   };
 }
 
-// Maps a follow-up kind to the imperative verb used when rendering it. Mirrors
-// `FollowUpKind::action` in src/solver_handlers/software_project_followup.rs.
-// The surface words that *recognise* each kind no longer live here — they are
-// self-describing meanings in data/seed/meanings-software-project.lino, queried
-// by detectSoftwareFollowUp via the software_followup_* roles (issue #386).
-const SOFTWARE_FOLLOW_UP_ACTIONS = {
-  verification: "test",
-  execution: "run",
-  demonstration: "show",
-};
+// Issue #918 (R918-2): the verb each follow-up kind renders is the
+// software_project_followup_action table, the gates and the expected-output
+// word limit the software_project_followup policy of data/seed/handler-rules.lino,
+// and every sentence a seeded software_project_followup_* response. The words
+// that *recognise* each kind are the software_followup_* roles (issue #386).
+// Mirrors src/solver_handlers/software_project_followup.rs.
+function softwareFollowUpGates() {
+  return String(handlerRulesPolicy("software_project_followup", "gates") || "").split(" ").filter(Boolean);
+}
 
-const SOFTWARE_FOLLOW_UP_GATES = ["generated_code", "test_execution", "network_access"];
+function softwareFollowUpText(name, language, values = {}) {
+  return handlerRulesFillOnce(answerFor(`software_project_followup_${name}`, language), values);
+}
 
 // Recover the active software-project dialogue from history regardless of
 // whether the plan was approved. Mirrors `prior_software_project_dialogue`.
@@ -427,12 +428,14 @@ function extractFollowUpTargetSite(prompt) {
   return null;
 }
 
-// Capture the clause after "show me"/"show"/"print"/"display" (capped at 12
-// words) so the follow-up records what the user wants surfaced.
+// Capture the clause after an output_display_request prefix opener ("show me
+// …", "покажи …"), in seed order and capped at the policy word limit, so the
+// follow-up records what the user wants surfaced. Mirrors extract_expected_output.
 function extractFollowUpExpectedOutput(prompt) {
   const source = String(prompt || "");
   const lower = source.toLowerCase();
-  for (const marker of ["show me ", "show ", "print ", "display "]) {
+  const limit = Number(handlerRulesPolicy("software_project_followup", "output_word_limit") || 0);
+  for (const marker of prefixLiterals("output_display_request")) {
     const found = lower.indexOf(marker);
     if (found < 0) continue;
     const start = found + marker.length;
@@ -443,7 +446,7 @@ function extractFollowUpExpectedOutput(prompt) {
       .slice(0, stop)
       .split(/\s+/)
       .filter(Boolean)
-      .slice(0, 12)
+      .slice(0, limit)
       .join(" ");
     if (clause) return clause;
   }
@@ -460,6 +463,7 @@ function extractFollowUpExpectedOutput(prompt) {
 // src/solver_handlers/software_project_followup.rs.
 function detectSoftwareFollowUp(prompt, normalized) {
   let kind = null;
+  let kindRole = null;
   for (const [role, candidate] of [
     [ROLE_SOFTWARE_FOLLOWUP_VERIFICATION, "verification"],
     [ROLE_SOFTWARE_FOLLOWUP_EXECUTION, "execution"],
@@ -467,13 +471,14 @@ function detectSoftwareFollowUp(prompt, normalized) {
   ]) {
     if (lexiconMentionsRoleSubstring(role, normalized)) {
       kind = candidate;
+      kindRole = role;
       break;
     }
   }
   if (!kind) return null;
   return {
     kind,
-    action: SOFTWARE_FOLLOW_UP_ACTIONS[kind],
+    action: handlerRulesTableValue("software_project_followup_action", kindRole),
     targetSite: extractFollowUpTargetSite(prompt),
     expectedOutput: extractFollowUpExpectedOutput(prompt),
   };
@@ -489,43 +494,31 @@ function followUpMeaningId(meaning, followUp) {
   return stableBehaviorRuleId("software_project_followup", key);
 }
 
-function followUpReasoningSteps(meaning, followUp) {
-  const steps = [
-    `Recognize "${followUp.action}" as a ${followUp.kind} request that exercises the ${meaning.artifact} from the active plan, not a fact lookup.`,
-  ];
+function followUpReasoningSteps(meaning, followUp, language) {
+  const values = { action: followUp.action, kind: followUp.kind, artifact: meaning.artifact };
+  const steps = [softwareFollowUpText("step_recognize", language, values)];
   if (followUp.targetSite) {
-    steps.push(
-      `Bind the test target to ${followUp.targetSite} and keep live fetches behind the network_access gate.`,
-    );
+    steps.push(softwareFollowUpText("step_bind_site", language, { site: followUp.targetSite }));
   }
   if (followUp.expectedOutput) {
-    steps.push(
-      `Record the expected output as "${followUp.expectedOutput}" so the test harness can assert it.`,
-    );
+    steps.push(softwareFollowUpText("step_record_output", language, { output: followUp.expectedOutput }));
   }
-  steps.push(
-    "Drive the artifact through a deterministic fixture before any host API or network call.",
-  );
-  steps.push(
-    "Keep code execution behind approval gates because the sandbox cannot run untrusted code.",
-  );
+  steps.push(softwareFollowUpText("step_fixture", language), softwareFollowUpText("step_gates", language));
   return steps;
 }
 
-function followUpPlanSteps(meaning, followUp) {
-  const site = followUp.targetSite || "the requested target";
+function followUpPlanSteps(meaning, followUp, language) {
+  const site = followUp.targetSite || softwareFollowUpText("default_target", language);
   const steps = [
-    `Generate the ${meaning.artifact} core plus a deterministic test harness with a captured ${site} fixture.`,
-    "Assert each requirement (parsing, extraction, counting, summary) against the fixture.",
+    softwareFollowUpText("plan_generate", language, { artifact: meaning.artifact, site }),
+    softwareFollowUpText("plan_assert", language),
   ];
   if (followUp.expectedOutput) {
-    steps.push(`Surface ${followUp.expectedOutput} from the fixture run.`);
+    steps.push(softwareFollowUpText("plan_surface", language, { output: followUp.expectedOutput }));
   }
   steps.push(
-    `Run the ${meaning.implementationLanguage} test command once the generated_code gate is approved.`,
-  );
-  steps.push(
-    `Promote the run to live ${site} only after the test_execution and network_access gates pass.`,
+    softwareFollowUpText("plan_run", language, { language: meaning.implementationLanguage }),
+    softwareFollowUpText("plan_promote", language, { site }),
   );
   return steps;
 }
@@ -544,19 +537,17 @@ function followUpEvidence(meaning, followUp, approved) {
     evidence.push(`software_project:expected_output:${followUp.expectedOutput}`);
   }
   evidence.push(`approval_state:${softwareApprovalLabel(approved)}`);
-  for (const gate of SOFTWARE_FOLLOW_UP_GATES) {
+  for (const gate of softwareFollowUpGates()) {
     evidence.push(`approval_gate:${gate}`);
   }
   return evidence;
 }
 
-function renderSoftwareProjectFollowUp(meaning, followUp, approved) {
+function renderSoftwareProjectFollowUp(meaning, followUp, approved, language) {
   const lines = [];
-  lines.push(
-    `Recorded a ${followUp.kind} follow-up for the ${meaning.artifact} from the active plan.`,
-  );
+  lines.push(softwareFollowUpText("recorded", language, { kind: followUp.kind, artifact: meaning.artifact }));
   lines.push("");
-  lines.push("Formalized meaning:");
+  lines.push(softwareFollowUpText("heading_meaning", language));
   lines.push("```lino");
   lines.push("software_project_followup");
   lines.push(`  parent_request ${linoString(stableSoftwareMeaningId(meaning))}`);
@@ -573,32 +564,18 @@ function renderSoftwareProjectFollowUp(meaning, followUp, approved) {
   lines.push(`  implementation_language ${linoString(meaning.implementationLanguage)}`);
   lines.push(`  approval_state ${softwareApprovalLabel(approved)}`);
   lines.push("  approval_required true");
-  for (const gate of SOFTWARE_FOLLOW_UP_GATES) {
+  for (const gate of softwareFollowUpGates()) {
     lines.push(`  approval_gate ${linoString(gate)}`);
   }
-  lines.push("```");
-  lines.push("");
-  lines.push("Reasoning steps:");
-  followUpReasoningSteps(meaning, followUp).forEach((step, index) => {
+  lines.push("```", "", softwareFollowUpText("heading_reasoning", language));
+  followUpReasoningSteps(meaning, followUp, language).forEach((step, index) => {
     lines.push(`${index + 1}. ${step}`);
   });
-  lines.push("");
-  lines.push("Verification plan:");
-  followUpPlanSteps(meaning, followUp).forEach((step, index) => {
+  lines.push("", softwareFollowUpText("heading_plan", language));
+  followUpPlanSteps(meaning, followUp, language).forEach((step, index) => {
     lines.push(`${index + 1}. ${step}`);
   });
-  lines.push("");
-  if (approved) {
-    lines.push(
-      "The plan is approved, so the generated starter already includes this test harness. " +
-        "Running it live needs the test_execution and network_access gates.",
-    );
-  } else {
-    lines.push(
-      "Reply `approve plan` to generate the artifact plus this test harness. Running it live " +
-        "against the target needs the test_execution and network_access gates.",
-    );
-  }
+  lines.push("", softwareFollowUpText(approved ? "approved" : "proposed", language));
   return lines.join("\n");
 }
 
@@ -618,7 +595,7 @@ function trySoftwareProjectFollowup(prompt, history = []) {
   if (!followUp) return null;
   return {
     intent: "software_project_followup",
-    content: renderSoftwareProjectFollowUp(dialogue.meaning, followUp, dialogue.approved),
+    content: renderSoftwareProjectFollowUp(dialogue.meaning, followUp, dialogue.approved, detectLanguage(prompt)),
     confidence: 0.74,
     evidence: followUpEvidence(dialogue.meaning, followUp, dialogue.approved),
   };

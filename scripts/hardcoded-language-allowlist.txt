@@ -624,10 +624,7 @@ rust/src/solver_handlers/conversation_memory/mod.rs	स्मृति में
 rust/src/solver_handlers/conversation_memory/mod.rs	स्मृति में \"{}\" नहीं मिला.
 rust/src/solver_handlers/conversation_memory/mod.rs	在对话历史中找到 \"{}\" 的记录: {}\n
 rust/src/solver_handlers/conversation_memory/mod.rs	在记忆中找到 \"{}\" 的记录: {} (对话: {})。\n
-rust/src/solver_handlers/document_originality.rs	Recognized an originality and plagiarism check for `{target}`.
-rust/src/solver_handlers/document_originality.rs	\"{sample}\" plagiarism originality
 rust/src/solver_handlers/document_originality.rs	asset={} period={} source={} min={:.2} min_date={} max={:.2} max_date={}
-rust/src/solver_handlers/document_originality.rs	{name} plagiarism originality uniqueness
 rust/src/solver_handlers/installation_conversion.rs	1. Detect the source surface and requested target surface(s).\n
 rust/src/solver_handlers/installation_conversion.rs	2. Extract command-like install/deploy steps in original order.\n
 rust/src/solver_handlers/installation_conversion.rs	3. Render every target from the same install-step IR.\n
@@ -742,20 +739,6 @@ rust/src/solver_handlers/software_project.rs	\nProposed plan:\n
 rust/src/solver_handlers/software_project.rs	\nReply `approve plan` to generate the starter implementation, or describe what to change.
 rust/src/solver_handlers/software_project.rs	\nRequirement model:\n
 rust/src/solver_handlers/software_project_followup.rs	  approval_required true\n
-rust/src/solver_handlers/software_project_followup.rs	Assert each requirement (parsing, extraction, counting, summary) against the fixture.
-rust/src/solver_handlers/software_project_followup.rs	Bind the test target to {site} and keep live fetches behind the network_access gate.
-rust/src/solver_handlers/software_project_followup.rs	Drive the artifact through a deterministic fixture before any host API or network call.
-rust/src/solver_handlers/software_project_followup.rs	Generate the {} core plus a deterministic test harness with a captured {site} fixture.
-rust/src/solver_handlers/software_project_followup.rs	Keep code execution behind approval gates because the sandbox cannot run untrusted code.
-rust/src/solver_handlers/software_project_followup.rs	Promote the run to live {site} only after the test_execution and network_access gates pass.
-rust/src/solver_handlers/software_project_followup.rs	Recognize \"{}\" as a {} request that exercises the {} from the active plan, not a fact lookup.
-rust/src/solver_handlers/software_project_followup.rs	Record the expected output as \"{output}\" so the test harness can assert it.
-rust/src/solver_handlers/software_project_followup.rs	Recorded a {} follow-up for the {} from the active plan.
-rust/src/solver_handlers/software_project_followup.rs	Reply `approve plan` to generate the artifact plus this test harness. Running it live against the target needs the test_execution and network_access gates.
-rust/src/solver_handlers/software_project_followup.rs	Run the {} test command once the generated_code gate is approved.
-rust/src/solver_handlers/software_project_followup.rs	Surface {output} from the fixture run.
-rust/src/solver_handlers/software_project_followup.rs	The plan is approved, so the generated starter already includes this test harness. Running it live needs the test_execution and network_access gates.
-rust/src/solver_handlers/software_project_followup.rs	\nVerification plan:\n
 rust/src/solver_handlers/software_project_followup.rs	software_project_followup\n
 rust/src/solver_handlers/text_manipulation.rs	bytes={} chars={}
 rust/src/solver_handlers/text_manipulation.rs	stage:{} -> operation:{}

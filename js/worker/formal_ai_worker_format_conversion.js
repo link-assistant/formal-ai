@@ -861,14 +861,21 @@ function formatConversionYamlText(prompt) {
   if (body !== null) return body;
   const span = formatConversionBacktickSpan(prompt);
   if (span !== null) return span;
+  // A line that carries a conversion cue is the request introducing the
+  // document ("Convert this YAML to JSON:"), not its first key; it is
+  // skipped unless no other line opens a mapping or sequence.
   let seen = 0;
+  let requestLine = null;
   for (const line of codeTaskLines(prompt)) {
     const start = seen;
     seen += line.length + 1;
     const trimmed = line.trim();
-    if (trimmed.indexOf(": ") !== -1 || trimmed.startsWith("- ") || trimmed.endsWith(":")) return prompt.slice(start);
+    if (trimmed.indexOf(": ") === -1 && !trimmed.startsWith("- ") && !trimmed.endsWith(":")) continue;
+    const lower = line.toLowerCase();
+    if (!codeTaskAnyCueMatches("format_conversion", lower, lower)) return prompt.slice(start);
+    if (requestLine === null) requestLine = start;
   }
-  return null;
+  return requestLine === null ? null : prompt.slice(requestLine);
 }
 
 /**
@@ -993,6 +1000,30 @@ function formatConversionCsvToJson(prompt, log) {
   ]), 0.7];
 }
 
+/**
+ * A request that names only JSON as its target ("Convert to JSON: {...}")
+ * over a payload that already parses as JSON: the source format is read
+ * from the payload, and the answer is the parsed document re-emitted with
+ * two-space indentation once it parses back to the same value (Rust
+ * `json_identity`). Null when the payload is not JSON, so the YAML reader
+ * gets it.
+ * @param {string} prompt raw prompt
+ * @param {Array<Array<string>>} log handler log
+ * @returns {string|null} the answer body
+ */
+function formatConversionJsonIdentity(prompt, log) {
+  const text = formatConversionJsonText(prompt);
+  const parsed = text === null ? null : formatJsonParse(text);
+  if (parsed === null || !parsed.ok) return null;
+  const json = formatJsonPretty(parsed.value, "");
+  const reparsed = formatJsonParse(json);
+  if (!reparsed.ok || !formatValuesEqual(reparsed.value, parsed.value)) return null;
+  codeTaskLogAppend(log, "format_conversion:request", "dir=json");
+  codeTaskLogAppend(log, "format_conversion:source", "json");
+  codeTaskLogAppend(log, "format_conversion:converted", "roundtrip=ok");
+  return codeTaskTemplate("format_conversion_json_identity", [["json", json]]);
+}
+
 // ---------------------------------------------------------------------------
 // Handler
 // ---------------------------------------------------------------------------
@@ -1019,8 +1050,13 @@ function handleFormatConversion(prompt, normalized) {
   const toYaml = codeTaskCued("format_conversion", "to_yaml", prompt, normalized);
   const toJson = codeTaskCued("format_conversion", "to_json", prompt, normalized);
   const fromCsv = !toYaml && !toJson && codeTaskCued("format_conversion", "csv_to_json", prompt, normalized);
-  if (!toYaml && !toJson && !fromCsv) return null;
+  const toJsonOnly = !toYaml && !toJson && !fromCsv && codeTaskCued("format_conversion", "json_target", prompt, normalized);
+  if (!toYaml && !toJson && !fromCsv && !toJsonOnly) return null;
   const log = codeTaskLog();
+  const identity = toJsonOnly ? formatConversionJsonIdentity(prompt, log) : null;
+  if (identity !== null) {
+    return codeTaskAnswer(log, "format_conversion", "response:format_conversion", identity, 0.7);
+  }
   if (fromCsv) {
     codeTaskLogAppend(log, "format_conversion:request", "dir=csv");
     const converted = formatConversionCsvToJson(prompt, log);

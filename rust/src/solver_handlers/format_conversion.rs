@@ -178,17 +178,25 @@ fn yaml_text(prompt: &str) -> Option<String> {
     if let Some(span) = backtick_span(prompt) {
         return Some(span);
     }
+    // A line that carries a conversion cue is the request introducing the
+    // document ("Convert this YAML to JSON:"), not its first key; it is
+    // skipped unless no other line opens a mapping or sequence.
     let mut seen = 0usize;
+    let mut request_line = None;
     for line in prompt.lines() {
         let start = seen;
         seen += line.len() + 1;
         let trimmed = line.trim();
-        if trimmed.contains(": ") || trimmed.strip_prefix("- ").is_some() || trimmed.ends_with(':')
-        {
+        if !trimmed.contains(": ") && !trimmed.starts_with("- ") && !trimmed.ends_with(':') {
+            continue;
+        }
+        let lower = line.to_lowercase();
+        if !super::shell_command_compose::any_cue_matches(INTENT, &lower, &lower) {
             return Some(prompt[start..].to_owned());
         }
+        request_line.get_or_insert(start);
     }
-    None
+    request_line.map(|start| prompt[start..].to_owned())
 }
 
 /// The CSV table under discussion: a fenced block, else the text after the
@@ -672,6 +680,27 @@ fn refusal(reason: &str) -> String {
     template("format_conversion_refusal", &[("reason", &reason_text)])
 }
 
+/// The answer to a request that names only JSON as its target over a payload
+/// that already parses as JSON.
+///
+/// The source format is read from the payload: the parsed document is
+/// re-emitted with two-space indentation once it parses back to the same
+/// value. `None` when the payload is not JSON, so the YAML reader gets it.
+fn json_identity(prompt: &str, log: &mut EventLog) -> Option<String> {
+    let value = serde_json::from_str::<Value>(&json_text(prompt)?).ok()?;
+    let json = serde_json::to_string_pretty(&value).ok()?;
+    if serde_json::from_str::<Value>(&json).ok()? != value {
+        return None;
+    }
+    log.append("format_conversion:request", "dir=json".to_owned());
+    log.append("format_conversion:source", "json".to_owned());
+    log.append("format_conversion:converted", "roundtrip=ok".to_owned());
+    Some(template(
+        "format_conversion_json_identity",
+        &[("json", &json)],
+    ))
+}
+
 /// Whether the prompt carries a JSON or YAML document to convert (issue
 /// #1175 R3: the `structured_document` claim evidence, read by the same
 /// extractors the handler uses).
@@ -691,8 +720,20 @@ pub fn handle_format_conversion(
     let to_yaml = role_cued(prompt, normalized, "to_yaml");
     let to_json = role_cued(prompt, normalized, "to_json");
     let from_csv = !to_yaml && !to_json && role_cued(prompt, normalized, "csv_to_json");
-    if !to_yaml && !to_json && !from_csv {
+    let to_json_only =
+        !to_yaml && !to_json && !from_csv && role_cued(prompt, normalized, "json_target");
+    if !to_yaml && !to_json && !from_csv && !to_json_only {
         return None;
+    }
+    if to_json_only && let Some(body) = json_identity(prompt, log) {
+        return Some(finalize_simple(
+            prompt,
+            log,
+            INTENT,
+            "response:format_conversion",
+            &body,
+            0.7,
+        ));
     }
     if from_csv {
         log.append("format_conversion:request", "dir=csv".to_owned());

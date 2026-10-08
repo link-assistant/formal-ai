@@ -316,6 +316,9 @@ impl UniversalSolver {
         probability_store: &ProbabilityStore,
         intent_cache: &mut IntentFormalizationCache,
     ) -> SymbolicAnswer {
+        // Issue #667 (R383): under a debug session the outermost solve of a
+        // connection waits at its first stage before it runs.
+        let _turn = crate::server::begin_turn(prompt);
         let mut log = EventLog::new();
         let mut answer = (|| {
             // Issue #556: when this solve is a forced-language replay, force

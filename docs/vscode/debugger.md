@@ -7,8 +7,9 @@ diagnostics mode renders the same five panes:
 1. **Conversation**: the chat messages.
 2. **Event links**: the public event-log links and the selected event's record.
 3. **Recipe diagram**: the selected event's Mermaid source, rendered as a graph.
-4. **Rust source**: the `path:line`, symbol and excerpt of the Rust handler.
-5. **JavaScript source**: the same for the browser worker's handler.
+4. **Rust source**: the `path:line`, symbol and excerpt of the Rust code that
+   emits the selected stage.
+5. **JavaScript source**: the same for the JavaScript server's solver chain.
 
 While a turn is paused, the event of the paused stage is selected, so the
 diagram and both source panes follow **Next stage**. Missing diagrams or source
@@ -43,17 +44,33 @@ into these steps the same way for `thinking_steps` in every answer.
 
 ### What is and is not paused
 
-- **Held:** the turn, from the moment its stages are known until the last one
-  is advanced or the turn is released. Both servers gate before the turn's
-  derivation record is persisted (`data/cache/derivations/<answer id>.lino`).
-  Nothing that consumes the answer has happened yet: no HTTP response, no
-  memory exchange, no dialog-log entry. The JavaScript gate sits in
-  `solveSymbolic` before `finalizeServerAnswer`. The Rust gate sits in
-  `derivation::finalize_answer` before `Derivation::persist`.
-- **Not paused:** the solver computation itself. The handler dispatch, the
-  handler and the trace projection have already run when the first stage
-  pauses, so stepping reveals stages one by one without suspending work
-  between them. Stepping never runs a stage again.
+- **Suspended (stage 0, `impulse`):** the solve itself. A turn opens before
+  the solver runs, with only its first stage known: the prompt, `stages: 1`,
+  no `method`. Until stage 0 is advanced, nothing is solved: no language
+  detection, formalization, routing, handler or trace. The JavaScript server
+  waits in `solveSymbolic` before `ctx.worker.solve` (`beginTurn`). The Rust
+  server waits at the start of
+  `solve_with_history_probability_store_and_intent_cache` (`begin_turn`), for
+  the outermost solve of a connection only.
+- **Running:** after stage 0 is advanced, the turn has no paused stage
+  (`paused` omits it, and an `advance` answers 409) while the solver runs.
+- **Revealed (stages 1 and on):** the rest of the turn. Both solvers compute
+  these stages in one uninterrupted call, so they are held, not suspended:
+  `ctx.worker.solve` runs the browser worker's whole pipeline synchronously in
+  its realm, and the Rust solve runs its handlers inside one call. The turn
+  resumes paused at stage 1 with every stage known (`stages` is now the full
+  count), and each advance reveals the next one. Both servers gate before the
+  turn's derivation record is persisted
+  (`data/cache/derivations/<answer id>.lino`). Nothing that consumes the
+  answer has happened yet: no HTTP response, no memory exchange, no
+  dialog-log entry. The JavaScript gate sits in `solveSymbolic` before
+  `finalizeServerAnswer`. The Rust gate sits in `derivation::finalize_answer`
+  before `Derivation::persist`. Stepping never runs a stage again.
+- **Not suspended:** the work between stages 1 and on, as above. The agentic
+  planner is not gated: it plans one step per request (`planChatStep`), and
+  its tool loop spans requests rather than running inside one. A nested Rust
+  solve (a replay or a synthesis sub-solve) is held as its own turn when it
+  finishes, as before.
 
 ### Starting a session
 
@@ -90,8 +107,8 @@ bearer gate. Every request body is JSON and must carry the session token:
 | action | body | effect |
 | --- | --- | --- |
 | `session` | `{token, since?}` | Reads the state; changes nothing. |
-| `pause` | `{token, since?}` | Turns stepping on. The next solved turn pauses at its first stage. |
-| `advance` | `{token, turn, stage, since?}` | Advances exactly the paused `stage` of `turn` and pauses at the next one. After the last stage, the turn is released. |
+| `pause` | `{token, since?}` | Turns stepping on. The next turn pauses at its first stage, before it is solved. |
+| `advance` | `{token, turn, stage, since?}` | Advances exactly the paused `stage` of `turn` and pauses at the next one. Advancing stage 0 lets the solve run; the turn pauses again at stage 1 once it is solved. After the last stage, the turn is released. |
 | `release` | `{token, turn?, since?}` | With `turn`, releases that turn. Without it, releases every paused turn and turns stepping off. |
 
 A success answers `200` with the session snapshot:
@@ -115,8 +132,8 @@ envelope:
 - `401 debug_session_token_invalid`: the token is missing or wrong. The
   comparison takes constant time.
 - `409 debug_stage_not_paused`: the `advance` names a stage that is not the
-  paused one, or an unknown or released turn. This covers a repeated advance
-  of the same stage. Nothing is recorded, so a stage is never advanced twice.
+  paused one, or an unknown, released or running turn. This covers a repeated
+  advance of the same stage. Nothing is recorded, so a stage is never advanced twice.
 
 ### Events
 
@@ -132,20 +149,43 @@ log. Event ids are `debug_event_<n>`. Every event carries `session`, `turn`
   - `completed`: the last stage was advanced.
   - `released`: a `release` request freed it.
   - `disconnected`: the client that asked for the turn hung up.
+  - `abandoned`: the solve ended (it threw) without resuming the turn.
 
 The stage fields, also carried by each `paused` entry of the snapshot:
 
 | field | value |
 | --- | --- |
-| `stages` | how many stages the turn has |
+| `stages` | how many stages the turn has: 1 while it waits to be solved |
 | `step`, `detail` | the thinking step |
 | `source` | the solver event kind the step came from |
 | `mermaid` | the turn's recipe as a Mermaid `flowchart TD`: top-level stages chained in order, a sub-stage joined to its parent by a dotted edge, and this stage given the `current` class |
+| `rust_source`, `rust_line`, `rust_excerpt` | the Rust function that emits this stage, as `path:symbol`, the 1-based line of the definition and the definition through its closing brace (at most 40 lines) |
+| `js_source`, `js_line`, `js_excerpt` | the same in the JavaScript server's solver chain (the worker's native event log, `js/agentic/crate`, `js/server`) |
 | `method` | the method-registry method the turn's route resolves to (`MethodRegistry::method_for_route` over the `formalize` stage's detail, else the `dispatch_handler` stage's), or empty |
-| `rust_source`, `rust_line`, `rust_excerpt` | where that method runs in Rust, as `path:symbol`, the 1-based line of the definition and the definition through its closing brace (at most 40 lines) |
-| `js_source`, `js_line`, `js_excerpt` | the same for the browser worker |
+| `method_rust_*`, `method_js_*` | the same three fields for that method's handler in Rust and in the browser worker |
 
-The locations come from the live source tree, nothing is recorded by hand:
+The locations come from the live source tree, nothing is recorded by hand.
+
+A stage's emitter is the function that appends the stage's `source` event:
+
+- **The table.** `data/meta/debug-stage-sources.lino` is written by
+  `node scripts/generate-debug-stage-sources.mjs --write`. The CI gate
+  `check_debug_stage_sources` runs it with `--check`. For every event kind
+  that becomes a thinking step, it lists the functions that append it in each
+  runtime: Rust `<log>.append("<kind>", …)`, JavaScript
+  `solverEvent("<kind>", …)` and `<log>.push({ kind: "<kind>", … })`. A kind
+  named by a string constant of the same file counts. It also lists each
+  runtime's source trees and solver entry.
+- **One appender:** it is the emitter.
+- **Several appenders:** the emitter is the one reachable in the fewest
+  calls, at most 2, from the turn's routed handler (below). Failing that, it
+  is the one reachable from the solver entry
+  (`solve_with_history_probability_store_and_intent_cache`, and
+  `nativeSolverLog` in JavaScript). Calls are read by name from the function
+  bodies of the runtime's trees. When none is reached, the stage records no
+  location; a guess is never recorded.
+
+The routed method's handler:
 
 - **Rust:** the method's row in the `HANDLER_FUNCTIONS` table of
   `rust/src/solver_dispatch.rs`. A method that `data/seed/handler-rules.lino`
@@ -153,20 +193,29 @@ The locations come from the live source tree, nothing is recorded by hand:
 - **JavaScript:** the handler of `data/seed/browser-handler-precedence.lino`
   named `try` plus the method, ignoring case and underscores. A rule-set
   method without one resolves to `runHandlerRuleSet`.
-- **Lookup:** each symbol is found by its definition line, in sorted file
-  order, under `rust/src` or `js/worker`. Each method is looked up once per
-  process.
+
+How the lookup works:
+
+- **Lookup:** each symbol is found by its definition line, under the file the
+  table names for an emitter, or in sorted file order under `rust/src` or
+  `js/worker` for a handler. Each location is looked up once per process.
 - **Empty fields:** a route the registry does not resolve (such as
-  `greeting`), or a server without its source tree, leaves the `*_source`
-  fields empty and the lines at 0.
+  `greeting`), an event no function appends, or a server without its source
+  tree, leaves those `*_source` fields empty and the lines at 0.
 
 The Rust server looks for its source tree at the crate's parent directory,
-then at the working directory. Example, for a turn routed to `arithmetic`:
+then at the working directory. The served `What is 2 + 2?` turn, routed to
+`arithmetic` (`method_rust_source`
+`rust/src/solver_dispatch.rs:handle_arithmetic`, `method_js_source`
+`js/worker/formal_ai_worker_06.js:tryArithmetic`), names these emitters:
 
-```json
-{"method": "arithmetic", "rust_source": "rust/src/solver_dispatch.rs:handle_arithmetic",
- "js_source": "js/worker/formal_ai_worker_06.js:tryArithmetic", "rust_line": 78, "...": "..."}
-```
+| stage | step | Rust emitter | JavaScript emitter |
+| --- | --- | --- | --- |
+| 0 | `impulse` | `rust/src/solver.rs:solve_with_history_probability_store_and_intent_cache` | `js/worker/formal_ai_worker_solver_events.js:solverEventLog` |
+| 1 | `detect_language` | the same | the same |
+| 2 | `formalize` | `rust/src/intent_formalization.rs:record_intent_formalization` | `js/agentic/crate/intent_formalization.mjs:recordIntentFormalization` |
+| 3–6 | `compute`, `compute_engine`, `compute_expression`, `compute_steps` | `rust/src/solver_handlers/mod.rs:try_arithmetic` | `js/worker/formal_ai_worker_solver_events.js:solverCalculationEvents` |
+| 7–9 | `dispatch_handler`, `rule_verification`, `deformalize` | `rust/src/solver_handlers/mod.rs:finalize_simple` | `js/worker/formal_ai_worker_solver_events.js:solverEventLog` |
 
 ### Release semantics
 
@@ -183,31 +232,38 @@ A held turn never outlives the ability to advance it:
 
 ### Implementation
 
-- JavaScript: `js/server/debug-session.mjs` and the stage views in
-  `js/server/debug-stage.mjs`, with the gate in `js/server/solve.mjs` and the
-  request scope in `js/server/http.mjs`.
-- Rust: `rust/src/server/debug_session.rs` and
-  `rust/src/server/debug_stage.rs`, with the gate in
-  `derivation::finalize_answer` and the connection scope in
+- JavaScript: `js/server/debug-session.mjs`, the stage views in
+  `js/server/debug-stage.mjs` and the emitter lookup in
+  `js/server/debug-stage-sources.mjs`. The begin and the gate are in
+  `js/server/solve.mjs`, and the request scope is in `js/server/http.mjs`.
+- Rust: `rust/src/server/debug_session.rs`, `rust/src/server/debug_stage.rs`
+  and `rust/src/server/debug_stage_sources.rs`. The begin is at the start of
+  the solver entry in `rust/src/solver.rs`, the gate is in
+  `derivation::finalize_answer`, and the connection scope is in
   `rust/src/server/transport.rs`.
+- Generator: `scripts/generate-debug-stage-sources.mjs` writes
+  `data/meta/debug-stage-sources.lino`.
 - Webview: `js/app/debugger-view.jsx` over `js/debugger-client.js`, which
   polls `session` with a `since` cursor, merges the stage events into the
   event pane and renders the diagram through `js/mermaid-entry.js`.
-- Tests: `rust/tests/web/server-debug-session.test.mjs`,
+- Tests: `rust/tests/web/server-debug-session.test.mjs` (which also checks
+  that the table is current),
   `rust/tests/unit/specification/debug_session.rs`,
   `rust/tests/web/debugger-client.test.mjs`,
   `vscode/scripts/debugger-panes.test.mjs`,
-  `vscode/scripts/config.test.mjs` and
-  `vscode/scripts/server-process.test.mjs`.
+  `vscode/scripts/config.test.mjs`,
+  `vscode/scripts/server-process.test.mjs`, and the browser test
+  `rust/tests/e2e/tests/issue-667-debugger-view.spec.js`. In the built app,
+  that test sees stage 0 wait before the solve, and the source panes change
+  from stage to stage.
 
 ## Remaining acceptance
 
-- Suspending the solver between its stages, not only holding the solved turn
-  before it is persisted and answered.
-- Per-stage source locations: every stage of a turn names the method its
-  route resolves to, not the code that emitted that particular step.
-- A browser test of the view inside the built app. The server payloads, the
-  event-to-pane projection, the renderer (with an injected bundle) and the
-  webview CSP are pinned by tests. The real bundle was checked by hand in
-  headless Chromium: five nodes, four edges, the current stage highlighted.
-- Live screenshots or a GIF of a debugger session.
+- Suspending the solver between stages 1 and on. Today these stages are
+  revealed from the solved turn. True suspension needs the browser worker's
+  `solve` and the Rust handlers to run as resumable steps, not as one call.
+- Emitters in JavaScript exist only where the worker mirrors the native
+  solver's event log: the prelude, the calculator, the finalize tail, the
+  write-program events and the server's formalization records. A stage from
+  a Rust-only event kind, such as a concept lookup or a tool call, has no
+  JavaScript location.

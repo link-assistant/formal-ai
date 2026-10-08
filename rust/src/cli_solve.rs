@@ -11,12 +11,12 @@
 //! bodies in.
 
 use std::error::Error;
-use std::fmt::Write as _;
 use std::io::Read as _;
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicU64, Ordering};
 
 use crate::repository_workspace::clone::{WorkspaceSpec, observed_head};
+use crate::repository_workspace::trace::{ProtocolTrace, StageStatus};
 use crate::repository_workspace::{RepositoryTask, RepositoryWorkspace, WorkspaceProtocol};
 use crate::source_fetch::{CachedSourceClient, CurlSourceTransport, SourceCapture};
 
@@ -166,6 +166,9 @@ pub fn run_solve(args: &SolveArgs) -> Result<SolveOutcome, Box<dyn Error>> {
     };
     let protocol = WorkspaceProtocol::load();
     let mut protocol_outcome = protocol.execute(&mut workspace, &task);
+    let authored = protocol_outcome.open.is_empty()
+        && protocol_outcome.stopped_at.is_none()
+        && !protocol_outcome.edited.is_empty();
 
     std::fs::create_dir_all(&args.evidence)?;
     let model = if args.model == "formal-ai" {
@@ -195,7 +198,15 @@ pub fn run_solve(args: &SolveArgs) -> Result<SolveOutcome, Box<dyn Error>> {
         ),
         (
             String::from("repository-protocol.lino"),
-            protocol_trace(&task, &protocol_outcome, &session, &model).into_bytes(),
+            protocol_trace(
+                &protocol,
+                &task,
+                &protocol_outcome,
+                &session,
+                &model,
+                args.commit && authored,
+            )
+            .into_bytes(),
         ),
     ];
     if let Some(source) = input.issue_source {
@@ -231,10 +242,7 @@ pub fn run_solve(args: &SolveArgs) -> Result<SolveOutcome, Box<dyn Error>> {
     // diagnostics outside the clone and can never become an evidence-only
     // contribution.
     let committed_evidence = format!(".formal-ai/evidence/{session}");
-    if protocol_outcome.open.is_empty()
-        && protocol_outcome.stopped_at.is_none()
-        && !protocol_outcome.edited.is_empty()
-    {
+    if authored {
         for (name, bytes) in &evidence_documents {
             workspace.write(
                 &format!("{committed_evidence}/{name}"),
@@ -249,11 +257,7 @@ pub fn run_solve(args: &SolveArgs) -> Result<SolveOutcome, Box<dyn Error>> {
         protocol_outcome.diff = workspace.diff()?;
     }
 
-    let can_commit = args.commit
-        && protocol_outcome.open.is_empty()
-        && protocol_outcome.stopped_at.is_none()
-        && !protocol_outcome.edited.is_empty()
-        && !protocol_outcome.diff.trim().is_empty();
+    let can_commit = args.commit && authored && !protocol_outcome.diff.trim().is_empty();
     let commit_message = if args.commit {
         commit_message(args, &session, &model, &committed_evidence)?
     } else {
@@ -432,28 +436,43 @@ fn canonical_pull_request(value: &str) -> bool {
         && parts[3].parse::<u64>().is_ok_and(|number| number > 0)
 }
 
+/// The `repository-protocol.lino` evidence of a structural run, in the format
+/// every protocol caller writes (#1138 R1138-3-5).
 fn protocol_trace(
+    protocol: &WorkspaceProtocol,
     task: &RepositoryTask,
     outcome: &crate::repository_workspace::ProtocolOutcome,
     session: &str,
     model: &str,
+    commit_requested: bool,
 ) -> String {
-    let mut out = String::from("repository_solve_trace\n");
-    let _ = writeln!(out, "  session \"{session}\"");
-    let _ = writeln!(out, "  model \"{model}\"");
-    let _ = writeln!(out, "  base_commit \"{}\"", task.clone.base_commit);
-    let _ = writeln!(out, "  located \"{}\"", outcome.located.len());
-    let _ = writeln!(out, "  edited \"{}\"", outcome.edited.len());
-    let _ = writeln!(out, "  observations \"{}\"", outcome.observations.len());
-    let _ = writeln!(out, "  diff_bytes \"{}\"", outcome.diff.len());
+    let mut trace = ProtocolTrace::from_outcome(protocol, SOLVE_CALLER, outcome);
+    // The commit gate is this caller's stage: default-deny unless `--commit`
+    // was given and every earlier stage observed its postcondition.
+    if trace.status(COMMIT_STAGE) != Some(StageStatus::NotReached) {
+        trace.record(
+            COMMIT_STAGE,
+            if commit_requested {
+                StageStatus::Requested
+            } else {
+                StageStatus::Refused
+            },
+        );
+    }
+    trace.set_field("session", session);
+    trace.set_field("model", model);
+    trace.set_field("base_commit", &task.clone.base_commit);
     if let Some(step) = &outcome.stopped_at {
-        let _ = writeln!(out, "  stopped_at \"{}\"", step.id);
+        trace.set_field("stopped_at", &step.id);
     }
-    for open in &outcome.open {
-        let _ = writeln!(out, "  open \"{}\"", open.replace('"', "\"\""));
-    }
-    out
+    trace.render()
 }
+
+/// The caller name `solve` (and the coding ladder through it) records.
+const SOLVE_CALLER: &str = "solve";
+
+/// The protocol stage this caller owns.
+const COMMIT_STAGE: &str = "commit";
 
 fn commit_isolated(workspace: &RepositoryWorkspace, message: &str) -> Result<bool, Box<dyn Error>> {
     crate::repository_workspace::clone::run_git(workspace.root(), &["add", "--all"]).map_err(

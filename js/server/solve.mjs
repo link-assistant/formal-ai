@@ -5,7 +5,7 @@
 // rust/src/protocol_policy.rs.
 
 import { finalizeServerAnswer } from './derivation-store.mjs';
-import { gateTurn } from './debug-session.mjs';
+import { beginTurn, endTurn, gateTurn } from './debug-session.mjs';
 import { ensureNodeHost } from './node-host-install.mjs';
 import { EventLog, buildEvidenceLinks } from './evidence-links.mjs';
 import { f32 } from './json.mjs';
@@ -119,6 +119,17 @@ async function seedReportReader(ctx) {
  * @returns {Promise<SymbolicAnswer>}
  */
 export async function solveSymbolic(ctx, prompt, history) {
+  // Issue #667 (R383): under a debug session the solve waits at its first
+  // stage (`impulse`) before the worker runs; `gateTurn` continues the turn.
+  await beginTurn(ctx, prompt);
+  try {
+    return await solveBegun(ctx, prompt, history);
+  } finally {
+    endTurn(ctx);
+  }
+}
+
+async function solveBegun(ctx, prompt, history) {
   const result = await ctx.worker.solve(prompt, history);
   // R1013: the formalization, intent-formalization and meta-core records the
   // native solver logs between the worker's prelude and its handler events.

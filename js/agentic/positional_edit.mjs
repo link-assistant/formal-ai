@@ -67,8 +67,10 @@ export function positionalInserts(request) {
   const clauses = block === null ? insertClauses(request) : [block.head];
   const inserts = clauses.map((clause) => clauseInsert(clause, block === null ? null : block.text));
   if (inserts.some((insert) => insert === null)) return null;
-  const named = [...new Set(unquotedPathTokens(request).map((token) => cleanPathToken(token.text))
-    .filter((candidate) => looksLikeFilePath(candidate) && safeRelativePath(candidate)))];
+  // Lines under the request that were neither fenced nor quoted are rebased on
+  // the anchor's indentation once the file is read (PR #1188 G16).
+  for (const insert of inserts) insert.rebase = block !== null && !block.verbatim;
+  const named = [...new Set(namedPaths(request))];
   for (const insert of inserts) {
     if (insert.target !== null) continue;
     if (named.length !== 1) return null;
@@ -93,9 +95,7 @@ function clauseInsert(sentence, blockText) {
   const after = mentionsRole('file_edit_position_after', outside);
   const before = mentionsRole('file_edit_position_before', outside);
   if (after === before || !mentionsRole('coding_member_add_action', normalized)) return null;
-  const target = unquotedPathTokens(sentence)
-    .map((token) => cleanPathToken(token.text))
-    .find((candidate) => looksLikeFilePath(candidate) && safeRelativePath(candidate)) ?? null;
+  const target = namedPaths(sentence)[0] ?? null;
   const literals = quotedLiterals(sentence).filter((literal) => literal.text !== target);
   const contexts = cueOccurrences(sentence, 'file_edit_anchor_context_cue');
   const role = after ? 'file_edit_position_after' : 'file_edit_position_before';
@@ -104,8 +104,28 @@ function clauseInsert(sentence, blockText) {
   const positions = cueOccurrences(sentence, role)
     .filter(([start]) => !contexts.some(([from, to]) => start >= from && start < to));
   if (blockText !== null) {
-    if (literals.length !== 1 || contexts.length > 0) return null;
-    return { target, anchor: unescapeProseNewlines(literals[0].text), inserted: blockText, after, context: null };
+    // One literal is the anchor: a context cue then names no second line, so
+    // `the following lines` speaks of the block (PR #1188 G16). With a seeded
+    // anchor context, a second literal is the line the anchor follows (G51).
+    if (literals.length === 1) {
+      return { target, anchor: unescapeProseNewlines(literals[0].text), inserted: blockText, after, context: null };
+    }
+    if (literals.length !== 2 || contexts.length === 0) return null;
+    const anchorAt = governedLiteral(positions, literals, [0, 1]);
+    const contextAt = anchorAt === null ? null : governedLiteral(contexts, literals, [1 - anchorAt]);
+    if (contextAt === null) return null;
+    return {
+      target,
+      anchor: unescapeProseNewlines(literals[anchorAt].text),
+      inserted: blockText,
+      after,
+      context: unescapeProseNewlines(literals[contextAt].text),
+    };
+  }
+  // `Insert an empty line before the line '## Probe'`: the seeded blank line
+  // is the line inserted beside the one literal (PR #1188 G31).
+  if (literals.length === 1 && contexts.length === 0 && mentionsRole('file_edit_blank_line', outside)) {
+    return { target, anchor: unescapeProseNewlines(literals[0].text), inserted: '', after, context: null };
   }
   if (literals.length < 2) return null;
   const indices = literals.map((_, index) => index);
@@ -121,7 +141,8 @@ function clauseInsert(sentence, blockText) {
   return {
     target,
     anchor: unescapeProseNewlines(literals[anchorAt].text),
-    inserted: inserted.map((literal) => unescapeProseNewlines(literal.text)).join('\n'),
+    // Lines given as separate literals are already lines: an escape inside one is content (PR #1188 G53).
+    inserted: inserted.map((literal) => (inserted.length > 1 ? literal.text : unescapeProseNewlines(literal.text))).join('\n'),
     after,
     context: contextAt === null ? null : unescapeProseNewlines(literals[contextAt].text),
   };
@@ -202,6 +223,18 @@ function insertClauses(request) {
  * Mirrors `fn joined_only`: consecutive inserted literals are separated by
  * nothing but whitespace, commas and seeded joiners (`'a' and 'b'`).
  */
+/**
+ * Mirrors `fn joined_literal_lines`: the request's quoted literals other than
+ * `target`, one line each, when there are several and only seeded joiners and
+ * commas separate them (`Append the lines 'a', 'b' to f`, PR #1188 G54); an
+ * escape inside one is content (G53).
+ */
+export function joinedLiteralLines(request, target) {
+  const literals = quotedLiterals(request).filter((literal) => literal.text !== target);
+  if (literals.length < 2 || !joinedOnly(request, literals)) return null;
+  return literals.map((literal) => literal.text).join('\n');
+}
+
 function joinedOnly(sentence, literals) {
   const joiners = bareSurfaces('file_edit_joiner_cue');
   return literals.slice(1).every((literal, index) => splitWhitespace(sentence.slice(literals[index].to, literal.from))
@@ -239,10 +272,44 @@ function cueOccurrences(sentence, role) {
 }
 
 /**
+ * Mirrors `fn named_paths`: the workspace paths `sentence` names, in order --
+ * those it leaves unquoted, or, when it leaves none, the quoted literals that
+ * are exactly one path. In `Insert the line 'foo' after the line
+ * 'js/ocr.bundle.js' in paths.txt.` the quoted path is the anchor and
+ * `paths.txt` the file (PR #1188 G21).
+ * @param {string} sentence
+ */
+function namedPaths(sentence) {
+  const segments = quotedSegmentSpans(sentence);
+  const quoted = (token) => segments.some((segment) => token.start < segment.end && token.end > segment.start);
+  const paths = unquotedPathTokens(sentence)
+    .map((token) => ({ quoted: quoted(token), path: cleanPathToken(token.text) }))
+    .filter(({ path }) => looksLikeFilePath(path) && safeRelativePath(path));
+  const bare = paths.filter((candidate) => !candidate.quoted);
+  return (bare.length > 0 ? bare : paths).map(({ path }) => path);
+}
+
+/**
+ * Mirrors `fn rebased_block`: `text` with `indentation` before each of its
+ * non-empty lines -- lines given with their shared indentation removed, set
+ * as siblings of a line indented by `indentation` (PR #1188 G16).
+ * @param {string} text
+ * @param {string} indentation
+ */
+export function rebasedBlock(text, indentation) {
+  return text.split('\n').map((line) => (line === '' ? line : `${indentation}${line}`)).join('\n');
+}
+
+/** Mirrors `fn leading_indentation`: the whitespace a line starts with. */
+export function leadingIndentation(line) {
+  return line.slice(0, line.length - line.trimStart().length);
+}
+
+/**
  * Mirrors `fn introduced_block`: a request whose first line ends in a colon
- * and is followed by lines -- `{head, text}`, the lines with their shared
- * indentation removed (one quoted literal stands for itself; a fenced block
- * keeps its own), or null.
+ * and is followed by lines -- `{head, text, verbatim, indentation}`, the
+ * lines with their shared `indentation` removed (one quoted literal stands
+ * for itself; a fenced block keeps its own, and both are `verbatim`), or null.
  */
 export function introducedBlock(request) {
   const breakAt = request.indexOf('\n');
@@ -260,7 +327,9 @@ export function introducedBlock(request) {
   const body = fenced ? lines.slice(1, -1) : lines;
   const shared = fenced ? indentOf(lines[0]) : Math.min(...lines.filter((line) => line !== '').map(indentOf));
   const text = body.map((line) => line.slice(Math.min(shared, indentOf(line)))).join('\n');
-  return { head, text: fenced ? text : quotedVerbatim(text) ?? text };
+  const quoted = fenced ? null : quotedVerbatim(text);
+  const indentation = fenced ? '' : leadingIndentation(lines.find((line) => line !== ''));
+  return { head, text: quoted ?? text, verbatim: fenced || quoted !== null, indentation: indentation.slice(0, shared) };
 }
 
 /**

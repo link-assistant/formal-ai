@@ -13,6 +13,7 @@
 //! walkdir = "2"
 //! ```
 
+use std::collections::BTreeSet;
 use std::fs;
 use std::path::Path;
 #[cfg(not(test))]
@@ -248,6 +249,14 @@ fn is_embedded_lino_data_line(line: &str) -> bool {
 }
 
 fn check_directory(cwd: &Path) -> CheckResult {
+    check_listed_files(cwd, None)
+}
+
+/// Measure the files under `cwd`, or only those in `listed` when it is given.
+/// A file git ignores can never be committed (a local session transcript, a
+/// sandbox), so inside a work tree the gate measures what a commit can carry,
+/// the same files CI's checkout holds.
+fn check_listed_files(cwd: &Path, listed: Option<&BTreeSet<String>>) -> CheckResult {
     let mut result = CheckResult {
         warnings: Vec::new(),
         violations: Vec::new(),
@@ -261,7 +270,9 @@ fn check_directory(cwd: &Path) -> CheckResult {
     {
         let path = entry.path();
 
-        if should_exclude(path) {
+        if should_exclude(path)
+            || listed.is_some_and(|listed| !listed.contains(&relative_path(path, cwd)))
+        {
             continue;
         }
 
@@ -365,6 +376,29 @@ fn growing_paths_from_numstat(numstat: &str) -> Vec<String> {
         .collect()
 }
 
+/// The files a commit can carry: tracked, or untracked and not ignored.
+/// `None` outside a git work tree, where every file is measured.
+#[cfg(not(test))]
+fn committable_paths() -> Option<BTreeSet<String>> {
+    let output = Command::new("git")
+        .args([
+            "ls-files",
+            "-z",
+            "--cached",
+            "--others",
+            "--exclude-standard",
+        ])
+        .output()
+        .ok()?;
+    output.status.success().then(|| {
+        String::from_utf8_lossy(&output.stdout)
+            .split('\0')
+            .filter(|path| !path.is_empty())
+            .map(str::to_owned)
+            .collect()
+    })
+}
+
 #[cfg(not(test))]
 fn growing_paths_since(base: &str) -> Option<Vec<String>> {
     if base.is_empty() || base.chars().all(|character| character == '0') {
@@ -453,7 +487,7 @@ fn main() {
     );
 
     let cwd = std::env::current_dir().expect("Failed to get current directory");
-    let result = check_directory(&cwd);
+    let result = check_listed_files(&cwd, committable_paths().as_ref());
     let warning_base = std::env::var("FILE_SIZE_WARNING_BASE").unwrap_or_default();
     if let Some(growing_paths) = growing_paths_since(&warning_base) {
         let warnings = warnings_for_growing_paths(&result.warnings, &growing_paths);
@@ -810,6 +844,28 @@ mod tests {
 
         assert_eq!(result.violations, Vec::new());
         assert_eq!(result.warnings, Vec::new());
+    }
+
+    /// PR #1188: a session transcript git ignores sat at the repository root
+    /// and failed the gate locally although no commit could ever carry it.
+    #[test]
+    fn check_listed_files_measures_only_the_listed_files() {
+        let repo = temp_dir("listed-files");
+        let rust_limit = FILE_LIMITS[0];
+        write_rust_file_with_lines(&repo.join("kept.rs"), rust_limit.max_lines + 1);
+        write_rust_file_with_lines(&repo.join("ignored.rs"), rust_limit.max_lines + 1);
+        let listed = BTreeSet::from(["kept.rs".to_string()]);
+
+        let result = check_listed_files(&repo, Some(&listed));
+
+        assert_eq!(
+            result
+                .violations
+                .iter()
+                .map(|finding| finding.file.as_str())
+                .collect::<Vec<_>>(),
+            ["kept.rs"]
+        );
     }
 
     #[test]

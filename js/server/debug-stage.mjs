@@ -1,8 +1,10 @@
 // What a step-through debug session shows for one stage (issue #667, R383):
-// the turn's recipe as Mermaid source with the stage highlighted, and the
-// method-registry `path:symbol` source location — with its line and an
-// excerpt — of the handler the turn's route resolves to, in the Rust and in
-// the JavaScript runtime. Mirrors rust/src/server/debug_stage.rs.
+// the turn's recipe as Mermaid source with the stage highlighted; the
+// `path:symbol` source location — with its line and an excerpt — of the code
+// that emits the stage, in the Rust and in the JavaScript runtime
+// (debug-stage-sources.mjs); and, as a separate field, the method-registry
+// method the turn's route resolves to with its handler in both runtimes.
+// Mirrors rust/src/server/debug_stage.rs.
 //
 // Everything is derived from live data, nothing is recorded by hand:
 //   - the method is `MethodRegistry::method_for_route` over the route the
@@ -13,14 +15,14 @@
 //   - the JavaScript symbol is the browser handler of
 //     data/seed/browser-handler-precedence.lino named `try` + the method (case
 //     and underscores aside), or the worker's `runHandlerRuleSet` for a rule set;
+//   - a stage's emitter is the function data/meta/debug-stage-sources.lino
+//     lists for the stage's `source_event` (debug-stage-sources.mjs `stageEmitter`);
 //   - each symbol is located by its definition line in the source tree, so a
 //     moved function is found where it now lives. A checkout without sources
 //     records no location (empty `*_source`), never a guessed one.
 
-import { readFileSync, readdirSync } from 'node:fs';
-import path from 'node:path';
-
 import { methodForRoute, methodRegistry } from '../agentic/crate/method_registry.mjs';
+import { defines, readStageSources, readText, stageEmitter, treeFiles } from './debug-stage-sources.mjs';
 import { REPO_ROOT } from './lino.mjs';
 
 /** Mirrors `const DISPATCH_TABLE`. */
@@ -36,19 +38,14 @@ const RUST_RULE_RUNNER = { path: 'rust/src/rule_interpreter.rs', symbol: 'run_ha
 const JS_RULE_RUNNER = 'runHandlerRuleSet';
 const BROWSER_HANDLER_PREFIX = 'try';
 const ROUTE_STEPS = ['formalize', 'dispatch_handler'];
-const DEFINITION_MODIFIERS = ['pub(crate) ', 'pub(super) ', 'pub ', 'export ', 'async ', 'const ', 'unsafe '];
+const RUST = 'rust';
+const JS = 'js';
+const RUST_KEYWORD = 'fn';
+const JS_KEYWORD = 'function';
 /** Mirrors `const EXCERPT_LINES`: the most lines an excerpt shows. */
 export const EXCERPT_LINES = 40;
 const CURRENT_CLASS = 'current';
 const CURRENT_STYLE = 'stroke-width:4px';
-
-const readText = (root, relative) => {
-  try {
-    return readFileSync(path.join(root, relative), 'utf8');
-  } catch {
-    return null;
-  }
-};
 
 /** Mirrors `fn seed_handlers`: the `  handler <name>` rows of a seed document. */
 function seedHandlers(text) {
@@ -75,37 +72,6 @@ function dispatchSymbol(text, method) {
   return null;
 }
 
-/** Mirrors `fn defines`: whether `line` defines `symbol` with `keyword`. */
-function defines(line, keyword, symbol) {
-  let rest = line.trim();
-  for (let stripped = true; stripped;) {
-    stripped = false;
-    for (const modifier of DEFINITION_MODIFIERS) {
-      if (rest.startsWith(modifier)) {
-        rest = rest.slice(modifier.length);
-        stripped = true;
-      }
-    }
-  }
-  const head = `${keyword} ${symbol}`;
-  return rest.startsWith(head) && ['(', '<'].includes(rest.charAt(head.length));
-}
-
-/** Mirrors `fn tree_files`: the files under `relative` ending in `extension`, sorted. */
-function treeFiles(root, relative, extension) {
-  let entries;
-  try {
-    entries = readdirSync(path.join(root, relative), { withFileTypes: true });
-  } catch {
-    return [];
-  }
-  return entries.flatMap((entry) => {
-    const child = `${relative}/${entry.name}`;
-    if (entry.isDirectory()) return treeFiles(root, child, extension);
-    return entry.name.endsWith(extension) ? [child] : [];
-  }).sort();
-}
-
 /** Mirrors `fn excerpt`: the definition through its closing brace, capped. */
 function excerpt(lines, index) {
   const indent = lines[index].slice(0, lines[index].length - lines[index].trimStart().length);
@@ -118,14 +84,20 @@ function excerpt(lines, index) {
 }
 
 /**
- * Mirrors `fn locate`: the first definition of `symbol` in the sorted tree.
+ * Mirrors `fn locate_in`: the definition of `symbol` in the file `file`.
  * @returns {{path: string, symbol: string, line: number, excerpt: string} | null}
  */
+function locateIn(root, file, keyword, symbol) {
+  const lines = (readText(root, file) ?? '').split('\n');
+  const index = lines.findIndex((line) => defines(line, keyword, symbol));
+  return index < 0 ? null : { path: file, symbol, line: index + 1, excerpt: excerpt(lines, index) };
+}
+
+/** Mirrors `fn locate`: the first definition of `symbol` in the sorted tree. */
 function locate(root, tree, extension, keyword, symbol) {
   for (const file of treeFiles(root, tree, extension)) {
-    const lines = (readText(root, file) ?? '').split('\n');
-    const index = lines.findIndex((line) => defines(line, keyword, symbol));
-    if (index >= 0) return { path: file, symbol, line: index + 1, excerpt: excerpt(lines, index) };
+    const found = locateIn(root, file, keyword, symbol);
+    if (found) return found;
   }
   return null;
 }
@@ -133,11 +105,9 @@ function locate(root, tree, extension, keyword, symbol) {
 /** Mirrors `fn rust_location`. */
 export function rustLocation(method, root = REPO_ROOT) {
   const symbol = dispatchSymbol(readText(root, DISPATCH_TABLE), method);
-  if (symbol) return locate(root, RUST_TREE, '.rs', 'fn', symbol);
+  if (symbol) return locate(root, RUST_TREE, '.rs', RUST_KEYWORD, symbol);
   if (!seedHandlers(readText(root, RULES_SEED)).includes(method)) return null;
-  const lines = (readText(root, RUST_RULE_RUNNER.path) ?? '').split('\n');
-  const index = lines.findIndex((line) => defines(line, 'fn', RUST_RULE_RUNNER.symbol));
-  return index < 0 ? null : { ...RUST_RULE_RUNNER, line: index + 1, excerpt: excerpt(lines, index) };
+  return locateIn(root, RUST_RULE_RUNNER.path, RUST_KEYWORD, RUST_RULE_RUNNER.symbol);
 }
 
 /** Mirrors `fn js_location`. */
@@ -145,7 +115,7 @@ export function jsLocation(method, root = REPO_ROOT) {
   const wanted = `${BROWSER_HANDLER_PREFIX}${method.replaceAll('_', '')}`.toLowerCase();
   const handler = seedHandlers(readText(root, BROWSER_SEED)).find((name) => name.toLowerCase() === wanted);
   const symbol = handler ?? (seedHandlers(readText(root, RULES_SEED)).includes(method) ? JS_RULE_RUNNER : null);
-  return symbol ? locate(root, JS_TREE, '.js', 'function', symbol) : null;
+  return symbol ? locate(root, JS_TREE, '.js', JS_KEYWORD, symbol) : null;
 }
 
 /** Mirrors `fn turn_method`: the registry method the turn's route resolves to. */
@@ -158,18 +128,45 @@ export function turnMethod(stages) {
   return '';
 }
 
-const locations = new Map();
+const cache = new Map();
+
+/** One lookup per process and key. */
+function cached(key, compute) {
+  if (!cache.has(key)) cache.set(key, compute());
+  return cache.get(key);
+}
 
 /**
- * Mirrors `fn describe_turn`: the method and both source locations, once per
- * turn (each location is looked up once per process and method).
+ * Mirrors `fn stage_location`: where the code that emits a stage of event
+ * `kind` is defined in `runtime`, given the routed handler's symbol there.
+ */
+export function stageLocation(runtime, kind, handler, root = REPO_ROOT) {
+  const sources = cached(`${root}\u0000sources`, () => readStageSources(root));
+  const emitter = stageEmitter(sources, runtime, kind, handler, root);
+  const keyword = runtime === RUST ? RUST_KEYWORD : JS_KEYWORD;
+  return emitter ? locateIn(root, emitter.path, keyword, emitter.symbol) : null;
+}
+
+/**
+ * Mirrors `fn describe_turn`: the routed method with its handler in both
+ * runtimes, and for every stage the code that emits it in both runtimes.
+ * Each location is looked up once per process.
  */
 export function describeTurn(stages, root = REPO_ROOT) {
   const method = turnMethod(stages);
-  if (!method) return { method, rust: null, js: null };
-  const key = `${root}\u0000${method}`;
-  if (!locations.has(key)) locations.set(key, { rust: rustLocation(method, root), js: jsLocation(method, root) });
-  return { method, ...locations.get(key) };
+  const handlers = method
+    ? cached(`${root}\u0000method\u0000${method}`, () => ({ rust: rustLocation(method, root), js: jsLocation(method, root) }))
+    : { rust: null, js: null };
+  const at = (runtime, kind, handler) => cached(`${root}\u0000stage\u0000${runtime}\u0000${kind}\u0000${handler}`,
+    () => (kind ? stageLocation(runtime, kind, handler, root) : null));
+  return {
+    method,
+    ...handlers,
+    stages: stages.map((stage) => {
+      const kind = String(stage?.source_event ?? '');
+      return { rust: at(RUST, kind, handlers.rust?.symbol ?? ''), js: at(JS, kind, handlers.js?.symbol ?? '') };
+    }),
+  };
 }
 
 /** Mirrors `fn label`: a Mermaid node label, quotes entity-escaped. */

@@ -126,8 +126,8 @@ pub(super) fn assigned_setting(
         .iter()
         .enumerate()
         .filter_map(|(index, line)| {
-            let (head, old, tail) = assignment(line, key)?;
-            Some((index, head, old, tail))
+            let (lead, old, tail) = assignment(line, key)?;
+            Some((index, lead, old, tail))
         })
         .collect();
     let matches: Vec<&(usize, &str, &str, &str)> = assigned
@@ -142,7 +142,7 @@ pub(super) fn assigned_setting(
         };
         return Some([&source[..*at], value, &source[at + held.len()..]].concat());
     };
-    let &(index, head, old, tail) = *found;
+    let &(index, lead, old, tail) = *found;
     let quote = old
         .chars()
         .next()
@@ -163,7 +163,7 @@ pub(super) fn assigned_setting(
         return None;
     }
     let mut out: Vec<String> = lines.iter().map(|line| (*line).to_owned()).collect();
-    out[index] = [head, written.as_str(), tail].concat();
+    out[index] = [lead, written.as_str(), tail].concat();
     Some(out.join("\n"))
 }
 

@@ -61,6 +61,7 @@ mod javascript_dependency_audit;
 mod macos_package_retry;
 mod network_download_retry;
 mod pr_1188_sharding;
+mod protocol_callers;
 mod release_publishing;
 mod release_site_layout;
 #[path = "../../../../scripts/rust-paths.rs"]

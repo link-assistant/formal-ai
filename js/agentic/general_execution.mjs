@@ -11,6 +11,7 @@ import {
   repositoryWorkReference, shellQuote,
 } from './general_planner.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
+import { guardedStep, isGuardRead } from './literal_write_guard.mjs';
 import { Progress, isWorkItemRead } from './progress.mjs';
 import { failedVerification, observedPayload, renderFailure } from './tool_result.mjs';
 import { fill } from './work_item_steps.mjs';
@@ -38,12 +39,19 @@ export function planWorkItemChangeStep(messages, toolNames, plan) {
 const command = (text) => jsonText({ command: text });
 
 function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
+  // A literal-file write reads its target first unless the request names a
+  // whole-file write, and never replaces an existing file unasked (PR #1188 T96).
+  const guarded = guardedStep(plan, messages, toolNames);
+  if (guarded !== null) return guarded;
   const progress = Progress.scan(messages);
   const latestFailure = progress.latestFailure();
   const workItemUnreadable = plan.mode === GeneralPlanMode.RepositoryWorkItem
     && latestFailure !== null
     && (latestFailure.capability === Capability.Fetch || isWorkItemRead(latestFailure));
-  const failure = workItemUnreadable ? null : latestFailure;
+  const targetMissing = latestFailure !== null && isGuardRead(plan,
+    latestFailure.arguments === null || latestFailure.arguments === undefined ? null : toolArgumentPath(latestFailure.arguments),
+    latestFailure.capability);
+  const failure = workItemUnreadable || targetMissing ? null : latestFailure;
   if (failure) {
     if (failure.capability === Capability.Write) {
       const path = failure.arguments === null || failure.arguments === undefined ? null : toolArgumentPath(failure.arguments);

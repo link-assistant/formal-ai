@@ -717,3 +717,155 @@ meanings
         text "la primera línea del archivo debe ser …"
       surface
         text "empieza el archivo con la línea …"
+  file_whole_write_action
+    # PR #1188 T96 (the backstop behind G13, G17 and T29): the write verbs
+    # that name a file's whole new content. A literal-file write whose first
+    # write verb is one of these writes the file as asked; any other verb
+    # (add, set, record, ...) or none reads the target first, and an existing
+    # non-empty file is replaced only with `file_overwrite_consent`.
+    defined-by action
+    role file_whole_write_action
+    precondition "a literal-file change request names a target file"
+    effect "only these verbs may write the target before it is read; any other verb reads it first"
+    unit "not applicable"
+    example "create"
+    lexeme en
+      surface
+        text create
+      surface
+        text write
+      surface
+        text save
+      surface
+        text make
+      surface
+        text generate
+      surface
+        text produce
+      surface
+        text store
+      surface
+        text "emit"
+      surface
+        text "new file"
+    lexeme ru
+      surface
+        text создай
+      surface
+        text создать
+      surface
+        text создайте
+      surface
+        text напиши
+      surface
+        text напишите
+      surface
+        text запиши
+      surface
+        text записать
+      surface
+        text запишите
+      surface
+        text сохрани
+      surface
+        text сохраните
+      surface
+        text сделай
+      surface
+        text сделайте
+      surface
+        text "новый файл"
+    lexeme hi
+      surface
+        text बनाओ
+      surface
+        text बनाएँ
+      surface
+        text लिखो
+      surface
+        text सहेजो
+      surface
+        text "नई फ़ाइल"
+    lexeme zh
+      surface
+        text 创建
+      surface
+        text 写
+      surface
+        text 写入
+      surface
+        text 保存
+      surface
+        text 生成
+      surface
+        text 新建
+    lexeme es
+      surface
+        text crea
+      surface
+        text crear
+      surface
+        text escribe
+      surface
+        text escribir
+      surface
+        text guarda
+      surface
+        text guardar
+      surface
+        text genera
+      surface
+        text generar
+      surface
+        text "nuevo archivo"
+  file_overwrite_consent
+    # Wording that consents to replacing an existing file's whole content.
+    defined-by relation
+    role file_overwrite_consent
+    precondition "a write request targets a file that already has content"
+    effect "the existing file may be replaced as a whole instead of being kept"
+    unit "not applicable"
+    example "overwrite"
+    lexeme en
+      surface
+        text "overwrite"
+      surface
+        text "replace the whole file"
+      surface
+        text "replace the file"
+      surface
+        text "replace its contents"
+      surface
+        text "replace the contents"
+      surface
+        text "set the contents of"
+      surface
+        text "set the content of"
+    lexeme ru
+      surface
+        text перезапиши
+      surface
+        text "замени весь файл"
+      surface
+        text "замени содержимое"
+      surface
+        text "установи содержимое"
+    lexeme hi
+      surface
+        text "पूरी फ़ाइल बदलें"
+      surface
+        text अधिलेखित
+    lexeme zh
+      surface
+        text 覆盖
+      surface
+        text 替换整个文件
+    lexeme es
+      surface
+        text sobrescribe
+      surface
+        text "reemplaza todo el archivo"
+      surface
+        text "reemplaza el contenido"
+      surface
+        text "pon el contenido de"

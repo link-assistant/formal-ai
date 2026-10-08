@@ -184,7 +184,11 @@ fn the_claim_rows_are_read_from_the_capability_table() {
             ),
             ("web_search", "tryWebSearch", vec!["search_focus"]),
             ("conversation_topic", "", vec!["conversation_topic_subject"]),
-            ("learn_from_source", "", vec!["learnable_source"]),
+            (
+                "learn_from_source",
+                "tryLearnFromSource",
+                vec!["learnable_source"]
+            ),
             (
                 "product_search",
                 "tryProductSearch",
@@ -419,6 +423,7 @@ fn the_claim_rows_are_read_from_the_capability_table() {
                 vec!["shell_command_compose:refusal"]
             ),
             ("how_it_works", vec!["how_it_works:refusal"]),
+            ("product_search", vec!["product_search:refusal"]),
             ("conversation_control", vec!["conversation_control:refusal"]),
             ("agentic_continuation", vec!["agentic_continuation:refusal"]),
             ("clarification", vec!["clarification:refusal"]),

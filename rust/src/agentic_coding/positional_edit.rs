@@ -76,6 +76,9 @@ pub(super) struct PositionalInsert {
     pub(super) inserted: String,
     pub(super) after: bool,
     pub(super) context: Option<String>,
+    /// Lines given under the request, neither fenced nor quoted: rebased on
+    /// the anchor line's indentation once the file is read (PR #1188 G16).
+    pub(super) rebase: bool,
 }
 
 /// Every insert the request asks for, in its order.
@@ -90,19 +93,17 @@ pub(super) fn positional_inserts(request: &str) -> Option<Vec<PositionalInsert>>
     let block = introduced_block(request);
     let clauses = block
         .as_ref()
-        .map_or_else(|| insert_clauses(request), |(head, _)| vec![*head]);
-    let block_text = block.as_ref().map(|(_, text)| text.as_str());
+        .map_or_else(|| insert_clauses(request), |block| vec![block.head]);
+    let block_text = block.as_ref().map(|block| block.text.as_str());
+    let rebase = block.as_ref().is_some_and(|block| !block.verbatim);
     let mut inserts = Vec::new();
     for clause in clauses {
-        inserts.push(clause_insert(clause, block_text)?);
+        let (target, insert) = clause_insert(clause, block_text)?;
+        inserts.push((target, PositionalInsert { rebase, ..insert }));
     }
     let mut named: Vec<&str> = Vec::new();
-    for token in unquoted_path_tokens(request) {
-        let candidate = clean_path_token(token.text);
-        if looks_like_file_path(candidate)
-            && safe_relative_path(candidate)
-            && !named.contains(&candidate)
-        {
+    for candidate in named_paths(request) {
+        if !named.contains(&candidate) {
             named.push(candidate);
         }
     }
@@ -147,11 +148,7 @@ fn clause_insert(
     if after == before || !lexicon.mentions_role(seed::ROLE_CODING_MEMBER_ADD_ACTION, &normalized) {
         return None;
     }
-    let target = unquoted_path_tokens(sentence)
-        .iter()
-        .map(|token| clean_path_token(token.text))
-        .find(|candidate| looks_like_file_path(candidate) && safe_relative_path(candidate))
-        .map(str::to_owned);
+    let target = named_paths(sentence).first().map(|path| (*path).to_owned());
     let literals: Vec<QuotedLiteral> = quoted_literals(sentence)
         .into_iter()
         .filter(|literal| target.as_deref() != Some(literal.text.as_str()))
@@ -172,17 +169,31 @@ fn clause_insert(
                 .any(|&(from, to, _)| start >= from && start < to)
         })
         .collect();
-    if let Some(text) = block_text {
-        let [anchor]: [QuotedLiteral; 1] = literals.try_into().ok()?;
-        if !contexts.is_empty() {
-            return None;
-        }
+    // One literal is the anchor: `the following lines` speaks of the block
+    // (PR #1188 G16). Without a block, the seeded blank line is the line
+    // inserted beside it (G31). With a block and a seeded anchor context, a
+    // second literal is the line the anchor follows (G51).
+    let blank =
+        block_text.is_none() && contexts.is_empty() && lexicon.mentions_role(BLANK_LINE, &outside);
+    if let Some(text) = block_text.or_else(|| blank.then_some("")) {
+        let (anchor_at, context_at) = match (literals.len(), contexts.is_empty()) {
+            // A context cue then names no second line: `the following lines`
+            // speaks of the block (G16).
+            (1, _) => (0, None),
+            (2, false) if block_text.is_some() => {
+                let anchor_at = governed_literal(&positions, &literals, &[0, 1])?;
+                let context_at = governed_literal(&contexts, &literals, &[1 - anchor_at])?;
+                (anchor_at, Some(context_at))
+            }
+            _ => return None,
+        };
         let insert = PositionalInsert {
             target: String::new(),
-            anchor: unescape_prose_newlines(&anchor.text),
+            anchor: unescape_prose_newlines(&literals[anchor_at].text),
             inserted: text.to_owned(),
             after,
-            context: None,
+            context: context_at.map(|index| unescape_prose_newlines(&literals[index].text)),
+            rebase: false,
         };
         return Some((target, insert));
     }
@@ -212,15 +223,75 @@ fn clause_insert(
     let insert = PositionalInsert {
         target: String::new(),
         anchor: unescape_prose_newlines(&literals[anchor_at].text),
+        // Lines given as separate literals are already lines: an escape
+        // inside one is content (PR #1188 G53).
         inserted: inserted
             .iter()
-            .map(|literal| unescape_prose_newlines(&literal.text))
+            .map(|literal| {
+                if inserted.len() > 1 {
+                    literal.text.clone()
+                } else {
+                    unescape_prose_newlines(&literal.text)
+                }
+            })
             .collect::<Vec<_>>()
             .join("\n"),
         after,
         context: context_at.map(|index| unescape_prose_newlines(&literals[index].text)),
+        rebase: false,
     };
     Some((target, insert))
+}
+
+/// The seeded role of the words that name an empty line.
+const BLANK_LINE: &str = "file_edit_blank_line";
+
+/// The workspace paths `sentence` names, in order.
+///
+/// Those it leaves unquoted, or, when it leaves none, the quoted literals that
+/// are exactly one path. In `Insert the line 'foo' after the line
+/// 'js/ocr.bundle.js' in paths.txt.` the quoted path is the anchor and
+/// `paths.txt` the file (PR #1188 G21).
+fn named_paths(sentence: &str) -> Vec<&str> {
+    let segments = quoted_segment_spans(sentence);
+    let paths: Vec<(bool, &str)> = unquoted_path_tokens(sentence)
+        .iter()
+        .map(|token| {
+            let quoted = segments
+                .iter()
+                .any(|segment| token.start < segment.end && token.end > segment.start);
+            (quoted, clean_path_token(token.text))
+        })
+        .filter(|(_, path)| looks_like_file_path(path) && safe_relative_path(path))
+        .collect();
+    let bare = paths.iter().any(|(quoted, _)| !quoted);
+    paths
+        .into_iter()
+        .filter(|(quoted, _)| !bare || !quoted)
+        .map(|(_, path)| path)
+        .collect()
+}
+
+/// `text` with `indentation` before each of its non-empty lines.
+///
+/// Lines given with their shared indentation removed, set as siblings of a
+/// line indented by `indentation` (PR #1188 G16).
+pub(super) fn rebased_block(text: &str, indentation: &str) -> String {
+    text.split('\n')
+        .map(|line| {
+            if line.is_empty() {
+                String::new()
+            } else {
+                [indentation, line].concat()
+            }
+        })
+        .collect::<Vec<_>>()
+        .join("\n")
+}
+
+/// The whitespace a line starts with.
+pub(super) fn leading_indentation(line: &str) -> &str {
+    &line[..line.len() - line.trim_start().len()]
 }
 
 /// The seeded role of the words that name the line an anchor follows.
@@ -341,6 +412,26 @@ fn insert_clauses(request: &str) -> Vec<&str> {
         .collect()
 }
 
+/// The request's quoted literals other than `target`, one line each.
+///
+/// Only when there are several and only seeded joiners and commas separate
+/// them (`Append the lines 'a', 'b' to f`, PR #1188 G54); an escape inside
+/// one is content (G53).
+pub(super) fn joined_literal_lines(request: &str, target: &str) -> Option<String> {
+    let literals = quoted_literals(request);
+    let lines: Vec<&QuotedLiteral> = literals
+        .iter()
+        .filter(|literal| literal.text != target)
+        .collect();
+    (lines.len() >= 2 && joined_only(request, &lines)).then(|| {
+        lines
+            .iter()
+            .map(|literal| literal.text.as_str())
+            .collect::<Vec<_>>()
+            .join("\n")
+    })
+}
+
 /// Whether listed literals are joined only by joiners.
 ///
 /// Consecutive inserted literals may be separated by nothing but whitespace,
@@ -439,10 +530,22 @@ fn governed_literal(
     })
 }
 
+/// The lines under a request whose first line ends in a colon.
+pub(super) struct IntroducedBlock<'a> {
+    /// The first line: the request itself.
+    pub(super) head: &'a str,
+    /// The lines, less their shared indentation (or verbatim).
+    pub(super) text: String,
+    /// A fenced block or one quoted literal, kept as written.
+    pub(super) verbatim: bool,
+    /// The indentation the lines shared.
+    pub(super) indentation: &'a str,
+}
+
 /// A request whose first line ends in a colon and is followed by lines: that
 /// first line, and the lines with their shared indentation removed (one quoted
 /// literal stands for itself; a fenced block keeps its own).
-pub(super) fn introduced_block(request: &str) -> Option<(&str, String)> {
+pub(super) fn introduced_block(request: &str) -> Option<IntroducedBlock<'_>> {
     let (head, rest) = request.split_once('\n')?;
     let head = head.trim_end();
     if !head.ends_with(':') {
@@ -478,12 +581,22 @@ pub(super) fn introduced_block(request: &str) -> Option<(&str, String)> {
         .map(|line| &line[shared.min(indent_of(line))..])
         .collect::<Vec<_>>()
         .join("\n");
-    let text = if fenced {
-        text
+    let quoted = if fenced { None } else { quoted_verbatim(&text) };
+    let verbatim = fenced || quoted.is_some();
+    let indentation = if fenced {
+        ""
     } else {
-        quoted_verbatim(&text).unwrap_or(text)
+        lines
+            .iter()
+            .find(|line| !line.is_empty())
+            .map_or("", |line| &line[..shared])
     };
-    Some((head, text))
+    Some(IntroducedBlock {
+        head,
+        text: quoted.unwrap_or(text),
+        verbatim,
+        indentation,
+    })
 }
 
 /// The line that opens and closes a fenced block.
@@ -551,7 +664,7 @@ pub(super) fn unquoted_path_tokens(request: &str) -> Vec<super::write_request::T
 /// payload); otherwise the whole request.
 pub(super) fn own_text(request: &str) -> &str {
     match introduced_block(request) {
-        Some((head, _)) if names_local_edit(head) => head,
+        Some(block) if names_local_edit(block.head) => block.head,
         _ => request,
     }
 }
@@ -584,13 +697,15 @@ pub(super) fn unescape_prose_newlines(text: &str) -> String {
 /// the anchor, `new` those lines with the inserted text beside the anchor's
 /// line; `None` unless the context (with none, the anchor) occurs once and the
 /// anchor occurs after it.
-fn insert_edit(source: &str, insert: &PositionalInsert) -> Option<(usize, String, String)> {
+fn insert_edit(source: &str, insert: &PositionalInsert) -> Option<(usize, String, String, String)> {
     let anchor = insert.anchor.as_str();
     let lead = insert.context.as_deref().unwrap_or(anchor);
-    let mut leads = source.match_indices(lead).map(|(at, _)| at);
-    let (Some(lead_at), None) = (leads.next(), leads.next()) else {
-        return None;
-    };
+    let mut leads: Vec<usize> = source.match_indices(lead).map(|(at, _)| at).collect();
+    // A lead found inside other lines too names the one line it is by itself.
+    if leads.len() > 1 {
+        leads = lone_line_occurrences(source, lead);
+    }
+    let [lead_at]: [usize; 1] = leads.try_into().ok()?;
     if anchor.is_empty() {
         return None;
     }
@@ -630,18 +745,66 @@ fn insert_edit(source: &str, insert: &PositionalInsert) -> Option<(usize, String
     };
     let old = &source[start..end];
     let anchor_line = line_start(at);
+    let inserted = inserted_text(source, anchor_line, insert);
     let new = if insert.after {
-        [old, "\n", insert.inserted.as_str()].concat()
+        [old, "\n", inserted.as_str()].concat()
     } else {
         [
             &source[start..anchor_line],
-            insert.inserted.as_str(),
+            inserted.as_str(),
             "\n",
             &source[anchor_line..end],
         ]
         .concat()
     };
-    Some((start, old.to_owned(), new))
+    Some((start, old.to_owned(), new, inserted))
+}
+
+/// Where `text` occurs in `source` as a whole line but for its indentation.
+///
+/// `the line 'b'` is the line `b`, not the `b` inside `table a`.
+fn lone_line_occurrences(source: &str, text: &str) -> Vec<usize> {
+    source
+        .match_indices(text)
+        .map(|(index, _)| index)
+        .filter(|&index| {
+            let line_start = source[..index].rfind('\n').map_or(0, |newline| newline + 1);
+            let tail = index + text.len();
+            let line_end = source[tail..]
+                .find('\n')
+                .map_or(source.len(), |newline| tail + newline);
+            source[line_start..index].trim().is_empty()
+                && (text.ends_with('\n') || source[tail..line_end].trim().is_empty())
+        })
+        .collect()
+}
+
+/// The lines an insert puts beside the anchor's line.
+///
+/// Rebased on that line's indentation when they came as an unfenced block, so
+/// they land as its siblings (PR #1188 G16).
+fn inserted_text(source: &str, anchor_line: usize, insert: &PositionalInsert) -> String {
+    if !insert.rebase {
+        return insert.inserted.clone();
+    }
+    let line_end = source[anchor_line..]
+        .find('\n')
+        .map_or(source.len(), |newline| anchor_line + newline);
+    rebased_block(
+        &insert.inserted,
+        leading_indentation(&source[anchor_line..line_end]),
+    )
+}
+
+/// The sentence stating an insert; an empty line is stated in its own words.
+pub(super) const fn insert_intent(after: bool, inserted: &str) -> &'static str {
+    if inserted.is_empty() {
+        BLANK_LINE
+    } else if after {
+        "file_edit_position_after"
+    } else {
+        "file_edit_position_before"
+    }
 }
 
 /// Make a request's inserts one anchored edit at a time.
@@ -669,7 +832,7 @@ pub(super) fn plan_insert_sequence_step(
         }
         let index = expected.iter().position(|(path, _)| *path == target)?;
         let source = expected[index].1.as_str();
-        let Some((start, lines, widened)) = insert_edit(source, insert) else {
+        let Some((start, lines, widened, inserted)) = insert_edit(source, insert) else {
             return Some(AgenticPlan::Final(render_seeded_outcome(
                 "coding_workspace_verification_failed",
                 task,
@@ -689,17 +852,12 @@ pub(super) fn plan_insert_sequence_step(
         ]
         .concat();
         expected[index].1 = updated;
-        let intent = if insert.after {
-            "file_edit_position_after"
-        } else {
-            "file_edit_position_before"
-        };
         stated.push(render_seeded_change(
-            intent,
+            insert_intent(insert.after, &inserted),
             task,
             target,
             &[
-                ("{new}", insert.inserted.as_str()),
+                ("{new}", inserted.as_str()),
                 ("{anchor}", insert.anchor.as_str()),
             ],
         ));

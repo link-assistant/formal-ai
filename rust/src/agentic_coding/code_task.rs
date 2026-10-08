@@ -198,7 +198,7 @@ pub(super) fn render_rust_template(intent: &str, substitutions: &[(&str, &str)])
 // `{path}` is replaced in seed-owned text rather than interpolated by Rust.
 #[allow(clippy::literal_string_with_formatting_args)]
 pub(super) fn render_seeded_outcome(intent: &str, task: &str, path: &str) -> Option<String> {
-    let language = crate::language::detect(task).slug();
+    let language = super::tool_result::response_language(task);
     Some(render_template(
         seed::localized_response(intent, language)?,
         &[("{path}", path)],
@@ -224,7 +224,7 @@ pub(super) fn render_seeded_change(
     path: &str,
     slots: &[(&str, &str)],
 ) -> Option<String> {
-    let language = crate::language::detect(task).slug();
+    let language = super::tool_result::response_language(task);
     let mut substitutions = vec![("{path}", path)];
     substitutions.extend_from_slice(slots);
     Some(render_template(
@@ -233,9 +233,44 @@ pub(super) fn render_seeded_change(
     ))
 }
 
+/// A placeholder the seed sentence wraps in backticks becomes a CommonMark
+/// code span: a value holding a backtick run gets a longer fence, padded when
+/// it starts or ends with a backtick, so the inserted text reads back verbatim.
+fn code_span_item(value: &str) -> String {
+    let longest = value
+        .split(|character| character != '`')
+        .map(str::len)
+        .max()
+        .unwrap_or(0);
+    if longest == 0 {
+        return format!("`{value}`");
+    }
+    let fence = "`".repeat(longest + 1);
+    let pad = if value.starts_with('`') || value.ends_with('`') {
+        " "
+    } else {
+        ""
+    };
+    format!("{fence}{pad}{value}{pad}{fence}")
+}
+
+/// A list slot is joined with [`LIST_JOIN`] so that it reads `` `a`, `b` ``
+/// inside the template's backticks; each item is fenced on its own.
+const LIST_JOIN: &str = "`, `";
+
+fn code_span(value: &str) -> String {
+    value
+        .split(LIST_JOIN)
+        .map(code_span_item)
+        .collect::<Vec<_>>()
+        .join(", ")
+}
+
 fn render_template(mut template: String, substitutions: &[(&str, &str)]) -> String {
     for (placeholder, value) in substitutions {
-        template = template.replace(placeholder, value);
+        template = template
+            .replace(&format!("`{placeholder}`"), &code_span(value))
+            .replace(placeholder, value);
     }
     template
 }

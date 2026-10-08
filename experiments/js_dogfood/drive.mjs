@@ -17,7 +17,7 @@
 // `edit` return an empty string, `bash` returns stdout+stderr.
 
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, isAbsolute, join, resolve } from 'node:path';
 
 import { WorkerHost } from '../../js/server/worker-host.mjs';
@@ -39,6 +39,31 @@ function within(dir, path) {
   const resolved = resolve(full);
   if (!resolved.startsWith(resolve(dir))) throw new Error(`path escapes the sandbox: ${path}`);
   return resolved;
+}
+
+/** Every file under `path` (a file or a directory), skipping VCS and dependency folders. */
+function filesUnder(path) {
+  if (!statSync(path).isDirectory()) return [path];
+  return readdirSync(path).filter((name) => name !== '.git' && name !== 'node_modules').sort()
+    .flatMap((name) => filesUnder(join(path, name)));
+}
+
+/**
+ * The Agent CLI's `grep` (ripgrep underneath): "Found N matches" then each
+ * file's absolute path and its `  Line N: text` hits, or "No files found".
+ */
+function grep(dir, args) {
+  const pattern = new RegExp(args.pattern ?? args.query ?? '');
+  const groups = [];
+  let count = 0;
+  for (const file of filesUnder(within(dir, args.path ?? '.'))) {
+    const lines = readFileSync(file, 'utf8').split('\n');
+    const hits = lines.map((line, index) => [index + 1, line]).filter(([, line]) => pattern.test(line));
+    if (!hits.length) continue;
+    count += hits.length;
+    groups.push([`${file}:`, ...hits.map(([number, line]) => `  Line ${number}: ${line}`)].join('\n'));
+  }
+  return count ? `Found ${count} matches\n${groups.join('\n\n')}` : 'No files found';
 }
 
 /** Execute one tool call the way the Agent CLI does; returns its result text. */
@@ -81,11 +106,16 @@ export function execute(dir, call) {
         try {
           return execFileSync('/bin/sh', ['-c', args.command], { cwd: dir, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 60000 });
         } catch (error) {
-          return `${error.stdout ?? ''}${error.stderr ?? ''}`;
+          // A failing command reports its exit code the way the Agent CLI's
+          // shell envelope does, so a recipe's failed precondition blocks it.
+          if (typeof error.status !== 'number') return `${error.stdout ?? ''}${error.stderr ?? ''}`;
+          return `Output: ${error.stdout ?? ''}\nError: ${error.stderr ?? ''}\nExit Code: ${error.status}`;
         }
       }
       case 'list':
         return readdirSync(within(dir, path ?? '.')).join('\n');
+      case 'grep':
+        return grep(dir, args);
       default:
         return `Error: the dogfood driver does not execute ${call.tool}`;
     }

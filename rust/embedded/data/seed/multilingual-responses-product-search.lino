@@ -26,3 +26,11 @@ multilingual_responses
     intent product_search_result
     language es
     text "Esta es la búsqueda que compuse para {product} en {marketplace}:\n\n{link}\n\nCondiciones que pediste: {constraints}\nAntes de comprar, verifica: {advice}\nNo cargué nada — el enlace es la consulta exacta que ejecutaría, y se ejecutó en modo sin conexión."
+  response response_product_search_marketplace_needed_en
+    intent product_search_marketplace_needed
+    language en
+    text "I compose a product search only on a marketplace the request names, and this one names none, so I will not guess a store for {product}. Name one of the marketplaces I know ({marketplaces}) and I will compose the exact search link.\nConstraints you asked for: {constraints}"
+  response response_product_search_marketplace_needed_ru
+    intent product_search_marketplace_needed
+    language ru
+    text "Я составляю поиск товара только на площадке, которую называет запрос, а здесь она не названа, поэтому я не буду угадывать магазин для «{product}». Назовите одну из известных мне площадок ({marketplaces}), и я составлю точную ссылку поиска.\nУсловия, которые вы назвали: {constraints}"

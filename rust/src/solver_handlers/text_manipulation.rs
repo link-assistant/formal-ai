@@ -7,6 +7,7 @@ use crate::engine::{SymbolicAnswer, stable_id};
 use crate::event_log::EventLog;
 use crate::links_format::push_lino_node;
 use crate::normal_markov::{QuotedSegment, quoted_segment_spans, quoted_segments};
+use crate::rule_interpreter::handler_table_rows;
 use crate::solver::{ConversationRole, ConversationTurn};
 use crate::solver_handlers::finalize_simple;
 use crate::solver_handlers::text_edit_ops::{
@@ -19,6 +20,15 @@ use crate::solver_handlers::text_request_framing::{phrase_argument, request_fram
 use crate::substitution::{
     CrudEvent, SubstitutionGraph, SubstitutionRuleSet, SubstitutionTraceReport,
 };
+
+// The cue tables of `data/seed/handler-rules.lino` and the row values that
+// say how a cue is read (see `text_cue_matches`).
+const REPLACEMENT_CUE_TABLE: &str = "text_replacement_cue";
+const INPUT_CONTEXT_CUE_TABLE: &str = "text_input_context_cue";
+const INPUT_CONTINUATION_CUE_TABLE: &str = "text_input_continuation_cue";
+const SUFFIX_READING: &str = "ends_with";
+const OPERANDS_IN_ORDER: &str = "operands_in_order";
+const TARGET_FOLLOWS_CUE: &str = "target_follows_cue";
 
 /// Does `prompt` name a replacement over quoted literals — the shape
 /// [`parse_replace_request`] reads?
@@ -167,7 +177,7 @@ impl TextRequest {
         let framing = request_framing(prompt, &spans);
         let fallback_input = || last_assistant_text_artifact(history);
 
-        if vocabulary.matches("replace", normalized) && quoted.len() >= 2 {
+        if contains_replacement_keyword(normalized) && quoted.len() >= 2 {
             let (input, from, to) = parse_replace_request(prompt, history)?;
             return Self::build(input, vec![TextOperation::Replace { from, to }]);
         }
@@ -656,11 +666,8 @@ fn parse_replace_request(
     }
 
     if quoted.len() >= 3 && looks_like_input_first_replacement(prompt, &quoted) {
-        return Some((
-            quoted[0].text.clone(),
-            quoted[1].text.clone(),
-            quoted[2].text.clone(),
-        ));
+        let (from, to) = replacement_operands(prompt, &quoted[1], &quoted[2]);
+        return Some((quoted[0].text.clone(), from, to));
     }
 
     let input = quoted
@@ -668,7 +675,26 @@ fn parse_replace_request(
         .map(|segment| segment.text.clone())
         .or_else(|| text_after_colon(prompt))
         .or_else(|| last_assistant_text_artifact(history))?;
-    Some((input, quoted[0].text.clone(), quoted[1].text.clone()))
+    let (from, to) = replacement_operands(prompt, &quoted[0], &quoted[1]);
+    Some((input, from, to))
+}
+
+/// The two operands of a replacement as `(from, to)`.
+///
+/// The quoted target comes first, unless a cue that names its target after it
+/// sits between them ("cat" instead of "dog"). Twin of `replacementOperands`
+/// in `js/worker/formal_ai_worker_07.js`.
+fn replacement_operands(
+    prompt: &str,
+    first: &QuotedSegment,
+    second: &QuotedSegment,
+) -> (String, String) {
+    let gap = prompt.get(first.end..second.start).unwrap_or_default();
+    if text_cue_matches(REPLACEMENT_CUE_TABLE, gap, Some(TARGET_FOLLOWS_CUE)) {
+        (second.text.clone(), first.text.clone())
+    } else {
+        (first.text.clone(), second.text.clone())
+    }
 }
 
 fn parse_remove_request(prompt: &str, history: &[ConversationTurn]) -> Option<(String, String)> {
@@ -725,44 +751,47 @@ fn looks_like_input_first_replacement(prompt: &str, quoted: &[QuotedSegment]) ->
     let between_first_second = &prompt[quoted[0].end..quoted[1].start];
     let between_second_third = &prompt[quoted[1].end..quoted[2].start];
 
+    let cue =
+        |text: &str, reading: &str| text_cue_matches(REPLACEMENT_CUE_TABLE, text, Some(reading));
+
     input_context_before_first_quote(before_first)
-        || contains_replacement_keyword(between_first_second)
+        || cue(between_first_second, OPERANDS_IN_ORDER)
+        || cue(between_second_third, TARGET_FOLLOWS_CUE)
         || (contains_input_continuation(between_first_second)
             && contains_replacement_keyword(between_second_third))
 }
 
 fn input_context_before_first_quote(text: &str) -> bool {
-    if contains_replacement_keyword(text) {
-        return false;
-    }
-    let normalized = normalize_replacement_prompt(text);
-    let raw = text.to_lowercase();
-    normalized.ends_with("in")
-        || normalized.contains("text")
-        || normalized.contains("текст")
-        || raw.contains("पाठ")
-        || raw.contains("टेक्स्ट")
-        || raw.contains('在')
-        || raw.contains("文本")
-        || raw.contains("内容")
+    !contains_replacement_keyword(text) && text_cue_matches(INPUT_CONTEXT_CUE_TABLE, text, None)
 }
 
 fn contains_input_continuation(text: &str) -> bool {
-    let normalized = normalize_replacement_prompt(text);
-    let raw = text.to_lowercase();
-    normalized.contains("in")
-        || normalized.contains("text")
-        || normalized.contains("текст")
-        || raw.contains("में")
-        || raw.contains('中')
+    text_cue_matches(INPUT_CONTINUATION_CUE_TABLE, text, None)
 }
 
 fn contains_replacement_keyword(text: &str) -> bool {
+    text_cue_matches(REPLACEMENT_CUE_TABLE, text, None)
+}
+
+/// Does a row of the cue `table` occur in `text`, counting only rows whose
+/// value is `reading` when one is given?
+///
+/// Issue #918 (R918-2): the cues are the `text_*` tables of
+/// `data/seed/handler-rules.lino`. A row whose value is `ends_with`
+/// is read at the end of the normalized text, any other row anywhere in the
+/// lowercased text; a replacement cue's value is the order it quotes its
+/// operands in. Twin of `textCueMatches` in `js/worker/formal_ai_worker_07.js`.
+fn text_cue_matches(table: &str, text: &str, reading: Option<&str>) -> bool {
+    let raw = text.to_lowercase();
     let normalized = normalize_replacement_prompt(text);
-    normalized.contains("replace")
-        || normalized.contains("замен")
-        || normalized.contains("बदल")
-        || normalized.contains("替换")
+    handler_table_rows(table).iter().any(|(cue, value)| {
+        let read = if value == SUFFIX_READING {
+            normalized.ends_with(cue.as_str())
+        } else {
+            raw.contains(cue.as_str())
+        };
+        !cue.is_empty() && reading.is_none_or(|wanted| value == wanted) && read
+    })
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]

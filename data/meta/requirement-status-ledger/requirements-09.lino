@@ -387,7 +387,7 @@ requirement_status_ledger_shard requirements_09
   requirement
     id "R383"
     shard "docs/requirements/issue-0538-detailed-meanings-and-words.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "not delivered; the owning shard names it only as a follow-up (solution-plan R17 of issue #538, notes in `docs/vscode/extension.md`) and no open issue tracks it"
     issue "0538"
     automated_test "rust/tests/web/server-debug-session.test.mjs"

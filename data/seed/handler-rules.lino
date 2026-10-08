@@ -313,9 +313,10 @@ handler_rules
   handler execution_failure
     rule execution_failure_agent
       when
-        substring undefined_function
+        evidence undefined_call
         substring "[agent]"
-      log "trace:execution_failure" "undefined_function"
+      value function operand undefined_call
+      log "trace:execution_failure" $function
       log "agent_mode:opted_in" $prompt
       log "action_log" $prompt
       respond execution_failure
@@ -324,8 +325,9 @@ handler_rules
       confidence 0.4
     rule execution_failure
       when
-        substring undefined_function
-      log "trace:execution_failure" "undefined_function"
+        evidence undefined_call
+      value function operand undefined_call
+      log "trace:execution_failure" $function
       respond execution_failure
       link "response:execution_failure"
       confidence 0.4
@@ -776,3 +778,46 @@ handler_rules
     row "安排" "action"
     row "添加到日历" "action"
     row "创建" "action"
+  table text_replacement_cue
+    row "replace" "operands_in_order"
+    row "замен" "operands_in_order"
+    row "बदल" "operands_in_order"
+    row "替换" "operands_in_order"
+    row "instead" "target_follows_cue"
+    row "вместо" "target_follows_cue"
+  table text_input_context_cue
+    row "text" "contains"
+    row "текст" "contains"
+    row "पाठ" "contains"
+    row "टेक्स्ट" "contains"
+    row "在" "contains"
+    row "文本" "contains"
+    row "内容" "contains"
+    row "in" "ends_with"
+  table text_input_continuation_cue
+    row "in" "contains"
+    row "text" "contains"
+    row "текст" "contains"
+    row "में" "contains"
+    row "中" "contains"
+  table document_originality_marker
+    row "Attached files:" "section"
+    row "OCR text:" "sample"
+    row "Text excerpt:" "sample"
+    row "Text sample:" "sample"
+    row "Text omitted:" "omitted"
+    row "Text unavailable:" "unavailable"
+    row "OCR unavailable:" "unavailable"
+  policy document_originality_check
+    sample_query '"{sample}" plagiarism originality'
+    attachment_query "{name} plagiarism originality uniqueness"
+    default_query "document plagiarism originality uniqueness"
+    sample_query_words 14
+    default_target "provided text"
+  table software_project_followup_action
+    row software_followup_verification test
+    row software_followup_execution run
+    row software_followup_demonstration show
+  policy software_project_followup
+    gates "generated_code test_execution network_access"
+    output_word_limit 12

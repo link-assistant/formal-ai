@@ -167,7 +167,11 @@ fn member_insertion(task: &str) -> Option<MemberInsertion> {
                 named.push(segment.text.clone());
             }
         } else if is_member_literal(&segment.text) {
-            values.push(segment.text.clone());
+            // A value quoted again (a ladder node's `result=` clause repeats
+            // it) is still one member.
+            if !values.contains(&segment.text) {
+                values.push(segment.text.clone());
+            }
             if literal_target.is_none() {
                 literal_target = path;
             }

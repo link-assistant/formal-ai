@@ -41,9 +41,14 @@ pub fn claim_operands(kind: &str, prompt: &str) -> Option<Vec<String>> {
         "formalization_statement" => crate::solver_handlers::formalization_statement(prompt)
             .into_iter()
             .collect(),
+        "undefined_call" => undefined_call(prompt).into_iter().collect(),
         _ => return None,
     })
 }
+
+/// The roles that name the program a call runs in (JS
+/// `CLAIM_OPERAND_PROGRAM_ROLES`).
+const PROGRAM_ROLES: [&str; 2] = ["script_or_code_artifact", "program_genus"];
 
 /// Whether a surface is written in a script without spaces between words.
 fn unspaced(surface: &str) -> bool {
@@ -303,4 +308,78 @@ fn named_repository(prompt: &str) -> Option<String> {
         .iter()
         .any(|surface| names_surface(&lower, surface))
         .then_some(own)
+}
+
+/// The lowercased `word`s of the `script_builtin_callable` map of
+/// `data/seed/code-task-cues.lino`: the callables a script language provides
+/// without a definition.
+fn builtin_callables() -> BTreeSet<String> {
+    let text = crate::seed::seed_files()
+        .into_iter()
+        .find(|(path, _)| *path == "data/seed/code-task-cues.lino")
+        .map_or("", |(_, text)| text);
+    crate::seed::parser::parse_lino(text)
+        .children
+        .iter()
+        .filter(|record| {
+            record.name == "map" && record.find_child_value("name") == "script_builtin_callable"
+        })
+        .flat_map(|record| record.children.iter())
+        .flat_map(|child| child.children.iter())
+        .filter(|entry| entry.name == "entry")
+        .map(|entry| entry.find_child_value("word").to_lowercase())
+        .filter(|word| !word.is_empty())
+        .collect()
+}
+
+/// Whether `ch` continues an identifier: a letter, a digit or `_`.
+fn continues_identifier(ch: char) -> bool {
+    ch == '_' || ch.is_alphanumeric()
+}
+
+/// The function a coding request says its program calls when nothing
+/// defines it (issue 1173 R3).
+///
+/// The request names a program (a [`PROGRAM_ROLES`] surface) and a seeded
+/// `function_call_verb`, and the first call expression `name(` that is not a
+/// method call (`.name(`), not a callable of the seeded
+/// `script_builtin_callable` word map and not written anywhere else in the
+/// request (a definition or a second mention would name it) is the call a
+/// sandbox run fails on.
+fn undefined_call(prompt: &str) -> Option<String> {
+    let lower = prompt.to_lowercase();
+    let names = |role: &str| {
+        role_surfaces(role)
+            .iter()
+            .any(|surface| names_surface(&lower, surface))
+    };
+    if !names("function_call_verb") || !PROGRAM_ROLES.into_iter().any(names) {
+        return None;
+    }
+    let builtins = builtin_callables();
+    let words = words(prompt);
+    let chars: Vec<char> = prompt.chars().collect();
+    chars
+        .iter()
+        .enumerate()
+        .filter(|(_, ch)| **ch == '(')
+        .find_map(|(index, _)| {
+            let mut end = index;
+            while end > 0 && chars[end - 1].is_whitespace() {
+                end -= 1;
+            }
+            let mut start = end;
+            while start > 0 && continues_identifier(chars[start - 1]) {
+                start -= 1;
+            }
+            let name: String = chars[start..end].iter().collect();
+            let method = start > 0 && chars[start - 1] == '.';
+            let leads_with_digit = chars.get(start).copied().is_some_and(char::is_numeric);
+            (!name.is_empty()
+                && !method
+                && !leads_with_digit
+                && !builtins.contains(&name.to_lowercase())
+                && words.iter().filter(|word| **word == name).count() == 1)
+                .then_some(name)
+        })
 }

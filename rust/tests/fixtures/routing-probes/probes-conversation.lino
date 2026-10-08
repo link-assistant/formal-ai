@@ -443,13 +443,11 @@ routing_probes
     language en
     intent planning
     prompt "Plan a 2-day trip to Berlin"
-    rust_misroute unknown
   probe p214
     lane planning_request
     language en
     intent planning
     prompt "Plan a 5-day trip to Tokyo"
-    rust_misroute unknown
   probe p215
     lane planning_request
     language ru
@@ -525,7 +523,6 @@ routing_probes
     language en
     intent summarization_free_text
     prompt "Summarize: Cats sleep a lot. Cats like fish. Cats are independent animals that hunt mice."
-    rust_misroute summarize_topic
   probe p276
     lane summarization_text
     language ru
@@ -596,7 +593,6 @@ routing_probes
     language en
     intent unknown
     prompt "colourless green ideas sleep furiously"
-    rust_misroute concept_lookup
   probe p330
     lane unknown
     language en

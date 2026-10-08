@@ -385,6 +385,7 @@ pub(super) fn quoted_span(prompt: &str) -> Option<String> {
 /// does (`Insert the line "path '/v1/x'" after … in r.lino`).
 #[must_use]
 pub fn first_path(prompt: &str) -> Option<String> {
+    const EDGES: [char; 7] = [',', ';', '"', '\'', '(', ')', '\u{3002}'];
     let normalized = normalize_prompt(prompt);
     let outside = crate::normal_markov::quoted_segment_spans(prompt)
         .iter()
@@ -393,7 +394,6 @@ pub fn first_path(prompt: &str) -> Option<String> {
             [&text[..segment.start], " ", &text[segment.end..]].concat()
         });
     // The sentence's closing period is not the path's (`… in r.lino.`).
-    const EDGES: [char; 7] = [',', ';', '"', '\'', '(', ')', '\u{3002}'];
     let peeled = |token: &str| -> String {
         token
             .trim_start_matches(EDGES)

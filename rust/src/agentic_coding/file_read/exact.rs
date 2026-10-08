@@ -59,9 +59,7 @@ pub(super) fn plan_direct_file_reads(
     let mut contents = Vec::with_capacity(paths.len());
     for path in paths {
         let command = read_command_for(path, mode);
-        if exact_run
-            && let Some(raw) = run_record_for_command(records, &command)
-        {
+        if exact_run && let Some(raw) = run_record_for_command(records, &command) {
             if let Some(failure) = failed_step_answer(&command, raw, request) {
                 return AgenticPlan::Final(failure);
             }
@@ -71,9 +69,7 @@ pub(super) fn plan_direct_file_reads(
             ));
             continue;
         }
-        if !exact_run
-            && let Some(raw) = read_result_for_path(records, path)
-        {
+        if !exact_run && let Some(raw) = read_result_for_path(records, path) {
             if let Some(failure) = failed_step_answer(path, raw, request) {
                 return AgenticPlan::Final(failure);
             }
@@ -83,9 +79,7 @@ pub(super) fn plan_direct_file_reads(
             ));
             continue;
         }
-        if !exact_run
-            && let Some(raw) = run_record_for_command(records, &command)
-        {
+        if !exact_run && let Some(raw) = run_record_for_command(records, &command) {
             if let Some(failure) = failed_step_answer(&command, raw, request) {
                 return AgenticPlan::Final(failure);
             }
@@ -99,14 +93,10 @@ pub(super) fn plan_direct_file_reads(
         return AgenticPlan::Final(file_read_final_answer(mode, &contents, request));
     }
 
-    if exact_run
-        && let Some(tool) = run_tool
-    {
+    if exact_run && let Some(tool) = run_tool {
         let calls = paths
             .iter()
-            .filter(|path| {
-                run_record_for_command(records, &read_command_for(path, mode)).is_none()
-            })
+            .filter(|path| run_record_for_command(records, &read_command_for(path, mode)).is_none())
             .map(|path| PlannedToolCall {
                 tool: tool.to_owned(),
                 arguments: json!({ "command": read_command_for(path, mode) }).to_string(),
@@ -128,9 +118,7 @@ pub(super) fn plan_direct_file_reads(
     if let Some(tool) = run_tool {
         let calls = paths
             .iter()
-            .filter(|path| {
-                run_record_for_command(records, &read_command_for(path, mode)).is_none()
-            })
+            .filter(|path| run_record_for_command(records, &read_command_for(path, mode)).is_none())
             .map(|path| PlannedToolCall {
                 tool: tool.to_owned(),
                 arguments: json!({ "command": read_command_for(path, mode) }).to_string(),
@@ -141,8 +129,7 @@ pub(super) fn plan_direct_file_reads(
 
     let language = crate::language::detect(request);
     AgenticPlan::Final(
-        seed::localized_response("file_read_many_unavailable", language.slug())
-            .unwrap_or_default(),
+        seed::localized_response("file_read_many_unavailable", language.slug()).unwrap_or_default(),
     )
 }
 

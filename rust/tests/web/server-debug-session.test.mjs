@@ -4,10 +4,12 @@
 // session token, a paused turn advances one stage per authenticated advance
 // (a repeated or stale advance answers 409 and records nothing), and release
 // or a client disconnect never leaves a solve paused. Every stage event carries
-// the turn's recipe as Mermaid source with the stage highlighted and the
-// method-registry `path:symbol` locations, lines and excerpts of the handler
-// the turn's route resolves to (js/server/debug-stage.mjs), and a held turn is
-// neither persisted nor answered. The Rust twin is
+// the turn's recipe as Mermaid source with the stage highlighted, the
+// `path:symbol` locations, lines and excerpts of the code that emits that stage
+// in both runtimes (js/server/debug-stage-sources.mjs over the generated
+// data/meta/debug-stage-sources.lino), and the method-registry method the
+// turn's route resolves to with its handlers (js/server/debug-stage.mjs); a
+// held turn is neither persisted nor answered. The Rust twin is
 // rust/tests/unit/specification/debug_session.rs.
 
 import assert from "node:assert/strict";
@@ -20,6 +22,8 @@ import { answerDerivationId } from "../../../js/agentic/crate/derivation.mjs";
 import { hasHost, installHost } from "../../../js/agentic/host.mjs";
 import { DebugSession, debugSessionBanner, debugTokenFrom, isLoopbackHost } from "../../../js/server/debug-session.mjs";
 import { describeTurn, stageDiagram } from "../../../js/server/debug-stage.mjs";
+import { STAGE_SOURCES } from "../../../js/server/debug-stage-sources.mjs";
+import { renderStageSources } from "../../../scripts/generate-debug-stage-sources.mjs";
 import { REPO_ROOT, parseLino, readRepoFile } from "../../../js/server/lino.mjs";
 import { parseArgs, startServer } from "../../../js/server/main.mjs";
 
@@ -41,7 +45,47 @@ const ROUTED = [
 
 const NO_LOCATION = {
   method: "", js_excerpt: "", js_line: 0, js_source: "", rust_excerpt: "", rust_line: 0, rust_source: "",
+  method_js_excerpt: "", method_js_line: 0, method_js_source: "",
+  method_rust_excerpt: "", method_rust_line: 0, method_rust_source: "",
 };
+
+const SOLVE_ENTRY = "rust/src/solver.rs:solve_with_history_probability_store_and_intent_cache";
+const EVENT_LOG = "js/worker/formal_ai_worker_solver_events.js:solverEventLog";
+const ARITHMETIC = "rust/src/solver_handlers/mod.rs:try_arithmetic";
+const CALCULATION_EVENTS = "js/worker/formal_ai_worker_solver_events.js:solverCalculationEvents";
+const FINALIZE = "rust/src/solver_handlers/mod.rs:finalize_simple";
+const INTENT_RECORD = ["rust/src/intent_formalization.rs:record_intent_formalization",
+  "js/agentic/crate/intent_formalization.mjs:recordIntentFormalization"];
+
+// Every stage of the served `What is 2 + 2?` turn: `[step, Rust emitter, JS emitter]`.
+const TWO_PLUS_TWO = [
+  ["impulse", SOLVE_ENTRY, EVENT_LOG],
+  ["detect_language", SOLVE_ENTRY, EVENT_LOG],
+  ["formalize", ...INTENT_RECORD],
+  ["compute", ARITHMETIC, CALCULATION_EVENTS],
+  ["compute_engine", ARITHMETIC, CALCULATION_EVENTS],
+  ["compute_expression", ARITHMETIC, CALCULATION_EVENTS],
+  ["compute_steps", ARITHMETIC, CALCULATION_EVENTS],
+  ["dispatch_handler", FINALIZE, EVENT_LOG],
+  ["rule_verification", FINALIZE, EVENT_LOG],
+  ["deformalize", FINALIZE, EVENT_LOG],
+];
+
+/**
+ * Every stage names its own emitters, located in the files they live in, and
+ * the routed method stays a separate field (empty while nothing is routed).
+ */
+function assertStageSources(events, expected) {
+  assert.deepEqual(events.map((event) => [event.step, event.rust_source, event.js_source]), expected);
+  for (const event of events) {
+    assertExcerpt(event.rust_source, event.rust_line, event.rust_excerpt, new RegExp(`fn ${event.rust_source.split(":")[1]}[(<]`));
+    assertExcerpt(event.js_source, event.js_line, event.js_excerpt, new RegExp(`function ${event.js_source.split(":")[1]}\\(`));
+    const routed = event.method === "arithmetic";
+    assert.ok(routed || event.method === "", event.method);
+    assert.equal(event.method_rust_source, routed ? "rust/src/solver_dispatch.rs:handle_arithmetic" : "");
+    assert.equal(event.method_js_source, routed ? "js/worker/formal_ai_worker_06.js:tryArithmetic" : "");
+  }
+}
 
 /** The located excerpt is the file's own text from the definition line on. */
 function assertExcerpt(source, line, excerpt, definition) {
@@ -113,9 +157,15 @@ describe("the session state machine (DebugSession)", () => {
     assert.equal(last.session, session.id);
     assert.equal(last.turn, "turn_1");
     assert.equal(session.advance("turn_1", 2), false, "a released turn never advances");
-    const paused = session.events[2];
+    // No route: no method. The JavaScript `calculation` event has one
+    // appender, so it is the emitter; the Rust one has several and none is
+    // reached from the solver entry, so it records no location.
+    const { js_excerpt: excerpt, js_line: line, js_source: source, ...paused } = session.events[2];
+    assert.equal(source, CALCULATION_EVENTS);
+    assertExcerpt(source, line, excerpt, /^function solverCalculationEvents\(/);
+    const { js_excerpt: _excerpt, js_line: _line, js_source: _source, ...noLocation } = NO_LOCATION;
     assert.deepEqual(paused, {
-      ...NO_LOCATION,
+      ...noLocation,
       detail: "4", id: "debug_event_3", kind: "stage_paused", session: session.id,
       mermaid: [
         "flowchart TD",
@@ -132,7 +182,7 @@ describe("the session state machine (DebugSession)", () => {
     assert.deepEqual(session.snapshot(6).events.map((event) => event.id), ["debug_event_7"]);
   });
 
-  test("every stage carries the recipe diagram and the routed method's source locations", async () => {
+  test("every stage carries the recipe diagram, its own emitters and the routed method", async () => {
     if (!hasHost()) installHost({ readText: readRepoFile, parseLino });
     const session = new DebugSession(TOKEN);
     session.pause();
@@ -155,26 +205,76 @@ describe("the session state machine (DebugSession)", () => {
       "    classDef current stroke-width:4px",
       "    class s3 current",
     ].join("\n"));
-    assert.equal(paused.rust_source, "rust/src/solver_dispatch.rs:handle_arithmetic");
-    assert.equal(paused.js_source, "js/worker/formal_ai_worker_06.js:tryArithmetic");
-    assertExcerpt(paused.rust_source, paused.rust_line, paused.rust_excerpt, /^fn handle_arithmetic\(/);
-    assertExcerpt(paused.js_source, paused.js_line, paused.js_excerpt, /^function tryArithmetic\(/);
-    assert.equal(paused.rust_excerpt.split("\n").at(-1), "}", "the excerpt runs to the closing brace");
-    // Every event of the turn names the same method; only the highlight moves.
-    const staged = session.events.filter((event) => event.kind !== "turn_released");
-    assert.ok(staged.every((event) => event.rust_source === paused.rust_source && event.js_source === paused.js_source));
-    assert.deepEqual(staged.map((event) => event.mermaid.split("\n").at(-1)),
-      ["    class s0 current", "    class s0 current", "    class s1 current", "    class s1 current",
-        "    class s2 current", "    class s2 current", "    class s3 current"]);
+    assert.equal(paused.method_rust_source, "rust/src/solver_dispatch.rs:handle_arithmetic");
+    assert.equal(paused.method_js_source, "js/worker/formal_ai_worker_06.js:tryArithmetic");
+    assertExcerpt(paused.method_rust_source, paused.method_rust_line, paused.method_rust_excerpt, /^fn handle_arithmetic\(/);
+    assertExcerpt(paused.method_js_source, paused.method_js_line, paused.method_js_excerpt, /^function tryArithmetic\(/);
+    assert.equal(paused.method_rust_excerpt.split("\n").at(-1), "}", "the excerpt runs to the closing brace");
     session.release();
     await held;
+    // Each stage names the code that emits it; the highlight moves with it.
+    const staged = session.events.filter((event) => event.kind === "stage_paused");
+    assertStageSources(staged, [
+      ["impulse", SOLVE_ENTRY, EVENT_LOG],
+      ["formalize", ...INTENT_RECORD],
+      ["compute", ARITHMETIC, CALCULATION_EVENTS],
+      ["compute_engine", ARITHMETIC, CALCULATION_EVENTS],
+    ]);
+    assert.deepEqual(staged.map((event) => event.mermaid.split("\n").at(-1)),
+      ["    class s0 current", "    class s1 current", "    class s2 current", "    class s3 current"]);
     // A rule-set method resolves to the rule interpreter in both runtimes; a
-    // route the registry does not know records no location at all.
+    // route the registry does not know records no method, and a stage whose
+    // event no function appends records no location at all.
     const rule = describeTurn([{ step: "formalize", detail: "clarification" }]);
     assert.equal(`${rule.rust.path}:${rule.rust.symbol}`, "rust/src/rule_interpreter.rs:run_handler");
     assert.equal(`${rule.js.path}:${rule.js.symbol}`, "js/worker/formal_ai_worker_handler_rules.js:tryClarification");
-    assert.deepEqual(describeTurn([{ step: "formalize", detail: "greeting" }]), { method: "", rust: null, js: null });
+    assert.deepEqual(describeTurn([{ step: "formalize", detail: "greeting", source_event: "no_such_event" }]),
+      { method: "", rust: null, js: null, stages: [{ rust: null, js: null }] });
     assert.equal(stageDiagram([{ step: 'say "hi"' }], 0).split("\n")[1], '    s0["0 say #quot;hi#quot;"]');
+  });
+
+  test("the stage-sources table is current with the source tree", () => {
+    assert.equal(readFileSync(path.join(REPO_ROOT, STAGE_SOURCES), "utf8"), renderStageSources(),
+      "run node scripts/generate-debug-stage-sources.mjs --write");
+  });
+
+  test("a turn begun before its solve waits at its first stage, then resumes", async () => {
+    const session = new DebugSession(TOKEN);
+    assert.equal(await session.begin(STAGES[0]), null, "stepping off never opens a turn");
+    session.pause();
+    let begun = null;
+    const opening = session.begin(STAGES[0]).then((turn) => {
+      begun = turn;
+    });
+    const paused = session.snapshot().paused[0];
+    assert.deepEqual([paused.turn, paused.stage, paused.stages, paused.step], ["turn_1", 0, 1, "impulse"]);
+    await new Promise((resolve) => setImmediate(resolve));
+    assert.equal(begun, null, "the solve waits until stage 0 is advanced");
+    assert.equal(session.advance("turn_1", 0), true);
+    await opening;
+    assert.equal(begun.running, true);
+    assert.deepEqual(session.snapshot().paused, [], "a running solve has no paused stage");
+    assert.equal(session.advance("turn_1", 0), false, "stage 0 was advanced");
+    assert.equal(session.advance("turn_1", 1), false, "stage 1 is not computed yet");
+    const resumed = session.resume(begun, STAGES);
+    assert.equal(session.snapshot().paused[0].stage, 1);
+    assert.equal(session.snapshot().paused[0].stages, 3);
+    assert.equal(session.advance("turn_1", 1), true);
+    assert.equal(session.advance("turn_1", 2), true);
+    await resumed;
+    assert.deepEqual(kinds(session), [
+      "stage_paused:0", "stage_advanced:0", "stage_paused:1", "stage_advanced:1",
+      "stage_paused:2", "stage_advanced:2", "turn_released:2",
+    ]);
+    assert.equal(session.events.at(-1).reason, "completed");
+    // A turn released while its solve runs is not held again.
+    const second = session.begin(STAGES[0]);
+    session.advance("turn_2", 0);
+    const running = await second;
+    session.release("turn_2");
+    await session.resume(running, STAGES);
+    assert.equal(session.events.at(-1).reason, "released");
+    assert.deepEqual(session.snapshot().paused, []);
   });
 
   test("a disconnect or a release frees a paused turn", async () => {
@@ -270,9 +370,15 @@ describe("the --debug-session server", () => {
     assert.equal(state.body.stepping, false);
   });
 
-  test("a paused chat turn answers only after its last stage is advanced", async () => {
+  test("a paused chat turn waits before it is solved and answers only after its last stage", async () => {
     assert.equal((await debug("pause", { token: TOKEN })).body.stepping, true);
     const before = (await debug("session", { token: TOKEN })).body.next;
+    const solve = ctx.worker.solve.bind(ctx.worker);
+    let solves = 0;
+    ctx.worker.solve = (...args) => {
+      solves += 1;
+      return solve(...args);
+    };
     let answered = false;
     const pending = chat().then(async (response) => {
       answered = true;
@@ -280,13 +386,22 @@ describe("the --debug-session server", () => {
     });
     const derivations = path.join(home, "data/cache/derivations");
     const persisted = () => (existsSync(derivations) ? readdirSync(derivations) : []);
+    // Stage 0 is truly suspended: only the prompt is known, the worker has not run.
     let paused = await pausedTurn();
+    assert.deepEqual([paused.stage, paused.stages, paused.step, paused.method], [0, 1, "impulse", ""]);
+    assert.equal(solves, 0, "the worker has not solved the held turn");
+    const first = await debug("advance", { token: TOKEN, turn: paused.turn, stage: 0 });
+    assert.equal(first.status, 200);
+    assert.equal((await debug("advance", { token: TOKEN, turn: paused.turn, stage: 0 })).status, 409);
+    // Stages 1.. are revealed from the solved turn, held before it is persisted.
+    paused = await pausedTurn();
+    assert.equal(solves, 1, "the advance let the worker solve");
     const total = paused.stages;
-    assert.ok(total >= 2, `the turn has stages (${total})`);
+    assert.equal(total, TWO_PLUS_TWO.length);
     assert.equal(paused.method, "arithmetic", "the route resolves through the method registry");
-    assert.equal(paused.rust_source, "rust/src/solver_dispatch.rs:handle_arithmetic");
-    assert.equal(paused.js_source, "js/worker/formal_ai_worker_06.js:tryArithmetic");
-    for (let stage = 0; stage < total; stage += 1) {
+    assert.equal(paused.method_rust_source, "rust/src/solver_dispatch.rs:handle_arithmetic");
+    assert.equal(paused.method_js_source, "js/worker/formal_ai_worker_06.js:tryArithmetic");
+    for (let stage = 1; stage < total; stage += 1) {
       assert.equal(paused.stage, stage);
       assert.equal(answered, false, `held before stage ${stage} is advanced`);
       assert.deepEqual(persisted(), [], `no derivation record is persisted while stage ${stage} is held`);
@@ -299,12 +414,16 @@ describe("the --debug-session server", () => {
       if (stage + 1 < total) paused = advanced.body.paused[0];
     }
     const completion = await pending;
+    ctx.worker.solve = solve;
     assert.match(completion.choices[0].message.content, /4/);
     assert.deepEqual(persisted(), [`${answerDerivationId(completion.choices[0].message.content)}.lino`],
       "the release persists the turn's derivation record");
     const events = (await debug("session", { token: TOKEN, since: before })).body.events;
-    const advancedStages = events.filter((event) => event.kind === "stage_advanced").map((event) => event.stage);
-    assert.deepEqual(advancedStages, [...Array(total).keys()]);
+    const advanced = events.filter((event) => event.kind === "stage_advanced");
+    assert.deepEqual(advanced.map((event) => event.stage), [...Array(total).keys()]);
+    assert.deepEqual(advanced.map((event) => event.stages), [1, ...Array(total - 1).fill(total)]);
+    assertStageSources(advanced, TWO_PLUS_TWO);
+    assert.deepEqual(advanced.slice(0, 2).map((event) => event.method), ["", "arithmetic"]);
     assert.equal(events.at(-1).kind, "turn_released");
     assert.equal(events.at(-1).reason, "completed");
   });

@@ -27,9 +27,11 @@ import * as diagram from './diagram.mjs';
 import * as documentRecipe from './document_recipe.mjs';
 import * as dreamingAudit from './dreaming_audit.mjs';
 import * as evidenceRecord from './evidence_record.mjs';
+import * as fileSummary from './file_summary.mjs';
 import * as explain from './explain.mjs';
 import { fileReadTaskFor, planFileReadStep } from './file_read.mjs';
 import * as formalizationRecipe from './formalization_recipe.mjs';
+import * as functionExpectation from './function_expectation.mjs';
 import { planGeneralChangeStep } from './general_execution.mjs';
 import { composeGeneralChangePlan, hasAuthoritativeLiteralWrite, objectiveText } from './general_planner.mjs';
 import * as gitCommit from './git_commit.mjs';
@@ -41,6 +43,7 @@ import * as learningReport from './learning_report.mjs';
 import * as ledger from './ledger.mjs';
 import * as localSearch from './local_search.mjs';
 import * as meaningDetail from './meaning_detail.mjs';
+import * as moduleExports from './module_exports.mjs';
 import * as moduleFunction from './module_function.mjs';
 import * as mutatingAction from './mutating_action.mjs';
 import * as noteComposition from './note_composition.mjs';
@@ -70,6 +73,7 @@ import * as webResearch from './web_research.mjs';
 import { fill } from './work_item_steps.mjs';
 import * as workspaceChange from './workspace_change.mjs';
 import * as workspaceInspection from './workspace_inspection.mjs';
+import * as workspaceSearch from './workspace_search.mjs';
 
 const { toolFor } = capabilityRouter;
 
@@ -87,7 +91,7 @@ export const PLANNER_ROUTE_ARMS = [
     'statement_audit', 'task_obligations', 'literal_write', 'algorithm_learning', 'procedure',
     'learning_report', 'code_artifact', 'self_heal', 'dreaming_audit', 'self_ast', 'source_links',
     'learning_ledger', 'explain', 'change_request', 'repair_strategy', 'rebuild_plan',
-    'google_trends_learning', 'google_trends_catalog', 'question_catalog', 'file_analysis',
+    'google_trends_learning', 'google_trends_catalog', 'question_catalog', 'file_analysis', 'workspace_search',
     'report_flow', 'conversation_recall', 'follow_up_answer', 'contextual_reference_clarification',
     'definition_followup', 'intent_edit', 'typed_file_read', 'local_search', 'comparison',
     'named_capability_table', 'shell_command', 'file_read', 'formalization_recipe', 'meaning_detail',
@@ -121,7 +125,10 @@ export function checkedRoutePrecedence() {
  */
 async function planWorkspaceChangeArm(task, messages, toolNames) {
   return (await workspaceChange.planWorkspaceChangeStep(task, messages, toolNames))
-    ?? moduleFunction.planModuleFunctionStep(task, messages, toolNames);
+    ?? (await moduleFunction.planModuleFunctionStep(task, messages, toolNames))
+    // A bug report with a stated expectation is checked before anything is
+    // rewritten (PR #1188 T93).
+    ?? functionExpectation.planFunctionExpectationStep(task, messages, toolNames);
 }
 
 /**
@@ -278,6 +285,14 @@ export async function planSettledRoutes(task, messages, toolNames) {
   }
   const analysis = fileReadTaskFor(task);
   if (analysis !== null && analysis.isAnalysis()) return await planFileReadStep(analysis, messages, toolNames);
+  // Where a name or literal is used inside the workspace is a content search
+  // (PR #1188 T90): grep it, ahead of the file-name locate arm and web search.
+  const search = workspaceSearch.planWorkspaceSearchStep(task, messages, toolNames)
+    // What a named module exports is answered from its declarations (T99).
+    ?? moduleExports.planModuleExportsStep(task, messages, toolNames)
+    // A summary of a named file summarizes the file's text (T100).
+    ?? await fileSummary.planFileSummaryStep(task, messages, toolNames);
+  if (search !== null) return search;
   const reportFlow = await reportIssue.planReportFlow(messages, toolNames);
   if (reportFlow !== null) return reportFlow;
   const shared = await conversationRecall.planSharedSolverStep(messages, toolNames);

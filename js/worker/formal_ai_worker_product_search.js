@@ -161,6 +161,45 @@ function productSearchTerms(prompt, nouns) {
 }
 
 /**
+ * The constraint names a request states, or the none-stated marker.
+ * @param {Array<object>} constraints
+ * @returns {string}
+ */
+function productSearchConstraintsText(constraints) {
+  return constraints.length === 0
+    ? "(none stated)"
+    : constraints.map((constraint) => constraint.name).join(", ");
+}
+
+/**
+ * Issue 1173 R3: a shopping request that names a catalogued product with a
+ * request cue but no marketplace is the product-search lane's refusal: the
+ * answer names the catalogued marketplaces and asks for one rather than
+ * guessing a store (Rust `marketplace_needed`).
+ * @param {string} prompt
+ * @param {string} nounSurface
+ * @param {object} catalogue
+ * @param {function(string): boolean} mentions
+ * @returns {object}
+ */
+function productSearchMarketplaceNeeded(prompt, nounSurface, catalogue, mentions) {
+  const constraints = catalogue.constraints.filter((constraint) => constraint.phrases.some(mentions));
+  const marketplaces = catalogue.marketplaces.map((item) => item.name.split("_").join(" ")).join(", ");
+  const template = textTransformLocalizedResponse("product_search_marketplace_needed", detectLanguage(prompt)) || "";
+  return {
+    intent: PRODUCT_SEARCH_INTENT,
+    content: textTransformFill(template, [
+      ["product", nounSurface],
+      ["marketplaces", marketplaces],
+      ["constraints", productSearchConstraintsText(constraints)],
+    ]),
+    confidence: 0.4,
+    evidence: ["handler:product_search", "product_search:refusal:no_marketplace", "response:product_search_marketplace_needed"],
+    trace: ["product_search:refusal:no_marketplace"].concat(constraints.map((constraint) => `product_search:constraint:${constraint.name}`)),
+  };
+}
+
+/**
  * Compose the site-scoped search a shopping request describes
  * (`handle_product_search`).
  * @param {string} prompt
@@ -174,7 +213,6 @@ function tryProductSearch(prompt, normalized) {
   const lower = text.toLowerCase();
   const mentions = (phrase) => normal.includes(phrase) || lower.includes(phrase);
   const marketplace = catalogue.marketplaces.find((item) => item.phrases.some(mentions));
-  if (marketplace === undefined) return null;
   let nounSurface = null;
   for (const noun of catalogue.productNouns) {
     const phrase = noun.phrases.find((candidate) => lower.includes(candidate));
@@ -184,6 +222,9 @@ function tryProductSearch(prompt, normalized) {
     }
   }
   const cued = catalogue.cues.some(mentions);
+  if (marketplace === undefined) {
+    return cued && nounSurface !== null ? productSearchMarketplaceNeeded(text, nounSurface, catalogue, mentions) : null;
+  }
   if (!cued && nounSurface === null) return null;
   const terms = productSearchTerms(text, catalogue.productNouns);
   const matched = catalogue.productNouns.find((noun) => terms.includes(noun.noun));
@@ -200,9 +241,7 @@ function tryProductSearch(prompt, normalized) {
   const link = marketplace.linkTemplate
     .split("{query}")
     .join(productSearchPercentEncode(queryTerms.join(" ")));
-  const constraintsText = constraints.length === 0
-    ? "(none stated)"
-    : constraints.map((constraint) => constraint.name).join(", ");
+  const constraintsText = productSearchConstraintsText(constraints);
   let advice = matchedNoun === null
     ? "confirm the exact model and seller region before ordering"
     : matchedNoun.advice;

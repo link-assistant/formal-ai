@@ -149,6 +149,8 @@ meanings
       surface
         text "you can t perform that action at this time"
       surface
+        text "you cannot perform that action at this time"
+      surface
         text "too many requests"
       surface
         text "rate limit"

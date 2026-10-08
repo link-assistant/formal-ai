@@ -608,13 +608,15 @@ capability_routing
     because "issue 1175 R3: a conversation opener claims only with the topic it names"
   claim
     handler learn_from_source
+    browser_handler tryLearnFromSource
     admits_on learnable_source
     because "issue 1175 R3: a learning directive claims only with a declared source the engine can learn from"
   claim
     handler product_search
     browser_handler tryProductSearch
     admits_on marketplace_scope
-    because "issue 1175 R3: a product search claims only with the marketplace it is scoped to"
+    refusal_event "product_search:refusal"
+    because "issue 1175 R3: a product search claims only with the marketplace it is scoped to; issue 1173 R3: a product request that names no marketplace is admitted to the refusal lane, where only its named refusal (the catalogued marketplaces, no guessed store) is kept"
   claim
     handler verifiable_task
     browser_handler tryVerifiableTask

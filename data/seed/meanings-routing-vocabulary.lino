@@ -663,6 +663,14 @@ meanings
     unit "boolean"
     example "calls undefined_function()"
     grounding "data/seed/capability-routing.lino"
+  undefined_call
+    defined-by concept
+    role action
+    precondition "a coding request says its program calls a function that no definition, builtin or second mention names"
+    effect "admits the failure trace of the execution failure handler with that function named"
+    unit "not applicable"
+    example "a python script that calls missing_helper()"
+    grounding "data/seed/code-task-cues.lino"
   composition_topic
     defined-by concept
     role action

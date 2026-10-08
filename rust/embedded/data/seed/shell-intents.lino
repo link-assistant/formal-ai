@@ -259,6 +259,38 @@ shell_intents
       test "make test"
       install "make install"
       build make
+  test_file_runners
+    # PR #1188 T91 (gap G11): "Run the tests in m.test.mjs." runs the named
+    # test file with the runtime its extension needs, never the workspace's
+    # whole-suite command chosen by a marker file. `{file}` is the named path.
+    runner
+      extension "mjs"
+      command "node --test {file}"
+    runner
+      extension "js"
+      command "node --test {file}"
+    runner
+      extension "cjs"
+      command "node --test {file}"
+    runner
+      extension "py"
+      command "python3 -m pytest {file}"
+    runner
+      extension "rb"
+      command "ruby {file}"
+    runner
+      extension "rs"
+      command "cargo test"
+    runner
+      extension "go"
+      command "go test ./..."
+  content_search
+    # PR #1188 T90 (gap G12): the shell fallback of the workspace content
+    # search when the client advertises no grep tool. `{mode}` is `w` for an
+    # identifier (whole-word match) and `F` for a quoted literal (fixed text).
+    command "grep -rnH{mode} --exclude-dir=.git -- {pattern} {scope}"
+    identifier_mode "w"
+    literal_mode "F"
   path_objects
     language en
       object file

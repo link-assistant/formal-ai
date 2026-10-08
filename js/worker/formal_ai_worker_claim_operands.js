@@ -213,7 +213,48 @@ function claimOperandFormalizationStatement(prompt) {
   return onlyFrameWords(claimOperandWithout(sentence, phrases)) ? [] : [sentence];
 }
 
+/** The roles that name the program a call runs in (Rust `PROGRAM_ROLES`). */
+const CLAIM_OPERAND_PROGRAM_ROLES = ["script_or_code_artifact", "program_genus"];
+
+/** Whether a character continues an identifier: a letter, a digit or `_` (Rust `continues_identifier`). */
+function claimOperandContinuesIdentifier(character) {
+  return character !== undefined && (character === "_" || /[\p{Alphabetic}\p{N}]/u.test(character));
+}
+
+/**
+ * The function a coding request says its program calls when nothing defines
+ * it (Rust `undefined_call`, issue 1173 R3): the request names a program
+ * (a `CLAIM_OPERAND_PROGRAM_ROLES` surface) and a seeded
+ * `function_call_verb`, and the first call expression `name(` that is not a
+ * method call (`.name(`), not a callable of the seeded
+ * `script_builtin_callable` word map (data/seed/code-task-cues.lino) and not written anywhere else in the
+ * request (a definition or a second mention would name it) is the call a
+ * sandbox run fails on.
+ */
+function claimOperandUndefinedCall(prompt) {
+  const text = String(prompt || "");
+  const lower = text.toLowerCase();
+  const names = (role) => claimOperandSurfaces(role).some((surface) => claimOperandNames(lower, surface));
+  if (!names("function_call_verb") || !CLAIM_OPERAND_PROGRAM_ROLES.some(names)) return [];
+  const builtins = new Set(codeTaskWordEntries("script_builtin_callable").map((entry) => codeTaskChildValue(entry, "word").toLowerCase()));
+  const words = claimOperandWords(text);
+  const characters = [...text];
+  for (let index = 0; index < characters.length; index += 1) {
+    if (characters[index] !== "(") continue;
+    let end = index;
+    while (end > 0 && /\s/u.test(characters[end - 1])) end -= 1;
+    let start = end;
+    while (start > 0 && claimOperandContinuesIdentifier(characters[start - 1])) start -= 1;
+    const name = characters.slice(start, end).join("");
+    if (name === "" || /\p{N}/u.test(characters[start]) || characters[start - 1] === ".") continue;
+    if (builtins.has(name.toLowerCase())) continue;
+    if (words.filter((word) => word === name).length === 1) return [name];
+  }
+  return [];
+}
+
 const CLAIM_OPERANDS = Object.freeze({
+  undefined_call: claimOperandUndefinedCall,
   documented_method: claimOperandDocumentedMethod,
   idiom_utterance: claimOperandIdiomUtterance,
   attributed_alternatives: claimOperandAttributedAlternatives,

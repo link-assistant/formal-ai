@@ -253,3 +253,203 @@ meanings
     unit "not applicable"
     example "Create event «Call» on 2026-10-09."
     grounding "data/seed/multilingual-responses-quantities.lino"
+  document_originality_check_price_claim_heading
+    defined-by answer
+    role localized_response_template
+    precondition "an originality check caught a contradicted price claim"
+    effect "the answer heads the contradicted price claims"
+    unit "not applicable"
+    example "Price claim check"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_recorded
+    defined-by answer
+    role localized_response_template
+    precondition "a follow-up exercises the artifact of the active software-project plan"
+    effect "the answer names the follow-up kind and the artifact it records"
+    unit "not applicable"
+    example "Recorded a verification follow-up for the scraper from the active plan."
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_heading_meaning
+    defined-by answer
+    role localized_response_template
+    precondition "a software-project follow-up is formalized"
+    effect "the answer heads the Links Notation record of the follow-up"
+    unit "not applicable"
+    example "Formalized meaning:"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_heading_reasoning
+    defined-by answer
+    role localized_response_template
+    precondition "a software-project follow-up is formalized"
+    effect "the answer heads the reasoning steps behind the record"
+    unit "not applicable"
+    example "Reasoning steps:"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_heading_plan
+    defined-by answer
+    role localized_response_template
+    precondition "a software-project follow-up is formalized"
+    effect "the answer heads the verification plan for the artifact"
+    unit "not applicable"
+    example "Verification plan:"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_step_recognize
+    defined-by answer
+    role localized_response_template
+    precondition "a software-project follow-up is formalized"
+    effect "the first reasoning step reads the verb as a follow-up of the plan, not a fact lookup"
+    unit "not applicable"
+    example 'Recognize "test" as a verification request'
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_step_bind_site
+    defined-by answer
+    role localized_response_template
+    precondition "a follow-up names a site to test against"
+    effect "the reasoning step binds the test target behind the network gate"
+    unit "not applicable"
+    example "Bind the test target to wikipedia.org"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_step_record_output
+    defined-by answer
+    role localized_response_template
+    precondition "a follow-up names the output it wants surfaced"
+    effect "the reasoning step records the expected output for the harness"
+    unit "not applicable"
+    example 'Record the expected output as "the top 10 most frequent words"'
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_step_fixture
+    defined-by answer
+    role localized_response_template
+    precondition "a software-project follow-up is formalized"
+    effect "the reasoning step drives the artifact through a fixture first"
+    unit "not applicable"
+    example "Drive the artifact through a deterministic fixture"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_step_gates
+    defined-by answer
+    role localized_response_template
+    precondition "a software-project follow-up is formalized"
+    effect "the reasoning step keeps code execution behind approval gates"
+    unit "not applicable"
+    example "Keep code execution behind approval gates"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_plan_generate
+    defined-by answer
+    role localized_response_template
+    precondition "a software-project follow-up is formalized"
+    effect "the plan step generates the artifact core and a fixture-backed harness"
+    unit "not applicable"
+    example "Generate the scraper core plus a deterministic test harness"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_plan_assert
+    defined-by answer
+    role localized_response_template
+    precondition "a software-project follow-up is formalized"
+    effect "the plan step asserts each requirement against the fixture"
+    unit "not applicable"
+    example "Assert each requirement against the fixture."
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_plan_surface
+    defined-by answer
+    role localized_response_template
+    precondition "a follow-up names the output it wants surfaced"
+    effect "the plan step surfaces that output from the fixture run"
+    unit "not applicable"
+    example "Surface the top 10 most frequent words from the fixture run."
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_plan_run
+    defined-by answer
+    role localized_response_template
+    precondition "a software-project follow-up is formalized"
+    effect "the plan step runs the test command of the implementation language once approved"
+    unit "not applicable"
+    example "Run the python test command"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_plan_promote
+    defined-by answer
+    role localized_response_template
+    precondition "a software-project follow-up is formalized"
+    effect "the plan step promotes the run to the live target behind the gates"
+    unit "not applicable"
+    example "Promote the run to live wikipedia.org"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_default_target
+    defined-by answer
+    role localized_response_template
+    precondition "a follow-up names no site to test against"
+    effect "the plan names the requested target in place of a site"
+    unit "not applicable"
+    example "the requested target"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_approved
+    defined-by answer
+    role localized_response_template
+    precondition "the active software-project plan is already approved"
+    effect "the answer says the starter already holds the harness and which gates a live run needs"
+    unit "not applicable"
+    example "The plan is approved"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  software_project_followup_proposed
+    defined-by answer
+    role localized_response_template
+    precondition "the active software-project plan is not approved yet"
+    effect "the answer asks for plan approval and names the gates a live run needs"
+    unit "not applicable"
+    example "Reply approve plan"
+    grounding "data/seed/multilingual-responses-policy.lino"
+  workspace_search_hits
+    defined-by answer
+    role localized_response_template
+    precondition "a workspace content search for one identifier or literal found matching lines"
+    effect "the answer counts the lines and lists each as file:line with its text"
+    unit "not applicable"
+    example "Found 2 line(s) mentioning `add` in `.`:"
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  workspace_search_none
+    defined-by answer
+    role localized_response_template
+    precondition "a workspace content search for one identifier or literal found no matching line"
+    effect "the answer names the pattern and the searched scope"
+    unit "not applicable"
+    example "No line in `.` mentions `sub`."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  function_expectation_holds
+    defined-by answer
+    role localized_response_template
+    precondition "a bug report stated what a function should return and running it at the contract samples gave that value"
+    effect "no defect is reported and the file is left unchanged"
+    unit "not applicable"
+    example "No defect found: `add(2, 3)` in `m.mjs` returned `5`, the expected `5`, so `m.mjs` is unchanged."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  function_expectation_fails
+    defined-by answer
+    role localized_response_template
+    precondition "a bug report stated what a function should return and running it at the contract samples gave another value"
+    effect "the defect is reported as confirmed with both values and the file is left unchanged"
+    unit "not applicable"
+    example "The defect is confirmed: `add(2, 3)` in `m.mjs` returned `5`, but the request expects `6`."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  general_change_existing_file_kept
+    defined-by answer
+    role localized_response_template
+    precondition "a literal-file write whose verb does not name a whole-file write found its target already holding content"
+    effect "the file is left unchanged and the refusal names it"
+    unit "not applicable"
+    example "Left `m.mjs` unchanged: it already has content, and the request does not say to replace the whole file."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  module_exports_listed
+    defined-by answer
+    role localized_response_template
+    precondition "a question asked which functions a named module exports and its declarations carry an export marker"
+    effect "the answer counts the exported functions and names each"
+    unit "not applicable"
+    example "`src/m.mjs` exports 2 function(s): `add`, `mul`."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  module_exports_none
+    defined-by answer
+    role localized_response_template
+    precondition "a question asked which functions a named module exports and no declaration carries an export marker"
+    effect "the answer says the module exports no function"
+    unit "not applicable"
+    example "`src/m.mjs` exports no function."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"

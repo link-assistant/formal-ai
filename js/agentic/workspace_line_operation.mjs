@@ -19,6 +19,7 @@ import { unescapeProseNewlines } from './positional_edit.mjs';
 import { sentenceWords } from './workspace_change.mjs';
 import { cleanPathToken, looksLikeFilePath, safeRelativePath, tokens } from './write_request.mjs';
 import { meaningEvidencedIn, mentionsRole, wordsForRole } from './write_lexicon.mjs';
+import { meaning as seedMeaning, meaningsWithRole } from './crate/seed_meanings.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import { trim } from './write_str.mjs';
 
@@ -128,6 +129,97 @@ function numberedLines(task) {
     }
   }
   return found;
+}
+
+/** Mirrors `fn joins_word`: a letter, mark or digit outside the Han block, which a word boundary may not split. */
+const joinsWord = (character) => character !== undefined && /[\p{Alphabetic}\p{N}]/u.test(character) && !isHan(character);
+
+/**
+ * Mirrors `fn ordinal_value`: the one-based number a seeded line ordinal
+ * counts to -- the digits its cardinal meaning (`defined-by one`) spells.
+ */
+function ordinalValue(meaning) {
+  for (const slug of meaning.defined_by) {
+    const cardinal = seedMeaning(slug);
+    if (!cardinal || !cardinal.roles.includes('cardinal_number_word')) continue;
+    const digits = cardinal.lexemes.flatMap((lexeme) => lexeme.words.map((word) => word.text))
+      .find((text) => /^[0-9]{1,9}$/u.test(text));
+    if (digits !== undefined) return Number(digits);
+  }
+  return null;
+}
+
+/**
+ * Mirrors `fn ordinal_lines`: every line the request names by a seeded
+ * ordinal right before a seeded line noun (`the first line`, `последнюю
+ * строку`, `第一行`, `la última línea`), as `{first, last, fromEnd}`; a
+ * `line_ordinal_last` ordinal counts from the end (PR #1188 G19).
+ */
+function ordinalLines(task) {
+  const outside = textOutsideQuotedSegments(task).toLowerCase();
+  const nouns = roleWords('numbered_line_noun').filter((noun) => noun !== '');
+  const found = [];
+  for (const [role, fromEnd] of [['line_ordinal', false], ['line_ordinal_last', true]]) {
+    for (const meaning of meaningsWithRole(role)) {
+      const value = ordinalValue(meaning);
+      if (value === null) continue;
+      const surfaces = meaning.lexemes.flatMap((lexeme) => lexeme.words.map((word) => word.text.toLowerCase()));
+      for (const surface of surfaces.filter((text) => text !== '')) {
+        for (let at = outside.indexOf(surface); at >= 0; at = outside.indexOf(surface, at + surface.length)) {
+          if (joinsWord(Array.from(outside.slice(0, at)).pop())) continue;
+          const rest = outside.slice(at + surface.length);
+          const gap = rest.length - rest.trimStart().length;
+          if (gap === 0 && joinsWord(Array.from(rest)[0])) continue;
+          const noun = nouns.find((candidate) => rest.slice(gap).startsWith(candidate)
+            && !joinsWord(Array.from(rest.slice(gap + candidate.length))[0]));
+          if (noun !== undefined) {
+            found.push({ first: value, last: value, fromEnd, start: at, end: at + surface.length + gap + noun.length });
+          }
+        }
+      }
+    }
+  }
+  return found;
+}
+
+/**
+ * Mirrors `fn line_slice`: the one run of lines a read request names --
+ * `{from, to, fromEnd}`, one-based and inclusive, counted from the end when
+ * `fromEnd` -- or null (PR #1188 G33). A numbered line or range (`lines 2-3`),
+ * a seeded ordinal line (`the last line`), or a count between a seeded head or
+ * tail cue and a line noun (`the first 2 lines`, `последние 2 строки`).
+ */
+export function lineSlice(task) {
+  const numbered = numberedLines(task);
+  if (numbered.length > 1) return null;
+  if (numbered.length === 1) return { from: numbered[0].first, to: numbered[0].last, fromEnd: false };
+  const ordinals = ordinalLines(task);
+  if (ordinals.length === 1) return { from: ordinals[0].first, to: ordinals[0].first, fromEnd: ordinals[0].fromEnd };
+  const pieces = linePieces(task);
+  const nouns = roleWords('numbered_line_noun');
+  const is = (index, words) => index >= 0 && index < pieces.length && pieces[index].kind === 'word' && words.includes(pieces[index].text);
+  const slices = [];
+  for (let index = 1; index + 1 < pieces.length; index += 1) {
+    const count = pieces[index];
+    if (count.kind !== 'number' || count.value === 0 || !is(index + 1, nouns)) continue;
+    if (is(index - 1, roleWords('line_slice_head_cue'))) slices.push({ from: 1, to: count.value, fromEnd: false });
+    else if (is(index - 1, roleWords('line_slice_tail_cue'))) slices.push({ from: count.value, to: 1, fromEnd: true });
+  }
+  return slices.length === 1 ? slices[0] : null;
+}
+
+/**
+ * Mirrors `fn sliced_lines`: the lines of `source` a [`lineSlice`] names, as
+ * `{first, last, text}` with the file's own one-based numbers, or null when
+ * the file has none of them.
+ */
+export function slicedLines(source, slice) {
+  const { lines: all } = fileLines(source);
+  const count = all.length;
+  const first = slice.fromEnd ? Math.max(1, count + 1 - slice.from) : slice.from;
+  const last = Math.min(count, slice.fromEnd ? count + 1 - slice.to : slice.to);
+  if (first < 1 || first > last) return null;
+  return { first, last, text: all.slice(first - 1, last).join('\n') };
 }
 
 /** Mirrors `fn file_lines`: the file's lines without their `\n`, and whether it ended in one. */
@@ -262,22 +354,40 @@ export function groundedLineOperation(task) {
     return null;
   }
   const removing = mentionsRole('coding_text_remove_action', outside) && !mentionsRole('coding_member_add_action', outside);
-  const above = eitherOf(outside, 'line_adjacent_above', 'line_adjacent_below');
-  const numbered = numberedLines(task);
+  // An ordinal's words are not an adjacency (`最后一行` holds `后一行`).
+  const ordinals = ordinalLines(task);
+  const unordinal = ordinals.reduceRight((text, { start, end }) => `${text.slice(0, start)} ${text.slice(end)}`,
+    textOutsideQuotedSegments(task).toLowerCase());
+  const above = eitherOf(sentenceWords(unordinal), 'line_adjacent_above', 'line_adjacent_below');
+  const numbered = [...numberedLines(task), ...ordinals];
   if (numbered.length > 1) return null;
   if (numbered.length === 1) {
-    const { first, last } = numbered[0];
+    // An ordinal counted from the end names its line once the file is read.
+    const { first, last, fromEnd = false } = numbered[0];
+    const span = (source) => {
+      const count = fileLines(source).lines.length;
+      return fromEnd ? [count - last + 1, count - first + 1] : [first, last];
+    };
     if (removing && payloads.length === 0) {
-      const from = above === true ? first - 1 : first;
-      const to = above === false ? last + 1 : last;
-      const lines = from === to ? String(from) : `${from}-${to}`;
-      return change((source) => removedRange(source, from, to), 'numbered_lines_removed', [['{lines}', lines]], { bounded: true });
+      const range = (source) => {
+        const [low, high] = span(source);
+        return [above === true ? low - 1 : low, above === false ? high + 1 : high];
+      };
+      const label = (source) => {
+        const [from, to] = range(source);
+        return from === to ? String(from) : `${from}-${to}`;
+      };
+      return change((source) => removedRange(source, ...range(source)), 'numbered_lines_removed', [], {
+        bounded: true, reported: (source) => ({ intent: 'numbered_lines_removed', slots: [['{lines}', label(source)]] }),
+      });
     }
     const after = eitherOf(outside, 'file_edit_position_after', 'file_edit_position_before');
     if (!removing && first === last && payloads.length === 1 && after !== null) {
       const text = unescapeProseNewlines(payloads[0]);
-      return change((source) => insertedAtLine(source, first, text, after),
-        after ? 'numbered_line_insert_after' : 'numbered_line_insert_before', [['{new}', text], ['{line}', String(first)]]);
+      const intent = after ? 'numbered_line_insert_after' : 'numbered_line_insert_before';
+      return change((source) => insertedAtLine(source, span(source)[0], text, after), intent, [], {
+        reported: (source) => ({ intent, slots: [['{new}', text], ['{line}', String(span(source)[0])]] }),
+      });
     }
     return null;
   }

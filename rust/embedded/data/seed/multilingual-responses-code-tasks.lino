@@ -102,6 +102,10 @@ multilingual_responses
     intent format_conversion_to_json
     language en
     text "Converted YAML to JSON. Subset, stated honestly: block-style mappings and sequences, two-space indentation, scalars (numbers, booleans, null, plain or quoted strings); flow style, anchors, tags and multi-line scalars are refused rather than guessed.\n\n```json\n{json}```\nRound-trip check: parsing the emitted JSON back reproduced the same values and nesting as the input YAML."
+  response response_format_conversion_json_identity_en
+    intent format_conversion_json_identity
+    language en
+    text "The text is already JSON, so there is no other format to convert from; here it is parsed and re-emitted with two-space indentation.\n\n```json\n{json}\n```\nRound-trip check: parsing the emitted JSON back reproduced the same values and nesting as the input."
   response response_format_conversion_refusal_en
     intent format_conversion_refusal
     language en

@@ -394,6 +394,22 @@ meanings
     unit "not applicable"
     example "Here is the search I composed for a laptop charger on the named marketplace."
     grounding "data/seed/multilingual-responses-product-search.lino"
+  product_search_marketplace_needed
+    defined-by answer
+    role localized_response_template
+    precondition "a product-search request named a product but no marketplace the catalogue knows"
+    effect "the answer names the catalogued marketplaces and asks for one instead of guessing a store"
+    unit "not applicable"
+    example "Name one of the marketplaces I know and I will compose the exact search link."
+    grounding "data/seed/multilingual-responses-product-search.lino"
+  learn_from_source_browser_summary
+    defined-by answer
+    role localized_response_template
+    precondition "a learning directive named a declared learnable source in the browser worker"
+    effect "the answer says the learning loop for that source runs in the native engine and that nothing was learned in the browser"
+    unit "not applicable"
+    example "This browser worker records the source but does not run that loop."
+    grounding "data/seed/multilingual-responses.lino"
   triz_resolution_map
     defined-by answer
     role localized_response_template

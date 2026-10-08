@@ -131,6 +131,9 @@ pub const CLAIM_EVIDENCE_KINDS: &[&str] = &[
     "attributed_alternatives",
     "named_repository",
     "formalization_statement",
+    // Issue 1173 R3: the call a script request makes of a function nothing
+    // defines, read by the `execution_failure` rules and promotion.
+    "undefined_call",
 ];
 
 /// Parse the `claim` rows of a capability-routing document.

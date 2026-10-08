@@ -11,7 +11,7 @@ use serde_json::json;
 
 use super::file_path_shape::{is_dotted_number, peel_sentence_punctuation};
 use super::general_planner::has_file_write_intent;
-use super::planner::{tool_capability, AgenticPlan, Capability, PlannedToolCall};
+use super::planner::{AgenticPlan, Capability, PlannedToolCall, tool_capability};
 use super::shell_command_policy::sentences;
 use super::write_request;
 use crate::protocol::{ChatMessage, ToolCall};
@@ -56,6 +56,8 @@ pub(super) enum FileReadMode {
     Summary,
     /// Collect explicit incompleteness evidence without loading whole files.
     Audit,
+    /// A run of the file's lines (PR #1188 G33).
+    LineSlice(super::workspace_line_operation::LineSlice),
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -100,17 +102,9 @@ pub(super) fn plan_file_read_step(
             &records,
             &request,
         ),
-        FileReadTask::DirectMany { paths, mode } => {
-            exact::plan_direct_file_reads(
-                paths,
-                mode,
-                read_tool,
-                run_tool,
-                grep_tool,
-                &records,
-                &request,
-            )
-        }
+        FileReadTask::DirectMany { paths, mode } => exact::plan_direct_file_reads(
+            paths, mode, read_tool, run_tool, grep_tool, &records, &request,
+        ),
         FileReadTask::ListThenRead {
             directory,
             selection,
@@ -199,12 +193,13 @@ fn plan_direct_file_read(
     }
 
     if (prefer_run || exact_run)
-        && let Some(tool) = run_tool {
-            return plan_one(
-                tool,
-                json!({ "command": read_command_for(path, mode) }).to_string(),
-            );
-        }
+        && let Some(tool) = run_tool
+    {
+        return plan_one(
+            tool,
+            json!({ "command": read_command_for(path, mode) }).to_string(),
+        );
+    }
 
     if let Some(tool) = read_tool {
         return plan_one(tool, read_arguments(path, mode));
@@ -273,9 +268,10 @@ fn plan_list_then_read(
             return AgenticPlan::ToolCalls(calls);
         }
     } else if let Some(path) = paths.first()
-        && let Some(tool) = read_tool {
-            return plan_one(tool, read_arguments(path, mode));
-        }
+        && let Some(tool) = read_tool
+    {
+        return plan_one(tool, read_arguments(path, mode));
+    }
 
     if let Some(tool) = run_tool {
         let command = if selection == FileSelection::All {
@@ -305,6 +301,9 @@ fn plan_list_then_read(
     )
 }
 
+/// Shell syntax that chains, pipes or redirects commands.
+const SHELL_OPERATORS: [&str; 5] = ["&&", "||", ";", "|", ">"];
+
 pub(super) fn file_read_task_for(prompt: &str) -> Option<FileReadTask> {
     let lower = prompt.to_lowercase();
 
@@ -315,6 +314,15 @@ pub(super) fn file_read_task_for(prompt: &str) -> Option<FileReadTask> {
     // ("write intent beats read intent"), not a per-phrase special case: the same
     // gate catches create/write/save/generate across every supported language.
     if has_file_write_intent(&lower) {
+        return None;
+    }
+    // A command quoted after a run prefix that chains, pipes or redirects is
+    // run as written, not read file by file (PR #1188 G62).
+    if super::shell_command::explicit_passthrough_command(prompt).is_some_and(|command| {
+        SHELL_OPERATORS
+            .iter()
+            .any(|operator| command.contains(operator))
+    }) {
         return None;
     }
 
@@ -466,7 +474,8 @@ fn mode_for_prompt(prompt: &str) -> FileReadMode {
     if lower.contains("summarize") || lower.contains("summary") {
         return FileReadMode::Summary;
     }
-    FileReadMode::Full
+    super::workspace_line_operation::line_slice(prompt)
+        .map_or(FileReadMode::Full, FileReadMode::LineSlice)
 }
 
 fn extract_value_key(prompt: &str) -> Option<String> {
@@ -702,8 +711,7 @@ fn run_record_for_command<'a>(records: &'a [ToolResultRecord], command: &str) ->
         .iter()
         .find(|record| {
             record.capability == Some(Capability::Run)
-                && super::tool_result::command_argument(&record.arguments.to_string())
-                    .as_deref()
+                && super::tool_result::command_argument(&record.arguments.to_string()).as_deref()
                     == Some(command)
         })
         .map(|record| record.content.as_str())
@@ -757,8 +765,7 @@ fn regex_escape(surface: &str) -> String {
         .flat_map(|character| {
             if matches!(
                 character,
-                '.' | '+' | '*' | '?' | '(' | ')' | '|' | '[' | ']' | '{' | '}' | '^' | '$'
-                    | '\\'
+                '.' | '+' | '*' | '?' | '(' | ')' | '|' | '[' | ']' | '{' | '}' | '^' | '$' | '\\'
             ) {
                 vec!['\\', character]
             } else {
@@ -790,7 +797,7 @@ fn read_command_for(path: &str, mode: &FileReadMode) -> String {
             ]
             .join(" ")
         }
-        FileReadMode::Full | FileReadMode::Summary => {
+        FileReadMode::Full | FileReadMode::Summary | FileReadMode::LineSlice(_) => {
             format!("cat {}", shell_path(path))
         }
     }

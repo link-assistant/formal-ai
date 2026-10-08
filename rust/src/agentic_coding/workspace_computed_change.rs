@@ -13,6 +13,9 @@ use super::code_artifact::source_from_read_result;
 use super::code_task::render_seeded_outcome;
 use super::general_planner::compose_edit_request;
 use super::intent_router::edit_arguments;
+use super::line_removal::{
+    bare_line, removed_declarations, removed_line_indices, removed_lines, removed_literal,
+};
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
 use super::workspace_change::{
     VerifiedChange, changed_lines_edit, identifier_tokens, plan_digest_verification,
@@ -37,12 +40,18 @@ const MAX_ANCHOR_BYTES: usize = 4096;
 /// How a computed change derives the file's new bytes.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(super) enum Computation {
-    /// Quoted text placed as the last (`at_end`) or the first line.
-    EndInsertion { text: String, at_end: bool },
+    /// Quoted text placed as the last (`at_end`) or the first line; lines
+    /// given under the request keep their shared `indentation` when the file
+    /// has lines indented exactly so (PR #1188 G16).
+    EndInsertion {
+        text: String,
+        at_end: bool,
+        indentation: Option<String>,
+    },
     /// Every line that is exactly `text`, else its one in-line occurrence.
     Removal { text: String },
-    /// Every line that contains `text`, whole (the request names a line).
-    LineRemoval { text: String },
+    /// Whole lines (the request names a line): see `removed_line_indices`.
+    LineRemoval { text: String, containing: bool },
     /// The one line assigning `key` (holding `held`, when stated) gets
     /// `value`, in the file's own quoting.
     Setting {
@@ -56,6 +65,7 @@ pub(super) enum Computation {
         old: String,
         new: String,
         context: Option<String>,
+        rebase: bool,
     },
     /// Every whole-word `word` becomes its discovered `correction`.
     TypoFix { word: String, correction: String },
@@ -64,6 +74,13 @@ pub(super) enum Computation {
     DeclarationRemoval { names: Vec<String> },
     /// A whole-line operation: numbered, adjacent, moved or swapped lines.
     Line(LineOperation),
+    /// `text` placed at one end of the Markdown section under `heading`
+    /// (PR #1188 G35).
+    Section {
+        heading: String,
+        text: String,
+        at_end: bool,
+    },
 }
 
 /// A computed change: the file, how its bytes are computed, and the seed
@@ -167,10 +184,15 @@ pub(super) fn edits_inside_a_file(prompt: &str) -> bool {
 /// Whether the request names a line outside its quotes: the seeded `line`
 /// meaning (`the line containing '…'`, `lines`, `строку`, `पंक्ति`, `的行`).
 pub(super) fn names_line(task: &str) -> bool {
+    seed::lexicon()
+        .meaning("line")
+        .is_some_and(|meaning| meaning.evidenced_in(&outside_quotes(task)))
+}
+
+/// The lowered request outside its quotes.
+fn outside_quotes(task: &str) -> String {
     let outside = crate::solver_handlers::text_outside_quoted_segments(task);
-    seed::lexicon().meaning("line").is_some_and(|meaning| {
-        meaning.evidenced_in(&crate::engine::normalize_prompt(&outside).to_lowercase())
-    })
+    crate::engine::normalize_prompt(&outside).to_lowercase()
 }
 
 /// The one workspace path a request names and its one quoted segment that is
@@ -199,26 +221,48 @@ pub(super) fn grounded_line_change(task: &str) -> Option<ComputedChange> {
 
 /// `Append 'x' to notes.txt`, `Prepend "x" to a.md`: positioned by the seeded
 /// `file_edit_position_end` / `file_edit_position_start` meanings.
-fn grounded_end_insertion(task: &str) -> Option<ComputedChange> {
+pub(super) fn grounded_end_insertion(task: &str) -> Option<ComputedChange> {
     // `Append these lines to f:` followed by lines: the first line is the
     // request and the lines under it are the text added, verbatim (PR #1188).
     let block = super::positional_edit::introduced_block(task);
-    let sentence = block.as_ref().map_or(task, |(head, _)| *head);
+    let sentence = block.as_ref().map_or(task, |block| block.head);
     let at_end = mentions("file_edit_position_end", sentence);
     if at_end == mentions("file_edit_position_start", sentence) {
         return None;
     }
-    let (target, text) = match block {
-        Some((head, text)) => (block_target(head)?, text),
-        None => {
-            let (target, text) = quoted_payload_and_path(task)
-                .or_else(|| blank_line_and_path(task))
-                .or_else(|| line_payload_and_path(task))?;
-            (
-                target,
-                super::positional_edit::unescape_prose_newlines(&text),
-            )
-        }
+    // `… at the end of the section '## Usage' in README.md` (PR #1188 G35).
+    if block.is_none()
+        && let Some(section) = super::markdown_section::section_scope(task, &outside_quotes(task))
+    {
+        let text = super::positional_edit::unescape_prose_newlines(&section.text);
+        return Some(ComputedChange {
+            target: section.target,
+            intent: "file_edit_position_after",
+            slots: vec![
+                ("{new}", text.clone()),
+                ("{anchor}", section.heading.clone()),
+            ],
+            computation: Computation::Section {
+                heading: section.heading,
+                text,
+                at_end,
+            },
+        });
+    }
+    let (target, text, indentation) = if let Some(block) = block {
+        let indentation = (!block.verbatim).then(|| block.indentation.to_owned());
+        (block_target(block.head)?, block.text, indentation)
+    } else if let Some((target, text)) = quoted_lines_and_path(task) {
+        (target, text, None)
+    } else {
+        let (target, text) = quoted_payload_and_path(task)
+            .or_else(|| blank_line_and_path(task))
+            .or_else(|| line_payload_and_path(task))?;
+        (
+            target,
+            super::positional_edit::unescape_prose_newlines(&text),
+            None,
+        )
     };
     Some(ComputedChange {
         target,
@@ -231,8 +275,23 @@ fn grounded_end_insertion(task: &str) -> Option<ComputedChange> {
             "file_edit_position_start"
         },
         slots: vec![("{new}", text.clone())],
-        computation: Computation::EndInsertion { text, at_end },
+        computation: Computation::EndInsertion {
+            text,
+            at_end,
+            indentation,
+        },
     })
+}
+
+/// Several quoted literals, joined only by seeded joiners and commas, are the
+/// lines added, each its own line, as written (PR #1188 G53, G54).
+fn quoted_lines_and_path(task: &str) -> Option<(String, String)> {
+    let (target, payloads) = named_target_and_payloads(task)?;
+    if payloads.len() < 2 {
+        return None;
+    }
+    let text = super::positional_edit::joined_literal_lines(task, &target)?;
+    Some((target, text))
 }
 
 /// `Delete the line 'x' from notes.txt`: the seeded `coding_text_remove_action`
@@ -242,10 +301,15 @@ fn grounded_removal(task: &str) -> Option<ComputedChange> {
         return None;
     }
     let (target, text) = quoted_payload_and_path(task)?;
-    // A request that names a line removes whole lines: every line containing
-    // the payload goes, never only the payload inside it (PR #1188).
+    // A request that names a line removes whole lines, never only the
+    // payload inside one (PR #1188 G60).
     let computation = if names_line(task) {
-        Computation::LineRemoval { text: text.clone() }
+        let containing =
+            seed::lexicon().mentions_role("line_containment_cue", &outside_quotes(task));
+        Computation::LineRemoval {
+            text: text.clone(),
+            containing,
+        }
     } else {
         Computation::Removal { text: text.clone() }
     };
@@ -260,7 +324,7 @@ fn grounded_removal(task: &str) -> Option<ComputedChange> {
 /// `Delete the functions a and b from util.rs`: the seeded
 /// `coding_text_remove_action` and `coding_declaration_noun` with no add
 /// action, no quoted text and one named path. The names are the request's
-/// identifiers; [`removed_declarations`] keeps those the file itself declares
+/// identifiers; `removed_declarations` keeps those the file itself declares
 /// as functions (mirrors `groundedDeclarationRemoval`, PR #1188 dogfooding).
 fn grounded_declaration_removal(task: &str) -> Option<ComputedChange> {
     if !mentions("coding_text_remove_action", task)
@@ -316,6 +380,11 @@ fn grounded_setting(task: &str) -> Option<ComputedChange> {
     if stated.is_none() && !mentions("config_value_lead", task) {
         return None;
     }
+    // `set the contents of note.txt to hello` writes the file; its contents are
+    // not a key (PR #1188 G68, issue #745).
+    if stated.is_none() && mentions("file_contents_source_cue", task) {
+        return None;
+    }
     let key_clause = stated
         .as_ref()
         .map_or(old_clause.as_str(), |(key, _)| key.as_str());
@@ -368,8 +437,12 @@ fn grounded_line_replacement(task: &str) -> Option<ComputedChange> {
         .map(String::as_str)
         .map(super::positional_edit::unescape_prose_newlines)
         .collect();
+    // Lines under the request (G22) replace the line as its siblings, unless
+    // they were fenced or quoted.
+    let block =
+        super::positional_edit::introduced_block(task).filter(|block| block.text == replacement);
     if !quoted.contains(&original)
-        || !quoted.contains(&replacement)
+        || (block.is_none() && !quoted.contains(&replacement))
         || original.is_empty()
         || original == replacement
     {
@@ -383,6 +456,7 @@ fn grounded_line_replacement(task: &str) -> Option<ComputedChange> {
             old: original,
             new: replacement,
             context: context.map(|(_, _, text)| text),
+            rebase: block.is_some_and(|block| !block.verbatim),
         },
     })
 }
@@ -426,15 +500,21 @@ impl ComputedChange {
     /// The file after the change, or `None` when it cannot apply.
     fn compute(&self, source: &str, missing: bool) -> Option<String> {
         match &self.computation {
-            Computation::EndInsertion { text, at_end } => {
-                Some(inserted_at_end(source, text, *at_end))
-            }
+            Computation::EndInsertion {
+                text,
+                at_end,
+                indentation,
+            } => Some(inserted_at_end(
+                source,
+                &appended_block(source, text, indentation.as_deref()),
+                *at_end,
+            )),
             Computation::Removal { text } => {
                 (!missing).then(|| removed_literal(source, text)).flatten()
             }
-            Computation::LineRemoval { text } => {
-                (!missing).then(|| removed_lines(source, text)).flatten()
-            }
+            Computation::LineRemoval { text, containing } => (!missing)
+                .then(|| removed_lines(source, text, *containing))
+                .flatten(),
             Computation::Setting { key, value, held } => (!missing)
                 .then(|| {
                     super::workspace_setting::assigned_setting(
@@ -446,9 +526,19 @@ impl ComputedChange {
                     )
                 })
                 .flatten(),
-            Computation::LineReplacement { old, new, context } => (!missing)
+            Computation::LineReplacement {
+                old,
+                new,
+                context,
+                rebase,
+            } => (!missing)
                 .then(|| {
-                    super::workspace_setting::replaced_lines(source, old, new, context.as_deref())
+                    let new = if *rebase {
+                        super::positional_edit::rebased_block(new, line_indentation(source, old))
+                    } else {
+                        new.clone()
+                    };
+                    super::workspace_setting::replaced_lines(source, old, &new, context.as_deref())
                 })
                 .flatten(),
             Computation::TypoFix { word, correction } => (!missing)
@@ -462,6 +552,16 @@ impl ComputedChange {
                 .then(|| removed_declarations(source, names).map(|(updated, _)| updated))
                 .flatten(),
             Computation::Line(operation) => (!missing).then(|| operation.compute(source)).flatten(),
+            Computation::Section {
+                heading,
+                text,
+                at_end,
+            } => (!missing)
+                .then(|| {
+                    super::markdown_section::inserted_in_section(source, heading, text, *at_end)
+                })
+                .flatten()
+                .map(|(updated, _)| updated),
         }
     }
 
@@ -488,12 +588,42 @@ impl ComputedChange {
             | Computation::Setting { .. }
             | Computation::TypoFix { .. }
             | Computation::DeclarationRemoval { .. }
-            | Computation::Line(_) => changed_lines_edit(source, updated),
+            | Computation::Line(_)
+            | Computation::Section { .. } => changed_lines_edit(source, updated),
         }
     }
 }
 
 /// The file after the insertion; a file without a final newline keeps none.
+/// Lines under an append request, at the indentation they were given.
+///
+/// Only when the file already has lines indented exactly so (a `.lino` table
+/// appended among its siblings); else at the file's top level, since the
+/// indentation of lines written under a request is otherwise only its layout
+/// (PR #1188 G16).
+fn appended_block(source: &str, text: &str, indentation: Option<&str>) -> String {
+    match indentation {
+        Some(indentation)
+            if !indentation.is_empty()
+                && source.split('\n').any(|line| {
+                    !line.trim().is_empty()
+                        && super::positional_edit::leading_indentation(line) == indentation
+                }) =>
+        {
+            super::positional_edit::rebased_block(text, indentation)
+        }
+        _ => text.to_owned(),
+    }
+}
+
+/// The indentation of the first line that is `text` but for its indentation.
+fn line_indentation<'a>(source: &'a str, text: &str) -> &'a str {
+    source
+        .split('\n')
+        .find(|line| line.trim() == text.trim())
+        .map_or("", super::positional_edit::leading_indentation)
+}
+
 fn inserted_at_end(source: &str, text: &str, at_end: bool) -> String {
     if source.is_empty() {
         [text, "\n"].concat()
@@ -548,11 +678,11 @@ impl ComputedChange {
     /// only contained the payload are reported as lines, with their count;
     /// every other change keeps its own intent and slots.
     fn reported(&self, source: &str) -> (&'static str, Vec<(&'static str, String)>) {
-        if let Computation::LineRemoval { text } = &self.computation {
-            let removed: Vec<&str> = source
-                .split_inclusive('\n')
-                .map(bare_line)
-                .filter(|line| line.contains(text.as_str()))
+        if let Computation::LineRemoval { text, containing } = &self.computation {
+            let lines: Vec<&str> = source.split_inclusive('\n').map(bare_line).collect();
+            let removed: Vec<&str> = removed_line_indices(source, text, *containing)
+                .into_iter()
+                .map(|index| lines[index])
                 .collect();
             if removed.iter().any(|line| line != text) {
                 return (
@@ -563,6 +693,19 @@ impl ComputedChange {
                     ],
                 );
             }
+        }
+        if let Computation::Section {
+            heading,
+            text,
+            at_end,
+        } = &self.computation
+            && let Some((_, follows)) =
+                super::markdown_section::inserted_in_section(source, heading, text, *at_end)
+        {
+            return (
+                self.intent,
+                vec![("{new}", text.clone()), ("{anchor}", follows)],
+            );
         }
         if let Computation::DeclarationRemoval { names } = &self.computation
             && let Some((_, declared)) = removed_declarations(source, names)
@@ -576,185 +719,6 @@ impl ComputedChange {
         }
         (self.intent, self.slots.clone())
     }
-}
-
-/// `source` without the function each of `names` declares, and the names that
-/// were declared; `None` when none is. A name declared zero or several times
-/// is left alone; a block left between two blank lines takes one of them with
-/// it, and a block that ended the file the blank line before it (mirrors
-/// `removedDeclarations`).
-fn removed_declarations(source: &str, names: &[String]) -> Option<(String, Vec<String>)> {
-    let lines: Vec<&str> = source.split_inclusive('\n').collect();
-    let keywords = seed::lexicon().words_for_role("function_declaration_keyword");
-    let mut removed = std::collections::BTreeSet::new();
-    let mut declared = Vec::new();
-    for name in names {
-        let headers: Vec<usize> = lines
-            .iter()
-            .enumerate()
-            .filter(|(_, line)| declares_function(line, name, &keywords))
-            .map(|(index, _)| index)
-            .collect();
-        let [header] = headers.as_slice() else {
-            continue;
-        };
-        let Some((start, end)) = declaration_span(&lines, *header) else {
-            continue;
-        };
-        removed.extend(start..=end);
-        declared.push(name.clone());
-    }
-    if declared.is_empty() {
-        return None;
-    }
-    let blank = |index: usize| lines.get(index).is_some_and(|line| line.trim().is_empty());
-    for index in removed.clone() {
-        let next = index + 1;
-        if removed.contains(&next) {
-            continue;
-        }
-        let mut start = index;
-        while start > 0 && removed.contains(&(start - 1)) {
-            start -= 1;
-        }
-        if next == lines.len() {
-            // A block that ended the file takes the blank line before it.
-            if start > 0 && blank(start - 1) {
-                removed.insert(start - 1);
-            }
-        } else if blank(next) && (start == 0 || blank(start - 1)) {
-            removed.insert(next);
-        }
-    }
-    let kept: String = lines
-        .iter()
-        .enumerate()
-        .filter(|(index, _)| !removed.contains(index))
-        .map(|(_, line)| *line)
-        .collect();
-    Some((kept, declared))
-}
-
-/// A seeded `function_declaration_keyword`, then `name`, then `(` or `<`
-/// (mirrors `declaresFunction`). The line is read as identifier runs and
-/// single other characters, so `fn name (` and `function name<T>(` both count.
-fn declares_function(line: &str, name: &str, keywords: &[String]) -> bool {
-    let is_identifier =
-        |character: char| character.is_ascii_alphanumeric() || "_$".contains(character);
-    let mut words: Vec<&str> = Vec::new();
-    let mut run: Option<usize> = None;
-    for (index, character) in line.char_indices() {
-        if is_identifier(character) {
-            if run.is_none() {
-                run = Some(index);
-            }
-            continue;
-        }
-        if let Some(from) = run.take() {
-            words.push(&line[from..index]);
-        }
-        words.push(&line[index..index + character.len_utf8()]);
-    }
-    if let Some(from) = run {
-        words.push(&line[from..]);
-    }
-    let skip_blank = |mut at: usize| {
-        while words.get(at).is_some_and(|word| word.trim().is_empty()) {
-            at += 1;
-        }
-        at
-    };
-    words.iter().enumerate().any(|(index, word)| {
-        if !keywords.iter().any(|keyword| keyword == word) {
-            return false;
-        }
-        let at = skip_blank(index + 1);
-        if words.get(at) != Some(&name) {
-            return false;
-        }
-        matches!(words.get(skip_blank(at + 1)), Some(&("(" | "<")))
-    })
-}
-
-/// The first and last line of the declaration whose header is line `header`,
-/// with the comment and attribute lines directly above it (mirrors
-/// `declarationSpan`). A braced body ends at the first later line that closes
-/// at the header's indentation; an indented body (a header ending in `:`) at
-/// the last line indented deeper.
-fn declaration_span(lines: &[&str], header: usize) -> Option<(usize, usize)> {
-    let indent = |line: &str| line.len() - line.trim_start_matches([' ', '\t']).len();
-    let header_line = bare_line(lines[header]);
-    let depth = indent(header_line);
-    let closing = header_line.trim_end();
-    let end = if closing.ends_with(['}', ';']) {
-        header
-    } else if closing.ends_with(':') {
-        let mut end = header;
-        for (index, line) in lines.iter().copied().enumerate().skip(header + 1) {
-            if line.trim().is_empty() {
-                continue;
-            }
-            if indent(line) <= depth {
-                break;
-            }
-            end = index;
-        }
-        end
-    } else {
-        (header + 1..lines.len())
-            .find(|index| indent(lines[*index]) == depth && lines[*index].trim().starts_with('}'))?
-    };
-    let opens_comment = |line: &str| line.trim().starts_with("/*");
-    let mut start = header;
-    while start > 0 {
-        let above = lines[start - 1].trim();
-        if above.ends_with("*/") {
-            let mut open = start - 1;
-            while open > 0 && !opens_comment(lines[open]) {
-                open -= 1;
-            }
-            if !opens_comment(lines[open]) {
-                break;
-            }
-            start = open;
-        } else if ["//", "#[", "@"].iter().any(|lead| above.starts_with(lead)) {
-            start -= 1;
-        } else {
-            break;
-        }
-    }
-    Some((start, end))
-}
-
-/// A line without its `\n` or `\r\n` ending.
-fn bare_line(line: &str) -> &str {
-    line.strip_suffix('\n')
-        .map_or(line, |body| body.strip_suffix('\r').unwrap_or(body))
-}
-
-/// `source` without every line containing `text`; `None` when none does.
-fn removed_lines(source: &str, text: &str) -> Option<String> {
-    let kept: String = source
-        .split_inclusive('\n')
-        .filter(|line| !line.contains(text))
-        .collect();
-    (kept != source).then_some(kept)
-}
-
-fn removed_literal(source: &str, text: &str) -> Option<String> {
-    let kept: String = source
-        .split_inclusive('\n')
-        .filter(|line| {
-            let bare = line
-                .strip_suffix('\n')
-                .map_or(*line, |body| body.strip_suffix('\r').unwrap_or(body));
-            bare != text
-        })
-        .collect();
-    if kept != source {
-        return Some(kept);
-    }
-    (source.matches(text).count() == 1).then(|| source.replacen(text, "", 1))
 }
 
 /// Read, compute, edit (or write), check the digest, state the change.

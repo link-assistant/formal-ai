@@ -13,12 +13,12 @@ js_rust_translation
   upstream link-foundation/meta-language
   commit 679a3b3c3c56177b8df1ad82672690c6e9889aeb
   modules 128
-  translated_items 243
+  translated_items 249
   inferred_signatures 2
-  carried_items 2108
-  translated_modules 78
+  carried_items 2120
+  translated_modules 79
   fully_translated_modules 1
-  refused_modules 50
+  refused_modules 49
 module js/agentic/crate/algorithm_discovery.mjs translated 6 inferred 0 carried 40
 module js/agentic/crate/associative_persistence.mjs translated 1 inferred 0 carried 7
 module js/agentic/crate/calculation.mjs translated 0 inferred 0 carried 2
@@ -70,7 +70,7 @@ module js/agentic/crate/meta_frame.mjs translated 5 inferred 0 carried 47
 module js/agentic/crate/meta_translate.mjs translated 0 inferred 0 carried 6
 module js/agentic/crate/method_registry.mjs translated 9 inferred 0 carried 21
 module js/agentic/crate/needs.mjs translated 1 inferred 0 carried 8
-module js/agentic/crate/normal_markov.mjs translated 1 inferred 0 carried 11
+module js/agentic/crate/normal_markov.mjs translated 1 inferred 0 carried 13
 module js/agentic/crate/obligation_ledger.mjs translated 0 inferred 0 carried 36
 module js/agentic/crate/orchestration_analysis.mjs translated 2 inferred 0 carried 25
 module js/agentic/crate/orchestration_attribution.mjs translated 5 inferred 0 carried 13
@@ -90,7 +90,7 @@ module js/agentic/crate/protocol_responses_apply_patch.mjs translated 3 inferred
 module js/agentic/crate/rebuild_plan.mjs translated 0 inferred 0 carried 12
 module js/agentic/crate/recursive_execution.mjs translated 1 inferred 0 carried 13
 module js/agentic/crate/relative_meta_logic.mjs translated 2 inferred 0 carried 21
-module js/agentic/crate/repository_workspace.mjs translated 0 inferred 0 carried 4
+module js/agentic/crate/repository_workspace.mjs translated 6 inferred 0 carried 14
 module js/agentic/crate/rule_interpreter.mjs translated 0 inferred 0 carried 5
 module js/agentic/crate/rust_ast_census.mjs translated 0 inferred 0 carried 4
 module js/agentic/crate/rust_str.mjs translated 1 inferred 0 carried 46
@@ -148,25 +148,25 @@ module js/worker/formal_ai_worker_meta_composite.js translated 0 inferred 0 carr
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 inferred 0 carried 25
 refusal "import { … }" 405
-refusal "JSDoc type {…}" 196
+refusal "JSDoc type {…}" 198
 refusal "null" 162
-refusal "type: unknown name (a sibling item or an import)" 113
+refusal "type: unknown name (a sibling item or an import)" 114
 refusal "arrow function" 96
-refusal "function value …" 94
+refusal "function value …" 95
 refusal "object without a $ tag" 77
 refusal "new expression" 74
-refusal "method call .find()" 57
+refusal "method call .find()" 59
+refusal "method call .split()" 53
 refusal "regular expression" 52
-refusal "method call .split()" 51
-refusal "method call .map()" 47
-refusal "method call .filter()" 43
+refusal "method call .map()" 48
+refusal "method call .filter()" 44
 refusal "method call .some()" 42
 refusal "Array.from" 40
 refusal "method call .slice()" 40
 refusal "method call .push()" 34
 refusal "field access" 32
-refusal "method call .indexOf()" 26
-refusal "nullish coalescing" 25
+refusal "method call .indexOf()" 27
+refusal "nullish coalescing" 26
 refusal "method call .replace()" 23
 refusal "optional chaining" 19
 refusal "case test" 18

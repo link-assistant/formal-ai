@@ -759,6 +759,15 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
     if let Some(edit) = super::positional_edit::compose_positional_insert(request) {
         return Some(edit);
     }
+    // `Replace the line 'x' with these three lines in f:` followed by lines: a
+    // new clause that only describes lines (the seeded `line` meaning,
+    // unquoted) stands for the lines under the request (PR #1188 G22).
+    if let Some(block) = super::positional_edit::introduced_block(request)
+        && let Some((target, old, new)) = compose_edit_request(block.head)
+        && describes_lines(block.head, &new)
+    {
+        return Some((target, old, block.text));
+    }
     let toks = tokens(request);
     let action_cues = bare_surfaces(seed::ROLE_FILE_EDIT_ACTION_CUE);
     let new_leads = bare_surfaces(seed::ROLE_FILE_EDIT_NEW_LEAD_CUE);
@@ -868,7 +877,30 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
     let new_span = request.get(new_lead.end..new_end)?;
     let old = super::positional_edit::literal_text(old_span)?;
     let new = super::positional_edit::literal_text(new_span)?;
-    Some((target, old, new))
+    // `Rename the file m.py to math_utils.py`: an unquoted new name that is a
+    // workspace path renames the file itself, which is no edit of its bytes
+    // (PR #1188 G24); the shell intents carry it.
+    // Quoted, the new path renames the file too when the old clause quotes
+    // nothing (`Rename the file 'a.txt' to 'b.txt'`, G37).
+    let renamed_file = (crate::normal_markov::quoted_segment_spans(new_span).is_empty()
+        || crate::normal_markov::quoted_segment_spans(old_span).is_empty())
+        && looks_like_file_path(clean_path_token(new_span.trim()))
+        && seed::lexicon().mentions_role(
+            seed::ROLE_CODING_IDENTIFIER_RENAME_ACTION,
+            &request.to_lowercase(),
+        );
+    (!renamed_file).then_some((target, old, new))
+}
+
+/// Whether a clause `text` of `head` is no quoted literal but words naming
+/// lines (`these three lines`, `the following lines`, `эти строки`).
+fn describes_lines(head: &str, text: &str) -> bool {
+    !crate::normal_markov::quoted_segment_spans(head)
+        .iter()
+        .any(|segment| segment.text == text)
+        && seed::lexicon().meaning("line").is_some_and(|meaning| {
+            meaning.evidenced_in(&crate::engine::normalize_prompt(text).to_lowercase())
+        })
 }
 
 /// Whether the payload starting at `from` is a block that outlives its first line.

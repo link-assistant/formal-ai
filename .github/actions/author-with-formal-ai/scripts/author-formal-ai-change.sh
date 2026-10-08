@@ -3,7 +3,8 @@
 #
 # Issue #1085 (D2.3). The heavy lifting is in
 # `author-change-with-formal-ai.sh`, which ships beside this script; this one
-# only turns the issue's contract into its arguments.
+# only turns the issue's contract into its arguments. It is the one caller that
+# lands the commit, so it passes `--commit`: the wrapper refuses otherwise.
 set -euo pipefail
 
 contains=()
@@ -35,7 +36,7 @@ fi
 
 AGENT=agent PORT="${PORT:-8931}" BIN="$PWD/target/release/formal-ai" \
   FORMAL_AI_REPO_ROOT="$PWD" \
-  "$RUNNER_TEMP/author-change-with-formal-ai.sh" \
+  "$RUNNER_TEMP/author-change-with-formal-ai.sh" --commit \
   --task "$TASK" --seed "$SEED" ${artifacts[@]+"${artifacts[@]}"} \
   --evidence "$EVIDENCE" --pull-request "$PULL_REQUEST" \
   --message "$MESSAGE (#$NUMBER)" ${contains[@]+"${contains[@]}"}

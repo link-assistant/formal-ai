@@ -14,6 +14,7 @@ pub mod diff;
 pub mod edit;
 pub mod locate;
 pub mod outcome;
+pub mod trace;
 pub mod verify;
 pub mod world_model;
 
@@ -63,6 +64,9 @@ const PROTOCOL_LINO: &str =
 
 /// Record type of one protocol step.
 const RECORD_STEP: &str = "meta_step";
+
+/// The `editor` value of a step every caller runs.
+const STEP_EDITOR_ANY: &str = "any";
 
 /// The header the regenerated document carries, so a deleted document is
 /// rediscovered to the same content id rather than to a near-miss.
@@ -266,12 +270,23 @@ impl RepositoryWorkspace {
 pub struct ProtocolStep {
     /// Position in the protocol, 1-based and contiguous.
     pub order: usize,
-    /// `clone | locate | read | edit | verify | diff`.
+    /// The stage id the document declares (`clone`, `locate`, `serve`, …).
     pub id: String,
     /// What must hold before the step runs.
     pub precondition: Vec<String>,
     /// What must be observed after it.
     pub postcondition: Vec<String>,
+    /// Which editor the step belongs to: `any`, or one editor id.
+    pub editor: String,
+}
+
+impl ProtocolStep {
+    /// Whether `editor` runs this step: a step declared for `any` editor runs
+    /// for every caller, a step declared for one editor only for that one.
+    #[must_use]
+    pub fn applies_to(&self, editor: &str) -> bool {
+        self.editor.is_empty() || self.editor == STEP_EDITOR_ANY || self.editor == editor
+    }
 }
 
 /// What a repository task is, independent of where it came from.
@@ -356,6 +371,7 @@ impl WorkspaceProtocol {
             .map(|node| ProtocolStep {
                 order: node.find_child_value("order").parse().unwrap_or_default(),
                 id: node.find_child_value("id").to_owned(),
+                editor: node.find_child_value("editor").to_owned(),
                 precondition: vec![node.find_child_value("precondition").to_owned()],
                 postcondition: vec![node.find_child_value("postcondition").to_owned()],
             })
@@ -391,6 +407,15 @@ impl WorkspaceProtocol {
         workspace: &mut RepositoryWorkspace,
         task: &RepositoryTask,
     ) -> ProtocolOutcome {
+        // Steps another editor owns (spawning the server an Agent CLI session
+        // talks to, harvesting its session id) are data for that caller and
+        // are neither planned nor run here.
+        let steps: Vec<ProtocolStep> = self
+            .steps
+            .iter()
+            .filter(|step| step.applies_to(trace::EDITOR_STRUCTURAL))
+            .cloned()
+            .collect();
         let mut outcome = ProtocolOutcome {
             located: Vec::new(),
             edited: Vec::new(),
@@ -398,10 +423,10 @@ impl WorkspaceProtocol {
             diff: String::new(),
             stopped_at: None,
             open: Vec::new(),
-            need_ledger: protocol_ledger(&self.steps, task),
+            need_ledger: protocol_ledger(&steps, task),
         };
 
-        for step in &self.steps {
+        for step in &steps {
             match step.id.as_str() {
                 "clone" => match clone::observed_head(workspace.root()) {
                     Some(head) if head == task.clone.base_commit => {
@@ -627,6 +652,7 @@ impl WorkspaceProtocol {
             let _ = writeln!(out, "  record_type \"{RECORD_STEP}\"");
             let _ = writeln!(out, "  order \"{}\"", step.order);
             let _ = writeln!(out, "  id \"{}\"", step.id);
+            let _ = writeln!(out, "  editor \"{}\"", step.editor);
             let _ = writeln!(out, "  detail \"{}\"", node.find_child_value("detail"));
             let _ = writeln!(out, "  precondition \"{}\"", step.precondition.join(" "));
             let _ = writeln!(out, "  postcondition \"{}\"", step.postcondition.join(" "));

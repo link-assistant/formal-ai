@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { debugSessionCall, loadMermaid, pausedEventIndex, pollDebugger, renderMermaid, stagePanes } from "../debugger-client.js";
 import { withAssetVersion } from "./app-constants.jsx";
 
+const { createElement: h, Fragment } = React;
+
 // The five-pane debugger (issue #667, R383; docs/vscode/debugger.md). Polling,
 // the debug-session client, the event-to-pane projection and the Mermaid
 // renderer live in js/debugger-client.js; selection is presentation only.

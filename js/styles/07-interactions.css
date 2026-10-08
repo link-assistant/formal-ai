@@ -215,6 +215,9 @@
 .context-panel :focus-visible { scroll-margin-block: 12px; }
 
 /* Issue #667: four projections remain readable as panes collapse on mobile. */
+/* The debugger sits above the messages: its own row, so the messages keep the
+   scrolling 1fr row and the composer stays last (R383). */
+.chat-panel:has(> .debugger-view) { grid-template-rows: auto minmax(0, 1fr) auto; }
 .debugger-view { min-height: 0; max-height: 50vh; overflow: auto; border-block-end: 1px solid var(--fa-border-subtle, #bbb); padding: 12px; }
 .debugger-view header { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
 .debugger-panes { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }

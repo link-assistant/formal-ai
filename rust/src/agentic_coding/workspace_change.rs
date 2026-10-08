@@ -7,7 +7,7 @@
 //! source creation with a second module-registration edit, so a multi-file
 //! request cannot stop after its first observable effect.
 
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 use std::path::Path;
 
 use super::code_artifact::source_from_read_result;
@@ -17,7 +17,7 @@ use super::code_task::{
 use super::general_planner::compose_edit_request;
 use super::intent_router::edit_arguments;
 use super::planner::{
-    plan_one, tool_capability, tool_for, write_arguments, AgenticPlan, Capability,
+    AgenticPlan, Capability, plan_one, tool_capability, tool_for, write_arguments,
 };
 use super::positional_edit::PositionalInsert;
 use crate::normal_markov::{quoted_segments, unwrap_transport_quotes};
@@ -44,6 +44,9 @@ struct GroundedRewrite {
     /// The seed sentence that states the change, when it is not the
     /// rename/replace one (a positional insertion's).
     stated: Option<(&'static str, Vec<(&'static str, String)>)>,
+    /// The pattern and replacement as the request wrote them, when it wrote
+    /// `\n` / `\t` escapes the rewrite unescaped (see [`as_written`]).
+    verbatim: Option<(String, String)>,
 }
 
 /// The template slots the seed sentences that state a rewrite fill.
@@ -107,6 +110,17 @@ pub(super) fn plan_workspace_change_step(
     // (issue #1138): slicing at the last user message -- the cue itself --
     // restarted the read--write pair on every ping.
     let current_turn = &messages[super::planner::evidence_window_start(messages)..];
+    // `Append the contents of a.txt to b.txt`: the source is read, and the
+    // request is restated with its lines as the block placed (PR #1188 G50).
+    let sourced = match sourced_request(task, current_turn) {
+        Some(Sourced::Read(path)) => {
+            let tool = tool_for(tool_names, Capability::Read)?;
+            return Some(plan_one(tool, read_arguments(&path)));
+        }
+        Some(Sourced::Task(sourced)) => Some(sourced),
+        None => None,
+    };
+    let task = sourced.as_deref().unwrap_or(task);
 
     if let Some(change) = composite_module_change(task) {
         return plan_composite_step(task, current_turn, tool_names, &change);
@@ -137,6 +151,36 @@ pub(super) fn plan_workspace_change_step(
         tool_names,
         &change,
     )
+}
+
+/// A request whose additive edit places another file's contents: the source
+/// to read first, or the request restated with its lines.
+enum Sourced {
+    Read(String),
+    Task(String),
+}
+
+/// `None` unless the request names a contents source and, restated, is an
+/// additive edit the composers place.
+fn sourced_request(task: &str, current_turn: &[ChatMessage]) -> Option<Sourced> {
+    use super::contents_source::{contents_source, with_contents};
+    let source = contents_source(task)?;
+    let probe = with_contents(task, &source, "x");
+    if insert_sequence(&probe).is_none()
+        && super::workspace_computed_change::grounded_end_insertion(&probe).is_none()
+    {
+        return None;
+    }
+    let Some(read) = result_for_path(current_turn, Capability::Read, &source.path, None) else {
+        return Some(Sourced::Read(source.path));
+    };
+    if super::code_artifact::source_from_agent_read_result(&read).is_none()
+        && super::tool_result::failure_message(&read, false, true).is_some()
+    {
+        return None;
+    }
+    let contents = source_from_read_result(&read);
+    Some(Sourced::Task(with_contents(task, &source, &contents)))
 }
 
 /// Whether `answer` is one of this module's seeded verification-failure
@@ -184,6 +228,8 @@ fn plan_rewrite_step(
         return Some(plan_one(tool, read_arguments(&rewrite.target)));
     };
     let source = source_from_read_result(&read);
+    let written = as_written(&source, rewrite);
+    let rewrite = written.as_ref().unwrap_or(rewrite);
     let Some(updated) = rewritten_source(&source, rewrite) else {
         return Some(AgenticPlan::Final(render_seeded_outcome(
             "coding_workspace_verification_failed",
@@ -227,22 +273,23 @@ fn plan_rewrite_step(
         }
     } else if tool_for(tool_names, Capability::Edit).is_some()
         && let Some(command) = repeated_identifier_rewrite_command(rewrite)
-            && let Some(tool) = tool_for(tool_names, Capability::Run) {
-                if result_for_command(current_turn, &command).is_none() {
-                    return Some(plan_one(tool, json!({"command": command}).to_string()));
-                }
-                return plan_digest_verification(
-                    task,
-                    current_turn,
-                    tool_names,
-                    &VerifiedChange {
-                        target: &rewrite.target,
-                        expected: &updated,
-                        intent: rewrite.stated_intent(),
-                        slots: &rewrite.stated_slots(),
-                    },
-                );
-            }
+        && let Some(tool) = tool_for(tool_names, Capability::Run)
+    {
+        if result_for_command(current_turn, &command).is_none() {
+            return Some(plan_one(tool, json!({"command": command}).to_string()));
+        }
+        return plan_digest_verification(
+            task,
+            current_turn,
+            tool_names,
+            &VerifiedChange {
+                target: &rewrite.target,
+                expected: &updated,
+                intent: rewrite.stated_intent(),
+                slots: &rewrite.stated_slots(),
+            },
+        );
+    }
 
     if result_for_path(
         current_turn,
@@ -334,25 +381,26 @@ fn plan_composite_step(
     }
 
     if let Some((old, new)) = compact_registration_edit(&current, &change.registration)
-        && let Some(tool) = tool_for(tool_names, Capability::Edit) {
-            if result_for_edit(current_turn, &change.registration_path, &old, &new).is_none() {
-                return Some(plan_one(
-                    tool,
-                    edit_arguments(&change.registration_path, &old, &new),
-                ));
-            }
-            return plan_digest_verification(
-                task,
-                current_turn,
-                tool_names,
-                &VerifiedChange {
-                    target: &change.registration_path,
-                    expected: &updated,
-                    intent: "coding_member_inserted",
-                    slots: &[("{members}", &registered)],
-                },
-            );
+        && let Some(tool) = tool_for(tool_names, Capability::Edit)
+    {
+        if result_for_edit(current_turn, &change.registration_path, &old, &new).is_none() {
+            return Some(plan_one(
+                tool,
+                edit_arguments(&change.registration_path, &old, &new),
+            ));
         }
+        return plan_digest_verification(
+            task,
+            current_turn,
+            tool_names,
+            &VerifiedChange {
+                target: &change.registration_path,
+                expected: &updated,
+                intent: "coding_member_inserted",
+                slots: &[("{members}", &registered)],
+            },
+        );
+    }
 
     if result_for_path(
         current_turn,
@@ -396,6 +444,22 @@ fn plan_composite_step(
 /// The file after `rewrite`, or `None` when it cannot apply. A positional
 /// insertion replaces its one anchor occurrence; an anchor found zero or
 /// several times does not say where the line goes.
+/// The rewrite as the request wrote it, when the file holds no unescaped
+/// pattern but holds the pattern as written (source code quoting `'\n'`,
+/// PR #1188 G65).
+fn as_written(source: &str, rewrite: &GroundedRewrite) -> Option<GroundedRewrite> {
+    let (pattern, replacement) = rewrite.verbatim.clone()?;
+    if source.contains(&rewrite.pattern) || !source.contains(&pattern) {
+        return None;
+    }
+    Some(GroundedRewrite {
+        pattern,
+        replacement,
+        verbatim: None,
+        ..rewrite.clone()
+    })
+}
+
 fn rewritten_source(source: &str, rewrite: &GroundedRewrite) -> Option<String> {
     if rewrite.unique {
         let (start, old, new) = anchored_lines(source, rewrite)?;
@@ -426,7 +490,9 @@ fn anchored_lines(source: &str, rewrite: &GroundedRewrite) -> Option<(usize, Str
     let end = if pattern.ends_with('\n') {
         tail - 1
     } else {
-        source[tail..].find('\n').map_or(source.len(), |newline| tail + newline)
+        source[tail..]
+            .find('\n')
+            .map_or(source.len(), |newline| tail + newline)
     };
     let old = &source[start..end];
     let new = replacement.strip_prefix(pattern).map_or_else(
@@ -457,14 +523,22 @@ pub(super) fn changed_lines_edit(source: &str, updated: &str) -> Option<(String,
     // therefore character -- boundaries even when the first or last differing
     // byte sits inside a multi-byte character.
     let bytes = source.as_bytes();
-    let start = bytes[..prefix]
-        .iter()
-        .rposition(|byte| *byte == b'\n')
-        .map_or(0, |at| at + 1);
+    let line_start = |before: usize| {
+        bytes[..before]
+            .iter()
+            .rposition(|byte| *byte == b'\n')
+            .map_or(0, |at| at + 1)
+    };
+    let mut start = line_start(prefix);
     let end = bytes[source.len() - suffix..]
         .iter()
         .position(|byte| *byte == b'\n')
         .map_or(source.len(), |at| source.len() - suffix + at);
+    // Lines inserted between two lines change none: the line above carries
+    // them.
+    if start == end && start > 0 {
+        start = line_start(start - 1);
+    }
     let old = &source[start..end];
     let new = &updated[start..updated.len() - (source.len() - end)];
     (!old.is_empty() && old.len() <= MAX_EDIT_BYTES && source.matches(old).count() == 1)
@@ -476,15 +550,13 @@ pub(super) fn changed_lines_edit(source: &str, updated: &str) -> Option<(String,
 fn grounded_positional_insert(task: &str) -> Option<GroundedRewrite> {
     let (target, anchor, replacement) = super::positional_edit::compose_positional_insert(task)?;
     let after_anchor = [anchor.as_str(), "\n"].concat();
-    let (intent, inserted) = if let Some(inserted) = replacement.strip_prefix(&after_anchor) {
-        ("file_edit_position_after", inserted.to_owned())
+    let (after, inserted) = if let Some(inserted) = replacement.strip_prefix(&after_anchor) {
+        (true, inserted.to_owned())
     } else {
         let before_anchor = ["\n", anchor.as_str()].concat();
-        (
-            "file_edit_position_before",
-            replacement.strip_suffix(&before_anchor)?.to_owned(),
-        )
+        (false, replacement.strip_suffix(&before_anchor)?.to_owned())
     };
+    let intent = super::positional_edit::insert_intent(after, &inserted);
     Some(GroundedRewrite {
         target,
         stated: Some((
@@ -496,16 +568,17 @@ fn grounded_positional_insert(task: &str) -> Option<GroundedRewrite> {
         scope: RewriteScope::Substring,
         renaming: false,
         unique: true,
+        verbatim: None,
     })
 }
 
-/// The inserts one anchored rewrite cannot carry.
+/// Every insert the request asks for, each its own anchored edit.
 ///
-/// Several clauses (`…, and insert …`), or an anchor named by the line it
-/// follows (T31, T34); `None` otherwise.
+/// Several clauses (`…, and insert …`), an anchor named by the line it
+/// follows (T31, T34), lines rebased on the anchor (G16), or one insert whose
+/// anchor is a whole line also found inside others (`the line 'b'`).
 fn insert_sequence(task: &str) -> Option<Vec<PositionalInsert>> {
-    let inserts = super::positional_edit::positional_inserts(task)?;
-    (inserts.len() > 1 || inserts.iter().any(|insert| insert.context.is_some())).then_some(inserts)
+    super::positional_edit::positional_inserts(task)
 }
 
 fn grounded_rewrite(task: &str) -> Option<GroundedRewrite> {
@@ -553,6 +626,13 @@ fn grounded_rewrite(task: &str) -> Option<GroundedRewrite> {
         None
     }?;
     let (old, new) = operands;
+    let as_quoted = |text: &str| {
+        quoted_segments(task)
+            .into_iter()
+            .find(|raw| raw != text && super::positional_edit::unescape_prose_newlines(raw) == text)
+            .unwrap_or_else(|| text.to_owned())
+    };
+    let verbatim = (as_quoted(&old) != old).then(|| (as_quoted(&old), as_quoted(&new)));
     // A rename names a *word*, so the edit is word-scoped whichever way the
     // request spelled its operands. Without that scope the most ordinary rename
     // there is -- giving a name a prefix or a suffix -- has to be refused, since
@@ -578,6 +658,7 @@ fn grounded_rewrite(task: &str) -> Option<GroundedRewrite> {
         renaming: renaming && scope == RewriteScope::Word,
         unique: false,
         stated: None,
+        verbatim,
     })
 }
 
@@ -672,10 +753,7 @@ fn repeated_identifier_rewrite_command(rewrite: &GroundedRewrite) -> Option<Stri
     // is the wrong home for a shell invocation. Naming the pieces says what
     // each is, and none of them reads as a sentence.
     let script = format!("'s/{pattern}/{}/g'", rewrite.replacement);
-    Some(
-        ["perl", "-pi", "-e", &script, "--", &rewrite.target]
-            .join(" "),
-    )
+    Some(["perl", "-pi", "-e", &script, "--", &rewrite.target].join(" "))
 }
 
 fn shell_safe_identifier(identifier: &str) -> bool {

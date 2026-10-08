@@ -353,6 +353,14 @@ pub fn try_translation(
     if !is_translation_request {
         return None;
     }
+    // A quantity between two units with no target language named is a unit
+    // conversion ("переведи 10 миль в километры", issue #1175 p324), as the
+    // browser twin `tryTranslation` declines it.
+    if target.is_none()
+        && handle_unit_conversion(prompt, normalized, &mut EventLog::new()).is_some()
+    {
+        return None;
+    }
 
     // Plan 16 L2g: a request that names a source-tree file (`js/app.js … to
     // typescript`) is the meta pivot's job, not the Wiktionary pipeline's.

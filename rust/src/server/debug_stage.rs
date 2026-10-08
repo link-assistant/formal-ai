@@ -1,9 +1,11 @@
 //! What a step-through debug session shows for one stage (issue #667, R383).
 //!
-//! The turn's recipe as Mermaid source with the stage highlighted, and the
-//! method-registry `path:symbol` source location — with its line and an
-//! excerpt — of the handler the turn's route resolves to, in the Rust and in
-//! the JavaScript runtime. The JavaScript twin is `js/server/debug-stage.mjs`.
+//! The turn's recipe as Mermaid source with the stage highlighted; the
+//! `path:symbol` source location — with its line and an excerpt — of the code
+//! that emits the stage, in the Rust and in the JavaScript runtime
+//! (`debug_stage_sources`); and, as a separate field, the method-registry
+//! method the turn's route resolves to with its handler in both runtimes. The
+//! JavaScript twin is `js/server/debug-stage.mjs`.
 //!
 //! Everything is derived from live data:
 //! - the method is [`MethodRegistry::method_for_route`] over the route the
@@ -14,15 +16,20 @@
 //! - the JavaScript symbol is the browser handler of
 //!   `data/seed/browser-handler-precedence.lino` named `try` + the method
 //!   (case and underscores aside), or the worker's `runHandlerRuleSet`;
+//! - a stage's emitter is the function `data/meta/debug-stage-sources.lino`
+//!   lists for the stage's `source_event` ([`stage_emitter`]);
 //! - each symbol is located by its definition line in the source tree. A
 //!   binary without its source tree records no location, never a guessed one.
 
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
-use std::sync::{Mutex, OnceLock, PoisonError};
+use std::sync::{Arc, Mutex, OnceLock, PoisonError};
 
 use serde_json::{Map, Value};
 
+use super::debug_stage_sources::{
+    StageSources, defines, read_stage_sources, read_text, stage_emitter, tree_files,
+};
 use crate::method_registry::MethodRegistry;
 use crate::thinking::ThinkingStep;
 
@@ -40,15 +47,10 @@ const RUST_RULE_RUNNER_SYMBOL: &str = "run_handler";
 const JS_RULE_RUNNER: &str = "runHandlerRuleSet";
 const BROWSER_HANDLER_PREFIX: &str = "try";
 const ROUTE_STEPS: [&str; 2] = ["formalize", "dispatch_handler"];
-const DEFINITION_MODIFIERS: [&str; 7] = [
-    "pub(crate) ",
-    "pub(super) ",
-    "pub ",
-    "export ",
-    "async ",
-    "const ",
-    "unsafe ",
-];
+const RUST: &str = "rust";
+const JS: &str = "js";
+const RUST_KEYWORD: &str = "fn";
+const JS_KEYWORD: &str = "function";
 /// The most lines an excerpt shows. Mirrors `EXCERPT_LINES`.
 pub const EXCERPT_LINES: usize = 40;
 const CURRENT_CLASS: &str = "current";
@@ -67,19 +69,27 @@ pub struct SourceLocation {
     pub excerpt: String,
 }
 
-/// The method a turn resolves to and where it is defined in each runtime.
+/// Where the code that emits one stage is defined in each runtime.
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct StageView {
+    /// The Rust emitter, when found.
+    pub rust: Option<SourceLocation>,
+    /// The JavaScript emitter, when found.
+    pub js: Option<SourceLocation>,
+}
+
+/// The method a turn resolves to, where its handler is defined in each
+/// runtime, and where each stage's emitter is.
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct TurnView {
     /// The registry method name, empty when the route resolves to none.
     pub method: String,
-    /// The Rust definition, when found.
+    /// The Rust handler definition, when found.
     pub rust: Option<SourceLocation>,
-    /// The JavaScript definition, when found.
+    /// The JavaScript handler definition, when found.
     pub js: Option<SourceLocation>,
-}
-
-fn read_text(root: &Path, relative: &str) -> String {
-    std::fs::read_to_string(root.join(relative)).unwrap_or_default()
+    /// One entry per stage of the turn, in order.
+    pub stages: Vec<StageView>,
 }
 
 /// Mirrors `seedHandlers`: the `  handler <name>` rows of a seed document.
@@ -112,47 +122,6 @@ fn dispatch_symbol(text: &str, method: &str) -> Option<String> {
             .trim();
         (!symbol.is_empty()).then(|| symbol.to_owned())
     })
-}
-
-/// Mirrors `defines`: whether `line` defines `symbol` with `keyword`.
-fn defines(line: &str, keyword: &str, symbol: &str) -> bool {
-    let mut rest = line.trim();
-    let mut stripped = true;
-    while stripped {
-        stripped = false;
-        for modifier in DEFINITION_MODIFIERS {
-            if let Some(after) = rest.strip_prefix(modifier) {
-                rest = after;
-                stripped = true;
-            }
-        }
-    }
-    let head = format!("{keyword} {symbol}");
-    rest.strip_prefix(&head)
-        .is_some_and(|after| after.starts_with('(') || after.starts_with('<'))
-}
-
-/// Mirrors `treeFiles`: the files under `relative` ending in `extension`, sorted.
-fn tree_files(root: &Path, relative: &str, extension: &str) -> Vec<String> {
-    let Ok(entries) = std::fs::read_dir(root.join(relative)) else {
-        return Vec::new();
-    };
-    let mut files: Vec<String> = entries
-        .flatten()
-        .flat_map(|entry| {
-            let name = entry.file_name().to_string_lossy().into_owned();
-            let child = format!("{relative}/{name}");
-            if entry.path().is_dir() {
-                tree_files(root, &child, extension)
-            } else if name.ends_with(extension) {
-                vec![child]
-            } else {
-                Vec::new()
-            }
-        })
-        .collect();
-    files.sort();
-    files
 }
 
 /// Mirrors `excerpt`: the definition through its closing brace, capped.
@@ -203,7 +172,7 @@ fn locate(
 #[must_use]
 pub fn rust_location(method: &str, root: &Path) -> Option<SourceLocation> {
     if let Some(symbol) = dispatch_symbol(&read_text(root, DISPATCH_TABLE), method) {
-        return locate(root, RUST_TREE, ".rs", "fn", &symbol);
+        return locate(root, RUST_TREE, ".rs", RUST_KEYWORD, &symbol);
     }
     if !seed_handlers(&read_text(root, RULES_SEED))
         .iter()
@@ -214,7 +183,7 @@ pub fn rust_location(method: &str, root: &Path) -> Option<SourceLocation> {
     locate_in(
         &read_text(root, RUST_RULE_RUNNER_PATH),
         RUST_RULE_RUNNER_PATH,
-        "fn",
+        RUST_KEYWORD,
         RUST_RULE_RUNNER_SYMBOL,
     )
 }
@@ -233,7 +202,7 @@ pub fn js_location(method: &str, root: &Path) -> Option<SourceLocation> {
             .any(|name| name == method)
             .then(|| JS_RULE_RUNNER.to_owned())
     })?;
-    locate(root, JS_TREE, ".js", "function", &symbol)
+    locate(root, JS_TREE, ".js", JS_KEYWORD, &symbol)
 }
 
 /// The registry method the turn's route resolves to. Mirrors `turnMethod`.
@@ -266,31 +235,97 @@ fn source_root() -> Option<PathBuf> {
 
 type Locations = (Option<SourceLocation>, Option<SourceLocation>);
 
-/// The method and both source locations of a turn, each location looked up
-/// once per process and method. Mirrors `describeTurn`.
-#[must_use]
-pub fn describe_turn(stages: &[ThinkingStep]) -> TurnView {
-    static CACHE: OnceLock<Mutex<HashMap<String, Locations>>> = OnceLock::new();
-    let method = turn_method(stages);
-    if method.is_empty() {
-        return TurnView::default();
-    }
-    let Some(root) = source_root() else {
-        return TurnView {
-            method,
-            ..TurnView::default()
-        };
-    };
-    let mut cache = CACHE
+/// One lookup per process and key.
+fn cached<T: Clone>(
+    cache: &'static OnceLock<Mutex<HashMap<String, T>>>,
+    key: String,
+    compute: impl FnOnce() -> T,
+) -> T {
+    let mut entries = cache
         .get_or_init(Mutex::default)
         .lock()
         .unwrap_or_else(PoisonError::into_inner);
-    let (rust, js) = cache
-        .entry(method.clone())
-        .or_insert_with(|| (rust_location(&method, &root), js_location(&method, &root)))
-        .clone();
-    drop(cache);
-    TurnView { method, rust, js }
+    let value = entries.entry(key).or_insert_with(compute).clone();
+    drop(entries);
+    value
+}
+
+/// Where the code that emits a stage of event `kind` is defined in
+/// `runtime`, given the routed handler's symbol there. Mirrors `stageLocation`.
+#[must_use]
+pub fn stage_location(
+    sources: &StageSources,
+    runtime: &str,
+    kind: &str,
+    handler: &str,
+    root: &Path,
+) -> Option<SourceLocation> {
+    let emitter = stage_emitter(sources, runtime, kind, handler, root)?;
+    let keyword = if runtime == RUST {
+        RUST_KEYWORD
+    } else {
+        JS_KEYWORD
+    };
+    locate_in(
+        &read_text(root, &emitter.path),
+        &emitter.path,
+        keyword,
+        &emitter.symbol,
+    )
+}
+
+/// The routed method with its handler in both runtimes, and for every stage
+/// the code that emits it in both runtimes. Each location is looked up once
+/// per process. Mirrors `describeTurn`.
+#[must_use]
+pub fn describe_turn(stages: &[ThinkingStep]) -> TurnView {
+    static HANDLERS: OnceLock<Mutex<HashMap<String, Locations>>> = OnceLock::new();
+    static SOURCES: OnceLock<Mutex<HashMap<String, Arc<StageSources>>>> = OnceLock::new();
+    static STAGES: OnceLock<Mutex<HashMap<String, Option<SourceLocation>>>> = OnceLock::new();
+    let method = turn_method(stages);
+    let Some(root) = source_root() else {
+        return TurnView {
+            method,
+            stages: vec![StageView::default(); stages.len()],
+            ..TurnView::default()
+        };
+    };
+    let base = root.display().to_string();
+    let (rust, js) = if method.is_empty() {
+        (None, None)
+    } else {
+        cached(&HANDLERS, format!("{base}\u{0}{method}"), || {
+            (rust_location(&method, &root), js_location(&method, &root))
+        })
+    };
+    let sources = cached(&SOURCES, base.clone(), || {
+        Arc::new(read_stage_sources(&root))
+    });
+    let at = |runtime: &str, kind: &str, handler: Option<&SourceLocation>| {
+        let handler = handler.map_or("", |found| found.symbol.as_str());
+        cached(
+            &STAGES,
+            format!("{base}\u{0}{runtime}\u{0}{kind}\u{0}{handler}"),
+            || {
+                (!kind.is_empty())
+                    .then(|| stage_location(&sources, runtime, kind, handler, &root))
+                    .flatten()
+            },
+        )
+    };
+    let views = stages
+        .iter()
+        .map(|stage| StageView {
+            rust: at(RUST, &stage.source_event, rust.as_ref()),
+            js: at(JS, &stage.source_event, js.as_ref()),
+        })
+        .collect();
+    TurnView {
+        method,
+        rust,
+        js,
+        stages: views,
+    }
 }
 
 /// Mirrors `label`: a Mermaid node label, quotes entity-escaped.

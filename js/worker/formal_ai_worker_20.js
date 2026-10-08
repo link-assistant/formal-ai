@@ -909,7 +909,7 @@ function workerHandlerRegistryDefinition() {
     formalization_request: "tryFormalizationRequest",
     product_search: "tryProductSearch",
     web_search: null, // phase async
-    learn_from_source: null, // phase async
+    learn_from_source: "tryLearnFromSource",
     research_comparison_table: "tryResearchComparisonTable",
     research_result_followup: "tryResearchResultFollowup",
     docs_method_explanation: "tryDocsMethodExplanation",

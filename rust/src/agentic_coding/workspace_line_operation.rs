@@ -21,6 +21,13 @@ use crate::seed;
 use crate::solver_handlers::text_outside_quoted_segments;
 
 /// A digit run longer than this is not a line number.
+/// The seed frames' slots, spelled so no literal reads as a format argument
+/// beside a binding of the same name.
+const LINES_SLOT: &str = concat!("{", "lines", "}");
+const OLD_SLOT: &str = concat!("{", "old", "}");
+const ANCHOR_SLOT: &str = concat!("{", "anchor", "}");
+const NEW_SLOT: &str = concat!("{", "new", "}");
+const LINE_SLOT: &str = concat!("{", "line", "}");
 const MAX_NUMBER_DIGITS: usize = 9;
 /// A file below this many lines is too short for "most of it" to mean anything.
 const MIN_GUARDED_LINES: usize = 8;
@@ -43,13 +50,20 @@ pub(super) enum Destination {
 /// A whole-line operation and the operands it needs.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(super) enum LineOperation {
-    /// Lines `first..=last` (one-based) go.
-    RangeRemoval { first: usize, last: usize },
-    /// `text` goes in as a line after (or before) line `line`.
+    /// Lines `first..=last` (one-based) go; `from_end` counts them from the
+    /// last line (1), so `first` is then the earlier line's count.
+    RangeRemoval {
+        first: usize,
+        last: usize,
+        from_end: bool,
+    },
+    /// `text` goes in as a line after (or before) line `line`, counted from
+    /// the last line when `from_end`.
     NumberedInsertion {
         line: usize,
         text: String,
         after: bool,
+        from_end: bool,
     },
     /// The line `anchor` names and the line directly above (or below) it go;
     /// a named `neighbour` must be that line.
@@ -268,6 +282,186 @@ fn numbered_lines(task: &str) -> Vec<(usize, usize)> {
     found
 }
 
+/// A line named by a seeded ordinal right before a seeded line noun.
+struct Ordinal {
+    /// The one-based count, from the start or (`from_end`) from the end.
+    value: usize,
+    from_end: bool,
+    /// The byte span of the ordinal and its noun in the lowered request.
+    start: usize,
+    end: usize,
+}
+
+/// A letter or digit outside the Han block, which a word boundary may not split.
+fn joins_word(character: Option<char>) -> bool {
+    character.is_some_and(|character| character.is_alphanumeric() && !is_han(character))
+}
+
+/// The one-based number a seeded line ordinal counts to: the digits its
+/// cardinal meaning (`defined-by one`) spells.
+fn ordinal_value(meaning: &seed::Meaning) -> Option<usize> {
+    let lexicon = seed::lexicon();
+    meaning.defined_by.iter().find_map(|slug| {
+        let cardinal = lexicon.meaning(slug)?;
+        if !cardinal.has_role("cardinal_number_word") {
+            return None;
+        }
+        cardinal
+            .words()
+            .filter(|text| {
+                !text.is_empty()
+                    && text.len() <= MAX_NUMBER_DIGITS
+                    && text.bytes().all(|byte| byte.is_ascii_digit())
+            })
+            .find_map(|text| text.parse().ok())
+    })
+}
+
+/// Every line the request names by a seeded ordinal before a line noun.
+///
+/// `the first line`, `последнюю строку`, `第一行`, `la última línea`; a
+/// `line_ordinal_last` ordinal counts from the end (PR #1188 G19).
+fn ordinal_lines(lowered: &str) -> Vec<Ordinal> {
+    let nouns: Vec<String> = role_words("numbered_line_noun")
+        .into_iter()
+        .filter(|noun| !noun.is_empty())
+        .collect();
+    let mut found = Vec::new();
+    for (role, from_end) in [("line_ordinal", false), ("line_ordinal_last", true)] {
+        for meaning in seed::lexicon().meanings_with_role(role) {
+            let Some(value) = ordinal_value(meaning) else {
+                continue;
+            };
+            for surface in meaning.words().map(str::to_lowercase) {
+                if surface.is_empty() {
+                    continue;
+                }
+                for (at, _) in lowered.match_indices(surface.as_str()) {
+                    if joins_word(lowered[..at].chars().next_back()) {
+                        continue;
+                    }
+                    let rest = &lowered[at + surface.len()..];
+                    let gap = rest.len() - rest.trim_start().len();
+                    if gap == 0 && joins_word(rest.chars().next()) {
+                        continue;
+                    }
+                    let noun = nouns.iter().find(|noun| {
+                        rest[gap..].starts_with(noun.as_str())
+                            && !joins_word(rest[gap + noun.len()..].chars().next())
+                    });
+                    if let Some(noun) = noun {
+                        found.push(Ordinal {
+                            value,
+                            from_end,
+                            start: at,
+                            end: at + surface.len() + gap + noun.len(),
+                        });
+                    }
+                }
+            }
+        }
+    }
+    found
+}
+
+/// Line `line` of a file of `count` lines, counted from its end when `from_end`.
+const fn resolved_line(line: usize, count: usize, from_end: bool) -> Option<usize> {
+    if from_end {
+        (count + 1).checked_sub(line)
+    } else {
+        Some(line)
+    }
+}
+
+/// The one run of lines a read request names (PR #1188 G33).
+///
+/// One-based and inclusive, counted from the end when `from_end`: a numbered
+/// line or range (`lines 2-3`), a seeded ordinal line (`the last line`), or a
+/// count between a seeded head or tail cue and a line noun (`the first 2
+/// lines`, `последние 2 строки`).
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(super) struct LineSlice {
+    pub(super) from: usize,
+    pub(super) to: usize,
+    pub(super) from_end: bool,
+}
+
+/// The [`LineSlice`] `task` names, if exactly one.
+pub(super) fn line_slice(task: &str) -> Option<LineSlice> {
+    let numbered = numbered_lines(task);
+    if let [(from, to)] = numbered.as_slice() {
+        return Some(LineSlice {
+            from: *from,
+            to: *to,
+            from_end: false,
+        });
+    }
+    if numbered.len() > 1 {
+        return None;
+    }
+    let outside = text_outside_quoted_segments(task).to_lowercase();
+    if let [ordinal] = ordinal_lines(&outside).as_slice() {
+        return Some(LineSlice {
+            from: ordinal.value,
+            to: ordinal.value,
+            from_end: ordinal.from_end,
+        });
+    }
+    let pieces = line_pieces(task);
+    let nouns = role_words("numbered_line_noun");
+    let (heads, tails) = (
+        role_words("line_slice_head_cue"),
+        role_words("line_slice_tail_cue"),
+    );
+    let mut slices = Vec::new();
+    for (index, piece) in pieces.iter().enumerate().skip(1) {
+        let Piece::Number(count) = *piece else {
+            continue;
+        };
+        if count == 0 || !is_word_in(&pieces, index + 1, &nouns) {
+            continue;
+        }
+        if is_word_in(&pieces, index - 1, &heads) {
+            slices.push(LineSlice {
+                from: 1,
+                to: count,
+                from_end: false,
+            });
+        } else if is_word_in(&pieces, index - 1, &tails) {
+            slices.push(LineSlice {
+                from: count,
+                to: 1,
+                from_end: true,
+            });
+        }
+    }
+    match slices.as_slice() {
+        [slice] => Some(*slice),
+        _ => None,
+    }
+}
+
+/// The lines of `source` a [`LineSlice`] names, with the file's own one-based
+/// numbers of the first and last, or `None` when the file has none of them.
+pub(super) fn sliced_lines(source: &str, slice: LineSlice) -> Option<(usize, usize, String)> {
+    let (lines, _) = file_lines(source);
+    let count = lines.len();
+    let first = if slice.from_end {
+        (count + 1).saturating_sub(slice.from).max(1)
+    } else {
+        slice.from
+    };
+    let last = count.min(if slice.from_end {
+        (count + 1).saturating_sub(slice.to)
+    } else {
+        slice.to
+    });
+    if first == 0 || first > last {
+        return None;
+    }
+    Some((first, last, lines[first - 1..last].join("\n")))
+}
+
 /// The file's lines without their `\n`, and whether it ended in one.
 fn file_lines(source: &str) -> (Vec<&str>, bool) {
     let trailing = source.ends_with('\n');
@@ -436,9 +630,14 @@ impl LineOperation {
     /// The file after the operation, or `None` when it cannot apply.
     pub(super) fn compute(&self, source: &str) -> Option<String> {
         match self {
-            Self::RangeRemoval { first, last } => removed_range(source, *first, *last),
-            Self::NumberedInsertion { line, text, after } => {
-                inserted_at_line(source, *line, text, *after)
+            Self::RangeRemoval { .. } | Self::NumberedInsertion { .. } => {
+                let (first, last) = self.resolved_lines(source)?;
+                match self {
+                    Self::NumberedInsertion { text, after, .. } => {
+                        inserted_at_line(source, first, text, *after)
+                    }
+                    _ => removed_range(source, first, last),
+                }
             }
             Self::AdjacentRemoval {
                 anchor,
@@ -463,6 +662,35 @@ impl LineOperation {
     /// The seed sentence for the lines actually removed, when the operation
     /// reports them from the file rather than from the request.
     pub(super) fn reported(&self, source: &str) -> Option<(&'static str, Slots)> {
+        match self {
+            Self::RangeRemoval { from_end: true, .. } => {
+                let (first, last) = self.resolved_lines(source)?;
+                let lines = if first == last {
+                    first.to_string()
+                } else {
+                    format!("{first}-{last}")
+                };
+                return Some(("numbered_lines_removed", vec![(LINES_SLOT, lines)]));
+            }
+            Self::NumberedInsertion {
+                text,
+                after,
+                from_end: true,
+                ..
+            } => {
+                let (line, _) = self.resolved_lines(source)?;
+                let intent = if *after {
+                    "numbered_line_insert_after"
+                } else {
+                    "numbered_line_insert_before"
+                };
+                return Some((
+                    intent,
+                    vec![(NEW_SLOT, text.clone()), (LINE_SLOT, line.to_string())],
+                ));
+            }
+            _ => {}
+        }
         let Self::AdjacentRemoval {
             anchor,
             neighbour,
@@ -474,7 +702,28 @@ impl LineOperation {
         let (lines, _) = file_lines(source);
         let (one, two) = adjacent_pair(&lines, anchor, neighbour.as_deref(), *above)?;
         let removed = [bare(lines[one.min(two)]), bare(lines[one.max(two)])];
-        Some(("coding_text_remove", vec![("{old}", removed.join("`, `"))]))
+        Some(("coding_text_remove", vec![(OLD_SLOT, removed.join("`, `"))]))
+    }
+}
+
+impl LineOperation {
+    /// The one-based lines a numbered operation names in `source`, earlier
+    /// first; `None` for any other operation or a count past the file.
+    fn resolved_lines(&self, source: &str) -> Option<(usize, usize)> {
+        let count = file_lines(source).0.len();
+        let (first, last, from_end) = match self {
+            Self::RangeRemoval {
+                first,
+                last,
+                from_end,
+            } => (*first, *last, *from_end),
+            Self::NumberedInsertion { line, from_end, .. } => (*line, *line, *from_end),
+            _ => return None,
+        };
+        Some((
+            resolved_line(first, count, from_end)?,
+            resolved_line(last, count, from_end)?,
+        ))
     }
 }
 
@@ -509,7 +758,7 @@ pub(super) fn grounded_line_operation(task: &str) -> Option<LineChange> {
                 second: second.clone(),
             },
             "lines_swapped",
-            vec![("{old}", first.clone()), ("{new}", second.clone())],
+            vec![(OLD_SLOT, first.clone()), (NEW_SLOT, second.clone())],
         );
     }
     if lexicon.mentions_role("line_move_action", &outside) {
@@ -518,21 +767,46 @@ pub(super) fn grounded_line_operation(task: &str) -> Option<LineChange> {
     }
     let removing = lexicon.mentions_role("coding_text_remove_action", &outside)
         && !lexicon.mentions_role("coding_member_add_action", &outside);
-    let above = either_of(&outside, "line_adjacent_above", "line_adjacent_below");
-    let numbered = numbered_lines(task);
+    // An ordinal's words are not an adjacency (`最后一行` holds `后一行`).
+    let mut unordinal = outside_text.to_lowercase();
+    let ordinals = ordinal_lines(&unordinal);
+    for ordinal in ordinals.iter().rev() {
+        unordinal.replace_range(ordinal.start..ordinal.end, " ");
+    }
+    let above = either_of(
+        &sentence_words(&unordinal),
+        "line_adjacent_above",
+        "line_adjacent_below",
+    );
+    let mut numbered: Vec<(usize, usize, bool)> = numbered_lines(task)
+        .into_iter()
+        .map(|(first, last)| (first, last, false))
+        .collect();
+    numbered.extend(
+        ordinals
+            .iter()
+            .map(|ordinal| (ordinal.value, ordinal.value, ordinal.from_end)),
+    );
     match numbered.as_slice() {
         [] => {}
-        [(first, last)] => {
+        [(first, last, from_end)] => {
+            let from_end = *from_end;
             if removing && payloads.is_empty() {
-                let from = if above == Some(true) {
-                    first.saturating_sub(1)
+                // Counted from the end, the earlier line has the larger count.
+                let (earlier, later) = if from_end {
+                    (*last, *first)
                 } else {
-                    *first
+                    (*first, *last)
                 };
-                let to = if above == Some(false) {
-                    last + 1
-                } else {
-                    *last
+                let from = match (above == Some(true), from_end) {
+                    (false, _) => earlier,
+                    (true, false) => earlier.saturating_sub(1),
+                    (true, true) => earlier + 1,
+                };
+                let to = match (above == Some(false), from_end) {
+                    (false, _) => later,
+                    (true, false) => later + 1,
+                    (true, true) => later.saturating_sub(1),
                 };
                 let lines = if from == to {
                     from.to_string()
@@ -543,9 +817,10 @@ pub(super) fn grounded_line_operation(task: &str) -> Option<LineChange> {
                     LineOperation::RangeRemoval {
                         first: from,
                         last: to,
+                        from_end,
                     },
                     "numbered_lines_removed",
-                    vec![("{lines}", lines)],
+                    vec![(LINES_SLOT, lines)],
                 );
             }
             let after = either_of(
@@ -565,13 +840,14 @@ pub(super) fn grounded_line_operation(task: &str) -> Option<LineChange> {
                     line: *first,
                     text: text.clone(),
                     after,
+                    from_end,
                 },
                 if after {
                     "numbered_line_insert_after"
                 } else {
                     "numbered_line_insert_before"
                 },
-                vec![("{new}", text), ("{line}", first.to_string())],
+                vec![(NEW_SLOT, text), (LINE_SLOT, first.to_string())],
             );
         }
         _ => return None,
@@ -595,7 +871,7 @@ pub(super) fn grounded_line_operation(task: &str) -> Option<LineChange> {
             above,
         },
         "coding_text_remove",
-        vec![("{old}", anchor)],
+        vec![(OLD_SLOT, anchor)],
     )
 }
 
@@ -624,7 +900,7 @@ fn moved(payloads: &[String], outside: &str) -> Option<(LineOperation, &'static 
                 } else {
                     "line_moved_end"
                 },
-                vec![("{old}", text.clone())],
+                vec![(OLD_SLOT, text.clone())],
             ))
         }
         [text, anchor] => {
@@ -648,7 +924,7 @@ fn moved(payloads: &[String], outside: &str) -> Option<(LineOperation, &'static 
                 } else {
                     "line_moved_before"
                 },
-                vec![("{old}", text.clone()), ("{anchor}", anchor.clone())],
+                vec![(OLD_SLOT, text.clone()), (ANCHOR_SLOT, anchor.clone())],
             ))
         }
         _ => None,

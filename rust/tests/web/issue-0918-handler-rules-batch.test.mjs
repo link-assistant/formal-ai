@@ -461,3 +461,129 @@ test("an event confirmation renders the seeded sentence and the seeded title cue
   const untitled = await solve("Book a review on Friday at 09:30");
   assert.ok(untitled.content.startsWith("Create event «Event» on "), untitled.content);
 });
+
+// Issue #918 (R918-2): the text_manipulation replacement cues are the text_*
+// tables of data/seed/handler-rules.lino. A cue that names its target after
+// it ("instead", "вместо") swaps the operands it sits between, so "X instead
+// of Y" replaces Y with X; the four replace verbs keep the quoted order. The
+// native twin pins the same answers in rust/tests/unit/issue_918_handler_rules_batch.rs.
+const TEXT_REPLACEMENTS = [
+  ["Write \"cat\" instead of \"dog\": the dog barks", "the cat barks"],
+  ["Use \"cat\" instead of \"dog\" in \"the dog barks\"", "the cat barks"],
+  ["In \"the dog barks\" write \"cat\" instead of \"dog\"", "the cat barks"],
+  ["Instead of \"dog\" use \"cat\": the dog barks", "the cat barks"],
+  ["Напиши «кот» вместо «пёс»: пёс лает", "кот лает"],
+  ["Вместо «пёс» используй «кот» в тексте «пёс лает»", "кот лает"],
+  ["Replace \"cat\" with \"dog\" in this text: \"cat sat with cat\"", "dog sat with dog"],
+  ["\"cat sat\": replace \"cat\" with \"dog\"", "dog sat"],
+  ["Замени «пёс» на «кот» в тексте «пёс лает»", "кот лает"],
+  ["पाठ 'कुत्ता भौंकता है' में 'कुत्ता' को 'बिल्ली' से बदलें", "बिल्ली भौंकता है"],
+  ["把文本「狗在叫」中的「狗」替换为「猫」", "猫在叫"],
+  ["Uppercase \"replace me\"", "REPLACE ME"],
+];
+
+test("text replacements read their cues and operand order from the seed tables", async () => {
+  for (const [prompt, expected] of TEXT_REPLACEMENTS) {
+    const response = await solve(prompt);
+    assert.equal(response.intent, "text_manipulation", prompt);
+    assert.equal(response.content, expected, prompt);
+  }
+  await ready;
+  const value = (name, key) => evaluate(worker, `handlerRulesTableValue(${JSON.stringify(name)}, ${JSON.stringify(key)})`);
+  assert.equal(value("text_replacement_cue", "instead"), "target_follows_cue");
+  assert.equal(value("text_replacement_cue", "замен"), "operands_in_order");
+  assert.equal(value("text_input_context_cue", "in"), "ends_with");
+});
+
+// Issue #918 (R918-2): document_originality_check reads its attachment
+// markers from the document_originality_marker table, its queries, sample
+// word limit and default target from the document_originality_check policy,
+// and its price-claim heading from seeded responses. The answers are the
+// ones the inline literals produced; the native twin pins the same strings.
+const ORIGINALITY_EN = "Workflow: read the supplied text, select stable passages, run exact web searches for those passages, then compare any found sources against the document for overlap, citations, and suspicious reuse. I will not claim a uniqueness percentage until matching sources are found and compared.";
+const ORIGINALITY_RU = "Рабочий план: прочитать приложенный текст, взять устойчивые фрагменты, выполнить веб-поиск точных совпадений по этим фрагментам, затем сравнить найденные источники с документом и отметить совпадения, цитирования и подозрительные заимствования. Я не буду объявлять процент уникальности без найденных источников и сопоставления текста.";
+const ORIGINALITY_HI = "योजना: संलग्न पाठ पढ़ना, स्थिर अंश चुनना, उन अंशों के सटीक मिलान के लिए वेब खोज करना, फिर मिले स्रोतों को दस्तावेज से मिलाकर overlap, citation और संदिग्ध copy को रिपोर्ट करना. स्रोतों से मिलान किए बिना uniqueness प्रतिशत घोषित नहीं किया जाएगा.";
+const ORIGINALITY_ZH = "计划：读取附件文本，抽取稳定片段，对这些片段做精确网页搜索，再把找到的来源与文档逐段比对，报告重合、引用和可疑借用。在没有来源匹配前，不会直接给出唯一性百分比。";
+const ETH_CLAIMS = "ETH in 2024: $1,700\nETH in 2021: $1,700";
+const ETH_CONTRADICTED = "- ETH in 2024: $1,700 is contradicted: Binance ETHUSDT daily klines reports ETH USDT daily candles in 2024 stayed between $2100.00 on 2024-01-03 and $4107.80 on 2024-12-16.";
+const ORIGINALITY_CASES = [
+  [
+    "Check this attached text for uniqueness and plagiarism\n\nAttached files:\n1. article.txt (text/plain, 12.0 KB)\nText excerpt: The tower opened in 1889 and remains a symbol of Paris.",
+    `Recognized an originality and plagiarism check for \`article.txt\`.\n\n${ORIGINALITY_EN}\n\nClient text sample: present.`,
+    "\"The tower opened in 1889 and remains a symbol of Paris.\" plagiarism originality",
+  ],
+  [
+    "Check this attached text for uniqueness and plagiarism\n\nAttached files:\n1. article.txt (text/plain, 12.0 KB)\nText omitted: the file is too large",
+    `Recognized an originality and plagiarism check for \`article.txt\`.\n\n${ORIGINALITY_EN}\n\nClient text sample: read from attachment.`,
+    "article.txt plagiarism originality uniqueness",
+  ],
+  [
+    "Check this text for plagiarism: The tower opened in 1889.",
+    `Recognized an originality and plagiarism check for \`provided text\`.\n\n${ORIGINALITY_EN}\n\nClient text sample: read from attachment.`,
+    "document plagiarism originality uniqueness",
+  ],
+  [
+    `Verify the authenticity and factual accuracy of this attached document\n\nAttached files:\n1. claim.txt (text/plain, 3.0 KB)\nOCR text: ${ETH_CLAIMS}`,
+    `Recognized an originality and plagiarism check for \`claim.txt\`.\n\n${ORIGINALITY_EN}\n\nClient text sample: present.\n\nPrice claim check:\n${ETH_CONTRADICTED}`,
+    "\"ETH in 2024: $1,700 ETH in 2021: $1,700\" plagiarism originality",
+  ],
+  [
+    `Проверь данный текст на уникальность и на плагиат\n\nAttached files:\n1. eth.txt (text/plain, 1.0 KB)\nText excerpt: ${ETH_CLAIMS}`,
+    `Распознал проверку текста на уникальность и плагиат для \`eth.txt\`.\n\n${ORIGINALITY_RU}\n\nТекстовый фрагмент от клиента: получен.\n\nПроверка ценовых утверждений:\n${ETH_CONTRADICTED}`,
+    "\"ETH in 2024: $1,700 ETH in 2021: $1,700\" plagiarism originality",
+  ],
+  [
+    `संलग्न पाठ की मौलिकता और plagiarism जांचें\n\nAttached files:\n1. report.txt (text/plain, 8.0 KB)\nText sample: ${ETH_CLAIMS}`,
+    `\`report.txt\` के लिए मौलिकता और plagiarism जांच पहचानी गई.\n\n${ORIGINALITY_HI}\n\nClient text sample: present.\n\nमूल्य दावों की जांच:\n${ETH_CONTRADICTED}`,
+    "\"ETH in 2024: $1,700 ETH in 2021: $1,700\" plagiarism originality",
+  ],
+  [
+    "检查这个附件文本的原创性和抄袭情况\n\nAttached files:\n1. manuscript.txt (text/plain, 9.0 KB)\nText excerpt: ETH in 2024: $1,700\nText unavailable: page two",
+    `已识别 \`manuscript.txt\` 的原创性/抄袭检查请求。\n\n${ORIGINALITY_ZH}\n\nClient text sample: present.\n\n价格声明核查:\n${ETH_CONTRADICTED}`,
+    "\"ETH in 2024: $1,700\" plagiarism originality",
+  ],
+];
+
+test("an originality check reads its markers, queries and heading from the seed", async () => {
+  for (const [prompt, expected, query] of ORIGINALITY_CASES) {
+    const response = await solve(prompt);
+    assert.equal(response.intent, "document_originality_check", prompt);
+    assert.equal(response.content, expected, prompt);
+    assert.ok(response.evidence.includes(`document_originality_check:request:${query}`), prompt);
+  }
+});
+
+// Issue #918 (R918-2): software_project_followup renders every sentence from
+// the seeded software_project_followup_* responses, its action verbs from the
+// software_project_followup_action table and its gates and expected-output
+// word limit from the policy of data/seed/handler-rules.lino. The expected
+// output opener is any prefix form of the output_display_request role (the
+// worker used to list four English openers, so "покажи результат" now records
+// its output as the native row already did). The native twin pins the same
+// sentences in rust/tests/unit/issue_918_handler_rules_batch.rs.
+const SCRAPER_PLAN = "Design a simple web scraper in Python that:\n1. Fetches a webpage\n2. Extracts all headings (h1, h2, h3)\n3. Counts word frequency\n4. Generates a markdown summary";
+const PRICES_PLAN = "Write a Python scraper that imports product prices and stores history";
+const FOLLOW_UP_TEST = "Recorded a verification follow-up for the scraper from the active plan.\n\nFormalized meaning:\n```lino\nsoftware_project_followup\n  parent_request \"software_project_request_a85d2529097ceda5\"\n  parent_artifact \"scraper\"\n  action \"test\"\n  follow_up_kind verification\n  target_site \"wikipedia.org\"\n  expected_output \"the top 10 most frequent words\"\n  delivery_mode code_generation\n  implementation_language \"python\"\n  approval_state proposed\n  approval_required true\n  approval_gate \"generated_code\"\n  approval_gate \"test_execution\"\n  approval_gate \"network_access\"\n```\n\nReasoning steps:\n1. Recognize \"test\" as a verification request that exercises the scraper from the active plan, not a fact lookup.\n2. Bind the test target to wikipedia.org and keep live fetches behind the network_access gate.\n3. Record the expected output as \"the top 10 most frequent words\" so the test harness can assert it.\n4. Drive the artifact through a deterministic fixture before any host API or network call.\n5. Keep code execution behind approval gates because the sandbox cannot run untrusted code.\n\nVerification plan:\n1. Generate the scraper core plus a deterministic test harness with a captured wikipedia.org fixture.\n2. Assert each requirement (parsing, extraction, counting, summary) against the fixture.\n3. Surface the top 10 most frequent words from the fixture run.\n4. Run the python test command once the generated_code gate is approved.\n5. Promote the run to live wikipedia.org only after the test_execution and network_access gates pass.\n\nReply `approve plan` to generate the artifact plus this test harness. Running it live against the target needs the test_execution and network_access gates.";
+const FOLLOW_UP_SHOW_RU = "Recorded a demonstration follow-up for the scraper from the active plan.\n\nFormalized meaning:\n```lino\nsoftware_project_followup\n  parent_request \"software_project_request_a85d2529097ceda5\"\n  parent_artifact \"scraper\"\n  action \"show\"\n  follow_up_kind demonstration\n  expected_output \"результат\"\n  delivery_mode code_generation\n  implementation_language \"python\"\n  approval_state proposed\n  approval_required true\n  approval_gate \"generated_code\"\n  approval_gate \"test_execution\"\n  approval_gate \"network_access\"\n```\n\nReasoning steps:\n1. Recognize \"show\" as a demonstration request that exercises the scraper from the active plan, not a fact lookup.\n2. Record the expected output as \"результат\" so the test harness can assert it.\n3. Drive the artifact through a deterministic fixture before any host API or network call.\n4. Keep code execution behind approval gates because the sandbox cannot run untrusted code.\n\nVerification plan:\n1. Generate the scraper core plus a deterministic test harness with a captured the requested target fixture.\n2. Assert each requirement (parsing, extraction, counting, summary) against the fixture.\n3. Surface результат from the fixture run.\n4. Run the python test command once the generated_code gate is approved.\n5. Promote the run to live the requested target only after the test_execution and network_access gates pass.\n\nReply `approve plan` to generate the artifact plus this test harness. Running it live against the target needs the test_execution and network_access gates.";
+const FOLLOW_UP_APPROVED = "Recorded a verification follow-up for the scraper from the active plan.\n\nFormalized meaning:\n```lino\nsoftware_project_followup\n  parent_request \"software_project_request_8237833aba5f0f2d\"\n  parent_artifact \"scraper\"\n  action \"test\"\n  follow_up_kind verification\n  delivery_mode code_generation\n  implementation_language \"python\"\n  approval_state approved\n  approval_required true\n  approval_gate \"generated_code\"\n  approval_gate \"test_execution\"\n  approval_gate \"network_access\"\n```\n\nReasoning steps:\n1. Recognize \"test\" as a verification request that exercises the scraper from the active plan, not a fact lookup.\n2. Drive the artifact through a deterministic fixture before any host API or network call.\n3. Keep code execution behind approval gates because the sandbox cannot run untrusted code.\n\nVerification plan:\n1. Generate the scraper core plus a deterministic test harness with a captured the requested target fixture.\n2. Assert each requirement (parsing, extraction, counting, summary) against the fixture.\n3. Run the python test command once the generated_code gate is approved.\n4. Promote the run to live the requested target only after the test_execution and network_access gates pass.\n\nThe plan is approved, so the generated starter already includes this test harness. Running it live needs the test_execution and network_access gates.";
+
+test("a software-project follow-up renders the seeded sentences in both approval states", async () => {
+  await ready;
+  const plan = await solve(SCRAPER_PLAN);
+  const history = [{ role: "user", content: SCRAPER_PLAN }, { role: "assistant", content: plan.content }];
+  for (const [prompt, expected] of [
+    ["test it by scraping wikipedia.org and show me the top 10 most frequent words.", FOLLOW_UP_TEST],
+    ["покажи результат", FOLLOW_UP_SHOW_RU],
+  ]) {
+    const response = await worker.solve(prompt, history, {}, {}, [], {});
+    assert.equal(response.intent, "software_project_followup", prompt);
+    assert.equal(response.content, expected, prompt);
+  }
+  const prices = await solve(PRICES_PLAN);
+  const implementation = await worker.solve("approve plan",
+    [{ role: "user", content: PRICES_PLAN }, { role: "assistant", content: prices.content }], {}, {}, [], {});
+  const approved = await worker.solve("run it and verify the output",
+    [{ role: "user", content: PRICES_PLAN }, { role: "assistant", content: implementation.content }], {}, {}, [], {});
+  assert.equal(approved.intent, "software_project_followup");
+  assert.equal(approved.content, FOLLOW_UP_APPROVED);
+});

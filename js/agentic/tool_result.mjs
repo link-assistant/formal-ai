@@ -8,10 +8,12 @@ import { Capability } from './capability.mjs';
 import { findToolDefinition } from './protocol_policy.mjs';
 import { requestFor as localSearchRequestFor } from './local_search.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
-import { detect } from './crate/language.mjs';
+import { detect, fallbackLanguage } from './crate/language.mjs';
+import { cached } from './host.mjs';
+import { textOutsideQuotedSegments } from './crate/coding_program_contract.mjs';
 import { localizedResponse } from './crate/seed.mjs';
 import { appendInvitation } from './crate/failure_reporting.mjs';
-import { mentionsRole } from './crate/seed_meanings.mjs';
+import { lexicon, mentionsRole } from './crate/seed_meanings.mjs';
 import {
   asI64, asStr, compactJson, isObject, isWhitespace, jsonGet, parseI64, parseJson, parseUsize, prettyJson,
   replaceAllLiteral, splitInclusiveNewline, splitOnce, splitWhitespace, toAsciiLowercase, trim, trimEndMatches,
@@ -620,9 +622,61 @@ function isSearch(label) {
   return ['grep', 'find', 'search'].some((kind) => lower.includes(kind));
 }
 
-/** Mirrors `fn response_language`. */
+/**
+ * Mirrors `fn response_language`: the language detected from the request's
+ * script, or -- when the script leaves it at the fallback language, which
+ * shares its letters with others -- the language the request's own words are
+ * seeded in. `Elimina las líneas 2 a 3 de f.txt.` names no Spanish marker,
+ * but `elimina`, `las` and `líneas` are seeded only as Spanish (PR #1188 G20).
+ * @param {string} prompt
+ */
 export function responseLanguage(prompt) {
-  return detect(prompt);
+  const detected = detect(prompt);
+  return detected === fallbackLanguage() ? lexicalLanguage(prompt) ?? detected : detected;
+}
+
+/** Fewer words seeded only in one language than this are no evidence. */
+const MIN_LEXICAL_EVIDENCE = 2;
+
+/** Mirrors `fn seeded_word_languages`: every one-word surface and the languages it is seeded in. */
+function seededWordLanguages() {
+  return cached('seeded-word-languages', () => {
+    const languages = new Map();
+    for (const meaning of lexicon()) {
+      for (const lexeme of meaning.lexemes) {
+        for (const word of lexeme.words) {
+          const surface = word.text.toLowerCase();
+          if (!/^\p{Alphabetic}+$/u.test(surface)) continue;
+          if (!languages.has(surface)) languages.set(surface, new Set());
+          languages.get(surface).add(lexeme.language);
+        }
+      }
+    }
+    return languages;
+  });
+}
+
+/**
+ * Mirrors `fn lexical_language` (rust/src/agentic_coding/tool_result/response_language.rs):
+ * the one language most of the request's unquoted words are seeded in alone,
+ * when it is not the fallback, has at least `MIN_LEXICAL_EVIDENCE` such words
+ * and more than the fallback has; else null (a tie decides nothing).
+ */
+function lexicalLanguage(prompt) {
+  const seeded = seededWordLanguages();
+  const counts = new Map();
+  for (const word of textOutsideQuotedSegments(prompt).toLowerCase().split(/[^\p{Alphabetic}]+/u)) {
+    const languages = seeded.get(word);
+    if (languages === undefined || languages.size !== 1) continue;
+    const [language] = languages;
+    counts.set(language, (counts.get(language) ?? 0) + 1);
+  }
+  const fallback = fallbackLanguage();
+  const top = Math.max(0, ...counts.values());
+  const leaders = [...counts].filter(([, count]) => count === top).map(([language]) => language);
+  if (leaders.length !== 1 || top < MIN_LEXICAL_EVIDENCE) return null;
+  const [leader] = leaders;
+  return leader === fallback || top <= (counts.get(fallback) ?? 0) ? null : leader;
 }
 
 /** Mirrors `fn fill` in tool_result.rs. */

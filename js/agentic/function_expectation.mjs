@@ -1,0 +1,165 @@
+// Checking a stated expectation before fixing (PR #1188 T93, gap G14): "Fix
+// the bug in m.mjs: add should return the sum." on a correct module fell to
+// the unknown answer. A bug report that names a module and states what one of
+// its functions should return (the seeded `coding_bug_fix_request` and
+// `coding_expectation_cue` meanings, every registered language) is checked
+// first: the module is read, the expectation is computed from the statement
+// itself at the contract's sample arguments (the calculator, as for an added
+// function), the function is run at the same arguments through the
+// contract's seeded `probe` command, and the observed value is compared. A
+// function that meets the expectation is reported as no defect found, from a
+// seeded template; one that does not is reported as confirmed, the file
+// unchanged. rust/src/agentic_coding/function_expectation.rs.
+
+import { Capability } from './capability.mjs';
+import { toolFor } from './capability_router.mjs';
+import { plainText } from './content.mjs';
+import { normalizePrompt } from './crate/engine.mjs';
+import { detect } from './crate/language.mjs';
+import { isWhitespace } from './crate/rust_str.mjs';
+import { renderResponse } from './crate/seed.mjs';
+import { mentionsRole, wordsForRole } from './crate/seed_meanings.mjs';
+import { contract, extensionLanguage, pathsIn, readSource, signature, statedValue } from './module_function.mjs';
+import { finalAnswer, jsonText, planOne } from './plan.mjs';
+import { evidenceWindowStart } from './planner/continuation.mjs';
+import { resultCapability } from './progress.mjs';
+import { normalizedPayload, render } from './tool_result.mjs';
+import { readArguments } from './workspace_change.mjs';
+import { lowerChars } from './workspace_search.mjs';
+import { findChildValue } from './write_lino.mjs';
+
+const ROLE_BUG_FIX = 'coding_bug_fix_request';
+const ROLE_EXPECTATION = 'coding_expectation_cue';
+const SPEC_EDGES = new Set(['.', ',', ';', ':', '!', '?', '。', '，', '！', '？', '：', '।']);
+
+const fill = (template, slots) => slots.reduce((text, [slot, value]) => text.split(`{${slot}}`).join(value), template);
+const isIdentifierChar = (character) => character !== undefined && /^[A-Za-z0-9_$]$/u.test(character);
+
+/** The first char offset of `needle` in `haystack` (char arrays), or -1. */
+function findChars(haystack, needle) {
+  for (let at = 0; at + needle.length <= haystack.length; at += 1) {
+    if (needle.every((character, index) => haystack[at + index] === character)) return at;
+  }
+  return -1;
+}
+
+/** `chars[start..end]` without surrounding whitespace and sentence marks. */
+function trimmedSpan(chars, start, end) {
+  let from = start;
+  let to = end;
+  while (from < to && (isWhitespace(chars[from]) || SPEC_EDGES.has(chars[from]))) from += 1;
+  while (to > from && (isWhitespace(chars[to - 1]) || SPEC_EDGES.has(chars[to - 1]))) to -= 1;
+  return chars.slice(from, to).join('');
+}
+
+/** The last identifier-bounded offset of `name` in `chars[..end]`, or -1. */
+function lastNameOffset(chars, name, end) {
+  const needle = Array.from(name);
+  for (let at = end - needle.length; at >= 0; at -= 1) {
+    if (needle.every((character, index) => chars[at + index] === character)
+      && !isIdentifierChar(chars[at - 1]) && !isIdentifierChar(chars[at + needle.length])) return at;
+  }
+  return -1;
+}
+
+/**
+ * Mirrors `fn expectation_request` in rust/src/agentic_coding/function_expectation.rs:
+ * `{module, language, cue: [start, end]}` for a bug report that names a
+ * module with a probe contract and states an expectation, or null.
+ * @param {string} task
+ */
+export function expectationRequest(task) {
+  if (!mentionsRole(ROLE_BUG_FIX, normalizePrompt(task))) return null;
+  const lower = lowerChars(Array.from(task));
+  let cue = null;
+  for (const surface of wordsForRole(ROLE_EXPECTATION)) {
+    const needle = Array.from(surface.toLowerCase());
+    const at = findChars(lower, needle);
+    if (at >= 0 && (cue === null || at < cue[0])) cue = [at, at + needle.length];
+  }
+  if (cue === null) return null;
+  for (const module of pathsIn(task)) {
+    const language = extensionLanguage(module);
+    const terms = language === null ? null : contract(language);
+    if (terms !== null && findChildValue(terms, 'probe') !== '') return { module, language, cue };
+  }
+  return null;
+}
+
+/** The checked call of the source's function the request names: `{name, call, command, expected}` or null. */
+function checkedCall(task, request, source) {
+  const terms = contract(request.language);
+  const prefix = findChildValue(terms, 'definition').split('{name}')[0];
+  const chars = Array.from(task);
+  let best = null;
+  for (const line of source.split('\n')) {
+    if (!line.startsWith(prefix)) continue;
+    const stated = signature(line);
+    if (stated === null) continue;
+    const at = lastNameOffset(chars, stated.name, request.cue[0]);
+    if (at >= 0 && (best === null || at > best.at)) best = { ...stated, at };
+  }
+  if (best === null) return null;
+  const after = trimmedSpan(chars, request.cue[1], chars.length);
+  const spec = after !== '' ? after : trimmedSpan(chars, best.at + Array.from(best.name).length, request.cue[0]);
+  const samples = findChildValue(terms, 'samples').split(/\s+/u).filter(Boolean).slice(0, best.parameters.length);
+  if (samples.length !== best.parameters.length) return null;
+  const expected = statedValue(spec.split(/\s+/u).filter(Boolean), spec, best.parameters, samples);
+  if (expected === null) return null;
+  const argumentsText = samples.join(', ');
+  return {
+    name: best.name,
+    call: `${best.name}(${argumentsText})`,
+    command: fill(findChildValue(terms, 'probe'),
+      [['name', best.name], ['module', request.module], ['arguments', argumentsText]]),
+    expected,
+  };
+}
+
+/** The latest shell result of the current turn, or null. */
+function latestRun(messages) {
+  let currentTurn = 0;
+  for (let index = messages.length - 1; index >= 0; index -= 1) {
+    if (messages[index].role.toLowerCase() === 'user') {
+      currentTurn = index + 1;
+      break;
+    }
+  }
+  let latest = null;
+  for (let index = currentTurn; index < messages.length; index += 1) {
+    if (messages[index].role.toLowerCase() === 'tool' && resultCapability(messages, index) === Capability.Run) {
+      latest = plainText(messages[index].content);
+    }
+  }
+  return latest;
+}
+
+/**
+ * Mirrors `fn plan_function_expectation_step` in
+ * rust/src/agentic_coding/function_expectation.rs.
+ * @param {string} task
+ * @param {Array<object>} messages
+ * @param {Array<string>} toolNames
+ */
+export function planFunctionExpectationStep(task, messages, toolNames) {
+  const request = expectationRequest(task);
+  if (request === null) return null;
+  const source = readSource(messages.slice(evidenceWindowStart(messages)), request.module);
+  if (source === null) {
+    const read = toolFor(toolNames, Capability.Read);
+    return read === null ? null : planOne(read, readArguments(request.module));
+  }
+  const checked = checkedCall(task, request, source);
+  if (checked === null) return null;
+  const raw = latestRun(messages);
+  if (raw === null) {
+    const shell = toolFor(toolNames, Capability.Run);
+    return shell === null ? null : planOne(shell, jsonText({ command: checked.command }));
+  }
+  const payload = normalizedPayload(raw);
+  if (payload === null || payload === undefined) return finalAnswer(render(checked.command, raw, task));
+  const observed = payload.trim();
+  const intent = observed === checked.expected ? 'function_expectation_holds' : 'function_expectation_fails';
+  const values = [['call', checked.call], ['path', request.module], ['observed', observed], ['expected', checked.expected]];
+  return finalAnswer(renderResponse(intent, detect(task), values) ?? renderResponse(intent, 'en', values));
+}

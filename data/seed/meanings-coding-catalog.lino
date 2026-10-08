@@ -663,6 +663,50 @@ meanings
     lexeme zh
       surface
         text 菲茨巴兹
+  function_call
+    defined-by program
+    role function_call_verb
+    precondition "a coding request says its program calls a named function"
+    effect "the call expression the request names is the function the program runs"
+    unit "not applicable"
+    example "a script that calls missing_helper()"
+    lexeme en
+      surface
+        text "that calls"
+      surface
+        text "which calls"
+      surface
+        text "and calls"
+      surface
+        text call
+      surface
+        text "that invokes"
+      surface
+        text invoke
+    lexeme ru
+      surface
+        text вызывает
+      surface
+        text вызовет
+      surface
+        text вызови
+      surface
+        text вызвать
+    lexeme hi
+      surface
+        text "कॉल करता"
+      surface
+        text "कॉल करे"
+    lexeme zh
+      surface
+        text 调用
+    lexeme es
+      surface
+        text llama
+      surface
+        text invoca
+      surface
+        text llamar
   program_task_factorial
     defined-by program_task
     role program_task_alias

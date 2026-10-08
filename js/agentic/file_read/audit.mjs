@@ -8,6 +8,7 @@ import { localizedResponse } from '../crate/seed.mjs';
 import { wordsForRole } from '../crate/seed_meanings.mjs';
 import { agenticMessage } from '../messages.mjs';
 import { extractJsonishValue } from './supplied.mjs';
+import { slicedLines } from '../workspace_line_operation.mjs';
 
 const ROLE_FILE_ANALYSIS_GAP_MARKER = 'file_analysis_gap_marker';
 
@@ -47,6 +48,13 @@ export function fileReadFinalAnswer(mode, files, request) {
     }
     case 'audit':
       return boundedAuditAnswer(files, request);
+    case 'line_slice':
+      return files.map(([path, content]) => {
+        const sliced = slicedLines(content, mode);
+        return sliced === null
+          ? agenticMessage('file_read_contents', { path, content: trimEnd(content) })
+          : agenticMessage('file_read_lines', { path, first: sliced.first, last: sliced.last, lines: sliced.text });
+      }).join('\n\n');
     default:
       return files
         .map(([path, content]) => agenticMessage('file_read_contents', { path, content: trimEnd(content) }))

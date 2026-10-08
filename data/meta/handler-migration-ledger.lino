@@ -78,7 +78,11 @@ handler_migration_ledger
     justification "issue #1085 D1.3: Four role conjunctions in the detected language and English, seeded reply with the documentation links as rule values."
     held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler document_originality_check
-    status pending
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/meanings-web-research.lino|data/seed/multilingual-responses.lino|data/seed/multilingual-responses-policy.lino"
+    primitive "rust/src/solver_handlers/document_originality.rs"
+    justification "issue #918 (R918-2): recognition was already the seeded document_originality_check action, subject and document roles and the workflow wording the seeded document_originality_check_sample_* responses; the last vocabulary in code, the attachment-envelope markers (Attached files:, OCR text:, Text excerpt:, Text sample:, Text omitted:, Text unavailable:, OCR unavailable:), the three search-query frames, the sample word limit, the default target and the four-language price-claim heading, are now the document_originality_marker table and the document_originality_check policy of data/seed/handler-rules.lino and the seeded document_originality_check_price_claim_heading responses, read by both runtimes; the English fallback template in Rust is gone (the seed carries it). The native part is the envelope reader and the per-statement relative-meta-logic verification plan. Answers and request evidence are byte-identical to the inline literals in en, ru, hi and zh, pinned in both runtimes."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler repository_lineage
     status "justified-native"
     primitive "rust/src/history_context/lineage.rs"
@@ -132,7 +136,11 @@ handler_migration_ledger
   handler conversation_memory
     status pending
   handler software_project_followup
-    status pending
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/multilingual-responses-policy.lino|data/seed/meanings-software-project.lino|data/seed/meanings-concept-lookup.lino"
+    primitive "rust/src/solver_handlers/software_project_followup.rs"
+    justification "issue #918 (R918-2): recognition was already the seeded software_followup_* roles; the follow-up record, its reasoning steps, its verification plan, the three headings, the default target and both approval sentences are now seeded software_project_followup_* responses (English-only, as before, rendered in the prompt language when a translation is seeded), the rendered action verbs the software_project_followup_action table and the approval gates and expected-output word limit the software_project_followup policy of data/seed/handler-rules.lino, in both runtimes. The expected-output openers are the prefix forms of the seeded output_display_request role in both: the worker listed four English openers of its own, and the native row also took the role's bare and circumfix forms (a bare print inside printing, the Hindi lead जो anywhere), so a Russian покажи результат now records its output in the worker as it did natively. The native part recovers the active plan from the log and lays the record out. Pinned in both runtimes."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler summarization_text
     status "justified-native"
     primitive "rust/src/solver_handlers/summarization_request.rs"
@@ -146,7 +154,11 @@ handler_migration_ledger
   handler verifiable_task
     status pending
   handler text_manipulation
-    status pending
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/operation-vocabulary.lino|data/seed/code-task-cues.lino"
+    primitive "rust/src/solver_handlers/text_manipulation.rs"
+    justification "issue #918 (R918-2): the operations were already data/seed/operation-vocabulary.lino and the format-conversion cue data/seed/code-task-cues.lino; the last vocabulary in code, the replacement cues and the input-context and input-continuation cues that decide which quote is the input (about seventeen inline literals in looks_like_input_first_replacement and its helpers), are now the text_replacement_cue, text_input_context_cue and text_input_continuation_cue tables of data/seed/handler-rules.lino, read through handler_table_rows natively and handlerRulesTables in the worker. The runtimes disagreed and the JavaScript root decided (R1000): the worker also accepted instead and вместо, so the native gate now does too. Deliberate behaviour change in both roots: a cue whose row value is target_follows_cue swaps the operands it sits between, so Write 'cat' instead of 'dog': the dog barks answers the cat barks (the worker used to answer the input unchanged), and a replace cue with fewer than two quotes falls through to the other operations in the worker as it did natively (Uppercase 'replace me' answers REPLACE ME). The answer is the computed text; the handler names no word and writes no prose. Pinned with exact answers in en, ru, hi and zh in both runtimes."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler brainstorm_composition
     status "justified-native"
     primitive "rust/src/solver_handlers/creative_composition.rs"

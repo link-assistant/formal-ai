@@ -36,7 +36,7 @@ flowchart LR
 | Rank | Handler | Why the rule exists |
 | --- | --- | --- |
 | 10 | `conversation_control` | conversation preferences and action corrections must bind before ordinary task routing |
-| 20 | `execution_failure` | an explicit execution failure must be explained before source text is treated as a new task |
+| 20 | `execution_failure` | an explicit execution failure must be explained before source text is treated as a new task; issue 1173 R3: a request whose program calls a function nothing defines (the undefined_call operand) fails the same way whatever the function is named |
 | 30 | `calendar_create_event` | issue 869 and issue 595 — a date signal conjoined with a scheduling act, or an elliptical clock hour that only the calendar handler's entity context can ground |
 | 40 | `program_synthesis` | issue 710: a structural coding task is resolved before arithmetic and concepts inside its examples |
 | 50 | `web_search` | issue 745: an explicit search act, a news request, or a records request |

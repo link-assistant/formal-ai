@@ -250,7 +250,48 @@ fn next_complete_pair(
     None
 }
 
+/// The first close that is not an apostrophe inside a word, or, for a single
+/// quote, the one that closes a payload quoting a single-quoted literal of its
+/// own (PR #1188 G61): a quote with a space before it and a word character
+/// after it opens a nested literal, and the payload closes after that literal
+/// does. When such nesting never closes, the first close stands.
 fn closing_delimiter(text: &str, cursor: usize, close: &str) -> Option<usize> {
+    if close == "'"
+        && let Some(close_at) = nested_closing_delimiter(text, cursor)
+    {
+        return Some(close_at);
+    }
+    plain_closing_delimiter(text, cursor, close)
+}
+
+/// The close of a single-quoted payload that holds nested single-quoted
+/// literals, or `None` when the nesting never closes.
+fn nested_closing_delimiter(text: &str, cursor: usize) -> Option<usize> {
+    let mut depth = 0_usize;
+    let mut from = cursor;
+    while let Some(relative) = text[from..].find('\'') {
+        let close_at = from + relative;
+        from = close_at + 1;
+        let before = text[..close_at].chars().next_back();
+        let after_is_word = text[from..]
+            .chars()
+            .next()
+            .is_some_and(|character| character.is_ascii_alphanumeric());
+        if before.is_some_and(|character| character.is_ascii_alphanumeric()) && after_is_word {
+            continue;
+        }
+        if before.is_some_and(char::is_whitespace) && after_is_word {
+            depth += 1;
+        } else if depth == 0 {
+            return Some(close_at);
+        } else {
+            depth -= 1;
+        }
+    }
+    None
+}
+
+fn plain_closing_delimiter(text: &str, cursor: usize, close: &str) -> Option<usize> {
     let mut from = cursor;
     while let Some(relative) = text[from..].find(close) {
         let close_at = from + relative;

@@ -45,6 +45,11 @@ fn general_change_step(
     plan: &GeneralChangePlan,
     resolved_from_work_item: bool,
 ) -> AgenticPlan {
+    // A literal-file write reads its target first unless the request names a
+    // whole-file write, and never replaces an existing file unasked (PR #1188 T96).
+    if let Some(guarded) = super::literal_write_guard::guarded_step(plan, messages, tool_names) {
+        return guarded;
+    }
     let progress = Progress::scan(messages);
     // Reading the work item is an attempt to find out whether anything *can* be
     // executed, not a step the request named. A read that comes back missing or
@@ -56,7 +61,21 @@ fn general_change_step(
         && progress
             .latest_failure()
             .is_some_and(|failure| failure.capability == Capability::Fetch || failure.is_work_item_read());
-    if let Some(failure) = progress.latest_failure().filter(|_| !work_item_unreadable) {
+    let target_missing = progress.latest_failure().is_some_and(|failure| {
+        super::literal_write_guard::is_guard_read(
+            plan,
+            failure
+                .arguments
+                .as_deref()
+                .and_then(tool_argument_path)
+                .as_deref(),
+            failure.capability,
+        )
+    });
+    if let Some(failure) = progress
+        .latest_failure()
+        .filter(|_| !work_item_unreadable && !target_missing)
+    {
         if failure.capability == Capability::Write {
             let path = failure.arguments.as_deref().and_then(tool_argument_path);
             if let (Some(path), Some(read_tool)) =

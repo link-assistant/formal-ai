@@ -1,7 +1,7 @@
 coding_guidance
   record_type "coding_guidance_registry"
   issue "1138"
-  language "en|ru|hi|zh|es"
+  languages ("en" "ru" "hi" "zh" "es")
   plan "docs/case-studies/issue-1138/plans/06-prerequisite-discovery.md"
 coding_guidance_how_it_works_heading
   record_type "coding_guidance"

@@ -10,13 +10,15 @@
 //! [`super::shell_command_policy`], which keeps both files under the repository
 //! line budget.
 
+use super::directory_listing::asks_for_directory_listing;
+use super::file_path_shape::{is_dotted_number, trim_trailing_sentence_dot};
 use super::shell_command_policy::{
     governs_commands_rather_than_requesting_one, is_prose_word, named_shell_command_in_sentence,
     normalize_command_word, sentence_spans, states_a_command_policy,
 };
-use super::directory_listing::asks_for_directory_listing;
-use super::file_path_shape::{is_dotted_number, trim_trailing_sentence_dot};
-use crate::seed::{self, ShellIntent, ShellIntentArgument, ShellIntentVocabulary, TerminalCommandVocabulary};
+use crate::seed::{
+    self, ShellIntent, ShellIntentArgument, ShellIntentVocabulary, TerminalCommandVocabulary,
+};
 
 const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
 /// Resolve a user turn into the concrete shell command the agentic loop should run.
@@ -158,8 +160,9 @@ fn trim_command_sentence_end(remainder: &str) -> &str {
 
 /// Characters that turn the words around them into data rather than prose:
 /// quoting, redirection, substitution and command separators.
-const SHELL_QUOTING_AND_METACHARACTERS: &[char] =
-    &['"', '\'', '`', '|', '&', ';', '<', '>', '$', '(', ')', '{', '}'];
+const SHELL_QUOTING_AND_METACHARACTERS: &[char] = &[
+    '"', '\'', '`', '|', '&', ';', '<', '>', '$', '(', ')', '{', '}',
+];
 
 /// Recover the command from a remainder that *names* it instead of being it.
 ///
@@ -301,7 +304,6 @@ pub(super) fn code_search_query_for_task(prompt: &str) -> Option<String> {
         })
 }
 
-
 /// Resolve the source subject named by an inspection request.
 ///
 /// Explicit literal cues and visibly code-shaped tokens are unambiguous on
@@ -346,7 +348,6 @@ fn literal_code_search_query(normalized: &str) -> Option<String> {
         .find(|form| normalized.contains(&form.text.to_lowercase()))
         .and_then(|form| (!form.action.is_empty()).then(|| form.action.clone()))
 }
-
 
 /// The most identifier-shaped token in `prompt`, if it holds one.
 ///
@@ -627,14 +628,24 @@ fn is_fact_statement(
 
 fn intent_shell_command(prompt: &str, vocab: &ShellIntentVocabulary) -> Option<String> {
     let lower = prompt.to_lowercase();
-    let (intent, cue) = matched_intent_cue(&lower, vocab)?;
+    // Quoted words of a request about text inside a file are its payload,
+    // never the command it asks for (PR #1188 G32: `Add the line '- run tests'`).
+    let inside_a_file = super::workspace_computed_change::edits_inside_a_file(prompt);
+    let outside = inside_a_file
+        .then(|| crate::solver_handlers::text_outside_quoted_segments(prompt).to_lowercase());
+    let (intent, cue) = matched_intent_cue(outside.as_deref().unwrap_or(&lower), vocab)?;
     // A destructive intent (`destructive true` in the seed) never reads a
     // request about text inside a file as a request to delete the file.
-    if intent.destructive && super::workspace_computed_change::edits_inside_a_file(prompt) {
+    if intent.destructive && inside_a_file {
         return None;
     }
     match intent.argument {
-        ShellIntentArgument::None => resolve_shell_command(&intent.command, vocab),
+        // A named test file runs with its own runtime (PR #1188 T91).
+        ShellIntentArgument::None => super::test_file_runner::test_file_command(
+            &intent.command,
+            path_argument(prompt).as_deref(),
+        )
+        .or_else(|| resolve_shell_command(&intent.command, vocab)),
         ShellIntentArgument::Path => {
             path_argument(prompt).map(|arg| format!("{} {arg}", intent.command))
         }
@@ -700,7 +711,8 @@ fn matched_intent_cue<'a>(
 /// filler words a speaker inserts inside a cue phrase: *"show me git status"*
 /// carries the cue `show git status` (PR #1188 dogfooding).
 fn sentence_carries_cue(sentence: &str, cue: &str, fillers: &[String]) -> bool {
-    if sentence.contains(cue) {
+    // Whole words only (CJK aside): `move` is not inside `removed` (PR #1188 G66).
+    if crate::seed::FactRecord::contains_word_sequence(sentence, cue) {
         return true;
     }
     let without_fillers = |text: &str| {
@@ -710,7 +722,8 @@ fn sentence_carries_cue(sentence: &str, cue: &str, fillers: &[String]) -> bool {
             .join(" ")
     };
     let bare = without_fillers(cue);
-    !bare.is_empty() && without_fillers(sentence).contains(&bare)
+    !bare.is_empty()
+        && crate::seed::FactRecord::contains_word_sequence(&without_fillers(sentence), &bare)
 }
 
 /// Whether a requesting sentence names the cue of an intent that declares an
@@ -816,9 +829,9 @@ fn collect_path_arguments(
     let cue = cue.to_lowercase();
     let mut arguments = Vec::new();
     for word in text.split_whitespace() {
-        let candidate = trim_trailing_sentence_dot(
-            word.trim_matches(|c: char| matches!(c, '`' | '"' | '\'' | ',' | ';' | ':' | '!' | '?')),
-        );
+        // A quoted operand closes before the full stop (PR #1188 G37).
+        let quote = |c: char| matches!(c, '`' | '"' | '\'' | ',' | ';' | ':' | '!' | '?');
+        let candidate = trim_trailing_sentence_dot(word.trim_matches(quote)).trim_matches(quote);
         let normalized = candidate.to_lowercase();
         if candidate.is_empty()
             || !is_safe_path(candidate)

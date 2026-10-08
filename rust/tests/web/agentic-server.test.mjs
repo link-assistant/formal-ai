@@ -28,7 +28,9 @@ const EXPECTED = {
   agent_shell_show_environment: shell("env"),
   agent_shell_copy_file: shell("test -e a.txt"),
   agent_shell_git_changes: shell("git diff"),
-  agent_shell_search_todo: shell("rg --fixed-strings -- 'TODO' ."),
+  // A content search is the workspace-search arm's grep, which lists file:line
+  // hits (PR #1188 T90).
+  agent_shell_search_todo: shell("grep -rnHw --exclude-dir=.git -- 'TODO' '.'"),
   agent_shell_delete_en: shell("rm old.txt"),
   agent_shell_delete_ru: shell("rm old.txt"),
   agent_shell_delete_hi: shell("rm old.txt"),

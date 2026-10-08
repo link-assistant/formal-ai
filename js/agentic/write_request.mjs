@@ -7,11 +7,12 @@
 
 import { isDottedNumber, peelSentencePunctuation } from './file_path_shape.mjs';
 import { proseSentences, sentences } from './shell_command_policy.mjs';
-import { composePositionalInsert, literalText, unquotedPathTokens } from './positional_edit.mjs';
+import { composePositionalInsert, introducedBlock, literalText, unquotedPathTokens } from './positional_edit.mjs';
 import { resolveCensusTarget } from './general_planner.mjs';
 import { containsCjk } from './crate/coding_catalog.mjs';
 import { quotedSegmentSpans } from './crate/normal_markov.mjs';
-import { roleWordForms } from './write_lexicon.mjs';
+import { meaningEvidencedIn, mentionsRole, roleWordForms } from './write_lexicon.mjs';
+import { normalizePrompt } from './crate/engine.mjs';
 import {
   charIn, isAlphanumeric, isAscii, isAsciiPunctuation, isWhitespace, minByKey, trim, trimEnd,
   trimEndMatches, trimMatches, trimStart, trimStartMatches,
@@ -401,6 +402,14 @@ export function safeRelativePath(path) {
 export function composeEditRequest(request) {
   const positional = composePositionalInsert(request);
   if (positional) return positional;
+  const block = introducedBlock(request);
+  if (block !== null) {
+    // `Replace the line 'x' with these three lines in f:` followed by lines:
+    // a new clause that only describes lines (the seeded `line` meaning,
+    // unquoted) stands for the lines under the request (PR #1188 G22).
+    const head = composeEditRequest(block.head);
+    if (head !== null && describesLines(block.head, head[2])) return [head[0], head[1], block.text];
+  }
   const toks = tokens(request);
   const actionCues = bareSurfaces('file_edit_action_cue');
   const newLeads = bareSurfaces('file_edit_new_lead_cue');
@@ -471,7 +480,25 @@ export function composeEditRequest(request) {
   if (oldText === null) return null;
   const newText = literalText(newSpan);
   if (newText === null) return null;
-  return [target, oldText, newText];
+  // `Rename the file m.py to math_utils.py`: an unquoted new name that is a
+  // workspace path renames the file itself, which is no edit of its bytes
+  // (PR #1188 G24); the shell intents carry it.
+  // Quoted, the new path renames the file too when the old clause quotes
+  // nothing (`Rename the file 'a.txt' to 'b.txt'`, G37).
+  const renamedFile = (quotedSegmentSpans(newSpan).length === 0 || quotedSegmentSpans(oldSpan).length === 0)
+    && looksLikeFilePath(cleanPathToken(trim(newSpan)))
+    && mentionsRole('coding_identifier_rename_action', request.toLowerCase());
+  return renamedFile ? null : [target, oldText, newText];
+}
+
+/**
+ * Mirrors `fn describes_lines`: whether a clause `text` of `head` is no quoted
+ * literal but words naming lines (`these three lines`, `the following
+ * lines`, `эти строки`).
+ */
+function describesLines(head, text) {
+  return !quotedSegmentSpans(head).some((segment) => segment.text === text)
+    && meaningEvidencedIn('line', normalizePrompt(text).toLowerCase());
 }
 
 /** Mirrors `fn payload_continues_past_its_first_line`. */

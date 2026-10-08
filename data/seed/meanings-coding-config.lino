@@ -261,3 +261,158 @@ meanings
         text establece
       surface
         text incrementa
+  coding_bug_fix_request
+    # PR #1188 T93 (gap G14): a request to fix a defect in a named file. With
+    # a stated expectation (`coding_expectation_cue`) the function is run
+    # against it first, and a function that already meets it is reported as
+    # no defect found instead of being rewritten or answered as unknown.
+    defined-by action
+    role coding_bug_fix_request
+    precondition "a request asks to fix a defect in a named file"
+    effect "the named function is run against the stated expectation before any rewrite"
+    unit "not applicable"
+    example "fix the bug"
+    lexeme en
+      surface
+        text "fix the bug"
+      surface
+        text "fix a bug"
+      surface
+        text "fix the defect"
+      surface
+        text "fix the error"
+    lexeme ru
+      surface
+        text "исправь ошибку"
+      surface
+        text "исправь баг"
+      surface
+        text "исправить ошибку"
+    lexeme hi
+      surface
+        text "बग ठीक करें"
+      surface
+        text "बग ठीक करो"
+      surface
+        text "त्रुटि ठीक करें"
+    lexeme zh
+      surface
+        text 修复错误
+      surface
+        text 修复缺陷
+      surface
+        text 修复bug
+    lexeme es
+      surface
+        text "corrige el error"
+      surface
+        text "arregla el error"
+      surface
+        text "corrige el fallo"
+  coding_expectation_cue
+    # The stated expectation of a bug report: the named function, then this
+    # cue, then what it should return ("add should return the sum").
+    defined-by relation
+    role coding_expectation_cue
+    precondition "a bug report states what a named function should return"
+    effect "the text after this cue is computed at the contract samples and compared with the observed value"
+    unit "not applicable"
+    example "should return"
+    lexeme en
+      surface
+        text "should return"
+      surface
+        text "must return"
+      surface
+        text "is supposed to return"
+    lexeme ru
+      surface
+        text "должна возвращать"
+      surface
+        text "должен возвращать"
+      surface
+        text "должна вернуть"
+      surface
+        text "должен вернуть"
+    lexeme hi
+      surface
+        text "लौटाना चाहिए"
+    lexeme zh
+      surface
+        text 应该返回
+      surface
+        text 应返回
+    lexeme es
+      surface
+        text "debería devolver"
+      surface
+        text "debe devolver"
+  module_export_question
+    # PR #1188 T99 (gap G26): a question about what a named module exports
+    # ("Which functions does src/m.mjs export?"), answered from the module's
+    # own declarations instead of dumping the file.
+    defined-by relation
+    role module_export_question
+    precondition "a question names a module and asks about its declarations"
+    effect "the module is read and its exported functions are named instead of dumping the file"
+    unit "not applicable"
+    example "export"
+    lexeme en
+      surface
+        text "export"
+      surface
+        text "exports"
+      surface
+        text "exported"
+    lexeme ru
+      surface
+        text экспортирует
+      surface
+        text экспортируются
+    lexeme hi
+      surface
+        text निर्यात
+    lexeme zh
+      surface
+        text 导出
+    lexeme es
+      surface
+        text exporta
+      surface
+        text exportan
+      surface
+        text exportadas
+  module_export_marker
+    # A programming-language keyword that makes the declaration after it part
+    # of the module's public interface; the same word in every lexeme.
+    defined-by code
+    role module_export_marker
+    precondition "a source line under export listing starts with this keyword"
+    effect "the declaration after it is listed as part of the module public interface"
+    unit "not applicable"
+    example "export"
+    lexeme en
+      surface
+        text "export"
+      surface
+        text "pub"
+    lexeme ru
+      surface
+        text "export"
+      surface
+        text "pub"
+    lexeme hi
+      surface
+        text "export"
+      surface
+        text "pub"
+    lexeme zh
+      surface
+        text "export"
+      surface
+        text "pub"
+    lexeme es
+      surface
+        text "export"
+      surface
+        text "pub"

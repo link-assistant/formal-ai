@@ -8,6 +8,7 @@ import {
 import { asksForDirectoryListing } from './directory_listing.mjs';
 import { isDottedNumber, trimTrailingSentenceDot } from './file_path_shape.mjs';
 import { requestBlocks } from './stated_request.mjs';
+import { testFileCommand } from './test_file_runner.mjs';
 import { currentDirectory, isFile } from './host.mjs';
 import { effectIsDeclared, shellIntentVocabulary } from './crate/seed_shell_intents.mjs';
 import { terminalCommandVocabulary } from './crate/seed_terminal_commands.mjs';
@@ -15,6 +16,7 @@ import { asksAQuestion, callerContextVocabulary, copulaIn } from './crate/seed_c
 import { agenticToolCapabilities } from './crate/seed_agentic_tool_capabilities.mjs';
 import { evidencedIn, meaning, mentionsRole, roleWordForms, wordsForRole } from './crate/seed_meanings.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
+import { containsWordSequence } from './crate/solver_handlers_benchmark_prompts.mjs';
 import { quotedSegmentSpans } from './crate/normal_markov.mjs';
 import { webSearchQueryFor } from './crate/solver_handlers_web_search.mjs';
 import {
@@ -358,16 +360,21 @@ function isFactStatement(sentence, interrogative, cue) {
 /** Mirrors `fn intent_shell_command`. */
 function intentShellCommand(prompt, vocab) {
   const lower = prompt.toLowerCase();
-  const matched = matchedIntentCue(lower, vocab);
+  // A request about text inside a file carries its payload in quotes: the
+  // words there are data, never the command it asks for (PR #1188 G32:
+  // `Add the line '- run tests' …` ran the workspace tests).
+  const insideAFile = editsInsideAFile(prompt);
+  const matched = matchedIntentCue(insideAFile ? outsideQuotedSegments(prompt).toLowerCase() : lower, vocab);
   if (matched === null) return null;
   const [intent, cue] = matched;
   // A destructive intent (`destructive true` in the seed) never reads a
   // request about text inside a file as a request to delete the file.
-  if (intent.destructive && editsInsideAFile(prompt)) return null;
+  if (intent.destructive && insideAFile) return null;
   const withArgument = (argument) => (argument === null ? null : `${intent.command} ${argument}`);
   switch (intent.argument) {
     case 'none':
-      return resolveShellCommand(intent.command, vocab);
+      // A named test file runs with its own runtime (PR #1188 T91).
+      return testFileCommand(intent.command, pathArgument(prompt)) ?? resolveShellCommand(intent.command, vocab);
     case 'path':
       return withArgument(pathArgument(prompt));
     case 'name_lead':
@@ -393,10 +400,11 @@ function intentShellCommand(prompt, vocab) {
  * phrase (`show me git status` carries `show git status`).
  */
 function sentenceCarriesCue(sentence, cue, fillers) {
-  if (sentence.includes(cue)) return true;
+  // Whole words only (CJK aside): `move` is not inside `removed` (PR #1188 G66).
+  if (containsWordSequence(sentence, cue)) return true;
   const withoutFillers = (text) => splitWhitespace(text).filter((word) => !fillers.includes(word)).join(' ');
   const bare = withoutFillers(cue);
-  return bare !== '' && withoutFillers(sentence).includes(bare);
+  return bare !== '' && containsWordSequence(withoutFillers(sentence), bare);
 }
 
 /** Mirrors `fn matched_intent_cue`: `[intent, cue]` or null. */
@@ -500,7 +508,9 @@ function collectPathArguments(text, rawCue, vocab, count, anchored) {
   const cueParts = splitWhitespace(cue);
   const args = [];
   for (const word of splitWhitespace(text)) {
-    const candidate = trimTrailingSentenceDot(trimMatches(word, (character) => '`"\',;:!?'.includes(character)));
+    // A quoted operand closes before the full stop: `'b.txt'.` (PR #1188 G37).
+    const quote = (character) => '`"\',;:!?'.includes(character);
+    const candidate = trimMatches(trimTrailingSentenceDot(trimMatches(word, quote)), quote);
     const normalized = candidate.toLowerCase();
     if (!candidate || !isSafePath(candidate) || (!anchored && !looksLikeAPath(candidate))
       || cueParts.includes(normalized) || vocab.argument_noise.includes(normalized)) continue;

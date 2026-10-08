@@ -759,3 +759,143 @@ multilingual_responses
     intent coding_workspace_fragment_refused
     language es
     text "Se rechazó cambiar `{path}`: el resultado calculado eliminaría la mayor parte del archivo, y la solicitud no lo pide."
+  response response_workspace_search_hits_en
+    intent workspace_search_hits
+    language en
+    text "Found {count} line(s) mentioning `{pattern}` in `{scope}`:\n{hits}"
+  response response_workspace_search_hits_ru
+    intent workspace_search_hits
+    language ru
+    text "Найдено строк с `{pattern}` в `{scope}`: {count}.\n{hits}"
+  response response_workspace_search_hits_hi
+    intent workspace_search_hits
+    language hi
+    text "`{scope}` में `{pattern}` वाली {count} पंक्ति(याँ) मिलीं:\n{hits}"
+  response response_workspace_search_hits_zh
+    intent workspace_search_hits
+    language zh
+    text "在 `{scope}` 中找到 {count} 行提到 `{pattern}`：\n{hits}"
+  response response_workspace_search_hits_es
+    intent workspace_search_hits
+    language es
+    text "Se encontraron {count} línea(s) que mencionan `{pattern}` en `{scope}`:\n{hits}"
+  response response_workspace_search_none_en
+    intent workspace_search_none
+    language en
+    text "No line in `{scope}` mentions `{pattern}`."
+  response response_workspace_search_none_ru
+    intent workspace_search_none
+    language ru
+    text "В `{scope}` нет строк с `{pattern}`."
+  response response_workspace_search_none_hi
+    intent workspace_search_none
+    language hi
+    text "`{scope}` में कोई पंक्ति `{pattern}` का उल्लेख नहीं करती।"
+  response response_workspace_search_none_zh
+    intent workspace_search_none
+    language zh
+    text "`{scope}` 中没有任何一行提到 `{pattern}`。"
+  response response_workspace_search_none_es
+    intent workspace_search_none
+    language es
+    text "Ninguna línea en `{scope}` menciona `{pattern}`."
+  response response_function_expectation_holds_en
+    intent function_expectation_holds
+    language en
+    text "No defect found: `{call}` in `{path}` returned `{observed}`, the expected `{expected}`, so `{path}` is unchanged."
+  response response_function_expectation_holds_ru
+    intent function_expectation_holds
+    language ru
+    text "Ошибка не найдена: `{call}` в `{path}` вернула `{observed}` — ожидаемое `{expected}`, поэтому `{path}` не изменён."
+  response response_function_expectation_holds_hi
+    intent function_expectation_holds
+    language hi
+    text "कोई दोष नहीं मिला: `{path}` में `{call}` ने `{observed}` लौटाया, जो अपेक्षित `{expected}` है, इसलिए `{path}` अपरिवर्तित है।"
+  response response_function_expectation_holds_zh
+    intent function_expectation_holds
+    language zh
+    text "未发现缺陷：`{path}` 中的 `{call}` 返回了 `{observed}`，与预期的 `{expected}` 一致，因此 `{path}` 未作修改。"
+  response response_function_expectation_holds_es
+    intent function_expectation_holds
+    language es
+    text "No se encontró ningún defecto: `{call}` en `{path}` devolvió `{observed}`, el valor esperado `{expected}`, así que `{path}` no cambió."
+  response response_function_expectation_fails_en
+    intent function_expectation_fails
+    language en
+    text "The defect is confirmed: `{call}` in `{path}` returned `{observed}`, but the request expects `{expected}`. `{path}` is unchanged."
+  response response_function_expectation_fails_ru
+    intent function_expectation_fails
+    language ru
+    text "Ошибка подтверждена: `{call}` в `{path}` вернула `{observed}`, а запрос ожидает `{expected}`. `{path}` не изменён."
+  response response_function_expectation_fails_hi
+    intent function_expectation_fails
+    language hi
+    text "दोष की पुष्टि हुई: `{path}` में `{call}` ने `{observed}` लौटाया, पर अनुरोध `{expected}` की अपेक्षा करता है। `{path}` अपरिवर्तित है।"
+  response response_function_expectation_fails_zh
+    intent function_expectation_fails
+    language zh
+    text "缺陷已确认：`{path}` 中的 `{call}` 返回了 `{observed}`，但请求期望 `{expected}`。`{path}` 未作修改。"
+  response response_function_expectation_fails_es
+    intent function_expectation_fails
+    language es
+    text "El defecto está confirmado: `{call}` en `{path}` devolvió `{observed}`, pero la solicitud espera `{expected}`. `{path}` no cambió."
+  response response_general_change_existing_file_kept_en
+    intent general_change_existing_file_kept
+    language en
+    text "Left `{path}` unchanged: it already has content, and the request does not say to replace the whole file."
+  response response_general_change_existing_file_kept_ru
+    intent general_change_existing_file_kept
+    language ru
+    text "`{path}` оставлен без изменений: в нём уже есть содержимое, а запрос не говорит заменить весь файл."
+  response response_general_change_existing_file_kept_hi
+    intent general_change_existing_file_kept
+    language hi
+    text "`{path}` अपरिवर्तित छोड़ा: उसमें पहले से सामग्री है, और अनुरोध पूरी फ़ाइल बदलने को नहीं कहता।"
+  response response_general_change_existing_file_kept_zh
+    intent general_change_existing_file_kept
+    language zh
+    text "`{path}` 保持不变：它已有内容，而请求并未要求替换整个文件。"
+  response response_general_change_existing_file_kept_es
+    intent general_change_existing_file_kept
+    language es
+    text "`{path}` se dejó sin cambios: ya tiene contenido y la solicitud no pide reemplazar todo el archivo."
+  response response_module_exports_listed_en
+    intent module_exports_listed
+    language en
+    text "`{path}` exports {count} function(s): {names}."
+  response response_module_exports_listed_ru
+    intent module_exports_listed
+    language ru
+    text "`{path}` экспортирует функции ({count}): {names}."
+  response response_module_exports_listed_hi
+    intent module_exports_listed
+    language hi
+    text "`{path}` {count} फ़ंक्शन निर्यात करता है: {names}।"
+  response response_module_exports_listed_zh
+    intent module_exports_listed
+    language zh
+    text "`{path}` 导出 {count} 个函数：{names}。"
+  response response_module_exports_listed_es
+    intent module_exports_listed
+    language es
+    text "`{path}` exporta {count} función(es): {names}."
+  response response_module_exports_none_en
+    intent module_exports_none
+    language en
+    text "`{path}` exports no function."
+  response response_module_exports_none_ru
+    intent module_exports_none
+    language ru
+    text "`{path}` не экспортирует ни одной функции."
+  response response_module_exports_none_hi
+    intent module_exports_none
+    language hi
+    text "`{path}` कोई फ़ंक्शन निर्यात नहीं करता।"
+  response response_module_exports_none_zh
+    intent module_exports_none
+    language zh
+    text "`{path}` 没有导出任何函数。"
+  response response_module_exports_none_es
+    intent module_exports_none
+    language es
+    text "`{path}` no exporta ninguna función."

@@ -6,12 +6,15 @@ import { classifyTool, toolFor } from './capability_router.mjs';
 import { sourceFromAgentReadResult, sourceFromReadResult } from './code_artifact.mjs';
 import { renderRustTemplate, renderSeededChange, renderSeededOutcome, rustSourceForTask } from './code_task.mjs';
 import { plainText } from './content.mjs';
+import { contentsSource, withContents } from './contents_source.mjs';
+import { insertedInSection, sectionScope } from './markdown_section.mjs';
 import { composeEditRequest } from './general_planner.mjs';
 import { editArguments } from './intent_router.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import {
-  anchorContext, composePositionalInsert, introducedBlock, positionalInserts, unescapeProseNewlines, unquotedPathTokens,
+  anchorContext, composePositionalInsert, introducedBlock, leadingIndentation, positionalInserts, rebasedBlock,
+  joinedLiteralLines, unescapeProseNewlines, unquotedPathTokens,
 } from './positional_edit.mjs';
 import { bareSurfaces, cleanCueToken, cleanPathToken, looksLikeFilePath, safeRelativePath, tokens } from './write_request.mjs';
 import { commandArgument, failureMessage } from './tool_result.mjs';
@@ -40,8 +43,12 @@ const statedSlots = (rewrite) => rewrite.slots ?? [['{old}', rewrite.pattern], [
  * @param {Array<string>} toolNames
  */
 export function planWorkspaceChangeStep(rawTask, messages, toolNames) {
-  const task = unwrapTransportQuotes(rawTask);
   const currentTurn = messages.slice(evidenceWindowStart(messages));
+  // `Append the contents of a.txt to b.txt`: the source is read, and the
+  // request is restated with its lines as the block placed (PR #1188 G50).
+  const sourced = sourcedRequest(unwrapTransportQuotes(rawTask), currentTurn);
+  if (sourced?.read) return planWithTool(toolNames, Capability.Read, readArguments(sourced.read));
+  const task = sourced?.task ?? unwrapTransportQuotes(rawTask);
   const change = compositeModuleChange(task);
   if (change) return planCompositeStep(task, currentTurn, toolNames, change);
   // A whole-line operation (numbered, adjacent, moved, swapped lines) is read
@@ -55,6 +62,23 @@ export function planWorkspaceChangeStep(rawTask, messages, toolNames) {
   const computed = groundedEndInsertion(task) ?? groundedRemoval(task) ?? groundedDeclarationRemoval(task)
     ?? groundedLineReplacement(task) ?? groundedSetting(task) ?? groundedTypoFix(task);
   return computed ? planComputedChangeStep(task, currentTurn, toolNames, computed) : null;
+}
+
+/**
+ * Mirrors `fn sourced_request`: for a request whose additive edit places
+ * another file's contents, `{read: path}` until that file is read in this
+ * turn, then `{task}` restated with its lines; null otherwise, or when the
+ * restated request is no additive edit the composers place.
+ */
+function sourcedRequest(task, currentTurn) {
+  const source = contentsSource(task);
+  if (source === null) return null;
+  const places = (request) => insertSequence(request) !== null || groundedEndInsertion(request) !== null;
+  if (!places(withContents(task, source, 'x'))) return null;
+  const read = resultForPath(currentTurn, Capability.Read, source.path, null);
+  if (read === null) return { read: source.path };
+  if (sourceFromAgentReadResult(read) === null && failureMessage(read, false, true) !== null) return null;
+  return { task: withContents(task, source, sourceFromReadResult(read)) };
 }
 
 /** Mirrors `fn is_verification_failure_answer`. */
@@ -77,10 +101,11 @@ function planWithTool(toolNames, capability, args) {
   return tool ? planOne(tool, args) : null;
 }
 
-function planRewriteStep(task, currentTurn, toolNames, rewrite) {
-  const read = resultForPath(currentTurn, Capability.Read, rewrite.target, null);
-  if (read === null) return planWithTool(toolNames, Capability.Read, readArguments(rewrite.target));
+function planRewriteStep(task, currentTurn, toolNames, grounded) {
+  const read = resultForPath(currentTurn, Capability.Read, grounded.target, null);
+  if (read === null) return planWithTool(toolNames, Capability.Read, readArguments(grounded.target));
   const source = sourceFromReadResult(read);
+  const rewrite = asWritten(source, grounded);
   const updated = rewrittenSource(source, rewrite);
   if (updated === null) return failed(task, rewrite.target);
   const occurrences = rewrite.scope === RewriteScope.Substring
@@ -116,6 +141,17 @@ function planRewriteStep(task, currentTurn, toolNames, rewrite) {
   if (observed === null) return planWithTool(toolNames, Capability.Run, jsonText({ command }));
   if (observed !== updated) return failed(task, rewrite.target);
   return finalOrNull(renderSeededChange(statedIntent(rewrite), task, rewrite.target, statedSlots(rewrite)));
+}
+
+/**
+ * Mirrors `fn as_written`: the request unescapes `\n` / `\t` in its literals;
+ * when the file holds no such text but holds the needle as written (source
+ * code quoting `'\n'`), the literals are the text as written (PR #1188 G65).
+ */
+function asWritten(source, rewrite) {
+  const { verbatim } = rewrite;
+  if (!verbatim || source.includes(rewrite.pattern) || !source.includes(verbatim.pattern)) return rewrite;
+  return { ...rewrite, pattern: verbatim.pattern, replacement: verbatim.replacement, verbatim: null };
 }
 
 function planCompositeStep(task, currentTurn, toolNames, change) {
@@ -204,9 +240,11 @@ function changedLinesEdit(source, updated) {
   let suffix = 0;
   while (suffix < source.length - prefix && suffix < updated.length - prefix
     && source[source.length - 1 - suffix] === updated[updated.length - 1 - suffix]) suffix += 1;
-  const start = source.lastIndexOf('\n', prefix - 1) + 1;
+  let start = source.lastIndexOf('\n', prefix - 1) + 1;
   const lineEnd = source.indexOf('\n', source.length - suffix);
   const end = lineEnd < 0 ? source.length : lineEnd;
+  // Lines inserted between two lines change none: the line above carries them.
+  if (start === end && start > 0) start = start < 2 ? 0 : source.lastIndexOf('\n', start - 2) + 1;
   const old = source.slice(start, end);
   const next = updated.slice(start, updated.length - (source.length - end));
   if (old === '' || new TextEncoder().encode(old).length > MAX_EDIT_BYTES) return null;
@@ -225,19 +263,39 @@ function groundedPositionalInsert(task) {
   const inserted = after ? replacement.slice(anchor.length + 1) : replacement.slice(0, -(anchor.length + 1));
   return {
     target, pattern: anchor, replacement, scope: RewriteScope.Substring, unique: true,
-    intent: after ? 'file_edit_position_after' : 'file_edit_position_before',
+    intent: insertIntent(after, inserted),
     slots: [['{new}', inserted], ['{anchor}', anchor]],
   };
 }
 
+/** Mirrors `fn insert_intent`: the sentence stating an insert; an empty line is stated in its own words. */
+const insertIntent = (after, inserted) => {
+  if (inserted === '') return 'file_edit_blank_line';
+  return after ? 'file_edit_position_after' : 'file_edit_position_before';
+};
+
 /**
- * Mirrors `fn insert_sequence`: the inserts a request asks for when one
- * anchored rewrite cannot carry them -- several clauses (`…, and insert …`),
- * or an anchor named by the line it follows (T31, T34) -- or null.
+ * Mirrors `fn insert_sequence`: every insert the request asks for, each its
+ * own anchored edit -- several clauses (`…, and insert …`), an anchor named
+ * by the line it follows (T31, T34), lines rebased on the anchor (G16), or
+ * one insert whose anchor is a whole line also found inside others.
  */
 function insertSequence(task) {
-  const inserts = positionalInserts(task);
-  return inserts !== null && (inserts.length > 1 || inserts[0].context !== null) ? inserts : null;
+  return positionalInserts(task);
+}
+
+/**
+ * Mirrors `fn lone_line_occurrences`: where `text` occurs in `source` as a
+ * whole line but for its indentation -- `the line 'b'` is the line `b`, not
+ * the `b` inside `table a`.
+ */
+function loneLineOccurrences(source, text) {
+  return matchIndices(source, text).filter((index) => {
+    const lineStart = index === 0 ? 0 : source.lastIndexOf('\n', index - 1) + 1;
+    const newline = source.indexOf('\n', index + text.length);
+    const rest = source.slice(index + text.length, newline < 0 ? source.length : newline);
+    return trim(source.slice(lineStart, index)) === '' && (text.endsWith('\n') || trim(rest) === '');
+  });
 }
 
 /**
@@ -248,7 +306,9 @@ function insertSequence(task) {
  */
 function insertEdit(source, insert) {
   const lead = insert.context ?? insert.anchor;
-  const leads = matchIndices(source, lead);
+  let leads = matchIndices(source, lead);
+  // A lead found inside other lines too names the one line it is by itself.
+  if (leads.length > 1) leads = loneLineOccurrences(source, lead);
   if (leads.length !== 1 || insert.anchor === '') return null;
   // After a context, a line that is exactly the anchor outranks one that only
   // contains it (`text set` is not `text setting`).
@@ -270,10 +330,22 @@ function insertEdit(source, insert) {
   const end = insert.anchor.endsWith('\n') ? tail - 1 : newline < 0 ? source.length : newline;
   const old = source.slice(start, end);
   const anchorLine = lineStart(at);
+  const inserted = insertedText(source, anchorLine, insert);
   const next = insert.after
-    ? `${old}\n${insert.inserted}`
-    : `${source.slice(start, anchorLine)}${insert.inserted}\n${source.slice(anchorLine, end)}`;
-  return [start, old, next];
+    ? `${old}\n${inserted}`
+    : `${source.slice(start, anchorLine)}${inserted}\n${source.slice(anchorLine, end)}`;
+  return [start, old, next, inserted];
+}
+
+/**
+ * Mirrors `fn inserted_text`: the lines an insert puts beside the anchor's
+ * line -- rebased on that line's indentation when they came as an unfenced
+ * block, so they land as its siblings (PR #1188 G16).
+ */
+function insertedText(source, anchorLine, insert) {
+  if (!insert.rebase) return insert.inserted;
+  const newline = source.indexOf('\n', anchorLine);
+  return rebasedBlock(insert.inserted, leadingIndentation(source.slice(anchorLine, newline < 0 ? source.length : newline)));
 }
 
 /**
@@ -295,13 +367,13 @@ function planInsertSequenceStep(task, currentTurn, toolNames, inserts) {
     const source = expected.get(insert.target);
     const edit = insertEdit(source, insert);
     if (edit === null) return failed(task, insert.target);
-    const [start, old, next] = edit;
+    const [start, old, next, inserted] = edit;
     if (resultForEdit(currentTurn, insert.target, old, next) === null) {
       return planOne(editTool, editArguments(insert.target, old, next));
     }
     expected.set(insert.target, `${source.slice(0, start)}${next}${source.slice(start + old.length)}`);
-    stated.push(renderSeededChange(insert.after ? 'file_edit_position_after' : 'file_edit_position_before', task,
-      insert.target, [['{new}', insert.inserted], ['{anchor}', insert.anchor]]));
+    stated.push(renderSeededChange(insertIntent(insert.after, inserted), task,
+      insert.target, [['{new}', inserted], ['{anchor}', insert.anchor]]));
   }
   for (const [target, content] of expected) {
     const command = `sha256sum -- ${target}`;
@@ -328,8 +400,11 @@ function groundedRewrite(task) {
   const quoted = quotedSegments(task).map(unescapeProseNewlines);
   let old;
   let next;
+  let verbatim = null;
   if (quoted.includes(oldClause) && quoted.includes(newClause)) {
     [old, next] = [oldClause, newClause];
+    const asQuoted = (text) => quotedSegments(task).find((raw) => raw !== text && unescapeProseNewlines(raw) === text) ?? text;
+    if (asQuoted(old) !== old) verbatim = { pattern: asQuoted(old), replacement: asQuoted(next) };
   } else if (renaming) {
     old = identifierTokens(oldClause).pop();
     next = identifierTokens(newClause)[0];
@@ -340,7 +415,7 @@ function groundedRewrite(task) {
   const words = isIdentifierWord(old) && isIdentifierWord(next);
   const scope = words && (renaming || next.includes(old)) ? RewriteScope.Word : RewriteScope.Substring;
   if (old === '' || old === next || (scope === RewriteScope.Substring && next.includes(old))) return null;
-  return { target, pattern: old, replacement: next, scope, renaming: renaming && scope === RewriteScope.Word };
+  return { target, pattern: old, replacement: next, scope, renaming: renaming && scope === RewriteScope.Word, verbatim };
 }
 
 /**
@@ -351,6 +426,39 @@ function groundedRewrite(task) {
 function quotedPayloadAndPath(task) {
   const named = namedTargetAndPayloads(task);
   return named && named.payloads.length === 1 ? { target: named.target, text: named.payloads[0] } : null;
+}
+
+/**
+ * Mirrors the section arm of `fn grounded_end_insertion`: the text placed at
+ * one end of a Markdown section, stated as inserted after the line it now
+ * follows.
+ */
+function groundedSectionInsertion(section, atEnd) {
+  const text = unescapeProseNewlines(section.text);
+  const placed = (source) => insertedInSection(source, section.heading, text, atEnd);
+  return {
+    target: section.target,
+    compute: (source, missing) => (missing ? null : placed(source)?.updated ?? null),
+    edit: changedLinesEdit,
+    intent: 'file_edit_position_after',
+    slots: [['{new}', text], ['{anchor}', section.heading]],
+    reported: (source) => {
+      const result = placed(source);
+      return result === null ? null : { intent: 'file_edit_position_after', slots: [['{new}', text], ['{anchor}', result.anchor]] };
+    },
+  };
+}
+
+/**
+ * Mirrors `fn quoted_lines_and_path`: several quoted literals, joined only by
+ * seeded joiners and commas, are the lines added, each its own line, as
+ * written (PR #1188 G53, G54).
+ */
+function quotedLinesAndPath(task) {
+  const named = namedTargetAndPayloads(task);
+  if (!named || named.payloads.length < 2) return null;
+  const text = joinedLiteralLines(task, named.target);
+  return text === null ? null : { target: named.target, text, lines: true };
 }
 
 /**
@@ -366,14 +474,17 @@ function groundedEndInsertion(task) {
   const lowered = sentenceWords(block === null ? task : block.head);
   const atEnd = mentionsRole('file_edit_position_end', lowered);
   if (atEnd === mentionsRole('file_edit_position_start', lowered)) return null;
+  // `… at the end of the section '## Usage' in README.md` (PR #1188 G35).
+  const section = block === null ? sectionScope(task, outsideQuotes(task)) : null;
+  if (section) return groundedSectionInsertion(section, atEnd);
   const named = block === null
-    ? quotedPayloadAndPath(task) ?? blankLineAndPath(task) ?? linePayloadAndPath(task)
+    ? quotedPayloadAndPath(task) ?? quotedLinesAndPath(task) ?? blankLineAndPath(task) ?? linePayloadAndPath(task)
     : blockPayloadAndPath(block);
   if (!named) return null;
-  const text = block === null ? unescapeProseNewlines(named.text) : named.text;
+  const text = block === null && !named.lines ? unescapeProseNewlines(named.text) : named.text;
   return {
     target: named.target,
-    compute: (source) => insertedAtEnd(source, text, atEnd),
+    compute: (source) => insertedAtEnd(source, block === null ? text : appendedBlock(source, block), atEnd),
     edit: (source, updated) => (source === '' ? null : compactEndEdit(source, updated, atEnd)),
     // An empty line has no text to quote back; it is stated in its own words.
     intent: named.text === '' ? 'file_edit_blank_line' : atEnd ? 'file_edit_position_end' : 'file_edit_position_start',
@@ -390,8 +501,9 @@ function groundedEndInsertion(task) {
  *
  * A request that names a line outside its quotes (the seeded `line` meaning:
  * `the line containing '…'`, `lines`, `строку`, `पंक्ति`, `的行`) removes whole
- * lines: every line that contains the payload goes, never only the payload
- * inside it (PR #1188 dogfooding).
+ * lines, never only the payload inside one: the lines equal to the payload,
+ * else its one containing line, or with the seeded `line_containment_cue`
+ * every line containing it (PR #1188 G60).
  */
 function groundedRemoval(task) {
   const lowered = sentenceWords(task);
@@ -399,16 +511,17 @@ function groundedRemoval(task) {
   const named = quotedPayloadAndPath(task);
   if (!named) return null;
   const byLine = namesLine(task);
+  const containing = byLine && mentionsRole('line_containment_cue', outsideQuotes(task));
   return {
     target: named.target,
     compute: (source, missing) => {
       if (missing) return null;
-      return byLine ? removedLines(source, named.text) : removedLiteral(source, named.text);
+      return byLine ? removedLines(source, named.text, containing) : removedLiteral(source, named.text);
     },
     edit: changedLinesEdit,
     intent: 'coding_text_remove',
     slots: [['{old}', named.text]],
-    reported: byLine ? (source) => removedLinesReport(source, named.text) : null,
+    reported: byLine ? (source) => removedLinesReport(source, named.text, containing) : null,
   };
 }
 
@@ -547,8 +660,8 @@ export function sentenceWords(task) {
   return task.toLowerCase().replace(/[.!?;:,\u0964\u0965\u3002\uff01\uff1f]+(?=\s|$)/gu, ' ');
 }
 
-/** Mirrors `fn names_line`: the seeded `line` meaning, outside the request's quotes. */
-function namesLine(task) {
+/** The lowered request outside its quotes (each quote set off as a space). */
+function outsideQuotes(task) {
   let outside = '';
   let cursor = 0;
   for (const segment of quotedSegmentSpans(task)) {
@@ -556,13 +669,35 @@ function namesLine(task) {
     outside += `${task.slice(cursor, segment.start)} `;
     cursor = segment.end;
   }
-  return meaningEvidencedIn('line', normalizePrompt(outside + task.slice(cursor)).toLowerCase());
+  return normalizePrompt(outside + task.slice(cursor)).toLowerCase();
 }
 
-/** Mirrors `fn removed_lines`: `source` without every line containing `text`. */
-function removedLines(source, text) {
-  const kept = source.split(/(?<=\n)/u).filter((line) => !line.includes(text)).join('');
-  return kept === source ? null : kept;
+/** Mirrors `fn names_line`: the seeded `line` meaning, outside the request's quotes. */
+function namesLine(task) {
+  return meaningEvidencedIn('line', outsideQuotes(task));
+}
+
+/**
+ * Mirrors `fn removed_line_indices`: the lines a line removal takes. With the
+ * seeded `line_containment_cue` (`the lines containing 'x'`) every line that
+ * contains the payload; otherwise the lines that are the payload but for
+ * their indentation, else the one line containing it (PR #1188 G60:
+ * `Delete the line 'x'` removed every line holding the letter x).
+ */
+function removedLineIndices(source, text, containing) {
+  const bare = source.split(/(?<=\n)/u).map((line) => line.replace(/\r?\n$/u, ''));
+  const holding = bare.flatMap((line, index) => (line.includes(text) ? [index] : []));
+  if (containing) return holding;
+  const equal = holding.filter((index) => trim(bare[index]) === trim(text));
+  if (equal.length > 0) return equal;
+  return holding.length === 1 ? holding : [];
+}
+
+/** Mirrors `fn removed_lines`: `source` without the lines [`removedLineIndices`] takes. */
+function removedLines(source, text, containing) {
+  const taken = new Set(removedLineIndices(source, text, containing));
+  if (taken.size === 0) return null;
+  return source.split(/(?<=\n)/u).filter((_, index) => !taken.has(index)).join('');
 }
 
 /**
@@ -570,8 +705,9 @@ function removedLines(source, text) {
  * reported as the payload's removal; lines that only contained it are
  * reported as lines, with their count.
  */
-function removedLinesReport(source, text) {
-  const removed = source.split(/(?<=\n)/u).map((line) => line.replace(/\r?\n$/u, '')).filter((line) => line.includes(text));
+function removedLinesReport(source, text, containing) {
+  const bare = source.split(/(?<=\n)/u).map((line) => line.replace(/\r?\n$/u, ''));
+  const removed = removedLineIndices(source, text, containing).map((index) => bare[index]);
   if (removed.every((line) => line === text)) return null;
   return { intent: 'line', slots: [['{old}', text], ['{count}', String(removed.length)]] };
 }
@@ -595,6 +731,9 @@ function groundedSetting(task) {
   const [target, oldClause, value] = edit;
   const stated = statedOldValue(oldClause);
   if (stated === null && !mentionsRole('config_value_lead', sentenceWords(task))) return null;
+  // `set the contents of note.txt to hello` writes the file; its contents are
+  // not a key (PR #1188 G68, issue #745).
+  if (stated === null && mentionsRole('file_contents_source_cue', sentenceWords(task))) return null;
   const keyClause = stated === null ? oldClause : stated.key;
   const quoted = quotedSegments(keyClause);
   const key = quoted.length === 1 ? quoted[0] : identifierTokens(keyClause).pop();
@@ -624,15 +763,29 @@ function groundedLineReplacement(task) {
   if (!edit || composePositionalInsert(task) !== null) return null;
   const [target, old, next] = edit;
   const quoted = quotedSegments(request).map(unescapeProseNewlines);
-  if (!quoted.includes(old) || !quoted.includes(next) || old === '' || old === next) return null;
+  // Lines under the request (G22) replace the line as its siblings, unless
+  // they were fenced or quoted.
+  const block = introducedBlock(task);
+  const lines = block !== null && block.text === next;
+  if (!quoted.includes(old) || (!lines && !quoted.includes(next)) || old === '' || old === next) return null;
   const after = context === null ? null : context.text;
+  const replacement = (source) => (lines && !block.verbatim ? rebasedBlock(next, lineIndentation(source, old)) : next);
   return {
     target,
-    compute: (source, missing) => (missing ? null : replacedLines(source, old, next, after)),
+    compute: (source, missing) => (missing ? null : replacedLines(source, old, replacement(source), after)),
     edit: (source, updated) => contextLinesEdit(source, updated, after),
     intent: 'coding_text_replaced',
     slots: [['{old}', old], ['{new}', next]],
   };
+}
+
+/**
+ * Mirrors `fn line_indentation`: the indentation of the first line that is
+ * `text` but for its indentation, or none.
+ */
+function lineIndentation(source, text) {
+  const line = source.split('\n').find((candidate) => trim(candidate) === trim(text));
+  return line === undefined ? '' : leadingIndentation(line);
 }
 
 /**
@@ -937,6 +1090,19 @@ function linePayloadAndPath(task) {
   }
   if (end <= leadEnd) return null;
   return { target, text: task.slice(toks[leadEnd].start, toks[end - 1].end) };
+}
+
+/**
+ * Mirrors `fn appended_block`: lines under an append request, at the
+ * indentation they were given when the file already has lines indented
+ * exactly so (a `.lino` table appended among its siblings), else at the
+ * file's top level -- the indentation of lines written under a request is
+ * otherwise only the request's layout (PR #1188 G16).
+ */
+function appendedBlock(source, block) {
+  if (block.verbatim || block.indentation === '') return block.text;
+  const levels = source.split('\n').filter((line) => trim(line) !== '').map(leadingIndentation);
+  return levels.includes(block.indentation) ? rebasedBlock(block.text, block.indentation) : block.text;
 }
 
 /**

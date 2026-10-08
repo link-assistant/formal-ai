@@ -114,7 +114,20 @@ function nextCompletePair(text, cursor, open, close) {
   }
 }
 
+/**
+ * Mirrors `fn closing_delimiter`: the first close that is not an apostrophe
+ * inside a word, or, for a single quote, the one that closes a payload quoting
+ * a single-quoted literal of its own (`'- G1 "Delete the line 'x'." -'`,
+ * PR #1188 G61): a quote with a space before it and a word character after it
+ * opens a nested literal there, and the payload closes after that literal
+ * does. When such nesting never closes, the first close stands.
+ */
 function closingDelimiter(text, cursor, close) {
+  return close === "'" ? nestedClosingDelimiter(text, cursor) ?? plainClosingDelimiter(text, cursor, close)
+    : plainClosingDelimiter(text, cursor, close);
+}
+
+function plainClosingDelimiter(text, cursor, close) {
   let from = cursor;
   for (;;) {
     const closeAt = text.indexOf(close, from);
@@ -125,5 +138,22 @@ function closingDelimiter(text, cursor, close) {
       && isAsciiAlphanumeric(Array.from(text.slice(afterClose, afterClose + 2))[0]);
     if (!isAsciiApostrophe) return closeAt;
     from = afterClose;
+  }
+}
+
+/** Mirrors `fn nested_closing_delimiter`. */
+function nestedClosingDelimiter(text, cursor) {
+  let depth = 0;
+  let from = cursor;
+  for (;;) {
+    const closeAt = text.indexOf("'", from);
+    if (closeAt < 0) return null;
+    from = closeAt + 1;
+    const before = previousChar(text, closeAt);
+    const after = Array.from(text.slice(from, from + 2))[0];
+    if (isAsciiAlphanumeric(before) && isAsciiAlphanumeric(after)) continue;
+    if (before !== undefined && /\s/u.test(before) && isAsciiAlphanumeric(after)) depth += 1;
+    else if (depth === 0) return closeAt;
+    else depth -= 1;
   }
 }

@@ -61,9 +61,9 @@ pub struct ModuleFunctionRequest {
 }
 
 /// `name(a, b)` and the byte offset it starts at.
-struct Signature {
-    name: String,
-    parameters: Vec<String>,
+pub(super) struct Signature {
+    pub(super) name: String,
+    pub(super) parameters: Vec<String>,
     at: usize,
 }
 
@@ -86,7 +86,7 @@ fn bare(word: &str) -> String {
 }
 
 /// The function-test contract of `language`. Mirrors `contract`.
-fn contract(language: &str) -> Option<LinoNode> {
+pub(super) fn contract(language: &str) -> Option<LinoNode> {
     let root = parse_lino(CONTRACTS);
     root.children
         .first()?
@@ -98,7 +98,7 @@ fn contract(language: &str) -> Option<LinoNode> {
 
 /// The language the seeded extension table names for `path`. Mirrors
 /// `extensionLanguage`.
-fn extension_language(path: &str) -> Option<String> {
+pub(super) fn extension_language(path: &str) -> Option<String> {
     let root = parse_lino(EXTENSIONS);
     root.children
         .first()?
@@ -171,7 +171,7 @@ fn is_identifier(text: &str) -> bool {
 
 /// `name(a, b)`: the first call-shaped signature whose parameters are
 /// identifiers. Mirrors `signature`.
-fn signature(text: &str) -> Option<Signature> {
+pub(super) fn signature(text: &str) -> Option<Signature> {
     for (open, _) in text.match_indices('(') {
         let Some(close) = text[open + 1..]
             .find([')', '('])
@@ -275,7 +275,7 @@ fn stated_command(request: &str) -> Option<String> {
 }
 
 /// The paths `text` names, each once, in order.
-fn paths_in(text: &str) -> Vec<String> {
+pub(super) fn paths_in(text: &str) -> Vec<String> {
     let mut paths: Vec<String> = Vec::new();
     for token in super::write_request::tokens(text) {
         let path = super::write_request::clean_path_token(token.text);
@@ -466,31 +466,52 @@ fn specified_value(request: &ModuleFunctionRequest, samples: &[String]) -> Optio
     let returns = words
         .iter()
         .position(|word| lexicon.mentions_role("coding_return_action", &bare(word)))?;
-    let bound = words[returns + 1..]
-        .iter()
-        .map(|word| {
-            request
-                .parameters
-                .iter()
-                .position(|parameter| *parameter == bare(word))
-                .and_then(|index| samples.get(index))
-                .map_or_else(|| (*word).to_owned(), Clone::clone)
-        })
-        .collect::<Vec<_>>()
-        .join(" ");
-    if let Some(candidate) = crate::calculation::calculation_expression_candidates(&bound)
-        .into_iter()
-        .next()
-    {
-        return evaluated(&candidate.expression);
-    }
     let after_signature = request
         .clause
         .find(')')
         .map_or(request.clause.as_str(), |close| {
             &request.clause[close + 1..]
         });
-    evaluated(&relation_expression(after_signature, samples)?)
+    stated_value(
+        &words[returns + 1..],
+        after_signature,
+        &request.parameters,
+        samples,
+    )
+}
+
+/// The value a stated return computes at `samples`.
+///
+/// The longest expression the words open with, its parameters bound to the
+/// samples (`a - b to m.mjs` reads `2 - 3`; the words after it belong to the
+/// request, PR #1188 T92), or else the arithmetic relation `relation_text`
+/// names applied to the samples. Mirrors `statedValue`.
+pub(super) fn stated_value(
+    words: &[&str],
+    relation_text: &str,
+    parameters: &[String],
+    samples: &[String],
+) -> Option<String> {
+    let bound = words
+        .iter()
+        .map(|word| {
+            parameters
+                .iter()
+                .position(|parameter| *parameter == bare(word))
+                .and_then(|index| samples.get(index))
+                .map_or_else(|| (*word).to_owned(), Clone::clone)
+        })
+        .collect::<Vec<_>>();
+    for end in (1..=bound.len()).rev() {
+        if let Some(candidate) =
+            crate::calculation::calculation_expression_candidates(&bound[..end].join(" "))
+                .into_iter()
+                .next()
+        {
+            return evaluated(&candidate.expression);
+        }
+    }
+    evaluated(&relation_expression(relation_text, samples)?)
 }
 
 /// The function's source in `request.language`: the one seeded binary
@@ -717,7 +738,7 @@ fn module_function_recipe(
 
 /// The file `path` as the transcript's read returned it; empty for a missing
 /// file, `None` when unread. Mirrors `readSource`.
-fn read_source(current_turn: &[ChatMessage], path: &str) -> Option<String> {
+pub(super) fn read_source(current_turn: &[ChatMessage], path: &str) -> Option<String> {
     let read =
         super::workspace_change::result_for_path(current_turn, Capability::Read, path, None)?;
     let missing = super::code_artifact::source_from_agent_read_result(&read).is_none()

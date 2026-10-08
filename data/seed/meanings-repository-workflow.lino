@@ -941,3 +941,127 @@ meanings
         text "intercambia"
       surface
         text "intercambiar"
+  line_ordinal_first
+    defined-by concept
+    defined-by one
+    role line_ordinal
+    precondition "a request names a line of a file by its ordinal"
+    effect "the line the ordinal counts to from the start of the file; the number is the one its cardinal meaning spells in digits"
+    unit "not applicable"
+    example "remove the first line"
+    lexeme en
+      surface
+        text "first"
+    lexeme ru
+      surface
+        text "первую"
+      surface
+        text "первая"
+      surface
+        text "первой"
+    lexeme hi
+      surface
+        text "पहली"
+      surface
+        text "पहला"
+    lexeme zh
+      surface
+        text "第一"
+    lexeme es
+      surface
+        text "primera"
+      surface
+        text "primer"
+  line_ordinal_second
+    defined-by concept
+    defined-by two
+    role line_ordinal
+    precondition "a request names a line of a file by its ordinal"
+    effect "the line the ordinal counts to from the start of the file"
+    unit "not applicable"
+    example "delete the second line"
+    lexeme en
+      surface
+        text "second"
+    lexeme ru
+      surface
+        text "вторую"
+      surface
+        text "вторая"
+      surface
+        text "второй"
+    lexeme hi
+      surface
+        text "दूसरी"
+      surface
+        text "दूसरा"
+    lexeme zh
+      surface
+        text "第二"
+    lexeme es
+      surface
+        text "segunda"
+      surface
+        text "segundo"
+  line_ordinal_third
+    defined-by concept
+    defined-by three
+    role line_ordinal
+    precondition "a request names a line of a file by its ordinal"
+    effect "the line the ordinal counts to from the start of the file"
+    unit "not applicable"
+    example "delete the third line"
+    lexeme en
+      surface
+        text "third"
+    lexeme ru
+      surface
+        text "третью"
+      surface
+        text "третья"
+      surface
+        text "третьей"
+    lexeme hi
+      surface
+        text "तीसरी"
+      surface
+        text "तीसरा"
+    lexeme zh
+      surface
+        text "第三"
+    lexeme es
+      surface
+        text "tercera"
+      surface
+        text "tercer"
+  line_ordinal_last
+    defined-by concept
+    defined-by one
+    role line_ordinal_last
+    precondition "a request names a line of a file by its ordinal counted from the end"
+    effect "the line the ordinal counts to from the end of the file"
+    unit "not applicable"
+    example "remove the last line"
+    lexeme en
+      surface
+        text "last"
+    lexeme ru
+      surface
+        text "последнюю"
+      surface
+        text "последняя"
+      surface
+        text "последней"
+    lexeme hi
+      surface
+        text "आखिरी"
+      surface
+        text "अंतिम"
+    lexeme zh
+      surface
+        text "最后一"
+    lexeme es
+      surface
+        text "última"
+      surface
+        text "último"

@@ -391,6 +391,14 @@ meanings
     unit "not applicable"
     example "block yaml renders as nested json"
     grounding "data/seed/multilingual-responses.lino"
+  format_conversion_json_identity
+    defined-by method
+    role action
+    precondition "a conversion request names only json as the target and its payload already parses as json"
+    effect "answers with the parsed json re-emitted with two-space indentation and the round-trip note"
+    unit "not applicable"
+    example "convert to json over a json object re-emits that object"
+    grounding "data/seed/multilingual-responses.lino"
   format_conversion_refusal
     defined-by method
     role action
@@ -486,6 +494,14 @@ meanings
     effect "routes the request to the csv-to-json conversion"
     unit "not applicable"
     example "a csv table with a header row is asked for as json"
+    grounding "data/seed/code-task-cues.lino"
+  json_target
+    defined-by method
+    role action
+    precondition "a conversion request names json as the only target and no source format"
+    effect "reads the source format from the payload and re-emits a payload that already parses as json"
+    unit "not applicable"
+    example "convert to json over a json object"
     grounding "data/seed/code-task-cues.lino"
   to_json
     defined-by method

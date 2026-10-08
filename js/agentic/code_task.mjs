@@ -6,7 +6,7 @@ import { toolFor } from './capability_router.mjs';
 import { latestResult } from './code_artifact.mjs';
 import { composeEditRequest } from './general_planner.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
-import { detect } from './crate/language.mjs';
+import { responseLanguage } from './tool_result.mjs';
 import { unwrapTransportQuotes } from './crate/normal_markov.mjs';
 import { localizedResponse, responseFor } from './crate/seed.mjs';
 import { firstRoleMatch, words } from './crate/seed_meanings.mjs';
@@ -105,18 +105,36 @@ export function renderRustTemplate(intent, substitutions) {
 
 /** Mirrors `fn render_seeded_outcome`. */
 export function renderSeededOutcome(intent, task, path) {
-  const template = localizedResponse(intent, detect(task));
+  const template = localizedResponse(intent, responseLanguage(task));
   return template === null || template === undefined ? null : renderTemplate(template, [['{path}', path]]);
 }
 
 /** Mirrors `fn render_seeded_change`. */
 export function renderSeededChange(intent, task, path, slots) {
-  const template = localizedResponse(intent, detect(task));
+  const template = localizedResponse(intent, responseLanguage(task));
   return template === null || template === undefined ? null : renderTemplate(template, [['{path}', path], ...slots]);
 }
 
+// A placeholder the seed sentence wraps in backticks becomes a CommonMark code
+// span: a value holding a backtick run gets a longer fence, padded when it
+// starts or ends with a backtick, so the inserted text reads back verbatim.
+// Mirrors `code_span` in rust/src/agentic_coding/code_task.rs.
+function codeSpanItem(value) {
+  const longest = Math.max(0, ...(value.match(/`+/g) ?? []).map((run) => run.length));
+  if (longest === 0) return `\`${value}\``;
+  const fence = '`'.repeat(longest + 1);
+  const pad = value.startsWith('`') || value.endsWith('`') ? ' ' : '';
+  return `${fence}${pad}${value}${pad}${fence}`;
+}
+
+// A list slot is joined with LIST_JOIN so that it reads `a`, `b` inside the
+// template's backticks; each item is fenced on its own.
+const LIST_JOIN = '`, `';
+const codeSpan = (value) => value.split(LIST_JOIN).map(codeSpanItem).join(', ');
+
 function renderTemplate(template, substitutions) {
-  return substitutions.reduce((text, [placeholder, value]) => text.split(placeholder).join(value), template);
+  return substitutions.reduce((text, [placeholder, value]) =>
+    text.split(`\`${placeholder}\``).join(codeSpan(value)).split(placeholder).join(value), template);
 }
 
 const isPathCharacter = (character) => isAsciiAlphanumeric(character) || '_-./'.includes(character);

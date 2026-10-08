@@ -135,3 +135,87 @@ multilingual_responses
     intent github_repository_traffic_unnamed
     language es
     text "En parte. No nombraste un repositorio, así que esto vale para cualquier repositorio de GitHub: GitHub muestra tráfico agregado a las personas con acceso de push o escritura: visualizaciones, visitantes únicos, clones, sitios de referencia y contenido popular durante el periodo reciente. No muestra la identidad de cada visitante. Nombra el repositorio como propietario/nombre para ver sus páginas de tráfico. Consulta GitHub Insights > Traffic o los endpoints REST de tráfico: {traffic_ui_docs}; {traffic_api_docs}."
+  response response_document_originality_check_price_claim_heading_en
+    intent document_originality_check_price_claim_heading
+    language en
+    text "Price claim check"
+  response response_document_originality_check_price_claim_heading_ru
+    intent document_originality_check_price_claim_heading
+    language ru
+    text "Проверка ценовых утверждений"
+  response response_document_originality_check_price_claim_heading_hi
+    intent document_originality_check_price_claim_heading
+    language hi
+    text "मूल्य दावों की जांच"
+  response response_document_originality_check_price_claim_heading_zh
+    intent document_originality_check_price_claim_heading
+    language zh
+    text "价格声明核查"
+  response response_software_project_followup_recorded_en
+    intent software_project_followup_recorded
+    language en
+    text "Recorded a {kind} follow-up for the {artifact} from the active plan."
+  response response_software_project_followup_heading_meaning_en
+    intent software_project_followup_heading_meaning
+    language en
+    text "Formalized meaning:"
+  response response_software_project_followup_heading_reasoning_en
+    intent software_project_followup_heading_reasoning
+    language en
+    text "Reasoning steps:"
+  response response_software_project_followup_heading_plan_en
+    intent software_project_followup_heading_plan
+    language en
+    text "Verification plan:"
+  response response_software_project_followup_step_recognize_en
+    intent software_project_followup_step_recognize
+    language en
+    text 'Recognize "{action}" as a {kind} request that exercises the {artifact} from the active plan, not a fact lookup.'
+  response response_software_project_followup_step_bind_site_en
+    intent software_project_followup_step_bind_site
+    language en
+    text "Bind the test target to {site} and keep live fetches behind the network_access gate."
+  response response_software_project_followup_step_record_output_en
+    intent software_project_followup_step_record_output
+    language en
+    text 'Record the expected output as "{output}" so the test harness can assert it.'
+  response response_software_project_followup_step_fixture_en
+    intent software_project_followup_step_fixture
+    language en
+    text "Drive the artifact through a deterministic fixture before any host API or network call."
+  response response_software_project_followup_step_gates_en
+    intent software_project_followup_step_gates
+    language en
+    text "Keep code execution behind approval gates because the sandbox cannot run untrusted code."
+  response response_software_project_followup_plan_generate_en
+    intent software_project_followup_plan_generate
+    language en
+    text "Generate the {artifact} core plus a deterministic test harness with a captured {site} fixture."
+  response response_software_project_followup_plan_assert_en
+    intent software_project_followup_plan_assert
+    language en
+    text "Assert each requirement (parsing, extraction, counting, summary) against the fixture."
+  response response_software_project_followup_plan_surface_en
+    intent software_project_followup_plan_surface
+    language en
+    text "Surface {output} from the fixture run."
+  response response_software_project_followup_plan_run_en
+    intent software_project_followup_plan_run
+    language en
+    text "Run the {language} test command once the generated_code gate is approved."
+  response response_software_project_followup_plan_promote_en
+    intent software_project_followup_plan_promote
+    language en
+    text "Promote the run to live {site} only after the test_execution and network_access gates pass."
+  response response_software_project_followup_default_target_en
+    intent software_project_followup_default_target
+    language en
+    text "the requested target"
+  response response_software_project_followup_approved_en
+    intent software_project_followup_approved
+    language en
+    text "The plan is approved, so the generated starter already includes this test harness. Running it live needs the test_execution and network_access gates."
+  response response_software_project_followup_proposed_en
+    intent software_project_followup_proposed
+    language en
+    text "Reply `approve plan` to generate the artifact plus this test harness. Running it live against the target needs the test_execution and network_access gates."

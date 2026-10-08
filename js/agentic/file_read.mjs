@@ -16,6 +16,10 @@ import { hasFileWriteIntent } from './general_planner.mjs';
 import { agenticMessage } from './messages.mjs';
 import { finalAnswer, jsonText, plannedCall, toolCalls } from './plan.mjs';
 import { sentences } from './shell_command_policy.mjs';
+import { explicitPassthroughCommand } from './shell_command.mjs';
+
+/** Mirrors `SHELL_OPERATORS`: shell syntax that chains, pipes or redirects commands. */
+const SHELL_OPERATORS = ['&&', '||', ';', '|', '>'];
 import { commandArgument, harnessReportedFailure, render, stripTransportEnvelope } from './tool_result.mjs';
 import { isStatedWriteTarget } from './write_request.mjs';
 import { sourceFromReadResult } from './code_artifact.mjs';
@@ -23,6 +27,7 @@ import { byteOrder, eqIgnoreAsciiCase, replaceAllLiteral, rsplitOnce, splitWhite
   trim, trimMatches } from './crate/rust_str.mjs';
 import { mentionsRole, wordsForRole } from './crate/seed_meanings.mjs';
 import { fileReadFinalAnswer } from './file_read/audit.mjs';
+import { lineSlice } from './workspace_line_operation.mjs';
 import { exactLineKey, planDirectFileReads } from './file_read/exact.mjs';
 
 export { suppliedFileAnswer } from './file_read/supplied.mjs';
@@ -42,11 +47,15 @@ export const FileReadMode = Object.freeze({
   Summary: Object.freeze({ kind: 'summary' }),
   Audit: Object.freeze({ kind: 'audit' }),
   extractValue: (key) => ({ kind: 'extract_value', key }),
+  /** A run of lines (`lineSlice` in workspace_line_operation.mjs, PR #1188 G33). */
+  lineSlice: (slice) => ({ kind: 'line_slice', ...slice }),
 });
 
 /** `FileReadMode` equality (`==`). */
 export function sameMode(left, right) {
-  return left.kind === right.kind && (left.kind !== 'extract_value' || left.key === right.key);
+  return left.kind === right.kind && (left.kind !== 'extract_value' || left.key === right.key)
+    && (left.kind !== 'line_slice'
+      || (left.from === right.from && left.to === right.to && left.fromEnd === right.fromEnd));
 }
 
 const isAudit = (mode) => mode.kind === 'audit';
@@ -184,6 +193,9 @@ function planListThenRead(directory, selection, mode, readTool, runTool, records
 export function fileReadTaskFor(prompt) {
   const lower = prompt.toLowerCase();
   if (hasFileWriteIntent(lower)) return null;
+  // A command quoted after a run prefix that chains, pipes or redirects is
+  // run as written, not read file by file (PR #1188 G62).
+  if (SHELL_OPERATORS.some((operator) => explicitPassthroughCommand(prompt)?.includes(operator))) return null;
   const catPath = leadingCatPath(prompt);
   if (catPath !== null) return directTask(catPath, FileReadMode.Full, false);
   if (asksToReadEveryFile(lower)) return listThenReadTask('.', 'all', FileReadMode.Summary);
@@ -251,7 +263,8 @@ function modeForPrompt(prompt) {
   if (key !== null) return FileReadMode.extractValue(key);
   if (mentionsRole(ROLE_WORKSPACE_INSPECTION_ACTION, lower)) return FileReadMode.Audit;
   if (lower.includes('summarize') || lower.includes('summary')) return FileReadMode.Summary;
-  return FileReadMode.Full;
+  const slice = lineSlice(prompt);
+  return slice === null ? FileReadMode.Full : FileReadMode.lineSlice(slice);
 }
 
 /** Mirrors `fn extract_value_key`. */

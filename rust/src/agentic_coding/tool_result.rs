@@ -12,6 +12,7 @@ use crate::seed::{
 
 // Issue #1154: the request's tool schemas name each tool's command property.
 mod command_keys;
+mod response_language;
 pub use command_keys::{command_argument_key, project_declared_command_keys};
 
 struct NormalizedResult {
@@ -926,8 +927,14 @@ fn is_search(label: &str) -> bool {
         .any(|kind| lower.contains(kind))
 }
 
+/// The language detected from the request's script, or -- when the script
+/// leaves it at the fallback language -- the one its words are seeded in.
 pub(super) fn response_language(prompt: &str) -> &'static str {
-    crate::language::detect(prompt).slug()
+    let detected = crate::language::detect(prompt).slug();
+    if detected == crate::language::fallback_language().slug() {
+        return response_language::lexical_language(prompt).unwrap_or(detected);
+    }
+    detected
 }
 
 fn fill(intent: &str, language: &str, values: &[(&str, &str)]) -> String {

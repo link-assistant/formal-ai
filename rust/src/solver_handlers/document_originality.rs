@@ -7,7 +7,8 @@ use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
 use crate::relative_meta_logic::{ASSUMED_TRUE_PRIOR, SourceTier};
-use crate::seed::{self, response_for};
+use crate::rule_interpreter::{handler_policy, handler_table_rows};
+use crate::seed::{self, fill_template_once, response_for};
 use crate::statement_verification::{
     MarketPriceAssessment, StatementVerificationPlan, TRUSTED_SOURCE_POLICY,
     assess_market_price_claims, extract_market_price_claims,
@@ -18,6 +19,37 @@ use super::web_requests::{WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K};
 use super::web_search_intent::WebSearchQueryKind;
 
 const TARGET_PLACEHOLDER: &str = concat!("{", "target", "}");
+const MARKER_TABLE: &str = "document_originality_marker";
+const SECTION: &str = "section";
+const SAMPLE: &str = "sample";
+const OMITTED: &str = "omitted";
+const UNAVAILABLE: &str = "unavailable";
+
+/// The attachment-envelope markers of the given kinds, in seed order.
+///
+/// Issue #918 (R918-2): the markers are the `document_originality_marker`
+/// table of `data/seed/handler-rules.lino` by kind, and the queries, the
+/// sample word limit and the default target its `document_originality_check`
+/// policy. Twin of `documentOriginalityMarkers` in
+/// `js/worker/formal_ai_worker_21.js`.
+fn originality_markers<'a>(kinds: &'a [&'a str]) -> impl Iterator<Item = &'static str> + 'a {
+    handler_table_rows(MARKER_TABLE)
+        .iter()
+        .filter(|(_, kind)| kinds.contains(&kind.as_str()))
+        .map(|(marker, _)| marker.as_str())
+}
+
+fn starts_with_marker(line: &str, kinds: &[&str]) -> bool {
+    originality_markers(kinds).any(|marker| line.starts_with(marker))
+}
+
+fn is_section_line(line: &str) -> bool {
+    originality_markers(&[SECTION]).any(|marker| line.eq_ignore_ascii_case(marker))
+}
+
+fn originality_policy(key: &str) -> String {
+    handler_policy("document_originality_check", key).unwrap_or_default()
+}
 
 pub fn try_document_originality_check(
     prompt: &str,
@@ -106,7 +138,7 @@ fn extract_attached_file_names(prompt: &str) -> Vec<String> {
     let mut names = Vec::new();
     for line in prompt.lines() {
         let trimmed = line.trim();
-        if trimmed.eq_ignore_ascii_case("Attached files:") {
+        if is_section_line(trimmed) {
             in_section = true;
             continue;
         }
@@ -116,11 +148,7 @@ fn extract_attached_file_names(prompt: &str) -> Vec<String> {
         if trimmed.is_empty() {
             continue;
         }
-        if trimmed.starts_with("OCR text:")
-            || trimmed.starts_with("Text excerpt:")
-            || trimmed.starts_with("Text sample:")
-            || trimmed.starts_with("Text omitted:")
-        {
+        if starts_with_marker(trimmed, &[SAMPLE, OMITTED]) {
             continue;
         }
         let Some((_, rest)) = trimmed.split_once(". ") else {
@@ -138,19 +166,20 @@ fn extract_attached_file_names(prompt: &str) -> Vec<String> {
 }
 
 fn has_text_sample(prompt: &str) -> bool {
-    prompt.lines().any(|line| {
-        let trimmed = line.trim();
-        trimmed.starts_with("OCR text:")
-            || trimmed.starts_with("Text excerpt:")
-            || trimmed.starts_with("Text sample:")
-    })
+    prompt
+        .lines()
+        .any(|line| starts_with_marker(line.trim(), &[SAMPLE]))
 }
 
 fn text_sample(prompt: &str) -> Option<String> {
     full_text_sample(prompt).and_then(|sample| {
         let sample = sample
             .split_whitespace()
-            .take(14)
+            .take(
+                originality_policy("sample_query_words")
+                    .parse()
+                    .unwrap_or(0),
+            )
             .collect::<Vec<_>>()
             .join(" ");
         if sample.is_empty() {
@@ -208,17 +237,13 @@ fn push_current_text_sample(samples: &mut Vec<String>, current: &mut Option<Stri
 }
 
 fn text_sample_prefix_value(trimmed: &str) -> Option<&str> {
-    ["Text excerpt:", "Text sample:", "OCR text:"]
-        .into_iter()
-        .find_map(|prefix| trimmed.strip_prefix(prefix))
+    originality_markers(&[SAMPLE]).find_map(|prefix| trimmed.strip_prefix(prefix))
 }
 
 fn is_attachment_context_boundary(trimmed: &str) -> bool {
-    trimmed.eq_ignore_ascii_case("Attached files:")
+    is_section_line(trimmed)
         || is_attachment_file_line(trimmed)
-        || trimmed.starts_with("Text omitted:")
-        || trimmed.starts_with("Text unavailable:")
-        || trimmed.starts_with("OCR unavailable:")
+        || starts_with_marker(trimmed, &[OMITTED, UNAVAILABLE])
 }
 
 fn is_attachment_file_line(trimmed: &str) -> bool {
@@ -317,12 +342,18 @@ fn log_statement_verification(prompt: &str, log: &mut EventLog) -> Vec<MarketPri
 
 fn document_originality_query(prompt: &str, attachments: &[String]) -> String {
     if let Some(sample) = text_sample(prompt) {
-        return format!("\"{sample}\" plagiarism originality");
+        return fill_template_once(
+            &originality_policy("sample_query"),
+            &[("sample", sample.as_str())],
+        );
     }
     if let Some(name) = attachments.first() {
-        return format!("{name} plagiarism originality uniqueness");
+        return fill_template_once(
+            &originality_policy("attachment_query"),
+            &[("name", name.as_str())],
+        );
     }
-    "document plagiarism originality uniqueness".to_owned()
+    originality_policy("default_query")
 }
 
 fn document_originality_body(
@@ -332,7 +363,7 @@ fn document_originality_body(
     market_assessments: &[MarketPriceAssessment],
 ) -> String {
     let target = if attachments.is_empty() {
-        "provided text".to_owned()
+        originality_policy("default_target")
     } else {
         attachments.join(", ")
     };
@@ -341,23 +372,15 @@ fn document_originality_body(
     } else {
         "document_originality_check_sample_missing"
     };
-    let template = response_for(template_intent, language)
-        .or_else(|| response_for(template_intent, "en"))
-        .unwrap_or_else(|| {
-            "Recognized an originality and plagiarism check for `{target}`.".to_owned()
-        });
+    let template = localized_response(template_intent, language);
     let mut body = template.replace(TARGET_PLACEHOLDER, &target);
     let contradicted = market_assessments
         .iter()
         .filter(|assessment| assessment.status == "contradicted")
         .collect::<Vec<_>>();
     if !contradicted.is_empty() {
-        let heading = match language {
-            "ru" => "Проверка ценовых утверждений",
-            "hi" => "मूल्य दावों की जांच",
-            "zh" => "价格声明核查",
-            _ => "Price claim check",
-        };
+        let heading =
+            localized_response("document_originality_check_price_claim_heading", language);
         let summaries = contradicted
             .into_iter()
             .map(|assessment| format!("- {}", assessment.summary_sentence()))
@@ -366,4 +389,11 @@ fn document_originality_body(
         body = format!("{body}\n\n{heading}:\n{summaries}");
     }
     body
+}
+
+/// The seeded response for `intent` in `language`, else in English.
+fn localized_response(intent: &str, language: &str) -> String {
+    response_for(intent, language)
+        .or_else(|| response_for(intent, "en"))
+        .unwrap_or_default()
 }

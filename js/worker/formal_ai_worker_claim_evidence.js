@@ -224,6 +224,5 @@ const CLASS_CLAIM_EVIDENCE = Object.freeze({
   memory_query_statement: (prompt) => claimEvidenceMemoryQueryStatement(prompt),
   fact_subject: (prompt, normalized) => Boolean(gatedFactRecord(normalized, prompt) || explanationConcept(prompt)
     || tryPromptTextQuestion(prompt, normalized) || tryFactComparison(prompt, normalized)),
-  // Native-only readers with no worker twin (the browser has no handler to admit).
-  learnable_source: () => false,
+  learnable_source: (prompt) => matchLearningDirective(String(prompt || "").toLowerCase()) !== null,
 });

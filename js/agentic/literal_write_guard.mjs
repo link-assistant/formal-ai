@@ -1,0 +1,70 @@
+// The literal-file backstop (PR #1188 T96; the guard behind G13, G17 and
+// T29): the general change plan wrote its target without reading it, so every
+// new misreading of an edit request as a whole-file write destroyed the file.
+// Unless the request's first write verb is a seeded whole-file write
+// (`file_whole_write_action`: create, write, save, new file, ... in every
+// registered language), the target is read first, and an existing non-empty
+// file is replaced only when the request consents to it
+// (`file_overwrite_consent`); otherwise the plan declines with a seeded
+// refusal naming the file. The per-shape guards (`namesAnAddition`, the
+// routed-write removal check) stay; this is the backstop.
+// rust/src/agentic_coding/literal_write_guard.rs.
+
+import { Capability } from './capability.mjs';
+import { toolFor } from './capability_router.mjs';
+import { normalizePrompt } from './crate/engine.mjs';
+import { detect } from './crate/language.mjs';
+import { renderResponse } from './crate/seed.mjs';
+import { mentionsRole } from './crate/seed_meanings.mjs';
+import { readSource } from './module_function.mjs';
+import { finalAnswer, planOne } from './plan.mjs';
+import { evidenceWindowStart } from './planner/continuation.mjs';
+import { readArguments } from './workspace_change.mjs';
+import { firstActionCueEnd, firstActionCueStart, tokens } from './write_request.mjs';
+
+const ROLE_WHOLE_WRITE = 'file_whole_write_action';
+const ROLE_OVERWRITE_CONSENT = 'file_overwrite_consent';
+const LITERAL_FILE = 'literal_file';
+
+/**
+ * Mirrors `fn writes_whole_file` in rust/src/agentic_coding/literal_write_guard.rs:
+ * whether the request's first write verb names a file's whole new content,
+ * or the request consents to replacing it.
+ * @param {string} request
+ */
+export function writesWholeFile(request) {
+  if (mentionsRole(ROLE_OVERWRITE_CONSENT, normalizePrompt(request))) return true;
+  const toks = tokens(request);
+  const start = firstActionCueStart(toks);
+  const end = firstActionCueEnd(toks);
+  return start !== null && end !== null && mentionsRole(ROLE_WHOLE_WRITE, normalizePrompt(request.slice(start, end)));
+}
+
+/**
+ * Mirrors `fn guarded_step`: the read of the target, or the refusal that
+ * keeps an existing file, ahead of a literal-file plan's writes; null when
+ * the plan may proceed.
+ */
+export function guardedStep(plan, messages, toolNames) {
+  if (plan.mode !== LITERAL_FILE || writesWholeFile(plan.goal)) return null;
+  const read = toolFor(toolNames, Capability.Read);
+  if (read === null) return null;
+  const source = readSource(messages.slice(evidenceWindowStart(messages)), plan.target);
+  if (source === null) return planOne(read, readArguments(plan.target));
+  if (source.trim() === '' || source === plan.content) return null;
+  const values = [['path', plan.target]];
+  return finalAnswer(renderResponse('general_change_existing_file_kept', detect(plan.goal), values)
+    ?? renderResponse('general_change_existing_file_kept', 'en', values));
+}
+
+/**
+ * Mirrors `fn is_guard_read`: the failure is the guard's read of a target
+ * that does not exist yet, which the plan goes on to create.
+ * @param {object} plan
+ * @param {string|null} failedPath the path of the failed call
+ * @param {string} capability the failed call's capability
+ */
+export function isGuardRead(plan, failedPath, capability) {
+  return plan.mode === LITERAL_FILE && capability === Capability.Read && failedPath === plan.target
+    && !writesWholeFile(plan.goal);
+}

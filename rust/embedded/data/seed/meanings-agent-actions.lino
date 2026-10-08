@@ -655,14 +655,6 @@ meanings
     unit "not applicable"
     example "сделай from Сделай отчёт по продажам"
     grounding "data/seed/handler-rules.lino"
-  document_format
-    defined-by method
-    role action
-    precondition "a document plan names the output format the request asks for"
-    effect "reads the first format label, in priority order, whose surface occurs in the request"
-    unit "not applicable"
-    example "PDF from make me a pdf"
-    grounding "data/seed/handler-rules.lino"
   document_ebook_marker
     defined-by method
     role action
@@ -830,4 +822,44 @@ meanings
     effect "reads the verb fragments a title sheds"
     unit "not applicable"
     example "安排"
+    grounding "data/seed/handler-rules.lino"
+  text_replacement_cue
+    defined-by method
+    role action
+    precondition "a text edit names a replacement of one quoted literal by another"
+    effect "reads the replacement cue and the order it quotes its operands in, target first or target after the cue"
+    unit "not applicable"
+    example "instead for target_follows_cue"
+    grounding "data/seed/handler-rules.lino"
+  text_input_context_cue
+    defined-by method
+    role action
+    precondition "a text edit may quote its input text before the operands"
+    effect "reads the surfaces before the first quote that make it the input text"
+    unit "not applicable"
+    example "text"
+    grounding "data/seed/handler-rules.lino"
+  text_input_continuation_cue
+    defined-by method
+    role action
+    precondition "a text edit carries its input on from the first quote to the operands"
+    effect "reads the surfaces between two quotes that continue the input"
+    unit "not applicable"
+    example "in"
+    grounding "data/seed/handler-rules.lino"
+  document_originality_marker
+    defined-by method
+    role action
+    precondition "an originality check reads the attachment envelope the client appends to the request"
+    effect "reads each envelope marker by kind: the section opener, a text sample, an omitted text or an unavailable text"
+    unit "not applicable"
+    example "Text excerpt: for sample"
+    grounding "data/seed/handler-rules.lino"
+  software_project_followup_action
+    defined-by method
+    role action
+    precondition "a software-project follow-up records the verb that exercises the artifact"
+    effect "reads the verb keyed by the role that recognized the follow-up kind"
+    unit "not applicable"
+    example "software_followup_verification for test"
     grounding "data/seed/handler-rules.lino"

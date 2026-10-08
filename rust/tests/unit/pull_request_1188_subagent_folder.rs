@@ -68,6 +68,23 @@ fn a_gap_entry_is_appended_to_the_gap_list() {
     );
 }
 
+/// G30: a literal holding a backtick run is echoed inside a longer fence, so
+/// the answer's Markdown shows it verbatim.
+#[test]
+fn an_entry_holding_backticks_is_echoed_as_one_code_span() {
+    let (_, file, answer) = drive(
+        "Append the line '- G3 the `x` flag' to experiments/formal_ai_subagent/gaps.md.",
+        GAP_LIST,
+    );
+    assert_eq!(file, format!("{GAP_LIST}- G3 the `x` flag\n"));
+    assert_eq!(
+        answer.as_deref(),
+        Some(
+            "Appended ``- G3 the `x` flag`` to the end of `experiments/formal_ai_subagent/gaps.md` and observed the result."
+        )
+    );
+}
+
 #[test]
 fn an_entry_is_placed_after_the_line_it_names() {
     let (_, file, _) = drive(
@@ -106,4 +123,17 @@ fn the_probe_tool_runs_as_asked() {
             "node experiments/formal_ai_subagent/probe.mjs path \"Read 'notes.txt'.\"".to_owned()
         )]
     );
+}
+
+#[test]
+fn the_local_gate_runner_runs_as_asked() {
+    let command = "node experiments/formal_ai_subagent/local-gates.mjs --only check_file_size";
+    let messages = [ChatMessage::user(format!("Run {command}"))];
+    let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &TOOLS) else {
+        panic!("a run request plans a tool call");
+    };
+    let arguments: serde_json::Value =
+        serde_json::from_str(&calls[0].arguments).expect("tool arguments are JSON");
+    assert_eq!(calls[0].tool, "bash");
+    assert_eq!(arguments["command"], command);
 }

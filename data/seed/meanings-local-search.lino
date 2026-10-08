@@ -490,3 +490,337 @@ meanings
         text 用一句话
       surface
         text 一句话
+  workspace_content_search_form
+    # PR #1188 T90 (gap G12): a request for the places a name or literal is
+    # used inside the workspace's files. `…` is the searched pattern (one
+    # identifier or one quoted literal); the content-search arm greps it and
+    # answers with the file:line hits, ahead of the file-name locate arm.
+    defined-by action
+    role workspace_content_search_form
+    precondition "a request asks where a name or literal occurs in the workspace files"
+    effect "the slot text is grepped across the scope and answered with file:line hits or a not-found answer"
+    unit "not applicable"
+    example "usages of add"
+    lexeme en
+      surface
+        text "usages of …"
+      surface
+        text "usage of …"
+      surface
+        text "uses of …"
+      surface
+        text "occurrences of …"
+      surface
+        text "references to …"
+      surface
+        text "references of …"
+      surface
+        text "callers of …"
+      surface
+        text "who calls …"
+      surface
+        text "what uses …"
+      surface
+        text "where is … used"
+      surface
+        text "where are … used"
+      surface
+        text "where is … called"
+      surface
+        text "where is … referenced"
+      surface
+        text "where does … appear"
+      surface
+        text "grep for …"
+      surface
+        text "grep …"
+      surface
+        text "search for … in the files"
+      surface
+        text "search for … in the code"
+      surface
+        text "search for … in the source"
+      surface
+        text "search for … in this project"
+      surface
+        text "search for … in the project"
+      surface
+        text "search for … in this repository"
+      surface
+        text "search for … in the repository"
+      surface
+        text "search for … in this directory"
+      surface
+        text "search for … in the current directory"
+      surface
+        text "search for … in the workspace"
+      surface
+        text "search for … in this workspace"
+      surface
+        text "find … in the code"
+      surface
+        text "find … in the repository"
+      surface
+        text "find … in this project"
+      surface
+        text "search the files for …"
+      surface
+        text "search the code for …"
+      surface
+        text "lines containing …"
+      surface
+        text "files that mention …"
+      surface
+        text "files containing …"
+    lexeme ru
+      surface
+        text "использования …"
+      surface
+        text "использование …"
+      surface
+        text "вхождения …"
+      surface
+        text "упоминания …"
+      surface
+        text "ссылки на …"
+      surface
+        text "где используется …"
+      surface
+        text "где используются …"
+      surface
+        text "где вызывается …"
+      surface
+        text "кто вызывает …"
+      surface
+        text "грепни …"
+      surface
+        text "найди … в файлах"
+      surface
+        text "поищи … в файлах"
+      surface
+        text "найди … в коде"
+      surface
+        text "найди … в проекте"
+      surface
+        text "найди … в репозитории"
+      surface
+        text "поищи … в проекте"
+      surface
+        text "строки с …"
+    lexeme hi
+      surface
+        text "… के सभी उपयोग"
+      surface
+        text "… के उपयोग"
+      surface
+        text "… का उपयोग कहाँ"
+      surface
+        text "… कहाँ उपयोग"
+      surface
+        text "… कहाँ इस्तेमाल"
+      surface
+        text "… के सभी संदर्भ"
+      surface
+        text "… के संदर्भ"
+      surface
+        text "… की सभी घटनाएँ"
+      surface
+        text "फ़ाइलों में … खोजें"
+      surface
+        text "प्रोजेक्ट में … खोजें"
+      surface
+        text "कोड में … खोजें"
+    lexeme zh
+      surface
+        text "…的所有用法"
+      surface
+        text "…的用法"
+      surface
+        text "…的所有引用"
+      surface
+        text "…的引用"
+      surface
+        text "…的所有出现"
+      surface
+        text "…在哪里被使用"
+      surface
+        text "…在哪里使用"
+      surface
+        text "…在哪里被调用"
+      surface
+        text "…被用在哪里"
+      surface
+        text "在文件中搜索…"
+      surface
+        text "在项目中搜索…"
+      surface
+        text "在代码中搜索…"
+    lexeme es
+      surface
+        text "usos de …"
+      surface
+        text "ocurrencias de …"
+      surface
+        text "apariciones de …"
+      surface
+        text "referencias a …"
+      surface
+        text "dónde se usa …"
+      surface
+        text "dónde se utiliza …"
+      surface
+        text "dónde se llama a …"
+      surface
+        text "quién llama a …"
+      surface
+        text "busca … en los archivos"
+      surface
+        text "busca … en el código"
+      surface
+        text "busca … en el proyecto"
+      surface
+        text "busca … en este proyecto"
+      surface
+        text "busca … en el repositorio"
+  workspace_content_search_noise
+    # Words that stand in the searched slot of a content-search form without
+    # being the pattern ("usages of the function add"): skipped, never grepped.
+    defined-by concept
+    role workspace_content_search_noise
+    precondition "a word stands in the searched slot of a content-search form"
+    effect "the word is skipped and never grepped"
+    unit "not applicable"
+    example "the"
+    lexeme en
+      surface
+        text the
+      surface
+        text a
+      surface
+        text an
+      surface
+        text all
+      surface
+        text every
+      surface
+        text each
+      surface
+        text "for"
+      surface
+        text function
+      surface
+        text method
+      surface
+        text "variable"
+      surface
+        text constant
+      surface
+        text class
+      surface
+        text "field"
+      surface
+        text property
+      surface
+        text symbol
+      surface
+        text identifier
+      surface
+        text name
+      surface
+        text word
+      surface
+        text string
+      surface
+        text text
+      surface
+        text term
+    lexeme ru
+      surface
+        text все
+      surface
+        text всех
+      surface
+        text функции
+      surface
+        text функция
+      surface
+        text функцию
+      surface
+        text метода
+      surface
+        text метод
+      surface
+        text переменной
+      surface
+        text переменная
+      surface
+        text класса
+      surface
+        text слова
+      surface
+        text слово
+      surface
+        text строки
+      surface
+        text строку
+      surface
+        text имени
+      surface
+        text идентификатора
+    lexeme hi
+      surface
+        text सभी
+      surface
+        text फ़ंक्शन
+      surface
+        text फंक्शन
+      surface
+        text चर
+      surface
+        text शब्द
+      surface
+        text नाम
+    lexeme zh
+      surface
+        text 函数
+      surface
+        text 方法
+      surface
+        text 变量
+      surface
+        text 所有
+    lexeme es
+      surface
+        text el
+      surface
+        text la
+      surface
+        text los
+      surface
+        text las
+      surface
+        text un
+      surface
+        text una
+      surface
+        text todos
+      surface
+        text todas
+      surface
+        text función
+      surface
+        text método
+      surface
+        text "variable"
+      surface
+        text clase
+      surface
+        text palabra
+      surface
+        text cadena
+      surface
+        text texto
+      surface
+        text nombre
+      surface
+        text identificador

@@ -535,6 +535,7 @@ fn public_concepts() -> &'static [ConceptRecord] {
 
 fn public_concept_candidate_terms(focus: &str) -> Vec<String> {
     let focus_normalized = normalize_search_surface(focus);
+    let padded_focus = format!(" {focus_normalized} ");
     let mut scored = Vec::new();
     for record in public_concepts() {
         for candidate in concept_candidate_surfaces(record) {
@@ -542,7 +543,13 @@ fn public_concept_candidate_terms(focus: &str) -> Vec<String> {
             if normalized.len() < 3 {
                 continue;
             }
-            let matches = focus_normalized.contains(&normalized) || normalized == focus_normalized;
+            // A surface names the focus as whole words: "colour" inside
+            // "colourless" is no mention of colour (issue #1175 p329). A
+            // script written without spaces keeps the substring reading.
+            let matches = normalized == focus_normalized
+                || padded_focus.contains(&format!(" {normalized} "))
+                || (normalized.chars().any(is_unspaced_script)
+                    && focus_normalized.contains(&normalized));
             if matches {
                 scored.push((normalized.len(), candidate));
             }
@@ -818,6 +825,14 @@ fn normalize_fact_subject(value: &str) -> String {
         .or_else(|| cleaned.strip_prefix("an "))
         .unwrap_or(cleaned.as_str());
     normalize_search_surface(stripped)
+}
+
+/// Whether `ch` belongs to a script written without spaces (kana, CJK, hangul).
+const fn is_unspaced_script(ch: char) -> bool {
+    matches!(
+        ch,
+        '\u{3040}'..='\u{30ff}' | '\u{3400}'..='\u{9fff}' | '\u{ac00}'..='\u{d7af}'
+    )
 }
 
 fn normalize_search_surface(value: &str) -> String {

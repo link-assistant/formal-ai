@@ -177,6 +177,7 @@ seed_registry
     web true
   seed learning-sources
     bundle true
+    web true
   seed legality-patterns
     bundle true
     web true

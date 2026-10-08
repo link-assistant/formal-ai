@@ -112,6 +112,8 @@ behaviour, and the hand-written Rust is left as it is for its owner to decide.
 
 ## Upstream drafts
 
+Filed on 2026-10-08: drafts 09 and 10 became meta-language#202, #203 and #211; 11, 12 and 13 became #213, #214 and #215; and the release request in 08 became a comment on #199. Eight more issues (#204 to #210 and #212) cover the remaining refusal classes. [js-rust-translation-scope.md](js-rust-translation-scope.md) maps every class to its issue and measures the roots outside the scope.
+
 | Draft | Gap |
 | --- | --- |
 | [08](upstream-issue-drafts/08-meta-language.md) | Release #196 to crates.io and npm, so the SHA pin can become a version. |

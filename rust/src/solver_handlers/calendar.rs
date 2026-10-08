@@ -600,7 +600,7 @@ fn weekday_label(language: &str, weekday: Weekday) -> &'static str {
     weekday
         .label(language)
         .or_else(|| weekday.label("en"))
-        .unwrap_or(weekday.slug())
+        .unwrap_or_else(|| weekday.slug())
 }
 
 /// The weekday in the case its direction phrase needs (Russian takes the

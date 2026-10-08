@@ -85,7 +85,7 @@ describe('a quoted replacement may carry a path, a cue word and a full stop', ()
     assert.equal(files.has('rust/tests/unit/ci-cd/mod.rs'), false);
     assert.equal(
       answer,
-      'Replaced `covered by the same release-script unit test.` with `covered by the same release-script unit test, compiled into the unit suite through `rust/tests/unit/ci-cd/mod.rs`.` in `req.md` and observed the result.',
+      'Replaced `covered by the same release-script unit test.` with ``covered by the same release-script unit test, compiled into the unit suite through `rust/tests/unit/ci-cd/mod.rs`.`` in `req.md` and observed the result.',
     );
   });
 });

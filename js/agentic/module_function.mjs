@@ -38,14 +38,15 @@ import { terminalCommandVocabulary } from './crate/seed_terminal_commands.mjs';
 const fill = (template, slots) => slots.reduce((text, [slot, value]) => text.split(`{${slot}}`).join(value), template);
 const bare = (word) => word.replace(/^[^\p{Alphabetic}\p{N}]+|[^\p{Alphabetic}\p{N}]+$/gu, '').toLowerCase();
 
-function contract(language) {
+/** Mirrors `fn contract`: the function-test contract of `language`, or null. */
+export function contract(language) {
   const root = cached('module_function:contracts',
     () => parseLinoRoot(readText('data/meta/function-test-contracts.lino') ?? '').children[0] ?? null);
   return (root?.children || []).find((node) => node.name === 'language' && node.id === language) ?? null;
 }
 
 /** The language the seeded extension table names for `path`, or null. */
-function extensionLanguage(path) {
+export function extensionLanguage(path) {
   const table = cached('module_function:extensions', () => {
     const root = parseLinoRoot(readText('data/seed/page-formalization-rules.lino') ?? '').children[0];
     return (root?.children || []).filter((node) => node.name === 'extension')
@@ -86,7 +87,7 @@ function clauses(request) {
 }
 
 /** `name(a, b)`: the first call-shaped signature whose parameters are identifiers. */
-function signature(text) {
+export function signature(text) {
   for (const match of text.matchAll(/([A-Za-z_$][\w$]*)\s*\(([^()]*)\)/gu)) {
     const parameters = match[2].split(',').map((part) => part.trim());
     if (parameters.every((parameter) => /^[A-Za-z_$][\w$]*$/u.test(parameter))) {
@@ -136,6 +137,12 @@ function statedCommand(request) {
   return head < 0 ? null : commandFrom(words.slice(head, verb));
 }
 
+/** Mirrors `fn paths_in`: the paths `text` names, each once, in order. */
+export function pathsIn(text) {
+  return [...new Set(tokens(text).map((token) => cleanPathToken(token.text))
+    .filter((path) => looksLikeFilePath(path) && safeRelativePath(path)))];
+}
+
 /**
  * The module-function request `task` states, or null: a seeded code construct
  * (`coding_request_object`) the request asks to write or add, a signature,
@@ -150,8 +157,6 @@ export function moduleFunctionRequest(task) {
     || !(mentionsRole('coding_request_verb', normalized) || mentionsRole('coding_member_add_action', normalized))) return null;
   const stated = signature(outside);
   if (!stated) return null;
-  const pathsIn = (text) => [...new Set(tokens(text).map((token) => cleanPathToken(token.text))
-    .filter((path) => looksLikeFilePath(path) && safeRelativePath(path)))];
   const parts = clauses(outside);
   const at = parts.findIndex((part) => signature(part)?.name === stated.name);
   // The module is the path the signature's own clause names, before or after
@@ -188,6 +193,12 @@ function relationOperations() {
     return (root?.children || []).map((node) => ({
       idiom: findChildValue(node, 'idiom'),
       supports: (node.children || []).filter((child) => child.name === 'supports').map((child) => String(child.id ?? child.value ?? '')),
+      // The realization per language (the Python idiom is the canonical
+      // surface) and whether the typed signature takes integers.
+      realizations: Object.fromEntries((node.children || []).filter((child) => child.name === 'realization')
+        .flatMap((child) => child.children || []).map((child) => [child.name, String(child.value ?? '')])),
+      integer: findChildValue(node, 'fragment_signature').replace(/[()]/gu, '').split(/\s+/u)
+        .every((type) => type === 'integer'),
     })).filter(({ idiom }) => /^\{left\} \S+ \{right\}$/u.test(idiom));
   });
 }
@@ -227,15 +238,63 @@ function specifiedValue(request, samples) {
   const words = request.clause.split(/\s+/u);
   const returns = words.findIndex((word) => mentionsRole('coding_return_action', bare(word)));
   if (returns < 0) return null;
-  const bound = words.slice(returns + 1).map((word) => {
-    const index = request.parameters.indexOf(bare(word));
-    return index < 0 ? word : samples[index];
-  }).join(' ');
-  const extracted = realm().extractArithmeticExpression(bound);
-  if (extracted && extracted.expression) return evaluated(extracted.expression);
   const afterSignature = request.clause.slice(request.clause.indexOf(')') + 1);
-  const relation = relationExpression(afterSignature, samples);
+  return statedValue(words.slice(returns + 1), afterSignature, request.parameters, samples);
+}
+
+/**
+ * Mirrors `fn stated_value` in rust/src/agentic_coding/module_function.rs: the
+ * value a stated return computes at `samples` -- the longest expression the
+ * words open with, its parameters bound to the samples ("a - b to m.mjs" ->
+ * "2 - 3"; the words after it belong to the request, PR #1188 T92), or else
+ * the arithmetic relation `relationText` names applied to the samples.
+ */
+export function statedValue(words, relationText, parameters, samples) {
+  const bound = words.map((word) => {
+    const index = parameters.indexOf(bare(word));
+    return index < 0 ? word : samples[index];
+  });
+  for (let end = bound.length; end > 0; end -= 1) {
+    const extracted = realm().extractArithmeticExpression(bound.slice(0, end).join(' '));
+    if (extracted && extracted.expression) return evaluated(extracted.expression);
+  }
+  const relation = relationExpression(relationText, samples);
   return relation === null ? null : evaluated(relation);
+}
+
+/** The seeded function a language lowers a body into (`{language}_ir_function`), or null. */
+function functionTemplate(language) {
+  const root = cached('module_function:runtime-templates',
+    () => parseLinoRoot(readText('data/seed/coding-discovery-runtime.lino') ?? ''));
+  const template = (root.children || []).flatMap((node) => node.children || [])
+    .find((node) => node.name === 'template' && String(node.id ?? node.value ?? '') === `${language}_ir_function`);
+  return template ? findChildValue(template, 'text') || null : null;
+}
+
+/**
+ * Mirrors `fn synthesized_source` in rust/src/agentic_coding/module_function.rs:
+ * the one seeded integer operation whose idiom meets the specification at
+ * every sample pair of the contract, applied to the parameters in order and
+ * lowered through the language's function template; null when none or
+ * several meet it.
+ */
+function searchedSource(request, terms) {
+  const arity = request.parameters.length;
+  const samples = findChildValue(terms, 'samples').split(/\s+/u).filter(Boolean);
+  if (arity !== 2 || samples.length < arity) return null;
+  const pairs = [];
+  for (let index = 0; index + arity <= samples.length; index += arity) pairs.push(samples.slice(index, index + arity));
+  const specified = pairs.map((pair) => specifiedValue(request, pair));
+  if (specified.some((value) => value === null)) return null;
+  const meeting = relationOperations().filter((operation) => operation.integer && pairs.every((pair, index) =>
+    evaluated(fill(operation.idiom, [['left', pair[0]], ['right', pair[1]]])) === specified[index]));
+  if (meeting.length !== 1) return null;
+  const [operation] = meeting;
+  const surface = request.language === 'python' ? operation.idiom : operation.realizations[request.language];
+  const template = functionTemplate(request.language);
+  if (!surface || template === null) return null;
+  const expression = fill(surface, [['left', request.parameters[0]], ['right', request.parameters[1]]]);
+  return fill(template, [['name', request.name], ['parameters', request.parameters.join(', ')], ['expression', expression]]);
 }
 
 /** `source` with `name` imported from `specifier` through the contract's import line. */
@@ -279,11 +338,15 @@ async function moduleFunctionRecipe(request, moduleSource, testSource) {
     .filter((word) => word !== '' && !adds.includes(bare(word))).join(' ');
   const answer = await solve(`${specification} ${catalog.name}`, []);
   const program = answer?.synthesized_program;
-  if (!program || program.language !== request.language) return null;
+  // A body stated as an expression ("returns a - b") names no structure the
+  // composer can discover; the seeded operation that meets the specification
+  // at every sample pair is the function then, as natively (PR #1188 T92).
+  const composed = program && program.language === request.language ? program.source : searchedSource(request, terms);
+  if (composed === null) return null;
   const definition = fill(findChildValue(terms, 'definition'), [['name', request.name]]);
   const defined = moduleSource.split('\n').some((line) => line.startsWith(definition));
   const source = defined ? moduleSource
-    : `${withFinalNewline(moduleSource)}${moduleSource.trim() === '' ? '' : '\n'}${program.source}`;
+    : `${withFinalNewline(moduleSource)}${moduleSource.trim() === '' ? '' : '\n'}${composed}`;
   const commands = [catalog.execution.check_command]
     .filter((command) => command !== null && command !== undefined)
     .map((command) => command.split(catalog.save_as).join(request.module));
@@ -305,7 +368,7 @@ async function moduleFunctionRecipe(request, moduleSource, testSource) {
 }
 
 /** The file `path` as the transcript's read returned it; '' for a missing file, null when unread. */
-function readSource(currentTurn, path) {
+export function readSource(currentTurn, path) {
   const read = resultForPath(currentTurn, Capability.Read, path, null);
   if (read === null) return null;
   const missing = sourceFromAgentReadResult(read) === null && failureMessage(read, false, true) !== null;

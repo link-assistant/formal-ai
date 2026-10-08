@@ -20,9 +20,10 @@ fn web_bundle_generation_skips_nondeterministic_identifier_minification() {
 
     // Bun #40657: 1.4.0 can assign different minified identifiers to an
     // unchanged graph under load. Keep the deterministic size reductions until
-    // the fix after oven-sh/bun#40664 reaches a stable release.
-    assert_eq!(build.matches("--minify-whitespace").count(), 4);
-    assert_eq!(build.matches("--minify-syntax").count(), 4);
+    // the fix after oven-sh/bun#40664 reaches a stable release. Five bundles
+    // since R382 added `js/mermaid.bundle.js` for the generated diagrams.
+    assert_eq!(build.matches("--minify-whitespace").count(), 5);
+    assert_eq!(build.matches("--minify-syntax").count(), 5);
     assert!(
         !build.split_ascii_whitespace().any(|arg| arg == "--minify"),
         "bare --minify re-enables nondeterministic identifier renaming"
@@ -103,6 +104,35 @@ fn the_authorship_route_is_a_wrapper_over_solve_and_never_publishes() {
         workflow.contains("scripts/author-change-with-formal-ai.sh"),
         "the weekly authoring workflow must keep invoking the wrapper by path"
     );
+}
+
+/// R1138-3-7: authoring refuses commits by default. The wrapper hands
+/// `formal-ai solve` a `--commit` only when its caller passes one, and the
+/// action that lands self-authored changes is the caller that does. `echo`
+/// stands in for the binary, so the test reads the arguments the wrapper
+/// really passes.
+#[test]
+fn the_authoring_wrapper_commits_only_when_asked() {
+    let root = format!("{}/..", env!("CARGO_MANIFEST_DIR"));
+    let solve_arguments = |extra: &[&str]| {
+        let output = std::process::Command::new("bash")
+            .arg(format!("{root}/scripts/author-change-with-formal-ai.sh"))
+            .args(["--task", "t"])
+            .args(extra)
+            .env("BIN", "/bin/echo")
+            .env("AGENT", "true")
+            .env("FORMAL_AI_REPO_ROOT", &root)
+            .output()
+            .expect("bash runs the wrapper");
+        assert!(output.status.success(), "{output:?}");
+        String::from_utf8_lossy(&output.stdout).into_owned()
+    };
+    assert!(!solve_arguments(&[]).contains("--commit"));
+    assert!(!solve_arguments(&["--no-commit"]).contains("--commit"));
+    assert!(solve_arguments(&["--commit"]).contains(" --commit "));
+    let caller =
+        repository_file(".github/actions/author-with-formal-ai/scripts/author-formal-ai-change.sh");
+    assert!(caller.contains("author-change-with-formal-ai.sh\" --commit"));
 }
 
 /// The two computer-use E2E steps bound the whole run, not only each session.

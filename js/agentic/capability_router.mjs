@@ -16,6 +16,7 @@ import { conceptLookupLeavesUnknown, openWebQueryForBlock } from './web_research
 import { catalogClaims } from './code_artifact.mjs';
 import { composeEditRequest, statedWriteTarget, statesWriteAction } from './write_request.mjs';
 import { workspaceInspectionSearchForTask } from './workspace_inspection.mjs';
+import { listedDirectory } from './directory_listing.mjs';
 import {
   Act, Locus, ObjectType, acts, evidencesRetrieveAct, explicitContent, firstPath, firstUrl, locus, namesOpenWeb,
   isDialogueUtterance, objectType, route, tableRoutingEnabled,
@@ -230,7 +231,10 @@ function planRoutedCapabilityStepIn(task, messages, toolNames, stage, only) {
   const capability = routedCapability(slug);
   if (capability === null) return null;
   if (namesAContainerWithoutAnAct(routedTask)) return null;
-  if ((capability === Capability.ReadMany || OBSERVING_SLUGS.includes(decided)) && namesMutatingShellIntent(routedTask)) {
+  // A mutating shell intent (`rename the file a to b`) is the settled shell
+  // arm's verified recipe, never a bare run (PR #1188 G24).
+  if ((capability === Capability.ReadMany || capability === Capability.Run || OBSERVING_SLUGS.includes(decided))
+    && namesMutatingShellIntent(routedTask)) {
     return null;
   }
   if (hasLatestTurnResult(messages)) {
@@ -323,7 +327,7 @@ function argumentsFor(capability, task) {
     case Capability.Glob:
       return jsonText({ pattern: wildcardToken(task) ?? '*', path: '.' });
     case Capability.ListDir:
-      return jsonText({ path: '.' });
+      return jsonText({ path: listedDirectory(task) });
     case Capability.Todo:
       return jsonText({ todos: [{ content: task, status: 'pending' }], plan: [{ step: task, status: 'pending' }] });
     case Capability.Subagent:
@@ -362,8 +366,10 @@ function shellFallback(capability, task) {
       const pattern = (wildcardToken(task) ?? '*').split("'").join("'\\''");
       return `find . -path '${pattern}'`;
     }
-    case Capability.ListDir:
-      return 'ls';
+    case Capability.ListDir: {
+      const directory = listedDirectory(task);
+      return directory === '.' ? 'ls' : `ls ${shellQuote(directory)}`;
+    }
     case Capability.ReadMany: {
       const paths = fileTokens(task);
       return paths.length ? `cat ${paths.map(shellQuote).join(' ')}` : null;

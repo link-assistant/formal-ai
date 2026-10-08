@@ -258,25 +258,31 @@ pub fn run_suite_window(
     })
 }
 
-/// Run one repository-backed benchmark through the same clone → locate → read
-/// → edit → verify → diff protocol as the authoring CLI.
+/// Run one repository-backed benchmark through the same protocol document as
+/// the authoring CLI and the self-authoring loop.
 ///
 /// A protocol refusal is represented by an empty answer and an inspectable
 /// trace, so the upstream grader records a failed patch rather than confusing a
-/// capability gap with unavailable benchmark infrastructure.
-fn solve_repository_case(case: &BenchmarkCase, run_root: &Path) -> SymbolicAnswer {
-    let case_root = run_root
-        .join("repository-cases")
-        .join(crate::engine::stable_id("benchmark_repository", &case.id));
+/// capability gap with unavailable benchmark infrastructure. The trace is the
+/// `repository-protocol.lino` every protocol caller writes (#1138 R1138-3-5):
+/// it is the answer's Links Notation and lands under
+/// `<run_root>/repository-evidence/<case>/`.
+#[must_use]
+pub fn solve_repository_case(case: &BenchmarkCase, run_root: &Path) -> SymbolicAnswer {
+    use crate::repository_workspace::trace::{ProtocolTrace, StageStatus};
+
+    let case_id = crate::engine::stable_id("benchmark_repository", &case.id);
+    let case_root = run_root.join("repository-cases").join(&case_id);
     if case_root.exists() {
         let _ = std::fs::remove_dir_all(&case_root);
     }
     let Some(spec) = case.repository.clone() else {
         unreachable!("repository benchmark branch requires a clone spec");
     };
+    let protocol = crate::repository_workspace::WorkspaceProtocol::load();
     let result = crate::repository_workspace::RepositoryWorkspace::open(&spec, &case_root).map(
         |mut workspace| {
-            crate::repository_workspace::WorkspaceProtocol::load().execute(
+            protocol.execute(
                 &mut workspace,
                 &crate::repository_workspace::RepositoryTask {
                     requirement: case.prompt.clone(),
@@ -286,51 +292,65 @@ fn solve_repository_case(case: &BenchmarkCase, run_root: &Path) -> SymbolicAnswe
             )
         },
     );
-    match result {
+    let (answer, evidence_links, mut trace) = match result {
         Ok(outcome) => {
             let answer = if outcome.diff.trim().is_empty() {
                 String::new()
             } else {
                 format!("```diff\n{}\n```", outcome.diff.trim_end())
             };
-            let mut trace = String::from("repository_benchmark_protocol\n");
-            let _ = writeln!(trace, "  case \"{}\"", case.id.replace('"', "\"\""));
-            let _ = writeln!(trace, "  observations \"{}\"", outcome.observations.len());
-            let _ = writeln!(trace, "  diff_bytes \"{}\"", outcome.diff.len());
-            if let Some(step) = outcome.stopped_at {
-                let _ = writeln!(trace, "  stopped_at \"{}\"", step.id);
+            let mut trace = ProtocolTrace::from_outcome(&protocol, BENCHMARK_CALLER, &outcome);
+            if let Some(step) = &outcome.stopped_at {
+                trace.set_field("stopped_at", &step.id);
             }
-            for open in outcome.open {
-                let _ = writeln!(trace, "  open \"{}\"", open.replace('"', "\"\""));
-            }
-            SymbolicAnswer {
-                intent: String::from("repository_task"),
-                answer,
-                confidence: 1.0,
-                evidence_links: outcome
-                    .observations
-                    .iter()
-                    .map(|evidence| evidence.evidence_id.clone())
-                    .collect(),
-                thinking_steps: Vec::new(),
-                links_notation: trace,
-                execution_recipe: None,
-            }
+            let links: Vec<String> = outcome
+                .observations
+                .iter()
+                .map(|evidence| evidence.evidence_id.clone())
+                .collect();
+            (answer, links, trace)
         }
-        Err(error) => SymbolicAnswer {
-            intent: String::from("repository_task"),
-            answer: String::new(),
-            confidence: 1.0,
-            evidence_links: Vec::new(),
-            thinking_steps: Vec::new(),
-            links_notation: crate::links_format::format_lino_record(
-                "repository_benchmark_protocol",
-                &[("open", format!("{error:?}"))],
-            ),
-            execution_recipe: None,
-        },
+        Err(error) => {
+            // The workspace never opened: the first declared stage stopped.
+            let mut trace = ProtocolTrace::new(
+                &protocol,
+                BENCHMARK_CALLER,
+                crate::repository_workspace::trace::EDITOR_STRUCTURAL,
+            );
+            if let Some(first) = protocol.steps().first() {
+                trace.record(&first.id, StageStatus::Stopped);
+            }
+            trace.open.push(format!("{error:?}"));
+            (String::new(), Vec::new(), trace)
+        }
+    };
+    // A benchmark never commits: its deliverable is the diff the grader
+    // applies, so the commit gate stays shut whenever it is reached.
+    if trace.status(BENCHMARK_COMMIT_STAGE) == Some(StageStatus::Unobserved) {
+        trace.record(BENCHMARK_COMMIT_STAGE, StageStatus::Refused);
+    }
+    trace.set_field("case", &case.id);
+    let links_notation = trace.render();
+    let evidence = run_root.join("repository-evidence").join(&case_id);
+    if std::fs::create_dir_all(&evidence).is_ok() {
+        let _ = std::fs::write(evidence.join("repository-protocol.lino"), &links_notation);
+    }
+    SymbolicAnswer {
+        intent: String::from("repository_task"),
+        answer,
+        confidence: 1.0,
+        evidence_links,
+        thinking_steps: Vec::new(),
+        links_notation,
+        execution_recipe: None,
     }
 }
+
+/// The caller name a repository benchmark case records.
+const BENCHMARK_CALLER: &str = "benchmark";
+
+/// The protocol stage a benchmark leaves shut.
+const BENCHMARK_COMMIT_STAGE: &str = "commit";
 
 fn unavailable_run(
     manifest: &SuiteManifest,

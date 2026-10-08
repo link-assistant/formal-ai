@@ -348,6 +348,15 @@ pub fn handle_planning_request(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    // The canonical reading folds punctuation, as the browser twin's
+    // normalized prompt does, so the hyphen of "a 2-day trip" does not hide
+    // the seeded "day trip" surface (issue #1175 p213/p214).
+    let canonical = crate::engine::normalize_prompt(prompt);
+    let normalized = if canonical.is_empty() {
+        normalized
+    } else {
+        canonical.as_str()
+    };
     if !crate::seed::lexicon().mentions_role(ROLE_PLANNING, normalized) {
         return None;
     }

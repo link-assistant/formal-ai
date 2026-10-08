@@ -44,7 +44,18 @@ general fix with a regression test, and the next task goes to Formal AI too.
 | `claims.md` | Who is editing what right now. Append a line before editing a file. |
 | `gaps.md` | Task shapes Formal AI failed, open or FIXED with their ledger row. |
 | `probe.mjs` | Shows how the planner reads a request: `plan`, `edit`, `path`, `quotes`, `read-parse`. |
+| `local-gates.mjs` | Runs the CI gates that need no Rust build, one at a time: `--list`, `--only a,b`, `--match js`. Logs go to `sandboxes/gates/`. |
+| `apply-census.sh` | Applies the self-AST census CI regenerated for HEAD, a commit or a run id, with the paths read from the census workflow, for a census-only commit. |
+| `translation-scope.mjs` | Measures how much of any JS root the meta-language translator would translate, by module and refusal construct, without changing the committed scope. |
 | `sandboxes/` | Throwaway copies of files a delegated task edits (git-ignored). |
+
+## Routine commands
+
+- Requirement status after a row changes: `rust-script scripts/assemble-requirements.rs --write && rust-script scripts/generate-requirement-status.rs --write && rust-script scripts/render-status.rs --write && rust-script scripts/check-requirement-status.rs`
+- JS to Rust translation after a JS change: `node scripts/translate-es.mjs --write && node scripts/translate-js-rust.mjs --verify`
+- Local gates: `node experiments/formal_ai_subagent/local-gates.mjs`
+- Building the web app (`bun run build:web`, the e2e specs) needs the bun named in `.bun-version`: an older bun bundles Mermaid with a bare `__require`, and every diagram silently falls back to its source text. Unpack that release under `sandboxes/bun-<version>/` and put it first in PATH.
+- After CI regenerates the census for a pushed commit: `bash experiments/formal_ai_subagent/apply-census.sh`, then a census-only commit.
 
 ## Probe
 

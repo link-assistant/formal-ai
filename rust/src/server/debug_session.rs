@@ -3,8 +3,9 @@
 //! `serve --debug-session` holds every solved turn before its derivation record
 //! is persisted and its answer returned, and hands its stages out one at a
 //! time, each `POST /v1/debug/advance` revealing the next. Every stage event
-//! carries the turn's recipe diagram and the routed method's Rust and
-//! JavaScript source locations (`debug_stage`). The JavaScript twin is
+//! carries the turn's recipe diagram, the Rust and JavaScript source locations
+//! of the code that emits that stage, and the routed method with its handler
+//! in both runtimes (`debug_stage`). The JavaScript twin is
 //! `js/server/debug-session.mjs`; the protocol is documented in
 //! `docs/vscode/debugger.md`.
 //!
@@ -22,7 +23,7 @@
 //! - Only solves inside a connection scope are gated: background work
 //!   (dreaming, the CLI) never pauses.
 
-use std::cell::RefCell;
+use std::cell::{Cell, RefCell};
 use std::collections::hash_map::RandomState;
 use std::fmt::Write as _;
 use std::hash::{BuildHasher as _, Hasher as _};
@@ -42,6 +43,8 @@ pub const DEBUG_TOKEN_ENV: &str = "FORMAL_AI_DEBUG_SESSION_TOKEN";
 const STAGE_PAUSED: &str = "stage_paused";
 const STAGE_ADVANCED: &str = "stage_advanced";
 const TURN_RELEASED: &str = "turn_released";
+const IMPULSE: &str = "impulse";
+const IMPULSE_LEVEL: &str = "high";
 const DEBUG_ROUTE_PREFIX: &str = "/v1/debug/";
 const DEBUG_ACTIONS: [&str; 4] = ["session", "pause", "advance", "release"];
 
@@ -127,6 +130,10 @@ struct Turn {
     stages: Vec<ThinkingStep>,
     view: TurnView,
     current: usize,
+    /// Begun before its solve: only the first stage is known yet.
+    open: bool,
+    /// Its first stage was advanced and its solve is running: nothing paused.
+    running: bool,
 }
 
 #[derive(Debug, Default)]
@@ -137,9 +144,12 @@ struct State {
     turn_count: u64,
 }
 
-/// Mirrors `stageFields`: what an event says about one stage — the step, the
-/// turn's recipe diagram with this stage highlighted, and the source locations
-/// of the method the turn's route resolves to (`debug_stage`).
+/// Mirrors `stageFields`: what an event says about one stage.
+///
+/// The step, the turn's recipe diagram with this stage highlighted, the source
+/// locations of the code that emits the stage (`rust_*`, `js_*`), and the
+/// method the turn's route resolves to with its handler locations (`method`,
+/// `method_rust_*`, `method_js_*`) (`debug_stage`).
 fn stage_fields(turn: &Turn, index: usize) -> Value {
     let stage = turn.stages.get(index);
     let mut fields = Map::new();
@@ -160,8 +170,15 @@ fn stage_fields(turn: &Turn, index: usize) -> Value {
         String::from("mermaid"),
         Value::from(stage_diagram(&turn.stages, index)),
     );
-    location_fields(&mut fields, "rust", turn.view.rust.as_ref());
-    location_fields(&mut fields, "js", turn.view.js.as_ref());
+    let view = turn.view.stages.get(index);
+    location_fields(
+        &mut fields,
+        "rust",
+        view.and_then(|view| view.rust.as_ref()),
+    );
+    location_fields(&mut fields, "js", view.and_then(|view| view.js.as_ref()));
+    location_fields(&mut fields, "method_rust", turn.view.rust.as_ref());
+    location_fields(&mut fields, "method_js", turn.view.js.as_ref());
     Value::Object(fields)
 }
 
@@ -192,8 +209,29 @@ impl State {
         );
     }
 
+    /// Whether `turn_id` is still held: present and not running its solve.
     fn holds(&self, turn_id: &str) -> bool {
-        self.turns.iter().any(|turn| turn.id == turn_id)
+        self.turns
+            .iter()
+            .any(|turn| turn.id == turn_id && !turn.running)
+    }
+
+    /// Mirrors `start`: open a turn over `stages`, paused at its first stage.
+    fn start(&mut self, session: &str, stages: &[ThinkingStep], open: bool) -> String {
+        self.turn_count += 1;
+        let turn_id = format!("turn_{}", self.turn_count);
+        let turn = Turn {
+            id: turn_id.clone(),
+            stages: stages.to_vec(),
+            view: describe_turn(stages),
+            current: 0,
+            open,
+            running: false,
+        };
+        let fields = stage_fields(&turn, 0);
+        self.record(session, STAGE_PAUSED, &turn_id, fields);
+        self.turns.push(turn);
+        turn_id
     }
 }
 
@@ -250,6 +288,76 @@ impl DebugSession {
         self.lock().stepping = true;
     }
 
+    /// Mirrors `hold`: wait until the turn is no longer held — its last known
+    /// stage advanced, or the turn released (a disconnect releases it).
+    fn hold(
+        &self,
+        mut state: MutexGuard<'_, State>,
+        turn_id: &str,
+        alive: &mut dyn FnMut() -> bool,
+    ) {
+        self.changed.notify_all();
+        while state.holds(turn_id) {
+            state = self
+                .changed
+                .wait_timeout(state, LIVENESS_POLL)
+                .unwrap_or_else(PoisonError::into_inner)
+                .0;
+            if !state.holds(turn_id) {
+                break;
+            }
+            drop(state);
+            let connected = alive();
+            state = self.lock();
+            if !connected {
+                state.finish(&self.id, turn_id, "disconnected");
+                self.changed.notify_all();
+            }
+        }
+        drop(state);
+    }
+
+    /// Suspend a turn before the solver runs: the turn opens with only its
+    /// first stage (`impulse`) known and paused. Returns once that stage is
+    /// advanced (the turn is then running and the solve proceeds) or the turn
+    /// is released; `None` when stepping is off. [`Self::resume`] continues
+    /// the turn with the solved stages. Mirrors `begin`.
+    pub fn begin(&self, first: &ThinkingStep, alive: &mut dyn FnMut() -> bool) -> Option<String> {
+        let mut state = self.lock();
+        if !state.stepping {
+            return None;
+        }
+        let turn_id = state.start(&self.id, std::slice::from_ref(first), true);
+        self.hold(state, &turn_id, alive);
+        Some(turn_id)
+    }
+
+    /// Continue a turn [`Self::begin`] suspended, now that the solver has
+    /// computed all of its stages: hold it at stage 1 until every remaining
+    /// stage is advanced. A released turn, or one with no stage left, returns
+    /// at once. Mirrors `resume`.
+    pub fn resume(&self, turn_id: &str, stages: &[ThinkingStep], alive: &mut dyn FnMut() -> bool) {
+        let mut state = self.lock();
+        let Some(position) = state.turns.iter().position(|turn| turn.id == turn_id) else {
+            return;
+        };
+        if stages.len() < 2 {
+            state.finish(&self.id, turn_id, "completed");
+            drop(state);
+            self.changed.notify_all();
+            return;
+        }
+        let turn = &mut state.turns[position];
+        turn.stages = stages.to_vec();
+        turn.view = describe_turn(stages);
+        turn.current = 1;
+        turn.open = false;
+        turn.running = false;
+        let fields = stage_fields(turn, 1);
+        state.record(&self.id, STAGE_PAUSED, turn_id, fields);
+        self.hold(state, turn_id, alive);
+    }
+
     /// Hold one solved turn until every stage is advanced or the turn is
     /// released; `alive` answers false once the requesting client is gone.
     /// Returns at once when stepping is off or there is no stage.
@@ -258,44 +366,27 @@ impl DebugSession {
         if !state.stepping || stages.is_empty() {
             return;
         }
-        state.turn_count += 1;
-        let turn_id = format!("turn_{}", state.turn_count);
-        let turn = Turn {
-            id: turn_id.clone(),
-            stages: stages.to_vec(),
-            view: describe_turn(stages),
-            current: 0,
-        };
-        let fields = stage_fields(&turn, 0);
-        state.record(&self.id, STAGE_PAUSED, &turn_id, fields);
-        state.turns.push(turn);
+        let turn_id = state.start(&self.id, stages, false);
+        self.hold(state, &turn_id, alive);
+    }
+
+    /// Release a turn whose solve ended without resuming it (`abandoned`).
+    fn abandon(&self, turn_id: &str) {
+        self.lock().finish(&self.id, turn_id, "abandoned");
         self.changed.notify_all();
-        while state.holds(&turn_id) {
-            state = self
-                .changed
-                .wait_timeout(state, LIVENESS_POLL)
-                .unwrap_or_else(PoisonError::into_inner)
-                .0;
-            if !state.holds(&turn_id) {
-                break;
-            }
-            drop(state);
-            let connected = alive();
-            state = self.lock();
-            if !connected {
-                state.finish(&self.id, &turn_id, "disconnected");
-                self.changed.notify_all();
-            }
-        }
-        drop(state);
     }
 
     /// Advance the paused stage `requested` of `turn_id`. False — nothing
-    /// recorded — when that stage is not the one paused.
+    /// recorded — when that stage is not the one paused (already advanced,
+    /// unknown turn, or a turn whose solve is running).
     #[must_use]
     pub fn advance(&self, turn_id: &str, requested: Option<u64>) -> bool {
         let mut state = self.lock();
-        let Some(position) = state.turns.iter().position(|turn| turn.id == turn_id) else {
+        let Some(position) = state
+            .turns
+            .iter()
+            .position(|turn| turn.id == turn_id && !turn.running)
+        else {
             return false;
         };
         let current = state.turns[position].current;
@@ -308,6 +399,8 @@ impl DebugSession {
             state.turns[position].current = current + 1;
             let fields = stage_fields(&state.turns[position], current + 1);
             state.record(&self.id, STAGE_PAUSED, turn_id, fields);
+        } else if state.turns[position].open {
+            state.turns[position].running = true;
         } else {
             state.finish(&self.id, turn_id, "completed");
         }
@@ -343,6 +436,7 @@ impl DebugSession {
         let paused: Vec<Value> = state
             .turns
             .iter()
+            .filter(|turn| !turn.running)
             .map(|turn| {
                 let mut fields = stage_fields(turn, turn.current);
                 if let Some(fields) = fields.as_object_mut() {
@@ -397,6 +491,10 @@ type Liveness = Box<dyn FnMut() -> bool>;
 
 thread_local! {
     static CONNECTION: RefCell<Option<Liveness>> = const { RefCell::new(None) };
+    /// The turn [`begin_turn`] opened for this connection's outermost solve.
+    static OPEN_TURN: RefCell<Option<String>> = const { RefCell::new(None) };
+    /// How many solves of this thread are running, outermost first.
+    static SOLVE_DEPTH: Cell<usize> = const { Cell::new(0) };
 }
 
 /// Run `run` inside one connection's scope; `alive` answers false once the
@@ -412,17 +510,68 @@ pub fn with_connection_scope<T>(
     result
 }
 
-/// Mirrors `gateTurn`: hold a solved turn when the server runs a debug session
-/// and the solve belongs to a connection.
-pub fn gate_turn(stages: &[ThinkingStep]) {
-    let Some(session) = SESSION.get() else {
-        return;
-    };
-    let Some(mut alive) = CONNECTION.with(|slot| slot.borrow_mut().take()) else {
-        return;
-    };
-    session.gate(stages, &mut alive);
+/// Run `hold` with this connection's liveness check, when the server runs a
+/// debug session and the solve belongs to a connection.
+fn with_liveness<T>(hold: impl FnOnce(&DebugSession, &mut dyn FnMut() -> bool) -> T) -> Option<T> {
+    let session = SESSION.get()?;
+    let mut alive = CONNECTION.with(|slot| slot.borrow_mut().take())?;
+    let result = hold(session, &mut alive);
     CONNECTION.with(|slot| *slot.borrow_mut() = Some(alive));
+    Some(result)
+}
+
+/// One running solve: the outermost releases the turn it began, if its solve
+/// ended without resuming it.
+#[derive(Debug)]
+pub struct SolveTurn {
+    outermost: bool,
+}
+
+impl Drop for SolveTurn {
+    fn drop(&mut self) {
+        SOLVE_DEPTH.with(|depth| depth.set(depth.get().saturating_sub(1)));
+        if !self.outermost {
+            return;
+        }
+        if let (Some(session), Some(turn_id)) = (
+            SESSION.get(),
+            OPEN_TURN.with(|slot| slot.borrow_mut().take()),
+        ) {
+            session.abandon(&turn_id);
+        }
+    }
+}
+
+/// Mirrors `beginTurn`: suspend a connection's outermost solve before it runs,
+/// at the turn's first stage (`impulse`, the prompt), when the server runs a
+/// debug session. The open turn waits for [`gate_turn`]; the returned guard
+/// marks the solve running until it is dropped (and mirrors `endTurn`).
+#[must_use]
+pub fn begin_turn(prompt: &str) -> SolveTurn {
+    let outermost = SOLVE_DEPTH.with(|depth| {
+        depth.set(depth.get() + 1);
+        depth.get() == 1
+    });
+    if outermost && OPEN_TURN.with(|slot| slot.borrow().is_none()) {
+        let first = ThinkingStep::new(0, IMPULSE, prompt, IMPULSE_LEVEL, IMPULSE);
+        let opened = with_liveness(|session, alive| session.begin(&first, alive)).flatten();
+        OPEN_TURN.with(|slot| *slot.borrow_mut() = opened);
+    }
+    SolveTurn { outermost }
+}
+
+/// Mirrors `gateTurn`: hold a solved turn when the server runs a debug session
+/// and the solve belongs to a connection — continuing the turn
+/// [`begin_turn`] opened for the outermost solve, else holding a new one.
+pub fn gate_turn(stages: &[ThinkingStep]) {
+    let outermost = SOLVE_DEPTH.with(|depth| depth.get() <= 1);
+    let open = outermost
+        .then(|| OPEN_TURN.with(|slot| slot.borrow_mut().take()))
+        .flatten();
+    with_liveness(|session, alive| match &open {
+        Some(turn_id) => session.resume(turn_id, stages, alive),
+        None => session.gate(stages, alive),
+    });
 }
 
 /// The text of a JSON field the way `String(value)` reads it in the twin.

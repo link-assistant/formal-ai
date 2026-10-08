@@ -19,10 +19,10 @@
 //! is the exact query that would run, and the advice says what to verify
 //! before buying (a charger must match model, connector, wattage).
 
+use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed::parser::parse_lino;
-use super::finalize_simple;
 
 const CUES_PATH: &str = "data/seed/product-search-cues.lino";
 const INTENT: &str = "product_search";
@@ -91,7 +91,10 @@ impl Catalogue {
             return empty;
         };
         let tree = parse_lino(text);
-        let Some(root) = tree.children.iter().find(|child| child.name == "product_search")
+        let Some(root) = tree
+            .children
+            .iter()
+            .find(|child| child.name == "product_search")
         else {
             return empty;
         };
@@ -213,7 +216,9 @@ fn product_terms(prompt: &str, nouns: &[ProductNoun]) -> Vec<String> {
                 if candidate.chars().all(char::is_alphabetic)
                     && candidate.len() >= 3
                     && candidate.chars().next().is_some_and(char::is_uppercase)
-                    && !terms.iter().any(|term| term.eq_ignore_ascii_case(candidate))
+                    && !terms
+                        .iter()
+                        .any(|term| term.eq_ignore_ascii_case(candidate))
                 {
                     terms.push(candidate.to_owned());
                 }
@@ -236,14 +241,79 @@ fn template(intent: &str, values: &[(&str, &str)]) -> String {
 /// e.g. `игры для малышей`), used for the composed query in place of the
 /// catalogue slug.
 fn matched_noun_surface(lower: &str, nouns: &[ProductNoun]) -> Option<String> {
-    nouns
+    nouns.iter().find_map(|noun| {
+        noun.phrases
+            .iter()
+            .find(|phrase| lower.contains(phrase.as_str()))
+            .cloned()
+    })
+}
+
+/// The constraint names a request states, or the none-stated marker.
+fn constraints_text(constraints: &[&Constraint]) -> String {
+    if constraints.is_empty() {
+        "(none stated)".to_owned()
+    } else {
+        constraints
+            .iter()
+            .map(|constraint| constraint.name.clone())
+            .collect::<Vec<_>>()
+            .join(", ")
+    }
+}
+
+/// The product-search lane's refusal (issue 1173 R3).
+///
+/// A shopping request that names a catalogued product with a request cue but
+/// no marketplace gets the catalogued marketplaces and a request for one,
+/// never a guessed store.
+fn marketplace_needed(
+    prompt: &str,
+    normalized: &str,
+    product: &str,
+    catalogue: &Catalogue,
+    log: &mut EventLog,
+) -> SymbolicAnswer {
+    let lower = prompt.to_lowercase();
+    let constraints: Vec<&Constraint> = catalogue
+        .constraints
         .iter()
-        .find_map(|noun| {
-            noun.phrases
-                .iter()
-                .find(|phrase| lower.contains(phrase.as_str()))
-                .cloned()
+        .filter(|constraint| {
+            constraint.phrases.iter().any(|phrase| {
+                normalized.contains(phrase.as_str()) || lower.contains(phrase.as_str())
+            })
         })
+        .collect();
+    log.append("product_search:refusal", "no_marketplace".to_owned());
+    for constraint in &constraints {
+        log.append("product_search:constraint", constraint.name.clone());
+    }
+    let marketplaces = catalogue
+        .marketplaces
+        .iter()
+        .map(|marketplace| marketplace.name.replace('_', " "))
+        .collect::<Vec<_>>()
+        .join(", ");
+    let language = crate::language::detect(prompt);
+    let mut body =
+        crate::seed::localized_response("product_search_marketplace_needed", language.slug())
+            .or_else(|| crate::seed::localized_response("product_search_marketplace_needed", "en"))
+            .unwrap_or_default();
+    for (key, value) in [
+        ("product", product),
+        ("marketplaces", marketplaces.as_str()),
+        ("constraints", constraints_text(&constraints).as_str()),
+    ] {
+        body = body.replace(&format!("{{{key}}}"), value);
+    }
+    finalize_simple(
+        prompt,
+        log,
+        INTENT,
+        "response:product_search_marketplace_needed",
+        &body,
+        0.4,
+    )
 }
 
 /// Try to recognize a shopping request with a marketplace and compose the
@@ -259,20 +329,21 @@ pub fn handle_product_search(
 ) -> Option<SymbolicAnswer> {
     let catalogue = Catalogue::load();
     let lower = prompt.to_lowercase();
-    let marketplace = catalogue
-        .marketplaces
-        .iter()
-        .find(|marketplace| {
-            marketplace
-                .phrases
-                .iter()
-                .any(|phrase| normalized.contains(phrase.as_str()) || lower.contains(phrase.as_str()))
-        })?;
     let noun_surface = matched_noun_surface(&lower, &catalogue.product_nouns);
     let cued = catalogue
         .cues
         .iter()
         .any(|phrase| normalized.contains(phrase.as_str()) || lower.contains(phrase.as_str()));
+    let Some(marketplace) = catalogue.marketplaces.iter().find(|marketplace| {
+        marketplace
+            .phrases
+            .iter()
+            .any(|phrase| normalized.contains(phrase.as_str()) || lower.contains(phrase.as_str()))
+    }) else {
+        return noun_surface
+            .filter(|_| cued)
+            .map(|surface| marketplace_needed(prompt, normalized, &surface, &catalogue, log));
+    };
     // A bare noun phrase with a marketplace ("игры для малышей … в App
     // Store", issue #872) is a shopping request without a request verb;
     // the structural shape carries it.
@@ -288,10 +359,9 @@ pub fn handle_product_search(
         .constraints
         .iter()
         .filter(|constraint| {
-            constraint
-                .phrases
-                .iter()
-                .any(|phrase| normalized.contains(phrase.as_str()) || lower.contains(phrase.as_str()))
+            constraint.phrases.iter().any(|phrase| {
+                normalized.contains(phrase.as_str()) || lower.contains(phrase.as_str())
+            })
         })
         .collect();
 
@@ -320,15 +390,7 @@ pub fn handle_product_search(
     let link = marketplace
         .link_template
         .replace(concat!("{", "query}"), &percent_encode(&query));
-    let constraints_text = if constraints.is_empty() {
-        "(none stated)".to_owned()
-    } else {
-        constraints
-            .iter()
-            .map(|constraint| constraint.name.clone())
-            .collect::<Vec<_>>()
-            .join(", ")
-    };
+    let constraints_text = constraints_text(&constraints);
     let advice = matched_noun.map_or_else(
         || "confirm the exact model and seller region before ordering".to_owned(),
         |noun| noun.advice.clone(),

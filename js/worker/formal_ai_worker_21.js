@@ -256,11 +256,31 @@ function marketPriceDecimal(value) {
   return Number(value).toFixed(2);
 }
 
+// Issue #918 (R918-2): the attachment-envelope markers are the
+// document_originality_marker table of data/seed/handler-rules.lino by kind
+// (section, sample, omitted, unavailable), and the queries, the sample word
+// limit and the default target its document_originality_check policy.
+// Mirrors originality_markers in rust/src/solver_handlers/document_originality.rs.
+function documentOriginalityMarkers(...kinds) {
+  const table = handlerRulesTables().document_originality_marker;
+  return (table ? table.rows : []).filter(([, kind]) => kinds.includes(kind)).map(([marker]) => marker);
+}
+
+function documentOriginalityLineStartsWith(line, ...kinds) {
+  return documentOriginalityMarkers(...kinds).some((marker) => line.startsWith(marker));
+}
+
+function isDocumentOriginalitySectionLine(line) {
+  return documentOriginalityMarkers("section").some((marker) => line.toLowerCase() === marker.toLowerCase());
+}
+
+function documentOriginalityPolicy(key) {
+  return handlerRulesPolicy("document_originality_check", key) || "";
+}
+
 function documentOriginalityTextSamplePrefixValue(line) {
-  for (const prefix of ["Text excerpt:", "Text sample:", "OCR text:"]) {
-    if (line.startsWith(prefix)) return line.slice(prefix.length);
-  }
-  return null;
+  const prefix = documentOriginalityMarkers("sample").find((marker) => line.startsWith(marker));
+  return prefix === undefined ? null : line.slice(prefix.length);
 }
 
 function isDocumentOriginalityAttachmentFileLine(line) {
@@ -269,11 +289,9 @@ function isDocumentOriginalityAttachmentFileLine(line) {
 
 function isDocumentOriginalityContextBoundary(line) {
   return (
-    /^attached files:$/iu.test(line) ||
+    isDocumentOriginalitySectionLine(line) ||
     isDocumentOriginalityAttachmentFileLine(line) ||
-    line.startsWith("Text omitted:") ||
-    line.startsWith("Text unavailable:") ||
-    line.startsWith("OCR unavailable:")
+    documentOriginalityLineStartsWith(line, "omitted", "unavailable")
   );
 }
 
@@ -680,19 +698,12 @@ function extractDocumentOriginalityAttachmentNames(prompt) {
   let inSection = false;
   for (const rawLine of String(prompt || "").split(/\r?\n/u)) {
     const line = rawLine.trim();
-    if (/^attached files:$/iu.test(line)) {
+    if (isDocumentOriginalitySectionLine(line)) {
       inSection = true;
       continue;
     }
     if (!inSection || !line) continue;
-    if (
-      line.startsWith("OCR text:") ||
-      line.startsWith("Text excerpt:") ||
-      line.startsWith("Text sample:") ||
-      line.startsWith("Text omitted:")
-    ) {
-      continue;
-    }
+    if (documentOriginalityLineStartsWith(line, "sample", "omitted")) continue;
     const match = line.match(/^\d+\.\s+(.+?)\s+\([^)]*\)$/u);
     if (match && match[1]) names.push(match[1].trim());
   }
@@ -702,35 +713,28 @@ function extractDocumentOriginalityAttachmentNames(prompt) {
 function hasDocumentOriginalityTextSample(prompt) {
   return String(prompt || "")
     .split(/\r?\n/u)
-    .some((rawLine) => {
-      const line = rawLine.trim();
-      return (
-        line.startsWith("OCR text:") ||
-        line.startsWith("Text excerpt:") ||
-        line.startsWith("Text sample:")
-      );
-    });
+    .some((rawLine) => documentOriginalityLineStartsWith(rawLine.trim(), "sample"));
 }
 
 function documentOriginalityTextSample(prompt) {
   return documentOriginalityFullTextSample(prompt)
     .split(/\s+/u)
     .filter(Boolean)
-    .slice(0, 14)
+    .slice(0, Number(documentOriginalityPolicy("sample_query_words")))
     .join(" ");
 }
 
 function documentOriginalityQuery(prompt, attachments) {
   const sample = documentOriginalityTextSample(prompt);
-  if (sample) return `"${sample}" plagiarism originality`;
+  if (sample) return handlerRulesFillOnce(documentOriginalityPolicy("sample_query"), { sample });
   if (attachments.length > 0) {
-    return `${attachments[0]} plagiarism originality uniqueness`;
+    return handlerRulesFillOnce(documentOriginalityPolicy("attachment_query"), { name: attachments[0] });
   }
-  return "document plagiarism originality uniqueness";
+  return documentOriginalityPolicy("default_query");
 }
 
 function documentOriginalityContent(language, attachments, samplePresent, marketAssessments) {
-  const target = attachments.length > 0 ? attachments.join(", ") : "provided text";
+  const target = attachments.length > 0 ? attachments.join(", ") : documentOriginalityPolicy("default_target");
   const templateIntent = samplePresent
     ? "document_originality_check_sample_present"
     : "document_originality_check_sample_missing";
@@ -739,14 +743,7 @@ function documentOriginalityContent(language, attachments, samplePresent, market
     (assessment) => assessment.status === MARKET_PRICE_CLAIM_STATUS_CONTRADICTED,
   );
   if (contradicted.length > 0) {
-    const heading =
-      language === "ru"
-        ? "Проверка ценовых утверждений"
-        : language === "hi"
-          ? "मूल्य दावों की जांच"
-          : language === "zh"
-            ? "价格声明核查"
-            : "Price claim check";
+    const heading = answerFor("document_originality_check_price_claim_heading", language);
     const summaries = contradicted
       .map((assessment) => `- ${marketPriceSummarySentence(assessment)}`)
       .join("\n");
@@ -812,7 +809,7 @@ function tryDocumentOriginalityCheck(prompt, language) {
     evidence,
     query,
     attachments,
-    formalizedObject: attachments.length > 0 ? attachments.join(", ") : "provided text",
+    formalizedObject: attachments.length > 0 ? attachments.join(", ") : documentOriginalityPolicy("default_target"),
   };
 }
 

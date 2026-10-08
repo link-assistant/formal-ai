@@ -7,4 +7,5 @@ function_test_contracts
     header "import { test } from 'node:test';\nimport assert from 'node:assert/strict';\n"
     case "\ntest('{name}', () => {\n  assert.equal({name}({arguments}), {expected});\n});\n"
     run "node --test {test}"
+    probe "node --input-type=module -e \"import { {name} } from './{module}'; console.log({name}({arguments}));\""
     samples "2 3 4 5 6 7"

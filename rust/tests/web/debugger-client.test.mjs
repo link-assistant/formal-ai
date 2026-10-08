@@ -1,7 +1,8 @@
 // The debugger view's non-UI logic (issue #667, R383, js/debugger-client.js):
 // the debug-session client, the poll that merges memory records with stage
 // events, the projection of a recorded stage event onto the recipe-diagram,
-// Rust-source and JavaScript-source panes, and the on-demand Mermaid renderer
+// Rust-source and JavaScript-source panes (the code that emits that stage),
+// and the on-demand Mermaid renderer
 // with its source fallback. js/app/debugger-view.jsx renders exactly these.
 
 import assert from "node:assert/strict";
@@ -69,22 +70,27 @@ describe("the debug-session client", () => {
 });
 
 describe("the stage panes", () => {
-  test("a recorded stage event fills the diagram, Rust and JavaScript panes", async () => {
+  test("a recorded stage event fills the diagram and the panes of the code that emits it", async () => {
     if (!hasHost()) installHost({ readText: readRepoFile, parseLino });
     const session = new DebugSession(TOKEN);
     session.pause();
     const held = session.gate(ROUTED);
+    const pane = (path, line, symbol, excerpt) => ({ location: `${path}:${line}`, symbol, excerpt });
     const event = session.events[0];
     const panes = stagePanes(event);
     assert.equal(panes.diagram, event.mermaid);
     assert.match(panes.diagram, /\n {4}class s0 current$/);
-    assert.deepEqual(panes.rust, {
-      location: `rust/src/solver_dispatch.rs:${event.rust_line}`, symbol: "handle_arithmetic", excerpt: event.rust_excerpt,
-    });
-    assert.deepEqual(panes.js, {
-      location: `js/worker/formal_ai_worker_06.js:${event.js_line}`, symbol: "tryArithmetic", excerpt: event.js_excerpt,
-    });
+    assert.deepEqual(panes.rust, pane("rust/src/solver.rs", event.rust_line,
+      "solve_with_history_probability_store_and_intent_cache", event.rust_excerpt));
+    assert.deepEqual(panes.js, pane("js/worker/formal_ai_worker_solver_events.js", event.js_line,
+      "solverEventLog", event.js_excerpt));
     assert.ok(event.rust_line > 0 && event.js_line > 0);
+    // The panes follow the stage: the last one is the finalizer's.
+    session.advance("turn_1", 0);
+    session.advance("turn_1", 1);
+    const last = stagePanes(session.events.at(-1));
+    assert.deepEqual([last.rust.symbol, last.js.symbol], ["finalize_simple", "solverEventLog"]);
+    assert.match(last.rust.location, /^rust\/src\/solver_handlers\/mod\.rs:\d+$/);
     session.release();
     await held;
   });

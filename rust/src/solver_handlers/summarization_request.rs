@@ -35,7 +35,11 @@ pub fn handle_summarization_request(
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    if !crate::seed::lexicon().mentions_role(ROLE_TEXT_SUMMARIZATION_ACTION, normalized) {
+    // The role is read on the punctuation-folded prompt, as the browser twin
+    // reads it, so a colon glued to the verb ("Summarize: …") does not hide it
+    // (issue #1175 p275).
+    let folded = crate::engine::normalize_prompt(normalized);
+    if !crate::seed::lexicon().mentions_role(ROLE_TEXT_SUMMARIZATION_ACTION, &folded) {
         return None;
     }
     let payload = free_text_payload(prompt)?;

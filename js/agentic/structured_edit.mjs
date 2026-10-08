@@ -113,7 +113,9 @@ function memberInsertion(task) {
       if (path !== null) candidates.push([segment.start, path]);
       else if (validIdentifier(segment.text) && !named.includes(segment.text)) named.push(segment.text);
     } else if (isMemberLiteral(segment.text)) {
-      values.push(segment.text);
+      // A value quoted again (a ladder node's `result=` clause repeats it) is
+      // still one member.
+      if (!values.includes(segment.text)) values.push(segment.text);
       if (literalTarget === null) literalTarget = path;
     }
     literalSpans.push([segment.start, segment.end]);

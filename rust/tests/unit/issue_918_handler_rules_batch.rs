@@ -740,3 +740,213 @@ fn an_event_confirmation_renders_the_seeded_sentence_in_every_prompt_language() 
         assert_eq!(confirmation_shape(&response.answer), expected, "{prompt}");
     }
 }
+
+/// Issue #918 (R918-2): the `text_manipulation` replacement cues are the
+/// `text_*` tables of the rule document. A cue that names its target after it
+/// ("instead", "вместо") swaps the operands it sits between, so "X instead of
+/// Y" replaces Y with X; the replace verbs keep the quoted order. The browser
+/// twin pins the same answers.
+#[test]
+fn text_replacements_read_their_cues_and_operand_order_from_the_seed_tables() {
+    for (prompt, expected) in [
+        (
+            "Write \"cat\" instead of \"dog\": the dog barks",
+            "the cat barks",
+        ),
+        (
+            "Use \"cat\" instead of \"dog\" in \"the dog barks\"",
+            "the cat barks",
+        ),
+        (
+            "In \"the dog barks\" write \"cat\" instead of \"dog\"",
+            "the cat barks",
+        ),
+        (
+            "Instead of \"dog\" use \"cat\": the dog barks",
+            "the cat barks",
+        ),
+        ("Напиши «кот» вместо «пёс»: пёс лает", "кот лает"),
+        (
+            "Вместо «пёс» используй «кот» в тексте «пёс лает»",
+            "кот лает",
+        ),
+        (
+            "Replace \"cat\" with \"dog\" in this text: \"cat sat with cat\"",
+            "dog sat with dog",
+        ),
+        ("\"cat sat\": replace \"cat\" with \"dog\"", "dog sat"),
+        ("Замени «пёс» на «кот» в тексте «пёс лает»", "кот лает"),
+        (
+            "पाठ 'कुत्ता भौंकता है' में 'कुत्ता' को 'बिल्ली' से बदलें",
+            "बिल्ली भौंकता है",
+        ),
+        ("把文本「狗在叫」中的「狗」替换为「猫」", "猫在叫"),
+        ("Uppercase \"replace me\"", "REPLACE ME"),
+    ] {
+        let response = FormalAiEngine.answer(prompt);
+        assert_eq!(response.intent, "text_manipulation", "{prompt}");
+        assert_eq!(response.answer, expected, "{prompt}");
+    }
+    assert_eq!(
+        handler_table_value("text_replacement_cue", "instead"),
+        Some("target_follows_cue")
+    );
+    assert_eq!(
+        handler_table_value("text_replacement_cue", "замен"),
+        Some("operands_in_order")
+    );
+    assert_eq!(
+        handler_table_value("text_input_context_cue", "in"),
+        Some("ends_with")
+    );
+}
+
+const ORIGINALITY_EN: &str = "Workflow: read the supplied text, select stable passages, run exact web searches for those passages, then compare any found sources against the document for overlap, citations, and suspicious reuse. I will not claim a uniqueness percentage until matching sources are found and compared.";
+const ORIGINALITY_RU: &str = "Рабочий план: прочитать приложенный текст, взять устойчивые фрагменты, выполнить веб-поиск точных совпадений по этим фрагментам, затем сравнить найденные источники с документом и отметить совпадения, цитирования и подозрительные заимствования. Я не буду объявлять процент уникальности без найденных источников и сопоставления текста.";
+const ORIGINALITY_HI: &str = "योजना: संलग्न पाठ पढ़ना, स्थिर अंश चुनना, उन अंशों के सटीक मिलान के लिए वेब खोज करना, फिर मिले स्रोतों को दस्तावेज से मिलाकर overlap, citation और संदिग्ध copy को रिपोर्ट करना. स्रोतों से मिलान किए बिना uniqueness प्रतिशत घोषित नहीं किया जाएगा.";
+const ORIGINALITY_ZH: &str = "计划：读取附件文本，抽取稳定片段，对这些片段做精确网页搜索，再把找到的来源与文档逐段比对，报告重合、引用和可疑借用。在没有来源匹配前，不会直接给出唯一性百分比。";
+const ETH_CONTRADICTED: &str = "- ETH in 2024: $1,700 is contradicted: Binance ETHUSDT daily klines reports ETH USDT daily candles in 2024 stayed between $2100.00 on 2024-01-03 and $4107.80 on 2024-12-16.";
+const ETH_QUERY: &str = "\"ETH in 2024: $1,700 ETH in 2021: $1,700\" plagiarism originality";
+
+/// Issue #918 (R918-2): `document_originality_check` reads its attachment
+/// markers from the `document_originality_marker` table, its queries, sample
+/// word limit and default target from the `document_originality_check`
+/// policy, and its price-claim heading from seeded responses. The answers are
+/// the ones the inline literals produced; the browser twin pins the same.
+#[test]
+fn an_originality_check_reads_its_markers_queries_and_heading_from_the_seed() {
+    let cases = [
+        (
+            "Check this attached text for uniqueness and plagiarism\n\nAttached files:\n1. article.txt (text/plain, 12.0 KB)\nText excerpt: The tower opened in 1889 and remains a symbol of Paris.".to_owned(),
+            format!("Recognized an originality and plagiarism check for `article.txt`.\n\n{ORIGINALITY_EN}\n\nClient text sample: present."),
+            "\"The tower opened in 1889 and remains a symbol of Paris.\" plagiarism originality",
+        ),
+        (
+            "Check this attached text for uniqueness and plagiarism\n\nAttached files:\n1. article.txt (text/plain, 12.0 KB)\nText omitted: the file is too large".to_owned(),
+            format!("Recognized an originality and plagiarism check for `article.txt`.\n\n{ORIGINALITY_EN}\n\nClient text sample: read from attachment."),
+            "article.txt plagiarism originality uniqueness",
+        ),
+        (
+            "Check this text for plagiarism: The tower opened in 1889.".to_owned(),
+            format!("Recognized an originality and plagiarism check for `provided text`.\n\n{ORIGINALITY_EN}\n\nClient text sample: read from attachment."),
+            "document plagiarism originality uniqueness",
+        ),
+        (
+            "Verify the authenticity and factual accuracy of this attached document\n\nAttached files:\n1. claim.txt (text/plain, 3.0 KB)\nOCR text: ETH in 2024: $1,700\nETH in 2021: $1,700".to_owned(),
+            format!("Recognized an originality and plagiarism check for `claim.txt`.\n\n{ORIGINALITY_EN}\n\nClient text sample: present.\n\nPrice claim check:\n{ETH_CONTRADICTED}"),
+            ETH_QUERY,
+        ),
+        (
+            "Проверь данный текст на уникальность и на плагиат\n\nAttached files:\n1. eth.txt (text/plain, 1.0 KB)\nText excerpt: ETH in 2024: $1,700\nETH in 2021: $1,700".to_owned(),
+            format!("Распознал проверку текста на уникальность и плагиат для `eth.txt`.\n\n{ORIGINALITY_RU}\n\nТекстовый фрагмент от клиента: получен.\n\nПроверка ценовых утверждений:\n{ETH_CONTRADICTED}"),
+            ETH_QUERY,
+        ),
+        (
+            "संलग्न पाठ की मौलिकता और plagiarism जांचें\n\nAttached files:\n1. report.txt (text/plain, 8.0 KB)\nText sample: ETH in 2024: $1,700\nETH in 2021: $1,700".to_owned(),
+            format!("`report.txt` के लिए मौलिकता और plagiarism जांच पहचानी गई.\n\n{ORIGINALITY_HI}\n\nClient text sample: present.\n\nमूल्य दावों की जांच:\n{ETH_CONTRADICTED}"),
+            ETH_QUERY,
+        ),
+        (
+            "检查这个附件文本的原创性和抄袭情况\n\nAttached files:\n1. manuscript.txt (text/plain, 9.0 KB)\nText excerpt: ETH in 2024: $1,700\nText unavailable: page two".to_owned(),
+            format!("已识别 `manuscript.txt` 的原创性/抄袭检查请求。\n\n{ORIGINALITY_ZH}\n\nClient text sample: present.\n\n价格声明核查:\n{ETH_CONTRADICTED}"),
+            "\"ETH in 2024: $1,700\" plagiarism originality",
+        ),
+    ];
+    for (prompt, expected, query) in cases {
+        let response = FormalAiEngine.answer(&prompt);
+        assert_eq!(response.intent, "document_originality_check", "{prompt}");
+        assert_eq!(response.answer, expected, "{prompt}");
+        let request = format!("document_originality_check:request:{query}");
+        assert!(
+            response.evidence_links.contains(&request),
+            "{prompt}: {:?}",
+            response.evidence_links
+        );
+    }
+}
+
+/// The prose around a software-project follow-up's Links Notation block, and
+/// the block itself, split at its fences.
+fn follow_up_parts(answer: &str) -> (&str, &str, &str) {
+    let (head, rest) = answer.split_once("```lino\n").expect("a lino block");
+    let (block, tail) = rest.split_once("```\n").expect("the block's end");
+    (head, block, tail)
+}
+
+/// Issue #918 (R918-2): `software_project_followup` renders every sentence from
+/// the seeded `software_project_followup_*` responses, its action verbs from
+/// the `software_project_followup_action` table and its gates and
+/// expected-output word limit from the policy of the rule document. Its
+/// expected-output openers are the prefix forms of the
+/// `output_display_request` role only, as in the browser twin, which pins the
+/// same sentences.
+#[test]
+fn a_software_project_follow_up_renders_the_seeded_sentences() {
+    let solver = UniversalSolver::default();
+    let scraper_plan = "Design a simple web scraper in Python that:\n1. Fetches a webpage\n2. Extracts all headings (h1, h2, h3)\n3. Counts word frequency\n4. Generates a markdown summary";
+    let plan = solver.solve(scraper_plan);
+    let history = [
+        ConversationTurn::user(scraper_plan),
+        ConversationTurn::assistant(plan.answer),
+    ];
+    for (prompt, head, block_lines, tail) in [
+        (
+            "test it by scraping wikipedia.org and show me the top 10 most frequent words.",
+            "Recorded a verification follow-up for the scraper from the active plan.\n\nFormalized meaning:\n",
+            [
+                "  action \"test\"",
+                "  target_site \"wikipedia.org\"",
+                "  expected_output \"the top 10 most frequent words\"",
+                "  approval_gate \"network_access\"",
+            ],
+            "\nReasoning steps:\n1. Recognize \"test\" as a verification request that exercises the scraper from the active plan, not a fact lookup.\n2. Bind the test target to wikipedia.org and keep live fetches behind the network_access gate.\n3. Record the expected output as \"the top 10 most frequent words\" so the test harness can assert it.\n4. Drive the artifact through a deterministic fixture before any host API or network call.\n5. Keep code execution behind approval gates because the sandbox cannot run untrusted code.\n\nVerification plan:\n1. Generate the scraper core plus a deterministic test harness with a captured wikipedia.org fixture.\n2. Assert each requirement (parsing, extraction, counting, summary) against the fixture.\n3. Surface the top 10 most frequent words from the fixture run.\n4. Run the python test command once the generated_code gate is approved.\n5. Promote the run to live wikipedia.org only after the test_execution and network_access gates pass.\n\nReply `approve plan` to generate the artifact plus this test harness. Running it live against the target needs the test_execution and network_access gates.",
+        ),
+        (
+            "покажи результат",
+            "Recorded a demonstration follow-up for the scraper from the active plan.\n\nFormalized meaning:\n",
+            [
+                "  action \"show\"",
+                "  follow_up_kind demonstration",
+                "  expected_output \"результат\"",
+                "  approval_gate \"generated_code\"",
+            ],
+            "\nReasoning steps:\n1. Recognize \"show\" as a demonstration request that exercises the scraper from the active plan, not a fact lookup.\n2. Record the expected output as \"результат\" so the test harness can assert it.\n3. Drive the artifact through a deterministic fixture before any host API or network call.\n4. Keep code execution behind approval gates because the sandbox cannot run untrusted code.\n\nVerification plan:\n1. Generate the scraper core plus a deterministic test harness with a captured the requested target fixture.\n2. Assert each requirement (parsing, extraction, counting, summary) against the fixture.\n3. Surface результат from the fixture run.\n4. Run the python test command once the generated_code gate is approved.\n5. Promote the run to live the requested target only after the test_execution and network_access gates pass.\n\nReply `approve plan` to generate the artifact plus this test harness. Running it live against the target needs the test_execution and network_access gates.",
+        ),
+    ] {
+        let response = solver.solve_with_history(prompt, &history);
+        assert_eq!(response.intent, "software_project_followup", "{prompt}");
+        let (actual_head, block, actual_tail) = follow_up_parts(&response.answer);
+        assert_eq!(actual_head, head, "{prompt}");
+        assert_eq!(actual_tail, tail, "{prompt}");
+        for line in block_lines {
+            assert!(
+                block.lines().any(|candidate| candidate == line),
+                "{prompt}: {block}"
+            );
+        }
+    }
+
+    let prices_plan = "Write a Python scraper that imports product prices and stores history";
+    let plan = solver.solve(prices_plan);
+    let history = [
+        ConversationTurn::user(prices_plan),
+        ConversationTurn::assistant(plan.answer),
+    ];
+    let implementation = solver.solve_with_history("approve plan", &history);
+    let history = [
+        ConversationTurn::user(prices_plan),
+        ConversationTurn::assistant(implementation.answer),
+    ];
+    let approved = solver.solve_with_history("run it and verify the output", &history);
+    assert_eq!(approved.intent, "software_project_followup");
+    let (head, block, tail) = follow_up_parts(&approved.answer);
+    assert_eq!(
+        head,
+        "Recorded a verification follow-up for the scraper from the active plan.\n\nFormalized meaning:\n"
+    );
+    assert!(block.contains("  approval_state approved\n"));
+    assert_eq!(
+        tail,
+        "\nReasoning steps:\n1. Recognize \"test\" as a verification request that exercises the scraper from the active plan, not a fact lookup.\n2. Drive the artifact through a deterministic fixture before any host API or network call.\n3. Keep code execution behind approval gates because the sandbox cannot run untrusted code.\n\nVerification plan:\n1. Generate the scraper core plus a deterministic test harness with a captured the requested target fixture.\n2. Assert each requirement (parsing, extraction, counting, summary) against the fixture.\n3. Run the python test command once the generated_code gate is approved.\n4. Promote the run to live the requested target only after the test_execution and network_access gates pass.\n\nThe plan is approved, so the generated starter already includes this test harness. Running it live needs the test_execution and network_access gates."
+    );
+}

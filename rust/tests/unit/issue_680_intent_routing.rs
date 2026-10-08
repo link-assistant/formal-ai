@@ -202,14 +202,31 @@ fn edit_intent_without_edit_tool_does_not_emit_edit_call() {
 
 #[test]
 fn write_intent_is_not_stolen_by_the_edit_router() {
-    // A file-creation request ("add hello to config.txt") names no edit action and
-    // no edit target cue, so even with an edit tool advertised it must route to the
-    // write tool, not be mis-parsed as a replacement.
+    // A file-creation request ("write hello to config.txt") names no edit action
+    // and no edit target cue, so even with an edit tool advertised it must route
+    // to the write tool, not be mis-parsed as a replacement.
     let (tool, _) = single_call(
-        "add hello to config.txt",
+        "write hello to config.txt",
         &["edit", "write_file", "read_file"],
     );
     assert_eq!(tool, "write_file", "write intent mis-routed to an edit");
+
+    // "add hello to config.txt" asks for an addition, which is never the file's
+    // whole new content (PR #1188: `Add <content> to <file>` once replaced
+    // `m.test.mjs` with the sentence it was asked to add). It must not become an
+    // edit either. Appending an unquoted addition is still an open gap, so no
+    // step is planned for it.
+    let messages = vec![ChatMessage::user("add hello to config.txt")];
+    if let Some(AgenticPlan::ToolCalls(calls)) =
+        plan_chat_step(&messages, &["edit", "write_file", "read_file"])
+    {
+        assert!(
+            calls
+                .iter()
+                .all(|call| call.tool != "edit" && call.tool != "write_file"),
+            "an addition is neither an edit nor a whole-file write: {calls:?}"
+        );
+    }
 }
 
 #[test]

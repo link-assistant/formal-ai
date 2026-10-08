@@ -59,6 +59,7 @@ use super::task_structure;
 use super::tool_result;
 use super::web_research;
 use super::workspace_inspection;
+use super::workspace_search;
 use super::{algorithm_learning, capability_router};
 use super::{change_request, code_artifact};
 use crate::protocol::ChatMessage;
@@ -387,10 +388,18 @@ pub(super) fn plan_settled_routes(
     // collapse them into one incomplete action. A function and its test added
     // to existing modules (PR #1188 T1) is one such composition: read both
     // modules, write both, run the stated command.
-    if let Some(plan) = super::workspace_change::plan_workspace_change_step(
-        task, messages, tool_names,
-    )
-    .or_else(|| super::module_function::plan_module_function_step(task, messages, tool_names))
+    if let Some(plan) =
+        super::workspace_change::plan_workspace_change_step(task, messages, tool_names)
+            .or_else(|| {
+                super::module_function::plan_module_function_step(task, messages, tool_names)
+            })
+            // A bug report with a stated expectation is checked before anything is
+            // rewritten (PR #1188 T93).
+            .or_else(|| {
+                super::function_expectation::plan_function_expectation_step(
+                    task, messages, tool_names,
+                )
+            })
     {
         return Some(plan);
     }
@@ -609,6 +618,16 @@ pub(super) fn plan_settled_routes(
         && file_task.is_analysis()
     {
         return Some(plan_file_read_step(&file_task, messages, tool_names));
+    }
+    // Where a name or literal is used inside the workspace is a content search
+    // (PR #1188 T90): grep it, ahead of the file-name locate arm and web search.
+    if let Some(plan) = workspace_search::plan_workspace_search_step(task, messages, tool_names)
+        // What a named module exports is answered from its declarations (T99).
+        .or_else(|| super::module_exports::plan_module_exports_step(task, messages, tool_names))
+        // A summary of a named file summarizes the file's text (T100).
+        .or_else(|| super::file_summary::plan_file_summary_step(task, messages, tool_names))
+    {
+        return Some(plan);
     }
     // Agent-mode counterpart of the web UI's report action (issues #687 + #822).
     // This is a conversation state machine: after the initial report intent it

@@ -80,6 +80,12 @@ fn handle_arithmetic(
     _normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    // The browser asks the shell composer before arithmetic, so a command it
+    // composes is its answer even where a digit and a `/` promote arithmetic
+    // here ("find .log files larger than 10 MB under /var", issue #1177).
+    if shell_compose_claims(prompt) {
+        return None;
+    }
     try_arithmetic(prompt, log)
 }
 

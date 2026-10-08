@@ -323,13 +323,11 @@ routing_probes
     language ru
     intent learn_from_source
     prompt "Отсюда ты узнаешь актуальные темы https://trends.google.com/trending?hl=ru&geo=DE"
-    js_misroute unknown
   probe p179
     lane learn_from_source
     language ru
     intent learn_from_source
     prompt "Отсюда ты узнаешь популярные запросы https://trends.google.com/trending?hl=ru&geo=RU"
-    js_misroute unknown
   probe p195
     lane network_query
     language en
@@ -395,8 +393,6 @@ routing_probes
     language en
     intent product_search
     prompt "Find me a laptop under 1000 dollars"
-    js_misroute calculation_error
-    rust_misroute calculation_error
   probe p220
     lane product_search
     language en
@@ -509,7 +505,6 @@ routing_probes
     language ru
     intent unit_conversion
     prompt "Переведи 10 миль в километры"
-    rust_misroute translate_ru_to_en
   probe p325
     lane unit_conversion
     language ru

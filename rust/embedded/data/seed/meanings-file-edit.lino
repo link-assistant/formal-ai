@@ -202,3 +202,147 @@ meanings
     lexeme es
       surface
         text "que sigue a"
+  line_containment
+    defined-by relation
+    role line_containment_cue
+    precondition "a line edit names its quoted text as something a line contains"
+    effect "every line that contains the quoted text is meant; without this cue a quoted line is the whole line that equals it"
+    unit "not applicable"
+    example "delete the lines containing 'x' from f.md"
+    lexeme en
+      surface
+        text "lines containing"
+      surface
+        text "line containing"
+      surface
+        text "that contain"
+      surface
+        text "that contains"
+      surface
+        text "which contain"
+    lexeme ru
+      surface
+        text содержащую
+      surface
+        text содержащие
+      surface
+        text содержащих
+    lexeme hi
+      surface
+        text वाली
+      surface
+        text युक्त
+    lexeme zh
+      surface
+        text 包含
+    lexeme es
+      surface
+        text "que contiene"
+      surface
+        text "que contienen"
+      surface
+        text "que contengan"
+  file_contents_source
+    defined-by relation
+    role file_contents_source_cue
+    precondition "an additive edit names another file whose contents are the text it places"
+    effect "the named file is read and its lines are placed as written; its path is the source, not the file edited"
+    unit "not applicable"
+    example "append the contents of a.txt to the end of b.txt"
+    lexeme en
+      surface
+        text "the contents of"
+      surface
+        text "the content of"
+      surface
+        text "contents of"
+    lexeme ru
+      surface
+        text "содержимое файла"
+      surface
+        text "содержимое из"
+    lexeme hi
+      surface
+        text "की सामग्री"
+    lexeme zh
+      surface
+        text "的内容"
+    lexeme es
+      surface
+        text "el contenido de"
+      surface
+        text "los contenidos de"
+  line_slice_head
+    defined-by relation
+    role line_slice_head_cue
+    precondition "a request names a count of lines right before a line noun"
+    effect "the lines counted from the start of the file: the first N lines"
+    unit "not applicable"
+    example "show the first 2 lines of n.txt"
+    lexeme en
+      surface
+        text first
+    lexeme ru
+      surface
+        text первые
+    lexeme hi
+      surface
+        text पहली
+    lexeme zh
+      surface
+        text 前
+    lexeme es
+      surface
+        text primeras
+  line_slice_tail
+    defined-by relation
+    role line_slice_tail_cue
+    precondition "a request names a count of lines right before a line noun"
+    effect "the lines counted from the end of the file: the last N lines"
+    unit "not applicable"
+    example "show the last 2 lines of n.txt"
+    lexeme en
+      surface
+        text last
+    lexeme ru
+      surface
+        text последние
+    lexeme hi
+      surface
+        text आख़िरी
+      surface
+        text अंतिम
+    lexeme zh
+      surface
+        text 最后
+      surface
+        text 后
+    lexeme es
+      surface
+        text últimas
+  file_section
+    defined-by concept
+    role file_section_noun
+    precondition "an additive edit places its text at one end of a Markdown section named by its quoted heading"
+    effect "the section runs from its heading to the line before the next heading of the same or a higher level"
+    unit "not applicable"
+    example "insert the line 'x' at the end of the section '## Usage' in README.md"
+    lexeme en
+      surface
+        text "the section"
+      surface
+        text "a section"
+    lexeme ru
+      surface
+        text раздела
+      surface
+        text раздел
+    lexeme hi
+      surface
+        text खंड
+    lexeme zh
+      surface
+        text 章节
+    lexeme es
+      surface
+        text sección

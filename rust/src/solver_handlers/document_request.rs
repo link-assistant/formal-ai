@@ -348,7 +348,7 @@ fn render_document_plan(language: &str, label: Option<&str>) -> String {
     let suffix = label
         .and_then(|label| {
             seed::localized_response("document_generation_plan_format", language)
-                .map(|text| text.replace("{label}", label))
+                .map(|text| text.replace(concat!("{", "label", "}"), label))
         })
         .unwrap_or_default();
     seed::localized_response("document_generation_plan", language)

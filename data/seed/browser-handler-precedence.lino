@@ -46,6 +46,8 @@ browser_handler_precedence
   handler tryProductSearch
     argument_prompt
     argument_normalized
+  handler tryLearnFromSource
+    argument_prompt
   handler tryResearchComparisonTable
     argument_prompt
     argument_normalized

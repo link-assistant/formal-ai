@@ -46,6 +46,7 @@ self.FORMAL_AI_SEED_FILES = Object.freeze([
   "seed/language-detection.lino",
   "seed/languages.lino",
   "seed/learned-request-openers.lino",
+  "seed/learning-sources.lino",
   "seed/legality-patterns.lino",
   "seed/manual-pages.lino",
   "seed/market-price-references.lino",

@@ -16,7 +16,8 @@ handler_promotions
         all
           substring undefined of cleaned
           substring function of cleaned
-    because "an explicit execution failure must be explained before source text is treated as a new task"
+        evidence undefined_call
+    because "an explicit execution failure must be explained before source text is treated as a new task; issue 1173 R3: a request whose program calls a function nothing defines (the undefined_call operand) fails the same way whatever the function is named"
   promotion calendar_create_event
     rank 30
     when
