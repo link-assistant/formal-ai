@@ -1,10 +1,28 @@
 // meta-language:self-translation:v1 source=JavaScript target=Rust sha256=182c1dfdd8abda96d15ce145f6c9343971d39dd356cd69d5597f7dacf3c93f33 bytes=15885
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=4
+// formal-ai:workarounds import-pruning items=0 carried=4; string-methods items=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// formal-ai:workaround-prelude begin
+pub fn wa_str_last_index_of(text: String, search: String) -> f64 {
+    let units: Vec<u16> = text.encode_utf16().collect();
+    let needle: Vec<u16> = search.encode_utf16().collect();
+    if needle.is_empty() { return units.len() as f64; }
+    if needle.len() > units.len() { return -1.0; }
+    units.windows(needle.len()).rposition(|window| window == needle.as_slice()).map_or(-1.0, |at| at as f64) }
+
+pub fn wa_index(index: f64, len: usize) -> usize {
+    let whole = if index.is_nan() { 0.0 } else { index.trunc() };
+    (if whole < 0.0 { (len as f64 + whole).max(0.0) } else { whole.min(len as f64) }) as usize }
+
+pub fn wa_str_slice(text: String, start: f64, end: f64) -> String {
+    let units: Vec<u16> = text.encode_utf16().collect();
+    let (from, to) = (wa_index(start, units.len()), wa_index(end, units.len()));
+    if from >= to { String::new() } else { String::from_utf16_lossy(&units[from..to]) } }
+// formal-ai:workaround-prelude end
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -184,9 +202,27 @@ pub fn join_path(root: String, relative: String) -> String {
 // | export const UNUSABLE_ANSWER_ID = 'derivation_answer_id_unusable';
 pub const UNUSABLE_ANSWER_ID: &str = "derivation_answer_id_unusable";
 
-// meta-language:carried JavaScript function_declaration (unsupported)
-// formal-ai:refusal method call .lastIndexOf()
-// formal-ai:blockers method call .lastIndexOf() | method call .slice()
+// formal-ai:workaround string-methods JavaScript function_declaration items=1 sha256=86c13561216c13ea6e19f6d113728bc3c23a64e5343b445e053f76bee597b3e1
+// | /** The parent directory of a `/`-separated path (`Path::parent`). @param {string} file */
+// | function parentPath(file) {
+// |   const index = file.lastIndexOf('/');
+// |   return index <= 0 ? '' : file.slice(0, index);
+// | }
+// ~ /** The parent directory of a `/`-separated path (`Path::parent`). @param {string} file */
+// ~ function parentPath(file) {
+// ~   const index = waStrLastIndexOf(file, '/');
+// ~   return index <= 0 ? '' : waStrSlice(file, 0, index);
+// ~ }
+pub fn parent_path(file: String) -> String {
+    {
+        let index = crate::wa_str_last_index_of(file.clone(), String::from("/"));
+        if (index <= (0f64)) {
+            String::from("")
+        } else {
+            crate::wa_str_slice(file.clone(), 0f64, index)
+        }
+    }
+}
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal object without a $ tag

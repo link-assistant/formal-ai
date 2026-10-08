@@ -41,7 +41,7 @@ export function callerContextVocabulary() {
   });
 }
 
-/** Mirrors `const fn is_unspaced_script`. */
+/** Mirrors `const fn is_unspaced_script`. @param {string} character */
 function isUnspacedScript(character) {
   const cp = character.codePointAt(0);
   return (cp >= 0x3400 && cp <= 0x9fff) || (cp >= 0xf900 && cp <= 0xfaff);

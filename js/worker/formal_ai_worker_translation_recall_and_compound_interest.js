@@ -265,19 +265,23 @@ function stripCombiningMarks(value) {
     : value;
 }
 
-function extractWiktionaryTranslation(wikitext, targetLang) {
-  if (!wikitext || !targetLang) return null;
+// Every target surface the wikitext offers, in page order (the Rust
+// pipeline's Wiktionary candidates); the chat route picks among them by the
+// round trip (roundTripSurface, R1188-U19).
+function extractWiktionaryCandidates(wikitext, targetLang) {
+  if (!wikitext || !targetLang) return [];
   // English-edition templates: {{t|<lang>|...}}, {{t+|<lang>|...}},
   // {{tt|<lang>|...}}, {{tt+|<lang>|...}}.
   const enPattern = new RegExp(
     `\\{\\{tt?\\+?\\|${targetLang}\\|([^|}\\n]+)`,
-    "i",
+    "gi",
   );
-  const enMatch = enPattern.exec(wikitext);
-  if (enMatch) {
+  const candidates = [];
+  for (const enMatch of wikitext.matchAll(enPattern)) {
     const surface = stripCombiningMarks(String(enMatch[1] || "").trim());
-    if (surface) return surface;
+    if (surface && !candidates.includes(surface)) candidates.push(surface);
   }
+  if (candidates.length > 0) return candidates;
   // Russian-edition translation blocks: `{{перев-блок|...|<lang>=[[surface]]\n|...}}`.
   // The language code may appear at the very start (no leading newline)
   // or after `\n|`; the surface can be inside `[[...]]`, optionally
@@ -290,9 +294,9 @@ function extractWiktionaryTranslation(wikitext, targetLang) {
   if (ruMatch) {
     const raw = (ruMatch[1] || ruMatch[2] || "").trim();
     const surface = stripCombiningMarks(raw.replace(/\s*\([^)]*\)\s*$/, "").trim());
-    if (surface) return surface;
+    if (surface) return [surface];
   }
-  return null;
+  return [];
 }
 
 async function resolveWiktionaryLemma(surface, language) {
@@ -343,7 +347,7 @@ async function liveWiktionaryTranslate(surface, source, target) {
     const subpage = await fetchWiktionaryWikitext(`${surface}/translations`, source);
     if (subpage) wikitext = `${subpage}\n${main}`;
   }
-  return extractWiktionaryTranslation(wikitext, target);
+  return roundTripSurface(surface, source, target, extractWiktionaryCandidates(wikitext, target));
 }
 
 async function translateSurface(surface, source, target) {
@@ -352,7 +356,7 @@ async function translateSurface(surface, source, target) {
   }
   const token = formalizeSurface(surface, source);
   if (token) {
-    const primary = deformalizeMeaning(token, target);
+    const primary = deformalizeMeaning(token, target, surface, source);
     if (primary) return { surface: primary, gap: false };
   }
   const compositional = translateCompositionalSurface(surface, source, target);

@@ -174,13 +174,13 @@ function finalize(planId, steps) {
   return steps.map((entry, index) => ({ ...entry, id: `${planId}-${String(index + 1).padStart(2, '0')}` }));
 }
 
-/** Mirrors `fn parent_of`. */
+/** Mirrors `fn parent_of`. @param {string} path */
 function parentOf(path) {
   const at = path.lastIndexOf('/');
   return at < 0 ? '.' : path.slice(0, at);
 }
 
-/** Mirrors `fn basename_of`. */
+/** Mirrors `fn basename_of`. @param {string} path */
 function basenameOf(path) {
   const at = path.lastIndexOf('/');
   return at < 0 ? path : path.slice(at + 1);

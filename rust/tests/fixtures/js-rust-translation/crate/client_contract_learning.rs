@@ -1,10 +1,15 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=14280817883388e730081eaec48ae164ec9896b8dedcd4969f6ad751588f87a3 bytes=9707
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=92052f25235ca2b321c5cbecfe7dd6d6b544685277b57e76a24fbf9292b78dc1 bytes=9729
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=1
+// formal-ai:workarounds import-pruning items=0 carried=1; string-methods items=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// formal-ai:workaround-prelude begin
+pub fn wa_str_replace_all(text: String, pattern: String, replacement: String) -> String {
+    text.replace(pattern.as_str(), replacement.as_str()) }
+// formal-ai:workaround-prelude end
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
@@ -26,13 +31,22 @@
 // formal-ai:refusal method call .split()
 // formal-ai:blockers global value Boolean | method call .filter() | method call .join() | method call .split() | regular expression
 
-// meta-language:carried JavaScript function_declaration (unsupported)
-// formal-ai:refusal method call .replaceAll()
-// formal-ai:blockers method call .replaceAll()
+// formal-ai:workaround string-methods JavaScript function_declaration items=1 sha256=946a68459d82422a820fa5282586566e2dc1fde49dd31d5ce6aab389fe7fbf7c
+// | /** Mirrors `fn quote` in rust/src/client_contract_learning.rs. @param {string} value */
+// | function quote(value) {
+// |   return value.replaceAll('\\', '\\\\').replaceAll('"', "'").replaceAll('\n', '\\n').replaceAll('\r', '\\r');
+// | }
+// ~ /** Mirrors `fn quote` in rust/src/client_contract_learning.rs. @param {string} value */
+// ~ function quote(value) {
+// ~   return waStrReplaceAll(waStrReplaceAll(waStrReplaceAll(waStrReplaceAll(value, '\\', '\\\\'), '"', "'"), '\n', '\\n'), '\r', '\\r');
+// ~ }
+pub fn quote(value: String) -> String {
+    crate::wa_str_replace_all(crate::wa_str_replace_all(crate::wa_str_replace_all(crate::wa_str_replace_all(value.clone(), String::from("\\"), String::from("\\\\")), String::from("\""), String::from("'")), String::from("\n"), String::from("\\n")), String::from("\r"), String::from("\\r"))
+}
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .repeat()
-// formal-ai:blockers call of a sibling function | method call .repeat()
+// formal-ai:blockers method call .repeat()
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal null

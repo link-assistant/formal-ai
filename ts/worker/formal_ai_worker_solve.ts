@@ -1059,6 +1059,7 @@ async function loadSeed() {
       installBrowserHandlerPrecedence(seed && seed.browserHandlerPrecedence);
       installWorkerHandlerRegistry(SEED_RAW["seed/handler-precedence.lino"]);
       await hydrateLinoSeedAndSourceCaches(SEED_RAW);
+      await loadCrateSeeds(SEED_RAW);
       if (seed && seed.responses) {
         const merged = {};
         const intents = new Set(

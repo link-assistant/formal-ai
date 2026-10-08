@@ -33,7 +33,7 @@ function parseCodepoint(value) {
   return parseInt(digits, 16);
 }
 
-/** Mirrors `fn parse_quoted_list`. */
+/** Mirrors `fn parse_quoted_list`. @param {string} value */
 function parseQuotedList(value) {
   const items = [];
   let rest = value;

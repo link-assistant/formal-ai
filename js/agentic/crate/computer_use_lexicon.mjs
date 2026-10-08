@@ -8,6 +8,7 @@
 
 import { rustLines } from '../content.mjs';
 import { textOutsideQuotedSegments } from './coding_program_contract.mjs';
+import { quotedSegmentSpans } from './normal_markov.mjs';
 import { containsCjk, meaningsWithRole, words } from './seed_meanings.mjs';
 import { byteOrder, isAlphanumeric, splitWhitespace, utf16ToByte, utf8Len } from './rust_str.mjs';
 
@@ -58,12 +59,23 @@ export function normalize(prompt) {
 /**
  * Mirrors `fn instruction_surface`: the prompt without indented payload lines
  * and without quoted spans (every pair `textOutsideQuotedSegments` reads, so
- * the single-quoted payloads of a `Replace 'X' with 'Y'` request too).
+ * the single-quoted payloads of a `Replace 'X' with 'Y'` request too, and a
+ * span that runs over several lines as a whole).
  * @param {string} prompt
  */
 export function instructionSurface(prompt) {
+  // A quoted payload that spans lines (a multi-line «…» replacement) is one
+  // literal: line by line, its pairs would not close (PR #1188 G105).
+  let unquoted = '';
+  let cursor = 0;
+  for (const segment of quotedSegmentSpans(prompt)) {
+    if (segment.start < cursor || !prompt.slice(segment.start, segment.end).includes('\n')) continue;
+    unquoted += `${prompt.slice(cursor, segment.start)} `;
+    cursor = segment.end;
+  }
+  unquoted += prompt.slice(cursor);
   let instruction = '';
-  for (const line of rustLines(prompt)) {
+  for (const line of rustLines(unquoted)) {
     if (line.startsWith(' ') || line.startsWith('\t')) continue;
     instruction += `${textOutsideQuotedSegments(line)}\n`;
   }

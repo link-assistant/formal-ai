@@ -108,7 +108,7 @@ export function lexicon() {
   });
 }
 
-/** Mirrors `crate::coding::contains_cjk`. */
+/** Mirrors `crate::coding::contains_cjk`. @param {string} text */
 export function containsCjk(text) {
   for (const character of text) {
     const cp = character.codePointAt(0);

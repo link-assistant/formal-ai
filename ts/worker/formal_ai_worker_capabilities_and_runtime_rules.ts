@@ -683,9 +683,20 @@ function formalizeSurface(surface, source) {
   return entry ? entry.token : null;
 }
 
-function deformalizeMeaning(token, target) {
+// The surface among `candidates`, offered in `target` for `surface` in
+// `source`, that survives the round trip best (Rust
+// `Translation::round_trip_surface`, R1188-U19): the crate's
+// `roundTripChoice`, with the first candidate standing wherever the round
+// trip cannot tell them apart.
+function roundTripSurface(surface, source, target, candidates) {
+  if (candidates.length === 0) return null;
+  const { roundTripChoice } = crateModule("crate/round_trip_translation.mjs");
+  return candidates[roundTripChoice(String(surface || ""), source, target, candidates) ?? 0];
+}
+
+function deformalizeMeaning(token, target, surface, source) {
   const entry = translationPhraseRegistry().find((phrase) => phrase.token === token);
-  return entry && entry.forms[target] && entry.forms[target].length > 0 ? entry.forms[target][0] : null;
+  return roundTripSurface(surface, source, target, (entry && entry.forms[target]) || []);
 }
 
 function canonicalTokenForNormalized(normalized) {

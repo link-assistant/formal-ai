@@ -243,6 +243,7 @@ function workflowStepMarker() {
   return marker === '' ? null : marker;
 }
 
+/** @param {string} tag */
 function trimStartV(tag) {
   let out = tag;
   while (out.startsWith('v')) out = out.slice(1);

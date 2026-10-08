@@ -160,6 +160,8 @@ function directExternalLinkAnswer(url, framePolicy, leadingLine) {
 }
 
 async function tryFetch(prompt) {
+  const formalized = await tryPageFormalization(prompt); // R1188-U18: "formalize <url>"
+  if (formalized) return formalized;
   const normalized = normalizePrompt(prompt);
   const url = extractHttpFetchUrl(prompt, normalized);
   if (!url) return null;

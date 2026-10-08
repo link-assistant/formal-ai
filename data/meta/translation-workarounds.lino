@@ -22,3 +22,184 @@ workaround crate-assembly
   upstream "https://github.com/link-foundation/meta-language/issues/219"
   scope "compile"
   how "--compile (CI only) builds each root (crate, worker) as one crate with one module per projection. Each module's own crate::x paths are rewritten to crate::<module>::x, so imports and helpers both resolve. The committed projections are not changed."
+lowering
+  workaround string-methods
+    lifts "method call .slice() .indexOf() .lastIndexOf() .split() .replace() .replaceAll() .repeat() .padStart() .padEnd() .codePointAt() .charAt() .join() on strings and arrays; length of a string; for…of over a string"
+    upstream "https://github.com/link-foundation/meta-language/issues/209"
+    how "receiver.method(args) becomes a call of the typed stub below that method, receiver kind and arity name, declared beside the item. The stub's emitted Rust is replaced by the recorded rust lines, which follow JavaScript's UTF-16 semantics. A receiver is read first as a string, then as an array of strings, then as an array of numbers; the first reading that type-checks is kept. A string length that upstream refuses (with its span) becomes waStrLength, and a for…of over a string that upstream reads as an array iterates waStrChars (code points). replace and replaceAll take only a string pattern and a replacement literal without $."
+  workaround array-push
+    lifts "method call .push()"
+    upstream "https://github.com/link-foundation/meta-language/issues/208"
+    how "The statement xs.push(a, b); on an array the item declares as const xs = [ or let xs = [ becomes xs = [...xs, a, b];, and the const becomes a let. The portable core builds the new array (ml_array::append)."
+  workaround callback-loops
+    lifts "arrow callback of .map() .filter() .some() .every()"
+    upstream "https://github.com/link-foundation/meta-language/issues/207"
+    how "const r = xs.map((x) => e); (or let, or return xs.map(…);) with an expression body becomes let r = []; for (const x of xs) { r = [...r, e]; }. filter keeps x when e holds, some and every break at the first decisive element, and a return returns the result."
+  stubs of string-methods
+stubs string-methods
+  receiver string
+  arity 1
+  stub waIndex
+    rust "pub fn wa_index(index: f64, len: usize) -> usize {"
+    rust "    let whole = if index.is_nan() { 0.0 } else { index.trunc() };"
+    rust "    (if whole < 0.0 { (len as f64 + whole).max(0.0) } else { whole.min(len as f64) }) as usize }"
+  stub waStrSlice
+    method slice
+    arity 2
+    needs waIndex
+    javascript "/** @param {string} text @param {number} start @param {number} end @returns {string} */ function waStrSlice(text, start, end) { return text; }"
+    rust "pub fn wa_str_slice(text: String, start: f64, end: f64) -> String {"
+    rust "    let units: Vec<u16> = text.encode_utf16().collect();"
+    rust "    let (from, to) = (wa_index(start, units.len()), wa_index(end, units.len()));"
+    rust "    if from >= to { String::new() } else { String::from_utf16_lossy(&units[from..to]) } }"
+  stub waStrSliceFrom
+    method slice
+    needs waStrSlice
+    javascript "/** @param {string} text @param {number} start @returns {string} */ function waStrSliceFrom(text, start) { return text; }"
+    rust "pub fn wa_str_slice_from(text: String, start: f64) -> String {"
+    rust "    wa_str_slice(text, start, f64::INFINITY) }"
+  stub waStrsSlice
+    method slice
+    receiver strings
+    arity 2
+    needs waIndex
+    javascript "/** @param {string[]} items @param {number} start @param {number} end @returns {string[]} */ function waStrsSlice(items, start, end) { return items; }"
+    rust "pub fn wa_strs_slice(items: Vec<String>, start: f64, end: f64) -> Vec<String> {"
+    rust "    let (from, to) = (wa_index(start, items.len()), wa_index(end, items.len()));"
+    rust "    if from >= to { Vec::new() } else { items[from..to].to_vec() } }"
+  stub waStrsSliceFrom
+    method slice
+    receiver strings
+    needs waStrsSlice
+    javascript "/** @param {string[]} items @param {number} start @returns {string[]} */ function waStrsSliceFrom(items, start) { return items; }"
+    rust "pub fn wa_strs_slice_from(items: Vec<String>, start: f64) -> Vec<String> {"
+    rust "    wa_strs_slice(items, start, f64::INFINITY) }"
+  stub waNumsSlice
+    method slice
+    receiver numbers
+    arity 2
+    needs waIndex
+    javascript "/** @param {number[]} items @param {number} start @param {number} end @returns {number[]} */ function waNumsSlice(items, start, end) { return items; }"
+    rust "pub fn wa_nums_slice(items: Vec<f64>, start: f64, end: f64) -> Vec<f64> {"
+    rust "    let (from, to) = (wa_index(start, items.len()), wa_index(end, items.len()));"
+    rust "    if from >= to { Vec::new() } else { items[from..to].to_vec() } }"
+  stub waNumsSliceFrom
+    method slice
+    receiver numbers
+    needs waNumsSlice
+    javascript "/** @param {number[]} items @param {number} start @returns {number[]} */ function waNumsSliceFrom(items, start) { return items; }"
+    rust "pub fn wa_nums_slice_from(items: Vec<f64>, start: f64) -> Vec<f64> {"
+    rust "    wa_nums_slice(items, start, f64::INFINITY) }"
+  stub waStrIndexOf
+    method indexOf
+    javascript "/** @param {string} text @param {string} search @returns {number} */ function waStrIndexOf(text, search) { return 0; }"
+    rust "pub fn wa_str_index_of(text: String, search: String) -> f64 {"
+    rust "    let units: Vec<u16> = text.encode_utf16().collect();"
+    rust "    let needle: Vec<u16> = search.encode_utf16().collect();"
+    rust "    if needle.is_empty() { return 0.0; }"
+    rust "    if needle.len() > units.len() { return -1.0; }"
+    rust "    units.windows(needle.len()).position(|window| window == needle.as_slice()).map_or(-1.0, |at| at as f64) }"
+  stub waStrLastIndexOf
+    method lastIndexOf
+    javascript "/** @param {string} text @param {string} search @returns {number} */ function waStrLastIndexOf(text, search) { return 0; }"
+    rust "pub fn wa_str_last_index_of(text: String, search: String) -> f64 {"
+    rust "    let units: Vec<u16> = text.encode_utf16().collect();"
+    rust "    let needle: Vec<u16> = search.encode_utf16().collect();"
+    rust "    if needle.is_empty() { return units.len() as f64; }"
+    rust "    if needle.len() > units.len() { return -1.0; }"
+    rust "    units.windows(needle.len()).rposition(|window| window == needle.as_slice()).map_or(-1.0, |at| at as f64) }"
+  stub waStrsIndexOf
+    method indexOf
+    receiver strings
+    javascript "/** @param {string[]} items @param {string} item @returns {number} */ function waStrsIndexOf(items, item) { return 0; }"
+    rust "pub fn wa_strs_index_of(items: Vec<String>, item: String) -> f64 {"
+    rust "    items.iter().position(|entry| *entry == item).map_or(-1.0, |at| at as f64) }"
+  stub waNumsIndexOf
+    method indexOf
+    receiver numbers
+    javascript "/** @param {number[]} items @param {number} item @returns {number} */ function waNumsIndexOf(items, item) { return 0; }"
+    rust "pub fn wa_nums_index_of(items: Vec<f64>, item: f64) -> f64 {"
+    rust "    items.iter().position(|entry| *entry == item).map_or(-1.0, |at| at as f64) }"
+  stub waStrSplit
+    method split
+    javascript "/** @param {string} text @param {string} separator @returns {string[]} */ function waStrSplit(text, separator) { return [text]; }"
+    rust "pub fn wa_str_split(text: String, separator: String) -> Vec<String> {"
+    rust "    if separator.is_empty() {"
+    rust "        return text.encode_utf16().map(|unit| String::from_utf16_lossy(&[unit])).collect();"
+    rust "    }"
+    rust "    text.split(separator.as_str()).map(String::from).collect() }"
+  stub waStrsJoin
+    method join
+    receiver strings
+    javascript "/** @param {string[]} items @param {string} separator @returns {string} */ function waStrsJoin(items, separator) { return separator; }"
+    rust "pub fn wa_strs_join(items: Vec<String>, separator: String) -> String {"
+    rust "    items.join(separator.as_str()) }"
+  stub waStrReplace
+    method replace
+    arity 2
+    javascript "/** @param {string} text @param {string} pattern @param {string} replacement @returns {string} */ function waStrReplace(text, pattern, replacement) { return text; }"
+    rust "pub fn wa_str_replace(text: String, pattern: String, replacement: String) -> String {"
+    rust "    text.replacen(pattern.as_str(), replacement.as_str(), 1) }"
+  stub waStrReplaceAll
+    method replaceAll
+    arity 2
+    javascript "/** @param {string} text @param {string} pattern @param {string} replacement @returns {string} */ function waStrReplaceAll(text, pattern, replacement) { return text; }"
+    rust "pub fn wa_str_replace_all(text: String, pattern: String, replacement: String) -> String {"
+    rust "    text.replace(pattern.as_str(), replacement.as_str()) }"
+  stub waStrRepeat
+    method repeat
+    javascript "/** @param {string} text @param {number} count @returns {string} */ function waStrRepeat(text, count) { return text; }"
+    rust "pub fn wa_str_repeat(text: String, count: f64) -> String {"
+    rust "    text.repeat(if count.is_nan() || count < 1.0 { 0 } else { count.trunc() as usize }) }"
+  stub waStrPadStart
+    method padStart
+    arity 2
+    needs waPad
+    javascript "/** @param {string} text @param {number} length @param {string} fill @returns {string} */ function waStrPadStart(text, length, fill) { return text; }"
+    rust "pub fn wa_str_pad_start(text: String, length: f64, fill: String) -> String {"
+    rust "    let padding = wa_pad(&text, length, &fill);"
+    rust "    padding + &text }"
+  stub waStrPadEnd
+    method padEnd
+    arity 2
+    needs waPad
+    javascript "/** @param {string} text @param {number} length @param {string} fill @returns {string} */ function waStrPadEnd(text, length, fill) { return text; }"
+    rust "pub fn wa_str_pad_end(text: String, length: f64, fill: String) -> String {"
+    rust "    let padding = wa_pad(&text, length, &fill);"
+    rust "    text + &padding }"
+  stub waPad
+    rust "pub fn wa_pad(text: &str, length: f64, fill: &str) -> String {"
+    rust "    let have = text.encode_utf16().count();"
+    rust "    let fill: Vec<u16> = fill.encode_utf16().collect();"
+    rust "    let want = if length.is_nan() { 0 } else { length.trunc().max(0.0) as usize };"
+    rust "    if want <= have || fill.is_empty() { return String::new(); }"
+    rust "    String::from_utf16_lossy(&fill.iter().copied().cycle().take(want - have).collect::<Vec<u16>>()) }"
+  stub waStrCodePointAt
+    method codePointAt
+    javascript "/** @param {string} text @param {number} index @returns {number} */ function waStrCodePointAt(text, index) { return index; }"
+    rust "pub fn wa_str_code_point_at(text: String, index: f64) -> f64 {"
+    rust "    let units: Vec<u16> = text.encode_utf16().collect();"
+    rust "    let at = if index.is_nan() { 0.0 } else { index.trunc() };"
+    rust "    if at < 0.0 || at >= units.len() as f64 { return f64::NAN; }"
+    rust "    let first = units[at as usize];"
+    rust "    match units.get(at as usize + 1) {"
+    rust "        Some(&second) if (0xD800..0xDC00).contains(&first) && (0xDC00..0xE000).contains(&second) => {"
+    rust "            f64::from(((u32::from(first) - 0xD800) << 10) + (u32::from(second) - 0xDC00) + 0x10000)"
+    rust "        }"
+    rust "        _ => f64::from(first),"
+    rust "    } }"
+  stub waStrCharAt
+    method charAt
+    javascript "/** @param {string} text @param {number} index @returns {string} */ function waStrCharAt(text, index) { return text; }"
+    rust "pub fn wa_str_char_at(text: String, index: f64) -> String {"
+    rust "    let units: Vec<u16> = text.encode_utf16().collect();"
+    rust "    let at = if index.is_nan() { 0.0 } else { index.trunc() };"
+    rust "    if at < 0.0 || at >= units.len() as f64 { String::new() } else { String::from_utf16_lossy(&units[at as usize..at as usize + 1]) } }"
+  stub waStrLength
+    javascript "/** @param {string} text @returns {number} */ function waStrLength(text) { return 0; }"
+    rust "pub fn wa_str_length(text: String) -> f64 {"
+    rust "    text.encode_utf16().count() as f64 }"
+  stub waStrChars
+    javascript "/** @param {string} text @returns {string[]} */ function waStrChars(text) { return [text]; }"
+    rust "pub fn wa_str_chars(text: String) -> Vec<String> {"
+    rust "    text.chars().map(String::from).collect() }"

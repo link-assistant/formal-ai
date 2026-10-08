@@ -491,8 +491,8 @@ pub use solver_handlers::{
     handle_creative_writing_request, handle_formalization_request, handle_format_conversion,
     handle_planning_request, handle_product_search, handle_regex_synthesis,
     handle_shell_command_compose, handle_sql_synthesis, handle_summarization_request,
-    handle_test_generation, handle_text_rewrite, handle_word_problem, try_translation,
-    try_web_search_with_client,
+    handle_test_generation, handle_text_rewrite, handle_word_problem,
+    try_page_formalization_with_client, try_translation, try_web_search_with_client,
 };
 // Issue #1186 R4/R6: the relative-meta-logic export step and the theorem-prover
 // step of the formalization task, public so the unit suite pins the rendered

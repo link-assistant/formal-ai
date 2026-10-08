@@ -43,6 +43,7 @@ export function raisedNeed(kind, subject, language, raisedBy) {
  * @returns {string}
  */
 const bare = (field, value) => `  ${field} ${value}\n`;
+/** @param {string} value */
 const escape = (value) => value.replaceAll('\\', '\\\\').replaceAll('"', '\\"');
 const quoted = (field, value) => `  ${field} "${escape(value)}"\n`;
 

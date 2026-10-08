@@ -6,7 +6,12 @@
 
 use formal_ai::formalization::statement_rendering::{resolve_surface, surfaces_in};
 use formal_ai::formalization::text_statements::formalize_text;
-use formal_ai::translation::round_trip::{best_surface, round_trip, translate_text};
+use formal_ai::translation::Translation;
+use formal_ai::translation::meaning::MeaningId;
+use formal_ai::translation::round_trip::{
+    best_surface, round_trip, round_trip_choice, translate_text,
+};
+use formal_ai::translation::wiktionary::WiktionaryCandidate;
 
 #[test]
 fn the_first_listed_surface_loses_to_the_one_whose_meaning_comes_back() {
@@ -68,4 +73,52 @@ fn an_unknown_word_stays_in_its_source_form_and_the_sentence_does_not_survive() 
     assert_eq!(trip.forward, "яблоко red");
     assert!(!trip.survives);
     assert_eq!((trip.surviving_terms, trip.known_terms), (1, 1));
+}
+
+/// A translation of `surface` from English to Russian offering `candidates`,
+/// each with its qualifier.
+fn offered(surface: &str, candidates: &[(&str, Option<&str>)]) -> Translation {
+    Translation {
+        source_surface: surface.to_owned(),
+        source_lang: "en".to_owned(),
+        target_lang: "ru".to_owned(),
+        meaning: MeaningId::from_wiktionary_page("en", surface),
+        candidates: candidates
+            .iter()
+            .map(|(surface, qualifier)| WiktionaryCandidate {
+                surface: (*surface).to_owned(),
+                qualifier: qualifier.map(str::to_owned),
+            })
+            .collect(),
+        provenance: Vec::new(),
+    }
+}
+
+#[test]
+fn the_round_trip_chooses_among_offered_surfaces() {
+    assert_eq!(
+        round_trip_choice("fix", "en", "ru", &["добавь", "исправить"]),
+        Some(1)
+    );
+    assert_eq!(round_trip_choice("fix", "en", "ru", &["добавь"]), None);
+    assert_eq!(round_trip_choice("blarg", "en", "ru", &["бларг"]), None);
+    assert_eq!(
+        round_trip_choice("hello", "en", "ru", &["привет", "здравствуйте"]),
+        Some(0)
+    );
+}
+
+#[test]
+fn the_chat_translation_answers_with_the_surface_that_survives_the_round_trip() {
+    let translation = offered("fix", &[("добавь", None), ("исправить", None)]);
+    assert_eq!(translation.primary_surface(), Some("добавь"));
+    assert_eq!(translation.round_trip_surface(), Some("исправить"));
+    let tied = offered(
+        "hello",
+        &[("здравствуйте", Some("formal")), ("привет", None)],
+    );
+    assert_eq!(tied.round_trip_surface(), Some("привет"));
+    let unknown = offered("blarg", &[("бларг", None), ("блорг", None)]);
+    assert_eq!(unknown.round_trip_surface(), Some("бларг"));
+    assert_eq!(offered("fix", &[]).round_trip_surface(), None);
 }

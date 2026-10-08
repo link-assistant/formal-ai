@@ -18,16 +18,25 @@
 # lexeme shares (`part_of_speech noun`) now sits once on the lexeme, where the
 # measure sees the same field on the sibling lexemes of other languages. That
 # is the next deduplication: state it once on the meaning.
+#
+# On 2026-10-09 data/seed underscore-names was raised from 9419 to 9426 for
+# R1188-U18 ("formalize <url>"): the meaning page_formalization, its role
+# page_formalization_action and five answer intents (page_formalization_empty,
+# _fetch_failed, _more, _offline, _summary). Intents and roles are identifiers
+# both roots and the API read, and their family has not been converted, so a
+# member spelled with `-` alone would mix two conventions in one family; it
+# converts with its readers in the intents-and-roles pass. The 25 new response
+# records of the same change are already written with `-`.
 notation-ratchet
   scope data/meta
-    underscore-names 2867
+    underscore-names 2074
     abbreviated-names 200
     duplicated-blocks 9
-    repeated-fields 84
-    characters 1707426
+    repeated-fields 80
+    characters 1815046
   scope data/seed
-    underscore-names 9419
+    underscore-names 9426
     abbreviated-names 245
     duplicated-blocks 27
     repeated-fields 184
-    characters 3150411
+    characters 3158149

@@ -24,6 +24,7 @@ function contractFor(language) {
   return (contracts()?.children || []).find((node) => node.name === 'language' && node.id === language) ?? null;
 }
 
+/** @param {string} text @param {string} from @param {string} to */
 const replaceText = (text, from, to) => text.split(from).join(to);
 
 /** Mirrors `fn runtime_steps`: the language's CI setup steps, or null. */

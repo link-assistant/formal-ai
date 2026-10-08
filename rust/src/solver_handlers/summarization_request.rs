@@ -1,35 +1,40 @@
-//! Free-text summarization handler (issue #1174, E139 text-transform family).
+//! Free-text summarization handler (issue #1174, E139 text-transform family;
+//! R1188-U21).
 //!
 //! Recognizes requests that carry the text to summarize themselves — a
-//! paragraph after a command colon, a line break, or quotes — and runs it
-//! through the shared formalize → summarize → deformalize pipeline
-//! (`crate::summarization`) under a ~30% selection bound (at least two
-//! statements, always at least one short of the input so the summary can
-//! never echo the source). Requests that carry no text (for example
-//! "summarize the rust language", a seeded topic) stay with the handlers
-//! that own them: this handler returns `None` when no payload follows the
-//! command, and when the payload is a single sentence that cannot be
-//! shortened without being echoed back.
+//! paragraph after a command colon, a line break, or quotes — and answers with
+//! the dependency summary of that text
+//! ([`crate::summarization::dependency::summarize_by_dependency`]): the text is
+//! formalized into statements, restatements are dropped, and the statements
+//! the others depend on are kept, up to one in three, in the text's own words.
+//! Requests that carry no text (for example "summarize the rust language", a
+//! seeded topic) stay with the handlers that own them: this handler returns
+//! `None` when no payload follows the command, and when the payload holds a
+//! single statement, which cannot be shortened without being echoed back.
 //!
-//! Recognition vocabulary lives in `data/seed/meanings-summarization.lino`
-//! (`text_summarization_action`, in all five supported languages); the
-//! handler only computes the transform and logs every ranking decision.
+//! The evidence trace names every statement kept or dropped and every
+//! duplicate removed. Recognition vocabulary lives in
+//! `data/seed/meanings-summarization.lino` (`text_summarization_action`, in
+//! all five supported languages). The browser twin is `trySummarizationText`
+//! in `js/worker/formal_ai_worker_text_transform.js`, which runs the
+//! JavaScript root's `js/agentic/crate/dependency_summarization.mjs`.
 
-use crate::engine::SymbolicAnswer;
-use crate::event_log::EventLog;
 use super::finalize_simple;
 use super::text_rewrite::free_text_payload;
+use crate::engine::SymbolicAnswer;
+use crate::event_log::EventLog;
+use crate::summarization::dependency::summarize_by_dependency;
 
 /// The role naming the act of summarizing a text the request itself
 /// carries. Surfaces live in `data/seed/meanings-summarization.lino`.
 const ROLE_TEXT_SUMMARIZATION_ACTION: &str = "text_summarization_action";
 
 /// Recognize a summarization request that carries its own text and answer
-/// with a weight-ranked selection of its statements.
+/// with the statements the rest of the text depends on.
 ///
-/// Returns `None` when
-/// the prompt names no text to summarize — the seeded-topic and
-/// conversation-summary handlers keep those prompts.
+/// Returns `None` when the prompt names no text to summarize — the
+/// seeded-topic and conversation-summary handlers keep those prompts — or
+/// when the text holds a single statement.
 pub fn handle_summarization_request(
     prompt: &str,
     normalized: &str,
@@ -43,49 +48,41 @@ pub fn handle_summarization_request(
         return None;
     }
     let payload = free_text_payload(prompt)?;
-    let statements = crate::summarization::formalize(&payload);
-    if statements.len() < 2 {
+    let summary = summarize_by_dependency(&payload, crate::language::detect(&payload).slug());
+    if summary.statements.len() + summary.removed.len() < 2 || summary.kept.is_empty() {
         // A single statement cannot be shortened without echoing it back.
         return None;
     }
-    for statement in &statements {
+    for (index, node) in summary.statements.iter().enumerate() {
+        let verdict = if summary.kept.contains(&index) {
+            "kept"
+        } else {
+            "dropped"
+        };
         log.append(
             "summarization_statement",
-            format!("{:?} weight {}", statement.kind, statement.weight),
+            format!("{verdict} {}", node.entry.statement.text),
         );
     }
-    // A ~30% selection bound, floored at two statements and always at least
-    // one short of the input.
-    let bound = (((statements.len() * 3) + 5) / 10)
-        .max(2)
-        .min(statements.len() - 1)
-        .max(1);
-    log.append(
-        "summarization_bound",
-        format!("{}/{}", bound, statements.len()),
-    );
-    let config = crate::summarization::SummarizationConfig::default()
-        .with_max_statements(bound)
-        .with_language(crate::language::detect(prompt).slug());
-    let selected = crate::summarization::summarize(&statements, &config);
-    if selected.is_empty() {
-        return None;
+    for entry in &summary.removed {
+        log.append("summarization_duplicate", entry.statement.text.clone());
     }
     log.append(
-        "summarization_selected",
-        selected
-            .iter()
-            .map(|statement| statement.text.as_str())
-            .collect::<Vec<_>>()
-            .join(" | "),
+        "summarization_bound",
+        format!("{}/{}", summary.kept.len(), summary.statements.len()),
     );
-    let body = crate::summarization::deformalize(&selected);
+    let selected: Vec<&str> = summary
+        .kept
+        .iter()
+        .map(|index| summary.statements[*index].entry.statement.text.as_str())
+        .collect();
+    log.append("summarization_selected", selected.join(" | "));
     Some(finalize_simple(
         prompt,
         log,
         "summarization_free_text",
         "response:summarization_free_text",
-        &body,
+        &summary.text,
         0.8,
     ))
 }

@@ -9,36 +9,37 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 
 | Who | Tasks | Passed | Failed | Partial | Fixed | Open | Not reproduced | Unresolved |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **All** | 365 | 191 | 160 | 3 | 122 | 38 | 3 | 0 |
-| CHAT-ROUTES | 5 | 4 | 1 | 0 | 0 | 1 | 0 | 0 |
+| **All** | 389 | 212 | 163 | 3 | 152 | 9 | 5 | 0 |
+| CHAT-ROUTES | 13 | 10 | 3 | 0 | 0 | 3 | 0 | 0 |
 | CI-SPEED | 6 | 6 | 0 | 0 | 0 | 0 | 0 | 0 |
 | CIFIX | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
-| CIFIX2 | 3 | 0 | 3 | 0 | 2 | 1 | 0 | 0 |
-| coordinator | 150 | 25 | 115 | 1 | 106 | 9 | 1 | 0 |
+| CIFIX2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
+| coordinator | 150 | 25 | 115 | 1 | 112 | 3 | 1 | 0 |
 | DEBUG2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
-| DEBUG3 | 2 | 1 | 1 | 0 | 0 | 1 | 0 | 0 |
+| DEBUG3 | 2 | 1 | 1 | 0 | 1 | 0 | 0 | 0 |
 | DISCOVER | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | GENERALIZE | 16 | 16 | 0 | 0 | 0 | 0 | 0 | 0 |
-| LEAD | 12 | 10 | 0 | 1 | 1 | 0 | 0 | 0 |
-| LEXEMES | 4 | 3 | 1 | 0 | 0 | 1 | 0 | 0 |
-| MIGRATE3 | 4 | 0 | 4 | 0 | 0 | 4 | 0 | 0 |
-| MIGRATE4 | 3 | 0 | 2 | 1 | 0 | 3 | 0 | 0 |
+| LEAD | 13 | 11 | 0 | 1 | 1 | 0 | 0 | 0 |
+| LEXEMES | 4 | 3 | 1 | 0 | 1 | 0 | 0 | 0 |
+| MIGRATE3 | 4 | 0 | 4 | 0 | 3 | 0 | 1 | 0 |
+| MIGRATE4 | 3 | 0 | 2 | 1 | 3 | 0 | 0 | 0 |
 | NOTATION | 22 | 22 | 0 | 0 | 0 | 0 | 0 | 0 |
-| READABLE | 10 | 8 | 2 | 0 | 0 | 2 | 0 | 0 |
-| RENAME | 47 | 39 | 8 | 0 | 1 | 6 | 1 | 0 |
-| REPO-PROTO | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0 |
+| READABLE | 10 | 8 | 2 | 0 | 2 | 0 | 0 | 0 |
+| RENAME | 47 | 39 | 8 | 0 | 3 | 3 | 2 | 0 |
+| REPO-PROTO | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | REQ-AUDIT | 9 | 9 | 0 | 0 | 0 | 0 | 0 | 0 |
 | REQ-ROUTE | 12 | 7 | 5 | 0 | 4 | 0 | 1 | 0 |
-| ROUTE2 | 3 | 0 | 3 | 0 | 0 | 3 | 0 | 0 |
-| ROUTE3 | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0 |
-| SCRIPTS-A | 5 | 4 | 1 | 0 | 0 | 1 | 0 | 0 |
+| ROUTE2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
+| ROUTE3 | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
+| SCRIPTS-A | 5 | 4 | 1 | 0 | 1 | 0 | 0 | 0 |
 | SCRIPTS-B | 5 | 5 | 0 | 0 | 0 | 0 | 0 | 0 |
-| SPANISH | 3 | 2 | 1 | 0 | 0 | 1 | 0 | 0 |
-| TEACH-C | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0 |
+| SPANISH | 3 | 2 | 1 | 0 | 1 | 0 | 0 | 0 |
+| TEACH-C | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | TEACH-F | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | TEXT-CAPABILITY | 9 | 9 | 0 | 0 | 0 | 0 | 0 | 0 |
+| TRANSLATE | 15 | 14 | 1 | 0 | 1 | 0 | 0 | 0 |
 | TWINS | 24 | 21 | 3 | 0 | 3 | 0 | 0 | 0 |
-| UPSTREAM-TR | 2 | 0 | 2 | 0 | 0 | 2 | 0 | 0 |
+| UPSTREAM-TR | 2 | 0 | 2 | 0 | 2 | 0 | 0 | 0 |
 
 Fixed failures whose row names no regression test, pin, gap or carrying row: 0.
 Failures with no resolution: 0.
@@ -50,6 +51,7 @@ and the files it wrote itself. A tool run by rule counts as neither.
 
 | Who | By Formal AI | By hand | Delegated share |
 | --- | ---: | ---: | ---: |
-| **All** | 166 | 57 | 74% |
+| **All** | 203 | 71 | 74% |
 | LEAD | 9 | 41 | 18% |
 | RENAME | 157 | 16 | 91% |
+| TRANSLATE | 37 | 14 | 73% |

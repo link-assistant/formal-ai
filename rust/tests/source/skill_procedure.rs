@@ -593,7 +593,7 @@ struct Found {
 /// The content id of `step` inside the procedure `procedure_id`: its index,
 /// kind and arguments under the procedure's id.
 ///
-/// Mirrored by `stepId` in js/agentic/crate/skill_procedure.mjs.
+/// Mirrored by `stepId` in `js/agentic/crate/skill_procedure.mjs`.
 fn step_id(procedure_id: &str, step: &ProcedureStep) -> String {
     stable_id(
         "compiled_procedure_step",

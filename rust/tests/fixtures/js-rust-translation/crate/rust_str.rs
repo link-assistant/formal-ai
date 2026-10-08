@@ -1,5 +1,6 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=b6653a850adc56e8cf192eb97d89d87b772cf54a6a61e85d892af246ff9bcfd4 bytes=8890
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=b25fb8210f62cdf57f1419efbf4ecec80e01084b887ac95fbd1c41c94d946f03 bytes=8951
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
+// formal-ai:workarounds string-methods items=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -115,6 +116,17 @@ pub mod ml_array {
 }
 // meta-language:prelude end
 
+// formal-ai:workaround-prelude begin
+pub fn wa_str_split(text: String, separator: String) -> Vec<String> {
+    if separator.is_empty() {
+        return text.encode_utf16().map(|unit| String::from_utf16_lossy(&[unit])).collect();
+    }
+    text.split(separator.as_str()).map(String::from).collect() }
+
+pub fn wa_strs_join(items: Vec<String>, separator: String) -> String {
+    items.join(separator.as_str()) }
+// formal-ai:workaround-prelude end
+
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal regular expression
 // formal-ai:blockers regular expression
@@ -223,9 +235,14 @@ pub mod ml_array {
 // formal-ai:refusal method call .slice()
 // formal-ai:blockers arrow function | method call .slice() | null
 
-// meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal method call .split()
-// formal-ai:blockers arrow function | method call .join() | method call .split()
+// formal-ai:workaround string-methods JavaScript export_statement items=1 sha256=879d871862be285c440dffd244bf5171b31f6351c30aee7532a961cdb38eb536
+// | /** `str::replace(from, to)` without `$` pattern expansion. @param {string} text @param {string} from @param {string} to */
+// | export const replaceAllLiteral = (text, from, to) => text.split(from).join(to);
+// ~ /** `str::replace(from, to)` without `$` pattern expansion. @param {string} text @param {string} from @param {string} to */
+// ~ export const replaceAllLiteral = (text, from, to) => waStrsJoin(waStrSplit(text, from), to);
+pub fn replace_all_literal(text: String, from: String, to: String) -> String {
+    crate::wa_strs_join(crate::wa_str_split(text.clone(), from.clone()), to.clone())
+}
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .indexOf()

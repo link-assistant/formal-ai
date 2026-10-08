@@ -36,25 +36,33 @@ export const APPLIED = '// formal-ai:workarounds ';
 
 /**
  * The workaround records: `workaround <name>` with `lifts`, `upstream`,
- * `scope` and `how` children.
+ * `scope` and `how` children. The workarounds that rewrite the source before
+ * translation are grouped under `lowering`, which states their scope once.
  * @param {string} text the contents of data/meta/translation-workarounds.lino
  * @returns {{ name: string, lifts: string, upstream: string, scope: string, how: string }[]}
  */
 export function readWorkarounds(text) {
   const records = [];
   let current = null;
+  let group = null;
   for (const line of text.split('\n')) {
-    const head = /^workaround (\S+)$/u.exec(line);
+    if (/^\S/u.test(line)) group = line.trim();
+    const head = /^( *)workaround (\S+)$/u.exec(line);
     if (head) {
-      current = { name: head[1], lifts: '', upstream: '', scope: '', how: '' };
+      const nested = head[1].length > 0;
+      if (nested && group !== 'lowering') {
+        current = null;
+        continue;
+      }
+      current = { name: head[2], lifts: '', upstream: '', scope: nested ? 'lowering' : '', how: '', depth: head[1].length + 2 };
       records.push(current);
       continue;
     }
-    const field = /^ {2}(lifts|upstream|scope|how) "((?:[^"\\]|\\.)*)"$/u.exec(line);
-    if (field && current) current[field[1]] = field[2].replace(/\\"/gu, '"');
+    const field = /^( +)(lifts|upstream|scope|how) "((?:[^"\\]|\\.)*)"$/u.exec(line);
+    if (field && current && field[1].length === current.depth) current[field[2]] = field[3].replace(/\\"/gu, '"');
     else if (!/^\s*(#.*)?$/u.test(line)) current = null;
   }
-  return records;
+  return records.map(({ depth, ...record }) => record);
 }
 
 // ---------------------------------------------------------------- the import graph

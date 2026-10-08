@@ -10,11 +10,18 @@
 //! terms and no unknown term. A statement with a known term survives when its
 //! deformalization, read again in the same language, names the same known
 //! terms.
+//!
+//! [`page_answer`] renders a report as the chat answer to "formalize <url>":
+//! the page's counts, then each statement with its formal notation.
 
 use super::statement_rendering::deformalize_statement;
 use super::text_statements::{
-    Statement, clause_statement, formalize_sentences, has_no_unknown, known_ids, statement_terms,
+    Polarity, Statement, clause_statement, formalize_sentences, has_no_unknown, known_ids,
+    statement_terms,
 };
+
+/// The most statements a page answer lists; the rest are counted.
+pub const ANSWER_STATEMENT_LIMIT: usize = 40;
 
 /// One sentence of a page, with its statements.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -94,4 +101,75 @@ pub fn formalize_page(text: &str, language: &str) -> PageReport {
         });
     }
     report
+}
+
+/// A statement in formal notation: its term ids, the subject first, in
+/// parentheses, after `¬` when the statement is denied.
+#[must_use]
+pub fn statement_notation(statement: &Statement) -> String {
+    let ids: Vec<&str> = statement_terms(statement)
+        .into_iter()
+        .map(|term| term.id.as_str())
+        .collect();
+    let negation = if statement.polarity == Polarity::Denied {
+        "¬ "
+    } else {
+        ""
+    };
+    format!("{negation}({})", ids.join(" "))
+}
+
+/// The answer to a request to formalize the page at `url`, in `language`:
+/// the seeded summary of the report's counts, then one line per statement
+/// (its text and its notation), up to [`ANSWER_STATEMENT_LIMIT`], then the
+/// count of the rest. A page with no statement is answered with the seeded
+/// empty-page response.
+#[must_use]
+pub fn page_answer(report: &PageReport, url: &str, language: &str) -> String {
+    let render = |intent: &str, values: &[(&str, &str)]| {
+        crate::seed::render_response(intent, language, values).unwrap_or_default()
+    };
+    if report.statements == 0 {
+        return render("page_formalization_empty", &[("url", url)]);
+    }
+    let counts = [
+        report.sentences.len(),
+        report.statements,
+        report.covered,
+        report.terms,
+        report.unknown,
+        report.factual,
+        report.survived,
+    ]
+    .map(|count| count.to_string());
+    let mut lines = vec![render(
+        "page_formalization_summary",
+        &[
+            ("url", url),
+            ("sentences", &counts[0]),
+            ("statements", &counts[1]),
+            ("covered", &counts[2]),
+            ("terms", &counts[3]),
+            ("unknown", &counts[4]),
+            ("factual", &counts[5]),
+            ("survived", &counts[6]),
+        ],
+    )];
+    lines.push(String::new());
+    let statements = report
+        .sentences
+        .iter()
+        .flat_map(|sentence| sentence.statements.iter());
+    for statement in statements.take(ANSWER_STATEMENT_LIMIT) {
+        lines.push(format!(
+            "- {} → {}",
+            statement.text,
+            statement_notation(statement)
+        ));
+    }
+    if report.statements > ANSWER_STATEMENT_LIMIT {
+        let rest = (report.statements - ANSWER_STATEMENT_LIMIT).to_string();
+        lines.push(render("page_formalization_more", &[("count", &rest)]));
+    }
+    lines.join("\n")
 }

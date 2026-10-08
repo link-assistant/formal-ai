@@ -88,9 +88,9 @@
     "expectedIntent": "summarization_free_text",
     "expectedAnswerFragments": [
       "is used to study the Antarctic ice shelf",
-      "year-round measurements of ozone and sea temperature"
+      "The Halley research station"
     ],
-    "forbiddenAnswerFragments": [],
+    "forbiddenAnswerFragments": ["Radar masts"],
     "expectedEvidencePrefixes": [
       "summarization_statement:",
       "summarization_bound:",

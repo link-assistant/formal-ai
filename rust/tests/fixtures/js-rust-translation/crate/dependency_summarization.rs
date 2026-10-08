@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=b306e932d64a5554aabf3148e31d2f646f312c442f3cb954c6495798b26347b7 bytes=8453
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=3c1e7275311071fbe2f4f20c7a17e78b428ab352658e4b71de408be6d654ef19 bytes=8874
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=2
 
@@ -131,6 +131,10 @@ pub const KEEP_DIVISOR: f64 = 3f64;
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .some()
 // formal-ai:blockers arrow callback of .some() | call of a sibling function | field access | method call .push() | method call .some() | object without a $ tag
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal object without a $ tag
+// formal-ai:blockers call of a sibling function | destructuring | object without a $ tag
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal new expression

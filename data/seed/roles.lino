@@ -635,6 +635,8 @@ roles
     kind meaning
   output_obligation_verb
     kind meaning
+  page_formalization_action
+    kind predicate
   part_whole_relation
     kind predicate
   personal_facts_listing_request

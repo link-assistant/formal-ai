@@ -39,3 +39,14 @@ fn an_unquoted_computer_use_request_still_plans() {
                   `counts.md`.";
     assert!(plan_request(prompt).is_some());
 }
+
+/// G105 (TRANSLATE, T773): a «…» payload that runs over a blank line was read
+/// line by line, so neither line closed its pair and the payload's "order" and
+/// "count" planned a computer-use count of orders.
+const MULTILINE: &str = "Replace «old cell» with «A.\n\norder, count» in r.md.";
+
+#[test]
+fn a_quoted_payload_over_several_lines_is_not_a_computer_use_plan() {
+    assert!(plan_request(MULTILINE).is_none());
+    assert!(plan_agentic_step(&[ChatMessage::user(MULTILINE)], &AGENT_CLI_TOOLS).is_none());
+}

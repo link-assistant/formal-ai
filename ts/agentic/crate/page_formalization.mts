@@ -16,10 +16,16 @@
 // Representation: a page report is `{sentences, covered, statements,
 // survived, terms, unknown}` (counts) with `sentences` a list of `{text,
 // statements, covered, unknown}`.
+//
+// `pageAnswer` renders a report as the chat answer to "formalize <url>": the
+// page's counts, then each statement with its formal notation.
 
 import {
-  clauseStatement, deformalizeStatement, formalizeSentences, hasNoUnknown, knownIds, statementTerms,
+  Polarity, clauseStatement, deformalizeStatement, formalizeSentences, hasNoUnknown, knownIds, statementTerms,
 } from './text_formalization.mjs';
+
+/** Mirrors `ANSWER_STATEMENT_LIMIT` in rust/src/formalization/page.rs: the most statements a page answer lists. */
+export const ANSWER_STATEMENT_LIMIT = 40;
 
 /** Mirrors `fn fact_survives` in rust/src/formalization/page.rs: the known terms of a statement come back from its deformalization. */
 export function factSurvives(statement) {
@@ -53,4 +59,45 @@ export function formalizePage(text, language) {
     }
   }
   return report;
+}
+
+/**
+ * Mirrors `fn statement_notation` in rust/src/formalization/page.rs: a statement in formal notation, its term ids
+ * (the subject first) in parentheses, after `¬` when the statement is denied.
+ */
+export function statementNotation(statement) {
+  const identifiers = statementTerms(statement).map((term) => term.id);
+  const negation = statement.polarity === Polarity.Denied ? '¬ ' : '';
+  return `${negation}(${identifiers.join(' ')})`;
+}
+
+/**
+ * Mirrors `fn page_answer` in rust/src/formalization/page.rs: the answer to a request to formalize the page at
+ * `url`. `render(intent, values)` is the seeded response of `intent` in the answer's language with `values`
+ * filled in (the Rust twin calls `crate::seed::render_response`).
+ * @param {object} report a `formalizePage` report
+ * @param {string} url
+ * @param {(intent: string, values: object) => string} render
+ */
+export function pageAnswer(report, url, render) {
+  if (report.statements === 0) return render('page_formalization_empty', { url });
+  const lines = [render('page_formalization_summary', {
+    url,
+    sentences: report.sentences.length,
+    statements: report.statements,
+    covered: report.covered,
+    terms: report.terms,
+    unknown: report.unknown,
+    factual: report.factual,
+    survived: report.survived,
+  })];
+  lines.push('');
+  const statements = report.sentences.flatMap((sentence) => sentence.statements);
+  for (const statement of statements.slice(0, ANSWER_STATEMENT_LIMIT)) {
+    lines.push(`- ${statement.text} → ${statementNotation(statement)}`);
+  }
+  if (report.statements > ANSWER_STATEMENT_LIMIT) {
+    lines.push(render('page_formalization_more', { count: report.statements - ANSWER_STATEMENT_LIMIT }));
+  }
+  return lines.join('\n');
 }

@@ -23,6 +23,37 @@ import {
 } from './text_formalization.mjs';
 
 /**
+ * Mirrors `fn round_trip_score` in rust/src/translation/round_trip.rs: how well `candidate`, a surface in `target`,
+ * carries `meaning`, read from `surface` in `source`, through the round trip. Two points when the candidate is read
+ * back as the same meaning, one more when that meaning returns to `source` as `surface` again.
+ * @param {string} candidate
+ * @param {string} meaning
+ * @param {string} surface
+ * @param {string} source
+ * @param {string} target
+ */
+export function roundTripScore(candidate, meaning, surface, source, target) {
+  const back = resolveSurface(candidate, target);
+  const returned = back === null ? null : returnSurface(back, source);
+  const sameMeaning = back === meaning;
+  const sameSurface = returned !== null && returned.toLowerCase() === surface.toLowerCase();
+  return (sameMeaning ? 2 : 0) + (sameSurface ? 1 : 0);
+}
+
+/**
+ * Mirrors `fn best_candidate` in rust/src/translation/round_trip.rs: the index and score of the candidate that
+ * survives the round trip best, the first one on a tie, or null when there is none.
+ */
+function bestCandidate(candidates, meaning, surface, source, target) {
+  let best = null;
+  candidates.forEach((candidate, index) => {
+    const score = roundTripScore(candidate, meaning, surface, source, target);
+    if (best === null || score > best.score) best = { index, score };
+  });
+  return best;
+}
+
+/**
  * Mirrors `fn best_surface` in rust/src/translation/round_trip.rs: the target surface of a meaning term whose round
  * trip survives best, or null when the meaning has no target surface.
  * @param {{kind: string, id: string, surface: string}} term
@@ -30,15 +61,27 @@ import {
  * @param {string} target
  */
 export function bestSurface(term, source, target) {
-  let best = null;
-  for (const candidate of surfacesIn(term.id, target)) {
-    const back = resolveSurface(candidate, target);
-    const returned = back === null ? null : returnSurface(back, source);
-    const score = (back === term.id ? 2 : 0)
-      + (returned !== null && returned.toLowerCase() === term.surface.toLowerCase() ? 1 : 0);
-    if (best === null || score > best.score) best = { surface: candidate, score };
-  }
-  return best === null ? null : best.surface;
+  const candidates = surfacesIn(term.id, target);
+  const best = bestCandidate(candidates, term.id, term.surface, source, target);
+  return best === null ? null : candidates[best.index];
+}
+
+/**
+ * Mirrors `fn round_trip_choice` in rust/src/translation/round_trip.rs: which of several `candidates`, surfaces in
+ * `target` offered for `surface` in `source`, survives the round trip best: the index of the highest
+ * `roundTripScore`, the first one on a tie. Null when `surface` is read as no meaning in `source`, or when no
+ * candidate comes back as its meaning or as `surface`; the caller then keeps its own choice. The chat translation
+ * route uses it wherever it picks among several surfaces (R1188-U19).
+ * @param {string} surface
+ * @param {string} source
+ * @param {string} target
+ * @param {Array<string>} candidates
+ */
+export function roundTripChoice(surface, source, target, candidates) {
+  const meaning = resolveSurface(surface, source);
+  if (meaning === null) return null;
+  const best = bestCandidate(candidates, meaning, surface, source, target);
+  return best !== null && best.score > 0 ? best.index : null;
 }
 
 /** Mirrors `fn render_term` in rust/src/translation/round_trip.rs: one term in `target`, `{source, target, translated}`. */

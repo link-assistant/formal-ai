@@ -5,6 +5,8 @@ seed-metadata-gaps
   missing "precondition,effect,unit,example"
   gap seed-metadata-gap-3b77dbe2d3705f40
     record "http_fetch"
+  gap seed-metadata-gap-374a0206654ed2a6
+    record "page_formalization"
   gap seed-metadata-gap-65c0cdce56d85bde
     record "url_navigate"
   gap seed-metadata-gap-003cf5c4af3c4f0c

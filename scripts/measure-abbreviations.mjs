@@ -158,7 +158,12 @@ function trackedFiles(root, paths = []) {
     .filter((path) => path && existsSync(join(root, path)));
 }
 
-const under = (excluded) => (path) => !excluded.some((prefix) => path === prefix || path.startsWith(`${prefix}/`));
+// An exclusion is a file, a directory, or a name prefix ending in `*` (a
+// family of generated files, such as js/worker/formal_ai_worker_crate_*).
+const covers = (prefix, path) => (prefix.endsWith('*')
+  ? path.startsWith(prefix.slice(0, -1))
+  : path === prefix || path.startsWith(`${prefix}/`));
+const under = (excluded) => (path) => !excluded.some((prefix) => covers(prefix, path));
 
 /**
  * Measure the abbreviated file names and the abbreviated bindings.

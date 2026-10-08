@@ -1,10 +1,15 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=8edfd00cd71bfe63a52f3127aa530d7805ca7664739836a0a1af09e6127dbf12 bytes=5451
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=d45fae9027a9f218b5bff0dd671fa0ef4f72235803eaddfb8ea0325d8394a475 bytes=5473
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=3
+// formal-ai:workarounds import-pruning items=0 carried=3; string-methods items=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// formal-ai:workaround-prelude begin
+pub fn wa_str_replace_all(text: String, pattern: String, replacement: String) -> String {
+    text.replace(pattern.as_str(), replacement.as_str()) }
+// formal-ai:workaround-prelude end
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -67,10 +72,19 @@ pub const CANONICAL_TARGET_MODULE: &str = "src/agentic_coding/planner.rs";
 // formal-ai:refusal Array.from
 // formal-ai:blockers Array.from | method call .join() | method call .slice()
 
-// meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal method call .replaceAll()
-// formal-ai:blockers method call .replaceAll()
+// formal-ai:workaround string-methods JavaScript export_statement items=1 sha256=fb9c0e3f7c40a2791894e2c6f9252dd6217842486f68d2f0edca1b100dffdf61
+// | /** Mirrors `fn quote` in rust/src/change_request.rs (and rebuild_plan.rs). @param {string} value */
+// | export function quote(value) {
+// |   return value.replaceAll('\\', '\\\\').replaceAll('"', "'").replaceAll('\n', '\\n').replaceAll('\r', '\\r').replaceAll('\t', '\\t');
+// | }
+// ~ /** Mirrors `fn quote` in rust/src/change_request.rs (and rebuild_plan.rs). @param {string} value */
+// ~ export function quote(value) {
+// ~   return waStrReplaceAll(waStrReplaceAll(waStrReplaceAll(waStrReplaceAll(waStrReplaceAll(value, '\\', '\\\\'), '"', "'"), '\n', '\\n'), '\r', '\\r'), '\t', '\\t');
+// ~ }
+pub fn quote(value: String) -> String {
+    crate::wa_str_replace_all(crate::wa_str_replace_all(crate::wa_str_replace_all(crate::wa_str_replace_all(crate::wa_str_replace_all(value.clone(), String::from("\\"), String::from("\\\\")), String::from("\""), String::from("'")), String::from("\n"), String::from("\\n")), String::from("\r"), String::from("\\r")), String::from("\t"), String::from("\\t"))
+}
 
 // meta-language:carried JavaScript lexical_declaration (type)
 // formal-ai:refusal type: unknown name (a sibling item or an import)
-// formal-ai:blockers arrow function | call of a sibling function
+// formal-ai:blockers arrow function

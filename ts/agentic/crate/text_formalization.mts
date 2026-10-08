@@ -36,8 +36,8 @@
 
 import { cached, parseLino, readText } from '../host.mjs';
 import { byteSlice, clauses, scriptOf, sentences } from './formalization_segment.mjs';
+import { byteOrder } from './rust_str.mjs';
 import { lexicon, meaning, meaningsWithRole } from './seed_meanings.mjs';
-import { compareStrings } from './summarization_dedup.mjs';
 
 /** Mirrors `TEXT_FORMALIZATION_LINO` in rust/src/seed/embedded_registry.rs (the repository path it embeds). */
 export const TEXT_FORMALIZATION_PATH = 'data/seed/text-formalization.lino';
@@ -509,13 +509,13 @@ export function statementTerms(statement) {
 
 /** Mirrors `fn content_ids` in rust/src/formalization/text_statements.rs: the distinct ids of every term, sorted (Rust byte order). */
 export function contentIds(statement) {
-  return [...new Set(statementTerms(statement).map((term) => term.id))].sort(compareStrings);
+  return [...new Set(statementTerms(statement).map((term) => term.id))].sort(byteOrder);
 }
 
 /** Mirrors `fn known_ids` in rust/src/formalization/text_statements.rs: the distinct ids of the known terms, sorted. */
 export function knownIds(statement) {
   return [...new Set(statementTerms(statement).filter((term) => isKnownKind(term.kind)).map((term) => term.id))]
-    .sort(compareStrings);
+    .sort(byteOrder);
 }
 
 /**
@@ -525,7 +525,7 @@ export function knownIds(statement) {
  */
 export function statementIdentity(statement) {
   const subject = statement.subject === null ? '' : statement.subject.id;
-  const others = [...new Set(statement.terms.map((term) => term.id))].filter((id) => id !== subject).sort(compareStrings);
+  const others = [...new Set(statement.terms.map((term) => term.id))].filter((id) => id !== subject).sort(byteOrder);
   return `${statement.polarity}|${subject}|${others.join(' ')}`;
 }
 

@@ -1,14 +1,15 @@
 // Issue #1174 text-transform family, browser twin (issue #1188 JS parity).
 //
 // Mirrors rust/src/solver_handlers/summarization_request.rs (free-text
-// summarization), the statement pipeline it calls in
-// rust/src/summarization/mod.rs (formalize -> summarize -> deformalize), and
+// summarization, which runs the dependency summarizer of
+// js/agentic/crate/dependency_summarization.mjs through
+// formal_ai_worker_crate_modules.js), and
 // rust/src/solver_handlers/text_rewrite.rs (register rewriting, grammar
 // correction, genre writing). Every vocabulary item is read from the same seed
 // records the native handlers read: data/seed/register-lexicon.lino,
 // data/seed/agreement-rules.lino, data/seed/writing-genre-styleguides.lino,
-// the text_summarization_action and summary_classification_cue meaning roles,
-// and the multilingual-responses-text-transform.lino templates.
+// the text_summarization_action meaning role, and the
+// multilingual-responses-text-transform.lino templates.
 
 const TEXT_TRANSFORM_REGISTER_FILE = "register-lexicon.lino";
 const TEXT_TRANSFORM_AGREEMENT_FILE = "agreement-rules.lino";
@@ -17,7 +18,6 @@ const TEXT_TRANSFORM_INTENT_REGISTER = "text_transform_register";
 const TEXT_TRANSFORM_INTENT_GRAMMAR = "text_transform_grammar";
 const TEXT_TRANSFORM_INTENT_GENRE_PREFIX = "text_transform_genre";
 const ROLE_TEXT_SUMMARIZATION_ACTION = "text_summarization_action";
-const ROLE_SUMMARY_CLASSIFICATION_CUE = "summary_classification_cue";
 
 // ---------------------------------------------------------------------------
 // Shared seed and text helpers
@@ -682,195 +682,18 @@ function tryTextRewrite(prompt) {
 }
 
 // ---------------------------------------------------------------------------
-// Free-text summarization (summarization_request.rs + summarization/mod.rs)
+// Free-text summarization (summarization_request.rs, R1188-U21)
 // ---------------------------------------------------------------------------
 
-const SUMMARY_SENTENCE_TERMINATORS = [".", "!", "?", "。", "…", "।", "॥", "\n"];
-const SUMMARY_TERMINAL_PUNCTUATION = [".", "!", "?", "。", "…", "।", "॥", "」", '"'];
-
-/**
- * @param {string} slug a summary_classification_cue meaning slug
- * @returns {string} the statement kind
- */
-function summaryKindFromSlug(slug) {
-  switch (slug) {
-    case "summary_kind_install":
-      return "install";
-    case "summary_kind_example":
-      return "example";
-    case "summary_kind_language":
-      return "language";
-    case "summary_kind_stars":
-      return "stars";
-    case "summary_kind_purpose":
-      return "purpose";
-    case "summary_kind_use_case":
-      return "use_case";
-    case "summary_kind_feature":
-      return "feature";
-    default:
-      return "misc";
-  }
-}
-
-/**
- * @param {string} kind
- * @returns {number}
- */
-function summaryWeightForKind(kind) {
-  switch (kind) {
-    case "purpose":
-      return 100;
-    case "identity":
-      return 90;
-    case "language":
-      return 60;
-    case "stars":
-      return 55;
-    case "feature":
-      return 70;
-    case "use_case":
-      return 65;
-    case "install":
-      return 10;
-    case "example":
-      return 15;
-    default:
-      return 30;
-  }
-}
-
-/**
- * Mirrors `classify_sentence`: the first seeded cue meaning whose surface
- * occurs in the lowercased sentence; long sentences skip the language kind.
- * @param {string} sentence
- * @returns {string}
- */
-function summaryClassifySentence(sentence) {
-  const lower = sentence.toLowerCase();
-  const wordCount = textTransformWords(lower).length;
-  for (const meaning of meaningsWithRole(ROLE_SUMMARY_CLASSIFICATION_CUE)) {
-    if (!meaning.words.some((cue) => cue.length > 0 && lower.includes(cue))) continue;
-    const kind = summaryKindFromSlug(meaning.slug);
-    if (kind === "language" && wordCount > 12) continue;
-    return kind;
-  }
-  return "misc";
-}
-
-/**
- * Whether a full stop belongs to the token being written (decimals, dotted
- * names, initialisms) rather than closing a sentence.
- * @param {string} buffer
- * @param {string|null} next
- * @returns {boolean}
- */
-function summaryPeriodBelongsToToken(buffer, next) {
-  const bufferCharacters = Array.from(buffer);
-  const previous = bufferCharacters.length > 0 ? bufferCharacters[bufferCharacters.length - 1] : null;
-  if (previous !== null && next !== null && textTransformIsAlphanumeric(previous) &&
-    textTransformIsAlphanumeric(next)) {
-    return true;
-  }
-  const words = textTransformWords(buffer);
-  const last = words.length > 0 ? words[words.length - 1] : "";
-  const keep = (character) => /\p{Alphabetic}/u.test(character) || character === ".";
-  const characters = Array.from(last);
-  let start = 0;
-  let end = characters.length;
-  while (start < end && !keep(characters[start])) start += 1;
-  while (end > start && !keep(characters[end - 1])) end -= 1;
-  const token = characters.slice(start, end).join("");
-  const segments = token.split(".");
-  const single = (segment) => {
-    const parts = Array.from(segment);
-    return parts.length === 1 && /\p{Alphabetic}/u.test(parts[0]);
-  };
-  if (!single(segments[0])) return false;
-  for (const segment of segments.slice(1)) {
-    if (!single(segment)) return false;
-  }
-  return segments.length >= 2;
-}
-
-/**
- * @param {string} buffer
- * @returns {{text: string, kind: string, weight: number}|null}
- */
-function summaryStatementFrom(buffer) {
-  const sentence = buffer.split("\n").join("").trim();
-  if (sentence.length === 0) return null;
-  const kind = summaryClassifySentence(sentence);
-  return { text: sentence, kind: kind, weight: summaryWeightForKind(kind) };
-}
-
-/**
- * Mirrors `summarization::formalize`: one statement per sentence.
- * @param {string} text
- * @returns {Array<{text: string, kind: string, weight: number}>}
- */
-function summaryFormalize(text) {
-  const characters = Array.from(text);
-  const out = [];
-  let buffer = "";
-  for (let index = 0; index < characters.length; index += 1) {
-    const character = characters[index];
-    const next = index + 1 < characters.length ? characters[index + 1] : null;
-    const internalPeriod = character === "." && summaryPeriodBelongsToToken(buffer, next);
-    buffer += character;
-    if (!internalPeriod && SUMMARY_SENTENCE_TERMINATORS.includes(character)) {
-      const statement = summaryStatementFrom(buffer);
-      if (statement !== null) out.push(statement);
-      buffer = "";
-    }
-  }
-  const tail = summaryStatementFrom(buffer);
-  if (tail !== null) out.push(tail);
-  return out;
-}
-
-/**
- * Mirrors `summarize` in Standard mode with an explicit cap: boilerplate
- * dropped, stable descending weight order, truncated to the effective cap.
- * @param {Array<{text: string, kind: string, weight: number}>} statements
- * @param {number} maxStatements
- * @returns {Array<{text: string, kind: string, weight: number}>}
- */
-function summarySelect(statements, maxStatements) {
-  if (statements.length === 0) return [];
-  const filtered = statements
-    .filter((statement) => statement.kind !== "install" && statement.kind !== "example")
-    .map((statement, index) => ({ statement: statement, index: index }))
-    .sort((left, right) => right.statement.weight - left.statement.weight || left.index - right.index)
-    .map((entry) => entry.statement);
-  if (filtered.length === 0) return [];
-  const ratioTarget = Math.max(1, Math.floor((filtered.length * 50 + 50) / 100));
-  const cap = Math.max(1, Math.min(maxStatements, ratioTarget));
-  return filtered.slice(0, cap);
-}
-
-/**
- * Mirrors `deformalize`: re-punctuate and join with single spaces.
- * @param {Array<{text: string}>} statements
- * @returns {string}
- */
-function summaryDeformalize(statements) {
-  return statements
-    .map((statement) => {
-      const trimmed = statement.text.trim();
-      if (trimmed.length === 0) return "";
-      const characters = Array.from(trimmed);
-      const last = characters[characters.length - 1];
-      return SUMMARY_TERMINAL_PUNCTUATION.includes(last) ? trimmed : `${trimmed}.`;
-    })
-    .filter((text) => text.length > 0)
-    .join(" ");
-}
+/** The crate module that summarizes a text by what its statements depend on. */
+const DEPENDENCY_SUMMARIZATION_MODULE = "crate/dependency_summarization.mjs";
 
 /**
  * Free-text summarization (`handle_summarization_request`): a request that
- * carries its own text is answered with a ~30% weight-ranked selection,
- * floored at two statements and always one short of the input.
+ * carries its own text is answered with its dependency summary, the
+ * statements the others depend on, up to one in three, in the text's own
+ * words (`summarizeByDependency`, the JavaScript root's own module). The
+ * trace names every statement kept or dropped and every duplicate removed.
  * @param {string} prompt
  * @param {string} normalized
  * @returns {object|null}
@@ -880,24 +703,17 @@ function trySummarizationText(prompt, normalized) {
   if (!lexiconMentionsRole(ROLE_TEXT_SUMMARIZATION_ACTION, String(normalized || ""))) return null;
   const payload = textTransformFreeTextPayload(text);
   if (payload === null) return null;
-  const statements = summaryFormalize(payload);
-  if (statements.length < 2) return null;
-  const trace = statements.map(
-    (statement) => `summarization_statement:${statement.kind} weight ${statement.weight}`,
-  );
-  const bound = Math.max(
-    1,
-    Math.min(Math.max(2, Math.floor((statements.length * 3 + 5) / 10)), statements.length - 1),
-  );
-  trace.push(`summarization_bound:${bound}/${statements.length}`);
-  const selected = summarySelect(statements, bound);
-  if (selected.length === 0) return null;
-  trace.push(`summarization_selected:${selected.map((statement) => statement.text).join(" | ")}`);
-  return textTransformAnswer(
-    "summarization_free_text",
-    summaryDeformalize(selected),
-    0.8,
-    "summarization_text",
-    trace,
-  );
+  const { summarizeByDependency } = crateModule(DEPENDENCY_SUMMARIZATION_MODULE);
+  const summary = summarizeByDependency(payload, detectLanguage(payload));
+  // A single statement cannot be shortened without echoing it back.
+  if (summary.statements.length + summary.removed.length < 2 || summary.kept.length === 0) return null;
+  const trace = summary.statements.map((node, index) => {
+    const verdict = summary.kept.includes(index) ? "kept" : "dropped";
+    return `summarization_statement:${verdict} ${node.statement.text}`;
+  });
+  for (const entry of summary.removed) trace.push(`summarization_duplicate:${entry.statement.text}`);
+  trace.push(`summarization_bound:${summary.kept.length}/${summary.statements.length}`);
+  const selected = summary.kept.map((index) => summary.statements[index].statement.text);
+  trace.push(`summarization_selected:${selected.join(" | ")}`);
+  return textTransformAnswer("summarization_free_text", summary.text, 0.8, "summarization_text", trace);
 }

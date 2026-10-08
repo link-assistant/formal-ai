@@ -1,10 +1,31 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=97ede073b2bf1eea45b014e93076dda2c9a4540da1a587eab3a61af826535ff8 bytes=7213
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=c5b4a60c1d578fe939e740b518dbcd5f7bc826b8157d02f95e0f1c8afb1a8c58 bytes=7255
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=1 carried=4
+// formal-ai:workarounds import-pruning items=1 carried=4; string-methods items=2
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// formal-ai:workaround-prelude begin
+pub fn wa_str_last_index_of(text: String, search: String) -> f64 {
+    let units: Vec<u16> = text.encode_utf16().collect();
+    let needle: Vec<u16> = search.encode_utf16().collect();
+    if needle.is_empty() { return units.len() as f64; }
+    if needle.len() > units.len() { return -1.0; }
+    units.windows(needle.len()).rposition(|window| window == needle.as_slice()).map_or(-1.0, |at| at as f64) }
+
+pub fn wa_index(index: f64, len: usize) -> usize {
+    let whole = if index.is_nan() { 0.0 } else { index.trunc() };
+    (if whole < 0.0 { (len as f64 + whole).max(0.0) } else { whole.min(len as f64) }) as usize }
+
+pub fn wa_str_slice(text: String, start: f64, end: f64) -> String {
+    let units: Vec<u16> = text.encode_utf16().collect();
+    let (from, to) = (wa_index(start, units.len()), wa_index(end, units.len()));
+    if from >= to { String::new() } else { String::from_utf16_lossy(&units[from..to]) } }
+
+pub fn wa_str_slice_from(text: String, start: f64) -> String {
+    wa_str_slice(text, start, f64::INFINITY) }
+// formal-ai:workaround-prelude end
 
 // formal-ai:workaround import-pruning carried JavaScript import_statement
 // formal-ai:refusal import of names its module does not translate
@@ -72,10 +93,46 @@ pub static RESOURCE_FIELDS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLo
 // formal-ai:refusal method call .map()
 // formal-ai:blockers arrow callback of .map() | global call String() | method call .map() | method call .padStart() | object spread | object without a $ tag
 
-// meta-language:carried JavaScript function_declaration (unsupported)
-// formal-ai:refusal method call .lastIndexOf()
-// formal-ai:blockers method call .lastIndexOf() | method call .slice()
+// formal-ai:workaround string-methods JavaScript function_declaration items=1 sha256=4fd47d3e6112d9a19868365b81e9a7fd4aa3aa7632d19de2b8c33aea1af5ee3c
+// | /** Mirrors `fn parent_of`. @param {string} path */
+// | function parentOf(path) {
+// |   const at = path.lastIndexOf('/');
+// |   return at < 0 ? '.' : path.slice(0, at);
+// | }
+// ~ /** Mirrors `fn parent_of`. @param {string} path */
+// ~ function parentOf(path) {
+// ~   const at = waStrLastIndexOf(path, '/');
+// ~   return at < 0 ? '.' : waStrSlice(path, 0, at);
+// ~ }
+pub fn parent_of(path: String) -> String {
+    {
+        let at = crate::wa_str_last_index_of(path.clone(), String::from("/"));
+        if (at < (0f64)) {
+            String::from(".")
+        } else {
+            crate::wa_str_slice(path.clone(), 0f64, at)
+        }
+    }
+}
 
-// meta-language:carried JavaScript function_declaration (unsupported)
-// formal-ai:refusal method call .lastIndexOf()
-// formal-ai:blockers method call .lastIndexOf() | method call .slice()
+// formal-ai:workaround string-methods JavaScript function_declaration items=1 sha256=9db9d1c72a358d31b984db1c6edc9e278a80ba56a22878c8cf635d64b0c285e2
+// | /** Mirrors `fn basename_of`. @param {string} path */
+// | function basenameOf(path) {
+// |   const at = path.lastIndexOf('/');
+// |   return at < 0 ? path : path.slice(at + 1);
+// | }
+// ~ /** Mirrors `fn basename_of`. @param {string} path */
+// ~ function basenameOf(path) {
+// ~   const at = waStrLastIndexOf(path, '/');
+// ~   return at < 0 ? path : waStrSliceFrom(path, at + 1);
+// ~ }
+pub fn basename_of(path: String) -> String {
+    {
+        let at = crate::wa_str_last_index_of(path.clone(), String::from("/"));
+        if (at < (0f64)) {
+            path.clone()
+        } else {
+            crate::wa_str_slice_from(path.clone(), (at + 1f64))
+        }
+    }
+}

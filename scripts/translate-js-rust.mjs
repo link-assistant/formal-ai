@@ -52,8 +52,9 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { Worker, isMainThread, parentPort, workerData } from 'node:worker_threads';
 
 import { itemBlockers, moduleContext, renderBlockers } from './lib/translation-blockers.mjs';
+import { LOWERED_LINE, lowerModule, readStubs, stubPrelude } from './lib/translation-lowering.mjs';
 import {
-  APPLIED, WORKAROUND, assembleCrate, importGraph, namedImports, pruneImport, resolveImport, translationClosure,
+  APPLIED, WORKAROUND, WORKAROUNDS_FILE, assembleCrate, importGraph, namedImports, pruneImport, resolveImport, translationClosure,
 } from './lib/translation-workarounds.mjs';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -76,6 +77,10 @@ const PRELUDE_END = '// meta-language:prelude end';
 const SOURCE_LINE = '// |';
 const REFUSAL = '// formal-ai:refusal ';
 const BLOCKERS = '// formal-ai:blockers ';
+const WORKAROUND_PRELUDE_BEGIN = '// formal-ai:workaround-prelude begin';
+const WORKAROUND_PRELUDE_END = '// formal-ai:workaround-prelude end';
+// meta-language's own crate attributes, which its prelude opens with.
+const RUST_ALLOW = '#![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]';
 const PROJECTION_NOTE = '// formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)';
 // Upstream reasons that come with a portable-core diagnostic worth naming.
 const DIAGNOSED = new Set(['unsupported', 'syntax', 'type']);
@@ -146,6 +151,8 @@ export function upstreamBlocks(code) {
       let last = index;
       while (lines[last + 1]?.startsWith(SOURCE_LINE)) last += 1;
       const source = lines.slice(index + 1, last + 1).map((text) => text.slice(SOURCE_LINE.length).replace(/^ /u, '')).join('\n');
+      // A lowered item shows its lowered source (`// ~`) after its source.
+      while (lines[last + 1]?.startsWith(LOWERED_LINE)) last += 1;
       const workaround = /^\/\/ formal-ai:workaround (\S+) (carried )?(\S+) (\S+)/u.exec(line);
       if (line.startsWith(CARRIED) || workaround?.[2]) {
         const match = /^\/\/ meta-language:carried (\S+) (\S+) \((.*)\)$/u.exec(line);
@@ -206,6 +213,11 @@ export function renderProjection(parsed) {
   const applied = appliedWorkarounds(parsed.blocks);
   const parts = [[parsed.header, PROJECTION_NOTE, ...(applied ? [`${APPLIED}${applied}`] : [])].join('\n')];
   if (parsed.prelude.length) parts.push(parsed.prelude.join('\n'));
+  if (parsed.workaroundPrelude?.length) {
+    // An inner attribute must precede every item, so it opens this block only when upstream wrote no prelude.
+    const allow = parsed.prelude.some((line) => line.startsWith('#![allow(')) ? [] : [RUST_ALLOW];
+    parts.push([WORKAROUND_PRELUDE_BEGIN, ...allow, parsed.workaroundPrelude.join('\n\n'), WORKAROUND_PRELUDE_END].join('\n'));
+  }
   for (const block of parsed.blocks) {
     if (block.kind !== 'carried') parts.push(block.text);
     else parts.push([block.marker, `${REFUSAL}${block.refusal}`, ...(block.blockers?.length ? [`${BLOCKERS}${block.blockers.join(' | ')}`] : [])].join('\n'));
@@ -225,7 +237,7 @@ export function appliedWorkarounds(blocks) {
     rules.get(rule)[field] += 1;
   };
   for (const block of blocks) {
-    if (block.kind === 'workaround') count(block.rule, 'items');
+    if (block.kind === 'workaround') for (const rule of block.rule.split('+')) count(rule, 'items');
     const carried = block.kind === 'carried' ? /^\/\/ formal-ai:workaround (\S+) carried /u.exec(block.marker ?? '') : null;
     if (carried) count(carried[1], 'carried');
   }
@@ -253,7 +265,7 @@ export function readProjection(text) {
     bytes: Number(fields.bytes ?? Number.NaN),
     translated: translated.length,
     workaround: workaround.length,
-    rules: workaround.map((block) => block.rule),
+    rules: workaround.flatMap((block) => block.rule.split('+')),
     inferred: [...translated, ...workaround].filter((block) => inferredSignature(block.text)).length,
     carried: refusals.length,
     refusals,
@@ -579,7 +591,16 @@ function translateAll(dir, paths, jobs) {
 }
 
 async function workerMain() {
-  const api = await import(pathToFileURL(join(workerData.dir, 'js', 'src', 'index.js')).href);
+  const src = (file) => import(pathToFileURL(join(workerData.dir, 'js', 'src', ...file.split('/'))).href);
+  const api = await src('index.js');
+  // The frontend, checker and emitter selfTranslate itself runs, for the lowered items.
+  const upstream = {
+    parseJavaScript: (await src('translation/javascript.js')).parseJavaScript,
+    checkProgram: (await src('translation/check.js')).checkProgram,
+    emitRust: (await src('translation/emit-rust.js')).emitRust,
+    TranslationError: (await src('translation/diagnostics.js')).TranslationError,
+  };
+  const stubs = readStubs(readFileSync(join(REPO, WORKAROUNDS_FILE), 'utf8'));
   parentPort.on('message', ({ path, text, imports, bound, signatures: wanted }) => {
     const started = Date.now();
     // Each module is the crate root of its directory (meta-language's default).
@@ -591,7 +612,14 @@ async function workerMain() {
     const details = upstreamBlocks(code).blocks.map((block) => (block.kind === 'carried' && DIAGNOSED.has(block.reason)
       ? (api.translateProgram(block.source, 'JavaScript', 'Rust').diagnostic?.message ?? null)
       : null));
-    parentPort.postMessage({ path, code, details, signatures, bound, ms: Date.now() - started });
+    const externals = namedImports(text).flatMap((entry) => entry.names.flatMap((name) => {
+      const signature = (imports[entry.specifier] ?? []).find((candidate) => candidate.name === name.imported);
+      return signature ? [{ ...signature, name: name.local }] : [];
+    }));
+    // An item whose parameters lack JSDoc types would get a signature inferred from its own body (the ratchet refuses it).
+    const accept = (source) => !inferredSignature(source.split('\n').map((line) => `${SOURCE_LINE} ${line}`).join('\n'));
+    const lowered = Object.fromEntries(lowerModule(upstream, { blocks: upstreamBlocks(code).blocks, details, externals, stubs, accept }));
+    parentPort.postMessage({ path, code, details, signatures, bound, lowered, ms: Date.now() - started });
   });
 }
 
@@ -607,6 +635,20 @@ export function measure(path, result) {
   parsed.blocks.forEach((block, index) => {
     if (block.kind === 'carried') block.refusal = refusalClass(block.reason, result.details[index]);
   });
+  // The items the lowering rules translated, and the Rust they need beside their own.
+  const lowered = result.lowered ?? {};
+  const preludes = new Set();
+  const stubNames = new Set();
+  parsed.blocks = parsed.blocks.map((block, index) => {
+    const entry = lowered[index];
+    if (!entry) return block;
+    for (const prelude of entry.preludes) if (!parsed.prelude.join('\n').includes(prelude)) preludes.add(prelude);
+    for (const name of entry.stubs) stubNames.add(name);
+    return { kind: 'workaround', rule: entry.rules.join('+'), term: block.term, source: block.source, text: entry.text };
+  });
+  if (preludes.size || stubNames.size) {
+    parsed.workaroundPrelude = [...preludes, ...stubPrelude([...stubNames], readStubs(readFileSync(join(REPO, WORKAROUNDS_FILE), 'utf8')))];
+  }
   parsed.blocks = parsed.blocks.map((block) => {
     if (block.kind !== 'translated' || block.term !== 'import_statement') return block;
     const [entry] = namedImports(block.source);
@@ -630,7 +672,7 @@ export function measure(path, result) {
     path,
     translated: parsed.blocks.filter((block) => block.kind === 'translated').length,
     workaround: parsed.blocks.filter((block) => block.kind === 'workaround').length,
-    rules: parsed.blocks.filter((block) => block.kind === 'workaround').map((block) => block.rule),
+    rules: parsed.blocks.filter((block) => block.kind === 'workaround').flatMap((block) => block.rule.split('+')),
     inferred: done.filter((block) => inferredSignature(block.text)).length,
     carried: carried.length,
     refusals: carried.map((block) => block.refusal),

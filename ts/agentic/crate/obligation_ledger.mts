@@ -65,6 +65,7 @@ function opensAClause(request, index) {
   return before === '' || lineEnd.endsWith('\n') || ['.', '!', '?', ';', ':', '。', '！', '？', '।', '॥'].some((mark) => before.endsWith(mark));
 }
 
+/** @param {string} character */
 function isUnspacedScript(character) {
   const cp = character.codePointAt(0);
   return (cp >= 0x3040 && cp <= 0x30ff) || (cp >= 0x3400 && cp <= 0x4dbf) || (cp >= 0x4e00 && cp <= 0x9fff)

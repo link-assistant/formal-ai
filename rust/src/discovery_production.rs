@@ -375,7 +375,7 @@ impl ProcedureCache {
 
     /// The text [`Self::write`] puts on disk: the header comment, the cache
     /// record and one row per recipe. Mirrored by `cacheFileText` in
-    /// js/agentic/crate/discovery_production.mjs.
+    /// `js/agentic/crate/discovery_production.mjs`.
     fn cache_file_text(&self) -> String {
         let mut out = cache_file_header();
         crate::links_format::push_lino_field(&mut out, 0, "coding_procedure_cache", None);

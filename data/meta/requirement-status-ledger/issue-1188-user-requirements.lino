@@ -97,6 +97,7 @@ requirement_status_ledger_shard
   requirement
     id "R1188-U30"
     verdict "partial"
+    automated_test "rust/tests/web/translation-workarounds.test.mjs"
   requirement
     id "R1188-U4"
     verdict "partial"

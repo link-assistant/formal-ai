@@ -736,6 +736,9 @@ function formalDeformalizeAnswer(grammar, prompt, language, trace) {
  * @returns {object|null}
  */
 function tryFormalizationRequest(prompt, normalized) {
+  // A URL the fetch row claims is a page to fetch: natively http_fetch (and the routed fetch) rank before this
+  // row, and the browser answers fetches in its async phase, after the synchronous table (R1188-U18).
+  if (extractHttpFetchUrl(prompt, String(normalized || "")) !== null) return null;
   const text = String(prompt || "");
   const roles = formalMatchedRoles(text, String(normalized || ""));
   // Every deformalize verb contains its formalize verb ("deformalize" /

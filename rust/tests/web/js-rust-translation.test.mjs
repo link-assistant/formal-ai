@@ -48,7 +48,11 @@ test('issue_report.mjs translates whole: both of its items are Rust, none carrie
 
 test('every call of calls.lino returns its recorded result in JavaScript and names a translated Rust function', async () => {
   const calls = parseCalls(read(CALLS_FILE));
-  assert.deepEqual([...new Set(calls.map((call) => call.rust))], ['fenced_block', 'span', 'permission_key', 'verdict_slug', 'compare_tuples']);
+  assert.deepEqual([...new Set(calls.map((call) => call.rust))], [
+    'fenced_block', 'span', 'permission_key', 'verdict_slug', 'compare_tuples',
+    // Translated through the workarounds of data/meta/translation-workarounds.lino (R1188-U30).
+    'sanitize_lino_value', 'replace_all_literal', 'contains_cjk', 'strip_inline_code_and_html', 'escapes_root',
+  ]);
   for (const call of calls) {
     const module = await load(call.module);
     assert.equal(module[call.javascript](...call.args.map((arg) => arg.value)), call.result.value, `${call.javascript} of ${call.module}`);

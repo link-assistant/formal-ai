@@ -766,3 +766,103 @@ multilingual_responses
     intent research_result_followup_open_research
     language es
     text "Todavía no hay ningún resultado final de investigación verificado en la conversación. El turno anterior fue una solicitud de investigación, pero no veo ninguna respuesta completa y respaldada por fuentes que comunicar.\n\nTarea de investigación anterior: `{preview}`\n\nSiguiente paso: ejecuta la búsqueda o aporta enlaces a fuentes; entonces podré producir el resultado solicitado."
+  response response-page-formalization-summary-en
+    intent page_formalization_summary
+    language en
+    text "Formalized `{url}`: {sentences} sentences became {statements} statements. {covered} sentences are fully formal; {unknown} of {terms} terms have no meaning yet; {survived} of {factual} facts survive the round trip back to text."
+  response response-page-formalization-summary-ru
+    intent page_formalization_summary
+    language ru
+    text "Страница `{url}` формализована: из {sentences} предложений получено {statements} утверждений. Полностью формальны предложений: {covered}; терминов без значения: {unknown} из {terms}; фактов, переживших обратный перевод в текст: {survived} из {factual}."
+  response response-page-formalization-summary-hi
+    intent page_formalization_summary
+    language hi
+    text "`{url}` को औपचारिक बनाया गया: {sentences} वाक्यों से {statements} कथन बने। {covered} वाक्य पूरी तरह औपचारिक हैं; {terms} में से {unknown} पदों का अभी कोई अर्थ नहीं है; {factual} में से {survived} तथ्य पाठ में वापस बदलने पर बचे रहते हैं।"
+  response response-page-formalization-summary-zh
+    intent page_formalization_summary
+    language zh
+    text "已形式化 `{url}`：{sentences} 个句子变为 {statements} 条陈述。{covered} 个句子完全形式化；{terms} 个术语中有 {unknown} 个尚无含义；{factual} 个事实中有 {survived} 个在转回文本后保留。"
+  response response-page-formalization-summary-es
+    intent page_formalization_summary
+    language es
+    text "Página `{url}` formalizada: {sentences} oraciones se convirtieron en {statements} enunciados. Oraciones totalmente formales: {covered}; términos aún sin significado: {unknown} de {terms}; hechos que sobreviven a la vuelta al texto: {survived} de {factual}."
+  response response-page-formalization-more-en
+    intent page_formalization_more
+    language en
+    text "… and {count} more statements."
+  response response-page-formalization-more-ru
+    intent page_formalization_more
+    language ru
+    text "… и ещё утверждений: {count}."
+  response response-page-formalization-more-hi
+    intent page_formalization_more
+    language hi
+    text "… और {count} कथन।"
+  response response-page-formalization-more-zh
+    intent page_formalization_more
+    language zh
+    text "……另有 {count} 条陈述。"
+  response response-page-formalization-more-es
+    intent page_formalization_more
+    language es
+    text "… y {count} enunciados más."
+  response response-page-formalization-empty-en
+    intent page_formalization_empty
+    language en
+    text "`{url}` was fetched, but it holds no sentence I could formalize."
+  response response-page-formalization-empty-ru
+    intent page_formalization_empty
+    language ru
+    text "Страница `{url}` загружена, но в ней нет предложений, которые я мог бы формализовать."
+  response response-page-formalization-empty-hi
+    intent page_formalization_empty
+    language hi
+    text "`{url}` fetch किया गया, लेकिन उसमें ऐसा कोई वाक्य नहीं है जिसे मैं औपचारिक बना सकूँ।"
+  response response-page-formalization-empty-zh
+    intent page_formalization_empty
+    language zh
+    text "已获取 `{url}`，但其中没有我能形式化的句子。"
+  response response-page-formalization-empty-es
+    intent page_formalization_empty
+    language es
+    text "Se obtuvo `{url}`, pero no contiene ninguna oración que pueda formalizar."
+  response response-page-formalization-offline-en
+    intent page_formalization_offline
+    language en
+    text "I cannot formalize `{url}`: the page is not in the source cache and live fetching is off, so nothing was fetched."
+  response response-page-formalization-offline-ru
+    intent page_formalization_offline
+    language ru
+    text "Не могу формализовать `{url}`: страницы нет в кэше источников, а загрузка из сети выключена, поэтому ничего не загружено."
+  response response-page-formalization-offline-hi
+    intent page_formalization_offline
+    language hi
+    text "`{url}` को औपचारिक नहीं बना सकता: पेज स्रोत कैश में नहीं है और लाइव fetch बंद है, इसलिए कुछ भी fetch नहीं किया गया।"
+  response response-page-formalization-offline-zh
+    intent page_formalization_offline
+    language zh
+    text "无法形式化 `{url}`：该页面不在来源缓存中，且实时获取已关闭，因此没有获取任何内容。"
+  response response-page-formalization-offline-es
+    intent page_formalization_offline
+    language es
+    text "No puedo formalizar `{url}`: la página no está en la caché de fuentes y la descarga en vivo está desactivada, así que no se descargó nada."
+  response response-page-formalization-fetch-failed-en
+    intent page_formalization_fetch_failed
+    language en
+    text "I could not fetch `{url}` to formalize it: {error}."
+  response response-page-formalization-fetch-failed-ru
+    intent page_formalization_fetch_failed
+    language ru
+    text "Не удалось загрузить `{url}` для формализации: {error}."
+  response response-page-formalization-fetch-failed-hi
+    intent page_formalization_fetch_failed
+    language hi
+    text "`{url}` को औपचारिक बनाने के लिए fetch नहीं कर सका: {error}।"
+  response response-page-formalization-fetch-failed-zh
+    intent page_formalization_fetch_failed
+    language zh
+    text "无法获取 `{url}` 以进行形式化：{error}。"
+  response response-page-formalization-fetch-failed-es
+    intent page_formalization_fetch_failed
+    language es
+    text "No pude obtener `{url}` para formalizarla: {error}."

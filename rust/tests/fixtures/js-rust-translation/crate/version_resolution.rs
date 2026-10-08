@@ -1,10 +1,24 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=9f5b77c2b417fc1ea078a5ad88dfbe4571bf51076ee8bcd87fe3d1f1c02addaf bytes=12054
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=543ac1b912a9831f7a60b91961765af2364fcfd5aaba19920d8f316669602059 bytes=12081
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=1
+// formal-ai:workarounds import-pruning items=0 carried=1; string-methods items=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// formal-ai:workaround-prelude begin
+pub fn wa_index(index: f64, len: usize) -> usize {
+    let whole = if index.is_nan() { 0.0 } else { index.trunc() };
+    (if whole < 0.0 { (len as f64 + whole).max(0.0) } else { whole.min(len as f64) }) as usize }
+
+pub fn wa_str_slice(text: String, start: f64, end: f64) -> String {
+    let units: Vec<u16> = text.encode_utf16().collect();
+    let (from, to) = (wa_index(start, units.len()), wa_index(end, units.len()));
+    if from >= to { String::new() } else { String::from_utf16_lossy(&units[from..to]) } }
+
+pub fn wa_str_slice_from(text: String, start: f64) -> String {
+    wa_str_slice(text, start, f64::INFINITY) }
+// formal-ai:workaround-prelude end
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -62,7 +76,7 @@ pub static PIN_IDS: std::sync::LazyLock<Vec<Vec<String>>> = std::sync::LazyLock:
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal object spread
-// formal-ai:blockers call of a sibling function | field access | null | object spread | object without a $ tag
+// formal-ai:blockers field access | null | object spread | object without a $ tag
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal call of a computed function
@@ -104,9 +118,44 @@ pub static PIN_IDS: std::sync::LazyLock<Vec<Vec<String>>> = std::sync::LazyLock:
 // formal-ai:refusal method call .find()
 // formal-ai:blockers arrow callback of .find() | call of a sibling function | call of an imported function | field access | method call .find() | null
 
-// meta-language:carried JavaScript function_declaration (unsupported)
-// formal-ai:refusal method call .slice()
-// formal-ai:blockers method call .slice()
+// formal-ai:workaround string-methods JavaScript function_declaration items=2 sha256=bc1fbf588ccdfea58af274e84bc7043839ea1b7e5d3780b29dfc244b96b27774
+// | /** @param {string} tag */
+// | function trimStartV(tag) {
+// |   let out = tag;
+// |   while (out.startsWith('v')) out = out.slice(1);
+// |   return out;
+// | }
+// ~ /** @param {string} tag */
+// ~ function trimStartV(tag) {
+// ~   let out = tag;
+// ~   while (out.startsWith('v')) out = waStrSliceFrom(out, 1);
+// ~   return out;
+// ~ }
+pub fn trim_start_v(tag: String) -> String {
+    {
+        let out = tag.clone();
+        {
+            let out_2 = crate::ml_trim_start_v_loop1(out.clone());
+            out_2.clone()
+        }
+    }
+}
+
+pub fn ml_trim_start_v_loop1(mut out: String) -> String {
+    loop {
+        return if out.starts_with("v") {
+            {
+                let out_2 = crate::wa_str_slice_from(out.clone(), 1f64);
+                {
+                    out = out_2.clone();
+                    continue;
+                }
+            }
+        } else {
+            out.clone()
+        };
+    }
+}
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .reduce()

@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=eb734b90c21410b59d3fd0463fd415f44d9ca6ca683c4db41806eb774a1568de bytes=6081
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=682a2ec2214b51c5840441fb4bf8fff36e8bd1ceb07c507d2996bfeaad165783 bytes=8111
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=1
 
@@ -11,8 +11,20 @@
 // formal-ai:blockers import of names its module carries
 
 // meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal null
+// formal-ai:blockers call of an imported function | null
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal null
+// formal-ai:blockers arrow callback of .forEach() | call of a sibling function | field access | method call .forEach() | null | object without a $ tag
+
+// meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
-// formal-ai:blockers JSDoc type {…} | call of an imported function | field access | null | object without a $ tag
+// formal-ai:blockers JSDoc type {…} | call of a sibling function | call of an imported function | field access | null
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal null
+// formal-ai:blockers call of a sibling function | call of an imported function | field access | null
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal function value …

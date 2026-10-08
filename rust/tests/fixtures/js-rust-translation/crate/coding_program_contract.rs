@@ -1,10 +1,21 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=f72d762e5e7397bdf14e828474be587af91954b922d34dbc8d90c296c53330ed bytes=13830
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=1cb7fbb3ef3ab9e5ea27b1fc709c806526518735388f685720bec8f3adef1472 bytes=13898
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=6
+// formal-ai:workarounds import-pruning items=0 carried=6; string-methods items=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// formal-ai:workaround-prelude begin
+pub fn wa_str_split(text: String, separator: String) -> Vec<String> {
+    if separator.is_empty() {
+        return text.encode_utf16().map(|unit| String::from_utf16_lossy(&[unit])).collect();
+    }
+    text.split(separator.as_str()).map(String::from).collect() }
+
+pub fn wa_strs_join(items: Vec<String>, separator: String) -> String {
+    items.join(separator.as_str()) }
+// formal-ai:workaround-prelude end
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -58,9 +69,14 @@
 // formal-ai:refusal optional chaining
 // formal-ai:blockers arrow callback of .find() | call of a sibling function | field access | method call .find() | null | nullish coalescing | optional chaining
 
-// meta-language:carried JavaScript lexical_declaration (unsupported)
-// formal-ai:refusal method call .split()
-// formal-ai:blockers arrow function | method call .join() | method call .split()
+// formal-ai:workaround string-methods JavaScript lexical_declaration items=1 sha256=f4ef0e4b5a63c97b00c8db77a68055413812986b3af5304063a8b60165db73a4
+// | /** @param {string} text @param {string} from @param {string} to */
+// | const replaceText = (text, from, to) => text.split(from).join(to);
+// ~ /** @param {string} text @param {string} from @param {string} to */
+// ~ const replaceText = (text, from, to) => waStrsJoin(waStrSplit(text, from), to);
+pub fn replace_text(text: String, from: String, to: String) -> String {
+    crate::wa_strs_join(crate::wa_str_split(text.clone(), from.clone()), to.clone())
+}
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
@@ -112,7 +128,7 @@
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal null
-// formal-ai:blockers call of a sibling function | call of an imported function | field access | null | object without a $ tag
+// formal-ai:blockers call of an imported function | field access | null | object without a $ tag
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal regular expression
@@ -120,7 +136,7 @@
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .codePointAt()
-// formal-ai:blockers call of a sibling function | method call .codePointAt() | method call .padStart()
+// formal-ai:blockers method call .codePointAt() | method call .padStart()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .filter()

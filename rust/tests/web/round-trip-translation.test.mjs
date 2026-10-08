@@ -34,6 +34,13 @@ describe('choosing the surface that survives the round trip', () => {
     assert.equal(text.resolveSurface(best, 'ru'), statement.subject.id);
   });
 
+  test('the round trip chooses among offered surfaces', () => {
+    assert.equal(roundTrip.roundTripChoice('fix', 'en', 'ru', ['добавь', 'исправить']), 1);
+    assert.equal(roundTrip.roundTripChoice('fix', 'en', 'ru', ['добавь']), null);
+    assert.equal(roundTrip.roundTripChoice('blarg', 'en', 'ru', ['бларг']), null);
+    assert.equal(roundTrip.roundTripChoice('hello', 'en', 'ru', ['привет', 'здравствуйте']), 0);
+  });
+
   test('a word crosses to every language and comes back as itself', () => {
     const expected = { ru: 'яблоко', hi: 'सेब', zh: '苹果', es: 'manzana' };
     for (const [target, surface] of Object.entries(expected)) {

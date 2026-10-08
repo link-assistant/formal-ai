@@ -87,15 +87,28 @@ fn indentation(line: &str) -> usize {
     line.bytes().take_while(|byte| *byte == b' ').count()
 }
 
+/// A `#` line, whatever its indentation.
+fn is_comment(line: &str) -> bool {
+    line.trim_start().starts_with('#')
+}
+
 fn parse_meanings(source: &str, text: &str) -> Result<Vec<MeaningRecord>, String> {
-    if text.lines().find(|line| !line.trim().is_empty()) != Some("meanings") {
+    // The root is the first line that is neither blank nor a comment, so a
+    // file may open with a comment header.
+    let Some(root) = text
+        .lines()
+        .position(|line| !line.trim().is_empty() && !is_comment(line))
+    else {
+        return Ok(Vec::new());
+    };
+    if text.lines().nth(root) != Some("meanings") {
         return Ok(Vec::new());
     }
 
     let mut records = Vec::new();
     let mut current: Option<MeaningRecord> = None;
-    for (index, line) in text.lines().enumerate().skip(1) {
-        if line.trim().is_empty() || line.trim_start().starts_with('#') {
+    for (index, line) in text.lines().enumerate().skip(root + 1) {
+        if line.trim().is_empty() || is_comment(line) {
             continue;
         }
         match indentation(line) {
@@ -416,6 +429,17 @@ mod tests {
         assert_eq!(records.len(), 1);
         assert_eq!(records[0].fields.len(), 6);
         assert!(records[0].fields.contains("role"));
+    }
+
+    #[test]
+    fn a_comment_header_comes_before_the_meanings_root() {
+        let records = parse_meanings(
+            "data/seed/coding.lino",
+            "# The coding loop.\n# Moved out of coding.lino.\nmeanings\n  coding_loop\n    role coding_control\n",
+        )
+        .expect("meaning records");
+        assert_eq!(records.len(), 1);
+        assert_eq!(records[0].name, "coding_loop");
     }
 
     #[test]

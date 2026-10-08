@@ -25,15 +25,18 @@ const REGEX_AFTER = new Set(['(', ',', '=', ':', '[', '!', '&', '|', '?', '{', '
 const REGEX_AFTER_WORDS = new Set(['return', 'typeof', 'case', 'do', 'else', 'in', 'of', 'new', 'delete', 'void', 'throw', 'yield', 'await']);
 
 /**
- * Tokens of a JavaScript source: `{ kind, value }` with kind `word`, `number`,
- * `string`, `template`, `regex`, `punct` or `comment`. A template's
- * substitutions are tokenized too and follow it, between `${` and `}` puncts.
+ * Tokens of a JavaScript source: `{ kind, value, start, end }` with kind
+ * `word`, `number`, `string`, `template`, `regex`, `punct` or `comment`, and
+ * the offsets of its text. A template's substitutions are tokenized too and
+ * follow it, between `${` and `}` puncts.
  * @param {string} source
- * @returns {{ kind: string, value: string }[]}
+ * @param {number} offset added to every offset (a substitution's place in its template)
+ * @returns {{ kind: string, value: string, start: number, end: number }[]}
  */
-export function tokenize(source) {
+export function tokenize(source, offset = 0) {
   const tokens = [];
   let index = 0;
+  const push = (kind, value) => tokens.push({ kind, value, start: offset + index, end: offset + index + value.length });
   const significant = () => {
     for (let at = tokens.length - 1; at >= 0; at -= 1) if (tokens[at].kind !== 'comment') return tokens[at];
     return null;
@@ -45,27 +48,27 @@ export function tokenize(source) {
     } else if (source.startsWith('//', index)) {
       const end = source.indexOf('\n', index);
       const stop = end < 0 ? source.length : end;
-      tokens.push({ kind: 'comment', value: source.slice(index, stop) });
+      push('comment', source.slice(index, stop));
       index = stop;
     } else if (source.startsWith('/*', index)) {
       const end = source.indexOf('*/', index + 2);
       const stop = end < 0 ? source.length : end + 2;
-      tokens.push({ kind: 'comment', value: source.slice(index, stop) });
+      push('comment', source.slice(index, stop));
       index = stop;
     } else if (char === '"' || char === "'") {
       let at = index + 1;
       while (at < source.length && source[at] !== char && source[at] !== '\n') at += source[at] === '\\' ? 2 : 1;
-      tokens.push({ kind: 'string', value: source.slice(index, at + 1) });
+      push('string', source.slice(index, at + 1));
       index = at + 1;
     } else if (char === '`') {
-      index = template(source, index, tokens);
+      index = template(source, index, tokens, offset);
     } else if (/[A-Za-z_$\\]/u.test(char) || char.codePointAt(0) > 0x7f) {
       const match = /^[\w$\\\u0080-￿]+/u.exec(source.slice(index));
-      tokens.push({ kind: 'word', value: match[0] });
+      push('word', match[0]);
       index += match[0].length;
     } else if (/\d/u.test(char) || (char === '.' && /\d/u.test(source[index + 1] ?? ''))) {
       const match = /^(?:0[xXbBoO][\da-fA-F_]+|[\d_]*\.?[\d_]*(?:[eE][+-]?\d+)?)n?/u.exec(source.slice(index));
-      tokens.push({ kind: 'number', value: match[0] });
+      push('number', match[0]);
       index += Math.max(1, match[0].length);
     } else if (char === '/' && regexStarts(significant())) {
       let at = index + 1;
@@ -78,11 +81,11 @@ export function tokenize(source) {
       }
       at += 1;
       while (/[a-z]/u.test(source[at] ?? '')) at += 1;
-      tokens.push({ kind: 'regex', value: source.slice(index, at) });
+      push('regex', source.slice(index, at));
       index = at;
     } else {
       const punct = PUNCTUATORS.find((candidate) => source.startsWith(candidate, index)) ?? char;
-      tokens.push({ kind: 'punct', value: punct });
+      push('punct', punct);
       index += punct.length;
     }
   }
@@ -96,7 +99,7 @@ function regexStarts(previous) {
 }
 
 // A template literal: its text is one token; each substitution's tokens follow it.
-function template(source, start, tokens) {
+function template(source, start, tokens, offset) {
   let at = start + 1;
   const substitutions = [];
   while (at < source.length && source[at] !== '`') {
@@ -118,14 +121,18 @@ function template(source, start, tokens) {
         }
         end += 1;
       }
-      substitutions.push(source.slice(at + 2, end - 1));
+      substitutions.push({ text: source.slice(at + 2, end - 1), at: at + 2 });
       at = end;
     } else {
       at += 1;
     }
   }
-  tokens.push({ kind: 'template', value: source.slice(start, at + 1) });
-  for (const inner of substitutions) tokens.push({ kind: 'punct', value: '${' }, ...tokenize(inner), { kind: 'punct', value: '}' });
+  tokens.push({ kind: 'template', value: source.slice(start, at + 1), start: offset + start, end: offset + at + 1 });
+  for (const inner of substitutions) {
+    const close = offset + inner.at + inner.text.length;
+    tokens.push({ kind: 'punct', value: '${', start: offset + inner.at - 2, end: offset + inner.at },
+      ...tokenize(inner.text, offset + inner.at), { kind: 'punct', value: '}', start: close, end: close + 1 });
+  }
   return at + 1;
 }
 

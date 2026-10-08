@@ -210,6 +210,7 @@ mod minimal_core_and_seed_metadata;
 mod multilingual_variations;
 mod offline_replay;
 mod overrides;
+mod page_formalization_route;
 mod playwright_script;
 mod proactive_failure_reports;
 mod process_composition;

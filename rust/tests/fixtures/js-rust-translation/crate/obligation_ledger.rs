@@ -1,10 +1,24 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=decf7d24ec67954d34cafa8c04fc0a6ff71821610c0a7e8ff8d254dc040cdb5a bytes=12917
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=0182013be33d8105a412732f921fb06e5eab817e40fbda3464311d9ae386aed3 bytes=12950
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=5
+// formal-ai:workarounds import-pruning items=0 carried=5; string-methods items=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// formal-ai:workaround-prelude begin
+pub fn wa_str_code_point_at(text: String, index: f64) -> f64 {
+    let units: Vec<u16> = text.encode_utf16().collect();
+    let at = if index.is_nan() { 0.0 } else { index.trunc() };
+    if at < 0.0 || at >= units.len() as f64 { return f64::NAN; }
+    let first = units[at as usize];
+    match units.get(at as usize + 1) {
+        Some(&second) if (0xD800..0xDC00).contains(&first) && (0xDC00..0xE000).contains(&second) => {
+            f64::from(((u32::from(first) - 0xD800) << 10) + (u32::from(second) - 0xDC00) + 0x10000)
+        }
+        _ => f64::from(first),
+    } }
+// formal-ai:workaround-prelude end
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -62,13 +76,29 @@
 // formal-ai:refusal method call .slice()
 // formal-ai:blockers arrow callback of .some() | arrow function | call of an imported function | method call .slice() | method call .some()
 
-// meta-language:carried JavaScript function_declaration (unsupported)
-// formal-ai:refusal method call .codePointAt()
-// formal-ai:blockers method call .codePointAt()
+// formal-ai:workaround string-methods JavaScript function_declaration items=1 sha256=cd8d2182f8251431a65d5c3ce97284f87d05c9cd05b56e527db0e89ac2e48c8b
+// | /** @param {string} character */
+// | function isUnspacedScript(character) {
+// |   const cp = character.codePointAt(0);
+// |   return (cp >= 0x3040 && cp <= 0x30ff) || (cp >= 0x3400 && cp <= 0x4dbf) || (cp >= 0x4e00 && cp <= 0x9fff)
+// |     || (cp >= 0xac00 && cp <= 0xd7af) || (cp >= 0xf900 && cp <= 0xfaff);
+// | }
+// ~ /** @param {string} character */
+// ~ function isUnspacedScript(character) {
+// ~   const cp = waStrCodePointAt(character, 0);
+// ~   return (cp >= 0x3040 && cp <= 0x30ff) || (cp >= 0x3400 && cp <= 0x4dbf) || (cp >= 0x4e00 && cp <= 0x9fff)
+// ~     || (cp >= 0xac00 && cp <= 0xd7af) || (cp >= 0xf900 && cp <= 0xfaff);
+// ~ }
+pub fn is_unspaced_script(character: String) -> bool {
+    {
+        let cp = crate::wa_str_code_point_at(character.clone(), 0f64);
+        ((((((cp >= (12352f64)) && (cp <= (12543f64))) || ((cp >= (13312f64)) && (cp <= (19903f64)))) || ((cp >= (19968f64)) && (cp <= (40959f64)))) || ((cp >= (44032f64)) && (cp <= (55215f64)))) || ((cp >= (63744f64)) && (cp <= (64255f64))))
+    }
+}
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal Array.from
-// formal-ai:blockers Array.from | call of an imported function | method call .slice() | method call .some() | sibling value | undefined
+// formal-ai:blockers Array.from | call of an imported function | method call .slice() | method call .some() | undefined
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function

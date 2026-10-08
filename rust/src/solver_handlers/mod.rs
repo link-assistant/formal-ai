@@ -92,7 +92,8 @@ pub use web_requests::{
     detect_web_search_query, http_fetch_claims, repository_slug_candidates,
     try_explicit_repository_lookup, try_http_fetch, try_http_fetch_with_offline,
     try_project_lookup, try_project_lookup_with_response_language,
-    try_routed_http_fetch_with_offline, try_url_navigate, try_web_search,
+    try_page_formalization_with_client, try_routed_http_fetch_with_offline, try_url_navigate,
+    try_web_search,
     try_web_search_with_client, try_web_search_with_offline, url_navigation_claims,
 };
 pub use word_definition::{
@@ -537,7 +538,7 @@ pub fn try_translation(
         crate::solver_helpers::translate_surface_detailed(&surface, source_slug, target_slug);
 
     let (target_surface, meaning_id, translation_gap) = if let Ok(translation) = pipeline_result {
-        let target_surface = translation.primary_surface().map(str::to_owned);
+        let target_surface = translation.round_trip_surface().map(str::to_owned);
         let gap = target_surface.is_none();
         // A seed meaning stands in only where Wikidata has nothing to say and
         // the caller asked for links; otherwise the pipeline's own id is the id.

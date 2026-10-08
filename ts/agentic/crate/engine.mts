@@ -4,7 +4,7 @@ import { cached, readText } from '../host.mjs';
 
 const ALPHANUMERIC = /[\p{Alphabetic}\p{N}]/u;
 
-/** Mirrors `const fn is_script_combining_mark` in rust/src/engine.rs. */
+/** Mirrors `const fn is_script_combining_mark` in rust/src/engine.rs. @param {string} character */
 function isScriptCombiningMark(character) {
   const code = character.codePointAt(0);
   return (code >= 0x0300 && code <= 0x036f)

@@ -76,26 +76,78 @@ pub struct RoundTrip {
     pub survives: bool,
 }
 
+/// How well `candidate`, a surface in `target`, carries `meaning`, read from
+/// `surface` in `source`, through the round trip.
+///
+/// Two points when the candidate is read back as the same meaning (meaning
+/// identity), one more when that meaning returns to `source` as `surface`
+/// again (surface identity).
+#[must_use]
+pub fn round_trip_score(
+    candidate: &str,
+    meaning: &str,
+    surface: &str,
+    source: &str,
+    target: &str,
+) -> usize {
+    let back = resolve_surface(candidate, target);
+    let returned = back
+        .as_deref()
+        .and_then(|slug| return_surface(slug, source));
+    let same_meaning = back.as_deref() == Some(meaning);
+    let same_surface =
+        returned.is_some_and(|returned| returned.to_lowercase() == surface.to_lowercase());
+    2 * usize::from(same_meaning) + usize::from(same_surface)
+}
+
+/// The index and score of the candidate that survives the round trip best,
+/// the first one on a tie.
+fn best_candidate<S: AsRef<str>>(
+    candidates: &[S],
+    meaning: &str,
+    surface: &str,
+    source: &str,
+    target: &str,
+) -> Option<(usize, usize)> {
+    let mut best: Option<(usize, usize)> = None;
+    for (index, candidate) in candidates.iter().enumerate() {
+        let score = round_trip_score(candidate.as_ref(), meaning, surface, source, target);
+        if best.is_none_or(|(_, held)| score > held) {
+            best = Some((index, score));
+        }
+    }
+    best
+}
+
 /// The target surface of a meaning term whose round trip survives best.
 ///
 /// `None` when the meaning has no surface in `target`.
 #[must_use]
 pub fn best_surface(term: &Word, source: &str, target: &str) -> Option<String> {
-    let mut best: Option<(String, usize)> = None;
-    for candidate in surfaces_in(&term.id, target) {
-        let back = resolve_surface(&candidate, target);
-        let returned = back
-            .as_deref()
-            .and_then(|slug| return_surface(slug, source));
-        let same_meaning = back.as_deref() == Some(term.id.as_str());
-        let same_surface =
-            returned.is_some_and(|surface| surface.to_lowercase() == term.surface.to_lowercase());
-        let score = 2 * usize::from(same_meaning) + usize::from(same_surface);
-        if best.as_ref().is_none_or(|(_, held)| score > *held) {
-            best = Some((candidate, score));
-        }
-    }
-    best.map(|(surface, _)| surface)
+    let mut candidates = surfaces_in(&term.id, target);
+    let (index, _) = best_candidate(&candidates, &term.id, &term.surface, source, target)?;
+    Some(candidates.swap_remove(index))
+}
+
+/// Which of several `candidates`, surfaces in `target` offered for `surface`
+/// in `source`, survives the round trip best: the index of the highest
+/// [`round_trip_score`], the first one on a tie.
+///
+/// `None` when `surface` is read as no meaning in `source`, or when no
+/// candidate comes back as its meaning or as `surface`; the caller then keeps
+/// its own choice. The chat translation route uses it wherever it picks among
+/// several surfaces (R1188-U19).
+#[must_use]
+pub fn round_trip_choice<S: AsRef<str>>(
+    surface: &str,
+    source: &str,
+    target: &str,
+    candidates: &[S],
+) -> Option<usize> {
+    let meaning = resolve_surface(surface, source)?;
+    best_candidate(candidates, &meaning, surface, source, target)
+        .filter(|(_, score)| *score > 0)
+        .map(|(index, _)| index)
 }
 
 /// One term in `target`.

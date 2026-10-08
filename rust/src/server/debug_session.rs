@@ -322,6 +322,9 @@ impl DebugSession {
     /// advanced (the turn is then running and the solve proceeds) or the turn
     /// is released; `None` when stepping is off. [`Self::resume`] continues
     /// the turn with the solved stages. Mirrors `begin`.
+    // The guard moves into `hold` through the closure, which clippy reads as
+    // a temporary that outlives its last use.
+    #[allow(clippy::significant_drop_tightening)]
     pub fn begin(&self, first: &ThinkingStep, alive: &mut dyn FnMut() -> bool) -> Option<String> {
         let mut state = self.lock();
         if !state.stepping {

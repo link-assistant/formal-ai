@@ -1,10 +1,31 @@
 // meta-language:self-translation:v1 source=JavaScript target=Rust sha256=9d4ce1a89f1d7c8c352a185f3603e3fc22dbb8ab9bc82b5ee78075c7bc125790 bytes=25827
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=3
+// formal-ai:workarounds import-pruning items=0 carried=3; string-methods items=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// formal-ai:workaround-prelude begin
+pub fn wa_str_last_index_of(text: String, search: String) -> f64 {
+    let units: Vec<u16> = text.encode_utf16().collect();
+    let needle: Vec<u16> = search.encode_utf16().collect();
+    if needle.is_empty() { return units.len() as f64; }
+    if needle.len() > units.len() { return -1.0; }
+    units.windows(needle.len()).rposition(|window| window == needle.as_slice()).map_or(-1.0, |at| at as f64) }
+
+pub fn wa_index(index: f64, len: usize) -> usize {
+    let whole = if index.is_nan() { 0.0 } else { index.trunc() };
+    (if whole < 0.0 { (len as f64 + whole).max(0.0) } else { whole.min(len as f64) }) as usize }
+
+pub fn wa_str_slice(text: String, start: f64, end: f64) -> String {
+    let units: Vec<u16> = text.encode_utf16().collect();
+    let (from, to) = (wa_index(start, units.len()), wa_index(end, units.len()));
+    if from >= to { String::new() } else { String::from_utf16_lossy(&units[from..to]) } }
+
+pub fn wa_str_slice_from(text: String, start: f64) -> String {
+    wa_str_slice(text, start, f64::INFINITY) }
+// formal-ai:workaround-prelude end
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -153,9 +174,37 @@ pub const MAX_PLAIN_TEXT_STATEMENTS: f64 = 256f64;
 // formal-ai:refusal method call .split()
 // formal-ai:blockers arrow callback of .filter() | method call .filter() | method call .split() | null | undefined
 
-// meta-language:carried JavaScript function_declaration (unsupported)
-// formal-ai:refusal method call .lastIndexOf()
-// formal-ai:blockers method call .lastIndexOf() | method call .slice()
+// formal-ai:workaround string-methods JavaScript function_declaration items=1 sha256=a6e021ad7656ee5e4578f777b5d22fda3253c6dc9f845211d8ea027400fdc363
+// | /**
+// |  * `Path::extension` of a file name: the text after the last `.`, absent when
+// |  * there is no `.` or the only one starts the name (`.bashrc`).
+// |  * @param {string} fileName
+// |  */
+// | function pathExtension(fileName) {
+// |   const at = fileName.lastIndexOf('.');
+// |   if (at <= 0) return '';
+// |   return fileName.slice(at + 1);
+// | }
+// ~ /**
+// ~  * `Path::extension` of a file name: the text after the last `.`, absent when
+// ~  * there is no `.` or the only one starts the name (`.bashrc`).
+// ~  * @param {string} fileName
+// ~  */
+// ~ function pathExtension(fileName) {
+// ~   const at = waStrLastIndexOf(fileName, '.');
+// ~   if (at <= 0) return '';
+// ~   return waStrSliceFrom(fileName, at + 1);
+// ~ }
+pub fn path_extension(file_name: String) -> String {
+    {
+        let at = crate::wa_str_last_index_of(file_name.clone(), String::from("."));
+        if (at <= (0f64)) {
+            String::from("")
+        } else {
+            crate::wa_str_slice_from(file_name.clone(), (at + 1f64))
+        }
+    }
+}
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .replace()

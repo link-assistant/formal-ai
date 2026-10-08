@@ -93,6 +93,7 @@ export function setTraceField(trace, name, value) {
   else trace.fields.push([name, value]);
 }
 
+/** @param {string} value */
 function quote(value) {
   return value.split('"').join('""');
 }

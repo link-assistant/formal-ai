@@ -24,6 +24,9 @@ import {
   translationClosure,
 } from '../../../scripts/lib/translation-workarounds.mjs';
 import { itemBlockers, moduleContext, portableType, unlockOrder } from '../../../scripts/lib/translation-blockers.mjs';
+import {
+  lowerCallback, lowerItem, lowerLength, lowerMethod, lowerPush, lowerStringLoop, readStubs, rustName, stubPrelude,
+} from '../../../scripts/lib/translation-lowering.mjs';
 
 const REPOSITORY = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 const read = (path) => readFileSync(join(REPOSITORY, path), 'utf8');
@@ -32,11 +35,11 @@ const records = readWorkarounds(read(WORKAROUNDS_FILE));
 const projections = scopeModules(REPOSITORY).map((path) => ({ path, file: projectionPath(path), text: read(projectionPath(path)) }));
 
 test('every workaround is recorded with the refusal it lifts, its upstream issue, its scope and how it works', () => {
-  assert.deepEqual(records.map((record) => record.name), ['import-pruning', 'crate-assembly']);
+  assert.deepEqual(records.map((record) => record.name), ['import-pruning', 'crate-assembly', 'string-methods', 'array-push', 'callback-loops']);
   for (const record of records) {
     assert.ok(record.lifts && record.how, `${record.name} names what it lifts and how`);
     assert.match(record.upstream, /^https:\/\/github\.com\/link-foundation\/(?:meta-language|relative-meta-logic)\/issues\/\d+$/u, `${record.name} names the upstream issue that retires it`);
-    assert.ok(['projection', 'compile'].includes(record.scope), `${record.name} acts on the projection or the compile check`);
+    assert.ok(['projection', 'compile', 'lowering'].includes(record.scope), `${record.name} acts on the projection, the compile check or the source before translation`);
   }
 });
 
@@ -46,12 +49,14 @@ test('the projections apply only recorded workarounds, and every projection-scop
   for (const { file, text } of projections) {
     const read = readProjection(text);
     assert.equal(read.applied, read.expectedApplied, `${file}: the header names the workarounds its blocks hold`);
-    for (const [, rule] of text.matchAll(/^\/\/ formal-ai:workaround (\S+) /gmu)) {
-      assert.ok(recorded.has(rule), `${file} applies the unrecorded workaround ${rule}`);
-      used.add(rule);
+    for (const [, rules] of text.matchAll(/^\/\/ formal-ai:workaround (\S+) /gmu)) {
+      for (const rule of rules.split('+')) {
+        assert.ok(recorded.has(rule), `${file} applies the unrecorded workaround ${rule}`);
+        used.add(rule);
+      }
     }
   }
-  for (const record of records.filter((entry) => entry.scope === 'projection')) {
+  for (const record of records.filter((entry) => entry.scope !== 'compile')) {
     assert.ok(used.has(record.name), `${record.name} is recorded but no projection applies it; retire the record`);
   }
 });
@@ -60,24 +65,32 @@ test('the ledger counts workaround items apart from the items meta-language tran
   const ledger = parseLedger(read(LEDGER_FILE));
   let upstream = 0;
   let workaround = 0;
+  const rules = new Map();
   for (const { text } of projections) {
     upstream += (text.match(/^\/\/ meta-language:translated /gmu) ?? []).length;
-    workaround += (text.match(/^\/\/ formal-ai:workaround \S+ (?!carried )/gmu) ?? []).length;
+    for (const [, joined] of text.matchAll(/^\/\/ formal-ai:workaround (\S+) (?!carried )/gmu)) {
+      workaround += 1;
+      // An item several rules lowered counts once in the total and once under each rule.
+      for (const rule of joined.split('+')) rules.set(rule, (rules.get(rule) ?? 0) + 1);
+    }
   }
   assert.equal(ledger.totals.translated_items, upstream);
   assert.equal(ledger.totals.workaround_items, workaround);
-  assert.equal(ledger.workarounds.reduce((sum, row) => sum + row.count, 0), workaround);
+  assert.deepEqual(ledger.workarounds.map((row) => [row.rule, row.count]), [...rules].sort());
 });
 
 test('every recorded workaround is covered by a call of calls.lino', () => {
   const calls = parseCalls(read(CALLS_FILE));
-  const holding = (rule) => projections.filter(({ text }) => text.includes(`// formal-ai:workaround ${rule} `));
+  const marks = (rule) => new RegExp(`^// formal-ai:workaround (?:\\S+\\+)?${rule}(?:\\+\\S+)? `, 'mu');
+  const holding = (rule) => projections.filter(({ text }) => marks(rule).test(text));
   for (const record of records) {
     const covered = record.scope === 'compile'
       // The compile check assembles every root as one crate, so every call runs through it.
       ? calls.length > 0
+      // A call of a function in a module the workaround translated in, or of one its Rust names (a pruned `use`).
       : calls.some((call) => holding(record.name).some(({ path, text }) => path === call.module
-        || new RegExp(`^// formal-ai:workaround ${record.name} [^\\n]*\\n(?:// \\|[^\\n]*\\n)*[^\\n]*\\b${call.rust}\\b`, 'mu').test(text)));
+        || upstreamBlocks(text).blocks.some((block) => block.kind === 'workaround' && block.rule.split('+').includes(record.name)
+          && new RegExp(`\\b${call.rust}\\b`, 'u').test(block.text.split('\n').filter((line) => !line.startsWith('//')).join('\n')))));
     assert.ok(covered, `${record.name}: no call of ${CALLS_FILE} runs through Rust it wrote`);
   }
 });
@@ -199,4 +212,40 @@ test('the committed blocker table is the scan of the carried items the projectio
   const ledger = parseLedger(read(LEDGER_FILE));
   assert.equal(Number(/^ {2}carried_items (\d+)$/mu.exec(table)?.[1]), ledger.totals.carried_items);
   assert.match(table, /^unlock 1 "/mu);
+});
+
+const stubs = readStubs(read(WORKAROUNDS_FILE));
+
+test('every stub is typed JavaScript that meta-language names as its recorded Rust signature says', () => {
+  assert.ok(stubs.length >= 20);
+  for (const stub of stubs) {
+    assert.ok(stub.rust.length >= 2 && stub.rust.at(-1).endsWith(" }"), `${stub.name} records its Rust, closed on its last line`);
+    assert.ok(stub.rust[0].startsWith(`pub fn ${rustName(stub.name)}(`), `${stub.name}: ${stub.rust[0]}`);
+    if (stub.javascript) assert.match(stub.javascript, new RegExp(`^/\\*\\* (?:@param \\{[^}]+\\} \\w+ )+@returns \\{[^}]+\\} \\*/ function ${stub.name}\\(`, 'u'));
+    for (const need of stub.needs) assert.ok(stubs.some((entry) => entry.name === need), `${stub.name} needs ${need}`);
+  }
+  // A helper comes before the stub that needs it, once.
+  const prelude = stubPrelude(['waStrSliceFrom', 'waStrSlice'], stubs);
+  assert.deepEqual(prelude.map((text) => text.split('(')[0]), ['pub fn wa_index', 'pub fn wa_str_slice', 'pub fn wa_str_slice_from']);
+});
+
+test('the lowering rules rewrite method calls, pushes, callbacks, string lengths and string loops', () => {
+  assert.equal(lowerMethod('return text.slice(1, -1).indexOf(x);', stubs).text, 'return waStrSlice(text, 1, -1).indexOf(x);');
+  assert.equal(lowerMethod('return words.join(", ");', stubs).text, 'return waStrsJoin(words, ", ");');
+  assert.equal(lowerMethod('return items.slice(1);', stubs, new Map([['slice', 'strings']])).text, 'return waStrsSliceFrom(items, 1);');
+  assert.equal(lowerMethod('return `${a.b.replaceAll("x", "y")}!`;', stubs).text, 'return `${waStrReplaceAll(a.b, "x", "y")}!`;');
+  // A regular-expression pattern or a `$` replacement is not a string replacement.
+  assert.equal(lowerMethod('return text.replace(/x/g, "y");', stubs), null);
+  assert.equal(lowerMethod('return text.replaceAll("x", "$&");', stubs), null);
+  assert.equal(lowerPush('const out = [];\nfor (const x of xs) out.push(x, 1);\nreturn out;'), 'let out = [];\nfor (const x of xs) out = [...out, x, 1];\nreturn out;');
+  assert.equal(lowerPush('function f(xs) { xs.push(1); return xs; }'), null, 'a parameter is not pushed onto: the caller would not see it');
+  assert.equal(lowerCallback('  const ys = xs.map((x) => x + 1);\n  return ys;'), '  let ys = [];\n  for (const x of xs) {\n    ys = [...ys, x + 1];\n  }\n  return ys;');
+  assert.equal(lowerCallback('return parts.some((part) => part === "..");', 2),
+    'let waResult2 = false;\nfor (const part of parts) {\n  if (part === "..") {\n    waResult2 = true;\n    break;\n  }\n}\nreturn waResult2;');
+  assert.equal(lowerCallback('return xs.map((x) => { return x; });'), null, 'a block body is left alone');
+  assert.equal(lowerLength('return a.b.length >= 2;', { start: 9, end: 15 }), 'return waStrLength(a.b) >= 2;');
+  assert.equal(lowerStringLoop('for (const c of text) n += 1;', { start: 0, end: 5 }), 'for (const c of waStrChars(text)) n += 1;');
+  const lowered = lowerItem('const out = [];\nout.push(s.slice(1));\nreturn out;', stubs);
+  assert.deepEqual([...lowered.rules].sort(), ['array-push', 'string-methods']);
+  assert.equal(lowered.text, 'let out = [];\nout = [...out, waStrSliceFrom(s, 1)];\nreturn out;');
 });

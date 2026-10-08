@@ -1402,3 +1402,43 @@ meanings
     unit "not applicable"
     example "Refused to change `f.txt`: the computed result would drop most of the file."
     grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  page_formalization_summary
+    defined-by answer
+    role localized_response_template
+    precondition "a page asked to be formalized was fetched and read into statements"
+    effect "the answer states the page counts before the statements"
+    unit "sentences"
+    example "Formalized `https://example.org`: 4 sentences became 9 statements."
+    grounding "data/seed/multilingual-responses-web.lino"
+  page_formalization_more
+    defined-by answer
+    role localized_response_template
+    precondition "a formalized page holds more statements than the answer lists"
+    effect "the answer says how many statements were left out"
+    unit "statements"
+    example "… and 12 more statements."
+    grounding "data/seed/multilingual-responses-web.lino"
+  page_formalization_empty
+    defined-by answer
+    role localized_response_template
+    precondition "a page asked to be formalized was fetched but holds no sentence"
+    effect "the answer says the page held nothing to formalize"
+    unit "not applicable"
+    example "`https://example.org` was fetched, but it holds no sentence I could formalize."
+    grounding "data/seed/multilingual-responses-web.lino"
+  page_formalization_offline
+    defined-by answer
+    role localized_response_template
+    precondition "a page asked to be formalized is not cached and live fetching is off"
+    effect "the answer says nothing was fetched and why"
+    unit "not applicable"
+    example "I cannot formalize `https://example.org`: the page is not in the source cache."
+    grounding "data/seed/multilingual-responses-web.lino"
+  page_formalization_fetch_failed
+    defined-by answer
+    role localized_response_template
+    precondition "fetching a page asked to be formalized failed"
+    effect "the answer names the URL and the failure"
+    unit "not applicable"
+    example "I could not fetch `https://example.org` to formalize it: network error."
+    grounding "data/seed/multilingual-responses-web.lino"

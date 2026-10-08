@@ -25,8 +25,8 @@ export function parseSourceRoot(name) {
   }
 }
 
-/** Mirrors `fn escapes_root`. */
-function escapesRoot(repoRelative) {
+/** Mirrors `fn escapes_root`. @param {string} repoRelative */
+export function escapesRoot(repoRelative) {
   return repoRelative.split('/').some((segment) => segment === '..');
 }
 

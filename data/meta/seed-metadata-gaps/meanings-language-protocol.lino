@@ -1,0 +1,31 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-language-protocol.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "role,precondition,effect,unit,example"
+  gap seed-metadata-gap-bbcb1245a710c33b
+    record "es"
+  gap seed-metadata-gap-8150fb895e7c69c8
+    record "explicit_gap"
+  gap seed-metadata-gap-e2c9e46fa30e752a
+    record "explicit_language_context"
+  gap seed-metadata-gap-12f8f461a9635916
+    record "full"
+  gap seed-metadata-gap-bd4ab6220d8cca72
+    record "language_gap"
+  gap seed-metadata-gap-5d3b40efd4b63f88
+    record "partial"
+  gap seed-metadata-gap-211cdd1cac61c2db
+    record "response_greeting_es"
+  gap seed-metadata-gap-a45727ae0e36dee8
+    record "response_identity_es"
+  gap seed-metadata-gap-ee6c3f2ca6f9cbe2
+    record "response_language_gap_en"
+  gap seed-metadata-gap-ee6c342ca6f9b931
+    record "response_language_gap_es"
+  gap seed-metadata-gap-ee62462ca6f18342
+    record "response_language_gap_hi"
+  gap seed-metadata-gap-eebb362ca73d90e8
+    record "response_language_gap_ru"
+  gap seed-metadata-gap-ee9f432ca7252c47
+    record "response_language_gap_zh"

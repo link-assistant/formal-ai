@@ -55,6 +55,8 @@ pub struct CoreSummary {
     pub statements: Vec<Node>,
     /// How many statements restated an earlier one.
     pub duplicates: usize,
+    /// The statements that restated an earlier one, in text order.
+    pub removed: Vec<Entry>,
     /// The indexes of the kept statements, in text order.
     pub kept: Vec<usize>,
     /// The kept statements in the text's own words.
@@ -104,23 +106,31 @@ pub fn restates(later: &Statement, earlier: &Statement) -> bool {
     !ids.is_empty() && later.polarity == earlier.polarity && ids.iter().all(|id| held.contains(id))
 }
 
-/// The statements no earlier kept statement restates, and how many were
-/// dropped.
+/// The statements no earlier kept statement restates, and the ones that
+/// restate one (the duplicates removed), each in text order.
 #[must_use]
-pub fn without_duplicates(entries: Vec<Entry>) -> (Vec<Entry>, usize) {
+pub fn split_duplicates(entries: Vec<Entry>) -> (Vec<Entry>, Vec<Entry>) {
     let mut unique: Vec<Entry> = Vec::new();
-    let mut duplicates = 0;
+    let mut removed = Vec::new();
     for entry in entries {
         if unique
             .iter()
             .any(|earlier| restates(&entry.statement, &earlier.statement))
         {
-            duplicates += 1;
+            removed.push(entry);
             continue;
         }
         unique.push(entry);
     }
-    (unique, duplicates)
+    (unique, removed)
+}
+
+/// The statements no earlier kept statement restates, and how many were
+/// dropped.
+#[must_use]
+pub fn without_duplicates(entries: Vec<Entry>) -> (Vec<Entry>, usize) {
+    let (unique, removed) = split_duplicates(entries);
+    (unique, removed.len())
 }
 
 /// How many distinct term ids two statements share.
@@ -234,13 +244,14 @@ pub fn render_kept(nodes: &[Node], kept: &[usize]) -> String {
 /// The kept core of `text` and its rendering in the text's own words.
 #[must_use]
 pub fn summarize_by_dependency(text: &str, language: &str) -> CoreSummary {
-    let (unique, duplicates) = without_duplicates(sentence_statements(text, language));
+    let (unique, removed) = split_duplicates(sentence_statements(text, language));
     let statements = statement_graph(unique);
     let kept = kept_core(&statements);
     let text = render_kept(&statements, &kept);
     CoreSummary {
         statements,
-        duplicates,
+        duplicates: removed.len(),
+        removed,
         kept,
         text,
     }

@@ -138,7 +138,7 @@ function decapitalize(value) {
   return characters[0].toLowerCase() + characters.slice(1).join('');
 }
 
-/** Mirrors `fn quote` in rust/src/change_request.rs (and rebuild_plan.rs). */
+/** Mirrors `fn quote` in rust/src/change_request.rs (and rebuild_plan.rs). @param {string} value */
 export function quote(value) {
   return value.replaceAll('\\', '\\\\').replaceAll('"', "'").replaceAll('\n', '\\n').replaceAll('\r', '\\r').replaceAll('\t', '\\t');
 }

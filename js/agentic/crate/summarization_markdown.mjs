@@ -153,8 +153,8 @@ function consumeUntilUnbalanced(cursor, open, close) {
   return false;
 }
 
-/** Mirrors `fn strip_inline_code_and_html` in rust/src/summarization/markdown.rs. */
-function stripInlineCodeAndHtml(line) {
+/** Mirrors `fn strip_inline_code_and_html` in rust/src/summarization/markdown.rs. @param {string} line */
+export function stripInlineCodeAndHtml(line) {
   const out = [];
   let inHtmlTag = false;
   for (const character of line) {

@@ -51,8 +51,7 @@ fn documented_answer(id: &str) -> &'static str {
         }
         "e34_text_manipulation_chain" => "RULES NOTATION LINKS",
         "e1174_summarization_free_text" => {
-            "The Halley research station, opened in 1956, is used to study the Antarctic ice \
-                 shelf. It provides year-round measurements of ozone and sea temperature."
+            "The Halley research station opened in 1956 is used to study the Antarctic ice shelf."
         }
         "e1176_statistics_mean_median" => {
             "The values are 4, 8, 15, 16, 23, 42 (n = 6).\nmean: 18 (108 / 6 = 18)\nmedian: \

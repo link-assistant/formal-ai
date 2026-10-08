@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_seed_meanings.js"
+  ceiling 347
+  rationale "Written by scripts/generate-worker-crate-modules.mjs from js/agentic/crate/seed_meanings.mjs (R1188-U18, U19, U21, 2026-10-09): the browser worker is a classic script and cannot import the ES module, so the generator writes it, byte for byte with its imports and exports rewritten, as a factory that formal_ai_worker_crate_modules.js runs on first use; the browser runs the JavaScript root's own code instead of a second port, and check-worker-crate-modules holds the copy current. The ceiling is the module's own length plus its factory frame; it moves only with the crate module."

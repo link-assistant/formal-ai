@@ -38,7 +38,7 @@ function normalize(value) {
   return value.split(/\p{White_Space}+/u).filter(Boolean).join(' ').toLowerCase();
 }
 
-/** Mirrors `fn quote` in rust/src/client_contract_learning.rs. */
+/** Mirrors `fn quote` in rust/src/client_contract_learning.rs. @param {string} value */
 function quote(value) {
   return value.replaceAll('\\', '\\\\').replaceAll('"', "'").replaceAll('\n', '\\n').replaceAll('\r', '\\r');
 }

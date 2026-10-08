@@ -152,7 +152,7 @@ impl<T: HttpClient + ?Sized> TranslationPipeline<'_, T> {
                 .ok()
                 .and_then(|translation| {
                     translation
-                        .primary_surface()
+                        .round_trip_surface()
                         .map(|surface| (surface.to_owned(), translation.meaning.slug()))
                 });
             let (target, meaning) = match resolved {

@@ -3,9 +3,10 @@
 use crate::concepts::extract_concept_query;
 use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
+use crate::formalization::page::{formalize_page, page_answer};
 use crate::language::detect as detect_language;
 use crate::seed::{self, ProjectRecord, projects_registry};
-use crate::source_fetch::{CachedSourceClient, CurlSourceTransport};
+use crate::source_fetch::{CachedSourceClient, CurlSourceTransport, FetchError, SourceTransport};
 use crate::summarization::{SummarizationConfig, SummarizationMode, describe_project};
 use crate::web_search_core::{
     WEB_SEARCH_PROVIDERS as CORE_WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K as CORE_WEB_SEARCH_RRF_K,
@@ -23,7 +24,8 @@ pub use live_search::{try_web_search_with_client, try_web_search_with_offline};
 pub(super) use url_parse::normalize_url_candidate;
 use url_parse::{
     extract_http_fetch_url, extract_url_navigate_url, first_url_candidate,
-    is_url_trailing_punctuation, is_url_wrapper_punctuation, looks_like_hostname,
+    is_page_formalization_prompt, is_url_trailing_punctuation, is_url_wrapper_punctuation,
+    looks_like_hostname,
 };
 
 /// Match prompts that explicitly ask the engine to perform an HTTP request
@@ -73,6 +75,12 @@ fn answer_http_fetch_url(
     log: &mut EventLog,
     offline: bool,
 ) -> SymbolicAnswer {
+    if is_page_formalization_prompt(prompt, &normalize_prompt(prompt)) {
+        let cache_root = crate::coding::synthesis_runtime::source_cache_root();
+        let client =
+            CachedSourceClient::new(&cache_root, CurlSourceTransport).with_online(!offline);
+        return answer_page_formalization(prompt, url, log, &client);
+    }
     log.append("http_fetch:request", url);
     if let Some(answer) = try_curated_http_fetch(prompt, url, log) {
         return answer;
@@ -111,6 +119,91 @@ fn answer_http_fetch_url(
         .take(8_000)
         .collect::<String>();
     finalize_simple(prompt, log, "http_fetch", "response:http_fetch", &body, 1.0)
+}
+
+/// Formalize the page a request names (R1188-U18), fetched through
+/// `client`: the cache answers first, and the network only when the client is
+/// online. Returns `None` when the request names no URL or does not ask for
+/// a formalization. The browser twin is `tryPageFormalization` in
+/// `js/worker/formal_ai_worker_page_formalization.js`.
+pub fn try_page_formalization_with_client<T: SourceTransport>(
+    prompt: &str,
+    log: &mut EventLog,
+    client: &CachedSourceClient<T>,
+) -> Option<SymbolicAnswer> {
+    let normalized = normalize_prompt(prompt);
+    let url = extract_http_fetch_url(prompt, &normalized)?;
+    is_page_formalization_prompt(prompt, &normalized)
+        .then(|| answer_page_formalization(prompt, &url, log, client))
+}
+
+/// The statements of the page at `url`, in the request's language: the
+/// page's prose ([`crate::web_formalize::page_prose`]) read by
+/// [`crate::formalization::page::formalize_page`] in the page's language.
+/// Offline with no cached capture, or when the fetch fails, the answer says
+/// so and nothing is formalized.
+fn answer_page_formalization<T: SourceTransport>(
+    prompt: &str,
+    url: &str,
+    log: &mut EventLog,
+    client: &CachedSourceClient<T>,
+) -> SymbolicAnswer {
+    log.append("page_formalization:request", url);
+    let language = detect_language(prompt).slug();
+    let capture = match client.fetch(url) {
+        Ok(capture) => capture,
+        Err(error) => {
+            log.append("error:fetch", error.to_string());
+            let reason = error.to_string();
+            let body = if matches!(error, FetchError::OfflineCacheMiss(_)) {
+                seed::render_response("page_formalization_offline", language, &[("url", url)])
+            } else {
+                seed::render_response(
+                    "page_formalization_fetch_failed",
+                    language,
+                    &[("url", url), ("error", &reason)],
+                )
+            };
+            return finalize_simple(
+                prompt,
+                log,
+                "page_formalization",
+                "response:page_formalization_unavailable",
+                &body.unwrap_or_default(),
+                0.0,
+            );
+        }
+    };
+    capture.record(log);
+    let prose = crate::web_formalize::page_prose(capture.bytes(), url);
+    let report = formalize_page(&prose, detect_language(&prose).slug());
+    let counts = [
+        report.sentences.len(),
+        report.statements,
+        report.covered,
+        report.terms,
+        report.unknown,
+    ]
+    .map(|count| count.to_string());
+    log.append_fields(
+        "page_formalization:report",
+        &[
+            ("sentences", &counts[0]),
+            ("statements", &counts[1]),
+            ("covered", &counts[2]),
+            ("terms", &counts[3]),
+            ("unknown", &counts[4]),
+        ],
+    );
+    let body = page_answer(&report, url, language);
+    finalize_simple(
+        prompt,
+        log,
+        "page_formalization",
+        "response:page_formalization",
+        &body,
+        0.9,
+    )
 }
 
 /// Whether the seed's navigation recognizer claims this prompt for the

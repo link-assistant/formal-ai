@@ -20,9 +20,9 @@ The root the test that pins each requirement runs in (R1188-U29: the JavaScript 
 
 | Pinned by | Requirements |
 | --- | ---: |
-| a JavaScript test | 431 |
+| a JavaScript test | 432 |
 | a Rust test only | 921 |
-| no test | 17 |
+| no test | 16 |
 
 ## Next pass
 

@@ -99,7 +99,7 @@ test_durations
     seconds 37.4
   test "coding_discovery::composition::held_out_grid_examples_select_the_supported_predecessor_relation"
     seconds 37.3
-  test "issue_745::directory_listing_routes_shell_variations_in_every_supported_language"
+  test "semantic_intent_routing::directory_listing_routes_shell_variations_in_every_supported_language"
     seconds 32.9
   test "issue_1085_upstream_prompt_transfer::the_mbpp_prompt_shape_in_spanish_derives_the_same_function"
     seconds 32
@@ -139,13 +139,13 @@ test_durations
     seconds 21.7
   test "issue_1155_read_validation::a_successful_curl_read_drives_execution_and_the_sentinel_stays_out_of_the_text"
     seconds 21.4
-  test "issue_745::web_search_routes_action_variations_in_every_supported_language"
+  test "semantic_intent_routing::web_search_routes_action_variations_in_every_supported_language"
     seconds 21.3
   test "issue_1133_hive_mind_three_runs::repository_requirements_bind_language_and_output_independently_of_page_chrome"
     seconds 21
   test "specification::benchmarks::issue_704_portfolio_rescues_the_industry_search_case"
     seconds 20.7
-  test "issue_1164_pascal_from_docs::recomposed_programs_compile_and_print_the_held_out_literal"
+  test "issue_1164_pascal_from_documentation::recomposed_programs_compile_and_print_the_held_out_literal"
     seconds 20.5
   test "specification::benchmarks::issue_315_program_synthesis_accepts_supported_language_wrappers"
     seconds 20.4
@@ -159,7 +159,7 @@ test_durations
     seconds 18.6
   test "issue_705_anticipation::prediction_hits_link_later_actual_requests_and_zero_percent_is_honest"
     seconds 18.6
-  test "issue_819::every_seeded_local_path_phrase_routes_to_find"
+  test "local_path_discovery::every_seeded_local_path_phrase_routes_to_find"
     seconds 18.4
   test "issue_1133_hive_mind_three_runs::extended::codex_plans_the_work_item_and_never_narrates_the_connector_placeholder"
     seconds 18.4
@@ -171,7 +171,7 @@ test_durations
     seconds 17.9
   test "issue_499_learn_from_source::the_directive_routes_into_the_human_gated_learning_frontier"
     seconds 17
-  test "issue_745::local_path_object_routes_read_variations_without_web_misroutes"
+  test "semantic_intent_routing::local_path_object_routes_read_variations_without_web_misroutes"
     seconds 16.9
   test "issue_749_shell_routing::whole_shell_task_matrix_routes_without_web_search"
     seconds 16.4
@@ -183,7 +183,7 @@ test_durations
     seconds 14.7
   test "issue_1138_rust_projection::grammar_projection_corpus_ratchet"
     seconds 14.3
-  test "issue_745::url_object_routes_fetch_variations_without_cross_tool_misroutes"
+  test "semantic_intent_routing::url_object_routes_fetch_variations_without_cross_tool_misroutes"
     seconds 14.2
   test "issue_819_report_flow::a_report_without_an_issue_url_is_narrated_as_a_failure"
     seconds 13.8
@@ -201,7 +201,7 @@ test_durations
     seconds 12.6
   test "issue_1138_repository_workspace::diff_round_trips_through_git_apply"
     seconds 12.6
-  test "issue_907::every_policy_lead_suppresses_its_command_in_every_language"
+  test "caller_framing_context::every_policy_lead_suppresses_its_command_in_every_language"
     seconds 12.4
   test "issue_701_learning_adoption::committed_adoption_ledger_matches_a_fresh_run"
     seconds 11.7
@@ -217,7 +217,7 @@ test_durations
     seconds 11.3
   test "issue_1138_repository_workspace::workspace_is_isolated_from_the_ambient_checkout"
     seconds 10.9
-  test "issue_840::generated_local_routing_property_holds_for_twelve_prompts_per_language"
+  test "grounded_local_action::generated_local_routing_property_holds_for_twelve_prompts_per_language"
     seconds 10.4
   test "issue_1069_ladder_change_tasks::issue_1069_every_ladder_node_satisfies_every_obligation_it_was_given"
     seconds 10.2
@@ -229,7 +229,7 @@ test_durations
     seconds 9.7
   test "issue_749_shell_routing::passthrough_prefixes_have_language_parity"
     seconds 9.6
-  test "issue_907::a_sentence_about_commands_is_not_passed_through_as_one"
+  test "caller_framing_context::a_sentence_about_commands_is_not_passed_through_as_one"
     seconds 9.3
   test "software_project::software_project_dialogue_examples_formalize_plan_then_implement_after_approval"
     seconds 9.3
@@ -265,7 +265,7 @@ test_durations
     seconds 7.8
   test "issue_1138_repository_workspace::protocol_derives_and_observes_a_structural_member_edit"
     seconds 7.8
-  test "issue_819::local_path_discovery_benchmark_routes_every_case_to_find"
+  test "local_path_discovery::local_path_discovery_benchmark_routes_every_case_to_find"
     seconds 7.8
   test "issue_1138_repository_workspace::clone_at_base_checks_out_the_exact_commit"
     seconds 7.5
@@ -285,7 +285,7 @@ test_durations
     seconds 6.6
   test "issue_498_google_trends_learning::the_learning_report_is_a_faithful_proposal_only_run"
     seconds 6.6
-  test "issue_781::research_deepens_toward_the_part_of_the_question_the_evidence_left_open"
+  test "compatibility_research_evidence::research_deepens_toward_the_part_of_the_question_the_evidence_left_open"
     seconds 6.5
   test "issue_499_learn_from_source::the_reported_prompt_no_longer_returns_unknown"
     seconds 6.5
@@ -299,7 +299,7 @@ test_durations
     seconds 6.3
   test "issue_498_google_trends_catalog::planner_walks_the_google_trends_catalog_recipe"
     seconds 6.3
-  test "issue_758::shared_navigation_planning_and_delegation_capabilities_route_by_intent"
+  test "capability_first_tool_routing::shared_navigation_planning_and_delegation_capabilities_route_by_intent"
     seconds 6.2
   test "specification::behavior_rules::behavior_rules_count_followup_covers_supported_languages"
     seconds 6.2
@@ -311,9 +311,9 @@ test_durations
     seconds 6
   test "issue_1138_named_tests::named_tests_record_the_observed_pass_fail_split"
     seconds 6
-  test "issue_781::a_source_already_read_is_not_read_again"
+  test "compatibility_research_evidence::a_source_already_read_is_not_read_again"
     seconds 5.9
-  test "issue_907::caller_framing_alone_never_becomes_a_command"
+  test "caller_framing_context::caller_framing_alone_never_becomes_a_command"
     seconds 5.9
   test "specification::recipe_interpreter::native_and_data_driven_execution_produce_the_same_events"
     seconds 5.9
@@ -367,7 +367,7 @@ test_durations
     seconds 4.9
   test "issue_1021_behaviour_range::a_command_naming_noun_is_not_an_argument"
     seconds 4.9
-  test "issue_919::coding_gap_is_solved_by_a_verified_researched_procedure_and_replays_offline"
+  test "researched_coding_procedures::coding_gap_is_solved_by_a_verified_researched_procedure_and_replays_offline"
     seconds 4.8
   test "formal_ai::seed_and_memory::url_navigation_variations_return_https_link_without_fetch_advice"
     seconds 4.8
@@ -375,7 +375,7 @@ test_durations
     seconds 4.8
   test "issue_1154_progress_arguments::every_argument_spelling_records_the_same_read"
     seconds 4.7
-  test "issue_989::whole_reported_dialog_stays_local_and_preserves_diagnostics"
+  test "location_and_edit_routing::whole_reported_dialog_stays_local_and_preserves_diagnostics"
     seconds 4.6
   test "issue_671_supplied_file_bytes::the_refusal_that_shipped_before_is_gone"
     seconds 4.6
@@ -385,7 +385,7 @@ test_durations
     seconds 4.6
   test "issue_558_change_request::agent_mode_routes_change_request_to_a_reviewable_write"
     seconds 4.6
-  test "issue_907::a_declarative_statement_does_not_fire_an_intent"
+  test "caller_framing_context::a_declarative_statement_does_not_fire_an_intent"
     seconds 4.6
   test "specification::code_generation_blueprint::python_http_json_statistics_request_returns_blueprint_program"
     seconds 4.6
@@ -425,7 +425,7 @@ test_durations
     seconds 4.1
   test "issue_758_capability_routing::shared_capabilities_honor_strict_advertised_schemas"
     seconds 4.1
-  test "ci_cd::issue_1017::budget_wrapper_heartbeat_is_available_but_off_by_default"
+  test "ci_cd::step_budgets_within_job_clocks::budget_wrapper_heartbeat_is_available_but_off_by_default"
     seconds 4
   test "issue_1106_projection_reuse::a_prefix_containing_escaped_characters_is_restored_exactly"
     seconds 4
@@ -447,7 +447,7 @@ test_durations
     seconds 3.7
   test "issue_819_narration::desktop_find_narration_is_localized_and_command_free"
     seconds 3.7
-  test "issue_771::multilingual_extraction::every_supported_language_gets_an_extract_and_not_a_page_dump"
+  test "fetched_page_answer_extraction::multilingual_extraction::every_supported_language_gets_an_extract_and_not_a_page_dump"
     seconds 3.7
   test "issue_1021_behaviour_range::a_named_task_is_not_answered_with_a_minimal_script"
     seconds 3.6
@@ -461,11 +461,11 @@ test_durations
     seconds 3.6
   test "issue_755_file_read_write::a_multi_turn_lifecycle_reads_back_the_current_content_each_time"
     seconds 3.5
-  test "ci_cd::issue_1021::a_stalled_mirror_is_killed_at_its_own_deadline_and_the_next_attempt_succeeds"
+  test "ci_cd::third_party_cli_version_pins::a_stalled_mirror_is_killed_at_its_own_deadline_and_the_next_attempt_succeeds"
     seconds 3.5
   test "issue_758_capability_routing::live_http_server_routes_reported_folder_variants_to_one_shell_contract"
     seconds 3.4
-  test "issue_904::a_read_work_item_describing_a_program_reaches_an_authoring_route"
+  test "work_item_planning::a_read_work_item_describing_a_program_reaches_an_authoring_route"
     seconds 3.4
   test "ci_cd::macos_package_retry::retries_known_hdiutil_device_failures_and_cleans_incomplete_dmg"
     seconds 3.4
@@ -475,13 +475,13 @@ test_durations
     seconds 3.3
   test "agentic_coding::issue_676_planner_maps_execute_pwd_to_pwd_command"
     seconds 3.3
-  test "issue_916::r916_01_a_missing_file_is_a_failure_in_every_registered_language"
+  test "coding_ladder_rungs::r916_01_a_missing_file_is_a_failure_in_every_registered_language"
     seconds 3.3
   test "courtesy_response::courtesy_response_matrix_never_falls_through_to_unknown"
     seconds 3.3
   test "issue_680_intent_routing::gemini_routes_edit_intent_to_function_call"
     seconds 3.3
-  test "ci_cd::issue_1021::the_deadline_never_expires_before_the_time_it_was_given"
+  test "ci_cd::third_party_cli_version_pins::the_deadline_never_expires_before_the_time_it_was_given"
     seconds 3.3
   test "courtesy_response::courtesy_response_matrix_is_classified_across_languages"
     seconds 3.3
@@ -507,9 +507,9 @@ test_durations
     seconds 3.1
   test "issue_714_agentic_mode::gemini_continues_after_the_client_returns_a_function_response"
     seconds 3.1
-  test "ci_cd::issue_1017::budget_wrapper_terminates_the_overrun_and_reports_it_as_an_error"
+  test "ci_cd::step_budgets_within_job_clocks::budget_wrapper_terminates_the_overrun_and_reports_it_as_an_error"
     seconds 3
-  test "ci_cd::issue_1021::a_budget_warning_reports_the_counters_without_touching_the_result"
+  test "ci_cd::third_party_cli_version_pins::a_budget_warning_reports_the_counters_without_touching_the_result"
     seconds 3
   test "issue_714_agentic_mode::chat_completions_routes_report_to_bash_not_websearch"
     seconds 3
@@ -547,19 +547,19 @@ test_durations
     seconds 2.8
   test "issue_931_local_transports::issue_931_whole_task_uses_the_same_cli_as_server_and_client"
     seconds 2.8
-  test "issue_687::report_issue::coding_request_that_mentions_an_existing_issue_and_output_files_is_not_a_report"
+  test "agentic_backend_actions::report_issue::coding_request_that_mentions_an_existing_issue_and_output_files_is_not_a_report"
     seconds 2.8
   test "issue_1066_ladder_capability::written_files::an_answer_only_the_symbolic_engine_reaches_is_still_delivered_to_the_named_file"
     seconds 2.8
   test "installation_conversion::extended::unlisted_tools_still_route_through_install_conversion"
     seconds 2.8
-  test "issue_822::conversation_learning_endpoint_stages_structured_server_trace_for_review"
+  test "report_context_collection::conversation_learning_endpoint_stages_structured_server_trace_for_review"
     seconds 2.8
   test "issue_1138_execution_box::the_halving_ladder_records_every_n_it_tried"
     seconds 2.8
   test "issue_755_file_read_write::write_emits_only_the_advertised_parameter_names"
     seconds 2.7
-  test "issue_923::symbolic_kernel_responses_cover_every_registered_language"
+  test "symbolic_kernel_coverage::symbolic_kernel_responses_cover_every_registered_language"
     seconds 2.7
   test "issue_918_handler_rules_batch::an_originality_check_reads_its_markers_queries_and_heading_from_the_seed"
     seconds 2.7
@@ -569,7 +569,7 @@ test_durations
     seconds 2.7
   test "memory_learning::organically_recorded_chat_dreams_amendments_that_replay_through_production"
     seconds 2.7
-  test "issue_704::three_drafts_are_tested_compared_and_deterministic"
+  test "candidate_solution_portfolios::three_drafts_are_tested_compared_and_deterministic"
     seconds 2.7
   test "specification::prompt_variations::greeting_matrix_records_per_language_evidence"
     seconds 2.6
@@ -577,11 +577,11 @@ test_durations
     seconds 2.6
   test "issue_1154_progress_arguments::repeated_successful_read_is_reported_not_replanned"
     seconds 2.6
-  test "issue_864::expected_tool_refusals_do_not_claim_formal_ai_detected_a_failure"
+  test "proactive_failure_reports::expected_tool_refusals_do_not_claim_formal_ai_detected_a_failure"
     seconds 2.6
   test "issue_1066_ladder_capability::a_specified_document_is_composed_even_when_the_request_names_a_file"
     seconds 2.6
-  test "issue_989::github_report_requests_three_separate_context_links"
+  test "location_and_edit_routing::github_report_requests_three_separate_context_links"
     seconds 2.6
   test "specification::prompt_variations::identity_matrix_is_classified_as_identity_across_languages"
     seconds 2.6
@@ -593,11 +593,11 @@ test_durations
     seconds 2.5
   test "http_client::a_response_that_pauses_mid_body_is_read_in_full"
     seconds 2.5
-  test "issue_904::an_uncovered_language_is_not_invented_into_an_artifact"
+  test "work_item_planning::an_uncovered_language_is_not_invented_into_an_artifact"
     seconds 2.5
-  test "issue_687::learn_about::earlier_research_results_do_not_complete_a_new_research_turn"
+  test "agentic_backend_actions::learn_about::earlier_research_results_do_not_complete_a_new_research_turn"
     seconds 2.5
-  test "issue_864::detected_tool_failures_proactively_ask_to_report_on_agentic_harnesses"
+  test "proactive_failure_reports::detected_tool_failures_proactively_ask_to_report_on_agentic_harnesses"
     seconds 2.5
   test "issue_386_cancel_sort::issue_386_cancel_sort_follow_up_must_not_be_unknown"
     seconds 2.4
@@ -609,9 +609,9 @@ test_durations
     seconds 2.4
   test "issue_712_intent_routing::responses_google_request_routes_to_web_search"
     seconds 2.4
-  test "issue_750::follow_up_can_recover_original_urls_from_an_earlier_tool_turn"
+  test "tool_result_presentation::follow_up_can_recover_original_urls_from_an_earlier_tool_turn"
     seconds 2.4
-  test "issue_907::an_imperative_still_selects_the_command_it_names"
+  test "caller_framing_context::an_imperative_still_selects_the_command_it_names"
     seconds 2.4
   test "issue_1138_concept_lookup_http::chat_completions_reports_an_unresolved_word_instead_of_inventing_a_meaning"
     seconds 2.4
@@ -627,7 +627,7 @@ test_durations
     seconds 2.3
   test "issue_671_absolute_path_projection::opencode_read_absolutises_a_relative_request_path"
     seconds 2.3
-  test "issue_781::independent_sources_are_fetched_in_separate_agent_turns"
+  test "compatibility_research_evidence::independent_sources_are_fetched_in_separate_agent_turns"
     seconds 2.3
   test "formal_ai_cli::cli_serve_exposes_agentic_tool_protocols_over_loopback"
     seconds 2.3
@@ -655,7 +655,7 @@ test_durations
     seconds 2.2
   test "specification::reasoning_paths_procedures::procedural_elaboration_followup_covers_many_topics"
     seconds 2.2
-  test "issue_687::factual_question::research_prefers_an_official_source_and_cites_it"
+  test "agentic_backend_actions::factual_question::research_prefers_an_official_source_and_cites_it"
     seconds 2.2
   test "issue_714_agentic_mode::completed_client_tool_execution_becomes_durable_learning_evidence"
     seconds 2.2
@@ -667,13 +667,13 @@ test_durations
     seconds 2.2
   test "multi_protocol_api::cli_serve_exposes_namespaced_protocols_over_loopback_http"
     seconds 2.1
-  test "issue_916::r916_10_a_policy_sentence_naming_a_command_does_not_authorize_it"
+  test "coding_ladder_rungs::r916_10_a_policy_sentence_naming_a_command_does_not_authorize_it"
     seconds 2.1
   test "ci_cd::macos_package_retry::retry_is_skipped_when_it_would_exceed_the_packaging_budget"
     seconds 2.1
   test "issue_749_shell_routing::explicit_and_listing_routes_win_over_embedded_semantic_cues"
     seconds 2.1
-  test "issue_750::follow_up_can_recover_a_numbered_line_or_the_complete_payload"
+  test "tool_result_presentation::follow_up_can_recover_a_numbered_line_or_the_complete_payload"
     seconds 2.1
   test "agentic_coding::issue_607_server_emits_tool_calls_for_shell_request_in_agent_mode"
     seconds 2.1
@@ -681,7 +681,7 @@ test_durations
     seconds 2.1
   test "issue_859_codex::codex_report_issue_asks_for_structured_details_instead_of_searching_the_web"
     seconds 2.1
-  test "specification::issue_710::free_time_answers_are_prompt_stable_but_not_one_canned_reply"
+  test "specification::conversational_reverification::free_time_answers_are_prompt_stable_but_not_one_canned_reply"
     seconds 2.1
   test "issue_671_absolute_path_projection::a_declared_working_directory_wins_over_the_servers_own"
     seconds 2.1
@@ -701,7 +701,7 @@ test_durations
     seconds 2.1
   test "issue_680_intent_routing::chat_completions_routes_web_fetch_intent_to_tool_call"
     seconds 2.1
-  test "issue_907::a_turn_that_carries_a_task_gets_the_task"
+  test "caller_framing_context::a_turn_that_carries_a_task_gets_the_task"
     seconds 2.1
   test "ci_cd::macos_package_retry::a_deadline_already_past_still_refuses_the_retry"
     seconds 2.1
@@ -713,15 +713,15 @@ test_durations
     seconds 2
   test "issue_538_agentic::committed_diagram_session_matches_a_fresh_run"
     seconds 2
-  test "ci_cd::issue_1017::budget_enforcement_has_a_documented_escape_hatch"
+  test "ci_cd::step_budgets_within_job_clocks::budget_enforcement_has_a_documented_escape_hatch"
     seconds 2
   test "issue_1173_route3_probes::a_described_value_or_a_script_request_names_no_print_text_task"
     seconds 2
-  test "ci_cd::issue_1012::budget_warning_is_live_instead_of_post_process"
+  test "ci_cd::ci_warning_audit::budget_warning_is_live_instead_of_post_process"
     seconds 2
-  test "ci_cd::issue_1021::a_budget_that_expires_reports_the_compiler_cache_counters"
+  test "ci_cd::third_party_cli_version_pins::a_budget_that_expires_reports_the_compiler_cache_counters"
     seconds 2
-  test "ci_cd::issue_1017::budget_wrapper_warns_while_the_command_is_still_alive"
+  test "ci_cd::step_budgets_within_job_clocks::budget_wrapper_warns_while_the_command_is_still_alive"
     seconds 2
   test "ci_cd::macos_package_retry::retry_is_skipped_when_the_job_deadline_is_too_close"
     seconds 2
@@ -729,17 +729,17 @@ test_durations
     seconds 2
   test "issue_703_orchestration_followup::timeout_terminates_descendant_processes"
     seconds 2
-  test "ci_cd::issue_1021::a_budget_that_wraps_no_compiler_reports_no_counters"
+  test "ci_cd::third_party_cli_version_pins::a_budget_that_wraps_no_compiler_reports_no_counters"
     seconds 2
   test "verifiable_task::execution::the_composed_program_is_executed_and_its_output_is_the_answer"
     seconds 2
   test "issue_1138_bounded_file_analysis::explicit_content_requests_keep_the_full_read_contract"
     seconds 2
-  test "issue_781::a_named_host_inside_a_research_prompt_still_plans_its_follow_up_fetches"
+  test "compatibility_research_evidence::a_named_host_inside_a_research_prompt_still_plans_its_follow_up_fetches"
     seconds 2
   test "specification::code_generation::single_turn::hello_world_inline_replacement_accepts_diverse_prompt_surfaces"
     seconds 2
-  test "issue_704::comparison_ledger_answers_why_in_all_supported_languages"
+  test "candidate_solution_portfolios::comparison_ledger_answers_why_in_all_supported_languages"
     seconds 2
   test "issue_1138_self_use_verifiable_task::an_arithmetic_narrative_is_derived_in_every_language"
     seconds 1.9
@@ -769,9 +769,9 @@ test_durations
     seconds 1.9
   test "issue_395_sort_numbers::issue_395_string_list_sort_uses_cst_validated_code_path"
     seconds 1.9
-  test "issue_840::local_scope_dominates_search_verb_and_possessive_variations"
+  test "grounded_local_action::local_scope_dominates_search_verb_and_possessive_variations"
     seconds 1.9
-  test "issue_704::default_one_draft_preserves_the_existing_search_path"
+  test "candidate_solution_portfolios::default_one_draft_preserves_the_existing_search_path"
     seconds 1.9
   test "issue_1021_closed_circle::the_committed_process_artifacts_are_generator_output"
     seconds 1.9
@@ -791,9 +791,9 @@ test_durations
     seconds 1.8
   test "issue_982_memory_upgrade::ordinary_server_write_preserves_released_schema_and_unknown_metadata"
     seconds 1.8
-  test "issue_745::a_listing_word_inside_a_longer_non_latin_word_does_not_panic_the_boundary_scan"
+  test "semantic_intent_routing::a_listing_word_inside_a_longer_non_latin_word_does_not_panic_the_boundary_scan"
     seconds 1.8
-  test "issue_1069::agent_compaction_continuation_resumes_the_summarized_task"
+  test "agent_cli_entry_point::agent_compaction_continuation_resumes_the_summarized_task"
     seconds 1.8
   test "specification::openai_compatibility::http_chat_completion_returns_canonical_model_for_multilingual_prompts"
     seconds 1.8
@@ -805,13 +805,13 @@ test_durations
     seconds 1.8
   test "specification::prompt_variations::factual_qna_matrix_records_wikidata_anchor"
     seconds 1.8
-  test "issue_916::r916_07_a_declarative_statement_of_fact_is_not_a_request"
+  test "coding_ladder_rungs::r916_07_a_declarative_statement_of_fact_is_not_a_request"
     seconds 1.8
   test "issue_1066_ladder_capability::a_question_about_a_task_is_answered_by_thinking_about_the_task"
     seconds 1.8
-  test "issue_745::explicit_content_and_file_object_route_write_variations"
+  test "semantic_intent_routing::explicit_content_and_file_object_route_write_variations"
     seconds 1.8
-  test "issue_907::asking_for_the_date_still_runs_date"
+  test "caller_framing_context::asking_for_the_date_still_runs_date"
     seconds 1.8
   test "issue_1021_behaviour_range::a_bare_command_is_the_request"
     seconds 1.8
@@ -831,7 +831,7 @@ test_durations
     seconds 1.7
   test "process_composition::ordered_literal_outputs_are_not_silently_dropped"
     seconds 1.7
-  test "issue_890::every_registered_natural_language_can_request_proof_translation"
+  test "proof_language_independence::every_registered_natural_language_can_request_proof_translation"
     seconds 1.7
   test "issue_1066_ladder_capability::textual_rendering_language_is_not_a_gui_capability_request"
     seconds 1.7
@@ -857,11 +857,11 @@ test_durations
     seconds 1.7
   test "issue_1066_ladder_capability::a_file_the_request_asks_for_is_never_opened_for_reading"
     seconds 1.7
-  test "issue_945::machine_value_answers_select_every_target_including_formal_ai"
+  test "report_output_location::machine_value_answers_select_every_target_including_formal_ai"
     seconds 1.7
   test "issue_819_followup::every_planned_report_step_executes_its_selected_action"
     seconds 1.7
-  test "issue_907::a_request_that_punctuates_itself_with_a_colon_still_routes"
+  test "caller_framing_context::a_request_that_punctuates_itself_with_a_colon_still_routes"
     seconds 1.7
   test "issue_1066_ladder_capability::a_genuine_dotted_file_name_is_still_recognised"
     seconds 1.7
@@ -875,7 +875,7 @@ test_durations
     seconds 1.7
   test "specification::code_generation_blueprint::rust_http_json_statistics_request_returns_blueprint_program"
     seconds 1.7
-  test "issue_771::research_answer::a_short_page_is_still_answered_verbatim"
+  test "fetched_page_answer_extraction::research_answer::a_short_page_is_still_answered_verbatim"
     seconds 1.7
   test "issue_1133_hive_mind_three_runs::extended::a_gh_read_does_not_count_as_literal_file_verification"
     seconds 1.7
@@ -895,7 +895,7 @@ test_durations
     seconds 1.6
   test "installation_conversion::wrapped_readme_with_nested_shell_fences_converts_to_scripts"
     seconds 1.6
-  test "issue_745::reported_object_type_collisions_choose_the_right_capability"
+  test "semantic_intent_routing::reported_object_type_collisions_choose_the_right_capability"
     seconds 1.6
   test "specification::chat_surface::behavior_rules_list_works_for_chinese_speakers"
     seconds 1.6
@@ -927,7 +927,7 @@ test_durations
     seconds 1.6
   test "issue_1138_intent_phrase_migration::held_out_url_navigate_paraphrases_reach_the_navigation_answer"
     seconds 1.5
-  test "issue_916::r916_09_an_unmarked_preamble_does_not_outrank_the_objective_after_it"
+  test "coding_ladder_rungs::r916_09_an_unmarked_preamble_does_not_outrank_the_objective_after_it"
     seconds 1.5
   test "specification::procedural_howto_benchmarks::issue_444_procedural_howto_suite_routes_each_case"
     seconds 1.5
@@ -937,7 +937,7 @@ test_durations
     seconds 1.5
   test "memory_maintenance::dreaming_recalculates_topic_frequency_and_learns_durable_requirements"
     seconds 1.5
-  test "issue_627::ls_folder_prompt_reads_last_file_from_listing"
+  test "file_read_tool_calls::ls_folder_prompt_reads_last_file_from_listing"
     seconds 1.5
   test "specification::task_decomposition::every_sub_task_surfaces_as_a_sub_impulse_event"
     seconds 1.5
@@ -957,11 +957,11 @@ test_durations
     seconds 1.5
   test "issue_1175_routing::incidental_artifact_words_do_not_claim_the_software_project_frame"
     seconds 1.5
-  test "docs_status::check_mode_is_green_against_the_committed_ledgers"
+  test "documentation_status::check_mode_is_green_against_the_committed_ledgers"
     seconds 1.5
-  test "issue_627::direct_file_read_prompts_emit_read_tool_calls"
+  test "file_read_tool_calls::direct_file_read_prompts_emit_read_tool_calls"
     seconds 1.5
-  test "issue_907::an_explicitly_introduced_command_survives_sentence_scoping"
+  test "caller_framing_context::an_explicitly_introduced_command_survives_sentence_scoping"
     seconds 1.5
   test "issue_1021_verified_move::a_requested_move_runs_its_checks_around_the_action"
     seconds 1.5
@@ -979,7 +979,7 @@ test_durations
     seconds 1.4
   test "issue_755_file_read_write::read_emits_only_the_advertised_parameter_name"
     seconds 1.4
-  test "issue_945::no_report_target_writes_into_the_callers_working_directory"
+  test "report_output_location::no_report_target_writes_into_the_callers_working_directory"
     seconds 1.4
   test "specification::prompt_variations::factual_qna_matrix_records_per_language_evidence"
     seconds 1.4
@@ -1005,7 +1005,7 @@ test_durations
     seconds 1.4
   test "issue_822_context::local_context_learning_uses_the_dialog_log_without_a_server"
     seconds 1.4
-  test "issue_956::ordinary_and_multilingual_quotes_bind_the_same_inline_source"
+  test "custom_formalization_subject::ordinary_and_multilingual_quotes_bind_the_same_inline_source"
     seconds 1.4
   test "specification::synthesis::compound_courtesy_and_question_are_answered_in_source_order"
     seconds 1.4
@@ -1013,19 +1013,19 @@ test_durations
     seconds 1.4
   test "specification::chat_surface::behavior_rule_grammar::behavior_rule_listing_renders_when_then_statements_grouped_by_topic"
     seconds 1.4
-  test "issue_750::every_tool_gets_the_same_generic_friendly_renderer"
+  test "tool_result_presentation::every_tool_gets_the_same_generic_friendly_renderer"
     seconds 1.4
   test "issue_527_question_catalog::planner_walks_the_question_catalog_recipe"
     seconds 1.4
-  test "issue_535::document_originality_requests_route_to_grounded_attachment_workflow"
+  test "document_originality_check::document_originality_requests_route_to_grounded_attachment_workflow"
     seconds 1.4
-  test "issue_535::verification_class_generalizes_beyond_plagiarism_in_every_language"
+  test "document_originality_check::verification_class_generalizes_beyond_plagiarism_in_every_language"
     seconds 1.4
   test "issue_457_self_source_metrics::issue_457_rust_self_source_metrics_request_returns_blueprint_program"
     seconds 1.4
   test "issue_755_file_read_write::repeated_read_turns_are_deterministic"
     seconds 1.4
-  test "issue_627::read_every_file_lists_then_reads_each_file"
+  test "file_read_tool_calls::read_every_file_lists_then_reads_each_file"
     seconds 1.4
   test "openai_chat_streaming::cli_serve_streams_chat_completion_chunks_over_loopback_http"
     seconds 1.4
@@ -1039,11 +1039,11 @@ test_durations
     seconds 1.4
   test "specification::prompt_variations_facts::roleplay_intent_routes_to_roleplay_handler"
     seconds 1.4
-  test "issue_750::tool_validation_errors_are_rendered_as_failures_not_stdout"
+  test "tool_result_presentation::tool_validation_errors_are_rendered_as_failures_not_stdout"
     seconds 1.4
   test "issue_680_intent_routing::responses_routes_web_search_intent_to_function_call"
     seconds 1.4
-  test "issue_989::british_behaviour_rule_queries_match_the_rule_catalog"
+  test "location_and_edit_routing::british_behaviour_rule_queries_match_the_rule_catalog"
     seconds 1.4
   test "specification::coding_modification_benchmarks::issue_362_multilingual_multi_turn_coding_modification_ratchet"
     seconds 1.4
@@ -1057,7 +1057,7 @@ test_durations
     seconds 1.4
   test "issue_1138_self_use_repository_workspace::a_named_base_commit_is_not_silently_dropped"
     seconds 1.3
-  test "issue_858::claude_code_away_recap_returns_a_bounded_plain_summary"
+  test "claude_code_away_recap::claude_code_away_recap_returns_a_bounded_plain_summary"
     seconds 1.3
   test "issue_1166_executor_gaps::catalog_requests_record_the_worker_gap_lines"
     seconds 1.3
@@ -1073,7 +1073,7 @@ test_durations
     seconds 1.3
   test "issue_1075_held_out_grounding::a_workspace_the_server_cannot_stat_is_still_the_clients_workspace"
     seconds 1.3
-  test "issue_781::a_failed_source_reports_its_diagnostic_without_retrying"
+  test "compatibility_research_evidence::a_failed_source_reports_its_diagnostic_without_retrying"
     seconds 1.3
   test "memory_learning::failed_replays_are_preserved_as_refinement_records"
     seconds 1.3
@@ -1109,11 +1109,11 @@ test_durations
     seconds 1.3
   test "memory_maintenance::dreaming_generalizes_requirements_into_meta_algorithm_amendments"
     seconds 1.3
-  test "issue_916::r916_10_an_imperative_still_selects_the_command_it_names"
+  test "coding_ladder_rungs::r916_10_an_imperative_still_selects_the_command_it_names"
     seconds 1.3
   test "with_formal_ai_argv::with_formal_ai_renders_the_same_argv_from_an_argument_and_a_piped_prompt"
     seconds 1.3
-  test "issue_687::factual_question::election_search_then_fetch_then_answers_from_results"
+  test "agentic_backend_actions::factual_question::election_search_then_fetch_then_answers_from_results"
     seconds 1.3
   test "issue_1182_duplicate_gate::two_identical_bodies_across_files_fail_without_a_baseline"
     seconds 1.3
@@ -1121,13 +1121,13 @@ test_durations
     seconds 1.3
   test "issue_349_reverse_sort::issue_349_diagnostic_mode_emits_full_turn_5_reasoning_chain"
     seconds 1.3
-  test "issue_832::local_report_export_is_available_in_every_supported_language"
+  test "local_report_export::local_report_export_is_available_in_every_supported_language"
     seconds 1.3
   test "issue_671_absolute_path_projection::a_client_that_accepts_relative_paths_keeps_the_requested_spelling"
     seconds 1.3
-  test "issue_687::report_issue::report_request_emits_atomic_report_script"
+  test "agentic_backend_actions::report_issue::report_request_emits_atomic_report_script"
     seconds 1.3
-  test "issue_627::read_file_in_named_folder_lists_then_reads_nested_file"
+  test "file_read_tool_calls::read_file_in_named_folder_lists_then_reads_nested_file"
     seconds 1.3
   test "issue_527_question_catalog::catalog_classifies_smallest_first_and_answers_meaningful_questions"
     seconds 1.2
@@ -1137,15 +1137,15 @@ test_durations
     seconds 1.2
   test "issue_819_narration::open_web_search_is_explained_as_a_web_search"
     seconds 1.2
-  test "issue_832::every_report_context_is_exported_by_the_local_cli"
+  test "local_report_export::every_report_context_is_exported_by_the_local_cli"
     seconds 1.2
-  test "issue_907::a_declared_absolute_path_is_not_a_request"
+  test "caller_framing_context::a_declared_absolute_path_is_not_a_request"
     seconds 1.2
   test "issue_1176_quantities_dates::mode_and_range_read_from_the_seed_vocabulary"
     seconds 1.2
   test "issue_1066_ladder_capability::tool_results::a_search_that_announces_its_matches_before_quoting_them_is_not_a_failure"
     seconds 1.2
-  test "ci_cd::issue_1021::the_deadline_exits_124_and_kills_the_whole_stalled_tree"
+  test "ci_cd::third_party_cli_version_pins::the_deadline_exits_124_and_kills_the_whole_stalled_tree"
     seconds 1.2
   test "formal_ai::server_handler_supports_chat_completions_route"
     seconds 1.2
@@ -1163,13 +1163,13 @@ test_durations
     seconds 1.2
   test "agentic_coding::issue_624_planner_maps_natural_language_directory_listing_to_ls"
     seconds 1.2
-  test "issue_687::report_issue::every_supported_language_routes_report_intent_from_seed_data"
+  test "agentic_backend_actions::report_issue::every_supported_language_routes_report_intent_from_seed_data"
     seconds 1.2
   test "issue_1075_held_out_grounding::an_explicit_default_is_still_honoured"
     seconds 1.2
   test "issue_1021_behaviour_range::listing_parts_alone_do_not_make_a_listing_request"
     seconds 1.2
-  test "issue_771::reported_session::the_reported_session_files_a_readable_issue"
+  test "fetched_page_answer_extraction::reported_session::the_reported_session_files_a_readable_issue"
     seconds 1.2
   test "issue_1138_self_use_repository_workspace::chat_does_not_invent_a_declaration_in_an_unseen_foreign_tree"
     seconds 1.2
@@ -1179,7 +1179,7 @@ test_durations
     seconds 1.2
   test "specification::reasoning_loop::step_4_complex_requests_get_decomposed"
     seconds 1.2
-  test "issue_873::researched_unknown_returns_a_grounded_answer_after_search_and_fetch"
+  test "unresolved_request_research::researched_unknown_returns_a_grounded_answer_after_search_and_fetch"
     seconds 1.2
   test "issue_819_narration::opencode_run_shell_schema_still_gets_a_command_free_explanation"
     seconds 1.2
@@ -1215,7 +1215,7 @@ test_durations
     seconds 1.2
   test "formal_ai::software_project_variations_do_not_return_unknown"
     seconds 1.2
-  test "issue_750::openai_chat_surface_returns_the_friendly_result_not_the_transport_envelope"
+  test "tool_result_presentation::openai_chat_surface_returns_the_friendly_result_not_the_transport_envelope"
     seconds 1.2
   test "issue_744_qwen_tool_schema::qwen_fetch_schema_is_language_independent"
     seconds 1.2
@@ -1269,17 +1269,17 @@ test_durations
     seconds 1.1
   test "memory_maintenance::multilingual_topics_receive_distinct_stable_amendment_ids"
     seconds 1.1
-  test "issue_1069::repeated_agent_compaction_finds_an_embedded_summary_envelope"
+  test "agent_cli_entry_point::repeated_agent_compaction_finds_an_embedded_summary_envelope"
     seconds 1.1
   test "local_surface::anthropic_messages_route_queries_persisted_memory_with_natural_language"
     seconds 1.1
   test "ci_cd::javascript_dependency_audit::a_slow_but_answering_registry_is_never_charged_to_the_outage_budget"
     seconds 1.1
-  test "docs_status::deleting_the_status_document_and_regenerating_reproduces_its_content_id"
+  test "documentation_status::deleting_the_status_document_and_regenerating_reproduces_its_content_id"
     seconds 1.1
   test "issue_699_handler_migration::held_out_number_constraint_paraphrases_are_data_driven"
     seconds 1.1
-  test "issue_864::explicit_unsuccessful_results_invite_reports_but_pending_results_do_not"
+  test "proactive_failure_reports::explicit_unsuccessful_results_invite_reports_but_pending_results_do_not"
     seconds 1.1
   test "agentic_general_planner::command_stdout_plan_executes_generate_then_verify_through_cli_tools"
     seconds 1.1
@@ -1333,7 +1333,7 @@ test_durations
     seconds 1
   test "issue_1138_concept_lookup::every_concept_lookup_outcome_is_seeded_in_all_five_languages"
     seconds 1
-  test "specification::issue_710::independent_questions_are_answered_in_source_order_in_every_language"
+  test "specification::conversational_reverification::independent_questions_are_answered_in_source_order_in_every_language"
     seconds 1
   test "issue_671_absolute_path_projection::agent_read_absolutises_when_only_the_tool_description_says_so"
     seconds 1

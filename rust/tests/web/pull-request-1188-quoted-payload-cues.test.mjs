@@ -38,3 +38,14 @@ test('an unquoted computer-use request still plans', () => {
   const prompt = 'Count the sub-tasks of the customer import rewrite and save the result in `counts.md`.';
   assert.notEqual(planRequest(prompt), null);
 });
+
+// G105 (TRANSLATE, T773): a «…» payload that runs over a blank line was read
+// line by line, so neither line closed its pair and the payload's "order" and
+// "count" planned a computer-use count of orders.
+const MULTILINE = 'Replace «old cell» with «A.\n\norder, count» in r.md.';
+
+test('a quoted payload over several lines leaves the instruction surface whole', () => {
+  assert.equal(instructionSurface(MULTILINE), 'Replace   with   in r.md.\n');
+  assert.equal(planRequest(MULTILINE), null);
+  assert.equal(computerUsePlanAgenticStep([user(MULTILINE)], AGENT_CLI_TOOLS), null);
+});

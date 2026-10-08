@@ -1,6 +1,6 @@
 // meta-language:self-translation:v1 source=JavaScript target=Rust sha256=342e1796f30e3c44c49a3a7a27db84f655c16d0e08bb36a4804b0687c2df400b bytes=16870
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds import-pruning items=0 carried=2
+// formal-ai:workarounds import-pruning items=0 carried=2; string-methods items=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
@@ -292,6 +292,11 @@ pub mod ml {
 }
 // meta-language:prelude end
 
+// formal-ai:workaround-prelude begin
+pub fn wa_str_replace_all(text: String, pattern: String, replacement: String) -> String {
+    text.replace(pattern.as_str(), replacement.as_str()) }
+// formal-ai:workaround-prelude end
+
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
 // formal-ai:blockers import from outside the module directory
@@ -491,6 +496,15 @@ pub fn default_cache_path() -> String {
     String::from(DEFAULT_CACHE_FILE)
 }
 
-// meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal method call .replaceAll()
-// formal-ai:blockers method call .replaceAll()
+// formal-ai:workaround string-methods JavaScript export_statement items=1 sha256=fa4d353f399922b8c186a017470daf18840a920de7ab719d9645039284a8f977
+// | /** Mirrors `fn quote`: the parser's backslash dialect. @param {string} value */
+// | export function quote(value) {
+// |   return `"${value.replaceAll('\\', '\\\\').replaceAll('"', '\\"').replaceAll('\n', '\\n')}"`;
+// | }
+// ~ /** Mirrors `fn quote`: the parser's backslash dialect. @param {string} value */
+// ~ export function quote(value) {
+// ~   return `"${waStrReplaceAll(waStrReplaceAll(waStrReplaceAll(value, '\\', '\\\\'), '"', '\\"'), '\n', '\\n')}"`;
+// ~ }
+pub fn quote(value: String) -> String {
+    format!("{}{}", (format!("{}{}", (String::from("\"")), (crate::wa_str_replace_all(crate::wa_str_replace_all(crate::wa_str_replace_all(value.clone(), String::from("\\"), String::from("\\\\")), String::from("\""), String::from("\\\"")), String::from("\n"), String::from("\\n"))))), (String::from("\"")))
+}

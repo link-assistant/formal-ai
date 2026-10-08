@@ -49,3 +49,13 @@ meanings
     lexeme hi "पर जाएं" खोलें देखें "खोलें …" "देखें …" "वेबसाइट पर जाएँ …"
     lexeme zh 打开 访问 前往 查看 打开… 访问… 前往… 查看…
     lexeme es "ve a …" "navega a …" "abre …" "abre la página …" "abre el sitio …" "visita …" "muéstrame …" "llévame a …"
+  page_formalization
+    defined-by action
+    defined-by web_resource
+    role page_formalization_action
+    role http_fetch
+    lexeme en "formalize …" "formalise …" "formalize this page" "formalize the page"
+    lexeme ru "формализуй …" "формализуйте …" "формализуй эту страницу" "формализуй страницу"
+    lexeme hi "औपचारिक बनाओ …" "इस पेज को औपचारिक बनाओ" "पेज को औपचारिक बनाओ"
+    lexeme zh 形式化… 形式化这个网页 形式化网页
+    lexeme es "formaliza …" "formalizar …" "formaliza esta página" "formaliza la página"

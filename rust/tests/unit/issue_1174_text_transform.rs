@@ -32,44 +32,105 @@ fn declined_by(handler: Handler, prompt: &str) -> bool {
     handler(prompt, &normalized, &mut log).is_none()
 }
 
-#[test]
-fn summarization_selects_the_weightiest_statements() {
-    let answer = solved_by(
-        handle_summarization_request,
+/// The payloads of the `kind` events a handler logged while answering.
+fn logged(handler: Handler, prompt: &str, kind: &str) -> Vec<String> {
+    let normalized = normalize_prompt(prompt);
+    let mut log = EventLog::new();
+    handler(prompt, &normalized, &mut log)
+        .unwrap_or_else(|| panic!("the handler should answer: {prompt}"));
+    log.events()
+        .iter()
+        .filter(|event| event.kind == kind)
+        .map(|event| event.payload.clone())
+        .collect()
+}
+
+/// Free-text prompts and the dependency summaries both runtimes answer
+/// (R1188-U21). rust/tests/web/issue-1174-text-transform-parity.test.mjs pins
+/// the same answers in the browser worker.
+const SUMMARIES: &[(&str, &str)] = &[
+    (
         "Summarize this paragraph: The Halley research station, opened in 1956, is used to study \
          the Antarctic ice shelf. It provides year-round measurements of ozone and sea \
          temperature. The crew rotates every summer. Supplies arrive by ship in February. Radar \
          masts surround the living quarters.",
-    );
-    assert_eq!(answer.intent, "summarization_free_text");
-    // Five statements under the ~30% bound keep two: the purpose statement
-    // (weight 100) then the feature statement (weight 70), joined as prose.
+        "The Halley research station opened in 1956 is used to study the Antarctic ice shelf.",
+    ),
+    (
+        "Summarize: The parser reads the file. It builds a tree. The tree is checked.",
+        "The parser reads the file.",
+    ),
+    (
+        "Резюмируй: Парсер читает файл. Он строит дерево. Дерево проверяется.",
+        "Парсер читает файл.",
+    ),
+    (
+        "संक्षेप में लिखें: पार्सर फ़ाइल पढ़ता है। वह एक पेड़ बनाता है। पेड़ जाँचा जाता है।",
+        "पार्सर फ़ाइल पढ़ता है।",
+    ),
+    (
+        "总结一下：解析器读取文件。它构建一棵树。树被检查。",
+        "解析器读取文件。",
+    ),
+    (
+        "Resume esto: El analizador lee el archivo. Construye un árbol. El árbol se comprueba.",
+        "El analizador lee el archivo.",
+    ),
+];
+
+#[test]
+fn summarization_keeps_the_statements_the_text_depends_on() {
+    for (prompt, summary) in SUMMARIES {
+        let answer = solved_by(handle_summarization_request, prompt);
+        assert_eq!(answer.intent, "summarization_free_text", "{prompt}");
+        assert_eq!(answer.answer, *summary, "{prompt}");
+    }
+}
+
+#[test]
+fn summarization_traces_every_statement_and_duplicate() {
+    let prompt =
+        "Summarize: The parser reads the file. The parser reads the file. It builds a tree.";
     assert_eq!(
-        answer.answer,
-        "The Halley research station, opened in 1956, is used to study the Antarctic ice \
-         shelf. It provides year-round measurements of ozone and sea temperature."
+        solved_by(handle_summarization_request, prompt).answer,
+        "The parser reads the file."
     );
-    // The purpose and feature statements outrank the misc ones.
-    assert!(
-        answer.answer.contains("is used to study"),
-        "the purpose statement must survive: {}",
-        answer.answer
+    assert_eq!(
+        logged(
+            handle_summarization_request,
+            prompt,
+            "summarization_statement"
+        ),
+        vec![
+            "kept The parser reads the file.".to_owned(),
+            "dropped It builds a tree.".to_owned(),
+        ]
     );
-    assert!(
-        answer.answer.contains("year-round measurements"),
-        "the feature statement must survive: {}",
-        answer.answer
+    assert_eq!(
+        logged(
+            handle_summarization_request,
+            prompt,
+            "summarization_duplicate"
+        ),
+        vec!["The parser reads the file.".to_owned()]
     );
-    assert!(
-        !answer.answer.contains("Radar masts"),
-        "a misc statement must be dropped: {}",
-        answer.answer
+    assert_eq!(
+        logged(handle_summarization_request, prompt, "summarization_bound"),
+        vec!["1/2".to_owned()]
     );
 }
 
 #[test]
 fn summarization_declines_a_prompt_without_text() {
     assert!(declined_by(handle_summarization_request, "Summarize this."));
+}
+
+#[test]
+fn summarization_declines_a_single_statement() {
+    assert!(declined_by(
+        handle_summarization_request,
+        "Summarize: Cats sleep a lot."
+    ));
 }
 
 #[test]

@@ -231,7 +231,7 @@ export function ownedManifestContentId() {
   return cached('owned-manifest-content-id', () => fastStableId('source_tree', ownedManifestNotation()));
 }
 
-/** Mirrors `fn quote` in rust/src/self_source_links.rs (and self_explanation.rs). */
+/** Mirrors `fn quote` in rust/src/self_source_links.rs (and self_explanation.rs). @param {string} value */
 export function quote(value) {
   return value.replaceAll('\\', '\\\\').replaceAll('"', "'").replaceAll('\n', '\\n')
     .replaceAll('\r', '\\r').replaceAll('\t', '\\t');

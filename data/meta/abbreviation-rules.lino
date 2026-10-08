@@ -41,9 +41,13 @@ abbreviation-rules
       reason "the coordination archive keeps its names as written"
     excluded data/meta/requirement-status-ledger
       reason "generated, one file per requirement document and named for it"
+    excluded js/worker/formal_ai_worker_crate_*
+      reason "the browser worker's generated copies of js/agentic/crate modules (scripts/generate-worker-crate-modules.mjs), named and spelled as their sources"
     fixed-name lib
       reason "the stem of the crate root file Rust fixes (src/lib.rs), and of a script directory's lib.sh by the same convention"
   bindings js
     excluded js/vendor
       reason "third-party code, kept byte for byte"
+    excluded js/worker/formal_ai_worker_crate_*
+      reason "generated copies of js/agentic/crate modules, whose names the sources already count"
   bindings rust/src

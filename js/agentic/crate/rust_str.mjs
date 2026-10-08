@@ -92,7 +92,7 @@ export const stripPrefix = (text, prefix) => (text.startsWith(prefix) ? text.sli
 /** `str::strip_suffix` -> rest or null. */
 export const stripSuffix = (text, suffix) => (text.endsWith(suffix) ? text.slice(0, text.length - suffix.length) : null);
 
-/** `str::replace(from, to)` without `$` pattern expansion. */
+/** `str::replace(from, to)` without `$` pattern expansion. @param {string} text @param {string} from @param {string} to */
 export const replaceAllLiteral = (text, from, to) => text.split(from).join(to);
 
 /** `str::split_inclusive('\n')`. */

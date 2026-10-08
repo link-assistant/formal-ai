@@ -20,9 +20,10 @@
 // Representation: an entry is `{statement, sentence, closing}` (the index of
 // its sentence and that sentence's closing punctuation, or ''); a node adds
 // `dependsOn` and `dependents`, lists of node indexes; a summary is
-// `{statements, duplicates, kept, text}` where `kept` lists node indexes.
+// `{statements, duplicates, removed, kept, text}` where `removed` lists the
+// duplicate entries and `kept` lists node indexes.
 
-import { compareStrings } from './summarization_dedup.mjs';
+import { byteOrder } from './rust_str.mjs';
 import { contentIds, formalizeSentences, joinSurfaces, statementIdentity } from './text_formalization.mjs';
 
 /** Mirrors `ELABORATION_SHARED_TERMS` in rust/src/summarization/dependency.rs: shared terms that make one statement elaborate another. */
@@ -71,20 +72,29 @@ export function restates(later, earlier) {
 }
 
 /**
- * Mirrors `fn without_duplicates` in rust/src/summarization/dependency.rs: the statements no earlier kept statement
- * restates, and how many were dropped.
+ * Mirrors `fn split_duplicates` in rust/src/summarization/dependency.rs: the statements no earlier kept statement
+ * restates, and the ones that restate one (the duplicates removed), each in text order.
  */
-export function withoutDuplicates(entries) {
+export function splitDuplicates(entries) {
   const unique = [];
-  let duplicates = 0;
+  const removed = [];
   for (const entry of entries) {
     if (unique.some((earlier) => restates(entry.statement, earlier.statement))) {
-      duplicates += 1;
+      removed.push(entry);
       continue;
     }
     unique.push(entry);
   }
-  return { unique, duplicates };
+  return { unique, removed };
+}
+
+/**
+ * Mirrors `fn without_duplicates` in rust/src/summarization/dependency.rs: the statements no earlier kept statement
+ * restates, and how many were dropped.
+ */
+export function withoutDuplicates(entries) {
+  const { unique, removed } = splitDuplicates(entries);
+  return { unique, duplicates: removed.length };
 }
 
 /** Mirrors `fn shared_terms` in rust/src/summarization/dependency.rs: how many distinct term ids two statements share. */
@@ -160,12 +170,13 @@ export function renderKept(nodes, kept) {
  */
 export function summarizeByDependency(text, language) {
   const entries = sentenceStatements(text, language);
-  const { unique, duplicates } = withoutDuplicates(entries);
+  const { unique, removed } = splitDuplicates(entries);
   const nodes = statementGraph(unique);
   const kept = keptCore(nodes);
   return {
     statements: nodes,
-    duplicates,
+    duplicates: removed.length,
+    removed,
     kept,
     text: renderKept(nodes, kept),
   };
@@ -181,7 +192,7 @@ export function keyFacts(text, language) {
   if (entries.length === 0) return [];
   const first = entries[0].sentence;
   const ids = entries.filter((entry) => entry.sentence === first).flatMap((entry) => contentIds(entry.statement));
-  return [...new Set(ids)].sort(compareStrings);
+  return [...new Set(ids)].sort(byteOrder);
 }
 
 /** Mirrors `fn retained_facts` in rust/src/summarization/dependency.rs: how many of `facts` the kept statements still hold. */

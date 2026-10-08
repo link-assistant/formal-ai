@@ -1,9 +1,21 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=733edce650b8973c35ce16e254ce55b7c713fb979c02b1620b4e7d5b83a8d9a1 bytes=4799
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=96011895904247aab1483366e87feade042dc4b26fcf2f5bf8c0efaebf26676d bytes=4828
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
+// formal-ai:workarounds string-methods items=1
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// formal-ai:workaround-prelude begin
+pub fn wa_str_split(text: String, separator: String) -> Vec<String> {
+    if separator.is_empty() {
+        return text.encode_utf16().map(|unit| String::from_utf16_lossy(&[unit])).collect();
+    }
+    text.split(separator.as_str()).map(String::from).collect() }
+
+pub fn wa_strs_join(items: Vec<String>, separator: String) -> String {
+    items.join(separator.as_str()) }
+// formal-ai:workaround-prelude end
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import from '…'
@@ -71,13 +83,22 @@ pub const EDITOR_AGENT_SESSION: &str = "agent_session";
 // formal-ai:refusal method call .find()
 // formal-ai:blockers arrow callback of .find() | assignment of a field or element | field access | method call .find() | method call .push()
 
-// meta-language:carried JavaScript function_declaration (unsupported)
-// formal-ai:refusal method call .split()
-// formal-ai:blockers method call .join() | method call .split()
+// formal-ai:workaround string-methods JavaScript function_declaration items=1 sha256=f8f65ed4acbe9a32d2573730957136515b90214786e7716af4f46ea4b8de12a7
+// | /** @param {string} value */
+// | function quote(value) {
+// |   return value.split('"').join('""');
+// | }
+// ~ /** @param {string} value */
+// ~ function quote(value) {
+// ~   return waStrsJoin(waStrSplit(value, '"'), '""');
+// ~ }
+pub fn quote(value: String) -> String {
+    crate::wa_strs_join(crate::wa_str_split(value.clone(), String::from("\"")), String::from("\"\""))
+}
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal function value …
-// formal-ai:blockers call of a sibling function | destructuring | field access | method call .join() | method call .push()
+// formal-ai:blockers destructuring | field access | method call .join() | method call .push()
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .split()

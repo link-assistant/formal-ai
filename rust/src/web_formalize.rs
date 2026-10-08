@@ -290,6 +290,25 @@ pub fn url_domain(url: &str) -> String {
     host.strip_prefix("www.").unwrap_or(&host).to_owned()
 }
 
+/// The prose of a fetched page (R1188-U18): the text of its paragraphs and
+/// list items, one block per line, in page order. Headings, table rows and
+/// code are not prose, so text formalization never reads them as sentences.
+/// The browser twin is `pageProse` in
+/// `js/worker/formal_ai_worker_page_formalization.js`.
+#[must_use]
+pub fn page_prose(bytes: &[u8], url: &str) -> String {
+    let (_, blocks) = formalize_page_with_context(bytes, None, Some(url));
+    let texts: Vec<String> = blocks
+        .into_iter()
+        .filter_map(|(_, block)| match block {
+            PageBlock::Paragraph { text, .. } | PageBlock::ListItem { text } => Some(text),
+            _ => None,
+        })
+        .filter(|text| !text.trim().is_empty())
+        .collect();
+    texts.join("\n")
+}
+
 /// Convert raw fetched bytes into a [`LinkNetwork`] (issue #1163 R1).
 ///
 /// Headings become section links, paragraphs become statement links, lists

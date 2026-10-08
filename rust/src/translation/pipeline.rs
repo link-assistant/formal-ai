@@ -76,6 +76,33 @@ impl Translation {
             .or_else(|| self.candidates.first())
             .map(|c| c.surface.as_str())
     }
+
+    /// The target-language surface that survives the round trip best.
+    ///
+    /// Among several candidates, the one
+    /// [`super::round_trip::round_trip_choice`] picks: the candidate read back
+    /// as the source surface's meaning, then the one returning the source
+    /// surface itself (R1188-U19). The [`Translation::primary_surface`] is
+    /// tried first, so it stands wherever the round trip cannot tell the
+    /// candidates apart.
+    #[must_use]
+    pub fn round_trip_surface(&self) -> Option<&str> {
+        let primary = self.primary_surface()?;
+        let mut surfaces = vec![primary];
+        surfaces.extend(
+            self.candidates
+                .iter()
+                .map(|candidate| candidate.surface.as_str())
+                .filter(|surface| *surface != primary),
+        );
+        let chosen = super::round_trip::round_trip_choice(
+            &self.source_surface,
+            &self.source_lang,
+            &self.target_lang,
+            &surfaces,
+        );
+        Some(chosen.map_or(primary, |index| surfaces[index]))
+    }
 }
 
 // The word-by-word sentence translation arm (issue #1174) lives in
