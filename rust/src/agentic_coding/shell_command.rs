@@ -235,8 +235,15 @@ pub(super) fn explicit_passthrough_command(prompt: &str) -> Option<String> {
     if governs_commands_rather_than_requesting_one(prompt) {
         return None;
     }
-    prefixed_shell_command(prompt, &seed::terminal_command_vocabulary())
-        .filter(|command| super::shell_command_policy::shell_quotes_paired(command))
+    let vocabulary = seed::terminal_command_vocabulary();
+    let command = prefixed_shell_command(prompt, &vocabulary)?;
+    let first = normalize_command_word(command.split_whitespace().next()?);
+    if intent_shell_command(prompt, &seed::shell_intent_vocabulary()).is_some()
+        && !vocabulary.shell_tokens.contains(&first)
+    {
+        return None;
+    }
+    super::shell_command_policy::shell_quotes_paired(&command).then_some(command)
 }
 
 fn bare_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Option<String> {

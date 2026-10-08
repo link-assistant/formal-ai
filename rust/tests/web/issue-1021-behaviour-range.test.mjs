@@ -16,12 +16,14 @@ import { createWorkerContext, evaluate } from './support/browser-runtime.mjs';
 
 let planner;
 let mutating;
+let shell;
 let worker;
 
 before(async () => {
   await installNodeHost(new WorkerHost());
   planner = await import('../../../js/agentic/planner.mjs');
   mutating = await import('../../../js/agentic/mutating_action.mjs');
+  shell = await import('../../../js/agentic/shell_command.mjs');
   worker = createWorkerContext();
   await evaluate(worker, 'loadSeed()');
 });
@@ -51,7 +53,11 @@ async function shellCommand(prompt) {
     // A read-only command is the whole plan; only a recipe opens with a check.
     if (commands.length === 1 && !command.startsWith('test ')) break;
   }
-  return commands.find((command) => mutating.verifiedRecipe(command)) ?? commands[0] ?? null;
+  const resolved = shell.shellCommandForTask(prompt);
+  const recipe = resolved === null ? null : mutating.expand(resolved);
+  if (recipe === null) return commands[0] ?? null;
+  assert.deepEqual(commands, recipe.steps, 'every declared precondition, preparation, action and postcondition is driven');
+  return commands[recipe.action] ?? null;
 }
 
 const solve = (prompt) => worker.solve(prompt, [], {}, {}, [], {});
