@@ -2,7 +2,7 @@
 // Shared constants and page helpers for the multilingual-*.spec.js suites
 // (split from the former multilingual.spec.js; this file is not itself a spec).
 const { expect } = require('@playwright/test');
-const { WORKER_READY_TIMEOUT_MS } = require('./worker-ready');
+const { WORKER_READY_TIMEOUT_MS, allowWorkerBoot } = require('./worker-ready');
 
 const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local links rules';
 const TEN_POW_100 =
@@ -196,6 +196,8 @@ async function setUiLanguage(page, language) {
       `demo_preferences\n  demoMode "off"\n  greetingVariations "off"\n  uiLanguage "${nextLanguage}"`,
     );
   }, language);
+  // The reload boots the worker again.
+  allowWorkerBoot();
   await page.reload();
   await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
   await expect(page.locator('html')).toHaveAttribute('lang', language);
