@@ -333,7 +333,7 @@ fn a_grammar_correction_answer_carries_its_rules_in_the_derivation() {
 
 // R1184-1: the id is the FNV-1a `stable_id` of the answer text, so every
 // root computes the same value. The browser worker (`finalize` in
-// js/worker/formal_ai_worker_20.js) and the JavaScript server pin the same
+// js/worker/formal_ai_worker_solve.js) and the JavaScript server pin the same
 // constant in rust/tests/web/issue-1184-derivation-id-surfaces.test.mjs.
 #[test]
 fn the_derivation_id_is_the_same_constant_in_every_root() {

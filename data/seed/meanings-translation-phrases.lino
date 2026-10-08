@@ -3,7 +3,7 @@
 # Each meaning carries the role `translation_phrase`; the first surface of a
 # language is the form a translation answers with, the others are the
 # phrasings it recognizes (compared by their letters and digits only). The
-# browser worker read them from a table in js/worker/formal_ai_worker_04.js
+# browser worker read them from a table in js/worker/formal_ai_worker_capabilities_and_runtime_rules.js
 # before; it now reads them by role (meaningsWithRole).
 meanings
   translation_phrase

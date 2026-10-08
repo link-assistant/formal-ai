@@ -79,7 +79,7 @@ check(
   !/mask|tramp|tromp|bidan|einstien|issac|vladmir|puting/i.test(raw['seed/entity-names.lino']),
 );
 // Localized headings come from seed data, not from JavaScript literals.
-const worker09 = fs.readFileSync(path.join(WORKER_DIR, 'formal_ai_worker_09.js'), 'utf8');
+const worker09 = fs.readFileSync(path.join(WORKER_DIR, 'formal_ai_worker_wikipedia_and_shell_commands.js'), 'utf8');
 check('no hardcoded merge headings', !worker09.includes('Merged definition of'));
 check('no hardcoded person table', !worker09.includes('KNOWN_PERSON_VARIANTS'));
 

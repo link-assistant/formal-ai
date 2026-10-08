@@ -177,7 +177,7 @@ fn warning_band_files_are_small_and_split_responses_cover_the_registry() {
         // Issue #1138 (L1) moved the crate to `rust/`; the caps are unchanged.
         ("rust/src/intent_formalization.rs", 900),
         ("rust/src/agentic_coding/general_planner.rs", 900),
-        ("js/worker/formal_ai_worker_20.js", 1_400),
+        ("js/worker/formal_ai_worker_solve.js", 1_400),
         ("data/seed/multilingual-responses-agentic.lino", 1_400),
         ("data/seed/multilingual-responses-agentic-tools.lino", 1_400),
     ] {

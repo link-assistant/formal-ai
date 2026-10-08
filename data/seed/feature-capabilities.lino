@@ -4,7 +4,7 @@
 # that gates it; `label` and `example` give the localized wording, and a
 # language without an entry falls back to English. Read by
 # rust/src/solver_handlers/feature_capability.rs and the browser twin in
-# js/worker/formal_ai_worker_04.js, so both runtimes answer from one table.
+# js/worker/formal_ai_worker_capabilities_and_runtime_rules.js, so both runtimes answer from one table.
 feature_capabilities
   feature feature_capability_web_search
     state "web_search"

@@ -15,7 +15,7 @@
 // Usage: node scripts/check-prompt-specialization.mjs [--list]
 
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -101,7 +101,7 @@ function main(argv) {
       maxBuffer: 1 << 28,
     })
       .split('\n')
-      .filter((path) => extensions.test(path));
+      .filter((path) => extensions.test(path) && existsSync(join(root, path)));
   const read = (path) => readFileSync(join(root, path), 'utf8');
   const prompts = listed(TEST_ROOTS).flatMap((path) => promptsOf(read(path)));
   // Source code includes the browser app's JSX: its local fallbacks and

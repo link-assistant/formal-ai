@@ -4,7 +4,7 @@
 // one node per repeated literal (R1166-2), the never-discarded underivable
 // clause (R1166-5), the multilingual (R1166-6) and paraphrase (R1166-7)
 // fixtures, and the terminal-routing guard (R1166-8), which the browser
-// worker's `leadingShellCommand` (js/worker/formal_ai_worker_09.js) now reads
+// worker's `leadingShellCommand` (js/worker/formal_ai_worker_wikipedia_and_shell_commands.js) now reads
 // exactly as the native `leading_shell_command` does.
 
 import assert from 'node:assert/strict';

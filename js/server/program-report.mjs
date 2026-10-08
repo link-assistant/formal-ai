@@ -6,7 +6,7 @@
 // The browser worker reports what its Web Worker sandbox could run; the
 // native server reports the toolchain run recorded in data/seed/toolchains.lino.
 // The worker hands over both its own block and the facts the native report is
-// built from (`programExecution`, js/worker/formal_ai_worker_16.js), and this
+// built from (`programExecution`, js/worker/formal_ai_worker_write_program_and_research.js), and this
 // module swaps one for the other. The wording lives in
 // data/meta/server-messages.lino.
 

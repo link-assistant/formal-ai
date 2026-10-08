@@ -122,7 +122,7 @@ test("the diagnostic override answers from JS with honest provenance", async () 
 
 test("the source no longer contains the silent fallback assignment", () => {
   const source = readFileSync(
-    path.join(REPO_ROOT, "js/worker/formal_ai_worker_20.js"),
+    path.join(REPO_ROOT, "js/worker/formal_ai_worker_solve.js"),
     "utf8",
   );
   assert.ok(!source.includes('mode = "js fallback"'), "the silent fallback is gone");

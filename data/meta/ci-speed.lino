@@ -28,10 +28,6 @@ ci-speed
   sharded-suite ".github/workflows/release.yml"
   sharded-suite ".github/workflows/layered-ci.yml"
   sharded-suite ".github/workflows/e2e-local.yml"
-  workflow ".github/workflows/agent-cli-e2e.yml"
-    over-limit-job agent-cli-e2e
-      timeout-minutes 45
-      reason "Measured 23.1 minutes at most. The cap outlasts the 900s computer-use record/replay and 600s held-out deadlines plus setup under the 70% share rule (issue #1069, #1081). To meet 30: move the two computer-use steps into a third matrix leg."
   workflow ".github/workflows/container-images.yml"
     over-limit-job build
       timeout-minutes 90
@@ -76,6 +72,3 @@ ci-speed
     over-limit-job manual-release
       timeout-minutes 90
       reason "Dispatch only: the auto-release job's work on demand, under the same issue #977 floor of 60 minutes."
-    over-limit-job deploy-pages
-      timeout-minutes 35
-      reason "Push to main only: cargo doc for the API reference plus the GitHub Pages deployment queue, which can stall for minutes (PR #965)."

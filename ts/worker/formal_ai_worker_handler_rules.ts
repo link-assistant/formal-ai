@@ -608,7 +608,7 @@ function handlerRulesHolds(condition, context) {
       // The claim-evidence kind the capability table admits a handler on
       // (Rust `capability_routing::claim_evidence_holds_in_dialogue`), so a
       // rule's refusal lane reads the same reader its admission does.
-      const reader = typeof CLAIM_EVIDENCE === "object" ? CLAIM_EVIDENCE[condition.value] : null;
+      const reader = typeof claimEvidence === "function" ? claimEvidence()[condition.value] : null;
       return typeof reader === "function"
         && Boolean(reader(context.prompt, context.subjects.normalized, context.history));
     }

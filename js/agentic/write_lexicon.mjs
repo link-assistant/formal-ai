@@ -2,7 +2,7 @@
 // (rust/src/seed/meanings.rs `Lexicon::role_word_forms`, `words_for_role`,
 // `mentions_role`, `mentions_role_raw`, `WordForm::slot/before_slot/after_slot`),
 // read through the booted worker realm's port of the same lexicon
-// (js/worker/formal_ai_worker_13.js). Agent "write" helper; agent "core" owns
+// (js/worker/formal_ai_worker_meaning_lexicon.js). Agent "write" helper; agent "core" owns
 // the general crate/seed_meanings.mjs.
 
 import { realm } from './host.mjs';

@@ -3,7 +3,7 @@
 //
 // - `rust_and_browser_coding_inheritance_are_cycle_safe_not_depth_capped`
 //   only reads the browser source for the absence of a depth constant; here the
-//   worker's own `codingLanguageChain` (js/worker/formal_ai_worker_07.js) walks
+//   worker's own `codingLanguageChain` (js/worker/formal_ai_worker_coding_idioms_and_text_manipulation.js) walks
 //   an `extends` chain deeper than any former cap and stops on a cycle.
 // - `nested_context_auto_learning_is_derived_and_review_gated` and
 //   `real_agent_cli_learning_artifact_is_byte_reproducible`: the JavaScript

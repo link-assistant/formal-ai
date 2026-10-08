@@ -1,7 +1,7 @@
 // Claim evidence for the handler classes of issue #1175 R3 that read their
 // operand from the dialogue, compose from a specification, or look up a
-// subject. Twin of rust/src/capability_routing/claim_evidence.rs; spread into
-// CLAIM_EVIDENCE (formal_ai_worker_dispatch.js).
+// subject. Twin of rust/src/capability_routing/claim_evidence.rs; joined into
+// claimEvidence() (formal_ai_worker_dispatch.js).
 //
 // Every kind is the reader the handler itself runs before it answers, so a
 // row admits exactly the prompts the handler could answer from structure:

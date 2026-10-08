@@ -53,7 +53,7 @@ const RUST_TRACE = {
   prompt: PROMPT,
 };
 
-// The worker's trace for the same turn (js/worker/formal_ai_worker_16.js
+// The worker's trace for the same turn (js/worker/formal_ai_worker_write_program_and_research.js
 // `writeProgramDiagnosticBundle`).
 const WORKER_STEPS = [
   { step: "impulse", detail: PROMPT },

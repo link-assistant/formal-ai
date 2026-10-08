@@ -13,7 +13,7 @@
 //! Every byte goes through [`CachedSourceClient`], so an offline client reads
 //! only the capture cache and a cache miss is an honest `Err`, never a guess.
 //! This is the native twin of the browser worker's
-//! `resolveFactQueryViaWikidata` (`js/worker/formal_ai_worker_10.js`).
+//! `resolveFactQueryViaWikidata` (`js/worker/formal_ai_worker_facts_and_software_phrases.js`).
 
 use serde_json::Value;
 

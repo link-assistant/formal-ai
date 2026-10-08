@@ -193,8 +193,11 @@ export function loadWorkerMirror(overrides = {}) {
  * `data/seed/` tree, which is exactly what the dev server mirrors into
  * `js/seed/`. The result is a worker booted from production sources and real
  * seed data, so the answers the tests assert are the answers the site gives.
+ *
+ * `reorderModules`, when given, maps the module list the entry loads to the
+ * order to load it in, so a test can prove the modules load in any order.
  */
-export function createWorkerContext(overrides = {}) {
+export function createWorkerContext(overrides = {}, { reorderModules = null } = {}) {
   const context = createBrowserContext({
     location: { href: "http://localhost/worker/formal_ai_worker.js", search: "" },
     fetch: (url) => {
@@ -213,7 +216,11 @@ export function createWorkerContext(overrides = {}) {
   });
   context.importScripts = (...urls) => {
     for (const url of urls) {
-      loadBrowserScript(context, path.posix.join("js", webRootPath(url)));
+      const relative = webRootPath(url);
+      loadBrowserScript(context, path.posix.join("js", relative));
+      if (reorderModules && relative === "worker-modules.js") {
+        context.FORMAL_AI_WORKER_MODULES = Object.freeze(reorderModules([...context.FORMAL_AI_WORKER_MODULES]));
+      }
     }
   };
   loadBrowserScript(context, "js/worker/formal_ai_worker.js");

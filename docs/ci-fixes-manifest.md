@@ -38,7 +38,7 @@ validated TLS store fetched the records instead. No certificate check was disabl
   and stale census documents. Regenerate from the final source tree in CI;
   the draft has no locally generated census or fabricated fidelity markers.
 - **TS regeneration:** Layered CI [run 36707093399](https://github.com/link-assistant/formal-ai/actions/runs/36707093399)
-  changes `ts/worker/formal_ai_worker_10.ts` and `_20.ts`. Reconcile with the UI
+  changes `ts/worker/formal_ai_worker_facts_and_software_phrases.ts` and `_20.ts`. Reconcile with the UI
   agent's current JS/TS work, then let CI compare the actual translator output.
 - **Role registry:** `reference_closure::role_registry_is_in_lockstep_with_usage`
   requires registry reconciliation after every newly added role. Regenerate or

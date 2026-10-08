@@ -7,7 +7,7 @@
 # speaks of the browser session, the native one of the configuration.
 # Placeholders in braces are filled by
 # rust/src/solver_handlers/feature_capability.rs and the browser twin in
-# js/worker/formal_ai_worker_04.js. The meta_explanation_architecture records
+# js/worker/formal_ai_worker_capabilities_and_runtime_rules.js. The meta_explanation_architecture records
 # answer how the assistant itself is built, with the current surface's label,
 # slug, runtime, memory and web-search notes filled in by each runtime.
 multilingual_responses

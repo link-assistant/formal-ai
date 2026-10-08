@@ -11,8 +11,8 @@
 //! `installation_*` tables and policy of `data/seed/handler-rules.lino`, and
 //! every sentence is a seeded `installation_*` response. Only the script
 //! syntax itself (fence infos, strict-mode lines, wrappers, probe flags) stays
-//! here, as the browser twin in `js/worker/formal_ai_worker_11.js` and
-//! `js/worker/formal_ai_worker_12.js` keeps it too.
+//! here, as the browser twin in `js/worker/formal_ai_worker_software_project_plans.js` and
+//! `js/worker/formal_ai_worker_installation_and_software_followups.js` keeps it too.
 
 use std::fmt::Write as _;
 

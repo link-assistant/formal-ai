@@ -5,7 +5,7 @@
 # names the value noun ({noun}: numbers or strings). {lang} is the program
 # language and {given} the list as given. Filled in one pass by
 # rust/src/solver_handlers/numeric_list/mod.rs and the browser twin in
-# js/worker/formal_ai_worker_06.js.
+# js/worker/formal_ai_worker_arithmetic_and_numeric_lists.js.
 multilingual_responses
   response response_numeric_list_intro_sort_en
     intent numeric_list_intro_sort

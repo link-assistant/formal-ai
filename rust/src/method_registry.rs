@@ -660,7 +660,7 @@ impl MethodRegistry {
     /// ([`crate::seed::before_promotion_handlers`], issue #1175 p133) moved
     /// ahead of the promoted methods, right after the prelude: the browser
     /// worker asks those in its fixed early phase, before the walk its
-    /// promotions reorder (`claimRouteRun` in `js/worker/formal_ai_worker_20.js`).
+    /// promotions reorder (`claimRouteRun` in `js/worker/formal_ai_worker_solve.js`).
     #[must_use]
     pub fn dispatch_order(&self, relevants: &[String]) -> Vec<String> {
         let mut ordered = self.ordered_method_names_for_relevants(relevants);

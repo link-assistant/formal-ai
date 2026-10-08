@@ -380,7 +380,7 @@ fn cycle_history_is_hash_linked_and_rendered_for_replay() {
 
 #[test]
 fn browser_worker_already_runs_the_same_unknown_research_before_fallback() {
-    const WORKER: &str = include_str!("../../../js/worker/formal_ai_worker_20.js");
+    const WORKER: &str = include_str!("../../../js/worker/formal_ai_worker_solve.js");
     let research = WORKER.find("unknown_intent_research").unwrap();
     let fallback = WORKER.find("fallback:unknown").unwrap();
     assert!(research < fallback);

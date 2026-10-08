@@ -31,7 +31,7 @@ const UNAVAILABLE: &str = "unavailable";
 /// table of `data/seed/handler-rules.lino` by kind, and the queries, the
 /// sample word limit and the default target its `document_originality_check`
 /// policy. Twin of `documentOriginalityMarkers` in
-/// `js/worker/formal_ai_worker_21.js`.
+/// `js/worker/formal_ai_worker_statement_verification.js`.
 fn originality_markers<'a>(kinds: &'a [&'a str]) -> impl Iterator<Item = &'static str> + 'a {
     handler_table_rows(MARKER_TABLE)
         .iter()

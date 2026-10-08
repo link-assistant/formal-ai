@@ -3,7 +3,7 @@ requirement_status_ledger
   source "REQUIREMENTS.md and docs/requirements/*.md"
   verdict_vocabulary "implemented | partial | not-delivered | superseded | withdrawn"
   manual_column "aspirational since 2026-09-30 (issue #1090): not yet confirmed rows carry no debt"
-  requirement_count 1365
+  requirement_count 1366
   implemented_count 1311
   shard "data/meta/requirement-status-ledger/requirements-01.lino"
   shard "data/meta/requirement-status-ledger/requirements-02.lino"

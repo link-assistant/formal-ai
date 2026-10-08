@@ -64,7 +64,7 @@ fn follow_up_policy(key: &str) -> String {
 ///
 /// The sentence is read in `language`, in English when the seed has no
 /// translation. Twin of `softwareFollowUpText` in
-/// `js/worker/formal_ai_worker_12.js`.
+/// `js/worker/formal_ai_worker_installation_and_software_followups.js`.
 fn follow_up_text(name: &str, language: &str, values: &[(&str, &str)]) -> String {
     let intent = format!("software_project_followup_{name}");
     let template = response_for(&intent, language)

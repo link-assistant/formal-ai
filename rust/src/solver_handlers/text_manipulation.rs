@@ -683,7 +683,7 @@ fn parse_replace_request(
 ///
 /// The quoted target comes first, unless a cue that names its target after it
 /// sits between them ("cat" instead of "dog"). Twin of `replacementOperands`
-/// in `js/worker/formal_ai_worker_07.js`.
+/// in `js/worker/formal_ai_worker_coding_idioms_and_text_manipulation.js`.
 fn replacement_operands(
     prompt: &str,
     first: &QuotedSegment,
@@ -780,7 +780,7 @@ fn contains_replacement_keyword(text: &str) -> bool {
 /// `data/seed/handler-rules.lino`. A row whose value is `ends_with`
 /// is read at the end of the normalized text, any other row anywhere in the
 /// lowercased text; a replacement cue's value is the order it quotes its
-/// operands in. Twin of `textCueMatches` in `js/worker/formal_ai_worker_07.js`.
+/// operands in. Twin of `textCueMatches` in `js/worker/formal_ai_worker_coding_idioms_and_text_manipulation.js`.
 fn text_cue_matches(table: &str, text: &str, reading: Option<&str>) -> bool {
     let raw = text.to_lowercase();
     let normalized = normalize_replacement_prompt(text);

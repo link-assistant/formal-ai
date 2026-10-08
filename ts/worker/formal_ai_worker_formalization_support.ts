@@ -182,7 +182,7 @@ function formalizationIdentity(graph) {
     `structures=${structures.join(",")};relations=${relations.join(",")};procedure_shapes=${procedureShapes.join(",")}`,
   );
 }
-// Moved from formal_ai_worker_20.js (issue #999 warning band): the
+// Moved from formal_ai_worker_solve.js (issue #999 warning band): the
 // formalization fold-back, interpretation, deformalization and thinking-level
 // helpers finalize() applies to every answer.
 // Fold a handler's concrete entity back into its initial formalization trace.

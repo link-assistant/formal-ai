@@ -351,7 +351,7 @@ impl UniversalSolver {
             // R1012: the general loop runs ahead of the handler table. A
             // program verified against the request's examples, or one every
             // word of the request grounds, answers here (`metaReason` at the
-            // top of `solveImpl`, js/worker/formal_ai_worker_20.js).
+            // top of `solveImpl`, js/worker/formal_ai_worker_solve.js).
             if let Some(answer) = crate::meta_reasoner::try_meta_answer(
                 prompt,
                 language.slug(),
@@ -853,7 +853,7 @@ impl UniversalSolver {
             }
         })();
         // R1012: a handler that admits an impasse hands the turn to the
-        // general loop (`metaResolveImpasse`, js/worker/formal_ai_worker_20.js).
+        // general loop (`metaResolveImpasse`, js/worker/formal_ai_worker_solve.js).
         crate::meta_reasoner::resolve_impasse(prompt, &mut answer, &mut log);
         crate::derivation::finalize_answer(&mut answer, &mut log);
         answer

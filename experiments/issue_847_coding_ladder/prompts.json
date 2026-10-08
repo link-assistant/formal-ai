@@ -352,7 +352,7 @@
       "prompt": "In this repository, find where reciprocalRankFusion is implemented in JavaScript and tell me the file name.",
       "verify": "true",
       "note": "Atomic search; the step every targeted edit begins with.",
-      "expect_answer": "formal_ai_worker_19.js"
+      "expect_answer": "formal_ai_worker_web_search_and_projects.js"
     },
     {
       "id": "search.find_world",

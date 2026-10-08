@@ -279,7 +279,7 @@ fn parity_rules() -> Vec<ParityRule> {
 }
 
 fn worker_source() -> String {
-    let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("../js/worker/formal_ai_worker_20.js");
+    let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("../js/worker/formal_ai_worker_solve.js");
     fs::read_to_string(&path).unwrap_or_else(|error| panic!("worker source readable: {error}"))
 }
 
@@ -297,7 +297,7 @@ fn worker_handler_registry_keys() -> Vec<String> {
     let src = worker_source();
     let start = src.find("const workerHandlers = {").unwrap_or_else(|| {
         panic!(
-            "plan 09 leaf 14 owes js/worker/formal_ai_worker_20.js a name-keyed \
+            "plan 09 leaf 14 owes js/worker/formal_ai_worker_solve.js a name-keyed \
              `const workerHandlers = {{ … }}` registry; the file still declares an array \
              literal, so a renamed handler cannot fail loudly"
         )

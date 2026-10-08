@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_program_blueprints.js"
+  ceiling 1250
+  rationale "The composite program blueprints: their sources, capability detection, composition and the blueprint write-program answer. Issue #658 cut this module out of one oversized worker file by line count; R1188-U5 named it after what it holds. Its ceiling falls as its logic moves into js/wasm-worker. Ceiling moved 1175 to 1250 (R1188-U5): BLUEPRINT_RUST_HTTP_JSON_STATS moved here from formal_ai_worker_program_plans.js because the recipes read it while this module loads, and the first comment lines say what the module holds."

@@ -696,7 +696,7 @@ mod tests {
         let worker_dir = repo.join("js/worker");
         fs::create_dir_all(&worker_dir).unwrap();
         write_js_file_with_lines(
-            &worker_dir.join("formal_ai_worker_00.js"),
+            &worker_dir.join("formal_ai_worker_seed_responses_and_language.js"),
             WORKER_JS_LIMIT.max_lines + 1,
         );
 
@@ -705,7 +705,7 @@ mod tests {
         assert_eq!(
             result.violations,
             vec![Finding {
-                file: "js/worker/formal_ai_worker_00.js".to_string(),
+                file: "js/worker/formal_ai_worker_seed_responses_and_language.js".to_string(),
                 lines: WORKER_JS_LIMIT.max_lines + 1,
                 max_lines: WORKER_JS_LIMIT.max_lines,
                 warn_lines: WORKER_JS_LIMIT.warn_lines,
@@ -741,7 +741,7 @@ mod tests {
         let worker_dir = repo.join("js/worker");
         fs::create_dir_all(&worker_dir).unwrap();
         fs::write(
-            worker_dir.join("formal_ai_worker_00.js"),
+            worker_dir.join("formal_ai_worker_seed_responses_and_language.js"),
             "const MEANINGS_LINO = [\n  \"meaning fact\",\n].join(\"\\n\");\n",
         )
         .unwrap();
@@ -751,7 +751,7 @@ mod tests {
         assert_eq!(
             result.embedded_data_violations,
             vec![EmbeddedDataFinding {
-                file: "js/worker/formal_ai_worker_00.js".to_string(),
+                file: "js/worker/formal_ai_worker_seed_responses_and_language.js".to_string(),
                 line: 1,
                 message: "Worker JavaScript must load Links Notation data from data/seed via seed_loader.js, not embed _LINO arrays or template literals.".to_string(),
             }]

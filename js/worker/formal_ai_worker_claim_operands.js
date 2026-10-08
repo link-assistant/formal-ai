@@ -5,7 +5,7 @@
 //
 // A reader returns the operands it extracts from the prompt, an empty list
 // when there are none. The claim row admits on that list being non-empty
-// (OPERAND_CLAIM_EVIDENCE, spread into CLAIM_EVIDENCE), and the rule
+// (OPERAND_CLAIM_EVIDENCE, joined into claimEvidence()), and the rule
 // interpreter captures the same operands with `value <name> operand <kind>`,
 // so the row and the answer read one thing. Every surface is a seed role.
 

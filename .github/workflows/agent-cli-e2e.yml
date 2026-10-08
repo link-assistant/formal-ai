@@ -57,11 +57,14 @@ env:
 
 jobs:
   agent-cli-e2e:
-    name: E2E Tests (agent CLI ↔ formal-ai)${{ matrix.part == 'learning' && ' (method learning)' || '' }}
+    name: E2E Tests (agent CLI ↔ formal-ai)${{ matrix.part == 'learning' && ' (method learning)' || matrix.part != 'scenarios' && format(' ({0})', matrix.part) || '' }}
     runs-on: ubuntu-latest
-    # Issue #1069: raised from 32 so it outlasts the 900s and 600s deadlines
-    # the computer-use steps below now own; see tests/unit/ci-cd/.
-    timeout-minutes: 45
+    # Issue #1069 raised the cap from 32 to 45 so one job outlasted the 900s
+    # and 600s deadlines of both computer-use steps. R1188-U9 (no job over 30
+    # minutes): each computer-use step now runs in a leg of its own, so a leg
+    # carries at most one of those deadlines (a 17-minute backstop) beside the
+    # shared setup, and every leg fits 30 minutes.
+    timeout-minutes: 30
     # PR #1188: the full replay took 19-23 minutes in one job, 11.1 of them in
     # the issue #922 method-learning replay alone (run 37663997662). That step
     # runs in its own `learning` leg beside the `scenarios` leg; both legs set
@@ -70,7 +73,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        part: ${{ fromJSON(inputs.full-replay && '["scenarios", "learning"]' || '["scenarios"]') }}
+        part: ${{ fromJSON(inputs.full-replay && '["scenarios", "learning", "computer-use-record", "computer-use-generalization"]' || '["scenarios", "computer-use-generalization"]') }}
     env:
       LINK_ASSISTANT_AGENT_SUMMARIZE_SESSION: "false"
     steps:
@@ -281,7 +284,7 @@ jobs:
       # runner at 10 minutes with no scenario named. The wrapper and the script
       # own the deadline now; the backstop only outlasts it (issue #1017).
       - name: "Run agent CLI E2E — verified computer-use record/replay (issue #707)"
-        if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
+        if: ${{ matrix.part == 'computer-use-record' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 17
         env:
           PORT: 8907
@@ -293,7 +296,7 @@ jobs:
             "$TEST_BUDGET_SECONDS" "Computer-use record/replay E2E" \
             experiments/agent_cli_e2e/run_issue_707.sh
       - name: "Run agent CLI E2E — held-out computer-use generalization (issue #707)"
-        if: ${{ matrix.part == 'scenarios' && steps.ledger.outputs.already-green != 'true' }}
+        if: ${{ matrix.part == 'computer-use-generalization' && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 12
         env:
           PORT: 8909

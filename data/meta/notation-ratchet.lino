@@ -1,0 +1,24 @@
+# Notation ratchet (PR #1188, R1188-U6 and R1188-U7;
+# docs/links-notation-style.md).
+#
+# The ceilings on the links notation we own, per scope of
+# data/meta/notation-rules.lino, measured by scripts/measure-notation.mjs
+# (gate check-notation). Each count is of distinct items, so a new record
+# that reuses existing keys moves nothing, while a new `_` name, a new
+# abbreviated name, a new duplicated block or a new repeated field raises a
+# count and fails the gate. The ceilings only fall: `--write` lowers them to
+# the measure after a rule pass. `characters` is recorded for the concise-form
+# passes and is not a ceiling, since new seed data rightly adds characters.
+notation-ratchet
+  scope data/meta
+    underscore-names 3017
+    abbreviated-names 202
+    duplicated-blocks 9
+    repeated-fields 86
+    characters 1850173
+  scope data/seed
+    underscore-names 9506
+    abbreviated-names 245
+    duplicated-blocks 45
+    repeated-fields 115
+    characters 3532129

@@ -9,7 +9,7 @@
 // obligation_ledger.mjs and task_decomposition.mjs. The plan reader
 // `derive_expectation` consults is formal_ai_worker_obligation_plans.js.
 //
-// Vocabulary is the seed lexicon (formal_ai_worker_13.js). Two data/meta
+// Vocabulary is the seed lexicon (formal_ai_worker_meaning_lexicon.js). Two data/meta
 // documents are not served to the worker, so their decisions are mirrored
 // here and held equal to the files by
 // rust/tests/web/issue-1166-worker-obligation-gaps.test.mjs: the expectation

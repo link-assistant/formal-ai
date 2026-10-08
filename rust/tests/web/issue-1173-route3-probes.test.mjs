@@ -94,7 +94,7 @@ test("issue #1175 p133: every before_promotion row is asked in solve()'s early p
   const early = [...precedence.matchAll(/^ {2}handler (\S+)\n(?: {4}.*\n)*? {4}before_promotion true$/gmu)].map((match) => match[1]);
   assert.deepEqual(early, ["github_repository_traffic"]);
   const claims = readFileSync(path.join(REPO_ROOT, "data/seed/capability-routing.lino"), "utf8");
-  const solveSource = readFileSync(path.join(REPO_ROOT, "js/worker/formal_ai_worker_20.js"), "utf8");
+  const solveSource = readFileSync(path.join(REPO_ROOT, "js/worker/formal_ai_worker_solve.js"), "utf8");
   const walk = solveSource.indexOf("synchronousHandlerCandidates({");
   for (const handler of early) {
     const browser = claims.match(new RegExp(`handler ${handler}\\n {4}browser_handler (\\S+)`, "u"))[1];

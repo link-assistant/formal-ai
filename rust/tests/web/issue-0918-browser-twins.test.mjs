@@ -216,8 +216,8 @@ test("a failed fetch falls back to the frame policy", async () => {
 // Issue #918 (R914-6): the browser web search renders its result header,
 // source labels, no-result and all-disabled sentences and the Wikinews
 // fallback description from seeded web_search_* responses instead of
-// per-language tables in js/worker/formal_ai_worker_19.js and
-// js/worker/formal_ai_worker_18.js; every text is unchanged.
+// per-language tables in js/worker/formal_ai_worker_web_search_and_projects.js and
+// js/worker/formal_ai_worker_web_providers_and_wasm_calls.js; every text is unchanged.
 test("web search texts come from the seed in every language", async () => {
   await ready;
   const texts = plain(evaluate(worker, `["en", "ru", "es"].map((language) => { const t = webSearchTexts(language); return [t.header("rust", 10, 60), t.otherSources, t.via, t.readMore, t.noResults("rust", "duckduckgo, wikipedia"), t.allDisabled("duckduckgo")]; })`));

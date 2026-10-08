@@ -122,7 +122,7 @@ test('R1165-6: no language row hard-codes a command a captured page states', () 
   );
   const tables = [
     [read('rust/src/coding/catalog/languages.rs'), (line, slug) => line.trim() === `slug: "${slug}",`],
-    [read('js/worker/formal_ai_worker_12.js'), (line, slug) => line === `  ${slug}: {`],
+    [read('js/worker/formal_ai_worker_installation_and_software_followups.js'), (line, slug) => line === `  ${slug}: {`],
     [read('data/meta/agentic-coding-catalog.lino'), (line, slug) => line === `  language ${slug}`],
   ];
   for (const [language, , command] of DERIVED) {

@@ -4,7 +4,7 @@
 # When X then Y statements that `List behavior rules` and `Show behavior rule`
 # render, the list footer, and the answers to a rule taught in the dialog.
 # Both roots read them by intent (rust/src/solver_handlers/behavior_rules.rs,
-# js/worker/formal_ai_worker_03.js) instead of holding the prose and its
+# js/worker/formal_ai_worker_behavior_rules_and_self_facts.js) instead of holding the prose and its
 # example prompts in code. Placeholders in braces are filled by the handler.
 
 multilingual_responses

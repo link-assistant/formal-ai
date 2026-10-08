@@ -263,8 +263,8 @@ fn unsupported_write_program_fails_with_a_named_skill_gap() {
     let recitation = ["Supported", "tasks:"].join(" ");
     for source in [
         "rust/src/engine.rs",
-        "js/worker/formal_ai_worker_14.js",
-        "js/worker/formal_ai_worker_16.js",
+        "js/worker/formal_ai_worker_program_plans.js",
+        "js/worker/formal_ai_worker_write_program_and_research.js",
     ] {
         let text = fs::read_to_string(root.join(source)).expect("engine source");
         assert!(

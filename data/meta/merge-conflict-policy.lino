@@ -208,8 +208,7 @@ merge_conflict_policy
     cause sequential_file_name
     path "js/worker/formal_ai_worker_*.js"
     extracted_from "src/web/worker/formal_ai_worker_*.js"
-    frozen_prefix_max 24
-    note "formal_ai_worker_00 through formal_ai_worker_24 predate this policy and keep their numbers; every module added after issue 991 is named after its subject."
+    note "Every module is named after its subject: the numbered modules issue 658 cut by line count were renamed after what each holds (R1188-U5, data/meta/rename-map.lino), and every module added after issue 991 is named after its subject, so two branches that add modules create two different names."
     observed_conflicts 11
   artifact worker_line_budget
     cause global_scalar_ratchet

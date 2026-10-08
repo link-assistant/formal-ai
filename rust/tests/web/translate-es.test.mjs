@@ -67,7 +67,7 @@ test('the layout has one slot per token, delimiter and interpolation close, plus
 
 test('every committed js source renders back to itself through the pivot', () => {
   const root = new URL('../../../', import.meta.url);
-  for (const rel of ['agentic/repair_loop.mjs', 'agentic/crate/es_tokenizer.mjs', 'worker/formal_ai_worker_20.js']) {
+  for (const rel of ['agentic/repair_loop.mjs', 'agentic/crate/es_tokenizer.mjs', 'worker/formal_ai_worker_solve.js']) {
     const source = readFileSync(new URL(`js/${rel}`, root), 'utf8');
     assert.equal(translateJsToTs(source), source, rel);
   }
@@ -92,7 +92,7 @@ test('unbalanced input is refused, never guessed', () => {
 // NodeNext), and the committed twin is exactly the translator's rendering.
 test('the agentic ES modules mirror into ts/agentic as .mts twins', () => {
   assert.equal(tsTwinPath('agentic/repair_loop.mjs'), 'agentic/repair_loop.mts');
-  assert.equal(tsTwinPath('worker/formal_ai_worker_20.js'), 'worker/formal_ai_worker_20.ts');
+  assert.equal(tsTwinPath('worker/formal_ai_worker_solve.js'), 'worker/formal_ai_worker_solve.ts');
   const root = new URL('../../../', import.meta.url);
   for (const rel of ['agentic/repair_loop.mjs', 'agentic/command_reroute.mjs', 'agentic/crate/history_context.mjs']) {
     const source = readFileSync(new URL(`js/${rel}`, root), 'utf8');

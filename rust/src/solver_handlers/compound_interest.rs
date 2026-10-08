@@ -11,7 +11,7 @@
 //! periods per compounding meaning, the frequency labels, the default
 //! exchange rates and the final-amount marker are the `policy compound_interest`
 //! block of `data/seed/handler-rules.lino`. The browser twin
-//! (`tryCompoundInterest` in `js/worker/formal_ai_worker_05.js`) reads the same
+//! (`tryCompoundInterest` in `js/worker/formal_ai_worker_translation_recall_and_compound_interest.js`) reads the same
 //! records, so both runtimes answer alike.
 
 use crate::engine::SymbolicAnswer;

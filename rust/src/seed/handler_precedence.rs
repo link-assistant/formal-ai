@@ -115,7 +115,7 @@ pub fn browser_only_handlers() -> &'static [String] {
 /// The native dispatcher asks them right after the prelude, so a promoted
 /// method (a search act read off "can I see") never preempts them either. The
 /// browser twin is the early `claimRouteRun` call `solve()` makes in
-/// `js/worker/formal_ai_worker_20.js` before `synchronousHandlerCandidates`.
+/// `js/worker/formal_ai_worker_solve.js` before `synchronousHandlerCandidates`.
 #[must_use]
 pub fn before_promotion_handlers() -> &'static [String] {
     static CELL: std::sync::OnceLock<Vec<String>> = std::sync::OnceLock::new();

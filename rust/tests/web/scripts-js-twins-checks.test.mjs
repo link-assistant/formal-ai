@@ -97,7 +97,7 @@ describe('check-file-size.mjs', () => {
     assert.equal(fileLimit('vscode/package-lock.json'), null);
     assert.equal(fileLimit('js/vendor.bundle.js'), null);
     assert.equal(fileLimit('data/cache/wikidata/lexeme/L3302.json'), null);
-    assert.equal(fileLimit('/r/js/worker/formal_ai_worker_00.js').label, 'Worker JavaScript');
+    assert.equal(fileLimit('/r/js/worker/formal_ai_worker_seed_responses_and_language.js').label, 'Worker JavaScript');
     assert.equal(fileLimit('/r/.github/workflows/release.yml').label, 'GitHub Actions workflow');
     assert.deepEqual(growingPathsFromNumstat('12\t0\tsrc/growing.rs\n3\t3\tsrc/same.rs\n1\t8\tsrc/shrinking.rs\n-\t-\ta.png\n'), ['src/growing.rs']);
   });
@@ -106,7 +106,7 @@ describe('check-file-size.mjs', () => {
     const root = fixture({
       'src/near_limit.rs': numbered(901),
       'src/over_limit.rs': numbered(1001),
-      'js/worker/formal_ai_worker_00.js': 'const MEANINGS_LINO = [\n  "meaning fact",\n].join("\\n");\n',
+      'js/worker/formal_ai_worker_seed_responses_and_language.js': 'const MEANINGS_LINO = [\n  "meaning fact",\n].join("\\n");\n',
       'docs/case-studies/issue-561/release.yml': numbered(1501),
       'dev/log/issues/798/big.rs': numbered(1001),
       'target/debug/big.rs': numbered(1001),
@@ -135,7 +135,7 @@ describe('check-file-size.mjs', () => {
         '',
         'Found embedded Links Notation data in worker JavaScript:',
         '',
-        '  js/worker/formal_ai_worker_00.js:1: Worker JavaScript must load Links Notation data from data/seed via seed_loader.js, not embed _LINO arrays or template literals.',
+        '  js/worker/formal_ai_worker_seed_responses_and_language.js:1: Worker JavaScript must load Links Notation data from data/seed via seed_loader.js, not embed _LINO arrays or template literals.',
         '',
         'Move worker seed data to data/seed and load it through seed_loader.js',
         '',
@@ -238,7 +238,7 @@ function ratchetTree(ceilings) {
     'rust/src/intent_formalization/prompt_relevants.rs': '"handler:a"\n',
     'rust/src/meta_method_dispatch.rs': 'fn f() {}\n',
     'rust/src/lib.rs': 'fn f(x: &str) -> bool { x.contains("a") || x.starts_with("b") }\n',
-    'js/worker/formal_ai_worker_00.js': 'function synchronousHandlerCandidates() { return [{ name: "a" }]; }\n',
+    'js/worker/formal_ai_worker_seed_responses_and_language.js': 'function synchronousHandlerCandidates() { return [{ name: "a" }]; }\n',
     'rust/tests/unit/docs_requirements.rs': '\n',
     'experiments/issue_1028_agent_cli_ladder/rules/r.lino': '\n',
     'data/seed/s.lino': 'meaning a\n  lexeme en\n  lexeme ru\n',
@@ -343,7 +343,7 @@ describe('check-minimal-core-boundary.mjs', () => {
 });
 
 describe('check-worker-line-budget.mjs', () => {
-  const shard = (ceiling) => `worker_module_budget\n  module "formal_ai_worker_00.js"\n  ceiling ${ceiling}\n  rationale "Glue for tests."\n`;
+  const shard = (ceiling) => `worker_module_budget\n  module "formal_ai_worker_seed_responses_and_language.js"\n  ceiling ${ceiling}\n  rationale "Glue for tests."\n`;
 
   test('a module summary and shard name read as the Rust script reads them', () => {
     assert.equal(leadingSummary('// Worker module 0. Glue for "tests".\n// More.\n\ncode\n'), "Glue for 'tests'. More.");
@@ -352,12 +352,12 @@ describe('check-worker-line-budget.mjs', () => {
 
   test('a regrown module, --write and a clean run print as the Rust script prints them', () => {
     const root = fixture({
-      'js/worker/formal_ai_worker_00.js': '// Worker module 0. Glue for tests.\nx\n',
-      'data/meta/worker-line-budget/formal_ai_worker_00.lino': shard(2),
+      'js/worker/formal_ai_worker_seed_responses_and_language.js': '// Worker module 0. Glue for tests.\nx\n',
+      'data/meta/worker-line-budget/formal_ai_worker_seed_responses_and_language.lino': shard(2),
       'data/meta/worker-line-budget/formal_ai_worker_gone.lino': 'worker_module_budget\n  module "formal_ai_worker_gone.js"\n  ceiling 1\n  rationale "Gone."\n',
     });
     try {
-      write(root, 'js/worker/formal_ai_worker_00.js', '// Worker module 0. Glue for tests.\nx\ny\n');
+      write(root, 'js/worker/formal_ai_worker_seed_responses_and_language.js', '// Worker module 0. Glue for tests.\nx\ny\n');
       const grown = run('check-worker-line-budget.mjs', [], root);
       assert.equal(grown.status, 1);
       assert.equal(grown.stdout, [
@@ -365,11 +365,11 @@ describe('check-worker-line-budget.mjs', () => {
         'Checking the UI-glue line budget for the split JavaScript worker...',
         '',
         'Worker JavaScript line counts (js/worker/*.js):',
-        '       3 /      2  js/worker/formal_ai_worker_00.js',
+        '       3 /      2  js/worker/formal_ai_worker_seed_responses_and_language.js',
         '',
         '  total: 3 lines (summed ceilings 3, target 3000)',
         '',
-        '::error::js/worker/formal_ai_worker_00.js grew to 3 lines, past its recorded ceiling of 2. Move logic into the Rust→WASM worker (js/wasm-worker) instead of growing the mirror, or re-baseline this one module with `--write` and explain the growth in data/meta/worker-line-budget/formal_ai_worker_00.lino',
+        '::error::js/worker/formal_ai_worker_seed_responses_and_language.js grew to 3 lines, past its recorded ceiling of 2. Move logic into the Rust→WASM worker (js/wasm-worker) instead of growing the mirror, or re-baseline this one module with `--write` and explain the growth in data/meta/worker-line-budget/formal_ai_worker_seed_responses_and_language.lino',
         '::error::data/meta/worker-line-budget/formal_ai_worker_gone.lino budgets `formal_ai_worker_gone.js`, which no longer exists; delete the shard',
         '',
         '2 module budget violation(s). The mirror cannot silently regrow.',
@@ -382,14 +382,14 @@ describe('check-worker-line-budget.mjs', () => {
         '',
         'Checking the UI-glue line budget for the split JavaScript worker...',
         '',
-        '  rebaselined  formal_ai_worker_00.js -> 3 lines',
+        '  rebaselined  formal_ai_worker_seed_responses_and_language.js -> 3 lines',
         '  removed      formal_ai_worker_gone.js (no longer in the mirror)',
         '',
         'Budget shards re-baselined. Review the diff and explain any growth.',
         '',
         '',
       ].join('\n'));
-      assert.equal(readFileSync(join(root, 'data/meta/worker-line-budget/formal_ai_worker_00.lino'), 'utf8'), shard(3));
+      assert.equal(readFileSync(join(root, 'data/meta/worker-line-budget/formal_ai_worker_seed_responses_and_language.lino'), 'utf8'), shard(3));
 
       const clean = run('check-worker-line-budget.mjs', [], root);
       assert.equal(clean.status, 0);

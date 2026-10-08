@@ -244,6 +244,7 @@ requirement translation-pipeline
   group translation
   text "js -> ts runs without a Rust build, js -> rust runs through meta-language, and the translated count never falls."
   source javascript-first "2026-10-06"
+  source user-messages "2026-10-08 07:36 (message 130)"
   rows R1000 R1012 R993
 
 requirement adopt-meta-language-practices
@@ -275,6 +276,7 @@ requirement bulk-drafting
   text "Draft every planned change in bulk, tests and code, before relying on CI; never idle-wait while CI runs."
   source september-messages "2026-09-18 10:11, 2026-09-20 14:39"
   source october-messages "2026-10-06 17:01"
+  source user-messages "2026-10-08 14:53 (message 144)"
   rows R1022 R1020
 
 requirement decide-without-asking
@@ -347,6 +349,12 @@ requirement careful-disk-use
   source user-messages "2026-10-08 07:36, 11:41 (messages 130, 139)"
   rows R1188-U25
 
+requirement valid-testable-release
+  group process
+  text "The pull request lands as a valid, working and testable release: every workflow on its head is green and each surface can be tested."
+  source user-messages "2026-10-08 12:09 (message 143)"
+  rows R1188-U27
+
 requirement ci-fixer-subagent
   group process
   text "One of the subagents commits CI fixes as soon as each run reports, while the others bulk-draft undrafted requirements."
@@ -360,8 +368,8 @@ contradiction requirements-readme-numbered-parts
 
 contradiction runtime-numbered-worker-shards
   document "docs/architecture/runtime-and-surfaces.md"
-  text "Lists the browser solver as js/worker/formal_ai_worker_00.js ... _23.js (stale: the shards run to _24) without saying the numbered layout is to go."
-  action "Wording fixed to _24 and marked as numbered parts that R1188-U5 replaces with named modules."
+  text "Listed the browser solver as the numbered modules js/worker/formal_ai_worker_NN.js, 00 ... _23 (stale: the shards ran to _24), without saying the numbered layout was to go."
+  action "Wording fixed to _24 and marked as numbered parts; R1188-U5 then renamed the modules after what each holds, and the sentence now names them by subject."
 
 contradiction contributing-naming-standard
   document "CONTRIBUTING.md"

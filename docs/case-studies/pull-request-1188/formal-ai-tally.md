@@ -9,11 +9,11 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 
 | Who | Tasks | Passed | Failed | Partial | Fixed | Open | Not reproduced | Unresolved |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **All** | 279 | 115 | 150 | 3 | 126 | 25 | 2 | 0 |
+| **All** | 298 | 131 | 153 | 3 | 127 | 27 | 2 | 0 |
 | CI-SPEED | 6 | 6 | 0 | 0 | 0 | 0 | 0 | 0 |
 | CIFIX | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | CIFIX2 | 3 | 0 | 3 | 0 | 2 | 1 | 0 | 0 |
-| coordinator | 148 | 24 | 114 | 1 | 107 | 7 | 1 | 0 |
+| coordinator | 150 | 25 | 115 | 1 | 108 | 7 | 1 | 0 |
 | DEBUG2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
 | DEBUG3 | 2 | 1 | 1 | 0 | 0 | 1 | 0 | 0 |
 | DISCOVER | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -23,6 +23,7 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 | MIGRATE3 | 4 | 0 | 4 | 0 | 0 | 4 | 0 | 0 |
 | MIGRATE4 | 3 | 0 | 2 | 1 | 0 | 3 | 0 | 0 |
 | READABLE | 10 | 8 | 2 | 0 | 2 | 0 | 0 | 0 |
+| RENAME | 17 | 15 | 2 | 0 | 0 | 2 | 0 | 0 |
 | REPO-PROTO | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0 |
 | REQ-AUDIT | 9 | 9 | 0 | 0 | 0 | 0 | 0 | 0 |
 | REQ-ROUTE | 12 | 7 | 5 | 0 | 4 | 0 | 1 | 0 |

@@ -17,7 +17,7 @@ fn issue_712_case_study_and_semantic_routing_contract_are_traceable() {
         "Auto-learning boundary",
         "awaiting_human_review",
         "Agent CLI",
-        "formal_ai_worker_17.js",
+        "formal_ai_worker_search_queries_and_how_to.js",
     ] {
         assert!(case_study.contains(expected), "missing {expected}");
     }

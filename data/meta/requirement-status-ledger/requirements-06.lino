@@ -105,6 +105,14 @@ requirement_status_ledger_shard requirements_06
     automated_test "rust/tests/web/pull-request-1188-working-rules.test.mjs"
     manual "not yet confirmed"
   requirement
+    id "R1188-U27"
+    shard "docs/requirements/issue-1188-user-requirements.md"
+    verdict "partial"
+    delivered ""
+    issue "1188"
+    automated_test ""
+    manual "not yet confirmed"
+  requirement
     id "R1188-U3"
     shard "docs/requirements/issue-1188-user-requirements.md"
     verdict "partial"
@@ -123,10 +131,10 @@ requirement_status_ledger_shard requirements_06
   requirement
     id "R1188-U5"
     shard "docs/requirements/issue-1188-user-requirements.md"
-    verdict "not-delivered"
+    verdict "partial"
     delivered ""
     issue "1188"
-    automated_test ""
+    automated_test "rust/tests/web/rename-by-rule.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R1188-U6"
@@ -631,12 +639,4 @@ requirement_status_ledger_shard requirements_06
     delivered "pre-2026-07 (undated); issue #129"
     issue "0129"
     automated_test "rust/tests/unit/ci-cd/workflow_release.rs"
-    manual "not yet confirmed"
-  requirement
-    id "R172"
-    shard "docs/requirements/issue-0129-connectivity-diagnostics-requirements.md"
-    verdict "implemented"
-    delivered "pre-2026-07 (undated); issue #129"
-    issue "0129"
-    automated_test "rust/tests/web/case-study-preservation.test.mjs"
     manual "not yet confirmed"

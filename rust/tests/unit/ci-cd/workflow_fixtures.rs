@@ -29,6 +29,18 @@ pub fn coverage_workflow() -> String {
     .replace("\r\n", "\n")
 }
 
+/// PR #1188 (R1188-U9): the Pages build (web bundle, `cargo doc`, stamp,
+/// upload) runs in its own reusable workflow under a 30-minute cap, and the
+/// release workflow's `deploy-pages` job only deploys its artifact.
+pub fn pages_artifact_workflow() -> String {
+    fs::read_to_string(format!(
+        "{}/../.github/workflows/pages-artifact.yml",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .unwrap()
+    .replace("\r\n", "\n")
+}
+
 pub fn self_development_status_workflow() -> String {
     fs::read_to_string(format!(
         "{}/../.github/workflows/self-development-status.yml",

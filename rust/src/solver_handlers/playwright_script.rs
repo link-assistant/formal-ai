@@ -6,7 +6,7 @@
 //! `policy playwright_script` block of `data/seed/handler-rules.lino`; the
 //! clarification, the two leads, the starter layout and the starter
 //! TypeScript are seeded `playwright_*` responses. The browser twin
-//! (`tryPlaywrightScript` in `js/worker/formal_ai_worker_11.js`) renders the
+//! (`tryPlaywrightScript` in `js/worker/formal_ai_worker_software_project_plans.js`) renders the
 //! same records.
 
 use crate::engine::SymbolicAnswer;

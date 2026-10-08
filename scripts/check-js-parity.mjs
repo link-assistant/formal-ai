@@ -12,7 +12,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const REGISTRY_FILE = 'js/worker/formal_ai_worker_20.js';
+const REGISTRY_FILE = 'js/worker/formal_ai_worker_solve.js';
 const RATCHET_FILE = 'data/meta/js-parity-ratchet.lino';
 
 /**

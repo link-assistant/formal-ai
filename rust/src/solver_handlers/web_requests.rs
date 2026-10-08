@@ -147,7 +147,7 @@ pub fn try_url_navigate(
     log.append("url_preview:frame_policy_check", url.clone());
     log.append("url_preview:external_link", url.clone());
     // Issue #918: the wording is the seeded web_* responses the browser twin
-    // (`tryUrlNavigate`, js/worker/formal_ai_worker_18.js) also renders.
+    // (`tryUrlNavigate`, js/worker/formal_ai_worker_web_providers_and_wasm_calls.js) also renders.
     let body = format!(
         "{}\n\n{}",
         seed::render_response("web_open_in_new_tab", "en", &[("url", &url)]).unwrap_or_default(),

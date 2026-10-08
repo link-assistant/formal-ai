@@ -6,7 +6,7 @@
 // The Rust learner reads the solver's event log flattened into the answer's
 // `links_notation` (rust/src/engine.rs `answer_links_notation`). The browser
 // worker reports the same solver events as thinking steps
-// (js/worker/formal_ai_worker_16.js `writeProgramDiagnosticBundle`), so
+// (js/worker/formal_ai_worker_write_program_and_research.js `writeProgramDiagnosticBundle`), so
 // `solverEventsFromThinkingSteps` rebuilds that event log and
 // `answerStepsLinks` flattens it the Rust way before the verbatim
 // `event_payload` reads it.
@@ -336,7 +336,7 @@ function flattenLinoValue(value) {
 
 /**
  * The solver events behind the worker's thinking steps
- * (js/worker/formal_ai_worker_16.js `writeProgramDiagnosticBundle`): a route
+ * (js/worker/formal_ai_worker_write_program_and_research.js `writeProgramDiagnosticBundle`): a route
  * attempt carries `selected_rule <payload>`, a rule construction carries the
  * `rule_synthesis_request` record followed by the `rule_synthesis_candidate`
  * one, a program plan carries `write_program_plan` and its body.

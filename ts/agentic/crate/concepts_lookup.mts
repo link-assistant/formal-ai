@@ -1,7 +1,7 @@
 // `crate::concepts::{extract_concept_query, lookup_concept_query}`
 // (rust/src/concepts.rs), answered by the booted worker realm's twins
-// (js/worker/formal_ai_worker_01.js `extractConceptQuery`,
-// js/worker/formal_ai_worker_00.js `lookupConceptQuery`), which read the same
+// (js/worker/formal_ai_worker_concept_queries_and_arithmetic.js `extractConceptQuery`,
+// js/worker/formal_ai_worker_seed_responses_and_language.js `lookupConceptQuery`), which read the same
 // concept seed. A `ConceptQuery` is `{term, context}`.
 
 import { realm } from '../host.mjs';

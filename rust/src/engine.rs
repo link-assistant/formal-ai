@@ -713,7 +713,7 @@ fn contractions() -> &'static [(Vec<String>, String)] {
 
 /// `normalized` with every seeded contracted pair rewritten into its expansion.
 ///
-/// Mirrors `expandSeededContractions` in `js/worker/formal_ai_worker_00.js`.
+/// Mirrors `expandSeededContractions` in `js/worker/formal_ai_worker_seed_responses_and_language.js`.
 fn expand_contractions(normalized: &str) -> String {
     let pairs = contractions();
     let tokens: Vec<&str> = normalized.split(' ').collect();

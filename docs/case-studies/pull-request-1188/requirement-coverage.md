@@ -12,10 +12,10 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 
 ## Summary
 
-- Distinct requirements: 115 (52 from the owner's messages and the vision, 63 items of the 8 fixed issues).
+- Distinct requirements: 116 (53 from the owner's messages and the vision, 63 items of the 8 fixed issues).
 - Covered by rows that existed before this audit: 96 (every issue item has its own row).
-- Drafted in `docs/requirements/issue-1188-user-requirements.md`: 26 rows for 26 requirements, 19 of which no earlier row covered and 7 of which earlier rows covered only in part.
-- Row verdicts in scope: implemented 121, not-delivered 6, partial 17, superseded 1.
+- Drafted in `docs/requirements/issue-1188-user-requirements.md`: 27 rows for 27 requirements, 20 of which no earlier row covered and 7 of which earlier rows covered only in part.
+- Row verdicts in scope: implemented 121, not-delivered 5, partial 19, superseded 1.
 - Evidence check: 121 implemented rows re-read; 0 cite evidence that does not exist, and 3 more cite something the check could not find that was reviewed and is not evidence.
 
 ## The owner's requirements
@@ -43,7 +43,7 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 | Requirement | Source | Rows | Status |
 | --- | --- | --- | --- |
 | Names are full English words, without abbreviations, in code and in owned links notation. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U4 | R1188-U4 not-delivered |
-| File and directory names say what they hold; no numbered parts where a meaningful category exists. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U5 | R1188-U5 not-delivered |
+| File and directory names say what they hold; no numbered parts where a meaningful category exists. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U5 | R1188-U5 partial |
 
 ### Notation
 
@@ -94,7 +94,7 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 
 | Requirement | Source | Rows | Status |
 | --- | --- | --- | --- |
-| js -> ts runs without a Rust build, js -> rust runs through meta-language, and the translated count never falls. | [javascript-first](../../../docs/architect-notes/2026-10-06-javascript-first-full-parity.md) 2026-10-06 | R1000, R1012, R993 | R1000 implemented; R1012 partial; R993 implemented |
+| js -> ts runs without a Rust build, js -> rust runs through meta-language, and the translated count never falls. | [javascript-first](../../../docs/architect-notes/2026-10-06-javascript-first-full-parity.md) 2026-10-06; [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 07:36 (message 130) | R1000, R1012, R993 | R1000 implemented; R1012 partial; R993 implemented |
 | Adopt the conversion practices of link-foundation/meta-language and relative-meta-logic. | [october-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-10-07.md) 2026-10-06 13:17 | R1024 | R1024 implemented |
 | Formalize any text from the internet with high quality, a whole Wikipedia page included, and restate its facts from the formal statements. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 11:25 (message 132) | R1188-U18 | R1188-U18 partial |
 | Translate between all languages and choose the translation that survives the round trip source, meta, target, meta, source, for sentences and whole texts. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 11:25 (message 132) | R1188-U19, R526-1 | R1188-U19 partial; R526-1 implemented |
@@ -114,12 +114,13 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 
 | Requirement | Source | Rows | Status |
 | --- | --- | --- | --- |
-| Draft every planned change in bulk, tests and code, before relying on CI; never idle-wait while CI runs. | [september-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-09-25.md) 2026-09-18 10:11, 2026-09-20 14:39; [october-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-10-07.md) 2026-10-06 17:01 | R1022, R1020 | R1022 implemented; R1020 implemented |
+| Draft every planned change in bulk, tests and code, before relying on CI; never idle-wait while CI runs. | [september-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-09-25.md) 2026-09-18 10:11, 2026-09-20 14:39; [october-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-10-07.md) 2026-10-06 17:01; [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 14:53 (message 144) | R1022, R1020 | R1022 implemented; R1020 implemented |
 | Decide open technical choices from the best available practices instead of asking the owner. | [october-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-10-07.md) 2026-10-06 18:54 | R1023 | R1023 implemented |
 | Check the meta algorithm against current best practices and record the comparison. | [october-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-10-07.md) 2026-10-06 15:07 | R1025 | R1025 implemented |
 | Report general defects to our own dependencies, and track each patched source install by one issue per dependency. | [september-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-09-25.md) 2026-09-20 18:02 | R1021-26 | R1021-26 implemented |
 | Run at most three subagents at once, never stop a running agent early, and fully deliver the work of every started agent. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 11:25, 11:47 (messages 132, 141) | R1188-U22 | R1188-U22 implemented |
 | Run only the tests closest to a fix locally; the full suites run in CI, where failures are fixed in bulk. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 11:44 (message 140) | R1188-U24 | R1188-U24 implemented |
+| The pull request lands as a valid, working and testable release: every workflow on its head is green and each surface can be tested. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 12:09 (message 143) | R1188-U27 | R1188-U27 partial |
 | One of the subagents commits CI fixes as soon as each run reports, while the others bulk-draft undrafted requirements. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 11:47 (message 141) | R1188-U26 | R1188-U26 implemented |
 
 ## The fixed issues' requirements
@@ -207,7 +208,7 @@ A row listed here cites a path, name or test title that the check did not find. 
 | Document | Contradiction | Action |
 | --- | --- | --- |
 | `docs/requirements/README.md` | Describes the assembled register's numbered parts (assembled/part-01.md, part-02.md, ...) as the design. | Wording: a sentence now says the numbered names contradict the vision. Code first: the generators must write named parts (R1188-U5). |
-| `docs/architecture/runtime-and-surfaces.md` | Lists the browser solver as js/worker/formal_ai_worker_00.js ... _23.js (stale: the shards run to _24) without saying the numbered layout is to go. | Wording fixed to _24 and marked as numbered parts that R1188-U5 replaces with named modules. |
+| `docs/architecture/runtime-and-surfaces.md` | Listed the browser solver as the numbered modules js/worker/formal_ai_worker_NN.js, 00 ... _23 (stale: the shards ran to _24), without saying the numbered layout was to go. | Wording fixed to _24 and marked as numbered parts; R1188-U5 then renamed the modules after what each holds, and the sentence now names them by subject. |
 | `CONTRIBUTING.md` | Code Standards said only 'use meaningful variable and function names', and the documentation example named its parameters arg1 and arg2. | Wording fixed: full English words, no numbered file parts, - over _ and deduplication in owned links notation, generalize over specialize, code-architecture-principles, bulk changes by rules (R1188-U1, R1188-U2, R1188-U4 to R1188-U8); the example now names left and right. |
 | `CONTRIBUTING.md` | Describes the changelog roll-over into docs/changelog/archive-NN.md as the process. | Wording: marked as numbered parts that R1188-U5 replaces. Code first: the release roll-over script. |
 | `VISION.md` | Did not state the 2026-10-08 rules (generalization, code-architecture-principles, names, notation, automation by rules, CI shape). | Section 'Code shape (2026-10-08)' added from the preamble summary. The verbatim architect note waits on R1188-U15 (R1188-U14). |

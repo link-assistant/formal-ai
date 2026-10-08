@@ -88,7 +88,7 @@ function synchronousHandlerCandidates(context, registry = promotedHandlerOrder(b
 // data/seed/capability-routing.lino name a handler's browser function and the evidence kinds any one of
 // which admits it; a handler whose row admits on none is never offered the prompt.
 let CLAIM_ROUTE_ROWS = null;
-const CLAIM_EVIDENCE = Object.freeze({
+const OWN_CLAIM_EVIDENCE = Object.freeze({
   object_phrase_artifact: (prompt) => detectSoftwareObjectPhrase(normalizePrompt(prompt)) !== null,
   approval_of_a_proposal: (prompt) => isSoftwareApprovalPrompt(normalizePrompt(prompt)),
   shell_command_shape: (prompt) => detectTerminalCommand(prompt) !== null,
@@ -100,14 +100,24 @@ const CLAIM_EVIDENCE = Object.freeze({
   fetch_url: (prompt, normalized) => extractHttpFetchUrl(prompt, normalized) !== null,
   navigation_url: (prompt, normalized) => extractUrlNavigateUrl(prompt, normalized) !== null,
   calendar_date_signal: (prompt, normalized) => mentionsCalendarCreateRequest(normalized),
-  code_artifact: (prompt) => codeTaskCodeBlock(prompt) !== null, supplied_text: (prompt) => textTransformFreeTextPayload(prompt) !== null, ...(typeof NUMERIC_CLAIM_EVIDENCE === "object" ? NUMERIC_CLAIM_EVIDENCE : {}),
-  ...(typeof CLASS_CLAIM_EVIDENCE === "object" ? CLASS_CLAIM_EVIDENCE : {}), // classes (b), (c), (e): formal_ai_worker_claim_evidence.js
-  ...(typeof OPERAND_CLAIM_EVIDENCE === "object" ? OPERAND_CLAIM_EVIDENCE : {}), // the last five rows: formal_ai_worker_claim_operands.js
+  code_artifact: (prompt) => codeTaskCodeBlock(prompt) !== null, supplied_text: (prompt) => textTransformFreeTextPayload(prompt) !== null,
   // Refusal group: the operand each handler's own reader extracts before it composes anything.
   function_under_test: (prompt) => testGenerationFunctionName(prompt) !== null,
   structured_document: (prompt) => formatConversionJsonText(prompt) !== null || formatConversionYamlText(prompt) !== null
     || formatConversionCsvText(prompt) !== null,
 });
+
+let CLAIM_EVIDENCE_TABLE = null;
+
+// Every claim-evidence reader by kind: this module's own, then the numeric,
+// class and operand groups other worker modules define. Built on first use, so
+// the table holds every group whatever order the modules load in.
+function claimEvidence() {
+  CLAIM_EVIDENCE_TABLE ??= Object.freeze({
+    ...OWN_CLAIM_EVIDENCE, ...NUMERIC_CLAIM_EVIDENCE, ...CLASS_CLAIM_EVIDENCE, ...OPERAND_CLAIM_EVIDENCE,
+  });
+  return CLAIM_EVIDENCE_TABLE;
+}
 
 function claimRouteRows() {
   if (CLAIM_ROUTE_ROWS !== null) return CLAIM_ROUTE_ROWS;
@@ -127,7 +137,7 @@ function claimRouteRows() {
 // dialogue kinds read the earlier turns from `history`.
 function claimRouteAdmission(browserHandler, prompt, normalized, history = []) {
   const row = claimRouteRows().find((candidate) => candidate.browserHandler === browserHandler);
-  if (!row || row.admitsOn.some((kind) => Boolean(CLAIM_EVIDENCE[kind] && CLAIM_EVIDENCE[kind](prompt, normalized ?? normalizePrompt(prompt), history)))) return "full";
+  if (!row || row.admitsOn.some((kind) => Boolean(claimEvidence()[kind]?.(prompt, normalized ?? normalizePrompt(prompt), history)))) return "full";
   return row.refusalEvents.length > 0 ? "refusal" : "denied";
 }
 

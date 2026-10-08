@@ -149,7 +149,7 @@ SEARCHES = [
     ("find_report", "the GitHub issue creation command is built", "report_issue.rs", "839"),
     ("find_ladder", "the excluded_folders array is defined", "detect-code-changes.rs", "846"),
     ("find_worker_rrf", "reciprocalRankFusion is implemented in JavaScript",
-     "formal_ai_worker_19.js", "840"),
+     "formal_ai_worker_web_search_and_projects.js", "840"),
     ("find_world", "the Context struct for world models is defined", "world_model.rs", "845"),
     ("find_summarize", "the summarize function is defined", "summarization", "844"),
 ]

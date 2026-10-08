@@ -83,7 +83,7 @@ function assertStageSources(events, expected) {
     const routed = event.method === "arithmetic";
     assert.ok(routed || event.method === "", event.method);
     assert.equal(event.method_rust_source, routed ? "rust/src/solver_dispatch.rs:handle_arithmetic" : "");
-    assert.equal(event.method_js_source, routed ? "js/worker/formal_ai_worker_06.js:tryArithmetic" : "");
+    assert.equal(event.method_js_source, routed ? "js/worker/formal_ai_worker_arithmetic_and_numeric_lists.js:tryArithmetic" : "");
   }
 }
 
@@ -206,7 +206,7 @@ describe("the session state machine (DebugSession)", () => {
       "    class s3 current",
     ].join("\n"));
     assert.equal(paused.method_rust_source, "rust/src/solver_dispatch.rs:handle_arithmetic");
-    assert.equal(paused.method_js_source, "js/worker/formal_ai_worker_06.js:tryArithmetic");
+    assert.equal(paused.method_js_source, "js/worker/formal_ai_worker_arithmetic_and_numeric_lists.js:tryArithmetic");
     assertExcerpt(paused.method_rust_source, paused.method_rust_line, paused.method_rust_excerpt, /^fn handle_arithmetic\(/);
     assertExcerpt(paused.method_js_source, paused.method_js_line, paused.method_js_excerpt, /^function tryArithmetic\(/);
     assert.equal(paused.method_rust_excerpt.split("\n").at(-1), "}", "the excerpt runs to the closing brace");
@@ -400,7 +400,7 @@ describe("the --debug-session server", () => {
     assert.equal(total, TWO_PLUS_TWO.length);
     assert.equal(paused.method, "arithmetic", "the route resolves through the method registry");
     assert.equal(paused.method_rust_source, "rust/src/solver_dispatch.rs:handle_arithmetic");
-    assert.equal(paused.method_js_source, "js/worker/formal_ai_worker_06.js:tryArithmetic");
+    assert.equal(paused.method_js_source, "js/worker/formal_ai_worker_arithmetic_and_numeric_lists.js:tryArithmetic");
     for (let stage = 1; stage < total; stage += 1) {
       assert.equal(paused.stage, stage);
       assert.equal(answered, false, `held before stage ${stage} is advanced`);

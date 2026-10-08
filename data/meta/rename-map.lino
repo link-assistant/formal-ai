@@ -1,0 +1,154 @@
+# File and directory names that say what they hold (PR #1188, R1188-U5).
+#
+# Each `rename` moves one file; `node experiments/formal_ai_subagent/rename-by-rule.mjs`
+# applies the map and rewrites every reference to the old path, and its
+# `--check` (gate check_rename_map) fails while any file still names an old
+# path. The companions of a rename follow by rule and are not repeated here:
+# the ts/ twin of a js/ source, the rust/embedded mirror, the worker
+# line-budget shard of a browser worker module and the self-AST census of a
+# Rust source.
+#
+# `exclude` lists the historical records whose old paths stay as written:
+# evidence logs, case-study data, changelog fragments, verbatim owner notes,
+# captured issue texts and the coordination archive.
+rename-map
+  exclude "dev/log/"
+  exclude "docs/case-studies/"
+  exclude "changelog.d/"
+  exclude "CHANGELOG.md"
+  exclude "docs/changelog/"
+  exclude "docs/architect-notes/"
+  exclude "data/benchmarks/issue-requirements/"
+  exclude "data/cache/"
+  exclude "experiments/formal_ai_subagent/archive/"
+  exclude "experiments/formal_ai_subagent/claims.md"
+  exclude "experiments/formal_ai_subagent/tasks/"
+  exclude "experiments/formal_ai_subagent/sandboxes/"
+  resort "js/worker-modules.js"
+  resort "ts/worker-modules.ts"
+  tree browser-worker-modules
+    rename
+      from "js/worker/formal_ai_worker_00.js"
+      to "js/worker/formal_ai_worker_seed_responses_and_language.js"
+      reason "Seed hydration with its bootstrap fallbacks, the localized response lookup, response-language detection, prompt normalization and concept record matching."
+      review "Read on 2026-10-08: 928 lines, 47 top-level functions from seedFileBaseName to stripLeadingRequest; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_01.js"
+      to "js/worker/formal_ai_worker_concept_queries_and_arithmetic.js"
+      reason "Concept and how-it-works query extraction, then the arithmetic tokenizer, currency and percent expressions and the exact arithmetic evaluator."
+      review "Read on 2026-10-08: 1214 lines, 64 top-level functions from extractInvertedWhoIs to parseLinearExpression; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_02.js"
+      to "js/worker/formal_ai_worker_equations_and_word_problems.js"
+      reason "Linear and polynomial equation solving, Fibonacci references and the box, motion and train word problems the calculator normalizes."
+      review "Read on 2026-10-08: 1247 lines, 67 top-level functions from formatLinearSymbolicSolution to isPunctuationOnlyPrompt; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_03.js"
+      to "js/worker/formal_ai_worker_behavior_rules_and_self_facts.js"
+      reason "Translation marker detection, the behavior-rule listing, count, brief and detail answers, and the self-fact and self-introduction answers."
+      review "Read on 2026-10-08: 746 lines, 43 top-level functions from stableBehaviorRuleId to selfIntroductionContent; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_04.js"
+      to "js/worker/formal_ai_worker_capabilities_and_runtime_rules.js"
+      reason "Known-fact inventory queries, runtime rule updates, feature capability status, the architecture explanation and translation phrase normalization."
+      review "Read on 2026-10-08: 706 lines, 40 top-level functions from isKnownFactQuery to normalizeMeaningText; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_05.js"
+      to "js/worker/formal_ai_worker_translation_recall_and_compound_interest.js"
+      reason "Compositional and Wiktionary translation, brainstorming, fact and coreference lookup, name and message recall, memory writes and the compound-interest answers."
+      review "Read on 2026-10-08: 1434 lines, 72 top-level functions from matchSourceFormatting to parseCompoundNumberText; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_06.js"
+      to "js/worker/formal_ai_worker_arithmetic_and_numeric_lists.js"
+      reason "The arithmetic handler with clock and compound-money formatting, link-native synthesis arithmetic and the numeric-list operations."
+      review "Read on 2026-10-08: 763 lines, 44 top-level functions from formatCompoundNumber to numericListDirection; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_07.js"
+      to "js/worker/formal_ai_worker_coding_idioms_and_text_manipulation.js"
+      reason "The coding-idiom catalog that renders numeric-list programs, and the text-manipulation request parser and operations."
+      review "Read on 2026-10-08: 1396 lines, 81 top-level functions from numericListProgramLinks to stripProofClaimNoise; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_08.js"
+      to "js/worker/formal_ai_worker_calendar_and_proofs.js"
+      reason "Proof requests, weekday reasoning, calendar event creation with its ICS and Google Calendar links, and concept rendering."
+      review "Read on 2026-10-08: 1208 lines, 63 top-level functions from startsWithProofVerb to normalizeDefinitionFact; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_09.js"
+      to "js/worker/formal_ai_worker_wikipedia_and_shell_commands.js"
+      reason "Definition merging, entity-name correction and who-is questions, terminal command detection, and the Wikipedia search, summary and disambiguation lookup."
+      review "Read on 2026-10-08: 1392 lines, 59 top-level functions from pushDefinitionFragment to wikipediaArticleQuestionMessage; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_10.js"
+      to "js/worker/formal_ai_worker_facts_and_software_phrases.js"
+      reason "Fact questions resolved through the fact cache, Wikidata and Wiktionary, and the software artifact and object-phrase scanner."
+      review "Read on 2026-10-08: 1292 lines, 38 top-level functions from relationConfig to requirementMarkerWords; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_11.js"
+      to "js/worker/formal_ai_worker_software_project_plans.js"
+      reason "Playwright starters, software project formalization, planning and implementation, the meta-algorithm template and installation-guide detection."
+      review "Read on 2026-10-08: 1031 lines, 57 top-level functions from playwrightDocsUrl to looksLikeInstallationCommand; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_12.js"
+      to "js/worker/formal_ai_worker_installation_and_software_followups.js"
+      reason "Installation-guide conversion to scripts, software project follow-ups, JavaScript execution and the coding oracle with its write-program templates."
+      review "Read on 2026-10-08: 839 lines, 36 top-level functions from pushInstallationCommand to codingOracleKnowsLanguage; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_13.js"
+      to "js/worker/formal_ai_worker_meaning_lexicon.js"
+      reason "The seed meaning lexicon (roles, word forms, surfaces), program task and language detection, units, memory surfaces and the links-notation pattern matcher."
+      review "Read on 2026-10-08: 1460 lines, 78 top-level functions from codingOracleDocumentedSnippet to findBindings; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_14.js"
+      to "js/worker/formal_ai_worker_program_plans.js"
+      reason "Substitution rules that lower program plans, write-program parameters and recovery, coding guidance, program explanations and the blueprint capability table."
+      review "Read on 2026-10-08: 1031 lines, 34 top-level functions from applySubstitutionRule to programTestInstructions; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_15.js"
+      to "js/worker/formal_ai_worker_program_blueprints.js"
+      reason "The composite program blueprints: their sources, capability detection, composition and the blueprint write-program answer."
+      review "Read on 2026-10-08: 1250 lines, 20 top-level functions from collectNumbers to tryProgramBlueprintFromPrompt; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_16.js"
+      to "js/worker/formal_ai_worker_write_program_and_research.js"
+      reason "The write-program handler with its verification trace, conversation recap, research comparison tables, summarize prompts and the web-search literal markers."
+      review "Read on 2026-10-08: 1291 lines, 68 top-level functions from writeProgramDecompositionParts to searchBoundaryBefore; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_17.js"
+      to "js/worker/formal_ai_worker_search_queries_and_how_to.js"
+      reason "Web-search query extraction, procedural how-to answers from wikiHow and the frame-policy checks."
+      review "Read on 2026-10-08: 1221 lines, 71 top-level functions from truncateSearchInstructionTail to sourceExpressionMatches; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_18.js"
+      to "js/worker/formal_ai_worker_web_providers_and_wasm_calls.js"
+      reason "Fetch and navigation answers, the WebAssembly engine calls and the web-search providers."
+      review "Read on 2026-10-08: 1166 lines, 51 top-level functions from webResponse to runWithConcurrencyLimit; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_19.js"
+      to "js/worker/formal_ai_worker_web_search_and_projects.js"
+      reason "Reciprocal rank fusion and the web-search handler, promoted projects and GitHub repository lookups, response-language follow-ups and formalization matching."
+      review "Read on 2026-10-08: 1253 lines, 53 top-level functions from reciprocalRankFusion to detectFormalizationMatch; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_20.js"
+      to "js/worker/formal_ai_worker_solve.js"
+      reason "The solve entry point and its dispatch loop, the worker handler registry, seed loading and worker initialization."
+      review "Read on 2026-10-08: 1366 lines, 9 top-level functions from isTargetlessProgramModification to init; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_21.js"
+      to "js/worker/formal_ai_worker_statement_verification.js"
+      reason "Relative meta-logic statement verification: formalization records, market-price claims and document originality checks."
+      review "Read on 2026-10-08: 829 lines, 49 top-level functions from objectForFormalization to tryCurrentDialogueFactChecking; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_22.js"
+      to "js/worker/formal_ai_worker_memory_programs.js"
+      reason "The memory-program compiler and executor, the browser mirror of rust/src/memory_program.rs."
+      review "Read on 2026-10-08: 674 lines, 30 top-level functions from memoryProgramCatalog to tryMemoryProgramGap; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_23.js"
+      to "js/worker/formal_ai_worker_search_statement_fusion.js"
+      reason "The bridge that hands browser search statements to the WebAssembly engine for fusion."
+      review "Read on 2026-10-08: 18 lines, 1 top-level functions from fuseBrowserSearchStatements to fuseBrowserSearchStatements; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+    rename
+      from "js/worker/formal_ai_worker_24.js"
+      to "js/worker/formal_ai_worker_memory_inspection.js"
+      reason "Associative-memory inspection answers over the links the interface stores."
+      review "Read on 2026-10-08: 110 lines, 6 top-level functions from memoryInspectionStableId to tryMemoryInspection; the name covers the largest groups, and the module reads no other module's bindings while it loads."

@@ -1,7 +1,7 @@
 //! The reasoner inside the universal solver: it runs ahead of the handler
 //! table, and a handler that admits an impasse hands its turn to the loop.
 //!
-//! Originals: `solve` and `solveImpl` in `js/worker/formal_ai_worker_20.js`, and
+//! Originals: `solve` and `solveImpl` in `js/worker/formal_ai_worker_solve.js`, and
 //! `metaReasonTurn` / `metaResolveImpasse` in
 //! `js/worker/formal_ai_worker_meta_reasoner.js`.
 
@@ -99,7 +99,7 @@ fn project(prompt: &str, log: &mut EventLog, answer: MetaAnswer) -> SymbolicAnsw
 /// clarification handler asks which artifact is meant.
 ///
 /// Mirrors the `metaReason(prompt, language, {})` step at the top of
-/// `solveImpl` in `js/worker/formal_ai_worker_20.js`.
+/// `solveImpl` in `js/worker/formal_ai_worker_solve.js`.
 pub fn try_meta_answer(
     prompt: &str,
     language: &str,
@@ -135,7 +135,7 @@ pub fn try_meta_answer(
 /// derives, before any external research runs.
 ///
 /// Mirrors the `metaReasonTurn` step ahead of `unknown_intent_research` in
-/// `solveImpl` (`js/worker/formal_ai_worker_20.js`).
+/// `solveImpl` (`js/worker/formal_ai_worker_solve.js`).
 pub fn try_meta_discovery(
     prompt: &str,
     language: &str,

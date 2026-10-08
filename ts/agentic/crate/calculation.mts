@@ -1,7 +1,7 @@
 // `crate::calculation::calculation_expression_candidates`
 // (rust/src/calculation.rs). The planner only asks whether the list is empty;
 // the booted worker realm's calculator extractor
-// (js/worker/formal_ai_worker_02.js `extractArithmeticExpression`) reads the
+// (js/worker/formal_ai_worker_equations_and_word_problems.js `extractArithmeticExpression`) reads the
 // same calculation cue roles and is its twin for that question.
 
 import { realm } from '../host.mjs';

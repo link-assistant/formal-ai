@@ -5,7 +5,7 @@
 //! "a**us**tralia" and "What is the capital of Australia?" was answered with
 //! Washington, D.C. from the USA fact — even though no Australia fact is
 //! seeded. The matcher now requires whole-word (token-run) matches, mirrored
-//! by `matchesFactPhrase` in `js/worker/formal_ai_worker_05.js`.
+//! by `matchesFactPhrase` in `js/worker/formal_ai_worker_translation_recall_and_compound_interest.js`.
 //!
 //! These tests pin the boundary contract from three angles:
 //! - `FactRecord::contains_word_sequence` unit semantics (word boundaries,

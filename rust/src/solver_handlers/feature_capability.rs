@@ -4,7 +4,7 @@
 //! examples are `data/seed/feature-capabilities.lino`, and every answer
 //! sentence is a seeded `feature_capability_*` response
 //! (`data/seed/multilingual-responses-capabilities.lino`). The browser twin
-//! (`tryFeatureCapabilityStatus` in `js/worker/formal_ai_worker_04.js`) reads
+//! (`tryFeatureCapabilityStatus` in `js/worker/formal_ai_worker_capabilities_and_runtime_rules.js`) reads
 //! the same records.
 
 use std::sync::OnceLock;

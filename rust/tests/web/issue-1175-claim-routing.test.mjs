@@ -119,7 +119,7 @@ test("the claim rows are read from the capability table", async () => {
 test("every row names browser functions and evidence kinds the worker knows", async () => {
   await seeded;
   const unknown = plain(evaluate(worker, `claimRouteRows().flatMap((row) => [
-    ...row.admitsOn.filter((kind) => typeof CLAIM_EVIDENCE[kind] !== "function"),
+    ...row.admitsOn.filter((kind) => typeof claimEvidence()[kind] !== "function"),
     ...(row.browserHandler && typeof self[row.browserHandler] !== "function"
       && !browserHandlerPrecedence().some((record) => record.name === row.browserHandler && (record.contextBinding || record.ruleSet))
       ? [row.browserHandler] : []),
@@ -129,7 +129,7 @@ test("every row names browser functions and evidence kinds the worker knows", as
 
 async function evidence(kind, prompt) {
   await seeded;
-  return plain(evaluate(worker, `CLAIM_EVIDENCE[${JSON.stringify(kind)}](${JSON.stringify(prompt)}, normalizePrompt(${JSON.stringify(prompt)}))`));
+  return plain(evaluate(worker, `claimEvidence()[${JSON.stringify(kind)}](${JSON.stringify(prompt)}, normalizePrompt(${JSON.stringify(prompt)}))`));
 }
 
 test("the native-only rows read the same structure in the worker", async () => {
@@ -244,7 +244,7 @@ test("R1175-3: the refusal-group evidence reads the handlers' own operands", asy
 // admitted to its refusal lane), a lookup or policy on its subject or shape.
 async function evidenceIn(kind, prompt, history = []) {
   await seeded;
-  return plain(evaluate(worker, `CLAIM_EVIDENCE[${JSON.stringify(kind)}](${JSON.stringify(prompt)}, normalizePrompt(${JSON.stringify(prompt)}), ${JSON.stringify(history)})`));
+  return plain(evaluate(worker, `claimEvidence()[${JSON.stringify(kind)}](${JSON.stringify(prompt)}, normalizePrompt(${JSON.stringify(prompt)}), ${JSON.stringify(history)})`));
 }
 
 test("R1175-3 class b: the dialogue evidence reads the earlier turns, never the prompt alone", async () => {

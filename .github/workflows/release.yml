@@ -1329,23 +1329,40 @@ jobs:
           if-no-files-found: warn
       - if: ${{ !cancelled() }}
         run: scripts/prune-docker.sh
-  deploy-pages:
-    name: Deploy Web App to GitHub Pages
-    concurrency:
-      group: formal-ai-repository-writes
-      queue: max
+  build-pages:
+    name: Build GitHub Pages artifact
     needs: [build, auto-release, manual-release]
-    outputs:
-      page_url: ${{ steps.deployment.outputs.page_url }}
-      pages_sha: ${{ steps.pages_ref.outputs.sha }}
     if: |
       !cancelled() &&
       needs.build.result == 'success' && (
         (github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.auto-release.result == 'success') ||
         (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && github.ref == 'refs/heads/main' && needs.manual-release.result == 'success')
       )
+    # The bundle and cargo doc build under their own 30-minute cap (R1188-U9).
+    uses: ./.github/workflows/pages-artifact.yml
+    with:
+      sha: ${{ needs.auto-release.outputs.pages_sha || needs.manual-release.outputs.pages_sha || github.sha }}
+    permissions:
+      contents: read
+  deploy-pages:
+    name: Deploy Web App to GitHub Pages
+    concurrency:
+      group: formal-ai-repository-writes
+      queue: max
+    needs: [build-pages]
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
+      pages_sha: ${{ needs.build-pages.outputs.pages_sha }}
+    # A writing job states its own dispatch guard (R1187-3).
+    if: |
+      !cancelled() &&
+      needs.build-pages.result == 'success' && (
+        (github.event_name == 'push' && github.ref == 'refs/heads/main') ||
+        (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && github.ref == 'refs/heads/main')
+      )
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    # Covers the Pages deployment queue, whose wait the action caps at 10 minutes.
+    timeout-minutes: 15
     permissions:
       contents: read
       pages: write
@@ -1354,60 +1371,8 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Select Pages deployment ref
-        id: pages_ref
-        env:
-          PAGES_DEPLOY_SHA: ${{ needs.auto-release.outputs.pages_sha || needs.manual-release.outputs.pages_sha || github.sha }}
-        run: |
-          if [ -z "$PAGES_DEPLOY_SHA" ]; then
-            echo "::error::Could not resolve Pages deployment SHA"
-            exit 1
-          fi
-          echo "sha=${PAGES_DEPLOY_SHA}" >> "$GITHUB_OUTPUT"
-          echo "Pages deployment SHA: ${PAGES_DEPLOY_SHA}"
-      - uses: actions/checkout@v7
-        with:
-          persist-credentials: false
-          ref: ${{ steps.pages_ref.outputs.sha }}
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v6
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v2
-        with:
-          bun-version-file: .bun-version
-      - name: Install web bundle dependencies
-        run: bun install --frozen-lockfile
-      - name: Build web vendor bundle
-        run: bun run build:web
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
-      - name: Free up runner disk space
-        run: bash scripts/free-runner-disk.sh
-      - uses: ./.github/actions/cache-cargo-registry
-        with:
-          prefix: docs-
-      - name: Generate Rust API docs (cargo doc --manifest-path rust/Cargo.toml)
-        env:
-          RUSTDOCFLAGS: -D warnings
-        run: bash scripts/build-rust-api-docs.sh
-      - name: Sync data/seed into js/seed (deployment mirror)
-        run: scripts/sync-seed.sh
-      - name: Install rust-script
-        run: bash scripts/install-rust-script.sh
-      - name: Read formal-ai version from Cargo.toml
-        id: formal_ai_version
-        run: rust-script scripts/get-version.rs
-      - name: Stamp GitHub Pages artifact
-        run: scripts/stamp-pages-artifact.sh js "${{ steps.pages_ref.outputs.sha }}" "${{ steps.pages_ref.outputs.sha }}" "${{ steps.formal_ai_version.outputs.version }}"
-      - name: Copy Rust API docs into the Pages artifact (/docs/api)
-        run: |
-          mkdir -p js/docs/api
-          cp -R target/doc/. js/docs/api/
-      - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v5
-        with:
-          path: js
-          include-hidden-files: true
       - name: Deploy Pages artifact
         id: deployment
         uses: actions/deploy-pages@v5
@@ -1484,7 +1449,7 @@ jobs:
             version-check, release-preflight, base, lint, test, macos-core-tests, build,
             auto-release, manual-release,
             changelog-pr, test-e2e-local, test-agent-cli-e2e,
-            build-artifacts, box-language-projects, deploy-pages,
+            build-artifacts, box-language-projects, build-pages, deploy-pages,
             test-e2e-pages, server-parity]
     steps:
       - uses: actions/checkout@v7

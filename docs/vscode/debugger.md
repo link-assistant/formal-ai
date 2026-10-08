@@ -207,7 +207,7 @@ The Rust server looks for its source tree at the crate's parent directory,
 then at the working directory. The served `What is 2 + 2?` turn, routed to
 `arithmetic` (`method_rust_source`
 `rust/src/solver_dispatch.rs:handle_arithmetic`, `method_js_source`
-`js/worker/formal_ai_worker_06.js:tryArithmetic`), names these emitters:
+`js/worker/formal_ai_worker_arithmetic_and_numeric_lists.js:tryArithmetic`), names these emitters:
 
 | stage | step | Rust emitter | JavaScript emitter |
 | --- | --- | --- | --- |

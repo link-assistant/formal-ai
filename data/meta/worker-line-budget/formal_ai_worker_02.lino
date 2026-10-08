@@ -1,4 +1,0 @@
-worker_module_budget
-  module "formal_ai_worker_02.js"
-  ceiling 1245
-  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into js/wasm-worker. Ceiling moved 1195 to 1206 when plan 10 L20 retired conversational phrase families onto declared roles and the mirror arms followed. Ceiling 1242 (2026-10-07, R1017): rewriteMathFunctionPhrases turns a spelled function application ('the square root of 144') into call syntax, twin of rust/src/calculation/function_phrase.rs. Ceiling 1245 (2026-10-07, PR #1188): extractJavaScriptProgram reads the program after the request's colon (`Run this JavaScript: console.log(1 + 2)`), mirroring rust/src/solver_helpers/code.rs extract_javascript_program."

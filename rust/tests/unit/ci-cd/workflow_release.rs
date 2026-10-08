@@ -12,22 +12,27 @@ fn pages_deploy_waits_for_release_ref_before_pages_upload() {
     let workflow = release_workflow();
     let auto_release = job_block(&workflow, "auto-release");
     let manual_release = job_block(&workflow, "manual-release");
-    let deploy_demo = job_block(&workflow, "deploy-pages");
+    let build_pages = job_block(&workflow, "build-pages");
+    let pages_artifact = pages_artifact_workflow();
+    let pages_build = job_block(&pages_artifact, "build");
 
     assert!(auto_release.contains("outputs:\n      pages_sha:"));
     assert!(auto_release.contains("Resolve Pages deploy ref"));
     assert!(manual_release.contains("outputs:\n      pages_sha:"));
     assert!(manual_release.contains("Resolve Pages deploy ref"));
-    assert!(deploy_demo.contains("needs: [build, auto-release, manual-release]"));
-    assert!(deploy_demo.contains("needs.build.result == 'success'"));
-    assert!(deploy_demo.contains("github.ref == 'refs/heads/main'"));
-    assert!(deploy_demo.contains("needs.auto-release.result == 'success'"));
-    assert!(deploy_demo.contains("needs.manual-release.result == 'success'"));
-    assert!(deploy_demo.contains("Select Pages deployment ref"));
-    assert!(deploy_demo.contains(
-        "PAGES_DEPLOY_SHA: ${{ needs.auto-release.outputs.pages_sha || needs.manual-release.outputs.pages_sha || github.sha }}"
+    assert!(build_pages.contains("needs: [build, auto-release, manual-release]"));
+    assert!(build_pages.contains("needs.build.result == 'success'"));
+    assert!(build_pages.contains("github.ref == 'refs/heads/main'"));
+    assert!(build_pages.contains("needs.auto-release.result == 'success'"));
+    assert!(build_pages.contains("needs.manual-release.result == 'success'"));
+    assert!(build_pages.contains("uses: ./.github/workflows/pages-artifact.yml"));
+    assert!(build_pages.contains(
+        "sha: ${{ needs.auto-release.outputs.pages_sha || needs.manual-release.outputs.pages_sha || github.sha }}"
     ));
-    assert!(deploy_demo.contains("ref: ${{ steps.pages_ref.outputs.sha }}"));
+    assert!(job_block(&workflow, "deploy-pages").contains("needs: [build-pages]"));
+    assert!(pages_build.contains("Select Pages deployment ref"));
+    assert!(pages_build.contains("PAGES_DEPLOY_SHA: ${{ inputs.sha }}"));
+    assert!(pages_build.contains("ref: ${{ steps.pages_ref.outputs.sha }}"));
 }
 
 #[test]
@@ -49,7 +54,9 @@ fn rust_script_install_steps_use_retry_wrapper() {
         // extracting it brought `release.yml` back under the 1500-line warning
         // band (issues #999, #1012); its install step is counted by
         // `evidence_check_workflow_caps_its_job_and_installs_rust_script_with_the_retry_wrapper`.
-        9,
+        // PR #1188 moved the Pages build's install into pages-artifact.yml,
+        // asserted by `pages_deploy_generates_api_docs_and_copies_them_after_stamping`.
+        8,
         "each rust-script install step should use the retry wrapper"
     );
     assert!(install_script.contains("RUST_SCRIPT_INSTALL_ATTEMPTS"));
@@ -67,8 +74,10 @@ fn pages_deploy_uses_github_pages_workflow_artifact() {
     assert!(deploy_demo.contains("environment:\n      name: github-pages"));
     assert!(deploy_demo.contains("url: ${{ steps.deployment.outputs.page_url }}"));
     assert!(deploy_demo.contains("actions/configure-pages@v6"));
-    assert!(deploy_demo.contains("actions/upload-pages-artifact@v5"));
-    assert!(deploy_demo.contains("path: js"));
+    let pages_artifact = pages_artifact_workflow();
+    let pages_build = job_block(&pages_artifact, "build");
+    assert!(pages_build.contains("actions/upload-pages-artifact@v5"));
+    assert!(pages_build.contains("path: js"));
     assert!(deploy_demo.contains("id: deployment"));
     assert!(deploy_demo.contains("actions/deploy-pages@v5"));
     assert!(!deploy_demo.contains("peaceiris/actions-gh-pages"));
@@ -136,9 +145,15 @@ fn pages_e2e_uses_deployment_output_url() {
 #[test]
 fn pages_deploy_is_pinned_and_live_e2e_waits_for_matching_deployment() {
     let workflow = release_workflow();
-    let deploy_demo = job_block(&workflow, "deploy-pages");
+    let pages_artifact = pages_artifact_workflow();
+    let deploy_demo = job_block(&pages_artifact, "build");
     let pages_e2e = job_block(&workflow, "test-e2e-pages");
 
+    assert!(
+        job_block(&workflow, "deploy-pages")
+            .contains("pages_sha: ${{ needs.build-pages.outputs.pages_sha }}"),
+        "deploy-pages should report the SHA the Pages build stamped"
+    );
     assert!(
         deploy_demo.contains("ref: ${{ steps.pages_ref.outputs.sha }}"),
         "Pages deployment should use the selected Pages SHA, which is the release child commit when auto-release creates one"
@@ -868,13 +883,13 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // language's traditional init commands inside it. The budget covers a
         // cold release build plus the image pull.
         ("box-language-projects", 30),
-        // deploy-pages also runs `cargo doc` for the /docs/api reference (issue
-        // #479), which compiles the dependency tree on a cold cargo cache.
-        // Raised from 20 (PR #965 review): the budget also has to cover the
-        // GitHub Pages deployment queue, which is not part of the build and can
-        // stall for many minutes — see
+        // The Pages build runs `cargo doc` for the /docs/api reference (issue
+        // #479) in pages-artifact.yml under its own 30-minute cap (R1188-U9).
+        ("build-pages", 0),
+        // deploy-pages only waits in the GitHub Pages deployment queue, which
+        // can stall for many minutes (PR #965 review) — see
         // `pages_deploy_uses_the_actions_maximum_supported_wait`.
-        ("deploy-pages", 35),
+        ("deploy-pages", 15),
         ("test-e2e-pages", 15),
         // Issue #977: the terminal gate that turns a silently-`cancelled` run
         // (the shape a `timeout-minutes` kill takes) into a red failure.
@@ -928,9 +943,13 @@ fn release_workflow_jobs_have_explicit_timeouts() {
 /// out of the placeholder scan).
 #[test]
 fn pages_deploy_generates_api_docs_and_copies_them_after_stamping() {
-    let workflow = release_workflow();
-    let deploy = job_block(&workflow, "deploy-pages");
+    let workflow = pages_artifact_workflow();
+    let deploy = job_block(&workflow, "build");
 
+    assert!(
+        deploy.contains("bash scripts/install-rust-script.sh"),
+        "the Pages build should install rust-script with the retry wrapper"
+    );
     assert!(
         deploy.contains("bash scripts/build-rust-api-docs.sh"),
         "deploy-pages should invoke the API-docs builder"

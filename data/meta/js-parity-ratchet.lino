@@ -2,7 +2,7 @@
 #
 # The ceiling on browser handler-registry rows marked "native surface only"
 # (`null` with that comment in workerHandlerRegistryDefinition(),
-# js/worker/formal_ai_worker_20.js). Rows the worker runs in its async phase
+# js/worker/formal_ai_worker_solve.js). Rows the worker runs in its async phase
 # or inline above the table are implemented, so they do not count.
 # scripts/check-js-parity.mjs fails above the ceiling and asks for the ceiling
 # to be lowered below it — the number only falls.

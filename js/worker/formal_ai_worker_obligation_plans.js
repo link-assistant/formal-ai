@@ -8,7 +8,7 @@
 // a repository work item (data/meta/obligation-evidence-contract.lino), so the
 // plan's id, steps and content are never built here. JavaScript twins:
 // js/agentic/general_planner.mjs, js/agentic/write_request.mjs. Every cue is a
-// seed role read through the worker lexicon (formal_ai_worker_13.js).
+// seed role read through the worker lexicon (formal_ai_worker_meaning_lexicon.js).
 //
 // Offsets are JavaScript string indices, produced and consumed inside one
 // string, exactly as the agentic port reads them.

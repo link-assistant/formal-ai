@@ -9,7 +9,7 @@
 // under a heading that names requirements. A unit whose content words an
 // earlier kept unit already holds restates it and is dropped. The vocabulary
 // is data/seed/meanings-requirement-extraction.lino, read through the worker
-// lexicon (formal_ai_worker_13.js); nothing here names a language.
+// lexicon (formal_ai_worker_meaning_lexicon.js); nothing here names a language.
 // rust/tests/web/requirement-listing-route.test.mjs holds this twin equal to
 // the crate module over the whole benchmark corpus.
 
