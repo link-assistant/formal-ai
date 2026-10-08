@@ -59,7 +59,7 @@ requirement_status_ledger_shard
   requirement
     id "R421"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_540.rs"
+    automated_test "rust/tests/unit/docs_requirements/dreaming_memory_maintenance.rs"
   requirement
     id "R422"
     verdict "implemented"
@@ -87,7 +87,7 @@ requirement_status_ledger_shard
   requirement
     id "R537"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_540.rs"
+    automated_test "rust/tests/unit/docs_requirements/dreaming_memory_maintenance.rs"
   requirement
     id "R538"
     verdict "implemented"
@@ -127,7 +127,7 @@ requirement_status_ledger_shard
   requirement
     id "R547"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_540.rs"
+    automated_test "rust/tests/unit/docs_requirements/dreaming_memory_maintenance.rs"
   requirement
     id "R548"
     verdict "implemented"

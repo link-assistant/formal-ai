@@ -169,7 +169,7 @@ fn cited_procedure_steps(procedure: &CompiledProcedure, language: &str) -> Strin
 /// language filter. No question word is hardcoded in this function.
 fn is_why_question(normalized: &str) -> bool {
     let lexicon = seed::lexicon();
-    let lead_languages = policy_languages("rationale_lead_languages");
+    let lead_languages = policy_languages("rationale-lead-languages");
     for meaning in lexicon.meanings_with_role(seed::ROLE_ANSWER_RATIONALE_LEAD) {
         for lexeme in &meaning.lexemes {
             if !lead_languages.contains(&lexeme.language) {
@@ -188,7 +188,7 @@ fn is_why_question(normalized: &str) -> bool {
             }
         }
     }
-    policy_languages("compositional_why_languages")
+    policy_languages("compositional-why-languages")
         .iter()
         .any(|language| {
             let names_cause = lexicon
@@ -239,7 +239,7 @@ fn is_how_you_work(normalized: &str) -> bool {
     if lexicon.mentions_role_raw(seed::ROLE_ASSISTANT_MECHANISM_INQUIRY, normalized) {
         return true;
     }
-    let languages = policy_languages("operating_principle_languages");
+    let languages = policy_languages("operating-principle-languages");
     let languages: Vec<&str> = languages.iter().map(String::as_str).collect();
     let names_principle = lexicon
         .words_for_role_in_languages(seed::ROLE_OPERATING_PRINCIPLE, &languages)

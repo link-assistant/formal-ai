@@ -130,12 +130,12 @@ grounded_action_runtime_parity
   js_function "extractWebSearchRequest"
 grounded_action_property_benchmark
   record_type "meta_benchmark"
-  source_file "tests/unit/issue_819.rs"
+  source_file "tests/unit/local_path_discovery.rs"
   test "every_seeded_local_path_phrase_routes_to_find"
   coverage "generated_meaning_surfaces"
 grounded_action_reproduction_benchmark
   record_type "meta_benchmark"
-  source_file "tests/unit/issue_840.rs"
+  source_file "tests/unit/grounded_local_action.rs"
   test "empty_exact_local_lookup_widens_instead_of_claiming_absence"
   coverage "evidence_driven_widening"
 grounded_action_whole_task_benchmark

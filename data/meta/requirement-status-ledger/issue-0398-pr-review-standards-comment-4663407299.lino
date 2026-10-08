@@ -21,7 +21,7 @@ requirement_status_ledger_shard
     verdict "implemented"
   requirement
     id "R282"
-    verdict "implemented"
+    verdict "partial"
   requirement
     id "R283"
     verdict "implemented"

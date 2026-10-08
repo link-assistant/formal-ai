@@ -12,8 +12,8 @@ issue was filed `data/cache/wikidata/entity` held 406 records against a
 documented cap of 128. Timeline, root causes, and the measurements behind the
 one deliberate exemption live in `docs/case-studies/issue-960/`.
 
-The cache budget (R222-1) is delivered as R960-2 below, enforced by `scripts/check-cache-budget.rs` and pinned by `rust/tests/unit/docs_requirements/issue_960.rs`.
-The linking rule (R234-4) is delivered as R960-5 below, enforced by `scripts/check-pull-request-link.rs` and pinned by `rust/tests/unit/docs_requirements/issue_960.rs`.
+The cache budget (R222-1) is delivered as R960-2 below, enforced by `scripts/check-cache-budget.rs` and pinned by `rust/tests/unit/docs_requirements/enforced_conventions.rs`.
+The linking rule (R234-4) is delivered as R960-5 below, enforced by `scripts/check-pull-request-link.rs` and pinned by `rust/tests/unit/docs_requirements/enforced_conventions.rs`.
 
 | ID | Requirement | Status / Evidence |
 | --- | --- | --- |

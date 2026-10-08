@@ -8,7 +8,7 @@ requirement_status_ledger_shard
   requirement
     id "R428"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_649.rs"
+    automated_test "rust/tests/unit/docs_requirements/world_models_and_contexts.rs"
   requirement
     id "R429"
     verdict "implemented"
@@ -27,4 +27,4 @@ requirement_status_ledger_shard
   requirement
     id "R434"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_649.rs"
+    automated_test "rust/tests/unit/docs_requirements/world_models_and_contexts.rs"

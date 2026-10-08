@@ -60,9 +60,9 @@ fn lino_field(record: &[&str], wanted: &str) -> String {
 /// one migrates its handlers into.
 const BATCHES: [(&str, &str); 5] = [
     ("M2", "retrieval_method"),
-    ("M3", "procedure_interpreter"),
-    ("M4", "structural_operator"),
-    ("M5", "dialogue_state_query"),
+    ("M3", "procedure-interpreter"),
+    ("M4", "structural-operator"),
+    ("M5", "dialogue-state-query"),
     ("M1", "rule_interpreter"),
 ];
 

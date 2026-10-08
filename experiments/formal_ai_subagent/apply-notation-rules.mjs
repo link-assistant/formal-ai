@@ -74,7 +74,7 @@ const UNREWRITTEN_ROOTS = ['.github', 'scripts', 'experiments', 'rust', 'js', 'p
  * changelogs, verbatim architect notes), and generated documents are
  * regenerated from their sources instead of rewritten.
  */
-const DOCUMENTS = /^(?:docs\/(?!case-studies\/|changelog\/|architect-notes\/|requirements\/assembled\/).*|(?!CHANGELOG|REQUIREMENTS)[^/]+|data\/README|rust\/README|js\/README)\.md$/u;
+const DOCUMENTS = /^(?:docs\/(?!case-studies\/|changelog\/|architect-notes\/|diagrams\/|requirements\/assembled\/).*|(?!CHANGELOG|REQUIREMENTS)[^/]+|data\/README|rust\/README|js\/README)\.md$/u;
 
 function tracked(paths = []) {
   return execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', ...paths], {

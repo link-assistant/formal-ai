@@ -190,6 +190,24 @@ fn verdict(line: &str, automated_test: &str) -> String {
         line.to_owned()
     };
     let lower = status.to_ascii_lowercase();
+    // A status that opens with its verdict states it (R1188-U27): "Partial: …
+    // delivered …" is partial and "Implemented: … planned …" implemented,
+    // whatever words follow.
+    let opening = lower.trim_start().trim_start_matches('*');
+    if opening.starts_with("partial") {
+        return "partial".to_owned();
+    }
+    if opening.starts_with("not delivered") {
+        return "not-delivered".to_owned();
+    }
+    let stated = ["implemented", "delivered"].iter().any(|word| {
+        opening
+            .strip_prefix(word)
+            .is_some_and(|rest| rest.trim_start().starts_with([':', '.', '(']))
+    });
+    if stated && !automated_test.is_empty() {
+        return "implemented".to_owned();
+    }
     // Words, not substrings: R1017-7 names its pinning test
     // `superseded_read_only_work_releases_its_runners`, and a substring match
     // filed a delivered row as superseded.

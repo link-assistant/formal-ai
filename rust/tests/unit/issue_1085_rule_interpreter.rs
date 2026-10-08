@@ -120,7 +120,7 @@ fn an_injected_seed_rule_routes_an_unseen_intent_in_four_languages_without_rust(
       surface
         text 月相
 ";
-    const RULES: &str = "handler_rules
+    const RULES: &str = "handler-rules
   handler moon_phase
     rule moon_phase
       when
@@ -307,15 +307,15 @@ fn conversation_control_recognition_is_the_rule_set_the_planner_consults() {
 /// Issue #1138 B9, plan 09 leaf 9: the two grammar primitives the promotion
 /// migration needs, and the only ones it adds.
 ///
-/// `of padded` is the space-padded subject `role_padded` built privately for
+/// `of padded` is the space-padded subject `role-padded` built privately for
 /// one condition; as a subject, every condition can ask for it, which is what
 /// lets `contains("в ")` in `src/intent_formalization/prompt_relevants.rs`
-/// become `role temporal_preposition of padded` — seed data in every language
+/// become `role temporal-preposition of padded` — seed data in every language
 /// rather than one Russian preposition compiled into Rust. `shape` states a
 /// structural property of the input that carries no natural language, so
-/// `contains(':')` becomes `shape time_separator` instead of hiding a
+/// `contains(':')` becomes `shape time-separator` instead of hiding a
 /// structural test inside a lexical one.
-const SHAPE_RULES: &str = "handler_rules
+const SHAPE_RULES: &str = "handler-rules
   handler padded_probe
     rule padded_probe
       when
@@ -337,7 +337,7 @@ const SHAPE_RULES: &str = "handler_rules
   handler time_probe
     rule time_probe
       when
-        shape time_separator of trimmed
+        shape time-separator of trimmed
       respond time_probe
         text en \"time\"
   handler url_probe
@@ -404,7 +404,7 @@ fn every_shape_is_a_structural_property_and_carries_no_natural_language() {
     assert!(probe(&parsed, "digit_probe", "встреча в ７"));
     assert!(!probe(&parsed, "digit_probe", "meet at noon"));
 
-    // time_separator — the literal replacement for `contains(':')`.
+    // time-separator — the literal replacement for `contains(':')`.
     assert!(probe(&parsed, "time_probe", "20:00"));
     assert!(probe(&parsed, "time_probe", "20：00"));
     assert!(!probe(&parsed, "time_probe", "2000"));
@@ -436,12 +436,12 @@ fn every_shape_is_a_structural_property_and_carries_no_natural_language() {
 
 #[test]
 fn an_unknown_shape_or_subject_is_refused_rather_than_ignored() {
-    let unknown_shape = "handler_rules\n  handler probe\n    rule probe\n      when\n        \
+    let unknown_shape = "handler-rules\n  handler probe\n    rule probe\n      when\n        \
                          shape weather of trimmed\n      respond probe\n        text en \"x\"\n";
     let error = HandlerRules::parse(unknown_shape).expect_err("an unknown shape must not parse");
     assert!(error.contains("unknown_shape"), "{error}");
 
-    let unknown_subject = "handler_rules\n  handler probe\n    rule probe\n      when\n        \
+    let unknown_subject = "handler-rules\n  handler probe\n    rule probe\n      when\n        \
                            shape digit of sideways\n      respond probe\n        text en \"x\"\n";
     let error =
         HandlerRules::parse(unknown_subject).expect_err("an unknown subject must not parse");

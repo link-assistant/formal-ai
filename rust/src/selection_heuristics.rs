@@ -524,7 +524,7 @@ impl CandidateRanker for TrizRanker {
 /// The situation slug for a scored candidate set: `contradiction_detected` when
 /// any two candidates each win on a different cost dimension, else empty.
 ///
-/// Mirrored by `situationFor` in js/agentic/crate/selection_heuristics_triz.mjs.
+/// Mirrored by `situationFor` in `js/agentic/crate/selection_heuristics_triz.mjs`.
 #[must_use]
 pub fn situation_for(scores: &[CandidateScore]) -> &'static str {
     if contradictions_in(scores, "").is_empty() {
@@ -541,7 +541,7 @@ pub fn situation_for(scores: &[CandidateScore]) -> &'static str {
 /// over `LeastActionRanker` (order 1); every other situation keeps the least
 /// action order. The draft portfolio and the algorithm-discovery survivors
 /// both rank through it. Mirrored by `rankWithHeuristic` in
-/// js/agentic/crate/selection_heuristics_triz.mjs.
+/// `js/agentic/crate/selection_heuristics_triz.mjs`.
 #[must_use]
 pub fn rank_with_heuristic(scores: &[CandidateScore], situation: &str) -> Vec<usize> {
     let registry = crate::method_registry::MethodRegistry::shared();

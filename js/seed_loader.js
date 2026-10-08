@@ -423,9 +423,9 @@
   // `rule_set` field marks a row the seed rule interpreter runs by its name.
   function extractBrowserHandlerPrecedence(root) {
     if (!root) return [];
-    var section = root.name === "browser_handler_precedence"
+    var section = root.name === "browser-handler-precedence"
       ? root
-      : findChildren(root, "browser_handler_precedence")[0];
+      : findChildren(root, "browser-handler-precedence")[0];
     if (!section) return [];
     return findChildren(section, "handler").map(function (handler) {
       var record = {
@@ -442,7 +442,7 @@
           record.arguments.push(field.slice("argument_".length));
         } else if (field.indexOf("context_binding_") === 0) {
           record.contextBinding = field.slice("context_binding_".length);
-        } else if (field === "rule_set") {
+        } else if (field === "rule-set") {
           record.ruleSet = true;
         } else if (field.indexOf("result_intent_") === 0) {
           record.resultIntent = field.slice("result_intent_".length);

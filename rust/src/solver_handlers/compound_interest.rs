@@ -201,7 +201,7 @@ fn append_conversion(
             format_rate(rate),
         ),
     );
-    let expression = policy("rate_expression")
+    let expression = policy("rate-expression")
         .replace("{source}", source_currency)
         .replace("{target}", target_currency);
     body.push_str("\n\n");
@@ -301,7 +301,7 @@ fn prior_final_amount(log: &EventLog) -> Option<(f64, &'static str)> {
 /// The amount and currency an earlier report states after the seeded
 /// final-amount marker.
 fn parse_final_amount_from_text(text: &str) -> Option<(f64, &'static str)> {
-    let marker = policy("final_amount_marker");
+    let marker = policy("final-amount-marker");
     if marker.is_empty() {
         return None;
     }
@@ -409,8 +409,8 @@ fn asks_for_web_rate(normalized: &str) -> bool {
 }
 
 fn compounding_label(compounds_per_year: u32) -> String {
-    crate::rule_interpreter::handler_policy(POLICY, &format!("label_{compounds_per_year}"))
-        .unwrap_or_else(|| policy("label_other"))
+    crate::rule_interpreter::handler_policy(POLICY, &format!("label-{compounds_per_year}"))
+        .unwrap_or_else(|| policy("label-other"))
 }
 
 const fn is_ascii_space(ch: char) -> bool {

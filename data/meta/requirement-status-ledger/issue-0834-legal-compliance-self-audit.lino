@@ -3,7 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0834-legal-compliance-self-audit.md"
   issue "0834"
   delivered "PR #837 (issue #834)"
-  automated_test "rust/tests/unit/docs_requirements/issue_834.rs"
+  automated_test "rust/tests/unit/docs_requirements/legal_compliance_self_audit.rs"
   manual "not yet confirmed"
   requirement
     id "R484"

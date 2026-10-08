@@ -1003,9 +1003,9 @@ function isLanguageReanswerFollowup(normalized) {
   if (detectComprehensionFailure(text)) return true;
   // CJK markers carry no inter-word spaces, so a bare "用中文" counts as one
   // word here — still terse, still a switch. How short is the
-  // terse_word_limit policy of data/seed/handler-rules.lino.
+  // terse-word-limit policy of data/seed/handler-rules.lino.
   const wordCount = text.split(/\s+/u).filter(Boolean).length;
-  return wordCount <= Number(handlerRulesPolicy("response_language_followup", "terse_word_limit") || 0);
+  return wordCount <= Number(handlerRulesPolicy("response_language_followup", "terse-word-limit") || 0);
 }
 
 // Intents that mean the replay never reached a concrete answer, so the

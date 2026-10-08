@@ -10,6 +10,8 @@ other document, gate or requirement contradicts that page, the other one is wron
 
 ## How we develop Formal AI: drive the Agent CLI, never defer
 
+**Method: progressive JPEG (R1188-U28 to R1188-U30).** Every problem and every pull request is attacked the way a progressive JPEG loads: first the whole at low resolution, then sharper passes over all of it, the lowest level first. JavaScript goes first, and the other roots follow by automated translation, with recorded temporary workarounds where the meta language cannot translate yet. See [`docs/progressive-delivery.md`](docs/progressive-delivery.md); [`docs/progressive-plan.md`](docs/progressive-plan.md) is the generated next pass.
+
 **From issue #538 forward, this is the only way we develop the Formal AI
 system.** We do not solve a task by editing code and data by hand and we do not
 solve it partway and defer the rest to a roadmap. We solve it by **driving Formal
@@ -765,7 +767,7 @@ pub fn example_function(left: i32, right: i32) -> i32 {
   **When something does behave differently on macOS, add its module to
   `data/meta/macos-platform-tests.lino`** with a line saying what differs. Do
   not widen the filter back to everything; the file is the list of what macOS is
-  actually for, and `issue_1017::the_macos_lane_selects_a_non_empty_set_of_tests`
+  actually for, and `step_budgets_within_job_clocks::the_macos_lane_selects_a_non_empty_set_of_tests`
   fails if it empties out.
 
   **Start the longest work first.** Whenever work is split across parallel

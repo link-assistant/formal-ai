@@ -11,7 +11,7 @@ requirement_status_ledger_shard
   requirement
     id "R924-10"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_924.rs"
+    automated_test "rust/tests/unit/docs_requirements/self_development_loop.rs"
   requirement
     id "R924-11"
     verdict "implemented"
@@ -31,7 +31,7 @@ requirement_status_ledger_shard
   requirement
     id "R924-5"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_924.rs"
+    automated_test "rust/tests/unit/docs_requirements/self_development_loop.rs"
   requirement
     id "R924-6"
     verdict "superseded"
@@ -39,7 +39,7 @@ requirement_status_ledger_shard
   requirement
     id "R924-7"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_924.rs"
+    automated_test "rust/tests/unit/docs_requirements/self_development_loop.rs"
   requirement
     id "R924-8"
     verdict "implemented"
@@ -47,4 +47,4 @@ requirement_status_ledger_shard
   requirement
     id "R924-9"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_924.rs"
+    automated_test "rust/tests/unit/docs_requirements/self_development_loop.rs"

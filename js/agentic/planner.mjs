@@ -86,23 +86,23 @@ const { toolFor } = capabilityRouter;
  * route arms of the cascade, named and in run order.
  */
 export const PLANNER_ROUTE_ARMS = [
-  ['plan_chat_step_routes', 'conversation_control_decline'],
+  ['plan_chat_step_routes', 'conversation-control-decline'],
   ['plan_chat_step_routes', 'computer_use'],
-  ['plan_chat_step_routes', 'authoritative_literal_write'],
+  ['plan_chat_step_routes', 'authoritative-literal-write'],
   ['plan_chat_step_routes', 'program_contract'],
   ['plan_chat_step_routes', 'evidence_record'],
-  ...['git_commit', 'workspace_change', 'generated_source', 'structured_edit', 'structured_document',
-    'statement_audit', 'task_obligations', 'literal_write', 'algorithm_learning', 'procedure',
+  ...['git_commit', 'workspace_change', 'generated-source', 'structured_edit', 'structured_document',
+    'statement_audit', 'task_obligations', 'literal-write', 'algorithm_learning', 'procedure',
     'learning_report', 'code_artifact', 'self_heal', 'dreaming_audit', 'self_ast', 'source_links',
     'learning_ledger', 'explain', 'change_request', 'repair_strategy', 'rebuild_plan',
-    'google_trends_learning', 'google_trends_catalog', 'question_catalog', 'file_analysis',
-    'report_flow', 'conversation_recall', 'follow_up_answer', 'contextual_reference_clarification',
-    'definition_followup', 'intent_edit', 'typed_file_read', 'local_search', 'comparison',
-    'named_capability_table', 'shell_command', 'file_read', 'formalization_recipe', 'meaning_detail',
-    'diagram', 'workspace_inspection', 'task_structure', 'capability_table_named_or_local',
-    'positional_edit_decline', 'web_research_query', 'intent_web_search', 'code_search_fallback',
-    'research_continuation', 'latest_turn_answer', 'note_composition', 'general_change_fallback',
-    'web_research_final', 'capability_table_open_web'].map((arm) => ['plan_settled_routes', arm]),
+    'google_trends_learning', 'google_trends_catalog', 'question_catalog', 'file-analysis',
+    'report-flow', 'conversation_recall', 'follow_up_answer', 'contextual_reference_clarification',
+    'definition-followup', 'intent-edit', 'typed-file-read', 'local_search', 'comparison',
+    'named-capability-table', 'shell_command', 'file_read', 'formalization_recipe', 'meaning_detail',
+    'diagram', 'workspace_inspection', 'task_structure', 'capability-table-named-or-local',
+    'positional-edit-decline', 'web-research-query', 'intent_web_search', 'code-search-fallback',
+    'research-continuation', 'latest_turn_answer', 'note_composition', 'general-change-fallback',
+    'web-research-final', 'capability-table-open-web'].map((arm) => ['plan_settled_routes', arm]),
 ];
 
 /**
@@ -314,7 +314,7 @@ export async function planSettledRoutes(task, messages, toolNames) {
   ]) {
     if (predicate(task)) return await step(messages, toolNames);
   }
-  // The file_analysis arm. After its typed read, where a name or literal is
+  // The file-analysis arm. After its typed read, where a name or literal is
   // used inside the workspace is a content search (PR #1188 T90): grep it,
   // ahead of the file-name locate arm and web search.
   const analysis = fileReadTaskFor(task);

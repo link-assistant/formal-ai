@@ -106,6 +106,20 @@ fn captured_evidence_under_cache_is_not_generated_code() {
     assert!(scan_data(&data).is_empty());
 }
 
+/// The requirement-extraction corpus holds issue bodies as their authors
+/// wrote them (PR #1188 R1188-U20); a version an issue quotes is evidence.
+#[test]
+fn captured_issue_bodies_are_not_generated_code() {
+    let data = fixture_tree(
+        "issues",
+        &[(
+            "benchmarks/issue-requirements/issue-1168.md",
+            "        java-version: '21'\n",
+        )],
+    );
+    assert!(scan_data(&data).is_empty());
+}
+
 /// R1168-6/R1168-7: both templates now carry `{placeholders}` only, so the
 /// repository's own `data/` scans clean.
 #[test]

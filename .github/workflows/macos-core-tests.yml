@@ -49,7 +49,7 @@ jobs:
     # Issue #1081 gave the doc-test step below a budget of its own, which makes
     # the arithmetic a sum: two steps that both run in this job now claim
     # their budgets together against the 70% share
-    # `tests/unit/ci-cd/issue_1081.rs` enforces.
+    # `tests/unit/ci-cd/job_budget_fit.rs` enforces.
     #
     # Issue #1085: run 33994570842 (2026-09-05, main) was killed at the full
     # 1400s of the archive budget with a 93% sccache hit rate -- not a cold
@@ -182,7 +182,7 @@ jobs:
     # The download is a 941MB artifact whose transfer time depends on runner
     # throughput, so its budget has to cover a slow runner rather than a typical
     # one.
-    # `issue_1039::the_download_retry_is_bounded_to_fit_the_job_cap` recomputes
+    # `artifact_download_retry::the_download_retry_is_bounded_to_fit_the_job_cap` recomputes
     # this from the workflow, so the numbers cannot drift out of agreement.
     #
     # Issue #1081 kept that arithmetic and widened the margin it leaves. The
@@ -192,7 +192,7 @@ jobs:
     # setup slower than the 133s that was measured would put the cap ahead of
     # the budgets again and turn a real overrun back into a grey `cancelled`.
     # 30 minutes holds the budgets at 66.1%, under the 70% share
-    # `tests/unit/ci-cd/issue_1081.rs` now enforces for every job in the
+    # `tests/unit/ci-cd/job_budget_fit.rs` now enforces for every job in the
     # repository. Nothing runs longer for it -- a backstop only costs time when
     # it fires, and this one is now sized never to fire first.
     timeout-minutes: 30

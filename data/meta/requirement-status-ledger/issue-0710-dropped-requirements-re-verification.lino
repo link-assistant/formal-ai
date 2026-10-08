@@ -17,7 +17,7 @@ requirement_status_ledger_shard
     id "R710-03"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 3 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/unit/specification/issue_710.rs"
+    automated_test "rust/tests/unit/specification/conversational_reverification.rs"
   requirement
     id "R710-04"
     verdict "implemented"
@@ -27,7 +27,7 @@ requirement_status_ledger_shard
     id "R710-05"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 5 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/e2e/tests/issue-343.spec.js"
+    automated_test "rust/tests/e2e/tests/how-to-typo-correction.spec.js"
   requirement
     id "R710-06"
     verdict "implemented"
@@ -41,17 +41,17 @@ requirement_status_ledger_shard
     id "R710-08"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 8 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/unit/specification/issue_710.rs"
+    automated_test "rust/tests/unit/specification/conversational_reverification.rs"
   requirement
     id "R710-09"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 9 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/unit/specification/issue_710.rs"
+    automated_test "rust/tests/unit/specification/conversational_reverification.rs"
   requirement
     id "R710-10"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 10 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/unit/specification/issue_710.rs"
+    automated_test "rust/tests/unit/specification/conversational_reverification.rs"
   requirement
     id "R710-11"
     verdict "implemented"
@@ -66,12 +66,12 @@ requirement_status_ledger_shard
     id "R710-13"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 13 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/e2e/tests/issue-488.spec.js"
+    automated_test "rust/tests/e2e/tests/visible-thinking-preview.spec.js"
   requirement
     id "R710-14"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 14 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/unit/issue_890.rs"
+    automated_test "rust/tests/unit/proof_language_independence.rs"
   requirement
     id "R710-15"
     verdict "implemented"
@@ -91,12 +91,12 @@ requirement_status_ledger_shard
     id "R710-18"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 18 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/unit/specification/issue_892.rs"
+    automated_test "rust/tests/unit/specification/release_order_snapshot.rs"
   requirement
     id "R710-19"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 19 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/unit/specification/issue_465.rs"
+    automated_test "rust/tests/unit/specification/pronoun_topic_follow_up.rs"
   requirement
     id "R710-20"
     verdict "implemented"
@@ -111,17 +111,17 @@ requirement_status_ledger_shard
     id "R710-22"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 22 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/unit/issue_571.rs"
+    automated_test "rust/tests/unit/web_search_by_reasoning.rs"
   requirement
     id "R710-23"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 23 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/e2e/tests/issue-404.spec.js"
+    automated_test "rust/tests/e2e/tests/calendar-event-request.spec.js"
   requirement
     id "R710-24"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 24 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/e2e/tests/issue-493.spec.js"
+    automated_test "rust/tests/e2e/tests/ocr-market-price-check.spec.js"
   requirement
     id "R710-25"
     verdict "implemented"
@@ -131,7 +131,7 @@ requirement_status_ledger_shard
     id "R710-26"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 26 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/unit/docs_requirements/issue_894.rs"
+    automated_test "rust/tests/unit/docs_requirements/ci_template_upstream_filings.rs"
   requirement
     id "R710-27"
     verdict "implemented"
@@ -146,7 +146,7 @@ requirement_status_ledger_shard
     id "R710-29"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 29 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/e2e/tests/issue-548.spec.js"
+    automated_test "rust/tests/e2e/tests/desktop-updates-and-version.spec.js"
   requirement
     id "R710-30"
     verdict "implemented"

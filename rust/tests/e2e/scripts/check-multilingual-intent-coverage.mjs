@@ -817,7 +817,7 @@ assertBalancedLanguageCaseCounts(
 
 for (const [language, entries] of Object.entries(webSearchSourceMarkerCases)) {
   const rustWebRequestTests = readRepoFile('rust/tests/unit/web_requests.rs');
-  const browserSearchTests = readRepoFile('rust/tests/e2e/tests/issue-153.spec.js');
+  const browserSearchTests = readRepoFile('rust/tests/e2e/tests/search-menu-and-deduplication.spec.js');
   for (const entry of entries) {
     assert(
       entry.prompt.trim() && entry.query.trim(),
@@ -831,7 +831,7 @@ for (const [language, entries] of Object.entries(webSearchSourceMarkerCases)) {
     assert(
       browserSearchTests.includes(entry.prompt) &&
         browserSearchTests.includes(entry.query),
-      `tests/e2e/tests/issue-153.spec.js must cover ${language} web-search source-marker prompt ${JSON.stringify(entry.prompt)}`,
+      `tests/e2e/tests/search-menu-and-deduplication.spec.js must cover ${language} web-search source-marker prompt ${JSON.stringify(entry.prompt)}`,
     );
   }
 }
@@ -878,7 +878,7 @@ assertBalancedLanguageCaseCounts(
 
 {
   const rustWebRequestTests = readRepoFile('rust/tests/unit/web_requests.rs');
-  const browserIssue228Tests = readRepoFile('rust/tests/e2e/tests/issue-228.spec.js');
+  const browserIssue228Tests = readRepoFile('rust/tests/e2e/tests/enumeration-research-web-search.spec.js');
   for (const [language, entries] of Object.entries(webSearchEnumerationResearchCases)) {
     for (const entry of entries) {
       assert(
@@ -895,7 +895,7 @@ assertBalancedLanguageCaseCounts(
       assert(
         browserIssue228Tests.includes(entry.prompt) &&
           browserIssue228Tests.includes(entry.browserRequest),
-        `tests/e2e/tests/issue-228.spec.js must cover ${language} enumeration-research prompt ${JSON.stringify(entry.prompt)}`,
+        `tests/e2e/tests/enumeration-research-web-search.spec.js must cover ${language} enumeration-research prompt ${JSON.stringify(entry.prompt)}`,
       );
     }
   }
@@ -1006,7 +1006,7 @@ assertBalancedLanguageCaseCounts(
 
 {
   const rustProofTests = readRepoFile('rust/tests/unit/proof_request.rs');
-  const browserIssue209Tests = readRepoFile('rust/tests/e2e/tests/issue-209.spec.js');
+  const browserIssue209Tests = readRepoFile('rust/tests/e2e/tests/prime-proof-prompts.spec.js');
   for (const [language, entries] of Object.entries(primeInfinitudeProofCases)) {
     for (const entry of entries) {
       assert(
@@ -1017,7 +1017,7 @@ assertBalancedLanguageCaseCounts(
       assert(
         browserIssue209Tests.includes(entry.prompt) &&
           browserIssue209Tests.includes(entry.expectedStatement),
-        `tests/e2e/tests/issue-209.spec.js must cover ${language} prime-infinitude proof prompt ${JSON.stringify(entry.prompt)}`,
+        `tests/e2e/tests/prime-proof-prompts.spec.js must cover ${language} prime-infinitude proof prompt ${JSON.stringify(entry.prompt)}`,
       );
     }
   }

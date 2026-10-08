@@ -294,7 +294,7 @@ test.describe('Issue #27: conversations sidebar', () => {
     // Issue #541 (R4): demo isolation now keeps the demo conversation session-
     // scoped and hidden from the sidebar, so `switchToManualMode` may already
     // land on an empty user conversation — leaving the "+ New conversation"
-    // button disabled by design (see issue-153.spec.js:140). Skip the click
+    // button disabled by design (see search-menu-and-deduplication.spec.js:140). Skip the click
     // when the button is disabled; the zero-state assertion below is the
     // source of truth either way.
     const newBtn = page.locator('[data-testid="conversation-new"]');

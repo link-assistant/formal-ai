@@ -546,9 +546,10 @@ fn word_tokens(rest: &str) -> Vec<&str> {
         if matches!(quote, b'"' | b'\'' | b'`') {
             index += 1;
             while index < bytes.len() {
-                if bytes[index] == b'\\' {
-                    index += 2;
-                } else if bytes[index] == quote && bytes.get(index + 1) == Some(&quote) {
+                // A backslash escape and a doubled quote each span two bytes.
+                if bytes[index] == b'\\'
+                    || (bytes[index] == quote && bytes.get(index + 1) == Some(&quote))
+                {
                     index += 2;
                 } else if bytes[index] == quote {
                     index += 1;

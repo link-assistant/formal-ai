@@ -97,10 +97,10 @@ pub fn list_item_of(line: &str) -> Option<(String, bool)> {
     }
     let rest = rest.trim_start();
     for checkbox in ["[ ]", "[x]", "[X]"] {
-        if let Some(after) = rest.strip_prefix(checkbox) {
-            if after.starts_with(char::is_whitespace) {
-                return Some((after.trim().to_string(), true));
-            }
+        if let Some(after) = rest.strip_prefix(checkbox)
+            && after.starts_with(char::is_whitespace)
+        {
+            return Some((after.trim().to_string(), true));
         }
     }
     Some((rest.trim().to_string(), false))

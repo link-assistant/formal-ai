@@ -216,7 +216,7 @@ service_wikinews
 test_unit_issue_535
   record_type "meta_test"
   suite "issue_535"
-  test_file "tests/unit/issue_535.rs"
+  test_file "tests/unit/document_originality_check.rs"
   pins "The Russian attachment prompt routes to document_originality_check (not unknown), the class generalises beyond plagiarism in every supported language, and each statement is grounded with relative-meta-logic."
 test_source_relative_meta_logic
   record_type "meta_test"
@@ -231,5 +231,5 @@ test_source_statement_verification
 test_e2e_issue_535
   record_type "meta_test"
   suite "issue_535_e2e"
-  test_file "tests/e2e/tests/issue-535.spec.js"
+  test_file "tests/e2e/tests/text-attachment-originality.spec.js"
   pins "The browser worker mirrors the document-verification path with matching evidence markers (Rust↔JS parity)."

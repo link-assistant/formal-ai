@@ -58,7 +58,7 @@ that the parity batch is **now closed and merged**:
    as the Rust core, verified by the shared fixture
    `data/parity/cross-runtime-synthesis.json`, the Rust test
    `shared_cross_runtime_synthesis_fixture_matches_rust_solver`, and
-   `rust/tests/e2e/tests/issue-327.spec.js`. Mirrors the E19 [#282](https://github.com/link-assistant/formal-ai/issues/282)
+   `rust/tests/e2e/tests/cross-runtime-synthesis-parity.spec.js`. Mirrors the E19 [#282](https://github.com/link-assistant/formal-ai/issues/282)
    browser-worker parity precedent; WebAssembly stays the bridge for shared
    primitives and JavaScript stays UI/glue per pillar 18.
 

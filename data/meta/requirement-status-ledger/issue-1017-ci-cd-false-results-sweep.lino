@@ -3,7 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-1017-ci-cd-false-results-sweep.md"
   issue "1017"
   delivered "none recorded"
-  automated_test "rust/tests/unit/ci-cd/issue_1017.rs"
+  automated_test "rust/tests/unit/ci-cd/step_budgets_within_job_clocks.rs"
   manual "not yet confirmed"
   requirement
     id "R1017-1"

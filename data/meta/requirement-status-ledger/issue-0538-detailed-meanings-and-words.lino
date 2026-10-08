@@ -7,19 +7,19 @@ requirement_status_ledger_shard
   requirement
     id "R370"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_538.rs"
+    automated_test "rust/tests/unit/word_surface_grammar.rs"
   requirement
     id "R371"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_538.rs"
+    automated_test "rust/tests/unit/word_surface_grammar.rs"
   requirement
     id "R372"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_538.rs"
+    automated_test "rust/tests/unit/word_surface_grammar.rs"
   requirement
     id "R373"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_538.rs"
+    automated_test "rust/tests/unit/word_surface_grammar.rs"
   requirement
     id "R374"
     verdict "implemented"
@@ -31,7 +31,7 @@ requirement_status_ledger_shard
   requirement
     id "R376"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_538.rs"
+    automated_test "rust/tests/unit/word_surface_grammar.rs"
   requirement
     id "R377"
     verdict "implemented"
@@ -42,7 +42,7 @@ requirement_status_ledger_shard
     automated_test "rust/tests/unit/bulk_lexeme_import.rs"
   requirement
     id "R379"
-    verdict "implemented"
+    verdict "partial"
     automated_test "rust/tests/unit/proof_request.rs"
   requirement
     id "R380"

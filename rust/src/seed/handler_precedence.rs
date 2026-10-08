@@ -105,10 +105,10 @@ pub const HANDLER_PRECEDENCE_PATH: &str = "data/seed/handler-precedence.lino";
 #[must_use]
 pub fn browser_only_handlers() -> &'static [String] {
     static CELL: std::sync::OnceLock<Vec<String>> = std::sync::OnceLock::new();
-    CELL.get_or_init(|| rows_marked("browser_only"))
+    CELL.get_or_init(|| rows_marked("browser-only"))
 }
 
-/// The precedence rows the seed marks `before_promotion true` (issue #1175
+/// The precedence rows the seed marks `before-promotion true` (issue #1175
 /// p133): handlers the browser worker asks in its fixed early phase, before
 /// the walk a prompt's promotions reorder.
 ///
@@ -119,7 +119,7 @@ pub fn browser_only_handlers() -> &'static [String] {
 #[must_use]
 pub fn before_promotion_handlers() -> &'static [String] {
     static CELL: std::sync::OnceLock<Vec<String>> = std::sync::OnceLock::new();
-    CELL.get_or_init(|| rows_marked("before_promotion"))
+    CELL.get_or_init(|| rows_marked("before-promotion"))
 }
 
 /// The handler names of the precedence rows whose `field` is `true`, in seed

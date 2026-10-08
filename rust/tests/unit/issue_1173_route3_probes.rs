@@ -4,7 +4,7 @@
 //! request's operand (`print_text` in `data/seed/hello-world-programs.lino`):
 //! the program is the documented `hello_world` print procedure with the text
 //! bound into its output literal, never a stored program. And a handler the
-//! precedence seed marks `before_promotion` is asked before the promoted
+//! precedence seed marks `before-promotion` is asked before the promoted
 //! methods, as the browser asks it in its fixed early phase (issue #1175
 //! p133). The browser twin is `rust/tests/web/issue-1173-route3-probes.test.mjs`.
 

@@ -596,7 +596,7 @@ fn free_time_prompts_route_through_the_social_free_time_role() {
             "assistant_free_time",
             "the free-time prompt `{prompt}` must reach the assistant_free_time \
              intent through the social_assistant_free_time role, with the \
-             family's rows retired and the capabilities rules' route_exact \
+             family's rows retired and the capabilities rules' route-exact \
              veto reading the same role surfaces"
         );
     }
@@ -617,7 +617,7 @@ fn the_assistant_free_time_family_stays_row_free() {
         "the assistant_free_time family had twenty-one phrase rows at the draft \
          and zero after the retirement; the social_assistant_free_time role \
          surfaces of meanings-conversation.lino decide, and the capabilities \
-         rules' route_exact veto reads them through the same declaration \
+         rules' route-exact veto reads them through the same declaration \
          (plan 10 leaf 20)"
     );
 }

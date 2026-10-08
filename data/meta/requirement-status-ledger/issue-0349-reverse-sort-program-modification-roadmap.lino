@@ -35,7 +35,7 @@ requirement_status_ledger_shard
   requirement
     id "R263"
     verdict "implemented"
-    automated_test "rust/tests/e2e/tests/issue-363.spec.js"
+    automated_test "rust/tests/e2e/tests/reasoning-first-report.spec.js"
   requirement
     id "R264"
     verdict "implemented"

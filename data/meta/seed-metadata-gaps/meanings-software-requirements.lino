@@ -1,0 +1,19 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-software-requirements.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-a67d5c0910aedce9
+    record "requirement_automation"
+  gap seed-metadata-gap-419a570a36d05152
+    record "requirement_data_exchange"
+  gap seed-metadata-gap-7f90efbe6cf050c8
+    record "requirement_integration"
+  gap seed-metadata-gap-369b2870d9d2f352
+    record "requirement_project_behavior"
+  gap seed-metadata-gap-0863df11c80e3dd5
+    record "requirement_state_tracking"
+  gap seed-metadata-gap-b01bd82808fbe3c9
+    record "requirement_user_interface"
+  gap seed-metadata-gap-6ac1e5667e4e3bd5
+    record "requirement_validation"

@@ -1,6 +1,6 @@
 // Issue #661 (R384 of issue #538): the browser worker warns when a requirement
 // contradicts one an earlier user turn stated, before a contextual handler can
-// act on it. JavaScript twin of rust/tests/unit/issue_661.rs over
+// act on it. JavaScript twin of rust/tests/unit/weighted_statement_formalization.rs over
 // js/worker/formal_ai_worker_requirement_contradiction.js; both runtimes read
 // the required and forbidden surfaces from data/seed/statement-audit-registry.lino.
 
@@ -28,7 +28,7 @@ async function afterDirective(first, second) {
 describe('opposing directives are flagged with both statements and a resolution', () => {
   it('English: the warning quotes both requirements, their weights, and the retraction protocol, in the established language', async () => {
     // The first turn established Russian (issue #724), so the warning is the
-    // Russian template, as issue_661.rs pins natively through `language:ru`.
+    // Russian template, as weighted_statement_formalization.rs pins natively through `language:ru`.
     const answer = await afterDirective('always answer in Russian', 'never answer in Russian');
     assert.equal(answer.intent, 'requirement_contradiction');
     assert.equal(answer.content, [

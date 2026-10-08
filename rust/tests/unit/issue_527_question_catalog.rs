@@ -4,7 +4,7 @@
 //! Issue #527 asks Formal AI to enumerate questions from smallest to largest out of a
 //! frequency-tiered vocabulary, classify each candidate grammatically and logically,
 //! and answer the meaningful ones with the best possible answer. The generator itself
-//! is exercised by `issue_527.rs`; these pins lock the *agentic* capability:
+//! is exercised by `generated_question_ordering.rs`; these pins lock the *agentic* capability:
 //!
 //! 1. the catalog records the four-way classification smallest-first and answers the
 //!    grammatical-and-meaningful questions with the deterministic engine;

@@ -118,7 +118,7 @@ pub(super) fn resolved_spans(source: &str, insert: &PositionalInsert) -> Option<
 /// A quoted `\n` or `\t` reads as a line break or a tab where the file holds
 /// it so, and as its two characters where the file holds those inside a line
 /// of code (`split_inclusive('\n')`, PR #1188 G96). Mirrored by
-/// `writtenEscapes` in js/agentic/workspace_change.mjs.
+/// `writtenEscapes` in `js/agentic/workspace_change.mjs`.
 pub(super) fn written_escapes(source: &str, insert: &PositionalInsert) -> Option<PositionalInsert> {
     let written = |text: &str| {
         let raw = text.replace('\n', "\\n").replace('\t', "\\t");

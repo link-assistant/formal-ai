@@ -8,7 +8,7 @@ requirement_status_ledger_shard
   requirement
     id "R445"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_686.rs"
+    automated_test "rust/tests/unit/docs_requirements/associative_knowledge_networks.rs"
   requirement
     id "R446"
     verdict "implemented"
@@ -30,7 +30,7 @@ requirement_status_ledger_shard
   requirement
     id "R452"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_686.rs"
+    automated_test "rust/tests/unit/docs_requirements/associative_knowledge_networks.rs"
   requirement
     id "R453"
     verdict "implemented"

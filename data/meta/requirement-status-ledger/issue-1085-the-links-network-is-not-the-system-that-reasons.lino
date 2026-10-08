@@ -21,12 +21,12 @@ requirement_status_ledger_shard
   requirement
     id "R1085-12"
     verdict "implemented"
-    automated_test "rust/tests/unit/ci-cd/issue_1081/release_preflight.rs"
+    automated_test "rust/tests/unit/ci-cd/job_budget_fit/release_preflight.rs"
     manual "manual: crates.io /api/v1/me answered 403 to a bogus token and to no token alike on 2026-09-08; source `AuthCheck::only_cookie()`"
   requirement
     id "R1085-13"
     verdict "implemented"
-    automated_test "rust/tests/unit/ci-cd/issue_1012.rs"
+    automated_test "rust/tests/unit/ci-cd/ci_warning_audit.rs"
   requirement
     id "R1085-14"
     verdict "implemented"
@@ -49,7 +49,7 @@ requirement_status_ledger_shard
     automated_test "rust/tests/unit/issue_1090_manual_column_retired.rs"
   requirement
     id "R1085-2"
-    verdict "not-delivered"
+    verdict "implemented"
     delivered "none recorded"
     automated_test "rust/tests/unit/issue_1085_seed_links.rs"
   requirement
@@ -76,7 +76,7 @@ requirement_status_ledger_shard
   requirement
     id "R1085-8"
     verdict "implemented"
-    automated_test "rust/tests/unit/ci-cd/issue_1014.rs"
+    automated_test "rust/tests/unit/ci-cd/ci_diagnostic_audit.rs"
   requirement
     id "R1085-9"
     verdict "partial"

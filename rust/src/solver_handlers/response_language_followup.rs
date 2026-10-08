@@ -102,7 +102,7 @@ pub fn try_response_language_followup(
 /// confirmed a seed-grounded response-language marker is present, so a short
 /// prompt with no fresh subject of its own is enough to treat it as a retarget
 /// of the previous turn rather than a new question. How short is the
-/// `terse_word_limit` policy of `data/seed/handler-rules.lino` (issue #918).
+/// `terse-word-limit` policy of `data/seed/handler-rules.lino` (issue #918).
 fn is_language_reanswer_followup(normalized: &str) -> bool {
     let normalized = normalized.trim();
     if normalized.is_empty() {
@@ -114,7 +114,7 @@ fn is_language_reanswer_followup(normalized: &str) -> bool {
     // Chinese and other scriptio-continua markers carry no inter-word spaces,
     // so a bare "用中文" counts as one word here — still terse, still a switch.
     let limit =
-        crate::rule_interpreter::handler_policy("response_language_followup", "terse_word_limit")
+        crate::rule_interpreter::handler_policy("response_language_followup", "terse-word-limit")
             .and_then(|value| value.parse::<usize>().ok())
             .unwrap_or_default();
     normalized.split_whitespace().count() <= limit

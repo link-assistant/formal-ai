@@ -743,14 +743,14 @@ function howResponse(intent, language, values = {}) {
 }
 
 function proceduralFallbackQuery(task) {
-  return howPolicy("procedural_how_to", "fallback_query", { task });
+  return howPolicy("procedural_how_to", "fallback-query", { task });
 }
 
 function proceduralSearchQuery(task) {
   const fallbackQuery = proceduralFallbackQuery(task.task);
   if (!task || task.action !== "install") return fallbackQuery;
   const target = String(task.object || task.task || "").trim();
-  return howPolicy("procedural_how_to", "install_query", { target: target || task.task }).trim();
+  return howPolicy("procedural_how_to", "install-query", { target: target || task.task }).trim();
 }
 
 async function tryProceduralHowTo(prompt, language, preferences = {}) {

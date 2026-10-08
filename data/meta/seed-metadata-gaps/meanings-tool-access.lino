@@ -1,0 +1,27 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-tool-access.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-f26a31d09bc25124
+    record "calculator_tool"
+  gap seed-metadata-gap-5862ce6cf56ba440
+    record "local_shell_tool"
+  gap seed-metadata-gap-45c31c71e6737b5e
+    record "tool_argument_marker"
+  gap seed-metadata-gap-48ea56719f61ac62
+    record "tool_invocation_cue"
+  gap seed-metadata-gap-885447d7d6757fb9
+    record "tool_result_detail_request"
+  gap seed-metadata-gap-13e8ab4a3250e40c
+    record "tool_result_failure"
+  gap seed-metadata-gap-b3013eaa6db65c9e
+    record "tool_result_first_reference"
+  gap seed-metadata-gap-03480c86f3f1072e
+    record "tool_result_line_request"
+  gap seed-metadata-gap-970fad23724298c4
+    record "tool_result_second_reference"
+  gap seed-metadata-gap-0d8b3b8a134d5ee9
+    record "tool_result_url_request"
+  gap seed-metadata-gap-301f04823574820d
+    record "web_search_tool"

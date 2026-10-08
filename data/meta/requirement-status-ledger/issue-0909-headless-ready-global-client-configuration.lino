@@ -19,12 +19,12 @@ requirement_status_ledger_shard
   requirement
     id "R909-4"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_909.rs"
+    automated_test "rust/tests/unit/docs_requirements/headless_client_configuration.rs"
     manual "not yet confirmed"
   requirement
     id "R909-5"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_909.rs"
+    automated_test "rust/tests/unit/docs_requirements/headless_client_configuration.rs"
     manual "manually confirmed 2026-08-04: script run against the debug binary, exit 0"
   requirement
     id "R909-6"

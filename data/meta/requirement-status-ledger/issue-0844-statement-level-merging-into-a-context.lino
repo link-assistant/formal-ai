@@ -35,4 +35,4 @@ requirement_status_ledger_shard
   requirement
     id "R510"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_844.rs"
+    automated_test "rust/tests/unit/docs_requirements/statement_merging.rs"

@@ -65,11 +65,11 @@ enum Subject {
     /// surface whose seeded form carries a word boundary matches at the edges
     /// of the input as well as inside it (issue #1138 B9, plan 09 leaf 9).
     ///
-    /// `role_padded` built this shape privately for one condition; as a subject
+    /// `role-padded` built this shape privately for one condition; as a subject
     /// every condition can ask for it, which is what lets the Russian
     /// preposition test in
     /// `src/intent_formalization/prompt_relevants.rs` become
-    /// `role temporal_preposition of padded` — seed data in every language
+    /// `role temporal-preposition of padded` — seed data in every language
     /// rather than one Russian preposition compiled into Rust.
     Padded,
     /// The normalized command head: the request before its free-text payload
@@ -359,7 +359,7 @@ impl LinkStoreSource {
                     // A family that retired its rows onto a declared role
                     // (`role_surface`, issue #1138 plan 10 leaf 20) keeps its
                     // exact-match semantics: the role's surfaces are the
-                    // route's surfaces, so `route_exact` conditions keep
+                    // route's surfaces, so `route-exact` conditions keep
                     // deciding on the same whole prompts.
                     for role in store.field_values(&intent.index, "role_surface") {
                         if let Some(entries) = roles.get(&role) {
@@ -496,14 +496,14 @@ impl HandlerRules {
     ///
     /// # Errors
     ///
-    /// Returns a `handler_rules:<line>:<reason>` code for the first malformed
+    /// Returns a `handler-rules:<line>:<reason>` code for the first malformed
     /// line.
     pub fn parse(text: &str) -> Result<Self, String> {
         let nodes = parse_tree(text);
         let root = nodes
             .iter()
-            .find(|node| node.name == "handler_rules")
-            .ok_or_else(|| String::from("handler_rules:0:missing_root"))?;
+            .find(|node| node.name == "handler-rules")
+            .ok_or_else(|| String::from("handler-rules:0:missing_root"))?;
         let mut handlers = Vec::new();
         for node in root.children.iter().filter(|node| node.name == "handler") {
             let name = node.first_arg()?;

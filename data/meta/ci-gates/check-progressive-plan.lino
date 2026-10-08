@@ -1,0 +1,6 @@
+# One CI gate, one file (issue #991).
+ci_gate check-progressive-plan
+  stage web
+  description "R1188-U28, R1188-U29: docs/progressive-plan.md, the requirements placed on their resolution levels (closed, recorded, measured, partial, implemented) and on the root whose test pins them, matches the requirement-status ledger, and the requirements pinned only by a Rust test stay at or below the ceiling of data/meta/progressive-plan-ratchet.lino."
+  run "node scripts/render-progressive-plan.mjs --check"
+  justification "PR #1188 (R1188-U28, R1188-U29): the progressive JPEG method raises the lowest level first, so the levels must be generated from the ledger, never stated by hand."

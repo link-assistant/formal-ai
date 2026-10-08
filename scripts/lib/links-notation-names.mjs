@@ -73,8 +73,10 @@ export function namesOfLine(line) {
   const blanked = blankQuotedAndComment(line);
   for (const match of blanked.matchAll(/[^\s()]+/gu)) {
     const token = match[0].endsWith(':') ? match[0].slice(0, -1) : match[0];
-    if (NAME.test(token)) {
-      names.push({ name: token, start: match.index });
+    // `$name` refers to the value a handler rule names `name`.
+    const reference = token.startsWith('$') ? 1 : 0;
+    if (NAME.test(token.slice(reference))) {
+      names.push({ name: token.slice(reference), start: match.index + reference });
     }
   }
   return names;

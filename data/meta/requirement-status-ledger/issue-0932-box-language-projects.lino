@@ -7,7 +7,7 @@ requirement_status_ledger_shard
   requirement
     id "R932-1"
     verdict "implemented"
-    automated_test "rust/tests/unit/ci-cd/issue_932.rs"
+    automated_test "rust/tests/unit/ci-cd/box_language_release_legs.rs"
   requirement
     id "R932-10"
     verdict "implemented"
@@ -27,7 +27,7 @@ requirement_status_ledger_shard
   requirement
     id "R932-2"
     verdict "implemented"
-    automated_test "rust/tests/unit/ci-cd/issue_932.rs"
+    automated_test "rust/tests/unit/ci-cd/box_language_release_legs.rs"
   requirement
     id "R932-3"
     verdict "implemented"
@@ -35,7 +35,7 @@ requirement_status_ledger_shard
   requirement
     id "R932-4"
     verdict "implemented"
-    automated_test "rust/tests/unit/ci-cd/issue_932.rs"
+    automated_test "rust/tests/unit/ci-cd/box_language_release_legs.rs"
   requirement
     id "R932-5"
     verdict "implemented"

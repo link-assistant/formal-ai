@@ -3,7 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0894-ci-template-upstream-filings.md"
   issue "0894"
   delivered "PR #971 (issue #894)"
-  automated_test "rust/tests/unit/docs_requirements/issue_894.rs"
+  automated_test "rust/tests/unit/docs_requirements/ci_template_upstream_filings.rs"
   requirement
     id "R894-1"
     verdict "implemented"

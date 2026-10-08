@@ -51,7 +51,7 @@ run_step "status surfaces (docs/status.md, docs/benchmarks.md, README.md)" \
 # grounding work list and writes nothing, so it is not a derived artifact and
 # has no step here. The honest number it reports is ratcheted by
 # `data/meta/closure-audit.lino`.
-run_step "seed metadata gaps (data/meta/seed-metadata-gaps-*.lino)" \
+run_step "seed metadata gaps (data/meta/seed-metadata-gaps/, one file per seed source)" \
   rust-script scripts/audit-seed-metadata.rs --write
 run_step "hardcoded-language allowlist (scripts/hardcoded-language-allowlist.txt)" \
   rust-script scripts/check-hardcoded-language.rs --write

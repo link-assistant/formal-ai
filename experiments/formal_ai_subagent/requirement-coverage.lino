@@ -355,6 +355,25 @@ requirement valid-testable-release
   source user-messages "2026-10-08 12:09 (message 143)"
   rows R1188-U27
 
+requirement progressive-jpeg-method
+  group process
+  text "Every problem and the pull request itself are attacked by the progressive JPEG method: complete at every moment at some resolution, raised lowest level first; recorded in the documents."
+  source user-messages "2026-10-08 15:41 (message 145)"
+  source user-messages "2026-10-08 15:41 (message 146)"
+  rows R1188-U28
+
+requirement javascript-first-formal-ai
+  group javascript-first-parity
+  text "More of the work goes through Formal AI from JavaScript, and the JavaScript requirements pass first."
+  source user-messages "2026-10-08 15:41 (message 145)"
+  rows R1188-U29
+
+requirement automated-translation-with-workarounds
+  group translation
+  text "Translation between JavaScript, TypeScript, Rust and the meta language is fully automated, with temporary workarounds where RML and ML are not done yet."
+  source user-messages "2026-10-08 15:41 (message 145)"
+  rows R1188-U30
+
 requirement ci-fixer-subagent
   group process
   text "One of the subagents commits CI fixes as soon as each run reports, while the others bulk-draft undrafted requirements."

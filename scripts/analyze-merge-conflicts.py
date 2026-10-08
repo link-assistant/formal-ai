@@ -50,7 +50,7 @@ CAUSES: list[tuple[str, "re.Pattern[str]"]] = [
         "derived-artifact",
         re.compile(
             r"^(data/meta/self-ast/|data/meta/self-ast\.lino$"
-            r"|data/seed/closure-generated-|data/meta/seed-metadata-gaps-)"
+            r"|data/seed/closure-generated-|data/meta/seed-metadata-gaps/)"
         ),
     ),
     (

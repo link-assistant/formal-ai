@@ -37,7 +37,7 @@ requirement_status_ledger_shard
   requirement
     id "R16"
     verdict "implemented"
-    automated_test "rust/tests/e2e/tests/issue-776.spec.js"
+    automated_test "rust/tests/e2e/tests/source-first-translation.spec.js"
   requirement
     id "R17"
     verdict "implemented"
@@ -62,7 +62,7 @@ requirement_status_ledger_shard
   requirement
     id "R21"
     verdict "implemented"
-    automated_test "rust/tests/e2e/tests/issue-180.spec.js"
+    automated_test "rust/tests/e2e/tests/deformalize-step.spec.js"
   requirement
     id "R22"
     verdict "implemented"

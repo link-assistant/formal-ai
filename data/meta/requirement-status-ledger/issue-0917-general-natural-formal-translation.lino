@@ -7,11 +7,11 @@ requirement_status_ledger_shard
   requirement
     id "R917-1"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_917.rs"
+    automated_test "rust/tests/unit/formal_projection_round_trips.rs"
   requirement
     id "R917-2"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_917.rs"
+    automated_test "rust/tests/unit/formal_projection_round_trips.rs"
   requirement
     id "R917-3"
     verdict "implemented"
@@ -19,16 +19,16 @@ requirement_status_ledger_shard
   requirement
     id "R917-4"
     verdict "implemented"
-    automated_test "rust/tests/e2e/tests/issue-917.spec.js"
+    automated_test "rust/tests/e2e/tests/formal-language-projections.spec.js"
   requirement
     id "R917-5"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_917.rs"
+    automated_test "rust/tests/unit/formal_projection_round_trips.rs"
   requirement
     id "R917-6"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_917.rs"
+    automated_test "rust/tests/unit/docs_requirements/natural_formal_translation.rs"
   requirement
     id "R917-7"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_917.rs"
+    automated_test "rust/tests/unit/docs_requirements/natural_formal_translation.rs"

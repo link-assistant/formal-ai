@@ -9,7 +9,7 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 
 | Who | Tasks | Passed | Failed | Partial | Fixed | Open | Not reproduced | Unresolved |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **All** | 318 | 150 | 154 | 3 | 127 | 27 | 3 | 0 |
+| **All** | 335 | 167 | 154 | 3 | 127 | 27 | 3 | 0 |
 | CI-SPEED | 6 | 6 | 0 | 0 | 0 | 0 | 0 | 0 |
 | CIFIX | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | CIFIX2 | 3 | 0 | 3 | 0 | 2 | 1 | 0 | 0 |
@@ -22,9 +22,9 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 | LEXEMES | 4 | 3 | 1 | 0 | 1 | 0 | 0 | 0 |
 | MIGRATE3 | 4 | 0 | 4 | 0 | 0 | 4 | 0 | 0 |
 | MIGRATE4 | 3 | 0 | 2 | 1 | 0 | 3 | 0 | 0 |
-| NOTATION | 12 | 12 | 0 | 0 | 0 | 0 | 0 | 0 |
+| NOTATION | 22 | 22 | 0 | 0 | 0 | 0 | 0 | 0 |
 | READABLE | 10 | 8 | 2 | 0 | 2 | 0 | 0 | 0 |
-| RENAME | 25 | 22 | 3 | 0 | 0 | 2 | 1 | 0 |
+| RENAME | 32 | 29 | 3 | 0 | 0 | 2 | 1 | 0 |
 | REPO-PROTO | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0 |
 | REQ-AUDIT | 9 | 9 | 0 | 0 | 0 | 0 | 0 | 0 |
 | REQ-ROUTE | 12 | 7 | 5 | 0 | 4 | 0 | 1 | 0 |
@@ -41,3 +41,14 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 
 Fixed failures whose row names no regression test, pin, gap or carrying row: 0.
 Failures with no resolution: 0.
+
+## Formal AI edits beside edits by hand
+
+From the "Edits by hand" table of the ledger: per agent, the edits it delegated to Formal AI
+and the files it wrote itself. A tool run by rule counts as neither.
+
+| Who | By Formal AI | By hand | Delegated share |
+| --- | ---: | ---: | ---: |
+| **All** | 166 | 57 | 74% |
+| LEAD | 9 | 41 | 18% |
+| RENAME | 157 | 16 | 91% |

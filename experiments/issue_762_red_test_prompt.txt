@@ -1,4 +1,4 @@
-Create file tests/issue_762.rs with exactly the Rust source between BEGIN_SOURCE and END_SOURCE. Do not create or modify any other file. Then run cargo test --test issue_762 and stop. The test is expected to fail because opencode-desktop is not registered yet.
+Create file tests/desktop_launch_registry.rs with exactly the Rust source between BEGIN_SOURCE and END_SOURCE. Do not create or modify any other file. Then run cargo test --test issue_762 and stop. The test is expected to fail because opencode-desktop is not registered yet.
 
 BEGIN_SOURCE
 #[cfg(unix)]

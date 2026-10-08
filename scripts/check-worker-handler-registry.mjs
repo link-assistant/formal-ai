@@ -25,7 +25,7 @@ function parseRegistry(source) {
     }
     const binding = /^    context_binding_(\S+)\s*$/.exec(line);
     if (binding && current) current.contextBinding = binding[1];
-    if (/^    rule_set\s*$/.test(line) && current) current.ruleSet = true;
+    if (/^    rule[-_]set\s*$/.test(line) && current) current.ruleSet = true;
   }
   return records;
 }

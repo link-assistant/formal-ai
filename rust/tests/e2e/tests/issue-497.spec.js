@@ -53,7 +53,7 @@ test.describe('Issue #497 GitHub repository traffic prompt', () => {
     await expect(body).toContainText('link-assistant/formal-ai');
     await expect(body).toContainText('docs.github.com/en/rest/metrics/traffic');
     await expect(assistantMessage).toContainText(
-      'github_repository_traffic:privacy:no_individual_identity',
+      'github_repository_traffic:privacy:no-individual-identity',
     );
   });
 });

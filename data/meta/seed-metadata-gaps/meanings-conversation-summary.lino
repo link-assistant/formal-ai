@@ -1,0 +1,15 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-conversation-summary.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-be63d15852614983
+    record "conversation_reference"
+  gap seed-metadata-gap-87ea02a2f9c029d0
+    record "conversation_return_recap"
+  gap seed-metadata-gap-318693457d868731
+    record "conversation_summary_courtesy"
+  gap seed-metadata-gap-3a2bac2e4990dff4
+    record "conversation_summary_directive"
+  gap seed-metadata-gap-53da1cd27244136a
+    record "conversation_summary_phrase"

@@ -19,6 +19,12 @@ test('names are the unquoted lowercase identifier tokens of a line', () => {
     namesOfLine('    aliases ("web_search" "read_file") defined-by: path/to_file.rs').map((entry) => entry.name),
     ['aliases', 'defined-by'],
   );
+  // `$name` refers to the value a handler rule names, so a rename reaches it.
+  assert.deepEqual(namesOfLine('      log source $sample_value_name'), [
+    { name: 'log', start: 6 },
+    { name: 'source', start: 10 },
+    { name: 'sample_value_name', start: 18 },
+  ]);
 });
 
 test('a name counts as abbreviated when one of its words is on the seeded list', () => {

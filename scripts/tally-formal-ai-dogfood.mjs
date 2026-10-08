@@ -23,7 +23,7 @@
 //   --check compares it and checks the ratchet (gate check-formal-ai-tally).
 
 import { execFileSync } from 'node:child_process';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -55,6 +55,66 @@ export function ladderRows(text) {
     rows.push({ id: match[1], task: cells.join(' | '), before, after });
   }
   return rows;
+}
+
+/**
+ * The rows of the ledger's "Edits by hand" table (R1188-U13): per agent and
+ * round, the edits Formal AI made and the files the agent wrote by hand.
+ * @param {string} text
+ * @returns {Array<{id: string, agent: string, round: string, delegated: number, byHand: number, why: string}>}
+ */
+export function handRows(text) {
+  const rows = [];
+  for (const line of text.split('\n')) {
+    const match = /^\| (H\d+) \| ([^|]+?) \| ([^|]+?) \| (\d+) \| (\d+) \| (.*) \|\s*$/u.exec(line);
+    if (match) {
+      rows.push({
+        id: match[1],
+        agent: match[2],
+        round: match[3],
+        delegated: Number(match[4]),
+        byHand: Number(match[5]),
+        why: match[6],
+      });
+    }
+  }
+  return rows;
+}
+
+/**
+ * The share of edits Formal AI made, per agent and over all, as text.
+ * @param {ReturnType<typeof handRows>} rows
+ * @returns {Array<string>}
+ */
+export function renderHandEdits(rows) {
+  if (rows.length === 0) {
+    return [];
+  }
+  const share = (delegated, byHand) =>
+    delegated + byHand === 0 ? '-' : `${Math.round((100 * delegated) / (delegated + byHand))}%`;
+  const sums = new Map();
+  for (const row of rows) {
+    const sum = sums.get(row.agent) ?? { delegated: 0, byHand: 0 };
+    sum.delegated += row.delegated;
+    sum.byHand += row.byHand;
+    sums.set(row.agent, sum);
+  }
+  const delegated = rows.reduce((total, row) => total + row.delegated, 0);
+  const byHand = rows.reduce((total, row) => total + row.byHand, 0);
+  return [
+    '## Formal AI edits beside edits by hand',
+    '',
+    'From the "Edits by hand" table of the ledger: per agent, the edits it delegated to Formal AI',
+    'and the files it wrote itself. A tool run by rule counts as neither.',
+    '',
+    '| Who | By Formal AI | By hand | Delegated share |',
+    '| --- | ---: | ---: | ---: |',
+    `| **All** | ${delegated} | ${byHand} | ${share(delegated, byHand)} |`,
+    ...[...sums]
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([agent, sum]) => `| ${agent} | ${sum.delegated} | ${sum.byHand} | ${share(sum.delegated, sum.byHand)} |`),
+    '',
+  ];
 }
 
 /**
@@ -145,7 +205,7 @@ export function tally(rows, citedIds = new Set()) {
  * @param {ReturnType<typeof tally>} result
  * @returns {string}
  */
-export function renderTally({ total, agents, fixedWithoutTest, unresolved }) {
+export function renderTally({ total, agents, fixedWithoutTest, unresolved }, hand = []) {
   const header = '| Who | Tasks | Passed | Failed | Partial | Fixed | Open | Not reproduced | Unresolved |';
   const rule = '| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |';
   const line = (name, counts) =>
@@ -171,6 +231,7 @@ export function renderTally({ total, agents, fixedWithoutTest, unresolved }) {
       (fixedWithoutTest.length ? ` (${fixedWithoutTest.join(', ')}).` : '.'),
     `Failures with no resolution: ${unresolved.length}` + (unresolved.length ? ` (${unresolved.join(', ')}).` : '.'),
     '',
+    ...renderHandEdits(hand),
   ].join('\n');
 }
 
@@ -181,7 +242,7 @@ function citedTaskIds(root) {
     encoding: 'utf8',
   })
     .split('\n')
-    .filter((path) => path.endsWith('.mjs') || path.endsWith('.rs'));
+    .filter((path) => (path.endsWith('.mjs') || path.endsWith('.rs')) && existsSync(join(root, path)));
   const ids = new Set();
   for (const path of files) {
     for (const match of readFileSync(join(root, path), 'utf8').matchAll(/\bT\d+\b/gu)) {
@@ -202,8 +263,9 @@ function ceilingOf(text) {
 function main(argv) {
   const root = join(dirname(fileURLToPath(import.meta.url)), '..');
   const read = (path) => readFileSync(join(root, path), 'utf8');
-  const result = tally(ladderRows(read(LEDGER)), citedTaskIds(root));
-  const page = renderTally(result);
+  const ledger = read(LEDGER);
+  const result = tally(ladderRows(ledger), citedTaskIds(root));
+  const page = renderTally(result, handRows(ledger));
   if (argv.includes('--write')) {
     writeFileSync(join(root, TALLY), page);
     console.log(`wrote ${TALLY}: ${result.total.tasks} tasks, ${result.total.failed} failed, ${result.total.fixed} fixed`);

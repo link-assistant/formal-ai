@@ -152,3 +152,1139 @@ rename-map
       to "js/worker/formal_ai_worker_memory_inspection.js"
       reason "Associative-memory inspection answers over the links the interface stores."
       review "Read on 2026-10-08: 110 lines, 6 top-level functions from memoryInspectionStableId to tryMemoryInspection; the name covers the largest groups, and the module reads no other module's bindings while it loads."
+  tree test-files-by-behaviour
+    rename
+      from "desktop/scripts/issue-756.test.mjs"
+      to "desktop/scripts/shared-memory-path.test.mjs"
+      reason "The desktop shared memory path honors overrides and platform defaults, and every desktop service shares one memory mount."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was desktop-shared-path.test.mjs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-135.spec.js"
+      to "rust/tests/e2e/tests/playwright-script-request.spec.js"
+      reason "A Russian request for a Playwright script returns a starter script instead of the unknown fallback."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was playwright-script-prompt.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-153.spec.js"
+      to "rust/tests/e2e/tests/search-menu-and-deduplication.spec.js"
+      reason "The top menu, the search experience, formalization display and answer deduplication."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was search-formalization-menu.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-157.spec.js"
+      to "rust/tests/e2e/tests/creator-question.spec.js"
+      reason "A Russian question about the creator of Formal AI resolves through the worker's seed facts."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was formal-ai-creator.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-180.spec.js"
+      to "rust/tests/e2e/tests/deformalize-step.spec.js"
+      reason "Every answer ends its reasoning with a deformalize step, including unknown and web-search answers."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was deformalize-step-web.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-193.spec.js"
+      to "rust/tests/e2e/tests/offline-bundled-runtime.spec.js"
+      reason "The bundled web runtime starts and translates the UI when external JavaScript CDNs are unavailable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was bundled-web-runtime.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-1963.spec.js"
+      to "rust/tests/e2e/tests/reasoning-and-panel-polish.spec.js"
+      reason "One continuous reasoning scroll-fade, a stable pending-bubble width, dark services and update panels and a uniform topbar hover."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was pending-width-dark.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-205.spec.js"
+      to "rust/tests/e2e/tests/ocr-image-attachments.spec.js"
+      reason "Optional OCR image attachments stay out of the initial page and export their text into memory when enabled."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/e2e/tests/issue-209.spec.js"
+      to "rust/tests/e2e/tests/prime-proof-prompts.spec.js"
+      reason "Compact multilingual proof requests are answered with Euclid's proof that the primes are infinite."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/e2e/tests/issue-210.spec.js"
+      to "rust/tests/e2e/tests/quoted-russian-translation.spec.js"
+      reason "Quoted Russian prompts are translated instead of answered as identity, capability or placeholder questions."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was russian-translation-prompts.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-218.spec.js"
+      to "rust/tests/e2e/tests/apple-translation.spec.js"
+      reason "The apple noun translates in both directions, quoted or unquoted, as the Rust pipeline does."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was apple-russian-quotes.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-221.spec.js"
+      to "rust/tests/e2e/tests/common-noun-translation.spec.js"
+      reason "Any common noun translates in the browser demo, quoted or unquoted, not only the apple."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was common-russian-tomato.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-223.spec.js"
+      to "rust/tests/e2e/tests/pandas-join-documentation.spec.js"
+      reason "A pandas join-method prompt returns an answer from the official documentation."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was pandas-join-method.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-224.spec.js"
+      to "rust/tests/e2e/tests/implicit-research-web-search.spec.js"
+      reason "Implicit research questions route to web search."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was web-search-routes.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-228.spec.js"
+      to "rust/tests/e2e/tests/enumeration-research-web-search.spec.js"
+      reason "Enumeration research requests route to web search."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was enumeration-web-search.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-230.spec.js"
+      to "rust/tests/e2e/tests/search-phrase-translation.spec.js"
+      reason "A quoted Russian phrase that describes a search action is translated instead of answered with a placeholder."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was russian-phrase-translation.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-242.spec.js"
+      to "rust/tests/e2e/tests/dictionary-lookup-recovery.spec.js"
+      reason "A malformed meaning question extracts its term and falls back to Wiktionary."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was dictionary-lookup-meaning.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-280.spec.js"
+      to "rust/tests/e2e/tests/desktop-shell-bridge.spec.js"
+      reason "The desktop shell bridge shows status, network, memory and permission surfaces in every UI language."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was desktop-shell-permission.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-282.spec.js"
+      to "rust/tests/e2e/tests/rust-wasm-worker-parity.spec.js"
+      reason "The Rust/WASM worker answers unknown prompts with the native stable-id opener."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was rust-wasm-worker.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-286.spec.js"
+      to "rust/tests/e2e/tests/antiregime-concept-lookup.spec.js"
+      reason "The Russian antiregime concept resolves from local seed data instead of the unknown fallback."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was russian-antiregime-concept.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-288.spec.js"
+      to "rust/tests/e2e/tests/false-totality-concept-lookup.spec.js"
+      reason "The Russian false-totality concept resolves from local seed data instead of the unknown fallback."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was russian-false-totality.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-327.spec.js"
+      to "rust/tests/e2e/tests/cross-runtime-synthesis-parity.spec.js"
+      reason "Browser text synthesis matches the Rust parity fixture and accepts supported-language wrappers."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was cross-synthesis-parity.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-330.spec.js"
+      to "rust/tests/e2e/tests/code-highlighting-and-copy.spec.js"
+      reason "Code blocks are syntax-highlighted with a copy button, and a whole message copies as Markdown."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was code-copy-highlights.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-334.spec.js"
+      to "rust/tests/e2e/tests/fibonacci-agent-plan.spec.js"
+      reason "Both steps of the Fibonacci agent plan succeed in the WASM-worker demo."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was fibonacci-agent-step.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-335.spec.js"
+      to "rust/tests/e2e/tests/composite-wikipedia-research.spec.js"
+      reason "A composite historical research prompt in agent mode searches Wikipedia per subject, not with the whole instruction."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/e2e/tests/issue-336.spec.js"
+      to "rust/tests/e2e/tests/compound-interest-conversion.spec.js"
+      reason "A compound-interest prompt with a follow-up currency conversion is calculated instead of falling to unknown."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was eur-conversion-mode.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-337.spec.js"
+      to "rust/tests/e2e/tests/github-repository-extraction.spec.js"
+      reason "A GitHub repository extraction prompt returns repository facts as JSON."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/e2e/tests/issue-338.spec.js"
+      to "rust/tests/e2e/tests/relational-box-arithmetic.spec.js"
+      reason "A box-and-apple word problem is reduced to arithmetic with the requested steps."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was relational-apple-box.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-339.spec.js"
+      to "rust/tests/e2e/tests/research-table-follow-up.spec.js"
+      reason "A search-then-table agent prompt does not fall through to unknown."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was agent-research-table.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-343.spec.js"
+      to "rust/tests/e2e/tests/how-to-typo-correction.spec.js"
+      reason "A how-to prompt with a typo routes to the procedural how-to with the typo corrected."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was russian-how-typo.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-347.spec.js"
+      to "rust/tests/e2e/tests/download-page.spec.js"
+      reason "The cross-platform download page and its preview screenshots."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was download-page-release.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-353.spec.js"
+      to "rust/tests/e2e/tests/vscode-extension-bridge.spec.js"
+      reason "The VS Code extension bridge on Node and web hosts, and its permission panel in every UI language."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was vs-code-host.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-360.spec.js"
+      to "rust/tests/e2e/tests/write-program-diagnostics.spec.js"
+      reason "A reverse-sort follow-up exposes the synthesized write_program reasoning steps."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/e2e/tests/issue-363.spec.js"
+      to "rust/tests/e2e/tests/reasoning-first-report.spec.js"
+      reason "A resolved follow-up offers no report action, and a missing-rule report carries the reasoning trace."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/e2e/tests/issue-386.spec.js"
+      to "rust/tests/e2e/tests/trimmed-issue-report.spec.js"
+      reason "The prefilled issue report omits settings that are at their default."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was default-reasoning-reset.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-388.spec.js"
+      to "rust/tests/e2e/tests/adaptive-header-and-dark-theme.spec.js"
+      reason "The header switches to icon-only controls before it clips, and dark theme surfaces match."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was adaptive-header-actions.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-392.spec.js"
+      to "rust/tests/e2e/tests/activation-safe-copy.spec.js"
+      reason "Copying a conversation as Markdown works under activation-sensitive clipboard rules."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/e2e/tests/issue-395.spec.js"
+      to "rust/tests/e2e/tests/sort-numbers-program.spec.js"
+      reason "A request to sort numbers in JavaScript returns runnable code and its printed result."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was sort-code-result.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-402.spec.js"
+      to "rust/tests/e2e/tests/free-time-small-talk.spec.js"
+      reason "A Russian free-time question is answered with the assistant free-time intent."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was russian-free-time.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-404.spec.js"
+      to "rust/tests/e2e/tests/calendar-event-request.spec.js"
+      reason "A Russian calendar-event request drafts the event and offers safe execution paths."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/e2e/tests/issue-409.spec.js"
+      to "rust/tests/e2e/tests/toolbar-icon-packs.spec.js"
+      reason "The toolbar uses icon-font metadata without emoji, and the selected icon pack persists."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was toolbar-icon-pack.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-426.spec.js"
+      to "rust/tests/e2e/tests/records-research-web-search.spec.js"
+      reason "Questions about the records or financials of a subject route to web search."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was records-web-search.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-435.spec.js"
+      to "rust/tests/e2e/tests/relative-date-calendar.spec.js"
+      reason "A calendar request with only a relative date is scheduled for that day."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/e2e/tests/issue-438.spec.js"
+      to "rust/tests/e2e/tests/desktop-services-panel.spec.js"
+      reason "The desktop one-click services panel starts and stops both prepared containers."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was click-services-panel.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-439.spec.js"
+      to "rust/tests/e2e/tests/length-versus-mass-units.spec.js"
+      reason "The worker explains that meters and kilograms measure different dimensions."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was russian-length-vs.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-440.spec.js"
+      to "rust/tests/e2e/tests/file-listing-and-light-code-theme.spec.js"
+      reason "File-listing examples match the language, and code blocks use a light theme in the light app theme."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was list-files-output.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-441.spec.js"
+      to "rust/tests/e2e/tests/mixed-script-wikipedia-lookup.spec.js"
+      reason "A Russian definition prompt with a Latin technical term stays Russian."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was mixed-script-russian.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-444.spec.js"
+      to "rust/tests/e2e/tests/how-to-elaboration-follow-up.spec.js"
+      reason "An elaboration follow-up rebinds to the previous how-to answer."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was elaboration-follow-up.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-460.spec.js"
+      to "rust/tests/e2e/tests/train-meeting-word-problem.spec.js"
+      reason "A train meeting word problem is solved with relative speed and keeps its verification tags."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was train-meeting-word.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-464.spec.js"
+      to "rust/tests/e2e/tests/clock-time-duration.spec.js"
+      reason "Clock subtraction and natural-language elapsed-time prompts route to the calculator."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was clock-time-subtraction.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-466.spec.js"
+      to "rust/tests/e2e/tests/authorship-fact-query.spec.js"
+      reason "Authorship questions for unseeded works resolve through the Wikidata fact query."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was authorship-resolves-questions.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-476.spec.js"
+      to "rust/tests/e2e/tests/sidebar-section-isolation.spec.js"
+      reason "Sidebar sections expand and collapse independently."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was sidebar-section-expands.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-478.spec.js"
+      to "rust/tests/e2e/tests/neural-inference-concept.spec.js"
+      reason "Neural inference prompts in every supported language use the seeded concept."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/e2e/tests/issue-479.spec.js"
+      to "rust/tests/e2e/tests/macos-gatekeeper-screenshots.spec.js"
+      reason "The download page shows the macOS Gatekeeper screenshots."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/e2e/tests/issue-481.spec.js"
+      to "rust/tests/e2e/tests/telegraphic-how-to.spec.js"
+      reason "A telegraphic how-to prompt routes through the procedural worker path."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was telegraphic-how-prompt.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-485.spec.js"
+      to "rust/tests/e2e/tests/elided-procedural-how-to.spec.js"
+      reason "A greeting followed by an elided connect request composes a procedural answer."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was multilingual-elided-procedural.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-488.spec.js"
+      to "rust/tests/e2e/tests/visible-thinking-preview.spec.js"
+      reason "A collapsed, human-readable thinking preview is shown by default and localized."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/e2e/tests/issue-493.spec.js"
+      to "rust/tests/e2e/tests/ocr-market-price-check.spec.js"
+      reason "OCR text is used to flag a false market-price claim across assets and languages."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was ocr-market-price.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-500.spec.js"
+      to "rust/tests/e2e/tests/unresolved-term-web-search.spec.js"
+      reason "An unresolved bare term routes to web search instead of unknown."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was unresolved-web-search.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-501.spec.js"
+      to "rust/tests/e2e/tests/install-how-to-discovery.spec.js"
+      reason "Install requests route to official-documentation-first procedural discovery."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was install-how-prompts.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-513.spec.js"
+      to "rust/tests/e2e/tests/terminal-command-mode.spec.js"
+      reason "A terminal-command request suggests Agent mode, and the mode radio switches modes."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was terminal-mode-agent.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-514.spec.js"
+      to "rust/tests/e2e/tests/tool-permissions-and-approval.spec.js"
+      reason "Per-tool permissions persist, render translated, and Agent mode asks before each shell command."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was per-tool-command.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-518.spec.js"
+      to "rust/tests/e2e/tests/agent-cli-chat-rendering.spec.js"
+      reason "Agent CLI NDJSON renders in the chat UI with the provider answer and tool diagnostics."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was agent-cli-renders.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-535.spec.js"
+      to "rust/tests/e2e/tests/text-attachment-originality.spec.js"
+      reason "A plagiarism request with a text attachment routes to the originality check."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/e2e/tests/issue-548.spec.js"
+      to "rust/tests/e2e/tests/desktop-updates-and-version.spec.js"
+      reason "The desktop app shows its own version and in-app update notifications."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was desktop-version-app.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-556.spec.js"
+      to "rust/tests/e2e/tests/repository-lookup-language-follow-up.spec.js"
+      reason "A request for another language re-answers the previous GitHub lookup in that language."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was repository-lookup-language.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-687.spec.js"
+      to "rust/tests/e2e/tests/natural-language-settings-control.spec.js"
+      reason "Seed-backed natural-language commands control settings that had no message-command route."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was seed-backed-natural.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-707.spec.js"
+      to "rust/tests/e2e/tests/computer-use-permissions.spec.js"
+      reason "The computer-use seed and the desktop permission panel cover the whole taxonomy in every locale."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was computer-seed-permission.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-708.spec.js"
+      to "rust/tests/e2e/tests/browser-memory-programs.spec.js"
+      reason "Seeded memory programs run identically across languages in the browser and refuse destructive effects."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was seeded-program-browser.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-709.spec.js"
+      to "rust/tests/e2e/tests/ranked-provenance-answers.spec.js"
+      reason "Live search is presented as ranked statements with source-level provenance."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/e2e/tests/issue-710.spec.js"
+      to "rust/tests/e2e/tests/conversational-requirement-recovery.spec.js"
+      reason "Conversational requirements recovered by the closure audit work in the browser."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/e2e/tests/issue-747.spec.js"
+      to "rust/tests/e2e/tests/desktop-web-search-without-agent.spec.js"
+      reason "Multilingual desktop web search works with agent permission off and no local API."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was multilingual-desktop-web.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-759.spec.js"
+      to "rust/tests/e2e/tests/desktop-agent-selector.spec.js"
+      reason "The desktop selector routes installed Agent and native turns through one UI."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was desktop-selector-routes.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-776.spec.js"
+      to "rust/tests/e2e/tests/source-first-translation.spec.js"
+      reason "Source-first translation commands and semantic round trips in the browser worker."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was prompt-browser-worker.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-845.spec.js"
+      to "rust/tests/e2e/tests/dialogue-fact-checking.spec.js"
+      reason "Current-dialogue fact checking is live in the browser worker in every language."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was current-dialogue-fact.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-864.spec.js"
+      to "rust/tests/e2e/tests/failure-detection-and-report-offer.spec.js"
+      reason "Failure detection uses semantic signals, and a detected failure offers a contextual issue report."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was failure-detection-semantic.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-870.spec.js"
+      to "rust/tests/e2e/tests/research-fusion-routing.spec.js"
+      reason "A reported request routes through permission and the task list, and unknown requests fuse trusted research."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was surface-routes-russian.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-890.spec.js"
+      to "rust/tests/e2e/tests/proof-program-translation.spec.js"
+      reason "The browser worker mirrors native proof-to-program translation."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was formal-proof-program.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-896.spec.js"
+      to "rust/tests/e2e/tests/published-search-boundaries.spec.js"
+      reason "The web app crosses the published web-search and web-capture boundaries before its local fallbacks."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was browser-language-http.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/e2e/tests/issue-917.spec.js"
+      to "rust/tests/e2e/tests/formal-language-projections.spec.js"
+      reason "Every registered seed language round-trips through the seed-defined first-order logic projection in the browser."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was language-supported-natural.spec.js; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/issue_715.rs"
+      to "rust/tests/workspace_code_changes.rs"
+      reason "Agentic code requests change workspace files through the CLI's file tools instead of returning prose."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was code_file_change.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/issue_752.rs"
+      to "rust/tests/model_context_usage.rs"
+      reason "Models report real disk, context and memory usage, scaled by the configured average."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was models_report_usage.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/issue_756.rs"
+      to "rust/tests/shared_memory_path.rs"
+      reason "The shared memory path honors overrides and platform defaults, and a fresh store is created securely."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/issue_760.rs"
+      to "rust/tests/t3code_launch.rs"
+      reason "The T3 Code aliases launch with an isolated provider for both protocols, and setup includes them."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was aliases_launch_isolated.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/issue_762.rs"
+      to "rust/tests/desktop_launch_registry.rs"
+      reason "The desktop registry has cross-platform launch metadata and an isolated shared provider configuration."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was desktop_registry_launch.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/issue_763.rs"
+      to "rust/tests/vscode_launch.rs"
+      reason "The VS Code aliases launch with an isolated OpenCode provider, and global setup can be undone."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was aliases_launch_opencode.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/issue_902.rs"
+      to "rust/tests/codex_provider_config.rs"
+      reason "The Codex provider configuration survives caller overrides."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1001.rs"
+      to "rust/tests/unit/ci-cd/container_image_visibility.rs"
+      reason "The released container image is public: a private or absent package fails the release with the remedy."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was package_fails_probe.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1012.rs"
+      to "rust/tests/unit/ci-cd/ci_warning_audit.rs"
+      reason "The full CI warning and error audit: macOS core slices, their deadlines and targets."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was macos_core_warning.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1014.rs"
+      to "rust/tests/unit/ci-cd/ci_diagnostic_audit.rs"
+      reason "The complete CI diagnostic audit: preserved run evidence, the release cycle and shared test archives."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was pull_request_without.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1017.rs"
+      to "rust/tests/unit/ci-cd/step_budgets_within_job_clocks.rs"
+      reason "Every step budget expires before the job clock it guards, so a timeout reports as a failure."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was budget_job_wrapper.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1021.rs"
+      to "rust/tests/unit/ci-cd/third_party_cli_version_pins.rs"
+      reason "Every third-party CLI a workflow installs carries an explicit version, and the Codex pin names its defect."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was deadline_budget_reports.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1031.rs"
+      to "rust/tests/unit/ci-cd/sccache_statistics.rs"
+      reason "sccache is started explicitly and reports its statistics between steps."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was sccache_started_explicitly.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1037.rs"
+      to "rust/tests/unit/ci-cd/test_lane_deduplication.rs"
+      reason "Each test runs in one lane only, and every commit prunes the build cache."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was lane_specification_shard.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1039.rs"
+      to "rust/tests/unit/ci-cd/artifact_download_retry.rs"
+      reason "The macOS archive download retries transient storage failures within the job cap."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was archive_download_retry.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1041.rs"
+      to "rust/tests/unit/ci-cd/tracked_git_hooks.rs"
+      reason "The build installs the tracked hooks directory, and the pre-commit hook prunes without blocking."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was build_hooks_commit.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1043.rs"
+      to "rust/tests/unit/ci-cd/harness_release_profile.rs"
+      reason "Only harness builds weaken the release profile; shipped builds keep full optimisation."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was harness_builds_release.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1045.rs"
+      to "rust/tests/unit/ci-cd/link_checker_retries.rs"
+      reason "The link checker retries past a connection reset, while a missing page still fails."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was link_checked_captured.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1047.rs"
+      to "rust/tests/unit/ci-cd/longest_tests_first.rs"
+      reason "The longest tests are scheduled first in the macOS lane."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was longest_scheduled_first.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1049.rs"
+      to "rust/tests/unit/ci-cd/example_binary_pruning.rs"
+      reason "The commit hook checks examples instead of linking them, and the pruner removes linked example binaries."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was commit_hook_checks.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1051.rs"
+      to "rust/tests/unit/ci-cd/single_release_build.rs"
+      reason "The release binary is compiled once per pipeline and reused by the images."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was binary_prebuilt_source.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1053.rs"
+      to "rust/tests/unit/ci-cd/optimized_test_profile.rs"
+      reason "The test profile is optimized without disabling the checks tests rely on."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was profile_optimized_optimization.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1055.rs"
+      to "rust/tests/unit/ci-cd/one_build_per_platform.rs"
+      reason "One job builds per platform and the rest download its binary."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was wrapped_build_checks.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1057.rs"
+      to "rust/tests/unit/ci-cd/docker_layer_cache_budget.rs"
+      reason "Docker layers no longer evict the compiler cache from the shared Actions cache."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was prebuilt_image_layers.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1059.rs"
+      to "rust/tests/unit/ci-cd/macos_test_selection.rs"
+      reason "The macOS lane runs only the tests that can differ from Linux, on one runner."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was macos_list_records.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1064.rs"
+      to "rust/tests/unit/ci-cd/executable_workflow_scripts.rs"
+      reason "A script a workflow runs directly is committed executable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was script_workflow_runs.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1069.rs"
+      to "rust/tests/unit/ci-cd/docker_resource_hygiene.rs"
+      reason "Docker resources are pruned on every exit, within a ceiling, without blocking commits."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was docker_commits_wrapper.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1076.rs"
+      to "rust/tests/unit/ci-cd/step_deadlines_and_coverage_budget.rs"
+      reason "Every long-running step under a job cap owns a deadline, and the coverage budget fits its cap."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was step_job_cap.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1079.rs"
+      to "rust/tests/unit/ci-cd/pinned_tool_images.rs"
+      reason "Every container image and tool version a workflow uses is pinned once and used everywhere."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was image_pinned_pass.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_1081.rs"
+      to "rust/tests/unit/ci-cd/job_budget_fit.rs"
+      reason "The budgets a job can spend together fit inside its cap, and a test step's deadline reports as a failure."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was job_fit_branch.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_717.rs"
+      to "rust/tests/unit/ci-cd/attestation_and_coverage_audit.rs"
+      reason "Attestations digest artifacts, coverage is retained, and agent CLI warnings are reviewed."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was attestations_digest_warning.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_730.rs"
+      to "rust/tests/unit/ci-cd/desktop_jobs_and_permissions.rs"
+      reason "Every desktop job has a bounded runtime and least privilege, and dependency warnings are classified."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was desktop_job_bounded.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_739.rs"
+      to "rust/tests/unit/ci-cd/production_readiness_gates.rs"
+      reason "Rustdoc gates pull requests before a release, and production does not brand the app as a demo."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was rustdoc_pre_release.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_742.rs"
+      to "rust/tests/unit/ci-cd/api_docs_publishing.rs"
+      reason "The docs.rs profile is validated on pull requests, and the API docs publish below the site docs."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was docs_rs_profile.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_796.rs"
+      to "rust/tests/unit/ci-cd/npm_deprecation_review.rs"
+      reason "Reviewed npm deprecations are matched by package name, and unreviewed diagnostics still fail."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was reviewed_deprecations_package.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_798.rs"
+      to "rust/tests/unit/ci-cd/rust_warning_policy.rs"
+      reason "WASM and desktop release builds reject Rust warnings on every platform."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was wasm_rejects_platform.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_846.rs"
+      to "rust/tests/unit/ci-cd/excluded_only_changes.rs"
+      reason "Change-gated jobs detect excluded-only changes on pushes and pull requests."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was change_pushes_job.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_932.rs"
+      to "rust/tests/unit/ci-cd/box_language_release_legs.rs"
+      reason "The release pipeline runs one box-image leg per generated language project."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was release_pipeline_leg.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_977.rs"
+      to "rust/tests/unit/ci-cd/job_timeouts_as_failures.rs"
+      reason "Bounded Playwright and Docker steps abort before the job clock, so a timeout reports as a failure."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was playwright_step_release.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_980.rs"
+      to "rust/tests/unit/ci-cd/default_branch_ci_failures.rs"
+      reason "The default-branch CI failures stay fixed: rustfmt, parity and the cold-start permission test."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was rust_sources_remain.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/ci-cd/issue_999.rs"
+      to "rust/tests/unit/ci-cd/macos_test_partitioning.rs"
+      reason "macOS tests are partitioned without raising the failed budget."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was without_matrix_suite.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_1021.rs"
+      to "rust/tests/unit/docs_requirements/full_range_coding_artifacts.rs"
+      reason "Every requirement of the full-range coding and contribution artifacts is written down and traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was requirements_written_down.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_1138.rs"
+      to "rust/tests/unit/docs_requirements/plan_set_traceability.rs"
+      reason "One traceability file for the whole plan set: every shard declares ids that name a test that exists."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was requirements_shard_exists.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_451.rs"
+      to "rust/tests/unit/docs_requirements/symbolic_ai_reference.rs"
+      reason "The symbolic AI reference documents are present and traceable."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_468.rs"
+      to "rust/tests/unit/docs_requirements/agentic_coding_mode.rs"
+      reason "The agentic coding mode case study is traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was agentic_coding_case.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_482.rs"
+      to "rust/tests/unit/docs_requirements/nemotron_training_documents.rs"
+      reason "The Nemotron training sample documents are traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was nemotron_training_sample.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_492.rs"
+      to "rust/tests/unit/docs_requirements/release_badge_stability.rs"
+      reason "The release badge documents are traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was release_badge_documents.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_498.rs"
+      to "rust/tests/unit/docs_requirements/google_trends_documents.rs"
+      reason "The Google Trends documents are traceable."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_499.rs"
+      to "rust/tests/unit/docs_requirements/learn_from_data_source.rs"
+      reason "The learn-from-this-data-source documents are traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was learn_source_documents.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_526.rs"
+      to "rust/tests/unit/docs_requirements/translation_quality_documents.rs"
+      reason "The translation quality documents are traceable."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_527.rs"
+      to "rust/tests/unit/docs_requirements/question_generation_documents.rs"
+      reason "The question generation documents are traceable."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_531.rs"
+      to "rust/tests/unit/docs_requirements/pattern_inference_research.rs"
+      reason "The pattern inference case study is traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was pattern_inference_case.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_540.rs"
+      to "rust/tests/unit/docs_requirements/dreaming_memory_maintenance.rs"
+      reason "The dreaming memory maintenance documents are traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was dreaming_documents_traceable.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_558.rs"
+      to "rust/tests/unit/docs_requirements/auto_learning_case_study.rs"
+      reason "The auto-learning case study is traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was auto_learning_case.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_559.rs"
+      to "rust/tests/unit/docs_requirements/general_meta_algorithm.rs"
+      reason "Every general meta algorithm requirement names the source and tests that implement it."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was traceable_recursive_work.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_563.rs"
+      to "rust/tests/unit/docs_requirements/repository_resource_summarization.rs"
+      reason "The repository file summarization documents are traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was repository_file_summarization.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_602.rs"
+      to "rust/tests/unit/docs_requirements/codex_responses_documentation.rs"
+      reason "The Codex documentation is copy-pasteable and uses the Responses API only."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was codex_docs_copy.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_603.rs"
+      to "rust/tests/unit/docs_requirements/multi_protocol_gateway.rs"
+      reason "The multi-protocol gateway documentation is traceable."
+      review "Reviewed on 2026-10-08: kept the proposal read from the test names."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_606.rs"
+      to "rust/tests/unit/docs_requirements/with_formal_ai_wrapper.rs"
+      reason "The with-formal-ai documentation and seed templates are traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was formal_ai_docs.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_607.rs"
+      to "rust/tests/unit/docs_requirements/agent_cli_shell.rs"
+      reason "The agent CLI shell documentation, shell planner and serve opt-in are traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was agent_shell_traceable.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_622.rs"
+      to "rust/tests/unit/docs_requirements/wrapper_cli_behavior.rs"
+      reason "The wrapper documentation matches the current CLI seed behavior."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was wrapper_docs_match.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_628.rs"
+      to "rust/tests/unit/docs_requirements/agentic_cli_testing_guide.rs"
+      reason "The agentic CLI testing guide is traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was agentic_cli_testing.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_649.rs"
+      to "rust/tests/unit/docs_requirements/world_models_and_contexts.rs"
+      reason "The world model case study documents are present and traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was world_model_case.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_656.rs"
+      to "rust/tests/unit/docs_requirements/benchmark_gated_promotion.rs"
+      reason "The benchmark-gated promotion documents are traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was promotion_documents_traceable.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_657.rs"
+      to "rust/tests/unit/docs_requirements/self_hosting_metric_evidence.rs"
+      reason "The release self-hosting metric evidence is traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was self_hosting_evidence.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_659.rs"
+      to "rust/tests/unit/docs_requirements/hardcoded_language_scanner.rs"
+      reason "The hardcoded-language scanner's evidence and CI are traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was evidence_ci_traceable.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_660.rs"
+      to "rust/tests/unit/docs_requirements/lexeme_importer_evidence.rs"
+      reason "The lexeme importer's evidence and CI are traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was evidence_ci_traceable.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_686.rs"
+      to "rust/tests/unit/docs_requirements/associative_knowledge_networks.rs"
+      reason "The associative persistence case study documents are present and traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was associative_persistence_case.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_698.rs"
+      to "rust/tests/unit/docs_requirements/external_benchmark_harness.rs"
+      reason "The external benchmark case study and contract stay in the repository and traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was case_study_external.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_702.rs"
+      to "rust/tests/unit/docs_requirements/dialogue_world_model.rs"
+      reason "The dialogue world model documents are traceable from the repository matrix."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was world_model_documents.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_705.rs"
+      to "rust/tests/unit/docs_requirements/anticipatory_dreaming.rs"
+      reason "The anticipatory dreaming requirements, grounded recipe and evidence are traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was requirements_grounded_recipe.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_709.rs"
+      to "rust/tests/unit/docs_requirements/multi_source_search_fusion.rs"
+      reason "Every multi-source search fusion requirement maps to a test, with acceptance evidence committed."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was requirement_evidence_committed.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_710.rs"
+      to "rust/tests/unit/docs_requirements/dropped_requirements_reverification.rs"
+      reason "Every closure-audit checklist row has one allowed verdict and evidence."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was verdict_evidence_requirements.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_834.rs"
+      to "rust/tests/unit/docs_requirements/legal_compliance_self_audit.rs"
+      reason "The contribution, provenance and training-data rules of the legal compliance audit."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was training_data_model.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_844.rs"
+      to "rust/tests/unit/docs_requirements/statement_merging.rs"
+      reason "The statement-level merging case study, requirements and worked example are traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was case_study_explains.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_858.rs"
+      to "rust/tests/unit/docs_requirements/returning_user_recap.rs"
+      reason "Every returning-user recap requirement maps to a test, with before and after evidence."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was requirement_maps_exists.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_864.rs"
+      to "rust/tests/unit/docs_requirements/failure_report_invitations.rs"
+      reason "The cross-surface contract of proactive failure-report invitations is traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was detected_failure_surface.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_890.rs"
+      to "rust/tests/unit/docs_requirements/proof_program_translation.rs"
+      reason "The proof-to-program translation case study and release metadata are traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was case_study_release.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_891.rs"
+      to "rust/tests/unit/docs_requirements/equation_corpus_ratchet.rs"
+      reason "The equation corpus documents are traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was equation_corpus_documents.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_893.rs"
+      to "rust/tests/unit/docs_requirements/summarization_validation.rs"
+      reason "The summarization quality protocol documents are traceable, and the published metric matches the scored criteria."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was summarization_validation_documents.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_894.rs"
+      to "rust/tests/unit/docs_requirements/ci_template_upstream_filings.rs"
+      reason "Every confirmed finding of the CI template audit carries an upstream issue URL."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was confirmed_filing_report.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_909.rs"
+      to "rust/tests/unit/docs_requirements/headless_client_configuration.rs"
+      reason "The headless global client configuration is traceable and answers in every registered language."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was headless_global_configuration.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_914.rs"
+      to "rust/tests/unit/docs_requirements/coding_first_planning.rs"
+      reason "The coding-first vision planning documents are traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was case_study_planning.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_917.rs"
+      to "rust/tests/unit/docs_requirements/natural_formal_translation.rs"
+      reason "The natural-to-formal translation case study and release metadata are traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was case_study_release.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_918.rs"
+      to "rust/tests/unit/docs_requirements/minimal_core_boundary.rs"
+      reason "The minimal core boundary and seed metadata audit case study and release metadata are traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was case_study_release.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_922.rs"
+      to "rust/tests/unit/docs_requirements/method_learning_from_experience.rs"
+      reason "The method learning case study, promotion and agent CLI evidence are traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was case_study_release.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_923.rs"
+      to "rust/tests/unit/docs_requirements/formal_reasoning_coverage.rs"
+      reason "The formal reasoning coverage case study and release metadata are traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was case_study_release.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_924.rs"
+      to "rust/tests/unit/docs_requirements/self_development_loop.rs"
+      reason "The self-development loop requirements, release contract and replayable agent task are traceable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was release_agent_replayable.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_960.rs"
+      to "rust/tests/unit/docs_requirements/enforced_conventions.rs"
+      reason "Recorded conventions are documented and enforced."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was conventions_documented_enforced.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_1069.rs"
+      to "rust/tests/unit/agent_cli_entry_point.rs"
+      reason "The real Agent CLI entry point reads the work item first and resumes compacted tasks."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was agent_compaction_strategy.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_1963.rs"
+      to "rust/tests/unit/thinking_detail_length.rs"
+      reason "Thinking steps are written in full instead of being clipped at 120 characters."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was thinking_detail_chars.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_337.rs"
+      to "rust/tests/unit/repository_extraction_routing.rs"
+      reason "A GitHub repository extraction prompt does not route to the configuration capability."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was github_repository_capability.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_403.rs"
+      to "rust/tests/unit/interval_number_riddle.rs"
+      reason "A Russian hidden-number interval prompt is formalized and solved as a reasoning task."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was russian_interval_number.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_425.rs"
+      to "rust/tests/unit/document_generation_plan.rs"
+      reason "A document-generation request returns the universal algorithm's formal plan."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was language_document_plan.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_484.rs"
+      to "rust/tests/unit/concept_lookup_response_language.rs"
+      reason "A concept lookup respects an explicit response language."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was telegram_ads_concept.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_493.rs"
+      to "rust/tests/unit/market_price_claims.rs"
+      reason "The market-price claim parser and its assessment of OCR text."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was market_price_claim.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_513.rs"
+      to "rust/tests/unit/terminal_command_intent.rs"
+      reason "Terminal-command requests resolve to an agent suggestion in every language."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was terminal_request_unknown.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_527.rs"
+      to "rust/tests/unit/generated_question_ordering.rs"
+      reason "Generated questions are lazy, ordered by word count, classified and filtered for grammar."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was generated_questions_generator.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_535.rs"
+      to "rust/tests/unit/document_originality_check.rs"
+      reason "An attachment originality request keeps its language and routes to the originality check."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was attachment_originality_document.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_538.rs"
+      to "rust/tests/unit/word_surface_grammar.rs"
+      reason "Word surfaces record their grammatical number and part of speech from the seed data."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was tomato_surfaces_grammatical.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_571.rs"
+      to "rust/tests/unit/web_search_by_reasoning.rs"
+      reason "External-entity questions route to web search by reasoning, not vocabulary."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was questions_route_web.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_627.rs"
+      to "rust/tests/unit/file_read_tool_calls.rs"
+      reason "Direct file-read prompts emit read tool calls instead of URL answers."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was file_read_then.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_661.rs"
+      to "rust/tests/unit/weighted_statement_formalization.rs"
+      reason "Probability-weighted statement formalization with contradiction warnings."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was weighted_requirement_contradiction.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_681.rs"
+      to "rust/tests/unit/file_creation_writes.rs"
+      reason "A file-creation request emits a write on the target, never a read."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was file_creation_write.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_687.rs"
+      to "rust/tests/unit/agentic_backend_actions.rs"
+      reason "Driven as an agentic backend, Formal AI acts on simple natural-language requests."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was question_web_report.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_704.rs"
+      to "rust/tests/unit/candidate_solution_portfolios.rs"
+      reason "Deterministic parallel candidate-solution portfolios."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was drafts_draft_portfolio.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_745.rs"
+      to "rust/tests/unit/semantic_intent_routing.rs"
+      reason "Intent routing is semantic, object-typed, multilingual and variation-complete."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was object_routes_variations.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_750.rs"
+      to "rust/tests/unit/tool_result_presentation.rs"
+      reason "Tool results are presented and recalled from their unwrapped payloads."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was result_envelope_tool.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_758.rs"
+      to "rust/tests/unit/capability_first_tool_routing.rs"
+      reason "Agentic tool routing chooses the advertised capability first."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was navigation_shell_fallback.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_771.rs"
+      to "rust/tests/unit/fetched_page_answer_extraction.rs"
+      reason "An answer keeps the sentence that answers instead of the whole fetched page."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was dump_page_context.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_781.rs"
+      to "rust/tests/unit/compatibility_research_evidence.rs"
+      reason "Compatibility research gathers independent evidence instead of one search result."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was search_tool_research.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_819.rs"
+      to "rust/tests/unit/local_path_discovery.rs"
+      reason "Local path discovery uses find instead of the web, in every language."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was find_web_local.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_822.rs"
+      to "rust/tests/unit/report_context_collection.rs"
+      reason "A report asks what the user wants before collecting its context."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was report_confirmation_server.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_832.rs"
+      to "rust/tests/unit/local_report_export.rs"
+      reason "Reports work outside the server and never claim a failed command filed an issue."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was report_context_local.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_840.rs"
+      to "rust/tests/unit/grounded_local_action.rs"
+      reason "The local scope of a request dominates its search verb, across languages."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was local_search_definition.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_841.rs"
+      to "rust/tests/unit/tui_integration_metadata.rs"
+      reason "The published TUI integration metadata and its reviewed captures."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was tui_contract_real.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_842.rs"
+      to "rust/tests/unit/task_ladder_false_greens.rs"
+      reason "The task-ladder false greens stay fixed: definition requests research and contextual questions do not."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was definition_example_web.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_843.rs"
+      to "rust/tests/unit/source_provenance.rs"
+      reason "External search never fabricates source provenance, and cache metadata stays truthful."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was source_cache_research.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_858.rs"
+      to "rust/tests/unit/claude_code_away_recap.rs"
+      reason "The Claude Code away recap returns a bounded plain summary in every language."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was recap_plain_summary.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_859.rs"
+      to "rust/tests/unit/codex_patch_writes.rs"
+      reason "Codex workspace writes use apply_patch instead of process input."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was codex_process_write.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_864.rs"
+      to "rust/tests/unit/proactive_failure_reports.rs"
+      reason "Detected failures proactively ask to report on every agentic surface and language."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was detected_tool_failures.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_873.rs"
+      to "rust/tests/unit/unresolved_request_research.rs"
+      reason "An unresolved request triggers research whenever external research is permitted."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was unknown_mode_version.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_890.rs"
+      to "rust/tests/unit/proof_language_independence.rs"
+      reason "A formal proof is reusable apart from its prose and translated through the general program path."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was proof_language_solved.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_904.rs"
+      to "rust/tests/unit/work_item_planning.rs"
+      reason "A repository work item plans for its objective, not for the caller's preamble."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was plan_work_item.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_905.rs"
+      to "rust/tests/unit/tool_failure_observations.rs"
+      reason "Tool failures are observations, and verification evidence must match the requested bytes."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was failed_write_error.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_907.rs"
+      to "rust/tests/unit/caller_framing_context.rs"
+      reason "The caller's injected framing is not the user's request."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was context_request_command.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_908.rs"
+      to "rust/tests/unit/exit_code_verification.rs"
+      reason "Step verification reads the exit code, not the presence of output."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was exit_code_failure.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_916.rs"
+      to "rust/tests/unit/coding_ladder_rungs.rs"
+      reason "The coding-ladder ratchet rungs, each pinning the observed effect that closes a defect."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was exit_failure_command.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_917.rs"
+      to "rust/tests/unit/formal_projection_round_trips.rs"
+      reason "Every seed language round-trips through a seeded formal projection."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was seed_formal_projection.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_918.rs"
+      to "rust/tests/unit/minimal_core_and_seed_metadata.rs"
+      reason "The minimal core ledger covers every recursive handler, and the coding path has complete seed metadata."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was minimal_core_ledger.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_919.rs"
+      to "rust/tests/unit/researched_coding_procedures.rs"
+      reason "A recorded coding gap is solved by a verified, researched procedure that replays offline."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was coding_gap_research.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_921.rs"
+      to "rust/tests/unit/hive_mind_full_circle.rs"
+      reason "Both directions of the hive-mind integration are committed and replayable."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was both_directions_direction.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_923.rs"
+      to "rust/tests/unit/symbolic_kernel_coverage.rs"
+      reason "Symbolic kernel coverage: equality saturation and Datalog rule inference."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was equality_saturation_datalog.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_945.rs"
+      to "rust/tests/unit/report_output_location.rs"
+      reason "The report flow never writes a deliverable into the caller's working directory."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was target_report_working.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_956.rs"
+      to "rust/tests/unit/custom_formalization_subject.rs"
+      reason "A custom quoted formalization task formalizes the supplied text."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was custom_quoted_task.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/issue_989.rs"
+      to "rust/tests/unit/location_and_edit_routing.rs"
+      reason "Location questions use pwd, ordinary file edits are not dialog control, and rule queries match the catalog."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was web_dialog_links.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/specification/issue_146.rs"
+      to "rust/tests/unit/specification/self_awareness_prompts.rs"
+      reason "Self-awareness prompts and their nearby variations have exact answer examples."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was self_awareness_exact.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/specification/issue_402.rs"
+      to "rust/tests/unit/specification/free_time_small_talk.rs"
+      reason "A Russian free-time prompt returns the assistant free-time answer."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was russian_free_time.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/specification/issue_435.rs"
+      to "rust/tests/unit/specification/relative_date_scheduling.rs"
+      reason "A call request for tomorrow is scheduled in every language."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was relative_tomorrow_call.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/specification/issue_436.rs"
+      to "rust/tests/unit/specification/metatheory_concept.rs"
+      reason "Theory of theory resolves to the metatheory concept in every language."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was theory_resolves_metatheory.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/specification/issue_462.rs"
+      to "rust/tests/unit/specification/film_release_order.rs"
+      reason "A Russian film release-order prompt resolves to a grounded fact lookup."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was spider_release_order.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/specification/issue_465.rs"
+      to "rust/tests/unit/specification/pronoun_topic_follow_up.rs"
+      reason "A pronoun follow-up keeps the previous topic when asking a creator question."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was pronoun_rust_creator.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/specification/issue_467.rs"
+      to "rust/tests/unit/specification/stroller_baggage_fact.rs"
+      reason "Airline stroller baggage questions resolve to a grounded fact lookup."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was air_india_stroller.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/specification/issue_595.rs"
+      to "rust/tests/unit/specification/spoken_hour_scheduling.rs"
+      reason "Calendar prompts with a spoken hour are scheduled in every supported language."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was russian_spoken_calendar.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/specification/issue_682.rs"
+      to "rust/tests/unit/specification/null_content_tool_calls.rs"
+      reason "Chat Completions accept an assistant tool-call turn whose content is null."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was explicit_null_content.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/specification/issue_710.rs"
+      to "rust/tests/unit/specification/conversational_reverification.rs"
+      reason "Conversational regressions re-verified end to end by the closure audit."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was localized_response_language.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/specification/issue_892.rs"
+      to "rust/tests/unit/specification/release_order_snapshot.rs"
+      reason "The release-order answer is computed from a dated, source-backed snapshot."
+      review "Reviewed on 2026-10-08: the proposal read from the test names was snapshot_release_timeline.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."

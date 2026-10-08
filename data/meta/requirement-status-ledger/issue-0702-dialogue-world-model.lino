@@ -11,7 +11,7 @@ requirement_status_ledger_shard
   requirement
     id "R702-10"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_702.rs"
+    automated_test "rust/tests/unit/docs_requirements/dialogue_world_model.rs"
   requirement
     id "R702-11"
     verdict "implemented"

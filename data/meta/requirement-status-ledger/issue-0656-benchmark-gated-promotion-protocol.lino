@@ -26,7 +26,7 @@ requirement_status_ledger_shard
   requirement
     id "R465"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_656.rs"
+    automated_test "rust/tests/unit/docs_requirements/benchmark_gated_promotion.rs"
   requirement
     id "R466"
     verdict "implemented"

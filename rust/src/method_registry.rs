@@ -656,7 +656,7 @@ impl MethodRegistry {
     /// The order `meta_method_dispatch::try_dispatch` asks methods in.
     ///
     /// The [`Self::ordered_method_names_for_relevants`] order, with every
-    /// handler the precedence seed marks `before_promotion`
+    /// handler the precedence seed marks `before-promotion`
     /// ([`crate::seed::before_promotion_handlers`], issue #1175 p133) moved
     /// ahead of the promoted methods, right after the prelude: the browser
     /// worker asks those in its fixed early phase, before the walk its

@@ -1,0 +1,7 @@
+# JavaScript first (R1188-U29): the requirements pinned only by a Rust test.
+# `node scripts/render-progressive-plan.mjs --check` (gate check-progressive-plan)
+# fails when the count rises above the ceiling, and asks for the ceiling to be
+# lowered when it falls, so a requirement gains a JavaScript test and never
+# loses one. Measured 2026-10-08.
+progressive-plan-ratchet
+  rust-only-ceiling 1116

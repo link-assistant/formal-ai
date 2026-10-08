@@ -185,7 +185,7 @@ pub fn precedence_rows(text: &str) -> Vec<HandlerRow> {
         .map(|node| HandlerRow {
             name: node.id.clone(),
             rank: rank_of(node),
-            browser_only: child_value(node, "browser_only") == "true",
+            browser_only: child_value(node, "browser-only") == "true",
         })
         .collect();
     rows.sort_by(|left, right| {

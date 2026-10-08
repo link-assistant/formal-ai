@@ -40,4 +40,4 @@ budget-python.sh             poll=1    exit=124  wall= 6s survivors=0
 ```
 
 This repository's own `scripts/run-with-budget-warning.sh` is not affected by
-either defect; `tests/unit/ci-cd/issue_1017.rs` pins the behaviour.
+either defect; `tests/unit/ci-cd/step_budgets_within_job_clocks.rs` pins the behaviour.

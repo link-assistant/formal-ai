@@ -116,6 +116,13 @@ export function verdict(line, automatedTest) {
     if (cells.length > 2) status = cells.slice(2).join('|');
   }
   const lower = asciiLowercase(status);
+  // A status that opens with its verdict states it (R1188-U27): "Partial: …
+  // delivered …" is partial and "Implemented: … planned …" implemented,
+  // whatever words follow.
+  const opening = trimStart(lower).replace(/^\*+/u, '');
+  if (opening.startsWith('partial')) return 'partial';
+  if (opening.startsWith('not delivered')) return 'not-delivered';
+  if (/^(?:implemented|delivered)\s*[:.(]/u.test(opening) && automatedTest !== '') return 'implemented';
   if (containsWord(lower, 'withdrawn')) return 'withdrawn';
   if (containsWord(lower, 'superseded')) return 'superseded';
   if (['not delivered', 'not implemented', 'pending', 'planned'].some((needle) => containsWord(lower, needle))) {

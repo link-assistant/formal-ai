@@ -2,7 +2,7 @@
 //
 // Issue #914 asked for a plan, not for a feature: sync the documentation, then
 // open every issue the vision needs, coding first, foundation blockers first.
-// rust/tests/unit/docs_requirements/issue_914.rs holds the case study and the
+// rust/tests/unit/docs_requirements/coding_first_planning.rs holds the case study and the
 // opened-issue list. This file holds the plan's *structure* to the rows that
 // rest on it: the binding design rules, the foundation epic, and an "Existing
 // components" inventory in every epic, so generalization never drops what is

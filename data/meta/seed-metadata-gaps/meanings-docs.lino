@@ -1,0 +1,9 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-docs.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-6880e541ffba6b3e
+    record "code_method"
+  gap seed-metadata-gap-6bee26727e178bc4
+    record "explanation_request"

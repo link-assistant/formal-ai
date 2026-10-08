@@ -512,7 +512,7 @@ pub fn kind_of_listed(lower: &str, language: &str) -> Option<WordKind> {
     None
 }
 
-fn word(surface: String, kind: WordKind, id: String) -> Word {
+const fn word(surface: String, kind: WordKind, id: String) -> Word {
     Word { surface, kind, id }
 }
 
@@ -741,7 +741,7 @@ pub fn statement_clauses(sentence: &Segment) -> Vec<Segment> {
         if let Some(last) = out.last_mut() {
             let from = last.start - sentence.start;
             let to = clause.end - sentence.start;
-            last.text = sentence.text[from..to].to_owned();
+            sentence.text[from..to].clone_into(&mut last.text);
             last.end = clause.end;
         }
     }

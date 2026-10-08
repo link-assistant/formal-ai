@@ -4,8 +4,8 @@
 // rust/src/number_constraints.rs must formalize the bounds, render the
 // canonical proof statement from data/seed/proof-program-templates.lino and
 // discharge the interval through the linear decision procedure exactly as
-// the native presenter does. Prompts come from rust/tests/unit/issue_403.rs
-// and rust/tests/unit/issue_890.rs.
+// the native presenter does. Prompts come from rust/tests/unit/interval_number_riddle.rs
+// and rust/tests/unit/proof_language_independence.rs.
 
 import assert from "node:assert/strict";
 import test from "node:test";

@@ -12,11 +12,11 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 
 ## Summary
 
-- Distinct requirements: 116 (53 from the owner's messages and the vision, 63 items of the 8 fixed issues).
+- Distinct requirements: 119 (56 from the owner's messages and the vision, 63 items of the 8 fixed issues).
 - Covered by rows that existed before this audit: 96 (every issue item has its own row).
-- Drafted in `docs/requirements/issue-1188-user-requirements.md`: 27 rows for 27 requirements, 20 of which no earlier row covered and 7 of which earlier rows covered only in part.
-- Row verdicts in scope: implemented 121, not-delivered 3, partial 21, superseded 1.
-- Evidence check: 121 implemented rows re-read; 0 cite evidence that does not exist, and 3 more cite something the check could not find that was reviewed and is not evidence.
+- Drafted in `docs/requirements/issue-1188-user-requirements.md`: 30 rows for 30 requirements, 23 of which no earlier row covered and 7 of which earlier rows covered only in part.
+- Row verdicts in scope: implemented 122, not-delivered 2, partial 24, superseded 1.
+- Evidence check: 122 implemented rows re-read; 0 cite evidence that does not exist, and 3 more cite something the check could not find that was reviewed and is not evidence.
 
 ## The owner's requirements
 
@@ -59,7 +59,7 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 | --- | --- | --- | --- |
 | No CI job or step runs longer than 15 to 30 minutes; the root cause of the longest runs is fixed. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1085-16, R1017-1, R1188-U9 | R1085-16 implemented; R1017-1 implemented; R1188-U9 partial |
 | Long-running jobs and tests start first. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U10 | R1188-U10 partial |
-| CI runs in parallel at job level and at test level. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U11 | R1188-U11 not-delivered |
+| CI runs in parallel at job level and at test level. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U11 | R1188-U11 implemented |
 | The CI speed rules are enforced automatically by a gate. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U12 | R1188-U12 implemented |
 | CI runs only the parts a change affects: js, then ts, then rust, each only when its root changed. | [september-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-09-25.md) 2026-09-20 17:48 | R994 | R994 not-delivered |
 | No errors, warnings, false positives or false negatives land in CI checks, and all CI passes, pre-existing failures included, so a merge always produces a release. | [september-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-09-25.md) 2026-09-20 17:34, 2026-09-24 02:00 | R1017-1, R1017-11, R1022 | R1017-1 implemented; R1017-11 implemented; R1022 implemented |
@@ -89,6 +89,7 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 | JavaScript implements the server as well as the client, with parity to the Rust server guaranteed by CI. | [october-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-10-07.md) 2026-10-06 18:55 | R1013, R1014, R1015 | R1013 implemented; R1014 implemented; R1015 implemented |
 | Full parity between Rust, JavaScript and TypeScript, client and backend, reported honestly. | [three-roots](../../../docs/architect-notes/2026-09-24-three-roots-full-parity-via-the-meta-language.md) 2026-09-24 | R992, R996 | R992 partial; R996 implemented |
 | The agentic planner lands in JavaScript first and its Rust twin follows with the same behaviour. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U16 | R1188-U16 implemented |
+| More of the work goes through Formal AI from JavaScript, and the JavaScript requirements pass first. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 15:41 (message 145) | R1188-U29 | R1188-U29 partial |
 
 ### Translation
 
@@ -100,6 +101,7 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 | Translate between all languages and choose the translation that survives the round trip source, meta, target, meta, source, for sentences and whole texts. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 11:25 (message 132) | R1188-U19, R526-1 | R1188-U19 partial; R526-1 implemented |
 | List every exact requirement an issue states, measured against the repository's own reviewed requirement rows. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 11:25 (message 132) | R1188-U20 | R1188-U20 partial |
 | Summarize algorithmically with no language model: keep what the other statements depend on, drop restatements, deformalize the core concisely. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 11:25 (message 132) | R1188-U21, R197 | R1188-U21 partial; R197 implemented |
+| Translation between JavaScript, TypeScript, Rust and the meta language is fully automated, with temporary workarounds where RML and ML are not done yet. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 15:41 (message 145) | R1188-U30 | R1188-U30 partial |
 
 ### Safety
 
@@ -121,6 +123,7 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 | Run at most three subagents at once, never stop a running agent early, and fully deliver the work of every started agent. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 11:25, 11:47 (messages 132, 141) | R1188-U22 | R1188-U22 implemented |
 | Run only the tests closest to a fix locally; the full suites run in CI, where failures are fixed in bulk. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 11:44 (message 140) | R1188-U24 | R1188-U24 implemented |
 | The pull request lands as a valid, working and testable release: every workflow on its head is green and each surface can be tested. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 12:09 (message 143) | R1188-U27 | R1188-U27 partial |
+| Every problem and the pull request itself are attacked by the progressive JPEG method: complete at every moment at some resolution, raised lowest level first; recorded in the documents. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 15:41 (message 145); [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 15:41 (message 146) | R1188-U28 | R1188-U28 partial |
 | One of the subagents commits CI fixes as soon as each run reports, while the others bulk-draft undrafted requirements. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 11:47 (message 141) | R1188-U26 | R1188-U26 implemented |
 
 ## The fixed issues' requirements

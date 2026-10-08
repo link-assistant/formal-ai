@@ -35,15 +35,15 @@ requirement_status_ledger_shard
   requirement
     id "R352"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_563.rs"
+    automated_test "rust/tests/unit/docs_requirements/repository_resource_summarization.rs"
   requirement
     id "R353"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_563.rs"
+    automated_test "rust/tests/unit/docs_requirements/repository_resource_summarization.rs"
   requirement
     id "R354"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_563.rs"
+    automated_test "rust/tests/unit/docs_requirements/repository_resource_summarization.rs"
   requirement
     id "R355"
     verdict "implemented"

@@ -251,6 +251,13 @@ possible tasks you encounter on the way must be fully supported by it".
 | T702 | RENAME: (R1188-U5) from the sandbox, insert the contents of a file of ledger rows (T387-T701, then this row) after the line that starts with a given row id | **Pass** (2 of 2) | No change needed. |
 | T703 | RENAME: (R1188-U5, R1188-U7) a Replace in the R1188-U5 row that adds the manual confirmation to the fields a ledger file states once as its default | **Pass** | No change needed. |
 | T704 | RENAME: (R1188-U5) from the sandbox, insert this row and T703 after the line that starts with a given row id | **Pass** | No change needed. |
+| T705 | RENAME: (R1188-U5) two Replaces in the R1188-U5 row, each «» text about 900 characters with backticks, `**`, `<n>` and `#[path]`, that record the renamed test files and what remains | **Pass** (2 of 2) | No change needed. |
+| T706 | RENAME: (R1188-U5) a Replace that takes a renamed path out of the same row, so the rename check does not read it as a stale reference | **Pass** | No change needed. |
+| T707 | RENAME: (R1188-U5) from the sandbox, insert rows T705-T707 after the line that starts with a given row id | **Pass** | No change needed. |
+| T708 | RENAME: (R1188-U5) five one-line Replaces in five sandbox copies (`.gitattributes`, `merge-conflict-policy.lino`, `seed-metadata-schema.lino`, `analyze-merge-conflicts.py`, `regenerate-derived-artifacts.sh`) that point the seed metadata gaps at their new directory | **Pass** (5 of 5) | No change needed. |
+| T709 | RENAME: (R1188-U5) two Replaces in the R918-5 row, then a third that corrects my own wording («named by area» was wrong) | **Pass** (3 of 3) | No change needed. |
+| T710 | RENAME: (R1188-U5) insert a rename tree after a line given as a double-quoted text holding `\"` escapes | **Pass**: a correct decline; the backslash-escaped quote leaves the quoted text unpaired, and Formal AI said so and edited nothing. The same request with «» quoting inserted the tree. | No change needed. |
+| T711 | RENAME: (R1188-U5) from the sandbox, insert rows T708-T711 after the line that starts with a given row id | **Pass** | No change needed. |
 | T470 | CIFIX-LOOP (ee9fd4de8, E2E issue-153): replace the two `toLower(...)` lines of `extractCoreferenceSeeds` in `js/seed_loader.js` so a coreference context keeps its spaces (sandbox copy) | **Pass** (2 of 2) with «» quotes; the first try, with backslash-escaped quotes, was declined with the reason (the unpaired quote named), which is the designed answer | No change needed. The CI failure itself was a worker defect, fixed by this edit: the seed loader trimmed `" program "` to `program`, so "programming" in a Hindi search request after an English one resolved to the program-artifact body (pinned in `rust/tests/web/issue-0918-handler-rules-batch-2.test.mjs` and `rust/tests/unit/issue_918_handler_rules_batch_2.rs`). |
 | T471 | CIFIX-LOOP (ee9fd4de8, clippy): replace a Rust line holding the char literal ``'`'`` in `shell_command_policy.rs`, the old and new texts in single quotes (sandbox copy) | **Fail**: the single quotes inside the quoted texts paired with the outer ones; Formal AI edited nothing and answered a fragment of the new text as if it were the result | Not fixed in this cycle (gap G90). The same request with double quotes: **Pass**. |
 | T472 | CIFIX-LOOP (ee9fd4de8, clippy): replace the wildcard arm `plan => return Some(plan),` with `plan @ AgenticPlan::ToolCalls(_) => return Some(plan),` in `request_sequence.rs` (sandbox copy) | **Pass** | No change needed. |
@@ -279,6 +286,16 @@ possible tasks you encounter on the way must be fully supported by it".
 | T399 | NOTATION: the same Replace for the R1188-U7 status cell (double quotes inside backticks) | **Pass** | No change needed. |
 | T400 | NOTATION: from the repository root, replace `(R1188-U6, R1188-U7)` with the same text plus the style document path in CONTRIBUTING.md | **Pass** | No change needed. |
 | T401 | NOTATION: insert the six-line `family gate-names` entry (`merge-collisions true` with a reason holding parentheses and a comma, one `except`) before the line `  abbreviations` of a sandbox copy of `data/meta/notation-rules.lino` | **Pass** | No change needed. |
+| T402 | NOTATION: insert the five-line `family handler-rules` entry (two `files` globs, `merge-collisions true` with a reason holding parentheses and commas) before the line `  abbreviations` of a sandbox copy of `data/meta/notation-rules.lino` | **Pass** | No change needed. |
+| T403 | NOTATION: insert ten `keep` lines with reasons (one line holding five names, reasons with colons and parentheses) after the handler-rules reason line | **Pass** | No change needed. |
+| T404 | NOTATION: one request naming two files (`label_${periodsPerYear}` in a worker module, `label_{compounds_per_year}` in its Rust twin) | **Pass (declined)**: "one edit request changes one file, so nothing was changed. Ask for the edit once for each file." | No change needed; asked once per file (T405, T406). |
+| T405 | NOTATION: replace `label_${periodsPerYear}` (a template literal) with `label-${periodsPerYear}` in a sandbox copy of the compound-interest worker module | **Pass** | No change needed. |
+| T406 | NOTATION: replace `"label_{compounds_per_year}"` with the dash spelling in a sandbox copy of `rust/src/solver_handlers/compound_interest.rs` | **Pass** | No change needed. |
+| T407 | NOTATION: replace `underscore-names-ceiling 9506` in a sandbox copy of `data/meta/notation-ratchet.lino`, where the line reads `underscore-names 9506` | **Pass**: answered that the text does not occur and changed nothing (an operator error in the request) | No change needed. |
+| T408 | NOTATION: the same Replace with the text as written (`underscore-names 9506` to `9410`) | **Pass** | No change needed. |
+| T409 | NOTATION: insert a `keep` line of eight names (one 47 characters long) and its reason after a reason line, in a sandbox copy of the rules file | **Pass** | No change needed. |
+| T410 | NOTATION: insert `keep default_target` and its reason after the reason line that starts with `js/seed_loader.js reads a code symbol` | **Pass** | No change needed. |
+| T411 | NOTATION: from the repository root, insert rows T402-T411 after the line that starts with `\| T401 \|` of `docs/case-studies/pull-request-1188/formal-ai-dogfood.md` | **Pass** | No change needed. |
 | T420 | SPANISH: replace one translated row (`text "project"` with its Hindi word) in a sandbox copy of `multilingual-responses-installation.lino` | **Pass** | No change needed. |
 | T421 | SPANISH: one Replace naming two files, `... in multilingual-responses-installation.lino and in multilingual-responses-policy.lino.` (sandbox copies) | **Fail**: only the first file was edited; the answer named that file alone and did not say the second was skipped (G91) | Not fixed in this cycle: G91 is recorded for the write_request owner. |
 | T422 | SPANISH: the T421 Replace on the second file alone (sandbox copy) | **Pass** | No change needed. |
@@ -1366,3 +1383,12 @@ open:
   '/v1/x/learn'" in r.lino.`) read the inner `/v1/x/learn` as the target
   file, a sandbox escape. A variant went to web search. The same request
   with backtick-delimited lines works. The escape is fixed (T36): the read now goes to the named file.
+
+## Edits by hand
+
+Per agent and round (R1188-U13, R1188-U29): the edits delegated to Formal AI and the files the agent wrote by hand. A tool run by rule counts as neither. Each agent appends its row when it reports.
+
+| # | Who | Round | By Formal AI | By hand | Why by hand |
+| --- | --- | --- | ---: | ---: | --- |
+| H1 | RENAME | 19 | 157 | 16 | New code: the rename tool, its map, gate and test, the order-independent module loading in nine worker modules, the worker host and two tests. The 137 path rewrites were rule runs. |
+| H2 | LEAD | 19 | 9 | 41 | New code and workflow splits (Pages build, agent CLI legs), the Spanish capability rule, the deleted browser fallback, the dependency-direction and progressive-plan gates, the generator verdict fix and the requirement rows. The lines of this table were delegated. |

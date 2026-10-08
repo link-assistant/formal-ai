@@ -289,7 +289,7 @@ async function setRangeValue(page, testId, value) {
 // prefers-reduced-motion makes `usePrefersReducedMotion()` return true, which
 // short-circuits `useMessageReveal` to "show everything at once" — the same
 // behavior users with the reduced-motion preference see, and the same trick
-// already in use in issue-347.spec.js for screenshot captures. The matching
+// already in use in download-page.spec.js for screenshot captures. The matching
 // config-level `reducedMotion: 'reduce'` in playwright.local.config.js does not
 // reliably propagate through the test fixture in the local Playwright runner;
 // emulating per-page here is the belt-and-braces fix.

@@ -3,7 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0873-research-driven-unknown-recovery.md"
   issue "0873"
   delivered "none recorded"
-  automated_test "rust/tests/unit/issue_873.rs"
+  automated_test "rust/tests/unit/unresolved_request_research.rs"
   manual "not yet confirmed"
   requirement
     id "R873-1"

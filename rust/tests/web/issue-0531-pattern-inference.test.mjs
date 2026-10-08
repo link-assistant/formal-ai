@@ -12,7 +12,7 @@
 // - rust/tests/unit/issue_531_algorithm_discovery.rs: episodes inside one log
 //   and held-out rejection in js/agentic/crate/algorithm_discovery.mjs
 //   (R531-19, R531-21).
-// - rust/tests/unit/docs_requirements/issue_531.rs: the research record
+// - rust/tests/unit/docs_requirements/pattern_inference_research.rs: the research record
 //   (R396-R401, R406, R531-25), checked here for the claims that test leaves out.
 
 import assert from 'node:assert/strict';

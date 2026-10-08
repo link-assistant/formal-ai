@@ -24,7 +24,7 @@ pub fn record_formalization(log: &mut EventLog, candidate: &FormalizationCandida
 /// role and its anchor kind.
 ///
 /// Mirrored by `formalizationSlotKind` in
-/// js/agentic/crate/solver_formalization.mjs.
+/// `js/agentic/crate/solver_formalization.mjs`.
 const fn formalization_slot_kind(
     role: FormalizationRole,
     anchor_kind: FormalizationAnchorKind,

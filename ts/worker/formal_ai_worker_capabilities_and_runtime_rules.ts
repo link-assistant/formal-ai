@@ -612,7 +612,7 @@ function tryCapabilities(prompt, normalized, preferences, history) {
       evidence: [
         "handler:capabilities",
         "capabilities:follow_up",
-        ...(priorSearch ? ["capabilities:history:prior_web_search"] : []),
+        ...(priorSearch ? ["capabilities:history:prior-web-search"] : []),
         `language:${language}`,
       ],
     };

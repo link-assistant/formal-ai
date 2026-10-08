@@ -22,7 +22,7 @@ requirement_status_ledger_shard
     automated_test "rust/tests/unit/issue_1138_repository_workspace.rs"
   requirement
     id "R1138-3-5"
-    verdict "implemented"
+    verdict "partial"
     automated_test "rust/tests/unit/ci-cd/protocol_callers.rs"
   requirement
     id "R1138-3-6"
@@ -31,7 +31,7 @@ requirement_status_ledger_shard
   requirement
     id "R1138-3-7"
     verdict "implemented"
-    automated_test "rust/tests/unit/ci-cd/issue_1069.rs"
+    automated_test "rust/tests/unit/ci-cd/docker_resource_hygiene.rs"
   requirement
     id "R1138-3-8"
     verdict "implemented"

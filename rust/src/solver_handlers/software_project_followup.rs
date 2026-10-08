@@ -194,13 +194,13 @@ fn extract_target_site(prompt: &str) -> Option<String> {
 /// a marker, tried in declaration order so the longer "show me " wins over the
 /// bare "show ". A marker is matched anywhere in the prompt, and the clause that
 /// follows — read from the original-case prompt, stopped at the first
-/// sentence-ending punctuation and capped at the policy `output_word_limit` —
+/// sentence-ending punctuation and capped at the policy `output-word-limit` —
 /// is returned. Issue #918: bare and circumfix forms are not openers (a bare
 /// "print" matched inside "printing", the Hindi circumfix lead "जो " anywhere),
 /// and the browser twin reads the same prefix forms instead of its own list.
 fn extract_expected_output(prompt: &str) -> Option<String> {
     let lower = prompt.to_lowercase();
-    let limit = follow_up_policy("output_word_limit").parse().unwrap_or(0);
+    let limit = follow_up_policy("output-word-limit").parse().unwrap_or(0);
     let forms = seed::lexicon().role_word_forms(seed::ROLE_OUTPUT_DISPLAY_REQUEST);
     for form in forms.iter().filter(|form| form.slot() == Slot::Prefix) {
         let marker = form.before_slot();

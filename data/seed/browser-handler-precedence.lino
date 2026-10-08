@@ -5,7 +5,7 @@
 # arguments and result guards here makes one Links Notation document the
 # authority for both membership and first-match-wins order.  Child node names
 # are executable symbols rather than natural-language meaning references.
-browser_handler_precedence
+browser-handler-precedence
   handler tryAgenticContinuation
     argument_prompt
     argument_normalized
@@ -47,7 +47,7 @@ browser_handler_precedence
     argument_prompt
     argument_normalized
   handler requirement_listing
-    rule_set
+    rule-set
     argument_prompt
     argument_normalized
     argument_history

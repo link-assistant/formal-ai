@@ -178,7 +178,7 @@ pub(super) fn try_summarize_conversation(
 ///
 /// The envelope holds the summary, the title and the numbered user turns,
 /// trimmed at the end. Mirrored by `conversationSummaryEnvelope` in
-/// js/agentic/crate/conversation_summary.mjs.
+/// `js/agentic/crate/conversation_summary.mjs`.
 fn conversation_summary_envelope(turns: &[DialogTurn], language: &str) -> (String, String) {
     // Standard mode keeps roughly 50% of the highest-weighted statements; with
     // the dialog bias (user +20, assistant -10) the user's questions dominate

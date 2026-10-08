@@ -65,7 +65,7 @@ export function precedenceRows(text) {
     .map((node) => ({
       name: node.value,
       rank: Number.parseInt(childValue(node, 'rank'), 10),
-      browserOnly: childValue(node, 'browser_only') === 'true',
+      browserOnly: childValue(node, 'browser-only') === 'true',
     }))
     .sort((left, right) => left.rank - right.rank || (left.name < right.name ? -1 : left.name > right.name ? 1 : 0));
 }

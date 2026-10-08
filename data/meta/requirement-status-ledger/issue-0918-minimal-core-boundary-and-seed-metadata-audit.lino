@@ -3,7 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0918-minimal-core-boundary-and-seed-metadata-audit.md"
   issue "0918"
   delivered "none recorded"
-  automated_test "rust/tests/unit/issue_918.rs"
+  automated_test "rust/tests/unit/minimal_core_and_seed_metadata.rs"
   manual "not yet confirmed"
   requirement
     id "R918-1"
@@ -24,4 +24,4 @@ requirement_status_ledger_shard
   requirement
     id "R918-6"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_918.rs"
+    automated_test "rust/tests/unit/docs_requirements/minimal_core_boundary.rs"

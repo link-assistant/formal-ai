@@ -6,7 +6,7 @@
 // document_recipe.mjs and their crate/ dependencies).
 //
 // Each case mirrors a Rust test (rust/tests/unit/agentic_coding.rs,
-// agentic_surfaces.rs, issue_538_agentic.rs, issue_956.rs, issue_558_*.rs,
+// agentic_surfaces.rs, issue_538_agentic.rs, custom_formalization_subject.rs, issue_558_*.rs,
 // issue_1138_formalization_depth.rs); committed artifacts the Rust tests pin
 // byte-for-byte (docs/diagrams/agentic-recipes.md, the issue-538 Agent CLI
 // sessions, the seed meaning blocks) are the expectations here too.
@@ -185,7 +185,7 @@ describe('formalization segmentation and needs (rust/src/formalization)', () => 
   });
 });
 
-describe('formalization recipe (agentic_coding.rs, agentic_surfaces.rs, issue_956.rs)', () => {
+describe('formalization recipe (agentic_coding.rs, agentic_surfaces.rs, custom_formalization_subject.rs)', () => {
   const TOOLS = ['web_search', 'web_fetch', 'write_file', 'run_command'];
 
   it('recognises formalization tasks in every language', () => {

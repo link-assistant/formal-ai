@@ -78,7 +78,7 @@ function handlerRulesParseTree(text) {
  * @returns {string}
  */
 function handlerRulesFirstArg(node) {
-  if (node.args.length === 0) throw new Error("handler_rules:missing_argument");
+  if (node.args.length === 0) throw new Error("handler-rules:missing_argument");
   return node.args[0];
 }
 
@@ -99,7 +99,7 @@ function handlerRulesParseCondition(node) {
       options.push(rest[index]);
     }
   }
-  if (!HANDLER_RULES_SUBJECT_NAMES.includes(subject)) throw new Error("handler_rules:unknown_subject");
+  if (!HANDLER_RULES_SUBJECT_NAMES.includes(subject)) throw new Error("handler-rules:unknown_subject");
   switch (node.name) {
     case "all":
     case "any":
@@ -108,34 +108,34 @@ function handlerRulesParseCondition(node) {
     case "role": {
       const mode = options.length === 0 ? "spelled" : options[0];
       const modes = ["spelled", "raw", "languages", "forms", "separated", "whole"];
-      if (!modes.includes(mode)) throw new Error("handler_rules:unknown_role_mode");
+      if (!modes.includes(mode)) throw new Error("handler-rules:unknown_role_mode");
       return { kind: "role", value: handlerRulesFirstArg(node), mode, subject };
     }
-    case "role_lead":
-    case "role_prefix":
-    case "role_padded":
+    case "role-lead":
+    case "role-prefix":
+    case "role-padded":
     case "word":
     case "substring":
     case "prefix":
     case "cue_set":
-    case "only_characters":
-    case "route_exact":
-    case "history_role":
+    case "only-characters":
+    case "route-exact":
+    case "history-role":
     case "prior_turn":
     case "evidence":
     case "operation":
       return { kind: node.name, value: handlerRulesFirstArg(node), subject };
-    case "unbalanced_parentheses":
+    case "unbalanced-parentheses":
       return { kind: node.name, subject };
     case "shape": {
       const shape = handlerRulesFirstArg(node);
-      if (!["digit", "time_separator", "url", "path", "quoted"].includes(shape)) {
-        throw new Error("handler_rules:unknown_shape");
+      if (!["digit", "time-separator", "url", "path", "quoted"].includes(shape)) {
+        throw new Error("handler-rules:unknown_shape");
       }
       return { kind: "shape", value: shape, subject };
     }
     default:
-      throw new Error("handler_rules:unknown_condition");
+      throw new Error("handler-rules:unknown_condition");
   }
 }
 
@@ -178,17 +178,17 @@ function handlerRulesParseRule(node) {
               fallback = handlerRulesFirstArg(option);
               break;
             case "text":
-              if (option.args.length < 2) throw new Error("handler_rules:text_without_body");
+              if (option.args.length < 2) throw new Error("handler-rules:text_without_body");
               texts.push({ language: option.args[0], text: option.args[1] });
               break;
             default:
-              throw new Error("handler_rules:unknown_respond_option");
+              throw new Error("handler-rules:unknown_respond_option");
           }
         }
         rule.response = { kind: "seed", intent: handlerRulesFirstArg(child), fallback, texts };
         break;
       }
-      case "respond_unknown":
+      case "respond-unknown":
         rule.response = { kind: "unknown" };
         break;
       case "intent":
@@ -200,15 +200,15 @@ function handlerRulesParseRule(node) {
       case "confidence":
         rule.confidence = Number(handlerRulesFirstArg(child));
         if (!Number.isFinite(rule.confidence)) {
-          throw new Error("handler_rules:confidence_not_a_number");
+          throw new Error("handler-rules:confidence_not_a_number");
         }
         break;
       default:
-        throw new Error("handler_rules:unknown_rule_field");
+        throw new Error("handler-rules:unknown_rule_field");
     }
   }
-  if (!rule.when) throw new Error("handler_rules:rule_without_when");
-  if (!rule.response) throw new Error("handler_rules:rule_without_respond");
+  if (!rule.when) throw new Error("handler-rules:rule_without_when");
+  if (!rule.response) throw new Error("handler-rules:rule_without_respond");
   return rule;
 }
 
@@ -219,48 +219,48 @@ function handlerRulesParseRule(node) {
  */
 function handlerRulesParseValue(node) {
   const name = handlerRulesFirstArg(node);
-  if (node.args.length < 2) throw new Error("handler_rules:value_without_source");
+  if (node.args.length < 2) throw new Error("handler-rules:value_without_source");
   const source = node.args[1];
   switch (source) {
     case "backticks":
-    case "trimmed_prompt":
+    case "trimmed-prompt":
     case "quoted":
     case "network_snapshot":
       return { name, source, text: "", key: "" };
     case "literal":
-      if (node.args.length < 3) throw new Error("handler_rules:literal_without_text");
+      if (node.args.length < 3) throw new Error("handler-rules:literal_without_text");
       return { name, source, text: node.args[2], key: "" };
     case "agent_info": {
-      if (node.args.length < 3) throw new Error("handler_rules:agent_info_without_key");
+      if (node.args.length < 3) throw new Error("handler-rules:agent_info_without_key");
       const text = node.args[3] === "default" ? node.args.slice(4).join(" ") : "";
       return { name, source, text, key: node.args[2] };
     }
     case "stable_id":
-      if (node.args.length < 3) throw new Error("handler_rules:stable_id_without_prefix");
+      if (node.args.length < 3) throw new Error("handler-rules:stable_id_without_prefix");
       return { name, source, text: "", key: node.args[2] };
     case "role_slot":
-      if (node.args.length < 3) throw new Error("handler_rules:role_slot_without_role");
+      if (node.args.length < 3) throw new Error("handler-rules:role_slot_without_role");
       return { name, source, text: "", key: node.args[2] };
     case "operand": // #1175 R3: the operand a claim-evidence reader extracts, by index (Rust ValueSource::Operand)
-      if (node.args.length < 3) throw new Error("handler_rules:operand_without_kind");
+      if (node.args.length < 3) throw new Error("handler-rules:operand_without_kind");
       return { name, source, text: node.args[3] || "0", key: node.args[2] };
     case "table": { // #918: a row of a `table` block, by containment `of <subject>` or by `key <capture>`
-      if (node.args.length < 3) throw new Error("handler_rules:table_without_name");
+      if (node.args.length < 3) throw new Error("handler-rules:table_without_name");
       const mode = node.args[3];
-      if ((mode !== "of" && mode !== "key") || node.args.length < 5) throw new Error("handler_rules:table_without_lookup");
+      if ((mode !== "of" && mode !== "key") || node.args.length < 5) throw new Error("handler-rules:table_without_lookup");
       if (mode === "of" && !HANDLER_RULES_SUBJECT_NAMES.includes(node.args[4])) {
-        throw new Error("handler_rules:unknown_subject");
+        throw new Error("handler-rules:unknown_subject");
       }
       return { name, source, text: node.args[4], key: node.args[2], mode };
     }
     case "transform": // R1188-U20: a named text transform of the free-text payload (Rust ValueSource::Transform)
-      if (node.args.length < 3) throw new Error("handler_rules:transform_without_name");
+      if (node.args.length < 3) throw new Error("handler-rules:transform_without_name");
       return { name, source, text: "", key: node.args[2] };
     case "response": // #918: the seeded response whose intent the template names, in the prompt language
-      if (node.args.length < 3) throw new Error("handler_rules:response_without_intent");
+      if (node.args.length < 3) throw new Error("handler-rules:response_without_intent");
       return { name, source, text: "", key: node.args[2] };
     default:
-      throw new Error("handler_rules:unknown_value_source");
+      throw new Error("handler-rules:unknown_value_source");
   }
 }
 
@@ -275,8 +275,8 @@ function handlerRulesDocument() {
   const text = seedRawText(SEED_RAW, "handler-rules.lino");
   if (!text) return {};
   const roots = handlerRulesParseTree(text);
-  const root = roots.find((node) => node.name === "handler_rules");
-  if (!root) throw new Error("handler_rules:0:missing_root");
+  const root = roots.find((node) => node.name === "handler-rules");
+  if (!root) throw new Error("handler-rules:0:missing_root");
   const handlers = {};
   for (const node of root.children) {
     if (node.name !== "handler") continue;
@@ -298,7 +298,7 @@ let cachedHandlerRuleTables = null;
 function handlerRulesTables() {
   if (cachedHandlerRuleTables) return cachedHandlerRuleTables;
   const root = handlerRulesParseTree(seedRawText(SEED_RAW, "handler-rules.lino"))
-    .find((node) => node.name === "handler_rules");
+    .find((node) => node.name === "handler-rules");
   const tables = {};
   for (const node of root ? root.children : []) {
     if (node.name !== "table" || node.args.length === 0) continue;
@@ -374,7 +374,7 @@ function handlerRulesFillOnce(template, values) {
  */
 function handlerRulesPolicy(handler, key) {
   const text = seedRawText(SEED_RAW, "handler-rules.lino");
-  const root = handlerRulesParseTree(text).find((node) => node.name === "handler_rules");
+  const root = handlerRulesParseTree(text).find((node) => node.name === "handler-rules");
   const policy = root && root.children.find((node) => node.name === "policy" && node.args[0] === handler);
   const entry = policy && policy.children.find((node) => node.name === key);
   return entry && entry.args.length > 0 ? entry.args[0] : null;
@@ -505,7 +505,7 @@ function handlerRulesShapeHolds(shape, text) {
   switch (shape) {
     case "digit":
       return /\p{N}/u.test(text);
-    case "time_separator":
+    case "time-separator":
       return text.includes(":") || text.includes("：");
     case "url":
       return tokens.some((token) => isUrl(token.toLowerCase()));
@@ -560,15 +560,15 @@ function handlerRulesHolds(condition, context) {
           return false;
       }
     }
-    case "role_lead":
+    case "role-lead":
       return handlerRulesRoleSurfaces(condition.value).some((surface) =>
         surface.slot === "prefix"
           ? text.startsWith(surface.text.split("…")[0])
           : text.includes(surface.text));
-    case "role_prefix":
+    case "role-prefix":
       return handlerRulesRoleSurfaces(condition.value).some((surface) =>
         surface.slot === "prefix" && text.startsWith(surface.text.split("…")[0]));
-    case "role_padded": {
+    case "role-padded": {
       const padded = ` ${text} `;
       return handlerRulesRoleSurfaces(condition.value).some((surface) =>
         surface.text.startsWith(" ") || surface.text.endsWith(" ")
@@ -581,17 +581,17 @@ function handlerRulesHolds(condition, context) {
       return text.includes(condition.value);
     case "prefix":
       return text.startsWith(condition.value);
-    case "only_characters": {
+    case "only-characters": {
       const trimmed = context.prompt.trim();
       return trimmed !== "" && Array.from(trimmed).every((character) =>
         condition.value.includes(character));
     }
-    case "unbalanced_parentheses": {
+    case "unbalanced-parentheses": {
       const opens = context.prompt.split("(").length - 1;
       const closes = context.prompt.split(")").length - 1;
       return opens !== closes;
     }
-    case "history_role": {
+    case "history-role": {
       const surfaces = handlerRulesRoleSurfaces(condition.value);
       return context.history.some((turn) => {
         const payload = String((turn && (turn.content || turn.text)) || "").toLowerCase();
@@ -619,7 +619,7 @@ function handlerRulesHolds(condition, context) {
       const token = (cue) => (/[\u3040-\u30ff\u3400-\u9fff\uac00-\ud7af]/u.test(cue) ? text.includes(cue) : text.split(/\s+/).includes(cue));
       return Boolean(set) && set.cues.some((cue) => (set.match === "prefix" ? text.startsWith(cue) : set.match === "substring" ? text.includes(cue) : token(cue)));
     }
-    case "route_exact":
+    case "route-exact":
       // The exact-route backend is not read by the rule sets this browser module runs.
       return false;
     default:

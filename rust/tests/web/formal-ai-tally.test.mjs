@@ -9,8 +9,10 @@ import test from 'node:test';
 
 import {
   agentOf,
+  handRows,
   ladderRows,
   outcomeOf,
+  renderHandEdits,
   renderTally,
   resolutionOf,
   tally,
@@ -61,4 +63,23 @@ test('a fixed failure needs a named test, a cited id or a carrying row', () => {
 test('the repository tally is current and every failure is resolved', () => {
   const output = execFileSync('node', ['scripts/tally-formal-ai-dogfood.mjs', '--check'], { cwd: REPO_ROOT, encoding: 'utf8' });
   assert.match(output, /formal-ai tally: \d+ tasks/);
+});
+
+test('R1188-U13: edits by hand are read per agent and set beside Formal AI\'s', () => {
+  const rows = handRows([
+    '| # | Who | Round | By Formal AI | By hand | Why by hand |',
+    '| H1 | RENAME | 19 | 9 | 1 | New tool. |',
+    '| H2 | LEAD | 19 | 1 | 3 | Workflow splits. |',
+    '| H3 | LEAD | 20 | 2 | 0 | — |',
+  ].join('\n'));
+  assert.deepEqual(rows.map((row) => [row.id, row.agent, row.delegated, row.byHand]), [
+    ['H1', 'RENAME', 9, 1],
+    ['H2', 'LEAD', 1, 3],
+    ['H3', 'LEAD', 2, 0],
+  ]);
+  const page = renderHandEdits(rows).join('\n');
+  assert.match(page, /\| \*\*All\*\* \| 12 \| 4 \| 75% \|/u);
+  assert.match(page, /\| LEAD \| 3 \| 3 \| 50% \|/u);
+  assert.match(page, /\| RENAME \| 9 \| 1 \| 90% \|/u);
+  assert.deepEqual(renderHandEdits([]), []);
 });

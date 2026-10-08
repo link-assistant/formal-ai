@@ -11,7 +11,7 @@ requirement_status_ledger_shard
   requirement
     id "R960-2"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_960.rs"
+    automated_test "rust/tests/unit/docs_requirements/enforced_conventions.rs"
   requirement
     id "R960-3"
     verdict "implemented"
@@ -23,8 +23,8 @@ requirement_status_ledger_shard
   requirement
     id "R960-5"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_960.rs"
+    automated_test "rust/tests/unit/docs_requirements/enforced_conventions.rs"
   requirement
     id "R960-6"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_960.rs"
+    automated_test "rust/tests/unit/docs_requirements/enforced_conventions.rs"

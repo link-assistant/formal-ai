@@ -33,7 +33,7 @@ use crate::self_source_links::owned_manifest;
 /// The owned manifest's `content_id` of `path` (`SourceModuleDigest::content_id`),
 /// or `None` when the repository does not ship that module.
 ///
-/// Mirrored by `ownedContentId` in js/agentic/crate/change_request.mjs.
+/// Mirrored by `ownedContentId` in `js/agentic/crate/change_request.mjs`.
 #[must_use]
 pub fn owned_content_id(path: &str) -> Option<String> {
     owned_manifest()

@@ -446,7 +446,7 @@ fn test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten(
     // budget unable to grow when the work under it grows, which is how the
     // macOS specification shard reached 100.1% of its budget twice with no
     // warning; the arithmetic that decides what the numbers should be now
-    // lives in `tests/unit/ci-cd/issue_1081.rs`, which recomputes the whole
+    // lives in `tests/unit/ci-cd/job_budget_fit.rs`, which recomputes the whole
     // job from the workflow instead of memorising one figure from it. What
     // this test still defends is the shape: a plain-number cap, a budget on
     // the suite, and the wrapper that makes the overrun red rather than grey.
@@ -828,7 +828,7 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // the compile that was 86% of `Run specification tests` was split into
         // a step of its own. One cap covers both legs, so it has to hold the
         // larger sum at or under the 70% share
-        // `issue_1081::the_budgets_a_job_can_spend_together_fit_inside_its_cap`
+        // `job_budget_fit::the_budgets_a_job_can_spend_together_fit_inside_its_cap`
         // enforces: 2640/3900 is 67.7%.
         // The same fix raised the cap from 65 to 90: the spec lane's worst
         // budgeted group is 3600s, and 3600/5400 leaves it at 66% of the cap

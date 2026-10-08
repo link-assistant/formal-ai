@@ -5,8 +5,8 @@ use formal_ai::{environment_records, supported_languages};
 
 mod count;
 mod doctrine_2026_10_07;
-mod issue_1138;
 mod issues;
+mod plan_set_traceability;
 
 #[test]
 fn issue_12_vision_documents_are_present_and_traceable() {

@@ -52,7 +52,7 @@ pub fn try_how_to_procedure(
     let is_install_procedure = task.action == "install";
     let fallback_query = how_policy(
         "procedural_how_to",
-        "fallback_query",
+        "fallback-query",
         &[("task", &task.task)],
     );
     let search_query = procedural_search_query(&task);
@@ -228,7 +228,7 @@ pub fn try_how_it_works(
             "followup:subject",
             format!("inline:{}", term.to_lowercase()),
         );
-        let concept_prompt = how_policy("how_it_works", "concept_query", &[("term", term)]);
+        let concept_prompt = how_policy("how_it_works", "concept-query", &[("term", term)]);
         if let Some(concept_query) = extract_concept_query(&concept_prompt)
             && lookup_concept_query(&concept_query).is_some()
         {
@@ -254,7 +254,7 @@ pub fn try_how_it_works(
         // (typically the term in "Term (category): …" format).
         if let Some(term) = extract_topic_from_prior_reply(&prior) {
             use crate::concepts::{extract_concept_query, lookup_concept_query};
-            let concept_prompt = how_policy("how_it_works", "concept_query", &[("term", &term)]);
+            let concept_prompt = how_policy("how_it_works", "concept-query", &[("term", &term)]);
             if let Some(query) = extract_concept_query(&concept_prompt)
                 && lookup_concept_query(&query).is_some()
             {
@@ -583,11 +583,11 @@ fn procedural_search_query(task: &ProceduralHowToTask) -> String {
         } else {
             task.object.as_str()
         };
-        return how_policy("procedural_how_to", "install_query", &[("target", target)]);
+        return how_policy("procedural_how_to", "install-query", &[("target", target)]);
     }
     how_policy(
         "procedural_how_to",
-        "fallback_query",
+        "fallback-query",
         &[("task", &task.task)],
     )
 }
@@ -752,7 +752,7 @@ fn render_procedural_how_to_body(
             language,
             &[
                 ("search_query", search_query),
-                ("fallback_query", fallback_query),
+                ("fallback-query", fallback_query),
             ],
         )
     } else {

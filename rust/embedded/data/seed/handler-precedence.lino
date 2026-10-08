@@ -20,43 +20,43 @@ handler_precedence
     note "a turn that is only a continuation cue resumes the agentic task; with nothing to resume it is answered here, never searched for (issue 1095)"
   handler exact_memory_query
     rank 30
-    browser_only true
+    browser-only true
     note "the memory store lives in the worker, so the exact-memory query runs there alone (plan 09 leaf 13)"
   handler memory_program
     rank 40
-    browser_only true
+    browser-only true
     note "the worker interprets stored memory programs there alone (plan 09 leaf 13)"
   handler memory_program_gap
     rank 50
-    browser_only true
+    browser-only true
     note "surfaces what the stored memory program cannot yet answer (plan 09 leaf 13)"
   handler current_dialogue_fact_checking
     rank 60
-    browser_only true
+    browser-only true
     note "checks the running dialogue against the worker's memory (plan 09 leaf 13)"
   handler link_native_synthesis
     rank 70
-    browser_only true
+    browser-only true
     note "synthesizes over the link store the worker itself holds (plan 09 leaf 13)"
   handler historical
     rank 80
-    browser_only true
+    browser-only true
     note "replays the worker's stored conversation history (plan 09 leaf 13)"
   handler write_program_coreference
     rank 90
-    browser_only true
+    browser-only true
     note "context-bound write-program rewrite over resolved coreference (plan 09 leaf 13)"
   handler program_blueprint_from_prompt
     rank 100
-    browser_only true
+    browser-only true
     note "composes the program blueprint from a bare prompt (plan 09 leaf 13)"
   handler write_program_concrete
     rank 110
-    browser_only true
+    browser-only true
     note "context-bound concrete write-program binding (plan 09 leaf 13)"
   handler software_project_request
     rank 120
-    browser_only true
+    browser-only true
     note "the browser's interactive software-project dialogue (plan 09 leaf 13)"
   handler legality_warning
     rank 125
@@ -72,7 +72,7 @@ handler_precedence
     note "phase async -- the worker answers navigations in its async network phase"
   handler github_repository_traffic
     rank 150
-    before_promotion true
+    before-promotion true
     note "issue 1175 p133 the browser asks the traffic rules in its fixed early phase, before the walk promotions reorder, so a promoted search act never preempts them natively either"
   handler document_originality_check
     rank 160

@@ -75,7 +75,7 @@ function metaExplanationLanguages(key) {
 }
 
 function isWhyQuestion(lower) {
-  const leadLanguages = metaExplanationLanguages("rationale_lead_languages");
+  const leadLanguages = metaExplanationLanguages("rationale-lead-languages");
   for (const meaning of meaningsWithRole(ROLE_ANSWER_RATIONALE_LEAD)) {
     for (const lexeme of meaning.lexemes) {
       if (!leadLanguages.includes(lexeme.language)) continue;
@@ -88,7 +88,7 @@ function isWhyQuestion(lower) {
       }
     }
   }
-  return metaExplanationLanguages("compositional_why_languages").some((language) => {
+  return metaExplanationLanguages("compositional-why-languages").some((language) => {
     const namesCause = wordsForRoleInLanguages(ROLE_CAUSAL_INTERROGATIVE, [language]).some((word) => lower.includes(word));
     const namesPrior = wordsForRoleInLanguages(ROLE_PRIOR_ANSWER_REFERENCE, [language]).some((word) => lower.includes(word));
     return namesCause && namesPrior;
@@ -117,7 +117,7 @@ function whyQuestionAddressesAssistant(rest) {
  */
 function isHowYouWork(lower) {
   if (lexiconMentionsRoleSubstring(ROLE_ASSISTANT_MECHANISM_INQUIRY, lower)) return true;
-  const languages = metaExplanationLanguages("operating_principle_languages");
+  const languages = metaExplanationLanguages("operating-principle-languages");
   const namesPrinciple = wordsForRoleInLanguages(ROLE_OPERATING_PRINCIPLE, languages).some((word) => lower.includes(word));
   const addressesAssistant = wordsForRoleInLanguages(ROLE_ASSISTANT_SELF_REFERENCE, languages).some((word) => lower.includes(word));
   return namesPrinciple && addressesAssistant;
@@ -200,7 +200,7 @@ function howItWorksFromHistory(history) {
   const prior = lastHistoryTurn(history, "assistant");
   const term = prior ? howItWorksPriorTopic(prior) : null;
   if (term) {
-    const concept = tryConceptLookup(howPolicy("how_it_works", "concept_query", { term }));
+    const concept = tryConceptLookup(howPolicy("how_it_works", "concept-query", { term }));
     if (concept) {
       concept.evidence = [`followup:subject:prior_reply:${term}`, ...concept.evidence];
       return concept;

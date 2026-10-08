@@ -12,7 +12,9 @@ import {
   findReferences,
   indexByBasename,
   parseRenameMap,
+  moduleDirectoryMoves,
   renameRustModules,
+  renameSeedRegistryStems,
   renamedToken,
   resortQuotedLists,
   tokenNames,
@@ -86,14 +88,14 @@ test("references are found with their boundaries, never inside a longer name", (
 });
 
 test("a Rust rename changes the parent's mod line and the module's paths", () => {
-  const move = { from: "rust/tests/unit/issue_745.rs", to: "rust/tests/unit/file_write_routing.rs" };
+  const move = { from: "rust/tests/unit/issue_8745.rs", to: "rust/tests/unit/fixture_write_routing.rs" };
   const byBasename = indexByBasename([move.from]);
-  const parent = renameRustModules("mod issue_744;\nmod issue_745;\npub mod issue_7450;\n", "rust/tests/unit/mod.rs", [move], byBasename);
-  assert.equal(parent.text, "mod issue_744;\nmod file_write_routing;\npub mod issue_7450;\n");
-  const user = renameRustModules("use crate::issue_745::helper;\n", "rust/tests/unit/other.rs", [move], byBasename);
-  assert.equal(user.text, "use crate::file_write_routing::helper;\n");
-  const elsewhere = renameRustModules("mod issue_745;\n", "rust/tests/unit/ci/mod.rs", [move], byBasename);
-  assert.equal(elsewhere.text, "mod issue_745;\n", "a namesake module in another directory keeps its name");
+  const parent = renameRustModules("mod issue_8744;\nmod issue_8745;\npub mod issue_87450;\n", "rust/tests/unit/mod.rs", [move], byBasename);
+  assert.equal(parent.text, "mod issue_8744;\nmod fixture_write_routing;\npub mod issue_87450;\n");
+  const user = renameRustModules("use crate::issue_8745::helper;\n", "rust/tests/unit/other.rs", [move], byBasename);
+  assert.equal(user.text, "use crate::fixture_write_routing::helper;\n");
+  const elsewhere = renameRustModules("mod issue_8745;\n", "rust/tests/unit/ci/mod.rs", [move], byBasename);
+  assert.equal(elsewhere.text, "mod issue_8745;\n", "a namesake module in another directory keeps its name");
 });
 
 test("a #[path] module declaration follows its file", () => {
@@ -116,6 +118,23 @@ test("a test path names a module outside Rust: unique, qualified by its parent, 
   const right = { from: "rust/tests/unit/b/issue_8.rs", to: "rust/tests/unit/b/fixture_right.rs" };
   const ambiguous = findModuleReferences("see issue_8::case", "docs/x.md", [left, right], indexByBasename([left.from, right.from]));
   assert.deepEqual(ambiguous, []);
+});
+
+test("a Rust module's own directory follows its file", () => {
+  const move = { from: "rust/tests/unit/area/issue_9.rs", to: "rust/tests/unit/area/fixture_area_rule.rs" };
+  const below = (directory) => (directory === "rust/tests/unit/area/issue_9" ? ["rust/tests/unit/area/issue_9/child.rs"] : []);
+  assert.deepEqual(moduleDirectoryMoves(move, below), [
+    { from: "rust/tests/unit/area/issue_9/child.rs", to: "rust/tests/unit/area/fixture_area_rule/child.rs", companion: "module directory" },
+  ]);
+  assert.deepEqual(moduleDirectoryMoves({ from: "rust/tests/unit/mod.rs", to: "rust/tests/unit/x.rs" }, below), []);
+});
+
+test("the seed registry names a moved seed by its new stem", () => {
+  const move = { from: "data/seed/fixture-seed-01.lino", to: "data/seed/fixture-seed-alpha-to-beta.lino" };
+  const registry = "seed-registry\n  seed fixture-seed-01\n    bundle true\n  seed fixture-seed-011\n";
+  const renamed = renameSeedRegistryStems(registry, "data/meta/seed-registry.lino", [move]);
+  assert.equal(renamed.text, "seed-registry\n  seed fixture-seed-alpha-to-beta\n    bundle true\n  seed fixture-seed-011\n");
+  assert.equal(renameSeedRegistryStems(registry, "docs/x.md", [move]).count, 0);
 });
 
 test("a generated one-entry-per-line list is re-sorted after a rename", () => {

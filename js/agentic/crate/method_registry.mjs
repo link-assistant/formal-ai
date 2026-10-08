@@ -44,7 +44,7 @@ function specializedHandlerNames() {
   const rows = childrenNamed(root, 'handler').map((row) => ({
     name: row.value,
     rank: Number(childValue(row, 'rank')),
-    browserOnly: childValue(row, 'browser_only') === 'true',
+    browserOnly: childValue(row, 'browser-only') === 'true',
   }));
   rows.sort((left, right) => (left.rank - right.rank) || (left.name < right.name ? -1 : left.name > right.name ? 1 : 0));
   return rows.filter((row) => !row.browserOnly).map((row) => row.name);

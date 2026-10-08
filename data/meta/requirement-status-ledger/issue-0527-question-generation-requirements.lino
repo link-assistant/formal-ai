@@ -7,7 +7,7 @@ requirement_status_ledger_shard
   requirement
     id "R527-1"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_527.rs"
+    automated_test "rust/tests/unit/docs_requirements/question_generation_documents.rs"
   requirement
     id "R527-10"
     verdict "implemented"
@@ -23,31 +23,31 @@ requirement_status_ledger_shard
   requirement
     id "R527-2"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_527.rs"
+    automated_test "rust/tests/unit/generated_question_ordering.rs"
   requirement
     id "R527-3"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_527.rs"
+    automated_test "rust/tests/unit/generated_question_ordering.rs"
   requirement
     id "R527-4"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_527.rs"
+    automated_test "rust/tests/unit/generated_question_ordering.rs"
   requirement
     id "R527-5"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_527.rs"
+    automated_test "rust/tests/unit/generated_question_ordering.rs"
   requirement
     id "R527-6"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_527.rs"
+    automated_test "rust/tests/unit/generated_question_ordering.rs"
   requirement
     id "R527-7"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_527.rs"
+    automated_test "rust/tests/unit/generated_question_ordering.rs"
   requirement
     id "R527-8"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_527.rs"
+    automated_test "rust/tests/unit/docs_requirements/question_generation_documents.rs"
   requirement
     id "R527-9"
     verdict "implemented"

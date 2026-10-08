@@ -225,7 +225,7 @@ test("the screen session rewrite answers unchanged in english, russian, hindi an
 
 test("a terse language switch replays the prior answer under the seeded limit", async () => {
   await ready;
-  assert.equal(evaluate(worker, 'handlerRulesPolicy("response_language_followup", "terse_word_limit")'), "4");
+  assert.equal(evaluate(worker, 'handlerRulesPolicy("response_language_followup", "terse-word-limit")'), "4");
   const response = await worker.solve("用中文", [
     { role: "user", content: "что ты такое" },
     { role: "assistant", content: "Я formal-ai — детерминированный символьный ИИ, отвечающий по локальным правилам Links Notation." },

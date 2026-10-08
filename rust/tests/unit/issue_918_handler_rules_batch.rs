@@ -42,7 +42,7 @@
 //! and the conversion answer's lines into seeded responses.
 //!
 //! The English and Russian answers below are byte-identical to the ones the
-//! deleted Rust produced (`tests/unit/specification/issue_146.rs` pins the
+//! deleted Rust produced (`tests/unit/specification/self_awareness_prompts.rs` pins the
 //! same two conversation-topic answers). The browser twin is
 //! `rust/tests/web/issue-0918-handler-rules-batch.test.mjs`.
 
@@ -85,7 +85,7 @@ fn the_migrated_handlers_are_seed_rule_sets() {
         .expect("source_refresh rule set")
         .rule_names()
         .collect();
-    assert_eq!(refresh, ["source_refresh", "source_refresh_unnamed"]);
+    assert_eq!(refresh, ["source_refresh", "source-refresh-unnamed"]);
 }
 
 #[test]
@@ -370,12 +370,12 @@ const RETARGET_ZH: &str = "我是 formal-ai —— 一个确定性的符号化 A
 
 /// The response-language follow-up replays the prior request through the whole
 /// solver with the requested language forced; how short a bare language switch
-/// may be is the `terse_word_limit` policy of the rule document, not a constant
+/// may be is the `terse-word-limit` policy of the rule document, not a constant
 /// in either runtime.
 #[test]
 fn a_terse_language_switch_replays_the_prior_answer_under_the_seeded_limit() {
     assert_eq!(
-        handler_policy("response_language_followup", "terse_word_limit").as_deref(),
+        handler_policy("response_language_followup", "terse-word-limit").as_deref(),
         Some("4")
     );
     let solver = UniversalSolver::default();

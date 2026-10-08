@@ -3,8 +3,8 @@
 // (PR #1188, R1188-U5, rename tree 4), and writes the reviewed names into the
 // rename map.
 //
-// A test file such as `rust/tests/unit/issue_745.rs` or
-// `rust/tests/e2e/tests/issue-153.spec.js` says which issue asked for it, not
+// A test file named `rust/tests/unit/issue_<n>.rs` or
+// `rust/tests/e2e/tests/issue-<n>.spec.js` says which issue asked for it, not
 // what it pins. The proposal is read from the file itself: its first doc
 // comment and the names of its tests. The words the test names repeat most,
 // in first-seen order, become the proposed name; the doc comment's first
@@ -49,7 +49,7 @@ export function testSuffix(path) {
   return SUFFIXES.find((suffix) => path.endsWith(suffix)) ?? null;
 }
 
-/** The issue number a test file is named by alone (`issue_745.rs`, `issue-153.spec.js`), or null. */
+/** The issue number a test file is named by alone (`issue_<n>.rs`, `issue-<n>.spec.js`), or null. */
 export function issueOnlyNumber(path) {
   const suffix = testSuffix(path);
   if (!suffix) return null;

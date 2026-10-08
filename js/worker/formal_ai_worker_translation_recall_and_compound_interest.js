@@ -1168,7 +1168,7 @@ function answerCompoundInterest(request) {
     rate: formatCompoundRate(annualRate),
     percent: formatCompoundNumber(request.annualRatePercent),
     periods_per_year: periodsPerYear,
-    frequency: compoundPolicy(`label_${periodsPerYear}`) || compoundPolicy("label_other"),
+    frequency: compoundPolicy(`label-${periodsPerYear}`) || compoundPolicy("label-other"),
     years: formatCompoundNumber(request.years),
     periodic_rate: formatCompoundRate(periodicRate),
     periods: formatCompoundNumber(periods),
@@ -1228,7 +1228,7 @@ function compoundConversion(evidence, amount, source, target, asksForWebRate) {
   evidence.push(
     `calculation:currency_conversion:${formatCompoundMoney(displayedAmount)} ${source} to ${target} at ${formatCompoundRate(rate)}`,
   );
-  const expression = compoundPolicy("rate_expression").split("{source}").join(source).split("{target}").join(target);
+  const expression = compoundPolicy("rate-expression").split("{source}").join(source).split("{target}").join(target);
   let text = `\n\n${compoundResponse("compound_interest_conversion", {
     source,
     target,
@@ -1324,7 +1324,7 @@ function priorFinalAmount(history) {
 // The amount and currency an earlier report states after the seeded
 // final-amount marker. Mirrors parse_final_amount_from_text.
 function parseFinalAmountFromText(text) {
-  const marker = compoundPolicy("final_amount_marker");
+  const marker = compoundPolicy("final-amount-marker");
   const lower = String(text || "").toLowerCase();
   const at = marker ? lower.indexOf(marker) : -1;
   if (at < 0) return null;

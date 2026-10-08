@@ -59,7 +59,7 @@ before(async () => {
   await installNodeHost(new WorkerHost());
 });
 
-describe('file_read (rust/tests/unit/issue_627.rs)', () => {
+describe('file_read (rust/tests/unit/file_read_tool_calls.rs)', () => {
   const TOOLS = ['read', 'bash'];
 
   it('direct file read prompts emit read tool calls', () => {
@@ -144,7 +144,7 @@ describe('file_read (rust/tests/unit/issue_627.rs)', () => {
     assert.equal(final(readStep(messages, TOOLS)), 'Value of `gamma_marker` in `gamma.json`: GAMMA_33333');
   });
 
-  it('write intent beats read intent (rust/tests/unit/issue_681.rs)', () => {
+  it('write intent beats read intent (rust/tests/unit/file_creation_writes.rs)', () => {
     assert.equal(fileReadTaskFor('create a file notes.txt with hello'), null);
   });
 });
@@ -261,7 +261,7 @@ describe('supplied file bytes (rust/tests/integration/issue_671_supplied_file_by
   });
 });
 
-describe('local_search (rust/tests/unit/issue_840.rs)', () => {
+describe('local_search (rust/tests/unit/grounded_local_action.rs)', () => {
   const TOOLS = ['bash', 'websearch', 'webfetch', 'request_user_input'];
   const command = (call) => args(call).command;
 
@@ -371,7 +371,7 @@ describe('local_search (rust/tests/unit/issue_840.rs)', () => {
   });
 });
 
-describe('comparison (rust/tests/unit/issue_840.rs)', () => {
+describe('comparison (rust/tests/unit/grounded_local_action.rs)', () => {
   const TOOLS = ['bash', 'websearch', 'webfetch', 'request_user_input'];
   const step = (messages, tools = TOOLS) => planComparisonStep(latestTask(messages), messages, tools);
 
@@ -399,7 +399,7 @@ describe('comparison (rust/tests/unit/issue_840.rs)', () => {
   });
 });
 
-describe('web_research (rust/tests/unit/issue_840.rs)', () => {
+describe('web_research (rust/tests/unit/grounded_local_action.rs)', () => {
   const TOOLS = ['bash', 'websearch', 'webfetch', 'request_user_input'];
 
   it('bare definition follow-up asks for its antecedent', async () => {
@@ -483,7 +483,7 @@ describe('web_research (rust/tests/unit/issue_840.rs)', () => {
   });
 });
 
-describe('report_issue (rust/tests/unit/issue_840.rs, issue_822.rs)', () => {
+describe('report_issue (rust/tests/unit/grounded_local_action.rs, report_context_collection.rs)', () => {
   it('report intent is meanings-driven for the reported Russian phrase', () => {
     for (const prompt of ['Зарепорти баг', 'Сообщи об ошибке', 'Report a bug']) {
       assert.equal(isReportIntent(prompt), true, prompt);

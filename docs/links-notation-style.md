@@ -27,8 +27,10 @@ file_read_action
 ```
 
 the names are `file_read_action`, `defined-by`, `action`, `role`,
-`file_read_action_cue`, `lexeme`, `en`, `surface` and `text`. These are not
-names, and no rule touches them:
+`file_read_action_cue`, `lexeme`, `en`, `surface` and `text`. A `$` before a
+name refers to the value a handler rule names (`log source $traffic-api-docs`
+reads `value traffic-api-docs`), so it is the same name. These are not names,
+and no rule touches them:
 
 - quoted text (`"read the file"`), which is human text or an external spelling;
 - a token with `/` or `.`, which is a path or a file name;
@@ -150,7 +152,10 @@ applies the rename rule to one `family` of `data/meta/notation-rules.lino`:
    `.lino` file. A name shared with other files waits for the family that owns
    all of them; a name a shell, Python or workflow file spells waits for the
    family that moves those files too; a name the family keeps is listed under
-   `keep` with its reason. A name whose `-` spelling already exists is a
+   `keep` with its reason. A family keeps a name that code builds from parts
+   (`periods_{slug}`, `software_project_followup_{name}`), a name that is also
+   the text a prompt is searched for, and a name that is also an event-log kind
+   (`prior_turn:user`), until the family that owns those parts moves them. A name whose `-` spelling already exists is a
    collision and waits, unless the family says `merge-collisions true` with a
    reason: the `gate-names` family does, since a gate's name and its shard file
    (`check_file_size` in `check-file-size.lino`) are one name in two spellings.

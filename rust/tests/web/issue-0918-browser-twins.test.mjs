@@ -323,7 +323,7 @@ test("numeric-list answers render their seeded intro and result label", async ()
 
 // Issue #918 (R914-6): meta_explanation renders the seeded why, how-I-work
 // and meta_explanation_architecture records in both runtimes (the native pins
-// are rust/tests/unit/specification/issue_146.rs), and both read which
+// are rust/tests/unit/specification/self_awareness_prompts.rs), and both read which
 // languages take the fronted and the compositional why-question readings
 // from the `policy meta_explanation` block. Every answer is unchanged.
 test("meta explanations render the seeded records", async () => {

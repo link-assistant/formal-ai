@@ -16,7 +16,7 @@
 //!
 //! The same gap was still open one level down, and issue #1081 fell into it.
 //! Every gate in the repository compared a step budget **upward**: `tests/unit/
-//! ci-cd/issue_1017.rs` asserts a budget is at most 70% of its job's cap. No
+//! ci-cd/step_budgets_within_job_clocks.rs` asserts a budget is at most 70% of its job's cap. No
 //! gate compared a budget **downward**, against the work it is supposed to
 //! bound. So `Run specification tests` grew from 424s to 1181s over three weeks
 //! against a fixed 1400s budget, crossed it in run 32688997247 and again in run
@@ -166,7 +166,7 @@ fn parse_utc_timestamp(value: &str) -> Option<i64> {
 /// Line-based for the same reason `check-job-headroom.rs` is: this runs as a
 /// standalone `rust-script` with no dependency tree. Every budget in the
 /// repository is a `TEST_BUDGET_SECONDS:` under a named step's `env:`, which is
-/// what `tests/unit/ci-cd/issue_1081.rs` keeps true.
+/// what `tests/unit/ci-cd/job_budget_fit.rs` keeps true.
 fn declared_steps(workflow_directory: &Path) -> Vec<DeclaredStep> {
     let mut steps = Vec::new();
     let mut files: Vec<_> = fs::read_dir(workflow_directory)
@@ -316,7 +316,7 @@ struct Gaps {
 /// job name -- `Test (macos-15-intel / specification)` -- which no declaration
 /// contains, and reversing that expansion is the hard problem
 /// `check-job-headroom.rs` had to solve. Step names need none of it: they carry
-/// no matrix expressions, and `tests/unit/ci-cd/issue_1081.rs` keeps every
+/// no matrix expressions, and `tests/unit/ci-cd/job_budget_fit.rs` keeps every
 /// budgeted step name unique across the repository so the join stays total. A
 /// name that does become ambiguous is reported rather than guessed at.
 fn audit(declared: &[DeclaredStep], measured: &[Measurement]) -> (Vec<Headroom>, Gaps) {
@@ -357,7 +357,7 @@ fn audit(declared: &[DeclaredStep], measured: &[Measurement]) -> (Vec<Headroom>,
             // Every unbudgeted step in the pipeline lands here. That is the
             // expected case, not a gap: this audit is about budgets, and the
             // question "should this step have one?" is a static one that
-            // `tests/unit/ci-cd/issue_1081.rs` answers at pull-request time.
+            // `tests/unit/ci-cd/job_budget_fit.rs` answers at pull-request time.
             continue;
         };
         entry.samples += 1;

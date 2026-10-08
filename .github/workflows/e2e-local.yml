@@ -3,8 +3,8 @@ name: E2E Tests (local web app)
 # Issue #1138 moved this job out of `.github/workflows/release.yml`. That file
 # had reached 1505 lines against the 1500-line warning band its own gates pin
 # (`scripts/check-file-size.rs`, and the same number asserted by
-# `issue_999::warning_band_files_are_small_and_split_responses_cover_the_registry`
-# and `issue_1012::audited_warning_band_sources_stay_below_their_limits`), so
+# `macos_test_partitioning::warning_band_files_are_small_and_split_responses_cover_the_registry`
+# and `ci_warning_audit::audited_warning_band_sources_stay_below_their_limits`), so
 # every run carried a size warning that could no longer warn about anything
 # new. The instruction for that situation is written beside the number itself:
 # extract a job, do not raise it.

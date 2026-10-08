@@ -150,7 +150,7 @@ fn documented_method(prompt: &str) -> Vec<String> {
     let (Some(page), Some(docs_url)) = (policy("page"), policy("docs_url")) else {
         return Vec::new();
     };
-    let alias = policy("class_alias").unwrap_or_default().to_lowercase();
+    let alias = policy("class-alias").unwrap_or_default().to_lowercase();
     let segments: Vec<&str> = page.split('.').collect();
     let parts: Vec<String> = segments
         .iter()

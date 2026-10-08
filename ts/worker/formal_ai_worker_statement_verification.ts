@@ -14,7 +14,7 @@
 
 // Issue #1138: the formalization-tuple builders and the associative-research
 // recall helpers moved here from formal_ai_worker_solve.js to keep that module
-// inside its 1400-line warning band (tests/unit/ci-cd/issue_999.rs).
+// inside its 1400-line warning band (tests/unit/ci-cd/macos_test_partitioning.rs).
 // Function declarations hoist across the concatenated worker bundle, so
 // worker_20 solve calls reach them regardless of module order.
 function objectForFormalization(prompt, normalized, match) {
@@ -720,17 +720,17 @@ function documentOriginalityTextSample(prompt) {
   return documentOriginalityFullTextSample(prompt)
     .split(/\s+/u)
     .filter(Boolean)
-    .slice(0, Number(documentOriginalityPolicy("sample_query_words")))
+    .slice(0, Number(documentOriginalityPolicy("sample-query-words")))
     .join(" ");
 }
 
 function documentOriginalityQuery(prompt, attachments) {
   const sample = documentOriginalityTextSample(prompt);
-  if (sample) return handlerRulesFillOnce(documentOriginalityPolicy("sample_query"), { sample });
+  if (sample) return handlerRulesFillOnce(documentOriginalityPolicy("sample-query"), { sample });
   if (attachments.length > 0) {
-    return handlerRulesFillOnce(documentOriginalityPolicy("attachment_query"), { name: attachments[0] });
+    return handlerRulesFillOnce(documentOriginalityPolicy("attachment-query"), { name: attachments[0] });
   }
-  return documentOriginalityPolicy("default_query");
+  return documentOriginalityPolicy("default-query");
 }
 
 function documentOriginalityContent(language, attachments, samplePresent, marketAssessments) {

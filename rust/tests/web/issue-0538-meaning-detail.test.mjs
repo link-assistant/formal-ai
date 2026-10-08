@@ -1,5 +1,5 @@
 // Issue #538 (R375, R377, R386): detailed meanings and words, checked over the
-// committed seed and case study. The Rust twins are rust/tests/unit/issue_538.rs
+// committed seed and case study. The Rust twins are rust/tests/unit/word_surface_grammar.rs
 // (each tomato surface reads its grammatical number, part of speech and
 // denotation through the one `SemanticFacet` path) and
 // rust/tests/unit/issue_538_agentic.rs; the JavaScript meaning-detail recipe

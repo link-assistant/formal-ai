@@ -44,7 +44,7 @@ pub struct IntentRouting {
 
 /// The intent routing table, built once from the seed links network.
 ///
-/// Rebuilding it per call cost real time: `rule_interpreter`'s `route_exact`
+/// Rebuilding it per call cost real time: `rule_interpreter`'s `route-exact`
 /// condition and `intent_formalization` both ask for it inside a request, and
 /// the held-out generalization end-to-end run went from 265 s on `main` to
 /// over its 540 s budget on the branch that made routing a link query

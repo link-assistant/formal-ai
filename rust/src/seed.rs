@@ -479,7 +479,7 @@ pub fn agent_info() -> BTreeMap<String, String> {
 
 /// One `agent-info.lino` field (`agent_info().remove(key)`), or `None`.
 ///
-/// Mirrored by `agentInfoValue` in js/agentic/crate/seed_agent_info.mjs.
+/// Mirrored by `agentInfoValue` in `js/agentic/crate/seed_agent_info.mjs`.
 #[must_use]
 pub fn agent_info_value(key: &str) -> Option<String> {
     agent_info().remove(key)

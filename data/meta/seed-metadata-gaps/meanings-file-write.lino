@@ -1,0 +1,25 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-file-write.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-0779ae03b5192858
+    record "file_leading_line_constraint"
+  gap seed-metadata-gap-fee3058c4c2b0662
+    record "file_read_action"
+  gap seed-metadata-gap-bd4e0e6c37de77e9
+    record "file_write_action"
+  gap seed-metadata-gap-1c336abb94cc4a90
+    record "file_write_authoritative_content"
+  gap seed-metadata-gap-e18943a37cedb274
+    record "file_write_command_output"
+  gap seed-metadata-gap-517a51260ab2024c
+    record "file_write_content"
+  gap seed-metadata-gap-5124c39c4bbfd726
+    record "file_write_deferred_content"
+  gap seed-metadata-gap-39dfa327c31c7821
+    record "file_write_destination"
+  gap seed-metadata-gap-d33101f5ae95f755
+    record "file_write_literal_qualifier"
+  gap seed-metadata-gap-a732d54caa6f126e
+    record "file_write_target"

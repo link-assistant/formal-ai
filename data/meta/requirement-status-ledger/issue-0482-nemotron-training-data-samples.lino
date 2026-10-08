@@ -35,4 +35,4 @@ requirement_status_ledger_shard
   requirement
     id "R444"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_482.rs"
+    automated_test "rust/tests/unit/docs_requirements/nemotron_training_documents.rs"

@@ -193,7 +193,7 @@ handler_migration_ledger
     status migrated
     data "data/seed/facts.lino|data/seed/release-timelines.lino|data/seed/meanings-facts.lino"
     primitive "rust/src/solver_handlers/factual_qa.rs"
-    justification "issue #918 (R914-6): the row is a dispatcher over the promoted factual interpreters (prompt-text question, fact comparison, the subject-gated record of factual_qa.rs) and the generic release-timeline renderer; the records, their localized summaries and the timeline phrasing are seed data and the dispatcher names no word. The browser twin already read the same records but rendered a release-timeline record as an empty answer; it now has the renderer (renderReleaseTimeline in js/worker/formal_ai_worker_factual_qa.js) over the same seed, registered for the web. Pinned in both runtimes, and natively by rust/tests/unit/specification/issue_892.rs and the issue 1172 suites."
+    justification "issue #918 (R914-6): the row is a dispatcher over the promoted factual interpreters (prompt-text question, fact comparison, the subject-gated record of factual_qa.rs) and the generic release-timeline renderer; the records, their localized summaries and the timeline phrasing are seed data and the dispatcher names no word. The browser twin already read the same records but rendered a release-timeline record as an empty answer; it now has the renderer (renderReleaseTimeline in js/worker/formal_ai_worker_factual_qa.js) over the same seed, registered for the web. Pinned in both runtimes, and natively by rust/tests/unit/specification/release_order_snapshot.rs and the issue 1172 suites."
     held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler coreference
     status migrated
@@ -364,7 +364,7 @@ handler_migration_ledger
     data "data/seed/meanings-meta.lino|data/seed/handler-rules.lino|data/seed/multilingual-responses.lino|data/seed/multilingual-responses-synthesis.lino|data/seed/multilingual-responses-capabilities.lino"
     primitive "rust/src/solver_handlers/meta_explanation.rs"
     justification "issue #918 (R914-6): recognition is the answer_rationale_lead, causal_interrogative, prior_answer_reference, assistant_mechanism_inquiry, operating_principle, assistant_self_reference and architecture_concept roles, and which languages take the fronted or the compositional why-question reading is now the policy meta_explanation block instead of language literals; the why, how-I-work and architecture answers are the seeded meta_explanation_why, meta_explanation and meta_explanation_architecture records filled with each surface's own notes. The browser already rendered the why and how-I-work records; both runtimes now read every record, and every answer is unchanged."
-    held_out "rust/tests/unit/specification/issue_146.rs"
+    held_out "rust/tests/unit/specification/self_awareness_prompts.rs"
   handler network_query
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-intent.lino|data/seed/multilingual-responses-synthesis.lino"

@@ -4,7 +4,7 @@ self_ast_census
   fidelity full_ast
   byte_len 27029
   line_count 825
-  content_id source_module_6362283922ec7065
+  content_id source_module_ec40dee2f357181f
   symbol_count 47
   symbols
     const CONFIG_PATH 21 21

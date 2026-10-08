@@ -172,11 +172,11 @@ pub fn promotion_condition_verdicts(
 
 fn compile_condition(row: &HandlerPromotion) -> Result<HandlerRules, String> {
     let mut document =
-        String::from("handler_rules\n  handler promotion\n    rule predicate\n      when\n");
+        String::from("handler-rules\n  handler promotion\n    rule predicate\n      when\n");
     for line in row.when.lines() {
         let _ = writeln!(document, "        {line}");
     }
-    crate::links_format::push_lino_node(&mut document, 6, "respond_unknown", None);
+    crate::links_format::push_lino_node(&mut document, 6, "respond-unknown", None);
     HandlerRules::parse(&document)
         .map_err(|error| format!("handler_promotions:{}:{error}", row.handler))
 }

@@ -142,7 +142,7 @@ function extractInstallationProject(prompt) {
   const source = String(prompt || "");
   const lower = source.toLowerCase();
   const fallback = installationText("default_project");
-  const marker = handlerRulesPolicy("installation_conversion", "project_marker");
+  const marker = handlerRulesPolicy("installation_conversion", "project-marker");
   const start = marker ? lower.indexOf(marker) : -1;
   if (start < 0) return fallback;
   const tail = source.slice(start + marker.length);
@@ -381,7 +381,7 @@ function extractFollowUpTargetSite(prompt) {
 function extractFollowUpExpectedOutput(prompt) {
   const source = String(prompt || "");
   const lower = source.toLowerCase();
-  const limit = Number(handlerRulesPolicy("software_project_followup", "output_word_limit") || 0);
+  const limit = Number(handlerRulesPolicy("software_project_followup", "output-word-limit") || 0);
   for (const marker of prefixLiterals("output_display_request")) {
     const found = lower.indexOf(marker);
     if (found < 0) continue;

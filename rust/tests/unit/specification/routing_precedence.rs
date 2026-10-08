@@ -333,7 +333,7 @@ fn browser_only_rows(seed: &str) -> Vec<String> {
     for line in seed.lines() {
         if let Some(handler) = row_handler_name(line) {
             current = Some(handler);
-        } else if line.trim_start().starts_with("browser_only") && current.is_some() {
+        } else if line.trim_start().starts_with("browser-only") && current.is_some() {
             rows.push(current.unwrap_or_default().to_owned());
         }
     }
@@ -428,7 +428,7 @@ fn rust_and_browser_worker_share_specialized_precedence() {
     for name in &browser_only {
         assert!(
             worker_keys.contains(name),
-            "`{name}` is marked browser_only in the seed but the worker registry has no \
+            "`{name}` is marked browser-only in the seed but the worker registry has no \
              such key"
         );
     }
@@ -456,7 +456,7 @@ fn worker_handler_registry_is_a_permutation_of_the_seed() {
 
     assert!(
         !browser_only_rows(&seed).is_empty(),
-        "plan 09 leaf 13 adds `browser_only` guard notes for the worker-only entries \
+        "plan 09 leaf 13 adds `browser-only` guard notes for the worker-only entries \
          (tryExactMemoryQuery, tryHistorical, tryLinkNativeSynthesis, tryMemoryProgram*), \
          so the two surfaces share one vocabulary"
     );

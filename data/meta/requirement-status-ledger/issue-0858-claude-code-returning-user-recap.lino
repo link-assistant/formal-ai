@@ -3,7 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0858-claude-code-returning-user-recap.md"
   issue "0858"
   delivered "PR #899 (issue #858)"
-  automated_test "rust/tests/unit/issue_858.rs"
+  automated_test "rust/tests/unit/claude_code_away_recap.rs"
   manual "not yet confirmed"
   requirement
     id "R858-1"

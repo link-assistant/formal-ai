@@ -169,6 +169,14 @@ The 2026-10-08 instructions, recorded verbatim in [the 2026-10-08 architect note
 - Every regular source file in `js/`, `ts/` and `rust/` is readable multi-line code; only distribution bundles may be exempt (R1188-U23).
 - Locally, Formal AI runs from its JavaScript source, Rust is not built, only the tests next to a change run, and disk space is kept free; CI checks the rest (R1188-U24, R1188-U25).
 
+### Method (2026-10-08)
+
+The 2026-10-08 method, recorded verbatim in [the progressive JPEG architect note](docs/architect-notes/2026-10-08-progressive-jpeg-javascript-first-and-automated-translation.md):
+
+- Every problem, and the development of each pull request, follows the progressive JPEG method of [§ 167](https://www.artlebedev.ru/kovodstvo/sections/167/). The whole is complete at every moment at some resolution, and each pass raises everything, lowest level first; [`docs/progressive-plan.md`](docs/progressive-plan.md) is generated from the requirement ledger (R1188-U28).
+- More of the work goes through Formal AI from its JavaScript source, and the JavaScript requirements pass first (R1188-U29).
+- Translation between JavaScript, TypeScript, Rust and the meta language is automated. Temporary, recorded workarounds cover what relative meta logic and the meta language cannot translate yet, and they are retired as those improve in parallel (R1188-U30, [`docs/progressive-delivery.md`](docs/progressive-delivery.md)).
+
 ### Where the architect's notes live
 
 This section is kept up to date from

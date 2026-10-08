@@ -58,6 +58,10 @@ notation-rules
       reason "the cue set of data/meta/cue-lexicon.lino names it in quotes; renamed with that file"
     keep periods_compounding_monthly periods_compounding_quarterly periods_compounding_weekly periods_compounding_daily periods_compounding_annual
       reason "the compound-interest readers build the key from a meaning slug (periods_compounding_monthly); renamed with the meanings family"
+    keep argument_prompt argument_normalized argument_history argument_language argument_memory argument_preferences result_intent_write_program evidence_kind_write_program_coreference_rewrite
+      reason "js/seed_loader.js reads a code symbol after the prefix of the field name (argument_prompt passes the handler context path prompt); renamed when the browser precedence states its symbols as values"
+    keep default_target
+      reason "also the end of the response intent software_project_followup_default_target, which both roots build from it; renamed with the responses family"
   abbreviations
     app application
     arg argument

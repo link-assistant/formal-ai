@@ -44,7 +44,7 @@ function check(name, cond, extra) {
 const isArch = (prompt) => sandbox.isArchitectureQuestion(sandbox.normalizePrompt(prompt));
 
 // Architecture questions from the Rust spec (tests/unit/specification/
-// issue_146.rs) plus multilingual variants: each addresses the assistant AND
+// self_awareness_prompts.rs) plus multilingual variants: each addresses the assistant AND
 // names an architecture concept, so it is recognised in every language.
 console.log("=== architecture-question recognition (mirror of meta_explanation.rs) ===");
 for (const [lang, prompt] of [

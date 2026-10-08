@@ -7,11 +7,11 @@ requirement_status_ledger_shard
   requirement
     id "R396"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_531.rs"
+    automated_test "rust/tests/unit/docs_requirements/pattern_inference_research.rs"
   requirement
     id "R397"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_531.rs"
+    automated_test "rust/tests/unit/docs_requirements/pattern_inference_research.rs"
   requirement
     id "R398"
     verdict "implemented"
@@ -27,7 +27,7 @@ requirement_status_ledger_shard
   requirement
     id "R401"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_531.rs"
+    automated_test "rust/tests/unit/docs_requirements/pattern_inference_research.rs"
   requirement
     id "R402"
     verdict "implemented"
@@ -51,12 +51,12 @@ requirement_status_ledger_shard
   requirement
     id "R407"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_531.rs"
+    automated_test "rust/tests/unit/docs_requirements/pattern_inference_research.rs"
     manual "manually confirmed 2026-08-04 (audit): `npm --prefix desktop run smoke` passed (desktop/scripts/smoke.mjs)"
   requirement
     id "R531-17"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_531.rs"
+    automated_test "rust/tests/unit/docs_requirements/pattern_inference_research.rs"
   requirement
     id "R531-18"
     verdict "implemented"
@@ -88,4 +88,4 @@ requirement_status_ledger_shard
   requirement
     id "R531-25"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_531.rs"
+    automated_test "rust/tests/unit/docs_requirements/pattern_inference_research.rs"

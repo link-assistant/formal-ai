@@ -403,7 +403,7 @@ jobs:
     # 31937348472 used 1415s of a 1500s cap). Issue #1081 sized the cap so one
     # leg's worst budgeted group -- 3600s: the specification lane's two 1800s
     # steps, or the full lane's 2400s tests plus its gates -- stays at 66.7% of
-    # 90 minutes, inside the 70% share `tests/unit/ci-cd/issue_1081.rs` holds.
+    # 90 minutes, inside the 70% share `tests/unit/ci-cd/job_budget_fit.rs` holds.
     timeout-minutes: 90
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}-${{ matrix.shard || 1 }}
@@ -1292,7 +1292,7 @@ jobs:
       fail-fast: false
       matrix:
         # Kept in step with `data/meta/box-language-projects.lino` by
-        # `tests/unit/ci-cd/issue_932.rs`.
+        # `tests/unit/ci-cd/box_language_release_legs.rs`.
         language: [rust, python, javascript, typescript, go, java, ruby]
     steps:
       - uses: actions/checkout@v7

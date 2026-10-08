@@ -206,7 +206,7 @@ fn every_upstream_report_records_where_it_was_filed() {
 /// The two tracing modes beside the budget heartbeat are opt-in through
 /// `cli_env::flag_enabled`, and nothing CI runs switches them on, so a green
 /// run stays quiet. The heartbeat has its own test:
-/// `issue_1017::budget_wrapper_heartbeat_is_available_but_off_by_default`.
+/// `step_budgets_within_job_clocks::budget_wrapper_heartbeat_is_available_but_off_by_default`.
 #[test]
 fn the_slow_init_and_command_traces_are_available_but_off_by_default() {
     let modes = [

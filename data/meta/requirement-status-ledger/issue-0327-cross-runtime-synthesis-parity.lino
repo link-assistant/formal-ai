@@ -11,7 +11,7 @@ requirement_status_ledger_shard
   requirement
     id "R247"
     verdict "implemented"
-    automated_test "rust/tests/e2e/tests/issue-327.spec.js"
+    automated_test "rust/tests/e2e/tests/cross-runtime-synthesis-parity.spec.js"
   requirement
     id "R248"
     verdict "implemented"

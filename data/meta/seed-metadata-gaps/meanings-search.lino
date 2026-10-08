@@ -1,0 +1,11 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-search.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-c3c15e3b92906224
+    record "reachability_operand_framing"
+  gap seed-metadata-gap-a44a6c83df95d28f
+    record "reachability_search_action"
+  gap seed-metadata-gap-66648bd2f266e28c
+    record "reachability_target_marker"

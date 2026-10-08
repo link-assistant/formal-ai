@@ -62,5 +62,5 @@ requirement_status_ledger_shard
     automated_test "rust/tests/unit/specification/recipe_interpreter.rs"
   requirement
     id "R344"
-    verdict "not-delivered"
+    verdict "partial"
     automated_test "rust/tests/unit/specification/behavior_rules.rs"

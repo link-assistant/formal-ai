@@ -116,7 +116,7 @@ fn the_link_backend_reads_an_injected_store_not_the_boot_projection() {
     let with_source = LinkStoreSource::from_store(&with_probe);
     let without_source = LinkStoreSource::from_store(&without_probe);
     let rules = HandlerRules::parse(
-        "handler_rules\n  handler probe\n    rule probe\n      when\n        role store_probe raw\n        route_exact store_route\n      respond_unknown\n",
+        "handler-rules\n  handler probe\n    rule probe\n      when\n        role store_probe raw\n        route-exact store_route\n      respond-unknown\n",
     )
     .expect("fixture rule parses");
     let handler = rules.handler("probe").expect("fixture handler");

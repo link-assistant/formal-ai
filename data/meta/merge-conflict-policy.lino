@@ -161,7 +161,7 @@ merge_conflict_policy
   artifact seed_metadata_gaps
     cause derived_artifact
     merge union
-    path "data/meta/seed-metadata-gaps-*.lino"
+    path "data/meta/seed-metadata-gaps/*.lino"
     regenerate "rust-script scripts/audit-seed-metadata.rs --write"
     verify "rust-script scripts/audit-seed-metadata.rs"
     observed_conflicts 75

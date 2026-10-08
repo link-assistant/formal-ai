@@ -23,7 +23,7 @@ requirement_status_ledger_shard
   requirement
     id "R392"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_558.rs"
+    automated_test "rust/tests/unit/docs_requirements/auto_learning_case_study.rs"
   requirement
     id "R393"
     verdict "implemented"

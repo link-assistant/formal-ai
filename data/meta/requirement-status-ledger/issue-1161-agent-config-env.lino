@@ -12,7 +12,7 @@ requirement_status_ledger_shard
     id "R1161-2"
     verdict "implemented"
     delivered "2026-09-30 (this pull request)"
-    automated_test "rust/tests/issue_760.rs"
+    automated_test "rust/tests/t3code_launch.rs"
   requirement
     id "R1161-3"
     verdict "implemented"

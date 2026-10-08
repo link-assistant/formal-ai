@@ -167,7 +167,7 @@ pub fn ast_census(source: &str) -> AstCensus {
 /// The AST proper is the named syntax links in the abstract-syntax projection,
 /// which drops lossless tokens and trivia; grouping them by `term()` (the
 /// grammar node kind) yields the histogram. Mirrored by `namedNodeHistogram`
-/// in js/agentic/crate/rust_ast_census.mjs.
+/// in `js/agentic/crate/rust_ast_census.mjs`.
 #[cfg(feature = "meta-language")]
 fn named_node_histogram(network: &LinkNetwork) -> (usize, Vec<AstNodeCount>) {
     let mut histogram: BTreeMap<String, usize> = BTreeMap::new();
@@ -215,7 +215,7 @@ pub fn render_ast_document(target_path: &str, source: &str) -> String {
 /// The formatting half of [`render_ast_document`]: the CST/AST-in-data
 /// document for an already computed `census`.
 ///
-/// Mirrored by `renderCensusDocument` in js/agentic/self_ast.mjs.
+/// Mirrored by `renderCensusDocument` in `js/agentic/self_ast.mjs`.
 #[must_use]
 pub fn render_census_document(target_path: &str, census: &AstCensus) -> String {
     let mut out = String::new();

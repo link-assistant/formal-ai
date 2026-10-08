@@ -505,7 +505,7 @@ fn marker_present(normalized: &str, marker: &str, rules: &[Rule], fallback_scrip
 /// Whether the whitespace-delimited token around byte `at` of `text` is a path
 /// or an identifier: it holds `_`, `/` or `\`, or a `.` before a letter or a
 /// digit (a file extension). Mirrored by `inIdentifier` in
-/// js/agentic/crate/language.mjs.
+/// `js/agentic/crate/language.mjs`.
 fn in_identifier(text: &str, at: usize) -> bool {
     let start = text[..at]
         .char_indices()

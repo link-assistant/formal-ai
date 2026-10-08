@@ -73,7 +73,7 @@ fn main() {
         ),
         (
             // The two self-hosting authorship replays (kept in sync with
-            // tests/unit/ci-cd/issue_1012.rs).
+            // tests/unit/ci-cd/ci_warning_audit.rs).
             "Create file ci-diagnostic-audit-invariant.md containing CI diagnostics are classified, actionable causes are fixed, and uncertain cache backends expose opt-in tracing",
             "docs/case-studies/issue-1012/self-hosting-authorship/diagnostic-audit/session.json",
         ),

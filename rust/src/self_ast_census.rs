@@ -278,7 +278,7 @@ pub struct CensusDocument {
 /// [`ModuleCensus::links_notation`] for the module path and its symbol table,
 /// or `None` when the document names no module.
 ///
-/// Mirrored by `moduleFromDocument` in js/agentic/crate/self_ast_census.mjs,
+/// Mirrored by `moduleFromDocument` in `js/agentic/crate/self_ast_census.mjs`,
 /// whose workspace census is built from the committed documents.
 #[must_use]
 pub fn module_from_document(text: &str) -> Option<CensusDocument> {

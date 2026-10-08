@@ -50,8 +50,9 @@ pub fn import_languages() -> Vec<&'static str> {
     languages_with_status("full")
 }
 
-/// Partial-support project languages, derived from the registry in ledger
-/// order. A concept carries a surface in each of them when its cache record
+/// Partial-support project languages, in the registry's ledger order.
+///
+/// A concept carries a surface in each of them when its cache record
 /// holds a clean one; a missing one leaves the language out of the block
 /// instead of refusing the concept.
 #[must_use]
@@ -105,8 +106,9 @@ pub const GRAMMATICAL_NUMBER: &str = "singular";
 /// The genus every imported meaning is defined by.
 pub const DEFINED_BY: &str = "entity";
 
-/// Maximum lines written per shard file, header included. A block's length
-/// grows with the languages it carries, so shards are filled by lines rather
+/// Maximum lines written per shard file, header included.
+///
+/// A block's length grows with the languages it carries, so shards are filled by lines rather
 /// than by a concept count; the budget is the data-file warning threshold of
 /// `scripts/check-file-size.rs`, under the 1500-line ceiling enforced by
 /// `tests/unit/data_files.rs`.
@@ -436,9 +438,11 @@ fn resolve_surfaces(
     Ok(labels)
 }
 
-/// Extract the project-language surfaces from a trimmed Wikidata entity
-/// document (`{entities: {<qid>: {labels: …}}}`): one per full-support language,
-/// which must resolve, and one per partial-support language that does.
+/// Extract the project-language surfaces from a trimmed Wikidata entity.
+///
+/// The document is `{entities: {<qid>: {labels: …}}}`: one surface per
+/// full-support language, which must resolve, and one per partial-support
+/// language that does.
 pub fn surfaces_from_entity(value: &Value, qid: &str) -> Result<SurfaceMaps, String> {
     let entity = value
         .get("entities")

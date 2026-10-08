@@ -681,7 +681,7 @@ fn classify_verb(token: &str) -> Option<&'static str> {
 
 fn extract_project(prompt: &str) -> Option<String> {
     let lower = prompt.to_lowercase();
-    let marker = handler_policy("installation_conversion", "project_marker")?;
+    let marker = handler_policy("installation_conversion", "project-marker")?;
     let start = lower.find(marker.as_str())? + marker.len();
     let tail = &prompt[start..];
     let stop = tail

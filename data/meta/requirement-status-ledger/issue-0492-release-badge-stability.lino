@@ -27,11 +27,11 @@ requirement_status_ledger_shard
   requirement
     id "R365"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_492.rs"
+    automated_test "rust/tests/unit/docs_requirements/release_badge_stability.rs"
   requirement
     id "R366"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_492.rs"
+    automated_test "rust/tests/unit/docs_requirements/release_badge_stability.rs"
   requirement
     id "R367"
     verdict "implemented"
@@ -43,4 +43,4 @@ requirement_status_ledger_shard
   requirement
     id "R369"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/issue_492.rs"
+    automated_test "rust/tests/unit/docs_requirements/release_badge_stability.rs"

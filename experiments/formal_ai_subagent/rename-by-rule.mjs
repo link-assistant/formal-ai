@@ -9,8 +9,9 @@
 //   rule: the TypeScript twin (`js/x.js` -> `ts/x.ts`, `.mjs` -> `.mts`), the
 //   `rust/embedded/` mirror, the worker line-budget shard of a browser worker
 //   module (`data/meta/worker-line-budget/<stem>.lino`) and the self-AST
-//   census of a Rust source (`data/meta/self-ast/src/<path>.lino`). The map
-//   states each rename once; the companions are not repeated in it.
+//   census of a Rust source (`data/meta/self-ast/src/<path>.lino`) and the
+//   files of a Rust module's own directory (`x.rs` brings `x/child.rs`). The
+//   map states each rename once; the companions are not repeated in it.
 // - It rewrites every reference to an old path across the repository: import
 //   and require paths, `include_str!`/`include_bytes!` and `#[path]`
 //   arguments, workflow paths, seed lists, budgets, documentation links and
@@ -36,7 +37,7 @@
 //   node experiments/formal_ai_subagent/rename-by-rule.mjs --check [--tree <name>]
 //   node experiments/formal_ai_subagent/rename-by-rule.mjs --list [--tree <name>]
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, renameSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmdirSync, statSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, posix, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -361,6 +362,33 @@ export function renameRustModules(text, file, moves, byBasename) {
   return { text: result, count };
 }
 
+/** The seed registry, which names each `data/seed/<stem>.lino` by its stem. */
+const SEED_REGISTRY = 'data/meta/seed-registry.lino';
+
+/**
+ * Rename the `seed <stem>` entries of the seed registry whose seed file moved
+ * within `data/seed/`; `scripts/generate-seed-registry.*` then regenerates the
+ * embedded registries from it.
+ * @param {string} text
+ * @param {string} file
+ * @param {Array<{from: string, to: string}>} moves
+ */
+export function renameSeedRegistryStems(text, file, moves) {
+  if (file !== SEED_REGISTRY) return { text, count: 0 };
+  let count = 0;
+  let result = text;
+  for (const move of moves) {
+    const from = /^data\/seed\/([^/]+)\.lino$/u.exec(move.from);
+    const to = /^data\/seed\/([^/]+)\.lino$/u.exec(move.to);
+    if (!from || !to) continue;
+    result = result.replace(new RegExp(`^(\\s*seed )${escapeRegExp(from[1])}$`, 'gmu'), (_whole, before) => {
+      count += 1;
+      return `${before}${to[1]}`;
+    });
+  }
+  return { text: result, count };
+}
+
 /** Sort each run of one-entry-per-line quoted list items, as their generators do. */
 export function resortQuotedLists(text) {
   const lines = text.split('\n');
@@ -408,9 +436,42 @@ function selectedRenames(map, tree) {
   return tree ? map.renames.filter((rename) => rename.tree === tree) : map.renames;
 }
 
+/** Every file below a directory of the repository, as repository paths. */
+function filesBelow(directory) {
+  const full = join(ROOT, directory);
+  if (!existsSync(full) || !statSync(full).isDirectory()) return [];
+  return readdirSync(full, { withFileTypes: true }).flatMap((entry) => {
+    const path = `${directory}/${entry.name}`;
+    return entry.isDirectory() ? filesBelow(path) : [path];
+  });
+}
+
+/**
+ * The files of a Rust module's own directory, which follow the module: the
+ * child modules of `x.rs` live in `x/`, so renaming `x.rs` to `y.rs` moves
+ * `x/child.rs` to `y/child.rs`.
+ * @param {{from: string, to: string}} move
+ */
+export function moduleDirectoryMoves(move, below = filesBelow) {
+  const name = basename(move.from, '.rs');
+  if (!move.from.endsWith('.rs') || ['mod', 'main', 'lib'].includes(name)) return [];
+  const fromDirectory = move.from.slice(0, -'.rs'.length);
+  const toDirectory = move.to.slice(0, -'.rs'.length);
+  const pending = below(fromDirectory).map((path) => ({ from: path, to: `${toDirectory}${path.slice(fromDirectory.length)}` }));
+  const done = below(toDirectory).map((path) => ({ from: `${fromDirectory}${path.slice(toDirectory.length)}`, to: path }));
+  const seen = new Set();
+  return [...pending, ...done]
+    .filter((child) => !seen.has(child.from) && seen.add(child.from))
+    .map((child) => ({ ...child, companion: 'module directory' }));
+}
+
 function allMoves(renames) {
   const exists = (path) => existsSync(join(ROOT, path));
-  return renames.flatMap((rename) => companionMoves(rename, exists).map((move) => ({ ...move, rename })));
+  return renames.flatMap((rename) => {
+    const moves = companionMoves(rename, exists);
+    const children = moves.flatMap((move) => moduleDirectoryMoves(move));
+    return [...moves, ...children].map((move) => ({ ...move, rename }));
+  });
 }
 
 function moveFile(move, options) {
@@ -422,6 +483,10 @@ function moveFile(move, options) {
   mkdirSync(dirname(to), { recursive: true });
   if (options.gitMove) execFileSync('git', ['mv', move.from, move.to], { cwd: ROOT });
   else renameSync(from, to);
+  // A module directory whose last file moved out goes with it.
+  for (let directory = dirname(from); directory !== ROOT && readdirSync(directory).length === 0; directory = dirname(directory)) {
+    rmdirSync(directory);
+  }
   return 'moved';
 }
 
@@ -434,6 +499,7 @@ function apply(map, moves, options) {
   const files = repositoryFiles();
   const byBasename = indexByBasename([...files, ...moves.map((move) => move.from)]);
   let rewritten = 0;
+  const formatModuleOrder = [];
   for (const file of files) {
     if (excluded(file, map)) continue;
     const text = readText(file);
@@ -444,12 +510,24 @@ function apply(map, moves, options) {
       next = next.slice(0, reference.start) + renamedToken(reference.token, reference.move.from, reference.move.to) + next.slice(reference.end);
     }
     const modules = renameRustModules(next, file, moves, byBasename);
-    next = modules.text;
+    next = renameSeedRegistryStems(modules.text, file, moves).text;
     if (map.resort.includes(file)) next = resortQuotedLists(next);
     if (next !== text) {
+      if (modules.count && file.endsWith('.rs') && !options.dryRun) formatModuleOrder.push(file);
       rewritten += 1;
       console.log(`  rewrote       ${file} (${references.length} path${references.length === 1 ? '' : 's'}${modules.count ? `, ${modules.count} module name${modules.count === 1 ? '' : 's'}` : ''})`);
       if (!options.dryRun) writeFileSync(join(ROOT, file), next);
+    }
+  }
+  // rustfmt keeps each run of `mod` declarations sorted, so a renamed module
+  // moves to its sorted place: format every Rust file whose module names
+  // changed (they were rustfmt-clean before; CI checks they still are).
+  for (const file of formatModuleOrder) {
+    try {
+      execFileSync('rustfmt', ['--edition', '2024', file], { cwd: ROOT, stdio: 'ignore' });
+      console.log(`  formatted     ${file} (mod order)`);
+    } catch {
+      console.log(`  ::warning::rustfmt could not format ${file}; sort its mod lines by hand`);
     }
   }
   console.log(`\n${moves.length} move(s), ${rewritten} file(s) rewritten${options.dryRun ? ' (dry run)' : ''}.`);
@@ -472,6 +550,9 @@ function check(map, moves) {
     }
     for (const reference of findModuleReferences(text, file, moves, byBasename)) {
       failures.push(`${file}:${lineOf(text, reference.start)} still names the module ${reference.from}:: (now ${reference.to}::)`);
+    }
+    if (renameSeedRegistryStems(text, file, moves).count > 0) {
+      failures.push(`${file} still names a renamed seed by its old stem`);
     }
   }
   if (failures.length > 0) {

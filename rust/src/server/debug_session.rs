@@ -328,8 +328,9 @@ impl DebugSession {
             return None;
         }
         let turn_id = state.start(&self.id, std::slice::from_ref(first), true);
-        self.hold(state, &turn_id, alive);
-        Some(turn_id)
+        // The hold is the tail expression, so the guard's last use ends the
+        // scope (`gate` likewise ends on its hold).
+        Some(turn_id).inspect(|turn_id| self.hold(state, turn_id, alive))
     }
 
     /// Continue a turn [`Self::begin`] suspended, now that the solver has

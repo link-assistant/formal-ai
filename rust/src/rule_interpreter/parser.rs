@@ -19,7 +19,7 @@ impl Node {
     pub(super) fn error(&self, reason: &str) -> String {
         let line = self.line;
         let name = &self.name;
-        format!("handler_rules:{line}:{reason}:{name}")
+        format!("handler-rules:{line}:{reason}:{name}")
     }
 }
 
@@ -94,7 +94,7 @@ fn tokenize(line: &str) -> Vec<String> {
 pub(super) fn policy_value(text: &str, handler: &str, key: &str) -> Option<String> {
     parse_tree(text)
         .iter()
-        .find(|node| node.name == "handler_rules")?
+        .find(|node| node.name == "handler-rules")?
         .children
         .iter()
         .find(|node| {
@@ -113,7 +113,7 @@ pub(super) fn policy_value(text: &str, handler: &str, key: &str) -> Option<Strin
 pub(super) fn tables(text: &str) -> BTreeMap<String, Table> {
     let mut tables = BTreeMap::new();
     let roots = parse_tree(text);
-    let Some(root) = roots.iter().find(|node| node.name == "handler_rules") else {
+    let Some(root) = roots.iter().find(|node| node.name == "handler-rules") else {
         return tables;
     };
     for node in root.children.iter().filter(|node| node.name == "table") {
@@ -188,7 +188,7 @@ pub(super) fn parse_rule(node: &Node) -> Result<Rule, String> {
                     texts,
                 });
             }
-            "respond_unknown" => response = Some(Response::Unknown),
+            "respond-unknown" => response = Some(Response::Unknown),
             "intent" => intent = Some(child.first_arg()?),
             "link" => link = Some(child.first_arg()?),
             "confidence" => {
@@ -235,17 +235,17 @@ fn parse_condition(node: &Node) -> Result<Condition, String> {
             };
             Condition::Role(node.first_arg()?, mode, subject)
         }
-        "role_lead" => Condition::RoleLead(node.first_arg()?, subject),
-        "role_prefix" => Condition::RolePrefix(node.first_arg()?, subject),
-        "role_padded" => Condition::RolePadded(node.first_arg()?, subject),
+        "role-lead" => Condition::RoleLead(node.first_arg()?, subject),
+        "role-prefix" => Condition::RolePrefix(node.first_arg()?, subject),
+        "role-padded" => Condition::RolePadded(node.first_arg()?, subject),
         "word" => Condition::Word(node.first_arg()?, subject),
         "substring" => Condition::Substring(node.first_arg()?, subject),
         "prefix" => Condition::Prefix(node.first_arg()?, subject),
         "cue_set" => Condition::CueSet(node.first_arg()?, subject),
-        "only_characters" => Condition::OnlyCharacters(node.first_arg()?),
-        "unbalanced_parentheses" => Condition::UnbalancedParentheses,
-        "route_exact" => Condition::RouteExact(node.first_arg()?),
-        "history_role" => Condition::HistoryRole(node.first_arg()?),
+        "only-characters" => Condition::OnlyCharacters(node.first_arg()?),
+        "unbalanced-parentheses" => Condition::UnbalancedParentheses,
+        "route-exact" => Condition::RouteExact(node.first_arg()?),
+        "history-role" => Condition::HistoryRole(node.first_arg()?),
         "prior_turn" => Condition::PriorTurn(node.first_arg()?),
         "evidence" => Condition::Evidence(node.first_arg()?),
         "shape" => Condition::Shape(parse_shape(node, &node.first_arg()?)?, subject),
@@ -271,7 +271,7 @@ fn split_subject(args: &[String]) -> (Vec<String>, Option<&str>) {
 fn parse_shape(node: &Node, name: &str) -> Result<Shape, String> {
     Ok(match name {
         "digit" => Shape::Digit,
-        "time_separator" => Shape::TimeSeparator,
+        "time-separator" => Shape::TimeSeparator,
         "url" => Shape::Url,
         "path" => Shape::Path,
         "quoted" => Shape::Quoted,
@@ -300,7 +300,7 @@ fn parse_value(node: &Node) -> Result<(String, ValueSource), String> {
         .ok_or_else(|| node.error("value_without_source"))?;
     let source = match kind.as_str() {
         "backticks" => ValueSource::Backticks,
-        "trimmed_prompt" => ValueSource::TrimmedPrompt,
+        "trimmed-prompt" => ValueSource::TrimmedPrompt,
         "quoted" => ValueSource::Quoted,
         "network_snapshot" => ValueSource::NetworkSnapshot,
         "literal" => ValueSource::Literal(

@@ -90,7 +90,7 @@ function claimOperandWithout(text, surfaces) {
 function claimOperandDocumentedMethod(prompt) {
   const page = handlerRulesPolicy("docs_method_explanation", "page");
   const docsUrl = handlerRulesPolicy("docs_method_explanation", "docs_url");
-  const alias = String(handlerRulesPolicy("docs_method_explanation", "class_alias") || "").toLowerCase();
+  const alias = String(handlerRulesPolicy("docs_method_explanation", "class-alias") || "").toLowerCase();
   if (!page || !docsUrl) return [];
   const segments = page.split(".");
   const parts = segments.map((segment) => segment.toLowerCase());

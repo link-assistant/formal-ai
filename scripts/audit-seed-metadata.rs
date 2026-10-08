@@ -1,7 +1,11 @@
 #!/usr/bin/env rust-script
 //! Audits problem-solving metadata on seed meaning records (issue #918).
 //!
-//! Missing fields are themselves reviewed data, sharded below `data/meta/`.
+//! Missing fields are themselves reviewed data: one file per seed source,
+//! `data/meta/seed-metadata-gaps/<seed file>` (R1188-U5), so a file says whose
+//! gaps it holds and a branch that edits one seed file changes one gap file.
+//! A gap file states its source once, and the missing fields most of its gaps
+//! share once as the file default (R1188-U7); a gap states only what differs.
 //! Coding-path concepts are the regression floor and may not have gaps.
 //!
 //! Usage:
@@ -12,9 +16,6 @@
 //! ```cargo
 //! [package]
 //! edition = "2024"
-//!
-//! [dependencies]
-//! walkdir = "2"
 //! ```
 
 #![cfg_attr(test, allow(dead_code, unused_imports))]
@@ -24,12 +25,11 @@ use std::fs;
 use std::path::{Path, PathBuf};
 #[cfg(not(test))]
 use std::process::exit;
-use walkdir::WalkDir;
 
 const SCHEMA_PATH: &str = "data/meta/seed-metadata-schema.lino";
 const SEED_ROOT: &str = "data/seed";
-const GAP_PREFIX: &str = "data/meta/seed-metadata-gaps-";
-const SHARD_COUNT: usize = 16;
+const GAP_DIRECTORY: &str = "data/meta/seed-metadata-gaps";
+const AUDIT_SCOPE: &str = "problem-solving concept records under data/seed meanings roots";
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 struct MeaningRecord {
@@ -148,20 +148,34 @@ fn parse_meanings(source: &str, text: &str) -> Result<Vec<MeaningRecord>, String
     Ok(records)
 }
 
+/// Every `.lino` file below `directory`, in no particular order.
+fn lino_files(directory: &Path, files: &mut Vec<PathBuf>) -> Result<(), String> {
+    let entries = fs::read_dir(directory)
+        .map_err(|error| format!("walk {}: {error}", directory.display()))?;
+    for entry in entries {
+        let path = entry
+            .map_err(|error| format!("walk {}: {error}", directory.display()))?
+            .path();
+        if path.is_dir() {
+            lino_files(&path, files)?;
+        } else if path.extension().is_some_and(|value| value == "lino") {
+            files.push(path);
+        }
+    }
+    Ok(())
+}
+
 fn collect_records(root: &Path) -> Result<Vec<MeaningRecord>, String> {
     let mut records = Vec::new();
-    for entry in WalkDir::new(root.join(SEED_ROOT)) {
-        let entry = entry.map_err(|error| format!("walk {SEED_ROOT}: {error}"))?;
-        let path = entry.path();
-        if !entry.file_type().is_file() || path.extension().is_none_or(|value| value != "lino") {
-            continue;
-        }
+    let mut paths = Vec::new();
+    lino_files(&root.join(SEED_ROOT), &mut paths)?;
+    for path in paths {
         let source = path
             .strip_prefix(root)
             .map_err(|error| format!("relative seed path: {error}"))?
             .to_string_lossy()
             .replace('\\', "/");
-        let text = fs::read_to_string(path).map_err(|error| format!("read {source}: {error}"))?;
+        let text = fs::read_to_string(&path).map_err(|error| format!("read {source}: {error}"))?;
         records.extend(parse_meanings(&source, &text)?);
     }
     records.sort();
@@ -224,42 +238,63 @@ fn stable_hash(gap: &Gap) -> u64 {
     hash
 }
 
-fn stable_shard(gap: &Gap) -> usize {
-    stable_hash(gap) as usize % SHARD_COUNT
-}
-
 fn quoted(value: &str) -> String {
     format!("\"{}\"", value.replace('\\', "\\\\").replace('"', "\\\""))
 }
 
-fn render_shards(gaps: &[Gap]) -> BTreeMap<String, String> {
-    let mut sharded = vec![Vec::new(); SHARD_COUNT];
-    for gap in gaps {
-        sharded[stable_shard(gap)].push(gap);
+/// The value more than half of `values` share, or the empty text when none
+/// does.
+fn shared_value(values: &[String]) -> String {
+    let mut counts: BTreeMap<&str, usize> = BTreeMap::new();
+    for value in values {
+        *counts.entry(value.as_str()).or_default() += 1;
     }
-
-    sharded
+    counts
         .into_iter()
-        .enumerate()
-        .map(|(index, gaps)| {
+        .find(|(_, count)| count * 2 > values.len())
+        .map_or_else(String::new, |(value, _)| value.to_owned())
+}
+
+/// The gap file of a seed source: the source's path below `data/seed`, below
+/// the gap directory.
+fn gap_file(source: &str) -> String {
+    let relative = source
+        .strip_prefix(SEED_ROOT)
+        .map_or(source, |rest| rest.trim_start_matches('/'));
+    format!("{GAP_DIRECTORY}/{relative}")
+}
+
+fn render_gap_files(gaps: &[Gap]) -> BTreeMap<String, String> {
+    let mut by_source: BTreeMap<&str, Vec<&Gap>> = BTreeMap::new();
+    for gap in gaps {
+        by_source.entry(&gap.source).or_default().push(gap);
+    }
+    let mut ids = BTreeSet::new();
+    by_source
+        .into_iter()
+        .map(|(source, gaps)| {
+            let missing = gaps
+                .iter()
+                .map(|gap| gap.missing.join(","))
+                .collect::<Vec<_>>();
+            let shared = shared_value(&missing);
             let mut output = format!(
-                "seed_metadata_gaps\n  issue 918\n  shard {index}\n  shard_count {SHARD_COUNT}\n  audit_scope \"problem-solving concept records under data/seed meanings roots\"\n"
+                "seed-metadata-gaps\n  issue 918\n  source {}\n  audit-scope {}\n",
+                quoted(source),
+                quoted(AUDIT_SCOPE)
             );
-            let mut ids = BTreeSet::new();
-            for gap in gaps {
-                let id = format!("seed_metadata_gap_{:016x}", stable_hash(gap));
-                assert!(ids.insert(id.clone()), "stable gap id collision: {id}");
-                output.push_str(&format!(
-                    "  gap {id}\n    source {}\n    record {}\n    missing {}\n",
-                    quoted(&gap.source),
-                    quoted(&gap.record),
-                    quoted(&gap.missing.join(","))
-                ));
+            if !shared.is_empty() {
+                output.push_str(&format!("  missing {}\n", quoted(&shared)));
             }
-            (
-                format!("{GAP_PREFIX}{index:02}.lino"),
-                output,
-            )
+            for (gap, missing) in gaps.iter().zip(&missing) {
+                let id = format!("seed-metadata-gap-{:016x}", stable_hash(gap));
+                assert!(ids.insert(id.clone()), "stable gap id collision: {id}");
+                output.push_str(&format!("  gap {id}\n    record {}\n", quoted(&gap.record)));
+                if *missing != shared {
+                    output.push_str(&format!("    missing {}\n", quoted(missing)));
+                }
+            }
+            (gap_file(source), output)
         })
         .collect()
 }
@@ -269,11 +304,31 @@ fn check_or_write(
     expected: &BTreeMap<String, String>,
     write: bool,
 ) -> Result<(), String> {
+    let mut present = Vec::new();
+    if root.join(GAP_DIRECTORY).is_dir() {
+        lino_files(&root.join(GAP_DIRECTORY), &mut present)?;
+    }
+    let present = present
+        .iter()
+        .map(|path| {
+            path.strip_prefix(root)
+                .map(|relative| relative.to_string_lossy().replace('\\', "/"))
+                .map_err(|error| format!("relative gap path: {error}"))
+        })
+        .collect::<Result<BTreeSet<_>, _>>()?;
     if write {
+        for path in present.iter().filter(|path| !expected.contains_key(*path)) {
+            fs::remove_file(root.join(path)).map_err(|error| format!("remove {path}: {error}"))?;
+        }
         for (path, content) in expected {
+            if let Some(parent) = root.join(path).parent() {
+                fs::create_dir_all(parent)
+                    .map_err(|error| format!("create {}: {error}", parent.display()))?;
+            }
             fs::write(root.join(path), content)
                 .map_err(|error| format!("write {path}: {error}"))?;
         }
+        return Ok(());
     }
 
     let mut errors = Vec::new();
@@ -284,22 +339,10 @@ fn check_or_write(
             Err(error) => errors.push(format!("missing {path}: {error}; run with --write")),
         }
     }
-
-    let expected_paths = expected.keys().map(String::as_str).collect::<BTreeSet<_>>();
-    for entry in WalkDir::new(root.join("data/meta")).max_depth(1) {
-        let entry = entry.map_err(|error| format!("walk data/meta: {error}"))?;
-        let relative = entry
-            .path()
-            .strip_prefix(root)
-            .map_err(|error| format!("relative gap path: {error}"))?
-            .to_string_lossy()
-            .replace('\\', "/");
-        if relative.starts_with(GAP_PREFIX)
-            && relative.ends_with(".lino")
-            && !expected_paths.contains(relative.as_str())
-        {
-            errors.push(format!("unexpected stale gap shard {relative}"));
-        }
+    for path in present.iter().filter(|path| !expected.contains_key(*path)) {
+        errors.push(format!(
+            "unexpected stale gap file {path}; run with --write"
+        ));
     }
 
     if errors.is_empty() {
@@ -330,8 +373,8 @@ fn main() {
         let schema = parse_schema(&schema_text)?;
         let records = collect_records(&root)?;
         let gaps = find_gaps(&records, &schema)?;
-        let shards = render_shards(&gaps);
-        check_or_write(&root, &shards, write)?;
+        let files = render_gap_files(&gaps);
+        check_or_write(&root, &files, write)?;
         Ok((records.len(), gaps.len()))
     })();
 
@@ -416,9 +459,11 @@ mod tests {
             gaps[0].missing,
             ["precondition", "effect", "unit", "example"]
         );
-        assert!(render_shards(&gaps)
-            .values()
-            .any(|shard| shard.contains("record \"domain_term\"")));
+        assert!(
+            render_gap_files(&gaps)
+                .values()
+                .any(|file| file.contains("record \"domain_term\""))
+        );
     }
 
     #[test]
@@ -428,12 +473,36 @@ mod tests {
             record: "lexical-sense:".to_owned(),
             missing: vec!["effect".to_owned()],
         };
-        let rendered = render_shards(&[gap]);
-        let shard = rendered
+        let rendered = render_gap_files(&[gap]);
+        let file = rendered
             .values()
             .find(|content| content.contains("lexical-sense:"))
-            .expect("gap shard");
-        assert!(shard.contains("gap seed_metadata_gap_"));
-        assert!(shard.contains("record \"lexical-sense:\""));
+            .expect("gap file");
+        assert!(file.contains("gap seed-metadata-gap-"));
+        assert!(file.contains("record \"lexical-sense:\""));
+    }
+
+    #[test]
+    fn a_gap_file_states_its_source_and_shared_missing_fields_once() {
+        let gap = |record: &str, missing: &[&str]| Gap {
+            source: "data/seed/domain.lino".to_owned(),
+            record: record.to_owned(),
+            missing: missing.iter().map(|field| (*field).to_owned()).collect(),
+        };
+        let rendered = render_gap_files(&[
+            gap("alpha", &["effect", "unit"]),
+            gap("beta", &["effect", "unit"]),
+            gap("gamma", &["example"]),
+        ]);
+        let file = &rendered["data/meta/seed-metadata-gaps/domain.lino"];
+        assert!(
+            file.starts_with(
+                "seed-metadata-gaps\n  issue 918\n  source \"data/seed/domain.lino\"\n"
+            )
+        );
+        assert_eq!(file.matches("source ").count(), 1);
+        assert!(file.contains("  missing \"effect,unit\"\n"));
+        assert!(file.contains("    record \"alpha\"\n  gap "));
+        assert!(file.contains("    record \"gamma\"\n    missing \"example\"\n"));
     }
 }

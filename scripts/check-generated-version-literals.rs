@@ -13,8 +13,9 @@
 //! `latest_tag "…"` fields are not `version:` keys, so the gate reads them
 //! as data rather than as pins. Captured external evidence under
 //! `data/cache/` and `data/source-cache/` (the git-ignored store fetched
-//! pages are written to at run time) is not generated code and is not
-//! scanned.
+//! pages are written to at run time) and the issue bodies captured verbatim
+//! under `data/benchmarks/issue-requirements/` (PR #1188 R1188-U20) is not
+//! generated code and is not scanned.
 //!
 //! This gate is red on a tree whose templates still carry the literals; the
 //! same change that rewrites them to `{placeholders}` (R6) turns it green.
@@ -64,7 +65,7 @@ fn main() {
         );
     }
     println!(
-        "generated-version literals: {} finding(s) under data/ (data/cache, data/source-cache excluded)",
+        "generated-version literals: {} finding(s) under data/ (captured evidence excluded)",
         findings.len()
     );
     if findings.is_empty() {
@@ -82,8 +83,13 @@ fn usage(message: &str) -> ! {
     std::process::exit(2);
 }
 
-/// Every memorized pin under `data/`, captured evidence (`data/cache/`,
-/// `data/source-cache/`) excluded.
+/// Directories under `data/` that hold captured evidence, not generated code.
+///
+/// A bare name matches a directory of that name at any depth; a path matches
+/// that directory under `data/`.
+const CAPTURED_EVIDENCE: [&str; 3] = ["cache", "source-cache", "benchmarks/issue-requirements"];
+
+/// Every memorized pin under `data/`, captured evidence excluded.
 pub fn scan_data(data: &Path) -> Vec<Finding> {
     let mut findings = Vec::new();
     walk(data, data, &mut findings);
@@ -97,10 +103,7 @@ fn walk(root: &Path, dir: &Path, findings: &mut Vec<Finding>) {
     for entry in entries.flatten() {
         let path = entry.path();
         if path.is_dir() {
-            if path
-                .file_name()
-                .is_some_and(|name| name == "cache" || name == "source-cache")
-            {
+            if is_captured_evidence(root, &path) {
                 continue;
             }
             walk(root, &path, findings);
@@ -108,6 +111,18 @@ fn walk(root: &Path, dir: &Path, findings: &mut Vec<Finding>) {
             scan_file(root, &path, findings);
         }
     }
+}
+
+/// Whether the directory `path` under the `data/` root holds captured evidence.
+fn is_captured_evidence(root: &Path, path: &Path) -> bool {
+    let relative = path.strip_prefix(root).unwrap_or(path);
+    CAPTURED_EVIDENCE.iter().any(|captured| {
+        if captured.contains('/') {
+            relative == Path::new(captured)
+        } else {
+            path.file_name().is_some_and(|name| name == *captured)
+        }
+    })
 }
 
 fn scan_file(root: &Path, path: &Path, findings: &mut Vec<Finding>) {

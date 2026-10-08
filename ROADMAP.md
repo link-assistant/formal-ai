@@ -217,7 +217,7 @@ sub-gaps are now **closed and merged**:
    answers as the Rust core. Parity is pinned by the shared fixture
    `data/parity/cross-runtime-synthesis.json`, the Rust test
    `shared_cross_runtime_synthesis_fixture_matches_rust_solver`, and the browser
-   e2e `rust/tests/e2e/tests/issue-327.spec.js`, all of which enforce the
+   e2e `rust/tests/e2e/tests/cross-runtime-synthesis-parity.spec.js`, all of which enforce the
    anti-memorization rule (forbidden literal answers must not appear).
 
 With E1-E34 all closed and merged, **no vision-planning epic remains open** for
@@ -284,7 +284,7 @@ plural and what part of speech it is; every surface denotes its meaning
 (bidirectional word ⇄ meaning); the previously missing plural `томаты` is added
 so both Russian synonyms are symmetric; and the grammatical values are grounded
 in Wikidata (`Q104083`/`Q110786`/`Q146786`) and lexicalised in en/ru/hi/zh. This
-is captured by `REQUIREMENTS.md` rows R370–R377 and `rust/tests/unit/issue_538.rs`.
+is captured by `REQUIREMENTS.md` rows R370–R377 and `rust/tests/unit/word_surface_grammar.rs`.
 
 The issue also states a large aspirational programme. Rather than half-build it,
 this PR decomposes it into tracked follow-ups (`REQUIREMENTS.md` R378–R386,
@@ -585,7 +585,7 @@ one branch, and this section records what each push delivered.
 | Item | Status | Evidence |
 | --- | --- | --- |
 | D3.1-D3.4 metric version 3: model attribution, behaviour-only paths, pull-request author, history restated | Delivered | `scripts/self-hosting-attribution.rs`, `scripts/self-hosting-replay.rs`, `data/meta/self-hosting-ledger.lino` header, `rust/tests/unit/specification/self_hosting_metric.rs` |
-| D3.5 floor off the release path, red-until-true status | Delivered | `.github/workflows/self-development-status.yml`; `release.yml` cuts on CI correctness; `rust/tests/unit/ci-cd/issue_1014.rs` |
+| D3.5 floor off the release path, red-until-true status | Delivered | `.github/workflows/self-development-status.yml`; `release.yml` cuts on CI correctness; `rust/tests/unit/ci-cd/ci_diagnostic_audit.rs` |
 | D1.1-D1.3 seed network at startup, link-query routing, rule interpreter (D1.4's privileged-path allowlist and Rust-line shrink ratchet are withdrawn: Rust is an emission target, not the system) | Delivered: the seed and routing meta documents load as one links network (`rust/src/seed_links.rs`) mirrored into a native link-cli store at server start; precedence, cues and intent routes are link queries; eleven handlers are seed rules (delivery-time ratchet: pending 51 to 40, handler files 43 to 42, literal predicates 529 to 504; plan 09 later corrected the undercount, and `data/meta/debt-ratchet.lino` now records pending 55, handler files 46, literal predicates 543) | `data/meta/debt-ratchet.lino`, `scripts/check-debt-ratchet.rs`, gate `check_debt_ratchet` |
 | D4 compile-and-test ladder | Delivered: per-leaf `cargo check` and `cargo test`, depth-4 diff merge, requirement-shaped depth 0 to 3, pull-request and weekly runs, deepest-level ratchet (`data/meta/ladder-ratchet.lino`) | `experiments/issue_1028_agent_cli_ladder/{run.sh,verify-node.sh,leaves.tsv,rules/}` |
 | D5.4 upstream numbers beside every curated citation | Delivered: every curated ratio in this file, `VISION.md`, `ARCHITECTURE.md`, `README.md`, and `docs/benchmarks.md` carries the upstream slice numbers beside it, and `rust/tests/unit/docs_benchmarks.rs` fails a curated ratio published without its upstream comparison | this file, `VISION.md`, `ARCHITECTURE.md`, `docs/benchmarks.md`, `rust/tests/unit/docs_benchmarks.rs` |

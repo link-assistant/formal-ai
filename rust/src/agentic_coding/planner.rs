@@ -966,22 +966,21 @@ pub(super) fn fetch_arguments(url: &str) -> String {
 /// The seeded answer declining a request whose quotes do not pair (PR #1188
 /// G71) or whose edit names several files (G91).
 fn request_fault_answer(task: &str) -> Option<AgenticPlan> {
-    let answer = match crate::normal_markov::quote_fault(task) {
-        Some(fault) => code_task::render_seeded_change(
+    let answer = if let Some(fault) = crate::normal_markov::quote_fault(task) {
+        code_task::render_seeded_change(
             &format!("request_quote_{}", fault.kind),
             task,
             "",
             &[("{fragment}", &fault.fragment)],
-        ),
-        None => {
-            let files = super::replace_list::several_edit_targets(task)?.join("`, `");
-            code_task::render_seeded_change(
-                "request_several_edit_targets",
-                task,
-                "",
-                &[("{files}", &files)],
-            )
-        }
+        )
+    } else {
+        let targets = super::replace_list::several_edit_targets(task)?.join("`, `");
+        code_task::render_seeded_change(
+            "request_several_edit_targets",
+            task,
+            "",
+            &[("{files}", &targets)],
+        )
     };
     answer.map(AgenticPlan::Final)
 }

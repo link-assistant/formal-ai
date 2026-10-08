@@ -115,7 +115,7 @@ fn the_family_corpus_is_three_hundred_held_out_cases_in_five_languages() {
     assert_eq!(header[1], "en|ru|hi|zh|es");
     assert_eq!(
         header[2],
-        "retrieval_method|procedure_interpreter|structural_operator|dialogue_state_query|rule_interpreter"
+        "retrieval_method|procedure-interpreter|structural-operator|dialogue-state-query|rule_interpreter"
     );
 
     let cases = family_cases();

@@ -210,7 +210,7 @@ pub fn try_capabilities(
     }
     if more_capabilities {
         if prior_history_mentions_web_search(log) {
-            log.append("capabilities:history", "prior_web_search".to_owned());
+            log.append("capabilities:history", "prior-web-search".to_owned());
         }
         let body = localized_seed_response("capabilities_more", language.slug());
         return Some(finalize_simple(

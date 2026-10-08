@@ -1,6 +1,6 @@
 //! The five-language parity census library, compiled into the unit suite.
 //!
-//! Issue #1081 (tests/unit/ci-cd/issue_1081.rs) counts a script's inline
+//! Issue #1081 (tests/unit/ci-cd/job_budget_fit.rs) counts a script's inline
 //! suite as covered when it is compiled into the test crate or run by a gate
 //! with `--test`. `scripts/language-parity-lib.rs` is a library script -- it
 //! has no `fn main`, so `rust-script --test` cannot execute it directly, and

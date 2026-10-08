@@ -1,0 +1,19 @@
+seed-metadata-gaps
+  issue 918
+  source "data/seed/meanings-ontology.lino"
+  audit-scope "problem-solving concept records under data/seed meanings roots"
+  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-8998746859d68d87
+    record "action"
+  gap seed-metadata-gap-1873873542414b7b
+    record "concept"
+  gap seed-metadata-gap-6c7484605cad7842
+    record "entity"
+  gap seed-metadata-gap-2da82e6f98124b61
+    record "link"
+  gap seed-metadata-gap-0c3db9753814f100
+    record "property"
+  gap seed-metadata-gap-6ae11702c1abbdd9
+    record "relation"
+  gap seed-metadata-gap-582abc2e205e4115
+    record "type"

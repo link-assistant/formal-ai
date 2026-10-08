@@ -1,7 +1,7 @@
 //! The conversation a solve continues.
 //!
 //! Split from `rust/src/solver.rs` to keep it below the 900-line warning band
-//! of `tests/unit/ci-cd/issue_1012.rs`. The solver records every earlier turn
+//! of `tests/unit/ci-cd/ci_warning_audit.rs`. The solver records every earlier turn
 //! as a `prior_turn:<role>` event before it processes the current impulse;
 //! these are the turns and their roles.
 

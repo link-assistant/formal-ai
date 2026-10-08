@@ -3,7 +3,7 @@
 // request's operand (`print_text` in data/seed/hello-world-programs.lino): the
 // program is the documented hello_world print procedure with the text bound
 // into its output literal, never a stored program. And a handler the
-// precedence seed marks `before_promotion` is asked in solve()'s fixed early
+// precedence seed marks `before-promotion` is asked in solve()'s fixed early
 // phase, which the native dispatcher now mirrors (issue #1175 p133). Native
 // pins: rust/tests/unit/issue_1173_route3_probes.rs.
 
@@ -89,9 +89,9 @@ test("R1173-3: a script request stays the minimal-script lane, and no program is
   assert.ok(!/template_print_text_/u.test(seed), "the operand task stores no per-language program");
 });
 
-test("issue #1175 p133: every before_promotion row is asked in solve()'s early phase, before the promoted walk", async () => {
+test("issue #1175 p133: every before-promotion row is asked in solve()'s early phase, before the promoted walk", async () => {
   const precedence = readFileSync(path.join(REPO_ROOT, "data/seed/handler-precedence.lino"), "utf8");
-  const early = [...precedence.matchAll(/^ {2}handler (\S+)\n(?: {4}.*\n)*? {4}before_promotion true$/gmu)].map((match) => match[1]);
+  const early = [...precedence.matchAll(/^ {2}handler (\S+)\n(?: {4}.*\n)*? {4}before[-_]promotion true$/gmu)].map((match) => match[1]);
   assert.deepEqual(early, ["github_repository_traffic"]);
   const claims = readFileSync(path.join(REPO_ROOT, "data/seed/capability-routing.lino"), "utf8");
   const solveSource = readFileSync(path.join(REPO_ROOT, "js/worker/formal_ai_worker_solve.js"), "utf8");

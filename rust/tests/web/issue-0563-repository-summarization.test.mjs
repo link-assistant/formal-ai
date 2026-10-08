@@ -13,7 +13,7 @@
 // * rust/tests/unit/issue_844_statement_merge.rs: the identifier rung
 //   (`the_identifier_rung_*`), which `label_for_mode` and
 //   `SummarizationMode::Identifier` stand on;
-// * rust/tests/unit/issue_858.rs: `summarize_dialog_plain`;
+// * rust/tests/unit/claude_code_away_recap.rs: `summarize_dialog_plain`;
 // * rust/examples/issue_563_folder_summary.rs: the example tree.
 //
 // Oracles. The sampled-file test reads the committed files the Rust test

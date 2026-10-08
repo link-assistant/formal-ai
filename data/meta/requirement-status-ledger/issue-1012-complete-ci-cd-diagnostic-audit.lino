@@ -3,7 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-1012-complete-ci-cd-diagnostic-audit.md"
   issue "1012"
   delivered "none recorded"
-  automated_test "rust/tests/unit/ci-cd/issue_1012.rs"
+  automated_test "rust/tests/unit/ci-cd/ci_warning_audit.rs"
   manual "not yet confirmed"
   requirement
     id "R1012-1"

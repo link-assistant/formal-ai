@@ -176,7 +176,7 @@ fn text_sample(prompt: &str) -> Option<String> {
         let sample = sample
             .split_whitespace()
             .take(
-                originality_policy("sample_query_words")
+                originality_policy("sample-query-words")
                     .parse()
                     .unwrap_or(0),
             )
@@ -343,17 +343,17 @@ fn log_statement_verification(prompt: &str, log: &mut EventLog) -> Vec<MarketPri
 fn document_originality_query(prompt: &str, attachments: &[String]) -> String {
     if let Some(sample) = text_sample(prompt) {
         return fill_template_once(
-            &originality_policy("sample_query"),
+            &originality_policy("sample-query"),
             &[("sample", sample.as_str())],
         );
     }
     if let Some(name) = attachments.first() {
         return fill_template_once(
-            &originality_policy("attachment_query"),
+            &originality_policy("attachment-query"),
             &[("name", name.as_str())],
         );
     }
-    originality_policy("default_query")
+    originality_policy("default-query")
 }
 
 fn document_originality_body(

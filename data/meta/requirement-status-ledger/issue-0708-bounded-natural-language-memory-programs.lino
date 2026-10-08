@@ -29,7 +29,7 @@ requirement_status_ledger_shard
   requirement
     id "R708-8"
     verdict "implemented"
-    automated_test "rust/tests/e2e/tests/issue-708.spec.js"
+    automated_test "rust/tests/e2e/tests/browser-memory-programs.spec.js"
   requirement
     id "R708-9"
     verdict "implemented"

@@ -218,7 +218,7 @@ fn catalog_text(name: &str, language: &str, values: &[(&str, &str)]) -> String {
     seed::render_localized_once(&format!("behavior_rule_{name}"), language, values)
 }
 
-fn behavior_rule_counts(runtime_rules: &[CompiledSkillPackage]) -> (usize, usize, usize) {
+const fn behavior_rule_counts(runtime_rules: &[CompiledSkillPackage]) -> (usize, usize, usize) {
     let built_in = BEHAVIOR_RULES.len();
     let runtime = runtime_rules.len();
     (built_in, runtime, built_in + runtime)
