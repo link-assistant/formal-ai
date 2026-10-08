@@ -4,6 +4,10 @@ Pull request [#1188](https://github.com/link-assistant/formal-ai/pull/1188), "Bu
 
 This document is for the next agent. It covers what the owner asked for, how the work is done here, the state of the branch at the handoff, and what is left. Everything it names is committed on the branch.
 
+## Current arrangement (2026-10-09)
+
+The owner resumed this work and requested up to four GPT-6.1-sol subagents, subject to the four-active-slot environment limit including the coordinator. Keep slots busy, one subagent continuously monitoring CI/CD, and one delivering requirements by asking Formal AI, repairing it after failures and retrying. The coordinator also works continuously. Follow [the recommended multi-agent workflow](multi-agent-workflow.md), including its bulk drafting, small commits, coordinated push barriers and honest capability evidence. It supersedes the older agent and immediate-push instructions below.
+
 ## 1. Where the requirements live
 
 The owner's requirements are recorded in three places, from the most literal to the most structured:
