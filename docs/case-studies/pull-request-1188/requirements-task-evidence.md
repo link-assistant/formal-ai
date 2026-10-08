@@ -14,16 +14,16 @@ The reviewed source payloads were composed by the coding agent; all repository s
 | T1021 | REPO-RUNNERS: Guard already-rebased fixture paths | **Pass**: exact replacement, leaving separate G115 defect. | T1022 recovered full source. |
 | T1022 | REPO-RUNNERS: Recover corrected area generator by whole-file copy | **Pass**: byte-identical reviewed source. | Seven runner and closest area tests passed. |
 | T1023 | REPO-RUNNERS: Add native directory modules to area evidence | **Pass**: byte-identical expanded generator. | No change needed. |
-| T1024 | REPO-RUNNERS: Copy rename-shards.txt to rename-shards.mjs | **Fail G116**: filename rename cue selected mv and removed the source instead of copying it. | Open until a natural Copy regression proves source preservation; resulting reviewed source recovered. |
+| T1024 | REPO-RUNNERS: Copy rename-shards.txt to rename-shards.mjs | **Fail G116**: filename rename cue selected mv and removed the source instead of copying it. | Fixed G116: T1242 replayed the unchanged original request, executed cp, preserved the source and copied exact bytes. |
 | T1025 | REPO-RUNNERS: Add public reexport evidence and named map shards | **Pass**: byte-identical reviewed generator. | No change needed. |
 | T1026 | REPO-RUNNERS: Exclude loaded rule shards from their own substitution | **Pass**: byte-identical reviewed loader. | Shard loading and cycle pins pass. |
 | T1027 | REPO-RUNNERS: Bound finalizer file list and repair original map sources | **Pass**: byte-identical reviewed generator. | 156 test moves completed. |
 | T1028 | REPO-RUNNERS: Copy area registration regression test | **Pass**: byte-identical reviewed test. | Fourteen nearest rename and area tests passed. |
 | T1029 | REPO-RUNNERS: Make root area declarations idempotent | **Pass**: byte-identical reviewed generator. | No change needed. |
 | T1030 | REPO-RUNNERS: Update U5 actual grouping and remaining gaps | **Pass**: 156 moved into ten areas, 252 remaining, native compilation reserved to CI. | No change needed. |
-| T1031 | REPO-RUNNERS: Copy word-names.txt to javascript-full-word-file-names.lino | **Fail G118**: filename words selected no-plan synthesis; no copy performed. | Open; T1034 explicit command workaround only. |
+| T1031 | REPO-RUNNERS: Copy word-names.txt to javascript-full-word-file-names.lino | **Fail G118**: filename words selected no-plan synthesis; no copy performed. | Fixed G118: T1243 replayed the unchanged plain request, executed cp, preserved the source and copied exact bytes. |
 | T1032 | REPO-RUNNERS: Append naming shard include to rename map | **Pass**: exact append. | No change needed. |
-| T1033 | REPO-RUNNERS: Retry Copy with quoted source and destination | **Fail G118**: no-plan unknown answer; no copy performed. | Open; quoting did not fix this request. |
+| T1033 | REPO-RUNNERS: Retry Copy with quoted source and destination | **Fail G118**: no-plan unknown answer; no copy performed. | Fixed G118: T1245 replayed the unchanged quoted request, executed cp, preserved the source and copied exact bytes. |
 | T1034 | REPO-RUNNERS: Run explicit cp naming-shard command | **Pass**: source preserved and destination byte-identical. | Workaround does not establish natural Copy correctness. |
 | T1200 | REPO-RUNNERS: Update U4 with measured naming pass | **Pass**: exact requirement clause replacement through JavaScript Formal AI. | 92 names, 729 JS bindings, 912 Rust bindings. |
 | T1201 | REPO-RUNNERS: Copy reviewed requirement-delivery changelog fragment | **Pass**: exact payload copy. | No change needed. |
@@ -100,3 +100,18 @@ The native partial-census fallback now ranks const/static symbols by identifier 
 Seventeen closest runner/Node/authoring tests passed after exact-base cloning and full-word command-line naming. Actual local Formal AI server plus Agent CLI completed T1225; the live stream, task, protocol and session are captured in javascript-repository-callers.md and javascript-repository-authoring-stream.jsonl. This completes the R1138-3-5 JavaScript caller delivery. The host owns process network isolation, and remote clone access requires an explicit host grant. Native compilation remains CI-owned.
 
 A private-index commit raced the coordinator documentation commit; a dedicated restoration commit retained its original worktree bytes exactly. Subsequent commits use the shared atomic commit lock and refresh the default index within that lock.
+
+## Original Copy retries after general repair
+
+| T1237 | REPO-RUNNERS: Restore the original G116 source fixture through explicit cp | **Pass**: exact source fixture restored. | No change needed. |
+| T1238 | REPO-RUNNERS: Replay original G116 Copy with destination already present | **Partial**: overwrite collision safely refused. | Original absent-destination precondition restored for T1242. |
+| T1239 | REPO-RUNNERS: Replay original plain G118 Copy with destination already present | **Partial**: overwrite collision safely refused. | Original absent-destination precondition restored for T1243. |
+| T1240 | REPO-RUNNERS: Replay original quoted G118 Copy with destination already present | **Partial**: overwrite collision safely refused. | Original absent-destination precondition restored for T1245. |
+| T1241 | REPO-RUNNERS: Remove only scratch fixture destinations for original-precondition replays | **Pass**: exact explicit rm executed. | No repository source changed. |
+| T1242 | REPO-RUNNERS: Retry unchanged original G116 Copy request after general repair | **Pass**: actual cp, source preserved and destination byte-identical. | G116 fixed by general repair with original task replay. |
+| T1243 | REPO-RUNNERS: Retry unchanged plain G118 Copy request after general repair | **Pass**: actual cp, source preserved and destination byte-identical. | G118 fixed for original plain request. |
+| T1244 | REPO-RUNNERS: Remove only G118 scratch destination before quoted original retry | **Pass**: exact explicit rm executed. | No repository source changed. |
+| T1245 | REPO-RUNNERS: Retry unchanged quoted G118 Copy request after general repair | **Pass**: actual cp, source preserved and destination byte-identical. | G118 fixed for original quoted request. |
+| T1246 | REPO-RUNNERS: Copy original Copy-gap retry evidence and updated After cells | **Pass**: exact reviewed evidence copied. | Parent integrates all pending rows and Fixed cells. |
+
+Historical G116 and G118 failures above remain recorded. T1242, T1243 and T1245 repeated the exact original natural-language prompts with their original absent-destination preconditions: each planned and executed cp, retained identical source bytes and created an identical destination. These original-task retries establish the general repair; the earlier explicit cp workaround and existing-destination refusals alone did not.
