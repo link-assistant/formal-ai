@@ -31,7 +31,9 @@ fn code_generation_writes_a_real_workspace_file_for_every_catalog_language() {
         // Java's program is Oracle's documented HelloWorldApp, and the class
         // it declares binds the saved file (issue #1165 R1165-6).
         ("Java", "HelloWorldApp.java", "class HelloWorldApp"),
-        ("C#", "Program.cs", "class Program"),
+        // C#'s program is Microsoft's documented top-level statement, with no
+        // enclosing class (3ff7c4a4e).
+        ("C#", "Program.cs", "Console.WriteLine"),
         ("Ruby", "main.rb", "puts"),
     ] {
         let prompt = format!("Give me a hello world program in {language}");
