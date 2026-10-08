@@ -209,8 +209,9 @@ fn detect_feature_capability(
 
 // A prompt is a capability question when one of the `feature_capability_question`
 // interrogative cues occurs as a raw substring, checked in the prompt's own
-// detected language only. English prompts additionally accept a grammatical
-// "is/are ... enabled/available" frame computed in code.
+// detected language only. A language the seed gives no cue reads as English,
+// which also accepts a grammatical "is/are ... enabled/available" frame
+// computed in code (R1188-U1: no per-language branch).
 fn is_feature_capability_question(normalized: &str, language: &str) -> bool {
     let lexicon = seed::lexicon();
     let mentions = |lang: &str| {
@@ -220,11 +221,16 @@ fn is_feature_capability_question(normalized: &str, language: &str) -> bool {
             &[lang],
         )
     };
-    match language {
-        "ru" => mentions("ru"),
-        "zh" => mentions("zh"),
-        "hi" => mentions("hi"),
-        _ => mentions("en") || is_english_availability_question(normalized),
+    // The prompt's own language decides; a language the seed gives no cue
+    // reads as English, which also accepts the grammatical availability frame.
+    let cued = language != "en"
+        && !lexicon
+            .words_for_role_in_languages(seed::ROLE_FEATURE_CAPABILITY_QUESTION, &[language])
+            .is_empty();
+    if cued {
+        mentions(language)
+    } else {
+        mentions("en") || is_english_availability_question(normalized)
     }
 }
 

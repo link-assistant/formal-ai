@@ -30,7 +30,7 @@ multilingual_responses
   response response_feature_capability_available_es
     intent feature_capability_available
     language es
-    text "Sí. {label} está disponible en esta configuración. Mensaje de ejemplo: `{example}`."
+    text "Sí. La función «{label}» está disponible en esta configuración. Mensaje de ejemplo: `{example}`."
   response response_feature_capability_unavailable_en
     intent feature_capability_unavailable
     language en
@@ -50,7 +50,7 @@ multilingual_responses
   response response_feature_capability_unavailable_es
     intent feature_capability_unavailable
     language es
-    text "No. {label} no está disponible en esta configuración: {reason}. Mensaje de ejemplo después de activarlo: `{example}`."
+    text "No. La función «{label}» no está disponible en esta configuración: {reason}. Mensaje de ejemplo después de activarlo: `{example}`."
   response response_feature_capability_reason_agent_mode_off_en
     intent feature_capability_reason_agent_mode_off
     language en

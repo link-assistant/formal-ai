@@ -11,6 +11,7 @@ feature_capabilities
     label
       en "web search"
       ru "веб-поиск"
+      es "búsqueda web"
     example
       en "Search the web for Nikola Tesla"
       ru "Найди в интернете Никола Тесла"
@@ -20,6 +21,7 @@ feature_capabilities
       en "diagnostic trace"
       ru "диагностика"
       zh "诊断 trace"
+      es "traza de diagnóstico"
     example
       en "Turn on diagnostics"
       ru "Включи диагностику"
@@ -27,6 +29,7 @@ feature_capabilities
     state "agent_mode"
     label
       en "agent mode"
+      es "modo agente"
     example
       en "Turn on agent mode"
       ru "Включи agent mode"
@@ -36,6 +39,7 @@ feature_capabilities
       en "automatic definition fusion"
       ru "автоматическое слияние определений"
       zh "自动 definition fusion"
+      es "fusión automática de definiciones"
     example
       en "Turn on definition fusion"
       ru "Включи слияние определений"
@@ -45,6 +49,7 @@ feature_capabilities
       en "message-driven configuration"
       ru "настройка через сообщения"
       zh "消息配置"
+      es "configuración mediante mensajes"
     example
       en "Switch to dark theme"
       ru "Включи темную тему"
@@ -54,6 +59,7 @@ feature_capabilities
       en "memory import/export"
       ru "импорт и экспорт памяти"
       zh "记忆导入/导出"
+      es "importación y exportación de memoria"
     example
       en "Export memory"
       ru "Экспортируй память"
@@ -64,6 +70,7 @@ feature_capabilities
       ru "приветствия"
       hi "अभिवादन"
       zh "问候"
+      es "saludos"
     example
       en "Hi"
       ru "Привет"
@@ -75,6 +82,7 @@ feature_capabilities
       en "program template generation"
       ru "генерация программ"
       zh "程序生成"
+      es "generación de plantillas de programas"
     example
       en "Write a Python program that counts to three"
       ru "Напиши hello world на Rust"
@@ -84,6 +92,7 @@ feature_capabilities
       en "concept lookup"
       ru "поиск понятий"
       zh "概念查找"
+      es "búsqueda de conceptos"
     example
       en "What is Wikipedia?"
       ru "Что такое Википедия?"
@@ -96,6 +105,7 @@ feature_capabilities
       ru "арифметика"
       hi "अंकगणित"
       zh "算术"
+      es "aritmética"
     example
       en "What is 2 + 2?"
       ru "Сколько будет 2 + 2?"
@@ -108,6 +118,7 @@ feature_capabilities
       ru "перевод"
       hi "अनुवाद"
       zh "翻译"
+      es "traducción"
     example
       en "Translate hello to Russian"
       ru "Переведи hello на русский"
@@ -117,6 +128,7 @@ feature_capabilities
       en "conversation memory"
       ru "память разговора"
       zh "会话记忆"
+      es "memoria de la conversación"
     example
       en "Remember my name is Ada"
       ru "Запомни, меня зовут Ада"
@@ -126,6 +138,7 @@ feature_capabilities
       en "demo mode"
       ru "демо-режим"
       zh "演示模式"
+      es "modo demo"
     example
       en "Turn off demo mode"
       ru "Выключи демо"
@@ -135,6 +148,7 @@ feature_capabilities
       en "URL navigation and HTTP fetch"
       ru "URL-навигация и HTTP-запросы"
       zh "URL 导航和 HTTP 请求"
+      es "navegación por URL y peticiones HTTP"
     example
       en "Navigate to github.com"
       ru "Сделай запрос к google.com"
@@ -144,6 +158,7 @@ feature_capabilities
       en "JavaScript execution"
       ru "выполнение JavaScript"
       zh "JavaScript 执行"
+      es "ejecución de JavaScript"
     example
       en "Run JavaScript: 1 + 1"
       ru "Выполни JavaScript: 1 + 1"
@@ -153,6 +168,7 @@ feature_capabilities
       en "summaries, brainstorming, roleplay, and project planning"
       ru "резюме, брейншторминг, роли и планирование проектов"
       zh "总结、头脑风暴、角色扮演和项目计划"
+      es "resúmenes, lluvia de ideas, juego de rol y planificación de proyectos"
     example
       en "Brainstorm 5 project ideas"
       ru "Предложи 5 идей проекта"

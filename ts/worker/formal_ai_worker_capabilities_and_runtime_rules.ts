@@ -402,16 +402,15 @@ function detectFeatureCapability(normalized, language) {
 
 // A prompt is a capability question when one of the `feature_capability_question`
 // interrogative cues occurs as a raw substring, checked in the prompt's own
-// detected language only. English prompts additionally accept a grammatical
-// "is/are ... enabled/available" frame computed in code. Mirrors
-// is_feature_capability_question in
-// src/solver_handlers/feature_capability.rs (#386).
+// detected language only. A language the seed gives no cue reads as English,
+// which also accepts a grammatical "is/are ... enabled/available" frame
+// computed in code. Mirrors is_feature_capability_question in
+// src/solver_handlers/feature_capability.rs (#386, R1188-U1).
 function isFeatureCapabilityQuestion(normalized, language) {
   const mentions = (lang) =>
     mentionsRoleInLanguagesRaw(ROLE_FEATURE_CAPABILITY_QUESTION, normalized, [lang]);
-  if (language === "ru") return mentions("ru");
-  if (language === "zh") return mentions("zh");
-  if (language === "hi") return mentions("hi");
+  const cues = wordsForRoleInLanguages(ROLE_FEATURE_CAPABILITY_QUESTION, [language]);
+  if (language !== "en" && cues.length > 0) return mentions(language);
   return mentions("en") || isEnglishAvailabilityQuestion(normalized);
 }
 
