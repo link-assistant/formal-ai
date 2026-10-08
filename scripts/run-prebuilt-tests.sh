@@ -2,10 +2,14 @@
 # Run the test executables `collect-build-artifacts.sh` gathered.
 #
 # Issue #1055: these were compiled once by the shared build job, so this only
-# runs them. The skips match what the compile-and-run form selected: those
-# suites have their own jobs (`data_files::` and `self_ast_census` run as
-# separate steps, `specification::` on macOS), and running them here again
-# would be the duplication issue #1037 removed.
+# runs them. TEST_SUITE picks the suite (PR #1188, R1188-U9):
+#
+# - `full` (the default): every target, skipping the suites that run apart --
+#   `data_files::` and `self_ast_census` as separate steps, `specification::`
+#   as its own lane -- since running them here again would be the duplication
+#   issue #1037 removed;
+# - `specification`: only the `specification::` tests of the unit target,
+#   which the specification lane used to compile again in every shard.
 set -euo pipefail
 
 # Issue #1138: the branch suites shell out to `rust-script` for their gate
@@ -46,8 +50,21 @@ CORPUS_GATE_SKIP=(--skip issue_1138_no_silent_unknown)
 SHARD_INDEX="${SHARD_INDEX:-1}"
 SHARD_TOTAL="${SHARD_TOTAL:-1}"
 SHARD_RESERVED_SECONDS="${SHARD_RESERVED_SECONDS:-}"
-targets=(unit integration source)
-skips=(--skip data_files:: --skip self_ast_census --skip specification:: "${CORPUS_GATE_SKIP[@]}")
+TEST_SUITE="${TEST_SUITE:-full}"
+case "$TEST_SUITE" in
+  full)
+    targets=(unit integration source)
+    selection=(--skip data_files:: --skip self_ast_census --skip specification:: "${CORPUS_GATE_SKIP[@]}")
+    ;;
+  specification)
+    targets=(unit)
+    selection=(specification::)
+    ;;
+  *)
+    echo "::error::unknown TEST_SUITE '$TEST_SUITE' (full or specification)" >&2
+    exit 2
+    ;;
+esac
 time_flags=()
 if [ "${RECORD_TEST_TIMES:-false}" = "true" ] \
   && RUSTC_BOOTSTRAP=1 dist/tests/unit -Z unstable-options --report-time --list >/dev/null 2>&1; then
@@ -60,7 +77,7 @@ if [ "$SHARD_TOTAL" -gt 1 ]; then
   plan="$(mktemp)"
   trap 'rm -f "$listing" "$plan"' EXIT
   for target in "${targets[@]}"; do
-    "dist/tests/$target" --list --format terse "${skips[@]}" \
+    "dist/tests/$target" --list --format terse "${selection[@]}" \
       | sed -n 's/: test$//p' \
       | awk -v target="$target" '{ print target "\t" $0 }' >> "$listing" || status=1
   done
@@ -78,7 +95,7 @@ for target in "${targets[@]}"; do
     echo "shard ${SHARD_INDEX}/${SHARD_TOTAL}: ${#names[@]} ${target} test(s)"
     "dist/tests/$target" "${time_flags[@]}" --exact "${names[@]}" || status=1
   else
-    "dist/tests/$target" "${time_flags[@]}" "${skips[@]}" || status=1
+    "dist/tests/$target" "${time_flags[@]}" "${selection[@]}" || status=1
   fi
 done
 exit "$status"

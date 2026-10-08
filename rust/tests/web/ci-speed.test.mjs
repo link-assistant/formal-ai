@@ -9,11 +9,14 @@
 import { describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
-  INDEX_ORDER_SHARDING, capProblems, checkCiSpeed, criticalPaths, measuredProblems, orderProblems, staleExceptionProblems,
+  INDEX_ORDER_SHARDING, capProblems, checkCiSpeed, criticalPaths, measuredProblems, orderProblems, shardingProblems,
+  staleExceptionProblems,
 } from '../../../scripts/check-ci-speed.mjs';
 import { parseCiDurations, parseTestDurations, renderCiDurations } from '../../../scripts/lib/ci-speed-durations.mjs';
 import { parseSpeedPolicy } from '../../../scripts/lib/ci-speed-policy.mjs';
@@ -221,6 +224,26 @@ describe('the measured records', () => {
     const log = '2026-10-08T09:00:00Z test a::b ... ok <1.250s>\ntest c::d ... FAILED <0.500s>\ntest e ... ok\n';
     assert.deepEqual([...parseReportTime(log)], [['a::b', 1.25], ['c::d', 0.5]]);
   });
+});
+
+test('a sharded suite plans through the planner itself or through a listed suite that does', () => {
+  const root = mkdtempSync(join(tmpdir(), 'ci-speed-'));
+  try {
+    mkdirSync(join(root, '.github/workflows'), { recursive: true });
+    mkdirSync(join(root, 'scripts'));
+    writeFileSync(join(root, 'scripts/runner.sh'), 'node scripts/plan-test-shards.mjs --of "$N"\n');
+    writeFileSync(join(root, 'scripts/alone.sh'), 'cargo test\n');
+    writeFileSync(join(root, '.github/workflows/ci.yml'), 'run: bash scripts/runner.sh\n');
+    const policy = {
+      shardPlanner: 'scripts/plan-test-shards.mjs',
+      shardedSuites: ['scripts/runner.sh', 'scripts/alone.sh', '.github/workflows/ci.yml'],
+    };
+    assert.deepEqual(shardingProblems(root, policy, []), [
+      'scripts/alone.sh is a sharded suite that does not plan its shards with scripts/plan-test-shards.mjs',
+    ]);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
 });
 
 test('the repository meets its own CI speed rule', () => {

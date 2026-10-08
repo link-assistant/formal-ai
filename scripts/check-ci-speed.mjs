@@ -185,10 +185,17 @@ export function shardingProblems(root, policy, testDurations) {
       }
     }
   }
+  // A suite plans its shards when it runs the planner itself or runs another
+  // listed sharded suite that does (release.yml through run-prebuilt-tests.sh).
+  const present = policy.shardedSuites.filter((suite) => existsSync(join(root, suite)));
+  const texts = new Map(present.map((suite) => [suite, withoutComments(readFileSync(join(root, suite), 'utf8'))]));
+  const plansDirectly = (suite) => texts.get(suite).includes(policy.shardPlanner);
+  const plans = (suite) => plansDirectly(suite)
+    || present.some((other) => other !== suite && plansDirectly(other) && texts.get(suite).includes(other));
   for (const suite of policy.shardedSuites) {
-    if (!existsSync(join(root, suite))) {
+    if (!texts.has(suite)) {
       problems.push(`sharded-suite ${suite} does not exist`);
-    } else if (!withoutComments(readFileSync(join(root, suite), 'utf8')).includes(policy.shardPlanner)) {
+    } else if (!plans(suite)) {
       problems.push(`${suite} is a sharded suite that does not plan its shards with ${policy.shardPlanner}`);
     }
   }

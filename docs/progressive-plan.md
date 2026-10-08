@@ -10,8 +10,8 @@ requirement is on a resolution level, and the next pass raises the lowest level 
 | 0 closed | superseded or withdrawn; no pass raises it | 8 |
 | 1 recorded | the row exists, nothing measures it yet | 1 |
 | 2 measured | a test pins it, but the row says it is not delivered | 2 |
-| 3 partial | delivered in part | 47 |
-| 4 implemented | delivered, with a test | 1311 |
+| 3 partial | delivered in part | 46 |
+| 4 implemented | delivered, with a test | 1312 |
 | | **all** | **1369** |
 
 ## JavaScript first
@@ -20,9 +20,9 @@ The root the test that pins each requirement runs in (R1188-U29: the JavaScript 
 
 | Pinned by | Requirements |
 | --- | ---: |
-| a JavaScript test | 430 |
+| a JavaScript test | 431 |
 | a Rust test only | 921 |
-| no test | 18 |
+| no test | 17 |
 
 ## Next pass
 
@@ -53,4 +53,4 @@ Level 1 (recorded): 1 requirement(s) to raise before any level above it is refin
 - `docs/requirements/issue-1165-discovery-production-path.md`: R1165-1, R1165-2, R1165-4, R1165-8
 - `docs/requirements/issue-1173-no-canned-search-answer.md`: R1173-3
 - `docs/requirements/issue-1186-formalization-as-a-user-facing-task.md`: R1186-4
-- `docs/requirements/issue-1188-user-requirements.md`: R1188-U1, R1188-U2, R1188-U3, R1188-U4, R1188-U5, R1188-U6, R1188-U7, R1188-U8, R1188-U9, R1188-U10, R1188-U13, R1188-U18, R1188-U19, R1188-U20, R1188-U21, R1188-U23, R1188-U27, R1188-U28, R1188-U29, R1188-U30
+- `docs/requirements/issue-1188-user-requirements.md`: R1188-U1, R1188-U2, R1188-U3, R1188-U4, R1188-U5, R1188-U6, R1188-U7, R1188-U8, R1188-U9, R1188-U13, R1188-U18, R1188-U19, R1188-U20, R1188-U21, R1188-U23, R1188-U27, R1188-U28, R1188-U29, R1188-U30

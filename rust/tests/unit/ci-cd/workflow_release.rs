@@ -455,9 +455,13 @@ fn test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten(
         .find_map(|line| line.trim().strip_prefix("timeout-minutes:"))
         .and_then(|value| value.trim().parse().ok())
         .expect("the test job declares a plain-number timeout-minutes");
+    // PR #1188 (R1188-U9) runs the suite as five shards of prebuilt
+    // executables, a fifth of it about 450s (run 37802763478), so the floors
+    // are per shard: 15 minutes of shard work behind a 25-minute backstop.
     assert!(
-        cap_minutes >= 35,
-        "the test job's cap is {cap_minutes}m; the measured 25min suite plus          its setup needs at least 35m of backstop behind it"
+        cap_minutes >= 25,
+        "the test job's cap is {cap_minutes}m; a shard of the suite plus its \
+         setup needs at least 25m of backstop behind it"
     );
     let suite_budget: u64 = workflow_step_block(test_job, "Run tests")
         .lines()
@@ -465,8 +469,9 @@ fn test_job_budget_exceeds_the_measured_suite_cost_and_warns_before_it_is_eaten(
         .and_then(|value| value.trim().parse().ok())
         .expect("the full-suite step declares a plain-number execution budget");
     assert!(
-        suite_budget >= 1_200,
-        "the full suite's execution budget is {suite_budget}s, below the 1200s          that issue #1017 measured it needs"
+        suite_budget >= 900,
+        "the full suite's execution budget is {suite_budget}s, below the 900s \
+         that twice a measured shard needs"
     );
     assert!(
         suite_budget <= cap_minutes * 60,
@@ -837,7 +842,10 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // Issue #1138 raised the full leg's `Run tests` budget from 1440 to
         // 2400 (measured demand ~1520s: unit 1251-1315s + integration ~200s),
         // which lifts that leg's sum to 3600s -- the same 66% of this cap.
-        ("test", 90),
+        // PR #1188 (R1188-U9) lowered it to 30: both suites run prebuilt
+        // executables in shards (full five, specification four), and each
+        // budgeted group is 1080s, 60% of the cap.
+        ("test", 30),
         // Issue #1014 compiles one nextest archive and fans it out to five
         // macOS runners. The reusable workflow owns both internal timeouts.
         ("macos-core-tests", 0),

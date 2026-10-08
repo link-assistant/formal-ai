@@ -15,8 +15,8 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 - Distinct requirements: 119 (56 from the owner's messages and the vision, 63 items of the 8 fixed issues).
 - Covered by rows that existed before this audit: 96 (every issue item has its own row).
 - Drafted in `docs/requirements/issue-1188-user-requirements.md`: 30 rows for 30 requirements, 23 of which no earlier row covered and 7 of which earlier rows covered only in part.
-- Row verdicts in scope: implemented 122, not-delivered 1, partial 25, superseded 1.
-- Evidence check: 122 implemented rows re-read; 0 cite evidence that does not exist, and 3 more cite something the check could not find that was reviewed and is not evidence.
+- Row verdicts in scope: implemented 123, not-delivered 1, partial 24, superseded 1.
+- Evidence check: 123 implemented rows re-read; 0 cite evidence that does not exist, and 3 more cite something the check could not find that was reviewed and is not evidence.
 
 ## The owner's requirements
 
@@ -58,7 +58,7 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 | Requirement | Source | Rows | Status |
 | --- | --- | --- | --- |
 | No CI job or step runs longer than 15 to 30 minutes; the root cause of the longest runs is fixed. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1085-16, R1017-1, R1188-U9 | R1085-16 implemented; R1017-1 implemented; R1188-U9 partial |
-| Long-running jobs and tests start first. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U10 | R1188-U10 partial |
+| Long-running jobs and tests start first. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U10 | R1188-U10 implemented |
 | CI runs in parallel at job level and at test level. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U11 | R1188-U11 implemented |
 | The CI speed rules are enforced automatically by a gate. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U12 | R1188-U12 implemented |
 | CI runs only the parts a change affects: js, then ts, then rust, each only when its root changed. | [september-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-09-25.md) 2026-09-20 17:48 | R994 | R994 not-delivered |

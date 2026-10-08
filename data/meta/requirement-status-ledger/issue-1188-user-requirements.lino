@@ -9,7 +9,8 @@ requirement_status_ledger_shard
     automated_test "rust/tests/web/prompt-specialization.test.mjs"
   requirement
     id "R1188-U10"
-    verdict "partial"
+    verdict "implemented"
+    automated_test "rust/tests/web/ci-speed.test.mjs"
   requirement
     id "R1188-U11"
     verdict "implemented"

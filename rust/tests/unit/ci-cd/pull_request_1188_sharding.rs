@@ -146,16 +146,14 @@ fn every_test_matrix_suite_lists_each_of_its_shards_once() {
         let (Some(os), Some(suite)) = (fields.get("os"), fields.get("test-suite")) else {
             continue;
         };
-        // An entry without `shard` is shard 1; the full lane's total is the
-        // `SHARD_TOTAL: 4` its run step divides by.
+        // An entry without `shard` is shard 1; every sharded entry declares
+        // its suite's total as `shards`, which the run steps divide by.
         let shard = fields
             .get("shard")
             .map_or(1, |value| value.parse().unwrap());
         let total = fields
             .get("shards")
-            .map_or(if *suite == "full" { 4 } else { 1 }, |value| {
-                value.parse().unwrap()
-            });
+            .map_or(1, |value| value.parse().unwrap());
         let slot = declared
             .entry(format!("{os} / {suite}"))
             .or_insert((total, Vec::new()));
@@ -170,9 +168,10 @@ fn every_test_matrix_suite_lists_each_of_its_shards_once() {
             && declared.contains_key("ubuntu-latest / specification"),
         "the test matrix must still declare the ubuntu full and specification suites"
     );
-    assert!(
-        test.contains("SHARD_TOTAL: 4"),
-        "the full lane divides by the four shards its matrix lists"
+    assert_eq!(
+        test.matches("SHARD_TOTAL: ${{ matrix.shards }}").count(),
+        2,
+        "both suites divide by the `shards` their matrix entries declare"
     );
     for (suite, (total, mut shards)) in declared {
         shards.sort_unstable();

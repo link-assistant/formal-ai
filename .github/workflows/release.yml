@@ -397,14 +397,16 @@ jobs:
           GITHUB_BASE_REF: ${{ github.base_ref }}
         run: rust-script scripts/run-ci-gates.rs --stage web
   test:
-    name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ matrix.shard && format(' shard {0}/{1}', matrix.shard, matrix.shards || 4) || '' }}
+    name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ matrix.shard && format(' shard {0}/{1}', matrix.shard, matrix.shards) || '' }}
     runs-on: ${{ matrix.os }}
     # Issue #1017: the cap is the backstop, the step budget the deadline (run
-    # 31937348472 used 1415s of a 1500s cap). Issue #1081 sized the cap so one
-    # leg's worst budgeted group -- 3600s: the specification lane's two 1800s
-    # steps, or the full lane's 2400s tests plus its gates -- stays at 66.7% of
-    # 90 minutes, inside the 70% share `tests/unit/ci-cd/job_budget_fit.rs` holds.
-    timeout-minutes: 90
+    # 31937348472 used 1415s of a 1500s cap). PR #1188 (R1188-U9): no job runs
+    # over 30 minutes. Nothing compiles here any more -- both suites run the
+    # test executables `build-artifacts` built once -- and each budgeted group
+    # (the full lane's 1080s gates or 1080s tests, the specification shard's
+    # 1080s) stays at 60% of the cap, inside the 70% share
+    # `tests/unit/ci-cd/job_budget_fit.rs` holds.
+    timeout-minutes: 30
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}-${{ matrix.shard || 1 }}
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -421,19 +423,27 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { os: ubuntu-latest, test-suite: full }
-          # Four parallel shards; the entry above is shard 1 (data + census gates), shard 2 runs doc tests.
-          - { os: ubuntu-latest, test-suite: full, shard: 2 }
-          - { os: ubuntu-latest, test-suite: full, shard: 3 }
-          - { os: ubuntu-latest, test-suite: full, shard: 4 }
-          # The specification suite ran only on macOS, so a linux-only failure
-          # in it could not turn any required check red; these legs close that
-          # blind spot (issue #1107). PR #1188 runs it as three shards (17-19
-          # min in one job); pull_request_1188_sharding.rs pins that `shards` legs exist.
-          - { os: ubuntu-latest, test-suite: specification, shard: 1, shards: 3 }
-          - { os: ubuntu-latest, test-suite: specification, shard: 2, shards: 3 }
-          - { os: ubuntu-latest, test-suite: specification, shard: 3, shards: 3 }
-          - { os: macos-15-intel, test-suite: specification }
+          # Five parallel shards of the full lane, planned longest-first from
+          # data/meta/test-durations.lino (run 37802763478: 296-743s of tests
+          # at four). The entry without `shard` is shard 1 (data + census
+          # gates); shard 2 runs doc tests.
+          - { os: ubuntu-latest, test-suite: full, shards: 5 }
+          - { os: ubuntu-latest, test-suite: full, shard: 2, shards: 5 }
+          - { os: ubuntu-latest, test-suite: full, shard: 3, shards: 5 }
+          - { os: ubuntu-latest, test-suite: full, shard: 4, shards: 5 }
+          - { os: ubuntu-latest, test-suite: full, shard: 5, shards: 5 }
+          # The specification suite on Linux closes the blind spot of issue
+          # #1107. PR #1188 runs it as four shards of the prebuilt unit
+          # executable (its longest test took 520s; run 37802763478 ran three
+          # shards in 417-590s plus a 220-362s compile each). Its unsharded
+          # macOS leg is gone: issue #1059 runs on macOS only the tests whose
+          # behaviour can differ from Linux (data/meta/macos-platform-tests.lino,
+          # macos-core-tests.yml), and a 3600s compile-and-run leg could not fit
+          # the 30-minute cap.
+          - { os: ubuntu-latest, test-suite: specification, shard: 1, shards: 4 }
+          - { os: ubuntu-latest, test-suite: specification, shard: 2, shards: 4 }
+          - { os: ubuntu-latest, test-suite: specification, shard: 3, shards: 4 }
+          - { os: ubuntu-latest, test-suite: specification, shard: 4, shards: 4 }
     steps:
       - uses: actions/checkout@v7
         with:
@@ -510,7 +520,7 @@ jobs:
       # into each executable at compile time -- 109 call sites across 36 test
       # files spawn it -- so the path has to exist here as well.
       - name: Download test executables
-        if: ${{ !cancelled() && (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+        if: ${{ !cancelled() && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         uses: actions/download-artifact@v8
         env:
           NODE_OPTIONS: --disable-warning=DEP0005
@@ -518,21 +528,21 @@ jobs:
           name: formal-ai-test-executables
           path: dist/tests
       - uses: ./.github/actions/download-formal-ai-binary
-        if: ${{ !cancelled() && (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+        if: ${{ !cancelled() && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
       - name: Run tests
         if: ${{ !cancelled() && (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         env:
-          # Issue #1081 measured 961s worst against the old 1200s budget;
-          # issue #1138 raised it from 1440 when the unsharded unit phase grew
-          # to 1251-1315s plus ~200s of integration (run 35877276920). 2400
-          # holds that at 63%. The benchmark corpus gate runs in its own
+          # PR #1188: five shards planned longest-first; run 37802763478 ran
+          # four in 296-743s, so a fifth of the work is about 450s and 1080s
+          # holds it at about 42%. The benchmark corpus gate runs in its own
           # workflow (benchmark-corpus-gate.yml), skipped by run-prebuilt-tests.sh.
-          TEST_BUDGET_SECONDS: 2400
+          TEST_BUDGET_SECONDS: 1080
+          TEST_SUITE: full
           SHARD_INDEX: ${{ matrix.shard || 1 }}
-          SHARD_TOTAL: 4
+          SHARD_TOTAL: ${{ matrix.shards }}
           # PR #1188: seconds a shard spends in other steps (shard 1 the LiNo and
-          # census gates, shard 2 the doc tests; run 37753751698), planned around.
-          SHARD_RESERVED_SECONDS: 1=330,2=80
+          # census gates, shard 2 the doc tests; run 37802763478), planned around.
+          SHARD_RESERVED_SECONDS: 1=330,2=110
           RECORD_TEST_TIMES: ${{ vars.FORMAL_AI_RECORD_TEST_TIMES == 'true' }}
           TEST_WARN_RATIO_PERCENT: 70
         run: |
@@ -540,53 +550,26 @@ jobs:
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Test suite" \
             bash scripts/run-prebuilt-tests.sh
-      # Issue #1081 split the specification compile from its run: on run
-      # 34095902681 rustc alone took 1201s of the old combined 1400s budget and
-      # the step died at 100.1% of it. Each phase now owns a deadline over the
-      # work it bounds, the shape `macos-core-tests.yml` already uses.
-      - name: Build the specification test binary
-        if: ${{ (matrix.test-suite == 'specification') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
+      # PR #1188 (R1188-U9): the specification shards run the unit executable
+      # `build-artifacts` compiled once (release, all features) instead of each
+      # compiling its own, which took 220-362s per shard on run 37802763478 and
+      # 1201s cold on run 34095902681.
+      - name: Run specification tests from the prebuilt executable
+        if: ${{ !cancelled() && (matrix.test-suite == 'specification') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         env:
-          # 1800s over the 1201s of rustc measured on run 34095902681, with
-          # sccache at an 88.5% hit rate and its 66 misses costing 953s.
-          TEST_BUDGET_SECONDS: 1800
-          TEST_WARN_RATIO_PERCENT: 70
-        run: |
-          scripts/run-with-budget-warning.sh \
-            "$TEST_BUDGET_SECONDS" "Specification test build" \
-            cargo test --manifest-path rust/Cargo.toml --test unit --all-features --verbose --no-run
-      # Named apart from the old combined step on purpose: the step audit
-      # (`scripts/check-step-budget-headroom.rs`) joins measurements by name.
-      - name: Run specification tests from the prebuilt binary
-        if: ${{ (matrix.test-suite == 'specification') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
-        env:
-          # Execution only. The whole suite (1145 tests) measured 341s on a
-          # dev notebook and ~1492s at the CI host's pace (run 35703111768: 508
-          # tests in 662s); 1800s holds an unsharded leg (macOS) as well.
-          TEST_BUDGET_SECONDS: 1800
-          TEST_WARN_RATIO_PERCENT: 70
+          # The longest specification test took 520s and three debug shards
+          # 417-590s (run 37802763478); four release shards fit well inside 1080s.
+          TEST_BUDGET_SECONDS: 1080
+          TEST_SUITE: specification
           SHARD_INDEX: ${{ matrix.shard || 1 }}
-          SHARD_TOTAL: ${{ matrix.shards || 1 }}
+          SHARD_TOTAL: ${{ matrix.shards }}
           RECORD_TEST_TIMES: ${{ vars.FORMAL_AI_RECORD_TEST_TIMES == 'true' }}
-        # PR #1188: this shard's part, planned longest-first (index order gave
-        # 236s, 641s and 378s, run 37753751698); `--check` proves each test runs
-        # once. `--exact` makes the `specification::` filter match nothing.
+          TEST_WARN_RATIO_PERCENT: 70
         run: |
-          set -euo pipefail
-          listing="$RUNNER_TEMP/specification-tests.txt"
-          cargo test --manifest-path rust/Cargo.toml --test unit --all-features specification:: -- --list --format terse \
-            | sed -n 's/: test$//p' > "$listing"
-          node scripts/plan-test-shards.mjs --of "$SHARD_TOTAL" --check < "$listing"
-          mapfile -t names < <(node scripts/plan-test-shards.mjs --shard "$SHARD_INDEX" --of "$SHARD_TOTAL" < "$listing")
-          [ "${#names[@]}" -gt 0 ] || { echo "::error::specification shard $SHARD_INDEX/$SHARD_TOTAL selected no test" >&2; exit 1; }
-          time_flags=()
-          if [ "$RECORD_TEST_TIMES" = "true" ]; then
-            export RUSTC_BOOTSTRAP=1
-            time_flags=(-Z unstable-options --report-time)
-          fi
+          chmod +x dist/tests/*
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Specification test shard" \
-            cargo test --manifest-path rust/Cargo.toml --test unit --all-features --verbose specification:: -- "${time_flags[@]}" --exact "${names[@]}"
+            bash scripts/run-prebuilt-tests.sh
       - name: Run doc tests
         if: ${{ !cancelled() && (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' && matrix.shard == 2 }}
         env:
