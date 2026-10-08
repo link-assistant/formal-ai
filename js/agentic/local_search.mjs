@@ -35,6 +35,7 @@ const ROLE_LOCAL_PATH_ROUTE_QUESTION = 'local_path_route_question';
 const ROLE_LOCAL_PATH_DIRECTORY_KIND = 'local_path_directory_kind';
 const ROLE_LOCAL_PATH_FILE_KIND = 'local_path_file_kind';
 const ROLE_LOCAL_PATH_QUERY_NOISE = 'local_path_query_noise';
+const ROLE_INTERROGATIVE_OPENER = 'interrogative_opener';
 
 const ALPHANUMERIC = /^[\p{Alphabetic}\p{N}]$/u;
 const isAlnum = (character) => character !== undefined && ALPHANUMERIC.test(character);
@@ -145,11 +146,13 @@ export function requestFor(prompt) {
   else if (file !== null) kind = 'file';
   else kind = fileLiteral !== null ? 'file' : null;
 
+  // An interrogative ('what', 'qué', 'cuáles') asks about the scope and names
+  // no file, so a listing question is never a search for a file called 'qué'.
   let stripped = normalized;
   for (const role of [
     ROLE_LOCAL_PATH_ROUTE_QUESTION, ROLE_LOCAL_PATH_CONTENTS_REQUEST, ROLE_LOCAL_PATH_TYPE_REQUEST,
     ROLE_LOCAL_PATH_SEARCH_ACTION, ROLE_LOCAL_PATH_LIST_ACTION, scopeRole, ROLE_LOCAL_PATH_DIRECTORY_KIND,
-    ROLE_LOCAL_PATH_FILE_KIND, ROLE_LOCAL_PATH_QUERY_NOISE,
+    ROLE_LOCAL_PATH_FILE_KIND, ROLE_LOCAL_PATH_QUERY_NOISE, ROLE_INTERROGATIVE_OPENER,
   ]) {
     stripped = stripRole(stripped, role);
   }

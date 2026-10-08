@@ -1031,6 +1031,8 @@ meanings
         text cómo
       surface
         text cuál
+      surface
+        text cuáles
   set_assistant_name
     defined-by action
     role assistant_name_assignment

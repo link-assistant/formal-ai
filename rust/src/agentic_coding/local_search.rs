@@ -184,6 +184,8 @@ pub(super) fn request_for(prompt: &str) -> Option<LocalSearchRequest> {
     };
 
     let mut subject = normalized;
+    // An interrogative (`what`, `qué`, `cuáles`) asks about the scope and names
+    // no file, so a listing question is never a search for a file called `qué`.
     for role in [
         seed::ROLE_LOCAL_PATH_ROUTE_QUESTION,
         seed::ROLE_LOCAL_PATH_CONTENTS_REQUEST,
@@ -194,6 +196,7 @@ pub(super) fn request_for(prompt: &str) -> Option<LocalSearchRequest> {
         seed::ROLE_LOCAL_PATH_DIRECTORY_KIND,
         seed::ROLE_LOCAL_PATH_FILE_KIND,
         seed::ROLE_LOCAL_PATH_QUERY_NOISE,
+        seed::ROLE_INTERROGATIVE_OPENER,
     ] {
         strip_role(&mut subject, role);
     }
