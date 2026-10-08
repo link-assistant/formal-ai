@@ -116,13 +116,6 @@ fn expand_with(command: &str, vocab: &ShellIntentVocabulary) -> Option<VerifiedA
         .chain(&effect.prepare)
         .chain(&effect.after)
         .any(|template| template.contains(PATH_PLACEHOLDER));
-    let bind = |template: &str, bindings: &[(&str, String)]| {
-        bindings
-            .iter()
-            .fold(template.to_owned(), |text, (key, value)| {
-                text.replace(key, value)
-            })
-    };
     let mut groups: Vec<Vec<(&str, String)>> = Vec::new();
     let mut collection = None;
     if has_path {
@@ -169,7 +162,7 @@ fn expand_with(command: &str, vocab: &ShellIntentVocabulary) -> Option<VerifiedA
         groups
             .iter()
             .map(|bindings| {
-                let check = bind(template, bindings);
+                let check = bind_template(template, bindings);
                 if let Some((sources, destination)) = &collection {
                     let setup = super::work_item_steps::fill(
                         "filesystem-collection-setup",
@@ -189,12 +182,19 @@ fn expand_with(command: &str, vocab: &ShellIntentVocabulary) -> Option<VerifiedA
             })
             .collect()
     };
-    let mut steps: Vec<String> = before.iter().flat_map(fill).collect();
-    steps.extend(effect.prepare.iter().flat_map(fill));
+    let mut steps: Vec<String> = before.iter().chain(&effect.prepare).flat_map(fill).collect();
     let action = steps.len();
     steps.push(command.to_owned());
     steps.extend(effect.after.iter().flat_map(fill));
     Some(VerifiedAction { steps, action })
+}
+
+fn bind_template(template: &str, bindings: &[(&str, String)]) -> String {
+    bindings
+        .iter()
+        .fold(template.to_owned(), |text, (key, value)| {
+            text.replace(key, value)
+        })
 }
 
 /// Separate declared options from shell words while preserving operand quoting.
