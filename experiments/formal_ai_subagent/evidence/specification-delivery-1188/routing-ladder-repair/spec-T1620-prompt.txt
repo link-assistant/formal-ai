@@ -1,4 +1,4 @@
-// Deterministic fallback planner for repository change requests
+Set the contents of js/agentic/general_planner.mjs to «// Deterministic fallback planner for repository change requests
 // (rust/src/agentic_coding/general_planner.rs, issue #654).
 //
 // A `GeneralChangePlan` is `{id, mode, goal, target, content, steps,
@@ -520,3 +520,4 @@ function field(name, value) {
 function fieldNested(name, value) {
   return `    ${name} "${escape(value)}"\n`;
 }
+»

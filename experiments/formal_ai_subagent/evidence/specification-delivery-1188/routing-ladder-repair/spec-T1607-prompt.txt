@@ -1,4 +1,4 @@
-link_edit
+Set the contents of experiments/issue_1028_agent_cli_ladder/rules/L07.lino to «link_edit
   leaf L07
   path data/seed/meanings-conversation.lino
   language lino
@@ -6,3 +6,4 @@ link_edit
     old "good evening"
     new "good day"
   expect "good day"
+»

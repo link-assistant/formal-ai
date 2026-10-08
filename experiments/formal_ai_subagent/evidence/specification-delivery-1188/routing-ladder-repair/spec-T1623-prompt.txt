@@ -1,4 +1,4 @@
-// Meanings-driven, stateful local path discovery (issue #840):
+Set the contents of js/agentic/local_search.mjs to «// Meanings-driven, stateful local path discovery (issue #840):
 // rust/src/agentic_coding/local_search.rs.
 
 import { Capability } from './capability.mjs';
@@ -530,3 +530,4 @@ function localized(intent, language) {
 function shellQuote(value) {
   return `'${replaceAllLiteral(value, "'", "'\\''")}'`;
 }
+»

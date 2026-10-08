@@ -1,4 +1,4 @@
-// Deterministic fallback planner for repository change requests
+Set the contents of js/agentic/general_planner.mjs to «// Deterministic fallback planner for repository change requests
 // (rust/src/agentic_coding/general_planner.rs, issue #654).
 //
 // A `GeneralChangePlan` is `{id, mode, goal, target, content, steps,
@@ -380,7 +380,7 @@ function parseWriteRequest(request) {
     // target cues before it bind the file; its internal prose is authored data.
     const binding = rankedBindings(toks).find((candidate) =>
       toks[candidate.index].end <= literal.start && candidate.cue_end <= literal.start);
-    if (binding) return [binding.path, cleanContent(request.slice(literal.start, literal.end)) ?? literal.text];
+    if (binding) return [binding.path, literal.text];
   }
   for (const binding of rankedBindings(toks)) {
     const parsed = parseWriteRequestBound(request, toks, binding);
@@ -520,3 +520,4 @@ function field(name, value) {
 function fieldNested(name, value) {
   return `    ${name} "${escape(value)}"\n`;
 }
+»

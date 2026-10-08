@@ -1,4 +1,4 @@
-//! Reading a request's `write_program` parameters — the task it names and the
+Set the contents of rust/src/intent_formalization/write_program_request.rs to «//! Reading a request's `write_program` parameters — the task it names and the
 //! implementation language it asks for.
 //!
 //! Split out of `intent_formalization.rs` so the routing veto and the
@@ -233,3 +233,4 @@ fn is_accounted_for(token: &str, accounted: &[String]) -> bool {
     }
     rest.is_empty()
 }
+»

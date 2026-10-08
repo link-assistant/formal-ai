@@ -1,4 +1,4 @@
-//! Meanings-driven, stateful local path discovery (issue #840).
+Set the contents of rust/src/agentic_coding/local_search.rs to «//! Meanings-driven, stateful local path discovery (issue #840).
 //!
 //! An explicit local scope wins over generic web-search verbs. The planner
 //! performs one observable shell action at a time, reads the result from the
@@ -735,3 +735,4 @@ fn localized(intent: &str, language: &str) -> String {
 fn shell_quote(value: &str) -> String {
     format!("'{}'", value.replace('\'', "'\\''"))
 }
+»

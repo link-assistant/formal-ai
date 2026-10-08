@@ -1,4 +1,4 @@
-//! Deterministic fallback planner for repository change requests (issue #654).
+Set the contents of rust/src/agentic_coding/general_planner.rs to «//! Deterministic fallback planner for repository change requests (issue #654).
 //!
 //! Unlike the stored recipe fixtures, this planner derives its target and payload
 //! from the formalized request.  The resulting plan is data: it is serialized to
@@ -938,3 +938,4 @@ fn field(out: &mut String, name: &str, value: &str) {
 fn field_nested(out: &mut String, name: &str, value: &str) {
     let _ = writeln!(out, "    {name} \"{}\"", escape(value));
 }
+»

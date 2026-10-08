@@ -1,4 +1,4 @@
-// Substitution rules that lower program plans, write-program parameters and
+Set the contents of js/worker/formal_ai_worker_program_plans.js to «// Substitution rules that lower program plans, write-program parameters and
 // recovery, coding guidance, program explanations and the blueprint capability table.
 // Loaded by ../formal_ai_worker.js.
 function applySubstitutionRule(linkSet, rule, event, sequence) {
@@ -223,8 +223,8 @@ function writeProgramParameters(prompt) {
   // Issue #1021 (R1021-31): "мне нужен код" names code and nothing else, so it is a
   // request with no parameters whatever the asking verb (namesCodeAndNothingElse).
   const asksForBareCode = !task && !language && namesCodeAndNothingElse(normalized);
-  // Catalog aliases bind coding tasks. Without a program artefact or language,
-  // a container-scoped enumeration asks for a workspace action.
+  // A catalog alias describes a program's task only after a coding request
+  // is established. A container-scoped enumeration with no program artefact
   const enumeratesContainer = ["capability_container_scope", "capability_act_enumerate"]
     .every((role) => lexiconMentionsRole(role, normalized) || lexiconMentionsRoleSubstring(role, normalized));
   if (!language && !lexiconMentionsRole(ROLE_PROGRAM_KIND, normalized) && enumeratesContainer) return null;
@@ -1029,3 +1029,4 @@ const BLUEPRINT_CAPABILITIES = [
     keywords: ["mock", "mock endpoint"],
   },
 ];
+»

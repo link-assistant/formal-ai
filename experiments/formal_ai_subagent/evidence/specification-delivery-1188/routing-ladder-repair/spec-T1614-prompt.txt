@@ -1,4 +1,4 @@
-//! Deterministic fallback planner for repository change requests (issue #654).
+Set the contents of rust/src/agentic_coding/general_planner.rs to «//! Deterministic fallback planner for repository change requests (issue #654).
 //!
 //! Unlike the stored recipe fixtures, this planner derives its target and payload
 //! from the formalized request.  The resulting plan is data: it is serialized to
@@ -589,18 +589,6 @@ pub(super) fn has_authoritative_literal_write(request: &str) -> bool {
 /// recovered content keeps its case and punctuation.
 fn parse_write_request(request: &str) -> Option<(String, String)> {
     let toks = tokens(request);
-    if let Some(literal) = literal_payload(request) {
-        // A closed whole-file payload supplies the content. Only target cues
-        // before it bind the file; its internal prose is authored data.
-        if let Some(binding) = ranked_bindings(&toks).into_iter().find(|candidate| {
-            toks[candidate.index].end <= literal.start && candidate.cue_end <= literal.start
-        }) {
-            return Some((
-                binding.path,
-                clean_content(&request[literal.start..literal.end]).unwrap_or(literal.text),
-            ));
-        }
-    }
     // A cue between two file-shaped tokens can belong to either of them, and the
     // ranking only says which reading to try first. The reading that recovers a
     // payload is the one the sentence supports, so the candidates are taken in
@@ -938,3 +926,4 @@ fn field(out: &mut String, name: &str, value: &str) {
 fn field_nested(out: &mut String, name: &str, value: &str) {
     let _ = writeln!(out, "    {name} \"{}\"", escape(value));
 }
+»

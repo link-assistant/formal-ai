@@ -1,4 +1,4 @@
-// Substitution rules that lower program plans, write-program parameters and
+Set the contents of js/worker/formal_ai_worker_program_plans.js to «// Substitution rules that lower program plans, write-program parameters and
 // recovery, coding guidance, program explanations and the blueprint capability table.
 // Loaded by ../formal_ai_worker.js.
 function applySubstitutionRule(linkSet, rule, event, sequence) {
@@ -1029,3 +1029,4 @@ const BLUEPRINT_CAPABILITIES = [
     keywords: ["mock", "mock endpoint"],
   },
 ];
+»
