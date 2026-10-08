@@ -419,7 +419,10 @@ fn template_trees_are_archived_at_the_named_commits() {
             );
         }
     }
-    assert!(!repository_file(&format!("{ARCHIVE}/raw-data/CI-CD-BEST-PRACTICES.md")).is_empty());
+    assert_ne!(
+        repository_file(&format!("{ARCHIVE}/raw-data/CI-CD-BEST-PRACTICES.md")),
+        ""
+    );
 }
 
 /// R1012-5 and R1012-7: the audit record names its reports and its analysis.

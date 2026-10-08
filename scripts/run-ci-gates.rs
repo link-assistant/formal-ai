@@ -111,7 +111,7 @@ pub fn justification_has_citation(justification: &str) -> bool {
             let run = i - start;
             let before_ok = start == 0 || !chars[start - 1].is_ascii_alphanumeric();
             let after_ok = i >= chars.len() || !chars[i].is_ascii_alphanumeric();
-            if run >= 7 && run <= 40 && before_ok && after_ok {
+            if (7..=40).contains(&run) && before_ok && after_ok {
                 return true;
             }
         } else {

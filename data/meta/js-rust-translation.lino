@@ -15,7 +15,7 @@ js_rust_translation
   modules 128
   translated_items 243
   inferred_signatures 2
-  carried_items 2105
+  carried_items 2106
   translated_modules 78
   fully_translated_modules 1
   refused_modules 50
@@ -146,9 +146,9 @@ module js/agentic/crate/web_engine_core.mjs translated 0 inferred 0 carried 2
 module js/agentic/crate/workspace_change_learning.mjs translated 2 inferred 0 carried 11
 module js/worker/formal_ai_worker_meta_composite.js translated 0 inferred 0 carried 6
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 inferred 0 carried 42
-module js/worker/formal_ai_worker_meta_synthesis.js translated 0 inferred 0 carried 24
+module js/worker/formal_ai_worker_meta_synthesis.js translated 0 inferred 0 carried 25
 refusal "import { … }" 403
-refusal "JSDoc type {…}" 197
+refusal "JSDoc type {…}" 196
 refusal "null" 162
 refusal "type: unknown name (a sibling item or an import)" 112
 refusal "arrow function" 96
@@ -177,11 +177,11 @@ refusal "method call .codePointAt()" 15
 refusal "typeof operator" 13
 refusal "import from '…'" 12
 refusal "method call .every()" 12
+refusal "syntax: @param needs a type and a name" 12
 refusal "undefined" 12
 refusal "for with const" 11
 refusal "method call .join()" 11
 refusal "namespace property …" 11
-refusal "syntax: @param needs a type and a name" 11
 refusal "method call .flatMap()" 10
 refusal "method call .reduce()" 10
 refusal "assignment" 9
@@ -194,6 +194,7 @@ refusal "array destructuring" 5
 refusal "method call .sort()" 5
 refusal "throw new …" 5
 refusal "Object.keys" 4
+refusal "method call .has()" 4
 refusal "syntax: unsupported template escape" 4
 refusal "top-level class statement" 4
 refusal "type: one value is used as a Uint8Array and as an array; declare the types of the function with JSDoc" 4
@@ -201,7 +202,6 @@ refusal "type: one value is used as a string and as an array; declare the types 
 refusal "JSON.stringify" 3
 refusal "Object.prototype.hasOwnProperty.call" 3
 refusal "let …" 3
-refusal "method call .has()" 3
 refusal "method call .repeat()" 3
 refusal "method call .toFixed()" 3
 refusal "syntax: unterminated string literal" 3

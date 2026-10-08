@@ -7,7 +7,7 @@ use lino_objects_codec::format::parse_indented;
 
 mod seed_and_memory;
 
-const PYTHON_SCRIPT_ANSWER: &str = r#"Here is a minimal Python script:
+const PYTHON_SCRIPT_ANSWER: &str = r"Here is a minimal Python script:
 
 ```python
 print('Hello, world!')
@@ -19,7 +19,7 @@ Run command: `python3 main.py`
 Expected output after verification:
 ```text
 Hello, world!
-```"#;
+```";
 
 const RUST_SCRIPT_ANSWER: &str = r#"Here is a minimal Rust script:
 

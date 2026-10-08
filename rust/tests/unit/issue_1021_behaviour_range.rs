@@ -604,7 +604,7 @@ fn the_languageless_coding_request_is_answered_in_its_own_language() {
 /// answer a real one: the templates are `php -l`-checked and executed by the
 /// issue-8 harness. The Hello World is now php.net's page example (issue
 /// #1165), which that run never executed, so the answer names the page and
-/// its decomposition check rather than borrowing the run; the FizzBuzz
+/// its decomposition check rather than borrowing the run; the `FizzBuzz`
 /// template below keeps the verified status.
 #[test]
 fn php_is_answered_from_the_catalog_like_every_catalogued_language() {

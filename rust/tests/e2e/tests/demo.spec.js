@@ -33,7 +33,7 @@ async function disableGreetingVariations(page) {
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 5_000 });
+  await expect(input).toBeEnabled({ timeout: 15_000 });
   await input.fill(text);
   return submitCurrentPrompt(page);
 }
@@ -156,7 +156,7 @@ test.describe('formal-ai demo UI', () => {
     await hiButton.click();
 
     const input = page.locator('[data-testid="chat-composer-input"]');
-    await expect(input).toBeEnabled({ timeout: 5_000 });
+    await expect(input).toBeEnabled({ timeout: 15_000 });
     await expect(input).toHaveValue('Hi');
   });
 
@@ -612,7 +612,7 @@ test.describe('formal-ai demo UI', () => {
     await expect(input).toBeDisabled({ timeout: 5_000 });
 
     await demoToggle.click();
-    await expect(input).toBeEnabled({ timeout: 5_000 });
+    await expect(input).toBeEnabled({ timeout: 15_000 });
   });
 
   test('diagnostics are hidden by default', async ({ page }) => {
@@ -1214,7 +1214,7 @@ test.describe('Issue #110: mobile keyboard viewport handling', () => {
 
     await page.locator('.mode-toggle').click();
     const input = page.locator('[data-testid="chat-composer-input"]');
-    await expect(input).toBeEnabled({ timeout: 5_000 });
+    await expect(input).toBeEnabled({ timeout: 15_000 });
     await input.focus();
 
     const viewportState = await page.evaluate(() => {

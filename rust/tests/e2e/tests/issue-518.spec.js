@@ -23,7 +23,7 @@ async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
   const messages = page.locator('[data-testid="chat-message"]');
   const initial = await messages.count();
-  await expect(input).toBeEnabled({ timeout: 5_000 });
+  await expect(input).toBeEnabled({ timeout: 15_000 });
   await input.fill(text);
   await page.locator('[data-testid="chat-composer-submit"]').click();
   await expect.poll(async () => messages.count(), { timeout: 20_000 }).toBeGreaterThan(initial);

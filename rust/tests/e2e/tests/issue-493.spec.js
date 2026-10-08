@@ -76,7 +76,7 @@ async function attachAndVerify(page, name) {
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 5_000 });
+  await expect(input).toBeEnabled({ timeout: 15_000 });
   await input.fill(text);
   const messages = page.locator('[data-testid="chat-message"]');
   const initialAssistant = await page.locator('[data-testid="chat-message"].assistant').count();

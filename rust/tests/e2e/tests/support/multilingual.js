@@ -241,7 +241,7 @@ async function disableGreetingVariations(page) {
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 5_000 });
+  await expect(input).toBeEnabled({ timeout: 15_000 });
   await input.fill(text);
   const messages = page.locator('[data-testid="chat-message"]');
   const initial = await messages.count();

@@ -65,7 +65,7 @@ impl Value {
 #[derive(Debug, Clone)]
 enum Node {
     Word(String),
-    Link(Vec<Node>),
+    Link(Vec<Self>),
 }
 
 impl Node {

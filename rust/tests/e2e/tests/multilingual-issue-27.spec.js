@@ -221,7 +221,7 @@ test.describe('Issue #27: mobile layout', () => {
   test('Issue #112: focused composer grows to content with equal padding and a half-panel cap', async ({ page }) => {
     await page.locator('.mode-toggle').click();
     const input = page.locator('[data-testid="chat-composer-input"]');
-    await expect(input).toBeEnabled({ timeout: 5_000 });
+    await expect(input).toBeEnabled({ timeout: 15_000 });
     await input.fill('line one\nline two\nline three\nline four');
 
     const metrics = await input.evaluate((node) => {

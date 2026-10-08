@@ -1,4 +1,4 @@
-//! PR #1188 dogfooding: "Delete the line containing '| R56kfQp |' from t.md."
+//! PR #1188 dogfooding: `Delete the line containing '| R56kfQp |' from t.md.`
 //! stripped only the quoted cells and left the row's tail. A request that
 //! names a line (the seeded `line` meaning, in every registered language)
 //! removes whole lines, and says how many. Twin of the JS cases in

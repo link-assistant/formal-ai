@@ -194,7 +194,7 @@ fn the_forty_principles_are_seed_data_and_survive_forget_and_rediscover() {
 // ── R901-3: registry-selected ranking ────────────────────────────────────────
 
 /// The candidate pair used to test registry selection: index 0 wins on steps,
-/// index 1 wins on code_size, so each wins on a different dimension.
+/// index 1 wins on `code_size`, so each wins on a different dimension.
 fn contradicted_pair_for_registry() -> Vec<CandidateScore> {
     vec![
         CandidateScore {

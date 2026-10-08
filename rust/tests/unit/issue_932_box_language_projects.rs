@@ -35,7 +35,7 @@ fn expected_program(language: &str) -> &'static str {
     println!("Hello, world!");
 }"#
         }
-        "python" => r#"print('Hello, world!')"#,
+        "python" => r"print('Hello, world!')",
         "javascript" => r#"console.log("Hello, world!");"#,
         "typescript" => {
             r#"// Greets the world.

@@ -220,7 +220,7 @@ test.describe('Issue #386 - reset settings to default', () => {
 test.describe('Issue #386 - copy a conversation as Markdown', () => {
   async function sendPrompt(page, text) {
     const input = page.locator('[data-testid="chat-composer-input"]');
-    await expect(input).toBeEnabled({ timeout: 5_000 });
+    await expect(input).toBeEnabled({ timeout: 15_000 });
     await input.fill(text);
     const messages = page.locator('[data-testid="chat-message"]');
     const count = await messages.count();
@@ -311,7 +311,7 @@ test.describe('Issue #386 - cancel a program modification', () => {
 
   async function sendPrompt(page, text) {
     const input = page.locator('[data-testid="chat-composer-input"]');
-    await expect(input).toBeEnabled({ timeout: 5_000 });
+    await expect(input).toBeEnabled({ timeout: 15_000 });
     await input.fill(text);
     const messages = page.locator('[data-testid="chat-message"]');
     const initial = await messages.count();

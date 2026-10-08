@@ -132,22 +132,34 @@ function metaMeasures(element, type) {
  * primitive mapped over a list.
  * @param {string} fromType
  * @param {number} length
+ * @param {Set<string>|null} [mustUse] when given, only the programs using one
+ *   of these operations (see `metaStepUsesAny`) are returned
  * @returns {Array<{steps: Array<object>, type: string}>}
  */
-function metaPrograms(fromType, length) {
+function metaPrograms(fromType, length, mustUse = null) {
   const primitives = metaSeed().primitives;
-  let frontier = [{ steps: [], type: fromType }];
+  let frontier = [mustUse === null ? { steps: [], type: fromType } : { steps: [], type: fromType, uses: false }];
   const out = [];
   for (let size = 1; size <= length; size += 1) {
     const next = [];
+    // A last-length program using none of `mustUse` is never built.
+    const extend = (program, step, type) => {
+      if (mustUse === null) {
+        next.push({ steps: program.steps.concat(step), type });
+        return;
+      }
+      const uses = program.uses || metaStepUsesAny(step, mustUse);
+      if (size === length && !uses) return;
+      next.push({ steps: program.steps.concat(step), type, uses });
+    };
     for (const program of frontier) {
       for (const primitive of primitives) {
         const direct = metaApply(primitive, program.type);
-        if (direct) next.push({ steps: program.steps.concat({ primitive, mapped: false }), type: direct });
+        if (direct) extend(program, { primitive, mapped: false }, direct);
         if (program.type.startsWith("list_")) {
           const element = program.type.slice(5);
           const mapped = metaApply(primitive, element);
-          if (mapped && !mapped.startsWith("list_")) next.push({ steps: program.steps.concat({ primitive, mapped: true }), type: `list_${mapped}` });
+          if (mapped && !mapped.startsWith("list_")) extend(program, { primitive, mapped: true }, `list_${mapped}`);
         }
       }
       // A file is edited in place by any text transformation: read it,
@@ -155,27 +167,27 @@ function metaPrograms(fromType, length) {
       if (program.type === "path" || program.type === "list_path") {
         for (const primitive of primitives) {
           if (primitive.from !== "text" || primitive.to !== "text" || primitive.infer || primitive.takes.length) continue;
-          next.push({ steps: program.steps.concat({ primitive, mapped: program.type === "list_path", rewrite: true }), type: program.type });
+          extend(program, { primitive, mapped: program.type === "list_path", rewrite: true }, program.type);
         }
       }
       if (program.type.startsWith("list_")) {
         for (const measure of metaMeasures(program.type.slice(5))) {
           for (const filter of metaSeed().filters) {
-            if (filter.measure === "number") next.push({ steps: program.steps.concat({ primitive: measure, mapped: false, filter }), type: program.type });
+            if (filter.measure === "number") extend(program, { primitive: measure, mapped: false, filter }, program.type);
           }
         }
         // A filter comparing the element's content with a value.
         for (const filter of metaSeed().filters) {
           if (filter.measure === "number") continue;
-          for (const measure of metaMeasures(program.type.slice(5), filter.measure)) next.push({ steps: program.steps.concat({ primitive: measure, mapped: false, filter }), type: program.type });
+          for (const measure of metaMeasures(program.type.slice(5), filter.measure)) extend(program, { primitive: measure, mapped: false, filter }, program.type);
         }
         // A selector picks one element by its measure ("the longest word").
         for (const measure of metaMeasures(program.type.slice(5))) {
-          for (const select of metaSeed().selectors) next.push({ steps: program.steps.concat({ primitive: measure, mapped: false, select }), type: program.type.slice(5) });
+          for (const select of metaSeed().selectors) extend(program, { primitive: measure, mapped: false, select }, program.type.slice(5));
         }
       }
     }
-    for (const program of next) out.push(program);
+    for (const program of next) if (mustUse === null || program.uses) out.push(program);
     frontier = next;
   }
   return out;
@@ -191,6 +203,17 @@ function metaStepOperations(step) {
   const chooser = step.filter || step.select;
   if (chooser) return step.primitive.id === "value" ? [chooser.id] : [step.primitive.id, chooser.id];
   return step.mapped ? [step.primitive.id, "map_each"] : [step.primitive.id];
+}
+
+/**
+ * Whether a step uses one of `operations` -- in `metaStepOperations(step)` or,
+ * for a filter or selector, its measure's parts -- without building a list.
+ */
+function metaStepUsesAny(step, operations) {
+  const chooser = step.filter || step.select;
+  if (!(chooser && step.primitive.id === "value") && operations.has(step.primitive.id)) return true;
+  if (chooser) return operations.has(chooser.id) || (step.primitive.parts || []).some((part) => operations.has(part));
+  return (step.rewrite && operations.has("rewrite_file")) || (step.mapped && operations.has("map_each"));
 }
 
 /**
@@ -501,8 +524,10 @@ function metaSynthesizeFromMeaning(groups, evidence, trace, values, words, input
   for (const hypotheses of allWords) {
     for (const hypothesis of hypotheses) strongest.set(hypothesis.operation, Math.max(strongest.get(hypothesis.operation) || 0, hypothesis.score));
   }
+  const headOperations = new Set(lastHead);
   for (const fromType of types) {
-    for (const program of metaPrograms(fromType, META_BOUNDS.programLength - 1)) {
+    // Only programs using the head operation are enumerated at full length.
+    for (const program of metaPrograms(fromType, META_BOUNDS.programLength - 1, headOperations)) {
       const parametric = program.steps.filter(metaStepIsParametric);
       if (parametric.length > (values.length ? 1 : 0)) continue;
       const bound = parametric.length ? metaBindValues(metaStepParameterTypes(parametric[0]), values) : null;
