@@ -387,7 +387,18 @@ function fencedBody(inner) {
 }
 
 function stripClauseLead(raw) {
-  const qualifiers = bareSurfaces('file_write_content_qualifier');
+  const modifiers = bareSurfaces('file_write_content_qualifier');
+  const qualifiers = [...modifiers];
+  for (const role of ['file_write_content_lead', 'file_write_authoritative_content_lead']) {
+    for (const form of roleWordForms(role).filter((item) => item.slot === 'prefix')) {
+      const lead = trim(form.before).toLowerCase();
+      for (const modifier of modifiers) {
+        const start = lead.indexOf(modifier);
+        if (start >= 0 && (start === 0 || isWhitespace(lead[start - 1]))) qualifiers.push(lead.slice(start));
+      }
+      qualifiers.push(lead);
+    }
+  }
   let led = trim(raw);
   for (;;) {
     const separated = trim(trimStartMatches(led, charIn(':-—–')));

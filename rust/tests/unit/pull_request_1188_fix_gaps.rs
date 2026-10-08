@@ -307,3 +307,28 @@ fn authored_failure_text_is_verification_data() {
         );
     }
 }
+
+#[test]
+fn exact_content_set_forms_consume_seeded_leads() {
+    let content =
+        "First paragraph.\n\nWhen tasks arrive, preserve Copy a.mjs to b.mjs as quoted data.\n";
+    for lead in [
+        "exactly this content",
+        "with exactly this content",
+        "with content",
+        "contents",
+        "с точно таким содержанием",
+        "ठीक इसी सामग्री के साथ",
+        "内容与以下完全相同",
+        "con exactamente este contenido",
+    ] {
+        let request = format!("Set the contents of output.mjs to {lead}: «{content}»");
+        let run = drive(&request, &[("output.mjs", "previous\n")]);
+        assert_eq!(run.files["output.mjs"], content, "{lead}");
+    }
+    for content in ["exactly what I asked for", "with content: literal words"] {
+        let request = format!("Set the contents of output.mjs to «{content}»");
+        let run = drive(&request, &[("output.mjs", "previous\n")]);
+        assert_eq!(run.files["output.mjs"], content);
+    }
+}

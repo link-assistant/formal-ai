@@ -667,12 +667,7 @@ pub(super) fn action_cue_start_after(toks: &[Token<'_>], from: usize) -> Option<
 pub(super) fn first_action_cue_start(toks: &[Token<'_>]) -> Option<usize> {
     first_action_cue(toks).map(|(start, _)| start)
 }
-/// Trim a recovered content span down to its literal payload, dropping the
-/// leading clause separator ("… the following: hello") and any surrounding
-/// quoting. A delimiter is removed only when the entire payload has a matching
-/// opening and closing delimiter. This matters for generated source and Links
-/// Notation: a lone terminal quote is data, not presentation punctuation.
-/// Returns [`None`] when nothing is left.
+/// Recover literal bytes from a seeded clause, preserving unmatched delimiters.
 pub(super) fn clean_content(raw: &str) -> Option<String> {
     let led = strip_clause_lead(raw);
     let fence_length = led.bytes().take_while(|byte| *byte == b'`').count();
@@ -681,9 +676,6 @@ pub(super) fn clean_content(raw: &str) -> Option<String> {
             super::markdown_section::fenced_body(&led[fence_length..led.len() - fence_length]);
         return (!body.is_empty()).then(|| body.to_owned());
     }
-    // One quoted literal, in any pair of quotes (`'a'`, «a», “a”; PR #1188 G100),
-    // is the content; the sentence's closing mark after it is the sentence's:
-    // `containing 'hello'.` writes `hello`, not `'hello'.`.
     let closed = led
         .strip_suffix([
             '.', '!', '?', '\u{0964}', '\u{3002}', '\u{ff01}', '\u{ff1f}',
@@ -707,16 +699,28 @@ pub(super) fn clean_content(raw: &str) -> Option<String> {
     };
     (!result.is_empty()).then(|| result.to_owned())
 }
-/// Strip everything a recovered span carries *before* its literal payload: the
-/// clause separators, and the seed-defined adverbs that qualify the requirement
-/// rather than naming content.
-///
-/// "…containing exactly: Hello World" delimits the content with `exactly:`, so
-/// slicing after the content lead captured `exactly: Hello World` as the bytes
-/// to write and as the evidence to verify against — the file would never have
-/// matched (issue #905 §3).
+/// Strip seeded qualifiers and content leads only before a clause separator.
 fn strip_clause_lead(raw: &str) -> &str {
-    let qualifiers = bare_surfaces(seed::ROLE_FILE_WRITE_CONTENT_QUALIFIER);
+    let modifiers = bare_surfaces(seed::ROLE_FILE_WRITE_CONTENT_QUALIFIER);
+    let mut qualifiers = modifiers.clone();
+    for role in [
+        seed::ROLE_FILE_WRITE_CONTENT_LEAD,
+        "file_write_authoritative_content_lead",
+    ] {
+        for form in seed::lexicon()
+            .role_word_forms(role)
+            .into_iter()
+            .filter(|form| form.slot() == Slot::Prefix)
+        {
+            let lead = form.before_slot().trim().to_lowercase();
+            qualifiers.extend(modifiers.iter().filter_map(|modifier| {
+                let (before, _) = lead.split_once(modifier.as_str())?;
+                (before.is_empty() || before.chars().next_back().is_some_and(char::is_whitespace))
+                    .then(|| lead[before.len()..].to_owned())
+            }));
+            qualifiers.push(lead);
+        }
+    }
     let mut led = raw.trim();
     loop {
         let separated = led.trim_start_matches([':', '-', '—', '–']).trim();
@@ -727,10 +731,6 @@ fn strip_clause_lead(raw: &str) -> &str {
         led = shortened;
     }
 }
-/// Drop one leading qualifier, but only when a clause separator follows it. The
-/// separator is what marks the adverb as introducing the payload rather than
-/// opening it, so content that genuinely starts with "exactly what I asked for"
-/// keeps its first word.
 fn strip_leading_qualifier<'a>(text: &'a str, qualifiers: &[String]) -> &'a str {
     let lowered = text.to_lowercase();
     qualifiers

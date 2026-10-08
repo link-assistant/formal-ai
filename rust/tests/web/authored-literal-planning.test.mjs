@@ -86,3 +86,18 @@ test('explicit verification failure still vetoes exact literal output', () => {
   assert.match(result.answer, /exited with code 1/i);
   assert.doesNotMatch(result.answer, /Completed the general change request/);
 });
+
+test('exact-content Set forms consume seed leads while preserving the declared literal bytes', async () => {
+  const body = 'First paragraph.\n\nWhen tasks arrive, preserve Copy a.mjs to b.mjs as quoted data.\n';
+  for (const lead of ['exactly this content', 'with exactly this content', 'with content', 'contents', 'с точно таким содержанием', 'ठीक इसी सामग्री के साथ', '内容与以下完全相同', 'con exactamente este contenido']) {
+    const result = await observe('Set the contents of output.mjs to ' + lead + ': ' + openQuote + body + closeQuote, body, 'previous\n');
+    assert.match(result.answer, /terminal_state "executed"/);
+  }
+});
+
+test('seed-like words inside quoted payloads and ordinary leading prose remain content', async () => {
+  for (const body of ['exactly what I asked for', 'with content: literal words']) {
+    await observe('Set the contents of output.mjs to ' + openQuote + body + closeQuote, body, 'previous\n');
+  }
+  await observe('Set the contents of output.mjs to exactly what I asked for', 'exactly what I asked for', 'previous\n');
+});

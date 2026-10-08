@@ -1,0 +1,3 @@
+>> bash {"command":"node -e 'require(\"node:fs\").rmSync(\"experiments/formal_ai_subagent/sandboxes/spec-reader-next\",{recursive:true,force:true})'"}
+== answer ==
+The command completed successfully without output.
