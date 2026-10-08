@@ -632,7 +632,7 @@ pub(super) fn plan_settled_routes(
     // content search (PR #1188 T90): grep it, ahead of the file-name locate arm
     // and web search.
     if let Some(plan) = file_read_task_for(task)
-        .filter(|file_task| file_task.is_analysis())
+        .filter(super::file_read::FileReadTask::is_analysis)
         .map(|file_task| plan_file_read_step(&file_task, messages, tool_names))
         .or_else(|| workspace_search::plan_workspace_search_step(task, messages, tool_names))
         // What a named module exports is answered from its declarations (T99).

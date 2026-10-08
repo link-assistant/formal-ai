@@ -68,7 +68,7 @@ pub(super) fn plan_request_sequence_step(
     for part in &parts {
         match plan_for(&with_request(messages, part), tool_names)? {
             AgenticPlan::Final(answer) => answers.push(answer),
-            plan => return Some(plan),
+            plan @ AgenticPlan::ToolCalls(_) => return Some(plan),
         }
     }
     Some(AgenticPlan::Final(answers.join("\n\n")))

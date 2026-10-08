@@ -71,6 +71,23 @@ test("a pronoun with no antecedent in any earlier user turn is not a coreference
   assert.ok(!String(response.intent).startsWith("coreference"), response.intent);
 });
 
+// PR #1188 CIFIX-LOOP (T470): a seeded context keeps its spaces, which are its
+// word boundaries, as the native `coreference_seeds` reads them. The worker
+// trimmed them, so " program " matched "programming" and a Hindi search request
+// after an English one answered the program-artifact body.
+test("a word that only contains a pronoun is no coreference; the pronoun itself still is", async () => {
+  const search = await solve("Rust programming के बारे में जानकारी खोजो", [
+    turn("user", "Find detailed information about Rust programming"),
+    turn("assistant", "Search results for Rust programming."),
+  ]);
+  assert.equal(search.intent, "web_search");
+  const followUp = await solve("what does the program print?", [
+    turn("user", "write a program in Python that prints hello"),
+    turn("assistant", "print('hello')"),
+  ]);
+  assert.equal(followUp.intent, "coreference_program_artifact");
+});
+
 // `nl_tool`: the worker had no twin, so an explicit tool call answered unknown
 // (the calculator) or ran the general web search over the request's words. It
 // now reads the same roles and seeded `nl_tool_*` responses as

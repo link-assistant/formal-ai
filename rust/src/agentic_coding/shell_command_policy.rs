@@ -197,7 +197,7 @@ pub(super) fn command_span(remainder: &str) -> Option<&str> {
             return Some(inner);
         }
     }
-    (text.matches('`').count() % 2 == 0).then_some(text)
+    text.matches('`').count().is_multiple_of(2).then_some(text)
 }
 
 pub(super) fn named_shell_command_in_sentence(

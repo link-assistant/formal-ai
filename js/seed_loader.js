@@ -636,11 +636,13 @@
       if (!pronoun || !pronoun.id) continue;
       seeds.pronouns.push({
         token: toLower(pronoun.id),
+        // A context keeps its spaces, which are its word boundaries: " program "
+        // never matches "programming" (Rust `coreference_seeds` keeps them too).
         contexts: findChildren(pronoun, "context").map(function (context) {
-          return toLower(context.id);
+          return String(context.id || "").toLowerCase();
         }).filter(Boolean),
         startsWith: findChildren(pronoun, "starts_with").map(function (prefix) {
-          return toLower(prefix.id);
+          return String(prefix.id || "").toLowerCase();
         }).filter(Boolean),
       });
     }

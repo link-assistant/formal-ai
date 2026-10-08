@@ -108,33 +108,40 @@ pub(super) fn replaced_in_order(source: &str, pairs: &[(String, String)]) -> Opt
     Some(text)
 }
 
-/// The honest answer when the file no longer holds `old` (PR #1188 G87).
+/// The honest answer when the file no longer holds `replaced` (PR #1188 G87).
 ///
-/// The replacement is already made when the file holds `new`, else the text
-/// does not occur -- never a failed verification of an effect nothing
-/// planned. `None` while `old` (any name a listed slot gives) is still there.
+/// The replacement is already made when the file holds `replacement`, else
+/// the text does not occur -- never a failed verification of an effect
+/// nothing planned. `None` while `replaced` (any name a listed slot gives) is
+/// still there.
 pub(super) fn absent_text_answer(
     task: &str,
     target: &str,
     source: &str,
-    old: &str,
-    new: Option<&str>,
+    replaced: &str,
+    replacement: Option<&str>,
 ) -> Option<String> {
-    if old.is_empty() || old.split(LISTED).any(|name| source.contains(name)) {
+    if replaced.is_empty() || replaced.split(LISTED).any(|name| source.contains(name)) {
         return None;
     }
-    match new.filter(|new| !new.is_empty() && source.contains(*new)) {
-        Some(new) => super::code_task::render_seeded_change(
-            "coding_text_already_replaced",
-            task,
-            target,
-            &[("{old}", old), ("{new}", new)],
-        ),
-        None => super::code_task::render_seeded_change(
-            "coding_text_not_found",
-            task,
-            target,
-            &[("{old}", old)],
-        ),
-    }
+    replacement
+        .filter(|text| !text.is_empty() && source.contains(*text))
+        .map_or_else(
+            || {
+                super::code_task::render_seeded_change(
+                    "coding_text_not_found",
+                    task,
+                    target,
+                    &[("{old}", replaced)],
+                )
+            },
+            |text| {
+                super::code_task::render_seeded_change(
+                    "coding_text_already_replaced",
+                    task,
+                    target,
+                    &[("{old}", replaced), ("{new}", text)],
+                )
+            },
+        )
 }

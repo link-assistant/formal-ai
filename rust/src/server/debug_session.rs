@@ -325,7 +325,6 @@ impl DebugSession {
     pub fn begin(&self, first: &ThinkingStep, alive: &mut dyn FnMut() -> bool) -> Option<String> {
         let mut state = self.lock();
         if !state.stepping {
-            drop(state);
             return None;
         }
         let turn_id = state.start(&self.id, std::slice::from_ref(first), true);

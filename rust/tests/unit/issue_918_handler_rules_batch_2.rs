@@ -139,6 +139,23 @@ fn a_pronoun_without_an_earlier_antecedent_is_not_a_coreference() {
     );
 }
 
+/// A seeded context keeps its spaces (PR #1188 T470): `" program "` never
+/// matches "programming", so a search request is no coreference.
+#[test]
+fn a_word_that_only_contains_a_pronoun_is_not_a_coreference() {
+    let history = [
+        ConversationTurn::user("Find detailed information about Rust programming"),
+        ConversationTurn::assistant("Search results for Rust programming."),
+    ];
+    let response = UniversalSolver::default()
+        .solve_with_history("Rust programming के बारे में जानकारी खोजो", &history);
+    assert!(
+        !response.intent.starts_with("coreference"),
+        "{}",
+        response.intent
+    );
+}
+
 fn agent_answer(prompt: &str) -> SymbolicAnswer {
     UniversalSolver::new(SolverConfig {
         agent_mode: true,

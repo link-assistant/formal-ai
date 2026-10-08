@@ -63,7 +63,7 @@ fn last_call(text: &str) -> Option<&str> {
             }
             (start < end).then(|| &text[start..=close])
         })
-        .last()
+        .next_back()
 }
 
 /// An assertion a request states: the test file, its language, the call and
@@ -194,11 +194,10 @@ fn assertion_request(task: &str) -> Option<AssertionRequest> {
 /// Its index, the style (the longest lead when several fit) and its
 /// indentation (mirrors `lastAssertion`).
 fn last_assertion<'a>(source: &'a str, styles: &[String]) -> Option<(usize, String, &'a str)> {
-    let lines: Vec<&str> = source.split('\n').collect();
-    lines
-        .into_iter()
-        .enumerate()
+    let count = source.split('\n').count();
+    (0..count)
         .rev()
+        .zip(source.split('\n').rev())
         .find_map(|(index, line)| {
             let line = line.strip_suffix('\r').unwrap_or(line);
             let text = line.trim();
