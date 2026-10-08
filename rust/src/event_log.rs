@@ -792,6 +792,11 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
             "execution_environment" => format!("execution_environment:{}", event.id),
             _ => format!("{}:{}", event.kind, event.id),
         };
+        // A named transform is typed metadata, while its event id remains the
+        // provenance link recorded below.
+        if event.kind == "text_transform" {
+            links.push(format!("text_transform:{}", event.payload));
+        }
         links.push(evidence);
     }
     if !links.iter().any(|link| link == response_link) {

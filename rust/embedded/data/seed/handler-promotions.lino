@@ -121,7 +121,7 @@ handler_promotions
     rank 90
     when
       any
-        role proof_directive of cleaned
+        role-prefix proof_directive of cleaned
         role proof_request_lead of cleaned
     because "an explicit request for proof reaches formal proof handling before opinion routing"
   promotion fact_checking

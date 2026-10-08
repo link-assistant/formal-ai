@@ -3,7 +3,7 @@ meanings
     defined-by inquiry
     defined-by conversation_reference
     role conversation_preference_avoid
-    lexeme en "do not use" "stop using" "avoid using"
+    lexeme en "do not use" "don t use" "don’t use" "don't use" "stop using" "avoid using"
     lexeme ru "не используй" "не используйте"
     lexeme hi "उपयोग मत करो" "इस्तेमाल मत करो"
     lexeme zh 不要使用 别再用

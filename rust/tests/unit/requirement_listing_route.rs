@@ -57,6 +57,13 @@ fn a_requirement_listing_request_answers_the_extracted_requirements_one_per_line
             response
                 .evidence_links
                 .iter()
+                .any(|link| { link.starts_with("text_transform:text_transform_") }),
+            "{prompt}: transform provenance was lost"
+        );
+        assert!(
+            response
+                .evidence_links
+                .iter()
                 .any(|link| link.contains("text_transform") && link.contains("requirement_list")),
             "{prompt}: {:?}",
             response.evidence_links

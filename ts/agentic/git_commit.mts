@@ -96,7 +96,14 @@ export function planCommitStep(task, messages, toolNames) {
   // changes" to notes.txt.` quotes it as text to write (PR #1188 gap 2).
   const normalized = normalizePrompt(textOutsideQuotedSegments(task));
   if (!mentionsRole('git_commit_request', normalized)) return null;
-  if (repositoryWorkReference(task) !== null || mentionsSoftwareAuthoring(task)) return null;
+  // A seeded commit phrase may contain an otherwise generic authoring verb.
+  // Exclude only complete cue spans; independent authoring still owns its work.
+  const authoringText = wordsForRole('git_commit_request').reduce((text, cue) => {
+    const escaped = cue.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+    return text.replace(new RegExp('(?<![\\p{L}\\p{N}])' + escaped
+      + '(?![\\p{L}\\p{N}])', 'gu'), ' ');
+  }, normalized);
+  if (repositoryWorkReference(task) !== null || mentionsSoftwareAuthoring(authoringText)) return null;
   const run = toolFor(toolNames, Capability.Run);
   if (!run) return null;
   const progress = Progress.scan(messages);

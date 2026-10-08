@@ -17,7 +17,7 @@
 // runs it as a generated crate factory over the native log it records
 // (`solverEvents`), so a worker answer carries the native links too.
 
-const { stableId } = crateRequire("crate/engine_stable_id.mjs");
+const { stableId } = crateRequire("crate/engine_stable_identifier.mjs");
 
 /** Mirrors rust/src/event_log.rs `EventLog` (append, events, first_of). */
 class EventLog {
@@ -144,7 +144,10 @@ function evidenceLink(event) {
  */
 function buildEvidenceLinks(prompt, log, responseLink) {
   const links = [`prompt:${stableId('prompt', prompt)}`];
-  for (const event of log.events) links.push(evidenceLink(event));
+  for (const event of log.events) {
+    if (event.kind === 'text_transform') links.push(`text_transform:${event.payload}`);
+    links.push(evidenceLink(event));
+  }
   if (!links.includes(responseLink)) links.push(responseLink);
   return links;
 }

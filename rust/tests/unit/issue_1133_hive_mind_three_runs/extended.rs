@@ -679,3 +679,22 @@ fn positional_inserts_compose_in_every_language() {
         assert_eq!(new, "# generated\non:", "{language}");
     }
 }
+
+#[test]
+fn commit_cue_masking_preserves_independent_authoring_and_word_boundaries() {
+    for request in [
+        "Implement a parser and haz commit.",
+        "Revisa haz committer y haz commit.",
+        "Revisa src/haz-committer.mjs y haz commit.",
+        "Append \"haz commit\" to notes.txt.",
+    ] {
+        let messages = vec![ChatMessage::user(request)];
+        let planned = calls(plan_chat_step(&messages, AGENT_TOOLS.as_slice()));
+        assert!(
+            planned
+                .iter()
+                .all(|call| { call.tool != "bash" || !command_of(call).contains("git commit") }),
+            "{request}: {planned:?}"
+        );
+    }
+}

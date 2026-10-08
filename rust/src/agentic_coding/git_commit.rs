@@ -167,8 +167,39 @@ pub(super) fn plan_commit_step(
     // also names the work to do -- "Implement X … and commit the changes", a
     // work item with its issue URL -- is the work, with the commit as its
     // last step, and belongs to the routes that do the work.
+    // Commit phrases can contain a generic authoring verb. Mask their complete
+    // spans while preserving an independent authoring instruction.
+    let spans: Vec<_> = seed::lexicon()
+        .words_for_role(seed::ROLE_GIT_COMMIT_REQUEST)
+        .iter()
+        .flat_map(|cue| {
+            normalized
+                .match_indices(cue)
+                .filter_map(|(start, matched)| {
+                    let end = start + matched.len();
+                    let before = normalized[..start].chars().next_back();
+                    let after = normalized[end..].chars().next();
+                    (before.is_none_or(|ch| !ch.is_alphanumeric())
+                        && after.is_none_or(|ch| !ch.is_alphanumeric()))
+                    .then_some((start, end))
+                })
+        })
+        .collect();
+    let authoring_text: String = normalized
+        .char_indices()
+        .map(|(index, ch)| {
+            if spans
+                .iter()
+                .any(|(start, end)| index >= *start && index < *end)
+            {
+                ' '
+            } else {
+                ch
+            }
+        })
+        .collect();
     if super::general_planner::repository_work_reference(task).is_some()
-        || super::general_planner::mentions_software_authoring(task)
+        || super::general_planner::mentions_software_authoring(&authoring_text)
     {
         return None;
     }

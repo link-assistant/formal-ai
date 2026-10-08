@@ -144,7 +144,10 @@ function evidenceLink(event) {
  */
 function buildEvidenceLinks(prompt, log, responseLink) {
   const links = [`prompt:${stableId('prompt', prompt)}`];
-  for (const event of log.events) links.push(evidenceLink(event));
+  for (const event of log.events) {
+    if (event.kind === 'text_transform') links.push(`text_transform:${event.payload}`);
+    links.push(evidenceLink(event));
+  }
   if (!links.includes(responseLink)) links.push(responseLink);
   return links;
 }
