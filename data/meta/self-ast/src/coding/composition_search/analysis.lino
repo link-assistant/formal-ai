@@ -2,10 +2,10 @@ self_ast_census
   target src/coding/composition_search/analysis.rs
   language rust
   fidelity signature
-  byte_len 11413
-  line_count 311
-  content_id source_module_6ef98fea128a7a4a
-  symbol_count 8
+  byte_len 12811
+  line_count 345
+  content_id source_module_ac8c4bb195572238
+  symbol_count 10
   symbols
     function literal_leaves 12 18
     function iteration_element_types 26 31
@@ -14,4 +14,6 @@ self_ast_census
     function walk 45 165
     function canonical_displacement 176 276
     function walk 177 272
-    function python_tokens 281 311
+    function reading_order_displacement 285 310
+    function walk 286 303
+    function python_tokens 315 345

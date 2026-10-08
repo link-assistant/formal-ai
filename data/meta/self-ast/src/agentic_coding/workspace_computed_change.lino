@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/workspace_computed_change.rs
   language rust
   fidelity full_ast
-  byte_len 23469
-  line_count 611
-  content_id source_module_a43806ea48c0dea1
+  byte_len 23574
+  line_count 613
+  content_id source_module_3250f65309eda17a
   symbol_count 28
   symbols
     const MAX_ANCHOR_BYTES 31 31
@@ -30,21 +30,21 @@ self_ast_census
     function removed_lines 379 385
     function removed_literal 387 401
     function is_bare_literal 404 415
-    function assigned_setting 420 453
-    function assignment 457 480
-    function plan_computed_change_step 483 537
-    function line_payload_and_path 543 592
-    function blank_line_and_path 596 611
+    function assigned_setting 420 455
+    function assignment 459 482
+    function plan_computed_change_step 485 539
+    function line_payload_and_path 545 594
+    function blank_line_and_path 598 613
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 18824
-    named_node_count 3825
+    total_link_count 18906
+    named_node_count 3846
     distinct_node_kinds 96
     node_kinds
-      arguments 338
+      arguments 341
       array_expression 8
       array_type 3
       assignment_expression 2
@@ -54,11 +54,11 @@ self_ast_census
       block 88
       boolean_literal 4
       break_expression 1
-      call_expression 338
+      call_expression 341
       captured_pattern 1
       char_literal 35
-      closure_expression 48
-      closure_parameters 48
+      closure_expression 49
+      closure_parameters 49
       compound_assignment_expr 2
       const_item 2
       continue_expression 2
@@ -73,8 +73,8 @@ self_ast_census
       expression_statement 69
       field_declaration 12
       field_declaration_list 6
-      field_expression 249
-      field_identifier 276
+      field_expression 251
+      field_identifier 278
       field_initializer 15
       field_initializer_list 10
       field_pattern 10
@@ -82,7 +82,7 @@ self_ast_census
       function_item 24
       generic_function 1
       generic_type 32
-      identifier 866
+      identifier 872
       if_expression 34
       impl_item 2
       index_expression 18
@@ -111,7 +111,7 @@ self_ast_census
       reference_type 57
       remaining_field_pattern 6
       return_expression 24
-      scoped_identifier 61
+      scoped_identifier 64
       scoped_type_identifier 17
       scoped_use_list 5
       self 9

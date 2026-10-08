@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/capability_router.rs
   language rust
   fidelity full_ast
-  byte_len 36480
-  line_count 827
-  content_id source_module_489420a7948461db
+  byte_len 36765
+  line_count 831
+  content_id source_module_ee1e52c27ea35bb1
   symbol_count 29
   symbols
     function tool_for 24 59
@@ -28,38 +28,38 @@ self_ast_census
     function plan_routed_capability_step 389 396
     const NAMED_CAPABILITY_SLUGS 408 408
     function plan_named_capability_step 421 433
-    function plan_routed_capability_step_in 435 616
-    function lowered_search_command 627 634
-    function routed_arguments 642 731
-    function arguments_for 739 770
-    function wildcard_token 772 776
-    function file_tokens 778 791
-    function shell_fallback 793 823
-    function shell_quote 825 827
+    function plan_routed_capability_step_in 435 620
+    function lowered_search_command 631 638
+    function routed_arguments 646 735
+    function arguments_for 743 774
+    function wildcard_token 776 780
+    function file_tokens 782 795
+    function shell_fallback 797 827
+    function shell_quote 829 831
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 18781
-    named_node_count 3841
+    total_link_count 18851
+    named_node_count 3854
     distinct_node_kinds 78
     node_kinds
-      arguments 289
+      arguments 290
       array_expression 9
       array_type 16
       assignment_expression 1
       attribute 1
       attribute_item 1
-      binary_expression 68
-      block 80
+      binary_expression 69
+      block 79
       boolean_literal 12
-      call_expression 289
+      call_expression 290
       char_literal 28
       closure_expression 39
       closure_parameters 39
       const_item 5
-      crate 18
+      crate 19
       doc_comment 152
       else_clause 10
       enum_item 1
@@ -74,17 +74,17 @@ self_ast_census
       function_item 23
       generic_function 2
       generic_type 17
-      identifier 834
+      identifier 839
       if_expression 29
       index_expression 1
       inner_doc_comment_marker 1
       integer_literal 9
       let_chain 2
       let_condition 4
-      let_declaration 45
+      let_declaration 46
       lifetime 11
       lifetime_parameter 3
-      line_comment 253
+      line_comment 255
       macro_invocation 20
       match_arm 27
       match_block 5
@@ -101,7 +101,7 @@ self_ast_census
       reference_type 54
       remaining_field_pattern 2
       return_expression 19
-      scoped_identifier 162
+      scoped_identifier 164
       scoped_type_identifier 4
       scoped_use_list 3
       shorthand_field_identifier 3

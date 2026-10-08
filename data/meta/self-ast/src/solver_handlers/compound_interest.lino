@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/compound_interest.rs
   language rust
   fidelity signature
-  byte_len 16229
+  byte_len 16431
   line_count 488
-  content_id source_module_1f4bf32a5631a31f
+  content_id source_module_17776aed2c890757
   symbol_count 32
   symbols
     const POLICY 23 23
@@ -21,12 +21,12 @@ self_ast_census
     function parse_compound_interest_request 248 274
     function parse_final_amount_conversion_request 276 291
     function prior_final_amount 293 299
-    function parse_final_amount_from_text 303 330
-    function parse_currency_amount 332 351
-    function parse_percent_before_symbol 353 357
-    function years_in_prompt 359 379
-    function parse_compounds_per_year 381 389
-    function target_currency 394 403
+    function parse_final_amount_from_text 303 325
+    function parse_currency_amount 327 346
+    function parse_percent_before_symbol 348 352
+    function years_in_prompt 354 374
+    function parse_compounds_per_year 376 384
+    function target_currency 393 403
     function asks_for_web_rate 405 409
     function compounding_label 411 414
     function is_ascii_space 416 418

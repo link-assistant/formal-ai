@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/research_table.rs
   language rust
   fidelity signature
-  byte_len 16189
-  line_count 490
-  content_id source_module_531b50a6a9f07162
+  byte_len 16297
+  line_count 492
+  content_id source_module_ea7a38725f545f6b
   symbol_count 32
   symbols
     const RESEARCH_TABLE_PROCEDURE_LINO 26 27
@@ -20,22 +20,22 @@ self_ast_census
     function looks_like_research_prompt 168 177
     function follows_research_request 183 185
     function is_research_result_followup 189 193
-    function classify_prior_research_answer 197 216
-    function render_research_result_followup 220 228
-    function research_prompt_preview 230 238
-    function extract_research_topics 240 265
-    function clean_topic_line 267 275
-    function strip_list_marker 277 295
-    function clean_search_text 297 310
-    function extract_criteria 312 332
-    function append_criteria_from_text 341 353
-    function push_unique 355 359
-    function render_comparison_table 361 395
-    function localized_value 397 403
-    function research_table_procedure 405 408
-    static CELL 406 406
-    function parse_research_table_procedure 410 460
-    function child_values 462 468
-    function localized_children 470 482
-    function table_escape 484 486
-    function compact_log_value 488 490
+    function classify_prior_research_answer 197 218
+    function render_research_result_followup 222 230
+    function research_prompt_preview 232 240
+    function extract_research_topics 242 267
+    function clean_topic_line 269 277
+    function strip_list_marker 279 297
+    function clean_search_text 299 312
+    function extract_criteria 314 334
+    function append_criteria_from_text 343 355
+    function push_unique 357 361
+    function render_comparison_table 363 397
+    function localized_value 399 405
+    function research_table_procedure 407 410
+    static CELL 408 408
+    function parse_research_table_procedure 412 462
+    function child_values 464 470
+    function localized_children 472 484
+    function table_escape 486 488
+    function compact_log_value 490 492

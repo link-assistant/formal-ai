@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/write_request.rs
   language rust
   fidelity full_ast
-  byte_len 39848
-  line_count 860
-  content_id source_module_eab032e3b2fdd83d
+  byte_len 40067
+  line_count 861
+  content_id source_module_b3edff80cb6b8a37
   symbol_count 43
   symbols
     struct Token 14 18
@@ -12,71 +12,71 @@ self_ast_census
     function is_ideographic_punctuation 58 70
     function bare_surfaces 72 79
     function clean_path_token 85 91
-    function looks_like_file_path 100 107
-    function clean_cue_token 114 122
-    function first_content_lead_end 126 128
-    function content_lead_close 136 156
-    function first_prefix_lead_end 157 207
-    enum CueFamily 211 218
-    struct WriteBinding 222 235
-    function cued_write_target 252 254
-    function ranked_bindings 265 269
-    function preferred_binding 272 274
-    function binding_rank 278 284
-    function cued_write_targets 289 295
-    function write_bindings 306 361
-    function trailing_cue 368 377
-    function leading_cue 380 389
-    function is_unspaced_surface 393 395
-    function quoted_as_value 405 408
-    function stated_write_target 417 419
-    function typed_write_target 423 433
-    function states_write_action 439 441
-    function delivered_write_target 491 498
-    function is_stated_write_target 514 519
-    function pinned_first_line 527 540
-    function delimited_first_line 547 555
-    function unquoted_machine_first_line 563 576
-    function pinned_first_line_of_request 583 587
-    function honouring_pinned_first_line 612 623
-    function without_pinning_sentences 626 634
-    function first_action_cue 636 640
-    function first_action_cue_end 642 644
-    function action_cue_start_after 651 657
-    function first_action_cue_start 667 669
-    function clean_content 676 692
-    function strip_clause_lead 701 712
-    function strip_leading_qualifier 717 728
-    function safe_relative_path 729 736
-    function compose_edit_request 743 825
-    function payload_continues_past_its_first_line 844 860
+    function looks_like_file_path 102 108
+    function clean_cue_token 115 123
+    function first_content_lead_end 127 129
+    function content_lead_close 137 157
+    function first_prefix_lead_end 158 208
+    enum CueFamily 212 219
+    struct WriteBinding 223 236
+    function cued_write_target 253 255
+    function ranked_bindings 266 270
+    function preferred_binding 273 275
+    function binding_rank 279 285
+    function cued_write_targets 290 296
+    function write_bindings 307 362
+    function trailing_cue 369 378
+    function leading_cue 381 390
+    function is_unspaced_surface 394 396
+    function quoted_as_value 406 409
+    function stated_write_target 418 420
+    function typed_write_target 424 434
+    function states_write_action 440 442
+    function delivered_write_target 492 499
+    function is_stated_write_target 515 520
+    function pinned_first_line 528 541
+    function delimited_first_line 548 556
+    function unquoted_machine_first_line 564 577
+    function pinned_first_line_of_request 584 588
+    function honouring_pinned_first_line 613 624
+    function without_pinning_sentences 627 635
+    function first_action_cue 637 641
+    function first_action_cue_end 643 645
+    function action_cue_start_after 652 658
+    function first_action_cue_start 668 670
+    function clean_content 677 693
+    function strip_clause_lead 702 713
+    function strip_leading_qualifier 718 729
+    function safe_relative_path 730 737
+    function compose_edit_request 744 826
+    function payload_continues_past_its_first_line 845 861
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 22129
-    named_node_count 4757
+    total_link_count 22224
+    named_node_count 4780
     distinct_node_kinds 87
     node_kinds
-      arguments 362
+      arguments 364
       array_expression 8
       array_type 12
       assignment_expression 4
       attribute 3
       attribute_item 3
-      binary_expression 93
-      block 95
+      binary_expression 95
+      block 96
       boolean_literal 12
       break_expression 1
-      call_expression 362
-      char_literal 71
-      closure_expression 75
-      closure_parameters 75
+      call_expression 364
+      char_literal 72
+      closure_expression 76
+      closure_parameters 76
       compound_assignment_expr 1
       continue_expression 1
       crate 3
-      doc_comment 300
+      doc_comment 302
       else_clause 5
       enum_item 1
       enum_variant 3
@@ -85,8 +85,8 @@ self_ast_census
       expression_statement 49
       field_declaration 9
       field_declaration_list 2
-      field_expression 331
-      field_identifier 344
+      field_expression 333
+      field_identifier 346
       field_initializer 8
       field_initializer_list 4
       for_expression 2
@@ -94,7 +94,7 @@ self_ast_census
       function_modifiers 2
       generic_function 1
       generic_type 43
-      identifier 885
+      identifier 888
       if_expression 23
       index_expression 20
       inner_doc_comment_marker 9
@@ -104,7 +104,7 @@ self_ast_census
       let_declaration 78
       lifetime 17
       lifetime_parameter 2
-      line_comment 316
+      line_comment 318
       loop_expression 1
       macro_invocation 10
       match_arm 3
@@ -113,7 +113,7 @@ self_ast_census
       match_pattern 3
       mutable_specifier 7
       or_pattern 1
-      outer_doc_comment_marker 291
+      outer_doc_comment_marker 293
       parameter 57
       parameters 40
       parenthesized_expression 11

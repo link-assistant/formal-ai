@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/shell_command_transform.rs
   language rust
   fidelity signature
-  byte_len 9725
+  byte_len 9738
   line_count 298
-  content_id source_module_7873ff15e4157caa
+  content_id source_module_32822d0d894c2322
   symbol_count 22
   symbols
     const CUE_INTENT 16 16

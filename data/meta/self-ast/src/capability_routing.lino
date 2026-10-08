@@ -2,10 +2,10 @@ self_ast_census
   target src/capability_routing.rs
   language rust
   fidelity signature
-  byte_len 32807
-  line_count 850
-  content_id source_module_7035b4a520b725ec
-  symbol_count 38
+  byte_len 34193
+  line_count 883
+  content_id source_module_80a67c1d76592e03
+  symbol_count 40
   symbols
     module claim_evidence 42 42
     module claim_operands 43 43
@@ -28,20 +28,22 @@ self_ast_census
     enum RoutingOutcome 329 342
     struct RoutingDecision 351 360
     function table_routing_enabled 368 376
-    function object_type 381 498
-    function evidences_retrieve_act 510 512
-    function is_response_language_obligation 524 527
-    function acts 535 554
-    function act 558 560
-    function locus_of 568 610
-    function locus 615 619
-    function routing_table 623 625
-    const CAPABILITY_ROUTING_LINO 628 629
-    function routing_table_from 637 669
-    function route 680 682
-    function route_decision 691 718
-    function route_placed 734 748
-    function advertised_provides 756 772
-    function route_with 776 812
-    function readings_for 820 847
-    const DEFAULT_OUTCOME 850 850
+    function dialogue_utterance_roles 381 389
+    function is_dialogue_utterance 400 409
+    function object_type 414 531
+    function evidences_retrieve_act 543 545
+    function is_response_language_obligation 557 560
+    function acts 568 587
+    function act 591 593
+    function locus_of 601 643
+    function locus 648 652
+    function routing_table 656 658
+    const CAPABILITY_ROUTING_LINO 661 662
+    function routing_table_from 670 702
+    function route 713 715
+    function route_decision 724 751
+    function route_placed 767 781
+    function advertised_provides 789 805
+    function route_with 809 845
+    function readings_for 853 880
+    const DEFAULT_OUTCOME 883 883

@@ -2,21 +2,21 @@ self_ast_census
   target src/agentic_coding/planner/precedence.rs
   language rust
   fidelity full_ast
-  byte_len 5362
-  line_count 111
-  content_id source_module_db0a3dca567fd32f
+  byte_len 5307
+  line_count 110
+  content_id source_module_58feb368d6525ca7
   symbol_count 3
   symbols
-    const PLANNER_ROUTE_ARMS 15 75
-    function checked_route_precedence 83 111
-    static CELL 84 84
+    const PLANNER_ROUTE_ARMS 15 74
+    function checked_route_precedence 82 110
+    static CELL 83 83
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 2763
-    named_node_count 517
+    total_link_count 2728
+    named_node_count 511
     distinct_node_kinds 43
     node_kinds
       arguments 10
@@ -27,7 +27,7 @@ self_ast_census
       closure_expression 1
       closure_parameters 1
       const_item 1
-      crate 2
+      crate 1
       doc_comment 19
       escape_sequence 3
       expression_statement 4
@@ -53,10 +53,10 @@ self_ast_census
       scoped_type_identifier 1
       source_file 1
       static_item 1
-      string_content 124
-      string_literal 121
+      string_content 122
+      string_literal 119
       token_tree 8
-      tuple_expression 59
+      tuple_expression 58
       tuple_pattern 2
       tuple_type 1
       type_arguments 2

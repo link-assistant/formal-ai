@@ -2,9 +2,9 @@ self_ast_census
   target src/coding/synthesis_runtime.rs
   language rust
   fidelity signature
-  byte_len 18590
+  byte_len 18620
   line_count 488
-  content_id source_module_1154ced71152b3d9
+  content_id source_module_f23f154ba54e86d5
   symbol_count 15
   symbols
     function source_cache_root 31 35

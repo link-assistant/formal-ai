@@ -2,9 +2,9 @@ self_ast_census
   target src/discovery_production_contract.rs
   language rust
   fidelity signature
-  byte_len 16191
-  line_count 422
-  content_id source_module_dc1eff690853754c
+  byte_len 16201
+  line_count 423
+  content_id source_module_574c08f709f65ebc
   symbol_count 19
   symbols
     const CODE_EXAMPLE_PARTS 14 14
@@ -19,10 +19,10 @@ self_ast_census
     function documented_command_matches 134 136
     function documentation_command_lines 140 158
     function rebind 161 168
-    function documented_run_contract 185 256
-    function documentation_deviation 267 282
-    enum ProgramVerification 286 297
-    function rediscovered_page 302 307
-    function program_verification 317 344
-    function documentation_events 354 399
-    function documented_oracle_program 409 422
+    function documented_run_contract 185 257
+    function documentation_deviation 268 283
+    enum ProgramVerification 287 298
+    function rediscovered_page 303 308
+    function program_verification 318 345
+    function documentation_events 355 400
+    function documented_oracle_program 410 423

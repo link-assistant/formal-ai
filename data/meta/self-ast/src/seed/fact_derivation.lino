@@ -2,9 +2,9 @@ self_ast_census
   target src/seed/fact_derivation.rs
   language rust
   fidelity signature
-  byte_len 19511
+  byte_len 19512
   line_count 536
-  content_id source_module_538633be6d313c61
+  content_id source_module_1ab0c2ba9faf1bff
   symbol_count 35
   symbols
     const SUBJECT_SLOT 20 20
