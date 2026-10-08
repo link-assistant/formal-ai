@@ -32,7 +32,9 @@ fn pages_deploy_waits_for_release_ref_before_pages_upload() {
     assert!(job_block(&workflow, "deploy-pages").contains("needs: [build-pages]"));
     assert!(pages_build.contains("Select Pages deployment ref"));
     assert!(pages_build.contains("PAGES_DEPLOY_SHA: ${{ inputs.sha }}"));
-    assert!(pages_build.contains("ref: ${{ steps.pages_ref.outputs.sha }}"));
+    assert!(pages_build.contains("ref: ${{ github.ref }}"));
+    assert!(pages_build.contains("git rev-parse HEAD"));
+    assert!(!pages_build.contains("ref: ${{ steps.pages_ref.outputs.sha }}"));
 }
 
 #[test]
@@ -155,8 +157,9 @@ fn pages_deploy_is_pinned_and_live_e2e_waits_for_matching_deployment() {
         "deploy-pages should report the SHA the Pages build stamped"
     );
     assert!(
-        deploy_demo.contains("ref: ${{ steps.pages_ref.outputs.sha }}"),
-        "Pages deployment should use the selected Pages SHA, which is the release child commit when auto-release creates one"
+        deploy_demo.contains("ref: ${{ github.ref }}")
+            && deploy_demo.contains("git rev-parse HEAD"),
+        "Pages build verifies that the trusted release branch matches the selected commit"
     );
     assert!(
         deploy_demo.contains("Stamp GitHub Pages artifact"),
