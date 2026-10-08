@@ -1,0 +1,3 @@
+>> bash {"command":"rustfmt --edition 2024 rust/src/agentic_coding/mutating_action.rs rust/src/seed/shell_intents.rs rust/tests/unit/agentic-coding/issue_1021_verified_move.rs"}
+== answer ==
+The command completed successfully without output.

@@ -1,0 +1,241 @@
+>> read {"filePath":"rust/tests/unit/ci-cd/workflow_fixtures.rs","file_path":"rust/tests/unit/ci-cd/workflow_fixtures.rs","path":"rust/tests/unit/ci-cd/workflow_fixtures.rs"}
+   <file>
+   00001| //! Shared fixtures for the release-workflow CI/CD unit tests.
+   00002| //!
+   00003| //! These helpers read the real workflow YAML from the repo and slice out
+   00004| //! individual jobs/steps so the assertions in `workflow_release.rs` and
+   00005| //! `release_publishing.rs` can stay focused and small.
+   00006| 
+   00007| use std::fs;
+   00008| use std::path::Path;
+   00009| 
+   00010| /// Everything CI executes for a pull request, workflow and gate registry as one
+   00011| /// text.
+   00012| ///
+   00013| /// Issue #991 moved the `lint` job's checks into `data/meta/ci-gates/`, so a
+   00014| /// test that asks "does CI run this check?" must read both files.
+   00015| /// `crate::ci_gates` answers that for the whole suite; it is re-exported here
+   00016| /// because these fixtures are where the workflow tests already look.
+   00017| pub use crate::ci_gates::{ci_surface, release_workflow};
+   00018| 
+   00019| /// Issue #895: the two coverage denominators live in their own workflow. They
+   00020| /// are a leaf of the release graph -- nothing `needs:` them -- so moving them
+   00021| /// out of `release.yml` changed no ordering, and it keeps that file under the
+   00022| /// 1500-line ceiling `scripts/check-file-size.rs` enforces.
+   00023| pub fn coverage_workflow() -> String {
+   00024|     fs::read_to_string(format!(
+   00025|         "{}/../.github/workflows/coverage.yml",
+   00026|         env!("CARGO_MANIFEST_DIR")
+   00027|     ))
+   00028|     .unwrap()
+   00029|     .replace("\r\n", "\n")
+   00030| }
+   00031| 
+   00032| /// PR #1188 (R1188-U9): the Pages build (web bundle, `cargo doc`, stamp,
+   00033| /// upload) runs in its own reusable workflow under a 30-minute cap, and the
+   00034| /// release workflow's `deploy-pages` job only deploys its artifact.
+   00035| pub fn pages_artifact_workflow() -> String {
+   00036|     fs::read_to_string(format!(
+   00037|         "{}/../.github/workflows/pages-artifact.yml",
+   00038|         env!("CARGO_MANIFEST_DIR")
+   00039|     ))
+   00040|     .unwrap()
+   00041|     .replace("\r\n", "\n")
+   00042| }
+   00043| 
+   00044| pub fn self_development_status_workflow() -> String {
+   00045|     fs::read_to_string(format!(
+   00046|         "{}/../.github/workflows/self-development-status.yml",
+   00047|         env!("CARGO_MANIFEST_DIR")
+   00048|     ))
+   00049|     .unwrap()
+   00050|     .replace("\r\n", "\n")
+   00051| }
+   00052| 
+   00053| pub fn desktop_release_workflow() -> String {
+   00054|     fs::read_to_string(format!(
+   00055|         "{}/../.github/workflows/desktop-release.yml",
+   00056|         env!("CARGO_MANIFEST_DIR")
+   00057|     ))
+   00058|     .unwrap()
+   00059|     .replace("\r\n", "\n")
+   00060| }
+   00061| 
+   00062| /// The same workflow with every run of whitespace collapsed to one space.
+   00063| ///
+   00064| /// Issue #1081: two gates pinned one line-wrapping of `links.yml`'s `if:`
+   00065| /// expression as a literal, so folding a condition across lines to add a term
+   00066| /// to it read to them as a deletion -- a true failure for a change that removed
+   00067| /// nothing. A condition means the same thing however it is wrapped, so the
+   00068| /// assertions that care about one ask it of this rather than of the raw file.
+   00069| pub fn unwrapped(workflow: &str) -> String {
+   00070|     workflow.split_whitespace().collect::<Vec<_>>().join(" ")
+   00071| }
+   00072| 
+   00073| pub fn job_block<'a>(workflow: &'a str, job_name: &str) -> &'a str {
+   00074|     let marker = format!("  {job_name}:\n");
+   00075|     let start = workflow.find(&format!("\n{marker}")).unwrap() + 1;
+   00076|     let body_start = start + marker.len();
+   00077|     let rest = &workflow[body_start..];
+   00078| 
+   00079|     let next_job = rest
+   00080|         .lines()
+   00081|         .scan(0usize, |offset, line| {
+   00082|             let current_offset = *offset;
+   00083|             *offset += line.len() + 1;
+   00084|             Some((current_offset, line))
+   00085|         })
+   00086|         .find_map(|(offset, line)| {
+   00087|             let starts_at_job_indent = line.starts_with("  ") && !line.starts_with("    ");
+   00088|             (starts_at_job_indent && line.trim_end().ends_with(':')).then_some(offset)
+   00089|         });
+   00090| 
+   00091|     next_job.map_or_else(
+   00092|         || &workflow[start..],
+   00093|         |end| &workflow[start..body_start + end],
+   00094|     )
+   00095| }
+   00096| 
+   00097| pub fn workflow_step_block<'a>(job: &'a str, step_name: &str) -> &'a str {
+   00098|     let marker = format!("      - name: {step_name}\n");
+   00099|     let start = job.find(&marker).unwrap();
+   00100|     let body_start = start + marker.len();
+   00101|     let rest = &job[body_start..];
+   00102| 
+   00103|     let next_step = rest
+   00104|         .lines()
+   00105|         .scan(0usize, |offset, line| {
+   00106|             let current_offset = *offset;
+   00107|             *offset += line.len() + 1;
+   00108|             Some((current_offset, line))
+   00109|         })
+   00110|         .find_map(|(offset, line)| line.starts_with("      - ").then_some(offset));
+   00111| 
+   00112|     next_step.map_or_else(|| &job[start..], |end| &job[start..body_start + end])
+   00113| }
+   00114| 
+   00115| pub fn workflow_job_names(workflow: &str) -> Vec<&str> {
+   00116|     let marker = "jobs:\n";
+   00117|     let start = workflow.find(marker).unwrap() + marker.len();
+   00118| 
+   00119|     workflow[start..]
+   00120|         .lines()
+   00121|         .filter_map(|line| {
+   00122|             let starts_at_job_indent = line.starts_with("  ") && !line.starts_with("    ");
+   00123|             // A comment at job indentation is not a job. Issue #1017: a prose
+   00124|             // line that happened to end in a colon was parsed as one, which
+   00125|             // made every job-sweeping contract fail against a phantom job whose
+   00126|             // "name" was the sentence -- an error that points at the wrong
+   00127|             // thing entirely and takes a CI round trip to see.
+   00128|             let is_comment = line.trim_start().starts_with('#');
+   00129|             (starts_at_job_indent && !is_comment && line.trim_end().ends_with(':'))
+   00130|                 .then(|| line.trim().trim_end_matches(':'))
+   00131|         })
+   00132|         .collect()
+   00133| }
+   00134| 
+   00135| /// The workflow files, and only those.
+   00136| ///
+   00137| /// Most callers parse what they get here as a workflow -- `jobs:`, job caps,
+   00138| /// concurrency groups -- so a composite action, which has none of those, makes
+   00139| /// them panic rather than fail with a reason. `ci_shell_files` is the list for
+   00140| /// contracts about the shell CI runs, wherever it lives.
+   00141| pub fn workflow_files() -> Vec<(String, String)> {
+   00142|     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+   00143|         .parent()
+   00144|         .expect("the repository root sits one level above the crate");
+   00145|     let mut files = Vec::new();
+   00146|     collect_ci_files(
+   00147|         &root.join(".github/workflows"),
+   00148|         root,
+   00149|         &mut files,
+   00150|         &["yml", "yaml"],
+   00151|     );
+   00152|     files.sort();
+   00153|     assert!(!files.is_empty(), "no workflow files found");
+   00154|     files
+   00155| }
+   00156| 
+   00157| /// Everything CI executes as shell: the workflows, the composite actions, and
+   00158| /// the scripts either of them runs.
+   00159| ///
+   00160| /// Issue #1085 moved the self-authored authoring loop into
+   00161| /// `.github/actions/author-with-formal-ai/` so another repository can install
+   00162| /// it. A contract about the shell -- no bare `git push`, no credentialed
+   00163| /// checkout without a reason -- has to read this list, or moving a line one
+   00164| /// directory across would move it out of review. The shell CI runs is the same
+   00165| /// shell either way.
+   00166| pub fn ci_shell_files() -> Vec<(String, String)> {
+   00167|     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+   00168|         .parent()
+   00169|         .expect("the repository root sits one level above the crate");
+   00170|     let mut files = Vec::new();
+   00171|     collect_ci_files(
+   00172|         &root.join(".github/workflows"),
+   00173|         root,
+   00174|         &mut files,
+   00175|         &["yml", "yaml"],
+   00176|     );
+   00177|     collect_ci_files(
+   00178|         &root.join(".github/actions"),
+   00179|         root,
+   00180|         &mut files,
+   00181|         &["yml", "yaml", "sh"],
+   00182|     );
+   00183|     files.sort();
+   00184|     assert!(!files.is_empty(), "no CI shell files found");
+   00185|     files
+   00186| }
+   00187| 
+   00188| fn collect_ci_files(
+   00189|     dir: &Path,
+   00190|     root: &Path,
+   00191|     files: &mut Vec<(String, String)>,
+   00192|     extensions: &[&str],
+   00193| ) {
+   00194|     let Ok(entries) = fs::read_dir(dir) else {
+   00195|         return;
+   00196|     };
+   00197|     for entry in entries {
+   00198|         let path = entry.expect("workflow entry").path();
+   00199|         if path.is_dir() {
+   00200|             collect_ci_files(&path, root, files, extensions);
+   00201|             continue;
+   00202|         }
+   00203|         if !path
+   00204|             .extension()
+   00205|             .is_some_and(|ext| extensions.iter().any(|allowed| ext == *allowed))
+   00206|         {
+   00207|             continue;
+   00208|         }
+   00209|         let name = path
+   00210|             .strip_prefix(root)
+   00211|             .unwrap_or(&path)
+   00212|             .to_string_lossy()
+   00213|             .into_owned();
+   00214|         let name = name
+   00215|             .strip_prefix(".github/workflows/")
+   00216|             .unwrap_or(&name)
+   00217|             .to_owned();
+   00218|         files.push((
+   00219|             name,
+   00220|             fs::read_to_string(&path).unwrap().replace("\r\n", "\n"),
+   00221|         ));
+   00222|     }
+   00223| }
+   00224| 
+   
+   (End of file - total 224 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/ci-cd/workflow_fixtures.rs","file_path":"rust/tests/unit/ci-cd/workflow_fixtures.rs","new":"#[test]\nfn job_lookup_ignores_a_nested_input_with_the_same_name() {\n    let workflow = \"on:\\n  workflow_dispatch:\\n    inputs:\\n      publish:\\n        type: boolean\\njobs:\\n  publish:\\n    timeout-minutes: 30\\n  resolve:\\n    timeout-minutes: 5\\n\";\n    assert_eq!(job_block(workflow, \"publish\"), \"  publish:\\n    timeout-minutes: 30\\n\");\n}\n\npub fn workflow_step_block","newString":"#[test]\nfn job_lookup_ignores_a_nested_input_with_the_same_name() {\n    let workflow = \"on:\\n  workflow_dispatch:\\n    inputs:\\n      publish:\\n        type: boolean\\njobs:\\n  publish:\\n    timeout-minutes: 30\\n  resolve:\\n    timeout-minutes: 5\\n\";\n    assert_eq!(job_block(workflow, \"publish\"), \"  publish:\\n    timeout-minutes: 30\\n\");\n}\n\npub fn workflow_step_block","new_str":"#[test]\nfn job_lookup_ignores_a_nested_input_with_the_same_name() {\n    let workflow = \"on:\\n  workflow_dispatch:\\n    inputs:\\n      publish:\\n        type: boolean\\njobs:\\n  publish:\\n    timeout-minutes: 30\\n  resolve:\\n    timeout-minutes: 5\\n\";\n    assert_eq!(job_block(workflow, \"publish\"), \"  publish:\\n    timeout-minutes: 30\\n\");\n}\n\npub fn workflow_step_block","new_string":"#[test]\nfn job_lookup_ignores_a_nested_input_with_the_same_name() {\n    let workflow = \"on:\\n  workflow_dispatch:\\n    inputs:\\n      publish:\\n        type: boolean\\njobs:\\n  publish:\\n    timeout-minutes: 30\\n  resolve:\\n    timeout-minutes: 5\\n\";\n    assert_eq!(job_block(workflow, \"publish\"), \"  publish:\\n    timeout-minutes: 30\\n\");\n}\n\npub fn workflow_step_block","old":"pub fn workflow_step_block","oldString":"pub fn workflow_step_block","old_str":"pub fn workflow_step_block","old_string":"pub fn workflow_step_block","path":"rust/tests/unit/ci-cd/workflow_fixtures.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/ci-cd/workflow_fixtures.rs"}
+   fa2e57685d43e876669b1b59f0a31cd10194333d287c7db607b8c043f25cd5b6  rust/tests/unit/ci-cd/workflow_fixtures.rs
+   
+== answer ==
+Replaced `pub fn workflow_step_block` with `#[test]
+fn job_lookup_ignores_a_nested_input_with_the_same_name() {
+    let workflow = "on:\n  workflow_dispatch:\n    inputs:\n      publish:\n        type: boolean\njobs:\n  publish:\n    timeout-minutes: 30\n  resolve:\n    timeout-minutes: 5\n";
+    assert_eq!(job_block(workflow, "publish"), "  publish:\n    timeout-minutes: 30\n");
+}
+
+pub fn workflow_step_block` in `rust/tests/unit/ci-cd/workflow_fixtures.rs` and observed the result.

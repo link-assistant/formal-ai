@@ -1,0 +1,748 @@
+>> read {"filePath":"js/agentic/tool_result.mjs","file_path":"js/agentic/tool_result.mjs","path":"js/agentic/tool_result.mjs"}
+   <file>
+   00001| // Friendly, lossless presentation of client-owned tool results (issue #750):
+   00002| // a port of rust/src/agentic_coding/tool_result.rs.
+   00003| 
+   00004| import { plainText, rustLines } from './content.mjs';
+   00005| import { agenticMessage } from './messages.mjs';
+   00006| import { classifyTool, isWorkspaceCreationTool } from './capability_router.mjs';
+   00007| import { Capability } from './capability.mjs';
+   00008| import { findToolDefinition } from './protocol_policy.mjs';
+   00009| import { requestFor as localSearchRequestFor } from './local_search.mjs';
+   00010| import { normalizePrompt } from './crate/engine.mjs';
+   00011| import { detect, fallbackLanguage } from './crate/language.mjs';
+   00012| import { cached, childValue, childrenNamed, readText } from './host.mjs';
+   00013| import { parseRoot } from './crate/seed_parser.mjs';
+   00014| import { textOutsideQuotedSegments } from './crate/coding_program_contract.mjs';
+   00015| import { localizedResponse } from './crate/seed.mjs';
+   00016| import { appendInvitation } from './crate/failure_reporting.mjs';
+   00017| import { lexicon, mentionsRole } from './crate/seed_meanings.mjs';
+   00018| import {
+   00019|   asI64, asStr, compactJson, isObject, isWhitespace, jsonGet, parseI64, parseJson, parseUsize, prettyJson,
+   00020|   replaceAllLiteral, splitInclusiveNewline, splitOnce, splitWhitespace, toAsciiLowercase, trim, trimEndMatches,
+   00021|   trimStart, utf8Len,
+   00022| } from './crate/rust_str.mjs';
+   00023| 
+   00024| const SHELL_INTENTS_FILE = 'data/seed/shell-intents.lino';
+   00025| 
+   00026| const ROLE_TOOL_RESULT_DETAIL_REQUEST = 'tool_result_detail_request';
+   00027| const ROLE_TOOL_RESULT_FAILURE_SIGNAL = 'tool_result_failure_signal';
+   00028| const ROLE_TOOL_RESULT_FIRST_REFERENCE = 'tool_result_first_reference';
+   00029| const ROLE_TOOL_RESULT_LINE_REQUEST = 'tool_result_line_request';
+   00030| const ROLE_TOOL_RESULT_SECOND_REFERENCE = 'tool_result_second_reference';
+   00031| const ROLE_TOOL_RESULT_URL_REQUEST = 'tool_result_url_request';
+   00032| 
+   00033| /** `StepOutcome` variants. */
+   00034| export const StepOutcome = Object.freeze({ Succeeded: 'succeeded', Failed: 'failed', Unreported: 'unreported' });
+   00035| 
+   00036| const isUser = (message) => message.role.toLowerCase() === 'user';
+   00037| const isTool = (message) => message.role.toLowerCase() === 'tool';
+   00038| 
+   00039| /** Mirrors `fn step_outcome`. */
+   00040| export function stepOutcome(raw) {
+   00041|   const result = normalize(raw);
+   00042|   if (result.error !== null) return StepOutcome.Failed;
+   00043|   if (result.exit_code === 0) return StepOutcome.Succeeded;
+   00044|   if (result.exit_code !== null) return StepOutcome.Failed;
+   00045|   return looksLikeError(result.payload) ? StepOutcome.Failed : StepOutcome.Unreported;
+   00046| }
+   00047| 
+   00048| /** Mirrors `fn failed_verification`. */
+   00049| export function failedVerification(runOutputs, verificationCommand, prompt) {
+   00050|   const output = runOutputs[runOutputs.length - 1];
+   00051|   if (output === undefined || stepOutcome(output) !== StepOutcome.Failed) return null;
+   00052|   return render(verificationCommand, output, prompt);
+   00053| }
+   00054| 
+   00055| /** Mirrors `fn reported_exit_code`. */
+   00056| export function reportedExitCode(raw) {
+   00057|   return normalize(raw).exit_code;
+   00058| }
+   00059| 
+   00060| /** Mirrors `fn harness_reported_failure`. */
+   00061| export function harnessReportedFailure(raw) {
+   00062|   return normalize(raw).error !== null;
+   00063| }
+   00064| 
+   00065| /** Mirrors `fn shell_step`: `{text}` or null. */
+   00066| export function shellStep(raw) {
+   00067|   const envelope = parseShellEnvelope(trim(raw));
+   00068|   if (!envelope) return null;
+   00069|   const result = envelopeResult(envelope);
+   00070|   return { text: result.error ?? result.payload };
+   00071| }
+   00072| 
+   00073| /** Mirrors `fn normalized_payload`. */
+   00074| export function normalizedPayload(raw) {
+   00075|   const result = normalize(raw);
+   00076|   const succeeded = result.exit_code === 0;
+   00077|   return result.error === null && (succeeded || !looksLikeError(result.payload)) ? result.payload : null;
+   00078| }
+   00079| 
+   00080| /** Mirrors `fn observed_payload`. */
+   00081| export function observedPayload(raw) {
+   00082|   const result = normalize(raw);
+   00083|   return result.error === null ? result.payload : null;
+   00084| }
+   00085| 
+   00086| /** Mirrors `fn failure_message`. */
+   00087| export function failureMessage(raw, explicitlyFailed, inferFromProse) {
+   00088|   const result = normalize(raw);
+   00089|   if (result.error !== null) return result.error;
+   00090|   if (explicitlyFailed || (inferFromProse && looksLikeError(result.payload))) {
+   00091|     return trim(result.payload) ? result.payload : trim(raw);
+   00092|   }
+   00093|   return null;
+   00094| }
+   00095| 
+   00096| const PROSE_FAILURE_PREFIX_CHARS = 512;
+   00097| 
+   00098| /** Mirrors `fn looks_like_error`. */
+   00099| function looksLikeError(text) {
+   00100|   const prefix = Array.from(ownWords(text)).slice(0, PROSE_FAILURE_PREFIX_CHARS).join('');
+   00101|   return mentionsRole(ROLE_TOOL_RESULT_FAILURE_SIGNAL, normalizePrompt(prefix));
+   00102| }
+   00103| 
+   00104| const CITED_LINES_THAT_MAKE_A_QUOTATION = 2;
+   00105| 
+   00106| /** Mirrors `fn own_words`. */
+   00107| function ownWords(text) {
+   00108|   let consumed = 0;
+   00109|   let firstCitation = null;
+   00110|   let cited = 0;
+   00111|   for (const line of splitInclusiveNewline(text)) {
+   00112|     const offset = citationOffset(line);
+   00113|     if (offset !== null) {
+   00114|       cited += 1;
+   00115|       if (firstCitation === null) firstCitation = consumed + offset;
+   00116|     }
+   00117|     consumed += line.length;
+   00118|   }
+   00119|   return firstCitation !== null && cited >= CITED_LINES_THAT_MAKE_A_QUOTATION ? text.slice(0, firstCitation) : text;
+   00120| }
+   00121| 
+   00122| /** Mirrors `fn citation_offset`. */
+   00123| function citationOffset(line) {
+   00124|   for (let colon = line.indexOf(':'); colon >= 0; colon = line.indexOf(':', colon + 1)) {
+   00125|     const before = line.slice(0, colon);
+   00126|     const stem = trimEndMatches(before, (character) => /^[0-9]$/.test(character));
+   00127|     const last = Array.from(stem).pop();
+   00128|     const cites = stem.length < before.length
+   00129|       && (last === undefined || last === ':' || last === '/' || last === '.' || isWhitespace(last));
+   00130|     if (cites) return wordStart(before);
+   00131|   }
+   00132|   return null;
+   00133| }
+   00134| 
+   00135| /** Mirrors `fn word_start`. */
+   00136| function wordStart(text) {
+   00137|   const chars = Array.from(text);
+   00138|   let offset = text.length;
+   00139|   for (let index = chars.length - 1; index >= 0; index -= 1) {
+   00140|     offset -= chars[index].length;
+   00141|     if (isWhitespace(chars[index])) return offset + chars[index].length;
+   00142|   }
+   00143|   return 0;
+   00144| }
+   00145| 
+   00146| /** Mirrors `fn render`. */
+   00147| export function render(label, raw, prompt) {
+   00148|   const result = normalize(raw);
+   00149|   const language = responseLanguage(prompt);
+   00150|   if (result.error !== null) return failureReport(label, result.error, result.exit_code, language);
+   00151|   if (result.exit_code !== 0 && looksLikeError(result.payload)) {
+   00152|     return failureReport(label, result.payload, result.exit_code, language);
+   00153|   }
+   00154|   if (!trim(result.payload)) {
+   00155|     let intent = 'tool_result_empty_generic';
+   00156|     if (localSearchRequestFor(prompt) !== null) intent = 'tool_result_empty_local_path_search';
+   00157|     else if (isListing(label)) intent = 'tool_result_empty_list';
+   00158|     else if (isSearch(label)) intent = 'tool_result_empty_search';
+   00159|     return fill(intent, language, [['{tool}', label]]);
+   00160|   }
+   00161|   return fill('tool_result_completed', language, [
+   00162|     ['{tool}', label],
+   00163|     ['{format}', result.format],
+   00164|     ['{payload}', result.payload],
+   00165|   ]);
+   00166| }
+   00167| 
+   00168| /** Mirrors `fn render_failure`. */
+   00169| export function renderFailure(label, detail, prompt) {
+   00170|   const result = normalize(detail);
+   00171|   return failureReport(label, result.error ?? result.payload, result.exit_code, responseLanguage(prompt));
+   00172| }
+   00173| 
+   00174| /** Mirrors `fn failure_report`. */
+   00175| function failureReport(label, error, exitCode, language) {
+   00176|   const failure = exitCode === null
+   00177|     ? fill('tool_result_failed', language, [['{tool}', label], ['{error}', trim(error)]])
+   00178|     : fill('tool_result_failed_exit_code', language, [
+   00179|       ['{tool}', label],
+   00180|       ['{exit_code}', String(exitCode)],
+   00181|       ['{error}', trim(error)],
+   00182|     ]);
+   00183|   return appendInvitation(failure, language);
+   00184| }
+   00185| 
+   00186| function lastIndexWhere(items, predicate, from = 0) {
+   00187|   for (let index = items.length - 1; index >= from; index -= 1) if (predicate(items[index])) return index;
+   00188|   return -1;
+   00189| }
+   00190| 
+   00191| /** Mirrors `fn latest_turn_answer`. */
+   00192| export function latestTurnAnswer(messages, toolNames, prompt) {
+   00193|   const start = lastIndexWhere(messages, isUser);
+   00194|   if (start < 0) return null;
+   00195|   const index = lastIndexWhere(messages, isTool, start + 1);
+   00196|   if (index < 0) return null;
+   00197|   if (isWriteRunRecipe(messages, toolNames)) return null;
+   00198|   return render(resultLabel(messages, index), plainText(messages[index].content), prompt);
+   00199| }
+   00200| 
+   00201| /**
+   00202|  * Mirrors `fn latest_turn_quiet_success`: whether the latest tool result of
+   00203|  * this turn succeeded with no output, as an edit tool's empty reply does
+   00204|  * (PR #1188 T181).
+   00205|  */
+   00206| export function latestTurnQuietSuccess(messages) {
+   00207|   const start = lastIndexWhere(messages, isUser);
+   00208|   if (start < 0) return false;
+   00209|   const index = lastIndexWhere(messages, isTool, start + 1);
+   00210|   if (index < 0) return false;
+   00211|   const result = normalize(plainText(messages[index].content));
+   00212|   return result.error === null && (result.exit_code === null || result.exit_code === 0) && !trim(result.payload);
+   00213| }
+   00214| 
+   00215| /** Mirrors `fn has_latest_turn_result`. */
+   00216| export function hasLatestTurnResult(messages) {
+   00217|   const start = lastIndexWhere(messages, isUser);
+   00218|   if (start < 0) return false;
+   00219|   return messages.slice(start + 1).some(isTool);
+   00220| }
+   00221| 
+   00222| /** Mirrors `fn is_write_run_recipe`. */
+   00223| function isWriteRunRecipe(messages, toolNames) {
+   00224|   return toolNames.some(isWorkspaceCreationTool)
+   00225|     && toolNames.some((name) => classifyTool(name) === Capability.Run)
+   00226|     && messages.some((message) => (message.tool_calls || []).some((call) => isWorkspaceCreationTool(call.function.name)));
+   00227| }
+   00228| 
+   00229| /** Mirrors `fn follow_up_answer`. */
+   00230| export function followUpAnswer(messages, prompt) {
+   00231|   const normalizedPrompt = normalizePrompt(prompt);
+   00232|   const wantsUrl = mentionsRole(ROLE_TOOL_RESULT_URL_REQUEST, normalizedPrompt);
+   00233|   const wantsLine = mentionsRole(ROLE_TOOL_RESULT_LINE_REQUEST, normalizedPrompt);
+   00234|   const wantsDetail = mentionsRole(ROLE_TOOL_RESULT_DETAIL_REQUEST, normalizedPrompt);
+   00235|   if (!wantsUrl && !wantsLine && !wantsDetail) return null;
+   00236|   const latestUser = lastIndexWhere(messages, isUser);
+   00237|   if (latestUser < 0) return null;
+   00238|   const toolIndex = lastIndexWhere(messages.slice(0, latestUser), isTool);
+   00239|   if (toolIndex < 0) return null;
+   00240|   const result = normalize(plainText(messages[toolIndex].content));
+   00241|   if (wantsUrl) return extractUrls(result.payload)[requestedIndex(normalizedPrompt)] ?? null;
+   00242|   if (wantsLine) return rustLines(result.payload)[requestedIndex(normalizedPrompt)] ?? null;
+   00243|   return result.payload;
+   00244| }
+   00245| 
+   00246| /** Mirrors `fn requested_index`. */
+   00247| function requestedIndex(prompt) {
+   00248|   if (mentionsRole(ROLE_TOOL_RESULT_SECOND_REFERENCE, prompt)) return 1;
+   00249|   if (mentionsRole(ROLE_TOOL_RESULT_FIRST_REFERENCE, prompt)) return 0;
+   00250|   let found = null;
+   00251|   for (const digits of prompt.split(/[^0-9]/)) {
+   00252|     const parsed = parseUsize(digits);
+   00253|     if (parsed !== null && Number.isSafeInteger(parsed)) {
+   00254|       found = parsed;
+   00255|       break;
+   00256|     }
+   00257|   }
+   00258|   return Math.max((found ?? 1) - 1, 0);
+   00259| }
+   00260| 
+   00261| function result(payload, error, format, exitCode) {
+   00262|   return { payload, error, format, exit_code: exitCode };
+   00263| }
+   00264| 
+   00265| const has = (object, key) => Object.prototype.hasOwnProperty.call(object, key);
+   00266| 
+   00267| /** Mirrors `fn normalize`: `{payload, error, format, exit_code}`. */
+   00268| function normalize(raw) {
+   00269|   const trimmed = trim(raw);
+   00270|   const value = parseJson(trimmed);
+   00271|   if (value === undefined) {
+   00272|     const envelope = parseShellEnvelope(trimmed);
+   00273|     if (envelope) return envelopeResult(envelope);
+   00274|     return fromPayload(stripTransportEnvelope(trimmed), null);
+   00275|   }
+   00276|   if (!isObject(value)) return fromPayload(prettyJson(value), null);
+   00277|   const object = value;
+   00278|   const present = (keys) => keys.filter((key) => has(object, key)).map((key) => object[key]);
+   00279|   const nonzeroExit = present(['exit_code', 'exitCode']).some(nonzeroStatus);
+   00280|   const statusCode = object.status_code;
+   00281|   const failedHttp = has(object, 'status_code') && Number.isInteger(statusCode) && statusCode >= 400;
+   00282|   const statusValues = present(['status', 'state', 'outcome']);
+   00283|   const status = statusValues.length ? statusValues[0] : undefined;
+   00284|   const expectedStop = status !== undefined && expectedStopStatus(status);
+   00285|   const failed = status !== undefined && failedStatus(status);
+   00286|   const explicitlyUnsuccessful = present(['ok', 'success']).some((entry) => entry === false);
+   00287|   const explicitlyFailed = present(['is_error', 'isError']).some((entry) => entry === true);
+   00288|   let explicitError = null;
+   00289|   for (const entry of present(['error', 'stderr', 'failure'])) {
+   00290|     explicitError = nonemptyText(entry);
+   00291|     if (explicitError !== null) break;
+   00292|   }
+   00293|   let reportedExit = null;
+   00294|   for (const entry of present(['exit_code', 'exitCode'])) {
+   00295|     reportedExit = asI64(entry) ?? (typeof entry === 'string' ? parseI64(entry) : null);
+   00296|     if (reportedExit !== null) break;
+   00297|   }
+   00298|   if (!expectedStop && (nonzeroExit || failedHttp || failed || explicitlyUnsuccessful || explicitlyFailed
+   00299|     || explicitError !== null)) {
+   00300|     let error = explicitError;
+   00301|     for (const key of ['output', 'content', 'result']) {
+   00302|       if (error !== null) break;
+   00303|       if (has(object, key)) error = nonemptyText(object[key]);
+   00304|     }
+   00305|     if (error === null) {
+   00306|       const key = ['exit_code', 'exitCode', 'status_code', 'status', 'state', 'outcome'].find((name) => has(object, name));
+   00307|       error = key === undefined ? '' : `${key}=${compactJson(object[key])}`;
+   00308|     }
+   00309|     return { ...fromPayload('', error), exit_code: reportedExit !== null && reportedExit !== 0 ? reportedExit : null };
+   00310|   }
+   00311|   const text = mcpTextContent(value);
+   00312|   if (text !== null) return { ...fromPayload(text, null), exit_code: reportedExit };
+   00313|   const payloadKey = ['output', 'stdout', 'content', 'result'].find((key) => has(object, key));
+   00314|   if (payloadKey !== undefined) {
+   00315|     const payload = object[payloadKey];
+   00316|     const textPayload = typeof payload === 'string' ? stripTransportEnvelope(payload) : prettyJson(payload);
+   00317|     return { ...fromPayload(textPayload, null), exit_code: reportedExit };
+   00318|   }
+   00319|   return { ...fromPayload(prettyJson(value), null), exit_code: reportedExit };
+   00320| }
+   00321| 
+   00322| /** Mirrors `ShellEnvelope::into_result`. */
+   00323| function envelopeResult(envelope) {
+   00324|   if (envelope.exit_code === 0) {
+   00325|     return { ...fromPayload(envelope.output || envelope.error, null), exit_code: 0 };
+   00326|   }
+   00327|   return result('', envelope.error || envelope.output, 'text', envelope.exit_code);
+   00328| }
+   00329| 
+   00330| function untrustedInner(text) {
+   00331|   const open = splitOnce(text, '<untrusted_context>');
+   00332|   const close = open && splitOnce(open[1], '</untrusted_context>');
+   00333|   return close ? close[0] : text;
+   00334| }
+   00335| 
+   00336| /** Mirrors `fn parse_shell_envelope`: `{output, error, exit_code}` or null. */
+   00337| function parseShellEnvelope(text) {
+   00338|   const lines = rustLines(untrustedInner(text));
+   00339|   let exitCode = null;
+   00340|   // A call the harness killed (a timeout) names its signal and no exit code
+   00341|   // (PR #1188 G77): the kill is the error, and no exit code is invented.
+   00342|   const killed = [];
+   00343|   let end = lines.length;
+   00344|   while (end > 0) {
+   00345|     const split = splitOnce(trim(lines[end - 1]), ':');
+   00346|     if (!split) break;
+   00347|     const field = trim(split[0]);
+   00348|     if (field === 'Exit Code') {
+   00349|       const code = parseI64(trim(split[1]));
+   00350|       if (code === null) return null;
+   00351|       exitCode = code;
+   00352|     } else if (field === 'Signal' || field === 'Timeout') {
+   00353|       killed.unshift(trim(lines[end - 1]));
+   00354|     } else if (field !== agenticMessage('tool_result_process_group_field')) {
+   00355|       break;
+   00356|     }
+   00357|     end -= 1;
+   00358|   }
+   00359|   if (exitCode === null && killed.length === 0) return null;
+   00360|   const head = lines.slice(0, end);
+   00361|   const outputAt = head.findIndex((line) => isField(line, 'Output'));
+   00362|   if (outputAt < 0) return null;
+   00363|   const errorAt = lastIndexWhere(head, (line) => isField(line, 'Error'), outputAt + 1);
+   00364|   const output = envelopeSection(lines.slice(outputAt, errorAt < 0 ? end : errorAt), 'Output:');
+   00365|   const stated = errorAt < 0 ? '' : envelopeSection(lines.slice(errorAt, end), 'Error:');
+   00366|   const error = exitCode === null ? [stated, ...killed].filter((part) => part !== '').join('\n') : stated;
+   00367|   return { output, error, exit_code: exitCode };
+   00368| }
+   00369| 
+   00370| /** Mirrors `fn is_field`. */
+   00371| function isField(line, field) {
+   00372|   const trimmed = trim(line);
+   00373|   if (!trimmed.startsWith(field)) return false;
+   00374|   const rest = trimmed.slice(field.length);
+   00375|   if (!rest.startsWith(':')) return false;
+   00376|   const after = rest.slice(1);
+   00377|   return after === '' || after.startsWith(' ');
+   00378| }
+   00379| 
+   00380| const ABSENT_SECTIONS = ['', '(empty)', '(none)', '(no output)', '(no error)', 'none'];
+   00381| 
+   00382| /** Mirrors `fn envelope_section`. */
+   00383| function envelopeSection(lines, field) {
+   00384|   let section = '';
+   00385|   lines.forEach((line, index) => {
+   00386|     if (index > 0) section += '\n';
+   00387|     if (index === 0) {
+   00388|       const trimmedLine = trim(line);
+   00389|       section += trimStart(trimmedLine.startsWith(field) ? trimmedLine.slice(field.length) : line);
+   00390|     } else {
+   00391|       section += line;
+   00392|     }
+   00393|   });
+   00394|   const trimmed = trim(section);
+   00395|   return ABSENT_SECTIONS.includes(toAsciiLowercase(trimmed)) ? '' : trimmed;
+   00396| }
+   00397| 
+   00398| function noOutputMarkers() {
+   00399|   return agenticMessage('tool_result_no_output_markers').split('|');
+   00400| }
+   00401| 
+   00402| /** Mirrors `fn from_payload`. */
+   00403| function fromPayload(payload, error) {
+   00404|   let trimmed = trim(payload);
+   00405|   if (noOutputMarkers().includes(toAsciiLowercase(trimmed))) trimmed = '';
+   00406|   const json = parseJson(trimmed);
+   00407|   if (json !== undefined) {
+   00408|     const text = mcpTextContent(json);
+   00409|     if (text !== null) return result(text, error, 'text', null);
+   00410|     return result(prettyJson(json), error, 'json', null);
+   00411|   }
+   00412|   let format = 'text';
+   00413|   if (trimmed.startsWith('#!/bin/bash') || trimmed.startsWith(agenticMessage('tool_result_env_bash_shebang'))) format = 'bash';
+   00414|   else if (trimmed.startsWith(agenticMessage('tool_result_env_python_shebang'))) format = 'python';
+   00415|   return result(trimmed, error, format, null);
+   00416| }
+   00417| 
+   00418| /** Mirrors `fn mcp_text_content`. */
+   00419| function mcpTextContent(value) {
+   00420|   const content = isObject(value) && has(value, 'content') ? value.content : value;
+   00421|   if (!Array.isArray(content) || content.length === 0) return null;
+   00422|   const parts = [];
+   00423|   for (const item of content) {
+   00424|     if (!isObject(item) || item.type !== 'text' || typeof item.text !== 'string') return null;
+   00425|     parts.push(item.text);
+   00426|   }
+   00427|   const text = parts.join('\n');
+   00428|   if (isObject(value) && has(value, 'structuredContent')) {
+   00429|     const structured = structuredContentText(value.structuredContent);
+   00430|     if (utf8Len(structured) > utf8Len(text)) return structured;
+   00431|   }
+   00432|   return text;
+   00433| }
+   00434| 
+   00435| /** Mirrors `fn structured_content_text`. */
+   00436| function structuredContentText(structured) {
+   00437|   const inner = isObject(structured) && has(structured, 'content') ? structured.content : structured;
+   00438|   let record = inner;
+   00439|   if (typeof inner === 'string') {
+   00440|     const parsed = parseJson(inner);
+   00441|     record = parsed === undefined ? inner : parsed;
+   00442|   }
+   00443|   if (typeof record === 'string') return record;
+   00444|   if (isObject(record)) {
+   00445|     const title = asStr(jsonGet(record, 'title'));
+   00446|     const body = asStr(jsonGet(record, 'body'));
+   00447|     if (title !== null && body !== null) return [title, body].join('\n\n');
+   00448|     if (title !== null) return title;
+   00449|     if (body !== null) return body;
+   00450|   }
+   00451|   return prettyJson(record);
+   00452| }
+   00453| 
+   00454| /** Mirrors `fn strip_transport_envelope`. */
+   00455| export function stripTransportEnvelope(text) {
+   00456|   const lines = rustLines(untrustedInner(text));
+   00457|   const output = lines.findIndex((line) => {
+   00458|     const trimmed = trim(line);
+   00459|     return trimmed === 'Output:' || trimmed.startsWith('Output: ');
+   00460|   });
+   00461|   const kept = [];
+   00462|   lines.forEach((line, index) => {
+   00463|     if (output >= 0 && index < output) return;
+   00464|     const trimmed = trim(line);
+   00465|     if (trimmed.startsWith(`${agenticMessage('tool_result_process_group_field')}:`)) return;
+   00466|     if (trimmed.startsWith('Output:')) {
+   00467|       const rest = trim(trimmed.slice('Output:'.length));
+   00468|       if (rest !== '(empty)' && rest !== '(no output)') kept.push(rest);
+   00469|       return;
+   00470|     }
+   00471|     kept.push(line);
+   00472|   });
+   00473|   return trim(kept.join('\n'));
+   00474| }
+   00475| 
+   00476| /** Mirrors `fn nonzero_status`. */
+   00477| function nonzeroStatus(value) {
+   00478|   const integer = asI64(value);
+   00479|   if (integer !== null && integer !== 0) return true;
+   00480|   if (typeof value !== 'string') return false;
+   00481|   const parsed = parseI64(value);
+   00482|   return parsed === null ? !['ok', 'success', 'completed'].includes(value) : parsed !== 0;
+   00483| }
+   00484| 
+   00485| /** Mirrors `fn failed_status`. */
+   00486| function failedStatus(value) {
+   00487|   const numeric = asI64(value) ?? (typeof value === 'string' ? parseI64(value) : null);
+   00488|   if (numeric === null) {
+   00489|     return typeof value === 'string'
+   00490|       && !['ok', 'success', 'succeeded', 'completed', 'passed'].includes(toAsciiLowercase(value))
+   00491|       && !expectedStopStatus(value);
+   00492|   }
+   00493|   return numeric < 0 || (numeric > 0 && numeric < 100) || numeric >= 400;
+   00494| }
+   00495| 
+   00496| const EXPECTED_STOPS = ['refused', 'denied', 'cancelled', 'canceled', 'aborted', 'pending', 'awaiting_approval', 'not_granted'];
+   00497| 
+   00498| /** Mirrors `fn expected_stop_status`. */
+   00499| function expectedStopStatus(value) {
+   00500|   return typeof value === 'string' && EXPECTED_STOPS.includes(toAsciiLowercase(value));
+   00501| }
+   00502| 
+   00503| /** Mirrors `fn nonempty_text`. */
+   00504| function nonemptyText(value) {
+   00505|   if (value === null || value === undefined) return null;
+   00506|   if (typeof value === 'string') return trim(value) ? trim(value) : null;
+   00507|   if (isObject(value)) {
+   00508|     const message = has(value, 'message') ? nonemptyText(value.message) : null;
+   00509|     return message ?? compactJson(value);
+   00510|   }
+   00511|   return compactJson(value);
+   00512| }
+   00513| 
+   00514| /** Mirrors `fn command_argument`. */
+   00515| export function commandArgument(argumentsText) {
+   00516|   const value = parseJson(argumentsText);
+   00517|   if (!isObject(value)) return null;
+   00518|   for (const key of ['command', 'cmd', 'script']) {
+   00519|     const entry = jsonGet(value, key);
+   00520|     if (typeof entry === 'string') return entry;
+   00521|     if (Array.isArray(entry)) {
+   00522|       const joined = entry.filter((word) => typeof word === 'string').join(' ');
+   00523|       if (joined) return joined;
+   00524|     }
+   00525|   }
+   00526|   return null;
+   00527| }
+   00528| 
+   00529| /** Mirrors `fn command_argument_key`. */
+   00530| export function commandArgumentKey(definition) {
+   00531|   const holder = isObject(definition) && has(definition, 'function') ? definition.function : definition;
+   00532|   const parameters = jsonGet(holder, 'parameters');
+   00533|   if (parameters === undefined) return null;
+   00534|   const properties = jsonGet(parameters, 'properties');
+   00535|   if (!isObject(properties)) return null;
+   00536|   for (const key of Object.keys(properties).sort()) {
+   00537|     const property = properties[key];
+   00538|     const describesCommand = ['description', 'title', 'name'].some((field) => {
+   00539|       const text = asStr(jsonGet(property, field));
+   00540|       if (text === null) return false;
+   00541|       const lowered = text.toLowerCase();
+   00542|       return lowered.includes('command') && !lowered.includes(agenticMessage('tool_result_working_directory_phrase'));
+   00543|     });
+   00544|     if (describesCommand && jsonGet(property, 'type') === 'string') return key;
+   00545|   }
+   00546|   return null;
+   00547| }
+   00548| 
+   00549| /** The argument keys `commandArgument` reads on its own (`fn command_argument`). */
+   00550| const FALLBACK_COMMAND_KEYS = ['command', 'cmd', 'script'];
+   00551| 
+   00552| /**
+   00553|  * Mirrors `fn project_declared_command_keys`: the transcript as the planner
+   00554|  * reads it, where every call to a tool whose own schema names its command
+   00555|  * property `K` (outside `command`/`cmd`/`script`) also carries that value
+   00556|  * under `command`. A pure projection of the request: nothing is stored
+   00557|  * between requests, and the client's own messages are not mutated.
+   00558|  * @param {Array<object>} messages
+   00559|  * @param {Array<object>} tools the request's tool definitions
+   00560|  * @returns {Array<object>}
+   00561|  */
+   00562| export function projectDeclaredCommandKeys(messages, tools) {
+   00563|   if (!Array.isArray(tools) || tools.length === 0) return messages;
+   00564|   const keyOf = new Map();
+   00565|   const declaredKey = (name) => {
+   00566|     if (!keyOf.has(name)) {
+   00567|       const definition = findToolDefinition(tools, name);
+   00568|       const key = definition ? commandArgumentKey(definition) : null;
+   00569|       keyOf.set(name, key !== null && !FALLBACK_COMMAND_KEYS.includes(key) ? key : null);
+   00570|     }
+   00571|     return keyOf.get(name);
+   00572|   };
+   00573|   return messages.map((message) => {
+   00574|     if (!Array.isArray(message.tool_calls) || message.tool_calls.length === 0) return message;
+   00575|     let changed = false;
+   00576|     const calls = message.tool_calls.map((call) => {
+   00577|       const key = call?.function ? declaredKey(call.function.name) : null;
+   00578|       if (key === null) return call;
+   00579|       const value = parseJson(call.function.arguments);
+   00580|       if (!isObject(value) || !has(value, key) || has(value, 'command')) return call;
+   00581|       changed = true;
+   00582|       return { ...call, function: { ...call.function, arguments: JSON.stringify({ command: value[key], ...value }) } };
+   00583|     });
+   00584|     return changed ? { ...message, tool_calls: calls } : message;
+   00585|   });
+   00586| }
+   00587| 
+   00588| /** Mirrors `fn result_tool`. */
+   00589| function resultTool(messages, index) {
+   00590|   const message = messages[index];
+   00591|   if (message.name) return message.name;
+   00592|   const id = message.tool_call_id;
+   00593|   if (!id) return null;
+   00594|   return findCall(messages, index, id)?.function.name ?? null;
+   00595| }
+   00596| 
+   00597| function findCall(messages, index, id) {
+   00598|   for (const prior of messages.slice(0, index)) {
+   00599|     const call = (prior.tool_calls || []).find((candidate) => candidate.id === id);
+   00600|     if (call) return call;
+   00601|   }
+   00602|   return null;
+   00603| }
+   00604| 
+   00605| /** Mirrors `fn result_label`. */
+   00606| function resultLabel(messages, index) {
+   00607|   const id = messages[index].tool_call_id;
+   00608|   const call = id ? findCall(messages, index, id) : null;
+   00609|   const command = call ? commandArgument(call.function.arguments) : null;
+   00610|   if (command !== null) return command;
+   00611|   return resultTool(messages, index) ?? 'tool';
+   00612| }
+   00613| 
+   00614| /** Mirrors `fn extract_urls`. */
+   00615| function extractUrls(text) {
+   00616|   const urls = [];
+   00617|   let rest = text;
+   00618|   for (;;) {
+   00619|     const found = [rest.indexOf('https://'), rest.indexOf('http://')].filter((at) => at >= 0);
+   00620|     if (!found.length) break;
+   00621|     const candidate = rest.slice(Math.min(...found));
+   00622|     let end = candidate.length;
+   00623|     for (let index = 0; index < candidate.length; index += 1) {
+   00624|       const character = candidate[index];
+   00625|       if (isWhitespace(character) || '"\'<>)]}'.includes(character)) {
+   00626|         end = index;
+   00627|         break;
+   00628|       }
+   00629|     }
+   00630|     urls.push(candidate.slice(0, end));
+   00631|     rest = candidate.slice(end);
+   00632|   }
+   00633|   return urls;
+   00634| }
+   00635| 
+   00636| /** Mirrors `fn is_listing`. */
+   00637| function isListing(label) {
+   00638|   const lower = toAsciiLowercase(label);
+   00639|   const kind = commandKind(lower);
+   00640|   return kind !== null ? kind === 'listing' : !isCommand(lower) && (lower.includes('list') || lower.includes('glob'));
+   00641| }
+   00642| 
+   00643| /** Mirrors `fn is_search`. */
+   00644| function isSearch(label) {
+   00645|   const lower = toAsciiLowercase(label);
+   00646|   return isCommand(lower) ? commandKind(lower) === 'search'
+   00647|     : ['grep', 'find', 'search'].some((kind) => lower.includes(kind));
+   00648| }
+   00649| 
+   00650| /**
+   00651|  * Mirrors `fn is_command`: a label with operands is a shell command, read by
+   00652|  * its own word, never by a word inside its operands (`sed … allowlist.txt`,
+   00653|  * PR #1188 G75); a one-word label is a tool's name.
+   00654|  */
+   00655| const isCommand = (lower) => splitWhitespace(lower).length > 1;
+   00656| 
+   00657| /** Mirrors `fn command_kind`: the seeded kind of a command's own word. */
+   00658| function commandKind(lower) {
+   00659|   const [word] = splitWhitespace(lower);
+   00660|   const kinds = cached('result-command-words', () => {
+   00661|     const root = parseRoot(readText(SHELL_INTENTS_FILE)).children[0];
+   00662|     const group = childrenNamed(root, 'result_command_words')[0];
+   00663|     return group === undefined ? [] : childrenNamed(group, 'command').map((node) => [childValue(node, 'word'), childValue(node, 'kind')]);
+   00664|   });
+   00665|   return kinds.find(([candidate]) => candidate === word)?.[1] ?? null;
+   00666| }
+   00667| 
+   00668| /**
+   00669|  * Mirrors `fn response_language`: the language detected from the request's
+   00670|  * script, or -- when the script leaves it at the fallback language, which
+   00671|  * shares its letters with others -- the language the request's own words are
+   00672|  * seeded in. `Elimina las líneas 2 a 3 de f.txt.` names no Spanish marker,
+   00673|  * but `elimina`, `las` and `líneas` are seeded only as Spanish (PR #1188 G20).
+   00674|  * @param {string} prompt
+   00675|  */
+   00676| export function responseLanguage(prompt) {
+   00677|   // The request's own words choose the language, never its quoted payload
+   00678|   // (PR #1188 G92); a request that is all quotation keeps the whole text.
+   00679|   const outside = textOutsideQuotedSegments(prompt);
+   00680|   const detected = detect(/\p{L}/u.test(outside) ? outside : prompt);
+   00681|   return detected === fallbackLanguage() ? lexicalLanguage(prompt) ?? detected : detected;
+   00682| }
+   00683| 
+   00684| /** Fewer words seeded only in one language than this are no evidence. */
+   00685| const MIN_LEXICAL_EVIDENCE = 2;
+   00686| 
+   00687| /** Mirrors `fn seeded_word_languages`: every one-word surface and the languages it is seeded in. */
+   00688| function seededWordLanguages() {
+   00689|   return cached('seeded-word-languages', () => {
+   00690|     const languages = new Map();
+   00691|     for (const meaning of lexicon()) {
+   00692|       for (const lexeme of meaning.lexemes) {
+   00693|         for (const word of lexeme.words) {
+   00694|           const surface = word.text.toLowerCase();
+   00695|           if (!/^\p{Alphabetic}+$/u.test(surface)) continue;
+   00696|           if (!languages.has(surface)) languages.set(surface, new Set());
+   00697|           languages.get(surface).add(lexeme.language);
+   00698|         }
+   00699|       }
+   00700|     }
+   00701|     return languages;
+   00702|   });
+   00703| }
+   00704| 
+   00705| /**
+   00706|  * Mirrors `fn lexical_language` (rust/src/agentic_coding/tool_result/response_language.rs):
+   00707|  * the one language most of the request's unquoted words are seeded in alone,
+   00708|  * when it is not the fallback, has at least `MIN_LEXICAL_EVIDENCE` such words
+   00709|  * and more than the fallback has; else null (a tie decides nothing).
+   00710|  */
+   00711| function lexicalLanguage(prompt) {
+   00712|   const seeded = seededWordLanguages();
+   00713|   const counts = new Map();
+   00714|   for (const word of textOutsideQuotedSegments(prompt).toLowerCase().split(/[^\p{Alphabetic}]+/u)) {
+   00715|     const languages = seeded.get(word);
+   00716|     if (languages === undefined || languages.size !== 1) continue;
+   00717|     const [language] = languages;
+   00718|     counts.set(language, (counts.get(language) ?? 0) + 1);
+   00719|   }
+   00720|   const fallback = fallbackLanguage();
+   00721|   const top = Math.max(0, ...counts.values());
+   00722|   const leaders = [...counts].filter(([, count]) => count === top).map(([language]) => language);
+   00723|   if (leaders.length !== 1 || top < MIN_LEXICAL_EVIDENCE) return null;
+   00724|   const [leader] = leaders;
+   00725|   return leader === fallback || top <= (counts.get(fallback) ?? 0) ? null : leader;
+   00726| }
+   00727| 
+   00728| /** Mirrors `fn fill` in tool_result.rs. */
+   00729| function fill(intent, language, values) {
+   00730|   let text = localizedResponse(intent, language) ?? '';
+   00731|   for (const [placeholder, value] of values) text = replaceAllLiteral(text, placeholder, value);
+   00732|   return text;
+   00733| }
+   00734| 
+   
+   (End of file - total 734 lines)
+   </file>
+>> edit {"filePath":"js/agentic/tool_result.mjs","file_path":"js/agentic/tool_result.mjs","new":"const kind = commandKind(lower);\n  return kind !== null ? kind === 'search'\n    : !isCommand(lower) && ['grep', 'find', 'search'].some((word) => lower.includes(word));","newString":"const kind = commandKind(lower);\n  return kind !== null ? kind === 'search'\n    : !isCommand(lower) && ['grep', 'find', 'search'].some((word) => lower.includes(word));","new_str":"const kind = commandKind(lower);\n  return kind !== null ? kind === 'search'\n    : !isCommand(lower) && ['grep', 'find', 'search'].some((word) => lower.includes(word));","new_string":"const kind = commandKind(lower);\n  return kind !== null ? kind === 'search'\n    : !isCommand(lower) && ['grep', 'find', 'search'].some((word) => lower.includes(word));","old":"return isCommand(lower) ? commandKind(lower) === 'search'\n    : ['grep', 'find', 'search'].some((kind) => lower.includes(kind));","oldString":"return isCommand(lower) ? commandKind(lower) === 'search'\n    : ['grep', 'find', 'search'].some((kind) => lower.includes(kind));","old_str":"return isCommand(lower) ? commandKind(lower) === 'search'\n    : ['grep', 'find', 'search'].some((kind) => lower.includes(kind));","old_string":"return isCommand(lower) ? commandKind(lower) === 'search'\n    : ['grep', 'find', 'search'].some((kind) => lower.includes(kind));","path":"js/agentic/tool_result.mjs"}
+>> bash {"command":"sha256sum -- js/agentic/tool_result.mjs"}
+   931b05fdc0ab881f55e5a6d8e81416e765af3fcca52e615b1c6f6ce1723bd7a1  js/agentic/tool_result.mjs
+   
+== answer ==
+Replaced `return isCommand(lower) ? commandKind(lower) === 'search'
+    : ['grep', 'find', 'search'].some((kind) => lower.includes(kind));` with `const kind = commandKind(lower);
+  return kind !== null ? kind === 'search'
+    : !isCommand(lower) && ['grep', 'find', 'search'].some((word) => lower.includes(word));` in `js/agentic/tool_result.mjs` and observed the result.

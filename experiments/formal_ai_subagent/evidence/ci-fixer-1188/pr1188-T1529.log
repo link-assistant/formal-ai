@@ -1,0 +1,676 @@
+>> read {"filePath":"rust/tests/unit/minimal_core_and_seed_metadata.rs","file_path":"rust/tests/unit/minimal_core_and_seed_metadata.rs","path":"rust/tests/unit/minimal_core_and_seed_metadata.rs"}
+   <file>
+   00001| //! Regression coverage for issue #918's minimal-core and seed-metadata audit.
+   00002| 
+   00003| use std::collections::{BTreeMap, BTreeSet};
+   00004| use std::fs;
+   00005| use std::path::{Path, PathBuf};
+   00006| 
+   00007| /// The CI gate itself, compiled into the suite.
+   00008| ///
+   00009| /// The census below and `rust-script scripts/check-minimal-core-boundary.rs`
+   00010| /// must agree on which files are handler debt. Walking the directory twice made
+   00011| /// that a coincidence; reading it through the gate's own `source_files` makes it
+   00012| /// a fact -- issue #991 added an exclusion for generated `mod` lists, and one
+   00013| /// edit taught both.
+   00014| #[path = "../../../scripts/check-minimal-core-boundary.rs"]
+   00015| mod check_minimal_core_boundary;
+   00016| 
+   00017| /// Every handler source the boundary gate counts, with its line count, relative
+   00018| /// to the repository root.
+   00019| fn handler_source_lines() -> BTreeMap<String, usize> {
+   00020|     check_minimal_core_boundary::source_files(
+   00021|         Path::new(env!("CARGO_MANIFEST_DIR"))
+   00022|             .parent()
+   00023|             .expect("the repository root sits one level above the crate"),
+   00024|     )
+   00025|     .expect("the boundary gate should enumerate the handler sources")
+   00026| }
+   00027| 
+   00028| /// Every handler source the boundary gate counts, relative to the repository
+   00029| /// root.
+   00030| fn handler_sources() -> BTreeSet<String> {
+   00031|     handler_source_lines().into_keys().collect()
+   00032| }
+   00033| 
+   00034| #[derive(Default)]
+   00035| struct LedgerEntry {
+   00036|     path: String,
+   00037|     disposition: String,
+   00038|     core_component: String,
+   00039|     reason: String,
+   00040| }
+   00041| 
+   00042| fn ledger_entries(ledger: &str) -> Vec<LedgerEntry> {
+   00043|     let mut entries = Vec::new();
+   00044|     let mut current: Option<LedgerEntry> = None;
+   00045|     for line in ledger.lines() {
+   00046|         if let Some(path) = line.strip_prefix("  source ") {
+   00047|             if let Some(entry) = current.take() {
+   00048|                 entries.push(entry);
+   00049|             }
+   00050|             current = Some(LedgerEntry {
+   00051|                 path: path.to_owned(),
+   00052|                 ..LedgerEntry::default()
+   00053|             });
+   00054|         } else if let Some(entry) = current.as_mut() {
+   00055|             let trimmed = line.trim();
+   00056|             if let Some(value) = trimmed.strip_prefix("disposition ") {
+   00057|                 value.clone_into(&mut entry.disposition);
+   00058|             } else if let Some(value) = trimmed.strip_prefix("core_component ") {
+   00059|                 value.clone_into(&mut entry.core_component);
+   00060|             } else if let Some(value) = trimmed.strip_prefix("reason ") {
+   00061|                 value.trim_matches('"').clone_into(&mut entry.reason);
+   00062|             }
+   00063|         }
+   00064|     }
+   00065|     if let Some(entry) = current {
+   00066|         entries.push(entry);
+   00067|     }
+   00068|     entries
+   00069| }
+   00070| 
+   00071| fn lino_files_below(directory: &Path) -> Vec<PathBuf> {
+   00072|     fn visit(directory: &Path, paths: &mut Vec<PathBuf>) {
+   00073|         for entry in fs::read_dir(directory).expect("data directory") {
+   00074|             let path = entry.expect("data entry").path();
+   00075|             if path.is_dir() {
+   00076|                 visit(&path, paths);
+   00077|             } else if path
+   00078|                 .extension()
+   00079|                 .is_some_and(|extension| extension == "lino")
+   00080|             {
+   00081|                 paths.push(path);
+   00082|             }
+   00083|         }
+   00084|     }
+   00085|     let mut paths = Vec::new();
+   00086|     visit(directory, &mut paths);
+   00087|     paths.sort();
+   00088|     paths
+   00089| }
+   00090| 
+   00091| fn required_metadata(schema: &str) -> Vec<String> {
+   00092|     schema
+   00093|         .lines()
+   00094|         .filter_map(|line| line.strip_prefix("  required_field "))
+   00095|         .map(str::to_owned)
+   00096|         .collect()
+   00097| }
+   00098| 
+   00099| fn meaning_records(source: &str, text: &str) -> Vec<(String, String, BTreeSet<String>)> {
+   00100|     if text.lines().find(|line| !line.trim().is_empty()) != Some("meanings") {
+   00101|         return Vec::new();
+   00102|     }
+   00103|     let mut records = Vec::new();
+   00104|     let mut current: Option<(String, String, BTreeSet<String>)> = None;
+   00105|     for line in text.lines().skip(1) {
+   00106|         // A `#` line documents the records around it, as in the audit script
+   00107|         // (`scripts/audit-seed-metadata.rs`); it is never a record itself.
+   00108|         if line.trim_start().starts_with('#') {
+   00109|             continue;
+   00110|         }
+   00111|         let indentation = line.bytes().take_while(|byte| *byte == b' ').count();
+   00112|         if indentation == 2 {
+   00113|             if let Some(record) = current.take() {
+   00114|                 records.push(record);
+   00115|             }
+   00116|             current = Some((
+   00117|                 source.to_owned(),
+   00118|                 line.split_whitespace()
+   00119|                     .next()
+   00120|                     .expect("meaning name")
+   00121|                     .to_owned(),
+   00122|                 BTreeSet::new(),
+   00123|             ));
+   00124|         } else if indentation == 4 {
+   00125|             let trimmed = line.trim();
+   00126|             if let (Some(record), Some(value_offset)) =
+   00127|                 (current.as_mut(), trimmed.find(char::is_whitespace))
+   00128|             {
+   00129|                 let field = &trimmed[..value_offset];
+   00130|                 let raw_value = trimmed[value_offset..].trim();
+   00131|                 let value = raw_value
+   00132|                     .strip_prefix('"')
+   00133|                     .and_then(|value| value.strip_suffix('"'))
+   00134|                     .unwrap_or(raw_value);
+   00135|                 if !value.trim().is_empty() {
+   00136|                     record.2.insert(field.to_owned());
+   00137|                 }
+   00138|             }
+   00139|         }
+   00140|     }
+   00141|     if let Some(record) = current {
+   00142|         records.push(record);
+   00143|     }
+   00144|     records
+   00145| }
+   00146| 
+   00147| /// Every `.lino` file below `directory`.
+   00148| fn lino_files(directory: &Path, files: &mut Vec<PathBuf>) {
+   00149|     for entry in fs::read_dir(directory)
+   00150|         .expect("metadata gap directory")
+   00151|         .filter_map(Result::ok)
+   00152|     {
+   00153|         let path = entry.path();
+   00154|         if path.is_dir() {
+   00155|             lino_files(&path, files);
+   00156|         } else if path.extension().is_some_and(|value| value == "lino") {
+   00157|             files.push(path);
+   00158|         }
+   00159|     }
+   00160| }
+   00161| 
+   00162| /// The committed gaps: one file per seed source below
+   00163| /// `data/meta/seed-metadata-gaps/` (R1188-U5). A file states its source once,
+   00164| /// and the missing fields most of its gaps share once as the file default
+   00165| /// (R1188-U7); a gap states `missing` only where it differs.
+   00166| fn committed_gaps(root: &Path) -> BTreeMap<(String, String), String> {
+   00167|     let mut paths = Vec::new();
+   00168|     lino_files(&root.join("data/meta/seed-metadata-gaps"), &mut paths);
+   00169|     paths.sort();
+   00170|     assert!(!paths.is_empty(), "the metadata gap audit writes gap files");
+   00171| 
+   00172|     let mut gaps = BTreeMap::new();
+   00173|     for path in paths {
+   00174|         let text = fs::read_to_string(&path).expect("metadata gap file");
+   00175|         assert!(
+   00176|             text.lines().count() <= 1_500,
+   00177|             "{} exceeds the data-file line limit",
+   00178|             path.display()
+   00179|         );
+   00180|         let source = text
+   00181|             .lines()
+   00182|             .find_map(|line| line.strip_prefix("  source "))
+   00183|             .map(|value| value.trim_matches('"').to_owned())
+   00184|             .expect("a gap file states its source");
+   00185|         let shared_missing = text
+   00186|             .lines()
+   00187|             .find_map(|line| line.strip_prefix("  missing "))
+   00188|             .map_or_else(String::new, |value| value.trim_matches('"').to_owned());
+   00189|         let mut entries: Vec<(String, String, String)> = Vec::new();
+   00190|         for line in text.lines() {
+   00191|             if let Some(id) = line.strip_prefix("  gap ") {
+   00192|                 assert!(
+   00193|                     id.starts_with("seed-metadata-gap-") && id.len() == 34,
+   00194|                     "gap identifier should be a stable 64-bit hash: {id}"
+   00195|                 );
+   00196|                 entries.push((id.to_owned(), String::new(), shared_missing.clone()));
+   00197|             } else if let Some(value) = line.strip_prefix("    record ") {
+   00198|                 value.trim_matches('"').clone_into(&mut entries.last_mut().expect("gap record").1);
+   00199|             } else if let Some(value) = line.strip_prefix("    missing ") {
+   00200|                 value.trim_matches('"').clone_into(&mut entries.last_mut().expect("gap missing").2);
+   00201|             }
+   00202|         }
+   00203|         for (_, record, missing) in entries {
+   00204|             assert!(
+   00205|                 !missing.is_empty(),
+   00206|                 "{record} in {source} names no missing field"
+   00207|             );
+   00208|             assert!(
+   00209|                 gaps.insert((source.clone(), record), missing).is_none(),
+   00210|                 "each seed record has at most one gap entry"
+   00211|             );
+   00212|         }
+   00213|     }
+   00214|     gaps
+   00215| }
+   00216| 
+   00217| #[test]
+   00218| fn minimal_core_ledger_covers_every_recursive_handler_source() {
+   00219|     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+   00220|         .parent()
+   00221|         .expect("the repository root sits one level above the crate");
+   00222|     let actual = handler_sources();
+   00223|     let ledger = fs::read_to_string(root.join("data/meta/core-boundary-ledger.lino"))
+   00224|         .expect("issue #918 must provide the source-file core-boundary ledger");
+   00225|     let entries = ledger_entries(&ledger);
+   00226|     let active = entries
+   00227|         .iter()
+   00228|         .filter(|entry| entry.disposition != "delete")
+   00229|         .map(|entry| entry.path.clone())
+   00230|         .collect::<BTreeSet<_>>();
+   00231| 
+   00232|     assert_eq!(active, actual);
+   00233|     // The census history (46 before issue #1085, the plan 09 leaf 1 corrected
+   00234|     // undercount, the plan 08 and URL-parsing promotions, the plan 16 L1
+   00235|     // re-measure, the PR #1188 interpreters) lives in the ledger's `note` rows.
+   00236|     // Restating the totals here froze 53 / 51 / 2 long after the ledger moved
+   00237|     // on, so the expected counts are the ledger's own reviewed ceilings: the
+   00238|     // gate proves those equal to the tree, and this test proves the rows agree.
+   00239|     let ceiling = |field: &str| -> usize {
+   00240|         ledger
+   00241|             .lines()
+   00242|             .find_map(|line| line.trim().strip_prefix(field))
+   00243|             .and_then(|value| value.trim().parse().ok())
+   00244|             .unwrap_or_else(|| panic!("the ledger records {field}"))
+   00245|     };
+   00246|     let source_files = ceiling("source_file_count_max ");
+   00247|     let outside_core_files = ceiling("outside_core_file_count_max ");
+   00248|     assert_eq!(actual.len(), source_files);
+   00249|     assert_eq!(
+   00250|         entries
+   00251|             .iter()
+   00252|             .filter(|entry| entry.disposition == "migrate")
+   00253|             .count(),
+   00254|         outside_core_files
+   00255|     );
+   00256|     assert_eq!(
+   00257|         entries
+   00258|             .iter()
+   00259|             .filter(|entry| entry.disposition == "promote")
+   00260|             .count(),
+   00261|         source_files - outside_core_files,
+   00262|         "every active row is either migration debt or a promoted interpreter"
+   00263|     );
+   00264|     for entry in entries
+   00265|         .iter()
+   00266|         .filter(|entry| entry.disposition == "promote")
+   00267|     {
+   00268|         assert!(
+   00269|             !entry.core_component.is_empty(),
+   00270|             "{} promotion must name its core component",
+   00271|             entry.path
+   00272|         );
+   00273|         assert!(
+   00274|             !entry.reason.is_empty(),
+   00275|             "{} promotion must explain the boundary decision",
+   00276|             entry.path
+   00277|         );
+   00278|     }
+   00279|     for disposition in entries.iter().map(|entry| entry.disposition.as_str()) {
+   00280|         assert!(matches!(disposition, "migrate" | "promote" | "delete"));
+   00281|     }
+   00282|     // The ledger's ceiling is the measurement itself: the gate fails when it sits
+   00283|     // above *or* below the real count, so migration debt can only ratchet down.
+   00284|     // Restating the number here would freeze a value that every handler edit moves
+   00285|     // into a second shared file -- the conflict shape issue #991 removes -- so the
+   00286|     // expected total is summed from the same sources the gate measures.
+   00287|     let lines = handler_source_lines();
+   00288|     let outside_core_lines: usize = entries
+   00289|         .iter()
+   00290|         .filter(|entry| entry.disposition == "migrate")
+   00291|         .map(|entry| lines[&entry.path])
+   00292|         .sum();
+   00293|     assert!(ledger.contains(&format!("outside_core_lines_max {outside_core_lines}")));
+   00294| }
+   00295| 
+   00296| #[test]
+   00297| fn generic_interpreter_components_are_registered_outside_the_census() {
+   00298|     // Issue #1138 B9, plan 09 leaf 17: the migration families need compiled
+   00299|     // homes that are not themselves handler debt. A `component` block in the
+   00300|     // ledger names one such file outside the census, the boundary category it
+   00301|     // was promoted under, and the reason it passes the promotion test. The
+   00302|     // test reads the ledger through the gate's own parser so the gate and the
+   00303|     // suite cannot disagree about what a component is.
+   00304|     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+   00305|         .parent()
+   00306|         .expect("the repository root sits one level above the crate");
+   00307|     let ledger_text = fs::read_to_string(root.join("data/meta/core-boundary-ledger.lino"))
+   00308|         .expect("issue #918 must provide the source-file core-boundary ledger");
+   00309|     let ledger = check_minimal_core_boundary::parse_ledger(&ledger_text)
+   00310|         .expect("the boundary ledger parses, components included");
+   00311|     let census = handler_sources();
+   00312|     assert!(
+   00313|         !ledger.components.is_empty(),
+   00314|         "the migration families register their generic interpreters as components"
+   00315|     );
+   00316|     let mut names = BTreeSet::new();
+   00317|     for record in &ledger.components {
+   00318|         assert!(
+   00319|             names.insert(record.name.as_str()),
+   00320|             "component names are unique: {}",
+   00321|             record.name
+   00322|         );
+   00323|         assert_eq!(
+   00324|             record.kind, "Generic interpreter",
+   00325|             "component {} is registered under the boundary document's interpreter category",
+   00326|             record.name
+   00327|         );
+   00328|         assert!(
+   00329|             !record.reason.is_empty(),
+   00330|             "component {} explains the promotion decision",
+   00331|             record.name
+   00332|         );
+   00333|         assert!(
+   00334|             !census.contains(&record.file),
+   00335|             "component {} file {} must sit outside the handler census",
+   00336|             record.name,
+   00337|             record.file
+   00338|         );
+   00339|         assert!(
+   00340|             root.join(&record.file).is_file(),
+   00341|             "component {} file {} must exist",
+   00342|             record.name,
+   00343|             record.file
+   00344|         );
+   00345|     }
+   00346|     assert!(
+   00347|         names.contains("retrieval_method_interpreter"),
+   00348|         "the M2 retrieval family's interpreter is registered"
+   00349|     );
+   00350| }
+   00351| 
+   00352| #[test]
+   00353| fn boundary_document_names_the_only_four_compiled_core_categories() {
+   00354|     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+   00355|         .parent()
+   00356|         .expect("the repository root sits one level above the crate");
+   00357|     let boundary = fs::read_to_string(root.join("docs/design/minimal-core-boundary.md"))
+   00358|         .expect("minimal-core boundary document");
+   00359|     for category in [
+   00360|         "Meta algorithm",
+   00361|         "Link store",
+   00362|         "Generic interpreters",
+   00363|         "Host surfaces",
+   00364|     ] {
+   00365|         assert!(
+   00366|             boundary.contains(category),
+   00367|             "missing boundary category {category}"
+   00368|         );
+   00369|     }
+   00370|     assert!(boundary.contains("Mixed files fail the promotion test"));
+   00371|     assert!(boundary.contains("Everything else is seed or learned data"));
+   00372| }
+   00373| 
+   00374| #[test]
+   00375| fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
+   00376|     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
+   00377|         .parent()
+   00378|         .expect("the repository root sits one level above the crate");
+   00379|     let schema_text = fs::read_to_string(root.join("data/meta/seed-metadata-schema.lino"))
+   00380|         .expect("seed metadata schema");
+   00381|     let required = required_metadata(&schema_text);
+   00382|     assert_eq!(
+   00383|         required,
+   00384|         ["role", "precondition", "effect", "unit", "example"]
+   00385|     );
+   00386|     for external_shape in ["FrameNet", "Wikidata:Data_model", "typed property value"] {
+   00387|         assert!(
+   00388|             schema_text.contains(external_shape),
+   00389|             "schema must cite {external_shape}"
+   00390|         );
+   00391|     }
+   00392|     let complete_sources = schema_text
+   00393|         .lines()
+   00394|         .filter_map(|line| line.strip_prefix("  complete_source "))
+   00395|         .map(|value| value.trim_matches('"').to_owned())
+   00396|         .collect::<BTreeSet<_>>();
+   00397|     assert_eq!(complete_sources.len(), 3);
+   00398|     let registered_languages = formal_ai::language::registered_languages();
+   00399|     assert!(!registered_languages.is_empty(), "language registry");
+   00400| 
+   00401|     let mut expected_gaps = BTreeMap::new();
+   00402|     let mut coding_records = 0;
+   00403|     let seed_root = root.join("data/seed");
+   00404|     for path in lino_files_below(&seed_root) {
+   00405|         let source = path
+   00406|             .strip_prefix(root)
+   00407|             .expect("relative seed path")
+   00408|             .to_string_lossy()
+   00409|             .replace('\\', "/");
+   00410|         let text = fs::read_to_string(&path).expect("seed file");
+   00411|         for (source, record, fields) in meaning_records(&source, &text) {
+   00412|             let missing = required
+   00413|                 .iter()
+   00414|                 .filter(|field| !fields.contains(field.as_str()))
+   00415|                 .cloned()
+   00416|                 .collect::<Vec<_>>();
+   00417|             if complete_sources.contains(&source) {
+   00418|                 coding_records += 1;
+   00419|                 for language in &registered_languages {
+   00420|                     assert!(
+   00421|                         missing.is_empty(),
+   00422|                         "{source}:{record} is missing language-neutral metadata {missing:?} for {}",
+   00423|                         language.slug()
+   00424|                     );
+   00425|                 }
+   00426|             } else if !missing.is_empty() {
+   00427|                 expected_gaps.insert((source, record), missing.join(","));
+   00428|             }
+   00429|         }
+   00430|     }
+   00431|     // Scala and Kotlin joined the coding catalog for the hive-mind#2158
+   00432|     // language matrix (issue #921), and PHP followed them under issue #1021, so
+   00433|     // the complete-source floor rises with each: 27 catalog records + 15 task
+   00434|     // records. The fifteenth task is `program_task_copy_stdin_to_stdout`, the
+   00435|     // task issue #863 reported (see `tests/unit/issue_1021_behaviour_range.rs`);
+   00436|     // the twenty-seventh catalog record is `program_language_laravel`, the
+   00437|     // framework issue #723 asked for, which is a catalog row of its own rather
+   00438|     // than an alias surface of PHP. Either way a new target is a new
+   00439|     // complete-source record, never a new gap. Three later additions are not
+   00440|     // language targets at all: `workspace_inspection_examine`,
+   00441|     // `workspace_inspection_verify` and `workspace_inspection_identify` are the
+   00442|     // vocabulary that lets a request to *look at* the repository route to a
+   00443|     // workspace search instead of an open-web one (issue #1066). They land in
+   00444|     // the same complete source as the coding tasks and carry the same five
+   00445|     // fields, so they raise the floor rather than the gap count -- which is the
+   00446|     // point of the floor: new agent capability arrives as described data.
+   00447|     // Issue #1069 first added 29 complete workspace-search records, moving the
+   00448|     // floor from 45 to 74. Its verified ladder then supplied 18 leaf-first
+   00449|     // decomposition and proof facts, moving the floor from 74 to 92. Its
+   00450|     // change-shaped delegation work added the three member-list kinds --
+   00451|     // `coding_member_list_sequence`, `coding_member_list_set` and
+   00452|     // `coding_member_list_group` -- that let a request name the collection it
+   00453|     // edits in words the file never has to repeat, moving the floor from 92 to
+   00454|     // 95. Issue #1131 added `coding_member_add`, the verb that says a member
+   00455|     // list should grow, moving the floor from 95 to 96: the nouns alone had
+   00456|     // been routing whole-file rewrites into member insertion. Issue #1133
+   00457|     // added five more records from the three Hive Mind runs that produced no
+   00458|     // solution -- `git_branch_cue` and `git_commit_request` (where a work
+   00459|     // item's result lands, and the request to land it), `ci_workflow_request`
+   00460|     // (the workflow an issue asks for beside the program) and the two
+   00461|     // `file_edit_position_*` cues of an additive edit -- moving the floor
+   00462|     // from 96 to 101: each was a hardcoded English sentence or a missing route
+   00463|     // before it was data. None is allowed to become a metadata gap.
+   00464|     // Issue #1138 moved five repository-workflow meanings out of the coding
+   00465|     // task source into their own complete domain source, then added four
+   00466|     // language-neutral repository-target meanings here. Recounted 2026-09-22,
+   00467|     // the three complete coding sources carry 5 (config) + 28 (catalog) +
+   00468|     // 68 (tasks) = 101 records: the #1138 net-floor line said 100 and shipped
+   00469|     // unverified, masked by a run whose census-freshness step died before the
+   00470|     // unit tests executed. The floor is 101; none of the nine records became
+   00471|     // an unreviewed metadata gap.
+   00472|     // Issue #1167 added `program_language_swift` and `program_language_r` to
+   00473|     // the catalog, each with role, precondition, effect, unit and example, so
+   00474|     // the catalog carries 30 and the floor moves from 101 to 103.
+   00475|     // The agentic edit verbs then added three task records, each with all
+   00476|     // five fields: `coding_text_remove` (remove quoted text from a file),
+   00477|     // `setting` (the key of a configuration file whose value changes) and
+   00478|     // `typo` (a misspelling whose correction is discovered, not stated), so
+   00479|     // the floor moves from 103 to 106.
+   00480|     // PR #1188 then added seven, each with all five fields: the edit composer's
+   00481|     // `coding_declaration` and `function_declaration` (a function named by
+   00482|     // identifier is removed whole), `function_call` (the undefined-call
+   00483|     // routing claim), `coding_bug_fix_request` and `coding_expectation_cue`
+   00484|     // (a stated expectation drives the fix), and `module_export_question` and
+   00485|     // `module_export_marker` (what a module exports), so the floor moves from
+   00486|     // 106 to 113.
+   00487|     // PR #1188 round 18 moved the decomposition-tree and Agent-CLI ladder
+   00488|     // records out of the tasks source to keep it under 1500 lines, and the
+   00489|     // schema did not follow, so the floor read 77. Their new file is a
+   00490|     // complete source too: 33 (catalog) + 10 (config) + 34 (tasks) + 38
+   00491|     // (decomposition ladder, two records added since the move) = 115.
+   00492|     assert_eq!(coding_records, 115, "coding-path regression floor");
+   00493|     assert_eq!(committed_gaps(root), expected_gaps);
+   00494|     // The floor moves with the closure, not with the handlers: every gap added
+   00495|     // under issue #1021 is a `closure-generated-*.lino` record for a token the
+   00496|     // new prose pulled into the total closure -- 74 for the contribution
+   00497|     // artifacts, then 16 more when the listing detector was given its Spanish
+   00498|     // vocabulary (`lista`, `ficheros`, `archivos`, `aqui`, ...), then 8 more
+   00499|     // for the closed-class words the language-less coding request subtracts
+   00500|     // (`me`, `my`, `our`, `we`, `some`, `these`, `just`) plus the Spanish
+   00501|     // `guion`, and one more for `copy_stdin_to_stdout` once the portable seed
+   00502|     // bundle started naming the task issue #863 reported. A new language's
+   00503|     // words arriving as generated closure records rather than as hand-written
+   00504|     // gaps is the shape this floor exists to show; `request_function_word`
+   00505|     // joins the count as a hand-written record because every meaning in
+   00506|     // `data/seed/meanings.lino` -- all 22 of them, not just the new one --
+   00507|     // carries its lexemes without the five-field metadata that file has never
+   00508|     // supplied. The last twelve arrived the same way: the verified-mutating-
+   00509|     // action responses issues #824 and #944 added pull their two intent tokens
+   00510|     // and their ten response ids into the closure, and every one of the twelve
+   00511|     // is a `closure-generated-*.lino` record -- no hand-written gap, no
+   00512|     // handler without metadata. The one after them is hand-written and says so
+   00513|     // honestly: `file_leading_line_constraint` in
+   00514|     // `data/seed/meanings-file-write.lino` is the vocabulary for "the first
+   00515|     // line must be ..." that lets an evidence-record request pin its opening
+   00516|     // line (issue #1066), and that file, like `data/seed/meanings.lino`, has
+   00517|     // never carried the five fields for any of its records. A gap recorded in
+   00518|     // reviewed data is the outcome this audit is for; the floor above is what
+   00519|     // forbids the same omission on the coding path.
+   00520|     //
+   00521|     // The seven after it are closure records again, and they arrived for the
+   00522|     // same reason the twelve before them did. `data/seed/meanings-note-
+   00523|     // composition.lino` carries both of its meanings with all five fields --
+   00524|     // it is a hand-written file and it is complete -- but the closure expands
+   00525|     // each of its English surfaces into a generated record, and `produce`,
+   00526|     // `compose`, `draft`, `assemble`, `prepare`, `note` and `memo` had no
+   00527|     // generated record before. `report`, `summary` and `brief` already did.
+   00528|     // Vocabulary for a new capability entering the closure is exactly the
+   00529|     // shape this number tracks: described data grows the count, an
+   00530|     // undescribed handler would not be allowed to.
+   00531|     //
+   00532|     // The eleven after those are the same two shapes again, and they arrived
+   00533|     // together under issue #1066. Ten are closure records for the honest
+   00534|     // replies a decomposition gives when it cannot enumerate anything: the two
+   00535|     // intent tokens `task_decomposition_single_need` and
+   00536|     // `task_decomposition_unsplit_depth_bound`, and their eight response ids,
+   00537|     // one per language the seed then answered in. The eleventh is hand-written
+   00538|     // and says so:
+   00539|     // `file_write_deferred_content` in `data/seed/meanings-file-write.lino` is
+   00540|     // the vocabulary for a payload that *names* the work product ("... the
+   00541|     // findings", "... 结论") rather than stating it, which is what stops a
+   00542|     // request to record findings from writing the words "the findings" into
+   00543|     // the caller's file. That file carries `role` and has never carried the
+   00544|     // other four for any record, so the new one is a gap on exactly the terms
+   00545|     // its neighbours already are.
+   00546|     // The thirteen after those are one response id per decomposition intent,
+   00547|     // and they arrived when Spanish stopped being answered in English (issue
+   00548|     // #1066). `es` is a registered language, `data/seed/multilingual-responses-
+   00549|     // decomposition.lino` carried no record in it, and `localized_response`
+   00550|     // falls back to English rather than failing -- so a Spanish speaker asking
+   00551|     // why nothing could be enumerated was told something true in words they had
+   00552|     // not asked in. Filling the hole is described data entering the closure,
+   00553|     // which is the growth this number exists to track. Leaving the fallback in
+   00554|     // place would have held the count still and kept the answer wrong, which is
+   00555|     // the direction this floor is here to make visible.
+   00556|     // Issue #1069 first contributes 33 more reviewed closure gaps: the two new
+   00557|     // repository-observation intents and ten localized response ids, plus the
+   00558|     // source-search vocabulary generated from the 29 complete coding records
+   00559|     // above. The exact-composition, failed multi-read and link-publish response
+   00560|     // seeds then add 18 generated records while displacing the three obsolete
+   00561|     // render-surface tokens, for a net 15 more gaps. They are closure data, not
+   00562|     // missing metadata on the coding path. Six more arrive with the member-list
+   00563|     // kinds: `set`, `collection`, `group`, `lists`, `sequence` and
+   00564|     // `alternation` are the English surfaces that let a request name the
+   00565|     // collection it edits, and the closure expands each into a generated
+   00566|     // record. Vocabulary for a new capability entering the closure is the same
+   00567|     // shape as every addition above it.
+   00568|     // The last 24 are the sentences a change route says its change in, and they
+   00569|     // are four intents plus one response id per registered language for each:
+   00570|     // `coding_member_inserted`, `coding_member_already_present`,
+   00571|     // `coding_text_replaced` and `coding_identifier_renamed`. A route that
+   00572|     // reported only `{path}` told a caller which file it had touched and never
+   00573|     // what it had done to it, which is not a record of a change -- the issue
+   00574|     // #1028 ladder asks each leaf's proof for "at least four words that state
+   00575|     // the change you made", and a status line has none of them. Naming the
+   00576|     // members that went into a list, or the name that became which other name,
+   00577|     // is text a person reads, so it is seed text in all five languages
+   00578|     // `data/seed/languages.lino` registers, exactly as the other fifteen
+   00579|     // intents in `data/seed/multilingual-responses-agentic-tools.lino` are.
+   00580|     // Answering in English only would have held this number 20 lower and left
+   00581|     // four of the five languages hearing about their own edit in a language
+   00582|     // they had not asked in.
+   00583|     // The four after them are the primacy kinds issue #1073 added: `citation`,
+   00584|     // `first_hand_record`, `self_published` and `editorial_synthesis` are the
+   00585|     // vocabulary a source uses to say how close it stands to what it reports,
+   00586|     // and every source in `data/seed/sources-registry.lino` now names one of
+   00587|     // them in its `primacy` chain instead of asserting a tier. The closure
+   00588|     // expands each into a generated record, so computing trust rather than
+   00589|     // assuming it arrives here as described data, on the same terms as every
+   00590|     // vocabulary addition above.
+   00591|     // The last forty-two arrive the same way, from issue #1075's
+   00592|     // `data/seed/tool-resource-scopes.lino`: the words that let a tool say
+   00593|     // *where* its effect lands rather than only what it does --
+   00594|     // `remote_service`, `process_input`, `connector`, `namespaced`,
+   00595|     // `substring`, `router`, `advertised`, `grounded`, `untouched` and the
+   00596|     // prose around them. Every one is a `closure-generated-*.lino` record for a
+   00597|     // token the new seed prose pulled into the total closure, not a
+   00598|     // hand-written gap, which is the shape this floor exists to show.
+   00599|     //
+   00600|     // The last fifty-four arrive that way too, from issue #1085: the tokens
+   00601|     // `data/seed/handler-rules.lino` and
+   00602|     // `data/seed/multilingual-responses-policy.lino` introduced when eleven
+   00603|     // handlers stopped being Rust -- the rule vocabulary (`agent_info`,
+   00604|     // `backticks`, `cleaned`, `raw`, `literal`, `prompt`, `forms`), the
+   00605|     // handler names themselves, and the response ids of their four-language
+   00606|     // wording. Behaviour moving from Rust into seed data arrives as generated
+   00607|     // closure records, which is what this floor is for. Four more followed when
+   00608|     // those responses were given their Spanish text, which every supported
+   00609|     // locale owes the others. Ten more arrived the same way with issues #1095
+   00610|     // and #1099: two seed roles (`agentic_continuation_cue`,
+   00611|     // `enumeration_cue`), the `agentic_continuation` handler and its
+   00612|     // `continuation_cue` rule, that handler's five-language wording, and the
+   00613|     // seeded notice `context_session_guessed_notice` from #1105 RC6. Every one
+   00614|     // is behaviour that used to be Rust -- a hardcoded English phrase, an
+   00615|     // exact-string comparison in the planner -- arriving as described data,
+   00616|     // which is what this floor exists to record. Issue #1131 brought five more
+   00617|     // through the total closure (`adds`, `appends`, `include`, `insert`,
+   00618|     // `inserts`): the surfaces of `coding_member_add`, the verb that has to be
+   00619|     // present before a member list may be grown.
+   00620|     // Issue #1133 moved the total from 4,059 to 4,062: five coding-path
+   00621|     // records arrived (see the coding floor above) while the Spanish and
+   00622|     // "resolve" lexemes given to `implement` closed two gaps that had been
+   00623|     // waiting on exactly that wording.
+   00624|     // Issue #710 moved the total from 4,062 to 4,250: the generalized coding
+   00625|     // structures, discoverable runtime templates, and source-backed recurrence
+   00626|     // vocabulary entered the total closure instead of remaining Rust literals.
+   00627|     //
+   00628|     // Issue #1138 B9, plan 09 leaf 8 moved it from 4,250 to 695, and the drop is
+   00629|     // the point of the leaf rather than progress against this floor. 3,555 of
+   00630|     // those 4,250 rows were records in `data/seed/closure-generated-*.lino` --
+   00631|     // files `scripts/close-total.py` wrote and `scripts/audit-total-closure.py`
+   00632|     // then read back as definitions, so the closure metric reported zero while
+   00633|     // 17,791 lines of English-only glosses no runtime loads stood in for
+   00634|     // grounding. Every one of them was a metadata gap by construction: a
+   00635|     // generated record carries `defined-by` and an English `lexeme` and none of
+   00636|     // the five reviewed fields. Deleting the generator's output did not ground
+   00637|     // anything, and the grounding work it was standing in for is now counted
+   00638|     // honestly, in one place, by `data/meta/closure-audit.lino` -- 3,569 distinct
+   00639|     // tokens as measured on 2026-09-16. The 695 rows that remain are the
+   00640|     // hand-written gaps this audit has always been about.
+   00641|     //
+   00642|     // The pin then drifted twice while every Test leg that should have caught
+   00643|     // it died at the census-freshness step before the unit tests ran:
+   00644|     // 8c831a451 added 28 rows and e8533a522 added 13 more -- both ran the
+   00645|     // audit script with --write so the shards told the truth while this
+   00646|     // assert kept the old count. Recounted 2026-09-22 the shards hold 737,
+   00647|     // including the `personal_facts_listing_request` role the personal-facts
+   00648|     // paydown added: its five reviewed fields are pending reviewed data, so
+   00649|     // it is a gap row like its siblings, not a silent omission.
+   00650|     // Recounted 2026-10-07 the shards hold 778: the census-stale legs had again
+   00651|     // hidden 33 rows of reviewed-data gaps from the seed growth of issues
+   00652|     // #1163-#1187 (the `software_object_*` roles among them), and this batch
+   00653|     // adds eight -- the five `word_problem_*` relation meanings of #1176 R2
+   00654|     // and three factual-question cues of #1172 (`fact_comparison_request`,
+   00655|     // `fact_comparison_joiner`, `prompt_text_question_cue`) -- each a role whose four
+   00656|     // other reviewed fields are pending data.
+   00657|     // Recounted 2026-10-08 the files hold 765: the seed changes committed with
+   00658|     // the concise lexemes and the language-parity lexemes moved and grounded
+   00659|     // records (the number words among them), and the audit now writes one
+   00660|     // file per seed source (R1188-U5).
+   00661|     assert_eq!(expected_gaps.len(), 765);
+   00662| }
+   00663| 
+   
+   (End of file - total 663 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/minimal_core_and_seed_metadata.rs","file_path":"rust/tests/unit/minimal_core_and_seed_metadata.rs","new":"value\n                    .trim_matches('\"')\n                    .clone_into(&mut entries.last_mut().expect(\"gap record\").1);","newString":"value\n                    .trim_matches('\"')\n                    .clone_into(&mut entries.last_mut().expect(\"gap record\").1);","new_str":"value\n                    .trim_matches('\"')\n                    .clone_into(&mut entries.last_mut().expect(\"gap record\").1);","new_string":"value\n                    .trim_matches('\"')\n                    .clone_into(&mut entries.last_mut().expect(\"gap record\").1);","old":"value.trim_matches('\"').clone_into(&mut entries.last_mut().expect(\"gap record\").1);","oldString":"value.trim_matches('\"').clone_into(&mut entries.last_mut().expect(\"gap record\").1);","old_str":"value.trim_matches('\"').clone_into(&mut entries.last_mut().expect(\"gap record\").1);","old_string":"value.trim_matches('\"').clone_into(&mut entries.last_mut().expect(\"gap record\").1);","path":"rust/tests/unit/minimal_core_and_seed_metadata.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/minimal_core_and_seed_metadata.rs"}
+   a54872aa03920a24c0c22c918e6326aab7c6d41b01176171384e8c82db8db740  rust/tests/unit/minimal_core_and_seed_metadata.rs
+   
+== answer ==
+Replaced `value.trim_matches('"').clone_into(&mut entries.last_mut().expect("gap record").1);` with `value
+                    .trim_matches('"')
+                    .clone_into(&mut entries.last_mut().expect("gap record").1);` in `rust/tests/unit/minimal_core_and_seed_metadata.rs` and observed the result.

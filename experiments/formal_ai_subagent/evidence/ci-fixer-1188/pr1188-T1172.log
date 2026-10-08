@@ -1,0 +1,965 @@
+>> read {"filePath":"rust/src/agentic_coding/workspace_line_operation.rs","file_path":"rust/src/agentic_coding/workspace_line_operation.rs","path":"rust/src/agentic_coding/workspace_line_operation.rs"}
+   <file>
+   00001| //! Whole-line operations a request states by position, adjacency or exchange.
+   00002| //!
+   00003| //! PR #1188 dogfooding: `Delete lines 266-267 from f.lino.` only read the
+   00004| //! file (T30), `Insert the line '…' after line 12 in f.lino.` planned nothing
+   00005| //! (T33), `delete the line 'A' and the 'B' line directly above it` was routed
+   00006| //! to a whole-file write of a fragment (T29), `Move the line 'x' to the top
+   00007| //! of f` duplicated the line and `Swap the lines 'a' and 'b' in f` planned
+   00008| //! nothing. Each is now a computed change over the file's lines (read,
+   00009| //! compute, the smallest unique edit, the digest check, the seeded sentence),
+   00010| //! run by [`super::workspace_computed_change`]. Every word that carries the
+   00011| //! operation is seeded (`numbered_line_noun`, `numbered_line_lead`,
+   00012| //! `line_range_connector`, `line_adjacent_above`, `line_adjacent_below`,
+   00013| //! `line_move_action`, `line_swap_action`) in every registered language.
+   00014| //! Mirrors `js/agentic/workspace_line_operation.mjs`.
+   00015| 
+   00016| use super::positional_edit::unescape_prose_newlines;
+   00017| use super::workspace_computed_change::sentence_words;
+   00018| use super::write_request::{clean_path_token, looks_like_file_path, safe_relative_path, tokens};
+   00019| use crate::normal_markov::quoted_segment_spans;
+   00020| use crate::seed;
+   00021| use crate::solver_handlers::text_outside_quoted_segments;
+   00022| 
+   00023| /// A digit run longer than this is not a line number.
+   00024| /// The seed frames' slots, spelled so no literal reads as a format argument
+   00025| /// beside a binding of the same name.
+   00026| const LINES_SLOT: &str = concat!("{", "lines", "}");
+   00027| const OLD_SLOT: &str = concat!("{", "old", "}");
+   00028| const ANCHOR_SLOT: &str = concat!("{", "anchor", "}");
+   00029| const NEW_SLOT: &str = concat!("{", "new", "}");
+   00030| const LINE_SLOT: &str = concat!("{", "line", "}");
+   00031| const MAX_NUMBER_DIGITS: usize = 9;
+   00032| /// A file below this many lines is too short for "most of it" to mean anything.
+   00033| const MIN_GUARDED_LINES: usize = 8;
+   00034| const DASHES: [char; 3] = ['-', '\u{2013}', '\u{2014}'];
+   00035| /// Punctuation beyond ASCII that separates the pieces of a request.
+   00036| const WIDE_PUNCTUATION: [char; 15] = [
+   00037|     '\u{ab}', '\u{bb}', '\u{964}', '\u{965}', '\u{2018}', '\u{2019}', '\u{201c}', '\u{201d}',
+   00038|     '\u{3001}', '\u{3002}', '\u{ff01}', '\u{ff0c}', '\u{ff1a}', '\u{ff1b}', '\u{ff1f}',
+   00039| ];
+   00040| 
+   00041| /// Where a moved line goes.
+   00042| #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+   00043| pub(super) enum Destination {
+   00044|     Start,
+   00045|     End,
+   00046|     After,
+   00047|     Before,
+   00048| }
+   00049| 
+   00050| /// A whole-line operation and the operands it needs.
+   00051| #[derive(Debug, Clone, PartialEq, Eq)]
+   00052| pub(super) enum LineOperation {
+   00053|     /// Lines `first..=last` (one-based) go; `from_end` counts them from the
+   00054|     /// last line (1), so `first` is then the earlier line's count.
+   00055|     RangeRemoval {
+   00056|         first: usize,
+   00057|         last: usize,
+   00058|         from_end: bool,
+   00059|     },
+   00060|     /// `text` goes in as a line after (or before) line `line`, counted from
+   00061|     /// the last line when `from_end`.
+   00062|     NumberedInsertion {
+   00063|         line: usize,
+   00064|         text: String,
+   00065|         after: bool,
+   00066|         from_end: bool,
+   00067|     },
+   00068|     /// The line `anchor` names and the line directly above (or below) it go;
+   00069|     /// a named `neighbour` must be that line.
+   00070|     AdjacentRemoval {
+   00071|         anchor: String,
+   00072|         neighbour: Option<String>,
+   00073|         above: bool,
+   00074|     },
+   00075|     /// The line `text` names moves to `destination` (beside `anchor`).
+   00076|     Move {
+   00077|         text: String,
+   00078|         destination: Destination,
+   00079|         anchor: Option<String>,
+   00080|     },
+   00081|     /// The two named lines exchange places.
+   00082|     Swap { first: String, second: String },
+   00083| }
+   00084| 
+   00085| /// A line operation on one file, with the seed sentence that states it.
+   00086| #[derive(Debug, Clone, PartialEq, Eq)]
+   00087| pub(super) struct LineChange {
+   00088|     pub(super) target: String,
+   00089|     pub(super) operation: LineOperation,
+   00090|     pub(super) intent: &'static str,
+   00091|     pub(super) slots: Slots,
+   00092| }
+   00093| 
+   00094| /// The slots of a seed sentence.
+   00095| type Slots = Vec<(&'static str, String)>;
+   00096| 
+   00097| /// One piece of a request outside its quotes.
+   00098| #[derive(Debug, Clone, PartialEq, Eq)]
+   00099| enum Piece {
+   00100|     Path,
+   00101|     Word(String),
+   00102|     Number(usize),
+   00103|     Dash,
+   00104| }
+   00105| 
+   00106| /// What a request character contributes to a piece.
+   00107| #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+   00108| enum Run {
+   00109|     Word,
+   00110|     Number,
+   00111|     Dash,
+   00112|     Han,
+   00113| }
+   00114| 
+   00115| /// The one workspace path the request names and its quoted payloads.
+   00116| ///
+   00117| /// A path the request leaves unquoted is the file; only when it names none
+   00118| /// does a quoted literal that is exactly one path name it, so `Delete the
+   00119| /// lines containing 'src/x.rs' from list.txt` edits `list.txt` (PR #1188 T35).
+   00120| pub(super) fn named_target_and_payloads(task: &str) -> Option<(String, Vec<String>)> {
+   00121|     let segments = quoted_segment_spans(task);
+   00122|     let is_path = |path: &str| looks_like_file_path(path) && safe_relative_path(path);
+   00123|     let mut unquoted: Vec<&str> = Vec::new();
+   00124|     for token in tokens(task) {
+   00125|         if segments
+   00126|             .iter()
+   00127|             .any(|segment| token.start < segment.end && token.end > segment.start)
+   00128|         {
+   00129|             continue;
+   00130|         }
+   00131|         let path = clean_path_token(token.text);
+   00132|         if is_path(path) && !unquoted.contains(&path) {
+   00133|             unquoted.push(path);
+   00134|         }
+   00135|     }
+   00136|     let mut quoted: Vec<&str> = Vec::new();
+   00137|     for segment in &segments {
+   00138|         if is_path(&segment.text) && !quoted.contains(&segment.text.as_str()) {
+   00139|             quoted.push(&segment.text);
+   00140|         }
+   00141|     }
+   00142|     let target = match (unquoted.as_slice(), quoted.as_slice()) {
+   00143|         ([path], _) | ([], [path]) => (*path).to_owned(),
+   00144|         _ => return None,
+   00145|     };
+   00146|     let payloads = segments
+   00147|         .iter()
+   00148|         .map(|segment| segment.text.clone())
+   00149|         .filter(|text| *text != target && !text.trim().is_empty())
+   00150|         .collect();
+   00151|     Some((target, payloads))
+   00152| }
+   00153| 
+   00154| /// One Han ideograph, a word of its own.
+   00155| const fn is_han(character: char) -> bool {
+   00156|     matches!(
+   00157|         character,
+   00158|         '\u{3400}'..='\u{4dbf}' | '\u{4e00}'..='\u{9fff}' | '\u{f900}'..='\u{faff}'
+   00159|     )
+   00160| }
+   00161| 
+   00162| fn is_ascii_printable(text: &str) -> bool {
+   00163|     !text.is_empty() && text.bytes().all(|byte| (0x21..=0x7e).contains(&byte))
+   00164| }
+   00165| 
+   00166| /// The request outside its quotes as words, numbers and dashes. A path is one
+   00167| /// opaque piece; a Han ideograph is a word of its own.
+   00168| fn line_pieces(task: &str) -> Vec<Piece> {
+   00169|     let outside = text_outside_quoted_segments(task);
+   00170|     let mut pieces = Vec::new();
+   00171|     for token in tokens(&outside) {
+   00172|         let path = clean_path_token(token.text);
+   00173|         if is_ascii_printable(path) && looks_like_file_path(path) {
+   00174|             pieces.push(Piece::Path);
+   00175|             continue;
+   00176|         }
+   00177|         let mut run = String::new();
+   00178|         let mut kind: Option<Run> = None;
+   00179|         for character in token.text.chars() {
+   00180|             let next = if character.is_ascii_digit() {
+   00181|                 Some(Run::Number)
+   00182|             } else if DASHES.contains(&character) {
+   00183|                 Some(Run::Dash)
+   00184|             } else if is_han(character) {
+   00185|                 Some(Run::Han)
+   00186|             } else if character.is_ascii_punctuation() || WIDE_PUNCTUATION.contains(&character) {
+   00187|                 None
+   00188|             } else {
+   00189|                 Some(Run::Word)
+   00190|             };
+   00191|             if next != kind || matches!(next, Some(Run::Dash | Run::Han)) {
+   00192|                 flush_piece(&mut pieces, &mut run, kind);
+   00193|             }
+   00194|             if let Some(next) = next {
+   00195|                 kind = Some(next);
+   00196|                 run.push(character);
+   00197|             } else {
+   00198|                 kind = None;
+   00199|             }
+   00200|         }
+   00201|         flush_piece(&mut pieces, &mut run, kind);
+   00202|     }
+   00203|     pieces
+   00204| }
+   00205| 
+   00206| fn flush_piece(pieces: &mut Vec<Piece>, run: &mut String, kind: Option<Run>) {
+   00207|     if run.is_empty() {
+   00208|         return;
+   00209|     }
+   00210|     let piece = match kind {
+   00211|         Some(Run::Dash) => Piece::Dash,
+   00212|         Some(Run::Number) if run.len() <= MAX_NUMBER_DIGITS => run
+   00213|             .parse()
+   00214|             .map_or_else(|_| Piece::Word(run.clone()), Piece::Number),
+   00215|         _ => Piece::Word(run.to_lowercase()),
+   00216|     };
+   00217|     pieces.push(piece);
+   00218|     run.clear();
+   00219| }
+   00220| 
+   00221| /// Whether the piece at `index` is one of `words`.
+   00222| fn is_word_in(pieces: &[Piece], index: usize, words: &[String]) -> bool {
+   00223|     matches!(pieces.get(index), Some(Piece::Word(word)) if words.contains(word))
+   00224| }
+   00225| 
+   00226| fn role_words(role: &str) -> Vec<String> {
+   00227|     seed::lexicon()
+   00228|         .words_for_role(role)
+   00229|         .into_iter()
+   00230|         .map(|word| word.to_lowercase())
+   00231|         .collect()
+   00232| }
+   00233| 
+   00234| /// Every line number or range the request names, one-based and inclusive.
+   00235| ///
+   00236| /// A seeded `numbered_line_noun` comes before the number (`line 12`, `lines
+   00237| /// 3-5`, `lines from 3 to 5`, `строки с 3 по 5`), or, after a seeded lead,
+   00238| /// after it (`第3到5行`).
+   00239| pub(super) fn numbered_lines(task: &str) -> Vec<(usize, usize)> {
+   00240|     let pieces = line_pieces(task);
+   00241|     let nouns = role_words("numbered_line_noun");
+   00242|     let leads = role_words("numbered_line_lead");
+   00243|     let connectors = role_words("line_range_connector");
+   00244|     let word_in = |index: usize, words: &[String]| is_word_in(&pieces, index, words);
+   00245|     let number_at = |index: usize| match pieces.get(index) {
+   00246|         Some(Piece::Number(number)) => Some(*number),
+   00247|         _ => None,
+   00248|     };
+   00249|     let mut found = Vec::new();
+   00250|     let mut index = 0;
+   00251|     while index < pieces.len() {
+   00252|         let Some(first) = number_at(index) else {
+   00253|             index += 1;
+   00254|             continue;
+   00255|         };
+   00256|         let mut end = index;
+   00257|         let joint = index + 1;
+   00258|         if matches!(pieces.get(joint), Some(Piece::Dash)) || word_in(joint, &connectors) {
+   00259|             let second = if word_in(joint + 1, &leads) {
+   00260|                 joint + 2
+   00261|             } else {
+   00262|                 joint + 1
+   00263|             };
+   00264|             if number_at(second).is_some() {
+   00265|                 end = second;
+   00266|             }
+   00267|         }
+   00268|         let mut led = 0;
+   00269|         while led < 2 && index > led && word_in(index - 1 - led, &leads) {
+   00270|             led += 1;
+   00271|         }
+   00272|         let noun_before = index
+   00273|             .checked_sub(1 + led)
+   00274|             .is_some_and(|noun| word_in(noun, &nouns));
+   00275|         if noun_before || (led > 0 && word_in(end + 1, &nouns)) {
+   00276|             found.push((first, number_at(end).unwrap_or(first)));
+   00277|             index = end + 1;
+   00278|         } else {
+   00279|             index += 1;
+   00280|         }
+   00281|     }
+   00282|     found
+   00283| }
+   00284| 
+   00285| /// A line named by a seeded ordinal right before a seeded line noun.
+   00286| struct Ordinal {
+   00287|     /// The one-based count, from the start or (`from_end`) from the end.
+   00288|     value: usize,
+   00289|     from_end: bool,
+   00290|     /// The byte span of the ordinal and its noun in the lowered request.
+   00291|     start: usize,
+   00292|     end: usize,
+   00293| }
+   00294| 
+   00295| /// A letter or digit outside the Han block, which a word boundary may not split.
+   00296| fn joins_word(character: Option<char>) -> bool {
+   00297|     character.is_some_and(|character| character.is_alphanumeric() && !is_han(character))
+   00298| }
+   00299| 
+   00300| /// The one-based number a seeded line ordinal counts to: the digits its
+   00301| /// cardinal meaning (`defined-by one`) spells.
+   00302| fn ordinal_value(meaning: &seed::Meaning) -> Option<usize> {
+   00303|     let lexicon = seed::lexicon();
+   00304|     meaning.defined_by.iter().find_map(|slug| {
+   00305|         let cardinal = lexicon.meaning(slug)?;
+   00306|         if !cardinal.has_role("cardinal_number_word") {
+   00307|             return None;
+   00308|         }
+   00309|         cardinal
+   00310|             .words()
+   00311|             .filter(|text| {
+   00312|                 !text.is_empty()
+   00313|                     && text.len() <= MAX_NUMBER_DIGITS
+   00314|                     && text.bytes().all(|byte| byte.is_ascii_digit())
+   00315|             })
+   00316|             .find_map(|text| text.parse().ok())
+   00317|     })
+   00318| }
+   00319| 
+   00320| /// Every line the request names by a seeded ordinal before a line noun.
+   00321| ///
+   00322| /// `the first line`, `последнюю строку`, `第一行`, `la última línea`; a
+   00323| /// `line_ordinal_last` ordinal counts from the end (PR #1188 G19).
+   00324| fn ordinal_lines(lowered: &str) -> Vec<Ordinal> {
+   00325|     let nouns: Vec<String> = role_words("numbered_line_noun")
+   00326|         .into_iter()
+   00327|         .filter(|noun| !noun.is_empty())
+   00328|         .collect();
+   00329|     let mut found = Vec::new();
+   00330|     for (role, from_end) in [("line_ordinal", false), ("line_ordinal_last", true)] {
+   00331|         for meaning in seed::lexicon().meanings_with_role(role) {
+   00332|             let Some(value) = ordinal_value(meaning) else {
+   00333|                 continue;
+   00334|             };
+   00335|             for surface in meaning.words().map(str::to_lowercase) {
+   00336|                 if surface.is_empty() {
+   00337|                     continue;
+   00338|                 }
+   00339|                 for (at, _) in lowered.match_indices(surface.as_str()) {
+   00340|                     if joins_word(lowered[..at].chars().next_back()) {
+   00341|                         continue;
+   00342|                     }
+   00343|                     let rest = &lowered[at + surface.len()..];
+   00344|                     let gap = rest.len() - rest.trim_start().len();
+   00345|                     if gap == 0 && joins_word(rest.chars().next()) {
+   00346|                         continue;
+   00347|                     }
+   00348|                     let noun = nouns.iter().find(|noun| {
+   00349|                         rest[gap..].starts_with(noun.as_str())
+   00350|                             && !joins_word(rest[gap + noun.len()..].chars().next())
+   00351|                     });
+   00352|                     if let Some(noun) = noun {
+   00353|                         found.push(Ordinal {
+   00354|                             value,
+   00355|                             from_end,
+   00356|                             start: at,
+   00357|                             end: at + surface.len() + gap + noun.len(),
+   00358|                         });
+   00359|                     }
+   00360|                 }
+   00361|             }
+   00362|         }
+   00363|     }
+   00364|     found
+   00365| }
+   00366| 
+   00367| /// Line `line` of a file of `count` lines, counted from its end when `from_end`.
+   00368| const fn resolved_line(line: usize, count: usize, from_end: bool) -> Option<usize> {
+   00369|     if from_end {
+   00370|         (count + 1).checked_sub(line)
+   00371|     } else {
+   00372|         Some(line)
+   00373|     }
+   00374| }
+   00375| 
+   00376| /// The one run of lines a read request names (PR #1188 G33).
+   00377| ///
+   00378| /// One-based and inclusive, counted from the end when `from_end`: a numbered
+   00379| /// line or range (`lines 2-3`), a seeded ordinal line (`the last line`), or a
+   00380| /// count between a seeded head or tail cue and a line noun (`the first 2
+   00381| /// lines`, `последние 2 строки`).
+   00382| #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+   00383| pub(super) struct LineSlice {
+   00384|     pub(super) from: usize,
+   00385|     pub(super) to: usize,
+   00386|     pub(super) from_end: bool,
+   00387| }
+   00388| 
+   00389| /// The [`LineSlice`] `task` names, if exactly one.
+   00390| pub(super) fn line_slice(task: &str) -> Option<LineSlice> {
+   00391|     let numbered = numbered_lines(task);
+   00392|     if let [(from, to)] = numbered.as_slice() {
+   00393|         return Some(LineSlice {
+   00394|             from: *from,
+   00395|             to: *to,
+   00396|             from_end: false,
+   00397|         });
+   00398|     }
+   00399|     if numbered.len() > 1 {
+   00400|         return None;
+   00401|     }
+   00402|     let outside = text_outside_quoted_segments(task).to_lowercase();
+   00403|     if let [ordinal] = ordinal_lines(&outside).as_slice() {
+   00404|         return Some(LineSlice {
+   00405|             from: ordinal.value,
+   00406|             to: ordinal.value,
+   00407|             from_end: ordinal.from_end,
+   00408|         });
+   00409|     }
+   00410|     let pieces = line_pieces(task);
+   00411|     let nouns = role_words("numbered_line_noun");
+   00412|     let (heads, tails) = (
+   00413|         role_words("line_slice_head_cue"),
+   00414|         role_words("line_slice_tail_cue"),
+   00415|     );
+   00416|     let mut slices = Vec::new();
+   00417|     for (index, piece) in pieces.iter().enumerate().skip(1) {
+   00418|         let Piece::Number(count) = *piece else {
+   00419|             continue;
+   00420|         };
+   00421|         if count == 0 || !is_word_in(&pieces, index + 1, &nouns) {
+   00422|             continue;
+   00423|         }
+   00424|         if is_word_in(&pieces, index - 1, &heads) {
+   00425|             slices.push(LineSlice {
+   00426|                 from: 1,
+   00427|                 to: count,
+   00428|                 from_end: false,
+   00429|             });
+   00430|         } else if is_word_in(&pieces, index - 1, &tails) {
+   00431|             slices.push(LineSlice {
+   00432|                 from: count,
+   00433|                 to: 1,
+   00434|                 from_end: true,
+   00435|             });
+   00436|         }
+   00437|     }
+   00438|     match slices.as_slice() {
+   00439|         [slice] => Some(*slice),
+   00440|         _ => None,
+   00441|     }
+   00442| }
+   00443| 
+   00444| /// The lines of `source` a [`LineSlice`] names, with the file's own one-based
+   00445| /// numbers of the first and last, or `None` when the file has none of them.
+   00446| pub(super) fn sliced_lines(source: &str, slice: LineSlice) -> Option<(usize, usize, String)> {
+   00447|     let (lines, _) = file_lines(source);
+   00448|     let count = lines.len();
+   00449|     let first = if slice.from_end {
+   00450|         (count + 1).saturating_sub(slice.from).max(1)
+   00451|     } else {
+   00452|         slice.from
+   00453|     };
+   00454|     let last = count.min(if slice.from_end {
+   00455|         (count + 1).saturating_sub(slice.to)
+   00456|     } else {
+   00457|         slice.to
+   00458|     });
+   00459|     if first == 0 || first > last {
+   00460|         return None;
+   00461|     }
+   00462|     Some((first, last, lines[first - 1..last].join("\n")))
+   00463| }
+   00464| 
+   00465| /// The file's lines without their `\n`, and whether it ended in one.
+   00466| fn file_lines(source: &str) -> (Vec<&str>, bool) {
+   00467|     let trailing = source.ends_with('\n');
+   00468|     let body = source.strip_suffix('\n').unwrap_or(source);
+   00469|     let lines = if source.is_empty() {
+   00470|         Vec::new()
+   00471|     } else {
+   00472|         body.split('\n').collect()
+   00473|     };
+   00474|     (lines, trailing)
+   00475| }
+   00476| 
+   00477| fn joined_lines(lines: &[&str], trailing: bool) -> String {
+   00478|     if lines.is_empty() {
+   00479|         return String::new();
+   00480|     }
+   00481|     let mut out = lines.join("\n");
+   00482|     if trailing {
+   00483|         out.push('\n');
+   00484|     }
+   00485|     out
+   00486| }
+   00487| 
+   00488| fn bare(line: &str) -> &str {
+   00489|     line.strip_suffix('\r').unwrap_or(line)
+   00490| }
+   00491| 
+   00492| /// The one line that is exactly `text`, else the one line containing it;
+   00493| /// `None` when there are none or several.
+   00494| fn unique_line(lines: &[&str], text: &str) -> Option<usize> {
+   00495|     let exact: Vec<usize> = (0..lines.len())
+   00496|         .filter(|index| bare(lines[*index]) == text)
+   00497|         .collect();
+   00498|     if !exact.is_empty() {
+   00499|         return only(&exact);
+   00500|     }
+   00501|     let containing: Vec<usize> = (0..lines.len())
+   00502|         .filter(|index| bare(lines[*index]).contains(text))
+   00503|         .collect();
+   00504|     only(&containing)
+   00505| }
+   00506| 
+   00507| const fn only(indices: &[usize]) -> Option<usize> {
+   00508|     match indices {
+   00509|         [index] => Some(*index),
+   00510|         _ => None,
+   00511|     }
+   00512| }
+   00513| 
+   00514| /// Lines `first..=last` (one-based) gone.
+   00515| fn removed_range(source: &str, first: usize, last: usize) -> Option<String> {
+   00516|     let (lines, trailing) = file_lines(source);
+   00517|     if first < 1 || last < first || last > lines.len() {
+   00518|         return None;
+   00519|     }
+   00520|     let kept: Vec<&str> = [&lines[..first - 1], &lines[last..]].concat();
+   00521|     Some(joined_lines(&kept, trailing))
+   00522| }
+   00523| 
+   00524| /// `text` as a line after (or before) line `line`.
+   00525| fn inserted_at_line(source: &str, line: usize, text: &str, after: bool) -> Option<String> {
+   00526|     let (lines, trailing) = file_lines(source);
+   00527|     if line < 1 || line > lines.len() {
+   00528|         return None;
+   00529|     }
+   00530|     let at = if after { line } else { line - 1 };
+   00531|     let inserted: Vec<&str> = text.split('\n').collect();
+   00532|     let out: Vec<&str> = [&lines[..at], &inserted[..], &lines[at..]].concat();
+   00533|     Some(joined_lines(&out, trailing))
+   00534| }
+   00535| 
+   00536| /// The line `anchor` names and the line directly above (or below) it, when
+   00537| /// exactly one such pair exists and the neighbour, if named, is that line.
+   00538| fn adjacent_pair(
+   00539|     lines: &[&str],
+   00540|     anchor: &str,
+   00541|     neighbour: Option<&str>,
+   00542|     above: bool,
+   00543| ) -> Option<(usize, usize)> {
+   00544|     let fits = |index: usize| {
+   00545|         let line = bare(lines[index]);
+   00546|         neighbour.is_none_or(|neighbour| {
+   00547|             line == neighbour || line.trim() == neighbour.trim() || line.contains(neighbour)
+   00548|         })
+   00549|     };
+   00550|     let pairs = |exact: bool| -> Vec<(usize, usize)> {
+   00551|         (0..lines.len())
+   00552|             .filter_map(|index| {
+   00553|                 let line = bare(lines[index]);
+   00554|                 let matches = if exact {
+   00555|                     line == anchor
+   00556|                 } else {
+   00557|                     line.contains(anchor)
+   00558|                 };
+   00559|                 let other = if above {
+   00560|                     index.checked_sub(1)?
+   00561|                 } else {
+   00562|                     index + 1
+   00563|                 };
+   00564|                 (matches && other < lines.len() && fits(other)).then_some((index, other))
+   00565|             })
+   00566|             .collect()
+   00567|     };
+   00568|     let mut found = pairs(true);
+   00569|     if found.is_empty() {
+   00570|         found = pairs(false);
+   00571|     }
+   00572|     match found.as_slice() {
+   00573|         [pair] => Some(*pair),
+   00574|         _ => None,
+   00575|     }
+   00576| }
+   00577| 
+   00578| fn removed_adjacent(
+   00579|     source: &str,
+   00580|     anchor: &str,
+   00581|     neighbour: Option<&str>,
+   00582|     above: bool,
+   00583| ) -> Option<String> {
+   00584|     let (lines, trailing) = file_lines(source);
+   00585|     let (one, two) = adjacent_pair(&lines, anchor, neighbour, above)?;
+   00586|     let kept: Vec<&str> = lines
+   00587|         .iter()
+   00588|         .enumerate()
+   00589|         .filter(|(index, _)| *index != one && *index != two)
+   00590|         .map(|(_, line)| *line)
+   00591|         .collect();
+   00592|     Some(joined_lines(&kept, trailing))
+   00593| }
+   00594| 
+   00595| /// The line `text` names taken out and put back at the start, the end, or
+   00596| /// beside the line `anchor` names among the rest.
+   00597| fn moved_line(
+   00598|     source: &str,
+   00599|     text: &str,
+   00600|     destination: Destination,
+   00601|     anchor: Option<&str>,
+   00602| ) -> Option<String> {
+   00603|     let (lines, trailing) = file_lines(source);
+   00604|     let from = unique_line(&lines, text)?;
+   00605|     let mut rest = lines;
+   00606|     let moved = rest.remove(from);
+   00607|     let at = match destination {
+   00608|         Destination::Start => 0,
+   00609|         Destination::End => rest.len(),
+   00610|         Destination::After => unique_line(&rest, anchor?)? + 1,
+   00611|         Destination::Before => unique_line(&rest, anchor?)?,
+   00612|     };
+   00613|     rest.insert(at, moved);
+   00614|     Some(joined_lines(&rest, trailing))
+   00615| }
+   00616| 
+   00617| /// The two named lines exchanged.
+   00618| fn swapped_lines(source: &str, first: &str, second: &str) -> Option<String> {
+   00619|     let (mut lines, trailing) = file_lines(source);
+   00620|     let one = unique_line(&lines, first)?;
+   00621|     let two = unique_line(&lines, second)?;
+   00622|     if one == two {
+   00623|         return None;
+   00624|     }
+   00625|     lines.swap(one, two);
+   00626|     Some(joined_lines(&lines, trailing))
+   00627| }
+   00628| 
+   00629| impl LineOperation {
+   00630|     /// The file after the operation, or `None` when it cannot apply.
+   00631|     pub(super) fn compute(&self, source: &str) -> Option<String> {
+   00632|         match self {
+   00633|             Self::RangeRemoval { .. } | Self::NumberedInsertion { .. } => {
+   00634|                 let (first, last) = self.resolved_lines(source)?;
+   00635|                 match self {
+   00636|                     Self::NumberedInsertion { text, after, .. } => {
+   00637|                         inserted_at_line(source, first, text, *after)
+   00638|                     }
+   00639|                     _ => removed_range(source, first, last),
+   00640|                 }
+   00641|             }
+   00642|             Self::AdjacentRemoval {
+   00643|                 anchor,
+   00644|                 neighbour,
+   00645|                 above,
+   00646|             } => removed_adjacent(source, anchor, neighbour.as_deref(), *above),
+   00647|             Self::Move {
+   00648|                 text,
+   00649|                 destination,
+   00650|                 anchor,
+   00651|             } => moved_line(source, text, *destination, anchor.as_deref()),
+   00652|             Self::Swap { first, second } => swapped_lines(source, first, second),
+   00653|         }
+   00654|     }
+   00655| 
+   00656|     /// Whether the request states the operation's whole extent (a numbered
+   00657|     /// range), so it may remove most of a file.
+   00658|     pub(super) const fn bounded(&self) -> bool {
+   00659|         matches!(self, Self::RangeRemoval { .. })
+   00660|     }
+   00661| 
+   00662|     /// The seed sentence for the lines actually removed, when the operation
+   00663|     /// reports them from the file rather than from the request.
+   00664|     pub(super) fn reported(&self, source: &str) -> Option<(&'static str, Slots)> {
+   00665|         match self {
+   00666|             Self::RangeRemoval { from_end: true, .. } => {
+   00667|                 let (first, last) = self.resolved_lines(source)?;
+   00668|                 let lines = if first == last {
+   00669|                     first.to_string()
+   00670|                 } else {
+   00671|                     format!("{first}-{last}")
+   00672|                 };
+   00673|                 return Some(("numbered_lines_removed", vec![(LINES_SLOT, lines)]));
+   00674|             }
+   00675|             Self::NumberedInsertion {
+   00676|                 text,
+   00677|                 after,
+   00678|                 from_end: true,
+   00679|                 ..
+   00680|             } => {
+   00681|                 let (line, _) = self.resolved_lines(source)?;
+   00682|                 let intent = if *after {
+   00683|                     "numbered_line_insert_after"
+   00684|                 } else {
+   00685|                     "numbered_line_insert_before"
+   00686|                 };
+   00687|                 return Some((
+   00688|                     intent,
+   00689|                     vec![(NEW_SLOT, text.clone()), (LINE_SLOT, line.to_string())],
+   00690|                 ));
+   00691|             }
+   00692|             _ => {}
+   00693|         }
+   00694|         let removed = self.reported_values(source)?;
+   00695|         Some(("coding_text_remove", vec![(OLD_SLOT, removed.join("\n"))]))
+   00696|     }
+   00697| 
+   00698|     /// Original removed lines, retained as list values rather than presentation text.
+   00699|     pub(super) fn reported_values(&self, source: &str) -> Option<Vec<String>> {
+   00700|         let Self::AdjacentRemoval { anchor, neighbour, above } = self else { return None; };
+   00701|         let (lines, _) = file_lines(source);
+   00702|         let (one, two) = adjacent_pair(&lines, anchor, neighbour.as_deref(), *above)?;
+   00703|         Some([one.min(two), one.max(two)].map(|index| bare(lines[index]).to_owned()).to_vec())
+   00704|     }
+   00705| }
+   00706| 
+   00707| impl LineOperation {
+   00708|     /// The one-based lines a numbered operation names in `source`, earlier
+   00709|     /// first; `None` for any other operation or a count past the file.
+   00710|     fn resolved_lines(&self, source: &str) -> Option<(usize, usize)> {
+   00711|         let count = file_lines(source).0.len();
+   00712|         let (first, last, from_end) = match self {
+   00713|             Self::RangeRemoval {
+   00714|                 first,
+   00715|                 last,
+   00716|                 from_end,
+   00717|             } => (*first, *last, *from_end),
+   00718|             Self::NumberedInsertion { line, from_end, .. } => (*line, *line, *from_end),
+   00719|             _ => return None,
+   00720|         };
+   00721|         Some((
+   00722|             resolved_line(first, count, from_end)?,
+   00723|             resolved_line(last, count, from_end)?,
+   00724|         ))
+   00725|     }
+   00726| }
+   00727| 
+   00728| /// Exactly one of the two seeded meanings: `Some(true)` for the first.
+   00729| fn either_of(outside: &str, first: &str, second: &str) -> Option<bool> {
+   00730|     let lexicon = seed::lexicon();
+   00731|     let one = lexicon.mentions_role(first, outside);
+   00732|     (one != lexicon.mentions_role(second, outside)).then_some(one)
+   00733| }
+   00734| 
+   00735| /// The whole-line operation `task` asks for, if any.
+   00736| pub(super) fn grounded_line_operation(task: &str) -> Option<LineChange> {
+   00737|     let (target, payloads) = named_target_and_payloads(task)?;
+   00738|     let outside_text = text_outside_quoted_segments(task);
+   00739|     let outside = sentence_words(&outside_text);
+   00740|     let lexicon = seed::lexicon();
+   00741|     let change = |operation, intent, slots| {
+   00742|         Some(LineChange {
+   00743|             target: target.clone(),
+   00744|             operation,
+   00745|             intent,
+   00746|             slots,
+   00747|         })
+   00748|     };
+   00749|     if lexicon.mentions_role("line_swap_action", &outside) {
+   00750|         let [first, second] = payloads.as_slice() else {
+   00751|             return None;
+   00752|         };
+   00753|         return change(
+   00754|             LineOperation::Swap {
+   00755|                 first: first.clone(),
+   00756|                 second: second.clone(),
+   00757|             },
+   00758|             "lines_swapped",
+   00759|             vec![(OLD_SLOT, first.clone()), (NEW_SLOT, second.clone())],
+   00760|         );
+   00761|     }
+   00762|     if lexicon.mentions_role("line_move_action", &outside) {
+   00763|         return moved(&payloads, &outside)
+   00764|             .and_then(|(operation, intent, slots)| change(operation, intent, slots));
+   00765|     }
+   00766|     let removing = lexicon.mentions_role("coding_text_remove_action", &outside)
+   00767|         && !lexicon.mentions_role("coding_member_add_action", &outside);
+   00768|     // An ordinal's words are not an adjacency (`最后一行` holds `后一行`).
+   00769|     let mut unordinal = outside_text.to_lowercase();
+   00770|     let ordinals = ordinal_lines(&unordinal);
+   00771|     for ordinal in ordinals.iter().rev() {
+   00772|         unordinal.replace_range(ordinal.start..ordinal.end, " ");
+   00773|     }
+   00774|     let above = either_of(
+   00775|         &sentence_words(&unordinal),
+   00776|         "line_adjacent_above",
+   00777|         "line_adjacent_below",
+   00778|     );
+   00779|     let mut numbered: Vec<(usize, usize, bool)> = numbered_lines(task)
+   00780|         .into_iter()
+   00781|         .map(|(first, last)| (first, last, false))
+   00782|         .collect();
+   00783|     numbered.extend(
+   00784|         ordinals
+   00785|             .iter()
+   00786|             .map(|ordinal| (ordinal.value, ordinal.value, ordinal.from_end)),
+   00787|     );
+   00788|     match numbered.as_slice() {
+   00789|         [] => {}
+   00790|         [(first, last, from_end)] => {
+   00791|             let from_end = *from_end;
+   00792|             if removing && payloads.is_empty() {
+   00793|                 // Counted from the end, the earlier line has the larger count.
+   00794|                 let (earlier, later) = if from_end {
+   00795|                     (*last, *first)
+   00796|                 } else {
+   00797|                     (*first, *last)
+   00798|                 };
+   00799|                 let from = match (above == Some(true), from_end) {
+   00800|                     (false, _) => earlier,
+   00801|                     (true, false) => earlier.saturating_sub(1),
+   00802|                     (true, true) => earlier + 1,
+   00803|                 };
+   00804|                 let to = match (above == Some(false), from_end) {
+   00805|                     (false, _) => later,
+   00806|                     (true, false) => later + 1,
+   00807|                     (true, true) => later.saturating_sub(1),
+   00808|                 };
+   00809|                 let lines = if from == to {
+   00810|                     from.to_string()
+   00811|                 } else {
+   00812|                     format!("{from}-{to}")
+   00813|                 };
+   00814|                 return change(
+   00815|                     LineOperation::RangeRemoval {
+   00816|                         first: from,
+   00817|                         last: to,
+   00818|                         from_end,
+   00819|                     },
+   00820|                     "numbered_lines_removed",
+   00821|                     vec![(LINES_SLOT, lines)],
+   00822|                 );
+   00823|             }
+   00824|             let after = either_of(
+   00825|                 &outside,
+   00826|                 "file_edit_position_after",
+   00827|                 "file_edit_position_before",
+   00828|             )?;
+   00829|             let [payload] = payloads.as_slice() else {
+   00830|                 return None;
+   00831|             };
+   00832|             if removing || first != last {
+   00833|                 return None;
+   00834|             }
+   00835|             let text = unescape_prose_newlines(payload);
+   00836|             return change(
+   00837|                 LineOperation::NumberedInsertion {
+   00838|                     line: *first,
+   00839|                     text: text.clone(),
+   00840|                     after,
+   00841|                     from_end,
+   00842|                 },
+   00843|                 if after {
+   00844|                     "numbered_line_insert_after"
+   00845|                 } else {
+   00846|                     "numbered_line_insert_before"
+   00847|                 },
+   00848|                 vec![(NEW_SLOT, text), (LINE_SLOT, first.to_string())],
+   00849|             );
+   00850|         }
+   00851|         _ => return None,
+   00852|     }
+   00853|     let unpathed = crate::solver_handlers::text_outside_quoted_segments(
+   00854|         &super::workspace_computed_change::without_path_words(task),
+   00855|     );
+   00856|     let names_line = lexicon.meaning("line").is_some_and(|meaning| {
+   00857|         meaning.evidenced_in(&crate::engine::normalize_prompt(&unpathed).to_lowercase())
+   00858|     });
+   00859|     let above = above?;
+   00860|     if !removing || !names_line {
+   00861|         return None;
+   00862|     }
+   00863|     let (anchor, neighbour) = match payloads.as_slice() {
+   00864|         [anchor] => (anchor.clone(), None),
+   00865|         [anchor, neighbour] => (anchor.clone(), Some(neighbour.clone())),
+   00866|         _ => return None,
+   00867|     };
+   00868|     change(
+   00869|         LineOperation::AdjacentRemoval {
+   00870|             anchor: anchor.clone(),
+   00871|             neighbour,
+   00872|             above,
+   00873|         },
+   00874|         "coding_text_remove",
+   00875|         vec![(OLD_SLOT, anchor)],
+   00876|     )
+   00877| }
+   00878| 
+   00879| /// A move: one quoted line to the start or the end, or two (the line, then
+   00880| /// its anchor) with an after/before position.
+   00881| fn moved(payloads: &[String], outside: &str) -> Option<(LineOperation, &'static str, Slots)> {
+   00882|     match payloads {
+   00883|         [text] => {
+   00884|             let at_start = either_of(
+   00885|                 outside,
+   00886|                 "file_edit_position_start",
+   00887|                 "file_edit_position_end",
+   00888|             )?;
+   00889|             Some((
+   00890|                 LineOperation::Move {
+   00891|                     text: text.clone(),
+   00892|                     destination: if at_start {
+   00893|                         Destination::Start
+   00894|                     } else {
+   00895|                         Destination::End
+   00896|                     },
+   00897|                     anchor: None,
+   00898|                 },
+   00899|                 if at_start {
+   00900|                     "line_moved_start"
+   00901|                 } else {
+   00902|                     "line_moved_end"
+   00903|                 },
+   00904|                 vec![(OLD_SLOT, text.clone())],
+   00905|             ))
+   00906|         }
+   00907|         [text, anchor] => {
+   00908|             // `so that it follows the line …` states the place by the line it
+   00909|             // ends up beside (PR #1188 G81).
+   00910|             let after = either_of(
+   00911|                 outside,
+   00912|                 "file_edit_position_after",
+   00913|                 "file_edit_position_before",
+   00914|             )
+   00915|             .or_else(|| either_of(outside, "line_move_after_cue", "line_move_before_cue"))?;
+   00916|             Some((
+   00917|                 LineOperation::Move {
+   00918|                     text: text.clone(),
+   00919|                     destination: if after {
+   00920|                         Destination::After
+   00921|                     } else {
+   00922|                         Destination::Before
+   00923|                     },
+   00924|                     anchor: Some(anchor.clone()),
+   00925|                 },
+   00926|                 if after {
+   00927|                     "line_moved_after"
+   00928|                 } else {
+   00929|                     "line_moved_before"
+   00930|                 },
+   00931|                 vec![(OLD_SLOT, text.clone()), (ANCHOR_SLOT, anchor.clone())],
+   00932|             ))
+   00933|         }
+   00934|         _ => None,
+   00935|     }
+   00936| }
+   00937| 
+   00938| /// Whether `updated` keeps fewer than half of the lines of a file that had at
+   00939| /// least [`MIN_GUARDED_LINES`].
+   00940| ///
+   00941| /// A computed change that does so without the request stating that extent is
+   00942| /// refused (PR #1188 T29: a 380-line file was once replaced by one line).
+   00943| pub(super) fn drops_most_of_file(source: &str, updated: &str) -> bool {
+   00944|     let before = file_lines(source).0.len();
+   00945|     before >= MIN_GUARDED_LINES && file_lines(updated).0.len() * 2 < before
+   00946| }
+   00947| 
+   
+   (End of file - total 947 lines)
+   </file>
+>> edit {"filePath":"rust/src/agentic_coding/workspace_line_operation.rs","file_path":"rust/src/agentic_coding/workspace_line_operation.rs","new":"        let Self::AdjacentRemoval {\n            anchor,\n            neighbour,\n            above,\n        } = self\n        else {\n            return None;\n        };","newString":"        let Self::AdjacentRemoval {\n            anchor,\n            neighbour,\n            above,\n        } = self\n        else {\n            return None;\n        };","new_str":"        let Self::AdjacentRemoval {\n            anchor,\n            neighbour,\n            above,\n        } = self\n        else {\n            return None;\n        };","new_string":"        let Self::AdjacentRemoval {\n            anchor,\n            neighbour,\n            above,\n        } = self\n        else {\n            return None;\n        };","old":"        let Self::AdjacentRemoval { anchor, neighbour, above } = self else { return None; };","oldString":"        let Self::AdjacentRemoval { anchor, neighbour, above } = self else { return None; };","old_str":"        let Self::AdjacentRemoval { anchor, neighbour, above } = self else { return None; };","old_string":"        let Self::AdjacentRemoval { anchor, neighbour, above } = self else { return None; };","path":"rust/src/agentic_coding/workspace_line_operation.rs"}
+>> bash {"command":"sha256sum -- rust/src/agentic_coding/workspace_line_operation.rs"}
+   80e46a305f5bf19e581cc1002c27d4f8f2e5cf78830292c7082109c407070f2a  rust/src/agentic_coding/workspace_line_operation.rs
+   
+== answer ==
+Replaced `        let Self::AdjacentRemoval { anchor, neighbour, above } = self else { return None; };` with `        let Self::AdjacentRemoval {
+            anchor,
+            neighbour,
+            above,
+        } = self
+        else {
+            return None;
+        };` in `rust/src/agentic_coding/workspace_line_operation.rs` and observed the result.

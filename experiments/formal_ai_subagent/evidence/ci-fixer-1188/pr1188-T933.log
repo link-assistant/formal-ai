@@ -1,0 +1,186 @@
+>> read {"filePath":"rust/src/agentic_coding/quote_nesting.rs","file_path":"rust/src/agentic_coding/quote_nesting.rs","path":"rust/src/agentic_coding/quote_nesting.rs"}
+   <file>
+   00001| //! A quoted text that holds its own quote mark (PR #1188 G90, G107), and the
+   00002| //! request faults the planner declines before any arm reads a payload.
+   00003| //!
+   00004| //! With one mark for both ends (apostrophe, double quote or backtick), `Replace 'a('x')' with 'b' in
+   00005| //! f.rs.` pairs the outer opening quote with the first inner one. A closing
+   00006| //! mark is followed by a space, the end, or punctuation; one followed straight
+   00007| //! away by a letter, a digit or another quote mark opened an inner quote
+   00008| //! instead. When the inner spans pair among themselves and the payload closes
+   00009| //! at the end of the instruction, the payload runs there, whatever sentences
+   00010| //! it holds. When the edit read from the request still does not hold such a
+   00011| //! quote whole, the request is declined, naming the quote, rather than
+   00012| //! guessed. The Rust original of `js/agentic/quote_nesting.mjs`.
+   00013| 
+   00014| use super::code_task;
+   00015| use super::planner::AgenticPlan;
+   00016| use crate::normal_markov::{quoted_segment_spans, wrapped_in_quote_pair};
+   00017| 
+   00018| /// The quote marks that open and close a quoted text alike.
+   00019| const SAME_MARKS: [char; 3] = ['\'', '"', '`'];
+   00020| /// The mark of a fenced block, whose body may hold any quote.
+   00021| const FENCE: &str = "```";
+   00022| /// How many characters of the request the decline quotes.
+   00023| const FAULT_FRAGMENT_CHARS: usize = 32;
+   00024| /// What may stand right after a closing mark.
+   00025| const CLOSE_FOLLOWERS: &str = ".,;:!?)]}'\"`»";
+   00026| /// What may stand right before an opening mark.
+   00027| const OPEN_LEADERS: &str = "([{";
+   00028| /// The seeded answer to a quote that holds its own mark.
+   00029| const NESTED_INTENT: &str = "request-quote-nested";
+   00030| /// The seeded answer to a clause of several edits that is no replacement.
+   00031| const FRAGMENT_PLACEHOLDER: &str = "{fragment}";
+   00032| const CLAUSE_PLACEHOLDER: &str = "{clause}";
+   00033| const UNPLANNED_CLAUSE_INTENT: &str = "request-edit-clause-unplanned";
+   00034| 
+   00035| /// A quoted text whose closing mark opens an inner quote.
+   00036| pub(super) struct NestedQuote {
+   00037|     /// The seeded answer that declines it.
+   00038|     pub(super) intent: &'static str,
+   00039|     /// Up to 32 characters of the request from `at`, trailing space trimmed.
+   00040|     pub(super) fragment: String,
+   00041| }
+   00042| 
+   00043| /// Whether the character at byte `at` opens an inner quote right after a
+   00044| /// close.
+   00045| fn opens_inner(text: &str, at: usize) -> bool {
+   00046|     text.get(at..)
+   00047|         .and_then(|rest| rest.chars().next())
+   00048|         .is_some_and(|after| after.is_ascii_alphanumeric() || SAME_MARKS.contains(&after))
+   00049| }
+   00050| 
+   00051| /// Where a new text that starts at byte `from` ends, given the sentence end
+   00052| /// `cut` (mirrors `wholePayloadEnd`).
+   00053| ///
+   00054| /// When the payload cut there is no whole literal, or its closing mark opens
+   00055| /// an inner quote, its marks are read by their shape: a mark after a space or
+   00056| /// an opening bracket and before a word opens an inner quote, a mark after a
+   00057| /// word and before a space or punctuation closes one, and the payload ends
+   00058| /// where its own opening mark is closed. `cut` when a mark has neither shape
+   00059| /// or the payload never closes.
+   00060| pub(super) fn whole_payload_end(request: &str, from: usize, cut: usize) -> usize {
+   00061|     let Some(payload) = request.get(from..cut) else {
+   00062|         return cut;
+   00063|     };
+   00064|     if wrapped_in_quote_pair(payload) && !opens_inner(request, cut) {
+   00065|         return cut;
+   00066|     }
+   00067|     let rest = &request[from..];
+   00068|     let open = from + (rest.len() - rest.trim_start().len());
+   00069|     let Some(mark) = request[open..].chars().next() else {
+   00070|         return cut;
+   00071|     };
+   00072|     if !SAME_MARKS.contains(&mark) || request[open..].starts_with(FENCE) {
+   00073|         return cut;
+   00074|     }
+   00075|     let end = super::positional_edit::instruction_end(request);
+   00076|     if end <= open + mark.len_utf8() {
+   00077|         return cut;
+   00078|     }
+   00079|     let mut depth = 1_usize;
+   00080|     let mut before = mark;
+   00081|     let mut characters = request[open + mark.len_utf8()..end]
+   00082|         .char_indices()
+   00083|         .peekable();
+   00084|     while let Some((offset, character)) = characters.next() {
+   00085|         let previous = before;
+   00086|         before = character;
+   00087|         if character != mark {
+   00088|             continue;
+   00089|         }
+   00090|         let after = characters.peek().map(|(_, next)| *next);
+   00091|         let closes = !previous.is_whitespace()
+   00092|             && after.is_none_or(|next| next.is_whitespace() || CLOSE_FOLLOWERS.contains(next));
+   00093|         let opens = (previous.is_whitespace() || OPEN_LEADERS.contains(previous))
+   00094|             && after.is_some_and(|next| !next.is_whitespace());
+   00095|         if opens && !closes {
+   00096|             depth += 1;
+   00097|         } else if closes {
+   00098|             depth -= 1;
+   00099|         } else {
+   00100|             return cut;
+   00101|         }
+   00102|         if depth == 0 {
+   00103|             return open + mark.len_utf8() + offset + mark.len_utf8();
+   00104|         }
+   00105|     }
+   00106|     cut
+   00107| }
+   00108| 
+   00109| /// The first quoted text of a request naming a file whose closing mark opens
+   00110| /// an inner quote and that the request's edit, if one can be read, does not
+   00111| /// hold whole (mirrors `nestedQuoteFault`).
+   00112| pub(super) fn nested_quote_fault(text: &str) -> Option<NestedQuote> {
+   00113|     let edit = super::write_request::compose_edit_request(text);
+   00114|     // A request naming a file whose edit cannot be read at all is declined too.
+   00115|     if edit.is_none() && super::module_function::paths_in(text).is_empty() {
+   00116|         return None;
+   00117|     }
+   00118|     for segment in quoted_segment_spans(text) {
+   00119|         let opening = text[segment.start..].chars().next();
+   00120|         if !opening.is_some_and(|mark| SAME_MARKS.contains(&mark))
+   00121|             || text[segment.start..].starts_with(FENCE)
+   00122|             || !opens_inner(text, segment.end)
+   00123|         {
+   00124|             continue;
+   00125|         }
+   00126|         let next = text[segment.end..].chars().next().map_or(0, char::len_utf8);
+   00127|         let across = &text[segment.start + 1..segment.end + next];
+   00128|         let held = edit
+   00129|             .as_ref()
+   00130|             .is_some_and(|(_, old, new)| old.contains(across) || new.contains(across));
+   00131|         if held {
+   00132|             continue;
+   00133|         }
+   00134|         let fragment: String = text[segment.start..]
+   00135|             .chars()
+   00136|             .take(FAULT_FRAGMENT_CHARS)
+   00137|             .collect();
+   00138|         return Some(NestedQuote {
+   00139|             intent: NESTED_INTENT,
+   00140|             fragment: fragment.trim_end().to_owned(),
+   00141|         });
+   00142|     }
+   00143|     None
+   00144| }
+   00145| 
+   00146| /// The seeded answer declining a request whose quotes do not pair (PR #1188
+   00147| /// G71) or nest (G90), whose edit names several files (G91, G104), or whose
+   00148| /// several edits hold one that is no replacement (G106); mirrors
+   00149| /// `requestFaultAnswer` in `js/agentic/planner.mjs`.
+   00150| ///
+   00151| /// Steps joined by a sequence cue are each checked alone (G99).
+   00152| pub(super) fn request_fault_answer(task: &str) -> Option<AgenticPlan> {
+   00153|     let fault = crate::normal_markov::quote_fault(task)
+   00154|         .map(|fault| (format!("request_quote_{}", fault.kind), fault.fragment))
+   00155|         .or_else(|| {
+   00156|             nested_quote_fault(task).map(|fault| (fault.intent.to_owned(), fault.fragment))
+   00157|         });
+   00158|     let answer = if let Some((intent, fragment)) = fault {
+   00159|         code_task::render_seeded_change(&intent, task, "", &[(FRAGMENT_PLACEHOLDER, &fragment)])
+   00160|     } else if super::request_sequence::sequence_steps(task).is_some() {
+   00161|         return None;
+   00162|     } else if let Some(targets) = super::replace_list::several_edit_targets(task) {
+   00163|         code_task::render_seeded_change(
+   00164|             "request_several_edit_targets",
+   00165|             task,
+   00166|             "",
+   00167|             &[("{files}", &targets.join("`, `"))],
+   00168|         )
+   00169|     } else {
+   00170|         let clause = super::replace_list::unplanned_edit_clause(task)?;
+   00171|         code_task::render_seeded_change(UNPLANNED_CLAUSE_INTENT, task, "", &[("{clause}", &clause)])
+   00172|     };
+   00173|     answer.map(AgenticPlan::Final)
+   00174| }
+   00175| 
+   
+   (End of file - total 175 lines)
+   </file>
+>> edit {"filePath":"rust/src/agentic_coding/quote_nesting.rs","file_path":"rust/src/agentic_coding/quote_nesting.rs","new":"&[(CLAUSE_PLACEHOLDER, &clause)]","newString":"&[(CLAUSE_PLACEHOLDER, &clause)]","new_str":"&[(CLAUSE_PLACEHOLDER, &clause)]","new_string":"&[(CLAUSE_PLACEHOLDER, &clause)]","old":"&[(\"{clause}\", &clause)]","oldString":"&[(\"{clause}\", &clause)]","old_str":"&[(\"{clause}\", &clause)]","old_string":"&[(\"{clause}\", &clause)]","path":"rust/src/agentic_coding/quote_nesting.rs"}
+>> bash {"command":"sha256sum -- rust/src/agentic_coding/quote_nesting.rs"}
+   decf1c9d68013e0907773c7aa927b16e2b40878b3c43ab67533643c22d505c7d  rust/src/agentic_coding/quote_nesting.rs
+   
+== answer ==
+Replaced `&[("{clause}", &clause)]` with `&[(CLAUSE_PLACEHOLDER, &clause)]` in `rust/src/agentic_coding/quote_nesting.rs` and observed the result.

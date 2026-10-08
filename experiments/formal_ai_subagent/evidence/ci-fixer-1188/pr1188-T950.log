@@ -1,0 +1,629 @@
+>> read {"filePath":"data/seed/multilingual-responses-procedural-how-to.lino","file_path":"data/seed/multilingual-responses-procedural-how-to.lino","path":"data/seed/multilingual-responses-procedural-how-to.lino"}
+   <file>
+   00001| # Response templates for procedural how-to discovery (issue #918).
+   00002| #
+   00003| # The discovery plan, the install source gate, the source paths and the stage
+   00004| # lines of the live wikiHow, official-documentation and fallback searches. Moved
+   00005| # out of data/seed/multilingual-responses-synthesis.lino by category so each
+   00006| # response file stays within 1500 lines. Placeholders in braces are filled by the
+   00007| # handler.
+   00008| 
+   00009| multilingual_responses
+   00010|   response response_procedural_how_to_plan_en
+   00011|     intent procedural_how_to_plan
+   00012|     language en
+   00013|     text "Procedural discovery plan for `{task}` (action `{action}`, object `{object}`).\n\n{install_gate}I do not answer this from a memoized recipe. The solver first checks Wikipedia for topic context and Wikidata for entity/action/object hints. It then tries wikiHow's CORS-readable MediaWiki parse API candidate `{candidate}` via `{api_url}`. If those sources do not expose usable steps, the fallback path runs web search for `{search_query}` across {providers} and merges the top results with reciprocal rank fusion (k = {k}). The final recursive fetch check only accepts pages that actually contain explicit ordered or instructional steps for `{task}`."
+   00014|   response response_procedural_how_to_install_gate_en
+   00015|     intent procedural_how_to_install_gate
+   00016|     language en
+   00017|     text "For install tasks, the first source gate prefers the product's official documentation or official repository install page before community how-to sources. It starts with the official-source web search query `{search_query}` and keeps the general how-to query `{fallback-query}` as fallback.\n\n"
+   00018|   response response_procedural_how_to_plan_ru
+   00019|     intent procedural_how_to_plan
+   00020|     language ru
+   00021|     text "План поиска процедуры для `{task}` (действие `{action}`, объект `{object}`).\n\n{install_gate}Я не отвечаю на это как на заученный рецепт. Сначала solver проверяет Wikipedia для контекста темы и Wikidata для подсказок сущности, действия и объекта. Затем он пробует CORS-readable MediaWiki parse API wikiHow для кандидата `{candidate}` через `{api_url}`. Если эти источники не дают пригодные шаги, fallback запускает web search по `{search_query}` через {providers} и объединяет верхние результаты reciprocal rank fusion (k = {k}). Финальная recursive fetch check принимает только страницы с явными упорядоченными или инструкционными шагами для `{task}`."
+   00022|   response response_procedural_how_to_install_gate_ru
+   00023|     intent procedural_how_to_install_gate
+   00024|     language ru
+   00025|     text "Для задач установки первый source gate ищет официальную документацию продукта или официальную страницу установки в репозитории, а уже потом переходит к общим how-to источникам. Он начинает с web search запроса `{search_query}` и держит общий how-to запрос `{fallback-query}` как fallback. "
+   00026|   response response_procedural_how_to_plan_hi
+   00027|     intent procedural_how_to_plan
+   00028|     language hi
+   00029|     text "`{task}` के लिए procedural discovery plan (action `{action}`, object `{object}`).\n\n{install_gate}मैं इसे memorized recipe से answer नहीं करता. Solver पहले topic context के लिए Wikipedia और entity/action/object hints के लिए Wikidata जांचता है. फिर वह candidate `{candidate}` के लिए wikiHow का CORS-readable MediaWiki parse API `{api_url}` से आजमाता है. अगर ये sources usable steps नहीं देते, fallback `{search_query}` के लिए {providers} पर web search चलाता है और top results को reciprocal rank fusion (k = {k}) से merge करता है. अंतिम recursive fetch check केवल उन pages को स्वीकार करता है जिनमें `{task}` के explicit ordered या instructional steps हों."
+   00030|   response response_procedural_how_to_install_gate_hi
+   00031|     intent procedural_how_to_install_gate
+   00032|     language hi
+   00033|     text "इंस्टॉल वाले कामों में पहला source gate उत्पाद की आधिकारिक documentation या official repository install page को प्राथमिकता देता है; उसके बाद ही community how-to sources देखे जाते हैं. Solver official-source web search query `{search_query}` पहले चलाता है और general how-to query `{fallback-query}` को fallback रखता है. "
+   00034|   response response_procedural_how_to_plan_zh
+   00035|     intent procedural_how_to_plan
+   00036|     language zh
+   00037|     text "`{task}` 的过程发现计划（action `{action}`, object `{object}`）。\n\n{install_gate}我不会把它当作记忆中的固定 recipe 来回答。Solver 先检查 Wikipedia 获取主题上下文，再检查 Wikidata 获取 entity/action/object 线索。然后它尝试 wikiHow 的 CORS-readable MediaWiki parse API candidate `{candidate}`，URL 为 `{api_url}`。如果这些来源没有可用步骤，fallback 会对 `{search_query}` 通过 {providers} 运行 web search，并用 reciprocal rank fusion (k = {k}) 合并顶部结果。最后的 recursive fetch check 只接受真正包含 `{task}` 的明确有序步骤或 instructional steps 的页面。"
+   00038|   response response_procedural_how_to_plan_es
+   00039|     intent procedural_how_to_plan
+   00040|     language es
+   00041|     text "Plan de descubrimiento del procedimiento para `{task}` (acción `{action}`, objeto `{object}`).\n\n{install_gate}No respondo a esto con una receta memorizada. El solucionador consulta primero Wikipedia para el contexto del tema y Wikidata para pistas sobre la entidad, la acción y el objeto. Después prueba la API de análisis MediaWiki de wikiHow, legible por CORS, con el candidato `{candidate}` mediante `{api_url}`. Si esas fuentes no ofrecen pasos utilizables, la ruta alternativa ejecuta una búsqueda web de `{search_query}` en {providers} y combina los mejores resultados con reciprocal rank fusion (k = {k}). La comprobación final de obtención recursiva solo acepta páginas que contengan realmente pasos explícitos, ordenados o instructivos, para `{task}`."
+   00042|   response response_procedural_how_to_install_gate_zh
+   00043|     intent procedural_how_to_install_gate
+   00044|     language zh
+   00045|     text "对于安装类任务，第一个 source gate 优先查找产品官方 documentation 或官方仓库的安装页面，然后才使用社区 how-to 来源。Solver 先运行官方来源 web search query `{search_query}`，并把通用 how-to query `{fallback-query}` 保留为 fallback。"
+   00046|   response response_procedural_how_to_install_gate_es
+   00047|     intent procedural_how_to_install_gate
+   00048|     language es
+   00049|     text "Para las tareas de instalación, el primer filtro de fuentes prefiere la documentación oficial del producto o la página de instalación del repositorio oficial antes que las guías de la comunidad. Empieza con la consulta de búsqueda web de fuentes oficiales `{search_query}` y mantiene la consulta general de guía `{fallback-query}` como alternativa.\n\n"
+   00050|   response response_procedural_how_to_source_path_install_wikihow_en
+   00051|     intent procedural_how_to_source_path_install_wikihow
+   00052|     language en
+   00053|     text "Source path: Wikipedia -> Wikidata -> official documentation web search -> wikiHow API fallback -> community web search fallback -> recursive fetch check."
+   00054|   response response_procedural_how_to_source_path_install_wikihow_ru
+   00055|     intent procedural_how_to_source_path_install_wikihow
+   00056|     language ru
+   00057|     text "Путь источников: Wikipedia -> Wikidata -> official documentation web search -> wikiHow API fallback -> community web search fallback -> recursive fetch check."
+   00058|   response response_procedural_how_to_source_path_install_wikihow_hi
+   00059|     intent procedural_how_to_source_path_install_wikihow
+   00060|     language hi
+   00061|     text "स्रोत पथ: Wikipedia -> Wikidata -> official documentation web search -> wikiHow API fallback -> community web search fallback -> recursive fetch check।"
+   00062|   response response_procedural_how_to_source_path_install_wikihow_zh
+   00063|     intent procedural_how_to_source_path_install_wikihow
+   00064|     language zh
+   00065|     text "来源路径：Wikipedia -> Wikidata -> 官方文档 web search -> wikiHow API fallback -> 社区 web search fallback -> recursive fetch check。"
+   00066|   response response_procedural_how_to_source_path_install_wikihow_es
+   00067|     intent procedural_how_to_source_path_install_wikihow
+   00068|     language es
+   00069|     text "Ruta de fuentes: Wikipedia -> Wikidata -> búsqueda web en la documentación oficial -> API de wikiHow como alternativa -> búsqueda web alternativa en la comunidad -> comprobación de obtención recursiva."
+   00070|   response response_procedural_how_to_source_path_install_no_wikihow_en
+   00071|     intent procedural_how_to_source_path_install_no_wikihow
+   00072|     language en
+   00073|     text "Source path: Wikipedia -> Wikidata -> official documentation web search -> community web search fallback -> recursive fetch check (wikiHow disabled in settings)."
+   00074|   response response_procedural_how_to_source_path_install_no_wikihow_ru
+   00075|     intent procedural_how_to_source_path_install_no_wikihow
+   00076|     language ru
+   00077|     text "Путь источников: Wikipedia -> Wikidata -> official documentation web search -> community web search fallback -> recursive fetch check (wikiHow отключен в настройках)."
+   00078|   response response_procedural_how_to_source_path_install_no_wikihow_hi
+   00079|     intent procedural_how_to_source_path_install_no_wikihow
+   00080|     language hi
+   00081|     text "स्रोत पथ: Wikipedia -> Wikidata -> official documentation web search -> community web search fallback -> recursive fetch check (settings में wikiHow बंद है)।"
+   00082|   response response_procedural_how_to_source_path_install_no_wikihow_zh
+   00083|     intent procedural_how_to_source_path_install_no_wikihow
+   00084|     language zh
+   00085|     text "来源路径：Wikipedia -> Wikidata -> 官方文档 web search -> 社区 web search fallback -> recursive fetch check（设置中已禁用 wikiHow）。"
+   00086|   response response_procedural_how_to_source_path_install_no_wikihow_es
+   00087|     intent procedural_how_to_source_path_install_no_wikihow
+   00088|     language es
+   00089|     text "Ruta de fuentes: Wikipedia -> Wikidata -> búsqueda web en la documentación oficial -> búsqueda web alternativa en la comunidad -> comprobación de obtención recursiva (wikiHow desactivado en los ajustes)."
+   00090|   response response_procedural_how_to_source_path_wikihow_en
+   00091|     intent procedural_how_to_source_path_wikihow
+   00092|     language en
+   00093|     text "Source path: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check."
+   00094|   response response_procedural_how_to_source_path_wikihow_ru
+   00095|     intent procedural_how_to_source_path_wikihow
+   00096|     language ru
+   00097|     text "Путь источников: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check."
+   00098|   response response_procedural_how_to_source_path_wikihow_hi
+   00099|     intent procedural_how_to_source_path_wikihow
+   00100|     language hi
+   00101|     text "स्रोत पथ: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check।"
+   00102|   response response_procedural_how_to_source_path_wikihow_zh
+   00103|     intent procedural_how_to_source_path_wikihow
+   00104|     language zh
+   00105|     text "来源路径：Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check。"
+   00106|   response response_procedural_how_to_source_path_wikihow_es
+   00107|     intent procedural_how_to_source_path_wikihow
+   00108|     language es
+   00109|     text "Ruta de fuentes: Wikipedia -> Wikidata -> API de wikiHow -> búsqueda web alternativa -> comprobación de obtención recursiva."
+   00110|   response response_procedural_how_to_source_path_no_wikihow_en
+   00111|     intent procedural_how_to_source_path_no_wikihow
+   00112|     language en
+   00113|     text "Source path: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow disabled in settings)."
+   00114|   response response_procedural_how_to_source_path_no_wikihow_ru
+   00115|     intent procedural_how_to_source_path_no_wikihow
+   00116|     language ru
+   00117|     text "Путь источников: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow отключен в настройках)."
+   00118|   response response_procedural_how_to_source_path_no_wikihow_hi
+   00119|     intent procedural_how_to_source_path_no_wikihow
+   00120|     language hi
+   00121|     text "स्रोत पथ: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (settings में wikiHow बंद है)।"
+   00122|   response response_procedural_how_to_source_path_no_wikihow_zh
+   00123|     intent procedural_how_to_source_path_no_wikihow
+   00124|     language zh
+   00125|     text "来源路径：Wikipedia -> Wikidata -> web search fallback -> recursive fetch check（设置中已禁用 wikiHow）。"
+   00126|   response response_procedural_how_to_source_path_no_wikihow_es
+   00127|     intent procedural_how_to_source_path_no_wikihow
+   00128|     language es
+   00129|     text "Ruta de fuentes: Wikipedia -> Wikidata -> búsqueda web alternativa -> comprobación de obtención recursiva (wikiHow desactivado en los ajustes)."
+   00130|   response response_procedural_how_to_heading_en
+   00131|     intent procedural_how_to_heading
+   00132|     language en
+   00133|     text "Procedural discovery plan for `{task}` (action `{action}`, object `{object}`)."
+   00134|   response response_procedural_how_to_live_install_gate_en
+   00135|     intent procedural_how_to_live_install_gate
+   00136|     language en
+   00137|     text "For install tasks, the first source gate prefers the product's official documentation or official repository install page before community how-to sources. It starts with `{search_query}` and keeps `{fallback-query}` as fallback."
+   00138|   response response_procedural_how_to_heading_ru
+   00139|     intent procedural_how_to_heading
+   00140|     language ru
+   00141|     text "План поиска процедуры для `{task}` (действие `{action}`, объект `{object}`)."
+   00142|   response response_procedural_how_to_live_install_gate_ru
+   00143|     intent procedural_how_to_live_install_gate
+   00144|     language ru
+   00145|     text "Для задач установки первый source gate ищет официальную документацию продукта или официальную страницу установки в репозитории, а уже потом переходит к общим how-to источникам. Он начинает с `{search_query}` и держит `{fallback-query}` как fallback."
+   00146|   response response_procedural_how_to_heading_hi
+   00147|     intent procedural_how_to_heading
+   00148|     language hi
+   00149|     text "`{task}` के लिए procedural discovery plan (action `{action}`, object `{object}`)."
+   00150|   response response_procedural_how_to_live_install_gate_hi
+   00151|     intent procedural_how_to_live_install_gate
+   00152|     language hi
+   00153|     text "इंस्टॉल वाले कामों में पहला source gate उत्पाद की आधिकारिक documentation या official repository install page को प्राथमिकता देता है; उसके बाद ही community how-to sources देखे जाते हैं. Solver पहले `{search_query}` चलाता है और `{fallback-query}` को fallback रखता है."
+   00154|   response response_procedural_how_to_heading_zh
+   00155|     intent procedural_how_to_heading
+   00156|     language zh
+   00157|     text "`{task}` 的过程发现计划（action `{action}`, object `{object}`）。"
+   00158|   response response_procedural_how_to_heading_es
+   00159|     intent procedural_how_to_heading
+   00160|     language es
+   00161|     text "Plan de descubrimiento del procedimiento para `{task}` (acción `{action}`, objeto `{object}`)."
+   00162|   response response_procedural_how_to_live_install_gate_zh
+   00163|     intent procedural_how_to_live_install_gate
+   00164|     language zh
+   00165|     text "对于安装类任务，第一个 source gate 优先查找产品官方 documentation 或官方仓库的安装页面，然后才使用社区 how-to 来源。Solver 先运行 `{search_query}`，并把 `{fallback-query}` 保留为 fallback。"
+   00166|   response response_procedural_how_to_live_install_gate_es
+   00167|     intent procedural_how_to_live_install_gate
+   00168|     language es
+   00169|     text "Para las tareas de instalación, el primer filtro de fuentes prefiere la documentación oficial del producto o la página de instalación del repositorio oficial antes que las guías de la comunidad. Empieza con `{search_query}` y mantiene `{fallback-query}` como alternativa."
+   00170|   response response_procedural_how_to_official_search_en
+   00171|     intent procedural_how_to_official_search
+   00172|     language en
+   00173|     text "Official-documentation web search for `{query}`:"
+   00174|   response response_procedural_how_to_official_search_ru
+   00175|     intent procedural_how_to_official_search
+   00176|     language ru
+   00177|     text "Веб-поиск по официальной документации для `{query}`:"
+   00178|   response response_procedural_how_to_official_search_hi
+   00179|     intent procedural_how_to_official_search
+   00180|     language hi
+   00181|     text "`{query}` के लिए official documentation web search:"
+   00182|   response response_procedural_how_to_official_search_zh
+   00183|     intent procedural_how_to_official_search
+   00184|     language zh
+   00185|     text "`{query}` 的官方文档 web search："
+   00186|   response response_procedural_how_to_official_search_es
+   00187|     intent procedural_how_to_official_search
+   00188|     language es
+   00189|     text "Búsqueda web en la documentación oficial de `{query}`:"
+   00190|   response response_procedural_how_to_official_search_miss_en
+   00191|     intent procedural_how_to_official_search_miss
+   00192|     language en
+   00193|     text "Official-documentation web search for `{query}` did not return ranked guidance; preserving `{fallback}` as the general how-to fallback."
+   00194|   response response_procedural_how_to_official_search_miss_ru
+   00195|     intent procedural_how_to_official_search_miss
+   00196|     language ru
+   00197|     text "Веб-поиск по официальной документации для `{query}` не вернул ранжированных инструкций; `{fallback}` сохраняется как общий резервный how-to запрос."
+   00198|   response response_procedural_how_to_official_search_miss_hi
+   00199|     intent procedural_how_to_official_search_miss
+   00200|     language hi
+   00201|     text "`{query}` के लिए official documentation web search ने कोई ranked मार्गदर्शन नहीं लौटाया; `{fallback}` को सामान्य how-to fallback के रूप में रखा गया है।"
+   00202|   response response_procedural_how_to_official_search_miss_zh
+   00203|     intent procedural_how_to_official_search_miss
+   00204|     language zh
+   00205|     text "`{query}` 的官方文档 web search 没有返回排序后的指导；保留 `{fallback}` 作为通用的 how-to fallback。"
+   00206|   response response_procedural_how_to_official_search_miss_es
+   00207|     intent procedural_how_to_official_search_miss
+   00208|     language es
+   00209|     text "La búsqueda web en la documentación oficial de `{query}` no devolvió ninguna guía clasificada; se conserva `{fallback}` como alternativa general de guía."
+   00210|   response response_procedural_how_to_wikihow_returned_en
+   00211|     intent procedural_how_to_wikihow_returned
+   00212|     language en
+   00213|     text "wikiHow API returned `{title}` for candidate `{candidate}`."
+   00214|   response response_procedural_how_to_wikihow_returned_ru
+   00215|     intent procedural_how_to_wikihow_returned
+   00216|     language ru
+   00217|     text "API wikiHow вернул `{title}` для кандидата `{candidate}`."
+   00218|   response response_procedural_how_to_wikihow_returned_hi
+   00219|     intent procedural_how_to_wikihow_returned
+   00220|     language hi
+   00221|     text "wikiHow API ने candidate `{candidate}` के लिए `{title}` लौटाया।"
+   00222|   response response_procedural_how_to_wikihow_returned_zh
+   00223|     intent procedural_how_to_wikihow_returned
+   00224|     language zh
+   00225|     text "wikiHow API 为候选 `{candidate}` 返回了 `{title}`。"
+   00226|   response response_procedural_how_to_wikihow_returned_es
+   00227|     intent procedural_how_to_wikihow_returned
+   00228|     language es
+   00229|     text "La API de wikiHow devolvió `{title}` para el candidato `{candidate}`."
+   00230|   response response_procedural_how_to_wikihow_miss_en
+   00231|     intent procedural_how_to_wikihow_miss
+   00232|     language en
+   00233|     text "wikiHow candidate `{candidate}` did not return explicit steps ({error})."
+   00234|   response response_procedural_how_to_wikihow_miss_ru
+   00235|     intent procedural_how_to_wikihow_miss
+   00236|     language ru
+   00237|     text "Кандидат wikiHow `{candidate}` не вернул явных шагов ({error})."
+   00238|   response response_procedural_how_to_wikihow_miss_hi
+   00239|     intent procedural_how_to_wikihow_miss
+   00240|     language hi
+   00241|     text "wikiHow candidate `{candidate}` ने स्पष्ट steps नहीं लौटाए ({error})।"
+   00242|   response response_procedural_how_to_wikihow_miss_zh
+   00243|     intent procedural_how_to_wikihow_miss
+   00244|     language zh
+   00245|     text "wikiHow 候选 `{candidate}` 没有返回明确的步骤（{error}）。"
+   00246|   response response_procedural_how_to_wikihow_miss_es
+   00247|     intent procedural_how_to_wikihow_miss
+   00248|     language es
+   00249|     text "El candidato de wikiHow `{candidate}` no devolvió pasos explícitos ({error})."
+   00250|   response response_procedural_how_to_wikihow_disabled_en
+   00251|     intent procedural_how_to_wikihow_disabled
+   00252|     language en
+   00253|     text "wikiHow is disabled in settings."
+   00254|   response response_procedural_how_to_wikihow_disabled_ru
+   00255|     intent procedural_how_to_wikihow_disabled
+   00256|     language ru
+   00257|     text "wikiHow отключён в настройках."
+   00258|   response response_procedural_how_to_wikihow_disabled_hi
+   00259|     intent procedural_how_to_wikihow_disabled
+   00260|     language hi
+   00261|     text "settings में wikiHow बंद है।"
+   00262|   response response_procedural_how_to_wikihow_disabled_zh
+   00263|     intent procedural_how_to_wikihow_disabled
+   00264|     language zh
+   00265|     text "设置中已禁用 wikiHow。"
+   00266|   response response_procedural_how_to_wikihow_disabled_es
+   00267|     intent procedural_how_to_wikihow_disabled
+   00268|     language es
+   00269|     text "wikiHow está desactivado en los ajustes."
+   00270|   response response_procedural_how_to_fallback_search_en
+   00271|     intent procedural_how_to_fallback_search
+   00272|     language en
+   00273|     text "Fallback web search for `{query}`:"
+   00274|   response response_procedural_how_to_fallback_search_ru
+   00275|     intent procedural_how_to_fallback_search
+   00276|     language ru
+   00277|     text "Резервный веб-поиск по `{query}`:"
+   00278|   response response_procedural_how_to_fallback_search_hi
+   00279|     intent procedural_how_to_fallback_search
+   00280|     language hi
+   00281|     text "`{query}` के लिए fallback web search:"
+   00282|   response response_procedural_how_to_fallback_search_zh
+   00283|     intent procedural_how_to_fallback_search
+   00284|     language zh
+   00285|     text "`{query}` 的 fallback web search："
+   00286|   response response_procedural_how_to_fallback_search_es
+   00287|     intent procedural_how_to_fallback_search
+   00288|     language es
+   00289|     text "Búsqueda web alternativa de `{query}`:"
+   00290|   response response_procedural_how_to_fallback_search_plan_en
+   00291|     intent procedural_how_to_fallback_search_plan
+   00292|     language en
+   00293|     text "Fallback web search for `{query}` should use {providers} and reciprocal rank fusion (k = {k})."
+   00294|   response response_procedural_how_to_fallback_search_plan_ru
+   00295|     intent procedural_how_to_fallback_search_plan
+   00296|     language ru
+   00297|     text "Резервный веб-поиск по `{query}` должен использовать {providers} и reciprocal rank fusion (k = {k})."
+   00298|   response response_procedural_how_to_fallback_search_plan_hi
+   00299|     intent procedural_how_to_fallback_search_plan
+   00300|     language hi
+   00301|     text "`{query}` के लिए fallback web search को {providers} और reciprocal rank fusion (k = {k}) का उपयोग करना चाहिए।"
+   00302|   response response_procedural_how_to_fallback_search_plan_zh
+   00303|     intent procedural_how_to_fallback_search_plan
+   00304|     language zh
+   00305|     text "`{query}` 的 fallback web search 应使用 {providers} 和 reciprocal rank fusion（k = {k}）。"
+   00306|   response response_procedural_how_to_fallback_search_plan_es
+   00307|     intent procedural_how_to_fallback_search_plan
+   00308|     language es
+   00309|     text "La búsqueda web alternativa de `{query}` debe usar {providers} y reciprocal rank fusion (k = {k})."
+   00310| 
+   
+   (End of file - total 310 lines)
+   </file>
+>> write {"content":"# Response templates for procedural how-to discovery (issue #918).\n#\n# The discovery plan, the install source gate, the source paths and the stage\n# lines of the live wikiHow, official-documentation and fallback searches. Moved\n# out of data/seed/multilingual-responses-synthesis.lino by category so each\n# response file stays within 1500 lines. Placeholders in braces are filled by the\n# handler.\n\nmultilingual_responses\n  response response_procedural_how_to_plan_en\n    intent procedural_how_to_plan\n    language en\n    text \"Procedural discovery plan for `{task}` (action `{action}`, object `{object}`).\\n\\n{install_gate}I do not answer this from a memoized recipe. The solver first checks Wikipedia for topic context and Wikidata for entity/action/object hints. It then tries wikiHow's CORS-readable MediaWiki parse API candidate `{candidate}` via `{api_url}`. If those sources do not expose usable steps, the fallback path runs web search for `{search_query}` across {providers} and merges the top results with reciprocal rank fusion (k = {k}). The final recursive fetch check only accepts pages that actually contain explicit ordered or instructional steps for `{task}`.\"\n  response response_procedural_how_to_install_gate_en\n    intent procedural_how_to_install_gate\n    language en\n    text \"For install tasks, the first source gate prefers the product's official documentation or official repository install page before community how-to sources. It starts with the official-source web search query `{search_query}` and keeps the general how-to query `{fallback_query}` as fallback.\\n\\n\"\n  response response_procedural_how_to_plan_ru\n    intent procedural_how_to_plan\n    language ru\n    text \"План поиска процедуры для `{task}` (действие `{action}`, объект `{object}`).\\n\\n{install_gate}Я не отвечаю на это как на заученный рецепт. Сначала solver проверяет Wikipedia для контекста темы и Wikidata для подсказок сущности, действия и объекта. Затем он пробует CORS-readable MediaWiki parse API wikiHow для кандидата `{candidate}` через `{api_url}`. Если эти источники не дают пригодные шаги, fallback запускает web search по `{search_query}` через {providers} и объединяет верхние результаты reciprocal rank fusion (k = {k}). Финальная recursive fetch check принимает только страницы с явными упорядоченными или инструкционными шагами для `{task}`.\"\n  response response_procedural_how_to_install_gate_ru\n    intent procedural_how_to_install_gate\n    language ru\n    text \"Для задач установки первый source gate ищет официальную документацию продукта или официальную страницу установки в репозитории, а уже потом переходит к общим how-to источникам. Он начинает с web search запроса `{search_query}` и держит общий how-to запрос `{fallback_query}` как fallback. \"\n  response response_procedural_how_to_plan_hi\n    intent procedural_how_to_plan\n    language hi\n    text \"`{task}` के लिए procedural discovery plan (action `{action}`, object `{object}`).\\n\\n{install_gate}मैं इसे memorized recipe से answer नहीं करता. Solver पहले topic context के लिए Wikipedia और entity/action/object hints के लिए Wikidata जांचता है. फिर वह candidate `{candidate}` के लिए wikiHow का CORS-readable MediaWiki parse API `{api_url}` से आजमाता है. अगर ये sources usable steps नहीं देते, fallback `{search_query}` के लिए {providers} पर web search चलाता है और top results को reciprocal rank fusion (k = {k}) से merge करता है. अंतिम recursive fetch check केवल उन pages को स्वीकार करता है जिनमें `{task}` के explicit ordered या instructional steps हों.\"\n  response response_procedural_how_to_install_gate_hi\n    intent procedural_how_to_install_gate\n    language hi\n    text \"इंस्टॉल वाले कामों में पहला source gate उत्पाद की आधिकारिक documentation या official repository install page को प्राथमिकता देता है; उसके बाद ही community how-to sources देखे जाते हैं. Solver official-source web search query `{search_query}` पहले चलाता है और general how-to query `{fallback_query}` को fallback रखता है. \"\n  response response_procedural_how_to_plan_zh\n    intent procedural_how_to_plan\n    language zh\n    text \"`{task}` 的过程发现计划（action `{action}`, object `{object}`）。\\n\\n{install_gate}我不会把它当作记忆中的固定 recipe 来回答。Solver 先检查 Wikipedia 获取主题上下文，再检查 Wikidata 获取 entity/action/object 线索。然后它尝试 wikiHow 的 CORS-readable MediaWiki parse API candidate `{candidate}`，URL 为 `{api_url}`。如果这些来源没有可用步骤，fallback 会对 `{search_query}` 通过 {providers} 运行 web search，并用 reciprocal rank fusion (k = {k}) 合并顶部结果。最后的 recursive fetch check 只接受真正包含 `{task}` 的明确有序步骤或 instructional steps 的页面。\"\n  response response_procedural_how_to_plan_es\n    intent procedural_how_to_plan\n    language es\n    text \"Plan de descubrimiento del procedimiento para `{task}` (acción `{action}`, objeto `{object}`).\\n\\n{install_gate}No respondo a esto con una receta memorizada. El solucionador consulta primero Wikipedia para el contexto del tema y Wikidata para pistas sobre la entidad, la acción y el objeto. Después prueba la API de análisis MediaWiki de wikiHow, legible por CORS, con el candidato `{candidate}` mediante `{api_url}`. Si esas fuentes no ofrecen pasos utilizables, la ruta alternativa ejecuta una búsqueda web de `{search_query}` en {providers} y combina los mejores resultados con reciprocal rank fusion (k = {k}). La comprobación final de obtención recursiva solo acepta páginas que contengan realmente pasos explícitos, ordenados o instructivos, para `{task}`.\"\n  response response_procedural_how_to_install_gate_zh\n    intent procedural_how_to_install_gate\n    language zh\n    text \"对于安装类任务，第一个 source gate 优先查找产品官方 documentation 或官方仓库的安装页面，然后才使用社区 how-to 来源。Solver 先运行官方来源 web search query `{search_query}`，并把通用 how-to query `{fallback_query}` 保留为 fallback。\"\n  response response_procedural_how_to_install_gate_es\n    intent procedural_how_to_install_gate\n    language es\n    text \"Para las tareas de instalación, el primer filtro de fuentes prefiere la documentación oficial del producto o la página de instalación del repositorio oficial antes que las guías de la comunidad. Empieza con la consulta de búsqueda web de fuentes oficiales `{search_query}` y mantiene la consulta general de guía `{fallback_query}` como alternativa.\\n\\n\"\n  response response_procedural_how_to_source_path_install_wikihow_en\n    intent procedural_how_to_source_path_install_wikihow\n    language en\n    text \"Source path: Wikipedia -> Wikidata -> official documentation web search -> wikiHow API fallback -> community web search fallback -> recursive fetch check.\"\n  response response_procedural_how_to_source_path_install_wikihow_ru\n    intent procedural_how_to_source_path_install_wikihow\n    language ru\n    text \"Путь источников: Wikipedia -> Wikidata -> official documentation web search -> wikiHow API fallback -> community web search fallback -> recursive fetch check.\"\n  response response_procedural_how_to_source_path_install_wikihow_hi\n    intent procedural_how_to_source_path_install_wikihow\n    language hi\n    text \"स्रोत पथ: Wikipedia -> Wikidata -> official documentation web search -> wikiHow API fallback -> community web search fallback -> recursive fetch check।\"\n  response response_procedural_how_to_source_path_install_wikihow_zh\n    intent procedural_how_to_source_path_install_wikihow\n    language zh\n    text \"来源路径：Wikipedia -> Wikidata -> 官方文档 web search -> wikiHow API fallback -> 社区 web search fallback -> recursive fetch check。\"\n  response response_procedural_how_to_source_path_install_wikihow_es\n    intent procedural_how_to_source_path_install_wikihow\n    language es\n    text \"Ruta de fuentes: Wikipedia -> Wikidata -> búsqueda web en la documentación oficial -> API de wikiHow como alternativa -> búsqueda web alternativa en la comunidad -> comprobación de obtención recursiva.\"\n  response response_procedural_how_to_source_path_install_no_wikihow_en\n    intent procedural_how_to_source_path_install_no_wikihow\n    language en\n    text \"Source path: Wikipedia -> Wikidata -> official documentation web search -> community web search fallback -> recursive fetch check (wikiHow disabled in settings).\"\n  response response_procedural_how_to_source_path_install_no_wikihow_ru\n    intent procedural_how_to_source_path_install_no_wikihow\n    language ru\n    text \"Путь источников: Wikipedia -> Wikidata -> official documentation web search -> community web search fallback -> recursive fetch check (wikiHow отключен в настройках).\"\n  response response_procedural_how_to_source_path_install_no_wikihow_hi\n    intent procedural_how_to_source_path_install_no_wikihow\n    language hi\n    text \"स्रोत पथ: Wikipedia -> Wikidata -> official documentation web search -> community web search fallback -> recursive fetch check (settings में wikiHow बंद है)।\"\n  response response_procedural_how_to_source_path_install_no_wikihow_zh\n    intent procedural_how_to_source_path_install_no_wikihow\n    language zh\n    text \"来源路径：Wikipedia -> Wikidata -> 官方文档 web search -> 社区 web search fallback -> recursive fetch check（设置中已禁用 wikiHow）。\"\n  response response_procedural_how_to_source_path_install_no_wikihow_es\n    intent procedural_how_to_source_path_install_no_wikihow\n    language es\n    text \"Ruta de fuentes: Wikipedia -> Wikidata -> búsqueda web en la documentación oficial -> búsqueda web alternativa en la comunidad -> comprobación de obtención recursiva (wikiHow desactivado en los ajustes).\"\n  response response_procedural_how_to_source_path_wikihow_en\n    intent procedural_how_to_source_path_wikihow\n    language en\n    text \"Source path: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check.\"\n  response response_procedural_how_to_source_path_wikihow_ru\n    intent procedural_how_to_source_path_wikihow\n    language ru\n    text \"Путь источников: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check.\"\n  response response_procedural_how_to_source_path_wikihow_hi\n    intent procedural_how_to_source_path_wikihow\n    language hi\n    text \"स्रोत पथ: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check।\"\n  response response_procedural_how_to_source_path_wikihow_zh\n    intent procedural_how_to_source_path_wikihow\n    language zh\n    text \"来源路径：Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check。\"\n  response response_procedural_how_to_source_path_wikihow_es\n    intent procedural_how_to_source_path_wikihow\n    language es\n    text \"Ruta de fuentes: Wikipedia -> Wikidata -> API de wikiHow -> búsqueda web alternativa -> comprobación de obtención recursiva.\"\n  response response_procedural_how_to_source_path_no_wikihow_en\n    intent procedural_how_to_source_path_no_wikihow\n    language en\n    text \"Source path: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow disabled in settings).\"\n  response response_procedural_how_to_source_path_no_wikihow_ru\n    intent procedural_how_to_source_path_no_wikihow\n    language ru\n    text \"Путь источников: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow отключен в настройках).\"\n  response response_procedural_how_to_source_path_no_wikihow_hi\n    intent procedural_how_to_source_path_no_wikihow\n    language hi\n    text \"स्रोत पथ: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (settings में wikiHow बंद है)।\"\n  response response_procedural_how_to_source_path_no_wikihow_zh\n    intent procedural_how_to_source_path_no_wikihow\n    language zh\n    text \"来源路径：Wikipedia -> Wikidata -> web search fallback -> recursive fetch check（设置中已禁用 wikiHow）。\"\n  response response_procedural_how_to_source_path_no_wikihow_es\n    intent procedural_how_to_source_path_no_wikihow\n    language es\n    text \"Ruta de fuentes: Wikipedia -> Wikidata -> búsqueda web alternativa -> comprobación de obtención recursiva (wikiHow desactivado en los ajustes).\"\n  response response_procedural_how_to_heading_en\n    intent procedural_how_to_heading\n    language en\n    text \"Procedural discovery plan for `{task}` (action `{action}`, object `{object}`).\"\n  response response_procedural_how_to_live_install_gate_en\n    intent procedural_how_to_live_install_gate\n    language en\n    text \"For install tasks, the first source gate prefers the product's official documentation or official repository install page before community how-to sources. It starts with `{search_query}` and keeps `{fallback_query}` as fallback.\"\n  response response_procedural_how_to_heading_ru\n    intent procedural_how_to_heading\n    language ru\n    text \"План поиска процедуры для `{task}` (действие `{action}`, объект `{object}`).\"\n  response response_procedural_how_to_live_install_gate_ru\n    intent procedural_how_to_live_install_gate\n    language ru\n    text \"Для задач установки первый source gate ищет официальную документацию продукта или официальную страницу установки в репозитории, а уже потом переходит к общим how-to источникам. Он начинает с `{search_query}` и держит `{fallback_query}` как fallback.\"\n  response response_procedural_how_to_heading_hi\n    intent procedural_how_to_heading\n    language hi\n    text \"`{task}` के लिए procedural discovery plan (action `{action}`, object `{object}`).\"\n  response response_procedural_how_to_live_install_gate_hi\n    intent procedural_how_to_live_install_gate\n    language hi\n    text \"इंस्टॉल वाले कामों में पहला source gate उत्पाद की आधिकारिक documentation या official repository install page को प्राथमिकता देता है; उसके बाद ही community how-to sources देखे जाते हैं. Solver पहले `{search_query}` चलाता है और `{fallback_query}` को fallback रखता है.\"\n  response response_procedural_how_to_heading_zh\n    intent procedural_how_to_heading\n    language zh\n    text \"`{task}` 的过程发现计划（action `{action}`, object `{object}`）。\"\n  response response_procedural_how_to_heading_es\n    intent procedural_how_to_heading\n    language es\n    text \"Plan de descubrimiento del procedimiento para `{task}` (acción `{action}`, objeto `{object}`).\"\n  response response_procedural_how_to_live_install_gate_zh\n    intent procedural_how_to_live_install_gate\n    language zh\n    text \"对于安装类任务，第一个 source gate 优先查找产品官方 documentation 或官方仓库的安装页面，然后才使用社区 how-to 来源。Solver 先运行 `{search_query}`，并把 `{fallback_query}` 保留为 fallback。\"\n  response response_procedural_how_to_live_install_gate_es\n    intent procedural_how_to_live_install_gate\n    language es\n    text \"Para las tareas de instalación, el primer filtro de fuentes prefiere la documentación oficial del producto o la página de instalación del repositorio oficial antes que las guías de la comunidad. Empieza con `{search_query}` y mantiene `{fallback_query}` como alternativa.\"\n  response response_procedural_how_to_official_search_en\n    intent procedural_how_to_official_search\n    language en\n    text \"Official-documentation web search for `{query}`:\"\n  response response_procedural_how_to_official_search_ru\n    intent procedural_how_to_official_search\n    language ru\n    text \"Веб-поиск по официальной документации для `{query}`:\"\n  response response_procedural_how_to_official_search_hi\n    intent procedural_how_to_official_search\n    language hi\n    text \"`{query}` के लिए official documentation web search:\"\n  response response_procedural_how_to_official_search_zh\n    intent procedural_how_to_official_search\n    language zh\n    text \"`{query}` 的官方文档 web search：\"\n  response response_procedural_how_to_official_search_es\n    intent procedural_how_to_official_search\n    language es\n    text \"Búsqueda web en la documentación oficial de `{query}`:\"\n  response response_procedural_how_to_official_search_miss_en\n    intent procedural_how_to_official_search_miss\n    language en\n    text \"Official-documentation web search for `{query}` did not return ranked guidance; preserving `{fallback}` as the general how-to fallback.\"\n  response response_procedural_how_to_official_search_miss_ru\n    intent procedural_how_to_official_search_miss\n    language ru\n    text \"Веб-поиск по официальной документации для `{query}` не вернул ранжированных инструкций; `{fallback}` сохраняется как общий резервный how-to запрос.\"\n  response response_procedural_how_to_official_search_miss_hi\n    intent procedural_how_to_official_search_miss\n    language hi\n    text \"`{query}` के लिए official documentation web search ने कोई ranked मार्गदर्शन नहीं लौटाया; `{fallback}` को सामान्य how-to fallback के रूप में रखा गया है।\"\n  response response_procedural_how_to_official_search_miss_zh\n    intent procedural_how_to_official_search_miss\n    language zh\n    text \"`{query}` 的官方文档 web search 没有返回排序后的指导；保留 `{fallback}` 作为通用的 how-to fallback。\"\n  response response_procedural_how_to_official_search_miss_es\n    intent procedural_how_to_official_search_miss\n    language es\n    text \"La búsqueda web en la documentación oficial de `{query}` no devolvió ninguna guía clasificada; se conserva `{fallback}` como alternativa general de guía.\"\n  response response_procedural_how_to_wikihow_returned_en\n    intent procedural_how_to_wikihow_returned\n    language en\n    text \"wikiHow API returned `{title}` for candidate `{candidate}`.\"\n  response response_procedural_how_to_wikihow_returned_ru\n    intent procedural_how_to_wikihow_returned\n    language ru\n    text \"API wikiHow вернул `{title}` для кандидата `{candidate}`.\"\n  response response_procedural_how_to_wikihow_returned_hi\n    intent procedural_how_to_wikihow_returned\n    language hi\n    text \"wikiHow API ने candidate `{candidate}` के लिए `{title}` लौटाया।\"\n  response response_procedural_how_to_wikihow_returned_zh\n    intent procedural_how_to_wikihow_returned\n    language zh\n    text \"wikiHow API 为候选 `{candidate}` 返回了 `{title}`。\"\n  response response_procedural_how_to_wikihow_returned_es\n    intent procedural_how_to_wikihow_returned\n    language es\n    text \"La API de wikiHow devolvió `{title}` para el candidato `{candidate}`.\"\n  response response_procedural_how_to_wikihow_miss_en\n    intent procedural_how_to_wikihow_miss\n    language en\n    text \"wikiHow candidate `{candidate}` did not return explicit steps ({error}).\"\n  response response_procedural_how_to_wikihow_miss_ru\n    intent procedural_how_to_wikihow_miss\n    language ru\n    text \"Кандидат wikiHow `{candidate}` не вернул явных шагов ({error}).\"\n  response response_procedural_how_to_wikihow_miss_hi\n    intent procedural_how_to_wikihow_miss\n    language hi\n    text \"wikiHow candidate `{candidate}` ने स्पष्ट steps नहीं लौटाए ({error})।\"\n  response response_procedural_how_to_wikihow_miss_zh\n    intent procedural_how_to_wikihow_miss\n    language zh\n    text \"wikiHow 候选 `{candidate}` 没有返回明确的步骤（{error}）。\"\n  response response_procedural_how_to_wikihow_miss_es\n    intent procedural_how_to_wikihow_miss\n    language es\n    text \"El candidato de wikiHow `{candidate}` no devolvió pasos explícitos ({error}).\"\n  response response_procedural_how_to_wikihow_disabled_en\n    intent procedural_how_to_wikihow_disabled\n    language en\n    text \"wikiHow is disabled in settings.\"\n  response response_procedural_how_to_wikihow_disabled_ru\n    intent procedural_how_to_wikihow_disabled\n    language ru\n    text \"wikiHow отключён в настройках.\"\n  response response_procedural_how_to_wikihow_disabled_hi\n    intent procedural_how_to_wikihow_disabled\n    language hi\n    text \"settings में wikiHow बंद है।\"\n  response response_procedural_how_to_wikihow_disabled_zh\n    intent procedural_how_to_wikihow_disabled\n    language zh\n    text \"设置中已禁用 wikiHow。\"\n  response response_procedural_how_to_wikihow_disabled_es\n    intent procedural_how_to_wikihow_disabled\n    language es\n    text \"wikiHow está desactivado en los ajustes.\"\n  response response_procedural_how_to_fallback_search_en\n    intent procedural_how_to_fallback_search\n    language en\n    text \"Fallback web search for `{query}`:\"\n  response response_procedural_how_to_fallback_search_ru\n    intent procedural_how_to_fallback_search\n    language ru\n    text \"Резервный веб-поиск по `{query}`:\"\n  response response_procedural_how_to_fallback_search_hi\n    intent procedural_how_to_fallback_search\n    language hi\n    text \"`{query}` के लिए fallback web search:\"\n  response response_procedural_how_to_fallback_search_zh\n    intent procedural_how_to_fallback_search\n    language zh\n    text \"`{query}` 的 fallback web search：\"\n  response response_procedural_how_to_fallback_search_es\n    intent procedural_how_to_fallback_search\n    language es\n    text \"Búsqueda web alternativa de `{query}`:\"\n  response response_procedural_how_to_fallback_search_plan_en\n    intent procedural_how_to_fallback_search_plan\n    language en\n    text \"Fallback web search for `{query}` should use {providers} and reciprocal rank fusion (k = {k}).\"\n  response response_procedural_how_to_fallback_search_plan_ru\n    intent procedural_how_to_fallback_search_plan\n    language ru\n    text \"Резервный веб-поиск по `{query}` должен использовать {providers} и reciprocal rank fusion (k = {k}).\"\n  response response_procedural_how_to_fallback_search_plan_hi\n    intent procedural_how_to_fallback_search_plan\n    language hi\n    text \"`{query}` के लिए fallback web search को {providers} और reciprocal rank fusion (k = {k}) का उपयोग करना चाहिए।\"\n  response response_procedural_how_to_fallback_search_plan_zh\n    intent procedural_how_to_fallback_search_plan\n    language zh\n    text \"`{query}` 的 fallback web search 应使用 {providers} 和 reciprocal rank fusion（k = {k}）。\"\n  response response_procedural_how_to_fallback_search_plan_es\n    intent procedural_how_to_fallback_search_plan\n    language es\n    text \"La búsqueda web alternativa de `{query}` debe usar {providers} y reciprocal rank fusion (k = {k}).\"\n","filePath":"data/seed/multilingual-responses-procedural-how-to.lino","file_path":"data/seed/multilingual-responses-procedural-how-to.lino","path":"data/seed/multilingual-responses-procedural-how-to.lino"}
+>> bash {"command":"cat data/seed/multilingual-responses-procedural-how-to.lino"}
+   # Response templates for procedural how-to discovery (issue #918).
+   #
+   # The discovery plan, the install source gate, the source paths and the stage
+   # lines of the live wikiHow, official-documentation and fallback searches. Moved
+   # out of data/seed/multilingual-responses-synthesis.lino by category so each
+   # response file stays within 1500 lines. Placeholders in braces are filled by the
+   # handler.
+   
+   multilingual_responses
+     response response_procedural_how_to_plan_en
+       intent procedural_how_to_plan
+       language en
+       text "Procedural discovery plan for `{task}` (action `{action}`, object `{object}`).\n\n{install_gate}I do not answer this from a memoized recipe. The solver first checks Wikipedia for topic context and Wikidata for entity/action/object hints. It then tries wikiHow's CORS-readable MediaWiki parse API candidate `{candidate}` via `{api_url}`. If those sources do not expose usable steps, the fallback path runs web search for `{search_query}` across {providers} and merges the top results with reciprocal rank fusion (k = {k}). The final recursive fetch check only accepts pages that actually contain explicit ordered or instructional steps for `{task}`."
+     response response_procedural_how_to_install_gate_en
+       intent procedural_how_to_install_gate
+       language en
+       text "For install tasks, the first source gate prefers the product's official documentation or official repository install page before community how-to sources. It starts with the official-source web search query `{search_query}` and keeps the general how-to query `{fallback_query}` as fallback.\n\n"
+     response response_procedural_how_to_plan_ru
+       intent procedural_how_to_plan
+       language ru
+       text "План поиска процедуры для `{task}` (действие `{action}`, объект `{object}`).\n\n{install_gate}Я не отвечаю на это как на заученный рецепт. Сначала solver проверяет Wikipedia для контекста темы и Wikidata для подсказок сущности, действия и объекта. Затем он пробует CORS-readable MediaWiki parse API wikiHow для кандидата `{candidate}` через `{api_url}`. Если эти источники не дают пригодные шаги, fallback запускает web search по `{search_query}` через {providers} и объединяет верхние результаты reciprocal rank fusion (k = {k}). Финальная recursive fetch check принимает только страницы с явными упорядоченными или инструкционными шагами для `{task}`."
+     response response_procedural_how_to_install_gate_ru
+       intent procedural_how_to_install_gate
+       language ru
+       text "Для задач установки первый source gate ищет официальную документацию продукта или официальную страницу установки в репозитории, а уже потом переходит к общим how-to источникам. Он начинает с web search запроса `{search_query}` и держит общий how-to запрос `{fallback_query}` как fallback. "
+     response response_procedural_how_to_plan_hi
+       intent procedural_how_to_plan
+       language hi
+       text "`{task}` के लिए procedural discovery plan (action `{action}`, object `{object}`).\n\n{install_gate}मैं इसे memorized recipe से answer नहीं करता. Solver पहले topic context के लिए Wikipedia और entity/action/object hints के लिए Wikidata जांचता है. फिर वह candidate `{candidate}` के लिए wikiHow का CORS-readable MediaWiki parse API `{api_url}` से आजमाता है. अगर ये sources usable steps नहीं देते, fallback `{search_query}` के लिए {providers} पर web search चलाता है और top results को reciprocal rank fusion (k = {k}) से merge करता है. अंतिम recursive fetch check केवल उन pages को स्वीकार करता है जिनमें `{task}` के explicit ordered या instructional steps हों."
+     response response_procedural_how_to_install_gate_hi
+       intent procedural_how_to_install_gate
+       language hi
+       text "इंस्टॉल वाले कामों में पहला source gate उत्पाद की आधिकारिक documentation या official repository install page को प्राथमिकता देता है; उसके बाद ही community how-to sources देखे जाते हैं. Solver official-source web search query `{search_query}` पहले चलाता है और general how-to query `{fallback_query}` को fallback रखता है. "
+     response response_procedural_how_to_plan_zh
+       intent procedural_how_to_plan
+       language zh
+       text "`{task}` 的过程发现计划（action `{action}`, object `{object}`）。\n\n{install_gate}我不会把它当作记忆中的固定 recipe 来回答。Solver 先检查 Wikipedia 获取主题上下文，再检查 Wikidata 获取 entity/action/object 线索。然后它尝试 wikiHow 的 CORS-readable MediaWiki parse API candidate `{candidate}`，URL 为 `{api_url}`。如果这些来源没有可用步骤，fallback 会对 `{search_query}` 通过 {providers} 运行 web search，并用 reciprocal rank fusion (k = {k}) 合并顶部结果。最后的 recursive fetch check 只接受真正包含 `{task}` 的明确有序步骤或 instructional steps 的页面。"
+     response response_procedural_how_to_plan_es
+       intent procedural_how_to_plan
+       language es
+       text "Plan de descubrimiento del procedimiento para `{task}` (acción `{action}`, objeto `{object}`).\n\n{install_gate}No respondo a esto con una receta memorizada. El solucionador consulta primero Wikipedia para el contexto del tema y Wikidata para pistas sobre la entidad, la acción y el objeto. Después prueba la API de análisis MediaWiki de wikiHow, legible por CORS, con el candidato `{candidate}` mediante `{api_url}`. Si esas fuentes no ofrecen pasos utilizables, la ruta alternativa ejecuta una búsqueda web de `{search_query}` en {providers} y combina los mejores resultados con reciprocal rank fusion (k = {k}). La comprobación final de obtención recursiva solo acepta páginas que contengan realmente pasos explícitos, ordenados o instructivos, para `{task}`."
+     response response_procedural_how_to_install_gate_zh
+       intent procedural_how_to_install_gate
+       language zh
+       text "对于安装类任务，第一个 source gate 优先查找产品官方 documentation 或官方仓库的安装页面，然后才使用社区 how-to 来源。Solver 先运行官方来源 web search query `{search_query}`，并把通用 how-to query `{fallback_query}` 保留为 fallback。"
+     response response_procedural_how_to_install_gate_es
+       intent procedural_how_to_install_gate
+       language es
+       text "Para las tareas de instalación, el primer filtro de fuentes prefiere la documentación oficial del producto o la página de instalación del repositorio oficial antes que las guías de la comunidad. Empieza con la consulta de búsqueda web de fuentes oficiales `{search_query}` y mantiene la consulta general de guía `{fallback_query}` como alternativa.\n\n"
+     response response_procedural_how_to_source_path_install_wikihow_en
+       intent procedural_how_to_source_path_install_wikihow
+       language en
+       text "Source path: Wikipedia -> Wikidata -> official documentation web search -> wikiHow API fallback -> community web search fallback -> recursive fetch check."
+     response response_procedural_how_to_source_path_install_wikihow_ru
+       intent procedural_how_to_source_path_install_wikihow
+       language ru
+       text "Путь источников: Wikipedia -> Wikidata -> official documentation web search -> wikiHow API fallback -> community web search fallback -> recursive fetch check."
+     response response_procedural_how_to_source_path_install_wikihow_hi
+       intent procedural_how_to_source_path_install_wikihow
+       language hi
+       text "स्रोत पथ: Wikipedia -> Wikidata -> official documentation web search -> wikiHow API fallback -> community web search fallback -> recursive fetch check।"
+     response response_procedural_how_to_source_path_install_wikihow_zh
+       intent procedural_how_to_source_path_install_wikihow
+       language zh
+       text "来源路径：Wikipedia -> Wikidata -> 官方文档 web search -> wikiHow API fallback -> 社区 web search fallback -> recursive fetch check。"
+     response response_procedural_how_to_source_path_install_wikihow_es
+       intent procedural_how_to_source_path_install_wikihow
+       language es
+       text "Ruta de fuentes: Wikipedia -> Wikidata -> búsqueda web en la documentación oficial -> API de wikiHow como alternativa -> búsqueda web alternativa en la comunidad -> comprobación de obtención recursiva."
+     response response_procedural_how_to_source_path_install_no_wikihow_en
+       intent procedural_how_to_source_path_install_no_wikihow
+       language en
+       text "Source path: Wikipedia -> Wikidata -> official documentation web search -> community web search fallback -> recursive fetch check (wikiHow disabled in settings)."
+     response response_procedural_how_to_source_path_install_no_wikihow_ru
+       intent procedural_how_to_source_path_install_no_wikihow
+       language ru
+       text "Путь источников: Wikipedia -> Wikidata -> official documentation web search -> community web search fallback -> recursive fetch check (wikiHow отключен в настройках)."
+     response response_procedural_how_to_source_path_install_no_wikihow_hi
+       intent procedural_how_to_source_path_install_no_wikihow
+       language hi
+       text "स्रोत पथ: Wikipedia -> Wikidata -> official documentation web search -> community web search fallback -> recursive fetch check (settings में wikiHow बंद है)।"
+     response response_procedural_how_to_source_path_install_no_wikihow_zh
+       intent procedural_how_to_source_path_install_no_wikihow
+       language zh
+       text "来源路径：Wikipedia -> Wikidata -> 官方文档 web search -> 社区 web search fallback -> recursive fetch check（设置中已禁用 wikiHow）。"
+     response response_procedural_how_to_source_path_install_no_wikihow_es
+       intent procedural_how_to_source_path_install_no_wikihow
+       language es
+       text "Ruta de fuentes: Wikipedia -> Wikidata -> búsqueda web en la documentación oficial -> búsqueda web alternativa en la comunidad -> comprobación de obtención recursiva (wikiHow desactivado en los ajustes)."
+     response response_procedural_how_to_source_path_wikihow_en
+       intent procedural_how_to_source_path_wikihow
+       language en
+       text "Source path: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check."
+     response response_procedural_how_to_source_path_wikihow_ru
+       intent procedural_how_to_source_path_wikihow
+       language ru
+       text "Путь источников: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check."
+     response response_procedural_how_to_source_path_wikihow_hi
+       intent procedural_how_to_source_path_wikihow
+       language hi
+       text "स्रोत पथ: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check।"
+     response response_procedural_how_to_source_path_wikihow_zh
+       intent procedural_how_to_source_path_wikihow
+       language zh
+       text "来源路径：Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check。"
+     response response_procedural_how_to_source_path_wikihow_es
+       intent procedural_how_to_source_path_wikihow
+       language es
+       text "Ruta de fuentes: Wikipedia -> Wikidata -> API de wikiHow -> búsqueda web alternativa -> comprobación de obtención recursiva."
+     response response_procedural_how_to_source_path_no_wikihow_en
+       intent procedural_how_to_source_path_no_wikihow
+       language en
+       text "Source path: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow disabled in settings)."
+     response response_procedural_how_to_source_path_no_wikihow_ru
+       intent procedural_how_to_source_path_no_wikihow
+       language ru
+       text "Путь источников: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow отключен в настройках)."
+     response response_procedural_how_to_source_path_no_wikihow_hi
+       intent procedural_how_to_source_path_no_wikihow
+       language hi
+       text "स्रोत पथ: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (settings में wikiHow बंद है)।"
+     response response_procedural_how_to_source_path_no_wikihow_zh
+       intent procedural_how_to_source_path_no_wikihow
+       language zh
+       text "来源路径：Wikipedia -> Wikidata -> web search fallback -> recursive fetch check（设置中已禁用 wikiHow）。"
+     response response_procedural_how_to_source_path_no_wikihow_es
+       intent procedural_how_to_source_path_no_wikihow
+       language es
+       text "Ruta de fuentes: Wikipedia -> Wikidata -> búsqueda web alternativa -> comprobación de obtención recursiva (wikiHow desactivado en los ajustes)."
+     response response_procedural_how_to_heading_en
+       intent procedural_how_to_heading
+       language en
+       text "Procedural discovery plan for `{task}` (action `{action}`, object `{object}`)."
+     response response_procedural_how_to_live_install_gate_en
+       intent procedural_how_to_live_install_gate
+       language en
+       text "For install tasks, the first source gate prefers the product's official documentation or official repository install page before community how-to sources. It starts with `{search_query}` and keeps `{fallback_query}` as fallback."
+     response response_procedural_how_to_heading_ru
+       intent procedural_how_to_heading
+       language ru
+       text "План поиска процедуры для `{task}` (действие `{action}`, объект `{object}`)."
+     response response_procedural_how_to_live_install_gate_ru
+       intent procedural_how_to_live_install_gate
+       language ru
+       text "Для задач установки первый source gate ищет официальную документацию продукта или официальную страницу установки в репозитории, а уже потом переходит к общим how-to источникам. Он начинает с `{search_query}` и держит `{fallback_query}` как fallback."
+     response response_procedural_how_to_heading_hi
+       intent procedural_how_to_heading
+       language hi
+       text "`{task}` के लिए procedural discovery plan (action `{action}`, object `{object}`)."
+     response response_procedural_how_to_live_install_gate_hi
+       intent procedural_how_to_live_install_gate
+       language hi
+       text "इंस्टॉल वाले कामों में पहला source gate उत्पाद की आधिकारिक documentation या official repository install page को प्राथमिकता देता है; उसके बाद ही community how-to sources देखे जाते हैं. Solver पहले `{search_query}` चलाता है और `{fallback_query}` को fallback रखता है."
+     response response_procedural_how_to_heading_zh
+       intent procedural_how_to_heading
+       language zh
+       text "`{task}` 的过程发现计划（action `{action}`, object `{object}`）。"
+     response response_procedural_how_to_heading_es
+       intent procedural_how_to_heading
+       language es
+       text "Plan de descubrimiento del procedimiento para `{task}` (acción `{action}`, objeto `{object}`)."
+     response response_procedural_how_to_live_install_gate_zh
+       intent procedural_how_to_live_install_gate
+       language zh
+       text "对于安装类任务，第一个 source gate 优先查找产品官方 documentation 或官方仓库的安装页面，然后才使用社区 how-to 来源。Solver 先运行 `{search_query}`，并把 `{fallback_query}` 保留为 fallback。"
+     response response_procedural_how_to_live_install_gate_es
+       intent procedural_how_to_live_install_gate
+       language es
+       text "Para las tareas de instalación, el primer filtro de fuentes prefiere la documentación oficial del producto o la página de instalación del repositorio oficial antes que las guías de la comunidad. Empieza con `{search_query}` y mantiene `{fallback_query}` como alternativa."
+     response response_procedural_how_to_official_search_en
+       intent procedural_how_to_official_search
+       language en
+       text "Official-documentation web search for `{query}`:"
+     response response_procedural_how_to_official_search_ru
+       intent procedural_how_to_official_search
+       language ru
+       text "Веб-поиск по официальной документации для `{query}`:"
+     response response_procedural_how_to_official_search_hi
+       intent procedural_how_to_official_search
+       language hi
+       text "`{query}` के लिए official documentation web search:"
+     response response_procedural_how_to_official_search_zh
+       intent procedural_how_to_official_search
+       language zh
+       text "`{query}` 的官方文档 web search："
+     response response_procedural_how_to_official_search_es
+       intent procedural_how_to_official_search
+       language es
+       text "Búsqueda web en la documentación oficial de `{query}`:"
+     response response_procedural_how_to_official_search_miss_en
+       intent procedural_how_to_official_search_miss
+       language en
+       text "Official-documentation web search for `{query}` did not return ranked guidance; preserving `{fallback}` as the general how-to fallback."
+     response response_procedural_how_to_official_search_miss_ru
+       intent procedural_how_to_official_search_miss
+       language ru
+       text "Веб-поиск по официальной документации для `{query}` не вернул ранжированных инструкций; `{fallback}` сохраняется как общий резервный how-to запрос."
+     response response_procedural_how_to_official_search_miss_hi
+       intent procedural_how_to_official_search_miss
+       language hi
+       text "`{query}` के लिए official documentation web search ने कोई ranked मार्गदर्शन नहीं लौटाया; `{fallback}` को सामान्य how-to fallback के रूप में रखा गया है।"
+     response response_procedural_how_to_official_search_miss_zh
+       intent procedural_how_to_official_search_miss
+       language zh
+       text "`{query}` 的官方文档 web search 没有返回排序后的指导；保留 `{fallback}` 作为通用的 how-to fallback。"
+     response response_procedural_how_to_official_search_miss_es
+       intent procedural_how_to_official_search_miss
+       language es
+       text "La búsqueda web en la documentación oficial de `{query}` no devolvió ninguna guía clasificada; se conserva `{fallback}` como alternativa general de guía."
+     response response_procedural_how_to_wikihow_returned_en
+       intent procedural_how_to_wikihow_returned
+       language en
+       text "wikiHow API returned `{title}` for candidate `{candidate}`."
+     response response_procedural_how_to_wikihow_returned_ru
+       intent procedural_how_to_wikihow_returned
+       language ru
+       text "API wikiHow вернул `{title}` для кандидата `{candidate}`."
+     response response_procedural_how_to_wikihow_returned_hi
+       intent procedural_how_to_wikihow_returned
+       language hi
+       text "wikiHow API ने candidate `{candidate}` के लिए `{title}` लौटाया।"
+     response response_procedural_how_to_wikihow_returned_zh
+       intent procedural_how_to_wikihow_returned
+       language zh
+       text "wikiHow API 为候选 `{candidate}` 返回了 `{title}`。"
+     response response_procedural_how_to_wikihow_returned_es
+       intent procedural_how_to_wikihow_returned
+       language es
+       text "La API de wikiHow devolvió `{title}` para el candidato `{candidate}`."
+     response response_procedural_how_to_wikihow_miss_en
+       intent procedural_how_to_wikihow_miss
+       language en
+       text "wikiHow candidate `{candidate}` did not return explicit steps ({error})."
+     response response_procedural_how_to_wikihow_miss_ru
+       intent procedural_how_to_wikihow_miss
+       language ru
+       text "Кандидат wikiHow `{candidate}` не вернул явных шагов ({error})."
+     response response_procedural_how_to_wikihow_miss_hi
+       intent procedural_how_to_wikihow_miss
+       language hi
+       text "wikiHow candidate `{candidate}` ने स्पष्ट steps नहीं लौटाए ({error})।"
+     response response_procedural_how_to_wikihow_miss_zh
+       intent procedural_how_to_wikihow_miss
+       language zh
+       text "wikiHow 候选 `{candidate}` 没有返回明确的步骤（{error}）。"
+     response response_procedural_how_to_wikihow_miss_es
+       intent procedural_how_to_wikihow_miss
+       language es
+       text "El candidato de wikiHow `{candidate}` no devolvió pasos explícitos ({error})."
+     response response_procedural_how_to_wikihow_disabled_en
+       intent procedural_how_to_wikihow_disabled
+       language en
+       text "wikiHow is disabled in settings."
+     response response_procedural_how_to_wikihow_disabled_ru
+       intent procedural_how_to_wikihow_disabled
+       language ru
+       text "wikiHow отключён в настройках."
+     response response_procedural_how_to_wikihow_disabled_hi
+       intent procedural_how_to_wikihow_disabled
+       language hi
+       text "settings में wikiHow बंद है।"
+     response response_procedural_how_to_wikihow_disabled_zh
+       intent procedural_how_to_wikihow_disabled
+       language zh
+       text "设置中已禁用 wikiHow。"
+     response response_procedural_how_to_wikihow_disabled_es
+       intent procedural_how_to_wikihow_disabled
+       language es
+       text "wikiHow está desactivado en los ajustes."
+     response response_procedural_how_to_fallback_search_en
+       intent procedural_how_to_fallback_search
+       language en
+       text "Fallback web search for `{query}`:"
+     response response_procedural_how_to_fallback_search_ru
+       intent procedural_how_to_fallback_search
+       language ru
+       text "Резервный веб-поиск по `{query}`:"
+     response response_procedural_how_to_fallback_search_hi
+       intent procedural_how_to_fallback_search
+       language hi
+       text "`{query}` के लिए fallback web search:"
+     response response_procedural_how_to_fallback_search_zh
+       intent procedural_how_to_fallback_search
+       language zh
+       text "`{query}` 的 fallback web search："
+     response response_procedural_how_to_fallback_search_es
+       intent procedural_how_to_fallback_search
+       language es
+       text "Búsqueda web alternativa de `{query}`:"
+     response response_procedural_how_to_fallback_search_plan_en
+       intent procedural_how_to_fallback_search_plan
+       language en
+       text "Fallback web search for `{query}` should use {providers} and reciprocal rank fusion (k = {k})."
+     response response_procedural_how_to_fallback_search_plan_ru
+       intent procedural_how_to_fallback_search_plan
+       language ru
+       text "Резервный веб-поиск по `{query}` должен использовать {providers} и reciprocal rank fusion (k = {k})."
+     response response_procedural_how_to_fallback_search_plan_hi
+       intent procedural_how_to_fallback_search_plan
+       language hi
+       text "`{query}` के लिए fallback web search को {providers} और reciprocal rank fusion (k = {k}) का उपयोग करना चाहिए।"
+     response response_procedural_how_to_fallback_search_plan_zh
+       intent procedural_how_to_fallback_search_plan
+       language zh
+       text "`{query}` 的 fallback web search 应使用 {providers} 和 reciprocal rank fusion（k = {k}）。"
+     response response_procedural_how_to_fallback_search_plan_es
+       intent procedural_how_to_fallback_search_plan
+       language es
+       text "La búsqueda web alternativa de `{query}` debe usar {providers} y reciprocal rank fusion (k = {k})."
+   
+== answer ==
+Replaced `{fallback-query}` with `{fallback_query}` in `data/seed/multilingual-responses-procedural-how-to.lino` and observed the result.

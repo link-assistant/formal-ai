@@ -1,0 +1,1007 @@
+>> read {"filePath":"rust/src/agentic_coding/workspace_change.rs","file_path":"rust/src/agentic_coding/workspace_change.rs","path":"rust/src/agentic_coding/workspace_change.rs"}
+   <file>
+   00001| //! Grounded, verified workspace transformations learned from coding-task runs.
+   00002| //!
+   00003| //! The planner never edits request prose. It compiles a bounded transformation,
+   00004| //! reads the client-owned bytes, executes the transformation in memory, applies
+   00005| //! a compact edit or bounded replace-all operation, and accepts success only
+   00006| //! after an exact content-digest observation. The same state machine composes
+   00007| //! source creation with a second module-registration edit, so a multi-file
+   00008| //! request cannot stop after its first observable effect.
+   00009| 
+   00010| use serde_json::{Value, json};
+   00011| use std::path::Path;
+   00012| 
+   00013| use super::code_artifact::source_from_read_result;
+   00014| use super::code_task::{
+   00015|     render_rust_template, render_seeded_change, render_seeded_change_with_lists,
+   00016|     render_seeded_outcome, rust_source_for_task,
+   00017| };
+   00018| use super::general_planner::compose_edit_request;
+   00019| use super::intent_router::edit_arguments;
+   00020| use super::planner::{
+   00021|     AgenticPlan, Capability, plan_one, tool_capability, tool_for, write_arguments,
+   00022| };
+   00023| use super::positional_edit::PositionalInsert;
+   00024| use crate::normal_markov::{quoted_segments, unwrap_transport_quotes};
+   00025| use crate::protocol::ChatMessage;
+   00026| use crate::seed;
+   00027| use crate::workspace_change_learning::{
+   00028|     RewriteScope, execute_scoped_workspace_rewrite, is_identifier_word, word_scoped_matches,
+   00029| };
+   00030| 
+   00031| #[derive(Debug, Clone, PartialEq, Eq)]
+   00032| struct GroundedRewrite {
+   00033|     target: String,
+   00034|     pattern: String,
+   00035|     replacement: String,
+   00036|     /// How the pattern is allowed to match. Renaming an identifier is a
+   00037|     /// word-scoped edit; replacing a quoted literal is a substring one -- or a
+   00038|     /// word-scoped one when the new word contains the old (`smal` → `small`).
+   00039|     scope: RewriteScope,
+   00040|     /// Whether the request renamed a name (a word-scoped rename).
+   00041|     renaming: bool,
+   00042|     /// Whether the pattern must occur exactly once (a positional insertion's
+   00043|     /// anchor), replaced once rather than everywhere.
+   00044|     unique: bool,
+   00045|     /// Whether the replacement holds the pattern, so it is applied in one
+   00046|     /// pass rather than rewritten until no pattern is left (PR #1188 G78).
+   00047|     single_pass: bool,
+   00048|     /// The seed sentence that states the change, when it is not the
+   00049|     /// rename/replace one (a positional insertion's).
+   00050|     stated: Option<(&'static str, Vec<(&'static str, String)>)>,
+   00051|     /// The pattern and replacement as the request wrote them, when it wrote
+   00052|     /// `\n` / `\t` escapes the rewrite unescaped (see [`as_written`]).
+   00053|     verbatim: Option<(String, String)>,
+   00054| }
+   00055| 
+   00056| /// The template slots the seed sentences that state a rewrite fill.
+   00057| const OLD_SLOT: &str = concat!("{", "old", "}");
+   00058| const NEW_SLOT: &str = concat!("{", "new", "}");
+   00059| const ANCHOR_SLOT: &str = concat!("{", "anchor", "}");
+   00060| 
+   00061| impl GroundedRewrite {
+   00062|     /// The intent whose seed sentence states this change rather than merely
+   00063|     /// reporting that the file was touched.
+   00064|     const fn stated_intent(&self) -> &'static str {
+   00065|         match self.stated {
+   00066|             Some((intent, _)) => intent,
+   00067|             None if self.renaming => "coding_identifier_renamed",
+   00068|             None => "coding_text_replaced",
+   00069|         }
+   00070|     }
+   00071| 
+   00072|     /// The operands the seed sentence names, as template slots.
+   00073|     fn stated_slots(&self) -> Vec<(&str, &str)> {
+   00074|         match &self.stated {
+   00075|             Some((_, slots)) => slots
+   00076|                 .iter()
+   00077|                 .map(|(slot, value)| (*slot, value.as_str()))
+   00078|                 .collect(),
+   00079|             None => vec![
+   00080|                 (OLD_SLOT, self.pattern.as_str()),
+   00081|                 (NEW_SLOT, self.replacement.as_str()),
+   00082|             ],
+   00083|         }
+   00084|     }
+   00085| }
+   00086| 
+   00087| /// A change whose bytes are settled, awaiting the observation that confirms it.
+   00088| ///
+   00089| /// `expected` is what the workspace should now hold; `intent` and `slots` are
+   00090| /// the seed sentence that states the change once it does.
+   00091| pub(super) struct VerifiedChange<'a> {
+   00092|     pub(super) target: &'a str,
+   00093|     pub(super) expected: &'a str,
+   00094|     pub(super) intent: &'a str,
+   00095|     pub(super) slots: &'a [(&'a str, &'a str)],
+   00096|     pub(super) list_slots: &'a [(&'a str, &'a [String])],
+   00097| }
+   00098| 
+   00099| #[derive(Debug, Clone, PartialEq, Eq)]
+   00100| struct CompositeModuleChange {
+   00101|     source_path: String,
+   00102|     source: String,
+   00103|     registration_path: String,
+   00104|     registration: String,
+   00105| }
+   00106| 
+   00107| pub(super) fn plan_workspace_change_step(
+   00108|     task: &str,
+   00109|     messages: &[ChatMessage],
+   00110|     tool_names: &[&str],
+   00111| ) -> Option<AgenticPlan> {
+   00112|     let task = unwrap_transport_quotes(task);
+   00113|     // A continuation cue resumes this run rather than opening a new request,
+   00114|     // so the read and write evidence gathered for it must survive the ping
+   00115|     // (issue #1138): slicing at the last user message -- the cue itself --
+   00116|     // restarted the read--write pair on every ping.
+   00117|     let current_turn = &messages[super::planner::evidence_window_start(messages)..];
+   00118|     // `Append the contents of a.txt to b.txt`: the source is read, and the
+   00119|     // request is restated with its lines as the block placed (PR #1188 G50).
+   00120|     let sourced = match sourced_request(task, current_turn) {
+   00121|         Some(Sourced::Read(path)) => {
+   00122|             let tool = tool_for(tool_names, Capability::Read)?;
+   00123|             return Some(plan_one(tool, read_arguments(&path)));
+   00124|         }
+   00125|         Some(Sourced::Task(sourced)) => Some(sourced),
+   00126|         None => None,
+   00127|     };
+   00128|     let task = sourced.as_deref().unwrap_or(task);
+   00129| 
+   00130|     if let Some(change) = composite_module_change(task) {
+   00131|         return plan_composite_step(task, current_turn, tool_names, &change);
+   00132|     }
+   00133|     // Numbered lines moved to another file: placed there, then removed (G85).
+   00134|     if let Some(order) = super::line_range_move::line_range_move(task) {
+   00135|         return super::line_range_move::plan_line_range_move_step(
+   00136|             task,
+   00137|             current_turn,
+   00138|             tool_names,
+   00139|             &order,
+   00140|         );
+   00141|     }
+   00142|     if let Some(change) = super::workspace_computed_change::grounded_line_change(task) {
+   00143|         return super::workspace_computed_change::plan_computed_change_step(
+   00144|             task,
+   00145|             current_turn,
+   00146|             tool_names,
+   00147|             &change,
+   00148|         );
+   00149|     }
+   00150|     if let Some(inserts) = insert_sequence(task) {
+   00151|         return super::positional_edit::plan_insert_sequence_step(
+   00152|             task,
+   00153|             current_turn,
+   00154|             tool_names,
+   00155|             &inserts,
+   00156|         );
+   00157|     }
+   00158|     // Several replacements asked in one sentence are made in order (G82).
+   00159|     if let Some(change) = super::workspace_computed_change::grounded_replace_list(task) {
+   00160|         return super::workspace_computed_change::plan_computed_change_step(
+   00161|             task,
+   00162|             current_turn,
+   00163|             tool_names,
+   00164|             &change,
+   00165|         );
+   00166|     }
+   00167|     if let Some(rewrite) = grounded_rewrite(task) {
+   00168|         return plan_rewrite_step(task, current_turn, tool_names, &rewrite);
+   00169|     }
+   00170|     let change = super::workspace_computed_change::grounded_computed_change(task)?;
+   00171|     super::workspace_computed_change::plan_computed_change_step(
+   00172|         task,
+   00173|         current_turn,
+   00174|         tool_names,
+   00175|         &change,
+   00176|     )
+   00177| }
+   00178| 
+   00179| /// A request whose additive edit places another file's contents: the source
+   00180| /// to read first, or the request restated with its lines.
+   00181| enum Sourced {
+   00182|     Read(String),
+   00183|     Task(String),
+   00184| }
+   00185| 
+   00186| /// `None` unless the request names a contents source and, restated, is an
+   00187| /// additive edit the composers place.
+   00188| fn sourced_request(task: &str, current_turn: &[ChatMessage]) -> Option<Sourced> {
+   00189|     use super::contents_source::{contents_source, with_contents};
+   00190|     let source = contents_source(task)?;
+   00191|     let probe = with_contents(task, &source, "x");
+   00192|     if insert_sequence(&probe).is_none()
+   00193|         && super::workspace_computed_change::grounded_end_insertion(&probe).is_none()
+   00194|     {
+   00195|         return None;
+   00196|     }
+   00197|     let Some(read) = result_for_path(current_turn, Capability::Read, &source.path, None) else {
+   00198|         return Some(Sourced::Read(source.path));
+   00199|     };
+   00200|     if super::code_artifact::source_from_agent_read_result(&read).is_none()
+   00201|         && super::tool_result::failure_message(&read, false, true).is_some()
+   00202|     {
+   00203|         return None;
+   00204|     }
+   00205|     let contents = source_from_read_result(&read);
+   00206|     Some(Sourced::Task(with_contents(task, &source, &contents)))
+   00207| }
+   00208| 
+   00209| /// Whether `answer` is one of this module's seeded verification-failure
+   00210| /// renderings for `task`'s targets.
+   00211| ///
+   00212| /// The rendering is deterministic in the task and the target, so equality
+   00213| /// against it is a structural test with no phrase table: it recognises the
+   00214| /// failure report in whatever language the seed rendered it. The delivery
+   00215| /// route uses it to keep such prose out of the files it writes -- a report
+   00216| /// that a check failed is chat, never the `result=` line of an effect file
+   00217| /// (issue #1138: the binary-tree ladder's effect files carried the failure
+   00218| /// template and every leaf read as an unverified result).
+   00219| pub(super) fn is_verification_failure_answer(task: &str, answer: &str) -> bool {
+   00220|     let task = unwrap_transport_quotes(task);
+   00221|     let mut targets: Vec<String> = compose_edit_request(task)
+   00222|         .map(|(target, _, _)| target)
+   00223|         .into_iter()
+   00224|         .chain(rust_paths(task))
+   00225|         .collect();
+   00226|     if let Some((target, _)) = super::workspace_line_operation::named_target_and_payloads(task)
+   00227|         && !targets.contains(&target)
+   00228|     {
+   00229|         targets.push(target);
+   00230|     }
+   00231|     targets.iter().any(|target| {
+   00232|         [
+   00233|             "coding_workspace_verification_failed",
+   00234|             "coding_workspace_fragment_refused",
+   00235|         ]
+   00236|         .iter()
+   00237|         .any(|intent| {
+   00238|             render_seeded_outcome(intent, task, target).is_some_and(|rendered| rendered == answer)
+   00239|         })
+   00240|     })
+   00241| }
+   00242| 
+   00243| fn plan_rewrite_step(
+   00244|     task: &str,
+   00245|     current_turn: &[ChatMessage],
+   00246|     tool_names: &[&str],
+   00247|     rewrite: &GroundedRewrite,
+   00248| ) -> Option<AgenticPlan> {
+   00249|     let Some(read) = result_for_path(current_turn, Capability::Read, &rewrite.target, None) else {
+   00250|         let tool = tool_for(tool_names, Capability::Read)?;
+   00251|         return Some(plan_one(tool, read_arguments(&rewrite.target)));
+   00252|     };
+   00253|     let source = source_from_read_result(&read);
+   00254|     let written = as_written(&source, rewrite);
+   00255|     let rewrite = written.as_ref().unwrap_or(rewrite);
+   00256|     let Some(updated) = rewritten_source(&source, rewrite) else {
+   00257|         // A replace asked again finds its old text gone: that is the answer (G87).
+   00258|         let absent = super::replace_list::absent_text_answer(
+   00259|             task,
+   00260|             &rewrite.target,
+   00261|             &source,
+   00262|             &rewrite.pattern,
+   00263|             Some(&rewrite.replacement),
+   00264|         );
+   00265|         return Some(AgenticPlan::Final(match absent {
+   00266|             Some(answer) => answer,
+   00267|             None => render_seeded_outcome(
+   00268|                 "coding_workspace_verification_failed",
+   00269|                 task,
+   00270|                 &rewrite.target,
+   00271|             )?,
+   00272|         }));
+   00273|     };
+   00274| 
+   00275|     let occurrences = match rewrite.scope {
+   00276|         RewriteScope::Substring => source.match_indices(&rewrite.pattern).count(),
+   00277|         RewriteScope::Word => word_scoped_matches(&source, &rewrite.pattern).len(),
+   00278|     };
+   00279|     if occurrences > 1
+   00280|         && let Some(answer) = super::edit_scope::scoped_decline(task, &rewrite.target, &source)
+   00281|     {
+   00282|         return Some(AgenticPlan::Final(answer));
+   00283|     }
+   00284|     if occurrences == 1 {
+   00285|         // The bare pattern when it is unique in the file; otherwise the
+   00286|         // smallest unique run of changed lines -- the edit tool refuses an
+   00287|         // `oldString` it finds twice, and `smal` also sits inside `small`.
+   00288|         let edit = if rewrite.unique {
+   00289|             anchored_lines(&source, rewrite).map(|(_, old, new)| (old, new))
+   00290|         } else if source.matches(rewrite.pattern.as_str()).count() == 1 {
+   00291|             Some((rewrite.pattern.clone(), rewrite.replacement.clone()))
+   00292|         } else {
+   00293|             changed_lines_edit(&source, &updated)
+   00294|         };
+   00295|         if let Some(tool) = tool_for(tool_names, Capability::Edit)
+   00296|             && let Some((old, new)) = edit
+   00297|         {
+   00298|             if result_for_edit(current_turn, &rewrite.target, &old, &new).is_none() {
+   00299|                 return Some(plan_one(tool, edit_arguments(&rewrite.target, &old, &new)));
+   00300|             }
+   00301|             return plan_digest_verification(
+   00302|                 task,
+   00303|                 current_turn,
+   00304|                 tool_names,
+   00305|                 &VerifiedChange {
+   00306|                     target: &rewrite.target,
+   00307|                     expected: &updated,
+   00308|                     intent: rewrite.stated_intent(),
+   00309|                     slots: &rewrite.stated_slots(),
+   00310|                     list_slots: &[],
+   00311|                 },
+   00312|             );
+   00313|         }
+   00314|     } else if tool_for(tool_names, Capability::Edit).is_some()
+   00315|         && let Some(command) = repeated_identifier_rewrite_command(rewrite)
+   00316|         && let Some(tool) = tool_for(tool_names, Capability::Run)
+   00317|     {
+   00318|         if result_for_command(current_turn, &command).is_none() {
+   00319|             return Some(plan_one(tool, json!({"command": command}).to_string()));
+   00320|         }
+   00321|         return plan_digest_verification(
+   00322|             task,
+   00323|             current_turn,
+   00324|             tool_names,
+   00325|             &VerifiedChange {
+   00326|                 target: &rewrite.target,
+   00327|                 expected: &updated,
+   00328|                 intent: rewrite.stated_intent(),
+   00329|                 slots: &rewrite.stated_slots(),
+   00330|                 list_slots: &[],
+   00331|             },
+   00332|         );
+   00333|     }
+   00334| 
+   00335|     if result_for_path(
+   00336|         current_turn,
+   00337|         Capability::Write,
+   00338|         &rewrite.target,
+   00339|         Some(&updated),
+   00340|     )
+   00341|     .is_none()
+   00342|     {
+   00343|         let tool = tool_for(tool_names, Capability::Write)?;
+   00344|         return Some(plan_one(tool, write_arguments(&rewrite.target, &updated)));
+   00345|     }
+   00346|     let command = format!("cat {}", rewrite.target);
+   00347|     let Some(observed) = result_for_command(current_turn, &command) else {
+   00348|         let tool = tool_for(tool_names, Capability::Run)?;
+   00349|         return Some(plan_one(tool, json!({"command": command}).to_string()));
+   00350|     };
+   00351|     if observed != updated {
+   00352|         return Some(AgenticPlan::Final(render_seeded_outcome(
+   00353|             "coding_workspace_verification_failed",
+   00354|             task,
+   00355|             &rewrite.target,
+   00356|         )?));
+   00357|     }
+   00358|     Some(AgenticPlan::Final(render_seeded_change(
+   00359|         rewrite.stated_intent(),
+   00360|         task,
+   00361|         &rewrite.target,
+   00362|         &rewrite.stated_slots(),
+   00363|     )?))
+   00364| }
+   00365| 
+   00366| fn plan_composite_step(
+   00367|     task: &str,
+   00368|     current_turn: &[ChatMessage],
+   00369|     tool_names: &[&str],
+   00370|     change: &CompositeModuleChange,
+   00371| ) -> Option<AgenticPlan> {
+   00372|     if result_for_path(
+   00373|         current_turn,
+   00374|         Capability::Write,
+   00375|         &change.source_path,
+   00376|         Some(&change.source),
+   00377|     )
+   00378|     .is_none()
+   00379|     {
+   00380|         let tool = tool_for(tool_names, Capability::Write)?;
+   00381|         return Some(plan_one(
+   00382|             tool,
+   00383|             write_arguments(&change.source_path, &change.source),
+   00384|         ));
+   00385|     }
+   00386| 
+   00387|     let source_command = format!("cat {}", change.source_path);
+   00388|     let Some(observed_source) = result_for_command(current_turn, &source_command) else {
+   00389|         let tool = tool_for(tool_names, Capability::Run)?;
+   00390|         return Some(plan_one(
+   00391|             tool,
+   00392|             json!({"command": source_command}).to_string(),
+   00393|         ));
+   00394|     };
+   00395|     if observed_source != change.source {
+   00396|         return Some(AgenticPlan::Final(render_seeded_outcome(
+   00397|             "coding_workspace_verification_failed",
+   00398|             task,
+   00399|             &change.source_path,
+   00400|         )?));
+   00401|     }
+   00402| 
+   00403|     let Some(read) = result_for_path(
+   00404|         current_turn,
+   00405|         Capability::Read,
+   00406|         &change.registration_path,
+   00407|         None,
+   00408|     ) else {
+   00409|         let tool = tool_for(tool_names, Capability::Read)?;
+   00410|         return Some(plan_one(tool, read_arguments(&change.registration_path)));
+   00411|     };
+   00412|     let current = source_from_read_result(&read);
+   00413|     let updated = insert_registration(&current, &change.registration);
+   00414|     let registered = ["`", change.registration.trim(), "`"].concat();
+   00415|     if updated == current {
+   00416|         return Some(AgenticPlan::Final(render_seeded_change(
+   00417|             "coding_member_already_present",
+   00418|             task,
+   00419|             &change.registration_path,
+   00420|             &[("{members}", &registered)],
+   00421|         )?));
+   00422|     }
+   00423| 
+   00424|     if let Some((old, new)) = compact_registration_edit(&current, &change.registration)
+   00425|         && let Some(tool) = tool_for(tool_names, Capability::Edit)
+   00426|     {
+   00427|         if result_for_edit(current_turn, &change.registration_path, &old, &new).is_none() {
+   00428|             return Some(plan_one(
+   00429|                 tool,
+   00430|                 edit_arguments(&change.registration_path, &old, &new),
+   00431|             ));
+   00432|         }
+   00433|         return plan_digest_verification(
+   00434|             task,
+   00435|             current_turn,
+   00436|             tool_names,
+   00437|             &VerifiedChange {
+   00438|                 target: &change.registration_path,
+   00439|                 expected: &updated,
+   00440|                 intent: "coding_member_inserted",
+   00441|                 slots: &[("{members}", &registered)],
+   00442|             },
+   00443|         );
+   00444|     }
+   00445| 
+   00446|     if result_for_path(
+   00447|         current_turn,
+   00448|         Capability::Write,
+   00449|         &change.registration_path,
+   00450|         Some(&updated),
+   00451|     )
+   00452|     .is_none()
+   00453|     {
+   00454|         let tool = tool_for(tool_names, Capability::Write)?;
+   00455|         return Some(plan_one(
+   00456|             tool,
+   00457|             write_arguments(&change.registration_path, &updated),
+   00458|         ));
+   00459|     }
+   00460| 
+   00461|     let registration_command = format!("cat {}", change.registration_path);
+   00462|     let Some(observed_registration) = result_for_command(current_turn, &registration_command)
+   00463|     else {
+   00464|         let tool = tool_for(tool_names, Capability::Run)?;
+   00465|         return Some(plan_one(
+   00466|             tool,
+   00467|             json!({"command": registration_command}).to_string(),
+   00468|         ));
+   00469|     };
+   00470|     if observed_registration != updated {
+   00471|         return Some(AgenticPlan::Final(render_seeded_outcome(
+   00472|             "coding_workspace_verification_failed",
+   00473|             task,
+   00474|             &change.registration_path,
+   00475|         )?));
+   00476|     }
+   00477|     Some(AgenticPlan::Final(render_seeded_change(
+   00478|         "coding_member_inserted",
+   00479|         task,
+   00480|         &change.registration_path,
+   00481|         &[("{members}", &registered)],
+   00482|     )?))
+   00483| }
+   00484| 
+   00485| /// The file after `rewrite`, or `None` when it cannot apply. A positional
+   00486| /// insertion replaces its one anchor occurrence; an anchor found zero or
+   00487| /// several times does not say where the line goes.
+   00488| /// The rewrite as the request wrote it, when the file holds no unescaped
+   00489| /// pattern but holds the pattern as written (source code quoting `'\n'`,
+   00490| /// PR #1188 G65).
+   00491| fn as_written(source: &str, rewrite: &GroundedRewrite) -> Option<GroundedRewrite> {
+   00492|     let (pattern, replacement) = rewrite.verbatim.clone()?;
+   00493|     if (rewrite.pattern != pattern && source.contains(&rewrite.pattern))
+   00494|         || !source.contains(&pattern)
+   00495|     {
+   00496|         return None;
+   00497|     }
+   00498|     Some(GroundedRewrite {
+   00499|         pattern,
+   00500|         replacement,
+   00501|         verbatim: None,
+   00502|         ..rewrite.clone()
+   00503|     })
+   00504| }
+   00505| 
+   00506| fn rewritten_source(source: &str, rewrite: &GroundedRewrite) -> Option<String> {
+   00507|     if rewrite.single_pass {
+   00508|         return source
+   00509|             .contains(rewrite.pattern.as_str())
+   00510|             .then(|| source.replace(rewrite.pattern.as_str(), &rewrite.replacement));
+   00511|     }
+   00512|     if rewrite.unique {
+   00513|         let (start, old, new) = anchored_lines(source, rewrite)?;
+   00514|         return Some([&source[..start], new.as_str(), &source[start + old.len()..]].concat());
+   00515|     }
+   00516|     execute_scoped_workspace_rewrite(
+   00517|         source,
+   00518|         &rewrite.pattern,
+   00519|         &rewrite.replacement,
+   00520|         rewrite.scope,
+   00521|     )
+   00522|     .ok()
+   00523|     .map(|execution| execution.output)
+   00524| }
+   00525| 
+   00526| /// A positional insertion's one anchor occurrence widened to the whole lines
+   00527| /// it sits on, as `(start, old_lines, new_lines)`, or `None` unless the anchor
+   00528| /// occurs exactly once. The inserted text is a line, so an anchor that is only
+   00529| /// part of a line (`after the line containing '| T20 |'`) must not split it.
+   00530| fn anchored_lines(source: &str, rewrite: &GroundedRewrite) -> Option<(usize, String, String)> {
+   00531|     let (pattern, replacement) = (rewrite.pattern.as_str(), rewrite.replacement.as_str());
+   00532|     let mut found = source.match_indices(pattern).map(|(at, _)| at);
+   00533|     let (Some(at), None) = (found.next(), found.next()) else {
+   00534|         return None;
+   00535|     };
+   00536|     let start = source[..at].rfind('\n').map_or(0, |newline| newline + 1);
+   00537|     let tail = at + pattern.len();
+   00538|     let end = if pattern.ends_with('\n') {
+   00539|         tail - 1
+   00540|     } else {
+   00541|         source[tail..]
+   00542|             .find('\n')
+   00543|             .map_or(source.len(), |newline| tail + newline)
+   00544|     };
+   00545|     let old = &source[start..end];
+   00546|     let new = replacement.strip_prefix(pattern).map_or_else(
+   00547|         || [&replacement[..replacement.len() - pattern.len()], old].concat(),
+   00548|         |rest| [old, rest].concat(),
+   00549|     );
+   00550|     Some((start, old.to_owned(), new))
+   00551| }
+   00552| 
+   00553| /// The smallest run of whole lines holding every change from `source` to
+   00554| /// `updated`, as an edit pair, when that run occurs once in `source`.
+   00555| pub(super) fn changed_lines_edit(source: &str, updated: &str) -> Option<(String, String)> {
+   00556|     const MAX_EDIT_BYTES: usize = 4096;
+   00557|     let prefix = source
+   00558|         .bytes()
+   00559|         .zip(updated.bytes())
+   00560|         .take_while(|(left, right)| left == right)
+   00561|         .count();
+   00562|     let limit = source.len().min(updated.len()) - prefix;
+   00563|     let suffix = source
+   00564|         .bytes()
+   00565|         .rev()
+   00566|         .zip(updated.bytes().rev())
+   00567|         .take(limit)
+   00568|         .take_while(|(left, right)| left == right)
+   00569|         .count();
+   00570|     // Byte positions only meet `\n`, so `start` and `end` fall on line -- and
+   00571|     // therefore character -- boundaries even when the first or last differing
+   00572|     // byte sits inside a multi-byte character.
+   00573|     let bytes = source.as_bytes();
+   00574|     let line_start = |before: usize| {
+   00575|         bytes[..before]
+   00576|             .iter()
+   00577|             .rposition(|byte| *byte == b'\n')
+   00578|             .map_or(0, |at| at + 1)
+   00579|     };
+   00580|     let mut start = line_start(prefix);
+   00581|     let end = bytes[source.len() - suffix..]
+   00582|         .iter()
+   00583|         .position(|byte| *byte == b'\n')
+   00584|         .map_or(source.len(), |at| source.len() - suffix + at);
+   00585|     // Lines inserted between two lines change none: the line above carries
+   00586|     // them.
+   00587|     if start == end && start > 0 {
+   00588|         start = line_start(start - 1);
+   00589|     }
+   00590|     let old = &source[start..end];
+   00591|     let new = &updated[start..updated.len() - (source.len() - end)];
+   00592|     (!old.is_empty() && old.len() <= MAX_EDIT_BYTES && source.matches(old).count() == 1)
+   00593|         .then(|| (old.to_owned(), new.to_owned()))
+   00594| }
+   00595| 
+   00596| /// `Insert 'x' after the line 'y' in f`: the anchor line, replaced once by the
+   00597| /// anchor beside the new line, stated by the position meaning that placed it.
+   00598| fn grounded_positional_insert(task: &str) -> Option<GroundedRewrite> {
+   00599|     let (target, anchor, replacement) = super::positional_edit::compose_positional_insert(task)?;
+   00600|     let after_anchor = [anchor.as_str(), "\n"].concat();
+   00601|     let (after, inserted) = if let Some(inserted) = replacement.strip_prefix(&after_anchor) {
+   00602|         (true, inserted.to_owned())
+   00603|     } else {
+   00604|         let before_anchor = ["\n", anchor.as_str()].concat();
+   00605|         (false, replacement.strip_suffix(&before_anchor)?.to_owned())
+   00606|     };
+   00607|     let intent = super::positional_edit::insert_intent(after, &inserted);
+   00608|     Some(GroundedRewrite {
+   00609|         target,
+   00610|         stated: Some((
+   00611|             intent,
+   00612|             vec![(NEW_SLOT, inserted), (ANCHOR_SLOT, anchor.clone())],
+   00613|         )),
+   00614|         pattern: anchor,
+   00615|         replacement,
+   00616|         scope: RewriteScope::Substring,
+   00617|         renaming: false,
+   00618|         unique: true,
+   00619|         single_pass: false,
+   00620|         verbatim: None,
+   00621|     })
+   00622| }
+   00623| 
+   00624| /// Every insert the request asks for, each its own anchored edit.
+   00625| ///
+   00626| /// Several clauses (`…, and insert …`), an anchor named by the line it
+   00627| /// follows (T31, T34), lines rebased on the anchor (G16), or one insert whose
+   00628| /// anchor is a whole line also found inside others (`the line 'b'`).
+   00629| fn insert_sequence(task: &str) -> Option<Vec<PositionalInsert>> {
+   00630|     super::positional_edit::positional_inserts(task)
+   00631| }
+   00632| 
+   00633| fn grounded_rewrite(task: &str) -> Option<GroundedRewrite> {
+   00634|     if let Some(positional) = grounded_positional_insert(task) {
+   00635|         return Some(positional);
+   00636|     }
+   00637|     let (target, old_clause, new_clause) = compose_edit_request(task)?;
+   00638|     let renaming = seed::lexicon().mentions_role(
+   00639|         seed::ROLE_CODING_IDENTIFIER_RENAME_ACTION,
+   00640|         &task.to_lowercase(),
+   00641|     );
+   00642|     // A request that names a line replaces whole lines
+   00643|     // (`grounded_line_replacement`).
+   00644|     if !renaming && super::workspace_computed_change::names_line(task) {
+   00645|         return None;
+   00646|     }
+   00647|     // Both operands have to be literals the request actually quoted, so prose
+   00648|     // ("replace the old header with something clearer") is never rewritten as
+   00649|     // bytes. What that cannot be is a count: requiring the request to hold
+   00650|     // *exactly* two quoted segments made every other pair of delimiters in the
+   00651|     // prompt disqualify the edit, and this repository's own prose backticks the
+   00652|     // file it names. The issue #1028 ladder node "In the file
+   00653|     // `src/protocol_memory.rs`, replace \"request_history\" with
+   00654|     // \"conversation_history\"" quotes three things and states one replacement.
+   00655|     // Asking whether each clause *is* quoted keeps the guarantee and drops the
+   00656|     // arithmetic.
+   00657|     // The edit request unescapes `\n` / `\t` in its literals, so the quoted
+   00658|     // segments are compared unescaped too: a multi-line replacement written
+   00659|     // with `\n` was otherwise not "quoted", and the general fallback wrote its
+   00660|     // new text over the whole file (PR #1188 sub-agent gap 3).
+   00661|     let quoted: Vec<String> = quoted_segments(task)
+   00662|         .iter()
+   00663|         .map(String::as_str)
+   00664|         .map(super::positional_edit::unescape_prose_newlines)
+   00665|         .collect();
+   00666|     // A literal quoted whole counts even when backtick spans inside it pair
+   00667|     // among themselves (PR #1188 G63).
+   00668|     let is_quoted =
+   00669|         |value: &String| quoted.contains(value) || crate::normal_markov::quotes_whole(task, value);
+   00670|     let operands = if is_quoted(&old_clause) && is_quoted(&new_clause) {
+   00671|         Some((old_clause, new_clause))
+   00672|     } else if renaming {
+   00673|         Some((
+   00674|             identifier_tokens(&old_clause).next_back()?.to_owned(),
+   00675|             identifier_tokens(&new_clause).next()?.to_owned(),
+   00676|         ))
+   00677|     } else {
+   00678|         None
+   00679|     }?;
+   00680|     let (old, new) = operands;
+   00681|     let as_quoted = |text: &str| {
+   00682|         quoted_segments(task)
+   00683|             .into_iter()
+   00684|             .find(|raw| raw != text && super::positional_edit::unescape_prose_newlines(raw) == text)
+   00685|             .unwrap_or_else(|| text.to_owned())
+   00686|     };
+   00687|     let verbatim = (as_quoted(&old) != old || as_quoted(&new) != new)
+   00688|         .then(|| (as_quoted(&old), as_quoted(&new)));
+   00689|     // A rename names a *word*, so the edit is word-scoped whichever way the
+   00690|     // request spelled its operands. Without that scope the most ordinary rename
+   00691|     // there is -- giving a name a prefix or a suffix -- has to be refused, since
+   00692|     // an unanchored substring rewrite that reintroduces its own pattern never
+   00693|     // terminates.
+   00694|     //
+   00695|     // A word replaced by a longer word that contains it (`smal` → `small`, a
+   00696|     // typo fix) is only safe word by word for the same reason.
+   00697|     let words = is_identifier_word(&old) && is_identifier_word(&new);
+   00698|     let scope = if words && (renaming || new.contains(&old)) {
+   00699|         RewriteScope::Word
+   00700|     } else {
+   00701|         RewriteScope::Substring
+   00702|     };
+   00703|     if old.is_empty() || old == new {
+   00704|         return None;
+   00705|     }
+   00706|     // A new text holding the old one (`key 3` → `key 33`) is replaced in one
+   00707|     // pass over the file, never rewritten again inside its own result (PR
+   00708|     // #1188 G78).
+   00709|     let single_pass = scope == RewriteScope::Substring && new.contains(&old);
+   00710|     Some(GroundedRewrite {
+   00711|         target,
+   00712|         pattern: old,
+   00713|         replacement: new,
+   00714|         scope,
+   00715|         renaming: renaming && scope == RewriteScope::Word,
+   00716|         unique: false,
+   00717|         single_pass,
+   00718|         stated: None,
+   00719|         verbatim,
+   00720|     })
+   00721| }
+   00722| 
+   00723| // This is a seed-template placeholder, not a Rust formatting argument.
+   00724| #[allow(clippy::literal_string_with_formatting_args)]
+   00725| fn composite_module_change(task: &str) -> Option<CompositeModuleChange> {
+   00726|     let lowered = task.to_lowercase();
+   00727|     if !seed::lexicon().mentions_role(seed::ROLE_CODING_MODULE_REGISTRATION_ACTION, &lowered) {
+   00728|         return None;
+   00729|     }
+   00730|     let generated = rust_source_for_task(task)?;
+   00731|     let registration_path = rust_paths(task)
+   00732|         .into_iter()
+   00733|         .find(|path| path != &generated.path)?;
+   00734|     let module = generated.path.rsplit('/').next()?.strip_suffix(".rs")?;
+   00735|     if !valid_identifier(module) {
+   00736|         return None;
+   00737|     }
+   00738|     let registration =
+   00739|         render_rust_template("coding_source_module_registration", &[("{module}", module)])?;
+   00740|     Some(CompositeModuleChange {
+   00741|         source_path: generated.path,
+   00742|         source: generated.content,
+   00743|         registration_path,
+   00744|         registration,
+   00745|     })
+   00746| }
+   00747| 
+   00748| fn insert_registration(source: &str, registration: &str) -> String {
+   00749|     if source
+   00750|         .lines()
+   00751|         .any(|line| line.trim() == registration.trim())
+   00752|     {
+   00753|         return source.to_owned();
+   00754|     }
+   00755|     let mut updated = source.to_owned();
+   00756|     if !updated.is_empty() && !updated.ends_with('\n') {
+   00757|         updated.push('\n');
+   00758|     }
+   00759|     updated.push_str(registration);
+   00760|     updated
+   00761| }
+   00762| 
+   00763| fn compact_registration_edit(source: &str, registration: &str) -> Option<(String, String)> {
+   00764|     const MAX_SUFFIX_BYTES: usize = 4096;
+   00765|     let mut starts = source
+   00766|         .match_indices('\n')
+   00767|         .map(|(index, _)| index + 1)
+   00768|         .filter(|start| *start < source.len())
+   00769|         .collect::<Vec<_>>();
+   00770|     starts.insert(0, 0);
+   00771|     for start in starts.into_iter().rev() {
+   00772|         let suffix = &source[start..];
+   00773|         if suffix.len() > MAX_SUFFIX_BYTES {
+   00774|             break;
+   00775|         }
+   00776|         if source.match_indices(suffix).count() != 1 {
+   00777|             continue;
+   00778|         }
+   00779|         let mut replacement = suffix.to_owned();
+   00780|         if !replacement.ends_with('\n') {
+   00781|             replacement.push('\n');
+   00782|         }
+   00783|         replacement.push_str(registration);
+   00784|         return Some((suffix.to_owned(), replacement));
+   00785|     }
+   00786|     None
+   00787| }
+   00788| 
+   00789| fn repeated_identifier_rewrite_command(rewrite: &GroundedRewrite) -> Option<String> {
+   00790|     if !shell_safe_identifier(&rewrite.pattern) || !shell_safe_identifier(&rewrite.replacement) {
+   00791|         return None;
+   00792|     }
+   00793|     // The in-memory execution and the command the client runs have to agree on
+   00794|     // what a match is, so a word-scoped rewrite asks for whole words too.
+   00795|     let pattern = match rewrite.scope {
+   00796|         RewriteScope::Substring => rewrite.pattern.clone(),
+   00797|         RewriteScope::Word => format!("\\b{}\\b", rewrite.pattern),
+   00798|     };
+   00799|     // `perl -pi -e`, not `sed -i` (issue #1110). GNU and BSD sed disagree about
+   00800|     // both halves of that command: BSD `-i` reads the script as its backup
+   00801|     // suffix, and BSD sed has no `\b`. On macOS every rename therefore failed
+   00802|     // with `bad flag in substitute command`, the file was left unchanged, and
+   00803|     // Formal AI reported the mismatch as its own verification failure -- a
+   00804|     // confident failure report instead of a rename. perl's `-pi -e` and `\b`
+   00805|     // mean the same thing on both, and perl ships with macOS and the runners.
+   00806|     // Both identifiers are `[A-Za-z0-9_]` by `shell_safe_identifier`, so
+   00807|     // neither side can carry a regex or shell metacharacter.
+   00808|     // Assembled from named parts rather than one template string: the prose
+   00809|     // detector reads `perl -pi -e ...` as a multi-word phrase (two alphabetic
+   00810|     // runs, one of three letters) and would have it live in `data/seed`, which
+   00811|     // is the wrong home for a shell invocation. Naming the pieces says what
+   00812|     // each is, and none of them reads as a sentence.
+   00813|     let script = format!("'s/{pattern}/{}/g'", rewrite.replacement);
+   00814|     Some(["perl", "-pi", "-e", &script, "--", &rewrite.target].join(" "))
+   00815| }
+   00816| 
+   00817| fn shell_safe_identifier(identifier: &str) -> bool {
+   00818|     !identifier.is_empty()
+   00819|         && identifier
+   00820|             .chars()
+   00821|             .all(|character| character.is_ascii_alphanumeric() || character == '_')
+   00822| }
+   00823| 
+   00824| pub(super) fn identifier_tokens(text: &str) -> impl DoubleEndedIterator<Item = &str> {
+   00825|     text.split(|character: char| !character.is_ascii_alphanumeric() && character != '_')
+   00826|         .filter(|token| valid_identifier(token))
+   00827| }
+   00828| 
+   00829| fn valid_identifier(identifier: &str) -> bool {
+   00830|     let mut characters = identifier.chars();
+   00831|     characters
+   00832|         .next()
+   00833|         .is_some_and(|first| first.is_ascii_alphabetic() || first == '_')
+   00834|         && characters.all(|character| character.is_ascii_alphanumeric() || character == '_')
+   00835|         && !seed::lexicon()
+   00836|             .words_for_role(seed::ROLE_IDENTIFIER_RESERVED_WORD)
+   00837|             .iter()
+   00838|             .any(|reserved| reserved == identifier)
+   00839| }
+   00840| 
+   00841| fn rust_paths(task: &str) -> Vec<String> {
+   00842|     let mut paths = Vec::new();
+   00843|     for (suffix, _) in task.match_indices(".rs") {
+   00844|         let end = suffix + 3;
+   00845|         let start = task[..end]
+   00846|             .char_indices()
+   00847|             .rev()
+   00848|             .take_while(|(_, character)| {
+   00849|                 character.is_ascii_alphanumeric() || matches!(character, '_' | '-' | '.' | '/')
+   00850|             })
+   00851|             .last()
+   00852|             .map_or(0, |(index, _)| index);
+   00853|         let path = &task[start..end];
+   00854|         if !path.is_empty()
+   00855|             && !path.starts_with('/')
+   00856|             && !path.split('/').any(|component| component == "..")
+   00857|             && !paths.iter().any(|existing| existing == path)
+   00858|         {
+   00859|             paths.push(path.to_owned());
+   00860|         }
+   00861|     }
+   00862|     paths
+   00863| }
+   00864| 
+   00865| pub(super) fn result_for_path(
+   00866|     messages: &[ChatMessage],
+   00867|     capability: Capability,
+   00868|     path: &str,
+   00869|     expected_content: Option<&str>,
+   00870| ) -> Option<String> {
+   00871|     matching_result(messages, |name, arguments| {
+   00872|         if tool_capability(name) != Some(capability) {
+   00873|             return false;
+   00874|         }
+   00875|         let Ok(value) = serde_json::from_str::<Value>(arguments) else {
+   00876|             return false;
+   00877|         };
+   00878|         let matches_path = ["path", "filePath", "file_path"].iter().any(|key| {
+   00879|             value
+   00880|                 .get(key)
+   00881|                 .and_then(Value::as_str)
+   00882|                 .is_some_and(|observed| workspace_path_matches(path, observed))
+   00883|         });
+   00884|         matches_path
+   00885|             && expected_content.is_none_or(|expected| {
+   00886|                 value.get("content").and_then(Value::as_str) == Some(expected)
+   00887|             })
+   00888|     })
+   00889| }
+   00890| 
+   00891| pub(super) fn result_for_edit(
+   00892|     messages: &[ChatMessage],
+   00893|     path: &str,
+   00894|     old: &str,
+   00895|     new: &str,
+   00896| ) -> Option<String> {
+   00897|     matching_result(messages, |name, arguments| {
+   00898|         if tool_capability(name) != Some(Capability::Edit) {
+   00899|             return false;
+   00900|         }
+   00901|         let Ok(value) = serde_json::from_str::<Value>(arguments) else {
+   00902|             return false;
+   00903|         };
+   00904|         argument_matches_path(&value, path)
+   00905|             && argument_matches(&value, &["oldString", "old_string", "old_str", "old"], old)
+   00906|             && argument_matches(&value, &["newString", "new_string", "new_str", "new"], new)
+   00907|     })
+   00908| }
+   00909| 
+   00910| fn argument_matches_path(value: &Value, expected: &str) -> bool {
+   00911|     ["path", "filePath", "file_path"].iter().any(|key| {
+   00912|         value
+   00913|             .get(key)
+   00914|             .and_then(Value::as_str)
+   00915|             .is_some_and(|observed| workspace_path_matches(expected, observed))
+   00916|     })
+   00917| }
+   00918| 
+   00919| fn argument_matches(value: &Value, keys: &[&str], expected: &str) -> bool {
+   00920|     keys.iter()
+   00921|         .any(|key| value.get(key).and_then(Value::as_str) == Some(expected))
+   00922| }
+   00923| 
+   00924| fn workspace_path_matches(expected: &str, observed: &str) -> bool {
+   00925|     if observed == expected {
+   00926|         return true;
+   00927|     }
+   00928|     let expected = Path::new(expected);
+   00929|     let observed = Path::new(observed);
+   00930|     expected.is_relative() && observed.is_absolute() && observed.ends_with(expected)
+   00931| }
+   00932| 
+   00933| pub(super) fn result_for_command(messages: &[ChatMessage], command: &str) -> Option<String> {
+   00934|     matching_result(messages, |name, arguments| {
+   00935|         tool_capability(name) == Some(Capability::Run)
+   00936|             && super::tool_result::command_argument(arguments).as_deref() == Some(command)
+   00937|     })
+   00938| }
+   00939| 
+   00940| pub(super) fn plan_digest_verification(
+   00941|     task: &str,
+   00942|     current_turn: &[ChatMessage],
+   00943|     tool_names: &[&str],
+   00944|     change: &VerifiedChange<'_>,
+   00945| ) -> Option<AgenticPlan> {
+   00946|     let command = ["sha256sum -- ", change.target].concat();
+   00947|     let Some(observed) = result_for_command(current_turn, &command) else {
+   00948|         let tool = tool_for(tool_names, Capability::Run)?;
+   00949|         return Some(plan_one(tool, json!({"command": command}).to_string()));
+   00950|     };
+   00951|     let digest = crate::source_fetch::sha256_hex(change.expected.as_bytes());
+   00952|     if observed.split_whitespace().next() != Some(digest.as_str()) {
+   00953|         return Some(AgenticPlan::Final(render_seeded_outcome(
+   00954|             "coding_workspace_verification_failed",
+   00955|             task,
+   00956|             change.target,
+   00957|         )?));
+   00958|     }
+   00959|     Some(AgenticPlan::Final(render_seeded_change(
+   00960|         change.intent,
+   00961|         task,
+   00962|         change.target,
+   00963|         change.slots,
+   00964|     )?))
+   00965| }
+   00966| 
+   00967| fn matching_result(
+   00968|     messages: &[ChatMessage],
+   00969|     matches: impl Fn(&str, &str) -> bool,
+   00970| ) -> Option<String> {
+   00971|     messages
+   00972|         .iter()
+   00973|         .enumerate()
+   00974|         .rev()
+   00975|         .find_map(|(index, message)| {
+   00976|             if !message.role.eq_ignore_ascii_case("tool") {
+   00977|                 return None;
+   00978|             }
+   00979|             let id = message.tool_call_id.as_deref()?;
+   00980|             let call = messages[..index]
+   00981|                 .iter()
+   00982|                 .rev()
+   00983|                 .flat_map(|prior| prior.tool_calls.iter().rev())
+   00984|                 .find(|call| call.id == id)?;
+   00985|             matches(&call.function.name, &call.function.arguments)
+   00986|                 .then(|| message.content.plain_text())
+   00987|         })
+   00988| }
+   00989| 
+   00990| pub(super) fn read_arguments(path: &str) -> String {
+   00991|     json!({"path": path, "filePath": path, "file_path": path}).to_string()
+   00992| }
+   00993| 
+   
+   (End of file - total 993 lines)
+   </file>
+>> edit {"filePath":"rust/src/agentic_coding/workspace_change.rs","file_path":"rust/src/agentic_coding/workspace_change.rs","new":"                slots: &[(\"{members}\", &registered)],\n                list_slots: &[],\n            },","newString":"                slots: &[(\"{members}\", &registered)],\n                list_slots: &[],\n            },","new_str":"                slots: &[(\"{members}\", &registered)],\n                list_slots: &[],\n            },","new_string":"                slots: &[(\"{members}\", &registered)],\n                list_slots: &[],\n            },","old":"                slots: &[(\"{members}\", &registered)],\n            },","oldString":"                slots: &[(\"{members}\", &registered)],\n            },","old_str":"                slots: &[(\"{members}\", &registered)],\n            },","old_string":"                slots: &[(\"{members}\", &registered)],\n            },","path":"rust/src/agentic_coding/workspace_change.rs"}
+>> bash {"command":"sha256sum -- rust/src/agentic_coding/workspace_change.rs"}
+   ca7ebad396299e4f924bfc0ab335d76ccaac6a00f0e34e65cdee6c98fd94426c  rust/src/agentic_coding/workspace_change.rs
+   
+== answer ==
+Replaced `                slots: &[("{members}", &registered)],
+            },` with `                slots: &[("{members}", &registered)],
+                list_slots: &[],
+            },` in `rust/src/agentic_coding/workspace_change.rs` and observed the result.

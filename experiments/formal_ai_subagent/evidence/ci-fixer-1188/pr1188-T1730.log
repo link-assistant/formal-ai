@@ -1,0 +1,7 @@
+>> bash {"command":"test -e data/seed/multilingual-responses-agentic-tools.lino"}
+>> bash {"command":"mkdir -p -- rust/embedded/data/seed"}
+>> bash {"command":"cp -f data/seed/multilingual-responses-agentic-tools.lino rust/embedded/data/seed/multilingual-responses-agentic-tools.lino"}
+>> bash {"command":"test -e rust/embedded/data/seed/multilingual-responses-agentic-tools.lino"}
+>> bash {"command":"test -e data/seed/multilingual-responses-agentic-tools.lino"}
+== answer ==
+Completed the action `cp -f data/seed/multilingual-responses-agentic-tools.lino rust/embedded/data/seed/multilingual-responses-agentic-tools.lino` and verified it with `test -e rust/embedded/data/seed/multilingual-responses-agentic-tools.lino`, `test -e data/seed/multilingual-responses-agentic-tools.lino`.

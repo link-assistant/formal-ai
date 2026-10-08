@@ -1,0 +1,208 @@
+>> read {"filePath":"rust/tests/unit/agentic-coding/system_diagrams.rs","file_path":"rust/tests/unit/agentic-coding/system_diagrams.rs","path":"rust/tests/unit/agentic-coding/system_diagrams.rs"}
+   <file>
+   00001| //! The generated system diagrams (issue #538, R382).
+   00002| //!
+   00003| //! `docs/diagrams/{system-overview,solver-handlers,cli-subcommands,http-routes}.md`
+   00004| //! are rendered from live data by `formal_ai::agentic_coding::system_diagram`
+   00005| //! (twin of `js/agentic/system_diagram.mjs`, whose driver
+   00006| //! `scripts/generate-system-diagrams.mjs --check` is the CI drift gate). These
+   00007| //! tests pin the Rust twin to the committed parts byte for byte, and pin that
+   00008| //! every handler, promotion, route and CLI subcommand the live sources declare
+   00009| //! appears in its part — the CLI list read from `rust/src/main.rs` is also held
+   00010| //! to what the built `formal-ai --help` prints.
+   00011| 
+   00012| use std::path::{Path, PathBuf};
+   00013| 
+   00014| use formal_ai::agentic_coding::system_diagram::{
+   00015|     CONFIG_PATH, DIAGRAM_DIR, cli_definition, render_system_diagrams, route_rows,
+   00016| };
+   00017| 
+   00018| fn repository_root() -> PathBuf {
+   00019|     Path::new(env!("CARGO_MANIFEST_DIR"))
+   00020|         .parent()
+   00021|         .expect("the repository root sits above the crate")
+   00022|         .to_path_buf()
+   00023| }
+   00024| 
+   00025| fn read_repo(relative: &str) -> Option<String> {
+   00026|     std::fs::read_to_string(repository_root().join(relative)).ok()
+   00027| }
+   00028| 
+   00029| fn rendered() -> Vec<(String, String)> {
+   00030|     render_system_diagrams(read_repo).expect("the live sources render")
+   00031| }
+   00032| 
+   00033| fn part(file: &str) -> String {
+   00034|     rendered()
+   00035|         .into_iter()
+   00036|         .find(|(name, _)| name == file)
+   00037|         .map_or_else(|| panic!("no generated part {file}"), |(_, text)| text)
+   00038| }
+   00039| 
+   00040| #[test]
+   00041| fn committed_parts_are_the_generated_parts() {
+   00042|     let parts = rendered();
+   00043|     let files: Vec<&str> = parts.iter().map(|(file, _)| file.as_str()).collect();
+   00044|     assert_eq!(
+   00045|         files,
+   00046|         [
+   00047|             "system-overview.md",
+   00048|             "solver-handlers.md",
+   00049|             "cli-subcommands.md",
+   00050|             "http-routes.md"
+   00051|         ]
+   00052|     );
+   00053|     for (file, text) in &parts {
+   00054|         let committed = read_repo(&format!("{DIAGRAM_DIR}/{file}"))
+   00055|             .unwrap_or_else(|| panic!("{DIAGRAM_DIR}/{file} is committed"));
+   00056|         assert_eq!(
+   00057|             &committed, text,
+   00058|             "{DIAGRAM_DIR}/{file} drifted; run node scripts/generate-system-diagrams.mjs --write"
+   00059|         );
+   00060|     }
+   00061| }
+   00062| 
+   00063| #[test]
+   00064| fn every_handler_appears_in_precedence_order() {
+   00065|     let text = part("solver-handlers.md");
+   00066|     let precedence = formal_ai::seed::handler_precedence();
+   00067|     assert!(precedence.len() > 50, "{}", precedence.len());
+   00068|     let mut last = 0;
+   00069|     for name in precedence {
+   00070|         let node = format!("h_{name}[\"");
+   00071|         let at = text
+   00072|             .find(&node)
+   00073|             .unwrap_or_else(|| panic!("handler {name} is drawn"));
+   00074|         assert!(at > last, "handler {name} is drawn in precedence order");
+   00075|         last = at;
+   00076|         assert!(text.contains(&format!("| `{name}` |")), "{name} is tabled");
+   00077|     }
+   00078|     for name in formal_ai::seed::browser_only_handlers() {
+   00079|         assert!(
+   00080|             text.contains(&format!("`{name}` | browser worker only |")),
+   00081|             "{name} is marked browser-only"
+   00082|         );
+   00083|     }
+   00084| }
+   00085| 
+   00086| #[test]
+   00087| fn every_promotion_appears_in_rank_order() {
+   00088|     let text = part("solver-handlers.md");
+   00089|     let promotions = formal_ai::handler_promotion::promotions();
+   00090|     assert!(!promotions.is_empty());
+   00091|     let mut last = 0;
+   00092|     for promotion in &promotions {
+   00093|         let label = format!("[\"{}: {}\"]", promotion.rank, promotion.handler);
+   00094|         let at = text
+   00095|             .find(&label)
+   00096|             .unwrap_or_else(|| panic!("promotion {} is drawn", promotion.handler));
+   00097|         assert!(
+   00098|             at > last,
+   00099|             "promotion {} keeps rank order",
+   00100|             promotion.handler
+   00101|         );
+   00102|         last = at;
+   00103|     }
+   00104| }
+   00105| 
+   00106| #[test]
+   00107| fn every_route_and_path_appears() {
+   00108|     let text = part("http-routes.md");
+   00109|     let manifest = read_repo("data/meta/server-routes.lino").expect("route manifest");
+   00110|     let ids: Vec<&str> = manifest
+   00111|         .lines()
+   00112|         .filter_map(|line| line.strip_prefix("  route "))
+   00113|         .collect();
+   00114|     let routes = route_rows(&manifest);
+   00115|     assert_eq!(
+   00116|         routes.iter().map(|row| row.id.as_str()).collect::<Vec<_>>(),
+   00117|         ids
+   00118|     );
+   00119|     for route in &routes {
+   00120|         assert!(
+   00121|             text.contains(&format!("r_{}[\"", route.id)),
+   00122|             "route {} is drawn",
+   00123|             route.id
+   00124|         );
+   00125|         for path in &route.paths {
+   00126|             assert!(text.contains(&format!("`{path}`")), "path {path} is tabled");
+   00127|         }
+   00128|     }
+   00129| }
+   00130| 
+   00131| #[test]
+   00132| fn every_subcommand_appears_and_matches_the_built_cli() {
+   00133|     let text = part("cli-subcommands.md");
+   00134|     let cli = cli_definition(&read_repo("rust/src/main.rs").expect("main.rs"));
+   00135|     assert_eq!(cli.binary, "formal-ai");
+   00136|     let names: Vec<&str> = cli
+   00137|         .subcommands
+   00138|         .iter()
+   00139|         .map(|sub| sub.name.as_str())
+   00140|         .collect();
+   00141|     for name in &names {
+   00142|         assert!(
+   00143|             text.contains(&format!("| `formal-ai {name}` |")),
+   00144|             "subcommand {name} is tabled"
+   00145|         );
+   00146|     }
+   00147|     let help = std::process::Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+   00148|         .arg("--help")
+   00149|         .output()
+   00150|         .expect("the formal-ai binary runs");
+   00151|     let help = String::from_utf8_lossy(&help.stdout);
+   00152|     let listed: Vec<&str> = help
+   00153|         .lines()
+   00154|         .skip_while(|line| line.trim() != "Commands:")
+   00155|         .skip(1)
+   00156|         .take_while(|line| !line.trim().is_empty())
+   00157|         .filter_map(|line| line.split_whitespace().next())
+   00158|         .filter(|name| *name != "help")
+   00159|         .collect();
+   00160|     assert_eq!(names, listed, "the generated list is clap's own");
+   00161| }
+   00162| 
+   00163| #[test]
+   00164| fn an_edge_naming_a_vanished_subcommand_fails_the_renderer() {
+   00165|     let broken = |relative: &str| {
+   00166|         let text = read_repo(relative)?;
+   00167|         Some(if relative == CONFIG_PATH {
+   00168|             text.replace("subcommand chat", "subcommand vanished")
+   00169|         } else {
+   00170|             text
+   00171|         })
+   00172|     };
+   00173|     assert_eq!(
+   00174|         render_system_diagrams(broken).expect_err("a stale edge is refused"),
+   00175|         "system_diagrams:edge:cli_chat:unknown_subcommand:vanished"
+   00176|     );
+   00177| }
+   00178| 
+   00179| #[test]
+   00180| fn a_new_seed_handler_reaches_the_diagram() {
+   00181|     let extended = |relative: &str| {
+   00182|         let text = read_repo(relative)?;
+   00183|         Some(if relative == "data/seed/handler-precedence.lino" {
+   00184|             format!("{text}  handler diagram_probe_handler\n    rank 999999\n")
+   00185|         } else {
+   00186|             text
+   00187|         })
+   00188|     };
+   00189|     let parts = render_system_diagrams(extended).expect("renders");
+   00190|     let handlers = &parts
+   00191|         .iter()
+   00192|         .find(|(file, _)| file == "solver-handlers.md")
+   00193|         .expect("handlers part")
+   00194|         .1;
+   00195|     assert!(handlers.contains("h_diagram_probe_handler[\"999999: diagram_probe_handler\"]"));
+   00196| }
+   00197| 
+   
+   (End of file - total 197 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/agentic-coding/system_diagrams.rs","file_path":"rust/tests/unit/agentic-coding/system_diagrams.rs","new":"assert_ne!(promotions.len(), 0);","newString":"assert_ne!(promotions.len(), 0);","new_str":"assert_ne!(promotions.len(), 0);","new_string":"assert_ne!(promotions.len(), 0);","old":"assert!(!promotions.is_empty());","oldString":"assert!(!promotions.is_empty());","old_str":"assert!(!promotions.is_empty());","old_string":"assert!(!promotions.is_empty());","path":"rust/tests/unit/agentic-coding/system_diagrams.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/agentic-coding/system_diagrams.rs"}
+   7e378dbe644c70f416f90b21604ed80d184807cd1aff5c045768a4fd200cfbb1  rust/tests/unit/agentic-coding/system_diagrams.rs
+   
+== answer ==
+Replaced `assert!(!promotions.is_empty());` with `assert_ne!(promotions.len(), 0);` in `rust/tests/unit/agentic-coding/system_diagrams.rs` and observed the result.

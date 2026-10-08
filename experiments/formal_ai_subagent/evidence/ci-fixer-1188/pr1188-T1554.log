@@ -1,0 +1,8 @@
+>> bash {"command":"test -e changelog.d/20261009_041000_typed-removal-summaries.md"}
+>> bash {"command":"test ! -e changelog.d/20261009_045000_native-ci-and-macos-repairs.md"}
+>> bash {"command":"mkdir -p -- changelog.d"}
+>> bash {"command":"cp changelog.d/20261009_041000_typed-removal-summaries.md changelog.d/20261009_045000_native-ci-and-macos-repairs.md"}
+>> bash {"command":"test -e changelog.d/20261009_045000_native-ci-and-macos-repairs.md"}
+>> bash {"command":"test -e changelog.d/20261009_041000_typed-removal-summaries.md"}
+== answer ==
+Completed the action `cp changelog.d/20261009_041000_typed-removal-summaries.md changelog.d/20261009_045000_native-ci-and-macos-repairs.md` and verified it with `test -e changelog.d/20261009_045000_native-ci-and-macos-repairs.md`, `test -e changelog.d/20261009_041000_typed-removal-summaries.md`.

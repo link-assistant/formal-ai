@@ -1,0 +1,498 @@
+>> read {"filePath":"rust/tests/unit/ci-cd/ci_diagnostic_audit.rs","file_path":"rust/tests/unit/ci-cd/ci_diagnostic_audit.rs","path":"rust/tests/unit/ci-cd/ci_diagnostic_audit.rs"}
+   <file>
+   00001| //! Regression coverage for issue #1014's complete CI diagnostic audit.
+   00002| 
+   00003| use std::fs;
+   00004| use std::path::{Path, PathBuf};
+   00005| 
+   00006| use super::workflow_fixtures::{job_block, release_workflow};
+   00007| 
+   00008| fn repository_path(path: &str) -> PathBuf {
+   00009|     Path::new(env!("CARGO_MANIFEST_DIR"))
+   00010|         .parent()
+   00011|         .expect("the repository root sits one level above the crate")
+   00012|         .join(path)
+   00013| }
+   00014| 
+   00015| fn repository_file(path: &str) -> String {
+   00016|     fs::read_to_string(repository_path(path))
+   00017|         .unwrap_or_else(|error| panic!("read {path}: {error}"))
+   00018|         .replace("\r\n", "\n")
+   00019| }
+   00020| 
+   00021| fn files_below(root: &Path, files: &mut Vec<PathBuf>) {
+   00022|     for entry in
+   00023|         fs::read_dir(root).unwrap_or_else(|error| panic!("read {}: {error}", root.display()))
+   00024|     {
+   00025|         let path = entry.expect("directory entry").path();
+   00026|         if path.is_dir() {
+   00027|             files_below(&path, files);
+   00028|         } else {
+   00029|             files.push(path);
+   00030|         }
+   00031|     }
+   00032| }
+   00033| 
+   00034| fn direct_files_with(root: &Path, prefix: &str, suffix: &str) -> Vec<PathBuf> {
+   00035|     fs::read_dir(root)
+   00036|         .unwrap_or_else(|error| panic!("read {}: {error}", root.display()))
+   00037|         .map(|entry| entry.expect("directory entry").path())
+   00038|         .filter(|path| {
+   00039|             path.file_name()
+   00040|                 .and_then(|name| name.to_str())
+   00041|                 .is_some_and(|name| name.starts_with(prefix) && name.ends_with(suffix))
+   00042|         })
+   00043|         .collect()
+   00044| }
+   00045| 
+   00046| #[test]
+   00047| fn every_named_baseline_and_initial_pull_request_run_has_preserved_evidence() {
+   00048|     let evidence = repository_path("dev/log/issues/1014/pulls/1015");
+   00049|     let logs = evidence.join("ci-logs");
+   00050|     let branch_logs = logs.join("branch-initial");
+   00051|     let raw = evidence.join("raw-data");
+   00052| 
+   00053|     assert_eq!(direct_files_with(&logs, "run-", ".log").len(), 13);
+   00054|     assert_eq!(direct_files_with(&branch_logs, "branch-", ".log").len(), 5);
+   00055|     assert_eq!(direct_files_with(&raw, "run-", "-jobs.json").len(), 12);
+   00056|     assert_eq!(direct_files_with(&raw, "run-", "-artifacts.json").len(), 12);
+   00057|     assert_eq!(
+   00058|         direct_files_with(&raw, "branch-run-", "-jobs.json").len(),
+   00059|         5
+   00060|     );
+   00061|     assert_eq!(
+   00062|         direct_files_with(&raw, "branch-run-", "-artifacts.json").len(),
+   00063|         5
+   00064|     );
+   00065|     assert_eq!(
+   00066|         direct_files_with(&raw.join("check-annotations"), "", ".json").len(),
+   00067|         66
+   00068|     );
+   00069| }
+   00070| 
+   00071| /// Issue #1085 (D3.5). The self-development floor still exists and still fails
+   00072| /// an ineligible cycle from the first push with no deferral machinery -- but it
+   00073| /// reports from `.github/workflows/self-development-status.yml`, red until
+   00074| /// true, and no longer decides whether a release is cut. The floor #924 put on
+   00075| /// the release path had become satisfiable by a documentation commit carrying
+   00076| /// trailers, and it held a downstream-critical fix back for 268 commits
+   00077| /// (issue #1064). Neither release job may grow the gate back, and neither may
+   00078| /// grow a bypass: the floor is honest exactly because nothing needs to escape it.
+   00079| #[test]
+   00080| fn an_ineligible_cycle_is_reported_red_without_gating_the_release() {
+   00081|     let workflow = release_workflow();
+   00082|     let automatic = job_block(&workflow, "auto-release");
+   00083|     let manual = job_block(&workflow, "manual-release");
+   00084|     let policy = repository_file("scripts/self-development-loop.rs");
+   00085|     let preflight = repository_file("scripts/check-self-development-release.rs");
+   00086|     let status = repository_file(".github/workflows/self-development-status.yml");
+   00087| 
+   00088|     assert!(policy.contains("SelfDevelopmentReleaseStatus"));
+   00089|     assert!(policy.contains("Blocked"));
+   00090|     assert!(preflight.contains("set_output(\"should_release\", \"false\")"));
+   00091|     // Issue #1066: work is not deferred in this repository, however hard it is.
+   00092|     // An ineligible cycle fails the status check from the first push, so there
+   00093|     // is no state in which the status reports success while nothing was done.
+   00094|     assert!(
+   00095|         preflight.contains("SelfDevelopmentReleaseStatus::Blocked"),
+   00096|         "the preflight must classify an ineligible cycle as blocked"
+   00097|     );
+   00098|     assert!(
+   00099|         preflight.contains("return Err(reason)"),
+   00100|         "a blocked cycle must fail the check rather than report success"
+   00101|     );
+   00102|     for forbidden in [
+   00103|         "Deferred",
+   00104|         "Overdue",
+   00105|         "DEFERRAL_BUDGET_DAYS",
+   00106|         "DEFERRAL_BUDGET_FRAGMENTS",
+   00107|     ] {
+   00108|         assert!(
+   00109|             !policy.contains(forbidden)
+   00110|                 && !preflight.contains(forbidden)
+   00111|                 && !status.contains(forbidden),
+   00112|             "the self-development path must carry no deferral machinery, found `{forbidden}`"
+   00113|         );
+   00114|     }
+   00115|     assert!(
+   00116|         !preflight.contains("::notice title=Release deferred::"),
+   00117|         "an ineligible cycle must not be downgraded to a notice"
+   00118|     );
+   00119|     assert!(
+   00120|         status.contains("scripts/check-self-development-release.rs"),
+   00121|         "the floor is checked by the status workflow"
+   00122|     );
+   00123|     assert!(
+   00124|         status.contains("branches: [main]") && status.contains("schedule:"),
+   00125|         "the status runs on every push to main and on a schedule, so red stays visible"
+   00126|     );
+   00127|     for (job_name, job) in [("auto-release", automatic), ("manual-release", manual)] {
+   00128|         assert!(
+   00129|             !job.contains("check-self-development-release.rs") && !job.contains("release_gate"),
+   00130|             "{job_name} must not gate the release on the self-development floor"
+   00131|         );
+   00132|     }
+   00133|     assert!(manual.contains("scripts/version-and-commit.rs"));
+   00134|     let version_script = repository_file("scripts/version-and-commit.rs");
+   00135|     assert!(
+   00136|         !version_script.contains("ensure_self_development_release("),
+   00137|         "the manual path must not gate either; the record is kept, the gate is not"
+   00138|     );
+   00139|     assert!(version_script.contains("record_release_with_policy"));
+   00140| }
+   00141| 
+   00142| #[test]
+   00143| fn macos_core_shards_reuse_one_nextest_archive() {
+   00144|     let workflow = release_workflow();
+   00145|     let regular_tests = job_block(&workflow, "test");
+   00146|     let macos_call = job_block(&workflow, "macos-core-tests");
+   00147|     let macos = repository_file(".github/workflows/macos-core-tests.yml");
+   00148| 
+   00149|     assert!(macos_call.contains("uses: ./.github/workflows/macos-core-tests.yml"));
+   00150|     assert_eq!(macos.matches("runs-on: macos-15-intel").count(), 2);
+   00151|     assert!(!regular_tests.contains("test-suite: core-"));
+   00152|     // Issue #1059: one runner. What this test pins is that the lane reuses the
+   00153|     // archive instead of compiling, which is unchanged.
+   00154|     assert_eq!(macos.matches("- { partition:").count(), 1);
+   00155|     assert_eq!(
+   00156|         macos
+   00157|             .matches("cargo nextest --manifest-path rust/Cargo.toml archive")
+   00158|             .count(),
+   00159|         1
+   00160|     );
+   00161|     assert!(macos.contains("actions/upload-artifact@v7"));
+   00162|     // Issue #1039 moved the download to `scripts/download-artifact-with-retry.sh`
+   00163|     // so a transient storage failure retries instead of reddening a slice that
+   00164|     // never ran a test. What this test pins is that the slices *reuse the one
+   00165|     // archive* rather than each building their own -- the mechanism that
+   00166|     // fetches it is free to change, and the retry is covered by issue #1039.
+   00167|     assert!(macos.contains("scripts/download-artifact-with-retry.sh"));
+   00168|     assert!(macos.contains("cargo nextest --manifest-path rust/Cargo.toml run --archive-file"));
+   00169|     assert!(macos.contains("--extract-to \"$GITHUB_WORKSPACE\""));
+   00170|     assert!(macos.contains("--archive-file"));
+   00171|     assert!(macos.contains("git rev-parse 'HEAD^{tree}'"));
+   00172|     assert!(macos.contains("macos-core-tests/tree"));
+   00173|     assert!(repository_path("experiments/issue_1014_nextest_archive/run.sh").is_file());
+   00174| }
+   00175| 
+   00176| #[test]
+   00177| fn unix_agent_runner_uses_command_streams_exact_argv_api() {
+   00178|     let cargo = repository_file("rust/Cargo.toml");
+   00179|     let runner = repository_file("rust/src/orchestration/runner.rs");
+   00180| 
+   00181|     assert!(cargo.contains("command-stream = \"1.5\""));
+   00182|     assert!(runner.contains("command_stream::StreamingRunner::from_argv("));
+   00183|     assert!(!runner.contains("command_stream::quote(&part)"));
+   00184| }
+   00185| 
+   00186| #[test]
+   00187| fn gemini_e2e_declares_true_color_and_keeps_mutable_home_outside_the_scanned_project() {
+   00188|     let harness = repository_file("experiments/agent_cli_e2e/run_issue_907.sh");
+   00189| 
+   00190|     assert!(harness.contains("export COLORTERM=truecolor"));
+   00191|     assert!(harness.contains("PROJECT_DIR=\"$WORKDIR/project\""));
+   00192|     assert!(harness.contains("HOME=\"$WORKDIR/home\""));
+   00193|     assert!(harness.contains("cd \"$PROJECT_DIR\""));
+   00194| }
+   00195| 
+   00196| #[test]
+   00197| fn captured_dependency_manifests_cannot_be_discovered_as_live_projects() {
+   00198|     let evidence_roots = [
+   00199|         repository_path("dev/log"),
+   00200|         repository_path("docs/case-studies"),
+   00201|     ];
+   00202|     let scanner_names = [
+   00203|         "Cargo.toml",
+   00204|         "Cargo.lock",
+   00205|         "package.json",
+   00206|         "package-lock.json",
+   00207|         "pyproject.toml",
+   00208|         "requirements.txt",
+   00209|         "poetry.lock",
+   00210|         "uv.lock",
+   00211|     ];
+   00212|     let mut live_manifests = Vec::new();
+   00213|     for root in evidence_roots {
+   00214|         let mut files = Vec::new();
+   00215|         files_below(&root, &mut files);
+   00216|         live_manifests.extend(files.iter().filter_map(|path| {
+   00217|             path.file_name()
+   00218|                 .and_then(|name| name.to_str())
+   00219|                 .filter(|name| scanner_names.contains(name))
+   00220|                 .map(|_| {
+   00221|                     path.strip_prefix(repository_path(""))
+   00222|                         .unwrap()
+   00223|                         .display()
+   00224|                         .to_string()
+   00225|                 })
+   00226|         }));
+   00227|     }
+   00228| 
+   00229|     assert!(
+   00230|         live_manifests.is_empty(),
+   00231|         "captured evidence must use a .snapshot suffix: {live_manifests:#?}"
+   00232|     );
+   00233| }
+   00234| 
+   00235| #[test]
+   00236| fn every_javascript_lock_surface_has_one_explicit_advisory_gate() {
+   00237|     let gate = repository_file("data/meta/ci-gates/check-javascript-dependencies.lino");
+   00238|     let script = repository_file("scripts/check-javascript-dependencies.sh");
+   00239| 
+   00240|     assert!(gate.contains("stage web"));
+   00241|     assert!(gate.contains("scripts/check-javascript-dependencies.sh"));
+   00242|     assert!(script.contains("git ls-files"));
+   00243|     assert!(script.contains("$NF == name"));
+   00244|     assert!(script.contains("queue_locks \"bun.lock\" bun audit"));
+   00245|     assert!(script.contains("queue_locks \"package-lock.json\" npm audit"));
+   00246|     // Queueing an audit is not running one. Both surfaces are audited concurrently,
+   00247|     // so the gate's verdict only exists once every queued audit has been waited on.
+   00248|     assert!(script.contains("wait_for_audits"));
+   00249|     assert!(script.contains("bun audit --audit-level=moderate"));
+   00250|     assert!(script.contains("npm audit --package-lock-only --audit-level=moderate"));
+   00251|     for lock in [
+   00252|         "bun.lock",
+   00253|         "experiments/agent_cli_e2e/issue_819_tui/bun.lock",
+   00254|         "rust/tests/e2e/package-lock.json",
+   00255|         "desktop/package-lock.json",
+   00256|         "vscode/package-lock.json",
+   00257|     ] {
+   00258|         assert!(repository_path(lock).is_file(), "missing live lock {lock}");
+   00259|     }
+   00260|     assert!(!repository_file("package.json").contains("\"dompurify\": \"3.4.12\""));
+   00261| }
+   00262| 
+   00263| #[test]
+   00264| fn javascript_installs_apply_a_scoped_lifecycle_policy() {
+   00265|     // Issue #1081 moved the agent-CLI end-to-end steps -- which is where every
+   00266|     // `bun add -g` in the pipeline lives -- into their own reusable workflow.
+   00267|     // The policy is about what CI installs, not about which file spells the
+   00268|     // install, so read the spliced surface and keep asking the same question.
+   00269|     let workflow = crate::ci_gates::pipeline_workflows();
+   00270|     for line in workflow.lines().filter(|line| line.contains("npm ci")) {
+   00271|         assert!(
+   00272|             line.contains("--no-audit") && line.contains("--no-fund"),
+   00273|             "{line}"
+   00274|         );
+   00275|     }
+   00276| 
+   00277|     for path in [
+   00278|         ".github/workflows/release.yml",
+   00279|         ".github/workflows/agent-cli-e2e.yml",
+   00280|         ".github/workflows/proactive-failure-report-e2e.yml",
+   00281|         "experiments/agentic_cli_matrix/install_client.sh",
+   00282|     ] {
+   00283|         let source = repository_file(path);
+   00284|         for line in source.lines().filter(|line| {
+   00285|             let command = line.trim_start();
+   00286|             command.starts_with("bun add -g") || command.starts_with("run: bun add -g")
+   00287|         }) {
+   00288|             assert!(
+   00289|                 line.contains("--ignore-scripts") || line.contains("--trust"),
+   00290|                 "{path}: {line}"
+   00291|             );
+   00292|             if line.contains("--trust") {
+   00293|                 assert!(
+   00294|                     (path == ".github/workflows/agent-cli-e2e.yml"
+   00295|                         && line.contains("opencode-ai@1.18.25"))
+   00296|                         || (path == "experiments/agentic_cli_matrix/install_client.sh"
+   00297|                             && line.contains("\"$spec\"")),
+   00298|                     "{path}: {line}"
+   00299|                 );
+   00300|             }
+   00301|         }
+   00302|     }
+   00303| 
+   00304|     assert!(workflow.contains("bun add -g --trust opencode-ai@1.18.25"));
+   00305|     let installer = repository_file("experiments/agentic_cli_matrix/install_client.sh");
+   00306|     assert!(installer.contains("[ \"$CLIENT\" = opencode ]"));
+   00307|     assert!(installer.contains("bun add -g --trust \"$spec\""));
+   00308|     assert!(
+   00309|         repository_file("experiments/agentic_cli_matrix/clients.lock")
+   00310|             .contains("opencode-ai@1.18.25")
+   00311|     );
+   00312| }
+   00313| 
+   00314| #[test]
+   00315| fn vscode_dependency_graph_test_runs_after_its_dependencies_are_installed() {
+   00316|     let package = repository_file("vscode/package.json");
+   00317|     let workflow = repository_file(".github/workflows/desktop-release.yml");
+   00318|     let test_script = package
+   00319|         .split("\"test\": \"")
+   00320|         .nth(1)
+   00321|         .and_then(|tail| tail.split('"').next())
+   00322|         .expect("VS Code source-only test script");
+   00323| 
+   00324|     assert!(
+   00325|         !test_script.contains("bundle-web-tools.test.mjs"),
+   00326|         "the lint-stage test must remain runnable from committed source without npm install"
+   00327|     );
+   00328|     assert!(
+   00329|         package.contains("\"test:package\": \"node --test scripts/bundle-web-tools.test.mjs\"")
+   00330|     );
+   00331|     let install = workflow
+   00332|         .find("scripts/install-node-dependencies.sh vscode")
+   00333|         .expect("locked VS Code dependency install");
+   00334|     let dependency_test = workflow
+   00335|         .find("npm run test:package")
+   00336|         .expect("dependency-backed VS Code package test");
+   00337|     let package_vsix = workflow
+   00338|         .find("npm run package")
+   00339|         .expect("VSIX package command");
+   00340|     assert!(
+   00341|         install < dependency_test && dependency_test < package_vsix,
+   00342|         "the real dependency graph must be tested after install and before packaging"
+   00343|     );
+   00344| }
+   00345| 
+   00346| #[test]
+   00347| fn diagnostic_ledger_classifies_every_observed_signal_without_weakening_failures() {
+   00348|     let ledger = repository_file("dev/log/issues/1014/pulls/1015/README.md");
+   00349|     for signal in [
+   00350|         "Auto Release error",
+   00351|         "Pipeline Status failure",
+   00352|         "Core test slice took",
+   00353|         "npm reports two high advisories",
+   00354|         "Blocked 2 postinstalls",
+   00355|         "Gemini true-color warnings",
+   00356|         "projects.json.lock",
+   00357|         "Dependency Graph workflow",
+   00358|         "ca-certificates.crt",
+   00359|         "CodeQL sources",
+   00360|         "Cache restore misses",
+   00361|         "npm 11 refuses",
+   00362|     ] {
+   00363|         assert!(ledger.contains(signal), "missing diagnostic {signal:?}");
+   00364|     }
+   00365|     assert!(ledger.contains("No suppression or aggregator weakening"));
+   00366| }
+   00367| 
+   00368| #[test]
+   00369| fn template_comparison_and_upstream_reports_cover_each_ecosystem() {
+   00370|     let raw = repository_path("dev/log/issues/1014/pulls/1015/raw-data");
+   00371|     for source in [
+   00372|         "references/rust-ai-driven-development-pipeline-template-tree.json",
+   00373|         "references/js-ai-driven-development-pipeline-template-tree.json",
+   00374|         "references/python-ai-driven-development-pipeline-template-tree.json",
+   00375|         "references/CI-CD-BEST-PRACTICES.md",
+   00376|         "upstream-rust-template-132.json",
+   00377|         "upstream-js-template-134.json",
+   00378|         "upstream-python-template-58.json",
+   00379|         "upstream-gemini-28826.json",
+   00380|         "upstream-web-capture-153.json",
+   00381|         "upstream-html-to-markdown-459.json",
+   00382|         "related/playwright-33031.json",
+   00383|         "related/web-capture-154.json",
+   00384|     ] {
+   00385|         assert!(
+   00386|             raw.join(source).is_file(),
+   00387|             "missing research evidence {source}"
+   00388|         );
+   00389|     }
+   00390| 
+   00391|     let reports = repository_path("dev/log/issues/1014/pulls/1015/upstream-reports");
+   00392|     let report_files = direct_files_with(&reports, "", ".md");
+   00393|     assert_eq!(report_files.len(), 8);
+   00394|     for report in report_files {
+   00395|         let body = fs::read_to_string(&report).expect("upstream report body");
+   00396|         if report
+   00397|             .file_name()
+   00398|             .and_then(|name| name.to_str())
+   00399|             .is_some_and(|name| name.ends_with("-follow-up.md"))
+   00400|         {
+   00401|             assert!(body.contains("validated downstream workaround"));
+   00402|             assert!(body.contains("issues/154"));
+   00403|             continue;
+   00404|         }
+   00405|         assert!(
+   00406|             body.contains("## Reproduction") || body.contains("## Minimal reproduction"),
+   00407|             "{} lacks a reproduction section",
+   00408|             report.display()
+   00409|         );
+   00410|         assert!(
+   00411|             body.contains("## Workaround"),
+   00412|             "{} lacks ## Workaround",
+   00413|             report.display()
+   00414|         );
+   00415|         assert!(
+   00416|             body.contains("## Suggested code fix") || body.contains("## Suggested source fix"),
+   00417|             "{} lacks a suggested code fix",
+   00418|             report.display()
+   00419|         );
+   00420|     }
+   00421| }
+   00422| 
+   00423| #[test]
+   00424| fn tests_first_record_contains_the_failing_and_passing_composed_regression() {
+   00425|     let red = repository_file("dev/log/issues/1014/pulls/1015/local-tests/regression-red.log");
+   00426|     let green = repository_file("dev/log/issues/1014/pulls/1015/local-tests/regression-green.log");
+   00427|     assert!(red.contains("test result: FAILED. 0 passed; 7 failed"));
+   00428|     assert!(green.contains("test result: ok. 7 passed; 0 failed"));
+   00429| }
+   00430| 
+   00431| #[test]
+   00432| fn issue_and_pull_request_delivery_documents_target_the_prepared_pull_request() {
+   00433|     for path in [
+   00434|         "dev/log/issues/1014/pulls/1015/README.md",
+   00435|         "docs/case-studies/issue-1014/README.md",
+   00436|         "docs/case-studies/pull-request-1015/README.md",
+   00437|     ] {
+   00438|         let document = repository_file(path);
+   00439|         for marker in ["#1014", "#1015", "test", "evidence"] {
+   00440|             assert!(document.contains(marker), "{path} is missing {marker:?}");
+   00441|         }
+   00442|     }
+   00443| 
+   00444|     // The changelog entry is the fourth delivery document, but a fragment does
+   00445|     // not survive the release that ships it: v0.346.0 (c11b23d34) consumed
+   00446|     // `changelog.d/20260815_160000_issue_1014_ci_diagnostic_audit.md` and this
+   00447|     // test failed on every run afterwards. Follow the entry across its
+   00448|     // lifecycle the way `docs_requirements_issue_656` does -- a fragment before
+   00449|     // release, a CHANGELOG.md section after -- so the markers stay pinned
+   00450|     // either way.
+   00451|     let fragment = repository_path("changelog.d/20260815_160000_issue_1014_ci_diagnostic_audit.md");
+   00452|     let (source, changelog) = if fragment.is_file() {
+   00453|         (
+   00454|             "changelog.d/20260815_160000_issue_1014_ci_diagnostic_audit.md",
+   00455|             repository_file("changelog.d/20260815_160000_issue_1014_ci_diagnostic_audit.md"),
+   00456|         )
+   00457|     } else {
+   00458|         ("CHANGELOG.md", crate::assembled_docs::changelog())
+   00459|     };
+   00460|     for marker in ["#1014", "#1015", "test", "evidence"] {
+   00461|         assert!(
+   00462|             changelog.contains(marker),
+   00463|             "the issue #1014 changelog entry in {source} is missing {marker:?}"
+   00464|         );
+   00465|     }
+   00466| }
+   00467| 
+   00468| #[test]
+   00469| fn whole_issue_contract_composes_all_nine_requirements() {
+   00470|     let requirements = crate::assembled_docs::requirements();
+   00471|     for requirement in 1..=9 {
+   00472|         assert!(requirements.contains(&format!("R1014-{requirement}")));
+   00473|     }
+   00474|     for implementation in [
+   00475|         "scripts/check-self-development-release.rs",
+   00476|         ".github/workflows/macos-core-tests.yml",
+   00477|         "scripts/check-javascript-dependencies.sh",
+   00478|         "experiments/agent_cli_e2e/run_issue_907.sh",
+   00479|     ] {
+   00480|         assert!(
+   00481|             repository_path(implementation).is_file(),
+   00482|             "missing {implementation}"
+   00483|         );
+   00484|     }
+   00485| }
+   00486| 
+   
+   (End of file - total 486 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/ci-cd/ci_diagnostic_audit.rs","file_path":"rust/tests/unit/ci-cd/ci_diagnostic_audit.rs","new":"assert!(macos.contains(\"--extract-to \\\"$GITHUB_WORKSPACE\\\"\"));\n    assert!(macos.contains(\"--workspace-remap \\\"$GITHUB_WORKSPACE/rust\\\"\"));","newString":"assert!(macos.contains(\"--extract-to \\\"$GITHUB_WORKSPACE\\\"\"));\n    assert!(macos.contains(\"--workspace-remap \\\"$GITHUB_WORKSPACE/rust\\\"\"));","new_str":"assert!(macos.contains(\"--extract-to \\\"$GITHUB_WORKSPACE\\\"\"));\n    assert!(macos.contains(\"--workspace-remap \\\"$GITHUB_WORKSPACE/rust\\\"\"));","new_string":"assert!(macos.contains(\"--extract-to \\\"$GITHUB_WORKSPACE\\\"\"));\n    assert!(macos.contains(\"--workspace-remap \\\"$GITHUB_WORKSPACE/rust\\\"\"));","old":"assert!(macos.contains(\"--extract-to \\\"$GITHUB_WORKSPACE\\\"\"));","oldString":"assert!(macos.contains(\"--extract-to \\\"$GITHUB_WORKSPACE\\\"\"));","old_str":"assert!(macos.contains(\"--extract-to \\\"$GITHUB_WORKSPACE\\\"\"));","old_string":"assert!(macos.contains(\"--extract-to \\\"$GITHUB_WORKSPACE\\\"\"));","path":"rust/tests/unit/ci-cd/ci_diagnostic_audit.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/ci-cd/ci_diagnostic_audit.rs"}
+   7a6daff89abb7a21941d3dfed6c01f365e116a75a59683312a48c32a35755999  rust/tests/unit/ci-cd/ci_diagnostic_audit.rs
+   
+== answer ==
+Replaced `assert!(macos.contains("--extract-to \"$GITHUB_WORKSPACE\""));` with `assert!(macos.contains("--extract-to \"$GITHUB_WORKSPACE\""));
+    assert!(macos.contains("--workspace-remap \"$GITHUB_WORKSPACE/rust\""));` in `rust/tests/unit/ci-cd/ci_diagnostic_audit.rs` and observed the result.

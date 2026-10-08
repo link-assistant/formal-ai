@@ -1,0 +1,261 @@
+>> read {"filePath":"js/agentic/mutating_action.mjs","file_path":"js/agentic/mutating_action.mjs","path":"js/agentic/mutating_action.mjs"}
+   <file>
+   00001| // Verified mutating filesystem actions (issues #824 and #944): the JavaScript
+   00002| // twin of rust/src/agentic_coding/mutating_action.rs.
+   00003| //
+   00004| // A mutating command is planned as the ordered recipe its seed intent declares
+   00005| // (preconditions, preparation, the action, postconditions), each step observed
+   00006| // before the next is planned.
+   00007| 
+   00008| import { Capability } from './capability.mjs';
+   00009| import { toolFor } from './capability_router.mjs';
+   00010| import { finalAnswer, jsonText, planOne } from './plan.mjs';
+   00011| import { Progress } from './progress.mjs';
+   00012| import { StepOutcome, render, reportedExitCode, responseLanguage, stepOutcome } from './tool_result.mjs';
+   00013| import { localizedResponse } from './crate/seed.mjs';
+   00014| import { effectIsDeclared, shellIntentVocabulary } from './crate/seed_shell_intents.mjs';
+   00015| import { maxByKey, replaceAllLiteral, rsplitOnce, splitWhitespace } from './crate/rust_str.mjs';
+   00016| 
+   00017| const PATH_PLACEHOLDER = '{path}';
+   00018| const SOURCE_PLACEHOLDER = '{source}';
+   00019| const DESTINATION_PLACEHOLDER = '{destination}';
+   00020| const DESTINATION_PARENT_PLACEHOLDER = '{destination_parent}';
+   00021| const ACTION_PLACEHOLDER = '{action}';
+   00022| const CHECK_PLACEHOLDER = '{check}';
+   00023| const CHECKS_PLACEHOLDER = '{checks}';
+   00024| const EXIT_CODE_PLACEHOLDER = '{exit_code}';
+   00025| const CURRENT_DIRECTORY = '.';
+   00026| 
+   00027| /**
+   00028|  * Mirrors `fn expand` in rust/src/agentic_coding/mutating_action.rs:
+   00029|  * `{steps, action}` (the action's index) or null.
+   00030|  * @param {string} command
+   00031|  */
+   00032| export function expand(command) {
+   00033|   return expandWith(command, shellIntentVocabulary());
+   00034| }
+   00035| 
+   00036| function expandWith(command, vocab) {
+   00037|   const candidates = [];
+   00038|   for (const intent of vocab.intents) {
+   00039|     if (!effectIsDeclared(intent.effect)) continue;
+   00040|     if (!command.startsWith(intent.command)) continue;
+   00041|     const rest = command.slice(intent.command.length);
+   00042|     if (!rest.startsWith(' ')) continue;
+   00043|     candidates.push([intent.effect, splitWhitespace(rest)]);
+   00044|   }
+   00045|   const best = maxByKey(candidates, ([, operands]) => operands.length);
+   00046|   if (best === undefined) return null;
+   00047|   const [effect, operands] = best;
+   00048|   let substitutions;
+   00049|   if (operands.length === 1) substitutions = [[PATH_PLACEHOLDER, operands[0]]];
+   00050|   else if (operands.length === 2) {
+   00051|     const [source, destination] = operands;
+   00052|     substitutions = [[SOURCE_PLACEHOLDER, source], [DESTINATION_PARENT_PLACEHOLDER, parentOf(destination)], [DESTINATION_PLACEHOLDER, destination]];
+   00053|   } else return null;
+   00054|   const fill = (template) => substitutions.reduce((text, [placeholder, value]) => replaceAllLiteral(text, placeholder, value), template);
+   00055|   const steps = [...effect.before.map(fill), ...effect.prepare.map(fill)];
+   00056|   const action = steps.length;
+   00057|   steps.push(command);
+   00058|   steps.push(...effect.after.map(fill));
+   00059|   return { steps, action };
+   00060| }
+   00061| 
+   00062| /** Mirrors `fn parent_of`. */
+   00063| function parentOf(path) {
+   00064|   const split = rsplitOnce(path, '/');
+   00065|   if (split === null) return CURRENT_DIRECTORY;
+   00066|   return split[0] === '' ? '/' : split[0];
+   00067| }
+   00068| 
+   00069| /**
+   00070|  * Mirrors `fn plan_step` in rust/src/agentic_coding/mutating_action.rs.
+   00071|  * @param {string} command
+   00072|  * @param {object[]} messages
+   00073|  * @param {string[]} toolNames
+   00074|  * @param {string} prompt
+   00075|  */
+   00076| export function planStep(command, messages, toolNames, prompt) {
+   00077|   const recipe = expand(command);
+   00078|   if (recipe === null) return null;
+   00079|   const tool = toolFor(toolNames, Capability.Run);
+   00080|   if (tool === null) return null;
+   00081|   const progress = Progress.scan(messages);
+   00082|   const taken = progress.run_outputs.length;
+   00083|   if (taken > 0) {
+   00084|     const index = taken - 1;
+   00085|     const observed = progress.run_outputs[index];
+   00086|     if (stepOutcome(observed) === StepOutcome.Failed) {
+   00087|       return finalAnswer(blockedReport(recipe, recipe.steps[index] ?? command, observed, prompt));
+   00088|     }
+   00089|   }
+   00090|   if (taken < recipe.steps.length) return planOne(tool, jsonText({ command: recipe.steps[taken] }));
+   00091|   return finalAnswer(completedReport(recipe, prompt));
+   00092| }
+   00093| 
+   00094| function blockedReport(recipe, check, observed, prompt) {
+   00095|   const language = responseLanguage(prompt);
+   00096|   let answer = localizedResponse('mutating_action_blocked', language);
+   00097|   if (answer === null) return render(check, observed, prompt);
+   00098|   answer = replaceAllLiteral(answer, ACTION_PLACEHOLDER, recipe.steps[recipe.action]);
+   00099|   answer = replaceAllLiteral(answer, CHECK_PLACEHOLDER, check);
+   00100|   const code = reportedExitCode(observed);
+   00101|   return replaceAllLiteral(answer, EXIT_CODE_PLACEHOLDER, code === null ? '' : String(code));
+   00102| }
+   00103| 
+   00104| function completedReport(recipe, prompt) {
+   00105|   const language = responseLanguage(prompt);
+   00106|   const checks = recipe.steps.slice(recipe.action + 1).map((check) => `\`${check}\``).join(', ');
+   00107|   const answer = localizedResponse('mutating_action_completed', language);
+   00108|   if (answer === null) return recipe.steps[recipe.action];
+   00109|   return replaceAllLiteral(replaceAllLiteral(answer, ACTION_PLACEHOLDER, recipe.steps[recipe.action]), CHECKS_PLACEHOLDER, checks);
+   00110| }
+   00111| 
+   00112| /**
+   00113|  * Mirrors `fn verified_recipe` in rust/src/agentic_coding/mutating_action.rs.
+   00114|  * @param {string} command
+   00115|  * @returns {string[]|null}
+   00116|  */
+   00117| export function verifiedRecipe(command) {
+   00118|   return expand(command)?.steps ?? null;
+   00119| }
+   00120| 
+   
+   (End of file - total 120 lines)
+   </file>
+>> edit {"filePath":"js/agentic/mutating_action.mjs","file_path":"js/agentic/mutating_action.mjs","new":"function expandWith(command, vocab) {\n  const candidates = vocab.intents.filter((intent) => effectIsDeclared(intent.effect)\n    && command.startsWith(intent.command + ' '));\n  const intent = maxByKey(candidates, (candidate) => candidate.command.length);\n  if (!intent) return null;\n  const parsed = effectOperands(command.slice(intent.command.length), intent.effect);\n  if (!parsed || !parsed.operands.length) return null;\n  const { operands, flags } = parsed;\n  const effect = intent.effect;\n  const before = flags.some((flag) => effect.reuse_options.includes(flag)) && effect.before_reuse.length\n    ? effect.before_reuse : effect.before;\n  const templates = [...before, ...effect.prepare, ...effect.after];\n  const fill = (template, bindings) => bindings.reduce((text, [key, value]) => replaceAllLiteral(text, key, value), template);\n  let groups;\n  if (templates.some((template) => template.includes(PATH_PLACEHOLDER))) {\n    groups = operands.map((path) => (template) => fill(template, [[PATH_PLACEHOLDER, path]]));\n  } else {\n    if (operands.length < 2 || (operands.length > 2 && !effect.directory_targets)) return null;\n    const destination = operands.at(-1);\n    const sources = operands.slice(0, -1);\n    const collection = effect.directory_targets && (sources.length > 1\n      || sources.some(hasShellExpansion) || destination.replace(/^['\"]|['\"]$/gu, '').endsWith('/'));\n    if (collection) {\n      const setup = 'formal_ai_destination=' + destination + '; '\n        + 'if test -d \"$formal_ai_destination\" || [ \"${formal_ai_destination%/}\" != \"$formal_ai_destination\" ]; then '\n        + 'formal_ai_leaf=\"${formal_ai_source%/}\"; formal_ai_destination=\"${formal_ai_destination%/}/${formal_ai_leaf##*/}\"; fi; '\n        + 'formal_ai_parent=\"${formal_ai_destination%/*}\"; '\n        + 'if [ \"$formal_ai_parent\" = \"$formal_ai_destination\" ]; then formal_ai_parent=.; fi; ';\n      const bindings = [[SOURCE_PLACEHOLDER, '\"$formal_ai_source\"'],\n        [DESTINATION_PARENT_PLACEHOLDER, '\"$formal_ai_parent\"'], [DESTINATION_PLACEHOLDER, '\"$formal_ai_destination\"']];\n      groups = [(template) => 'for formal_ai_source in ' + sources.join(' ') + '; do ' + setup\n        + fill(template, bindings) + ' || exit $?; done'];\n    } else {\n      groups = [(template) => fill(template, [[SOURCE_PLACEHOLDER, sources[0]],\n        [DESTINATION_PARENT_PLACEHOLDER, parentOf(destination)], [DESTINATION_PLACEHOLDER, destination]])];\n    }\n  }\n  const expandTemplates = (items) => items.flatMap((template) => groups.map((bind) => bind(template)));\n  const steps = [...expandTemplates(before), ...expandTemplates(effect.prepare)];\n  const action = steps.length;\n  steps.push(command, ...expandTemplates(effect.after));\n  return { steps, action };\n}\n\n/** Preserve shell quoting while separating declared options from positional operands. */\nfunction effectOperands(text, effect) {\n  const words = shellWords(text);\n  if (words === null) return null;\n  const operands = [];\n  const flags = [];\n  let options = true;\n  for (let index = 0; index < words.length; index += 1) {\n    const raw = words[index];\n    const word = raw.replace(/^['\"]|['\"]$/gu, '');\n    if (options && word === '--') { options = false; continue; }\n    if (options && word.startsWith('-') && word !== '-') {\n      const valueOption = effect.value_options.find((option) => word === option || word.startsWith(option + '=')\n        || (!option.startsWith('--') && word.startsWith(option) && word.length > option.length));\n      if (valueOption) {\n        if (word === valueOption && ++index >= words.length) return null;\n        flags.push(valueOption);\n      } else if (effect.flags.includes(word)) flags.push(word);\n      else if (!word.startsWith('--') && [...word.slice(1)].every((letter) => effect.flags.includes('-' + letter))) {\n        flags.push(...[...word.slice(1)].map((letter) => '-' + letter));\n      } else return null;\n    } else operands.push(raw);\n  }\n  return { operands, flags };\n}\n\nfunction shellWords(text) {\n  const words = [];\n  let start = null;\n  let quote = null;\n  let escaped = false;\n  for (let index = 0; index < text.length; index += 1) {\n    const character = text[index];\n    if (start === null && /\\s/u.test(character)) continue;\n    if (start === null) start = index;\n    if (escaped) { escaped = false; continue; }\n    if (character === '\\\\' && quote !== \"'\") { escaped = true; continue; }\n    if (quote !== null) { if (character === quote) quote = null; continue; }\n    if (character === '\"' || character === \"'\") { quote = character; continue; }\n    if (/\\s/u.test(character)) { words.push(text.slice(start, index)); start = null; }\n    else if (';|&<>()`'.includes(character)) return null;\n  }\n  if (quote !== null || escaped) return null;\n  if (start !== null) words.push(text.slice(start));\n  return words;\n}\n\nfunction hasShellExpansion(word) {\n  let quote = null;\n  let escaped = false;\n  for (const character of word) {\n    if (escaped) { escaped = false; continue; }\n    if (character === '\\\\' && quote !== \"'\") { escaped = true; continue; }\n    if (quote !== null) { if (character === quote) quote = null; continue; }\n    if (character === '\"' || character === \"'\") quote = character;\n    else if ('*?[$'.includes(character)) return true;\n  }\n  return false;\n}\n\n","newString":"function expandWith(command, vocab) {\n  const candidates = vocab.intents.filter((intent) => effectIsDeclared(intent.effect)\n    && command.startsWith(intent.command + ' '));\n  const intent = maxByKey(candidates, (candidate) => candidate.command.length);\n  if (!intent) return null;\n  const parsed = effectOperands(command.slice(intent.command.length), intent.effect);\n  if (!parsed || !parsed.operands.length) return null;\n  const { operands, flags } = parsed;\n  const effect = intent.effect;\n  const before = flags.some((flag) => effect.reuse_options.includes(flag)) && effect.before_reuse.length\n    ? effect.before_reuse : effect.before;\n  const templates = [...before, ...effect.prepare, ...effect.after];\n  const fill = (template, bindings) => bindings.reduce((text, [key, value]) => replaceAllLiteral(text, key, value), template);\n  let groups;\n  if (templates.some((template) => template.includes(PATH_PLACEHOLDER))) {\n    groups = operands.map((path) => (template) => fill(template, [[PATH_PLACEHOLDER, path]]));\n  } else {\n    if (operands.length < 2 || (operands.length > 2 && !effect.directory_targets)) return null;\n    const destination = operands.at(-1);\n    const sources = operands.slice(0, -1);\n    const collection = effect.directory_targets && (sources.length > 1\n      || sources.some(hasShellExpansion) || destination.replace(/^['\"]|['\"]$/gu, '').endsWith('/'));\n    if (collection) {\n      const setup = 'formal_ai_destination=' + destination + '; '\n        + 'if test -d \"$formal_ai_destination\" || [ \"${formal_ai_destination%/}\" != \"$formal_ai_destination\" ]; then '\n        + 'formal_ai_leaf=\"${formal_ai_source%/}\"; formal_ai_destination=\"${formal_ai_destination%/}/${formal_ai_leaf##*/}\"; fi; '\n        + 'formal_ai_parent=\"${formal_ai_destination%/*}\"; '\n        + 'if [ \"$formal_ai_parent\" = \"$formal_ai_destination\" ]; then formal_ai_parent=.; fi; ';\n      const bindings = [[SOURCE_PLACEHOLDER, '\"$formal_ai_source\"'],\n        [DESTINATION_PARENT_PLACEHOLDER, '\"$formal_ai_parent\"'], [DESTINATION_PLACEHOLDER, '\"$formal_ai_destination\"']];\n      groups = [(template) => 'for formal_ai_source in ' + sources.join(' ') + '; do ' + setup\n        + fill(template, bindings) + ' || exit $?; done'];\n    } else {\n      groups = [(template) => fill(template, [[SOURCE_PLACEHOLDER, sources[0]],\n        [DESTINATION_PARENT_PLACEHOLDER, parentOf(destination)], [DESTINATION_PLACEHOLDER, destination]])];\n    }\n  }\n  const expandTemplates = (items) => items.flatMap((template) => groups.map((bind) => bind(template)));\n  const steps = [...expandTemplates(before), ...expandTemplates(effect.prepare)];\n  const action = steps.length;\n  steps.push(command, ...expandTemplates(effect.after));\n  return { steps, action };\n}\n\n/** Preserve shell quoting while separating declared options from positional operands. */\nfunction effectOperands(text, effect) {\n  const words = shellWords(text);\n  if (words === null) return null;\n  const operands = [];\n  const flags = [];\n  let options = true;\n  for (let index = 0; index < words.length; index += 1) {\n    const raw = words[index];\n    const word = raw.replace(/^['\"]|['\"]$/gu, '');\n    if (options && word === '--') { options = false; continue; }\n    if (options && word.startsWith('-') && word !== '-') {\n      const valueOption = effect.value_options.find((option) => word === option || word.startsWith(option + '=')\n        || (!option.startsWith('--') && word.startsWith(option) && word.length > option.length));\n      if (valueOption) {\n        if (word === valueOption && ++index >= words.length) return null;\n        flags.push(valueOption);\n      } else if (effect.flags.includes(word)) flags.push(word);\n      else if (!word.startsWith('--') && [...word.slice(1)].every((letter) => effect.flags.includes('-' + letter))) {\n        flags.push(...[...word.slice(1)].map((letter) => '-' + letter));\n      } else return null;\n    } else operands.push(raw);\n  }\n  return { operands, flags };\n}\n\nfunction shellWords(text) {\n  const words = [];\n  let start = null;\n  let quote = null;\n  let escaped = false;\n  for (let index = 0; index < text.length; index += 1) {\n    const character = text[index];\n    if (start === null && /\\s/u.test(character)) continue;\n    if (start === null) start = index;\n    if (escaped) { escaped = false; continue; }\n    if (character === '\\\\' && quote !== \"'\") { escaped = true; continue; }\n    if (quote !== null) { if (character === quote) quote = null; continue; }\n    if (character === '\"' || character === \"'\") { quote = character; continue; }\n    if (/\\s/u.test(character)) { words.push(text.slice(start, index)); start = null; }\n    else if (';|&<>()`'.includes(character)) return null;\n  }\n  if (quote !== null || escaped) return null;\n  if (start !== null) words.push(text.slice(start));\n  return words;\n}\n\nfunction hasShellExpansion(word) {\n  let quote = null;\n  let escaped = false;\n  for (const character of word) {\n    if (escaped) { escaped = false; continue; }\n    if (character === '\\\\' && quote !== \"'\") { escaped = true; continue; }\n    if (quote !== null) { if (character === quote) quote = null; continue; }\n    if (character === '\"' || character === \"'\") quote = character;\n    else if ('*?[$'.includes(character)) return true;\n  }\n  return false;\n}\n\n","new_str":"function expandWith(command, vocab) {\n  const candidates = vocab.intents.filter((intent) => effectIsDeclared(intent.effect)\n    && command.startsWith(intent.command + ' '));\n  const intent = maxByKey(candidates, (candidate) => candidate.command.length);\n  if (!intent) return null;\n  const parsed = effectOperands(command.slice(intent.command.length), intent.effect);\n  if (!parsed || !parsed.operands.length) return null;\n  const { operands, flags } = parsed;\n  const effect = intent.effect;\n  const before = flags.some((flag) => effect.reuse_options.includes(flag)) && effect.before_reuse.length\n    ? effect.before_reuse : effect.before;\n  const templates = [...before, ...effect.prepare, ...effect.after];\n  const fill = (template, bindings) => bindings.reduce((text, [key, value]) => replaceAllLiteral(text, key, value), template);\n  let groups;\n  if (templates.some((template) => template.includes(PATH_PLACEHOLDER))) {\n    groups = operands.map((path) => (template) => fill(template, [[PATH_PLACEHOLDER, path]]));\n  } else {\n    if (operands.length < 2 || (operands.length > 2 && !effect.directory_targets)) return null;\n    const destination = operands.at(-1);\n    const sources = operands.slice(0, -1);\n    const collection = effect.directory_targets && (sources.length > 1\n      || sources.some(hasShellExpansion) || destination.replace(/^['\"]|['\"]$/gu, '').endsWith('/'));\n    if (collection) {\n      const setup = 'formal_ai_destination=' + destination + '; '\n        + 'if test -d \"$formal_ai_destination\" || [ \"${formal_ai_destination%/}\" != \"$formal_ai_destination\" ]; then '\n        + 'formal_ai_leaf=\"${formal_ai_source%/}\"; formal_ai_destination=\"${formal_ai_destination%/}/${formal_ai_leaf##*/}\"; fi; '\n        + 'formal_ai_parent=\"${formal_ai_destination%/*}\"; '\n        + 'if [ \"$formal_ai_parent\" = \"$formal_ai_destination\" ]; then formal_ai_parent=.; fi; ';\n      const bindings = [[SOURCE_PLACEHOLDER, '\"$formal_ai_source\"'],\n        [DESTINATION_PARENT_PLACEHOLDER, '\"$formal_ai_parent\"'], [DESTINATION_PLACEHOLDER, '\"$formal_ai_destination\"']];\n      groups = [(template) => 'for formal_ai_source in ' + sources.join(' ') + '; do ' + setup\n        + fill(template, bindings) + ' || exit $?; done'];\n    } else {\n      groups = [(template) => fill(template, [[SOURCE_PLACEHOLDER, sources[0]],\n        [DESTINATION_PARENT_PLACEHOLDER, parentOf(destination)], [DESTINATION_PLACEHOLDER, destination]])];\n    }\n  }\n  const expandTemplates = (items) => items.flatMap((template) => groups.map((bind) => bind(template)));\n  const steps = [...expandTemplates(before), ...expandTemplates(effect.prepare)];\n  const action = steps.length;\n  steps.push(command, ...expandTemplates(effect.after));\n  return { steps, action };\n}\n\n/** Preserve shell quoting while separating declared options from positional operands. */\nfunction effectOperands(text, effect) {\n  const words = shellWords(text);\n  if (words === null) return null;\n  const operands = [];\n  const flags = [];\n  let options = true;\n  for (let index = 0; index < words.length; index += 1) {\n    const raw = words[index];\n    const word = raw.replace(/^['\"]|['\"]$/gu, '');\n    if (options && word === '--') { options = false; continue; }\n    if (options && word.startsWith('-') && word !== '-') {\n      const valueOption = effect.value_options.find((option) => word === option || word.startsWith(option + '=')\n        || (!option.startsWith('--') && word.startsWith(option) && word.length > option.length));\n      if (valueOption) {\n        if (word === valueOption && ++index >= words.length) return null;\n        flags.push(valueOption);\n      } else if (effect.flags.includes(word)) flags.push(word);\n      else if (!word.startsWith('--') && [...word.slice(1)].every((letter) => effect.flags.includes('-' + letter))) {\n        flags.push(...[...word.slice(1)].map((letter) => '-' + letter));\n      } else return null;\n    } else operands.push(raw);\n  }\n  return { operands, flags };\n}\n\nfunction shellWords(text) {\n  const words = [];\n  let start = null;\n  let quote = null;\n  let escaped = false;\n  for (let index = 0; index < text.length; index += 1) {\n    const character = text[index];\n    if (start === null && /\\s/u.test(character)) continue;\n    if (start === null) start = index;\n    if (escaped) { escaped = false; continue; }\n    if (character === '\\\\' && quote !== \"'\") { escaped = true; continue; }\n    if (quote !== null) { if (character === quote) quote = null; continue; }\n    if (character === '\"' || character === \"'\") { quote = character; continue; }\n    if (/\\s/u.test(character)) { words.push(text.slice(start, index)); start = null; }\n    else if (';|&<>()`'.includes(character)) return null;\n  }\n  if (quote !== null || escaped) return null;\n  if (start !== null) words.push(text.slice(start));\n  return words;\n}\n\nfunction hasShellExpansion(word) {\n  let quote = null;\n  let escaped = false;\n  for (const character of word) {\n    if (escaped) { escaped = false; continue; }\n    if (character === '\\\\' && quote !== \"'\") { escaped = true; continue; }\n    if (quote !== null) { if (character === quote) quote = null; continue; }\n    if (character === '\"' || character === \"'\") quote = character;\n    else if ('*?[$'.includes(character)) return true;\n  }\n  return false;\n}\n\n","new_string":"function expandWith(command, vocab) {\n  const candidates = vocab.intents.filter((intent) => effectIsDeclared(intent.effect)\n    && command.startsWith(intent.command + ' '));\n  const intent = maxByKey(candidates, (candidate) => candidate.command.length);\n  if (!intent) return null;\n  const parsed = effectOperands(command.slice(intent.command.length), intent.effect);\n  if (!parsed || !parsed.operands.length) return null;\n  const { operands, flags } = parsed;\n  const effect = intent.effect;\n  const before = flags.some((flag) => effect.reuse_options.includes(flag)) && effect.before_reuse.length\n    ? effect.before_reuse : effect.before;\n  const templates = [...before, ...effect.prepare, ...effect.after];\n  const fill = (template, bindings) => bindings.reduce((text, [key, value]) => replaceAllLiteral(text, key, value), template);\n  let groups;\n  if (templates.some((template) => template.includes(PATH_PLACEHOLDER))) {\n    groups = operands.map((path) => (template) => fill(template, [[PATH_PLACEHOLDER, path]]));\n  } else {\n    if (operands.length < 2 || (operands.length > 2 && !effect.directory_targets)) return null;\n    const destination = operands.at(-1);\n    const sources = operands.slice(0, -1);\n    const collection = effect.directory_targets && (sources.length > 1\n      || sources.some(hasShellExpansion) || destination.replace(/^['\"]|['\"]$/gu, '').endsWith('/'));\n    if (collection) {\n      const setup = 'formal_ai_destination=' + destination + '; '\n        + 'if test -d \"$formal_ai_destination\" || [ \"${formal_ai_destination%/}\" != \"$formal_ai_destination\" ]; then '\n        + 'formal_ai_leaf=\"${formal_ai_source%/}\"; formal_ai_destination=\"${formal_ai_destination%/}/${formal_ai_leaf##*/}\"; fi; '\n        + 'formal_ai_parent=\"${formal_ai_destination%/*}\"; '\n        + 'if [ \"$formal_ai_parent\" = \"$formal_ai_destination\" ]; then formal_ai_parent=.; fi; ';\n      const bindings = [[SOURCE_PLACEHOLDER, '\"$formal_ai_source\"'],\n        [DESTINATION_PARENT_PLACEHOLDER, '\"$formal_ai_parent\"'], [DESTINATION_PLACEHOLDER, '\"$formal_ai_destination\"']];\n      groups = [(template) => 'for formal_ai_source in ' + sources.join(' ') + '; do ' + setup\n        + fill(template, bindings) + ' || exit $?; done'];\n    } else {\n      groups = [(template) => fill(template, [[SOURCE_PLACEHOLDER, sources[0]],\n        [DESTINATION_PARENT_PLACEHOLDER, parentOf(destination)], [DESTINATION_PLACEHOLDER, destination]])];\n    }\n  }\n  const expandTemplates = (items) => items.flatMap((template) => groups.map((bind) => bind(template)));\n  const steps = [...expandTemplates(before), ...expandTemplates(effect.prepare)];\n  const action = steps.length;\n  steps.push(command, ...expandTemplates(effect.after));\n  return { steps, action };\n}\n\n/** Preserve shell quoting while separating declared options from positional operands. */\nfunction effectOperands(text, effect) {\n  const words = shellWords(text);\n  if (words === null) return null;\n  const operands = [];\n  const flags = [];\n  let options = true;\n  for (let index = 0; index < words.length; index += 1) {\n    const raw = words[index];\n    const word = raw.replace(/^['\"]|['\"]$/gu, '');\n    if (options && word === '--') { options = false; continue; }\n    if (options && word.startsWith('-') && word !== '-') {\n      const valueOption = effect.value_options.find((option) => word === option || word.startsWith(option + '=')\n        || (!option.startsWith('--') && word.startsWith(option) && word.length > option.length));\n      if (valueOption) {\n        if (word === valueOption && ++index >= words.length) return null;\n        flags.push(valueOption);\n      } else if (effect.flags.includes(word)) flags.push(word);\n      else if (!word.startsWith('--') && [...word.slice(1)].every((letter) => effect.flags.includes('-' + letter))) {\n        flags.push(...[...word.slice(1)].map((letter) => '-' + letter));\n      } else return null;\n    } else operands.push(raw);\n  }\n  return { operands, flags };\n}\n\nfunction shellWords(text) {\n  const words = [];\n  let start = null;\n  let quote = null;\n  let escaped = false;\n  for (let index = 0; index < text.length; index += 1) {\n    const character = text[index];\n    if (start === null && /\\s/u.test(character)) continue;\n    if (start === null) start = index;\n    if (escaped) { escaped = false; continue; }\n    if (character === '\\\\' && quote !== \"'\") { escaped = true; continue; }\n    if (quote !== null) { if (character === quote) quote = null; continue; }\n    if (character === '\"' || character === \"'\") { quote = character; continue; }\n    if (/\\s/u.test(character)) { words.push(text.slice(start, index)); start = null; }\n    else if (';|&<>()`'.includes(character)) return null;\n  }\n  if (quote !== null || escaped) return null;\n  if (start !== null) words.push(text.slice(start));\n  return words;\n}\n\nfunction hasShellExpansion(word) {\n  let quote = null;\n  let escaped = false;\n  for (const character of word) {\n    if (escaped) { escaped = false; continue; }\n    if (character === '\\\\' && quote !== \"'\") { escaped = true; continue; }\n    if (quote !== null) { if (character === quote) quote = null; continue; }\n    if (character === '\"' || character === \"'\") quote = character;\n    else if ('*?[$'.includes(character)) return true;\n  }\n  return false;\n}\n\n","old":"function expandWith(command, vocab) {\n  const candidates = [];\n  for (const intent of vocab.intents) {\n    if (!effectIsDeclared(intent.effect)) continue;\n    if (!command.startsWith(intent.command)) continue;\n    const rest = command.slice(intent.command.length);\n    if (!rest.startsWith(' ')) continue;\n    candidates.push([intent.effect, splitWhitespace(rest)]);\n  }\n  const best = maxByKey(candidates, ([, operands]) => operands.length);\n  if (best === undefined) return null;\n  const [effect, operands] = best;\n  let substitutions;\n  if (operands.length === 1) substitutions = [[PATH_PLACEHOLDER, operands[0]]];\n  else if (operands.length === 2) {\n    const [source, destination] = operands;\n    substitutions = [[SOURCE_PLACEHOLDER, source], [DESTINATION_PARENT_PLACEHOLDER, parentOf(destination)], [DESTINATION_PLACEHOLDER, destination]];\n  } else return null;\n  const fill = (template) => substitutions.reduce((text, [placeholder, value]) => replaceAllLiteral(text, placeholder, value), template);\n  const steps = [...effect.before.map(fill), ...effect.prepare.map(fill)];\n  const action = steps.length;\n  steps.push(command);\n  steps.push(...effect.after.map(fill));\n  return { steps, action };\n}\n\n","oldString":"function expandWith(command, vocab) {\n  const candidates = [];\n  for (const intent of vocab.intents) {\n    if (!effectIsDeclared(intent.effect)) continue;\n    if (!command.startsWith(intent.command)) continue;\n    const rest = command.slice(intent.command.length);\n    if (!rest.startsWith(' ')) continue;\n    candidates.push([intent.effect, splitWhitespace(rest)]);\n  }\n  const best = maxByKey(candidates, ([, operands]) => operands.length);\n  if (best === undefined) return null;\n  const [effect, operands] = best;\n  let substitutions;\n  if (operands.length === 1) substitutions = [[PATH_PLACEHOLDER, operands[0]]];\n  else if (operands.length === 2) {\n    const [source, destination] = operands;\n    substitutions = [[SOURCE_PLACEHOLDER, source], [DESTINATION_PARENT_PLACEHOLDER, parentOf(destination)], [DESTINATION_PLACEHOLDER, destination]];\n  } else return null;\n  const fill = (template) => substitutions.reduce((text, [placeholder, value]) => replaceAllLiteral(text, placeholder, value), template);\n  const steps = [...effect.before.map(fill), ...effect.prepare.map(fill)];\n  const action = steps.length;\n  steps.push(command);\n  steps.push(...effect.after.map(fill));\n  return { steps, action };\n}\n\n","old_str":"function expandWith(command, vocab) {\n  const candidates = [];\n  for (const intent of vocab.intents) {\n    if (!effectIsDeclared(intent.effect)) continue;\n    if (!command.startsWith(intent.command)) continue;\n    const rest = command.slice(intent.command.length);\n    if (!rest.startsWith(' ')) continue;\n    candidates.push([intent.effect, splitWhitespace(rest)]);\n  }\n  const best = maxByKey(candidates, ([, operands]) => operands.length);\n  if (best === undefined) return null;\n  const [effect, operands] = best;\n  let substitutions;\n  if (operands.length === 1) substitutions = [[PATH_PLACEHOLDER, operands[0]]];\n  else if (operands.length === 2) {\n    const [source, destination] = operands;\n    substitutions = [[SOURCE_PLACEHOLDER, source], [DESTINATION_PARENT_PLACEHOLDER, parentOf(destination)], [DESTINATION_PLACEHOLDER, destination]];\n  } else return null;\n  const fill = (template) => substitutions.reduce((text, [placeholder, value]) => replaceAllLiteral(text, placeholder, value), template);\n  const steps = [...effect.before.map(fill), ...effect.prepare.map(fill)];\n  const action = steps.length;\n  steps.push(command);\n  steps.push(...effect.after.map(fill));\n  return { steps, action };\n}\n\n","old_string":"function expandWith(command, vocab) {\n  const candidates = [];\n  for (const intent of vocab.intents) {\n    if (!effectIsDeclared(intent.effect)) continue;\n    if (!command.startsWith(intent.command)) continue;\n    const rest = command.slice(intent.command.length);\n    if (!rest.startsWith(' ')) continue;\n    candidates.push([intent.effect, splitWhitespace(rest)]);\n  }\n  const best = maxByKey(candidates, ([, operands]) => operands.length);\n  if (best === undefined) return null;\n  const [effect, operands] = best;\n  let substitutions;\n  if (operands.length === 1) substitutions = [[PATH_PLACEHOLDER, operands[0]]];\n  else if (operands.length === 2) {\n    const [source, destination] = operands;\n    substitutions = [[SOURCE_PLACEHOLDER, source], [DESTINATION_PARENT_PLACEHOLDER, parentOf(destination)], [DESTINATION_PLACEHOLDER, destination]];\n  } else return null;\n  const fill = (template) => substitutions.reduce((text, [placeholder, value]) => replaceAllLiteral(text, placeholder, value), template);\n  const steps = [...effect.before.map(fill), ...effect.prepare.map(fill)];\n  const action = steps.length;\n  steps.push(command);\n  steps.push(...effect.after.map(fill));\n  return { steps, action };\n}\n\n","path":"js/agentic/mutating_action.mjs"}
+>> bash {"command":"sha256sum -- js/agentic/mutating_action.mjs"}
+   74dfaf225ec250ef1f9cf1472de5f4976b0ee5ec60379ef557e3951120e754e1  js/agentic/mutating_action.mjs
+   
+== answer ==
+Replaced `function expandWith(command, vocab) {
+  const candidates = [];
+  for (const intent of vocab.intents) {
+    if (!effectIsDeclared(intent.effect)) continue;
+    if (!command.startsWith(intent.command)) continue;
+    const rest = command.slice(intent.command.length);
+    if (!rest.startsWith(' ')) continue;
+    candidates.push([intent.effect, splitWhitespace(rest)]);
+  }
+  const best = maxByKey(candidates, ([, operands]) => operands.length);
+  if (best === undefined) return null;
+  const [effect, operands] = best;
+  let substitutions;
+  if (operands.length === 1) substitutions = [[PATH_PLACEHOLDER, operands[0]]];
+  else if (operands.length === 2) {
+    const [source, destination] = operands;
+    substitutions = [[SOURCE_PLACEHOLDER, source], [DESTINATION_PARENT_PLACEHOLDER, parentOf(destination)], [DESTINATION_PLACEHOLDER, destination]];
+  } else return null;
+  const fill = (template) => substitutions.reduce((text, [placeholder, value]) => replaceAllLiteral(text, placeholder, value), template);
+  const steps = [...effect.before.map(fill), ...effect.prepare.map(fill)];
+  const action = steps.length;
+  steps.push(command);
+  steps.push(...effect.after.map(fill));
+  return { steps, action };
+}
+
+` with ``function expandWith(command, vocab) {
+  const candidates = vocab.intents.filter((intent) => effectIsDeclared(intent.effect)
+    && command.startsWith(intent.command + ' '));
+  const intent = maxByKey(candidates, (candidate) => candidate.command.length);
+  if (!intent) return null;
+  const parsed = effectOperands(command.slice(intent.command.length), intent.effect);
+  if (!parsed || !parsed.operands.length) return null;
+  const { operands, flags } = parsed;
+  const effect = intent.effect;
+  const before = flags.some((flag) => effect.reuse_options.includes(flag)) && effect.before_reuse.length
+    ? effect.before_reuse : effect.before;
+  const templates = [...before, ...effect.prepare, ...effect.after];
+  const fill = (template, bindings) => bindings.reduce((text, [key, value]) => replaceAllLiteral(text, key, value), template);
+  let groups;
+  if (templates.some((template) => template.includes(PATH_PLACEHOLDER))) {
+    groups = operands.map((path) => (template) => fill(template, [[PATH_PLACEHOLDER, path]]));
+  } else {
+    if (operands.length < 2 || (operands.length > 2 && !effect.directory_targets)) return null;
+    const destination = operands.at(-1);
+    const sources = operands.slice(0, -1);
+    const collection = effect.directory_targets && (sources.length > 1
+      || sources.some(hasShellExpansion) || destination.replace(/^['"]|['"]$/gu, '').endsWith('/'));
+    if (collection) {
+      const setup = 'formal_ai_destination=' + destination + '; '
+        + 'if test -d "$formal_ai_destination" || [ "${formal_ai_destination%/}" != "$formal_ai_destination" ]; then '
+        + 'formal_ai_leaf="${formal_ai_source%/}"; formal_ai_destination="${formal_ai_destination%/}/${formal_ai_leaf##*/}"; fi; '
+        + 'formal_ai_parent="${formal_ai_destination%/*}"; '
+        + 'if [ "$formal_ai_parent" = "$formal_ai_destination" ]; then formal_ai_parent=.; fi; ';
+      const bindings = [[SOURCE_PLACEHOLDER, '"$formal_ai_source"'],
+        [DESTINATION_PARENT_PLACEHOLDER, '"$formal_ai_parent"'], [DESTINATION_PLACEHOLDER, '"$formal_ai_destination"']];
+      groups = [(template) => 'for formal_ai_source in ' + sources.join(' ') + '; do ' + setup
+        + fill(template, bindings) + ' || exit $?; done'];
+    } else {
+      groups = [(template) => fill(template, [[SOURCE_PLACEHOLDER, sources[0]],
+        [DESTINATION_PARENT_PLACEHOLDER, parentOf(destination)], [DESTINATION_PLACEHOLDER, destination]])];
+    }
+  }
+  const expandTemplates = (items) => items.flatMap((template) => groups.map((bind) => bind(template)));
+  const steps = [...expandTemplates(before), ...expandTemplates(effect.prepare)];
+  const action = steps.length;
+  steps.push(command, ...expandTemplates(effect.after));
+  return { steps, action };
+}
+
+/** Preserve shell quoting while separating declared options from positional operands. */
+function effectOperands(text, effect) {
+  const words = shellWords(text);
+  if (words === null) return null;
+  const operands = [];
+  const flags = [];
+  let options = true;
+  for (let index = 0; index < words.length; index += 1) {
+    const raw = words[index];
+    const word = raw.replace(/^['"]|['"]$/gu, '');
+    if (options && word === '--') { options = false; continue; }
+    if (options && word.startsWith('-') && word !== '-') {
+      const valueOption = effect.value_options.find((option) => word === option || word.startsWith(option + '=')
+        || (!option.startsWith('--') && word.startsWith(option) && word.length > option.length));
+      if (valueOption) {
+        if (word === valueOption && ++index >= words.length) return null;
+        flags.push(valueOption);
+      } else if (effect.flags.includes(word)) flags.push(word);
+      else if (!word.startsWith('--') && [...word.slice(1)].every((letter) => effect.flags.includes('-' + letter))) {
+        flags.push(...[...word.slice(1)].map((letter) => '-' + letter));
+      } else return null;
+    } else operands.push(raw);
+  }
+  return { operands, flags };
+}
+
+function shellWords(text) {
+  const words = [];
+  let start = null;
+  let quote = null;
+  let escaped = false;
+  for (let index = 0; index < text.length; index += 1) {
+    const character = text[index];
+    if (start === null && /\s/u.test(character)) continue;
+    if (start === null) start = index;
+    if (escaped) { escaped = false; continue; }
+    if (character === '\\' && quote !== "'") { escaped = true; continue; }
+    if (quote !== null) { if (character === quote) quote = null; continue; }
+    if (character === '"' || character === "'") { quote = character; continue; }
+    if (/\s/u.test(character)) { words.push(text.slice(start, index)); start = null; }
+    else if (';|&<>()`'.includes(character)) return null;
+  }
+  if (quote !== null || escaped) return null;
+  if (start !== null) words.push(text.slice(start));
+  return words;
+}
+
+function hasShellExpansion(word) {
+  let quote = null;
+  let escaped = false;
+  for (const character of word) {
+    if (escaped) { escaped = false; continue; }
+    if (character === '\\' && quote !== "'") { escaped = true; continue; }
+    if (quote !== null) { if (character === quote) quote = null; continue; }
+    if (character === '"' || character === "'") quote = character;
+    else if ('*?[$'.includes(character)) return true;
+  }
+  return false;
+}
+
+`` in `js/agentic/mutating_action.mjs` and observed the result.

@@ -1,0 +1,497 @@
+>> read {"filePath":"rust/tests/unit/ci-cd/ci_warning_audit.rs","file_path":"rust/tests/unit/ci-cd/ci_warning_audit.rs","path":"rust/tests/unit/ci-cd/ci_warning_audit.rs"}
+   <file>
+   00001| //! Regression coverage for issue #1012's full CI warning/error audit.
+   00002| 
+   00003| use std::fs;
+   00004| use std::process::Command;
+   00005| 
+   00006| use super::workflow_fixtures::{job_block, release_workflow, workflow_step_block};
+   00007| 
+   00008| fn repository_file(path: &str) -> String {
+   00009|     fs::read_to_string(format!("{}/../{path}", env!("CARGO_MANIFEST_DIR")))
+   00010|         .unwrap_or_else(|error| panic!("read {path}: {error}"))
+   00011|         .replace("\r\n", "\n")
+   00012| }
+   00013| 
+   00014| fn action_step<'a>(workflow: &'a str, action: &str) -> Vec<&'a str> {
+   00015|     workflow
+   00016|         .split("\n      - ")
+   00017|         .filter(|step| step.contains(&format!("uses: {action}")))
+   00018|         .collect()
+   00019| }
+   00020| 
+   00021| #[test]
+   00022| fn macos_core_tests_are_sliced_and_warn_before_the_job_timeout() {
+   00023|     let workflow = release_workflow();
+   00024|     let test = job_block(&workflow, "test");
+   00025|     let macos_call = job_block(&workflow, "macos-core-tests");
+   00026|     let macos = repository_file(".github/workflows/macos-core-tests.yml");
+   00027| 
+   00028|     assert_eq!(macos.matches("runs-on: macos-15-intel").count(), 2);
+   00029|     assert!(test.contains("test-suite: specification"));
+   00030|     assert!(macos_call.contains("uses: ./.github/workflows/macos-core-tests.yml"));
+   00031|     // Issue #1059: macOS runs only the tests whose behaviour can differ from
+   00032|     // Linux -- 139 of 2895, about ten seconds. Sharding that multiplies
+   00033|     // checkout, toolchain and a 916MB artifact download across machines for no
+   00034|     // gain, so one partition is the whole matrix now.
+   00035|     assert!(
+   00036|         macos.contains("- { partition: 1 }"),
+   00037|         "the macOS lane runs on one runner"
+   00038|     );
+   00039|     assert!(
+   00040|         !macos.contains("- { partition: 2 }"),
+   00041|         "sharding ten seconds of tests costs more than it saves"
+   00042|     );
+   00043|     assert_eq!(
+   00044|         macos
+   00045|             .matches("cargo nextest --manifest-path rust/Cargo.toml archive")
+   00046|             .count(),
+   00047|         1
+   00048|     );
+   00049|     assert!(
+   00050|         macos.contains("plan-test-partition.rs --macos-platform"),
+   00051|         "the lane selects platform-sensitive modules, not a slice of everything"
+   00052|     );
+   00053|     // Issue #1055 raised the archive cap 30m -> 35m so its budget could grow to
+   00054|     // 1400s for a cold rebuild while staying at 66% of the cap; issue #1017's
+   00055|     // gate allows 70%.
+   00056|     //
+   00057|     // Issue #1081 made this a floor too, and the cap moved to 45m: the doc
+   00058|     // tests in the same job stopped being unbudgeted, so the 70% share is now
+   00059|     // measured against 1400 + 400 = 1800s rather than 1400s alone. An equality
+   00060|     // here would have made giving a step its budget look like a regression.
+   00061|     let archive_cap: u64 = job_block(&macos, "build-archive")
+   00062|         .lines()
+   00063|         .find_map(|line| line.trim().strip_prefix("timeout-minutes:"))
+   00064|         .and_then(|value| value.trim().parse().ok())
+   00065|         .expect("the archive job declares a plain-number timeout-minutes");
+   00066|     assert!(
+   00067|         archive_cap >= 35,
+   00068|         "the archive job's cap is {archive_cap}m, but issue #1055's cold \
+   00069|          rebuild alone needs 35m of backstop behind it"
+   00070|     );
+   00071|     // Issue #1039 raised the slice cap from 15 to 25 minutes to make room for a
+   00072|     // retrying artifact download. `artifact_download_retry::the_download_retry_is_bounded_to
+   00073|     // _fit_the_job_cap` checks the arithmetic that justifies it, so this only
+   00074|     // pins that the cap is still declared as a plain number and never falls
+   00075|     // back below what that arithmetic needed.
+   00076|     //
+   00077|     // Issue #1081 made this a floor rather than an equality, and the cap moved
+   00078|     // to 30m the same day: an equality is what stops a backstop from growing,
+   00079|     // which is exactly what issue #1055 hit when the archive budget went 1200s
+   00080|     // -> 1400s. The cap grew so the job's two step budgets stay under the 70%
+   00081|     // share of it that `tests/unit/ci-cd/job_budget_fit.rs` enforces everywhere.
+   00082|     let slice_cap: u64 = job_block(&macos, "test-archive")
+   00083|         .lines()
+   00084|         .find_map(|line| line.trim().strip_prefix("timeout-minutes:"))
+   00085|         .and_then(|value| value.trim().parse().ok())
+   00086|         .expect("the slice job declares a plain-number timeout-minutes");
+   00087|     assert!(
+   00088|         slice_cap >= 25,
+   00089|         "the slice job's cap is {slice_cap}m, but issue #1039's download retry \
+   00090|          alone needs 25m of backstop behind it"
+   00091|     );
+   00092|     assert!(!macos.contains("2100"));
+   00093|     assert!(macos.contains("taiki-e/install-action@nextest"));
+   00094|     assert!(macos.contains("scripts/run-with-budget-warning.sh"));
+   00095| }
+   00096| 
+   00097| /// The issue #936 parity test invokes a WASM-targeted `rustc` at runtime. The
+   00098| /// nextest archive does not include that target's standard library, so each
+   00099| /// independent slice runner must install it.
+   00100| #[test]
+   00101| fn macos_core_slices_install_wasm_target_for_runtime_compiler_tests() {
+   00102|     let macos = repository_file(".github/workflows/macos-core-tests.yml");
+   00103|     let test_archive = job_block(&macos, "test-archive");
+   00104|     let setup_rust = workflow_step_block(test_archive, "Setup Rust");
+   00105| 
+   00106|     assert!(
+   00107|         setup_rust.contains("targets: wasm32-unknown-unknown"),
+   00108|         "each macOS slice must install the target used by runtime compiler tests"
+   00109|     );
+   00110| }
+   00111| 
+   00112| #[test]
+   00113| fn budget_warning_is_live_instead_of_post_process() {
+   00114|     let script = format!(
+   00115|         "{}/../scripts/run-with-budget-warning.sh",
+   00116|         env!("CARGO_MANIFEST_DIR")
+   00117|     );
+   00118|     // Issue #1017 made the wrapper enforce the budget it warns about, so the
+   00119|     // command has to stay inside it for this case to be about the warning
+   00120|     // alone: warn at 30% of 4s, finish at 2s. Enforcement has its own coverage
+   00121|     // in `step_budgets_within_job_clocks::budget_wrapper_terminates_the_overrun_and_reports_it_as_an_error`.
+   00122|     let output = Command::new("bash")
+   00123|         .arg(script)
+   00124|         .env("TEST_WARN_RATIO_PERCENT", "30")
+   00125|         .args(["4", "Slow regression test", "bash", "-c", "sleep 2"])
+   00126|         .output()
+   00127|         .expect("run budget warning wrapper");
+   00128| 
+   00129|     assert!(output.status.success());
+   00130|     let stderr = String::from_utf8_lossy(&output.stderr);
+   00131|     assert!(
+   00132|         stderr.contains("::warning title=Slow regression test is approaching its timeout::"),
+   00133|         "warning should be emitted while the wrapped command is still alive: {stderr}"
+   00134|     );
+   00135| }
+   00136| 
+   00137| #[test]
+   00138| fn download_artifact_deprecation_is_suppressed_only_on_affected_steps() {
+   00139|     // Issue #1039 replaced the macOS slice's `download-artifact` step with
+   00140|     // `scripts/download-artifact-with-retry.sh`, so that workflow no longer
+   00141|     // uses the action at all and is not listed here. The rule this test pins is
+   00142|     // "every v8 step suppresses DEP0005", not "every workflow has a v8 step" --
+   00143|     // a workflow that stops using the action cannot regress the warning.
+   00144|     // `release.yml` no longer names the action directly: issue #1051 moved its
+   00145|     // downloads into a composite action, which the sweep below still covers.
+   00146|     for path in [
+   00147|         ".github/workflows/agentic-cli-matrix.yml",
+   00148|         ".github/workflows/desktop-release.yml",
+   00149|     ] {
+   00150|         let workflow = repository_file(path);
+   00151|         let steps = action_step(&workflow, "actions/download-artifact@v8");
+   00152|         assert!(
+   00153|             !steps.is_empty(),
+   00154|             "{path} should exercise download-artifact v8"
+   00155|         );
+   00156|         for step in steps {
+   00157|             assert!(
+   00158|                 step.contains("NODE_OPTIONS: --disable-warning=DEP0005"),
+   00159|                 "{path} has an unsuppressed download-artifact v8 step:\n{step}"
+   00160|             );
+   00161|         }
+   00162|     }
+   00163| 
+   00164|     // The rule still applies to every *other* workflow, including the ones not
+   00165|     // listed above. Dropping macos-core-tests.yml from the list must not create
+   00166|     // a blind spot if a v8 step comes back to it later.
+   00167|     for entry in fs::read_dir(format!(
+   00168|         "{}/../.github/workflows",
+   00169|         env!("CARGO_MANIFEST_DIR")
+   00170|     ))
+   00171|     .expect("read .github/workflows")
+   00172|     {
+   00173|         let path = entry.expect("read a workflow").path();
+   00174|         if path.extension().is_none_or(|extension| extension != "yml") {
+   00175|             continue;
+   00176|         }
+   00177|         let workflow = fs::read_to_string(&path)
+   00178|             .unwrap_or_else(|error| panic!("failed to read {}: {error}", path.display()))
+   00179|             .replace("\r\n", "\n");
+   00180|         for step in action_step(&workflow, "actions/download-artifact@v8") {
+   00181|             assert!(
+   00182|                 step.contains("NODE_OPTIONS: --disable-warning=DEP0005"),
+   00183|                 "{} has an unsuppressed download-artifact v8 step:\n{step}",
+   00184|                 path.display()
+   00185|             );
+   00186|         }
+   00187|     }
+   00188| }
+   00189| 
+   00190| #[test]
+   00191| fn agentic_matrix_consumes_search_output_and_tolerates_closed_tui_input() {
+   00192|     let library = repository_file("experiments/agentic_cli_matrix/lib.sh");
+   00193| 
+   00194|     for old in ["grep -qF", "grep -qiF", "grep -qiE"] {
+   00195|         assert!(
+   00196|             !library.contains(old),
+   00197|             "{old} closes the process substitution early and makes sed report a broken pipe"
+   00198|         );
+   00199|     }
+   00200|     for search in ["grep -F", "grep -iF", "grep -iE"] {
+   00201|         assert!(library.contains(&format!("{search} -- \"$2\" > /dev/null < <(")));
+   00202|     }
+   00203|     assert!(library.contains("printf '\\r' 2> /dev/null || return 0"));
+   00204|     assert!(library.contains("printf '%b' \"${step#*:}\" 2> /dev/null || return 0"));
+   00205| }
+   00206| 
+   00207| #[test]
+   00208| fn third_party_cli_noise_has_narrow_documented_mitigations() {
+   00209|     let installer = repository_file("experiments/agentic_cli_matrix/install_client.sh");
+   00210|     assert!(installer.contains("NODE_OPTIONS=--disable-warning=DEP0169"));
+   00211|     assert!(installer.contains("microsoft/vscode/issues/319867"));
+   00212| 
+   00213|     let gemini = repository_file("experiments/agent_cli_e2e/run_issue_907.sh");
+   00214|     assert!(gemini.contains("\"model\":{\"name\":\"formal-ai\"}"));
+   00215|     assert!(gemini.contains("\"tools\":{\"useRipgrep\":false}"));
+   00216|     assert!(gemini.contains("export TERM=xterm-256color"));
+   00217| }
+   00218| 
+   00219| #[test]
+   00220| fn stock_rust_workflow_uses_a_quiet_dependency_probe_and_installed_path() {
+   00221|     let workflow = repository_file(".github/workflows/stock-rust-install.yml");
+   00222| 
+   00223|     assert!(!workflow.contains("cargo tree --locked -i openssl-sys"));
+   00224|     assert!(workflow.contains(
+   00225|         "cargo tree --manifest-path rust/Cargo.toml --locked --prefix none --format '{p}'"
+   00226|     ));
+   00227|     assert!(workflow.contains("> /tmp/formal-ai-dependency-tree.txt"));
+   00228|     assert!(!workflow.contains("<<<"));
+   00229|     assert!(workflow.contains("CARGO_INSTALL_ROOT: /tmp/formal-ai-install"));
+   00230|     assert!(workflow.contains("export PATH=\"$CARGO_INSTALL_ROOT/bin:$PATH\""));
+   00231|     assert!(workflow.contains("formal-ai --version"));
+   00232| }
+   00233| 
+   00234| #[test]
+   00235| fn box_language_matrix_reuses_one_release_binary() {
+   00236|     let workflow = release_workflow();
+   00237|     let build = job_block(&workflow, "build-artifacts");
+   00238|     let matrix = job_block(&workflow, "box-language-projects");
+   00239| 
+   00240|     // Issue #1055 builds the binary and the test executables in one command.
+   00241|     assert!(
+   00242|         build.contains(
+   00243|             "cargo test --manifest-path rust/Cargo.toml --release --no-run --bins --tests"
+   00244|         )
+   00245|     );
+   00246|     assert!(build.contains("actions/upload-artifact@v7"));
+   00247|     assert!(matrix.contains("needs: [detect-changes, build-artifacts]"));
+   00248|     // Issue #1051 moved the download into `.github/actions/download-formal-ai-binary`
+   00249|     // so the four consumers share one definition; what matters here is still
+   00250|     // that the matrix *downloads* the binary rather than rebuilding it.
+   00251|     assert!(matrix.contains("uses: ./.github/actions/download-formal-ai-binary"));
+   00252|     assert!(!matrix.contains("actions/cache@v5"));
+   00253|     assert!(!matrix.contains("cargo test --release --no-run"));
+   00254| }
+   00255| 
+   00256| #[test]
+   00257| fn sccache_backend_diagnostics_are_available_but_off_by_default() {
+   00258|     let workflow = release_workflow();
+   00259|     assert!(workflow.contains("FORMAL_AI_CI_VERBOSE: ${{ vars.FORMAL_AI_CI_VERBOSE || 'false' }}"));
+   00260| 
+   00261|     let setup = repository_file(".github/actions/setup-sccache/action.yml");
+   00262|     assert!(setup.contains("if: env.FORMAL_AI_CI_VERBOSE == 'true'"));
+   00263|     assert!(setup.contains("SCCACHE_LOG=debug"));
+   00264|     assert!(setup.contains("SCCACHE_LOG_MILLIS=1"));
+   00265| }
+   00266| 
+   00267| #[test]
+   00268| fn audited_warning_band_sources_stay_below_their_limits() {
+   00269|     let solver_lines = repository_file("rust/src/solver.rs").lines().count();
+   00270|     assert!(
+   00271|         solver_lines <= 900,
+   00272|         "src/solver.rs has {solver_lines} lines; keep it below the 900-line warning band"
+   00273|     );
+   00274|     let workflow_lines = release_workflow().lines().count();
+   00275|     // Issue #1081 (D6) returned this file to the ordinary 1500-line warning
+   00276|     // band by extracting `.github/workflows/agent-cli-e2e.yml`. The reasoning
+   00277|     // is written out once, beside the same number in
+   00278|     // `macos_test_partitioning::warning_band_files_are_small_and_split_responses_cover_the_registry`.
+   00279|     assert!(
+   00280|         workflow_lines <= 1_500,
+   00281|         ".github/workflows/release.yml has {workflow_lines} lines"
+   00282|     );
+   00283| }
+   00284| 
+   00285| #[test]
+   00286| fn solver_configuration_keeps_every_registered_response_language() {
+   00287|     let registered_languages = formal_ai::language::registered_languages();
+   00288|     assert!(
+   00289|         !registered_languages.is_empty(),
+   00290|         "the response-language registry must not be empty"
+   00291|     );
+   00292| 
+   00293|     for language in registered_languages {
+   00294|         let config = formal_ai::SolverConfig {
+   00295|             forced_response_language: Some(language.slug()),
+   00296|             ..formal_ai::SolverConfig::default()
+   00297|         };
+   00298|         assert_eq!(config.forced_response_language, Some(language.slug()));
+   00299|     }
+   00300| }
+   00301| 
+   00302| #[test]
+   00303| fn formal_ai_and_real_agent_cli_authored_two_of_nine_requirement_leaves() {
+   00304|     const FORMAL_AI_AUTHORED_LEAVES: usize = 2;
+   00305|     const SMALLEST_REQUIREMENT_LEAVES: usize = 9;
+   00306|     let cases = [
+   00307|         (
+   00308|             "Create file ci-diagnostic-audit-invariant.md containing CI diagnostics are classified, actionable causes are fixed, and uncertain cache backends expose opt-in tracing",
+   00309|             "CI diagnostics are classified, actionable causes are fixed, and uncertain cache backends expose opt-in tracing",
+   00310|             "ci-diagnostic-audit-invariant.md",
+   00311|             "ses_ffb20640bffeX0VahcuKR9bfXj",
+   00312|             "diagnostic-audit",
+   00313|         ),
+   00314|         (
+   00315|             "Create file ci-template-comparison-invariant.md containing Template audits compare immutable workflow and script trees and report shared defects upstream",
+   00316|             "Template audits compare immutable workflow and script trees and report shared defects upstream",
+   00317|             "ci-template-comparison-invariant.md",
+   00318|             "ses_ffb1ee9b4ffedIt26xRyh8FEDy",
+   00319|             "template-comparison",
+   00320|         ),
+   00321|     ];
+   00322| 
+   00323|     const {
+   00324|         assert!(FORMAL_AI_AUTHORED_LEAVES * 100 / SMALLEST_REQUIREMENT_LEAVES >= 20);
+   00325|     }
+   00326|     for (task, expected_leaf, target, native_session, evidence_dir) in cases {
+   00327|         let base = format!("docs/case-studies/issue-1012/self-hosting-authorship/{evidence_dir}");
+   00328|         assert_eq!(repository_file(&format!("{base}/{target}")), expected_leaf);
+   00329|         assert!(repository_file(&format!("{base}/agent-cli.log")).contains(native_session));
+   00330| 
+   00331|         let server_log = repository_file(&format!("{base}/formal-ai.log"));
+   00332|         for marker in ["planned ToolCalls", "tool=write", "planned Final", target] {
+   00333|             assert!(
+   00334|                 server_log.contains(marker),
+   00335|                 "missing {marker:?} from {evidence_dir} server trace"
+   00336|             );
+   00337|         }
+   00338| 
+   00339|         let fresh = formal_ai::agentic_coding::run_agentic_task(task).expect("replay agent task");
+   00340|         let rendered = format!(
+   00341|             "{}\n",
+   00342|             serde_json::to_string_pretty(&fresh.session_json()).expect("render session JSON")
+   00343|         );
+   00344|         assert_eq!(repository_file(&format!("{base}/session.json")), rendered);
+   00345| 
+   00346|         let written_leaf = fresh
+   00347|             .steps
+   00348|             .iter()
+   00349|             .find(|step| {
+   00350|                 step.tool == "write_file"
+   00351|                     && serde_json::from_str::<serde_json::Value>(&step.arguments)
+   00352|                         .is_ok_and(|arguments| arguments["path"] == target)
+   00353|             })
+   00354|             .expect("Agent CLI writes the claimed leaf");
+   00355|         let arguments: serde_json::Value =
+   00356|             serde_json::from_str(&written_leaf.arguments).expect("write arguments JSON");
+   00357|         assert_eq!(arguments["content"], expected_leaf);
+   00358|     }
+   00359| }
+   00360| 
+   00361| /// The canonical archive of issue #1012 / pull request #1013.
+   00362| const ARCHIVE: &str = "dev/log/issues/1012/pulls/1013";
+   00363| 
+   00364| fn archive_entries(directory: &str, prefix: &str, suffix: &str) -> usize {
+   00365|     let path = format!("{}/../{ARCHIVE}/{directory}", env!("CARGO_MANIFEST_DIR"));
+   00366|     fs::read_dir(&path)
+   00367|         .unwrap_or_else(|error| panic!("read {path}: {error}"))
+   00368|         .filter_map(Result::ok)
+   00369|         .filter(|entry| {
+   00370|             entry
+   00371|                 .file_name()
+   00372|                 .to_str()
+   00373|                 .is_some_and(|name| name.starts_with(prefix) && name.ends_with(suffix))
+   00374|         })
+   00375|         .count()
+   00376| }
+   00377| 
+   00378| /// R1012-1: all ten issue-listed runs are archived.
+   00379| ///
+   00380| /// Each run keeps its metadata, its full log and its stderr, and the job and
+   00381| /// annotation listings sit beside them, so the audit re-derives without
+   00382| /// GitHub access.
+   00383| #[test]
+   00384| fn every_issue_listed_run_has_preserved_evidence() {
+   00385|     assert_eq!(archive_entries("raw-data", "main-run-", ".json"), 10);
+   00386|     assert_eq!(archive_entries("ci-logs", "main-run-", ".log"), 10);
+   00387|     assert_eq!(archive_entries("ci-logs", "main-run-", ".stderr"), 10);
+   00388|     assert!(archive_entries("raw-data/main-run-jobs", "", "") >= 10);
+   00389|     assert!(archive_entries("raw-data/check-annotations", "", ".json") > 0);
+   00390|     assert!(archive_entries("ci-logs/initial-pr", "", "") > 0);
+   00391|     assert!(archive_entries("ci-logs/final", "", "") > 0);
+   00392| }
+   00393| 
+   00394| /// R1012-4: the comparison is against complete, pinned template trees.
+   00395| ///
+   00396| /// The three pipeline templates and Hive Mind are archived at the commits the
+   00397| /// requirement row names, as file trees and as source snapshots.
+   00398| #[test]
+   00399| fn template_trees_are_archived_at_the_named_commits() {
+   00400|     for (repository, commit) in [
+   00401|         ("rust-ai-driven-development-pipeline-template", "56aa18a"),
+   00402|         ("js-ai-driven-development-pipeline-template", "77b8f1b"),
+   00403|         ("python-ai-driven-development-pipeline-template", "c3a2eb2"),
+   00404|         ("hive-mind", "44372fd"),
+   00405|     ] {
+   00406|         let head = repository_file(&format!("{ARCHIVE}/raw-data/{repository}-head.json"));
+   00407|         assert!(
+   00408|             head.contains(&format!("\"sha\":\"{commit}")),
+   00409|             "{repository} must be archived at {commit}"
+   00410|         );
+   00411|         assert!(
+   00412|             !repository_file(&format!("{ARCHIVE}/raw-data/{repository}-tree.json")).is_empty(),
+   00413|             "{repository} must keep its complete file tree"
+   00414|         );
+   00415|         if repository != "hive-mind" {
+   00416|             assert!(
+   00417|                 archive_entries(&format!("references/templates/{repository}"), "", "") > 0,
+   00418|                 "{repository} must keep its source snapshot"
+   00419|             );
+   00420|         }
+   00421|     }
+   00422|     assert_ne!(
+   00423|         repository_file(&format!("{ARCHIVE}/raw-data/CI-CD-BEST-PRACTICES.md")),
+   00424|         ""
+   00425|     );
+   00426| }
+   00427| 
+   00428| /// R1012-5 and R1012-7: the audit record names its reports and its analysis.
+   00429| ///
+   00430| /// The README carries the timeline, the requirement inventory, the
+   00431| /// finding-by-finding root causes, the alternatives, the research and the two
+   00432| /// template reports with the canonical upstream issues they defer to.
+   00433| #[test]
+   00434| fn audit_record_carries_its_analysis_and_upstream_reports() {
+   00435|     let record = repository_file(&format!("{ARCHIVE}/README.md"));
+   00436|     for section in [
+   00437|         "## Timeline reconstructed from independent timestamps",
+   00438|         "## Requirements inventory",
+   00439|         "## Finding-by-finding root cause analysis",
+   00440|         "## Complete template comparison",
+   00441|         "## Online research and reusable components",
+   00442|         "## Alternatives and solution plans",
+   00443|         "## Upstream reports",
+   00444|         "## Tests and verification record",
+   00445|     ] {
+   00446|         assert!(record.contains(section), "missing {section:?}");
+   00447|     }
+   00448|     for report in [
+   00449|         "https://github.com/link-foundation/rust-ai-driven-development-pipeline-template/issues/131",
+   00450|         "https://github.com/link-foundation/js-ai-driven-development-pipeline-template/issues/133",
+   00451|         "https://github.com/actions/download-artifact/issues/484",
+   00452|         "https://github.com/microsoft/vscode/issues/319867",
+   00453|     ] {
+   00454|         assert!(record.contains(report), "missing upstream report {report}");
+   00455|     }
+   00456| }
+   00457| 
+   00458| /// R1012-6 and R1012-9: tests came first, and one pull request delivered it.
+   00459| ///
+   00460| /// The red log records the eight invariants failing before the fix and the
+   00461| /// focused green log the nine passing after it; the case studies name the
+   00462| /// issue and pull request #1013.
+   00463| #[test]
+   00464| fn tests_first_record_and_delivery_documents_are_retained() {
+   00465|     let red = repository_file(&format!("{ARCHIVE}/local-tests/regression-red.log"));
+   00466|     assert!(red.contains("test result: FAILED. 0 passed; 8 failed"));
+   00467|     let green = repository_file(&format!(
+   00468|         "{ARCHIVE}/local-tests/regression-focused-green.log"
+   00469|     ));
+   00470|     assert!(green.contains("test result: ok. 9 passed; 0 failed"));
+   00471|     for path in [
+   00472|         "dev/log/issues/1012/pulls/1013/README.md",
+   00473|         "docs/case-studies/issue-1012/README.md",
+   00474|         "docs/case-studies/pull-request-1013/README.md",
+   00475|     ] {
+   00476|         let document = repository_file(path);
+   00477|         for marker in ["#1012", "#1013"] {
+   00478|             assert!(document.contains(marker), "{path} is missing {marker}");
+   00479|         }
+   00480|     }
+   00481| }
+   00482| 
+   
+   (End of file - total 482 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/ci-cd/ci_warning_audit.rs","file_path":"rust/tests/unit/ci-cd/ci_warning_audit.rs","new":"// The planner now appends its event, preserving earlier session evidence.\n        // Archived sessions retain their original wording; every other byte agrees.\n        let archived = repository_file(&format!(\"{base}/session.json\"))\n            .replace(\"write the composed plan\", \"append the composed plan\");\n        assert_eq!(archived, rendered);","newString":"// The planner now appends its event, preserving earlier session evidence.\n        // Archived sessions retain their original wording; every other byte agrees.\n        let archived = repository_file(&format!(\"{base}/session.json\"))\n            .replace(\"write the composed plan\", \"append the composed plan\");\n        assert_eq!(archived, rendered);","new_str":"// The planner now appends its event, preserving earlier session evidence.\n        // Archived sessions retain their original wording; every other byte agrees.\n        let archived = repository_file(&format!(\"{base}/session.json\"))\n            .replace(\"write the composed plan\", \"append the composed plan\");\n        assert_eq!(archived, rendered);","new_string":"// The planner now appends its event, preserving earlier session evidence.\n        // Archived sessions retain their original wording; every other byte agrees.\n        let archived = repository_file(&format!(\"{base}/session.json\"))\n            .replace(\"write the composed plan\", \"append the composed plan\");\n        assert_eq!(archived, rendered);","old":"assert_eq!(repository_file(&format!(\"{base}/session.json\")), rendered);","oldString":"assert_eq!(repository_file(&format!(\"{base}/session.json\")), rendered);","old_str":"assert_eq!(repository_file(&format!(\"{base}/session.json\")), rendered);","old_string":"assert_eq!(repository_file(&format!(\"{base}/session.json\")), rendered);","path":"rust/tests/unit/ci-cd/ci_warning_audit.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/ci-cd/ci_warning_audit.rs"}
+   738d16f46ea70bbb514a121c7836440f12ed40edc181e04f03bdfa612869e249  rust/tests/unit/ci-cd/ci_warning_audit.rs
+   
+== answer ==
+Replaced `assert_eq!(repository_file(&format!("{base}/session.json")), rendered);` with `// The planner now appends its event, preserving earlier session evidence.
+        // Archived sessions retain their original wording; every other byte agrees.
+        let archived = repository_file(&format!("{base}/session.json"))
+            .replace("write the composed plan", "append the composed plan");
+        assert_eq!(archived, rendered);` in `rust/tests/unit/ci-cd/ci_warning_audit.rs` and observed the result.

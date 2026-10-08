@@ -1,0 +1,3 @@
+>> write {"content":"What should the test in `solver_formalization.mjs` check: which call, and what result? The request states no expected result, so nothing was written or run. Say what the function should return for which inputs.\n","filePath":"repair-summary.mjs","file_path":"repair-summary.mjs","path":"repair-summary.mjs"}
+== answer ==
+What should the test in `solver_formalization.mjs` check: which call, and what result? The request states no expected result, so nothing was written or run. Say what the function should return for which inputs.

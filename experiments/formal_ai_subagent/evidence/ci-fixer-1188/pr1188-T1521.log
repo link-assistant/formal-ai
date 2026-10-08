@@ -1,0 +1,991 @@
+>> read {"filePath":"rust/tests/unit/pull_request_1188_teach_f.rs","file_path":"rust/tests/unit/pull_request_1188_teach_f.rs","path":"rust/tests/unit/pull_request_1188_teach_f.rs"}
+   <file>
+   00001| //! PR #1188 TEACH-F: the open gaps of `experiments/formal_ai_subagent/gaps.md`
+   00002| //! taught to Formal AI (ledger rows T210-T229, T290-T299, T360-T369). Twin of
+   00003| //! `rust/tests/web/pull-request-1188-teach-f.test.mjs`.
+   00004| 
+   00005| use std::collections::BTreeMap;
+   00006| 
+   00007| use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
+   00008| use formal_ai::normal_markov::{quote_fault, quoted_segment_spans};
+   00009| use formal_ai::protocol::{ChatMessage, ToolCall};
+   00010| use formal_ai::source_fetch::sha256_hex;
+   00011| 
+   00012| const TOOLS: [&str; 7] = ["bash", "edit", "glob", "grep", "list", "read", "write"];
+   00013| 
+   00014| /// One driven session: the workspace afterwards, the bash commands and tools
+   00015| /// it ran, and its final answer.
+   00016| pub struct Run {
+   00017|     pub(crate) files: BTreeMap<String, String>,
+   00018|     pub(crate) tools: Vec<String>,
+   00019|     pub(crate) commands: Vec<String>,
+   00020|     pub(crate) answer: Option<String>,
+   00021| }
+   00022| 
+   00023| fn path_of(arguments: &serde_json::Value) -> String {
+   00024|     ["filePath", "file_path", "path"]
+   00025|         .iter()
+   00026|         .find_map(|key| arguments[key].as_str())
+   00027|         .unwrap_or_default()
+   00028|         .to_owned()
+   00029| }
+   00030| 
+   00031| /// The Agent CLI's tools over an in-memory workspace; bash knows
+   00032| /// `sha256sum --`, `cat` and a passing `node --test`.
+   00033| fn execute(
+   00034|     files: &mut BTreeMap<String, String>,
+   00035|     tool: &str,
+   00036|     arguments: &serde_json::Value,
+   00037| ) -> String {
+   00038|     match tool {
+   00039|         "read" => files
+   00040|             .get(&path_of(arguments))
+   00041|             .cloned()
+   00042|             .unwrap_or_else(|| format!("Error: File not found: {}", path_of(arguments))),
+   00043|         "write" => {
+   00044|             let content = arguments["content"].as_str().unwrap_or_default().to_owned();
+   00045|             files.insert(path_of(arguments), content);
+   00046|             String::new()
+   00047|         }
+   00048|         "edit" => {
+   00049|             let path = path_of(arguments);
+   00050|             let text = files.get(&path).cloned().unwrap_or_default();
+   00051|             let old = arguments["oldString"].as_str().unwrap_or_default();
+   00052|             let new = arguments["newString"].as_str().unwrap_or_default();
+   00053|             if text.matches(old).count() != 1 {
+   00054|                 return "Error: oldString not found in content".to_owned();
+   00055|             }
+   00056|             files.insert(path, text.replacen(old, new, 1));
+   00057|             String::new()
+   00058|         }
+   00059|         "bash" => {
+   00060|             let command = arguments["command"].as_str().unwrap_or_default();
+   00061|             if let Some(path) = command.strip_prefix("sha256sum -- ") {
+   00062|                 let text = files.get(path).cloned().unwrap_or_default();
+   00063|                 return format!("{}  {path}\n", sha256_hex(text.as_bytes()));
+   00064|             }
+   00065|             // The file operations a copy recipe runs (G82).
+   00066|             if let Some(path) = command.strip_prefix("test -e ") {
+   00067|                 return if files.contains_key(path) {
+   00068|                     String::new()
+   00069|                 } else {
+   00070|                     "Output: \nError: \nExit Code: 1".to_owned()
+   00071|                 };
+   00072|             }
+   00073|             if let Some(path) = command.strip_prefix("test ! -e ") {
+   00074|                 return if files.contains_key(path) {
+   00075|                     "Output: \nError: \nExit Code: 1".to_owned()
+   00076|                 } else {
+   00077|                     String::new()
+   00078|                 };
+   00079|             }
+   00080|             if command == "mkdir -p -- ." {
+   00081|                 return String::new();
+   00082|             }
+   00083|             if let Some((from, to)) = command
+   00084|                 .strip_prefix("cp ")
+   00085|                 .and_then(|rest| rest.split_once(' '))
+   00086|             {
+   00087|                 let text = files.get(from).cloned().unwrap_or_default();
+   00088|                 files.insert(to.to_owned(), text);
+   00089|                 return String::new();
+   00090|             }
+   00091|             // A replace of every occurrence of a plain word (G84).
+   00092|             if let Some((old, new, path)) = perl_replace(command) {
+   00093|                 let text = files.get(path).cloned().unwrap_or_default();
+   00094|                 files.insert(path.to_owned(), text.replace(old, new));
+   00095|                 return String::new();
+   00096|             }
+   00097|             // A suite slower than the driver's timeout comes back killed (G77).
+   00098|             if command == "node --test slow.test.mjs" {
+   00099|                 return "Output: TAP version 13\nError: \nSignal: SIGTERM\nTimeout: 60000 ms"
+   00100|                     .to_owned();
+   00101|             }
+   00102|             if command.starts_with("node --test ") {
+   00103|                 return "# tests 1\n# pass 1\n# fail 0\n".to_owned();
+   00104|             }
+   00105|             command.strip_prefix("cat ").map_or_else(
+   00106|                 || format!("Error: {command} is not simulated"),
+   00107|                 |path| files.get(path).cloned().unwrap_or_default(),
+   00108|             )
+   00109|         }
+   00110|         _ => format!("Error: {tool} is not simulated"),
+   00111|     }
+   00112| }
+   00113| 
+   00114| /// The old word, new word and path of `perl -pi -e 's/OLD/NEW/g' -- PATH`.
+   00115| fn perl_replace(command: &str) -> Option<(&str, &str, &str)> {
+   00116|     let (expression, path) = command
+   00117|         .strip_prefix("perl -pi -e 's/")?
+   00118|         .split_once("/g' -- ")?;
+   00119|     let (old, new) = expression.split_once('/')?;
+   00120|     let word = |text: &str| !text.is_empty() && text.chars().all(char::is_alphanumeric);
+   00121|     (word(old) && word(new)).then_some((old, new, path))
+   00122| }
+   00123| 
+   00124| pub(crate) fn drive(prompt: &str, workspace: &[(&str, &str)]) -> Run {
+   00125|     let mut run = Run {
+   00126|         files: workspace
+   00127|             .iter()
+   00128|             .map(|(path, text)| ((*path).to_owned(), (*text).to_owned()))
+   00129|             .collect(),
+   00130|         tools: Vec::new(),
+   00131|         commands: Vec::new(),
+   00132|         answer: None,
+   00133|     };
+   00134|     let mut messages = vec![ChatMessage::user(prompt)];
+   00135|     for index in 0..16 {
+   00136|         let calls = match plan_chat_step(&messages, &TOOLS) {
+   00137|             Some(AgenticPlan::ToolCalls(calls)) => calls,
+   00138|             Some(AgenticPlan::Final(text)) => {
+   00139|                 run.answer = Some(text);
+   00140|                 break;
+   00141|             }
+   00142|             None => break,
+   00143|         };
+   00144|         let call = calls[0].clone();
+   00145|         let arguments: serde_json::Value =
+   00146|             serde_json::from_str(&call.arguments).expect("tool arguments are JSON");
+   00147|         if call.tool == "bash" {
+   00148|             run.commands
+   00149|                 .push(arguments["command"].as_str().unwrap_or_default().to_owned());
+   00150|         }
+   00151|         run.tools.push(call.tool.clone());
+   00152|         let result = execute(&mut run.files, &call.tool, &arguments);
+   00153|         let id = format!("call_{index}");
+   00154|         messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+   00155|             id.clone(),
+   00156|             call.tool.clone(),
+   00157|             call.arguments.clone(),
+   00158|         )]));
+   00159|         messages.push(ChatMessage::tool_result(id, call.tool.clone(), result));
+   00160|     }
+   00161|     run
+   00162| }
+   00163| 
+   00164| const LEDGER: &str = "| T208 | a | b |\n| T209 | c | d |\n";
+   00165| 
+   00166| #[test]
+   00167| fn g71_an_escaped_quote_inside_a_quoted_line_is_declined() {
+   00168|     let prompt = "Insert the line '| T210 | asked \\'set the contents of note.txt to hello\\' | Pass |' after the line containing 'T209' in ledger.md.";
+   00169|     let run = drive(prompt, &[("ledger.md", LEDGER)]);
+   00170|     assert!(run.tools.is_empty(), "{:?}", run.tools);
+   00171|     assert_eq!(run.files.keys().collect::<Vec<_>>(), ["ledger.md"]);
+   00172|     assert_eq!(run.files["ledger.md"], LEDGER);
+   00173|     assert_eq!(
+   00174|         run.answer.as_deref(),
+   00175|         Some(
+   00176|             "A backslash before a quote in this request (`\\'set the contents of note.txt t`) leaves its quoted text unpaired, so I cannot tell the quoted text from the instruction, and nothing was done. Quote the text without backslashes, using «» or backticks when it holds quotes of its own."
+   00177|         )
+   00178|     );
+   00179| }
+   00180| 
+   00181| #[test]
+   00182| fn g71_an_opening_quote_that_never_closes_is_declined_in_the_request_language() {
+   00183|     let english = drive("Replace 'x with y in f.txt.", &[("f.txt", "x\n")]);
+   00184|     assert!(english.tools.is_empty(), "{:?}", english.tools);
+   00185|     assert_eq!(
+   00186|         english.answer.as_deref(),
+   00187|         Some(
+   00188|             "A quote in this request opens and never closes (`'x with y in f.txt.`), so I cannot tell the quoted text from the instruction, and nothing was done. Close the quote, or use «» or backticks when the text holds quotes of its own."
+   00189|         )
+   00190|     );
+   00191|     let russian = drive("Замени 'x на y в f.txt.", &[("f.txt", "x\n")]);
+   00192|     assert_eq!(
+   00193|         russian.answer.as_deref(),
+   00194|         Some(
+   00195|             "Кавычка в этом запросе открывается и не закрывается (`'x на y в f.txt.`), поэтому я не могу отличить цитату от инструкции, и ничего не сделано. Закройте кавычку или используйте «» или обратные апострофы, если в тексте есть свои кавычки."
+   00196|         )
+   00197|     );
+   00198| }
+   00199| 
+   00200| #[test]
+   00201| fn g71_quotes_that_pair_apostrophes_and_code_literals_are_not_faults() {
+   00202|     for prompt in [
+   00203|         "Replace '\\' with '/' in p.txt.",
+   00204|         "Replace 'C:\\dir\\' with 'D:\\' in p.txt.",
+   00205|         "Replace `\\'` with `'` in f.js.",
+   00206|         "What's in the users' files? Don't guess.",
+   00207|         "Insert the line «a 'b' \"c\"» after the line 'x' in f.md.",
+   00208|         "Append the line '- G1 \"Delete the line 'x'.\" -' to gaps.md.",
+   00209|         "The 5\" screen and the 6' wall.",
+   00210|         "rock 'n' roll",
+   00211|     ] {
+   00212|         assert_eq!(quote_fault(prompt), None, "{prompt}");
+   00213|     }
+   00214| }
+   00215| 
+   00216| #[test]
+   00217| fn g71_the_same_request_with_guillemets_is_carried_out() {
+   00218|     let run = drive(
+   00219|         "Insert the line «| T210 | asked 'set the contents of note.txt to hello' | Pass |» after the line containing 'T209' in ledger.md.",
+   00220|         &[("ledger.md", LEDGER)],
+   00221|     );
+   00222|     assert_eq!(
+   00223|         run.files["ledger.md"],
+   00224|         format!("{LEDGER}| T210 | asked 'set the contents of note.txt to hello' | Pass |\n")
+   00225|     );
+   00226|     assert!(!run.files.contains_key("note.txt"));
+   00227| }
+   00228| 
+   00229| /// The `contraction` / `expansion` pairs `data/seed/languages.lino` seeds.
+   00230| fn seeded_contractions() -> Vec<(String, String)> {
+   00231|     let languages = formal_ai::seed::seed_files()
+   00232|         .into_iter()
+   00233|         .find(|(path, _)| *path == "data/seed/languages.lino")
+   00234|         .map(|(_, text)| text)
+   00235|         .expect("languages.lino is seeded");
+   00236|     let mut pairs = Vec::new();
+   00237|     let mut contracted = None;
+   00238|     for line in languages.lines() {
+   00239|         let Some((key, value)) = line.trim().split_once(' ') else {
+   00240|             continue;
+   00241|         };
+   00242|         let value = value.trim_matches('"').to_owned();
+   00243|         match key {
+   00244|             "contraction" => contracted = Some(value),
+   00245|             "expansion" => {
+   00246|                 if let Some(pair) = contracted.take() {
+   00247|                     pairs.push((pair, value));
+   00248|                 }
+   00249|             }
+   00250|             _ => {}
+   00251|         }
+   00252|     }
+   00253|     pairs
+   00254| }
+   00255| 
+   00256| #[test]
+   00257| fn g70_a_provider_denial_written_with_a_contraction_is_a_failure() {
+   00258|     let tools = ["bash", "read", "webfetch", "websearch"];
+   00259|     let mut messages = vec![ChatMessage::user("Fetch https://example.test/x")];
+   00260|     let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &tools) else {
+   00261|         panic!("the fetch is planned");
+   00262|     };
+   00263|     assert_eq!(calls[0].tool, "webfetch");
+   00264|     messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+   00265|         "c0",
+   00266|         "webfetch",
+   00267|         calls[0].arguments.clone(),
+   00268|     )]));
+   00269|     messages.push(ChatMessage::tool_result(
+   00270|         "c0",
+   00271|         "webfetch",
+   00272|         "You can't perform that action at this time.",
+   00273|     ));
+   00274|     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
+   00275|         panic!("the denial is answered");
+   00276|     };
+   00277|     assert!(
+   00278|         answer.starts_with("The command failed: You can't perform that action at this time."),
+   00279|         "{answer}"
+   00280|     );
+   00281| }
+   00282| 
+   00283| #[test]
+   00284| fn g70_no_seed_surface_holds_a_seeded_contraction_written_apart() {
+   00285|     let pairs = seeded_contractions();
+   00286|     assert!(
+   00287|         pairs
+   00288|             .iter()
+   00289|             .any(|(contracted, expansion)| contracted == "can t" && expansion == "cannot")
+   00290|     );
+   00291|     let mut contracted = Vec::new();
+   00292|     for (path, text) in formal_ai::seed::seed_files() {
+   00293|         if path == "data/seed/languages.lino" {
+   00294|             continue;
+   00295|         }
+   00296|         for (index, line) in text.lines().enumerate() {
+   00297|             let trimmed = line.trim();
+   00298|             let Some(value) = ["text ", "phrase ", "cue ", "followup_request "]
+   00299|                 .iter()
+   00300|                 .find_map(|key| trimmed.strip_prefix(key))
+   00301|                 .and_then(|value| value.strip_prefix('"')?.strip_suffix('"'))
+   00302|             else {
+   00303|                 continue;
+   00304|             };
+   00305|             let padded = format!(" {value} ");
+   00306|             if pairs
+   00307|                 .iter()
+   00308|                 .any(|(pair, _)| padded.contains(&format!(" {pair} ")))
+   00309|             {
+   00310|                 contracted.push(format!("{path}:{}", index + 1));
+   00311|             }
+   00312|         }
+   00313|     }
+   00314|     assert!(contracted.is_empty(), "{contracted:?}");
+   00315| }
+   00316| 
+   00317| #[test]
+   00318| fn g69_an_addition_that_quotes_no_text_earns_a_question() {
+   00319|     for prompt in [
+   00320|         "add hello to config.txt",
+   00321|         "append hello to config.txt",
+   00322|         "add hello to the end of config.txt",
+   00323|     ] {
+   00324|         let run = drive(prompt, &[("config.txt", "a = 1\n")]);
+   00325|         assert!(run.tools.is_empty(), "{prompt}: {:?}", run.tools);
+   00326|         assert_eq!(run.files["config.txt"], "a = 1\n", "{prompt}");
+   00327|         assert_eq!(
+   00328|             run.answer.as_deref(),
+   00329|             Some(
+   00330|                 "What exact text should go into `config.txt`, and where? The request names the addition without quoting it, so I cannot tell the text to add from words that describe it, and nothing was changed. Quote the text and say where it goes, for example: Append the line «…» to config.txt."
+   00331|             ),
+   00332|             "{prompt}"
+   00333|         );
+   00334|     }
+   00335|     let named = drive(
+   00336|         "Create a test for add in t.mjs and run it.",
+   00337|         &[("m.mjs", "export const add = (a, b) => a + b;\n")],
+   00338|     );
+   00339|     assert!(
+   00340|         !named
+   00341|             .tools
+   00342|             .iter()
+   00343|             .any(|tool| tool == "write" || tool == "edit"),
+   00344|         "{:?}",
+   00345|         named.tools
+   00346|     );
+   00347|     assert!(!named.files.contains_key("t.mjs"));
+   00348|     let quoted = drive(
+   00349|         "Append the line 'b = 2' to config.txt.",
+   00350|         &[("config.txt", "a = 1\n")],
+   00351|     );
+   00352|     assert_eq!(quoted.files["config.txt"], "a = 1\nb = 2\n");
+   00353| }
+   00354| 
+   00355| const REQ: &str = "# req\nrow x here\n";
+   00356| 
+   00357| #[test]
+   00358| fn g63_a_sentence_break_followed_by_backtick_spans_keeps_the_whole_replacement() {
+   00359|     let run = drive(
+   00360|         "Replace `x` with `a `data/meta/p.lino` is b. It has c, each with an `e`: `any`, d.` in req.md.",
+   00361|         &[("req.md", REQ)],
+   00362|     );
+   00363|     assert_eq!(run.tools, ["read", "edit", "bash"]);
+   00364|     assert_eq!(run.commands, ["sha256sum -- req.md"]);
+   00365|     assert_eq!(
+   00366|         run.files["req.md"],
+   00367|         "# req\nrow a `data/meta/p.lino` is b. It has c, each with an `e`: `any`, d. here\n"
+   00368|     );
+   00369|     assert_eq!(
+   00370|         run.answer.as_deref(),
+   00371|         Some(
+   00372|             "Replaced `x` with ``a `data/meta/p.lino` is b. It has c, each with an `e`: `any`, d.`` in `req.md` and observed the result."
+   00373|         )
+   00374|     );
+   00375| }
+   00376| 
+   00377| #[test]
+   00378| fn g63_a_payload_ending_in_a_backtick_span_names_no_target_file() {
+   00379|     let run = drive(
+   00380|         "Replace `x` with `a is b. It has `p.lino`` in req.md.",
+   00381|         &[("req.md", REQ)],
+   00382|     );
+   00383|     assert_eq!(
+   00384|         run.files["req.md"],
+   00385|         "# req\nrow a is b. It has `p.lino` here\n"
+   00386|     );
+   00387|     assert!(!run.files.contains_key("p.lino"));
+   00388| }
+   00389| 
+   00390| #[test]
+   00391| fn t181_a_quiet_edit_reply_names_the_replacement() {
+   00392|     let run = drive(
+   00393|         "In greeting.txt, change hello to goodbye",
+   00394|         &[("greeting.txt", "hello world\n")],
+   00395|     );
+   00396|     assert_eq!(run.tools, ["read", "edit"]);
+   00397|     assert_eq!(run.files["greeting.txt"], "goodbye world\n");
+   00398|     assert_eq!(
+   00399|         run.answer.as_deref(),
+   00400|         Some("Replaced `hello` with `goodbye` in `greeting.txt`; the edit tool reported no error.")
+   00401|     );
+   00402| }
+   00403| 
+   00404| #[test]
+   00405| fn g78_a_replace_whose_new_text_holds_the_old_is_a_verified_edit() {
+   00406|     for (prompt, name, source, expected, answer) in [
+   00407|         (
+   00408|             "In s.txt replace 'key 3' with 'key 33'",
+   00409|             "s.txt",
+   00410|             "a\nkey 3\nb\n",
+   00411|             "a\nkey 33\nb\n",
+   00412|             "Replaced `key 3` with `key 33` in `s.txt` and observed the result.",
+   00413|         ),
+   00414|         (
+   00415|             "Replace `run();` with `guard(); run();` in s.mjs.",
+   00416|             "s.mjs",
+   00417|             "if (a) {\n  run();\n}\n",
+   00418|             "if (a) {\n  guard(); run();\n}\n",
+   00419|             "Replaced `run();` with `guard(); run();` in `s.mjs` and observed the result.",
+   00420|         ),
+   00421|     ] {
+   00422|         let run = drive(prompt, &[(name, source)]);
+   00423|         assert_eq!(run.tools, ["read", "edit", "bash"], "{prompt}");
+   00424|         assert_eq!(run.files[name], expected, "{prompt}");
+   00425|         assert_eq!(run.answer.as_deref(), Some(answer), "{prompt}");
+   00426|     }
+   00427| }
+   00428| 
+   00429| #[test]
+   00430| fn g64_an_append_whose_payload_names_paths_and_positions_appends_it() {
+   00431|     let run = drive(
+   00432|         "Append the line 'D a.rs (one line at the start of x)' to c.md.",
+   00433|         &[("c.md", "# claims\n"), ("a.rs", "fn a() {}\n")],
+   00434|     );
+   00435|     assert_eq!(run.tools, ["read", "edit", "bash"]);
+   00436|     assert_eq!(run.commands, ["sha256sum -- c.md"]);
+   00437|     assert_eq!(
+   00438|         run.files["c.md"],
+   00439|         "# claims\nD a.rs (one line at the start of x)\n"
+   00440|     );
+   00441|     assert_eq!(
+   00442|         run.answer.as_deref(),
+   00443|         Some(
+   00444|             "Appended `D a.rs (one line at the start of x)` to the end of `c.md` and observed the result."
+   00445|         )
+   00446|     );
+   00447| }
+   00448| 
+   00449| #[test]
+   00450| fn g72_an_anchor_line_found_more_than_once_is_named() {
+   00451|     let source = "a\nanchor\nb\nanchor\nc\n";
+   00452|     let run = drive(
+   00453|         "In g.txt, insert the line 'new' after the line 'anchor'.",
+   00454|         &[("g.txt", source)],
+   00455|     );
+   00456|     assert_eq!(run.tools, ["read"]);
+   00457|     assert_eq!(run.files["g.txt"], source);
+   00458|     assert_eq!(
+   00459|         run.answer.as_deref(),
+   00460|         Some(
+   00461|             "The line `anchor` occurs 2 times in `g.txt`, so I cannot tell which one places the insert, and nothing was changed. Quote more of the line, or name it by its line number."
+   00462|         )
+   00463|     );
+   00464| }
+   00465| 
+   00466| #[test]
+   00467| fn g15_the_plan_event_step_says_it_writes_the_composed_plan() {
+   00468|     let run = drive("Write hello to x.txt", &[]);
+   00469|     assert_eq!(run.files["x.txt"], "hello");
+   00470|     assert!(
+   00471|         run.files[".formal-ai/general-change-plan.lino"].contains(
+   00472|             "\n    action \"write the composed plan to .formal-ai/general-change-plan.lino\"\n"
+   00473|         ),
+   00474|         "{}",
+   00475|         run.files[".formal-ai/general-change-plan.lino"]
+   00476|     );
+   00477| }
+   00478| 
+   00479| #[test]
+   00480| fn g73_a_whole_line_anchor_that_also_ends_another_line_is_edited_once() {
+   00481|     let run = drive(
+   00482|         "Insert the line '    2,' before the line '];' in t.rs.",
+   00483|         &[(
+   00484|             "t.rs",
+   00485|             "pub const A: &[&str] = &[`x`];\npub const T: &[u8] = &[\n    1,\n];\n",
+   00486|         )],
+   00487|     );
+   00488|     assert_eq!(run.tools, ["read", "edit", "bash"]);
+   00489|     assert_eq!(
+   00490|         run.files["t.rs"],
+   00491|         "pub const A: &[&str] = &[`x`];\npub const T: &[u8] = &[\n    1,\n    2,\n];\n"
+   00492|     );
+   00493|     assert_eq!(
+   00494|         run.answer.as_deref(),
+   00495|         Some("Inserted `    2,` before `];` in `t.rs` and observed the result.")
+   00496|     );
+   00497| }
+   00498| 
+   00499| #[test]
+   00500| fn g74_an_inserted_line_followed_by_an_empty_line_keeps_it() {
+   00501|     let run = drive(
+   00502|         "Insert the line 'pub mod cache;' followed by an empty line before the line 'use std::collections::BTreeMap;' in r.rs.",
+   00503|         &[("r.rs", "pub mod a;\nuse std::collections::BTreeMap;\n")],
+   00504|     );
+   00505|     assert_eq!(
+   00506|         run.files["r.rs"],
+   00507|         "pub mod a;\npub mod cache;\n\nuse std::collections::BTreeMap;\n"
+   00508|     );
+   00509|     assert_eq!(
+   00510|         run.answer.as_deref(),
+   00511|         Some(
+   00512|             "Inserted `pub mod cache;` before `use std::collections::BTreeMap;` in `r.rs` and observed the result.\nAdded an empty line to `r.rs` and observed the result."
+   00513|         )
+   00514|     );
+   00515| }
+   00516| 
+   00517| #[test]
+   00518| fn g25_a_test_with_no_expected_result_is_a_question() {
+   00519|     let run = drive(
+   00520|         "Create a Python test for add in test_m.py and run it.",
+   00521|         &[("m.py", "def add(a, b):\n    return a + b\n")],
+   00522|     );
+   00523|     assert!(run.tools.is_empty(), "{:?}", run.tools);
+   00524|     assert_eq!(run.files.keys().collect::<Vec<_>>(), ["m.py"]);
+   00525|     assert_eq!(
+   00526|         run.answer.as_deref(),
+   00527|         Some(
+   00528|             "What should the test in `test_m.py` check: which call, and what result? The request states no expected result, so nothing was written or run. Say what the function should return for which inputs."
+   00529|         )
+   00530|     );
+   00531| }
+   00532| 
+   00533| /// The answer to `Run <command>` once the command ran with no output.
+   00534| fn quiet_run(command: &str) -> Option<String> {
+   00535|     let mut messages = vec![ChatMessage::user(format!("Run {command}"))];
+   00536|     let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &TOOLS) else {
+   00537|         panic!("{command} is planned");
+   00538|     };
+   00539|     let arguments: serde_json::Value =
+   00540|         serde_json::from_str(&calls[0].arguments).expect("tool arguments are JSON");
+   00541|     assert_eq!(arguments["command"], command);
+   00542|     messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+   00543|         "c0",
+   00544|         "bash",
+   00545|         calls[0].arguments.clone(),
+   00546|     )]));
+   00547|     messages.push(ChatMessage::tool_result("c0", "bash", ""));
+   00548|     match plan_chat_step(&messages, &TOOLS) {
+   00549|         Some(AgenticPlan::Final(answer)) => Some(answer),
+   00550|         _ => None,
+   00551|     }
+   00552| }
+   00553| 
+   00554| #[test]
+   00555| fn g75_a_command_is_a_listing_by_its_own_word_only() {
+   00556|     assert_eq!(
+   00557|         quiet_run("sed -i '' '/^a/d' allowlist.txt").as_deref(),
+   00558|         Some("The command completed successfully without output.")
+   00559|     );
+   00560|     assert_eq!(
+   00561|         quiet_run("ls empty").as_deref(),
+   00562|         Some("This folder is empty.")
+   00563|     );
+   00564| }
+   00565| 
+   00566| #[test]
+   00567| fn g51_a_file_inserted_after_an_unquoted_anchor_that_follows_another() {
+   00568|     let run = drive(
+   00569|         "Insert the contents of rows.txt after the line row a that follows the line table u in f.lino.",
+   00570|         &[
+   00571|             ("f.lino", "table t\n  row a\nend\ntable u\n  row a\nend\n"),
+   00572|             ("rows.txt", "  row b\n  row c\n"),
+   00573|         ],
+   00574|     );
+   00575|     assert_eq!(
+   00576|         run.files["f.lino"],
+   00577|         "table t\n  row a\nend\ntable u\n  row a\n  row b\n  row c\nend\n"
+   00578|     );
+   00579|     assert_eq!(
+   00580|         run.answer.as_deref(),
+   00581|         Some("Inserted `  row b\n  row c` after `row a` in `f.lino` and observed the result.")
+   00582|     );
+   00583| }
+   00584| 
+   00585| const SCOPED_ROWS: &str = "const C = {\n  slug: \"c\",\n  run: \"./main\",\n};\nconst RUST = {\n  slug: \"rust\",\n  run: \"./main\",\n};\n";
+   00586| 
+   00587| #[test]
+   00588| fn g79_a_scoped_replace_of_a_repeated_text_is_declined_naming_the_part() {
+   00589|     let run = drive(
+   00590|         "In rows.mjs, in the row whose slug is rust, replace `run: \"./main\",` with `run: \"\",`",
+   00591|         &[("rows.mjs", SCOPED_ROWS)],
+   00592|     );
+   00593|     assert_eq!(run.files["rows.mjs"], SCOPED_ROWS);
+   00594|     assert_eq!(
+   00595|         run.answer.as_deref(),
+   00596|         Some(
+   00597|             "`run: \"./main\",` occurs 2 times in `rows.mjs`, and I cannot tell which of them lie in the row whose slug is rust, so nothing was changed. Quote more of the text around the one to replace."
+   00598|         )
+   00599|     );
+   00600| }
+   00601| 
+   00602| #[test]
+   00603| fn g79_a_scoped_replace_of_a_text_found_once_is_made() {
+   00604|     let run = drive(
+   00605|         "In rows.mjs, in the row whose slug is rust, replace `slug: \"rust\",` with `slug: \"rs\",`",
+   00606|         &[("rows.mjs", SCOPED_ROWS)],
+   00607|     );
+   00608|     assert_eq!(
+   00609|         run.files["rows.mjs"],
+   00610|         SCOPED_ROWS.replace("slug: \"rust\"", "slug: \"rs\"")
+   00611|     );
+   00612| }
+   00613| 
+   00614| #[test]
+   00615| fn g79_words_that_name_no_part_are_no_scope() {
+   00616|     let run = drive(
+   00617|         "Please, in rows.mjs, replace `run: \"./main\",` with `run: \"\",`",
+   00618|         &[("rows.mjs", SCOPED_ROWS)],
+   00619|     );
+   00620|     assert_eq!(
+   00621|         run.files["rows.mjs"],
+   00622|         SCOPED_ROWS.replace("run: \"./main\",", "run: \"\",")
+   00623|     );
+   00624| }
+   00625| 
+   00626| #[test]
+   00627| fn g80_listed_lines_are_replaced_as_one_block() {
+   00628|     let run = drive(
+   00629|         "Replace the three lines `check: some(`, `\"kotlinc Main.kt\",` and `),` with the line `check: none,` in k.mjs",
+   00630|         &[(
+   00631|             "k.mjs",
+   00632|             "const KOTLIN = {\n  check: some(\n    \"kotlinc Main.kt\",\n  ),\n  run: \"java\",\n};\n",
+   00633|         )],
+   00634|     );
+   00635|     assert_eq!(
+   00636|         run.files["k.mjs"],
+   00637|         "const KOTLIN = {\n  check: none,\n  run: \"java\",\n};\n"
+   00638|     );
+   00639|     assert_eq!(
+   00640|         run.answer.as_deref(),
+   00641|         Some(
+   00642|             "Replaced `check: some(`, `\"kotlinc Main.kt\",`, `),` with `check: none,` in `k.mjs` and observed the result."
+   00643|         )
+   00644|     );
+   00645| }
+   00646| 
+   00647| #[test]
+   00648| fn g13_an_assertion_is_added_in_the_files_assert_form_and_run() {
+   00649|     let source = "import assert from 'node:assert/strict';\nimport { add } from './m.mjs';\n\ntest('add', () => {\n  assert.equal(add(1, 2), 3);\n});\n";
+   00650|     let run = drive(
+   00651|         "Add an assertion that add(2, 2) equals 4 to m.test.mjs.",
+   00652|         &[("m.test.mjs", source)],
+   00653|     );
+   00654|     assert_eq!(
+   00655|         run.files["m.test.mjs"],
+   00656|         source.replace("3);\n", "3);\n  assert.equal(add(2, 2), 4);\n")
+   00657|     );
+   00658|     assert_eq!(run.tools, ["read", "edit", "bash"]);
+   00659|     assert_eq!(run.commands, ["node --test m.test.mjs"]);
+   00660|     assert_eq!(
+   00661|         run.answer.as_deref(),
+   00662|         Some(
+   00663|             "Added `assert.equal(add(2, 2), 4);` to `m.test.mjs` and ran `node --test m.test.mjs`.\n\nThe `node --test m.test.mjs` command completed. Output:\n\n```text\n# tests 1\n# pass 1\n# fail 0\n```"
+   00664|         )
+   00665|     );
+   00666| }
+   00667| 
+   00668| #[test]
+   00669| fn g13_an_assertion_is_added_in_the_files_expect_form() {
+   00670|     let source = "import { expect, test } from 'bun:test';\nimport { add } from './m.mjs';\n\ntest('add', () => {\n    expect(add(1, 2)).toBe(3);\n});\n";
+   00671|     let run = drive(
+   00672|         "Add an assertion that add(2, 2) equals 4 to m.test.mjs.",
+   00673|         &[("m.test.mjs", source)],
+   00674|     );
+   00675|     assert_eq!(
+   00676|         run.files["m.test.mjs"],
+   00677|         source.replace("3);\n", "3);\n    expect(add(2, 2)).toBe(4);\n")
+   00678|     );
+   00679| }
+   00680| 
+   00681| #[test]
+   00682| fn g25_a_missing_javascript_test_file_is_written_around_the_stated_assertion() {
+   00683|     let run = drive(
+   00684|         "Create a test for add in m.test.mjs that add(2, 3) returns 5, and run it.",
+   00685|         &[("m.mjs", "export function add(a, b) {\n  return a + b;\n}\n")],
+   00686|     );
+   00687|     assert_eq!(
+   00688|         run.files["m.test.mjs"],
+   00689|         "import { test } from 'node:test';\nimport assert from 'node:assert/strict';\nimport { add } from './m.mjs';\n\ntest('add', () => {\n  assert.equal(add(2, 3), 5);\n});\n"
+   00690|     );
+   00691|     assert_eq!(run.tools, ["read", "write", "bash"]);
+   00692|     assert_eq!(run.commands, ["node --test m.test.mjs"]);
+   00693|     assert_eq!(
+   00694|         run.answer.as_deref(),
+   00695|         Some(
+   00696|             "Wrote `m.test.mjs` with `assert.equal(add(2, 3), 5);` and ran `node --test m.test.mjs`.\n\nThe `node --test m.test.mjs` command completed. Output:\n\n```text\n# tests 1\n# pass 1\n# fail 0\n```"
+   00697|         )
+   00698|     );
+   00699| }
+   00700| 
+   00701| #[test]
+   00702| fn g25_a_missing_python_test_file_imports_from_the_module_its_name_names() {
+   00703|     let run = drive(
+   00704|         "Create a Python test for add in test_m.py that add(2, 3) returns 5, and run it.",
+   00705|         &[("m.py", "def add(a, b):\n    return a + b\n")],
+   00706|     );
+   00707|     assert_eq!(
+   00708|         run.files["test_m.py"],
+   00709|         "from m import add\n\n\ndef test_add():\n    assert add(2, 3) == 5\n"
+   00710|     );
+   00711|     assert_eq!(
+   00712|         run.commands.first().map(String::as_str),
+   00713|         Some("python3 -m pytest test_m.py")
+   00714|     );
+   00715| }
+   00716| 
+   00717| #[test]
+   00718| fn g25_a_shell_word_is_a_command_only_when_named_as_one() {
+   00719|     let run = drive("Please run the command ls in the terminal.", &[]);
+   00720|     assert_eq!(run.commands.first().map(String::as_str), Some("ls"));
+   00721| }
+   00722| 
+   00723| #[test]
+   00724| fn g76_a_leading_code_span_is_the_command_and_the_words_after_it_are_prose() {
+   00725|     let run = drive(
+   00726|         "Run `node --test x.test.js` and tell me whether every test passes.",
+   00727|         &[],
+   00728|     );
+   00729|     assert_eq!(
+   00730|         run.commands.first().map(String::as_str),
+   00731|         Some("node --test x.test.js")
+   00732|     );
+   00733| }
+   00734| 
+   00735| #[test]
+   00736| fn g77_a_call_killed_at_the_timeout_is_stated_without_an_exit_code() {
+   00737|     let run = drive("Run `node --test slow.test.mjs`.", &[]);
+   00738|     assert_eq!(run.commands, ["node --test slow.test.mjs"]);
+   00739|     assert_eq!(
+   00740|         run.answer.as_deref(),
+   00741|         Some(
+   00742|             "The command failed: Signal: SIGTERM\nTimeout: 60000 ms\n\nI detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`."
+   00743|         )
+   00744|     );
+   00745| }
+   00746| 
+   00747| #[test]
+   00748| fn g81_a_line_is_moved_so_that_it_follows_another() {
+   00749|     let run = drive(
+   00750|         "In f.md move the line that starts with «- alpha» so that it follows the line that starts with «- gamma».",
+   00751|         &[("f.md", "# T\n\n- alpha one\n- beta two\n- gamma three\n")],
+   00752|     );
+   00753|     assert_eq!(
+   00754|         run.files["f.md"],
+   00755|         "# T\n\n- beta two\n- gamma three\n- alpha one\n"
+   00756|     );
+   00757|     assert_eq!(
+   00758|         run.answer.as_deref(),
+   00759|         Some("Moved `- alpha` after `- gamma` in `f.md` and observed the result.")
+   00760|     );
+   00761| }
+   00762| 
+   00763| #[test]
+   00764| fn g83_a_replace_in_a_file_whose_name_holds_line_is_a_text_replace() {
+   00765|     let run = drive(
+   00766|         "In x-line.lino replace «file» with «zzz».",
+   00767|         &[("x-line.lino", "a check-file-size b\nrun check\n")],
+   00768|     );
+   00769|     assert_eq!(run.files["x-line.lino"], "a check-zzz-size b\nrun check\n");
+   00770|     assert_eq!(
+   00771|         run.answer.as_deref(),
+   00772|         Some("Replaced `file` with `zzz` in `x-line.lino` and observed the result.")
+   00773|     );
+   00774| }
+   00775| 
+   00776| #[test]
+   00777| fn g82_a_copy_then_its_edits_are_planned_sentence_by_sentence() {
+   00778|     let run = drive(
+   00779|         "Copy a.lino to b.lino. In b.lino replace «x» with «y», replace «p» with «q», and replace «m» with «n».",
+   00780|         &[("a.lino", "x one\np two\nm three\n")],
+   00781|     );
+   00782|     assert_eq!(run.files["a.lino"], "x one\np two\nm three\n");
+   00783|     assert_eq!(run.files["b.lino"], "y one\nq two\nn three\n");
+   00784|     assert_eq!(
+   00785|         run.answer.as_deref(),
+   00786|         Some(
+   00787|             "Completed the action `cp a.lino b.lino` and verified it with `test -e b.lino`, `test -e a.lino`.\n\nMade 3 replacements in `b.lino`, in order: `x` → `y`, `p` → `q`, `m` → `n`; and observed the result."
+   00788|         )
+   00789|     );
+   00790| }
+   00791| 
+   00792| const G86_REQUEST: &str = "Insert the line «| T3 | In f.md move the line that starts with «- alpha» after «- gamma». |» after the line containing «| T2 |» in l.md.";
+   00793| 
+   00794| #[test]
+   00795| fn g86_guillemets_pair_as_a_stack() {
+   00796|     let texts: Vec<String> = quoted_segment_spans(G86_REQUEST)
+   00797|         .into_iter()
+   00798|         .map(|segment| segment.text)
+   00799|         .collect();
+   00800|     assert_eq!(
+   00801|         texts,
+   00802|         [
+   00803|             "| T3 | In f.md move the line that starts with «- alpha» after «- gamma». |",
+   00804|             "| T2 |"
+   00805|         ]
+   00806|     );
+   00807| }
+   00808| 
+   00809| #[test]
+   00810| fn g86_a_nested_guillemet_payload_is_inserted_and_no_other_file_is_written() {
+   00811|     let run = drive(G86_REQUEST, &[("l.md", "| T1 | a |\n| T2 | b |\n")]);
+   00812|     assert_eq!(run.files.keys().collect::<Vec<_>>(), ["l.md"]);
+   00813|     assert_eq!(
+   00814|         run.files["l.md"],
+   00815|         "| T1 | a |\n| T2 | b |\n| T3 | In f.md move the line that starts with «- alpha» after «- gamma». |\n"
+   00816|     );
+   00817|     assert_eq!(
+   00818|         run.answer.as_deref(),
+   00819|         Some(
+   00820|             "Inserted `| T3 | In f.md move the line that starts with «- alpha» after «- gamma». |` after `| T2 |` in `l.md` and observed the result."
+   00821|         )
+   00822|     );
+   00823| }
+   00824| 
+   00825| #[test]
+   00826| fn g86_an_outer_guillemet_whose_stack_never_empties_is_declined() {
+   00827|     let run = drive(
+   00828|         "Insert the line «| T3 | a «b» c after the line containing «| T2 |» in l.md.",
+   00829|         &[("l.md", "| T2 | b |\n")],
+   00830|     );
+   00831|     assert_eq!(run.files.keys().collect::<Vec<_>>(), ["l.md"]);
+   00832|     assert_eq!(
+   00833|         run.answer.as_deref(),
+   00834|         Some(
+   00835|             "A quote in this request opens and never closes (`«| T3 | a «b» c after the line c`), so I cannot tell the quoted text from the instruction, and nothing was done. Close the quote, or use «» or backticks when the text holds quotes of its own."
+   00836|         )
+   00837|     );
+   00838| }
+   00839| 
+   00840| #[test]
+   00841| fn g84_a_replace_asked_for_everywhere_replaces_every_occurrence() {
+   00842|     for cue in ["everywhere", "in all occurrences", "throughout the file"] {
+   00843|         let run = drive(
+   00844|             &format!("In f.txt replace «a» with «b» {cue}."),
+   00845|             &[("f.txt", "a x a\ny a\n")],
+   00846|         );
+   00847|         assert_eq!(run.files["f.txt"], "b x b\ny b\n", "{cue}");
+   00848|         assert_eq!(
+   00849|             run.answer.as_deref(),
+   00850|             Some("Replaced `a` with `b` in `f.txt` and observed the result."),
+   00851|             "{cue}"
+   00852|         );
+   00853|     }
+   00854| }
+   00855| 
+   00856| #[test]
+   00857| fn g84_a_cue_word_inside_the_quotes_is_part_of_the_text() {
+   00858|     let run = drive(
+   00859|         "In f.txt replace «a» with «b everywhere».",
+   00860|         &[("f.txt", "a x\n")],
+   00861|     );
+   00862|     assert_eq!(run.files["f.txt"], "b everywhere x\n");
+   00863| }
+   00864| 
+   00865| #[test]
+   00866| fn g87_a_replace_whose_new_text_is_already_there_is_already_made() {
+   00867|     let run = drive("In g.txt replace «x» with «y».", &[("g.txt", "a y b\n")]);
+   00868|     assert_eq!(run.files["g.txt"], "a y b\n");
+   00869|     assert!(run.tools.iter().all(|tool| tool == "read"));
+   00870|     assert_eq!(
+   00871|         run.answer.as_deref(),
+   00872|         Some(
+   00873|             "`g.txt` already holds `y` and no `x`: the replacement is already made, and nothing changed."
+   00874|         )
+   00875|     );
+   00876| }
+   00877| 
+   00878| #[test]
+   00879| fn g87_a_replace_whose_old_text_does_not_occur_says_so() {
+   00880|     for prompt in [
+   00881|         "In g.txt replace «q» with «z».",
+   00882|         "In g.txt replace the line «q» with the line «z».",
+   00883|     ] {
+   00884|         let run = drive(prompt, &[("g.txt", "a y b\n")]);
+   00885|         assert_eq!(
+   00886|             run.answer.as_deref(),
+   00887|             Some("`q` does not occur in `g.txt`, so nothing was changed."),
+   00888|             "{prompt}"
+   00889|         );
+   00890|     }
+   00891| }
+   00892| 
+   00893| const G85_SOURCE: &str = "l1\nl2\nl3\nl4\nl5\n";
+   00894| 
+   00895| #[test]
+   00896| fn g85_a_line_range_is_appended_to_the_destination_then_removed_from_the_source() {
+   00897|     let run = drive(
+   00898|         "Move lines 2-3 of a.md to the end of b.md.",
+   00899|         &[("a.md", G85_SOURCE), ("b.md", "b1\n")],
+   00900|     );
+   00901|     assert_eq!(run.files["a.md"], "l1\nl4\nl5\n");
+   00902|     assert_eq!(run.files["b.md"], "b1\nl2\nl3\n");
+   00903|     assert!(
+   00904|         run.commands
+   00905|             .iter()
+   00906|             .all(|command| !command.starts_with("mv ") && !command.starts_with("cp ")),
+   00907|         "{:?}",
+   00908|         run.commands
+   00909|     );
+   00910|     assert_eq!(
+   00911|         run.answer.as_deref(),
+   00912|         Some("Moved lines 2-3 of `a.md` to the end of `b.md` and observed the result.")
+   00913|     );
+   00914| }
+   00915| 
+   00916| #[test]
+   00917| fn g85_the_destination_is_the_path_after_the_cue_wherever_the_source_is_named() {
+   00918|     let run = drive(
+   00919|         "In a.md move lines 2 to 3 to the start of b.md.",
+   00920|         &[("a.md", G85_SOURCE), ("b.md", "b1\n")],
+   00921|     );
+   00922|     assert_eq!(run.files["a.md"], "l1\nl4\nl5\n");
+   00923|     assert_eq!(run.files["b.md"], "l2\nl3\nb1\n");
+   00924|     assert_eq!(
+   00925|         run.answer.as_deref(),
+   00926|         Some("Moved lines 2-3 of `a.md` to the start of `b.md` and observed the result.")
+   00927|     );
+   00928| }
+   00929| 
+   00930| #[test]
+   00931| fn g85_one_line_moved_in_russian() {
+   00932|     let run = drive(
+   00933|         "Перенеси строку 4 из a.md в конец b.md.",
+   00934|         &[("a.md", G85_SOURCE), ("b.md", "b1\n")],
+   00935|     );
+   00936|     assert_eq!(run.files["a.md"], "l1\nl2\nl3\nl5\n");
+   00937|     assert_eq!(run.files["b.md"], "b1\nl4\n");
+   00938|     assert_eq!(
+   00939|         run.answer.as_deref(),
+   00940|         Some("Перенёс строку 4 из `a.md` в конец `b.md` и проверил результат.")
+   00941|     );
+   00942| }
+   00943| 
+   00944| #[test]
+   00945| fn g85_a_range_past_the_end_of_the_source_changes_nothing() {
+   00946|     let run = drive(
+   00947|         "Move lines 7-9 of a.md to the end of b.md.",
+   00948|         &[("a.md", G85_SOURCE), ("b.md", "b1\n")],
+   00949|     );
+   00950|     assert_eq!(run.tools, ["read"]);
+   00951|     assert_eq!(run.files["b.md"], "b1\n");
+   00952|     assert_eq!(
+   00953|         run.answer.as_deref(),
+   00954|         Some("`a.md` has 5 lines, so it has no lines 7-9 to move, and nothing was changed.")
+   00955|     );
+   00956| }
+   00957| 
+   00958| #[test]
+   00959| fn g85_a_file_move_without_line_numbers_is_still_a_file_move() {
+   00960|     let run = drive("Move a.md to c.md.", &[("a.md", G85_SOURCE)]);
+   00961|     assert!(
+   00962|         run.commands.iter().any(|command| command == "test -e a.md"),
+   00963|         "{:?}",
+   00964|         run.commands
+   00965|     );
+   00966| }
+   00967| 
+   00968| #[test]
+   00969| fn g87_a_removal_whose_text_is_gone_says_so() {
+   00970|     let run = drive(
+   00971|         "Delete the line 'absent' from notes.txt.",
+   00972|         &[("notes.txt", "first line\n")],
+   00973|     );
+   00974|     assert_eq!(run.files["notes.txt"], "first line\n");
+   00975|     assert_eq!(
+   00976|         run.answer.as_deref(),
+   00977|         Some("`absent` does not occur in `notes.txt`, so nothing was changed.")
+   00978|     );
+   00979| }
+   00980| 
+   
+   (End of file - total 980 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/pull_request_1188_teach_f.rs","file_path":"rust/tests/unit/pull_request_1188_teach_f.rs","new":"pub fn drive","newString":"pub fn drive","new_str":"pub fn drive","new_string":"pub fn drive","old":"pub(crate) fn drive","oldString":"pub(crate) fn drive","old_str":"pub(crate) fn drive","old_string":"pub(crate) fn drive","path":"rust/tests/unit/pull_request_1188_teach_f.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/pull_request_1188_teach_f.rs"}
+   63de74ef84728dbaa79543bee91009530585ea1bc923f0b72a502c33262cbc89  rust/tests/unit/pull_request_1188_teach_f.rs
+   
+== answer ==
+Replaced `pub(crate) fn drive` with `pub fn drive` in `rust/tests/unit/pull_request_1188_teach_f.rs` and observed the result.

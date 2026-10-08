@@ -1,0 +1,843 @@
+>> read {"filePath":"rust/src/solver_handler_how.rs","file_path":"rust/src/solver_handler_how.rs","path":"rust/src/solver_handler_how.rs"}
+   <file>
+   00001| //! "How it works" follow-up handler extracted from `solver_handlers` to keep
+   00002| //! that module under the 1000-line cap enforced by `scripts/check-file-size.rs`.
+   00003| 
+   00004| use crate::concepts::{extract_concept_query, lookup_concept_query};
+   00005| use crate::engine::{SymbolicAnswer, normalize_prompt};
+   00006| use crate::event_log::EventLog;
+   00007| use crate::language::detect as detect_language;
+   00008| use crate::seed;
+   00009| use crate::solver_handlers::{finalize_simple, try_concept_lookup};
+   00010| use crate::solver_helpers::{last_assistant_turn, last_user_turn};
+   00011| use crate::web_search_core::{WEB_SEARCH_PROVIDERS, WEB_SEARCH_RRF_K};
+   00012| 
+   00013| struct HowItWorksQuery {
+   00014|     subject: Option<String>,
+   00015| }
+   00016| 
+   00017| struct ProceduralHowToTask {
+   00018|     task: String,
+   00019|     action: String,
+   00020|     object: String,
+   00021|     corrections: Vec<SpellingCorrection>,
+   00022| }
+   00023| 
+   00024| #[derive(Debug, Clone)]
+   00025| struct SpellingCorrection {
+   00026|     from: String,
+   00027|     to: String,
+   00028| }
+   00029| 
+   00030| /// Handles source-backed procedural requests such as "How to make tea?" and
+   00031| /// "How can I prepare fried potatoes?". The offline Rust engine records the
+   00032| /// same discovery plan that the browser worker can execute: local
+   00033| /// decomposition first, Wikimedia/wikiHow candidates next, then web search
+   00034| /// and recursive fetch checks only as the fallback path.
+   00035| /// A request the legality catalogue flags is declined, so `legality_warning`
+   00036| /// answers it even when the `procedural_how_to` promotion hoisted this row.
+   00037| pub fn try_how_to_procedure(
+   00038|     prompt: &str,
+   00039|     normalized: &str,
+   00040|     log: &mut EventLog,
+   00041| ) -> Option<SymbolicAnswer> {
+   00042|     if crate::legality_warning::assess(prompt, normalized).is_some() {
+   00043|         return None;
+   00044|     }
+   00045|     let task = extract_procedural_how_to_task(normalized)?;
+   00046|     for correction in &task.corrections {
+   00047|         log.append(
+   00048|             "spelling_correction",
+   00049|             format!("{}->{}", correction.from, correction.to),
+   00050|         );
+   00051|     }
+   00052|     let is_install_procedure = task.action == "install";
+   00053|     let fallback_query = how_policy(
+   00054|         "procedural_how_to",
+   00055|         "fallback-query",
+   00056|         &[("task", &task.task)],
+   00057|     );
+   00058|     let search_query = procedural_search_query(&task);
+   00059|     let wikihow_candidate = wikihow_page_title(&task.task);
+   00060|     let wikihow_api_url = format!(
+   00061|         "https://www.wikihow.com/api.php?action=parse&page={wikihow_candidate}\
+   00062|          &prop=text%7Csections%7Cdisplaytitle&format=json&origin=*"
+   00063|     );
+   00064| 
+   00065|     // The request evidence records what was asked for. A specific verb names
+   00066|     // the operation and stays in the request ("calibrate a torque wrench");
+   00067|     // the generic light verb "do" names no operation — "how to do X" asks
+   00068|     // for X — so the object alone is the request. The task text keeps the
+   00069|     // verb either way, keeping the search query and the wikiHow candidate
+   00070|     // faithful to the user's phrasing.
+   00071|     let request = if task.action == "do" && !task.object.is_empty() {
+   00072|         task.object.clone()
+   00073|     } else {
+   00074|         task.task.clone()
+   00075|     };
+   00076|     log.append("procedural_how_to:request", request);
+   00077|     log.append("procedural_how_to:action", task.action.clone());
+   00078|     if !task.object.is_empty() {
+   00079|         log.append("procedural_how_to:object", task.object.clone());
+   00080|     }
+   00081|     if is_install_procedure {
+   00082|         log.append(
+   00083|             "procedural_how_to:stage",
+   00084|             "official_documentation".to_owned(),
+   00085|         );
+   00086|         log.append(
+   00087|             "procedural_how_to:source_gate",
+   00088|             "official_documentation_first".to_owned(),
+   00089|         );
+   00090|     }
+   00091|     log.append("procedural_how_to:stage", "wikipedia".to_owned());
+   00092|     log.append("procedural_how_to:stage", "wikidata".to_owned());
+   00093|     log.append("procedural_how_to:stage", "wikihow_api".to_owned());
+   00094|     log.append(
+   00095|         "procedural_how_to:wikihow_candidate",
+   00096|         wikihow_candidate.clone(),
+   00097|     );
+   00098|     log.append("http_fetch:request", wikihow_api_url.clone());
+   00099|     log.append("procedural_how_to:stage", "web_search".to_owned());
+   00100|     log.append("web_search:request", search_query.clone());
+   00101|     if is_install_procedure && search_query != fallback_query {
+   00102|         log.append("web_search:request", fallback_query.clone());
+   00103|     }
+   00104|     for provider in WEB_SEARCH_PROVIDERS {
+   00105|         log.append("web_search:provider_planned", (*provider).to_owned());
+   00106|     }
+   00107|     log.append(
+   00108|         "web_search:fusion_planned",
+   00109|         format!("rrf:k={WEB_SEARCH_RRF_K}"),
+   00110|     );
+   00111|     log.append(
+   00112|         "procedural_how_to:stage",
+   00113|         "recursive_fetch_check".to_owned(),
+   00114|     );
+   00115|     log.append(
+   00116|         "procedural_how_to:source_gate",
+   00117|         "explicit_steps_only".to_owned(),
+   00118|     );
+   00119| 
+   00120|     let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
+   00121|     let body = render_procedural_how_to_body(
+   00122|         &task,
+   00123|         &wikihow_candidate,
+   00124|         &wikihow_api_url,
+   00125|         &search_query,
+   00126|         &fallback_query,
+   00127|         &provider_summary,
+   00128|         detect_language(prompt).slug(),
+   00129|     );
+   00130| 
+   00131|     Some(finalize_simple(
+   00132|         prompt,
+   00133|         log,
+   00134|         "procedural_how_to",
+   00135|         "response:procedural_how_to",
+   00136|         &body,
+   00137|         0.78,
+   00138|     ))
+   00139| }
+   00140| 
+   00141| /// The bare task text of a recognised procedural request ("make tea" from
+   00142| /// "how to make tea?"), or `None` when the prompt is not one.
+   00143| ///
+   00144| /// Exposed so the executed synthesis path
+   00145| /// ([`crate::solver_handler_how_synthesis`]) recognises exactly the same
+   00146| /// prompts, in exactly the same normalised form, as the discovery plan it falls
+   00147| /// back to — the two can never disagree about what the task is.
+   00148| #[must_use]
+   00149| pub fn procedural_how_to_task(normalized: &str) -> Option<String> {
+   00150|     extract_procedural_how_to_task(normalized).map(|task| task.task)
+   00151| }
+   00152| 
+   00153| /// Handles follow-up requests for the concrete steps of an active procedure —
+   00154| /// "Can you give me specific instructions?", "give me the exact steps", "step
+   00155| /// by step", and their multilingual equivalents (issue #444). These prompts
+   00156| /// carry no "how to" lead-in of their own, so without this handler the user's
+   00157| /// natural follow-up after a how-to answer fell through to the unknown opener
+   00158| /// (the exact symptom reported in the issue).
+   00159| ///
+   00160| /// The handler fires only when (a) the current prompt evidences the
+   00161| /// `procedural_elaboration` meaning and (b) the prior user turn was itself a
+   00162| /// procedural "how to X" request that the assistant answered. It then re-runs
+   00163| /// the original discovery in the original language via [`try_how_to_procedure`],
+   00164| /// so the elaboration rebinds to the recovered task instead of dead-ending. The
+   00165| /// deeper "construct a full guide from collected sources" work tracked by the
+   00166| /// issue is the browser worker's live-fetch path; this keeps the offline engine
+   00167| /// and the worker in parity on the coreference fix.
+   00168| pub fn try_procedural_how_to_followup(
+   00169|     prompt: &str,
+   00170|     normalized: &str,
+   00171|     log: &mut EventLog,
+   00172| ) -> Option<SymbolicAnswer> {
+   00173|     // The dispatch loop passes a lightly-cleaned `prompt.to_lowercase()` whose
+   00174|     // punctuation survives, so "Can you give me specific instructions?" keeps its
+   00175|     // trailing "?" and a phrase surface would miss. Canonicalise first, exactly
+   00176|     // as `try_software_project_followup` does, before matching the meaning.
+   00177|     let canonical = normalize_prompt(prompt);
+   00178|     let canonical = if canonical.is_empty() {
+   00179|         normalized
+   00180|     } else {
+   00181|         canonical.as_str()
+   00182|     };
+   00183|     if !is_procedural_elaboration_request(canonical) {
+   00184|         return None;
+   00185|     }
+   00186|     // The prior exchange must have been a how-to procedure: the previous user
+   00187|     // turn re-parses as a procedural request and the assistant answered it.
+   00188|     last_assistant_turn(log)?;
+   00189|     let prior_user = last_user_turn(log)?.to_owned();
+   00190|     let prior_normalized = normalize_prompt(&prior_user);
+   00191|     let task = extract_procedural_how_to_task(&prior_normalized)?;
+   00192|     log.append("procedural_how_to:followup", canonical.to_owned());
+   00193|     log.append("procedural_how_to:followup_task", task.task);
+   00194|     // Re-run the original discovery in the original language so the recovered
+   00195|     // plan matches what the prior turn produced, now bound to the elaboration.
+   00196|     try_how_to_procedure(&prior_user, &prior_normalized, log)
+   00197| }
+   00198| 
+   00199| /// Recognise a request for the concrete steps of an active procedure by
+   00200| /// *meaning*, not a hardcoded per-language phrase table (issue #386 convention).
+   00201| /// Each surface of the `procedural_elaboration` meaning lives in
+   00202| /// `data/seed/meanings-how.lino`; this code knows only the concept. Matching is
+   00203| /// whole-token/phrase for Latin scripts and substring for CJK, exactly as every
+   00204| /// other lexicon recogniser, so "specific instructions" matches but "specifics"
+   00205| /// does not.
+   00206| fn is_procedural_elaboration_request(normalized: &str) -> bool {
+   00207|     seed::lexicon()
+   00208|         .meanings_with_role(seed::ROLE_PROCEDURAL_ELABORATION)
+   00209|         .any(|meaning| meaning.evidenced_in(normalized))
+   00210| }
+   00211| 
+   00212| /// Handles follow-up elaboration prompts such as "how it works?", "how does
+   00213| /// it work?", or multilingual "how X works?" variants. When the prior
+   00214| /// assistant turn mentioned a named concept the solver re-runs a concept lookup
+   00215| /// for that topic. Explicit unknown subjects get a source-backed discovery plan
+   00216| /// instead of falling through to the unknown fallback.
+   00217| pub fn try_how_it_works(
+   00218|     prompt: &str,
+   00219|     normalized: &str,
+   00220|     log: &mut EventLog,
+   00221| ) -> Option<SymbolicAnswer> {
+   00222|     let query = extract_how_it_works_query(prompt, normalized)?;
+   00223|     log.append("followup:how_it_works", normalized.to_owned());
+   00224| 
+   00225|     // When a subject was explicit in the prompt, do a direct concept lookup.
+   00226|     if let Some(ref term) = query.subject {
+   00227|         log.append(
+   00228|             "followup:subject",
+   00229|             format!("inline:{}", term.to_lowercase()),
+   00230|         );
+   00231|         let concept_prompt = how_policy("how_it_works", "concept-query", &[("term", term)]);
+   00232|         if let Some(concept_query) = extract_concept_query(&concept_prompt)
+   00233|             && lookup_concept_query(&concept_query).is_some()
+   00234|         {
+   00235|             // Delegate to try_concept_lookup by synthesising a standard prompt.
+   00236|             return try_concept_lookup(&concept_prompt, log);
+   00237|         }
+   00238|         record_mechanism_query(log, term);
+   00239|         let body = render_mechanism_discovery_answer(term, detect_language(prompt).slug());
+   00240|         return Some(finalize_simple(
+   00241|             prompt,
+   00242|             log,
+   00243|             "how_it_works",
+   00244|             "response:how_it_works",
+   00245|             &body,
+   00246|             0.68,
+   00247|         ));
+   00248|     }
+   00249| 
+   00250|     // No inline subject — look for the topic in the prior assistant reply.
+   00251|     if let Some(prior) = last_assistant_turn(log).map(str::to_owned) {
+   00252|         log.append("followup:prior_turn", "assistant".to_owned());
+   00253|         // Extract the first capitalised noun phrase from the prior reply
+   00254|         // (typically the term in "Term (category): …" format).
+   00255|         if let Some(term) = extract_topic_from_prior_reply(&prior) {
+   00256|             use crate::concepts::{extract_concept_query, lookup_concept_query};
+   00257|             let concept_prompt = how_policy("how_it_works", "concept-query", &[("term", &term)]);
+   00258|             if let Some(query) = extract_concept_query(&concept_prompt)
+   00259|                 && lookup_concept_query(&query).is_some()
+   00260|             {
+   00261|                 log.append("followup:subject", format!("prior_reply:{term}"));
+   00262|                 return try_concept_lookup(&concept_prompt, log);
+   00263|             }
+   00264|             // Topic is known from history but not in the concept corpus —
+   00265|             // return a helpful explanation that names the topic.
+   00266|             let body = how_response("how_it_works_prior_topic", "en", &[("term", &term)]);
+   00267|             log.append("followup:subject", format!("prior_reply_no_record:{term}"));
+   00268|             return Some(finalize_simple(
+   00269|                 prompt,
+   00270|                 log,
+   00271|                 "concept_elaboration_missing",
+   00272|                 "response:concept_elaboration_missing",
+   00273|                 &body,
+   00274|                 0.3,
+   00275|             ));
+   00276|         }
+   00277|     }
+   00278| 
+   00279|     // No context at all — route to meta_explanation, the claim row's refusal lane.
+   00280|     log.append(
+   00281|         "how_it_works:refusal",
+   00282|         "no subject and no prior reply".to_owned(),
+   00283|     );
+   00284|     let body = how_response("how_it_works_no_context", "en", &[]);
+   00285|     Some(finalize_simple(
+   00286|         prompt,
+   00287|         log,
+   00288|         "meta_explanation",
+   00289|         "response:meta_explanation",
+   00290|         &body,
+   00291|         0.5,
+   00292|     ))
+   00293| }
+   00294| 
+   00295| fn extract_how_it_works_query(prompt: &str, _normalized: &str) -> Option<HowItWorksQuery> {
+   00296|     let original = clean_mechanism_fragment(prompt);
+   00297|     if original.is_empty() {
+   00298|         return None;
+   00299|     }
+   00300|     let lower = original.to_lowercase();
+   00301|     if is_bare_how_it_works(&lower) {
+   00302|         return Some(HowItWorksQuery { subject: None });
+   00303|     }
+   00304|     extract_how_it_works_subject(&original, &lower).map(|subject| HowItWorksQuery {
+   00305|         subject: Some(subject),
+   00306|     })
+   00307| }
+   00308| 
+   00309| /// Whether the mechanism question names its subject.
+   00310| ///
+   00311| /// The `mechanism_subject` claim evidence of issue #1175 R3.
+   00312| #[must_use]
+   00313| pub fn names_mechanism_subject(prompt: &str) -> bool {
+   00314|     mechanism_subject_term(prompt).is_some()
+   00315| }
+   00316| 
+   00317| /// The subject a mechanism question names, if any.
+   00318| #[must_use]
+   00319| pub fn mechanism_subject_term(prompt: &str) -> Option<String> {
+   00320|     extract_how_it_works_query(prompt, "").and_then(|query| query.subject)
+   00321| }
+   00322| 
+   00323| /// Is `lower` a bare "how it works" form — a fixed phrase carrying no subject?
+   00324| ///
+   00325| /// The bare phrases are the [`seed::Slot::Bare`] word forms of the
+   00326| /// `mechanism_inquiry` meaning (issue #386): no hardcoded per-language list
+   00327| /// lives here, only the language-independent concept. A prompt is the bare form
+   00328| /// when it equals such a phrase or is that phrase followed by a space.
+   00329| fn is_bare_how_it_works(lower: &str) -> bool {
+   00330|     seed::lexicon()
+   00331|         .role_word_forms(seed::ROLE_MECHANISM_INQUIRY)
+   00332|         .into_iter()
+   00333|         .filter(|form| form.slot() == seed::Slot::Bare)
+   00334|         .any(|form| {
+   00335|             let phrase = form.text.as_str();
+   00336|             lower == phrase
+   00337|                 || lower
+   00338|                     .strip_prefix(phrase)
+   00339|                     .is_some_and(|rest| rest.starts_with(' '))
+   00340|         })
+   00341| }
+   00342| 
+   00343| /// Extract the explicit subject from multilingual "how X works?" prompts.
+   00344| /// Returns `None` when the prompt is the bare "how it works?" form.
+   00345| ///
+   00346| /// The affixes are the slot-marked surface forms of the `mechanism_inquiry`
+   00347| /// meaning (issue #386): the position of the `…` (U+2026) marker classifies
+   00348| /// each form, so the matching strategy is derived from the data, not from a
+   00349| /// hardcoded per-language list. The mechanism order — prefix surfaces, then
+   00350| /// circumfix, then suffix — and the within-bucket declaration order are
+   00351| /// preserved so behaviour is identical to the prior inline arrays:
+   00352| /// * [`seed::Slot::Prefix`] (`how does …`): the literal precedes the subject;
+   00353| ///   `strip_mechanism_tail` then trims a trailing verb, and we return its
+   00354| ///   result even when it is `None` (an early commit, as before).
+   00355| /// * [`seed::Slot::Circumfix`] (`how … works`): the subject sits between the
+   00356| ///   two literals.
+   00357| /// * [`seed::Slot::Suffix`] (`… как работает`): the subject precedes the
+   00358| ///   literal. Suffix surfaces are end-anchored and script-disjoint across
+   00359| ///   languages, so their relative order across languages does not change which
+   00360| ///   one matches a given prompt.
+   00361| fn extract_how_it_works_subject(original: &str, lower: &str) -> Option<String> {
+   00362|     let forms = seed::lexicon().role_word_forms(seed::ROLE_MECHANISM_INQUIRY);
+   00363| 
+   00364|     for form in forms.iter().filter(|f| f.slot() == seed::Slot::Prefix) {
+   00365|         if let Some(subject) = subject_after_prefix(original, lower, form.before_slot()) {
+   00366|             return strip_mechanism_tail(&subject);
+   00367|         }
+   00368|     }
+   00369| 
+   00370|     for form in forms.iter().filter(|f| f.slot() == seed::Slot::Circumfix) {
+   00371|         if let Some(subject) =
+   00372|             subject_between(original, lower, form.before_slot(), &[form.after_slot()])
+   00373|         {
+   00374|             return Some(subject);
+   00375|         }
+   00376|     }
+   00377| 
+   00378|     for form in forms.iter().filter(|f| f.slot() == seed::Slot::Suffix) {
+   00379|         if let Some(subject) = subject_before_suffix(original, lower, form.after_slot()) {
+   00380|             return Some(subject);
+   00381|         }
+   00382|     }
+   00383| 
+   00384|     None
+   00385| }
+   00386| 
+   00387| fn subject_after_prefix(original: &str, lower: &str, prefix: &str) -> Option<String> {
+   00388|     lower.strip_prefix(prefix)?;
+   00389|     let rest = original.get(prefix.len()..)?;
+   00390|     clean_mechanism_subject(rest)
+   00391| }
+   00392| 
+   00393| fn subject_before_suffix(original: &str, lower: &str, suffix: &str) -> Option<String> {
+   00394|     lower.strip_suffix(suffix)?;
+   00395|     let end = original.len().checked_sub(suffix.len())?;
+   00396|     clean_mechanism_subject(original.get(..end)?)
+   00397| }
+   00398| 
+   00399| fn subject_between(original: &str, lower: &str, prefix: &str, suffixes: &[&str]) -> Option<String> {
+   00400|     if !lower.starts_with(prefix) {
+   00401|         return None;
+   00402|     }
+   00403|     for suffix in suffixes {
+   00404|         if lower.ends_with(suffix) {
+   00405|             let end = original.len().checked_sub(suffix.len())?;
+   00406|             if end <= prefix.len() {
+   00407|                 return None;
+   00408|             }
+   00409|             return clean_mechanism_subject(original.get(prefix.len()..end)?);
+   00410|         }
+   00411|     }
+   00412|     None
+   00413| }
+   00414| 
+   00415| /// Strip a trailing mechanism predicate ("work", "works", "structured", …) so a
+   00416| /// prefix match such as "how does X work" yields the bare subject "X".
+   00417| ///
+   00418| /// The predicate tails carry the [`seed::ROLE_MECHANISM_PREDICATE`] role; each
+   00419| /// is a [`seed::Slot::Suffix`] whose text after the `…` slot is the literal to
+   00420| /// trim. They are tried in declaration order and the first match wins, mirroring
+   00421| /// the original return-on-first-match loop. No per-language tail list lives here.
+   00422| fn strip_mechanism_tail(subject: &str) -> Option<String> {
+   00423|     let mut clean = clean_mechanism_subject(subject)?;
+   00424|     let lower = clean.to_lowercase();
+   00425|     for form in &seed::lexicon().role_word_forms(seed::ROLE_MECHANISM_PREDICATE) {
+   00426|         let suffix = form.after_slot();
+   00427|         if lower.ends_with(suffix) {
+   00428|             let end = clean.len().checked_sub(suffix.len())?;
+   00429|             clean.truncate(end);
+   00430|             return clean_mechanism_subject(&clean);
+   00431|         }
+   00432|     }
+   00433|     Some(clean)
+   00434| }
+   00435| 
+   00436| fn clean_mechanism_fragment(value: &str) -> String {
+   00437|     value
+   00438|         .trim()
+   00439|         .trim_matches(|character: char| {
+   00440|             matches!(
+   00441|                 character,
+   00442|                 '`' | '"' | '\'' | '«' | '»' | '<' | '>' | '(' | ')' | '[' | ']' | '{' | '}'
+   00443|             )
+   00444|         })
+   00445|         .trim_end_matches(['?', '？', '。', '.', '!', ',', ';', ':'])
+   00446|         .trim()
+   00447|         .to_owned()
+   00448| }
+   00449| 
+   00450| /// Trim optional detail/politeness modifiers from a candidate subject and reject
+   00451| /// it outright when it is a non-referential subject (a pronoun or bare function
+   00452| /// word that names no real topic).
+   00453| ///
+   00454| /// The modifier tails carry the [`seed::ROLE_DETAIL_MODIFIER`] role; each is a
+   00455| /// [`seed::Slot::Suffix`] stripped in declaration order, re-trimming after each,
+   00456| /// so several modifiers can fall away in one pass. The rejection set carries the
+   00457| /// [`seed::ROLE_NON_REFERENTIAL_SUBJECT`] role: [`seed::Slot::Bare`] surfaces
+   00458| /// match the whole candidate exactly and [`seed::Slot::Prefix`] surfaces match a
+   00459| /// candidate that begins with the literal before the `…` slot. No per-language
+   00460| /// modifier or pronoun list lives here.
+   00461| fn clean_mechanism_subject(value: &str) -> Option<String> {
+   00462|     let mut clean = clean_mechanism_fragment(value);
+   00463|     for form in &seed::lexicon().role_word_forms(seed::ROLE_DETAIL_MODIFIER) {
+   00464|         let suffix = form.after_slot();
+   00465|         let lower = clean.to_lowercase();
+   00466|         if lower.ends_with(suffix) {
+   00467|             let end = clean.len().checked_sub(suffix.len())?;
+   00468|             clean.truncate(end);
+   00469|             clean = clean_mechanism_fragment(&clean);
+   00470|         }
+   00471|     }
+   00472|     let lower = clean.to_lowercase();
+   00473|     let non_referential = seed::lexicon()
+   00474|         .role_word_forms(seed::ROLE_NON_REFERENTIAL_SUBJECT)
+   00475|         .iter()
+   00476|         .any(|form| match form.slot() {
+   00477|             seed::Slot::Bare => lower == form.text,
+   00478|             seed::Slot::Prefix => lower.starts_with(form.before_slot()),
+   00479|             _ => false,
+   00480|         });
+   00481|     if clean.is_empty() || non_referential {
+   00482|         return None;
+   00483|     }
+   00484|     Some(clean)
+   00485| }
+   00486| 
+   00487| fn record_mechanism_query(log: &mut EventLog, subject: &str) {
+   00488|     log.append("mechanism_query:request", subject.to_owned());
+   00489|     for stage in ["wikipedia", "wikidata", "web_search"] {
+   00490|         log.append("mechanism_query:stage", stage.to_owned());
+   00491|     }
+   00492|     log.append(
+   00493|         "web_search:request",
+   00494|         how_policy("how_it_works", "mechanism_query", &[("subject", subject)]),
+   00495|     );
+   00496|     for provider in WEB_SEARCH_PROVIDERS {
+   00497|         log.append("web_search:provider_planned", (*provider).to_owned());
+   00498|     }
+   00499|     log.append(
+   00500|         "web_search:fusion_planned",
+   00501|         format!("rrf:k={WEB_SEARCH_RRF_K}"),
+   00502|     );
+   00503|     log.append(
+   00504|         "mechanism_query:source_gate",
+   00505|         "source_backed_mechanism_only".to_owned(),
+   00506|     );
+   00507| }
+   00508| 
+   00509| fn render_mechanism_discovery_answer(subject: &str, language: &str) -> String {
+   00510|     let providers = WEB_SEARCH_PROVIDERS.join(", ");
+   00511|     how_response(
+   00512|         "how_it_works",
+   00513|         language,
+   00514|         &[("providers", &providers), ("subject", subject)],
+   00515|     )
+   00516| }
+   00517| 
+   00518| /// Detect a procedural "how to X" request and split it into task/action/object.
+   00519| ///
+   00520| /// The prefixes are the slot-marked surface forms of the `procedural_request`
+   00521| /// meaning (issue #386): every form is a [`seed::Slot::Prefix`] whose literal
+   00522| /// (the text before the `…` marker) is the matchable prefix. A form may name
+   00523| /// the canonical operation in its `action` field (do, perform, implement,
+   00524| /// create, write); an empty action means the operation is taken from the task's
+   00525| /// first word. The weak telegraphic form ("how order X") uses a separate seed
+   00526| /// role and is accepted only when the first task word is an approved procedural
+   00527| /// action. No per-language prefix list lives here — only the concept.
+   00528| fn extract_procedural_how_to_task(normalized: &str) -> Option<ProceduralHowToTask> {
+   00529|     let clean_prompt = clean_procedural_fragment(normalized);
+   00530|     // Action-less forms first, action-carrying forms as fallback. A form
+   00531|     // without an `action` leaves the verb in the task's own words — "how to
+   00532|     // do X" keeps task "do X" with action "do" split from it — while a form
+   00533|     // that names the canonical action consumes its verb into the prefix and
+   00534|     // is only there for prompts whose remaining words carry none ("как
+   00535|     // сделать X": the action is the form's, there is no verb left to keep).
+   00536|     // Declaration order alone let "how to do …" shadow "how to …" and drop
+   00537|     // the verb from the task text, the search query, and the wikiHow
+   00538|     // candidate (issue #1138).
+   00539|     for actionless_pass in [true, false] {
+   00540|         for form in seed::lexicon().role_word_forms(seed::ROLE_PROCEDURAL_REQUEST) {
+   00541|             if form.action.is_empty() != actionless_pass {
+   00542|                 continue;
+   00543|             }
+   00544|             if let Some(rest) = clean_prompt.strip_prefix(form.before_slot()) {
+   00545|                 let action_override = (!form.action.is_empty()).then_some(form.action.as_str());
+   00546|                 return build_procedural_task(rest, action_override);
+   00547|             }
+   00548|         }
+   00549|     }
+   00550|     extract_elided_procedural_how_to_task(&clean_prompt)
+   00551| }
+   00552| 
+   00553| fn extract_elided_procedural_how_to_task(clean_prompt: &str) -> Option<ProceduralHowToTask> {
+   00554|     for form in seed::lexicon().role_word_forms(seed::ROLE_PROCEDURAL_REQUEST_ELIDED_LEAD) {
+   00555|         let Some(rest) = clean_prompt.strip_prefix(form.before_slot()) else {
+   00556|             continue;
+   00557|         };
+   00558|         let task = clean_procedural_fragment(rest);
+   00559|         if task.is_empty() {
+   00560|             continue;
+   00561|         }
+   00562|         let (task, corrections) = correct_common_procedural_typos(&task);
+   00563|         let Some((action, object)) = split_known_procedural_action_object(&task) else {
+   00564|             continue;
+   00565|         };
+   00566|         if object.is_empty() {
+   00567|             continue;
+   00568|         }
+   00569|         return Some(ProceduralHowToTask {
+   00570|             task,
+   00571|             action,
+   00572|             object,
+   00573|             corrections,
+   00574|         });
+   00575|     }
+   00576|     None
+   00577| }
+   00578| 
+   00579| fn procedural_search_query(task: &ProceduralHowToTask) -> String {
+   00580|     if task.action == "install" {
+   00581|         let target = if task.object.is_empty() {
+   00582|             task.task.as_str()
+   00583|         } else {
+   00584|             task.object.as_str()
+   00585|         };
+   00586|         return how_policy("procedural_how_to", "install-query", &[("target", target)]);
+   00587|     }
+   00588|     how_policy(
+   00589|         "procedural_how_to",
+   00590|         "fallback-query",
+   00591|         &[("task", &task.task)],
+   00592|     )
+   00593| }
+   00594| 
+   00595| fn split_known_procedural_action_object(task: &str) -> Option<(String, String)> {
+   00596|     let mut forms = seed::lexicon().role_word_forms(seed::ROLE_PROCEDURAL_ACTION_VERB);
+   00597|     forms.sort_by_key(|form| std::cmp::Reverse(form.text.chars().count()));
+   00598|     for form in forms {
+   00599|         let action_surface = form.text.trim();
+   00600|         if action_surface.is_empty() {
+   00601|             continue;
+   00602|         }
+   00603|         let Some(rest) = task.strip_prefix(action_surface) else {
+   00604|             continue;
+   00605|         };
+   00606|         if !rest.is_empty()
+   00607|             && !rest.chars().next().is_some_and(char::is_whitespace)
+   00608|             && !crate::coding::contains_cjk(action_surface)
+   00609|         {
+   00610|             continue;
+   00611|         }
+   00612|         let action = if form.action.is_empty() {
+   00613|             action_surface.to_owned()
+   00614|         } else {
+   00615|             form.action.clone()
+   00616|         };
+   00617|         return Some((action, clean_procedural_fragment(rest)));
+   00618|     }
+   00619|     None
+   00620| }
+   00621| 
+   00622| fn build_procedural_task(
+   00623|     raw_task: &str,
+   00624|     action_override: Option<&str>,
+   00625| ) -> Option<ProceduralHowToTask> {
+   00626|     let task = clean_procedural_fragment(raw_task);
+   00627|     if task.is_empty() {
+   00628|         return None;
+   00629|     }
+   00630|     let (task, corrections) = correct_common_procedural_typos(&task);
+   00631| 
+   00632|     let (action, object) = if let Some(action) = action_override {
+   00633|         (action.to_owned(), task.clone())
+   00634|     } else {
+   00635|         split_procedural_action_object(&task)?
+   00636|     };
+   00637| 
+   00638|     Some(ProceduralHowToTask {
+   00639|         task,
+   00640|         action,
+   00641|         object,
+   00642|         corrections,
+   00643|     })
+   00644| }
+   00645| 
+   00646| fn split_procedural_action_object(task: &str) -> Option<(String, String)> {
+   00647|     let mut parts = task.splitn(2, char::is_whitespace);
+   00648|     let action = parts.next()?.trim();
+   00649|     if action.is_empty() {
+   00650|         return None;
+   00651|     }
+   00652|     let object = parts.next().unwrap_or("").trim();
+   00653|     Some((action.to_owned(), object.to_owned()))
+   00654| }
+   00655| 
+   00656| fn clean_procedural_fragment(value: &str) -> String {
+   00657|     let mut clean = value
+   00658|         .trim()
+   00659|         .trim_matches(|character: char| matches!(character, '`' | '"' | '\'' | ' '))
+   00660|         .trim_end_matches(['?', '!', '.', ',', ';', ':'])
+   00661|         .trim()
+   00662|         .to_owned();
+   00663| 
+   00664|     // The trailing "step by step" / politeness modifiers are the slot-marked
+   00665|     // surface forms of the `procedural_task_modifier` meaning
+   00666|     // (data/seed/meanings-how.lino): every form is a suffix whose text after the
+   00667|     // … marker (`after_slot`) is the tail to strip, scanned in declaration order
+   00668|     // so the longer Russian "напиши по шагам" still precedes its "по шагам" tail.
+   00669|     // No per-language modifier list lives here — only the concept.
+   00670|     for form in &seed::lexicon().role_word_forms(seed::ROLE_PROCEDURAL_TASK_MODIFIER) {
+   00671|         if let Some(stripped) = clean.strip_suffix(form.after_slot()) {
+   00672|             clean = stripped.trim().to_owned();
+   00673|             break;
+   00674|         }
+   00675|     }
+   00676|     clean
+   00677| }
+   00678| 
+   00679| fn correct_common_procedural_typos(task: &str) -> (String, Vec<SpellingCorrection>) {
+   00680|     // The misspelling -> correction pairs are the `common_typo` meaning's bare
+   00681|     // surface forms (data/seed/meanings-how.lino): each form's text is the
+   00682|     // misspelled token and its `action` child names the correct spelling. No
+   00683|     // per-language typo table lives here — only the concept.
+   00684|     let lexicon = seed::lexicon();
+   00685|     let typos = lexicon.role_word_forms(seed::ROLE_COMMON_TYPO);
+   00686| 
+   00687|     let mut corrections: Vec<SpellingCorrection> = Vec::new();
+   00688|     let corrected = task
+   00689|         .split_whitespace()
+   00690|         .map(|token| {
+   00691|             for form in &typos {
+   00692|                 if token == form.text {
+   00693|                     if !corrections.iter().any(|seen| seen.from == form.text) {
+   00694|                         corrections.push(SpellingCorrection {
+   00695|                             from: form.text.clone(),
+   00696|                             to: form.action.clone(),
+   00697|                         });
+   00698|                     }
+   00699|                     return form.action.clone();
+   00700|                 }
+   00701|             }
+   00702|             token.to_owned()
+   00703|         })
+   00704|         .collect::<Vec<_>>()
+   00705|         .join(" ");
+   00706| 
+   00707|     (corrected, corrections)
+   00708| }
+   00709| 
+   00710| fn wikihow_page_title(task: &str) -> String {
+   00711|     task.split(|character: char| !is_word_character(character))
+   00712|         .filter(|word| !word.is_empty())
+   00713|         .map(capitalize_word)
+   00714|         .collect::<Vec<_>>()
+   00715|         .join("-")
+   00716| }
+   00717| 
+   00718| /// Whether `character` may stand inside a word for the wikiHow candidate
+   00719| /// slug.
+   00720| ///
+   00721| /// `char::is_alphanumeric` is not enough for abugida scripts: Devanagari
+   00722| /// writes conjuncts with combining marks ("कनेक्ट" is letters joined by the
+   00723| /// virama ्, a vowel sign sits on the letter before it), and a mark carries no
+   00724| /// standalone sound, so splitting on it tears every conjunct apart
+   00725| /// ("कनेक्ट" became "कनेक-ट", a word that does not exist). Marks therefore
+   00726| /// join the word around them; only characters outside the letters and the
+   00727| /// marks — spaces, punctuation, digits' neighbours in other scripts' ties —
+   00728| /// bound a word.
+   00729| fn is_word_character(character: char) -> bool {
+   00730|     use unicode_general_category::GeneralCategory;
+   00731|     character.is_alphanumeric()
+   00732|         || matches!(
+   00733|             unicode_general_category::get_general_category(character),
+   00734|             GeneralCategory::NonspacingMark
+   00735|                 | GeneralCategory::SpacingMark
+   00736|                 | GeneralCategory::EnclosingMark
+   00737|         )
+   00738| }
+   00739| 
+   00740| fn render_procedural_how_to_body(
+   00741|     task: &ProceduralHowToTask,
+   00742|     wikihow_candidate: &str,
+   00743|     wikihow_api_url: &str,
+   00744|     search_query: &str,
+   00745|     fallback_query: &str,
+   00746|     provider_summary: &str,
+   00747|     language: &str,
+   00748| ) -> String {
+   00749|     let install_gate = if task.action == "install" {
+   00750|         how_response(
+   00751|             "procedural_how_to_install_gate",
+   00752|             language,
+   00753|             &[
+   00754|                 ("search_query", search_query),
+   00755|                 ("fallback-query", fallback_query),
+   00756|             ],
+   00757|         )
+   00758|     } else {
+   00759|         String::new()
+   00760|     };
+   00761|     how_response(
+   00762|         "procedural_how_to_plan",
+   00763|         language,
+   00764|         &[
+   00765|             ("task", &task.task),
+   00766|             ("action", &task.action),
+   00767|             ("object", &task.object),
+   00768|             ("install_gate", &install_gate),
+   00769|             ("candidate", wikihow_candidate),
+   00770|             ("api_url", wikihow_api_url),
+   00771|             ("search_query", search_query),
+   00772|             ("providers", provider_summary),
+   00773|             ("k", &WEB_SEARCH_RRF_K.to_string()),
+   00774|         ],
+   00775|     )
+   00776| }
+   00777| 
+   00778| /// A seeded response with its `{name}` slots filled in one pass, so a value
+   00779| /// that itself contains braces (a user's task text) is never re-filled.
+   00780| /// Issue #918: the how-to and how-it-works wording is seed data the browser
+   00781| /// twin renders too.
+   00782| fn how_response(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
+   00783|     seed::render_localized_once(intent, language, values)
+   00784| }
+   00785| 
+   00786| /// A `policy <handler>` template of `data/seed/handler-rules.lino` (the
+   00787| /// search-query and concept-query frames), filled in one pass.
+   00788| fn how_policy(handler: &str, key: &str, values: &[(&str, &str)]) -> String {
+   00789|     seed::fill_template_once(
+   00790|         &crate::rule_interpreter::handler_policy(handler, key).unwrap_or_default(),
+   00791|         values,
+   00792|     )
+   00793| }
+   00794| 
+   00795| fn capitalize_word(word: &str) -> String {
+   00796|     let mut chars = word.chars();
+   00797|     let Some(first) = chars.next() else {
+   00798|         return String::new();
+   00799|     };
+   00800|     format!("{}{rest}", first.to_uppercase(), rest = chars.as_str())
+   00801| }
+   00802| 
+   00803| /// Extract the first meaningful topic word/phrase from a prior assistant reply.
+   00804| /// Looks for "Term (category):" patterns first, then the first capitalised token.
+   00805| fn extract_topic_from_prior_reply(reply: &str) -> Option<String> {
+   00806|     // Match "Term (category): description" — common in concept_lookup answers.
+   00807|     let first_line = reply.lines().next().unwrap_or("").trim();
+   00808|     if let Some(paren_pos) = first_line.find('(') {
+   00809|         let candidate = first_line[..paren_pos].trim();
+   00810|         if !candidate.is_empty() {
+   00811|             return Some(candidate.to_lowercase());
+   00812|         }
+   00813|     }
+   00814|     // Fallback: first capitalised token that is not a function word. The skip
+   00815|     // list is the `topic_scan_stop_word` meaning's bare surface forms
+   00816|     // (data/seed/meanings-how.lino): closed-class words (articles, prepositions,
+   00817|     // conjunctions, pronouns) and the 'source' citation heading that name no
+   00818|     // subject, compared case-insensitively. No per-language word list lives here
+   00819|     // — only the concept "a function word that names no topic".
+   00820|     let stop_words = seed::lexicon().role_word_forms(seed::ROLE_TOPIC_SCAN_STOP_WORD);
+   00821|     for word in reply.split_whitespace() {
+   00822|         let clean = word.trim_matches(|c: char| !c.is_alphanumeric());
+   00823|         if clean.len() >= 2 && clean.chars().next().is_some_and(char::is_uppercase) {
+   00824|             let lowered = clean.to_lowercase();
+   00825|             if !stop_words.iter().any(|form| form.text == lowered) {
+   00826|                 return Some(lowered);
+   00827|             }
+   00828|         }
+   00829|     }
+   00830|     None
+   00831| }
+   00832| 
+   
+   (End of file - total 832 lines)
+   </file>
+>> edit {"filePath":"rust/src/solver_handler_how.rs","file_path":"rust/src/solver_handler_how.rs","new":"(\"fallback_query\", fallback_query),","newString":"(\"fallback_query\", fallback_query),","new_str":"(\"fallback_query\", fallback_query),","new_string":"(\"fallback_query\", fallback_query),","old":"(\"fallback-query\", fallback_query),","oldString":"(\"fallback-query\", fallback_query),","old_str":"(\"fallback-query\", fallback_query),","old_string":"(\"fallback-query\", fallback_query),","path":"rust/src/solver_handler_how.rs"}
+>> bash {"command":"sha256sum -- rust/src/solver_handler_how.rs"}
+   5421f75445a0a7edce6b21ecab1516d5a4ca265c15bef580f0713be9e9f52d41  rust/src/solver_handler_how.rs
+   
+== answer ==
+Replaced `("fallback-query", fallback_query),` with `("fallback_query", fallback_query),` in `rust/src/solver_handler_how.rs` and observed the result.

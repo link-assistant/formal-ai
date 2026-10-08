@@ -1,0 +1,246 @@
+>> read {"filePath":"rust/tests/unit/ci-cd/macos_test_partitioning.rs","file_path":"rust/tests/unit/ci-cd/macos_test_partitioning.rs","path":"rust/tests/unit/ci-cd/macos_test_partitioning.rs"}
+   <file>
+   00001| //! Regression gates for issue #999's CI/CD false-positive and false-negative audit.
+   00002| 
+   00003| use std::fs;
+   00004| 
+   00005| use super::workflow_fixtures::{desktop_release_workflow, job_block, release_workflow, unwrapped};
+   00006| 
+   00007| fn repository_file(path: &str) -> String {
+   00008|     fs::read_to_string(format!("{}/../{path}", env!("CARGO_MANIFEST_DIR")))
+   00009|         .unwrap_or_else(|error| panic!("read {path}: {error}"))
+   00010|         .replace("\r\n", "\n")
+   00011| }
+   00012| 
+   00013| #[test]
+   00014| fn macos_tests_are_partitioned_without_raising_the_failed_budget() {
+   00015|     let workflow = release_workflow();
+   00016|     let test = job_block(&workflow, "test");
+   00017|     let macos_call = job_block(&workflow, "macos-core-tests");
+   00018|     let macos = repository_file(".github/workflows/macos-core-tests.yml");
+   00019| 
+   00020|     assert!(test.contains("name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})"));
+   00021|     assert!(test.contains("test-suite: full"));
+   00022|     // Issue #1059: the lane runs 139 platform-sensitive tests on one runner
+   00023|     // rather than the whole suite across eight.
+   00024|     assert!(macos.contains("- { partition: 1 }"));
+   00025|     assert!(test.contains("test-suite: specification"));
+   00026|     assert_eq!(macos.matches("runs-on: macos-15-intel").count(), 2);
+   00027|     assert!(macos_call.contains("uses: ./.github/workflows/macos-core-tests.yml"));
+   00028|     // Issue #1055 raised the archive cap to 35m and issue #1081 to 45m; see
+   00029|     // issue_1012 for the math, which is where the cap is checked. Pinning an
+   00030|     // exact backstop from two places means every future widening has to be
+   00031|     // argued twice, so this one only asserts that the partitioning below did
+   00032|     // not remove it.
+   00033|     assert!(macos.contains("\n    timeout-minutes:"));
+   00034|     assert!(macos.contains("cargo nextest --manifest-path rust/Cargo.toml archive"));
+   00035|     assert!(macos.contains("cargo nextest --manifest-path rust/Cargo.toml run --archive-file"));
+   00036|     assert!(macos.contains("--macos-platform"));
+   00037|     assert!(test.contains("TEST_SUITE: ${{ matrix.test-suite }}"));
+   00038|     assert!(test.contains("scripts/run-prebuilt-tests.sh"));
+   00039|     assert!(macos.contains("test(specification::)"));
+   00040|     assert!(test.contains("matrix.test-suite == 'full'"));
+   00041|     assert!(repository_file("scripts/run-prebuilt-tests.sh").contains("selection=(specification::)"));
+   00042| }
+   00043| 
+   00044| #[test]
+   00045| fn write_jobs_queue_together_without_workflow_level_cancellation() {
+   00046|     let release = release_workflow();
+   00047|     let desktop = desktop_release_workflow();
+   00048|     let external = repository_file(".github/workflows/external-benchmarks.yml");
+   00049|     let shared = concat!(
+   00050|         "    concurrency:\n",
+   00051|         "      group: formal-ai-repository-writes\n",
+   00052|         "      queue: max\n",
+   00053|     );
+   00054| 
+   00055|     for workflow in [&release, &desktop, &external] {
+   00056|         let header = workflow.split("\njobs:\n").next().unwrap();
+   00057|         assert!(!header.contains("\nconcurrency:\n"));
+   00058|     }
+   00059|     for job_name in [
+   00060|         "auto-release",
+   00061|         "manual-release",
+   00062|         "changelog-pr",
+   00063|         "deploy-pages",
+   00064|     ] {
+   00065|         assert!(job_block(&release, job_name).contains(shared), "{job_name}");
+   00066|     }
+   00067|     let desktop_build = job_block(&desktop, "build");
+   00068|     assert!(desktop_build.contains("group: desktop-release-${{ github.event.pull_request.number || needs.resolve.outputs.tag }}-${{ matrix.label }}"));
+   00069|     assert!(desktop_build.contains("queue: max"));
+   00070|     let vscode = job_block(&desktop, "vscode");
+   00071|     assert!(vscode.contains("group: desktop-release-${{ github.event.pull_request.number || needs.resolve.outputs.tag }}-vscode"));
+   00072|     assert!(vscode.contains("queue: max"));
+   00073|     assert!(job_block(&desktop, "finalize").contains(shared));
+   00074|     assert!(job_block(&external, "external-benchmarks").contains(shared));
+   00075| }
+   00076| 
+   00077| #[test]
+   00078| fn known_advisories_do_not_emit_false_warning_annotations() {
+   00079|     let cache_budget = repository_file("scripts/check-cache-budget.rs");
+   00080|     let self_hosting = repository_file("scripts/self-hosting-metric.rs");
+   00081|     let deploy = job_block(&release_workflow(), "deploy-pages").to_owned();
+   00082| 
+   00083|     assert!(!cache_budget.contains("::warning file={}::Closure-driven cache bucket"));
+   00084|     assert!(cache_budget.contains("::notice file={}::Closure-driven cache bucket"));
+   00085|     assert!(!self_hosting.contains("::warning title=Self-hosting ratchet fell"));
+   00086|     assert!(self_hosting.contains("::notice title=Self-hosting ratchet fell"));
+   00087|     assert!(deploy.contains("timeout: 600000"));
+   00088|     assert!(!deploy.contains("timeout: 1200000"));
+   00089| }
+   00090| 
+   00091| #[test]
+   00092| fn current_template_security_and_link_gates_are_present() {
+   00093|     let security = repository_file(".github/workflows/security.yml");
+   00094|     assert!(security.contains("language: [rust, actions]"));
+   00095|     assert!(security.contains("github/codeql-action/init@v4"));
+   00096|     assert!(security.contains("github/codeql-action/analyze@v4"));
+   00097|     assert!(security.contains("actions/dependency-review-action@v5"));
+   00098|     assert!(security.contains("fail-on-severity: high"));
+   00099| 
+   00100|     let links = repository_file(".github/workflows/links.yml");
+   00101|     assert!(links.contains("lycheeverse/lychee-action@v2"));
+   00102|     assert!(links.contains("--host-concurrency 2"));
+   00103|     assert!(links.contains("formal-ai-link-checker/1.0"));
+   00104|     assert!(links.contains("sed 's|https://…|https://example.com/placeholder|g' CHANGELOG.md"));
+   00105|     assert!(links.contains("--exclude-path '^CHANGELOG\\.md$'"));
+   00106|     assert!(links.contains("> LYCHEE_CHANGELOG.md"));
+   00107|     assert!(links.contains("--exclude-path docs/case-studies"));
+   00108|     assert!(links.contains("--exclude-path dev/log"));
+   00109|     // Issue #1138: the rust/embedded/ byte mirror duplicates files whose
+   00110|     // relative links only resolve next to the originals; dropping this
+   00111|     // exclusion reddens the check on the mirror's index.html.
+   00112|     assert!(links.contains("--exclude-path rust/embedded"));
+   00113|     assert!(links.contains("node scripts/check-web-archive.mjs"));
+   00114|     // Issue #1017 narrowed this from `always()`: a cancelled link check has no
+   00115|     // verdict to report, so it must not append a "broken links" error to a run
+   00116|     // that never finished checking them.
+   00117|     // Issue #1081 added a second term to this condition, which folded it across
+   00118|     // lines. The property is the two guards, not the wrapping that carried them.
+   00119|     assert!(unwrapped(&links).contains("!cancelled() && steps.lychee.outputs.exit_code != 0"));
+   00120|     assert!(!links.contains("if: ${{ always()"));
+   00121|     assert!(!links.contains("steps.webarchive.outputs.all_archived != 'true'"));
+   00122|     assert!(
+   00123|         repository_file("scripts/check-web-archive.mjs").contains("archive.org/wayback/available")
+   00124|     );
+   00125| }
+   00126| 
+   00127| #[test]
+   00128| fn actionlint_tracks_githubs_queue_schema_without_hiding_other_errors() {
+   00129|     // Issue #1076 moved actionlint out of release.yml's `lint` job and into
+   00130|     // `.github/workflows/workflows.yml`, and with it the `-ignore` flag, which
+   00131|     // is now a `paths:` entry in `.github/actionlint.yaml`. The property this
+   00132|     // test defends is unchanged: the suppression names GitHub's `queue` schema
+   00133|     // lag specifically and cannot be widened into a blanket filter.
+   00134|     let workflow = repository_file(".github/workflows/workflows.yml");
+   00135|     let config = repository_file(".github/actionlint.yaml");
+   00136| 
+   00137|     // Issue #1079 replaced the tag with the digest it resolved to: a tag is a
+   00138|     // mutable pointer, and `.github/zizmor.yml` forbids those. The tag it was
+   00139|     // resolved from stays in the comment beside it, so a bump is still a
+   00140|     // readable diff rather than an opaque hash swap.
+   00141|     assert!(
+   00142|         workflow.contains("docker://rhysd/actionlint@sha256:"),
+   00143|         "actionlint must run as the digest-pinned Docker image -- the image \
+   00144|          bundles ShellCheck, and a bare binary without ShellCheck on PATH skips \
+   00145|          every `run:` block check and still exits 0 (issues #1076, #1079)"
+   00146|     );
+   00147|     assert!(
+   00148|         workflow.contains("rhysd/actionlint:<tag>"),
+   00149|         "workflows.yml must keep the command that re-resolves the digest, or \
+   00150|          the next bump has no way to check what the hash points at (issue #1079)"
+   00151|     );
+   00152|     assert!(config.contains("rhysd/actionlint/issues/657"));
+   00153|     assert!(config.contains("unexpected key \"queue\" for \"concurrency\" section"));
+   00154| 
+   00155|     // A pattern matching everything is indistinguishable from not running the
+   00156|     // linter at all, whichever form it takes.
+   00157|     for blanket in ["- '.*'", "- \".*\"", "-ignore '.*'"] {
+   00158|         assert!(
+   00159|             !config.contains(blanket) && !workflow.contains(blanket),
+   00160|             "actionlint suppressions must stay specific, found {blanket:?}"
+   00161|         );
+   00162|     }
+   00163| }
+   00164| 
+   00165| #[test]
+   00166| fn warning_band_files_are_small_and_split_responses_cover_the_registry() {
+   00167|     for (path, warning_limit) in [
+   00168|         // Issue #1081 (D6) moved the agent-CLI E2E steps out to
+   00169|         // `.github/workflows/agent-cli-e2e.yml`, which returned this file to
+   00170|         // the ordinary 1500-line warning band `scripts/check-file-size.rs`
+   00171|         // applies to every workflow. The exemptions issues #921, #1069 and
+   00172|         // #1079 each needed -- the Hive Mind full-circle gate, the
+   00173|         // `run-with-budget-warning.sh` wrappers, `persist-credentials: false`
+   00174|         // on eighteen checkouts and D12's failure-time evidence dump -- are
+   00175|         // all still here; they simply fit again. Anything that puts this file
+   00176|         // back over 1500 should extract a job, not raise the number.
+   00177|         (".github/workflows/release.yml", 1_500),
+   00178|         // Issue #1138 (L1) moved the crate to `rust/`; the caps are unchanged.
+   00179|         ("rust/src/intent_formalization.rs", 900),
+   00180|         ("rust/src/agentic_coding/general_planner.rs", 900),
+   00181|         ("js/worker/formal_ai_worker_solve.js", 1_400),
+   00182|         ("data/seed/multilingual-responses-agentic.lino", 1_400),
+   00183|         ("data/seed/multilingual-responses-agentic-tools.lino", 1_400),
+   00184|     ] {
+   00185|         let lines = repository_file(path).lines().count();
+   00186|         assert!(
+   00187|             lines <= warning_limit,
+   00188|             "{path} has {lines} lines; warning threshold is {warning_limit}"
+   00189|         );
+   00190|     }
+   00191| 
+   00192|     for language in formal_ai::language::registered_languages() {
+   00193|         for intent in [
+   00194|             "coding_workspace_effect_observed",
+   00195|             "coding_workspace_written_unverified",
+   00196|             "coding_workspace_verification_failed",
+   00197|             "coding_repository_source_observation",
+   00198|             "coding_repository_result_observation",
+   00199|             "tool_result_failed_exit_code",
+   00200|             // Issues #824 and #944 added the verified-mutating-action pair to
+   00201|             // the same split file, for the same reason the four above are
+   00202|             // there: they are what the workspace tools observed, not what the
+   00203|             // planner said.
+   00204|             "mutating_action_completed",
+   00205|             "mutating_action_blocked",
+   00206|         ] {
+   00207|             assert!(
+   00208|                 formal_ai::seed::response_for(intent, language.slug()).is_some(),
+   00209|                 "{intent} must remain directly available in {} after the seed split",
+   00210|                 language.slug()
+   00211|             );
+   00212|         }
+   00213|     }
+   00214| 
+   00215|     // Issue #991 made `data/meta/seed-registry.lino` the one inventory and
+   00216|     // generates the rest from it, so the split file is declared once and
+   00217|     // reaches every production surface by construction.
+   00218|     assert!(
+   00219|         repository_file("data/meta/seed-registry.lino")
+   00220|             .contains("seed multilingual-responses-agentic-tools\n"),
+   00221|         "the seed registry must declare the split response file"
+   00222|     );
+   00223|     for generated in [
+   00224|         "rust/src/seed/embedded_registry.rs",
+   00225|         "rust/tests/source/seed/embedded.rs",
+   00226|         "js/seed-files.js",
+   00227|     ] {
+   00228|         assert!(
+   00229|             repository_file(generated).contains("multilingual-responses-agentic-tools.lino"),
+   00230|             "{generated} must carry the split response file; regenerate it with \
+   00231|              `rust-script scripts/generate-seed-registry.rs --write`"
+   00232|         );
+   00233|     }
+   00234| }
+   00235| 
+   
+   (End of file - total 235 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/ci-cd/macos_test_partitioning.rs","file_path":"rust/tests/unit/ci-cd/macos_test_partitioning.rs","new":"assert!(test.contains(\"TEST_SUITE: specification\"));","newString":"assert!(test.contains(\"TEST_SUITE: specification\"));","new_str":"assert!(test.contains(\"TEST_SUITE: specification\"));","new_string":"assert!(test.contains(\"TEST_SUITE: specification\"));","old":"assert!(test.contains(\"TEST_SUITE: ${{ matrix.test-suite }}\"));","oldString":"assert!(test.contains(\"TEST_SUITE: ${{ matrix.test-suite }}\"));","old_str":"assert!(test.contains(\"TEST_SUITE: ${{ matrix.test-suite }}\"));","old_string":"assert!(test.contains(\"TEST_SUITE: ${{ matrix.test-suite }}\"));","path":"rust/tests/unit/ci-cd/macos_test_partitioning.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/ci-cd/macos_test_partitioning.rs"}
+   a7ec33c3f37ce68d831c89707660e0347249cc5c1f6032f53d0bc3d2d6097b41  rust/tests/unit/ci-cd/macos_test_partitioning.rs
+   
+== answer ==
+Replaced `assert!(test.contains("TEST_SUITE: ${{ matrix.test-suite }}"));` with `assert!(test.contains("TEST_SUITE: specification"));` in `rust/tests/unit/ci-cd/macos_test_partitioning.rs` and observed the result.

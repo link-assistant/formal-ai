@@ -1,0 +1,213 @@
+>> read {"filePath":"js/agentic/mutating_action.mjs","file_path":"js/agentic/mutating_action.mjs","path":"js/agentic/mutating_action.mjs"}
+   <file>
+   00001| // Verified mutating filesystem actions (issues #824 and #944): the JavaScript
+   00002| // twin of rust/src/agentic_coding/mutating_action.rs.
+   00003| //
+   00004| // A mutating command is planned as the ordered recipe its seed intent declares
+   00005| // (preconditions, preparation, the action, postconditions), each step observed
+   00006| // before the next is planned.
+   00007| 
+   00008| import { Capability } from './capability.mjs';
+   00009| import { toolFor } from './capability_router.mjs';
+   00010| import { finalAnswer, jsonText, planOne } from './plan.mjs';
+   00011| import { Progress } from './progress.mjs';
+   00012| import { StepOutcome, render, reportedExitCode, responseLanguage, stepOutcome } from './tool_result.mjs';
+   00013| import { localizedResponse } from './crate/seed.mjs';
+   00014| import { effectIsDeclared, shellIntentVocabulary } from './crate/seed_shell_intents.mjs';
+   00015| import { maxByKey, replaceAllLiteral, rsplitOnce } from './crate/rust_str.mjs';
+   00016| 
+   00017| const PATH_PLACEHOLDER = '{path}';
+   00018| const SOURCE_PLACEHOLDER = '{source}';
+   00019| const DESTINATION_PLACEHOLDER = '{destination}';
+   00020| const DESTINATION_PARENT_PLACEHOLDER = '{destination_parent}';
+   00021| const ACTION_PLACEHOLDER = '{action}';
+   00022| const CHECK_PLACEHOLDER = '{check}';
+   00023| const CHECKS_PLACEHOLDER = '{checks}';
+   00024| const EXIT_CODE_PLACEHOLDER = '{exit_code}';
+   00025| const CURRENT_DIRECTORY = '.';
+   00026| 
+   00027| /**
+   00028|  * Mirrors `fn expand` in rust/src/agentic_coding/mutating_action.rs:
+   00029|  * `{steps, action}` (the action's index) or null.
+   00030|  * @param {string} command
+   00031|  */
+   00032| export function expand(command) {
+   00033|   return expandWith(command, shellIntentVocabulary());
+   00034| }
+   00035| 
+   00036| function expandWith(command, vocab) {
+   00037|   const candidates = vocab.intents.filter((intent) => effectIsDeclared(intent.effect)
+   00038|     && command.startsWith(intent.command + ' '));
+   00039|   const intent = maxByKey(candidates, (candidate) => candidate.command.length);
+   00040|   if (!intent) return null;
+   00041|   const parsed = effectOperands(command.slice(intent.command.length), intent.effect);
+   00042|   if (!parsed || !parsed.operands.length) return null;
+   00043|   const { operands, flags } = parsed;
+   00044|   const effect = intent.effect;
+   00045|   const before = flags.some((flag) => effect.reuse_options.includes(flag)) && effect.before_reuse.length
+   00046|     ? effect.before_reuse : effect.before;
+   00047|   const templates = [...before, ...effect.prepare, ...effect.after];
+   00048|   const fill = (template, bindings) => bindings.reduce((text, [key, value]) => replaceAllLiteral(text, key, value), template);
+   00049|   let groups;
+   00050|   if (templates.some((template) => template.includes(PATH_PLACEHOLDER))) {
+   00051|     groups = operands.map((path) => (template) => fill(template, [[PATH_PLACEHOLDER, path]]));
+   00052|   } else {
+   00053|     if (operands.length < 2 || (operands.length > 2 && !effect.directory_targets)) return null;
+   00054|     const destination = operands.at(-1);
+   00055|     const sources = operands.slice(0, -1);
+   00056|     const collection = effect.directory_targets && (sources.length > 1
+   00057|       || sources.some(hasShellExpansion) || destination.replace(/^['"]|['"]$/gu, '').endsWith('/'));
+   00058|     if (collection) {
+   00059|       const setup = 'formal_ai_destination=' + destination + '; '
+   00060|         + 'if test -d "$formal_ai_destination" || [ "${formal_ai_destination%/}" != "$formal_ai_destination" ]; then '
+   00061|         + 'formal_ai_leaf="${formal_ai_source%/}"; formal_ai_destination="${formal_ai_destination%/}/${formal_ai_leaf##*/}"; fi; '
+   00062|         + 'formal_ai_parent="${formal_ai_destination%/*}"; '
+   00063|         + 'if [ "$formal_ai_parent" = "$formal_ai_destination" ]; then formal_ai_parent=.; fi; ';
+   00064|       const bindings = [[SOURCE_PLACEHOLDER, '"$formal_ai_source"'],
+   00065|         [DESTINATION_PARENT_PLACEHOLDER, '"$formal_ai_parent"'], [DESTINATION_PLACEHOLDER, '"$formal_ai_destination"']];
+   00066|       groups = [(template) => 'for formal_ai_source in ' + sources.join(' ') + '; do ' + setup
+   00067|         + fill(template, bindings) + ' || exit $?; done'];
+   00068|     } else {
+   00069|       groups = [(template) => fill(template, [[SOURCE_PLACEHOLDER, sources[0]],
+   00070|         [DESTINATION_PARENT_PLACEHOLDER, parentOf(destination)], [DESTINATION_PLACEHOLDER, destination]])];
+   00071|     }
+   00072|   }
+   00073|   const expandTemplates = (items) => items.flatMap((template) => groups.map((bind) => bind(template)));
+   00074|   const steps = [...expandTemplates(before), ...expandTemplates(effect.prepare)];
+   00075|   const action = steps.length;
+   00076|   steps.push(command, ...expandTemplates(effect.after));
+   00077|   return { steps, action };
+   00078| }
+   00079| 
+   00080| /** Preserve shell quoting while separating declared options from positional operands. */
+   00081| function effectOperands(text, effect) {
+   00082|   const words = shellWords(text);
+   00083|   if (words === null) return null;
+   00084|   const operands = [];
+   00085|   const flags = [];
+   00086|   let options = true;
+   00087|   for (let index = 0; index < words.length; index += 1) {
+   00088|     const raw = words[index];
+   00089|     const word = raw.replace(/^['"]|['"]$/gu, '');
+   00090|     if (options && word === '--') { options = false; continue; }
+   00091|     if (options && word.startsWith('-') && word !== '-') {
+   00092|       const valueOption = effect.value_options.find((option) => word === option || word.startsWith(option + '=')
+   00093|         || (!option.startsWith('--') && word.startsWith(option) && word.length > option.length));
+   00094|       if (valueOption) {
+   00095|         if (word === valueOption && ++index >= words.length) return null;
+   00096|         flags.push(valueOption);
+   00097|       } else if (effect.flags.includes(word)) flags.push(word);
+   00098|       else if (!word.startsWith('--') && [...word.slice(1)].every((letter) => effect.flags.includes('-' + letter))) {
+   00099|         flags.push(...[...word.slice(1)].map((letter) => '-' + letter));
+   00100|       } else return null;
+   00101|     } else operands.push(raw);
+   00102|   }
+   00103|   return { operands, flags };
+   00104| }
+   00105| 
+   00106| function shellWords(text) {
+   00107|   const words = [];
+   00108|   let start = null;
+   00109|   let quote = null;
+   00110|   let escaped = false;
+   00111|   for (let index = 0; index < text.length; index += 1) {
+   00112|     const character = text[index];
+   00113|     if (start === null && /\s/u.test(character)) continue;
+   00114|     if (start === null) start = index;
+   00115|     if (escaped) { escaped = false; continue; }
+   00116|     if (character === '\\' && quote !== "'") { escaped = true; continue; }
+   00117|     if (quote !== null) { if (character === quote) quote = null; continue; }
+   00118|     if (character === '"' || character === "'") { quote = character; continue; }
+   00119|     if (/\s/u.test(character)) { words.push(text.slice(start, index)); start = null; }
+   00120|     else if (';|&<>()`'.includes(character)) return null;
+   00121|   }
+   00122|   if (quote !== null || escaped) return null;
+   00123|   if (start !== null) words.push(text.slice(start));
+   00124|   return words;
+   00125| }
+   00126| 
+   00127| function hasShellExpansion(word) {
+   00128|   let quote = null;
+   00129|   let escaped = false;
+   00130|   for (const character of word) {
+   00131|     if (escaped) { escaped = false; continue; }
+   00132|     if (character === '\\' && quote !== "'") { escaped = true; continue; }
+   00133|     if (quote !== null) { if (character === quote) quote = null; continue; }
+   00134|     if (character === '"' || character === "'") quote = character;
+   00135|     else if ('*?[$'.includes(character)) return true;
+   00136|   }
+   00137|   return false;
+   00138| }
+   00139| 
+   00140| /** Mirrors `fn parent_of`. */
+   00141| function parentOf(path) {
+   00142|   if (/["']/u.test(path) || path.includes(String.fromCharCode(92))) return '"$(dirname -- ' + path + ')"';
+   00143|   const split = rsplitOnce(path, '/');
+   00144|   if (split === null) return CURRENT_DIRECTORY;
+   00145|   return split[0] === '' ? '/' : split[0];
+   00146| }
+   00147| 
+   00148| /**
+   00149|  * Mirrors `fn plan_step` in rust/src/agentic_coding/mutating_action.rs.
+   00150|  * @param {string} command
+   00151|  * @param {object[]} messages
+   00152|  * @param {string[]} toolNames
+   00153|  * @param {string} prompt
+   00154|  */
+   00155| export function planStep(command, messages, toolNames, prompt) {
+   00156|   const recipe = expand(command);
+   00157|   if (recipe === null) return null;
+   00158|   const tool = toolFor(toolNames, Capability.Run);
+   00159|   if (tool === null) return null;
+   00160|   const progress = Progress.scan(messages);
+   00161|   const taken = progress.run_outputs.length;
+   00162|   if (taken > 0) {
+   00163|     const index = taken - 1;
+   00164|     const observed = progress.run_outputs[index];
+   00165|     if (stepOutcome(observed) === StepOutcome.Failed) {
+   00166|       return finalAnswer(blockedReport(recipe, recipe.steps[index] ?? command, observed, prompt, index >= recipe.action));
+   00167|     }
+   00168|   }
+   00169|   if (taken < recipe.steps.length) return planOne(tool, jsonText({ command: recipe.steps[taken] }));
+   00170|   return finalAnswer(completedReport(recipe, prompt));
+   00171| }
+   00172| 
+   00173| function blockedReport(recipe, check, observed, prompt, attempted) {
+   00174|   const language = responseLanguage(prompt);
+   00175|   let answer = localizedResponse(attempted ? 'mutating_action_observed_failure' : 'mutating_action_blocked', language);
+   00176|   if (answer === null) return render(check, observed, prompt);
+   00177|   answer = replaceAllLiteral(answer, ACTION_PLACEHOLDER, recipe.steps[recipe.action]);
+   00178|   answer = replaceAllLiteral(answer, CHECK_PLACEHOLDER, check);
+   00179|   const code = reportedExitCode(observed);
+   00180|   return replaceAllLiteral(answer, EXIT_CODE_PLACEHOLDER, code === null ? '' : String(code));
+   00181| }
+   00182| 
+   00183| function completedReport(recipe, prompt) {
+   00184|   const language = responseLanguage(prompt);
+   00185|   const checks = recipe.steps.slice(recipe.action + 1).map((check) => `\`${check}\``).join(', ');
+   00186|   const answer = localizedResponse('mutating_action_completed', language);
+   00187|   if (answer === null) return recipe.steps[recipe.action];
+   00188|   return replaceAllLiteral(replaceAllLiteral(answer, ACTION_PLACEHOLDER, recipe.steps[recipe.action]), CHECKS_PLACEHOLDER, checks);
+   00189| }
+   00190| 
+   00191| /**
+   00192|  * Mirrors `fn verified_recipe` in rust/src/agentic_coding/mutating_action.rs.
+   00193|  * @param {string} command
+   00194|  * @returns {string[]|null}
+   00195|  */
+   00196| export function verifiedRecipe(command) {
+   00197|   return expand(command)?.steps ?? null;
+   00198| }
+   00199| 
+   
+   (End of file - total 199 lines)
+   </file>
+>> edit {"filePath":"js/agentic/mutating_action.mjs","file_path":"js/agentic/mutating_action.mjs","new":"const sources = operands.slice(0, -1);\n    if (!effect.directory_targets && sources.some(hasShellExpansion)) return null;\n    const collection","newString":"const sources = operands.slice(0, -1);\n    if (!effect.directory_targets && sources.some(hasShellExpansion)) return null;\n    const collection","new_str":"const sources = operands.slice(0, -1);\n    if (!effect.directory_targets && sources.some(hasShellExpansion)) return null;\n    const collection","new_string":"const sources = operands.slice(0, -1);\n    if (!effect.directory_targets && sources.some(hasShellExpansion)) return null;\n    const collection","old":"const sources = operands.slice(0, -1);\n    const collection","oldString":"const sources = operands.slice(0, -1);\n    const collection","old_str":"const sources = operands.slice(0, -1);\n    const collection","old_string":"const sources = operands.slice(0, -1);\n    const collection","path":"js/agentic/mutating_action.mjs"}
+>> bash {"command":"sha256sum -- js/agentic/mutating_action.mjs"}
+   51ae9c615d433676c9c06128d0a3e72f8d2b817edfcb4f98a959b87e5e3adff1  js/agentic/mutating_action.mjs
+   
+== answer ==
+Replaced `const sources = operands.slice(0, -1);
+    const collection` with `const sources = operands.slice(0, -1);
+    if (!effect.directory_targets && sources.some(hasShellExpansion)) return null;
+    const collection` in `js/agentic/mutating_action.mjs` and observed the result.

@@ -1,0 +1,8 @@
+>> bash {"command":"test -e changelog.d/20261009_031500_ci-templates-and-pages-trust.md"}
+>> bash {"command":"test ! -e changelog.d/20261009_041000_typed-removal-summaries.md"}
+>> bash {"command":"mkdir -p -- changelog.d"}
+>> bash {"command":"cp changelog.d/20261009_031500_ci-templates-and-pages-trust.md changelog.d/20261009_041000_typed-removal-summaries.md"}
+>> bash {"command":"test -e changelog.d/20261009_041000_typed-removal-summaries.md"}
+>> bash {"command":"test -e changelog.d/20261009_031500_ci-templates-and-pages-trust.md"}
+== answer ==
+Completed the action `cp changelog.d/20261009_031500_ci-templates-and-pages-trust.md changelog.d/20261009_041000_typed-removal-summaries.md` and verified it with `test -e changelog.d/20261009_041000_typed-removal-summaries.md`, `test -e changelog.d/20261009_031500_ci-templates-and-pages-trust.md`.

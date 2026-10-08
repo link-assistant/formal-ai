@@ -1,0 +1,407 @@
+>> read {"filePath":"rust/src/agentic_coding/mutating_action.rs","file_path":"rust/src/agentic_coding/mutating_action.rs","path":"rust/src/agentic_coding/mutating_action.rs"}
+   <file>
+   00001| //! Verified mutating filesystem actions (issues #824 and #944).
+   00002| //!
+   00003| //! Issue #824 reported a request to *move* a directory being refused outright.
+   00004| //! The routing half of that was answered by the seed `mv` intent: the request
+   00005| //! now lowers to a concrete `mv SOURCE DESTINATION`. What issue #944 asks for is
+   00006| //! the other half — that the action be **verified** rather than merely issued.
+   00007| //!
+   00008| //! A read-only command answers by what it prints, so running it and reporting
+   00009| //! its output is the whole job. A mutating command answers by what the workspace
+   00010| //! *holds afterwards*, and a zero exit status is not that: `mv a b` exits zero
+   00011| //! whether or not `b` was something the user wanted overwritten, and exits
+   00012| //! non-zero for a missing parent directory that the request plainly implied
+   00013| //! should exist. So the action is planned as an ordered recipe —
+   00014| //!
+   00015| //! 1. the preconditions the intent declares (the source is there, the
+   00016| //!    destination is free),
+   00017| //! 2. the preparation the intent declares (`mkdir -p` on the destination's
+   00018| //!    parent, which is what makes a deep target path work at all),
+   00019| //! 3. the action itself,
+   00020| //! 4. the postconditions the intent declares (the destination is there, and for
+   00021| //!    a move, the source is not),
+   00022| //!
+   00023| //! — with each step observed before the next is planned. A step that exits
+   00024| //! non-zero ends the recipe and is reported as itself, so a blocked move says
+   00025| //! which check blocked it and that nothing changed, instead of claiming a
+   00026| //! completion the workspace would contradict.
+   00027| //!
+   00028| //! None of those predicates are written here. They are declared per intent in
+   00029| //! `data/seed/shell-intents.lino` as [`crate::seed::ShellIntentEffect`], so a
+   00030| //! maintainer teaches a new mutating verb its pre/post conditions by editing
+   00031| //! seed data — the same rule every other trigger vocabulary on this project
+   00032| //! follows, and the reason this module works for `cp` without naming `cp`.
+   00033| 
+   00034| use serde_json::json;
+   00035| 
+   00036| use super::planner::{plan_one, tool_for, AgenticPlan, Capability};
+   00037| use super::progress::Progress;
+   00038| use super::tool_result;
+   00039| use crate::protocol::ChatMessage;
+   00040| use crate::seed::{self, ShellIntentVocabulary};
+   00041| 
+   00042| const PATH_PLACEHOLDER: &str = concat!("{", "path", "}");
+   00043| const SOURCE_PLACEHOLDER: &str = concat!("{", "source", "}");
+   00044| const DESTINATION_PLACEHOLDER: &str = concat!("{", "destination", "}");
+   00045| const DESTINATION_PARENT_PLACEHOLDER: &str = concat!("{", "destination_parent", "}");
+   00046| const ACTION_PLACEHOLDER: &str = concat!("{", "action", "}");
+   00047| const CHECK_PLACEHOLDER: &str = concat!("{", "check", "}");
+   00048| const CHECKS_PLACEHOLDER: &str = concat!("{", "checks", "}");
+   00049| const EXIT_CODE_PLACEHOLDER: &str = concat!("{", "exit_code", "}");
+   00050| 
+   00051| /// The directory component used when the destination names no directory at all.
+   00052| const CURRENT_DIRECTORY: &str = ".";
+   00053| 
+   00054| /// One mutating action expanded into the ordered steps that carry it out.
+   00055| pub(super) struct VerifiedAction {
+   00056|     /// Every step in order: preconditions, preparation, the action, postconditions.
+   00057|     steps: Vec<String>,
+   00058|     /// The index of the action itself within [`Self::steps`].
+   00059|     action: usize,
+   00060| }
+   00061| 
+   00062| impl VerifiedAction {
+   00063|     /// The steps in the order they are run.
+   00064|     pub(super) fn steps(&self) -> &[String] {
+   00065|         &self.steps
+   00066|     }
+   00067| 
+   00068|     /// The mutating command itself, the one step that is not a check.
+   00069|     pub(super) fn action(&self) -> &str {
+   00070|         self.steps[self.action].as_str()
+   00071|     }
+   00072| 
+   00073|     /// The checks that ran after the action, which is what the completion claim
+   00074|     /// rests on.
+   00075|     pub(super) fn postconditions(&self) -> &[String] {
+   00076|         &self.steps[self.action + 1..]
+   00077|     }
+   00078| }
+   00079| 
+   00080| /// Expand `command` into its verified recipe, or `None` when no seed intent
+   00081| /// declares an effect for it.
+   00082| ///
+   00083| /// The command was assembled by [`super::shell_command`] as the intent's own
+   00084| /// command followed by its operands, so it is taken apart the same way: the
+   00085| /// longest declared command that prefixes it wins, and the remainder must be
+   00086| /// exactly the two operands a source/destination effect is written against.
+   00087| pub(super) fn expand(command: &str) -> Option<VerifiedAction> {
+   00088|     expand_with(command, &seed::shell_intent_vocabulary())
+   00089| }
+   00090| 
+   00091| fn expand_with(command: &str, vocab: &ShellIntentVocabulary) -> Option<VerifiedAction> {
+   00092|     let (effect, operands) = vocab
+   00093|         .intents
+   00094|         .iter()
+   00095|         .filter(|intent| intent.effect.is_declared())
+   00096|         .filter_map(|intent| {
+   00097|             let rest = command
+   00098|                 .strip_prefix(intent.command.as_str())
+   00099|                 .filter(|rest| rest.starts_with(' '))?;
+   00100|             Some((&intent.effect, rest.split_whitespace().collect::<Vec<_>>()))
+   00101|         })
+   00102|         .max_by_key(|(_, operands)| operands.len())?;
+   00103|     // One operand fills `{path}` (`mkdir src`); two fill the source, the
+   00104|     // destination and the destination's parent, the parent first so the
+   00105|     // longer placeholder is never read as the shorter one.
+   00106|     let substitutions: Vec<(&str, String)> = match operands.as_slice() {
+   00107|         [path] => vec![(PATH_PLACEHOLDER, (*path).to_owned())],
+   00108|         [source, destination] => vec![
+   00109|             (SOURCE_PLACEHOLDER, (*source).to_owned()),
+   00110|             (DESTINATION_PARENT_PLACEHOLDER, parent_of(destination)),
+   00111|             (DESTINATION_PLACEHOLDER, (*destination).to_owned()),
+   00112|         ],
+   00113|         _ => return None,
+   00114|     };
+   00115|     let fill = |template: &String| {
+   00116|         substitutions
+   00117|             .iter()
+   00118|             .fold(template.clone(), |text, (placeholder, value)| {
+   00119|                 text.replace(placeholder, value)
+   00120|             })
+   00121|     };
+   00122|     let mut steps: Vec<String> = effect.before.iter().map(&fill).collect();
+   00123|     steps.extend(effect.prepare.iter().map(&fill));
+   00124|     let action = steps.len();
+   00125|     steps.push(command.to_owned());
+   00126|     steps.extend(effect.after.iter().map(&fill));
+   00127|     Some(VerifiedAction { steps, action })
+   00128| }
+   00129| 
+   00130| /// The directory component of `path`, or `.` when it names no directory.
+   00131| ///
+   00132| /// Written as text rather than through [`std::path::Path`] on purpose: the
+   00133| /// operand is a shell word that may still be rooted at `~`, and `Path` would
+   00134| /// happily hand back a `~` that the shell then declines to expand once it is no
+   00135| /// longer the first character of the word.
+   00136| fn parent_of(path: &str) -> String {
+   00137|     match path.rsplit_once('/') {
+   00138|         Some(("", _)) => String::from("/"),
+   00139|         Some((parent, _)) => parent.to_owned(),
+   00140|         None => String::from(CURRENT_DIRECTORY),
+   00141|     }
+   00142| }
+   00143| 
+   00144| /// Plan the next step of the verified recipe for `command`.
+   00145| ///
+   00146| /// Returns `None` when the command declares no effect (every read-only intent),
+   00147| /// or when the client advertised no shell tool — in which case the caller's
+   00148| /// single-shot path still produces the honest "I can run this when you give me a
+   00149| /// shell" answer rather than this module inventing a second one.
+   00150| pub(super) fn plan_step(
+   00151|     command: &str,
+   00152|     messages: &[ChatMessage],
+   00153|     tool_names: &[&str],
+   00154|     prompt: &str,
+   00155| ) -> Option<AgenticPlan> {
+   00156|     let recipe = expand(command)?;
+   00157|     let tool = tool_for(tool_names, Capability::Run)?;
+   00158|     let progress = Progress::scan(messages);
+   00159|     let taken = progress.run_outputs.len();
+   00160| 
+   00161|     // The workspace gets the last word before anything else is planned: a step
+   00162|     // that exited non-zero ends the recipe where it stopped.
+   00163|     if let Some(index) = taken.checked_sub(1) {
+   00164|         let observed = &progress.run_outputs[index];
+   00165|         if tool_result::step_outcome(observed) == tool_result::StepOutcome::Failed {
+   00166|             return Some(AgenticPlan::Final(blocked_report(
+   00167|                 &recipe,
+   00168|                 recipe.steps().get(index).map_or(command, String::as_str),
+   00169|                 observed,
+   00170|                 prompt,
+   00171|             )));
+   00172|         }
+   00173|     }
+   00174|     if let Some(step) = recipe.steps().get(taken) {
+   00175|         return Some(plan_one(tool, json!({ "command": step }).to_string()));
+   00176|     }
+   00177|     Some(AgenticPlan::Final(completed_report(&recipe, prompt)))
+   00178| }
+   00179| 
+   00180| /// The report for a recipe that stopped: which check stopped it, with what
+   00181| /// status, and the fact that the action did not run.
+   00182| ///
+   00183| /// A blocked move is not a failed move, and saying so is the point. Issue #824
+   00184| /// is the record of what over-refusal costs and issue #916 rung `R916-01` is the
+   00185| /// record of what a false completion claim costs; a recipe that names the check
+   00186| /// it stopped on avoids both.
+   00187| fn blocked_report(recipe: &VerifiedAction, check: &str, observed: &str, prompt: &str) -> String {
+   00188|     let language = tool_result::response_language(prompt);
+   00189|     let Some(mut answer) = seed::localized_response("mutating_action_blocked", language) else {
+   00190|         return tool_result::render(check, observed, prompt);
+   00191|     };
+   00192|     answer = answer.replace(ACTION_PLACEHOLDER, recipe.action());
+   00193|     answer = answer.replace(CHECK_PLACEHOLDER, check);
+   00194|     answer = answer.replace(
+   00195|         EXIT_CODE_PLACEHOLDER,
+   00196|         &tool_result::reported_exit_code(observed).map_or_else(String::new, |code| code.to_string()),
+   00197|     );
+   00198|     answer
+   00199| }
+   00200| 
+   00201| /// The report for a recipe that finished: the action that ran, and the checks
+   00202| /// that were observed to hold afterwards.
+   00203| ///
+   00204| /// The claim rests on those checks and names them, because a claim the reader
+   00205| /// cannot re-run is the narration issue #916 rung `R916-01` was written against.
+   00206| fn completed_report(recipe: &VerifiedAction, prompt: &str) -> String {
+   00207|     let language = tool_result::response_language(prompt);
+   00208|     let checks = recipe
+   00209|         .postconditions()
+   00210|         .iter()
+   00211|         .map(|check| format!("`{check}`"))
+   00212|         .collect::<Vec<_>>()
+   00213|         .join(", ");
+   00214|     seed::localized_response("mutating_action_completed", language).map_or_else(
+   00215|         || recipe.action().to_owned(),
+   00216|         |answer| {
+   00217|             answer
+   00218|                 .replace(ACTION_PLACEHOLDER, recipe.action())
+   00219|                 .replace(CHECKS_PLACEHOLDER, &checks)
+   00220|         },
+   00221|     )
+   00222| }
+   00223| 
+   00224| /// The ordered steps `command` is carried out as.
+   00225| ///
+   00226| /// `None` when no seed intent declares an effect for it — every read-only
+   00227| /// intent, and every mutating one whose operands are not the source/destination
+   00228| /// pair the effect is written against.
+   00229| ///
+   00230| /// Read-only intents keep their single-shot path, which is why this is the same
+   00231| /// question the planner asks: a caller that wants to know whether a command is
+   00232| /// carried out as a recipe asks for the recipe.
+   00233| #[must_use]
+   00234| pub fn verified_recipe(command: &str) -> Option<Vec<String>> {
+   00235|     expand(command).map(|recipe| recipe.steps)
+   00236| }
+   00237| 
+   00238| 
+   
+   (End of file - total 238 lines)
+   </file>
+>> edit {"filePath":"rust/src/agentic_coding/mutating_action.rs","file_path":"rust/src/agentic_coding/mutating_action.rs","new":"fn expand_with(command: &str, vocab: &ShellIntentVocabulary) -> Option<VerifiedAction> {\n    let intent = vocab.intents.iter()\n        .filter(|intent| intent.effect.is_declared())\n        .filter(|intent| command.strip_prefix(intent.command.as_str()).is_some_and(|rest| rest.starts_with(' ')))\n        .max_by_key(|intent| intent.command.len())?;\n    let effect = &intent.effect;\n    let (operands, flags) = effect_operands(&command[intent.command.len()..], effect)?;\n    if operands.is_empty() { return None; }\n    let before = if flags.iter().any(|flag| effect.reuse_options.contains(flag)) && !effect.before_reuse.is_empty() {\n        &effect.before_reuse\n    } else { &effect.before };\n    let has_path = before.iter().chain(&effect.prepare).chain(&effect.after)\n        .any(|template| template.contains(PATH_PLACEHOLDER));\n    let bind = |template: &str, bindings: &[(&str, String)]| {\n        bindings.iter().fold(template.to_owned(), |text, (key, value)| text.replace(key, value))\n    };\n    let mut groups: Vec<Vec<(&str, String)>> = Vec::new();\n    let mut collection = None;\n    if has_path {\n        groups.extend(operands.iter().map(|path| vec![(PATH_PLACEHOLDER, (*path).to_owned())]));\n    } else {\n        if operands.len() < 2 || (operands.len() > 2 && !effect.directory_targets) { return None; }\n        let destination = *operands.last()?;\n        let sources = &operands[..operands.len() - 1];\n        if effect.directory_targets && (sources.len() > 1 || sources.iter().any(|source| has_shell_expansion(source))\n            || destination.trim_matches(['\\'', '\"']).ends_with('/')) {\n            collection = Some((sources.join(\" \"), destination));\n            groups.push(vec![(SOURCE_PLACEHOLDER, String::from(\"\\\"$formal_ai_source\\\"\")),\n                (DESTINATION_PARENT_PLACEHOLDER, String::from(\"\\\"$formal_ai_parent\\\"\")),\n                (DESTINATION_PLACEHOLDER, String::from(\"\\\"$formal_ai_destination\\\"\"))]);\n        } else {\n            groups.push(vec![(SOURCE_PLACEHOLDER, sources[0].to_owned()),\n                (DESTINATION_PARENT_PLACEHOLDER, parent_of(destination)),\n                (DESTINATION_PLACEHOLDER, destination.to_owned())]);\n        }\n    }\n    let fill = |template: &String| -> Vec<String> {\n        groups.iter().map(|bindings| {\n            let check = bind(template, bindings);\n            if let Some((sources, destination)) = &collection {\n                let setup = format!(\"formal_ai_destination={destination}; {}\", concat!(\n                    \"if test -d \\\"$formal_ai_destination\\\" || [ \\\"${formal_ai_destination%/}\\\" != \\\"$formal_ai_destination\\\" ]; then \",\n                    \"formal_ai_leaf=\\\"${formal_ai_source%/}\\\"; formal_ai_destination=\\\"${formal_ai_destination%/}/${formal_ai_leaf##*/}\\\"; fi; \",\n                    \"formal_ai_parent=\\\"${formal_ai_destination%/*}\\\"; \",\n                    \"if [ \\\"$formal_ai_parent\\\" = \\\"$formal_ai_destination\\\" ]; then formal_ai_parent=.; fi; \"));\n                format!(\"for formal_ai_source in {sources}; do {setup}{check} || exit $?; done\")\n            } else { check }\n        }).collect()\n    };\n    let mut steps: Vec<String> = before.iter().flat_map(&fill).collect();\n    steps.extend(effect.prepare.iter().flat_map(&fill));\n    let action = steps.len();\n    steps.push(command.to_owned());\n    steps.extend(effect.after.iter().flat_map(&fill));\n    Some(VerifiedAction { steps, action })\n}\n\n/// Separate declared options from shell words while preserving operand quoting.\nfn effect_operands<'a>(text: &'a str, effect: &seed::ShellIntentEffect) -> Option<(Vec<&'a str>, Vec<String>)> {\n    let words = shell_words(text)?;\n    let mut operands = Vec::new();\n    let mut flags = Vec::new();\n    let mut options = true;\n    let mut index = 0;\n    while index < words.len() {\n        let raw = words[index];\n        let word = raw.trim_matches(['\\'', '\"']);\n        if options && word == \"--\" { options = false; }\n        else if options && word.starts_with('-') && word != \"-\" {\n            if let Some(option) = effect.value_options.iter().find(|option| word == option.as_str()\n                || word.strip_prefix(option.as_str()).is_some_and(|suffix| suffix.starts_with('=')\n                    || (!option.starts_with(\"--\") && !suffix.is_empty()))) {\n                if word == option { index += 1; if index >= words.len() { return None; } }\n                flags.push(option.clone());\n            } else if effect.flags.iter().any(|flag| flag == word) { flags.push(word.to_owned()); }\n            else if !word.starts_with(\"--\") {\n                let bundled: Vec<String> = word[1..].chars().map(|letter| format!(\"-{letter}\")).collect();\n                if !bundled.iter().all(|flag| effect.flags.contains(flag)) { return None; }\n                flags.extend(bundled);\n            } else { return None; }\n        } else { operands.push(raw); }\n        index += 1;\n    }\n    Some((operands, flags))\n}\n\nfn shell_words(text: &str) -> Option<Vec<&str>> {\n    let mut words = Vec::new();\n    let mut start = None;\n    let mut quote = None;\n    let mut escaped = false;\n    for (index, character) in text.char_indices() {\n        if start.is_none() && character.is_whitespace() { continue; }\n        if start.is_none() { start = Some(index); }\n        if escaped { escaped = false; continue; }\n        if character == '\\\\' && quote != Some('\\'') { escaped = true; continue; }\n        if let Some(delimiter) = quote { if character == delimiter { quote = None; } continue; }\n        if character == '\"' || character == '\\'' { quote = Some(character); continue; }\n        if character.is_whitespace() { words.push(&text[start.take()?..index]); }\n        else if \";|&<>()`\".contains(character) { return None; }\n    }\n    if quote.is_some() || escaped { return None; }\n    if let Some(start) = start { words.push(&text[start..]); }\n    Some(words)\n}\n\nfn has_shell_expansion(word: &str) -> bool {\n    let mut quote = None;\n    let mut escaped = false;\n    for character in word.chars() {\n        if escaped { escaped = false; continue; }\n        if character == '\\\\' && quote != Some('\\'') { escaped = true; continue; }\n        if let Some(delimiter) = quote { if character == delimiter { quote = None; } continue; }\n        if character == '\"' || character == '\\'' { quote = Some(character); }\n        else if \"*?[$\".contains(character) { return true; }\n    }\n    false\n}\n\n","newString":"fn expand_with(command: &str, vocab: &ShellIntentVocabulary) -> Option<VerifiedAction> {\n    let intent = vocab.intents.iter()\n        .filter(|intent| intent.effect.is_declared())\n        .filter(|intent| command.strip_prefix(intent.command.as_str()).is_some_and(|rest| rest.starts_with(' ')))\n        .max_by_key(|intent| intent.command.len())?;\n    let effect = &intent.effect;\n    let (operands, flags) = effect_operands(&command[intent.command.len()..], effect)?;\n    if operands.is_empty() { return None; }\n    let before = if flags.iter().any(|flag| effect.reuse_options.contains(flag)) && !effect.before_reuse.is_empty() {\n        &effect.before_reuse\n    } else { &effect.before };\n    let has_path = before.iter().chain(&effect.prepare).chain(&effect.after)\n        .any(|template| template.contains(PATH_PLACEHOLDER));\n    let bind = |template: &str, bindings: &[(&str, String)]| {\n        bindings.iter().fold(template.to_owned(), |text, (key, value)| text.replace(key, value))\n    };\n    let mut groups: Vec<Vec<(&str, String)>> = Vec::new();\n    let mut collection = None;\n    if has_path {\n        groups.extend(operands.iter().map(|path| vec![(PATH_PLACEHOLDER, (*path).to_owned())]));\n    } else {\n        if operands.len() < 2 || (operands.len() > 2 && !effect.directory_targets) { return None; }\n        let destination = *operands.last()?;\n        let sources = &operands[..operands.len() - 1];\n        if effect.directory_targets && (sources.len() > 1 || sources.iter().any(|source| has_shell_expansion(source))\n            || destination.trim_matches(['\\'', '\"']).ends_with('/')) {\n            collection = Some((sources.join(\" \"), destination));\n            groups.push(vec![(SOURCE_PLACEHOLDER, String::from(\"\\\"$formal_ai_source\\\"\")),\n                (DESTINATION_PARENT_PLACEHOLDER, String::from(\"\\\"$formal_ai_parent\\\"\")),\n                (DESTINATION_PLACEHOLDER, String::from(\"\\\"$formal_ai_destination\\\"\"))]);\n        } else {\n            groups.push(vec![(SOURCE_PLACEHOLDER, sources[0].to_owned()),\n                (DESTINATION_PARENT_PLACEHOLDER, parent_of(destination)),\n                (DESTINATION_PLACEHOLDER, destination.to_owned())]);\n        }\n    }\n    let fill = |template: &String| -> Vec<String> {\n        groups.iter().map(|bindings| {\n            let check = bind(template, bindings);\n            if let Some((sources, destination)) = &collection {\n                let setup = format!(\"formal_ai_destination={destination}; {}\", concat!(\n                    \"if test -d \\\"$formal_ai_destination\\\" || [ \\\"${formal_ai_destination%/}\\\" != \\\"$formal_ai_destination\\\" ]; then \",\n                    \"formal_ai_leaf=\\\"${formal_ai_source%/}\\\"; formal_ai_destination=\\\"${formal_ai_destination%/}/${formal_ai_leaf##*/}\\\"; fi; \",\n                    \"formal_ai_parent=\\\"${formal_ai_destination%/*}\\\"; \",\n                    \"if [ \\\"$formal_ai_parent\\\" = \\\"$formal_ai_destination\\\" ]; then formal_ai_parent=.; fi; \"));\n                format!(\"for formal_ai_source in {sources}; do {setup}{check} || exit $?; done\")\n            } else { check }\n        }).collect()\n    };\n    let mut steps: Vec<String> = before.iter().flat_map(&fill).collect();\n    steps.extend(effect.prepare.iter().flat_map(&fill));\n    let action = steps.len();\n    steps.push(command.to_owned());\n    steps.extend(effect.after.iter().flat_map(&fill));\n    Some(VerifiedAction { steps, action })\n}\n\n/// Separate declared options from shell words while preserving operand quoting.\nfn effect_operands<'a>(text: &'a str, effect: &seed::ShellIntentEffect) -> Option<(Vec<&'a str>, Vec<String>)> {\n    let words = shell_words(text)?;\n    let mut operands = Vec::new();\n    let mut flags = Vec::new();\n    let mut options = true;\n    let mut index = 0;\n    while index < words.len() {\n        let raw = words[index];\n        let word = raw.trim_matches(['\\'', '\"']);\n        if options && word == \"--\" { options = false; }\n        else if options && word.starts_with('-') && word != \"-\" {\n            if let Some(option) = effect.value_options.iter().find(|option| word == option.as_str()\n                || word.strip_prefix(option.as_str()).is_some_and(|suffix| suffix.starts_with('=')\n                    || (!option.starts_with(\"--\") && !suffix.is_empty()))) {\n                if word == option { index += 1; if index >= words.len() { return None; } }\n                flags.push(option.clone());\n            } else if effect.flags.iter().any(|flag| flag == word) { flags.push(word.to_owned()); }\n            else if !word.starts_with(\"--\") {\n                let bundled: Vec<String> = word[1..].chars().map(|letter| format!(\"-{letter}\")).collect();\n                if !bundled.iter().all(|flag| effect.flags.contains(flag)) { return None; }\n                flags.extend(bundled);\n            } else { return None; }\n        } else { operands.push(raw); }\n        index += 1;\n    }\n    Some((operands, flags))\n}\n\nfn shell_words(text: &str) -> Option<Vec<&str>> {\n    let mut words = Vec::new();\n    let mut start = None;\n    let mut quote = None;\n    let mut escaped = false;\n    for (index, character) in text.char_indices() {\n        if start.is_none() && character.is_whitespace() { continue; }\n        if start.is_none() { start = Some(index); }\n        if escaped { escaped = false; continue; }\n        if character == '\\\\' && quote != Some('\\'') { escaped = true; continue; }\n        if let Some(delimiter) = quote { if character == delimiter { quote = None; } continue; }\n        if character == '\"' || character == '\\'' { quote = Some(character); continue; }\n        if character.is_whitespace() { words.push(&text[start.take()?..index]); }\n        else if \";|&<>()`\".contains(character) { return None; }\n    }\n    if quote.is_some() || escaped { return None; }\n    if let Some(start) = start { words.push(&text[start..]); }\n    Some(words)\n}\n\nfn has_shell_expansion(word: &str) -> bool {\n    let mut quote = None;\n    let mut escaped = false;\n    for character in word.chars() {\n        if escaped { escaped = false; continue; }\n        if character == '\\\\' && quote != Some('\\'') { escaped = true; continue; }\n        if let Some(delimiter) = quote { if character == delimiter { quote = None; } continue; }\n        if character == '\"' || character == '\\'' { quote = Some(character); }\n        else if \"*?[$\".contains(character) { return true; }\n    }\n    false\n}\n\n","new_str":"fn expand_with(command: &str, vocab: &ShellIntentVocabulary) -> Option<VerifiedAction> {\n    let intent = vocab.intents.iter()\n        .filter(|intent| intent.effect.is_declared())\n        .filter(|intent| command.strip_prefix(intent.command.as_str()).is_some_and(|rest| rest.starts_with(' ')))\n        .max_by_key(|intent| intent.command.len())?;\n    let effect = &intent.effect;\n    let (operands, flags) = effect_operands(&command[intent.command.len()..], effect)?;\n    if operands.is_empty() { return None; }\n    let before = if flags.iter().any(|flag| effect.reuse_options.contains(flag)) && !effect.before_reuse.is_empty() {\n        &effect.before_reuse\n    } else { &effect.before };\n    let has_path = before.iter().chain(&effect.prepare).chain(&effect.after)\n        .any(|template| template.contains(PATH_PLACEHOLDER));\n    let bind = |template: &str, bindings: &[(&str, String)]| {\n        bindings.iter().fold(template.to_owned(), |text, (key, value)| text.replace(key, value))\n    };\n    let mut groups: Vec<Vec<(&str, String)>> = Vec::new();\n    let mut collection = None;\n    if has_path {\n        groups.extend(operands.iter().map(|path| vec![(PATH_PLACEHOLDER, (*path).to_owned())]));\n    } else {\n        if operands.len() < 2 || (operands.len() > 2 && !effect.directory_targets) { return None; }\n        let destination = *operands.last()?;\n        let sources = &operands[..operands.len() - 1];\n        if effect.directory_targets && (sources.len() > 1 || sources.iter().any(|source| has_shell_expansion(source))\n            || destination.trim_matches(['\\'', '\"']).ends_with('/')) {\n            collection = Some((sources.join(\" \"), destination));\n            groups.push(vec![(SOURCE_PLACEHOLDER, String::from(\"\\\"$formal_ai_source\\\"\")),\n                (DESTINATION_PARENT_PLACEHOLDER, String::from(\"\\\"$formal_ai_parent\\\"\")),\n                (DESTINATION_PLACEHOLDER, String::from(\"\\\"$formal_ai_destination\\\"\"))]);\n        } else {\n            groups.push(vec![(SOURCE_PLACEHOLDER, sources[0].to_owned()),\n                (DESTINATION_PARENT_PLACEHOLDER, parent_of(destination)),\n                (DESTINATION_PLACEHOLDER, destination.to_owned())]);\n        }\n    }\n    let fill = |template: &String| -> Vec<String> {\n        groups.iter().map(|bindings| {\n            let check = bind(template, bindings);\n            if let Some((sources, destination)) = &collection {\n                let setup = format!(\"formal_ai_destination={destination}; {}\", concat!(\n                    \"if test -d \\\"$formal_ai_destination\\\" || [ \\\"${formal_ai_destination%/}\\\" != \\\"$formal_ai_destination\\\" ]; then \",\n                    \"formal_ai_leaf=\\\"${formal_ai_source%/}\\\"; formal_ai_destination=\\\"${formal_ai_destination%/}/${formal_ai_leaf##*/}\\\"; fi; \",\n                    \"formal_ai_parent=\\\"${formal_ai_destination%/*}\\\"; \",\n                    \"if [ \\\"$formal_ai_parent\\\" = \\\"$formal_ai_destination\\\" ]; then formal_ai_parent=.; fi; \"));\n                format!(\"for formal_ai_source in {sources}; do {setup}{check} || exit $?; done\")\n            } else { check }\n        }).collect()\n    };\n    let mut steps: Vec<String> = before.iter().flat_map(&fill).collect();\n    steps.extend(effect.prepare.iter().flat_map(&fill));\n    let action = steps.len();\n    steps.push(command.to_owned());\n    steps.extend(effect.after.iter().flat_map(&fill));\n    Some(VerifiedAction { steps, action })\n}\n\n/// Separate declared options from shell words while preserving operand quoting.\nfn effect_operands<'a>(text: &'a str, effect: &seed::ShellIntentEffect) -> Option<(Vec<&'a str>, Vec<String>)> {\n    let words = shell_words(text)?;\n    let mut operands = Vec::new();\n    let mut flags = Vec::new();\n    let mut options = true;\n    let mut index = 0;\n    while index < words.len() {\n        let raw = words[index];\n        let word = raw.trim_matches(['\\'', '\"']);\n        if options && word == \"--\" { options = false; }\n        else if options && word.starts_with('-') && word != \"-\" {\n            if let Some(option) = effect.value_options.iter().find(|option| word == option.as_str()\n                || word.strip_prefix(option.as_str()).is_some_and(|suffix| suffix.starts_with('=')\n                    || (!option.starts_with(\"--\") && !suffix.is_empty()))) {\n                if word == option { index += 1; if index >= words.len() { return None; } }\n                flags.push(option.clone());\n            } else if effect.flags.iter().any(|flag| flag == word) { flags.push(word.to_owned()); }\n            else if !word.starts_with(\"--\") {\n                let bundled: Vec<String> = word[1..].chars().map(|letter| format!(\"-{letter}\")).collect();\n                if !bundled.iter().all(|flag| effect.flags.contains(flag)) { return None; }\n                flags.extend(bundled);\n            } else { return None; }\n        } else { operands.push(raw); }\n        index += 1;\n    }\n    Some((operands, flags))\n}\n\nfn shell_words(text: &str) -> Option<Vec<&str>> {\n    let mut words = Vec::new();\n    let mut start = None;\n    let mut quote = None;\n    let mut escaped = false;\n    for (index, character) in text.char_indices() {\n        if start.is_none() && character.is_whitespace() { continue; }\n        if start.is_none() { start = Some(index); }\n        if escaped { escaped = false; continue; }\n        if character == '\\\\' && quote != Some('\\'') { escaped = true; continue; }\n        if let Some(delimiter) = quote { if character == delimiter { quote = None; } continue; }\n        if character == '\"' || character == '\\'' { quote = Some(character); continue; }\n        if character.is_whitespace() { words.push(&text[start.take()?..index]); }\n        else if \";|&<>()`\".contains(character) { return None; }\n    }\n    if quote.is_some() || escaped { return None; }\n    if let Some(start) = start { words.push(&text[start..]); }\n    Some(words)\n}\n\nfn has_shell_expansion(word: &str) -> bool {\n    let mut quote = None;\n    let mut escaped = false;\n    for character in word.chars() {\n        if escaped { escaped = false; continue; }\n        if character == '\\\\' && quote != Some('\\'') { escaped = true; continue; }\n        if let Some(delimiter) = quote { if character == delimiter { quote = None; } continue; }\n        if character == '\"' || character == '\\'' { quote = Some(character); }\n        else if \"*?[$\".contains(character) { return true; }\n    }\n    false\n}\n\n","new_string":"fn expand_with(command: &str, vocab: &ShellIntentVocabulary) -> Option<VerifiedAction> {\n    let intent = vocab.intents.iter()\n        .filter(|intent| intent.effect.is_declared())\n        .filter(|intent| command.strip_prefix(intent.command.as_str()).is_some_and(|rest| rest.starts_with(' ')))\n        .max_by_key(|intent| intent.command.len())?;\n    let effect = &intent.effect;\n    let (operands, flags) = effect_operands(&command[intent.command.len()..], effect)?;\n    if operands.is_empty() { return None; }\n    let before = if flags.iter().any(|flag| effect.reuse_options.contains(flag)) && !effect.before_reuse.is_empty() {\n        &effect.before_reuse\n    } else { &effect.before };\n    let has_path = before.iter().chain(&effect.prepare).chain(&effect.after)\n        .any(|template| template.contains(PATH_PLACEHOLDER));\n    let bind = |template: &str, bindings: &[(&str, String)]| {\n        bindings.iter().fold(template.to_owned(), |text, (key, value)| text.replace(key, value))\n    };\n    let mut groups: Vec<Vec<(&str, String)>> = Vec::new();\n    let mut collection = None;\n    if has_path {\n        groups.extend(operands.iter().map(|path| vec![(PATH_PLACEHOLDER, (*path).to_owned())]));\n    } else {\n        if operands.len() < 2 || (operands.len() > 2 && !effect.directory_targets) { return None; }\n        let destination = *operands.last()?;\n        let sources = &operands[..operands.len() - 1];\n        if effect.directory_targets && (sources.len() > 1 || sources.iter().any(|source| has_shell_expansion(source))\n            || destination.trim_matches(['\\'', '\"']).ends_with('/')) {\n            collection = Some((sources.join(\" \"), destination));\n            groups.push(vec![(SOURCE_PLACEHOLDER, String::from(\"\\\"$formal_ai_source\\\"\")),\n                (DESTINATION_PARENT_PLACEHOLDER, String::from(\"\\\"$formal_ai_parent\\\"\")),\n                (DESTINATION_PLACEHOLDER, String::from(\"\\\"$formal_ai_destination\\\"\"))]);\n        } else {\n            groups.push(vec![(SOURCE_PLACEHOLDER, sources[0].to_owned()),\n                (DESTINATION_PARENT_PLACEHOLDER, parent_of(destination)),\n                (DESTINATION_PLACEHOLDER, destination.to_owned())]);\n        }\n    }\n    let fill = |template: &String| -> Vec<String> {\n        groups.iter().map(|bindings| {\n            let check = bind(template, bindings);\n            if let Some((sources, destination)) = &collection {\n                let setup = format!(\"formal_ai_destination={destination}; {}\", concat!(\n                    \"if test -d \\\"$formal_ai_destination\\\" || [ \\\"${formal_ai_destination%/}\\\" != \\\"$formal_ai_destination\\\" ]; then \",\n                    \"formal_ai_leaf=\\\"${formal_ai_source%/}\\\"; formal_ai_destination=\\\"${formal_ai_destination%/}/${formal_ai_leaf##*/}\\\"; fi; \",\n                    \"formal_ai_parent=\\\"${formal_ai_destination%/*}\\\"; \",\n                    \"if [ \\\"$formal_ai_parent\\\" = \\\"$formal_ai_destination\\\" ]; then formal_ai_parent=.; fi; \"));\n                format!(\"for formal_ai_source in {sources}; do {setup}{check} || exit $?; done\")\n            } else { check }\n        }).collect()\n    };\n    let mut steps: Vec<String> = before.iter().flat_map(&fill).collect();\n    steps.extend(effect.prepare.iter().flat_map(&fill));\n    let action = steps.len();\n    steps.push(command.to_owned());\n    steps.extend(effect.after.iter().flat_map(&fill));\n    Some(VerifiedAction { steps, action })\n}\n\n/// Separate declared options from shell words while preserving operand quoting.\nfn effect_operands<'a>(text: &'a str, effect: &seed::ShellIntentEffect) -> Option<(Vec<&'a str>, Vec<String>)> {\n    let words = shell_words(text)?;\n    let mut operands = Vec::new();\n    let mut flags = Vec::new();\n    let mut options = true;\n    let mut index = 0;\n    while index < words.len() {\n        let raw = words[index];\n        let word = raw.trim_matches(['\\'', '\"']);\n        if options && word == \"--\" { options = false; }\n        else if options && word.starts_with('-') && word != \"-\" {\n            if let Some(option) = effect.value_options.iter().find(|option| word == option.as_str()\n                || word.strip_prefix(option.as_str()).is_some_and(|suffix| suffix.starts_with('=')\n                    || (!option.starts_with(\"--\") && !suffix.is_empty()))) {\n                if word == option { index += 1; if index >= words.len() { return None; } }\n                flags.push(option.clone());\n            } else if effect.flags.iter().any(|flag| flag == word) { flags.push(word.to_owned()); }\n            else if !word.starts_with(\"--\") {\n                let bundled: Vec<String> = word[1..].chars().map(|letter| format!(\"-{letter}\")).collect();\n                if !bundled.iter().all(|flag| effect.flags.contains(flag)) { return None; }\n                flags.extend(bundled);\n            } else { return None; }\n        } else { operands.push(raw); }\n        index += 1;\n    }\n    Some((operands, flags))\n}\n\nfn shell_words(text: &str) -> Option<Vec<&str>> {\n    let mut words = Vec::new();\n    let mut start = None;\n    let mut quote = None;\n    let mut escaped = false;\n    for (index, character) in text.char_indices() {\n        if start.is_none() && character.is_whitespace() { continue; }\n        if start.is_none() { start = Some(index); }\n        if escaped { escaped = false; continue; }\n        if character == '\\\\' && quote != Some('\\'') { escaped = true; continue; }\n        if let Some(delimiter) = quote { if character == delimiter { quote = None; } continue; }\n        if character == '\"' || character == '\\'' { quote = Some(character); continue; }\n        if character.is_whitespace() { words.push(&text[start.take()?..index]); }\n        else if \";|&<>()`\".contains(character) { return None; }\n    }\n    if quote.is_some() || escaped { return None; }\n    if let Some(start) = start { words.push(&text[start..]); }\n    Some(words)\n}\n\nfn has_shell_expansion(word: &str) -> bool {\n    let mut quote = None;\n    let mut escaped = false;\n    for character in word.chars() {\n        if escaped { escaped = false; continue; }\n        if character == '\\\\' && quote != Some('\\'') { escaped = true; continue; }\n        if let Some(delimiter) = quote { if character == delimiter { quote = None; } continue; }\n        if character == '\"' || character == '\\'' { quote = Some(character); }\n        else if \"*?[$\".contains(character) { return true; }\n    }\n    false\n}\n\n","old":"fn expand_with(command: &str, vocab: &ShellIntentVocabulary) -> Option<VerifiedAction> {\n    let (effect, operands) = vocab\n        .intents\n        .iter()\n        .filter(|intent| intent.effect.is_declared())\n        .filter_map(|intent| {\n            let rest = command\n                .strip_prefix(intent.command.as_str())\n                .filter(|rest| rest.starts_with(' '))?;\n            Some((&intent.effect, rest.split_whitespace().collect::<Vec<_>>()))\n        })\n        .max_by_key(|(_, operands)| operands.len())?;\n    // One operand fills `{path}` (`mkdir src`); two fill the source, the\n    // destination and the destination's parent, the parent first so the\n    // longer placeholder is never read as the shorter one.\n    let substitutions: Vec<(&str, String)> = match operands.as_slice() {\n        [path] => vec![(PATH_PLACEHOLDER, (*path).to_owned())],\n        [source, destination] => vec![\n            (SOURCE_PLACEHOLDER, (*source).to_owned()),\n            (DESTINATION_PARENT_PLACEHOLDER, parent_of(destination)),\n            (DESTINATION_PLACEHOLDER, (*destination).to_owned()),\n        ],\n        _ => return None,\n    };\n    let fill = |template: &String| {\n        substitutions\n            .iter()\n            .fold(template.clone(), |text, (placeholder, value)| {\n                text.replace(placeholder, value)\n            })\n    };\n    let mut steps: Vec<String> = effect.before.iter().map(&fill).collect();\n    steps.extend(effect.prepare.iter().map(&fill));\n    let action = steps.len();\n    steps.push(command.to_owned());\n    steps.extend(effect.after.iter().map(&fill));\n    Some(VerifiedAction { steps, action })\n}\n\n","oldString":"fn expand_with(command: &str, vocab: &ShellIntentVocabulary) -> Option<VerifiedAction> {\n    let (effect, operands) = vocab\n        .intents\n        .iter()\n        .filter(|intent| intent.effect.is_declared())\n        .filter_map(|intent| {\n            let rest = command\n                .strip_prefix(intent.command.as_str())\n                .filter(|rest| rest.starts_with(' '))?;\n            Some((&intent.effect, rest.split_whitespace().collect::<Vec<_>>()))\n        })\n        .max_by_key(|(_, operands)| operands.len())?;\n    // One operand fills `{path}` (`mkdir src`); two fill the source, the\n    // destination and the destination's parent, the parent first so the\n    // longer placeholder is never read as the shorter one.\n    let substitutions: Vec<(&str, String)> = match operands.as_slice() {\n        [path] => vec![(PATH_PLACEHOLDER, (*path).to_owned())],\n        [source, destination] => vec![\n            (SOURCE_PLACEHOLDER, (*source).to_owned()),\n            (DESTINATION_PARENT_PLACEHOLDER, parent_of(destination)),\n            (DESTINATION_PLACEHOLDER, (*destination).to_owned()),\n        ],\n        _ => return None,\n    };\n    let fill = |template: &String| {\n        substitutions\n            .iter()\n            .fold(template.clone(), |text, (placeholder, value)| {\n                text.replace(placeholder, value)\n            })\n    };\n    let mut steps: Vec<String> = effect.before.iter().map(&fill).collect();\n    steps.extend(effect.prepare.iter().map(&fill));\n    let action = steps.len();\n    steps.push(command.to_owned());\n    steps.extend(effect.after.iter().map(&fill));\n    Some(VerifiedAction { steps, action })\n}\n\n","old_str":"fn expand_with(command: &str, vocab: &ShellIntentVocabulary) -> Option<VerifiedAction> {\n    let (effect, operands) = vocab\n        .intents\n        .iter()\n        .filter(|intent| intent.effect.is_declared())\n        .filter_map(|intent| {\n            let rest = command\n                .strip_prefix(intent.command.as_str())\n                .filter(|rest| rest.starts_with(' '))?;\n            Some((&intent.effect, rest.split_whitespace().collect::<Vec<_>>()))\n        })\n        .max_by_key(|(_, operands)| operands.len())?;\n    // One operand fills `{path}` (`mkdir src`); two fill the source, the\n    // destination and the destination's parent, the parent first so the\n    // longer placeholder is never read as the shorter one.\n    let substitutions: Vec<(&str, String)> = match operands.as_slice() {\n        [path] => vec![(PATH_PLACEHOLDER, (*path).to_owned())],\n        [source, destination] => vec![\n            (SOURCE_PLACEHOLDER, (*source).to_owned()),\n            (DESTINATION_PARENT_PLACEHOLDER, parent_of(destination)),\n            (DESTINATION_PLACEHOLDER, (*destination).to_owned()),\n        ],\n        _ => return None,\n    };\n    let fill = |template: &String| {\n        substitutions\n            .iter()\n            .fold(template.clone(), |text, (placeholder, value)| {\n                text.replace(placeholder, value)\n            })\n    };\n    let mut steps: Vec<String> = effect.before.iter().map(&fill).collect();\n    steps.extend(effect.prepare.iter().map(&fill));\n    let action = steps.len();\n    steps.push(command.to_owned());\n    steps.extend(effect.after.iter().map(&fill));\n    Some(VerifiedAction { steps, action })\n}\n\n","old_string":"fn expand_with(command: &str, vocab: &ShellIntentVocabulary) -> Option<VerifiedAction> {\n    let (effect, operands) = vocab\n        .intents\n        .iter()\n        .filter(|intent| intent.effect.is_declared())\n        .filter_map(|intent| {\n            let rest = command\n                .strip_prefix(intent.command.as_str())\n                .filter(|rest| rest.starts_with(' '))?;\n            Some((&intent.effect, rest.split_whitespace().collect::<Vec<_>>()))\n        })\n        .max_by_key(|(_, operands)| operands.len())?;\n    // One operand fills `{path}` (`mkdir src`); two fill the source, the\n    // destination and the destination's parent, the parent first so the\n    // longer placeholder is never read as the shorter one.\n    let substitutions: Vec<(&str, String)> = match operands.as_slice() {\n        [path] => vec![(PATH_PLACEHOLDER, (*path).to_owned())],\n        [source, destination] => vec![\n            (SOURCE_PLACEHOLDER, (*source).to_owned()),\n            (DESTINATION_PARENT_PLACEHOLDER, parent_of(destination)),\n            (DESTINATION_PLACEHOLDER, (*destination).to_owned()),\n        ],\n        _ => return None,\n    };\n    let fill = |template: &String| {\n        substitutions\n            .iter()\n            .fold(template.clone(), |text, (placeholder, value)| {\n                text.replace(placeholder, value)\n            })\n    };\n    let mut steps: Vec<String> = effect.before.iter().map(&fill).collect();\n    steps.extend(effect.prepare.iter().map(&fill));\n    let action = steps.len();\n    steps.push(command.to_owned());\n    steps.extend(effect.after.iter().map(&fill));\n    Some(VerifiedAction { steps, action })\n}\n\n","path":"rust/src/agentic_coding/mutating_action.rs"}
+>> bash {"command":"sha256sum -- rust/src/agentic_coding/mutating_action.rs"}
+   f196fd6008b335837329b592eb3d3222541709ff74ed8a268f7b4ad332f1caef  rust/src/agentic_coding/mutating_action.rs
+   
+== answer ==
+Replaced ``fn expand_with(command: &str, vocab: &ShellIntentVocabulary) -> Option<VerifiedAction> {
+    let (effect, operands) = vocab
+        .intents
+        .iter()
+        .filter(|intent| intent.effect.is_declared())
+        .filter_map(|intent| {
+            let rest = command
+                .strip_prefix(intent.command.as_str())
+                .filter(|rest| rest.starts_with(' '))?;
+            Some((&intent.effect, rest.split_whitespace().collect::<Vec<_>>()))
+        })
+        .max_by_key(|(_, operands)| operands.len())?;
+    // One operand fills `{path}` (`mkdir src`); two fill the source, the
+    // destination and the destination's parent, the parent first so the
+    // longer placeholder is never read as the shorter one.
+    let substitutions: Vec<(&str, String)> = match operands.as_slice() {
+        [path] => vec![(PATH_PLACEHOLDER, (*path).to_owned())],
+        [source, destination] => vec![
+            (SOURCE_PLACEHOLDER, (*source).to_owned()),
+            (DESTINATION_PARENT_PLACEHOLDER, parent_of(destination)),
+            (DESTINATION_PLACEHOLDER, (*destination).to_owned()),
+        ],
+        _ => return None,
+    };
+    let fill = |template: &String| {
+        substitutions
+            .iter()
+            .fold(template.clone(), |text, (placeholder, value)| {
+                text.replace(placeholder, value)
+            })
+    };
+    let mut steps: Vec<String> = effect.before.iter().map(&fill).collect();
+    steps.extend(effect.prepare.iter().map(&fill));
+    let action = steps.len();
+    steps.push(command.to_owned());
+    steps.extend(effect.after.iter().map(&fill));
+    Some(VerifiedAction { steps, action })
+}
+
+`` with ``fn expand_with(command: &str, vocab: &ShellIntentVocabulary) -> Option<VerifiedAction> {
+    let intent = vocab.intents.iter()
+        .filter(|intent| intent.effect.is_declared())
+        .filter(|intent| command.strip_prefix(intent.command.as_str()).is_some_and(|rest| rest.starts_with(' ')))
+        .max_by_key(|intent| intent.command.len())?;
+    let effect = &intent.effect;
+    let (operands, flags) = effect_operands(&command[intent.command.len()..], effect)?;
+    if operands.is_empty() { return None; }
+    let before = if flags.iter().any(|flag| effect.reuse_options.contains(flag)) && !effect.before_reuse.is_empty() {
+        &effect.before_reuse
+    } else { &effect.before };
+    let has_path = before.iter().chain(&effect.prepare).chain(&effect.after)
+        .any(|template| template.contains(PATH_PLACEHOLDER));
+    let bind = |template: &str, bindings: &[(&str, String)]| {
+        bindings.iter().fold(template.to_owned(), |text, (key, value)| text.replace(key, value))
+    };
+    let mut groups: Vec<Vec<(&str, String)>> = Vec::new();
+    let mut collection = None;
+    if has_path {
+        groups.extend(operands.iter().map(|path| vec![(PATH_PLACEHOLDER, (*path).to_owned())]));
+    } else {
+        if operands.len() < 2 || (operands.len() > 2 && !effect.directory_targets) { return None; }
+        let destination = *operands.last()?;
+        let sources = &operands[..operands.len() - 1];
+        if effect.directory_targets && (sources.len() > 1 || sources.iter().any(|source| has_shell_expansion(source))
+            || destination.trim_matches(['\'', '"']).ends_with('/')) {
+            collection = Some((sources.join(" "), destination));
+            groups.push(vec![(SOURCE_PLACEHOLDER, String::from("\"$formal_ai_source\"")),
+                (DESTINATION_PARENT_PLACEHOLDER, String::from("\"$formal_ai_parent\"")),
+                (DESTINATION_PLACEHOLDER, String::from("\"$formal_ai_destination\""))]);
+        } else {
+            groups.push(vec![(SOURCE_PLACEHOLDER, sources[0].to_owned()),
+                (DESTINATION_PARENT_PLACEHOLDER, parent_of(destination)),
+                (DESTINATION_PLACEHOLDER, destination.to_owned())]);
+        }
+    }
+    let fill = |template: &String| -> Vec<String> {
+        groups.iter().map(|bindings| {
+            let check = bind(template, bindings);
+            if let Some((sources, destination)) = &collection {
+                let setup = format!("formal_ai_destination={destination}; {}", concat!(
+                    "if test -d \"$formal_ai_destination\" || [ \"${formal_ai_destination%/}\" != \"$formal_ai_destination\" ]; then ",
+                    "formal_ai_leaf=\"${formal_ai_source%/}\"; formal_ai_destination=\"${formal_ai_destination%/}/${formal_ai_leaf##*/}\"; fi; ",
+                    "formal_ai_parent=\"${formal_ai_destination%/*}\"; ",
+                    "if [ \"$formal_ai_parent\" = \"$formal_ai_destination\" ]; then formal_ai_parent=.; fi; "));
+                format!("for formal_ai_source in {sources}; do {setup}{check} || exit $?; done")
+            } else { check }
+        }).collect()
+    };
+    let mut steps: Vec<String> = before.iter().flat_map(&fill).collect();
+    steps.extend(effect.prepare.iter().flat_map(&fill));
+    let action = steps.len();
+    steps.push(command.to_owned());
+    steps.extend(effect.after.iter().flat_map(&fill));
+    Some(VerifiedAction { steps, action })
+}
+
+/// Separate declared options from shell words while preserving operand quoting.
+fn effect_operands<'a>(text: &'a str, effect: &seed::ShellIntentEffect) -> Option<(Vec<&'a str>, Vec<String>)> {
+    let words = shell_words(text)?;
+    let mut operands = Vec::new();
+    let mut flags = Vec::new();
+    let mut options = true;
+    let mut index = 0;
+    while index < words.len() {
+        let raw = words[index];
+        let word = raw.trim_matches(['\'', '"']);
+        if options && word == "--" { options = false; }
+        else if options && word.starts_with('-') && word != "-" {
+            if let Some(option) = effect.value_options.iter().find(|option| word == option.as_str()
+                || word.strip_prefix(option.as_str()).is_some_and(|suffix| suffix.starts_with('=')
+                    || (!option.starts_with("--") && !suffix.is_empty()))) {
+                if word == option { index += 1; if index >= words.len() { return None; } }
+                flags.push(option.clone());
+            } else if effect.flags.iter().any(|flag| flag == word) { flags.push(word.to_owned()); }
+            else if !word.starts_with("--") {
+                let bundled: Vec<String> = word[1..].chars().map(|letter| format!("-{letter}")).collect();
+                if !bundled.iter().all(|flag| effect.flags.contains(flag)) { return None; }
+                flags.extend(bundled);
+            } else { return None; }
+        } else { operands.push(raw); }
+        index += 1;
+    }
+    Some((operands, flags))
+}
+
+fn shell_words(text: &str) -> Option<Vec<&str>> {
+    let mut words = Vec::new();
+    let mut start = None;
+    let mut quote = None;
+    let mut escaped = false;
+    for (index, character) in text.char_indices() {
+        if start.is_none() && character.is_whitespace() { continue; }
+        if start.is_none() { start = Some(index); }
+        if escaped { escaped = false; continue; }
+        if character == '\\' && quote != Some('\'') { escaped = true; continue; }
+        if let Some(delimiter) = quote { if character == delimiter { quote = None; } continue; }
+        if character == '"' || character == '\'' { quote = Some(character); continue; }
+        if character.is_whitespace() { words.push(&text[start.take()?..index]); }
+        else if ";|&<>()`".contains(character) { return None; }
+    }
+    if quote.is_some() || escaped { return None; }
+    if let Some(start) = start { words.push(&text[start..]); }
+    Some(words)
+}
+
+fn has_shell_expansion(word: &str) -> bool {
+    let mut quote = None;
+    let mut escaped = false;
+    for character in word.chars() {
+        if escaped { escaped = false; continue; }
+        if character == '\\' && quote != Some('\'') { escaped = true; continue; }
+        if let Some(delimiter) = quote { if character == delimiter { quote = None; } continue; }
+        if character == '"' || character == '\'' { quote = Some(character); }
+        else if "*?[$".contains(character) { return true; }
+    }
+    false
+}
+
+`` in `rust/src/agentic_coding/mutating_action.rs` and observed the result.

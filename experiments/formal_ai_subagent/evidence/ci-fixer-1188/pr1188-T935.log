@@ -1,0 +1,359 @@
+>> read {"filePath":"scripts/lib/notation-substitution.mjs","file_path":"scripts/lib/notation-substitution.mjs","path":"scripts/lib/notation-substitution.mjs"}
+   <file>
+   00001| // The substitution rule of the links notation passes (PR #1188, R1188-U6).
+   00002| //
+   00003| // A name of the notation we own is renamed in three kinds of place: the
+   00004| // `.lino` files, where it is an unquoted token; the code that reads them,
+   00005| // where it is a token inside a string or regular-expression literal; and the
+   00006| // documentation, where it is a backticked token. Code identifiers are never
+   00007| // touched: a Rust or JavaScript variable keeps its language's convention, so
+   00008| // only literal, comment and documentation spans are rewritten.
+   00009| // experiments/formal_ai_subagent/apply-notation-rules.mjs drives this module.
+   00010| 
+   00011| import { namesOfLine } from './links-notation-names.mjs';
+   00012| 
+   00013| /** A character that continues a name: a token boundary is anything else. */
+   00014| const NAME_CHARACTER = /[A-Za-z0-9_-]/u;
+   00015| 
+   00016| /**
+   00017|  * Rewrite the names of a `.lino` document by `mapping`, only where a name is
+   00018|  * an unquoted token.
+   00019|  * @param {string} text
+   00020|  * @param {Map<string, string>} mapping
+   00021|  * @returns {string}
+   00022|  */
+   00023| export function rewriteNotation(text, mapping) {
+   00024|   return text
+   00025|     .split('\n')
+   00026|     .map((line) => {
+   00027|       let output = line;
+   00028|       for (const { name, start } of namesOfLine(line).reverse()) {
+   00029|         const renamed = mapping.get(name);
+   00030|         if (renamed !== undefined) {
+   00031|           output = output.slice(0, start) + renamed + output.slice(start + name.length);
+   00032|         }
+   00033|       }
+   00034|       return output;
+   00035|     })
+   00036|     .join('\n');
+   00037| }
+   00038| 
+   00039| /**
+   00040|  * The spans of a JavaScript or Rust source: `code`, `comment`, `string` and
+   00041|  * `regex` (JavaScript regular-expression literals), in order and covering the
+   00042|  * whole text.
+   00043|  * @param {string} source
+   00044|  * @param {'javascript' | 'rust'} language
+   00045|  * @returns {Array<{kind: string, start: number, end: number}>}
+   00046|  */
+   00047| export function sourceSpans(source, language) {
+   00048|   const spans = [];
+   00049|   const push = (kind, start, end) => {
+   00050|     if (end <= start) {
+   00051|       return;
+   00052|     }
+   00053|     const last = spans[spans.length - 1];
+   00054|     if (last && last.kind === kind && last.end === start) {
+   00055|       last.end = end;
+   00056|     } else {
+   00057|       spans.push({ kind, start, end });
+   00058|     }
+   00059|   };
+   00060|   const scan = language === 'rust' ? scanRust : scanJavaScript;
+   00061|   scan(source, push);
+   00062|   return spans;
+   00063| }
+   00064| 
+   00065| function skipQuoted(source, index, quote) {
+   00066|   let cursor = index + 1;
+   00067|   while (cursor < source.length && source[cursor] !== quote) {
+   00068|     cursor += source[cursor] === '\\' ? 2 : 1;
+   00069|   }
+   00070|   return Math.min(cursor + 1, source.length);
+   00071| }
+   00072| 
+   00073| function scanRust(source, push) {
+   00074|   let index = 0;
+   00075|   let codeStart = 0;
+   00076|   while (index < source.length) {
+   00077|     const character = source[index];
+   00078|     const next = source[index + 1];
+   00079|     let kind = null;
+   00080|     let end = index;
+   00081|     if (character === '/' && next === '/') {
+   00082|       kind = 'comment';
+   00083|       end = source.indexOf('\n', index);
+   00084|       end = end === -1 ? source.length : end;
+   00085|     } else if (character === '/' && next === '*') {
+   00086|       kind = 'comment';
+   00087|       let depth = 0;
+   00088|       end = index;
+   00089|       while (end < source.length) {
+   00090|         if (source.startsWith('/*', end)) {
+   00091|           depth += 1;
+   00092|           end += 2;
+   00093|         } else if (source.startsWith('*/', end)) {
+   00094|           depth -= 1;
+   00095|           end += 2;
+   00096|           if (depth === 0) {
+   00097|             break;
+   00098|           }
+   00099|         } else {
+   00100|           end += 1;
+   00101|         }
+   00102|       }
+   00103|     } else if (/[rb]/u.test(character) && !NAME_CHARACTER.test(source[index - 1] ?? ' ')) {
+   00104|       const raw = /^(?:br|r)(#*)"/u.exec(source.slice(index, index + 260));
+   00105|       const bytes = /^b"/u.exec(source.slice(index, index + 2));
+   00106|       if (raw) {
+   00107|         kind = 'string';
+   00108|         const closing = `"${raw[1]}`;
+   00109|         const found = source.indexOf(closing, index + raw[0].length);
+   00110|         end = found === -1 ? source.length : found + closing.length;
+   00111|       } else if (bytes) {
+   00112|         kind = 'string';
+   00113|         end = skipQuoted(source, index + 1, '"');
+   00114|       }
+   00115|     } else if (character === '"') {
+   00116|       kind = 'string';
+   00117|       end = skipQuoted(source, index, '"');
+   00118|     } else if (character === "'") {
+   00119|       const charLiteral = /^'(?:\\(?:u\{[0-9a-fA-F]+\}|x[0-9a-fA-F]{2}|.)|[^\\'])'/u.exec(source.slice(index, index + 12));
+   00120|       if (charLiteral) {
+   00121|         kind = 'string';
+   00122|         end = index + charLiteral[0].length;
+   00123|       }
+   00124|     }
+   00125|     if (kind === null) {
+   00126|       index += 1;
+   00127|       continue;
+   00128|     }
+   00129|     push('code', codeStart, index);
+   00130|     push(kind, index, end);
+   00131|     index = end;
+   00132|     codeStart = end;
+   00133|   }
+   00134|   push('code', codeStart, source.length);
+   00135| }
+   00136| 
+   00137| /** The words after which a `/` opens a regular-expression literal. */
+   00138| const REGEX_AFTER_WORD = /(?:^|[^\w$])(?:return|typeof|case|do|else|in|of|void|yield|await|delete|throw|new)$/u;
+   00139| 
+   00140| function regexMayStart(source, index) {
+   00141|   let cursor = index - 1;
+   00142|   while (cursor >= 0 && /\s/u.test(source[cursor])) {
+   00143|     cursor -= 1;
+   00144|   }
+   00145|   if (cursor < 0) {
+   00146|     return true;
+   00147|   }
+   00148|   if (/[(,=:[!&|?{};+\-*%<>~^]/u.test(source[cursor])) {
+   00149|     return true;
+   00150|   }
+   00151|   return REGEX_AFTER_WORD.test(source.slice(Math.max(0, cursor - 8), cursor + 1));
+   00152| }
+   00153| 
+   00154| function skipRegex(source, index) {
+   00155|   let cursor = index + 1;
+   00156|   let inClass = false;
+   00157|   while (cursor < source.length && source[cursor] !== '\n') {
+   00158|     const character = source[cursor];
+   00159|     if (character === '\\') {
+   00160|       cursor += 2;
+   00161|       continue;
+   00162|     }
+   00163|     if (character === '[') {
+   00164|       inClass = true;
+   00165|     } else if (character === ']') {
+   00166|       inClass = false;
+   00167|     } else if (character === '/' && !inClass) {
+   00168|       cursor += 1;
+   00169|       while (cursor < source.length && /[a-z]/u.test(source[cursor])) {
+   00170|         cursor += 1;
+   00171|       }
+   00172|       return cursor;
+   00173|     }
+   00174|     cursor += 1;
+   00175|   }
+   00176|   return -1;
+   00177| }
+   00178| 
+   00179| function scanJavaScript(source, push) {
+   00180|   let index = 0;
+   00181|   let codeStart = 0;
+   00182|   // Each open template literal records the brace depth of its `${`.
+   00183|   const templates = [];
+   00184|   let braces = 0;
+   00185|   const openSpan = (kind, start, end) => {
+   00186|     push('code', codeStart, start);
+   00187|     push(kind, start, end);
+   00188|     codeStart = end;
+   00189|     return end;
+   00190|   };
+   00191|   const scanTemplate = (start) => {
+   00192|     let cursor = start;
+   00193|     while (cursor < source.length) {
+   00194|       if (source[cursor] === '\\') {
+   00195|         cursor += 2;
+   00196|       } else if (source[cursor] === '`') {
+   00197|         return { end: cursor + 1, opensExpression: false };
+   00198|       } else if (source.startsWith('${', cursor)) {
+   00199|         return { end: cursor + 2, opensExpression: true };
+   00200|       } else {
+   00201|         cursor += 1;
+   00202|       }
+   00203|     }
+   00204|     return { end: source.length, opensExpression: false };
+   00205|   };
+   00206|   while (index < source.length) {
+   00207|     const character = source[index];
+   00208|     const next = source[index + 1];
+   00209|     if (character === '/' && next === '/') {
+   00210|       const end = source.indexOf('\n', index);
+   00211|       index = openSpan('comment', index, end === -1 ? source.length : end);
+   00212|     } else if (character === '/' && next === '*') {
+   00213|       const end = source.indexOf('*/', index + 2);
+   00214|       index = openSpan('comment', index, end === -1 ? source.length : end + 2);
+   00215|     } else if (character === '"' || character === "'") {
+   00216|       index = openSpan('string', index, skipQuoted(source, index, character));
+   00217|     } else if (character === '`') {
+   00218|       const template = scanTemplate(index + 1);
+   00219|       index = openSpan('string', index, template.end);
+   00220|       if (template.opensExpression) {
+   00221|         templates.push(braces);
+   00222|       }
+   00223|     } else if (character === '}' && templates.length > 0 && templates[templates.length - 1] === braces) {
+   00224|       templates.pop();
+   00225|       const template = scanTemplate(index + 1);
+   00226|       index = openSpan('string', index, template.end);
+   00227|       if (template.opensExpression) {
+   00228|         templates.push(braces);
+   00229|       }
+   00230|     } else if (character === '/' && regexMayStart(source, index)) {
+   00231|       const end = skipRegex(source, index);
+   00232|       index = end === -1 ? index + 1 : openSpan('regex', index, end);
+   00233|     } else {
+   00234|       if (character === '{') {
+   00235|         braces += 1;
+   00236|       } else if (character === '}') {
+   00237|         braces -= 1;
+   00238|       }
+   00239|       index += 1;
+   00240|     }
+   00241|   }
+   00242|   push('code', codeStart, source.length);
+   00243| }
+   00244| 
+   00245| /**
+   00246|  * Replace every whole-token occurrence of a mapped name inside `text`.
+   00247|  * `spelling` turns the old and new name into the replacement text.
+   00248|  * @param {string} text
+   00249|  * @param {Map<string, string>} mapping
+   00250|  * @param {(old: string, renamed: string) => string} spelling
+   00251|  * @returns {{text: string, count: number}}
+   00252|  */
+   00253| export function replaceTokens(text, mapping, spelling = (_old, renamed) => renamed) {
+   00254|   let count = 0;
+   00255|   // An escape such as `\b` or `\n` right before a token is a boundary.
+   00256|   const replaced = text.replace(/(\\[A-Za-z])?([a-z][a-z0-9]*(?:[-_][a-z0-9]+)*)/gu, (whole, escape, token, offset) => {
+   00257|     const before = escape ? ' ' : text[offset - 1] ?? ' ';
+   00258|     const after = text[offset + whole.length] ?? ' ';
+   00259|     if (NAME_CHARACTER.test(before) || NAME_CHARACTER.test(after) || !mapping.has(token)) {
+   00260|       return whole;
+   00261|     }
+   00262|     // `{name}` and `{name:?}` in a format string name a code variable.
+   00263|     if (before === '{' && (after === '}' || after === ':')) {
+   00264|       return whole;
+   00265|     }
+   00266|     count += 1;
+   00267|     return (escape ?? '') + spelling(token, mapping.get(token));
+   00268|   });
+   00269|   return { text: replaced, count };
+   00270| }
+   00271| 
+   00272| /** In a regular expression the name accepts both spellings during the transition. */
+   00273| export function bothSpellingsPattern(old) {
+   00274|   return old.replace(/_/gu, '[-_]');
+   00275| }
+   00276| 
+   00277| /**
+   00278|  * The names of `mapping` used as code identifiers (outside literals and
+   00279|  * comments) in a source: those keep their comments untouched.
+   00280|  * @param {string} source
+   00281|  * @param {'javascript' | 'rust'} language
+   00282|  * @param {Map<string, string>} mapping
+   00283|  * @returns {Set<string>}
+   00284|  */
+   00285| export function identifiersIn(source, language, mapping) {
+   00286|   const found = new Set();
+   00287|   for (const span of sourceSpans(source, language)) {
+   00288|     if (span.kind === 'code') {
+   00289|       const code = source.slice(span.start, span.end);
+   00290|       replaceTokens(code, mapping, (old) => {
+   00291|         found.add(old);
+   00292|         return old;
+   00293|       });
+   00294|     }
+   00295|   }
+   00296|   return found;
+   00297| }
+   00298| 
+   00299| /**
+   00300|  * Rewrite the mapped names of a source inside its literals (a regular
+   00301|  * expression accepts both spellings) and, for names that are no code
+   00302|  * identifier anywhere (`identifiers`), inside its comments.
+   00303|  * @param {string} source
+   00304|  * @param {'javascript' | 'rust'} language
+   00305|  * @param {Map<string, string>} mapping
+   00306|  * @param {Set<string>} identifiers
+   00307|  * @returns {{text: string, count: number}}
+   00308|  */
+   00309| export function rewriteSource(source, language, mapping, identifiers) {
+   00310|   const commentMapping = new Map([...mapping].filter(([old]) => !identifiers.has(old)));
+   00311|   let count = 0;
+   00312|   const text = sourceSpans(source, language)
+   00313|     .map((span) => {
+   00314|       const piece = source.slice(span.start, span.end);
+   00315|       let result = { text: piece, count: 0 };
+   00316|       if (span.kind === 'string') {
+   00317|         result = replaceTokens(piece, mapping);
+   00318|       } else if (span.kind === 'regex') {
+   00319|         result = replaceTokens(piece, mapping, (old) => bothSpellingsPattern(old));
+   00320|       } else if (span.kind === 'comment') {
+   00321|         result = replaceTokens(piece, commentMapping);
+   00322|       }
+   00323|       count += result.count;
+   00324|       return result.text;
+   00325|     })
+   00326|     .join('');
+   00327|   return { text, count };
+   00328| }
+   00329| 
+   00330| /**
+   00331|  * Rewrite the backticked mapped names of a Markdown document.
+   00332|  * @param {string} text
+   00333|  * @param {Map<string, string>} mapping
+   00334|  * @returns {{text: string, count: number}}
+   00335|  */
+   00336| export function rewriteDocument(text, mapping) {
+   00337|   let count = 0;
+   00338|   const rewritten = text.replace(/`([^`\n]+)`/gu, (whole, inner) => {
+   00339|     const result = replaceTokens(inner, mapping);
+   00340|     count += result.count;
+   00341|     return `\`${result.text}\``;
+   00342|   });
+   00343|   return { text: rewritten, count };
+   00344| }
+   00345| 
+   
+   (End of file - total 345 lines)
+   </file>
+>> edit {"filePath":"scripts/lib/notation-substitution.mjs","file_path":"scripts/lib/notation-substitution.mjs","new":"      return output.replace(/\\{([A-Za-z][A-Za-z0-9_-]*)\\}/gu, (placeholder, name) => {\n        const renamed = mapping.get(name);\n        return renamed === undefined ? placeholder : `{${renamed}}`;\n      });","newString":"      return output.replace(/\\{([A-Za-z][A-Za-z0-9_-]*)\\}/gu, (placeholder, name) => {\n        const renamed = mapping.get(name);\n        return renamed === undefined ? placeholder : `{${renamed}}`;\n      });","new_str":"      return output.replace(/\\{([A-Za-z][A-Za-z0-9_-]*)\\}/gu, (placeholder, name) => {\n        const renamed = mapping.get(name);\n        return renamed === undefined ? placeholder : `{${renamed}}`;\n      });","new_string":"      return output.replace(/\\{([A-Za-z][A-Za-z0-9_-]*)\\}/gu, (placeholder, name) => {\n        const renamed = mapping.get(name);\n        return renamed === undefined ? placeholder : `{${renamed}}`;\n      });","old":"      return output;","oldString":"      return output;","old_str":"      return output;","old_string":"      return output;","path":"scripts/lib/notation-substitution.mjs"}
+>> bash {"command":"sha256sum -- scripts/lib/notation-substitution.mjs"}
+   1df5ae88ceef1fb50874b4c580d8a47468042a5125c1124146c7068115407748  scripts/lib/notation-substitution.mjs
+   
+== answer ==
+Replaced `      return output;` with ``      return output.replace(/\{([A-Za-z][A-Za-z0-9_-]*)\}/gu, (placeholder, name) => {
+        const renamed = mapping.get(name);
+        return renamed === undefined ? placeholder : `{${renamed}}`;
+      });`` in `scripts/lib/notation-substitution.mjs` and observed the result.

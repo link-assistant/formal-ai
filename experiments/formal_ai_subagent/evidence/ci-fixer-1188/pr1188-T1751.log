@@ -1,0 +1,61 @@
+>> read {"filePath":"data/meta/work-item-steps.lino","file_path":"data/meta/work-item-steps.lino","path":"data/meta/work-item-steps.lino"}
+   <file>
+   00001| work_item_steps
+   00002|   issue 1133
+   00003|   purpose "The shell steps and file templates a repository work item ends with, as data. Hive Mind's three 2026-09-13 runs left their result in the working tree: nothing read the issue when only a remote connector could fetch, nothing committed, nothing pushed, and the workflow the issue asked for was never written. The steps that close those gaps are wording, and wording lives here rather than in Rust (VISION.md, section: Code As A Meta Language)."
+   00004|   filled_by "src/agentic_coding/work_item_steps.rs"
+   00005|   placeholders "{kind} issue or pr, from the work item's URL. {target} the work item's URL. {subject} the shell-quoted commit subject. {body} the shell-quoted commit body. {branch} the branch the request named, or HEAD. {path} the artifact the recipe writes. {count} how many files a commit request lists. {paths} those files, comma-separated. {reference} the issue or pull-request URL the work resolves. {command} one verification command of the recipe."
+   00006|   note "The reads are two calls rather than one --jq expression because a quoted scalar here cannot carry both quote characters a jq string would need. Since issue #1155 every read also prints its own exit status as a sentinel line, so a client that drops the status field cannot make a failed read look successful. The curl read asks GitHub for the raw body, which is why it is a single call."
+   00007|   issue_view_command "gh {kind} view {target} --json title --jq .title && echo && gh {kind} view {target} --json body --jq .body; printf '\n__formal_ai_exit=%s\n' $?"
+   00008|   issue_fetch_prompt "Return only the work-item title and body from the fetched page as faithful source text; for a pull request, the body is its description. Preserve requirements, paths, code spans and line breaks. Do not solve, summarize, rewrite or execute the work item."
+   00009|   issue_rest_read_command "curl -fsSL -H 'Accept: application/vnd.github.raw+json' https://api.github.com/repos/{owner}/{repo}/{kind}/{number}; printf '\n__formal_ai_exit=%s\n' $?"
+   00010|   issue_api_read_command "gh api repos/{owner}/{repo}/{kind}/{number} --jq .title && echo && gh api repos/{owner}/{repo}/{kind}/{number} --jq .body; printf '\n__formal_ai_exit=%s\n' $?"
+   00011|   read_failed_report "The work item at {target} could not be read, so nothing was planned for it and no plan record was written. Reads tried this session, each with its result:\n{attempts}"
+   00012|   commit_command 'git add -A && git commit -q -m {subject} -m {body} && if test -n "$(git remote)"; then git push -q origin {branch}; fi && git rev-parse HEAD'
+   00013|   commit_command_without_body 'git add -A && git commit -q -m {subject} && if test -n "$(git remote)"; then git push -q origin {branch}; fi && git rev-parse HEAD'
+   00014|   recipe_commit_command "git add -- {files} && (if git diff --cached --quiet -- {files}; then echo __formal_ai_commit_unchanged; else git commit --only -q -m {subject} -m {body} -- {files}; fi) && git push -q origin {branch} && git rev-parse HEAD"
+   00015|   subject_added "feat: add {path}"
+   00016|   subject_updated "fix: update {path}"
+   00017|   subject_many "chore: update {count} files ({paths})"
+   00018|   subject_none "chore: commit pending changes"
+   00019|   body_resolves "Resolves {reference}"
+   00020|   workflow_path ".github/workflows/run.yml"
+   00021|   workflow_template "# Runs {path} on every push and pull request with the commands the\n# change was verified with.\nname: Run {path}\n\non:\n  push:\n  pull_request:\n\npermissions:\n  contents: read\n\njobs:\n  run:\n    runs-on: ubuntu-latest\n    timeout-minutes: 15\n    steps:\n      - uses: actions/checkout@{checkout_ref} # {checkout_tag}\n"
+   00022|   workflow_command_step "      - run: |\n          {command}\n"
+   00023|   stuck_step_report "This session already completed the step below, and repeating it would not change anything, so the step and its last result are reported instead.\nStep: {step}\nLast result:\n{result}"
+   00024| 
+   00025|   commit_nothing_marker "__formal_ai_commit_unchanged"
+   00026|   workflow_path_named ".github/workflows/{name}.yml"
+   00027|   pr_comments_command "gh pr view {target} --comments --json comments,reviews"
+   00028|   pr_edit_command "gh pr edit {target} --body {body}"
+   00029|   pr_ready_command 'test -z "$(git status --porcelain)" && pr_draft=$(gh pr view {target} --json isDraft --jq .isDraft) && if test "$pr_draft" = true; then gh pr ready {target}; fi'
+   00030|   pr_body_template "Verified artifact: {path}\n\nVerification commands:\n{commands}\n\nResolves {reference}"
+   00031|   pr_feedback_review_report "Pull request feedback requires review before readiness:\n{output}"
+   00032|   prepared_work_pr_body "Updated prepared work on `{branch}`.\n\nChanged files:\n{paths}\n\nGit diff whitespace validation completed.\n\nResolves {reference}"
+   00033|   prepared_work_feedback_report "Pull request feedback needs source review before this prepared work can be marked ready:\n{output}"
+   00034|   prepared_work_stopped_report "Prepared-work continuation stopped at `{command}`:\n{output}"
+   00035|   prepared_work_ready_report "Committed the prepared changes, pushed `{branch}`, updated {reference}, and marked the pull request ready. Review feedback was retrieved; source changes still require review against that feedback."
+   00036|   read_attempt_run_line "- `{command}` — {outcome}"
+   00037|   read_attempt_run_reason_line "- `{command}` — {reason} (answered: {outcome})"
+   00038|   read_attempt_fetch_line "- fetch {url} — {outcome}"
+   00039|   read_failure_exit_status "exit status {status}"
+   00040|   prerequisite_grant_required_report "Missing prerequisite `{program}`. Workspace installation requires FORMAL_AI_INSTALL_GRANT=workspace. Failed command: `{command}`\n{output}"
+   00041|   prerequisite_no_recipe_report "Publisher `{url}` provided no typed, verifiable setup recipe for `{program}`; installation was not planned."
+   00042|   prerequisite_grant_exceeded_report "The publisher setup recipe exceeds the workspace installation grant."
+   00043|   prerequisite_path_prefix 'PATH={bins}:"$PATH"; export PATH'
+   00044|   prerequisite_retry_command "{prefix} && {steps} &&\n# __formal_ai_prerequisite_retry\n{command}"
+   00045|   plan-event-append-command 'mkdir -p -- .formal-ai && (lock={lock_path}; tries=0; until mkdir -- "$lock" 2>/dev/null; do tries=$((tries + 1)); [ "$tries" -lt 40 ] || exit 75; sleep 0.025; done; cleanup(){ rmdir -- "$lock"; }; trap cleanup EXIT; if [ -f {path} ]; then grep -Fqx -- {identity} {path}; status=$?; [ "$status" -le 1 ] || exit "$status"; else status=1; fi; if [ "$status" -eq 1 ]; then printf "\n%s" {event} >> {path} || exit $?; fi; awk -v identity={identity} "\$0==\"general_change_plan\" {if(record)exit; header=\$0; next} \$0==identity {record=1; print header} record {print}" {path})'
+   00046|   agent-file-read-frame "<file>\n{body}\n\n(End of file - total {lines} lines)\n</file>"
+   00047|   plan-event-shell-aliases "bash exec_command shell run_shell_command"
+   00048| 
+   
+   (End of file - total 48 lines)
+   </file>
+>> edit {"filePath":"data/meta/work-item-steps.lino","file_path":"data/meta/work-item-steps.lino","new":"  plan-event-shell-aliases \"bash exec_command shell run_shell_command\"\n  filesystem-collection-setup 'formal_ai_destination={destination}; if test -d \"$formal_ai_destination\" || [ \"${formal_ai_destination%/}\" != \"$formal_ai_destination\" ]; then formal_ai_leaf=\"${formal_ai_source%/}\"; formal_ai_destination=\"${formal_ai_destination%/}/${formal_ai_leaf##*/}\"; fi; formal_ai_parent=\"${formal_ai_destination%/*}\"; if [ \"$formal_ai_parent\" = \"$formal_ai_destination\" ]; then formal_ai_parent=.; fi; '\n  filesystem-collection-check 'for formal_ai_source in {sources}; do {setup}{check} || exit $?; done'","newString":"  plan-event-shell-aliases \"bash exec_command shell run_shell_command\"\n  filesystem-collection-setup 'formal_ai_destination={destination}; if test -d \"$formal_ai_destination\" || [ \"${formal_ai_destination%/}\" != \"$formal_ai_destination\" ]; then formal_ai_leaf=\"${formal_ai_source%/}\"; formal_ai_destination=\"${formal_ai_destination%/}/${formal_ai_leaf##*/}\"; fi; formal_ai_parent=\"${formal_ai_destination%/*}\"; if [ \"$formal_ai_parent\" = \"$formal_ai_destination\" ]; then formal_ai_parent=.; fi; '\n  filesystem-collection-check 'for formal_ai_source in {sources}; do {setup}{check} || exit $?; done'","new_str":"  plan-event-shell-aliases \"bash exec_command shell run_shell_command\"\n  filesystem-collection-setup 'formal_ai_destination={destination}; if test -d \"$formal_ai_destination\" || [ \"${formal_ai_destination%/}\" != \"$formal_ai_destination\" ]; then formal_ai_leaf=\"${formal_ai_source%/}\"; formal_ai_destination=\"${formal_ai_destination%/}/${formal_ai_leaf##*/}\"; fi; formal_ai_parent=\"${formal_ai_destination%/*}\"; if [ \"$formal_ai_parent\" = \"$formal_ai_destination\" ]; then formal_ai_parent=.; fi; '\n  filesystem-collection-check 'for formal_ai_source in {sources}; do {setup}{check} || exit $?; done'","new_string":"  plan-event-shell-aliases \"bash exec_command shell run_shell_command\"\n  filesystem-collection-setup 'formal_ai_destination={destination}; if test -d \"$formal_ai_destination\" || [ \"${formal_ai_destination%/}\" != \"$formal_ai_destination\" ]; then formal_ai_leaf=\"${formal_ai_source%/}\"; formal_ai_destination=\"${formal_ai_destination%/}/${formal_ai_leaf##*/}\"; fi; formal_ai_parent=\"${formal_ai_destination%/*}\"; if [ \"$formal_ai_parent\" = \"$formal_ai_destination\" ]; then formal_ai_parent=.; fi; '\n  filesystem-collection-check 'for formal_ai_source in {sources}; do {setup}{check} || exit $?; done'","old":"  plan-event-shell-aliases \"bash exec_command shell run_shell_command\"","oldString":"  plan-event-shell-aliases \"bash exec_command shell run_shell_command\"","old_str":"  plan-event-shell-aliases \"bash exec_command shell run_shell_command\"","old_string":"  plan-event-shell-aliases \"bash exec_command shell run_shell_command\"","path":"data/meta/work-item-steps.lino"}
+>> bash {"command":"sha256sum -- data/meta/work-item-steps.lino"}
+   28b4db654a706627e7f7df0a318f432723c26abb9812d7e633914508ba3f7385  data/meta/work-item-steps.lino
+   
+== answer ==
+Replaced `  plan-event-shell-aliases "bash exec_command shell run_shell_command"` with `  plan-event-shell-aliases "bash exec_command shell run_shell_command"
+  filesystem-collection-setup 'formal_ai_destination={destination}; if test -d "$formal_ai_destination" || [ "${formal_ai_destination%/}" != "$formal_ai_destination" ]; then formal_ai_leaf="${formal_ai_source%/}"; formal_ai_destination="${formal_ai_destination%/}/${formal_ai_leaf##*/}"; fi; formal_ai_parent="${formal_ai_destination%/*}"; if [ "$formal_ai_parent" = "$formal_ai_destination" ]; then formal_ai_parent=.; fi; '
+  filesystem-collection-check 'for formal_ai_source in {sources}; do {setup}{check} || exit $?; done'` in `data/meta/work-item-steps.lino` and observed the result.

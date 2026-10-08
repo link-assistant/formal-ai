@@ -1,0 +1,253 @@
+>> read {"filePath":"rust/tests/unit/issue_1188_web_formalization.rs","file_path":"rust/tests/unit/issue_1188_web_formalization.rs","path":"rust/tests/unit/issue_1188_web_formalization.rs"}
+   <file>
+   00001| //! R1188-U18: page formalization.
+   00002| //!
+   00003| //! Every sentence of a page becomes formal statements, nothing is dropped
+   00004| //! silently, and the statements deformalize back to the same known terms. The
+   00005| //! JavaScript twin is `rust/tests/web/web-formalization.test.mjs`; both pin the
+   00006| //! same outputs of the shared text formalizer.
+   00007| 
+   00008| use std::cmp::Reverse;
+   00009| use std::collections::{BTreeSet, HashMap};
+   00010| use std::fs;
+   00011| use std::path::Path;
+   00012| 
+   00013| use formal_ai::formalization::page::formalize_page;
+   00014| use formal_ai::formalization::statement_rendering::deformalize_statement;
+   00015| use formal_ai::formalization::text_statements::{
+   00016|     FUNCTION_WORD_ROLES, NEGATION_ROLE, Token, formalize_text, indexed_meaning, phrase_key,
+   00017|     statement_identity, tokens,
+   00018| };
+   00019| use formal_ai::seed::{lexicon, parse_lino};
+   00020| 
+   00021| fn identities(text: &str, language: &str) -> Vec<String> {
+   00022|     formalize_text(text, language)
+   00023|         .iter()
+   00024|         .map(statement_identity)
+   00025|         .collect()
+   00026| }
+   00027| 
+   00028| fn token(surface: &str, han: bool) -> Token {
+   00029|     Token {
+   00030|         surface: surface.to_owned(),
+   00031|         han,
+   00032|     }
+   00033| }
+   00034| 
+   00035| #[test]
+   00036| fn tokens_keep_apostrophes_and_numbers_whole_and_set_han_runs_apart() {
+   00037|     assert_eq!(
+   00038|         tokens("Earth's orbit is 378,000 km; 1.2 billion. 地球的卫星（月球）"),
+   00039|         vec![
+   00040|             token("Earth's", false),
+   00041|             token("orbit", false),
+   00042|             token("is", false),
+   00043|             token("378,000", false),
+   00044|             token("km", false),
+   00045|             token("1.2", false),
+   00046|             token("billion", false),
+   00047|             token("地球的卫星", true),
+   00048|             token("月球", true),
+   00049|         ]
+   00050|     );
+   00051| }
+   00052| 
+   00053| #[test]
+   00054| fn an_anaphor_and_a_clause_continuation_keep_the_subject_and_a_negation_cue_denies() {
+   00055|     assert_eq!(
+   00056|         identities(
+   00057|             "The Moon orbits Earth. It does not emit light, and it has 1.2 billion craters.",
+   00058|             "en"
+   00059|         ),
+   00060|         vec![
+   00061|             "asserted|moon|name:earth unknown:orbit",
+   00062|             "denied|moon|file_whole_write_action unknown:light",
+   00063|             "asserted|moon|number:1.2 unknown:billion unknown:crater",
+   00064|         ]
+   00065|     );
+   00066|     assert_eq!(
+   00067|         identities("Луна вращается вокруг Земли. Она не светится.", "ru"),
+   00068|         vec![
+   00069|             "asserted|moon|name:земли unknown:вокруг unknown:враща",
+   00070|             "denied|moon|unknown:свет",
+   00071|         ]
+   00072|     );
+   00073| }
+   00074| 
+   00075| #[test]
+   00076| fn every_language_reads_through_the_same_lexicon() {
+   00077|     assert_eq!(
+   00078|         identities("सेब एक फल है।", "hi"),
+   00079|         vec!["asserted|wikidata_item_apple|wikidata_item_fruit"]
+   00080|     );
+   00081|     assert_eq!(
+   00082|         identities("La manzana es una fruta.", "es"),
+   00083|         vec!["asserted|wikidata_item_apple|wikidata_item_fruit wikidata_property_instance_of"]
+   00084|     );
+   00085|     assert_eq!(
+   00086|         identities("我喜欢苹果。", "zh"),
+   00087|         vec!["asserted|software_object_lead_word|unknown:喜欢 wikidata_item_apple"]
+   00088|     );
+   00089| }
+   00090| 
+   00091| /// PR #1188 (LEXEMES): the surface count spans every language, so one meaning
+   00092| /// holds a shared word in each language, and the rank still tells meanings
+   00093| /// apart once every meaning is written in all five languages.
+   00094| #[test]
+   00095| fn a_shared_surface_goes_to_more_languages_then_fewer_surfaces_then_declaration_order() {
+   00096|     assert_eq!(
+   00097|         indexed_meaning("apple", "en").as_deref(),
+   00098|         Some("wikidata_item_apple")
+   00099|     );
+   00100|     assert_eq!(
+   00101|         indexed_meaning("सेब", "hi").as_deref(),
+   00102|         Some("wikidata_item_apple")
+   00103|     );
+   00104|     // A rank orders lower first: more languages, fewer surfaces, earlier declared.
+   00105|     let mut ranks: HashMap<String, (Reverse<usize>, usize, usize, String)> = HashMap::new();
+   00106|     for (order, meaning) in lexicon().meanings.iter().enumerate() {
+   00107|         let excluded = FUNCTION_WORD_ROLES
+   00108|             .iter()
+   00109|             .any(|role| meaning.has_role(role))
+   00110|             || meaning.has_role(NEGATION_ROLE);
+   00111|         if excluded {
+   00112|             continue;
+   00113|         }
+   00114|         let languages: BTreeSet<&str> = meaning
+   00115|             .lexemes
+   00116|             .iter()
+   00117|             .map(|lexeme| lexeme.language.as_str())
+   00118|             .collect();
+   00119|         let size: usize = meaning
+   00120|             .lexemes
+   00121|             .iter()
+   00122|             .map(|lexeme| lexeme.words.len())
+   00123|             .sum();
+   00124|         let Some(english) = meaning
+   00125|             .lexemes
+   00126|             .iter()
+   00127|             .find(|lexeme| lexeme.language == "en")
+   00128|         else {
+   00129|             continue;
+   00130|         };
+   00131|         for word in &english.words {
+   00132|             let Some(key) = phrase_key(&word.text) else {
+   00133|                 continue;
+   00134|             };
+   00135|             let rank = (Reverse(languages.len()), size, order, meaning.slug.clone());
+   00136|             let better = ranks
+   00137|                 .get(&key)
+   00138|                 .is_none_or(|held| (&rank.0, rank.1, rank.2) < (&held.0, held.1, held.2));
+   00139|             if better {
+   00140|                 ranks.insert(key, rank);
+   00141|             }
+   00142|         }
+   00143|     }
+   00144|     for (key, rank) in ranks {
+   00145|         assert_eq!(indexed_meaning(&key, "en"), Some(rank.3), "{key}");
+   00146|     }
+   00147| }
+   00148| 
+   00149| #[test]
+   00150| fn a_sentence_opening_word_is_a_name_only_when_the_text_writes_it_as_one_elsewhere() {
+   00151|     assert_eq!(
+   00152|         identities("Earth is orbited by the Moon. The Moon orbits Earth.", "en"),
+   00153|         vec![
+   00154|             "asserted|name:earth|moon unknown:orbit",
+   00155|             "asserted|moon|name:earth unknown:orbit",
+   00156|         ]
+   00157|     );
+   00158|     assert_eq!(
+   00159|         identities("Yesterday the Moon rose.", "en"),
+   00160|         vec!["asserted|unknown:yesterday|moon unknown:rose"]
+   00161|     );
+   00162| }
+   00163| 
+   00164| #[test]
+   00165| fn a_statement_deformalizes_subject_first_in_any_language() {
+   00166|     let statements = formalize_text("The Moon does not orbit Earth.", "en");
+   00167|     let statement = statements.first().expect("one statement");
+   00168|     assert_eq!(
+   00169|         deformalize_statement(statement, "en"),
+   00170|         "Moon not orbit Earth"
+   00171|     );
+   00172|     assert_eq!(
+   00173|         deformalize_statement(statement, "ru"),
+   00174|         "Луна не orbit Earth"
+   00175|     );
+   00176|     assert_eq!(deformalize_statement(statement, "zh"), "月球不 orbit Earth");
+   00177| }
+   00178| 
+   00179| #[test]
+   00180| fn a_page_reports_every_sentence_its_unknown_words_and_its_surviving_facts() {
+   00181|     let report = formalize_page(
+   00182|         "The Moon orbits Earth. It does not emit light, and it has 1.2 billion craters. La la la.",
+   00183|         "en",
+   00184|     );
+   00185|     assert_eq!(
+   00186|         (
+   00187|             report.covered,
+   00188|             report.statements,
+   00189|             report.factual,
+   00190|             report.survived,
+   00191|             report.terms,
+   00192|             report.unknown
+   00193|         ),
+   00194|         (0, 4, 3, 3, 13, 7)
+   00195|     );
+   00196|     let unknown: Vec<Vec<String>> = report
+   00197|         .sentences
+   00198|         .iter()
+   00199|         .map(|sentence| sentence.unknown.clone())
+   00200|         .collect();
+   00201|     assert_eq!(
+   00202|         unknown,
+   00203|         vec![
+   00204|             vec!["orbits".to_owned()],
+   00205|             vec![
+   00206|                 "light".to_owned(),
+   00207|                 "billion".to_owned(),
+   00208|                 "craters".to_owned()
+   00209|             ],
+   00210|             vec!["La".to_owned(), "la".to_owned(), "la".to_owned()],
+   00211|         ]
+   00212|     );
+   00213| }
+   00214| 
+   00215| #[test]
+   00216| fn a_sentence_whose_terms_are_all_known_is_covered_and_its_fact_survives() {
+   00217|     let report = formalize_page("सेब एक फल है।", "hi");
+   00218|     assert_eq!((report.covered, report.survived, report.unknown), (1, 1, 0));
+   00219| }
+   00220| 
+   00221| #[test]
+   00222| fn the_cached_corpus_holds_the_same_topics_in_every_language() {
+   00223|     for language in ["en", "ru", "hi", "zh", "es"] {
+   00224|         let path = Path::new(env!("CARGO_MANIFEST_DIR"))
+   00225|             .join("..")
+   00226|             .join("data/benchmarks/web-formalization")
+   00227|             .join(format!("{language}.lino"));
+   00228|         let text = fs::read_to_string(&path).expect("the cached corpus is committed");
+   00229|         let root = parse_lino(&text);
+   00230|         let pages: Vec<_> = root
+   00231|             .children
+   00232|             .iter()
+   00233|             .filter(|node| node.name == "web-formalization-page")
+   00234|             .collect();
+   00235|         assert_eq!(pages.len(), 8, "{language}");
+   00236|         for page in pages {
+   00237|             assert_ne!(page.find_child_value("source-url"), "");
+   00238|             assert!(!page.find_child_value("revision-id").is_empty());
+   00239|         }
+   00240|     }
+   00241| }
+   00242| 
+   
+   (End of file - total 242 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/issue_1188_web_formalization.rs","file_path":"rust/tests/unit/issue_1188_web_formalization.rs","new":"assert_ne!(page.find_child_value(\"revision-id\"), \"\");","newString":"assert_ne!(page.find_child_value(\"revision-id\"), \"\");","new_str":"assert_ne!(page.find_child_value(\"revision-id\"), \"\");","new_string":"assert_ne!(page.find_child_value(\"revision-id\"), \"\");","old":"assert!(!page.find_child_value(\"revision-id\").is_empty());","oldString":"assert!(!page.find_child_value(\"revision-id\").is_empty());","old_str":"assert!(!page.find_child_value(\"revision-id\").is_empty());","old_string":"assert!(!page.find_child_value(\"revision-id\").is_empty());","path":"rust/tests/unit/issue_1188_web_formalization.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/issue_1188_web_formalization.rs"}
+   3fe1c006016c35ebd2386976481a260c97d4b8e948f66c06ccbf7d363fa3685b  rust/tests/unit/issue_1188_web_formalization.rs
+   
+== answer ==
+Replaced `assert!(!page.find_child_value("revision-id").is_empty());` with `assert_ne!(page.find_child_value("revision-id"), "");` in `rust/tests/unit/issue_1188_web_formalization.rs` and observed the result.
