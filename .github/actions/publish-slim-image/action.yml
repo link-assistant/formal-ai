@@ -1,0 +1,32 @@
+name: Publish the slim server image
+description: Publish and smoke test the exact release binary as a small production sidecar.
+inputs:
+  version:
+    description: The released crate version
+    required: true
+  image:
+    description: GHCR repository already authenticated by the release job
+    required: true
+runs:
+  using: composite
+  steps:
+    - uses: docker/build-push-action@v7
+      with:
+        context: .
+        file: Dockerfile.slim
+        build-args: BINARY_SOURCE=prebuilt
+        push: true
+        tags: |
+          ${{ inputs.image }}:slim
+          ${{ inputs.image }}:${{ inputs.version }}-slim
+        cache-to: type=inline
+    - name: Verify the published sidecar
+      shell: bash
+      env:
+        SLIM_IMAGE: ${{ inputs.image }}:${{ inputs.version }}-slim
+      run: |
+        set -euo pipefail
+        docker pull "$SLIM_IMAGE"
+        docker run --rm --entrypoint verify-formal-ai-slim "$SLIM_IMAGE"
+        bytes=$(docker image inspect "$SLIM_IMAGE" --format '{{.Size}}')
+        test "$bytes" -le 2147483648

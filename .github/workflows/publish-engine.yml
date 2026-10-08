@@ -1,29 +1,107 @@
 name: Publish browser engine
-on:
+# GITHUB_TOKEN-created releases suppress release events. Resolve only the
+# published tag from a completed main run; no fork head is executed here.
+on: # zizmor: ignore[dangerous-triggers]
   release:
     types: [published]
+  workflow_run:
+    workflows: ["CI/CD Pipeline"]
+    types: [completed]
+    branches: [main]
+  pull_request:
+    branches-ignore: ['e2e/**']
+    paths:
+      - "js/**"
+      - "data/seed/**"
+      - "packages/formal-ai-engine/**"
+      - "package.json"
+      - "bun.lock"
+      - ".github/workflows/publish-engine.yml"
+      - "scripts/resolve-package-release.mjs"
+      - "scripts/publish-browser-engine.mjs"
+      - "scripts/generate-web-distribution.py"
   workflow_dispatch:
     inputs:
+      mode:
+        description: Run package checks without publication
+        type: choice
+        options: [checks]
+        default: checks
+      pull-request:
+        description: Pull request whose package checks were dispatched
+        type: string
+        default: ''
       publish:
-        description: Publish the package after preparation
+        description: Publish the selected stable release (main only)
         type: boolean
         default: false
+      tag:
+        description: Published release tag (empty selects the latest)
+        type: string
+        default: ''
 permissions:
   contents: read
 concurrency:
-  group: publish-browser-engine
+  group: package-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: false
 jobs:
-  package:
+  resolve:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    permissions:
-      contents: read
-      id-token: write
+    timeout-minutes: 5
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.head_repository.full_name == github.repository &&
+       github.event.workflow_run.conclusion != 'cancelled' &&
+       github.event.workflow_run.conclusion != 'skipped')
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
+      publish: ${{ steps.release.outputs.publish }}
+      build: ${{ steps.release.outputs.build }}
     steps:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24.x'
+      - name: Resolve the published package release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          REPOSITORY: ${{ github.repository }}
+          REFERENCE: ${{ github.ref }}
+          PUBLISH: ${{ inputs.publish }}
+          INPUT_TAG: ${{ inputs.tag }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RUN_HEAD: ${{ github.event.workflow_run.head_sha }}
+          RUN_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          RUN_REPOSITORY: ${{ github.event.workflow_run.head_repository.full_name }}
+          RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        run: node scripts/resolve-package-release.mjs
+  package:
+    needs: resolve
+    if: ${{ !cancelled() && needs.resolve.outputs.build == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Select the resolved release tag
+        if: needs.resolve.outputs.tag != ''
+        env:
+          PACKAGE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+        run: |
+          set -euo pipefail
+          [[ "$PACKAGE_RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit 1
+          git fetch origin "refs/tags/$PACKAGE_RELEASE_TAG:refs/tags/$PACKAGE_RELEASE_TAG"
+          git checkout --detach "refs/tags/$PACKAGE_RELEASE_TAG"
       - uses: actions/setup-node@v7
         with:
           node-version: '24.x'
@@ -44,9 +122,15 @@ jobs:
           name: formal-ai-engine
           path: packages/formal-ai-engine/*.tgz
           if-no-files-found: error
+      - name: Attach installable engine package to the release
+        if: needs.resolve.outputs.publish == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PACKAGE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+        run: gh release upload "$PACKAGE_RELEASE_TAG" packages/formal-ai-engine/*.tgz --clobber
       - name: Publish with provenance
-        if: github.event_name == 'release' || inputs.publish
+        if: needs.resolve.outputs.publish == 'true'
         working-directory: packages/formal-ai-engine
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --provenance --access public --ignore-scripts
+        run: node ../../scripts/publish-browser-engine.mjs

@@ -1,27 +1,111 @@
 name: Publish VS Code extension
-on:
+# GITHUB_TOKEN-created releases suppress release events. Resolve only the
+# published tag from a completed main run; no fork head is executed here.
+on: # zizmor: ignore[dangerous-triggers]
   release:
     types: [published]
+  workflow_run:
+    workflows: ["CI/CD Pipeline"]
+    types: [completed]
+    branches: [main]
+  pull_request:
+    branches-ignore: ['e2e/**']
+    paths:
+      - "js/**"
+      - "vscode/**"
+      - "data/seed/**"
+      - "package.json"
+      - "bun.lock"
+      - ".github/workflows/publish-vscode.yml"
+      - "scripts/resolve-package-release.mjs"
   workflow_dispatch:
+    inputs:
+      mode:
+        description: Run package checks without publication
+        type: choice
+        options: [checks]
+        default: checks
+      pull-request:
+        description: Pull request whose package checks were dispatched
+        type: string
+        default: ''
+      publish:
+        description: Publish the selected stable release (main only)
+        type: boolean
+        default: false
+      tag:
+        description: Published release tag (empty selects the latest)
+        type: string
+        default: ''
 permissions:
   contents: read
 concurrency:
-  group: publish-vscode-extension
+  group: publish-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: false
 jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.head_repository.full_name == github.repository &&
+       github.event.workflow_run.conclusion != 'cancelled' &&
+       github.event.workflow_run.conclusion != 'skipped')
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
+      publish: ${{ steps.release.outputs.publish }}
+      build: ${{ steps.release.outputs.build }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24.x'
+      - name: Resolve the published package release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          REPOSITORY: ${{ github.repository }}
+          REFERENCE: ${{ github.ref }}
+          PUBLISH: ${{ inputs.publish }}
+          INPUT_TAG: ${{ inputs.tag }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RUN_HEAD: ${{ github.event.workflow_run.head_sha }}
+          RUN_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          RUN_REPOSITORY: ${{ github.event.workflow_run.head_repository.full_name }}
+          RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        run: node scripts/resolve-package-release.mjs
   publish:
+    needs: resolve
+    if: ${{ !cancelled() && needs.resolve.outputs.build == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
           persist-credentials: false
+      - name: Select the resolved release tag
+        if: needs.resolve.outputs.tag != ''
+        env:
+          PACKAGE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+        run: |
+          set -euo pipefail
+          [[ "$PACKAGE_RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit 1
+          git fetch origin "refs/tags/$PACKAGE_RELEASE_TAG:refs/tags/$PACKAGE_RELEASE_TAG"
+          git checkout --detach "refs/tags/$PACKAGE_RELEASE_TAG"
       - uses: actions/setup-node@v7
         with:
           node-version: '24.x'
-          cache: npm
-          cache-dependency-path: vscode/package-lock.json
+      - name: Install Bun
+        run: |
+          curl -fsSL https://bun.sh/install | bash
+          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
       - name: Build web resources and extension
         run: |
           curl -fsSL https://bun.sh/install | bash
@@ -47,8 +131,16 @@ jobs:
           name: formal-ai-vscode
           path: vscode/*.vsix
           if-no-files-found: error
+      - name: Run existing extension checks
+        run: npm --prefix vscode test
+      - name: Attach installable extension package to the release
+        if: needs.resolve.outputs.publish == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PACKAGE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+        run: gh release upload "$PACKAGE_RELEASE_TAG" vscode/*.vsix --clobber
       - name: Publish Marketplace
-        if: steps.version.outputs.changed == 'true'
+        if: needs.resolve.outputs.publish == 'true' && steps.version.outputs.changed == 'true'
         working-directory: vscode
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
@@ -56,17 +148,15 @@ jobs:
           if [ -z "$VSCE_PAT" ]; then echo 'Marketplace publishing unavailable: VSCE_PAT is not configured'; exit 0; fi
           npx --no-install vsce publish --packagePath ./*.vsix
       - name: Publish Open VSX
-        if: steps.version.outputs.changed == 'true'
+        if: needs.resolve.outputs.publish == 'true' && steps.version.outputs.changed == 'true'
         working-directory: vscode
         env:
           OVSX_PAT: ${{ secrets.OVSX_PAT }}
         run: |
           if [ -z "$OVSX_PAT" ]; then echo 'Open VSX publishing unavailable: OVSX_PAT is not configured'; exit 0; fi
           npx --yes ovsx@1.2.0 publish ./*.vsix
-      - name: Run existing extension checks
-        run: npm --prefix vscode test
       - name: Install published Marketplace extension in a clean profile
-        if: steps.version.outputs.changed == 'true'
+        if: needs.resolve.outputs.publish == 'true' && steps.version.outputs.changed == 'true'
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
           EXPECTED_VERSION: ${{ steps.version.outputs.current }}
