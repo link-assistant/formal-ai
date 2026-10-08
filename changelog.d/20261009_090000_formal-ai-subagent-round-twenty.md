@@ -1,0 +1,25 @@
+### Changed
+
+- PR #1188 round 20:
+  - **The release test job meets 30 minutes (R1188-U9, R1188-U10).**
+    - The specification shards no longer compile their own test binary (220-362s a shard, 1201s cold). They run the unit executable that `build-artifacts` compiles once, through `scripts/run-prebuilt-tests.sh` (`TEST_SUITE=specification`).
+    - The full lane runs five shards and the specification lane four, planned longest-first from per-test durations re-recorded from CI (the longest test takes 520s).
+    - The job's cap fell from 90 to 30 minutes: 83 of 94 jobs now meet the limit.
+    - The unsharded macOS specification leg is gone: macOS runs only the tests whose behaviour can differ from Linux (issue #1059).
+  - **JavaScript first (R1188-U29).**
+    - When a requirement row names tests in both roots, the requirement ledger now cites the JavaScript one, so the requirements pinned only by a Rust test fall from 1116 to 921.
+    - `js/agentic/crate/least_action.mjs` is the JavaScript twin of the least-action scoring (issue #491). R918-2 (the handler inventory) is delivered and pinned by a JavaScript test.
+  - **The Rust specification suite asked of the browser worker (R1188-U29, R1188-U30).**
+    - `scripts/lib/rust-specification-cases.mjs` reads every specification test of the simple shape (a prompt, then assertions on the answer, the intent or the evidence links) into a JavaScript case, which is the rust → js direction of the automated translation.
+    - The gate `check-specification-in-javascript` asks the worker each case: 136 of 1169 are carried and 102 pass.
+    - The 34 failing cases are listed in `data/meta/specification-javascript-gaps.lino` as the worker's parity debt. The number that pass never falls.
+  - **Recorded translation workarounds (R1188-U30, R994).**
+    - The js → rust leg runs meta-language at eb0574d5, which translates imports and sibling calls.
+    - Where it cannot translate yet, a recorded workaround in `data/meta/translation-workarounds.lino` does, each linked to the upstream issue that retires it.
+    - The CI compile builds one crate per root.
+  - **The progressive plan's ratchet (R1188-U28).** A recorded, measured or partial level may grow only by newly recorded requirements and by rows that rose from below. A pass that refines a high level while a lower one grows now fails `check-progressive-plan`.
+  - **Readable names (R1188-U4, R1188-U5).**
+    - The abbreviation rule has a measure and a falling ratchet (gate `check-abbreviations`).
+    - Twelve file names are spelled in full words.
+    - The lexicon-import shards and the changelog archives are named by what they hold (`meanings-lexicon-import-actor-to-diamond.lino`, `releases-from-0.1.0.md`).
+  - The Formal AI tally counts "Not fixed …" as open.
