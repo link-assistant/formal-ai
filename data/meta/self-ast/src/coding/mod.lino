@@ -2,10 +2,10 @@ self_ast_census
   target src/coding/mod.rs
   language rust
   fidelity signature
-  byte_len 1653
-  line_count 44
-  content_id source_module_ea05b98d9b944543
-  symbol_count 21
+  byte_len 1678
+  line_count 45
+  content_id source_module_799039c2580a59b5
+  symbol_count 22
   symbols
     module blueprint 21 21
     module blueprint_data 22 22
@@ -20,11 +20,12 @@ self_ast_census
     module function_catalog 31 31
     module guidance 32 32
     module ir_lowering 33 33
-    module program_contract 34 34
-    module program_ir 35 35
-    module python_render 36 36
-    module python_signature 37 37
-    module recurrence 38 38
-    module rosetta_request 39 39
-    module synthesis_runtime 40 40
-    module task_spec 41 41
+    module operand_program 34 34
+    module program_contract 35 35
+    module program_ir 36 36
+    module python_render 37 37
+    module python_signature 38 38
+    module recurrence 39 39
+    module rosetta_request 40 40
+    module synthesis_runtime 41 41
+    module task_spec 42 42

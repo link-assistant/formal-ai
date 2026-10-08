@@ -2,66 +2,72 @@ self_ast_census
   target src/agentic_coding/intent_router.rs
   language rust
   fidelity full_ast
-  byte_len 7492
-  line_count 178
-  content_id source_module_3c7d62cd5250edd5
-  symbol_count 5
+  byte_len 8116
+  line_count 194
+  content_id source_module_4af9fd6f05feccd1
+  symbol_count 7
   symbols
-    function plan_web_search_step 39 78
-    function tool_result_exists 80 110
-    function plan_edit_step 127 144
-    function read_arguments 146 153
-    function edit_arguments 163 178
+    const OLD_SLOT 25 25
+    const NEW_SLOT 26 26
+    function plan_web_search_step 42 81
+    function tool_result_exists 83 113
+    function plan_edit_step 130 160
+    function read_arguments 162 169
+    function edit_arguments 179 194
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 3848
-    named_node_count 817
-    distinct_node_kinds 49
+    total_link_count 4267
+    named_node_count 890
+    distinct_node_kinds 53
     node_kinds
-      arguments 60
+      arguments 64
+      array_expression 1
       array_type 5
       binary_expression 4
-      block 16
+      block 18
       boolean_literal 3
-      call_expression 60
+      call_expression 64
       closure_expression 8
       closure_parameters 8
+      const_item 2
       crate 1
       doc_comment 53
+      else_clause 1
       expression_statement 16
       field_expression 45
       field_identifier 45
       function_item 5
       generic_type 2
-      identifier 174
-      if_expression 7
+      identifier 195
+      if_expression 8
       index_expression 1
       inner_doc_comment_marker 16
       integer_literal 3
       let_chain 1
       let_condition 2
-      let_declaration 9
-      line_comment 53
-      macro_invocation 4
+      let_declaration 11
+      line_comment 55
+      macro_invocation 6
       outer_doc_comment_marker 37
       parameter 12
       parameters 5
-      primitive_type 10
+      primitive_type 12
       range_expression 1
-      reference_expression 6
-      reference_type 14
+      reference_expression 10
+      reference_type 16
       return_expression 9
-      scoped_identifier 26
+      scoped_identifier 29
       scoped_use_list 1
       source_file 1
-      string_content 23
-      string_literal 23
-      super 8
-      token_tree 8
-      try_expression 4
+      string_content 30
+      string_literal 30
+      super 9
+      token_tree 10
+      try_expression 5
+      tuple_expression 2
       tuple_pattern 2
       tuple_struct_pattern 4
       type_arguments 2

@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/planner.rs
   language rust
   fidelity full_ast
-  byte_len 47034
-  line_count 947
-  content_id source_module_1e61a7086e93e930
-  symbol_count 19
+  byte_len 48882
+  line_count 987
+  content_id source_module_c1e3e2f50fa7debf
+  symbol_count 21
   symbols
     module continuation 5 5
     module precedence 6 6
@@ -19,63 +19,65 @@ self_ast_census
     function stop_repeated_call 204 225
     function stop_repeated_failure 235 256
     const REPEATED_FAILURES_THAT_STOP 236 236
-    function plan_chat_step_routes 258 357
-    function plan_settled_routes 373 859
-    function plan_shell_command_arm 868 887
-    function plan_shell_step 890 909
-    function plan_one 911 916
-    function write_arguments 924 932
-    function fetch_arguments 941 947
+    function plan_chat_step_routes 258 362
+    function plan_settled_routes 378 876
+    function plan_shell_command_arm 885 904
+    function plan_shell_step 907 926
+    function plan_one 928 933
+    function write_arguments 941 949
+    function fetch_arguments 958 964
+    function quote_fault_answer 967 976
+    function unquoted_addition_question 981 987
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 19504
-    named_node_count 3814
+    total_link_count 20442
+    named_node_count 4018
     distinct_node_kinds 80
     node_kinds
-      arguments 278
-      array_expression 1
+      arguments 297
+      array_expression 3
       array_type 12
       assignment_expression 1
       attribute 6
       attribute_item 6
-      binary_expression 5
-      block 96
+      binary_expression 6
+      block 97
       boolean_literal 4
-      call_expression 278
-      closure_expression 16
-      closure_parameters 16
+      call_expression 297
+      closure_expression 23
+      closure_parameters 23
       const_item 1
-      crate 11
+      crate 12
       declaration_list 1
-      doc_comment 78
+      doc_comment 82
       else_clause 1
       enum_item 2
       enum_variant 16
       enum_variant_list 2
-      expression_statement 152
+      expression_statement 150
       field_declaration 2
       field_declaration_list 1
-      field_expression 58
-      field_identifier 60
+      field_expression 69
+      field_identifier 71
       field_pattern 4
-      function_item 13
+      function_item 15
       function_modifiers 2
-      generic_type 6
-      identifier 1138
-      if_expression 70
+      generic_type 8
+      identifier 1185
+      if_expression 69
       impl_item 1
       index_expression 1
       inner_doc_comment_marker 2
       integer_literal 1
-      let_chain 11
-      let_condition 54
-      let_declaration 18
+      let_chain 10
+      let_condition 53
+      let_declaration 19
       lifetime 2
-      line_comment 344
-      macro_invocation 8
+      line_comment 360
+      macro_invocation 9
       match_arm 37
       match_block 5
       match_expression 5
@@ -85,32 +87,32 @@ self_ast_census
       mutable_specifier 3
       or_pattern 2
       ordered_field_declaration_list 2
-      outer_doc_comment_marker 76
-      parameter 24
-      parameters 13
-      primitive_type 16
-      reference_expression 49
-      reference_type 27
-      return_expression 76
-      scoped_identifier 252
+      outer_doc_comment_marker 80
+      parameter 26
+      parameters 15
+      primitive_type 18
+      reference_expression 55
+      reference_type 29
+      return_expression 75
+      scoped_identifier 271
       scoped_type_identifier 1
       scoped_use_list 7
       self 4
       self_parameter 2
       shorthand_field_identifier 4
       source_file 1
-      string_content 49
-      string_literal 50
+      string_content 52
+      string_literal 54
       struct_item 1
       struct_pattern 1
-      super 71
-      token_tree 18
-      try_expression 3
-      tuple_expression 3
+      super 77
+      token_tree 19
+      try_expression 4
+      tuple_expression 4
       tuple_pattern 1
-      tuple_struct_pattern 65
-      type_arguments 6
-      type_identifier 37
+      tuple_struct_pattern 64
+      type_arguments 8
+      type_identifier 41
       unary_expression 4
       use_declaration 54
       use_list 7

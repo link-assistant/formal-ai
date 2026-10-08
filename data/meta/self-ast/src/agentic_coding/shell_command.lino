@@ -2,76 +2,76 @@ self_ast_census
   target src/agentic_coding/shell_command.rs
   language rust
   fidelity full_ast
-  byte_len 45072
-  line_count 998
-  content_id source_module_7982bbaa4a348277
+  byte_len 45209
+  line_count 997
+  content_id source_module_b9ad7e0249536e9b
   symbol_count 45
   symbols
-    const REPORT_ISSUE_ACTION 23 23
-    function shell_command_for_task 42 85
-    function semantic_shell_command_for_task 93 95
-    function strip_balanced_outer_quotes 97 104
-    function prefixed_shell_command 118 136
-    function trim_command_sentence_end 145 159
-    const SHELL_QUOTING_AND_METACHARACTERS 163 165
-    function command_named_in_prose 180 202
-    function names_a_command 207 212
-    function reads_as_prose 224 241
-    function explicit_passthrough_command 249 255
-    function bare_shell_command 257 273
-    function prefix_boundary 275 281
-    function code_search_query_for_task 293 305
-    function code_shaped_query 312 317
-    function longest_search_cue 326 342
-    function literal_code_search_query 344 350
-    function shaped_code_search_token 366 382
-    function adjacent_code_search_token 384 408
-    function search_tokens 410 416
-    function search_tokens_with_offsets 418 429
-    function valid_search_identifier 431 441
-    function sentences_with_mood 461 492
-    function requesting_sentences 502 516
-    function carries_authoring_task 530 537
-    function strip_subject_lead 541 552
-    function labels_a_value 578 594
-    function is_fact_statement 596 627
-    function intent_shell_command 629 665
-    function matched_intent_cue 672 708
-    function sentence_carries_cue 713 727
-    function names_mutating_shell_intent 739 743
-    function destructive_edit_decline 749 769
-    function path_arguments 771 788
-    function names_a_path_object 799 804
-    function looks_like_a_path 809 820
-    function collect_path_arguments 822 853
-    function local_search_query 855 881
-    function resolve_shell_command 883 889
-    function workspace_command 891 902
-    function remainder_argument 905 913
-    function path_argument 918 928
-    function name_lead_argument 933 948
-    function is_safe_path 960 969
-    function named_shell_command 993 998
+    const REPORT_ISSUE_ACTION 24 24
+    function shell_command_for_task 43 86
+    function semantic_shell_command_for_task 94 96
+    function strip_balanced_outer_quotes 98 105
+    function prefixed_shell_command 119 133
+    function trim_command_sentence_end 142 156
+    const SHELL_QUOTING_AND_METACHARACTERS 160 162
+    function command_named_in_prose 177 199
+    function names_a_command 204 209
+    function reads_as_prose 221 238
+    function explicit_passthrough_command 246 252
+    function bare_shell_command 254 270
+    function prefix_boundary 272 278
+    function code_search_query_for_task 290 302
+    function code_shaped_query 309 314
+    function longest_search_cue 323 339
+    function literal_code_search_query 341 347
+    function shaped_code_search_token 363 379
+    function adjacent_code_search_token 381 405
+    function search_tokens 407 413
+    function search_tokens_with_offsets 415 426
+    function valid_search_identifier 428 438
+    function sentences_with_mood 458 489
+    function requesting_sentences 499 513
+    function carries_authoring_task 527 534
+    function strip_subject_lead 538 549
+    function labels_a_value 575 591
+    function is_fact_statement 593 624
+    function intent_shell_command 626 664
+    function matched_intent_cue 671 707
+    function sentence_carries_cue 712 726
+    function names_mutating_shell_intent 738 742
+    function destructive_edit_decline 748 768
+    function path_arguments 770 787
+    function names_a_path_object 798 803
+    function looks_like_a_path 808 819
+    function collect_path_arguments 821 852
+    function local_search_query 854 880
+    function resolve_shell_command 882 888
+    function workspace_command 890 901
+    function remainder_argument 904 912
+    function path_argument 917 927
+    function name_lead_argument 932 947
+    function is_safe_path 959 968
+    function named_shell_command 992 997
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 27737
-    named_node_count 5909
+    total_link_count 27739
+    named_node_count 5908
     distinct_node_kinds 75
     node_kinds
       abstract_type 2
-      arguments 540
+      arguments 538
       array_expression 7
       array_type 5
       assignment_expression 3
-      binary_expression 115
+      binary_expression 117
       block 112
       boolean_literal 13
       break_expression 2
-      call_expression 540
-      char_literal 104
+      call_expression 538
+      char_literal 103
       closure_expression 123
       closure_parameters 123
       compound_assignment_expr 1
@@ -82,22 +82,22 @@ self_ast_census
       else_clause 1
       escape_sequence 3
       expression_statement 76
-      field_expression 464
-      field_identifier 464
+      field_expression 462
+      field_identifier 462
       for_expression 4
       function_item 43
       generic_function 6
       generic_type 39
-      identifier 1161
+      identifier 1163
       if_expression 31
       index_expression 9
       inner_doc_comment_marker 11
       integer_literal 21
       let_condition 4
-      let_declaration 102
+      let_declaration 101
       lifetime 13
       lifetime_parameter 4
-      line_comment 290
+      line_comment 292
       loop_expression 1
       macro_invocation 18
       match_arm 11
@@ -108,13 +108,13 @@ self_ast_census
       outer_doc_comment_marker 250
       parameter 92
       parameters 43
-      parenthesized_expression 11
+      parenthesized_expression 12
       primitive_type 101
       range_expression 13
       reference_expression 50
       reference_type 92
       return_expression 27
-      scoped_identifier 77
+      scoped_identifier 78
       scoped_type_identifier 4
       scoped_use_list 4
       self 1
@@ -123,7 +123,7 @@ self_ast_census
       string_literal 27
       super 19
       token_tree 19
-      try_expression 13
+      try_expression 14
       tuple_expression 10
       tuple_pattern 20
       tuple_struct_pattern 11

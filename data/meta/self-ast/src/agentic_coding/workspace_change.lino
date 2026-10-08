@@ -2,92 +2,92 @@ self_ast_census
   target src/agentic_coding/workspace_change.rs
   language rust
   fidelity full_ast
-  byte_len 35329
-  line_count 934
-  content_id source_module_480ac3d4bc9879a8
+  byte_len 37354
+  line_count 985
+  content_id source_module_08317f253b50ffb7
   symbol_count 40
   symbols
-    struct GroundedRewrite 31 50
-    const OLD_SLOT 53 53
-    const NEW_SLOT 54 54
-    const ANCHOR_SLOT 55 55
-    function stated_intent 60 66
-    function stated_slots 69 80
-    struct VerifiedChange 87 92
-    struct CompositeModuleChange 95 100
-    function plan_workspace_change_step 102 154
-    enum Sourced 158 161
-    function sourced_request 165 184
-    function is_verification_failure_answer 196 218
-    function plan_rewrite_step 220 323
-    function plan_composite_step 325 442
-    function as_written 450 461
-    function rewritten_source 463 476
-    function anchored_lines 482 503
-    function changed_lines_edit 507 546
-    const MAX_EDIT_BYTES 508 508
-    function grounded_positional_insert 550 573
-    function insert_sequence 580 582
-    function grounded_rewrite 584 663
-    function composite_module_change 667 688
-    function insert_registration 690 703
-    function compact_registration_edit 705 729
-    const MAX_SUFFIX_BYTES 706 706
-    function repeated_identifier_rewrite_command 731 757
-    function shell_safe_identifier 759 764
-    function identifier_tokens 766 769
-    function valid_identifier 771 781
-    function rust_paths 783 805
-    function result_for_path 807 831
-    function result_for_edit 833 850
-    function argument_matches_path 852 859
-    function argument_matches 861 864
-    function workspace_path_matches 866 873
-    function result_for_command 875 880
-    function plan_digest_verification 882 907
-    function matching_result 909 930
-    function read_arguments 932 934
+    struct GroundedRewrite 31 53
+    const OLD_SLOT 56 56
+    const NEW_SLOT 57 57
+    const ANCHOR_SLOT 58 58
+    function stated_intent 63 69
+    function stated_slots 72 83
+    struct VerifiedChange 90 95
+    struct CompositeModuleChange 98 103
+    function plan_workspace_change_step 105 175
+    enum Sourced 179 182
+    function sourced_request 186 205
+    function is_verification_failure_answer 217 239
+    function plan_rewrite_step 241 360
+    function plan_composite_step 362 479
+    function as_written 487 498
+    function rewritten_source 500 518
+    function anchored_lines 524 545
+    function changed_lines_edit 549 588
+    const MAX_EDIT_BYTES 550 550
+    function grounded_positional_insert 592 616
+    function insert_sequence 623 625
+    function grounded_rewrite 627 714
+    function composite_module_change 718 739
+    function insert_registration 741 754
+    function compact_registration_edit 756 780
+    const MAX_SUFFIX_BYTES 757 757
+    function repeated_identifier_rewrite_command 782 808
+    function shell_safe_identifier 810 815
+    function identifier_tokens 817 820
+    function valid_identifier 822 832
+    function rust_paths 834 856
+    function result_for_path 858 882
+    function result_for_edit 884 901
+    function argument_matches_path 903 910
+    function argument_matches 912 915
+    function workspace_path_matches 917 924
+    function result_for_command 926 931
+    function plan_digest_verification 933 958
+    function matching_result 960 981
+    function read_arguments 983 985
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 25754
-    named_node_count 5153
+    total_link_count 26785
+    named_node_count 5360
     distinct_node_kinds 92
     node_kinds
       abstract_type 2
-      arguments 456
+      arguments 471
       array_expression 17
       array_type 15
       assignment_expression 1
       attribute 3
       attribute_item 3
       base_field_initializer 1
-      binary_expression 93
-      block 110
-      boolean_literal 12
+      binary_expression 94
+      block 114
+      boolean_literal 13
       break_expression 1
-      call_expression 456
+      call_expression 471
       char_literal 21
-      closure_expression 52
-      closure_parameters 52
+      closure_expression 53
+      closure_parameters 53
       const_item 5
       continue_expression 1
-      crate 5
+      crate 6
       declaration_list 1
-      doc_comment 59
+      doc_comment 61
       else_clause 8
       enum_item 1
       enum_variant 2
       enum_variant_list 1
       escape_sequence 4
-      expression_statement 100
-      field_declaration 16
+      expression_statement 108
+      field_declaration 17
       field_declaration_list 3
-      field_expression 325
-      field_identifier 367
-      field_initializer 26
+      field_expression 338
+      field_identifier 382
+      field_initializer 27
       field_initializer_list 7
       for_expression 2
       function_item 31
@@ -95,50 +95,50 @@ self_ast_census
       function_type 1
       generic_function 3
       generic_type 31
-      identifier 1297
-      if_expression 48
+      identifier 1357
+      if_expression 52
       impl_item 1
       index_expression 15
       inner_doc_comment_marker 8
-      integer_literal 18
-      let_chain 4
-      let_condition 13
-      let_declaration 98
+      integer_literal 19
+      let_chain 5
+      let_condition 16
+      let_declaration 100
       lifetime 11
       lifetime_parameter 1
-      line_comment 114
+      line_comment 124
       macro_invocation 17
-      match_arm 12
-      match_block 5
-      match_expression 5
-      match_pattern 12
+      match_arm 14
+      match_block 6
+      match_expression 6
+      match_pattern 14
       mutable_specifier 8
       ordered_field_declaration_list 2
-      outer_doc_comment_marker 51
+      outer_doc_comment_marker 53
       parameter 64
       parameters 32
-      parenthesized_expression 5
-      primitive_type 71
+      parenthesized_expression 4
+      primitive_type 72
       range_expression 15
-      reference_expression 131
+      reference_expression 140
       reference_type 82
-      return_expression 46
-      scoped_identifier 114
+      return_expression 50
+      scoped_identifier 129
       scoped_use_list 6
       self 7
       self_parameter 2
-      shorthand_field_initializer 9
+      shorthand_field_initializer 10
       source_file 1
       string_content 68
       string_literal 69
       struct_expression 7
       struct_item 3
-      super 38
+      super 44
       token_tree 33
       try_expression 36
       tuple_expression 18
       tuple_pattern 24
-      tuple_struct_pattern 30
+      tuple_struct_pattern 34
       tuple_type 8
       type_arguments 34
       type_binding 1

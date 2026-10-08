@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/workspace_search.rs
   language rust
   fidelity full_ast
-  byte_len 18218
-  line_count 528
-  content_id source_module_01b19c850364174b
+  byte_len 18460
+  line_count 533
+  content_id source_module_543e2302e9513e10
   symbol_count 41
   symbols
     const ROLE_SEARCH_FORM 22 22
@@ -35,38 +35,38 @@ self_ast_census
     function form_match 220 252
     function scope_of 255 274
     function is_identifier 277 283
-    function content_search_for 287 322
-    function escaped_regex 325 334
-    function grep_arguments 337 345
-    function content_search_seed 349 369
-    static SEED 350 350
-    function shell_command 373 387
-    function turn_results 390 406
-    function relative_path 409 421
-    function numbered_text 424 428
-    function shell_hit 431 438
-    function hits_of 442 469
-    function answer_for 472 497
-    function plan_workspace_search_step 500 528
+    function content_search_for 287 327
+    function escaped_regex 330 339
+    function grep_arguments 342 350
+    function content_search_seed 354 374
+    static SEED 355 355
+    function shell_command 378 392
+    function turn_results 395 411
+    function relative_path 414 426
+    function numbered_text 429 433
+    function shell_hit 436 443
+    function hits_of 447 474
+    function answer_for 477 502
+    function plan_workspace_search_step 505 533
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 16523
-    named_node_count 3250
+    total_link_count 16619
+    named_node_count 3270
     distinct_node_kinds 81
     node_kinds
-      arguments 271
+      arguments 273
       array_expression 7
       array_type 18
       assignment_expression 6
       attribute 2
       attribute_item 2
       binary_expression 77
-      block 81
+      block 82
       boolean_literal 9
-      call_expression 271
+      call_expression 273
       char_literal 56
       closure_expression 38
       closure_parameters 38
@@ -77,19 +77,19 @@ self_ast_census
       doc_comment 44
       else_clause 5
       escape_sequence 4
-      expression_statement 72
+      expression_statement 74
       field_declaration 6
       field_declaration_list 2
-      field_expression 218
-      field_identifier 236
+      field_expression 219
+      field_identifier 237
       field_initializer 14
       field_initializer_list 5
       for_expression 5
       function_item 25
       generic_function 1
       generic_type 23
-      identifier 731
-      if_expression 29
+      identifier 735
+      if_expression 30
       index_expression 24
       inner_doc_comment_marker 10
       integer_literal 40
@@ -97,7 +97,7 @@ self_ast_census
       let_condition 13
       let_declaration 53
       lifetime 1
-      line_comment 46
+      line_comment 48
       macro_invocation 9
       match_arm 2
       match_block 1
@@ -113,8 +113,8 @@ self_ast_census
       reference_expression 38
       reference_pattern 8
       reference_type 44
-      return_expression 19
-      scoped_identifier 53
+      return_expression 20
+      scoped_identifier 55
       scoped_type_identifier 1
       scoped_use_list 2
       shorthand_field_initializer 1
@@ -124,7 +124,7 @@ self_ast_census
       string_literal 44
       struct_expression 5
       struct_item 2
-      super 10
+      super 11
       token_tree 14
       try_expression 7
       tuple_expression 27

@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/general_planner.rs
   language rust
   fidelity full_ast
-  byte_len 39496
+  byte_len 39495
   line_count 849
-  content_id source_module_166c8239949e3100
+  content_id source_module_4efc77faf5e69027
   symbol_count 39
   symbols
     const PLAN_PATH 22 22

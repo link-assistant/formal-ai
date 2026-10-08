@@ -1,0 +1,14 @@
+self_ast_census
+  target src/solver/conversation.rs
+  language rust
+  fidelity signature
+  byte_len 1707
+  line_count 57
+  content_id source_module_e304eaaf88b34993
+  symbol_count 5
+  symbols
+    enum ConversationRole 12 15
+    function slug 20 25
+    struct ConversationTurn 34 37
+    function user 42 47
+    function assistant 51 56

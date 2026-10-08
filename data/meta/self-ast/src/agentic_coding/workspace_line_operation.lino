@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/workspace_line_operation.rs
   language rust
   fidelity full_ast
-  byte_len 32794
-  line_count 942
-  content_id source_module_5332dba9d0893750
+  byte_len 33168
+  line_count 948
+  content_id source_module_01590fd3ba0b7eb1
   symbol_count 50
   symbols
     const LINES_SLOT 26 26
@@ -54,19 +54,19 @@ self_ast_census
     function reported 664 706
     function resolved_lines 712 727
     function either_of 731 735
-    function grounded_line_operation 738 876
-    function moved 880 932
-    function drops_most_of_file 939 942
+    function grounded_line_operation 738 879
+    function moved 883 938
+    function drops_most_of_file 945 948
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 26019
-    named_node_count 5012
+    total_link_count 26199
+    named_node_count 5048
     distinct_node_kinds 94
     node_kinds
-      arguments 357
+      arguments 361
       array_expression 6
       array_type 10
       assignment_expression 5
@@ -75,14 +75,14 @@ self_ast_census
       binary_expression 99
       block 144
       boolean_literal 22
-      call_expression 357
+      call_expression 361
       char_literal 30
-      closure_expression 30
-      closure_parameters 30
+      closure_expression 31
+      closure_parameters 31
       compound_assignment_expr 3
       const_item 9
       continue_expression 9
-      crate 4
+      crate 5
       declaration_list 2
       doc_comment 93
       else_clause 24
@@ -93,8 +93,8 @@ self_ast_census
       expression_statement 110
       field_declaration 26
       field_declaration_list 8
-      field_expression 238
-      field_identifier 291
+      field_expression 239
+      field_identifier 292
       field_initializer 28
       field_initializer_list 12
       field_pattern 22
@@ -102,16 +102,16 @@ self_ast_census
       function_item 33
       function_modifiers 4
       generic_type 46
-      identifier 1209
+      identifier 1217
       if_expression 55
       impl_item 2
       index_expression 16
       inner_doc_comment_marker 14
       integer_literal 55
       let_condition 4
-      let_declaration 115
+      let_declaration 116
       lifetime 4
-      line_comment 95
+      line_comment 97
       macro_invocation 21
       match_arm 44
       match_block 16
@@ -127,11 +127,11 @@ self_ast_census
       parenthesized_expression 11
       primitive_type 120
       range_expression 15
-      reference_expression 59
+      reference_expression 60
       reference_type 67
       remaining_field_pattern 6
       return_expression 26
-      scoped_identifier 48
+      scoped_identifier 52
       scoped_type_identifier 18
       scoped_use_list 1
       self 13
@@ -140,12 +140,12 @@ self_ast_census
       shorthand_field_initializer 10
       slice_pattern 16
       source_file 1
-      string_content 55
-      string_literal 57
+      string_content 57
+      string_literal 59
       struct_expression 12
       struct_item 3
       struct_pattern 11
-      super 22
+      super 24
       token_tree 57
       try_expression 21
       tuple_expression 25
@@ -158,5 +158,5 @@ self_ast_census
       unary_expression 45
       use_declaration 6
       use_list 1
-      visibility_modifier 19
+      visibility_modifier 20
       while_expression 2

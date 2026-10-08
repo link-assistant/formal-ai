@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/function_expectation.rs
   language rust
   fidelity full_ast
-  byte_len 8841
-  line_count 240
-  content_id source_module_a6018b6a2bb38b13
-  symbol_count 15
+  byte_len 10004
+  line_count 267
+  content_id source_module_b1b285e6b56c12b2
+  symbol_count 16
   symbols
     const ROLE_BUG_FIX 25 25
     const ROLE_EXPECTATION 26 26
@@ -22,84 +22,85 @@ self_ast_census
     function checked_call 122 173
     function latest_run 176 191
     function plan_function_expectation_step 195 240
+    function test_expectation_question 247 267
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 7678
-    named_node_count 1533
+    total_link_count 8518
+    named_node_count 1717
     distinct_node_kinds 72
     node_kinds
-      arguments 131
-      array_expression 4
+      arguments 150
+      array_expression 5
       array_type 9
       assignment_expression 2
-      binary_expression 31
-      block 31
-      call_expression 131
+      binary_expression 34
+      block 35
+      call_expression 150
       char_literal 15
-      closure_expression 14
-      closure_parameters 14
+      closure_expression 16
+      closure_parameters 16
       compound_assignment_expr 2
       const_item 4
       continue_expression 3
-      crate 4
-      doc_comment 25
+      crate 6
+      doc_comment 30
       else_clause 2
-      expression_statement 21
+      expression_statement 25
       field_declaration 6
       field_declaration_list 2
-      field_expression 113
-      field_identifier 118
+      field_expression 127
+      field_identifier 132
       field_initializer 2
       field_initializer_list 2
       for_expression 2
-      function_item 9
+      function_item 10
       function_modifiers 1
       generic_function 1
-      generic_type 14
-      identifier 348
-      if_expression 7
+      generic_type 15
+      identifier 388
+      if_expression 9
       index_expression 7
       inner_doc_comment_marker 14
       integer_literal 12
       let_chain 1
       let_condition 1
-      let_declaration 39
-      line_comment 25
+      let_declaration 43
+      line_comment 30
       macro_invocation 3
       mutable_specifier 4
-      outer_doc_comment_marker 11
-      parameter 20
-      parameters 9
+      outer_doc_comment_marker 16
+      parameter 21
+      parameters 10
       parenthesized_expression 4
-      primitive_type 34
+      primitive_type 35
       range_expression 6
-      reference_expression 29
+      reference_expression 34
       reference_pattern 2
-      reference_type 23
-      return_expression 5
-      scoped_identifier 32
+      reference_type 24
+      return_expression 7
+      scoped_identifier 40
       scoped_type_identifier 1
       scoped_use_list 2
       shorthand_field_initializer 4
       source_file 1
-      string_content 26
-      string_literal 26
+      string_content 30
+      string_literal 30
       struct_expression 2
       struct_item 2
-      super 10
+      super 12
       token_tree 4
-      try_expression 11
+      try_expression 12
       tuple_expression 9
       tuple_pattern 6
       tuple_struct_pattern 6
       tuple_type 4
-      type_arguments 15
-      type_identifier 35
-      unary_expression 10
+      type_arguments 16
+      type_identifier 37
+      unary_expression 13
       use_declaration 5
       use_list 2
-      visibility_modifier 1
+      visibility_modifier 2
       while_expression 2

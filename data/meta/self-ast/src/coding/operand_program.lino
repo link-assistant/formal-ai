@@ -1,0 +1,21 @@
+self_ast_census
+  target src/coding/operand_program.rs
+  language rust
+  fidelity signature
+  byte_len 12341
+  line_count 328
+  content_id source_module_cfd65e163b08eeca
+  symbol_count 12
+  symbols
+    const OPERAND_ENDS 26 26
+    function operand_tasks 31 45
+    static CELL 32 32
+    function bare_word 50 53
+    function program_task_operand 66 99
+    function operand_literal 102 104
+    function greetings 107 111
+    function operand_after 116 170
+    function operand_before 175 209
+    function operand_utterance 217 224
+    function operand_task 231 234
+    function try_write_operand_program 247 328

@@ -1,0 +1,72 @@
+self_ast_census
+  target src/agentic_coding/request_sequence.rs
+  language rust
+  fidelity full_ast
+  byte_len 2970
+  line_count 75
+  content_id source_module_129d3f6948265c05
+  symbol_count 3
+  symbols
+    function request_sequence 15 36
+    function with_request 39 54
+    function plan_request_sequence_step 60 75
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 2095
+    named_node_count 435
+    distinct_node_kinds 51
+    node_kinds
+      arguments 37
+      array_type 5
+      assignment_expression 1
+      binary_expression 2
+      block 10
+      call_expression 37
+      captured_pattern 1
+      closure_expression 6
+      closure_parameters 6
+      crate 1
+      doc_comment 15
+      escape_sequence 2
+      expression_statement 9
+      field_expression 25
+      field_identifier 25
+      for_expression 2
+      function_item 3
+      function_type 1
+      generic_type 6
+      identifier 95
+      if_expression 3
+      inner_doc_comment_marker 8
+      let_declaration 8
+      line_comment 15
+      match_arm 2
+      match_block 1
+      match_expression 1
+      match_pattern 2
+      mutable_specifier 2
+      outer_doc_comment_marker 7
+      parameter 7
+      parameters 4
+      primitive_type 5
+      reference_expression 3
+      reference_type 10
+      return_expression 3
+      scoped_identifier 18
+      scoped_use_list 1
+      source_file 1
+      string_content 1
+      string_literal 2
+      super 7
+      try_expression 4
+      tuple_pattern 4
+      tuple_struct_pattern 2
+      type_arguments 6
+      type_identifier 14
+      unary_expression 1
+      use_declaration 2
+      use_list 1
+      visibility_modifier 1

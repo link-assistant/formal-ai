@@ -2,9 +2,9 @@ self_ast_census
   target src/seed/meanings.rs
   language rust
   fidelity signature
-  byte_len 39301
-  line_count 869
-  content_id source_module_9d8686e7765695d5
+  byte_len 39317
+  line_count 870
+  content_id source_module_0d952704179ac01e
   symbol_count 57
   symbols
     module parse 26 26
@@ -58,9 +58,9 @@ self_ast_census
     function reaches_root 756 776
     function ontology_type_root 785 789
     function ontology_categories 797 799
-    function surface_present 809 820
-    const PHRASAL_VERB_OBJECT_LIMIT 829 829
-    function separated_surface_present 837 850
-    function lexicon 855 858
-    static CACHE 856 856
-    function parse_lexicon_text 867 869
+    function surface_present 810 821
+    const PHRASAL_VERB_OBJECT_LIMIT 830 830
+    function separated_surface_present 838 851
+    function lexicon 856 859
+    static CACHE 857 857
+    function parse_lexicon_text 868 870

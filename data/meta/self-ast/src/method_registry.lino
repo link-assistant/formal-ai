@@ -2,10 +2,10 @@ self_ast_census
   target src/method_registry.rs
   language rust
   fidelity signature
-  byte_len 35377
-  line_count 845
-  content_id source_module_80493e4f64a12783
-  symbol_count 46
+  byte_len 36478
+  line_count 868
+  content_id source_module_672a89c7953d4fb3
+  symbol_count 47
   symbols
     const METHOD_EXECUTION_LINO 32 32
     const METHOD_EXECUTION_PATH 33 33
@@ -45,11 +45,12 @@ self_ast_census
     function execution_for 585 590
     function count_on 594 596
     function ordered_method_names_for_relevants 608 654
-    function to_links_notation 658 697
-    function parse_learned_methods 700 747
-    function parse_method_execution 749 805
-    function execution_for 807 809
-    function child_values 811 817
-    function push_unique 819 823
-    function event_kind_matches_base 825 830
-    function record_method_registry 840 845
+    function dispatch_order 665 677
+    function to_links_notation 681 720
+    function parse_learned_methods 723 770
+    function parse_method_execution 772 828
+    function execution_for 830 832
+    function child_values 834 840
+    function push_unique 842 846
+    function event_kind_matches_base 848 853
+    function record_method_registry 863 868

@@ -2,70 +2,78 @@ self_ast_census
   target src/agentic_coding/literal_write_guard.rs
   language rust
   fidelity full_ast
-  byte_len 3471
-  line_count 83
-  content_id source_module_4618ce0402e77773
-  symbol_count 6
+  byte_len 6228
+  line_count 146
+  content_id source_module_449aaec474b26990
+  symbol_count 10
   symbols
-    const ROLE_WHOLE_WRITE 20 20
-    const ROLE_OVERWRITE_CONSENT 21 21
-    const REFUSAL 22 22
-    function writes_whole_file 26 42
-    function guarded_step 46 70
-    function is_guard_read 74 83
+    const ROLE_WHOLE_WRITE 26 26
+    const ROLE_OVERWRITE_CONSENT 27 27
+    const ROLE_DECLARED_NOUN 28 28
+    const REFUSAL 29 29
+    const UNNAMED 30 30
+    function writes_whole_file 34 53
+    function declares_file 60 74
+    function guarded_step 78 113
+    function names_as_destination 119 133
+    function is_guard_read 137 146
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 2254
-    named_node_count 455
-    distinct_node_kinds 47
+    total_link_count 4208
+    named_node_count 884
+    distinct_node_kinds 51
     node_kinds
-      arguments 29
-      array_expression 1
-      array_type 2
-      binary_expression 10
-      block 9
-      boolean_literal 2
-      call_expression 29
-      closure_expression 2
-      closure_parameters 2
-      const_item 3
-      crate 5
-      doc_comment 18
-      expression_statement 8
-      field_expression 21
-      field_identifier 21
-      function_item 3
-      generic_type 2
-      identifier 116
-      if_expression 3
-      index_expression 1
-      inner_doc_comment_marker 12
-      let_declaration 8
-      line_comment 18
-      outer_doc_comment_marker 6
-      parameter 7
-      parameters 3
-      primitive_type 8
-      range_expression 2
-      reference_expression 12
-      reference_type 10
-      return_expression 5
-      scoped_identifier 26
+      arguments 73
+      array_expression 2
+      array_type 3
+      binary_expression 20
+      block 16
+      boolean_literal 3
+      call_expression 73
+      closure_expression 11
+      closure_parameters 11
+      const_item 5
+      crate 6
+      doc_comment 30
+      expression_statement 15
+      field_expression 62
+      field_identifier 62
+      function_item 5
+      generic_type 4
+      identifier 210
+      if_expression 6
+      index_expression 3
+      inner_doc_comment_marker 15
+      integer_literal 3
+      let_declaration 13
+      lifetime 1
+      line_comment 32
+      mutable_specifier 1
+      outer_doc_comment_marker 15
+      parameter 11
+      parameters 5
+      parenthesized_expression 1
+      primitive_type 16
+      range_expression 4
+      reference_expression 21
+      reference_type 17
+      return_expression 8
+      scoped_identifier 33
       scoped_use_list 3
       source_file 1
-      string_content 5
-      string_literal 5
+      string_content 9
+      string_literal 9
       super 9
       try_expression 1
-      tuple_expression 2
-      tuple_pattern 1
+      tuple_expression 3
+      tuple_pattern 2
       tuple_struct_pattern 3
-      type_arguments 2
-      type_identifier 7
-      unary_expression 1
+      type_arguments 4
+      type_identifier 9
+      unary_expression 4
       use_declaration 5
       use_list 3
       visibility_modifier 3

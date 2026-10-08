@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/code_task.rs
   language rust
   fidelity full_ast
-  byte_len 15277
+  byte_len 15279
   line_count 406
-  content_id source_module_4228b7eeaf456fdd
+  content_id source_module_0c275efcfaf5c3c5
   symbol_count 18
   symbols
     enum RustItemKind 19 23

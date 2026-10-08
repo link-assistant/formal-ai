@@ -1,0 +1,27 @@
+self_ast_census
+  target src/coding/recurrence/cache.rs
+  language rust
+  fidelity signature
+  byte_len 15850
+  line_count 398
+  content_id source_module_66ac919b26303972
+  symbol_count 18
+  symbols
+    const RECURRENCE_SOURCE_CACHE_LINO 25 26
+    const RECURRENCE_CANDIDATE_KIND 29 29
+    const EVALUATION_DEPTH_LIMIT 32 32
+    struct CachedRecurrence 36 50
+    function recurrence_source_records 56 59
+    static RECORDS 57 57
+    function records_from 63 76
+    function cached_recurrence 78 130
+    function expression_root 135 144
+    function expression_from 151 179
+    function recurrence_fold 191 210
+    function keeps 212 224
+    function recurrence_source_match 232 250
+    enum RecurrenceValue 254 259
+    function evaluate_recurrence_expression 268 322
+    function verified_recurrence_record 329 351
+    function render_cached_recurrence 359 362
+    function source_recurrence_candidate 374 398

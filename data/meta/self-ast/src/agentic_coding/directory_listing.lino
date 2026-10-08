@@ -2,76 +2,77 @@ self_ast_census
   target src/agentic_coding/directory_listing.rs
   language rust
   fidelity full_ast
-  byte_len 6465
-  line_count 145
-  content_id source_module_4695713cc4f9d089
-  symbol_count 10
+  byte_len 6689
+  line_count 149
+  content_id source_module_241f0ad564c43410
+  symbol_count 11
   symbols
     function asks_for_directory_listing 20 24
     function composes_a_listing_request 38 43
     function mentions 52 74
     function is_unspaced_script 77 79
     const LISTED_SCOPE_ROLES 82 82
-    const PLACE_ROLE 89 89
-    const OPERAND_WRAPPERS 90 92
-    const CURRENT_DIRECTORY 93 93
-    function is_directory_operand 97 104
-    function listed_directory 112 145
+    const FUNCTION_WORD_ROLE 89 89
+    const PLACE_ROLE 90 90
+    const OPERAND_WRAPPERS 91 93
+    const CURRENT_DIRECTORY 94 94
+    function is_directory_operand 98 105
+    function listed_directory 115 149
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 3671
-    named_node_count 774
+    total_link_count 3781
+    named_node_count 799
     distinct_node_kinds 56
     node_kinds
-      arguments 65
+      arguments 67
       array_expression 2
       array_type 3
       assignment_expression 1
       binary_expression 14
       block 12
       boolean_literal 3
-      call_expression 65
+      call_expression 67
       char_literal 26
       closure_expression 11
       closure_parameters 11
-      const_item 4
+      const_item 5
       crate 1
-      doc_comment 45
+      doc_comment 47
       expression_statement 8
-      field_expression 60
-      field_identifier 60
+      field_expression 61
+      field_identifier 61
       function_item 6
       function_modifiers 1
       generic_function 1
       generic_type 4
-      identifier 126
+      identifier 131
       if_expression 3
       index_expression 5
       inner_doc_comment_marker 15
       integer_literal 6
       let_condition 1
       let_declaration 12
-      line_comment 48
+      line_comment 50
       macro_invocation 2
       mutable_specifier 1
-      outer_doc_comment_marker 30
+      outer_doc_comment_marker 32
       parameter 9
       parameters 6
       parenthesized_expression 1
-      primitive_type 17
+      primitive_type 18
       range_expression 3
-      reference_expression 9
-      reference_type 13
+      reference_expression 10
+      reference_type 14
       return_expression 3
-      scoped_identifier 9
+      scoped_identifier 11
       scoped_use_list 1
       self 1
       source_file 1
-      string_content 8
-      string_literal 8
+      string_content 9
+      string_literal 9
       super 3
       token_tree 2
       tuple_struct_pattern 1

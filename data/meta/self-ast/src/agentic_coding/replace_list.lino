@@ -1,0 +1,82 @@
+self_ast_census
+  target src/agentic_coding/replace_list.rs
+  language rust
+  fidelity full_ast
+  byte_len 5371
+  line_count 147
+  content_id source_module_c17425c3de0eb651
+  symbol_count 7
+  symbols
+    const LISTED 15 15
+    const CLAUSE_TAIL 18 18
+    function without_tail 21 25
+    function replace_clauses 31 66
+    function replace_list 72 94
+    function replaced_in_order 100 109
+    function absent_text_answer 117 147
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 3975
+    named_node_count 809
+    distinct_node_kinds 57
+    node_kinds
+      arguments 68
+      array_expression 3
+      array_type 2
+      assignment_expression 2
+      binary_expression 18
+      block 23
+      break_expression 2
+      call_expression 68
+      char_literal 4
+      closure_expression 9
+      closure_parameters 9
+      const_item 2
+      crate 2
+      doc_comment 29
+      else_clause 2
+      expression_statement 19
+      field_expression 54
+      field_identifier 54
+      for_expression 3
+      function_item 5
+      generic_type 9
+      identifier 170
+      if_expression 7
+      index_expression 1
+      inner_doc_comment_marker 8
+      integer_literal 5
+      let_declaration 16
+      line_comment 29
+      loop_expression 1
+      macro_invocation 1
+      mutable_specifier 4
+      outer_doc_comment_marker 21
+      parameter 11
+      parameters 5
+      primitive_type 15
+      range_expression 2
+      reference_expression 11
+      reference_type 14
+      return_expression 4
+      scoped_identifier 10
+      scoped_use_list 2
+      source_file 1
+      string_content 8
+      string_literal 8
+      super 6
+      token_tree 1
+      try_expression 6
+      tuple_expression 5
+      tuple_pattern 4
+      tuple_struct_pattern 1
+      tuple_type 3
+      type_arguments 9
+      type_identifier 17
+      unary_expression 8
+      use_declaration 3
+      use_list 2
+      visibility_modifier 3
