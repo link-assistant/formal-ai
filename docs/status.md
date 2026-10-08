@@ -53,7 +53,7 @@ This document is a deterministic projection of committed ledgers.
 | `data/meta/self-hosting-ledger.lino` | 1283 |
 | `data/meta/debt-ratchet.lino` | 64 |
 | `data/meta/core-boundary-ledger.lino` | 496 |
-| `data/meta/handler-migration-ledger.lino` | 493 |
+| `data/meta/handler-migration-ledger.lino` | 499 |
 | `data/meta/ladder-ratchet.lino` | 21 |
 | `data/meta/requirement-status-ledger.lino` | 25 |
 | `data/seed/languages.lino` | 113 |

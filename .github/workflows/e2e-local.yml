@@ -30,9 +30,16 @@ permissions:
 
 jobs:
   e2e-local:
-    name: E2E Tests (local web app)
+    name: E2E Tests (local web app, shard ${{ matrix.shard }}/3)
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    # R1188-U9/U11: the suite is split over three matrix legs by spec file
+    # (Playwright `--shard`), so each leg stays well inside 30 minutes; the
+    # whole suite measured 30.0 minutes at most as one job.
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
     steps:
       - uses: actions/checkout@v7
         with:
@@ -41,7 +48,7 @@ jobs:
         id: ledger
         uses: ./.github/actions/green-ledger
         with:
-          check: e2e-local
+          check: e2e-local-${{ matrix.shard }}
           paths: >-
             rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock rust/tests/e2e js package.json bun.lock scripts .github/workflows/e2e-local.yml .github/actions
           enabled: ${{ github.ref != 'refs/heads/main' }}
@@ -96,23 +103,26 @@ jobs:
         run: scripts/sync-seed.sh
       - name: Run local e2e tests
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
+        env:
+          SHARD: ${{ matrix.shard }}
         run: |
           cd rust/tests/e2e
-          npx playwright test --config=playwright.local.config.js
+          npx playwright test --config=playwright.local.config.js --shard="${SHARD}/3"
       - name: Upload Playwright report on failure
         if: ${{ (failure()) && steps.ledger.outputs.already-green != 'true' }}
         uses: actions/upload-artifact@v7
         with:
-          name: playwright-report-local
+          name: playwright-report-local-${{ matrix.shard }}
           path: rust/tests/e2e/playwright-report/
           retention-days: 7
       - name: Upload generated /download screenshots
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
         uses: actions/upload-artifact@v7
         with:
-          name: download-page-screenshots
+          name: download-page-screenshots-${{ matrix.shard }}
           path: |
             docs/screenshots/issue-347/
             js/download/assets/app-preview*.png
           retention-days: 14
-          if-no-files-found: error
+          # Only the leg that runs the screenshot spec produces them.
+          if-no-files-found: ignore

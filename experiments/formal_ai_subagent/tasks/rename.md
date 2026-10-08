@@ -33,7 +33,7 @@ Do, in this order, one tree at a time, each as a separate rule application:
 5. **Other numbered names** in `rust/examples`, `data/meta` and `docs/` that are ours: apply the same rule.
 
 Rules:
-- **No cargo and no rust-script locally.** Rust module renames must update `mod` lines and paths exactly; CI compiles them. Validate with `rustfmt --edition 2024 --check` on the touched Rust files, `node experiments/formal_ai_subagent/local-gates.mjs`, and the full web suite (`node --test rust/tests/web/`).
+- **No cargo and no rust-script locally.** Rust module renames must update `mod` lines and paths exactly; CI compiles them. Validate with `rustfmt --edition 2024 --check` on the touched Rust files, the gate twins the rename touches (`local-gates.mjs --only ...`), and only the web tests that reference the renamed paths (find them with grep). CI runs the rest, and CIFIX-LOOP fixes its failures in bulk (owner, 2026-10-08: minimal local tests).
 - LEAD commits after each tree (2, 3, 4, 5) passes, so stop and report after each one.
 - Ledger rows T370–T389. Delegate the map entries' review notes and ledger rows to Formal AI.
 - Do not commit.

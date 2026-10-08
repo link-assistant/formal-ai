@@ -14,3 +14,4 @@
 - The web UI boundary ratchet counts non-whitespace characters, so wrapping a line no longer changes the measure.
 - JS -> Rust translated items: 254 -> 263.
 - CONTRIBUTING's pull request process asks for the tests next to a change and the JavaScript gate twins locally, not every test; CI runs the rest.
+- The local web E2E suite runs as three Playwright `--shard` legs of a 30-minute job instead of one 40-minute job, so CI speed carries 14 exceptions.

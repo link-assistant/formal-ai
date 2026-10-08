@@ -18,7 +18,7 @@ Do:
    - It rewrites the `.lino` files, their `rust/embedded` and `js/seed` mirrors, and the matching quoted string literals in `js/`, `ts/` (via `translate-es --write`), `rust/src` and `rust/tests`.
    - Never touch identifiers that are code syntax (Rust/JS variable or function names follow their own language conventions), external formats (OpenAI-compatible JSON field names, Wikidata ids, HTTP headers), or quoted human text.
    - Generalize the parsers where needed, so that both spellings are accepted during the transition and one canonical spelling is written.
-   - Go one seed family at a time (meanings, responses, handler rules, ledgers), each as its own rule application. Run the web suite after each. LEAD commits between families.
+   - Go one seed family at a time (meanings, responses, handler rules, ledgers), each as its own rule application. After each family, run only the tests that read that family (grep for the converted names). CI runs the rest. LEAD commits between families.
 3. **Concise form for the most repeated structure:**
    - The pattern `lexeme <lang>` / `surface` / `text <word>` costs about 37k lines. Design a shorter equivalent that stays readable, e.g. `<lang> "word" "other word"` under a `words` link.
    - Implement the reader in the JS seed parser first, then the Rust one, accepting both forms.
@@ -30,7 +30,7 @@ Do:
 Rules:
 - **No cargo and no rust-script locally;** Rust is checked by rustfmt and CI only.
 - JS first, then the Rust twin, with the same behaviour.
-- Every family conversion must keep `node --test rust/tests/web/` and `local-gates.mjs` green.
+- Every family conversion must keep the relevant `local-gates.mjs --only` twins and the tests that read the family green. CI runs the rest (owner, 2026-10-08: minimal local tests).
 - Ledger rows T390–T419. Use Formal AI for the rule files and the small edits.
 - Stop and report after each family, so LEAD can commit.
 - Do not commit.

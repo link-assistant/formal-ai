@@ -124,7 +124,10 @@ module.exports = defineConfig({
   // uploaded. The job cap is now 40 minutes, and this one is deliberately kept
   // well below the remaining budget so *Playwright* aborts first, exits
   // non-zero, and leaves a report behind.
-  globalTimeout: 25 * 60_000,
+  //
+  // R1188-U9/U11: the suite now runs as three `--shard` legs of a 30-minute
+  // job, so each leg's Playwright aborts at 20 minutes, before the job clock.
+  globalTimeout: 20 * 60_000,
   // Issue #977: the suite is 468 tests. Playwright's default is half the
   // available cores (2 on a 4-vCPU ubuntu-latest runner), which left the suite
   // unable to finish in any reasonable budget. These specs are I/O-bound
