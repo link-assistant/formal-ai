@@ -335,3 +335,38 @@ fn committed_agent_cli_session_is_byte_reproducible() {
             .trim()
     );
 }
+
+#[test]
+fn file_operation_cues_do_not_come_from_path_operands() {
+    for word in ["rename", "move", "delete", "remove", "word", "line", "text"] {
+        for prefix in ["", "/tmp/"] {
+            let source = format!("{prefix}{word}-source.txt");
+            let target = format!("{prefix}{word}-destination.mjs");
+            for (opening, closing) in [("", ""), ("«", "»"), ("“", "”")] {
+                let prompt =
+                    format!("Copy {opening}{source}{closing} to {opening}{target}{closing}");
+                assert_eq!(
+                    shell_command(&prompt),
+                    Some(format!("cp {source} {target}"))
+                );
+            }
+        }
+    }
+    for verb in [
+        "Delete",
+        "Remove",
+        "удали",
+        "удалить",
+        "हटाओ",
+        "删除",
+        "移除",
+        "elimina",
+        "borra",
+    ] {
+        let prompt = format!("{verb} malformed-regression.test.mjs");
+        assert_eq!(
+            shell_command(&prompt),
+            Some(String::from("rm malformed-regression.test.mjs"))
+        );
+    }
+}

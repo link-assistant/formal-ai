@@ -6,6 +6,7 @@ import {
   normalizeCommandWord, sentenceSpans, statesACommandPolicy,
 } from './shell_command_policy.mjs';
 import { asksForDirectoryListing } from './directory_listing.mjs';
+import { withoutPathWords } from './workspace_line_operation.mjs';
 import { isDottedNumber, trimTrailingSentenceDot } from './file_path_shape.mjs';
 import { requestBlocks } from './stated_request.mjs';
 import { testFileCommand } from './test_file_runner.mjs';
@@ -412,6 +413,8 @@ function sentenceCarriesCue(sentence, cue, fillers) {
 
 /** Mirrors `fn matched_intent_cue`: `[intent, cue]` or null. */
 function matchedIntentCue(lower, vocab) {
+  // Path operands and quoted payloads supply data, never operation cues.
+  lower = outsideQuotedSegments(withoutPathWords(lower));
   const moods = sentencesWithMood(lower);
   const cues = vocab.intents.flatMap((intent) => intent.cues);
   const requesting = requestingSentences(moods, cues);
@@ -450,7 +453,7 @@ function outsideQuotedSegments(prompt) {
 export function editsInsideAFile(prompt) {
   const quoted = quotedSegmentSpans(prompt).map((segment) => trim(segment.text)).filter((text) => text !== '');
   if (quoted.some((text) => !looksLikeAPath(text))) return true;
-  const outside = normalizePrompt(outsideQuotedSegments(prompt)).toLowerCase();
+  const outside = normalizePrompt(outsideQuotedSegments(withoutPathWords(prompt))).toLowerCase();
   const line = meaning('line');
   return (line !== null && line !== undefined && evidencedIn(line, outside)) || mentionsRole('file_text_unit', outside);
 }
@@ -512,7 +515,7 @@ function collectPathArguments(text, rawCue, vocab, count, anchored) {
   const args = [];
   for (const word of splitWhitespace(text)) {
     // A quoted operand closes before the full stop: `'b.txt'.` (PR #1188 G37).
-    const quote = (character) => '`"\',;:!?'.includes(character);
+    const quote = (character) => '`"\',;:!?«»‘’“”'.includes(character);
     const candidate = trimMatches(trimTrailingSentenceDot(trimMatches(word, quote)), quote);
     const normalized = candidate.toLowerCase();
     if (!candidate || !isSafePath(candidate) || (!anchored && !looksLikeAPath(candidate))

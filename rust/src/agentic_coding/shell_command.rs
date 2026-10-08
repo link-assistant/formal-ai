@@ -24,22 +24,9 @@ use crate::seed::{
 const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
 /// Resolve a user turn into the concrete shell command the agentic loop should run.
 ///
-/// Two data-driven strategies, in order of specificity:
-///
-/// 1. **Named command** ([`named_shell_command`]): when the prompt pairs a run/execute
-///    verb (or terminal/shell phrase) with a known shell token from
-///    `data/seed/terminal-commands.lino` — e.g. *"execute pwd"*, *"run git status"*,
-///    *«запусти ls»* — emit that command (with its flag/path/sub-command arguments).
-///    This is what makes `pwd` (issue #676) and every other seed token reachable, not
-///    just the hardcoded `ls` the fallback used to know.
-///
-/// 2. **Natural-language directory listing** ([`asks_for_directory_listing`]): when the
-///    prompt asks, in prose, to see the files in the current place — e.g. *"give me a
-///    list of files in current folder"*, *"what files are here?"* — resolve to `ls`.
-///
-/// The vocabulary lives in seed data, so a maintainer retunes coverage by editing a
-/// `.lino` file rather than this function, upholding the project rule against hardcoded
-/// natural language in the solver.
+/// Named commands preserve their flags, paths and subcommands. Directory
+/// listings use the seeded listing intent. Both vocabularies live in seed
+/// data, so new language forms do not require prompt-specific code.
 pub(super) fn shell_command_for_task(prompt: &str) -> Option<String> {
     let prompt = strip_balanced_outer_quotes(prompt.trim());
     // Caller policy is filtered here, not inside one strategy, because
@@ -671,6 +658,11 @@ fn matched_intent_cue<'a>(
     lower: &str,
     vocab: &'a ShellIntentVocabulary,
 ) -> Option<(&'a ShellIntent, &'a String)> {
+    // Path operands and quoted payloads supply data, never operation cues.
+    let instruction = crate::solver_handlers::text_outside_quoted_segments(
+        &super::workspace_computed_change::without_path_words(lower),
+    );
+    let lower = instruction.as_str();
     let sentences = sentences_with_mood(lower);
     let caller_context = seed::caller_context_vocabulary();
     let cues: Vec<&str> = vocab
@@ -832,7 +824,12 @@ fn collect_path_arguments(
     let mut arguments = Vec::new();
     for word in text.split_whitespace() {
         // A quoted operand closes before the full stop (PR #1188 G37).
-        let quote = |c: char| matches!(c, '`' | '"' | '\'' | ',' | ';' | ':' | '!' | '?');
+        let quote = |c: char| {
+            matches!(
+                c,
+                '`' | '"' | '\'' | ',' | ';' | ':' | '!' | '?' | '«' | '»' | '‘' | '’' | '“' | '”'
+            )
+        };
         let candidate = trim_trailing_sentence_dot(word.trim_matches(quote)).trim_matches(quote);
         let normalized = candidate.to_lowercase();
         if candidate.is_empty()

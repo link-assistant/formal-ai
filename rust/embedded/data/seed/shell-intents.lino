@@ -831,15 +831,26 @@ shell_intents
         cue "remove the file"
         cue "delete file"
         cue "remove file"
+        cue delete
+        cue remove
       language ru
         cue "удали файл"
         cue "удалить файл"
+        cue удали
+        cue удалить
       language hi
         cue हटाओ
         cue "फ़ाइल हटाएँ"
       language zh
         cue 删除文件
         cue 移除文件
+        cue 删除
+        cue 移除
+      language es
+        cue "elimina el archivo"
+        cue "borra el archivo"
+        cue elimina
+        cue borra
     intent
       command cp
       argument two_paths

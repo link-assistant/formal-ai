@@ -403,7 +403,7 @@ export function groundedLineOperation(task) {
         const pair = adjacentPair(lines, anchor, neighbour, above);
         if (pair === null) return null;
         const removed = [...pair].sort((left, right) => left - right).map((index) => bare(lines[index]));
-        return { intent: 'coding_text_remove', slots: [['{old}', removed.join('`, `')]] };
+        return { intent: 'coding_text_remove', slots: [['{old}', removed]] };
       },
     });
   }
@@ -425,7 +425,7 @@ export function withoutPathWords(task) {
   for (const token of tokens(task).reverse()) {
     if (segments.some((segment) => token.start < segment.end && token.end > segment.start)) continue;
     const path = cleanPathToken(token.text);
-    if (looksLikeFilePath(path) && safeRelativePath(path)) {
+    if (looksLikeFilePath(path)) {
       out = `${out.slice(0, token.start)}${' '.repeat(token.end - token.start)}${out.slice(token.end)}`;
     }
   }

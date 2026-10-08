@@ -174,7 +174,7 @@ pub(super) fn edits_inside_a_file(prompt: &str) -> bool {
         return true;
     }
     let outside = crate::engine::normalize_prompt(
-        &crate::solver_handlers::text_outside_quoted_segments(prompt),
+        &crate::solver_handlers::text_outside_quoted_segments(&without_path_words(prompt)),
     )
     .to_lowercase();
     seed::lexicon()
@@ -207,9 +207,7 @@ pub(super) fn without_path_words(task: &str) -> String {
             continue;
         }
         let path = super::write_request::clean_path_token(token.text);
-        if super::write_request::looks_like_file_path(path)
-            && super::write_request::safe_relative_path(path)
-        {
+        if super::write_request::looks_like_file_path(path) {
             out.replace_range(token.start..token.end, &" ".repeat(token.end - token.start));
         }
     }
@@ -804,6 +802,17 @@ impl ComputedChange {
         }
         (self.intent, self.slots.clone())
     }
+
+    /// Preserve removed names and lines as explicit list values for the summary.
+    fn reported_values(&self, source: &str) -> Option<Vec<String>> {
+        match &self.computation {
+            Computation::DeclarationRemoval { names } => {
+                removed_declarations(source, names).map(|(_, values)| values)
+            }
+            Computation::Line(operation) => operation.reported_values(source),
+            _ => None,
+        }
+    }
 }
 
 /// Read, compute, edit (or write), check the digest, state the change.
@@ -859,11 +868,17 @@ pub(super) fn plan_computed_change_step(
         .iter()
         .map(|(slot, value)| (*slot, value.as_str()))
         .collect();
+    let values = change.reported_values(&source);
+    let list_slots: Vec<(&str, &[String])> = values
+        .as_deref()
+        .map(|values| vec![(concat!("{", "old", "}"), values)])
+        .unwrap_or_default();
     let verified = VerifiedChange {
         target,
         expected: &updated,
         intent,
         slots: &slots,
+        list_slots: &list_slots,
     };
     if let Some((old, new)) = change.edit(&source, &updated)
         && let Some(tool) = tool_for(tool_names, Capability::Edit)
