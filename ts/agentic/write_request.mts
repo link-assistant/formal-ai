@@ -348,6 +348,9 @@ export function firstActionCueStart(toks) {
 /** Mirrors `fn clean_content`. @param {string} raw @returns {string|null} */
 export function cleanContent(raw) {
   const led = stripClauseLead(raw);
+  if (new TextEncoder().encode(led).length >= 6 && led.startsWith('```') && led.endsWith('```')) {
+    return fencedBody(led.slice(3, led.length - 3)) || null;
+  }
   // One quoted literal, in any pair of quotes (`'a'`, «a», “a”; PR #1188 G100),
   // is the content; the sentence's closing mark after it is the sentence's:
   // `containing 'hello'.` writes `hello`, not `'hello'.`.
@@ -358,14 +361,25 @@ export function cleanContent(raw) {
   }
   let result = led;
   const bytes = new TextEncoder().encode(led);
-  if (bytes.length >= 6 && led.startsWith('```') && led.endsWith('```')) {
-    result = trim(led.slice(3, led.length - 3));
-  } else if (bytes.length >= 2) {
+  if (bytes.length >= 2) {
     const first = bytes[0];
     const last = bytes[bytes.length - 1];
     if (first === last && (first === 0x60 || first === 0x22 || first === 0x27)) result = trim(led.slice(1, -1));
   }
   return result ? result : null;
+}
+
+/**
+ * Mirrors `fn fenced_body`: the bytes of a fenced block. The opening line's
+ * info string names the language and is not content, and the line break
+ * before the closing fence ends the last line (PR #1188 G101). A fence on one
+ * line is its trimmed text.
+ * @param {string} inner the text between the fences
+ */
+function fencedBody(inner) {
+  const newline = inner.indexOf('\n');
+  if (newline < 0 || /\s/u.test(trim(inner.slice(0, newline)))) return trim(inner);
+  return inner.slice(newline + 1);
 }
 
 function stripClauseLead(raw) {

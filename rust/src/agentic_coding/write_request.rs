@@ -678,6 +678,10 @@ pub(super) fn first_action_cue_start(toks: &[Token<'_>]) -> Option<usize> {
 /// Returns [`None`] when nothing is left.
 pub(super) fn clean_content(raw: &str) -> Option<String> {
     let led = strip_clause_lead(raw);
+    if led.len() >= 6 && led.starts_with("```") && led.ends_with("```") {
+        let body = super::markdown_section::fenced_body(&led[3..led.len() - 3]);
+        return (!body.is_empty()).then(|| body.to_owned());
+    }
     // One quoted literal, in any pair of quotes (`'a'`, «a», “a”; PR #1188 G100),
     // is the content; the sentence's closing mark after it is the sentence's:
     // `containing 'hello'.` writes `hello`, not `'hello'.`.
@@ -693,16 +697,12 @@ pub(super) fn clean_content(raw: &str) -> Option<String> {
         let text = only.text.trim();
         return (!text.is_empty()).then(|| text.to_owned());
     }
-    let result = if led.len() >= 6 && led.starts_with("```") && led.ends_with("```") {
-        led[3..led.len() - 3].trim()
-    } else if led.len() >= 2 {
-        let first = led.as_bytes()[0];
-        let last = led.as_bytes()[led.len() - 1];
-        if first == last && matches!(first, b'`' | b'"' | b'\'') {
-            led[1..led.len() - 1].trim()
-        } else {
-            led
-        }
+    let bytes = led.as_bytes();
+    let quoted = led.len() >= 2
+        && bytes[0] == bytes[led.len() - 1]
+        && matches!(bytes[0], b'`' | b'"' | b'\'');
+    let result = if quoted {
+        led[1..led.len() - 1].trim()
     } else {
         led
     };

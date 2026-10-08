@@ -10,6 +10,17 @@ use crate::seed;
 
 const FENCE: &str = "```";
 
+/// The bytes of a fenced block, given the text between its fences: the
+/// opening line's info string is not content, and the line break before the
+/// closing fence ends the last line (PR #1188 G101). A fence on one line is
+/// its trimmed text. Mirrors `fencedBody` in `js/agentic/write_request.mjs`.
+pub(super) fn fenced_body(inner: &str) -> &str {
+    match inner.split_once('\n') {
+        Some((info, body)) if !info.trim().contains(char::is_whitespace) => body,
+        _ => inner.trim(),
+    }
+}
+
 /// The level of a Markdown ATX heading line, or `None`.
 pub(super) fn heading_level(line: &str) -> Option<usize> {
     let trimmed = line.trim();
