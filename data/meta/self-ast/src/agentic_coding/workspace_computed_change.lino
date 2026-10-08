@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/workspace_computed_change.rs
   language rust
   fidelity full_ast
-  byte_len 37880
-  line_count 980
-  content_id source_module_d9c6259497168c37
+  byte_len 37692
+  line_count 974
+  content_id source_module_b5d61d68cd398710
   symbol_count 35
   symbols
     const MAX_ANCHOR_BYTES 38 38
@@ -33,38 +33,38 @@ self_ast_census
     function compute 588 656
     function bounded 660 666
     function edit 669 685
-    function appended_block 695 708
-    function line_indentation 711 716
-    function inserted_at_end 718 728
-    function compact_end_edit 732 765
-    function reported 771 812
-    function plan_computed_change_step 816 887
-    function line_payload_and_path 893 942
-    function block_target 946 961
-    function blank_line_and_path 965 980
+    function appended_block 695 702
+    function line_indentation 705 710
+    function inserted_at_end 712 722
+    function compact_end_edit 726 759
+    function reported 765 806
+    function plan_computed_change_step 810 881
+    function line_payload_and_path 887 936
+    function block_target 940 955
+    function blank_line_and_path 959 974
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 27200
-    named_node_count 5546
+    total_link_count 27056
+    named_node_count 5513
     distinct_node_kinds 97
     node_kinds
-      arguments 458
+      arguments 453
       array_expression 6
       array_type 3
       assignment_expression 1
       attribute 2
       attribute_item 2
-      binary_expression 70
-      block 120
+      binary_expression 67
+      block 119
       boolean_literal 5
       break_expression 1
-      call_expression 458
-      char_literal 21
-      closure_expression 74
-      closure_parameters 74
+      call_expression 453
+      char_literal 20
+      closure_expression 73
+      closure_parameters 73
       compound_assignment_expr 2
       const_item 2
       continue_expression 4
@@ -79,8 +79,8 @@ self_ast_census
       expression_statement 106
       field_declaration 24
       field_declaration_list 10
-      field_expression 334
-      field_identifier 397
+      field_expression 329
+      field_identifier 392
       field_initializer 39
       field_initializer_list 19
       field_pattern 28
@@ -89,7 +89,7 @@ self_ast_census
       function_modifiers 1
       generic_function 1
       generic_type 44
-      identifier 1238
+      identifier 1234
       if_expression 52
       impl_item 2
       index_expression 20
@@ -143,7 +143,7 @@ self_ast_census
       type_arguments 45
       type_identifier 153
       type_parameters 1
-      unary_expression 51
+      unary_expression 49
       use_declaration 13
       use_list 7
       visibility_modifier 15

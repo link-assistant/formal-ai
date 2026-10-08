@@ -1,0 +1,27 @@
+self_ast_census
+  target src/summarization/dependency.rs
+  language rust
+  fidelity signature
+  byte_len 9010
+  line_count 276
+  content_id source_module_d252bcf414bde69e
+  symbol_count 18
+  symbols
+    const ELABORATION_SHARED_TERMS 24 24
+    const KEEP_DIVISOR 27 27
+    struct Entry 31 38
+    struct Node 42 49
+    struct CoreSummary 53 62
+    function closing_of 66 73
+    function sentence_statements 78 91
+    function restates 98 105
+    function without_duplicates 110 124
+    function shared_terms 128 134
+    function depends_on 139 146
+    function statement_graph 151 173
+    function keep_budget 177 179
+    function kept_core 186 206
+    function render_kept 213 232
+    function summarize_by_dependency 236 247
+    function key_facts 252 265
+    function retained_facts 269 276

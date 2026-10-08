@@ -1,0 +1,19 @@
+self_ast_census
+  target src/translation/round_trip.rs
+  language rust
+  fidelity signature
+  byte_len 7651
+  line_count 208
+  content_id source_module_cabbfcb4c66d6d56
+  symbol_count 10
+  symbols
+    struct RenderedTerm 27 34
+    struct Rendering 38 43
+    struct StatementTrip 47 58
+    struct RoundTrip 62 77
+    function best_surface 83 99
+    function render_term 103 117
+    function render_statement 124 146
+    function translate_text 150 156
+    function round_trip_statement 160 182
+    function round_trip 189 208

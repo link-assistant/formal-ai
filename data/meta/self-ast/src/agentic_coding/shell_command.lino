@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/shell_command.rs
   language rust
   fidelity full_ast
-  byte_len 45209
-  line_count 997
-  content_id source_module_b9ad7e0249536e9b
-  symbol_count 45
+  byte_len 45369
+  line_count 1000
+  content_id source_module_8599db8c03806c2c
+  symbol_count 46
   symbols
     const REPORT_ISSUE_ACTION 24 24
     function shell_command_for_task 43 86
@@ -29,48 +29,49 @@ self_ast_census
     function search_tokens 407 413
     function search_tokens_with_offsets 415 426
     function valid_search_identifier 428 438
-    function sentences_with_mood 458 489
-    function requesting_sentences 499 513
-    function carries_authoring_task 527 534
-    function strip_subject_lead 538 549
-    function labels_a_value 575 591
-    function is_fact_statement 593 624
-    function intent_shell_command 626 664
-    function matched_intent_cue 671 707
-    function sentence_carries_cue 712 726
-    function names_mutating_shell_intent 738 742
-    function destructive_edit_decline 748 768
-    function path_arguments 770 787
-    function names_a_path_object 798 803
-    function looks_like_a_path 808 819
-    function collect_path_arguments 821 852
-    function local_search_query 854 880
-    function resolve_shell_command 882 888
-    function workspace_command 890 901
-    function remainder_argument 904 912
-    function path_argument 917 927
-    function name_lead_argument 932 947
-    function is_safe_path 959 968
-    function named_shell_command 992 997
+    function sentences_with_mood 457 488
+    function requesting_sentences 498 512
+    function carries_authoring_task 526 533
+    function strip_subject_lead 537 548
+    function labels_a_value 574 590
+    function is_fact_statement 592 623
+    function intent_shell_command 625 663
+    function matched_intent_cue 670 706
+    function sentence_carries_cue 711 725
+    function names_mutating_shell_intent 737 741
+    function destructive_edit_decline 746 750
+    function refused_destructive_edit 753 771
+    function path_arguments 773 790
+    function names_a_path_object 801 806
+    function looks_like_a_path 811 822
+    function collect_path_arguments 824 855
+    function local_search_query 857 883
+    function resolve_shell_command 885 891
+    function workspace_command 893 904
+    function remainder_argument 907 915
+    function path_argument 920 930
+    function name_lead_argument 935 950
+    function is_safe_path 962 971
+    function named_shell_command 995 1000
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 27739
-    named_node_count 5908
+    total_link_count 27846
+    named_node_count 5928
     distinct_node_kinds 75
     node_kinds
       abstract_type 2
-      arguments 538
+      arguments 540
       array_expression 7
       array_type 5
       assignment_expression 3
       binary_expression 117
-      block 112
+      block 113
       boolean_literal 13
       break_expression 2
-      call_expression 538
+      call_expression 540
       char_literal 103
       closure_expression 123
       closure_parameters 123
@@ -78,26 +79,26 @@ self_ast_census
       const_item 2
       continue_expression 3
       crate 8
-      doc_comment 261
+      doc_comment 260
       else_clause 1
       escape_sequence 3
       expression_statement 76
       field_expression 462
       field_identifier 462
       for_expression 4
-      function_item 43
+      function_item 44
       generic_function 6
-      generic_type 39
-      identifier 1163
+      generic_type 40
+      identifier 1170
       if_expression 31
       index_expression 9
       inner_doc_comment_marker 11
       integer_literal 21
       let_condition 4
-      let_declaration 101
+      let_declaration 102
       lifetime 13
       lifetime_parameter 4
-      line_comment 292
+      line_comment 291
       loop_expression 1
       macro_invocation 18
       match_arm 11
@@ -105,14 +106,14 @@ self_ast_census
       match_expression 2
       match_pattern 11
       mutable_specifier 9
-      outer_doc_comment_marker 250
-      parameter 92
-      parameters 43
+      outer_doc_comment_marker 249
+      parameter 93
+      parameters 44
       parenthesized_expression 12
-      primitive_type 101
+      primitive_type 102
       range_expression 13
       reference_expression 50
-      reference_type 92
+      reference_type 93
       return_expression 27
       scoped_identifier 78
       scoped_type_identifier 4
@@ -123,14 +124,14 @@ self_ast_census
       string_literal 27
       super 19
       token_tree 19
-      try_expression 14
+      try_expression 15
       tuple_expression 10
       tuple_pattern 20
       tuple_struct_pattern 11
       tuple_type 4
-      type_arguments 45
+      type_arguments 46
       type_binding 2
-      type_identifier 93
+      type_identifier 95
       type_parameters 4
       unary_expression 65
       use_declaration 5

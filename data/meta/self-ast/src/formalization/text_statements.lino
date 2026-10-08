@@ -1,0 +1,68 @@
+self_ast_census
+  target src/formalization/text_statements.rs
+  language rust
+  fidelity signature
+  byte_len 29495
+  line_count 900
+  content_id source_module_2a99a31ce8e70903
+  symbol_count 59
+  symbols
+    const FUNCTION_WORD_ROLES 35 35
+    const NEGATION_ROLE 38 38
+    const LONGEST_PHRASE 41 41
+    const LONGEST_HAN_WORD 44 44
+    const SHORTEST_STEM 47 47
+    const APOSTROPHES 49 49
+    const NUMBER_SEPARATORS 50 50
+    const PLACEHOLDERS 51 51
+    enum WordKind 55 72
+    function is_term 77 82
+    function is_known 86 88
+    enum Polarity 93 98
+    function slug 103 108
+    struct Word 113 120
+    struct Statement 124 137
+    struct Sentence 141 146
+    struct Token 150 155
+    function is_word_character 159 174
+    function is_numeral_character 176 183
+    function is_han 185 187
+    function is_number 190 194
+    function seed_record 196 205
+    static ROOT 197 197
+    function seed_words 209 226
+    function inflection_endings 230 234
+    function role_words_in 239 256
+    function function_words 260 270
+    function tokens 278 314
+    function flush_token 316 323
+    function phrase_key 328 353
+    struct Rank 356 361
+    function outranks 366 374
+    function meaning_indexes 377 380
+    static INDEXES 378 378
+    function build_meaning_indexes 382 439
+    function indexed_meaning 443 448
+    function fold_inflection 453 476
+    function unknown_stem 483 493
+    function kind_of_listed 498 513
+    function word 515 517
+    function read_plain_run 521 538
+    function longest_phrase 541 558
+    function read_single 561 588
+    function join_names 591 606
+    function read_han_run 610 627
+    function flush_unknown 629 636
+    function longest_han_word 638 650
+    function read_words 655 668
+    function flush_run 670 677
+    function clause_statement 684 725
+    function statement_clauses 730 749
+    function formalize_sentences 755 781
+    function promote_names 787 830
+    function formalize_text 834 839
+    function statement_terms 843 849
+    function content_ids 853 859
+    function known_ids 863 870
+    function statement_identity 877 893
+    function has_no_unknown 897 900

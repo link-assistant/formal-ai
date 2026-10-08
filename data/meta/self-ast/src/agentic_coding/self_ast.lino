@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/self_ast.rs
   language rust
   fidelity full_ast
-  byte_len 15231
-  line_count 348
-  content_id source_module_83ee4e0fd85d7566
-  symbol_count 26
+  byte_len 15967
+  line_count 363
+  content_id source_module_6fbab02199e74dce
+  symbol_count 28
   symbols
     static AST_CENSUS_RUNS 32 32
     function ast_census_runs 43 45
@@ -19,45 +19,47 @@ self_ast_census
     function is_self_ast_task 102 113
     struct AstNodeCount 118 123
     struct AstCensus 128 139
-    function ast_census 149 182
-    function ast_census 187 195
-    function render_ast_document 204 225
-    function reconstruct_source 238 241
-    function reconstruct_source 246 248
-    function round_trips 257 259
-    function network_lino 271 273
-    function network_lino 278 280
-    function render_network_source 290 300
-    function render_network_source 306 313
-    function render_document 317 319
-    function target_census 325 327
-    function target_source 333 335
-    function final_answer 340 348
+    function ast_census 149 162
+    function named_node_histogram 172 189
+    function ast_census 194 202
+    function render_ast_document 211 213
+    function render_census_document 220 240
+    function reconstruct_source 253 256
+    function reconstruct_source 261 263
+    function round_trips 272 274
+    function network_lino 286 288
+    function network_lino 293 295
+    function render_network_source 305 315
+    function render_network_source 321 328
+    function render_document 332 334
+    function target_census 340 342
+    function target_source 348 350
+    function final_answer 355 363
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 7064
-    named_node_count 1440
-    distinct_node_kinds 68
+    total_link_count 7428
+    named_node_count 1523
+    distinct_node_kinds 70
     node_kinds
-      arguments 59
+      arguments 61
       array_expression 1
       array_type 1
-      attribute 27
-      attribute_item 27
+      attribute 29
+      attribute_item 29
       binary_expression 10
-      block 23
+      block 25
       boolean_literal 2
-      call_expression 59
+      call_expression 61
       closure_expression 4
       closure_parameters 4
       compound_assignment_expr 1
       const_item 6
       continue_expression 1
       crate 1
-      doc_comment 120
+      doc_comment 131
       escape_sequence 13
       expression_statement 10
       field_declaration 7
@@ -68,26 +70,26 @@ self_ast_census
       field_initializer_list 3
       field_pattern 2
       for_expression 2
-      function_item 17
+      function_item 19
       function_modifiers 2
-      generic_type 4
-      identifier 280
+      generic_type 5
+      identifier 295
       if_expression 3
       inner_doc_comment_marker 21
       integer_literal 7
       let_condition 1
       let_declaration 28
       lifetime 1
-      line_comment 126
+      line_comment 134
       macro_invocation 19
       mutable_specifier 2
-      outer_doc_comment_marker 99
-      parameter 15
-      parameters 17
+      outer_doc_comment_marker 110
+      parameter 18
+      parameters 19
       parenthesized_expression 1
-      primitive_type 30
-      reference_expression 1
-      reference_type 20
+      primitive_type 32
+      reference_expression 3
+      reference_type 23
       scoped_identifier 27
       scoped_type_identifier 1
       scoped_use_list 2
@@ -95,18 +97,20 @@ self_ast_census
       shorthand_field_initializer 4
       source_file 1
       static_item 1
-      string_content 55
-      string_literal 46
+      string_content 56
+      string_literal 47
       struct_expression 3
       struct_item 2
       struct_pattern 1
-      token_tree 41
-      tuple_pattern 1
+      token_tree 42
+      tuple_expression 1
+      tuple_pattern 2
       tuple_struct_pattern 1
-      type_arguments 4
-      type_identifier 29
+      tuple_type 1
+      type_arguments 5
+      type_identifier 34
       unary_expression 2
       use_as_clause 1
       use_declaration 4
       use_list 2
-      visibility_modifier 28
+      visibility_modifier 29

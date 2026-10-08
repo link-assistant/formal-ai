@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/tool_result.rs
   language rust
   fidelity full_ast
-  byte_len 36475
-  line_count 971
-  content_id source_module_0686feb4cc1fe874
+  byte_len 36830
+  line_count 979
+  content_id source_module_e7b85f566ba31d24
   symbol_count 50
   symbols
     module command_keys 14 14
@@ -55,18 +55,18 @@ self_ast_census
     function result_tool 908 918
     function result_label 920 935
     function extract_urls 937 953
-    function response_language 957 963
-    function fill 965 971
+    function response_language 957 971
+    function fill 973 979
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 25888
-    named_node_count 5314
+    total_link_count 26081
+    named_node_count 5350
     distinct_node_kinds 88
     node_kinds
-      arguments 470
+      arguments 474
       array_expression 15
       array_type 12
       assignment_expression 3
@@ -74,19 +74,19 @@ self_ast_census
       attribute_item 3
       base_field_initializer 5
       binary_expression 64
-      block 120
+      block 122
       boolean_literal 4
       break_expression 2
-      call_expression 470
+      call_expression 474
       char_literal 9
       closure_expression 86
       closure_parameters 86
       compound_assignment_expr 3
       const_item 2
-      crate 12
+      crate 13
       declaration_list 1
       doc_comment 130
-      else_clause 13
+      else_clause 14
       enum_item 1
       enum_variant 3
       enum_variant_list 1
@@ -94,24 +94,24 @@ self_ast_census
       expression_statement 82
       field_declaration 8
       field_declaration_list 3
-      field_expression 430
-      field_identifier 456
+      field_expression 433
+      field_identifier 459
       field_initializer 18
       field_initializer_list 11
       for_expression 3
       function_item 41
       generic_function 11
       generic_type 27
-      identifier 1078
-      if_expression 40
+      identifier 1088
+      if_expression 41
       impl_item 1
       index_expression 16
       inner_doc_comment_marker 1
       integer_literal 35
       let_condition 11
-      let_declaration 102
+      let_declaration 104
       lifetime 2
-      line_comment 152
+      line_comment 154
       macro_invocation 10
       match_arm 29
       match_block 10
@@ -129,7 +129,7 @@ self_ast_census
       reference_expression 51
       reference_type 68
       return_expression 30
-      scoped_identifier 67
+      scoped_identifier 70
       scoped_type_identifier 1
       scoped_use_list 3
       self 9

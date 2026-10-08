@@ -2,10 +2,10 @@ self_ast_census
   target src/seed.rs
   language rust
   fidelity signature
-  byte_len 38143
-  line_count 970
-  content_id source_module_56349063186bd89c
-  symbol_count 71
+  byte_len 38418
+  line_count 978
+  content_id source_module_e5bac4f5771c944a
+  symbol_count 72
   symbols
     module agentic_tool_capabilities 24 24
     module brainstorm 25 25
@@ -53,28 +53,29 @@ self_ast_census
     function localized_response 440 450
     function response_values_for 457 459
     function agent_info 463 476
-    function supported_languages 485 490
-    struct LanguageRule 494 507
-    function language_rules 510 530
-    function language_of_source 537 542
-    struct PromptPattern 546 552
-    struct LocalizedConcept 560 567
-    struct ConceptRecord 590 602
-    function localized_for 608 613
-    function concepts 617 667
-    struct LocalizedContextLabel 671 674
-    struct ContextRecord 680 685
-    function label_for 691 699
-    function matches 704 719
-    function concept_contexts 723 753
-    struct LearningSource 763 768
-    struct LearningSources 773 776
-    function match_directive 794 809
-    function learning_sources 818 848
-    function prompt_patterns 851 870
-    struct EnvironmentRecord 880 892
-    struct MigrationFlow 895 899
-    struct EnvironmentDirectory 902 906
-    function environment_directory 909 953
-    function child_value_alias 955 962
-    function environment_records 968 970
+    function agent_info_value 482 484
+    function supported_languages 493 498
+    struct LanguageRule 502 515
+    function language_rules 518 538
+    function language_of_source 545 550
+    struct PromptPattern 554 560
+    struct LocalizedConcept 568 575
+    struct ConceptRecord 598 610
+    function localized_for 616 621
+    function concepts 625 675
+    struct LocalizedContextLabel 679 682
+    struct ContextRecord 688 693
+    function label_for 699 707
+    function matches 712 727
+    function concept_contexts 731 761
+    struct LearningSource 771 776
+    struct LearningSources 781 784
+    function match_directive 802 817
+    function learning_sources 826 856
+    function prompt_patterns 859 878
+    struct EnvironmentRecord 888 900
+    struct MigrationFlow 903 907
+    struct EnvironmentDirectory 910 914
+    function environment_directory 917 961
+    function child_value_alias 963 970
+    function environment_records 976 978

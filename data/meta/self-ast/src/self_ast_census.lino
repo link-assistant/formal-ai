@@ -2,10 +2,10 @@ self_ast_census
   target src/self_ast_census.rs
   language rust
   fidelity signature
-  byte_len 30660
-  line_count 822
-  content_id source_module_6708dacbddb65caf
-  symbol_count 44
+  byte_len 33305
+  line_count 895
+  content_id source_module_3f6091d4dbc60083
+  symbol_count 50
   symbols
     const CENSUS_DIR 41 41
     const FULL_FIDELITY_PREFIX 48 48
@@ -23,31 +23,37 @@ self_ast_census
     function document_path 204 206
     function symbol 210 212
     function links_notation 216 253
-    struct CensusResolution 258 267
-    function reference 272 277
-    struct WorkspaceCensus 282 285
-    function compile 294 301
-    function of_directory 312 321
-    function module_count 325 327
-    function full_fidelity_count 331 336
-    function symbol_count 340 342
-    function module 346 350
-    function module_by_reference 358 369
-    function modules_declaring 373 378
-    function resolve 393 412
-    function documents 421 429
-    function content_id 434 446
-    function index_notation 450 481
-    function collect_directory_sources 484 509
-    function resolution 512 519
-    function workspace 526 529
-    static WORKSPACE 527 527
-    enum CensusDrift 533 549
-    function document 554 560
-    function kind 564 570
-    function describe 578 580
-    function drift_report 590 624
-    function scan_symbols 634 655
-    function strip_noncode 659 723
-    function declared_item 726 794
-    function item_end_line 800 822
+    const TARGET_ROW 257 257
+    const SYMBOLS_ROW 259 259
+    const SYMBOL_ROW_INDENT 261 261
+    const NESTED_ROW_INDENT 263 263
+    struct CensusDocument 268 275
+    function module_from_document 284 327
+    struct CensusResolution 331 340
+    function reference 345 350
+    struct WorkspaceCensus 355 358
+    function compile 367 374
+    function of_directory 385 394
+    function module_count 398 400
+    function full_fidelity_count 404 409
+    function symbol_count 413 415
+    function module 419 423
+    function module_by_reference 431 442
+    function modules_declaring 446 451
+    function resolve 466 485
+    function documents 494 502
+    function content_id 507 519
+    function index_notation 523 554
+    function collect_directory_sources 557 582
+    function resolution 585 592
+    function workspace 599 602
+    static WORKSPACE 600 600
+    enum CensusDrift 606 622
+    function document 627 633
+    function kind 637 643
+    function describe 651 653
+    function drift_report 663 697
+    function scan_symbols 707 728
+    function strip_noncode 732 796
+    function declared_item 799 867
+    function item_end_line 873 895

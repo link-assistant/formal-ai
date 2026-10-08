@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/planner.rs
   language rust
   fidelity full_ast
-  byte_len 48882
-  line_count 987
-  content_id source_module_c1e3e2f50fa7debf
+  byte_len 49294
+  line_count 998
+  content_id source_module_f1eb71cefc6edd85
   symbol_count 21
   symbols
     module continuation 5 5
@@ -26,33 +26,33 @@ self_ast_census
     function plan_one 928 933
     function write_arguments 941 949
     function fetch_arguments 958 964
-    function quote_fault_answer 967 976
-    function unquoted_addition_question 981 987
+    function request_fault_answer 968 987
+    function unquoted_addition_question 992 998
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 20442
-    named_node_count 4018
+    total_link_count 20682
+    named_node_count 4065
     distinct_node_kinds 80
     node_kinds
-      arguments 297
-      array_expression 3
+      arguments 300
+      array_expression 4
       array_type 12
       assignment_expression 1
       attribute 6
       attribute_item 6
       binary_expression 6
-      block 97
+      block 98
       boolean_literal 4
-      call_expression 297
+      call_expression 300
       closure_expression 23
       closure_parameters 23
       const_item 1
       crate 12
       declaration_list 1
-      doc_comment 82
+      doc_comment 83
       else_clause 1
       enum_item 2
       enum_variant 16
@@ -60,13 +60,13 @@ self_ast_census
       expression_statement 150
       field_declaration 2
       field_declaration_list 1
-      field_expression 69
-      field_identifier 71
+      field_expression 70
+      field_identifier 72
       field_pattern 4
       function_item 15
       function_modifiers 2
       generic_type 8
-      identifier 1185
+      identifier 1197
       if_expression 69
       impl_item 1
       index_expression 1
@@ -74,43 +74,43 @@ self_ast_census
       integer_literal 1
       let_chain 10
       let_condition 53
-      let_declaration 19
+      let_declaration 20
       lifetime 2
-      line_comment 360
+      line_comment 361
       macro_invocation 9
-      match_arm 37
-      match_block 5
-      match_expression 5
-      match_pattern 37
+      match_arm 39
+      match_block 6
+      match_expression 6
+      match_pattern 39
       mod_item 2
       mut_pattern 1
       mutable_specifier 3
       or_pattern 2
       ordered_field_declaration_list 2
-      outer_doc_comment_marker 80
+      outer_doc_comment_marker 81
       parameter 26
       parameters 15
       primitive_type 18
-      reference_expression 55
+      reference_expression 57
       reference_type 29
       return_expression 75
-      scoped_identifier 271
+      scoped_identifier 274
       scoped_type_identifier 1
       scoped_use_list 7
       self 4
       self_parameter 2
       shorthand_field_identifier 4
       source_file 1
-      string_content 52
-      string_literal 54
+      string_content 55
+      string_literal 58
       struct_item 1
       struct_pattern 1
-      super 77
+      super 78
       token_tree 19
       try_expression 4
-      tuple_expression 4
+      tuple_expression 5
       tuple_pattern 1
-      tuple_struct_pattern 64
+      tuple_struct_pattern 65
       type_arguments 8
       type_identifier 41
       unary_expression 4

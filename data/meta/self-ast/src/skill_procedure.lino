@@ -2,10 +2,10 @@ self_ast_census
   target src/skill_procedure.rs
   language rust
   fidelity signature
-  byte_len 31038
-  line_count 810
-  content_id source_module_193c1ce45bf5797a
-  symbol_count 51
+  byte_len 31303
+  line_count 818
+  content_id source_module_6d72d3b7eaadbbb1
+  symbol_count 52
   symbols
     module artifact 46 46
     module learning 47 47
@@ -21,40 +21,41 @@ self_ast_census
     function fmt 168 173
     function gap_name 186 190
     function compile_procedure 200 202
-    function compile_procedure_with_ledger 207 322
-    struct StepOutcome 326 333
-    struct ProcedureRun 337 342
-    function answer 347 349
-    function links_notation 353 371
-    struct ProcedureRunError 376 383
-    function fmt 386 392
-    struct ProcedureArtifactError 399 401
-    function new 404 408
-    function fmt 412 414
-    trait ProcedureHost 425 433
-    function perform 432 432
-    function execute 441 467
-    function conformance_links_notation 472 477
-    function restate_steps 485 500
-    function links_notation 507 531
-    function link_records 537 562
-    struct ProcedureConformanceHost 565 565
-    function perform 568 570
-    function canonical_program 574 589
-    struct Found 593 597
-    function requirement_id 599 607
-    function procedure_lexicon 609 612
-    static CACHE 610 610
-    function procedure_role_surfaces 614 620
-    function meaning_has_role 622 626
-    function first_step_match 628 654
-    function first_match 662 664
-    function first_procedure_match 666 668
-    function first_match_in 670 696
-    function objects_in 702 724
-    function surfaces 727 734
-    function is_standalone 744 755
-    function is_ideographic 758 760
-    function link_record 762 792
-    function push_field 794 802
-    function push_doublet 804 810
+    function compile_procedure_with_ledger 207 314
+    struct StepOutcome 318 325
+    struct ProcedureRun 329 334
+    function answer 339 341
+    function links_notation 345 363
+    struct ProcedureRunError 368 375
+    function fmt 378 384
+    struct ProcedureArtifactError 391 393
+    function new 396 400
+    function fmt 404 406
+    trait ProcedureHost 417 425
+    function perform 424 424
+    function execute 433 459
+    function conformance_links_notation 464 469
+    function restate_steps 477 492
+    function links_notation 499 523
+    function link_records 529 554
+    struct ProcedureConformanceHost 557 557
+    function perform 560 562
+    function step_id 569 579
+    function canonical_program 582 597
+    struct Found 601 605
+    function requirement_id 607 615
+    function procedure_lexicon 617 620
+    static CACHE 618 618
+    function procedure_role_surfaces 622 628
+    function meaning_has_role 630 634
+    function first_step_match 636 662
+    function first_match 670 672
+    function first_procedure_match 674 676
+    function first_match_in 678 704
+    function objects_in 710 732
+    function surfaces 735 742
+    function is_standalone 752 763
+    function is_ideographic 766 768
+    function link_record 770 800
+    function push_field 802 810
+    function push_doublet 812 818

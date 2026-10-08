@@ -2,34 +2,34 @@ self_ast_census
   target src/draft_portfolio.rs
   language rust
   fidelity signature
-  byte_len 20282
-  line_count 514
-  content_id source_module_f8581a38b65d8d0c
+  byte_len 19648
+  line_count 496
+  content_id source_module_830cbcb5eff2beac
   symbol_count 26
   symbols
-    const MAX_ATTEMPTS 44 44
-    struct DraftPlan 49 58
-    struct DraftArtifact 66 74
-    trait PortfolioLeaf 77 102
-    type Artifact 79 79
-    function supports 84 84
-    function draft 88 88
-    function run_tests 92 92
-    function test_count 96 96
-    function composes 101 101
-    struct PortfolioSelection 105 111
-    struct DraftEvaluation 114 126
-    function passed 129 131
-    function strategy_catalog 141 143
-    function plan_drafts 155 175
-    function seed_for_draft 183 191
-    function run_portfolio 199 230
-    function evaluate_slot 237 270
-    function is_better 274 284
-    function evaluate_attempt 286 309
-    function evaluate_in_parallel 319 335
-    function rank_passing_drafts 354 383
-    function select_composable_draft 388 392
-    function record_draft_results 394 432
-    function failure_record 440 454
-    function comparison_record 456 514
+    const MAX_ATTEMPTS 40 40
+    struct DraftPlan 45 54
+    struct DraftArtifact 62 70
+    trait PortfolioLeaf 73 98
+    type Artifact 75 75
+    function supports 80 80
+    function draft 84 84
+    function run_tests 88 88
+    function test_count 92 92
+    function composes 97 97
+    struct PortfolioSelection 101 107
+    struct DraftEvaluation 110 122
+    function passed 125 127
+    function strategy_catalog 137 139
+    function plan_drafts 151 171
+    function seed_for_draft 179 187
+    function run_portfolio 195 226
+    function evaluate_slot 233 266
+    function is_better 270 280
+    function evaluate_attempt 282 305
+    function evaluate_in_parallel 315 331
+    function rank_passing_drafts 350 365
+    function select_composable_draft 370 374
+    function record_draft_results 376 414
+    function failure_record 422 436
+    function comparison_record 438 496

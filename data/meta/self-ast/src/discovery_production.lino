@@ -2,10 +2,10 @@ self_ast_census
   target src/discovery_production.rs
   language rust
   fidelity signature
-  byte_len 22502
-  line_count 584
-  content_id source_module_b78e1dd855888c8e
-  symbol_count 35
+  byte_len 22803
+  line_count 592
+  content_id source_module_03b1a71ff7e0f54d
+  symbol_count 36
   symbols
     const POLICY 42 42
     const GRAMMARS 45 45
@@ -33,12 +33,13 @@ self_ast_census
     function store 319 332
     function delete_all 336 339
     function parse 341 374
-    function write 376 418
-    function cached_write_program 435 446
-    enum CachedOrDiscovered 451 454
-    function recipe 459 463
-    function was_cached 467 469
-    function cached_or_research 486 532
-    function gap_field 538 548
-    function default_cache_path 553 570
-    function quote 573 581
+    function cache_file_text 379 416
+    function write 418 426
+    function cached_write_program 443 454
+    enum CachedOrDiscovered 459 462
+    function recipe 467 471
+    function was_cached 475 477
+    function cached_or_research 494 540
+    function gap_field 546 556
+    function default_cache_path 561 578
+    function quote 581 589

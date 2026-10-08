@@ -2,10 +2,10 @@ self_ast_census
   target src/translation/mod.rs
   language rust
   fidelity signature
-  byte_len 5428
-  line_count 119
-  content_id source_module_d139caef1aa8fe4e
-  symbol_count 16
+  byte_len 5448
+  line_count 120
+  content_id source_module_39a196ff952e3628
+  symbol_count 17
   symbols
     module cache 51 51
     module formal_statement 52 52
@@ -17,9 +17,10 @@ self_ast_census
     module meaning 58 58
     module pipeline 59 59
     module prompt 60 60
-    module selection 61 61
-    module wikidata 62 62
-    module wiktionary 63 63
-    function default_cached_client 98 101
-    static CLIENT 99 99
-    function translate_via_default_pipeline 112 119
+    module round_trip 61 61
+    module selection 62 62
+    module wikidata 63 63
+    module wiktionary 64 64
+    function default_cached_client 99 102
+    static CLIENT 100 100
+    function translate_via_default_pipeline 113 120

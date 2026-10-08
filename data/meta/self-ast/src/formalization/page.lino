@@ -1,0 +1,13 @@
+self_ast_census
+  target src/formalization/page.rs
+  language rust
+  fidelity signature
+  byte_len 3426
+  line_count 97
+  content_id source_module_a8e76b779d33f340
+  symbol_count 4
+  symbols
+    struct SentenceReport 21 30
+    struct PageReport 34 49
+    function fact_survives 53 61
+    function formalize_page 65 97

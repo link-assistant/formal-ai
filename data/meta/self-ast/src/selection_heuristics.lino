@@ -2,10 +2,10 @@ self_ast_census
   target src/selection_heuristics.rs
   language rust
   fidelity signature
-  byte_len 22005
-  line_count 603
-  content_id source_module_e89dff10b8944d70
-  symbol_count 64
+  byte_len 23482
+  line_count 638
+  content_id source_module_fc063169cd648b37
+  symbol_count 66
   symbols
     module refutation 23 23
     module splitting 24 24
@@ -59,15 +59,17 @@ self_ast_census
     struct TrizRanker 512 512
     function slug 515 517
     function rank 519 521
-    struct SearchHypothesis 527 534
-    struct Experiment 538 546
-    struct HypothesisSpace 550 556
-    enum SearchVerdict 559 568
-    trait ExperimentChooser 570 575
-    function slug 571 571
-    function next_experiment 574 574
-    struct RefutationSearch 578 578
-    function slug 581 583
-    function next_experiment 585 587
-    function segment_count 592 594
-    function complete_layers 601 603
+    function situation_for 529 535
+    function rank_with_heuristic 546 557
+    struct SearchHypothesis 562 569
+    struct Experiment 573 581
+    struct HypothesisSpace 585 591
+    enum SearchVerdict 594 603
+    trait ExperimentChooser 605 610
+    function slug 606 606
+    function next_experiment 609 609
+    struct RefutationSearch 613 613
+    function slug 616 618
+    function next_experiment 620 622
+    function segment_count 627 629
+    function complete_layers 636 638
