@@ -173,6 +173,11 @@ function nextDelimiter(text, cursor) {
     if (!found) continue;
     if (best === null || found[0] < best[0] || (found[0] === best[0] && found[1].length > best[1].length)) best = found;
   }
+  if (best && best[1] === '```') {
+    const fence = /^`{3,}/u.exec(text.slice(best[0]))[0];
+    if (closingDelimiter(text, best[0] + fence.length, fence, fence) === null) return null;
+    return [best[0], fence, fence];
+  }
   return best;
 }
 

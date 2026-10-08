@@ -213,6 +213,9 @@ function tryBehaviorRules(prompt, normalized, history, preferences) {
     };
   }
 
+  const compiled = tryCompiledProcedure(prompt, language);
+  if (compiled) return compiled;
+
   if (isBehaviorRulesCountQuery(normalized, history)) {
     const runtimeRules = collectRuntimeRules(history);
     const counts = behaviorRuleCounts(runtimeRules);

@@ -214,13 +214,8 @@ function writeProgramParameters(prompt) {
   // function / class) requested by a program_request verb (write / create / … / build).
   // The surface words live once in data/seed/meanings.lino; this code knows the
   // concepts. Mirrors write_program_parameters in src/intent_formalization.rs.
-  const mentionsProgramRequest = lexiconMentionsRole(
-    ROLE_PROGRAM_REQUEST,
-    normalized,
-  );
-  const asksForProgram =
-    lexiconMentionsRole(ROLE_PROGRAM_KIND, normalized) &&
-    mentionsProgramRequest;
+  const mentionsProgramRequest = lexiconMentionsRole(ROLE_PROGRAM_REQUEST, normalized);
+  const asksForProgram = lexiconMentionsRole(ROLE_PROGRAM_KIND, normalized) && mentionsProgramRequest;
   const asksForKnownLanguageProgram =
     Boolean(language) &&
     mentionsProgramRequest &&
@@ -228,6 +223,11 @@ function writeProgramParameters(prompt) {
   // Issue #1021 (R1021-31): "мне нужен код" names code and nothing else, so it is a
   // request with no parameters whatever the asking verb (namesCodeAndNothingElse).
   const asksForBareCode = !task && !language && namesCodeAndNothingElse(normalized);
+  // Catalog aliases bind coding tasks. Without a program artefact or language,
+  // a container-scoped enumeration asks for a workspace action.
+  const enumeratesContainer = ["capability_container_scope", "capability_act_enumerate"]
+    .every((role) => lexiconMentionsRole(role, normalized) || lexiconMentionsRoleSubstring(role, normalized));
+  if (!language && !lexiconMentionsRole(ROLE_PROGRAM_KIND, normalized) && enumeratesContainer) return null;
   if (!task && !asksForProgram && !asksForKnownLanguageProgram && !asksForBareCode) return null;
   // Issue #358: modification phrases in the same turn lower the base task
   // through the data-backed substitution pipeline.

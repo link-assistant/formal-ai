@@ -688,7 +688,7 @@ function groundedDeclarationRemoval(task) {
     bounded: true,
     reported: (source) => {
       const removed = removedDeclarations(source, names);
-      return removed ? { intent: 'coding_text_remove', slots: [['{old}', removed.names.join('`, `')]] } : null;
+      return removed ? { intent: 'coding_text_remove', slots: [['{old}', removed.names]] } : null;
     },
   };
 }
@@ -912,7 +912,7 @@ function groundedLineReplacement(task) {
     edit: (source, updated) => contextLinesEdit(source, updated, after),
     intent: 'coding_text_replaced',
     // Listed lines are named one by one, not as one span holding line breaks.
-    slots: [['{old}', quoted.includes(old) ? old : old.split('\n').join('`, `')], ['{new}', next]],
+    slots: [['{old}', quoted.includes(old) ? old : old.split('\n')], ['{new}', next]],
   };
 }
 

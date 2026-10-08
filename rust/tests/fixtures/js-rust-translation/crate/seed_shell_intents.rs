@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=1d8700394e11ceff860dd11613677bd82f5ed3a48de503742b3fe699ebe45d32 bytes=5013
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=8d1a7176db96bb48a07f0e4cc29b103b5a94af09ce5d1a582b1db6605d2d0523 bytes=5315
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=1
 
@@ -32,7 +32,7 @@ pub static ARGUMENTS: std::sync::LazyLock<Vec<String>> = std::sync::LazyLock::ne
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal method call .find()
-// formal-ai:blockers ARGUMENTS.includes | arrow callback of .find() | arrow callback of .map() | arrow function | call of a sibling function | call of an imported function | field access | method call .find() | method call .map() | object without a $ tag
+// formal-ai:blockers ARGUMENTS.includes | arrow callback of .find() | arrow callback of .map() | arrow callback of .some() | arrow function | call of a sibling function | call of an imported function | field access | method call .find() | method call .map() | method call .some() | nullish coalescing | object without a $ tag | optional chaining
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal field access

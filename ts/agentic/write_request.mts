@@ -351,8 +351,9 @@ export function firstActionCueStart(toks) {
 /** Mirrors `fn clean_content`. @param {string} raw @returns {string|null} */
 export function cleanContent(raw) {
   const led = stripClauseLead(raw);
-  if (new TextEncoder().encode(led).length >= 6 && led.startsWith('```') && led.endsWith('```')) {
-    return fencedBody(led.slice(3, led.length - 3)) || null;
+  const fence = /^`{3,}/u.exec(led)?.[0];
+  if (fence && led.length >= fence.length * 2 && led.endsWith(fence)) {
+    return fencedBody(led.slice(fence.length, led.length - fence.length)) || null;
   }
   // One quoted literal, in any pair of quotes (`'a'`, «a», “a”; PR #1188 G100),
   // is the content; the sentence's closing mark after it is the sentence's:
@@ -386,7 +387,18 @@ function fencedBody(inner) {
 }
 
 function stripClauseLead(raw) {
-  const qualifiers = bareSurfaces('file_write_content_qualifier');
+  const modifiers = bareSurfaces('file_write_content_qualifier');
+  const qualifiers = [...modifiers];
+  for (const role of ['file_write_content_lead', 'file_write_authoritative_content_lead']) {
+    for (const form of roleWordForms(role).filter((item) => item.slot === 'prefix')) {
+      const lead = trim(form.before).toLowerCase();
+      for (const modifier of modifiers) {
+        const start = lead.indexOf(modifier);
+        if (start >= 0 && (start === 0 || isWhitespace(lead[start - 1]))) qualifiers.push(lead.slice(start));
+      }
+      qualifiers.push(lead);
+    }
+  }
   let led = trim(raw);
   for (;;) {
     const separated = trim(trimStartMatches(led, charIn(':-—–')));

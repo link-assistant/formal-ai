@@ -24,7 +24,11 @@ function parseIntent(node) {
     command: findChildValue(node, 'command'),
     argument: ARGUMENTS.includes(argument) ? argument : 'none',
     cues: lowerAll(collectLanguageValues(node, 'cue')),
-    effect: { before: templates('before'), prepare: templates('prepare'), after: templates('after') },
+    effect: {
+      flags: templates('flag'), value_options: templates('value-option'), reuse_options: templates('reuse-option'),
+      before_reuse: templates('before-reuse'), directory_targets: effectNode?.children.some((child) => child.name === 'directory-targets' && child.value === 'true') ?? false,
+      before: templates('before'), prepare: templates('prepare'), after: templates('after'),
+    },
     destructive: findChildValue(node, 'destructive') === 'true',
   };
 }

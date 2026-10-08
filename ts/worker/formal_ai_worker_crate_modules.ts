@@ -26,7 +26,9 @@ let CRATE_SEED_RAW = {};
 
 /** The crate meaning seeds `present(fileName)` does not hold, as seed paths. */
 function missingCrateSeeds(present) {
-  const files = (self.FORMAL_AI_CRATE_MEANING_SEEDS || []).map((seed) => `seed/${seed}.lino`);
+  const seeds = [...new Set([...(self.FORMAL_AI_CRATE_MEANING_SEEDS || []), ...(self.FORMAL_AI_CRATE_RESPONSE_SEEDS || [])])];
+  const files = seeds.map((seed) => `seed/${seed}.lino`);
+
   return files.filter((file) => !present(seedFileBaseName(file)));
 }
 
@@ -65,7 +67,8 @@ Promise.resolve().then(() => {
 function crateSeedRegistryText() {
   const seeds = self.FORMAL_AI_CRATE_MEANING_SEEDS || [];
   const records = seeds.map((seed) => `  seed ${seed}\n    lexicon meaning`);
-  return ["seed_registry", ...records].join("\n");
+  const responses = (self.FORMAL_AI_CRATE_RESPONSE_SEEDS || []).map((seed) => `  seed ${seed}\n    lexicon response`);
+  return ["seed_registry", ...records, ...responses].join("\n");
 }
 
 /**

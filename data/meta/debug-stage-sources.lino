@@ -94,6 +94,7 @@ debug_stage_sources
     step formalize
     rust "rust/src/intent_formalization.rs" record_intent_formalization
     js "js/agentic/crate/intent_formalization.mjs" recordIntentFormalization
+    js "js/worker/formal_ai_worker_crate_intent_formalization.js" recordIntentFormalization
     js "js/worker/formal_ai_worker_solver_events.js" solverEventLog
   event "language"
     step detect_language

@@ -636,14 +636,16 @@ function extractUrls(text) {
 /** Mirrors `fn is_listing`. */
 function isListing(label) {
   const lower = toAsciiLowercase(label);
-  return isCommand(lower) ? commandKind(lower) === 'listing' : lower.includes('list') || lower.includes('glob');
+  const kind = commandKind(lower);
+  return kind !== null ? kind === 'listing' : !isCommand(lower) && (lower.includes('list') || lower.includes('glob'));
 }
 
 /** Mirrors `fn is_search`. */
 function isSearch(label) {
   const lower = toAsciiLowercase(label);
-  return isCommand(lower) ? commandKind(lower) === 'search'
-    : ['grep', 'find', 'search'].some((kind) => lower.includes(kind));
+  const kind = commandKind(lower);
+  return kind !== null ? kind === 'search'
+    : !isCommand(lower) && ['grep', 'find', 'search'].some((word) => lower.includes(word));
 }
 
 /**

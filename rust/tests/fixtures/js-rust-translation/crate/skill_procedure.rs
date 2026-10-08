@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=0dabc46fb9743c53254019ea7df907d267bebe084acd53571c3abc5fe11354b3 bytes=16695
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=3cde1bb83fac796cd620dc51015d6628f8172b20f0a58937f71f258d4f7c7150 bytes=16703
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds import-pruning items=0 carried=8
 

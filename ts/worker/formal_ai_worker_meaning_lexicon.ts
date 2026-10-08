@@ -1273,7 +1273,7 @@ function parseLinoValue(raw) {
 function parseLinoTree(text) {
   const root = { name: "", value: "", depth: -1, children: [] };
   const stack = [root];
-  for (const line of text.split("\n")) {
+  for (const line of (globalThis.FormalAiSeed?.expandConciseLexemes(text) ?? text).split("\n")) {
     const stripped = stripLinoComment(line);
     if (!stripped.trim()) continue;
     const indent = stripped.length - stripped.trimStart().length;

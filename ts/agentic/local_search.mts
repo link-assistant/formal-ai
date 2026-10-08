@@ -128,10 +128,17 @@ export function requestFor(prompt) {
   const routeQuestion = roleMatches(ROLE_LOCAL_PATH_ROUTE_QUESTION, normalized);
   if (!contents && !typeRequest && !list && !find && !routeQuestion) return null;
 
+  // A later existential clause can describe what a listing contains. The
+  // earliest evidenced action owns the request; it is not a filename search.
+  const actionPosition = (role) => Math.min(...roleWordForms(role)
+    .map((form) => normalizePrompt(beforeSlot(form) || afterSlot(form)))
+    .filter(Boolean).map((surface) => surfacePosition(normalized, surface))
+    .filter((position) => position !== null));
+  const listsScope = list && (!find || actionPosition(ROLE_LOCAL_PATH_LIST_ACTION) < actionPosition(ROLE_LOCAL_PATH_SEARCH_ACTION));
   let mode;
   if (contents) mode = 'list_contents';
   else if (typeRequest) mode = 'type';
-  else if (list && !find) mode = 'list_scope';
+  else if (listsScope) mode = 'list_scope';
   else mode = 'find';
   if (scope === 'current' && mode === 'list_scope') return null;
 

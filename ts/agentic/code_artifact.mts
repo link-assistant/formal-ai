@@ -147,7 +147,7 @@ function requestedRewrite(task, artifact) {
   return { target: artifact.path, program: rewriteProgram(rules, MAX_REWRITE_STEPS) };
 }
 
-function explicitSubstitutionQuery(task) {
+export function explicitSubstitutionQuery(task) {
   const trimmed = trim(task);
   if (!trimmed.startsWith('(')) return null;
   const program = parseSubstitutionQuery(trimmed, MAX_REWRITE_STEPS);

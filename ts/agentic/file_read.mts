@@ -239,7 +239,7 @@ function asksToReadEveryFile(lower) {
 /** Mirrors `fn asks_to_list_then_read`. */
 function asksToListThenRead(lower) {
   const listsFiles = lower.includes(cue('list_the_files')) || lower.includes('list files')
-    || lower.includes(cue('ls_the_folder')) || lower.includes('ls ');
+    || lower.includes(cue('ls_the_folder')) || splitWhitespace(lower).includes('ls');
   const readsAfter = lower.includes('read') || lower.includes('contents') || lower.includes('content')
     || lower.includes('show me');
   return listsFiles && readsAfter;
