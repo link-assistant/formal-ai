@@ -20,7 +20,7 @@ missing.
   3. **partial**: delivered in part;
   4. **implemented**: delivered, with a test.
 
-  The next pass is the lowest non-empty level.
+  The next pass is the lowest non-empty level. `data/meta/progressive-plan-ratchet.lino` holds the plan: a recorded, measured or partial level may grow only by the requirements recorded since it was written, so a pass that refines a high level while a lower one grows fails the gate. `--write` lowers its ceilings and never raises one.
 - **Refinement is a ratchet.** The resolution knob of a delivered capability is its measured value (term survival, recall, coverage, the number of specializations, the jobs over 30 minutes). A pass moves the number, and the ratchet holds it.
 - **Each problem the same way.** A bug or a gap is first answered by the smallest general rule that covers its class (R1188-U1), with a test, and then sharpened. A special case that makes one prompt sharp while the class stays blurred is the baseline-JPEG mistake.
 
