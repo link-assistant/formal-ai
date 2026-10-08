@@ -2,71 +2,99 @@ self_ast_census
   target src/agentic_coding/request_sequence.rs
   language rust
   fidelity full_ast
-  byte_len 2970
-  line_count 75
-  content_id source_module_129d3f6948265c05
-  symbol_count 3
+  byte_len 10186
+  line_count 266
+  content_id source_module_c654959ce422099c
+  symbol_count 13
   symbols
-    function request_sequence 15 36
-    function with_request 39 54
-    function plan_request_sequence_step 60 75
+    const CLAUSE_MARKS 25 25
+    const SEQUENCE_CUE_ROLE 27 27
+    const JOINER_ROLE 29 29
+    function request_sequence 33 54
+    function sequence_cut 59 69
+    function sequence_cues 73 104
+    function cue_at 108 119
+    function unquoted_paths 122 135
+    function sequence_steps 140 185
+    const STEP_TAIL 188 188
+    function with_request 191 206
+    function plan_request_sequence_step 212 243
+    function turn_exchanges 248 266
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 2095
-    named_node_count 435
-    distinct_node_kinds 51
+    total_link_count 7992
+    named_node_count 1654
+    distinct_node_kinds 69
     node_kinds
-      arguments 37
-      array_type 5
-      assignment_expression 1
-      binary_expression 2
-      block 10
-      call_expression 37
+      arguments 155
+      array_expression 3
+      array_type 11
+      assignment_expression 3
+      binary_expression 30
+      block 40
+      boolean_literal 2
+      break_expression 1
+      call_expression 155
       captured_pattern 1
-      closure_expression 6
-      closure_parameters 6
-      crate 1
-      doc_comment 15
+      char_literal 12
+      closure_expression 23
+      closure_parameters 23
+      compound_assignment_expr 2
+      const_item 4
+      continue_expression 1
+      crate 3
+      doc_comment 38
+      else_clause 1
       escape_sequence 2
-      expression_statement 9
-      field_expression 25
-      field_identifier 25
-      for_expression 2
-      function_item 3
+      expression_statement 46
+      field_expression 125
+      field_identifier 125
+      for_expression 5
+      function_item 9
       function_type 1
-      generic_type 6
-      identifier 95
-      if_expression 3
-      inner_doc_comment_marker 8
-      let_declaration 8
-      line_comment 15
+      generic_type 16
+      identifier 371
+      if_expression 13
+      index_expression 10
+      inner_doc_comment_marker 13
+      integer_literal 12
+      let_declaration 39
+      line_comment 42
+      loop_expression 1
+      macro_invocation 2
       match_arm 2
       match_block 1
       match_expression 1
       match_pattern 2
-      mutable_specifier 2
-      outer_doc_comment_marker 7
-      parameter 7
-      parameters 4
-      primitive_type 5
-      reference_expression 3
-      reference_type 10
-      return_expression 3
-      scoped_identifier 18
-      scoped_use_list 1
+      mutable_specifier 11
+      outer_doc_comment_marker 25
+      parameter 18
+      parameters 10
+      parenthesized_expression 2
+      primitive_type 24
+      range_expression 10
+      reference_expression 15
+      reference_type 25
+      return_expression 10
+      scoped_identifier 37
+      scoped_use_list 2
       source_file 1
-      string_content 1
-      string_literal 2
-      super 7
-      try_expression 4
-      tuple_pattern 4
-      tuple_struct_pattern 2
-      type_arguments 6
-      type_identifier 14
-      unary_expression 1
-      use_declaration 2
-      use_list 1
-      visibility_modifier 1
+      string_content 6
+      string_literal 7
+      super 11
+      token_tree 3
+      try_expression 6
+      tuple_expression 3
+      tuple_pattern 8
+      tuple_struct_pattern 6
+      tuple_type 2
+      type_arguments 16
+      type_identifier 32
+      unary_expression 8
+      use_declaration 5
+      use_list 2
+      visibility_modifier 2
+      while_expression 1

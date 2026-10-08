@@ -2,58 +2,59 @@ self_ast_census
   target src/solver_helpers/mod.rs
   language rust
   fidelity signature
-  byte_len 32037
-  line_count 843
-  content_id source_module_e9d77ff738f12f6c
-  symbol_count 50
+  byte_len 31907
+  line_count 828
+  content_id source_module_3df47956ecd53f53
+  symbol_count 51
   symbols
     module code 13 13
     struct DecomposedSubImpulse 23 27
     function confidence_for 29 38
-    function is_unbounded_autonomy 40 51
-    function is_forget_request 53 57
-    function is_cache_flush_request 59 61
-    function is_agent_request 63 67
-    function is_agent_opt_in 69 73
-    function is_destructive_action 75 84
-    function is_unbounded_loop 86 91
-    function is_inappropriate_content 93 102
-    function unresolved_surfaces_present 119 121
-    function miss_names_consulted_sources 127 129
-    function bare_concept_misses 140 148
-    function record_decomposition 150 206
-    function record_sub_impulses 208 223
-    function independent_actionable_segments 225 235
-    function split_candidate_actionable_parts 237 252
-    function split_sentences 254 270
-    function push_trimmed_segment 272 277
-    function strip_leading_coordinator 279 292
-    function looks_like_independent_impulse 294 319
-    function record_candidates 321 335
-    struct ValidationChoice 338 340
-    function record_validation 342 357
-    function extract_range 359 368
-    function is_prime 370 382
-    function extract_quoted_phrase 384 394
-    function extract_backticked 396 401
-    function recall_name_from_history 406 418
-    function last_user_turn 422 428
-    function last_assistant_turn 433 439
-    function last_turn 445 454
-    function extract_introduced_name 456 459
-    function extract_assistant_name 467 475
-    function extract_name_after_needles 479 502
-    function recall_assistant_name_from_history 509 518
-    function humanize_url 531 556
-    function hex_nibble 558 565
-    function is_reserved_uri_delimiter 567 572
-    function extract_fenced_block 577 597
-    function is_write_script_request 618 632
-    function names_no_task_beyond_the_minimal_script 646 671
-    function format_write_script_execution 673 713
-    function env_definition_fusion_by_default 716 722
-    function env_bool 729 731
-    function env_bool_with_extra_truthy 734 750
-    function env_bounded_f32 753 760
-    function env_truthy 763 772
-    function config_from_env 777 843
+    function mentions_policy_role 45 47
+    function is_unbounded_autonomy 49 51
+    function is_forget_request 53 55
+    function is_cache_flush_request 57 60
+    function is_agent_request 62 64
+    function is_agent_opt_in 66 68
+    function is_destructive_action 70 72
+    function is_unbounded_loop 74 76
+    function is_inappropriate_content 78 87
+    function unresolved_surfaces_present 104 106
+    function miss_names_consulted_sources 112 114
+    function bare_concept_misses 125 133
+    function record_decomposition 135 191
+    function record_sub_impulses 193 208
+    function independent_actionable_segments 210 220
+    function split_candidate_actionable_parts 222 237
+    function split_sentences 239 255
+    function push_trimmed_segment 257 262
+    function strip_leading_coordinator 264 277
+    function looks_like_independent_impulse 279 304
+    function record_candidates 306 320
+    struct ValidationChoice 323 325
+    function record_validation 327 342
+    function extract_range 344 353
+    function is_prime 355 367
+    function extract_quoted_phrase 369 379
+    function extract_backticked 381 386
+    function recall_name_from_history 391 403
+    function last_user_turn 407 413
+    function last_assistant_turn 418 424
+    function last_turn 430 439
+    function extract_introduced_name 441 444
+    function extract_assistant_name 452 460
+    function extract_name_after_needles 464 487
+    function recall_assistant_name_from_history 494 503
+    function humanize_url 516 541
+    function hex_nibble 543 550
+    function is_reserved_uri_delimiter 552 557
+    function extract_fenced_block 562 582
+    function is_write_script_request 603 617
+    function names_no_task_beyond_the_minimal_script 631 656
+    function format_write_script_execution 658 698
+    function env_definition_fusion_by_default 701 707
+    function env_bool 714 716
+    function env_bool_with_extra_truthy 719 735
+    function env_bounded_f32 738 745
+    function env_truthy 748 757
+    function config_from_env 762 828

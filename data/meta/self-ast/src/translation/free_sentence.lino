@@ -2,9 +2,9 @@ self_ast_census
   target src/translation/free_sentence.rs
   language rust
   fidelity signature
-  byte_len 9277
+  byte_len 9280
   line_count 228
-  content_id source_module_6f211b6bf1d3e932
+  content_id source_module_29cff7b079e7e05e
   symbol_count 9
   symbols
     const ROLE_TRANSLATION_STOP_WORD 19 19

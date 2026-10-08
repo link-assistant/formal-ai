@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/summarization_request.rs
   language rust
   fidelity signature
-  byte_len 3633
-  line_count 91
-  content_id source_module_f2cb99648d4ff5ab
+  byte_len 3824
+  line_count 88
+  content_id source_module_441213fb622b5a1d
   symbol_count 2
   symbols
-    const ROLE_TEXT_SUMMARIZATION_ACTION 25 25
-    function handle_summarization_request 33 91
+    const ROLE_TEXT_SUMMARIZATION_ACTION 30 30
+    function handle_summarization_request 38 88

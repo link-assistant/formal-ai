@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/modules.rs
   language rust
   fidelity full_ast
-  byte_len 6596
-  line_count 182
-  content_id source_module_7aadf97d169b92ac
-  symbol_count 96
+  byte_len 6615
+  line_count 183
+  content_id source_module_dd590d52604043fc
+  symbol_count 97
   symbols
     module algorithm_learning 10 10
     module associative_learning 11 11
@@ -63,59 +63,60 @@ self_ast_census
     module prerequisite_recovery 63 63
     module procedure 64 64
     module progress 65 65
-    module question_catalog 66 66
-    module rebuild_plan 67 67
-    module repair_apply 68 68
-    module repair_loop 69 69
-    module repair_strategy 70 70
-    module replace_list 71 71
-    module report_issue 72 72
-    module report_script 73 73
-    module request_sequence 74 74
-    module requirement_extraction 75 75
-    module requirement_resolution 76 76
-    module restart_feedback 77 77
-    module routing_learning 78 78
-    module self_ast 79 79
-    module self_heal 80 80
-    module shell_command 81 81
-    module shell_command_policy 82 82
-    module shell_file_fallback 83 83
-    module source_links 84 84
-    module spelling 85 85
-    module stated_request 86 86
-    module statement_audit 87 87
-    module structured_document 88 88
-    module structured_edit 89 89
-    module system_diagram 90 90
-    module task_obligations 91 91
-    module task_structure 92 92
-    module test_assertion 93 93
-    module test_file_runner 94 94
-    module tool_result 95 95
-    module transcript_evidence 96 96
-    module web_research 97 97
-    module work_item_steps 98 98
-    module workspace_change 99 99
-    module workspace_computed_change 100 100
-    module workspace_inspection 101 101
-    module workspace_line_operation 102 102
-    module workspace_search 103 103
-    module workspace_setting 104 104
-    module write_request 105 105
+    module quote_nesting 66 66
+    module question_catalog 67 67
+    module rebuild_plan 68 68
+    module repair_apply 69 69
+    module repair_loop 70 70
+    module repair_strategy 71 71
+    module replace_list 72 72
+    module report_issue 73 73
+    module report_script 74 74
+    module request_sequence 75 75
+    module requirement_extraction 76 76
+    module requirement_resolution 77 77
+    module restart_feedback 78 78
+    module routing_learning 79 79
+    module self_ast 80 80
+    module self_heal 81 81
+    module shell_command 82 82
+    module shell_command_policy 83 83
+    module shell_file_fallback 84 84
+    module source_links 85 85
+    module spelling 86 86
+    module stated_request 87 87
+    module statement_audit 88 88
+    module structured_document 89 89
+    module structured_edit 90 90
+    module system_diagram 91 91
+    module task_obligations 92 92
+    module task_structure 93 93
+    module test_assertion 94 94
+    module test_file_runner 95 95
+    module tool_result 96 96
+    module transcript_evidence 97 97
+    module web_research 98 98
+    module work_item_steps 99 99
+    module workspace_change 100 100
+    module workspace_computed_change 101 101
+    module workspace_inspection 102 102
+    module workspace_line_operation 103 103
+    module workspace_search 104 104
+    module workspace_setting 105 105
+    module write_request 106 106
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 3696
-    named_node_count 568
+    total_link_count 3710
+    named_node_count 570
     distinct_node_kinds 11
     node_kinds
       crate 7
-      identifier 260
+      identifier 261
       line_comment 8
-      mod_item 96
+      mod_item 97
       scoped_identifier 11
       scoped_use_list 32
       source_file 1

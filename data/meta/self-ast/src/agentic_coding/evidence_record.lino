@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/evidence_record.rs
   language rust
   fidelity full_ast
-  byte_len 43475
-  line_count 974
-  content_id source_module_49afdd02a2e0170f
-  symbol_count 36
+  byte_len 44060
+  line_count 985
+  content_id source_module_9dcfe49fc08947a6
+  symbol_count 37
   symbols
     struct DeliveryBinding 59 68
     function masked_multi_word_quotes 79 102
@@ -13,75 +13,76 @@ self_ast_census
     function exact_field_lines 197 230
     function work_before_delivery 246 250
     function without_trailing_separator 263 273
-    function plan_evidence_record_step 284 398
-    const DELIVERY_PROBE_TURNS 407 407
-    function later_route_delivering 433 454
-    function settled_route_delivers 458 480
-    static DELIVERY_PROBE_ANSWERS 485 486
-    const DELIVERY_PROBE_MEMO_CAPACITY 490 490
-    function probe_settled_routes 492 513
-    function planned_destination 517 519
-    function planned_command_output_path 530 535
-    const OUTPUT_OPTION 538 538
-    function planned_write_path 541 551
-    function render_obligation 554 580
-    function exact_field_values 587 595
-    function combined_observation 598 613
-    function non_hollow_result 622 634
-    function written_observation 640 651
-    function substantive_result_line 661 720
-    function relevance_score 722 788
-    function looks_like_condition 796 808
-    function looks_like_instance_condition 814 819
-    function looks_like_local_binding 824 829
-    function looks_like_exposed_declaration 834 839
-    function looks_like_declaration 847 863
-    function source_text 865 869
-    function is_quoted_or_commented_source 871 881
-    function is_match_count 883 887
-    function looks_like_result_path_heading 889 891
-    function source_authority 896 903
-    function symbolic_answer 929 943
-    function with_residual_request 954 974
+    function plan_evidence_record_step 284 404
+    const DELIVERY_PROBE_TURNS 413 413
+    function later_route_delivering 439 460
+    function settled_route_delivers 464 486
+    static DELIVERY_PROBE_ANSWERS 491 492
+    const DELIVERY_PROBE_MEMO_CAPACITY 496 496
+    function probe_settled_routes 498 519
+    function planned_destination 523 525
+    function planned_command_output_path 536 541
+    const OUTPUT_OPTION 544 544
+    function planned_write_path 547 557
+    function render_obligation 560 586
+    function exact_field_values 593 601
+    function combined_observation 604 619
+    function non_hollow_result 628 640
+    function written_observation 646 657
+    function substantive_result_line 667 726
+    function relevance_score 728 794
+    function looks_like_condition 802 814
+    function looks_like_instance_condition 820 825
+    function looks_like_local_binding 830 835
+    function looks_like_exposed_declaration 840 845
+    function looks_like_declaration 853 869
+    function source_text 871 875
+    function is_quoted_or_commented_source 877 887
+    function is_match_count 889 893
+    function looks_like_result_path_heading 895 897
+    function source_authority 902 909
+    function symbolic_answer 935 951
+    const GAP_INTENT_SUFFIX 954 954
+    function with_residual_request 965 985
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 22518
-    named_node_count 4791
+    total_link_count 22735
+    named_node_count 4837
     distinct_node_kinds 84
     node_kinds
-      arguments 403
+      arguments 409
       array_expression 10
       array_type 8
       assignment_expression 8
-      binary_expression 65
-      block 95
+      binary_expression 64
+      block 96
       boolean_literal 8
-      call_expression 403
+      call_expression 409
       captured_pattern 1
       char_literal 34
       closure_expression 65
       closure_parameters 65
-      const_item 3
+      const_item 4
       continue_expression 4
       crate 17
-      doc_comment 242
+      doc_comment 243
       else_clause 6
       escape_sequence 6
-      expression_statement 91
+      expression_statement 94
       field_declaration 4
       field_declaration_list 1
-      field_expression 334
-      field_identifier 338
+      field_expression 337
+      field_identifier 341
       field_initializer_list 1
       for_expression 7
       function_item 31
       generic_function 5
       generic_type 20
-      identifier 951
-      if_expression 28
+      identifier 959
+      if_expression 29
       index_expression 9
       inner_doc_comment_marker 38
       integer_literal 17
@@ -90,7 +91,7 @@ self_ast_census
       let_declaration 79
       lifetime 4
       lifetime_parameter 1
-      line_comment 322
+      line_comment 327
       macro_invocation 11
       match_arm 11
       match_block 4
@@ -99,25 +100,25 @@ self_ast_census
       mut_pattern 1
       mutable_specifier 15
       or_pattern 1
-      outer_doc_comment_marker 204
+      outer_doc_comment_marker 205
       parameter 54
       parameters 31
       parenthesized_expression 5
-      primitive_type 77
+      primitive_type 78
       range_expression 9
       reference_expression 49
       reference_pattern 1
-      reference_type 60
+      reference_type 61
       remaining_field_pattern 3
-      return_expression 17
-      scoped_identifier 107
+      return_expression 18
+      scoped_identifier 108
       scoped_type_identifier 4
       scoped_use_list 3
       shorthand_field_initializer 4
       slice_pattern 2
       source_file 1
-      string_content 82
-      string_literal 84
+      string_content 84
+      string_literal 86
       struct_expression 1
       struct_item 1
       struct_pattern 3
