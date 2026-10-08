@@ -1,1 +1,276 @@
-import { cached , readText } from './host.mjs' ; import { rustLines } from './content.mjs' ; import { isAlphanumeric , isWhitespace , splitWhitespace , trim } from './crate/rust_str.mjs' ; export const LEXICON_PATH = 'data/agentic-coding/fisherman-lexicon.lino' ; export const TermKind = Object . freeze ( { Entity : 'entity' , Concept : 'concept' , Literal : 'literal' } ) ; export const termKindSlug = ( kind ) => kind ; export function literalTerm ( text ) { return { id : text , label : text , kind : TermKind . Literal } ; } export function predicateUse ( lexeme ) { return { id : lexeme . id , label : lexeme . label } ; } const LexemeKind = Object . freeze ( { Entity : 'entity' , Concept : 'concept' , Predicate : 'predicate' } ) ; function asTerm ( lexeme ) { if ( lexeme . kind === LexemeKind . Entity ) return { id : lexeme . id , label : lexeme . label , kind : TermKind . Entity } ; if ( lexeme . kind === LexemeKind . Concept ) return { id : lexeme . id , label : lexeme . label , kind : TermKind . Concept } ; return null ; } const sameTokens = ( left , right ) => left . length === right . length && left . every ( ( token , index ) => token === right [ index ] ) ; export class Work { constructor ( fields ) { Object . assign ( this , fields ) ; } primaryContext () { return this . contexts . length ? this . contexts [ 0 ] . id : null ; } finalContext () { const found = this . contexts . find ( ( context ) => context . id . endsWith ( ':final' ) ) ?? ( this . contexts . length ? this . contexts [ this . contexts . length - 1 ] : null ) ; return found ? found . id : null ; } extract ( sentence ) { const tokens = tokenize ( sentence ) ; let predicate = null ; let index = 0 ; while ( index < tokens . length && predicate === null ) { const matched = this . matchAt ( tokens , index ) ; if ( matched !== null && matched [ 1 ] . kind === LexemeKind . Predicate ) { const lexeme = matched [ 1 ] ; predicate = [ index , index + matched [ 0 ] , { id : lexeme . id , label : lexeme . label , modal : lexeme . modal , time : lexeme . time } ] ; } index += 1 ; } if ( predicate === null ) return null ; const [ predStart , predEnd , predicateLexeme ] = predicate ; let subject = null ; let position = 0 ; while ( position < predStart ) { const matched = this . matchAt ( tokens , position ) ; if ( matched !== null ) { const term = asTerm ( matched [ 1 ] ) ; if ( term !== null ) subject = term ; position += matched [ 0 ] ; } else { position += 1 ; } } let object = null ; position = predEnd ; while ( position < tokens . length ) { const matched = this . matchAt ( tokens , position ) ; if ( matched !== null ) { const term = asTerm ( matched [ 1 ] ) ; if ( term !== null ) { object = term ; break ; } position += matched [ 0 ] ; } else { position += 1 ; } } if ( object === null ) object = literalTerm ( tokens . slice ( predEnd ) . join ( ' ' ) ) ; return { subject : subject ?? literalTerm ( '—' ) , predicate : predicateLexeme , object } ; } matchAt ( tokens , index ) { for ( const width of [ 2 , 1 ] ) { if ( index + width > tokens . length ) continue ; const window = tokens . slice ( index , index + width ) ; const lexeme = this . lexemes . find ( ( candidate ) => candidate . surface . length === width && sameTokens ( candidate . surface , window ) ) ; if ( lexeme ) return [ width , lexeme ] ; } return null ; } } export class Lexicon { constructor ( works ) { this . works = works ; } static standard () { return cached ( 'agentic-lexicon-standard' , () => Lexicon . load ( readText ( LEXICON_PATH ) ) ) ; } static load ( source ) { const records = parseRecords ( source ) ; const works = [] ; for ( const record of records ) { if ( record . kind !== 'work' ) continue ; const signature = field ( record , 'signature' ) ; works . push ( new Work ( { id : record . head , doc_id : field ( record , 'doc_id' ) ?? record . head , title : field ( record , 'title' ) ?? record . head , aliases : fields ( record , 'alias' ) . map ( tokenize ) . filter ( ( tokens ) => tokens . length > 0 ) , signature : signature === null ? [] : splitWhitespace ( signature ) . map ( ( word ) => word . toLowerCase () ) , lexemes : [] , concepts : [] , procedures : [] , contexts : [] , } ) ) ; } for ( const record of records ) { const workId = field ( record , 'work' ) ; if ( workId === null ) continue ; const work = works . find ( ( candidate ) => candidate . id === workId ) ; if ( ! work ) continue ; if ( record . kind === 'lexeme' ) { const kind = field ( record , 'kind' ) ; if ( kind !== 'entity' && kind !== 'concept' && kind !== 'predicate' ) continue ; work . lexemes . push ( { surface : tokenize ( record . head ) , kind , id : field ( record , 'id' ) ?? record . head , label : field ( record , 'label' ) ?? record . head , modal : field ( record , 'modal' ) , time : field ( record , 'time' ) , } ) ; } else if ( record . kind === 'concept' ) { work . concepts . push ( { id : record . head , label : field ( record , 'label' ) ?? record . head , kind : field ( record , 'type' ) ?? 'abstract' } ) ; } else if ( record . kind === 'procedure' ) { work . procedures . push ( { id : record . head , signature : field ( record , 'signature' ) ?? '' , description : field ( record , 'description' ) ?? '' , trigger : field ( record , 'trigger' ) ?? '' , } ) ; } else if ( record . kind === 'context' ) { work . contexts . push ( { id : record . head , label : field ( record , 'label' ) ?? record . head , description : field ( record , 'description' ) ?? '' } ) ; } } return new Lexicon ( works ) ; } workForTitle ( title ) { const words = tokenize ( title ) ; if ( ! words . length ) return null ; return this . works . find ( ( work ) => sameTokens ( tokenize ( work . title ) , words ) || work . aliases . some ( ( alias ) => sameTokens ( alias , words ) ) ) ?? null ; } bestWorkFor ( text ) { const tokens = tokenize ( text ) ; const direct = this . works . find ( ( work ) => phraseOccurs ( tokens , tokenize ( work . title ) ) || work . aliases . some ( ( alias ) => phraseOccurs ( tokens , alias ) ) ) ; if ( direct ) return direct ; let best = null ; for ( const work of this . works ) { if ( ! work . signature . length ) continue ; const hits = work . signature . filter ( ( needle ) => tokens . some ( ( token ) => token === needle ) ) . length ; const threshold = Math . ceil ( work . signature . length / 2 ) ; if ( hits >= threshold && ( best === null || hits > best [ 1 ] ) ) best = [ work , hits ] ; } return best === null ? null : best [ 0 ] ; } } export function tokenize ( text ) { const out = [] ; let current = '' ; for ( const character of text ) { if ( isAlphanumeric ( character ) ) { current += character ; } else { if ( current ) out . push ( current . toLowerCase () ) ; current = '' ; } } if ( current ) out . push ( current . toLowerCase () ) ; return out ; } function field ( record , key ) { const found = record . fields . find ( ( [ name ] ) => name === key ) ; return found ? found [ 1 ] : null ; } function fields ( record , key ) { return record . fields . filter ( ( [ name ] ) => name === key ) . map ( ( [ , value ] ) => value ) ; } function phraseOccurs ( tokens , phrase ) { if ( ! phrase . length ) return false ; for ( let start = 0 ; start + phrase . length <= tokens . length ; start += 1 ) { if ( sameTokens ( tokens . slice ( start , start + phrase . length ) , phrase ) ) return true ; } return false ; } function parseRecords ( source ) { const records = [] ; for ( const line of rustLines ( source ) ) { if ( ! trim ( line ) ) continue ; if ( line . startsWith ( ' ' ) ) { const record = records [ records . length - 1 ] ; if ( ! record ) continue ; const pair = parsePair ( trim ( line ) ) ; if ( pair !== null ) record . fields . push ( pair ) ; } else { const pair = parsePair ( trim ( line ) ) ; if ( pair !== null ) records . push ( { kind : pair [ 0 ] , head : pair [ 1 ] , fields : [] } ) ; } } return records ; } function parsePair ( line ) { const characters = Array . from ( line ) ; const split = characters . findIndex ( ( character ) => isWhitespace ( character ) ) ; if ( split < 0 ) return null ; const key = characters . slice ( 0 , split ) . join ( '' ) ; let value = trim ( characters . slice ( split + 1 ) . join ( '' ) ) ; if ( value . startsWith ( '"' ) ) { const inner = value . slice ( 1 ) ; if ( inner . endsWith ( '"' ) ) value = inner . slice ( 0 , - 1 ) ; } return [ key , value ] ; }
+// The closed-class lexicon for grounded extraction, parsed from Links Notation
+// (rust/src/agentic_coding/lexicon.rs). The lexicon itself is data:
+// data/agentic-coding/fisherman-lexicon.lino (`LEXICON_LINO`).
+
+import { cached, readText } from './host.mjs';
+import { rustLines } from './content.mjs';
+import { isAlphanumeric, isWhitespace, splitWhitespace, trim } from './crate/rust_str.mjs';
+
+/** Mirrors `const LEXICON_LINO`: the repository path of the lexicon data. */
+export const LEXICON_PATH = 'data/agentic-coding/fisherman-lexicon.lino';
+
+/** Mirrors `enum TermKind` (`TermKind::slug` values). */
+export const TermKind = Object.freeze({ Entity: 'entity', Concept: 'concept', Literal: 'literal' });
+
+/** Mirrors `TermKind::slug`. @param {string} kind */
+export const termKindSlug = (kind) => kind;
+
+/** Mirrors `Term::literal`. @param {string} text */
+export function literalTerm(text) {
+  return { id: text, label: text, kind: TermKind.Literal };
+}
+
+/** Mirrors `PredicateLexeme::as_ref`. */
+export function predicateUse(lexeme) {
+  return { id: lexeme.id, label: lexeme.label };
+}
+
+const LexemeKind = Object.freeze({ Entity: 'entity', Concept: 'concept', Predicate: 'predicate' });
+
+/** Mirrors `Lexeme::as_term`. */
+function asTerm(lexeme) {
+  if (lexeme.kind === LexemeKind.Entity) return { id: lexeme.id, label: lexeme.label, kind: TermKind.Entity };
+  if (lexeme.kind === LexemeKind.Concept) return { id: lexeme.id, label: lexeme.label, kind: TermKind.Concept };
+  return null;
+}
+
+const sameTokens = (left, right) => left.length === right.length && left.every((token, index) => token === right[index]);
+
+/** Mirrors `struct Work` and its methods. */
+export class Work {
+  constructor(fields) {
+    Object.assign(this, fields);
+  }
+
+  /** Mirrors `Work::primary_context`. */
+  primaryContext() {
+    return this.contexts.length ? this.contexts[0].id : null;
+  }
+
+  /** Mirrors `Work::final_context`. */
+  finalContext() {
+    const found = this.contexts.find((context) => context.id.endsWith(':final'))
+      ?? (this.contexts.length ? this.contexts[this.contexts.length - 1] : null);
+    return found ? found.id : null;
+  }
+
+  /**
+   * Mirrors `Work::extract`: a subject-predicate-object triple grounded in
+   * this work's closed lexicon, or null when no predicate lexeme is present.
+   * @param {string} sentence
+   */
+  extract(sentence) {
+    const tokens = tokenize(sentence);
+    let predicate = null;
+    let index = 0;
+    while (index < tokens.length && predicate === null) {
+      const matched = this.matchAt(tokens, index);
+      if (matched !== null && matched[1].kind === LexemeKind.Predicate) {
+        const lexeme = matched[1];
+        predicate = [index, index + matched[0], { id: lexeme.id, label: lexeme.label, modal: lexeme.modal, time: lexeme.time }];
+      }
+      index += 1;
+    }
+    if (predicate === null) return null;
+    const [predStart, predEnd, predicateLexeme] = predicate;
+
+    let subject = null;
+    let position = 0;
+    while (position < predStart) {
+      const matched = this.matchAt(tokens, position);
+      if (matched !== null) {
+        const term = asTerm(matched[1]);
+        if (term !== null) subject = term;
+        position += matched[0];
+      } else {
+        position += 1;
+      }
+    }
+
+    let object = null;
+    position = predEnd;
+    while (position < tokens.length) {
+      const matched = this.matchAt(tokens, position);
+      if (matched !== null) {
+        const term = asTerm(matched[1]);
+        if (term !== null) {
+          object = term;
+          break;
+        }
+        position += matched[0];
+      } else {
+        position += 1;
+      }
+    }
+    if (object === null) object = literalTerm(tokens.slice(predEnd).join(' '));
+    return { subject: subject ?? literalTerm('—'), predicate: predicateLexeme, object };
+  }
+
+  /** Mirrors `Work::match_at`: the longest surface at `index` (width 2, then 1). */
+  matchAt(tokens, index) {
+    for (const width of [2, 1]) {
+      if (index + width > tokens.length) continue;
+      const window = tokens.slice(index, index + width);
+      const lexeme = this.lexemes.find((candidate) => candidate.surface.length === width && sameTokens(candidate.surface, window));
+      if (lexeme) return [width, lexeme];
+    }
+    return null;
+  }
+}
+
+/** Mirrors `struct Lexicon`. */
+export class Lexicon {
+  constructor(works) {
+    this.works = works;
+  }
+
+  /** Mirrors `Lexicon::standard`: the bundled lexicon (memoized per host). */
+  static standard() {
+    return cached('agentic-lexicon-standard', () => Lexicon.load(readText(LEXICON_PATH)));
+  }
+
+  /** Mirrors `Lexicon::load`. @param {string} source */
+  static load(source) {
+    const records = parseRecords(source);
+    const works = [];
+    for (const record of records) {
+      if (record.kind !== 'work') continue;
+      const signature = field(record, 'signature');
+      works.push(new Work({
+        id: record.head,
+        doc_id: field(record, 'doc_id') ?? record.head,
+        title: field(record, 'title') ?? record.head,
+        aliases: fields(record, 'alias').map(tokenize).filter((tokens) => tokens.length > 0),
+        signature: signature === null ? [] : splitWhitespace(signature).map((word) => word.toLowerCase()),
+        lexemes: [],
+        concepts: [],
+        procedures: [],
+        contexts: [],
+      }));
+    }
+    for (const record of records) {
+      const workId = field(record, 'work');
+      if (workId === null) continue;
+      const work = works.find((candidate) => candidate.id === workId);
+      if (!work) continue;
+      if (record.kind === 'lexeme') {
+        const kind = field(record, 'kind');
+        if (kind !== 'entity' && kind !== 'concept' && kind !== 'predicate') continue;
+        work.lexemes.push({
+          surface: tokenize(record.head),
+          kind,
+          id: field(record, 'id') ?? record.head,
+          label: field(record, 'label') ?? record.head,
+          modal: field(record, 'modal'),
+          time: field(record, 'time'),
+        });
+      } else if (record.kind === 'concept') {
+        work.concepts.push({ id: record.head, label: field(record, 'label') ?? record.head, kind: field(record, 'type') ?? 'abstract' });
+      } else if (record.kind === 'procedure') {
+        work.procedures.push({
+          id: record.head,
+          signature: field(record, 'signature') ?? '',
+          description: field(record, 'description') ?? '',
+          trigger: field(record, 'trigger') ?? '',
+        });
+      } else if (record.kind === 'context') {
+        work.contexts.push({ id: record.head, label: field(record, 'label') ?? record.head, description: field(record, 'description') ?? '' });
+      }
+    }
+    return new Lexicon(works);
+  }
+
+  /** Mirrors `Lexicon::work_for_title`: identity, not topic overlap. @param {string} title */
+  workForTitle(title) {
+    const words = tokenize(title);
+    if (!words.length) return null;
+    return this.works.find((work) => sameTokens(tokenize(work.title), words)
+      || work.aliases.some((alias) => sameTokens(alias, words))) ?? null;
+  }
+
+  /** Mirrors `Lexicon::best_work_for`. @param {string} text */
+  bestWorkFor(text) {
+    const tokens = tokenize(text);
+    const direct = this.works.find((work) => phraseOccurs(tokens, tokenize(work.title))
+      || work.aliases.some((alias) => phraseOccurs(tokens, alias)));
+    if (direct) return direct;
+    let best = null;
+    for (const work of this.works) {
+      if (!work.signature.length) continue;
+      const hits = work.signature.filter((needle) => tokens.some((token) => token === needle)).length;
+      const threshold = Math.ceil(work.signature.length / 2);
+      if (hits >= threshold && (best === null || hits > best[1])) best = [work, hits];
+    }
+    return best === null ? null : best[0];
+  }
+}
+
+/**
+ * Mirrors `fn tokenize`: split on non-alphanumeric characters, lowercase.
+ * @param {string} text
+ * @returns {Array<string>}
+ */
+export function tokenize(text) {
+  const out = [];
+  let current = '';
+  for (const character of text) {
+    if (isAlphanumeric(character)) {
+      current += character;
+    } else {
+      if (current) out.push(current.toLowerCase());
+      current = '';
+    }
+  }
+  if (current) out.push(current.toLowerCase());
+  return out;
+}
+
+function field(record, key) {
+  const found = record.fields.find(([name]) => name === key);
+  return found ? found[1] : null;
+}
+
+function fields(record, key) {
+  return record.fields.filter(([name]) => name === key).map(([, value]) => value);
+}
+
+/** Mirrors `fn phrase_occurs`. */
+function phraseOccurs(tokens, phrase) {
+  if (!phrase.length) return false;
+  for (let start = 0; start + phrase.length <= tokens.length; start += 1) {
+    if (sameTokens(tokens.slice(start, start + phrase.length), phrase)) return true;
+  }
+  return false;
+}
+
+/** Mirrors `fn parse_records`: the minimal 2-space-indent record parser. */
+function parseRecords(source) {
+  const records = [];
+  for (const line of rustLines(source)) {
+    if (!trim(line)) continue;
+    if (line.startsWith(' ')) {
+      const record = records[records.length - 1];
+      if (!record) continue;
+      const pair = parsePair(trim(line));
+      if (pair !== null) record.fields.push(pair);
+    } else {
+      const pair = parsePair(trim(line));
+      if (pair !== null) records.push({ kind: pair[0], head: pair[1], fields: [] });
+    }
+  }
+  return records;
+}
+
+/** Mirrors `fn parse_pair`. */
+function parsePair(line) {
+  const characters = Array.from(line);
+  const split = characters.findIndex((character) => isWhitespace(character));
+  if (split < 0) return null;
+  const key = characters.slice(0, split).join('');
+  let value = trim(characters.slice(split + 1).join(''));
+  if (value.startsWith('"')) {
+    const inner = value.slice(1);
+    if (inner.endsWith('"')) value = inner.slice(0, -1);
+  }
+  return [key, value];
+}

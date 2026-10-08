@@ -72,6 +72,7 @@ mod replace_list;
 mod report_issue;
 mod report_script;
 mod request_sequence;
+pub mod requirement_extraction;
 pub mod requirement_resolution;
 pub mod restart_feedback;
 pub mod routing_learning;

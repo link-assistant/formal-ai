@@ -1,0 +1,7 @@
+procedural_how_to_fallback_search	"Резервный веб-поиск по `{query}`:"
+procedural_how_to_fallback_search_plan	"Резервный веб-поиск по `{query}` должен использовать {providers} и reciprocal rank fusion (k = {k})."
+procedural_how_to_official_search	"Веб-поиск по официальной документации для `{query}`:"
+procedural_how_to_official_search_miss	"Веб-поиск по официальной документации для `{query}` не вернул ранжированных инструкций; `{fallback}` сохраняется как общий резервный how-to запрос."
+procedural_how_to_wikihow_disabled	"wikiHow отключён в настройках."
+procedural_how_to_wikihow_miss	"Кандидат wikiHow `{candidate}` не вернул явных шагов ({error})."
+procedural_how_to_wikihow_returned	"API wikiHow вернул `{title}` для кандидата `{candidate}`."

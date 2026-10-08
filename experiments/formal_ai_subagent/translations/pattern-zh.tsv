@@ -1,0 +1,5 @@
+algorithm_discovery_summary	"基于 {traces} 条 trace 的算法发现：{candidates} 个候选，{validated} 个通过留出验证；仅为提案，未执行任何算法。"
+algorithm_dreaming_applied	"已将 dreaming 计划应用到 {path}：删除了 {removed} 个事件，估计可回收 {bytes} 字节，学到 {amendments} 条元算法修订、{patterns} 个重复模式和 {algorithms} 个执行算法候选，保留了 {failures} 次失败模拟和 {trials} 次 dreaming 试验。"
+algorithm_empty_binding_name	"无效的绑定 {binding}：名称为空"
+algorithm_invalid_binding	"无效的绑定 {binding}：应为 NAME=VALUE"
+algorithm_observation_missing	"观察文件不存在：{path}"

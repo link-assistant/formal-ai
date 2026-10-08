@@ -3,8 +3,15 @@
 //
 // A byte-for-byte twin of rust/src/es_tokenizer.rs (`tokenize`, whose body
 // lives in js/agentic/crate/es_tokenizer.mjs so the agentic port can count
-// tokens too) and the canonical renderer in rust/src/es_meta.rs
-// (`write_source`): every leaf separated by one space, group delimiters spaced, template chunks verbatim.
+// tokens too) and the renderer in rust/src/es_meta.rs (`layout_of` and
+// `write_source`). The pivot carries the source's layout: the text before
+// every token (whitespace, comments, a leading shebang line) and after the
+// last one. The renderer writes each token after its own layout text, so a
+// ts twin keeps its js source's lines, indentation and comments; only a
+// tree with no layout (a hand-built one) renders in canonical spacing
+// (every leaf separated by one space, group delimiters spaced, template
+// chunks verbatim). Issue #1188 R1188-U23: every committed ts file is
+// readable multi-line code.
 // It exists so the js-first cycle (2026-10-06 doctrine) can regenerate
 // `ts/` without compiling the crate; the rust tier in layered-ci.yml stays
 // the authority and diffs this script's output against the native one.
@@ -66,47 +73,200 @@ export function tokenize(source) {
   }
 }
 
+/** The bytes `es_tokenizer` skips between tokens: Rust's `u8::is_ascii_whitespace`. */
+const WHITESPACE = ' \t\n\f\r';
+
 /**
- * The canonical rendering es_meta.rs `write_source` emits.
- * @param {Array<object>} trees
- * @returns {string}
+ * The offset just past the line that holds `start` (past its newline).
+ * @param {string} source
+ * @param {number} start
+ * @returns {number}
  */
-export function renderSource(trees) {
-  const pieces = [];
+function lineEnd(source, start) {
+  const newline = source.indexOf('\n', start);
+  return newline < 0 ? source.length : newline + 1;
+}
+
+/**
+ * The offset of the next token: past whitespace, comments and, at the very
+ * start, a shebang line, exactly what the tokenizer skips.
+ * @param {string} source
+ * @param {number} start
+ * @returns {number}
+ */
+function skipLayout(source, start) {
+  let position = start;
+  if (position === 0 && source.startsWith('#!')) {
+    position = lineEnd(source, 2);
+  }
+  for (;;) {
+    while (position < source.length && WHITESPACE.includes(source[position])) {
+      position += 1;
+    }
+    if (source.startsWith('//', position)) {
+      position = lineEnd(source, position + 2);
+    } else if (source.startsWith('/*', position)) {
+      position = source.indexOf('*/', position + 2) + 2;
+    } else {
+      return position;
+    }
+  }
+}
+
+/**
+ * Record the layout text before the next token, then step over that token's
+ * own text, which must stand there.
+ * @param {{ source: string, cursor: number, layout: Array<string> }} state
+ * @param {string} text the token text expected next
+ */
+function stepOver(state, text) {
+  const start = state.cursor;
+  state.cursor = skipLayout(state.source, start);
+  state.layout.push(state.source.slice(start, state.cursor));
+  takeText(state, text);
+}
+
+/**
+ * Step over text that must stand at the cursor, with no layout before it.
+ * @param {{ source: string, cursor: number }} state
+ * @param {string} text
+ */
+function takeText(state, text) {
+  if (!state.source.startsWith(text, state.cursor)) {
+    throw new Error(`the layout lost its place at offset ${state.cursor}`);
+  }
+  state.cursor += text.length;
+}
+
+/**
+ * Walk one tree level in source order, recording each slot's layout text.
+ * @param {{ source: string, cursor: number, layout: Array<string> }} state
+ * @param {Array<object>} trees
+ */
+function collectLayout(state, trees) {
   for (const tree of trees) {
     switch (tree.$) {
       case 'leaf':
-        pieces.push(tree.text);
+        stepOver(state, tree.text);
         break;
       case 'group':
-        pieces.push(
-          tree.trees.length === 0
-            ? OPENS[tree.delim] + CLOSES[tree.delim]
-            : `${OPENS[tree.delim]} ${renderSource(tree.trees)} ${CLOSES[tree.delim]}`,
-        );
+        stepOver(state, OPENS[tree.delim]);
+        collectLayout(state, tree.trees);
+        stepOver(state, CLOSES[tree.delim]);
         break;
-      case 'template': {
-        let text = '`';
+      case 'template':
+        stepOver(state, '`');
         for (const part of tree.parts) {
-          text += part.$ === 'chunk' ? part.text : `\${${renderSource(part.trees)}}`;
+          if (part.$ === 'chunk') {
+            takeText(state, part.text);
+          } else {
+            takeText(state, '${');
+            collectLayout(state, part.trees);
+            stepOver(state, '}');
+          }
         }
-        pieces.push(`${text}\``);
+        takeText(state, '`');
         break;
-      }
       default:
         throw new Error('unknown tree tag');
     }
   }
-  return pieces.join(' ');
 }
 
 /**
- * Translate one js source to its ts rendering.
+ * The layout of one source (mirrors es_meta.rs `layout_of`): the text before
+ * every slot of its token tree, in the order the renderer visits them, then
+ * the text after the last token. A slot is a leaf, a group's opening and
+ * closing delimiter, a template's opening backtick, and an interpolation's
+ * closing brace; everything else in a template is its verbatim chunks.
+ * @param {string} source
+ * @param {Array<object>} trees the tree `tokenize(source)` returned
+ * @returns {Array<string>}
+ */
+export function layoutOf(source, trees) {
+  const state = { source, cursor: 0, layout: [] };
+  collectLayout(state, trees);
+  state.layout.push(source.slice(state.cursor));
+  return state.layout;
+}
+
+/**
+ * The text of the next slot: the layout's own when it has one, else the
+ * canonical spacing given.
+ * @param {{ layout: Array<string>, slot: number }} state
+ * @param {string} canonical
+ * @returns {string}
+ */
+function slotText(state, canonical) {
+  const text = state.slot < state.layout.length ? state.layout[state.slot] : canonical;
+  state.slot += 1;
+  return text;
+}
+
+/**
+ * Render one tree level; `lead` is the canonical text before its first item.
+ * @param {{ layout: Array<string>, slot: number }} state
+ * @param {Array<object>} trees
+ * @param {string} lead
+ * @returns {string}
+ */
+function writeTrees(state, trees, lead) {
+  let out = '';
+  for (let index = 0; index < trees.length; index += 1) {
+    const tree = trees[index];
+    out += slotText(state, index === 0 ? lead : ' ');
+    switch (tree.$) {
+      case 'leaf':
+        out += tree.text;
+        break;
+      case 'group':
+        out += OPENS[tree.delim];
+        out += writeTrees(state, tree.trees, ' ');
+        out += slotText(state, tree.trees.length === 0 ? '' : ' ');
+        out += CLOSES[tree.delim];
+        break;
+      case 'template':
+        out += '`';
+        for (const part of tree.parts) {
+          if (part.$ === 'chunk') {
+            out += part.text;
+          } else {
+            out += '${';
+            out += writeTrees(state, part.trees, '');
+            out += slotText(state, '');
+            out += '}';
+          }
+        }
+        out += '`';
+        break;
+      default:
+        throw new Error('unknown tree tag');
+    }
+  }
+  return out;
+}
+
+/**
+ * The rendering es_meta.rs `write_source` emits: every token after its
+ * layout text, or after canonical spacing when `layout` is empty.
+ * @param {Array<object>} trees
+ * @param {Array<string>} [layout] the source's `layoutOf`, when it has one
+ * @returns {string}
+ */
+export function renderSource(trees, layout = []) {
+  const state = { layout, slot: 0 };
+  const body = writeTrees(state, trees, '');
+  return body + slotText(state, '');
+}
+
+/**
+ * Translate one js source to its ts rendering, layout carried.
  * @param {string} source
  * @returns {string}
  */
 export function translateJsToTs(source) {
-  return renderSource(tokenize(source));
+  const trees = tokenize(source);
+  return renderSource(trees, layoutOf(source, trees));
 }
 
 /**

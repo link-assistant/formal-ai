@@ -47,6 +47,13 @@ general fix with a regression test, and the next task goes to Formal AI too.
 | `local-gates.mjs` | Runs the CI gates that need no Rust build, one at a time: `--list`, `--only a,b`, `--match js`. Logs go to `sandboxes/gates/`. |
 | `apply-census.sh` | Applies the self-AST census CI regenerated for HEAD, a commit or a run id, with the paths read from the census workflow, for a census-only commit. |
 | `translation-scope.mjs` | Measures how much of any JS root the meta-language translator would translate, by module and refusal construct, without changing the committed scope. |
+| `collect-user-messages.mjs` | Collects every owner message of the PR's Claude Code sessions into `docs/case-studies/pull-request-1188/user-messages.md` (`--write`). |
+| `requirement-coverage.mjs` | Maps the collected owner messages to requirement rows, so an unrecorded requirement is visible. |
+| `ci-durations.mjs` | Reads recent CI runs and records job and test durations for the longest-first shard planner. |
+| `add-translations.mjs` | `<seed.lino> <language> <table.tsv>`: inserts one response row per intent after the intent's last row and mirrors the seed file. |
+| `fill-response-languages.mjs` | Lists a response file's intents that lack a language, and `--move` splits intents into a category file. |
+| `translations/*.tsv` | The translation tables `add-translations.mjs` applied, one per response category and language. |
+| `break-long-lines.mjs` | Splits JSX lines longer than the readable-code limit at element and attribute boundaries only; idempotent. |
 | `sandboxes/` | Throwaway copies of files a delegated task edits (git-ignored). |
 
 ## Routine commands

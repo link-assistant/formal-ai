@@ -1,0 +1,12 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+#
+# PR #1188: R1188-U23, every code file is human-readable multi-line code.
+ci_gate check_readable_code
+  stage web
+  description "Every tracked code file under js/, ts/, rust/, scripts/ and packages/ is human-readable multi-line code: no file averages more than 160 characters per line and no line holds more than 300 characters of code (string and comment text not counted); the only exceptions are the distribution bundles and untouchable generated output listed with their reasons in data/meta/readable-code-exemptions.lino, and a stale exemption fails."
+  run "node scripts/check-readable-code.mjs"
+  justification "PR #1188 (R1188-U23, owner 2026-10-08, a strict requirement): scripts/translate-es.mjs wrote all 341 ts/ twins as one line of space-joined tokens and nothing rejected it; the translator now carries the source layout, and this gate keeps any generator or hand edit from committing an unreadable code file again."

@@ -806,7 +806,8 @@ impl Lexicon {
 /// whole string, or bounded by spaces — so a multi-word phrase ("each step")
 /// matches as a unit and a short word ("api") never matches inside a longer
 /// one ("напиши"). An empty surface never matches.
-fn surface_present(normalized: &str, expected: &str) -> bool {
+#[must_use]
+pub fn surface_present(normalized: &str, expected: &str) -> bool {
     if expected.is_empty() {
         return false;
     }

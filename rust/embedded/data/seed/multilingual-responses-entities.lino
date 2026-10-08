@@ -15,6 +15,10 @@ multilingual_responses
     intent who_is_unknown_entity
     language zh
     text "我还没有关于“{term}”的 Links Notation 事实。请在 Links Notation 中添加事实或规则，然后重新运行该请求。"
+  response response_who_is_unknown_entity_es
+    intent who_is_unknown_entity
+    language es
+    text "Todavía no tengo un hecho de Links Notation sobre «{term}». Añade un hecho o una regla en Links Notation y vuelve a ejecutar la solicitud."
   response response_who_is_unknown_entity_suggestion_en
     intent who_is_unknown_entity_suggestion
     language en
@@ -31,6 +35,10 @@ multilingual_responses
     intent who_is_unknown_entity_suggestion
     language zh
     text "我还没有关于“{term}”的 Links Notation 事实。您指的是“{corrected}”吗？请在 Links Notation 中添加事实或规则，然后重新运行该请求。"
+  response response_who_is_unknown_entity_suggestion_es
+    intent who_is_unknown_entity_suggestion
+    language es
+    text "Todavía no tengo un hecho de Links Notation sobre «{term}». ¿Quisiste decir «{corrected}»? Añade un hecho o una regla en Links Notation y vuelve a ejecutar la solicitud."
   response response_definition_merge_header_en
     intent definition_merge_header
     language en
@@ -47,6 +55,10 @@ multilingual_responses
     intent definition_merge_header
     language zh
     text "{term}{anchor} 的合并定义\n来源语言：{languages}\n\n事实："
+  response response_definition_merge_header_es
+    intent definition_merge_header
+    language es
+    text "Definición combinada de {term}{anchor}\nIdiomas de las fuentes: {languages}\n\nHechos:"
   response response_definition_merge_sources_label_en
     intent definition_merge_sources_label
     language en
@@ -63,6 +75,10 @@ multilingual_responses
     intent definition_merge_sources_label
     language zh
     text "来源："
+  response response_definition_merge_sources_label_es
+    intent definition_merge_sources_label
+    language es
+    text "Fuentes:"
   response response_fact_comparison_en
     intent fact_comparison
     language en

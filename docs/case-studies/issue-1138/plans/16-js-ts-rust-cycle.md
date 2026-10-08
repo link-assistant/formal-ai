@@ -491,7 +491,7 @@ both renderers. Decisions fixed before any of it is written:
 - **CST equality is token-tree equality, spans ignored.** Spans name bytes
   of one text; a rendered target is a different text. A round trip is
   perfect exactly when kind, text, and shape survive.
-- **The renderers emit canonical spacing** — leaf tokens joined by single
+- **The renderers keep the source layout** (R1188-U23): the pivot carries the whitespace and comments before every token, so a rendered twin keeps its source lines; a tree with no layout renders in canonical spacing — leaf tokens joined by single
   spaces, group delimiters spaced, template chunks verbatim between
   backticks. Because the tokenizer's regex/division decision is a pure
   function of the previous significant token, re-tokenizing canonically

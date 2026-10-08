@@ -44,6 +44,50 @@ test('opens the Playwright docs', async ({ page }) => {
 
 Уточните URL, действия и ожидаемый результат, если нужен сценарий под конкретный сайт.";
 
+const PLAYWRIGHT_HI_ANSWER: &str = r"मैं Playwright docs पर आधारित एक starter TypeScript उदाहरण इस्तेमाल करूँगा।
+
+स्रोत: https://playwright.dev/docs/writing-tests
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('opens the Playwright docs', async ({ page }) => {
+  await page.goto('https://playwright.dev/');
+  await expect(page).toHaveTitle(/Playwright/);
+
+  await page.getByRole('link', { name: 'Docs' }).click();
+  await expect(page.getByRole('heading', { name: /Playwright/ })).toBeVisible();
+});
+```
+
+इसे इस तरह जाँचें:
+1. `npm init playwright@latest`
+2. `npx playwright test`
+
+अगर आपको किसी खास साइट के लिए script चाहिए, तो URL, actions और अपेक्षित परिणाम बताएँ।";
+
+const PLAYWRIGHT_ZH_ANSWER: &str = r"我将使用基于 Playwright 文档的 TypeScript 入门示例。
+
+来源：https://playwright.dev/docs/writing-tests
+
+```typescript
+import { test, expect } from '@playwright/test';
+
+test('opens the Playwright docs', async ({ page }) => {
+  await page.goto('https://playwright.dev/');
+  await expect(page).toHaveTitle(/Playwright/);
+
+  await page.getByRole('link', { name: 'Docs' }).click();
+  await expect(page.getByRole('heading', { name: /Playwright/ })).toBeVisible();
+});
+```
+
+用以下命令检查：
+1. `npm init playwright@latest`
+2. `npx playwright test`
+
+如果需要针对特定网站的脚本，请提供 URL、操作和预期结果。";
+
 #[test]
 fn russian_playwright_script_prompt_returns_starter_example() {
     // Regression test for issue #135: the reported Russian prompt with the
@@ -112,10 +156,11 @@ fn playwright_script_prompts_route_across_supported_languages() {
 
         assert_eq!(
             response.answer,
-            if case.language == "ru" {
-                PLAYWRIGHT_RU_TYPO_ANSWER
-            } else {
-                PLAYWRIGHT_EN_ANSWER
+            match case.language {
+                "ru" => PLAYWRIGHT_RU_TYPO_ANSWER,
+                "hi" => PLAYWRIGHT_HI_ANSWER,
+                "zh" => PLAYWRIGHT_ZH_ANSWER,
+                _ => PLAYWRIGHT_EN_ANSWER,
             }
         );
         assert_eq!(

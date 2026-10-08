@@ -1,1 +1,362 @@
-function tokenizeError ( kind , start ) { return Object . assign ( new Error ( `${kind}@${start}` ) , { kind , start } ) ; } const REGEX_CONTEXT_KEYWORDS = [ 'await' , 'case' , 'delete' , 'do' , 'else' , 'in' , 'instanceof' , 'new' , 'of' , 'return' , 'throw' , 'typeof' , 'void' , 'yield' , ] ; const PUNCTUATORS = [ '>>>=' , '...' , '===' , '!==' , '**=' , '<<=' , '>>=' , '>>>' , '&&=' , '||=' , '??=' , '=>' , '==' , '!=' , '<=' , '>=' , '&&' , '||' , '??' , '?.' , '++' , '--' , '+=' , '-=' , '*=' , '/=' , '%=' , '&=' , '|=' , '^=' , '<<' , '>>' , '**' , '{' , '}' , '(' , ')' , '[' , ']' , ';' , ',' , '<' , '>' , '+' , '-' , '*' , '/' , '%' , '&' , '|' , '^' , '!' , '~' , '?' , ':' , '=' , '.' , '@' , '#' , ] ; function isWhitespace ( b ) { return b === 0x20 || b === 0x09 || b === 0x0a || b === 0x0c || b === 0x0d ; } function isDigit ( b ) { return b >= 0x30 && b <= 0x39 ; } function isAlpha ( b ) { return ( b >= 0x41 && b <= 0x5a ) || ( b >= 0x61 && b <= 0x7a ) ; } function isIdentByte ( b ) { return isAlpha ( b ) || isDigit ( b ) || b === 0x5f || b === 0x24 || b >= 0x80 ; } function skipLine ( bytes , start ) { let pos = start ; while ( pos < bytes . length && bytes [ pos ] !== 0x0a ) { pos += 1 ; } return pos < bytes . length ? pos + 1 : pos ; } function findCommentEnd ( bytes , start ) { for ( let pos = start ; pos + 1 < bytes . length ; pos += 1 ) { if ( bytes [ pos ] === 0x2a && bytes [ pos + 1 ] === 0x2f ) { return pos ; } } return - 1 ; } function scanRegex ( bytes , start ) { let pos = start + 1 ; let inClass = false ; while ( pos < bytes . length ) { const b = bytes [ pos ] ; if ( b === 0x5c ) { pos += 2 ; } else if ( b === 0x5b ) { inClass = true ; pos += 1 ; } else if ( b === 0x5d ) { inClass = false ; pos += 1 ; } else if ( b === 0x2f && ! inClass ) { return pos ; } else if ( b === 0x0a || b === 0x0d ) { return - 1 ; } else { pos += 1 ; } } return - 1 ; } function scanString ( bytes , start , quote ) { let pos = start + 1 ; while ( pos < bytes . length ) { const b = bytes [ pos ] ; if ( b === 0x5c ) { pos += 2 ; } else if ( b === quote ) { return { end : pos + 1 , closed : true } ; } else if ( b === 0x0a || b === 0x0d ) { return { end : pos , closed : false } ; } else { pos += 1 ; } } return { end : bytes . length , closed : false } ; } function scanNumber ( bytes , start ) { let pos = start ; if ( bytes [ pos ] === 0x2e ) { pos += 1 ; } const next = bytes [ start + 1 ] ; const radixPrefixed = bytes [ start ] === 0x30 && ( next === 0x78 || next === 0x58 || next === 0x6f || next === 0x4f || next === 0x62 || next === 0x42 ) ; if ( radixPrefixed ) { pos += 2 ; } let last = 0 ; while ( pos < bytes . length ) { const b = bytes [ pos ] ; if ( isAlpha ( b ) || isDigit ( b ) || b === 0x5f ) { last = b ; pos += 1 ; continue ; } if ( ! radixPrefixed && ( last === 0x65 || last === 0x45 ) && ( b === 0x2b || b === 0x2d ) ) { last = b ; pos += 1 ; continue ; } break ; } return pos ; } function scanTemplateChunk ( bytes , start , templateStart ) { let pos = start ; while ( pos < bytes . length ) { const b = bytes [ pos ] ; if ( b === 0x5c ) { pos += 2 ; } else if ( b === 0x60 ) { return { end : pos , next : 'backtick' } ; } else if ( b === 0x24 && bytes [ pos + 1 ] === 0x7b ) { return { end : pos , next : 'dollar' } ; } else { pos += 1 ; } } throw tokenizeError ( 'unterminated_template' , templateStart ) ; } function matchPunctuator ( bytes , pos ) { for ( const punct of PUNCTUATORS ) { let matches = pos + punct . length <= bytes . length ; for ( let i = 0 ; matches && i < punct . length ; i += 1 ) { matches = bytes [ pos + i ] === punct . charCodeAt ( i ) ; } if ( matches ) { if ( punct === '?.' && isDigit ( bytes [ pos + 2 ] ) ) { return '?' ; } return punct ; } } return '' ; } export function tokenize ( source ) { const bytes = new TextEncoder () . encode ( source ) ; const decoder = new TextDecoder () ; const slice = ( start , end ) => decoder . decode ( bytes . subarray ( start , end ) ) ; const root = [] ; const stack = [] ; const parentTrees = () => ( stack . length === 0 ? root : stack [ stack . length - 1 ] . trees ) ; const emit = ( text , kind ) => parentTrees () . push ( { $ : 'leaf' , text , kind } ) ; let pos = 0 ; let regexAllowed = true ; if ( bytes [ 0 ] === 0x23 && bytes [ 1 ] === 0x21 ) { pos = skipLine ( bytes , 2 ) ; } for ( ; ; ) { const top = stack [ stack . length - 1 ] ; if ( top && top . $ === 'template' ) { const scanned = scanTemplateChunk ( bytes , pos , top . start ) ; if ( scanned . end > top . chunkStart ) { top . parts . push ( { $ : 'chunk' , text : slice ( top . chunkStart , scanned . end ) } ) ; } pos = scanned . end ; if ( scanned . next === 'backtick' ) { stack . pop () ; parentTrees () . push ( { $ : 'template' , parts : top . parts } ) ; regexAllowed = false ; pos += 1 ; } else { stack . push ( { $ : 'interp' , start : pos , trees : [] } ) ; pos += 2 ; } continue ; } while ( pos < bytes . length && isWhitespace ( bytes [ pos ] ) ) { pos += 1 ; } if ( pos >= bytes . length ) { break ; } const b = bytes [ pos ] ; if ( b === 0x2f && bytes [ pos + 1 ] === 0x2f ) { pos = skipLine ( bytes , pos + 2 ) ; } else if ( b === 0x2f && bytes [ pos + 1 ] === 0x2a ) { const end = findCommentEnd ( bytes , pos + 2 ) ; if ( end < 0 ) { throw tokenizeError ( 'unterminated_comment' , pos ) ; } pos = end + 2 ; } else if ( b === 0x2f && regexAllowed ) { const bodyEnd = scanRegex ( bytes , pos ) ; if ( bodyEnd < 0 ) { throw tokenizeError ( 'unterminated_regexp' , pos ) ; } let flagEnd = bodyEnd + 1 ; while ( flagEnd < bytes . length && isAlpha ( bytes [ flagEnd ] ) ) { flagEnd += 1 ; } emit ( slice ( pos , flagEnd ) , 'regexp' ) ; regexAllowed = false ; pos = flagEnd ; } else if ( b === 0x27 || b === 0x22 ) { const scanned = scanString ( bytes , pos , b ) ; if ( ! scanned . closed ) { throw tokenizeError ( 'unterminated_string' , pos ) ; } emit ( slice ( pos , scanned . end ) , 'string' ) ; regexAllowed = false ; pos = scanned . end ; } else if ( b === 0x60 ) { stack . push ( { $ : 'template' , start : pos , chunkStart : pos + 1 , parts : [] } ) ; pos += 1 ; } else if ( b === 0x28 || b === 0x5b || b === 0x7b ) { const delim = b === 0x28 ? 'paren' : b === 0x5b ? 'bracket' : 'brace' ; stack . push ( { $ : 'group' , delim , start : pos , trees : [] } ) ; regexAllowed = true ; pos += 1 ; } else if ( b === 0x29 || b === 0x5d || b === 0x7d ) { const found = b === 0x29 ? 'paren' : b === 0x5d ? 'bracket' : 'brace' ; const frame = stack [ stack . length - 1 ] ; if ( frame && frame . $ === 'group' && frame . delim === found ) { stack . pop () ; parentTrees () . push ( { $ : 'group' , delim : found , trees : frame . trees } ) ; regexAllowed = found === 'brace' ; } else if ( frame && frame . $ === 'interp' && found === 'brace' ) { stack . pop () ; const template = stack [ stack . length - 1 ] ; template . parts . push ( { $ : 'interp' , trees : frame . trees } ) ; template . chunkStart = pos + 1 ; } else { throw tokenizeError ( 'unexpected_closing' , pos ) ; } pos += 1 ; } else if ( isDigit ( b ) || ( b === 0x2e && isDigit ( bytes [ pos + 1 ] ) ) ) { const end = scanNumber ( bytes , pos ) ; emit ( slice ( pos , end ) , 'numeric' ) ; regexAllowed = false ; pos = end ; } else if ( isIdentByte ( b ) || ( b === 0x23 && isIdentByte ( bytes [ pos + 1 ] ) ) ) { let end = pos + ( b === 0x23 ? 2 : 1 ) ; while ( end < bytes . length && isIdentByte ( bytes [ end ] ) ) { end += 1 ; } const text = slice ( pos , end ) ; emit ( text , 'identifier' ) ; regexAllowed = REGEX_CONTEXT_KEYWORDS . includes ( text ) ; pos = end ; } else { const punct = matchPunctuator ( bytes , pos ) ; if ( punct === '' ) { throw tokenizeError ( 'unexpected_char' , pos ) ; } emit ( punct , 'punctuator' ) ; regexAllowed = punct !== ')' && punct !== ']' ; pos += punct . length ; } } if ( stack . length > 0 ) { const templateFrame = stack . slice () . reverse () . find ( ( frame ) => frame . $ === 'template' ) ; if ( templateFrame ) { throw tokenizeError ( 'unterminated_template' , templateFrame . start ) ; } throw tokenizeError ( 'unclosed_group' , stack [ stack . length - 1 ] . start ) ; } return root ; } export function countTokens ( trees ) { let total = 0 ; for ( const tree of trees ) { if ( tree . $ === 'leaf' ) total += 1 ; else if ( tree . $ === 'group' ) total += countTokens ( tree . trees ) ; else if ( tree . $ === 'template' ) { for ( const part of tree . parts ) total += part . $ === 'chunk' ? 1 : countTokens ( part . trees ) ; } } return total ; }
+// The ES tokenizer: a byte-for-byte twin of rust/src/es_tokenizer.rs
+// (`tokenize`), shared by the js → ts translator (scripts/translate-es.mjs)
+// and the repository-history importer's token count (history_store.mjs,
+// issue #1180 R11).
+//
+// Portable-subset style (link-foundation/meta-language): plain functions,
+// const/let, tagged objects ({ $: 'leaf' | 'group' | 'template' }), no
+// classes. A failure throws an Error carrying `kind` (the slug of the native
+// `TokenizeErrorKind` variant) and `start` (the span's first byte); the
+// readable sentence is the caller's rendering, as `Display` is in Rust.
+
+/**
+ * Mirrors `TokenizeError`: the variant slug and the span's first byte.
+ * @param {string} kind
+ * @param {number} start
+ * @returns {Error}
+ */
+function tokenizeError(kind, start) {
+  return Object.assign(new Error(`${kind}@${start}`), { kind, start });
+}
+
+const REGEX_CONTEXT_KEYWORDS = [
+  'await', 'case', 'delete', 'do', 'else', 'in', 'instanceof', 'new', 'of', 'return', 'throw',
+  'typeof', 'void', 'yield',
+];
+
+const PUNCTUATORS = [
+  '>>>=', '...', '===', '!==', '**=', '<<=', '>>=', '>>>', '&&=', '||=', '??=', '=>', '==', '!=',
+  '<=', '>=', '&&', '||', '??', '?.', '++', '--', '+=', '-=', '*=', '/=', '%=', '&=', '|=', '^=',
+  '<<', '>>', '**', '{', '}', '(', ')', '[', ']', ';', ',', '<', '>', '+', '-', '*', '/', '%',
+  '&', '|', '^', '!', '~', '?', ':', '=', '.', '@', '#',
+];
+
+/** @param {number} b @returns {boolean} */
+function isWhitespace(b) {
+  // Rust's u8::is_ascii_whitespace: space, \t, \n, \x0C, \r (not \x0B).
+  return b === 0x20 || b === 0x09 || b === 0x0a || b === 0x0c || b === 0x0d;
+}
+
+/** @param {number} b @returns {boolean} */
+function isDigit(b) {
+  return b >= 0x30 && b <= 0x39;
+}
+
+/** @param {number} b @returns {boolean} */
+function isAlpha(b) {
+  return (b >= 0x41 && b <= 0x5a) || (b >= 0x61 && b <= 0x7a);
+}
+
+/** @param {number} b @returns {boolean} */
+function isIdentByte(b) {
+  return isAlpha(b) || isDigit(b) || b === 0x5f || b === 0x24 || b >= 0x80;
+}
+
+/**
+ * @param {Uint8Array} bytes
+ * @param {number} start
+ * @returns {number}
+ */
+function skipLine(bytes, start) {
+  let pos = start;
+  while (pos < bytes.length && bytes[pos] !== 0x0a) {
+    pos += 1;
+  }
+  return pos < bytes.length ? pos + 1 : pos;
+}
+
+/**
+ * @param {Uint8Array} bytes
+ * @param {number} start
+ * @returns {number} index of the closing `*\/`, or -1
+ */
+function findCommentEnd(bytes, start) {
+  for (let pos = start; pos + 1 < bytes.length; pos += 1) {
+    if (bytes[pos] === 0x2a && bytes[pos + 1] === 0x2f) {
+      return pos;
+    }
+  }
+  return -1;
+}
+
+/**
+ * @param {Uint8Array} bytes
+ * @param {number} start
+ * @returns {number} index of the closing slash, or -1
+ */
+function scanRegex(bytes, start) {
+  let pos = start + 1;
+  let inClass = false;
+  while (pos < bytes.length) {
+    const b = bytes[pos];
+    if (b === 0x5c) {
+      pos += 2;
+    } else if (b === 0x5b) {
+      inClass = true;
+      pos += 1;
+    } else if (b === 0x5d) {
+      inClass = false;
+      pos += 1;
+    } else if (b === 0x2f && !inClass) {
+      return pos;
+    } else if (b === 0x0a || b === 0x0d) {
+      return -1;
+    } else {
+      pos += 1;
+    }
+  }
+  return -1;
+}
+
+/**
+ * @param {Uint8Array} bytes
+ * @param {number} start
+ * @param {number} quote
+ * @returns {{end: number, closed: boolean}}
+ */
+function scanString(bytes, start, quote) {
+  let pos = start + 1;
+  while (pos < bytes.length) {
+    const b = bytes[pos];
+    if (b === 0x5c) {
+      pos += 2;
+    } else if (b === quote) {
+      return { end: pos + 1, closed: true };
+    } else if (b === 0x0a || b === 0x0d) {
+      return { end: pos, closed: false };
+    } else {
+      pos += 1;
+    }
+  }
+  return { end: bytes.length, closed: false };
+}
+
+/**
+ * @param {Uint8Array} bytes
+ * @param {number} start
+ * @returns {number}
+ */
+function scanNumber(bytes, start) {
+  let pos = start;
+  if (bytes[pos] === 0x2e) {
+    pos += 1;
+  }
+  const next = bytes[start + 1];
+  const radixPrefixed =
+    bytes[start] === 0x30 &&
+    (next === 0x78 || next === 0x58 || next === 0x6f || next === 0x4f || next === 0x62 || next === 0x42);
+  if (radixPrefixed) {
+    pos += 2;
+  }
+  let last = 0;
+  while (pos < bytes.length) {
+    const b = bytes[pos];
+    if (isAlpha(b) || isDigit(b) || b === 0x5f) {
+      last = b;
+      pos += 1;
+      continue;
+    }
+    if (!radixPrefixed && (last === 0x65 || last === 0x45) && (b === 0x2b || b === 0x2d)) {
+      last = b;
+      pos += 1;
+      continue;
+    }
+    break;
+  }
+  return pos;
+}
+
+/**
+ * @param {Uint8Array} bytes
+ * @param {number} start
+ * @param {number} templateStart
+ * @returns {{end: number, next: string}}
+ */
+function scanTemplateChunk(bytes, start, templateStart) {
+  let pos = start;
+  while (pos < bytes.length) {
+    const b = bytes[pos];
+    if (b === 0x5c) {
+      pos += 2;
+    } else if (b === 0x60) {
+      return { end: pos, next: 'backtick' };
+    } else if (b === 0x24 && bytes[pos + 1] === 0x7b) {
+      return { end: pos, next: 'dollar' };
+    } else {
+      pos += 1;
+    }
+  }
+  throw tokenizeError('unterminated_template', templateStart);
+}
+
+/**
+ * @param {Uint8Array} bytes
+ * @param {number} pos
+ * @returns {string}
+ */
+function matchPunctuator(bytes, pos) {
+  for (const punct of PUNCTUATORS) {
+    let matches = pos + punct.length <= bytes.length;
+    for (let i = 0; matches && i < punct.length; i += 1) {
+      matches = bytes[pos + i] === punct.charCodeAt(i);
+    }
+    if (matches) {
+      if (punct === '?.' && isDigit(bytes[pos + 2])) {
+        return '?';
+      }
+      return punct;
+    }
+  }
+  return '';
+}
+
+/**
+ * Tokenize ES source into the token tree es_tokenizer.rs builds.
+ * Leaves: { $: 'leaf', text, kind }; groups: { $: 'group', delim, trees };
+ * templates: { $: 'template', parts: [{ $: 'chunk', text } | { $: 'interp', trees }] }.
+ * @param {string} source
+ * @returns {Array<object>}
+ */
+export function tokenize(source) {
+  const bytes = new TextEncoder().encode(source);
+  const decoder = new TextDecoder();
+  const slice = (start, end) => decoder.decode(bytes.subarray(start, end));
+  const root = [];
+  const stack = [];
+  const parentTrees = () => (stack.length === 0 ? root : stack[stack.length - 1].trees);
+  const emit = (text, kind) => parentTrees().push({ $: 'leaf', text, kind });
+  let pos = 0;
+  let regexAllowed = true;
+  if (bytes[0] === 0x23 && bytes[1] === 0x21) {
+    pos = skipLine(bytes, 2);
+  }
+  for (;;) {
+    const top = stack[stack.length - 1];
+    if (top && top.$ === 'template') {
+      const scanned = scanTemplateChunk(bytes, pos, top.start);
+      if (scanned.end > top.chunkStart) {
+        top.parts.push({ $: 'chunk', text: slice(top.chunkStart, scanned.end) });
+      }
+      pos = scanned.end;
+      if (scanned.next === 'backtick') {
+        stack.pop();
+        parentTrees().push({ $: 'template', parts: top.parts });
+        regexAllowed = false;
+        pos += 1;
+      } else {
+        stack.push({ $: 'interp', start: pos, trees: [] });
+        pos += 2;
+      }
+      continue;
+    }
+    while (pos < bytes.length && isWhitespace(bytes[pos])) {
+      pos += 1;
+    }
+    if (pos >= bytes.length) {
+      break;
+    }
+    const b = bytes[pos];
+    if (b === 0x2f && bytes[pos + 1] === 0x2f) {
+      pos = skipLine(bytes, pos + 2);
+    } else if (b === 0x2f && bytes[pos + 1] === 0x2a) {
+      const end = findCommentEnd(bytes, pos + 2);
+      if (end < 0) {
+        throw tokenizeError('unterminated_comment', pos);
+      }
+      pos = end + 2;
+    } else if (b === 0x2f && regexAllowed) {
+      const bodyEnd = scanRegex(bytes, pos);
+      if (bodyEnd < 0) {
+        throw tokenizeError('unterminated_regexp', pos);
+      }
+      let flagEnd = bodyEnd + 1;
+      while (flagEnd < bytes.length && isAlpha(bytes[flagEnd])) {
+        flagEnd += 1;
+      }
+      emit(slice(pos, flagEnd), 'regexp');
+      regexAllowed = false;
+      pos = flagEnd;
+    } else if (b === 0x27 || b === 0x22) {
+      const scanned = scanString(bytes, pos, b);
+      if (!scanned.closed) {
+        throw tokenizeError('unterminated_string', pos);
+      }
+      emit(slice(pos, scanned.end), 'string');
+      regexAllowed = false;
+      pos = scanned.end;
+    } else if (b === 0x60) {
+      stack.push({ $: 'template', start: pos, chunkStart: pos + 1, parts: [] });
+      pos += 1;
+    } else if (b === 0x28 || b === 0x5b || b === 0x7b) {
+      const delim = b === 0x28 ? 'paren' : b === 0x5b ? 'bracket' : 'brace';
+      stack.push({ $: 'group', delim, start: pos, trees: [] });
+      regexAllowed = true;
+      pos += 1;
+    } else if (b === 0x29 || b === 0x5d || b === 0x7d) {
+      const found = b === 0x29 ? 'paren' : b === 0x5d ? 'bracket' : 'brace';
+      const frame = stack[stack.length - 1];
+      if (frame && frame.$ === 'group' && frame.delim === found) {
+        stack.pop();
+        parentTrees().push({ $: 'group', delim: found, trees: frame.trees });
+        regexAllowed = found === 'brace';
+      } else if (frame && frame.$ === 'interp' && found === 'brace') {
+        stack.pop();
+        const template = stack[stack.length - 1];
+        template.parts.push({ $: 'interp', trees: frame.trees });
+        template.chunkStart = pos + 1;
+      } else {
+        throw tokenizeError('unexpected_closing', pos);
+      }
+      pos += 1;
+    } else if (isDigit(b) || (b === 0x2e && isDigit(bytes[pos + 1]))) {
+      const end = scanNumber(bytes, pos);
+      emit(slice(pos, end), 'numeric');
+      regexAllowed = false;
+      pos = end;
+    } else if (isIdentByte(b) || (b === 0x23 && isIdentByte(bytes[pos + 1]))) {
+      let end = pos + (b === 0x23 ? 2 : 1);
+      while (end < bytes.length && isIdentByte(bytes[end])) {
+        end += 1;
+      }
+      const text = slice(pos, end);
+      emit(text, 'identifier');
+      regexAllowed = REGEX_CONTEXT_KEYWORDS.includes(text);
+      pos = end;
+    } else {
+      const punct = matchPunctuator(bytes, pos);
+      if (punct === '') {
+        throw tokenizeError('unexpected_char', pos);
+      }
+      emit(punct, 'punctuator');
+      regexAllowed = punct !== ')' && punct !== ']';
+      pos += punct.length;
+    }
+  }
+  if (stack.length > 0) {
+    const templateFrame = stack.slice().reverse().find((frame) => frame.$ === 'template');
+    if (templateFrame) {
+      throw tokenizeError('unterminated_template', templateFrame.start);
+    }
+    throw tokenizeError('unclosed_group', stack[stack.length - 1].start);
+  }
+  return root;
+}
+
+/**
+ * Mirrors `es_meta::count_tokens` over a `tokenize` tree: a leaf is one
+ * token, a group counts its children, a template counts each chunk once and
+ * the trees of each interpolation.
+ * @param {Array<object>} trees
+ * @returns {number}
+ */
+export function countTokens(trees) {
+  let total = 0;
+  for (const tree of trees) {
+    if (tree.$ === 'leaf') total += 1;
+    else if (tree.$ === 'group') total += countTokens(tree.trees);
+    else if (tree.$ === 'template') {
+      for (const part of tree.parts) total += part.$ === 'chunk' ? 1 : countTokens(part.trees);
+    }
+  }
+  return total;
+}

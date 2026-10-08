@@ -409,7 +409,7 @@ meanings
     effect "the answer says the learning loop for that source runs in the native engine and that nothing was learned in the browser"
     unit "not applicable"
     example "This browser worker records the source but does not run that loop."
-    grounding "data/seed/multilingual-responses.lino"
+    grounding "data/seed/multilingual-responses-parity.lino"
   triz_resolution_map
     defined-by answer
     role localized_response_template
@@ -657,7 +657,7 @@ meanings
     effect "the answer names this reason inside the frame-policy verdict sentence"
     unit "not applicable"
     example "the target URL could not be parsed"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_frame_policy_reason_xfo_deny_and_csp_none
     defined-by answer
     role localized_response_template
@@ -665,7 +665,7 @@ meanings
     effect "the answer names this reason inside the frame-policy verdict sentence"
     unit "not applicable"
     example "the page sends X-Frame-Options: DENY and CSP frame-ancestors none"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_frame_policy_reason_xfo_deny
     defined-by answer
     role localized_response_template
@@ -673,7 +673,7 @@ meanings
     effect "the answer names this reason inside the frame-policy verdict sentence"
     unit "not applicable"
     example "the page sends X-Frame-Options: DENY"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_frame_policy_reason_xfo_sameorigin
     defined-by answer
     role localized_response_template
@@ -681,7 +681,7 @@ meanings
     effect "the answer names this reason inside the frame-policy verdict sentence"
     unit "not applicable"
     example "the page sends X-Frame-Options: SAMEORIGIN"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_frame_policy_reason_embedder_unavailable
     defined-by answer
     role localized_response_template
@@ -689,7 +689,7 @@ meanings
     effect "the answer names this reason inside the frame-policy verdict sentence"
     unit "not applicable"
     example "the current web app origin is unavailable"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_frame_policy_reason_csp_none
     defined-by answer
     role localized_response_template
@@ -697,7 +697,7 @@ meanings
     effect "the answer names this reason inside the frame-policy verdict sentence"
     unit "not applicable"
     example "the page sends CSP frame-ancestors none"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_frame_policy_reason_csp_excludes_embedder
     defined-by answer
     role localized_response_template
@@ -705,7 +705,7 @@ meanings
     effect "the answer names this reason inside the frame-policy verdict sentence"
     unit "not applicable"
     example "the pages CSP frame-ancestors directive does not include this web app"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_frame_policy_reason_no_blocking_policy
     defined-by answer
     role localized_response_template
@@ -713,7 +713,7 @@ meanings
     effect "the answer names this reason inside the frame-policy verdict sentence"
     unit "not applicable"
     example "no blocking X-Frame-Options or CSP frame-ancestors policy was detected"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_frame_policy_reason_fetch_unavailable
     defined-by answer
     role localized_response_template
@@ -721,7 +721,7 @@ meanings
     effect "the answer names this reason inside the frame-policy verdict sentence"
     unit "not applicable"
     example "browser fetch is not available"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_frame_policy_reason_non_public_url
     defined-by answer
     role localized_response_template
@@ -729,7 +729,7 @@ meanings
     effect "the answer names this reason inside the frame-policy verdict sentence"
     unit "not applicable"
     example "only public HTTP(S) URLs are checked by the frame-policy service"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_frame_policy_reason_service_http_status
     defined-by answer
     role localized_response_template
@@ -737,7 +737,7 @@ meanings
     effect "the answer names this reason inside the frame-policy verdict sentence"
     unit "not applicable"
     example "the frame-policy service returned HTTP 503"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_frame_policy_reason_service_no_headers
     defined-by answer
     role localized_response_template
@@ -745,7 +745,7 @@ meanings
     effect "the answer names this reason inside the frame-policy verdict sentence"
     unit "not applicable"
     example "the frame-policy service did not return response headers"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_frame_policy_reason_service_unreachable
     defined-by answer
     role localized_response_template
@@ -753,7 +753,7 @@ meanings
     effect "the answer names this reason inside the frame-policy verdict sentence"
     unit "not applicable"
     example "the frame-policy service could not be reached from this browser"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_open_in_new_tab
     defined-by answer
     role localized_response_template
@@ -761,7 +761,7 @@ meanings
     effect "the answer suggests opening the URL in a new tab with a direct link"
     unit "not applicable"
     example "I suggest opening this in a new tab."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_url_navigate_native_note
     defined-by answer
     role localized_response_template
@@ -769,7 +769,7 @@ meanings
     effect "the answer explains that the web app checks frame policy before any embedded preview"
     unit "not applicable"
     example "the web app keeps the direct external link instead."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_frame_policy_blocked
     defined-by answer
     role localized_response_template
@@ -777,7 +777,7 @@ meanings
     effect "the answer says embedding is not allowed and names the reason"
     unit "not applicable"
     example "it does not allow embedding here"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_frame_policy_unknown
     defined-by answer
     role localized_response_template
@@ -785,7 +785,7 @@ meanings
     effect "the answer says embedding could not be verified and names the reason"
     unit "not applicable"
     example "I could not verify that this page allows embedding here."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_frame_policy_unverified
     defined-by answer
     role localized_response_template
@@ -793,7 +793,7 @@ meanings
     effect "the answer says embedding could not be verified"
     unit "not applicable"
     example "I could not verify that this page allows embedding here."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_frame_policy_cors_note
     defined-by answer
     role localized_response_template
@@ -801,7 +801,7 @@ meanings
     effect "the answer explains that browser JavaScript cannot read the page without CORS"
     unit "not applicable"
     example "the direct external link is the reliable option."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_frame_policy_allowed
     defined-by answer
     role localized_response_template
@@ -809,7 +809,7 @@ meanings
     effect "the answer shows the page embedded and gives the direct link"
     unit "not applicable"
     example "I checked the page's frame policy and can show it here."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_http_fetch_unavailable
     defined-by answer
     role localized_response_template
@@ -817,7 +817,7 @@ meanings
     effect "the answer says the fetch cannot run and links the URL"
     unit "not applicable"
     example "HTTP fetch is not available in this environment."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_http_fetch_truncated
     defined-by answer
     role localized_response_template
@@ -825,7 +825,7 @@ meanings
     effect "the answer shows the first part of the body and the total byte count"
     unit "bytes"
     example "truncated, 2100 bytes total"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_http_fetch_body
     defined-by answer
     role localized_response_template
@@ -833,7 +833,7 @@ meanings
     effect "the answer gives the status and shows the body in a code block"
     unit "not applicable"
     example "Fetched example.com, status 200."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_http_fetch_binary
     defined-by answer
     role localized_response_template
@@ -841,7 +841,7 @@ meanings
     effect "the answer gives the status and content type and links the URL instead of the body"
     unit "not applicable"
     example "binary or empty body, not shown."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_http_fetch_failed_cors
     defined-by answer
     role localized_response_template
@@ -849,7 +849,7 @@ meanings
     effect "the answer says the URL could not be fetched because of CORS"
     unit "not applicable"
     example "Could not fetch example.com directly."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_http_fetch_failed_network
     defined-by answer
     role localized_response_template
@@ -857,7 +857,7 @@ meanings
     effect "the answer says the URL could not be fetched because of a network error"
     unit "not applicable"
     example "Could not fetch example.com directly."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_http_fetch_iframe
     defined-by answer
     role localized_response_template
@@ -865,7 +865,7 @@ meanings
     effect "the answer says the page is shown in the embedded frame"
     unit "not applicable"
     example "I can show it in the embedded frame below."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_search_results_header
     defined-by answer
     role localized_response_template
@@ -873,7 +873,7 @@ meanings
     effect "the answer heads the results with the query, the result count and the fusion constant"
     unit "not applicable"
     example "Search results for rust, top 10 after reciprocal rank fusion."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_search_other_sources
     defined-by answer
     role localized_response_template
@@ -881,7 +881,7 @@ meanings
     effect "the answer labels the further sources"
     unit "not applicable"
     example "Other sources"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_search_via
     defined-by answer
     role localized_response_template
@@ -889,7 +889,7 @@ meanings
     effect "the answer joins the result to its provider"
     unit "not applicable"
     example "via"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_search_read_more
     defined-by answer
     role localized_response_template
@@ -897,7 +897,7 @@ meanings
     effect "the answer labels the link to the full page"
     unit "not applicable"
     example "Read more"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_search_no_results
     defined-by answer
     role localized_response_template
@@ -905,7 +905,7 @@ meanings
     effect "the answer names the query and the providers tried"
     unit "not applicable"
     example "No CORS-enabled web search results were returned."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_search_all_disabled
     defined-by answer
     role localized_response_template
@@ -913,7 +913,7 @@ meanings
     effect "the answer says the providers are disabled and names them"
     unit "not applicable"
     example "All CORS-readable search providers are disabled for this session."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   web_search_wikinews_article
     defined-by answer
     role localized_response_template
@@ -921,7 +921,7 @@ meanings
     effect "the answer describes the result as a Wikinews article with its title"
     unit "not applicable"
     example "Wikinews has a news article titled Mars rover lands."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   procedural_how_to_plan
     defined-by answer
     role localized_response_template
@@ -929,7 +929,7 @@ meanings
     effect "the answer describes the source-backed discovery plan for the task, its action and object"
     unit "not applicable"
     example "Procedural discovery plan for make tea."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
   procedural_how_to_install_gate
     defined-by answer
     role localized_response_template
@@ -937,7 +937,7 @@ meanings
     effect "the answer says official documentation is searched before community how-to sources"
     unit "not applicable"
     example "the first source gate prefers the product's official documentation"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
   procedural_how_to_heading
     defined-by answer
     role localized_response_template
@@ -945,7 +945,7 @@ meanings
     effect "the answer heads the plan with the task, its action and object"
     unit "not applicable"
     example "Procedural discovery plan for make tea."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
   procedural_how_to_live_install_gate
     defined-by answer
     role localized_response_template
@@ -953,7 +953,7 @@ meanings
     effect "the answer says the official-documentation search runs first and names the fallback query"
     unit "not applicable"
     example "It starts with docker install official documentation."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
   procedural_how_to_source_path_install_wikihow
     defined-by answer
     role localized_response_template
@@ -961,7 +961,7 @@ meanings
     effect "the answer lists the source path with the official-documentation stage and the wikiHow fallback"
     unit "not applicable"
     example "Source path: Wikipedia -> Wikidata -> official documentation web search"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
   procedural_how_to_source_path_install_no_wikihow
     defined-by answer
     role localized_response_template
@@ -969,7 +969,7 @@ meanings
     effect "the answer lists the source path without the wikiHow stage"
     unit "not applicable"
     example "wikiHow disabled in settings"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
   procedural_how_to_source_path_wikihow
     defined-by answer
     role localized_response_template
@@ -977,7 +977,7 @@ meanings
     effect "the answer lists the source path through the wikiHow API"
     unit "not applicable"
     example "Source path: Wikipedia -> Wikidata -> wikiHow API"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
   procedural_how_to_source_path_no_wikihow
     defined-by answer
     role localized_response_template
@@ -985,7 +985,7 @@ meanings
     effect "the answer lists the source path without the wikiHow stage"
     unit "not applicable"
     example "Source path: Wikipedia -> Wikidata -> web search fallback"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
   procedural_how_to_official_search
     defined-by answer
     role localized_response_template
@@ -993,7 +993,7 @@ meanings
     effect "the answer introduces the official search results"
     unit "not applicable"
     example "Official-documentation web search for docker install official documentation:"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
   procedural_how_to_official_search_miss
     defined-by answer
     role localized_response_template
@@ -1001,7 +1001,7 @@ meanings
     effect "the answer says so and keeps the general how-to query as fallback"
     unit "not applicable"
     example "did not return ranked guidance"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
   procedural_how_to_wikihow_returned
     defined-by answer
     role localized_response_template
@@ -1009,7 +1009,7 @@ meanings
     effect "the answer names the returned page and the candidate before the steps"
     unit "not applicable"
     example "wikiHow API returned Make Tea for candidate Make-Tea."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
   procedural_how_to_wikihow_miss
     defined-by answer
     role localized_response_template
@@ -1017,7 +1017,7 @@ meanings
     effect "the answer names the candidate and the error"
     unit "not applicable"
     example "wikiHow candidate Make-Tea did not return explicit steps."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
   procedural_how_to_wikihow_disabled
     defined-by answer
     role localized_response_template
@@ -1025,7 +1025,7 @@ meanings
     effect "the answer says the wikiHow stage was skipped"
     unit "not applicable"
     example "wikiHow is disabled in settings."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
   procedural_how_to_fallback_search
     defined-by answer
     role localized_response_template
@@ -1033,7 +1033,7 @@ meanings
     effect "the answer introduces the fallback search results"
     unit "not applicable"
     example "Fallback web search for how to make tea:"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
   procedural_how_to_fallback_search_plan
     defined-by answer
     role localized_response_template
@@ -1041,7 +1041,7 @@ meanings
     effect "the answer names the providers and the fusion constant the search should use"
     unit "not applicable"
     example "Fallback web search should use reciprocal rank fusion."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-procedural-how-to.lino"
   feature_capability_available
     defined-by answer
     role localized_response_template
@@ -1121,7 +1121,7 @@ meanings
     effect "the answer reports that no verified source data exists yet and names the prior research task and the next step"
     unit "not applicable"
     example "Prior research task: the economic impact of replacing C++ with Rust."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   research_result_followup_all_providers_disabled
     defined-by answer
     role localized_response_template
@@ -1129,7 +1129,7 @@ meanings
     effect "the answer reports that no research result was produced and asks for a provider or source links"
     unit "not applicable"
     example "Prior research task: the economic impact of replacing C++ with Rust."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   research_result_followup_search_plan_only
     defined-by answer
     role localized_response_template
@@ -1137,7 +1137,7 @@ meanings
     effect "the answer reports that no final result exists yet and points at running the source search"
     unit "not applicable"
     example "Prior research task: the economic impact of replacing C++ with Rust."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   research_result_followup_open_research
     defined-by answer
     role localized_response_template
@@ -1145,7 +1145,7 @@ meanings
     effect "the answer reports that there is no verified final result yet and names the next step"
     unit "not applicable"
     example "Prior research task: the economic impact of replacing C++ with Rust."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-web.lino"
   concept_introspection
     defined-by answer
     role localized_response_template

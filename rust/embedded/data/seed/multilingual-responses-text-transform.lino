@@ -129,23 +129,119 @@ multilingual_responses
     intent translation_gap_no_source
     language en
     text "I could not identify a source phrase to translate from {source} to {target}."
+  response response_translation_gap_no_source_ru
+    intent translation_gap_no_source
+    language ru
+    text "Не удалось определить исходную фразу для перевода с {source} на {target}."
+  response response_translation_gap_no_source_hi
+    intent translation_gap_no_source
+    language hi
+    text "मैं {source} से {target} में अनुवाद के लिए कोई स्रोत वाक्यांश पहचान नहीं सका।"
+  response response_translation_gap_no_source_zh
+    intent translation_gap_no_source
+    language zh
+    text "我无法确定要从 {source} 翻译到 {target} 的源短语。"
+  response response_translation_gap_no_source_es
+    intent translation_gap_no_source
+    language es
+    text "No pude identificar una frase de origen para traducir de {source} a {target}."
   response response_translation_gap_surface_en
     intent translation_gap_surface
     language en
     text "I could not translate \"{surface}\" from {source} to {target} with the available formalization data. I recorded this as a translation gap for follow-up."
+  response response_translation_gap_surface_ru
+    intent translation_gap_surface
+    language ru
+    text "Не удалось перевести «{surface}» с {source} на {target} с имеющимися данными формализации. Я записал это как пробел перевода для дальнейшей работы."
+  response response_translation_gap_surface_hi
+    intent translation_gap_surface
+    language hi
+    text "उपलब्ध formalization data से मैं «{surface}» का {source} से {target} में अनुवाद नहीं कर सका। मैंने इसे आगे के काम के लिए अनुवाद अंतराल के रूप में दर्ज किया है।"
+  response response_translation_gap_surface_zh
+    intent translation_gap_surface
+    language zh
+    text "我无法用现有的形式化数据将“{surface}”从 {source} 翻译到 {target}。我已将其记录为翻译缺口，以便后续处理。"
+  response response_translation_gap_surface_es
+    intent translation_gap_surface
+    language es
+    text "No pude traducir «{surface}» de {source} a {target} con los datos de formalización disponibles. Lo registré como una laguna de traducción para darle seguimiento."
   response response_translation_program_heading_en
     intent translation_program_heading
     language en
     text "Translated `{code}` from {source} to {target}:"
+  response response_translation_program_heading_ru
+    intent translation_program_heading
+    language ru
+    text "Перевод `{code}` с {source} на {target}:"
+  response response_translation_program_heading_hi
+    intent translation_program_heading
+    language hi
+    text "`{code}` का {source} से {target} में अनुवाद:"
+  response response_translation_program_heading_zh
+    intent translation_program_heading
+    language zh
+    text "已将 `{code}` 从 {source} 翻译为 {target}："
+  response response_translation_program_heading_es
+    intent translation_program_heading
+    language es
+    text "Traducción de `{code}` de {source} a {target}:"
   response response_translation_code_gap_comment_en
     intent translation_code_gap_comment
     language en
     text "translation gap for `{subject}` from {source} to {target}"
+  response response_translation_code_gap_comment_ru
+    intent translation_code_gap_comment
+    language ru
+    text "пробел перевода для `{subject}` с {source} на {target}"
+  response response_translation_code_gap_comment_hi
+    intent translation_code_gap_comment
+    language hi
+    text "{source} से {target} में `{subject}` के लिए अनुवाद अंतराल"
+  response response_translation_code_gap_comment_zh
+    intent translation_code_gap_comment
+    language zh
+    text "`{subject}` 从 {source} 到 {target} 的翻译缺口"
+  response response_translation_code_gap_comment_es
+    intent translation_code_gap_comment
+    language es
+    text "laguna de traducción para `{subject}` de {source} a {target}"
   response response_translation_clarify_interpretation_en
     intent translation_clarify_interpretation
     language en
     text "Which interpretation did you mean: {top} or {other}?"
+  response response_translation_clarify_interpretation_ru
+    intent translation_clarify_interpretation
+    language ru
+    text "Какое толкование вы имели в виду: {top} или {other}?"
+  response response_translation_clarify_interpretation_hi
+    intent translation_clarify_interpretation
+    language hi
+    text "आपका मतलब कौन-सी व्याख्या थी: {top} या {other}?"
+  response response_translation_clarify_interpretation_zh
+    intent translation_clarify_interpretation
+    language zh
+    text "你指的是哪种解释：{top} 还是 {other}？"
+  response response_translation_clarify_interpretation_es
+    intent translation_clarify_interpretation
+    language es
+    text "¿Qué interpretación querías decir: {top} o {other}?"
   response response_translation_clarify_reading_en
     intent translation_clarify_reading
     language en
     text "Should I read \"{text}\" as \"{top}\" or \"{other}\"?"
+  response response_translation_clarify_reading_ru
+    intent translation_clarify_reading
+    language ru
+    text "Как читать «{text}»: как «{top}» или как «{other}»?"
+  response response_translation_clarify_reading_hi
+    intent translation_clarify_reading
+    language hi
+    text "क्या मैं «{text}» को «{top}» पढ़ूँ या «{other}»?"
+  response response_translation_clarify_reading_zh
+    intent translation_clarify_reading
+    language zh
+    text "我应该把“{text}”理解为“{top}”还是“{other}”？"
+  response response_translation_clarify_reading_es
+    intent translation_clarify_reading
+    language es
+    text "¿Debo leer «{text}» como «{top}» o como «{other}»?"

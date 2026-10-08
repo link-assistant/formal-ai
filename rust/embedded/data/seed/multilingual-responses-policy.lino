@@ -83,10 +83,42 @@ multilingual_responses
     intent external_benchmark_stagnant_suite
     language en
     text "{suite}: passed={passed} unchanged over the last three runs at slice {slice} ({first}, {second}, {third}); a stalled suite is a warning until it moves (issue #1085 D5.2)"
+  response response_external_benchmark_stagnant_suite_ru
+    intent external_benchmark_stagnant_suite
+    language ru
+    text "{suite}: passed={passed} не менялось за последние три запуска на срезе {slice} ({first}, {second}, {third}); застывший набор считается предупреждением, пока не сдвинется (issue #1085 D5.2)"
+  response response_external_benchmark_stagnant_suite_hi
+    intent external_benchmark_stagnant_suite
+    language hi
+    text "{suite}: passed={passed} पिछले तीन runs में slice {slice} पर नहीं बदला ({first}, {second}, {third}); रुका हुआ suite तब तक चेतावनी है जब तक वह आगे न बढ़े (issue #1085 D5.2)"
+  response response_external_benchmark_stagnant_suite_zh
+    intent external_benchmark_stagnant_suite
+    language zh
+    text "{suite}：passed={passed} 在切片 {slice} 上最近三次运行中均未变化（{first}、{second}、{third}）；停滞的测试集在有所变化之前都视为警告（issue #1085 D5.2）"
+  response response_external_benchmark_stagnant_suite_es
+    intent external_benchmark_stagnant_suite
+    language es
+    text "{suite}: passed={passed} sin cambios en las tres últimas ejecuciones con el corte {slice} ({first}, {second}, {third}); una suite estancada es una advertencia hasta que se mueva (issue #1085 D5.2)"
   response response_external_benchmark_frontier_summary_en
     intent external_benchmark_frontier_summary
     language en
     text "Every upstream benchmark case the last scheduled run failed, one frontier prompt per case, so the learning cycle proposes seed surfaces from the same evidence the ledger scores (issue #1085 D5.1). Rewritten by formal-ai benchmark run --frontier-record; a suite that passes fully drops out. Replayed by formal-ai learn cycle --frontier upstream-benchmarks."
+  response response_external_benchmark_frontier_summary_ru
+    intent external_benchmark_frontier_summary
+    language ru
+    text "Каждый случай внешнего бенчмарка, проваленный последним плановым запуском, — по одному пограничному промпту на случай, чтобы цикл обучения предлагал поверхности seed на основе тех же данных, по которым оценивает реестр (issue #1085 D5.1). Перезаписывается командой formal-ai benchmark run --frontier-record; полностью пройденный набор выпадает. Воспроизводится командой formal-ai learn cycle --frontier upstream-benchmarks."
+  response response_external_benchmark_frontier_summary_hi
+    intent external_benchmark_frontier_summary
+    language hi
+    text "पिछले scheduled run में विफल हुआ हर upstream benchmark case, हर case के लिए एक frontier prompt, ताकि learning cycle उन्हीं सबूतों से seed surfaces प्रस्तावित करे जिनसे ledger score करता है (issue #1085 D5.1)। formal-ai benchmark run --frontier-record से फिर से लिखा जाता है; पूरी तरह पास होने वाला suite हट जाता है। formal-ai learn cycle --frontier upstream-benchmarks से दोहराया जाता है।"
+  response response_external_benchmark_frontier_summary_zh
+    intent external_benchmark_frontier_summary
+    language zh
+    text "上一次定时运行中失败的每个上游基准用例，每个用例一个前沿提示，使学习循环依据账本评分所用的同一证据来提出种子表面（issue #1085 D5.1）。由 formal-ai benchmark run --frontier-record 重写；完全通过的测试集会被移除。由 formal-ai learn cycle --frontier upstream-benchmarks 重放。"
+  response response_external_benchmark_frontier_summary_es
+    intent external_benchmark_frontier_summary
+    language es
+    text "Cada caso de benchmark externo que falló en la última ejecución programada, con un prompt de frontera por caso, para que el ciclo de aprendizaje proponga superficies de la semilla a partir de la misma evidencia que puntúa el registro (issue #1085 D5.1). Lo reescribe formal-ai benchmark run --frontier-record; una suite que pasa por completo desaparece. Lo reproduce formal-ai learn cycle --frontier upstream-benchmarks."
   response response_external_benchmark_frontier_recorded_from_en
     intent external_benchmark_frontier_recorded_from
     language en
@@ -95,6 +127,22 @@ multilingual_responses
     intent external_benchmark_frontier_written
     language en
     text "upstream failure frontier written: {path}"
+  response response_external_benchmark_frontier_written_ru
+    intent external_benchmark_frontier_written
+    language ru
+    text "граница внешних сбоев записана: {path}"
+  response response_external_benchmark_frontier_written_hi
+    intent external_benchmark_frontier_written
+    language hi
+    text "upstream failure frontier लिखा गया: {path}"
+  response response_external_benchmark_frontier_written_zh
+    intent external_benchmark_frontier_written
+    language zh
+    text "已写入上游失败前沿：{path}"
+  response response_external_benchmark_frontier_written_es
+    intent external_benchmark_frontier_written
+    language es
+    text "frontera de fallos externos escrita: {path}"
   response response_conversation_topic_en
     intent conversation_topic
     language en
@@ -151,71 +199,347 @@ multilingual_responses
     intent document_originality_check_price_claim_heading
     language zh
     text "价格声明核查"
+  response response_document_originality_check_price_claim_heading_es
+    intent document_originality_check_price_claim_heading
+    language es
+    text "Comprobación de afirmaciones de precio"
   response response_software_project_followup_recorded_en
     intent software_project_followup_recorded
     language en
     text "Recorded a {kind} follow-up for the {artifact} from the active plan."
+  response response_software_project_followup_recorded_ru
+    intent software_project_followup_recorded
+    language ru
+    text "Записано продолжение типа {kind} для {artifact} из активного плана."
+  response response_software_project_followup_recorded_hi
+    intent software_project_followup_recorded
+    language hi
+    text "सक्रिय योजना के {artifact} के लिए एक {kind} follow-up दर्ज किया गया।"
+  response response_software_project_followup_recorded_zh
+    intent software_project_followup_recorded
+    language zh
+    text "已为当前计划中的 {artifact} 记录了一个 {kind} 后续步骤。"
+  response response_software_project_followup_recorded_es
+    intent software_project_followup_recorded
+    language es
+    text "Registré un seguimiento de tipo {kind} para {artifact} del plan activo."
   response response_software_project_followup_heading_meaning_en
     intent software_project_followup_heading_meaning
     language en
     text "Formalized meaning:"
+  response response_software_project_followup_heading_meaning_ru
+    intent software_project_followup_heading_meaning
+    language ru
+    text "Формализованный смысл:"
+  response response_software_project_followup_heading_meaning_hi
+    intent software_project_followup_heading_meaning
+    language hi
+    text "औपचारिक अर्थ:"
+  response response_software_project_followup_heading_meaning_zh
+    intent software_project_followup_heading_meaning
+    language zh
+    text "形式化含义："
+  response response_software_project_followup_heading_meaning_es
+    intent software_project_followup_heading_meaning
+    language es
+    text "Significado formalizado:"
   response response_software_project_followup_heading_reasoning_en
     intent software_project_followup_heading_reasoning
     language en
     text "Reasoning steps:"
+  response response_software_project_followup_heading_reasoning_ru
+    intent software_project_followup_heading_reasoning
+    language ru
+    text "Шаги рассуждения:"
+  response response_software_project_followup_heading_reasoning_hi
+    intent software_project_followup_heading_reasoning
+    language hi
+    text "तर्क के चरण:"
+  response response_software_project_followup_heading_reasoning_zh
+    intent software_project_followup_heading_reasoning
+    language zh
+    text "推理步骤："
+  response response_software_project_followup_heading_reasoning_es
+    intent software_project_followup_heading_reasoning
+    language es
+    text "Pasos de razonamiento:"
   response response_software_project_followup_heading_plan_en
     intent software_project_followup_heading_plan
     language en
     text "Verification plan:"
+  response response_software_project_followup_heading_plan_ru
+    intent software_project_followup_heading_plan
+    language ru
+    text "План проверки:"
+  response response_software_project_followup_heading_plan_hi
+    intent software_project_followup_heading_plan
+    language hi
+    text "सत्यापन योजना:"
+  response response_software_project_followup_heading_plan_zh
+    intent software_project_followup_heading_plan
+    language zh
+    text "验证计划："
+  response response_software_project_followup_heading_plan_es
+    intent software_project_followup_heading_plan
+    language es
+    text "Plan de verificación:"
   response response_software_project_followup_step_recognize_en
     intent software_project_followup_step_recognize
     language en
     text 'Recognize "{action}" as a {kind} request that exercises the {artifact} from the active plan, not a fact lookup.'
+  response response_software_project_followup_step_recognize_ru
+    intent software_project_followup_step_recognize
+    language ru
+    text "Распознать «{action}» как запрос типа {kind}, который проверяет {artifact} из активного плана, а не поиск факта."
+  response response_software_project_followup_step_recognize_hi
+    intent software_project_followup_step_recognize
+    language hi
+    text "«{action}» को एक {kind} अनुरोध के रूप में पहचानें जो सक्रिय योजना के {artifact} को परखता है, न कि किसी तथ्य की खोज।"
+  response response_software_project_followup_step_recognize_zh
+    intent software_project_followup_step_recognize
+    language zh
+    text "将「{action}」识别为检验当前计划中 {artifact} 的 {kind} 请求，而不是事实查询。"
+  response response_software_project_followup_step_recognize_es
+    intent software_project_followup_step_recognize
+    language es
+    text "Reconocer «{action}» como una solicitud de tipo {kind} que pone a prueba {artifact} del plan activo, no como una búsqueda de hechos."
   response response_software_project_followup_step_bind_site_en
     intent software_project_followup_step_bind_site
     language en
     text "Bind the test target to {site} and keep live fetches behind the network_access gate."
+  response response_software_project_followup_step_bind_site_ru
+    intent software_project_followup_step_bind_site
+    language ru
+    text "Привязать цель тестов к {site} и держать живые загрузки за шлюзом network_access."
+  response response_software_project_followup_step_bind_site_hi
+    intent software_project_followup_step_bind_site
+    language hi
+    text "Test target को {site} से bind करें और live fetches को network_access gate के पीछे रखें।"
+  response response_software_project_followup_step_bind_site_zh
+    intent software_project_followup_step_bind_site
+    language zh
+    text "将测试目标绑定到 {site}，并让实时获取保持在 network_access 闸门之后。"
+  response response_software_project_followup_step_bind_site_es
+    intent software_project_followup_step_bind_site
+    language es
+    text "Vincular el destino de las pruebas a {site} y mantener las obtenciones en vivo detrás de la compuerta network_access."
   response response_software_project_followup_step_record_output_en
     intent software_project_followup_step_record_output
     language en
     text 'Record the expected output as "{output}" so the test harness can assert it.'
+  response response_software_project_followup_step_record_output_ru
+    intent software_project_followup_step_record_output
+    language ru
+    text "Записать ожидаемый вывод как «{output}», чтобы тестовый каркас мог его проверить."
+  response response_software_project_followup_step_record_output_hi
+    intent software_project_followup_step_record_output
+    language hi
+    text "अपेक्षित output को «{output}» के रूप में दर्ज करें ताकि test harness उसे assert कर सके।"
+  response response_software_project_followup_step_record_output_zh
+    intent software_project_followup_step_record_output
+    language zh
+    text "将预期输出记录为「{output}」，以便测试框架对其进行断言。"
+  response response_software_project_followup_step_record_output_es
+    intent software_project_followup_step_record_output
+    language es
+    text "Registrar la salida esperada como «{output}» para que el arnés de pruebas pueda comprobarla."
   response response_software_project_followup_step_fixture_en
     intent software_project_followup_step_fixture
     language en
     text "Drive the artifact through a deterministic fixture before any host API or network call."
+  response response_software_project_followup_step_fixture_ru
+    intent software_project_followup_step_fixture
+    language ru
+    text "Прогнать артефакт через детерминированную фикстуру до любого вызова API хоста или сети."
+  response response_software_project_followup_step_fixture_hi
+    intent software_project_followup_step_fixture
+    language hi
+    text "किसी भी host API या network call से पहले artifact को एक deterministic fixture से चलाएँ।"
+  response response_software_project_followup_step_fixture_zh
+    intent software_project_followup_step_fixture
+    language zh
+    text "在任何宿主 API 或网络调用之前，先用确定性夹具驱动该制品。"
+  response response_software_project_followup_step_fixture_es
+    intent software_project_followup_step_fixture
+    language es
+    text "Pasar el artefacto por un fixture determinista antes de cualquier llamada a la API del anfitrión o a la red."
   response response_software_project_followup_step_gates_en
     intent software_project_followup_step_gates
     language en
     text "Keep code execution behind approval gates because the sandbox cannot run untrusted code."
+  response response_software_project_followup_step_gates_ru
+    intent software_project_followup_step_gates
+    language ru
+    text "Держать выполнение кода за шлюзами одобрения, потому что песочница не может запускать недоверенный код."
+  response response_software_project_followup_step_gates_hi
+    intent software_project_followup_step_gates
+    language hi
+    text "Code execution को approval gates के पीछे रखें, क्योंकि sandbox untrusted code नहीं चला सकता।"
+  response response_software_project_followup_step_gates_zh
+    intent software_project_followup_step_gates
+    language zh
+    text "将代码执行保持在批准闸门之后，因为沙箱无法运行不受信任的代码。"
+  response response_software_project_followup_step_gates_es
+    intent software_project_followup_step_gates
+    language es
+    text "Mantener la ejecución de código detrás de compuertas de aprobación, porque el entorno aislado no puede ejecutar código no confiable."
   response response_software_project_followup_plan_generate_en
     intent software_project_followup_plan_generate
     language en
     text "Generate the {artifact} core plus a deterministic test harness with a captured {site} fixture."
+  response response_software_project_followup_plan_generate_ru
+    intent software_project_followup_plan_generate
+    language ru
+    text "Сгенерировать ядро {artifact} и детерминированный тестовый каркас с записанной фикстурой сайта ({site})."
+  response response_software_project_followup_plan_generate_hi
+    intent software_project_followup_plan_generate
+    language hi
+    text "{artifact} core और एक deterministic test harness बनाएँ, जिसमें {site} का captured fixture हो।"
+  response response_software_project_followup_plan_generate_zh
+    intent software_project_followup_plan_generate
+    language zh
+    text "生成 {artifact} 核心以及带有已捕获 {site} 夹具的确定性测试框架。"
+  response response_software_project_followup_plan_generate_es
+    intent software_project_followup_plan_generate
+    language es
+    text "Generar el núcleo de {artifact} y un arnés de pruebas determinista con un fixture capturado del sitio ({site})."
   response response_software_project_followup_plan_assert_en
     intent software_project_followup_plan_assert
     language en
     text "Assert each requirement (parsing, extraction, counting, summary) against the fixture."
+  response response_software_project_followup_plan_assert_ru
+    intent software_project_followup_plan_assert
+    language ru
+    text "Проверить каждое требование (разбор, извлечение, подсчёт, сводку) на фикстуре."
+  response response_software_project_followup_plan_assert_hi
+    intent software_project_followup_plan_assert
+    language hi
+    text "हर requirement (parsing, extraction, counting, summary) को fixture के विरुद्ध assert करें।"
+  response response_software_project_followup_plan_assert_zh
+    intent software_project_followup_plan_assert
+    language zh
+    text "针对夹具逐一断言每项需求（解析、提取、计数、摘要）。"
+  response response_software_project_followup_plan_assert_es
+    intent software_project_followup_plan_assert
+    language es
+    text "Comprobar cada requisito (análisis, extracción, conteo, resumen) contra el fixture."
   response response_software_project_followup_plan_surface_en
     intent software_project_followup_plan_surface
     language en
     text "Surface {output} from the fixture run."
+  response response_software_project_followup_plan_surface_ru
+    intent software_project_followup_plan_surface
+    language ru
+    text "Показать {output} из запуска на фикстуре."
+  response response_software_project_followup_plan_surface_hi
+    intent software_project_followup_plan_surface
+    language hi
+    text "Fixture run से {output} दिखाएँ।"
+  response response_software_project_followup_plan_surface_zh
+    intent software_project_followup_plan_surface
+    language zh
+    text "展示夹具运行得到的 {output}。"
+  response response_software_project_followup_plan_surface_es
+    intent software_project_followup_plan_surface
+    language es
+    text "Mostrar {output} a partir de la ejecución con el fixture."
   response response_software_project_followup_plan_run_en
     intent software_project_followup_plan_run
     language en
     text "Run the {language} test command once the generated_code gate is approved."
+  response response_software_project_followup_plan_run_ru
+    intent software_project_followup_plan_run
+    language ru
+    text "Запустить команду тестов {language}, как только шлюз generated_code будет одобрен."
+  response response_software_project_followup_plan_run_hi
+    intent software_project_followup_plan_run
+    language hi
+    text "generated_code gate मंज़ूर होते ही {language} test command चलाएँ।"
+  response response_software_project_followup_plan_run_zh
+    intent software_project_followup_plan_run
+    language zh
+    text "generated_code 闸门批准后，运行 {language} 测试命令。"
+  response response_software_project_followup_plan_run_es
+    intent software_project_followup_plan_run
+    language es
+    text "Ejecutar el comando de pruebas de {language} en cuanto se apruebe la compuerta generated_code."
   response response_software_project_followup_plan_promote_en
     intent software_project_followup_plan_promote
     language en
     text "Promote the run to live {site} only after the test_execution and network_access gates pass."
+  response response_software_project_followup_plan_promote_ru
+    intent software_project_followup_plan_promote
+    language ru
+    text "Переводить запуск на живой сайт ({site}) только после прохождения шлюзов test_execution и network_access."
+  response response_software_project_followup_plan_promote_hi
+    intent software_project_followup_plan_promote
+    language hi
+    text "test_execution और network_access gates पास होने के बाद ही run को live {site} पर ले जाएँ।"
+  response response_software_project_followup_plan_promote_zh
+    intent software_project_followup_plan_promote
+    language zh
+    text "只有在 test_execution 和 network_access 闸门通过后，才将运行提升到真实的 {site}。"
+  response response_software_project_followup_plan_promote_es
+    intent software_project_followup_plan_promote
+    language es
+    text "Pasar la ejecución al sitio en vivo ({site}) solo después de que se superen las compuertas test_execution y network_access."
   response response_software_project_followup_default_target_en
     intent software_project_followup_default_target
     language en
     text "the requested target"
+  response response_software_project_followup_default_target_ru
+    intent software_project_followup_default_target
+    language ru
+    text "запрошенная цель"
+  response response_software_project_followup_default_target_hi
+    intent software_project_followup_default_target
+    language hi
+    text "अनुरोधित target"
+  response response_software_project_followup_default_target_zh
+    intent software_project_followup_default_target
+    language zh
+    text "请求的目标"
+  response response_software_project_followup_default_target_es
+    intent software_project_followup_default_target
+    language es
+    text "el destino solicitado"
   response response_software_project_followup_approved_en
     intent software_project_followup_approved
     language en
     text "The plan is approved, so the generated starter already includes this test harness. Running it live needs the test_execution and network_access gates."
+  response response_software_project_followup_approved_ru
+    intent software_project_followup_approved
+    language ru
+    text "План одобрен, поэтому сгенерированная заготовка уже включает этот тестовый каркас. Для живого запуска нужны шлюзы test_execution и network_access."
+  response response_software_project_followup_approved_hi
+    intent software_project_followup_approved
+    language hi
+    text "योजना मंज़ूर है, इसलिए बनाए गए starter में यह test harness पहले से शामिल है। इसे live चलाने के लिए test_execution और network_access gates चाहिए।"
+  response response_software_project_followup_approved_zh
+    intent software_project_followup_approved
+    language zh
+    text "计划已批准，因此生成的入门代码已包含这个测试框架。实际运行它需要 test_execution 和 network_access 闸门。"
+  response response_software_project_followup_approved_es
+    intent software_project_followup_approved
+    language es
+    text "El plan está aprobado, así que el código inicial generado ya incluye este arnés de pruebas. Ejecutarlo en vivo necesita las compuertas test_execution y network_access."
   response response_software_project_followup_proposed_en
     intent software_project_followup_proposed
     language en
     text "Reply `approve plan` to generate the artifact plus this test harness. Running it live against the target needs the test_execution and network_access gates."
+  response response_software_project_followup_proposed_ru
+    intent software_project_followup_proposed
+    language ru
+    text "Ответьте `approve plan`, чтобы сгенерировать артефакт вместе с этим тестовым каркасом. Для живого запуска против цели нужны шлюзы test_execution и network_access."
+  response response_software_project_followup_proposed_hi
+    intent software_project_followup_proposed
+    language hi
+    text "Artifact और यह test harness बनाने के लिए `approve plan` लिखकर जवाब दें। Target पर इसे live चलाने के लिए test_execution और network_access gates चाहिए।"
+  response response_software_project_followup_proposed_zh
+    intent software_project_followup_proposed
+    language zh
+    text "回复 `approve plan` 以生成制品和这个测试框架。针对目标实际运行它需要 test_execution 和 network_access 闸门。"
+  response response_software_project_followup_proposed_es
+    intent software_project_followup_proposed
+    language es
+    text "Responde `approve plan` para generar el artefacto junto con este arnés de pruebas. Ejecutarlo en vivo contra el destino necesita las compuertas test_execution y network_access."

@@ -1,1 +1,171 @@
-import { cached , readText } from '../host.mjs' ; import { findToolDefinition } from '../protocol_policy.mjs' ; import { splitPipeList } from './seed.mjs' ; import { findChildValue , parseRoot } from './seed_parser.mjs' ; import { isObject , splitWhitespace , trimEndMatches , trimMatches } from './rust_str.mjs' ; export const ToolResourceScope = Object . freeze ( { ClientWorkspace : 'client_workspace' , RemoteService : 'remote_service' , ProcessInput : 'process_input' , } ) ; export const isClientWorkspace = ( scope ) => scope === ToolResourceScope . ClientWorkspace ; const lowercaseList = ( raw ) => splitPipeList ( raw ) . map ( ( entry ) => entry . toLowerCase () ) ; export function parseToolResourceScopes ( text ) { const vocabulary = { remote_arguments : [] , remote_namespaces : [] , process_arguments : [] , process_names : [] , identity_arguments : [] , } ; const root = parseRoot ( text ) . children [ 0 ] ; if ( ! root ) return vocabulary ; for ( const node of root . children || [] ) { if ( node . name === 'scope' && node . value === 'remote_service' ) { vocabulary . remote_arguments = lowercaseList ( findChildValue ( node , 'arguments' ) ) ; vocabulary . remote_namespaces = lowercaseList ( findChildValue ( node , 'namespaces' ) ) ; } else if ( node . name === 'scope' && node . value === 'process_input' ) { vocabulary . process_arguments = lowercaseList ( findChildValue ( node , 'arguments' ) ) ; vocabulary . process_names = lowercaseList ( findChildValue ( node , 'names' ) ) ; } else if ( node . name === 'identity' ) { vocabulary . identity_arguments = lowercaseList ( findChildValue ( node , 'arguments' ) ) ; } } return vocabulary ; } function vocabulary () { return cached ( 'tool-resource-scopes' , () => parseToolResourceScopes ( readText ( 'data/seed/tool-resource-scopes.lino' ) ) ) ; } export function scopeOfToolName ( name ) { return scopeOfToolNameWith ( name , vocabulary () ) ; } export function scopeOfToolNameWith ( name , words ) { const segments = addressSegments ( name ) ; if ( segments . some ( ( segment ) => words . remote_namespaces . includes ( segment ) ) ) return ToolResourceScope . RemoteService ; const leaf = segments [ segments . length - 1 ] ?? '' ; if ( words . process_names . includes ( leaf ) ) return ToolResourceScope . ProcessInput ; return ToolResourceScope . ClientWorkspace ; } export function scopeOfToolDefinition ( definition , name ) { const words = vocabulary () ; const required = requiredArgumentNames ( definition ) ; if ( required . some ( ( argument ) => words . remote_arguments . includes ( argument ) ) ) return ToolResourceScope . RemoteService ; if ( required . some ( ( argument ) => words . process_arguments . includes ( argument ) ) ) return ToolResourceScope . ProcessInput ; return scopeOfToolNameWith ( name , words ) ; } export function scopeOfAdvertisedTool ( definitions , name ) { const definition = findToolDefinition ( definitions , name ) ; return definition ? scopeOfToolDefinition ( definition , name ) : scopeOfToolName ( name ) ; } export function isIdentityArgument ( name ) { return vocabulary () . identity_arguments . includes ( name . toLowerCase () ) ; } export function ungroundedIdentityArguments ( definition , provided , context ) { return requiredArgumentNames ( definition ) . filter ( ( name ) => isIdentityArgument ( name ) ) . filter ( ( name ) => { const has = Object . prototype . hasOwnProperty . call ( provided , name ) ; const supplied = has && provided [ name ] !== '' ; return ! supplied && groundedIdentityArgument ( name , context ) === null ; } ) ; } export function groundedIdentityArgument ( name , context ) { const lower = name . toLowerCase () ; if ( lower === 'url' || lower === 'uri' ) return firstUrl ( context ) ; const reference = repositoryReference ( context ) ; if ( reference === null ) return null ; const [ owner , repo , number ] = reference ; switch ( lower ) { case 'repository_full_name' : case 'repository' : return `${owner}/${repo}` ; case 'repo' : case 'repo_name' : return repo ; case 'owner' : case 'org' : case 'organization' : return owner ; case 'issue_number' : case 'pull_number' : return number ; default : return null ; } } function firstUrl ( context ) { for ( const token of splitWhitespace ( context ) ) { const trimmed = trimMatches ( token , ( character ) => '.,)("\'><' . includes ( character ) ) ; if ( trimmed . includes ( '://' ) ) return trimmed ; } return null ; } function repositoryReference ( context ) { for ( const after of context . split ( '://' ) . slice ( 1 ) ) { const first = splitWhitespace ( after ) [ 0 ] ; if ( first === undefined ) continue ; const rest = trimEndMatches ( first , ( character ) => '.,)"\'>' . includes ( character ) ) ; const segments = rest . split ( '/' ) . filter ( Boolean ) ; if ( segments . length < 3 ) continue ; const owner = segments [ 1 ] ; let repo = segments [ 2 ] ; while ( repo . endsWith ( '.git' ) ) repo = repo . slice ( 0 , - 4 ) ; if ( ! owner || ! repo ) continue ; const numberSegment = segments [ 4 ] ; const number = numberSegment !== undefined && /^\+?[0-9]+$/ . test ( numberSegment ) && BigInt ( numberSegment ) <= 18446744073709551615n ? Number ( numberSegment ) : null ; return [ owner , repo , number ] ; } return null ; } function addressSegments ( name ) { return name . split ( '__' ) . flatMap ( ( part ) => part . split ( /[./:]/ ) ) . filter ( Boolean ) . map ( ( segment ) => segment . toLowerCase () ) ; } const present = ( object , key ) => ( isObject ( object ) && Object . prototype . hasOwnProperty . call ( object , key ) ? object [ key ] : undefined ) ; function requiredArgumentNames ( definition ) { if ( ! isObject ( definition ) ) return [] ; const fn = present ( definition , 'function' ) ; const schema = [ present ( definition , 'parameters' ) , present ( definition , 'input_schema' ) , present ( fn , 'parameters' ) , present ( fn , 'input_schema' ) ] . find ( ( candidate ) => candidate !== undefined ) ; const required = present ( schema , 'required' ) ; if ( ! Array . isArray ( required ) ) return [] ; return required . filter ( ( entry ) => typeof entry === 'string' ) . map ( ( entry ) => entry . toLowerCase () ) ; }
+// Which resource an advertised tool's effect actually lands on (issue #1075):
+// a port of rust/src/tool_scope.rs and its seed reader
+// rust/src/seed/tool_resource_scopes.rs (data/seed/tool-resource-scopes.lino).
+
+import { cached, readText } from '../host.mjs';
+import { findToolDefinition } from '../protocol_policy.mjs';
+import { splitPipeList } from './seed.mjs';
+import { findChildValue, parseRoot } from './seed_parser.mjs';
+import { isObject, splitWhitespace, trimEndMatches, trimMatches } from './rust_str.mjs';
+
+/** `ToolResourceScope` variants. */
+export const ToolResourceScope = Object.freeze({
+  ClientWorkspace: 'client_workspace',
+  RemoteService: 'remote_service',
+  ProcessInput: 'process_input',
+});
+
+/** Mirrors `ToolResourceScope::is_client_workspace`. */
+export const isClientWorkspace = (scope) => scope === ToolResourceScope.ClientWorkspace;
+
+const lowercaseList = (raw) => splitPipeList(raw).map((entry) => entry.toLowerCase());
+
+/** Mirrors `fn parse_tool_resource_scopes` in rust/src/seed/tool_resource_scopes.rs. */
+export function parseToolResourceScopes(text) {
+  const vocabulary = {
+    remote_arguments: [], remote_namespaces: [], process_arguments: [], process_names: [], identity_arguments: [],
+  };
+  const root = parseRoot(text).children[0];
+  if (!root) return vocabulary;
+  for (const node of root.children || []) {
+    if (node.name === 'scope' && node.value === 'remote_service') {
+      vocabulary.remote_arguments = lowercaseList(findChildValue(node, 'arguments'));
+      vocabulary.remote_namespaces = lowercaseList(findChildValue(node, 'namespaces'));
+    } else if (node.name === 'scope' && node.value === 'process_input') {
+      vocabulary.process_arguments = lowercaseList(findChildValue(node, 'arguments'));
+      vocabulary.process_names = lowercaseList(findChildValue(node, 'names'));
+    } else if (node.name === 'identity') {
+      vocabulary.identity_arguments = lowercaseList(findChildValue(node, 'arguments'));
+    }
+  }
+  return vocabulary;
+}
+
+/** Mirrors `fn vocabulary`. */
+function vocabulary() {
+  return cached('tool-resource-scopes', () => parseToolResourceScopes(readText('data/seed/tool-resource-scopes.lino')));
+}
+
+/** Mirrors `fn scope_of_tool_name`. */
+export function scopeOfToolName(name) {
+  return scopeOfToolNameWith(name, vocabulary());
+}
+
+/** Mirrors `fn scope_of_tool_name_with`. */
+export function scopeOfToolNameWith(name, words) {
+  const segments = addressSegments(name);
+  if (segments.some((segment) => words.remote_namespaces.includes(segment))) return ToolResourceScope.RemoteService;
+  const leaf = segments[segments.length - 1] ?? '';
+  if (words.process_names.includes(leaf)) return ToolResourceScope.ProcessInput;
+  return ToolResourceScope.ClientWorkspace;
+}
+
+/** Mirrors `fn scope_of_tool_definition`. */
+export function scopeOfToolDefinition(definition, name) {
+  const words = vocabulary();
+  const required = requiredArgumentNames(definition);
+  if (required.some((argument) => words.remote_arguments.includes(argument))) return ToolResourceScope.RemoteService;
+  if (required.some((argument) => words.process_arguments.includes(argument))) return ToolResourceScope.ProcessInput;
+  return scopeOfToolNameWith(name, words);
+}
+
+/** Mirrors `fn scope_of_advertised_tool`. */
+export function scopeOfAdvertisedTool(definitions, name) {
+  const definition = findToolDefinition(definitions, name);
+  return definition ? scopeOfToolDefinition(definition, name) : scopeOfToolName(name);
+}
+
+/** Mirrors `fn is_identity_argument`. */
+export function isIdentityArgument(name) {
+  return vocabulary().identity_arguments.includes(name.toLowerCase());
+}
+
+/**
+ * Mirrors `fn ungrounded_identity_arguments`.
+ * @param {object} definition the tool definition JSON value
+ * @param {object} provided the call's argument object
+ * @param {string} context
+ * @returns {string[]}
+ */
+export function ungroundedIdentityArguments(definition, provided, context) {
+  return requiredArgumentNames(definition)
+    .filter((name) => isIdentityArgument(name))
+    .filter((name) => {
+      const has = Object.prototype.hasOwnProperty.call(provided, name);
+      const supplied = has && provided[name] !== '';
+      return !supplied && groundedIdentityArgument(name, context) === null;
+    });
+}
+
+/** Mirrors `fn grounded_identity_argument`: a JSON value or null. */
+export function groundedIdentityArgument(name, context) {
+  const lower = name.toLowerCase();
+  if (lower === 'url' || lower === 'uri') return firstUrl(context);
+  const reference = repositoryReference(context);
+  if (reference === null) return null;
+  const [owner, repo, number] = reference;
+  switch (lower) {
+    case 'repository_full_name':
+    case 'repository':
+      return `${owner}/${repo}`;
+    case 'repo':
+    case 'repo_name':
+      return repo;
+    case 'owner':
+    case 'org':
+    case 'organization':
+      return owner;
+    case 'issue_number':
+    case 'pull_number':
+      return number;
+    default:
+      return null;
+  }
+}
+
+/** Mirrors `fn first_url` in rust/src/tool_scope.rs. */
+function firstUrl(context) {
+  for (const token of splitWhitespace(context)) {
+    const trimmed = trimMatches(token, (character) => '.,)("\'><'.includes(character));
+    if (trimmed.includes('://')) return trimmed;
+  }
+  return null;
+}
+
+/** Mirrors `fn repository_reference`: `[owner, repo, number|null]` or null. */
+function repositoryReference(context) {
+  for (const after of context.split('://').slice(1)) {
+    const first = splitWhitespace(after)[0];
+    if (first === undefined) continue;
+    const rest = trimEndMatches(first, (character) => '.,)"\'>'.includes(character));
+    const segments = rest.split('/').filter(Boolean);
+    if (segments.length < 3) continue;
+    const owner = segments[1];
+    let repo = segments[2];
+    while (repo.endsWith('.git')) repo = repo.slice(0, -4);
+    if (!owner || !repo) continue;
+    const numberSegment = segments[4];
+    const number = numberSegment !== undefined && /^\+?[0-9]+$/.test(numberSegment)
+      && BigInt(numberSegment) <= 18446744073709551615n ? Number(numberSegment) : null;
+    return [owner, repo, number];
+  }
+  return null;
+}
+
+/** Mirrors `fn address_segments`. */
+function addressSegments(name) {
+  return name.split('__').flatMap((part) => part.split(/[./:]/)).filter(Boolean).map((segment) => segment.toLowerCase());
+}
+
+const present = (object, key) => (isObject(object) && Object.prototype.hasOwnProperty.call(object, key) ? object[key] : undefined);
+
+/** Mirrors `fn required_argument_names`. */
+function requiredArgumentNames(definition) {
+  if (!isObject(definition)) return [];
+  const fn = present(definition, 'function');
+  const schema = [present(definition, 'parameters'), present(definition, 'input_schema'),
+    present(fn, 'parameters'), present(fn, 'input_schema')].find((candidate) => candidate !== undefined);
+  const required = present(schema, 'required');
+  if (!Array.isArray(required)) return [];
+  return required.filter((entry) => typeof entry === 'string').map((entry) => entry.toLowerCase());
+}

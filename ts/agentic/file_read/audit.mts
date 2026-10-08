@@ -1,1 +1,117 @@
-import { rustLines } from '../content.mjs' ; import { detect } from '../crate/language.mjs' ; import { replaceAllLiteral , trim , trimEnd , trimStart } from '../crate/rust_str.mjs' ; import { localizedResponse } from '../crate/seed.mjs' ; import { wordsForRole } from '../crate/seed_meanings.mjs' ; import { agenticMessage } from '../messages.mjs' ; import { extractJsonishValue } from './supplied.mjs' ; import { slicedLines } from '../workspace_line_operation.mjs' ; const ROLE_FILE_ANALYSIS_GAP_MARKER = 'file_analysis_gap_marker' ; export function fileReadFinalAnswer ( mode , files , request ) { switch ( mode . kind ) { case 'first_line' : { const [ path , content ] = files [ 0 ] ; return agenticMessage ( 'file_read_first_line' , { path , first : rustLines ( content ) [ 0 ] ?? '' } ) ; } case 'extract_value' : { const { key } = mode ; if ( files . length === 1 ) { const [ path , content ] = files [ 0 ] ; const value = extractJsonishValue ( content , key ) ?? trim ( content ) ; return agenticMessage ( 'file_read_value_of' , { key , path , value } ) ; } const lines = [] ; for ( const [ path , content ] of files ) { const value = extractJsonishValue ( content , key ) ?? trim ( content ) ; lines . push ( `${path}:` ) ; lines . push ( `${key}=${value}` ) ; } return lines . join ( '\n' ) ; } case 'summary' : { const lines = [ agenticMessage ( 'file_read_summary_heading' , { count : files . length } ) ] ; for ( const [ path , content ] of files ) { lines . push ( `- \`${path}\`: ${trim ( rustLines ( content ) [ 0 ] ?? '' )}` ) ; } return lines . join ( '\n' ) ; } case 'audit' : return boundedAuditAnswer ( files , request ) ; case 'line_slice' : return files . map ( ( [ path , content ] ) => { const sliced = slicedLines ( content , mode ) ; return sliced === null ? agenticMessage ( 'file_read_contents' , { path , content : trimEnd ( content ) } ) : agenticMessage ( 'file_read_lines' , { path , first : sliced . first , last : sliced . last , lines : sliced . text } ) ; } ) . join ( '\n\n' ) ; default : return files . map ( ( [ path , content ] ) => agenticMessage ( 'file_read_contents' , { path , content : trimEnd ( content ) } ) ) . join ( '\n\n' ) ; } } function boundedAuditAnswer ( files , request ) { const FINDINGS_PER_FILE = 4 ; const FINDINGS_TOTAL = 24 ; const FINDING_CHARS = 180 ; const PATH_CHARS = 160 ; const markers = wordsForRole ( ROLE_FILE_ANALYSIS_GAP_MARKER ) . map ( ( surface ) => surface . toLowerCase () ) ; const language = detect ( request ) ; const response = ( intent ) => localizedResponse ( intent , language ) ?? '' ; const noFiles = agenticMessage ( 'file_read_no_files_found' ) ; let remaining = FINDINGS_TOTAL ; const lines = [ replaceAllLiteral ( response ( 'file_analysis_heading' ) , '{count}' , String ( files . length ) ) ] ; for ( const [ path , content ] of files ) { lines . push ( `- \`${cappedText ( path , PATH_CHARS )}\`` ) ; const noMatches = trim ( content ) === noFiles ; const grepResult = trimStart ( content ) . startsWith ( 'Found ' ) ; const findings = rustLines ( content ) . map ( trim ) . filter ( ( line ) => line !== '' ) . filter ( ( line ) => ! noMatches && ( ! grepResult || ( ! line . startsWith ( 'Found ' ) && ! line . endsWith ( ':' ) ) ) && lineContainsGapMarker ( line , markers ) ) . slice ( 0 , Math . min ( FINDINGS_PER_FILE , remaining ) ) . map ( ( line ) => cappedText ( line , FINDING_CHARS ) ) ; remaining = Math . max ( 0 , remaining - findings . length ) ; if ( ! findings . length ) lines . push ( `  ${response ( 'file_analysis_no_marker' )}` ) ; else for ( const finding of findings ) lines . push ( `  - ${finding}` ) ; } lines . push ( response ( 'file_analysis_absence_boundary' ) ) ; return lines . join ( '\n' ) ; } function lineContainsGapMarker ( line , markers ) { const normalized = line . toLowerCase () ; return containsUncheckedBox ( line ) || markers . some ( ( surface ) => normalized . includes ( surface ) ) ; } function containsUncheckedBox ( line ) { for ( let start = line . indexOf ( '[' ) ; start >= 0 ; start = line . indexOf ( '[' , start + 1 ) ) { const rest = line . slice ( start + 1 ) ; const end = rest . indexOf ( ']' ) ; if ( end >= 0 && /^\p{White_Space}*$/u . test ( rest . slice ( 0 , end ) ) ) return true ; } return false ; } function cappedText ( text , maxChars ) { const chars = Array . from ( text ) ; return chars . length > maxChars ? `${chars . slice ( 0 , maxChars ) . join ( '' )}…` : text ; }
+// Answer rendering for completed file reads
+// (rust/src/agentic_coding/file_read/audit.rs).
+
+import { rustLines } from '../content.mjs';
+import { detect } from '../crate/language.mjs';
+import { replaceAllLiteral, trim, trimEnd, trimStart } from '../crate/rust_str.mjs';
+import { localizedResponse } from '../crate/seed.mjs';
+import { wordsForRole } from '../crate/seed_meanings.mjs';
+import { agenticMessage } from '../messages.mjs';
+import { extractJsonishValue } from './supplied.mjs';
+import { slicedLines } from '../workspace_line_operation.mjs';
+
+const ROLE_FILE_ANALYSIS_GAP_MARKER = 'file_analysis_gap_marker';
+
+/**
+ * Mirrors `fn file_read_final_answer` in rust/src/agentic_coding/file_read/audit.rs.
+ * @param {object} mode a `FileReadMode`
+ * @param {Array<[string, string]>} files `[path, content]` pairs
+ * @param {string} request
+ */
+export function fileReadFinalAnswer(mode, files, request) {
+  switch (mode.kind) {
+    case 'first_line': {
+      const [path, content] = files[0];
+      return agenticMessage('file_read_first_line', { path, first: rustLines(content)[0] ?? '' });
+    }
+    case 'extract_value': {
+      const { key } = mode;
+      if (files.length === 1) {
+        const [path, content] = files[0];
+        const value = extractJsonishValue(content, key) ?? trim(content);
+        return agenticMessage('file_read_value_of', { key, path, value });
+      }
+      const lines = [];
+      for (const [path, content] of files) {
+        const value = extractJsonishValue(content, key) ?? trim(content);
+        lines.push(`${path}:`);
+        lines.push(`${key}=${value}`);
+      }
+      return lines.join('\n');
+    }
+    case 'summary': {
+      const lines = [agenticMessage('file_read_summary_heading', { count: files.length })];
+      for (const [path, content] of files) {
+        lines.push(`- \`${path}\`: ${trim(rustLines(content)[0] ?? '')}`);
+      }
+      return lines.join('\n');
+    }
+    case 'audit':
+      return boundedAuditAnswer(files, request);
+    case 'line_slice':
+      return files.map(([path, content]) => {
+        const sliced = slicedLines(content, mode);
+        return sliced === null
+          ? agenticMessage('file_read_contents', { path, content: trimEnd(content) })
+          : agenticMessage('file_read_lines', { path, first: sliced.first, last: sliced.last, lines: sliced.text });
+      }).join('\n\n');
+    default:
+      return files
+        .map(([path, content]) => agenticMessage('file_read_contents', { path, content: trimEnd(content) }))
+        .join('\n\n');
+  }
+}
+
+/** Mirrors `fn bounded_audit_answer`. */
+function boundedAuditAnswer(files, request) {
+  const FINDINGS_PER_FILE = 4;
+  const FINDINGS_TOTAL = 24;
+  const FINDING_CHARS = 180;
+  const PATH_CHARS = 160;
+  const markers = wordsForRole(ROLE_FILE_ANALYSIS_GAP_MARKER).map((surface) => surface.toLowerCase());
+  const language = detect(request);
+  const response = (intent) => localizedResponse(intent, language) ?? '';
+  const noFiles = agenticMessage('file_read_no_files_found');
+  let remaining = FINDINGS_TOTAL;
+  const lines = [replaceAllLiteral(response('file_analysis_heading'), '{count}', String(files.length))];
+  for (const [path, content] of files) {
+    lines.push(`- \`${cappedText(path, PATH_CHARS)}\``);
+    const noMatches = trim(content) === noFiles;
+    const grepResult = trimStart(content).startsWith('Found ');
+    const findings = rustLines(content)
+      .map(trim)
+      .filter((line) => line !== '')
+      .filter((line) => !noMatches
+        && (!grepResult || (!line.startsWith('Found ') && !line.endsWith(':')))
+        && lineContainsGapMarker(line, markers))
+      .slice(0, Math.min(FINDINGS_PER_FILE, remaining))
+      .map((line) => cappedText(line, FINDING_CHARS));
+    remaining = Math.max(0, remaining - findings.length);
+    if (!findings.length) lines.push(`  ${response('file_analysis_no_marker')}`);
+    else for (const finding of findings) lines.push(`  - ${finding}`);
+  }
+  lines.push(response('file_analysis_absence_boundary'));
+  return lines.join('\n');
+}
+
+/** Mirrors `fn line_contains_gap_marker`. */
+function lineContainsGapMarker(line, markers) {
+  const normalized = line.toLowerCase();
+  return containsUncheckedBox(line) || markers.some((surface) => normalized.includes(surface));
+}
+
+/** Mirrors `fn contains_unchecked_box`. */
+function containsUncheckedBox(line) {
+  for (let start = line.indexOf('['); start >= 0; start = line.indexOf('[', start + 1)) {
+    const rest = line.slice(start + 1);
+    const end = rest.indexOf(']');
+    if (end >= 0 && /^\p{White_Space}*$/u.test(rest.slice(0, end))) return true;
+  }
+  return false;
+}
+
+/** Mirrors `fn capped_text`. */
+function cappedText(text, maxChars) {
+  const chars = Array.from(text);
+  return chars.length > maxChars ? `${chars.slice(0, maxChars).join('')}…` : text;
+}

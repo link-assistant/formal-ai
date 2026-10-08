@@ -1,5 +1,5 @@
 {
-  "ui_jsx_line_ceiling": 10041,
+  "ui_jsx_character_ceiling": 353747,
   "strict_target": 2499,
   "classification": "provisional lexical inventory; names and DOM references are evidence, not semantic proof",
   "legacy_functions": {

@@ -1,0 +1,600 @@
+meanings
+  requirement_obligation
+    # Requirement extraction (R1188-U20): words that mark a sentence of an issue as a requirement.
+    defined-by relation
+    role requirement_obligation_cue
+    precondition "a sentence or list item of an issue contains this word or phrase"
+    effect "the sentence states something the work must do or must keep, so it is listed as a requirement"
+    unit "not applicable"
+    example "The page must load in under a second."
+    lexeme en
+      surface
+        text "must"
+      surface
+        text "must not"
+      surface
+        text "should"
+      surface
+        text "should not"
+      surface
+        text "shall"
+      surface
+        text "need to"
+      surface
+        text "needs to"
+      surface
+        text "we need"
+      surface
+        text "i need"
+      surface
+        text "have to"
+      surface
+        text "has to"
+      surface
+        text "required"
+      surface
+        text "is required"
+      surface
+        text "are required"
+      surface
+        text "ensure"
+      surface
+        text "make sure"
+      surface
+        text "it is important"
+      surface
+        text "we want"
+      surface
+        text "i want"
+      surface
+        text "please"
+      surface
+        text "never"
+      surface
+        text "always"
+      surface
+        text "cannot"
+      surface
+        text "is expected"
+      surface
+        text "are expected"
+      surface
+        text "expected to"
+    lexeme ru
+      surface
+        text "должен"
+      surface
+        text "должна"
+      surface
+        text "должно"
+      surface
+        text "должны"
+      surface
+        text "нужно"
+      surface
+        text "необходимо"
+      surface
+        text "надо"
+      surface
+        text "следует"
+      surface
+        text "требуется"
+      surface
+        text "обязательно"
+      surface
+        text "пожалуйста"
+      surface
+        text "нельзя"
+      surface
+        text "всегда"
+      surface
+        text "никогда"
+    lexeme hi
+      surface
+        text "चाहिए"
+      surface
+        text "ज़रूरी"
+      surface
+        text "जरूरी"
+      surface
+        text "आवश्यक"
+      surface
+        text "अनिवार्य"
+      surface
+        text "कृपया"
+      surface
+        text "हमेशा"
+      surface
+        text "कभी नहीं"
+    lexeme zh
+      surface
+        text "必须"
+      surface
+        text "应该"
+      surface
+        text "需要"
+      surface
+        text "应当"
+      surface
+        text "请"
+      surface
+        text "不能"
+      surface
+        text "务必"
+      surface
+        text "总是"
+      surface
+        text "不要"
+    lexeme es
+      surface
+        text "debe"
+      surface
+        text "deben"
+      surface
+        text "debería"
+      surface
+        text "deberían"
+      surface
+        text "hay que"
+      surface
+        text "necesita"
+      surface
+        text "necesitamos"
+      surface
+        text "es necesario"
+      surface
+        text "tiene que"
+      surface
+        text "tienen que"
+      surface
+        text "por favor"
+      surface
+        text "siempre"
+      surface
+        text "nunca"
+      surface
+        text "no debe"
+  requirement_directive
+    defined-by relation
+    role requirement_directive_verb
+    precondition "a sentence or list item of an issue starts with this verb"
+    effect "the sentence is an instruction to the implementer, so it is listed as a requirement"
+    unit "not applicable"
+    example "Add a dark mode toggle."
+    lexeme en
+      surface
+        text "add"
+      surface
+        text "make"
+      surface
+        text "fix"
+      surface
+        text "use"
+      surface
+        text "check"
+      surface
+        text "double check"
+      surface
+        text "create"
+      surface
+        text "implement"
+      surface
+        text "support"
+      surface
+        text "remove"
+      surface
+        text "update"
+      surface
+        text "keep"
+      surface
+        text "allow"
+      surface
+        text "provide"
+      surface
+        text "write"
+      surface
+        text "show"
+      surface
+        text "test"
+      surface
+        text "delete"
+      surface
+        text "move"
+      surface
+        text "rename"
+      surface
+        text "split"
+      surface
+        text "convert"
+      surface
+        text "translate"
+      surface
+        text "run"
+      surface
+        text "avoid"
+      surface
+        text "prefer"
+      surface
+        text "do"
+      surface
+        text "deliver"
+      surface
+        text "report"
+      surface
+        text "upload"
+      surface
+        text "store"
+      surface
+        text "record"
+      surface
+        text "document"
+      surface
+        text "replace"
+      surface
+        text "generate"
+      surface
+        text "enforce"
+      surface
+        text "track"
+      surface
+        text "verify"
+      surface
+        text "publish"
+      surface
+        text "release"
+      surface
+        text "include"
+      surface
+        text "list"
+      surface
+        text "collect"
+      surface
+        text "find"
+      surface
+        text "try"
+      surface
+        text "continue"
+      surface
+        text "start"
+      surface
+        text "stop"
+      surface
+        text "integrate"
+      surface
+        text "build"
+      surface
+        text "design"
+      surface
+        text "measure"
+      surface
+        text "display"
+      surface
+        text "return"
+      surface
+        text "answer"
+      surface
+        text "accept"
+      surface
+        text "reject"
+      surface
+        text "handle"
+      surface
+        text "detect"
+      surface
+        text "ignore"
+      surface
+        text "mark"
+      surface
+        text "merge"
+      surface
+        text "open"
+      surface
+        text "close"
+      surface
+        text "send"
+      surface
+        text "save"
+      surface
+        text "load"
+      surface
+        text "parse"
+      surface
+        text "render"
+      surface
+        text "print"
+      surface
+        text "reuse"
+      surface
+        text "extract"
+      surface
+        text "expose"
+      surface
+        text "limit"
+      surface
+        text "restore"
+      surface
+        text "teach"
+      surface
+        text "learn"
+    lexeme ru
+      surface
+        text "добавь"
+      surface
+        text "добавить"
+      surface
+        text "сделай"
+      surface
+        text "сделать"
+      surface
+        text "исправь"
+      surface
+        text "исправить"
+      surface
+        text "используй"
+      surface
+        text "использовать"
+      surface
+        text "проверь"
+      surface
+        text "проверить"
+      surface
+        text "создай"
+      surface
+        text "создать"
+      surface
+        text "реализуй"
+      surface
+        text "реализовать"
+      surface
+        text "удали"
+      surface
+        text "удалить"
+      surface
+        text "обнови"
+      surface
+        text "обновить"
+      surface
+        text "покажи"
+      surface
+        text "показать"
+      surface
+        text "напиши"
+      surface
+        text "написать"
+      surface
+        text "переведи"
+      surface
+        text "перевести"
+      surface
+        text "запусти"
+      surface
+        text "запустить"
+      surface
+        text "избегай"
+      surface
+        text "сохрани"
+      surface
+        text "сохранить"
+      surface
+        text "поддержи"
+      surface
+        text "поддерживать"
+    lexeme hi
+      surface
+        text "जोड़ें"
+      surface
+        text "बनाएं"
+      surface
+        text "ठीक करें"
+      surface
+        text "उपयोग करें"
+      surface
+        text "जांचें"
+      surface
+        text "लागू करें"
+      surface
+        text "हटाएं"
+      surface
+        text "अपडेट करें"
+      surface
+        text "दिखाएं"
+      surface
+        text "लिखें"
+      surface
+        text "चलाएं"
+      surface
+        text "अनुवाद करें"
+      surface
+        text "सहेजें"
+    lexeme zh
+      surface
+        text "添加"
+      surface
+        text "修复"
+      surface
+        text "使用"
+      surface
+        text "检查"
+      surface
+        text "创建"
+      surface
+        text "实现"
+      surface
+        text "删除"
+      surface
+        text "更新"
+      surface
+        text "显示"
+      surface
+        text "编写"
+      surface
+        text "运行"
+      surface
+        text "翻译"
+      surface
+        text "保存"
+      surface
+        text "支持"
+      surface
+        text "避免"
+    lexeme es
+      surface
+        text "añade"
+      surface
+        text "agrega"
+      surface
+        text "haz"
+      surface
+        text "corrige"
+      surface
+        text "usa"
+      surface
+        text "comprueba"
+      surface
+        text "verifica"
+      surface
+        text "crea"
+      surface
+        text "implementa"
+      surface
+        text "elimina"
+      surface
+        text "actualiza"
+      surface
+        text "muestra"
+      surface
+        text "escribe"
+      surface
+        text "ejecuta"
+      surface
+        text "traduce"
+      surface
+        text "guarda"
+      surface
+        text "evita"
+      surface
+        text "mantén"
+      surface
+        text "permite"
+      surface
+        text "soporta"
+  requirement_section
+    defined-by relation
+    role requirement_section_heading
+    precondition "a heading of an issue contains this word or phrase"
+    effect "every list item and sentence under the heading states a requirement"
+    unit "not applicable"
+    example "## Acceptance criteria"
+    lexeme en
+      surface
+        text "requirements"
+      surface
+        text "requirement"
+      surface
+        text "acceptance criteria"
+      surface
+        text "definition of done"
+      surface
+        text "tasks"
+      surface
+        text "to do"
+      surface
+        text "todo"
+      surface
+        text "deliverables"
+      surface
+        text "scope"
+      surface
+        text "goals"
+      surface
+        text "expected behavior"
+      surface
+        text "expected behaviour"
+      surface
+        text "proposal"
+      surface
+        text "proposed solution"
+      surface
+        text "what to do"
+      surface
+        text "checklist"
+      surface
+        text "must have"
+      surface
+        text "plan"
+    lexeme ru
+      surface
+        text "требования"
+      surface
+        text "требование"
+      surface
+        text "критерии приёмки"
+      surface
+        text "критерии приемки"
+      surface
+        text "задачи"
+      surface
+        text "что сделать"
+      surface
+        text "что нужно сделать"
+      surface
+        text "ожидаемое поведение"
+      surface
+        text "предложение"
+      surface
+        text "план"
+      surface
+        text "цели"
+    lexeme hi
+      surface
+        text "आवश्यकताएँ"
+      surface
+        text "आवश्यकताएं"
+      surface
+        text "आवश्यकता"
+      surface
+        text "स्वीकृति मानदंड"
+      surface
+        text "कार्य"
+      surface
+        text "लक्ष्य"
+      surface
+        text "योजना"
+      surface
+        text "अपेक्षित व्यवहार"
+    lexeme zh
+      surface
+        text "需求"
+      surface
+        text "要求"
+      surface
+        text "验收标准"
+      surface
+        text "任务"
+      surface
+        text "待办"
+      surface
+        text "目标"
+      surface
+        text "计划"
+      surface
+        text "预期行为"
+    lexeme es
+      surface
+        text "requisitos"
+      surface
+        text "requisito"
+      surface
+        text "criterios de aceptación"
+      surface
+        text "tareas"
+      surface
+        text "objetivos"
+      surface
+        text "alcance"
+      surface
+        text "comportamiento esperado"
+      surface
+        text "propuesta"
+      surface
+        text "plan"

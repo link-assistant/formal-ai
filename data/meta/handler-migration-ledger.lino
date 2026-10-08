@@ -61,13 +61,13 @@ handler_migration_ledger
     justification "Issue #1163 R10: the page queries are the seed's page_query templates (data/seed/page-formalization-rules.lino) run over a page the prompt supplies, formalized by the generic page formalizer; the answer is the page's own block text. Browser twin (PR #1188, JavaScript-first parity): tryPageQueryText in js/worker/formal_ai_worker_web_formalize.js answers the same templates in the worker."
   handler http_fetch
     status migrated
-    data "data/seed/meanings-web-navigation.lino|data/seed/multilingual-responses-synthesis.lino|data/seed/multilingual-responses.lino"
+    data "data/seed/meanings-web-navigation.lino|data/seed/multilingual-responses-web.lino|data/seed/multilingual-responses.lino"
     primitive "rust/src/solver_handlers/web_requests.rs"
     justification "issue #918 (R914-6): recognition is the seeded web-navigation roles in both runtimes; the native row answers through seeded responses (the offline cache-miss and fetch-failure records) and the browser row now renders its fetched-body, binary-body, truncation, CORS and network failure, iframe and frame-policy wording from the seeded web_* responses instead of literals. The two runtimes answer from different environments (the browser fetches live and checks frame policy; the native row reads the replayable source cache), so their answers are pinned per outcome rather than byte-for-byte against each other; every browser answer is unchanged against stubbed fetches."
     held_out "rust/tests/unit/web_requests.rs"
   handler url_navigate
     status migrated
-    data "data/seed/meanings-web-navigation.lino|data/seed/multilingual-responses-synthesis.lino"
+    data "data/seed/meanings-web-navigation.lino|data/seed/multilingual-responses-web.lino"
     primitive "rust/src/solver_handlers/web_requests.rs"
     justification "issue #918 (R914-6): both runtimes open with the same seeded web_open_in_new_tab sentence; the native row adds the seeded web_url_navigate_native_note paragraph (its exact answer is pinned in rust/tests/unit/formal_ai/seed_and_memory.rs) and the browser row the seeded frame-policy verdict and reason for what the frame-policy service returned. Recognition is the seeded web-navigation roles in both."
     held_out "rust/tests/unit/formal_ai/seed_and_memory.rs"
@@ -97,7 +97,7 @@ handler_migration_ledger
     justification "Issues 800 and 872 compose marketplace searches from seeded hosts, qualifiers, and localized responses. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_product_search.js answers the same seed records in the worker."
   handler web_search
     status migrated
-    data "data/seed/meanings-web-search.lino|data/seed/multilingual-responses-agentic.lino|data/seed/multilingual-responses-synthesis.lino"
+    data "data/seed/meanings-web-search.lino|data/seed/multilingual-responses-agentic.lino|data/seed/multilingual-responses-web.lino"
     primitive "rust/src/solver_handlers/web_requests/live_search.rs"
     justification "issue #918 (R914-6): recognition is the seeded web-search roles in both runtimes; the native row executes the search through the replayable source cache and answers through the seeded web_search_live_results, web_search_unavailable and search_fusion_* responses, and the browser row now renders its result header, source labels, no-result and all-disabled sentences and the Wikinews fallback from seeded web_search_* responses instead of a four-language table and inline sentences. The browser searches CORS providers live while the native row reads captured sources, so the two answers differ by environment, not by vocabulary; the browser texts are pinned unchanged in every language."
     held_out "rust/tests/web/issue-0918-browser-twins.test.mjs"
@@ -111,9 +111,9 @@ handler_migration_ledger
     held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler research_result_followup
     status migrated
-    data "data/seed/research-table-procedure.lino|data/seed/multilingual-responses-synthesis.lino"
+    data "data/seed/research-table-procedure.lino|data/seed/multilingual-responses-web.lino"
     primitive "rust/src/solver_handlers/research_table.rs"
-    justification "issue #918 (R914-6): the whole-prompt result follow-ups, the prior-answer status markers and the fallback status are the procedure seed, and each status renders its seeded research_result_followup_<status> response (English-only, as before) with the prior task preview in a slot. The native part classifies the prior assistant turn and previews the prior research request. Browser twin: tryResearchResultFollowup in js/worker/formal_ai_worker_16.js reads the same records; pinned in both runtimes."
+    justification "issue #918 (R914-6): the whole-prompt result follow-ups, the prior-answer status markers and the fallback status are the procedure seed, and each status renders its seeded research_result_followup_<status> response (in the prompt language, all five since PR #1188) with the prior task preview in a slot. The native part classifies the prior assistant turn and previews the prior research request. Browser twin: tryResearchResultFollowup in js/worker/formal_ai_worker_16.js reads the same records; pinned in both runtimes."
     held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler docs_method_explanation
     status migrated
@@ -123,13 +123,13 @@ handler_migration_ledger
     held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
   handler procedural_how_to
     status migrated
-    data "data/seed/meanings-how.lino|data/seed/handler-rules.lino|data/seed/multilingual-responses-synthesis.lino"
+    data "data/seed/meanings-how.lino|data/seed/handler-rules.lino|data/seed/multilingual-responses-procedural-how-to.lino"
     primitive "rust/src/solver_handler_how.rs"
     justification "issue #918 (R914-6): recognition was already the procedural_request, procedural action and common-typo roles; the native discovery plan and its install gate (en, ru, hi, zh) are now the seeded procedural_how_to_plan and procedural_how_to_install_gate responses, the browser plan's heading, install gate, source paths and stage lines are seeded procedural_how_to_* responses, and the fallback and install search queries are the policy procedural_how_to frames, all filled in one pass so a task text with braces is never re-filled. The browser executes the plan live and the native row describes it, so each runtime keeps its own answer; both are pinned unchanged (rust/tests/unit/specification/reasoning_paths_procedures.rs natively)."
     held_out "rust/tests/unit/specification/reasoning_paths_procedures.rs"
   handler procedural_how_to_followup
     status migrated
-    data "data/seed/meanings-how.lino|data/seed/handler-rules.lino|data/seed/multilingual-responses-synthesis.lino"
+    data "data/seed/meanings-how.lino|data/seed/handler-rules.lino|data/seed/multilingual-responses-procedural-how-to.lino"
     primitive "rust/src/solver_handler_how.rs"
     justification "issue #918 (R914-6): the follow-up recognizes the procedural_elaboration role and re-runs the seeded procedural plan of the prior how-to turn in both runtimes; it holds no wording of its own."
     held_out "rust/tests/unit/specification/reasoning_paths_procedures.rs"
@@ -373,7 +373,7 @@ handler_migration_ledger
     held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler installation_conversion
     status migrated
-    data "data/seed/handler-rules.lino|data/seed/multilingual-responses-synthesis.lino"
+    data "data/seed/handler-rules.lino|data/seed/multilingual-responses-installation.lino"
     primitive "rust/src/solver_handlers/installation_conversion.rs"
     justification "issue #918 (R914-6): the request cues (installation_conversion_action, installation_conversion_surface, installation_conversion_script), the explicit source and target markers (installation_source_marker, installation_target_marker), the prose function words (installation_prose_word), the verb-to-step map (installation_verb_action) and the project marker (policy installation_conversion) are tables of data/seed/handler-rules.lino, read natively through rule_interpreter::handler_table_rows, handler_table_value and handler_policy and in the worker through handlerRulesTables, handlerRulesTableValue and handlerRulesPolicy; the heading, formalized-meaning and conversion-algorithm text, the three target headings, every step description and the default project name are seeded installation_* responses. The native part is the install-step IR and its renderers over script syntax (fence infos, strict-mode lines, privilege wrappers, probe flags, the python -m module form). Every answer is byte-identical in both runtimes (the documented answers of rust/tests/unit/installation_conversion.rs and a before/after capture of the browser answers). Pinned in both runtimes (rust/tests/web/issue-0918-handler-rules-batch-2.test.mjs)."
     held_out "rust/tests/unit/issue_918_handler_rules_batch_2.rs"
@@ -381,9 +381,9 @@ handler_migration_ledger
     status pending
   handler document_generation_plan
     status migrated
-    data "data/seed/handler-rules.lino|data/seed/multilingual-responses-synthesis.lino"
+    data "data/seed/handler-rules.lino|data/seed/multilingual-responses-documents.lino"
     primitive "rust/src/solver_handlers/document_request.rs"
-    justification "issue #918 (R914-6): every recognition cue is a table of data/seed/handler-rules.lino (document_software_artifact, document_authoring_action, document_format in priority order, document_ebook_marker with document_book_noun, document_noun; and for conversion document_conversion_action, document_format_alias, document_source_marker, document_target_marker, document_output_fence), read natively through rule_interpreter::handler_table_row and in the worker through handlerRulesTableRow. The four-language plan, its format suffix and every line of the conversion answer are seeded responses of data/seed/multilingual-responses-synthesis.lino; the DocFormat enum, the marker constants and the inline en/ru/hi/zh templates are deleted natively and documentPlanTemplate with the documentPlanMentions* cue lists in js/worker/formal_ai_worker_code_plans.js. The row keeps a native primitive rather than a rule set because its conversion branch runs the meta-language converter, which the browser does not have, and one precedence name is either native or a rule set. Every plan is byte-identical to the deleted code in en, ru, hi and zh."
+    justification "issue #918 (R914-6): every recognition cue is a table of data/seed/handler-rules.lino (document_software_artifact, document_authoring_action, document_format in priority order, document_ebook_marker with document_book_noun, document_noun; and for conversion document_conversion_action, document_format_alias, document_source_marker, document_target_marker, document_output_fence), read natively through rule_interpreter::handler_table_row and in the worker through handlerRulesTableRow. The four-language plan, its format suffix and every line of the conversion answer are seeded responses of data/seed/multilingual-responses-documents.lino; the DocFormat enum, the marker constants and the inline en/ru/hi/zh templates are deleted natively and documentPlanTemplate with the documentPlanMentions* cue lists in js/worker/formal_ai_worker_code_plans.js. The row keeps a native primitive rather than a rule set because its conversion branch runs the meta-language converter, which the browser does not have, and one precedence name is either native or a rule set. Every plan is byte-identical to the deleted code in en, ru, hi and zh."
     held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler software_project
     status pending

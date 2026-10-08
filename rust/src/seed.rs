@@ -118,7 +118,7 @@ pub use intent_routing::{
 pub use market_price_references::{MarketPriceAsset, MarketPricePeriod, market_price_assets};
 pub use meanings::{
     ArithmeticOperator, Lexeme, Lexicon, Meaning, SemanticFacet, Slot, WordForm, lexicon,
-    parse_lexicon_text,
+    parse_lexicon_text, surface_present,
 };
 pub use model_aliases::{
     ModelAliasRegistry, canonical_model_id, model_aliases, resolve_model_id, try_resolve_model_id,

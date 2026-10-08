@@ -101,14 +101,62 @@ multilingual_responses
     intent formalization_rml_absent
     language en
     text "rml was not found in PATH and FORMAL_AI_RML names no executable, so the clause was not exported through relative-meta-logic."
+  response response_formalization_rml_absent_ru
+    intent formalization_rml_absent
+    language ru
+    text "rml не найден в PATH, а FORMAL_AI_RML не указывает на исполняемый файл, поэтому утверждение не экспортировано через relative-meta-logic."
+  response response_formalization_rml_absent_hi
+    intent formalization_rml_absent
+    language hi
+    text "rml PATH में नहीं मिला और FORMAL_AI_RML किसी executable का नाम नहीं देता, इसलिए clause को relative-meta-logic के ज़रिए export नहीं किया गया।"
+  response response_formalization_rml_absent_zh
+    intent formalization_rml_absent
+    language zh
+    text "在 PATH 中找不到 rml，FORMAL_AI_RML 也没有指定可执行文件，因此该子句没有通过 relative-meta-logic 导出。"
+  response response_formalization_rml_absent_es
+    intent formalization_rml_absent
+    language es
+    text "No se encontró rml en PATH y FORMAL_AI_RML no indica ningún ejecutable, así que la cláusula no se exportó mediante relative-meta-logic."
   response response_formalization_rml_outside_subset_en
     intent formalization_rml_outside_subset
     language en
     text "The {quantifier} reading is outside the relative-meta-logic export subset, which has no binder for it, so rml was not run."
+  response response_formalization_rml_outside_subset_ru
+    intent formalization_rml_outside_subset
+    language ru
+    text "Прочтение {quantifier} выходит за пределы подмножества экспорта relative-meta-logic, где для него нет связывателя, поэтому rml не запускался."
+  response response_formalization_rml_outside_subset_hi
+    intent formalization_rml_outside_subset
+    language hi
+    text "{quantifier} वाला अर्थ relative-meta-logic export subset से बाहर है, जिसमें इसके लिए कोई binder नहीं है, इसलिए rml नहीं चलाया गया।"
+  response response_formalization_rml_outside_subset_zh
+    intent formalization_rml_outside_subset
+    language zh
+    text "{quantifier} 这种解读超出了 relative-meta-logic 导出子集，该子集没有对应的约束符，因此没有运行 rml。"
+  response response_formalization_rml_outside_subset_es
+    intent formalization_rml_outside_subset
+    language es
+    text "La lectura {quantifier} queda fuera del subconjunto de exportación de relative-meta-logic, que no tiene un ligador para ella, así que no se ejecutó rml."
   response response_formalization_rml_ran_en
     intent formalization_rml_ran
     language en
     text "rml export lean ran on {source} and exited with status {exit}; its Lean output path is {output}."
+  response response_formalization_rml_ran_ru
+    intent formalization_rml_ran
+    language ru
+    text "rml export lean выполнен для {source} и завершился со статусом {exit}; путь к его выводу Lean: {output}."
+  response response_formalization_rml_ran_hi
+    intent formalization_rml_ran
+    language hi
+    text "rml export lean को {source} पर चलाया गया और यह status {exit} के साथ समाप्त हुआ; इसके Lean output का पथ {output} है।"
+  response response_formalization_rml_ran_zh
+    intent formalization_rml_ran
+    language zh
+    text "已对 {source} 运行 rml export lean，退出状态为 {exit}；其 Lean 输出路径为 {output}。"
+  response response_formalization_rml_ran_es
+    intent formalization_rml_ran
+    language es
+    text "rml export lean se ejecutó sobre {source} y terminó con el estado {exit}; la ruta de su salida Lean es {output}."
   response response_formalization_honesty_en
     intent formalization_honesty
     language en

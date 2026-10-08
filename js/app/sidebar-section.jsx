@@ -58,5 +58,11 @@ export function CollapsibleSection({
     event.stopPropagation();
     if (typeof onToggle === "function") onToggle();
   };
-  return <section className={sectionClassName} data-testid={testId} data-collapsed={collapsed ? "true" : "false"}><div className="sidebar-section-header" onClick={handleHeaderClick}><button type="button" className="sidebar-section-toggle" aria-expanded={collapsed ? "false" : "true"} onClick={handleToggleClick}><span className="sidebar-section-caret" aria-hidden="true">{collapsed ? "▶" : "▼"}</span><h2>{title}</h2></button><button type="button" className="sidebar-section-isolate" data-testid="sidebar-section-isolate" data-sidebar-section-action="isolate" aria-label={isolateLabel} title={isolateTitle}><ToolbarIcon action="isolateSection" pack={iconPack} /></button></div>{collapsed ? null : <div className={sectionBodyClassName}>{children}</div>}</section>;
+  return <section className={sectionClassName} data-testid={testId} data-collapsed={collapsed ? "true" : "false"}>
+    <div className="sidebar-section-header" onClick={handleHeaderClick}>
+    <button type="button" className="sidebar-section-toggle" aria-expanded={collapsed ? "false" : "true"} onClick={handleToggleClick}>
+    <span className="sidebar-section-caret" aria-hidden="true">{collapsed ? "▶" : "▼"}</span><h2>{title}</h2></button>
+    <button type="button" className="sidebar-section-isolate" data-testid="sidebar-section-isolate" data-sidebar-section-action="isolate" aria-label={isolateLabel}
+    title={isolateTitle}>
+    <ToolbarIcon action="isolateSection" pack={iconPack} /></button></div>{collapsed ? null : <div className={sectionBodyClassName}>{children}</div>}</section>;
 }

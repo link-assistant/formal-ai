@@ -10,250 +10,1242 @@ multilingual_responses
     intent code_debugging_defect
     language en
     text "A defect in a function named `{name}`.\n\nWhat the name promises: a function named `{name}` must return {property} ({grounding}).\n\nDetected defect (code line {line_no}): `{line}`\nThe expression applies the binary `{shift}` to the whole quotient: `/` binds tighter than `-` and `+`, so this computes ({fixed}) {shift}, not the value the name promises.\n\nFix — drop the shift so the promised value is returned unchanged:\n    {fixed}\nor, if the shift was meant to apply to an operand of the division, move it inside the divisor so it applies there, not to the quotient:\n    {parenthesized}\n\nMethod, stated honestly: a structural scan — the operator precedence of the token stream was checked against the property the function name promises (the `function_intent` records in data/seed/meanings-code-structure-explanations.lino). No code was executed and no test was run; the canonical form for this property is `{correct_form}`."
+  response response_code_debugging_defect_ru
+    intent code_debugging_defect
+    language ru
+    text "Дефект в функции с именем `{name}`.\n\nЧто обещает имя: функция с именем `{name}` должна возвращать {property} ({grounding}).\n\nНайденный дефект (строка кода {line_no}): `{line}`\nВыражение применяет бинарный `{shift}` ко всему частному: `/` связывает сильнее, чем `-` и `+`, поэтому вычисляется ({fixed}) {shift}, а не значение, которое обещает имя.\n\nИсправление — уберите сдвиг, чтобы обещанное значение возвращалось без изменений:\n    {fixed}\nили, если сдвиг должен был относиться к операнду деления, перенесите его внутрь делителя, чтобы он применялся там, а не к частному:\n    {parenthesized}\n\nМетод, честно: структурный просмотр — приоритет операторов в потоке токенов сверен со свойством, которое обещает имя функции (записи `function_intent` в data/seed/meanings-code-structure-explanations.lino). Код не выполнялся, тесты не запускались; каноническая форма для этого свойства — `{correct_form}`."
+  response response_code_debugging_defect_hi
+    intent code_debugging_defect
+    language hi
+    text "`{name}` नाम के function में एक दोष।\n\nनाम क्या वादा करता है: `{name}` नाम का function {property} लौटाना चाहिए ({grounding})।\n\nपाया गया दोष (code line {line_no}): `{line}`\nExpression binary `{shift}` को पूरे भागफल पर लागू करता है: `/` का बंधन `-` और `+` से ज़्यादा मज़बूत है, इसलिए यह ({fixed}) {shift} की गणना करता है, न कि वह मान जिसका नाम वादा करता है।\n\nसुधार — shift हटा दें ताकि वादा किया गया मान बिना बदले लौटे:\n    {fixed}\nया, अगर shift को भाग के किसी operand पर लागू होना था, तो उसे divisor के अंदर ले जाएँ ताकि वह वहीं लागू हो, भागफल पर नहीं:\n    {parenthesized}\n\nतरीका, ईमानदारी से: एक structural scan — token stream की operator precedence को उस property से मिलाया गया जिसका function नाम वादा करता है (data/seed/meanings-code-structure-explanations.lino के `function_intent` records)। कोई code execute नहीं किया गया और कोई test नहीं चलाया गया; इस property का canonical रूप `{correct_form}` है।"
+  response response_code_debugging_defect_zh
+    intent code_debugging_defect
+    language zh
+    text "名为 `{name}` 的函数中有一个缺陷。\n\n名称承诺的内容：名为 `{name}` 的函数必须返回{property}（{grounding}）。\n\n检测到的缺陷（代码第 {line_no} 行）：`{line}`\n该表达式把二元 `{shift}` 应用于整个商：`/` 的优先级高于 `-` 和 `+`，因此它计算的是 ({fixed}) {shift}，而不是名称所承诺的值。\n\n修复——去掉偏移，使承诺的值原样返回：\n    {fixed}\n或者，如果偏移本应作用于除法的某个操作数，就把它移到除数内部，使其作用于那里而不是商：\n    {parenthesized}\n\n方法，如实说明：结构扫描——将词法单元流中的运算符优先级与函数名承诺的属性（data/seed/meanings-code-structure-explanations.lino 中的 `function_intent` 记录）进行核对。没有执行任何代码，也没有运行任何测试；该属性的规范形式是 `{correct_form}`。"
+  response response_code_debugging_defect_es
+    intent code_debugging_defect
+    language es
+    text "Un defecto en una función llamada `{name}`.\n\nLo que promete el nombre: una función llamada `{name}` debe devolver {property} ({grounding}).\n\nDefecto detectado (línea de código {line_no}): `{line}`\nLa expresión aplica el `{shift}` binario a todo el cociente: `/` tiene más precedencia que `-` y `+`, así que esto calcula ({fixed}) {shift}, no el valor que promete el nombre.\n\nCorrección — elimina el desplazamiento para que el valor prometido se devuelva sin cambios:\n    {fixed}\no, si el desplazamiento debía aplicarse a un operando de la división, muévelo dentro del divisor para que se aplique allí y no al cociente:\n    {parenthesized}\n\nMétodo, dicho con honestidad: un análisis estructural — la precedencia de operadores del flujo de tokens se contrastó con la propiedad que promete el nombre de la función (los registros `function_intent` de data/seed/meanings-code-structure-explanations.lino). No se ejecutó código ni se ejecutó ninguna prueba; la forma canónica de esta propiedad es `{correct_form}`."
   response response_code_debugging_index_bound_en
     intent code_debugging_index_bound
     language en
     text "A loop bound past the end of `{collection}`.\n\nDetected defect (code line {line_no}): `{line}`\nThe bound `{bad}` lets the index reach the length of `{collection}`, one past its last valid position, so the final pass reads `{collection}[…]` out of range.\n\nFix — stop one position earlier:\n    {fixed}\n\nMethod, stated honestly: a structural scan against the index-bound table (`index_bound_past_end` in data/seed/code-task-cues.lino), confirmed by an index into `{collection}` in the same code. No code was executed and no test was run."
+  response response_code_debugging_index_bound_ru
+    intent code_debugging_index_bound
+    language ru
+    text "Граница цикла выходит за конец `{collection}`.\n\nНайденный дефект (строка кода {line_no}): `{line}`\nГраница `{bad}` позволяет индексу дойти до длины `{collection}`, на одну позицию дальше последней допустимой, поэтому последний проход читает `{collection}[…]` за пределами диапазона.\n\nИсправление — остановитесь на одну позицию раньше:\n    {fixed}\n\nМетод, честно: структурный просмотр по таблице границ индекса (`index_bound_past_end` в data/seed/code-task-cues.lino), подтверждённый обращением по индексу к `{collection}` в том же коде. Код не выполнялся, тесты не запускались."
+  response response_code_debugging_index_bound_hi
+    intent code_debugging_index_bound
+    language hi
+    text "Loop की सीमा `{collection}` के अंत से आगे जाती है।\n\nपाया गया दोष (code line {line_no}): `{line}`\nसीमा `{bad}` index को `{collection}` की लंबाई तक पहुँचने देती है, जो उसकी अंतिम मान्य स्थिति से एक आगे है, इसलिए अंतिम pass `{collection}[…]` को range के बाहर पढ़ता है।\n\nसुधार — एक स्थिति पहले रुकें:\n    {fixed}\n\nतरीका, ईमानदारी से: index-bound table (data/seed/code-task-cues.lino में `index_bound_past_end`) के विरुद्ध structural scan, जिसकी पुष्टि उसी code में `{collection}` के index से हुई। कोई code execute नहीं किया गया और कोई test नहीं चलाया गया।"
+  response response_code_debugging_index_bound_zh
+    intent code_debugging_index_bound
+    language zh
+    text "循环边界超出了 `{collection}` 的末尾。\n\n检测到的缺陷（代码第 {line_no} 行）：`{line}`\n边界 `{bad}` 让索引能够达到 `{collection}` 的长度，即比最后一个有效位置多一位，因此最后一轮会越界读取 `{collection}[…]`。\n\n修复——提前一个位置停止：\n    {fixed}\n\n方法，如实说明：依据索引边界表（data/seed/code-task-cues.lino 中的 `index_bound_past_end`）进行结构扫描，并由同一段代码中对 `{collection}` 的索引访问确认。没有执行任何代码，也没有运行任何测试。"
+  response response_code_debugging_index_bound_es
+    intent code_debugging_index_bound
+    language es
+    text "Un límite de bucle que pasa del final de `{collection}`.\n\nDefecto detectado (línea de código {line_no}): `{line}`\nEl límite `{bad}` permite que el índice llegue a la longitud de `{collection}`, una posición más allá de la última válida, así que la última pasada lee `{collection}[…]` fuera de rango.\n\nCorrección — detente una posición antes:\n    {fixed}\n\nMétodo, dicho con honestidad: un análisis estructural con la tabla de límites de índice (`index_bound_past_end` en data/seed/code-task-cues.lino), confirmado por un acceso por índice a `{collection}` en el mismo código. No se ejecutó código ni se ejecutó ninguna prueba."
   response response_code_debugging_condition_assignment_en
     intent code_debugging_condition_assignment
     language en
     text "An assignment where a comparison was meant.\n\nDetected defect (code line {line_no}): `{line}`\nThe condition assigns with a single `=`, so it tests the assigned value instead of comparing: the branch runs whenever that value is truthy, and the variable is overwritten.\n\nFix — compare instead of assigning (in JavaScript, `===` is the strict comparison):\n    {fixed}\n\nMethod, stated honestly: a structural scan of each condition that opens with a head from the condition table (`assignment_in_condition` in data/seed/code-task-cues.lino) for a lone `=` at the top level of its parentheses, outside quoted text. No code was executed and no test was run."
+  response response_code_debugging_condition_assignment_ru
+    intent code_debugging_condition_assignment
+    language ru
+    text "Присваивание там, где подразумевалось сравнение.\n\nНайденный дефект (строка кода {line_no}): `{line}`\nУсловие присваивает одиночным `=`, поэтому проверяет присвоенное значение, а не сравнивает: ветка выполняется всякий раз, когда это значение истинно, и переменная перезаписывается.\n\nИсправление — сравнивайте вместо присваивания (в JavaScript строгое сравнение — `===`):\n    {fixed}\n\nМетод, честно: структурный просмотр каждого условия, начинающегося с заголовка из таблицы условий (`assignment_in_condition` в data/seed/code-task-cues.lino), на одиночный `=` на верхнем уровне его скобок вне строк в кавычках. Код не выполнялся, тесты не запускались."
+  response response_code_debugging_condition_assignment_hi
+    intent code_debugging_condition_assignment
+    language hi
+    text "जहाँ तुलना करनी थी वहाँ assignment हो गया।\n\nपाया गया दोष (code line {line_no}): `{line}`\nCondition एक अकेले `=` से assign करती है, इसलिए वह तुलना करने के बजाय assigned मान को जाँचती है: जब भी वह मान truthy हो, branch चलती है, और variable overwrite हो जाता है।\n\nसुधार — assign करने के बजाय तुलना करें (JavaScript में strict तुलना `===` है):\n    {fixed}\n\nतरीका, ईमानदारी से: condition table (data/seed/code-task-cues.lino में `assignment_in_condition`) के किसी head से शुरू होने वाली हर condition का structural scan, जिसमें उसके parentheses के top level पर, quoted text के बाहर, अकेला `=` खोजा गया। कोई code execute नहीं किया गया और कोई test नहीं चलाया गया।"
+  response response_code_debugging_condition_assignment_zh
+    intent code_debugging_condition_assignment
+    language zh
+    text "本应比较的地方写成了赋值。\n\n检测到的缺陷（代码第 {line_no} 行）：`{line}`\n该条件使用单个 `=` 进行赋值，因此它测试的是被赋的值而不是进行比较：只要该值为真，分支就会执行，并且变量会被覆盖。\n\n修复——改为比较而不是赋值（在 JavaScript 中，`===` 是严格比较）：\n    {fixed}\n\n方法，如实说明：对每个以条件表（data/seed/code-task-cues.lino 中的 `assignment_in_condition`）中的开头词开始的条件做结构扫描，查找其括号顶层、引号文本之外的单个 `=`。没有执行任何代码，也没有运行任何测试。"
+  response response_code_debugging_condition_assignment_es
+    intent code_debugging_condition_assignment
+    language es
+    text "Una asignación donde se quería una comparación.\n\nDefecto detectado (línea de código {line_no}): `{line}`\nLa condición asigna con un único `=`, así que evalúa el valor asignado en lugar de comparar: la rama se ejecuta siempre que ese valor sea verdadero y la variable se sobrescribe.\n\nCorrección — compara en lugar de asignar (en JavaScript, `===` es la comparación estricta):\n    {fixed}\n\nMétodo, dicho con honestidad: un análisis estructural de cada condición que empieza con una cabecera de la tabla de condiciones (`assignment_in_condition` en data/seed/code-task-cues.lino) en busca de un `=` aislado en el nivel superior de sus paréntesis, fuera del texto entre comillas. No se ejecutó código ni se ejecutó ninguna prueba."
   response response_code_debugging_no_defect_en
     intent code_debugging_no_defect
     language en
     text "No recognized defect pattern.\n\nThis is a debugging request and the code was scanned, but no construct in the defect table matched: the table currently covers a binary `+`/`-` applied at top level after a division (a shifted quotient), cross-checked against the property the function name promises, a loop bound that lets an index reach a collection's length, and an assignment inside a parenthesized `if`/`while` condition.{intent_note}\n\nMethod, stated honestly: structural scan only — no code was executed, no test was run, and nothing outside the table was guessed. Next steps a human would take: run the failing input, read the traceback, and compare the output against the property the function name promises."
+  response response_code_debugging_no_defect_ru
+    intent code_debugging_no_defect
+    language ru
+    text "Ни один известный шаблон дефекта не найден.\n\nЭто запрос на отладку, и код был просмотрен, но ни одна конструкция из таблицы дефектов не совпала: сейчас таблица охватывает бинарный `+`/`-`, применённый на верхнем уровне после деления (сдвинутое частное), со сверкой со свойством, которое обещает имя функции, границу цикла, позволяющую индексу дойти до длины коллекции, и присваивание внутри условия `if`/`while` в скобках.{intent_note}\n\nМетод, честно: только структурный просмотр — код не выполнялся, тесты не запускались, и ничего за пределами таблицы не угадывалось. Что сделал бы человек дальше: запустить падающий ввод, прочитать трассировку стека и сравнить вывод со свойством, которое обещает имя функции."
+  response response_code_debugging_no_defect_hi
+    intent code_debugging_no_defect
+    language hi
+    text "कोई पहचाना हुआ दोष pattern नहीं मिला।\n\nयह debugging अनुरोध है और code को scan किया गया, लेकिन defect table का कोई construct मेल नहीं खाया: table अभी भाग के बाद top level पर लगाया गया binary `+`/`-` (shifted quotient), जिसे function नाम की वादा की गई property से मिलाया जाता है, ऐसी loop सीमा जो index को collection की लंबाई तक पहुँचने देती है, और parentheses वाली `if`/`while` condition के अंदर assignment को cover करती है।{intent_note}\n\nतरीका, ईमानदारी से: केवल structural scan — कोई code execute नहीं किया गया, कोई test नहीं चलाया गया, और table के बाहर कुछ भी अनुमान से नहीं जोड़ा गया। अगले कदम जो कोई व्यक्ति उठाएगा: विफल input चलाएँ, traceback पढ़ें, और output की तुलना उस property से करें जिसका function नाम वादा करता है।"
+  response response_code_debugging_no_defect_zh
+    intent code_debugging_no_defect
+    language zh
+    text "没有识别出已知的缺陷模式。\n\n这是一个调试请求，代码已扫描，但缺陷表中没有任何结构匹配：该表目前涵盖在除法之后于顶层应用的二元 `+`/`-`（偏移的商，并与函数名承诺的属性交叉核对）、让索引达到集合长度的循环边界，以及带括号的 `if`/`while` 条件中的赋值。{intent_note}\n\n方法，如实说明：仅做结构扫描——没有执行任何代码，没有运行任何测试，也没有猜测表外的任何内容。人工的下一步通常是：运行失败的输入，阅读回溯信息，并将输出与函数名承诺的属性进行比较。"
+  response response_code_debugging_no_defect_es
+    intent code_debugging_no_defect
+    language es
+    text "Ningún patrón de defecto reconocido.\n\nEsta es una solicitud de depuración y el código se analizó, pero ninguna construcción de la tabla de defectos coincidió: la tabla cubre por ahora un `+`/`-` binario aplicado en el nivel superior después de una división (un cociente desplazado), contrastado con la propiedad que promete el nombre de la función, un límite de bucle que deja que un índice llegue a la longitud de una colección y una asignación dentro de una condición `if`/`while` entre paréntesis.{intent_note}\n\nMétodo, dicho con honestidad: solo análisis estructural — no se ejecutó código, no se ejecutó ninguna prueba y no se adivinó nada fuera de la tabla. Siguientes pasos que daría una persona: ejecutar la entrada que falla, leer la traza y comparar la salida con la propiedad que promete el nombre de la función."
   response response_regex_synthesis_pattern_en
     intent regex_synthesis_pattern
     language en
     text "Composed regular expression:\n\n```regex\n{pattern}\n```\n\nHow the constraints composed:\n{mapping}{anchor_note}\nVerified structurally: groups are balanced, every repetition is well-formed, and every character class is closed.\n{execution}"
+  response response_regex_synthesis_pattern_ru
+    intent regex_synthesis_pattern
+    language ru
+    text "Составленное регулярное выражение:\n\n```regex\n{pattern}\n```\n\nКак сложились ограничения:\n{mapping}{anchor_note}\nПроверено структурно: группы сбалансированы, каждое повторение корректно, каждый класс символов закрыт.\n{execution}"
+  response response_regex_synthesis_pattern_hi
+    intent regex_synthesis_pattern
+    language hi
+    text "बनाया गया regular expression:\n\n```regex\n{pattern}\n```\n\nConstraints कैसे जुड़े:\n{mapping}{anchor_note}\nStructurally सत्यापित: groups संतुलित हैं, हर repetition सही बना है, और हर character class बंद है।\n{execution}"
+  response response_regex_synthesis_pattern_zh
+    intent regex_synthesis_pattern
+    language zh
+    text "组合出的正则表达式：\n\n```regex\n{pattern}\n```\n\n约束的组合方式：\n{mapping}{anchor_note}\n结构已验证：分组平衡，每个重复都格式正确，每个字符类都已闭合。\n{execution}"
+  response response_regex_synthesis_pattern_es
+    intent regex_synthesis_pattern
+    language es
+    text "Expresión regular compuesta:\n\n```regex\n{pattern}\n```\n\nCómo se compusieron las restricciones:\n{mapping}{anchor_note}\nVerificada estructuralmente: los grupos están equilibrados, cada repetición está bien formada y cada clase de caracteres está cerrada.\n{execution}"
   response response_regex_synthesis_not_executed_en
     intent regex_synthesis_not_executed
     language en
     text "Not verified by execution: no example could be derived from these constraints, so no match was run against any input. Test the pattern on real inputs (a regex tester or a unit test) before relying on it."
+  response response_regex_synthesis_not_executed_ru
+    intent regex_synthesis_not_executed
+    language ru
+    text "Не проверено выполнением: из этих ограничений не удалось вывести ни одного примера, поэтому сопоставление ни с одним вводом не запускалось. Проверьте шаблон на реальных данных (тестером регулярных выражений или модульным тестом), прежде чем на него полагаться."
+  response response_regex_synthesis_not_executed_hi
+    intent regex_synthesis_not_executed
+    language hi
+    text "Execution से सत्यापित नहीं: इन constraints से कोई उदाहरण नहीं निकाला जा सका, इसलिए किसी input पर मिलान नहीं चलाया गया। इस पर भरोसा करने से पहले pattern को असली inputs पर जाँचें (regex tester या unit test से)।"
+  response response_regex_synthesis_not_executed_zh
+    intent regex_synthesis_not_executed
+    language zh
+    text "未通过执行验证：无法从这些约束推导出任何示例，因此没有对任何输入运行匹配。在依赖该模式之前，请在真实输入上测试它（用正则测试工具或单元测试）。"
+  response response_regex_synthesis_not_executed_es
+    intent regex_synthesis_not_executed
+    language es
+    text "No verificado por ejecución: no se pudo derivar ningún ejemplo de estas restricciones, así que no se ejecutó ninguna coincidencia contra ninguna entrada. Prueba el patrón con entradas reales (un probador de expresiones regulares o una prueba unitaria) antes de confiar en él."
   response response_regex_synthesis_witness_verified_en
     intent regex_synthesis_witness_verified
     language en
     text "Verified against examples derived from the constraints: the pattern text was matched by the subset matcher in rust/src/solver_handlers/regex_witness.rs (anchors, classes, groups and repetitions read from the pattern itself) and accepted all {positive_count} positive examples ({positives}) and rejected all {negative_count} negative examples ({negatives}). No input of yours was run; test the pattern on your real inputs before relying on it."
+  response response_regex_synthesis_witness_verified_ru
+    intent regex_synthesis_witness_verified
+    language ru
+    text "Проверено на примерах, выведенных из ограничений: текст шаблона сопоставлялся сопоставителем подмножества в rust/src/solver_handlers/regex_witness.rs (якоря, классы, группы и повторения читаются из самого шаблона), принял все {positive_count} положительных примеров ({positives}) и отклонил все {negative_count} отрицательных ({negatives}). Ваши данные не запускались; проверьте шаблон на реальных данных, прежде чем на него полагаться."
+  response response_regex_synthesis_witness_verified_hi
+    intent regex_synthesis_witness_verified
+    language hi
+    text "Constraints से निकाले गए उदाहरणों पर सत्यापित: pattern text को rust/src/solver_handlers/regex_witness.rs के subset matcher से मिलाया गया (anchors, classes, groups और repetitions pattern से ही पढ़े गए) और इसने सभी {positive_count} positive उदाहरण ({positives}) स्वीकार किए और सभी {negative_count} negative उदाहरण ({negatives}) अस्वीकार किए। आपका कोई input नहीं चलाया गया; इस पर भरोसा करने से पहले pattern को अपने असली inputs पर जाँचें।"
+  response response_regex_synthesis_witness_verified_zh
+    intent regex_synthesis_witness_verified
+    language zh
+    text "已用从约束推导出的示例验证：模式文本由 rust/src/solver_handlers/regex_witness.rs 中的子集匹配器匹配（锚点、字符类、分组和重复都从模式本身读取），接受了全部 {positive_count} 个正例（{positives}），拒绝了全部 {negative_count} 个反例（{negatives}）。没有运行你的任何输入；在依赖该模式之前，请在你的真实输入上测试它。"
+  response response_regex_synthesis_witness_verified_es
+    intent regex_synthesis_witness_verified
+    language es
+    text "Verificado con ejemplos derivados de las restricciones: el texto del patrón se comparó con el comparador de subconjunto de rust/src/solver_handlers/regex_witness.rs (anclas, clases, grupos y repeticiones leídos del propio patrón), que aceptó los {positive_count} ejemplos positivos ({positives}) y rechazó los {negative_count} ejemplos negativos ({negatives}). No se ejecutó ninguna entrada tuya; prueba el patrón con tus entradas reales antes de confiar en él."
   response response_regex_synthesis_witness_failed_en
     intent regex_synthesis_witness_failed
     language en
     text "The check against examples derived from the constraints failed (+ marks an example that should match, - one that should not): {failures}. Do not rely on this pattern; restate the counts and separators and I will compose it again."
+  response response_regex_synthesis_witness_failed_ru
+    intent regex_synthesis_witness_failed
+    language ru
+    text "Проверка на примерах, выведенных из ограничений, не прошла (+ отмечает пример, который должен совпасть, - тот, который не должен): {failures}. Не полагайтесь на этот шаблон; переформулируйте количества и разделители, и я составлю его заново."
+  response response_regex_synthesis_witness_failed_hi
+    intent regex_synthesis_witness_failed
+    language hi
+    text "Constraints से निकाले गए उदाहरणों पर जाँच विफल रही (+ उस उदाहरण को दर्शाता है जिसे मेल खाना चाहिए, - उसे जिसे नहीं): {failures}। इस pattern पर भरोसा न करें; counts और separators फिर से बताइए और मैं इसे फिर से बनाऊँगा।"
+  response response_regex_synthesis_witness_failed_zh
+    intent regex_synthesis_witness_failed
+    language zh
+    text "基于约束推导出的示例检查失败（+ 表示应当匹配的示例，- 表示不应匹配的示例）：{failures}。请不要依赖该模式；重新说明数量和分隔符，我会重新组合。"
+  response response_regex_synthesis_witness_failed_es
+    intent regex_synthesis_witness_failed
+    language es
+    text "La comprobación con ejemplos derivados de las restricciones falló (+ marca un ejemplo que debería coincidir, - uno que no): {failures}. No confíes en este patrón; vuelve a indicar las cantidades y los separadores y lo compondré de nuevo."
   response response_regex_synthesis_broken_en
     intent regex_synthesis_broken
     language en
     text "I will not guess a pattern. The constraints composed to `{broken}`, which failed structural verification ({problems}). Restate the counts — how many of which character class, separated by what — and I will compose it again."
+  response response_regex_synthesis_broken_ru
+    intent regex_synthesis_broken
+    language ru
+    text "Я не буду угадывать шаблон. Ограничения сложились в `{broken}`, который не прошёл структурную проверку ({problems}). Переформулируйте количества — сколько символов какого класса и через какой разделитель, — и я составлю шаблон заново."
+  response response_regex_synthesis_broken_hi
+    intent regex_synthesis_broken
+    language hi
+    text "मैं कोई pattern अनुमान से नहीं दूँगा। Constraints से `{broken}` बना, जो structural verification में विफल रहा ({problems})। Counts फिर से बताइए — किस character class के कितने, और किससे अलग किए गए — और मैं इसे फिर से बनाऊँगा।"
+  response response_regex_synthesis_broken_zh
+    intent regex_synthesis_broken
+    language zh
+    text "我不会猜测模式。这些约束组合成了 `{broken}`，它未通过结构验证（{problems}）。请重新说明数量——哪个字符类各多少个、用什么分隔——我会重新组合。"
+  response response_regex_synthesis_broken_es
+    intent regex_synthesis_broken
+    language es
+    text "No adivinaré un patrón. Las restricciones se compusieron en `{broken}`, que no superó la verificación estructural ({problems}). Vuelve a indicar las cantidades — cuántos caracteres de qué clase y separados por qué — y lo compondré de nuevo."
   response response_regex_synthesis_refusal_en
     intent regex_synthesis_refusal
     language en
     text "I could not derive composable constraints from this request, so I will not guess a pattern. I compose from counts of character classes ('five digits', 'two letters'), optional groups ('optionally followed by a hyphen and four digits'), and separators (hyphen, dot, slash, colon, comma, underscore, space). Name the classes and counts explicitly and I will compose the pattern."
+  response response_regex_synthesis_refusal_ru
+    intent regex_synthesis_refusal
+    language ru
+    text "Мне не удалось вывести из этого запроса сочетаемые ограничения, поэтому я не буду угадывать шаблон. Я составляю шаблон из количеств классов символов («пять цифр», «две буквы»), необязательных групп («за которыми может следовать дефис и четыре цифры») и разделителей (дефис, точка, косая черта, двоеточие, запятая, подчёркивание, пробел). Назовите классы и количества явно, и я составлю шаблон."
+  response response_regex_synthesis_refusal_hi
+    intent regex_synthesis_refusal
+    language hi
+    text "मैं इस अनुरोध से जोड़ने योग्य constraints नहीं निकाल सका, इसलिए मैं कोई pattern अनुमान से नहीं दूँगा। मैं character classes की गिनती («पाँच अंक», «दो अक्षर»), वैकल्पिक groups («जिसके बाद वैकल्पिक रूप से एक hyphen और चार अंक हों») और separators (hyphen, dot, slash, colon, comma, underscore, space) से pattern बनाता हूँ। Classes और counts साफ़-साफ़ बताइए और मैं pattern बना दूँगा।"
+  response response_regex_synthesis_refusal_zh
+    intent regex_synthesis_refusal
+    language zh
+    text "我无法从这个请求中推导出可组合的约束，因此不会猜测模式。我根据字符类的数量（「五个数字」「两个字母」）、可选分组（「后面可选地跟一个连字符和四个数字」）以及分隔符（连字符、点、斜杠、冒号、逗号、下划线、空格）来组合模式。请明确说出字符类和数量，我就会组合出模式。"
+  response response_regex_synthesis_refusal_es
+    intent regex_synthesis_refusal
+    language es
+    text "No pude derivar restricciones componibles de esta solicitud, así que no adivinaré un patrón. Compongo a partir de cantidades de clases de caracteres («cinco dígitos», «dos letras»), grupos opcionales («seguido opcionalmente de un guion y cuatro dígitos») y separadores (guion, punto, barra, dos puntos, coma, guion bajo, espacio). Nombra las clases y las cantidades de forma explícita y compondré el patrón."
   response response_sql_synthesis_statement_en
     intent sql_synthesis_statement
     language en
     text "Composed SQL:\n\n    {statement}\n\nClause-by-clause mapping:\n{mapping}Verified by construction: each clause above maps to one constraint in the request, and the statement is a single SELECT in standard syntax.\nNot verified by execution: this project carries no SQL engine or parser dependency, so nothing was run — check the column names against your actual schema before running it."
+  response response_sql_synthesis_statement_ru
+    intent sql_synthesis_statement
+    language ru
+    text "Составленный SQL:\n\n    {statement}\n\nСоответствие по предложениям:\n{mapping}Проверено построением: каждое предложение выше соответствует одному ограничению из запроса, а сам оператор — один SELECT в стандартном синтаксисе.\nНе проверено выполнением: в проекте нет SQL-движка или парсера, поэтому ничего не запускалось — сверьте имена столбцов с вашей реальной схемой перед запуском."
+  response response_sql_synthesis_statement_hi
+    intent sql_synthesis_statement
+    language hi
+    text "बनाया गया SQL:\n\n    {statement}\n\nClause-दर-clause mapping:\n{mapping}निर्माण से सत्यापित: ऊपर का हर clause अनुरोध की एक constraint से जुड़ता है, और statement मानक syntax में एक ही SELECT है।\nExecution से सत्यापित नहीं: इस project में कोई SQL engine या parser dependency नहीं है, इसलिए कुछ नहीं चलाया गया — चलाने से पहले column नामों को अपने असली schema से मिलाएँ।"
+  response response_sql_synthesis_statement_zh
+    intent sql_synthesis_statement
+    language zh
+    text "组合出的 SQL：\n\n    {statement}\n\n逐子句对应：\n{mapping}通过构造验证：上面的每个子句都对应请求中的一个约束，且该语句是一条标准语法的 SELECT。\n未通过执行验证：本项目不带 SQL 引擎或解析器依赖，因此没有运行任何内容——运行前请将列名与你的实际模式核对。"
+  response response_sql_synthesis_statement_es
+    intent sql_synthesis_statement
+    language es
+    text "SQL compuesto:\n\n    {statement}\n\nCorrespondencia cláusula por cláusula:\n{mapping}Verificado por construcción: cada cláusula anterior corresponde a una restricción de la solicitud, y la sentencia es un único SELECT con sintaxis estándar.\nNo verificado por ejecución: este proyecto no incluye ningún motor ni analizador SQL, así que no se ejecutó nada — comprueba los nombres de columna con tu esquema real antes de ejecutarlo."
   response response_sql_synthesis_refusal_en
     intent sql_synthesis_refusal
     language en
     text "I could not identify a table in this request, so I will not guess one. Name the table ('from the users table', 'select all users') and I will compose the SELECT. Verified by construction only: nothing was run against a database."
+  response response_sql_synthesis_refusal_ru
+    intent sql_synthesis_refusal
+    language ru
+    text "Мне не удалось определить таблицу в этом запросе, поэтому я не буду её угадывать. Назовите таблицу («из таблицы users», «выбрать всех users»), и я составлю SELECT. Проверено только построением: ничего не запускалось против базы данных."
+  response response_sql_synthesis_refusal_hi
+    intent sql_synthesis_refusal
+    language hi
+    text "मैं इस अनुरोध में कोई table नहीं पहचान सका, इसलिए मैं अनुमान से कोई table नहीं चुनूँगा। Table का नाम बताइए («users table से», «सभी users चुनें») और मैं SELECT बना दूँगा। केवल निर्माण से सत्यापित: किसी database पर कुछ नहीं चलाया गया।"
+  response response_sql_synthesis_refusal_zh
+    intent sql_synthesis_refusal
+    language zh
+    text "我无法在这个请求中识别出表，因此不会猜测。请说出表名（「从 users 表」「选择所有 users」），我会组合出 SELECT。仅通过构造验证：没有对任何数据库运行。"
+  response response_sql_synthesis_refusal_es
+    intent sql_synthesis_refusal
+    language es
+    text "No pude identificar ninguna tabla en esta solicitud, así que no adivinaré una. Nombra la tabla («de la tabla users», «selecciona todos los users») y compondré el SELECT. Verificado solo por construcción: no se ejecutó nada contra una base de datos."
   response response_shell_command_composed_en
     intent shell_command_composed
     language en
     text "Composed shell command:\n\n    {command}\n\nFlags, from the {package} manual:\n{flags}Manual: {manual}\n\nDerivation: {derivation}\nNot executed: this is a composed suggestion — run it yourself and inspect the output."
+  response response_shell_command_composed_ru
+    intent shell_command_composed
+    language ru
+    text "Составленная команда оболочки:\n\n    {command}\n\nФлаги из руководства {package}:\n{flags}Руководство: {manual}\n\nВывод: {derivation}\nНе выполнено: это составленное предложение — запустите его сами и проверьте вывод."
+  response response_shell_command_composed_hi
+    intent shell_command_composed
+    language hi
+    text "बनाया गया shell command:\n\n    {command}\n\nFlags, {package} manual से:\n{flags}Manual: {manual}\n\nव्युत्पत्ति: {derivation}\nExecute नहीं किया गया: यह एक बनाया गया सुझाव है — इसे खुद चलाएँ और output जाँचें।"
+  response response_shell_command_composed_zh
+    intent shell_command_composed
+    language zh
+    text "组合出的 shell 命令：\n\n    {command}\n\n来自 {package} 手册的参数：\n{flags}手册：{manual}\n\n推导：{derivation}\n未执行：这是组合出的建议——请自行运行并检查输出。"
+  response response_shell_command_composed_es
+    intent shell_command_composed
+    language es
+    text "Comando de shell compuesto:\n\n    {command}\n\nOpciones, según el manual de {package}:\n{flags}Manual: {manual}\n\nDerivación: {derivation}\nNo ejecutado: es una sugerencia compuesta — ejecútala tú y revisa la salida."
   response response_shell_command_piped_en
     intent shell_command_piped
     language en
     text "Composed shell command:\n\n    {command}\n\nFlags, from the {package} manual:\n{flags}Manual: {manual}\n\nPiped into {pipe_tool}, flags from the {pipe_package} manual:\n{pipe_flags}Manual: {pipe_manual}\n\nDerivation: {derivation}\nNot executed: this is a composed suggestion — run it yourself and inspect the output."
+  response response_shell_command_piped_ru
+    intent shell_command_piped
+    language ru
+    text "Составленная команда оболочки:\n\n    {command}\n\nФлаги из руководства {package}:\n{flags}Руководство: {manual}\n\nПередаётся по конвейеру в {pipe_tool}, флаги из руководства {pipe_package}:\n{pipe_flags}Руководство: {pipe_manual}\n\nВывод: {derivation}\nНе выполнено: это составленное предложение — запустите его сами и проверьте вывод."
+  response response_shell_command_piped_hi
+    intent shell_command_piped
+    language hi
+    text "बनाया गया shell command:\n\n    {command}\n\nFlags, {package} manual से:\n{flags}Manual: {manual}\n\n{pipe_tool} में pipe किया गया, flags {pipe_package} manual से:\n{pipe_flags}Manual: {pipe_manual}\n\nव्युत्पत्ति: {derivation}\nExecute नहीं किया गया: यह एक बनाया गया सुझाव है — इसे खुद चलाएँ और output जाँचें।"
+  response response_shell_command_piped_zh
+    intent shell_command_piped
+    language zh
+    text "组合出的 shell 命令：\n\n    {command}\n\n来自 {package} 手册的参数：\n{flags}手册：{manual}\n\n通过管道传给 {pipe_tool}，参数来自 {pipe_package} 手册：\n{pipe_flags}手册：{pipe_manual}\n\n推导：{derivation}\n未执行：这是组合出的建议——请自行运行并检查输出。"
+  response response_shell_command_piped_es
+    intent shell_command_piped
+    language es
+    text "Comando de shell compuesto:\n\n    {command}\n\nOpciones, según el manual de {package}:\n{flags}Manual: {manual}\n\nRedirigido mediante tubería a {pipe_tool}, con opciones del manual de {pipe_package}:\n{pipe_flags}Manual: {pipe_manual}\n\nDerivación: {derivation}\nNo ejecutado: es una sugerencia compuesta — ejecútala tú y revisa la salida."
   response response_shell_compose_refusal_en
     intent shell_compose_refusal
     language en
     text "This request reads as a shell task, but no manual-page entry in data/seed/manual-pages.lino covers it (find, ls, head, tail, grep, wc and sed are covered), so I will not guess a command. Say which files, sizes, ages, paths, line counts, or patterns are involved and I will compose it."
+  response response_shell_compose_refusal_ru
+    intent shell_compose_refusal
+    language ru
+    text "Этот запрос похож на задачу для оболочки, но ни одна запись руководства в data/seed/manual-pages.lino её не охватывает (охвачены find, ls, head, tail, grep, wc и sed), поэтому я не буду угадывать команду. Скажите, какие файлы, размеры, возраст, пути, количества строк или шаблоны нужны, и я составлю команду."
+  response response_shell_compose_refusal_hi
+    intent shell_compose_refusal
+    language hi
+    text "यह अनुरोध shell task जैसा लगता है, लेकिन data/seed/manual-pages.lino की कोई manual-page entry इसे cover नहीं करती (find, ls, head, tail, grep, wc और sed covered हैं), इसलिए मैं कोई command अनुमान से नहीं दूँगा। बताइए कि कौन-सी files, sizes, ages, paths, line counts या patterns शामिल हैं और मैं command बना दूँगा।"
+  response response_shell_compose_refusal_zh
+    intent shell_compose_refusal
+    language zh
+    text "这个请求看起来是 shell 任务，但 data/seed/manual-pages.lino 中没有任何手册条目涵盖它（已涵盖 find、ls、head、tail、grep、wc 和 sed），因此我不会猜测命令。请说明涉及哪些文件、大小、时间、路径、行数或模式，我会组合出命令。"
+  response response_shell_compose_refusal_es
+    intent shell_compose_refusal
+    language es
+    text "Esta solicitud parece una tarea de shell, pero ninguna entrada de página de manual en data/seed/manual-pages.lino la cubre (están cubiertos find, ls, head, tail, grep, wc y sed), así que no adivinaré un comando. Di qué archivos, tamaños, antigüedades, rutas, números de líneas o patrones intervienen y lo compondré."
   response response_code_explanation_lines_en
     intent code_explanation_lines
     language en
     text "A structural explanation, line by line. No code was executed.\n\n{lines}Coverage: {matched} of {total} lines matched a construct; every line is listed above, each matched one with the reference that defines its construct.\nOverall: {overall}\n{cost}Method, stated honestly: each line was matched against the construct table in data/seed/meanings-code-structure-explanations.lino; nothing was run and nothing outside the table was guessed."
+  response response_code_explanation_lines_ru
+    intent code_explanation_lines
+    language ru
+    text "Структурное объяснение, строка за строкой. Код не выполнялся.\n\n{lines}Покрытие: {matched} из {total} строк совпали с конструкцией; каждая строка перечислена выше, а у каждой совпавшей указан источник, определяющий её конструкцию.\nВ целом: {overall}\n{cost}Метод, честно: каждая строка сопоставлялась с таблицей конструкций в data/seed/meanings-code-structure-explanations.lino; ничего не запускалось и ничего за пределами таблицы не угадывалось."
+  response response_code_explanation_lines_hi
+    intent code_explanation_lines
+    language hi
+    text "एक structural व्याख्या, line दर line। कोई code execute नहीं किया गया।\n\n{lines}Coverage: {total} में से {matched} lines किसी construct से मेल खाईं; हर line ऊपर सूचीबद्ध है, और हर मेल खाने वाली line के साथ उसका construct परिभाषित करने वाला संदर्भ है।\nकुल मिलाकर: {overall}\n{cost}तरीका, ईमानदारी से: हर line को data/seed/meanings-code-structure-explanations.lino की construct table से मिलाया गया; कुछ भी चलाया नहीं गया और table के बाहर कुछ भी अनुमान से नहीं जोड़ा गया।"
+  response response_code_explanation_lines_zh
+    intent code_explanation_lines
+    language zh
+    text "逐行的结构解释。没有执行任何代码。\n\n{lines}覆盖率：{total} 行中有 {matched} 行匹配到结构；每一行都列在上面，每个匹配的行都附有定义其结构的参考。\n总体：{overall}\n{cost}方法，如实说明：每一行都与 data/seed/meanings-code-structure-explanations.lino 中的结构表进行匹配；没有运行任何内容，也没有猜测表外的任何内容。"
+  response response_code_explanation_lines_es
+    intent code_explanation_lines
+    language es
+    text "Una explicación estructural, línea por línea. No se ejecutó código.\n\n{lines}Cobertura: {matched} de {total} líneas coincidieron con una construcción; todas las líneas aparecen arriba, y cada una de las que coinciden lleva la referencia que define su construcción.\nEn conjunto: {overall}\n{cost}Método, dicho con honestidad: cada línea se comparó con la tabla de construcciones de data/seed/meanings-code-structure-explanations.lino; no se ejecutó nada y no se adivinó nada fuera de la tabla."
   response response_code_explanation_no_construct_en
     intent code_explanation_no_construct
     language en
     text "No construct in the table matched these lines. The table covers function definitions, for loops, if statements, comprehensions, sum/len/max/min calls, comparisons, assignments, returns, division, indexing, method calls, and a few JavaScript constructs. Method, stated honestly: structural scan only — no code was executed. If the code uses constructs outside the table, a human read (or a language-server hover) will explain more than I can derive structurally."
+  response response_code_explanation_no_construct_ru
+    intent code_explanation_no_construct
+    language ru
+    text "Ни одна конструкция из таблицы не совпала с этими строками. Таблица охватывает определения функций, циклы for, операторы if, генераторы списков, вызовы sum/len/max/min, сравнения, присваивания, return, деление, индексацию, вызовы методов и несколько конструкций JavaScript. Метод, честно: только структурный просмотр — код не выполнялся. Если в коде есть конструкции вне таблицы, чтение человеком (или подсказка языкового сервера) объяснит больше, чем я могу вывести структурно."
+  response response_code_explanation_no_construct_hi
+    intent code_explanation_no_construct
+    language hi
+    text "इन lines से table का कोई construct मेल नहीं खाया। Table में function definitions, for loops, if statements, comprehensions, sum/len/max/min calls, तुलना, assignments, returns, भाग, indexing, method calls और कुछ JavaScript constructs शामिल हैं। तरीका, ईमानदारी से: केवल structural scan — कोई code execute नहीं किया गया। अगर code में table के बाहर के constructs हैं, तो किसी व्यक्ति का पढ़ना (या language-server hover) उससे ज़्यादा समझाएगा जितना मैं structurally निकाल सकता हूँ।"
+  response response_code_explanation_no_construct_zh
+    intent code_explanation_no_construct
+    language zh
+    text "表中没有任何结构与这些行匹配。该表涵盖函数定义、for 循环、if 语句、推导式、sum/len/max/min 调用、比较、赋值、return、除法、索引、方法调用以及少量 JavaScript 结构。方法，如实说明：仅做结构扫描——没有执行任何代码。如果代码使用了表外的结构，人工阅读（或语言服务器的悬停提示）能解释得比我从结构上推导的更多。"
+  response response_code_explanation_no_construct_es
+    intent code_explanation_no_construct
+    language es
+    text "Ninguna construcción de la tabla coincidió con estas líneas. La tabla cubre definiciones de funciones, bucles for, sentencias if, comprensiones, llamadas a sum/len/max/min, comparaciones, asignaciones, return, divisiones, indexación, llamadas a métodos y algunas construcciones de JavaScript. Método, dicho con honestidad: solo análisis estructural — no se ejecutó código. Si el código usa construcciones fuera de la tabla, una lectura humana (o la ayuda emergente de un servidor de lenguaje) explicará más de lo que puedo deducir estructuralmente."
   response response_code_review_findings_en
     intent code_review_findings
     language en
     text "Structural review against data/seed/code-review-rules.lino. No code was executed; no linter was run.\n\nFindings:\n{findings}"
+  response response_code_review_findings_ru
+    intent code_review_findings
+    language ru
+    text "Структурный обзор по data/seed/code-review-rules.lino. Код не выполнялся; линтер не запускался.\n\nНаходки:\n{findings}"
+  response response_code_review_findings_hi
+    intent code_review_findings
+    language hi
+    text "data/seed/code-review-rules.lino के आधार पर structural review। कोई code execute नहीं किया गया; कोई linter नहीं चलाया गया।\n\nनिष्कर्ष:\n{findings}"
+  response response_code_review_findings_zh
+    intent code_review_findings
+    language zh
+    text "依据 data/seed/code-review-rules.lino 的结构审查。没有执行任何代码；没有运行 linter。\n\n发现：\n{findings}"
+  response response_code_review_findings_es
+    intent code_review_findings
+    language es
+    text "Revisión estructural según data/seed/code-review-rules.lino. No se ejecutó código; no se ejecutó ningún linter.\n\nHallazgos:\n{findings}"
   response response_code_review_no_match_en
     intent code_review_no_match
     language en
     text "No rule in the review table matched this code. That is a statement about the rule table, not a clean bill of health: the table covers bare except, mutable default arguments, == None, string += in loops, and JavaScript loose ==. Run a real linter (ruff, eslint) for a deeper review. Method, stated honestly: structural scan only — nothing was executed."
+  response response_code_review_no_match_ru
+    intent code_review_no_match
+    language ru
+    text "Ни одно правило из таблицы обзора не совпало с этим кодом. Это утверждение о таблице правил, а не справка о полном здоровье кода: таблица охватывает голый except, изменяемые аргументы по умолчанию, == None, строковый += в циклах и нестрогое == в JavaScript. Для более глубокого обзора запустите настоящий линтер (ruff, eslint). Метод, честно: только структурный просмотр — ничего не выполнялось."
+  response response_code_review_no_match_hi
+    intent code_review_no_match
+    language hi
+    text "Review table का कोई नियम इस code से मेल नहीं खाया। यह नियम table के बारे में कथन है, code के पूरी तरह ठीक होने का प्रमाण नहीं: table में bare except, mutable default arguments, == None, loops में string += और JavaScript का loose == शामिल हैं। गहरी समीक्षा के लिए असली linter (ruff, eslint) चलाएँ। तरीका, ईमानदारी से: केवल structural scan — कुछ भी execute नहीं किया गया।"
+  response response_code_review_no_match_zh
+    intent code_review_no_match
+    language zh
+    text "审查表中没有任何规则与这段代码匹配。这只是关于规则表的陈述，并不代表代码完全健康：该表涵盖裸 except、可变默认参数、== None、循环中的字符串 += 以及 JavaScript 的宽松 ==。如需更深入的审查，请运行真正的 linter（ruff、eslint）。方法，如实说明：仅做结构扫描——没有执行任何内容。"
+  response response_code_review_no_match_es
+    intent code_review_no_match
+    language es
+    text "Ninguna regla de la tabla de revisión coincidió con este código. Es una afirmación sobre la tabla de reglas, no un certificado de buena salud: la tabla cubre except sin tipo, argumentos por defecto mutables, == None, += de cadenas en bucles y el == laxo de JavaScript. Ejecuta un linter real (ruff, eslint) para una revisión más profunda. Método, dicho con honestidad: solo análisis estructural — no se ejecutó nada."
   response response_test_generation_suite_en
     intent test_generation_suite
     language en
     text "Generated pytest suite (Python). NOT executed — executing generated tests is out of scope here (that is issue #1185's scope); review the cases and run them yourself with `pytest -q`.\n\n```python\n{suite}```\n\nDerivation: {derivation}"
+  response response_test_generation_suite_ru
+    intent test_generation_suite
+    language ru
+    text "Сгенерированный набор pytest (Python). НЕ выполнялся — выполнение сгенерированных тестов здесь вне рамок (это область issue #1185); просмотрите случаи и запустите их сами командой `pytest -q`.\n\n```python\n{suite}```\n\nВывод: {derivation}"
+  response response_test_generation_suite_hi
+    intent test_generation_suite
+    language hi
+    text "बनाया गया pytest suite (Python)। Execute नहीं किया गया — बनाए गए tests चलाना यहाँ दायरे से बाहर है (यह issue #1185 का दायरा है); cases की समीक्षा करें और उन्हें खुद `pytest -q` से चलाएँ।\n\n```python\n{suite}```\n\nव्युत्पत्ति: {derivation}"
+  response response_test_generation_suite_zh
+    intent test_generation_suite
+    language zh
+    text "生成的 pytest 测试套件（Python）。未执行——执行生成的测试不在此处范围内（属于 issue #1185 的范围）；请审阅这些用例，并自行用 `pytest -q` 运行。\n\n```python\n{suite}```\n\n推导：{derivation}"
+  response response_test_generation_suite_es
+    intent test_generation_suite
+    language es
+    text "Conjunto de pruebas pytest generado (Python). NO ejecutado — ejecutar las pruebas generadas queda fuera del alcance aquí (es el alcance de la issue #1185); revisa los casos y ejecútalos tú con `pytest -q`.\n\n```python\n{suite}```\n\nDerivación: {derivation}"
   response response_code_refactoring_async_en
     intent code_refactoring_async
     language en
     text "Rewrote the promise chain with async/await. Handler bodies are preserved verbatim; only the control flow changed.\n\n```javascript\n{code}```\n\nEquivalence check, stated honestly: structural — each `.then(handler)` became a `const <param> = await <previous>;` in try-block order and `.catch(handler)` became the catch clause, so every handler still receives what the previous link produced. No code was executed."
+  response response_code_refactoring_async_ru
+    intent code_refactoring_async
+    language ru
+    text "Цепочка промисов переписана на async/await. Тела обработчиков сохранены дословно; изменился только поток управления.\n\n```javascript\n{code}```\n\nПроверка эквивалентности, честно: структурная — каждый `.then(handler)` стал `const <param> = await <previous>;` в порядке блока try, а `.catch(handler)` стал блоком catch, так что каждый обработчик по-прежнему получает то, что выдало предыдущее звено. Код не выполнялся."
+  response response_code_refactoring_async_hi
+    intent code_refactoring_async
+    language hi
+    text "Promise chain को async/await से दोबारा लिखा गया। Handler bodies ज्यों की त्यों रखी गई हैं; केवल control flow बदला है।\n\n```javascript\n{code}```\n\nसमतुल्यता जाँच, ईमानदारी से: structural — हर `.then(handler)` try-block क्रम में `const <param> = await <previous>;` बन गया और `.catch(handler)` catch clause बन गया, इसलिए हर handler को अब भी वही मिलता है जो पिछली कड़ी ने बनाया था। कोई code execute नहीं किया गया।"
+  response response_code_refactoring_async_zh
+    intent code_refactoring_async
+    language zh
+    text "已将 Promise 链改写为 async/await。处理函数体逐字保留；只改变了控制流。\n\n```javascript\n{code}```\n\n等价性检查，如实说明：结构上的——每个 `.then(handler)` 按 try 块顺序变为 `const <param> = await <previous>;`，`.catch(handler)` 变为 catch 子句，因此每个处理函数仍会收到上一环节产生的值。没有执行任何代码。"
+  response response_code_refactoring_async_es
+    intent code_refactoring_async
+    language es
+    text "Reescribí la cadena de promesas con async/await. Los cuerpos de los manejadores se conservan literalmente; solo cambió el flujo de control.\n\n```javascript\n{code}```\n\nComprobación de equivalencia, dicha con honestidad: estructural — cada `.then(handler)` pasó a ser un `const <param> = await <previous>;` en el orden del bloque try y `.catch(handler)` pasó a ser la cláusula catch, así que cada manejador sigue recibiendo lo que produjo el eslabón anterior. No se ejecutó código."
   response response_code_refactoring_refusal_en
     intent code_refactoring_refusal
     language en
     text "Recognized a refactoring request, but the only structural transformation implemented is a JavaScript promise chain (`.then`/`.catch`) to async/await, and this code has no promise chain, so I will not guess a different rewrite. Name the transformation you want (or show a promise chain) and I will do that one."
+  response response_code_refactoring_refusal_ru
+    intent code_refactoring_refusal
+    language ru
+    text "Распознан запрос на рефакторинг, но реализовано только одно структурное преобразование — цепочка промисов JavaScript (`.then`/`.catch`) в async/await, а в этом коде нет цепочки промисов, поэтому я не буду угадывать другое переписывание. Назовите нужное преобразование (или покажите цепочку промисов), и я выполню именно его."
+  response response_code_refactoring_refusal_hi
+    intent code_refactoring_refusal
+    language hi
+    text "Refactoring अनुरोध पहचाना गया, लेकिन लागू किया गया एकमात्र structural transformation JavaScript promise chain (`.then`/`.catch`) से async/await है, और इस code में कोई promise chain नहीं है, इसलिए मैं कोई दूसरा rewrite अनुमान से नहीं करूँगा। आप जो transformation चाहते हैं उसका नाम बताएँ (या promise chain दिखाएँ) और मैं वही करूँगा।"
+  response response_code_refactoring_refusal_zh
+    intent code_refactoring_refusal
+    language zh
+    text "识别到重构请求，但目前唯一实现的结构变换是将 JavaScript Promise 链（`.then`/`.catch`）改写为 async/await，而这段代码中没有 Promise 链，所以我不会猜测其他改写方式。请说出你想要的变换（或给出一个 Promise 链），我就会执行它。"
+  response response_code_refactoring_refusal_es
+    intent code_refactoring_refusal
+    language es
+    text "Reconocí una solicitud de refactorización, pero la única transformación estructural implementada es la de una cadena de promesas de JavaScript (`.then`/`.catch`) a async/await, y este código no tiene ninguna cadena de promesas, así que no adivinaré otra reescritura. Nombra la transformación que quieres (o muestra una cadena de promesas) y haré esa."
   response response_format_conversion_to_yaml_en
     intent format_conversion_to_yaml
     language en
     text "Converted JSON to YAML. Subset, stated honestly: nested objects, arrays, strings, numbers, booleans, null — block style, two-space indent; flow style, anchors, tags and multi-line scalars are outside it.\n\n```yaml\n{yaml}```\nRound-trip check: re-parsing this YAML with the same subset parser reproduced the input JSON exactly, so the conversion is reversible within the subset."
+  response response_format_conversion_to_yaml_ru
+    intent format_conversion_to_yaml
+    language ru
+    text "JSON преобразован в YAML. Подмножество, честно: вложенные объекты, массивы, строки, числа, булевы значения, null — блочный стиль, отступ в два пробела; потоковый стиль, якоря, теги и многострочные скаляры в него не входят.\n\n```yaml\n{yaml}```\nПроверка обратного преобразования: повторный разбор этого YAML тем же парсером подмножества точно воспроизвёл входной JSON, так что преобразование обратимо в пределах подмножества."
+  response response_format_conversion_to_yaml_hi
+    intent format_conversion_to_yaml
+    language hi
+    text "JSON को YAML में बदला गया। Subset, ईमानदारी से: nested objects, arrays, strings, numbers, booleans, null — block style, दो-space indent; flow style, anchors, tags और multi-line scalars इसके बाहर हैं।\n\n```yaml\n{yaml}```\nRound-trip जाँच: इसी subset parser से इस YAML को फिर से parse करने पर input JSON ठीक वैसा ही मिला, इसलिए subset के भीतर यह conversion उलटा जा सकता है।"
+  response response_format_conversion_to_yaml_zh
+    intent format_conversion_to_yaml
+    language zh
+    text "已将 JSON 转换为 YAML。子集，如实说明：嵌套对象、数组、字符串、数字、布尔值、null——块风格，两个空格缩进；流风格、锚点、标签和多行标量不在其中。\n\n```yaml\n{yaml}```\n往返检查：用同一个子集解析器重新解析该 YAML，精确还原了输入的 JSON，因此该转换在子集内是可逆的。"
+  response response_format_conversion_to_yaml_es
+    intent format_conversion_to_yaml
+    language es
+    text "Convertí JSON a YAML. Subconjunto, dicho con honestidad: objetos anidados, arrays, cadenas, números, booleanos, null — estilo de bloque, sangría de dos espacios; el estilo de flujo, los anclajes, las etiquetas y los escalares multilínea quedan fuera.\n\n```yaml\n{yaml}```\nComprobación de ida y vuelta: al volver a analizar este YAML con el mismo analizador del subconjunto se reprodujo exactamente el JSON de entrada, así que la conversión es reversible dentro del subconjunto."
   response response_format_conversion_to_json_en
     intent format_conversion_to_json
     language en
     text "Converted YAML to JSON. Subset, stated honestly: block-style mappings and sequences, two-space indentation, scalars (numbers, booleans, null, plain or quoted strings); flow style, anchors, tags and multi-line scalars are refused rather than guessed.\n\n```json\n{json}```\nRound-trip check: parsing the emitted JSON back reproduced the same values and nesting as the input YAML."
+  response response_format_conversion_to_json_ru
+    intent format_conversion_to_json
+    language ru
+    text "YAML преобразован в JSON. Подмножество, честно: блочные отображения и последовательности, отступ в два пробела, скаляры (числа, булевы значения, null, простые строки или строки в кавычках); потоковый стиль, якоря, теги и многострочные скаляры отклоняются, а не угадываются.\n\n```json\n{json}```\nПроверка обратного преобразования: разбор выданного JSON воспроизвёл те же значения и вложенность, что и во входном YAML."
+  response response_format_conversion_to_json_hi
+    intent format_conversion_to_json
+    language hi
+    text "YAML को JSON में बदला गया। Subset, ईमानदारी से: block-style mappings और sequences, दो-space indentation, scalars (numbers, booleans, null, सादी या quoted strings); flow style, anchors, tags और multi-line scalars अनुमान लगाने के बजाय अस्वीकार किए जाते हैं।\n\n```json\n{json}```\nRound-trip जाँच: बनाए गए JSON को फिर से parse करने पर input YAML जैसे ही मान और nesting मिले।"
+  response response_format_conversion_to_json_zh
+    intent format_conversion_to_json
+    language zh
+    text "已将 YAML 转换为 JSON。子集，如实说明：块风格的映射和序列、两个空格缩进、标量（数字、布尔值、null、普通或带引号的字符串）；流风格、锚点、标签和多行标量会被拒绝，而不是猜测。\n\n```json\n{json}```\n往返检查：将输出的 JSON 重新解析后，得到了与输入 YAML 相同的值和嵌套结构。"
+  response response_format_conversion_to_json_es
+    intent format_conversion_to_json
+    language es
+    text "Convertí YAML a JSON. Subconjunto, dicho con honestidad: mapeos y secuencias en estilo de bloque, sangría de dos espacios, escalares (números, booleanos, null, cadenas simples o entre comillas); el estilo de flujo, los anclajes, las etiquetas y los escalares multilínea se rechazan en lugar de adivinarse.\n\n```json\n{json}```\nComprobación de ida y vuelta: al volver a analizar el JSON emitido se reprodujeron los mismos valores y el mismo anidamiento que en el YAML de entrada."
   response response_format_conversion_json_identity_en
     intent format_conversion_json_identity
     language en
     text "The text is already JSON, so there is no other format to convert from; here it is parsed and re-emitted with two-space indentation.\n\n```json\n{json}\n```\nRound-trip check: parsing the emitted JSON back reproduced the same values and nesting as the input."
+  response response_format_conversion_json_identity_ru
+    intent format_conversion_json_identity
+    language ru
+    text "Текст уже является JSON, поэтому преобразовывать не из чего; здесь он разобран и выведен заново с отступом в два пробела.\n\n```json\n{json}\n```\nПроверка обратного преобразования: разбор выданного JSON воспроизвёл те же значения и вложенность, что и во входных данных."
+  response response_format_conversion_json_identity_hi
+    intent format_conversion_json_identity
+    language hi
+    text "Text पहले से JSON है, इसलिए किसी दूसरे format से बदलने को कुछ नहीं है; यहाँ इसे parse करके दो-space indentation के साथ फिर से लिखा गया है।\n\n```json\n{json}\n```\nRound-trip जाँच: बनाए गए JSON को फिर से parse करने पर input जैसे ही मान और nesting मिले।"
+  response response_format_conversion_json_identity_zh
+    intent format_conversion_json_identity
+    language zh
+    text "该文本已经是 JSON，因此没有可转换的其他格式；这里将其解析后以两个空格缩进重新输出。\n\n```json\n{json}\n```\n往返检查：将输出的 JSON 重新解析后，得到了与输入相同的值和嵌套结构。"
+  response response_format_conversion_json_identity_es
+    intent format_conversion_json_identity
+    language es
+    text "El texto ya es JSON, así que no hay otro formato del que convertir; aquí se analiza y se vuelve a emitir con sangría de dos espacios.\n\n```json\n{json}\n```\nComprobación de ida y vuelta: al volver a analizar el JSON emitido se reprodujeron los mismos valores y el mismo anidamiento que en la entrada."
   response response_format_conversion_refusal_en
     intent format_conversion_refusal
     language en
     text "I will not guess a conversion. {reason}"
+  response response_format_conversion_refusal_ru
+    intent format_conversion_refusal
+    language ru
+    text "Я не буду угадывать преобразование. {reason}"
+  response response_format_conversion_refusal_hi
+    intent format_conversion_refusal
+    language hi
+    text "मैं कोई conversion अनुमान से नहीं करूँगा। {reason}"
+  response response_format_conversion_refusal_zh
+    intent format_conversion_refusal
+    language zh
+    text "我不会猜测转换结果。{reason}"
+  response response_format_conversion_refusal_es
+    intent format_conversion_refusal
+    language es
+    text "No adivinaré una conversión. {reason}"
   response response_mapping_line_en
     intent mapping_line
     language en
+    text "  - '{request}' -> {emission}\n"
+  response response_mapping_line_ru
+    intent mapping_line
+    language ru
+    text "  - '{request}' -> {emission}\n"
+  response response_mapping_line_hi
+    intent mapping_line
+    language hi
+    text "  - '{request}' -> {emission}\n"
+  response response_mapping_line_zh
+    intent mapping_line
+    language zh
+    text "  - '{request}' -> {emission}\n"
+  response response_mapping_line_es
+    intent mapping_line
+    language es
     text "  - '{request}' -> {emission}\n"
   response response_flag_line_en
     intent flag_line
     language en
     text "  - `{flag}` — {meaning}\n"
+  response response_flag_line_ru
+    intent flag_line
+    language ru
+    text "  - `{flag}` — {meaning}\n"
+  response response_flag_line_hi
+    intent flag_line
+    language hi
+    text "  - `{flag}` — {meaning}\n"
+  response response_flag_line_zh
+    intent flag_line
+    language zh
+    text "  - `{flag}` — {meaning}\n"
+  response response_flag_line_es
+    intent flag_line
+    language es
+    text "  - `{flag}` — {meaning}\n"
   response response_code_debugging_no_intent_en
     intent code_debugging_no_intent
     language en
     text " Note: the function name `{name}` is not in the intent table, so there was no promised property to check the code against."
+  response response_code_debugging_no_intent_ru
+    intent code_debugging_no_intent
+    language ru
+    text " Примечание: имени функции `{name}` нет в таблице намерений, поэтому не было обещанного свойства, с которым можно сверить код."
+  response response_code_debugging_no_intent_hi
+    intent code_debugging_no_intent
+    language hi
+    text " ध्यान दें: function नाम `{name}` intent table में नहीं है, इसलिए code की जाँच के लिए कोई वादा की गई property नहीं थी।"
+  response response_code_debugging_no_intent_zh
+    intent code_debugging_no_intent
+    language zh
+    text " 注意：函数名 `{name}` 不在意图表中，因此没有可用来核对代码的承诺属性。"
+  response response_code_debugging_no_intent_es
+    intent code_debugging_no_intent
+    language es
+    text " Nota: el nombre de función `{name}` no está en la tabla de intenciones, así que no había ninguna propiedad prometida con la que contrastar el código."
   response response_regex_mapping_line_en
     intent regex_mapping_line
     language en
+    text "  - '{label}' -> `{render}`{role}{separator}\n"
+  response response_regex_mapping_line_ru
+    intent regex_mapping_line
+    language ru
+    text "  - '{label}' -> `{render}`{role}{separator}\n"
+  response response_regex_mapping_line_hi
+    intent regex_mapping_line
+    language hi
+    text "  - '{label}' -> `{render}`{role}{separator}\n"
+  response response_regex_mapping_line_zh
+    intent regex_mapping_line
+    language zh
+    text "  - '{label}' -> `{render}`{role}{separator}\n"
+  response response_regex_mapping_line_es
+    intent regex_mapping_line
+    language es
     text "  - '{label}' -> `{render}`{role}{separator}\n"
   response response_regex_role_main_en
     intent regex_role_main
     language en
     text " (the main run)"
+  response response_regex_role_main_ru
+    intent regex_role_main
+    language ru
+    text " (основная последовательность)"
+  response response_regex_role_main_hi
+    intent regex_role_main
+    language hi
+    text " (मुख्य run)"
+  response response_regex_role_main_zh
+    intent regex_role_main
+    language zh
+    text " (主体部分)"
+  response response_regex_role_main_es
+    intent regex_role_main
+    language es
+    text " (la secuencia principal)"
   response response_regex_role_optional_en
     intent regex_role_optional
     language en
     text " (an optional group)"
+  response response_regex_role_optional_ru
+    intent regex_role_optional
+    language ru
+    text " (необязательная группа)"
+  response response_regex_role_optional_hi
+    intent regex_role_optional
+    language hi
+    text " (एक वैकल्पिक group)"
+  response response_regex_role_optional_zh
+    intent regex_role_optional
+    language zh
+    text " (可选分组)"
+  response response_regex_role_optional_es
+    intent regex_role_optional
+    language es
+    text " (un grupo opcional)"
   response response_regex_role_required_en
     intent regex_role_required
     language en
     text " (a required group)"
+  response response_regex_role_required_ru
+    intent regex_role_required
+    language ru
+    text " (обязательная группа)"
+  response response_regex_role_required_hi
+    intent regex_role_required
+    language hi
+    text " (एक आवश्यक group)"
+  response response_regex_role_required_zh
+    intent regex_role_required
+    language zh
+    text " (必需分组)"
+  response response_regex_role_required_es
+    intent regex_role_required
+    language es
+    text " (un grupo obligatorio)"
   response response_regex_note_separator_en
     intent regex_note_separator
     language en
     text " preceded by a literal `{literal}`"
+  response response_regex_note_separator_ru
+    intent regex_note_separator
+    language ru
+    text " с предшествующим литералом `{literal}`"
+  response response_regex_note_separator_hi
+    intent regex_note_separator
+    language hi
+    text " जिससे पहले literal `{literal}` आता है"
+  response response_regex_note_separator_zh
+    intent regex_note_separator
+    language zh
+    text " 前面带有字面量 `{literal}`"
+  response response_regex_note_separator_es
+    intent regex_note_separator
+    language es
+    text " precedido por un literal `{literal}`"
   response response_regex_anchor_note_anchored_en
     intent regex_anchor_note_anchored
     language en
     text "  - anchored with ^ and $ so the whole string must match, not just a substring\n"
+  response response_regex_anchor_note_anchored_ru
+    intent regex_anchor_note_anchored
+    language ru
+    text "  - закреплено с помощью ^ и $, поэтому совпадать должна вся строка, а не только подстрока\n"
+  response response_regex_anchor_note_anchored_hi
+    intent regex_anchor_note_anchored
+    language hi
+    text "  - ^ और $ से anchored, इसलिए पूरी string मेल खानी चाहिए, केवल substring नहीं\n"
+  response response_regex_anchor_note_anchored_zh
+    intent regex_anchor_note_anchored
+    language zh
+    text "  - 用 ^ 和 $ 锚定，因此必须匹配整个字符串，而不仅仅是子串\n"
+  response response_regex_anchor_note_anchored_es
+    intent regex_anchor_note_anchored
+    language es
+    text "  - anclado con ^ y $, así que debe coincidir la cadena entera, no solo una subcadena\n"
   response response_regex_anchor_note_unanchored_en
     intent regex_anchor_note_unanchored
     language en
     text "  - not anchored (the request asked to match a substring), so the pattern matches anywhere\n"
+  response response_regex_anchor_note_unanchored_ru
+    intent regex_anchor_note_unanchored
+    language ru
+    text "  - не закреплено (запрос просил совпадение с подстрокой), поэтому шаблон совпадает в любом месте\n"
+  response response_regex_anchor_note_unanchored_hi
+    intent regex_anchor_note_unanchored
+    language hi
+    text "  - anchored नहीं (अनुरोध substring से मिलान चाहता था), इसलिए pattern कहीं भी मेल खाता है\n"
+  response response_regex_anchor_note_unanchored_zh
+    intent regex_anchor_note_unanchored
+    language zh
+    text "  - 未锚定（请求要求匹配子串），因此该模式可在任意位置匹配\n"
+  response response_regex_anchor_note_unanchored_es
+    intent regex_anchor_note_unanchored
+    language es
+    text "  - sin anclar (la solicitud pedía coincidir con una subcadena), así que el patrón coincide en cualquier posición\n"
   response response_regex_problem_dangling_escape_en
     intent regex_problem_dangling_escape
     language en
     text "a backslash at the end escapes nothing"
+  response response_regex_problem_dangling_escape_ru
+    intent regex_problem_dangling_escape
+    language ru
+    text "обратная косая черта в конце ничего не экранирует"
+  response response_regex_problem_dangling_escape_hi
+    intent regex_problem_dangling_escape
+    language hi
+    text "अंत में लगा backslash कुछ भी escape नहीं करता"
+  response response_regex_problem_dangling_escape_zh
+    intent regex_problem_dangling_escape
+    language zh
+    text "末尾的反斜杠没有转义任何内容"
+  response response_regex_problem_dangling_escape_es
+    intent regex_problem_dangling_escape
+    language es
+    text "una barra invertida al final no escapa nada"
   response response_regex_problem_bad_repetition_en
     intent regex_problem_bad_repetition
     language en
     text "a repetition count is missing after an opening brace"
+  response response_regex_problem_bad_repetition_ru
+    intent regex_problem_bad_repetition
+    language ru
+    text "после открывающей фигурной скобки отсутствует число повторений"
+  response response_regex_problem_bad_repetition_hi
+    intent regex_problem_bad_repetition
+    language hi
+    text "खुलने वाले brace के बाद repetition count नहीं है"
+  response response_regex_problem_bad_repetition_zh
+    intent regex_problem_bad_repetition
+    language zh
+    text "左花括号后缺少重复次数"
+  response response_regex_problem_bad_repetition_es
+    intent regex_problem_bad_repetition
+    language es
+    text "falta un número de repeticiones después de una llave de apertura"
   response response_regex_problem_unclosed_repetition_en
     intent regex_problem_unclosed_repetition
     language en
     text "a repetition count is not closed"
+  response response_regex_problem_unclosed_repetition_ru
+    intent regex_problem_unclosed_repetition
+    language ru
+    text "число повторений не закрыто"
+  response response_regex_problem_unclosed_repetition_hi
+    intent regex_problem_unclosed_repetition
+    language hi
+    text "repetition count बंद नहीं किया गया है"
+  response response_regex_problem_unclosed_repetition_zh
+    intent regex_problem_unclosed_repetition
+    language zh
+    text "重复次数没有闭合"
+  response response_regex_problem_unclosed_repetition_es
+    intent regex_problem_unclosed_repetition
+    language es
+    text "un número de repeticiones no está cerrado"
   response response_regex_problem_unbalanced_parens_en
     intent regex_problem_unbalanced_parens
     language en
     text "unbalanced parentheses"
+  response response_regex_problem_unbalanced_parens_ru
+    intent regex_problem_unbalanced_parens
+    language ru
+    text "несбалансированные круглые скобки"
+  response response_regex_problem_unbalanced_parens_hi
+    intent regex_problem_unbalanced_parens
+    language hi
+    text "parentheses संतुलित नहीं हैं"
+  response response_regex_problem_unbalanced_parens_zh
+    intent regex_problem_unbalanced_parens
+    language zh
+    text "圆括号不匹配"
+  response response_regex_problem_unbalanced_parens_es
+    intent regex_problem_unbalanced_parens
+    language es
+    text "paréntesis desequilibrados"
   response response_regex_problem_unbalanced_class_en
     intent regex_problem_unbalanced_class
     language en
     text "unbalanced character-class brackets"
+  response response_regex_problem_unbalanced_class_ru
+    intent regex_problem_unbalanced_class
+    language ru
+    text "несбалансированные скобки класса символов"
+  response response_regex_problem_unbalanced_class_hi
+    intent regex_problem_unbalanced_class
+    language hi
+    text "character-class brackets संतुलित नहीं हैं"
+  response response_regex_problem_unbalanced_class_zh
+    intent regex_problem_unbalanced_class
+    language zh
+    text "字符类方括号不匹配"
+  response response_regex_problem_unbalanced_class_es
+    intent regex_problem_unbalanced_class
+    language es
+    text "corchetes de clase de caracteres desequilibrados"
   response response_code_explanation_line_en
     intent code_explanation_line
     language en
+    text "  - `{line}` — {meaning} ({grounding})\n"
+  response response_code_explanation_line_ru
+    intent code_explanation_line
+    language ru
+    text "  - `{line}` — {meaning} ({grounding})\n"
+  response response_code_explanation_line_hi
+    intent code_explanation_line
+    language hi
+    text "  - `{line}` — {meaning} ({grounding})\n"
+  response response_code_explanation_line_zh
+    intent code_explanation_line
+    language zh
+    text "  - `{line}` — {meaning}（{grounding}）\n"
+  response response_code_explanation_line_es
+    intent code_explanation_line
+    language es
     text "  - `{line}` — {meaning} ({grounding})\n"
   response response_code_explanation_unmatched_line_en
     intent code_explanation_unmatched_line
     language en
     text "  - `{line}` — no construct in the table matches this line, so it is left unexplained rather than guessed\n"
+  response response_code_explanation_unmatched_line_ru
+    intent code_explanation_unmatched_line
+    language ru
+    text "  - `{line}` — ни одна конструкция таблицы не совпадает с этой строкой, поэтому она оставлена без объяснения, а не угадана\n"
+  response response_code_explanation_unmatched_line_hi
+    intent code_explanation_unmatched_line
+    language hi
+    text "  - `{line}` — table का कोई construct इस line से मेल नहीं खाता, इसलिए इसे अनुमान लगाने के बजाय बिना व्याख्या छोड़ा गया है\n"
+  response response_code_explanation_unmatched_line_zh
+    intent code_explanation_unmatched_line
+    language zh
+    text "  - `{line}` — 表中没有结构与此行匹配，因此不作解释，而不是猜测\n"
+  response response_code_explanation_unmatched_line_es
+    intent code_explanation_unmatched_line
+    language es
+    text "  - `{line}` — ninguna construcción de la tabla coincide con esta línea, así que se deja sin explicar en lugar de adivinarla\n"
   response response_code_explanation_overall_en
     intent code_explanation_overall
     language en
     text "the function name `{name}` promises {property}; the canonical expression of that promise is `{correct_form}` ({grounding}).\n"
+  response response_code_explanation_overall_ru
+    intent code_explanation_overall
+    language ru
+    text "имя функции `{name}` обещает {property}; каноническое выражение этого обещания — `{correct_form}` ({grounding}).\n"
+  response response_code_explanation_overall_hi
+    intent code_explanation_overall
+    language hi
+    text "function नाम `{name}` {property} का वादा करता है; इस वादे की canonical अभिव्यक्ति `{correct_form}` है ({grounding})।\n"
+  response response_code_explanation_overall_zh
+    intent code_explanation_overall
+    language zh
+    text "函数名 `{name}` 承诺{property}；该承诺的规范表达式是 `{correct_form}`（{grounding}）。\n"
+  response response_code_explanation_overall_es
+    intent code_explanation_overall
+    language es
+    text "el nombre de función `{name}` promete {property}; la expresión canónica de esa promesa es `{correct_form}` ({grounding}).\n"
   response response_code_explanation_no_overall_en
     intent code_explanation_no_overall
     language en
     text "the function name is not in the intent table, so there is no promised property to summarize.\n"
+  response response_code_explanation_no_overall_ru
+    intent code_explanation_no_overall
+    language ru
+    text "имени функции нет в таблице намерений, поэтому нет обещанного свойства для обобщения.\n"
+  response response_code_explanation_no_overall_hi
+    intent code_explanation_no_overall
+    language hi
+    text "function नाम intent table में नहीं है, इसलिए सारांश के लिए कोई वादा की गई property नहीं है।\n"
+  response response_code_explanation_no_overall_zh
+    intent code_explanation_no_overall
+    language zh
+    text "函数名不在意图表中，因此没有可供总结的承诺属性。\n"
+  response response_code_explanation_no_overall_es
+    intent code_explanation_no_overall
+    language es
+    text "el nombre de la función no está en la tabla de intenciones, así que no hay ninguna propiedad prometida que resumir.\n"
   response response_code_explanation_cost_linear_en
     intent code_explanation_cost_linear
     language en
     text "Cost: a single pass over the input, so the work grows linearly (O(n)).\n"
+  response response_code_explanation_cost_linear_ru
+    intent code_explanation_cost_linear
+    language ru
+    text "Стоимость: один проход по входным данным, поэтому работа растёт линейно (O(n)).\n"
+  response response_code_explanation_cost_linear_hi
+    intent code_explanation_cost_linear
+    language hi
+    text "लागत: input पर एक ही pass, इसलिए काम रैखिक रूप से बढ़ता है (O(n))।\n"
+  response response_code_explanation_cost_linear_zh
+    intent code_explanation_cost_linear
+    language zh
+    text "开销：对输入只遍历一遍，因此工作量线性增长（O(n)）。\n"
+  response response_code_explanation_cost_linear_es
+    intent code_explanation_cost_linear
+    language es
+    text "Coste: una sola pasada sobre la entrada, así que el trabajo crece linealmente (O(n)).\n"
   response response_code_explanation_cost_constant_en
     intent code_explanation_cost_constant
     language en
     text "Cost: no loop over the input appears in these lines.\n"
+  response response_code_explanation_cost_constant_ru
+    intent code_explanation_cost_constant
+    language ru
+    text "Стоимость: в этих строках нет цикла по входным данным.\n"
+  response response_code_explanation_cost_constant_hi
+    intent code_explanation_cost_constant
+    language hi
+    text "लागत: इन lines में input पर कोई loop नहीं है।\n"
+  response response_code_explanation_cost_constant_zh
+    intent code_explanation_cost_constant
+    language zh
+    text "开销：这些行中没有遍历输入的循环。\n"
+  response response_code_explanation_cost_constant_es
+    intent code_explanation_cost_constant
+    language es
+    text "Coste: en estas líneas no aparece ningún bucle sobre la entrada.\n"
   response response_code_review_finding_en
     intent code_review_finding
     language en
     text "  - [{severity}] {title} — line {line_no}: `{line}`\n    {advice}\n    {source}\n"
+  response response_code_review_finding_ru
+    intent code_review_finding
+    language ru
+    text "  - [{severity}] {title} — строка {line_no}: `{line}`\n    {advice}\n    {source}\n"
+  response response_code_review_finding_hi
+    intent code_review_finding
+    language hi
+    text "  - [{severity}] {title} — line {line_no}: `{line}`\n    {advice}\n    {source}\n"
+  response response_code_review_finding_zh
+    intent code_review_finding
+    language zh
+    text "  - [{severity}] {title} — 第 {line_no} 行：`{line}`\n    {advice}\n    {source}\n"
+  response response_code_review_finding_es
+    intent code_review_finding
+    language es
+    text "  - [{severity}] {title} — línea {line_no}: `{line}`\n    {advice}\n    {source}\n"
   response response_format_conversion_csv_to_json_en
     intent format_conversion_csv_to_json
     language en
     text "Converted CSV to JSON. Data rows: {rows}; header columns: {columns}. CSV carries no types, so every value stays a JSON string rather than a guessed number or boolean.\n\n```json\n{json}```\nRound-trip check: parsing the emitted JSON back gave every row the same value under every header column as the CSV it came from."
+  response response_format_conversion_csv_to_json_ru
+    intent format_conversion_csv_to_json
+    language ru
+    text "CSV преобразован в JSON. Строк данных: {rows}; столбцов заголовка: {columns}. В CSV нет типов, поэтому каждое значение остаётся строкой JSON, а не угаданным числом или булевым значением.\n\n```json\n{json}```\nПроверка обратного преобразования: разбор выданного JSON дал для каждой строки то же значение под каждым столбцом заголовка, что и в исходном CSV."
+  response response_format_conversion_csv_to_json_hi
+    intent format_conversion_csv_to_json
+    language hi
+    text "CSV को JSON में बदला गया। Data rows: {rows}; header columns: {columns}। CSV में types नहीं होते, इसलिए हर मान अनुमानित number या boolean के बजाय JSON string ही रहता है।\n\n```json\n{json}```\nRound-trip जाँच: बनाए गए JSON को फिर से parse करने पर हर row में हर header column के नीचे वही मान मिला जो मूल CSV में था।"
+  response response_format_conversion_csv_to_json_zh
+    intent format_conversion_csv_to_json
+    language zh
+    text "已将 CSV 转换为 JSON。数据行：{rows}；表头列：{columns}。CSV 不携带类型，因此每个值都保留为 JSON 字符串，而不是猜测的数字或布尔值。\n\n```json\n{json}```\n往返检查：将输出的 JSON 重新解析后，每一行在每个表头列下的值都与来源 CSV 相同。"
+  response response_format_conversion_csv_to_json_es
+    intent format_conversion_csv_to_json
+    language es
+    text "Convertí CSV a JSON. Filas de datos: {rows}; columnas de cabecera: {columns}. CSV no lleva tipos, así que cada valor queda como cadena JSON en lugar de un número o booleano adivinado.\n\n```json\n{json}```\nComprobación de ida y vuelta: al volver a analizar el JSON emitido, cada fila dio el mismo valor bajo cada columna de cabecera que el CSV de origen."
   response response_format_conversion_reason_csv_en
     intent format_conversion_reason_csv
     language en
     text "The text is outside the supported CSV subset (a header row of unique, non-empty names, then at least one row with the same number of comma-separated fields, double-quoted fields with doubled quotes inside), so I will not guess a conversion."
+  response response_format_conversion_reason_csv_ru
+    intent format_conversion_reason_csv
+    language ru
+    text "Текст выходит за пределы поддерживаемого подмножества CSV (строка заголовка с уникальными непустыми именами, затем хотя бы одна строка с тем же числом полей через запятую, поля в двойных кавычках с удвоенными кавычками внутри), поэтому я не буду угадывать преобразование."
+  response response_format_conversion_reason_csv_hi
+    intent format_conversion_reason_csv
+    language hi
+    text "Text समर्थित CSV subset से बाहर है (unique, non-empty नामों वाली header row, फिर कम से कम एक row जिसमें उतने ही comma-separated fields हों, double-quoted fields के अंदर quotes दोहराए गए हों), इसलिए मैं कोई conversion अनुमान से नहीं करूँगा।"
+  response response_format_conversion_reason_csv_zh
+    intent format_conversion_reason_csv
+    language zh
+    text "该文本超出了支持的 CSV 子集（一行由唯一且非空名称组成的表头，之后至少一行具有相同数量的逗号分隔字段，双引号字段内的引号需成对重复），因此我不会猜测转换结果。"
+  response response_format_conversion_reason_csv_es
+    intent format_conversion_reason_csv
+    language es
+    text "El texto queda fuera del subconjunto de CSV admitido (una fila de cabecera con nombres únicos y no vacíos y después al menos una fila con el mismo número de campos separados por comas, con los campos entre comillas dobles y las comillas internas duplicadas), así que no adivinaré una conversión."
   response response_format_conversion_reason_bad_json_en
     intent format_conversion_reason_bad_json
     language en
     text "The text was recognized as JSON but could not be parsed ({detail}), so I will not guess a conversion."
+  response response_format_conversion_reason_bad_json_ru
+    intent format_conversion_reason_bad_json
+    language ru
+    text "Текст распознан как JSON, но его не удалось разобрать ({detail}), поэтому я не буду угадывать преобразование."
+  response response_format_conversion_reason_bad_json_hi
+    intent format_conversion_reason_bad_json
+    language hi
+    text "Text को JSON के रूप में पहचाना गया लेकिन parse नहीं किया जा सका ({detail}), इसलिए मैं कोई conversion अनुमान से नहीं करूँगा।"
+  response response_format_conversion_reason_bad_json_zh
+    intent format_conversion_reason_bad_json
+    language zh
+    text "该文本被识别为 JSON，但无法解析（{detail}），因此我不会猜测转换结果。"
+  response response_format_conversion_reason_bad_json_es
+    intent format_conversion_reason_bad_json
+    language es
+    text "El texto se reconoció como JSON pero no se pudo analizar ({detail}), así que no adivinaré una conversión."
   response response_format_conversion_reason_roundtrip_en
     intent format_conversion_reason_roundtrip
     language en
     text "The conversion was composed, but re-parsing it did not reproduce the input exactly, so I will not show a possibly-wrong result."
+  response response_format_conversion_reason_roundtrip_ru
+    intent format_conversion_reason_roundtrip
+    language ru
+    text "Преобразование составлено, но его повторный разбор не воспроизвёл входные данные точно, поэтому я не покажу возможно неверный результат."
+  response response_format_conversion_reason_roundtrip_hi
+    intent format_conversion_reason_roundtrip
+    language hi
+    text "Conversion बना लिया गया, लेकिन उसे फिर से parse करने पर input ठीक वैसा नहीं मिला, इसलिए मैं संभवतः गलत परिणाम नहीं दिखाऊँगा।"
+  response response_format_conversion_reason_roundtrip_zh
+    intent format_conversion_reason_roundtrip
+    language zh
+    text "转换已生成，但重新解析后未能精确还原输入，因此我不会展示可能错误的结果。"
+  response response_format_conversion_reason_roundtrip_es
+    intent format_conversion_reason_roundtrip
+    language es
+    text "La conversión se compuso, pero al volver a analizarla no se reprodujo exactamente la entrada, así que no mostraré un resultado posiblemente erróneo."
   response response_format_conversion_reason_subset_en
     intent format_conversion_reason_subset
     language en
     text "The text is outside the supported YAML subset (block mappings, block sequences, two-space indent, scalars), so I will not guess a conversion."
+  response response_format_conversion_reason_subset_ru
+    intent format_conversion_reason_subset
+    language ru
+    text "Текст выходит за пределы поддерживаемого подмножества YAML (блочные отображения, блочные последовательности, отступ в два пробела, скаляры), поэтому я не буду угадывать преобразование."
+  response response_format_conversion_reason_subset_hi
+    intent format_conversion_reason_subset
+    language hi
+    text "Text समर्थित YAML subset से बाहर है (block mappings, block sequences, दो-space indent, scalars), इसलिए मैं कोई conversion अनुमान से नहीं करूँगा।"
+  response response_format_conversion_reason_subset_zh
+    intent format_conversion_reason_subset
+    language zh
+    text "该文本超出了支持的 YAML 子集（块映射、块序列、两个空格缩进、标量），因此我不会猜测转换结果。"
+  response response_format_conversion_reason_subset_es
+    intent format_conversion_reason_subset
+    language es
+    text "El texto queda fuera del subconjunto de YAML admitido (mapeos de bloque, secuencias de bloque, sangría de dos espacios, escalares), así que no adivinaré una conversión."
   response response_test_generation_unknown_shape_en
     intent test_generation_unknown_shape
     language en
     text "Recognized a request for tests of `{function}`, but its name matches no problem shape in the test-case table ({shapes}) and the request states no example with its expected value, so I will not guess what it must return. State examples as a call followed by its expected value, such as `{function}(<input>) returns <expected>` with a number, a quoted string, a list, True, False or None, and each one becomes a test case."
+  response response_test_generation_unknown_shape_ru
+    intent test_generation_unknown_shape
+    language ru
+    text "Распознан запрос на тесты для `{function}`, но её имя не совпадает ни с одной формой задачи в таблице тестовых случаев ({shapes}), а запрос не приводит ни одного примера с ожидаемым значением, поэтому я не буду угадывать, что она должна возвращать. Укажите примеры как вызов и ожидаемое значение, например `{function}(<input>) returns <expected>`, с числом, строкой в кавычках, списком, True, False или None, и каждый станет тестовым случаем."
+  response response_test_generation_unknown_shape_hi
+    intent test_generation_unknown_shape
+    language hi
+    text "`{function}` के tests का अनुरोध पहचाना गया, लेकिन उसका नाम test-case table की किसी problem shape ({shapes}) से मेल नहीं खाता और अनुरोध में अपेक्षित मान वाला कोई उदाहरण नहीं है, इसलिए मैं अनुमान नहीं लगाऊँगा कि उसे क्या लौटाना चाहिए। उदाहरण call और उसके अपेक्षित मान के रूप में दें, जैसे `{function}(<input>) returns <expected>`, जिसमें number, quoted string, list, True, False या None हो, और हर उदाहरण एक test case बन जाएगा।"
+  response response_test_generation_unknown_shape_zh
+    intent test_generation_unknown_shape
+    language zh
+    text "识别到为 `{function}` 编写测试的请求，但它的名字与测试用例表中的任何问题形状（{shapes}）都不匹配，请求中也没有给出带预期值的示例，因此我不会猜测它应返回什么。请以调用加预期值的形式给出示例，例如 `{function}(<input>) returns <expected>`，预期值可以是数字、带引号的字符串、列表、True、False 或 None，每个示例都会成为一个测试用例。"
+  response response_test_generation_unknown_shape_es
+    intent test_generation_unknown_shape
+    language es
+    text "Reconocí una solicitud de pruebas para `{function}`, pero su nombre no coincide con ninguna forma de problema de la tabla de casos de prueba ({shapes}) y la solicitud no da ningún ejemplo con su valor esperado, así que no adivinaré lo que debe devolver. Indica ejemplos como una llamada seguida de su valor esperado, por ejemplo `{function}(<input>) returns <expected>` con un número, una cadena entre comillas, una lista, True, False o None, y cada uno se convertirá en un caso de prueba."
   response response_test_generation_refusal_en
     intent test_generation_refusal
     language en
     text "Recognized a test-writing request, but no function under test could be identified — name it, ideally in backticks like `is_palindrome(s)` — so I will not guess test cases."
+  response response_test_generation_refusal_ru
+    intent test_generation_refusal
+    language ru
+    text "Распознан запрос на написание тестов, но тестируемую функцию определить не удалось — назовите её, лучше в обратных кавычках, например `is_palindrome(s)`, — поэтому я не буду угадывать тестовые случаи."
+  response response_test_generation_refusal_hi
+    intent test_generation_refusal
+    language hi
+    text "Test लिखने का अनुरोध पहचाना गया, लेकिन test की जाने वाली कोई function पहचानी नहीं जा सकी — उसका नाम बताएँ, बेहतर हो backticks में जैसे `is_palindrome(s)` — इसलिए मैं test cases अनुमान से नहीं बनाऊँगा।"
+  response response_test_generation_refusal_zh
+    intent test_generation_refusal
+    language zh
+    text "识别到编写测试的请求，但无法确定被测函数——请说出它的名字，最好用反引号括起来，例如 `is_palindrome(s)`——因此我不会猜测测试用例。"
+  response response_test_generation_refusal_es
+    intent test_generation_refusal
+    language es
+    text "Reconocí una solicitud para escribir pruebas, pero no se pudo identificar ninguna función bajo prueba — nómbrala, idealmente entre comillas invertidas como `is_palindrome(s)` —, así que no adivinaré casos de prueba."
   response response_regex_synthesis_execution_verified_en
     intent regex_synthesis_execution_verified
     language en
     text "Verified by execution in the browser worker: the pattern was compiled with the JavaScript RegExp engine and matched all {positive_count} positive examples derived from the constraints ({positives}) and rejected all {negative_count} negative examples ({negatives})."
+  response response_regex_synthesis_execution_verified_ru
+    intent regex_synthesis_execution_verified
+    language ru
+    text "Проверено выполнением в браузерном воркере: шаблон скомпилирован движком RegExp JavaScript, совпал со всеми {positive_count} положительными примерами, выведенными из ограничений ({positives}), и отклонил все {negative_count} отрицательных примеров ({negatives})."
+  response response_regex_synthesis_execution_verified_hi
+    intent regex_synthesis_execution_verified
+    language hi
+    text "Browser worker में execution से सत्यापित: pattern को JavaScript RegExp engine से compile किया गया, इसने constraints से निकाले गए सभी {positive_count} positive उदाहरणों ({positives}) से मेल खाया और सभी {negative_count} negative उदाहरणों ({negatives}) को अस्वीकार किया।"
+  response response_regex_synthesis_execution_verified_zh
+    intent regex_synthesis_execution_verified
+    language zh
+    text "已在浏览器 worker 中通过执行验证：该模式由 JavaScript RegExp 引擎编译，匹配了从约束推导出的全部 {positive_count} 个正例（{positives}），并拒绝了全部 {negative_count} 个反例（{negatives}）。"
+  response response_regex_synthesis_execution_verified_es
+    intent regex_synthesis_execution_verified
+    language es
+    text "Verificado por ejecución en el worker del navegador: el patrón se compiló con el motor RegExp de JavaScript, coincidió con los {positive_count} ejemplos positivos derivados de las restricciones ({positives}) y rechazó los {negative_count} ejemplos negativos ({negatives})."
   response response_regex_synthesis_execution_failed_en
     intent regex_synthesis_execution_failed
     language en
     text "Execution check failed in the browser worker: {failures}. Do not rely on this pattern; restate the counts and separators and I will compose it again."
+  response response_regex_synthesis_execution_failed_ru
+    intent regex_synthesis_execution_failed
+    language ru
+    text "Проверка выполнением в браузерном воркере не прошла: {failures}. Не полагайтесь на этот шаблон; переформулируйте количества и разделители, и я составлю его заново."
+  response response_regex_synthesis_execution_failed_hi
+    intent regex_synthesis_execution_failed
+    language hi
+    text "Browser worker में execution जाँच विफल रही: {failures}। इस pattern पर भरोसा न करें; counts और separators फिर से बताइए और मैं इसे फिर से बनाऊँगा।"
+  response response_regex_synthesis_execution_failed_zh
+    intent regex_synthesis_execution_failed
+    language zh
+    text "浏览器 worker 中的执行检查失败：{failures}。请不要依赖该模式；重新说明数量和分隔符，我会重新组合。"
+  response response_regex_synthesis_execution_failed_es
+    intent regex_synthesis_execution_failed
+    language es
+    text "La comprobación por ejecución en el worker del navegador falló: {failures}. No confíes en este patrón; vuelve a indicar las cantidades y los separadores y lo compondré de nuevo."
   response response_code_refactoring_execution_matched_en
     intent code_refactoring_execution_matched
     language en
     text "Execution check in the browser worker, beyond the structural check: the original chain and the rewrite both ran against recording stubs for every free identifier in {scenarios} scenarios (every call fulfilled, then each of the {calls} calls rejecting in turn), and the recorded call traces matched. Fulfilled trace: {trace}."
+  response response_code_refactoring_execution_matched_ru
+    intent code_refactoring_execution_matched
+    language ru
+    text "Проверка выполнением в браузерном воркере, помимо структурной проверки: исходная цепочка и переписанный вариант выполнены с записывающими заглушками для каждого свободного идентификатора в {scenarios} сценариях (все вызовы успешны, затем каждый из {calls} вызовов по очереди отклоняется), и записанные трассы вызовов совпали. Трасса успешного выполнения: {trace}."
+  response response_code_refactoring_execution_matched_hi
+    intent code_refactoring_execution_matched
+    language hi
+    text "Structural जाँच के अलावा browser worker में execution जाँच: मूल chain और नया रूप, दोनों को हर free identifier के लिए recording stubs के साथ {scenarios} scenarios में चलाया गया (सभी calls पूरी, फिर {calls} calls में से हर एक बारी-बारी से reject), और दर्ज call traces मेल खाए। सफल trace: {trace}।"
+  response response_code_refactoring_execution_matched_zh
+    intent code_refactoring_execution_matched
+    language zh
+    text "在结构检查之外，还在浏览器 worker 中做了执行检查：原始链和改写版本都针对每个自由标识符使用记录桩，在 {scenarios} 个场景中运行（先所有调用都成功，然后 {calls} 个调用依次各自被拒绝），记录的调用轨迹一致。成功轨迹：{trace}。"
+  response response_code_refactoring_execution_matched_es
+    intent code_refactoring_execution_matched
+    language es
+    text "Comprobación por ejecución en el worker del navegador, además de la estructural: la cadena original y la reescritura se ejecutaron con stubs de registro para cada identificador libre en {scenarios} escenarios (todas las llamadas cumplidas y luego cada una de las {calls} llamadas rechazada por turno), y las trazas de llamadas registradas coincidieron. Traza cumplida: {trace}."
   response response_code_refactoring_execution_mismatch_en
     intent code_refactoring_execution_mismatch
     language en
     text "Execution check in the browser worker found a difference between the original chain and the rewrite ({detail}). Review the rewrite before relying on it."
+  response response_code_refactoring_execution_mismatch_ru
+    intent code_refactoring_execution_mismatch
+    language ru
+    text "Проверка выполнением в браузерном воркере нашла различие между исходной цепочкой и переписанным вариантом ({detail}). Проверьте переписанный код, прежде чем на него полагаться."
+  response response_code_refactoring_execution_mismatch_hi
+    intent code_refactoring_execution_mismatch
+    language hi
+    text "Browser worker की execution जाँच में मूल chain और नए रूप के बीच अंतर मिला ({detail})। इस पर भरोसा करने से पहले नए रूप की समीक्षा करें।"
+  response response_code_refactoring_execution_mismatch_zh
+    intent code_refactoring_execution_mismatch
+    language zh
+    text "浏览器 worker 中的执行检查发现原始链与改写版本之间存在差异（{detail}）。在依赖改写版本之前请先审阅。"
+  response response_code_refactoring_execution_mismatch_es
+    intent code_refactoring_execution_mismatch
+    language es
+    text "La comprobación por ejecución en el worker del navegador encontró una diferencia entre la cadena original y la reescritura ({detail}). Revisa la reescritura antes de confiar en ella."
   response response_code_refactoring_execution_skipped_en
     intent code_refactoring_execution_skipped
     language en
     text "Execution check in the browser worker was skipped ({detail}); only the structural check above applies."
+  response response_code_refactoring_execution_skipped_ru
+    intent code_refactoring_execution_skipped
+    language ru
+    text "Проверка выполнением в браузерном воркере пропущена ({detail}); действует только структурная проверка выше."
+  response response_code_refactoring_execution_skipped_hi
+    intent code_refactoring_execution_skipped
+    language hi
+    text "Browser worker की execution जाँच छोड़ दी गई ({detail}); केवल ऊपर की structural जाँच लागू है।"
+  response response_code_refactoring_execution_skipped_zh
+    intent code_refactoring_execution_skipped
+    language zh
+    text "已跳过浏览器 worker 中的执行检查（{detail}）；仅上面的结构检查有效。"
+  response response_code_refactoring_execution_skipped_es
+    intent code_refactoring_execution_skipped
+    language es
+    text "Se omitió la comprobación por ejecución en el worker del navegador ({detail}); solo se aplica la comprobación estructural anterior."
   response response_algorithm_sort_en
     intent algorithm_sort
     language en
     text "Here is a reviewable sorting algorithm in {language}:\n\n```{snippet}\n{code}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable."
+  response response_algorithm_sort_ru
+    intent algorithm_sort
+    language ru
+    text "Вот проверяемый алгоритм сортировки на {language}:\n\n```{snippet}\n{code}\n```\n\nСтатус выполнения: недоступно в этой среде. Фрагмент предназначен для проверки и копирования."
+  response response_algorithm_sort_hi
+    intent algorithm_sort
+    language hi
+    text "यह {language} में एक समीक्षा-योग्य sorting algorithm है:\n\n```{snippet}\n{code}\n```\n\nनिष्पादन स्थिति: इस runtime में उपलब्ध नहीं। यह snippet copy-paste करके समीक्षा करने के लिए है।"
+  response response_algorithm_sort_zh
+    intent algorithm_sort
+    language zh
+    text "这是一个可审阅的 {language} 排序算法：\n\n```{snippet}\n{code}\n```\n\n执行状态：此运行环境不可用。该代码片段供复制粘贴审阅。"
+  response response_algorithm_sort_es
+    intent algorithm_sort
+    language es
+    text "Aquí tienes un algoritmo de ordenación revisable en {language}:\n\n```{snippet}\n{code}\n```\n\nEstado de ejecución: no disponible en este entorno. El fragmento está pensado para revisarlo copiándolo y pegándolo."
   response response_algorithm_sort_with_tests_en
     intent algorithm_sort_with_tests
     language en
     text "Here is a reviewable sorting algorithm in {language} with a test:\n\n```{snippet}\n{code}\n```\n\nTests:\n```{snippet}\n{tests}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable."
+  response response_algorithm_sort_with_tests_ru
+    intent algorithm_sort_with_tests
+    language ru
+    text "Вот проверяемый алгоритм сортировки на {language} с тестом:\n\n```{snippet}\n{code}\n```\n\nТесты:\n```{snippet}\n{tests}\n```\n\nСтатус выполнения: недоступно в этой среде. Фрагмент предназначен для проверки и копирования."
+  response response_algorithm_sort_with_tests_hi
+    intent algorithm_sort_with_tests
+    language hi
+    text "यह {language} में एक समीक्षा-योग्य sorting algorithm है, test के साथ:\n\n```{snippet}\n{code}\n```\n\nTests:\n```{snippet}\n{tests}\n```\n\nनिष्पादन स्थिति: इस runtime में उपलब्ध नहीं। यह snippet copy-paste करके समीक्षा करने के लिए है।"
+  response response_algorithm_sort_with_tests_zh
+    intent algorithm_sort_with_tests
+    language zh
+    text "这是一个可审阅的 {language} 排序算法，附带测试：\n\n```{snippet}\n{code}\n```\n\n测试：\n```{snippet}\n{tests}\n```\n\n执行状态：此运行环境不可用。该代码片段供复制粘贴审阅。"
+  response response_algorithm_sort_with_tests_es
+    intent algorithm_sort_with_tests
+    language es
+    text "Aquí tienes un algoritmo de ordenación revisable en {language} con una prueba:\n\n```{snippet}\n{code}\n```\n\nPruebas:\n```{snippet}\n{tests}\n```\n\nEstado de ejecución: no disponible en este entorno. El fragmento está pensado para revisarlo copiándolo y pegándolo."
   response response_algorithm_sort_code_python_en
     intent algorithm_sort_code_python
     language en

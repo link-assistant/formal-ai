@@ -180,7 +180,7 @@ meanings
     effect "the plan's opening sentence carries the requested format label"
     unit "not applicable"
     example " in PDF format"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-documents.lino"
   document_format_conversion
     defined-by answer
     role localized_response_template
@@ -188,7 +188,7 @@ meanings
     effect "the answer names the conversion engine and both formats before the converted output"
     unit "not applicable"
     example "Source: Markdown; target: HTML."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-documents.lino"
   document_format_conversion_native_concepts
     defined-by answer
     role localized_response_template
@@ -196,7 +196,7 @@ meanings
     effect "the answer names the concepts the target format represents natively"
     unit "not applicable"
     example "Native target concepts: heading, paragraph."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-documents.lino"
   document_format_conversion_fallbacks
     defined-by answer
     role localized_response_template
@@ -204,7 +204,7 @@ meanings
     effect "the answer heads the list of concepts that fall back to another form"
     unit "not applicable"
     example "Documented target fallbacks:"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-documents.lino"
   document_format_conversion_fallback
     defined-by answer
     role localized_response_template
@@ -212,7 +212,7 @@ meanings
     effect "the answer pairs the concept with the form it falls back to"
     unit "not applicable"
     example "- emphasis -> plain text"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-documents.lino"
   document_format_conversion_package
     defined-by answer
     role localized_response_template
@@ -220,7 +220,7 @@ meanings
     effect "the answer gives the package layer size in bytes"
     unit "not applicable"
     example "Package layer: 1024 bytes in the DOCX OPC stored-entry profile."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-documents.lino"
   calendar_weekday_relation_next
     defined-by answer
     role localized_response_template
@@ -676,7 +676,7 @@ meanings
     effect "renders this part of the converted answer"
     unit "not applicable"
     example "Converted installation instructions for {project}."
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-installation.lino"
   installation_formalized_meaning_heading
     defined-by answer
     role localized_response_template
@@ -684,7 +684,7 @@ meanings
     effect "renders this part of the converted answer"
     unit "not applicable"
     example "Formalized meaning:"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-installation.lino"
   installation_conversion_algorithm
     defined-by answer
     role localized_response_template
@@ -692,7 +692,7 @@ meanings
     effect "renders this part of the converted answer"
     unit "not applicable"
     example "Conversion algorithm:"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-installation.lino"
   installation_markdown_heading
     defined-by answer
     role localized_response_template
@@ -700,7 +700,7 @@ meanings
     effect "renders this part of the converted answer"
     unit "not applicable"
     example "README.md installation guide:"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-installation.lino"
   installation_shell_heading
     defined-by answer
     role localized_response_template
@@ -708,7 +708,7 @@ meanings
     effect "renders this part of the converted answer"
     unit "not applicable"
     example "Bash script:"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-installation.lino"
   installation_powershell_heading
     defined-by answer
     role localized_response_template
@@ -716,7 +716,7 @@ meanings
     effect "renders this part of the converted answer"
     unit "not applicable"
     example "PowerShell script:"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-installation.lino"
   installation_default_project
     defined-by answer
     role localized_response_template
@@ -724,7 +724,7 @@ meanings
     effect "renders this part of the converted answer"
     unit "not applicable"
     example "the project"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-installation.lino"
   installation_step_clone
     defined-by answer
     role localized_response_template
@@ -732,7 +732,7 @@ meanings
     effect "renders this part of the converted answer"
     unit "not applicable"
     example "Clone the repository"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-installation.lino"
   installation_step_enter_directory
     defined-by answer
     role localized_response_template
@@ -740,7 +740,7 @@ meanings
     effect "renders this part of the converted answer"
     unit "not applicable"
     example "Enter the project directory"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-installation.lino"
   installation_step_install
     defined-by answer
     role localized_response_template
@@ -748,7 +748,7 @@ meanings
     effect "renders this part of the converted answer"
     unit "not applicable"
     example "Install dependencies"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-installation.lino"
   installation_step_verify
     defined-by answer
     role localized_response_template
@@ -756,7 +756,7 @@ meanings
     effect "renders this part of the converted answer"
     unit "not applicable"
     example "Run the verification command"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-installation.lino"
   installation_step_build
     defined-by answer
     role localized_response_template
@@ -764,7 +764,7 @@ meanings
     effect "renders this part of the converted answer"
     unit "not applicable"
     example "Build the project"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-installation.lino"
   installation_step_start
     defined-by answer
     role localized_response_template
@@ -772,7 +772,7 @@ meanings
     effect "renders this part of the converted answer"
     unit "not applicable"
     example "Start the application"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-installation.lino"
   installation_step_probe
     defined-by answer
     role localized_response_template
@@ -780,7 +780,7 @@ meanings
     effect "renders this part of the converted answer"
     unit "not applicable"
     example "Verify the installation"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-installation.lino"
   installation_step_run_program
     defined-by answer
     role localized_response_template
@@ -788,7 +788,7 @@ meanings
     effect "renders this part of the converted answer"
     unit "not applicable"
     example "Run {program}"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-installation.lino"
   installation_step_run_verb
     defined-by answer
     role localized_response_template
@@ -796,7 +796,7 @@ meanings
     effect "renders this part of the converted answer"
     unit "not applicable"
     example "Run the {program} {verb} step"
-    grounding "data/seed/multilingual-responses-synthesis.lino"
+    grounding "data/seed/multilingual-responses-installation.lino"
   translation_gap_no_source
     defined-by answer
     role localized_response_template

@@ -1276,6 +1276,13 @@ function searchBoundaryBefore(text, verbStart, markers) {
 // boundary before it is part of the topic and left untouched. Mirrors
 // truncate_search_instruction_tail in src/solver_handlers/web_search_intent.rs.
 // Issue #1175 R3, numeric group: claim evidence spread into CLAIM_EVIDENCE (formal_ai_worker_dispatch.js), each the operand reader its handler already runs, twin of rust/src/capability_routing/claims.rs.
-const NUMERIC_CLAIM_EVIDENCE = Object.freeze({ stated_number: (prompt) => parseNumericListNumbers(String(prompt).toLowerCase()).length > 0, calculation_expression: (prompt) => Boolean(extractArithmeticExpression(prompt)), currency_rate_basis: (prompt) => mentionsUsdRate(normalizePrompt(prompt)) && mentionsRateCalculationBasis(normalizePrompt(prompt)),
-  investment_terms: (prompt, normalized) => parseCompoundInterestRequest(prompt, normalized) !== null, conversion_target_currency: (prompt, normalized) => Boolean(targetCurrencyFromText(normalized)), interval_bounds: (prompt, normalized) => numberConstraintIntervalBounds(normalizePrompt(normalized), String(prompt).toLowerCase()) !== null,
-  measured_quantity: (prompt) => parseNumericListNumbers(String(prompt).toLowerCase()).length > 0 && unitMentions(String(prompt).toLowerCase()).length === 2, calendar_anchor: (prompt, normalized) => Boolean(detectWeekday(normalized) || detectCalendarMonth(normalized) || calendarStatedDate(prompt, normalized) || mentionsCurrentDayQuestion(normalized)) });
+const NUMERIC_CLAIM_EVIDENCE = Object.freeze({
+  stated_number: (prompt) => parseNumericListNumbers(String(prompt).toLowerCase()).length > 0,
+  calculation_expression: (prompt) => Boolean(extractArithmeticExpression(prompt)),
+  currency_rate_basis: (prompt) => mentionsUsdRate(normalizePrompt(prompt)) && mentionsRateCalculationBasis(normalizePrompt(prompt)),
+  investment_terms: (prompt, normalized) => parseCompoundInterestRequest(prompt, normalized) !== null,
+  conversion_target_currency: (prompt, normalized) => Boolean(targetCurrencyFromText(normalized)),
+  interval_bounds: (prompt, normalized) => numberConstraintIntervalBounds(normalizePrompt(normalized), String(prompt).toLowerCase()) !== null,
+  measured_quantity: (prompt) => parseNumericListNumbers(String(prompt).toLowerCase()).length > 0 && unitMentions(String(prompt).toLowerCase()).length === 2,
+  calendar_anchor: (prompt, normalized) => Boolean(detectWeekday(normalized) || detectCalendarMonth(normalized) || calendarStatedDate(prompt, normalized) || mentionsCurrentDayQuestion(normalized)),
+});

@@ -134,8 +134,8 @@ test("playwright starters answer with the native pins in every language", async 
   for (const [prompt, expected] of [
     ["Can you write a Playwright script?", english],
     ["Можешь написать мне Playright скрипт?", russian],
-    ["क्या तुम Playwright script लिख सकते हो?", english],
-    ["可以写一个 Playwright script 吗？", english],
+    ["क्या तुम Playwright script लिख सकते हो?", rustRawConstant("PLAYWRIGHT_HI_ANSWER")],
+    ["可以写一个 Playwright script 吗？", rustRawConstant("PLAYWRIGHT_ZH_ANSWER")],
   ]) {
     const response = await solveWith(prompt, []);
     assert.equal(response.intent, "playwright_script", prompt);
@@ -233,7 +233,14 @@ test("web search texts come from the seed in every language", async () => {
     "Не получены результаты веб-поиска с поддержкой CORS для `rust`.\n\nПопробованы провайдеры: duckduckgo, wikipedia.",
     "Все CORS-совместимые поисковые провайдеры отключены в этой сессии. Пробовали: duckduckgo.",
   ]);
-  assert.deepEqual(texts[2], texts[0]);
+  assert.deepEqual(texts[2], [
+    "Resultados de búsqueda para `rust`: los 10 primeros tras reciprocal rank fusion (k = 60).",
+    "Otras fuentes",
+    "vía",
+    "Leer más",
+    "No se devolvieron resultados de búsqueda web con CORS para `rust`.\n\nProveedores probados: duckduckgo, wikipedia.",
+    "Todos los proveedores de búsqueda legibles por CORS están desactivados en esta sesión. Probados: duckduckgo.",
+  ]);
   assert.equal(plain(evaluate(worker, 'wikinewsFallbackDescription("Mars rover lands", "ru")')), "В Wikinews есть новостная статья «Mars rover lands».");
   assert.equal(plain(evaluate(worker, 'wikinewsFallbackDescription("Mars rover lands", "en")')), 'Wikinews has a news article titled "Mars rover lands".');
 });

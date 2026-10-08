@@ -555,6 +555,10 @@ multilingual_responses_quantities
     intent calendar_weekday_relation_next
     language zh
     text "{source}之后是{result}。我在七天的日历循环中将{source_plain}移动{delta}天。"
+  response response_calendar_weekday_relation_next_es
+    intent calendar_weekday_relation_next
+    language es
+    text "El día siguiente a {source} es {result}. Desplazo {source_plain} en {delta} dentro del ciclo de siete días del calendario."
   response response_calendar_weekday_relation_previous_en
     intent calendar_weekday_relation_previous
     language en
@@ -571,6 +575,10 @@ multilingual_responses_quantities
     intent calendar_weekday_relation_previous
     language zh
     text "{source}之前是{result}。我在七天的日历循环中将{source_plain}移动{delta}天。"
+  response response_calendar_weekday_relation_previous_es
+    intent calendar_weekday_relation_previous
+    language es
+    text "El día anterior a {source} es {result}. Desplazo {source_plain} en {delta} dentro del ciclo de siete días del calendario."
   response response_calendar_current_day_en
     intent calendar_current_day
     language en
@@ -587,6 +595,10 @@ multilingual_responses_quantities
     intent calendar_current_day
     language zh
     text "今天是{weekday}，{date}（{time_zone}）。"
+  response response_calendar_current_day_es
+    intent calendar_current_day
+    language es
+    text "Hoy es {weekday}, {date} ({time_zone})."
   response response_calendar_create_event_confirmation_en
     intent calendar_create_event_confirmation
     language en
@@ -603,3 +615,7 @@ multilingual_responses_quantities
     intent calendar_create_event_confirmation
     language zh
     text "在 {date}（{time}，时区 {time_zone}）创建事件「{title}」。时长 {minutes} 分钟。\n将此 .ics 文件导入任何日历：\n{ics}\n或在 Google 日历中打开（无需登录）：\n{google_url}\n回复「是」以确认。"
+  response response_calendar_create_event_confirmation_es
+    intent calendar_create_event_confirmation
+    language es
+    text "Crear el evento «{title}» el {date}. Hora: {time}, zona horaria: {time_zone}. Duración: {minutes} minutos.\nImporta este archivo .ics en cualquier calendario:\n{ics}\nO ábrelo en Google Calendar (no hace falta iniciar sesión):\n{google_url}\nResponde «sí» para confirmar."

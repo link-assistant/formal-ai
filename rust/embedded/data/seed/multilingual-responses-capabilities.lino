@@ -27,6 +27,10 @@ multilingual_responses
     intent feature_capability_available
     language zh
     text "可以。当前配置中「{label}」可用。示例消息：`{example}`。"
+  response response_feature_capability_available_es
+    intent feature_capability_available
+    language es
+    text "Sí. {label} está disponible en esta configuración. Mensaje de ejemplo: `{example}`."
   response response_feature_capability_unavailable_en
     intent feature_capability_unavailable
     language en
@@ -43,6 +47,10 @@ multilingual_responses
     intent feature_capability_unavailable
     language zh
     text "不可以。当前配置中「{label}」不可用：{reason}。启用后的示例消息：`{example}`。"
+  response response_feature_capability_unavailable_es
+    intent feature_capability_unavailable
+    language es
+    text "No. {label} no está disponible en esta configuración: {reason}. Mensaje de ejemplo después de activarlo: `{example}`."
   response response_feature_capability_reason_agent_mode_off_en
     intent feature_capability_reason_agent_mode_off
     language en
@@ -59,6 +67,10 @@ multilingual_responses
     intent feature_capability_reason_agent_mode_off
     language zh
     text "agent mode 已关闭；多步骤操作需要显式启用"
+  response response_feature_capability_reason_agent_mode_off_es
+    intent feature_capability_reason_agent_mode_off
+    language es
+    text "el modo agente está desactivado; las acciones de varios pasos requieren activarlo de forma explícita"
   response response_feature_capability_reason_diagnostic_mode_off_en
     intent feature_capability_reason_diagnostic_mode_off
     language en
@@ -75,6 +87,10 @@ multilingual_responses
     intent feature_capability_reason_diagnostic_mode_off
     language zh
     text "诊断已关闭；开启后才会显示 trace"
+  response response_feature_capability_reason_diagnostic_mode_off_es
+    intent feature_capability_reason_diagnostic_mode_off
+    language es
+    text "los diagnósticos están desactivados; actívalos para ver las trazas"
   response response_feature_capability_reason_definition_fusion_explicit_en
     intent feature_capability_reason_definition_fusion_explicit
     language en
@@ -91,6 +107,10 @@ multilingual_responses
     intent feature_capability_reason_definition_fusion_explicit
     language zh
     text "自动 definition fusion 需要切换到 auto 模式"
+  response response_feature_capability_reason_definition_fusion_explicit_es
+    intent feature_capability_reason_definition_fusion_explicit
+    language es
+    text "la fusión automática de definiciones está configurada solo para uso explícito"
   response response_feature_capability_web_search_available_en
     intent feature_capability_web_search_available
     language en
@@ -131,14 +151,26 @@ multilingual_responses
     intent feature_capability_web_search_available
     language zh
     text "可以。当前配置启用了 web search：我会默认使用 DuckDuckGo Instant Answer，并可使用这些 CORS-readable provider（`{providers}`）处理明确的搜索请求，例如 `Search the web for Nikola Tesla`。每个 provider 的 top-10 结果会用 reciprocal rank fusion 合并（k = {k}）。如果浏览器会话中所有 provider 被禁用或阻止，我会说明不可用，而不是回答可以。"
+  response response_feature_capability_web_search_available_es
+    intent feature_capability_web_search_available
+    language es
+    text "Sí. La búsqueda web está activada en esta configuración: puedo usar DuckDuckGo Instant Answer por defecto y los proveedores configurados legibles por CORS (`{providers}`) para solicitudes explícitas como `Busca en la web Nikola Tesla`. Los 10 primeros resultados de cada proveedor se combinan con reciprocal rank fusion (k = {k}). Si la sesión del navegador desactiva o bloquea todos los proveedores, lo diré en lugar de afirmar que la búsqueda está disponible."
   response response_feature_capability_web_search_unavailable_zh
     intent feature_capability_web_search_unavailable
     language zh
     text "不可以。当前配置的 offline 模式禁用了 web search，或者没有可用的搜索 provider。我仍可使用本地规则和缓存回答，但不会调用搜索引擎。"
+  response response_feature_capability_web_search_unavailable_es
+    intent feature_capability_web_search_unavailable
+    language es
+    text "No. La búsqueda web está desactivada por el modo sin conexión de esta configuración o no hay proveedores de búsqueda configurados. Aun así puedo responder con las reglas locales y la caché, pero no llamaré a motores de búsqueda."
   response response_feature_capability_web_search_unavailable_browser_zh
     intent feature_capability_web_search_unavailable_browser
     language zh
     text "不可以。当前浏览器会话中 web search 不可用：浏览器 offline，或所有 CORS-readable 搜索 provider 都因错误被禁用。我仍可使用本地规则和缓存回答，但不会调用搜索引擎。"
+  response response_feature_capability_web_search_unavailable_browser_es
+    intent feature_capability_web_search_unavailable_browser
+    language es
+    text "No. La búsqueda web no está disponible en esta sesión del navegador: el navegador está sin conexión o todos los proveedores de búsqueda legibles por CORS se desactivaron tras errores. Aun así puedo responder con las reglas locales y la caché, pero no llamaré a motores de búsqueda."
   response response_meta_explanation_architecture_en
     intent meta_explanation_architecture
     language en
@@ -155,3 +187,7 @@ multilingual_responses
     intent meta_explanation_architecture
     language zh
     text "我不是 LLM runtime, 也不执行神经网络推理。当前环境: {surface_label} (`{surface}`)。Runtime: {runtime}。项目提供 OpenAI-compatible API 形状, 但回答由确定性的 solver 生成: 先检查本地 Links Notation seed、规则和记忆 ({memory}); 然后只在当前环境允许时使用 web search: {web_search}。整个互联网不会预加载到本地规则中。"
+  response response_meta_explanation_architecture_es
+    intent meta_explanation_architecture
+    language es
+    text "No soy un entorno de ejecución de LLM ni realizo inferencia neuronal. Entorno actual: {surface_label} (`{surface}`). Entorno de ejecución: {runtime}. El proyecto expone formatos de API compatibles con OpenAI, pero las respuestas las produce un solucionador determinista: primero revisa la semilla local de Links Notation, las reglas y la memoria ({memory}); la búsqueda web solo se usa cuando este entorno lo permite: {web_search}. Internet entero no está precargado en las reglas locales."

@@ -8,7 +8,39 @@ multilingual_responses
     intent repair_ladder_exhausted
     language en
     text "The error-driven repair loop climbed rung {rung} of at most {max_rungs} without resolving the failure, so it stopped here instead of retrying without a bound. Each rung formalized the diagnostic, searched its text, and retained only a fix a fetched source stated for the exact error; the failure report above stands as the honest outcome."
+  response response_repair_ladder_exhausted_ru
+    intent repair_ladder_exhausted
+    language ru
+    text "Цикл исправления по ошибкам поднялся до ступени {rung} из максимум {max_rungs}, но не устранил сбой, поэтому он остановился здесь, а не повторяет попытки без ограничения. На каждой ступени диагностика формализовалась, по её тексту выполнялся поиск, и сохранялось только исправление, которое полученный источник указывал именно для этой ошибки; отчёт о сбое выше остаётся честным итогом."
+  response response_repair_ladder_exhausted_hi
+    intent repair_ladder_exhausted
+    language hi
+    text "त्रुटि-आधारित repair loop अधिकतम {max_rungs} में से rung {rung} तक पहुँचा लेकिन विफलता हल नहीं हुई, इसलिए यह बिना सीमा के दोबारा कोशिश करने के बजाय यहीं रुक गया। हर rung ने diagnostic को formalize किया, उसके text को खोजा, और केवल वही fix रखा जो किसी प्राप्त स्रोत ने ठीक इसी त्रुटि के लिए बताया था; ऊपर की failure report ही ईमानदार परिणाम है।"
+  response response_repair_ladder_exhausted_zh
+    intent repair_ladder_exhausted
+    language zh
+    text "基于错误的修复循环已爬升到第 {rung} 级（最多 {max_rungs} 级），但未能解决失败，因此在此停止，而不是无限制地重试。每一级都会形式化诊断信息、搜索其文本，并且只保留获取到的来源针对该确切错误给出的修复；上面的失败报告就是如实的结果。"
+  response response_repair_ladder_exhausted_es
+    intent repair_ladder_exhausted
+    language es
+    text "El ciclo de reparación guiado por errores subió hasta el peldaño {rung} de un máximo de {max_rungs} sin resolver el fallo, así que se detuvo aquí en lugar de reintentar sin límite. Cada peldaño formalizó el diagnóstico, buscó su texto y solo conservó una corrección que una fuente obtenida indicaba para ese error exacto; el informe de fallo anterior es el resultado honesto."
   response response_repair_unresolved_need_en
     intent repair_unresolved_need
     language en
     text "The diagnostic search ({query}) found no fetched source that addresses this exact error, so no candidate fix was retained. This is an unresolved need, reported as such rather than guessed."
+  response response_repair_unresolved_need_ru
+    intent repair_unresolved_need
+    language ru
+    text "Поиск по диагностике ({query}) не нашёл полученного источника, который касался бы именно этой ошибки, поэтому ни одно исправление-кандидат не сохранено. Это нерешённая потребность, и она сообщается как есть, а не угадывается."
+  response response_repair_unresolved_need_hi
+    intent repair_unresolved_need
+    language hi
+    text "Diagnostic search ({query}) में ऐसा कोई प्राप्त स्रोत नहीं मिला जो ठीक इसी त्रुटि को संबोधित करे, इसलिए कोई candidate fix नहीं रखा गया। यह एक अनसुलझी ज़रूरत है, जिसे अनुमान लगाने के बजाय ऐसे ही रिपोर्ट किया गया है।"
+  response response_repair_unresolved_need_zh
+    intent repair_unresolved_need
+    language zh
+    text "诊断搜索（{query}）没有找到针对这个确切错误的已获取来源，因此没有保留任何候选修复。这是一个未解决的需求，如实报告，而不是猜测。"
+  response response_repair_unresolved_need_es
+    intent repair_unresolved_need
+    language es
+    text "La búsqueda del diagnóstico ({query}) no encontró ninguna fuente obtenida que trate este error exacto, así que no se conservó ninguna corrección candidata. Es una necesidad sin resolver, y se informa como tal en lugar de adivinarla."

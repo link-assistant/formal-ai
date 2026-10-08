@@ -10,90 +10,442 @@ multilingual_responses
     intent formalization_derivation
     language en
     text "sentence: {sentence}\nparsed clause: {quantifier} {variable} ({antecedents})\nconsequent: {consequent}\ntemplates: {templates}"
+  response response_formalization_derivation_ru
+    intent formalization_derivation
+    language ru
+    text "предложение: {sentence}\nразобранное утверждение: {quantifier} {variable} ({antecedents})\nследствие: {consequent}\nшаблоны: {templates}"
+  response response_formalization_derivation_hi
+    intent formalization_derivation
+    language hi
+    text "वाक्य: {sentence}\nparsed clause: {quantifier} {variable} ({antecedents})\nपरिणाम: {consequent}\ntemplates: {templates}"
+  response response_formalization_derivation_zh
+    intent formalization_derivation
+    language zh
+    text "句子：{sentence}\n解析出的子句：{quantifier} {variable}（{antecedents}）\n后件：{consequent}\n模板：{templates}"
+  response response_formalization_derivation_es
+    intent formalization_derivation
+    language es
+    text "oración: {sentence}\ncláusula analizada: {quantifier} {variable} ({antecedents})\nconsecuente: {consequent}\nplantillas: {templates}"
   response response_version_provenance_cache_en
     intent version_provenance_cache
     language en
     text "{name} {tag}: (version resolved from cache; fetched_at={fetched_at})"
+  response response_version_provenance_cache_ru
+    intent version_provenance_cache
+    language ru
+    text "{name} {tag}: (версия взята из кэша; fetched_at={fetched_at})"
+  response response_version_provenance_cache_hi
+    intent version_provenance_cache
+    language hi
+    text "{name} {tag}: (version cache से ली गई; fetched_at={fetched_at})"
+  response response_version_provenance_cache_zh
+    intent version_provenance_cache
+    language zh
+    text "{name} {tag}:（版本取自缓存；fetched_at={fetched_at}）"
+  response response_version_provenance_cache_es
+    intent version_provenance_cache
+    language es
+    text "{name} {tag}: (versión tomada de la caché; fetched_at={fetched_at})"
   response response_version_provenance_baseline_en
     intent version_provenance_baseline
     language en
     text "{name} {tag}: (version resolved from the shipped baseline measured {fetched_at})"
+  response response_version_provenance_baseline_ru
+    intent version_provenance_baseline
+    language ru
+    text "{name} {tag}: (версия взята из поставляемого базового снимка, измеренного {fetched_at})"
+  response response_version_provenance_baseline_hi
+    intent version_provenance_baseline
+    language hi
+    text "{name} {tag}: (version shipped baseline से ली गई, जो {fetched_at} को मापी गई थी)"
+  response response_version_provenance_baseline_zh
+    intent version_provenance_baseline
+    language zh
+    text "{name} {tag}:（版本取自随附的基线，测量于 {fetched_at}）"
+  response response_version_provenance_baseline_es
+    intent version_provenance_baseline
+    language es
+    text "{name} {tag}: (versión tomada de la línea base incluida, medida el {fetched_at})"
   response response_code_example_parse_recognized_nothing_en
     intent code_example_parse_recognized_nothing
     language en
     text "the meta-language parse recognized nothing in the {language} example"
+  response response_code_example_parse_recognized_nothing_ru
+    intent code_example_parse_recognized_nothing
+    language ru
+    text "разбор meta-language ничего не распознал в примере на {language}"
+  response response_code_example_parse_recognized_nothing_hi
+    intent code_example_parse_recognized_nothing
+    language hi
+    text "meta-language parse ने {language} उदाहरण में कुछ भी नहीं पहचाना"
+  response response_code_example_parse_recognized_nothing_zh
+    intent code_example_parse_recognized_nothing
+    language zh
+    text "meta-language 解析在 {language} 示例中没有识别出任何内容"
+  response response_code_example_parse_recognized_nothing_es
+    intent code_example_parse_recognized_nothing
+    language es
+    text "el análisis de meta-language no reconoció nada en el ejemplo en {language}"
   response response_code_example_no_program_shape_en
     intent code_example_no_program_shape
     language en
     text "no decomposed {language} example contributed a program body that makes its aligned output call"
+  response response_code_example_no_program_shape_ru
+    intent code_example_no_program_shape
+    language ru
+    text "ни один разложенный пример на {language} не дал тела программы, выполняющего согласованный вызов вывода"
+  response response_code_example_no_program_shape_hi
+    intent code_example_no_program_shape
+    language hi
+    text "किसी भी विभाजित {language} उदाहरण ने ऐसा program body नहीं दिया जो अपना aligned output call करता हो"
+  response response_code_example_no_program_shape_zh
+    intent code_example_no_program_shape
+    language zh
+    text "没有任何分解后的 {language} 示例提供了执行其对齐输出调用的程序体"
+  response response_code_example_no_program_shape_es
+    intent code_example_no_program_shape
+    language es
+    text "ningún ejemplo descompuesto en {language} aportó un cuerpo de programa que haga su llamada de salida alineada"
   response response_code_example_unbound_output_literal_en
     intent code_example_unbound_output_literal
     language en
     text "no output literal is bound for {language}: the requirement states none and no example in that language supplies one"
+  response response_code_example_unbound_output_literal_ru
+    intent code_example_unbound_output_literal
+    language ru
+    text "для {language} не привязан литерал вывода: требование его не задаёт, и ни один пример на этом языке его не даёт"
+  response response_code_example_unbound_output_literal_hi
+    intent code_example_unbound_output_literal
+    language hi
+    text "{language} के लिए कोई output literal bound नहीं है: requirement में कोई नहीं बताया गया और उस भाषा का कोई उदाहरण भी नहीं देता"
+  response response_code_example_unbound_output_literal_zh
+    intent code_example_unbound_output_literal
+    language zh
+    text "{language} 没有绑定输出字面量：需求中没有给出，该语言的示例也都没有提供"
+  response response_code_example_unbound_output_literal_es
+    intent code_example_unbound_output_literal
+    language es
+    text "no hay ningún literal de salida vinculado para {language}: el requisito no indica ninguno y ningún ejemplo en ese lenguaje lo aporta"
   response response_code_example_procedure_step_en
     intent code_example_procedure_step
     language en
     text "provide the {part} of the procedure"
+  response response_code_example_procedure_step_ru
+    intent code_example_procedure_step
+    language ru
+    text "предоставить {part} процедуры"
+  response response_code_example_procedure_step_hi
+    intent code_example_procedure_step
+    language hi
+    text "procedure का {part} दें"
+  response response_code_example_procedure_step_zh
+    intent code_example_procedure_step
+    language zh
+    text "提供该过程的{part}"
+  response response_code_example_procedure_step_es
+    intent code_example_procedure_step
+    language es
+    text "aportar {part} del procedimiento"
   response response_compose_gap_render_en
     intent compose_gap_render
     language en
     text "the render leg refused: {reason}"
+  response response_compose_gap_render_ru
+    intent compose_gap_render
+    language ru
+    text "этап отрисовки отказался: {reason}"
+  response response_compose_gap_render_hi
+    intent compose_gap_render
+    language hi
+    text "render चरण ने मना कर दिया: {reason}"
+  response response_compose_gap_render_zh
+    intent compose_gap_render
+    language zh
+    text "渲染环节拒绝了：{reason}"
+  response response_compose_gap_render_es
+    intent compose_gap_render
+    language es
+    text "la etapa de generación se negó: {reason}"
   response response_compose_gap_syntax_invalid_en
     intent compose_gap_syntax_invalid
     language en
     text "the rendered source is not a valid `{language}` parse"
+  response response_compose_gap_syntax_invalid_ru
+    intent compose_gap_syntax_invalid
+    language ru
+    text "отрисованный исходный код не является корректным разбором `{language}`"
+  response response_compose_gap_syntax_invalid_hi
+    intent compose_gap_syntax_invalid
+    language hi
+    text "rendered source एक मान्य `{language}` parse नहीं है"
+  response response_compose_gap_syntax_invalid_zh
+    intent compose_gap_syntax_invalid
+    language zh
+    text "渲染出的源码不是有效的 `{language}` 解析结果"
+  response response_compose_gap_syntax_invalid_es
+    intent compose_gap_syntax_invalid
+    language es
+    text "el código fuente generado no es un análisis válido de `{language}`"
   response response_compose_gap_not_cst_equal_en
     intent compose_gap_not_cst_equal
     language en
     text "the rendered `{language}` source parses, but its network serialization differs from the composed one, so the round trip is not CST-equal"
+  response response_compose_gap_not_cst_equal_ru
+    intent compose_gap_not_cst_equal
+    language ru
+    text "отрисованный исходный код на `{language}` разбирается, но его сериализация в сеть отличается от составленной, поэтому круговой проход не CST-эквивалентен"
+  response response_compose_gap_not_cst_equal_hi
+    intent compose_gap_not_cst_equal
+    language hi
+    text "rendered `{language}` source parse हो जाता है, लेकिन उसका network serialization बनाए गए serialization से अलग है, इसलिए round trip CST-equal नहीं है"
+  response response_compose_gap_not_cst_equal_zh
+    intent compose_gap_not_cst_equal
+    language zh
+    text "渲染出的 `{language}` 源码可以解析，但其网络序列化与组合出的不同，因此往返结果不是 CST 等价的"
+  response response_compose_gap_not_cst_equal_es
+    intent compose_gap_not_cst_equal
+    language es
+    text "el código fuente `{language}` generado se analiza, pero su serialización en la red difiere de la compuesta, así que la ida y vuelta no es igual en CST"
   response response_cst_render_gap_no_grammar_entry_en
     intent cst_render_gap_no_grammar_entry
     language en
     text "no cst_grammar entry in program-cst-grammars.lino names `{language}`, so it is not a registered render target"
+  response response_cst_render_gap_no_grammar_entry_ru
+    intent cst_render_gap_no_grammar_entry
+    language ru
+    text "ни одна запись cst_grammar в program-cst-grammars.lino не называет `{language}`, поэтому это не зарегистрированная цель отрисовки"
+  response response_cst_render_gap_no_grammar_entry_hi
+    intent cst_render_gap_no_grammar_entry
+    language hi
+    text "program-cst-grammars.lino की कोई cst_grammar entry `{language}` का नाम नहीं लेती, इसलिए यह registered render target नहीं है"
+  response response_cst_render_gap_no_grammar_entry_zh
+    intent cst_render_gap_no_grammar_entry
+    language zh
+    text "program-cst-grammars.lino 中没有任何 cst_grammar 条目指名 `{language}`，因此它不是已注册的渲染目标"
+  response response_cst_render_gap_no_grammar_entry_es
+    intent cst_render_gap_no_grammar_entry
+    language es
+    text "ninguna entrada cst_grammar de program-cst-grammars.lino nombra `{language}`, así que no es un destino de generación registrado"
   response response_cst_render_gap_unknown_engine_en
     intent cst_render_gap_unknown_engine
     language en
     text "`{language}` names engine `{engine}`, and only the meta_language engine renders"
+  response response_cst_render_gap_unknown_engine_ru
+    intent cst_render_gap_unknown_engine
+    language ru
+    text "`{language}` указывает движок `{engine}`, а отрисовывает только движок meta_language"
+  response response_cst_render_gap_unknown_engine_hi
+    intent cst_render_gap_unknown_engine
+    language hi
+    text "`{language}` engine `{engine}` का नाम लेता है, और केवल meta_language engine render करता है"
+  response response_cst_render_gap_unknown_engine_zh
+    intent cst_render_gap_unknown_engine
+    language zh
+    text "`{language}` 指定的引擎是 `{engine}`，而只有 meta_language 引擎能渲染"
+  response response_cst_render_gap_unknown_engine_es
+    intent cst_render_gap_unknown_engine
+    language es
+    text "`{language}` nombra el motor `{engine}`, y solo el motor meta_language genera código"
   response response_cst_render_gap_engine_disabled_en
     intent cst_render_gap_engine_disabled
     language en
     text "the meta-language engine (feature `meta-language`) is disabled, so `{language}` cannot render"
+  response response_cst_render_gap_engine_disabled_ru
+    intent cst_render_gap_engine_disabled
+    language ru
+    text "движок meta-language (функция `meta-language`) отключён, поэтому `{language}` не может быть отрисован"
+  response response_cst_render_gap_engine_disabled_hi
+    intent cst_render_gap_engine_disabled
+    language hi
+    text "meta-language engine (feature `meta-language`) बंद है, इसलिए `{language}` render नहीं हो सकता"
+  response response_cst_render_gap_engine_disabled_zh
+    intent cst_render_gap_engine_disabled
+    language zh
+    text "meta-language 引擎（特性 `meta-language`）已禁用，因此无法渲染 `{language}`"
+  response response_cst_render_gap_engine_disabled_es
+    intent cst_render_gap_engine_disabled
+    language es
+    text "el motor meta-language (la característica `meta-language`) está desactivado, así que `{language}` no se puede generar"
   response response_derivation_record_missing_en
     intent derivation_record_missing
     language en
     text "no derivation record for `{answer_id}` under {directory} (an answer id has the shape `answer_<16 hex digits>` and is created when the answer is returned)"
+  response response_derivation_record_missing_ru
+    intent derivation_record_missing
+    language ru
+    text "нет записи вывода для `{answer_id}` в {directory} (идентификатор ответа имеет вид `answer_<16 hex digits>` и создаётся, когда ответ выдаётся)"
+  response response_derivation_record_missing_hi
+    intent derivation_record_missing
+    language hi
+    text "{directory} में `{answer_id}` का कोई derivation record नहीं है (answer id का रूप `answer_<16 hex digits>` होता है और यह जवाब लौटाते समय बनता है)"
+  response response_derivation_record_missing_zh
+    intent derivation_record_missing
+    language zh
+    text "{directory} 下没有 `{answer_id}` 的推导记录（答案 id 的形式为 `answer_<16 hex digits>`，在返回答案时创建）"
+  response response_derivation_record_missing_es
+    intent derivation_record_missing
+    language es
+    text "no hay ningún registro de derivación para `{answer_id}` en {directory} (un id de respuesta tiene la forma `answer_<16 hex digits>` y se crea cuando se devuelve la respuesta)"
   response response_fact_check_code_references_en
     intent fact_check_code_references
     language en
     text "code:{site} ({production} production, {test} test references)"
+  response response_fact_check_code_references_ru
+    intent fact_check_code_references
+    language ru
+    text "code:{site} (ссылок: в рабочем коде — {production}, в тестах — {test})"
+  response response_fact_check_code_references_hi
+    intent fact_check_code_references
+    language hi
+    text "code:{site} ({production} production, {test} test references)"
+  response response_fact_check_code_references_zh
+    intent fact_check_code_references
+    language zh
+    text "code:{site}（生产代码引用 {production} 处，测试引用 {test} 处）"
+  response response_fact_check_code_references_es
+    intent fact_check_code_references
+    language es
+    text "code:{site} ({production} referencias de producción, {test} de prueba)"
   response response_fact_check_code_test_only_en
     intent fact_check_code_test_only
     language en
     text "code: symbol {symbol} referenced only from test scope ({sites} sites)"
+  response response_fact_check_code_test_only_ru
+    intent fact_check_code_test_only
+    language ru
+    text "code: на символ {symbol} ссылаются только из тестов ({sites} мест)"
+  response response_fact_check_code_test_only_hi
+    intent fact_check_code_test_only
+    language hi
+    text "code: symbol {symbol} केवल test scope से referenced है ({sites} sites)"
+  response response_fact_check_code_test_only_zh
+    intent fact_check_code_test_only
+    language zh
+    text "code：符号 {symbol} 仅在测试范围内被引用（{sites} 处）"
+  response response_fact_check_code_test_only_es
+    intent fact_check_code_test_only
+    language es
+    text "code: el símbolo {symbol} solo se referencia desde el ámbito de pruebas ({sites} sitios)"
   response response_fact_check_git_value_never_present_en
     intent fact_check_git_value_never_present
     language en
     text "git:log:{path} (no revision in the newest {revisions} ever contained the value)"
+  response response_fact_check_git_value_never_present_ru
+    intent fact_check_git_value_never_present
+    language ru
+    text "git:log:{path} (ни одна из последних {revisions} ревизий не содержала это значение)"
+  response response_fact_check_git_value_never_present_hi
+    intent fact_check_git_value_never_present
+    language hi
+    text "git:log:{path} (नवीनतम {revisions} में से किसी revision में यह मान कभी नहीं था)"
+  response response_fact_check_git_value_never_present_zh
+    intent fact_check_git_value_never_present
+    language zh
+    text "git:log:{path}（最近 {revisions} 个修订中都从未包含该值）"
+  response response_fact_check_git_value_never_present_es
+    intent fact_check_git_value_never_present
+    language es
+    text "git:log:{path} (ninguna de las {revisions} revisiones más recientes contuvo nunca el valor)"
   response response_fact_check_git_last_touched_en
     intent fact_check_git_last_touched
     language en
+    text "git:log:{path}@{commit} {date}"
+  response response_fact_check_git_last_touched_ru
+    intent fact_check_git_last_touched
+    language ru
+    text "git:log:{path}@{commit} {date}"
+  response response_fact_check_git_last_touched_hi
+    intent fact_check_git_last_touched
+    language hi
+    text "git:log:{path}@{commit} {date}"
+  response response_fact_check_git_last_touched_zh
+    intent fact_check_git_last_touched
+    language zh
+    text "git:log:{path}@{commit} {date}"
+  response response_fact_check_git_last_touched_es
+    intent fact_check_git_last_touched
+    language es
     text "git:log:{path}@{commit} {date}"
   response response_si_conversion_incompatible_en
     intent si_conversion_incompatible
     language en
     text "incompatible dimensions: {from} vs {to}"
+  response response_si_conversion_incompatible_ru
+    intent si_conversion_incompatible
+    language ru
+    text "несовместимые размерности: {from} и {to}"
+  response response_si_conversion_incompatible_hi
+    intent si_conversion_incompatible
+    language hi
+    text "असंगत dimensions: {from} बनाम {to}"
+  response response_si_conversion_incompatible_zh
+    intent si_conversion_incompatible
+    language zh
+    text "量纲不兼容：{from} 与 {to}"
+  response response_si_conversion_incompatible_es
+    intent si_conversion_incompatible
+    language es
+    text "dimensiones incompatibles: {from} frente a {to}"
   response response_si_conversion_unknown_unit_en
     intent si_conversion_unknown_unit
     language en
     text "unknown unit: {unit}"
+  response response_si_conversion_unknown_unit_ru
+    intent si_conversion_unknown_unit
+    language ru
+    text "неизвестная единица: {unit}"
+  response response_si_conversion_unknown_unit_hi
+    intent si_conversion_unknown_unit
+    language hi
+    text "अज्ञात इकाई: {unit}"
+  response response_si_conversion_unknown_unit_zh
+    intent si_conversion_unknown_unit
+    language zh
+    text "未知单位：{unit}"
+  response response_si_conversion_unknown_unit_es
+    intent si_conversion_unknown_unit
+    language es
+    text "unidad desconocida: {unit}"
   response response_program_execution_notes_swift_en
     intent program_execution_notes_swift
     language en
     text "hello.swift printed exactly `Hello, World!` on 2026-09-12 (data/meta/hello-world-languages.lino); a swiftc-backed check profile is still owed, so the check above is the interpreter's own parse."
+  response response_program_execution_notes_swift_ru
+    intent program_execution_notes_swift
+    language ru
+    text "hello.swift вывел ровно `Hello, World!` 2026-09-12 (data/meta/hello-world-languages.lino); профиль проверки на основе swiftc всё ещё не готов, поэтому проверка выше — это собственный разбор интерпретатора."
+  response response_program_execution_notes_swift_hi
+    intent program_execution_notes_swift
+    language hi
+    text "hello.swift ने 2026-09-12 को ठीक `Hello, World!` छापा (data/meta/hello-world-languages.lino); swiftc-आधारित check profile अभी बकाया है, इसलिए ऊपर की जाँच interpreter का अपना parse है।"
+  response response_program_execution_notes_swift_zh
+    intent program_execution_notes_swift
+    language zh
+    text "hello.swift 在 2026-09-12 准确打印了 `Hello, World!`（data/meta/hello-world-languages.lino）；基于 swiftc 的检查配置仍未完成，因此上面的检查是解释器自身的解析。"
+  response response_program_execution_notes_swift_es
+    intent program_execution_notes_swift
+    language es
+    text "hello.swift imprimió exactamente `Hello, World!` el 2026-09-12 (data/meta/hello-world-languages.lino); todavía falta un perfil de comprobación basado en swiftc, así que la comprobación anterior es el propio análisis del intérprete."
   response response_program_execution_notes_r_en
     intent program_execution_notes_r
     language en
     text "no R toolchain was installed on the 2026-09-12 reference machine (data/meta/hello-world-languages.lino lists r among the nine unverified); the run is owed to the CI ladder."
+  response response_program_execution_notes_r_ru
+    intent program_execution_notes_r
+    language ru
+    text "на эталонной машине 2026-09-12 не было установлено инструментов R (data/meta/hello-world-languages.lino относит r к девяти непроверенным); запуск остаётся за лестницей CI."
+  response response_program_execution_notes_r_hi
+    intent program_execution_notes_r
+    language hi
+    text "2026-09-12 की reference machine पर कोई R toolchain installed नहीं था (data/meta/hello-world-languages.lino r को नौ unverified भाषाओं में गिनता है); यह run CI ladder पर बकाया है।"
+  response response_program_execution_notes_r_zh
+    intent program_execution_notes_r
+    language zh
+    text "2026-09-12 的参考机器上没有安装 R 工具链（data/meta/hello-world-languages.lino 将 r 列为九种未验证语言之一）；这次运行留待 CI 阶梯完成。"
+  response response_program_execution_notes_r_es
+    intent program_execution_notes_r
+    language es
+    text "no había ninguna cadena de herramientas de R instalada en la máquina de referencia del 2026-09-12 (data/meta/hello-world-languages.lino incluye r entre los nueve sin verificar); la ejecución queda pendiente en la escalera de CI."
   response response_program_execution_rediscovered_en
     intent program_execution_rediscovered
     language en

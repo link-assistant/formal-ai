@@ -1,1 +1,82 @@
-import { moduleSymbol , modulesDeclaring , workspace } from './crate/self_ast_census.mjs' ; import { isAlphanumeric } from './write_str.mjs' ; export function resolveRequirementTarget ( requirement ) { return resolveIn ( workspace () , requirement ) ; } export function resolveIn ( census , requirement ) { const tokens = tokensOf ( requirement ) ; for ( const token of tokens ) { if ( ! looksLikeDeclaredName ( token ) ) continue ; const named = modulesDeclaring ( census , token ) . map ( ( module ) => [ module , moduleSymbol ( module , token ) ] ) . filter ( ( [ , symbol ] ) => symbol !== null ) ; if ( named . length ) return unique ( named , tokens ) ; } const words = tokens . map ( ( token ) => singular ( token . toLowerCase () ) ) ; let best = [] ; let bestLength = 0 ; for ( const module of census . modules ) { for ( const symbol of module . symbols ) { if ( symbol . kind !== 'const' && symbol . kind !== 'static' ) continue ; const parts = symbol . name . split ( '_' ) . filter ( ( part ) => part !== '' ) . map ( ( part ) => singular ( part . toLowerCase () ) ) ; if ( parts . length < 2 || ! parts . every ( ( part ) => words . includes ( part ) ) ) continue ; if ( parts . length > bestLength ) { bestLength = parts . length ; best = [ [ module , symbol ] ] ; } else if ( parts . length === bestLength ) best . push ( [ module , symbol ] ) ; } } return best . length ? unique ( best , tokens ) : null ; } function unique ( candidates , tokens ) { if ( candidates . length === 1 ) return target ( ... candidates [ 0 ] ) ; const words = tokens . map ( ( token ) => singular ( token . toLowerCase () ) ) ; const scored = candidates . map ( ( [ module , symbol ] ) => [ pathWords ( module . path ) . filter ( ( word ) => words . includes ( word ) ) . length , module , symbol , ] ) ; if ( ! scored . length ) return null ; const top = Math . max ( ... scored . map ( ( [ score ] ) => score ) ) ; const winners = scored . filter ( ( [ score ] ) => score === top ) ; return winners . length === 1 ? target ( winners [ 0 ] [ 1 ] , winners [ 0 ] [ 2 ] ) : null ; } function target ( module , symbol ) { return { module_path : module . path , symbol : symbol . name , kind : symbol . kind } ; } function pathWords ( path ) { return path . split ( /[/_.]/u ) . filter ( ( part ) => part !== '' && part !== 'src' && part !== 'rs' && part !== 'mod' ) . map ( ( part ) => singular ( part . toLowerCase () ) ) ; } function tokensOf ( text ) { const out = [] ; let current = '' ; for ( const character of text ) { if ( isAlphanumeric ( character ) || character === '_' ) current += character ; else { if ( current ) out . push ( current ) ; current = '' ; } } if ( current ) out . push ( current ) ; return out ; } function looksLikeDeclaredName ( token ) { return token . length >= 2 && /[A-Z]/ . test ( token ) && /^[A-Z0-9_]+$/ . test ( token ) ; } function singular ( word ) { return new TextEncoder () . encode ( word ) . length > 3 && word . endsWith ( 's' ) && ! word . endsWith ( 'ss' ) ? word . slice ( 0 , - 1 ) : word ; }
+// Resolve a requirement's named declaration to the module that declares it
+// (rust/src/agentic_coding/requirement_resolution.rs). The census comes from
+// `crate/self_ast_census.mjs` `workspace()`.
+
+import { moduleSymbol, modulesDeclaring, workspace } from './crate/self_ast_census.mjs';
+import { isAlphanumeric } from './write_str.mjs';
+
+/** Mirrors `fn resolve_requirement_target`: `{module_path, symbol, kind}` or null. */
+export function resolveRequirementTarget(requirement) {
+  return resolveIn(workspace(), requirement);
+}
+
+/** Mirrors `fn resolve_in`. */
+export function resolveIn(census, requirement) {
+  const tokens = tokensOf(requirement);
+  for (const token of tokens) {
+    if (!looksLikeDeclaredName(token)) continue;
+    const named = modulesDeclaring(census, token)
+      .map((module) => [module, moduleSymbol(module, token)])
+      .filter(([, symbol]) => symbol !== null);
+    if (named.length) return unique(named, tokens);
+  }
+  const words = tokens.map((token) => singular(token.toLowerCase()));
+  let best = [];
+  let bestLength = 0;
+  for (const module of census.modules) {
+    for (const symbol of module.symbols) {
+      if (symbol.kind !== 'const' && symbol.kind !== 'static') continue;
+      const parts = symbol.name.split('_').filter((part) => part !== '').map((part) => singular(part.toLowerCase()));
+      if (parts.length < 2 || !parts.every((part) => words.includes(part))) continue;
+      if (parts.length > bestLength) {
+        bestLength = parts.length;
+        best = [[module, symbol]];
+      } else if (parts.length === bestLength) best.push([module, symbol]);
+    }
+  }
+  return best.length ? unique(best, tokens) : null;
+}
+
+function unique(candidates, tokens) {
+  if (candidates.length === 1) return target(...candidates[0]);
+  const words = tokens.map((token) => singular(token.toLowerCase()));
+  const scored = candidates.map(([module, symbol]) => [
+    pathWords(module.path).filter((word) => words.includes(word)).length, module, symbol,
+  ]);
+  if (!scored.length) return null;
+  const top = Math.max(...scored.map(([score]) => score));
+  const winners = scored.filter(([score]) => score === top);
+  return winners.length === 1 ? target(winners[0][1], winners[0][2]) : null;
+}
+
+function target(module, symbol) {
+  return { module_path: module.path, symbol: symbol.name, kind: symbol.kind };
+}
+
+function pathWords(path) {
+  return path.split(/[/_.]/u)
+    .filter((part) => part !== '' && part !== 'src' && part !== 'rs' && part !== 'mod')
+    .map((part) => singular(part.toLowerCase()));
+}
+
+function tokensOf(text) {
+  const out = [];
+  let current = '';
+  for (const character of text) {
+    if (isAlphanumeric(character) || character === '_') current += character;
+    else {
+      if (current) out.push(current);
+      current = '';
+    }
+  }
+  if (current) out.push(current);
+  return out;
+}
+
+function looksLikeDeclaredName(token) {
+  return token.length >= 2 && /[A-Z]/.test(token) && /^[A-Z0-9_]+$/.test(token);
+}
+
+function singular(word) {
+  return new TextEncoder().encode(word).length > 3 && word.endsWith('s') && !word.endsWith('ss') ? word.slice(0, -1) : word;
+}

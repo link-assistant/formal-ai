@@ -1,0 +1,1 @@
+triz_link_note	"Una contradicción es un enlace cuyo valor (0-1) se elige a partir de las propias cláusulas del requisito: puntos básicos en la heurística de selección, sin un 50 % por defecto. Di qué lado favorecen los requisitos y el punto del rango se deduce de ello."

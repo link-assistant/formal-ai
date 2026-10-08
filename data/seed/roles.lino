@@ -739,6 +739,12 @@ roles
     kind meaning
   request_objective_lead
     kind predicate
+  requirement_directive_verb
+    kind predicate
+  requirement_obligation_cue
+    kind predicate
+  requirement_section_heading
+    kind predicate
   research_criterion
     kind predicate
   research_evaluation_domain

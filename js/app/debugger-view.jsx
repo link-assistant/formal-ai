@@ -37,7 +37,9 @@ export function DebuggerView({ messages = [], apiBase = "", debugToken = "" }) {
     </header>
     <div className="debugger-panes">
       <section aria-label="Conversation"><h2>Conversation</h2>{messages.map(message => <p key={message.id}><strong>{message.role}</strong> {message.content}</p>)}</section>
-      <section aria-label="Event links"><h2>Event links</h2><label>Recorded event <select value={index} onChange={event => setSelection(Number(event.target.value))}>{events.map((event, at) => <option key={event.id || at} value={at}>{event.id || at}: {event.kind || event.role || "event"}{event.step ? ` ${event.step}` : ""}</option>)}</select></label><pre>{links || "No links recorded"}</pre><pre>{JSON.stringify(selected, null, 2)}</pre></section>
+      <section aria-label="Event links"><h2>Event links</h2><label>Recorded event <select value={index} onChange={event => setSelection(Number(event.target.value))}>
+        {events.map((event, at) => <option key={event.id || at} value={at}>{event.id || at}: {event.kind || event.role || "event"}{event.step ? ` ${event.step}` : ""}</option>)}
+        </select></label><pre>{links || "No links recorded"}</pre><pre>{JSON.stringify(selected, null, 2)}</pre></section>
       <section aria-label="Recipe diagram" data-testid="debugger-diagram">{svg ? <><h2>Recipe diagram</h2><div className="debugger-graph" dangerouslySetInnerHTML={{ __html: svg }} /></> : <><h2>Recipe diagram</h2><pre data-format="mermaid">{panes.diagram || "No recipe diagram recorded"}</pre></>}</section>
       <SourcePane label="Rust source" pane={panes.rust} testId="debugger-rust-source" />
       <SourcePane label="JavaScript source" pane={panes.js} testId="debugger-js-source" />

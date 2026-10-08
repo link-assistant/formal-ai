@@ -1,1 +1,157 @@
-import { cached , readText } from '../host.mjs' ; import { findChildValue , parseRoot } from './seed_parser.mjs' ; import { splitPipeList } from './seed.mjs' ; const CONFIG_FORMATS = [ 'toml' , 'json' , 'shell_env' ] ; const MODE_ARG_POSITIONS = [ 'before_invocation' , 'before_user_args' ] ; const MODEL_ARG_POSITIONS = [ 'before_args' , 'after_first_arg' ] ; function splitOnceEquals ( value ) { const at = value . indexOf ( '=' ) ; if ( at < 0 ) return null ; const key = value . slice ( 0 , at ) . trim () ; if ( key === '' ) return null ; return [ key , value . slice ( at + 1 ) . trim () ] ; } const fromSeed = ( value , known ) => ( known . includes ( value ) ? value : null ) ; function parseInvocation ( node ) { const invocation = { prepend_args : [] , args : [] , orchestration_args : [] , vendor_orchestration_args : [] , orchestration_arg_replacements : [] , no_summarize_args : [] , interactive_args : [] , interactive_args_require_prompt : false , non_interactive_args : [] , prompt_args : [] , mode_arg_position : null , env : [] , config_content_env : '' , config_env : '' , config_dir_env : '' , config_json_settings : [] , temp_home_env : '' , temp_home_config_path : '' , temp_home_json_settings : [] , temp_home_toml_settings : [] , model_catalog_path : '' , model_arg : '' , vendor_model_arg : '' , model_arg_position : null , session_root : '' , session_file_suffix : '' , resume_command : '' , resume_args : [] , session_id_query_args : [] , } ; const lists = { prepend_arg : 'prepend_args' , arg : 'args' , orchestration_arg : 'orchestration_args' , vendor_orchestration_arg : 'vendor_orchestration_args' , no_summarize_arg : 'no_summarize_args' , interactive_arg : 'interactive_args' , non_interactive_arg : 'non_interactive_args' , prompt_arg : 'prompt_args' , resume_arg : 'resume_args' , session_id_query_arg : 'session_id_query_args' , } ; const pairs = { orchestration_replace_arg : 'orchestration_arg_replacements' , config_json_set : 'config_json_settings' , temp_home_json_set : 'temp_home_json_settings' , temp_home_toml_set : 'temp_home_toml_settings' , } ; const scalars = [ 'config_content_env' , 'config_env' , 'config_dir_env' , 'temp_home_env' , 'temp_home_config_path' , 'model_catalog_path' , 'model_arg' , 'vendor_model_arg' , 'session_root' , 'session_file_suffix' , 'resume_command' , ] ; for ( const child of node . children ) { if ( child . name in lists ) invocation [ lists [ child . name ] ] . push ( child . id ) ; else if ( child . name in pairs ) { const pair = splitOnceEquals ( child . id ) ; if ( pair ) invocation [ pairs [ child . name ] ] . push ( pair ) ; } else if ( scalars . includes ( child . name ) ) invocation [ child . name ] = child . id ; else if ( child . name === 'interactive_args_require_prompt' ) invocation . interactive_args_require_prompt = child . id === 'true' ; else if ( child . name === 'mode_arg_position' ) invocation . mode_arg_position = fromSeed ( child . id , MODE_ARG_POSITIONS ) ; else if ( child . name === 'model_arg_position' ) invocation . model_arg_position = fromSeed ( child . id , MODEL_ARG_POSITIONS ) ; else if ( child . name === 'env' ) { const pair = splitOnceEquals ( child . id ) ; if ( pair ) invocation . env . push ( { key : pair [ 0 ] , value : pair [ 1 ] } ) ; } } return invocation ; } function parseVerification ( node ) { const verification = { surface : findChildValue ( node , 'surface' ) , file_delivery : findChildValue ( node , 'file_delivery' ) , headless_args : [] , interactive_env : [] , interactive_preamble : [] , required_request_tools : [] , required_response_tools : [] , forbidden_output : [] , auth_refusals : [] , launch_args : [] , launch_ready : findChildValue ( node , 'launch_ready' ) , launch_required_output : [] , launch_http_path : findChildValue ( node , 'launch_http_path' ) , launch_subcommands : [] , extension_glob : findChildValue ( node , 'extension_glob' ) , chromium_sandbox_fallback : findChildValue ( node , 'chromium_sandbox_fallback' ) === 'true' , sandbox_user_namespaces : findChildValue ( node , 'sandbox_user_namespaces' ) === 'true' , vendor_auth_error : findChildValue ( node , 'vendor_auth_error' ) , } ; const lists = { headless_arg : 'headless_args' , interactive_preamble : 'interactive_preamble' , required_request_tool : 'required_request_tools' , required_response_tool : 'required_response_tools' , forbidden_output : 'forbidden_output' , auth_refusal : 'auth_refusals' , launch_arg : 'launch_args' , launch_required_output : 'launch_required_output' , launch_subcommand : 'launch_subcommands' , } ; for ( const child of node . children ) { if ( child . name in lists ) verification [ lists [ child . name ] ] . push ( child . id ) ; else if ( child . name === 'interactive_env' ) { const pair = splitOnceEquals ( child . id ) ; if ( pair ) verification . interactive_env . push ( { key : pair [ 0 ] , value : pair [ 1 ] } ) ; } } return verification ; } function parseGlobalConfig ( node ) { const kind = findChildValue ( node , 'kind' ) ; return CONFIG_FORMATS . includes ( kind ) ? { protocol : node . id , format : kind , path : findChildValue ( node , 'path' ) } : null ; } function parseTool ( tool ) { const id = tool . id ; if ( ! id ) return null ; const children = tool . children ; const ephemeral = children . find ( ( node ) => node . name === 'ephemeral' ) ; const verification = children . find ( ( node ) => node . name === 'verification' ) ; const globalConfigs = children . filter ( ( node ) => node . name === 'global' ) . map ( parseGlobalConfig ) . filter ( Boolean ) ; if ( globalConfigs . length === 0 ) return null ; const defaultProtocol = findChildValue ( tool , 'default_protocol' ) ; return { id , aliases : splitPipeList ( findChildValue ( tool , 'aliases' ) ) , label : findChildValue ( tool , 'label' ) , command : findChildValue ( tool , 'command' ) , command_env : findChildValue ( tool , 'command_env' ) , platform_commands : children . filter ( ( child ) => child . name . startsWith ( 'command_' ) && child . name . slice ( 'command_' . length ) !== 'env' ) . map ( ( child ) => ( { key : child . name . slice ( 'command_' . length ) , value : child . id } ) ) , provider_id : findChildValue ( tool , 'provider_id' ) , default_protocol : defaultProtocol , supported_protocols : splitPipeList ( findChildValue ( tool , 'supported_protocols' ) ) , endpoints : children . filter ( ( child ) => child . name . startsWith ( 'endpoint_' ) ) . map ( ( child ) => [ child . name . slice ( 'endpoint_' . length ) , child . id ] ) , api_key_env : findChildValue ( tool , 'api_key_env' ) , api_key_default : findChildValue ( tool , 'api_key_default' ) , model_selector : findChildValue ( tool , 'model_selector' ) , invocation : parseInvocation ( ephemeral ?? { children : [] } ) , verification : parseVerification ( verification ?? { children : [] } ) , global_config : globalConfigs . find ( ( config ) => config . protocol === defaultProtocol ) ?? globalConfigs [ 0 ] , global_configs : globalConfigs , } ; } export function clientIntegrations () { return cached ( 'client-integrations' , () => { const out = [] ; for ( const root of parseRoot ( readText ( 'data/seed/client-integrations.lino' ) ) . children ) { if ( root . name !== 'client_integrations' ) continue ; for ( const tool of root . children . filter ( ( node ) => node . name === 'tool' ) ) { const integration = parseTool ( tool ) ; if ( integration ) out . push ( integration ) ; } } return out ; } ) ; }
+// `crate::seed::client_integrations` (rust/src/seed/client_integrations.rs): the
+// registry of agentic CLIs read from data/seed/client-integrations.lino, the
+// same file `formal-ai with` and the orchestration controller consume. The
+// orchestration runner reads each tool's identity, its `verification` surface
+// and its `ephemeral` invocation contract; the global-config blocks only decide
+// whether a tool is registered at all (`parse_tool` drops a tool with none), so
+// their settings are not carried.
+
+import { cached, readText } from '../host.mjs';
+import { findChildValue, parseRoot } from './seed_parser.mjs';
+import { splitPipeList } from './seed.mjs';
+
+const CONFIG_FORMATS = ['toml', 'json', 'shell_env'];
+const MODE_ARG_POSITIONS = ['before_invocation', 'before_user_args'];
+const MODEL_ARG_POSITIONS = ['before_args', 'after_first_arg'];
+
+/** Mirrors `fn split_once_equals` in rust/src/seed/client_integrations.rs. */
+function splitOnceEquals(value) {
+  const at = value.indexOf('=');
+  if (at < 0) return null;
+  const key = value.slice(0, at).trim();
+  if (key === '') return null;
+  return [key, value.slice(at + 1).trim()];
+}
+
+/** `ModeArgPosition::from_seed` / `ModelArgPosition::from_seed`: the slug, or null. */
+const fromSeed = (value, known) => (known.includes(value) ? value : null);
+
+/** Mirrors `fn parse_invocation` in rust/src/seed/client_integrations.rs. */
+function parseInvocation(node) {
+  const invocation = {
+    prepend_args: [], args: [], orchestration_args: [], vendor_orchestration_args: [],
+    orchestration_arg_replacements: [], no_summarize_args: [], interactive_args: [],
+    interactive_args_require_prompt: false, non_interactive_args: [], prompt_args: [],
+    mode_arg_position: null, env: [], config_content_env: '', config_env: '', config_dir_env: '',
+    config_json_settings: [], temp_home_env: '', temp_home_config_path: '', temp_home_json_settings: [],
+    temp_home_toml_settings: [], model_catalog_path: '', model_arg: '', vendor_model_arg: '',
+    model_arg_position: null, session_root: '', session_file_suffix: '', resume_command: '',
+    resume_args: [], session_id_query_args: [],
+  };
+  const lists = {
+    prepend_arg: 'prepend_args', arg: 'args', orchestration_arg: 'orchestration_args',
+    vendor_orchestration_arg: 'vendor_orchestration_args', no_summarize_arg: 'no_summarize_args',
+    interactive_arg: 'interactive_args', non_interactive_arg: 'non_interactive_args',
+    prompt_arg: 'prompt_args', resume_arg: 'resume_args', session_id_query_arg: 'session_id_query_args',
+  };
+  const pairs = {
+    orchestration_replace_arg: 'orchestration_arg_replacements', config_json_set: 'config_json_settings',
+    temp_home_json_set: 'temp_home_json_settings', temp_home_toml_set: 'temp_home_toml_settings',
+  };
+  const scalars = [
+    'config_content_env', 'config_env', 'config_dir_env', 'temp_home_env', 'temp_home_config_path',
+    'model_catalog_path', 'model_arg', 'vendor_model_arg', 'session_root', 'session_file_suffix', 'resume_command',
+  ];
+  for (const child of node.children) {
+    if (child.name in lists) invocation[lists[child.name]].push(child.id);
+    else if (child.name in pairs) {
+      const pair = splitOnceEquals(child.id);
+      if (pair) invocation[pairs[child.name]].push(pair);
+    } else if (scalars.includes(child.name)) invocation[child.name] = child.id;
+    else if (child.name === 'interactive_args_require_prompt') invocation.interactive_args_require_prompt = child.id === 'true';
+    else if (child.name === 'mode_arg_position') invocation.mode_arg_position = fromSeed(child.id, MODE_ARG_POSITIONS);
+    else if (child.name === 'model_arg_position') invocation.model_arg_position = fromSeed(child.id, MODEL_ARG_POSITIONS);
+    else if (child.name === 'env') {
+      const pair = splitOnceEquals(child.id);
+      if (pair) invocation.env.push({ key: pair[0], value: pair[1] });
+    }
+  }
+  return invocation;
+}
+
+/** Mirrors `fn parse_verification` in rust/src/seed/client_integrations.rs. */
+function parseVerification(node) {
+  const verification = {
+    surface: findChildValue(node, 'surface'),
+    file_delivery: findChildValue(node, 'file_delivery'),
+    headless_args: [], interactive_env: [], interactive_preamble: [], required_request_tools: [],
+    required_response_tools: [], forbidden_output: [], auth_refusals: [], launch_args: [],
+    launch_ready: findChildValue(node, 'launch_ready'), launch_required_output: [],
+    launch_http_path: findChildValue(node, 'launch_http_path'), launch_subcommands: [],
+    extension_glob: findChildValue(node, 'extension_glob'),
+    chromium_sandbox_fallback: findChildValue(node, 'chromium_sandbox_fallback') === 'true',
+    sandbox_user_namespaces: findChildValue(node, 'sandbox_user_namespaces') === 'true',
+    vendor_auth_error: findChildValue(node, 'vendor_auth_error'),
+  };
+  const lists = {
+    headless_arg: 'headless_args', interactive_preamble: 'interactive_preamble',
+    required_request_tool: 'required_request_tools', required_response_tool: 'required_response_tools',
+    forbidden_output: 'forbidden_output', auth_refusal: 'auth_refusals', launch_arg: 'launch_args',
+    launch_required_output: 'launch_required_output', launch_subcommand: 'launch_subcommands',
+  };
+  for (const child of node.children) {
+    if (child.name in lists) verification[lists[child.name]].push(child.id);
+    else if (child.name === 'interactive_env') {
+      const pair = splitOnceEquals(child.id);
+      if (pair) verification.interactive_env.push({ key: pair[0], value: pair[1] });
+    }
+  }
+  return verification;
+}
+
+/** Mirrors `fn parse_global_config` in rust/src/seed/client_integrations.rs: only the protocol and kind matter here. */
+function parseGlobalConfig(node) {
+  const kind = findChildValue(node, 'kind');
+  return CONFIG_FORMATS.includes(kind) ? { protocol: node.id, format: kind, path: findChildValue(node, 'path') } : null;
+}
+
+/** Mirrors `fn parse_tool` in rust/src/seed/client_integrations.rs. */
+function parseTool(tool) {
+  const id = tool.id;
+  if (!id) return null;
+  const children = tool.children;
+  const ephemeral = children.find((node) => node.name === 'ephemeral');
+  const verification = children.find((node) => node.name === 'verification');
+  const globalConfigs = children.filter((node) => node.name === 'global').map(parseGlobalConfig).filter(Boolean);
+  if (globalConfigs.length === 0) return null;
+  const defaultProtocol = findChildValue(tool, 'default_protocol');
+  return {
+    id,
+    aliases: splitPipeList(findChildValue(tool, 'aliases')),
+    label: findChildValue(tool, 'label'),
+    command: findChildValue(tool, 'command'),
+    command_env: findChildValue(tool, 'command_env'),
+    platform_commands: children
+      .filter((child) => child.name.startsWith('command_') && child.name.slice('command_'.length) !== 'env')
+      .map((child) => ({ key: child.name.slice('command_'.length), value: child.id })),
+    provider_id: findChildValue(tool, 'provider_id'),
+    default_protocol: defaultProtocol,
+    supported_protocols: splitPipeList(findChildValue(tool, 'supported_protocols')),
+    endpoints: children.filter((child) => child.name.startsWith('endpoint_')).map((child) => [child.name.slice('endpoint_'.length), child.id]),
+    api_key_env: findChildValue(tool, 'api_key_env'),
+    api_key_default: findChildValue(tool, 'api_key_default'),
+    model_selector: findChildValue(tool, 'model_selector'),
+    invocation: parseInvocation(ephemeral ?? { children: [] }),
+    verification: parseVerification(verification ?? { children: [] }),
+    global_config: globalConfigs.find((config) => config.protocol === defaultProtocol) ?? globalConfigs[0],
+    global_configs: globalConfigs,
+  };
+}
+
+/**
+ * Mirrors `fn client_integrations` in rust/src/seed/client_integrations.rs: the
+ * registered tools, in file order.
+ */
+export function clientIntegrations() {
+  return cached('client-integrations', () => {
+    const out = [];
+    for (const root of parseRoot(readText('data/seed/client-integrations.lino')).children) {
+      if (root.name !== 'client_integrations') continue;
+      for (const tool of root.children.filter((node) => node.name === 'tool')) {
+        const integration = parseTool(tool);
+        if (integration) out.push(integration);
+      }
+    }
+    return out;
+  });
+}

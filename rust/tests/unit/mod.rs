@@ -249,6 +249,7 @@ mod pull_request_1188_quoted_path_payload;
 mod pull_request_1188_quoted_payload_command;
 mod pull_request_1188_quoted_payload_cues;
 mod pull_request_1188_replace_semantics;
+mod pull_request_1188_requirement_extraction;
 mod pull_request_1188_setting_verb;
 mod pull_request_1188_subagent_folder;
 mod pull_request_1188_subagent_gaps;

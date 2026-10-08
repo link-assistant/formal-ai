@@ -1,0 +1,6 @@
+# One CI gate, one file (issue #991).
+ci_gate check_requirement_extraction
+  stage web
+  description "The requirements js/agentic/crate/requirement_extraction.mjs lists for every cached issue in data/benchmarks/issue-requirements/ keep their recall and precision against the reviewed rows of docs/requirements/issue-NNNN-*.md at or above the floors in data/meta/text-capability-ratchet.lino."
+  run "node scripts/measure-requirement-extraction.mjs --check"
+  justification "R1188-U20 asks Formal AI to list the exact requirements of an issue without an LLM; the benchmark is the repository's own reviewed requirement rows, and the floors may only rise."

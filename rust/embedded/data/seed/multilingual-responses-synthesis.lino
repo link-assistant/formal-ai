@@ -3,22 +3,102 @@ multilingual_responses
     intent capability_gap
     language en
     text "This request routes to the `{needed}` capability, but this chat surface does not expose the required `{missing}` tool. Use an agent client that advertises it."
+  response response_capability_gap_ru
+    intent capability_gap
+    language ru
+    text "Этот запрос направляется к возможности `{needed}`, но эта чат-поверхность не предоставляет нужный инструмент `{missing}`. Используйте агентский клиент, который его объявляет."
+  response response_capability_gap_hi
+    intent capability_gap
+    language hi
+    text "यह अनुरोध `{needed}` क्षमता की ओर जाता है, लेकिन यह chat surface ज़रूरी `{missing}` tool उपलब्ध नहीं कराता। ऐसा agent client इस्तेमाल करें जो इसे उपलब्ध कराता हो।"
+  response response_capability_gap_zh
+    intent capability_gap
+    language zh
+    text "此请求会路由到 `{needed}` 能力，但当前聊天界面没有提供所需的 `{missing}` 工具。请使用声明了该工具的代理客户端。"
+  response response_capability_gap_es
+    intent capability_gap
+    language es
+    text "Esta solicitud se dirige a la capacidad `{needed}`, pero esta interfaz de chat no expone la herramienta `{missing}` necesaria. Usa un cliente de agente que la ofrezca."
   response response_capability_gap_anchors_en
     intent capability_gap_anchors
     language en
     text "\nRequest anchors preserved for that client: {anchors}."
+  response response_capability_gap_anchors_ru
+    intent capability_gap_anchors
+    language ru
+    text "\nОпорные элементы запроса, сохранённые для этого клиента: {anchors}."
+  response response_capability_gap_anchors_hi
+    intent capability_gap_anchors
+    language hi
+    text "\nउस client के लिए सुरक्षित रखे गए अनुरोध anchors: {anchors}।"
+  response response_capability_gap_anchors_zh
+    intent capability_gap_anchors
+    language zh
+    text "\n为该客户端保留的请求锚点：{anchors}。"
+  response response_capability_gap_anchors_es
+    intent capability_gap_anchors
+    language es
+    text "\nAnclas de la solicitud conservadas para ese cliente: {anchors}."
   response response_language_demonstration_en
     intent response_language_demonstration
     language en
+    text "{canonical} ({surface}): {demonstration}"
+  response response_response_language_demonstration_ru
+    intent response_language_demonstration
+    language ru
+    text "{canonical} ({surface}): {demonstration}"
+  response response_response_language_demonstration_hi
+    intent response_language_demonstration
+    language hi
+    text "{canonical} ({surface}): {demonstration}"
+  response response_response_language_demonstration_zh
+    intent response_language_demonstration
+    language zh
+    text "{canonical}（{surface}）：{demonstration}"
+  response response_response_language_demonstration_es
+    intent response_language_demonstration
+    language es
     text "{canonical} ({surface}): {demonstration}"
   response response_explain_previous_turn_empty_en
     intent explain_previous_turn_empty
     language en
     text "There is no previous assistant turn available to explain yet."
+  response response_explain_previous_turn_empty_ru
+    intent explain_previous_turn_empty
+    language ru
+    text "Пока нет предыдущей реплики ассистента, которую можно объяснить."
+  response response_explain_previous_turn_empty_hi
+    intent explain_previous_turn_empty
+    language hi
+    text "अभी समझाने के लिए assistant का कोई पिछला turn उपलब्ध नहीं है।"
+  response response_explain_previous_turn_empty_zh
+    intent explain_previous_turn_empty
+    language zh
+    text "目前还没有可供解释的上一轮助手回复。"
+  response response_explain_previous_turn_empty_es
+    intent explain_previous_turn_empty
+    language es
+    text "Todavía no hay ningún turno anterior del asistente que explicar."
   response response_explain_previous_turn_answer_en
     intent explain_previous_turn_answer
     language en
     text "Here is the previous answer in a simpler form:\n\n{previous}"
+  response response_explain_previous_turn_answer_ru
+    intent explain_previous_turn_answer
+    language ru
+    text "Вот предыдущий ответ в более простой форме:\n\n{previous}"
+  response response_explain_previous_turn_answer_hi
+    intent explain_previous_turn_answer
+    language hi
+    text "पिछला जवाब आसान रूप में:\n\n{previous}"
+  response response_explain_previous_turn_answer_zh
+    intent explain_previous_turn_answer
+    language zh
+    text "下面是上一个回答的简化版本：\n\n{previous}"
+  response response_explain_previous_turn_answer_es
+    intent explain_previous_turn_answer
+    language es
+    text "Aquí tienes la respuesta anterior de forma más sencilla:\n\n{previous}"
   response response_code_execution_refused_en
     intent code_execution_refused
     language en
@@ -735,6 +815,10 @@ multilingual_responses
     intent meta_explanation_why
     language zh
     text "我这样回答是因为该提示匹配了确定性的 Links Notation 规则。evidence links 和 trace events 已追加到日志中; 可通过 trace link 检查完整链路。"
+  response response_meta_explanation_why_es
+    intent meta_explanation_why
+    language es
+    text "Respondí así porque la consulta coincidió con una regla determinista de Links Notation. Los enlaces de evidencia y los eventos de traza se añaden al registro; consulta el enlace de traza para ver la cadena completa."
   response response_how_it_works_en
     intent how_it_works
     language en
@@ -751,18 +835,70 @@ multilingual_responses
     intent how_it_works
     language zh
     text "`{subject}` 的机制发现计划。\n\nI do not answer this from a memoized fact. The solver treats the prompt as a question about how `{subject}` works, checks Wikipedia for a source-backed overview, Wikidata for entity relationships, then web search across {providers}. If no source explains the mechanism, it should ask for a source or a narrower term."
+  response response_how_it_works_es
+    intent how_it_works
+    language es
+    text "Plan de descubrimiento del mecanismo de `{subject}`.\n\nNo respondo a esto con un hecho memorizado. El solucionador trata la consulta como una pregunta sobre cómo funciona `{subject}`: consulta Wikipedia para obtener un resumen respaldado por fuentes, Wikidata para las relaciones entre entidades y luego la búsqueda web en {providers}. Si ninguna fuente explica el mecanismo, debe pedir una fuente o un término más concreto en lugar de inventar detalles."
   response response_how_it_works_prior_topic_en
     intent how_it_works_prior_topic
     language en
     text "To explain how {term} works: I know the term from the prior conversation but do not have a detailed symbolic rule for it yet. Add a Links Notation fact with the mechanism description, then ask again."
+  response response_how_it_works_prior_topic_ru
+    intent how_it_works_prior_topic
+    language ru
+    text "Чтобы объяснить, как работает {term}: я знаю этот термин из предыдущего разговора, но подробного символьного правила для него пока нет. Добавьте факт Links Notation с описанием механизма и спросите снова."
+  response response_how_it_works_prior_topic_hi
+    intent how_it_works_prior_topic
+    language hi
+    text "{term} कैसे काम करता है, यह समझाने के लिए: मैं यह शब्द पिछली बातचीत से जानता हूँ, लेकिन इसके लिए अभी कोई विस्तृत symbolic नियम नहीं है। तंत्र के विवरण के साथ एक Links Notation तथ्य जोड़ें, फिर दोबारा पूछें।"
+  response response_how_it_works_prior_topic_zh
+    intent how_it_works_prior_topic
+    language zh
+    text "关于 {term} 如何运作：我从之前的对话中知道这个术语，但还没有针对它的详细符号规则。请添加一条描述其机制的 Links Notation 事实，然后再问一次。"
+  response response_how_it_works_prior_topic_es
+    intent how_it_works_prior_topic
+    language es
+    text "Para explicar cómo funciona {term}: conozco el término por la conversación anterior, pero todavía no tengo una regla simbólica detallada para él. Añade un hecho de Links Notation con la descripción del mecanismo y vuelve a preguntar."
   response response_how_it_works_no_context_en
     intent how_it_works_no_context
     language en
     text 'I answered that way because the prompt matched a deterministic Links Notation rule. To ask about a specific topic, try "how does X work?" where X is a concept I know (e.g. "how does Wikipedia work?"). The evidence and trace events are appended to the log; see the trace link for the full chain.'
+  response response_how_it_works_no_context_ru
+    intent how_it_works_no_context
+    language ru
+    text "Я ответил так, потому что запрос совпал с детерминированным правилом Links Notation. Чтобы спросить о конкретной теме, попробуйте «как работает X?», где X — известное мне понятие (например, «как работает Wikipedia?»). Доказательства и события трассировки добавлены в журнал; полную цепочку смотрите по ссылке на трассировку."
+  response response_how_it_works_no_context_hi
+    intent how_it_works_no_context
+    language hi
+    text "मैंने ऐसा जवाब इसलिए दिया क्योंकि prompt एक deterministic Links Notation नियम से मेल खाता था। किसी खास विषय के बारे में पूछने के लिए «X कैसे काम करता है?» आज़माएँ, जहाँ X ऐसी अवधारणा हो जिसे मैं जानता हूँ (जैसे «Wikipedia कैसे काम करता है?»)। सबूत और trace events log में जोड़े गए हैं; पूरी chain के लिए trace link देखें।"
+  response response_how_it_works_no_context_zh
+    intent how_it_works_no_context
+    language zh
+    text "我这样回答是因为该提示匹配了确定性的 Links Notation 规则。若想询问具体主题，可以试试「X 是如何运作的？」，其中 X 是我已知的概念（例如「Wikipedia 是如何运作的？」）。证据和轨迹事件已追加到日志中；完整链路请查看轨迹链接。"
+  response response_how_it_works_no_context_es
+    intent how_it_works_no_context
+    language es
+    text "Respondí así porque la consulta coincidió con una regla determinista de Links Notation. Para preguntar por un tema concreto, prueba «¿cómo funciona X?», donde X sea un concepto que conozco (por ejemplo «¿cómo funciona Wikipedia?»). La evidencia y los eventos de traza se añaden al registro; consulta el enlace de traza para ver la cadena completa."
   response response_network_snapshot_en
     intent network_snapshot
     language en
     text "Here is the current link network as a links-notation snapshot:\n\n```links\n{snapshot}\n```"
+  response response_network_snapshot_ru
+    intent network_snapshot
+    language ru
+    text "Вот текущая сеть связей в виде снимка links-notation:\n\n```links\n{snapshot}\n```"
+  response response_network_snapshot_hi
+    intent network_snapshot
+    language hi
+    text "यह वर्तमान link network का links-notation snapshot है:\n\n```links\n{snapshot}\n```"
+  response response_network_snapshot_zh
+    intent network_snapshot
+    language zh
+    text "这是当前链接网络的 links-notation 快照：\n\n```links\n{snapshot}\n```"
+  response response_network_snapshot_es
+    intent network_snapshot
+    language es
+    text "Esta es la red de enlaces actual como instantánea en links-notation:\n\n```links\n{snapshot}\n```"
   response response_source_refresh_en
     intent source_refresh
     language en
@@ -787,34 +923,162 @@ multilingual_responses
     intent execution_failure
     language en
     text "Execution status: failed in isolated sandbox.\n```python\n{function}()\n```\nTraceback (most recent call last):\n  File 'main.py', line 1, in <module>\nNameError: name '{function}' is not defined.\nThe failure trace is appended to the action log; see the trace link."
+  response response_execution_failure_ru
+    intent execution_failure
+    language ru
+    text "Статус выполнения: сбой в изолированной песочнице.\n```python\n{function}()\n```\nTraceback (most recent call last):\n  File 'main.py', line 1, in <module>\nNameError: name '{function}' is not defined.\nТрассировка сбоя добавлена в журнал действий; см. ссылку на трассировку."
+  response response_execution_failure_hi
+    intent execution_failure
+    language hi
+    text "निष्पादन स्थिति: isolated sandbox में विफल।\n```python\n{function}()\n```\nTraceback (most recent call last):\n  File 'main.py', line 1, in <module>\nNameError: name '{function}' is not defined.\nविफलता का trace action log में जोड़ा गया है; trace link देखें।"
+  response response_execution_failure_zh
+    intent execution_failure
+    language zh
+    text "执行状态：在隔离沙箱中失败。\n```python\n{function}()\n```\nTraceback (most recent call last):\n  File 'main.py', line 1, in <module>\nNameError: name '{function}' is not defined.\n失败轨迹已追加到操作日志中；请查看轨迹链接。"
+  response response_execution_failure_es
+    intent execution_failure
+    language es
+    text "Estado de ejecución: falló en el entorno aislado.\n```python\n{function}()\n```\nTraceback (most recent call last):\n  File 'main.py', line 1, in <module>\nNameError: name '{function}' is not defined.\nLa traza del fallo se añadió al registro de acciones; consulta el enlace de la traza."
   response response_unit_incompatibility_en
     intent unit_incompatibility
     language en
     text "{unit_a} measures {dim_a}; {unit_b} measures {dim_b}. These are different physical dimensions and cannot be converted into each other. The incompatibility is recorded as a `unit_incompatibility` link in the network."
+  response response_unit_incompatibility_ru
+    intent unit_incompatibility
+    language ru
+    text "{unit_a} измеряет {dim_a}; {unit_b} измеряет {dim_b}. Это разные физические размерности, и их нельзя перевести друг в друга. Несовместимость записана в сети как связь `unit_incompatibility`."
+  response response_unit_incompatibility_hi
+    intent unit_incompatibility
+    language hi
+    text "{unit_a} {dim_a} मापता है; {unit_b} {dim_b} मापता है। ये अलग-अलग भौतिक आयाम हैं और इन्हें एक-दूसरे में बदला नहीं जा सकता। यह असंगति network में `unit_incompatibility` link के रूप में दर्ज है।"
+  response response_unit_incompatibility_zh
+    intent unit_incompatibility
+    language zh
+    text "{unit_a} 度量的是{dim_a}；{unit_b} 度量的是{dim_b}。这是不同的物理量纲，无法相互换算。该不兼容性已作为 `unit_incompatibility` 链接记录在网络中。"
+  response response_unit_incompatibility_es
+    intent unit_incompatibility
+    language es
+    text "{unit_a} mide {dim_a}; {unit_b} mide {dim_b}. Son dimensiones físicas distintas y no se pueden convertir entre sí. La incompatibilidad queda registrada como un enlace `unit_incompatibility` en la red."
   response response_compound_interest_report_en
     intent compound_interest_report
     language en
     text "Compound interest calculation\n\nFormula: A = P(1 + r/n)^(n*t)\nP = {principal} USD\nr = {rate} ({percent}% annual)\nn = {periods_per_year} ({frequency})\nt = {years} years\n\nStep 1: periodic rate = r/n = {rate}/{periods_per_year} = {periodic_rate}\nStep 2: number of periods = n*t = {periods_per_year}*{years} = {periods}\nStep 3: A = {principal} * (1 + {periodic_rate})^{periods}\nFinal amount: {final_amount} USD"
+  response response_compound_interest_report_ru
+    intent compound_interest_report
+    language ru
+    text "Расчёт сложных процентов\n\nФормула: A = P(1 + r/n)^(n*t)\nP = {principal} USD\nr = {rate} ({percent}% годовых)\nn = {periods_per_year} ({frequency})\nt = {years} лет\n\nШаг 1: ставка за период = r/n = {rate}/{periods_per_year} = {periodic_rate}\nШаг 2: число периодов = n*t = {periods_per_year}*{years} = {periods}\nШаг 3: A = {principal} * (1 + {periodic_rate})^{periods}\nИтоговая сумма: {final_amount} USD"
+  response response_compound_interest_report_hi
+    intent compound_interest_report
+    language hi
+    text "चक्रवृद्धि ब्याज की गणना\n\nसूत्र: A = P(1 + r/n)^(n*t)\nP = {principal} USD\nr = {rate} ({percent}% वार्षिक)\nn = {periods_per_year} ({frequency})\nt = {years} वर्ष\n\nचरण 1: आवधिक दर = r/n = {rate}/{periods_per_year} = {periodic_rate}\nचरण 2: अवधियों की संख्या = n*t = {periods_per_year}*{years} = {periods}\nचरण 3: A = {principal} * (1 + {periodic_rate})^{periods}\nअंतिम राशि: {final_amount} USD"
+  response response_compound_interest_report_zh
+    intent compound_interest_report
+    language zh
+    text "复利计算\n\n公式：A = P(1 + r/n)^(n*t)\nP = {principal} USD\nr = {rate}（年利率 {percent}%）\nn = {periods_per_year}（{frequency}）\nt = {years} 年\n\n第 1 步：每期利率 = r/n = {rate}/{periods_per_year} = {periodic_rate}\n第 2 步：期数 = n*t = {periods_per_year}*{years} = {periods}\n第 3 步：A = {principal} * (1 + {periodic_rate})^{periods}\n最终金额：{final_amount} USD"
+  response response_compound_interest_report_es
+    intent compound_interest_report
+    language es
+    text "Cálculo de interés compuesto\n\nFórmula: A = P(1 + r/n)^(n*t)\nP = {principal} USD\nr = {rate} ({percent}% anual)\nn = {periods_per_year} ({frequency})\nt = {years} años\n\nPaso 1: tasa por periodo = r/n = {rate}/{periods_per_year} = {periodic_rate}\nPaso 2: número de periodos = n*t = {periods_per_year}*{years} = {periods}\nPaso 3: A = {principal} * (1 + {periodic_rate})^{periods}\nImporte final: {final_amount} USD"
   response response_compound_interest_final_amount_conversion_en
     intent compound_interest_final_amount_conversion
     language en
     text "Final amount conversion\nSource amount: {amount} {source}"
+  response response_compound_interest_final_amount_conversion_ru
+    intent compound_interest_final_amount_conversion
+    language ru
+    text "Конвертация итоговой суммы\nИсходная сумма: {amount} {source}"
+  response response_compound_interest_final_amount_conversion_hi
+    intent compound_interest_final_amount_conversion
+    language hi
+    text "अंतिम राशि का रूपांतरण\nमूल राशि: {amount} {source}"
+  response response_compound_interest_final_amount_conversion_zh
+    intent compound_interest_final_amount_conversion
+    language zh
+    text "最终金额换算\n原始金额：{amount} {source}"
+  response response_compound_interest_final_amount_conversion_es
+    intent compound_interest_final_amount_conversion
+    language es
+    text "Conversión del importe final\nImporte de origen: {amount} {source}"
   response response_compound_interest_conversion_en
     intent compound_interest_conversion
     language en
     text "Conversion: {source} -> {target}\n{expression} = {rate} {target}\n{amount} {source} * {rate} = {converted} {target}"
+  response response_compound_interest_conversion_ru
+    intent compound_interest_conversion
+    language ru
+    text "Конвертация: {source} -> {target}\n{expression} = {rate} {target}\n{amount} {source} * {rate} = {converted} {target}"
+  response response_compound_interest_conversion_hi
+    intent compound_interest_conversion
+    language hi
+    text "रूपांतरण: {source} -> {target}\n{expression} = {rate} {target}\n{amount} {source} * {rate} = {converted} {target}"
+  response response_compound_interest_conversion_zh
+    intent compound_interest_conversion
+    language zh
+    text "换算：{source} -> {target}\n{expression} = {rate} {target}\n{amount} {source} * {rate} = {converted} {target}"
+  response response_compound_interest_conversion_es
+    intent compound_interest_conversion
+    language es
+    text "Conversión: {source} -> {target}\n{expression} = {rate} {target}\n{amount} {source} * {rate} = {converted} {target}"
   response response_compound_interest_rate_detail_en
     intent compound_interest_rate_detail
     language en
     text "Rate detail: Exchange rate: 1 {source} = {rate} {target} (source: default (hardcoded))"
+  response response_compound_interest_rate_detail_ru
+    intent compound_interest_rate_detail
+    language ru
+    text "Подробности курса: Обменный курс: 1 {source} = {rate} {target} (источник: по умолчанию (зашит в код))"
+  response response_compound_interest_rate_detail_hi
+    intent compound_interest_rate_detail
+    language hi
+    text "दर का विवरण: विनिमय दर: 1 {source} = {rate} {target} (स्रोत: default (hardcoded))"
+  response response_compound_interest_rate_detail_zh
+    intent compound_interest_rate_detail
+    language zh
+    text "汇率详情：汇率：1 {source} = {rate} {target}（来源：默认（硬编码））"
+  response response_compound_interest_rate_detail_es
+    intent compound_interest_rate_detail
+    language es
+    text "Detalle del tipo: Tipo de cambio: 1 {source} = {rate} {target} (fuente: predeterminada (fijada en el código))"
   response response_compound_interest_live_rate_note_en
     intent compound_interest_live_rate_note
     language en
     text "Live web freshness is not independently verified here; this uses the exchange-rate source available through the local calculator."
+  response response_compound_interest_live_rate_note_ru
+    intent compound_interest_live_rate_note
+    language ru
+    text "Актуальность данных из сети здесь независимо не проверяется; используется источник курса валют, доступный через локальный калькулятор."
+  response response_compound_interest_live_rate_note_hi
+    intent compound_interest_live_rate_note
+    language hi
+    text "Live web की ताज़गी यहाँ स्वतंत्र रूप से सत्यापित नहीं है; यह local calculator के ज़रिए उपलब्ध exchange-rate स्रोत का उपयोग करता है।"
+  response response_compound_interest_live_rate_note_zh
+    intent compound_interest_live_rate_note
+    language zh
+    text "此处未独立验证网络数据的时效性；这里使用的是本地计算器可用的汇率来源。"
+  response response_compound_interest_live_rate_note_es
+    intent compound_interest_live_rate_note
+    language es
+    text "Aquí no se verifica de forma independiente la actualidad de los datos de la web; se usa la fuente de tipos de cambio disponible mediante la calculadora local."
   response response_compound_interest_rate_unavailable_en
     intent compound_interest_rate_unavailable
     language en
     text "I calculated the USD amount, but no {source}->{target} exchange rate is available locally."
+  response response_compound_interest_rate_unavailable_ru
+    intent compound_interest_rate_unavailable
+    language ru
+    text "Я рассчитал сумму в USD, но локально нет обменного курса {source}->{target}."
+  response response_compound_interest_rate_unavailable_hi
+    intent compound_interest_rate_unavailable
+    language hi
+    text "मैंने USD राशि की गणना कर ली, लेकिन स्थानीय रूप से {source}->{target} की कोई विनिमय दर उपलब्ध नहीं है।"
+  response response_compound_interest_rate_unavailable_zh
+    intent compound_interest_rate_unavailable
+    language zh
+    text "我已算出美元金额，但本地没有 {source}->{target} 的汇率。"
+  response response_compound_interest_rate_unavailable_es
+    intent compound_interest_rate_unavailable
+    language es
+    text "Calculé el importe en USD, pero no hay ningún tipo de cambio {source}->{target} disponible localmente."
   response response_playwright_script_clarification_en
     intent playwright_script_clarification
     language en
@@ -823,6 +1087,18 @@ multilingual_responses
     intent playwright_script_clarification
     language ru
     text "Я могу написать Playwright-скрипт. Уточните URL страницы, действия и ожидаемую проверку. Если нужен пример по умолчанию, я могу взять стартовый сценарий из документации Playwright."
+  response response_playwright_script_clarification_hi
+    intent playwright_script_clarification
+    language hi
+    text "मैं Playwright script लिख सकता हूँ। कृपया पेज का URL, किए जाने वाले actions और अपेक्षित assertion बताएँ। अगर आपको default उदाहरण चाहिए, तो मैं Playwright docs का starter scenario इस्तेमाल कर सकता हूँ।"
+  response response_playwright_script_clarification_zh
+    intent playwright_script_clarification
+    language zh
+    text "我可以编写 Playwright 脚本。请提供页面 URL、要执行的操作以及预期的断言。如果需要默认示例，我可以使用 Playwright 文档中的入门场景。"
+  response response_playwright_script_clarification_es
+    intent playwright_script_clarification
+    language es
+    text "Puedo escribir un script de Playwright. Indica la URL de la página, las acciones que hay que realizar y la aserción esperada. Si quieres un ejemplo predeterminado, puedo usar el escenario inicial de la documentación de Playwright."
   response response_playwright_script_lead_en
     intent playwright_script_lead
     language en
@@ -831,6 +1107,18 @@ multilingual_responses
     intent playwright_script_lead
     language ru
     text "Даю стартовый TypeScript-пример по документации Playwright."
+  response response_playwright_script_lead_hi
+    intent playwright_script_lead
+    language hi
+    text "मैं Playwright docs पर आधारित एक starter TypeScript उदाहरण इस्तेमाल करूँगा।"
+  response response_playwright_script_lead_zh
+    intent playwright_script_lead
+    language zh
+    text "我将使用基于 Playwright 文档的 TypeScript 入门示例。"
+  response response_playwright_script_lead_es
+    intent playwright_script_lead
+    language es
+    text "Usaré un ejemplo inicial en TypeScript basado en la documentación de Playwright."
   response response_playwright_script_lead_corrected_en
     intent playwright_script_lead_corrected
     language en
@@ -839,6 +1127,18 @@ multilingual_responses
     intent playwright_script_lead_corrected
     language ru
     text "Я трактую `Playright` как `Playwright` и даю стартовый TypeScript-пример по документации Playwright."
+  response response_playwright_script_lead_corrected_hi
+    intent playwright_script_lead_corrected
+    language hi
+    text "मैं `Playright` को `Playwright` समझ रहा हूँ और Playwright docs पर आधारित एक starter TypeScript उदाहरण इस्तेमाल करूँगा।"
+  response response_playwright_script_lead_corrected_zh
+    intent playwright_script_lead_corrected
+    language zh
+    text "我将 `Playright` 理解为 `Playwright`，并使用基于 Playwright 文档的 TypeScript 入门示例。"
+  response response_playwright_script_lead_corrected_es
+    intent playwright_script_lead_corrected
+    language es
+    text "Interpreto `Playright` como `Playwright` y usaré un ejemplo inicial en TypeScript basado en la documentación de Playwright."
   response response_playwright_script_starter_en
     intent playwright_script_starter
     language en
@@ -847,378 +1147,62 @@ multilingual_responses
     intent playwright_script_starter
     language ru
     text "{lead}\n\nSource: {source}\n\n```typescript\n{code}\n```\n\nПроверка:\n1. `npm init playwright@latest`\n2. `npx playwright test`\n\nУточните URL, действия и ожидаемый результат, если нужен сценарий под конкретный сайт."
+  response response_playwright_script_starter_hi
+    intent playwright_script_starter
+    language hi
+    text "{lead}\n\nस्रोत: {source}\n\n```typescript\n{code}\n```\n\nइसे इस तरह जाँचें:\n1. `npm init playwright@latest`\n2. `npx playwright test`\n\nअगर आपको किसी खास साइट के लिए script चाहिए, तो URL, actions और अपेक्षित परिणाम बताएँ।"
+  response response_playwright_script_starter_zh
+    intent playwright_script_starter
+    language zh
+    text "{lead}\n\n来源：{source}\n\n```typescript\n{code}\n```\n\n用以下命令检查：\n1. `npm init playwright@latest`\n2. `npx playwright test`\n\n如果需要针对特定网站的脚本，请提供 URL、操作和预期结果。"
+  response response_playwright_script_starter_es
+    intent playwright_script_starter
+    language es
+    text "{lead}\n\nFuente: {source}\n\n```typescript\n{code}\n```\n\nCompruébalo con:\n1. `npm init playwright@latest`\n2. `npx playwright test`\n\nIndica la URL, las acciones y el resultado esperado si quieres un script para un sitio concreto."
   response response_playwright_starter_typescript_en
     intent playwright_starter_typescript
     language en
     text "import { test, expect } from '@playwright/test';\n\ntest('opens the Playwright docs', async ({ page }) => {\n  await page.goto('https://playwright.dev/');\n  await expect(page).toHaveTitle(/Playwright/);\n\n  await page.getByRole('link', { name: 'Docs' }).click();\n  await expect(page.getByRole('heading', { name: /Playwright/ })).toBeVisible();\n});"
-  response response_web_open_in_new_tab_en
-    intent web_open_in_new_tab
-    language en
-    text "I suggest opening this in a new tab: [{url}]({url})."
-  response response_web_url_navigate_native_note_en
-    intent web_url_navigate_native_note
-    language en
-    text "In the browser web app, this URL is checked with browser-readable frame-policy metadata before any embedded preview is attempted. If X-Frame-Options or CSP frame-ancestors blocks embedding, the web app keeps the direct external link instead."
-  response response_web_frame_policy_blocked_en
-    intent web_frame_policy_blocked
-    language en
-    text "I checked the page's frame policy, and it does not allow embedding here because {reason}."
-  response response_web_frame_policy_unknown_en
-    intent web_frame_policy_unknown
-    language en
-    text "I could not verify that this page allows embedding here because {reason}."
-  response response_web_frame_policy_unverified_en
-    intent web_frame_policy_unverified
-    language en
-    text "I could not verify that this page allows embedding here."
-  response response_web_frame_policy_cors_note_en
-    intent web_frame_policy_cors_note
-    language en
-    text "Browser JavaScript also cannot read the page content directly unless the site allows CORS, so the direct external link is the reliable option."
-  response response_web_frame_policy_allowed_en
-    intent web_frame_policy_allowed
-    language en
-    text "I checked the page's frame policy and can show it here.\n\nDirect link: [{url}]({url})."
-  response response_web_http_fetch_unavailable_en
-    intent web_http_fetch_unavailable
-    language en
-    text "HTTP fetch is not available in this environment.\n\nURL: [{url}]({url})"
-  response response_web_http_fetch_truncated_en
-    intent web_http_fetch_truncated
-    language en
-    text "{body}\n\n*(truncated — {bytes} bytes total)*"
-  response response_web_http_fetch_body_en
-    intent web_http_fetch_body
-    language en
-    text "Fetched `{url}` — status **{status}**.\n\nResponse body:\n```\n{body}\n```"
-  response response_web_http_fetch_binary_en
-    intent web_http_fetch_binary
-    language en
-    text "Fetched `{url}` — status **{status}**.\n\nContent-Type: `{content_type}` — binary or empty body, not shown.\n\nYou can view this URL directly: [{url}]({url})"
-  response response_web_http_fetch_failed_cors_en
-    intent web_http_fetch_failed_cors
-    language en
-    text "Could not fetch `{url}` directly (CORS restriction)."
-  response response_web_http_fetch_failed_network_en
-    intent web_http_fetch_failed_network
-    language en
-    text "Could not fetch `{url}` directly (network error)."
-  response response_web_http_fetch_iframe_en
-    intent web_http_fetch_iframe
-    language en
-    text "I checked the page's frame policy and can show it in the embedded frame below."
-  response response_web_frame_policy_reason_target_url_unparsed_en
-    intent web_frame_policy_reason_target_url_unparsed
-    language en
-    text "the target URL could not be parsed"
-  response response_web_frame_policy_reason_xfo_deny_and_csp_none_en
-    intent web_frame_policy_reason_xfo_deny_and_csp_none
-    language en
-    text "the page sends X-Frame-Options: DENY and CSP frame-ancestors 'none'"
-  response response_web_frame_policy_reason_xfo_deny_en
-    intent web_frame_policy_reason_xfo_deny
-    language en
-    text "the page sends X-Frame-Options: DENY"
-  response response_web_frame_policy_reason_xfo_sameorigin_en
-    intent web_frame_policy_reason_xfo_sameorigin
-    language en
-    text "the page sends X-Frame-Options: SAMEORIGIN"
-  response response_web_frame_policy_reason_embedder_unavailable_en
-    intent web_frame_policy_reason_embedder_unavailable
-    language en
-    text "the current web app origin is unavailable"
-  response response_web_frame_policy_reason_csp_none_en
-    intent web_frame_policy_reason_csp_none
-    language en
-    text "the page sends CSP frame-ancestors 'none'"
-  response response_web_frame_policy_reason_csp_excludes_embedder_en
-    intent web_frame_policy_reason_csp_excludes_embedder
-    language en
-    text "the page's CSP frame-ancestors directive does not include this web app"
-  response response_web_frame_policy_reason_no_blocking_policy_en
-    intent web_frame_policy_reason_no_blocking_policy
-    language en
-    text "no blocking X-Frame-Options or CSP frame-ancestors policy was detected"
-  response response_web_frame_policy_reason_fetch_unavailable_en
-    intent web_frame_policy_reason_fetch_unavailable
-    language en
-    text "browser fetch is not available"
-  response response_web_frame_policy_reason_non_public_url_en
-    intent web_frame_policy_reason_non_public_url
-    language en
-    text "only public HTTP(S) URLs are checked by the frame-policy service"
-  response response_web_frame_policy_reason_service_http_status_en
-    intent web_frame_policy_reason_service_http_status
-    language en
-    text "the frame-policy service returned HTTP {status}"
-  response response_web_frame_policy_reason_service_no_headers_en
-    intent web_frame_policy_reason_service_no_headers
-    language en
-    text "the frame-policy service did not return response headers"
-  response response_web_frame_policy_reason_service_unreachable_en
-    intent web_frame_policy_reason_service_unreachable
-    language en
-    text "the frame-policy service could not be reached from this browser"
-  response response_web_search_results_header_en
-    intent web_search_results_header
-    language en
-    text "Search results for `{query}` — top {top} after reciprocal rank fusion (k = {k})."
-  response response_web_search_results_header_ru
-    intent web_search_results_header
-    language ru
-    text "Результаты поиска для `{query}` — топ {top} после реципрокного объединения рангов (k = {k})."
-  response response_web_search_results_header_zh
-    intent web_search_results_header
-    language zh
-    text "搜索 `{query}` 的结果 — 经互惠等级融合后的前 {top} 项（k = {k}）。"
-  response response_web_search_results_header_hi
-    intent web_search_results_header
-    language hi
-    text "`{query}` के लिए खोज परिणाम — रेसिप्रोकल रैंक फ़्यूज़न के बाद शीर्ष {top} (k = {k})।"
-  response response_web_search_other_sources_en
-    intent web_search_other_sources
-    language en
-    text "Other sources"
-  response response_web_search_other_sources_ru
-    intent web_search_other_sources
-    language ru
-    text "Другие источники"
-  response response_web_search_other_sources_zh
-    intent web_search_other_sources
-    language zh
-    text "其他来源"
-  response response_web_search_other_sources_hi
-    intent web_search_other_sources
-    language hi
-    text "अन्य स्रोत"
-  response response_web_search_via_en
-    intent web_search_via
-    language en
-    text "via"
-  response response_web_search_via_ru
-    intent web_search_via
-    language ru
-    text "через"
-  response response_web_search_via_zh
-    intent web_search_via
-    language zh
-    text "来自"
-  response response_web_search_via_hi
-    intent web_search_via
-    language hi
-    text "के माध्यम से"
-  response response_web_search_read_more_en
-    intent web_search_read_more
-    language en
-    text "Read more"
-  response response_web_search_read_more_ru
-    intent web_search_read_more
-    language ru
-    text "Подробнее"
-  response response_web_search_read_more_zh
-    intent web_search_read_more
-    language zh
-    text "阅读更多"
-  response response_web_search_read_more_hi
-    intent web_search_read_more
-    language hi
-    text "और पढ़ें"
-  response response_web_search_no_results_en
-    intent web_search_no_results
-    language en
-    text "No CORS-enabled web search results were returned for `{query}`.\n\nProviders tried: {providers}."
-  response response_web_search_no_results_ru
-    intent web_search_no_results
-    language ru
-    text "Не получены результаты веб-поиска с поддержкой CORS для `{query}`.\n\nПопробованы провайдеры: {providers}."
-  response response_web_search_no_results_zh
-    intent web_search_no_results
-    language zh
-    text "未获取到 `{query}` 的可用 CORS 搜索结果。\n\n已尝试的提供方：{providers}。"
-  response response_web_search_no_results_hi
-    intent web_search_no_results
-    language hi
-    text "`{query}` के लिए CORS-समर्थित कोई खोज परिणाम नहीं मिले।\n\nप्रयास किए गए प्रदाता: {providers}."
-  response response_web_search_all_disabled_en
-    intent web_search_all_disabled
-    language en
-    text "All CORS-readable search providers are disabled for this session. Tried: {providers}."
-  response response_web_search_all_disabled_ru
-    intent web_search_all_disabled
-    language ru
-    text "Все CORS-совместимые поисковые провайдеры отключены в этой сессии. Пробовали: {providers}."
-  response response_web_search_all_disabled_zh
-    intent web_search_all_disabled
-    language zh
-    text "本会话中所有支持 CORS 的搜索提供方都已禁用。已尝试：{providers}。"
-  response response_web_search_all_disabled_hi
-    intent web_search_all_disabled
-    language hi
-    text "इस सत्र के लिए सभी CORS-समर्थित खोज प्रदाता अक्षम हैं। प्रयास किया: {providers}."
-  response response_web_search_wikinews_article_en
-    intent web_search_wikinews_article
-    language en
-    text "Wikinews has a news article titled \"{title}\"."
-  response response_web_search_wikinews_article_ru
-    intent web_search_wikinews_article
-    language ru
-    text "В Wikinews есть новостная статья «{title}»."
-  response response_web_search_wikinews_article_zh
-    intent web_search_wikinews_article
-    language zh
-    text "Wikinews 有“{title}”这篇新闻。"
-  response response_web_search_wikinews_article_hi
-    intent web_search_wikinews_article
-    language hi
-    text "Wikinews में \"{title}\" के लिए समाचार लेख है।"
-  response response_procedural_how_to_plan_en
-    intent procedural_how_to_plan
-    language en
-    text "Procedural discovery plan for `{task}` (action `{action}`, object `{object}`).\n\n{install_gate}I do not answer this from a memoized recipe. The solver first checks Wikipedia for topic context and Wikidata for entity/action/object hints. It then tries wikiHow's CORS-readable MediaWiki parse API candidate `{candidate}` via `{api_url}`. If those sources do not expose usable steps, the fallback path runs web search for `{search_query}` across {providers} and merges the top results with reciprocal rank fusion (k = {k}). The final recursive fetch check only accepts pages that actually contain explicit ordered or instructional steps for `{task}`."
-  response response_procedural_how_to_install_gate_en
-    intent procedural_how_to_install_gate
-    language en
-    text "For install tasks, the first source gate prefers the product's official documentation or official repository install page before community how-to sources. It starts with the official-source web search query `{search_query}` and keeps the general how-to query `{fallback_query}` as fallback.\n\n"
-  response response_procedural_how_to_plan_ru
-    intent procedural_how_to_plan
-    language ru
-    text "План поиска процедуры для `{task}` (действие `{action}`, объект `{object}`).\n\n{install_gate}Я не отвечаю на это как на заученный рецепт. Сначала solver проверяет Wikipedia для контекста темы и Wikidata для подсказок сущности, действия и объекта. Затем он пробует CORS-readable MediaWiki parse API wikiHow для кандидата `{candidate}` через `{api_url}`. Если эти источники не дают пригодные шаги, fallback запускает web search по `{search_query}` через {providers} и объединяет верхние результаты reciprocal rank fusion (k = {k}). Финальная recursive fetch check принимает только страницы с явными упорядоченными или инструкционными шагами для `{task}`."
-  response response_procedural_how_to_install_gate_ru
-    intent procedural_how_to_install_gate
-    language ru
-    text "Для задач установки первый source gate ищет официальную документацию продукта или официальную страницу установки в репозитории, а уже потом переходит к общим how-to источникам. Он начинает с web search запроса `{search_query}` и держит общий how-to запрос `{fallback_query}` как fallback. "
-  response response_procedural_how_to_plan_hi
-    intent procedural_how_to_plan
-    language hi
-    text "`{task}` के लिए procedural discovery plan (action `{action}`, object `{object}`).\n\n{install_gate}मैं इसे memorized recipe से answer नहीं करता. Solver पहले topic context के लिए Wikipedia और entity/action/object hints के लिए Wikidata जांचता है. फिर वह candidate `{candidate}` के लिए wikiHow का CORS-readable MediaWiki parse API `{api_url}` से आजमाता है. अगर ये sources usable steps नहीं देते, fallback `{search_query}` के लिए {providers} पर web search चलाता है और top results को reciprocal rank fusion (k = {k}) से merge करता है. अंतिम recursive fetch check केवल उन pages को स्वीकार करता है जिनमें `{task}` के explicit ordered या instructional steps हों."
-  response response_procedural_how_to_install_gate_hi
-    intent procedural_how_to_install_gate
-    language hi
-    text "इंस्टॉल वाले कामों में पहला source gate उत्पाद की आधिकारिक documentation या official repository install page को प्राथमिकता देता है; उसके बाद ही community how-to sources देखे जाते हैं. Solver official-source web search query `{search_query}` पहले चलाता है और general how-to query `{fallback_query}` को fallback रखता है. "
-  response response_procedural_how_to_plan_zh
-    intent procedural_how_to_plan
-    language zh
-    text "`{task}` 的过程发现计划（action `{action}`, object `{object}`）。\n\n{install_gate}我不会把它当作记忆中的固定 recipe 来回答。Solver 先检查 Wikipedia 获取主题上下文，再检查 Wikidata 获取 entity/action/object 线索。然后它尝试 wikiHow 的 CORS-readable MediaWiki parse API candidate `{candidate}`，URL 为 `{api_url}`。如果这些来源没有可用步骤，fallback 会对 `{search_query}` 通过 {providers} 运行 web search，并用 reciprocal rank fusion (k = {k}) 合并顶部结果。最后的 recursive fetch check 只接受真正包含 `{task}` 的明确有序步骤或 instructional steps 的页面。"
-  response response_procedural_how_to_install_gate_zh
-    intent procedural_how_to_install_gate
-    language zh
-    text "对于安装类任务，第一个 source gate 优先查找产品官方 documentation 或官方仓库的安装页面，然后才使用社区 how-to 来源。Solver 先运行官方来源 web search query `{search_query}`，并把通用 how-to query `{fallback_query}` 保留为 fallback。"
-  response response_procedural_how_to_source_path_install_wikihow_en
-    intent procedural_how_to_source_path_install_wikihow
-    language en
-    text "Source path: Wikipedia -> Wikidata -> official documentation web search -> wikiHow API fallback -> community web search fallback -> recursive fetch check."
-  response response_procedural_how_to_source_path_install_wikihow_ru
-    intent procedural_how_to_source_path_install_wikihow
-    language ru
-    text "Путь источников: Wikipedia -> Wikidata -> official documentation web search -> wikiHow API fallback -> community web search fallback -> recursive fetch check."
-  response response_procedural_how_to_source_path_install_no_wikihow_en
-    intent procedural_how_to_source_path_install_no_wikihow
-    language en
-    text "Source path: Wikipedia -> Wikidata -> official documentation web search -> community web search fallback -> recursive fetch check (wikiHow disabled in settings)."
-  response response_procedural_how_to_source_path_install_no_wikihow_ru
-    intent procedural_how_to_source_path_install_no_wikihow
-    language ru
-    text "Путь источников: Wikipedia -> Wikidata -> official documentation web search -> community web search fallback -> recursive fetch check (wikiHow отключен в настройках)."
-  response response_procedural_how_to_source_path_wikihow_en
-    intent procedural_how_to_source_path_wikihow
-    language en
-    text "Source path: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check."
-  response response_procedural_how_to_source_path_wikihow_ru
-    intent procedural_how_to_source_path_wikihow
-    language ru
-    text "Путь источников: Wikipedia -> Wikidata -> wikiHow API -> web search fallback -> recursive fetch check."
-  response response_procedural_how_to_source_path_no_wikihow_en
-    intent procedural_how_to_source_path_no_wikihow
-    language en
-    text "Source path: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow disabled in settings)."
-  response response_procedural_how_to_source_path_no_wikihow_ru
-    intent procedural_how_to_source_path_no_wikihow
-    language ru
-    text "Путь источников: Wikipedia -> Wikidata -> web search fallback -> recursive fetch check (wikiHow отключен в настройках)."
-  response response_procedural_how_to_heading_en
-    intent procedural_how_to_heading
-    language en
-    text "Procedural discovery plan for `{task}` (action `{action}`, object `{object}`)."
-  response response_procedural_how_to_live_install_gate_en
-    intent procedural_how_to_live_install_gate
-    language en
-    text "For install tasks, the first source gate prefers the product's official documentation or official repository install page before community how-to sources. It starts with `{search_query}` and keeps `{fallback_query}` as fallback."
-  response response_procedural_how_to_heading_ru
-    intent procedural_how_to_heading
-    language ru
-    text "План поиска процедуры для `{task}` (действие `{action}`, объект `{object}`)."
-  response response_procedural_how_to_live_install_gate_ru
-    intent procedural_how_to_live_install_gate
-    language ru
-    text "Для задач установки первый source gate ищет официальную документацию продукта или официальную страницу установки в репозитории, а уже потом переходит к общим how-to источникам. Он начинает с `{search_query}` и держит `{fallback_query}` как fallback."
-  response response_procedural_how_to_heading_hi
-    intent procedural_how_to_heading
-    language hi
-    text "`{task}` के लिए procedural discovery plan (action `{action}`, object `{object}`)."
-  response response_procedural_how_to_live_install_gate_hi
-    intent procedural_how_to_live_install_gate
-    language hi
-    text "इंस्टॉल वाले कामों में पहला source gate उत्पाद की आधिकारिक documentation या official repository install page को प्राथमिकता देता है; उसके बाद ही community how-to sources देखे जाते हैं. Solver पहले `{search_query}` चलाता है और `{fallback_query}` को fallback रखता है."
-  response response_procedural_how_to_heading_zh
-    intent procedural_how_to_heading
-    language zh
-    text "`{task}` 的过程发现计划（action `{action}`, object `{object}`）。"
-  response response_procedural_how_to_live_install_gate_zh
-    intent procedural_how_to_live_install_gate
-    language zh
-    text "对于安装类任务，第一个 source gate 优先查找产品官方 documentation 或官方仓库的安装页面，然后才使用社区 how-to 来源。Solver 先运行 `{search_query}`，并把 `{fallback_query}` 保留为 fallback。"
-  response response_procedural_how_to_official_search_en
-    intent procedural_how_to_official_search
-    language en
-    text "Official-documentation web search for `{query}`:"
-  response response_procedural_how_to_official_search_miss_en
-    intent procedural_how_to_official_search_miss
-    language en
-    text "Official-documentation web search for `{query}` did not return ranked guidance; preserving `{fallback}` as the general how-to fallback."
-  response response_procedural_how_to_wikihow_returned_en
-    intent procedural_how_to_wikihow_returned
-    language en
-    text "wikiHow API returned `{title}` for candidate `{candidate}`."
-  response response_procedural_how_to_wikihow_miss_en
-    intent procedural_how_to_wikihow_miss
-    language en
-    text "wikiHow candidate `{candidate}` did not return explicit steps ({error})."
-  response response_procedural_how_to_wikihow_disabled_en
-    intent procedural_how_to_wikihow_disabled
-    language en
-    text "wikiHow is disabled in settings."
-  response response_procedural_how_to_fallback_search_en
-    intent procedural_how_to_fallback_search
-    language en
-    text "Fallback web search for `{query}`:"
-  response response_procedural_how_to_fallback_search_plan_en
-    intent procedural_how_to_fallback_search_plan
-    language en
-    text "Fallback web search for `{query}` should use {providers} and reciprocal rank fusion (k = {k})."
-  response response_research_result_followup_no_results_en
-    intent research_result_followup_no_results
-    language en
-    text "The result of the previous research step is: no CORS-readable web search results were returned. I do not have verified source data to complete the requested analysis, calculation, table, or sources list yet.\n\nPrior research task: `{preview}`\n\nNext step: rerun the search with narrower queries or provide source links; then I can calculate the requested impact from those sources."
-  response response_research_result_followup_all_providers_disabled_en
-    intent research_result_followup_all_providers_disabled
-    language en
-    text "The result of the previous research step is: web search could not run because the CORS-readable search providers were disabled. No verified research result was produced yet.\n\nPrior research task: `{preview}`\n\nNext step: enable a search provider or provide source links; then I can complete the requested analysis from those sources."
-  response response_research_result_followup_search_plan_only_en
-    intent research_result_followup_search_plan_only
-    language en
-    text "The previous turn only set up the research/search step. It did not produce a final result, calculation, or sourced executive summary yet.\n\nPrior research task: `{preview}`\n\nNext step: run the source search and use the returned sources to finish the calculation."
-  response response_research_result_followup_open_research_en
-    intent research_result_followup_open_research
-    language en
-    text "There is no verified final research result in the conversation yet. The prior turn was a research request, but I do not see a completed source-backed answer to report.\n\nPrior research task: `{preview}`\n\nNext step: run the search or provide source links; then I can produce the requested result."
   response response_concept_introspection_en
     intent concept_introspection
     language en
     text "Here is what I know about '{concept}':\n\nintent: {concept}\nrole: the network records '{concept}' as a concept with rules and example links."
+  response response_concept_introspection_ru
+    intent concept_introspection
+    language ru
+    text "Вот что я знаю о «{concept}»:\n\nintent: {concept}\nроль: сеть записывает «{concept}» как понятие с правилами и связями-примерами."
+  response response_concept_introspection_hi
+    intent concept_introspection
+    language hi
+    text "«{concept}» के बारे में मैं यह जानता हूँ:\n\nintent: {concept}\nभूमिका: network «{concept}» को नियमों और उदाहरण links वाली एक अवधारणा के रूप में दर्ज करता है।"
+  response response_concept_introspection_zh
+    intent concept_introspection
+    language zh
+    text "关于「{concept}」，我知道的是：\n\nintent：{concept}\n角色：网络将「{concept}」记录为一个带有规则和示例链接的概念。"
+  response response_concept_introspection_es
+    intent concept_introspection
+    language es
+    text "Esto es lo que sé sobre «{concept}»:\n\nintent: {concept}\nrol: la red registra «{concept}» como un concepto con reglas y enlaces de ejemplo."
   response response_filter_user_en
     intent filter_user
     language en
     text "No facts have been recorded under your user filter yet. Submit a 'teach this fact' request to start your personal contribution list."
+  response response_filter_user_ru
+    intent filter_user
+    language ru
+    text "Под вашим пользовательским фильтром пока не записано ни одного факта. Отправьте запрос «запомни этот факт», чтобы начать свой личный список вкладов."
+  response response_filter_user_hi
+    intent filter_user
+    language hi
+    text "आपके user filter के अंतर्गत अभी तक कोई तथ्य दर्ज नहीं हुआ है। अपनी निजी योगदान सूची शुरू करने के लिए «यह तथ्य सिखाओ» अनुरोध भेजें।"
+  response response_filter_user_zh
+    intent filter_user
+    language zh
+    text "你的用户筛选下还没有记录任何事实。提交「记住这个事实」请求，开始你的个人贡献列表。"
+  response response_filter_user_es
+    intent filter_user
+    language es
+    text "Todavía no se ha registrado ningún hecho con tu filtro de usuario. Envía una solicitud de «aprende este hecho» para empezar tu lista personal de aportaciones."
   response response_source_conflict_en
     intent source_conflict
     language en
@@ -1259,78 +1243,106 @@ multilingual_responses
     intent source_conflict_unattributed
     language es
     text "Ninguna respuesta nombra su fuente, así que no se puede registrar un desacuerdo entre fuentes. Nombra cada fuente y lo que afirma, por ejemplo: según Wikipedia 1880, pero según Britannica 1881."
-  response response_document_generation_plan_en
-    intent document_generation_plan
-    language en
-    text "This is a document-generation request{format_suffix}. I am a deterministic symbolic solver: I cannot research arbitrary live data on the web and I do not render binary files directly, so I decompose the task into the formal plan the universal algorithm produces (decompose → tests → drafts → composition). The document workflow uses link-foundation/meta-language for txt, Markdown, HTML, PDF, and DOCX representation/conversion, with concept profiles for headings, paragraphs, lists, strong/bold text, emphasis, and hyperlinks:\n\n1. Scope the document and its criteria: which items to include and which attributes distinguish them.\n2. Collect the list of items from verifiable sources and record links to those sources.\n3. Classify each item against the stated criteria.\n4. Assemble the document structure: title, sections, and a table or list.\n5. Export the finished structure to the requested format.\n\nConfirm the plan or refine the criteria and sources and I will continue with concrete steps. If you need facts that are not in the local Links Notation memory, name a source and I will add it as a links rule."
-  response response_document_generation_plan_ru
-    intent document_generation_plan
-    language ru
-    text "Это запрос на создание документа{format_suffix}. Я детерминированный символьный решатель: у меня нет доступа к произвольным актуальным данным в вебе и я не рендерю бинарные файлы напрямую, поэтому я раскладываю задачу на формальный план по универсальному алгоритму (декомпозиция → проверки → черновики → композиция):\n\n1. Уточнить объём и критерии документа: какие элементы включать и по каким признакам их различать.\n2. Собрать список элементов из проверяемых источников и зафиксировать ссылки на эти источники.\n3. Классифицировать каждый элемент по заявленным критериям.\n4. Собрать структуру документа: заголовок, разделы и таблицу или список.\n5. Экспортировать готовую структуру в запрошенный формат.\n\nПодтвердите план или уточните критерии и источники — и я продолжу с конкретными шагами. Если нужны фактические данные, которых нет в локальной памяти Links Notation, укажите источник, и я добавлю его как правило связей."
-  response response_document_generation_plan_hi
-    intent document_generation_plan
-    language hi
-    text "यह एक दस्तावेज़ बनाने का अनुरोध है{format_suffix}. मैं एक नियतात्मक प्रतीकात्मक हल करने वाला हूँ: मैं वेब पर मनमाना सजीव डेटा नहीं खोज सकता और बाइनरी फ़ाइलें सीधे नहीं बनाता, इसलिए मैं इस कार्य को सार्वभौमिक एल्गोरिदम की औपचारिक योजना में विभाजित करता हूँ (विभाजन → जाँच → मसौदे → रचना):\n\n1. दस्तावेज़ और उसके मानदंड का दायरा तय करें: कौन-सी वस्तुएँ शामिल करनी हैं और कौन-से गुण उन्हें अलग करते हैं।\n2. सत्यापन योग्य स्रोतों से वस्तुओं की सूची एकत्र करें और उन स्रोतों के लिंक दर्ज करें।\n3. प्रत्येक वस्तु को बताए गए मानदंड के अनुसार वर्गीकृत करें।\n4. दस्तावेज़ की संरचना बनाएँ: शीर्षक, अनुभाग और एक तालिका या सूची।\n5. तैयार संरचना को अनुरोधित प्रारूप में निर्यात करें।\n\nयोजना की पुष्टि करें या मानदंड और स्रोत स्पष्ट करें, और मैं ठोस चरणों के साथ आगे बढ़ूँगा।"
-  response response_document_generation_plan_zh
-    intent document_generation_plan
-    language zh
-    text "这是一个生成文档的请求{format_suffix}。我是一个确定性的符号求解器：我无法在网络上检索任意实时数据，也不会直接渲染二进制文件，因此我把任务分解为通用算法生成的形式化计划（分解 → 校验 → 草稿 → 组合）：\n\n1. 界定文档及其标准：包含哪些条目以及用哪些属性区分它们。\n2. 从可验证的来源收集条目清单，并记录这些来源的链接。\n3. 根据所述标准对每个条目进行分类。\n4. 组装文档结构：标题、章节以及表格或列表。\n5. 将完成的结构导出为所请求的格式。\n\n请确认计划或细化标准与来源，我将继续给出具体步骤。"
-  response response_document_generation_plan_format_en
-    intent document_generation_plan_format
-    language en
-    text " in {label} format"
-  response response_document_generation_plan_format_ru
-    intent document_generation_plan_format
-    language ru
-    text " в формате {label}"
-  response response_document_generation_plan_format_hi
-    intent document_generation_plan_format
-    language hi
-    text " ({label} प्रारूप में)"
-  response response_document_generation_plan_format_zh
-    intent document_generation_plan_format
-    language zh
-    text "（{label} 格式）"
-  response response_document_format_conversion_en
-    intent document_format_conversion
-    language en
-    text "Document format conversion via link-foundation/meta-language ({engine}).\nSource: {source}; target: {target}.\nSupported document formats: {formats}."
-  response response_document_format_conversion_native_concepts_en
-    intent document_format_conversion_native_concepts
-    language en
-    text "Native target concepts: {concepts}."
-  response response_document_format_conversion_fallbacks_en
-    intent document_format_conversion_fallbacks
-    language en
-    text "Documented target fallbacks:"
-  response response_document_format_conversion_fallback_en
-    intent document_format_conversion_fallback
-    language en
-    text "- {concept} -> {fallback}"
-  response response_document_format_conversion_package_en
-    intent document_format_conversion_package
-    language en
-    text "Package layer: {bytes} bytes in the DOCX OPC stored-entry profile."
   response response_nl_tool_requested_source_en
     intent nl_tool_requested_source
     language en
     text "{denial}\n\nRequested source:\n```js\n{program}\n```"
+  response response_nl_tool_requested_source_ru
+    intent nl_tool_requested_source
+    language ru
+    text "{denial}\n\nЗапрошенный исходный код:\n```js\n{program}\n```"
+  response response_nl_tool_requested_source_hi
+    intent nl_tool_requested_source
+    language hi
+    text "{denial}\n\nअनुरोधित source:\n```js\n{program}\n```"
+  response response_nl_tool_requested_source_zh
+    intent nl_tool_requested_source
+    language zh
+    text "{denial}\n\n请求的源代码：\n```js\n{program}\n```"
+  response response_nl_tool_requested_source_es
+    intent nl_tool_requested_source
+    language es
+    text "{denial}\n\nCódigo fuente solicitado:\n```js\n{program}\n```"
   response response_nl_tool_javascript_report_en
     intent nl_tool_javascript_report
     language en
     text "Execution status: {status}.\nTool call: javascript_execution\nOutput: {result}"
+  response response_nl_tool_javascript_report_ru
+    intent nl_tool_javascript_report
+    language ru
+    text "Статус выполнения: {status}.\nВызов инструмента: javascript_execution\nВывод: {result}"
+  response response_nl_tool_javascript_report_hi
+    intent nl_tool_javascript_report
+    language hi
+    text "निष्पादन स्थिति: {status}।\nटूल कॉल: javascript_execution\nआउटपुट: {result}"
+  response response_nl_tool_javascript_report_zh
+    intent nl_tool_javascript_report
+    language zh
+    text "执行状态：{status}。\n工具调用：javascript_execution\n输出：{result}"
+  response response_nl_tool_javascript_report_es
+    intent nl_tool_javascript_report
+    language es
+    text "Estado de ejecución: {status}.\nLlamada a herramienta: javascript_execution\nSalida: {result}"
   response response_nl_tool_calculator_executed_en
     intent nl_tool_calculator_executed
     language en
     text "Execution status: executed.\nTool call: calculator\nInput: `{expression}`\nResult: {result}"
+  response response_nl_tool_calculator_executed_ru
+    intent nl_tool_calculator_executed
+    language ru
+    text "Статус выполнения: выполнено.\nВызов инструмента: calculator\nВвод: `{expression}`\nРезультат: {result}"
+  response response_nl_tool_calculator_executed_hi
+    intent nl_tool_calculator_executed
+    language hi
+    text "निष्पादन स्थिति: निष्पादित।\nटूल कॉल: calculator\nइनपुट: `{expression}`\nपरिणाम: {result}"
+  response response_nl_tool_calculator_executed_zh
+    intent nl_tool_calculator_executed
+    language zh
+    text "执行状态：已执行。\n工具调用：calculator\n输入：`{expression}`\n结果：{result}"
+  response response_nl_tool_calculator_executed_es
+    intent nl_tool_calculator_executed
+    language es
+    text "Estado de ejecución: ejecutado.\nLlamada a herramienta: calculator\nEntrada: `{expression}`\nResultado: {result}"
   response response_nl_tool_calculator_failed_en
     intent nl_tool_calculator_failed
     language en
     text "Execution status: failed.\nTool call: calculator\nInput: `{expression}`\nError: {error}"
+  response response_nl_tool_calculator_failed_ru
+    intent nl_tool_calculator_failed
+    language ru
+    text "Статус выполнения: сбой.\nВызов инструмента: calculator\nВвод: `{expression}`\nОшибка: {error}"
+  response response_nl_tool_calculator_failed_hi
+    intent nl_tool_calculator_failed
+    language hi
+    text "निष्पादन स्थिति: विफल।\nटूल कॉल: calculator\nइनपुट: `{expression}`\nत्रुटि: {error}"
+  response response_nl_tool_calculator_failed_zh
+    intent nl_tool_calculator_failed
+    language zh
+    text "执行状态：失败。\n工具调用：calculator\n输入：`{expression}`\n错误：{error}"
+  response response_nl_tool_calculator_failed_es
+    intent nl_tool_calculator_failed
+    language es
+    text "Estado de ejecución: fallido.\nLlamada a herramienta: calculator\nEntrada: `{expression}`\nError: {error}"
   response response_nl_tool_web_search_planned_en
     intent nl_tool_web_search_planned
     language en
     text "Execution status: planned.\nTool call: web_search\nQuery: `{query}`\nResult: search plan recorded with providers {providers}; combined ranking uses reciprocal rank fusion (k = {k})."
+  response response_nl_tool_web_search_planned_ru
+    intent nl_tool_web_search_planned
+    language ru
+    text "Статус выполнения: запланировано.\nВызов инструмента: web_search\nЗапрос: `{query}`\nРезультат: план поиска записан с провайдерами {providers}; общее ранжирование использует reciprocal rank fusion (k = {k})."
+  response response_nl_tool_web_search_planned_hi
+    intent nl_tool_web_search_planned
+    language hi
+    text "निष्पादन स्थिति: नियोजित।\nटूल कॉल: web_search\nQuery: `{query}`\nपरिणाम: providers {providers} के साथ search plan दर्ज किया गया; संयुक्त ranking reciprocal rank fusion (k = {k}) का उपयोग करती है।"
+  response response_nl_tool_web_search_planned_zh
+    intent nl_tool_web_search_planned
+    language zh
+    text "执行状态：已计划。\n工具调用：web_search\n查询：`{query}`\n结果：已记录使用提供方 {providers} 的搜索计划；综合排序使用 reciprocal rank fusion（k = {k}）。"
+  response response_nl_tool_web_search_planned_es
+    intent nl_tool_web_search_planned
+    language es
+    text "Estado de ejecución: planificado.\nLlamada a herramienta: web_search\nConsulta: `{query}`\nResultado: plan de búsqueda registrado con los proveedores {providers}; la clasificación combinada usa reciprocal rank fusion (k = {k})."
   response response_nl_tool_agent_mode_required_en
     intent nl_tool_agent_mode_required
     language en
@@ -1411,67 +1423,3 @@ multilingual_responses
     intent nl_tool_browser_unavailable
     language es
     text "Estado de ejecución: rechazado. Esta sesión del navegador no tiene un ejecutor para la herramienta `{tool}`, así que la llamada no puede ejecutarse aquí. Pide al Formal AI nativo (la CLI o el servidor) en modo agente que la ejecute."
-  response response_installation_conversion_heading_en
-    intent installation_conversion_heading
-    language en
-    text "Converted installation instructions for {project}."
-  response response_installation_formalized_meaning_heading_en
-    intent installation_formalized_meaning_heading
-    language en
-    text "Formalized meaning:"
-  response response_installation_conversion_algorithm_en
-    intent installation_conversion_algorithm
-    language en
-    text "Conversion algorithm:\n1. Detect the source surface and requested target surface(s).\n2. Extract command-like install/deploy steps in original order.\n3. Render every target from the same install-step IR.\n4. Preserve commands verbatim so the conversion can round-trip."
-  response response_installation_markdown_heading_en
-    intent installation_markdown_heading
-    language en
-    text "README.md installation guide:\n\n## Installation"
-  response response_installation_shell_heading_en
-    intent installation_shell_heading
-    language en
-    text "Bash script:"
-  response response_installation_powershell_heading_en
-    intent installation_powershell_heading
-    language en
-    text "PowerShell script:"
-  response response_installation_default_project_en
-    intent installation_default_project
-    language en
-    text "the project"
-  response response_installation_step_clone_en
-    intent installation_step_clone
-    language en
-    text "Clone the repository"
-  response response_installation_step_enter_directory_en
-    intent installation_step_enter_directory
-    language en
-    text "Enter the project directory"
-  response response_installation_step_install_en
-    intent installation_step_install
-    language en
-    text "Install dependencies"
-  response response_installation_step_verify_en
-    intent installation_step_verify
-    language en
-    text "Run the verification command"
-  response response_installation_step_build_en
-    intent installation_step_build
-    language en
-    text "Build the project"
-  response response_installation_step_start_en
-    intent installation_step_start
-    language en
-    text "Start the application"
-  response response_installation_step_probe_en
-    intent installation_step_probe
-    language en
-    text "Verify the installation"
-  response response_installation_step_run_program_en
-    intent installation_step_run_program
-    language en
-    text "Run {program}"
-  response response_installation_step_run_verb_en
-    intent installation_step_run_verb
-    language en
-    text "Run the {program} {verb} step"

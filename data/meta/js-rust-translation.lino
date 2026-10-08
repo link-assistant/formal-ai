@@ -12,11 +12,11 @@
 js_rust_translation
   upstream link-foundation/meta-language
   commit 679a3b3c3c56177b8df1ad82672690c6e9889aeb
-  modules 128
-  translated_items 254
+  modules 129
+  translated_items 263
   inferred_signatures 2
-  carried_items 2129
-  translated_modules 80
+  carried_items 2144
+  translated_modules 81
   fully_translated_modules 1
   refused_modules 48
 module js/agentic/crate/algorithm_discovery.mjs translated 6 inferred 0 carried 40
@@ -91,6 +91,7 @@ module js/agentic/crate/rebuild_plan.mjs translated 0 inferred 0 carried 12
 module js/agentic/crate/recursive_execution.mjs translated 1 inferred 0 carried 13
 module js/agentic/crate/relative_meta_logic.mjs translated 2 inferred 0 carried 21
 module js/agentic/crate/repository_workspace.mjs translated 6 inferred 0 carried 14
+module js/agentic/crate/requirement_extraction.mjs translated 8 inferred 0 carried 15
 module js/agentic/crate/rule_interpreter.mjs translated 0 inferred 0 carried 5
 module js/agentic/crate/rust_ast_census.mjs translated 0 inferred 0 carried 4
 module js/agentic/crate/rust_str.mjs translated 1 inferred 0 carried 46
@@ -101,7 +102,7 @@ module js/agentic/crate/seed_caller_context.mjs translated 0 inferred 0 carried 
 module js/agentic/crate/seed_client_integrations.mjs translated 3 inferred 0 carried 10
 module js/agentic/crate/seed_concepts.mjs translated 1 inferred 0 carried 3
 module js/agentic/crate/seed_learning_sources.mjs translated 0 inferred 0 carried 4
-module js/agentic/crate/seed_meanings.mjs translated 1 inferred 0 carried 40
+module js/agentic/crate/seed_meanings.mjs translated 2 inferred 0 carried 40
 module js/agentic/crate/seed_operation_vocabulary.mjs translated 0 inferred 0 carried 8
 module js/agentic/crate/seed_parser.mjs translated 0 inferred 0 carried 3
 module js/agentic/crate/seed_reports.mjs translated 0 inferred 0 carried 5
@@ -147,20 +148,20 @@ module js/agentic/crate/workspace_change_learning.mjs translated 2 inferred 0 ca
 module js/worker/formal_ai_worker_meta_composite.js translated 0 inferred 0 carried 6
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 inferred 0 carried 25
-refusal "import { … }" 406
+refusal "import { … }" 408
 refusal "JSDoc type {…}" 198
 refusal "null" 162
-refusal "type: unknown name (a sibling item or an import)" 114
-refusal "arrow function" 101
-refusal "function value …" 95
+refusal "type: unknown name (a sibling item or an import)" 115
+refusal "arrow function" 103
+refusal "function value …" 98
 refusal "object without a $ tag" 77
-refusal "new expression" 74
+refusal "new expression" 75
 refusal "method call .find()" 59
-refusal "method call .split()" 54
-refusal "regular expression" 52
-refusal "method call .map()" 48
+refusal "method call .split()" 56
+refusal "regular expression" 54
+refusal "method call .map()" 47
 refusal "method call .filter()" 44
-refusal "method call .some()" 42
+refusal "method call .some()" 43
 refusal "Array.from" 40
 refusal "method call .slice()" 40
 refusal "method call .push()" 34
@@ -191,10 +192,10 @@ refusal "Array.isArray" 7
 refusal "method call .lastIndexOf()" 7
 refusal "destructured parameter" 6
 refusal "array destructuring" 5
+refusal "method call .has()" 5
 refusal "method call .sort()" 5
 refusal "throw new …" 5
 refusal "Object.keys" 4
-refusal "method call .has()" 4
 refusal "syntax: unsupported template escape" 4
 refusal "syntax: unterminated string literal" 4
 refusal "top-level class statement" 4
@@ -244,6 +245,7 @@ refusal "shift >>>" 1
 refusal "syntax: unsupported string escape \]" 1
 refusal "syntax: unsupported string escape \b" 1
 refusal "syntax: unsupported string escape \p" 1
+refusal "syntax: unsupported string escape \s" 1
 refusal "syntax: unterminated template literal" 1
 refusal "type: one value is used as a boolean and as a string; declare the types of the function with JSDoc" 1
 refusal "type: ordering on string" 1

@@ -384,6 +384,10 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-requirement-extraction
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-research-table
     bundle true
     lexicon meaning
@@ -539,6 +543,10 @@ seed_registry
     bundle true
     lexicon response
     web true
+  seed multilingual-responses-documents
+    bundle true
+    lexicon response
+    web true
   seed multilingual-responses-engine-reports
     bundle true
     lexicon response
@@ -551,6 +559,10 @@ seed_registry
     bundle true
     lexicon response
   seed multilingual-responses-formalization
+    bundle true
+    lexicon response
+    web true
+  seed multilingual-responses-installation
     bundle true
     lexicon response
     web true
@@ -591,6 +603,10 @@ seed_registry
     lexicon response
     web true
   seed multilingual-responses-policy
+    bundle true
+    lexicon response
+    web true
+  seed multilingual-responses-procedural-how-to
     bundle true
     lexicon response
     web true
@@ -642,6 +658,10 @@ seed_registry
     bundle true
     lexicon response
   seed multilingual-responses-triz
+    bundle true
+    lexicon response
+    web true
+  seed multilingual-responses-web
     bundle true
     lexicon response
     web true

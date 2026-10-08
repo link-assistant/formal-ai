@@ -1,0 +1,5 @@
+document_format_conversion	"link-foundation/meta-language ({engine}) के ज़रिए दस्तावेज़ प्रारूप रूपांतरण।\nस्रोत: {source}; लक्ष्य: {target}।\nसमर्थित दस्तावेज़ प्रारूप: {formats}।"
+document_format_conversion_fallback	"- {concept} -> {fallback}"
+document_format_conversion_fallbacks	"लक्ष्य प्रारूप के प्रलेखित विकल्प:"
+document_format_conversion_native_concepts	"लक्ष्य प्रारूप की मूल अवधारणाएँ: {concepts}।"
+document_format_conversion_package	"Package layer: DOCX OPC stored-entry profile में {bytes} bytes।"

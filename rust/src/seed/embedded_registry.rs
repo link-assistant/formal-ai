@@ -204,6 +204,8 @@ pub const MEANINGS_PROGRAM_SYNTHESIS_LINO: &str =
 pub const MEANINGS_PROOF_LINO: &str = include_str!("../../embedded/data/seed/meanings-proof.lino");
 pub const MEANINGS_REPOSITORY_WORKFLOW_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-repository-workflow.lino");
+pub const MEANINGS_REQUIREMENT_EXTRACTION_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-requirement-extraction.lino");
 pub const MEANINGS_RESEARCH_TABLE_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-research-table.lino");
 pub const MEANINGS_RESPONSE_INTENTS_LINO: &str =
@@ -285,6 +287,8 @@ pub const MULTILINGUAL_RESPONSES_CREATIVE_TASKS_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-creative-tasks.lino");
 pub const MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-decomposition.lino");
+pub const MULTILINGUAL_RESPONSES_DOCUMENTS_LINO: &str =
+    include_str!("../../embedded/data/seed/multilingual-responses-documents.lino");
 pub const MULTILINGUAL_RESPONSES_ENGINE_REPORTS_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-engine-reports.lino");
 pub const MULTILINGUAL_RESPONSES_ENTITIES_LINO: &str =
@@ -293,6 +297,8 @@ pub const MULTILINGUAL_RESPONSES_EXTERNAL_BENCHMARK_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-external-benchmark.lino");
 pub const MULTILINGUAL_RESPONSES_FORMALIZATION_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-formalization.lino");
+pub const MULTILINGUAL_RESPONSES_INSTALLATION_LINO: &str =
+    include_str!("../../embedded/data/seed/multilingual-responses-installation.lino");
 pub const MULTILINGUAL_RESPONSES_ISSUE_710_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-issue-710.lino");
 pub const MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO: &str =
@@ -313,6 +319,8 @@ pub const MULTILINGUAL_RESPONSES_PATTERN_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-pattern.lino");
 pub const MULTILINGUAL_RESPONSES_POLICY_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-policy.lino");
+pub const MULTILINGUAL_RESPONSES_PROCEDURAL_HOW_TO_LINO: &str =
+    include_str!("../../embedded/data/seed/multilingual-responses-procedural-how-to.lino");
 pub const MULTILINGUAL_RESPONSES_PROCEDURE_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-procedure.lino");
 pub const MULTILINGUAL_RESPONSES_PRODUCT_SEARCH_LINO: &str =
@@ -341,6 +349,8 @@ pub const MULTILINGUAL_RESPONSES_TRANSLATE_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-translate.lino");
 pub const MULTILINGUAL_RESPONSES_TRIZ_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-triz.lino");
+pub const MULTILINGUAL_RESPONSES_WEB_LINO: &str =
+    include_str!("../../embedded/data/seed/multilingual-responses-web.lino");
 pub const NUMERIC_LIST_OPERATIONS_LINO: &str =
     include_str!("../../embedded/data/seed/numeric-list-operations.lino");
 pub const OBLIGATION_MISMATCH_LINO: &str =
@@ -528,6 +538,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-program-synthesis.lino", MEANINGS_PROGRAM_SYNTHESIS_LINO),
         ("data/seed/meanings-proof.lino", MEANINGS_PROOF_LINO),
         ("data/seed/meanings-repository-workflow.lino", MEANINGS_REPOSITORY_WORKFLOW_LINO),
+        ("data/seed/meanings-requirement-extraction.lino", MEANINGS_REQUIREMENT_EXTRACTION_LINO),
         ("data/seed/meanings-research-table.lino", MEANINGS_RESEARCH_TABLE_LINO),
         ("data/seed/meanings-response-intents.lino", MEANINGS_RESPONSE_INTENTS_LINO),
         (
@@ -596,6 +607,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
             "data/seed/multilingual-responses-decomposition.lino",
             MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
         ),
+        ("data/seed/multilingual-responses-documents.lino", MULTILINGUAL_RESPONSES_DOCUMENTS_LINO),
         (
             "data/seed/multilingual-responses-engine-reports.lino",
             MULTILINGUAL_RESPONSES_ENGINE_REPORTS_LINO,
@@ -608,6 +620,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         (
             "data/seed/multilingual-responses-formalization.lino",
             MULTILINGUAL_RESPONSES_FORMALIZATION_LINO,
+        ),
+        (
+            "data/seed/multilingual-responses-installation.lino",
+            MULTILINGUAL_RESPONSES_INSTALLATION_LINO,
         ),
         ("data/seed/multilingual-responses-issue-710.lino", MULTILINGUAL_RESPONSES_ISSUE_710_LINO),
         (
@@ -634,6 +650,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/multilingual-responses-parity.lino", MULTILINGUAL_RESPONSES_PARITY_LINO),
         ("data/seed/multilingual-responses-pattern.lino", MULTILINGUAL_RESPONSES_PATTERN_LINO),
         ("data/seed/multilingual-responses-policy.lino", MULTILINGUAL_RESPONSES_POLICY_LINO),
+        (
+            "data/seed/multilingual-responses-procedural-how-to.lino",
+            MULTILINGUAL_RESPONSES_PROCEDURAL_HOW_TO_LINO,
+        ),
         ("data/seed/multilingual-responses-procedure.lino", MULTILINGUAL_RESPONSES_PROCEDURE_LINO),
         (
             "data/seed/multilingual-responses-product-search.lino",
@@ -669,6 +689,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ),
         ("data/seed/multilingual-responses-translate.lino", MULTILINGUAL_RESPONSES_TRANSLATE_LINO),
         ("data/seed/multilingual-responses-triz.lino", MULTILINGUAL_RESPONSES_TRIZ_LINO),
+        ("data/seed/multilingual-responses-web.lino", MULTILINGUAL_RESPONSES_WEB_LINO),
         ("data/seed/numeric-list-operations.lino", NUMERIC_LIST_OPERATIONS_LINO),
         ("data/seed/obligation-mismatch.lino", OBLIGATION_MISMATCH_LINO),
         ("data/seed/operation-vocabulary.lino", OPERATION_VOCABULARY_LINO),
@@ -727,10 +748,12 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_CONCEPT_LOOKUP_LINO,
     MULTILINGUAL_RESPONSES_CREATIVE_TASKS_LINO,
     MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
+    MULTILINGUAL_RESPONSES_DOCUMENTS_LINO,
     MULTILINGUAL_RESPONSES_ENGINE_REPORTS_LINO,
     MULTILINGUAL_RESPONSES_ENTITIES_LINO,
     MULTILINGUAL_RESPONSES_EXTERNAL_BENCHMARK_LINO,
     MULTILINGUAL_RESPONSES_FORMALIZATION_LINO,
+    MULTILINGUAL_RESPONSES_INSTALLATION_LINO,
     MULTILINGUAL_RESPONSES_ISSUE_710_LINO,
     MULTILINGUAL_RESPONSES_LANGUAGE_PROTOCOL_LINO,
     MULTILINGUAL_RESPONSES_LEGALITY_LINO,
@@ -741,6 +764,7 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_PARITY_LINO,
     MULTILINGUAL_RESPONSES_PATTERN_LINO,
     MULTILINGUAL_RESPONSES_POLICY_LINO,
+    MULTILINGUAL_RESPONSES_PROCEDURAL_HOW_TO_LINO,
     MULTILINGUAL_RESPONSES_PROCEDURE_LINO,
     MULTILINGUAL_RESPONSES_PRODUCT_SEARCH_LINO,
     MULTILINGUAL_RESPONSES_QUANTITIES_LINO,
@@ -755,6 +779,7 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_THINKING_NARRATIVE_LINO,
     MULTILINGUAL_RESPONSES_TRANSLATE_LINO,
     MULTILINGUAL_RESPONSES_TRIZ_LINO,
+    MULTILINGUAL_RESPONSES_WEB_LINO,
 ];
 
 /// The registered set of meaning-lexicon files, concatenated by
@@ -815,6 +840,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_PROGRAM_SYNTHESIS_LINO,
     MEANINGS_PROOF_LINO,
     MEANINGS_REPOSITORY_WORKFLOW_LINO,
+    MEANINGS_REQUIREMENT_EXTRACTION_LINO,
     MEANINGS_RESEARCH_TABLE_LINO,
     MEANINGS_RESPONSE_INTENTS_LINO,
     MEANINGS_RESPONSE_INTENTS_HANDLERS_LINO,

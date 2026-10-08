@@ -560,7 +560,9 @@ function metaSynthesizeFromMeaning(groups, evidence, trace, values, words, input
       // "every file" asks for iteration: a program never holding a list
       // does not quantify over anything.
       const unquantified = universal && !order.types.some((type) => type.startsWith("list_")) ? 1 : 0;
-      const rank = [ungrounded, uncovered, -metaCoverageScore(program.steps, words), -measureEvidence, order.violations, order.objectMismatch, unquantified, statedInput, headFits, -metaCoverageScore(program.steps, weakViews), program.type === fromType ? 0 : 1, program.steps.length, -metaCoverageScore(program.steps, weakWords), measureSize];
+      const rank = [ungrounded, uncovered, -metaCoverageScore(program.steps, words), -measureEvidence,
+        order.violations, order.objectMismatch, unquantified, statedInput,
+        headFits, -metaCoverageScore(program.steps, weakViews), program.type === fromType ? 0 : 1, program.steps.length, -metaCoverageScore(program.steps, weakWords), measureSize];
       let better = !best;
       for (let position = 0; !better && position < rank.length; position += 1) {
         if (rank[position] !== best.rank[position]) {

@@ -1,0 +1,6 @@
+translation_clarify_interpretation	"¿Qué interpretación querías decir: {top} o {other}?"
+translation_clarify_reading	"¿Debo leer «{text}» como «{top}» o como «{other}»?"
+translation_code_gap_comment	"laguna de traducción para `{subject}` de {source} a {target}"
+translation_gap_no_source	"No pude identificar una frase de origen para traducir de {source} a {target}."
+translation_gap_surface	"No pude traducir «{surface}» de {source} a {target} con los datos de formalización disponibles. Lo registré como una laguna de traducción para darle seguimiento."
+translation_program_heading	"Traducción de `{code}` de {source} a {target}:"

@@ -95,30 +95,58 @@ multilingual_responses
     intent numeric_list_intro_sort
     language zh
     text "这是用 {lang} 编写的将数字 {given} 按升序排序的代码:"
+  response response_numeric_list_intro_sort_es
+    intent numeric_list_intro_sort
+    language es
+    text "Aquí tienes código {lang} que ordena la lista de {noun} {given} de forma ascendente:"
   response response_numeric_list_intro_reverse_sort_zh
     intent numeric_list_intro_reverse_sort
     language zh
     text "这是用 {lang} 编写的将数字 {given} 按降序排序的代码:"
+  response response_numeric_list_intro_reverse_sort_es
+    intent numeric_list_intro_reverse_sort
+    language es
+    text "Aquí tienes código {lang} que ordena la lista de {noun} {given} de forma descendente:"
   response response_numeric_list_intro_reverse_zh
     intent numeric_list_intro_reverse
     language zh
     text "这是用 {lang} 编写的将数字 {given} 反转的代码:"
+  response response_numeric_list_intro_reverse_es
+    intent numeric_list_intro_reverse
+    language es
+    text "Aquí tienes código {lang} que invierte la lista de {noun} {given}:"
   response response_numeric_list_intro_sum_zh
     intent numeric_list_intro_sum
     language zh
     text "这是用 {lang} 编写的对数字 {given} 求和的代码:"
+  response response_numeric_list_intro_sum_es
+    intent numeric_list_intro_sum
+    language es
+    text "Aquí tienes código {lang} que suma la lista de {noun} {given}:"
   response response_numeric_list_intro_product_zh
     intent numeric_list_intro_product
     language zh
     text "这是用 {lang} 编写的计算数字 {given} 乘积的代码:"
+  response response_numeric_list_intro_product_es
+    intent numeric_list_intro_product
+    language es
+    text "Aquí tienes código {lang} que multiplica la lista de {noun} {given}:"
   response response_numeric_list_intro_minimum_zh
     intent numeric_list_intro_minimum
     language zh
     text "这是用 {lang} 编写的求数字 {given} 最小值的代码:"
+  response response_numeric_list_intro_minimum_es
+    intent numeric_list_intro_minimum
+    language es
+    text "Aquí tienes código {lang} que encuentra el valor menor de la lista de {noun} {given}:"
   response response_numeric_list_intro_maximum_zh
     intent numeric_list_intro_maximum
     language zh
     text "这是用 {lang} 编写的求数字 {given} 最大值的代码:"
+  response response_numeric_list_intro_maximum_es
+    intent numeric_list_intro_maximum
+    language es
+    text "Aquí tienes código {lang} que encuentra el valor mayor de la lista de {noun} {given}:"
   response response_numeric_list_result_label_en
     intent numeric_list_result_label
     language en
@@ -135,11 +163,47 @@ multilingual_responses
     intent numeric_list_result_label
     language zh
     text "结果:"
+  response response_numeric_list_result_label_es
+    intent numeric_list_result_label
+    language es
+    text "Resultado:"
   response response_numeric_list_noun_strings_en
     intent numeric_list_noun_strings
     language en
     text "strings"
+  response response_numeric_list_noun_strings_ru
+    intent numeric_list_noun_strings
+    language ru
+    text "строки"
+  response response_numeric_list_noun_strings_hi
+    intent numeric_list_noun_strings
+    language hi
+    text "स्ट्रिंग्स"
+  response response_numeric_list_noun_strings_zh
+    intent numeric_list_noun_strings
+    language zh
+    text "字符串"
+  response response_numeric_list_noun_strings_es
+    intent numeric_list_noun_strings
+    language es
+    text "cadenas"
   response response_numeric_list_noun_numbers_en
     intent numeric_list_noun_numbers
     language en
     text "numbers"
+  response response_numeric_list_noun_numbers_ru
+    intent numeric_list_noun_numbers
+    language ru
+    text "числа"
+  response response_numeric_list_noun_numbers_hi
+    intent numeric_list_noun_numbers
+    language hi
+    text "संख्याएँ"
+  response response_numeric_list_noun_numbers_zh
+    intent numeric_list_noun_numbers
+    language zh
+    text "数字"
+  response response_numeric_list_noun_numbers_es
+    intent numeric_list_noun_numbers
+    language es
+    text "números"

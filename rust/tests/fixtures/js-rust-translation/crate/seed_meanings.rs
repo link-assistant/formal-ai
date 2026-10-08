@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=8b4a48aceb0c06b44386c83f7747b78a62bb4e845a2335dfce786d5772f059fe bytes=13933
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=06c04e95483d4fcceec6e0e6c48d84cae6214747d2b4f933ac790e7a09dafa7d bytes=12298
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:prelude begin
@@ -8,8 +8,13 @@
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import { … }
 
-// meta-language:carried JavaScript lexical_declaration (unsupported)
-// formal-ai:refusal method call .map()
+// meta-language:translated JavaScript lexical_declaration items=1 sha256=2d9b8c1bb4b4437bcb320c603c2f802a000e40fa9092307c59f02af758705f8f
+// | /** The one inventory of the seed files and the lexicons that read them. */
+// | const SEED_REGISTRY = 'data/meta/seed-registry.lino';
+pub const SEED_REGISTRY: &str = "data/meta/seed-registry.lino";
+
+// meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal arrow function
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal new expression

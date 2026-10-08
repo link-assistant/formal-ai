@@ -63,7 +63,7 @@ const REFRESH_UNNAMED_EN: &str = "Cached source source_2a324f9681a3e3bd has been
 
 const EXECUTION_FAILURE: &str = "Execution status: failed in isolated sandbox.\n```python\nundefined_function()\n```\nTraceback (most recent call last):\n  File 'main.py', line 1, in <module>\nNameError: name 'undefined_function' is not defined.\nThe failure trace is appended to the action log; see the trace link.";
 const UNITS_EN: &str = "meters measures length; kilogram measures mass. These are different physical dimensions and cannot be converted into each other. The incompatibility is recorded as a `unit_incompatibility` link in the network.";
-const UNITS_RU: &str = "метр measures length; килограмм measures mass. These are different physical dimensions and cannot be converted into each other. The incompatibility is recorded as a `unit_incompatibility` link in the network.";
+const UNITS_RU: &str = "метр измеряет length; килограмм измеряет mass. Это разные физические размерности, и их нельзя перевести друг в друга. Несовместимость записана в сети как связь `unit_incompatibility`.";
 
 #[test]
 fn the_migrated_handlers_are_seed_rule_sets() {
@@ -508,8 +508,9 @@ fn a_topic_summary_is_the_seeded_record_in_both_runtimes() {
 }
 
 const SORT_RUST: &str = "Here is a reviewable sorting algorithm in rust:\n\n```rust\nfn sort(values: &mut Vec<i32>) {\n    values.sort();\n}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
-const SORT_GO: &str = "Here is a reviewable sorting algorithm in go:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
-const SORT_TYPESCRIPT_TESTS: &str = "Here is a reviewable sorting algorithm in typescript with a test:\n\n```typescript\nfunction sort(values) {\n  return [...values].sort((a, b) => a - b);\n}\n```\n\nTests:\n```typescript\nfunction test_sort_ascending() {\n  assert.deepEqual(sort([3,1,2]), [1,2,3]);\n}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
+const SORT_GO: &str = "Вот проверяемый алгоритм сортировки на go:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nСтатус выполнения: недоступно в этой среде. Фрагмент предназначен для проверки и копирования.";
+const SORT_RUST_HI: &str = "यह rust में एक समीक्षा-योग्य sorting algorithm है:\n\n```rust\nfn sort(values: &mut Vec<i32>) {\n    values.sort();\n}\n```\n\nनिष्पादन स्थिति: इस runtime में उपलब्ध नहीं। यह snippet copy-paste करके समीक्षा करने के लिए है।";
+const SORT_TYPESCRIPT_TESTS: &str = "这是一个可审阅的 typescript 排序算法，附带测试：\n\n```typescript\nfunction sort(values) {\n  return [...values].sort((a, b) => a - b);\n}\n```\n\n测试：\n```typescript\nfunction test_sort_ascending() {\n  assert.deepEqual(sort([3,1,2]), [1,2,3]);\n}\n```\n\n执行状态：此运行环境不可用。该代码片段供复制粘贴审阅。";
 const SORT_PYTHON_TESTS: &str = "Here is a reviewable sorting algorithm in python with a test:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nTests:\n```python\ndef test_sort_ascending():\n    assert sort([3, 1, 2]) == [1, 2, 3]\n\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
 const SORT_PYTHON: &str = "Here is a reviewable sorting algorithm in python:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
 
@@ -532,7 +533,7 @@ fn the_algorithm_rule_set_answers_unchanged_in_every_prompt_language() {
         (
             "Rust में सॉर्टिंग एल्गोरिदम लिखो",
             "algorithm_sort_rust",
-            SORT_RUST,
+            SORT_RUST_HI,
         ),
         (
             "写一个 typescript 排序 algorithm 带 test",
@@ -903,14 +904,14 @@ fn a_software_project_follow_up_renders_the_seeded_sentences() {
         ),
         (
             "покажи результат",
-            "Recorded a demonstration follow-up for the scraper from the active plan.\n\nFormalized meaning:\n",
+            "Записано продолжение типа demonstration для scraper из активного плана.\n\nФормализованный смысл:\n",
             [
                 "  action \"show\"",
                 "  follow_up_kind demonstration",
                 "  expected_output \"результат\"",
                 "  approval_gate \"generated_code\"",
             ],
-            "\nReasoning steps:\n1. Recognize \"show\" as a demonstration request that exercises the scraper from the active plan, not a fact lookup.\n2. Record the expected output as \"результат\" so the test harness can assert it.\n3. Drive the artifact through a deterministic fixture before any host API or network call.\n4. Keep code execution behind approval gates because the sandbox cannot run untrusted code.\n\nVerification plan:\n1. Generate the scraper core plus a deterministic test harness with a captured the requested target fixture.\n2. Assert each requirement (parsing, extraction, counting, summary) against the fixture.\n3. Surface результат from the fixture run.\n4. Run the python test command once the generated_code gate is approved.\n5. Promote the run to live the requested target only after the test_execution and network_access gates pass.\n\nReply `approve plan` to generate the artifact plus this test harness. Running it live against the target needs the test_execution and network_access gates.",
+            "\nШаги рассуждения:\n1. Распознать «show» как запрос типа demonstration, который проверяет scraper из активного плана, а не поиск факта.\n2. Записать ожидаемый вывод как «результат», чтобы тестовый каркас мог его проверить.\n3. Прогнать артефакт через детерминированную фикстуру до любого вызова API хоста или сети.\n4. Держать выполнение кода за шлюзами одобрения, потому что песочница не может запускать недоверенный код.\n\nПлан проверки:\n1. Сгенерировать ядро scraper и детерминированный тестовый каркас с записанной фикстурой сайта (запрошенная цель).\n2. Проверить каждое требование (разбор, извлечение, подсчёт, сводку) на фикстуре.\n3. Показать результат из запуска на фикстуре.\n4. Запустить команду тестов python, как только шлюз generated_code будет одобрен.\n5. Переводить запуск на живой сайт (запрошенная цель) только после прохождения шлюзов test_execution и network_access.\n\nОтветьте `approve plan`, чтобы сгенерировать артефакт вместе с этим тестовым каркасом. Для живого запуска против цели нужны шлюзы test_execution и network_access.",
         ),
     ] {
         let response = solver.solve_with_history(prompt, &history);

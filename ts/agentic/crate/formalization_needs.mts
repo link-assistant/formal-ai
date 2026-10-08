@@ -1,1 +1,87 @@
-import { unknownSurfaceSpans } from './concept_lookup.mjs' ; import { clauses } from './formalization_segment.mjs' ; import { detect } from './language.mjs' ; import { NeedKind , NeedState , raisedNeed } from './needs.mjs' ; import { eqIgnoreAsciiCase } from './rust_str.mjs' ; export { NeedKind , NeedState } ; export const NeedOrigin = Object . freeze ( { UnresolvedSurface : 'unresolved_surface' , UnresolvedRelation : 'unresolved_relation' , UnresolvedProcedure : 'unresolved_procedure' , RecursiveGloss : 'recursive_gloss' , } ) ; export function emitNeeds ( docId , segments , graph , depth ) { const out = [] ; for ( const segment of segments ) { for ( const clause of clauses ( segment ) ) { const language = detect ( clause . text ) ; for ( const [ surface , start , end ] of unknownSurfaceSpans ( clause . text ) ) { if ( graph . grounds ( surface ) || out . some ( ( need ) => eqIgnoreAsciiCase ( need . subject , surface ) ) ) continue ; const need = raisedNeed ( NeedKind . Concept , surface , language , docId ) ; need . source_span = span ( docId , clause . start + start , clause . start + end ) ; need . depth = depth ; out . push ( need ) ; } } } return out ; } export function span ( docId , start , end ) { return `${docId}@${start}:${end}` ; } export function satisfy ( needs , lookup , bounds , maxConceptDepth ) { const out = { needs : [] , senses : [] , contexts : [] } ; for ( const need of needs ) { if ( need . state !== NeedState . Open ) { out . needs . push ( need ) ; continue ; } if ( need . depth > maxConceptDepth ) { need . state = NeedState . Unsatisfiable ; out . contexts . push ( { need_id : need . need_id , origin : NeedOrigin . RecursiveGloss , evidence : [] } ) ; out . needs . push ( need ) ; continue ; } const outcome = lookup . lookup ( need , bounds ) ; if ( outcome . kind === 'found' && outcome . senses . length ) { need . state = NeedState . Satisfied ; need . satisfied_by = outcome . senses [ 0 ] . content_id ; out . contexts . push ( { need_id : need . need_id , origin : NeedOrigin . UnresolvedSurface , evidence : [ ... outcome . senses ] } ) ; out . senses . push ( ... outcome . senses ) ; out . needs . push ( need ) ; } else { need . state = NeedState . Unsatisfiable ; out . contexts . push ( { need_id : need . need_id , origin : NeedOrigin . UnresolvedSurface , evidence : [] } ) ; out . needs . push ( need ) ; } } return out ; }
+// Need emission and satisfaction for the deep formalizer
+// (rust/src/formalization/needs.rs).
+
+import { unknownSurfaceSpans } from './concept_lookup.mjs';
+import { clauses } from './formalization_segment.mjs';
+import { detect } from './language.mjs';
+import { NeedKind, NeedState, raisedNeed } from './needs.mjs';
+import { eqIgnoreAsciiCase } from './rust_str.mjs';
+
+export { NeedKind, NeedState };
+
+/** Mirrors `enum NeedOrigin` (`NeedOrigin::slug` values). */
+export const NeedOrigin = Object.freeze({
+  UnresolvedSurface: 'unresolved_surface',
+  UnresolvedRelation: 'unresolved_relation',
+  UnresolvedProcedure: 'unresolved_procedure',
+  RecursiveGloss: 'recursive_gloss',
+});
+
+/**
+ * Mirrors `fn emit_needs`: every unresolved surface in `segments`, at `depth`.
+ * @param {string} docId
+ * @param {Array<object>} segments
+ * @param {{grounds: (surface: string) => boolean}} graph
+ * @param {number} depth
+ */
+export function emitNeeds(docId, segments, graph, depth) {
+  const out = [];
+  for (const segment of segments) {
+    for (const clause of clauses(segment)) {
+      const language = detect(clause.text);
+      for (const [surface, start, end] of unknownSurfaceSpans(clause.text)) {
+        if (graph.grounds(surface) || out.some((need) => eqIgnoreAsciiCase(need.subject, surface))) continue;
+        const need = raisedNeed(NeedKind.Concept, surface, language, docId);
+        need.source_span = span(docId, clause.start + start, clause.start + end);
+        need.depth = depth;
+        out.push(need);
+      }
+    }
+  }
+  return out;
+}
+
+/**
+ * Mirrors `fn span`: `"<doc_id>@<start>:<end>"`.
+ * @param {string} docId
+ * @param {number} start
+ * @param {number} end
+ * @returns {string}
+ */
+export function span(docId, start, end) {
+  return `${docId}@${start}:${end}`;
+}
+
+/**
+ * Mirrors `fn satisfy`: ask `lookup` for every `Open` need, bounded by
+ * `maxConceptDepth`. `lookup.lookup(need, bounds)` returns
+ * `{kind: 'found', senses}` or `{kind: 'not_found', consulted}`.
+ */
+export function satisfy(needs, lookup, bounds, maxConceptDepth) {
+  const out = { needs: [], senses: [], contexts: [] };
+  for (const need of needs) {
+    if (need.state !== NeedState.Open) {
+      out.needs.push(need);
+      continue;
+    }
+    if (need.depth > maxConceptDepth) {
+      need.state = NeedState.Unsatisfiable;
+      out.contexts.push({ need_id: need.need_id, origin: NeedOrigin.RecursiveGloss, evidence: [] });
+      out.needs.push(need);
+      continue;
+    }
+    const outcome = lookup.lookup(need, bounds);
+    if (outcome.kind === 'found' && outcome.senses.length) {
+      need.state = NeedState.Satisfied;
+      need.satisfied_by = outcome.senses[0].content_id;
+      out.contexts.push({ need_id: need.need_id, origin: NeedOrigin.UnresolvedSurface, evidence: [...outcome.senses] });
+      out.senses.push(...outcome.senses);
+      out.needs.push(need);
+    } else {
+      need.state = NeedState.Unsatisfiable;
+      out.contexts.push({ need_id: need.need_id, origin: NeedOrigin.UnresolvedSurface, evidence: [] });
+      out.needs.push(need);
+    }
+  }
+  return out;
+}

@@ -8,36 +8,18 @@
 // lists them. A meaning is `{slug, defined_by, roles, wikidata, lexemes:
 // [{language, words: [{text, action}]}]}`.
 
-import { cached, parseLino, readText } from '../host.mjs';
+import { cached, childrenNamed, parseLino, readText } from '../host.mjs';
 
-/** `MEANING_FILES` in rust/src/seed/embedded_registry.rs, in order. */
-const MEANING_FILES = [
-  'learned-request-openers', 'meanings', 'meanings-acts', 'meanings-agent-actions',
-  'meanings-behavior-rules', 'meanings-calculator', 'meanings-calendar', 'meanings-coding-assertions', 'meanings-coding-catalog',
-  'meanings-coding-config', 'meanings-coding-request', 'meanings-coding-structure',
-  'meanings-coding-structure-2', 'meanings-coding-tasks', 'meanings-computer-use',
-  'meanings-concept-lookup', 'meanings-conversation', 'meanings-creative-tasks',
-  'meanings-decomposition', 'meanings-definition-merge', 'meanings-docs',
-  'meanings-engine-report-intents', 'meanings-facts', 'meanings-feature-capability',
-  'meanings-file-edit', 'meanings-file-write', 'meanings-finance', 'meanings-formalization-needs',
-  'meanings-formalization-relations', 'meanings-formalization-report', 'meanings-how',
-  'meanings-intent', 'meanings-language-projection', 'meanings-lexical-meta',
-  'meanings-lexicon-import-01', 'meanings-lexicon-import-02', 'meanings-lexicon-import-03',
-  'meanings-lexicon-import-04', 'meanings-links-root', 'meanings-local-search',
-  'meanings-membership', 'meanings-meta', 'meanings-note-composition',
-  'meanings-number-constraints', 'meanings-object-shapes', 'meanings-ontology',
-  'meanings-playwright', 'meanings-policy', 'meanings-program-synthesis', 'meanings-proof',
-  'meanings-repository-workflow', 'meanings-research-table', 'meanings-response-intents',
-  'meanings-routing-vocabulary', 'meanings-search', 'meanings-selection-criteria',
-  'meanings-semantic-meta', 'meanings-skill-compiler', 'meanings-skill-procedure',
-  'meanings-software-project', 'meanings-statement-merge', 'meanings-statistics',
-  'meanings-substitution-compiler', 'meanings-summarization', 'meanings-summary',
-  'meanings-text-transform', 'meanings-tool-access', 'meanings-translate-cycle',
-  'meanings-translation', 'meanings-units', 'meanings-verifiable-task', 'meanings-web-followup',
-  'meanings-web-navigation', 'meanings-web-research', 'meanings-web-search',
-  'meanings-web-search-query', 'meanings-wikidata', 'meanings-writing-systems',
-  'software-project-phrases',
-].map((name) => `data/seed/${name}.lino`);
+/** The one inventory of the seed files and the lexicons that read them. */
+const SEED_REGISTRY = 'data/meta/seed-registry.lino';
+
+/** `MEANING_FILES`: every seed the registry gives the `meaning` lexicon, in the
+ * registry's (name) order, as rust/src/seed/embedded_registry.rs lists them. */
+export function meaningFiles() {
+  return cached('meaning-files', () => childrenNamed(parseLino(readText(SEED_REGISTRY)), 'seed')
+    .filter((seed) => childrenNamed(seed, 'lexicon').some((lexicon) => lexicon.id === 'meaning'))
+    .map((seed) => `data/seed/${seed.id}.lino`));
+}
 
 const CANONICAL_TARGETS = new Map([
   ['reference_action', 'reference-action'], ['link_action', 'link-action'],
@@ -112,7 +94,7 @@ function parseMeaning(node) {
 /** Mirrors `fn lexicon` / `fn parse_lexicon`: every meaning in declaration order. */
 export function lexicon() {
   return cached('meaning-lexicon', () => {
-    const root = parseLino(MEANING_FILES.map(readText).join('\n'));
+    const root = parseLino(meaningFiles().map(readText).join('\n'));
     const containers = (root.children || []).filter((child) => child.name === 'meanings');
     const sources = containers.length ? containers : [root];
     const meanings = [];

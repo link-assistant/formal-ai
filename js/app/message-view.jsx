@@ -20,7 +20,12 @@ const { createElement: h, useCallback, useEffect, useMemo, useRef, useState } = 
 // labels the SVO triple in the user's UI language.
 function FormalizationView({ formalization, t }) {
   if (!formalization) return null;
-  return <div className="formalization-view" data-testid="formalization">{formalization.raw ? <div className="formalization-raw"><code>{formalization.raw}</code><span className="formalization-arrow" aria-hidden="true">{"→"}</span><code className="formalization-tuple">{formalization.tuple}</code></div> : <code className="formalization-tuple">{formalization.tuple}</code>}<div className="formalization-svo"><span className="formalization-svo-label">{t("message.formalizationSubjectVerbObject")}</span><ol className="formalization-svo-list"><li><span className="formalization-slot">{"S"}</span><code>{formalization.subject || ""}</code></li><li><span className="formalization-slot">{"V"}</span><code>{formalization.verb || ""}</code></li><li><span className="formalization-slot">{"O"}</span><code>{formalization.object || ""}</code></li></ol></div></div>;
+  return <div className="formalization-view" data-testid="formalization">{formalization.raw ? <div className="formalization-raw"><code>{formalization.raw}</code>
+    <span className="formalization-arrow" aria-hidden="true">{"→"}</span><code className="formalization-tuple">{formalization.tuple}</code>
+    </div> : <code className="formalization-tuple">{formalization.tuple}</code>}<div className="formalization-svo"><span className="formalization-svo-label">
+    {t("message.formalizationSubjectVerbObject")}</span><ol className="formalization-svo-list"><li><span className="formalization-slot">{"S"}</span><code>
+    {formalization.subject || ""}</code></li><li><span className="formalization-slot">{"V"}</span><code>{formalization.verb || ""}</code></li><li>
+    <span className="formalization-slot">{"O"}</span><code>{formalization.object || ""}</code></li></ol></div></div>;
 }
 
 // Issue #180: format the unified link-notation projection for an HTTP
@@ -67,7 +72,12 @@ function DiagnosticsHttpPanel({ providers, exchanges, t }) {
           status: entry.ok ? t("message.diagnosticsProviderOk") : `${t("message.diagnosticsProviderError")}: ${entry.error || "(unknown)"}`,
           count: typeof entry.count === "number" ? entry.count : 0,
           elapsed: typeof entry.elapsedMs === "number" ? entry.elapsedMs : 0
-        })}</li>)}</ul></div> : null}<div className="diagnostics-http-section"><strong className="diagnostics-section-label">{t("message.diagnosticsHttp")}</strong>{safeExchanges.length === 0 ? <p className="diagnostics-http-empty">{t("message.diagnosticsHttpEmpty")}</p> : <ol className="diagnostics-http-list">{safeExchanges.map((exchange, index) => <li key={`${exchange.id || index}`} className="diagnostics-http-item"><details className="diagnostics-detail" data-testid="diagnostics-http-exchange"><summary><span className="diagnostics-step-name">{`${exchange.method || "GET"} ${exchange.provider ? `[${exchange.provider}] ` : ""}`}</span><span className="diagnostics-step-summary">{exchange.url || "(no url)"}</span><span className="diagnostics-http-status">{t("message.diagnosticsHttpStatus", {
+        })}</li>)}</ul></div> : null}<div className="diagnostics-http-section"><strong className="diagnostics-section-label">{t("message.diagnosticsHttp")}</strong>
+          {safeExchanges.length === 0 ? <p className="diagnostics-http-empty">{t("message.diagnosticsHttpEmpty")}</p> : <ol className="diagnostics-http-list">
+          {safeExchanges.map((exchange, index) => <li key={`${exchange.id || index}`} className="diagnostics-http-item">
+          <details className="diagnostics-detail" data-testid="diagnostics-http-exchange"><summary><span className="diagnostics-step-name">
+          {`${exchange.method || "GET"} ${exchange.provider ? `[${exchange.provider}] ` : ""}`}</span><span className="diagnostics-step-summary">{exchange.url || "(no url)"}</span>
+          <span className="diagnostics-http-status">{t("message.diagnosticsHttpStatus", {
                 status: typeof exchange.status === "number" ? exchange.status : "—",
                 elapsed: typeof exchange.elapsedMs === "number" ? exchange.elapsedMs : 0,
                 bytes: typeof exchange.responseBytes === "number" ? exchange.responseBytes : 0
@@ -326,7 +336,16 @@ function ThinkingPreview({ steps, t, isPending = false, narrative = "" }) {
       // Issue #488: show a subtle "live" affordance while pending so the user
       // understands the trace is updating in real time (the dot pulses via
       // CSS; the visible label stays unchanged for screen readers).
-      isPending ? <span className="thinking-preview-live-dot" aria-hidden="true" data-testid="thinking-preview-live-dot" /> : null}{t("message.thinking")}</strong><button type="button" className="thinking-preview-toggle" data-testid="thinking-preview-toggle" aria-expanded={expanded ? "true" : "false"} onClick={() => setExpanded(value => !value)}>{expanded ? t("message.thinkingCollapse") : t("message.thinkingExpand")}</button></div>{narrative ? <p className="thinking-preview-narrative" data-testid="thinking-narrative">{narrative}</p> : null}{expanded ? <ol className="thinking-preview-list" data-testid="thinking-expanded-list">{safeSteps.map((step, index) => <li key={`${index}-${step}`}>{step}</li>)}</ol> : <div className="thinking-preview-collapsed" data-testid="thinking-collapsed">{previous ? <p key={`prev-${animationKey}`} className="thinking-preview-previous" data-testid="thinking-preview-previous" aria-label={t("message.thinkingPrevious")}>{previous}</p> : null}<p key={`curr-${animationKey}`} className="thinking-preview-current" data-testid="thinking-preview-current" aria-label={t("message.thinkingCurrent")}>{current}</p></div>}</section>;
+      isPending ? <span className="thinking-preview-live-dot" aria-hidden="true" data-testid="thinking-preview-live-dot" /> : null}{t("message.thinking")}</strong>
+        <button type="button" className="thinking-preview-toggle" data-testid="thinking-preview-toggle" aria-expanded={expanded ? "true" : "false"}
+        onClick={() => setExpanded(value => !value)}>
+        {expanded ? t("message.thinkingCollapse") : t("message.thinkingExpand")}</button></div>
+        {narrative ? <p className="thinking-preview-narrative" data-testid="thinking-narrative">{narrative}
+        </p> : null}{expanded ? <ol className="thinking-preview-list" data-testid="thinking-expanded-list">{safeSteps.map((step, index) => <li key={`${index}-${step}`}>{step}
+        </li>)}</ol> : <div className="thinking-preview-collapsed" data-testid="thinking-collapsed">
+        {previous ? <p key={`prev-${animationKey}`} className="thinking-preview-previous" data-testid="thinking-preview-previous" aria-label={t("message.thinkingPrevious")}>
+        {previous}</p> : null}<p key={`curr-${animationKey}`} className="thinking-preview-current" data-testid="thinking-preview-current" aria-label={t("message.thinkingCurrent")}>
+        {current}</p></div>}</section>;
 }
 
 export function DesktopPermissionPanel({
@@ -358,12 +377,24 @@ export function DesktopPermissionPanel({
   const grantAllLabel = hasPendingTask
     ? tr("permissions.action.grantAllAndRun")
     : tr("permissions.action.grantAll");
-  return <section className="permission-panel" data-testid={testId} data-mode={mode}><div className="permission-panel-header"><strong>{tr("permissions.panel.title")}</strong><span>{active ? tr("permissions.panel.active") : tr("permissions.panel.saved")}</span></div>{onGrantAll ? <div className="permission-panel-grant-all"><button type="button" className="permission-button permission-button-grant-all" data-testid={`${testId}-grant-all`} data-has-pending-task={hasPendingTask ? "true" : "false"} onClick={() => onGrantAll()}>{grantAllLabel}</button></div> : null}<div className="permission-tool-list">{DESKTOP_TOOL_OPTIONS.map(tool => {
+  return <section className="permission-panel" data-testid={testId} data-mode={mode}><div className="permission-panel-header"><strong>{tr("permissions.panel.title")}</strong><span>
+    {active ? tr("permissions.panel.active") : tr("permissions.panel.saved")}</span></div>{onGrantAll ? <div className="permission-panel-grant-all">
+    <button type="button" className="permission-button permission-button-grant-all" data-testid={`${testId}-grant-all`} data-has-pending-task={hasPendingTask ? "true" : "false"}
+    onClick={() => onGrantAll()}>
+    {grantAllLabel}</button></div> : null}<div className="permission-tool-list">{DESKTOP_TOOL_OPTIONS.map(tool => {
       const state = desktopToolGrantState(grants, tool);
       const granted = state === "granted";
       const declined = state === "declined";
       const i18nKey = DESKTOP_TOOL_I18N_KEYS[tool] || tool;
-      return <div key={tool} className="permission-tool-row" data-testid={`${testId}-row-${tool}`}><div className="permission-tool-copy"><strong>{tr(`permissions.tool.${i18nKey}.label`)}</strong><span>{tr(`permissions.tool.${i18nKey}.description`)}</span></div><span className={`permission-state permission-state-${state}`} data-testid={`${testId}-state-${tool}`}>{stateLabel(state)}</span><div className="permission-actions"><button type="button" className="permission-button" data-testid={`${testId}-grant-${tool}`} aria-pressed={granted ? "true" : "false"} onClick={() => onDecision && onDecision(tool, true)}>{tr("permissions.action.grant")}</button><button type="button" className="permission-button permission-button-secondary" data-testid={`${testId}-decline-${tool}`} aria-pressed={declined ? "true" : "false"} onClick={() => onDecision && onDecision(tool, false)}>{tr("permissions.action.decline")}</button></div></div>;
+      return <div key={tool} className="permission-tool-row" data-testid={`${testId}-row-${tool}`}><div className="permission-tool-copy"><strong>
+        {tr(`permissions.tool.${i18nKey}.label`)}</strong><span>{tr(`permissions.tool.${i18nKey}.description`)}</span></div>
+        <span className={`permission-state permission-state-${state}`} data-testid={`${testId}-state-${tool}`}>{stateLabel(state)}</span><div className="permission-actions">
+        <button type="button" className="permission-button" data-testid={`${testId}-grant-${tool}`} aria-pressed={granted ? "true" : "false"}
+        onClick={() => onDecision && onDecision(tool, true)}>
+        {tr("permissions.action.grant")}</button>
+        <button type="button" className="permission-button permission-button-secondary" data-testid={`${testId}-decline-${tool}`} aria-pressed={declined ? "true" : "false"}
+        onClick={() => onDecision && onDecision(tool, false)}>
+        {tr("permissions.action.decline")}</button></div></div>;
     })}</div></section>;
 }
 
@@ -384,7 +415,14 @@ function CommandApprovalPanel({ approval, status, onApprove, onDeny, t }) {
   const statusLabel = statusKeys[currentStatus]
     ? tr(statusKeys[currentStatus])
     : currentStatus;
-  return <section className="command-approval-panel" data-testid="command-approval" data-status={currentStatus}><div className="command-approval-copy"><strong>{tr("permissions.command.title")}</strong><code>{command}</code><span className={`command-approval-status command-approval-status-${currentStatus}`}>{statusLabel}</span></div><div className="command-approval-actions"><button type="button" className="permission-button" data-testid="command-approve" disabled={!pending} onClick={() => pending && onApprove && onApprove(approval)}>{tr("permissions.command.approve")}</button><button type="button" className="permission-button permission-button-secondary" data-testid="command-deny" disabled={!pending} onClick={() => pending && onDeny && onDeny(approval)}>{tr("permissions.command.deny")}</button></div></section>;
+  return <section className="command-approval-panel" data-testid="command-approval" data-status={currentStatus}><div className="command-approval-copy"><strong>
+    {tr("permissions.command.title")}</strong><code>{command}</code><span className={`command-approval-status command-approval-status-${currentStatus}`}>{statusLabel}</span></div>
+    <div className="command-approval-actions">
+    <button type="button" className="permission-button" data-testid="command-approve" disabled={!pending} onClick={() => pending && onApprove && onApprove(approval)}>
+    {tr("permissions.command.approve")}</button>
+    <button type="button" className="permission-button permission-button-secondary" data-testid="command-deny" disabled={!pending}
+    onClick={() => pending && onDeny && onDeny(approval)}>
+    {tr("permissions.command.deny")}</button></div></section>;
 }
 
 // Issue #672 (F4): the hierarchy editor for a single reasoning step. It is a
@@ -409,7 +447,13 @@ function StepHierarchyMenu({ menu, currentLevel, overridden, onSelect, t }) {
     };
   }, [menu, close]);
   if (!menu) return null;
-  return <div className="step-hierarchy-menu" data-testid="step-hierarchy-menu" data-step={menu.step} role="menu" aria-label={t("message.stepLevel.title")} style={{ top: `${menu.y}px`, left: `${menu.x}px` }} onPointerDown={event => event.stopPropagation()}><button type="button" role="menuitem" data-testid="step-hierarchy-bump" disabled={currentLevel === "high"} onClick={() => onSelect(menu.step, "high")}>{t("message.stepLevel.bump")}</button><button type="button" role="menuitem" data-testid="step-hierarchy-demote" disabled={currentLevel === "detailed"} onClick={() => onSelect(menu.step, "detailed")}>{t("message.stepLevel.demote")}</button>{overridden ? <button type="button" role="menuitem" data-testid="step-hierarchy-reset" onClick={() => onSelect(menu.step, "")}>{t("message.stepLevel.reset")}</button> : null}</div>;
+  return <div className="step-hierarchy-menu" data-testid="step-hierarchy-menu" data-step={menu.step} role="menu" aria-label={t("message.stepLevel.title")}
+    style={{ top: `${menu.y}px`, left: `${menu.x}px` }} onPointerDown={event => event.stopPropagation()}>
+    <button type="button" role="menuitem" data-testid="step-hierarchy-bump" disabled={currentLevel === "high"} onClick={() => onSelect(menu.step, "high")}>
+    {t("message.stepLevel.bump")}</button>
+    <button type="button" role="menuitem" data-testid="step-hierarchy-demote" disabled={currentLevel === "detailed"} onClick={() => onSelect(menu.step, "detailed")}>
+    {t("message.stepLevel.demote")}</button>{overridden ? <button type="button" role="menuitem" data-testid="step-hierarchy-reset" onClick={() => onSelect(menu.step, "")}>
+    {t("message.stepLevel.reset")}</button> : null}</div>;
 }
 
 export function Message({
@@ -539,7 +583,14 @@ export function Message({
     }
   }, [message.content]);
 
-  return <article className={`message ${message.role}`} data-testid="chat-message" data-demo-label={message.demoLabel || null} data-skip-animation={reveal.active && !reveal.bodyShown ? "available" : null}><div className="avatar" aria-hidden="true">{message.role === "user" ? "Y" : "FA"}</div><div className="message-body"><div className="message-meta"><strong>{message.role === "user" ? t("message.author.user") : message.author}</strong><time>{message.sentAt}</time>{diagnosticsMode && message.intent ? <span className="intent">{`intent:${message.intent}`}</span> : null}<button type="button" className={`message-copy-button${markdownCopied ? " is-copied" : ""}`} data-testid="copy-markdown-button" data-copied={markdownCopied ? "true" : null} onClick={handleCopyMarkdown} aria-label={t("message.copyMarkdownTitle")} title={t("message.copyMarkdownTitle")}><span className="copy-button-label">{markdownCopied ? t("message.copyMarkdownDone") : t("message.copyMarkdown")}</span></button></div>{
+  return <article className={`message ${message.role}`} data-testid="chat-message" data-demo-label={message.demoLabel || null}
+    data-skip-animation={reveal.active && !reveal.bodyShown ? "available" : null}>
+    <div className="avatar" aria-hidden="true">{message.role === "user" ? "Y" : "FA"}</div><div className="message-body"><div className="message-meta"><strong>
+    {message.role === "user" ? t("message.author.user") : message.author}</strong><time>{message.sentAt}</time>{diagnosticsMode && message.intent ? <span className="intent">
+    {`intent:${message.intent}`}</span> : null}
+    <button type="button" className={`message-copy-button${markdownCopied ? " is-copied" : ""}`} data-testid="copy-markdown-button" data-copied={markdownCopied ? "true" : null}
+    onClick={handleCopyMarkdown} aria-label={t("message.copyMarkdownTitle")} title={t("message.copyMarkdownTitle")}>
+    <span className="copy-button-label">{markdownCopied ? t("message.copyMarkdownDone") : t("message.copyMarkdown")}</span></button></div>{
     // Issue #488: render thinking ABOVE the answer body. Reasoning logically
     // precedes the answer (and during streaming it is the only visible part of
     // the message), so it belongs at the top of the message body, not below it.
@@ -549,7 +600,52 @@ export function Message({
     // Issue #672 (F3): a one-shot per-message override of the global animation
     // budget. Only offered while the reveal is actually withholding the answer,
     // so it never lingers as dead chrome on a settled message.
-    reveal.active && !reveal.bodyShown ? <button type="button" className="skip-animation" data-testid="message-skip-animation" onClick={reveal.skip} title={t("message.skipAnimation")}>{t("message.skipAnimation")}</button> : null}<div ref={markdownRef} className={`markdown-body${bodyRevealClass}`} aria-hidden={reveal.active && !reveal.bodyShown ? "true" : null} data-testid="message-markdown-body" dangerouslySetInnerHTML={markdownContent} />{message.permissionPanel && typeof renderPermissionPanel === "function" ? <div className="message-permission-panel">{renderPermissionPanel("desktop-permission-panel-message")}</div> : null}{message.commandApproval ? <CommandApprovalPanel approval={message.commandApproval} status={commandApprovals && commandApprovals[message.commandApproval.id] && commandApprovals[message.commandApproval.id].status} onApprove={onApproveCommand} onDeny={onDenyCommand} t={t} /> : null}{message.iframeUrl ? <div className={`fetch-iframe-container${iframeFullscreen ? " is-fullscreen" : ""}`} data-testid="fetch-iframe-container"><div className="fetch-iframe-header"><span className="fetch-iframe-url">{message.iframeUrl}</span><div className="fetch-iframe-actions"><a href={message.iframeUrl} target="_blank" rel="noopener noreferrer" className="fetch-iframe-open fetch-iframe-control" aria-label={t("fetch.openInNewTab")} title={t("fetch.openInNewTab")}>{"↗"}</a><button type="button" className="fetch-iframe-toggle fetch-iframe-control" onClick={() => setIframeFullscreen(prev => !prev)} aria-label={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")} aria-pressed={iframeFullscreen ? "true" : "false"} title={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")}>{iframeFullscreen ? "⤡" : "⛶"}</button></div></div><iframe className="fetch-iframe" src={message.iframeUrl} title={t("fetch.frameTitle", {
+    reveal.active && !reveal.bodyShown ? <button type="button" className="skip-animation" data-testid="message-skip-animation" onClick={reveal.skip}
+      title={t("message.skipAnimation")}>
+      {t("message.skipAnimation")}</button> : null}
+      <div ref={markdownRef} className={`markdown-body${bodyRevealClass}`} aria-hidden={reveal.active && !reveal.bodyShown ? "true" : null} data-testid="message-markdown-body"
+      dangerouslySetInnerHTML={markdownContent} />
+      {message.permissionPanel && typeof renderPermissionPanel === "function" ? <div className="message-permission-panel">
+      {renderPermissionPanel("desktop-permission-panel-message")}
+      </div> : null}{message.commandApproval ? <CommandApprovalPanel approval={message.commandApproval}
+      status={commandApprovals && commandApprovals[message.commandApproval.id] && commandApprovals[message.commandApproval.id].status} onApprove={onApproveCommand}
+      onDeny={onDenyCommand} t={t} /> : null}{message.iframeUrl ? <div className={`fetch-iframe-container${iframeFullscreen ? " is-fullscreen" : ""}`}
+      data-testid="fetch-iframe-container">
+      <div className="fetch-iframe-header"><span className="fetch-iframe-url">{message.iframeUrl}</span><div className="fetch-iframe-actions">
+      <a href={message.iframeUrl} target="_blank" rel="noopener noreferrer" className="fetch-iframe-open fetch-iframe-control" aria-label={t("fetch.openInNewTab")}
+      title={t("fetch.openInNewTab")}>
+      {"↗"}</a>
+      <button type="button" className="fetch-iframe-toggle fetch-iframe-control" onClick={() => setIframeFullscreen(prev => !prev)}
+      aria-label={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")} aria-pressed={iframeFullscreen ? "true" : "false"}
+      title={iframeFullscreen ? t("fetch.minimize") : t("fetch.fullscreen")}>
+      {iframeFullscreen ? "⤡" : "⛶"}</button></div></div><iframe className="fetch-iframe" src={message.iframeUrl} title={t("fetch.frameTitle", {
         url: message.iframeUrl
-      })} sandbox="allow-scripts allow-same-origin allow-forms allow-popups" loading="lazy" data-testid="fetch-iframe" /></div> : null}{evidence.length ? <div className="evidence-list">{evidence.map(item => <span key={item}>{item}</span>)}</div> : null}{thinkingSteps.length ? <div className="thinking-steps"><strong>{t("message.thinking")}</strong><ol>{thinkingSteps.map(item => <li key={item}>{item}</li>)}</ol></div> : null}{diagnosticsSteps.length ? <div className="diagnostics-steps" data-testid="diagnostics-steps"><strong>{t("message.diagnosticsSteps")}</strong><ol className="diagnostics-step-list">{diagnosticsSteps.map((entry, index) => <li key={`${entry.step}-${index}`} className="diagnostics-step"><details className="diagnostics-detail" data-testid="diagnostics-step" data-step={entry.step} data-level={overrides.get(thinkingStepKey(entry)) || entry.level || null} data-solver-level={entry.level || null} data-level-override={overrides.get(thinkingStepKey(entry)) || null} onContextMenu={event => handleStepContextMenu(event, entry.step)}><summary title={t("message.stepLevel.hint")}><span className="diagnostics-step-name">{entry.formalization ? t("message.formalization") : entry.step}</span><span className="diagnostics-step-summary">{entry.formalization ? truncateDiagnosticDetail(entry.formalization.tuple) : truncateDiagnosticDetail(entry.detail)}</span></summary><div className="diagnostics-detail-body">{entry.formalization ? <FormalizationView formalization={entry.formalization} t={t} /> : <pre className="diagnostics-payload">{formatDiagnosticPayload(entry.detail)}</pre>}</div></details></li>)}</ol><StepHierarchyMenu menu={stepMenu} currentLevel={stepMenu ? overrides.get(stepMenu.step) || (diagnosticsSteps.find(entry => thinkingStepKey(entry) === stepMenu.step) || {}).level || "" : ""} overridden={stepMenu ? overrides.has(stepMenu.step) : false} onSelect={handleStepLevelSelect} t={t} /></div> : null}{diagnosticsToolCalls.length ? <div className="diagnostics-tools" data-testid="diagnostics-tools"><strong>{t("message.diagnosticsTools")}</strong><ol className="diagnostics-tool-list">{diagnosticsToolCalls.map((call, index) => <li key={`${call.tool || "tool"}-${index}`} className="diagnostics-tool"><details className="diagnostics-detail" data-testid="diagnostics-tool"><summary><span className="diagnostics-tool-name">{call.tool || "(tool)"}</span><span className="diagnostics-tool-summary">{summarizeToolCall(call)}</span></summary><div className="diagnostics-detail-body"><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolInputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.inputs)}</pre></div><div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolOutputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.outputs)}</pre></div>{Array.isArray(call.steps) && call.steps.length > 0 ? <div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolReasoning")}</span><ol className="diagnostics-tool-reasoning">{call.steps.map((s, j) => <li key={`${call.tool}-step-${j}`}>{`${s.step}: ${s.detail}`}</li>)}</ol></div> : null}</div></details></li>)}</ol></div> : null}{diagnosticsPayload ? <DiagnosticsHttpPanel providers={diagnosticsProviders} exchanges={diagnosticsHttp} t={t} /> : null}{reportIssueUrl ? <div className="message-actions" data-testid="detected-failure-report"><span>{t("message.detectedFailureReport")}</span><a href={reportIssueUrl} target="_blank" rel="noopener noreferrer">{reportLabel}</a></div> : null}</div></article>;
+      })} sandbox="allow-scripts allow-same-origin allow-forms allow-popups" loading="lazy" data-testid="fetch-iframe" />
+        </div> : null}{evidence.length ? <div className="evidence-list">{evidence.map(item => <span key={item}>{item}</span>)}
+        </div> : null}{thinkingSteps.length ? <div className="thinking-steps"><strong>{t("message.thinking")}</strong><ol>{thinkingSteps.map(item => <li key={item}>{item}</li>)}
+        </ol></div> : null}{diagnosticsSteps.length ? <div className="diagnostics-steps" data-testid="diagnostics-steps"><strong>{t("message.diagnosticsSteps")}</strong>
+        <ol className="diagnostics-step-list">{diagnosticsSteps.map((entry, index) => <li key={`${entry.step}-${index}`} className="diagnostics-step">
+        <details className="diagnostics-detail" data-testid="diagnostics-step" data-step={entry.step} data-level={overrides.get(thinkingStepKey(entry)) || entry.level || null}
+        data-solver-level={entry.level || null} data-level-override={overrides.get(thinkingStepKey(entry)) || null}
+        onContextMenu={event => handleStepContextMenu(event, entry.step)}>
+        <summary title={t("message.stepLevel.hint")}><span className="diagnostics-step-name">{entry.formalization ? t("message.formalization") : entry.step}</span>
+        <span className="diagnostics-step-summary">{entry.formalization ? truncateDiagnosticDetail(entry.formalization.tuple) : truncateDiagnosticDetail(entry.detail)}</span>
+        </summary><div className="diagnostics-detail-body">
+        {entry.formalization ? <FormalizationView formalization={entry.formalization} t={t} /> : <pre className="diagnostics-payload">{formatDiagnosticPayload(entry.detail)}</pre>}
+        </div></details></li>)}</ol>
+        <StepHierarchyMenu menu={stepMenu}
+        currentLevel={stepMenu ? overrides.get(stepMenu.step) || (diagnosticsSteps.find(entry => thinkingStepKey(entry) === stepMenu.step) || {}).level || "" : ""}
+        overridden={stepMenu ? overrides.has(stepMenu.step) : false} onSelect={handleStepLevelSelect} t={t} />
+        </div> : null}{diagnosticsToolCalls.length ? <div className="diagnostics-tools" data-testid="diagnostics-tools"><strong>{t("message.diagnosticsTools")}</strong>
+        <ol className="diagnostics-tool-list">{diagnosticsToolCalls.map((call, index) => <li key={`${call.tool || "tool"}-${index}`} className="diagnostics-tool">
+        <details className="diagnostics-detail" data-testid="diagnostics-tool"><summary><span className="diagnostics-tool-name">{call.tool || "(tool)"}</span>
+        <span className="diagnostics-tool-summary">{summarizeToolCall(call)}</span></summary><div className="diagnostics-detail-body"><div className="diagnostics-tool-section">
+        <span className="diagnostics-section-label">{t("message.toolInputs")}</span><pre className="diagnostics-payload">{formatDiagnosticPayload(call.inputs)}</pre></div>
+        <div className="diagnostics-tool-section"><span className="diagnostics-section-label">{t("message.toolOutputs")}</span><pre className="diagnostics-payload">
+        {formatDiagnosticPayload(call.outputs)}</pre></div>{Array.isArray(call.steps) && call.steps.length > 0 ? <div className="diagnostics-tool-section">
+        <span className="diagnostics-section-label">{t("message.toolReasoning")}</span><ol className="diagnostics-tool-reasoning">
+        {call.steps.map((s, j) => <li key={`${call.tool}-step-${j}`}>{`${s.step}: ${s.detail}`}</li>)}</ol></div> : null}</div></details></li>)}</ol>
+        </div> : null}{diagnosticsPayload ? <DiagnosticsHttpPanel providers={diagnosticsProviders} exchanges={diagnosticsHttp} t={t} /> : null}{reportIssueUrl ? <div
+        className="message-actions" data-testid="detected-failure-report">
+        <span>{t("message.detectedFailureReport")}</span><a href={reportIssueUrl} target="_blank" rel="noopener noreferrer">{reportLabel}</a></div> : null}</div></article>;
 }
