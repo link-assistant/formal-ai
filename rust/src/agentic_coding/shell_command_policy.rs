@@ -176,6 +176,30 @@ pub(super) fn governs_commands_rather_than_requesting_one(prompt: &str) -> bool 
     !sentences.is_empty() && sentences.iter().all(|sentence| states_a_command_policy(sentence))
 }
 
+/// The command text after a passthrough prefix, past an optional colon.
+///
+/// A leading code span is the command and the words after it are prose
+/// (``Run `node --test x.test.js` and tell me …``, PR #1188 G76); with no
+/// leading span, a remainder whose backticks do not pair is no command (the
+/// shell would read a command substitution), so `None` (mirrors
+/// `commandSpan`).
+pub(super) fn command_span(remainder: &str) -> Option<&str> {
+    let text = remainder
+        .strip_prefix(':')
+        .unwrap_or(remainder)
+        .trim_start();
+    let fence = &text[..text.len() - text.trim_start_matches('`').len()];
+    if !fence.is_empty()
+        && let Some(close) = text[fence.len()..].find(fence)
+    {
+        let inner = text[fence.len()..fence.len() + close].trim();
+        if !inner.is_empty() && !inner.contains('`') {
+            return Some(inner);
+        }
+    }
+    (text.matches('`').count() % 2 == 0).then_some(text)
+}
+
 pub(super) fn named_shell_command_in_sentence(
     prompt: &str,
     vocab: &TerminalCommandVocabulary,
@@ -211,11 +235,27 @@ pub(super) fn named_shell_command_in_sentence(
         }
     }
 
-    // Shape 2: a shell token mentioned anywhere, given run context — the token alone.
+    // Shape 2: a shell token named as a command -- written as code, or right
+    // after a seeded command noun (`run the command ls`) -- given run context,
+    // the token alone. A shell word elsewhere in the sentence is prose: `Create
+    // a Python test … and run it` names no `python` command (PR #1188 G25).
+    let named_as_command = |index: usize, word: &str| {
+        is_shell_token(word)
+            && (word.starts_with('`')
+                || index.checked_sub(1).is_some_and(|previous| {
+                    vocab
+                        .command_nouns
+                        .contains(&words[previous].to_ascii_lowercase())
+                }))
+    };
     if (has_verb || has_phrase)
-        && let Some(word) = words.iter().find(|w| is_shell_token(w)) {
-            return Some(normalize_command_word(word));
-        }
+        && let Some((_, word)) = words
+            .iter()
+            .enumerate()
+            .find(|(index, word)| named_as_command(*index, word))
+    {
+        return Some(normalize_command_word(word));
+    }
 
     None
 }

@@ -53,12 +53,26 @@ function seedProgram(task, language) {
   return realm()?.writeProgramTemplate?.(task, language) ?? null;
 }
 
+/**
+ * A catalog row with each command a captured documentation page states taken
+ * from that page (issue #1165 R1165-6): the catalog data leaves such a command
+ * out, as the Rust base rows leave it empty, and the worker realm derives it
+ * from the policy seed's `command_procedure` rows. Mirrors `fn program_languages`.
+ */
+function documentedLanguage(language) {
+  for (const command of realm()?.documentedLanguageCommands?.(language.slug, language.save_as) ?? []) {
+    if (command.role === 'check') language.execution.check_command = command.command;
+    else language.execution.run_command = command.command;
+  }
+  return language;
+}
+
 function catalog() {
   return cached('agentic-coding-catalog', () => {
     const parsed = parseLino(readText(CATALOG_FILE));
     const root = childrenNamed(parsed, 'coding_catalog')[0] ?? parsed;
     return {
-      languages: childrenNamed(root, 'language').map((node) => ({
+      languages: childrenNamed(root, 'language').map((node) => documentedLanguage({
         slug: node.value,
         name: childValue(node, 'name'),
         code_fence: childValue(node, 'code_fence'),

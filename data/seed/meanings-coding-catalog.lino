@@ -953,3 +953,54 @@ meanings
         text "copiar stdin a stdout"
       surface
         text "de stdin a stdout"
+  print_text
+    role program_task
+    defined-by print_stdout
+    defined-by program_task
+    precondition "a coding request asks its program to print a text it names"
+    effect "the program prints that text, the operand of the request, and nothing else"
+    unit "not applicable"
+    example "a program that prints hello"
+    lexeme en
+      surface
+        text "print a text"
+    lexeme ru
+      surface
+        text "напечатать текст"
+    lexeme hi
+      surface
+        text "टेक्स्ट छापना"
+    lexeme zh
+      surface
+        text 打印一段文本
+    lexeme es
+      surface
+        text "imprimir un texto"
+  program_task_print_text
+    defined-by program_task
+    role program_task_alias
+    precondition "a coding request asks its program to print a text it names"
+    effect "the program-task slot is bound to printing that text, the operand of the request"
+    unit "not applicable"
+    example "print text"
+    lexeme en
+      surface
+        text "print text"
+      surface
+        text "prints text"
+    lexeme ru
+      surface
+        text "печатает текст"
+      surface
+        text "выводит текст"
+    lexeme hi
+      surface
+        text "टेक्स्ट प्रिंट"
+    lexeme zh
+      surface
+        text 打印文本
+    lexeme es
+      surface
+        text "imprime texto"
+      surface
+        text "imprimir texto"

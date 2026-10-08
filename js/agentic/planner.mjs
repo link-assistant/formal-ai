@@ -18,6 +18,9 @@ import * as comparison from './comparison.mjs';
 import { programContractAnswer } from './crate/coding_program_contract.mjs';
 import { sourceTreeRequest as metaSourceTreeRequest } from './crate/meta_translate.mjs';
 import { handlerMatches } from './crate/rule_interpreter.mjs';
+import { quoteFault } from './crate/normal_markov.mjs';
+import * as testAssertion from './test_assertion.mjs';
+import * as requestSequence from './request_sequence.mjs';
 import { plannerPrecedence } from './crate/seed.mjs';
 import { looksLikeSkillDescription } from './crate/skill_compiler.mjs';
 import { computerUsePlanAgenticStep } from './crate/computer_use_planner.mjs';
@@ -91,7 +94,7 @@ export const PLANNER_ROUTE_ARMS = [
     'statement_audit', 'task_obligations', 'literal_write', 'algorithm_learning', 'procedure',
     'learning_report', 'code_artifact', 'self_heal', 'dreaming_audit', 'self_ast', 'source_links',
     'learning_ledger', 'explain', 'change_request', 'repair_strategy', 'rebuild_plan',
-    'google_trends_learning', 'google_trends_catalog', 'question_catalog', 'file_analysis', 'workspace_search',
+    'google_trends_learning', 'google_trends_catalog', 'question_catalog', 'file_analysis',
     'report_flow', 'conversation_recall', 'follow_up_answer', 'contextual_reference_clarification',
     'definition_followup', 'intent_edit', 'typed_file_read', 'local_search', 'comparison',
     'named_capability_table', 'shell_command', 'file_read', 'formalization_recipe', 'meaning_detail',
@@ -124,11 +127,31 @@ export function checkedRoutePrecedence() {
  * that is one of them.
  */
 async function planWorkspaceChangeArm(task, messages, toolNames) {
-  return (await workspaceChange.planWorkspaceChangeStep(task, messages, toolNames))
+  // A copy or move followed by edits of the file it makes is planned sentence
+  // by sentence (PR #1188 G82).
+  return (await requestSequence.planRequestSequenceStep(task, messages, toolNames, planChatStep))
+    ?? (await workspaceChange.planWorkspaceChangeStep(task, messages, toolNames))
     ?? (await moduleFunction.planModuleFunctionStep(task, messages, toolNames))
     // A bug report with a stated expectation is checked before anything is
     // rewritten (PR #1188 T93).
-    ?? functionExpectation.planFunctionExpectationStep(task, messages, toolNames);
+    ?? functionExpectation.planFunctionExpectationStep(task, messages, toolNames)
+    // An assertion of a stated call and value is added in the test file's own
+    // form, and the file is run (PR #1188 G13).
+    ?? testAssertion.planTestAssertionStep(task, messages, toolNames)
+    // A test asked for with no expected result is a question (PR #1188 G25).
+    ?? functionExpectation.planTestExpectationQuestion(task);
+}
+
+/**
+ * Mirrors `fn quote_fault_answer`: the seeded answer declining a request whose
+ * quotes do not pair (PR #1188 G71), or null.
+ * @param {string} task
+ */
+function quoteFaultAnswer(task) {
+  const fault = quoteFault(task);
+  if (fault === null) return null;
+  const answer = codeTask.renderSeededChange(`request_quote_${fault.kind}`, task, '', [['{fragment}', fault.fragment]]);
+  return answer === null ? null : finalAnswer(answer);
 }
 
 /**
@@ -200,7 +223,10 @@ async function planChatStepRoutes(messages, toolNames, received) {
     || looksLikeSkillDescription(positionalEdit.ownText(task))) {
     return null;
   }
-  const computerUse = computerUsePlanAgenticStep(messages, toolNames);
+  // The computer_use arm. Ahead of it, quotes that do not pair leave no
+  // telling the quoted text from the instruction, so the request is declined
+  // before any arm reads its payload as words to act on (PR #1188 G71).
+  const computerUse = quoteFaultAnswer(task) ?? computerUsePlanAgenticStep(messages, toolNames);
   if (computerUse !== null) return computerUse;
   if (hasAuthoritativeLiteralWrite(task) && capabilityRouter.workspaceCreationTool(toolNames) !== null) {
     const general = composeGeneralChangePlan(task);
@@ -283,11 +309,12 @@ export async function planSettledRoutes(task, messages, toolNames) {
   ]) {
     if (predicate(task)) return await step(messages, toolNames);
   }
+  // The file_analysis arm. After its typed read, where a name or literal is
+  // used inside the workspace is a content search (PR #1188 T90): grep it,
+  // ahead of the file-name locate arm and web search.
   const analysis = fileReadTaskFor(task);
-  if (analysis !== null && analysis.isAnalysis()) return await planFileReadStep(analysis, messages, toolNames);
-  // Where a name or literal is used inside the workspace is a content search
-  // (PR #1188 T90): grep it, ahead of the file-name locate arm and web search.
-  const search = workspaceSearch.planWorkspaceSearchStep(task, messages, toolNames)
+  const search = (analysis !== null && analysis.isAnalysis() ? await planFileReadStep(analysis, messages, toolNames) : null)
+    ?? workspaceSearch.planWorkspaceSearchStep(task, messages, toolNames)
     // What a named module exports is answered from its declarations (T99).
     ?? moduleExports.planModuleExportsStep(task, messages, toolNames)
     // A summary of a named file summarizes the file's text (T100).
@@ -369,7 +396,13 @@ async function planOpenRoutes(task, messages, toolNames) {
     const routed = await capabilityRouter.planRoutedCapabilityStep(task, messages, toolNames, capabilityRouter.RoutingStage.NamedOrLocal);
     if (routed !== null) return routed;
   }
-  if (positionalEdit.namesLocalEdit(task)) return null;
+  // An addition that quotes no text earns a question naming what is missing
+  // (PR #1188 G69); any other unplanned local edit is declined.
+  const unquoted = positionalEdit.unquotedAdditionPath(task);
+  if (unquoted !== null || positionalEdit.namesLocalEdit(task)) {
+    const question = unquoted === null ? null : codeTask.renderSeededChange('file_addition_unquoted', task, unquoted, []);
+    return question === null ? null : finalAnswer(question);
+  }
   const researchQuery = await webResearch.webResearchQueryFor(messages);
   if (researchQuery !== null) {
     const plan = await webResearch.planWebResearchStep(messages, toolNames, researchQuery, false);

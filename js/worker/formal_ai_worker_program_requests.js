@@ -43,7 +43,8 @@ function installSeedProgramTasks(raw) {
     const slug = childValue(record, "task");
     if (!record.name.startsWith("task_") || !slug) continue;
     const label = childValue(record, "label") || wordsForMeaning(`program_task_${slug}`)[0] || slug.split("_").join(" ");
-    WRITE_PROGRAM_TASKS[slug] = { label: label, output: childValue(record, "output") || "", input: childValue(record, "input") || "" };
+    WRITE_PROGRAM_TASKS[slug] = { label: label, output: childValue(record, "output") || "", input: childValue(record, "input") || "",
+      procedure: childValue(record, "procedure") || "" };
     installed.push(slug);
   }
   for (const record of records) {
@@ -127,4 +128,149 @@ function programTokenAccountedFor(token, accounted) {
     word = accounted.find((candidate) => containsCjk(candidate) && rest.includes(candidate));
   }
   return rest === "";
+}
+
+// Issue #1173 R1173-3: "a program that prints hello" names a catalog task whose
+// output is the request's own operand. Its seed row (`print_text`) stores no
+// program: it names the `procedure` it is composed from, and the program is
+// that procedure rediscovered from its documentation with the operand bound
+// into the output literal. Twins: rust/src/coding/operand_program.rs.
+
+/** A word with its edge punctuation removed, lowercased. Mirrors `bare_word`. */
+function programBareWord(word) {
+  return String(word).replace(/^[^\p{Alphabetic}\p{N}]+|[^\p{Alphabetic}\p{N}]+$/gu, "").toLowerCase();
+}
+
+/**
+ * The text a request asks its program to print: read around its first word
+ * that evidences the `print_stdout` meaning. After it, a quoted literal that
+ * opens right there, else the clause's words up to a seeded separator or a
+ * sentence end, a trailing implementation-language span set aside, when they
+ * are an utterance (programOperandUtterance). Before it (a verb-final request,
+ * "जो नमस्ते प्रिंट करे"), a quoted literal or a greeting that ends right there.
+ * Null when the request names no such text. Mirrors `program_task_operand`.
+ * @param {string} prompt
+ * @returns {string|null}
+ */
+function programTaskOperand(prompt) {
+  const print = findMeaning("print_stdout");
+  const words = String(prompt || "").split(/\s+/u).filter(Boolean);
+  const at = print ? words.findIndex((word) => meaningEvidencedIn(print, programBareWord(word))) : -1;
+  if (at < 0) return null;
+  const word = words[at];
+  const surface = containsCjk(word) ? print.words.find((candidate) => containsCjk(candidate) && word.includes(candidate)) : null;
+  const cut = surface ? word.indexOf(surface) : word.length;
+  const before = [...words.slice(0, at), surface ? word.slice(0, cut) : ""].join(" ").trim();
+  const after = [surface ? word.slice(cut + surface.length) : "", ...words.slice(at + 1)].join(" ").trim();
+  return programOperandAfter(after) ?? programOperandBefore(before);
+}
+
+/** A quoted literal is an operand when it is one non-empty line. */
+function programOperandLiteral(text) {
+  return text && !text.includes("\n") ? text : null;
+}
+
+/**
+ * The operand that opens `after`, the text after the print word. Mirrors
+ * `operand_after`.
+ */
+function programOperandAfter(after) {
+  const quoted = quotedTextSpans(after)[0];
+  // A second literal in the same sentence ("prints 'a' and 'b'") leaves the operand open.
+  const sentence = quoted ? after.slice(quoted.end).split(/[\n.;\u3002]/u)[0] : "";
+  if (quoted && quoted.start === 0) return quotedTextSpans(sentence).length === 0 ? programOperandLiteral(quoted.text) : null;
+  const greetings = wordsForRole("social_greeting").slice().sort((left, right) => right.length - left.length);
+  if (containsCjk(after.slice(0, 1))) return greetings.find((greeting) => containsCjk(greeting) && after.startsWith(greeting)) ?? null;
+  const separators = wordsForRole("skill_procedure_clause_separator");
+  const tokens = [];
+  for (const word of after.split(/\s+/u).filter(Boolean)) {
+    if (separators.includes(programBareWord(word))) break;
+    tokens.push(word);
+    if (/[.!?;:。！？।]$/u.test(word)) break;
+  }
+  const span = ["implementation_language_preposition", "implementation_language_noun", "program_language_alias"].flatMap(wordsForRole);
+  while (tokens.length > 1 && span.includes(programBareWord(tokens[tokens.length - 1]))) tokens.pop();
+  return programOperandUtterance(tokens.join(" "), greetings);
+}
+
+/**
+ * The operand that ends `before`, the text before a verb-final print word.
+ * Mirrors `operand_before`.
+ */
+function programOperandBefore(before) {
+  const spans = quotedTextSpans(before);
+  const last = spans[spans.length - 1];
+  if (last && last.end === before.length) return programOperandLiteral(last.text);
+  const tokens = before.split(/\s+/u).filter(Boolean);
+  for (const greeting of wordsForRole("social_greeting").slice().sort((left, right) => right.length - left.length)) {
+    if (containsCjk(greeting)) {
+      if (before.endsWith(greeting)) return greeting;
+      continue;
+    }
+    const size = greeting.split(" ").length;
+    const tail = tokens.slice(-size);
+    if (tail.length === size && tail.map(programBareWord).join(" ") === greeting) return tail.join(" ").replace(/^[^\p{Alphabetic}\p{N}]+|[^\p{Alphabetic}\p{N}]+$/gu, "");
+  }
+  return null;
+}
+
+/**
+ * Whether `words` are an utterance to print rather than a description of a
+ * value: an unquoted utterance (it opens with a capital and no word describes
+ * a value, as `unquoted_utterance` reads a work obligation's output), else a
+ * seeded greeting (`social_greeting`). Mirrors `operand_utterance`.
+ */
+function programOperandUtterance(words, greetings) {
+  const output = words.replace(/[.,;:。।]+$/u, "");
+  const lower = normalizePrompt(output.toLowerCase());
+  const functionWords = wordsForRole("statement_function_word");
+  const describes = output.split(/\s+/u).some((word) => functionWords.includes(programBareWord(word)))
+    || lexiconMentionsRole("coding_structure", lower)
+    || (lexiconMentionsRole("program_task_alias", lower) && !lexiconMentionsRole("social_greeting", lower));
+  if (/^\p{Uppercase}/u.test(output) && !describes) return output;
+  const bare = output.replace(/^[^\p{Alphabetic}\p{N}]+|[^\p{Alphabetic}\p{N}]+$/gu, "");
+  return bare && greetings.includes(bare.toLowerCase()) ? bare : null;
+}
+
+/**
+ * The catalog task a request names through its operand: the first task whose
+ * seed row names a `procedure`, when the request names text to print. Mirrors
+ * `operand_task`.
+ * @param {string} prompt
+ * @returns {string|null}
+ */
+function operandProgramTask(prompt) {
+  if (programTaskOperand(prompt) === null) return null;
+  return Object.keys(WRITE_PROGRAM_TASKS).find((slug) => WRITE_PROGRAM_TASKS[slug].procedure) || null;
+}
+
+/**
+ * The write_program parameters of the request being answered: a request that
+ * names no catalogued task but text to print names the operand task, unless
+ * the minimal-script route answers it (writeScriptLanguage). Mirrors the
+ * operand arm of `requested_write_program_parameters`.
+ * @param {string} prompt
+ * @returns {object|null}
+ */
+function requestedWriteProgramParameters(prompt) {
+  const detected = writeProgramParameters(prompt);
+  if (!detected || detected.task || writeScriptLanguage(prompt, normalizePrompt(prompt))) return detected;
+  const task = operandProgramTask(prompt);
+  return task ? { ...detected, task: task } : detected;
+}
+
+/**
+ * The program for an operand task: its seed row's `procedure` rediscovered
+ * from the documentation captures with the operand bound into the output
+ * literal (rediscoverDocumentedProgram), or null when the task takes no
+ * operand or no captured page verifies a program. Mirrors `operand_program`.
+ * @param {string} task
+ * @param {string} language
+ * @param {string|null} operand
+ */
+function operandProgram(task, language, operand) {
+  const taskInfo = task && typeof WRITE_PROGRAM_TASKS === "object" ? WRITE_PROGRAM_TASKS[task] : null;
+  if (!taskInfo || !taskInfo.procedure || operand === null || !WRITE_PROGRAM_LANGUAGES[language]) return null;
+  const documented = rediscoverDocumentedProgram(taskInfo.procedure, language, operand);
+  return documented.recipe ? documented : null;
 }

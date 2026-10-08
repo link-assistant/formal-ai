@@ -55,6 +55,9 @@ use crate::translation::{
     select_formalization_candidate_with_policy,
 };
 
+mod conversation;
+pub use conversation::{ConversationRole, ConversationTurn};
+
 /// Runtime configuration for the universal solver.
 ///
 /// These knobs control the universal loop's tradeoffs and let the same engine
@@ -191,57 +194,6 @@ impl SolverConfig {
     #[must_use]
     pub fn from_env() -> Self {
         crate::solver_helpers::config_from_env()
-    }
-}
-
-/// Speaker role for [`ConversationTurn`]. The solver only inspects user
-/// turns when recalling prior context; assistant turns are kept in the log
-/// so the trace stays balanced.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum ConversationRole {
-    User,
-    Assistant,
-}
-
-impl ConversationRole {
-    /// Lowercase slug used in `prior_turn:<role>` event kinds.
-    #[must_use]
-    pub const fn slug(self) -> &'static str {
-        match self {
-            Self::User => "user",
-            Self::Assistant => "assistant",
-        }
-    }
-}
-
-/// A single message in a multi-turn conversation.
-///
-/// The solver records every turn as a `prior_turn:<role>` event before
-/// processing the current impulse so memory recall is grounded in the
-/// append-only log, not in implicit state.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct ConversationTurn {
-    pub role: ConversationRole,
-    pub content: String,
-}
-
-impl ConversationTurn {
-    /// Construct a user turn.
-    #[must_use]
-    pub fn user(content: impl Into<String>) -> Self {
-        Self {
-            role: ConversationRole::User,
-            content: content.into(),
-        }
-    }
-
-    /// Construct an assistant turn.
-    #[must_use]
-    pub fn assistant(content: impl Into<String>) -> Self {
-        Self {
-            role: ConversationRole::Assistant,
-            content: content.into(),
-        }
     }
 }
 
@@ -528,11 +480,27 @@ impl UniversalSolver {
             // Issue #340 + #412: rescue an `UnsupportedWriteProgram` request via the
             // composite blueprint, then the cached coding oracle (uncatalogued
             // languages), so "write a hello world program in Kotlin" returns code.
-            if let SelectedRule::UnsupportedWriteProgram { task, language } = &rule {
+            if let SelectedRule::UnsupportedWriteProgram {
+                task,
+                language: program_language,
+            } = &rule
+            {
+                // Issue #1173 R1173-3: a task whose output is the request's
+                // operand composes its program from the procedure its seed row
+                // names, before any other rescue.
+                if let Some(answer) = crate::coding::operand_program::try_write_operand_program(
+                    prompt,
+                    task.as_deref(),
+                    program_language.as_deref(),
+                    language,
+                    &mut log,
+                ) {
+                    return answer;
+                }
                 if let Some(answer) = try_unsupported_write_program(
                     prompt,
                     task.as_deref(),
-                    language.as_deref(),
+                    program_language.as_deref(),
                     self.config.blueprint_composition,
                     &mut log,
                 ) {
@@ -546,10 +514,14 @@ impl UniversalSolver {
                 // Issue #906: a request that named no implementation language never
                 // reached a route, so it is logged under its own event rather than
                 // as a gap in what we can synthesize.
-                let shape = crate::program_skill_gap::shape(task.as_deref(), language.as_deref());
+                let shape =
+                    crate::program_skill_gap::shape(task.as_deref(), program_language.as_deref());
                 log.append(
                     shape.event(),
-                    crate::program_skill_gap::gap_name(task.as_deref(), language.as_deref()),
+                    crate::program_skill_gap::gap_name(
+                        task.as_deref(),
+                        program_language.as_deref(),
+                    ),
                 );
             }
 

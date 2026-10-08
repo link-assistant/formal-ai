@@ -11,6 +11,12 @@
 //! asserted `ExecutionStatus::Verified` could not be wrong about its
 //! environment because it never looked, and could not become right, because
 //! becoming right would have been a source edit.
+//!
+//! Issue #1165 R1165-6: **no row states a command its documentation states.**
+//! A check or run command that a captured documentation page states is left
+//! empty here and taken from that page by [`super::program_languages`], as the
+//! policy seed's `command_procedure` rows name it; every other command stays
+//! the row's own until a captured page states it.
 
 use std::borrow::Cow;
 
@@ -23,7 +29,7 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         code_fence: "rust",
         execution: ProgramExecution {
             check_command: Some(Cow::Borrowed("rustc main.rs -o main")),
-            run_command: Cow::Borrowed("./main"),
+            run_command: Cow::Borrowed(""), // from its page: command_procedure, R1165-6
             notes: "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed.",
         },
         source: "local Links Notation write-program seed",
@@ -63,7 +69,7 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         name: "TypeScript",
         code_fence: "typescript",
         execution: ProgramExecution {
-            check_command: Some(Cow::Borrowed("tsc hello.ts")),
+            check_command: None, // from its page: command_procedure, R1165-6
             run_command: Cow::Borrowed("node hello.js"),
             notes: "The TypeScript seed is returned with this warning until a tsc-backed execution profile is available.",
         },
@@ -115,8 +121,9 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         name: "Java",
         code_fence: "java",
         execution: ProgramExecution {
-            check_command: Some(Cow::Borrowed("javac Main.java")),
-            run_command: Cow::Borrowed("java Main"),
+            // Both commands come from its page: command_procedure, R1165-6.
+            check_command: None,
+            run_command: Cow::Borrowed(""),
             notes: "The Java seed is returned with this warning until a javac-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",
@@ -167,10 +174,9 @@ pub const PROGRAM_LANGUAGES: &[ProgramLanguage] = &[
         name: "Kotlin",
         code_fence: "kotlin",
         execution: ProgramExecution {
-            check_command: Some(Cow::Borrowed(
-                "kotlinc Main.kt -include-runtime -d Main.jar",
-            )),
-            run_command: Cow::Borrowed("java -jar Main.jar"),
+            // Both commands come from its page: command_procedure, R1165-6.
+            check_command: None,
+            run_command: Cow::Borrowed(""),
             notes: "The Kotlin seed is returned with this warning until a kotlinc-backed execution profile is available.",
         },
         source: "local Links Notation write-program seed",

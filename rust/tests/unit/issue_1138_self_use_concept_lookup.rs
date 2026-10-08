@@ -26,9 +26,10 @@ use formal_ai::solver::solve;
 /// The wave F corpus this file reads its prompts back from.
 const CORPUS: &str = "data/benchmarks/self-use-concept-lookup.lino";
 
-/// The seed file whose per-language rows decide which languages a surface can
-/// actually answer in.
-const RESPONSES_SEED: &str = "data/seed/multilingual-responses.lino";
+/// The seed files whose per-language rows decide which languages a surface can
+/// actually answer in: every `multilingual-responses*.lino`, so moving an
+/// intent between them can never hide its debt.
+const RESPONSES_SEED: &str = "data/seed/multilingual-responses*.lino";
 
 /// Explicit, strictly bounded response-template debt. Lexeme parity has its own
 /// structural gate because response templates and lexemes are different data
@@ -107,11 +108,33 @@ fn family(id: &str) -> Vec<Case> {
 
 /// Every `(intent, language)` pair the multilingual response seed declares.
 fn seeded_response_languages() -> BTreeMap<String, BTreeSet<String>> {
-    let path = repo_root().join(RESPONSES_SEED);
-    let text = fs::read_to_string(&path)
-        .unwrap_or_else(|error| panic!("{RESPONSES_SEED} should be readable: {error}"));
+    let (directory, pattern) = RESPONSES_SEED
+        .rsplit_once('/')
+        .expect("the response seed pattern names a directory");
+    let (prefix, suffix) = pattern
+        .split_once('*')
+        .expect("the response seed pattern has one wildcard");
+    let mut paths: Vec<_> = fs::read_dir(repo_root().join(directory))
+        .unwrap_or_else(|error| panic!("{directory} should be readable: {error}"))
+        .map(|entry| entry.expect("seed entries are readable").path())
+        .filter(|path| {
+            path.file_name()
+                .and_then(|name| name.to_str())
+                .is_some_and(|name| name.starts_with(prefix) && name.ends_with(suffix))
+        })
+        .collect();
+    paths.sort();
 
     let mut out: BTreeMap<String, BTreeSet<String>> = BTreeMap::new();
+    for path in paths {
+        let text = fs::read_to_string(&path)
+            .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.display()));
+        collect_response_languages(&text, &mut out);
+    }
+    out
+}
+
+fn collect_response_languages(text: &str, out: &mut BTreeMap<String, BTreeSet<String>>) {
     let mut intent = String::new();
     for line in text.lines() {
         let trimmed = line.trim();
@@ -125,7 +148,6 @@ fn seeded_response_languages() -> BTreeMap<String, BTreeSet<String>> {
                 .insert(unquote(value));
         }
     }
-    out
 }
 
 #[derive(Debug)]
@@ -373,7 +395,13 @@ fn every_seeded_response_intent_serves_all_five_languages_or_has_exact_debt() {
     );
 
     let mut gaps = BTreeMap::new();
-    for (intent, languages) in &seeded {
+    // An intent with no target-language row at all is a code template
+    // (`language rust`), not a reply to a person, so it owes no translation.
+    for (intent, languages) in seeded.iter().filter(|(_, languages)| {
+        LANGUAGES
+            .iter()
+            .any(|language| languages.contains(*language))
+    }) {
         let missing: BTreeSet<String> = LANGUAGES
             .iter()
             .map(|language| (*language).to_owned())

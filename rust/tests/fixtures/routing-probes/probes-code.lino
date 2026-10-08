@@ -333,19 +333,16 @@ routing_probes
     language en
     intent write_program
     prompt "Write a Python function that returns the factorial of n"
-    rust_misroute write_program_skill_gap
   probe p224
     lane program_synthesis
     language hi
     intent write_program
     prompt "Python में एक फ़ंक्शन लिखो जो n का फ़ैक्टोरियल लौटाए"
-    rust_misroute write_program_skill_gap
   probe p225
     lane program_synthesis
     language ru
     intent write_program
     prompt "Напиши функцию на Python, которая возвращает факториал n"
-    rust_misroute write_program_skill_gap
   probe p231
     lane regex_synthesis
     language en
@@ -655,8 +652,6 @@ routing_probes
     language en
     intent write_program
     prompt "Write a program in Rust that prints hello"
-    js_misroute write_program_skill_gap
-    rust_misroute write_program_skill_gap
   probe p353
     lane write_program
     language hi
@@ -672,8 +667,6 @@ routing_probes
     language ru
     intent write_program
     prompt "Напиши программу на Python, которая печатает привет"
-    js_misroute write_program_skill_gap
-    rust_misroute write_program_skill_gap
   probe p356
     lane write_program
     language zh

@@ -1,0 +1,299 @@
+# The owner's requirements for pull request #1188 and the rows that cover them.
+# `node experiments/formal_ai_subagent/requirement-coverage.mjs --write` renders
+# docs/case-studies/pull-request-1188/requirement-coverage.md from this file,
+# the requirement shards and the generated status ledger; `--check` compares.
+# The requirements of the issues the pull request fixes are not listed here:
+# the script reads them from each issue's shard (R<issue>-<n> is item R<n>).
+# The matching of a requirement to its rows is judgement; the status is computed.
+
+pull-request 1188
+  fixes 1161 1172 1173 1174 1175 1176 1177 1181
+
+source goal-is-meta-algorithm "docs/architect-notes/2026-09-11-the-goal-is-the-meta-algorithm.md"
+source lino-and-source "docs/architect-notes/2026-09-11-lino-and-src-one-to-one.md"
+source hello-world "docs/architect-notes/2026-09-11-start-from-hello-world.md"
+source do-not-obstruct "docs/architect-notes/2026-09-11-do-not-obstruct-the-vision.md"
+source notes-and-vision "docs/architect-notes/2026-09-12-notes-are-notes-vision-is-vision.md"
+source nothing-is-hard "docs/architect-notes/2026-09-12-nothing-is-a-hard-task.md"
+source know-how "docs/architect-notes/2026-09-14-know-how-to-get-to-know-anything.md"
+source three-roots "docs/architect-notes/2026-09-24-three-roots-full-parity-via-the-meta-language.md"
+source deliver-in-code "docs/architect-notes/2026-09-25-deliver-the-requirements-in-code.md"
+source javascript-first "docs/architect-notes/2026-10-06-javascript-first-full-parity.md"
+source recursive-meta "docs/architect-notes/2026-10-06-recursive-meta-algorithm.md"
+source september-messages "experiments/issue_1138_feedback_recovery/recovered-2026-09-25.md"
+source october-messages "experiments/issue_1138_feedback_recovery/recovered-2026-10-07.md"
+source delegation-doctrine "docs/requirements/doctrine-standing-doctrine-work-delegated-to-formal-ai-2026-10-07.md"
+source latest-vision "experiments/formal_ai_subagent/preamble.md"
+source subagent-gaps "experiments/formal_ai_subagent/gaps.md"
+
+requirement generalize-not-specialize
+  group architecture
+  text "Generalize, don't specialize: no solution is hardcoded for a test; a fix is the smallest universal rule covering the class, and specific tests pass through it."
+  source september-messages "2026-09-15"
+  source october-messages "2026-10-06 20:18"
+  source latest-vision "2026-10-08"
+  rows R1017 R1005 R1010 R914-13 R1188-U1
+
+requirement discover-from-trusted-sources
+  group architecture
+  text "Know how to get to know anything when it is needed: dynamic discovery from trusted sources, recursive formalization, no knowledge assumed in advance."
+  source know-how "2026-09-14"
+  source september-messages "2026-09-15"
+  rows R914-8 R1001 R1002
+
+requirement recursive-meta-algorithm
+  group architecture
+  text "A truly recursive meta algorithm: every word is an unknown to discover, the goal state is planned and the difference to it reduced, with transparent reasoning traces."
+  source recursive-meta "2026-10-06"
+  source october-messages "2026-10-06 15:07"
+  rows R1001 R1002 R1003 R1004 R1006 R1008
+
+requirement less-hardcoded-logic
+  group architecture
+  text "Reduce hardcoded logic: vocabulary and templates live in seed data, and the natural-language literal count in code only falls."
+  source recursive-meta "2026-10-06"
+  rows R1005 R1010
+
+requirement critical-blockers-first
+  group architecture
+  text "Attack first the critical blockers that keep the system from coding in general, so it can code itself as soon as possible."
+  source october-messages "2026-10-06 15:15"
+  rows R1011 R914-14
+
+requirement meta-language-basis
+  group architecture
+  text "The meta language is the basis for coding: the code is translatable through it into any language, with a function and a script for translation in any direction."
+  source goal-is-meta-algorithm "2026-09-11"
+  source three-roots "2026-09-24"
+  rows R993 R992 R1024
+
+requirement no-kernel
+  group architecture
+  text "Rust is not a shrinking kernel; no kernel terminology in requirements, CI names or documents."
+  source goal-is-meta-algorithm "2026-09-11"
+  rows R1085-1 R995
+
+requirement lino-and-source-one-to-one
+  group architecture
+  text "The .lino representation and the source are one to one and lossless on every merge."
+  source lino-and-source "2026-09-11"
+  rows R480 R482 R1188-U3
+
+requirement nothing-is-hard
+  group architecture
+  text "Nothing is a hard task: a big task is split in halves recursively until each leaf is simple."
+  source nothing-is-hard "2026-09-12"
+  rows R847-1 R847-4 R703-3
+
+requirement hello-world-first
+  group architecture
+  text "Start from a working Hello World in the top 10 to 20 languages, discovered rather than memorized, tested through Hive Mind on isolated branches."
+  source hello-world "2026-09-11"
+  rows R1165-1 R1165-8 R1187-4
+
+requirement code-architecture-principles
+  group architecture
+  text "Code follows link-foundation/code-architecture-principles."
+  source latest-vision "2026-10-08"
+  rows R1188-U2
+
+requirement full-english-names
+  group naming
+  text "Names are full English words, without abbreviations, in code and in owned links notation."
+  source latest-vision "2026-10-08"
+  rows R1188-U4
+
+requirement meaningful-file-names
+  group naming
+  text "File and directory names say what they hold; no numbered parts where a meaningful category exists."
+  source latest-vision "2026-10-08"
+  rows R1188-U5
+
+requirement dash-in-notation
+  group notation
+  text "Owned links notation prefers - over _ in names."
+  source latest-vision "2026-10-08"
+  rows R1188-U6
+
+requirement deduplicated-notation
+  group notation
+  text "Owned links notation is human readable and deduplicated: shared structure is stated once and referenced."
+  source latest-vision "2026-10-08"
+  rows R1188-U7
+
+requirement automation-by-rules
+  group notation
+  text "Bulk changes are automated as rules (substitution passes, generators with --check), not hand edits."
+  source latest-vision "2026-10-08"
+  rows R1188-U8
+
+requirement files-at-most-1500-lines
+  group architecture
+  text "No data or source file is larger than 1500 lines."
+  source october-messages "2026-10-06 18:53"
+  rows R1016
+
+requirement ci-step-duration
+  group ci-speed
+  text "No CI job or step runs longer than 15 to 30 minutes; the root cause of the longest runs is fixed."
+  source latest-vision "2026-10-08"
+  rows R1085-16 R1017-1 R1188-U9
+
+requirement ci-long-first
+  group ci-speed
+  text "Long-running jobs and tests start first."
+  source latest-vision "2026-10-08"
+  rows R1188-U10
+
+requirement ci-parallel
+  group ci-speed
+  text "CI runs in parallel at job level and at test level."
+  source latest-vision "2026-10-08"
+  rows R1188-U11
+
+requirement ci-speed-gate
+  group ci-speed
+  text "The CI speed rules are enforced automatically by a gate."
+  source latest-vision "2026-10-08"
+  rows R1188-U12
+
+requirement ci-path-filtered
+  group ci-speed
+  text "CI runs only the parts a change affects: js, then ts, then rust, each only when its root changed."
+  source september-messages "2026-09-20 17:48"
+  rows R994
+
+requirement ci-no-false-results
+  group ci-speed
+  text "No errors, warnings, false positives or false negatives land in CI checks, and all CI passes, pre-existing failures included, so a merge always produces a release."
+  source september-messages "2026-09-20 17:34, 2026-09-24 02:00"
+  rows R1017-1 R1017-11 R1022
+
+requirement delegate-each-step
+  group formal-ai-delegation
+  text "Delegate development work to Formal AI, ideally each small step; a task it fails is fixed by a general mechanism, never a handler for that request."
+  source october-messages "2026-10-06 20:18"
+  source delegation-doctrine "2026-10-07"
+  rows R1017 R1009 R1188-U13
+
+requirement formal-ai-on-each-pull-request
+  group formal-ai-delegation
+  text "Each pull request uses Formal AI to code part of itself, and small tasks reach it through issues and bot branches; this must not block releases."
+  source do-not-obstruct "2026-09-11"
+  rows R924-1 R1085-8
+
+requirement experiments-folder
+  group formal-ai-delegation
+  text "What the coding agents keep (probes, gaps, task prompts, claims, sandboxes) lives in experiments/, so Formal AI can work as a subagent on its own requirements."
+  source delegation-doctrine "2026-10-08"
+  rows R1026
+
+requirement vision-and-docs-in-sync
+  group docs-sync
+  text "Docs and vision are kept in sync: VISION.md takes in the latest notes, architect notes are listed chronologically, and no document contradicts the latest vision."
+  source notes-and-vision "2026-09-12"
+  source september-messages "2026-09-15 22:39"
+  source latest-vision "2026-10-08"
+  rows R914-3 R250 R1188-U14
+
+requirement compile-owner-messages
+  group docs-sync
+  text "All the owner's messages are compiled into one regenerable file, and every requirement in them is delivered in code, not kept as memories."
+  source deliver-in-code "2026-09-24"
+  source september-messages "2026-09-23 07:54"
+  rows R1188-U15
+
+requirement guidelines-in-repository
+  group docs-sync
+  text "The working practices (bulk drafting, selective tests, commit at least every four hours) are written in the contributing guidelines."
+  source september-messages "2026-09-19 16:35, 2026-09-20 17:33"
+  rows R1018 R1020 R1022
+
+requirement requirement-status-current
+  group docs-sync
+  text "The requirement status in the repository is kept current while the pull request is worked on."
+  source october-messages "2026-10-06 20:08"
+  rows R1021
+
+requirement javascript-first
+  group javascript-first-parity
+  text "JavaScript first with full feature parity, then automated translation into Rust."
+  source javascript-first "2026-10-06"
+  rows R997 R998 R999 R1000
+
+requirement javascript-server-parity
+  group javascript-first-parity
+  text "JavaScript implements the server as well as the client, with parity to the Rust server guaranteed by CI."
+  source october-messages "2026-10-06 18:55"
+  rows R1013 R1014 R1015
+
+requirement three-roots-parity
+  group javascript-first-parity
+  text "Full parity between Rust, JavaScript and TypeScript, client and backend, reported honestly."
+  source three-roots "2026-09-24"
+  rows R992 R996
+
+requirement planner-javascript-first
+  group javascript-first-parity
+  text "The agentic planner lands in JavaScript first and its Rust twin follows with the same behaviour."
+  source latest-vision "2026-10-08"
+  rows R1188-U16
+
+requirement translation-pipeline
+  group translation
+  text "js -> ts runs without a Rust build, js -> rust runs through meta-language, and the translated count never falls."
+  source javascript-first "2026-10-06"
+  rows R1000 R1012 R993
+
+requirement adopt-meta-language-practices
+  group translation
+  text "Adopt the conversion practices of link-foundation/meta-language and relative-meta-logic."
+  source october-messages "2026-10-06 13:17"
+  rows R1024
+
+requirement agent-never-destructive
+  group safety
+  text "Formal AI as a coding agent never takes an action it was not asked for: quoted payloads are data, unpaired quotes decline, edits never become whole-file writes."
+  source subagent-gaps "2026-10-07 to 2026-10-08"
+  rows R1188-U17
+
+requirement workstation-resources
+  group safety
+  text "Use the workstation carefully: one test at a time, two or three subagents, mind disk, RAM and CPU, and never kill processes another agent started."
+  source october-messages "2026-10-06 20:32, 21:19"
+  rows R1018 R1019
+
+requirement no-local-rust-build
+  group safety
+  text "Rust is never built locally; pushing triggers the build and CI verifies it."
+  source october-messages "2026-10-06 13:17"
+  rows R1020
+
+requirement bulk-drafting
+  group process
+  text "Draft every planned change in bulk, tests and code, before relying on CI; never idle-wait while CI runs."
+  source september-messages "2026-09-18 10:11, 2026-09-20 14:39"
+  source october-messages "2026-10-06 17:01"
+  rows R1022 R1020
+
+requirement decide-without-asking
+  group process
+  text "Decide open technical choices from the best available practices instead of asking the owner."
+  source october-messages "2026-10-06 18:54"
+  rows R1023
+
+requirement best-practice-comparison
+  group process
+  text "Check the meta algorithm against current best practices and record the comparison."
+  source october-messages "2026-10-06 15:07"
+  rows R1025
+
+requirement upstream-dependencies
+  group process
+  text "Report general defects to our own dependencies, and track each patched source install by one issue per dependency."
+  source september-messages "2026-09-20 18:02"
+  rows R1021-26
+
+reviewed R1016 "js/styles.css is named as the stylesheet that was split into js/styles/, not as evidence"
+reviewed R1161-6 "the regression test lives in link-assistant/hive-mind, not in this repository; this repository's side is pinned by rust/tests/web/issue-1161-host-contract.test.mjs"
+reviewed R1172-9 "fact_lotr_author is named as a seed record that was deleted, not as evidence"

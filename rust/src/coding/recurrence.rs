@@ -5,6 +5,8 @@
 //! language-neutral operations. This lets the same algorithm formalize new
 //! recurrence families without adding source-object IDs or benchmark prompts.
 
+pub mod cache;
+
 use std::collections::BTreeMap;
 use std::fmt::Write as _;
 

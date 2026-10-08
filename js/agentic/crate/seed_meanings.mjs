@@ -13,7 +13,7 @@ import { cached, parseLino, readText } from '../host.mjs';
 /** `MEANING_FILES` in rust/src/seed/embedded_registry.rs, in order. */
 const MEANING_FILES = [
   'learned-request-openers', 'meanings', 'meanings-acts', 'meanings-agent-actions',
-  'meanings-behavior-rules', 'meanings-calculator', 'meanings-calendar', 'meanings-coding-catalog',
+  'meanings-behavior-rules', 'meanings-calculator', 'meanings-calendar', 'meanings-coding-assertions', 'meanings-coding-catalog',
   'meanings-coding-config', 'meanings-coding-request', 'meanings-coding-structure',
   'meanings-coding-structure-2', 'meanings-coding-tasks', 'meanings-computer-use',
   'meanings-concept-lookup', 'meanings-conversation', 'meanings-creative-tasks',

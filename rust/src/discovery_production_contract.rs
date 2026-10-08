@@ -421,3 +421,124 @@ pub fn documented_oracle_program(task: &str, language: &str) -> Option<Documente
     )
     .ok()
 }
+
+/// One command a catalog row takes from a captured documentation page
+/// (R1165-6), as a `command` row of the policy seed's `command_procedure`
+/// record names it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct CommandProcedure {
+    /// The catalog language slug.
+    pub language: String,
+    /// `check` or `run`.
+    pub role: String,
+    /// The captured page whose line states the command.
+    pub page: String,
+    /// The first word of that line.
+    pub command_verb: String,
+}
+
+/// Every `command` row of the policy seed's `command_procedure` record, in
+/// seed order.
+#[must_use]
+pub fn command_procedures() -> Vec<CommandProcedure> {
+    let policy = parse_lino(POLICY);
+    policy
+        .children
+        .first()
+        .and_then(|root| {
+            root.children
+                .iter()
+                .find(|node| node.name == "command_procedure")
+        })
+        .map(|record| {
+            record
+                .children
+                .iter()
+                .filter(|row| row.name == "command")
+                .map(|row| CommandProcedure {
+                    language: row.find_child_value("language").to_owned(),
+                    role: row.find_child_value("role").to_owned(),
+                    page: row.find_child_value("page").to_owned(),
+                    command_verb: row.find_child_value("command_verb").to_owned(),
+                })
+                .collect()
+        })
+        .unwrap_or_default()
+}
+
+/// `word` with the documented file name `from` bound to `to`, when the word
+/// is that name or that name followed by a dot (`hello.jar` is `Main.jar`).
+fn bind_documented_name(word: &str, from: &str, to: &str) -> String {
+    if from.is_empty() || from == to {
+        return word.to_owned();
+    }
+    if word == from {
+        return to.to_owned();
+    }
+    word.strip_prefix(from)
+        .filter(|rest| rest.starts_with('.'))
+        .map_or_else(|| word.to_owned(), |rest| format!("{to}{rest}"))
+}
+
+/// The check and run commands a captured page states for a catalog row
+/// (R1165-6), each with the page as its source.
+///
+/// Each of the language's `command_procedure` rows takes the first line of
+/// its page's code blocks, the shell prompt removed, whose first word is the
+/// row's `command_verb`. The name the page gives its source file, the stem of the
+/// first word across those lines that ends with the extension of `save_as`
+/// (`hello.kt` for `Main.kt`), is bound to the stem of `save_as` in every
+/// word that is that name or that name followed by a dot: kotlinlang's
+/// `kotlinc hello.kt -include-runtime -d hello.jar` is `kotlinc Main.kt
+/// -include-runtime -d Main.jar`. A row whose page states no such line
+/// yields nothing, and the catalog row keeps its own command. The
+/// JavaScript twin is `documentedLanguageCommands` in
+/// `js/worker/formal_ai_worker_documented_commands.js`.
+#[must_use]
+pub fn documented_language_commands(language: &str, save_as: &str) -> Vec<SourcedCommand> {
+    let captures = all_documentation_captures();
+    let stated: Vec<(&'static str, String, String)> = command_procedures()
+        .into_iter()
+        .filter(|row| row.language == language)
+        .filter_map(|row| {
+            let role = match row.role.as_str() {
+                "check" => "check",
+                "run" => "run",
+                _ => return None,
+            };
+            let page: Vec<DocumentationCapture> = captures
+                .iter()
+                .filter(|capture| capture.language == language && capture.url == row.page)
+                .cloned()
+                .collect();
+            documentation_command_lines(&page)
+                .into_iter()
+                .find(|(line, _)| line.split_whitespace().next() == Some(row.command_verb.as_str()))
+                .map(|(line, url)| (role, line, url))
+        })
+        .collect();
+    let file = save_as.rsplit('/').next().unwrap_or_default();
+    let extension = file.rfind('.').map_or("", |dot| &file[dot..]);
+    let documented = stated
+        .iter()
+        .flat_map(|(_, line, _)| line.split_whitespace())
+        .find_map(|word| {
+            word.strip_suffix(extension)
+                .filter(|stem| !extension.is_empty() && !stem.is_empty())
+        })
+        .unwrap_or_default()
+        .to_owned();
+    let stem = file_stem(save_as);
+    stated
+        .into_iter()
+        .map(|(role, line, url)| SourcedCommand {
+            role,
+            command: line
+                .split_whitespace()
+                .map(|word| bind_documented_name(word, &documented, stem))
+                .collect::<Vec<_>>()
+                .join(" "),
+            source: url,
+        })
+        .collect()
+}

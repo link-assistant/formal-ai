@@ -11,6 +11,11 @@
 //   node experiments/formal_ai_subagent/probe.mjs path "<request>"
 //   node experiments/formal_ai_subagent/probe.mjs quotes "<request>"
 //   node experiments/formal_ai_subagent/probe.mjs read-parse <file> <dir> <relative-path>
+//   node experiments/formal_ai_subagent/probe.mjs solve "<prompt>" ["<prompt>" ...]
+//
+// `solve` answers each prompt through the browser worker, as the routing
+// probes (rust/tests/web/r1175-routing-probes.test.mjs) do, and prints the
+// intent and the answer.
 //
 // `plan` defaults to the link-assistant Agent CLI tool list the dogfood
 // driver advertises; pass --tools to try a reduced list.
@@ -59,8 +64,18 @@ switch (mode) {
     console.log(JSON.stringify({ parsed: source === null ? null : source.length, actual: actual.length, same: source === actual }));
     break;
   }
+  case 'solve': {
+    const { createWorkerContext, evaluate, plain } = await import('../../js/server/worker-host.mjs');
+    const worker = createWorkerContext();
+    await evaluate(worker, 'loadSeed()');
+    for (const prompt of rest) {
+      const answer = plain(await worker.solve(prompt, [], {}, {}, [], {}));
+      console.log(JSON.stringify({ prompt, intent: answer.intent, content: answer.content }, null, 2));
+    }
+    break;
+  }
   default:
-    console.error('usage: probe.mjs plan|edit|path|quotes|read-parse ...');
+    console.error('usage: probe.mjs plan|edit|path|quotes|read-parse|solve ...');
     process.exit(2);
 }
 process.exit(0);

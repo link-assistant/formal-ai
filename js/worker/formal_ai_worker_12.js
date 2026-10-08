@@ -48,64 +48,17 @@ function collectInstallationScriptCommands(source, commands) {
   }
 }
 
-// Translate a single verb token into an action category. Keyed on the verb
-// itself (not the surrounding tool), so the same lexicon serves every program.
-// Returns the marker "run" for generic launcher verbs so the caller can prefer
-// a more concrete object.
+// Translate a single verb token into its step action through the seeded
+// installation_verb_action table. Keyed on the verb itself (not the
+// surrounding tool), so the same table serves every program. Returns "run"
+// for generic launcher verbs so the caller can prefer a more concrete object.
 function classifyInstallationVerb(token) {
-  switch (token) {
-    case "clone":
-      return "Clone the repository";
-    case "cd":
-    case "chdir":
-    case "pushd":
-      return "Enter the project directory";
-    case "install":
-    case "add":
-    case "ci":
-    case "restore":
-    case "sync":
-    case "bootstrap":
-    case "vendor":
-    case "i":
-      return "Install dependencies";
-    case "test":
-    case "check":
-    case "lint":
-    case "doctor":
-    case "verify":
-    case "validate":
-    case "version":
-    case "pytest":
-    case "jest":
-    case "mocha":
-    case "vitest":
-    case "tox":
-      return "Run the verification command";
-    case "build":
-    case "compile":
-    case "configure":
-    case "make":
-    case "package":
-    case "dist":
-    case "bundle":
-    case "cmake":
-    case "gradle":
-    case "ninja":
-    case "msbuild":
-      return "Build the project";
-    case "run":
-    case "serve":
-    case "start":
-    case "up":
-    case "exec":
-    case "dev":
-    case "launch":
-    case "watch":
-      return "run";
-    default:
-      return null;
-  }
+  return handlerRulesTableValue("installation_verb_action", token);
+}
+
+/** The seeded `installation_<name>` response, each slot filled once (Rust `install_text`). */
+function installationText(name, values = {}) {
+  return handlerRulesFillOnce(answerFor(`installation_${name}`, "en"), values);
 }
 
 // Structural view of a command: the program (last path segment of the
@@ -143,29 +96,24 @@ function parseInstallationCommand(command) {
 // command rather than matching the whole string against a substring table.
 function describeInstallationCommand(command) {
   const parsed = parseInstallationCommand(command);
-  if (parsed.isProbe) return "Verify the installation";
+  if (parsed.isProbe) return installationText("step_probe");
 
+  // The verbs first, then the program itself.
   let genericRun = false;
-  for (const argument of parsed.args) {
-    const action = classifyInstallationVerb(argument);
+  for (const verb of [...parsed.args, parsed.program]) {
+    const action = classifyInstallationVerb(verb);
     if (action === "run") {
       genericRun = true;
     } else if (action) {
-      return action;
+      return installationText(`step_${action}`);
     }
   }
-  const programAction = classifyInstallationVerb(parsed.program);
-  if (programAction === "run") {
-    genericRun = true;
-  } else if (programAction) {
-    return programAction;
-  }
-  if (genericRun) return "Start the application";
+  if (genericRun) return installationText("step_start");
 
   // Fall back to a description synthesized from the program/verb so unseen but
   // well-formed commands still read meaningfully.
-  if (parsed.args.length) return `Run the ${parsed.program} ${parsed.args[0]} step`;
-  return `Run ${parsed.program}`;
+  if (parsed.args.length) return installationText("step_run_verb", { program: parsed.program, verb: parsed.args[0] });
+  return installationText("step_run_program", { program: parsed.program });
 }
 
 function extractInstallationSteps(source, sourceFormat) {
@@ -191,14 +139,15 @@ function extractInstallationSteps(source, sourceFormat) {
 function extractInstallationProject(prompt) {
   const source = String(prompt || "");
   const lower = source.toLowerCase();
-  const marker = " for ";
-  const start = lower.indexOf(marker);
-  if (start < 0) return "the project";
+  const fallback = installationText("default_project");
+  const marker = handlerRulesPolicy("installation_conversion", "project_marker");
+  const start = marker ? lower.indexOf(marker) : -1;
+  if (start < 0) return fallback;
   const tail = source.slice(start + marker.length);
   const stopMatch = tail.match(/[\s,:;\n]/);
   const stop = stopMatch ? stopMatch.index : tail.length;
   const project = tail.slice(0, stop).trim();
-  return project.includes("/") || project.includes("-") ? project : "the project";
+  return project.includes("/") || project.includes("-") ? project : fallback;
 }
 
 function installationMeaningKey(conversion) {
@@ -272,7 +221,7 @@ function activeMetaAlgorithmSurface(trace) {
 }
 
 function renderInstallationMarkdownGuide(conversion) {
-  const lines = ["README.md installation guide:", "", "## Installation", ""];
+  const lines = [installationText("markdown_heading"), ""];
   conversion.steps.forEach((step, index) => {
     lines.push(`${index + 1}. ${step.description}.`);
     lines.push("");
@@ -284,7 +233,7 @@ function renderInstallationMarkdownGuide(conversion) {
 }
 
 function renderInstallationShellScript(conversion) {
-  const lines = ["Bash script:", "```bash", "#!/usr/bin/env bash", "set -euo pipefail", ""];
+  const lines = [installationText("shell_heading"), "```bash", "#!/usr/bin/env bash", "set -euo pipefail", ""];
   for (const step of conversion.steps) {
     lines.push(`# ${step.description}`);
     lines.push(step.command);
@@ -294,7 +243,7 @@ function renderInstallationShellScript(conversion) {
 }
 
 function renderInstallationPowerShellScript(conversion) {
-  const lines = ["PowerShell script:", "```powershell", "$ErrorActionPreference = 'Stop'", ""];
+  const lines = [installationText("powershell_heading"), "```powershell", "$ErrorActionPreference = 'Stop'", ""];
   for (const step of conversion.steps) {
     lines.push(`# ${step.description}`);
     lines.push(step.command);
@@ -305,18 +254,14 @@ function renderInstallationPowerShellScript(conversion) {
 
 function renderInstallationConversion(conversion) {
   const lines = [
-    `Converted installation instructions for ${conversion.project}.`,
+    installationText("conversion_heading", { project: conversion.project }),
     "",
-    "Formalized meaning:",
+    installationText("formalized_meaning_heading"),
     "```lino",
     renderInstallationLino(conversion).trimEnd(),
     "```",
     "",
-    "Conversion algorithm:",
-    "1. Detect the source surface and requested target surface(s).",
-    "2. Extract command-like install/deploy steps in original order.",
-    "3. Render every target from the same install-step IR.",
-    "4. Preserve commands verbatim so the conversion can round-trip.",
+    installationText("conversion_algorithm"),
     "",
     renderInstallationMetaAlgorithm(),
   ];
@@ -674,6 +619,9 @@ function tryJavaScriptExecution(prompt) {
 // language live in the `program_language_<slug>` meaning (role
 // `program_language_alias`) and `programLanguageFromPrompt` reads them by slug
 // (issue #386), matching the Rust catalog byte-for-byte through the shared seed.
+// A command a captured documentation page states is not written here: the
+// seed install fills it from that page (installDocumentedLanguageCommands,
+// issue #1165 R1165-6), as `program_languages` does in Rust.
 const WRITE_PROGRAM_LANGUAGES = {
   rust: {
     name: "Rust",
@@ -681,7 +629,6 @@ const WRITE_PROGRAM_LANGUAGES = {
     saveAs: "main.rs",
     setupHint: "the Rust toolchain from https://rustup.rs",
     checkCommand: "rustc main.rs -o main",
-    runCommand: "./main",
   },
   python: {
     name: "Python",
@@ -705,7 +652,6 @@ const WRITE_PROGRAM_LANGUAGES = {
     saveAs: "hello.ts",
     setupHint:
       "Node.js from https://nodejs.org/ plus TypeScript via `npm install -g typescript`",
-    checkCommand: "tsc hello.ts",
     runCommand: "node hello.js",
   },
   go: {
@@ -739,8 +685,6 @@ const WRITE_PROGRAM_LANGUAGES = {
     fence: "java",
     saveAs: "Main.java",
     setupHint: "a JDK from https://adoptium.net/",
-    checkCommand: "javac Main.java",
-    runCommand: "java Main",
   },
   csharp: {
     name: "C#",
@@ -773,8 +717,6 @@ const WRITE_PROGRAM_LANGUAGES = {
     saveAs: "Main.kt",
     setupHint:
       "the Kotlin compiler from https://kotlinlang.org/docs/command-line.html (a JDK is required as well)",
-    checkCommand: "kotlinc Main.kt -include-runtime -d Main.jar",
-    runCommand: "java -jar Main.jar",
   },
   php: {
     name: "PHP",

@@ -10,7 +10,7 @@ import { proseSentences, sentences } from './shell_command_policy.mjs';
 import { composePositionalInsert, introducedBlock, literalText, unquotedPathTokens } from './positional_edit.mjs';
 import { resolveCensusTarget } from './general_planner.mjs';
 import { containsCjk } from './crate/coding_catalog.mjs';
-import { quotedSegmentSpans } from './crate/normal_markov.mjs';
+import { quotedSegmentSpans, wrappedInQuotePair } from './crate/normal_markov.mjs';
 import { meaningEvidencedIn, mentionsRole, roleWordForms } from './write_lexicon.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import {
@@ -400,15 +400,26 @@ export function safeRelativePath(path) {
  * @param {string} request
  */
 export function composeEditRequest(request) {
+  return composeEditClauses(request)?.edit ?? null;
+}
+
+/**
+ * Mirrors `fn compose_edit_clauses`: `{edit, spans}` -- the `[target, old,
+ * new]` of `composeEditRequest` and, when the request words them as clauses,
+ * the spans its file clause and its action through the new text take (null
+ * for a positional insert or lines under the request) -- or null.
+ * @param {string} request
+ */
+export function composeEditClauses(request) {
   const positional = composePositionalInsert(request);
-  if (positional) return positional;
+  if (positional) return { edit: positional, spans: null };
   const block = introducedBlock(request);
   if (block !== null) {
     // `Replace the line 'x' with these three lines in f:` followed by lines:
     // a new clause that only describes lines (the seeded `line` meaning,
     // unquoted) stands for the lines under the request (PR #1188 G22).
     const head = composeEditRequest(block.head);
-    if (head !== null && describesLines(block.head, head[2])) return [head[0], head[1], block.text];
+    if (head !== null && describesLines(block.head, head[2])) return { edit: [head[0], head[1], block.text], spans: null };
   }
   const toks = tokens(request);
   const actionCues = bareSurfaces('file_edit_action_cue');
@@ -425,6 +436,11 @@ export function composeEditRequest(request) {
   // the target.
   const segments = quotedSegmentSpans(request);
   const isQuoted = (token) => segments.some((segment) => token.start >= segment.start && token.end <= segment.end);
+  const isPathCandidate = (token) => {
+    const cleaned = cleanPathToken(token.text);
+    return unquoted.has(token.start)
+      && (resolveCensusTarget(cleaned) !== null || (looksLikeFilePath(cleaned) && safeRelativePath(cleaned)));
+  };
   for (const quotedPass of [false, true]) {
     for (let index = 0; index < toks.length; index += 1) {
       if (!unquoted.has(toks[index].start) || isQuoted(toks[index]) !== quotedPass) continue;
@@ -433,7 +449,10 @@ export function composeEditRequest(request) {
       if (resolved === null && (!looksLikeFilePath(cleaned) || !safeRelativePath(cleaned))) continue;
       const prevIsCue = index > 0 && (isTargetCue(index - 1) || isActionCue(index - 1));
       const nextIsCue = index + 1 < toks.length && (isTargetCue(index + 1) || isActionCue(index + 1));
-      if (prevIsCue || nextIsCue) {
+      // A cue between two paths introduces the later one: in "…`p.lino`` in
+      // req.md" the payload's last span is no target (PR #1188 G63).
+      const cueIntroducesNext = !prevIsCue && nextIsCue && index + 2 < toks.length && isPathCandidate(toks[index + 2]);
+      if ((prevIsCue || nextIsCue) && !cueIntroducesNext) {
         fileIndex = index;
         target = resolved === null ? cleaned : resolved.module_path;
         break;
@@ -472,7 +491,13 @@ export function composeEditRequest(request) {
   // the new text runs to the end of the literal it falls in.
   const literalAround = quotedSegmentSpans(request)
     .find((segment) => segment.start < sentenceEnd && sentenceEnd < segment.end);
-  if (literalAround) sentenceEnd = literalAround.end;
+  // When the literal holding that boundary ends early, because the backtick
+  // spans inside the payload paired among themselves, a payload quoted whole
+  // up to the file clause runs to it (PR #1188 G63).
+  if (literalAround) {
+    sentenceEnd = fileClauseStart > literalAround.end && wrappedInQuotePair(request.slice(newLead.end, fileClauseStart))
+      ? fileClauseStart : literalAround.end;
+  }
   const newEnd = fileClauseStart > newLead.end ? Math.min(fileClauseStart, sentenceEnd) : sentenceEnd;
   if (newEnd < newLead.end) return null;
   const newSpan = request.slice(newLead.end, newEnd);
@@ -488,7 +513,8 @@ export function composeEditRequest(request) {
   const renamedFile = (quotedSegmentSpans(newSpan).length === 0 || quotedSegmentSpans(oldSpan).length === 0)
     && looksLikeFilePath(cleanPathToken(trim(newSpan)))
     && mentionsRole('coding_identifier_rename_action', request.toLowerCase());
-  return renamedFile ? null : [target, oldText, newText];
+  if (renamedFile) return null;
+  return { edit: [target, oldText, newText], spans: [[fileClauseStart, toks[fileIndex].end], [action.start, newEnd]] };
 }
 
 /**

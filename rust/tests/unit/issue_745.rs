@@ -40,7 +40,9 @@ fn call_with_tools(prompt: &str, tools: &[&str]) -> (String, serde_json::Value) 
 fn code_search_prefers_an_advertised_grep_capability_over_shell_lowering() {
     let (tool, arguments) = call_with_tools("search the code for RouteIntent", &["grep_search"]);
     assert_eq!(tool, "grep_search");
-    assert_eq!(arguments["pattern"], "RouteIntent");
+    // An identifier is searched as a whole word (PR #1188 T90, kept by
+    // CIFIX2): `RouteIntent` must not also match `RouteIntentKind`.
+    assert_eq!(arguments["pattern"], "\\bRouteIntent\\b");
 }
 
 /// Issue #1138 B10, plan 10 leaf 11: the variation floor rises 15 -> 20 and is

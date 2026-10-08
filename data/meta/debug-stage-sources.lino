@@ -133,6 +133,7 @@ debug_stage_sources
     rust "rust/src/solver_handler_how.rs" try_how_to_procedure
   event "program_parameters"
     step program_plan
+    rust "rust/src/coding/operand_program.rs" try_write_operand_program
     rust "rust/src/solver.rs" solve_with_history_probability_store_and_intent_cache
     js "js/worker/formal_ai_worker_solver_events.js" solverWriteProgramEvents
   event "release_timeline:hit"

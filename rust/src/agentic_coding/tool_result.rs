@@ -13,7 +13,9 @@ use crate::seed::{
 // Issue #1154: the request's tool schemas name each tool's command property.
 mod command_keys;
 mod response_language;
+mod result_kind;
 pub use command_keys::{command_argument_key, project_declared_command_keys};
+use result_kind::{is_listing, is_search};
 
 struct NormalizedResult {
     payload: String,
@@ -337,6 +339,29 @@ pub(super) fn latest_turn_answer(
     Some(render(&label, &result.content.plain_text(), prompt))
 }
 
+/// Whether the latest tool result of this turn succeeded with no output.
+///
+/// An edit tool's empty reply is its success (PR #1188 T181).
+pub(super) fn latest_turn_quiet_success(messages: &[ChatMessage]) -> bool {
+    let Some(start) = messages
+        .iter()
+        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
+    else {
+        return false;
+    };
+    messages
+        .iter()
+        .skip(start + 1)
+        .rev()
+        .find(|message| message.role.eq_ignore_ascii_case("tool"))
+        .is_some_and(|result| {
+            let normalized = normalize(&result.content.plain_text());
+            normalized.error.is_none()
+                && matches!(normalized.exit_code, None | Some(0))
+                && normalized.payload.trim().is_empty()
+        })
+}
+
 pub(super) fn has_latest_turn_result(messages: &[ChatMessage]) -> bool {
     let Some(start) = messages
         .iter()
@@ -514,12 +539,12 @@ fn normalize(raw: &str) -> NormalizedResult {
 struct ShellEnvelope {
     output: String,
     error: String,
-    exit_code: i64,
+    exit_code: Option<i64>,
 }
 
 impl ShellEnvelope {
     fn into_result(self) -> NormalizedResult {
-        if self.exit_code == 0 {
+        if self.exit_code == Some(0) {
             // A zero exit is success even when the command wrote to stderr, and
             // even when it wrote nothing at all: `python3 -m py_compile main.py`
             // succeeds silently.
@@ -542,7 +567,7 @@ impl ShellEnvelope {
             payload: String::new(),
             error: Some(error),
             format: "text",
-            exit_code: Some(self.exit_code),
+            exit_code: self.exit_code,
         }
     }
 }
@@ -554,6 +579,9 @@ fn parse_shell_envelope(text: &str) -> Option<ShellEnvelope> {
         .map_or(text, |(inside, _)| inside);
     let lines = inner.lines().collect::<Vec<_>>();
     let mut exit_code = None;
+    // A call the harness killed (a timeout) names its signal and no exit code
+    // (PR #1188 G77): the kill is the error, and no exit code is invented.
+    let mut killed = Vec::new();
     let mut end = lines.len();
     while end > 0 {
         let Some((field, value)) = lines[end - 1].trim().split_once(':') else {
@@ -566,12 +594,15 @@ fn parse_shell_envelope(text: &str) -> Option<ShellEnvelope> {
                 // not an envelope this reader can trust.
                 Err(_) => return None,
             },
-            "Signal" | "Process Group PGID" => {}
+            "Signal" | "Timeout" => killed.insert(0, lines[end - 1].trim()),
+            "Process Group PGID" => {}
             _ => break,
         }
         end -= 1;
     }
-    let exit_code = exit_code?;
+    if exit_code.is_none() && killed.is_empty() {
+        return None;
+    }
     let output_at = lines[..end]
         .iter()
         .position(|line| is_field(line, "Output"))?;
@@ -586,6 +617,14 @@ fn parse_shell_envelope(text: &str) -> Option<ShellEnvelope> {
     let error = error_at.map_or_else(String::new, |at| {
         envelope_section(&lines[at..end], "Error:")
     });
+    let error = if exit_code.is_none() {
+        let mut parts: Vec<&str> = vec![error.as_str()];
+        parts.retain(|part| !part.is_empty());
+        parts.extend(killed);
+        parts.join("\n")
+    } else {
+        error
+    };
     Some(ShellEnvelope {
         output,
         error,
@@ -911,20 +950,6 @@ fn extract_urls(text: &str) -> Vec<String> {
         rest = &candidate[end..];
     }
     urls
-}
-
-fn is_listing(label: &str) -> bool {
-    let lower = label.to_ascii_lowercase();
-    lower.split_whitespace().next() == Some("ls")
-        || lower.contains("list")
-        || lower.contains("glob")
-}
-
-fn is_search(label: &str) -> bool {
-    let lower = label.to_ascii_lowercase();
-    ["grep", "find", "search"]
-        .iter()
-        .any(|kind| lower.contains(kind))
 }
 
 /// The language detected from the request's script, or -- when the script

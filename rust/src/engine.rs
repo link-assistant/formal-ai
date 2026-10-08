@@ -870,7 +870,11 @@ fn write_program_answer(
     )
 }
 
-fn write_program_intro(language_name: &str, task_label: &str, language: Language) -> String {
+pub(crate) fn write_program_intro(
+    language_name: &str,
+    task_label: &str,
+    language: Language,
+) -> String {
     match language {
         Language::Russian => {
             format!("Вот минимальная программа на языке {language_name} ({task_label}):")
@@ -895,7 +899,7 @@ pub(crate) fn rediscovered_page(spec: ProgramSpec) -> Option<String> {
         .map(str::to_owned)
 }
 
-fn execution_report(
+pub(crate) fn execution_report(
     program_language: &ProgramLanguage,
     run_command: &str,
     output: &str,

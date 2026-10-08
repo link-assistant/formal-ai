@@ -248,6 +248,7 @@ fn is_embedded_lino_data_line(line: &str) -> bool {
     declares_lino && (trimmed.contains("= [") || trimmed.contains("= `"))
 }
 
+#[cfg(test)]
 fn check_directory(cwd: &Path) -> CheckResult {
     check_listed_files(cwd, None)
 }

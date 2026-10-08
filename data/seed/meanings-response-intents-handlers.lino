@@ -453,3 +453,331 @@ meanings
     unit "not applicable"
     example "`src/m.mjs` exports no function."
     grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  request_quote_escaped
+    defined-by answer
+    role localized_response_template
+    precondition "a request holds a backslash before a quote that opens or closes a quoted literal"
+    effect "nothing is done and the answer names the escaped quote"
+    unit "not applicable"
+    example "A backslash before a quote in this request (`\'set the contents of note.txt t`) leaves its quoted text unpaired, so I cannot tell the quoted text from the instruction, and nothing was done."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  request_quote_unpaired
+    defined-by answer
+    role localized_response_template
+    precondition "a request holds an opening quote that no quoted literal closes"
+    effect "nothing is done and the answer names the unclosed quote"
+    unit "not applicable"
+    example "A quote in this request opens and never closes (`'x with y in f.txt.`), so I cannot tell the quoted text from the instruction, and nothing was done."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  file_addition_unquoted
+    defined-by answer
+    role localized_response_template
+    precondition "a request leading with the add verb names a workspace file but quotes no text to add"
+    effect "nothing is changed and the answer asks for the exact text and its place"
+    unit "not applicable"
+    example "What exact text should go into `config.txt`, and where?"
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  coding_text_replaced_unchecked
+    defined-by answer
+    role localized_response_template
+    precondition "an edit tool replaced quoted text and replied with no output and no error"
+    effect "the answer states the replacement without claiming an observation"
+    unit "not applicable"
+    example "Replaced `run();` with `guard(); run();` in `s.mjs`; the edit tool reported no error."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  file_edit_anchor_repeated
+    defined-by answer
+    role localized_response_template
+    precondition "an insert names an anchor line that occurs more than once in the file"
+    effect "nothing is changed and the answer counts the anchor and asks which one"
+    unit "not applicable"
+    example "The line `anchor` occurs 2 times in `g.txt`, so I cannot tell which one places the insert, and nothing was changed."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  file_edit_scope_unapplied
+    defined-by answer
+    role localized_response_template
+    precondition "a replace names a part of the file its old text lies in, and the old text occurs there more than once"
+    effect "nothing is changed and the answer counts the old text and names the part"
+    unit "not applicable"
+    example "`x` occurs 3 times in `languages.rs`, and I cannot tell which of them lie in the row whose slug is rust, so nothing was changed."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  test_assertion_added
+    defined-by answer
+    role localized_response_template
+    precondition "a request adds an assertion of a stated call and value to a named test file that already holds assertions"
+    effect "the assertion is written in the file's own assertion form, the file is run, and the answer states both"
+    unit "not applicable"
+    example "Added `assert.equal(add(2, 2), 4);` to `m.test.mjs` and ran `node --test m.test.mjs`."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  test_file_written
+    defined-by answer
+    role localized_response_template
+    precondition "a request writes a test of a stated call and value into a named test file that does not exist yet"
+    effect "the file is written in the language's new-file form around the one assertion, run, and the answer states both"
+    unit "not applicable"
+    example "Wrote `m.test.mjs` with `assert.equal(add(2, 3), 5);` and ran `node --test m.test.mjs`."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  coding_texts_replaced
+    defined-by answer
+    role localized_response_template
+    precondition "one sentence asks for several replacements of quoted text in one file"
+    effect "the replacements are made in order, the file's digest is checked, and the answer lists each pair"
+    unit "not applicable"
+    example "Made 3 replacements in `b.lino`, in order: `x` → `y`, `p` → `q`, `m` → `n`; and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  test_expectation_missing
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks to write a test into a named file and states no expected result"
+    effect "nothing is written or run and the answer asks which call and result the test should check"
+    unit "not applicable"
+    example "What should the test in `test_m.py` check: which call, and what result?"
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  nl_tool_requested_source
+    defined-by answer
+    role localized_response_template
+    precondition "a JavaScript tool call was refused before it ran"
+    effect "the refusal is followed by the source the request asked to run"
+    unit "not applicable"
+    example "Requested source: console.log(2 + 3)"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  nl_tool_javascript_report
+    defined-by answer
+    role localized_response_template
+    precondition "a JavaScript tool call ran in the deterministic subset"
+    effect "the report states the execution status, the tool and its output"
+    unit "not applicable"
+    example "Tool call: javascript_execution"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  nl_tool_calculator_executed
+    defined-by answer
+    role localized_response_template
+    precondition "an explicit calculator tool call was allowed and evaluated"
+    effect "the report states the input expression and the evaluated result"
+    unit "not applicable"
+    example "Tool call: calculator"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  nl_tool_calculator_failed
+    defined-by answer
+    role localized_response_template
+    precondition "an explicit calculator tool call was allowed but the expression did not evaluate"
+    effect "the report states the input expression and the evaluation error"
+    unit "not applicable"
+    example "Execution status: failed."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  nl_tool_web_search_planned
+    defined-by answer
+    role localized_response_template
+    precondition "an explicit web search tool call was allowed"
+    effect "the report states the query and the recorded provider plan without executing it"
+    unit "not applicable"
+    example "Tool call: web_search"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  nl_tool_agent_mode_required
+    defined-by answer
+    role localized_response_template
+    precondition "a natural-language tool call arrived while agent mode is off"
+    effect "the refusal names the capability that needs agent mode"
+    unit "not applicable"
+    example "Execution status: refused."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  nl_tool_package_denied
+    defined-by answer
+    role localized_response_template
+    precondition "a natural-language tool call names a capability no installed package grants"
+    effect "the refusal names the capability, the reason and the package that would grant it"
+    unit "not applicable"
+    example "Execution status: refused."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  nl_tool_local_shell_unavailable
+    defined-by answer
+    role localized_response_template
+    precondition "a local shell tool call is permitted but the runtime has no shell executor"
+    effect "the refusal says the shell executor is absent"
+    unit "not applicable"
+    example "Execution status: refused."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  nl_tool_browser_unavailable
+    defined-by answer
+    role localized_response_template
+    precondition "a natural-language tool call reaches a browser session that has no executor for that tool"
+    effect "the refusal says the call cannot run here and where it can"
+    unit "not applicable"
+    example "Execution status: refused."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  installation_conversion_heading
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Converted installation instructions for {project}."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  installation_formalized_meaning_heading
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Formalized meaning:"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  installation_conversion_algorithm
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Conversion algorithm:"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  installation_markdown_heading
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "README.md installation guide:"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  installation_shell_heading
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Bash script:"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  installation_powershell_heading
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "PowerShell script:"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  installation_default_project
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "the project"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  installation_step_clone
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Clone the repository"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  installation_step_enter_directory
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Enter the project directory"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  installation_step_install
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Install dependencies"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  installation_step_verify
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Run the verification command"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  installation_step_build
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Build the project"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  installation_step_start
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Start the application"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  installation_step_probe
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Verify the installation"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  installation_step_run_program
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Run {program}"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  installation_step_run_verb
+    defined-by answer
+    role localized_response_template
+    precondition "an installation guide or script is converted between surfaces"
+    effect "renders this part of the converted answer"
+    unit "not applicable"
+    example "Run the {program} {verb} step"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  translation_gap_no_source
+    defined-by answer
+    role localized_response_template
+    precondition "a translation request names no phrase to translate"
+    effect "says no source phrase was found"
+    unit "not applicable"
+    example "I could not identify a source phrase to translate from"
+    grounding "data/seed/multilingual-responses-text-transform.lino"
+  translation_gap_surface
+    defined-by answer
+    role localized_response_template
+    precondition "the translation pipeline finds no target surface for the phrase"
+    effect "reports the translation gap it recorded"
+    unit "not applicable"
+    example "I could not translate"
+    grounding "data/seed/multilingual-responses-text-transform.lino"
+  translation_program_heading
+    defined-by answer
+    role localized_response_template
+    precondition "a backticked program is translated between programming languages"
+    effect "heads the translated program"
+    unit "not applicable"
+    example "Translated"
+    grounding "data/seed/multilingual-responses-text-transform.lino"
+  translation_code_gap_comment
+    defined-by answer
+    role localized_response_template
+    precondition "a program meaning has no rendering in the target programming language"
+    effect "comments the gap inside the translated program"
+    unit "not applicable"
+    example "translation gap for"
+    grounding "data/seed/multilingual-responses-text-transform.lino"
+  translation_clarify_interpretation
+    defined-by answer
+    role localized_response_template
+    precondition "two formalization candidates are too close to choose between"
+    effect "asks which interpretation was meant"
+    unit "not applicable"
+    example "Which interpretation did you mean:"
+    grounding "data/seed/multilingual-responses-text-transform.lino"
+  translation_clarify_reading
+    defined-by answer
+    role localized_response_template
+    precondition "two close formalization candidates differ only in their predicate"
+    effect "asks which predicate reading was meant"
+    unit "not applicable"
+    example "Should I read"
+    grounding "data/seed/multilingual-responses-text-transform.lino"

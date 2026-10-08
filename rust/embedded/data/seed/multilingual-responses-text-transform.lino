@@ -125,3 +125,27 @@ multilingual_responses
     intent text_transform_genre_incomplete
     language es
     text "Aún no hay información suficiente para escribir un {genre}; falta: {missing}."
+  response response_translation_gap_no_source_en
+    intent translation_gap_no_source
+    language en
+    text "I could not identify a source phrase to translate from {source} to {target}."
+  response response_translation_gap_surface_en
+    intent translation_gap_surface
+    language en
+    text "I could not translate \"{surface}\" from {source} to {target} with the available formalization data. I recorded this as a translation gap for follow-up."
+  response response_translation_program_heading_en
+    intent translation_program_heading
+    language en
+    text "Translated `{code}` from {source} to {target}:"
+  response response_translation_code_gap_comment_en
+    intent translation_code_gap_comment
+    language en
+    text "translation gap for `{subject}` from {source} to {target}"
+  response response_translation_clarify_interpretation_en
+    intent translation_clarify_interpretation
+    language en
+    text "Which interpretation did you mean: {top} or {other}?"
+  response response_translation_clarify_reading_en
+    intent translation_clarify_reading
+    language en
+    text "Should I read \"{text}\" as \"{top}\" or \"{other}\"?"

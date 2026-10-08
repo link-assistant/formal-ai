@@ -210,7 +210,7 @@ pub fn compose_general_change_plan(full_request: &str) -> Option<GeneralChangePl
     let verification_command = format!("cat {target}");
     let mut steps = vec![GeneralPlanStep {
         capability: Capability::Write,
-        action: format!("append the composed plan to {PLAN_PATH}"),
+        action: format!("write the composed plan to {PLAN_PATH}"),
         expected_evidence: format!("written plan event {}", intent.impulse_id),
         command: None,
     }];

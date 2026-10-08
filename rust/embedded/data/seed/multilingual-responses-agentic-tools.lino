@@ -299,6 +299,206 @@ multilingual_responses
     intent file_text_unit
     language es
     text "Ninguna edición verificable interpreta esta solicitud sobre `{path}`, así que no se cambió nada. La solicitud nombra texto dentro del archivo, no el archivo, así que no lo eliminé."
+  response response_test_expectation_missing_en
+    intent test_expectation_missing
+    language en
+    text "What should the test in `{path}` check: which call, and what result? The request states no expected result, so nothing was written or run. Say what the function should return for which inputs."
+  response response_test_expectation_missing_ru
+    intent test_expectation_missing
+    language ru
+    text "Что должен проверять тест в `{path}`: какой вызов и какой результат? В запросе не указан ожидаемый результат, поэтому ничего не записано и не запущено. Укажите, что функция должна вернуть и для каких входных данных."
+  response response_test_expectation_missing_hi
+    intent test_expectation_missing
+    language hi
+    text "`{path}` में परीक्षण क्या जाँचे: कौन-सा कॉल, और कौन-सा परिणाम? अनुरोध में अपेक्षित परिणाम नहीं बताया गया, इसलिए कुछ भी लिखा या चलाया नहीं गया। बताइए कि फ़ंक्शन किन इनपुट के लिए क्या लौटाए।"
+  response response_test_expectation_missing_zh
+    intent test_expectation_missing
+    language zh
+    text "`{path}` 中的测试应检查什么：哪个调用，什么结果？请求没有说明预期结果，因此没有写入或运行任何内容。请说明函数在哪些输入下应返回什么。"
+  response response_test_expectation_missing_es
+    intent test_expectation_missing
+    language es
+    text "¿Qué debe comprobar la prueba en `{path}`: qué llamada y qué resultado? La solicitud no indica un resultado esperado, así que no se escribió ni se ejecutó nada. Diga qué debe devolver la función y para qué entradas."
+  response response_file_edit_anchor_repeated_en
+    intent file_edit_anchor_repeated
+    language en
+    text "The line `{anchor}` occurs {count} times in `{path}`, so I cannot tell which one places the insert, and nothing was changed. Quote more of the line, or name it by its line number."
+  response response_file_edit_anchor_repeated_ru
+    intent file_edit_anchor_repeated
+    language ru
+    text "Строка `{anchor}` встречается в `{path}` {count} раз(а), поэтому я не могу понять, рядом с какой вставлять, и ничего не изменено. Процитируйте строку полнее или назовите её номер."
+  response response_file_edit_anchor_repeated_hi
+    intent file_edit_anchor_repeated
+    language hi
+    text "पंक्ति `{anchor}` `{path}` में {count} बार आती है, इसलिए मैं नहीं बता सकता कि किसके पास जोड़ना है, और कुछ नहीं बदला गया। पंक्ति का अधिक भाग उद्धृत करें, या उसकी पंक्ति संख्या बताएँ।"
+  response response_file_edit_anchor_repeated_zh
+    intent file_edit_anchor_repeated
+    language zh
+    text "行 `{anchor}` 在 `{path}` 中出现了 {count} 次，因此无法确定插入到哪一处，未做任何更改。请引用该行的更多内容，或给出它的行号。"
+  response response_file_edit_anchor_repeated_es
+    intent file_edit_anchor_repeated
+    language es
+    text "La línea `{anchor}` aparece {count} veces en `{path}`, así que no puedo saber junto a cuál insertar y no se cambió nada. Cite más de la línea o indique su número de línea."
+  response response_file_edit_scope_unapplied_en
+    intent file_edit_scope_unapplied
+    language en
+    text "`{old}` occurs {count} times in `{path}`, and I cannot tell which of them lie in {scope}, so nothing was changed. Quote more of the text around the one to replace."
+  response response_file_edit_scope_unapplied_ru
+    intent file_edit_scope_unapplied
+    language ru
+    text "`{old}` встречается в `{path}` {count} раз(а), и я не могу определить, какие из них относятся к «{scope}», поэтому ничего не изменено. Процитируйте больше текста вокруг заменяемого места."
+  response response_file_edit_scope_unapplied_hi
+    intent file_edit_scope_unapplied
+    language hi
+    text "`{old}` `{path}` में {count} बार आता है, और मैं नहीं बता सकता कि इनमें से कौन {scope} में है, इसलिए कुछ नहीं बदला गया। बदले जाने वाले स्थान के आसपास का अधिक पाठ उद्धृत करें।"
+  response response_file_edit_scope_unapplied_zh
+    intent file_edit_scope_unapplied
+    language zh
+    text "`{old}` 在 `{path}` 中出现了 {count} 次，无法确定其中哪些位于{scope}，因此未做任何更改。请引用要替换处周围的更多文本。"
+  response response_file_edit_scope_unapplied_es
+    intent file_edit_scope_unapplied
+    language es
+    text "`{old}` aparece {count} veces en `{path}` y no puedo saber cuáles están en {scope}, así que no se cambió nada. Cite más del texto alrededor del que hay que reemplazar."
+  response response_test_assertion_added_en
+    intent test_assertion_added
+    language en
+    text "Added `{assertion}` to `{path}` and ran `{command}`."
+  response response_test_assertion_added_ru
+    intent test_assertion_added
+    language ru
+    text "В `{path}` добавлено `{assertion}`, затем запущено `{command}`."
+  response response_test_assertion_added_hi
+    intent test_assertion_added
+    language hi
+    text "`{path}` में `{assertion}` जोड़ा गया और `{command}` चलाया गया।"
+  response response_test_assertion_added_zh
+    intent test_assertion_added
+    language zh
+    text "已向 `{path}` 添加 `{assertion}`，并运行了 `{command}`。"
+  response response_test_assertion_added_es
+    intent test_assertion_added
+    language es
+    text "Se añadió `{assertion}` a `{path}` y se ejecutó `{command}`."
+  response response_test_file_written_en
+    intent test_file_written
+    language en
+    text "Wrote `{path}` with `{assertion}` and ran `{command}`."
+  response response_test_file_written_ru
+    intent test_file_written
+    language ru
+    text "Записан `{path}` с `{assertion}`, затем запущено `{command}`."
+  response response_test_file_written_hi
+    intent test_file_written
+    language hi
+    text "`{path}` को `{assertion}` के साथ लिखा गया और `{command}` चलाया गया।"
+  response response_test_file_written_zh
+    intent test_file_written
+    language zh
+    text "已写入含 `{assertion}` 的 `{path}`，并运行了 `{command}`。"
+  response response_test_file_written_es
+    intent test_file_written
+    language es
+    text "Se escribió `{path}` con `{assertion}` y se ejecutó `{command}`."
+  response response_coding_texts_replaced_en
+    intent coding_texts_replaced
+    language en
+    text "Made {count} replacements in `{path}`, in order: {pairs}; and observed the result."
+  response response_coding_texts_replaced_ru
+    intent coding_texts_replaced
+    language ru
+    text "В `{path}` сделано замен по порядку: {count} ({pairs}); результат проверен."
+  response response_coding_texts_replaced_hi
+    intent coding_texts_replaced
+    language hi
+    text "`{path}` में क्रम से {count} बदलाव किए गए: {pairs}; और परिणाम देखा गया।"
+  response response_coding_texts_replaced_zh
+    intent coding_texts_replaced
+    language zh
+    text "已在 `{path}` 中按顺序完成 {count} 处替换：{pairs}；并核对了结果。"
+  response response_coding_texts_replaced_es
+    intent coding_texts_replaced
+    language es
+    text "Se hicieron {count} reemplazos en `{path}`, en orden: {pairs}; y se observó el resultado."
+  response response_coding_text_replaced_unchecked_en
+    intent coding_text_replaced_unchecked
+    language en
+    text "Replaced `{old}` with `{new}` in `{path}`; the edit tool reported no error."
+  response response_coding_text_replaced_unchecked_ru
+    intent coding_text_replaced_unchecked
+    language ru
+    text "В `{path}` `{old}` заменено на `{new}`; инструмент правки не сообщил об ошибке."
+  response response_coding_text_replaced_unchecked_hi
+    intent coding_text_replaced_unchecked
+    language hi
+    text "`{path}` में `{old}` को `{new}` से बदला गया; संपादन टूल ने कोई त्रुटि नहीं बताई।"
+  response response_coding_text_replaced_unchecked_zh
+    intent coding_text_replaced_unchecked
+    language zh
+    text "已在 `{path}` 中将 `{old}` 替换为 `{new}`；编辑工具未报告错误。"
+  response response_coding_text_replaced_unchecked_es
+    intent coding_text_replaced_unchecked
+    language es
+    text "Se reemplazó `{old}` por `{new}` en `{path}`; la herramienta de edición no informó ningún error."
+  response response_file_addition_unquoted_en
+    intent file_addition_unquoted
+    language en
+    text "What exact text should go into `{path}`, and where? The request names the addition without quoting it, so I cannot tell the text to add from words that describe it, and nothing was changed. Quote the text and say where it goes, for example: Append the line «…» to {path}."
+  response response_file_addition_unquoted_ru
+    intent file_addition_unquoted
+    language ru
+    text "Какой именно текст добавить в `{path}` и куда? В запросе добавляемый текст не заключён в кавычки, поэтому я не могу отличить сам текст от слов, которые его описывают, и ничего не изменено. Заключите текст в кавычки «» и укажите, куда его добавить."
+  response response_file_addition_unquoted_hi
+    intent file_addition_unquoted
+    language hi
+    text "`{path}` में कौन-सा सटीक पाठ और कहाँ जोड़ना है? अनुरोध जोड़े जाने वाले पाठ को उद्धरण चिह्नों में नहीं देता, इसलिए मैं उस पाठ को उसका वर्णन करने वाले शब्दों से अलग नहीं कर सकता, और कुछ नहीं बदला गया। पाठ को «» में लिखें और बताएँ कि उसे कहाँ जोड़ना है।"
+  response response_file_addition_unquoted_zh
+    intent file_addition_unquoted
+    language zh
+    text "要向 `{path}` 添加哪段确切文本，加在哪里？请求没有用引号标出要添加的文本，因此我无法区分文本本身和描述它的词语，未做任何更改。请用 «» 标出文本，并说明添加位置。"
+  response response_file_addition_unquoted_es
+    intent file_addition_unquoted
+    language es
+    text "¿Qué texto exacto debe ir en `{path}` y dónde? La solicitud nombra lo que se añade sin citarlo, así que no puedo distinguir el texto de las palabras que lo describen y no se cambió nada. Cite el texto con «» y diga dónde va."
+  response response_request_quote_escaped_en
+    intent request_quote_escaped
+    language en
+    text "A backslash before a quote in this request (`{fragment}`) leaves its quoted text unpaired, so I cannot tell the quoted text from the instruction, and nothing was done. Quote the text without backslashes, using «» or backticks when it holds quotes of its own."
+  response response_request_quote_escaped_ru
+    intent request_quote_escaped
+    language ru
+    text "Обратная косая черта перед кавычкой в этом запросе (`{fragment}`) оставляет цитируемый текст без пары, поэтому я не могу отличить цитату от инструкции, и ничего не сделано. Заключите текст в кавычки без обратной косой черты, а если в нём есть свои кавычки, используйте «» или обратные апострофы."
+  response response_request_quote_escaped_hi
+    intent request_quote_escaped
+    language hi
+    text "इस अनुरोध में उद्धरण चिह्न से पहले का बैकस्लैश (`{fragment}`) उद्धृत पाठ को बिना जोड़ी के छोड़ देता है, इसलिए मैं उद्धृत पाठ को निर्देश से अलग नहीं कर सकता, और कुछ नहीं किया गया। पाठ को बिना बैकस्लैश के उद्धृत करें; यदि उसमें अपने उद्धरण चिह्न हों तो «» या बैकटिक का उपयोग करें।"
+  response response_request_quote_escaped_zh
+    intent request_quote_escaped
+    language zh
+    text "此请求中引号前的反斜杠（`{fragment}`）使引用的文本无法配对，因此我无法区分引用的文本和指令，未做任何操作。请不用反斜杠引用文本；文本本身含有引号时，请使用 «» 或反引号。"
+  response response_request_quote_escaped_es
+    intent request_quote_escaped
+    language es
+    text "Una barra invertida antes de una comilla en esta solicitud (`{fragment}`) deja sin pareja el texto citado, así que no puedo distinguir el texto citado de la instrucción y no se hizo nada. Cite el texto sin barras invertidas, con «» o comillas invertidas cuando contenga comillas propias."
+  response response_request_quote_unpaired_en
+    intent request_quote_unpaired
+    language en
+    text "A quote in this request opens and never closes (`{fragment}`), so I cannot tell the quoted text from the instruction, and nothing was done. Close the quote, or use «» or backticks when the text holds quotes of its own."
+  response response_request_quote_unpaired_ru
+    intent request_quote_unpaired
+    language ru
+    text "Кавычка в этом запросе открывается и не закрывается (`{fragment}`), поэтому я не могу отличить цитату от инструкции, и ничего не сделано. Закройте кавычку или используйте «» или обратные апострофы, если в тексте есть свои кавычки."
+  response response_request_quote_unpaired_hi
+    intent request_quote_unpaired
+    language hi
+    text "इस अनुरोध में एक उद्धरण चिह्न खुलता है और कभी बंद नहीं होता (`{fragment}`), इसलिए मैं उद्धृत पाठ को निर्देश से अलग नहीं कर सकता, और कुछ नहीं किया गया। उद्धरण चिह्न बंद करें, या पाठ में अपने उद्धरण चिह्न हों तो «» या बैकटिक का उपयोग करें।"
+  response response_request_quote_unpaired_zh
+    intent request_quote_unpaired
+    language zh
+    text "此请求中的一个引号只有开头没有结尾（`{fragment}`），因此我无法区分引用的文本和指令，未做任何操作。请闭合该引号；文本本身含有引号时，请使用 «» 或反引号。"
+  response response_request_quote_unpaired_es
+    intent request_quote_unpaired
+    language es
+    text "Una comilla de esta solicitud se abre y nunca se cierra (`{fragment}`), así que no puedo distinguir el texto citado de la instrucción y no se hizo nada. Cierre la comilla, o use «» o comillas invertidas cuando el texto contenga comillas propias."
   response response_setting_en
     intent setting
     language en

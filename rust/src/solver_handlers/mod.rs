@@ -471,9 +471,13 @@ pub fn try_translation(
         && let Some((source_lang, target_lang)) = detected_program
     {
         let translated = translate_program(code, source_lang, target_lang);
-        let body = format!(
-            "Translated `{code}` from {source_lang} to {target_lang}:\n\n```{target_lang}\n{translated}\n```"
-        );
+        let slots = [
+            ("code", code.as_str()),
+            ("source", source_lang),
+            ("target", target_lang),
+        ];
+        let heading = translation_text("translation_program_heading", &slots);
+        let body = format!("{heading}\n\n```{target_lang}\n{translated}\n```");
         log.append("language_from", source_lang.to_owned());
         log.append("language_to", target_lang.to_owned());
         let meaning_id = stable_id("meaning", &normalize_code_meaning(code));
@@ -585,18 +589,24 @@ pub fn try_translation(
     ))
 }
 
-fn render_translation_gap(surface: &str, source_slug: &str, target_slug: &str) -> String {
-    let surface = surface.trim();
-    if surface.is_empty() {
-        return format!(
-            "I could not identify a source phrase to translate from {source_slug} to \
-             {target_slug}."
-        );
-    }
-    format!(
-        "I could not translate \"{surface}\" from {source_slug} to {target_slug} with the \
-         available formalization data. I recorded this as a translation gap for follow-up."
+/// A seeded English `translation_*` response with each slot filled once.
+fn translation_text(intent: &str, values: &[(&str, &str)]) -> String {
+    crate::seed::fill_template_once(
+        &crate::seed::localized_response(intent, "en").unwrap_or_default(),
+        values,
     )
+}
+
+/// The seeded gap answer: no phrase named, or a phrase with no translation.
+fn render_translation_gap(surface: &str, source: &str, target: &str) -> String {
+    let surface = surface.trim();
+    let intent = if surface.is_empty() {
+        "translation_gap_no_source"
+    } else {
+        "translation_gap_surface"
+    };
+    let slots = [("surface", surface), ("source", source), ("target", target)];
+    translation_text(intent, &slots)
 }
 
 /// Word-by-word translation of the free sentence a translation request names

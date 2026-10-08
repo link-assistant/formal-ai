@@ -41,6 +41,9 @@ struct GroundedRewrite {
     /// Whether the pattern must occur exactly once (a positional insertion's
     /// anchor), replaced once rather than everywhere.
     unique: bool,
+    /// Whether the replacement holds the pattern, so it is applied in one
+    /// pass rather than rewritten until no pattern is left (PR #1188 G78).
+    single_pass: bool,
     /// The seed sentence that states the change, when it is not the
     /// rename/replace one (a positional insertion's).
     stated: Option<(&'static str, Vec<(&'static str, String)>)>,
@@ -139,6 +142,15 @@ pub(super) fn plan_workspace_change_step(
             current_turn,
             tool_names,
             &inserts,
+        );
+    }
+    // Several replacements asked in one sentence are made in order (G82).
+    if let Some(change) = super::workspace_computed_change::grounded_replace_list(task) {
+        return super::workspace_computed_change::plan_computed_change_step(
+            task,
+            current_turn,
+            tool_names,
+            &change,
         );
     }
     if let Some(rewrite) = grounded_rewrite(task) {
@@ -242,6 +254,11 @@ fn plan_rewrite_step(
         RewriteScope::Substring => source.match_indices(&rewrite.pattern).count(),
         RewriteScope::Word => word_scoped_matches(&source, &rewrite.pattern).len(),
     };
+    if occurrences > 1
+        && let Some(answer) = super::edit_scope::scoped_decline(task, &rewrite.target, &source)
+    {
+        return Some(AgenticPlan::Final(answer));
+    }
     if occurrences == 1 {
         // The bare pattern when it is unique in the file; otherwise the
         // smallest unique run of changed lines -- the edit tool refuses an
@@ -461,6 +478,11 @@ fn as_written(source: &str, rewrite: &GroundedRewrite) -> Option<GroundedRewrite
 }
 
 fn rewritten_source(source: &str, rewrite: &GroundedRewrite) -> Option<String> {
+    if rewrite.single_pass {
+        return source
+            .contains(rewrite.pattern.as_str())
+            .then(|| source.replace(rewrite.pattern.as_str(), &rewrite.replacement));
+    }
     if rewrite.unique {
         let (start, old, new) = anchored_lines(source, rewrite)?;
         return Some([&source[..start], new.as_str(), &source[start + old.len()..]].concat());
@@ -568,6 +590,7 @@ fn grounded_positional_insert(task: &str) -> Option<GroundedRewrite> {
         scope: RewriteScope::Substring,
         renaming: false,
         unique: true,
+        single_pass: false,
         verbatim: None,
     })
 }
@@ -614,7 +637,10 @@ fn grounded_rewrite(task: &str) -> Option<GroundedRewrite> {
         .map(String::as_str)
         .map(super::positional_edit::unescape_prose_newlines)
         .collect();
-    let is_quoted = |value: &String| quoted.contains(value);
+    // A literal quoted whole counts even when backtick spans inside it pair
+    // among themselves (PR #1188 G63).
+    let is_quoted =
+        |value: &String| quoted.contains(value) || crate::normal_markov::quotes_whole(task, value);
     let operands = if is_quoted(&old_clause) && is_quoted(&new_clause) {
         Some((old_clause, new_clause))
     } else if renaming {
@@ -647,9 +673,13 @@ fn grounded_rewrite(task: &str) -> Option<GroundedRewrite> {
     } else {
         RewriteScope::Substring
     };
-    if old.is_empty() || old == new || (scope == RewriteScope::Substring && new.contains(&old)) {
+    if old.is_empty() || old == new {
         return None;
     }
+    // A new text holding the old one (`key 3` → `key 33`) is replaced in one
+    // pass over the file, never rewritten again inside its own result (PR
+    // #1188 G78).
+    let single_pass = scope == RewriteScope::Substring && new.contains(&old);
     Some(GroundedRewrite {
         target,
         pattern: old,
@@ -657,6 +687,7 @@ fn grounded_rewrite(task: &str) -> Option<GroundedRewrite> {
         scope,
         renaming: renaming && scope == RewriteScope::Word,
         unique: false,
+        single_pass,
         stated: None,
         verbatim,
     })

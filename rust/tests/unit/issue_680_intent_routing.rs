@@ -214,7 +214,7 @@ fn write_intent_is_not_stolen_by_the_edit_router() {
     // "add hello to config.txt" asks for an addition, which is never the file's
     // whole new content (PR #1188: `Add <content> to <file>` once replaced
     // `m.test.mjs` with the sentence it was asked to add). It must not become an
-    // edit either. Appending an unquoted addition is still an open gap, so no
+    // edit either. An unquoted addition earns a seeded question (G69), so no
     // step is planned for it.
     let messages = vec![ChatMessage::user("add hello to config.txt")];
     if let Some(AgenticPlan::ToolCalls(calls)) =

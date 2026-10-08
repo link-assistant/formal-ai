@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=c766e6a90482817bfebc2c302e7051b11ecda5482c91e6901384ff0fc4e72812 bytes=9381
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=f62e0b9b1bb1501903e77e00b9d628fcec5b6c7b465e4aa1b4769969e38fe712 bytes=10042
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:prelude begin
@@ -37,6 +37,9 @@ pub const WRITE_PROGRAM_INTENT: &str = "write_program";
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal arrow function
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal optional chaining
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal arrow function

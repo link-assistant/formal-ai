@@ -233,7 +233,7 @@ pub(super) fn render_seeded_change(
     ))
 }
 
-/// A placeholder the seed sentence wraps in backticks becomes a CommonMark
+/// A placeholder the seed sentence wraps in backticks becomes a `CommonMark`
 /// code span: a value holding a backtick run gets a longer fence, padded when
 /// it starts or ends with a backtick, so the inserted text reads back verbatim.
 fn code_span_item(value: &str) -> String {

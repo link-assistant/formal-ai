@@ -1,7 +1,7 @@
 write_program
   intent write_program
   parameters "language, task"
-  tasks ("hello_world" "count_to_three" "list_files" "list_files_arg" "list_files_reverse_sort" "list_files_arg_reverse_sort" "fizzbuzz" "factorial" "reverse_string" "sum_to_ten" "fibonacci" "copy_stdin_to_stdout")
+  tasks ("hello_world" "count_to_three" "list_files" "list_files_arg" "list_files_reverse_sort" "list_files_arg_reverse_sort" "fizzbuzz" "factorial" "reverse_string" "sum_to_ten" "fibonacci" "copy_stdin_to_stdout" "print_text")
   languages ("rust" "python" "javascript" "typescript" "go" "c" "cpp" "java" "csharp" "ruby" "scala" "kotlin" "php" "laravel")
   source "local public-domain seed templates"
 task_hello_world
@@ -65,6 +65,11 @@ task_copy_stdin_to_stdout
   aliases "copy standard input to standard output, copy stdin to stdout, copies standard input to standard output, copies stdin to stdout, read stdin and write it to stdout, echo stdin to stdout, copy input to output, stdin to stdout, скопировать стандартный ввод в стандартный вывод, копировать стандартный ввод в стандартный вывод, скопируй stdin в stdout, скопировать stdin в stdout, стандартный ввод в стандартный вывод, из stdin в stdout, मानक इनपुट को मानक आउटपुट में कॉपी करें, मानक इनपुट को मानक आउटपुट में कॉपी, stdin को stdout में कॉपी करें, stdin से stdout, 将标准输入复制到标准输出, 把标准输入复制到标准输出, 标准输入复制到标准输出, 标准输入到标准输出, copiar la entrada estándar a la salida estándar, copiar entrada estándar a salida estándar, copia la entrada estándar a la salida estándar, copia stdin a stdout, copiar stdin a stdout, de stdin a stdout"
   output "hello\nworld"
   input "hello\nworld\n"
+task_print_text
+  task print_text
+  label "print text"
+  output "{operand}"
+  procedure hello_world
 template_hello_world_rust
   intent write_program
   language rust

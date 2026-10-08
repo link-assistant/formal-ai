@@ -494,11 +494,6 @@ prompt_patterns
     language en
     kind phrase
     text "how is it going"
-  pattern pattern_wellbeing_phrase_how_s_it_going_en
-    intent wellbeing
-    language en
-    kind phrase
-    text "how s it going"
   pattern pattern_wellbeing_phrase_how_are_things_en
     intent wellbeing
     language en

@@ -144,6 +144,8 @@ function keyedValue(line, at, key, declared) {
  * at that indentation (unless `next` brings its own); with none, the one
  * occurrence of `old` in the file. After a `context` (found once), only the
  * first such line below it, and never a bare occurrence. Otherwise null.
+ * Several lines (`old` holds a line break) are one consecutive block, found
+ * once but for each line's indentation (PR #1188 G80).
  */
 export function replacedLines(source, old, next, context = null) {
   const lines = source.split('\n');
@@ -156,6 +158,13 @@ export function replacedLines(source, old, next, context = null) {
   const bare = (line) => (line.endsWith('\r') ? line.slice(0, -1) : line);
   const indentOf = (line) => /^[ \t]*/u.exec(line)[0];
   const stripped = (text) => text.replace(/^[ \t]+|[ \t]+$/gu, '');
+  const starts = old.includes('\n') ? lineBlockStarts(source, old, from) : [];
+  if (starts.length > 0) {
+    if (context === null && starts.length > 1) return null;
+    const indent = /^[ \t]/u.test(next) ? '' : indentOf(lines[starts[0]]);
+    const placed = next.split('\n').map((line) => (line === '' ? '' : `${indent}${line}`));
+    return [...lines.slice(0, starts[0]), ...placed, ...lines.slice(starts[0] + old.split('\n').length)].join('\n');
+  }
   const exact = lines.map((line, index) => index >= from && bare(line) === old);
   const loose = lines.map((line, index) => index >= from && stripped(old) !== '' && stripped(bare(line)) === stripped(old));
   let chosen = exact.includes(true) ? exact : loose.includes(true) ? loose : null;
@@ -171,4 +180,20 @@ export function replacedLines(source, old, next, context = null) {
     if (!chosen[index]) return line;
     return `${indented ? indentOf(line) : ''}${next}${line.slice(bare(line).length)}`;
   }).join('\n');
+}
+
+/**
+ * Mirrors `fn line_block_starts`: the indices of the lines, from line `from`
+ * on, where the lines of `block` stand one after another, each but for its
+ * indentation (PR #1188 G80).
+ */
+export function lineBlockStarts(source, block, from = 0) {
+  const stripped = (text) => (text.endsWith('\r') ? text.slice(0, -1) : text).replace(/^[ \t]+|[ \t]+$/gu, '');
+  const lines = source.split('\n').map(stripped);
+  const wanted = block.split('\n').map(stripped);
+  const starts = [];
+  for (let at = from; at + wanted.length <= lines.length; at += 1) {
+    if (wanted.every((line, offset) => lines[at + offset] === line)) starts.push(at);
+  }
+  return starts;
 }

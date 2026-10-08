@@ -284,6 +284,30 @@ shell_intents
     runner
       extension "go"
       command "go test ./..."
+  result_command_words
+    # PR #1188 G75: a shell command's own word tells a listing or a search
+    # result apart, never a word inside its operands (`sed … allowlist.txt`).
+    command
+      word "ls"
+      kind "listing"
+    command
+      word "tree"
+      kind "listing"
+    command
+      word "dir"
+      kind "listing"
+    command
+      word "grep"
+      kind "search"
+    command
+      word "rg"
+      kind "search"
+    command
+      word "find"
+      kind "search"
+    command
+      word "ag"
+      kind "search"
   content_search
     # PR #1188 T90 (gap G12): the shell fallback of the workspace content
     # search when the client advertises no grep tool. `{mode}` is `w` for an

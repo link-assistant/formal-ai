@@ -5,7 +5,7 @@
 //! workspace's files. The seeded `workspace_content_search_form` slot forms
 //! (every registered language) read the searched pattern out of the request;
 //! the arm greps it -- the client's grep tool when advertised, else `grep -rn`
-//! through the shell -- and answers with the file:line hits, or a seeded
+//! through the shell -- and answers with the `file:line` hits, or a seeded
 //! not-found naming the pattern and the scope. It runs ahead of the file-name
 //! locate arm and of web search. Twin of `js/agentic/workspace_search.mjs`.
 
@@ -287,6 +287,11 @@ fn is_identifier(pattern: &str) -> bool {
 pub fn content_search_for(task: &str) -> Option<ContentSearch> {
     let padded = format!(" {} ", crate::engine::normalize_prompt(task));
     if seed::lexicon().mentions_role_raw(ROLE_WEB_MEDIUM, &padded) {
+        return None;
+    }
+    // An explicit command (`execute grep TODO note.txt`) runs as written; it
+    // is not a search request to lower (PR #1188 CIFIX2).
+    if super::shell_command::explicit_passthrough_command(task).is_some() {
         return None;
     }
     let chars: Vec<char> = task.chars().collect();

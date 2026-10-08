@@ -3,10 +3,11 @@
 
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
+import { renderSeededChange } from './code_task.mjs';
 import { finalAnswer, jsonText, planOne } from './plan.mjs';
 import { Progress } from './progress.mjs';
 import { requestBlocks } from './stated_request.mjs';
-import { latestTurnAnswer, render, renderFailure } from './tool_result.mjs';
+import { latestTurnAnswer, latestTurnQuietSuccess, render, renderFailure } from './tool_result.mjs';
 import { statedWebSearchQueryForBlock } from './web_research.mjs';
 import { composeEditRequest } from './write_request.mjs';
 import { eqIgnoreAsciiCase } from './crate/rust_str.mjs';
@@ -73,7 +74,13 @@ export function planEditStep(task, messages, toolNames) {
   const progress = Progress.scan(messages);
   if (progress.done(Capability.Edit)) {
     const answer = latestTurnAnswer(messages, toolNames, task);
-    return answer === null ? null : finalAnswer(answer);
+    if (answer === null) return null;
+    // An edit tool's quiet reply is its success: the answer names the
+    // replacement, not the empty output (PR #1188 T181).
+    const stated = latestTurnQuietSuccess(messages)
+      ? renderSeededChange('coding_text_replaced_unchecked', task, target, [['{old}', old], ['{new}', replacement]])
+      : null;
+    return finalAnswer(stated ?? answer);
   }
   const readTool = toolFor(toolNames, Capability.Read);
   if (readTool !== null && !progress.done(Capability.Read)) {

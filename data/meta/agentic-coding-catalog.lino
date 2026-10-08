@@ -7,13 +7,15 @@
 # catalog stores each program once (issue #1165 R1165-8). The rows after the
 # compiled ones are the pairs the seed bundle retires to the documentation
 # route, in seed order: the Rust table appends them when it is first read,
-# with the program the documentation captures rediscover (R1165-4).
+# with the program the documentation captures rediscover (R1165-4). A check
+# or run command a captured documentation page states is left out, as the
+# Rust rows leave it empty: the page states it, through the policy seed's
+# command_procedure rows (R1165-6).
 coding_catalog
   language rust
     name "Rust"
     code_fence "rust"
     check_command "rustc main.rs -o main"
-    run_command "./main"
     notes "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."
     source "local Links Notation write-program seed"
     save_as "main.rs"
@@ -36,7 +38,6 @@ coding_catalog
   language typescript
     name "TypeScript"
     code_fence "typescript"
-    check_command "tsc hello.ts"
     run_command "node hello.js"
     notes "The TypeScript seed is returned with this warning until a tsc-backed execution profile is available."
     source "local Links Notation write-program seed"
@@ -67,8 +68,6 @@ coding_catalog
   language java
     name "Java"
     code_fence "java"
-    check_command "javac Main.java"
-    run_command "java Main"
     notes "The Java seed is returned with this warning until a javac-backed execution profile is available."
     source "local Links Notation write-program seed"
     save_as "Main.java"
@@ -99,8 +98,6 @@ coding_catalog
   language kotlin
     name "Kotlin"
     code_fence "kotlin"
-    check_command "kotlinc Main.kt -include-runtime -d Main.jar"
-    run_command "java -jar Main.jar"
     notes "The Kotlin seed is returned with this warning until a kotlinc-backed execution profile is available."
     source "local Links Notation write-program seed"
     save_as "Main.kt"
@@ -185,6 +182,10 @@ coding_catalog
     label "copy standard input to standard output"
     output "hello\nworld"
     input "hello\nworld\n"
+  task print_text
+    label "print text"
+    output "{operand}"
+    input ""
   template "count_to_three:rust"
     task_slug count_to_three
     language_slug rust

@@ -402,19 +402,15 @@ meanings
     role clarification_request
     lexeme en
       surface
-        text "i don t understand"
+        text "i do not understand"
       surface
         text "i dont understand"
       surface
-        text "i didn t understand"
+        text "i did not understand"
       surface
         text "i didnt understand"
       surface
-        text "don t understand"
-      surface
         text "dont understand"
-      surface
-        text "didn t understand"
       surface
         text "didnt understand"
       surface
@@ -422,15 +418,11 @@ meanings
       surface
         text "did not understand"
       surface
-        text "don t get it"
-      surface
         text "dont get it"
       surface
         text "do not get it"
       surface
         text "what do you mean"
-      surface
-        text "i m confused"
       surface
         text "im confused"
       surface

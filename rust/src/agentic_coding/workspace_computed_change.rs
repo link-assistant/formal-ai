@@ -81,6 +81,8 @@ pub(super) enum Computation {
         text: String,
         at_end: bool,
     },
+    /// Each `(old, new)` pair replaced everywhere, in order (PR #1188 G82).
+    ReplaceList { pairs: Vec<(String, String)> },
 }
 
 /// A computed change: the file, how its bytes are computed, and the seed
@@ -184,9 +186,34 @@ pub(super) fn edits_inside_a_file(prompt: &str) -> bool {
 /// Whether the request names a line outside its quotes: the seeded `line`
 /// meaning (`the line containing '…'`, `lines`, `строку`, `पंक्ति`, `的行`).
 pub(super) fn names_line(task: &str) -> bool {
+    // A path's own words are no line: `x-line.lino` names a file (PR #1188 G83).
     seed::lexicon()
         .meaning("line")
-        .is_some_and(|meaning| meaning.evidenced_in(&outside_quotes(task)))
+        .is_some_and(|meaning| meaning.evidenced_in(&outside_quotes(&without_path_words(task))))
+}
+
+/// `task` with every unquoted path token blanked.
+///
+/// A path's own words (`x-line.lino`, `line-budget.lino`) never read as the
+/// words of the request (PR #1188 G83; mirrors `withoutPathWords`).
+pub(super) fn without_path_words(task: &str) -> String {
+    let segments = quoted_segment_spans(task);
+    let mut out = task.to_owned();
+    for token in super::write_request::tokens(task).iter().rev() {
+        if segments
+            .iter()
+            .any(|segment| token.start < segment.end && token.end > segment.start)
+        {
+            continue;
+        }
+        let path = super::write_request::clean_path_token(token.text);
+        if super::write_request::looks_like_file_path(path)
+            && super::write_request::safe_relative_path(path)
+        {
+            out.replace_range(token.start..token.end, &" ".repeat(token.end - token.start));
+        }
+    }
+    out
 }
 
 /// The lowered request outside its quotes.
@@ -209,6 +236,25 @@ fn quoted_payload_and_path(task: &str) -> Option<(String, String)> {
 /// A whole-line operation (numbered, adjacent, moved or swapped lines) as a
 /// computed change. It is read before a rewrite: `move 'x' after 'y'` is not
 /// an insertion (PR #1188).
+/// Several quoted replacements in one file, asked in one sentence, as one
+/// computed change (PR #1188 G82; mirrors `groundedReplaceList`).
+pub(super) fn grounded_replace_list(task: &str) -> Option<ComputedChange> {
+    let (target, pairs) = super::replace_list::replace_list(task)?;
+    let listed: Vec<String> = pairs
+        .iter()
+        .map(|(old, new)| format!("`{old}` → `{new}`"))
+        .collect();
+    Some(ComputedChange {
+        target,
+        intent: "coding_texts_replaced",
+        slots: vec![
+            (concat!("{", "pairs", "}"), listed.join(", ")),
+            (concat!("{", "count", "}"), pairs.len().to_string()),
+        ],
+        computation: Computation::ReplaceList { pairs },
+    })
+}
+
 pub(super) fn grounded_line_change(task: &str) -> Option<ComputedChange> {
     let change = grounded_line_operation(task)?;
     Some(ComputedChange {
@@ -225,9 +271,14 @@ pub(super) fn grounded_end_insertion(task: &str) -> Option<ComputedChange> {
     // `Append these lines to f:` followed by lines: the first line is the
     // request and the lines under it are the text added, verbatim (PR #1188).
     let block = super::positional_edit::introduced_block(task);
-    let sentence = block.as_ref().map_or(task, |block| block.head);
-    let at_end = mentions("file_edit_position_end", sentence);
-    if at_end == mentions("file_edit_position_start", sentence) {
+    // Position cues are read outside the quoted payload: a line saying "at the
+    // start of x" is text being appended (PR #1188 G64).
+    let cues = block
+        .as_ref()
+        .map_or_else(|| outside_quotes(task), |block| sentence_words(block.head));
+    let lexicon = seed::lexicon();
+    let at_end = lexicon.mentions_role("file_edit_position_end", &cues);
+    if at_end == lexicon.mentions_role("file_edit_position_start", &cues) {
         return None;
     }
     // `… at the end of the section '## Usage' in README.md` (PR #1188 G35).
@@ -441,7 +492,12 @@ fn grounded_line_replacement(task: &str) -> Option<ComputedChange> {
     // they were fenced or quoted.
     let block =
         super::positional_edit::introduced_block(task).filter(|block| block.text == replacement);
-    if !quoted.contains(&original)
+    // Listed lines (`the three lines 'a', 'b' and 'c'`) are quoted one by one (G80).
+    let listed = !quoted.contains(&original);
+    if (listed
+        && !original
+            .split('\n')
+            .all(|line| quoted.iter().any(|text| text == line)))
         || (block.is_none() && !quoted.contains(&replacement))
         || original.is_empty()
         || original == replacement
@@ -451,7 +507,18 @@ fn grounded_line_replacement(task: &str) -> Option<ComputedChange> {
     Some(ComputedChange {
         target,
         intent: "coding_text_replaced",
-        slots: vec![("{old}", original.clone()), ("{new}", replacement.clone())],
+        // Listed lines are named one by one, not as one span holding line breaks.
+        slots: vec![
+            (
+                "{old}",
+                if listed {
+                    original.replace('\n', "`, `")
+                } else {
+                    original.clone()
+                },
+            ),
+            ("{new}", replacement.clone()),
+        ],
         computation: Computation::LineReplacement {
             old: original,
             new: replacement,
@@ -562,6 +629,9 @@ impl ComputedChange {
                 })
                 .flatten()
                 .map(|(updated, _)| updated),
+            Computation::ReplaceList { pairs } => (!missing)
+                .then(|| super::replace_list::replaced_in_order(source, pairs))
+                .flatten(),
         }
     }
 
@@ -589,7 +659,8 @@ impl ComputedChange {
             | Computation::TypoFix { .. }
             | Computation::DeclarationRemoval { .. }
             | Computation::Line(_)
-            | Computation::Section { .. } => changed_lines_edit(source, updated),
+            | Computation::Section { .. }
+            | Computation::ReplaceList { .. } => changed_lines_edit(source, updated),
         }
     }
 }
@@ -742,6 +813,9 @@ pub(super) fn plan_computed_change_step(
     } else {
         source_from_read_result(&read)
     };
+    if let Some(answer) = super::edit_scope::scoped_decline(task, target, &source) {
+        return Some(AgenticPlan::Final(answer));
+    }
     let Some(updated) = change
         .compute(&source, missing)
         .filter(|updated| *updated != source)

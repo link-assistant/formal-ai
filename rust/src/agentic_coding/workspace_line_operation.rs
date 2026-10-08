@@ -852,8 +852,11 @@ pub(super) fn grounded_line_operation(task: &str) -> Option<LineChange> {
         }
         _ => return None,
     }
+    let unpathed = crate::solver_handlers::text_outside_quoted_segments(
+        &super::workspace_computed_change::without_path_words(task),
+    );
     let names_line = lexicon.meaning("line").is_some_and(|meaning| {
-        meaning.evidenced_in(&crate::engine::normalize_prompt(&outside_text).to_lowercase())
+        meaning.evidenced_in(&crate::engine::normalize_prompt(&unpathed).to_lowercase())
     });
     let above = above?;
     if !removing || !names_line {
@@ -904,11 +907,14 @@ fn moved(payloads: &[String], outside: &str) -> Option<(LineOperation, &'static 
             ))
         }
         [text, anchor] => {
+            // `so that it follows the line …` states the place by the line it
+            // ends up beside (PR #1188 G81).
             let after = either_of(
                 outside,
                 "file_edit_position_after",
                 "file_edit_position_before",
-            )?;
+            )
+            .or_else(|| either_of(outside, "line_move_after_cue", "line_move_before_cue"))?;
             Some((
                 LineOperation::Move {
                     text: text.clone(),

@@ -13,8 +13,9 @@
 use super::directory_listing::asks_for_directory_listing;
 use super::file_path_shape::{is_dotted_number, trim_trailing_sentence_dot};
 use super::shell_command_policy::{
-    governs_commands_rather_than_requesting_one, is_prose_word, named_shell_command_in_sentence,
-    normalize_command_word, sentence_spans, states_a_command_policy,
+    command_span, governs_commands_rather_than_requesting_one, is_prose_word,
+    named_shell_command_in_sentence, normalize_command_word, sentence_spans,
+    states_a_command_policy,
 };
 use crate::seed::{
     self, ShellIntent, ShellIntentArgument, ShellIntentVocabulary, TerminalCommandVocabulary,
@@ -123,11 +124,7 @@ fn prefixed_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Op
         .iter()
         .filter(|prefix| prefix_boundary(&lower, prefix))
         .max_by_key(|prefix| prefix.chars().count())?;
-    let remainder = prompt.get(prefix.len()..)?.trim_start();
-    let remainder = remainder
-        .strip_prefix(':')
-        .unwrap_or(remainder)
-        .trim_start();
+    let remainder = command_span(prompt.get(prefix.len()..)?.trim_start())?;
     let remainder = trim_command_sentence_end(strip_balanced_outer_quotes(remainder));
     if let Some(named) = command_named_in_prose(remainder, vocab) {
         return Some(named);

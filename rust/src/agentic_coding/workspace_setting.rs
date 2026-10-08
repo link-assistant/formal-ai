@@ -256,6 +256,8 @@ fn keyed_value<'a>(
 /// `new` brings its own); with none, the one occurrence of `old` in the file.
 /// After a `context` (found once), only the first such line below it, and
 /// never a bare occurrence. `None` otherwise (mirrors `replacedLines`).
+/// Several lines (`old` holds a line break) are one consecutive block, found
+/// once but for each line's indentation (PR #1188 G80).
 pub(super) fn replaced_lines(
     source: &str,
     old: &str,
@@ -275,6 +277,40 @@ pub(super) fn replaced_lines(
     };
     let bare = |line: &str| line.strip_suffix('\r').unwrap_or(line).len();
     let stripped = |text: &str| text.trim_matches([' ', '\t']).to_owned();
+    let starts = if old.contains('\n') {
+        line_block_starts(source, old, from)
+    } else {
+        Vec::new()
+    };
+    if let Some(&at) = starts.first() {
+        if context.is_none() && starts.len() > 1 {
+            return None;
+        }
+        let indent = if new.starts_with([' ', '\t']) {
+            ""
+        } else {
+            &lines[at][..lines[at].len() - lines[at].trim_start_matches([' ', '\t']).len()]
+        };
+        let placed = new.split('\n').map(|line| {
+            if line.is_empty() {
+                String::new()
+            } else {
+                [indent, line].concat()
+            }
+        });
+        let kept = |range: &[&str]| {
+            range
+                .iter()
+                .map(|line| (*line).to_owned())
+                .collect::<Vec<_>>()
+        };
+        let replaced: Vec<String> = kept(&lines[..at])
+            .into_iter()
+            .chain(placed)
+            .chain(kept(&lines[at + old.split('\n').count()..]))
+            .collect();
+        return Some(replaced.join("\n"));
+    }
     let exact: Vec<bool> = lines
         .iter()
         .enumerate()
@@ -319,4 +355,26 @@ pub(super) fn replaced_lines(
         })
         .collect();
     Some(replaced.join("\n"))
+}
+
+/// The indices of the lines where the lines of `block` stand in a run.
+///
+/// From line `from` on, each line but for its indentation (PR #1188 G80;
+/// mirrors `lineBlockStarts`).
+pub(super) fn line_block_starts(source: &str, block: &str, from: usize) -> Vec<usize> {
+    let stripped = |text: &str| {
+        text.strip_suffix('\r')
+            .unwrap_or(text)
+            .trim_matches([' ', '\t'])
+            .to_owned()
+    };
+    let lines: Vec<String> = source.split('\n').map(stripped).collect();
+    let wanted: Vec<String> = block.split('\n').map(stripped).collect();
+    (from..=lines.len().saturating_sub(wanted.len()))
+        .filter(|&at| {
+            lines
+                .get(at..at + wanted.len())
+                .is_some_and(|run| run == wanted.as_slice())
+        })
+        .collect()
 }

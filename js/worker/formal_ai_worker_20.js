@@ -18,6 +18,8 @@ async function solve(prompt, history, prefs, userContext = {}, memory = [], opti
     // Meanings learned in earlier sessions come back through memory; the
     // ones learned now leave as this answer's memory operation.
     metaImportLearned(memory);
+    const diagnostic = await tryDiagnosticMarker(prompt, (inner) => solve(inner, history, prefs, userContext, memory, options));
+    if (diagnostic) return diagnostic;
     const answer = await solveImpl(prompt, history, prefs, userContext, memory, options);
     return metaAttachLearned(await metaResolveImpasse(prompt, answer, prefs));
   } finally {
@@ -316,6 +318,8 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     return finalize(events, steps, toolCalls, githubRepoInfo, formalizationContext);
   }
 
+  const nlTool = tryNaturalLanguageToolRequest(prompt, preferences); // the nl_tool prelude row, ahead of feature_capability as natively
+  if (nlTool) return finalizeInlineHandler(events, steps, toolCalls, nlTool, "tryNaturalLanguageToolRequest", formalizationContext);
   const capabilities = !isAssistantFreeTimePrompt(normalized, prompt)
     && claimRouteRun("tryCapabilities", prompt, normalized, history, () => tryCapabilities(prompt, normalized, preferences, history));
   if (capabilities) {

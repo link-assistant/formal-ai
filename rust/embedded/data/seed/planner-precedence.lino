@@ -39,8 +39,7 @@ planner_precedence
   google_trends_learning # before the sibling catalog recipe; both legitimately name "Google Trends"
   google_trends_catalog # the trends catalog recipe, behind its learning sibling
   question_catalog # enumerate every possible question smallest-first; its keywords are disjoint from the sibling recipes (issue 527)
-  file_analysis # a request to inspect named files and report findings is a typed read plus audit, not an issue report (issue 1138 self-use)
-  workspace_search # a request for the places a name or literal is used inside the workspace files greps it and lists file:line hits, ahead of the file-name locate arm and web search (PR 1188 T90)
+  file_analysis # a request to inspect named files and report findings is a typed read plus audit, not an issue report (issue 1138 self-use); after it, a request for the places a name or literal is used inside the workspace files greps it and lists file:line hits, ahead of the file-name locate arm and web search (PR 1188 T90)
   report_flow # the agent-mode counterpart of the report action of the web UI; a conversation state machine (issues 687, 822)
   conversation_recall # recall answers from earlier turns of the conversation before any route re-reads them
   follow_up_answer # a follow-up on a tool result is answered from that result, not re-planned

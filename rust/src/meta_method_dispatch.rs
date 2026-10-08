@@ -56,7 +56,7 @@ pub fn try_dispatch(
                 .map(|method| method.name.clone())
         })
         .collect();
-    let method_names = registry.ordered_method_names_for_relevants(&intent_formalization.relevants);
+    let method_names = registry.dispatch_order(&intent_formalization.relevants);
     let runtime = MethodRuntime::new(solver.config);
     let mut capability_route_checked = false;
 
@@ -899,7 +899,7 @@ fn try_attributed_runtime(
 ) -> Option<SymbolicAnswer> {
     let kind = execution.runtime?;
     let answer = match kind {
-        MethodRuntimeKind::Diagnostic => try_diagnostic(solver, prompt, normalized, log),
+        MethodRuntimeKind::Diagnostic => try_diagnostic(solver, prompt, log),
         MethodRuntimeKind::NaturalLanguageTool => {
             try_natural_language_tool_request(prompt, normalized, log, solver.config.agent_mode)
         }
@@ -919,18 +919,17 @@ fn try_attributed_runtime(
 fn try_diagnostic(
     solver: &UniversalSolver,
     prompt: &str,
-    normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
-    if !normalized.contains("[diagnostic]") {
-        return None;
-    }
+    let (marker, _) = crate::rule_interpreter::handler_table_rows("diagnostic_marker")
+        .iter()
+        .find(|(marker, _)| !marker.is_empty() && prompt.contains(marker.as_str()))?;
     log.append("diagnostic_mode", "active".to_owned());
-    let stripped = prompt.replace("[diagnostic]", "").trim().to_owned();
+    let stripped = prompt.replace(marker.as_str(), "").trim().to_owned();
     let inner_solver = UniversalSolver::new(solver.config);
     let inner = inner_solver.solve(&stripped);
     let mut decorated = inner.answer.clone();
-    decorated.push_str("\n\n[diagnostic]\n");
+    let _ = writeln!(decorated, "\n\n{marker}");
     decorated.push_str(inner.links_notation.trim_end());
     decorated.push('\n');
     for link in &inner.evidence_links {

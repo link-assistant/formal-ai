@@ -341,7 +341,10 @@ export function groundedLineOperation(task) {
   if (mentionsRole('line_move_action', outside)) {
     const [text, anchor] = payloads;
     const atStart = eitherOf(outside, 'file_edit_position_start', 'file_edit_position_end');
-    const after = eitherOf(outside, 'file_edit_position_after', 'file_edit_position_before');
+    // `so that it follows the line …` states the place by the line it ends
+    // up beside (PR #1188 G81).
+    const after = eitherOf(outside, 'file_edit_position_after', 'file_edit_position_before')
+      ?? eitherOf(outside, 'line_move_after_cue', 'line_move_before_cue');
     if (payloads.length === 1 && atStart !== null) {
       const destination = atStart ? 'start' : 'end';
       return change((source) => movedLine(source, text, destination, null), `line_moved_${destination}`, [['{old}', text]]);
@@ -391,7 +394,7 @@ export function groundedLineOperation(task) {
     }
     return null;
   }
-  const namesLine = meaningEvidencedIn('line', normalizePrompt(textOutsideQuotedSegments(task)).toLowerCase());
+  const namesLine = meaningEvidencedIn('line', normalizePrompt(textOutsideQuotedSegments(withoutPathWords(task))).toLowerCase());
   if (removing && namesLine && above !== null && (payloads.length === 1 || payloads.length === 2)) {
     const [anchor, neighbour = null] = payloads;
     return change((source) => removedAdjacent(source, anchor, neighbour, above), 'coding_text_remove', [['{old}', anchor]], {
@@ -409,6 +412,25 @@ export function groundedLineOperation(task) {
 
 /** A file below this many lines is too short for "most of it" to mean anything. */
 const MIN_GUARDED_LINES = 8;
+
+/**
+ * Mirrors `fn without_path_words`: `task` with every unquoted path token
+ * blanked, so a path's own words (`x-line.lino`, `line-budget.lino`) never
+ * read as the words of the request (PR #1188 G83).
+ * @param {string} task
+ */
+export function withoutPathWords(task) {
+  const segments = quotedSegmentSpans(task);
+  let out = task;
+  for (const token of tokens(task).reverse()) {
+    if (segments.some((segment) => token.start < segment.end && token.end > segment.start)) continue;
+    const path = cleanPathToken(token.text);
+    if (looksLikeFilePath(path) && safeRelativePath(path)) {
+      out = `${out.slice(0, token.start)}${' '.repeat(token.end - token.start)}${out.slice(token.end)}`;
+    }
+  }
+  return out;
+}
 
 /**
  * Mirrors `fn drops_most_of_file`: whether `updated` keeps fewer than half of

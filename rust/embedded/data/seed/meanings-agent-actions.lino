@@ -863,3 +863,67 @@ meanings
     unit "not applicable"
     example "software_followup_verification for test"
     grounding "data/seed/handler-rules.lino"
+  diagnostic_marker
+    defined-by method
+    role action
+    precondition "a request asks to see the reasoning trace beside its answer"
+    effect "reads the per-message marker that asks for the trace and heads the evidence and trace block added after the answer"
+    unit "not applicable"
+    example "[diagnostic] for section"
+    grounding "data/seed/handler-rules.lino"
+  installation_conversion_action
+    defined-by method
+    role action
+    precondition "a request may ask to convert an installation guide or script"
+    effect "names the conversion verbs whose presence marks the request"
+    unit "not applicable"
+    example "convert"
+    grounding "data/seed/handler-rules.lino"
+  installation_conversion_surface
+    defined-by method
+    role action
+    precondition "a conversion request may name an installation or deployment guide"
+    effect "names the guide surfaces a conversion reads"
+    unit "not applicable"
+    example "installation guide"
+    grounding "data/seed/handler-rules.lino"
+  installation_conversion_script
+    defined-by method
+    role action
+    precondition "a conversion request may name a shell or PowerShell script"
+    effect "names the script surfaces a conversion reads or writes"
+    unit "not applicable"
+    example "powershell"
+    grounding "data/seed/handler-rules.lino"
+  installation_source_marker
+    defined-by method
+    role action
+    precondition "a conversion request may say which surface it starts from"
+    effect "maps each source phrase to the format it names"
+    unit "not applicable"
+    example "this bash for shell_script"
+    grounding "data/seed/handler-rules.lino"
+  installation_target_marker
+    defined-by method
+    role action
+    precondition "a conversion request may say which surfaces it wants"
+    effect "maps each target phrase to the format or formats it names"
+    unit "not applicable"
+    example "to readme for markdown"
+    grounding "data/seed/handler-rules.lino"
+  installation_prose_word
+    defined-by method
+    role action
+    precondition "a candidate install line may be a wrapped prose note rather than a command"
+    effect "lists the function words that mark a line as prose"
+    unit "not applicable"
+    example "the"
+    grounding "data/seed/handler-rules.lino"
+  installation_verb_action
+    defined-by method
+    role action
+    precondition "an install step is described from the verb of its command"
+    effect "maps a command verb to the step description it stands for"
+    unit "not applicable"
+    example "install for install"
+    grounding "data/seed/handler-rules.lino"

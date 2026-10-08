@@ -191,6 +191,90 @@ pub fn quoted_segment_spans(text: &str) -> Vec<QuotedSegment> {
     result
 }
 
+/// Where a request's quotes stop pairing (PR #1188 G71).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct QuoteFault {
+    /// `escaped` for a backslash before a quote, `unpaired` for an opening
+    /// quote that no literal holds.
+    pub kind: &'static str,
+    /// Byte offset of the backslash or of the lone opening quote.
+    pub at: usize,
+    /// Up to 32 characters of the request from `at`, trailing space trimmed.
+    pub fragment: String,
+}
+
+const ASCII_QUOTES: [char; 3] = ['\'', '"', '`'];
+const OPEN_ONLY: [char; 6] = ['«', '“', '‘', '「', '『', '《'];
+const CLOSE_FOLLOWERS: &str = ".,;:!?)]}";
+const FAULT_FRAGMENT_CHARS: usize = 32;
+
+/// The first place a request's quotes stop pairing, or `None` when they pair.
+///
+/// `escaped` is a backslash before a quote that opens a literal, or before
+/// one that closes it with a word straight after; `unpaired` is an opening
+/// quote no literal holds. An apostrophe (a quote after a letter or digit)
+/// never opens a literal.
+#[must_use]
+pub fn quote_fault(text: &str) -> Option<QuoteFault> {
+    let mut faults = Vec::new();
+    let mut gap_start = 0;
+    for segment in quoted_segment_spans(text) {
+        gap_faults(text, gap_start, segment.start, &mut faults);
+        gap_start = segment.end;
+        let opening = &text[segment.start..];
+        if opening.starts_with(PAIRS[0].0)
+            || !opening
+                .chars()
+                .next()
+                .is_some_and(|open| ASCII_QUOTES.contains(&open))
+        {
+            continue;
+        }
+        if text[..segment.start].ends_with('\\') {
+            faults.push(("escaped", segment.start - 1));
+        }
+        let close_at = segment.end - 1;
+        if segment.end - segment.start > 2
+            && text[..close_at].ends_with('\\')
+            && text[segment.end..]
+                .chars()
+                .next()
+                .is_some_and(|after| !after.is_whitespace() && !CLOSE_FOLLOWERS.contains(after))
+        {
+            faults.push(("escaped", close_at - 1));
+        }
+    }
+    gap_faults(text, gap_start, text.len(), &mut faults);
+    let (kind, at) = faults.into_iter().min_by_key(|&(_, at)| at)?;
+    let fragment = text[at..]
+        .chars()
+        .take(FAULT_FRAGMENT_CHARS)
+        .collect::<String>()
+        .trim_end()
+        .to_owned();
+    Some(QuoteFault { kind, at, fragment })
+}
+
+/// The quote faults between two literals: an escaped quote, or an opening
+/// quote that is not an apostrophe.
+fn gap_faults(text: &str, from: usize, to: usize, faults: &mut Vec<(&'static str, usize)>) {
+    for (offset, character) in text[from..to].char_indices() {
+        let index = from + offset;
+        let ascii = ASCII_QUOTES.contains(&character);
+        if ascii && text[..index].ends_with('\\') {
+            faults.push(("escaped", index - 1));
+        } else if (ascii
+            && !text[..index]
+                .chars()
+                .next_back()
+                .is_some_and(|before| before.is_ascii_alphanumeric()))
+            || OPEN_ONLY.contains(&character)
+        {
+            faults.push(("unpaired", index));
+        }
+    }
+}
+
 /// Remove one pair of client-added framing quotes without consuming literal
 /// operands such as `'old' -> 'new'`.
 #[must_use]
@@ -208,19 +292,45 @@ pub fn unwrap_transport_quotes(text: &str) -> &str {
     trimmed
 }
 
+/// The quote pairs a literal slot is delimited by, the fenced block first.
+const PAIRS: [(&str, &str); 10] = [
+    ("```", "```"),
+    ("'", "'"),
+    ("\"", "\""),
+    ("`", "`"),
+    ("«", "»"),
+    ("“", "”"),
+    ("‘", "’"),
+    ("「", "」"),
+    ("『", "』"),
+    ("《", "》"),
+];
+
+/// Whether `text`, trimmed, opens with a quote and closes with its pair.
+///
+/// Such text is one literal however the quotes inside it pair (PR #1188 G63).
+#[must_use]
+pub fn wrapped_in_quote_pair(text: &str) -> bool {
+    let trimmed = text.trim();
+    PAIRS.iter().any(|(open, close)| {
+        trimmed.len() >= open.len() + close.len()
+            && trimmed.starts_with(open)
+            && trimmed.ends_with(close)
+    })
+}
+
+/// Whether `text` holds `literal` inside one quote pair.
+///
+/// The quotes inside `literal` may pair among themselves (PR #1188 G63).
+#[must_use]
+pub fn quotes_whole(text: &str, literal: &str) -> bool {
+    !literal.is_empty()
+        && PAIRS
+            .iter()
+            .any(|(open, close)| text.contains(&format!("{open}{literal}{close}")))
+}
+
 fn next_delimiter(text: &str, cursor: usize) -> Option<(usize, &'static str, &'static str)> {
-    const PAIRS: [(&str, &str); 10] = [
-        ("```", "```"),
-        ("'", "'"),
-        ("\"", "\""),
-        ("`", "`"),
-        ("«", "»"),
-        ("“", "”"),
-        ("‘", "’"),
-        ("「", "」"),
-        ("『", "』"),
-        ("《", "》"),
-    ];
     PAIRS
         .iter()
         .filter_map(|&(open, close)| next_complete_pair(text, cursor, open, close))

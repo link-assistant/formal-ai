@@ -221,6 +221,14 @@ pub fn discover_and_compose(
     live: bool,
 ) -> (ConceptMap, composition::CompositionOutcome) {
     let mut catalog = discovery_catalog(spec, log, live);
+    // The committed recurrence cache is the browser's procedure memory
+    // (`trySourceRecurrenceSynthesis`); a recurrence the request names enters
+    // composition as a source candidate carrying its source tests, so the
+    // native solver composes the same program offline (issue #1173 p223).
+    if let Some(candidate) = crate::coding::recurrence::cache::source_recurrence_candidate(spec) {
+        log.append("synthesis:source_recurrence", candidate.id.clone());
+        catalog.source_candidates.push(candidate);
+    }
     let mut concepts = discover_over_registry(spec, &catalog, log, live);
     let mut outcome = composition::compose(spec, &concepts);
     if outcome.selected.is_none() {

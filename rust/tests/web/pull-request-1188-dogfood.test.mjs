@@ -151,7 +151,7 @@ describe('PR #1188 dogfood: a replacement edits only what it names', () => {
   test('an anchor that occurs twice does not say where the line goes', async () => {
     const { files, answer } = await drive("Insert 'x' before the line 'same' in t.txt.", { 't.txt': 'same\nsame\n' });
     assert.equal(files.get('t.txt'), 'same\nsame\n');
-    assert.equal(answer, 'Verification failed for `t.txt`: the observed bytes differ from the planned workspace effect.');
+    assert.equal(answer, 'The line `same` occurs 2 times in `t.txt`, so I cannot tell which one places the insert, and nothing was changed. Quote more of the line, or name it by its line number.');
   });
 });
 

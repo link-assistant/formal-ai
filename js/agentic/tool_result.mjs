@@ -9,7 +9,8 @@ import { findToolDefinition } from './protocol_policy.mjs';
 import { requestFor as localSearchRequestFor } from './local_search.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import { detect, fallbackLanguage } from './crate/language.mjs';
-import { cached } from './host.mjs';
+import { cached, childValue, childrenNamed, readText } from './host.mjs';
+import { parseRoot } from './crate/seed_parser.mjs';
 import { textOutsideQuotedSegments } from './crate/coding_program_contract.mjs';
 import { localizedResponse } from './crate/seed.mjs';
 import { appendInvitation } from './crate/failure_reporting.mjs';
@@ -19,6 +20,8 @@ import {
   replaceAllLiteral, splitInclusiveNewline, splitOnce, splitWhitespace, toAsciiLowercase, trim, trimEndMatches,
   trimStart, utf8Len,
 } from './crate/rust_str.mjs';
+
+const SHELL_INTENTS_FILE = 'data/seed/shell-intents.lino';
 
 const ROLE_TOOL_RESULT_DETAIL_REQUEST = 'tool_result_detail_request';
 const ROLE_TOOL_RESULT_FAILURE_SIGNAL = 'tool_result_failure_signal';
@@ -195,6 +198,20 @@ export function latestTurnAnswer(messages, toolNames, prompt) {
   return render(resultLabel(messages, index), plainText(messages[index].content), prompt);
 }
 
+/**
+ * Mirrors `fn latest_turn_quiet_success`: whether the latest tool result of
+ * this turn succeeded with no output, as an edit tool's empty reply does
+ * (PR #1188 T181).
+ */
+export function latestTurnQuietSuccess(messages) {
+  const start = lastIndexWhere(messages, isUser);
+  if (start < 0) return false;
+  const index = lastIndexWhere(messages, isTool, start + 1);
+  if (index < 0) return false;
+  const result = normalize(plainText(messages[index].content));
+  return result.error === null && (result.exit_code === null || result.exit_code === 0) && !trim(result.payload);
+}
+
 /** Mirrors `fn has_latest_turn_result`. */
 export function hasLatestTurnResult(messages) {
   const start = lastIndexWhere(messages, isUser);
@@ -320,6 +337,9 @@ function untrustedInner(text) {
 function parseShellEnvelope(text) {
   const lines = rustLines(untrustedInner(text));
   let exitCode = null;
+  // A call the harness killed (a timeout) names its signal and no exit code
+  // (PR #1188 G77): the kill is the error, and no exit code is invented.
+  const killed = [];
   let end = lines.length;
   while (end > 0) {
     const split = splitOnce(trim(lines[end - 1]), ':');
@@ -329,18 +349,21 @@ function parseShellEnvelope(text) {
       const code = parseI64(trim(split[1]));
       if (code === null) return null;
       exitCode = code;
-    } else if (field !== 'Signal' && field !== agenticMessage('tool_result_process_group_field')) {
+    } else if (field === 'Signal' || field === 'Timeout') {
+      killed.unshift(trim(lines[end - 1]));
+    } else if (field !== agenticMessage('tool_result_process_group_field')) {
       break;
     }
     end -= 1;
   }
-  if (exitCode === null) return null;
+  if (exitCode === null && killed.length === 0) return null;
   const head = lines.slice(0, end);
   const outputAt = head.findIndex((line) => isField(line, 'Output'));
   if (outputAt < 0) return null;
   const errorAt = lastIndexWhere(head, (line) => isField(line, 'Error'), outputAt + 1);
   const output = envelopeSection(lines.slice(outputAt, errorAt < 0 ? end : errorAt), 'Output:');
-  const error = errorAt < 0 ? '' : envelopeSection(lines.slice(errorAt, end), 'Error:');
+  const stated = errorAt < 0 ? '' : envelopeSection(lines.slice(errorAt, end), 'Error:');
+  const error = exitCode === null ? [stated, ...killed].filter((part) => part !== '').join('\n') : stated;
   return { output, error, exit_code: exitCode };
 }
 
@@ -613,13 +636,32 @@ function extractUrls(text) {
 /** Mirrors `fn is_listing`. */
 function isListing(label) {
   const lower = toAsciiLowercase(label);
-  return splitWhitespace(lower)[0] === 'ls' || lower.includes('list') || lower.includes('glob');
+  return isCommand(lower) ? commandKind(lower) === 'listing' : lower.includes('list') || lower.includes('glob');
 }
 
 /** Mirrors `fn is_search`. */
 function isSearch(label) {
   const lower = toAsciiLowercase(label);
-  return ['grep', 'find', 'search'].some((kind) => lower.includes(kind));
+  return isCommand(lower) ? commandKind(lower) === 'search'
+    : ['grep', 'find', 'search'].some((kind) => lower.includes(kind));
+}
+
+/**
+ * Mirrors `fn is_command`: a label with operands is a shell command, read by
+ * its own word, never by a word inside its operands (`sed … allowlist.txt`,
+ * PR #1188 G75); a one-word label is a tool's name.
+ */
+const isCommand = (lower) => splitWhitespace(lower).length > 1;
+
+/** Mirrors `fn command_kind`: the seeded kind of a command's own word. */
+function commandKind(lower) {
+  const [word] = splitWhitespace(lower);
+  const kinds = cached('result-command-words', () => {
+    const root = parseRoot(readText(SHELL_INTENTS_FILE)).children[0];
+    const group = childrenNamed(root, 'result_command_words')[0];
+    return group === undefined ? [] : childrenNamed(group, 'command').map((node) => [childValue(node, 'word'), childValue(node, 'kind')]);
+  });
+  return kinds.find(([candidate]) => candidate === word)?.[1] ?? null;
 }
 
 /**

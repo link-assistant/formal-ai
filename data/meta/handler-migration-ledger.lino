@@ -152,7 +152,11 @@ handler_migration_ledger
     justification "issue #918 (R914-6): the triggers, rejections, constraint markers, topics and their typed record references are data/seed/summary-topics.lino, and the answer is the referenced concept's localized summary or the project's heaviest statement, never a sentence of the handler's own; the fallback is the seeded unknown response. The native part matches the seed table and dereferences the record. The browser had no twin (the row answered with the unknown opener); trySummarizationTopic in js/worker/formal_ai_worker_factual_qa.js now reads the same records and runs inline after web search, where the native table places the row. Pinned in both runtimes, beside rust/tests/unit/specification/prompt_variations.rs."
     held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler verifiable_task
-    status pending
+    status migrated
+    data "data/seed/meanings-verifiable-task.lino|data/seed/multilingual-responses-synthesis.lino|data/seed/multilingual-responses-pattern.lino"
+    primitive "rust/src/solver_handlers/verifiable_task.rs"
+    justification "issue #918 (R914-6), reviewed by MIGRATE4: the row is the generic recognise, derive, execute and verify interpreter (promoted core since issue #1138 plan 08) entered through pattern inference. Its expectations and quantity cues are the verifiable_* roles of data/seed/meanings-verifiable-task.lino, its verified, uncorroborated and gap sentences seeded verifiable_task_* responses, and pattern inference reads the seeded verifiable_expectation_pattern role and renders seeded pattern_* responses (rust/src/solver_handlers/pattern_inference.rs is promoted in data/meta/core-boundary-ledger.lino the same day). Neither Rust file nor rust/src/verifiable_task.rs holds an allowlisted literal or a literal predicate. The browser twin (js/worker/formal_ai_worker_verifiable_task.js, js/worker/formal_ai_worker_pattern_inference.js) recognizes the same roles and renders the same pattern responses; it has no executor for the derived program, so it answers the seeded verifiable_task_browser_unverified response in the prompt language and presents no value, an environment difference, not a vocabulary one. Pinned natively over the 30 held-out corpus prompts of data/benchmarks/verifiable-task-paraphrases.lino and in the browser by rust/tests/web/issue-1138-execution-parity.test.mjs and rust/tests/web/issue-0531-pattern-inference.test.mjs."
+    held_out "rust/tests/unit/verifiable_task/mod.rs"
   handler text_manipulation
     status migrated
     data "data/seed/handler-rules.lino|data/seed/operation-vocabulary.lino|data/seed/code-task-cues.lino"
@@ -186,7 +190,11 @@ handler_migration_ledger
     justification "issue #918 (R914-6): the row is a dispatcher over the promoted factual interpreters (prompt-text question, fact comparison, the subject-gated record of factual_qa.rs) and the generic release-timeline renderer; the records, their localized summaries and the timeline phrasing are seed data and the dispatcher names no word. The browser twin already read the same records but rendered a release-timeline record as an empty answer; it now has the renderer (renderReleaseTimeline in js/worker/formal_ai_worker_factual_qa.js) over the same seed, registered for the web. Pinned in both runtimes, and natively by rust/tests/unit/specification/issue_892.rs and the issue 1172 suites."
     held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler coreference
-    status pending
+    status migrated
+    data "data/seed/coreference.lino"
+    primitive "rust/src/solver_handlers/benchmark_prompts.rs"
+    justification "issue #918 (R914-6): the pronouns with their contexts and the antecedents with their aliases, Wikidata ids, intents and bodies were already data/seed/coreference.lino; the native part is the nested-context resolution of the nearest earlier user turn naming an antecedent and the token-bounded rewrite into a seeded fact question. The browser twin (tryCoreferenceFactLookup in js/worker/formal_ai_worker_05.js and the coreference_antecedent claim evidence) read only the last user turn and answered only through a seeded fact, so a pronoun after an unrelated turn, or one no fact answered, fell through to unknown; it now resolves the nearest antecedent and answers its seeded body as the native row does, a deliberate parity fix. The browser still runs the row after its synchronous table, later than native rank 320. Native answers are unchanged. Pinned in both runtimes (rust/tests/web/issue-0918-handler-rules-batch-2.test.mjs)."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch_2.rs"
   handler roleplay
     status migrated
     data "data/seed/personas.lino"
@@ -198,7 +206,11 @@ handler_migration_ledger
     primitive "rust/src/solver_handlers/creative_writing.rs"
     justification "Issue 1178 generates and checks constrained verse against seeded rhyme classes and form rules. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_creative_writing.js answers the same seed records in the worker."
   handler translation
-    status pending
+    status migrated
+    data "data/seed/meanings-translation.lino|data/seed/multilingual-responses-text-transform.lino"
+    primitive "rust/src/solver_handlers/mod.rs"
+    justification "issue #918 (R914-6): the translation command, definition command and Links Notation format are seeded roles of data/seed/meanings-translation.lino in both runtimes already; the two gap answers, the program-translation heading, the program gap comment of rust/src/solver_helpers/code.rs and the two clarifying questions of rust/src/translation/selection.rs are now seeded English translation_* responses, byte-identical to the deleted format strings, and the worker renderTranslationGap in js/worker/formal_ai_worker_05.js reads the same two gap responses. The native part is the Wiktionary and Wikidata pipeline, the meta-language source-tree pivot and the program translator; the twelve rust/src/translation/ allowlist rows left are its cache and curl error values, its FORMAL_AI_TRANSLATION_DEBUG trace and a SPARQL query, none shown as an answer, as the allowlist note says. Pinned in both runtimes (rust/tests/web/issue-0918-handler-rules-batch-2.test.mjs, rust/tests/unit/specification/translation_via_links.rs)."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch_2.rs"
   handler text_rewrite
     status "justified-native"
     primitive "rust/src/solver_handlers/text_rewrite.rs"
@@ -360,7 +372,11 @@ handler_migration_ledger
     justification "issue #918 (R914-6): the failing-call cue and the agent opt-in are rule conditions, the trace and action-log events are logged steps, and the English-only Rust trace is a seeded English response (every language renders it, as before). The trace is still a seeded description, not an execution. Browser twin: tryExecutionFailure in js/worker/formal_ai_worker_code_plans.js runs the same rules; pinned in both runtimes (rust/tests/web/issue-0918-handler-rules-batch.test.mjs)."
     held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler installation_conversion
-    status pending
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/multilingual-responses-synthesis.lino"
+    primitive "rust/src/solver_handlers/installation_conversion.rs"
+    justification "issue #918 (R914-6): the request cues (installation_conversion_action, installation_conversion_surface, installation_conversion_script), the explicit source and target markers (installation_source_marker, installation_target_marker), the prose function words (installation_prose_word), the verb-to-step map (installation_verb_action) and the project marker (policy installation_conversion) are tables of data/seed/handler-rules.lino, read natively through rule_interpreter::handler_table_rows, handler_table_value and handler_policy and in the worker through handlerRulesTables, handlerRulesTableValue and handlerRulesPolicy; the heading, formalized-meaning and conversion-algorithm text, the three target headings, every step description and the default project name are seeded installation_* responses. The native part is the install-step IR and its renderers over script syntax (fence infos, strict-mode lines, privilege wrappers, probe flags, the python -m module form). Every answer is byte-identical in both runtimes (the documented answers of rust/tests/unit/installation_conversion.rs and a before/after capture of the browser answers). Pinned in both runtimes (rust/tests/web/issue-0918-handler-rules-batch-2.test.mjs)."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch_2.rs"
   handler write_script
     status pending
   handler document_generation_plan
@@ -444,13 +460,19 @@ handler_migration_ledger
     justification "issue #918 (R914-6): the units, the dimensions they measure and their surfaces were already meaning-lexicon data; the last Rust and worker prose, the incompatibility sentence, is the seeded unit_incompatibility response with unit and dimension slots, English-only exactly as before. The native part is the language-neutral walk that finds two units the lexicon places in distinct dimensions. Browser twin: tryIncompatibleUnits in js/worker/formal_ai_worker_13.js renders the same response; pinned in both runtimes (rust/tests/web/issue-0918-handler-rules-batch.test.mjs)."
     held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler diagnostic
-    status pending
+    status migrated
     surface prelude
-    reason "Runs on every turn ahead of the precedence table. Its recognition is the literal marker [diagnostic] in the normalized prompt, which is a cue that belongs in data/seed/cue-lexicon.lino like every other cue."
+    data "data/seed/handler-rules.lino"
+    primitive "rust/src/meta_method_dispatch.rs"
+    justification "issue #918 (R914-6): the per-message marker is the diagnostic_marker table of data/seed/handler-rules.lino, matched in the prompt and stripped from it in both runtimes, and it heads the appended evidence and trace block; the native part is the recursive solve of the unmarked prompt and the trace layout. Recognition used to test a literal in the lower-cased text while stripping it from the prompt, so an upper-case marker reached the inner solve unstripped and met itself again; the exact seeded marker now does both, a deliberate change, and a lower-case marker answers as before. The browser had no twin (a marked prompt answered unknown); tryDiagnosticMarker in js/worker/formal_ai_worker_native_lanes.js solves the unmarked prompt and appends the same evidence and trace lines under the marker, without the native links-notation lines, since the worker keeps no links projection of an answer. Pinned in both runtimes (rust/tests/web/issue-0918-handler-rules-batch-2.test.mjs)."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch_2.rs"
   handler nl_tool
-    status pending
+    status migrated
     surface prelude
-    reason "Runs on every turn ahead of the precedence table. Natural-language tool requests are recognized in Rust; the tool vocabulary is data the agent surface already declares."
+    data "data/seed/meanings-tool-access.lino|data/seed/multilingual-responses-synthesis.lino"
+    primitive "rust/src/solver_handlers/natural_language_tools.rs"
+    justification "issue #918 (R914-6): the calculator, web-search and local-shell tool calls are recognized through the seeded calculator_tool_name, web_search_tool_name, tool_invocation_cue, local_shell_request_cue and tool_argument_marker roles in both runtimes, and the seven report and refusal format strings of rust/src/solver_handlers/natural_language_tools.rs (and its requested-source frame) are seeded nl_tool_* responses; the native part is the agent-mode and package-permission gate, the bounded JavaScript subset and the calculator. English answers are byte-identical; the refusals now speak the prompt language in en, ru, hi, zh and es, a deliberate change (a Russian tool call used to be refused in English), while the tool reports stay English. The browser had no twin (a calculator tool call answered unknown, a web-search tool call ran the general search over the request words); tryNaturalLanguageToolRequest in js/worker/formal_ai_worker_nl_tools.js refuses outside agent mode with the native sentence, runs the browser calculator in agent mode with the native report, and answers the seeded nl_tool_browser_unavailable refusal in the prompt language for the web-search tool call and the local shell, which it has no executor for. JavaScript execution keeps the worker sandbox handler. Pinned in both runtimes (rust/tests/web/issue-0918-handler-rules-batch-2.test.mjs)."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch_2.rs"
   handler behavior_rules
     status pending
     surface prelude

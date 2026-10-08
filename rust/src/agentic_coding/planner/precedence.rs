@@ -43,7 +43,6 @@ pub const PLANNER_ROUTE_ARMS: &[(&str, &str)] = &[
     ("plan_settled_routes", "google_trends_catalog"),
     ("plan_settled_routes", "question_catalog"),
     ("plan_settled_routes", "file_analysis"),
-    ("plan_settled_routes", "workspace_search"),
     ("plan_settled_routes", "report_flow"),
     ("plan_settled_routes", "conversation_recall"),
     ("plan_settled_routes", "follow_up_answer"),

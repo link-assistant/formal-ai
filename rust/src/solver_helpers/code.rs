@@ -117,10 +117,11 @@ pub fn render_code_meaning(meaning: &CodeMeaning, source: &str, target: &str) ->
         CodeMeaning::FormalProof(_) => "formal proof",
         CodeMeaning::Unformalized(source_code) => source_code.as_str(),
     };
-    format!(
-        "{} translation gap for `{subject}` from {source} to {target}",
-        code_comment_prefix(target)
-    )
+    let gap = crate::seed::fill_template_once(
+        &crate::seed::localized_response("translation_code_gap_comment", "en").unwrap_or_default(),
+        &[("subject", subject), ("source", source), ("target", target)],
+    );
+    format!("{} {gap}", code_comment_prefix(target))
 }
 
 /// Render the seeded [`CodeMeaning::BinaryAddFunction`] into `target`. Returns

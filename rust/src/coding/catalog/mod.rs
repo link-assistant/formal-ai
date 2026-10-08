@@ -165,9 +165,41 @@ pub fn documented_pair(task_slug: &str, language_slug: &str) -> Option<&'static 
         .find(|pair| pair.task_slug == task_slug && pair.language.slug == language_slug)
 }
 
+/// Every catalog language row, with each command a captured documentation
+/// page states taken from that page (issue #1165 R1165-6).
+///
+/// [`PROGRAM_LANGUAGES`] leaves such a command empty; the policy seed's
+/// `command_procedure` rows name the page and the `command_verb` its line starts with,
+/// and [`crate::discovery_production::documented_language_commands`] derives
+/// the command with the page's file name bound to the row's. Built once.
+#[must_use]
+pub fn program_languages() -> &'static [ProgramLanguage] {
+    static LANGUAGES: std::sync::OnceLock<Vec<ProgramLanguage>> = std::sync::OnceLock::new();
+    LANGUAGES.get_or_init(|| {
+        PROGRAM_LANGUAGES
+            .iter()
+            .map(|base| {
+                let mut language = base.clone();
+                for command in crate::discovery_production::documented_language_commands(
+                    base.slug,
+                    &base.save_as,
+                ) {
+                    let stated = Cow::Owned(command.command);
+                    if command.role == "check" {
+                        language.execution.check_command = Some(stated);
+                    } else {
+                        language.execution.run_command = stated;
+                    }
+                }
+                language
+            })
+            .collect()
+    })
+}
+
 #[must_use]
 pub fn program_language_by_slug(slug: &str) -> Option<&'static ProgramLanguage> {
-    PROGRAM_LANGUAGES
+    program_languages()
         .iter()
         .find(|language| language.slug == slug)
 }
@@ -227,11 +259,11 @@ pub fn program_language_by_alias(normalized: &str) -> Option<&'static ProgramLan
     // hardest to satisfy. Framework rows are therefore consulted first. Nothing
     // else changes: with no framework named, this is the same first-match scan
     // over [`PROGRAM_LANGUAGES`] it has always been.
-    PROGRAM_LANGUAGES
+    program_languages()
         .iter()
         .find(|language| language.is_framework() && names_target(normalized, language))
         .or_else(|| {
-            PROGRAM_LANGUAGES
+            program_languages()
                 .iter()
                 .find(|language| names_target(normalized, language))
         })
@@ -270,7 +302,7 @@ pub fn program_task_by_alias(normalized: &str) -> Option<&'static ProgramTask> {
 
 #[must_use]
 pub fn supported_program_languages() -> String {
-    PROGRAM_LANGUAGES
+    program_languages()
         .iter()
         .map(|language| language.slug)
         .collect::<Vec<_>>()

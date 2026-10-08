@@ -6,8 +6,12 @@
 // registered language), the target is read first, and an existing non-empty
 // file is replaced only when the request consents to it
 // (`file_overwrite_consent`); otherwise the plan declines with a seeded
-// refusal naming the file. The per-shape guards (`namesAnAddition`, the
-// routed-write removal check) stay; this is the backstop.
+// refusal naming the file. A request that declares the file it writes (a
+// seeded `file_declared_noun` right before the path, no destination ahead of
+// it, the content stated after it: `add file note.txt containing hello`)
+// creates that file, whatever its verb. The per-shape guards
+// (`namesAnAddition`, the routed-write removal check) stay; this is the
+// backstop.
 // rust/src/agentic_coding/literal_write_guard.rs.
 
 import { Capability } from './capability.mjs';
@@ -20,10 +24,14 @@ import { readSource } from './module_function.mjs';
 import { finalAnswer, planOne } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import { readArguments } from './workspace_change.mjs';
-import { firstActionCueEnd, firstActionCueStart, tokens } from './write_request.mjs';
+import {
+  bareSurfaces, cleanCueToken, cleanPathToken, firstActionCueEnd, firstActionCueStart, firstContentLeadEnd,
+  looksLikeFilePath, tokens,
+} from './write_request.mjs';
 
 const ROLE_WHOLE_WRITE = 'file_whole_write_action';
 const ROLE_OVERWRITE_CONSENT = 'file_overwrite_consent';
+const ROLE_DECLARED_NOUN = 'file_declared_noun';
 const LITERAL_FILE = 'literal_file';
 
 /**
@@ -35,9 +43,28 @@ const LITERAL_FILE = 'literal_file';
 export function writesWholeFile(request) {
   if (mentionsRole(ROLE_OVERWRITE_CONSENT, normalizePrompt(request))) return true;
   const toks = tokens(request);
+  if (declaresFile(request, toks)) return true;
   const start = firstActionCueStart(toks);
   const end = firstActionCueEnd(toks);
   return start !== null && end !== null && mentionsRole(ROLE_WHOLE_WRITE, normalizePrompt(request.slice(start, end)));
+}
+
+/**
+ * Mirrors `fn declares_file`: whether the request declares the file it
+ * writes -- a path right after a seeded `file_declared_noun`, no destination
+ * or location cue ahead of that noun (`add 'x' to the file a.txt` edits it),
+ * and a content lead after the path (`new file: notes.txt, contents: hello`).
+ * @param {string} request
+ * @param {Array<{text: string, start: number, end: number}>} toks
+ */
+function declaresFile(request, toks) {
+  const nouns = bareSurfaces(ROLE_DECLARED_NOUN);
+  const cues = [...bareSurfaces('file_write_destination_cue'), ...bareSurfaces('file_write_target_cue')];
+  return toks.some((token, index) => index > 0
+    && looksLikeFilePath(cleanPathToken(token.text))
+    && nouns.includes(cleanCueToken(toks[index - 1].text))
+    && !toks.slice(0, index - 1).some((before) => cues.includes(cleanCueToken(before.text)))
+    && firstContentLeadEnd(request.slice(token.end).toLowerCase()) !== null);
 }
 
 /**

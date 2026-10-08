@@ -54,7 +54,7 @@ rust/src/agentic_coding/file_read.rs	find {} -maxdepth 1 -type f | sed 's#^.*/##
 rust/src/agentic_coding/file_read/audit.rs	Read {} file(s):
 rust/src/agentic_coding/file_read/audit.rs	Value of `{key}` in `{path}`: {value}
 rust/src/agentic_coding/formalization_recipe.rs	the source text ({})
-rust/src/agentic_coding/general_planner.rs	append the composed plan to {PLAN_PATH}
+rust/src/agentic_coding/general_planner.rs	write the composed plan to {PLAN_PATH}
 rust/src/agentic_coding/general_planner.rs	workspace file {target}
 rust/src/agentic_coding/general_planner.rs	write the requested content to {target}
 rust/src/agentic_coding/general_planner.rs	written plan event {}
@@ -625,25 +625,9 @@ rust/src/solver_handlers/conversation_memory/mod.rs	स्मृति में
 rust/src/solver_handlers/conversation_memory/mod.rs	在对话历史中找到 \"{}\" 的记录: {}\n
 rust/src/solver_handlers/conversation_memory/mod.rs	在记忆中找到 \"{}\" 的记录: {} (对话: {})。\n
 rust/src/solver_handlers/document_originality.rs	asset={} period={} source={} min={:.2} min_date={} max={:.2} max_date={}
-rust/src/solver_handlers/installation_conversion.rs	1. Detect the source surface and requested target surface(s).\n
-rust/src/solver_handlers/installation_conversion.rs	2. Extract command-like install/deploy steps in original order.\n
-rust/src/solver_handlers/installation_conversion.rs	3. Render every target from the same install-step IR.\n
-rust/src/solver_handlers/installation_conversion.rs	4. Preserve commands verbatim so the conversion can round-trip.\n
-rust/src/solver_handlers/installation_conversion.rs	Converted installation instructions for {}.
-rust/src/solver_handlers/installation_conversion.rs	README.md installation guide:\n\n
-rust/src/solver_handlers/installation_conversion.rs	Run the {} {} step
-rust/src/solver_handlers/mod.rs	I could not identify a source phrase to translate from {source_slug} to {target_slug}.
-rust/src/solver_handlers/mod.rs	I could not translate \"{surface}\" from {source_slug} to {target_slug} with the available formalization data. I recorded this as a translation gap for follow-up.
 rust/src/solver_handlers/mod.rs	I do not embed a JavaScript runtime in this build, so I cannot execute the program for you. The deterministic solver only runs code that has been verified offline; running arbitrary JavaScript would violate that contract. Here is the program you asked me to run, copy-paste reviewable:\n\n```js\n{program}\n```\n\nTo execute it yourself, save the snippet as `program.js` and run `node program.js` (or `deno run program.js`).
 rust/src/solver_handlers/mod.rs	I parsed '{expression}' as an arithmetic request but could not evaluate it: {error}.
 rust/src/solver_handlers/mod.rs	Therefore, there are {formatted} {label} in total.
-rust/src/solver_handlers/natural_language_tools.rs	Execution status: executed.\nTool call: calculator\nInput: `{expression}`\nResult: {}
-rust/src/solver_handlers/natural_language_tools.rs	Execution status: failed.\nTool call: calculator\nInput: `{expression}`\nError: {error}
-rust/src/solver_handlers/natural_language_tools.rs	Execution status: planned.\nTool call: web_search\nQuery: `{query}`\nResult: search plan recorded with providers {providers}; combined ranking uses reciprocal rank fusion (k = {WEB_SEARCH_RRF_K}).
-rust/src/solver_handlers/natural_language_tools.rs	Execution status: refused. Natural-language tool calls require explicit agent mode before `{capability}` can run.
-rust/src/solver_handlers/natural_language_tools.rs	Execution status: refused. Tool calls are not allowed for `{capability}`: {reason}. Install or import an associative package that grants this capability before enabling the tool.
-rust/src/solver_handlers/natural_language_tools.rs	Execution status: refused. local_shell is permissioned, but this Rust core does not provide a shell executor.
-rust/src/solver_handlers/natural_language_tools.rs	Execution status: {status}.\nTool call: javascript_execution\nOutput: {result}
 rust/src/solver_handlers/numeric_list/mod.rs	(@USER OP:{} values:[{}] value_type:{} language:{} result_kind:{} request:[code result])
 rust/src/solver_handlers/numeric_list/mod.rs	inherited_language={} inherited_code_request={}
 rust/src/solver_handlers/numeric_list/mod.rs	language={} task=numeric_list operation={} family={} result_kind={} value_type={}
@@ -756,7 +740,6 @@ rust/src/solver_handlers/web_requests.rs	यह {label} पर रिपॉज�
 rust/src/solver_handlers/web_requests.rs	在 {promoted_orgs} 仓库上下文中，`{display_name}` 首先指 [{repo_slug}]({project_url}) — {description}\n\n浏览器 demo 会通过 `{display_name}` 的网页搜索显示其他匹配的仓库和实体。Providers: {provider_summary}. Combined ranking: reciprocal rank fusion (k = {WEB_SEARCH_RRF_K}). 关闭 associative repository promotion 后，回答会走通用 GitHub、GitLab 和 Bitbucket project lookup 路径。
 rust/src/solver_handlers/web_requests.rs	这是 {label} 上的仓库查询：[{slug}]({url})。\n\n通用 project_lookup 路径可以汇总 GitHub、GitLab 和 Bitbucket 上的 README 或项目描述，不需要为单个名称写特殊规则。如果该仓库属于 promoted organizations 且 promotion 已开启，它会优先显示。
 rust/src/solver_handlers/web_requests.rs	这是一个关于项目或仓库的通用 project_lookup 请求。\n\n我不会优先选择某个特定仓库，因为 associative repository promotion 已关闭。下一步是在 {provider_summary} 和类似托管平台中搜索并汇总匹配项目。
-rust/src/solver_helpers/code.rs	{} translation gap for `{subject}` from {source} to {target}
 rust/src/solver_helpers/mod.rs	Check command: `{check}`\nRun command: `{}`
 rust/src/solver_helpers/mod.rs	Run command: `{}`
 rust/src/solver_synthesis.rs	composition:{} from={}
@@ -805,6 +788,12 @@ rust/src/telegram.rs	<pre><code class=\"{class}\">
 rust/src/telegram.rs	I can only process Telegram text messages in this implementation. Send a text prompt or a message caption.
 rust/src/telegram.rs	formal-ai {FORMAL_AI_VERSION}
 rust/src/telegram_runtime.rs	curl exited with {status}: {stderr}
+# Issue #918 (MIGRATE4, translation): the rust/src/translation/ rows below are
+# operator diagnostics, not answers. cache.rs and http.rs name a cache or curl
+# failure in an error value that try_translation never shows (a failed pipeline
+# answers the seeded translation_gap_* response); pipeline.rs writes the
+# FORMAL_AI_TRANSLATION_DEBUG stderr trace; wikidata.rs is a SPARQL query. Their user-facing
+# translation wording is seeded translation_* responses.
 rust/src/translation/cache.rs	failed to create cache directory {}: {error}
 rust/src/translation/cache.rs	failed to write cache body {}: {error}
 rust/src/translation/cache.rs	failed to write cache url marker {}: {error}
@@ -816,6 +805,4 @@ rust/src/translation/pipeline.rs	source-edition blocks={}
 rust/src/translation/pipeline.rs	source-edition error: {error}
 rust/src/translation/pipeline.rs	start surface={surface:?} {source_lang}->{target_lang}
 rust/src/translation/pipeline.rs	wikidata:sparql:{}->{} ({} lemmas)
-rust/src/translation/selection.rs	Should I read \"{}\" as \"{} {} {}\" or \"{} {} {}\"?
-rust/src/translation/selection.rs	Which interpretation did you mean: {} or {}?
 rust/src/translation/wikidata.rs	SELECT DISTINCT ?lemma WHERE {{ wd:{source_lexeme_id} ontolex:sense ?source_sense . wd:{source_lexeme_id} wikibase:lexicalCategory ?category . ?source_sense wdt:P5137 ?meaning . ?lexeme ontolex:sense ?sense . ?sense wdt:P5137 ?meaning . ?lexeme wikibase:lexicalCategory ?category . ?lexeme dct:language ?language . ?language wdt:P218 \"{target_lang_iso}\" . ?lexeme wikibase:lemma ?lemma . }}

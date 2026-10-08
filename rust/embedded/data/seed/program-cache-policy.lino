@@ -62,3 +62,35 @@ program_cache_policy
       language php
       task hello_world
       content_id "0xd9a33911cb81ab30"
+  command_procedure
+    purpose "A catalog language row states no check or run command that a captured documentation page states for it: the row takes the command from the page when the catalog is first read (issue #1165 R1165-6). Each command row names the language, the command's role (check or run), the captured page and the command_verb its command line starts with. The command is the first line of that page's code blocks, its shell prompt removed, whose first word is that command_verb. The name the page gives its source file (the stem of the first word, across the language's command rows, that ends with the extension of the file the catalog saves the program as) is bound to the catalog file's stem in every word that is that name or that name followed by a dot. A row is added only when the page states the command the catalog runs, so the command derived from the page is the one the catalog verified; every other command stays the catalog's own until a captured page states it."
+    command
+      language rust
+      role run
+      page "https://doc.rust-lang.org/book/ch01-02-hello-world.html"
+      command_verb "./main"
+    command
+      language typescript
+      role check
+      page "https://raw.githubusercontent.com/microsoft/TypeScript-Website/v2/packages/documentation/copy/en/handbook-v2/Basics.md"
+      command_verb tsc
+    command
+      language java
+      role check
+      page "https://docs.oracle.com/javase/tutorial/getStarted/cupojava/unix.html"
+      command_verb javac
+    command
+      language java
+      role run
+      page "https://docs.oracle.com/javase/tutorial/getStarted/cupojava/unix.html"
+      command_verb java
+    command
+      language kotlin
+      role check
+      page "https://kotlinlang.org/docs/command-line.html"
+      command_verb kotlinc
+    command
+      language kotlin
+      role run
+      page "https://kotlinlang.org/docs/command-line.html"
+      command_verb java

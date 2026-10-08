@@ -1311,3 +1311,167 @@ multilingual_responses
     intent document_format_conversion_package
     language en
     text "Package layer: {bytes} bytes in the DOCX OPC stored-entry profile."
+  response response_nl_tool_requested_source_en
+    intent nl_tool_requested_source
+    language en
+    text "{denial}\n\nRequested source:\n```js\n{program}\n```"
+  response response_nl_tool_javascript_report_en
+    intent nl_tool_javascript_report
+    language en
+    text "Execution status: {status}.\nTool call: javascript_execution\nOutput: {result}"
+  response response_nl_tool_calculator_executed_en
+    intent nl_tool_calculator_executed
+    language en
+    text "Execution status: executed.\nTool call: calculator\nInput: `{expression}`\nResult: {result}"
+  response response_nl_tool_calculator_failed_en
+    intent nl_tool_calculator_failed
+    language en
+    text "Execution status: failed.\nTool call: calculator\nInput: `{expression}`\nError: {error}"
+  response response_nl_tool_web_search_planned_en
+    intent nl_tool_web_search_planned
+    language en
+    text "Execution status: planned.\nTool call: web_search\nQuery: `{query}`\nResult: search plan recorded with providers {providers}; combined ranking uses reciprocal rank fusion (k = {k})."
+  response response_nl_tool_agent_mode_required_en
+    intent nl_tool_agent_mode_required
+    language en
+    text "Execution status: refused. Natural-language tool calls require explicit agent mode before `{capability}` can run."
+  response response_nl_tool_agent_mode_required_ru
+    intent nl_tool_agent_mode_required
+    language ru
+    text "Статус выполнения: отказ. Вызовы инструментов на естественном языке требуют явно включённого режима агента, прежде чем `{capability}` сможет запуститься."
+  response response_nl_tool_agent_mode_required_hi
+    intent nl_tool_agent_mode_required
+    language hi
+    text "निष्पादन स्थिति: अस्वीकृत। प्राकृतिक भाषा से टूल कॉल के लिए `{capability}` चलाने से पहले स्पष्ट रूप से agent mode चालू होना चाहिए।"
+  response response_nl_tool_agent_mode_required_zh
+    intent nl_tool_agent_mode_required
+    language zh
+    text "执行状态：已拒绝。自然语言工具调用需要先明确开启代理模式，`{capability}` 才能运行。"
+  response response_nl_tool_agent_mode_required_es
+    intent nl_tool_agent_mode_required
+    language es
+    text "Estado de ejecución: rechazado. Las llamadas a herramientas en lenguaje natural requieren activar explícitamente el modo agente antes de que `{capability}` pueda ejecutarse."
+  response response_nl_tool_package_denied_en
+    intent nl_tool_package_denied
+    language en
+    text "Execution status: refused. Tool calls are not allowed for `{capability}`: {reason}. Install or import an associative package that grants this capability before enabling the tool."
+  response response_nl_tool_package_denied_ru
+    intent nl_tool_package_denied
+    language ru
+    text "Статус выполнения: отказ. Вызовы инструментов для `{capability}` не разрешены: {reason}. Прежде чем включать инструмент, установите или импортируйте ассоциативный пакет, который предоставляет эту возможность."
+  response response_nl_tool_package_denied_hi
+    intent nl_tool_package_denied
+    language hi
+    text "निष्पादन स्थिति: अस्वीकृत। `{capability}` के लिए टूल कॉल की अनुमति नहीं है: {reason}। टूल सक्षम करने से पहले वह associative package इंस्टॉल या import करें जो यह क्षमता देता है।"
+  response response_nl_tool_package_denied_zh
+    intent nl_tool_package_denied
+    language zh
+    text "执行状态：已拒绝。`{capability}` 不允许工具调用：{reason}。启用该工具前，请安装或导入授予此能力的关联包。"
+  response response_nl_tool_package_denied_es
+    intent nl_tool_package_denied
+    language es
+    text "Estado de ejecución: rechazado. Las llamadas a herramientas no están permitidas para `{capability}`: {reason}. Instala o importa un paquete asociativo que conceda esta capacidad antes de habilitar la herramienta."
+  response response_nl_tool_local_shell_unavailable_en
+    intent nl_tool_local_shell_unavailable
+    language en
+    text "Execution status: refused. local_shell is permissioned, but this Rust core does not provide a shell executor."
+  response response_nl_tool_local_shell_unavailable_ru
+    intent nl_tool_local_shell_unavailable
+    language ru
+    text "Статус выполнения: отказ. Для local_shell есть разрешение, но это ядро Rust не предоставляет исполнителя оболочки."
+  response response_nl_tool_local_shell_unavailable_hi
+    intent nl_tool_local_shell_unavailable
+    language hi
+    text "निष्पादन स्थिति: अस्वीकृत। local_shell की अनुमति है, लेकिन यह Rust core कोई shell executor प्रदान नहीं करता।"
+  response response_nl_tool_local_shell_unavailable_zh
+    intent nl_tool_local_shell_unavailable
+    language zh
+    text "执行状态：已拒绝。local_shell 已获授权，但此 Rust 核心不提供 shell 执行器。"
+  response response_nl_tool_local_shell_unavailable_es
+    intent nl_tool_local_shell_unavailable
+    language es
+    text "Estado de ejecución: rechazado. local_shell tiene permiso, pero este núcleo de Rust no ofrece un ejecutor de shell."
+  response response_nl_tool_browser_unavailable_en
+    intent nl_tool_browser_unavailable
+    language en
+    text "Execution status: refused. This browser session has no executor for the `{tool}` tool, so the call cannot run here. Ask the native Formal AI (the CLI or the server) in agent mode to run it."
+  response response_nl_tool_browser_unavailable_ru
+    intent nl_tool_browser_unavailable
+    language ru
+    text "Статус выполнения: отказ. В этом сеансе браузера нет исполнителя для инструмента `{tool}`, поэтому вызов здесь выполнить нельзя. Попросите нативный Formal AI (CLI или сервер) в режиме агента выполнить его."
+  response response_nl_tool_browser_unavailable_hi
+    intent nl_tool_browser_unavailable
+    language hi
+    text "निष्पादन स्थिति: अस्वीकृत। इस ब्राउज़र सत्र में `{tool}` टूल के लिए कोई executor नहीं है, इसलिए यह कॉल यहाँ नहीं चल सकती। इसे चलाने के लिए agent mode में native Formal AI (CLI या server) से कहें।"
+  response response_nl_tool_browser_unavailable_zh
+    intent nl_tool_browser_unavailable
+    language zh
+    text "执行状态：已拒绝。此浏览器会话没有 `{tool}` 工具的执行器，因此无法在这里运行该调用。请在代理模式下让原生 Formal AI（CLI 或服务器）运行它。"
+  response response_nl_tool_browser_unavailable_es
+    intent nl_tool_browser_unavailable
+    language es
+    text "Estado de ejecución: rechazado. Esta sesión del navegador no tiene un ejecutor para la herramienta `{tool}`, así que la llamada no puede ejecutarse aquí. Pide al Formal AI nativo (la CLI o el servidor) en modo agente que la ejecute."
+  response response_installation_conversion_heading_en
+    intent installation_conversion_heading
+    language en
+    text "Converted installation instructions for {project}."
+  response response_installation_formalized_meaning_heading_en
+    intent installation_formalized_meaning_heading
+    language en
+    text "Formalized meaning:"
+  response response_installation_conversion_algorithm_en
+    intent installation_conversion_algorithm
+    language en
+    text "Conversion algorithm:\n1. Detect the source surface and requested target surface(s).\n2. Extract command-like install/deploy steps in original order.\n3. Render every target from the same install-step IR.\n4. Preserve commands verbatim so the conversion can round-trip."
+  response response_installation_markdown_heading_en
+    intent installation_markdown_heading
+    language en
+    text "README.md installation guide:\n\n## Installation"
+  response response_installation_shell_heading_en
+    intent installation_shell_heading
+    language en
+    text "Bash script:"
+  response response_installation_powershell_heading_en
+    intent installation_powershell_heading
+    language en
+    text "PowerShell script:"
+  response response_installation_default_project_en
+    intent installation_default_project
+    language en
+    text "the project"
+  response response_installation_step_clone_en
+    intent installation_step_clone
+    language en
+    text "Clone the repository"
+  response response_installation_step_enter_directory_en
+    intent installation_step_enter_directory
+    language en
+    text "Enter the project directory"
+  response response_installation_step_install_en
+    intent installation_step_install
+    language en
+    text "Install dependencies"
+  response response_installation_step_verify_en
+    intent installation_step_verify
+    language en
+    text "Run the verification command"
+  response response_installation_step_build_en
+    intent installation_step_build
+    language en
+    text "Build the project"
+  response response_installation_step_start_en
+    intent installation_step_start
+    language en
+    text "Start the application"
+  response response_installation_step_probe_en
+    intent installation_step_probe
+    language en
+    text "Verify the installation"
+  response response_installation_step_run_program_en
+    intent installation_step_run_program
+    language en
+    text "Run {program}"
+  response response_installation_step_run_verb_en
+    intent installation_step_run_verb
+    language en
+    text "Run the {program} {verb} step"

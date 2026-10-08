@@ -86,6 +86,7 @@ const LISTED_SCOPE_ROLES: [&str; 5] = [
     "capability_container_scope",
     "capability_workspace_scope",
 ];
+const FUNCTION_WORD_ROLE: &str = "request_function_word";
 const PLACE_ROLE: &str = "statement_place_preposition";
 const OPERAND_WRAPPERS: &[char] = &[
     '`', '"', '\'', ',', ';', ':', '!', '?', '(', ')', '[', ']', '{', '}',
@@ -107,12 +108,15 @@ fn is_directory_operand(token: &str) -> bool {
 ///
 /// "List the files in src." listed the workspace root. The operand is the
 /// path-shaped word right after a seeded place preposition
-/// (`statement_place_preposition`), unless that word is prose or part of a
-/// seeded scope phrase ("in this directory"); `.` otherwise.
+/// (`statement_place_preposition`), unless that word is prose, part of a
+/// seeded scope phrase ("in this directory") or a seeded function word
+/// (`request_function_word`: the article of "en la carpeta actual" is no
+/// directory); `.` otherwise.
 pub(super) fn listed_directory(task: &str) -> String {
     let lexicon = seed::lexicon();
     let excluded: Vec<String> = LISTED_SCOPE_ROLES
         .iter()
+        .chain(std::iter::once(&FUNCTION_WORD_ROLE))
         .flat_map(|role| lexicon.words_for_role(role))
         .flat_map(|surface| {
             surface

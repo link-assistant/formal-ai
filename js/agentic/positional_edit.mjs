@@ -15,6 +15,7 @@ import {
   byteToUtf16, replaceAllLiteral, trim, trimStartMatches, utf16ToByte, utf8Len,
 } from './crate/rust_str.mjs';
 import { splitWhitespace } from './write_str.mjs';
+import { meaningEvidencedIn } from './write_lexicon.mjs';
 
 /**
  * Mirrors `fn literal_text` in rust/src/agentic_coding/positional_edit.rs.
@@ -22,8 +23,21 @@ import { splitWhitespace } from './write_str.mjs';
  * @returns {string|null}
  */
 export function literalText(span) {
-  const text = quotedVerbatim(span) ?? describedLiteral(span) ?? cleanContent(span) ?? null;
+  const text = quotedVerbatim(span) ?? listedLines(span) ?? describedLiteral(span) ?? cleanContent(span) ?? null;
   return text === null ? null : unescapeProseNewlines(text);
+}
+
+/**
+ * Mirrors `fn listed_lines`: `the three lines 'a', 'b' and 'c'` -- several
+ * quoted literals led by words that name lines (the seeded `line` meaning)
+ * and joined only by commas and seeded joiners -- stands for those lines as
+ * one consecutive block (PR #1188 G80).
+ */
+function listedLines(span) {
+  const literals = quotedLiterals(span);
+  if (literals.length < 2 || !joinedOnly(span, literals) || span.slice(literals.at(-1).to).trim() !== '') return null;
+  const lead = normalizePrompt(span.slice(0, literals[0].from)).toLowerCase();
+  return meaningEvidencedIn('line', lead) ? literals.map((literal) => literal.text).join('\n') : null;
 }
 
 /**
@@ -103,6 +117,9 @@ function clauseInsert(sentence, blockText) {
   // context's, not the anchor's.
   const positions = cueOccurrences(sentence, role)
     .filter(([start]) => !contexts.some(([from, to]) => start >= from && start < to));
+  if (blockText !== null && literals.length === 0) {
+    return unquotedAnchorInsert(sentence, positions, contexts, target, blockText, after);
+  }
   if (blockText !== null) {
     // One literal is the anchor: a context cue then names no second line, so
     // `the following lines` speaks of the block (PR #1188 G16). With a seeded
@@ -138,14 +155,49 @@ function clauseInsert(sentence, blockText) {
   }
   const inserted = literals.filter((_, index) => index !== anchorAt && index !== contextAt);
   if (inserted.length === 0 || !joinedOnly(sentence, inserted)) return null;
+  // Lines given as separate literals are already lines: an escape inside one is content (PR #1188 G53).
+  const lines = inserted.map((literal) => (inserted.length > 1 ? literal.text : unescapeProseNewlines(literal.text))).join('\n');
+  // `'x' followed by an empty line`: the seeded blank line goes on the side of
+  // the lines its words stand on, never dropped (PR #1188 G74).
+  const blanks = cueOccurrences(sentence, 'file_edit_blank_line').map(([start]) => start);
+  const blankFirst = blanks.length > 0 && Math.min(...blanks) < inserted[0].start;
   return {
     target,
     anchor: unescapeProseNewlines(literals[anchorAt].text),
-    // Lines given as separate literals are already lines: an escape inside one is content (PR #1188 G53).
-    inserted: inserted.map((literal) => (inserted.length > 1 ? literal.text : unescapeProseNewlines(literal.text))).join('\n'),
+    inserted: blanks.length === 0 ? lines : blankFirst ? `\n${lines}` : `${lines}\n`,
     after,
     context: contextAt === null ? null : unescapeProseNewlines(literals[contextAt].text),
   };
+}
+
+/**
+ * Mirrors `fn unquoted_anchor_insert`: a block placed by unquoted line words
+ * (`after the line row a that follows the line table u in f.lino:`, PR #1188
+ * G51). The words after the position cue, up to a seeded context cue or the
+ * target clause, are the anchor span, and the words after the context cue the
+ * context span; each is resolved against the file's lines once it is read
+ * (`spans`). A postpositional cue is left to quoted anchors.
+ */
+function unquotedAnchorInsert(sentence, positions, contexts, target, blockText, after) {
+  const earliest = (cues) => cues.reduce((best, cue) => (best === null || cue[0] < best[0]
+    || (cue[0] === best[0] && cue[1] > best[1]) ? cue : best), null);
+  const cue = earliest(positions);
+  if (cue === null || cue[2]) return null;
+  const context = earliest(contexts.filter(([start, , postpositional]) => start >= cue[1] && !postpositional));
+  const at = target === null ? -1 : sentence.lastIndexOf(target);
+  const end = at < 0 || utf16ToByte(sentence, at) < cue[1] ? utf8Len(sentence) : utf16ToByte(sentence, at);
+  const span = (from, to) => withoutTargetCue(sentence.slice(byteToUtf16(sentence, from), byteToUtf16(sentence, to)));
+  const anchor = span(cue[1], context === null ? end : context[0]);
+  const contextText = context === null ? null : span(context[1], end);
+  if (anchor === '' || contextText === '') return null;
+  return { target, anchor, inserted: blockText, after, context: contextText, spans: true };
+}
+
+/** Mirrors `fn without_target_cue`: a span without its closing mark and a trailing seeded target cue. */
+function withoutTargetCue(span) {
+  const words = splitWhitespace(trim(span).replace(/[:：]$/u, ''));
+  if (words.length > 1 && bareSurfaces('file_edit_target_cue').includes(words[words.length - 1].toLowerCase())) words.pop();
+  return words.join(' ');
 }
 
 /**
@@ -425,10 +477,32 @@ export function ownText(request) {
 export function namesLocalEdit(task) {
   const normalized = normalizePrompt(task);
   const edits = mentionsRole('file_edit_action_cue', normalized) || mentionsRole('coding_member_add_action', normalized);
-  return edits && tokens(task).some((token) => {
+  return edits && localEditPath(task) !== null;
+}
+
+/** Mirrors `fn local_edit_path`: the first workspace path the request names. */
+function localEditPath(task) {
+  for (const token of tokens(task)) {
     const candidate = cleanPathToken(token.text);
-    return looksLikeFilePath(candidate) && safeRelativePath(candidate);
-  });
+    if (looksLikeFilePath(candidate) && safeRelativePath(candidate)) return candidate;
+  }
+  return null;
+}
+
+/**
+ * Mirrors `fn unquoted_addition_path`: the file a request leading with the
+ * add verb names when it quotes no text (`add hello to config.txt`, PR #1188
+ * G69). Its words may be the text or describe it, so the request earns a
+ * question, never a write.
+ * @param {string} task
+ * @returns {string|null}
+ */
+export function unquotedAdditionPath(task) {
+  if (quotedSegmentSpans(task).length > 0) return null;
+  // The request leads with the add verb: in "Create a test for add in t.mjs"
+  // `add` is a name, not the action.
+  const [lead = ''] = normalizePrompt(task).split(' ');
+  return mentionsRole('coding_member_add_action', lead) ? localEditPath(task) : null;
 }
 
 export const unescapeProseNewlines = (text) => replaceAllLiteral(replaceAllLiteral(text, '\\n', '\n'), '\\t', '\t');

@@ -49,7 +49,18 @@ pub(super) fn requested_write_program_parameters(
     if quotes_carry_the_task {
         return None;
     }
-    write_program_parameters(normalized)
+    let mut parameters = write_program_parameters(normalized)?;
+    // Issue #1173 R1173-3: a request that names no catalogued task but text to
+    // print names the operand task (`print_text`), unless the minimal-script
+    // route answers it. The JavaScript twin is `requestedWriteProgramParameters`.
+    if !parameters.contains_key("task")
+        && !(crate::solver_helpers::is_write_script_request(raw, normalized)
+            && crate::engine::hello_world_program_by_alias(normalized).is_some())
+        && let Some(task) = crate::coding::operand_program::operand_task(raw)
+    {
+        parameters.insert(String::from("task"), task.slug.to_owned());
+    }
+    Some(parameters)
 }
 
 /// Does the request name a program *as its artefact*?

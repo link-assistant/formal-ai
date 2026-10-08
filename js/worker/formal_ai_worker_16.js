@@ -199,7 +199,7 @@ function writeProgramDiagnosticBundle({
 }
 
 function tryWriteProgram(prompt, history, responseLanguage, composition) {
-  let detected = writeProgramParameters(prompt);
+  let detected = requestedWriteProgramParameters(prompt); // R1173-3: text to print names the operand task
   const initiallyDetected = detected;
   const coreference = detected ? null : rewriteBareProgramCoreference(prompt, history);
   if (!detected && !coreference) return null;
@@ -213,7 +213,9 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
   );
   // Issue #324: answer in the language of the request (falls back to en).
   const i18n = writeProgramStrings(responseLanguage);
-  const template = writeProgramTemplate(task, language); // #1165: documentation first, else stored
+  const operand = WRITE_PROGRAM_TASKS[task]?.procedure ? programTaskOperand(prompt) : null; // R1173-3
+  const operandResult = operandProgram(task, language, operand);
+  const template = operand === null ? writeProgramTemplate(task, language) : operandResult && operandResult.recipe.entry; // #1165: documentation first, else stored
   const diagnostics = writeProgramDiagnosticBundle({
     prompt,
     initiallyDetected,
@@ -270,9 +272,9 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
       trace: diagnostics.trace,
     };
   }
-  const languageInfo = writeProgramLanguageInfo(task, language); // #1165 R1165-6: the documented run contract
+  const languageInfo = writeProgramLanguageInfo(task, language, operandResult); // #1165 R1165-6: the documented run contract
   const taskInfo = WRITE_PROGRAM_TASKS[task];
-  const expectedOutput = writeProgramExpectedOutput(task, languageInfo, taskInfo);
+  const expectedOutput = operand === null ? writeProgramExpectedOutput(task, languageInfo, taskInfo) : operand;
   // The sandbox can only execute self-contained JavaScript; a snippet that pulls
   // in Node APIs (e.g. the list-files `require("fs")`) cannot run here (#312).
   const ranInSandbox =
@@ -300,7 +302,7 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
     content,
     // R1013: the sandbox block and the facts a native host reports instead (js/server/program-report.mjs).
     programExecution: { language, task, responseLanguage, checkCommand: languageInfo.checkCommand || null,
-      rediscoveredFrom: documentationRediscoveredPage(task, language), // #1165: what verified this program
+      rediscoveredFrom: operandResult ? operandResult.recipe.rediscovery_source : documentationRediscoveredPage(task, language), // #1165
       runCommand: programRunCommandLine(task, languageInfo.runCommand), output: applyInlineHelloWorldOutputReplacement(prompt, task, expectedOutput),
       block: applyInlineHelloWorldOutputReplacement(prompt, task, executionLines.join("\n")) },
     confidence: 0.9,

@@ -24,9 +24,17 @@ use crate::protocol::ChatMessage;
 use crate::seed;
 use serde_json::json;
 
+mod insert_lines;
+mod unquoted_anchor;
+
+use insert_lines::{blank_beside, repeated_anchor_count, unique_from};
+
+const COUNT_SLOT: &str = concat!("{", "count", "}");
+
 /// The bytes a quoted or clause-led span of edit prose stands for.
 pub(super) fn literal_text(span: &str) -> Option<String> {
     quoted_verbatim(span)
+        .or_else(|| insert_lines::listed_lines(span))
         .or_else(|| described_literal(span))
         .or_else(|| clean_content(span))
         .map(|text| unescape_prose_newlines(&text))
@@ -79,6 +87,9 @@ pub(super) struct PositionalInsert {
     /// Lines given under the request, neither fenced nor quoted: rebased on
     /// the anchor line's indentation once the file is read (PR #1188 G16).
     pub(super) rebase: bool,
+    /// The anchor and context are unquoted word spans, resolved against the
+    /// file's lines once it is read (PR #1188 G51).
+    pub(super) spans: bool,
 }
 
 /// Every insert the request asks for, in its order.
@@ -175,6 +186,13 @@ fn clause_insert(
     // second literal is the line the anchor follows (G51).
     let blank =
         block_text.is_none() && contexts.is_empty() && lexicon.mentions_role(BLANK_LINE, &outside);
+    if let Some(text) = block_text
+        && literals.is_empty()
+    {
+        return unquoted_anchor::unquoted_anchor_insert(
+            sentence, &positions, &contexts, target, text, after,
+        );
+    }
     if let Some(text) = block_text.or_else(|| blank.then_some("")) {
         let (anchor_at, context_at) = match (literals.len(), contexts.is_empty()) {
             // A context cue then names no second line: `the following lines`
@@ -194,6 +212,7 @@ fn clause_insert(
             after,
             context: context_at.map(|index| unescape_prose_newlines(&literals[index].text)),
             rebase: false,
+            spans: false,
         };
         return Some((target, insert));
     }
@@ -220,25 +239,38 @@ fn clause_insert(
     if inserted.is_empty() || !joined_only(sentence, &inserted) {
         return None;
     }
+    // Lines given as separate literals are already lines: an escape inside
+    // one is content (PR #1188 G53).
+    let lines = inserted
+        .iter()
+        .map(|literal| {
+            if inserted.len() > 1 {
+                literal.text.clone()
+            } else {
+                unescape_prose_newlines(&literal.text)
+            }
+        })
+        .collect::<Vec<_>>()
+        .join("\n");
+    // `'x' followed by an empty line`: the seeded blank line goes on the side
+    // of the lines its words stand on, never dropped (PR #1188 G74).
+    let first_blank = cue_occurrences(sentence, BLANK_LINE)
+        .into_iter()
+        .map(|(start, _, _)| start)
+        .min();
+    let inserted = match first_blank {
+        None => lines,
+        Some(blank) if blank < inserted[0].start => ["\n", lines.as_str()].concat(),
+        Some(_) => [lines.as_str(), "\n"].concat(),
+    };
     let insert = PositionalInsert {
         target: String::new(),
         anchor: unescape_prose_newlines(&literals[anchor_at].text),
-        // Lines given as separate literals are already lines: an escape
-        // inside one is content (PR #1188 G53).
-        inserted: inserted
-            .iter()
-            .map(|literal| {
-                if inserted.len() > 1 {
-                    literal.text.clone()
-                } else {
-                    unescape_prose_newlines(&literal.text)
-                }
-            })
-            .collect::<Vec<_>>()
-            .join("\n"),
+        inserted,
         after,
         context: context_at.map(|index| unescape_prose_newlines(&literals[index].text)),
         rebase: false,
+        spans: false,
     };
     Some((target, insert))
 }
@@ -678,11 +710,33 @@ pub(super) fn names_local_edit(task: &str) -> bool {
     let normalized = crate::engine::normalize_prompt(task);
     let edits = lexicon.mentions_role(seed::ROLE_FILE_EDIT_ACTION_CUE, &normalized)
         || lexicon.mentions_role(seed::ROLE_CODING_MEMBER_ADD_ACTION, &normalized);
-    edits
-        && tokens(task).iter().any(|token| {
-            let candidate = clean_path_token(token.text);
-            looks_like_file_path(candidate) && safe_relative_path(candidate)
-        })
+    edits && local_edit_path(task).is_some()
+}
+
+/// The first workspace path the request names.
+fn local_edit_path(task: &str) -> Option<String> {
+    tokens(task).iter().find_map(|token| {
+        let candidate = clean_path_token(token.text);
+        (looks_like_file_path(candidate) && safe_relative_path(candidate))
+            .then(|| candidate.to_owned())
+    })
+}
+
+/// The file a request leading with the add verb names when it quotes no text.
+///
+/// "add hello to config.txt" (PR #1188 G69): its words may be the text or
+/// describe it, so the request earns a question, never a write. In "Create a
+/// test for add in t.mjs" `add` is a name, not the action.
+pub(super) fn unquoted_addition_path(task: &str) -> Option<String> {
+    if !quoted_segment_spans(task).is_empty() {
+        return None;
+    }
+    let normalized = crate::engine::normalize_prompt(task);
+    let lead = normalized.split(' ').next().unwrap_or_default();
+    if !seed::lexicon().mentions_role(seed::ROLE_CODING_MEMBER_ADD_ACTION, lead) {
+        return None;
+    }
+    local_edit_path(task)
 }
 
 /// A newline an author spelled as `\n` inside prose means a newline in the
@@ -697,7 +751,14 @@ pub(super) fn unescape_prose_newlines(text: &str) -> String {
 /// the anchor, `new` those lines with the inserted text beside the anchor's
 /// line; `None` unless the context (with none, the anchor) occurs once and the
 /// anchor occurs after it.
-fn insert_edit(source: &str, insert: &PositionalInsert) -> Option<(usize, String, String, String)> {
+
+fn insert_edit(source: &str, given: &PositionalInsert) -> Option<(usize, String, String, String)> {
+    let resolved = if given.spans {
+        Some(unquoted_anchor::resolved_spans(source, given)?)
+    } else {
+        None
+    };
+    let insert = resolved.as_ref().unwrap_or(given);
     let anchor = insert.anchor.as_str();
     let lead = insert.context.as_deref().unwrap_or(anchor);
     let mut leads: Vec<usize> = source.match_indices(lead).map(|(at, _)| at).collect();
@@ -757,7 +818,15 @@ fn insert_edit(source: &str, insert: &PositionalInsert) -> Option<(usize, String
         ]
         .concat()
     };
-    Some((start, old.to_owned(), new, inserted))
+    // The edit tool needs its old text once in the file: a line that also ends
+    // another line (`];`) is widened back over the lines before it (PR #1188 G73).
+    let from = unique_from(source, start, end)?;
+    Some((
+        from,
+        source[from..end].to_owned(),
+        [&source[from..start], new.as_str()].concat(),
+        inserted,
+    ))
 }
 
 /// Where `text` occurs in `source` as a whole line but for its indentation.
@@ -833,6 +902,21 @@ pub(super) fn plan_insert_sequence_step(
         let index = expected.iter().position(|(path, _)| *path == target)?;
         let source = expected[index].1.as_str();
         let Some((start, lines, widened, inserted)) = insert_edit(source, insert) else {
+            // An anchor line found more than once names no one place: the
+            // answer says so instead of a failed verification (PR #1188 G72).
+            if let Some(occurrences) = repeated_anchor_count(source, insert) {
+                let lead = insert.context.as_deref().unwrap_or(&insert.anchor);
+                return render_seeded_change(
+                    "file_edit_anchor_repeated",
+                    task,
+                    target,
+                    &[
+                        ("{anchor}", lead.trim_end_matches('\n')),
+                        (COUNT_SLOT, &occurrences.to_string()),
+                    ],
+                )
+                .map(AgenticPlan::Final);
+            }
             return Some(AgenticPlan::Final(render_seeded_outcome(
                 "coding_workspace_verification_failed",
                 task,
@@ -852,15 +936,18 @@ pub(super) fn plan_insert_sequence_step(
         ]
         .concat();
         expected[index].1 = updated;
+        // An empty line beside the lines is stated in its own words (PR #1188
+        // G74).
+        let shown = blank_beside(&inserted);
         stated.push(render_seeded_change(
-            insert_intent(insert.after, &inserted),
+            insert_intent(insert.after, shown),
             task,
             target,
-            &[
-                ("{new}", inserted.as_str()),
-                ("{anchor}", insert.anchor.as_str()),
-            ],
+            &[("{new}", shown), ("{anchor}", insert.anchor.as_str())],
         ));
+        if shown.len() != inserted.len() {
+            stated.push(render_seeded_change(BLANK_LINE, task, target, &[]));
+        }
     }
     for (target, content) in &expected {
         let command = ["sha256sum -- ", *target].concat();

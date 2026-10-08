@@ -22,6 +22,7 @@ import { afterSlot, beforeSlot, containsCjk, mentionsRole, mentionsRoleRaw, role
 import { finalAnswer, jsonText, planOne } from './plan.mjs';
 import { looksLikeFilePath, safeRelativePath } from './write_request.mjs';
 import { resultCapability } from './progress.mjs';
+import { explicitPassthroughCommand } from './shell_command.mjs';
 import { normalizedPayload, render } from './tool_result.mjs';
 
 const ROLE_SEARCH_FORM = 'workspace_content_search_form';
@@ -202,6 +203,9 @@ function scopeOf(chars, span) {
  */
 export function contentSearchFor(task) {
   if (mentionsRoleRaw(ROLE_WEB_MEDIUM, ` ${normalizePrompt(task)} `)) return null;
+  // An explicit command (`execute grep TODO note.txt`) runs as written; it is
+  // not a search request to lower (PR #1188 CIFIX2).
+  if (explicitPassthroughCommand(task) !== null) return null;
   const chars = Array.from(task);
   const lower = lowerChars(chars);
   let best = null;

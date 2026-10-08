@@ -361,10 +361,10 @@ async function translateSurface(surface, source, target) {
   return { surface: null, gap: true };
 }
 
-function renderTranslationGap(surface, source, target) {
+function renderTranslationGap(surface, source, target) { // the seeded translation_gap_* answer (Rust render_translation_gap, #918)
   const trimmed = String(surface || "").trim();
-  if (!trimmed) return `I could not identify a source phrase to translate from ${source} to ${target}.`;
-  return `I could not translate "${trimmed}" from ${source} to ${target} with the available formalization data. I recorded this as a translation gap for follow-up.`;
+  const intent = trimmed ? "translation_gap_surface" : "translation_gap_no_source";
+  return handlerRulesFillOnce(answerFor(intent, "en"), { surface: trimmed, source, target });
 }
 
 async function tryTranslation(prompt, normalized) {
@@ -572,14 +572,26 @@ function matchingAntecedentFactAlias(record, antecedent, previous) {
   ) || "";
 }
 
+// Rust `resolve_coreference_antecedent`: the nearest earlier user turn naming an antecedent of the seed
+// (assistant turns name none, and a later unrelated user turn leaves an earlier antecedent visible).
+function nearestCoreferenceAntecedent(history) {
+  const turns = Array.isArray(history) ? history : [];
+  for (let index = turns.length - 1; index >= 0; index -= 1) {
+    const turn = turns[index];
+    if (!turn || turn.role !== "user") continue;
+    const antecedent = matchingCoreferenceAntecedent(String(turn.content || "").toLowerCase());
+    if (antecedent) return { antecedent, previous: normalizePrompt(String(turn.content || "")) };
+  }
+  return null;
+}
+
 function tryCoreferenceFactLookup(prompt, normalized, history) {
   const pronoun = matchingCoreferencePronoun(normalized);
   if (!pronoun || !pronoun.token) return null;
 
-  const previous = normalizePrompt(lastHistoryTurn(history, "user") || "");
-  if (!previous) return null;
-  const antecedent = matchingCoreferenceAntecedent(previous);
-  if (!antecedent) return null;
+  const resolved = nearestCoreferenceAntecedent(history);
+  if (!resolved) return null;
+  const { antecedent, previous } = resolved;
 
   for (const record of FACTS) {
     // Issue #1172: word-boundary keyword prefilter (see tryFactLookup).
@@ -604,7 +616,11 @@ function tryCoreferenceFactLookup(prompt, normalized, history) {
     });
   }
 
-  return null;
+  // Rust `try_coreference_request`: no fact answers the rewritten question, so the antecedent's seeded body does.
+  if (!antecedent.body) return null;
+  const evidence = [`coreference:resolved:${pronoun.token}=${antecedent.displayName}`];
+  if (antecedent.wikidata) evidence.push(`wikidata:${antecedent.wikidata}`);
+  return { intent: antecedent.intent, content: antecedent.body, confidence: 0.85, evidence: [...evidence, "response:coreference"] };
 }
 
 function renderRoleplayBody(persona, body) {

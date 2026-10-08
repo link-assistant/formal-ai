@@ -151,8 +151,7 @@ const CLASS_CLAIM_EVIDENCE = Object.freeze({
   },
   prior_procedure: (prompt, normalized, history) => priorProceduralHowToDialogue(history) !== null,
   coreference_antecedent: (prompt, normalized, history) => {
-    const previous = normalizePrompt(lastHistoryTurn(history, "user") || "");
-    return previous !== "" && matchingCoreferenceAntecedent(previous) !== null;
+    return nearestCoreferenceAntecedent(history) !== null;
   },
   prior_program: (prompt, normalized, history) => activeProgramContext(history) != null,
   list_items: (prompt) => parseNumericListNumbers(prompt).length > 0 || parseNumericListQuotedStrings(prompt).length >= 2,

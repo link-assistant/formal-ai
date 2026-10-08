@@ -238,3 +238,30 @@ pub(super) fn plan_function_expectation_step(
         .or_else(|| seed::render_response(intent, "en", &values))
         .map(AgenticPlan::Final)
 }
+
+/// The seeded question a test request earns when it states no expected result.
+///
+/// A request to write a test into a named file with no quoted literal, no
+/// seeded expectation cue and no value names nothing the test could check, so
+/// nothing is written and no interpreter is guessed (PR #1188 G25).
+pub(super) fn test_expectation_question(task: &str) -> Option<AgenticPlan> {
+    if !crate::normal_markov::quoted_segment_spans(task).is_empty() {
+        return None;
+    }
+    let paths = paths_in(task);
+    let path = paths.first()?;
+    let prose =
+        crate::engine::normalize_prompt(&paths.iter().fold(task.to_owned(), |text, named| {
+            text.replace(named.as_str(), " ")
+        }));
+    let lexicon = seed::lexicon();
+    if prose.chars().any(|character| character.is_ascii_digit())
+        || !lexicon.mentions_role("coding_request_verb", &prose)
+        || !lexicon.mentions_role("coding_test_artifact_kind", &prose)
+        || lexicon.mentions_role(ROLE_EXPECTATION, &prose)
+    {
+        return None;
+    }
+    super::code_task::render_seeded_change("test_expectation_missing", task, path, &[])
+        .map(AgenticPlan::Final)
+}

@@ -756,8 +756,25 @@ pub(super) fn safe_relative_path(path: &str) -> bool {
 /// or an unambiguous self-AST census reference; ambiguous spans fail closed.
 #[must_use]
 pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
+    compose_edit_clauses(request).map(|clauses| clauses.edit)
+}
+
+/// The `(target, old, new)` of an edit request and the spans its clauses take.
+pub(super) struct EditClauses {
+    /// What [`compose_edit_request`] returns.
+    pub(super) edit: (String, String, String),
+    /// The file clause, then the action through the new text, in bytes.
+    ///
+    /// `None` for a positional insert or lines under the request.
+    pub(super) spans: Option<[(usize, usize); 2]>,
+}
+
+/// [`compose_edit_request`] with the spans of its clauses.
+///
+/// Mirrors `composeEditClauses`.
+pub(super) fn compose_edit_clauses(request: &str) -> Option<EditClauses> {
     if let Some(edit) = super::positional_edit::compose_positional_insert(request) {
-        return Some(edit);
+        return Some(EditClauses { edit, spans: None });
     }
     // `Replace the line 'x' with these three lines in f:` followed by lines: a
     // new clause that only describes lines (the seeded `line` meaning,
@@ -766,7 +783,10 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
         && let Some((target, old, new)) = compose_edit_request(block.head)
         && describes_lines(block.head, &new)
     {
-        return Some((target, old, block.text));
+        return Some(EditClauses {
+            edit: (target, old, block.text),
+            spans: None,
+        });
     }
     let toks = tokens(request);
     let action_cues = bare_surfaces(seed::ROLE_FILE_EDIT_ACTION_CUE);
@@ -788,6 +808,12 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
             .iter()
             .any(|segment| token.start >= segment.start && token.end <= segment.end)
     };
+    let is_path_candidate = |token: &Token<'_>| {
+        let cleaned = clean_path_token(token.text);
+        unquoted.contains(&token.start)
+            && (super::general_planner::resolve_census_target(cleaned).is_some()
+                || (looks_like_file_path(cleaned) && safe_relative_path(cleaned)))
+    };
     let candidate = |quoted_pass: bool| {
         toks.iter().enumerate().find_map(|(index, token)| {
             let cleaned = clean_path_token(token.text);
@@ -805,8 +831,12 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
                 .is_some_and(|previous| is_target_cue(previous) || is_action_cue(previous));
             let next_is_cue =
                 (index + 1 < toks.len()) && (is_target_cue(index + 1) || is_action_cue(index + 1));
+            // A cue between two paths introduces the later one: in "…`p.lino``
+            // in req.md" the payload's last span is no target (PR #1188 G63).
+            let cue_introduces_next =
+                !prev_is_cue && next_is_cue && toks.get(index + 2).is_some_and(is_path_candidate);
             let target = resolved.map_or_else(|| cleaned.to_owned(), |census| census.module_path);
-            (prev_is_cue || next_is_cue).then_some((index, target))
+            ((prev_is_cue || next_is_cue) && !cue_introduces_next).then_some((index, target))
         })
     };
     let (file_index, target) = candidate(false).or_else(|| candidate(true))?;
@@ -865,10 +895,23 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
             },
         );
     // A sentence boundary inside a quoted literal is payload: extend to its end.
+    // When that literal ends early, because the backtick spans inside the
+    // payload paired among themselves, a payload quoted whole up to the file
+    // clause runs to it (PR #1188 G63).
     let sentence_end = crate::normal_markov::quoted_segment_spans(request)
         .into_iter()
         .find(|segment| segment.start < sentence_end && sentence_end < segment.end)
-        .map_or(sentence_end, |segment| segment.end);
+        .map_or(sentence_end, |segment| {
+            let whole = file_clause_start > segment.end
+                && request
+                    .get(new_lead.end..file_clause_start)
+                    .is_some_and(crate::normal_markov::wrapped_in_quote_pair);
+            if whole {
+                file_clause_start
+            } else {
+                segment.end
+            }
+        });
     let new_end = if file_clause_start > new_lead.end {
         file_clause_start.min(sentence_end)
     } else {
@@ -889,7 +932,13 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
             seed::ROLE_CODING_IDENTIFIER_RENAME_ACTION,
             &request.to_lowercase(),
         );
-    (!renamed_file).then_some((target, old, new))
+    (!renamed_file).then(|| EditClauses {
+        edit: (target, old, new),
+        spans: Some([
+            (file_clause_start, toks[file_index].end),
+            (action.start, new_end),
+        ]),
+    })
 }
 
 /// Whether a clause `text` of `head` is no quoted literal but words naming

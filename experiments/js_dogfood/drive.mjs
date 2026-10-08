@@ -18,10 +18,14 @@
 
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
-import { dirname, isAbsolute, join, resolve } from 'node:path';
+import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { WorkerHost } from '../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../js/agentic/node-host.mjs';
+
+/** How long one bash call may run before the driver kills it. */
+const BASH_TIMEOUT_MS = Number(process.env.FORMAL_AI_BASH_TIMEOUT_MS ?? 60000);
 
 export const AGENT_CLI_TOOLS = ['bash', 'batch', 'codesearch', 'edit', 'glob', 'grep', 'list', 'read', 'task',
   'todoread', 'todowrite', 'webfetch', 'websearch', 'write'];
@@ -34,10 +38,22 @@ function argsOf(call) {
   }
 }
 
+/** The repository root this driver sits in. */
+export const REPOSITORY_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
+/** Formal AI's plan-event folder, committed in this repository. */
+const PLAN_EVENTS = join(REPOSITORY_ROOT, '.formal-ai');
+/** Where a run from the repository root writes its plan events instead (git-ignored). */
+export const PLAN_EVENTS_SANDBOX = join(REPOSITORY_ROOT, 'experiments/formal_ai_subagent/sandboxes/plan-events');
+
 function within(dir, path) {
   const full = isAbsolute(path) ? path : join(dir, path);
   const resolved = resolve(full);
   if (!resolved.startsWith(resolve(dir))) throw new Error(`path escapes the sandbox: ${path}`);
+  // Run from the repository root, a plan event goes to a git-ignored sandbox,
+  // never over the committed `.formal-ai/` plan log (PR #1188 G15).
+  if (resolve(dir) === REPOSITORY_ROOT && (resolved === PLAN_EVENTS || resolved.startsWith(`${PLAN_EVENTS}${sep}`))) {
+    return join(PLAN_EVENTS_SANDBOX, relative(PLAN_EVENTS, resolved));
+  }
   return resolved;
 }
 
@@ -104,8 +120,15 @@ export function execute(dir, call) {
       }
       case 'bash': {
         try {
-          return execFileSync('/bin/sh', ['-c', args.command], { cwd: dir, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 60000 });
+          return execFileSync('/bin/sh', ['-c', args.command], { cwd: dir, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: BASH_TIMEOUT_MS });
         } catch (error) {
+          // A call killed at the timeout reports the kill, never an exit code:
+          // a killed `node --test` exits 1 on SIGTERM, which is not the
+          // command's own failure (PR #1188 G77).
+          if (error.code === 'ETIMEDOUT' || (error.signal && typeof error.status !== 'number')) {
+            const timeout = error.code === 'ETIMEDOUT' ? `\nTimeout: ${BASH_TIMEOUT_MS} ms` : '';
+            return `Output: ${error.stdout ?? ''}\nError: ${error.stderr ?? ''}\nSignal: ${error.signal ?? 'SIGTERM'}${timeout}`;
+          }
           // A failing command reports its exit code the way the Agent CLI's
           // shell envelope does, so a recipe's failed precondition blocks it.
           if (typeof error.status !== 'number') return `${error.stdout ?? ''}${error.stderr ?? ''}`;

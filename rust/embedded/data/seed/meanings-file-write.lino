@@ -818,6 +818,37 @@ meanings
         text generar
       surface
         text "nuevo archivo"
+  file_declared_noun
+    # PR #1188 CIFIX2: the noun that, written right before a path with the
+    # content stated after it (`add file note.txt containing hello`, `new
+    # file: notes.txt, contents: hello`), declares the file the request
+    # writes. Such a request creates the file whatever its verb, so the
+    # literal-file backstop (`file_whole_write_action`) writes it unread; a
+    # destination or location cue ahead of the noun (`add 'x' to the file
+    # a.txt`) keeps the read-first guard.
+    defined-by relation
+    role file_declared_noun
+    precondition "a literal-file write request names its target right after this noun and states the content after the target"
+    effect "the request declares the file it writes, so the target is written without a guard read"
+    unit "not applicable"
+    example "add file note.txt containing hello"
+    lexeme en
+      surface
+        text file
+    lexeme ru
+      surface
+        text файл
+    lexeme hi
+      surface
+        text फ़ाइल
+    lexeme zh
+      surface
+        text 文件
+    lexeme es
+      surface
+        text archivo
+      surface
+        text fichero
   file_overwrite_consent
     # Wording that consents to replacing an existing file's whole content.
     defined-by relation

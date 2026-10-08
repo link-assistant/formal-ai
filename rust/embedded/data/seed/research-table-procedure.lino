@@ -25,7 +25,6 @@ research_table_procedure
   followup_request "the result"
   followup_request "what result"
   followup_request "what is result"
-  followup_request "what s the result"
   followup_request "what is the result"
   followup_request "what was the result"
   followup_request "what are the results"

@@ -5,8 +5,6 @@ meanings
     role conversation_preference_avoid
     lexeme en
       surface
-        text "don t use"
-      surface
         text "do not use"
       surface
         text "stop using"
@@ -40,11 +38,7 @@ meanings
     role unauthorized_mutation_correction
     lexeme en
       surface
-        text "i didn t ask to update"
-      surface
         text "i did not ask to update"
-      surface
-        text "i didn t ask to change"
       surface
         text "i did not ask to change"
     lexeme ru
@@ -89,8 +83,6 @@ meanings
     lexeme en
       surface
         text "what is available in your local memory"
-      surface
-        text "what s available in your local memory"
     lexeme ru
       surface
         text "что доступно в твоей локальной памяти"
@@ -792,8 +784,6 @@ meanings
       surface
         text "how is it going"
       surface
-        text "how s it going"
-      surface
         text "how are things"
     lexeme ru
       surface
@@ -942,17 +932,9 @@ meanings
       surface
         text "i am fine thanks"
       surface
-        text "i m fine thank you"
-      surface
-        text "i m fine thanks"
-      surface
         text "i am good thank you"
       surface
         text "i am good thanks"
-      surface
-        text "i m good thank you"
-      surface
-        text "i m good thanks"
       surface
         text "fine thank you"
       surface
@@ -1060,8 +1042,6 @@ meanings
       surface
         text "you there"
       surface
-        text "i m here"
-      surface
         text "i am here"
     lexeme ru
       surface
@@ -1143,8 +1123,6 @@ meanings
     lexeme en
       surface
         text "what is your name"
-      surface
-        text "what s your name"
       surface
         text "what's your name"
       surface

@@ -557,3 +557,20 @@ function tryLearnFromSource(prompt) {
     evidence: ["handler:learn_from_source", `learning_source:${source.id}`, `learning_capability:${source.capability}`, "response:learn_from_source"],
   };
 }
+/**
+ * The `diagnostic` prelude row (rust/src/meta_method_dispatch.rs `try_diagnostic`): a prompt carrying a
+ * `diagnostic_marker` row of data/seed/handler-rules.lino is solved without the marker and answered with
+ * its evidence and trace under that marker. The browser keeps no links-notation projection of an answer,
+ * so the native block's links lines are absent here; the evidence and trace lines are the native ones.
+ * @param {string} prompt
+ * @param {function(string): Promise<object>} rerun
+ * @returns {Promise<object|null>}
+ */
+async function tryDiagnosticMarker(prompt, rerun) {
+  const marker = handlerRulesTableKeys("diagnostic_marker").find((key) => key && prompt.includes(key));
+  if (!marker) return null;
+  const inner = await rerun(prompt.split(marker).join("").trim());
+  const evidence = Array.isArray(inner.evidence) ? inner.evidence : [];
+  const lines = [`${inner.content}\n\n${marker}`, ...evidence.map((link) => `evidence: ${link}`), `trace: ${inner.intent}`];
+  return Object.assign({}, inner, { content: `${lines.join("\n")}\n`, evidence: ["diagnostic_mode:active", ...evidence] });
+}

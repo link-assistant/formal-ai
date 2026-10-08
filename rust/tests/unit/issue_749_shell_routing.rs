@@ -193,12 +193,20 @@ fn local_search_is_shell_routed_instead_of_web_searched() {
         "कोड में TODO खोजें",
         "在代码中搜索 TODO",
     ] {
+        // Since PR #1188 T90 the planner's workspace-search arm answers a
+        // local content search ahead of the shell-intent lowering (which still
+        // reads `rg --fixed-strings`, pinned on `shellCommandForTask` in
+        // rust/tests/web/agentic-core.test.mjs). It runs the seeded
+        // `content_search` command of data/seed/shell-intents.lino: `grep -rnH`
+        // prints the `path:line:text` hits the arm answers with, needs no `rg`
+        // installed, skips `.git`, and matches an identifier as a whole word
+        // (`-w`), so `TODO` does not also find `TODOS`. CIFIX2 kept it.
         let command = shell_command(prompt).expect(prompt);
         assert!(
-            command.starts_with("rg --fixed-strings -- '"),
+            command.starts_with("grep -rnHw --exclude-dir=.git -- '"),
             "{prompt}: {command}"
         );
-        assert!(command.ends_with("' ."), "{prompt}: {command}");
+        assert!(command.ends_with("' '.'"), "{prompt}: {command}");
     }
 }
 

@@ -2,8 +2,8 @@
 // run: a port of rust/src/agentic_coding/shell_command.rs.
 
 import {
-  governsCommandsRatherThanRequestingOne, isProseWord, namedShellCommandInSentence, normalizeCommandWord,
-  sentenceSpans, statesACommandPolicy,
+  commandSpan, governsCommandsRatherThanRequestingOne, isProseWord, namedShellCommandInSentence,
+  normalizeCommandWord, sentenceSpans, statesACommandPolicy,
 } from './shell_command_policy.mjs';
 import { asksForDirectoryListing } from './directory_listing.mjs';
 import { isDottedNumber, trimTrailingSentenceDot } from './file_path_shape.mjs';
@@ -78,8 +78,8 @@ function prefixedShellCommand(raw, vocab) {
   if (prefix === undefined) return null;
   const tail = sliceFromByte(prompt, utf8Len(prefix));
   if (tail === null) return null;
-  let remainder = trimStart(tail);
-  remainder = trimStart(remainder.startsWith(':') ? remainder.slice(1) : remainder);
+  let remainder = commandSpan(trimStart(tail));
+  if (remainder === null) return null;
   remainder = trimCommandSentenceEnd(stripBalancedOuterQuotes(remainder));
   const named = commandNamedInProse(remainder, vocab);
   if (named !== null) return named;

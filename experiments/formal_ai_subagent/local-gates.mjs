@@ -16,13 +16,15 @@
 // shared machine stays responsive. Each gate's output goes to
 // `sandboxes/gates/<name>.log` (git-ignored).
 //
-// No gate builds the crate here. A gate's `rust-script --test` half and the
-// suite that tests every script are left to CI, and `--js-only` also skips
-// the gates that compile a Rust script at all, for a machine short of disk.
+// Nothing is compiled from Rust here. A gate that runs `rust-script
+// scripts/<name>.rs` runs its JavaScript twin `scripts/<name>.mjs` instead
+// when one exists, and is skipped otherwise. CI runs the Rust originals
+// and checks the twins agree. `--with-rust-scripts` opts back in to
+// compiling scripts (it fills ~/Library/Caches/rust-script by gigabytes).
 //
 // Usage:
 //   node experiments/formal_ai_subagent/local-gates.mjs            # run all
-//   node experiments/formal_ai_subagent/local-gates.mjs --js-only  # no Rust compile at all
+//   node experiments/formal_ai_subagent/local-gates.mjs --with-rust-scripts  # also compile rust-script gates
 //   node experiments/formal_ai_subagent/local-gates.mjs --list     # print them
 //   node experiments/formal_ai_subagent/local-gates.mjs --only check_file_size,web-ui-boundary
 //   node experiments/formal_ai_subagent/local-gates.mjs --match js  # names containing "js"
@@ -164,18 +166,25 @@ function workflowGates(known) {
 const SCRIPT_TESTS = /rust-script --test \S+ && /g;
 const RUNS_SCRIPT_TESTS = /\bscripts\/test-scripts\.sh\b/;
 
+// `rust-script scripts/x.rs args` becomes `node scripts/x.mjs args` when the
+// twin exists.
+function withJsTwins(run) {
+  return run.replace(/\brust-script (scripts\/[\w-]+)\.rs\b/g, (whole, stem) =>
+    (existsSync(`${stem}.mjs`) ? `node ${stem}.mjs` : whole));
+}
+
 function allGates() {
   const registry = registryGates();
   const known = new Set(registry.map((gate) => gate.run));
-  const jsOnly = process.argv.includes('--js-only');
+  const jsOnly = !process.argv.includes('--with-rust-scripts');
   return [...registry, ...workflowGates(known)].map((gate) => ({
     ...gate,
     run: gate.run.replace(SCRIPT_TESTS, ''),
-  })).map((gate) => ({
+  })).map((gate) => (jsOnly ? { ...gate, run: withJsTwins(gate.run) } : gate)).map((gate) => ({
     ...gate,
     skipped: needsBuild(gate.run) ? 'needs a Rust build (CI only)'
       : RUNS_SCRIPT_TESTS.test(gate.run) || /^rust-script --test \S+$/.test(gate.run) ? 'compiles script unit tests (CI only)'
-      : jsOnly && /\brust-script\b/.test(gate.run) ? 'compiles a Rust script (--js-only)'
+      : jsOnly && /\brust-script\b/.test(gate.run) ? 'compiles a Rust script with no JS twin (CI only)'
       : gate.context ? 'reads CI context (secrets, variables or artifacts)' : null,
   }));
 }

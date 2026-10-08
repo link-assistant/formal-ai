@@ -72,6 +72,8 @@ handler_precedence
     note "phase async -- the worker answers navigations in its async network phase"
   handler github_repository_traffic
     rank 150
+    before_promotion true
+    note "issue 1175 p133 the browser asks the traffic rules in its fixed early phase, before the walk promotions reorder, so a promoted search act never preempts them natively either"
   handler document_originality_check
     rank 160
   handler repository_lineage

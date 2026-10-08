@@ -653,6 +653,29 @@ impl MethodRegistry {
         ordered
     }
 
+    /// The order `meta_method_dispatch::try_dispatch` asks methods in.
+    ///
+    /// The [`Self::ordered_method_names_for_relevants`] order, with every
+    /// handler the precedence seed marks `before_promotion`
+    /// ([`crate::seed::before_promotion_handlers`], issue #1175 p133) moved
+    /// ahead of the promoted methods, right after the prelude: the browser
+    /// worker asks those in its fixed early phase, before the walk its
+    /// promotions reorder (`claimRouteRun` in `js/worker/formal_ai_worker_20.js`).
+    #[must_use]
+    pub fn dispatch_order(&self, relevants: &[String]) -> Vec<String> {
+        let mut ordered = self.ordered_method_names_for_relevants(relevants);
+        let early = crate::seed::before_promotion_handlers();
+        let moved: Vec<String> = ordered
+            .iter()
+            .filter(|name| early.contains(*name))
+            .cloned()
+            .collect();
+        ordered.retain(|name| !early.contains(name));
+        let at = self.count_on(MethodSurface::Prelude).min(ordered.len());
+        ordered.splice(at..at, moved);
+        ordered
+    }
+
     /// Serialize the registry and every method to Links Notation (R311).
     #[must_use]
     pub fn to_links_notation(&self) -> String {

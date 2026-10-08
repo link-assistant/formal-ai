@@ -179,10 +179,10 @@ requirement_status_ledger_shard requirements_04
   requirement
     id "R1165-6"
     shard "docs/requirements/issue-1165-discovery-production-path.md"
-    verdict "partial"
+    verdict "implemented"
     delivered "open follow-up (needs verified procedures; languages.rs owned by #1167) — see the shard"
     issue "1165"
-    automated_test ""
+    automated_test "rust/tests/web/issue-1165-documented-commands.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R1165-7"

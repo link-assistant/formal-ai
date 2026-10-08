@@ -304,7 +304,12 @@ fn plan_chat_step_routes(
     // Issue #707: seed-defined computer-use plans own their exact multilingual
     // prompts before broad write/search routing. Each emitted primitive carries
     // explicit pre/postconditions and is executed by the advertising client.
-    if let Some(plan) = crate::computer_use::plan_agentic_step(messages, tool_names) {
+    // Ahead of them, quotes that do not pair leave no telling the quoted text
+    // from the instruction, so the request is declined before any arm reads its
+    // payload as words to act on (PR #1188 G71).
+    if let Some(plan) = quote_fault_answer(&task)
+        .or_else(|| crate::computer_use::plan_agentic_step(messages, tool_names))
+    {
         return Some(plan);
     }
     // An explicit exact-content marker makes the following bytes authoritative.
@@ -388,18 +393,27 @@ pub(super) fn plan_settled_routes(
     // collapse them into one incomplete action. A function and its test added
     // to existing modules (PR #1188 T1) is one such composition: read both
     // modules, write both, run the stated command.
-    if let Some(plan) =
-        super::workspace_change::plan_workspace_change_step(task, messages, tool_names)
-            .or_else(|| {
-                super::module_function::plan_module_function_step(task, messages, tool_names)
-            })
-            // A bug report with a stated expectation is checked before anything is
-            // rewritten (PR #1188 T93).
-            .or_else(|| {
-                super::function_expectation::plan_function_expectation_step(
-                    task, messages, tool_names,
-                )
-            })
+    // A copy or move followed by edits of the file it makes is planned
+    // sentence by sentence (PR #1188 G82).
+    if let Some(plan) = super::request_sequence::plan_request_sequence_step(
+        task,
+        messages,
+        tool_names,
+        plan_chat_step,
+    )
+    .or_else(|| super::workspace_change::plan_workspace_change_step(task, messages, tool_names))
+    .or_else(|| super::module_function::plan_module_function_step(task, messages, tool_names))
+    // A bug report with a stated expectation is checked before anything is
+    // rewritten (PR #1188 T93).
+    .or_else(|| {
+        super::function_expectation::plan_function_expectation_step(task, messages, tool_names)
+    })
+    // An assertion of a stated call and value is added in the test
+    // file's own form, and the file is run (PR #1188 G13).
+    .or_else(|| super::test_assertion::plan_test_assertion_step(task, messages, tool_names))
+    // A test asked for with no expected result is a question (PR #1188
+    // G25).
+    .or_else(|| super::function_expectation::test_expectation_question(task))
     {
         return Some(plan);
     }
@@ -614,14 +628,13 @@ pub(super) fn plan_settled_routes(
     // `.github/...` path supplies the report router's otherwise-valid subject
     // word. Let the typed read + audit object govern the output verb before the
     // conversation-level report wizard sees it (issue #1138 self-use).
-    if let Some(file_task) = file_read_task_for(task)
-        && file_task.is_analysis()
-    {
-        return Some(plan_file_read_step(&file_task, messages, tool_names));
-    }
-    // Where a name or literal is used inside the workspace is a content search
-    // (PR #1188 T90): grep it, ahead of the file-name locate arm and web search.
-    if let Some(plan) = workspace_search::plan_workspace_search_step(task, messages, tool_names)
+    // After it, where a name or literal is used inside the workspace is a
+    // content search (PR #1188 T90): grep it, ahead of the file-name locate arm
+    // and web search.
+    if let Some(plan) = file_read_task_for(task)
+        .filter(|file_task| file_task.is_analysis())
+        .map(|file_task| plan_file_read_step(&file_task, messages, tool_names))
+        .or_else(|| workspace_search::plan_workspace_search_step(task, messages, tool_names))
         // What a named module exports is answered from its declarations (T99).
         .or_else(|| super::module_exports::plan_module_exports_step(task, messages, tool_names))
         // A summary of a named file summarizes the file's text (T100).
@@ -783,11 +796,15 @@ pub(super) fn plan_settled_routes(
     {
         return Some(plan);
     }
+    // An addition that quotes no text earns a question naming what is missing
+    // (PR #1188 G69).
     // An instruction that edits a named file is never a web question -- when
     // no edit route above could compose it, the honest answer is that nothing
     // was planned, not a search for the sentence (issues #1115, #1133).
-    if super::positional_edit::names_local_edit(task) {
-        return None;
+    if super::positional_edit::unquoted_addition_path(task).is_some()
+        || super::positional_edit::names_local_edit(task)
+    {
+        return unquoted_addition_question(task);
     }
     if let Some(query) = web_research::web_research_query_for(messages)
         && let Some(plan) =
@@ -944,4 +961,27 @@ pub(super) fn fetch_arguments(url: &str) -> String {
         "format": "text",
     })
     .to_string()
+}
+
+/// The seeded answer declining a request whose quotes do not pair (PR #1188 G71).
+fn quote_fault_answer(task: &str) -> Option<AgenticPlan> {
+    let fault = crate::normal_markov::quote_fault(task)?;
+    code_task::render_seeded_change(
+        &format!("request_quote_{}", fault.kind),
+        task,
+        "",
+        &[("{fragment}", &fault.fragment)],
+    )
+    .map(AgenticPlan::Final)
+}
+
+/// The seeded question for an addition that quotes no text (PR #1188 G69).
+///
+/// `None` for any other unplanned local edit, which is declined.
+fn unquoted_addition_question(task: &str) -> Option<AgenticPlan> {
+    super::positional_edit::unquoted_addition_path(task)
+        .and_then(|path| {
+            code_task::render_seeded_change("file_addition_unquoted", task, &path, &[])
+        })
+        .map(AgenticPlan::Final)
 }

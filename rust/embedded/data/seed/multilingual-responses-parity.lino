@@ -517,3 +517,23 @@ multilingual_responses
     intent statement_audit_temperature_range
     language es
     text "la temperatura debe ser finita y mayor que cero"
+  response response_learn_from_source_browser_summary_en
+    intent learn_from_source_browser_summary
+    language en
+    text "I recognized {source} as a declared data source I can learn from ({capability}). The loop that learns from it runs in the native engine: it replays the source prompts through the local links rules and sends the ones they leave unanswered to the human-gated self-improvement loop. This browser worker records the source but does not run that loop, so nothing was learned here."
+  response response_learn_from_source_browser_summary_ru
+    intent learn_from_source_browser_summary
+    language ru
+    text "Я распознал {source} как объявленный источник данных, на котором могу учиться ({capability}). Цикл обучения на нём работает в нативном движке: он прогоняет запросы источника через локальные правила связей и передаёт оставшиеся без ответа в цикл самоулучшения под контролем человека. Этот браузерный воркер записывает источник, но не запускает этот цикл, поэтому здесь ничему не научился."
+  response response_learn_from_source_browser_summary_hi
+    intent learn_from_source_browser_summary
+    language hi
+    text "मैंने {source} को एक घोषित डेटा स्रोत के रूप में पहचाना, जिससे मैं सीख सकता हूँ ({capability})। इससे सीखने वाला लूप नेटिव इंजन में चलता है: वह स्रोत के प्रॉम्प्ट को स्थानीय लिंक नियमों से दोबारा चलाता है और जिनका उत्तर नहीं मिलता उन्हें मानव-नियंत्रित आत्म-सुधार लूप को भेजता है। यह ब्राउज़र वर्कर स्रोत को दर्ज करता है, पर वह लूप नहीं चलाता, इसलिए यहाँ कुछ नहीं सीखा गया।"
+  response response_learn_from_source_browser_summary_zh
+    intent learn_from_source_browser_summary
+    language zh
+    text "我已将 {source} 识别为可供学习的已声明数据源（{capability}）。从中学习的循环在原生引擎中运行：它通过本地链接规则重放该来源的提示，并把仍未得到回答的提示交给需人工把关的自我改进循环。此浏览器工作线程只记录该来源，不运行该循环，因此这里没有学到任何东西。"
+  response response_learn_from_source_browser_summary_es
+    intent learn_from_source_browser_summary
+    language es
+    text "Reconocí {source} como una fuente de datos declarada de la que puedo aprender ({capability}). El ciclo que aprende de ella se ejecuta en el motor nativo: reproduce las solicitudes de la fuente con las reglas de enlaces locales y envía las que quedan sin respuesta al ciclo de automejora supervisado por humanos. Este worker del navegador registra la fuente pero no ejecuta ese ciclo, así que aquí no se aprendió nada."

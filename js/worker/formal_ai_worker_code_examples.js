@@ -531,18 +531,20 @@ function documentationDeviation(language, call, program) {
  * by decomposing it again and against the run contract it binds. `rejected`
  * names why captured pages yielded no program; `captured` says whether any
  * existed; `contract` is the bound run contract and `deviation` what the
- * program departs from that its verification cannot see.
+ * program departs from that its verification cannot see. `output`, when given,
+ * is bound in place of the task's own output (an operand task, R1173-3).
  * @param {string} task
  * @param {string} language
+ * @param {string} [output]
  * @returns {{recipe: object|null, rejected: string|null, captured: boolean, contract: object|null, deviation: string|null, languageName: string}}
  */
-function rediscoverDocumentedProgram(task, language) {
+function rediscoverDocumentedProgram(task, language, output) {
   const captures = documentationRouteActive() ? documentationCaptures(language, task) : [];
   const empty = { recipe: null, rejected: null, captured: false, contract: null, deviation: null, languageName: "" };
   if (captures.length === 0) return empty;
   const reject = (reason) => ({ ...empty, rejected: reason, captured: true });
   const taskInfo = typeof WRITE_PROGRAM_TASKS === "object" ? WRITE_PROGRAM_TASKS[task] : null;
-  const expected = taskInfo ? String(taskInfo.output) : "";
+  const expected = output !== undefined ? String(output) : taskInfo ? String(taskInfo.output) : "";
   if (expected === "" || expected.includes("\n")) return reject("no_single_line_output");
   let best = null;
   for (const capture of captures) {
@@ -662,11 +664,12 @@ function writeProgramTemplate(task, language) {
  * the answer saves. Null for an uncatalogued language.
  * @param {string} task
  * @param {string} language
+ * @param {object} [documented] an operand program (operandProgram), whose contract binds instead
  * @returns {object|null}
  */
-function writeProgramLanguageInfo(task, language) {
+function writeProgramLanguageInfo(task, language, documented) {
   const base = typeof WRITE_PROGRAM_LANGUAGES === "object" ? WRITE_PROGRAM_LANGUAGES[language] : null;
-  const contract = base && task ? documentedProgram(task, language).contract : null;
+  const contract = base && task ? (documented || documentedProgram(task, language)).contract : null;
   if (!contract) return base || null;
   const command = (role) => (contract.commands.find((entry) => entry.role === role) || { command: null }).command;
   return { ...base, saveAs: contract.saveAs, checkCommand: command("check"), runCommand: command("run") };

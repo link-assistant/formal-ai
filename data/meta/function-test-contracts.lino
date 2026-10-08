@@ -9,3 +9,22 @@ function_test_contracts
     run "node --test {test}"
     probe "node --input-type=module -e \"import { {name} } from './{module}'; console.log({name}({arguments}));\""
     samples "2 3 4 5 6 7"
+  # PR #1188 G13: the assertion forms a test file may already use, per
+  # language. A new assertion is written in the form of the file's last
+  # assertion line; {actual} is the stated call, {expected} its stated value.
+  # A missing test file (G25) is written from new_file around the first style,
+  # importing {name} from the module test_name's {stem} names.
+  assertion_styles javascript
+    test_name "{stem}.test.mjs"
+    new_file "import { test } from 'node:test';\nimport assert from 'node:assert/strict';\nimport { {name} } from './{stem}.mjs';\n\ntest('{name}', () => {\n  {assertion}\n});\n"
+    style "assert.equal({actual}, {expected});"
+    style "assert.strictEqual({actual}, {expected});"
+    style "assert.deepStrictEqual({actual}, {expected});"
+    style "assert.deepEqual({actual}, {expected});"
+    style "expect({actual}).toBe({expected});"
+    style "expect({actual}).toEqual({expected});"
+  assertion_styles python
+    test_name "test_{stem}.py"
+    new_file "from {stem} import {name}\n\n\ndef test_{name}():\n    {assertion}\n"
+    style "assert {actual} == {expected}"
+    style "self.assertEqual({actual}, {expected})"

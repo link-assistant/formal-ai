@@ -2,7 +2,7 @@
 // (rust/src/normal_markov.rs). Spans are JavaScript string indices; the
 // execution trace reports UTF-8 byte offsets, as Rust does.
 
-import { isAsciiAlphanumeric, trim, utf8Len } from '../write_str.mjs';
+import { isAsciiAlphanumeric, trim, trimEnd, utf8Len } from '../write_str.mjs';
 
 /** Mirrors `RewriteRule::new` (plus `.terminal()` through `terminal`). */
 export function rewriteRule(pattern, replacement, terminal = false) {
@@ -69,6 +69,50 @@ export function quotedSegmentSpans(text) {
   return result;
 }
 
+const ASCII_QUOTES = ["'", '"', '`'];
+const OPEN_ONLY = ['«', '“', '‘', '「', '『', '《'];
+const CLOSE_FOLLOWERS = '.,;:!?)]}';
+const FAULT_FRAGMENT_CHARS = 32;
+
+/**
+ * Mirrors `fn quote_fault`: the first place a request's quotes stop pairing
+ * (PR #1188 G71), as `{kind, at, fragment}`, or null when every quote pairs.
+ * `escaped` is a backslash before a quote that opens a literal, or before one
+ * that closes it with a word straight after; `unpaired` is an opening quote
+ * no literal holds. An apostrophe (a quote after a letter or digit) is never
+ * an opening quote.
+ * @param {string} text
+ */
+export function quoteFault(text) {
+  const faults = [];
+  let gapStart = 0;
+  const gap = (from, to) => {
+    for (let index = from; index < to; index += 1) {
+      const character = text[index];
+      const ascii = ASCII_QUOTES.includes(character);
+      if (ascii && text[index - 1] === '\\') faults.push(['escaped', index - 1]);
+      else if ((ascii && !isAsciiAlphanumeric(previousChar(text, index))) || OPEN_ONLY.includes(character)) {
+        faults.push(['unpaired', index]);
+      }
+    }
+  };
+  for (const segment of quotedSegmentSpans(text)) {
+    gap(gapStart, segment.start);
+    gapStart = segment.end;
+    if (text.startsWith('```', segment.start) || !ASCII_QUOTES.includes(text[segment.start])) continue;
+    if (text[segment.start - 1] === '\\') faults.push(['escaped', segment.start - 1]);
+    const after = text[segment.end];
+    if (segment.end - segment.start > 2 && text[segment.end - 2] === '\\'
+      && after !== undefined && !/\s/u.test(after) && !CLOSE_FOLLOWERS.includes(after)) {
+      faults.push(['escaped', segment.end - 2]);
+    }
+  }
+  gap(gapStart, text.length);
+  if (faults.length === 0) return null;
+  const [kind, at] = faults.reduce((first, fault) => (fault[1] < first[1] ? fault : first));
+  return { kind, at, fragment: trimEnd(Array.from(text.slice(at)).slice(0, FAULT_FRAGMENT_CHARS).join('')) };
+}
+
 /** Mirrors `fn unwrap_transport_quotes`. @param {string} text */
 export function unwrapTransportQuotes(text) {
   const trimmed = trim(text);
@@ -86,6 +130,28 @@ const PAIRS = [
   ['```', '```'], ["'", "'"], ['"', '"'], ['`', '`'], ['«', '»'],
   ['“', '”'], ['‘', '’'], ['「', '」'], ['『', '』'], ['《', '》'],
 ];
+
+/**
+ * Mirrors `fn wrapped_in_quote_pair`: whether `text`, trimmed, opens with a
+ * quote and closes with that quote's pair, so it is one literal however the
+ * quotes inside it pair (PR #1188 G63).
+ * @param {string} text
+ */
+export function wrappedInQuotePair(text) {
+  const trimmed = trim(text);
+  return PAIRS.some(([open, close]) => trimmed.length >= open.length + close.length
+    && trimmed.startsWith(open) && trimmed.endsWith(close));
+}
+
+/**
+ * Mirrors `fn quotes_whole`: whether `text` holds `literal` inside one quote
+ * pair, however the quotes inside `literal` pair (PR #1188 G63).
+ * @param {string} text
+ * @param {string} literal
+ */
+export function quotesWhole(text, literal) {
+  return literal !== '' && PAIRS.some(([open, close]) => text.includes(`${open}${literal}${close}`));
+}
 
 function nextDelimiter(text, cursor) {
   let best = null;

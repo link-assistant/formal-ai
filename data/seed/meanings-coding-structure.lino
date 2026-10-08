@@ -78,6 +78,10 @@ meanings
         text выводит
       surface
         text "выводит …"
+      surface
+        text печатает
+      surface
+        text "печатает …"
     lexeme hi
       surface
         text प्रिंट

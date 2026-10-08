@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_nl_tools.js"
+  ceiling 113
+  rationale "Browser twin of the nl_tool prelude row (rust/src/solver_handlers/natural_language_tools.rs), added by the issue #918 MIGRATE4 batch on 2026-10-08: the calculator, web-search and local-shell tool calls are recognized through the same seeded roles and answered from the seeded nl_tool_* responses, refused outside agent mode as natively, run on the browser calculator in agent mode, and refused explicitly in the prompt language for the tools the browser has no executor for. A new module rather than growth of a numbered shard, which all sit at their ceilings."

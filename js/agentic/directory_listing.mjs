@@ -45,9 +45,12 @@ function mentions(text, phrase) {
 // files in src." listed the workspace root. The operand is the path-shaped
 // word right after a seeded place preposition (`statement_place_preposition`,
 // "in src", "в src"), unless that word is prose or part of a seeded scope
-// phrase ("in this directory", "in the workspace"); `.` otherwise.
+// phrase ("in this directory", "in the workspace") or a seeded function word
+// (`request_function_word`: the article of "en la carpeta actual" is no
+// directory, PR #1188 CIFIX2); `.` otherwise.
 const LISTED_SCOPE_ROLES = ['local_path_scope_current', 'local_path_scope_desktop', 'local_path_scope_home',
   'capability_container_scope', 'capability_workspace_scope'];
+const FUNCTION_WORD_ROLE = 'request_function_word';
 const PLACE_ROLE = 'statement_place_preposition';
 const OPERAND_WRAPPERS = '`"\',;:!?()[]{}';
 const CURRENT_DIRECTORY = '.';
@@ -64,7 +67,7 @@ function isDirectoryOperand(token) {
  * @returns {string}
  */
 export function listedDirectory(task) {
-  const excluded = new Set(LISTED_SCOPE_ROLES.flatMap((role) => wordsForRole(role))
+  const excluded = new Set([...LISTED_SCOPE_ROLES, FUNCTION_WORD_ROLE].flatMap((role) => wordsForRole(role))
     .flatMap((surface) => splitWhitespace(surface.toLowerCase())));
   const places = wordsForRole(PLACE_ROLE).map((surface) => surface.toLowerCase());
   const words = splitWhitespace(task).map((word) =>

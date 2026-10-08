@@ -905,6 +905,66 @@ meanings
         text "traslada"
       surface
         text "trasladar"
+  line_move_follow
+    defined-by relation
+    role line_move_after_cue
+    precondition "a line move states where the moved line ends up as the line it follows"
+    effect "the moved line is placed directly after the anchor line (PR #1188 G81)"
+    unit "not applicable"
+    example "so that it follows the line"
+    lexeme en
+      surface
+        text "so that it follows"
+      surface
+        text "so it follows"
+      surface
+        text "comes after"
+    lexeme ru
+      surface
+        text "чтобы она шла после"
+      surface
+        text "чтобы она следовала за"
+    lexeme hi
+      surface
+        text "ताकि वह उसके बाद आए"
+    lexeme zh
+      surface
+        text "使其跟在"
+    lexeme es
+      surface
+        text "de modo que siga a"
+      surface
+        text "para que siga a"
+  line_move_precede
+    defined-by relation
+    role line_move_before_cue
+    precondition "a line move states where the moved line ends up as the line it precedes"
+    effect "the moved line is placed directly before the anchor line (PR #1188 G81)"
+    unit "not applicable"
+    example "so that it precedes the line"
+    lexeme en
+      surface
+        text "so that it precedes"
+      surface
+        text "so it precedes"
+      surface
+        text "comes before"
+    lexeme ru
+      surface
+        text "чтобы она шла перед"
+      surface
+        text "чтобы она предшествовала"
+    lexeme hi
+      surface
+        text "ताकि वह उससे पहले आए"
+    lexeme zh
+      surface
+        text "使其排在"
+    lexeme es
+      surface
+        text "de modo que preceda a"
+      surface
+        text "para que preceda a"
   line_swap_action
     defined-by concept
     role line_swap_action

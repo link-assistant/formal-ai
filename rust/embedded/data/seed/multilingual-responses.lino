@@ -668,14 +668,6 @@ multilingual_responses
     variant 谢谢——你在向我指出一个我可以学习的数据来源。
     variant 明白了：你在告诉我从哪里获取用于推理和学习的数据。
     variant 了解——这是一个我可以研究以自我改进的来源。
-  response response_learn_from_source_browser_summary_en
-    intent learn_from_source_browser_summary
-    language en
-    text "I recognized {source} as a declared data source I can learn from ({capability}). The loop that learns from it runs in the native engine: it replays the source prompts through the local links rules and sends the ones they leave unanswered to the human-gated self-improvement loop. This browser worker records the source but does not run that loop, so nothing was learned here."
-  response response_learn_from_source_browser_summary_ru
-    intent learn_from_source_browser_summary
-    language ru
-    text "Я распознал {source} как объявленный источник данных, на котором могу учиться ({capability}). Цикл обучения на нём работает в нативном движке: он прогоняет запросы источника через локальные правила связей и передаёт оставшиеся без ответа в цикл самоулучшения под контролем человека. Этот браузерный воркер записывает источник, но не запускает этот цикл, поэтому здесь ничему не научился."
   response response_tool_result_completed_en
     intent tool_result_completed
     language en

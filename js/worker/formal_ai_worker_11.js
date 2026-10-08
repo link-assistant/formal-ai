@@ -768,6 +768,7 @@ function priorSoftwareProjectMeaning(history) {
 const INSTALL_FORMAT_MARKDOWN = "markdown";
 const INSTALL_FORMAT_SHELL = "shell_script";
 const INSTALL_FORMAT_POWERSHELL = "powershell_script";
+const INSTALL_FORMAT_BOTH_SCRIPTS = "shell_and_powershell";
 
 // Shared coding-task construction builder. Mirrors src/meta_algorithm_builder.rs
 // and parses the same data/seed/coding-idioms.lino definition.
@@ -833,69 +834,26 @@ function appendMetaAlgorithmConstructionLino(lines, activeSurface) {
   }
 }
 
-function installationContainsAny(value, needles) {
-  return needles.some((needle) => String(value || "").includes(needle));
+// Issue #918: the request cues, source and target markers, prose function
+// words, verb-to-step map and project marker are the installation_* tables and
+// policy of data/seed/handler-rules.lino, as natively.
+
+/** Whether `value` contains a key of the seeded `table <name>`. */
+function installationNamesAny(value, table) {
+  return handlerRulesTableKeys(table).some((cue) => cue !== "" && String(value || "").includes(cue));
+}
+
+/** The values of every row of the seeded `table <name>` whose key `value` contains. */
+function installationNamedValues(value, table) {
+  const text = String(value || "");
+  return (handlerRulesTables()[table] || { rows: [] }).rows
+    .filter(([cue]) => cue !== "" && text.includes(cue))
+    .map(([, named]) => named);
 }
 
 function isInstallationConversionRequest(normalized) {
-  const asksConversion = installationContainsAny(normalized, [
-    "convert",
-    "conversion",
-    "transform",
-    "turn",
-    "translate",
-    "back to",
-    "конверт",
-    "преобраз",
-    "перевед",
-    "बदल",
-    "परिवर्त",
-    "रूपांतर",
-    "कन्वर्ट",
-    "转换",
-    "轉換",
-    "转成",
-    "轉成",
-    "转为",
-    "轉為",
-    "翻译",
-    "翻譯",
-  ]);
-  const namesInstallSurface = installationContainsAny(normalized, [
-    "readme",
-    "markdown",
-    "installation guide",
-    "install guide",
-    "deployment guide",
-    "deploy guide",
-    "installation script",
-    "install script",
-    "deployment script",
-    "deploy script",
-    "руководство по установ",
-    "инструкц",
-    "установ",
-    "स्थापना",
-    "इंस्टॉल",
-    "इंस्टॉलेशन",
-    "安装",
-    "安裝",
-    "部署",
-  ]);
-  const namesScriptSurface = installationContainsAny(normalized, [
-    " sh ",
-    " bash",
-    "shell",
-    "powershell",
-    "pwsh",
-    "ps1",
-    "script",
-    "скрипт",
-    "скрипта",
-    "脚本",
-    "腳本",
-  ]);
-  return asksConversion && namesInstallSurface && namesScriptSurface;
+  return ["installation_conversion_action", "installation_conversion_surface", "installation_conversion_script"]
+    .every((table) => installationNamesAny(normalized, table));
 }
 
 function installationFencedBlocks(text) {
@@ -931,36 +889,13 @@ function isInstallationPowerShellFence(info) {
 }
 
 function detectInstallationSourceFormat(prompt, normalized) {
+  // An explicit PowerShell source outranks a shell one, which outranks a
+  // Markdown one, whatever order the markers occur in.
+  const named = installationNamedValues(normalized, "installation_source_marker");
+  const explicit = [INSTALL_FORMAT_POWERSHELL, INSTALL_FORMAT_SHELL, INSTALL_FORMAT_MARKDOWN]
+    .find((format) => named.includes(format));
+  if (explicit) return explicit;
   const fences = installationFencedBlocks(prompt);
-  const explicitPowerShell = installationContainsAny(normalized, [
-    "this powershell",
-    "powershell installation script",
-    "powershell script back",
-    "ps1 script",
-  ]);
-  const explicitShell = installationContainsAny(normalized, [
-    "this shell",
-    "this bash",
-    "shell installation script",
-    "shell script back",
-    "bash script back",
-  ]);
-  const explicitMarkdown = installationContainsAny(normalized, [
-    "this readme",
-    "readme.md installation guide",
-    "readme installation guide",
-    "this markdown",
-    "markdown installation guide",
-  ]);
-  if (explicitPowerShell) {
-    return INSTALL_FORMAT_POWERSHELL;
-  }
-  if (explicitShell) {
-    return INSTALL_FORMAT_SHELL;
-  }
-  if (explicitMarkdown) {
-    return INSTALL_FORMAT_MARKDOWN;
-  }
   if (fences.some((block) => isInstallationPowerShellFence(block.info))) {
     return INSTALL_FORMAT_POWERSHELL;
   }
@@ -978,55 +913,15 @@ function pushInstallationTarget(targets, target) {
 }
 
 function detectInstallationTargetFormats(normalized, sourceFormat) {
+  const named = installationNamedValues(normalized, "installation_target_marker");
   const targets = [];
-  if (
-    installationContainsAny(normalized, [
-      "back to a readme",
-      "back to readme",
-      "to a readme",
-      "to readme",
-      "to markdown",
-      "markdown guide",
-    ])
-  ) {
-    pushInstallationTarget(targets, INSTALL_FORMAT_MARKDOWN);
-  }
-  if (
-    installationContainsAny(normalized, [
-      "both sh and powershell",
-      "both bash and powershell",
-      "sh and powershell",
-      "bash and powershell",
-    ])
-  ) {
+  if (named.includes(INSTALL_FORMAT_MARKDOWN)) pushInstallationTarget(targets, INSTALL_FORMAT_MARKDOWN);
+  if (named.includes(INSTALL_FORMAT_BOTH_SCRIPTS)) {
     pushInstallationTarget(targets, INSTALL_FORMAT_SHELL);
     pushInstallationTarget(targets, INSTALL_FORMAT_POWERSHELL);
   }
-  if (
-    installationContainsAny(normalized, [
-      "into a sh script",
-      "to a sh script",
-      "into sh",
-      "to sh",
-      "into a shell script",
-      "to a shell script",
-      "into a bash script",
-      "to a bash script",
-    ])
-  ) {
-    pushInstallationTarget(targets, INSTALL_FORMAT_SHELL);
-  }
-  if (
-    sourceFormat !== INSTALL_FORMAT_POWERSHELL &&
-    installationContainsAny(normalized, [
-      "into a powershell script",
-      "to a powershell script",
-      "into powershell",
-      "to powershell",
-      "to ps1",
-      "into ps1",
-    ])
-  ) {
+  if (named.includes(INSTALL_FORMAT_SHELL)) pushInstallationTarget(targets, INSTALL_FORMAT_SHELL);
+  if (sourceFormat !== INSTALL_FORMAT_POWERSHELL && named.includes(INSTALL_FORMAT_POWERSHELL)) {
     pushInstallationTarget(targets, INSTALL_FORMAT_POWERSHELL);
   }
   if (targets.length === 0) {
@@ -1076,31 +971,6 @@ function shouldSkipInstallationScriptLine(line) {
 const INSTALL_PROVENANCE_CODE_SPAN = "code_span";
 const INSTALL_PROVENANCE_BARE_LINE = "bare_line";
 
-const INSTALL_COMMAND_FUNCTION_WORDS = new Set([
-  "the",
-  "a",
-  "an",
-  "and",
-  "or",
-  "to",
-  "with",
-  "into",
-  "from",
-  "your",
-  "you",
-  "our",
-  "this",
-  "that",
-  "these",
-  "those",
-  "then",
-  "will",
-  "should",
-  "must",
-  "please",
-  "manually",
-]);
-
 // True when the token is shaped like an executable name or a path to one rather
 // than a natural-language word. Commands are lowercase by convention, so an
 // uppercase or non-ASCII lead immediately reads as prose.
@@ -1124,7 +994,7 @@ function installationHasShellOperator(command) {
 function installationReadsAsProse(tokens) {
   return tokens.some((token) => {
     const word = token.replace(/^[^0-9a-z]+/i, "").replace(/[^0-9a-z]+$/i, "").toLowerCase();
-    return INSTALL_COMMAND_FUNCTION_WORDS.has(word);
+    return handlerRulesTableKeys("installation_prose_word").includes(word);
   });
 }
 

@@ -20,6 +20,8 @@ import { isWhitespace } from './crate/rust_str.mjs';
 import { renderResponse } from './crate/seed.mjs';
 import { mentionsRole, wordsForRole } from './crate/seed_meanings.mjs';
 import { contract, extensionLanguage, pathsIn, readSource, signature, statedValue } from './module_function.mjs';
+import { renderSeededChange } from './code_task.mjs';
+import { quotedSegmentSpans } from './crate/normal_markov.mjs';
 import { finalAnswer, jsonText, planOne } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import { resultCapability } from './progress.mjs';
@@ -162,4 +164,23 @@ export function planFunctionExpectationStep(task, messages, toolNames) {
   const intent = observed === checked.expected ? 'function_expectation_holds' : 'function_expectation_fails';
   const values = [['call', checked.call], ['path', request.module], ['observed', observed], ['expected', checked.expected]];
   return finalAnswer(renderResponse(intent, detect(task), values) ?? renderResponse(intent, 'en', values));
+}
+
+/**
+ * Mirrors `fn test_expectation_question`: a request to write a test into a
+ * named file that states no expected result (no quoted literal, no seeded
+ * expectation cue, no value) earns a seeded question naming what is missing
+ * (PR #1188 G25). Nothing is written, and no interpreter is guessed.
+ * @param {string} task
+ * @returns {object|null}
+ */
+export function planTestExpectationQuestion(task) {
+  if (quotedSegmentSpans(task).length > 0) return null;
+  const [path] = pathsIn(task);
+  if (path === undefined) return null;
+  const prose = normalizePrompt(pathsIn(task).reduce((text, named) => text.split(named).join(' '), task));
+  if (/[0-9]/u.test(prose) || !mentionsRole('coding_request_verb', prose)
+    || !mentionsRole('coding_test_artifact_kind', prose) || mentionsRole(ROLE_EXPECTATION, prose)) return null;
+  const question = renderSeededChange('test_expectation_missing', task, path, []);
+  return question === null ? null : finalAnswer(question);
 }

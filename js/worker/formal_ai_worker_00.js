@@ -203,6 +203,7 @@ function hydrateLinoSeedText(raw) {
   cachedMeaningLexicon = null;
   cachedMarketPriceReferences = null;
   if (typeof installSeedProgramTasks === "function") installSeedProgramTasks(raw); // R1021-6, formal_ai_worker_program_requests.js
+  if (typeof installDocumentedLanguageCommands === "function") installDocumentedLanguageCommands(raw); // R1165-6, formal_ai_worker_documented_commands.js
 }
 // Intent routing rules loaded from `seed/intent-routing.lino` at init time.
 // `intents` mirror `seed::IntentRoute` from the Rust crate, so the browser

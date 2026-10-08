@@ -91,7 +91,7 @@ describe('the local gate runner reads the gates CI runs', () => {
   const row = (name) => listed.find((line) => line.split(/\s+/)[1] === name);
 
   test('a registry gate runs locally', () => {
-    assert.match(row('check_file_size'), /^run {3}check_file_size +rust-script scripts\/check-file-size\.rs$/);
+    assert.match(row('check_file_size'), /^run {3}check_file_size +node scripts\/check-file-size\.mjs$/);
   });
 
   test('a gate that needs a Rust build is left to CI', () => {
@@ -99,6 +99,6 @@ describe('the local gate runner reads the gates CI runs', () => {
   });
 
   test('a workflow step given only the base ref runs with it', () => {
-    assert.match(listed.find((line) => line.includes('check-changelog-fragment.rs')), /^run /);
+    assert.match(listed.find((line) => line.includes('check-changelog-fragment.')), /^run /);
   });
 });

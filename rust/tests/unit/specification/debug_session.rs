@@ -100,6 +100,11 @@ fn repository() -> std::path::PathBuf {
 }
 
 /// The located excerpt is the file's own text from the definition line on.
+///
+/// A method's definition line is indented inside its `impl` block (the solve
+/// entry `solve_with_history_probability_store_and_intent_cache` is one), so
+/// the indentation is trimmed before the visibility, as the JavaScript twin's
+/// unanchored `fn <symbol>(` pattern does.
 fn assert_excerpt(source: &str, line: u64, excerpt: &str, definition: &str) {
     let file = source.rsplit_once(':').map_or(source, |(file, _)| file);
     let text = std::fs::read_to_string(repository().join(file)).expect("located file");
@@ -108,6 +113,7 @@ fn assert_excerpt(source: &str, line: u64, excerpt: &str, definition: &str) {
     let start = usize::try_from(line).expect("line") - 1;
     assert!(
         lines[start]
+            .trim_start()
             .trim_start_matches("pub(crate) ")
             .trim_start_matches("pub ")
             .trim_start_matches("export ")

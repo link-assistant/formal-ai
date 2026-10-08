@@ -7,7 +7,7 @@
 
 import { carriesPolicyLead } from './crate/seed_caller_context.mjs';
 import { terminalCommandVocabulary } from './crate/seed_terminal_commands.mjs';
-import { isAlphanumeric, splitOnce, splitWhitespace, toAsciiLowercase, trim, trimMatches } from './crate/rust_str.mjs';
+import { isAlphanumeric, splitOnce, splitWhitespace, toAsciiLowercase, trim, trimMatches, trimStart } from './crate/rust_str.mjs';
 
 const SHELL_ENDS = new Set(['.', '!', '?', ';', '\n', '。', '！', '？', '；', '।']);
 const PROSE_ENDS = new Set(['.', '!', '?', '\n', '。', '！', '？', '।']);
@@ -76,6 +76,25 @@ export function governsCommandsRatherThanRequestingOne(prompt) {
   return spans.length > 0 && spans.every(statesACommandPolicy);
 }
 
+/**
+ * Mirrors `fn command_span`: the command text after a passthrough prefix
+ * (`Run`), past an optional colon. A leading code span is the command and the
+ * words after it are prose (``Run `node --test x.test.js` and tell me …``,
+ * PR #1188 G76); with no leading span, a remainder whose backticks do not pair
+ * is no command (the shell would read a command substitution), so null.
+ * @param {string} remainder
+ */
+export function commandSpan(remainder) {
+  const text = trimStart(remainder.startsWith(':') ? remainder.slice(1) : remainder);
+  const fence = /^`+/u.exec(text)?.[0] ?? '';
+  if (fence !== '') {
+    const close = text.indexOf(fence, fence.length);
+    const inner = close < 0 ? '' : trim(text.slice(fence.length, close));
+    if (inner !== '' && !inner.includes('`')) return inner;
+  }
+  return (text.split('`').length - 1) % 2 === 1 ? null : text;
+}
+
 /** Mirrors `fn named_shell_command_in_sentence`. */
 export function namedShellCommandInSentence(prompt, vocab) {
   const lower = toAsciiLowercase(prompt);
@@ -91,8 +110,14 @@ export function namedShellCommandInSentence(prompt, vocab) {
   for (let index = 1; index < words.length; index += 1) {
     if (isShellToken(words[index]) && isRunVerb(words[index - 1])) return collectCommand(words.slice(index));
   }
+  // Shape 2: a shell token named as a command -- written as code, or right
+  // after a seeded command noun (`run the command ls`) -- given run context.
+  // A shell word elsewhere in the sentence is prose: `Create a Python test
+  // … and run it` names no `python` command (PR #1188 G25).
+  const namedAsCommand = (word, index) => isShellToken(word)
+    && (word.startsWith('`') || (index > 0 && vocab.command_nouns.includes(toAsciiLowercase(words[index - 1]))));
   if (hasVerb || hasPhrase) {
-    const word = words.find(isShellToken);
+    const word = words.find(namedAsCommand);
     if (word !== undefined) return normalizeCommandWord(word);
   }
   return null;
