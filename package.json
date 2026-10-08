@@ -30,6 +30,7 @@
     "tesseract.js": "7.0.0"
   },
   "overrides": {
-    "proxy-addr": "^2.0.8"
+    "proxy-addr": "^2.0.8",
+    "katex": "^0.19.0"
   }
 }
