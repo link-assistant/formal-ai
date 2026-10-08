@@ -2,32 +2,35 @@ self_ast_census
   target src/solver_handlers/formalization_task.rs
   language rust
   fidelity signature
-  byte_len 21621
-  line_count 535
-  content_id source_module_1875a9fd6e130694
-  symbol_count 24
+  byte_len 23800
+  line_count 584
+  content_id source_module_7ba2810f0259c83f
+  symbol_count 27
   symbols
     const TARGETS 44 44
     const INTENT 45 45
     const DEFAULT_VARIABLE 48 48
-    struct FormalLanguage 56 69
-    struct NaturalLanguage 73 88
-    struct Grammar 90 93
-    struct QuantifiedClause 98 106
-    struct AppliedPredicate 110 113
-    function from_words 116 125
-    function capitalize 130 138
-    function decapitalize 142 150
-    function structure_key 155 166
-    function child_values 169 176
-    function named_child 179 181
-    function target_records 188 190
-    function verb_final_language 199 204
-    function grammar 206 267
-    static GRAMMAR 207 207
-    function response 272 276
-    function fill 279 285
-    function is_word_character 294 303
-    function tokenize 310 335
-    function quantifier_at 339 359
-    function parse_quantified_clause 363 530
+    struct FormalLanguage 56 77
+    struct NaturalLanguage 81 96
+    struct Grammar 98 101
+    struct QuantifiedClause 106 114
+    struct AppliedPredicate 118 121
+    function from_words 124 133
+    function capitalize 138 146
+    function decapitalize 150 158
+    function structure_key 163 174
+    function is_plain_identifier 178 189
+    function apply_identifier_rule 193 201
+    function strip_identifier_quoting 206 213
+    function child_values 216 223
+    function named_child 226 228
+    function target_records 235 237
+    function verb_final_language 246 251
+    function grammar 253 316
+    static GRAMMAR 254 254
+    function response 321 325
+    function fill 328 334
+    function is_word_character 343 352
+    function tokenize 359 384
+    function quantifier_at 388 408
+    function parse_quantified_clause 412 579

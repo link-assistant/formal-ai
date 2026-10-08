@@ -2,24 +2,24 @@ self_ast_census
   target src/solver_handlers/formalization_task_render.rs
   language rust
   fidelity signature
-  byte_len 21925
-  line_count 597
-  content_id source_module_1c9a9001d10b1f78
+  byte_len 22100
+  line_count 603
+  content_id source_module_56805168c2d0f4dd
   symbol_count 16
   symbols
-    function render_atom 6 20
-    function render_clause 23 57
-    function split_top_level 64 89
-    function parse_atom 92 106
-    function parse_fol_clause 111 185
-    function render_clause_natural 192 245
-    function carries_formal_surface 255 259
-    function role_language 262 264
-    function matched_roles 268 292
-    function named_target 295 306
-    function sentence_under_discussion 310 318
-    function formalization_statement 329 349
-    function handle_formalization_request 356 417
-    function formalize_answer 420 515
-    function formal_span 519 526
-    function deformalize_answer 530 597
+    function render_atom 6 26
+    function render_clause 29 63
+    function split_top_level 70 95
+    function parse_atom 98 112
+    function parse_fol_clause 117 191
+    function render_clause_natural 198 251
+    function carries_formal_surface 261 265
+    function role_language 268 270
+    function matched_roles 274 298
+    function named_target 301 312
+    function sentence_under_discussion 316 324
+    function formalization_statement 335 355
+    function handle_formalization_request 362 423
+    function formalize_answer 426 521
+    function formal_span 525 532
+    function deformalize_answer 536 603
