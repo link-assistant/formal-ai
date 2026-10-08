@@ -82,7 +82,10 @@ fn the_task_specification_binds_the_same_output() {
             "Напиши программу на Python, которая выводит Привет, мир! и запусти её",
             "Привет, мир!",
         ),
-        ("Write a Python program that prints Hi. Then print \"Bye\".", "Hi"),
+        (
+            "Write a Python program that prints Hi. Then print \"Bye\".",
+            "Hi",
+        ),
         (
             "Write a Python program that prints \"Hello, World!\" to stdout.",
             "Hello, World!",

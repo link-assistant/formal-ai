@@ -59,9 +59,12 @@ test('desktop selector routes installed Agent and native turns through one UI', 
           eventListener({ requestId: request.requestId, engine: activeEngine,
             event: { type: 'assistant', content: 'agent streaming' } });
         }
-        // Keep the mocked turn pending long enough for Playwright to observe the
-        // transient stream surface before the completed answer replaces it.
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        // Keep the mocked turn pending until the test has observed the transient
+        // stream surface; a fixed delay races Playwright's widening poll interval
+        // on a loaded runner and the completed answer can replace it unseen.
+        await new Promise((resolve) => {
+          window.__issue759ReleaseAgentTurn = resolve;
+        });
         return {
           ok: true,
           answer: {
@@ -96,6 +99,7 @@ test('desktop selector routes installed Agent and native turns through one UI', 
   await input.fill('use installed agent');
   await page.locator('[data-testid="chat-composer-submit"]').click();
   await expect(page.locator('[data-testid="desktop-agent-stream"]')).toContainText('agent streaming');
+  await page.evaluate(() => window.__issue759ReleaseAgentTurn());
   await expect(page.locator('[data-testid="chat-message"]').last()).toContainText('agent roundtrip');
 
   await selector.selectOption('out-of-box');

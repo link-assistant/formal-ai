@@ -198,7 +198,8 @@ const CLASS_CLAIM_EVIDENCE = Object.freeze({
   // As names_verifiable_spec: the task reader formalizes the request, or the pattern arm reads a run of atoms.
   verifiable_spec: (prompt) => recogniseBrowserVerifiableTask(prompt) !== null || tryPatternInference(prompt) !== null,
   legality_assessment: (prompt, normalized) => assessLegality(prompt, normalized) !== null,
-  assistant_addressee: (prompt, normalized) => claimEvidenceAddressesAssistant(normalized),
+  assistant_addressee: (prompt, normalized) => claimEvidenceAddressesAssistant(normalized) // or a one-word question (Rust `is_one_word_question`)
+    || (/[?\uff1f]$/u.test(String(prompt || "").trim()) && claimEvidenceWords(String(prompt || "")).length === 1),
   punctuation_only: (prompt) => String(prompt || "").trim() !== "" && !/[\p{L}\p{N}]/u.test(String(prompt || "")),
   unbalanced_brackets: (prompt) => claimEvidenceUnbalancedBrackets(prompt),
   memory_program_reading: (prompt) => compileMemoryProgramOnce(prompt).status !== "not_memory_program",

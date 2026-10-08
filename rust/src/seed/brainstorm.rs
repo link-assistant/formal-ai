@@ -23,10 +23,12 @@ pub struct BrainstormCategory {
     pub items: Vec<String>,
 }
 
-/// Top-level brainstorm-seed bundle — the universal triggers that opt-in to
-/// brainstorm mode, the list of categories the matcher iterates, how many
-/// items a reply lists by default, and the cardinal meaning whose numeral a
-/// prompt may name to ask for more (issue #918).
+/// Top-level brainstorm-seed bundle.
+///
+/// It holds the universal triggers that opt-in to brainstorm mode, the list
+/// of categories the matcher iterates, how many items a reply lists by
+/// default, and the cardinal meaning whose numeral a prompt may name to ask
+/// for more (issue #918).
 #[derive(Debug, Clone, Default)]
 pub struct BrainstormSeeds {
     pub triggers: Vec<String>,

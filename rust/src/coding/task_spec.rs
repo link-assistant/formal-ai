@@ -164,6 +164,10 @@ impl CodingTaskSpec {
     }
 }
 
+/// The name a function request carries until the source catalog names it:
+/// the prose names a concept, not a signature.
+pub const PROVISIONAL_FUNCTION_NAME: &str = "discovered_function";
+
 /// Recognize `HumanEval`, `MBPP`, and conversational Python task shapes.
 #[must_use]
 pub fn recognise(prompt: &str) -> Option<CodingTaskSpec> {
@@ -261,7 +265,7 @@ pub fn recognise(prompt: &str) -> Option<CodingTaskSpec> {
         // name is never rendered by a source-derived candidate.
         (
             ArtifactShape::Function,
-            "discovered_function".to_owned(),
+            PROVISIONAL_FUNCTION_NAME.to_owned(),
             Vec::new(),
             None,
         )

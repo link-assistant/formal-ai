@@ -401,9 +401,12 @@ fn every_budgeted_retry_in_a_workflow_fits_the_budget_it_runs_under() {
             );
         }
     }
+    // Two steps compose the wrapper today: the agentic matrix's Xvfb install
+    // and the provers job's Rocq install (layered-ci.yml, issue #1186 R4).
     assert_eq!(
-        checked, 1,
-        "expected the agentic matrix's Xvfb install to be the one budgeted retry"
+        checked, 2,
+        "expected the agentic matrix's Xvfb install and the provers job's Rocq \
+         install to be the budgeted retries"
     );
 }
 

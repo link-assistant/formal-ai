@@ -159,8 +159,35 @@ fn named_source_language(prompt: &str) -> Option<String> {
     })
 }
 
+/// Whether every output the request binds is quoted in it.
+fn quotes_every_output(prompt: &str) -> bool {
+    let quoted: Vec<String> = crate::normal_markov::quoted_segment_spans(prompt)
+        .into_iter()
+        .map(|segment| segment.text)
+        .collect();
+    crate::intent_formalization::bound_output_literals(prompt)
+        .iter()
+        .all(|output| quoted.contains(output))
+}
+
+/// Whether the request asks for the program to be run, outside its quotes.
+fn asks_to_run(prompt: &str) -> bool {
+    let outside = crate::solver_handlers::text_outside_quoted_segments(prompt);
+    seed::lexicon().mentions_role(
+        seed::ROLE_SOFTWARE_FOLLOWUP_EXECUTION,
+        &crate::engine::normalize_prompt(&outside),
+    )
+}
+
 /// Build only the operation the request explicitly specifies. Other program
 /// behaviors continue through discovery/composition rather than being guessed.
+///
+/// An output read in the open, without quotes (PR #1188 T18), binds the
+/// contract only beside an obligation the agent itself discharges: a named
+/// source file or a run. Without one, "write a program in Rust that prints
+/// Hello, world!" is the catalog task the documentation route answers, the
+/// same program in every locale (issue #932) -- a verb-final request states
+/// no open output to bind at all.
 #[allow(
     clippy::literal_string_with_formatting_args,
     reason = "bind named operands in source-backed Links Notation templates"
@@ -172,9 +199,12 @@ pub fn answer(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
     let extension = std::path::Path::new(catalog.save_as.as_ref())
         .extension()?
         .to_str()?;
-    let path = crate::agentic_coding::general_planner::typed_write_target(prompt, extension)
-        .or_else(|| named_source_file(prompt, extension))
-        .unwrap_or_else(|| catalog.save_as.to_string());
+    let named_path = crate::agentic_coding::general_planner::typed_write_target(prompt, extension)
+        .or_else(|| named_source_file(prompt, extension));
+    if named_path.is_none() && !quotes_every_output(prompt) && !asks_to_run(prompt) {
+        return None;
+    }
+    let path = named_path.unwrap_or_else(|| catalog.save_as.to_string());
     let root = parse_lino(CONTRACTS);
     let contract = root
         .children
@@ -298,7 +328,9 @@ fn string_literal(value: &str, extra_escapes: &str, unicode_escape: &str) -> Str
 }
 
 /// The command that calls the function `source` defines with `arguments` and
-/// prints its result, from the language's `definition` and `call` contract
+/// prints its result.
+///
+/// It is built from the language's `definition` and `call` contract
 /// templates (PR #1188 dogfooding: "… in add.py and run it with 2 and 3").
 /// `None` when the language has no call template, no definition matches, or
 /// the argument count is not the parameter count.

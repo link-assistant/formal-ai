@@ -199,8 +199,9 @@ pub fn documented_run_contract(
         .filter(|name| !tokens.contains(&name.as_str()))
         .collect();
     let lines = documentation_command_lines(captures);
-    let mut name = stem.to_owned();
-    if !missing.is_empty() {
+    let name = if missing.is_empty() {
+        stem.to_owned()
+    } else {
         let stated = contract.commands.iter().find_map(|command| {
             lines.iter().find_map(|(line, _)| {
                 documented_command_binding(line, command, contract.save_as)
@@ -212,10 +213,10 @@ pub fn documented_run_contract(
             .windows(2)
             .find(|pair| containers.iter().any(|keyword| keyword.as_str() == pair[0]))
             .map(|pair| pair[1].to_owned());
-        name = stated
+        stated
             .or(declared)
-            .ok_or_else(|| format!("run_contract:{}", missing.join(",")))?;
-    }
+            .ok_or_else(|| format!("run_contract:{}", missing.join(",")))?
+    };
     let (directory, file) = contract
         .save_as
         .rsplit_once('/')
@@ -299,7 +300,7 @@ pub enum ProgramVerification {
 impl ProgramVerification {
     /// The page a program checked only by decomposition was rediscovered from.
     #[must_use]
-    pub fn rediscovered_page(&self) -> Option<&str> {
+    pub const fn rediscovered_page(&self) -> Option<&str> {
         match self {
             Self::Decomposition { page } => Some(page.as_str()),
             Self::Recorded { .. } => None,

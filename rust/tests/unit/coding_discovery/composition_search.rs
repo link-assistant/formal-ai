@@ -43,11 +43,22 @@ fn an_unseen_combination_of_seeded_meanings_composes() {
         first.type_check(&FragmentCatalog::bootstrap()).is_ok(),
         "every enumerated candidate is well-typed"
     );
+    // More task inputs read first, then cheapest first: a candidate that
+    // ignores an input agrees with the examples only by coincidence.
+    let reads = |program: &ProgramIr| {
+        let shape = format!("{:?}", program.body);
+        program
+            .parameters
+            .iter()
+            .filter(|(name, _)| shape.contains(&format!("Parameter {{ name: {name:?}")))
+            .count()
+    };
     assert!(
-        found
-            .windows(2)
-            .all(|pair| pair[0].action_cost() <= pair[1].action_cost()),
-        "candidates are enumerated cheapest first"
+        found.windows(2).all(|pair| {
+            let (left, right) = (reads(&pair[0]), reads(&pair[1]));
+            left > right || (left == right && pair[0].action_cost() <= pair[1].action_cost())
+        }),
+        "candidates are enumerated by inputs read, then cheapest first"
     );
     assert!(
         !first.fragments.is_empty(),
@@ -62,7 +73,7 @@ fn search_is_deterministic_across_runs() {
 
     assert_eq!(
         first, second,
-        "same prompt, same catalog, same order — enumeration is by cost then id"
+        "same prompt, same catalog, same order — enumeration is by inputs read, cost, then id"
     );
     let mut sorted = first.clone();
     sorted.sort();

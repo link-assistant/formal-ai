@@ -644,7 +644,9 @@ mod tests {
     fn justification_citation_detection() {
         assert!(justification_has_citation("introduced in #991"));
         assert!(justification_has_citation("commit 2b656e5cc"));
-        assert!(justification_has_citation("fix for #1081 via commit abcdef1234567"));
+        assert!(justification_has_citation(
+            "fix for #1081 via commit abcdef1234567"
+        ));
         // A URL slug with hex chars but fewer than 7 consecutive is not a commit.
         assert!(!justification_has_citation("plan-09 leaf-6"));
         // Plain prose without a citation is rejected.

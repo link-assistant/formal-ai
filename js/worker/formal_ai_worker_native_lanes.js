@@ -255,7 +255,7 @@ function trySourceRefresh(prompt) {
 }
 
 /**
- * Every value of `word` in the `shell_syntax` map of
+ * Every shell text (`code`) of `word` in the `shell_syntax` map of
  * data/seed/code-task-cues.lino (loop and session templates, joiners, prompt
  * markers), in seed order. Mirrors `syntax` in
  * rust/src/solver_handlers/shell_command_transform.rs.
@@ -265,7 +265,7 @@ function trySourceRefresh(prompt) {
 function shellSyntax(word) {
   return codeTaskWordEntries("shell_syntax")
     .filter((entry) => codeTaskChildValue(entry, "word") === word)
-    .map((entry) => codeTaskChildValue(entry, "value"));
+    .map((entry) => codeTaskChildValue(entry, "code"));
 }
 
 /** Whether `line` opens with the session program: the first token of the seeded screen template. */

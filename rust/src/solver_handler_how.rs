@@ -32,11 +32,16 @@ struct SpellingCorrection {
 /// same discovery plan that the browser worker can execute: local
 /// decomposition first, Wikimedia/wikiHow candidates next, then web search
 /// and recursive fetch checks only as the fallback path.
+/// A request the legality catalogue flags is declined, so `legality_warning`
+/// answers it even when the `procedural_how_to` promotion hoisted this row.
 pub fn try_how_to_procedure(
     prompt: &str,
     normalized: &str,
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
+    if crate::legality_warning::assess(prompt, normalized).is_some() {
+        return None;
+    }
     let task = extract_procedural_how_to_task(normalized)?;
     for correction in &task.corrections {
         log.append(

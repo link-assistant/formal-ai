@@ -129,7 +129,7 @@ pub fn all_documentation_captures() -> Vec<DocumentationCapture> {
                 .map(|block| {
                     (
                         block.find_child_value("language").to_owned(),
-                        block.find_child_value("text").to_owned(),
+                        block.find_child_value("code").to_owned(),
                     )
                 })
                 .collect(),

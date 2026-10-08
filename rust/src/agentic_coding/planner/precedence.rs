@@ -12,7 +12,7 @@
 /// `solver_dispatch::specialized_handlers` joins `handler-precedence.lino`
 /// (issue #663). Each entry is `(function, arm)`; the arms stay heterogeneous
 /// code — only their names and order are data.
-pub(crate) const PLANNER_ROUTE_ARMS: &[(&str, &str)] = &[
+pub const PLANNER_ROUTE_ARMS: &[(&str, &str)] = &[
     ("plan_chat_step_routes", "conversation_control_decline"),
     ("plan_chat_step_routes", "computer_use"),
     ("plan_chat_step_routes", "authoritative_literal_write"),
@@ -20,7 +20,6 @@ pub(crate) const PLANNER_ROUTE_ARMS: &[(&str, &str)] = &[
     ("plan_chat_step_routes", "evidence_record"),
     ("plan_settled_routes", "git_commit"),
     ("plan_settled_routes", "workspace_change"),
-    ("plan_settled_routes", "module_function"),
     ("plan_settled_routes", "generated_source"),
     ("plan_settled_routes", "structured_edit"),
     ("plan_settled_routes", "structured_document"),

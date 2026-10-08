@@ -401,7 +401,7 @@ fn research_phrases(spec: &CodingTaskSpec) -> Vec<String> {
                 .map(str::to_owned),
         );
     }
-    if spec.name != "discovered_function" {
+    if spec.name != crate::coding::task_spec::PROVISIONAL_FUNCTION_NAME {
         phrases.push(spec.name.replace('_', " "));
     }
     let mut seen = BTreeSet::new();

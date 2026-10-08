@@ -462,7 +462,12 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // Issue #1167 added `program_language_swift` and `program_language_r` to
     // the catalog, each with role, precondition, effect, unit and example, so
     // the catalog carries 30 and the floor moves from 101 to 103.
-    assert_eq!(coding_records, 103, "coding-path regression floor");
+    // The agentic edit verbs then added three task records, each with all
+    // five fields: `coding_text_remove` (remove quoted text from a file),
+    // `setting` (the key of a configuration file whose value changes) and
+    // `typo` (a misspelling whose correction is discovered, not stated), so
+    // the floor moves from 103 to 106.
+    assert_eq!(coding_records, 106, "coding-path regression floor");
     assert_eq!(committed_gaps(root), expected_gaps);
     // The floor moves with the closure, not with the handlers: every gap added
     // under issue #1021 is a `closure-generated-*.lino` record for a token the

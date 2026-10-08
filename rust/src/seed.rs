@@ -369,9 +369,11 @@ pub fn response_variant_for(intent: &str, language: &str, prompt: &str) -> Optio
         })
 }
 
-/// Look up one localized response (see [`localized_response`]) and fill its
-/// `{name}` slots in a single pass, so a value that itself contains braces —
-/// a user's task text, a quoted list item — is never re-filled (issue #918).
+/// Look up one localized response and fill its `{name}` slots in one pass.
+///
+/// The lookup is [`localized_response`]'s; filling once means a value that
+/// itself contains braces — a user's task text, a quoted list item — is never
+/// re-filled (issue #918).
 #[must_use]
 pub fn render_localized_once(intent: &str, language: &str, values: &[(&str, &str)]) -> String {
     fill_template_once(

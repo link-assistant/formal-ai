@@ -430,9 +430,8 @@ fn russian_lean_rendering_uses_guillemets_for_cyrillic_identifiers() {
 /// Plain ASCII predicate names must not be wrapped in guillemets.
 #[test]
 fn english_lean_rendering_has_no_guillemets_for_ascii_identifiers() {
-    let answer = handler_answer(
-        "Formalize in first-order logic: Every student who studies passes the exam",
-    );
+    let answer =
+        handler_answer("Formalize in first-order logic: Every student who studies passes the exam");
     let lean = fenced(&answer, "lean");
     assert!(
         lean.contains("Student x"),

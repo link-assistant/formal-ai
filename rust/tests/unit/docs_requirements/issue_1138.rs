@@ -71,8 +71,7 @@ fn requirement_ids(text: &str) -> Vec<String> {
     ids
 }
 
-/// Every requirement-shaped id in the assembled document, not only this
-/// issue's namespace. Plan 11's generated status ledger covers this exact set.
+/// Every requirement-shaped id in `text`, not only this issue's namespace.
 fn all_requirement_ids(text: &str) -> Vec<String> {
     let mut ids: Vec<String> = Vec::new();
     let mut rest = text;
@@ -91,6 +90,29 @@ fn all_requirement_ids(text: &str) -> Vec<String> {
             ids.push(id);
         }
         rest = &tail[1..];
+    }
+    ids
+}
+
+/// The requirements the assembled document defines: the id leading a table
+/// row (`| R12 |`), a heading (`### R12`) or a list item (`- R12`). Every
+/// other id it names is a reference -- a range endpoint (`R97-R100`), a
+/// case-study sub-requirement (`R558-01`) or a cross-reference
+/// ("R379-clean"). Plan 11's generated status ledger covers this exact set;
+/// the same rule as `defined_requirement_ids` in
+/// `scripts/generate-requirement-status.rs`.
+fn defined_requirement_ids(text: &str) -> Vec<String> {
+    let mut ids: Vec<String> = Vec::new();
+    for line in text.lines() {
+        let line = line.trim_start();
+        if !(line.starts_with("| R") || line.starts_with("### R") || line.starts_with("- R")) {
+            continue;
+        }
+        if let Some(id) = all_requirement_ids(line).into_iter().next()
+            && !ids.contains(&id)
+        {
+            ids.push(id);
+        }
     }
     ids
 }
@@ -273,7 +295,7 @@ fn an_implemented_verdict_names_a_test_that_exists() {
         .map(|pair| pair[0].clone())
         .collect();
     duplicates.dedup();
-    let mut expected = all_requirement_ids(&crate::assembled_docs::requirements());
+    let mut expected = defined_requirement_ids(&crate::assembled_docs::requirements());
     expected.sort();
     assert_eq!(
         checked, expected,

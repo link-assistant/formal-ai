@@ -67,6 +67,9 @@ struct Signature {
     at: usize,
 }
 
+/// The import-line slot the imported names fill.
+const NAMES_SLOT: &str = concat!("{", "names", "}");
+
 /// `template` with each `{slot}` replaced. Mirrors `fill`.
 fn fill(template: &str, slots: &[(&str, &str)]) -> String {
     slots
@@ -244,7 +247,7 @@ fn stated_command(request: &str) -> Option<String> {
                 .iter()
                 .any(|verb| plain.ends_with(verb.as_str()))
     };
-    let verb = words.iter().rposition(|word| runs(*word))?;
+    let verb = words.iter().rposition(|word| runs(word))?;
     let command_from = |span: &[&str]| -> Option<String> {
         let mut command: Vec<&str> = Vec::new();
         for word in span {
@@ -293,10 +296,11 @@ fn returns_in(part: &str) -> bool {
         .any(|word| lexicon.mentions_role("coding_return_action", &bare(word)))
 }
 
-/// The module-function request `task` states, or `None`: a seeded code
-/// construct (`coding_request_object`) the request asks to write or add, a
-/// signature, the module it goes in, and -- when the request names a test
-/// (`coding_test_artifact_kind`) -- the one other path, the test module.
+/// The module-function request `task` states, or `None`.
+///
+/// The request names a seeded code construct (`coding_request_object`) to
+/// write or add, a signature, the module it goes in, and -- when it names a
+/// test (`coding_test_artifact_kind`) -- the one other path, the test module.
 /// Mirrors `moduleFunctionRequest`.
 #[must_use]
 pub fn module_function_request(task: &str) -> Option<ModuleFunctionRequest> {
@@ -396,7 +400,14 @@ fn relation_operations() -> Vec<RelationOperation> {
         .children
         .iter()
         .map(|node| RelationOperation {
-            id: node.id.clone(),
+            // A record's line is its fragment id (`integer_add`), as the
+            // fragment catalog reads the same file; a `meaning <id>` record
+            // carries it as the id.
+            id: if node.name == "meaning" {
+                node.id.clone()
+            } else {
+                node.name.clone()
+            },
             idiom: node.find_child_value("idiom").to_owned(),
             supports: node
                 .children
@@ -497,27 +508,11 @@ fn synthesized_source(request: &ModuleFunctionRequest, samples: &[String]) -> Op
         .iter()
         .map(|pair| specified_value(request, pair))
         .collect::<Option<Vec<_>>>()?;
-    let meeting: Vec<RelationOperation> = relation_operations()
-        .into_iter()
-        .filter(|operation| {
-            pairs.iter().zip(&specified).all(|(pair, expected)| {
-                evaluated(&fill(
-                    &operation.idiom,
-                    &[("left", pair[0].as_str()), ("right", pair[1].as_str())],
-                ))
-                .as_ref()
-                    == Some(expected)
-            })
-        })
-        .collect();
-    let [operation] = meeting.as_slice() else {
-        return None;
-    };
     let parameter = |name: &String| IrNode::Parameter {
         name: name.clone(),
         ty: IrType::Integer,
     };
-    let ir = ProgramIr {
+    let program = |operation: &RelationOperation| ProgramIr {
         name: request.name.clone(),
         parameters: request
             .parameters
@@ -534,8 +529,30 @@ fn synthesized_source(request: &ModuleFunctionRequest, samples: &[String]) -> Op
         source_licenses: Vec::new(),
         reuse: ReuseMode::Verbatim,
     };
+    let catalog = FragmentCatalog::bootstrap();
+    // The integer samples type the operands: an idiom shared by an integer
+    // and a float operation (`{left} * {right}`) is the one whose typed
+    // signature takes the integer parameters.
+    let meeting: Vec<ProgramIr> = relation_operations()
+        .iter()
+        .filter(|operation| {
+            pairs.iter().zip(&specified).all(|(pair, expected)| {
+                evaluated(&fill(
+                    &operation.idiom,
+                    &[("left", pair[0].as_str()), ("right", pair[1].as_str())],
+                ))
+                .as_ref()
+                    == Some(expected)
+            })
+        })
+        .map(program)
+        .filter(|ir| ir.type_check(&catalog).is_ok())
+        .collect();
+    let [ir] = meeting.as_slice() else {
+        return None;
+    };
     crate::coding::ir_lowering::lowering_for(&request.language)?
-        .lower(&ir, &FragmentCatalog::bootstrap())
+        .lower(ir, &catalog)
         .ok()
 }
 
@@ -544,7 +561,7 @@ fn synthesized_source(request: &ModuleFunctionRequest, samples: &[String]) -> Op
 fn with_import(source: &str, template: &str, name: &str, specifier: &str) -> String {
     let filled = fill(template, &[("specifier", specifier)]);
     let (prefix, suffix) = filled
-        .split_once("{names}")
+        .split_once(NAMES_SLOT)
         .unwrap_or((filled.as_str(), ""));
     let mut lines: Vec<String> = source.split('\n').map(str::to_owned).collect();
     if let Some(at) = lines

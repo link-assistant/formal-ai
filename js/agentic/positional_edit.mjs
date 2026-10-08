@@ -39,9 +39,9 @@ export function composePositionalInsert(request) {
     .find((candidate) => looksLikeFilePath(candidate) && safeRelativePath(candidate));
   if (target === undefined) return null;
   const role = after ? 'file_edit_position_after' : 'file_edit_position_before';
-  const [insertedLiteral, anchorLiteral] = cueGovernedLiteral(request, role, first, second) === 1
-    ? [first, second]
-    : [second, first];
+  const governed = cueGovernedLiteral(request, role, first, second);
+  if (governed === null) return null;
+  const [insertedLiteral, anchorLiteral] = governed === 1 ? [first, second] : [second, first];
   const inserted = unescapeProseNewlines(insertedLiteral.text);
   const anchor = unescapeProseNewlines(anchorLiteral.text);
   const replacement = after ? `${anchor}\n${inserted}` : `${inserted}\n${anchor}`;
@@ -74,7 +74,10 @@ function quotedLiterals(request) {
   }));
 }
 
-/** Mirrors `fn cue_governed_literal`: 0 or 1. */
+/**
+ * Mirrors `fn cue_governed_literal`: 0 or 1, or null when the cue occurs but
+ * governs neither literal (a time, not a position: issue #1069).
+ */
 function cueGovernedLiteral(request, role, first, second) {
   const lowered = request.toLowerCase();
   const occurrences = [];
@@ -107,6 +110,7 @@ function cueGovernedLiteral(request, role, first, second) {
   const later = gap(second);
   if (before !== null && later !== null) return later <= before ? 1 : 0;
   if (before !== null) return 0;
+  if (later === null && occurrences.length) return null;
   return 1;
 }
 

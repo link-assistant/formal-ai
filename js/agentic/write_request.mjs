@@ -70,7 +70,9 @@ export function cleanPathToken(word) {
 
 /** Mirrors `fn looks_like_file_path`. @param {string} path */
 export function looksLikeFilePath(path) {
-  return !path.includes('://') && !isDottedNumber(path) && path.split('/').pop().includes('.');
+  const fileName = path.split('/').pop();
+  // A component of dots alone (`.`, `..`) names a directory, never a file.
+  return !path.includes('://') && !isDottedNumber(path) && fileName.includes('.') && /[^.]/u.test(fileName);
 }
 
 /** Mirrors `fn clean_cue_token`. @param {string} word */

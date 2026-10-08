@@ -257,36 +257,37 @@ cues
 # detached-session templates (the session program is the first token of the
 # screen template, and a command already in loop form is one the loop template
 # brackets), the joiners that make any line a command sequence, and the
-# interactive prompt markers a pasted command follows.
+# interactive prompt markers a pasted command follows. Each is verbatim shell
+# text, so it is a `code` field, where `|` is shell syntax, not a packed list.
 map
   name shell_syntax
     entry
       word loop_template
-      value "while true; do {command}; done"
+      code "while true; do {command}; done"
     entry
       word screen_template
-      value "screen -dmS {session} bash -c {command}"
+      code "screen -dmS {session} bash -c {command}"
     entry
       word joiner
-      value " && "
+      code " && "
     entry
       word joiner
-      value " || "
+      code " || "
     entry
       word joiner
-      value " | "
+      code " | "
     entry
       word joiner
-      value "; "
+      code "; "
     entry
       word prompt_marker
-      value "$ "
+      code "$ "
     entry
       word prompt_marker
-      value "# "
+      code "# "
     entry
       word prompt_marker
-      value "% "
+      code "% "
 # The concept-lookup query reader (rust/src/concepts.rs and the worker's
 # extractConceptQuery, issue #918): the request leads it strips ahead of a
 # question, the inverted "who X is" frame and the copulas it refuses as a

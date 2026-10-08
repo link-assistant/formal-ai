@@ -13,8 +13,10 @@ async function switchToManualMode(page) {
   });
   await demoToggle.click();
   await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
+  // The composer waits for the WASM worker to boot (`workerReady`), which can
+  // outlast 5s on a loaded runner; match the 15s app-boot budget.
   await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
-    timeout: 5_000,
+    timeout: 15_000,
   });
 }
 

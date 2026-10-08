@@ -45,12 +45,17 @@ struct GroundedRewrite {
     stated: Option<(&'static str, Vec<(&'static str, String)>)>,
 }
 
+/// The template slots the seed sentences that state a rewrite fill.
+const OLD_SLOT: &str = concat!("{", "old", "}");
+const NEW_SLOT: &str = concat!("{", "new", "}");
+const ANCHOR_SLOT: &str = concat!("{", "anchor", "}");
+
 impl GroundedRewrite {
     /// The intent whose seed sentence states this change rather than merely
     /// reporting that the file was touched.
-    fn stated_intent(&self) -> &'static str {
-        match &self.stated {
-            Some((intent, _)) => *intent,
+    const fn stated_intent(&self) -> &'static str {
+        match self.stated {
+            Some((intent, _)) => intent,
             None if self.renaming => "coding_identifier_renamed",
             None => "coding_text_replaced",
         }
@@ -64,8 +69,8 @@ impl GroundedRewrite {
                 .map(|(slot, value)| (*slot, value.as_str()))
                 .collect(),
             None => vec![
-                ("{old}", self.pattern.as_str()),
-                ("{new}", self.replacement.as_str()),
+                (OLD_SLOT, self.pattern.as_str()),
+                (NEW_SLOT, self.replacement.as_str()),
             ],
         }
     }
@@ -428,7 +433,7 @@ fn grounded_positional_insert(task: &str) -> Option<GroundedRewrite> {
         target,
         stated: Some((
             intent,
-            vec![("{new}", inserted), ("{anchor}", anchor.clone())],
+            vec![(NEW_SLOT, inserted), (ANCHOR_SLOT, anchor.clone())],
         )),
         pattern: anchor,
         replacement,

@@ -275,6 +275,40 @@ pub(super) fn canonical_displacement(node: &IrNode, parameters: &[(String, IrTyp
     total
 }
 
+/// How far the parameters a tree reads, in reading order (its leaves left to
+/// right, the order a lowering spells them), sit from their declared order.
+/// `canonical_displacement` scores only an apply's direct slots, so two
+/// nestings of one commutative fragment can tie on it: `(a + b) + c` and
+/// `(a + c) + b` each keep one slot off its declared position. Read in order,
+/// the first spells `a, b, c` (0) and the second `a, c, b` (2), so the
+/// declared order breaks the tie instead of a content hash.
+pub(super) fn reading_order_displacement(node: &IrNode, parameters: &[(String, IrType)]) -> usize {
+    fn walk(node: &IrNode, parameters: &[(String, IrType)], read: &mut Vec<usize>) {
+        match node {
+            IrNode::Parameter { name, .. } => {
+                if let Some(index) = parameters
+                    .iter()
+                    .position(|(parameter, _)| parameter == name)
+                {
+                    read.push(index);
+                }
+            }
+            IrNode::Apply { arguments, .. } => {
+                for argument in arguments {
+                    walk(argument, parameters, read);
+                }
+            }
+            _ => {}
+        }
+    }
+    let mut read = Vec::new();
+    walk(node, parameters, &mut read);
+    read.iter()
+        .enumerate()
+        .map(|(position, index)| position.abs_diff(*index))
+        .sum()
+}
+
 /// Minimal Python lexical scan for identifier scope. String contents are
 /// deliberately skipped, so a quoted example cannot accidentally bind or
 /// invalidate a placeholder with the same spelling.

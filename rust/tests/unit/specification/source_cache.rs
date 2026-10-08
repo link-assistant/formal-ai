@@ -105,7 +105,13 @@ fn unfetched_sources_do_not_include_prompt_hashes() {
 
 #[test]
 fn conflicting_sources_are_surfaced() {
-    let response = answer("Was X born in 1880 or 1881?");
+    // Issue #1175 R3: a disagreement is recorded between the two answers the
+    // prompt attributes to sources; a bare disjunction names no source and is
+    // refused (rust/tests/unit/issue_918_handler_rules_batch.rs).
+    let response = answer(
+        "The sources conflict: Wikipedia says X was born in 1880, but Britannica says 1881.",
+    );
+    assert_eq!(response.intent, "source_conflict");
     assert!(
         response
             .evidence_links

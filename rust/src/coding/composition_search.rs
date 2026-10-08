@@ -18,7 +18,10 @@ mod lowering;
 mod pool;
 mod recursive;
 
-use analysis::{canonical_displacement, collect_parameter_names, iteration_element_types};
+use analysis::{
+    canonical_displacement, collect_parameter_names, iteration_element_types,
+    reading_order_displacement,
+};
 pub(crate) use analysis::{literal_leaves, parameter_reads, python_tokens};
 use arguments::{
     argument_choices, argument_coherence, argument_grounded_structures, binder_circularity,
@@ -497,10 +500,19 @@ pub fn search_with_structures(
     if program_shape {
         candidates.extend(print_each_programs(spec, catalog, bounds, structure_ids));
     }
+    // More task inputs read outranks least action, as it does among verified
+    // drafts (`referenced_params` in composition): `sum(a)` is cheaper than
+    // `a + b`, but a function of `(a, b)` that ignores `b` agrees with its
+    // examples only by coincidence. Within one read count the order is the
+    // least-action order it always was.
     candidates.sort_by_key(|candidate| {
+        let mut referenced = BTreeSet::new();
+        collect_parameter_names(&candidate.body, &parameter_names, &mut referenced);
         (
+            Reverse(referenced.len()),
             candidate.action_cost(),
             canonical_displacement(&candidate.body, &parameters),
+            reading_order_displacement(&candidate.body, &parameters),
             candidate.content_id(),
         )
     });

@@ -29,11 +29,12 @@ fn grammar_languages() -> Vec<CstGrammar> {
 /// list shrink — it has, to nothing.
 const LANGUAGES_WITHOUT_A_SHIPPED_GRAMMAR: &[&str] = &[];
 
-/// Grammars registered for a held-out language: the decomposer of issue
-/// #1164 parses its documentation's examples, but the catalog carries no
-/// stored program for it on purpose (R1164-9), so the grammar names no
-/// catalog language.
-const HELD_OUT_GRAMMARS: &[&str] = &["pascal"];
+/// Grammars registered for a held-out language: the decomposer parses its
+/// documentation's examples, but the catalog carries no stored program for it
+/// on purpose, so the grammar names no catalog language. Free Pascal is the
+/// path of issue #1164 (R1164-9); Lua is rediscovered from lua.org's
+/// documentation instead of a snapshot (issue #1165, R1165-4).
+const HELD_OUT_GRAMMARS: &[&str] = &["pascal", "lua"];
 
 #[test]
 fn every_catalog_language_has_cst_metadata_or_is_a_declared_gap() {
@@ -183,6 +184,8 @@ fn meta_language_handles_every_covered_language() {
             "r" => "x <- 1\n",
             // Issue #1164: the held-out Free Pascal path.
             "pascal" => "program A;\nbegin\nend.\n",
+            // Issue #1165: the documentation-only Lua path.
+            "lua" => "print(1)\n",
             other => panic!("no snippet for meta-language language `{other}`"),
         };
         let cst = parse_program_cst(&grammar.language_slug, snippet)

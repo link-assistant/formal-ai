@@ -15,7 +15,7 @@ js_rust_translation
   modules 128
   translated_items 243
   inferred_signatures 2
-  carried_items 2103
+  carried_items 2105
   translated_modules 78
   fully_translated_modules 1
   refused_modules 50
@@ -27,7 +27,7 @@ module js/agentic/crate/change_request.mjs translated 1 inferred 0 carried 16
 module js/agentic/crate/client_contract_learning.mjs translated 0 inferred 0 carried 14
 module js/agentic/crate/coding_catalog.mjs translated 4 inferred 0 carried 28
 module js/agentic/crate/coding_cjk.mjs translated 0 inferred 0 carried 1
-module js/agentic/crate/coding_program_contract.mjs translated 0 inferred 0 carried 30
+module js/agentic/crate/coding_program_contract.mjs translated 0 inferred 0 carried 32
 module js/agentic/crate/computer_use.mjs translated 2 inferred 0 carried 14
 module js/agentic/crate/computer_use_induction.mjs translated 4 inferred 0 carried 22
 module js/agentic/crate/computer_use_lexicon.mjs translated 5 inferred 0 carried 12
@@ -150,7 +150,7 @@ module js/worker/formal_ai_worker_meta_synthesis.js translated 0 inferred 0 carr
 refusal "import { … }" 403
 refusal "JSDoc type {…}" 197
 refusal "null" 162
-refusal "type: unknown name (a sibling item or an import)" 111
+refusal "type: unknown name (a sibling item or an import)" 112
 refusal "arrow function" 96
 refusal "function value …" 94
 refusal "object without a $ tag" 77
@@ -158,7 +158,7 @@ refusal "new expression" 74
 refusal "method call .find()" 58
 refusal "regular expression" 52
 refusal "method call .split()" 51
-refusal "method call .map()" 46
+refusal "method call .map()" 47
 refusal "method call .filter()" 43
 refusal "method call .some()" 42
 refusal "Array.from" 40

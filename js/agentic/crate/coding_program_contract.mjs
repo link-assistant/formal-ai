@@ -134,8 +134,23 @@ function namedSourceLanguage(prompt) {
   return null;
 }
 
+/** Mirrors `fn quotes_every_output`: every output the request binds is quoted in it. */
+function quotesEveryOutput(prompt) {
+  const quoted = quotedSegmentSpans(prompt).map((segment) => segment.text);
+  return boundOutputLiterals(prompt).every((output) => quoted.includes(output));
+}
+
+/** Mirrors `fn asks_to_run`: the request asks for the program to be run, outside its quotes. */
+function asksToRun(prompt) {
+  return mentionsRole('software_followup_execution', normalizePrompt(textOutsideQuotedSegments(prompt)));
+}
+
 /**
  * Mirrors `fn answer` in rust/src/coding/program_contract.rs.
+ * An output read in the open, without quotes (PR #1188 T18), binds the
+ * contract only beside a named source file or a run; without one the request
+ * is the catalog task the documentation route answers, in every locale
+ * (issue #932).
  * The `SymbolicAnswer` is partial: `finalize_simple`'s event-log evidence
  * links, thinking steps and Links Notation trace are not rebuilt (native-only:
  * rust/src/solver_handlers/mod.rs finalize_simple; the JS host has no
@@ -154,7 +169,9 @@ export function programContractAnswer(prompt) {
   if (!catalog) return null;
   const extension = pathExtension(catalog.save_as);
   if (extension === null) return null;
-  const path = typedWriteTarget(prompt, extension) ?? namedSourceFile(prompt, extension) ?? catalog.save_as;
+  const namedPath = typedWriteTarget(prompt, extension) ?? namedSourceFile(prompt, extension);
+  if (namedPath === null && !quotesEveryOutput(prompt) && !asksToRun(prompt)) return null;
+  const path = namedPath ?? catalog.save_as;
   const root = contracts();
   const contract = contractFor(language);
   if (!root || !contract) return null;

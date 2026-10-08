@@ -51,7 +51,7 @@ pub(super) fn compose_positional_insert(request: &str) -> Option<(String, String
     } else {
         seed::ROLE_FILE_EDIT_POSITION_BEFORE
     };
-    let (inserted, anchor) = match cue_governed_literal(request, role, first, second) {
+    let (inserted, anchor) = match cue_governed_literal(request, role, first, second)? {
         1 => (first, second),
         _ => (second, first),
     };
@@ -88,7 +88,7 @@ fn quoted_literals(request: &str) -> Vec<QuotedLiteral> {
 }
 
 /// Which of two literals the position cue governs: `1` for the second, `0`
-/// for the first.
+/// for the first, `None` when the cue occurs but governs neither.
 ///
 /// Every occurrence of every surface of the cue is located, each with the
 /// language its lexeme belongs to, because the side a cue governs is a fact
@@ -96,13 +96,16 @@ fn quoted_literals(request: &str) -> Vec<QuotedLiteral> {
 /// cannot be trusted to detect as one: a preposition governs the literal
 /// after it, a postposition the literal before it (`languages.lino`,
 /// `adposition`). The governed literal is the nearest one on that side; with
-/// no occurrence found, the prepositional default stands.
+/// no occurrence found, the prepositional default stands. A cue that occurs
+/// only on the far side of both literals places neither ("… renders "x"
+/// before it reads the list" is a time, not a position), so the request is
+/// no positional insert (issue #1069).
 fn cue_governed_literal(
     request: &str,
     role: &str,
     first: &QuotedLiteral,
     second: &QuotedLiteral,
-) -> usize {
+) -> Option<usize> {
     let lowered = request.to_lowercase();
     let mut occurrences: Vec<(usize, usize, bool)> = Vec::new();
     for meaning in seed::lexicon().meanings_with_role(role) {
@@ -135,11 +138,12 @@ fn cue_governed_literal(
             .min()
     };
     match (gap(first), gap(second)) {
-        (Some(before), Some(after)) => usize::from(after <= before),
-        (Some(_), None) => 0,
+        (Some(before), Some(after)) => Some(usize::from(after <= before)),
+        (Some(_), None) => Some(0),
+        (None, None) if !occurrences.is_empty() => None,
         // No cue occurrence governs `first`: the second literal is the anchor,
-        // which is also the prepositional default when neither is governed.
-        (None, _) => 1,
+        // which is also the prepositional default when no cue is found.
+        (None, _) => Some(1),
     }
 }
 

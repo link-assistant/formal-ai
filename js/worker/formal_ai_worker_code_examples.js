@@ -305,7 +305,7 @@ function documentationCaptures(language, task) {
       query: childValue(node, "rediscovery_query"),
       languageName: childValue(node, "language_name") || "",
       blocks: node.children.filter((child) => child.name === "block")
-        .map((block) => ({ language: childValue(block, "language"), text: childValue(block, "text") })),
+        .map((block) => ({ language: childValue(block, "language"), text: childValue(block, "code") })),
     }));
 }
 

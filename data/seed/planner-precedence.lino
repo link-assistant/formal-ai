@@ -16,8 +16,7 @@ planner_precedence
   #
   # plan_settled_routes -- the settled tail of the cascade
   git_commit # a commit-only request is one shell step, claimed before search reads its file listing as a lookup (issue 1133)
-  workspace_change # a learned workspace-change procedure owns grounded repository rewrites before source creation or shell routing
-  module_function # a function and its test added to existing modules is a read, compose and run transaction, ahead of generated whole-file sources (PR 1188 T1)
+  workspace_change # a learned workspace-change procedure owns grounded repository rewrites and multi-file compositions before source creation or shell routing; a function and its test added to existing modules (PR 1188 T1) is one such composition
   generated_source # a source-code description is executable bytes, not literal file content; lower bounded seed-backed source tasks first
   structured_edit # a structured source edit is a read/derive/write transaction, ahead of the broad literal-write parser
   structured_document # a source-backed structured document is authored, not observed; ahead of the ordinary file reader (issue 1066)

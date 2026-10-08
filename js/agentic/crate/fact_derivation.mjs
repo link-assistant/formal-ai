@@ -13,7 +13,7 @@ import { meaning } from './seed_meanings.mjs';
 
 const FACT_CAPTURES_FILE = "data/seed/fact-captures.lino";
 const FACT_REALIZATION_FILE = "data/seed/fact-realization.lino";
-const FACT_SLOT_PATTERN = /\{(subject|value)(?:\|([a-z_]+))?\}/g;
+const FACT_SLOT_PATTERN = /\{(subject|value)(?::([a-z_]+))?\}/g;
 
 /**
  * The single top-level record of a parsed seed file named `name`, or null.

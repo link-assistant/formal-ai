@@ -240,10 +240,11 @@ pub fn grammar_exists(language: &str) -> bool {
         })
 }
 
-/// Whether discovery knows `language` (R1165-4): a grammar exists and
-/// discovery found a procedure — a cache row, a program the documentation
-/// captures rediscover, or the bootstrap record of a discovery that already
-/// ran before the cache file existed.
+/// Whether discovery knows `language` (R1165-4).
+///
+/// It does when a grammar exists and discovery found a procedure — a cache
+/// row, a program the documentation captures rediscover, or the bootstrap
+/// record of a discovery that already ran before the cache file existed.
 #[must_use]
 pub fn knows_language(language: &str) -> bool {
     grammar_exists(language)

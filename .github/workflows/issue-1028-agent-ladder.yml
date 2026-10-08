@@ -166,6 +166,14 @@ jobs:
       # from the shared compiler cache instead of compiling them cold.
       - uses: ./.github/actions/setup-sccache
 
+      # verify-node.sh compiles every leaf's edit, so the toolchain must meet
+      # the crate's rust-version whether or not the binary came from cache:
+      # formal-ai-binary installs one only on a cache miss, and a runner image
+      # still on rustc 1.98.1 failed thirteen leaves as uncompilable (run
+      # 37710079109) although their edits were valid.
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
       - uses: ./.github/actions/formal-ai-binary
         if: ${{ inputs.skip_build != true }}
 

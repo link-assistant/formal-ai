@@ -131,12 +131,11 @@ fn formerly_open_gaps_have_current_production_evidence() {
     assert!(CASE_STUDY.contains("[#991](https://github.com/link-assistant/formal-ai/issues/991)"));
     let requirements = crate::assembled_docs::requirements();
     assert!(requirements.contains(
-        "R710-20 | How-to multi-source synthesis and seven-day availability cache. | `works-now`"
+        "R710-20 | How-to multi-source synthesis and seven-day availability cache. | Implemented (`works-now`"
     ));
-    assert!(
-        requirements
-            .contains("R710-30 | link-foundation/start and command-stream adoption. | `works-now`")
-    );
+    assert!(requirements.contains(
+        "R710-30 | link-foundation/start and command-stream adoption. | Implemented (`works-now`"
+    ));
     assert!(CASE_STUDY.contains("issue_991_how_to_http.rs"));
     assert!(CASE_STUDY.contains("command-runner.test.mjs"));
 }

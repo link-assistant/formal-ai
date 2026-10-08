@@ -12,7 +12,7 @@
 
 const FACT_CAPTURES_FILE = "fact-captures.lino";
 const FACT_REALIZATION_FILE = "fact-realization.lino";
-const FACT_SLOT_PATTERN = /\{(subject|value)(?:\|([a-z_]+))?\}/g;
+const FACT_SLOT_PATTERN = /\{(subject|value)(?::([a-z_]+))?\}/g;
 
 /**
  * The single top-level record of a parsed seed file named `name`, or null.

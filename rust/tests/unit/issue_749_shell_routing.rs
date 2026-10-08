@@ -87,7 +87,15 @@ fn natural_shell_intents_cover_file_vcs_build_and_search_tasks() {
         ("en", "show metadata for Cargo.toml", "stat Cargo.toml"),
         ("en", "show git log", "git log"),
         ("en", "what changed in git", "git diff"),
-        ("en", "commit my changes", "git commit"),
+        // "commit my changes" is a `git_commit_request` surface (PR #1188
+        // dogfooding), planned as the non-interactive commit recipe — a bare
+        // `git commit` would wait on an editor — and the JavaScript planner
+        // plans the same command.
+        (
+            "en",
+            "commit my changes",
+            "git add -A && git commit -q -m 'chore: commit pending changes' && if test -n \"$(git remote)\"; then git push -q origin HEAD; fi && git rev-parse HEAD",
+        ),
         ("ru", "удали файл old.txt", "rm old.txt"),
         ("ru", "скопируй a.txt в b.txt", "cp a.txt b.txt"),
         ("hi", "फ़ाइल old.txt हटाओ", "rm old.txt"),

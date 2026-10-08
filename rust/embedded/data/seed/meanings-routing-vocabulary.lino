@@ -623,6 +623,14 @@ meanings
     unit "not applicable"
     example "rml export lean clause.lino -o clause.lean"
     grounding "data/seed/formal-targets.lino"
+  ascii
+    defined-by concept
+    role action
+    precondition "a formal target declares which names it writes without quoting"
+    effect "a name made only of ASCII letters, digits and underscores is written bare, any other name in the target's identifier quoting"
+    unit "not applicable"
+    example "Lean 4 writes student bare and студент as «студент»"
+    grounding "data/seed/formal-targets.lino"
   advice_topic
     defined-by concept
     role action
@@ -846,14 +854,6 @@ meanings
     effect "admits the claim of the procedure handler"
     unit "boolean"
     example "how to tie a tie"
-    grounding "data/seed/capability-routing.lino"
-  program_task
-    defined-by concept
-    role action
-    precondition "the program reader extracts a task and a language"
-    effect "admits the claim of the program writing handlers"
-    unit "boolean"
-    example "write hello world in rust"
     grounding "data/seed/capability-routing.lino"
   punctuation_only
     defined-by concept

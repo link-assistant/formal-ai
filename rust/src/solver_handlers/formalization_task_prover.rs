@@ -108,10 +108,7 @@ pub fn prover_unit(clause: &QuantifiedClause, prover: &ProverRecord) -> Option<S
     // not plain identifiers (e.g. Cyrillic names in Lean get «…»).
     let target_language = grammar().formal.iter().find(|l| l.slug == prover.target);
     let apply = |name: &str| -> String {
-        match target_language {
-            Some(lang) => apply_identifier_rule(lang, name),
-            None => name.to_owned(),
-        }
+        target_language.map_or_else(|| name.to_owned(), |lang| apply_identifier_rule(lang, name))
     };
     let mut lines = vec![fill(&prover.domain_declaration, &[("domain", domain)])];
     let mut declared: Vec<&str> = Vec::new();

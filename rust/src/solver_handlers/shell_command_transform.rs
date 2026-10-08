@@ -15,12 +15,12 @@ use crate::solver_helpers::extract_backticked;
 
 const CUE_INTENT: &str = "shell_command_transform";
 
-/// Every value of `word` in the `shell_syntax` map, in seed order.
+/// Every shell text (`code`) of `word` in the `shell_syntax` map, in seed order.
 fn syntax(word: &str) -> Vec<String> {
     word_entries("shell_syntax")
         .iter()
         .filter(|entry| entry.find_child_value("word") == word)
-        .map(|entry| entry.find_child_value("value").to_owned())
+        .map(|entry| entry.find_child_value("code").to_owned())
         .collect()
 }
 

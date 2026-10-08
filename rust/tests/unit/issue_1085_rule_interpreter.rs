@@ -75,8 +75,12 @@ fn the_embedded_rule_document_declares_every_migrated_handler() {
     // rule, the two source-refresh rules (named source and refusal lane) and
     // the source-conflict rule; 22 with the two execution-failure rules (agent
     // opt-in first); 25 with the snapshot, concept-introspection and
-    // user-filter rules of the network query.
-    assert_eq!(parsed.rule_count(), 25);
+    // user-filter rules of the network query; 28 with the three refusal-lane
+    // rules of the no-input arms (action correction, clarification and
+    // continuation without their operand, commit 602456cea); 30 with the
+    // unnamed-repository and unattributed-conflict refusal rules of issue
+    // #1175 R3.
+    assert_eq!(parsed.rule_count(), 30);
     let precedence = formal_ai::seed::handler_precedence();
     for name in MIGRATED_HANDLERS {
         assert!(

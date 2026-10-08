@@ -320,12 +320,7 @@ fn parse_final_amount_from_text(text: &str) -> Option<(f64, &'static str)> {
     let lexicon = seed::lexicon();
     CURRENCIES
         .iter()
-        .find(|(role, _)| {
-            lexicon
-                .words_for_role(role)
-                .iter()
-                .any(|form| *form == word)
-        })
+        .find(|(role, _)| lexicon.words_for_role(role).contains(&word))
         .map(|(_, code)| (amount, *code))
 }
 
@@ -391,13 +386,18 @@ fn parse_compounds_per_year(normalized: &str) -> Option<u32> {
 /// The currency a conversion request names, skipping `source`: the first
 /// currency meaning the prompt mentions as a whole token, in the priority of
 /// [`CURRENCIES`]. The `€` glyph is a typographic symbol for the euro.
+///
+/// The method dispatch hands handlers the lowercased prompt, punctuation
+/// intact, so the whole-token scan reads its punctuation-free normalization:
+/// "to rubles." names the ruble as the browser's `normalizePrompt` text does.
 pub fn target_currency(normalized: &str, source: Option<&str>) -> Option<&'static str> {
     let lexicon = seed::lexicon();
+    let tokens = crate::engine::normalize_prompt(normalized);
     CURRENCIES
         .iter()
         .filter(|(_, code)| Some(*code) != source)
         .find(|(role, code)| {
-            lexicon.mentions_role(role, normalized) || (*code == "EUR" && normalized.contains('€'))
+            lexicon.mentions_role(role, &tokens) || (*code == "EUR" && normalized.contains('€'))
         })
         .map(|(_, code)| *code)
 }

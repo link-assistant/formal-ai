@@ -69,6 +69,9 @@ pub fn try_how_to_procedure_with_client<T: SourceTransport>(
     preferences: &ServicePreferences,
     availability: &mut ServiceAccessibilityCache,
 ) -> Option<SymbolicAnswer> {
+    if crate::legality_warning::assess(prompt, normalized).is_some() {
+        return None;
+    }
     let task = procedural_how_to_task(normalized)?;
     let bounds = GuideBounds::default();
     let guide = synthesize_how_to_guide(

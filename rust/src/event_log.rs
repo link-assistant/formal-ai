@@ -679,6 +679,11 @@ pub fn build_evidence_links(prompt: &str, log: &EventLog, response_link: &str) -
                 format!("concept_lookup:context-mismatch:{}", event.payload)
             }
             "followup:subject" => format!("followup:subject:{}", event.payload),
+            // The seeded status slug the research follow-up classified, as the
+            // browser worker surfaces it (`research_result_followup:status:<slug>`).
+            "research_result_followup:status" => {
+                format!("research_result_followup:status:{}", event.payload)
+            }
             "mechanism_query:request" => {
                 format!("mechanism_query:request:{}", event.payload)
             }

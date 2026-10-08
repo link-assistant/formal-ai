@@ -4,10 +4,10 @@
 use serde_json::json;
 mod continuation;
 mod precedence;
-pub use continuation::trace_route;
-pub use precedence::checked_route_precedence;
-pub(in crate::agentic_coding) use continuation::{evidence_window_start, is_continuation_cue};
 use continuation::continued_agent_task;
+pub use continuation::trace_route;
+pub(in crate::agentic_coding) use continuation::{evidence_window_start, is_continuation_cue};
+pub use precedence::checked_route_precedence;
 
 pub(super) use super::capability_router::tool_for;
 use super::code_task;
@@ -185,7 +185,10 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
         tool_names,
     );
     let plan = restart.or_else(|| plan_chat_step_routes(messages, tool_names, received))?;
-    Some(stop_repeated_failure(stop_repeated_call(plan, messages), messages))
+    Some(stop_repeated_failure(
+        stop_repeated_call(plan, messages),
+        messages,
+    ))
 }
 
 /// A tool call this turn already completed is not a plan again (issue #1154).
@@ -211,7 +214,10 @@ fn stop_repeated_call(plan: AgenticPlan, messages: &[ChatMessage]) -> AgenticPla
     AgenticPlan::Final(super::work_item_steps::fill(
         "stuck_step_report",
         &[
-            ("{step}", &format!("{} {}", repeated.tool, repeated.arguments)),
+            (
+                "{step}",
+                &format!("{} {}", repeated.tool, repeated.arguments),
+            ),
             ("{result}", attempt.detail.trim()),
         ],
     ))
@@ -376,15 +382,13 @@ pub(super) fn plan_settled_routes(
     }
     // A learned workspace-change procedure owns grounded repository rewrites
     // and multi-file compositions before source creation or shell routing can
-    // collapse them into one incomplete action.
-    if let Some(plan) =
-        super::workspace_change::plan_workspace_change_step(task, messages, tool_names)
-    {
-        return Some(plan);
-    }
-    // A function and its test added to existing modules (PR #1188 T1).
-    if let Some(plan) =
-        super::module_function::plan_module_function_step(task, messages, tool_names)
+    // collapse them into one incomplete action. A function and its test added
+    // to existing modules (PR #1188 T1) is one such composition: read both
+    // modules, write both, run the stated command.
+    if let Some(plan) = super::workspace_change::plan_workspace_change_step(
+        task, messages, tool_names,
+    )
+    .or_else(|| super::module_function::plan_module_function_step(task, messages, tool_names))
     {
         return Some(plan);
     }
@@ -668,20 +672,8 @@ pub(super) fn plan_settled_routes(
     if let Some(plan) = capability_router::plan_named_capability_step(task, messages, tool_names) {
         return Some(plan);
     }
-    if let Some(decline) = shell_command::destructive_edit_decline(task) {
-        return Some(decline);
-    }
-    if let Some(command) = shell_command::shell_command_for_task(task) {
-        if let Some(plan) = shell_file_fallback::plan_step(task, messages, tool_names, &command) {
-            return Some(plan);
-        }
-        // A command that changes the workspace answers by what the workspace
-        // holds afterwards, so it is carried out as the verified recipe its seed
-        // intent declares rather than issued once (issues #824 and #944).
-        if let Some(plan) = mutating_action::plan_step(&command, messages, tool_names, task) {
-            return Some(plan);
-        }
-        return Some(plan_shell_step(messages, tool_names, &command));
+    if let Some(plan) = plan_shell_command_arm(task, messages, tool_names) {
+        return Some(plan);
     }
     if let Some(file_task) = file_read_task_for(task) {
         return Some(plan_file_read_step(&file_task, messages, tool_names));
@@ -777,7 +769,8 @@ pub(super) fn plan_settled_routes(
         return None;
     }
     if let Some(query) = web_research::web_research_query_for(messages)
-        && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query, false)
+        && let Some(plan) =
+            web_research::plan_web_research_step(messages, tool_names, &query, false)
     {
         return Some(plan);
     }
@@ -801,7 +794,8 @@ pub(super) fn plan_settled_routes(
     }
     if web_research::has_successful_search_result(messages)
         && let Some(query) = web_research::mid_research_web_query_for(messages)
-        && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query, false)
+        && let Some(plan) =
+            web_research::plan_web_research_step(messages, tool_names, &query, false)
     {
         return Some(plan);
     }
@@ -823,7 +817,8 @@ pub(super) fn plan_settled_routes(
         return Some(plan);
     }
     if let Some(query) = web_research::unresolved_web_research_query_for(messages)
-        && let Some(plan) = web_research::plan_web_research_step(messages, tool_names, &query, false)
+        && let Some(plan) =
+            web_research::plan_web_research_step(messages, tool_names, &query, false)
     {
         return Some(plan);
     }
@@ -840,6 +835,34 @@ pub(super) fn plan_settled_routes(
         return Some(plan);
     }
     None
+}
+
+/// The `shell_command` route arm of the cascade, or `None` to fall through.
+///
+/// A destructive shell intent read against a request about text inside a file
+/// is declined with the seeded sentence, never composed (PR #1188); that
+/// guard is this arm's own head, not a separately named route. Otherwise the
+/// composed command runs through the file fallback, the verified mutating
+/// recipe, or one shell step.
+fn plan_shell_command_arm(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> Option<AgenticPlan> {
+    if let Some(decline) = shell_command::destructive_edit_decline(task) {
+        return Some(decline);
+    }
+    let command = shell_command::shell_command_for_task(task)?;
+    if let Some(plan) = shell_file_fallback::plan_step(task, messages, tool_names, &command) {
+        return Some(plan);
+    }
+    // A command that changes the workspace answers by what the workspace
+    // holds afterwards, so it is carried out as the verified recipe its seed
+    // intent declares rather than issued once (issues #824 and #944).
+    if let Some(plan) = mutating_action::plan_step(&command, messages, tool_names, task) {
+        return Some(plan);
+    }
+    Some(plan_shell_step(messages, tool_names, &command))
 }
 
 /// Run a shell command through the client-owned tool loop, then present its result.

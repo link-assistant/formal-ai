@@ -296,7 +296,7 @@ impl Rules {
         };
         let Some(index) = words
             .iter()
-            .position(|word| !is_initial(word) && !(morphology.acronyms && is_acronym(word)))
+            .position(|word| !(is_initial(word) || (morphology.acronyms && is_acronym(word))))
         else {
             return text.to_owned();
         };
@@ -340,7 +340,7 @@ impl Rules {
                 break;
             };
             let slot = &rest[open + 1..close];
-            let (role, form) = slot.split_once('|').unwrap_or((slot, ""));
+            let (role, form) = slot.split_once(':').unwrap_or((slot, ""));
             let entity = match role {
                 SUBJECT_SLOT => subject,
                 VALUE_SLOT => value,

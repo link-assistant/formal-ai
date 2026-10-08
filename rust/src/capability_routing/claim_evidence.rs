@@ -52,7 +52,7 @@ pub fn class_evidence_holds(
         "pattern_constraints" => handlers::names_pattern_constraints(prompt),
         "table_reference" => handlers::names_query_table(prompt),
         "filesystem_object" => handlers::names_filesystem_object(prompt, normalized),
-        "function_spec" => handlers::looks_like_python_function_request(prompt, normalized),
+        "function_spec" => names_function_spec(prompt),
         "script_language" => crate::engine::hello_world_program_by_alias(normalized).is_some(),
         "document_format" => handlers::names_document_format(normalized),
         "install_steps" => handlers::carries_install_steps(prompt, normalized),
@@ -77,7 +77,7 @@ pub fn class_evidence_holds(
         "marketplace_scope" => handlers::names_marketplace(prompt, normalized),
         "verifiable_spec" => names_verifiable_spec(prompt, normalized),
         "legality_assessment" => crate::legality_warning::assess(prompt, normalized).is_some(),
-        "assistant_addressee" => addresses_assistant(normalized),
+        "assistant_addressee" => addresses_assistant(normalized) || is_one_word_question(prompt),
         "punctuation_only" => carries_no_word(prompt),
         "unbalanced_brackets" => unbalanced_brackets(prompt),
         // Follow-up round: the no-input arms record a refusal event, these
@@ -212,6 +212,32 @@ pub fn content_beyond_roles(text: &str, roles: &[&str]) -> bool {
         .any(|word| !covered.iter().any(|surface| surface == word))
 }
 
+/// Whether the request names the function it asks for.
+///
+/// The synthesis reader recognises a signature, an assertion or a program. A
+/// function it only provisionally names (no signature) is specified when the
+/// request says something beyond its own frame -- the request verb, the code
+/// object, the synthesis subject and the target language -- so a bare "write
+/// a Python function" carries no specification and is admitted to the
+/// refusal lane, as the browser twin's `function_spec` reader refuses it.
+fn names_function_spec(prompt: &str) -> bool {
+    use crate::coding::task_spec::{ArtifactShape, PROVISIONAL_FUNCTION_NAME, recognise};
+    let Some(spec) = recognise(prompt) else {
+        return false;
+    };
+    spec.artifact_shape != ArtifactShape::Function
+        || spec.name != PROVISIONAL_FUNCTION_NAME
+        || content_beyond_roles(
+            prompt,
+            &[
+                crate::seed::ROLE_CODING_REQUEST_VERB,
+                crate::seed::ROLE_CODING_REQUEST_OBJECT,
+                crate::seed::ROLE_PROGRAM_SYNTHESIS_SUBJECT,
+                crate::seed::ROLE_PROGRAM_LANGUAGE_ALIAS,
+            ],
+        )
+}
+
 /// Whether the prompt names a subject other than the assistant.
 ///
 /// The concept, dictionary or mechanism reader extracts a term holding a word
@@ -279,6 +305,15 @@ fn addresses_assistant(normalized: &str) -> bool {
                 })
             }
         })
+}
+
+/// Whether the prompt is a question of a single word (`Сосал?`).
+///
+/// An elliptical question names no subject at all, so in a pro-drop reading
+/// it asks the listener: the one-word question addresses the assistant.
+fn is_one_word_question(prompt: &str) -> bool {
+    let trimmed = prompt.trim();
+    trimmed.ends_with(['?', '\u{ff1f}']) && words(trimmed).len() == 1
 }
 
 /// Whether `ch` belongs to a script written without spaces between words.

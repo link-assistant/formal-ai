@@ -96,14 +96,15 @@ pub(super) fn clean_path_token(word: &str) -> &str {
 /// in ./examples" file-shaped. When a later sentence contained a write-content
 /// marker, the generic planner consequently tried to overwrite that directory.
 /// File shape belongs to the final path component; dots in parent components or
-/// in the relative-path prefix do not make the target a file.
+/// in the relative-path prefix do not make the target a file. A component that
+/// is nothing but dots (`.`, `..`) names a directory, never a file: the full
+/// stop after a closing quote (`… with ''.`) is not a file to read (issue #715).
 pub(super) fn looks_like_file_path(path: &str) -> bool {
     !path.contains("://")
         && !is_dotted_number(path)
-        && path
-            .rsplit('/')
-            .next()
-            .is_some_and(|file_name| file_name.contains('.'))
+        && path.rsplit('/').next().is_some_and(|file_name| {
+            file_name.contains('.') && file_name.chars().any(|character| character != '.')
+        })
 }
 /// Lowercase a token stripped of edge punctuation, for cue/action comparison.
 ///

@@ -436,7 +436,9 @@ fn assigned_setting(source: &str, key: &str, value: &str, target: &str) -> Optio
         .filter(|first| matches!(first, '"' | '\''));
     let written = match quote {
         Some(quote) if !is_bare_literal(value) => format!("{quote}{value}{quote}"),
-        None if target.ends_with(".json")
+        None if std::path::Path::new(target)
+            .extension()
+            .is_some_and(|extension| extension.eq_ignore_ascii_case("json"))
             && !is_bare_literal(value)
             && !value.starts_with(['"', '\'', '[', '{']) =>
         {

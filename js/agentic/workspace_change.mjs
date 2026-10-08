@@ -369,7 +369,7 @@ function assignedSetting(source, key, value, target) {
   let written = value;
   const quote = /^["']/u.exec(old)?.[0];
   if (quote && !isBareLiteral(value)) written = `${quote}${value}${quote}`;
-  else if (!quote && target.endsWith('.json') && !isBareLiteral(value) && !/^["'[{]/u.test(value)) written = JSON.stringify(value);
+  else if (!quote && /\.json$/iu.test(target) && !isBareLiteral(value) && !/^["'[{]/u.test(value)) written = JSON.stringify(value);
   if (written === old) return null;
   lines[index] = `${head}${written}${tail}`;
   return lines.join('\n');

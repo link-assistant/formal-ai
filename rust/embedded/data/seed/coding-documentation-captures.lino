@@ -23,37 +23,37 @@ coding_documentation_captures
     sha256 "98d3e31d5c41a6572a3536ee16c51a1058b3974e6f22e15ba5fb2a5e964ceb4e"
     block
       language "console"
-      text "$ mkdir ~/projects\n$ cd ~/projects\n$ mkdir hello_world\n$ cd hello_world"
+      code "$ mkdir ~/projects\n$ cd ~/projects\n$ mkdir hello_world\n$ cd hello_world"
     block
       language "cmd"
-      text "> mkdir ""%USERPROFILE%\\projects""\n> cd /d ""%USERPROFILE%\\projects""\n> mkdir hello_world\n> cd hello_world"
+      code "> mkdir ""%USERPROFILE%\\projects""\n> cd /d ""%USERPROFILE%\\projects""\n> mkdir hello_world\n> cd hello_world"
     block
       language "rust"
-      text "fn main() {\n    println!(""Hello, world!"");\n}"
+      code "fn main() {\n    println!(""Hello, world!"");\n}"
     block
       language "console"
-      text "$ rustc main.rs\n$ ./main\nHello, world!"
+      code "$ rustc main.rs\n$ ./main\nHello, world!"
     block
       language "powershell"
-      text "> rustc main.rs\n> .\\main\nHello, world!"
+      code "> rustc main.rs\n> .\\main\nHello, world!"
     block
       language "rust"
-      text "fn main() {\n\n}"
+      code "fn main() {\n\n}"
     block
       language "rust"
-      text "#![allow(unused)]\nfn main() {\nprintln!(""Hello, world!"");\n}"
+      code "#![allow(unused)]\nfn main() {\nprintln!(""Hello, world!"");\n}"
     block
       language "console"
-      text "$ rustc main.rs"
+      code "$ rustc main.rs"
     block
       language "console"
-      text "$ ls\nmain  main.rs"
+      code "$ ls\nmain  main.rs"
     block
       language "cmd"
-      text "> dir /B %= the /B option says to only show the file names =%\nmain.exe\nmain.pdb\nmain.rs"
+      code "> dir /B %= the /B option says to only show the file names =%\nmain.exe\nmain.pdb\nmain.rs"
     block
       language "console"
-      text "$ ./main # or .\\main on Windows"
+      code "$ ./main # or .\\main on Windows"
   capture
     language "go"
     task hello_world
@@ -64,34 +64,34 @@ coding_documentation_captures
     sha256 "a7048d2cce6a94ae835c9503d6af5e96f88954a459d831fe03f9a7d82b60ef2c"
     block
       language "unknown"
-      text "cd"
+      code "cd"
     block
       language "unknown"
-      text "cd %HOMEPATH%"
+      code "cd %HOMEPATH%"
     block
       language "unknown"
-      text "mkdir hello\ncd hello"
+      code "mkdir hello\ncd hello"
     block
       language "unknown"
-      text "$ go mod init example/hello\ngo: creating new go.mod: module example/hello"
+      code "$ go mod init example/hello\ngo: creating new go.mod: module example/hello"
     block
       language "unknown"
-      text "package main\n\nimport ""fmt""\n\nfunc main() {\n    fmt.Println(""Hello, World!"")\n}"
+      code "package main\n\nimport ""fmt""\n\nfunc main() {\n    fmt.Println(""Hello, World!"")\n}"
     block
       language "unknown"
-      text "$ go run .\nHello, World!"
+      code "$ go run .\nHello, World!"
     block
       language "unknown"
-      text "$ go help"
+      code "$ go help"
     block
       language "unknown"
-      text "package main\n\nimport ""fmt""\n\nimport ""rsc.io/quote""\n\nfunc main() {\n    fmt.Println(quote.Go())\n}"
+      code "package main\n\nimport ""fmt""\n\nimport ""rsc.io/quote""\n\nfunc main() {\n    fmt.Println(quote.Go())\n}"
     block
       language "unknown"
-      text "$ go mod tidy\ngo: finding module for package rsc.io/quote\ngo: found rsc.io/quote in rsc.io/quote v1.5.2"
+      code "$ go mod tidy\ngo: finding module for package rsc.io/quote\ngo: found rsc.io/quote in rsc.io/quote v1.5.2"
     block
       language "unknown"
-      text "$ go run .\nDon't communicate by sharing memory, share memory by communicating."
+      code "$ go run .\nDon't communicate by sharing memory, share memory by communicating."
   capture
     language "kotlin"
     task hello_world
@@ -102,40 +102,40 @@ coding_documentation_captures
     sha256 "0847a47edc7136be89ddb103aed1178c4eb95a0ba03bdfe396f1b207ab806e8e"
     block
       language "bash"
-      text "sdk install kotlin"
+      code "sdk install kotlin"
     block
       language "bash"
-      text "brew update\nbrew install kotlin"
+      code "brew update\nbrew install kotlin"
     block
       language "bash"
-      text "sudo snap install --classic kotlin"
+      code "sudo snap install --classic kotlin"
     block
       language "kotlin"
-      text "fun main() {\n    println(""Hello, World!"")\n}"
+      code "fun main() {\n    println(""Hello, World!"")\n}"
     block
       language "bash"
-      text "kotlinc hello.kt -include-runtime -d hello.jar"
+      code "kotlinc hello.kt -include-runtime -d hello.jar"
     block
       language "bash"
-      text "kotlinc -help"
+      code "kotlinc -help"
     block
       language "bash"
-      text "java -jar hello.jar"
+      code "java -jar hello.jar"
     block
       language "bash"
-      text "kotlinc hello.kt -d hello.jar"
+      code "kotlinc hello.kt -d hello.jar"
     block
       language "bash"
-      text "kotlinr -classpath hello.jar HelloKt"
+      code "kotlinr -classpath hello.jar HelloKt"
     block
       language "kotlin"
-      text "import java.io.File\n\n// Get the passed in path, i.e. ""-d some/path"" or use the current path.\nval path = if (args.contains(""-d"")) args[1 + args.indexOf(""-d"")]\n           else "".""\n\nval folders = File(path).listFiles { file -> file.isDirectory() }\nfolders?.forEach { folder -> println(folder) }"
+      code "import java.io.File\n\n// Get the passed in path, i.e. ""-d some/path"" or use the current path.\nval path = if (args.contains(""-d"")) args[1 + args.indexOf(""-d"")]\n           else "".""\n\nval folders = File(path).listFiles { file -> file.isDirectory() }\nfolders?.forEach { folder -> println(folder) }"
     block
       language "bash"
-      text "kotlinc -script list_folders.kts -- -d <path_to_folder_to_inspect>"
+      code "kotlinc -script list_folders.kts -- -d <path_to_folder_to_inspect>"
     block
       language "bash"
-      text "kotlinc -script-templates org.example.CustomScriptDefinition -script custom.script1.kts"
+      code "kotlinc -script-templates org.example.CustomScriptDefinition -script custom.script1.kts"
   capture
     language "kotlin"
     task hello_world
@@ -146,19 +146,19 @@ coding_documentation_captures
     sha256 "916f03525029483ef10ca64b75b7c110c538aadce2c7021dbb6a56e8ef8bd92a"
     block
       language "kotlin"
-      text "fun main() {\n    println(""Hello, world!"")\n    // Hello, world!\n}"
+      code "fun main() {\n    println(""Hello, world!"")\n    // Hello, world!\n}"
     block
       language "kotlin"
-      text "fun main() {\n//sampleStart\n    val popcorn = 5    // There are 5 boxes of popcorn\n    val hotdog = 7     // There are 7 hotdogs\n    var customers = 10 // There are 10 customers in the queue\n\n    // Some customers leave the queue\n    customers = 8\n    println(customers)\n    // 8\n//sampleEnd\n}"
+      code "fun main() {\n//sampleStart\n    val popcorn = 5    // There are 5 boxes of popcorn\n    val hotdog = 7     // There are 7 hotdogs\n    var customers = 10 // There are 10 customers in the queue\n\n    // Some customers leave the queue\n    customers = 8\n    println(customers)\n    // 8\n//sampleEnd\n}"
     block
       language "kotlin"
-      text "fun main() {\n//sampleStart\n    val customers = 10\n    println(""There are $customers customers"")\n    // There are 10 customers\n\n    println(""There are ${customers + 1} customers"")\n    // There are 11 customers\n//sampleEnd\n}"
+      code "fun main() {\n//sampleStart\n    val customers = 10\n    println(""There are $customers customers"")\n    // There are 10 customers\n\n    println(""There are ${customers + 1} customers"")\n    // There are 11 customers\n//sampleEnd\n}"
     block
       language "kotlin"
-      text "fun main() {\n    val name = ""Mary""\n    val age = 20\n    // Write your code here\n}"
+      code "fun main() {\n    val name = ""Mary""\n    val age = 20\n    // Write your code here\n}"
     block
       language "kotlin"
-      text "fun main() {\n    val name = ""Mary""\n    val age = 20\n    println(""$name is $age years old"")\n}"
+      code "fun main() {\n    val name = ""Mary""\n    val age = 20\n    println(""$name is $age years old"")\n}"
   capture
     language "scala"
     task hello_world
@@ -169,34 +169,34 @@ coding_documentation_captures
     sha256 "913485460cbb046dab070e46eca56fc97cc3f1bc43fb57ae931a2f711145ef2b"
     block
       language "scala"
-      text "object hello {\n  def main(args: Array[String]) = {\n    println(""Hello, World!"")\n  }\n}"
+      code "object hello {\n  def main(args: Array[String]) = {\n    println(""Hello, World!"")\n  }\n}"
     block
       language "scala"
-      text "@main def hello() = println(""Hello, World!"")"
+      code "@main def hello() = println(""Hello, World!"")"
     block
       language "bash"
-      text "$ scala run hello.scala"
+      code "$ scala run hello.scala"
     block
       language "plaintext"
-      text "Compiling project (Scala 3.9.0, JVM (20))\nCompiled project (Scala 3.9.0, JVM (20))\nHello, World!"
+      code "Compiling project (Scala 3.9.0, JVM (20))\nCompiled project (Scala 3.9.0, JVM (20))\nHello, World!"
     block
       language "scala"
-      text "import scala.io.StdIn.readLine"
+      code "import scala.io.StdIn.readLine"
     block
       language "scala"
-      text "import scala.io.StdIn.readLine\n\nobject helloInteractive {\n\n  def main(args: Array[String]) = {\n    println(""Please enter your name:"")\n    val name = readLine()\n\n    println(""Hello, "" + name + ""!"")\n  }\n\n}"
+      code "import scala.io.StdIn.readLine\n\nobject helloInteractive {\n\n  def main(args: Array[String]) = {\n    println(""Please enter your name:"")\n    val name = readLine()\n\n    println(""Hello, "" + name + ""!"")\n  }\n\n}"
     block
       language "scala"
-      text "import scala.io.StdIn.readLine\n\n@main def helloInteractive() =\n  println(""Please enter your name:"")\n  val name = readLine()\n\n  println(""Hello, "" + name + ""!"")"
+      code "import scala.io.StdIn.readLine\n\n@main def helloInteractive() =\n  println(""Please enter your name:"")\n  val name = readLine()\n\n  println(""Hello, "" + name + ""!"")"
     block
       language "bash"
-      text "$ scala run helloInteractive.scala\nCompiling project (Scala 3.9.0, JVM (20))\nCompiled project (Scala 3.9.0, JVM (20))\nPlease enter your name:\n▌"
+      code "$ scala run helloInteractive.scala\nCompiling project (Scala 3.9.0, JVM (20))\nCompiled project (Scala 3.9.0, JVM (20))\nPlease enter your name:\n▌"
     block
       language "bash"
-      text "$ scala run helloInteractive.scala\nCompiling project (Scala 3.9.0, JVM (20))\nCompiled project (Scala 3.9.0, JVM (20))\nPlease enter your name:\nAlvin Alexander\nHello, Alvin Alexander!"
+      code "$ scala run helloInteractive.scala\nCompiling project (Scala 3.9.0, JVM (20))\nCompiled project (Scala 3.9.0, JVM (20))\nPlease enter your name:\nAlvin Alexander\nHello, Alvin Alexander!"
     block
       language "scala"
-      text "import scala.io.StdIn.readLine"
+      code "import scala.io.StdIn.readLine"
   capture
     language "python"
     task hello_world
@@ -207,43 +207,43 @@ coding_documentation_captures
     sha256 "4b8ae35a20fe2984aaab039ca3597c9fcdc7be60e66320c533e0dfc2d179d4ba"
     block
       language "python"
-      text "print('Hello world!')"
+      code "print('Hello world!')"
     block
       language "python"
-      text "name = 'Monty'\nprint('Hello, %s' % name)  # string interpolation\nprint('Hello, {}'.format(name))  # string formatting"
+      code "name = 'Monty'\nprint('Hello, %s' % name)  # string interpolation\nprint('Hello, {}'.format(name))  # string formatting"
     block
       language "python"
-      text "def add_one(x):\n    return x + 1"
+      code "def add_one(x):\n    return x + 1"
     block
       language "python"
-      text "x = 1\ny = 2\nprint 'x is equal to y: %s' % (x == y)\nz = 1\nprint 'x is equal to z: %s' % (x == z)\nnames = ['Donald', 'Jake', 'Phil']\nwords = ['Random', 'Words', 'Dogs']\nif names == words:\n    print 'Names list is equal to words'\nelse:\n    print ""Names list isn't equal to words""\nnew_names = ['Donald', 'Jake', 'Phil']\nprint 'New names list is equal to names: %s' % (new_names == names)"
+      code "x = 1\ny = 2\nprint 'x is equal to y: %s' % (x == y)\nz = 1\nprint 'x is equal to z: %s' % (x == z)\nnames = ['Donald', 'Jake', 'Phil']\nwords = ['Random', 'Words', 'Dogs']\nif names == words:\n    print 'Names list is equal to words'\nelse:\n    print ""Names list isn't equal to words""\nnew_names = ['Donald', 'Jake', 'Phil']\nprint 'New names list is equal to names: %s' % (new_names == names)"
     block
       language "python"
-      text "class Talker(object):\n    def greet(self, name):\n        print 'Hello, %s!' % name\n    def farewell(self, name):\n        print 'Farewell, %s!' % name"
+      code "class Talker(object):\n    def greet(self, name):\n        print 'Hello, %s!' % name\n    def farewell(self, name):\n        print 'Farewell, %s!' % name"
     block
       language "python"
-      text "dynamic_languages = ['Python', 'Ruby', 'Groovy']\ndynamic_languages.append('Lisp')"
+      code "dynamic_languages = ['Python', 'Ruby', 'Groovy']\ndynamic_languages.append('Lisp')"
     block
       language "python"
-      text "numbered_words = dict()\nnumbered_words[2] = 'world'\nnumbered_words[1] = 'Hello'\nnumbered_words[3] = '!'"
+      code "numbered_words = dict()\nnumbered_words[2] = 'world'\nnumbered_words[1] = 'Hello'\nnumbered_words[3] = '!'"
     block
       language "python"
-      text "while True:\n    if value == wanted_value:\n        break\n    else:\n        pass"
+      code "while True:\n    if value == wanted_value:\n        break\n    else:\n        pass"
     block
       language "python"
-      text "string = '''This is a string with embedded newlines.\nAlso known as a tripled-quoted string.\n    Whitespace at the beginning of lines is included,\nso the above line is indented but the others are not.\n'''"
+      code "string = '''This is a string with embedded newlines.\nAlso known as a tripled-quoted string.\n    Whitespace at the beginning of lines is included,\nso the above line is indented but the others are not.\n'''"
     block
       language "python"
-      text "string = ('This is a single long, long string'\n          ' written over many lines for convenience'\n          ' using implicit concatenation to join each'\n          ' piece into a single string without extra'\n          ' newlines (unless you add them yourself).')"
+      code "string = ('This is a single long, long string'\n          ' written over many lines for convenience'\n          ' using implicit concatenation to join each'\n          ' piece into a single string without extra'\n          ' newlines (unless you add them yourself).')"
     block
       language "python"
-      text "for x in xrange(1, 4):\n    print ('Hello, new Python user!'\n           'This is time number %d') % x"
+      code "for x in xrange(1, 4):\n    print ('Hello, new Python user!'\n           'This is time number %d') % x"
     block
       language "python"
-      text "l = [x**2 for x in range(4)]\nprint(l)\n# [0, 1, 4, 9]"
+      code "l = [x**2 for x in range(4)]\nprint(l)\n# [0, 1, 4, 9]"
     block
       language "python"
-      text "squares = {x**2 for x in [0,2,4] if x < 4}\nprint(squares)\n# {0, 4}"
+      code "squares = {x**2 for x in [0,2,4] if x < 4}\nprint(squares)\n# {0, 4}"
   capture
     language "javascript"
     task hello_world
@@ -254,46 +254,46 @@ coding_documentation_captures
     sha256 "0b1c5b5d35b4c746e29c69ab7f366401b9bbca5be4d74d1cef532f8b00faffc1"
     block
       language "js"
-      text "console.log(""Failed to open the specified link"");"
+      code "console.log(""Failed to open the specified link"");"
     block
       language "js"
-      text "const someObject = { str: ""Some text"", id: 5 };\nconsole.log(someObject);"
+      code "const someObject = { str: ""Some text"", id: 5 };\nconsole.log(someObject);"
     block
       language "plain"
-      text "{str:""Some text"", id:5}"
+      code "{str:""Some text"", id:5}"
     block
       language "js"
-      text "const obj = {};\nconsole.log(obj);\nobj.prop = 123;"
+      code "const obj = {};\nconsole.log(obj);\nobj.prop = 123;"
     block
       language "js"
-      text "console.log(JSON.parse(JSON.stringify(obj)));"
+      code "console.log(JSON.parse(JSON.stringify(obj)));"
     block
       language "js"
-      text "const car = ""Dodge Charger"";\nconst someObject = { str: ""Some text"", id: 5 };\nconsole.info(""My first car was a"", car, "". The object is:"", someObject);"
+      code "const car = ""Dodge Charger"";\nconst someObject = { str: ""Some text"", id: 5 };\nconsole.info(""My first car was a"", car, "". The object is:"", someObject);"
     block
       language "plain"
-      text "My first car was a Dodge Charger . The object is: {str:""Some text"", id:5}"
+      code "My first car was a Dodge Charger . The object is: {str:""Some text"", id:5}"
     block
       language "js"
-      text "for (let i = 0; i < 5; i++) {\n  console.log(""Hello, %s. You've called me %d times."", ""Bob"", i + 1);\n}"
+      code "for (let i = 0; i < 5; i++) {\n  console.log(""Hello, %s. You've called me %d times."", ""Bob"", i + 1);\n}"
     block
       language "plain"
-      text "Hello, Bob. You've called me 1 times.\nHello, Bob. You've called me 2 times.\nHello, Bob. You've called me 3 times.\nHello, Bob. You've called me 4 times.\nHello, Bob. You've called me 5 times."
+      code "Hello, Bob. You've called me 1 times.\nHello, Bob. You've called me 2 times.\nHello, Bob. You've called me 3 times.\nHello, Bob. You've called me 4 times.\nHello, Bob. You've called me 5 times."
     block
       language "js"
-      text "console.log(\n  ""This is %cMy stylish message"",\n  ""color: yellow; font-style: italic; background-color: blue;padding: 2px"",\n);"
+      code "console.log(\n  ""This is %cMy stylish message"",\n  ""color: yellow; font-style: italic; background-color: blue;padding: 2px"",\n);"
     block
       language "js"
-      text "console.log(\n  ""Multiple styles: %cred %corange"",\n  ""color: red"",\n  ""color: orange"",\n  ""Additional unformatted message"",\n);"
+      code "console.log(\n  ""Multiple styles: %cred %corange"",\n  ""color: red"",\n  ""color: orange"",\n  ""Additional unformatted message"",\n);"
     block
       language "js"
-      text "console.log(""This is the outer level"");\nconsole.group(""First group"");\nconsole.log(""In the first group"");\nconsole.group(""Second group"");\nconsole.log(""In the second group"");\nconsole.warn(""Still in the second group"");\nconsole.groupEnd();\nconsole.log(""Back to the first group"");\nconsole.groupEnd();\nconsole.debug(""Back to the outer level"");"
+      code "console.log(""This is the outer level"");\nconsole.group(""First group"");\nconsole.log(""In the first group"");\nconsole.group(""Second group"");\nconsole.log(""In the second group"");\nconsole.warn(""Still in the second group"");\nconsole.groupEnd();\nconsole.log(""Back to the first group"");\nconsole.groupEnd();\nconsole.debug(""Back to the outer level"");"
     block
       language "js"
-      text "console.time(""answer time"");\nalert(""Click to continue"");\nconsole.timeLog(""answer time"");\nalert(""Do a bunch of other stuff…"");\nconsole.timeEnd(""answer time"");"
+      code "console.time(""answer time"");\nalert(""Click to continue"");\nconsole.timeLog(""answer time"");\nalert(""Do a bunch of other stuff…"");\nconsole.timeEnd(""answer time"");"
     block
       language "js"
-      text "function foo() {\n  function bar() {\n    console.trace();\n  }\n  bar();\n}\n\nfoo();"
+      code "function foo() {\n  function bar() {\n    console.trace();\n  }\n  bar();\n}\n\nfoo();"
   capture
     language "typescript"
     task hello_world
@@ -304,82 +304,82 @@ coding_documentation_captures
     sha256 "c89617a7d260a61a8841f169e1e3c15af3cda5726f3b47218563e9b8870114f1"
     block
       language "js"
-      text "// Accessing the property 'toLowerCase'\n// on 'message' and then calling it\nmessage.toLowerCase();\n\n// Calling 'message'\nmessage();"
+      code "// Accessing the property 'toLowerCase'\n// on 'message' and then calling it\nmessage.toLowerCase();\n\n// Calling 'message'\nmessage();"
     block
       language "js"
-      text "const message = ""Hello World!"";"
+      code "const message = ""Hello World!"";"
     block
       language "txt"
-      text "TypeError: message is not a function"
+      code "TypeError: message is not a function"
     block
       language "js"
-      text "function fn(x) {\n  return x.flip();\n}"
+      code "function fn(x) {\n  return x.flip();\n}"
     block
       language "ts"
-      text "// @errors: 2349\nconst message = ""hello!"";\n\nmessage();"
+      code "// @errors: 2349\nconst message = ""hello!"";\n\nmessage();"
     block
       language "js"
-      text "const user = {\n  name: ""Daniel"",\n  age: 26,\n};\n\nuser.location; // returns undefined"
+      code "const user = {\n  name: ""Daniel"",\n  age: 26,\n};\n\nuser.location; // returns undefined"
     block
       language "ts"
-      text "// @errors: 2339\nconst user = {\n  name: ""Daniel"",\n  age: 26,\n};\n\nuser.location;"
+      code "// @errors: 2339\nconst user = {\n  name: ""Daniel"",\n  age: 26,\n};\n\nuser.location;"
     block
       language "ts"
-      text "// @noErrors\nconst announcement = ""Hello World!"";\n\n// How quickly can you spot the typos?\nannouncement.toLocaleLowercase();\nannouncement.toLocalLowerCase();\n\n// We probably meant to write this...\nannouncement.toLocaleLowerCase();"
+      code "// @noErrors\nconst announcement = ""Hello World!"";\n\n// How quickly can you spot the typos?\nannouncement.toLocaleLowercase();\nannouncement.toLocalLowerCase();\n\n// We probably meant to write this...\nannouncement.toLocaleLowerCase();"
     block
       language "ts"
-      text "// @noUnusedLocals\n// @errors: 2365\nfunction flipCoin() {\n  // Meant to be Math.random()\n  return Math.random < 0.5;\n}"
+      code "// @noUnusedLocals\n// @errors: 2365\nfunction flipCoin() {\n  // Meant to be Math.random()\n  return Math.random < 0.5;\n}"
     block
       language "ts"
-      text "// @errors: 2367\nconst value = Math.random() < 0.5 ? ""a"" : ""b"";\nif (value !== ""a"") {\n  // ...\n} else if (value === ""b"") {\n  // Oops, unreachable\n}"
+      code "// @errors: 2367\nconst value = Math.random() < 0.5 ? ""a"" : ""b"";\nif (value !== ""a"") {\n  // ...\n} else if (value === ""b"") {\n  // Oops, unreachable\n}"
     block
       language "ts"
-      text "// @noErrors\n// @esModuleInterop\nimport express from ""express"";\nconst app = express();\n\napp.get(""/"", function (req, res) {\n  res.sen\n//       ^|\n});\n\napp.listen(3000);"
+      code "// @noErrors\n// @esModuleInterop\nimport express from ""express"";\nconst app = express();\n\napp.get(""/"", function (req, res) {\n  res.sen\n//       ^|\n});\n\napp.listen(3000);"
     block
       language "sh"
-      text "npm install -g typescript"
+      code "npm install -g typescript"
     block
       language "ts"
-      text "// Greets the world.\nconsole.log(""Hello world!"");"
+      code "// Greets the world.\nconsole.log(""Hello world!"");"
     block
       language "sh"
-      text "tsc hello.ts"
+      code "tsc hello.ts"
     block
       language "js"
-      text "// Greets the world.\nconsole.log(""Hello world!"");"
+      code "// Greets the world.\nconsole.log(""Hello world!"");"
     block
       language "ts"
-      text "// @noErrors\n// This is an industrial-grade general-purpose greeter function:\nfunction greet(person, date) {\n  console.log(`Hello ${person}, today is ${date}!`);\n}\n\ngreet(""Brendan"");"
+      code "// @noErrors\n// This is an industrial-grade general-purpose greeter function:\nfunction greet(person, date) {\n  console.log(`Hello ${person}, today is ${date}!`);\n}\n\ngreet(""Brendan"");"
     block
       language "txt"
-      text "Expected 2 arguments, but got 1."
+      code "Expected 2 arguments, but got 1."
     block
       language "sh"
-      text "tsc --noEmitOnError hello.ts"
+      code "tsc --noEmitOnError hello.ts"
     block
       language "ts"
-      text "function greet(person: string, date: Date) {\n  console.log(`Hello ${person}, today is ${date.toDateString()}!`);\n}"
+      code "function greet(person: string, date: Date) {\n  console.log(`Hello ${person}, today is ${date.toDateString()}!`);\n}"
     block
       language "ts"
-      text "// @errors: 2345\nfunction greet(person: string, date: Date) {\n  console.log(`Hello ${person}, today is ${date.toDateString()}!`);\n}\n\ngreet(""Maddison"", Date());"
+      code "// @errors: 2345\nfunction greet(person: string, date: Date) {\n  console.log(`Hello ${person}, today is ${date.toDateString()}!`);\n}\n\ngreet(""Maddison"", Date());"
     block
       language "ts"
-      text "function greet(person: string, date: Date) {\n  console.log(`Hello ${person}, today is ${date.toDateString()}!`);\n}\n\ngreet(""Maddison"", new Date());"
+      code "function greet(person: string, date: Date) {\n  console.log(`Hello ${person}, today is ${date.toDateString()}!`);\n}\n\ngreet(""Maddison"", new Date());"
     block
       language "ts"
-      text "let msg = ""hello there!"";\n//  ^?"
+      code "let msg = ""hello there!"";\n//  ^?"
     block
       language "ts"
-      text "// @showEmit\n// @target: es5\nfunction greet(person: string, date: Date) {\n  console.log(`Hello ${person}, today is ${date.toDateString()}!`);\n}\n\ngreet(""Maddison"", new Date());"
+      code "// @showEmit\n// @target: es5\nfunction greet(person: string, date: Date) {\n  console.log(`Hello ${person}, today is ${date.toDateString()}!`);\n}\n\ngreet(""Maddison"", new Date());"
     block
       language "js"
-      text "`Hello ${person}, today is ${date.toDateString()}!`;"
+      code "`Hello ${person}, today is ${date.toDateString()}!`;"
     block
       language "js"
-      text """Hello "".concat(person, "", today is "").concat(date.toDateString(), ""!"");"
+      code """Hello "".concat(person, "", today is "").concat(date.toDateString(), ""!"");"
     block
       language "js"
-      text "function greet(person, date) {\n  console.log(`Hello ${person}, today is ${date.toDateString()}!`);\n}\ngreet(""Maddison"", new Date());"
+      code "function greet(person, date) {\n  console.log(`Hello ${person}, today is ${date.toDateString()}!`);\n}\ngreet(""Maddison"", new Date());"
   capture
     language "c"
     task hello_world
@@ -390,13 +390,13 @@ coding_documentation_captures
     sha256 "b0775b223e8bfe57d85f9050a7985a8cc70979a373cc9e58b6136ce59dfd2eb1"
     block
       language "C"
-      text "int puts(\n   const char *str\n);\nint _putws(\n   const wchar_t *str\n);"
+      code "int puts(\n   const char *str\n);\nint _putws(\n   const wchar_t *str\n);"
     block
       language "C"
-      text "// crt_puts.c\n// This program uses puts to write a string to stdout.\n\n#include <stdio.h>\n\nint main( void )\n{\n   puts( ""Hello world from puts!"" );\n}"
+      code "// crt_puts.c\n// This program uses puts to write a string to stdout.\n\n#include <stdio.h>\n\nint main( void )\n{\n   puts( ""Hello world from puts!"" );\n}"
     block
       language "Output"
-      text "Hello world from puts!"
+      code "Hello world from puts!"
   capture
     language "cpp"
     task hello_world
@@ -407,7 +407,7 @@ coding_documentation_captures
     sha256 "d7cefcab0b10f65403b5ef98d9849f7da1d26c5c76e077d36e31809a8cfb8684"
     block
       language "unknown"
-      text "#include <iostream>\n\nint main()\n{\n    std::cout << ""Hello, world!"" << std::endl;\n    return 0;\n}"
+      code "#include <iostream>\n\nint main()\n{\n    std::cout << ""Hello, world!"" << std::endl;\n    return 0;\n}"
   capture
     language "csharp"
     task hello_world
@@ -418,43 +418,43 @@ coding_documentation_captures
     sha256 "950ff8eac4b8e5fa442e9e0b7daa9718078f3aeecd93c580f62b2994f2e7e673"
     block
       language "unknown"
-      text "Console.WriteLine(""Hello, World!"");"
+      code "Console.WriteLine(""Hello, World!"");"
     block
       language "unknown"
-      text "cd tutorials\ndotnet hello-world.cs"
+      code "cd tutorials\ndotnet hello-world.cs"
     block
       language "unknown"
-      text "string aFriend = ""Bill"";\nConsole.WriteLine(aFriend);"
+      code "string aFriend = ""Bill"";\nConsole.WriteLine(aFriend);"
     block
       language "unknown"
-      text "aFriend = ""Maira"";\nConsole.WriteLine(aFriend);"
+      code "aFriend = ""Maira"";\nConsole.WriteLine(aFriend);"
     block
       language "unknown"
-      text "Console.WriteLine(""Hello "" + aFriend);"
+      code "Console.WriteLine(""Hello "" + aFriend);"
     block
       language "unknown"
-      text "Console.WriteLine($""Hello {aFriend}"");"
+      code "Console.WriteLine($""Hello {aFriend}"");"
     block
       language "unknown"
-      text "string firstFriend = ""Maria"";\nstring secondFriend = ""Sage"";\nConsole.WriteLine($""My friends are {firstFriend} and {secondFriend}"");"
+      code "string firstFriend = ""Maria"";\nstring secondFriend = ""Sage"";\nConsole.WriteLine($""My friends are {firstFriend} and {secondFriend}"");"
     block
       language "unknown"
-      text "Console.WriteLine($""The name {firstFriend} has {firstFriend.Length} letters."");\nConsole.WriteLine($""The name {secondFriend} has {secondFriend.Length} letters."");"
+      code "Console.WriteLine($""The name {firstFriend} has {firstFriend.Length} letters."");\nConsole.WriteLine($""The name {secondFriend} has {secondFriend.Length} letters."");"
     block
       language "unknown"
-      text "string greeting = ""      Hello World!       "";\nConsole.WriteLine($""[{greeting}]"");\n\nstring trimmedGreeting = greeting.TrimStart();\nConsole.WriteLine($""[{trimmedGreeting}]"");\n\ntrimmedGreeting = greeting.TrimEnd();\nConsole.WriteLine($""[{trimmedGreeting}]"");\n\ntrimmedGreeting = greeting.Trim();\nConsole.WriteLine($""[{trimmedGreeting}]"");"
+      code "string greeting = ""      Hello World!       "";\nConsole.WriteLine($""[{greeting}]"");\n\nstring trimmedGreeting = greeting.TrimStart();\nConsole.WriteLine($""[{trimmedGreeting}]"");\n\ntrimmedGreeting = greeting.TrimEnd();\nConsole.WriteLine($""[{trimmedGreeting}]"");\n\ntrimmedGreeting = greeting.Trim();\nConsole.WriteLine($""[{trimmedGreeting}]"");"
     block
       language "unknown"
-      text "string sayHello = ""Hello World!"";\nConsole.WriteLine(sayHello);\nsayHello = sayHello.Replace(""Hello"", ""Greetings"");\nConsole.WriteLine(sayHello);"
+      code "string sayHello = ""Hello World!"";\nConsole.WriteLine(sayHello);\nsayHello = sayHello.Replace(""Hello"", ""Greetings"");\nConsole.WriteLine(sayHello);"
     block
       language "unknown"
-      text "Console.WriteLine(sayHello.ToUpper());\nConsole.WriteLine(sayHello.ToLower());"
+      code "Console.WriteLine(sayHello.ToUpper());\nConsole.WriteLine(sayHello.ToLower());"
     block
       language "unknown"
-      text "string songLyrics = ""You say goodbye, and I say hello"";\nConsole.WriteLine(songLyrics.Contains(""goodbye""));\nConsole.WriteLine(songLyrics.Contains(""greetings""));"
+      code "string songLyrics = ""You say goodbye, and I say hello"";\nConsole.WriteLine(songLyrics.Contains(""goodbye""));\nConsole.WriteLine(songLyrics.Contains(""greetings""));"
     block
       language "unknown"
-      text "string songLyrics = ""You say goodbye, and I say hello"";\nConsole.WriteLine(songLyrics.StartsWith(""You""));\nConsole.WriteLine(songLyrics.StartsWith(""goodbye""));\n\nConsole.WriteLine(songLyrics.EndsWith(""hello""));\nConsole.WriteLine(songLyrics.EndsWith(""goodbye""));"
+      code "string songLyrics = ""You say goodbye, and I say hello"";\nConsole.WriteLine(songLyrics.StartsWith(""You""));\nConsole.WriteLine(songLyrics.StartsWith(""goodbye""));\n\nConsole.WriteLine(songLyrics.EndsWith(""hello""));\nConsole.WriteLine(songLyrics.EndsWith(""goodbye""));"
   capture
     language "ruby"
     task hello_world
@@ -465,7 +465,7 @@ coding_documentation_captures
     sha256 "8735672e6aaac76115fcd30b2908975f01fd61b3dbb82c15cddacb369de8677e"
     block
       language "ruby"
-      text "# The famous Hello World\n# Program is trivial in\n# Ruby. Superfluous:\n#\n# * A ""main"" method\n# * Newline\n# * Semicolons\n#\n# Here is the Code:\n\nputs ""Hello World!"""
+      code "# The famous Hello World\n# Program is trivial in\n# Ruby. Superfluous:\n#\n# * A ""main"" method\n# * Newline\n# * Semicolons\n#\n# Here is the Code:\n\nputs ""Hello World!"""
   capture
     language "swift"
     language_name "Swift"
@@ -477,361 +477,361 @@ coding_documentation_captures
     sha256 "0becd1b48ee0baab2fd3432c70448f0c5edfa5fd1d36fa242aa08c4191391261"
     block
       language "swift"
-      text "print(""Hello, world!"")\n// Prints ""Hello, world!"""
+      code "print(""Hello, world!"")\n// Prints ""Hello, world!"""
     block
       language "swifttest"
-      text "  -> print(""Hello, world!"")\n  <- Hello, world!"
+      code "  -> print(""Hello, world!"")\n  <- Hello, world!"
     block
       language "swift"
-      text "var myVariable = 42\nmyVariable = 50\nlet myConstant = 42"
+      code "var myVariable = 42\nmyVariable = 50\nlet myConstant = 42"
     block
       language "swifttest"
-      text "  -> var myVariable = 42\n  -> myVariable = 50\n  -> let myConstant = 42"
+      code "  -> var myVariable = 42\n  -> myVariable = 50\n  -> let myConstant = 42"
     block
       language "swift"
-      text "let implicitInteger = 70\nlet implicitDouble = 70.0\nlet explicitDouble: Double = 70"
+      code "let implicitInteger = 70\nlet implicitDouble = 70.0\nlet explicitDouble: Double = 70"
     block
       language "swifttest"
-      text "  -> let implicitInteger = 70\n  -> let implicitDouble = 70.0\n  -> let explicitDouble: Double = 70"
+      code "  -> let implicitInteger = 70\n  -> let implicitDouble = 70.0\n  -> let explicitDouble: Double = 70"
     block
       language "swift"
-      text "let label = ""The width is ""\nlet width = 94\nlet widthLabel = label + String(width)"
+      code "let label = ""The width is ""\nlet width = 94\nlet widthLabel = label + String(width)"
     block
       language "swifttest"
-      text "  -> let label = ""The width is ""\n  -> let width = 94\n  -> let widthLabel = label + String(width)\n  >> print(widthLabel)\n  << The width is 94"
+      code "  -> let label = ""The width is ""\n  -> let width = 94\n  -> let widthLabel = label + String(width)\n  >> print(widthLabel)\n  << The width is 94"
     block
       language "swift"
-      text "let apples = 3\nlet oranges = 5\nlet appleSummary = ""I have \\(apples) apples.""\nlet fruitSummary = ""I have \\(apples + oranges) pieces of fruit."""
+      code "let apples = 3\nlet oranges = 5\nlet appleSummary = ""I have \\(apples) apples.""\nlet fruitSummary = ""I have \\(apples + oranges) pieces of fruit."""
     block
       language "swifttest"
-      text "  -> let apples = 3\n  -> let oranges = 5\n  -> let appleSummary = ""I have \\(apples) apples.""\n  >> print(appleSummary)\n  << I have 3 apples.\n  -> let fruitSummary = ""I have \\(apples + oranges) pieces of fruit.""\n  >> print(fruitSummary)\n  << I have 8 pieces of fruit."
+      code "  -> let apples = 3\n  -> let oranges = 5\n  -> let appleSummary = ""I have \\(apples) apples.""\n  >> print(appleSummary)\n  << I have 3 apples.\n  -> let fruitSummary = ""I have \\(apples + oranges) pieces of fruit.""\n  >> print(fruitSummary)\n  << I have 8 pieces of fruit."
     block
       language "swift"
-      text "let quotation = """"""\n        Even though there's whitespace to the left,\n        the actual lines aren't indented.\n            Except for this line.\n        Double quotes ("") can appear without being escaped.\n\n        I still have \\(apples + oranges) pieces of fruit.\n        """""""
+      code "let quotation = """"""\n        Even though there's whitespace to the left,\n        the actual lines aren't indented.\n            Except for this line.\n        Double quotes ("") can appear without being escaped.\n\n        I still have \\(apples + oranges) pieces of fruit.\n        """""""
     block
       language "swifttest"
-      text "  -> let quotation = """"""\n     I said ""I have \\(apples) apples.""\n     And then I said ""I have \\(apples + oranges) pieces of fruit.""\n     """""""
+      code "  -> let quotation = """"""\n     I said ""I have \\(apples) apples.""\n     And then I said ""I have \\(apples + oranges) pieces of fruit.""\n     """""""
     block
       language "swift"
-      text "var fruits = [""strawberries"", ""limes"", ""tangerines""]\nfruits[1] = ""grapes""\n\nvar occupations = [\n    ""Malcolm"": ""Captain"",\n    ""Kaylee"": ""Mechanic"",\n ]\noccupations[""Jayne""] = ""Public Relations"""
+      code "var fruits = [""strawberries"", ""limes"", ""tangerines""]\nfruits[1] = ""grapes""\n\nvar occupations = [\n    ""Malcolm"": ""Captain"",\n    ""Kaylee"": ""Mechanic"",\n ]\noccupations[""Jayne""] = ""Public Relations"""
     block
       language "swifttest"
-      text "  -> var fruits = [""strawberries"", ""limes"", ""tangerines""]\n  -> fruits[1] = ""grapes""\n\n  -> var occupations = [\n         ""Malcolm"": ""Captain"",\n         ""Kaylee"": ""Mechanic"",\n      ]\n  -> occupations[""Jayne""] = ""Public Relations"""
+      code "  -> var fruits = [""strawberries"", ""limes"", ""tangerines""]\n  -> fruits[1] = ""grapes""\n\n  -> var occupations = [\n         ""Malcolm"": ""Captain"",\n         ""Kaylee"": ""Mechanic"",\n      ]\n  -> occupations[""Jayne""] = ""Public Relations"""
     block
       language "swift"
-      text "fruits.append(""blueberries"")\nprint(fruits)\n// Prints ""[""strawberries"", ""grapes"", ""tangerines"", ""blueberries""]""."
+      code "fruits.append(""blueberries"")\nprint(fruits)\n// Prints ""[""strawberries"", ""grapes"", ""tangerines"", ""blueberries""]""."
     block
       language "swifttest"
-      text "  -> fruits.append(""blueberries"")\n  -> print(fruits)\n  <- [""strawberries"", ""grapes"", ""tangerines"", ""blueberries""]"
+      code "  -> fruits.append(""blueberries"")\n  -> print(fruits)\n  <- [""strawberries"", ""grapes"", ""tangerines"", ""blueberries""]"
     block
       language "swift"
-      text "fruits = []\noccupations = [:]"
+      code "fruits = []\noccupations = [:]"
     block
       language "swifttest"
-      text "  -> fruits = []\n  -> occupations = [:]"
+      code "  -> fruits = []\n  -> occupations = [:]"
     block
       language "swift"
-      text "let emptyArray: [String] = []\nlet emptyDictionary: [String: Float] = [:]"
+      code "let emptyArray: [String] = []\nlet emptyDictionary: [String: Float] = [:]"
     block
       language "swifttest"
-      text "  -> let emptyArray: [String] = []\n  -> let emptyDictionary: [String: Float] = [:]\n\n  -> let anotherEmptyArray = [String]()\n  -> let emptyDictionary = [String: Float]()"
+      code "  -> let emptyArray: [String] = []\n  -> let emptyDictionary: [String: Float] = [:]\n\n  -> let anotherEmptyArray = [String]()\n  -> let emptyDictionary = [String: Float]()"
     block
       language "swift"
-      text "let individualScores = [75, 43, 103, 87, 12]\nvar teamScore = 0\nfor score in individualScores {\n    if score > 50 {\n        teamScore += 3\n    } else {\n        teamScore += 1\n    }\n}\nprint(teamScore)\n// Prints ""11""."
+      code "let individualScores = [75, 43, 103, 87, 12]\nvar teamScore = 0\nfor score in individualScores {\n    if score > 50 {\n        teamScore += 3\n    } else {\n        teamScore += 1\n    }\n}\nprint(teamScore)\n// Prints ""11""."
     block
       language "swifttest"
-      text "  -> let individualScores = [75, 43, 103, 87, 12]\n  -> var teamScore = 0\n  -> for score in individualScores {\n         if score > 50 {\n             teamScore += 3\n         } else {\n             teamScore += 1\n         }\n     }\n  -> print(teamScore)\n  <- 11"
+      code "  -> let individualScores = [75, 43, 103, 87, 12]\n  -> var teamScore = 0\n  -> for score in individualScores {\n         if score > 50 {\n             teamScore += 3\n         } else {\n             teamScore += 1\n         }\n     }\n  -> print(teamScore)\n  <- 11"
     block
       language "swift"
-      text "let scoreDecoration = if teamScore > 10 {\n    ""🎉""\n} else {\n    """"\n}\nprint(""Score:"", teamScore, scoreDecoration)\n// Prints ""Score: 11 🎉""."
+      code "let scoreDecoration = if teamScore > 10 {\n    ""🎉""\n} else {\n    """"\n}\nprint(""Score:"", teamScore, scoreDecoration)\n// Prints ""Score: 11 🎉""."
     block
       language "swift"
-      text "var optionalString: String? = ""Hello""\nprint(optionalString == nil)\n// Prints ""false"".\n\nvar optionalName: String? = ""John Appleseed""\nvar greeting = ""Hello!""\nif let name = optionalName {\n    greeting = ""Hello, \\(name)""\n}\nprint(greeting)"
+      code "var optionalString: String? = ""Hello""\nprint(optionalString == nil)\n// Prints ""false"".\n\nvar optionalName: String? = ""John Appleseed""\nvar greeting = ""Hello!""\nif let name = optionalName {\n    greeting = ""Hello, \\(name)""\n}\nprint(greeting)"
     block
       language "swifttest"
-      text "  -> var optionalString: String? = ""Hello""\n  -> print(optionalString == nil)\n  <- false\n\n  -> var optionalName: String? = ""John Appleseed""\n  -> var greeting = ""Hello!""\n  -> if let name = optionalName {\n         greeting = ""Hello, \\(name)""\n     }\n  >> print(greeting)\n  << Hello, John Appleseed"
+      code "  -> var optionalString: String? = ""Hello""\n  -> print(optionalString == nil)\n  <- false\n\n  -> var optionalName: String? = ""John Appleseed""\n  -> var greeting = ""Hello!""\n  -> if let name = optionalName {\n         greeting = ""Hello, \\(name)""\n     }\n  >> print(greeting)\n  << Hello, John Appleseed"
     block
       language "swift"
-      text "let nickname: String? = nil\nlet fullName: String = ""John Appleseed""\nlet informalGreeting = ""Hi \\(nickname ?? fullName)"""
+      code "let nickname: String? = nil\nlet fullName: String = ""John Appleseed""\nlet informalGreeting = ""Hi \\(nickname ?? fullName)"""
     block
       language "swifttest"
-      text "  -> let nickname: String? = nil\n  -> let fullName: String = ""John Appleseed""\n  -> let informalGreeting = ""Hi \\(nickname ?? fullName)""\n  >> print(informalGreeting)\n  << Hi John Appleseed"
+      code "  -> let nickname: String? = nil\n  -> let fullName: String = ""John Appleseed""\n  -> let informalGreeting = ""Hi \\(nickname ?? fullName)""\n  >> print(informalGreeting)\n  << Hi John Appleseed"
     block
       language "swift"
-      text "if let nickname {\n    print(""Hey, \\(nickname)"")\n}\n// Doesn't print anything, because nickname is nil."
+      code "if let nickname {\n    print(""Hey, \\(nickname)"")\n}\n// Doesn't print anything, because nickname is nil."
     block
       language "swifttest"
-      text "  -> if let nickname {\n         print(""Hey, \\(nickname)"")\n     }"
+      code "  -> if let nickname {\n         print(""Hey, \\(nickname)"")\n     }"
     block
       language "swift"
-      text "let vegetable = ""red pepper""\nswitch vegetable {\ncase ""celery"":\n    print(""Add some raisins and make ants on a log."")\ncase ""cucumber"", ""watercress"":\n    print(""That would make a good tea sandwich."")\ncase let x where x.hasSuffix(""pepper""):\n    print(""Is it a spicy \\(x)?"")\ndefault:\n    print(""Everything tastes good in soup."")\n}\n// Prints ""Is it a spicy red pepper?"""
+      code "let vegetable = ""red pepper""\nswitch vegetable {\ncase ""celery"":\n    print(""Add some raisins and make ants on a log."")\ncase ""cucumber"", ""watercress"":\n    print(""That would make a good tea sandwich."")\ncase let x where x.hasSuffix(""pepper""):\n    print(""Is it a spicy \\(x)?"")\ndefault:\n    print(""Everything tastes good in soup."")\n}\n// Prints ""Is it a spicy red pepper?"""
     block
       language "swifttest"
-      text "  -> let vegetable = ""red pepper""\n  -> switch vegetable {\n         case ""celery"":\n             print(""Add some raisins and make ants on a log."")\n         case ""cucumber"", ""watercress"":\n             print(""That would make a good tea sandwich."")\n         case let x where x.hasSuffix(""pepper""):\n             print(""Is it a spicy \\(x)?"")\n         default:\n             print(""Everything tastes good in soup."")\n     }\n  <- Is it a spicy red pepper?"
+      code "  -> let vegetable = ""red pepper""\n  -> switch vegetable {\n         case ""celery"":\n             print(""Add some raisins and make ants on a log."")\n         case ""cucumber"", ""watercress"":\n             print(""That would make a good tea sandwich."")\n         case let x where x.hasSuffix(""pepper""):\n             print(""Is it a spicy \\(x)?"")\n         default:\n             print(""Everything tastes good in soup."")\n     }\n  <- Is it a spicy red pepper?"
     block
       language "swift"
-      text "let interestingNumbers = [\n    ""Prime"": [2, 3, 5, 7, 11, 13],\n    ""Fibonacci"": [1, 1, 2, 3, 5, 8],\n    ""Square"": [1, 4, 9, 16, 25],\n]\nvar largest = 0\nfor (_, numbers) in interestingNumbers {\n    for number in numbers {\n        if number > largest {\n            largest = number\n        }\n    }\n}\nprint(largest)\n// Prints ""25""."
+      code "let interestingNumbers = [\n    ""Prime"": [2, 3, 5, 7, 11, 13],\n    ""Fibonacci"": [1, 1, 2, 3, 5, 8],\n    ""Square"": [1, 4, 9, 16, 25],\n]\nvar largest = 0\nfor (_, numbers) in interestingNumbers {\n    for number in numbers {\n        if number > largest {\n            largest = number\n        }\n    }\n}\nprint(largest)\n// Prints ""25""."
     block
       language "swifttest"
-      text "  -> let interestingNumbers = [\n         ""Prime"": [2, 3, 5, 7, 11, 13],\n         ""Fibonacci"": [1, 1, 2, 3, 5, 8],\n         ""Square"": [1, 4, 9, 16, 25],\n     ]\n  -> var largest = 0\n  -> for (_, numbers) in interestingNumbers {\n         for number in numbers {\n             if number > largest {\n                 largest = number\n             }\n         }\n     }\n  -> print(largest)\n  <- 25"
+      code "  -> let interestingNumbers = [\n         ""Prime"": [2, 3, 5, 7, 11, 13],\n         ""Fibonacci"": [1, 1, 2, 3, 5, 8],\n         ""Square"": [1, 4, 9, 16, 25],\n     ]\n  -> var largest = 0\n  -> for (_, numbers) in interestingNumbers {\n         for number in numbers {\n             if number > largest {\n                 largest = number\n             }\n         }\n     }\n  -> print(largest)\n  <- 25"
     block
       language "swift"
-      text "var n = 2\nwhile n < 100 {\n    n *= 2\n}\nprint(n)\n// Prints ""128"".\n\nvar m = 2\nrepeat {\n    m *= 2\n} while m < 100\nprint(m)\n// Prints ""128""."
+      code "var n = 2\nwhile n < 100 {\n    n *= 2\n}\nprint(n)\n// Prints ""128"".\n\nvar m = 2\nrepeat {\n    m *= 2\n} while m < 100\nprint(m)\n// Prints ""128""."
     block
       language "swifttest"
-      text "  -> var n = 2\n  -> while n < 100 {\n         n *= 2\n     }\n  -> print(n)\n  <- 128\n\n  -> var m = 2\n  -> repeat {\n         m *= 2\n     } while m < 100\n  -> print(m)\n  <- 128"
+      code "  -> var n = 2\n  -> while n < 100 {\n         n *= 2\n     }\n  -> print(n)\n  <- 128\n\n  -> var m = 2\n  -> repeat {\n         m *= 2\n     } while m < 100\n  -> print(m)\n  <- 128"
     block
       language "swift"
-      text "var total = 0\nfor i in 0..<4 {\n    total += i\n}\nprint(total)\n// Prints ""6""."
+      code "var total = 0\nfor i in 0..<4 {\n    total += i\n}\nprint(total)\n// Prints ""6""."
     block
       language "swifttest"
-      text "  -> var total = 0\n  -> for i in 0..<4 {\n         total += i\n     }\n  -> print(total)\n  <- 6"
+      code "  -> var total = 0\n  -> for i in 0..<4 {\n         total += i\n     }\n  -> print(total)\n  <- 6"
     block
       language "swift"
-      text "func greet(person: String, day: String) -> String {\n    return ""Hello \\(person), today is \\(day).""\n}\ngreet(person: ""Bob"", day: ""Tuesday"")"
+      code "func greet(person: String, day: String) -> String {\n    return ""Hello \\(person), today is \\(day).""\n}\ngreet(person: ""Bob"", day: ""Tuesday"")"
     block
       language "swifttest"
-      text "  -> func greet(person: String, day: String) -> String {\n         return ""Hello \\(person), today is \\(day).""\n     }\n  >> let greetBob =\n  -> greet(person: ""Bob"", day: ""Tuesday"")\n  >> print(greetBob)\n  << Hello Bob, today is Tuesday."
+      code "  -> func greet(person: String, day: String) -> String {\n         return ""Hello \\(person), today is \\(day).""\n     }\n  >> let greetBob =\n  -> greet(person: ""Bob"", day: ""Tuesday"")\n  >> print(greetBob)\n  << Hello Bob, today is Tuesday."
     block
       language "swift"
-      text "func greet(_ person: String, on day: String) -> String {\n    return ""Hello \\(person), today is \\(day).""\n}\ngreet(""John"", on: ""Wednesday"")"
+      code "func greet(_ person: String, on day: String) -> String {\n    return ""Hello \\(person), today is \\(day).""\n}\ngreet(""John"", on: ""Wednesday"")"
     block
       language "swifttest"
-      text "  -> func greet(_ person: String, on day: String) -> String {\n         return ""Hello \\(person), today is \\(day).""\n     }\n  >> let greetJohn =\n  -> greet(""John"", on: ""Wednesday"")\n  >> print(greetJohn)\n  << Hello John, today is Wednesday."
+      code "  -> func greet(_ person: String, on day: String) -> String {\n         return ""Hello \\(person), today is \\(day).""\n     }\n  >> let greetJohn =\n  -> greet(""John"", on: ""Wednesday"")\n  >> print(greetJohn)\n  << Hello John, today is Wednesday."
     block
       language "swift"
-      text "func calculateStatistics(scores: [Int]) -> (min: Int, max: Int, sum: Int) {\n    var min = scores[0]\n    var max = scores[0]\n    var sum = 0\n\n    for score in scores {\n        if score > max {\n            max = score\n        } else if score < min {\n            min = score\n        }\n        sum += score\n    }\n\n    return (min, max, sum)\n}\nlet statistics = calculateStatistics(scores: [5, 3, 100, 3, 9])\nprint(statistics.sum)\n// Prints ""120"".\nprint(statistics.2)\n// Prints ""120""."
+      code "func calculateStatistics(scores: [Int]) -> (min: Int, max: Int, sum: Int) {\n    var min = scores[0]\n    var max = scores[0]\n    var sum = 0\n\n    for score in scores {\n        if score > max {\n            max = score\n        } else if score < min {\n            min = score\n        }\n        sum += score\n    }\n\n    return (min, max, sum)\n}\nlet statistics = calculateStatistics(scores: [5, 3, 100, 3, 9])\nprint(statistics.sum)\n// Prints ""120"".\nprint(statistics.2)\n// Prints ""120""."
     block
       language "swifttest"
-      text "  -> func calculateStatistics(scores: [Int]) -> (min: Int, max: Int, sum: Int) {\n         var min = scores[0]\n         var max = scores[0]\n         var sum = 0\n\n         for score in scores {\n             if score > max {\n                 max = score\n             } else if score < min {\n                 min = score\n             }\n             sum += score\n         }\n\n         return (min, max, sum)\n     }\n  -> let statistics = calculateStatistics(scores: [5, 3, 100, 3, 9])\n  >> print(statistics)\n  << (min: 3, max: 100, sum: 120)\n  -> print(statistics.sum)\n  <- 120\n  -> print(statistics.2)\n  <- 120"
+      code "  -> func calculateStatistics(scores: [Int]) -> (min: Int, max: Int, sum: Int) {\n         var min = scores[0]\n         var max = scores[0]\n         var sum = 0\n\n         for score in scores {\n             if score > max {\n                 max = score\n             } else if score < min {\n                 min = score\n             }\n             sum += score\n         }\n\n         return (min, max, sum)\n     }\n  -> let statistics = calculateStatistics(scores: [5, 3, 100, 3, 9])\n  >> print(statistics)\n  << (min: 3, max: 100, sum: 120)\n  -> print(statistics.sum)\n  <- 120\n  -> print(statistics.2)\n  <- 120"
     block
       language "swift"
-      text "func returnFifteen() -> Int {\n    var y = 10\n    func add() {\n        y += 5\n    }\n    add()\n    return y\n}\nreturnFifteen()"
+      code "func returnFifteen() -> Int {\n    var y = 10\n    func add() {\n        y += 5\n    }\n    add()\n    return y\n}\nreturnFifteen()"
     block
       language "swifttest"
-      text "  -> func returnFifteen() -> Int {\n         var y = 10\n         func add() {\n             y += 5\n         }\n         add()\n         return y\n     }\n  >> let fifteen =\n  -> returnFifteen()\n  >> print(fifteen)\n  << 15"
+      code "  -> func returnFifteen() -> Int {\n         var y = 10\n         func add() {\n             y += 5\n         }\n         add()\n         return y\n     }\n  >> let fifteen =\n  -> returnFifteen()\n  >> print(fifteen)\n  << 15"
     block
       language "swift"
-      text "func makeIncrementer() -> ((Int) -> Int) {\n    func addOne(number: Int) -> Int {\n        return 1 + number\n    }\n    return addOne\n}\nvar increment = makeIncrementer()\nincrement(7)"
+      code "func makeIncrementer() -> ((Int) -> Int) {\n    func addOne(number: Int) -> Int {\n        return 1 + number\n    }\n    return addOne\n}\nvar increment = makeIncrementer()\nincrement(7)"
     block
       language "swifttest"
-      text "  -> func makeIncrementer() -> ((Int) -> Int) {\n         func addOne(number: Int) -> Int {\n             return 1 + number\n         }\n         return addOne\n     }\n  -> var increment = makeIncrementer()\n  >> let incrementResult =\n  -> increment(7)\n  >> print(incrementResult)\n  << 8"
+      code "  -> func makeIncrementer() -> ((Int) -> Int) {\n         func addOne(number: Int) -> Int {\n             return 1 + number\n         }\n         return addOne\n     }\n  -> var increment = makeIncrementer()\n  >> let incrementResult =\n  -> increment(7)\n  >> print(incrementResult)\n  << 8"
     block
       language "swift"
-      text "func hasAnyMatches(list: [Int], condition: (Int) -> Bool) -> Bool {\n    for item in list {\n        if condition(item) {\n            return true\n        }\n    }\n    return false\n}\nfunc lessThanTen(number: Int) -> Bool {\n    return number < 10\n}\nvar numbers = [20, 19, 7, 12]\nhasAnyMatches(list: numbers, condition: lessThanTen)"
+      code "func hasAnyMatches(list: [Int], condition: (Int) -> Bool) -> Bool {\n    for item in list {\n        if condition(item) {\n            return true\n        }\n    }\n    return false\n}\nfunc lessThanTen(number: Int) -> Bool {\n    return number < 10\n}\nvar numbers = [20, 19, 7, 12]\nhasAnyMatches(list: numbers, condition: lessThanTen)"
     block
       language "swifttest"
-      text "  -> func hasAnyMatches(list: [Int], condition: (Int) -> Bool) -> Bool {\n         for item in list {\n             if condition(item) {\n                 return true\n             }\n         }\n         return false\n     }\n  -> func lessThanTen(number: Int) -> Bool {\n         return number < 10\n     }\n  -> var numbers = [20, 19, 7, 12]\n  >> let anyMatches =\n  -> hasAnyMatches(list: numbers, condition: lessThanTen)\n  >> print(anyMatches)\n  << true"
+      code "  -> func hasAnyMatches(list: [Int], condition: (Int) -> Bool) -> Bool {\n         for item in list {\n             if condition(item) {\n                 return true\n             }\n         }\n         return false\n     }\n  -> func lessThanTen(number: Int) -> Bool {\n         return number < 10\n     }\n  -> var numbers = [20, 19, 7, 12]\n  >> let anyMatches =\n  -> hasAnyMatches(list: numbers, condition: lessThanTen)\n  >> print(anyMatches)\n  << true"
     block
       language "swift"
-      text "numbers.map({ (number: Int) -> Int in\n    let result = 3 * number\n    return result\n})"
+      code "numbers.map({ (number: Int) -> Int in\n    let result = 3 * number\n    return result\n})"
     block
       language "swifttest"
-      text "  >> let numbersMap =\n  -> numbers.map({ (number: Int) -> Int in\n         let result = 3 * number\n         return result\n     })\n  >> print(numbersMap)\n  << [60, 57, 21, 36]"
+      code "  >> let numbersMap =\n  -> numbers.map({ (number: Int) -> Int in\n         let result = 3 * number\n         return result\n     })\n  >> print(numbersMap)\n  << [60, 57, 21, 36]"
     block
       language "swift"
-      text "let mappedNumbers = numbers.map({ number in 3 * number })\nprint(mappedNumbers)\n// Prints ""[60, 57, 21, 36]""."
+      code "let mappedNumbers = numbers.map({ number in 3 * number })\nprint(mappedNumbers)\n// Prints ""[60, 57, 21, 36]""."
     block
       language "swifttest"
-      text "  -> let mappedNumbers = numbers.map({ number in 3 * number })\n  -> print(mappedNumbers)\n  <- [60, 57, 21, 36]"
+      code "  -> let mappedNumbers = numbers.map({ number in 3 * number })\n  -> print(mappedNumbers)\n  <- [60, 57, 21, 36]"
     block
       language "swift"
-      text "let sortedNumbers = numbers.sorted { $0 > $1 }\nprint(sortedNumbers)\n// Prints ""[20, 19, 12, 7]""."
+      code "let sortedNumbers = numbers.sorted { $0 > $1 }\nprint(sortedNumbers)\n// Prints ""[20, 19, 12, 7]""."
     block
       language "swifttest"
-      text "  -> let sortedNumbers = numbers.sorted { $0 > $1 }\n  -> print(sortedNumbers)\n  <- [20, 19, 12, 7]"
+      code "  -> let sortedNumbers = numbers.sorted { $0 > $1 }\n  -> print(sortedNumbers)\n  <- [20, 19, 12, 7]"
     block
       language "swift"
-      text "class Shape {\n    var numberOfSides = 0\n    func simpleDescription() -> String {\n        return ""A shape with \\(numberOfSides) sides.""\n    }\n}"
+      code "class Shape {\n    var numberOfSides = 0\n    func simpleDescription() -> String {\n        return ""A shape with \\(numberOfSides) sides.""\n    }\n}"
     block
       language "swifttest"
-      text "  -> class Shape {\n         var numberOfSides = 0\n         func simpleDescription() -> String {\n             return ""A shape with \\(numberOfSides) sides.""\n         }\n     }\n  >> print(Shape().simpleDescription())\n  << A shape with 0 sides."
+      code "  -> class Shape {\n         var numberOfSides = 0\n         func simpleDescription() -> String {\n             return ""A shape with \\(numberOfSides) sides.""\n         }\n     }\n  >> print(Shape().simpleDescription())\n  << A shape with 0 sides."
     block
       language "swift"
-      text "var shape = Shape()\nshape.numberOfSides = 7\nvar shapeDescription = shape.simpleDescription()"
+      code "var shape = Shape()\nshape.numberOfSides = 7\nvar shapeDescription = shape.simpleDescription()"
     block
       language "swifttest"
-      text "  -> var shape = Shape()\n  -> shape.numberOfSides = 7\n  -> var shapeDescription = shape.simpleDescription()\n  >> print(shapeDescription)\n  << A shape with 7 sides."
+      code "  -> var shape = Shape()\n  -> shape.numberOfSides = 7\n  -> var shapeDescription = shape.simpleDescription()\n  >> print(shapeDescription)\n  << A shape with 7 sides."
     block
       language "swift"
-      text "class NamedShape {\n    var numberOfSides: Int = 0\n    var name: String\n\n    init(name: String) {\n       self.name = name\n    }\n\n    func simpleDescription() -> String {\n       return ""A shape with \\(numberOfSides) sides.""\n    }\n}"
+      code "class NamedShape {\n    var numberOfSides: Int = 0\n    var name: String\n\n    init(name: String) {\n       self.name = name\n    }\n\n    func simpleDescription() -> String {\n       return ""A shape with \\(numberOfSides) sides.""\n    }\n}"
     block
       language "swifttest"
-      text "  -> class NamedShape {\n         var numberOfSides: Int = 0\n         var name: String\n\n         init(name: String) {\n            self.name = name\n         }\n\n         func simpleDescription() -> String {\n            return ""A shape with \\(numberOfSides) sides.""\n         }\n     }\n  >> print(NamedShape(name: ""test name"").name)\n  << test name\n  >> print(NamedShape(name: ""test name"").simpleDescription())\n  << A shape with 0 sides."
+      code "  -> class NamedShape {\n         var numberOfSides: Int = 0\n         var name: String\n\n         init(name: String) {\n            self.name = name\n         }\n\n         func simpleDescription() -> String {\n            return ""A shape with \\(numberOfSides) sides.""\n         }\n     }\n  >> print(NamedShape(name: ""test name"").name)\n  << test name\n  >> print(NamedShape(name: ""test name"").simpleDescription())\n  << A shape with 0 sides."
     block
       language "swift"
-      text "class Square: NamedShape {\n    var sideLength: Double\n\n    init(sideLength: Double, name: String) {\n        self.sideLength = sideLength\n        super.init(name: name)\n        numberOfSides = 4\n    }\n\n    func area() -> Double {\n        return sideLength * sideLength\n    }\n\n    override func simpleDescription() -> String {\n        return ""A square with sides of length \\(sideLength).""\n    }\n}\nlet test = Square(sideLength: 5.2, name: ""my test square"")\ntest.area()\ntest.simpleDescription()"
+      code "class Square: NamedShape {\n    var sideLength: Double\n\n    init(sideLength: Double, name: String) {\n        self.sideLength = sideLength\n        super.init(name: name)\n        numberOfSides = 4\n    }\n\n    func area() -> Double {\n        return sideLength * sideLength\n    }\n\n    override func simpleDescription() -> String {\n        return ""A square with sides of length \\(sideLength).""\n    }\n}\nlet test = Square(sideLength: 5.2, name: ""my test square"")\ntest.area()\ntest.simpleDescription()"
     block
       language "swifttest"
-      text "  -> class Square: NamedShape {\n         var sideLength: Double\n\n         init(sideLength: Double, name: String) {\n             self.sideLength = sideLength\n             super.init(name: name)\n             numberOfSides = 4\n         }\n\n         func area() -> Double {\n             return sideLength * sideLength\n         }\n\n         override func simpleDescription() -> String {\n             return ""A square with sides of length \\(sideLength).""\n         }\n     }\n  -> let test = Square(sideLength: 5.2, name: ""my test square"")\n  >> let testArea =\n  -> test.area()\n  >> print(testArea)\n  << 27.040000000000003\n  >> let testDesc =\n  -> test.simpleDescription()\n  >> print(testDesc)\n  << A square with sides of length 5.2."
+      code "  -> class Square: NamedShape {\n         var sideLength: Double\n\n         init(sideLength: Double, name: String) {\n             self.sideLength = sideLength\n             super.init(name: name)\n             numberOfSides = 4\n         }\n\n         func area() -> Double {\n             return sideLength * sideLength\n         }\n\n         override func simpleDescription() -> String {\n             return ""A square with sides of length \\(sideLength).""\n         }\n     }\n  -> let test = Square(sideLength: 5.2, name: ""my test square"")\n  >> let testArea =\n  -> test.area()\n  >> print(testArea)\n  << 27.040000000000003\n  >> let testDesc =\n  -> test.simpleDescription()\n  >> print(testDesc)\n  << A square with sides of length 5.2."
     block
       language "swift"
-      text "class EquilateralTriangle: NamedShape {\n    var sideLength: Double = 0.0\n\n    init(sideLength: Double, name: String) {\n        self.sideLength = sideLength\n        super.init(name: name)\n        numberOfSides = 3\n    }\n\n    var perimeter: Double {\n        get {\n             return 3.0 * sideLength\n        }\n        set {\n            sideLength = newValue / 3.0\n        }\n    }\n\n    override func simpleDescription() -> String {\n        return ""An equilateral triangle with sides of length \\(sideLength).""\n    }\n}\nvar triangle = EquilateralTriangle(sideLength: 3.1, name: ""a triangle"")\nprint(triangle.perimeter)\n// Prints ""9.3"".\ntriangle.perimeter = 9.9\nprint(triangle.sideLength)\n// Prints ""3.3000000000000003""."
+      code "class EquilateralTriangle: NamedShape {\n    var sideLength: Double = 0.0\n\n    init(sideLength: Double, name: String) {\n        self.sideLength = sideLength\n        super.init(name: name)\n        numberOfSides = 3\n    }\n\n    var perimeter: Double {\n        get {\n             return 3.0 * sideLength\n        }\n        set {\n            sideLength = newValue / 3.0\n        }\n    }\n\n    override func simpleDescription() -> String {\n        return ""An equilateral triangle with sides of length \\(sideLength).""\n    }\n}\nvar triangle = EquilateralTriangle(sideLength: 3.1, name: ""a triangle"")\nprint(triangle.perimeter)\n// Prints ""9.3"".\ntriangle.perimeter = 9.9\nprint(triangle.sideLength)\n// Prints ""3.3000000000000003""."
     block
       language "swifttest"
-      text "  -> class EquilateralTriangle: NamedShape {\n         var sideLength: Double = 0.0\n\n         init(sideLength: Double, name: String) {\n             self.sideLength = sideLength\n             super.init(name: name)\n             numberOfSides = 3\n         }\n\n         var perimeter: Double {\n             get {\n                  return 3.0 * sideLength\n             }\n             set {\n                 sideLength = newValue / 3.0\n             }\n         }\n\n         override func simpleDescription() -> String {\n             return ""An equilateral triangle with sides of length \\(sideLength).""\n         }\n     }\n  -> var triangle = EquilateralTriangle(sideLength: 3.1, name: ""a triangle"")\n  -> print(triangle.perimeter)\n  <- 9.3\n  -> triangle.perimeter = 9.9\n  -> print(triangle.sideLength)\n  <- 3.3000000000000003"
+      code "  -> class EquilateralTriangle: NamedShape {\n         var sideLength: Double = 0.0\n\n         init(sideLength: Double, name: String) {\n             self.sideLength = sideLength\n             super.init(name: name)\n             numberOfSides = 3\n         }\n\n         var perimeter: Double {\n             get {\n                  return 3.0 * sideLength\n             }\n             set {\n                 sideLength = newValue / 3.0\n             }\n         }\n\n         override func simpleDescription() -> String {\n             return ""An equilateral triangle with sides of length \\(sideLength).""\n         }\n     }\n  -> var triangle = EquilateralTriangle(sideLength: 3.1, name: ""a triangle"")\n  -> print(triangle.perimeter)\n  <- 9.3\n  -> triangle.perimeter = 9.9\n  -> print(triangle.sideLength)\n  <- 3.3000000000000003"
     block
       language "swift"
-      text "class TriangleAndSquare {\n    var triangle: EquilateralTriangle {\n        willSet {\n            square.sideLength = newValue.sideLength\n        }\n    }\n    var square: Square {\n        willSet {\n            triangle.sideLength = newValue.sideLength\n        }\n    }\n    init(size: Double, name: String) {\n        square = Square(sideLength: size, name: name)\n        triangle = EquilateralTriangle(sideLength: size, name: name)\n    }\n}\nvar triangleAndSquare = TriangleAndSquare(size: 10, name: ""another test shape"")\nprint(triangleAndSquare.square.sideLength)\n// Prints ""10.0"".\nprint(triangleAndSquare.triangle.sideLength)\n// Prints ""10.0"".\ntriangleAndSquare.square = Square(sideLength: 50, name: ""larger square"")\nprint(triangleAndSquare.triangle.sideLength)\n// Prints ""50.0""."
+      code "class TriangleAndSquare {\n    var triangle: EquilateralTriangle {\n        willSet {\n            square.sideLength = newValue.sideLength\n        }\n    }\n    var square: Square {\n        willSet {\n            triangle.sideLength = newValue.sideLength\n        }\n    }\n    init(size: Double, name: String) {\n        square = Square(sideLength: size, name: name)\n        triangle = EquilateralTriangle(sideLength: size, name: name)\n    }\n}\nvar triangleAndSquare = TriangleAndSquare(size: 10, name: ""another test shape"")\nprint(triangleAndSquare.square.sideLength)\n// Prints ""10.0"".\nprint(triangleAndSquare.triangle.sideLength)\n// Prints ""10.0"".\ntriangleAndSquare.square = Square(sideLength: 50, name: ""larger square"")\nprint(triangleAndSquare.triangle.sideLength)\n// Prints ""50.0""."
     block
       language "swifttest"
-      text "  -> class TriangleAndSquare {\n         var triangle: EquilateralTriangle {\n             willSet {\n                 square.sideLength = newValue.sideLength\n             }\n         }\n         var square: Square {\n             willSet {\n                 triangle.sideLength = newValue.sideLength\n             }\n         }\n         init(size: Double, name: String) {\n             square = Square(sideLength: size, name: name)\n             triangle = EquilateralTriangle(sideLength: size, name: name)\n         }\n     }\n  -> var triangleAndSquare = TriangleAndSquare(size: 10, name: ""another test shape"")\n  -> print(triangleAndSquare.square.sideLength)\n  <- 10.0\n  -> print(triangleAndSquare.triangle.sideLength)\n  <- 10.0\n  -> triangleAndSquare.square = Square(sideLength: 50, name: ""larger square"")\n  -> print(triangleAndSquare.triangle.sideLength)\n  <- 50.0"
+      code "  -> class TriangleAndSquare {\n         var triangle: EquilateralTriangle {\n             willSet {\n                 square.sideLength = newValue.sideLength\n             }\n         }\n         var square: Square {\n             willSet {\n                 triangle.sideLength = newValue.sideLength\n             }\n         }\n         init(size: Double, name: String) {\n             square = Square(sideLength: size, name: name)\n             triangle = EquilateralTriangle(sideLength: size, name: name)\n         }\n     }\n  -> var triangleAndSquare = TriangleAndSquare(size: 10, name: ""another test shape"")\n  -> print(triangleAndSquare.square.sideLength)\n  <- 10.0\n  -> print(triangleAndSquare.triangle.sideLength)\n  <- 10.0\n  -> triangleAndSquare.square = Square(sideLength: 50, name: ""larger square"")\n  -> print(triangleAndSquare.triangle.sideLength)\n  <- 50.0"
     block
       language "swift"
-      text "let optionalSquare: Square? = Square(sideLength: 2.5, name: ""optional square"")\nlet sideLength = optionalSquare?.sideLength"
+      code "let optionalSquare: Square? = Square(sideLength: 2.5, name: ""optional square"")\nlet sideLength = optionalSquare?.sideLength"
     block
       language "swifttest"
-      text "  -> let optionalSquare: Square? = Square(sideLength: 2.5, name: ""optional square"")\n  -> let sideLength = optionalSquare?.sideLength"
+      code "  -> let optionalSquare: Square? = Square(sideLength: 2.5, name: ""optional square"")\n  -> let sideLength = optionalSquare?.sideLength"
     block
       language "swift"
-      text "enum Rank: Int {\n    case ace = 1\n    case two, three, four, five, six, seven, eight, nine, ten\n    case jack, queen, king\n\n    func simpleDescription() -> String {\n        switch self {\n        case .ace:\n            return ""ace""\n        case .jack:\n            return ""jack""\n        case .queen:\n            return ""queen""\n        case .king:\n            return ""king""\n        default:\n            return String(self.rawValue)\n        }\n    }\n}\nlet ace = Rank.ace\nlet aceRawValue = ace.rawValue"
+      code "enum Rank: Int {\n    case ace = 1\n    case two, three, four, five, six, seven, eight, nine, ten\n    case jack, queen, king\n\n    func simpleDescription() -> String {\n        switch self {\n        case .ace:\n            return ""ace""\n        case .jack:\n            return ""jack""\n        case .queen:\n            return ""queen""\n        case .king:\n            return ""king""\n        default:\n            return String(self.rawValue)\n        }\n    }\n}\nlet ace = Rank.ace\nlet aceRawValue = ace.rawValue"
     block
       language "swifttest"
-      text "  -> enum Rank: Int {\n         case ace = 1\n         case two, three, four, five, six, seven, eight, nine, ten\n         case jack, queen, king\n\n         func simpleDescription() -> String {\n             switch self {\n                 case .ace:\n                     return ""ace""\n                 case .jack:\n                     return ""jack""\n                 case .queen:\n                     return ""queen""\n                 case .king:\n                     return ""king""\n                 default:\n                     return String(self.rawValue)\n             }\n         }\n     }\n  -> let ace = Rank.ace\n  -> let aceRawValue = ace.rawValue\n  >> print(aceRawValue)\n  << 1"
+      code "  -> enum Rank: Int {\n         case ace = 1\n         case two, three, four, five, six, seven, eight, nine, ten\n         case jack, queen, king\n\n         func simpleDescription() -> String {\n             switch self {\n                 case .ace:\n                     return ""ace""\n                 case .jack:\n                     return ""jack""\n                 case .queen:\n                     return ""queen""\n                 case .king:\n                     return ""king""\n                 default:\n                     return String(self.rawValue)\n             }\n         }\n     }\n  -> let ace = Rank.ace\n  -> let aceRawValue = ace.rawValue\n  >> print(aceRawValue)\n  << 1"
     block
       language "swift"
-      text "if let convertedRank = Rank(rawValue: 3) {\n    let threeDescription = convertedRank.simpleDescription()\n}"
+      code "if let convertedRank = Rank(rawValue: 3) {\n    let threeDescription = convertedRank.simpleDescription()\n}"
     block
       language "swifttest"
-      text "  -> if let convertedRank = Rank(rawValue: 3) {\n         let threeDescription = convertedRank.simpleDescription()\n  >> print(threeDescription)\n  << 3\n  -> }"
+      code "  -> if let convertedRank = Rank(rawValue: 3) {\n         let threeDescription = convertedRank.simpleDescription()\n  >> print(threeDescription)\n  << 3\n  -> }"
     block
       language "swift"
-      text "enum Suit {\n    case spades, hearts, diamonds, clubs\n\n    func simpleDescription() -> String {\n        switch self {\n        case .spades:\n            return ""spades""\n        case .hearts:\n            return ""hearts""\n        case .diamonds:\n            return ""diamonds""\n        case .clubs:\n            return ""clubs""\n        }\n    }\n}\nlet hearts = Suit.hearts\nlet heartsDescription = hearts.simpleDescription()"
+      code "enum Suit {\n    case spades, hearts, diamonds, clubs\n\n    func simpleDescription() -> String {\n        switch self {\n        case .spades:\n            return ""spades""\n        case .hearts:\n            return ""hearts""\n        case .diamonds:\n            return ""diamonds""\n        case .clubs:\n            return ""clubs""\n        }\n    }\n}\nlet hearts = Suit.hearts\nlet heartsDescription = hearts.simpleDescription()"
     block
       language "swifttest"
-      text "  -> enum Suit {\n         case spades, hearts, diamonds, clubs\n\n         func simpleDescription() -> String {\n             switch self {\n                 case .spades:\n                     return ""spades""\n                 case .hearts:\n                     return ""hearts""\n                 case .diamonds:\n                     return ""diamonds""\n                 case .clubs:\n                     return ""clubs""\n             }\n         }\n     }\n  -> let hearts = Suit.hearts\n  -> let heartsDescription = hearts.simpleDescription()\n  >> print(heartsDescription)\n  << hearts"
+      code "  -> enum Suit {\n         case spades, hearts, diamonds, clubs\n\n         func simpleDescription() -> String {\n             switch self {\n                 case .spades:\n                     return ""spades""\n                 case .hearts:\n                     return ""hearts""\n                 case .diamonds:\n                     return ""diamonds""\n                 case .clubs:\n                     return ""clubs""\n             }\n         }\n     }\n  -> let hearts = Suit.hearts\n  -> let heartsDescription = hearts.simpleDescription()\n  >> print(heartsDescription)\n  << hearts"
     block
       language "swift"
-      text "enum ServerResponse {\n    case result(String, String)\n    case failure(String)\n}\n\nlet success = ServerResponse.result(""6:00 am"", ""8:09 pm"")\nlet failure = ServerResponse.failure(""Out of cheese."")\n\nswitch success {\ncase let .result(sunrise, sunset):\n    print(""Sunrise is at \\(sunrise) and sunset is at \\(sunset)."")\ncase let .failure(message):\n    print(""Failure...  \\(message)"")\n}\n// Prints ""Sunrise is at 6:00 am and sunset is at 8:09 pm."""
+      code "enum ServerResponse {\n    case result(String, String)\n    case failure(String)\n}\n\nlet success = ServerResponse.result(""6:00 am"", ""8:09 pm"")\nlet failure = ServerResponse.failure(""Out of cheese."")\n\nswitch success {\ncase let .result(sunrise, sunset):\n    print(""Sunrise is at \\(sunrise) and sunset is at \\(sunset)."")\ncase let .failure(message):\n    print(""Failure...  \\(message)"")\n}\n// Prints ""Sunrise is at 6:00 am and sunset is at 8:09 pm."""
     block
       language "swifttest"
-      text "  -> enum ServerResponse {\n         case result(String, String)\n         case failure(String)\n     }\n\n  -> let success = ServerResponse.result(""6:00 am"", ""8:09 pm"")\n  -> let failure = ServerResponse.failure(""Out of cheese."")\n\n  -> switch success {\n         case let .result(sunrise, sunset):\n             print(""Sunrise is at \\(sunrise) and sunset is at \\(sunset)."")\n         case let .failure(message):\n             print(""Failure...  \\(message)"")\n     }\n  <- Sunrise is at 6:00 am and sunset is at 8:09 pm."
+      code "  -> enum ServerResponse {\n         case result(String, String)\n         case failure(String)\n     }\n\n  -> let success = ServerResponse.result(""6:00 am"", ""8:09 pm"")\n  -> let failure = ServerResponse.failure(""Out of cheese."")\n\n  -> switch success {\n         case let .result(sunrise, sunset):\n             print(""Sunrise is at \\(sunrise) and sunset is at \\(sunset)."")\n         case let .failure(message):\n             print(""Failure...  \\(message)"")\n     }\n  <- Sunrise is at 6:00 am and sunset is at 8:09 pm."
     block
       language "swift"
-      text "struct Card {\n    var rank: Rank\n    var suit: Suit\n    func simpleDescription() -> String {\n        return ""The \\(rank.simpleDescription()) of \\(suit.simpleDescription())""\n    }\n}\nlet threeOfSpades = Card(rank: .three, suit: .spades)\nlet threeOfSpadesDescription = threeOfSpades.simpleDescription()"
+      code "struct Card {\n    var rank: Rank\n    var suit: Suit\n    func simpleDescription() -> String {\n        return ""The \\(rank.simpleDescription()) of \\(suit.simpleDescription())""\n    }\n}\nlet threeOfSpades = Card(rank: .three, suit: .spades)\nlet threeOfSpadesDescription = threeOfSpades.simpleDescription()"
     block
       language "swifttest"
-      text "  -> struct Card {\n         var rank: Rank\n         var suit: Suit\n         func simpleDescription() -> String {\n             return ""The \\(rank.simpleDescription()) of \\(suit.simpleDescription())""\n         }\n     }\n  -> let threeOfSpades = Card(rank: .three, suit: .spades)\n  -> let threeOfSpadesDescription = threeOfSpades.simpleDescription()\n  >> print(threeOfSpadesDescription)\n  << The 3 of spades"
+      code "  -> struct Card {\n         var rank: Rank\n         var suit: Suit\n         func simpleDescription() -> String {\n             return ""The \\(rank.simpleDescription()) of \\(suit.simpleDescription())""\n         }\n     }\n  -> let threeOfSpades = Card(rank: .three, suit: .spades)\n  -> let threeOfSpadesDescription = threeOfSpades.simpleDescription()\n  >> print(threeOfSpadesDescription)\n  << The 3 of spades"
     block
       language "swift"
-      text "func fetchUserID(from server: String) async -> Int {\n    if server == ""primary"" {\n        return 97\n    }\n    return 501\n}"
+      code "func fetchUserID(from server: String) async -> Int {\n    if server == ""primary"" {\n        return 97\n    }\n    return 501\n}"
     block
       language "swifttest"
-      text "  -> func fetchUserID(from server: String) async -> Int {\n         if server == ""primary"" {\n             return 97\n         }\n         return 501\n     }"
+      code "  -> func fetchUserID(from server: String) async -> Int {\n         if server == ""primary"" {\n             return 97\n         }\n         return 501\n     }"
     block
       language "swift"
-      text "func fetchUsername(from server: String) async -> String {\n    let userID = await fetchUserID(from: server)\n    if userID == 501 {\n        return ""John Appleseed""\n    }\n    return ""Guest""\n}"
+      code "func fetchUsername(from server: String) async -> String {\n    let userID = await fetchUserID(from: server)\n    if userID == 501 {\n        return ""John Appleseed""\n    }\n    return ""Guest""\n}"
     block
       language "swifttest"
-      text "  -> func fetchUsername(from server: String) async -> String {\n         let userID = await fetchUserID(from: server)\n         if userID == 501 {\n             return ""John Appleseed""\n         }\n         return ""Guest""\n     }"
+      code "  -> func fetchUsername(from server: String) async -> String {\n         let userID = await fetchUserID(from: server)\n         if userID == 501 {\n             return ""John Appleseed""\n         }\n         return ""Guest""\n     }"
     block
       language "swift"
-      text "func connectUser(to server: String) async {\n    async let userID = fetchUserID(from: server)\n    async let username = fetchUsername(from: server)\n    let greeting = await ""Hello \\(username), user ID \\(userID)""\n    print(greeting)\n}"
+      code "func connectUser(to server: String) async {\n    async let userID = fetchUserID(from: server)\n    async let username = fetchUsername(from: server)\n    let greeting = await ""Hello \\(username), user ID \\(userID)""\n    print(greeting)\n}"
     block
       language "swifttest"
-      text "  -> func connectUser(to server: String) async {\n         async let userID = fetchUserID(from: server)\n         async let username = fetchUsername(from: server)\n         let greeting = await ""Hello \\(username), user ID \\(userID)""\n         print(greeting)\n     }"
+      code "  -> func connectUser(to server: String) async {\n         async let userID = fetchUserID(from: server)\n         async let username = fetchUsername(from: server)\n         let greeting = await ""Hello \\(username), user ID \\(userID)""\n         print(greeting)\n     }"
     block
       language "swift"
-      text "Task {\n    await connectUser(to: ""primary"")\n}\n// Prints ""Hello Guest, user ID 97""."
+      code "Task {\n    await connectUser(to: ""primary"")\n}\n// Prints ""Hello Guest, user ID 97""."
     block
       language "swifttest"
-      text "  -> Task {\n         await connectUser(to: ""primary"")\n     }\n  >> import Darwin; sleep(1)  // Pause for task to run\n  <- Hello Guest, user ID 97"
+      code "  -> Task {\n         await connectUser(to: ""primary"")\n     }\n  >> import Darwin; sleep(1)  // Pause for task to run\n  <- Hello Guest, user ID 97"
     block
       language "swift"
-      text "let userIDs = await withTaskGroup(of: Int.self) { group in\n    for server in [""primary"", ""secondary"", ""development""] {\n        group.addTask {\n            return await fetchUserID(from: server)\n        }\n    }\n\n    var results: [Int] = []\n    for await result in group {\n        results.append(result)\n    }\n    return results\n}"
+      code "let userIDs = await withTaskGroup(of: Int.self) { group in\n    for server in [""primary"", ""secondary"", ""development""] {\n        group.addTask {\n            return await fetchUserID(from: server)\n        }\n    }\n\n    var results: [Int] = []\n    for await result in group {\n        results.append(result)\n    }\n    return results\n}"
     block
       language "swift"
-      text "actor ServerConnection {\n    var server: String = ""primary""\n    private var activeUsers: [Int] = []\n    func connect() async -> Int {\n        let userID = await fetchUserID(from: server)\n        // ... communicate with server ...\n        activeUsers.append(userID)\n        return userID\n    }\n}"
+      code "actor ServerConnection {\n    var server: String = ""primary""\n    private var activeUsers: [Int] = []\n    func connect() async -> Int {\n        let userID = await fetchUserID(from: server)\n        // ... communicate with server ...\n        activeUsers.append(userID)\n        return userID\n    }\n}"
     block
       language "swifttest"
-      text "  -> actor Oven {\n         var contents: [String] = []\n         func bake(_ food: String) -> String {\n             contents.append(food)\n             // ... wait for food to bake ...\n             return contents.removeLast()\n         }\n     }"
+      code "  -> actor Oven {\n         var contents: [String] = []\n         func bake(_ food: String) -> String {\n             contents.append(food)\n             // ... wait for food to bake ...\n             return contents.removeLast()\n         }\n     }"
     block
       language "swift"
-      text "let server = ServerConnection()\nlet userID = await server.connect()"
+      code "let server = ServerConnection()\nlet userID = await server.connect()"
     block
       language "swifttest"
-      text "  -> let oven = Oven()\n  -> let biscuits = await oven.bake(""biscuits"")"
+      code "  -> let oven = Oven()\n  -> let biscuits = await oven.bake(""biscuits"")"
     block
       language "swift"
-      text "protocol ExampleProtocol {\n     var simpleDescription: String { get }\n     mutating func adjust()\n}"
+      code "protocol ExampleProtocol {\n     var simpleDescription: String { get }\n     mutating func adjust()\n}"
     block
       language "swifttest"
-      text "  -> protocol ExampleProtocol {\n          var simpleDescription: String { get }\n          mutating func adjust()\n     }"
+      code "  -> protocol ExampleProtocol {\n          var simpleDescription: String { get }\n          mutating func adjust()\n     }"
     block
       language "swift"
-      text "class SimpleClass: ExampleProtocol {\n     var simpleDescription: String = ""A very simple class.""\n     var anotherProperty: Int = 69105\n     func adjust() {\n          simpleDescription += ""  Now 100% adjusted.""\n     }\n}\nvar a = SimpleClass()\na.adjust()\nlet aDescription = a.simpleDescription\n\nstruct SimpleStructure: ExampleProtocol {\n     var simpleDescription: String = ""A simple structure""\n     mutating func adjust() {\n          simpleDescription += "" (adjusted)""\n     }\n}\nvar b = SimpleStructure()\nb.adjust()\nlet bDescription = b.simpleDescription"
+      code "class SimpleClass: ExampleProtocol {\n     var simpleDescription: String = ""A very simple class.""\n     var anotherProperty: Int = 69105\n     func adjust() {\n          simpleDescription += ""  Now 100% adjusted.""\n     }\n}\nvar a = SimpleClass()\na.adjust()\nlet aDescription = a.simpleDescription\n\nstruct SimpleStructure: ExampleProtocol {\n     var simpleDescription: String = ""A simple structure""\n     mutating func adjust() {\n          simpleDescription += "" (adjusted)""\n     }\n}\nvar b = SimpleStructure()\nb.adjust()\nlet bDescription = b.simpleDescription"
     block
       language "swifttest"
-      text "  -> class SimpleClass: ExampleProtocol {\n          var simpleDescription: String = ""A very simple class.""\n          var anotherProperty: Int = 69105\n          func adjust() {\n               simpleDescription += ""  Now 100% adjusted.""\n          }\n     }\n  -> var a = SimpleClass()\n  -> a.adjust()\n  -> let aDescription = a.simpleDescription\n  >> print(aDescription)\n  << A very simple class.  Now 100% adjusted.\n\n  -> struct SimpleStructure: ExampleProtocol {\n          var simpleDescription: String = ""A simple structure""\n          mutating func adjust() {\n               simpleDescription += "" (adjusted)""\n          }\n     }\n  -> var b = SimpleStructure()\n  -> b.adjust()\n  -> let bDescription = b.simpleDescription\n  >> print(bDescription)\n  << A simple structure (adjusted)"
+      code "  -> class SimpleClass: ExampleProtocol {\n          var simpleDescription: String = ""A very simple class.""\n          var anotherProperty: Int = 69105\n          func adjust() {\n               simpleDescription += ""  Now 100% adjusted.""\n          }\n     }\n  -> var a = SimpleClass()\n  -> a.adjust()\n  -> let aDescription = a.simpleDescription\n  >> print(aDescription)\n  << A very simple class.  Now 100% adjusted.\n\n  -> struct SimpleStructure: ExampleProtocol {\n          var simpleDescription: String = ""A simple structure""\n          mutating func adjust() {\n               simpleDescription += "" (adjusted)""\n          }\n     }\n  -> var b = SimpleStructure()\n  -> b.adjust()\n  -> let bDescription = b.simpleDescription\n  >> print(bDescription)\n  << A simple structure (adjusted)"
     block
       language "swift"
-      text "extension Int: ExampleProtocol {\n    var simpleDescription: String {\n        return ""The number \\(self)""\n    }\n    mutating func adjust() {\n        self += 42\n    }\n }\nprint(7.simpleDescription)\n// Prints ""The number 7""."
+      code "extension Int: ExampleProtocol {\n    var simpleDescription: String {\n        return ""The number \\(self)""\n    }\n    mutating func adjust() {\n        self += 42\n    }\n }\nprint(7.simpleDescription)\n// Prints ""The number 7""."
     block
       language "swifttest"
-      text "  -> extension Int: ExampleProtocol {\n         var simpleDescription: String {\n             return ""The number \\(self)""\n         }\n         mutating func adjust() {\n             self += 42\n         }\n      }\n  -> print(7.simpleDescription)\n  <- The number 7"
+      code "  -> extension Int: ExampleProtocol {\n         var simpleDescription: String {\n             return ""The number \\(self)""\n         }\n         mutating func adjust() {\n             self += 42\n         }\n      }\n  -> print(7.simpleDescription)\n  <- The number 7"
     block
       language "swift"
-      text "let protocolValue: any ExampleProtocol = a\nprint(protocolValue.simpleDescription)\n// Prints ""A very simple class.  Now 100% adjusted.""\n// print(protocolValue.anotherProperty)  // Uncomment to see the error"
+      code "let protocolValue: any ExampleProtocol = a\nprint(protocolValue.simpleDescription)\n// Prints ""A very simple class.  Now 100% adjusted.""\n// print(protocolValue.anotherProperty)  // Uncomment to see the error"
     block
       language "swifttest"
-      text "  -> let protocolValue: ExampleProtocol = a\n  -> print(protocolValue.simpleDescription)\n  <- A very simple class.  Now 100% adjusted.\n  // print(protocolValue.anotherProperty)  // Uncomment to see the error"
+      code "  -> let protocolValue: ExampleProtocol = a\n  -> print(protocolValue.simpleDescription)\n  <- A very simple class.  Now 100% adjusted.\n  // print(protocolValue.anotherProperty)  // Uncomment to see the error"
     block
       language "swift"
-      text "enum PrinterError: Error {\n    case outOfPaper\n    case noToner\n    case onFire\n}"
+      code "enum PrinterError: Error {\n    case outOfPaper\n    case noToner\n    case onFire\n}"
     block
       language "swifttest"
-      text "  -> enum PrinterError: Error {\n         case outOfPaper\n         case noToner\n         case onFire\n     }"
+      code "  -> enum PrinterError: Error {\n         case outOfPaper\n         case noToner\n         case onFire\n     }"
     block
       language "swift"
-      text "func send(job: Int, toPrinter printerName: String) throws -> String {\n    if printerName == ""Never Has Toner"" {\n        throw PrinterError.noToner\n    }\n    return ""Job sent""\n}"
+      code "func send(job: Int, toPrinter printerName: String) throws -> String {\n    if printerName == ""Never Has Toner"" {\n        throw PrinterError.noToner\n    }\n    return ""Job sent""\n}"
     block
       language "swifttest"
-      text "  -> func send(job: Int, toPrinter printerName: String) throws -> String {\n         if printerName == ""Never Has Toner"" {\n             throw PrinterError.noToner\n         }\n         return ""Job sent""\n     }"
+      code "  -> func send(job: Int, toPrinter printerName: String) throws -> String {\n         if printerName == ""Never Has Toner"" {\n             throw PrinterError.noToner\n         }\n         return ""Job sent""\n     }"
     block
       language "swift"
-      text "do {\n    let printerResponse = try send(job: 1040, toPrinter: ""Bi Sheng"")\n    print(printerResponse)\n} catch {\n    print(error)\n}\n// Prints ""Job sent""."
+      code "do {\n    let printerResponse = try send(job: 1040, toPrinter: ""Bi Sheng"")\n    print(printerResponse)\n} catch {\n    print(error)\n}\n// Prints ""Job sent""."
     block
       language "swifttest"
-      text "  -> do {\n         let printerResponse = try send(job: 1040, toPrinter: ""Bi Sheng"")\n         print(printerResponse)\n     } catch {\n         print(error)\n     }\n  <- Job sent"
+      code "  -> do {\n         let printerResponse = try send(job: 1040, toPrinter: ""Bi Sheng"")\n         print(printerResponse)\n     } catch {\n         print(error)\n     }\n  <- Job sent"
     block
       language "swifttest"
-      text "  >> do {\n         let printerResponse = try send(job: 500, toPrinter: ""Never Has Toner"")\n         print(printerResponse)\n     } catch {\n         print(error)\n     }\n  <- noToner"
+      code "  >> do {\n         let printerResponse = try send(job: 500, toPrinter: ""Never Has Toner"")\n         print(printerResponse)\n     } catch {\n         print(error)\n     }\n  <- noToner"
     block
       language "swift"
-      text "do {\n    let printerResponse = try send(job: 1440, toPrinter: ""Gutenberg"")\n    print(printerResponse)\n} catch PrinterError.onFire {\n    print(""I'll just put this over here, with the rest of the fire."")\n} catch let printerError as PrinterError {\n    print(""Printer error: \\(printerError)."")\n} catch {\n    print(error)\n}\n// Prints ""Job sent""."
+      code "do {\n    let printerResponse = try send(job: 1440, toPrinter: ""Gutenberg"")\n    print(printerResponse)\n} catch PrinterError.onFire {\n    print(""I'll just put this over here, with the rest of the fire."")\n} catch let printerError as PrinterError {\n    print(""Printer error: \\(printerError)."")\n} catch {\n    print(error)\n}\n// Prints ""Job sent""."
     block
       language "swifttest"
-      text "  -> do {\n         let printerResponse = try send(job: 1440, toPrinter: ""Gutenberg"")\n         print(printerResponse)\n     } catch PrinterError.onFire {\n         print(""I'll just put this over here, with the rest of the fire."")\n     } catch let printerError as PrinterError {\n         print(""Printer error: \\(printerError)."")\n     } catch {\n         print(error)\n     }\n  <- Job sent"
+      code "  -> do {\n         let printerResponse = try send(job: 1440, toPrinter: ""Gutenberg"")\n         print(printerResponse)\n     } catch PrinterError.onFire {\n         print(""I'll just put this over here, with the rest of the fire."")\n     } catch let printerError as PrinterError {\n         print(""Printer error: \\(printerError)."")\n     } catch {\n         print(error)\n     }\n  <- Job sent"
     block
       language "swift"
-      text "let printerSuccess = try? send(job: 1884, toPrinter: ""Mergenthaler"")\nlet printerFailure = try? send(job: 1885, toPrinter: ""Never Has Toner"")"
+      code "let printerSuccess = try? send(job: 1884, toPrinter: ""Mergenthaler"")\nlet printerFailure = try? send(job: 1885, toPrinter: ""Never Has Toner"")"
     block
       language "swifttest"
-      text "  -> let printerSuccess = try? send(job: 1884, toPrinter: ""Mergenthaler"")\n  >> print(printerSuccess as Any)\n  << Optional(""Job sent"")\n  -> let printerFailure = try? send(job: 1885, toPrinter: ""Never Has Toner"")\n  >> print(printerFailure as Any)\n  << nil"
+      code "  -> let printerSuccess = try? send(job: 1884, toPrinter: ""Mergenthaler"")\n  >> print(printerSuccess as Any)\n  << Optional(""Job sent"")\n  -> let printerFailure = try? send(job: 1885, toPrinter: ""Never Has Toner"")\n  >> print(printerFailure as Any)\n  << nil"
     block
       language "swift"
-      text "var fridgeIsOpen = false\nlet fridgeContent = [""milk"", ""eggs"", ""leftovers""]\n\nfunc fridgeContains(_ food: String) -> Bool {\n    fridgeIsOpen = true\n    defer {\n        fridgeIsOpen = false\n    }\n\n    let result = fridgeContent.contains(food)\n    return result\n}\nif fridgeContains(""banana"") {\n    print(""Found a banana"")\n}\nprint(fridgeIsOpen)\n// Prints ""false""."
+      code "var fridgeIsOpen = false\nlet fridgeContent = [""milk"", ""eggs"", ""leftovers""]\n\nfunc fridgeContains(_ food: String) -> Bool {\n    fridgeIsOpen = true\n    defer {\n        fridgeIsOpen = false\n    }\n\n    let result = fridgeContent.contains(food)\n    return result\n}\nif fridgeContains(""banana"") {\n    print(""Found a banana"")\n}\nprint(fridgeIsOpen)\n// Prints ""false""."
     block
       language "swifttest"
-      text "  -> var fridgeIsOpen = false\n  -> let fridgeContent = [""milk"", ""eggs"", ""leftovers""]\n\n  -> func fridgeContains(_ food: String) -> Bool {\n         fridgeIsOpen = true\n         defer {\n             fridgeIsOpen = false\n         }\n\n         let result = fridgeContent.contains(food)\n         return result\n     }\n  >> let containsBanana =\n  -> fridgeContains(""banana"")\n  >> print(containsBanana)\n  << false\n  -> print(fridgeIsOpen)\n  <- false"
+      code "  -> var fridgeIsOpen = false\n  -> let fridgeContent = [""milk"", ""eggs"", ""leftovers""]\n\n  -> func fridgeContains(_ food: String) -> Bool {\n         fridgeIsOpen = true\n         defer {\n             fridgeIsOpen = false\n         }\n\n         let result = fridgeContent.contains(food)\n         return result\n     }\n  >> let containsBanana =\n  -> fridgeContains(""banana"")\n  >> print(containsBanana)\n  << false\n  -> print(fridgeIsOpen)\n  <- false"
     block
       language "swift"
-      text "func makeArray<Item>(repeating item: Item, numberOfTimes: Int) -> [Item] {\n    var result: [Item] = []\n    for _ in 0..<numberOfTimes {\n         result.append(item)\n    }\n    return result\n}\nmakeArray(repeating: ""knock"", numberOfTimes: 4)"
+      code "func makeArray<Item>(repeating item: Item, numberOfTimes: Int) -> [Item] {\n    var result: [Item] = []\n    for _ in 0..<numberOfTimes {\n         result.append(item)\n    }\n    return result\n}\nmakeArray(repeating: ""knock"", numberOfTimes: 4)"
     block
       language "swifttest"
-      text "  -> func makeArray<Item>(repeating item: Item, numberOfTimes: Int) -> [Item] {\n         var result: [Item] = []\n         for _ in 0..<numberOfTimes {\n              result.append(item)\n         }\n         return result\n     }\n  >> let fourKnocks =\n  -> makeArray(repeating: ""knock"", numberOfTimes: 4)\n  >> print(fourKnocks)\n  << [""knock"", ""knock"", ""knock"", ""knock""]"
+      code "  -> func makeArray<Item>(repeating item: Item, numberOfTimes: Int) -> [Item] {\n         var result: [Item] = []\n         for _ in 0..<numberOfTimes {\n              result.append(item)\n         }\n         return result\n     }\n  >> let fourKnocks =\n  -> makeArray(repeating: ""knock"", numberOfTimes: 4)\n  >> print(fourKnocks)\n  << [""knock"", ""knock"", ""knock"", ""knock""]"
     block
       language "swift"
-      text "// Reimplement the Swift standard library's optional type\nenum OptionalValue<Wrapped> {\n    case none\n    case some(Wrapped)\n}\nvar possibleInteger: OptionalValue<Int> = .none\npossibleInteger = .some(100)"
+      code "// Reimplement the Swift standard library's optional type\nenum OptionalValue<Wrapped> {\n    case none\n    case some(Wrapped)\n}\nvar possibleInteger: OptionalValue<Int> = .none\npossibleInteger = .some(100)"
     block
       language "swifttest"
-      text "  // Reimplement the Swift standard library's optional type\n  -> enum OptionalValue<Wrapped> {\n         case none\n         case some(Wrapped)\n     }\n  -> var possibleInteger: OptionalValue<Int> = .none\n  -> possibleInteger = .some(100)"
+      code "  // Reimplement the Swift standard library's optional type\n  -> enum OptionalValue<Wrapped> {\n         case none\n         case some(Wrapped)\n     }\n  -> var possibleInteger: OptionalValue<Int> = .none\n  -> possibleInteger = .some(100)"
     block
       language "swift"
-      text "func anyCommonElements<T: Sequence, U: Sequence>(_ lhs: T, _ rhs: U) -> Bool\n    where T.Element: Equatable, T.Element == U.Element\n{\n    for lhsItem in lhs {\n        for rhsItem in rhs {\n            if lhsItem == rhsItem {\n                return true\n            }\n        }\n    }\n   return false\n}\nanyCommonElements([1, 2, 3], [3])"
+      code "func anyCommonElements<T: Sequence, U: Sequence>(_ lhs: T, _ rhs: U) -> Bool\n    where T.Element: Equatable, T.Element == U.Element\n{\n    for lhsItem in lhs {\n        for rhsItem in rhs {\n            if lhsItem == rhsItem {\n                return true\n            }\n        }\n    }\n   return false\n}\nanyCommonElements([1, 2, 3], [3])"
     block
       language "swifttest"
-      text "  -> func anyCommonElements<T: Sequence, U: Sequence>(_ lhs: T, _ rhs: U) -> Bool\n         where T.Element: Equatable, T.Element == U.Element\n     {\n         for lhsItem in lhs {\n             for rhsItem in rhs {\n                 if lhsItem == rhsItem {\n                     return true\n                 }\n             }\n         }\n        return false\n     }\n  >> let hasAnyCommon =\n  -> anyCommonElements([1, 2, 3], [3])\n  >> print(hasAnyCommon)\n  << true"
+      code "  -> func anyCommonElements<T: Sequence, U: Sequence>(_ lhs: T, _ rhs: U) -> Bool\n         where T.Element: Equatable, T.Element == U.Element\n     {\n         for lhsItem in lhs {\n             for rhsItem in rhs {\n                 if lhsItem == rhsItem {\n                     return true\n                 }\n             }\n         }\n        return false\n     }\n  >> let hasAnyCommon =\n  -> anyCommonElements([1, 2, 3], [3])\n  >> print(hasAnyCommon)\n  << true"
   capture
     language "java"
     task hello_world
@@ -842,22 +842,22 @@ coding_documentation_captures
     sha256 "df36cbcc99836cfadc67f7bbb7c7bedeea27b57f0df0d6c79d85dae81b6e3750"
     block
       language "unknown"
-      text "cd /tmp\nmkdir examples\ncd examples\nmkdir java"
+      code "cd /tmp\nmkdir examples\ncd examples\nmkdir java"
     block
       language "unknown"
-      text "cd /tmp/examples/java"
+      code "cd /tmp/examples/java"
     block
       language "unknown"
-      text "/**\n * The HelloWorldApp class implements an application that\n * simply prints ""Hello World!"" to standard output.\n */\nclass HelloWorldApp {\n    public static void main(String[] args) {\n        System.out.println(""Hello World!""); // Display the string.\n    }\n}"
+      code "/**\n * The HelloWorldApp class implements an application that\n * simply prints ""Hello World!"" to standard output.\n */\nclass HelloWorldApp {\n    public static void main(String[] args) {\n        System.out.println(""Hello World!""); // Display the string.\n    }\n}"
     block
       language "unknown"
-      text "cd /tmp/examples/java"
+      code "cd /tmp/examples/java"
     block
       language "unknown"
-      text "javac HelloWorldApp.java"
+      code "javac HelloWorldApp.java"
     block
       language "unknown"
-      text "java HelloWorldApp"
+      code "java HelloWorldApp"
   capture
     language "php"
     task hello_world
@@ -868,19 +868,19 @@ coding_documentation_captures
     sha256 "83a92271b42f99981742b4750be07d16455d29d1ad9b90287d9533588799b0b6"
     block
       language "unknown"
-      text "<?php\n\necho ""Hello World!"";\n\n?>"
+      code "<?php\n\necho ""Hello World!"";\n\n?>"
     block
       language "unknown"
-      text "php -S localhost:8000"
+      code "php -S localhost:8000"
     block
       language "unknown"
-      text "<!DOCTYPE html>\n<html>\n    <head>\n        <title>PHP Test</title>\n    </head>\n    <body>\n        <?php echo '<p>Hello World</p>'; ?>\n    </body>\n</html>"
+      code "<!DOCTYPE html>\n<html>\n    <head>\n        <title>PHP Test</title>\n    </head>\n    <body>\n        <?php echo '<p>Hello World</p>'; ?>\n    </body>\n</html>"
     block
       language "unknown"
-      text "<!DOCTYPE html>\n<html>\n    <head>\n        <title>PHP Test</title>\n    </head>\n    <body>\n        <p>Hello World</p>\n    </body>\n</html>"
+      code "<!DOCTYPE html>\n<html>\n    <head>\n        <title>PHP Test</title>\n    </head>\n    <body>\n        <p>Hello World</p>\n    </body>\n</html>"
     block
       language "unknown"
-      text "<?php\n\nphpinfo();\n\n?>"
+      code "<?php\n\nphpinfo();\n\n?>"
   capture
     language "lua"
     language_name "Lua"
@@ -892,10 +892,10 @@ coding_documentation_captures
     sha256 "b47452aa65d7fce28b156b447fccfe2a2af8fb54cc12cd9c8975d983aa2d0cce"
     block
       language "unknown"
-      text "print(""Hello World"")"
+      code "print(""Hello World"")"
     block
       language "unknown"
-      text "prompt lua hello.lua"
+      code "prompt lua hello.lua"
     block
       language "unknown"
-      text "-- defines a factorial function\nfunction fact (n)\n  if n == 0 then\n    return 1\n  else\n    return n * fact(n-1)\n  end\nend\n\nprint(""enter a number:"")\na = io.read(""*number"")        -- read a number\nprint(fact(a))"
+      code "-- defines a factorial function\nfunction fact (n)\n  if n == 0 then\n    return 1\n  else\n    return n * fact(n-1)\n  end\nend\n\nprint(""enter a number:"")\na = io.read(""*number"")        -- read a number\nprint(fact(a))"

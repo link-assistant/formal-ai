@@ -471,7 +471,7 @@ fn gap_line(node: &ObligationNode, reason: &str) -> String {
 /// [`ObligationGraph::unbound_output_report`], never dropped.
 ///
 /// A clause that quotes nothing can still name its output in the open
-/// ("… prints Hello, World! and run it"): [`unquoted_output`] binds that
+/// ("… prints Hello, World! and run it"): `unquoted_output` binds that
 /// utterance, at the clause's position in request order (PR #1188 T18).
 #[must_use]
 pub fn bound_output_literals(text: &str) -> Vec<String> {
@@ -589,7 +589,7 @@ fn unquoted_output(clause: &str) -> Option<String> {
 ///
 /// The coding task specification binds a program's stdout through the same
 /// reading, so both bind the same output for one request.
-pub(crate) fn unquoted_utterance<'a>(words: impl Iterator<Item = &'a str>) -> Option<String> {
+pub fn unquoted_utterance<'a>(words: impl Iterator<Item = &'a str>) -> Option<String> {
     let lexicon = seed::lexicon();
     let separators = lexicon.words_for_role(seed::ROLE_SKILL_PROCEDURE_CLAUSE_SEPARATOR);
     let mut kept: Vec<&str> = Vec::new();
@@ -619,7 +619,7 @@ pub(crate) fn unquoted_utterance<'a>(words: impl Iterator<Item = &'a str>) -> Op
 ///   `FizzBuzz`), which name a computation, not text. The one task that *is*
 ///   its text is the greeting program: a task alias that is also a
 ///   `social_greeting` ("Hello, World!") stays an utterance.
-pub(crate) fn describes_a_value(output: &str) -> bool {
+pub fn describes_a_value(output: &str) -> bool {
     let lexicon = seed::lexicon();
     let lower = normalize_prompt(&output.to_lowercase());
     let function_words = lexicon.words_for_role(seed::ROLE_STATEMENT_FUNCTION_WORD);

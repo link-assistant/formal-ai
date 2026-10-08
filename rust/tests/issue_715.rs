@@ -28,7 +28,9 @@ fn code_generation_writes_a_real_workspace_file_for_every_catalog_language() {
         ("Go", "main.go", "package main"),
         ("C", "main.c", "int main"),
         ("C++", "main.cpp", "int main"),
-        ("Java", "Main.java", "class Main"),
+        // Java's program is Oracle's documented HelloWorldApp, and the class
+        // it declares binds the saved file (issue #1165 R1165-6).
+        ("Java", "HelloWorldApp.java", "class HelloWorldApp"),
         ("C#", "Program.cs", "class Program"),
         ("Ruby", "main.rb", "puts"),
     ] {

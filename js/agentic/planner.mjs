@@ -83,7 +83,7 @@ export const PLANNER_ROUTE_ARMS = [
   ['plan_chat_step_routes', 'authoritative_literal_write'],
   ['plan_chat_step_routes', 'program_contract'],
   ['plan_chat_step_routes', 'evidence_record'],
-  ...['git_commit', 'workspace_change', 'module_function', 'generated_source', 'structured_edit', 'structured_document',
+  ...['git_commit', 'workspace_change', 'generated_source', 'structured_edit', 'structured_document',
     'statement_audit', 'task_obligations', 'literal_write', 'algorithm_learning', 'procedure',
     'learning_report', 'code_artifact', 'self_heal', 'dreaming_audit', 'self_ast', 'source_links',
     'learning_ledger', 'explain', 'change_request', 'repair_strategy', 'rebuild_plan',
@@ -112,6 +112,16 @@ export function checkedRoutePrecedence() {
     }
   });
   return declared;
+}
+
+/**
+ * The workspace_change arm of `fn plan_settled_routes`: a learned
+ * workspace-change procedure, or the module-function composition (PR #1188 T1)
+ * that is one of them.
+ */
+async function planWorkspaceChangeArm(task, messages, toolNames) {
+  return (await workspaceChange.planWorkspaceChangeStep(task, messages, toolNames))
+    ?? moduleFunction.planModuleFunctionStep(task, messages, toolNames);
 }
 
 /**
@@ -202,8 +212,7 @@ async function planChatStepRoutes(messages, toolNames, received) {
  * @returns {Promise<object|null>}
  */
 export async function planSettledRoutes(task, messages, toolNames) {
-  for (const arm of [gitCommit.planCommitStep, workspaceChange.planWorkspaceChangeStep,
-    moduleFunction.planModuleFunctionStep, codeTask.planGeneratedSourceStep, structuredEdit.planStructuredEditStep, structuredDocument.planStep]) {
+  for (const arm of [gitCommit.planCommitStep, planWorkspaceChangeArm, codeTask.planGeneratedSourceStep, structuredEdit.planStructuredEditStep, structuredDocument.planStep]) {
     const plan = await arm(task, messages, toolNames);
     if (plan !== null) return plan;
   }

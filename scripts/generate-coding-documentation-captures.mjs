@@ -86,7 +86,7 @@ export function renderSeed(context, headers) {
     }
     for (const block of captureBlocks(context, header)) {
       // The page's own tag is literal page content, so it stays quoted.
-      lines.push('    block', `      language ${quoteValue(block.language)}`, `      text ${quoteValue(block.text)}`);
+      lines.push('    block', `      language ${quoteValue(block.language)}`, `      code ${quoteValue(block.text)}`);
     }
   }
   return `${lines.join('\n')}\n`;

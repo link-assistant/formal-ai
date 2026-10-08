@@ -19,7 +19,7 @@
 # filled into the source record's url.
 #
 # Sentence slots name a subject or value surface and optionally a form, as in
-# {subject|definite} or {value|instrumental}. A surface is the entity's
+# {subject:definite} or {value:instrumental}. A surface is the entity's
 # preferred label in the language (the preferred_label records, each either a
 # Wikidata alias or a recorded variant), else its label in the first captured
 # label variant the language lists, else its label. A form comes from the
@@ -47,9 +47,9 @@ fact_realization
     wikidata_order ("subject" "value")
     question_keywords ("capital" "столица" "столицей" "столицы" "राजधानी" "首都" "城市")
     sentence en
-      text "The capital of {subject|definite} is {value}."
+      text "The capital of {subject:definite} is {value}."
     sentence ru
-      text "Столица {subject|genitive} — {value}."
+      text "Столица {subject:genitive} — {value}."
     sentence hi
       text "{subject} की राजधानी {value} है।"
     sentence zh
@@ -73,7 +73,7 @@ fact_realization
     sentence en
       text "{subject} was written by {value}."
     sentence ru
-      text "«{subject}» был написан {value|instrumental}."
+      text "«{subject}» был написан {value:instrumental}."
     sentence hi
       text "{subject} को {value} ने लिखा था।"
     sentence zh

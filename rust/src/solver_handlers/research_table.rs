@@ -203,14 +203,16 @@ fn classify_prior_research_answer(answer: Option<&str>) -> &'static str {
     let Some(answer) = answer else {
         return fallback;
     };
-    let normalized = normalize_prompt(answer);
+    // The markers are seeded (`research-table-procedure` statuses), never
+    // phrases memorized here.
+    let answer_text = normalize_prompt(answer);
     statuses
         .iter()
         .find(|status| {
             status
                 .markers
                 .iter()
-                .any(|marker| normalized.contains(marker.as_str()))
+                .any(|marker| answer_text.contains(marker.as_str()))
         })
         .map_or(fallback, |status| status.slug.as_str())
 }

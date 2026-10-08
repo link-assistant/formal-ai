@@ -102,7 +102,7 @@ jobs:
   # PR #1188 stops raising and splits the work instead, so no job runs past
   # the owner's 15-minute target:
   #   coverage-build  compiles every instrumented executable once (the same
-  #                   `cargo test --all-features` set cargo-llvm-cov builds)
+  #                   all-features test set cargo-llvm-cov builds)
   #                   and uploads them with a manifest of the test harnesses;
   #   coverage-shard  N legs each run every N-th test of the whole suite
   #                   (scripts/run-coverage-shard.sh) and upload the merged

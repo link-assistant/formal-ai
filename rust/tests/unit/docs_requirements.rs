@@ -2,7 +2,6 @@ use std::fs;
 use std::path::Path;
 
 use formal_ai::{environment_records, supported_languages};
-use walkdir::{DirEntry, WalkDir};
 
 mod count;
 mod doctrine_2026_10_07;
@@ -830,14 +829,12 @@ fn repository_text_avoids_deferred_labels_requested_by_issue_103() {
     let compact_labels = [["m", "vp"].concat(), ["p", "oc"].concat()];
     let mut findings = Vec::new();
 
-    for entry in WalkDir::new(root)
-        .into_iter()
-        .filter_entry(|entry| !is_skipped_tree(root, entry))
-        .filter_map(Result::ok)
-        .filter(|entry| entry.file_type().is_file())
-    {
-        let path = entry.path();
-        let relative = relative_path(root, path);
+    for relative in tracked_files(root) {
+        let path = root.join(&relative);
+        let mut trees = relative.match_indices('/').map(|(end, _)| &relative[..end]);
+        if trees.any(is_skipped_tree) || is_skipped_tree(&relative) || !path.is_file() {
+            continue;
+        }
         let lower_path = relative.to_lowercase();
         collect_for_haystack(
             &relative,
@@ -848,8 +845,8 @@ fn repository_text_avoids_deferred_labels_requested_by_issue_103() {
             &mut findings,
         );
 
-        let bytes =
-            fs::read(path).unwrap_or_else(|error| panic!("{relative} should be readable: {error}"));
+        let bytes = fs::read(&path)
+            .unwrap_or_else(|error| panic!("{relative} should be readable: {error}"));
         let Ok(content) = String::from_utf8(bytes) else {
             continue;
         };
@@ -890,19 +887,30 @@ fn assert_contains_all(label: &str, content: &str, expected: &[&str]) {
     }
 }
 
-fn is_skipped_tree(root: &Path, entry: &DirEntry) -> bool {
-    let name = entry.file_name().to_string_lossy();
-    if matches!(name.as_ref(), ".git" | "target" | "node_modules") {
-        return true;
-    }
+/// The repository's own text: the files git tracks. A working-tree walk also read
+/// what a job left in the checkout (the coverage archive ran it out of memory).
+fn tracked_files(root: &Path) -> Vec<String> {
+    let output = std::process::Command::new("git")
+        .arg("-C")
+        .arg(root)
+        .args(["ls-files", "-z"])
+        .output()
+        .expect("git lists the tracked files");
+    assert!(output.status.success(), "git ls-files failed");
+    String::from_utf8_lossy(&output.stdout)
+        .split('\0')
+        .filter(|path| !path.is_empty())
+        .map(str::to_owned)
+        .collect()
+}
 
+/// Whether a tracked file or directory is verbatim or historical text the lint skips.
+fn is_skipped_tree(relative: &str) -> bool {
+    let name = relative.rsplit('/').next().unwrap_or(relative);
     // Verbatim external captures archived alongside a case study (the issue/PR
-    // JSON snapshots under `docs/case-studies/<issue>/raw-data`) are third-party
-    // text, not authored repository documentation. They are quoted as-is, so
-    // they may legitimately contain deferred-implementation wording that this
-    // lint forbids in the project's own prose (for example an issue author
-    // asking for a quick prototype before committing to a full design).
-    let relative = relative_path(root, entry.path());
+    // JSON snapshots under `docs/case-studies/<issue>/raw-data`) are quoted
+    // third-party text, not authored documentation: an issue author may ask for
+    // a quick prototype in wording this lint forbids in the project's own prose.
     if relative.starts_with("docs/case-studies/") && relative.ends_with("/raw-data") {
         return true;
     }
@@ -921,7 +929,7 @@ fn is_skipped_tree(root: &Path, entry: &DirEntry) -> bool {
     // records. They can quote old project terminology without reintroducing it
     // into current product documentation; `docs/changelog/` is its archive.
     if matches!(
-        relative.as_str(),
+        relative,
         "CHANGELOG.md" | "docs/changelog" | "docs/case-studies/issue-711/fragment-release-map.tsv"
     ) || relative.starts_with("docs/changelog/")
     {
@@ -929,7 +937,7 @@ fn is_skipped_tree(root: &Path, entry: &DirEntry) -> bool {
     }
 
     matches!(
-        relative.as_str(),
+        relative,
         "ci-logs"
             // Verbatim issue, pull-request, CI, and research captures gathered
             // by the issue solver. Like case-study raw-data, these are external
@@ -961,13 +969,6 @@ fn is_skipped_tree(root: &Path, entry: &DirEntry) -> bool {
             | "experiments/agentic_cli_matrix/artifacts"
             | "experiments/agentic_cli_matrix/recorded"
     )
-}
-
-fn relative_path(root: &Path, path: &Path) -> String {
-    path.strip_prefix(root)
-        .unwrap_or(path)
-        .to_string_lossy()
-        .replace('\\', "/")
 }
 
 fn collect_for_haystack<'a>(

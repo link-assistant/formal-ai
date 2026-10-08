@@ -1,7 +1,15 @@
 // @ts-check
 // Issue #896: the web app must cross the published web-search library and
 // web-capture HTTP boundaries before using its bounded local fallbacks.
+const path = require('path');
 const { test, expect } = require('@playwright/test');
+
+// The evidence pins the published package the web bundle actually loads, so
+// the expected marker follows the root manifest instead of a frozen version.
+const WEB_SEARCH_PACKAGE = '@link-assistant/web-search';
+const WEB_SEARCH_VERSION = require(path.resolve(__dirname, '../../../../package.json'))
+  .dependencies[WEB_SEARCH_PACKAGE].replace(/^[~^=]/u, '');
+const WEB_SEARCH_COMPONENT = `web_search:component:${WEB_SEARCH_PACKAGE}@${WEB_SEARCH_VERSION}`;
 
 async function boot(page) {
   await page.addInitScript(() => {
@@ -71,10 +79,10 @@ for (const { language, prompt } of SUPPORTED_LANGUAGE_SEARCHES) {
     const answer = await sendPrompt(page, prompt);
     await expect(answer).toContainText('Published component result');
     await expect(answer.locator('.evidence-list')).toContainText(
-      'web_search:component:@link-assistant/web-search@0.10.3:defaultProviders',
+      `${WEB_SEARCH_COMPONENT}:defaultProviders`,
     );
     await expect(answer.locator('.evidence-list')).toContainText(
-      'web_search:component:@link-assistant/web-search@0.10.3:mergeResults',
+      `${WEB_SEARCH_COMPONENT}:mergeResults`,
     );
   });
 }
