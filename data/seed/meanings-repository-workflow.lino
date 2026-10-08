@@ -639,3 +639,305 @@ meanings
         text "escudo"
       surface
         text "insignia"
+  numbered_line_noun
+    defined-by concept
+    role numbered_line_noun
+    precondition "a request names a line of a file by its number"
+    effect "the number beside the noun is a one-based line number of the named file"
+    unit "not applicable"
+    example "delete lines 3-5"
+    lexeme en
+      surface
+        text "line"
+      surface
+        text "lines"
+    lexeme ru
+      surface
+        text "строка"
+      surface
+        text "строку"
+      surface
+        text "строки"
+      surface
+        text "строк"
+      surface
+        text "строке"
+    lexeme hi
+      surface
+        text "पंक्ति"
+      surface
+        text "पंक्तियाँ"
+      surface
+        text "पंक्तियों"
+      surface
+        text "लाइन"
+    lexeme zh
+      surface
+        text "行"
+    lexeme es
+      surface
+        text "línea"
+      surface
+        text "líneas"
+  numbered_line_lead
+    defined-by concept
+    role numbered_line_lead
+    precondition "a word stands between a line noun and its number, or before a number the noun follows"
+    effect "the number after the lead is still the line number"
+    unit "not applicable"
+    example "lines from 3 to 5"
+    lexeme en
+      surface
+        text "from"
+      surface
+        text "number"
+    lexeme ru
+      surface
+        text "с"
+      surface
+        text "со"
+      surface
+        text "номер"
+    lexeme hi
+      surface
+        text "संख्या"
+      surface
+        text "क्रमांक"
+    lexeme zh
+      surface
+        text "第"
+      surface
+        text "从"
+    lexeme es
+      surface
+        text "de"
+      surface
+        text "del"
+      surface
+        text "desde"
+      surface
+        text "la"
+      surface
+        text "las"
+      surface
+        text "número"
+  line_range_connector
+    defined-by concept
+    role line_range_connector
+    precondition "two line numbers are joined into one inclusive range"
+    effect "the lines from the first number to the second are named"
+    unit "not applicable"
+    example "lines 3 to 5"
+    lexeme en
+      surface
+        text "to"
+      surface
+        text "through"
+      surface
+        text "thru"
+      surface
+        text "until"
+    lexeme ru
+      surface
+        text "по"
+      surface
+        text "до"
+    lexeme hi
+      surface
+        text "से"
+      surface
+        text "तक"
+    lexeme zh
+      surface
+        text "到"
+      surface
+        text "至"
+    lexeme es
+      surface
+        text "a"
+      surface
+        text "al"
+      surface
+        text "hasta"
+  line_adjacent_above
+    defined-by concept
+    role line_adjacent_above
+    precondition "a removal names the line directly above the line it quotes or numbers"
+    effect "that line goes as well"
+    unit "not applicable"
+    example "delete the line and the line above it"
+    lexeme en
+      surface
+        text "above it"
+      surface
+        text "before it"
+      surface
+        text "preceding it"
+      surface
+        text "the line above"
+      surface
+        text "the previous line"
+    lexeme ru
+      surface
+        text "над ней"
+      surface
+        text "перед ней"
+      surface
+        text "выше неё"
+      surface
+        text "выше нее"
+      surface
+        text "предыдущую строку"
+    lexeme hi
+      surface
+        text "उसके ऊपर"
+      surface
+        text "उससे पहले"
+      surface
+        text "ऊपर वाली"
+    lexeme zh
+      surface
+        text "上面的"
+      surface
+        text "上一行"
+      surface
+        text "前一行"
+    lexeme es
+      surface
+        text "encima de ella"
+      surface
+        text "antes de ella"
+      surface
+        text "la línea anterior"
+  line_adjacent_below
+    defined-by concept
+    role line_adjacent_below
+    precondition "a removal names the line directly below the line it quotes or numbers"
+    effect "that line goes as well"
+    unit "not applicable"
+    example "delete the line and the line below it"
+    lexeme en
+      surface
+        text "below it"
+      surface
+        text "after it"
+      surface
+        text "following it"
+      surface
+        text "under it"
+      surface
+        text "the line below"
+      surface
+        text "the next line"
+    lexeme ru
+      surface
+        text "под ней"
+      surface
+        text "после неё"
+      surface
+        text "после нее"
+      surface
+        text "ниже неё"
+      surface
+        text "ниже нее"
+      surface
+        text "следующую строку"
+    lexeme hi
+      surface
+        text "उसके नीचे"
+      surface
+        text "उसके बाद वाली"
+      surface
+        text "नीचे वाली"
+    lexeme zh
+      surface
+        text "下面的"
+      surface
+        text "下一行"
+      surface
+        text "后一行"
+    lexeme es
+      surface
+        text "debajo de ella"
+      surface
+        text "después de ella"
+      surface
+        text "la línea siguiente"
+  line_move_action
+    defined-by concept
+    role line_move_action
+    precondition "a request moves a quoted line of a file to another place in it"
+    effect "the line is taken out of its place and inserted at the start, the end, or beside an anchor line"
+    unit "not applicable"
+    example "move the line to the top of the file"
+    lexeme en
+      surface
+        text "move"
+    lexeme ru
+      surface
+        text "перемести"
+      surface
+        text "переместить"
+      surface
+        text "перенеси"
+      surface
+        text "перенести"
+    lexeme hi
+      surface
+        text "ले जाओ"
+      surface
+        text "खिसकाओ"
+      surface
+        text "स्थानांतरित करो"
+    lexeme zh
+      surface
+        text "移动"
+      surface
+        text "移到"
+      surface
+        text "挪到"
+    lexeme es
+      surface
+        text "mueve"
+      surface
+        text "mover"
+      surface
+        text "traslada"
+      surface
+        text "trasladar"
+  line_swap_action
+    defined-by concept
+    role line_swap_action
+    precondition "a request exchanges two quoted lines of a file"
+    effect "each line takes the other's place"
+    unit "not applicable"
+    example "swap the lines"
+    lexeme en
+      surface
+        text "swap"
+      surface
+        text "exchange"
+    lexeme ru
+      surface
+        text "поменяй местами"
+      surface
+        text "поменять местами"
+      surface
+        text "переставь местами"
+    lexeme hi
+      surface
+        text "अदला-बदली करो"
+      surface
+        text "आपस में बदलो"
+    lexeme zh
+      surface
+        text "交换"
+      surface
+        text "互换"
+      surface
+        text "对调"
+    lexeme es
+      surface
+        text "intercambia"
+      surface
+        text "intercambiar"

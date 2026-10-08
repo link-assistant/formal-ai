@@ -2,12 +2,20 @@ self_ast_census
   target src/rule_interpreter/values.rs
   language rust
   fidelity signature
-  byte_len 3843
-  line_count 92
-  content_id source_module_e1d6e990d976dfa2
-  symbol_count 4
+  byte_len 7330
+  line_count 189
+  content_id source_module_92ca56e58d70ecce
+  symbol_count 12
   symbols
-    const SLOT_EDGE_MARKS 10 10
-    function resolve_values 13 45
-    function resolve 49 63
-    function role_slot 74 92
+    struct Table 13 16
+    enum TableLookup 20 25
+    function tables 28 31
+    static CACHE 29 29
+    function handler_table_rows 37 41
+    function handler_table_row 45 50
+    function handler_table_value 55 65
+    const SLOT_EDGE_MARKS 70 70
+    function resolve_values 73 115
+    function resolve 119 133
+    function lookup_table 139 161
+    function role_slot 171 189

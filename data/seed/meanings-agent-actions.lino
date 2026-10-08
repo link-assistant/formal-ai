@@ -727,3 +727,107 @@ meanings
     unit "not applicable"
     example "html for HTML"
     grounding "data/seed/handler-rules.lino"
+  calendar_weekday_label
+    defined-by method
+    role action
+    precondition "a calendar answer prints a weekday in the asking language and in the case its direction phrase takes"
+    effect "reads the weekday name keyed by slug and language, or by slug, language and direction"
+    unit "not applicable"
+    example "monday.ru.next for понедельника"
+    grounding "data/seed/handler-rules.lino"
+  calendar_default_title
+    defined-by method
+    role action
+    precondition "an event request names no subject"
+    effect "reads the default event title keyed by language"
+    unit "not applicable"
+    example "Event"
+    grounding "data/seed/handler-rules.lino"
+  calendar_schedule_verb
+    defined-by method
+    role action
+    precondition "a date-anchored request asks to put something on the calendar"
+    effect "reads the surfaces that ask for scheduling"
+    unit "not applicable"
+    example "schedule"
+    grounding "data/seed/handler-rules.lino"
+  calendar_day_number_marker
+    defined-by method
+    role action
+    precondition "a request schedules on a numbered day of the month"
+    effect "reads the surfaces that mark a day number"
+    unit "not applicable"
+    example "число"
+    grounding "data/seed/handler-rules.lino"
+  calendar_clock_hour_lead
+    defined-by method
+    role action
+    precondition "a bare hour follows a preposition that introduces a clock time"
+    effect "reads the surfaces that introduce a clock hour"
+    unit "not applicable"
+    example "в"
+    grounding "data/seed/handler-rules.lino"
+  calendar_spoken_hour_marker
+    defined-by method
+    role action
+    precondition "a clock hour is stated with a spoken hour word"
+    effect "reads the hour words that follow a number"
+    unit "not applicable"
+    example "часов"
+    grounding "data/seed/handler-rules.lino"
+  calendar_spoken_hour_lead
+    defined-by method
+    role action
+    precondition "a spoken hour is introduced by a preposition"
+    effect "reads the prepositions allowed before a spoken hour"
+    unit "not applicable"
+    example "на"
+    grounding "data/seed/handler-rules.lino"
+  calendar_title_marker
+    defined-by method
+    role action
+    precondition "an event title follows a marker that introduces its subject"
+    effect "reads the surfaces after which the title starts"
+    unit "not applicable"
+    example "meeting with"
+    grounding "data/seed/handler-rules.lino"
+  calendar_participant_marker
+    defined-by method
+    role action
+    precondition "an event names a participant with a companion preposition"
+    effect "reads the surfaces that introduce a participant title"
+    unit "not applicable"
+    example "с"
+    grounding "data/seed/handler-rules.lino"
+  calendar_title_verb
+    defined-by method
+    role action
+    precondition "an event title follows a scheduling verb"
+    effect "reads the scheduling verbs after which the title starts"
+    unit "not applicable"
+    example "поставь"
+    grounding "data/seed/handler-rules.lino"
+  calendar_title_boundary
+    defined-by method
+    role action
+    precondition "an event title ends where a date, time or place phrase begins"
+    effect "reads the surfaces that end a title"
+    unit "not applicable"
+    example "at"
+    grounding "data/seed/handler-rules.lino"
+  calendar_title_stopword
+    defined-by method
+    role action
+    precondition "a candidate title is only a preposition"
+    effect "reads the words that are never a title by themselves"
+    unit "not applicable"
+    example "on"
+    grounding "data/seed/handler-rules.lino"
+  calendar_title_action_fragment
+    defined-by method
+    role action
+    precondition "a verb-final or spaceless request leaves the scheduling verb inside the title"
+    effect "reads the verb fragments a title sheds"
+    unit "not applicable"
+    example "安排"
+    grounding "data/seed/handler-rules.lino"

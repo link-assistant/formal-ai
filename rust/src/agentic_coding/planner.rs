@@ -294,7 +294,9 @@ fn plan_chat_step_routes(
     // words of the cue are never a request (issue #1095).
     if crate::rule_interpreter::handler_matches("conversation_control", &task)
         || is_continuation_cue(&task)
-        || looks_like_skill_description(&task)
+        // An edit request's block is its payload: a `when … then` inside it is
+        // text being written, not a skill being taught (PR #1188 T57).
+        || looks_like_skill_description(super::positional_edit::own_text(&task))
     {
         return None;
     }

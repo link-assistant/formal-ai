@@ -29,6 +29,8 @@ meanings
         text "rename"
       surface
         text "set"
+      surface
+        text "bump"
     lexeme ru
       surface
         text замени
@@ -46,6 +48,8 @@ meanings
         text переименуй
       surface
         text установи
+      surface
+        text повысь
     lexeme hi
       surface
         text बदलो
@@ -55,6 +59,8 @@ meanings
         text बदलिए
       surface
         text "नाम बदलो"
+      surface
+        text बढ़ाओ
     lexeme zh
       surface
         text 替换
@@ -64,6 +70,8 @@ meanings
         text 更改
       surface
         text 重命名
+      surface
+        text 提升
   file_edit_new_lead
     defined-by relation
     role file_edit_new_lead_cue
@@ -120,3 +128,77 @@ meanings
         text 文件
       surface
         text 中
+  file_edit_old_lead
+    defined-by relation
+    role file_edit_old_lead_cue
+    precondition "an edit request states the value a key holds now"
+    effect "the line assigning the key that value is the one changed"
+    unit "not applicable"
+    example "change MAXIMUM_RATIO from 8 to 16"
+    lexeme en
+      surface
+        text "from"
+    lexeme ru
+      surface
+        text с
+      surface
+        text со
+    lexeme hi
+      surface
+        text "की जगह"
+    lexeme zh
+      surface
+        text 从
+    lexeme es
+      surface
+        text "de"
+  file_edit_joiner
+    defined-by relation
+    role file_edit_joiner_cue
+    precondition "an insert request lists several quoted lines or several insert clauses"
+    effect "the listed lines go in together, in order, and each clause is its own insert"
+    unit "not applicable"
+    example "insert the two lines 'a' and 'b' after the line 'c'"
+    lexeme en
+      surface
+        text "and"
+    lexeme ru
+      surface
+        text и
+    lexeme hi
+      surface
+        text और
+    lexeme zh
+      surface
+        text 和
+    lexeme es
+      surface
+        text "y"
+  file_edit_anchor_context
+    defined-by relation
+    role file_edit_anchor_context_cue
+    precondition "an insert anchor occurs more than once and the request names the line it follows"
+    effect "the anchor is its first occurrence after the named line"
+    unit "not applicable"
+    example "after the line 'bundle true' that follows 'seed coding-guidance'"
+    lexeme en
+      surface
+        text "that follows"
+      surface
+        text "which follows"
+      surface
+        text "following"
+    lexeme ru
+      surface
+        text "которая следует за"
+      surface
+        text "следующей за"
+    lexeme hi
+      surface
+        text "के बाद आने वाली"
+    lexeme zh
+      surface
+        text 之后的
+    lexeme es
+      surface
+        text "que sigue a"

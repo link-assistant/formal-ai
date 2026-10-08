@@ -4,19 +4,24 @@
 //! answer can be derived from a stable calendar relation instead of an external
 //! clock or lookup.
 
+use super::calendar_create::try_calendar_create_event;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
+use crate::rule_interpreter::handler_table_value;
 use crate::seed::{
     ROLE_CALENDAR_DAY_REFERENCE, ROLE_CALENDAR_DIRECTION_NEXT, ROLE_CALENDAR_DIRECTION_PREVIOUS,
-    ROLE_CALENDAR_QUESTION, ROLE_CALENDAR_TODAY, ROLE_CALENDAR_WEEKDAY, lexicon,
+    ROLE_CALENDAR_QUESTION, ROLE_CALENDAR_TODAY, ROLE_CALENDAR_WEEKDAY, fill_template_once,
+    lexicon, response_for,
 };
-use super::calendar_create::try_calendar_create_event;
 use crate::solver_handlers::finalize_simple;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 pub mod date_weekday;
 pub mod month;
+
+/// The seed table of weekday names by language and direction case.
+const WEEKDAY_LABEL_TABLE: &str = "calendar_weekday_label";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum Weekday {
@@ -100,91 +105,13 @@ impl Weekday {
         }
     }
 
-    const fn en(self) -> &'static str {
-        match self {
-            Self::Monday => "Monday",
-            Self::Tuesday => "Tuesday",
-            Self::Wednesday => "Wednesday",
-            Self::Thursday => "Thursday",
-            Self::Friday => "Friday",
-            Self::Saturday => "Saturday",
-            Self::Sunday => "Sunday",
-        }
-    }
-
-    const fn ru(self) -> &'static str {
-        match self {
-            Self::Monday => "понедельник",
-            Self::Tuesday => "вторник",
-            Self::Wednesday => "среда",
-            Self::Thursday => "четверг",
-            Self::Friday => "пятница",
-            Self::Saturday => "суббота",
-            Self::Sunday => "воскресенье",
-        }
-    }
-
-    const fn ru_genitive(self) -> &'static str {
-        match self {
-            Self::Monday => "понедельника",
-            Self::Tuesday => "вторника",
-            Self::Wednesday => "среды",
-            Self::Thursday => "четверга",
-            Self::Friday => "пятницы",
-            Self::Saturday => "субботы",
-            Self::Sunday => "воскресенья",
-        }
-    }
-
-    const fn ru_instrumental(self) -> &'static str {
-        match self {
-            Self::Monday => "понедельником",
-            Self::Tuesday => "вторником",
-            Self::Wednesday => "средой",
-            Self::Thursday => "четвергом",
-            Self::Friday => "пятницей",
-            Self::Saturday => "субботой",
-            Self::Sunday => "воскресеньем",
-        }
-    }
-
-    const fn hi(self) -> &'static str {
-        match self {
-            Self::Monday => "सोमवार",
-            Self::Tuesday => "मंगलवार",
-            Self::Wednesday => "बुधवार",
-            Self::Thursday => "गुरुवार",
-            Self::Friday => "शुक्रवार",
-            Self::Saturday => "शनिवार",
-            Self::Sunday => "रविवार",
-        }
-    }
-
-    const fn zh(self) -> &'static str {
-        match self {
-            Self::Monday => "星期一",
-            Self::Tuesday => "星期二",
-            Self::Wednesday => "星期三",
-            Self::Thursday => "星期四",
-            Self::Friday => "星期五",
-            Self::Saturday => "星期六",
-            Self::Sunday => "星期日",
-        }
-    }
-
-    /// Spanish weekday names for the offset-answer templates (issue #1176): the
-    /// es lexeme surfaces make Spanish prompts recognizable, so the derived
-    /// answer names the weekday in Spanish as well.
-    const fn es(self) -> &'static str {
-        match self {
-            Self::Monday => "lunes",
-            Self::Tuesday => "martes",
-            Self::Wednesday => "miércoles",
-            Self::Thursday => "jueves",
-            Self::Friday => "viernes",
-            Self::Saturday => "sábado",
-            Self::Sunday => "domingo",
-        }
+    /// The weekday's name in `form`: a language slug, or a language slug and
+    /// the direction case a phrase takes (`ru.next`, `ru.previous`).
+    ///
+    /// The names are rows of the `calendar_weekday_label` table of
+    /// `data/seed/handler-rules.lino` (issue #918), so case is data as well.
+    fn label(self, form: &str) -> Option<&'static str> {
+        handler_table_value(WEEKDAY_LABEL_TABLE, &format!("{}.{form}", self.slug()))
     }
 }
 
@@ -207,6 +134,22 @@ impl WeekdayOperation {
         match self {
             Self::Next => "+1",
             Self::Previous => "-1",
+        }
+    }
+
+    /// The direction slug the weekday-label table keys a case form by.
+    const fn slug(self) -> &'static str {
+        match self {
+            Self::Next => "next",
+            Self::Previous => "previous",
+        }
+    }
+
+    /// The seeded response that phrases the bare one-day shift.
+    const fn relation_intent(self) -> &'static str {
+        match self {
+            Self::Next => "calendar_weekday_relation_next",
+            Self::Previous => "calendar_weekday_relation_previous",
         }
     }
 
@@ -275,9 +218,10 @@ pub fn try_calendar_reasoning(
     // "2 weeks before") instead of always shifting by one. A bare "the day
     // after X" states no offset and keeps the original ±1 reading.
     let offset = detect_offset(normalized, language);
-    let signed = offset.map_or_else(|| operation.sign(), |offset| {
-        operation.sign() * offset.total()
-    });
+    let signed = offset.map_or_else(
+        || operation.sign(),
+        |offset| operation.sign() * offset.total(),
+    );
     let result = source.shifted_by(signed);
 
     log.append(
@@ -540,7 +484,10 @@ pub(super) fn term_position(haystack: &str, needle: &str) -> Option<usize> {
     if !contains_term(haystack, needle) {
         return None;
     }
-    haystack.match_indices(needle).next().map(|(start, _)| start)
+    haystack
+        .match_indices(needle)
+        .next()
+        .map(|(start, _)| start)
 }
 
 fn is_cjk_character(character: char) -> bool {
@@ -598,119 +545,75 @@ const fn weekday_for_unix_days(days_since_unix_epoch: i64) -> Weekday {
     }
 }
 
+/// The seeded template of `intent` in `language`, or the English one when the
+/// seed carries none for it, paired with the language its weekday names take.
+fn template_for<'language>(intent: &str, language: &'language str) -> (&'language str, String) {
+    response_for(intent, language).map_or_else(
+        || ("en", response_for(intent, "en").unwrap_or_default()),
+        |template| (language, template),
+    )
+}
+
 fn render_current_day_answer(
     language: &str,
     weekday: Weekday,
     iso_date: &str,
     time_zone: &str,
 ) -> String {
-    match language {
-        "ru" => format!("Сегодня {}, {iso_date} ({time_zone}).", weekday.ru()),
-        "hi" => format!("आज {} है, {iso_date} ({time_zone}).", weekday.hi()),
-        "zh" => format!("今天是{}，{iso_date}（{time_zone}）。", weekday.zh()),
-        _ => format!("Today is {}, {iso_date} ({time_zone}).", weekday.en()),
-    }
+    let (language, template) = template_for("calendar_current_day", language);
+    fill_template_once(
+        &template,
+        &[
+            ("weekday", weekday_label(language, weekday)),
+            ("date", iso_date),
+            ("time_zone", time_zone),
+        ],
+    )
 }
 
+/// Render the bare one-day shift from the seeded
+/// `calendar_weekday_relation_*` responses (issue #918).
 fn render_answer(
     language: &str,
     operation: WeekdayOperation,
     source: Weekday,
     result: Weekday,
 ) -> String {
-    match language {
-        "ru" => match operation {
-            WeekdayOperation::Next => format!(
-                "После {} наступает {}. Я сдвинул {} на {} в семидневном календарном цикле.",
-                source.ru_genitive(),
-                result.ru(),
-                source.ru(),
-                operation.delta(),
+    let (language, template) = template_for(operation.relation_intent(), language);
+    fill_template_once(
+        &template,
+        &[
+            (
+                "source",
+                weekday_direction_label(language, operation, source),
             ),
-            WeekdayOperation::Previous => format!(
-                "Перед {} идёт {}. Я сдвинул {} на {} в семидневном календарном цикле.",
-                source.ru_instrumental(),
-                result.ru(),
-                source.ru(),
-                operation.delta(),
-            ),
-        },
-        "hi" => match operation {
-            WeekdayOperation::Next => format!(
-                "{} के बाद {} आता है। मैं सात दिनों के कैलेंडर चक्र में {} को {} दिन सरकाता हूँ।",
-                source.hi(),
-                result.hi(),
-                source.hi(),
-                operation.delta(),
-            ),
-            WeekdayOperation::Previous => format!(
-                "{} से पहले {} आता है। मैं सात दिनों के कैलेंडर चक्र में {} को {} दिन सरकाता हूँ।",
-                source.hi(),
-                result.hi(),
-                source.hi(),
-                operation.delta(),
-            ),
-        },
-        "zh" => match operation {
-            WeekdayOperation::Next => format!(
-                "{}之后是{}。我在七天的日历循环中将{}移动{}天。",
-                source.zh(),
-                result.zh(),
-                source.zh(),
-                operation.delta(),
-            ),
-            WeekdayOperation::Previous => format!(
-                "{}之前是{}。我在七天的日历循环中将{}移动{}天。",
-                source.zh(),
-                result.zh(),
-                source.zh(),
-                operation.delta(),
-            ),
-        },
-        _ => match operation {
-            WeekdayOperation::Next => format!(
-                "The day after {} is {}. I move {} by {} in the seven-day calendar cycle.",
-                source.en(),
-                result.en(),
-                source.en(),
-                operation.delta(),
-            ),
-            WeekdayOperation::Previous => format!(
-                "The day before {} is {}. I move {} by {} in the seven-day calendar cycle.",
-                source.en(),
-                result.en(),
-                source.en(),
-                operation.delta(),
-            ),
-        },
-    }
+            ("result", weekday_label(language, result)),
+            ("source_plain", weekday_label(language, source)),
+            ("delta", operation.delta()),
+        ],
+    )
 }
 
-/// The weekday's plain name for answer prose. Language-specific inflected
-/// forms stay on the `Weekday` enum because case is grammar, not vocabulary:
-/// the seed owns the words, this owns which form a sentence needs (issue #1176).
+/// The weekday's plain name for answer prose: the seeded name in `language`,
+/// else the English one (issue #918).
 fn weekday_label(language: &str, weekday: Weekday) -> &'static str {
-    match language {
-        "ru" => weekday.ru(),
-        "hi" => weekday.hi(),
-        "zh" => weekday.zh(),
-        "es" => weekday.es(),
-        _ => weekday.en(),
-    }
+    weekday
+        .label(language)
+        .or_else(|| weekday.label("en"))
+        .unwrap_or(weekday.slug())
 }
 
-/// The weekday in the case its direction phrase needs: Russian takes the
-/// genitive after "после" and the instrumental after "перед".
+/// The weekday in the case its direction phrase needs (Russian takes the
+/// genitive after "после" and the instrumental after "перед"); a language
+/// whose seed rows carry no case form uses the plain name.
 fn weekday_direction_label(
     language: &str,
     operation: WeekdayOperation,
     weekday: Weekday,
 ) -> &'static str {
-    match (language, operation) {
-        ("ru", WeekdayOperation::Next) => weekday.ru_genitive(),
-        ("ru", WeekdayOperation::Previous) => weekday.ru_instrumental(),
-        _ => weekday_label(language, weekday),
-    }
+    weekday
+        .label(&format!("{language}.{}", operation.slug()))
+        .unwrap_or_else(|| weekday_label(language, weekday))
 }
 
 /// Render the answer for a stated offset (issue #1176). The prose lives in
@@ -750,7 +653,10 @@ fn render_offset_answer(
         .replace("{n}", &total.to_string())
         .replace(concat!("{", "weeks}"), &weeks.to_string())
         .replace(concat!("{", "days}"), &days.to_string())
-        .replace(concat!("{", "source}"), weekday_direction_label(language, operation, source))
+        .replace(
+            concat!("{", "source}"),
+            weekday_direction_label(language, operation, source),
+        )
         .replace("{source_plain}", weekday_label(language, source))
         .replace(concat!("{", "result}"), weekday_label(language, result))
 }

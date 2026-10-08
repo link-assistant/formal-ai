@@ -334,6 +334,10 @@ fn recognises_the_diagram_task() {
         "make the tomato meaning more detailed"
     ));
     assert!(!diagram::is_diagram_task("What is the capital of France?"));
+    // A cue inside a quoted literal is payload, not the request.
+    assert!(!diagram::is_diagram_task(
+        "Insert the line 'js/mermaid.bundle.js' after the line 'js/app.js' in .gitignore."
+    ));
     // The diagram request uses none of the tomato/potato task wording.
     assert!(!diagram::DIAGRAM_TASK.contains("tomato"));
     assert!(!diagram::DIAGRAM_TASK.contains("grammatical"));

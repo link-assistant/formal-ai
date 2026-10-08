@@ -21,6 +21,9 @@ import {
   isDialogueUtterance, objectType, route, tableRoutingEnabled,
 } from './crate/capability_routing.mjs';
 import { extractConceptQuery } from './crate/concepts_lookup.mjs';
+import { textOutsideQuotedSegments } from './crate/coding_program_contract.mjs';
+import { normalizePrompt } from './crate/engine.mjs';
+import { mentionsRole } from './write_lexicon.mjs';
 import { factStoreResolves } from './crate/solver_handlers_benchmark_prompts.mjs';
 import { cleanSearchQuery } from './crate/solver_handlers_web_search.mjs';
 import { agenticToolCapabilities } from './crate/seed_agentic_tool_capabilities.mjs';
@@ -281,6 +284,9 @@ function routedArguments(capability, loweredFrom, task) {
       return path === null ? null : jsonText({ path, filePath: path, file_path: path });
     }
     case Capability.Write: {
+      // A removal never writes new content over the file (PR #1188 T29: a
+      // line deletion was routed here and the file became one quoted line).
+      if (mentionsRole('coding_text_remove_action', normalizePrompt(textOutsideQuotedSegments(task)))) return null;
       const path = firstPath(task);
       if (path === null) return null;
       const content = explicitContent(task);

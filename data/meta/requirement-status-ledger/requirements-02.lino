@@ -145,6 +145,14 @@ requirement_status_ledger_shard requirements_02
     automated_test "rust/tests/unit/docs_requirements/doctrine_2026_10_07.rs"
     manual "not yet confirmed"
   requirement
+    id "R1026"
+    shard "docs/requirements/doctrine-standing-doctrine-work-delegated-to-formal-ai-2026-10-07.md"
+    verdict "implemented"
+    delivered ""
+    issue ""
+    automated_test "rust/tests/web/pull-request-1188-subagent-folder.test.mjs"
+    manual "not yet confirmed"
+  requirement
     id "R103"
     shard "docs/requirements/issue-0016-follow-up-universal-data-seed-across-every-interface-pr-17-reopen.md"
     verdict "implemented"
@@ -626,14 +634,6 @@ requirement_status_ledger_shard requirements_02
     manual "not yet confirmed"
   requirement
     id "R1138-B1-1"
-    shard "docs/requirements/issue-1138-live-concept-lookup.md"
-    verdict "implemented"
-    delivered "PR for #1138"
-    issue "1138"
-    automated_test "rust/tests/unit/issue_1138_concept_lookup.rs"
-    manual "not yet confirmed"
-  requirement
-    id "R1138-B1-2"
     shard "docs/requirements/issue-1138-live-concept-lookup.md"
     verdict "implemented"
     delivered "PR for #1138"

@@ -228,79 +228,44 @@ function tryProofRequest(prompt, normalized, language) {
   };
 }
 
-// WEEKDAY_CYCLE keeps only the rendering surfaces (display names + Russian
-// case forms) used to phrase an answer. Issue #386: the *recognition* words
-// (the former `aliases`, plus the next/previous/today/day/question markers)
-// are no longer hardcoded here — they live as self-describing meanings in
-// data/seed/meanings-calendar.lino under the `calendar_*` roles, embedded
-// below in MEANINGS_LINO. The detection functions query the lexicon by role
-// and map a matched weekday slug back to its cycle entry; mirrors
-// src/solver_handlers/calendar.rs.
-const WEEKDAY_CYCLE = [
-  {
-    slug: "monday",
-    en: "Monday",
-    ru: "понедельник",
-    hi: "सोमवार",
-    zh: "星期一",
-    ruGenitive: "понедельника",
-    ruInstrumental: "понедельником",
-  },
-  {
-    slug: "tuesday",
-    en: "Tuesday",
-    ru: "вторник",
-    hi: "मंगलवार",
-    zh: "星期二",
-    ruGenitive: "вторника",
-    ruInstrumental: "вторником",
-  },
-  {
-    slug: "wednesday",
-    en: "Wednesday",
-    ru: "среда",
-    hi: "बुधवार",
-    zh: "星期三",
-    ruGenitive: "среды",
-    ruInstrumental: "средой",
-  },
-  {
-    slug: "thursday",
-    en: "Thursday",
-    ru: "четверг",
-    hi: "गुरुवार",
-    zh: "星期四",
-    ruGenitive: "четверга",
-    ruInstrumental: "четвергом",
-  },
-  {
-    slug: "friday",
-    en: "Friday",
-    ru: "пятница",
-    hi: "शुक्रवार",
-    zh: "星期五",
-    ruGenitive: "пятницы",
-    ruInstrumental: "пятницей",
-  },
-  {
-    slug: "saturday",
-    en: "Saturday",
-    ru: "суббота",
-    hi: "शनिवार",
-    zh: "星期六",
-    ruGenitive: "субботы",
-    ruInstrumental: "субботой",
-  },
-  {
-    slug: "sunday",
-    en: "Sunday",
-    ru: "воскресенье",
-    hi: "रविवार",
-    zh: "星期日",
-    ruGenitive: "воскресенья",
-    ruInstrumental: "воскресеньем",
-  },
-];
+// WEEKDAY_CYCLE is the seven-day cycle by slug. Issue #386: the recognition
+// words live as the `calendar_*` meanings of data/seed/meanings-calendar.lino;
+// issue #918: the names an answer prints, with the Russian case each
+// direction phrase takes, are the `calendar_weekday_label` table of
+// data/seed/handler-rules.lino. Mirrors src/solver_handlers/calendar.rs.
+const WEEKDAY_CYCLE = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+  .map((slug) => ({ slug }));
+
+/**
+ * The weekday's name in `form` (a language, or a language and direction such
+ * as `ru.next`), or null (Rust `Weekday::label`).
+ * @param {{slug: string}} weekday
+ * @param {string} form
+ * @returns {string|null}
+ */
+function calendarWeekdayForm(weekday, form) {
+  return handlerRulesTableValue("calendar_weekday_label", `${weekday.slug}.${form}`);
+}
+
+/** The weekday's plain name in `language`, else English (Rust `weekday_label`). */
+function calendarWeekdayLabel(language, weekday) {
+  return calendarWeekdayForm(weekday, language) || calendarWeekdayForm(weekday, "en") || weekday.slug;
+}
+
+/** The weekday in the case its direction phrase takes (Rust `weekday_direction_label`). */
+function calendarWeekdayDirectionLabel(language, operation, weekday) {
+  return calendarWeekdayForm(weekday, `${language}.${operation}`) || calendarWeekdayLabel(language, weekday);
+}
+
+/**
+ * The seeded template of `intent` in `language`, else the English one, with
+ * the language its weekday names take (Rust `template_for`).
+ * @returns {{language: string, template: string}}
+ */
+function calendarTemplateFor(intent, language) {
+  const own = handlerRulesResponseFor(intent, language);
+  return own ? { language, template: own } : { language: "en", template: handlerRulesResponseFor(intent, "en") || "" };
+}
 
 function hasCalendarCjkCharacter(term) {
   return /[\u4e00-\u9fff]/u.test(term);
@@ -435,42 +400,22 @@ function currentCalendarDate(userContext) {
 }
 
 function renderCurrentDay(language, weekday, isoDate, timeZone) {
-  if (language === "ru") {
-    return `Сегодня ${weekday.ru}, ${isoDate} (${timeZone}).`;
-  }
-  if (language === "hi") {
-    return `आज ${weekday.hi} है, ${isoDate} (${timeZone}).`;
-  }
-  if (language === "zh") {
-    return `今天是${weekday.zh}，${isoDate}（${timeZone}）。`;
-  }
-  return `Today is ${weekday.en}, ${isoDate} (${timeZone}).`;
+  const own = calendarTemplateFor("calendar_current_day", language);
+  return handlerRulesFillOnce(own.template, {
+    weekday: calendarWeekdayLabel(own.language, weekday),
+    date: isoDate,
+    time_zone: timeZone,
+  });
 }
 
 function renderWeekdayRelation(language, operation, source, result) {
-  const delta = operation === "next" ? "+1" : "-1";
-  if (language === "ru") {
-    if (operation === "next") {
-      return `После ${source.ruGenitive} наступает ${result.ru}. Я сдвинул ${source.ru} на ${delta} в семидневном календарном цикле.`;
-    }
-    return `Перед ${source.ruInstrumental} идёт ${result.ru}. Я сдвинул ${source.ru} на ${delta} в семидневном календарном цикле.`;
-  }
-  if (language === "hi") {
-    if (operation === "next") {
-      return `${source.hi} के बाद ${result.hi} आता है। मैं सात दिनों के कैलेंडर चक्र में ${source.hi} को ${delta} दिन सरकाता हूँ।`;
-    }
-    return `${source.hi} से पहले ${result.hi} आता है। मैं सात दिनों के कैलेंडर चक्र में ${source.hi} को ${delta} दिन सरकाता हूँ।`;
-  }
-  if (language === "zh") {
-    if (operation === "next") {
-      return `${source.zh}之后是${result.zh}。我在七天的日历循环中将${source.zh}移动${delta}天。`;
-    }
-    return `${source.zh}之前是${result.zh}。我在七天的日历循环中将${source.zh}移动${delta}天。`;
-  }
-  if (operation === "next") {
-    return `The day after ${source.en} is ${result.en}. I move ${source.en} by ${delta} in the seven-day calendar cycle.`;
-  }
-  return `The day before ${source.en} is ${result.en}. I move ${source.en} by ${delta} in the seven-day calendar cycle.`;
+  const own = calendarTemplateFor(`calendar_weekday_relation_${operation}`, language);
+  return handlerRulesFillOnce(own.template, {
+    source: calendarWeekdayDirectionLabel(own.language, operation, source),
+    result: calendarWeekdayLabel(own.language, result),
+    source_plain: calendarWeekdayLabel(own.language, source),
+    delta: operation === "next" ? "+1" : "-1",
+  });
 }
 
 // --- Issue #404: tryCalendarCreateEvent (full parallel of Rust try_calendar_create_event).
@@ -524,15 +469,8 @@ function mentionsCalendarCreateRequest(normalized) {
   if (hasClock && hasTimezone && hasParticipant) return true;
   // Rust fallback heuristic (classic RU/EN patterns). Word-boundary matching
   // keeps "the-book-of-secret-knowledge" from masquerading as a schedule verb.
-  const hasScheduleVerb = [
-    "забей",
-    "поставь",
-    "создай",
-    "добавь",
-    "schedule",
-    "book",
-    "add to",
-  ].some((verb) => containsCalendarTerm(normalized, verb));
+  const hasScheduleVerb = handlerRulesTableKeys("calendar_schedule_verb")
+    .some((verb) => containsCalendarTerm(normalized, verb));
   // The date/time anchor is already guaranteed by hasDateSignal above, so a
   // recognized schedule verb is enough to confirm a create request here.
   return hasScheduleVerb;
@@ -636,9 +574,10 @@ function extractClockTime(normalized) {
   }
   const spoken = extractSpokenHourTime(normalized);
   if (spoken) return spoken;
-  const vPos = normalized.indexOf("в ");
-  if (vPos !== -1) {
-    const tail = normalized.slice(vPos + 2);
+  for (const lead of handlerRulesTableKeys("calendar_clock_hour_lead")) {
+    const leadPos = normalized.indexOf(lead);
+    if (leadPos === -1) continue;
+    const tail = normalized.slice(leadPos + lead.length);
     let num = "";
     for (const ch of tail) {
       if (/\d/.test(ch)) num += ch;
@@ -651,7 +590,7 @@ function extractClockTime(normalized) {
 }
 
 function extractSpokenHourTime(normalized) {
-  for (const marker of ["часов", "часа", "час", "часу"]) {
+  for (const marker of handlerRulesTableKeys("calendar_spoken_hour_marker")) {
     let pos = normalized.indexOf(marker);
     while (pos !== -1) {
       const before = pos > 0 ? Array.from(normalized.slice(0, pos)).pop() : "";
@@ -684,7 +623,7 @@ function hasSpokenHourPrefix(normalized, digitStart) {
   if (!prefix) return true;
   const words = prefix.split(/\s+/).filter(Boolean);
   const last = words[words.length - 1];
-  return ["в", "на", "к"].includes(last);
+  return handlerRulesTableKeys("calendar_spoken_hour_lead").includes(last);
 }
 
 // Plan 10 leaf 16 (issue #869): the zone is not a memorized alias table. A
@@ -728,10 +667,7 @@ function resolveTimezone(normalized) {
 }
 
 function defaultTitle(language) {
-  if (language === "ru") return "Событие";
-  if (language === "hi") return "घटना";
-  if (language === "zh") return "事件";
-  return "Event";
+  return handlerRulesTableValue("calendar_default_title", language) || "";
 }
 
 function capitalizeFirst(value) {
@@ -744,19 +680,7 @@ function capitalizeFirst(value) {
 // Rust tidy_title.
 function tidyTitle(candidate) {
   let end = candidate.length;
-  for (const boundary of [
-    " on the ",
-    " on ",
-    " at ",
-    " в ",
-    " по ",
-    " на ",
-    " 在 ",
-    "下午",
-    "上午",
-    " को ",
-    " शाम",
-  ]) {
+  for (const boundary of handlerRulesTableKeys("calendar_title_boundary")) {
     const pos = candidate.indexOf(boundary);
     if (pos !== -1) end = Math.min(end, pos);
   }
@@ -766,7 +690,7 @@ function tidyTitle(candidate) {
   if (digit !== -1) end = Math.min(end, digit);
   const trimmed = stripActionWords(candidate.slice(0, end).trim()).trim();
   if (!trimmed) return null;
-  if (["на", "в", "во", "по", "к", "for", "on", "at"].includes(trimmed)) {
+  if (handlerRulesTableKeys("calendar_title_stopword").includes(trimmed)) {
     return null;
   }
   // A bare relative-date word ("завтра", "tomorrow", …) is a date cue, never a
@@ -785,30 +709,14 @@ function tidyTitle(candidate) {
 // only the event and its participant. Mirrors the Rust strip_action_words.
 function stripActionWords(value) {
   let out = value;
-  for (const fragment of [
-    "शेड्यूल करें",
-    "कैलेंडर में जोड़ें",
-    "बनाएँ",
-    "बनाओ",
-    "安排",
-    "添加到日历",
-    "创建",
-  ]) {
+  for (const fragment of handlerRulesTableKeys("calendar_title_action_fragment")) {
     out = out.split(fragment).join("");
   }
   return out.split(/\s+/).filter(Boolean).join(" ");
 }
 
 function extractTitle(normalized) {
-  for (const marker of [
-    "на ",
-    "for ",
-    "встречу ",
-    "meeting with ",
-    "call with ",
-    "के साथ ",
-    "和",
-  ]) {
+  for (const marker of handlerRulesTableKeys("calendar_title_marker")) {
     const pos = normalized.indexOf(marker);
     if (pos !== -1) {
       const rest = normalized.slice(pos + marker.length).trim();
@@ -818,7 +726,7 @@ function extractTitle(normalized) {
   }
   const participantTitle = extractParticipantTitle(normalized);
   if (participantTitle) return participantTitle;
-  for (const verb of ["забей", "поставь", "создай", "добавь"]) {
+  for (const verb of handlerRulesTableKeys("calendar_title_verb")) {
     const pos = normalized.indexOf(verb);
     if (pos !== -1) {
       const rest = normalized.slice(pos + verb.length).trimStart();
@@ -831,9 +739,12 @@ function extractTitle(normalized) {
 
 function extractParticipantTitle(normalized) {
   let start = null;
-  const inner = normalized.indexOf(" с ");
-  if (inner !== -1) start = inner + 1;
-  else if (normalized.startsWith("с ")) start = 0;
+  for (const marker of handlerRulesTableKeys("calendar_participant_marker")) {
+    const inner = normalized.indexOf(` ${marker}`);
+    if (inner !== -1) start = inner + 1;
+    else if (normalized.startsWith(marker)) start = 0;
+    if (start !== null) break;
+  }
   if (start === null) return null;
   return tidyTitle(normalized.slice(start));
 }
@@ -953,41 +864,17 @@ function buildGoogleCalendarUrl(event) {
 }
 
 function renderCreateConfirmation(language, event, ics, googleUrl) {
-  const iso = isoDate(event.year, event.month, event.day);
-  const time = `${pad2(event.hour)}:${pad2(event.minute)}`;
-  const tz = event.timeZone;
-  const title = event.title;
-  const minutes = event.durationMinutes;
-  if (language === "ru") {
-    return (
-      `Создать событие «${title}» на ${event.day} число (${iso}). Время: ${time}, часовой пояс: ${tz}. Длительность ${minutes} минут.\n` +
-      `Импортируйте этот файл .ics в любой календарь:\n${ics}\n` +
-      `Или откройте в Google Календаре (вход не требуется):\n${googleUrl}\n` +
-      `Ответьте «да», чтобы подтвердить.`
-    );
-  }
-  if (language === "hi") {
-    return (
-      `${iso} (${time}, समय क्षेत्र ${tz}) पर «${title}» कार्यक्रम बनाएँ। अवधि ${minutes} मिनट।\n` +
-      `इस .ics फ़ाइल को किसी भी कैलेंडर में आयात करें:\n${ics}\n` +
-      `या Google Calendar में खोलें (लॉगिन आवश्यक नहीं):\n${googleUrl}\n` +
-      `पुष्टि के लिए «हाँ» उत्तर दें।`
-    );
-  }
-  if (language === "zh") {
-    return (
-      `在 ${iso}（${time}，时区 ${tz}）创建事件「${title}」。时长 ${minutes} 分钟。\n` +
-      `将此 .ics 文件导入任何日历：\n${ics}\n` +
-      `或在 Google 日历中打开（无需登录）：\n${googleUrl}\n` +
-      `回复「是」以确认。`
-    );
-  }
-  return (
-    `Create event «${title}» on ${iso}. Time: ${time}, timezone: ${tz}. Duration ${minutes} minutes.\n` +
-    `Import this .ics file into any calendar:\n${ics}\n` +
-    `Or open it in Google Calendar (no login required):\n${googleUrl}\n` +
-    `Reply 'yes' to confirm.`
-  );
+  // The seeded confirmation (issue #918), as Rust render_localized_once reads it.
+  return handlerRulesFillOnce(answerFor("calendar_create_event_confirmation", language), {
+    title: event.title,
+    day: String(event.day),
+    date: isoDate(event.year, event.month, event.day),
+    time: `${pad2(event.hour)}:${pad2(event.minute)}`,
+    time_zone: event.timeZone,
+    minutes: String(event.durationMinutes),
+    ics,
+    google_url: googleUrl,
+  });
 }
 
 function currentUtcCalendarBase() {
@@ -1049,7 +936,7 @@ function tryCalendarCreateEvent(prompt, normalized, userContext = {}) {
   if (relativeOffset !== null) {
     evidence.push(`calendar:parsed_relative_offset:${relativeOffset}`);
   }
-  if (normalized.includes("число") || normalized.includes("number")) {
+  if (handlerRulesTableRow("calendar_day_number_marker", normalized) !== null) {
     evidence.push("calendar:parsed_via:day_number");
   }
   evidence.push(`calendar:ics:${ics}`);

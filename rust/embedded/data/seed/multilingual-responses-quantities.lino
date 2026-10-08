@@ -539,3 +539,67 @@ multilingual_responses_quantities
     intent word_problem_relation
     language es
     text "La respuesta es {result}: {derivation}."
+  response response_calendar_weekday_relation_next_en
+    intent calendar_weekday_relation_next
+    language en
+    text "The day after {source} is {result}. I move {source_plain} by {delta} in the seven-day calendar cycle."
+  response response_calendar_weekday_relation_next_ru
+    intent calendar_weekday_relation_next
+    language ru
+    text "После {source} наступает {result}. Я сдвинул {source_plain} на {delta} в семидневном календарном цикле."
+  response response_calendar_weekday_relation_next_hi
+    intent calendar_weekday_relation_next
+    language hi
+    text "{source} के बाद {result} आता है। मैं सात दिनों के कैलेंडर चक्र में {source_plain} को {delta} दिन सरकाता हूँ।"
+  response response_calendar_weekday_relation_next_zh
+    intent calendar_weekday_relation_next
+    language zh
+    text "{source}之后是{result}。我在七天的日历循环中将{source_plain}移动{delta}天。"
+  response response_calendar_weekday_relation_previous_en
+    intent calendar_weekday_relation_previous
+    language en
+    text "The day before {source} is {result}. I move {source_plain} by {delta} in the seven-day calendar cycle."
+  response response_calendar_weekday_relation_previous_ru
+    intent calendar_weekday_relation_previous
+    language ru
+    text "Перед {source} идёт {result}. Я сдвинул {source_plain} на {delta} в семидневном календарном цикле."
+  response response_calendar_weekday_relation_previous_hi
+    intent calendar_weekday_relation_previous
+    language hi
+    text "{source} से पहले {result} आता है। मैं सात दिनों के कैलेंडर चक्र में {source_plain} को {delta} दिन सरकाता हूँ।"
+  response response_calendar_weekday_relation_previous_zh
+    intent calendar_weekday_relation_previous
+    language zh
+    text "{source}之前是{result}。我在七天的日历循环中将{source_plain}移动{delta}天。"
+  response response_calendar_current_day_en
+    intent calendar_current_day
+    language en
+    text "Today is {weekday}, {date} ({time_zone})."
+  response response_calendar_current_day_ru
+    intent calendar_current_day
+    language ru
+    text "Сегодня {weekday}, {date} ({time_zone})."
+  response response_calendar_current_day_hi
+    intent calendar_current_day
+    language hi
+    text "आज {weekday} है, {date} ({time_zone})."
+  response response_calendar_current_day_zh
+    intent calendar_current_day
+    language zh
+    text "今天是{weekday}，{date}（{time_zone}）。"
+  response response_calendar_create_event_confirmation_en
+    intent calendar_create_event_confirmation
+    language en
+    text "Create event «{title}» on {date}. Time: {time}, timezone: {time_zone}. Duration {minutes} minutes.\nImport this .ics file into any calendar:\n{ics}\nOr open it in Google Calendar (no login required):\n{google_url}\nReply 'yes' to confirm."
+  response response_calendar_create_event_confirmation_ru
+    intent calendar_create_event_confirmation
+    language ru
+    text "Создать событие «{title}» на {day} число ({date}). Время: {time}, часовой пояс: {time_zone}. Длительность {minutes} минут.\nИмпортируйте этот файл .ics в любой календарь:\n{ics}\nИли откройте в Google Календаре (вход не требуется):\n{google_url}\nОтветьте «да», чтобы подтвердить."
+  response response_calendar_create_event_confirmation_hi
+    intent calendar_create_event_confirmation
+    language hi
+    text "{date} ({time}, समय क्षेत्र {time_zone}) पर «{title}» कार्यक्रम बनाएँ। अवधि {minutes} मिनट।\nइस .ics फ़ाइल को किसी भी कैलेंडर में आयात करें:\n{ics}\nया Google Calendar में खोलें (लॉगिन आवश्यक नहीं):\n{google_url}\nपुष्टि के लिए «हाँ» उत्तर दें।"
+  response response_calendar_create_event_confirmation_zh
+    intent calendar_create_event_confirmation
+    language zh
+    text "在 {date}（{time}，时区 {time_zone}）创建事件「{title}」。时长 {minutes} 分钟。\n将此 .ics 文件导入任何日历：\n{ics}\n或在 Google 日历中打开（无需登录）：\n{google_url}\n回复「是」以确认。"

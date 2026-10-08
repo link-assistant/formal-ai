@@ -2,9 +2,9 @@ self_ast_census
   target src/meta_reasoner/text.rs
   language rust
   fidelity signature
-  byte_len 16740
-  line_count 507
-  content_id source_module_376e3f47a8fa6782
+  byte_len 17075
+  line_count 515
+  content_id source_module_f7887aa16d0505f3
   symbol_count 35
   symbols
     function is_js_whitespace 20 32
@@ -35,10 +35,10 @@ self_ast_census
     function scan_at 285 355
     function is_path_character 358 360
     function meta_value_literals 367 389
-    function meta_examples 395 418
-    function chars_from 421 425
-    function chars_until 427 431
-    function is_interrogative 438 443
-    function meta_request_definitions 449 479
-    function collation_class 481 487
-    function locale_compare 495 507
+    function meta_examples 395 426
+    function chars_from 429 433
+    function chars_until 435 439
+    function is_interrogative 446 451
+    function meta_request_definitions 457 487
+    function collation_class 489 495
+    function locale_compare 503 515

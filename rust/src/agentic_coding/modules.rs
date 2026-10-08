@@ -85,6 +85,8 @@ mod work_item_steps;
 mod workspace_change;
 mod workspace_computed_change;
 mod workspace_inspection;
+mod workspace_line_operation;
+mod workspace_setting;
 mod write_request;
 
 pub use associative_learning::{

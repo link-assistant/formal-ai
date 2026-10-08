@@ -4,6 +4,7 @@
 // notes) and every prose line live in data/meta/agentic-messages.lino.
 
 import { agenticMessage } from './messages.mjs';
+import { quotedSegmentSpans } from './crate/normal_markov.mjs';
 import { trimEnd } from './crate/rust_str.mjs';
 
 /** Mirrors `const RECIPES`: keys, issues and step tools; wording by message key. */
@@ -28,7 +29,15 @@ const DIAGRAM_KEYWORDS = ['mermaid', 'diagram', 'visual overview', 'flowchart'];
  * @param {string} prompt
  */
 export function isDiagramTask(prompt) {
-  const lower = prompt.toLowerCase();
+  // A cue inside a quoted literal is payload, not the request: "Insert the
+  // line 'js/mermaid.bundle.js' after …" is an edit (PR #1188 dogfood T70).
+  let unquoted = '';
+  let cursor = 0;
+  for (const segment of quotedSegmentSpans(prompt)) {
+    unquoted += `${prompt.slice(cursor, segment.start)} `;
+    cursor = segment.end;
+  }
+  const lower = `${unquoted}${prompt.slice(cursor)}`.toLowerCase();
   return DIAGRAM_KEYWORDS.some((keyword) => lower.includes(keyword));
 }
 

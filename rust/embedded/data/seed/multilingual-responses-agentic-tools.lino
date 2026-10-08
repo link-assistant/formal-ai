@@ -579,3 +579,183 @@ multilingual_responses
     intent file_analysis_absence_boundary
     language es
     text "La ausencia de un marcador explícito en esta evidencia acotada no demuestra que el trabajo esté completo."
+  response response_numbered_lines_removed_en
+    intent numbered_lines_removed
+    language en
+    text "Deleted line(s) {lines} of `{path}` and observed the result."
+  response response_numbered_lines_removed_ru
+    intent numbered_lines_removed
+    language ru
+    text "Из `{path}` удалены строки {lines}, результат проверен."
+  response response_numbered_lines_removed_hi
+    intent numbered_lines_removed
+    language hi
+    text "`{path}` की पंक्ति(याँ) {lines} हटाईं और परिणाम सत्यापित किया।"
+  response response_numbered_lines_removed_zh
+    intent numbered_lines_removed
+    language zh
+    text "已删除 `{path}` 的第 {lines} 行并验证了结果。"
+  response response_numbered_lines_removed_es
+    intent numbered_lines_removed
+    language es
+    text "Se eliminaron las líneas {lines} de `{path}` y se verificó el resultado."
+  response response_numbered_line_insert_after_en
+    intent numbered_line_insert_after
+    language en
+    text "Inserted `{new}` after line {line} of `{path}` and observed the result."
+  response response_numbered_line_insert_after_ru
+    intent numbered_line_insert_after
+    language ru
+    text "В `{path}` после строки {line} вставлено `{new}`, результат проверен."
+  response response_numbered_line_insert_after_hi
+    intent numbered_line_insert_after
+    language hi
+    text "`{path}` में पंक्ति {line} के बाद `{new}` जोड़ा और परिणाम सत्यापित किया।"
+  response response_numbered_line_insert_after_zh
+    intent numbered_line_insert_after
+    language zh
+    text "已在 `{path}` 的第 {line} 行之后插入 `{new}` 并验证了结果。"
+  response response_numbered_line_insert_after_es
+    intent numbered_line_insert_after
+    language es
+    text "Se insertó `{new}` después de la línea {line} de `{path}` y se verificó el resultado."
+  response response_numbered_line_insert_before_en
+    intent numbered_line_insert_before
+    language en
+    text "Inserted `{new}` before line {line} of `{path}` and observed the result."
+  response response_numbered_line_insert_before_ru
+    intent numbered_line_insert_before
+    language ru
+    text "В `{path}` перед строкой {line} вставлено `{new}`, результат проверен."
+  response response_numbered_line_insert_before_hi
+    intent numbered_line_insert_before
+    language hi
+    text "`{path}` में पंक्ति {line} से पहले `{new}` जोड़ा और परिणाम सत्यापित किया।"
+  response response_numbered_line_insert_before_zh
+    intent numbered_line_insert_before
+    language zh
+    text "已在 `{path}` 的第 {line} 行之前插入 `{new}` 并验证了结果。"
+  response response_numbered_line_insert_before_es
+    intent numbered_line_insert_before
+    language es
+    text "Se insertó `{new}` antes de la línea {line} de `{path}` y se verificó el resultado."
+  response response_line_moved_start_en
+    intent line_moved_start
+    language en
+    text "Moved `{old}` to the start of `{path}` and observed the result."
+  response response_line_moved_start_ru
+    intent line_moved_start
+    language ru
+    text "Строка `{old}` перемещена в начало `{path}`, результат проверен."
+  response response_line_moved_start_hi
+    intent line_moved_start
+    language hi
+    text "`{old}` को `{path}` की शुरुआत में ले जाया और परिणाम सत्यापित किया।"
+  response response_line_moved_start_zh
+    intent line_moved_start
+    language zh
+    text "已将 `{old}` 移到 `{path}` 的开头并验证了结果。"
+  response response_line_moved_start_es
+    intent line_moved_start
+    language es
+    text "Se movió `{old}` al principio de `{path}` y se verificó el resultado."
+  response response_line_moved_end_en
+    intent line_moved_end
+    language en
+    text "Moved `{old}` to the end of `{path}` and observed the result."
+  response response_line_moved_end_ru
+    intent line_moved_end
+    language ru
+    text "Строка `{old}` перемещена в конец `{path}`, результат проверен."
+  response response_line_moved_end_hi
+    intent line_moved_end
+    language hi
+    text "`{old}` को `{path}` के अंत में ले जाया और परिणाम सत्यापित किया।"
+  response response_line_moved_end_zh
+    intent line_moved_end
+    language zh
+    text "已将 `{old}` 移到 `{path}` 的末尾并验证了结果。"
+  response response_line_moved_end_es
+    intent line_moved_end
+    language es
+    text "Se movió `{old}` al final de `{path}` y se verificó el resultado."
+  response response_line_moved_after_en
+    intent line_moved_after
+    language en
+    text "Moved `{old}` after `{anchor}` in `{path}` and observed the result."
+  response response_line_moved_after_ru
+    intent line_moved_after
+    language ru
+    text "В `{path}` строка `{old}` перемещена после `{anchor}`, результат проверен."
+  response response_line_moved_after_hi
+    intent line_moved_after
+    language hi
+    text "`{path}` में `{old}` को `{anchor}` के बाद ले जाया और परिणाम सत्यापित किया।"
+  response response_line_moved_after_zh
+    intent line_moved_after
+    language zh
+    text "已在 `{path}` 中将 `{old}` 移到 `{anchor}` 之后并验证了结果。"
+  response response_line_moved_after_es
+    intent line_moved_after
+    language es
+    text "Se movió `{old}` después de `{anchor}` en `{path}` y se verificó el resultado."
+  response response_line_moved_before_en
+    intent line_moved_before
+    language en
+    text "Moved `{old}` before `{anchor}` in `{path}` and observed the result."
+  response response_line_moved_before_ru
+    intent line_moved_before
+    language ru
+    text "В `{path}` строка `{old}` перемещена перед `{anchor}`, результат проверен."
+  response response_line_moved_before_hi
+    intent line_moved_before
+    language hi
+    text "`{path}` में `{old}` को `{anchor}` से पहले ले जाया और परिणाम सत्यापित किया।"
+  response response_line_moved_before_zh
+    intent line_moved_before
+    language zh
+    text "已在 `{path}` 中将 `{old}` 移到 `{anchor}` 之前并验证了结果。"
+  response response_line_moved_before_es
+    intent line_moved_before
+    language es
+    text "Se movió `{old}` antes de `{anchor}` en `{path}` y se verificó el resultado."
+  response response_lines_swapped_en
+    intent lines_swapped
+    language en
+    text "Swapped `{old}` and `{new}` in `{path}` and observed the result."
+  response response_lines_swapped_ru
+    intent lines_swapped
+    language ru
+    text "В `{path}` строки `{old}` и `{new}` поменяны местами, результат проверен."
+  response response_lines_swapped_hi
+    intent lines_swapped
+    language hi
+    text "`{path}` में `{old}` और `{new}` की अदला-बदली की और परिणाम सत्यापित किया।"
+  response response_lines_swapped_zh
+    intent lines_swapped
+    language zh
+    text "已在 `{path}` 中交换 `{old}` 与 `{new}` 并验证了结果。"
+  response response_lines_swapped_es
+    intent lines_swapped
+    language es
+    text "Se intercambiaron `{old}` y `{new}` en `{path}` y se verificó el resultado."
+  response response_coding_workspace_fragment_refused_en
+    intent coding_workspace_fragment_refused
+    language en
+    text "Refused to change `{path}`: the computed result would drop most of the file, and the request does not ask for that."
+  response response_coding_workspace_fragment_refused_ru
+    intent coding_workspace_fragment_refused
+    language ru
+    text "Изменение `{path}` отклонено: вычисленный результат удалил бы большую часть файла, а запрос этого не просит."
+  response response_coding_workspace_fragment_refused_hi
+    intent coding_workspace_fragment_refused
+    language hi
+    text "`{path}` में परिवर्तन अस्वीकार किया: गणना किया गया परिणाम फ़ाइल का अधिकांश भाग हटा देता, और अनुरोध यह नहीं माँगता।"
+  response response_coding_workspace_fragment_refused_zh
+    intent coding_workspace_fragment_refused
+    language zh
+    text "已拒绝修改 `{path}`：计算出的结果会删除文件的大部分内容，而请求并未要求这样做。"
+  response response_coding_workspace_fragment_refused_es
+    intent coding_workspace_fragment_refused
+    language es
+    text "Se rechazó cambiar `{path}`: el resultado calculado eliminaría la mayor parte del archivo, y la solicitud no lo pide."

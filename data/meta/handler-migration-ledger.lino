@@ -208,9 +208,17 @@ handler_migration_ledger
     primitive "rust/src/solver_handlers/creative_writing.rs"
     justification "Issue 1178 builds feasible cited itineraries from seeded place, duration, and travel constraints. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_creative_writing.js answers the same seed records in the worker."
   handler calendar_reasoning
-    status pending
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/meanings-calendar.lino|data/seed/multilingual-responses-quantities.lino"
+    primitive "rust/src/solver_handlers/calendar.rs"
+    justification "issue #918 (R914-6): recognition was already the calendar_* roles of data/seed/meanings-calendar.lino; the weekday names an answer prints, with the Russian case each direction phrase takes (ru.next genitive, ru.previous instrumental), are now the calendar_weekday_label table of data/seed/handler-rules.lino, read natively through rule_interpreter::handler_table_value and in the worker through handlerRulesTableValue, and the one-day relation and current-day sentences are the seeded calendar_weekday_relation_next, calendar_weekday_relation_previous and calendar_current_day responses beside the offset, month and date templates that were seeded already. The seven per-language name functions of the Weekday enum and the inline en/ru/hi/zh format strings are deleted natively, and the WEEKDAY_CYCLE name fields, the Spanish weekday map and the inline templates in js/worker/formal_ai_worker_08.js and formal_ai_worker_calendar_offset.js. A language the seed carries no sentence for keeps the English sentence with English names, as before. The native part is the cycle arithmetic, the offset and date readers and the clock; every answer is byte-identical to the deleted code in en, ru, hi and zh in both runtimes."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler calendar_create_event
-    status pending
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/meanings-calendar.lino|data/seed/multilingual-responses-quantities.lino"
+    primitive "rust/src/solver_handlers/calendar_create.rs"
+    justification "issue #918 (R914-6): every cue list of the event parser is a calendar_* table of data/seed/handler-rules.lino (schedule verbs, day-number markers, the clock-hour lead, spoken-hour markers and their leads, title markers and verbs, the participant marker, title boundaries and stopwords, the action fragments a title sheds, and the per-language default title), read natively through rule_interpreter::handler_table_rows and handler_table_value and in the worker through handlerRulesTableKeys and handlerRulesTableValue; the four-language confirmation is the seeded calendar_create_event_confirmation response filled in one pass. The inline cue arrays and the en/ru/hi/zh templates are deleted in rust/src/solver_handlers/calendar_create.rs and js/worker/formal_ai_worker_08.js. The native part is the date arithmetic, the clock scanner, the grounded time-zone resolution and the ICS and Google Calendar renderers; every confirmation is byte-identical to the deleted code in en, ru, hi and zh in both runtimes."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler compound_interest
     status migrated
     data "data/seed/handler-rules.lino|data/seed/multilingual-responses-synthesis.lino|data/seed/meanings-finance.lino|data/seed/meanings-calculator.lino"

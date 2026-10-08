@@ -18,6 +18,9 @@ use super::workspace_change::{
     VerifiedChange, changed_lines_edit, identifier_tokens, plan_digest_verification,
     read_arguments, result_for_edit, result_for_path,
 };
+use super::workspace_line_operation::{
+    LineOperation, drops_most_of_file, grounded_line_operation, named_target_and_payloads,
+};
 use super::write_request::{
     bare_surfaces, clean_cue_token, clean_path_token, looks_like_file_path, safe_relative_path,
     tokens,
@@ -40,13 +43,27 @@ pub(super) enum Computation {
     Removal { text: String },
     /// Every line that contains `text`, whole (the request names a line).
     LineRemoval { text: String },
-    /// The one line assigning `key` gets `value`, in the file's own quoting.
-    Setting { key: String, value: String },
+    /// The one line assigning `key` (holding `held`, when stated) gets
+    /// `value`, in the file's own quoting.
+    Setting {
+        key: String,
+        value: String,
+        held: Option<String>,
+    },
+    /// Every line that is `old` becomes `new` (the request names a line), or
+    /// only the first one after `context`.
+    LineReplacement {
+        old: String,
+        new: String,
+        context: Option<String>,
+    },
     /// Every whole-word `word` becomes its discovered `correction`.
     TypoFix { word: String, correction: String },
     /// The functions the file declares under these names go whole, with the
     /// comment and attribute lines directly above them.
     DeclarationRemoval { names: Vec<String> },
+    /// A whole-line operation: numbered, adjacent, moved or swapped lines.
+    Line(LineOperation),
 }
 
 /// A computed change: the file, how its bytes are computed, and the seed
@@ -64,6 +81,7 @@ pub(super) fn grounded_computed_change(task: &str) -> Option<ComputedChange> {
     grounded_end_insertion(task)
         .or_else(|| grounded_removal(task))
         .or_else(|| grounded_declaration_removal(task))
+        .or_else(|| grounded_line_replacement(task))
         .or_else(|| grounded_setting(task))
         .or_else(|| grounded_typo_fix(task))
 }
@@ -102,7 +120,7 @@ const SENTENCE_MARKS: [char; 11] = [
 /// as spaces, so a verb that closes its sentence (`… पंक्ति हटाओ।`, `…
 /// удали.`) is still a whole word. A dot inside a token (`t.md`) is not
 /// followed by a space and stays.
-fn sentence_words(task: &str) -> String {
+pub(super) fn sentence_words(task: &str) -> String {
     let lowered = task.to_lowercase();
     let characters: Vec<char> = lowered.chars().collect();
     let mut out = String::with_capacity(lowered.len());
@@ -148,7 +166,7 @@ pub(super) fn edits_inside_a_file(prompt: &str) -> bool {
 
 /// Whether the request names a line outside its quotes: the seeded `line`
 /// meaning (`the line containing '…'`, `lines`, `строку`, `पंक्ति`, `的行`).
-fn names_line(task: &str) -> bool {
+pub(super) fn names_line(task: &str) -> bool {
     let outside = crate::solver_handlers::text_outside_quoted_segments(task);
     seed::lexicon().meaning("line").is_some_and(|meaning| {
         meaning.evidenced_in(&crate::engine::normalize_prompt(&outside).to_lowercase())
@@ -156,48 +174,52 @@ fn names_line(task: &str) -> bool {
 }
 
 /// The one workspace path a request names and its one quoted segment that is
-/// not that path.
+/// not that path. An unquoted path outranks a quoted one, which is then the
+/// payload (PR #1188 T35).
 fn quoted_payload_and_path(task: &str) -> Option<(String, String)> {
-    let segments = quoted_segment_spans(task);
-    let mut paths: Vec<&str> = Vec::new();
-    for token in tokens(task) {
-        let path = clean_path_token(token.text);
-        let inside = segments.iter().any(|segment| {
-            token.start >= segment.start && token.end <= segment.end && path != segment.text
-        });
-        if !inside
-            && looks_like_file_path(path)
-            && safe_relative_path(path)
-            && !paths.contains(&path)
-        {
-            paths.push(path);
-        }
-    }
-    let [path] = paths.as_slice() else {
-        return None;
-    };
-    let payloads: Vec<&str> = segments
-        .iter()
-        .map(|segment| segment.text.as_str())
-        .filter(|text| text != path && !text.trim().is_empty())
-        .collect();
+    let (target, payloads) = named_target_and_payloads(task)?;
     let [payload] = payloads.as_slice() else {
         return None;
     };
-    Some(((*path).to_owned(), (*payload).to_owned()))
+    Some((target, payload.clone()))
+}
+
+/// A whole-line operation (numbered, adjacent, moved or swapped lines) as a
+/// computed change. It is read before a rewrite: `move 'x' after 'y'` is not
+/// an insertion (PR #1188).
+pub(super) fn grounded_line_change(task: &str) -> Option<ComputedChange> {
+    let change = grounded_line_operation(task)?;
+    Some(ComputedChange {
+        target: change.target,
+        computation: Computation::Line(change.operation),
+        intent: change.intent,
+        slots: change.slots,
+    })
 }
 
 /// `Append 'x' to notes.txt`, `Prepend "x" to a.md`: positioned by the seeded
 /// `file_edit_position_end` / `file_edit_position_start` meanings.
 fn grounded_end_insertion(task: &str) -> Option<ComputedChange> {
-    let at_end = mentions("file_edit_position_end", task);
-    if at_end == mentions("file_edit_position_start", task) {
+    // `Append these lines to f:` followed by lines: the first line is the
+    // request and the lines under it are the text added, verbatim (PR #1188).
+    let block = super::positional_edit::introduced_block(task);
+    let sentence = block.as_ref().map_or(task, |(head, _)| *head);
+    let at_end = mentions("file_edit_position_end", sentence);
+    if at_end == mentions("file_edit_position_start", sentence) {
         return None;
     }
-    let (target, text) = quoted_payload_and_path(task)
-        .or_else(|| blank_line_and_path(task))
-        .or_else(|| line_payload_and_path(task))?;
-    let text = super::positional_edit::unescape_prose_newlines(&text);
+    let (target, text) = match block {
+        Some((head, text)) => (block_target(head)?, text),
+        None => {
+            let (target, text) = quoted_payload_and_path(task)
+                .or_else(|| blank_line_and_path(task))
+                .or_else(|| line_payload_and_path(task))?;
+            (
+                target,
+                super::positional_edit::unescape_prose_newlines(&text),
+            )
+        }
+    };
     Some(ComputedChange {
         target,
         // An empty line has no text to quote back; it is stated in its own words.
@@ -283,15 +305,24 @@ fn grounded_declaration_removal(task: &str) -> Option<ComputedChange> {
 /// `Change the value of "debug" to true in config.json`: the seeded
 /// `config_value_lead` names a setting; the edit request's old clause names its
 /// key (quoted, or its last identifier) and the new clause its value.
+///
+/// `Change MAXIMUM_RATIO from 8 to 16 in p.rs` states the value the key holds
+/// now (the seeded `file_edit_old_lead_cue`): the line assigning the key that
+/// value is the one changed, and a key assigned nowhere leaves the stated
+/// value itself, when it occurs once as a word (PR #1188 G2).
 fn grounded_setting(task: &str) -> Option<ComputedChange> {
-    if !mentions("config_value_lead", task) {
+    let (target, old_clause, value) = compose_edit_request(task)?;
+    let stated = super::workspace_setting::stated_old_value(&old_clause);
+    if stated.is_none() && !mentions("config_value_lead", task) {
         return None;
     }
-    let (target, old_clause, value) = compose_edit_request(task)?;
-    let quoted = quoted_segments(&old_clause);
+    let key_clause = stated
+        .as_ref()
+        .map_or(old_clause.as_str(), |(key, _)| key.as_str());
+    let quoted = quoted_segments(key_clause);
     let key = match quoted.as_slice() {
         [key] => key.clone(),
-        _ => identifier_tokens(&old_clause).next_back()?.to_owned(),
+        _ => identifier_tokens(key_clause).next_back()?.to_owned(),
     };
     let value = value.trim().to_owned();
     if value.is_empty() {
@@ -301,8 +332,94 @@ fn grounded_setting(task: &str) -> Option<ComputedChange> {
         target,
         intent: "setting",
         slots: vec![("{old}", key.clone()), ("{new}", value.clone())],
-        computation: Computation::Setting { key, value },
+        computation: Computation::Setting {
+            key,
+            value,
+            held: stated.map(|(_, held)| held),
+        },
     })
+}
+
+/// `Replace the line 'x' with 'y' in f`: the seeded `line` meaning outside
+/// the quotes, both clauses quoted. A line replacement never touches text
+/// inside a longer line (T32: `text pays` became `text "pay"s`). With a seeded
+/// anchor context (`the line 'x' that follows the line 'z'`), the first such
+/// line after `z` is the one replaced (T62).
+fn grounded_line_replacement(task: &str) -> Option<ComputedChange> {
+    if !names_line(task)
+        || seed::lexicon().mentions_role(
+            seed::ROLE_CODING_IDENTIFIER_RENAME_ACTION,
+            &task.to_lowercase(),
+        )
+    {
+        return None;
+    }
+    let context = super::positional_edit::anchor_context(task);
+    let request = context.as_ref().map_or_else(
+        || task.to_owned(),
+        |(start, end, _)| [&task[..*start], " ", &task[*end..]].concat(),
+    );
+    let (target, original, replacement) = compose_edit_request(&request)?;
+    if super::positional_edit::compose_positional_insert(task).is_some() {
+        return None;
+    }
+    let quoted: Vec<String> = quoted_segments(&request)
+        .iter()
+        .map(String::as_str)
+        .map(super::positional_edit::unescape_prose_newlines)
+        .collect();
+    if !quoted.contains(&original)
+        || !quoted.contains(&replacement)
+        || original.is_empty()
+        || original == replacement
+    {
+        return None;
+    }
+    Some(ComputedChange {
+        target,
+        intent: "coding_text_replaced",
+        slots: vec![("{old}", original.clone()), ("{new}", replacement.clone())],
+        computation: Computation::LineReplacement {
+            old: original,
+            new: replacement,
+            context: context.map(|(_, _, text)| text),
+        },
+    })
+}
+
+/// The smallest unique changed run of lines, or the lines from the context's
+/// line through the change.
+///
+/// When the changed run repeats, the run is widened up to the context's line:
+/// the context occurs once, so the widened run does not (mirrors
+/// `contextLinesEdit`).
+fn context_lines_edit(
+    source: &str,
+    updated: &str,
+    context: Option<&str>,
+) -> Option<(String, String)> {
+    let compact = changed_lines_edit(source, updated);
+    let Some(context) = context.filter(|_| compact.is_none()) else {
+        return compact;
+    };
+    let mut found = source.match_indices(context).map(|(at, _)| at);
+    let (Some(at), None) = (found.next(), found.next()) else {
+        return None;
+    };
+    let start = source[..at].rfind('\n').map_or(0, |newline| newline + 1);
+    let suffix = source[start..]
+        .bytes()
+        .rev()
+        .zip(updated[start..].bytes().rev())
+        .take_while(|(left, right)| left == right)
+        .count();
+    let end = source[source.len() - suffix..]
+        .find('\n')
+        .map_or(source.len(), |newline| source.len() - suffix + newline);
+    Some((
+        source[start..end].to_owned(),
+        updated[start..updated.len() - (source.len() - end)].to_owned(),
+    ))
 }
 
 impl ComputedChange {
@@ -318,8 +435,21 @@ impl ComputedChange {
             Computation::LineRemoval { text } => {
                 (!missing).then(|| removed_lines(source, text)).flatten()
             }
-            Computation::Setting { key, value } => (!missing)
-                .then(|| assigned_setting(source, key, value, &self.target))
+            Computation::Setting { key, value, held } => (!missing)
+                .then(|| {
+                    super::workspace_setting::assigned_setting(
+                        source,
+                        key,
+                        value,
+                        &self.target,
+                        held.as_deref(),
+                    )
+                })
+                .flatten(),
+            Computation::LineReplacement { old, new, context } => (!missing)
+                .then(|| {
+                    super::workspace_setting::replaced_lines(source, old, new, context.as_deref())
+                })
                 .flatten(),
             Computation::TypoFix { word, correction } => (!missing)
                 .then(|| {
@@ -331,6 +461,17 @@ impl ComputedChange {
             Computation::DeclarationRemoval { names } => (!missing)
                 .then(|| removed_declarations(source, names).map(|(updated, _)| updated))
                 .flatten(),
+            Computation::Line(operation) => (!missing).then(|| operation.compute(source)).flatten(),
+        }
+    }
+
+    /// Whether the request states the change's whole extent (named
+    /// declarations, a numbered range), so it may remove most of a file.
+    const fn bounded(&self) -> bool {
+        match &self.computation {
+            Computation::DeclarationRemoval { .. } => true,
+            Computation::Line(operation) => operation.bounded(),
+            _ => false,
         }
     }
 
@@ -339,11 +480,15 @@ impl ComputedChange {
         match &self.computation {
             Computation::EndInsertion { .. } if source.is_empty() => None,
             Computation::EndInsertion { at_end, .. } => compact_end_edit(source, updated, *at_end),
+            Computation::LineReplacement { context, .. } => {
+                context_lines_edit(source, updated, context.as_deref())
+            }
             Computation::Removal { .. }
             | Computation::LineRemoval { .. }
             | Computation::Setting { .. }
             | Computation::TypoFix { .. }
-            | Computation::DeclarationRemoval { .. } => changed_lines_edit(source, updated),
+            | Computation::DeclarationRemoval { .. }
+            | Computation::Line(_) => changed_lines_edit(source, updated),
         }
     }
 }
@@ -423,6 +568,11 @@ impl ComputedChange {
             && let Some((_, declared)) = removed_declarations(source, names)
         {
             return (self.intent, vec![("{old}", declared.join("`, `"))]);
+        }
+        if let Computation::Line(operation) = &self.computation
+            && let Some(reported) = operation.reported(source)
+        {
+            return reported;
         }
         (self.intent, self.slots.clone())
     }
@@ -607,87 +757,6 @@ fn removed_literal(source: &str, text: &str) -> Option<String> {
     (source.matches(text).count() == 1).then(|| source.replacen(text, "", 1))
 }
 
-/// A value every config format writes bare: a boolean, null or a number.
-fn is_bare_literal(value: &str) -> bool {
-    if matches!(value, "true" | "false" | "null") {
-        return true;
-    }
-    let digits = value.strip_prefix('-').unwrap_or(value);
-    let (whole, fraction) = digits
-        .split_once('.')
-        .map_or((digits, None), |(whole, fraction)| (whole, Some(fraction)));
-    let all_digits =
-        |part: &str| !part.is_empty() && part.bytes().all(|byte| byte.is_ascii_digit());
-    all_digits(whole) && fraction.is_none_or(all_digits)
-}
-
-/// The one line assigning `key` (`"k": v`, `k: v`, `k = v`) with `value`, in
-/// the file's own quoting; `None` when the key is assigned zero or several
-/// times, or already holds the value.
-fn assigned_setting(source: &str, key: &str, value: &str, target: &str) -> Option<String> {
-    let lines: Vec<&str> = source.split('\n').collect();
-    let assignments: Vec<(usize, &str, &str, &str)> = lines
-        .iter()
-        .enumerate()
-        .filter_map(|(index, line)| {
-            let (head, old, tail) = assignment(line, key)?;
-            Some((index, head, old, tail))
-        })
-        .collect();
-    let [(index, head, old, tail)] = assignments.as_slice() else {
-        return None;
-    };
-    let quote = old
-        .chars()
-        .next()
-        .filter(|first| matches!(first, '"' | '\''));
-    let written = match quote {
-        Some(quote) if !is_bare_literal(value) => format!("{quote}{value}{quote}"),
-        None if std::path::Path::new(target)
-            .extension()
-            .is_some_and(|extension| extension.eq_ignore_ascii_case("json"))
-            && !is_bare_literal(value)
-            && !value.starts_with(['"', '\'', '[', '{']) =>
-        {
-            serde_json::Value::String(value.to_owned()).to_string()
-        }
-        _ => value.to_owned(),
-    };
-    if written == *old {
-        return None;
-    }
-    let mut out: Vec<String> = lines.iter().map(|line| (*line).to_owned()).collect();
-    out[*index] = [*head, written.as_str(), *tail].concat();
-    Some(out.join("\n"))
-}
-
-/// `(head, value, tail)` when `line` assigns `key`: optional indentation, the
-/// key bare or quoted, `:` or `=`, the value, and an optional trailing comma.
-fn assignment<'a>(line: &'a str, key: &str) -> Option<(&'a str, &'a str, &'a str)> {
-    let indent = line.len() - line.trim_start().len();
-    let rest = &line[indent..];
-    let (quote, rest) = match rest.chars().next() {
-        Some(quote @ ('"' | '\'')) => (Some(quote), &rest[1..]),
-        _ => (None, rest),
-    };
-    let rest = rest.strip_prefix(key)?;
-    let rest = match quote {
-        Some(quote) => rest.strip_prefix(quote)?,
-        None => rest,
-    };
-    let after_key = rest.trim_start();
-    let after_separator = after_key.strip_prefix([':', '='])?;
-    let value_start = line.len() - after_separator.trim_start().len();
-    let body = line[value_start..].trim_end();
-    let value = body.strip_suffix(',').unwrap_or(body).trim_end();
-    let value_end = value_start + value.len();
-    Some((
-        &line[..value_start],
-        &line[value_start..value_end],
-        &line[value_end..],
-    ))
-}
-
 /// Read, compute, edit (or write), check the digest, state the change.
 pub(super) fn plan_computed_change_step(
     task: &str,
@@ -719,6 +788,15 @@ pub(super) fn plan_computed_change_step(
             target,
         )?));
     };
+    // A change that would drop most of the file is refused unless its request
+    // states that extent (PR #1188 T29).
+    if !change.bounded() && drops_most_of_file(&source, &updated) {
+        return Some(AgenticPlan::Final(render_seeded_outcome(
+            "coding_workspace_fragment_refused",
+            task,
+            target,
+        )?));
+    }
     let (intent, reported) = change.reported(&source);
     let slots: Vec<(&str, &str)> = reported
         .iter()
@@ -798,6 +876,25 @@ fn line_payload_and_path(task: &str) -> Option<(String, String)> {
         target.to_owned(),
         task[tokens[lead_end].start..tokens[end - 1].end].to_owned(),
     ))
+}
+
+/// The one path a colon-ended request line names, with nothing else quoted
+/// (mirrors `blockPayloadAndPath`).
+fn block_target(head: &str) -> Option<String> {
+    let mut paths: Vec<&str> = super::positional_edit::unquoted_path_tokens(head)
+        .iter()
+        .map(|token| clean_path_token(token.text))
+        .filter(|path| looks_like_file_path(path) && safe_relative_path(path))
+        .collect();
+    paths.sort_unstable();
+    paths.dedup();
+    let [path] = paths.as_slice() else {
+        return None;
+    };
+    quoted_segment_spans(head)
+        .iter()
+        .all(|segment| segment.text == *path)
+        .then(|| (*path).to_owned())
 }
 
 /// The seeded `file_edit_blank_line` with one named path and no quoted text:

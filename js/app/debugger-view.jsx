@@ -1,89 +1,44 @@
-import React, { useEffect, useRef, useState } from "react";
-const { createElement: h } = React;
+import React, { useEffect, useState } from "react";
+import { debugSessionCall, loadMermaid, pausedEventIndex, pollDebugger, renderMermaid, stagePanes } from "../debugger-client.js";
+import { withAssetVersion } from "./app-constants.jsx";
 
-// One `POST /v1/debug/<action>` of a `serve --debug-session` server (issue
-// #667, R383; protocol in docs/vscode/debugger.md). The session token rides in
-// the JSON body, so the request needs no header beyond the CORS-allowed ones.
-export async function debugSessionCall(apiBase, debugToken, action, extra = {}) {
-  const response = await fetch(`${apiBase.replace(/\/$/, "")}/v1/debug/${action}`, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ token: debugToken, ...extra }),
-  });
-  const body = await response.json();
-  if (!response.ok) throw new Error(body?.error?.message || `HTTP ${response.status}`);
-  return body;
-}
+// The five-pane debugger (issue #667, R383; docs/vscode/debugger.md). Polling,
+// the debug-session client, the event-to-pane projection and the Mermaid
+// renderer live in js/debugger-client.js; selection is presentation only.
+const SourcePane = ({ label, pane, testId }) => <section aria-label={label} data-testid={testId}><h2>{label}</h2>{pane ? <><p><code>{pane.location}</code> <strong>{pane.symbol}</strong></p><pre>{pane.excerpt}</pre></> : <pre>{"No source location recorded"}</pre>}</section>;
 
-// All content comes from public memory records and, in a debug session, the
-// session's stage events; selection/poll state is presentation only.
 export function DebuggerView({ messages = [], apiBase = "", debugToken = "" }) {
-  const [events, setEvents] = useState([]);
-  const [selection, setSelection] = useState(0);
-  const [problem, setProblem] = useState("");
-  const [rawLinks, setRawLinks] = useState("");
-  const [debugState, setDebugState] = useState(null);
-  const debugCursor = useRef(0);
+  const [view, setView] = useState({ events: [], rawLinks: "", state: null, problem: "" });
+  const [selection, setSelection] = useState(null);
+  const [svg, setSvg] = useState(null);
+  useEffect(() => pollDebugger({ apiBase, debugToken, onUpdate: setView }), [apiBase, debugToken]);
+  const step = (action, extra) => debugSessionCall(apiBase, debugToken, action, extra)
+    .then(state => setView(current => ({ ...current, state, problem: "" })), error => setView(current => ({ ...current, problem: String(error.message || error) })));
+  const { events, state, problem } = view;
   const stepping = Boolean(apiBase && debugToken);
+  const paused = state?.paused?.[0];
+  const index = Math.min(selection ?? pausedEventIndex(events, state, events.length - 1), Math.max(0, events.length - 1));
+  const selected = events[index] || {};
+  const panes = stagePanes(selected);
   useEffect(() => {
-    let active = true;
-    let timer;
-    let cursor = "";
-    const records = new Map();
-    debugCursor.current = 0;
-    const abort = new AbortController();
-    const memory = window.FormalAiMemory;
-    async function poll() {
-      try {
-        const local = memory ? await memory.listEvents() : [];
-        let remote = [];
-        if (apiBase) {
-          const url = new URL(`${apiBase.replace(/\/$/, "")}/v1/memory/since`);
-          if (cursor) url.searchParams.set("event", cursor);
-          const response = await fetch(url, { signal: abort.signal });
-          if (!response.ok) throw new Error(`Memory stream HTTP ${response.status}`);
-          const text = await response.text();
-          if (active) setRawLinks(text);
-          remote = memory ? memory.parseLinksNotation(text) : [];
-          if (remote.length && remote[remote.length - 1].id) cursor = remote[remote.length - 1].id;
-        }
-        let staged = [];
-        if (apiBase && debugToken) {
-          const state = await debugSessionCall(apiBase, debugToken, "session", { since: debugCursor.current });
-          staged = state.events;
-          debugCursor.current = state.next;
-          if (active) setDebugState(state);
-        }
-        for (const event of [...local, ...remote, ...staged]) records.set(event.id || JSON.stringify(event), event);
-        if (active) { setEvents([...records.values()]); setProblem(""); }
-      } catch (error) { if (active) setProblem(String(error.message || error)); }
-      if (active) timer = setTimeout(poll, 1500);
-    }
-    poll();
-    return () => { active = false; clearTimeout(timer); abort.abort(); };
-  }, [apiBase, debugToken]);
-  async function step(action, extra) {
-    try { setDebugState(await debugSessionCall(apiBase, debugToken, action, extra)); setProblem(""); }
-    catch (error) { setProblem(String(error.message || error)); }
-  }
-  const paused = debugState?.paused?.[0];
-  const selected = events[Math.min(selection, Math.max(0, events.length - 1))] || {};
-  const diagram = selected.mermaid || selected.diagram ||
-    (selected.kind === "recipe_diagram" || selected.kind === "mermaid" ? selected.content : "");
-  const source = selected.sourceLocation || selected.source_location ||
-    (selected.kind === "source_location" ? selected.content : "");
-  const links = rawLinks || (window.FormalAiMemory ? window.FormalAiMemory.exportLinksNotation(events) : "");
+    let live = true;
+    setSvg(null);
+    renderMermaid(panes.diagram, () => loadMermaid(withAssetVersion("mermaid.bundle.js"))).then(markup => { if (live) setSvg(markup); });
+    return () => { live = false; };
+  }, [panes.diagram]);
+  const links = view.rawLinks || (window.FormalAiMemory ? window.FormalAiMemory.exportLinksNotation(events) : "");
   return <section className="debugger-view" data-testid="debugger-view" aria-label="Formal AI Debugger">
     <header><strong>Formal AI Debugger</strong><span role="status">{problem || `${events.length} recorded events`}</span>
-      <button type="button" data-testid="debugger-pause" disabled={!stepping || Boolean(debugState?.stepping)} title={stepping ? "" : "Stepping is unavailable in this session"} onClick={() => step("pause")}>Pause</button>
-      <button type="button" data-testid="debugger-next" disabled={!stepping || !paused} title={paused ? `${paused.turn} ${paused.stage + 1}/${paused.stages} ${paused.step}` : ""} onClick={() => step("advance", { turn: paused.turn, stage: paused.stage })}>Next stage</button>
-      <button type="button" data-testid="debugger-continue" disabled={!stepping || !debugState?.stepping} onClick={() => step("release")}>Continue</button>
+      <button type="button" data-testid="debugger-pause" disabled={!stepping || Boolean(state?.stepping)} title={stepping ? "" : "Stepping is unavailable in this session"} onClick={() => step("pause")}>Pause</button>
+      <button type="button" data-testid="debugger-next" disabled={!stepping || !paused} title={paused ? `${paused.turn} ${paused.stage + 1}/${paused.stages} ${paused.step}` : ""} onClick={() => { setSelection(null); step("advance", { turn: paused.turn, stage: paused.stage }); }}>Next stage</button>
+      <button type="button" data-testid="debugger-continue" disabled={!stepping || !state?.stepping} onClick={() => step("release")}>Continue</button>
     </header>
     <div className="debugger-panes">
       <section aria-label="Conversation"><h2>Conversation</h2>{messages.map(message => <p key={message.id}><strong>{message.role}</strong> {message.content}</p>)}</section>
-      <section aria-label="Event links"><h2>Event links</h2><label>Recorded event <select value={Math.min(selection, Math.max(0, events.length - 1))} onChange={event => setSelection(Number(event.target.value))}>{events.map((event, index) => <option key={event.id || index} value={index}>{event.id || index}: {event.kind || event.role || "event"}</option>)}</select></label><pre>{links || "No links recorded"}</pre></section>
-      <section aria-label="Recipe diagram"><h2>Recipe diagram</h2><pre data-format="mermaid">{diagram || "No recipe diagram recorded"}</pre></section>
-      <section aria-label="Executing source"><h2>Executing source</h2><pre>{source || "No source location recorded"}</pre><pre>{JSON.stringify(selected, null, 2)}</pre></section>
+      <section aria-label="Event links"><h2>Event links</h2><label>Recorded event <select value={index} onChange={event => setSelection(Number(event.target.value))}>{events.map((event, at) => <option key={event.id || at} value={at}>{event.id || at}: {event.kind || event.role || "event"}{event.step ? ` ${event.step}` : ""}</option>)}</select></label><pre>{links || "No links recorded"}</pre><pre>{JSON.stringify(selected, null, 2)}</pre></section>
+      <section aria-label="Recipe diagram" data-testid="debugger-diagram">{svg ? <><h2>Recipe diagram</h2><div className="debugger-graph" dangerouslySetInnerHTML={{ __html: svg }} /></> : <><h2>Recipe diagram</h2><pre data-format="mermaid">{panes.diagram || "No recipe diagram recorded"}</pre></>}</section>
+      <SourcePane label="Rust source" pane={panes.rust} testId="debugger-rust-source" />
+      <SourcePane label="JavaScript source" pane={panes.js} testId="debugger-js-source" />
     </div>
   </section>;
 }

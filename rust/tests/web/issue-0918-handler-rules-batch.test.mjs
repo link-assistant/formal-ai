@@ -374,3 +374,90 @@ test("the document plan renders the seeded plan in english, russian, hindi and c
     assert.equal(plain(evaluate(worker, `tryDocumentGenerationPlan(${JSON.stringify(prompt)})`)), null, prompt);
   }
 });
+
+// The calendar rows (issue #918): the weekday names with the Russian case a
+// direction phrase takes, the default event title and every cue list of the
+// event parser are calendar_* tables of data/seed/handler-rules.lino; the
+// relation, current-day and confirmation sentences are seeded responses.
+// Every answer is byte-identical to the deleted inline templates, and the
+// native twin pins the same strings in
+// rust/tests/unit/issue_918_handler_rules_batch.rs.
+const RELATIONS = [
+  ["What day of the week comes after Tuesday?", "The day after Tuesday is Wednesday. I move Tuesday by +1 in the seven-day calendar cycle."],
+  ["What day comes before Monday?", "The day before Monday is Sunday. I move Monday by -1 in the seven-day calendar cycle."],
+  ["какой день недели перед средой", "Перед средой идёт вторник. Я сдвинул среда на -1 в семидневном календарном цикле."],
+  ["следующий день после воскресенья", "После воскресенья наступает понедельник. Я сдвинул воскресенье на +1 в семидневном календарном цикле."],
+  ["सोमवार के बाद कौन सा दिन आता है", "सोमवार के बाद मंगलवार आता है। मैं सात दिनों के कैलेंडर चक्र में सोमवार को +1 दिन सरकाता हूँ।"],
+  ["सोमवार से पहले कौन सा दिन आता है", "सोमवार से पहले रविवार आता है। मैं सात दिनों के कैलेंडर चक्र में सोमवार को -1 दिन सरकाता हूँ।"],
+  ["星期一之后是星期几", "星期一之后是星期二。我在七天的日历循环中将星期一移动+1天。"],
+  ["星期三之前是星期几", "星期三之前是星期二。我在七天的日历循环中将星期三移动-1天。"],
+  ["какой день будет через 100 дней после понедельника?", "Через 100 дней после понедельника — среда. 100 дней = 14 недель + 2 дня; понедельник + 2 дня = среда в семидневном календарном цикле."],
+];
+
+test("the weekday relations render the seeded names and sentences unchanged", async () => {
+  for (const [prompt, expected] of RELATIONS) {
+    const response = await solve(prompt);
+    assert.equal(response.intent, "calendar_weekday_relation", prompt);
+    assert.equal(response.content, expected, prompt);
+  }
+  await ready;
+  assert.equal(evaluate(worker, `handlerRulesTableValue("calendar_weekday_label", "monday.ru.next")`), "понедельника");
+  assert.equal(evaluate(worker, `handlerRulesTableValue("calendar_default_title", "es")`), "Event");
+});
+
+const CALENDAR_WEEKDAYS = {
+  en: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+  ru: ["воскресенье", "понедельник", "вторник", "среда", "четверг", "пятница", "суббота"],
+  hi: ["रविवार", "सोमवार", "मंगलवार", "बुधवार", "गुरुवार", "शुक्रवार", "शनिवार"],
+  zh: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"],
+};
+
+test("the current day renders the seeded sentence in every prompt language", async () => {
+  await ready;
+  const now = new Date();
+  const iso = now.toISOString().slice(0, 10);
+  const day = (language) => CALENDAR_WEEKDAYS[language][now.getUTCDay()];
+  for (const [prompt, expected] of [
+    ["What day is today?", `Today is ${day("en")}, ${iso} (UTC).`],
+    ["Какой сегодня день?", `Сегодня ${day("ru")}, ${iso} (UTC).`],
+    ["आज कौन सा दिन है?", `आज ${day("hi")} है, ${iso} (UTC).`],
+    ["今天是星期几?", `今天是${day("zh")}，${iso}（UTC）。`],
+  ]) {
+    const response = await worker.solve(prompt, [], {}, { timeZone: "UTC" }, [], {});
+    assert.equal(response.intent, "calendar_current_day", prompt);
+    assert.equal(response.content, expected, prompt);
+  }
+});
+
+/** The ICS block, the Google Calendar link and the event date of a confirmation. */
+function confirmationParts(content) {
+  const end = "END:VCALENDAR\r\n";
+  const ics = content.slice(content.indexOf("BEGIN:VCALENDAR"), content.indexOf(end) + end.length);
+  const [, year, month, dayOfMonth] = ics.match(/DTSTART;TZID=[^:]+:(\d{4})(\d{2})(\d{2})T/u);
+  return {
+    ics,
+    url: content.match(/https:\/\/calendar\.google\.com\S+/u)[0],
+    date: `${year}-${month}-${dayOfMonth}`,
+    day: String(Number(dayOfMonth)),
+  };
+}
+
+test("an event confirmation renders the seeded sentence and the seeded title cues", async () => {
+  const tomorrow = new Date(Date.now() + 86_400_000).toISOString().slice(0, 10);
+  const cases = [
+    ["schedule a call for tomorrow", ({ date, ics, url }) => `Create event «Call» on ${date}. Time: 17:00, timezone: UTC. Duration 60 minutes.\nImport this .ics file into any calendar:\n${ics}\nOr open it in Google Calendar (no login required):\n${url}\nReply 'yes' to confirm.`],
+    ["поставь созвон на завтра", ({ date, day, ics, url }) => `Создать событие «Созвон» на ${day} число (${date}). Время: 17:00, часовой пояс: UTC. Длительность 60 минут.\nИмпортируйте этот файл .ics в любой календарь:\n${ics}\nИли откройте в Google Календаре (вход не требуется):\n${url}\nОтветьте «да», чтобы подтвердить.`],
+    ["कल मीटिंग शेड्यूल करें", ({ date, ics, url }) => `${date} (17:00, समय क्षेत्र UTC) पर «मीटिंग» कार्यक्रम बनाएँ। अवधि 60 मिनट।\nइस .ics फ़ाइल को किसी भी कैलेंडर में आयात करें:\n${ics}\nया Google Calendar में खोलें (लॉगिन आवश्यक नहीं):\n${url}\nपुष्टि के लिए «हाँ» उत्तर दें।`],
+    ["明天安排一个通话", ({ date, ics, url }) => `在 ${date}（17:00，时区 UTC）创建事件「通话」。时长 60 分钟。\n将此 .ics 文件导入任何日历：\n${ics}\n或在 Google 日历中打开（无需登录）：\n${url}\n回复「是」以确认。`],
+  ];
+  for (const [prompt, expected] of cases) {
+    const response = await solve(prompt);
+    assert.equal(response.intent, "calendar_create_event", prompt);
+    const parts = confirmationParts(response.content);
+    assert.equal(parts.date, tomorrow, prompt);
+    assert.equal(response.content, expected(parts), prompt);
+  }
+  // No subject at all takes the seeded default title.
+  const untitled = await solve("Book a review on Friday at 09:30");
+  assert.ok(untitled.content.startsWith("Create event «Event» on "), untitled.content);
+});

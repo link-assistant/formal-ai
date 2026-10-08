@@ -19,6 +19,7 @@ use super::intent_router::edit_arguments;
 use super::planner::{
     plan_one, tool_capability, tool_for, write_arguments, AgenticPlan, Capability,
 };
+use super::positional_edit::PositionalInsert;
 use crate::normal_markov::{quoted_segments, unwrap_transport_quotes};
 use crate::protocol::ChatMessage;
 use crate::seed;
@@ -110,6 +111,22 @@ pub(super) fn plan_workspace_change_step(
     if let Some(change) = composite_module_change(task) {
         return plan_composite_step(task, current_turn, tool_names, &change);
     }
+    if let Some(change) = super::workspace_computed_change::grounded_line_change(task) {
+        return super::workspace_computed_change::plan_computed_change_step(
+            task,
+            current_turn,
+            tool_names,
+            &change,
+        );
+    }
+    if let Some(inserts) = insert_sequence(task) {
+        return super::positional_edit::plan_insert_sequence_step(
+            task,
+            current_turn,
+            tool_names,
+            &inserts,
+        );
+    }
     if let Some(rewrite) = grounded_rewrite(task) {
         return plan_rewrite_step(task, current_turn, tool_names, &rewrite);
     }
@@ -134,14 +151,26 @@ pub(super) fn plan_workspace_change_step(
 /// template and every leaf read as an unverified result).
 pub(super) fn is_verification_failure_answer(task: &str, answer: &str) -> bool {
     let task = unwrap_transport_quotes(task);
-    compose_edit_request(task)
+    let mut targets: Vec<String> = compose_edit_request(task)
         .map(|(target, _, _)| target)
         .into_iter()
         .chain(rust_paths(task))
-        .any(|target| {
-            render_seeded_outcome("coding_workspace_verification_failed", task, &target)
-                .is_some_and(|rendered| rendered == answer)
+        .collect();
+    if let Some((target, _)) = super::workspace_line_operation::named_target_and_payloads(task)
+        && !targets.contains(&target)
+    {
+        targets.push(target);
+    }
+    targets.iter().any(|target| {
+        [
+            "coding_workspace_verification_failed",
+            "coding_workspace_fragment_refused",
+        ]
+        .iter()
+        .any(|intent| {
+            render_seeded_outcome(intent, task, target).is_some_and(|rendered| rendered == answer)
         })
+    })
 }
 
 fn plan_rewrite_step(
@@ -470,6 +499,15 @@ fn grounded_positional_insert(task: &str) -> Option<GroundedRewrite> {
     })
 }
 
+/// The inserts one anchored rewrite cannot carry.
+///
+/// Several clauses (`…, and insert …`), or an anchor named by the line it
+/// follows (T31, T34); `None` otherwise.
+fn insert_sequence(task: &str) -> Option<Vec<PositionalInsert>> {
+    let inserts = super::positional_edit::positional_inserts(task)?;
+    (inserts.len() > 1 || inserts.iter().any(|insert| insert.context.is_some())).then_some(inserts)
+}
+
 fn grounded_rewrite(task: &str) -> Option<GroundedRewrite> {
     if let Some(positional) = grounded_positional_insert(task) {
         return Some(positional);
@@ -479,6 +517,11 @@ fn grounded_rewrite(task: &str) -> Option<GroundedRewrite> {
         seed::ROLE_CODING_IDENTIFIER_RENAME_ACTION,
         &task.to_lowercase(),
     );
+    // A request that names a line replaces whole lines
+    // (`grounded_line_replacement`).
+    if !renaming && super::workspace_computed_change::names_line(task) {
+        return None;
+    }
     // Both operands have to be literals the request actually quoted, so prose
     // ("replace the old header with something clearer") is never rewritten as
     // bytes. What that cannot be is a count: requiring the request to hold
@@ -751,7 +794,7 @@ fn workspace_path_matches(expected: &str, observed: &str) -> bool {
     expected.is_relative() && observed.is_absolute() && observed.ends_with(expected)
 }
 
-fn result_for_command(messages: &[ChatMessage], command: &str) -> Option<String> {
+pub(super) fn result_for_command(messages: &[ChatMessage], command: &str) -> Option<String> {
     matching_result(messages, |name, arguments| {
         tool_capability(name) == Some(Capability::Run)
             && super::tool_result::command_argument(arguments).as_deref() == Some(command)

@@ -29,6 +29,7 @@ use crate::telegram::handle_telegram_webhook;
 
 mod conversation_reports;
 mod debug_session;
+mod debug_stage;
 mod transport;
 
 pub(crate) use debug_session::gate_turn;
@@ -36,6 +37,10 @@ pub use debug_session::{
     DEBUG_TOKEN_ENV, DebugSession, DebugToken, active_debug_session, debug_session_banner,
     debug_token_from_env, enable_debug_session, generate_debug_token, handle_debug_request,
     is_loopback_host, with_connection_scope,
+};
+pub use debug_stage::{
+    EXCERPT_LINES, SourceLocation, TurnView, describe_turn, js_location, rust_location,
+    stage_diagram, turn_method,
 };
 pub use transport::serve;
 

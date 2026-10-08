@@ -139,8 +139,11 @@ export async function solveSymbolic(ctx, prompt, history) {
   }
   // Issue #1184 R1184-9: every native solve ends in `finalize_answer`, which
   // links, appends and persists the answer's derivation record.
-  const answer = await finalizeServerAnswer(ctx, symbolicFromWorker(result, history, await seedReportReader(ctx)), result);
-  await gateTurn(ctx, answer.thinking_steps);
+  const symbolic = symbolicFromWorker(result, history, await seedReportReader(ctx));
+  // Issue #667 (R383): a held turn is neither persisted nor answered until it is released.
+  if (ctx.debugSession) await ensureNodeHost(ctx);
+  await gateTurn(ctx, symbolic.thinking_steps);
+  const answer = await finalizeServerAnswer(ctx, symbolic, result);
   return answer;
 }
 

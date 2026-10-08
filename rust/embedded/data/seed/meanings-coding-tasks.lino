@@ -413,46 +413,6 @@ meanings
         text "func"
       surface
         text "fun"
-  setting
-    defined-by concept
-    role config_value_lead
-    precondition "a request names the setting of a configuration file it wants changed"
-    effect "the line assigning that key gets the new value, in the file's own quoting"
-    unit "not applicable"
-    example "the value of"
-    lexeme en
-      surface
-        text "value of"
-      surface
-        text setting
-      surface
-        text set
-    lexeme ru
-      surface
-        text значение
-      surface
-        text настройку
-      surface
-        text установи
-      surface
-        text задай
-    lexeme hi
-      surface
-        text मान
-      surface
-        text "सेट करो"
-    lexeme zh
-      surface
-        text 值
-      surface
-        text 设置
-      surface
-        text 设为
-    lexeme es
-      surface
-        text "valor de"
-      surface
-        text establece
   coding_artifact_name
     defined-by relation
     role coding_name_slot

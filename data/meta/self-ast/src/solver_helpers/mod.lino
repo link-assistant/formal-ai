@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_helpers/mod.rs
   language rust
   fidelity signature
-  byte_len 31681
-  line_count 837
-  content_id source_module_8c055817fac76990
+  byte_len 32037
+  line_count 843
+  content_id source_module_e9d77ff738f12f6c
   symbol_count 50
   symbols
     module code 13 13
@@ -21,39 +21,39 @@ self_ast_census
     function unresolved_surfaces_present 119 121
     function miss_names_consulted_sources 127 129
     function bare_concept_misses 140 148
-    function record_decomposition 150 200
-    function record_sub_impulses 202 217
-    function independent_actionable_segments 219 229
-    function split_candidate_actionable_parts 231 246
-    function split_sentences 248 264
-    function push_trimmed_segment 266 271
-    function strip_leading_coordinator 273 286
-    function looks_like_independent_impulse 288 313
-    function record_candidates 315 329
-    struct ValidationChoice 332 334
-    function record_validation 336 351
-    function extract_range 353 362
-    function is_prime 364 376
-    function extract_quoted_phrase 378 388
-    function extract_backticked 390 395
-    function recall_name_from_history 400 412
-    function last_user_turn 416 422
-    function last_assistant_turn 427 433
-    function last_turn 439 448
-    function extract_introduced_name 450 453
-    function extract_assistant_name 461 469
-    function extract_name_after_needles 473 496
-    function recall_assistant_name_from_history 503 512
-    function humanize_url 525 550
-    function hex_nibble 552 559
-    function is_reserved_uri_delimiter 561 566
-    function extract_fenced_block 571 591
-    function is_write_script_request 612 626
-    function names_no_task_beyond_the_minimal_script 640 665
-    function format_write_script_execution 667 707
-    function env_definition_fusion_by_default 710 716
-    function env_bool 723 725
-    function env_bool_with_extra_truthy 728 744
-    function env_bounded_f32 747 754
-    function env_truthy 757 766
-    function config_from_env 771 837
+    function record_decomposition 150 206
+    function record_sub_impulses 208 223
+    function independent_actionable_segments 225 235
+    function split_candidate_actionable_parts 237 252
+    function split_sentences 254 270
+    function push_trimmed_segment 272 277
+    function strip_leading_coordinator 279 292
+    function looks_like_independent_impulse 294 319
+    function record_candidates 321 335
+    struct ValidationChoice 338 340
+    function record_validation 342 357
+    function extract_range 359 368
+    function is_prime 370 382
+    function extract_quoted_phrase 384 394
+    function extract_backticked 396 401
+    function recall_name_from_history 406 418
+    function last_user_turn 422 428
+    function last_assistant_turn 433 439
+    function last_turn 445 454
+    function extract_introduced_name 456 459
+    function extract_assistant_name 467 475
+    function extract_name_after_needles 479 502
+    function recall_assistant_name_from_history 509 518
+    function humanize_url 531 556
+    function hex_nibble 558 565
+    function is_reserved_uri_delimiter 567 572
+    function extract_fenced_block 577 597
+    function is_write_script_request 618 632
+    function names_no_task_beyond_the_minimal_script 646 671
+    function format_write_script_execution 673 713
+    function env_definition_fusion_by_default 716 722
+    function env_bool 729 731
+    function env_bool_with_extra_truthy 734 750
+    function env_bounded_f32 753 760
+    function env_truthy 763 772
+    function config_from_env 777 843

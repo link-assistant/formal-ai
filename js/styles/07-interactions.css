@@ -217,9 +217,10 @@
 /* Issue #667: four projections remain readable as panes collapse on mobile. */
 .debugger-view { min-height: 0; max-height: 50vh; overflow: auto; border-block-end: 1px solid var(--fa-border-subtle, #bbb); padding: 12px; }
 .debugger-view header { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
-.debugger-panes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.debugger-panes { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
 .debugger-panes section { min-width: 0; max-height: 36vh; overflow: auto; }
 .debugger-panes pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; }
 .debugger-panes h2 { font-size: 14px; }
+.debugger-graph svg { max-width: 100%; height: auto; }
 @media (max-width: 1100px) { .debugger-panes { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 600px) { .debugger-panes { grid-template-columns: minmax(0, 1fr); } }

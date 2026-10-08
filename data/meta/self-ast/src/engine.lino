@@ -2,10 +2,10 @@ self_ast_census
   target src/engine.rs
   language rust
   fidelity signature
-  byte_len 37789
-  line_count 929
-  content_id source_module_4c9679f7f450644d
-  symbol_count 41
+  byte_len 40175
+  line_count 988
+  content_id source_module_2bae068bf8b1187c
+  symbol_count 44
   symbols
     const DEFAULT_MODEL 43 43
     struct FormalAiEngine 57 57
@@ -37,14 +37,17 @@ self_ast_census
     function response_link_for_intent 650 652
     function hello_world_program_by_alias 655 658
     function normalize_prompt 660 678
-    function is_script_combining_mark 680 693
-    function answer_links_notation 695 741
-    function format_write_program_rule_record 743 767
-    function program_template_sources 769 777
-    function write_program_answer 779 812
-    function write_program_intro 814 825
-    function rediscovered_page 832 837
-    function execution_report 839 878
-    function execution_status_phrase 880 893
-    function execution_output_label 901 916
-    function execution_command_lines 924 929
+    function contractions 686 714
+    static CELL 687 687
+    function expand_contractions 719 737
+    function is_script_combining_mark 739 752
+    function answer_links_notation 754 800
+    function format_write_program_rule_record 802 826
+    function program_template_sources 828 836
+    function write_program_answer 838 871
+    function write_program_intro 873 884
+    function rediscovered_page 891 896
+    function execution_report 898 937
+    function execution_status_phrase 939 952
+    function execution_output_label 960 975
+    function execution_command_lines 983 988

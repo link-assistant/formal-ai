@@ -1,0 +1,148 @@
+self_ast_census
+  target src/agentic_coding/system_diagram.rs
+  language rust
+  fidelity full_ast
+  byte_len 27029
+  line_count 825
+  content_id source_module_6362283922ec7065
+  symbol_count 47
+  symbols
+    const CONFIG_PATH 21 21
+    const DIAGRAM_DIR 24 24
+    const BROWSER_CLASS 27 27
+    const BROWSER_STYLE 30 30
+    const FENCE 32 32
+    struct HandlerRow 36 43
+    struct PromotionRow 47 54
+    struct CliSubcommand 58 63
+    struct CliDefinition 67 72
+    struct RouteRow 76 87
+    function root_of 90 96
+    function children_named 99 101
+    function child_value 104 106
+    function rank_of 109 111
+    function fill 114 136
+    function config_error 139 146
+    function cell 149 151
+    function table 154 169
+    function mermaid 172 177
+    function precedence_rows 182 197
+    function promotion_rows 201 212
+    function kebab_case 215 224
+    function summary 227 234
+    function cli_definition 239 278
+    function route_rows 282 298
+    struct Source 301 304
+    struct Part 307 311
+    struct Node 314 320
+    struct Edge 323 329
+    struct Config 332 339
+    function parse 342 384
+    function message 386 392
+    function text 394 396
+    function source_path 398 403
+    struct Data 407 412
+    function document 415 434
+    function count_of 437 446
+    function edge_label 449 476
+    function render_overview 479 536
+    function handler_label 539 541
+    function promotion_blocks 544 586
+    function precedence_blocks 589 663
+    function render_handlers 666 678
+    function cli_node 681 683
+    function render_cli 686 722
+    function render_routes 725 786
+    function render_system_diagrams 795 825
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 23063
+    named_node_count 4754
+    distinct_node_kinds 83
+    node_kinds
+      abstract_type 2
+      arguments 349
+      array_expression 16
+      array_type 10
+      assignment_expression 6
+      attribute 9
+      attribute_item 9
+      binary_expression 29
+      block 88
+      break_expression 1
+      call_expression 349
+      char_literal 11
+      closure_expression 50
+      closure_parameters 50
+      const_item 5
+      crate 1
+      declaration_list 1
+      doc_comment 81
+      else_clause 10
+      escape_sequence 40
+      expression_statement 86
+      field_declaration 40
+      field_declaration_list 11
+      field_expression 331
+      field_identifier 409
+      field_initializer 38
+      field_initializer_list 11
+      for_expression 20
+      function_item 31
+      function_type 1
+      generic_function 1
+      generic_type 50
+      identifier 997
+      if_expression 21
+      impl_item 1
+      index_expression 10
+      inner_doc_comment_marker 16
+      integer_literal 13
+      let_condition 3
+      let_declaration 67
+      lifetime 7
+      lifetime_parameter 2
+      line_comment 81
+      macro_invocation 48
+      match_arm 11
+      match_block 2
+      match_expression 2
+      match_pattern 11
+      mutable_specifier 25
+      outer_doc_comment_marker 65
+      parameter 58
+      parameters 32
+      parenthesized_expression 2
+      primitive_type 42
+      range_expression 10
+      reference_expression 67
+      reference_type 68
+      return_expression 6
+      scoped_identifier 24
+      scoped_use_list 1
+      self 6
+      self_parameter 3
+      shorthand_field_initializer 2
+      source_file 1
+      string_content 210
+      string_literal 183
+      struct_expression 11
+      struct_item 11
+      token_tree 151
+      try_expression 20
+      tuple_expression 8
+      tuple_pattern 9
+      tuple_struct_pattern 5
+      tuple_type 4
+      type_arguments 51
+      type_binding 1
+      type_identifier 199
+      type_parameters 2
+      unary_expression 9
+      use_declaration 1
+      use_list 1
+      visibility_modifier 27
+      while_expression 1

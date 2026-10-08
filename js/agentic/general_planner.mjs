@@ -14,7 +14,7 @@ import { proseSentences } from './shell_command_policy.mjs';
 import { traceRoute } from './planner/continuation.mjs';
 import {
   CueFamily, actionCueStartAfter, bareSurfaces, cleanContent, cleanCueToken, cleanPathToken,
-  contentLeadClose, firstActionCueEnd, firstContentLeadEnd, firstPrefixLeadEnd,
+  contentLeadClose, firstActionCueEnd, firstActionCueStart, firstContentLeadEnd, firstPrefixLeadEnd,
   honouringPinnedFirstLine, looksLikeFilePath, payloadContinuesPastItsFirstLine, rankedBindings,
   safeRelativePath, spanOf, tokens,
 } from './write_request.mjs';
@@ -71,6 +71,24 @@ function describesCodeToAuthor(request, content) {
   if (content === '' || quotedSegments(request).some((segment) => segment.includes(content))) return false;
   return (firstContentLeadEnd(request.toLowerCase()) === null && mentionsRole('coding_request_object', normalizePrompt(content)))
     || asksToAuthorCode(proseAround(request, content));
+}
+
+/**
+ * Mirrors `fn names_an_addition`: `Add <content> to <file>` -- the write verb
+ * is the seeded add action and the content comes before the file -- names an
+ * addition to that file, never its whole new content. Writing it as the file
+ * replaced `m.test.mjs` with the sentence "an assertion that add(2, 2) equals
+ * 4" (PR #1188 dogfooding). Content a seeded content lead introduces
+ * (`containing`, `with exactly this content:`) is still the file's bytes.
+ */
+function namesAnAddition(request, content, target) {
+  const toks = tokens(request);
+  const start = firstActionCueStart(toks);
+  const end = firstActionCueEnd(toks);
+  if (start === null || end === null || firstContentLeadEnd(request.toLowerCase()) !== null) return false;
+  const at = content === '' ? -1 : request.indexOf(content);
+  return at >= 0 && at < request.indexOf(target)
+    && mentionsRole('coding_member_add_action', normalizePrompt(request.slice(start, end)));
 }
 
 /**
@@ -162,6 +180,7 @@ export function composeGeneralChangePlan(fullRequest) {
   }
   if (!safeRelativePath(target)) return null;
   if (!commandOutput && describesCodeToAuthor(request, content)) return null;
+  if (!commandOutput && namesAnAddition(request, content, target)) return null;
   const responseLanguage = detect(request);
   const intent = formalizeIntent(request, responseLanguage);
   const verificationCommand = `cat ${target}`;

@@ -1,7 +1,9 @@
 // The loopback-only step-through debug session (issue #667, R383): `serve
-// --debug-session` holds every solved turn's answer and hands its stages out
-// one at a time, each `POST /v1/debug/advance` revealing the next, before the
-// HTTP response is written. Mirrors rust/src/server/debug_session.rs.
+// --debug-session` holds every solved turn before its derivation record is
+// persisted and its answer returned, and hands its stages out one at a time,
+// each `POST /v1/debug/advance` revealing the next. Every stage event carries
+// the turn's recipe diagram and the routed method's Rust and JavaScript source
+// locations (debug-stage.mjs). Mirrors rust/src/server/debug_session.rs.
 //
 // Protocol (docs/vscode/debugger.md):
 //   - the session token comes from FORMAL_AI_DEBUG_SESSION_TOKEN, else it is
@@ -21,6 +23,7 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { randomBytes, timingSafeEqual } from 'node:crypto';
 
+import { describeTurn, locationFields, stageDiagram } from './debug-stage.mjs';
 import { sortedKeys } from './json.mjs';
 import { stableId } from './ids.mjs';
 import { jsonResponse, messageError } from './response.mjs';
@@ -71,8 +74,13 @@ export function debugSessionBanner(session) {
   return session.generated ? `debug_session=${session.id};token=${session.token}` : `debug_session=${session.id}`;
 }
 
-/** Mirrors `fn stage_fields`: what an event says about one stage. */
-function stageFields(stages, index) {
+/**
+ * Mirrors `fn stage_fields`: what an event says about one stage — the step,
+ * the turn's recipe diagram with this stage highlighted, and the source
+ * locations of the method the turn's route resolves to (debug-stage.mjs).
+ */
+function stageFields(turn, index) {
+  const { stages, view } = turn;
   const stage = stages[index] || {};
   return {
     stage: index,
@@ -80,13 +88,22 @@ function stageFields(stages, index) {
     step: String(stage.step ?? ''),
     detail: String(stage.detail ?? ''),
     source: String(stage.source_event ?? ''),
+    method: view.method,
+    mermaid: stageDiagram(stages, index),
+    ...locationFields('rust', view.rust),
+    ...locationFields('js', view.js),
   };
 }
 
 /** Mirrors `struct DebugSession`. */
 export class DebugSession {
-  /** @param {string | {token: string, generated?: boolean}} token */
-  constructor(token) {
+  /**
+   * @param {string | {token: string, generated?: boolean}} token
+   * @param {{describe?: typeof describeTurn}} [options] how a turn's method
+   *   and source locations are found (debug-stage.mjs `describeTurn`)
+   */
+  constructor(token, { describe = describeTurn } = {}) {
+    this.describe = describe;
     const given = typeof token === 'object' && token !== null ? token : { token, generated: false };
     this.token = String(given.token);
     this.generated = Boolean(given.generated);
@@ -131,12 +148,14 @@ export class DebugSession {
   async gate(stages, signal) {
     if (!this.stepping || !Array.isArray(stages) || stages.length === 0) return;
     this.turnCount += 1;
-    const turn = { id: `turn_${this.turnCount}`, stages, current: 0, released: false, resolve: null };
+    const turn = {
+      id: `turn_${this.turnCount}`, stages, view: this.describe(stages), current: 0, released: false, resolve: null,
+    };
     const done = new Promise((resolve) => {
       turn.resolve = resolve;
     });
     this.turns.set(turn.id, turn);
-    this.record(STAGE_PAUSED, turn, stageFields(stages, 0));
+    this.record(STAGE_PAUSED, turn, stageFields(turn, 0));
     const onAbort = () => this.finish(turn, 'disconnected');
     signal?.addEventListener('abort', onAbort, { once: true });
     if (signal?.aborted) onAbort();
@@ -159,10 +178,10 @@ export class DebugSession {
   advance(turnId, stage) {
     const turn = this.turns.get(String(turnId ?? ''));
     if (!turn || turn.released || stage !== turn.current) return false;
-    this.record(STAGE_ADVANCED, turn, stageFields(turn.stages, turn.current));
+    this.record(STAGE_ADVANCED, turn, stageFields(turn, turn.current));
     if (turn.current + 1 < turn.stages.length) {
       turn.current += 1;
-      this.record(STAGE_PAUSED, turn, stageFields(turn.stages, turn.current));
+      this.record(STAGE_PAUSED, turn, stageFields(turn, turn.current));
     } else {
       this.finish(turn, 'completed');
     }
@@ -187,7 +206,7 @@ export class DebugSession {
       object: 'debug.session',
       session: this.id,
       stepping: this.stepping,
-      paused: [...this.turns.values()].map((turn) => ({ turn: turn.id, ...stageFields(turn.stages, turn.current) })),
+      paused: [...this.turns.values()].map((turn) => ({ turn: turn.id, ...stageFields(turn, turn.current) })),
       events: this.events.slice(from),
       next: this.events.length,
     });

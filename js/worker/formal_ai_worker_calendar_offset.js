@@ -9,17 +9,6 @@
 // the `calendar_weekday_offset_*` templates in
 // data/seed/multilingual-responses-quantities.lino.
 
-/** Spanish weekday names for the offset templates (Rust `Weekday::es`). */
-const CALENDAR_OFFSET_SPANISH_WEEKDAYS = {
-  monday: "lunes",
-  tuesday: "martes",
-  wednesday: "miércoles",
-  thursday: "jueves",
-  friday: "viernes",
-  saturday: "sábado",
-  sunday: "domingo",
-};
-
 /**
  * The seed-localized response text for an intent: the language's own entry,
  * then the `unknown` slot, then English (Rust `seed::localized_response`).
@@ -220,27 +209,6 @@ function shiftWeekdayBy(weekday, days) {
 }
 
 /**
- * The weekday's plain name for answer prose (Rust `weekday_label`).
- * @param {string} language
- * @param {object} weekday
- * @returns {string}
- */
-function calendarOffsetWeekdayLabel(language, weekday) {
-  switch (language) {
-    case "ru":
-      return weekday.ru;
-    case "hi":
-      return weekday.hi;
-    case "zh":
-      return weekday.zh;
-    case "es":
-      return CALENDAR_OFFSET_SPANISH_WEEKDAYS[weekday.slug] || weekday.en;
-    default:
-      return weekday.en;
-  }
-}
-
-/**
  * Render the stated-offset answer from the seed templates (Rust
  * `render_offset_answer`); null when no template exists.
  * @param {string} language
@@ -263,17 +231,14 @@ function renderCalendarOffsetAnswer(language, operation, source, result, offset)
   }
   const template = calendarOffsetLocalizedResponse(intent, language);
   if (!template) return null;
-  let sourceLabel = calendarOffsetWeekdayLabel(language, source);
-  if (language === "ru") {
-    sourceLabel = operation === "next" ? source.ruGenitive : source.ruInstrumental;
-  }
+  const sourceLabel = calendarWeekdayDirectionLabel(language, operation, source);
   return template
     .split("{n}").join(String(total))
     .split("{weeks}").join(String(weeks))
     .split("{days}").join(String(days))
     .split("{source}").join(sourceLabel)
-    .split("{source_plain}").join(calendarOffsetWeekdayLabel(language, source))
-    .split("{result}").join(calendarOffsetWeekdayLabel(language, result));
+    .split("{source_plain}").join(calendarWeekdayLabel(language, source))
+    .split("{result}").join(calendarWeekdayLabel(language, result));
 }
 
 // Month offsets (issue #1176), mirroring rust/src/solver_handlers/calendar/month.rs:
@@ -406,10 +371,7 @@ function tryCalendarMonthOffset(prompt, normalized) {
       `calendar_weekday_month_offset_unresolved_${operation}`,
       language,
     );
-    let source = calendarOffsetWeekdayLabel(language, weekday);
-    if (language === "ru") {
-      source = operation === "next" ? weekday.ruGenitive : weekday.ruInstrumental;
-    }
+    const source = calendarWeekdayDirectionLabel(language, operation, weekday);
     const content = template === null
       ? ""
       : template
@@ -547,9 +509,9 @@ function tryCalendarDateWeekday(prompt, normalized) {
   if (template === null) return null;
   const content = template
     .split("{date}").join(iso)
-    .split("{epoch_weekday}").join(calendarOffsetWeekdayLabel(language, weekdayAt(0)))
+    .split("{epoch_weekday}").join(calendarWeekdayLabel(language, weekdayAt(0)))
     .split("{epoch}").join("1970-01-01")
-    .split("{weekday}").join(calendarOffsetWeekdayLabel(language, weekday))
+    .split("{weekday}").join(calendarWeekdayLabel(language, weekday))
     .split("{days}").join(String(days))
     .split("{weeks}").join(String(weeks))
     .split("{rest}").join(String(rest));

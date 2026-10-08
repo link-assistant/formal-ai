@@ -4,12 +4,17 @@
 // Literal and cue offsets are compared as gaps, so they are kept in UTF-8
 // bytes exactly as the Rust original measures them.
 
-import { cleanContent, cleanPathToken, looksLikeFilePath, safeRelativePath, tokens } from './write_request.mjs';
+import {
+  bareSurfaces, cleanContent, cleanCueToken, cleanPathToken, looksLikeFilePath, safeRelativePath, tokens,
+} from './write_request.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import { quotedSegmentSpans } from './crate/normal_markov.mjs';
 import { usesPostpositions } from './crate/language.mjs';
 import { meaningsWithRole, mentionsRole } from './crate/seed_meanings.mjs';
-import { replaceAllLiteral, trim, trimStartMatches, utf16ToByte, utf8Len } from './crate/rust_str.mjs';
+import {
+  byteToUtf16, replaceAllLiteral, trim, trimStartMatches, utf16ToByte, utf8Len,
+} from './crate/rust_str.mjs';
+import { splitWhitespace } from './write_str.mjs';
 
 /**
  * Mirrors `fn literal_text` in rust/src/agentic_coding/positional_edit.rs.
@@ -36,14 +41,50 @@ function describedLiteral(span) {
 
 /**
  * Mirrors `fn compose_positional_insert` in rust/src/agentic_coding/positional_edit.rs:
- * `[target, anchor, new]` or null.
+ * `[target, anchor, new]` or null -- one insert at an anchor that stands on
+ * its own (no anchor context, one clause).
  * @param {string} request
  */
 export function composePositionalInsert(request) {
+  const inserts = positionalInserts(request);
+  if (inserts === null || inserts.length !== 1 || inserts[0].context !== null) return null;
+  const { target, anchor, inserted, after } = inserts[0];
+  return [target, anchor, after ? `${anchor}\n${inserted}` : `${inserted}\n${anchor}`];
+}
+
+/**
+ * Mirrors `fn positional_inserts`: every insert the request asks for, in its
+ * order, as `{target, anchor, inserted, after, context}`, or null unless every
+ * clause is one. Clauses are the request cut before a repeated add action
+ * that a seeded joiner or a clause mark leads (`…, and insert …`); a clause
+ * that names no file takes the one file the request names.
+ * @param {string} request
+ */
+export function positionalInserts(request) {
   // `… after the line 'x':` followed by lines: the first line is the request
   // and the lines under it are the text inserted, whatever they quote.
   const block = introducedBlock(request);
-  const sentence = block === null ? request : block.head;
+  const clauses = block === null ? insertClauses(request) : [block.head];
+  const inserts = clauses.map((clause) => clauseInsert(clause, block === null ? null : block.text));
+  if (inserts.some((insert) => insert === null)) return null;
+  const named = [...new Set(unquotedPathTokens(request).map((token) => cleanPathToken(token.text))
+    .filter((candidate) => looksLikeFilePath(candidate) && safeRelativePath(candidate)))];
+  for (const insert of inserts) {
+    if (insert.target !== null) continue;
+    if (named.length !== 1) return null;
+    insert.target = named[0];
+  }
+  return inserts;
+}
+
+/**
+ * Mirrors `fn clause_insert`: one clause's insert, its target null when the
+ * clause names no file. The anchor is the literal the position cue governs;
+ * a seeded anchor context (`the line 'y' that follows 'z'`) names a literal
+ * the anchor comes after; every other literal is a line inserted, in order,
+ * and those lines may be separated only by seeded joiners and commas.
+ */
+function clauseInsert(sentence, blockText) {
   const normalized = normalizePrompt(sentence);
   // The position is the request's, not the payload's: a cue inside a quoted
   // literal ("Insert the line «… before …» after …") is text being inserted.
@@ -52,36 +93,158 @@ export function composePositionalInsert(request) {
   const after = mentionsRole('file_edit_position_after', outside);
   const before = mentionsRole('file_edit_position_before', outside);
   if (after === before || !mentionsRole('coding_member_add_action', normalized)) return null;
-  const literals = quotedLiterals(sentence);
-  if (literals.length !== (block === null ? 2 : 1)) return null;
   const target = unquotedPathTokens(sentence)
     .map((token) => cleanPathToken(token.text))
-    .find((candidate) => looksLikeFilePath(candidate) && safeRelativePath(candidate));
-  if (target === undefined) return null;
-  let inserted;
-  let anchor;
-  if (block === null) {
-    const [first, second] = literals;
-    const role = after ? 'file_edit_position_after' : 'file_edit_position_before';
-    const governed = cueGovernedLiteral(request, role, first, second);
-    if (governed === null) return null;
-    const [insertedLiteral, anchorLiteral] = governed === 1 ? [first, second] : [second, first];
-    inserted = unescapeProseNewlines(insertedLiteral.text);
-    anchor = unescapeProseNewlines(anchorLiteral.text);
-  } else {
-    inserted = block.text;
-    anchor = unescapeProseNewlines(literals[0].text);
+    .find((candidate) => looksLikeFilePath(candidate) && safeRelativePath(candidate)) ?? null;
+  const literals = quotedLiterals(sentence).filter((literal) => literal.text !== target);
+  const contexts = cueOccurrences(sentence, 'file_edit_anchor_context_cue');
+  const role = after ? 'file_edit_position_after' : 'file_edit_position_before';
+  // A position word inside the context cue ("के बाद आने वाली") is the
+  // context's, not the anchor's.
+  const positions = cueOccurrences(sentence, role)
+    .filter(([start]) => !contexts.some(([from, to]) => start >= from && start < to));
+  if (blockText !== null) {
+    if (literals.length !== 1 || contexts.length > 0) return null;
+    return { target, anchor: unescapeProseNewlines(literals[0].text), inserted: blockText, after, context: null };
   }
-  const replacement = after ? `${anchor}\n${inserted}` : `${inserted}\n${anchor}`;
-  return [target, anchor, replacement];
+  if (literals.length < 2) return null;
+  const indices = literals.map((_, index) => index);
+  const anchorAt = governedLiteral(positions, literals, indices);
+  if (anchorAt === null) return null;
+  let contextAt = null;
+  if (contexts.length > 0) {
+    contextAt = governedLiteral(contexts, literals, indices.filter((index) => index !== anchorAt));
+    if (contextAt === null) return null;
+  }
+  const inserted = literals.filter((_, index) => index !== anchorAt && index !== contextAt);
+  if (inserted.length === 0 || !joinedOnly(sentence, inserted)) return null;
+  return {
+    target,
+    anchor: unescapeProseNewlines(literals[anchorAt].text),
+    inserted: inserted.map((literal) => unescapeProseNewlines(literal.text)).join('\n'),
+    after,
+    context: contextAt === null ? null : unescapeProseNewlines(literals[contextAt].text),
+  };
+}
+
+/**
+ * Mirrors `fn anchor_context`: `{text, start, end}` -- the literal a seeded
+ * anchor context names (`that follows 'z'`) and the span from the cue
+ * through it (UTF-16 offsets), or null.
+ * @param {string} sentence
+ */
+export function anchorContext(sentence) {
+  const contexts = cueOccurrences(sentence, 'file_edit_anchor_context_cue');
+  if (contexts.length === 0) return null;
+  const literals = quotedLiterals(sentence);
+  const at = governedLiteral(contexts, literals, literals.map((_, index) => index));
+  if (at === null) return null;
+  const literal = literals[at];
+  // The cue that governs the literal: the nearest on its language's side.
+  let cue = null;
+  for (const occurrence of contexts) {
+    const [cueStart, cueEnd, postpositional] = occurrence;
+    const distance = postpositional ? cueStart - literal.end : literal.start - cueEnd;
+    if (distance >= 0 && (cue === null || distance < cue[0])) cue = [distance, occurrence];
+  }
+  const [cueStart, cueEnd, postpositional] = cue[1];
+  const start = postpositional ? literal.from : byteToUtf16(sentence, cueStart);
+  const end = postpositional ? byteToUtf16(sentence, cueEnd) : literal.to;
+  return { text: unescapeProseNewlines(literal.text), start, end };
+}
+
+/**
+ * Mirrors `fn insert_clauses`: the request cut before every repeated add
+ * action that a seeded joiner or a clause mark leads -- after it, in a
+ * postpositional language, whose verb closes its clause.
+ */
+function insertClauses(request) {
+  const segments = quotedSegmentSpans(request);
+  const toks = tokens(request);
+  const quoted = (token) => segments.some((segment) => token.start < segment.end && token.end > segment.start);
+  const joiners = bareSurfaces('file_edit_joiner_cue');
+  const joins = (token) => token !== undefined && !quoted(token) && joiners.includes(cleanCueToken(token.text));
+  const closes = (token) => /[,;\u0964]$/u.test(token.text);
+  const actions = new Map();
+  for (const meaning of meaningsWithRole('coding_member_add_action')) {
+    for (const lexeme of meaning.lexemes) {
+      for (const word of lexeme.words) actions.set(word.text.toLowerCase(), usesPostpositions(lexeme.language));
+    }
+  }
+  // Only a repeated action opens a clause: the first one (the last, where the
+  // verb closes its clause) belongs to the clause before it.
+  const verbs = toks.map((token, index) => [index, actions.get(cleanCueToken(token.text))])
+    .filter(([index, postpositional]) => postpositional !== undefined && !quoted(toks[index]));
+  const cuts = [];
+  verbs.forEach(([index, postpositional], at) => {
+    const token = toks[index];
+    if (!postpositional && at > 0) {
+      if (joins(toks[index - 1])) cuts.push([toks[index - 1].start, toks[index - 1].end]);
+      else if (closes(toks[index - 1])) cuts.push([token.start, token.start]);
+    } else if (postpositional && at + 1 < verbs.length) {
+      if (joins(toks[index + 1])) cuts.push([toks[index + 1].start, toks[index + 1].end]);
+      else if (closes(token)) cuts.push([token.end, token.end]);
+    }
+  });
+  const clauses = [];
+  let from = 0;
+  for (const [start, end] of cuts) {
+    // Two verbs may claim one joiner; the second claim is already made.
+    if (start < from) continue;
+    clauses.push(request.slice(from, start));
+    from = end;
+  }
+  clauses.push(request.slice(from));
+  return clauses.map((clause) => clause.trim()).filter((clause) => clause !== '');
+}
+
+/**
+ * Mirrors `fn joined_only`: consecutive inserted literals are separated by
+ * nothing but whitespace, commas and seeded joiners (`'a' and 'b'`).
+ */
+function joinedOnly(sentence, literals) {
+  const joiners = bareSurfaces('file_edit_joiner_cue');
+  return literals.slice(1).every((literal, index) => splitWhitespace(sentence.slice(literals[index].to, literal.from))
+    .map(cleanCueToken).every((word) => word === '' || joiners.includes(word)));
+}
+
+/**
+ * Mirrors `fn cue_occurrences`: `[start, end, postpositional]` in UTF-8 bytes
+ * for every surface of `role` in `sentence` outside its quoted literals, each
+ * with the side its own language's adposition governs.
+ */
+function cueOccurrences(sentence, role) {
+  const lowered = sentence.toLowerCase();
+  const literals = quotedLiterals(sentence);
+  const insideLiteral = (start) => literals.some((literal) => start >= literal.start && start < literal.end);
+  const occurrences = [];
+  for (const meaning of meaningsWithRole(role)) {
+    for (const lexeme of meaning.lexemes) {
+      const postpositional = usesPostpositions(lexeme.language);
+      for (const word of lexeme.words) {
+        const surface = word.text.toLowerCase();
+        if (surface === '') continue;
+        let from = 0;
+        for (;;) {
+          const at = lowered.indexOf(surface, from);
+          if (at < 0) break;
+          const start = utf16ToByte(lowered, at);
+          if (!insideLiteral(start)) occurrences.push([start, start + utf8Len(surface), postpositional]);
+          from = at + surface.length;
+        }
+      }
+    }
+  }
+  return occurrences;
 }
 
 /**
  * Mirrors `fn introduced_block`: a request whose first line ends in a colon
  * and is followed by lines -- `{head, text}`, the lines with their shared
- * indentation removed (one quoted literal stands for itself), or null.
+ * indentation removed (one quoted literal stands for itself; a fenced block
+ * keeps its own), or null.
  */
-function introducedBlock(request) {
+export function introducedBlock(request) {
   const breakAt = request.indexOf('\n');
   if (breakAt < 0) return null;
   const head = request.slice(0, breakAt).trimEnd();
@@ -91,9 +254,13 @@ function introducedBlock(request) {
   while (lines.length > 0 && lines[lines.length - 1] === '') lines.pop();
   if (lines.length === 0) return null;
   const indentOf = (line) => line.length - line.trimStart().length;
-  const shared = Math.min(...lines.filter((line) => line !== '').map(indentOf));
-  const text = lines.map((line) => line.slice(Math.min(shared, indentOf(line)))).join('\n');
-  return { head, text: quotedVerbatim(text) ?? text };
+  // A fenced block (```` ``` ```` lines around it) is kept as written, less
+  // the fence's own indentation: its indentation is the text's.
+  const fenced = lines.length >= 2 && lines[0].trimStart().startsWith(FENCE) && lines[lines.length - 1].trim() === FENCE;
+  const body = fenced ? lines.slice(1, -1) : lines;
+  const shared = fenced ? indentOf(lines[0]) : Math.min(...lines.filter((line) => line !== '').map(indentOf));
+  const text = body.map((line) => line.slice(Math.min(shared, indentOf(line)))).join('\n');
+  return { head, text: fenced ? text : quotedVerbatim(text) ?? text };
 }
 
 /**
@@ -118,38 +285,19 @@ function quotedLiterals(request) {
   return quotedSegmentSpans(request).map((segment) => ({
     start: utf16ToByte(request, segment.start),
     end: utf16ToByte(request, segment.end),
+    from: segment.start,
+    to: segment.end,
     text: segment.text,
   }));
 }
 
 /**
- * Mirrors `fn cue_governed_literal`: 0 or 1, or null when the cue occurs but
- * governs neither literal (a time, not a position: issue #1069).
+ * Mirrors `fn governed_literal`: which of the `candidates` (literal indices) a
+ * cue governs -- the nearest on the side its language's adposition faces, a
+ * later one on a tie -- or null when the cue occurs but governs none (a time,
+ * not a position: issue #1069). With no cue at all, the last candidate.
  */
-function cueGovernedLiteral(request, role, first, second) {
-  const lowered = request.toLowerCase();
-  // A cue word inside a quoted literal is payload ("Insert the line «… before
-  // …» after …"), never the position the request asks for.
-  const literals = quotedLiterals(request);
-  const insideLiteral = (start) => literals.some((literal) => start >= literal.start && start < literal.end);
-  const occurrences = [];
-  for (const meaning of meaningsWithRole(role)) {
-    for (const lexeme of meaning.lexemes) {
-      const postpositional = usesPostpositions(lexeme.language);
-      for (const word of lexeme.words) {
-        const surface = word.text.toLowerCase();
-        if (surface === '') continue;
-        let from = 0;
-        for (;;) {
-          const at = lowered.indexOf(surface, from);
-          if (at < 0) break;
-          const start = utf16ToByte(lowered, at);
-          if (!insideLiteral(start)) occurrences.push([start, start + utf8Len(surface), postpositional]);
-          from = at + surface.length;
-        }
-      }
-    }
-  }
+function governedLiteral(occurrences, literals, candidates) {
   const gap = (literal) => {
     let best = null;
     for (const [cueStart, cueEnd, postpositional] of occurrences) {
@@ -158,14 +306,20 @@ function cueGovernedLiteral(request, role, first, second) {
     }
     return best;
   };
-  const before = gap(first);
-  const later = gap(second);
-  if (before !== null && later !== null) return later <= before ? 1 : 0;
-  if (before !== null) return 0;
-  if (later === null && occurrences.length) return null;
-  return 1;
+  let governed = null;
+  let nearest = null;
+  for (const index of candidates) {
+    const distance = gap(literals[index]);
+    if (distance !== null && (nearest === null || distance <= nearest)) {
+      governed = index;
+      nearest = distance;
+    }
+  }
+  if (governed !== null) return governed;
+  return occurrences.length > 0 || candidates.length === 0 ? null : candidates[candidates.length - 1];
 }
 
+const FENCE = '```';
 const LEADING_MARKS = new Set([':', '-', '—', '–']);
 
 function quotedVerbatim(span) {
@@ -183,6 +337,16 @@ function quotedVerbatim(span) {
   if (first !== last || (first !== '"' && first !== '`')) return null;
   const inner = trimmed.slice(1, trimmed.length - 1);
   return inner.includes(first) ? null : inner;
+}
+
+/**
+ * Mirrors `fn own_text`: the words a request says itself -- the head of an edit
+ * request whose lines follow it (the lines are its payload), else the request.
+ * @param {string} request
+ */
+export function ownText(request) {
+  const block = introducedBlock(request);
+  return block !== null && namesLocalEdit(block.head) ? block.head : request;
 }
 
 /**

@@ -151,10 +151,21 @@ pub const DIAGRAM_PATH: &str = "agentic-recipes.md";
 /// Keywords that mark a user turn as the diagram-generation task.
 const DIAGRAM_KEYWORDS: [&str; 4] = ["mermaid", "diagram", "visual overview", "flowchart"];
 
-/// Whether `prompt` asks to generate the agentic-recipe diagrams (issue #538).
+/// Whether `prompt` asks to generate the agentic-recipe diagrams (issue #538);
+/// a keyword inside a quoted literal is payload and does not count.
 #[must_use]
 pub fn is_diagram_task(prompt: &str) -> bool {
-    let lower = prompt.to_lowercase();
+    // A cue inside a quoted literal is payload, not the request: "Insert the
+    // line 'js/mermaid.bundle.js' after …" is an edit (PR #1188 dogfood T70).
+    let mut unquoted = String::new();
+    let mut cursor = 0;
+    for segment in crate::normal_markov::quoted_segment_spans(prompt) {
+        unquoted.push_str(&prompt[cursor..segment.start]);
+        unquoted.push(' ');
+        cursor = segment.end;
+    }
+    unquoted.push_str(&prompt[cursor..]);
+    let lower = unquoted.to_lowercase();
     DIAGRAM_KEYWORDS
         .iter()
         .any(|keyword| lower.contains(keyword))

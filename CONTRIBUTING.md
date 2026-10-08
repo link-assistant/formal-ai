@@ -121,6 +121,22 @@ the local Formal AI server:
 solve ISSUE_URL --tool agent --model formal-ai --attach-logs --verbose
 ```
 
+### Formal AI as a subagent on its own requirements (R1026)
+
+Keep what you produce while working on Formal AI in the repository, not in a
+private scratchpad, whenever it is worth keeping: probe tools, the gaps found
+by probing, task prompts, claims and sandboxes. Formal AI can then read, edit
+and run it like any other workspace file. The shared folder is
+`experiments/formal_ai_subagent/`, and its `README.md` describes the loop:
+
+1. Delegate a small edit with
+   `node experiments/js_dogfood/drive.mjs --dir <sandbox-or-repo-root> "<instruction>"`.
+2. When it fails, probe the cause with `experiments/formal_ai_subagent/probe.mjs`.
+3. Fix the cause generally in both roots, add a regression test, and have
+   Formal AI record the result in the dogfood ledger.
+
+Formal AI keeps its own gap list (`gaps.md`) there too.
+
 ### Delegate the next commit to Formal AI: task issue, bot branch, review, merge
 
 The replay above runs the loop by hand on one machine. The loop we actually

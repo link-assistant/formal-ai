@@ -2,28 +2,28 @@ self_ast_census
   target src/solver_handlers/calendar_create.rs
   language rust
   fidelity signature
-  byte_len 22631
-  line_count 628
-  content_id source_module_08ab3a4363e809f6
+  byte_len 23047
+  line_count 636
+  content_id source_module_e7a25ee7351e7803
   symbol_count 20
   symbols
     function try_calendar_create_event 38 56
-    function try_routed_calendar_create_event 65 157
-    function default_title 160 167
-    function calendar_claims 173 175
-    function mentions_calendar_create_request 177 229
-    function extract_day_number 231 270
-    function relative_date_offset 272 285
-    function extract_event_title 287 295
-    function compute_target_date_with_rollover 297 317
-    function extract_clock_time 319 366
-    function extract_spoken_hour_time 368 399
-    struct PlaceZone 403 407
-    function resolve_timezone 422 458
-    function normalize_zone_text 462 477
-    function extract_title 479 510
-    function extract_participant_title 512 518
-    function tidy_title 520 565
-    function strip_action_words 567 581
-    function capitalize_first 583 588
-    function render_create_confirmation 590 628
+    function try_routed_calendar_create_event 65 165
+    function default_title 168 175
+    function calendar_claims 181 183
+    function mentions_calendar_create_request 185 237
+    function extract_day_number 239 278
+    function relative_date_offset 280 293
+    function extract_event_title 295 303
+    function compute_target_date_with_rollover 305 325
+    function extract_clock_time 327 374
+    function extract_spoken_hour_time 376 407
+    struct PlaceZone 411 415
+    function resolve_timezone 430 466
+    function normalize_zone_text 470 485
+    function extract_title 487 518
+    function extract_participant_title 520 526
+    function tidy_title 528 573
+    function strip_action_words 575 589
+    function capitalize_first 591 596
+    function render_create_confirmation 598 636

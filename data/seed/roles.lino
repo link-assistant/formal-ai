@@ -353,11 +353,17 @@ roles
     kind meaning
   file_edit_action_cue
     kind predicate
+  file_edit_anchor_context_cue
+    kind predicate
   file_edit_blank_line
     kind meaning
+  file_edit_joiner_cue
+    kind predicate
   file_edit_line_lead
     kind predicate
   file_edit_new_lead_cue
+    kind predicate
+  file_edit_old_lead_cue
     kind predicate
   file_edit_position_after
     kind meaning
@@ -459,6 +465,16 @@ roles
     kind meaning
   lexical_meta
     kind predicate
+  line_adjacent_above
+    kind meaning
+  line_adjacent_below
+    kind meaning
+  line_move_action
+    kind meaning
+  line_range_connector
+    kind meaning
+  line_swap_action
+    kind meaning
   links_notation_format
     kind meaning
   links_root
@@ -557,6 +573,10 @@ roles
     kind meaning
   number_property
     kind predicate
+  numbered_line_lead
+    kind meaning
+  numbered_line_noun
+    kind meaning
   numeric_concept
     kind predicate
   observable_task_action

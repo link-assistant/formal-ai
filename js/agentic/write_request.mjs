@@ -447,8 +447,11 @@ export function composeEditRequest(request) {
   const newLead = toks.find((token) => token.start >= actionEnd && unquoted.has(token.start)
     && newLeads.includes(cleanCueToken(token.text)));
   if (!newLead) return null;
-  if (fileClauseStart >= actionEnd && fileClauseStart < newLead.start) return null;
-  const oldSpan = request.slice(actionEnd, newLead.start);
+  // `Bump the version in package.json to 1.1.0`: a file clause right before
+  // the new lead ends the old text; anything else between them is no edit.
+  const fileBetween = fileClauseStart >= actionEnd && fileClauseStart < newLead.start;
+  if (fileBetween && request.slice(toks[fileIndex].end, newLead.start).trim() !== '') return null;
+  const oldSpan = request.slice(actionEnd, fileBetween ? fileClauseStart : newLead.start);
   const containing = proseSentences(request).find((sentence) => spanContains(spanOf(sentence), newLead.end));
   let sentenceEnd = request.length;
   if (containing) {

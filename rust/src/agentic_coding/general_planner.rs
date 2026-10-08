@@ -9,9 +9,9 @@ use super::shell_command_policy::prose_sentences;
 use super::write_request::{
     CueFamily, Token, WriteBinding, action_cue_start_after, bare_surfaces, clean_cue_token,
     clean_content, clean_path_token, content_lead_close, first_action_cue_end,
-    first_content_lead_end, first_prefix_lead_end, honouring_pinned_first_line,
-    looks_like_file_path, payload_continues_past_its_first_line, ranked_bindings,
-    safe_relative_path, tokens,
+    first_action_cue_start, first_content_lead_end, first_prefix_lead_end,
+    honouring_pinned_first_line, looks_like_file_path, payload_continues_past_its_first_line,
+    ranked_bindings, safe_relative_path, tokens,
 };
 use crate::engine::stable_id;
 use crate::intent_formalization::formalize_intent;
@@ -41,6 +41,33 @@ fn describes_code_to_author(request: &str, content: &str) -> bool {
             &crate::engine::normalize_prompt(content),
         ))
         || asks_to_author_code(&prose_around(request, content))
+}
+
+/// `Add <content> to <file>` -- the write verb is the seeded add action and
+/// the content comes before the file -- names an addition to that file, never
+/// its whole new content.
+///
+/// Writing it as the file replaced `m.test.mjs` with the sentence "an
+/// assertion that add(2, 2) equals 4" (PR #1188 dogfooding). Content a seeded
+/// content lead introduces (`containing`, `with exactly this content:`) is
+/// still the file's bytes.
+fn names_an_addition(request: &str, content: &str, target: &str) -> bool {
+    let toks = tokens(request);
+    let (Some(start), Some(end)) = (first_action_cue_start(&toks), first_action_cue_end(&toks))
+    else {
+        return false;
+    };
+    if content.is_empty() || first_content_lead_end(&request.to_lowercase()).is_some() {
+        return false;
+    }
+    request
+        .find(content)
+        .zip(request.find(target))
+        .is_some_and(|(at, file)| at < file)
+        && seed::lexicon().mentions_role(
+            seed::ROLE_CODING_MEMBER_ADD_ACTION,
+            &crate::engine::normalize_prompt(&request[start..end]),
+        )
 }
 
 /// The request itself asks to write a code construct (`Write a Python
@@ -239,7 +266,10 @@ pub fn compose_general_change_plan(full_request: &str) -> Option<GeneralChangePl
     if !safe_relative_path(&target) {
         return None;
     }
-    if command_output.is_none() && describes_code_to_author(request, &content) {
+    if command_output.is_none()
+        && (describes_code_to_author(request, &content)
+            || names_an_addition(request, &content, &target))
+    {
         return None;
     }
     let response_language = language(request);

@@ -148,7 +148,11 @@ js/app.js
 js/vendor.bundle.js
 js/ocr.bundle.js
 js/web-search-component.bundle.js
+js/mermaid.bundle.js
 
 # Per-answer derivation records written by the engine at run time (issue #1184).
 data/cache/derivations/
 rust/data/cache/derivations/
+
+# Formal AI subagent sandboxes: copies of files a delegated task edits (see experiments/formal_ai_subagent/README.md).
+experiments/formal_ai_subagent/sandboxes/

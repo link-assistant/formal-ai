@@ -47,7 +47,9 @@
 //! `rust/tests/web/issue-0918-handler-rules-batch.test.mjs`.
 
 use formal_ai::event_log::EventLog;
-use formal_ai::rule_interpreter::{handler_claims, handler_policy, rules, run_handler};
+use formal_ai::rule_interpreter::{
+    handler_claims, handler_policy, handler_table_value, rules, run_handler,
+};
 use formal_ai::{ConversationTurn, FormalAiEngine, UniversalSolver};
 
 const TOPIC_EN: &str = "We can talk about existence. I can start with a short definition, context, or a specific question; when web search is available, public facts can be checked against an external source.";
@@ -625,4 +627,116 @@ fn the_document_plan_renders_the_seeded_plan_in_every_prompt_language() {
         formal_ai::rule_interpreter::handler_table_value("document_output_fence", "TOML"),
         Some("")
     );
+}
+
+/// The calendar rows (issue #918): the weekday names with the Russian case a
+/// direction phrase takes, the default event title and every cue list of the
+/// event parser are `calendar_*` tables of the rule document; the relation
+/// and confirmation sentences are seeded responses. The browser twin pins the
+/// same strings for the same prompts.
+const CALENDAR_RELATIONS: [(&str, &str); 9] = [
+    (
+        "What day of the week comes after Tuesday?",
+        "The day after Tuesday is Wednesday. I move Tuesday by +1 in the seven-day calendar cycle.",
+    ),
+    (
+        "What day comes before Monday?",
+        "The day before Monday is Sunday. I move Monday by -1 in the seven-day calendar cycle.",
+    ),
+    (
+        "какой день недели перед средой",
+        "Перед средой идёт вторник. Я сдвинул среда на -1 в семидневном календарном цикле.",
+    ),
+    (
+        "следующий день после воскресенья",
+        "После воскресенья наступает понедельник. Я сдвинул воскресенье на +1 в семидневном календарном цикле.",
+    ),
+    (
+        "सोमवार के बाद कौन सा दिन आता है",
+        "सोमवार के बाद मंगलवार आता है। मैं सात दिनों के कैलेंडर चक्र में सोमवार को +1 दिन सरकाता हूँ।",
+    ),
+    (
+        "सोमवार से पहले कौन सा दिन आता है",
+        "सोमवार से पहले रविवार आता है। मैं सात दिनों के कैलेंडर चक्र में सोमवार को -1 दिन सरकाता हूँ।",
+    ),
+    (
+        "星期一之后是星期几",
+        "星期一之后是星期二。我在七天的日历循环中将星期一移动+1天。",
+    ),
+    (
+        "星期三之前是星期几",
+        "星期三之前是星期二。我在七天的日历循环中将星期三移动-1天。",
+    ),
+    (
+        "какой день будет через 100 дней после понедельника?",
+        "Через 100 дней после понедельника — среда. 100 дней = 14 недель + 2 дня; понедельник + 2 дня = среда в семидневном календарном цикле.",
+    ),
+];
+
+#[test]
+fn the_weekday_relations_render_the_seeded_names_and_sentences() {
+    for (prompt, expected) in CALENDAR_RELATIONS {
+        let response = FormalAiEngine.answer(prompt);
+        assert_eq!(response.intent, "calendar_weekday_relation", "{prompt}");
+        assert_eq!(response.answer, expected, "{prompt}");
+    }
+    assert_eq!(
+        handler_table_value("calendar_weekday_label", "monday.ru.next"),
+        Some("понедельника")
+    );
+    assert_eq!(
+        handler_table_value("calendar_default_title", "es"),
+        Some("Event")
+    );
+}
+
+/// A confirmation with its volatile parts (the ICS block, the Google Calendar
+/// link, the event date and the Russian day number) replaced by named slots,
+/// so the seeded sentence around them is pinned exactly.
+fn confirmation_shape(answer: &str) -> String {
+    const END: &str = "END:VCALENDAR\r\n";
+    let start = answer.find("BEGIN:VCALENDAR").expect("an ICS block");
+    let end = answer.find(END).expect("the ICS end") + END.len();
+    let ics = &answer[start..end];
+    let stamp = ics
+        .split("DTSTART;TZID=")
+        .nth(1)
+        .and_then(|rest| rest.split_once(':'))
+        .map(|(_, value)| value[..8].to_owned())
+        .expect("a start stamp");
+    let date = format!("{}-{}-{}", &stamp[..4], &stamp[4..6], &stamp[6..8]);
+    let day = stamp[6..8].trim_start_matches('0');
+    let link = answer.find("https://calendar.google.com").expect("a link");
+    let url = answer[link..].split('\n').next().unwrap_or_default();
+    answer
+        .replace(ics, concat!("{", "ics}"))
+        .replace(url, concat!("{", "url}"))
+        .replace(&date, concat!("{", "date}"))
+        .replace(&format!("на {day} число"), concat!("на {", "day} число"))
+}
+
+#[test]
+fn an_event_confirmation_renders_the_seeded_sentence_in_every_prompt_language() {
+    for (prompt, expected) in [
+        (
+            "schedule a call for tomorrow",
+            "Create event «Call» on {date}. Time: 17:00, timezone: UTC. Duration 60 minutes.\nImport this .ics file into any calendar:\n{ics}\nOr open it in Google Calendar (no login required):\n{url}\nReply 'yes' to confirm.",
+        ),
+        (
+            "поставь созвон на завтра",
+            "Создать событие «Созвон» на {day} число ({date}). Время: 17:00, часовой пояс: UTC. Длительность 60 минут.\nИмпортируйте этот файл .ics в любой календарь:\n{ics}\nИли откройте в Google Календаре (вход не требуется):\n{url}\nОтветьте «да», чтобы подтвердить.",
+        ),
+        (
+            "कल मीटिंग शेड्यूल करें",
+            "{date} (17:00, समय क्षेत्र UTC) पर «मीटिंग» कार्यक्रम बनाएँ। अवधि 60 मिनट।\nइस .ics फ़ाइल को किसी भी कैलेंडर में आयात करें:\n{ics}\nया Google Calendar में खोलें (लॉगिन आवश्यक नहीं):\n{url}\nपुष्टि के लिए «हाँ» उत्तर दें।",
+        ),
+        (
+            "明天安排一个通话",
+            "在 {date}（17:00，时区 UTC）创建事件「通话」。时长 60 分钟。\n将此 .ics 文件导入任何日历：\n{ics}\n或在 Google 日历中打开（无需登录）：\n{url}\n回复「是」以确认。",
+        ),
+    ] {
+        let response = FormalAiEngine.answer(prompt);
+        assert_eq!(response.intent, "calendar_create_event", "{prompt}");
+        assert_eq!(confirmation_shape(&response.answer), expected, "{prompt}");
+    }
 }

@@ -187,7 +187,10 @@ async function planChatStepRoutes(messages, toolNames, received) {
   const effective = continuedAgentTask(messages, received) ?? received;
   const task = objectiveText(effective);
   traceRoute('agentic_task', task);
-  if (handlerMatches('conversation_control', task) || isContinuationCue(task) || looksLikeSkillDescription(task)) {
+  if (handlerMatches('conversation_control', task) || isContinuationCue(task)
+    // An edit request's block is its payload: a `when … then` inside it is text
+    // being written, not a skill being taught (PR #1188 T57).
+    || looksLikeSkillDescription(positionalEdit.ownText(task))) {
     return null;
   }
   const computerUse = computerUsePlanAgenticStep(messages, toolNames);

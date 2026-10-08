@@ -2,22 +2,23 @@ self_ast_census
   target src/rule_interpreter/parser.rs
   language rust
   fidelity signature
-  byte_len 12032
-  line_count 333
-  content_id source_module_5b97f14f4638b914
-  symbol_count 14
+  byte_len 13957
+  line_count 382
+  content_id source_module_c546927be73775f7
+  symbol_count 15
   symbols
-    function first_arg 9 14
-    function error 16 20
-    function parse_tree 27 56
-    function attach 58 63
-    function tokenize 65 88
-    function policy_value 91 106
-    function parse_rule 108 185
-    function parse_conditions 187 189
-    function parse_condition 191 226
-    function split_subject 228 240
-    function parse_shape 242 251
-    function parse_subject 253 263
-    function parse_value 265 322
-    function parse_value_ref 324 333
+    function first_arg 12 17
+    function error 19 23
+    function parse_tree 30 59
+    function attach 61 66
+    function tokenize 68 91
+    function policy_value 94 109
+    function tables 113 134
+    function parse_rule 136 213
+    function parse_conditions 215 217
+    function parse_condition 219 255
+    function split_subject 257 269
+    function parse_shape 271 280
+    function parse_subject 282 292
+    function parse_value 294 371
+    function parse_value_ref 373 382

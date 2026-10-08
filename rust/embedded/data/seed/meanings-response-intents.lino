@@ -1314,3 +1314,75 @@ meanings
     unit "not applicable"
     example "One retrieved statement about the compiler, followed by its page address and digest."
     grounding "data/seed/multilingual-responses-entities.lino"
+  numbered_lines_removed
+    defined-by answer
+    role localized_response_template
+    precondition "a request deleted numbered lines of a file and the digest check confirmed it"
+    effect "the removed line numbers or range and the file are stated"
+    unit "not applicable"
+    example "Deleted line(s) 2-3 of `f.txt` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  numbered_line_insert_after
+    defined-by answer
+    role localized_response_template
+    precondition "a request inserted text after a numbered line of a file and the digest check confirmed it"
+    effect "the inserted text, the line number and the file are stated"
+    unit "not applicable"
+    example "Inserted `X` after line 2 of `f.txt` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  numbered_line_insert_before
+    defined-by answer
+    role localized_response_template
+    precondition "a request inserted text before a numbered line of a file and the digest check confirmed it"
+    effect "the inserted text, the line number and the file are stated"
+    unit "not applicable"
+    example "Inserted `X` before line 1 of `f.txt` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  line_moved_start
+    defined-by answer
+    role localized_response_template
+    precondition "a request moved a quoted line to the start of a file and the digest check confirmed it"
+    effect "the moved line and the file are stated"
+    unit "not applicable"
+    example "Moved `gamma = 3` to the start of `cfg.toml` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  line_moved_end
+    defined-by answer
+    role localized_response_template
+    precondition "a request moved a quoted line to the end of a file and the digest check confirmed it"
+    effect "the moved line and the file are stated"
+    unit "not applicable"
+    example "Moved `alpha = 1` to the end of `cfg.toml` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  line_moved_after
+    defined-by answer
+    role localized_response_template
+    precondition "a request moved a quoted line after an anchor line and the digest check confirmed it"
+    effect "the moved line, the anchor and the file are stated"
+    unit "not applicable"
+    example "Moved `alpha = 1` after `beta = 2` in `cfg.toml` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  line_moved_before
+    defined-by answer
+    role localized_response_template
+    precondition "a request moved a quoted line before an anchor line and the digest check confirmed it"
+    effect "the moved line, the anchor and the file are stated"
+    unit "not applicable"
+    example "Moved `alpha = 1` before `gamma = 3` in `cfg.toml` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  lines_swapped
+    defined-by answer
+    role localized_response_template
+    precondition "a request exchanged two quoted lines of a file and the digest check confirmed it"
+    effect "the two lines and the file are stated"
+    unit "not applicable"
+    example "Swapped `alpha = 1` and `beta = 2` in `cfg.toml` and observed the result."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  coding_workspace_fragment_refused
+    defined-by answer
+    role localized_response_template
+    precondition "a computed change would drop most of a file and the request does not state that extent"
+    effect "the change is refused and the file is left untouched"
+    unit "not applicable"
+    example "Refused to change `f.txt`: the computed result would drop most of the file."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"

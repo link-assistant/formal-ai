@@ -2,23 +2,28 @@ self_ast_census
   target src/proof_engine/types.rs
   language rust
   fidelity signature
-  byte_len 11795
-  line_count 273
-  content_id source_module_21c6114333e19ca7
-  symbol_count 15
+  byte_len 9178
+  line_count 258
+  content_id source_module_1ada0eab50a35d5a
+  symbol_count 20
   symbols
     enum ProofMethod 13 35
     function slug 41 54
-    function label 58 101
-    enum StepKind 106 113
-    function label 118 145
-    struct ProofStep 151 154
-    struct Proof 160 165
-    enum ProofOutcome 171 194
-    function status_slug 199 206
-    function method 210 216
-    struct ProofRenderConfig 237 240
-    function default 243 248
-    function show_interpretation 255 257
-    function ask_follow_ups 262 264
-    function is_terse 270 272
+    const ALL 57 57
+    function from_slug 72 74
+    function label 79 81
+    enum StepKind 86 93
+    const ALL 97 97
+    function slug 108 117
+    function from_slug 121 123
+    function label 128 130
+    struct ProofStep 136 139
+    struct Proof 145 150
+    enum ProofOutcome 156 179
+    function status_slug 184 191
+    function method 195 201
+    struct ProofRenderConfig 222 225
+    function default 228 233
+    function show_interpretation 240 242
+    function ask_follow_ups 247 249
+    function is_terse 255 257

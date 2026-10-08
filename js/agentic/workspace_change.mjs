@@ -10,7 +10,9 @@ import { composeEditRequest } from './general_planner.mjs';
 import { editArguments } from './intent_router.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
-import { composePositionalInsert, unescapeProseNewlines, unquotedPathTokens } from './positional_edit.mjs';
+import {
+  anchorContext, composePositionalInsert, introducedBlock, positionalInserts, unescapeProseNewlines, unquotedPathTokens,
+} from './positional_edit.mjs';
 import { bareSurfaces, cleanCueToken, cleanPathToken, looksLikeFilePath, safeRelativePath, tokens } from './write_request.mjs';
 import { commandArgument, failureMessage } from './tool_result.mjs';
 import { quotedSegmentSpans, quotedSegments, unwrapTransportQuotes } from './crate/normal_markov.mjs';
@@ -20,8 +22,10 @@ import {
   RewriteScope, executeScopedWorkspaceRewrite, isIdentifierWord, wordScopedMatches,
 } from './crate/workspace_change_learning.mjs';
 import { meaningEvidencedIn, mentionsRole, wordsForRole } from './write_lexicon.mjs';
+import { assignedSetting, replacedLines, statedOldValue } from './workspace_setting.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import { isAsciiAlphanumeric, lines, matchIndices, splitWhitespace, trim } from './write_str.mjs';
+import { dropsMostOfFile, groundedLineOperation, namedTargetAndPayloads } from './workspace_line_operation.mjs';
 
 const eqIgnoreAsciiCase = (left, right) => left.replace(/[A-Z]/g, (c) => c.toLowerCase()) === right.replace(/[A-Z]/g, (c) => c.toLowerCase());
 const finalOrNull = (text) => (text === null ? null : finalAnswer(text));
@@ -40,10 +44,16 @@ export function planWorkspaceChangeStep(rawTask, messages, toolNames) {
   const currentTurn = messages.slice(evidenceWindowStart(messages));
   const change = compositeModuleChange(task);
   if (change) return planCompositeStep(task, currentTurn, toolNames, change);
+  // A whole-line operation (numbered, adjacent, moved, swapped lines) is read
+  // before a rewrite: `move 'x' after 'y'` is not an insertion (PR #1188).
+  const lineOperation = groundedLineOperation(task);
+  if (lineOperation) return planComputedChangeStep(task, currentTurn, toolNames, { ...lineOperation, edit: changedLinesEdit });
+  const inserts = insertSequence(task);
+  if (inserts) return planInsertSequenceStep(task, currentTurn, toolNames, inserts);
   const rewrite = groundedRewrite(task);
   if (rewrite) return planRewriteStep(task, currentTurn, toolNames, rewrite);
   const computed = groundedEndInsertion(task) ?? groundedRemoval(task) ?? groundedDeclarationRemoval(task)
-    ?? groundedSetting(task) ?? groundedTypoFix(task);
+    ?? groundedLineReplacement(task) ?? groundedSetting(task) ?? groundedTypoFix(task);
   return computed ? planComputedChangeStep(task, currentTurn, toolNames, computed) : null;
 }
 
@@ -52,7 +62,10 @@ export function isVerificationFailureAnswer(rawTask, answer) {
   const task = unwrapTransportQuotes(rawTask);
   const edit = composeEditRequest(task);
   const targets = [...(edit ? [edit[0]] : []), ...rustPaths(task)];
-  return targets.some((target) => renderSeededOutcome('coding_workspace_verification_failed', task, target) === answer);
+  const named = namedTargetAndPayloads(task);
+  if (named && !targets.includes(named.target)) targets.push(named.target);
+  return targets.some((target) => ['coding_workspace_verification_failed', 'coding_workspace_fragment_refused']
+    .some((intent) => renderSeededOutcome(intent, task, target) === answer));
 }
 
 function failed(task, target) {
@@ -217,6 +230,88 @@ function groundedPositionalInsert(task) {
   };
 }
 
+/**
+ * Mirrors `fn insert_sequence`: the inserts a request asks for when one
+ * anchored rewrite cannot carry them -- several clauses (`…, and insert …`),
+ * or an anchor named by the line it follows (T31, T34) -- or null.
+ */
+function insertSequence(task) {
+  const inserts = positionalInserts(task);
+  return inserts !== null && (inserts.length > 1 || inserts[0].context !== null) ? inserts : null;
+}
+
+/**
+ * Mirrors `fn insert_edit`: `[start, old, new]` -- the whole lines from the
+ * anchor context (or the anchor) through the anchor, and those lines with the
+ * inserted text beside the anchor's line -- or null unless the context (with
+ * none, the anchor) occurs once and the anchor occurs after it.
+ */
+function insertEdit(source, insert) {
+  const lead = insert.context ?? insert.anchor;
+  const leads = matchIndices(source, lead);
+  if (leads.length !== 1 || insert.anchor === '') return null;
+  // After a context, a line that is exactly the anchor outranks one that only
+  // contains it (`text set` is not `text setting`).
+  let at = leads[0];
+  if (insert.context !== null) {
+    const whole = (index) => (index === 0 || source[index - 1] === '\n')
+      && (insert.anchor.endsWith('\n') || index + insert.anchor.length === source.length
+        || source[index + insert.anchor.length] === '\n');
+    const found = [];
+    for (let index = source.indexOf(insert.anchor, leads[0] + lead.length); index >= 0;
+      index = source.indexOf(insert.anchor, index + insert.anchor.length)) found.push(index);
+    at = found.find(whole) ?? found[0] ?? -1;
+  }
+  if (at < 0) return null;
+  const lineStart = (index) => (index === 0 ? 0 : source.lastIndexOf('\n', index - 1) + 1);
+  const start = lineStart(leads[0]);
+  const tail = at + insert.anchor.length;
+  const newline = source.indexOf('\n', tail);
+  const end = insert.anchor.endsWith('\n') ? tail - 1 : newline < 0 ? source.length : newline;
+  const old = source.slice(start, end);
+  const anchorLine = lineStart(at);
+  const next = insert.after
+    ? `${old}\n${insert.inserted}`
+    : `${source.slice(start, anchorLine)}${insert.inserted}\n${source.slice(anchorLine, end)}`;
+  return [start, old, next];
+}
+
+/**
+ * Mirrors `fn plan_insert_sequence_step`: read each file once, make each
+ * insert as its own anchored edit over the file as the earlier inserts left
+ * it, then check every file's digest and state every insert.
+ */
+function planInsertSequenceStep(task, currentTurn, toolNames, inserts) {
+  const editTool = toolFor(toolNames, Capability.Edit);
+  if (!editTool) return null;
+  const expected = new Map();
+  const stated = [];
+  for (const insert of inserts) {
+    if (!expected.has(insert.target)) {
+      const read = resultForPath(currentTurn, Capability.Read, insert.target, null);
+      if (read === null) return planWithTool(toolNames, Capability.Read, readArguments(insert.target));
+      expected.set(insert.target, sourceFromReadResult(read));
+    }
+    const source = expected.get(insert.target);
+    const edit = insertEdit(source, insert);
+    if (edit === null) return failed(task, insert.target);
+    const [start, old, next] = edit;
+    if (resultForEdit(currentTurn, insert.target, old, next) === null) {
+      return planOne(editTool, editArguments(insert.target, old, next));
+    }
+    expected.set(insert.target, `${source.slice(0, start)}${next}${source.slice(start + old.length)}`);
+    stated.push(renderSeededChange(insert.after ? 'file_edit_position_after' : 'file_edit_position_before', task,
+      insert.target, [['{new}', insert.inserted], ['{anchor}', insert.anchor]]));
+  }
+  for (const [target, content] of expected) {
+    const command = `sha256sum -- ${target}`;
+    const observed = resultForCommand(currentTurn, command);
+    if (observed === null) return planWithTool(toolNames, Capability.Run, jsonText({ command }));
+    if (splitWhitespace(observed)[0] !== sha256Hex(content)) return failed(task, target);
+  }
+  return stated.includes(null) ? null : finalAnswer(stated.join('\n'));
+}
+
 function groundedRewrite(task) {
   const positional = groundedPositionalInsert(task);
   if (positional) return positional;
@@ -224,6 +319,8 @@ function groundedRewrite(task) {
   if (!edit) return null;
   const [target, oldClause, newClause] = edit;
   const renaming = mentionsRole('coding_identifier_rename_action', task.toLowerCase());
+  // A request that names a line replaces whole lines (`groundedLineReplacement`).
+  if (!renaming && namesLine(task)) return null;
   // The edit request unescapes `\n` / `\t` in its literals, so the quoted
   // segments are compared unescaped too: a multi-line replacement written with
   // `\n` was otherwise not "quoted", and the general fallback wrote its new
@@ -248,17 +345,12 @@ function groundedRewrite(task) {
 
 /**
  * The one workspace path a request names and its one quoted segment that is
- * not that path: `{target, text}` or null.
+ * not that path: `{target, text}` or null. An unquoted path outranks a quoted
+ * one, which is then the payload (PR #1188 T35).
  */
 function quotedPayloadAndPath(task) {
-  const segments = quotedSegmentSpans(task);
-  const inside = (token) => segments.some((segment) => token.start >= segment.start && token.end <= segment.end
-    && cleanPathToken(token.text) !== segment.text);
-  const paths = [...new Set(tokens(task).filter((token) => !inside(token)).map((token) => cleanPathToken(token.text))
-    .filter((path) => looksLikeFilePath(path) && safeRelativePath(path)))];
-  if (paths.length !== 1) return null;
-  const payloads = segments.filter((segment) => segment.text !== paths[0] && trim(segment.text) !== '');
-  return payloads.length === 1 ? { target: paths[0], text: payloads[0].text } : null;
+  const named = namedTargetAndPayloads(task);
+  return named && named.payloads.length === 1 ? { target: named.target, text: named.payloads[0] } : null;
 }
 
 /**
@@ -268,14 +360,20 @@ function quotedPayloadAndPath(task) {
  * would.
  */
 function groundedEndInsertion(task) {
-  const lowered = sentenceWords(task);
+  // `Append these lines to f:` followed by lines: the first line is the
+  // request and the lines under it are the text added, verbatim (PR #1188).
+  const block = introducedBlock(task);
+  const lowered = sentenceWords(block === null ? task : block.head);
   const atEnd = mentionsRole('file_edit_position_end', lowered);
   if (atEnd === mentionsRole('file_edit_position_start', lowered)) return null;
-  const named = quotedPayloadAndPath(task) ?? blankLineAndPath(task) ?? linePayloadAndPath(task);
+  const named = block === null
+    ? quotedPayloadAndPath(task) ?? blankLineAndPath(task) ?? linePayloadAndPath(task)
+    : blockPayloadAndPath(block);
   if (!named) return null;
+  const text = block === null ? unescapeProseNewlines(named.text) : named.text;
   return {
     target: named.target,
-    compute: (source) => insertedAtEnd(source, unescapeProseNewlines(named.text), atEnd),
+    compute: (source) => insertedAtEnd(source, text, atEnd),
     edit: (source, updated) => (source === '' ? null : compactEndEdit(source, updated, atEnd)),
     // An empty line has no text to quote back; it is stated in its own words.
     intent: named.text === '' ? 'file_edit_blank_line' : atEnd ? 'file_edit_position_end' : 'file_edit_position_start',
@@ -340,6 +438,8 @@ function groundedDeclarationRemoval(task) {
     edit: changedLinesEdit,
     intent: 'coding_text_remove',
     slots: [['{old}', names.join('`, `')]],
+    // The request names each declaration it removes: its extent is stated.
+    bounded: true,
     reported: (source) => {
       const removed = removedDeclarations(source, names);
       return removed ? { intent: 'coding_text_remove', slots: [['{old}', removed.names.join('`, `')]] } : null;
@@ -443,7 +543,7 @@ function declarationSpan(sourceLines, header) {
  * (`… पंक्ति हटाओ।`, `… удали.`) is still a whole word. A dot inside a token
  * (`t.md`) is not followed by a space and stays.
  */
-function sentenceWords(task) {
+export function sentenceWords(task) {
   return task.toLowerCase().replace(/[.!?;:,\u0964\u0965\u3002\uff01\uff1f]+(?=\s|$)/gu, ' ');
 }
 
@@ -480,45 +580,78 @@ function removedLinesReport(source, text) {
  * `Change the value of "debug" to true in config.json`: the seeded
  * `config_value_lead` names a setting, the edit request's old clause names
  * its key (quoted, or its last identifier) and the new clause its value. The
- * one line assigning that key (`"debug": …`, `debug: …`, `debug = …`) gets
- * the new value; a key assigned nowhere or more than once is not a change
- * anyone can verify.
+ * one line assigning that key (`"debug": …`, `debug: …`, `debug = …`,
+ * `const DEBUG: bool = …;`) gets the new value; a key assigned nowhere or
+ * more than once is not a change anyone can verify.
+ *
+ * `Change MAXIMUM_RATIO from 8 to 16 in p.rs` states the value the key holds
+ * now (the seeded `file_edit_old_lead_cue`): the line assigning the key that
+ * value is the one changed, and a key assigned nowhere leaves the stated
+ * value itself, when it occurs once as a word (PR #1188 G2).
  */
 function groundedSetting(task) {
-  if (!mentionsRole('config_value_lead', sentenceWords(task))) return null;
   const edit = composeEditRequest(task);
   if (!edit) return null;
   const [target, oldClause, value] = edit;
-  const quoted = quotedSegments(oldClause);
-  const key = quoted.length === 1 ? quoted[0] : identifierTokens(oldClause).pop();
+  const stated = statedOldValue(oldClause);
+  if (stated === null && !mentionsRole('config_value_lead', sentenceWords(task))) return null;
+  const keyClause = stated === null ? oldClause : stated.key;
+  const quoted = quotedSegments(keyClause);
+  const key = quoted.length === 1 ? quoted[0] : identifierTokens(keyClause).pop();
   if (key === undefined || trim(value) === '') return null;
+  const held = stated === null ? null : stated.old;
   return {
     target,
-    compute: (source, missing) => (missing ? null : assignedSetting(source, key, trim(value), target)),
+    compute: (source, missing) => (missing ? null : assignedSetting(source, key, trim(value), target, held)),
     edit: changedLinesEdit,
     intent: 'setting',
     slots: [['{old}', key], ['{new}', trim(value)]],
   };
 }
 
-const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-/** A value every config format writes bare: a boolean, null or a number. */
-const isBareLiteral = (value) => /^(true|false|null|-?\d+(\.\d+)?)$/u.test(value);
+/**
+ * `Replace the line 'x' with 'y' in f`: the seeded `line` meaning outside the
+ * quotes, both clauses quoted. A line replacement never touches text inside a
+ * longer line (T32: `text pays` became `text "pay"s`). With a seeded anchor
+ * context (`the line 'x' that follows the line 'z'`), the first such line
+ * after `z` is the one replaced (T62).
+ */
+function groundedLineReplacement(task) {
+  if (!namesLine(task) || mentionsRole('coding_identifier_rename_action', task.toLowerCase())) return null;
+  const context = anchorContext(task);
+  const request = context === null ? task : `${task.slice(0, context.start)} ${task.slice(context.end)}`;
+  const edit = composeEditRequest(request);
+  if (!edit || composePositionalInsert(task) !== null) return null;
+  const [target, old, next] = edit;
+  const quoted = quotedSegments(request).map(unescapeProseNewlines);
+  if (!quoted.includes(old) || !quoted.includes(next) || old === '' || old === next) return null;
+  const after = context === null ? null : context.text;
+  return {
+    target,
+    compute: (source, missing) => (missing ? null : replacedLines(source, old, next, after)),
+    edit: (source, updated) => contextLinesEdit(source, updated, after),
+    intent: 'coding_text_replaced',
+    slots: [['{old}', old], ['{new}', next]],
+  };
+}
 
-function assignedSetting(source, key, value, target) {
-  const pattern = new RegExp(`^(\\s*(["']?)${escapeRegExp(key)}\\2\\s*[:=]\\s*)(.*?)(\\s*,?\\s*)$`, 'u');
-  const lines = source.split('\n');
-  const matches = lines.map((line, index) => [index, pattern.exec(line)]).filter(([, match]) => match !== null);
-  if (matches.length !== 1) return null;
-  const [index, match] = matches[0];
-  const [, head, , old, tail] = match;
-  let written = value;
-  const quote = /^["']/u.exec(old)?.[0];
-  if (quote && !isBareLiteral(value)) written = `${quote}${value}${quote}`;
-  else if (!quote && /\.json$/iu.test(target) && !isBareLiteral(value) && !/^["'[{]/u.test(value)) written = JSON.stringify(value);
-  if (written === old) return null;
-  lines[index] = `${head}${written}${tail}`;
-  return lines.join('\n');
+/**
+ * Mirrors `fn context_lines_edit`: the smallest unique changed run of lines,
+ * or, when that run repeats, the lines from the context's line through the
+ * change -- the context occurs once, so they do not.
+ */
+function contextLinesEdit(source, updated, context) {
+  const compact = changedLinesEdit(source, updated);
+  if (compact !== null || context === null) return compact;
+  const at = matchIndices(source, context);
+  if (at.length !== 1) return null;
+  const start = at[0] === 0 ? 0 : source.lastIndexOf('\n', at[0] - 1) + 1;
+  let suffix = 0;
+  while (suffix < source.length - start && suffix < updated.length - start
+    && source[source.length - 1 - suffix] === updated[updated.length - 1 - suffix]) suffix += 1;
+  const lineEnd = source.indexOf('\n', source.length - suffix);
+  const end = lineEnd < 0 ? source.length : lineEnd;
+  return [source.slice(start, end), updated.slice(start, updated.length - (source.length - end))];
 }
 
 /**
@@ -595,6 +728,11 @@ function planComputedChangeStep(task, currentTurn, toolNames, change) {
   const source = missing ? '' : sourceFromReadResult(read);
   const updated = change.compute(source, missing);
   if (updated === null || updated === source) return failed(task, target);
+  // A change that would drop most of the file is refused unless its request
+  // states that extent (PR #1188 T29).
+  if (!change.bounded && dropsMostOfFile(source, updated)) {
+    return finalOrNull(renderSeededOutcome('coding_workspace_fragment_refused', task, target));
+  }
   const { intent, slots } = change.reported?.(source) ?? change;
   const compact = change.edit(source, updated);
   const editTool = compact ? toolFor(toolNames, Capability.Edit) : null;
@@ -799,6 +937,17 @@ function linePayloadAndPath(task) {
   }
   if (end <= leadEnd) return null;
   return { target, text: task.slice(toks[leadEnd].start, toks[end - 1].end) };
+}
+
+/**
+ * Mirrors `fn block_payload_and_path`: the one path a colon-ended request
+ * line names, with nothing else quoted, and the lines under it.
+ */
+function blockPayloadAndPath(block) {
+  const paths = [...new Set(unquotedPathTokens(block.head).map((token) => cleanPathToken(token.text))
+    .filter((path) => looksLikeFilePath(path) && safeRelativePath(path)))];
+  if (paths.length !== 1 || quotedSegmentSpans(block.head).some((segment) => segment.text !== paths[0])) return null;
+  return { target: paths[0], text: block.text };
 }
 
 function blankLineAndPath(task) {

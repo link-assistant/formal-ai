@@ -2,42 +2,29 @@ self_ast_census
   target src/solver_handlers/document_request.rs
   language rust
   fidelity signature
-  byte_len 24389
-  line_count 654
-  content_id source_module_fdf5d5a3f559c673
-  symbol_count 34
+  byte_len 13530
+  line_count 357
+  content_id source_module_509fde3dd137b938
+  symbol_count 21
   symbols
-    enum DocFormat 29 36
-    function label 41 50
-    function try_document_request 59 97
-    function try_document_conversion_request 99 149
-    function looks_like_document_conversion_request 151 155
-    function mentions_conversion_action 157 180
-    const ACTIONS 158 178
-    struct FormatMention 183 186
-    function format_mentions 188 214
-    const ALIASES 189 201
-    function conversion_formats 216 249
-    const SOURCE_MARKERS 251 251
-    const TARGET_MARKERS 253 265
-    function has_direction_marker_before 267 272
-    function find_alias_positions 274 286
-    function is_token_boundary 288 292
-    function is_ascii_word_char 294 296
-    function extract_document_source_text 298 303
-    function first_fenced_code_block 305 314
-    function text_after_colon 316 320
-    function non_empty 322 324
-    function render_conversion_answer 326 366
-    function output_fence 368 377
-    function mentions_software_artifact 381 420
-    const SOFTWARE 382 418
-    function mentions_authoring_action 424 472
-    const ACTIONS 425 470
-    function detect_document_format 477 544
-    function names_document_format 550 553
-    function render_document_plan 559 566
-    function render_plan_ru 568 590
-    function render_plan_hi 592 611
-    function render_plan_zh 613 628
-    function render_plan_en 630 654
+    function try_document_request 34 67
+    function try_document_conversion_request 69 119
+    function looks_like_document_conversion_request 121 125
+    function mentions_conversion_action 127 129
+    struct FormatMention 132 135
+    function format_mentions 139 154
+    function conversion_formats 156 193
+    function has_direction_marker_before 197 202
+    function find_alias_positions 204 216
+    function is_token_boundary 218 222
+    function is_ascii_word_char 224 226
+    function extract_document_source_text 228 233
+    function first_fenced_code_block 235 244
+    function text_after_colon 246 250
+    function non_empty 252 254
+    function render_conversion_answer 257 302
+    function mentions_software_artifact 307 309
+    function mentions_authoring_action 314 316
+    function detect_document_format 324 334
+    function names_document_format 340 343
+    function render_document_plan 347 357

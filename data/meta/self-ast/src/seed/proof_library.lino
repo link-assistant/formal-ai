@@ -1,0 +1,27 @@
+self_ast_census
+  target src/seed/proof_library.rs
+  language rust
+  fidelity signature
+  byte_len 6867
+  line_count 204
+  content_id source_module_3e2d3c406209e55b
+  symbol_count 18
+  symbols
+    struct LocalizedText 18 21
+    function get 26 30
+    function find 32 37
+    function from_node 39 48
+    struct ProofLibraryStep 53 58
+    struct ProofLibraryEntry 62 73
+    function matches 78 82
+    function from_node 84 104
+    struct ProofTemplate 109 113
+    struct ProofLibrary 117 122
+    function theorem_for 127 129
+    function plan 133 135
+    function template 137 139
+    function text 145 150
+    function items 154 164
+    function proof_library 169 172
+    static LIBRARY 170 170
+    function parse_proof_library 176 204

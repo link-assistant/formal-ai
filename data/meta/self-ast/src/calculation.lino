@@ -2,10 +2,10 @@ self_ast_census
   target src/calculation.rs
   language rust
   fidelity signature
-  byte_len 35132
-  line_count 970
-  content_id source_module_63f087b4f51a1e65
-  symbol_count 54
+  byte_len 35903
+  line_count 986
+  content_id source_module_68a643df02e792a2
+  symbol_count 56
   symbols
     module function_phrase 13 13
     enum CalculationEngine 17 21
@@ -40,24 +40,26 @@ self_ast_census
     function format_equation_number 330 345
     function evaluate_linear_equation 347 373
     function contains_word_operator 375 392
-    function evaluate_calculation 397 415
-    function split_glued_operator_words 425 445
-    function trim_prompt_punctuation 447 461
-    function strip_prefix_case_insensitive 463 468
-    function strip_suffix_case_insensitive 470 475
-    function leading_word_spans 477 496
-    function fuzzy_prefix_match 498 529
-    function strip_fuzzy_prefix_case_insensitive 531 548
-    function interpretation_statements 551 562
-    function calculation_wrapper_suffixes 577 596
-    function calculation_request_prefixes 598 619
-    function strip_calculation_wrappers_with_prefixes 621 670
-    function has_prefix_boundary 672 679
-    function sentence_end_from 694 711
-    const TERMINATORS 695 695
-    function embedded_calculation_request_slices 725 750
-    function calculator_domain_signals 776 799
-    function has_calculation_signal 801 836
-    function contains_spelled_arithmetic 838 852
-    function push_calculation_candidate 854 875
-    function calculation_expression_candidates 881 970
+    function reads_as_calculator_expression 400 408
+    const SYMBOLS 401 401
+    function evaluate_calculation 413 431
+    function split_glued_operator_words 441 461
+    function trim_prompt_punctuation 463 477
+    function strip_prefix_case_insensitive 479 484
+    function strip_suffix_case_insensitive 486 491
+    function leading_word_spans 493 512
+    function fuzzy_prefix_match 514 545
+    function strip_fuzzy_prefix_case_insensitive 547 564
+    function interpretation_statements 567 578
+    function calculation_wrapper_suffixes 593 612
+    function calculation_request_prefixes 614 635
+    function strip_calculation_wrappers_with_prefixes 637 686
+    function has_prefix_boundary 688 695
+    function sentence_end_from 710 727
+    const TERMINATORS 711 711
+    function embedded_calculation_request_slices 741 766
+    function calculator_domain_signals 792 815
+    function has_calculation_signal 817 852
+    function contains_spelled_arithmetic 854 868
+    function push_calculation_candidate 870 891
+    function calculation_expression_candidates 897 986

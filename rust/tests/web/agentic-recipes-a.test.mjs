@@ -362,6 +362,7 @@ describe('diagram (rust/tests/unit/issue_538_agentic.rs)', () => {
     assert.ok(diagram.isDiagramTask('please draw a mermaid flowchart of the recipes'));
     assert.ok(!diagram.isDiagramTask('make the tomato meaning more detailed'));
     assert.ok(!diagram.isDiagramTask('What is the capital of France?'));
+    assert.ok(!diagram.isDiagramTask("Insert the line 'js/mermaid.bundle.js' after the line 'js/app.js' in .gitignore."), 'a quoted cue is payload');
   });
 
   it('committed_diagram_is_generated (docs/diagrams/agentic-recipes.md)', () => {

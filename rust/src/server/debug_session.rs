@@ -1,8 +1,10 @@
 //! The loopback-only step-through debug session (issue #667, R383).
 //!
-//! `serve --debug-session` holds every solved turn's answer and hands its
-//! stages out one at a time, each `POST /v1/debug/advance` revealing the next,
-//! before the HTTP response is written. The JavaScript twin is
+//! `serve --debug-session` holds every solved turn before its derivation record
+//! is persisted and its answer returned, and hands its stages out one at a
+//! time, each `POST /v1/debug/advance` revealing the next. Every stage event
+//! carries the turn's recipe diagram and the routed method's Rust and
+//! JavaScript source locations (`debug_stage`). The JavaScript twin is
 //! `js/server/debug-session.mjs`; the protocol is documented in
 //! `docs/vscode/debugger.md`.
 //!
@@ -27,9 +29,10 @@ use std::hash::{BuildHasher as _, Hasher as _};
 use std::sync::{Condvar, Mutex, MutexGuard, OnceLock, PoisonError};
 use std::time::Duration;
 
-use serde_json::{Value, json};
+use serde_json::{Map, Value, json};
 use sha2::{Digest as _, Sha256};
 
+use super::debug_stage::{TurnView, describe_turn, location_fields, stage_diagram};
 use super::{ApiHttpResponse, error_response, json_response};
 use crate::thinking::ThinkingStep;
 
@@ -118,17 +121,11 @@ pub fn debug_token_from_env() -> DebugToken {
     }
 }
 
-#[derive(Debug, Clone)]
-struct Stage {
-    step: String,
-    detail: String,
-    source: String,
-}
-
 #[derive(Debug)]
 struct Turn {
     id: String,
-    stages: Vec<Stage>,
+    stages: Vec<ThinkingStep>,
+    view: TurnView,
     current: usize,
 }
 
@@ -140,16 +137,32 @@ struct State {
     turn_count: u64,
 }
 
-/// Mirrors `stageFields`: what an event says about one stage.
-fn stage_fields(stages: &[Stage], index: usize) -> Value {
-    let stage = stages.get(index);
-    json!({
-        "stage": index,
-        "stages": stages.len(),
-        "step": stage.map_or("", |stage| stage.step.as_str()),
-        "detail": stage.map_or("", |stage| stage.detail.as_str()),
-        "source": stage.map_or("", |stage| stage.source.as_str()),
-    })
+/// Mirrors `stageFields`: what an event says about one stage — the step, the
+/// turn's recipe diagram with this stage highlighted, and the source locations
+/// of the method the turn's route resolves to (`debug_stage`).
+fn stage_fields(turn: &Turn, index: usize) -> Value {
+    let stage = turn.stages.get(index);
+    let mut fields = Map::new();
+    fields.insert(String::from("stage"), Value::from(index));
+    fields.insert(String::from("stages"), Value::from(turn.stages.len()));
+    for (key, text) in [
+        ("step", stage.map_or("", |stage| stage.step.as_str())),
+        ("detail", stage.map_or("", |stage| stage.detail.as_str())),
+        (
+            "source",
+            stage.map_or("", |stage| stage.source_event.as_str()),
+        ),
+        ("method", turn.view.method.as_str()),
+    ] {
+        fields.insert(String::from(key), Value::from(text));
+    }
+    fields.insert(
+        String::from("mermaid"),
+        Value::from(stage_diagram(&turn.stages, index)),
+    );
+    location_fields(&mut fields, "rust", turn.view.rust.as_ref());
+    location_fields(&mut fields, "js", turn.view.js.as_ref());
+    Value::Object(fields)
 }
 
 impl State {
@@ -247,21 +260,15 @@ impl DebugSession {
         }
         state.turn_count += 1;
         let turn_id = format!("turn_{}", state.turn_count);
-        let stages: Vec<Stage> = stages
-            .iter()
-            .map(|stage| Stage {
-                step: stage.step.clone(),
-                detail: stage.detail.clone(),
-                source: stage.source_event.clone(),
-            })
-            .collect();
-        let fields = stage_fields(&stages, 0);
-        state.record(&self.id, STAGE_PAUSED, &turn_id, fields);
-        state.turns.push(Turn {
+        let turn = Turn {
             id: turn_id.clone(),
-            stages,
+            stages: stages.to_vec(),
+            view: describe_turn(stages),
             current: 0,
-        });
+        };
+        let fields = stage_fields(&turn, 0);
+        state.record(&self.id, STAGE_PAUSED, &turn_id, fields);
+        state.turns.push(turn);
         self.changed.notify_all();
         while state.holds(&turn_id) {
             state = self
@@ -295,11 +302,11 @@ impl DebugSession {
         if requested.and_then(|index| usize::try_from(index).ok()) != Some(current) {
             return false;
         }
-        let fields = stage_fields(&state.turns[position].stages, current);
+        let fields = stage_fields(&state.turns[position], current);
         state.record(&self.id, STAGE_ADVANCED, turn_id, fields);
         if current + 1 < state.turns[position].stages.len() {
             state.turns[position].current = current + 1;
-            let fields = stage_fields(&state.turns[position].stages, current + 1);
+            let fields = stage_fields(&state.turns[position], current + 1);
             state.record(&self.id, STAGE_PAUSED, turn_id, fields);
         } else {
             state.finish(&self.id, turn_id, "completed");
@@ -337,7 +344,7 @@ impl DebugSession {
             .turns
             .iter()
             .map(|turn| {
-                let mut fields = stage_fields(&turn.stages, turn.current);
+                let mut fields = stage_fields(turn, turn.current);
                 if let Some(fields) = fields.as_object_mut() {
                     fields.insert(String::from("turn"), Value::from(turn.id.clone()));
                 }

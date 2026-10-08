@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/statistics.rs
   language rust
   fidelity signature
-  byte_len 34796
-  line_count 922
-  content_id source_module_b74ae80b7ec046c2
-  symbol_count 48
+  byte_len 36808
+  line_count 975
+  content_id source_module_0919faad367eb2f3
+  symbol_count 49
   symbols
     module primality 30 30
     module word_relations 31 31
@@ -54,4 +54,5 @@ self_ast_census
     function render_approx 699 705
     function handle_statistics 709 804
     function marker_position 808 815
-    function handle_word_problem 822 922
+    function one_item_change 823 865
+    function handle_word_problem 872 975

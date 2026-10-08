@@ -221,3 +221,35 @@ meanings
     unit "not applicable"
     example "Package layer: 1024 bytes in the DOCX OPC stored-entry profile."
     grounding "data/seed/multilingual-responses-synthesis.lino"
+  calendar_weekday_relation_next
+    defined-by answer
+    role localized_response_template
+    precondition "a weekday question asks for the day after a weekday"
+    effect "the answer names the following weekday and the one-day shift in the seven-day cycle"
+    unit "not applicable"
+    example "The day after Monday is Tuesday."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_weekday_relation_previous
+    defined-by answer
+    role localized_response_template
+    precondition "a weekday question asks for the day before a weekday"
+    effect "the answer names the preceding weekday and the one-day shift in the seven-day cycle"
+    unit "not applicable"
+    example "The day before Friday is Thursday."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_current_day
+    defined-by answer
+    role localized_response_template
+    precondition "a question asks which day today is"
+    effect "the answer names today's weekday, its date and the time zone it was read in"
+    unit "not applicable"
+    example "Today is Thursday, 2026-10-08 (UTC)."
+    grounding "data/seed/multilingual-responses-quantities.lino"
+  calendar_create_event_confirmation
+    defined-by answer
+    role localized_response_template
+    precondition "a request schedules an event"
+    effect "the answer proposes the event with its date, time, zone and duration, an importable ICS file and a calendar link, and asks for confirmation"
+    unit "not applicable"
+    example "Create event «Call» on 2026-10-09."
+    grounding "data/seed/multilingual-responses-quantities.lino"

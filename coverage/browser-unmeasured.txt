@@ -45,8 +45,9 @@ js/app/theme.js	Chakra UI theme definition; importing it requires the @chakra-ui
 js/tests/connectivity.js	Connectivity self-test page: every function reads and writes live DOM elements that only exist on js/tests/index.html. Covered by rust/tests/e2e/tests/connectivity.spec.js.
 js/ocr-entry.js	Bundler entry point: a re-export of tesseract.js consumed by `bun build` into ocr.bundle.js. Has no logic of its own to test.
 js/vendor-entry.js	Bundler entry point: re-exports marked, dompurify and lino-i18n into vendor.bundle.js. Has no logic of its own to test.
+js/mermaid-entry.js	Bundler entry point: initializes mermaid (strict security, SVG labels) and exposes its render call as window.FormalAiMermaid in mermaid.bundle.js; needs the mermaid package and a browser layout engine. Its caller js/debugger-client.js is measured with an injected renderer.
 js/web-search-component-entry.js	Bundler entry point: re-exports @link-assistant/web-search into web-search-component.bundle.js. Has no logic of its own to test.
-js/app/debugger-view.jsx	React component (JSX) for the four-pane debugger: renders and polls live memory records through hooks, so it needs a DOM and React renderer. Covered end-to-end by the Playwright suite against the built app.js.
+js/app/debugger-view.jsx	React component (JSX) for the five-pane debugger: renders what js/debugger-client.js polls and projects (that module is measured by rust/tests/web/debugger-client.test.mjs), so the component itself needs a DOM and React renderer. No browser test renders it yet (docs/vscode/debugger.md, Remaining acceptance).
 js/app/glyphs.jsx	Presentational JSX glyph components with no logic beyond a className toggle; importing JSX needs the bundler. Rendered by the Playwright suite against the built app.js.
 js/distribution/service-worker.js	Service worker script: runs only in a ServiceWorkerGlobalScope (importScripts, caches, install/fetch events). Exercised by the offline-install flow of the built distribution.
 js/pwa-register.js	Browser bootstrap: registers the service worker on window load when navigator.serviceWorker exists; no logic outside the live browser globals.

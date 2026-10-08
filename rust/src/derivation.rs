@@ -208,6 +208,10 @@ pub(crate) fn finalize_answer(answer: &mut crate::engine::SymbolicAnswer, log: &
     );
     let record = Derivation::record_for(log, &answer_id);
     answer.thinking_steps = log.thinking_steps_for_answer(&answer.answer);
+    // Issue #667 (R383): under `serve --debug-session` with stepping on, the
+    // solved turn is held here, before its derivation record is persisted and
+    // the answer returned, and its stages are handed out one per advance.
+    crate::server::gate_turn(&answer.thinking_steps);
     answer
         .evidence_links
         .push(format!("derivation:{answer_id}"));
@@ -222,9 +226,6 @@ pub(crate) fn finalize_answer(answer: &mut crate::engine::SymbolicAnswer, log: &
             .evidence_links
             .push(format!("derivation:persistence_failed:{error}")),
     }
-    // Issue #667 (R383): under `serve --debug-session` with stepping on, the
-    // finished turn is held here and its stages handed out one per advance.
-    crate::server::gate_turn(&answer.thinking_steps);
 }
 
 impl Derivation {

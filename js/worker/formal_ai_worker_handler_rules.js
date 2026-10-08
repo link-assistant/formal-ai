@@ -324,6 +324,44 @@ function handlerRulesTableRow(name, text) {
 }
 
 /**
+ * The value of the row of `table <name>` keyed exactly `key`, else the
+ * table's `default`, else null (Rust `rule_interpreter::handler_table_value`).
+ * @param {string} name
+ * @param {string} key
+ * @returns {string|null}
+ */
+function handlerRulesTableValue(name, key) {
+  const table = handlerRulesTables()[name];
+  if (!table) return null;
+  const row = table.rows.find((entry) => entry[0] === key);
+  return row ? row[1] : table.fallback;
+}
+
+/**
+ * The keys of `table <name>` in seed order (the keys of Rust
+ * `rule_interpreter::handler_table_rows`): a native-primitive handler's cue
+ * list read from data.
+ * @param {string} name
+ * @returns {string[]}
+ */
+function handlerRulesTableKeys(name) {
+  const table = handlerRulesTables()[name];
+  return table ? table.rows.map((entry) => entry[0]) : [];
+}
+
+/**
+ * Fill each `{name}` slot of `template` in one pass, so a value carrying
+ * braces is never re-filled (Rust `seed::fill_template_once`).
+ * @param {string} template
+ * @param {Object<string, string>} values
+ * @returns {string}
+ */
+function handlerRulesFillOnce(template, values) {
+  return String(template || "").replace(/\{([^{}]*)\}/gu, (whole, name) =>
+    Object.prototype.hasOwnProperty.call(values, name) ? String(values[name]) : whole);
+}
+
+/**
  * The value a `policy <handler>` block of the rule document declares for
  * `key` (Rust `rule_interpreter::handler_policy`), or null.
  * @param {string} handler

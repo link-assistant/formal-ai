@@ -828,10 +828,23 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
             && unquoted.contains(&token.start)
             && new_leads.contains(&clean_cue_token(token.text))
     })?;
-    if file_clause_start >= action_end && file_clause_start < new_lead.start {
+    // `Bump the version in package.json to 1.1.0`: a file clause right before
+    // the new lead ends the old text; anything else between them is no edit.
+    let file_between = file_clause_start >= action_end && file_clause_start < new_lead.start;
+    if file_between
+        && !request
+            .get(toks[file_index].end..new_lead.start)?
+            .trim()
+            .is_empty()
+    {
         return None;
     }
-    let old_span = request.get(action_end..new_lead.start)?;
+    let old_end = if file_between {
+        file_clause_start
+    } else {
+        new_lead.start
+    };
+    let old_span = request.get(action_end..old_end)?;
     let sentence_end = prose_sentences(request)
         .into_iter()
         .find(|sentence| sentence.span.contains(&new_lead.end))

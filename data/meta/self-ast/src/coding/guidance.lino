@@ -2,15 +2,14 @@ self_ast_census
   target src/coding/guidance.rs
   language rust
   fidelity signature
-  byte_len 26673
-  line_count 398
-  content_id source_module_5798aaa83c3c54d3
-  symbol_count 7
+  byte_len 5437
+  line_count 127
+  content_id source_module_b3dc077646812630
+  symbol_count 6
   symbols
-    const CODING_GUIDANCE_LINO 22 22
-    function spanish 27 37
-    function history_has_prior_code 43 47
-    function program_explanation_section 52 64
-    function program_explanation 69 87
-    function program_explanation_in 93 293
-    function program_test_instructions 299 398
+    const CODING_GUIDANCE_LINO 19 19
+    function guidance 25 44
+    function history_has_prior_code 50 54
+    function program_explanation_section 59 65
+    function program_explanation 72 79
+    function program_test_instructions 85 127

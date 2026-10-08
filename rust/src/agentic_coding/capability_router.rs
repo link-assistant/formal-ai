@@ -681,6 +681,15 @@ fn routed_arguments(
             Some(json!({"path": path, "filePath": path, "file_path": path}).to_string())
         }
         Capability::Write => {
+            // A removal never writes new content over the file (PR #1188 T29:
+            // a line deletion was routed here and the file became one quoted
+            // line).
+            let outside = crate::engine::normalize_prompt(
+                &crate::solver_handlers::text_outside_quoted_segments(task),
+            );
+            if seed::lexicon().mentions_role("coding_text_remove_action", &outside) {
+                return None;
+            }
             let path = crate::capability_routing::first_path(task)?;
             let content = crate::capability_routing::explicit_content(task)?;
             Some(super::planner::write_arguments(&path, &content))
