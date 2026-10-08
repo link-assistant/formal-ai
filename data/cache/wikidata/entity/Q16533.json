@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "法官"
+        },
+        "es": {
+          "language": "es",
+          "value": "juez"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "主持法庭訴訟的官員"
+        },
+        "es": {
+          "language": "es",
+          "value": "funcionario público que tiene autoridad para juzgar y sentenciar en un tribunal de justicia"
         }
       },
       "aliases": {
@@ -50,6 +58,12 @@
           {
             "language": "hi",
             "value": "न्यायाधीश"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "jueza"
           }
         ]
       }

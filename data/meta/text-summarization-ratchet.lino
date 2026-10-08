@@ -10,14 +10,14 @@ text-summarization-ratchet
   source "scripts/measure-dependency-summarization.mjs"
   corpus "data/benchmarks/dependency-summarization/corpus.lino"
   documents 70
-  compression 0.636
+  compression 0.639
   key-fact-retention 0.65
-  duplicates-removed 77
+  duplicates-removed 78
   pages-documents 40
-  pages-compression 0.632
+  pages-compression 0.637
   pages-key-fact-retention 0.815
-  pages-duplicates-removed 33
+  pages-duplicates-removed 34
   issues-documents 30
-  issues-compression 0.639
+  issues-compression 0.64
   issues-key-fact-retention 0.549
   issues-duplicates-removed 44

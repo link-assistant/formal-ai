@@ -1,0 +1,227 @@
+# The language-protocol records: the Spanish language code, the `full` and
+# `partial` support statuses of data/seed/languages.lino, the explicit-gap
+# policy and the per-language greeting, identity and gap responses. Each one
+# grounds a bare token the protocol files use and names itself in every
+# supported language. Moved out of meanings-translation.lino (PR #1188).
+meanings
+  es
+    defined-by human_language
+    lexeme en
+      surface
+        text "Spanish language code"
+    lexeme ru
+      surface
+        text "код испанского языка"
+    lexeme hi
+      surface
+        text "स्पेनिश भाषा कोड"
+    lexeme zh
+      surface
+        text 西班牙语语言代码
+    lexeme es
+      surface
+        text "código del idioma español"
+  full
+    defined-by concept
+    lexeme en
+      surface
+        text "full language protocol status"
+    lexeme ru
+      surface
+        text "полный статус языкового протокола"
+    lexeme hi
+      surface
+        text "पूर्ण भाषा प्रोटोकॉल स्थिति"
+    lexeme zh
+      surface
+        text 完整语言协议状态
+    lexeme es
+      surface
+        text "estado de protocolo de idioma completo"
+  partial
+    defined-by concept
+    lexeme en
+      surface
+        text "partial language protocol status"
+    lexeme ru
+      surface
+        text "частичный статус языкового протокола"
+    lexeme hi
+      surface
+        text "आंशिक भाषा प्रोटोकॉल स्थिति"
+    lexeme zh
+      surface
+        text 部分语言协议状态
+    lexeme es
+      surface
+        text "estado de protocolo de idioma parcial"
+  explicit_gap
+    defined-by concept
+    lexeme en
+      surface
+        text "explicit language gap policy"
+    lexeme ru
+      surface
+        text "политика явного языкового пробела"
+    lexeme hi
+      surface
+        text "स्पष्ट भाषा अंतराल नीति"
+    lexeme zh
+      surface
+        text 显式语言缺口策略
+    lexeme es
+      surface
+        text "política de carencia de idioma explícita"
+  explicit_language_context
+    defined-by concept
+    lexeme en
+      surface
+        text "explicit language context detection"
+    lexeme ru
+      surface
+        text "явное определение языкового контекста"
+    lexeme hi
+      surface
+        text "स्पष्ट भाषा संदर्भ पहचान"
+    lexeme zh
+      surface
+        text 显式语言上下文检测
+    lexeme es
+      surface
+        text "detección explícita del contexto de idioma"
+  language_gap
+    defined-by concept
+    lexeme en
+      surface
+        text "language coverage gap"
+    lexeme ru
+      surface
+        text "пробел в языковом покрытии"
+    lexeme hi
+      surface
+        text "भाषा कवरेज अंतराल"
+    lexeme zh
+      surface
+        text 语言覆盖缺口
+    lexeme es
+      surface
+        text "carencia de cobertura de idioma"
+  response_greeting_es
+    defined-by concept
+    lexeme en
+      surface
+        text "Spanish greeting response"
+    lexeme ru
+      surface
+        text "испанский ответ на приветствие"
+    lexeme hi
+      surface
+        text "स्पेनिश अभिवादन उत्तर"
+    lexeme zh
+      surface
+        text 西班牙语问候回答
+    lexeme es
+      surface
+        text "respuesta de saludo en español"
+  response_identity_es
+    defined-by concept
+    lexeme en
+      surface
+        text "Spanish identity response"
+    lexeme ru
+      surface
+        text "испанский ответ о себе"
+    lexeme hi
+      surface
+        text "स्पेनिश पहचान उत्तर"
+    lexeme zh
+      surface
+        text 西班牙语身份回答
+    lexeme es
+      surface
+        text "respuesta de identidad en español"
+  response_language_gap_en
+    defined-by concept
+    lexeme en
+      surface
+        text "English language gap response"
+    lexeme ru
+      surface
+        text "английский ответ о языковом пробеле"
+    lexeme hi
+      surface
+        text "अंग्रेज़ी भाषा अंतराल उत्तर"
+    lexeme zh
+      surface
+        text 英语语言缺口回答
+    lexeme es
+      surface
+        text "respuesta de carencia de idioma en inglés"
+  response_language_gap_ru
+    defined-by concept
+    lexeme en
+      surface
+        text "Russian language gap response"
+    lexeme ru
+      surface
+        text "русский ответ о языковом пробеле"
+    lexeme hi
+      surface
+        text "रूसी भाषा अंतराल उत्तर"
+    lexeme zh
+      surface
+        text 俄语语言缺口回答
+    lexeme es
+      surface
+        text "respuesta de carencia de idioma en ruso"
+  response_language_gap_hi
+    defined-by concept
+    lexeme en
+      surface
+        text "Hindi language gap response"
+    lexeme ru
+      surface
+        text "ответ на хинди о языковом пробеле"
+    lexeme hi
+      surface
+        text "हिंदी भाषा अंतराल उत्तर"
+    lexeme zh
+      surface
+        text 印地语语言缺口回答
+    lexeme es
+      surface
+        text "respuesta de carencia de idioma en hindi"
+  response_language_gap_zh
+    defined-by concept
+    lexeme en
+      surface
+        text "Chinese language gap response"
+    lexeme ru
+      surface
+        text "китайский ответ о языковом пробеле"
+    lexeme hi
+      surface
+        text "चीनी भाषा अंतराल उत्तर"
+    lexeme zh
+      surface
+        text 中文语言缺口回答
+    lexeme es
+      surface
+        text "respuesta de carencia de idioma en chino"
+  response_language_gap_es
+    defined-by concept
+    lexeme en
+      surface
+        text "Spanish language gap response"
+    lexeme ru
+      surface
+        text "испанский ответ о языковом пробеле"
+    lexeme hi
+      surface
+        text "स्पेनिश भाषा अंतराल उत्तर"
+    lexeme zh
+      surface
+        text 西班牙语语言缺口回答
+    lexeme es
+      surface
+        text "respuesta de carencia de idioma en español"

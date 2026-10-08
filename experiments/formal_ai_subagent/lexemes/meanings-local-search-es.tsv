@@ -1,0 +1,9 @@
+local_path_contents_request	qué hay dentro de …	muestra el contenido de …
+local_path_scope_home	en este ordenador	en mi ordenador	en esta computadora	en mi computadora	en mi carpeta personal
+local_path_scope_current	en este directorio	en el directorio actual	en esta carpeta	en la carpeta actual
+local_path_route_question	búsqueda local de archivos o búsqueda web
+definition_antecedent_followup	entonces qué es	y entonces qué es eso
+definition_example_request	da un ejemplo de …	dame un ejemplo de …
+comparison_infix	vs	versus	frente a	diferente de
+comparison_rhs_marker	de
+comparison_query_noise	en una frase	una frase

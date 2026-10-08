@@ -32,3 +32,9 @@ test('the repository holds the specialization ratchet', () => {
   const output = execFileSync('node', ['scripts/check-prompt-specialization.mjs'], { cwd: REPO_ROOT, encoding: 'utf8' });
   assert.match(output, /test prompts held verbatim in code: (\d+) \(ceiling \1\)/u);
 });
+
+test('the scan reads the app JSX too, and rust/src and the worker hold no pair', () => {
+  const output = execFileSync('node', ['scripts/check-prompt-specialization.mjs', '--list'], { cwd: REPO_ROOT, encoding: 'utf8' });
+  const listed = output.split('\n').filter((line) => line.startsWith('  '));
+  assert.ok(listed.every((line) => /^ {2}js\/app\/[\w-]+\.jsx: /u.test(line)), output);
+});

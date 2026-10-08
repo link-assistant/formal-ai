@@ -4,11 +4,13 @@ Q12370
     ru ("соли")
   descriptions
     en "ionic compound composed of cations and anions"
+    es "compuesto químico"
     ru "химическое соединение из катиона и аниона"
     zh "化合物的種類"
   id Q12370
   labels
     en salt
+    es sal
     hi "लवण"
     ru "соль"
     zh "盐"

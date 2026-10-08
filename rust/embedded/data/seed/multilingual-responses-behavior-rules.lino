@@ -1,0 +1,990 @@
+# Response templates of the behavior-rule catalog (R1188-U1).
+#
+# The topic labels, rule labels, matched prompts, response descriptions and
+# When X then Y statements that `List behavior rules` and `Show behavior rule`
+# render, the list footer, and the answers to a rule taught in the dialog.
+# Both roots read them by intent (rust/src/solver_handlers/behavior_rules.rs,
+# js/worker/formal_ai_worker_03.js) instead of holding the prose and its
+# example prompts in code. Placeholders in braces are filled by the handler.
+
+multilingual_responses
+  response response_behavior_rule_topic_greetings_en
+    intent behavior_rule_topic_greetings
+    language en
+    text "Greetings"
+  response response_behavior_rule_topic_greetings_ru
+    intent behavior_rule_topic_greetings
+    language ru
+    text "Приветствия"
+  response response_behavior_rule_topic_greetings_hi
+    intent behavior_rule_topic_greetings
+    language hi
+    text "अभिवादन"
+  response response_behavior_rule_topic_greetings_zh
+    intent behavior_rule_topic_greetings
+    language zh
+    text "问候"
+  response response_behavior_rule_topic_greetings_es
+    intent behavior_rule_topic_greetings
+    language es
+    text "Saludos"
+  response response_behavior_rule_topic_farewells_en
+    intent behavior_rule_topic_farewells
+    language en
+    text "Farewells"
+  response response_behavior_rule_topic_farewells_ru
+    intent behavior_rule_topic_farewells
+    language ru
+    text "Прощания"
+  response response_behavior_rule_topic_farewells_hi
+    intent behavior_rule_topic_farewells
+    language hi
+    text "विदाई"
+  response response_behavior_rule_topic_farewells_zh
+    intent behavior_rule_topic_farewells
+    language zh
+    text "告别"
+  response response_behavior_rule_topic_farewells_es
+    intent behavior_rule_topic_farewells
+    language es
+    text "Despedidas"
+  response response_behavior_rule_topic_small_talk_en
+    intent behavior_rule_topic_small_talk
+    language en
+    text "Small talk"
+  response response_behavior_rule_topic_small_talk_ru
+    intent behavior_rule_topic_small_talk
+    language ru
+    text "Светская беседа"
+  response response_behavior_rule_topic_small_talk_hi
+    intent behavior_rule_topic_small_talk
+    language hi
+    text "हल्की बातचीत"
+  response response_behavior_rule_topic_small_talk_zh
+    intent behavior_rule_topic_small_talk
+    language zh
+    text "闲聊"
+  response response_behavior_rule_topic_small_talk_es
+    intent behavior_rule_topic_small_talk
+    language es
+    text "Charla informal"
+  response response_behavior_rule_topic_identity_en
+    intent behavior_rule_topic_identity
+    language en
+    text "Identity"
+  response response_behavior_rule_topic_identity_ru
+    intent behavior_rule_topic_identity
+    language ru
+    text "Идентичность"
+  response response_behavior_rule_topic_identity_hi
+    intent behavior_rule_topic_identity
+    language hi
+    text "पहचान"
+  response response_behavior_rule_topic_identity_zh
+    intent behavior_rule_topic_identity
+    language zh
+    text "身份"
+  response response_behavior_rule_topic_identity_es
+    intent behavior_rule_topic_identity
+    language es
+    text "Identidad"
+  response response_behavior_rule_topic_assistant_name_en
+    intent behavior_rule_topic_assistant_name
+    language en
+    text "Assistant name"
+  response response_behavior_rule_topic_assistant_name_ru
+    intent behavior_rule_topic_assistant_name
+    language ru
+    text "Имя ассистента"
+  response response_behavior_rule_topic_assistant_name_hi
+    intent behavior_rule_topic_assistant_name
+    language hi
+    text "सहायक का नाम"
+  response response_behavior_rule_topic_assistant_name_zh
+    intent behavior_rule_topic_assistant_name
+    language zh
+    text "助手名称"
+  response response_behavior_rule_topic_assistant_name_es
+    intent behavior_rule_topic_assistant_name
+    language es
+    text "Nombre del asistente"
+  response response_behavior_rule_topic_capabilities_en
+    intent behavior_rule_topic_capabilities
+    language en
+    text "Capabilities"
+  response response_behavior_rule_topic_capabilities_ru
+    intent behavior_rule_topic_capabilities
+    language ru
+    text "Возможности"
+  response response_behavior_rule_topic_capabilities_hi
+    intent behavior_rule_topic_capabilities
+    language hi
+    text "क्षमताएँ"
+  response response_behavior_rule_topic_capabilities_zh
+    intent behavior_rule_topic_capabilities
+    language zh
+    text "能力"
+  response response_behavior_rule_topic_capabilities_es
+    intent behavior_rule_topic_capabilities
+    language es
+    text "Capacidades"
+  response response_behavior_rule_topic_write_program_en
+    intent behavior_rule_topic_write_program
+    language en
+    text "Program templates"
+  response response_behavior_rule_topic_write_program_ru
+    intent behavior_rule_topic_write_program
+    language ru
+    text "Шаблоны программ"
+  response response_behavior_rule_topic_write_program_hi
+    intent behavior_rule_topic_write_program
+    language hi
+    text "Program templates"
+  response response_behavior_rule_topic_write_program_zh
+    intent behavior_rule_topic_write_program
+    language zh
+    text "程序模板"
+  response response_behavior_rule_topic_write_program_es
+    intent behavior_rule_topic_write_program
+    language es
+    text "Plantillas de programas"
+  response response_behavior_rule_topic_unknown_fallback_en
+    intent behavior_rule_topic_unknown_fallback
+    language en
+    text "Unknown fallback"
+  response response_behavior_rule_topic_unknown_fallback_ru
+    intent behavior_rule_topic_unknown_fallback
+    language ru
+    text "Резервный ответ"
+  response response_behavior_rule_topic_unknown_fallback_hi
+    intent behavior_rule_topic_unknown_fallback
+    language hi
+    text "अज्ञात अनुरोध का वैकल्पिक उत्तर"
+  response response_behavior_rule_topic_unknown_fallback_zh
+    intent behavior_rule_topic_unknown_fallback
+    language zh
+    text "未知请求回退"
+  response response_behavior_rule_topic_unknown_fallback_es
+    intent behavior_rule_topic_unknown_fallback
+    language es
+    text "Respuesta de reserva"
+  response response_behavior_rule_label_greeting_en
+    intent behavior_rule_label_greeting
+    language en
+    text "Greeting rule"
+  response response_behavior_rule_label_greeting_ru
+    intent behavior_rule_label_greeting
+    language ru
+    text "Правило приветствия"
+  response response_behavior_rule_label_greeting_hi
+    intent behavior_rule_label_greeting
+    language hi
+    text "अभिवादन नियम"
+  response response_behavior_rule_label_greeting_zh
+    intent behavior_rule_label_greeting
+    language zh
+    text "问候规则"
+  response response_behavior_rule_label_greeting_es
+    intent behavior_rule_label_greeting
+    language es
+    text "Regla de saludo"
+  response response_behavior_rule_label_farewell_en
+    intent behavior_rule_label_farewell
+    language en
+    text "Farewell rule"
+  response response_behavior_rule_label_farewell_ru
+    intent behavior_rule_label_farewell
+    language ru
+    text "Правило прощания"
+  response response_behavior_rule_label_farewell_hi
+    intent behavior_rule_label_farewell
+    language hi
+    text "विदाई नियम"
+  response response_behavior_rule_label_farewell_zh
+    intent behavior_rule_label_farewell
+    language zh
+    text "告别规则"
+  response response_behavior_rule_label_farewell_es
+    intent behavior_rule_label_farewell
+    language es
+    text "Regla de despedida"
+  response response_behavior_rule_label_assistant_free_time_en
+    intent behavior_rule_label_assistant_free_time
+    language en
+    text "Assistant free-time rule"
+  response response_behavior_rule_label_assistant_free_time_ru
+    intent behavior_rule_label_assistant_free_time
+    language ru
+    text "Правило свободного времени ассистента"
+  response response_behavior_rule_label_assistant_free_time_hi
+    intent behavior_rule_label_assistant_free_time
+    language hi
+    text "सहायक खाली समय नियम"
+  response response_behavior_rule_label_assistant_free_time_zh
+    intent behavior_rule_label_assistant_free_time
+    language zh
+    text "助手空闲时间规则"
+  response response_behavior_rule_label_assistant_free_time_es
+    intent behavior_rule_label_assistant_free_time
+    language es
+    text "Regla del tiempo libre del asistente"
+  response response_behavior_rule_label_identity_en
+    intent behavior_rule_label_identity
+    language en
+    text "Identity rule"
+  response response_behavior_rule_label_identity_ru
+    intent behavior_rule_label_identity
+    language ru
+    text "Правило идентичности"
+  response response_behavior_rule_label_identity_hi
+    intent behavior_rule_label_identity
+    language hi
+    text "पहचान नियम"
+  response response_behavior_rule_label_identity_zh
+    intent behavior_rule_label_identity
+    language zh
+    text "身份规则"
+  response response_behavior_rule_label_identity_es
+    intent behavior_rule_label_identity
+    language es
+    text "Regla de identidad"
+  response response_behavior_rule_label_assistant_name_en
+    intent behavior_rule_label_assistant_name
+    language en
+    text "Assistant name rule"
+  response response_behavior_rule_label_assistant_name_ru
+    intent behavior_rule_label_assistant_name
+    language ru
+    text "Правило имени ассистента"
+  response response_behavior_rule_label_assistant_name_hi
+    intent behavior_rule_label_assistant_name
+    language hi
+    text "सहायक नाम नियम"
+  response response_behavior_rule_label_assistant_name_zh
+    intent behavior_rule_label_assistant_name
+    language zh
+    text "助手名称规则"
+  response response_behavior_rule_label_assistant_name_es
+    intent behavior_rule_label_assistant_name
+    language es
+    text "Regla del nombre del asistente"
+  response response_behavior_rule_label_capabilities_en
+    intent behavior_rule_label_capabilities
+    language en
+    text "Capabilities rule"
+  response response_behavior_rule_label_capabilities_ru
+    intent behavior_rule_label_capabilities
+    language ru
+    text "Правило возможностей"
+  response response_behavior_rule_label_capabilities_hi
+    intent behavior_rule_label_capabilities
+    language hi
+    text "क्षमता नियम"
+  response response_behavior_rule_label_capabilities_zh
+    intent behavior_rule_label_capabilities
+    language zh
+    text "能力规则"
+  response response_behavior_rule_label_capabilities_es
+    intent behavior_rule_label_capabilities
+    language es
+    text "Regla de capacidades"
+  response response_behavior_rule_label_write_program_en
+    intent behavior_rule_label_write_program
+    language en
+    text "Write-program rule"
+  response response_behavior_rule_label_write_program_ru
+    intent behavior_rule_label_write_program
+    language ru
+    text "Правило write-program"
+  response response_behavior_rule_label_write_program_hi
+    intent behavior_rule_label_write_program
+    language hi
+    text "Write-program नियम"
+  response response_behavior_rule_label_write_program_zh
+    intent behavior_rule_label_write_program
+    language zh
+    text "Write-program 规则"
+  response response_behavior_rule_label_write_program_es
+    intent behavior_rule_label_write_program
+    language es
+    text "Regla write-program"
+  response response_behavior_rule_label_unknown_en
+    intent behavior_rule_label_unknown
+    language en
+    text "Unknown fallback rule"
+  response response_behavior_rule_label_unknown_ru
+    intent behavior_rule_label_unknown
+    language ru
+    text "Резервное правило для неизвестного запроса"
+  response response_behavior_rule_label_unknown_hi
+    intent behavior_rule_label_unknown
+    language hi
+    text "अज्ञात अनुरोध का वैकल्पिक नियम"
+  response response_behavior_rule_label_unknown_zh
+    intent behavior_rule_label_unknown
+    language zh
+    text "未知请求回退规则"
+  response response_behavior_rule_label_unknown_es
+    intent behavior_rule_label_unknown
+    language es
+    text "Regla de reserva para solicitudes desconocidas"
+  response response_behavior_rule_matches_greeting_en
+    intent behavior_rule_matches_greeting
+    language en
+    text "`Hi`, `Hello`, `Hey`, and multilingual greeting seed phrases"
+  response response_behavior_rule_matches_greeting_ru
+    intent behavior_rule_matches_greeting
+    language ru
+    text "`Hi`, `Hello`, `Hey` и многоязычные seed-фразы приветствия"
+  response response_behavior_rule_matches_greeting_hi
+    intent behavior_rule_matches_greeting
+    language hi
+    text "`Hi`, `Hello`, `Hey` और बहुभाषी greeting seed phrases"
+  response response_behavior_rule_matches_greeting_zh
+    intent behavior_rule_matches_greeting
+    language zh
+    text "`Hi`、`Hello`、`Hey` 以及多语言问候 seed 短语"
+  response response_behavior_rule_matches_greeting_es
+    intent behavior_rule_matches_greeting
+    language es
+    text "`Hi`, `Hello`, `Hey` y frases semilla de saludo multilingües"
+  response response_behavior_rule_matches_farewell_en
+    intent behavior_rule_matches_farewell
+    language en
+    text "`bye`, `goodbye`, `poka`, and multilingual farewell seed phrases"
+  response response_behavior_rule_matches_farewell_ru
+    intent behavior_rule_matches_farewell
+    language ru
+    text "`bye`, `goodbye`, `poka` и многоязычные seed-фразы прощания"
+  response response_behavior_rule_matches_farewell_hi
+    intent behavior_rule_matches_farewell
+    language hi
+    text "`bye`, `goodbye`, `poka` और बहुभाषी farewell seed phrases"
+  response response_behavior_rule_matches_farewell_zh
+    intent behavior_rule_matches_farewell
+    language zh
+    text "`bye`、`goodbye`、`poka` 以及多语言告别 seed 短语"
+  response response_behavior_rule_matches_farewell_es
+    intent behavior_rule_matches_farewell
+    language es
+    text "`bye`, `goodbye`, `poka` y frases semilla de despedida multilingües"
+  response response_behavior_rule_matches_assistant_free_time_en
+    intent behavior_rule_matches_assistant_free_time
+    language en
+    text "`What do you do in your free time?`, `Что делаешь в свободное время?`, and equivalent small-talk seed phrases"
+  response response_behavior_rule_matches_assistant_free_time_ru
+    intent behavior_rule_matches_assistant_free_time
+    language ru
+    text "`What do you do in your free time?`, `Что делаешь в свободное время?` и равнозначные seed-фразы светской беседы"
+  response response_behavior_rule_matches_assistant_free_time_hi
+    intent behavior_rule_matches_assistant_free_time
+    language hi
+    text "`What do you do in your free time?`, `Что делаешь в свободное время?` और समान small-talk seed phrases"
+  response response_behavior_rule_matches_assistant_free_time_zh
+    intent behavior_rule_matches_assistant_free_time
+    language zh
+    text "`What do you do in your free time?`、`Что делаешь в свободное время?` 以及等价闲聊 seed 短语"
+  response response_behavior_rule_matches_assistant_free_time_es
+    intent behavior_rule_matches_assistant_free_time
+    language es
+    text "`What do you do in your free time?`, `Что делаешь в свободное время?` y frases semilla equivalentes de charla informal"
+  response response_behavior_rule_matches_identity_en
+    intent behavior_rule_matches_identity
+    language en
+    text "`Who are you?`, `Кто ты?`, and equivalent identity prompts"
+  response response_behavior_rule_matches_identity_ru
+    intent behavior_rule_matches_identity
+    language ru
+    text "`Who are you?`, `Кто ты?` и равнозначные вопросы об идентичности"
+  response response_behavior_rule_matches_identity_hi
+    intent behavior_rule_matches_identity
+    language hi
+    text "`Who are you?`, `Кто ты?` और समान identity prompts"
+  response response_behavior_rule_matches_identity_zh
+    intent behavior_rule_matches_identity
+    language zh
+    text "`Who are you?`、`Кто ты?` 以及等价身份提示"
+  response response_behavior_rule_matches_identity_es
+    intent behavior_rule_matches_identity
+    language es
+    text "`Who are you?`, `Кто ты?` y preguntas equivalentes sobre la identidad"
+  response response_behavior_rule_matches_assistant_name_en
+    intent behavior_rule_matches_assistant_name
+    language en
+    text "`What is your name?`, `Как тебя зовут?`, and equivalent name prompts"
+  response response_behavior_rule_matches_assistant_name_ru
+    intent behavior_rule_matches_assistant_name
+    language ru
+    text "`What is your name?`, `Как тебя зовут?` и равнозначные вопросы об имени"
+  response response_behavior_rule_matches_assistant_name_hi
+    intent behavior_rule_matches_assistant_name
+    language hi
+    text "`What is your name?`, `Как тебя зовут?` और समान name prompts"
+  response response_behavior_rule_matches_assistant_name_zh
+    intent behavior_rule_matches_assistant_name
+    language zh
+    text "`What is your name?`、`Как тебя зовут?` 以及等价名称提示"
+  response response_behavior_rule_matches_assistant_name_es
+    intent behavior_rule_matches_assistant_name
+    language es
+    text "`What is your name?`, `Как тебя зовут?` y preguntas equivalentes sobre el nombre"
+  response response_behavior_rule_matches_capabilities_en
+    intent behavior_rule_matches_capabilities
+    language en
+    text "`What can you do?`, `Что ты умеешь?`, and equivalent capability prompts"
+  response response_behavior_rule_matches_capabilities_ru
+    intent behavior_rule_matches_capabilities
+    language ru
+    text "`What can you do?`, `Что ты умеешь?` и равнозначные вопросы о возможностях"
+  response response_behavior_rule_matches_capabilities_hi
+    intent behavior_rule_matches_capabilities
+    language hi
+    text "`What can you do?`, `Что ты умеешь?` और समान capability prompts"
+  response response_behavior_rule_matches_capabilities_zh
+    intent behavior_rule_matches_capabilities
+    language zh
+    text "`What can you do?`、`Что ты умеешь?` 以及等价能力提示"
+  response response_behavior_rule_matches_capabilities_es
+    intent behavior_rule_matches_capabilities
+    language es
+    text "`What can you do?`, `Что ты умеешь?` y preguntas equivalentes sobre las capacidades"
+  response response_behavior_rule_matches_write_program_en
+    intent behavior_rule_matches_write_program
+    language en
+    text "`write_program(language, task)` with languages [{languages}] and tasks [{tasks}]"
+  response response_behavior_rule_matches_write_program_ru
+    intent behavior_rule_matches_write_program
+    language ru
+    text "Параметры `language` и `task`: `write_program(language, task)` with languages [{languages}] and tasks [{tasks}]"
+  response response_behavior_rule_matches_write_program_hi
+    intent behavior_rule_matches_write_program
+    language hi
+    text "`language` और `task` parameter: `write_program(language, task)` with languages [{languages}] and tasks [{tasks}]"
+  response response_behavior_rule_matches_write_program_zh
+    intent behavior_rule_matches_write_program
+    language zh
+    text "`language` 和 `task` 参数：`write_program(language, task)` with languages [{languages}] and tasks [{tasks}]"
+  response response_behavior_rule_matches_write_program_es
+    intent behavior_rule_matches_write_program
+    language es
+    text "Parámetros `language` y `task`: `write_program(language, task)` con los lenguajes [{languages}] y las tareas [{tasks}]"
+  response response_behavior_rule_matches_unknown_en
+    intent behavior_rule_matches_unknown
+    language en
+    text "Any prompt that no earlier rule or handler can answer"
+  response response_behavior_rule_matches_unknown_ru
+    intent behavior_rule_matches_unknown
+    language ru
+    text "Любой запрос, на который не ответило более раннее правило или обработчик"
+  response response_behavior_rule_matches_unknown_hi
+    intent behavior_rule_matches_unknown
+    language hi
+    text "कोई भी prompt जिसका उत्तर पहले का rule या handler नहीं दे सकता"
+  response response_behavior_rule_matches_unknown_zh
+    intent behavior_rule_matches_unknown
+    language zh
+    text "任何前面的规则或处理器无法回答的提示"
+  response response_behavior_rule_matches_unknown_es
+    intent behavior_rule_matches_unknown
+    language es
+    text "Cualquier solicitud que ninguna regla o controlador anterior pueda responder"
+  response response_behavior_rule_response_assistant_name_en
+    intent behavior_rule_response_assistant_name
+    language en
+    text "Returns the assistant-name answer; browser surfaces can override it from the assistant name setting."
+  response response_behavior_rule_response_assistant_name_ru
+    intent behavior_rule_response_assistant_name
+    language ru
+    text "Возвращает ответ об имени ассистента; браузерные поверхности могут переопределить его настройкой имени ассистента."
+  response response_behavior_rule_response_assistant_name_hi
+    intent behavior_rule_response_assistant_name
+    language hi
+    text "assistant-name उत्तर लौटाता है; browser surfaces assistant name setting से इसे बदल सकते हैं."
+  response response_behavior_rule_response_assistant_name_zh
+    intent behavior_rule_response_assistant_name
+    language zh
+    text "返回助手名称回答；浏览器界面可通过助手名称设置覆盖它。"
+  response response_behavior_rule_response_assistant_name_es
+    intent behavior_rule_response_assistant_name
+    language es
+    text "Devuelve la respuesta sobre el nombre del asistente; las superficies del navegador pueden sustituirla con el ajuste del nombre del asistente."
+  response response_behavior_rule_response_capabilities_en
+    intent behavior_rule_response_capabilities
+    language en
+    text "Lists the supported symbolic chat capabilities."
+  response response_behavior_rule_response_capabilities_ru
+    intent behavior_rule_response_capabilities
+    language ru
+    text "Перечисляет поддерживаемые возможности символьного чата."
+  response response_behavior_rule_response_capabilities_hi
+    intent behavior_rule_response_capabilities
+    language hi
+    text "समर्थित symbolic chat क्षमताओं को सूचीबद्ध करता है."
+  response response_behavior_rule_response_capabilities_zh
+    intent behavior_rule_response_capabilities
+    language zh
+    text "列出支持的符号聊天能力。"
+  response response_behavior_rule_response_capabilities_es
+    intent behavior_rule_response_capabilities
+    language es
+    text "Enumera las capacidades admitidas del chat simbólico."
+  response response_behavior_rule_response_write_program_en
+    intent behavior_rule_response_write_program
+    language en
+    text "Returns a minimal program from the parameterized template catalog."
+  response response_behavior_rule_response_write_program_ru
+    intent behavior_rule_response_write_program
+    language ru
+    text "Возвращает минимальную программу из параметризованного каталога шаблонов."
+  response response_behavior_rule_response_write_program_hi
+    intent behavior_rule_response_write_program
+    language hi
+    text "Parameterized template catalog से न्यूनतम program लौटाता है."
+  response response_behavior_rule_response_write_program_zh
+    intent behavior_rule_response_write_program
+    language zh
+    text "从参数化模板目录返回一个最小程序。"
+  response response_behavior_rule_response_write_program_es
+    intent behavior_rule_response_write_program
+    language es
+    text "Devuelve un programa mínimo del catálogo de plantillas parametrizadas."
+  response response_behavior_rule_when_then_greeting_en
+    intent behavior_rule_when_then_greeting
+    language en
+    text "When the user says `Hi`, `Hello`, or `Hey` then respond with `{response}`."
+  response response_behavior_rule_when_then_greeting_ru
+    intent behavior_rule_when_then_greeting
+    language ru
+    text "Когда пользователь говорит `Hi`, `Hello`, `Hey` или многоязычную фразу приветствия, ответь `{response}`."
+  response response_behavior_rule_when_then_greeting_hi
+    intent behavior_rule_when_then_greeting
+    language hi
+    text "जब उपयोगकर्ता `Hi`, `Hello`, `Hey` या बहुभाषी greeting phrase कहे, तब `{response}` उत्तर दें."
+  response response_behavior_rule_when_then_greeting_zh
+    intent behavior_rule_when_then_greeting
+    language zh
+    text "当用户说 `Hi`、`Hello`、`Hey` 或多语言问候短语时，回答 `{response}`。"
+  response response_behavior_rule_when_then_greeting_es
+    intent behavior_rule_when_then_greeting
+    language es
+    text "Cuando el usuario dice `Hi`, `Hello`, `Hey` o una frase de saludo multilingüe, responde `{response}`."
+  response response_behavior_rule_when_then_farewell_en
+    intent behavior_rule_when_then_farewell
+    language en
+    text "When the user says `bye`, `goodbye`, or `пока` then respond with `{response}`."
+  response response_behavior_rule_when_then_farewell_ru
+    intent behavior_rule_when_then_farewell
+    language ru
+    text "Когда пользователь говорит `bye`, `goodbye`, `poka` или многоязычную фразу прощания, ответь `{response}`."
+  response response_behavior_rule_when_then_farewell_hi
+    intent behavior_rule_when_then_farewell
+    language hi
+    text "जब उपयोगकर्ता `bye`, `goodbye`, `poka` या बहुभाषी farewell phrase कहे, तब `{response}` उत्तर दें."
+  response response_behavior_rule_when_then_farewell_zh
+    intent behavior_rule_when_then_farewell
+    language zh
+    text "当用户说 `bye`、`goodbye`、`poka` 或多语言告别短语时，回答 `{response}`。"
+  response response_behavior_rule_when_then_farewell_es
+    intent behavior_rule_when_then_farewell
+    language es
+    text "Cuando el usuario dice `bye`, `goodbye`, `poka` o una frase de despedida multilingüe, responde `{response}`."
+  response response_behavior_rule_when_then_assistant_free_time_en
+    intent behavior_rule_when_then_assistant_free_time
+    language en
+    text "When the user asks what I do in free time then respond with `{response}`."
+  response response_behavior_rule_when_then_assistant_free_time_ru
+    intent behavior_rule_when_then_assistant_free_time
+    language ru
+    text "Когда пользователь спрашивает, что я делаю в свободное время, ответь `{response}`."
+  response response_behavior_rule_when_then_assistant_free_time_hi
+    intent behavior_rule_when_then_assistant_free_time
+    language hi
+    text "जब उपयोगकर्ता पूछे कि मैं खाली समय में क्या करता हूँ, तब `{response}` उत्तर दें."
+  response response_behavior_rule_when_then_assistant_free_time_zh
+    intent behavior_rule_when_then_assistant_free_time
+    language zh
+    text "当用户问我空闲时间做什么时，回答 `{response}`。"
+  response response_behavior_rule_when_then_assistant_free_time_es
+    intent behavior_rule_when_then_assistant_free_time
+    language es
+    text "Cuando el usuario pregunta qué hago en mi tiempo libre, responde `{response}`."
+  response response_behavior_rule_when_then_identity_en
+    intent behavior_rule_when_then_identity
+    language en
+    text "When the user asks `Who are you?` or `Кто ты?` then respond with `{response}`."
+  response response_behavior_rule_when_then_identity_ru
+    intent behavior_rule_when_then_identity
+    language ru
+    text "Когда пользователь спрашивает `Who are you?` или `Кто ты?`, ответь `{response}`."
+  response response_behavior_rule_when_then_identity_hi
+    intent behavior_rule_when_then_identity
+    language hi
+    text "जब उपयोगकर्ता `Who are you?` या `Кто ты?` पूछे, तब `{response}` उत्तर दें."
+  response response_behavior_rule_when_then_identity_zh
+    intent behavior_rule_when_then_identity
+    language zh
+    text "当用户问 `Who are you?` 或 `Кто ты?` 时，回答 `{response}`。"
+  response response_behavior_rule_when_then_identity_es
+    intent behavior_rule_when_then_identity
+    language es
+    text "Cuando el usuario pregunta `Who are you?` o `Кто ты?`, responde `{response}`."
+  response response_behavior_rule_when_then_assistant_name_en
+    intent behavior_rule_when_then_assistant_name
+    language en
+    text "When the user asks `What is your name?` or `Как тебя зовут?` then respond with the assistant-name answer; if a surface has an assistant-name setting, include that configured name."
+  response response_behavior_rule_when_then_assistant_name_ru
+    intent behavior_rule_when_then_assistant_name
+    language ru
+    text "Когда пользователь спрашивает `What is your name?` или `Как тебя зовут?`, ответь сообщением об имени ассистента; если поверхность поддерживает настройку имени, включи настроенное имя."
+  response response_behavior_rule_when_then_assistant_name_hi
+    intent behavior_rule_when_then_assistant_name
+    language hi
+    text "जब उपयोगकर्ता `What is your name?` या `Как тебя зовут?` पूछे, तब assistant-name उत्तर दें; अगर surface में assistant-name setting है, तो configured name शामिल करें."
+  response response_behavior_rule_when_then_assistant_name_zh
+    intent behavior_rule_when_then_assistant_name
+    language zh
+    text "当用户问 `What is your name?` 或 `Как тебя зовут?` 时，回答助手名称；如果界面有助手名称设置，则包含配置的名称。"
+  response response_behavior_rule_when_then_assistant_name_es
+    intent behavior_rule_when_then_assistant_name
+    language es
+    text "Cuando el usuario pregunta `What is your name?` o `Как тебя зовут?`, responde con el nombre del asistente; si la superficie tiene un ajuste del nombre del asistente, incluye el nombre configurado."
+  response response_behavior_rule_when_then_capabilities_en
+    intent behavior_rule_when_then_capabilities
+    language en
+    text "When the user asks `What can you do?` or `Что ты умеешь?` then respond with the multilingual capability listing."
+  response response_behavior_rule_when_then_capabilities_ru
+    intent behavior_rule_when_then_capabilities
+    language ru
+    text "Когда пользователь спрашивает `What can you do?` или `Что ты умеешь?`, ответь многоязычным списком возможностей."
+  response response_behavior_rule_when_then_capabilities_hi
+    intent behavior_rule_when_then_capabilities
+    language hi
+    text "जब उपयोगकर्ता `What can you do?` या `Что ты умеешь?` पूछे, तब बहुभाषी capability listing दें."
+  response response_behavior_rule_when_then_capabilities_zh
+    intent behavior_rule_when_then_capabilities
+    language zh
+    text "当用户问 `What can you do?` 或 `Что ты умеешь?` 时，回答多语言能力列表。"
+  response response_behavior_rule_when_then_capabilities_es
+    intent behavior_rule_when_then_capabilities
+    language es
+    text "Cuando el usuario pregunta `What can you do?` o `Что ты умеешь?`, responde con la lista multilingüe de capacidades."
+  response response_behavior_rule_when_then_write_program_en
+    intent behavior_rule_when_then_write_program
+    language en
+    text "When the user requests a program with a supported `language` and `task`, resolve those parameters and render the matching template through the single `write_program` intent."
+  response response_behavior_rule_when_then_write_program_ru
+    intent behavior_rule_when_then_write_program
+    language ru
+    text "Когда пользователь просит программу с поддерживаемыми параметрами `language` и `task`, выбери соответствующий шаблон через единое намерение `write_program`."
+  response response_behavior_rule_when_then_write_program_hi
+    intent behavior_rule_when_then_write_program
+    language hi
+    text "जब उपयोगकर्ता supported `language` और `task` parameter वाला program माँगे, तब single `write_program` intent से matching template दें."
+  response response_behavior_rule_when_then_write_program_zh
+    intent behavior_rule_when_then_write_program
+    language zh
+    text "当用户请求带受支持 `language` 和 `task` 参数的程序时，通过单个 `write_program` 意图选择匹配模板。"
+  response response_behavior_rule_when_then_write_program_es
+    intent behavior_rule_when_then_write_program
+    language es
+    text "Cuando el usuario pide un programa con un `language` y una `task` admitidos, resuelve esos parámetros y genera la plantilla correspondiente mediante la única intención `write_program`."
+  response response_behavior_rule_when_then_unknown_en
+    intent behavior_rule_when_then_unknown
+    language en
+    text "When no earlier rule or handler matches the prompt then respond with the multilingual unknown-intent guide (`List behavior rules`, `Show behavior rule`, `When I say … answer …`, `Report issue`, `Export memory`)."
+  response response_behavior_rule_when_then_unknown_ru
+    intent behavior_rule_when_then_unknown
+    language ru
+    text "Когда ни одно более раннее правило или обработчик не подходит к запросу, ответь многоязычной подсказкой для неизвестного намерения (`Покажи правила`, `Покажи правило`, `Когда ... тогда ...`, `Сообщить о проблеме`, `Экспорт памяти`)."
+  response response_behavior_rule_when_then_unknown_hi
+    intent behavior_rule_when_then_unknown
+    language hi
+    text "जब कोई पहले का rule या handler prompt से मेल न खाए, तब unknown-intent guide दें (`नियम दिखाएँ`, `rule दिखाएँ`, `जब ... तब ...`, `Report issue`, `Export memory`)."
+  response response_behavior_rule_when_then_unknown_zh
+    intent behavior_rule_when_then_unknown
+    language zh
+    text "当前面的规则或处理器都不匹配提示时，回答未知意图指南（`显示规则`、`显示规则详情`、`当 ... 时 ...`、`报告问题`、`导出 memory`）。"
+  response response_behavior_rule_when_then_unknown_es
+    intent behavior_rule_when_then_unknown
+    language es
+    text "Cuando ninguna regla o controlador anterior coincide con la solicitud, responde con la guía multilingüe de intención desconocida (`List behavior rules`, `Show behavior rule`, `When I say … answer …`, `Report issue`, `Export memory`)."
+  response response_behavior_rule_list_intro_en
+    intent behavior_rule_list_intro
+    language en
+    text "Behavior rules I can inspect in this dialog (grouped by topic, each shown as a `When X then Y` statement):"
+  response response_behavior_rule_list_intro_ru
+    intent behavior_rule_list_intro
+    language ru
+    text "Правила поведения, которые я могу показать в этом диалоге (сгруппированы по темам; каждое показано как инструкция `Когда X тогда Y`):"
+  response response_behavior_rule_list_intro_hi
+    intent behavior_rule_list_intro
+    language hi
+    text "व्यवहार नियम जिन्हें मैं इस संवाद में दिखा सकता हूँ (विषय के अनुसार समूहित; हर नियम `जब X तब Y` कथन के रूप में है):"
+  response response_behavior_rule_list_intro_zh
+    intent behavior_rule_list_intro
+    language zh
+    text "我可以查看的行为规则（按主题分组；每条都显示为 `当 X 时 Y` 语句）："
+  response response_behavior_rule_list_intro_es
+    intent behavior_rule_list_intro
+    language es
+    text "Reglas de comportamiento que puedo mostrar en este diálogo (agrupadas por tema; cada una como una instrucción `Cuando X entonces Y`):"
+  response response_behavior_rule_runtime_heading_en
+    intent behavior_rule_runtime_heading
+    language en
+    text "Dialog-local rules taught in this conversation"
+  response response_behavior_rule_runtime_heading_ru
+    intent behavior_rule_runtime_heading
+    language ru
+    text "Правила, изученные в этом диалоге"
+  response response_behavior_rule_runtime_heading_hi
+    intent behavior_rule_runtime_heading
+    language hi
+    text "इस संवाद में सिखाए गए स्थानीय नियम"
+  response response_behavior_rule_runtime_heading_zh
+    intent behavior_rule_runtime_heading
+    language zh
+    text "本对话中学到的局部规则"
+  response response_behavior_rule_runtime_heading_es
+    intent behavior_rule_runtime_heading
+    language es
+    text "Reglas locales enseñadas en esta conversación"
+  response response_behavior_rule_list_footer_read_en
+    intent behavior_rule_list_footer_read
+    language en
+    text "Read one with `Show behavior rule unknown` or `Show behavior rule rule_greeting`."
+  response response_behavior_rule_list_footer_read_ru
+    intent behavior_rule_list_footer_read
+    language ru
+    text "Прочитать одно правило можно командой `Покажи правило unknown` или `Покажи правило rule_greeting`."
+  response response_behavior_rule_list_footer_read_hi
+    intent behavior_rule_list_footer_read
+    language hi
+    text "एक नियम पढ़ने के लिए `Show behavior rule unknown` या `Show behavior rule rule_greeting` भेजें."
+  response response_behavior_rule_list_footer_read_zh
+    intent behavior_rule_list_footer_read
+    language zh
+    text "要读取一条规则，请发送 `Show behavior rule unknown` 或 `Show behavior rule rule_greeting`。"
+  response response_behavior_rule_list_footer_read_es
+    intent behavior_rule_list_footer_read
+    language es
+    text "Lee una regla con `Show behavior rule unknown` o `Show behavior rule rule_greeting`."
+  response response_behavior_rule_list_footer_teach_en
+    intent behavior_rule_list_footer_teach
+    language en
+    text "Teach this dialog with: ``When `your prompt` then `your answer` ``. Equivalent forms: ``When I say `your prompt`, answer `your answer` ``; ``If I ask `your prompt`, reply `your answer` ``; ``When `your prompt` do `your answer` ``."
+  response response_behavior_rule_list_footer_teach_ru
+    intent behavior_rule_list_footer_teach
+    language ru
+    text "Научить этот диалог можно так: ``Когда `ваш запрос` тогда `ваш ответ` ``. Другие формы: ``Когда я скажу `ваш запрос`, ответь `ваш ответ` ``; ``Если я спрошу `ваш запрос`, ответь `ваш ответ` ``; ``Когда `ваш запрос` делай `ваш ответ` ``."
+  response response_behavior_rule_list_footer_teach_hi
+    intent behavior_rule_list_footer_teach
+    language hi
+    text "इस संवाद को सिखाएँ: ``जब `आपका प्रश्न` तब `आपका उत्तर` ``. अन्य रूप: ``When I say `your prompt`, answer `your answer` ``; ``If I ask `your prompt`, reply `your answer` ``; ``जब `आपका प्रश्न` तो `आपका उत्तर` ``."
+  response response_behavior_rule_list_footer_teach_zh
+    intent behavior_rule_list_footer_teach
+    language zh
+    text "可以这样教当前对话：``当 `你的提示` 时 `你的回答` ``。等价形式：``When I say `your prompt`, answer `your answer` ``；``If I ask `your prompt`, reply `your answer` ``；``当 `你的提示` 则 `你的回答` ``。"
+  response response_behavior_rule_list_footer_teach_es
+    intent behavior_rule_list_footer_teach
+    language es
+    text "Enseña a este diálogo con: ``When `your prompt` then `your answer` ``. Formas equivalentes: ``When I say `your prompt`, answer `your answer` ``; ``If I ask `your prompt`, reply `your answer` ``."
+  response response_behavior_rule_list_footer_forms_en
+    intent behavior_rule_list_footer_forms
+    language en
+    text "Multilingual forms: Russian ``Когда `X` тогда `Y` `` / ``Когда `X` делай `Y` ``, Hindi ``जब `X` तब `Y` ``, Chinese ``当 `X` 时 `Y` ``."
+  response response_behavior_rule_list_footer_forms_ru
+    intent behavior_rule_list_footer_forms
+    language ru
+    text "Многоязычные формы: английская ``When `X` then `Y` ``, хинди ``जब `X` तब `Y` ``, китайская ``当 `X` 时 `Y` ``."
+  response response_behavior_rule_list_footer_forms_hi
+    intent behavior_rule_list_footer_forms
+    language hi
+    text "बहुभाषी रूप: रूसी ``Когда `X` тогда `Y` ``, अंग्रेज़ी ``When `X` then `Y` ``, चीनी ``当 `X` 时 `Y` ``."
+  response response_behavior_rule_list_footer_forms_zh
+    intent behavior_rule_list_footer_forms
+    language zh
+    text "多语言形式：俄语 ``Когда `X` тогда `Y` ``，印地语 ``जब `X` तब `Y` ``，英语 ``When `X` then `Y` ``。"
+  response response_behavior_rule_list_footer_forms_es
+    intent behavior_rule_list_footer_forms
+    language es
+    text "Formas multilingües: rusa ``Когда `X` тогда `Y` ``, hindi ``जब `X` तब `Y` ``, china ``当 `X` 时 `Y` ``."
+  response response_behavior_rule_list_footer_append_en
+    intent behavior_rule_list_footer_append
+    language en
+    text "The write is append-only: export memory to preserve the rule message with the dialog."
+  response response_behavior_rule_list_footer_append_ru
+    intent behavior_rule_list_footer_append
+    language ru
+    text "Запись добавляется только в конец: экспортируйте память, чтобы сохранить сообщение с правилом вместе с диалогом."
+  response response_behavior_rule_list_footer_append_hi
+    intent behavior_rule_list_footer_append
+    language hi
+    text "लेखन केवल append-only है: नियम संदेश को संवाद के साथ रखने के लिए memory export करें."
+  response response_behavior_rule_list_footer_append_zh
+    intent behavior_rule_list_footer_append
+    language zh
+    text "写入是 append-only：导出 memory 可把这条规则消息随对话一起保存。"
+  response response_behavior_rule_list_footer_append_es
+    intent behavior_rule_list_footer_append
+    language es
+    text "La escritura solo se añade al final: exporta la memoria para conservar el mensaje de la regla con el diálogo."
+  response response_behavior_rule_change_hint_en
+    intent behavior_rule_change_hint
+    language en
+    text "To change this behavior in the current dialog, send: ``When `your prompt` then `your answer` ``. Equivalent: ``When I say `your prompt`, answer `your answer` ``."
+  response response_behavior_rule_change_hint_ru
+    intent behavior_rule_change_hint
+    language ru
+    text "Чтобы изменить это поведение в текущем диалоге, отправьте: ``Когда `ваш запрос` тогда `ваш ответ` ``. Также можно: ``Когда я скажу `ваш запрос`, ответь `ваш ответ` ``."
+  response response_behavior_rule_change_hint_hi
+    intent behavior_rule_change_hint
+    language hi
+    text "इस व्यवहार को वर्तमान संवाद में बदलने के लिए भेजें: ``जब `आपका प्रश्न` तब `आपका उत्तर` ``. दूसरा रूप: ``When I say `your prompt`, answer `your answer` ``."
+  response response_behavior_rule_change_hint_zh
+    intent behavior_rule_change_hint
+    language zh
+    text "要在当前对话中改变此行为，请发送：``当 `你的提示` 时 `你的回答` ``。也可以发送：``When I say `your prompt`, answer `your answer` ``。"
+  response response_behavior_rule_change_hint_es
+    intent behavior_rule_change_hint
+    language es
+    text "Para cambiar este comportamiento en el diálogo actual, envía: ``When `your prompt` then `your answer` ``. Equivalente: ``When I say `your prompt`, answer `your answer` ``."
+  response response_behavior_rule_runtime_when_then_en
+    intent behavior_rule_runtime_when_then
+    language en
+    text "When the user says `{trigger}` then respond with `{response}`."
+  response response_behavior_rule_runtime_when_then_ru
+    intent behavior_rule_runtime_when_then
+    language ru
+    text "Когда пользователь говорит `{trigger}`, ответь `{response}`."
+  response response_behavior_rule_runtime_when_then_hi
+    intent behavior_rule_runtime_when_then
+    language hi
+    text "जब उपयोगकर्ता `{trigger}` कहे, तब `{response}` उत्तर दें."
+  response response_behavior_rule_runtime_when_then_zh
+    intent behavior_rule_runtime_when_then
+    language zh
+    text "当用户说 `{trigger}` 时，回答 `{response}`。"
+  response response_behavior_rule_runtime_when_then_es
+    intent behavior_rule_runtime_when_then
+    language es
+    text "Cuando el usuario dice `{trigger}`, responde `{response}`."
+  response response_behavior_rule_update_title_en
+    intent behavior_rule_update_title
+    language en
+    text "Behavior rule compiled for this dialog."
+  response response_behavior_rule_update_title_ru
+    intent behavior_rule_update_title
+    language ru
+    text "Правило поведения скомпилировано для этого диалога."
+  response response_behavior_rule_update_title_hi
+    intent behavior_rule_update_title
+    language hi
+    text "इस संवाद के लिए व्यवहार नियम compile किया गया."
+  response response_behavior_rule_update_title_zh
+    intent behavior_rule_update_title
+    language zh
+    text "已为本对话编译行为规则。"
+  response response_behavior_rule_update_title_es
+    intent behavior_rule_update_title
+    language es
+    text "Regla de comportamiento compilada para este diálogo."
+  response response_behavior_rule_update_send_hint_en
+    intent behavior_rule_update_send_hint
+    language en
+    text "Send `{trigger}` now and I will answer with the configured response. Export memory to keep this rule message with the dialog."
+  response response_behavior_rule_update_send_hint_ru
+    intent behavior_rule_update_send_hint
+    language ru
+    text "Отправьте `{trigger}` сейчас, и я отвечу настроенным ответом. Экспортируйте память, чтобы сохранить это правило вместе с диалогом."
+  response response_behavior_rule_update_send_hint_hi
+    intent behavior_rule_update_send_hint
+    language hi
+    text "`{trigger}` अभी भेजें और मैं configured response से उत्तर दूँगा. इस rule message को dialog के साथ रखने के लिए memory export करें."
+  response response_behavior_rule_update_send_hint_zh
+    intent behavior_rule_update_send_hint
+    language zh
+    text "现在发送 `{trigger}`，我会使用配置的回答。导出 memory 可把这条规则消息随对话一起保存。"
+  response response_behavior_rule_update_send_hint_es
+    intent behavior_rule_update_send_hint
+    language es
+    text "Envía `{trigger}` ahora y responderé con la respuesta configurada. Exporta la memoria para conservar este mensaje de regla con el diálogo."
+  response response_behavior_rule_count_summary_en
+    intent behavior_rule_count_summary
+    language en
+    text "Total behavior rules: {total} (built-in: {built_in}; dialog-local: {runtime})."
+  response response_behavior_rule_count_summary_ru
+    intent behavior_rule_count_summary
+    language ru
+    text "Всего правил: {total} (встроенных: {built_in}; изученных в этом диалоге: {runtime})."
+  response response_behavior_rule_count_summary_hi
+    intent behavior_rule_count_summary
+    language hi
+    text "कुल व्यवहार नियम: {total} (built-in: {built_in}; dialog-local: {runtime})."
+  response response_behavior_rule_count_summary_zh
+    intent behavior_rule_count_summary
+    language zh
+    text "行为规则总数：{total}（内置：{built_in}；本对话：{runtime}）。"
+  response response_behavior_rule_count_summary_es
+    intent behavior_rule_count_summary
+    language es
+    text "Total de reglas de comportamiento: {total} (integradas: {built_in}; locales del diálogo: {runtime})."
+  response response_behavior_rule_count_reasoning_en
+    intent behavior_rule_count_reasoning
+    language en
+    text "Reasoning: I count the built-in behavior-rule catalog and add dialog-local rules compiled from earlier user turns."
+  response response_behavior_rule_count_reasoning_ru
+    intent behavior_rule_count_reasoning
+    language ru
+    text "Рассуждение: я считаю встроенный каталог правил поведения и добавляю правила, скомпилированные из предыдущих сообщений пользователя."
+  response response_behavior_rule_count_reasoning_hi
+    intent behavior_rule_count_reasoning
+    language hi
+    text "Reasoning: मैं built-in behavior-rule catalog गिनता हूँ और पहले user turns से compiled dialog-local rules जोड़ता हूँ."
+  response response_behavior_rule_count_reasoning_zh
+    intent behavior_rule_count_reasoning
+    language zh
+    text "Reasoning：我统计内置行为规则目录，并加上从此前用户消息编译出的本对话规则。"
+  response response_behavior_rule_count_reasoning_es
+    intent behavior_rule_count_reasoning
+    language es
+    text "Razonamiento: cuento el catálogo integrado de reglas de comportamiento y sumo las reglas locales compiladas a partir de los mensajes anteriores del usuario."
+  response response_behavior_rule_brief_groups_en
+    intent behavior_rule_brief_groups
+    language en
+    text "greetings, farewells, small talk, identity, assistant name, capabilities, program templates, and the unknown fallback"
+  response response_behavior_rule_brief_groups_ru
+    intent behavior_rule_brief_groups
+    language ru
+    text "приветствия, прощания, светская беседа, идентичность, имя ассистента, возможности, шаблоны программ и резервный ответ"
+  response response_behavior_rule_brief_groups_hi
+    intent behavior_rule_brief_groups
+    language hi
+    text "अभिवादन, विदाई, हल्की बातचीत, पहचान, सहायक का नाम, क्षमताएँ, program templates, और unknown fallback"
+  response response_behavior_rule_brief_groups_zh
+    intent behavior_rule_brief_groups
+    language zh
+    text "问候、告别、闲聊、身份、助手名称、能力、程序模板和未知请求回退"
+  response response_behavior_rule_brief_groups_es
+    intent behavior_rule_brief_groups
+    language es
+    text "saludos, despedidas, charla informal, identidad, nombre del asistente, capacidades, plantillas de programas y la respuesta de reserva"
+  response response_behavior_rule_brief_en
+    intent behavior_rule_brief
+    language en
+    text "Briefly: {total} behavior rules ({built_in} built-in, {runtime} dialog-local): {groups}."
+  response response_behavior_rule_brief_ru
+    intent behavior_rule_brief
+    language ru
+    text "Всего: {total} правил поведения ({built_in} встроенных, {runtime} из диалога). Кратко: {groups}."
+  response response_behavior_rule_brief_hi
+    intent behavior_rule_brief
+    language hi
+    text "कुल: {total} व्यवहार नियम ({built_in} built-in, {runtime} dialog-local). संक्षेप में: {groups}."
+  response response_behavior_rule_brief_zh
+    intent behavior_rule_brief
+    language zh
+    text "总计：{total} 条行为规则（{built_in} 条内置，{runtime} 条来自对话）。简要：{groups}。"
+  response response_behavior_rule_brief_es
+    intent behavior_rule_brief
+    language es
+    text "En resumen: {total} reglas de comportamiento ({built_in} integradas, {runtime} locales del diálogo): {groups}."

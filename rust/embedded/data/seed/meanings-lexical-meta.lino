@@ -32,6 +32,12 @@ meanings
         notation word_surface
         denotation lexical_form
         part_of_speech noun
+    lexeme es
+      surface
+        text "forma léxica"
+        notation word_surface
+        denotation lexical_form
+        part_of_speech noun_phrase
   word_surface
     defined-by lexical_form
     defined-by notation
@@ -64,6 +70,12 @@ meanings
         notation word_surface
         denotation word_surface
         part_of_speech noun
+    lexeme es
+      surface
+        text "forma de palabra"
+        notation word_surface
+        denotation word_surface
+        part_of_speech noun_phrase
   lexical_sense
     grounded-in Q1570700
     defined-by denotation
@@ -97,6 +109,12 @@ meanings
         notation word_surface
         denotation lexical_sense
         part_of_speech noun
+    lexeme es
+      surface
+        text "sentido léxico"
+        notation word_surface
+        denotation lexical_sense
+        part_of_speech noun_phrase
   part_of_speech
     grounded-in Q82042
     defined-by semantic_facet
@@ -131,6 +149,12 @@ meanings
         notation word_surface
         denotation part_of_speech
         part_of_speech noun
+    lexeme es
+      surface
+        text "categoría gramatical"
+        notation word_surface
+        denotation part_of_speech
+        part_of_speech noun_phrase
   noun
     grounded-in Q1084
     defined-by part_of_speech
@@ -160,6 +184,12 @@ meanings
     lexeme zh
       surface
         text 名词
+        notation word_surface
+        denotation noun
+        part_of_speech noun
+    lexeme es
+      surface
+        text sustantivo
         notation word_surface
         denotation noun
         part_of_speech noun
@@ -193,6 +223,12 @@ meanings
     lexeme zh
       surface
         text 名词短语
+        notation word_surface
+        denotation noun_phrase
+        part_of_speech noun_phrase
+    lexeme es
+      surface
+        text "sintagma nominal"
         notation word_surface
         denotation noun_phrase
         part_of_speech noun_phrase
@@ -230,6 +266,12 @@ meanings
         notation word_surface
         denotation grammatical_number
         part_of_speech noun
+    lexeme es
+      surface
+        text "número gramatical"
+        notation word_surface
+        denotation grammatical_number
+        part_of_speech noun_phrase
   singular
     grounded-in Q110786
     defined-by grammatical_number
@@ -262,6 +304,12 @@ meanings
         notation word_surface
         denotation singular
         part_of_speech noun
+    lexeme es
+      surface
+        text singular
+        notation word_surface
+        denotation singular
+        part_of_speech noun
   plural
     grounded-in Q146786
     defined-by grammatical_number
@@ -291,6 +339,12 @@ meanings
     lexeme zh
       surface
         text 复数
+        notation word_surface
+        denotation plural
+        part_of_speech noun
+    lexeme es
+      surface
+        text plural
         notation word_surface
         denotation plural
         part_of_speech noun

@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "權力"
+        },
+        "es": {
+          "language": "es",
+          "value": "poder"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "影響他人行為的能力"
+        },
+        "es": {
+          "language": "es",
+          "value": "capacidad de ejercer dominio o influencia el comportamiento de personas"
         }
       },
       "aliases": {

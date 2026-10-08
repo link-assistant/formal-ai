@@ -97,6 +97,17 @@ meanings
         text "… 的工作原理是什么"
       surface
         text …的工作原理是什么
+    lexeme es
+      surface
+        text "cómo funciona esto"
+      surface
+        text "cómo funciona …"
+      surface
+        text "cómo funcionan …"
+      surface
+        text "cómo está hecho …"
+      surface
+        text "cómo está hecha …"
   procedural_request
     defined-by inquiry
     defined-by action
@@ -204,6 +215,33 @@ meanings
       surface
         text "怎么写 …"
         action write
+    lexeme es
+      surface
+        text "dime cómo …"
+      surface
+        text "muéstrame cómo …"
+      surface
+        text "cuáles son los pasos para …"
+      surface
+        text "qué pasos necesito para …"
+      surface
+        text "cómo debo …"
+      surface
+        text "cómo puedo …"
+      surface
+        text "cómo podemos …"
+      surface
+        text "cómo hacer …"
+        action do
+      surface
+        text "cómo implementar …"
+        action implement
+      surface
+        text "cómo crear …"
+        action create
+      surface
+        text "cómo escribir …"
+        action write
   procedural_request_elided_lead
     defined-by inquiry
     defined-by procedural_request
@@ -222,6 +260,9 @@ meanings
         text 如何…
       surface
         text 怎么…
+    lexeme es
+      surface
+        text "cómo …"
   procedural_action_order
     defined-by action
     defined-by procedural_request
@@ -229,6 +270,24 @@ meanings
     lexeme en
       surface
         text order
+    lexeme ru
+      surface
+        text заказать
+      surface
+        text заказывать
+    lexeme hi
+      surface
+        text "ऑर्डर करें"
+    lexeme zh
+      surface
+        text 订购
+      surface
+        text 下单
+    lexeme es
+      surface
+        text pedir
+      surface
+        text encargar
   procedural_action_install
     defined-by action
     defined-by procedural_request
@@ -255,6 +314,10 @@ meanings
       surface
         text 安装
         action install
+    lexeme es
+      surface
+        text instalar
+        action install
   connect
     defined-by action
     defined-by procedural_request
@@ -280,6 +343,10 @@ meanings
     lexeme zh
       surface
         text 连接
+        action connect
+    lexeme es
+      surface
+        text conectar
         action connect
   mechanism_predicate
     defined-by action
@@ -313,6 +380,15 @@ meanings
         text …工作
       surface
         text …构建
+    lexeme es
+      surface
+        text "… funciona"
+      surface
+        text "… funcionan"
+      surface
+        text "… está hecho"
+      surface
+        text "… está construido"
   detail_modifier
     defined-by property
     defined-by mechanism_inquiry
@@ -343,6 +419,13 @@ meanings
         text …详细
       surface
         text …请
+    lexeme es
+      surface
+        text "… en detalle"
+      surface
+        text "… detalladamente"
+      surface
+        text "… por favor"
   non_referential_subject
     defined-by entity
     defined-by mechanism_inquiry
@@ -439,6 +522,13 @@ meanings
         text "… 一步一步写"
       surface
         text "… 请"
+    lexeme es
+      surface
+        text "… paso a paso"
+      surface
+        text "… por pasos"
+      surface
+        text "… por favor"
   procedural_elaboration
     defined-by inquiry
     defined-by procedural_request
@@ -529,6 +619,25 @@ meanings
         text 更具体
       surface
         text 更详细
+    lexeme es
+      surface
+        text "instrucciones concretas"
+      surface
+        text "pasos concretos"
+      surface
+        text "instrucciones detalladas"
+      surface
+        text "pasos detallados"
+      surface
+        text "pasos exactos"
+      surface
+        text "paso a paso"
+      surface
+        text "más detalle"
+      surface
+        text "más detalles"
+      surface
+        text "más concreto"
   common_typo
     defined-by relation
     role common_typo
@@ -548,6 +657,10 @@ meanings
       surface
         text 登陆
         action 登录
+    lexeme es
+      surface
+        text porfavor
+        action "por favor"
   topic_scan_stop_word
     defined-by concept
     role topic_scan_stop_word

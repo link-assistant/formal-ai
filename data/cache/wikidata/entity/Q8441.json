@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "成年男性"
+        },
+        "es": {
+          "language": "es",
+          "value": "varón"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "成年雄性人類"
+        },
+        "es": {
+          "language": "es",
+          "value": "humano adulto masculino"
         }
       },
       "aliases": {
@@ -90,6 +98,24 @@
           {
             "language": "zh",
             "value": "男人"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "ser humano masculino"
+          },
+          {
+            "language": "es",
+            "value": "humano masculino"
+          },
+          {
+            "language": "es",
+            "value": "hombre"
+          },
+          {
+            "language": "es",
+            "value": "varon"
           }
         ]
       }

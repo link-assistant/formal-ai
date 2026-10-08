@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "圍巾"
+        },
+        "es": {
+          "language": "es",
+          "value": "bufanda"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "衣物"
+        },
+        "es": {
+          "language": "es",
+          "value": "complemento de ropa"
         }
       },
       "aliases": {
@@ -40,6 +48,12 @@
           {
             "language": "ru",
             "value": "Шарфы"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "chalina"
           }
         ]
       }

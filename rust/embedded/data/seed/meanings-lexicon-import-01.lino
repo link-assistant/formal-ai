@@ -25,6 +25,11 @@ meanings
         text 演員 # source Q33999 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text actor # source Q33999 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   anchor
     grounded-in Q168432
     defined-by entity
@@ -46,6 +51,11 @@ meanings
     lexeme zh
       surface
         text 锚 # source Q168432 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text ancla # source Q168432 labels.es.value
         part_of_speech noun
         grammatical_number singular
   art
@@ -71,6 +81,11 @@ meanings
         text 藝術 # source Q735 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text arte # source Q735 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   axe
     grounded-in Q39397
     defined-by entity
@@ -92,6 +107,11 @@ meanings
     lexeme zh
       surface
         text 斧 # source Q39397 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text hacha # source Q39397 labels.es.value
         part_of_speech noun
         grammatical_number singular
   bag
@@ -117,6 +137,11 @@ meanings
         text 袋 # source Q1323314 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text bolsa # source Q1323314 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   ball
     grounded-in Q18545
     defined-by entity
@@ -138,6 +163,11 @@ meanings
     lexeme zh
       surface
         text 球 # source Q18545 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text balón # source Q18545 labels.es.value
         part_of_speech noun
         grammatical_number singular
   banana
@@ -163,6 +193,11 @@ meanings
         text 香蕉 # source Q503 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text plátano # source Q503 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   bean
     grounded-in Q379813
     defined-by entity
@@ -184,6 +219,11 @@ meanings
     lexeme zh
       surface
         text 豆类 # source Q379813 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text legumbre # source Q379813 labels.es.value
         part_of_speech noun
         grammatical_number singular
   beauty
@@ -209,6 +249,11 @@ meanings
         text 美 # source Q7242 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text belleza # source Q7242 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   bed
     grounded-in Q42177
     defined-by entity
@@ -230,6 +275,11 @@ meanings
     lexeme zh
       surface
         text 床 # source Q42177 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text cama # source Q42177 labels.es.value
         part_of_speech noun
         grammatical_number singular
   beer
@@ -255,6 +305,11 @@ meanings
         text 啤酒 # source Q44 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text cerveza # source Q44 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   bell
     grounded-in Q101401
     defined-by entity
@@ -276,6 +331,11 @@ meanings
     lexeme zh
       surface
         text 鐘 # source Q101401 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text campana # source Q101401 labels.es.value
         part_of_speech noun
         grammatical_number singular
   belt
@@ -301,6 +361,11 @@ meanings
         text 腰帶 # source Q134560 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text cinturón # source Q134560 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   bicycle
     grounded-in Q11442
     defined-by entity
@@ -322,6 +387,11 @@ meanings
     lexeme zh
       surface
         text 自行車 # source Q11442 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text bicicleta # source Q11442 labels.es.value
         part_of_speech noun
         grammatical_number singular
   bird
@@ -347,6 +417,11 @@ meanings
         text 鳥綱 # source Q5113 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text aves # source Q5113 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   blanket
     grounded-in Q5852
     defined-by entity
@@ -368,6 +443,11 @@ meanings
     lexeme zh
       surface
         text 毯子 # source Q5852 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text frazada # source Q5852 labels.es.value
         part_of_speech noun
         grammatical_number singular
   blood
@@ -393,6 +473,11 @@ meanings
         text 血液 # source Q7873 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text sangre # source Q7873 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   boat
     grounded-in Q35872
     defined-by entity
@@ -414,6 +499,11 @@ meanings
     lexeme zh
       surface
         text 艇 # source Q35872 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text bote # source Q35872 labels.es.value
         part_of_speech noun
         grammatical_number singular
   bottle
@@ -439,6 +529,11 @@ meanings
         text 瓶 # source Q80228 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text botella # source Q80228 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   bowl
     grounded-in Q153988
     defined-by entity
@@ -460,6 +555,11 @@ meanings
     lexeme zh
       surface
         text 碗 # source Q153988 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text cuenco # source Q153988 labels.es.value
         part_of_speech noun
         grammatical_number singular
   box
@@ -485,6 +585,11 @@ meanings
         text 盒子 # source Q188075 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text caja # source Q188075 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   boy
     grounded-in Q3010
     defined-by entity
@@ -506,6 +611,11 @@ meanings
     lexeme zh
       surface
         text 男孩 # source Q3010 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text niño # source Q3010 labels.es.value
         part_of_speech noun
         grammatical_number singular
   brick
@@ -531,6 +641,11 @@ meanings
         text 磚 # source Q40089 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text ladrillo # source Q40089 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   bridge
     grounded-in Q12280
     defined-by entity
@@ -552,6 +667,11 @@ meanings
     lexeme zh
       surface
         text 桥 # source Q12280 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text puente # source Q12280 labels.es.value
         part_of_speech noun
         grammatical_number singular
   bus
@@ -577,6 +697,11 @@ meanings
         text 巴士 # source Q5638 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text autobús # source Q5638 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   button
     grounded-in Q160464
     defined-by entity
@@ -598,6 +723,11 @@ meanings
     lexeme zh
       surface
         text 鈕扣 # source Q160464 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text botón # source Q160464 labels.es.value
         part_of_speech noun
         grammatical_number singular
   cake
@@ -623,6 +753,11 @@ meanings
         text 蛋糕 # source Q13276 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text pastel # source Q13276 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   car
     grounded-in Q1420
     defined-by entity
@@ -644,6 +779,11 @@ meanings
     lexeme zh
       surface
         text 汽车 # source Q1420 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text automóvil # source Q1420 labels.es.value
         part_of_speech noun
         grammatical_number singular
   carpet
@@ -669,6 +809,11 @@ meanings
         text 地毯 # source Q163446 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text alfombra # source Q163446 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   cement
     grounded-in Q45190
     defined-by entity
@@ -690,6 +835,11 @@ meanings
     lexeme zh
       surface
         text 水泥 # source Q45190 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text cemento # source Q45190 labels.es.value
         part_of_speech noun
         grammatical_number singular
   chain
@@ -715,6 +865,11 @@ meanings
         text 鏈 # source Q552299 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text cadena # source Q552299 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   chair
     grounded-in Q15026
     defined-by entity
@@ -736,6 +891,11 @@ meanings
     lexeme zh
       surface
         text 椅 # source Q15026 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text silla # source Q15026 labels.es.value
         part_of_speech noun
         grammatical_number singular
   cheese
@@ -761,6 +921,11 @@ meanings
         text 奶酪 # source Q10943 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text queso # source Q10943 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   cherry
     grounded-in Q196
     defined-by entity
@@ -782,6 +947,11 @@ meanings
     lexeme zh
       surface
         text 樱 # source Q196 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text cereza # source Q196 labels.es.value
         part_of_speech noun
         grammatical_number singular
   chicken
@@ -807,6 +977,11 @@ meanings
         text 鸡 # source Q780 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text pollo # source Q780 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   child
     grounded-in Q7569
     defined-by entity
@@ -828,6 +1003,11 @@ meanings
     lexeme zh
       surface
         text 儿童 # source Q7569 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text niño # source Q7569 labels.es.value
         part_of_speech noun
         grammatical_number singular
   chocolate
@@ -853,6 +1033,11 @@ meanings
         text 巧克力 # source Q195 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text chocolate # source Q195 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   clock
     grounded-in Q376
     defined-by entity
@@ -874,6 +1059,11 @@ meanings
     lexeme zh
       surface
         text 時鐘 # source Q376 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text reloj # source Q376 labels.es.value
         part_of_speech noun
         grammatical_number singular
   cloud
@@ -899,6 +1089,11 @@ meanings
         text 云 # source Q8074 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text nube # source Q8074 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   coconut
     grounded-in Q3342808
     defined-by entity
@@ -920,6 +1115,11 @@ meanings
     lexeme zh
       surface
         text 椰子 # source Q3342808 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text coco # source Q3342808 labels.es.value
         part_of_speech noun
         grammatical_number singular
   coffee
@@ -945,6 +1145,11 @@ meanings
         text 咖啡 # source Q8486 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text café # source Q8486 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   coin
     grounded-in Q41207
     defined-by entity
@@ -966,6 +1171,11 @@ meanings
     lexeme zh
       surface
         text 硬幣 # source Q41207 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text moneda # source Q41207 labels.es.value
         part_of_speech noun
         grammatical_number singular
   comb
@@ -991,6 +1201,11 @@ meanings
         text 梳篦 # source Q23834 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text peine # source Q23834 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   copper
     grounded-in Q753
     defined-by entity
@@ -1012,6 +1227,11 @@ meanings
     lexeme zh
       surface
         text 銅 # source Q753 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text cobre # source Q753 labels.es.value
         part_of_speech noun
         grammatical_number singular
   cup
@@ -1037,6 +1257,11 @@ meanings
         text 杯 # source Q81727 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text taza # source Q81727 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   curtain
     grounded-in Q49005
     defined-by entity
@@ -1058,6 +1283,11 @@ meanings
     lexeme zh
       surface
         text 簾 # source Q49005 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text cortina # source Q49005 labels.es.value
         part_of_speech noun
         grammatical_number singular
   death
@@ -1083,6 +1313,11 @@ meanings
         text 死亡 # source Q4 labels.zh.value
         part_of_speech noun
         grammatical_number singular
+    lexeme es
+      surface
+        text muerte # source Q4 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
   desert
     grounded-in Q8514
     defined-by entity
@@ -1104,6 +1339,11 @@ meanings
     lexeme zh
       surface
         text 荒漠 # source Q8514 labels.zh.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme es
+      surface
+        text desierto # source Q8514 labels.es.value
         part_of_speech noun
         grammatical_number singular
   diamond
@@ -1129,256 +1369,8 @@ meanings
         text 钻石 # source Q5283 labels.zh.value
         part_of_speech noun
         grammatical_number singular
-  dog
-    grounded-in Q144
-    defined-by entity
-    lexeme en
+    lexeme es
       surface
-        text dog # source Q144 labels.en.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme ru
-      surface
-        text собака # source Q144 labels.ru.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme hi
-      surface
-        text कुत्ता # source Q144 labels.hi.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme zh
-      surface
-        text 犬 # source Q144 labels.zh.value
-        part_of_speech noun
-        grammatical_number singular
-  doll
-    grounded-in Q168658
-    defined-by entity
-    lexeme en
-      surface
-        text doll # source Q168658 labels.en.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme ru
-      surface
-        text кукла # source Q168658 labels.ru.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme hi
-      surface
-        text गुड़िया # source Q168658 labels.hi.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme zh
-      surface
-        text 玩偶 # source Q168658 labels.zh.value
-        part_of_speech noun
-        grammatical_number singular
-  dolphin
-    grounded-in Q7369
-    defined-by entity
-    lexeme en
-      surface
-        text dolphin # source Q7369 labels.en.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme ru
-      surface
-        text дельфин # source Q7369 labels.ru.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme hi
-      surface
-        text सूंस # source Q7369 labels.hi.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme zh
-      surface
-        text 海豚 # source Q7369 labels.zh.value
-        part_of_speech noun
-        grammatical_number singular
-  door
-    grounded-in Q36794
-    defined-by entity
-    lexeme en
-      surface
-        text door # source Q36794 labels.en.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme ru
-      surface
-        text дверь # source Q36794 labels.ru.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme hi
-      surface
-        text द्वार # source Q36794 labels.hi.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme zh
-      surface
-        text 門 # source Q36794 labels.zh.value
-        part_of_speech noun
-        grammatical_number singular
-  dream
-    grounded-in Q36348
-    defined-by entity
-    lexeme en
-      surface
-        text dream # source Q36348 labels.en.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme ru
-      surface
-        text сновидение # source Q36348 labels.ru.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme hi
-      surface
-        text स्वप्न # source Q36348 labels.hi.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme zh
-      surface
-        text 夢 # source Q36348 labels.zh.value
-        part_of_speech noun
-        grammatical_number singular
-  drum
-    grounded-in Q11404
-    defined-by entity
-    lexeme en
-      surface
-        text drum # source Q11404 labels.en.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme ru
-      surface
-        text барабан # source Q11404 labels.ru.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme hi
-      surface
-        text ड्रम # source Q11404 labels.hi.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme zh
-      surface
-        text 鼓 # source Q11404 labels.zh.value
-        part_of_speech noun
-        grammatical_number singular
-  ear
-    grounded-in Q7362
-    defined-by entity
-    lexeme en
-      surface
-        text ear # source Q7362 labels.en.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme ru
-      surface
-        text ухо # source Q7362 labels.ru.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme hi
-      surface
-        text कान # source Q7362 labels.hi.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme zh
-      surface
-        text 耳 # source Q7362 labels.zh.value
-        part_of_speech noun
-        grammatical_number singular
-  egg
-    grounded-in Q17147
-    defined-by entity
-    lexeme en
-      surface
-        text egg # source Q17147 labels.en.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme ru
-      surface
-        text яйцо # source Q17147 labels.ru.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme hi
-      surface
-        text अंडा # source Q17147 labels.hi.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme zh
-      surface
-        text 卵 # source Q17147 labels.zh.value
-        part_of_speech noun
-        grammatical_number singular
-  elephant
-    grounded-in Q7378
-    defined-by entity
-    lexeme en
-      surface
-        text elephant # source Q7378 labels.en.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme ru
-      surface
-        text слон # source Q7378 labels.ru.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme hi
-      surface
-        text हाथी # source Q7378 labels.hi.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme zh
-      surface
-        text 象 # source Q7378 labels.zh.value
-        part_of_speech noun
-        grammatical_number singular
-  engine
-    grounded-in Q44167
-    defined-by entity
-    lexeme en
-      surface
-        text engine # source Q44167 labels.en.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme ru
-      surface
-        text двигатель # source Q44167 labels.ru.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme hi
-      surface
-        text इंजन # source Q44167 labels.hi.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme zh
-      surface
-        text 发动机 # source Q44167 labels.zh.value
-        part_of_speech noun
-        grammatical_number singular
-  engineer
-    grounded-in Q81096
-    defined-by entity
-    lexeme en
-      surface
-        text engineer # source Q81096 labels.en.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme ru
-      surface
-        text инженер # source Q81096 labels.ru.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme hi
-      surface
-        text अभियन्ता # source Q81096 labels.hi.value
-        part_of_speech noun
-        grammatical_number singular
-    lexeme zh
-      surface
-        text 工程师 # source Q81096 labels.zh.value
+        text diamante # source Q5283 labels.es.value
         part_of_speech noun
         grammatical_number singular

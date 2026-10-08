@@ -1,16 +1,19 @@
 Q7372
   aliases
     en (sharks Selachimorpha Selachii Selachian Selachians)
+    es (tiburones selaquimorfos selacimorfos escualos jaquetones tiburon "tiburón" Selaquimorpha selacos "seláqueos" escualo "seláqueo" selaco)
     ru (Selachimorpha "акула")
     zh ("鲨" "鲛" "鲨超目" "鲨鱼")
   descriptions
     en "clade of predatory cartilaginous fish (Chondrichthyes)"
+    es "división de peces elasmobranquios"
     hi "मछलियों का सपरोर्डर"
     ru "надотряд рыб"
     zh "软骨鱼纲中鲨总目鱼类的统称"
   id Q7372
   labels
     en shark
+    es Selachii
     hi "हाँगर"
     ru "акулы"
     zh "鲨总目"

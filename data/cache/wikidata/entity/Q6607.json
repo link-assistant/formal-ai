@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "吉他"
+        },
+        "es": {
+          "language": "es",
+          "value": "guitarra"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "撥弦樂器"
+        },
+        "es": {
+          "language": "es",
+          "value": "instrumento de cuerda que generalmente tiene seis cuerdas"
         }
       },
       "aliases": {

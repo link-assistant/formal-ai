@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "耳"
+        },
+        "es": {
+          "language": "es",
+          "value": "oído"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "接收聲音及維持身體平衡的器官"
+        },
+        "es": {
+          "language": "es",
+          "value": "órgano del equilibrio y la audición"
         }
       },
       "aliases": {
@@ -74,6 +82,12 @@
           {
             "language": "zh",
             "value": "歐爾"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "oido"
           }
         ]
       }

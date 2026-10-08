@@ -869,3 +869,395 @@ meanings
     unit "not applicable"
     example "audience machine"
     grounding "scripts/generate-response-parity-debt.mjs"
+  behavior_rule_topic_greetings
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list groups the built-in rules of the greetings topic"
+    effect "the answer heads that group of rules with this label"
+    unit "not applicable"
+    example "Greetings"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_topic_farewells
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list groups the built-in rules of the farewells topic"
+    effect "the answer heads that group of rules with this label"
+    unit "not applicable"
+    example "Farewells"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_topic_small_talk
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list groups the built-in rules of the small_talk topic"
+    effect "the answer heads that group of rules with this label"
+    unit "not applicable"
+    example "Small talk"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_topic_identity
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list groups the built-in rules of the identity topic"
+    effect "the answer heads that group of rules with this label"
+    unit "not applicable"
+    example "Identity"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_topic_assistant_name
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list groups the built-in rules of the assistant_name topic"
+    effect "the answer heads that group of rules with this label"
+    unit "not applicable"
+    example "Assistant name"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_topic_capabilities
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list groups the built-in rules of the capabilities topic"
+    effect "the answer heads that group of rules with this label"
+    unit "not applicable"
+    example "Capabilities"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_topic_write_program
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list groups the built-in rules of the write_program topic"
+    effect "the answer heads that group of rules with this label"
+    unit "not applicable"
+    example "Program templates"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_topic_unknown_fallback
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list groups the built-in rules of the unknown_fallback topic"
+    effect "the answer heads that group of rules with this label"
+    unit "not applicable"
+    example "Unknown fallback"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_label_greeting
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in greeting rule"
+    effect "the answer names the rule with this label"
+    unit "not applicable"
+    example "Greeting rule"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_label_farewell
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in farewell rule"
+    effect "the answer names the rule with this label"
+    unit "not applicable"
+    example "Farewell rule"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_label_assistant_free_time
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in assistant_free_time rule"
+    effect "the answer names the rule with this label"
+    unit "not applicable"
+    example "Assistant free-time rule"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_label_identity
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in identity rule"
+    effect "the answer names the rule with this label"
+    unit "not applicable"
+    example "Identity rule"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_label_assistant_name
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in assistant_name rule"
+    effect "the answer names the rule with this label"
+    unit "not applicable"
+    example "Assistant name rule"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_label_capabilities
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in capabilities rule"
+    effect "the answer names the rule with this label"
+    unit "not applicable"
+    example "Capabilities rule"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_label_write_program
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in write_program rule"
+    effect "the answer names the rule with this label"
+    unit "not applicable"
+    example "Write-program rule"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_label_unknown
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in unknown rule"
+    effect "the answer names the rule with this label"
+    unit "not applicable"
+    example "Unknown fallback rule"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_matches_greeting
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in greeting rule"
+    effect "the matches field names the prompts the rule answers"
+    unit "not applicable"
+    example "`Hi`, `Hello`, `Hey`, and multilingual greeting seed phrases"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_matches_farewell
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in farewell rule"
+    effect "the matches field names the prompts the rule answers"
+    unit "not applicable"
+    example "`bye`, `goodbye`, `poka`, and multilingual farewell seed phrases"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_matches_assistant_free_time
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in assistant_free_time rule"
+    effect "the matches field names the prompts the rule answers"
+    unit "not applicable"
+    example "`What do you do in your free time?`, `Что делаешь в свободное время?`, and equivalent small-talk seed phrases"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_matches_identity
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in identity rule"
+    effect "the matches field names the prompts the rule answers"
+    unit "not applicable"
+    example "`Who are you?`, `Кто ты?`, and equivalent identity prompts"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_matches_assistant_name
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in assistant_name rule"
+    effect "the matches field names the prompts the rule answers"
+    unit "not applicable"
+    example "`What is your name?`, `Как тебя зовут?`, and equivalent name prompts"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_matches_capabilities
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in capabilities rule"
+    effect "the matches field names the prompts the rule answers"
+    unit "not applicable"
+    example "`What can you do?`, `Что ты умеешь?`, and equivalent capability prompts"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_matches_write_program
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in write_program rule"
+    effect "the matches field names the prompts the rule answers"
+    unit "not applicable"
+    example "`write_program(language, task)` with languages [{languages}] and tasks [{tasks}]"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_matches_unknown
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in unknown rule"
+    effect "the matches field names the prompts the rule answers"
+    unit "not applicable"
+    example "Any prompt that no earlier rule or handler can answer"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_response_assistant_name
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in assistant_name rule, whose answer is no single seeded response"
+    effect "the response field describes the answer the rule gives"
+    unit "not applicable"
+    example "Returns the assistant-name answer; browser surfaces can override it from the assistant name setting."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_response_capabilities
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in capabilities rule, whose answer is no single seeded response"
+    effect "the response field describes the answer the rule gives"
+    unit "not applicable"
+    example "Lists the supported symbolic chat capabilities."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_response_write_program
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail shows the built-in write_program rule, whose answer is no single seeded response"
+    effect "the response field describes the answer the rule gives"
+    unit "not applicable"
+    example "Returns a minimal program from the parameterized template catalog."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_when_then_greeting
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list or a rule detail states the built-in greeting rule"
+    effect "the answer states the rule as a When X then Y sentence, its response filled in"
+    unit "not applicable"
+    example "When the user says `Hi`, `Hello`, or `Hey` then respond with `{response}`."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_when_then_farewell
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list or a rule detail states the built-in farewell rule"
+    effect "the answer states the rule as a When X then Y sentence, its response filled in"
+    unit "not applicable"
+    example "When the user says `bye`, `goodbye`, or `пока` then respond with `{response}`."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_when_then_assistant_free_time
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list or a rule detail states the built-in assistant_free_time rule"
+    effect "the answer states the rule as a When X then Y sentence, its response filled in"
+    unit "not applicable"
+    example "When the user asks what I do in free time then respond with `{response}`."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_when_then_identity
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list or a rule detail states the built-in identity rule"
+    effect "the answer states the rule as a When X then Y sentence, its response filled in"
+    unit "not applicable"
+    example "When the user asks `Who are you?` or `Кто ты?` then respond with `{response}`."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_when_then_assistant_name
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list or a rule detail states the built-in assistant_name rule"
+    effect "the answer states the rule as a When X then Y sentence, its response filled in"
+    unit "not applicable"
+    example "When the user asks `What is your name?` or `Как тебя зовут?` then respond with the assistant-name answer; if a surface has an assistant-name setting, include that configured name."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_when_then_capabilities
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list or a rule detail states the built-in capabilities rule"
+    effect "the answer states the rule as a When X then Y sentence, its response filled in"
+    unit "not applicable"
+    example "When the user asks `What can you do?` or `Что ты умеешь?` then respond with the multilingual capability listing."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_when_then_write_program
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list or a rule detail states the built-in write_program rule"
+    effect "the answer states the rule as a When X then Y sentence, its response filled in"
+    unit "not applicable"
+    example "When the user requests a program with a supported `language` and `task`, resolve those parameters and render the matching template through the single `write_program` intent."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_when_then_unknown
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list or a rule detail states the built-in unknown rule"
+    effect "the answer states the rule as a When X then Y sentence, its response filled in"
+    unit "not applicable"
+    example "When no earlier rule or handler matches the prompt then respond with the multilingual unknown-intent guide (`List behavior rules`, `Show behavior rule`, `When I say … answer …`, `Report issue`, `Export memory`)."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_list_intro
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks to list the behavior rules"
+    effect "the answer introduces the rules grouped by topic as When X then Y statements"
+    unit "not applicable"
+    example "Behavior rules I can inspect in this dialog (grouped by topic, each shown as a `When X then Y` statement):"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_runtime_heading
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list includes rules taught earlier in this dialog"
+    effect "the answer heads those dialog-local rules with this label"
+    unit "not applicable"
+    example "Dialog-local rules taught in this conversation"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_list_footer_read
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list ends"
+    effect "the answer shows how to read one rule, with two example commands"
+    unit "not applicable"
+    example "Read one with `Show behavior rule unknown` or `Show behavior rule rule_greeting`."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_list_footer_teach
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list ends"
+    effect "the answer shows the sentence forms that teach this dialog a rule"
+    unit "not applicable"
+    example "Teach this dialog with: ``When `your prompt` then `your answer` ``. Equivalent forms: ``When I say `your prompt`, answer `your answer` ``; ``If I ask `your prompt`, reply `your answer` ``; ``When `your prompt` do `your answer` ``."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_list_footer_forms
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list ends"
+    effect "the answer names the rule sentence forms of the other languages"
+    unit "not applicable"
+    example "Multilingual forms: Russian ``Когда `X` тогда `Y` `` / ``Когда `X` делай `Y` ``, Hindi ``जब `X` तब `Y` ``, Chinese ``当 `X` 时 `Y` ``."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_list_footer_append
+    defined-by answer
+    role localized_response_template
+    precondition "the behavior-rule list ends"
+    effect "the answer says a taught rule is appended and kept by exporting memory"
+    unit "not applicable"
+    example "The write is append-only: export memory to preserve the rule message with the dialog."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_change_hint
+    defined-by answer
+    role localized_response_template
+    precondition "a behavior-rule detail ends"
+    effect "the answer shows how to change the rule in the current dialog"
+    unit "not applicable"
+    example "To change this behavior in the current dialog, send: ``When `your prompt` then `your answer` ``. Equivalent: ``When I say `your prompt`, answer `your answer` ``."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_runtime_when_then
+    defined-by answer
+    role localized_response_template
+    precondition "a rule taught in this dialog is listed or recorded"
+    effect "the answer states the taught rule as a When X then Y sentence"
+    unit "not applicable"
+    example "When the user says `{trigger}` then respond with `{response}`."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_update_title
+    defined-by answer
+    role localized_response_template
+    precondition "a message teaches this dialog a rule"
+    effect "the answer confirms the rule was compiled for this dialog"
+    unit "not applicable"
+    example "Behavior rule compiled for this dialog."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_update_send_hint
+    defined-by answer
+    role localized_response_template
+    precondition "a message teaches this dialog a rule"
+    effect "the answer invites the trigger now and says how to keep the rule"
+    unit "not applicable"
+    example "Send `{trigger}` now and I will answer with the configured response. Export memory to keep this rule message with the dialog."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_count_summary
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks how many behavior rules there are"
+    effect "the answer states the total with the built-in and dialog-local counts"
+    unit "not applicable"
+    example "Total behavior rules: {total} (built-in: {built_in}; dialog-local: {runtime})."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_count_reasoning
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks how many behavior rules there are"
+    effect "the answer says how the count was made"
+    unit "not applicable"
+    example "Reasoning: I count the built-in behavior-rule catalog and add dialog-local rules compiled from earlier user turns."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_brief_groups
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks for the behavior-rule list briefly"
+    effect "the answer names the rule groups in one phrase"
+    unit "not applicable"
+    example "greetings, farewells, small talk, identity, assistant name, capabilities, program templates, and the unknown fallback"
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"
+  behavior_rule_brief
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks for the behavior-rule list briefly"
+    effect "the answer states the counts and the rule groups in one sentence"
+    unit "not applicable"
+    example "Briefly: {total} behavior rules ({built_in} built-in, {runtime} dialog-local): {groups}."
+    grounding "data/seed/multilingual-responses-behavior-rules.lino"

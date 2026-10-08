@@ -30,6 +30,15 @@ meanings
         text 合并
       surface
         text 融合
+    lexeme es
+      surface
+        text combin
+      surface
+        text fusion
+      surface
+        text fusión
+      surface
+        text une
   definition_artifact_request
     defined-by inquiry
     role definition_artifact_request
@@ -63,6 +72,17 @@ meanings
         text 定义
       surface
         text 翻译
+    lexeme es
+      surface
+        text definición
+      surface
+        text definiciones
+      surface
+        text traducción
+      surface
+        text traducciones
+      surface
+        text wikipedia
   definition_merge_marker
     defined-by inquiry
     role definition_merge_marker
@@ -110,6 +130,19 @@ meanings
         text "的定义 …"
       surface
         text "的翻译 …"
+    lexeme es
+      surface
+        text "definiciones traducidas de …"
+      surface
+        text "definiciones de wikipedia de …"
+      surface
+        text "definiciones de …"
+      surface
+        text "definición de …"
+      surface
+        text "traducciones de …"
+      surface
+        text "traducción de …"
   definition_merge_tail_boundary
     defined-by relation
     role definition_merge_tail_boundary

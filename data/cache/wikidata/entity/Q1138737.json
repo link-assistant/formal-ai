@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "灯"
+        },
+        "es": {
+          "language": "es",
+          "value": "lámpara"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "照明用具"
+        },
+        "es": {
+          "language": "es",
+          "value": "objeto técnico destinado a producir luz"
         }
       },
       "aliases": {
@@ -72,6 +80,12 @@
           {
             "language": "zh",
             "value": "燈具"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "lampara"
           }
         ]
       }

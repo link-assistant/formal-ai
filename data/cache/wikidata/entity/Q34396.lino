@@ -1,15 +1,18 @@
 Q34396
   aliases
     en (soaps)
+    es (Jabones "Jabonería" "Pastilla de jabon" "Pastillas de jabón" Jaboneria Jabon "Pastillas de jabon" "Pastilla de jabón" "Jabon en polvo" "Jabón en polvo")
     ru ("мыла")
     zh ("香皂" "皂" "番梘" "精皂花" "沐浴露" "茶箍" "雪文" "芳雪文" "油胰")
   descriptions
     en "salt of fatty acids, used for washing and cleaning"
+    es "compuesto limpiador tensioactivo que se utiliza para la limpieza personal o de otro tipo"
     ru "моющее средство на основе солей жирных кислот"
     zh "脂肪酸（長鏈羧酸）的鹽，用於洗滌和清潔"
   id Q34396
   labels
     en soap
+    es "jabón"
     hi "साबुन"
     ru "мыло"
     zh "肥皂"

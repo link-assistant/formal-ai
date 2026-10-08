@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "啤酒"
+        },
+        "es": {
+          "language": "es",
+          "value": "cerveza"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "酒精饮料"
+        },
+        "es": {
+          "language": "es",
+          "value": "bebida alcohólica elaborada a partir de granos de cereales fermentados"
         }
       },
       "aliases": {

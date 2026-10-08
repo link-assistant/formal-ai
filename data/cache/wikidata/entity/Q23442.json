@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "島嶼"
+        },
+        "es": {
+          "language": "es",
+          "value": "isla"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "被水包圍的次大陸土地"
+        },
+        "es": {
+          "language": "es",
+          "value": "masa de tierra completamente rodeada de agua"
         }
       },
       "aliases": {
@@ -76,6 +84,20 @@
           {
             "language": "zh",
             "value": "岛屿"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "isleño"
+          },
+          {
+            "language": "es",
+            "value": "insular"
+          },
+          {
+            "language": "es",
+            "value": "islas"
           }
         ]
       }

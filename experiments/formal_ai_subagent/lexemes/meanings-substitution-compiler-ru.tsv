@@ -1,0 +1,8 @@
+export_substitution_rule	экспорт правила подстановки
+substitution	подстановка
+substitution_rule_export	экспорт правил подстановки
+target_javascript	цель javascript
+target_rust	цель rust
+target_webassembly	цель webassembly
+wasm	wasm
+webassembly	webassembly

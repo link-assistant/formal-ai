@@ -373,3 +373,54 @@ meanings
         text "cuáles son tus reglas de comportamiento"
       surface
         text "reglas de comportamiento existentes"
+  behavior_rule_detail_request
+    defined-by action
+    defined-by behavior_rule
+    role rule_detail_request
+    precondition "a prompt opens by asking to show or read one behavior rule"
+    effect "the rest of the prompt names the rule, and its detail is shown"
+    unit "not applicable"
+    example "Show behavior rule unknown"
+    lexeme en
+      surface
+        text "show behavior rule"
+      surface
+        text "show behaviour rule"
+      surface
+        text "read behavior rule"
+      surface
+        text "read behaviour rule"
+      surface
+        text "describe behavior rule"
+      surface
+        text "describe behaviour rule"
+      surface
+        text "show rule"
+      surface
+        text "read rule"
+      surface
+        text "details for rule"
+    lexeme ru
+      surface
+        text "детали правила"
+      surface
+        text "покажи правило"
+      surface
+        text "прочитай правило"
+    lexeme hi
+      surface
+        text "नियम का विवरण दिखाओ"
+      surface
+        text "नियम पढ़ो"
+    lexeme zh
+      surface
+        text 规则详情
+      surface
+        text 读取规则
+    lexeme es
+      surface
+        text "muestra la regla"
+      surface
+        text "lee la regla"
+      surface
+        text "detalles de la regla"

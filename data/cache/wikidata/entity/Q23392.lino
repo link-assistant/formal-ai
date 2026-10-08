@@ -1,16 +1,19 @@
 Q23392
   aliases
     en ("solid water" "water ice" water "crystalline water" "frozen water" "frozen ice")
+    es ("agua congelada" "agua cristalina")
     hi ("बरफ" "बर्फ")
     ru ("водяной лёд")
     zh ("仌")
   descriptions
     en "water frozen into the solid state"
+    es "agua congelada, uno de los tres estados naturales del agua"
     ru "вода в твёрдом агрегатном состоянии"
     zh "處於固體狀態的水"
   id Q23392
   labels
     en ice
+    es hielo
     hi "बर्फ़"
     ru "лёд"
     zh "冰"

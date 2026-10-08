@@ -7,9 +7,9 @@ web-formalization-ratchet
   corpus "data/benchmarks/web-formalization"
   pages 40
   sentences 611
-  sentence-coverage 0.042
-  fact-survival 0.988
-  known-term-share 0.399
+  sentence-coverage 0.057
+  fact-survival 0.992
+  known-term-share 0.43
   en-pages 8
   en-sentences 155
   en-sentence-coverage 0.058
@@ -19,12 +19,12 @@ web-formalization-ratchet
   ru-sentences 98
   ru-sentence-coverage 0.061
   ru-fact-survival 0.979
-  ru-known-term-share 0.377
+  ru-known-term-share 0.379
   hi-pages 8
   hi-sentences 110
   hi-sentence-coverage 0.009
   hi-fact-survival 1
-  hi-known-term-share 0.289
+  hi-known-term-share 0.291
   zh-pages 8
   zh-sentences 119
   zh-sentence-coverage 0.05
@@ -32,6 +32,6 @@ web-formalization-ratchet
   zh-known-term-share 0.506
   es-pages 8
   es-sentences 129
-  es-sentence-coverage 0.031
-  es-fact-survival 0.975
-  es-known-term-share 0.313
+  es-sentence-coverage 0.1
+  es-fact-survival 0.992
+  es-known-term-share 0.453

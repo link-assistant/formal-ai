@@ -1,14 +1,17 @@
 Q9147
   aliases
     en ("the penguin family" penguins Spheniscidae spheniscid)
+    es (Spheniscidae)
     ru (Spheniscidae)
   descriptions
     en "family of birds in the order Sphenisciformes"
+    es "familia de aves"
     ru "семейство птиц"
     zh "企鹅目的一科鸟类"
   id Q9147
   labels
     en penguin
+    es "pingüino"
     hi "पेंगुइन"
     ru "пингвиновые"
     zh "企鵝科"

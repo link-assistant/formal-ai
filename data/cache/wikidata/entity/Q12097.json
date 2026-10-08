@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "王"
+        },
+        "es": {
+          "language": "es",
+          "value": "rey"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "國王"
+        },
+        "es": {
+          "language": "es",
+          "value": "título otorgado a un monarca masculino"
         }
       },
       "aliases": {

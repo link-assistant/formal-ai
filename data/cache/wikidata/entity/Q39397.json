@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "斧"
+        },
+        "es": {
+          "language": "es",
+          "value": "hacha"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "рубящее военное или бытовое орудие"
+        },
+        "es": {
+          "language": "es",
+          "value": "arma o herramienta que tiene un mango con una cabeza fijada en ángulo paralelo, utilizada principalmente para cortar, partir o dar forma a materiales"
         }
       },
       "aliases": {

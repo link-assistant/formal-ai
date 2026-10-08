@@ -106,6 +106,11 @@ meanings
         text "…里面有什么"
       surface
         text "显示…的内容"
+    lexeme es
+      surface
+        text "qué hay dentro de …"
+      surface
+        text "muestra el contenido de …"
   local_path_type_request
     defined-by inquiry
     role local_path_type_request
@@ -211,6 +216,17 @@ meanings
         text 在我的电脑上
       surface
         text 在主文件夹中
+    lexeme es
+      surface
+        text "en este ordenador"
+      surface
+        text "en mi ordenador"
+      surface
+        text "en esta computadora"
+      surface
+        text "en mi computadora"
+      surface
+        text "en mi carpeta personal"
   local_path_scope_current
     defined-by concept
     role local_path_scope_current
@@ -244,6 +260,15 @@ meanings
         text 在当前目录中
       surface
         text 在此文件夹中
+    lexeme es
+      surface
+        text "en este directorio"
+      surface
+        text "en el directorio actual"
+      surface
+        text "en esta carpeta"
+      surface
+        text "en la carpeta actual"
   local_path_directory_kind
     defined-by concept
     role local_path_directory_kind
@@ -391,6 +416,9 @@ meanings
     lexeme zh
       surface
         text 本地文件搜索还是网络搜索
+    lexeme es
+      surface
+        text "búsqueda local de archivos o búsqueda web"
   definition_antecedent_followup
     defined-by inquiry
     role definition_antecedent_followup
@@ -410,6 +438,11 @@ meanings
     lexeme zh
       surface
         text 那这到底是什么
+    lexeme es
+      surface
+        text "entonces qué es"
+      surface
+        text "y entonces qué es eso"
   definition_example_request
     defined-by inquiry
     role definition_example_request
@@ -429,6 +462,11 @@ meanings
     lexeme zh
       surface
         text 举一个…的例子
+    lexeme es
+      surface
+        text "da un ejemplo de …"
+      surface
+        text "dame un ejemplo de …"
   comparison_infix
     defined-by relation
     role comparison_infix
@@ -454,6 +492,15 @@ meanings
         text 对比
       surface
         text 与
+    lexeme es
+      surface
+        text vs
+      surface
+        text versus
+      surface
+        text "frente a"
+      surface
+        text "diferente de"
   comparison_rhs_marker
     defined-by relation
     role comparison_rhs_marker
@@ -469,6 +516,9 @@ meanings
     lexeme zh
       surface
         text 和
+    lexeme es
+      surface
+        text de
   comparison_query_noise
     defined-by concept
     role comparison_query_noise
@@ -490,6 +540,11 @@ meanings
         text 用一句话
       surface
         text 一句话
+    lexeme es
+      surface
+        text "en una frase"
+      surface
+        text "una frase"
   workspace_content_search_form
     # PR #1188 T90 (gap G12): a request for the places a name or literal is
     # used inside the workspace's files. `…` is the searched pattern (one

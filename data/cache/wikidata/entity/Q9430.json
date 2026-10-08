@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "海洋"
+        },
+        "es": {
+          "language": "es",
+          "value": "océano"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "地球上巨大的鹽水體"
+        },
+        "es": {
+          "language": "es",
+          "value": "gran extensión de agua"
         }
       },
       "aliases": {
@@ -52,6 +60,56 @@
           {
             "language": "en",
             "value": "oceanic"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "oceano"
+          },
+          {
+            "language": "es",
+            "value": "mar"
+          },
+          {
+            "language": "es",
+            "value": "océanos"
+          },
+          {
+            "language": "es",
+            "value": "oceanos"
+          },
+          {
+            "language": "es",
+            "value": "oceánico"
+          },
+          {
+            "language": "es",
+            "value": "oceánica"
+          },
+          {
+            "language": "es",
+            "value": "oceánicos"
+          },
+          {
+            "language": "es",
+            "value": "oceánicas"
+          },
+          {
+            "language": "es",
+            "value": "oceanico"
+          },
+          {
+            "language": "es",
+            "value": "oceanica"
+          },
+          {
+            "language": "es",
+            "value": "oceanicos"
+          },
+          {
+            "language": "es",
+            "value": "oceanicas"
           }
         ]
       }

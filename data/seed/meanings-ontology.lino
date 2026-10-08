@@ -53,6 +53,11 @@ meanings
         text 类型
       surface
         text 种类
+    lexeme es
+      surface
+        text tipo
+      surface
+        text clase
   entity
     defined-by type
     role ontology_category
@@ -76,6 +81,11 @@ meanings
         text 实体
       surface
         text 事物
+    lexeme es
+      surface
+        text entidad
+      surface
+        text cosa
   concept
     defined-by type
     role ontology_category
@@ -99,6 +109,11 @@ meanings
         text 概念
       surface
         text 观念
+    lexeme es
+      surface
+        text concepto
+      surface
+        text noción
   relation
     defined-by link
     source-lexeme L3743 # wikidata english noun relation
@@ -150,6 +165,9 @@ meanings
         text 关系
       surface
         text 联系
+    lexeme es
+      surface
+        text relación
   action
     defined-by concept
     role ontology_category
@@ -173,6 +191,11 @@ meanings
         text 动作
       surface
         text 操作
+    lexeme es
+      surface
+        text acción
+      surface
+        text acto
   property
     defined-by concept
     role ontology_category
@@ -196,3 +219,8 @@ meanings
         text 属性
       surface
         text 特性
+    lexeme es
+      surface
+        text propiedad
+      surface
+        text atributo

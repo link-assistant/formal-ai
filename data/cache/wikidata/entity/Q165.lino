@@ -1,16 +1,19 @@
 Q165
   aliases
     en (seas)
+    es (mares)
     hi ("समुद्र")
     zh ("海域")
   descriptions
     en "large body of saline water"
+    es "masa de agua salada de tamaño inferior al océano"
     hi "खारे पानी का विशाल जलस्त्रोत"
     ru "часть Мирового океана, крупный солёный водоём, отделённый сушей или возвышениями подводного рельефа"
     zh "較大面積的鹹水區域"
   id Q165
   labels
     en sea
+    es mar
     hi "सागर"
     ru "море"
     zh "海"

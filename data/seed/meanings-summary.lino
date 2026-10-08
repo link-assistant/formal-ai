@@ -22,6 +22,11 @@ meanings
         text 陈述类型
       surface
         text 句子类型
+    lexeme es
+      surface
+        text "tipo de afirmación"
+      surface
+        text "tipo de oración"
   summary_kind_install
     defined-by summary_statement_kind
     role summary_classification_cue
@@ -55,6 +60,13 @@ meanings
         text 安装
       surface
         text 安装方法
+    lexeme es
+      surface
+        text "para instalar"
+      surface
+        text "instalar con"
+      surface
+        text instalación
   summary_kind_example
     defined-by summary_statement_kind
     role summary_classification_cue
@@ -86,6 +98,11 @@ meanings
         text 例如
       surface
         text 比如
+    lexeme es
+      surface
+        text "por ejemplo"
+      surface
+        text "ejemplo:"
   summary_kind_language
     defined-by summary_statement_kind
     role summary_classification_cue
@@ -113,6 +130,13 @@ meanings
         text 语言
       surface
         text 编写
+    lexeme es
+      surface
+        text "escrito en "
+      surface
+        text "lenguaje:"
+      surface
+        text "construido con "
   summary_kind_stars
     defined-by summary_statement_kind
     role summary_classification_cue
@@ -140,6 +164,11 @@ meanings
         text 星标
       surface
         text 星数
+    lexeme es
+      surface
+        text " estrellas"
+      surface
+        text "estrellas en github"
   summary_kind_purpose
     defined-by summary_statement_kind
     role summary_classification_cue
@@ -177,6 +206,19 @@ meanings
         text 旨在
       surface
         text 帮助你
+    lexeme es
+      surface
+        text "sirve para "
+      surface
+        text "se usa para"
+      surface
+        text "está pensado para"
+      surface
+        text "está diseñado para"
+      surface
+        text "te ayuda a"
+      surface
+        text "te permite"
   summary_kind_use_case
     defined-by summary_statement_kind
     role summary_classification_cue
@@ -208,6 +250,15 @@ meanings
         text 当你需要
       surface
         text 适用于
+    lexeme es
+      surface
+        text "úsalo cuando"
+      surface
+        text "cuando necesitas"
+      surface
+        text "ideal para"
+      surface
+        text "útil cuando"
   summary_kind_feature
     defined-by summary_statement_kind
     role summary_classification_cue
@@ -239,3 +290,14 @@ meanings
         text 支持
       surface
         text 提供
+    lexeme es
+      surface
+        text " admite "
+      surface
+        text " proporciona "
+      surface
+        text " ofrece "
+      surface
+        text " expone "
+      surface
+        text " incluye "

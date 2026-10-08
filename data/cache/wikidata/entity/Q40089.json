@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "磚"
+        },
+        "es": {
+          "language": "es",
+          "value": "ladrillo"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "建筑材料"
+        },
+        "es": {
+          "language": "es",
+          "value": "bloque o unidad única de material cerámico utilizado en la albañilería"
         }
       },
       "aliases": {
@@ -62,6 +70,24 @@
           {
             "language": "zh",
             "value": "甓"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "ladriello"
+          },
+          {
+            "language": "es",
+            "value": "ladrillazo"
+          },
+          {
+            "language": "es",
+            "value": "ladrilloso"
+          },
+          {
+            "language": "es",
+            "value": "ladrillos"
           }
         ]
       }

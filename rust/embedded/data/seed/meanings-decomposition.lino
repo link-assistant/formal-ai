@@ -75,6 +75,21 @@ meanings
         text 划分
       surface
         text 细分
+    lexeme es
+      surface
+        text divide
+      surface
+        text dividir
+      surface
+        text descompón
+      surface
+        text descomponer
+      surface
+        text descomposición
+      surface
+        text subdivide
+      surface
+        text desglosa
   subtask_unit_noun
     defined-by entity
     role subtask_unit_noun
@@ -136,6 +151,17 @@ meanings
         text 步骤
       surface
         text 小任务
+    lexeme es
+      surface
+        text subtarea
+      surface
+        text subtareas
+      surface
+        text paso
+      surface
+        text pasos
+      surface
+        text "partes más pequeñas"
   decomposable_task_noun
     defined-by entity
     role decomposable_task_noun
@@ -187,6 +213,15 @@ meanings
         text 工作
       surface
         text 计划
+    lexeme es
+      surface
+        text tarea
+      surface
+        text tareas
+      surface
+        text problema
+      surface
+        text plan
   subtask_enumeration_cue
     defined-by action
     role subtask_enumeration_cue
@@ -271,6 +306,17 @@ meanings
         text 不可分
       surface
         text 不可再分
+    lexeme es
+      surface
+        text atómica
+      surface
+        text atómico
+      surface
+        text atomicidad
+      surface
+        text indivisible
+      surface
+        text irreducible
   task_first_step_cue
     defined-by inquiry
     role task_first_step_cue
@@ -312,6 +358,15 @@ meanings
         text 首先做
       surface
         text 从哪里开始
+    lexeme es
+      surface
+        text "primer paso"
+      surface
+        text "siguiente paso"
+      surface
+        text "empieza con"
+      surface
+        text "comienza con"
   observable_task_action
     defined-by action
     role observable_task_action
@@ -699,3 +754,24 @@ meanings
         text 熟悉
       surface
         text 思考
+    lexeme es
+      surface
+        text entiende
+      surface
+        text entender
+      surface
+        text explora
+      surface
+        text investiga
+      surface
+        text estudia
+      surface
+        text aprende
+      surface
+        text familiarízate
+      surface
+        text considera
+      surface
+        text piensa
+      surface
+        text analiza

@@ -36,6 +36,15 @@ meanings
         text 运行
       surface
         text 工具
+    lexeme es
+      surface
+        text llama
+      surface
+        text invoca
+      surface
+        text ejecuta
+      surface
+        text herramienta
   calculator_tool
     defined-by entity
     role calculator_tool_name
@@ -51,6 +60,9 @@ meanings
     lexeme zh
       surface
         text 计算器
+    lexeme es
+      surface
+        text calculadora
   web_search_tool
     defined-by entity
     role web_search_tool_name
@@ -76,6 +88,11 @@ meanings
         text 网络搜索
       surface
         text 网页搜索
+    lexeme es
+      surface
+        text "búsqueda web"
+      surface
+        text "búsqueda en internet"
   local_shell_tool
     defined-by entity
     role local_shell_request_cue
@@ -105,6 +122,13 @@ meanings
         text 本地外壳
       surface
         text 调用外壳工具
+    lexeme es
+      surface
+        text "shell local"
+      surface
+        text "terminal local"
+      surface
+        text "llama a la herramienta de shell"
   tool_argument_marker
     defined-by relation
     role tool_argument_marker
@@ -132,6 +156,13 @@ meanings
         text 查询
       surface
         text 用于
+    lexeme es
+      surface
+        text "con la consulta"
+      surface
+        text consulta
+      surface
+        text para
   tool_result_failure
     defined-by concept
     role tool_result_failure_signal
@@ -171,6 +202,19 @@ meanings
         text 无法执行此操作
       surface
         text 请求过多
+    lexeme es
+      surface
+        text error
+      surface
+        text falló
+      surface
+        text "no encontrado"
+      surface
+        text "demasiadas solicitudes"
+      surface
+        text "no disponible temporalmente"
+      surface
+        text "no se pudo"
   tool_result_detail_request
     defined-by action
     role tool_result_detail_request
@@ -202,6 +246,13 @@ meanings
         text 更多详情
       surface
         text 原始结果
+    lexeme es
+      surface
+        text "resultado completo"
+      surface
+        text "más detalles"
+      surface
+        text "resultado original"
   tool_result_url_request
     defined-by entity
     role tool_result_url_request
@@ -240,6 +291,9 @@ meanings
     lexeme zh
       surface
         text 行
+    lexeme es
+      surface
+        text línea
   tool_result_first_reference
     defined-by concept
     role tool_result_first_reference
@@ -263,6 +317,13 @@ meanings
         text 第一个
       surface
         text 第一
+    lexeme es
+      surface
+        text primero
+      surface
+        text primera
+      surface
+        text primer
   tool_result_second_reference
     defined-by concept
     role tool_result_second_reference
@@ -286,3 +347,8 @@ meanings
         text 第二个
       surface
         text 第二
+    lexeme es
+      surface
+        text segundo
+      surface
+        text segunda

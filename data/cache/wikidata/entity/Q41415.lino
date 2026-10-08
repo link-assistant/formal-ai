@@ -1,14 +1,17 @@
 Q41415
   aliases
+    es ("sopa enlatada" sopero sopar)
     ru ("похлёбка")
     zh ("湯水" "湯品" "汤")
   descriptions
     en "primarily liquid food"
+    es "alimento líquido a base de verduras o pastas cocidas"
     ru "жидкое первое блюдо"
     zh "一种食物"
   id Q41415
   labels
     en soup
+    es sopa
     hi "सूप"
     ru "суп"
     zh "湯"

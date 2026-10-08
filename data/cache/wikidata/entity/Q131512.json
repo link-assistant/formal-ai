@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "農夫"
+        },
+        "es": {
+          "language": "es",
+          "value": "agricultor"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "职业"
+        },
+        "es": {
+          "language": "es",
+          "value": "persona que practica la agricultura"
         }
       },
       "aliases": {
@@ -94,6 +102,32 @@
           {
             "language": "zh",
             "value": "農"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "trabajador rural"
+          },
+          {
+            "language": "es",
+            "value": "agricultora"
+          },
+          {
+            "language": "es",
+            "value": "labrador"
+          },
+          {
+            "language": "es",
+            "value": "labriego"
+          },
+          {
+            "language": "es",
+            "value": "granjero"
+          },
+          {
+            "language": "es",
+            "value": "campesino"
           }
         ]
       }

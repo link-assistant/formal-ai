@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "口袋"
+        },
+        "es": {
+          "language": "es",
+          "value": "bolsillo"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "сопутствующее хранилище, часть предмета одежды"
+        },
+        "es": {
+          "language": "es",
+          "value": "trozo de tela en forma de bolsa cosido por dentro a una ranura de una prenda de vestir"
         }
       },
       "aliases": {
@@ -66,6 +74,12 @@
           {
             "language": "zh",
             "value": "通櫃仔"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Ficka"
           }
         ]
       }

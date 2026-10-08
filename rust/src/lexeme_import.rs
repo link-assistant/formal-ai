@@ -6,7 +6,9 @@
 //! `<slug> <Qid>` pair; the importer reads every full-support language registered
 //! in `data/seed/languages.lino` from the committed Wikidata entity cache and
 //! emits a `meanings` block whose surfaces denote the meaning and carry their
-//! `part_of_speech`/`grammatical_number` facets.
+//! `part_of_speech`/`grammatical_number` facets. A partial-support language is
+//! read the same way, but as an optional surface: it is emitted when the record
+//! holds a clean surface for it and left out, not refused, when it does not.
 //!
 //! Two invariants make this safe to ship:
 //!
@@ -37,20 +39,60 @@ use crate::knowledge::cache_capacity;
 use crate::seed::{LANGUAGES_LINO, localized_response, parse_lexicon_text};
 use crate::translation::http::HttpClient;
 
+mod cache_trim;
+
+use cache_trim::{serialize_trimmed, trim_entity};
+
 /// Full-support project languages, derived from the registry in ledger order.
+/// Every imported concept must carry a surface in each of them.
 #[must_use]
 pub fn import_languages() -> Vec<&'static str> {
+    languages_with_status("full")
+}
+
+/// Partial-support project languages, derived from the registry in ledger
+/// order. A concept carries a surface in each of them when its cache record
+/// holds a clean one; a missing one leaves the language out of the block
+/// instead of refusing the concept.
+#[must_use]
+pub fn optional_import_languages() -> Vec<&'static str> {
+    languages_with_status("partial")
+}
+
+/// Every language the importer reads and caches: the full-support languages,
+/// then the partial-support ones.
+fn cached_languages() -> Vec<&'static str> {
+    let mut languages = import_languages();
+    languages.extend(optional_import_languages());
+    languages
+}
+
+/// The registry languages whose `status` is `status`, in ledger order.
+fn languages_with_status(status: &str) -> Vec<&'static str> {
+    let status_line = format!("    status {status}");
     let mut current = None;
     let mut languages = Vec::new();
     for line in LANGUAGES_LINO.lines() {
         if let Some(language) = line.strip_prefix("  language ") {
             current = Some(language);
-        } else if line == "    status full"
+        } else if line == status_line
             && let Some(language) = current.take()
         {
             languages.push(language);
         }
     }
+    languages
+}
+
+/// The languages `lexeme` is emitted in, in block order: every full-support
+/// language, then each partial-support language it has a surface for.
+fn emitted_languages(lexeme: &GroundedLexeme) -> Vec<&'static str> {
+    let mut languages = import_languages();
+    languages.extend(
+        optional_import_languages()
+            .into_iter()
+            .filter(|language| lexeme.labels.contains_key(*language)),
+    );
     languages
 }
 
@@ -63,10 +105,12 @@ pub const GRAMMATICAL_NUMBER: &str = "singular";
 /// The genus every imported meaning is defined by.
 pub const DEFINED_BY: &str = "entity";
 
-/// Maximum concepts written per shard file. A block is ~23 lines, so 60 keeps
-/// each shard comfortably under the 1500-line ceiling enforced by
+/// Maximum lines written per shard file, header included. A block's length
+/// grows with the languages it carries, so shards are filled by lines rather
+/// than by a concept count; the budget is the data-file warning threshold of
+/// `scripts/check-file-size.rs`, under the 1500-line ceiling enforced by
 /// `tests/unit/data_files.rs`.
-pub const CONCEPTS_PER_SHARD: usize = 60;
+pub const SHARD_LINE_BUDGET: usize = 1_400;
 
 /// Render an importer diagnostic from the grounded seed response registry.
 ///
@@ -110,7 +154,8 @@ pub struct Concept {
 pub struct GroundedLexeme {
     pub slug: String,
     pub qid: String,
-    /// Language code → single-token surface, one entry per [`import_languages`].
+    /// Language code → single-token surface: one entry per [`import_languages`],
+    /// plus one per [`optional_import_languages`] the record has a surface for.
     pub labels: BTreeMap<String, String>,
     /// Language code → the exact cache record field that supplied the surface.
     /// Item labels are not misrepresented as Wikidata Lexeme (`L…`) records.
@@ -314,11 +359,12 @@ pub fn run(
         expected_surfaces: config
             .concepts
             .len()
-            .saturating_mul(import_languages().len()),
+            .saturating_mul(cached_languages().len()),
         emitted_surfaces: report
             .accepted
-            .len()
-            .saturating_mul(import_languages().len()),
+            .iter()
+            .map(|lexeme| lexeme.labels.len())
+            .sum(),
     };
     report
 }
@@ -390,53 +436,24 @@ fn resolve_surfaces(
     Ok(labels)
 }
 
-/// Extract the four project-language label surfaces from a trimmed Wikidata
-/// entity document (`{entities: {<qid>: {labels: …}}}`).
+/// Extract the project-language surfaces from a trimmed Wikidata entity
+/// document (`{entities: {<qid>: {labels: …}}}`): one per full-support language,
+/// which must resolve, and one per partial-support language that does.
 pub fn surfaces_from_entity(value: &Value, qid: &str) -> Result<SurfaceMaps, String> {
     let entity = value
         .get("entities")
         .and_then(|entities| entities.get(qid))
         .ok_or_else(|| diagnostic("lexeme_import_qid_absent_from_cache", &[("qid", qid)]))?;
-    let labels = value
-        .get("entities")
-        .and_then(|entities| entities.get(qid))
-        .and_then(|entity| entity.get("labels"))
-        .ok_or_else(|| diagnostic("lexeme_import_no_labels_in_cache", &[("qid", qid)]))?;
+    if entity.get("labels").is_none() {
+        return Err(diagnostic(
+            "lexeme_import_no_labels_in_cache",
+            &[("qid", qid)],
+        ));
+    }
     let mut out = BTreeMap::new();
     let mut sources = BTreeMap::new();
-    for language in import_languages() {
-        let label = labels
-            .get(language)
-            .and_then(|label| label.get("value"))
-            .and_then(Value::as_str)
-            .ok_or_else(|| {
-                diagnostic(
-                    "lexeme_import_missing_cached_label",
-                    &[("qid", qid), ("language", language)],
-                )
-            })?;
-        let (surface, field) = if surface_matches_language(label, language) {
-            (label, format!("labels.{language}.value"))
-        } else {
-            entity
-                .get("aliases")
-                .and_then(|aliases| aliases.get(language))
-                .and_then(Value::as_array)
-                .and_then(|aliases| {
-                    aliases.iter().enumerate().find_map(|(index, alias)| {
-                        let value = alias.get("value").and_then(Value::as_str)?;
-                        surface_matches_language(value, language)
-                            .then(|| (value, format!("aliases.{language}[{index}].value")))
-                    })
-                })
-                .ok_or_else(|| {
-                    diagnostic(
-                        "lexeme_import_no_clean_alias",
-                        &[("qid", qid), ("language", language), ("label", label)],
-                    )
-                })?
-        };
-        out.insert(language.to_string(), surface.to_string());
+    let mut keep = |language: &str, (surface, field): (String, String)| {
+        out.insert(language.to_string(), surface);
         sources.insert(
             language.to_string(),
             SurfaceSource {
@@ -444,8 +461,63 @@ pub fn surfaces_from_entity(value: &Value, qid: &str) -> Result<SurfaceMaps, Str
                 field,
             },
         );
+    };
+    for language in import_languages() {
+        keep(language, entity_surface(entity, qid, language)?);
+    }
+    for language in optional_import_languages() {
+        if let Ok(chosen) = entity_surface(entity, qid, language) {
+            keep(language, chosen);
+        }
     }
     Ok((out, sources))
+}
+
+/// The surface `entity` supplies for `language` and the field it came from:
+/// the label when it is a clean surface in the language's script, else the
+/// first alias that is.
+fn entity_surface(entity: &Value, qid: &str, language: &str) -> Result<(String, String), String> {
+    let label = entity
+        .get("labels")
+        .and_then(|labels| labels.get(language))
+        .and_then(|label| label.get("value"))
+        .and_then(Value::as_str)
+        .ok_or_else(|| {
+            diagnostic(
+                "lexeme_import_missing_cached_label",
+                &[("qid", qid), ("language", language)],
+            )
+        })?;
+    if usable_surface(label, language) {
+        return Ok((label.to_string(), format!("labels.{language}.value")));
+    }
+    entity
+        .get("aliases")
+        .and_then(|aliases| aliases.get(language))
+        .and_then(Value::as_array)
+        .and_then(|aliases| {
+            aliases.iter().enumerate().find_map(|(index, alias)| {
+                let value = alias.get("value").and_then(Value::as_str)?;
+                usable_surface(value, language).then(|| {
+                    (
+                        value.to_string(),
+                        format!("aliases.{language}[{index}].value"),
+                    )
+                })
+            })
+        })
+        .ok_or_else(|| {
+            diagnostic(
+                "lexeme_import_no_clean_alias",
+                &[("qid", qid), ("language", language), ("label", label)],
+            )
+        })
+}
+
+/// Whether `surface` can stand as an imported surface of `language`: written in
+/// the language's script and a clean single token.
+fn usable_surface(surface: &str, language: &str) -> bool {
+    surface_matches_language(surface, language) && surface_is_clean(surface)
 }
 
 /// Compatibility projection for callers that only need the chosen surfaces.
@@ -517,169 +589,6 @@ fn fetch_and_cache(
     surfaces_from_entity(&value, qid)
 }
 
-/// Trim a full entity document to the four project languages, keeping the
-/// `type`, `id`, `labels`, `descriptions`, and `aliases` fields in that order —
-/// mirroring `scripts/ground-meanings.rs` so live writes match the committed
-/// cache byte-for-byte.
-fn trim_entity(full: &Value, qid: &str) -> Result<Ordered, String> {
-    let entity = full
-        .get("entities")
-        .and_then(|entities| entities.get(qid))
-        .ok_or_else(|| diagnostic("lexeme_import_qid_absent_from_fetch", &[("qid", qid)]))?;
-    let mut trimmed = Vec::new();
-    if let Some(kind) = entity.get("type").and_then(Value::as_str) {
-        trimmed.push(("type".to_string(), Ordered::Str(kind.to_string())));
-    }
-    trimmed.push(("id".to_string(), Ordered::Str(qid.to_string())));
-    if let Some(section) = keep_languages(entity.get("labels")) {
-        trimmed.push(("labels".to_string(), section));
-    }
-    if let Some(section) = keep_languages(entity.get("descriptions")) {
-        trimmed.push(("descriptions".to_string(), section));
-    }
-    if let Some(section) = keep_language_arrays(entity.get("aliases")) {
-        trimmed.push(("aliases".to_string(), section));
-    }
-    let entities = Ordered::Obj(vec![(qid.to_string(), Ordered::Obj(trimmed))]);
-    Ok(Ordered::Obj(vec![
-        ("entities".to_string(), entities),
-        ("success".to_string(), Ordered::Int(1)),
-    ]))
-}
-
-/// An insertion-ordered JSON value, used so the trimmed cache serialises in the
-/// same field order as the Python curation script (`serde_json`'s map is sorted).
-enum Ordered {
-    Str(String),
-    Int(i64),
-    Obj(Vec<(String, Self)>),
-    Arr(Vec<Self>),
-}
-
-fn keep_languages(section: Option<&Value>) -> Option<Ordered> {
-    let object = section?.as_object()?;
-    let mut kept = Vec::new();
-    for language in import_languages() {
-        if let Some(entry) = object.get(language) {
-            kept.push((language.to_string(), value_to_ordered(entry)));
-        }
-    }
-    (!kept.is_empty()).then_some(Ordered::Obj(kept))
-}
-
-fn keep_language_arrays(section: Option<&Value>) -> Option<Ordered> {
-    let object = section?.as_object()?;
-    let mut kept = Vec::new();
-    for language in import_languages() {
-        if let Some(Value::Array(items)) = object.get(language)
-            && !items.is_empty()
-        {
-            kept.push((
-                language.to_string(),
-                Ordered::Arr(items.iter().map(value_to_ordered).collect()),
-            ));
-        }
-    }
-    (!kept.is_empty()).then_some(Ordered::Obj(kept))
-}
-
-fn value_to_ordered(value: &Value) -> Ordered {
-    match value {
-        Value::String(text) => Ordered::Str(text.clone()),
-        Value::Number(number) => Ordered::Int(number.as_i64().unwrap_or_default()),
-        Value::Array(items) => Ordered::Arr(items.iter().map(value_to_ordered).collect()),
-        Value::Object(object) => Ordered::Obj(
-            object
-                .iter()
-                .map(|(key, inner)| (key.clone(), value_to_ordered(inner)))
-                .collect(),
-        ),
-        Value::Bool(_) | Value::Null => Ordered::Str(String::new()),
-    }
-}
-
-/// Serialise an [`Ordered`] value as pretty JSON matching Python's
-/// `json.dump(ensure_ascii=False, indent=2)` (two-space indent, `": "`
-/// separators, trailing newline) so live writes are byte-identical to the
-/// committed cache.
-fn serialize_trimmed(value: &Ordered) -> String {
-    let mut out = String::new();
-    write_ordered(&mut out, value, 0);
-    out.push('\n');
-    out
-}
-
-fn write_ordered(out: &mut String, value: &Ordered, indent: usize) {
-    match value {
-        Ordered::Str(text) => {
-            out.push('"');
-            out.push_str(&escape_json(text));
-            out.push('"');
-        }
-        Ordered::Int(number) => {
-            let _ = write!(out, "{number}");
-        }
-        Ordered::Obj(entries) => {
-            if entries.is_empty() {
-                out.push_str("{}");
-                return;
-            }
-            out.push_str("{\n");
-            for (index, (key, inner)) in entries.iter().enumerate() {
-                pad(out, indent + 2);
-                out.push('"');
-                out.push_str(&escape_json(key));
-                out.push_str("\": ");
-                write_ordered(out, inner, indent + 2);
-                if index + 1 < entries.len() {
-                    out.push(',');
-                }
-                out.push('\n');
-            }
-            pad(out, indent);
-            out.push('}');
-        }
-        Ordered::Arr(items) => {
-            if items.is_empty() {
-                out.push_str("[]");
-                return;
-            }
-            out.push_str("[\n");
-            for (index, inner) in items.iter().enumerate() {
-                pad(out, indent + 2);
-                write_ordered(out, inner, indent + 2);
-                if index + 1 < items.len() {
-                    out.push(',');
-                }
-                out.push('\n');
-            }
-            pad(out, indent);
-            out.push(']');
-        }
-    }
-}
-
-fn pad(out: &mut String, indent: usize) {
-    for _ in 0..indent {
-        out.push(' ');
-    }
-}
-
-fn escape_json(text: &str) -> String {
-    let mut out = String::with_capacity(text.len());
-    for character in text.chars() {
-        match character {
-            '"' => out.push_str("\\\""),
-            '\\' => out.push_str("\\\\"),
-            '\n' => out.push_str("\\n"),
-            '\r' => out.push_str("\\r"),
-            '\t' => out.push_str("\\t"),
-            other => out.push(other),
-        }
-    }
-    out
-}
-
 /// Validate a candidate lexeme.
 ///
 /// Labels must be clean single tokens, and the rendered block must parse back
@@ -698,7 +607,7 @@ pub fn validate(lexeme: &GroundedLexeme) -> Result<(), String> {
             &[("slug", &lexeme.slug)],
         ));
     }
-    for language in import_languages() {
+    for language in emitted_languages(lexeme) {
         let surface = lexeme
             .labels
             .get(language)
@@ -757,7 +666,7 @@ pub fn validate(lexeme: &GroundedLexeme) -> Result<(), String> {
             &[("slug", &lexeme.slug), ("defined_by", DEFINED_BY)],
         ));
     }
-    for language in import_languages() {
+    for language in emitted_languages(lexeme) {
         let expected = &lexeme.labels[language];
         let lexeme_block = meaning
             .lexemes
@@ -827,7 +736,7 @@ pub fn render_block(lexeme: &GroundedLexeme) -> String {
     let _ = writeln!(block, "  {}", lexeme.slug);
     let _ = writeln!(block, "    grounded-in {}", lexeme.qid);
     let _ = writeln!(block, "    defined-by {DEFINED_BY}");
-    for language in import_languages() {
+    for language in emitted_languages(lexeme) {
         let surface = &lexeme.labels[language];
         let _ = writeln!(block, "    lexeme {language}");
         let _ = writeln!(block, "      surface");
@@ -845,29 +754,40 @@ pub fn render_block(lexeme: &GroundedLexeme) -> String {
 
 /// Split the accepted lexemes into shard files.
 ///
-/// Each shard carries the header and up to [`CONCEPTS_PER_SHARD`] blocks. Shards
-/// are named `meanings-lexicon-import` with a zero-padded, one-based index when
-/// there is more than one.
+/// Each shard carries the header and as many whole blocks as fit in
+/// [`SHARD_LINE_BUDGET`] lines (a single block longer than the budget still gets
+/// a shard of its own). Shards are named `meanings-lexicon-import` with a
+/// zero-padded, one-based index when there is more than one.
 #[must_use]
 pub fn shard(accepted: &[GroundedLexeme]) -> Vec<Shard> {
-    if accepted.is_empty() {
-        return Vec::new();
+    let header_lines = SHARD_HEADER.lines().count();
+    let mut bodies: Vec<String> = Vec::new();
+    let mut body_lines = 0;
+    for lexeme in accepted {
+        let block = render_block(lexeme);
+        let block_lines = block.lines().count();
+        let full = header_lines + body_lines + block_lines > SHARD_LINE_BUDGET;
+        if bodies.is_empty() || (body_lines > 0 && full) {
+            bodies.push(String::new());
+            body_lines = 0;
+        }
+        if let Some(body) = bodies.last_mut() {
+            body.push_str(&block);
+        }
+        body_lines += block_lines;
     }
-    let chunks: Vec<&[GroundedLexeme]> = accepted.chunks(CONCEPTS_PER_SHARD).collect();
-    let single = chunks.len() == 1;
-    chunks
-        .iter()
+    let single = bodies.len() == 1;
+    bodies
+        .into_iter()
         .enumerate()
-        .map(|(index, chunk)| {
+        .map(|(index, body)| {
             let file_name = if single {
                 String::from("meanings-lexicon-import.lino")
             } else {
                 format!("meanings-lexicon-import-{:02}.lino", index + 1)
             };
             let mut content = String::from(SHARD_HEADER);
-            for lexeme in *chunk {
-                content.push_str(&render_block(lexeme));
-            }
+            content.push_str(&body);
             Shard { file_name, content }
         })
         .collect()

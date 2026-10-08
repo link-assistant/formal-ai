@@ -1,12 +1,15 @@
 Q553
   aliases
     en (teeth)
+    es (dientes)
   descriptions
     en "hard, calcified structure found in the jaws (or mouths) of many vertebrates and used to break down food"
+    es "estructura ósea de múltiples vertebrados"
     ru "костное образование в ротовой полости большинства позвоночных"
   id Q553
   labels
     en tooth
+    es diente
     hi "दाँत"
     ru "зуб"
     zh "牙齿"

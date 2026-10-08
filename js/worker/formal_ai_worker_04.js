@@ -27,27 +27,18 @@ function cleanRuleQuery(raw) {
     .toLowerCase();
 }
 
+// The rule a prompt asks to read: the text after its longest seeded
+// `rule_detail_request` opening. Mirrors `fn detail_query` in
+// rust/src/solver_handlers/behavior_rules.rs.
+const ROLE_RULE_DETAIL_REQUEST = "rule_detail_request";
+
 function detailQuery(prompt) {
   const lower = String(prompt || "").toLowerCase();
-  const prefixes = [
-    "show behavior rule",
-    "show behaviour rule",
-    "read behavior rule",
-    "read behaviour rule",
-    "describe behavior rule",
-    "describe behaviour rule",
-    "show rule",
-    "read rule",
-    "details for rule",
-    "детали правила",
-    "покажи правило",
-    "прочитай правило",
-  ];
-  for (const prefix of prefixes) {
-    if (lower.startsWith(prefix)) {
-      return cleanRuleQuery(String(prompt || "").slice(prefix.length));
-    }
-  }
+  const opening = wordsForRole(ROLE_RULE_DETAIL_REQUEST)
+    .map((surface) => String(surface).toLowerCase())
+    .filter((surface) => surface && lower.startsWith(surface))
+    .sort((left, right) => right.length - left.length)[0];
+  if (opening) return cleanRuleQuery(String(prompt || "").slice(opening.length));
   if (lower.includes("rule_unknown")) return "unknown";
   return "";
 }
@@ -560,11 +551,11 @@ function historyMentionsWebSearch(history) {
   });
 }
 
+// R1188-U1: the capability listings are the seeded `capabilities` and
+// `capabilities_more` responses, as rust/src/solver_handlers/user_intent.rs
+// answers them; no listing or example prompt lives here.
 function additionalCapabilitiesContent(language) {
-  if (language === "ru") {
-    return "Кроме уже названных возможностей, могу ещё:\n\n- **Арифметика**: вычислять выражения вроде «Сколько будет 2 + 2?»\n- **Перевод**: переводить короткие фразы между поддерживаемыми языками.\n- **Поиск понятий**: объяснять термины, например «Что такое Википедия?»\n- **Hello World**: генерировать минимальные программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Память диалога**: использовать предыдущие сообщения текущей сессии.\n- **Правила поведения**: показывать встроенные правила через `Покажи правила поведения` и `Покажи правило unknown`.\n- **Настройки и действия**: включать диагностику/демо/agent mode, менять тему, язык, стиль чата, экспортировать и импортировать память.";
-  }
-  return "Beyond the capability already discussed, I can also:\n\n- **Arithmetic**: evaluate expressions like `2 + 2`.\n- **Translation**: translate short phrases between supported languages.\n- **Concept lookup**: explain terms such as `What is Wikipedia?`.\n- **Hello World**: generate small programs in Rust, Python, JavaScript, Go, C, and more.\n- **Conversation memory**: use earlier messages from the current session.\n- **Behavior rules**: show built-in rules with `List behavior rules` and `Show behavior rule unknown`.\n- **Settings and actions**: configure diagnostics, demo mode, agent mode, theme, language, chat style, and memory import/export.";
+  return answerFor("capabilities_more", language);
 }
 
 // True when the prompt asks how the assistant itself is built rather than
@@ -625,14 +616,7 @@ function tryCapabilities(prompt, normalized, preferences, history) {
       ],
     };
   }
-  const content =
-    language === "ru"
-      ? "Я formal-ai — детерминированный символьный ИИ. Вот что я умею:\n\n- **Приветствия**: отвечаю на «Привет», «Здравствуйте» и т.п.\n- **Hello World**: генерирую программы на Rust, Python, JavaScript, Go, C и других языках.\n- **Веб-поиск**: ищу в интернете через DuckDuckGo, Wikipedia и Wikidata, когда поиск доступен.\n- **Поиск понятий**: объясняю термины — попробуйте «Что такое Википедия?»\n- **Арифметика**: вычисляю выражения — например, «Сколько будет 2 + 2?»\n- **Перевод**: перевожу фразы между языками.\n- **Память**: помню контекст разговора в рамках сессии.\n- **Настройки и действия**: через сообщения можно включать диагностику/демо/agent mode, менять тему, язык, стиль чата и экспортировать или импортировать память.\n\nЯ работаю на основе локальных символьных правил, без нейросетевого инференса."
-      : language === "zh"
-        ? "我是 formal-ai —— 一个确定性的符号化 AI。以下是我的功能：\n\n- **问候**：回应「你好」等问候语。\n- **Hello World**：生成 Rust、Python、JavaScript、Go、C 等语言的示例程序。\n- **Web search**：在可用时通过 DuckDuckGo、Wikipedia 和 Wikidata 搜索互联网。\n- **概念查找**：解释术语，例如「什么是维基百科？」\n- **算术**：计算表达式，例如「2 + 2 等于多少？」\n- **翻译**：在语言之间翻译短语。\n- **记忆**：在会话中记住上下文。\n- **设置和操作**：可通过消息开启诊断、演示、agent mode，切换主题、语言、聊天样式，并导出或导入记忆。\n\n我基于本地符号规则运行，不进行神经网络推理。"
-        : language === "hi"
-          ? "मैं formal-ai हूँ — एक नियतात्मक प्रतीकात्मक AI। मैं यह कर सकता हूँ:\n\n- **अभिवादन**: «नमस्ते» आदि का जवाब देना।\n- **Hello World**: Rust, Python, JavaScript, Go, C आदि में प्रोग्राम बनाना।\n- **Web search**: उपलब्ध होने पर DuckDuckGo, Wikipedia, और Wikidata से इंटरनेट में खोजना।\n- **अवधारणा खोज**: शब्दों को समझाना — जैसे «विकिपीडिया क्या है?»\n- **अंकगणित**: गणनाएँ — जैसे «2 + 2 क्या है?»\n- **अनुवाद**: भाषाओं के बीच अनुवाद।\n- **स्मृति**: सत्र में संदर्भ याद रखना।\n- **Settings और actions**: messages से diagnostics/demo/agent mode बदलना, theme/language/chat style बदलना, और memory export/import करना।\n\nमैं स्थानीय प्रतीकात्मक नियमों पर चलता हूँ, कोई न्यूरल इन्फेरेन्स नहीं।"
-          : "I am formal-ai, a deterministic symbolic AI. Here is what I can do:\n\n- **Greetings**: respond to «Hi», «Hello», and similar.\n- **Hello World**: generate programs in Rust, Python, JavaScript, Go, C, and more.\n- **Web search**: search the internet through DuckDuckGo, Wikipedia, and Wikidata when available.\n- **Concept lookup**: explain terms — try «What is Wikipedia?»\n- **Arithmetic**: evaluate expressions — try «What is 2 + 2?»\n- **Translation**: translate phrases between languages.\n- **Memory**: recall context within the current session.\n- **Settings and actions**: configure diagnostics, demo mode, agent mode, theme, language, chat style, and memory import/export from messages.\n\nI run on local symbolic rules, without any neural network inference.";
+  const content = answerFor("capabilities", language);
   return {
     intent: "capabilities",
     content,
@@ -662,205 +646,25 @@ function detectTranslationTargetLanguage(normalized) {
   );
 }
 
-// Offline meaning registry for the browser worker.
+// Offline phrase registry for the browser worker.
 //
 // The Rust pipeline (`src/translation/pipeline.rs`) resolves any pair
 // of surfaces through Wiktionary + Wikidata using cached HTTP
 // responses. The worker mirrors that with a live `liveWiktionaryTranslate`
 // fallback below (MediaWiki action API is CORS-friendly via
-// `origin=*`), but keeps this small in-memory registry of greetings and
-// stock phrases so the demo stays snappy when the network is slow.
-// `primary` is the canonical form deformalization renders; `aliases` is a
-// list of normalized alternative surfaces used during formalization.
-const TRANSLATION_MEANING_REGISTRY = [
-  {
-    token: "greeting",
-    primary: { en: "Hello", ru: "Привет", hi: "नमस्ते", zh: "你好" },
-    aliases: {
-      en: ["hello", "hi", "hey"],
-      ru: ["привет", "здравствуйте", "здравствуй"],
-      hi: ["नमस्ते", "नमस्कार"],
-      zh: ["你好", "您好"],
-    },
-  },
-  {
-    token: "greeting_how_are_you",
-    primary: {
-      en: "How are you?",
-      ru: "Как у тебя дела?",
-      hi: "आप कैसे हैं?",
-      zh: "你好吗？",
-    },
-    aliases: {
-      en: ["howareyou", "hellohowareyou", "hihowareyou"],
-      ru: [
-        "какдела",
-        "какутебядела",
-        "какувасдела",
-        "какваши дела",
-        "какватидела",
-        "какваши",
-        "приветкакдела",
-        "здравствуйтекаквашидела",
-      ],
-      hi: ["आपकैसेहैं", "तुमकैसेहो"],
-      zh: ["你好吗", "你怎么样"],
-    },
-  },
-  {
-    token: "thank_you",
-    primary: { en: "Thank you", ru: "Спасибо", hi: "धन्यवाद", zh: "谢谢" },
-    aliases: {
-      en: ["thanks", "thankyou", "thankyouverymuch"],
-      ru: ["спасибо", "благодарю", "большоеспасибо"],
-      hi: ["धन्यवाद", "शुक्रिया"],
-      zh: ["谢谢", "多谢", "感谢"],
-    },
-  },
-  {
-    token: "you_are_welcome",
-    primary: {
-      en: "You are welcome",
-      ru: "Пожалуйста",
-      hi: "आपका स्वागत है",
-      zh: "不客气",
-    },
-    aliases: {
-      en: ["youarewelcome", "yourewelcome", "nottoworry"],
-      ru: ["пожалуйста", "незачто"],
-      hi: ["आपकास्वागतहै", "कोईबातनहीं"],
-      zh: ["不客气", "不用谢"],
-    },
-  },
-  {
-    token: "goodbye",
-    primary: { en: "Goodbye", ru: "До свидания", hi: "अलविदा", zh: "再见" },
-    aliases: {
-      en: ["goodbye", "bye", "seeyou", "byebye"],
-      ru: ["досвидания", "пока", "прощай"],
-      hi: ["अलविदा", "फिरमिलेंगे"],
-      zh: ["再见", "拜拜"],
-    },
-  },
-  {
-    token: "good_morning",
-    primary: { en: "Good morning", ru: "Доброе утро", hi: "सुप्रभात", zh: "早上好" },
-    aliases: {
-      en: ["goodmorning"],
-      ru: ["доброеутро"],
-      hi: ["सुप्रभात", "शुभप्रभात"],
-      zh: ["早上好", "早安"],
-    },
-  },
-  {
-    token: "good_evening",
-    primary: { en: "Good evening", ru: "Добрый вечер", hi: "शुभ संध्या", zh: "晚上好" },
-    aliases: {
-      en: ["goodevening"],
-      ru: ["добрыйвечер"],
-      hi: ["शुभसंध्या"],
-      zh: ["晚上好", "晚安"],
-    },
-  },
-  {
-    token: "what_is_your_name",
-    primary: {
-      en: "What is your name?",
-      ru: "Как тебя зовут?",
-      hi: "तुम्हारा नाम क्या है?",
-      zh: "你叫什么名字？",
-    },
-    aliases: {
-      en: ["whatisyourname", "whatsyourname"],
-      ru: ["кактебязовут", "каквасзовут"],
-      hi: ["तुम्हारानामक्याहै", "आपकानामक्याहै"],
-      zh: ["你叫什么名字", "您叫什么名字"],
-    },
-  },
-  {
-    token: "who_are_you",
-    primary: {
-      en: "Who are you?",
-      ru: "Кто ты такой?",
-      hi: "तुम कौन हो?",
-      zh: "你是谁？",
-    },
-    aliases: {
-      en: ["whoareyou"],
-      ru: ["ктоты", "ктотытакой", "ктотытакая", "ктовы", "ктовытакой", "ктовытакая"],
-      hi: ["तुमकौनहो", "आपकौनहैं"],
-      zh: ["你是谁", "您是谁"],
-    },
-  },
-  {
-    token: "what_is_this",
-    primary: {
-      en: "What is this?",
-      ru: "Что это такое?",
-      hi: "यह क्या है?",
-      zh: "这是什么？",
-    },
-    aliases: {
-      en: ["whatisthis", "whatisit"],
-      ru: ["чтоэто", "чтоэтотакое"],
-      hi: ["यहक्याहै", "येक्याहै"],
-      zh: ["这是什么", "這是什麼"],
-    },
-  },
-  {
-    token: "i_am_fine",
-    primary: { en: "I am fine", ru: "У меня всё хорошо", hi: "मैं ठीक हूँ", zh: "我很好" },
-    aliases: {
-      en: ["iamfine", "imfine", "imdoingfine", "imdoingwell"],
-      ru: ["уменявсёхорошо", "уменявсехорошо", "всёхорошо"],
-      hi: ["मैंठीकहूँ", "मैंठीकहूं"],
-      zh: ["我很好", "我挺好的"],
-    },
-  },
-  {
-    token: "yes",
-    primary: { en: "Yes", ru: "Да", hi: "हाँ", zh: "是" },
-    aliases: {
-      en: ["yes", "yeah", "yep", "aye"],
-      ru: ["да", "ага", "конечно"],
-      hi: ["हाँ", "हां", "जी"],
-      zh: ["是", "是的", "对"],
-    },
-  },
-  {
-    token: "no",
-    primary: { en: "No", ru: "Нет", hi: "नहीं", zh: "不" },
-    aliases: {
-      en: ["no", "nope", "nah"],
-      ru: ["нет", "неа"],
-      hi: ["नहीं", "ना"],
-      zh: ["不", "不是"],
-    },
-  },
-  // Issue #216 / #217: the apple noun must be translatable in both
-  // directions from the browser demo, including unquoted prompts.
-  {
-    token: "apple",
-    primary: { en: "apple", ru: "яблоко", hi: "सेब", zh: "苹果" },
-    aliases: {
-      en: ["apple", "apples"],
-      ru: [
-        "яблоко",
-        "яблока",
-        "яблоку",
-        "яблоком",
-        "яблоке",
-        "яблоки",
-        "яблок",
-        "яблокам",
-        "яблоками",
-        "яблоках",
-      ],
-      hi: ["सेब"],
-      zh: ["苹果"],
-    },
-  },
-];
+// `origin=*`), and first looks up the stock phrases of the seed so the demo
+// stays snappy when the network is slow. Each is a meaning carrying the role
+// `translation_phrase` (data/seed/meanings-translation-phrases.lino,
+// R1188-U1): the first surface of a language is the form deformalization
+// renders, every surface is a phrasing formalization recognizes.
+const ROLE_TRANSLATION_PHRASE = "translation_phrase";
+
+function translationPhraseRegistry() {
+  return meaningsWithRole(ROLE_TRANSLATION_PHRASE).map((meaning) => ({
+    token: meaning.slug,
+    forms: Object.fromEntries((meaning.lexemes || []).map((lexeme) => [lexeme.language, lexeme.words])),
+  }));
+}
 
 const TRANSLATION_TERMINAL_PUNCTUATION = ["?", "!", ".", "。", "？", "！", "．"];
 
@@ -873,46 +677,21 @@ function normalizeTranslationAlias(surface) {
 function formalizeSurface(surface, source) {
   const normalized = normalizeTranslationAlias(surface);
   if (!normalized) return null;
-  for (const entry of TRANSLATION_MEANING_REGISTRY) {
-    const aliases = (entry.aliases && entry.aliases[source]) || [];
-    if (aliases.some((alias) => normalizeTranslationAlias(alias) === normalized)) {
-      return entry.token;
-    }
-    const primary = entry.primary && entry.primary[source];
-    if (primary && normalizeTranslationAlias(primary) === normalized) {
-      return entry.token;
-    }
-  }
-  return null;
+  const entry = translationPhraseRegistry().find((phrase) =>
+    (phrase.forms[source] || []).some((form) => normalizeTranslationAlias(form) === normalized));
+  return entry ? entry.token : null;
 }
 
 function deformalizeMeaning(token, target) {
-  for (const entry of TRANSLATION_MEANING_REGISTRY) {
-    if (entry.token !== token) continue;
-    const primary = entry.primary && entry.primary[target];
-    return primary || null;
-  }
-  return null;
+  const entry = translationPhraseRegistry().find((phrase) => phrase.token === token);
+  return entry && entry.forms[target] && entry.forms[target].length > 0 ? entry.forms[target][0] : null;
 }
 
 function canonicalTokenForNormalized(normalized) {
   if (!normalized) return null;
-  for (const entry of TRANSLATION_MEANING_REGISTRY) {
-    const aliasesByLang = entry.aliases || {};
-    for (const lang of Object.keys(aliasesByLang)) {
-      const aliases = aliasesByLang[lang] || [];
-      if (aliases.some((alias) => normalizeTranslationAlias(alias) === normalized)) {
-        return entry.token;
-      }
-    }
-    const primaryByLang = entry.primary || {};
-    for (const lang of Object.keys(primaryByLang)) {
-      if (normalizeTranslationAlias(primaryByLang[lang]) === normalized) {
-        return entry.token;
-      }
-    }
-  }
-  return null;
+  const entry = translationPhraseRegistry().find((phrase) =>
+    Object.values(phrase.forms).some((forms) => forms.some((form) => normalizeTranslationAlias(form) === normalized)));
+  return entry ? entry.token : null;
 }
 
 function canonicalMeaningToken(raw) {

@@ -4,11 +4,13 @@ Q3196
     hi ("आग")
   descriptions
     en "rapid oxidation of a material; phenomenon that emits light and heat"
+    es "oxidación rápida de un material; fenómeno que emite luz y calor"
     hi "किसी पदार्थ का तीव्र ऑक्सीकरण; प्रकाश और ऊष्मा उत्सर्जित करने वाली घटना"
     ru "образование пламени при горении"
   id Q3196
   labels
     en fire
+    es fuego
     hi "अग्नि"
     ru "огонь"
     zh "火"

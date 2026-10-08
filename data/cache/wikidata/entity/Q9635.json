@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "口腔"
+        },
+        "es": {
+          "language": "es",
+          "value": "boca"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "五官之一"
+        },
+        "es": {
+          "language": "es",
+          "value": "primera porción del tubo digestivo que recibe los alimentos"
         }
       },
       "aliases": {
@@ -56,6 +64,16 @@
           {
             "language": "zh",
             "value": "嘴（泰國電視劇）"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "cavidad bucal"
+          },
+          {
+            "language": "es",
+            "value": "tejido oral"
           }
         ]
       }

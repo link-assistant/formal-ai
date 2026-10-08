@@ -1,17 +1,20 @@
 Q44619
   aliases
     en ("😱" fearful scared "😨" "😰")
+    es (Pavor Temor Pavura miedos temores canguelo medrana)
     hi (Fear "भय")
     ru ("ужас" "испуг" "ужаса")
     zh ("怕" "恐" "恐怖" "恐懼" "惧" "害怕")
   descriptions
     en "emotion induced by perceived danger or threat"
+    es "respuesta ante un posible peligro"
     hi "भय"
     ru "внутреннее состояние, обусловленное грозящим реальным или предполагаемым бедствием"
     zh "感知威脅引起的基本情緒"
   id Q44619
   labels
     en fear
+    es miedo
     hi "डर"
     ru "страх"
     zh "恐惧"

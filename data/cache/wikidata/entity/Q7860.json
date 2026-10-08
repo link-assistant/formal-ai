@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "自然"
+        },
+        "es": {
+          "language": "es",
+          "value": "naturaleza"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "物質世界的所有事物與現象"
+        },
+        "es": {
+          "language": "es",
+          "value": "universo físico, mundo material o universo material"
         }
       }
     }

@@ -82,6 +82,23 @@ meanings
         text 证明…
       surface
         text 證明…
+    lexeme es
+      surface
+        text demuestra
+      surface
+        text demostración
+      surface
+        text "prueba que …"
+      surface
+        text "demuestra que …"
+      surface
+        text "demuestra …"
+      surface
+        text "demostración de …"
+      surface
+        text "puedes demostrar que …"
+      surface
+        text "dame una demostración de …"
   proof_request_frame
     defined-by inquiry
     defined-by prove
@@ -130,6 +147,15 @@ meanings
         text 请证明…
       surface
         text 請證明…
+    lexeme es
+      surface
+        text "puedes demostrar…"
+      surface
+        text "podrías demostrar…"
+      surface
+        text "por favor demuestra…"
+      surface
+        text "dame una demostración…"
   proof_assertion
     defined-by inquiry
     defined-by prove
@@ -168,6 +194,11 @@ meanings
         text 证明
       surface
         text 證明
+    lexeme es
+      surface
+        text " demuestra que "
+      surface
+        text " demostración de "
   godel
     defined-by concept
     role proof_concept_godel
@@ -189,6 +220,11 @@ meanings
     lexeme zh
       surface
         text 哥德尔
+    lexeme es
+      surface
+        text gödel
+      surface
+        text godel
   determinism
     defined-by concept
     role proof_concept_determinism
@@ -206,6 +242,11 @@ meanings
     lexeme zh
       surface
         text 决定论
+    lexeme es
+      surface
+        text determinismo
+      surface
+        text determinista
   metatheory
     defined-by concept
     role proof_concept_metatheory
@@ -223,6 +264,9 @@ meanings
     lexeme zh
       surface
         text 元理论
+    lexeme es
+      surface
+        text metateoría
   hypothesis
     defined-by concept
     role proof_step_kind

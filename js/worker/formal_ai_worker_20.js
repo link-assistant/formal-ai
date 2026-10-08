@@ -4,6 +4,9 @@ function isTargetlessProgramModification(normalized) { // "Reverse it.": Rust `l
   return mentions(ROLE_PROGRAM_MODIFICATION) && mentions(ROLE_PROGRAM_MODIFICATION_REFERENCE) && !mentions(ROLE_PROGRAM_ARTIFACT);
 }
 async function solve(prompt, history, prefs, userContext = {}, memory = [], options = {}) {
+  // R1188-U1: every answer reads the hydrated seed; no bootstrap copy of seed
+  // prose stands in while it loads (a no-op once loaded).
+  await loadSeed();
   // Issue #556: activate the forced response language for the whole replay and
   // always restore the previous value, so a nested follow-up replay never
   // leaks its forced language onto the outer turn's remaining handlers.

@@ -6,12 +6,14 @@ Q169
     zh ("杧果" "黄皮大金芒" "红玉文芒")
   descriptions
     en "fruit of the mango tree"
+    es "fruta de la zona intertropical de pulpa carnosa y dulce"
     hi "एक प्रकार का रसीला फल"
     ru "фрукт вида Mangifera Indica"
     zh "水果"
   id Q169
   labels
     en mango
+    es mango
     hi "आम"
     ru "манго"
     zh "芒果"

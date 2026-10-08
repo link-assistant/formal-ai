@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "歌手"
+        },
+        "es": {
+          "language": "es",
+          "value": "cantante"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "歌曲演唱者"
+        },
+        "es": {
+          "language": "es",
+          "value": "artista que produce con su voz sonidos melodiosos"
         }
       },
       "aliases": {
@@ -98,6 +106,20 @@
           {
             "language": "zh",
             "value": "歌唱演员"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "intérprete musical"
+          },
+          {
+            "language": "es",
+            "value": "cantor"
+          },
+          {
+            "language": "es",
+            "value": "cantora"
           }
         ]
       }

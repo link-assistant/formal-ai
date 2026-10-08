@@ -1,16 +1,19 @@
 Q22676
   aliases
     en (shoes "pair of shoes" footwear "foot gear")
+    es (zapatos calcorro calzado)
     hi ("जूता")
     ru ("лёгкая обувь" "туфля")
     zh ("鞋底" "鞋子" "屨" "履")
   descriptions
     en footwear
+    es "accesorio de calzado hecho con la intención de proveer protección y comforte al pie humano"
     ru "вид обуви"
     zh "保護人腳的一種物品"
   id Q22676
   labels
     en shoe
+    es zapato
     hi "शू"
     ru "туфли"
     zh "鞋"

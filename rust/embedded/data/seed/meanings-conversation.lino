@@ -176,6 +176,13 @@ meanings
         text 聊聊…
       surface
         text 谈谈…
+    lexeme es
+      surface
+        text "hablemos de …"
+      surface
+        text "hablemos sobre …"
+      surface
+        text "podemos hablar de …"
   conversation_recall_query
     defined-by inquiry
     defined-by conversation_reference
@@ -236,6 +243,21 @@ meanings
         text 搜索我的对话…
       surface
         text 在对话中搜索…
+    lexeme es
+      surface
+        text "cuándo pregunté por …"
+      surface
+        text "cuándo pregunté …"
+      surface
+        text "cuándo mencioné …"
+      surface
+        text "he preguntado por …"
+      surface
+        text "he mencionado …"
+      surface
+        text "busca en mis conversaciones …"
+      surface
+        text "busca en las conversaciones …"
   conversation_recall_previous_message
     defined-by inquiry
     defined-by conversation_reference
@@ -304,6 +326,21 @@ meanings
         text 前一条消息
       surface
         text 上条消息
+    lexeme es
+      surface
+        text "qué estaba escrito en el mensaje anterior"
+      surface
+        text "qué había en el mensaje anterior"
+      surface
+        text "qué decía el mensaje anterior"
+      surface
+        text "cuál fue el mensaje anterior"
+      surface
+        text "muestra el mensaje anterior"
+      surface
+        text "el mensaje anterior"
+      surface
+        text "mensaje anterior"
   conversation_recall_previous_user_message
     defined-by inquiry
     defined-by conversation_reference
@@ -364,6 +401,19 @@ meanings
         text 我之前问了什么
       surface
         text 我的上一个问题是什么
+    lexeme es
+      surface
+        text "qué pregunté"
+      surface
+        text "qué pregunté en el mensaje anterior"
+      surface
+        text "cuál fue mi pregunta anterior"
+      surface
+        text "cuál fue mi última pregunta"
+      surface
+        text "repite mi último mensaje"
+      surface
+        text "qué dije"
   conversation_recall_other_query
     defined-by inquiry
     defined-by conversation_reference
@@ -408,6 +458,15 @@ meanings
         text 搜索…在其他对话中
       surface
         text 查找…在另一个对话中
+    lexeme es
+      surface
+        text "busca … en otra conversación"
+      surface
+        text "busca … en otras conversaciones"
+      surface
+        text "encuentra … en otra conversación"
+      surface
+        text "encuentra … en otras conversaciones"
   memory_append_directive
     defined-by action
     defined-by answer
@@ -466,6 +525,17 @@ meanings
         text 记录…
       surface
         text 存入记忆…
+    lexeme es
+      surface
+        text "recuerda que …"
+      surface
+        text "recuerda …"
+      surface
+        text "guarda en la memoria …"
+      surface
+        text "anota que …"
+      surface
+        text "memoriza …"
   memory_scope
     defined-by action
     defined-by answer
@@ -498,6 +568,11 @@ meanings
         text 记忆中
       surface
         text 在内存中
+    lexeme es
+      surface
+        text "en la memoria"
+      surface
+        text "en memoria"
   memory_substitution_connector
     defined-by action
     defined-by answer
@@ -526,6 +601,9 @@ meanings
         text 替换成
       surface
         text 更换为
+    lexeme es
+      surface
+        text por
   memory_substitution_directive
     defined-by action
     defined-by answer
@@ -562,6 +640,11 @@ meanings
         text 替换
       surface
         text 更换
+    lexeme es
+      surface
+        text reemplaza
+      surface
+        text sustituye
   agentic_continuation_cue
     defined-by conversation_reference
     role agentic_continuation_cue

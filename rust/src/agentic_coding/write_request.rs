@@ -10,6 +10,8 @@
 use super::file_path_shape::{is_dotted_number, peel_sentence_punctuation};
 use super::shell_command_policy::{prose_sentences, sentences};
 use crate::seed::{self, Slot};
+/// The seeded articles and other function words (`the`, `el`).
+const FUNCTION_WORD_ROLE: &str = "request_function_word";
 /// One whitespace token together with its byte span in the original request.
 pub(super) struct Token<'a> {
     pub(super) text: &'a str,
@@ -843,13 +845,22 @@ pub(super) fn compose_edit_clauses(raw: &str) -> Option<EditClauses> {
         })
     };
     let (file_index, target) = candidate(false).or_else(|| candidate(true))?;
+    // The file clause runs back over target cues and the seeded function words
+    // between them (`in the file f.txt`) to its first cue (PR #1188 G98); a cue
+    // word inside a quoted literal is payload ("… the named file.'").
+    let function_words = bare_surfaces(FUNCTION_WORD_ROLE);
+    let joins_clause = |index: usize| {
+        !is_quoted(&toks[index])
+            && (is_target_cue(index) || function_words.contains(&clean_cue_token(toks[index].text)))
+    };
     let mut clause_start_index = file_index;
-    // A cue word inside a quoted literal is payload ("… the named file.'").
-    while clause_start_index > 0
-        && is_target_cue(clause_start_index - 1)
-        && !is_quoted(&toks[clause_start_index - 1])
+    for index in (0..file_index)
+        .rev()
+        .take_while(|&index| joins_clause(index))
     {
-        clause_start_index -= 1;
+        if is_target_cue(index) {
+            clause_start_index = index;
+        }
     }
     let file_clause_start = toks[clause_start_index].start;
     // A cue word quoted whole is payload too: `replace 'with' with ','`.

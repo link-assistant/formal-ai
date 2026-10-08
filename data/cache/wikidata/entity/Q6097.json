@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "茶"
+        },
+        "es": {
+          "language": "es",
+          "value": "té"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "一種飲品"
+        },
+        "es": {
+          "language": "es",
+          "value": "infusión de las hojas y brotes de la planta del té"
         }
       },
       "aliases": {
@@ -40,6 +48,12 @@
           {
             "language": "zh",
             "value": "茶水"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "cha"
           }
         ]
       }

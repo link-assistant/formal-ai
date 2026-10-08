@@ -287,10 +287,27 @@ possible tasks you encounter on the way must be fully supported by it".
 | T601 | TWINS: T584's insert again in a sandbox after the G97 fix | **Pass**: answered in English. | G97 fixed in the language detector of both roots; regression cases in the edit-composer gap tests of both roots. |
 | T602 | TWINS: from the repository root, insert rows T580-T601 as one block after the line containing the T531 row id, then append gaps G96 and G97 to `gaps.md` (two requests) | **Pass** | No change needed. |
 | T603 | TWINS: replace the R1188-U16 status cell (a long quoted text holding backticks) with the delivered status | **Pass** | No change needed. |
+| T620 | GENERALIZE: from the repository root, `Replace «- G98 (LEXEMES, T542; destructive; not fixed)» with «- G98 (LEXEMES, T542; destructive; FIXED by GENERALIZE, T620)» in experiments/formal_ai_subagent/gaps.md.` | **Pass**: one edit, observed by checksum. | No change needed. |
+| T621 | GENERALIZE: replace the tail of the G98 entry ("Left for the write_request owner …") with the fix note | **Pass** | No change needed. |
+| T622 | GENERALIZE: insert the four-line `seed multilingual-responses-behavior-rules` block before the line `  seed multilingual-responses-capabilities` in `data/meta/seed-registry.lino` | **Pass** | No change needed. |
+| T623 | GENERALIZE: insert three `example` lines after `    response_link "response:greeting"` in `data/seed/intent-routing.lino` | **Pass** | No change needed. |
+| T624 | GENERALIZE: insert two `example` lines (one holding a comma) after the courtesy_response link in `intent-routing.lino` | **Pass** | No change needed. |
+| T625 | GENERALIZE: insert two `example` lines (one in Russian) after the assistant_free_time link | **Pass** | No change needed. |
+| T626 | GENERALIZE: insert four `example` lines (two holding an apostrophe) after the test_status link | **Pass** | No change needed. |
+| T627 | GENERALIZE: insert five `example` lines in four scripts after the assistant_name link | **Pass** | No change needed. |
+| T628 | GENERALIZE: insert four `example` lines after the identity link | **Pass** | No change needed. |
+| T629 | GENERALIZE: insert two `example` lines after the write_program link | **Pass** | No change needed. |
+| T630 | GENERALIZE: insert one `example` line after the unknown link | **Pass** | No change needed. |
+| T631 | GENERALIZE: insert the three-line `seed meanings-translation-phrases` block before `  seed meanings-units` in `seed-registry.lino` | **Pass** | No change needed. |
+| T632 | GENERALIZE: `Replace «  specialization_ceiling 23» with «  specialization_ceiling 0» in data/meta/prompt-specialization-ratchet.lino.` | **Pass** | No change needed. |
+| T633 | GENERALIZE: replace the Chinese surface `显示规则详情` with `规则详情` in `data/seed/meanings-behavior-rules.lino` (the first was a list prompt already) | **Pass** | No change needed. |
+| T634 | GENERALIZE: T542's two requests again in a sandbox after the G98 fix (`Cambia 'mundo' a 'amigo' en el archivo f.txt.`, `Change 'world' to 'friend' in the file g.txt.`) | **Pass**: `hola amigo` and `hello friend`, each answered in the request's language. | G98 fixed: composeEditClauses (js/agentic/write_request.mjs) and compose_edit_clauses (rust/src/agentic_coding/write_request.rs) run the file clause back over the seeded `request_function_word` words between target cues; pinned in the edit-composer gap tests of both roots. |
+| T635 | GENERALIZE: insert rows T620-T635 as one block after the line containing the T603 row id in this file | **Pass** | No change needed. |
 | T448 | TEXT-CAPABILITY: from the repository root, append the done line of this task to `claims.md` (one long line of paths with braces and slashes) | **Pass** for the edit; the answer was in Spanish again, as in T440 and T443 (G92) | Not fixed in this cycle: G92 is recorded for the `tool_result` owner. |
 | T540 | LEXEMES: run the rule script in a sandbox, `node add-lexemes.mjs meanings-file-edit.lino es meanings-file-edit-es.tsv` | **Pass**: one bash call wrote the three Spanish `file_edit_*` lexemes (the `file_edit_action_cue` gap the owner named). | No change needed. |
 | T541 | LEXEMES: `Reemplaza 'hola' por 'adiós' en f.txt.` and `Cambia 'mundo' a 'amigo' en f.txt.` with the new Spanish edit cues | **Pass**: both edited and answered in Spanish. | No change needed. |
 | T542 | LEXEMES: `Cambia 'mundo' a 'amigo' en el archivo f.txt.` (and the English `Change 'mundo' to 'amigo' in the file f.txt.`) | **Fail** (destructive): the new text became `'amigo' en el` / `'amigo' in the`; the file clause is walked back only over target cues, so an article between two cues (`in the file`) stays in the new text (G98). | Not fixed in this cycle: `composeEditClauses` (js/agentic/write_request.mjs) and its Rust twin are claimed by other agents; recorded as G98. |
+| T543 | LEXEMES: in a sandbox, `In formal-ai-dogfood.md insert the contents of row.txt after the line that starts with "| T542 "` | **Pass**: one edit placed this row after T542. | No change needed. |
 
 ## Root causes and fixes
 

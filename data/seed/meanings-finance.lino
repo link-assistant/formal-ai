@@ -20,6 +20,13 @@ meanings
     lexeme zh
       surface
         text 投资
+    lexeme es
+      surface
+        text invert
+      surface
+        text inviert
+      surface
+        text inversión
   interest_finance
     grounded-in Q170924
     defined-by money
@@ -36,6 +43,11 @@ meanings
     lexeme zh
       surface
         text 利息
+    lexeme es
+      surface
+        text interés
+      surface
+        text intereses
   compounding
     grounded-in Q959606
     defined-by action
@@ -55,6 +67,11 @@ meanings
     lexeme zh
       surface
         text 复利
+    lexeme es
+      surface
+        text compuesto
+      surface
+        text capitaliza
   compounding_monthly
     defined-by compounding
     role compounding_frequency_cue
@@ -70,6 +87,9 @@ meanings
     lexeme zh
       surface
         text 每月
+    lexeme es
+      surface
+        text mensual
   compounding_quarterly
     defined-by compounding
     role compounding_frequency_cue
@@ -85,6 +105,9 @@ meanings
     lexeme zh
       surface
         text 每季度
+    lexeme es
+      surface
+        text trimestral
   compounding_weekly
     defined-by compounding
     role compounding_frequency_cue
@@ -100,6 +123,9 @@ meanings
     lexeme zh
       surface
         text 每周
+    lexeme es
+      surface
+        text semanal
   compounding_daily
     defined-by compounding
     role compounding_frequency_cue
@@ -115,6 +141,9 @@ meanings
     lexeme zh
       surface
         text 每日
+    lexeme es
+      surface
+        text diari
   compounding_annual
     defined-by compounding
     role compounding_frequency_cue
@@ -132,6 +161,9 @@ meanings
     lexeme zh
       surface
         text 每年
+    lexeme es
+      surface
+        text anual
   live_rate_freshness
     defined-by exchange_rate
     defined-by concept
@@ -174,6 +206,9 @@ meanings
     lexeme zh
       surface
         text 年
+    lexeme es
+      surface
+        text año
   conversion_action
     defined-by action
     defined-by money
@@ -190,6 +225,11 @@ meanings
     lexeme zh
       surface
         text 转换
+    lexeme es
+      surface
+        text convert
+      surface
+        text conviert
   final_amount
     defined-by money
     role final_amount_reference
@@ -205,3 +245,10 @@ meanings
     lexeme zh
       surface
         text 最终金额
+    lexeme es
+      surface
+        text "monto final"
+      surface
+        text "importe final"
+      surface
+        text "cantidad final"

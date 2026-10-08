@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "鸡"
+        },
+        "es": {
+          "language": "es",
+          "value": "pollo"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "家禽"
+        },
+        "es": {
+          "language": "es",
+          "value": "subespecie de aves"
         }
       },
       "aliases": {
@@ -80,6 +88,28 @@
           {
             "language": "zh",
             "value": "家鸡"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "gallina"
+          },
+          {
+            "language": "es",
+            "value": "gallo"
+          },
+          {
+            "language": "es",
+            "value": "gallo domestico"
+          },
+          {
+            "language": "es",
+            "value": "gallo doméstico"
+          },
+          {
+            "language": "es",
+            "value": "Gallus gallus domesticus"
           }
         ]
       }

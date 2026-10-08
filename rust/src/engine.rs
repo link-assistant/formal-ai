@@ -17,23 +17,21 @@ use serde::{Deserialize, Serialize};
 
 use crate::coding::guidance::{program_explanation_section, program_test_instructions};
 use crate::engine_assistant_name::{
-    ASSISTANT_NAME_EXAMPLES, assistant_name_answer, chinese_assistant_name_answer,
-    hindi_assistant_name_answer, russian_assistant_name_answer,
-};
-use crate::engine_responses::{
-    ASSISTANT_FREE_TIME_EXAMPLES, COURTESY_RESPONSE_EXAMPLES, GREETING_EXAMPLES, IDENTITY_EXAMPLES,
-    TEST_STATUS_EXAMPLES, UNKNOWN_EXAMPLES, chinese_courtesy_response_answer,
-    chinese_farewell_answer, chinese_greeting_answer, chinese_identity_answer,
-    chinese_test_status_answer, chinese_wellbeing_answer, courtesy_response_answer,
-    hindi_courtesy_response_answer, hindi_farewell_answer, hindi_greeting_answer,
-    hindi_identity_answer, hindi_test_status_answer, hindi_wellbeing_answer,
-    russian_courtesy_response_answer, russian_farewell_answer, russian_greeting_answer,
-    russian_identity_answer, russian_test_status_answer, russian_wellbeing_answer,
-    test_status_answer,
+    assistant_name_answer, chinese_assistant_name_answer, hindi_assistant_name_answer,
+    russian_assistant_name_answer,
 };
 pub(crate) use crate::engine_responses::{
     assistant_free_time_answer, farewell_answer, greeting_answer, identity_answer, unknown_answer,
     unknown_language_fallback_answer, wellbeing_answer,
+};
+use crate::engine_responses::{
+    chinese_courtesy_response_answer, chinese_farewell_answer, chinese_greeting_answer,
+    chinese_identity_answer, chinese_test_status_answer, chinese_wellbeing_answer,
+    courtesy_response_answer, hindi_courtesy_response_answer, hindi_farewell_answer,
+    hindi_greeting_answer, hindi_identity_answer, hindi_test_status_answer, hindi_wellbeing_answer,
+    russian_courtesy_response_answer, russian_farewell_answer, russian_greeting_answer,
+    russian_identity_answer, russian_test_status_answer, russian_wellbeing_answer,
+    test_status_answer,
 };
 use crate::event_log::EventLog;
 use crate::language::Language;
@@ -126,7 +124,7 @@ pub fn knowledge_links_notation() -> String {
                 ("intent", String::from("greeting")),
                 ("response_link", String::from("response:greeting")),
                 ("answer", String::from(greeting_answer())),
-                ("examples", GREETING_EXAMPLES.join(", ")),
+                ("examples", seed::intent_examples("greeting")),
                 ("source", String::from("local symbolic seed set")),
             ],
         ),
@@ -136,7 +134,7 @@ pub fn knowledge_links_notation() -> String {
                 ("intent", String::from("courtesy_response")),
                 ("response_link", String::from("response:courtesy_response")),
                 ("answer", String::from(courtesy_response_answer())),
-                ("examples", COURTESY_RESPONSE_EXAMPLES.join(", ")),
+                ("examples", seed::intent_examples("courtesy_response")),
                 ("source", String::from("local symbolic seed set")),
             ],
         ),
@@ -149,7 +147,7 @@ pub fn knowledge_links_notation() -> String {
                     String::from("response:assistant_free_time"),
                 ),
                 ("answer", String::from(assistant_free_time_answer())),
-                ("examples", ASSISTANT_FREE_TIME_EXAMPLES.join(", ")),
+                ("examples", seed::intent_examples("assistant_free_time")),
                 ("source", String::from("local symbolic seed set")),
             ],
         ),
@@ -159,7 +157,7 @@ pub fn knowledge_links_notation() -> String {
                 ("intent", String::from("identity")),
                 ("response_link", String::from("response:identity")),
                 ("answer", String::from(identity_answer())),
-                ("examples", IDENTITY_EXAMPLES.join(", ")),
+                ("examples", seed::intent_examples("identity")),
                 ("source", String::from("local symbolic seed set")),
             ],
         ),
@@ -169,7 +167,7 @@ pub fn knowledge_links_notation() -> String {
                 ("intent", String::from("assistant_name")),
                 ("response_link", String::from("response:assistant_name")),
                 ("answer", String::from(assistant_name_answer())),
-                ("examples", ASSISTANT_NAME_EXAMPLES.join(", ")),
+                ("examples", seed::intent_examples("assistant_name")),
                 ("source", String::from("local symbolic seed set")),
             ],
         ),
@@ -179,7 +177,7 @@ pub fn knowledge_links_notation() -> String {
                 ("intent", String::from("test_status")),
                 ("response_link", String::from("response:test_status")),
                 ("answer", String::from(test_status_answer())),
-                ("examples", TEST_STATUS_EXAMPLES.join(", ")),
+                ("examples", seed::intent_examples("test_status")),
                 ("source", String::from("local symbolic seed set")),
             ],
         ),
@@ -192,7 +190,7 @@ pub fn knowledge_links_notation() -> String {
             ("intent", String::from("unknown")),
             ("response_link", String::from("response:unknown")),
             ("answer", String::from(unknown_answer())),
-            ("examples", UNKNOWN_EXAMPLES.join(", ")),
+            ("examples", seed::intent_examples("unknown")),
             ("source", String::from("fallback symbolic rule")),
         ],
     ));
@@ -814,12 +812,7 @@ fn format_write_program_rule_record() -> String {
             ("template_count", program_template_count().to_string()),
             ("response_link", String::from("response:write_program")),
             ("answer", sample),
-            (
-                "examples",
-                String::from(
-                    "Write me hello world program in Rust; Write a Python program that counts to three",
-                ),
-            ),
+            ("examples", seed::intent_examples("write_program")),
             ("source", program_template_sources()),
         ],
     )

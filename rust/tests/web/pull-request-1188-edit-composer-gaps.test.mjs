@@ -184,3 +184,17 @@ describe('a path names a file, not the answer language (G97)', () => {
     assert.equal(answer, 'Inserted `x` after `one` in `formalization_segment.mjs` and observed the result.');
   });
 });
+
+describe('an article between the target cues is no part of the new text (G98)', () => {
+  test('the file clause runs back over the seeded function words to its first cue', () => {
+    assert.deepEqual(composeEditRequest("Change 'mundo' to 'amigo' in the file f.txt."), ['f.txt', 'mundo', 'amigo']);
+    assert.deepEqual(composeEditRequest("Cambia 'mundo' a 'amigo' en el archivo f.txt."), ['f.txt', 'mundo', 'amigo']);
+    assert.deepEqual(composeEditRequest('Replace foo with bar in the file f.txt.'), ['f.txt', 'foo', 'bar']);
+    assert.deepEqual(composeEditRequest("Change 'a' to 'b' in the f.txt file."), ['f.txt', 'a', 'b']);
+  });
+
+  test('the edit writes the new text alone', async () => {
+    const { file } = await drive("Change 'two' to 'deux' in the file f.txt.", THREE, 'f.txt');
+    assert.equal(file, 'one\ndeux\nthree\n');
+  });
+});

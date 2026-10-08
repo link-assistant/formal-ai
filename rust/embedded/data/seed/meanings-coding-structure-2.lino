@@ -11,6 +11,26 @@ meanings
         text mean
       surface
         text average
+    lexeme ru
+      surface
+        text среднее
+      surface
+        text "среднее значение"
+    lexeme hi
+      surface
+        text औसत
+      surface
+        text माध्य
+    lexeme zh
+      surface
+        text 平均值
+      surface
+        text 均值
+    lexeme es
+      surface
+        text media
+      surface
+        text promedio
     bootstrap true
     rediscovery_query "the average of the elements"
   absolute_deviation
@@ -25,6 +45,26 @@ meanings
         text "absolute deviation"
       surface
         text "absolute difference"
+    lexeme ru
+      surface
+        text "абсолютное отклонение"
+      surface
+        text "абсолютная разность"
+    lexeme hi
+      surface
+        text "निरपेक्ष विचलन"
+      surface
+        text "निरपेक्ष अंतर"
+    lexeme zh
+      surface
+        text 绝对偏差
+      surface
+        text 绝对差
+    lexeme es
+      surface
+        text "desviación absoluta"
+      surface
+        text "diferencia absoluta"
     bootstrap true
     rediscovery_query "how far each value sits from its center"
   prefix_negative
@@ -39,6 +79,24 @@ meanings
         text "below zero"
       surface
         text "falls below zero"
+    lexeme ru
+      surface
+        text "ниже нуля"
+      surface
+        text "опускается ниже нуля"
+    lexeme hi
+      surface
+        text "शून्य से नीचे"
+    lexeme zh
+      surface
+        text 低于零
+      surface
+        text 降到零以下
+    lexeme es
+      surface
+        text "por debajo de cero"
+      surface
+        text "baja de cero"
     bootstrap true
     rediscovery_query "whether the value is negative"
   interpose_each
@@ -53,6 +111,18 @@ meanings
         text "between every two consecutive elements"
       surface
         text "between consecutive elements"
+    lexeme ru
+      surface
+        text "между каждыми двумя соседними элементами"
+    lexeme hi
+      surface
+        text "हर दो लगातार तत्वों के बीच"
+    lexeme zh
+      surface
+        text 每两个相邻元素之间
+    lexeme es
+      surface
+        text "entre cada dos elementos consecutivos"
     bootstrap true
     rediscovery_query "place the separator between consecutive elements"
   balanced_delimiter_groups
@@ -64,6 +134,26 @@ meanings
         text "balanced groups"
       surface
         text "separate groups"
+    lexeme ru
+      surface
+        text "сбалансированные группы"
+      surface
+        text "отдельные группы"
+    lexeme hi
+      surface
+        text "संतुलित समूह"
+      surface
+        text "अलग समूह"
+    lexeme zh
+      surface
+        text 平衡的分组
+      surface
+        text 独立的分组
+    lexeme es
+      surface
+        text "grupos balanceados"
+      surface
+        text "grupos separados"
   group_max_nesting
     defined-by sequence
     role coding_structure
@@ -73,6 +163,26 @@ meanings
         text "deepest level of nesting"
       surface
         text "maximum nesting"
+    lexeme ru
+      surface
+        text "максимальная вложенность"
+      surface
+        text "самый глубокий уровень вложенности"
+    lexeme hi
+      surface
+        text "अधिकतम नेस्टिंग"
+      surface
+        text "नेस्टिंग का सबसे गहरा स्तर"
+    lexeme zh
+      surface
+        text 最大嵌套
+      surface
+        text 最深的嵌套层级
+    lexeme es
+      surface
+        text "anidamiento máximo"
+      surface
+        text "nivel de anidamiento más profundo"
   prefix_enumeration
     defined-by sequence
     role coding_structure
@@ -85,6 +195,24 @@ meanings
         text "all prefixes"
       surface
         text "prefixes from shortest to longest"
+    lexeme ru
+      surface
+        text "все префиксы"
+      surface
+        text "префиксы от самого короткого до самого длинного"
+    lexeme hi
+      surface
+        text "सभी उपसर्ग"
+    lexeme zh
+      surface
+        text 所有前缀
+      surface
+        text 从最短到最长的前缀
+    lexeme es
+      surface
+        text "todos los prefijos"
+      surface
+        text "prefijos del más corto al más largo"
     bootstrap true
     rediscovery_query "every prefix of the text, shortest first"
   zero_based_range
@@ -99,6 +227,26 @@ meanings
         text "starting from 0"
       surface
         text "starting at zero"
+    lexeme ru
+      surface
+        text "начиная с 0"
+      surface
+        text "начиная с нуля"
+    lexeme hi
+      surface
+        text "0 से शुरू"
+      surface
+        text "शून्य से शुरू"
+    lexeme zh
+      surface
+        text "从 0 开始"
+      surface
+        text 从零开始
+    lexeme es
+      surface
+        text "empezando desde 0"
+      surface
+        text "empezando en cero"
     bootstrap true
     rediscovery_query "every position from zero through the bound"
   stringify_each
@@ -113,6 +261,24 @@ meanings
         text "string containing"
       surface
         text "as a string"
+    lexeme ru
+      surface
+        text "строка, содержащая"
+      surface
+        text "в виде строки"
+    lexeme hi
+      surface
+        text "स्ट्रिंग के रूप में"
+    lexeme zh
+      surface
+        text 包含的字符串
+      surface
+        text 作为字符串
+    lexeme es
+      surface
+        text "cadena que contiene"
+      surface
+        text "como cadena"
     bootstrap true
     rediscovery_query "turn every element into its text form"
   palindrome_extension
@@ -124,6 +290,26 @@ meanings
         text "shortest palindrome"
       surface
         text "palindromic suffix"
+    lexeme ru
+      surface
+        text "кратчайший палиндром"
+      surface
+        text "палиндромный суффикс"
+    lexeme hi
+      surface
+        text "सबसे छोटा पैलिंड्रोम"
+      surface
+        text "पैलिंड्रोमिक प्रत्यय"
+    lexeme zh
+      surface
+        text 最短回文
+      surface
+        text 回文后缀
+    lexeme es
+      surface
+        text "palíndromo más corto"
+      surface
+        text "sufijo palíndromo"
   aligned_binary_xor
     defined-by mapping
     role coding_structure
@@ -133,6 +319,26 @@ meanings
         text "binary xor"
       surface
         text "perform xor"
+    lexeme ru
+      surface
+        text "двоичный xor"
+      surface
+        text "выполни xor"
+    lexeme hi
+      surface
+        text "बाइनरी xor"
+      surface
+        text "xor करें"
+    lexeme zh
+      surface
+        text 二进制异或
+      surface
+        text 执行异或
+    lexeme es
+      surface
+        text "xor binario"
+      surface
+        text "realiza xor"
   stable_longest
     defined-by reduction
     role coding_structure
@@ -145,6 +351,26 @@ meanings
         text "longest one"
       surface
         text "return the longest"
+    lexeme ru
+      surface
+        text "самый длинный"
+      surface
+        text "верни самый длинный"
+    lexeme hi
+      surface
+        text "सबसे लंबा"
+      surface
+        text "सबसे लंबा लौटाएं"
+    lexeme zh
+      surface
+        text 最长的
+      surface
+        text 返回最长的
+    lexeme es
+      surface
+        text "el más largo"
+      surface
+        text "devuelve el más largo"
     bootstrap true
     rediscovery_query "the longest element, keeping first-wins order"
   explicit_value_mapping
@@ -156,6 +382,26 @@ meanings
         text legend
       surface
         text "corresponding to"
+    lexeme ru
+      surface
+        text легенда
+      surface
+        text соответствующий
+    lexeme hi
+      surface
+        text लीजेंड
+      surface
+        text "के अनुरूप"
+    lexeme zh
+      surface
+        text 图例
+      surface
+        text 对应于
+    lexeme es
+      surface
+        text leyenda
+      surface
+        text "correspondiente a"
   explicit_ordering
     defined-by ordering
     role coding_structure
@@ -165,6 +411,26 @@ meanings
         text "valid choices are"
       surface
         text "given order"
+    lexeme ru
+      surface
+        text "допустимые варианты"
+      surface
+        text "заданный порядок"
+    lexeme hi
+      surface
+        text "मान्य विकल्प हैं"
+      surface
+        text "दिया गया क्रम"
+    lexeme zh
+      surface
+        text 有效选项为
+      surface
+        text 给定顺序
+    lexeme es
+      surface
+        text "las opciones válidas son"
+      surface
+        text "orden dado"
   bounded_top
     defined-by ordering
     role coding_structure
@@ -179,6 +445,26 @@ meanings
         text "largest integers"
       surface
         text "n largest"
+    lexeme ru
+      surface
+        text "наибольшие элементы"
+      surface
+        text "n наибольших"
+    lexeme hi
+      surface
+        text "सबसे बड़े तत्व"
+      surface
+        text "n सबसे बड़े"
+    lexeme zh
+      surface
+        text 最大的元素
+      surface
+        text "前 n 大"
+    lexeme es
+      surface
+        text "elementos más grandes"
+      surface
+        text "n mayores"
     bootstrap true
     rediscovery_query "the few largest elements in order"
   bounded_bottom
@@ -193,6 +479,26 @@ meanings
         text "smallest items"
       surface
         text "n smallest"
+    lexeme ru
+      surface
+        text "наименьшие элементы"
+      surface
+        text "n наименьших"
+    lexeme hi
+      surface
+        text "सबसे छोटे तत्व"
+      surface
+        text "n सबसे छोटे"
+    lexeme zh
+      surface
+        text 最小的元素
+      surface
+        text "前 n 小"
+    lexeme es
+      surface
+        text "elementos más pequeños"
+      surface
+        text "n menores"
     bootstrap true
     rediscovery_query "the few smallest elements in order"
   power_square_each
@@ -207,6 +513,24 @@ meanings
         text "squares of individual elements"
       surface
         text "square each"
+    lexeme ru
+      surface
+        text "квадраты отдельных элементов"
+      surface
+        text "возведи каждый в квадрат"
+    lexeme hi
+      surface
+        text "प्रत्येक तत्व का वर्ग"
+    lexeme zh
+      surface
+        text 各个元素的平方
+      surface
+        text 每个数平方
+    lexeme es
+      surface
+        text "cuadrados de los elementos"
+      surface
+        text "eleva cada uno al cuadrado"
     bootstrap true
     rediscovery_query "square every element"
   keyed_sum_order
@@ -221,6 +545,26 @@ meanings
         text "according to the sum"
       surface
         text "by row sum"
+    lexeme ru
+      surface
+        text "по сумме"
+      surface
+        text "по сумме строки"
+    lexeme hi
+      surface
+        text "योग के अनुसार"
+      surface
+        text "पंक्ति योग के अनुसार"
+    lexeme zh
+      surface
+        text 按总和
+      surface
+        text 按行和
+    lexeme es
+      surface
+        text "según la suma"
+      surface
+        text "por la suma de la fila"
     bootstrap true
     rediscovery_query "arrange the items by their total"
   frequency_rank
@@ -235,6 +579,26 @@ meanings
         text "most common"
       surface
         text "frequency rank"
+    lexeme ru
+      surface
+        text "самый частый"
+      surface
+        text "ранг частоты"
+    lexeme hi
+      surface
+        text "सबसे आम"
+      surface
+        text "आवृत्ति क्रम"
+    lexeme zh
+      surface
+        text 最常见
+      surface
+        text 频率排名
+    lexeme es
+      surface
+        text "más común"
+      surface
+        text "rango de frecuencia"
     bootstrap true
     rediscovery_query "the most frequent values, most common first"
   regex_minimum_word_length
@@ -246,6 +610,26 @@ meanings
         text "characters long"
       surface
         text "minimum word length"
+    lexeme ru
+      surface
+        text "символов в длину"
+      surface
+        text "минимальная длина слова"
+    lexeme hi
+      surface
+        text "अक्षर लंबा"
+      surface
+        text "न्यूनतम शब्द लंबाई"
+    lexeme zh
+      surface
+        text 个字符长
+      surface
+        text 最小单词长度
+    lexeme es
+      surface
+        text "caracteres de largo"
+      surface
+        text "longitud mínima de palabra"
   regex_lowercase_chunks
     defined-by character_class
     role coding_structure
@@ -255,6 +639,18 @@ meanings
         text "split a string at lowercase letters"
       surface
         text "split at lowercase"
+    lexeme ru
+      surface
+        text "раздели строку по строчным буквам"
+    lexeme hi
+      surface
+        text "छोटे अक्षरों पर स्ट्रिंग विभाजित करें"
+    lexeme zh
+      surface
+        text 在小写字母处分割字符串
+    lexeme es
+      surface
+        text "divide una cadena en las minúsculas"
   regex_lowercase_underscore
     defined-by character_class
     role coding_structure
@@ -264,6 +660,18 @@ meanings
         text "lowercase letters joined with an underscore"
       surface
         text "lowercase joined by underscore"
+    lexeme ru
+      surface
+        text "строчные буквы, соединённые подчёркиванием"
+    lexeme hi
+      surface
+        text "अंडरस्कोर से जुड़े छोटे अक्षर"
+    lexeme zh
+      surface
+        text 用下划线连接的小写字母
+    lexeme es
+      surface
+        text "minúsculas unidas con un guion bajo"
   exclude_membership
     defined-by filter
     role coding_structure
@@ -276,6 +684,26 @@ meanings
         text "remove characters"
       surface
         text "exclude characters"
+    lexeme ru
+      surface
+        text "удали символы"
+      surface
+        text "исключи символы"
+    lexeme hi
+      surface
+        text "अक्षर हटाएं"
+      surface
+        text "अक्षर बाहर करें"
+    lexeme zh
+      surface
+        text 删除字符
+      surface
+        text 排除字符
+    lexeme es
+      surface
+        text "elimina caracteres"
+      surface
+        text "excluye caracteres"
     bootstrap true
     rediscovery_query "keep only the values the excluded set does not contain"
   remove_first_occurrence
@@ -317,6 +745,18 @@ meanings
         text "remove first and last occurrence"
       surface
         text "remove the first and last occurrence"
+    lexeme ru
+      surface
+        text "удали первое и последнее вхождение"
+    lexeme hi
+      surface
+        text "पहली और आखिरी घटना हटाएं"
+    lexeme zh
+      surface
+        text 删除第一次和最后一次出现
+    lexeme es
+      surface
+        text "elimina la primera y la última aparición"
   positive_offsets
     defined-by range
     role coding_fragment
@@ -387,6 +827,24 @@ meanings
         text "minimum number of rotations"
       surface
         text "smallest rotation period"
+    lexeme ru
+      surface
+        text "минимальное число поворотов"
+      surface
+        text "наименьший период вращения"
+    lexeme hi
+      surface
+        text "न्यूनतम घुमावों की संख्या"
+    lexeme zh
+      surface
+        text 最少旋转次数
+      surface
+        text 最小旋转周期
+    lexeme es
+      surface
+        text "número mínimo de rotaciones"
+      surface
+        text "periodo de rotación mínimo"
   duplicate_exists
     defined-by predicate
     role coding_structure
@@ -399,6 +857,26 @@ meanings
         text "any duplicate"
       surface
         text "contains duplicates"
+    lexeme ru
+      surface
+        text "есть дубликаты"
+      surface
+        text "содержит дубликаты"
+    lexeme hi
+      surface
+        text "कोई डुप्लिकेट"
+      surface
+        text "डुप्लिकेट हैं"
+    lexeme zh
+      surface
+        text 有重复
+      surface
+        text 包含重复
+    lexeme es
+      surface
+        text "algún duplicado"
+      surface
+        text "contiene duplicados"
     bootstrap true
     rediscovery_query "whether any value occurs more than once"
   composite_number
@@ -410,6 +888,26 @@ meanings
         text "non-prime numbers"
       surface
         text "composite number"
+    lexeme ru
+      surface
+        text "непростые числа"
+      surface
+        text "составное число"
+    lexeme hi
+      surface
+        text "अभाज्य नहीं संख्याएँ"
+      surface
+        text "भाज्य संख्या"
+    lexeme zh
+      surface
+        text 非素数
+      surface
+        text 合数
+    lexeme es
+      surface
+        text "números no primos"
+      surface
+        text "número compuesto"
   bitwise_xor
     defined-by reduction
     role coding_fragment
@@ -449,6 +947,26 @@ meanings
         text "differ at one bit position"
       surface
         text "one bit difference"
+    lexeme ru
+      surface
+        text "отличаются в одном бите"
+      surface
+        text "разница в один бит"
+    lexeme hi
+      surface
+        text "एक बिट स्थिति पर अलग"
+      surface
+        text "एक बिट का अंतर"
+    lexeme zh
+      surface
+        text 只在一个位上不同
+      surface
+        text 一位差异
+    lexeme es
+      surface
+        text "difieren en una posición de bit"
+      surface
+        text "diferencia de un bit"
   grid_minimum_cost_path
     defined-by optimization
     role coding_structure
@@ -460,6 +978,24 @@ meanings
         text "lowest cost path"
       surface
         text "minimum weight path"
+    lexeme ru
+      surface
+        text "путь минимальной стоимости"
+      surface
+        text "путь наименьшей стоимости"
+    lexeme hi
+      surface
+        text "न्यूनतम लागत पथ"
+    lexeme zh
+      surface
+        text 最小成本路径
+      surface
+        text 最低代价路径
+    lexeme es
+      surface
+        text "camino de costo mínimo"
+      surface
+        text "camino de menor costo"
   recurrence_operator
     defined-by concept
     grounding "https://docs.python.org/3.12/reference/expressions.html"
@@ -471,6 +1007,22 @@ meanings
       surface
         text if
         action conditional
+    lexeme ru
+      surface
+        text если
+        action conditional
+    lexeme hi
+      surface
+        text यदि
+        action conditional
+    lexeme zh
+      surface
+        text 如果
+        action conditional
+    lexeme es
+      surface
+        text si
+        action conditional
   recurrence_less_equal
     defined-by recurrence_operator
     role coding_recurrence_operator
@@ -478,6 +1030,22 @@ meanings
     lexeme en
       surface
         text "less than or equal"
+        action less_equal
+    lexeme ru
+      surface
+        text "меньше или равно"
+        action less_equal
+    lexeme hi
+      surface
+        text "से कम या बराबर"
+        action less_equal
+    lexeme zh
+      surface
+        text 小于或等于
+        action less_equal
+    lexeme es
+      surface
+        text "menor o igual"
         action less_equal
   recurrence_equal
     defined-by recurrence_operator
@@ -487,6 +1055,22 @@ meanings
       surface
         text equality
         action equal
+    lexeme ru
+      surface
+        text равенство
+        action equal
+    lexeme hi
+      surface
+        text समानता
+        action equal
+    lexeme zh
+      surface
+        text 相等
+        action equal
+    lexeme es
+      surface
+        text igualdad
+        action equal
   recurrence_add
     defined-by recurrence_operator
     role coding_recurrence_operator
@@ -494,6 +1078,34 @@ meanings
     lexeme en
       surface
         text add
+        action add
+    lexeme ru
+      surface
+        text сложить
+        action add
+      surface
+        text сложение
+        action add
+    lexeme hi
+      surface
+        text जोड़ें
+        action add
+      surface
+        text जोड़
+        action add
+    lexeme zh
+      surface
+        text 加法
+        action add
+      surface
+        text 相加
+        action add
+    lexeme es
+      surface
+        text sumar
+        action add
+      surface
+        text suma
         action add
   recurrence_multiply
     defined-by recurrence_operator
@@ -503,6 +1115,31 @@ meanings
       surface
         text multiply
         action multiply
+    lexeme ru
+      surface
+        text умножить
+        action multiply
+      surface
+        text умножение
+        action multiply
+    lexeme hi
+      surface
+        text गुणा
+        action multiply
+    lexeme zh
+      surface
+        text 乘法
+        action multiply
+      surface
+        text 相乘
+        action multiply
+    lexeme es
+      surface
+        text multiplicar
+        action multiply
+      surface
+        text multiplicación
+        action multiply
   recurrence_subtract
     defined-by recurrence_operator
     role coding_recurrence_operator
@@ -511,6 +1148,31 @@ meanings
       surface
         text subtract
         action subtract
+    lexeme ru
+      surface
+        text вычесть
+        action subtract
+      surface
+        text вычитание
+        action subtract
+    lexeme hi
+      surface
+        text घटाव
+        action subtract
+    lexeme zh
+      surface
+        text 减法
+        action subtract
+      surface
+        text 相减
+        action subtract
+    lexeme es
+      surface
+        text restar
+        action subtract
+      surface
+        text resta
+        action subtract
   recurrence_subtract_one
     defined-by recurrence_operator
     role coding_recurrence_operator
@@ -518,6 +1180,34 @@ meanings
     lexeme en
       surface
         text decrement
+        action subtract_one
+    lexeme ru
+      surface
+        text декремент
+        action subtract_one
+      surface
+        text "уменьшить на единицу"
+        action subtract_one
+    lexeme hi
+      surface
+        text डिक्रीमेंट
+        action subtract_one
+      surface
+        text "एक घटाएं"
+        action subtract_one
+    lexeme zh
+      surface
+        text 递减
+        action subtract_one
+      surface
+        text 减一
+        action subtract_one
+    lexeme es
+      surface
+        text decrementar
+        action subtract_one
+      surface
+        text "disminuir en uno"
         action subtract_one
   extend_run
     defined-by reduction

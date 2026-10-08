@@ -94,17 +94,19 @@ function ceilingOf(text) {
 
 function main(argv) {
   const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-  const listed = (roots) =>
+  const listed = (roots, extensions = /\.(?:rs|mjs|js)$/u) =>
     execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', ...roots], {
       cwd: root,
       encoding: 'utf8',
       maxBuffer: 1 << 28,
     })
       .split('\n')
-      .filter((path) => /\.(?:rs|mjs|js)$/u.test(path));
+      .filter((path) => extensions.test(path));
   const read = (path) => readFileSync(join(root, path), 'utf8');
   const prompts = listed(TEST_ROOTS).flatMap((path) => promptsOf(read(path)));
-  const sources = listed(SOURCE_ROOTS)
+  // Source code includes the browser app's JSX: its local fallbacks and
+  // suggestion lists answer prompts too.
+  const sources = listed(SOURCE_ROOTS, /\.(?:rs|mjs|js|jsx)$/u)
     .filter((path) => !NOT_CODE.test(path))
     .map((path) => ({ path, code: codeLines(read(path)) }));
   const found = specializations(prompts, sources);

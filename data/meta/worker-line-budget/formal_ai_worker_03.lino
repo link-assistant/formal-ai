@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_03.js"
-  ceiling 1202
-  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into js/wasm-worker. Lowered to 1202 for issue #918 (2026-10-08): the conversation-topic edge cleaner left for the role_slot value source of the shared rule interpreter."
+  ceiling 744
+  rationale "Part of the mechanically split browser mirror of the Rust solver: issue #658 divided one oversized worker file by line count, so this shard has no subject of its own. Its ceiling falls as its logic moves into js/wasm-worker. Lowered to 1202 for issue #918 (2026-10-08): the conversation-topic edge cleaner left for the role_slot value source of the shared rule interpreter. Lowered from 1202 to 744 on 2026-10-08 for R1188-U1: the behavior-rule catalog prose (topic and rule labels, matched prompts, When X then Y statements, list footer, change hint, count and brief sentences, taught-rule answers) left for data/seed/multilingual-responses-behavior-rules.lino, read by intent as the native handler reads it."

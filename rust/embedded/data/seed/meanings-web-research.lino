@@ -29,6 +29,17 @@ meanings
     lexeme zh
       surface
         text 告诉我…
+    lexeme es
+      surface
+        text "háblame de …"
+      surface
+        text "háblame sobre …"
+      surface
+        text "cuéntame sobre …"
+      surface
+        text "cuéntame de …"
+      surface
+        text "puedes hablarme de …"
   research_question_opener
     defined-by inquiry
     role research_question_opener
@@ -210,6 +221,55 @@ meanings
         text 告诉我…
       surface
         text 你知道…
+    lexeme es
+      surface
+        text "define …"
+      surface
+        text "da una definición de …"
+      surface
+        text "qué es el …"
+      surface
+        text "qué es la …"
+      surface
+        text "qué es un …"
+      surface
+        text "qué es una …"
+      surface
+        text "qué es …"
+      surface
+        text "qué son los …"
+      surface
+        text "qué son las …"
+      surface
+        text "qué son …"
+      surface
+        text "cuál es el …"
+      surface
+        text "cuál es la …"
+      surface
+        text "cuáles son …"
+      surface
+        text "hay …"
+      surface
+        text "quién es …"
+      surface
+        text "quiénes son …"
+      surface
+        text "dónde está …"
+      surface
+        text "dónde …"
+      surface
+        text "cuándo es …"
+      surface
+        text "cuándo …"
+      surface
+        text "por qué …"
+      surface
+        text "puedes decirme …"
+      surface
+        text "sabes …"
+      surface
+        text "qué significa …"
   document_originality_check_action
     grounded-in Q953429
     defined-by inquiry
@@ -596,6 +656,27 @@ meanings
         text 说法
       surface
         text 說法
+    lexeme es
+      surface
+        text texto
+      surface
+        text documento
+      surface
+        text archivo
+      surface
+        text adjunto
+      surface
+        text manuscrito
+      surface
+        text artículo
+      surface
+        text ensayo
+      surface
+        text pasaje
+      surface
+        text afirmación
+      surface
+        text "este texto"
   research_superlative_modifier
     defined-by property
     role research_superlative_modifier
@@ -705,6 +786,29 @@ meanings
         text 最新
       surface
         text 最近
+    lexeme es
+      surface
+        text " mejor "
+      surface
+        text " mejores "
+      surface
+        text " principal "
+      surface
+        text " estándar "
+      surface
+        text " popular "
+      surface
+        text " recomendado "
+      surface
+        text " recomendada "
+      surface
+        text " actual "
+      surface
+        text " más reciente "
+      surface
+        text " último "
+      surface
+        text " última "
   research_evidence_domain
     defined-by entity
     role research_evidence_domain
@@ -784,6 +888,27 @@ meanings
         text 论文
       surface
         text 研究
+    lexeme es
+      surface
+        text " conjunto de datos "
+      surface
+        text " benchmark "
+      surface
+        text " corpus "
+      surface
+        text " métrica "
+      surface
+        text " métricas "
+      surface
+        text " framework "
+      surface
+        text " artículo "
+      surface
+        text " artículos "
+      surface
+        text " estudio "
+      surface
+        text " estudios "
   commercial_subscription_evidence
     defined-by entity
     role research_evidence_domain
@@ -877,6 +1002,25 @@ meanings
         text 每月
       surface
         text 每年
+    lexeme es
+      surface
+        text " suscripción "
+      surface
+        text " suscripciones "
+      surface
+        text " plan "
+      surface
+        text " planes "
+      surface
+        text " tarifa "
+      surface
+        text " precios "
+      surface
+        text " facturación "
+      surface
+        text " mensual "
+      surface
+        text " anual "
   research_evaluation_domain
     defined-by concept
     role research_evaluation_domain
@@ -938,6 +1082,23 @@ meanings
         text 翻译
       surface
         text 比较
+    lexeme es
+      surface
+        text " evaluación "
+      surface
+        text " evaluar "
+      surface
+        text " validación "
+      surface
+        text " validar "
+      surface
+        text " calidad "
+      surface
+        text " traducción "
+      surface
+        text " comparar "
+      surface
+        text " comparación "
   commercial_pricing_evaluation
     defined-by concept
     role research_evaluation_domain
@@ -1015,6 +1176,27 @@ meanings
         text 費用
       surface
         text 便宜
+    lexeme es
+      surface
+        text " descuento "
+      surface
+        text " descuentos "
+      surface
+        text " precio "
+      surface
+        text " precios "
+      surface
+        text " costo "
+      surface
+        text " coste "
+      surface
+        text " más barato "
+      surface
+        text " ahorro "
+      surface
+        text " oferta "
+      surface
+        text " ofertas "
   enumeration_request_opener
     defined-by inquiry
     defined-by action
@@ -1061,6 +1243,23 @@ meanings
         text "显示所有 …"
       surface
         text "枚举所有 …"
+    lexeme es
+      surface
+        text "enumera todos los …"
+      surface
+        text "enumera todas las …"
+      surface
+        text "lista todos los …"
+      surface
+        text "lista todas las …"
+      surface
+        text "muestra todos los …"
+      surface
+        text "muéstrame todos los …"
+      surface
+        text "dame todos los …"
+      surface
+        text "nombra todos los …"
   enumeration_constraint
     defined-by relation
     role enumeration_constraint
@@ -1140,3 +1339,22 @@ meanings
         text " 在 "
       surface
         text " 用于 "
+    lexeme es
+      surface
+        text " con "
+      surface
+        text " que "
+      surface
+        text " cuyo "
+      surface
+        text " cuya "
+      surface
+        text " donde "
+      surface
+        text " que tienen "
+      surface
+        text " capaces de "
+      surface
+        text " para "
+      surface
+        text " en "

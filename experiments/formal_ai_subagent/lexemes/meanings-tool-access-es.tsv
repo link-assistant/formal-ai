@@ -1,0 +1,10 @@
+tool_invocation_cue	llama	invoca	ejecuta	herramienta
+calculator_tool	calculadora
+web_search_tool	búsqueda web	búsqueda en internet
+local_shell_tool	shell local	terminal local	llama a la herramienta de shell
+tool_argument_marker	con la consulta	consulta	para
+tool_result_failure	error	falló	no encontrado	demasiadas solicitudes	no disponible temporalmente	no se pudo
+tool_result_detail_request	resultado completo	más detalles	resultado original
+tool_result_line_request	línea
+tool_result_first_reference	primero	primera	primer
+tool_result_second_reference	segundo	segunda

@@ -39,6 +39,11 @@ meanings
         text 回答
       surface
         text 解决方案
+    lexeme es
+      surface
+        text respuesta
+      surface
+        text solución
   answer_rationale_inquiry
     defined-by causal_interrogative
     defined-by prior_answer_reference
@@ -64,6 +69,13 @@ meanings
     lexeme zh
       surface
         text 为什么这样回答
+    lexeme es
+      surface
+        text "por qué …"
+      surface
+        text "por qué respondiste"
+      surface
+        text "por qué contestaste así"
   assistant_self_reference
     defined-by assistant
     defined-by self_reference
@@ -98,6 +110,13 @@ meanings
         text 你
       surface
         text 您
+    lexeme es
+      surface
+        text tú
+      surface
+        text usted
+      surface
+        text "formal ai"
   assistant_mechanism_inquiry
     defined-by mechanism_inquiry
     defined-by assistant
@@ -146,6 +165,13 @@ meanings
         text 你是怎么工作的
       surface
         text 你怎么运作
+    lexeme es
+      surface
+        text "cómo funcionas"
+      surface
+        text "muéstrame cómo funcionas"
+      surface
+        text "explica cómo funcionas"
   operating_principle
     defined-by concept
     defined-by action
@@ -162,6 +188,9 @@ meanings
     lexeme zh
       surface
         text 工作原理
+    lexeme es
+      surface
+        text "principio de funcionamiento"
   architecture_concept
     defined-by concept
     defined-by assistant
@@ -232,3 +261,16 @@ meanings
         text 語言模型
       surface
         text 语言模型
+    lexeme es
+      surface
+        text "modelo de lenguaje grande"
+      surface
+        text "modelo de lenguaje"
+      surface
+        text "red neuronal"
+      surface
+        text "inferencia neuronal"
+      surface
+        text "reglas locales"
+      surface
+        text "modelo del mundo"

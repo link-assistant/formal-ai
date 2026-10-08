@@ -20,6 +20,8 @@ use super::parser::parse_lino;
 ///   word inventories under the same whole-prompt equality (issue #1138
 ///   plan 10 leaf 20 — the retirement destination of the conversational
 ///   families' keyword and phrase rows)
+/// - `examples`: sample prompts the route answers, which help texts and the
+///   knowledge export show (R1188-U1); they take no part in matching
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct IntentRoute {
     pub id: String,
@@ -30,6 +32,7 @@ pub struct IntentRoute {
     pub tokens: Vec<String>,
     pub combos: Vec<Vec<String>>,
     pub role_surfaces: Vec<String>,
+    pub examples: Vec<String>,
 }
 
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
@@ -90,6 +93,7 @@ fn load_intent_routing() -> IntentRouting {
                     })
                     .collect(),
                 role_surfaces: network.field_values(&child.index, "role_surface"),
+                examples: network.field_values(&child.index, "example"),
             }),
             "article" => routing.article_prefixes.push(
                 network
@@ -107,6 +111,18 @@ fn load_intent_routing() -> IntentRouting {
         }
     }
     routing
+}
+
+/// The sample prompts of the route whose slug is `slug`, joined with `; `
+/// (a sample may hold a comma), or an empty string.
+#[must_use]
+pub fn intent_examples(slug: &str) -> String {
+    intent_routing()
+        .intents
+        .iter()
+        .find(|route| route.slug == slug)
+        .map(|route| route.examples.join("; "))
+        .unwrap_or_default()
 }
 
 /// Repository path of the intent routing seed, its name in the seed links network.
@@ -127,12 +143,14 @@ pub fn intent_routing_from(text: &str) -> IntentRouting {
                     let mut tokens = Vec::new();
                     let mut combos = Vec::new();
                     let mut role_surfaces = Vec::new();
+                    let mut examples = Vec::new();
                     for entry in &child.children {
                         match entry.name.as_str() {
                             "keyword" => keywords.push(entry.id.clone()),
                             "phrase" => phrases.push(entry.id.clone()),
                             "token" => tokens.push(entry.id.clone()),
                             "role_surface" => role_surfaces.push(entry.id.clone()),
+                            "example" => examples.push(entry.id.clone()),
                             "combo" => combos.push(
                                 entry
                                     .id
@@ -154,6 +172,7 @@ pub fn intent_routing_from(text: &str) -> IntentRouting {
                         tokens,
                         combos,
                         role_surfaces,
+                        examples,
                     });
                 }
                 "article" => routing.article_prefixes.push(child.id.clone()),

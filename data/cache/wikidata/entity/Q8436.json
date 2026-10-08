@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "家庭"
+        },
+        "es": {
+          "language": "es",
+          "value": "familia"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "一群有血緣、婚姻、親密、法定關係或共同居住的人"
+        },
+        "es": {
+          "language": "es",
+          "value": "grupo de personas afiliadas por consanguinidad, afinidad o corresidencia"
         }
       },
       "aliases": {

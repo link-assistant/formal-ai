@@ -1,11 +1,13 @@
 Q7873
   descriptions
     en "organic fluid which transports nutrients throughout the organism"
+    es "tejido fluido que circula por capilares, venas y arterias de todos los vertebrados"
     ru "жидкая и подвижная соединительная ткань"
     zh "生物體內的一種結締組織"
   id Q7873
   labels
     en blood
+    es sangre
     hi "रक्त"
     ru "кровь"
     zh "血液"

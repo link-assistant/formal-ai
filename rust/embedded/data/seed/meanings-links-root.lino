@@ -67,6 +67,9 @@ meanings
     lexeme zh
       surface
         text 链接动作
+    lexeme es
+      surface
+        text "acción de enlace"
   any-of-reference: reference repeatable-from-zero # concept any-of-reference
     role links_root
     lexeme en
@@ -81,6 +84,9 @@ meanings
     lexeme zh
       surface
         text 任意引用
+    lexeme es
+      surface
+        text "cualquier referencia"
   any-of-link: link repeatable-from-zero # concept any-of-link
     role links_root
     lexeme en
@@ -95,6 +101,9 @@ meanings
     lexeme zh
       surface
         text 任意链接
+    lexeme es
+      surface
+        text "cualquier enlace"
   repeatable-from-zero: same link-action zero-or-more # concept repeatable-from-zero
     role links_root
     lexeme en
@@ -109,6 +118,9 @@ meanings
     lexeme zh
       surface
         text 从零可重复
+    lexeme es
+      surface
+        text "repetible desde cero"
   zero-or-more: zero or-else more # concept zero-or-more
     role links_root
     lexeme en
@@ -123,6 +135,9 @@ meanings
     lexeme zh
       surface
         text 零个或多个
+    lexeme es
+      surface
+        text "cero o más"
   makes: link-action action # concept makes
     role links_root
     lexeme en
@@ -137,6 +152,9 @@ meanings
     lexeme zh
       surface
         text 生成
+    lexeme es
+      surface
+        text crea
   point-at: reference-action to link # concept point-at
     role links_root
     lexeme en
@@ -151,6 +169,9 @@ meanings
     lexeme zh
       surface
         text 指向
+    lexeme es
+      surface
+        text "apuntar a"
   of: belonging from part to whole # concept of
     role links_root
     lexeme en
@@ -165,6 +186,9 @@ meanings
     lexeme zh
       surface
         text 的
+    lexeme es
+      surface
+        text de
   from: source end direction # concept from
     role links_root
     lexeme en
@@ -193,6 +217,9 @@ meanings
     lexeme zh
       surface
         text 到
+    lexeme es
+      surface
+        text hacia
   and: together-with # concept and
     role links_root
     lexeme en
@@ -207,6 +234,9 @@ meanings
     lexeme zh
       surface
         text 和
+    lexeme es
+      surface
+        text y
   not: not (not not) # concept not
     self-equation not
     role links_root
@@ -222,6 +252,9 @@ meanings
     lexeme zh
       surface
         text 非
+    lexeme es
+      surface
+        text no
   same: not (not same) link # concept same
     self-equation same
     role links_root
@@ -237,6 +270,9 @@ meanings
     lexeme zh
       surface
         text 相同
+    lexeme es
+      surface
+        text mismo
   other: not same # concept other
     role links_root
     lexeme en
@@ -251,6 +287,9 @@ meanings
     lexeme zh
       surface
         text 其他
+    lexeme es
+      surface
+        text otro
   single: not other # concept single
     role links_root
     lexeme en
@@ -265,6 +304,9 @@ meanings
     lexeme zh
       surface
         text 单一
+    lexeme es
+      surface
+        text único
   or-else: choice between other # concept or-else
     role links_root
     lexeme en
@@ -279,6 +321,9 @@ meanings
     lexeme zh
       surface
         text 或者
+    lexeme es
+      surface
+        text "o bien"
   more: one and one # concept more
     role links_root
     lexeme en
@@ -293,6 +338,9 @@ meanings
     lexeme zh
       surface
         text 更多
+    lexeme es
+      surface
+        text más
   is-identity: same # concept is-identity
     role links_root
     lexeme en
@@ -307,6 +355,9 @@ meanings
     lexeme zh
       surface
         text 是同一
+    lexeme es
+      surface
+        text "es identidad"
   is-a-kind-of: subtype supertype direction # concept is-a-kind-of
     role links_root
     lexeme en
@@ -321,6 +372,9 @@ meanings
     lexeme zh
       surface
         text 是一种
+    lexeme es
+      surface
+        text "es un tipo de"
   subtype: is-a-kind-of type # concept subtype
     role links_root
     lexeme en
@@ -335,6 +389,9 @@ meanings
     lexeme zh
       surface
         text 子类型
+    lexeme es
+      surface
+        text subtipo
   supertype: type type # concept supertype
     role links_root
     lexeme en
@@ -349,6 +406,9 @@ meanings
     lexeme zh
       surface
         text 超类型
+    lexeme es
+      surface
+        text supertipo
   held-by: from property to entity # concept held-by
     role links_root
     lexeme en
@@ -363,6 +423,9 @@ meanings
     lexeme zh
       surface
         text 持有于
+    lexeme es
+      surface
+        text "poseído por"
   amount: count any-of-link # concept amount
     role links_root
     lexeme en
@@ -377,6 +440,11 @@ meanings
     lexeme zh
       surface
         text 数额
+    lexeme es
+      surface
+        text monto
+      surface
+        text importe
   size: extent single link # concept size
     role links_root
     lexeme en
@@ -391,6 +459,9 @@ meanings
     lexeme zh
       surface
         text 大小
+    lexeme es
+      surface
+        text tamaño
   count: amount distinct reference # concept count
     role links_root
     lexeme en
@@ -405,6 +476,9 @@ meanings
     lexeme zh
       surface
         text 计数
+    lexeme es
+      surface
+        text recuento
   extent: size single reference # concept extent
     role links_root
     lexeme en
@@ -419,6 +493,9 @@ meanings
     lexeme zh
       surface
         text 范围
+    lexeme es
+      surface
+        text extensión
   distinct: other # concept distinct
     role links_root
     lexeme en
@@ -433,6 +510,9 @@ meanings
     lexeme zh
       surface
         text 不同
+    lexeme es
+      surface
+        text distinto
   any: quantity not fixed # concept any
     role links_root
     lexeme en
@@ -447,6 +527,9 @@ meanings
     lexeme zh
       surface
         text 任意
+    lexeme es
+      surface
+        text cualquier
   fixed: same repeatable-from-zero # concept fixed
     role links_root
     lexeme en
@@ -461,6 +544,9 @@ meanings
     lexeme zh
       surface
         text 固定
+    lexeme es
+      surface
+        text fijo
   empty: any-of-reference zero # concept empty
     role links_root
     lexeme en
@@ -475,6 +561,9 @@ meanings
     lexeme zh
       surface
         text 空
+    lexeme es
+      surface
+        text vacío
   source: relation direction # concept source
     role links_root
     lexeme en
@@ -489,6 +578,9 @@ meanings
     lexeme zh
       surface
         text 来源
+    lexeme es
+      surface
+        text origen
   target: relation direction # concept target
     role links_root
     lexeme en
@@ -503,6 +595,9 @@ meanings
     lexeme zh
       surface
         text 目标
+    lexeme es
+      surface
+        text destino
   end: relation direction # concept end
     role links_root
     lexeme en
@@ -517,6 +612,9 @@ meanings
     lexeme zh
       surface
         text 端点
+    lexeme es
+      surface
+        text extremo
   direction: relation source target # concept direction
     role links_root
     lexeme en
@@ -531,6 +629,9 @@ meanings
     lexeme zh
       surface
         text 方向
+    lexeme es
+      surface
+        text dirección
   belonging: relation part whole # concept belonging
     role links_root
     lexeme en
@@ -545,6 +646,9 @@ meanings
     lexeme zh
       surface
         text 归属
+    lexeme es
+      surface
+        text pertenencia
   part: link whole # concept part
     role links_root
     lexeme en
@@ -559,6 +663,9 @@ meanings
     lexeme zh
       surface
         text 部分
+    lexeme es
+      surface
+        text parte
   whole: link part # concept whole
     role links_root
     lexeme en
@@ -573,6 +680,9 @@ meanings
     lexeme zh
       surface
         text 整体
+    lexeme es
+      surface
+        text todo
   together-with: relation and # concept together-with
     role links_root
     lexeme en
@@ -587,6 +697,9 @@ meanings
     lexeme zh
       surface
         text 一起
+    lexeme es
+      surface
+        text "junto con"
   choice: relation # concept choice
     role links_root
     lexeme en
@@ -601,6 +714,9 @@ meanings
     lexeme zh
       surface
         text 选择
+    lexeme es
+      surface
+        text elección
   between: relation # concept between
     source-lexeme L3412 # wikidata english adposition between
       language Q1860 # wikidata language english
@@ -625,11 +741,35 @@ meanings
     lexeme en
       surface
         text "semantic facet"
+    lexeme ru
+      surface
+        text "семантический аспект"
+    lexeme hi
+      surface
+        text "अर्थगत पहलू"
+    lexeme zh
+      surface
+        text 语义侧面
+    lexeme es
+      surface
+        text "faceta semántica"
   lexical-sense: denotation concept # concept lexical-sense
     role links_root
     lexeme en
       surface
         text "lexical sense"
+    lexeme ru
+      surface
+        text "лексическое значение"
+    lexeme hi
+      surface
+        text "शाब्दिक अर्थ"
+    lexeme zh
+      surface
+        text 词汇义项
+    lexeme es
+      surface
+        text "sentido léxico"
   self-equation: semantic-facet same # concept self-equation
     role semantic_facet_kind
     role links_root
@@ -645,6 +785,9 @@ meanings
     lexeme zh
       surface
         text 自方程
+    lexeme es
+      surface
+        text autoecuación
   symbol: reference notation # concept symbol
     role links_root
     lexeme en
@@ -659,6 +802,9 @@ meanings
     lexeme zh
       surface
         text 符号
+    lexeme es
+      surface
+        text símbolo
   one-symbol-one-meaning: symbol single lexical-sense # concept one-symbol-one-meaning
     role links_root
     lexeme en
@@ -673,6 +819,9 @@ meanings
     lexeme zh
       surface
         text 一符一义
+    lexeme es
+      surface
+        text "un símbolo un significado"
   sense-split: lexical-sense other symbol # concept sense-split
     role links_root
     lexeme en
@@ -687,6 +836,9 @@ meanings
     lexeme zh
       surface
         text 义项拆分
+    lexeme es
+      surface
+        text "división de sentidos"
   bank-river: sense-split part whole # concept bank-river
     role links_root
     lexeme en
@@ -701,6 +853,9 @@ meanings
     lexeme zh
       surface
         text 河岸
+    lexeme es
+      surface
+        text "orilla del río"
   bank-money: sense-split entity property # concept bank-money
     role links_root
     lexeme en
@@ -715,3 +870,6 @@ meanings
     lexeme zh
       surface
         text 银行
+    lexeme es
+      surface
+        text "banco financiero"

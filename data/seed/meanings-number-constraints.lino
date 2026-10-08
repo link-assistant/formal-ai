@@ -22,6 +22,11 @@ meanings
         text 数字
       surface
         text 整数
+    lexeme es
+      surface
+        text número
+      surface
+        text entero
   number_constraint_query
     defined-by action
     role number_constraint_query
@@ -59,6 +64,15 @@ meanings
         text 是什么数
       surface
         text 哪个数
+    lexeme es
+      surface
+        text "cuál es el número"
+      surface
+        text "qué número"
+      surface
+        text "encuentra el número"
+      surface
+        text "encuentra el entero"
   number_constraint_hidden
     defined-by property
     role number_constraint_hidden
@@ -94,6 +108,17 @@ meanings
         text 想的
       surface
         text 选的
+    lexeme es
+      surface
+        text adiviné
+      surface
+        text elegí
+      surface
+        text escogí
+      surface
+        text "pensé en"
+      surface
+        text "estoy pensando en"
   number_constraint_lower_strict
     defined-by relation
     role number_constraint_lower
@@ -124,6 +149,13 @@ meanings
         text 大于
       surface
         text 超过
+    lexeme es
+      surface
+        text "mayor que"
+      surface
+        text "más que"
+      surface
+        text supera
   number_constraint_lower_inclusive
     defined-by relation
     role number_constraint_lower
@@ -156,6 +188,13 @@ meanings
         text 不小于
       surface
         text 至少
+    lexeme es
+      surface
+        text "mayor o igual que"
+      surface
+        text "no menor que"
+      surface
+        text "al menos"
   number_constraint_upper_strict
     defined-by relation
     role number_constraint_upper
@@ -184,6 +223,13 @@ meanings
         text 小于
       surface
         text 不到
+    lexeme es
+      surface
+        text "menor que"
+      surface
+        text "menos que"
+      surface
+        text "por debajo de"
   number_constraint_upper_inclusive
     defined-by relation
     role number_constraint_upper
@@ -214,3 +260,10 @@ meanings
         text 不大于
       surface
         text 至多
+    lexeme es
+      surface
+        text "menor o igual que"
+      surface
+        text "no mayor que"
+      surface
+        text "como máximo"

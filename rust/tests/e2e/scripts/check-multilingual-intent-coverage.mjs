@@ -391,15 +391,38 @@ function parseFeatureCapabilityTestMatrix() {
   return matrix;
 }
 
+// R1188-U1: the browser's offline phrase registry is the `translation_phrase`
+// meanings of data/seed/meanings-translation-phrases.lino, which the worker
+// reads by role. A meaning's first surface in a language is its primary form;
+// every surface of the language is a phrasing it recognizes.
 function parseBrowserTranslationRegistry() {
-  const source = readWorkerSource();
-  const match = source.match(
-    /const TRANSLATION_MEANING_REGISTRY = (\[[\s\S]*?\n\]);/,
-  );
-  if (!match) {
-    throw new Error('the split web worker source is missing TRANSLATION_MEANING_REGISTRY');
+  const entries = [];
+  let entry = null;
+  let language = null;
+  for (const line of readRepoFile('data/seed/meanings-translation-phrases.lino').split(/\r?\n/)) {
+    const head = /^ {2}(\S+)$/.exec(line);
+    if (head) {
+      entry = { token: head[1], role: false, primary: {}, aliases: {} };
+      entries.push(entry);
+      language = null;
+      continue;
+    }
+    if (!entry) continue;
+    if (/^ {4}role translation_phrase$/.test(line)) entry.role = true;
+    const lexeme = /^ {4}lexeme (\S+)$/.exec(line);
+    if (lexeme) language = lexeme[1];
+    const text = /^ {8}text (?:"(.*)"|(\S+))$/.exec(line);
+    if (text && language) {
+      const surface = text[1] ?? text[2];
+      entry.primary[language] ??= surface;
+      (entry.aliases[language] ??= []).push(surface);
+    }
   }
-  return vm.runInNewContext(`(${match[1]})`);
+  const phrases = entries.filter((candidate) => candidate.role);
+  if (phrases.length === 0) {
+    throw new Error('data/seed/meanings-translation-phrases.lino holds no translation_phrase meaning');
+  }
+  return phrases;
 }
 
 const supportedLanguages = parseSupportedLanguages();
@@ -1096,24 +1119,24 @@ for (const feature of featureCapabilitySlugs) {
 }
 
 for (const entry of browserTranslationRegistry) {
-  assert(entry.token, 'TRANSLATION_MEANING_REGISTRY entries must define token');
+  assert(entry.token, 'translation_phrase meanings must define a slug');
   assertMatrixMatchesSupportedLanguages(
-    `TRANSLATION_MEANING_REGISTRY ${entry.token} primary`,
+    `translation_phrase ${entry.token} primary`,
     entry.primary || {},
   );
   assertMatrixMatchesSupportedLanguages(
-    `TRANSLATION_MEANING_REGISTRY ${entry.token} aliases`,
+    `translation_phrase ${entry.token} aliases`,
     entry.aliases || {},
   );
 
   for (const language of supportedLanguages) {
     assert(
       entry.primary?.[language]?.trim(),
-      `TRANSLATION_MEANING_REGISTRY ${entry.token} primary.${language} must be non-empty`,
+      `translation_phrase ${entry.token} primary.${language} must be non-empty`,
     );
     assert(
       Array.isArray(entry.aliases?.[language]) && entry.aliases[language].length > 0,
-      `TRANSLATION_MEANING_REGISTRY ${entry.token} aliases.${language} must be a non-empty array`,
+      `translation_phrase ${entry.token} aliases.${language} must be a non-empty array`,
     );
   }
 }

@@ -1,15 +1,18 @@
 Q36864
   aliases
     en (unguis onychium)
+    es ("Uñas")
     ru ("ноготь")
     zh ("趾甲")
   descriptions
     en "hard projection of digit"
+    es "placa córnea que cubre y protege parte de la superficie dorsal de los dedos"
     hi "शारिरिक अंग"
     ru "роговые пластины"
   id Q36864
   labels
     en nail
+    es "uña"
     hi "नाखून"
     ru "ногти"
     zh "指甲"

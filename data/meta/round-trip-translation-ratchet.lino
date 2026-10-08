@@ -16,45 +16,45 @@ round-trip-translation-ratchet
   source "scripts/measure-round-trip-translation.mjs"
   corpus "data/benchmarks/round-trip-translation/sentences.lino"
   sentences 320
-  sentence-survival 0.099
-  term-survival 0.392
+  sentence-survival 0.105
+  term-survival 0.436
   en-ru-sentence-survival 0.093
-  en-ru-term-survival 0.501
+  en-ru-term-survival 0.505
   en-hi-sentence-survival 0.093
-  en-hi-term-survival 0.439
+  en-hi-term-survival 0.448
   en-zh-sentence-survival 0.093
-  en-zh-term-survival 0.45
-  en-es-sentence-survival 0.093
-  en-es-term-survival 0.393
+  en-zh-term-survival 0.459
+  en-es-sentence-survival 0.109
+  en-es-term-survival 0.505
   ru-en-sentence-survival 0.125
-  ru-en-term-survival 0.349
+  ru-en-term-survival 0.363
   ru-hi-sentence-survival 0.109
-  ru-hi-term-survival 0.333
+  ru-hi-term-survival 0.336
   ru-zh-sentence-survival 0.125
-  ru-zh-term-survival 0.351
-  ru-es-sentence-survival 0.109
-  ru-es-term-survival 0.28
+  ru-zh-term-survival 0.352
+  ru-es-sentence-survival 0.125
+  ru-es-term-survival 0.361
   hi-en-sentence-survival 0.093
-  hi-en-term-survival 0.382
+  hi-en-term-survival 0.384
   hi-ru-sentence-survival 0.093
   hi-ru-term-survival 0.401
   hi-zh-sentence-survival 0.093
-  hi-zh-term-survival 0.382
-  hi-es-sentence-survival 0.078
-  hi-es-term-survival 0.292
+  hi-zh-term-survival 0.392
+  hi-es-sentence-survival 0.093
+  hi-es-term-survival 0.396
   zh-en-sentence-survival 0.109
-  zh-en-term-survival 0.487
+  zh-en-term-survival 0.5
   zh-ru-sentence-survival 0.109
-  zh-ru-term-survival 0.513
+  zh-ru-term-survival 0.515
   zh-hi-sentence-survival 0.109
-  zh-hi-term-survival 0.497
-  zh-es-sentence-survival 0.093
-  zh-es-term-survival 0.379
-  es-en-sentence-survival 0.093
-  es-en-term-survival 0.332
-  es-ru-sentence-survival 0.093
-  es-ru-term-survival 0.355
-  es-hi-sentence-survival 0.078
-  es-hi-term-survival 0.328
-  es-zh-sentence-survival 0.093
-  es-zh-term-survival 0.33
+  zh-hi-term-survival 0.505
+  zh-es-sentence-survival 0.109
+  zh-es-term-survival 0.512
+  es-en-sentence-survival 0.109
+  es-en-term-survival 0.42
+  es-ru-sentence-survival 0.109
+  es-ru-term-survival 0.442
+  es-hi-sentence-survival 0.093
+  es-hi-term-survival 0.418
+  es-zh-sentence-survival 0.109
+  es-zh-term-survival 0.42

@@ -1,14 +1,17 @@
 Q10884
   aliases
     en (arbor trees Trees)
+    es (arbol)
   descriptions
     en "perennial woody plant"
+    es "planta perenne, de tallo leñoso"
     hi "पेड़"
     ru "жизненная форма деревянистых растений с единственной, отчётливо выраженной главной осью — стволом"
     zh "植物分類"
   id Q10884
   labels
     en tree
+    es "árbol"
     hi "वृक्ष"
     ru "дерево"
     zh "树"

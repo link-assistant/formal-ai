@@ -1,15 +1,18 @@
 Q188075
   aliases
     en (boxes "storage box")
+    es (Cajas)
     hi ("डब्बा" "डिब्बा")
     ru ("Ящик")
     zh ("箱子" "盒" "箱" "整理箱")
   descriptions
     en "container (usually cuboidal) with at least one roughly rectangular cross-section"
+    es "recipiente de cartón, de madera, de metal, etc., generalmente con tapa, que sirve para guardar y transportar cosas."
     ru "Вид ёмкости или ящика из плотного материала"
   id Q188075
   labels
     en box
+    es caja
     hi m
     ru "коробка"
     zh "盒子"

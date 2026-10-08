@@ -5,12 +5,14 @@ Q8436
     zh ("家族" "范米莉" "家庭革命")
   descriptions
     en "group of people affiliated by consanguinity, law, affinity, or co-residence"
+    es "grupo de personas afiliadas por consanguinidad, afinidad o corresidencia"
     hi "सगोत्रता, आत्मीयता या सह-निवास से संबद्ध लोगों का समूह"
     ru "супруги, родственники, сожители, тесно связанные люди"
     zh "一群有血緣、婚姻、親密、法定關係或共同居住的人"
   id Q8436
   labels
     en family
+    es familia
     hi "परिवार"
     ru "семья"
     zh "家庭"

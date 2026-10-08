@@ -28,6 +28,13 @@ meanings
         text 比较
       surface
         text 对比
+    lexeme es
+      surface
+        text "tabla comparativa"
+      surface
+        text comparar
+      surface
+        text comparación
   table
     defined-by concept
     role comparison_table_noun
@@ -43,6 +50,9 @@ meanings
     lexeme zh
       surface
         text 表格
+    lexeme es
+      surface
+        text tabla
   differences
     defined-by relation
     role comparison_difference_cue
@@ -62,6 +72,9 @@ meanings
         text 差异
       surface
         text 区别
+    lexeme es
+      surface
+        text diferencias
   research_prompt_signal
     defined-by concept
     role research_prompt_signal
@@ -95,6 +108,15 @@ meanings
         text 搜索
       surface
         text 研究
+    lexeme es
+      surface
+        text "busca …"
+      surface
+        text "busca información …"
+      surface
+        text "búsqueda web"
+      surface
+        text investigación
   key_differences
     defined-by relation
     role research_criterion
@@ -118,6 +140,11 @@ meanings
         text 主要区别
       surface
         text 区别
+    lexeme es
+      surface
+        text "diferencias clave"
+      surface
+        text diferencia
   use_cases
     defined-by concept
     role research_criterion
@@ -141,6 +168,11 @@ meanings
         text 用例
       surface
         text 应用
+    lexeme es
+      surface
+        text "casos de uso"
+      surface
+        text aplicación
   advantages
     defined-by property
     role research_criterion
@@ -164,6 +196,11 @@ meanings
         text 优点
       surface
         text 优势
+    lexeme es
+      surface
+        text ventajas
+      surface
+        text ventaja
   disadvantages
     defined-by property
     role research_criterion
@@ -187,3 +224,8 @@ meanings
         text 缺点
       surface
         text 劣势
+    lexeme es
+      surface
+        text desventajas
+      surface
+        text desventaja

@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "和平"
+        },
+        "es": {
+          "language": "es",
+          "value": "paz"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "沒有暴力衝突或不畏懼暴力的狀態"
+        },
+        "es": {
+          "language": "es",
+          "value": "equilibrio y tranquilidad entre partes"
         }
       },
       "aliases": {

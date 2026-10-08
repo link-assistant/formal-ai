@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "大蒜"
+        },
+        "es": {
+          "language": "es",
+          "value": "ajo"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "烹饪佐料"
+        },
+        "es": {
+          "language": "es",
+          "value": "ingrediente culinario (para la planta usar Q23400)"
         }
       },
       "aliases": {

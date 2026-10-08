@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "蛋糕"
+        },
+        "es": {
+          "language": "es",
+          "value": "pastel"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "десерт из муки, масла и сахара"
+        },
+        "es": {
+          "language": "es",
+          "value": "masa de harina y manteca y otros ingredientes cocida al horno"
         }
       },
       "aliases": {
@@ -50,6 +58,16 @@
           {
             "language": "zh",
             "value": "卵清糕"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "bizcocho"
+          },
+          {
+            "language": "es",
+            "value": "torta"
           }
         ]
       }

@@ -1,15 +1,18 @@
 Q101401
   aliases
     en (bells)
+    es (campanas)
     ru ("Колокола" "Колокол")
     zh ("钟")
   descriptions
     en "percussion musical instrument"
+    es "instrumento sonoro, hueco, generalmente de algún metal como el bronce, de forma cónica, abierto en la base y cerrado en su parte superior."
     ru "инструмент, источник звука, имеющий куполообразную форму и, обычно, язык, ударяющийся изнутри о стенки."
     zh "中空的敲擊樂器"
   id Q101401
   labels
     en bell
+    es campana
     hi "घंटी"
     ru "колокол"
     zh "鐘"

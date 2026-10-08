@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "杯"
+        },
+        "es": {
+          "language": "es",
+          "value": "taza"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "可盛液体，顶部非闭合的容器"
+        },
+        "es": {
+          "language": "es",
+          "value": "recipiente abierto que se utiliza para contener líquidos para verter o beber"
         }
       },
       "aliases": {

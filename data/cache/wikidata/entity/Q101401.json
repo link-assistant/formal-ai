@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "鐘"
+        },
+        "es": {
+          "language": "es",
+          "value": "campana"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "中空的敲擊樂器"
+        },
+        "es": {
+          "language": "es",
+          "value": "instrumento sonoro, hueco, generalmente de algún metal como el bronce, de forma cónica, abierto en la base y cerrado en su parte superior."
         }
       },
       "aliases": {
@@ -56,6 +64,12 @@
           {
             "language": "zh",
             "value": "钟"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "campanas"
           }
         ]
       }

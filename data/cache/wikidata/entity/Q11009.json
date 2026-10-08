@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "坚果"
+        },
+        "es": {
+          "language": "es",
+          "value": "nuez"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "果实类型"
+        },
+        "es": {
+          "language": "es",
+          "value": "fruto seco e indehiscente"
         }
       },
       "aliases": {

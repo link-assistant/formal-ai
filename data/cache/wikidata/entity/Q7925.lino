@@ -4,12 +4,14 @@ Q7925
     zh ("下雨")
   descriptions
     en "liquid water in the form of droplets that have condensed from atmospheric water vapor and then precipitated"
+    es "tipo de precipitación en la que gotas de agua líquida caen hacia la superficie de la tierra"
     hi "प्राकृतिक घटना"
     ru "атмосферные осадки, выпадающие из облаков в виде капель жидкости"
     zh "自然降水現象"
   id Q7925
   labels
     en rain
+    es lluvia
     hi "वर्षा"
     ru "дождь"
     zh "雨"

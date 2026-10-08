@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "槌"
+        },
+        "es": {
+          "language": "es",
+          "value": "martillo"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "敲打工具"
+        },
+        "es": {
+          "language": "es",
+          "value": "herramienta con una cabeza de metal pesado montada en ángulo recto en el extremo de un mango, utilizada para trabajos como romper cosas y clavar clavos"
         }
       },
       "aliases": {

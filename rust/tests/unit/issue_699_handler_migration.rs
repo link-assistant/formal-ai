@@ -363,7 +363,7 @@ fn migration_ledger_is_a_complete_live_registry_census() {
     );
     assert_eq!(
         ledger.matches("status migrated").count(),
-        57,
+        58,
         "batches 1-3 migrated four methods; issue #1085 D1.3 migrated eleven handler names into \
          data/seed/handler-rules.lino, issue #1095 a twelfth (agentic_continuation), and the \
          issue #918 minimal-core batches forty-one more (conversation_topic, source_refresh, \
@@ -375,7 +375,8 @@ fn migration_ledger_is_a_complete_live_registry_census() {
          procedural_how_to_followup, how_it_works, feature_capability, numeric_list, \
          meta_explanation, algorithm, document_generation_plan, calendar_reasoning, calendar_create_event, \
          text_manipulation, document_originality_check, software_project_followup, coreference, \
-         diagnostic, verifiable_task, nl_tool, installation_conversion, translation)",
+         diagnostic, verifiable_task, nl_tool, installation_conversion, translation), and \
+         R1188-U1 one more (behavior_rules)",
     );
     assert_eq!(
         ledger.matches("status \"justified-native\"").count(),
@@ -389,7 +390,7 @@ fn migration_ledger_is_a_complete_live_registry_census() {
     let pending = ledger.matches("status pending").count();
     assert_eq!(
         pending,
-        expected.len() - 83,
+        expected.len() - 84,
         "every other current method must honestly remain pending",
     );
     assert_eq!(

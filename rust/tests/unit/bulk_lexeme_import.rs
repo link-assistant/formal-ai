@@ -12,7 +12,7 @@ use std::path::PathBuf;
 use formal_ai::event_log::EventLog;
 use formal_ai::lexeme_import::{
     self, Concept, DEFINED_BY, GRAMMATICAL_NUMBER, GroundedLexeme, ImportConfig, PART_OF_SPEECH,
-    SurfaceSource, import_languages,
+    SHARD_LINE_BUDGET, SurfaceSource, import_languages, optional_import_languages,
 };
 
 #[test]
@@ -200,8 +200,9 @@ fn denotation_is_bidirectional() {
 }
 
 /// Cache-record grounding: every imported concept resolves to a committed
-/// entity cache record whose four labels are exactly the emitted surfaces, and
-/// the record has its canonical `.lino` sibling.
+/// entity cache record whose chosen surfaces are exactly the emitted ones (a
+/// partial-support language absent from both when the record has no clean
+/// surface for it), and the record has its canonical `.lino` sibling.
 #[test]
 fn cache_records_ground_every_import() {
     let concepts = committed_concepts();
@@ -251,7 +252,10 @@ fn cache_records_ground_every_import() {
             .get(&concept.slug)
             .unwrap_or_else(|| panic!("{} not present in committed shards", concept.slug));
         assert_eq!(qid, &concept.qid, "{} grounding mismatch", concept.slug);
-        for language in import_languages() {
+        for language in import_languages()
+            .into_iter()
+            .chain(optional_import_languages())
+        {
             assert_eq!(
                 labels.get(language),
                 emitted_labels.get(language),
@@ -378,8 +382,9 @@ fn coverage_accounts_for_requested_concepts_languages_and_surfaces() {
 
     assert_eq!(report.coverage.requested_concepts, 1);
     assert_eq!(report.coverage.accepted_concepts, 1);
-    assert_eq!(report.coverage.expected_surfaces, import_languages().len());
-    assert_eq!(report.coverage.emitted_surfaces, import_languages().len());
+    let languages = import_languages().len() + optional_import_languages().len();
+    assert_eq!(report.coverage.expected_surfaces, languages);
+    assert_eq!(report.coverage.emitted_surfaces, languages);
     assert_eq!(report.coverage.permille(), 1_000);
 }
 
@@ -400,7 +405,10 @@ fn every_surface_carries_truthful_source_record_provenance() {
     let report = lexeme_import::run(&config, None, &mut events);
     let dog = report.accepted.first().expect("dog accepted");
 
-    for language in import_languages() {
+    for language in import_languages()
+        .into_iter()
+        .chain(optional_import_languages())
+    {
         assert_eq!(
             dog.sources.get(language),
             Some(&SurfaceSource {
@@ -431,6 +439,86 @@ fn cross_script_label_uses_a_same_language_alias_with_exact_provenance() {
             field: "aliases.hi[0].value".to_string(),
         })
     );
+}
+
+/// A partial-support language is read from the same record as the full ones:
+/// its clean label becomes one more surface, emitted after the full-support
+/// languages with the same provenance and facets.
+#[test]
+fn partial_language_label_is_imported_after_the_full_languages() {
+    let config = ImportConfig {
+        concepts: vec![Concept {
+            slug: "dog".to_string(),
+            qid: "Q144".to_string(),
+        }],
+        cache_dir: cache_dir(),
+        online: false,
+    };
+    let mut events = EventLog::new();
+    let report = lexeme_import::run(&config, None, &mut events);
+    let dog = report.accepted.first().expect("dog accepted");
+
+    assert_eq!(optional_import_languages(), ["es"]);
+    assert_eq!(dog.labels.get("es").map(String::as_str), Some("perro"));
+    let block = lexeme_import::render_block(dog);
+    let chinese = block.find("    lexeme zh\n").expect("zh block");
+    let spanish = block.find("    lexeme es\n").expect("es block");
+    assert!(chinese < spanish, "{block}");
+    assert!(block.ends_with(
+        "    lexeme es
+      surface
+        text perro # source Q144 labels.es.value
+        part_of_speech noun
+        grammatical_number singular
+"
+    ));
+}
+
+/// A partial-support language never costs a concept: a multi-word label with no
+/// clean alias leaves that language out of the block, while a full-support
+/// language in the same state still refuses the concept.
+#[test]
+fn partial_language_without_a_clean_surface_is_omitted_not_refused() {
+    let value: serde_json::Value = serde_json::from_str(
+        r#"{"entities":{"Q165308":{"labels":{"en":{"value":"pumpkin"},"ru":{"value":"тыква"},"hi":{"value":"कद्दू"},"zh":{"value":"笋瓜"},"es":{"value":"calabaza gigante"}}}}}"#,
+    )
+    .expect("fixture json");
+    let (labels, _) =
+        lexeme_import::surfaces_from_entity(&value, "Q165308").expect("surface resolution");
+    assert_eq!(labels.len(), import_languages().len());
+    assert!(!labels.contains_key("es"));
+
+    let lexeme = GroundedLexeme {
+        slug: "pumpkin".to_string(),
+        qid: "Q165308".to_string(),
+        labels,
+        sources: sample_sources("Q165308"),
+    };
+    assert_eq!(lexeme_import::validate(&lexeme), Ok(()));
+    assert!(!lexeme_import::render_block(&lexeme).contains("lexeme es"));
+
+    let refused: serde_json::Value = serde_json::from_str(
+        r#"{"entities":{"Q165308":{"labels":{"en":{"value":"giant pumpkin"},"ru":{"value":"тыква"},"hi":{"value":"कद्दू"},"zh":{"value":"笋瓜"}}}}}"#,
+    )
+    .expect("fixture json");
+    assert!(lexeme_import::surfaces_from_entity(&refused, "Q165308").is_err());
+}
+
+/// Shards are filled by lines, so a block that grows with the languages it
+/// carries cannot push a generated shard past the data-file line budget.
+#[test]
+fn committed_shards_stay_within_the_line_budget() {
+    for shard in committed_shards() {
+        let lines = fs::read_to_string(&shard)
+            .expect("shard readable")
+            .lines()
+            .count();
+        assert!(
+            lines <= SHARD_LINE_BUDGET,
+            "{} has {lines} lines, over {SHARD_LINE_BUDGET}",
+            shard.display()
+        );
+    }
 }
 
 /// Re-running with fewer accepted concepts must not leave an obsolete shard

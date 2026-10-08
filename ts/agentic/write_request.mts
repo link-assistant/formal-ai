@@ -403,6 +403,8 @@ export function composeEditRequest(request) {
   return composeEditClauses(request)?.edit ?? null;
 }
 
+/** The seeded articles and other function words (`the`, `el`). */
+const FUNCTION_WORD_ROLE = 'request_function_word';
 const SCRIPT_WITHOUT_SPACES = /[\u3040-\u9fff]/u;
 const wordCharacter = (character) => character !== undefined && /[\p{L}\p{N}]/u.test(character)
   && !SCRIPT_WITHOUT_SPACES.test(character);
@@ -492,10 +494,16 @@ export function composeEditClauses(raw) {
     if (fileIndex >= 0) break;
   }
   if (fileIndex < 0) return null;
+  // The file clause runs back over target cues and the seeded function words
+  // between them (`in the file f.txt`, `en el archivo f.txt`) to its first
+  // cue; an article there is no part of the new text (PR #1188 G98). A cue
+  // word inside a quoted literal is payload ("… the named file.'").
+  const functionWords = bareSurfaces(FUNCTION_WORD_ROLE);
+  const joinsClause = (index) => !isQuoted(toks[index])
+    && (isTargetCue(index) || functionWords.includes(cleanCueToken(toks[index].text)));
   let clauseStartIndex = fileIndex;
-  // A cue word inside a quoted literal is payload ("… the named file.'").
-  while (clauseStartIndex > 0 && isTargetCue(clauseStartIndex - 1) && !isQuoted(toks[clauseStartIndex - 1])) {
-    clauseStartIndex -= 1;
+  for (let index = fileIndex - 1; index >= 0 && joinsClause(index); index -= 1) {
+    if (isTargetCue(index)) clauseStartIndex = index;
   }
   const fileClauseStart = toks[clauseStartIndex].start;
   // Cue words inside a quoted literal are payload (`replace 'covered by x'`).

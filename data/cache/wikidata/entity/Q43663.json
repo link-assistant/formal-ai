@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "短襪"
+        },
+        "es": {
+          "language": "es",
+          "value": "calcetín"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "короткий чулок, не доходящий до колена"
+        },
+        "es": {
+          "language": "es",
+          "value": "prenda usada en el pie"
         }
       },
       "aliases": {
@@ -48,6 +56,24 @@
           {
             "language": "zh",
             "value": "短袜"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "soquete"
+          },
+          {
+            "language": "es",
+            "value": "calcetines"
+          },
+          {
+            "language": "es",
+            "value": "calcetin"
+          },
+          {
+            "language": "es",
+            "value": "media corta"
           }
         ]
       }

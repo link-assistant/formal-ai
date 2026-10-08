@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "糖"
+        },
+        "es": {
+          "language": "es",
+          "value": "azúcar"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "可食用的带有甜味的晶体"
+        },
+        "es": {
+          "language": "es",
+          "value": "carbohidratos solubles en agua de sabor dulce"
         }
       },
       "aliases": {
@@ -62,6 +70,12 @@
           {
             "language": "zh",
             "value": "食糖"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "azucar"
           }
         ]
       }

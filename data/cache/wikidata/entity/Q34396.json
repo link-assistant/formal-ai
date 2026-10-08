@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "肥皂"
+        },
+        "es": {
+          "language": "es",
+          "value": "jabón"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "脂肪酸（長鏈羧酸）的鹽，用於洗滌和清潔"
+        },
+        "es": {
+          "language": "es",
+          "value": "compuesto limpiador tensioactivo que se utiliza para la limpieza personal o de otro tipo"
         }
       },
       "aliases": {
@@ -84,6 +92,48 @@
           {
             "language": "zh",
             "value": "油胰"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "Jabones"
+          },
+          {
+            "language": "es",
+            "value": "Jabonería"
+          },
+          {
+            "language": "es",
+            "value": "Pastilla de jabon"
+          },
+          {
+            "language": "es",
+            "value": "Pastillas de jabón"
+          },
+          {
+            "language": "es",
+            "value": "Jaboneria"
+          },
+          {
+            "language": "es",
+            "value": "Jabon"
+          },
+          {
+            "language": "es",
+            "value": "Pastillas de jabon"
+          },
+          {
+            "language": "es",
+            "value": "Pastilla de jabón"
+          },
+          {
+            "language": "es",
+            "value": "Jabon en polvo"
+          },
+          {
+            "language": "es",
+            "value": "Jabón en polvo"
           }
         ]
       }

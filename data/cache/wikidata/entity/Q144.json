@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "犬"
+        },
+        "es": {
+          "language": "es",
+          "value": "perro"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "由欧亚大陆的灰狼驯化而来的常见家畜，被广泛作为宠物或役用动物饲养"
+        },
+        "es": {
+          "language": "es",
+          "value": "mamífero carnívoro doméstico de la familia Canidae"
         }
       },
       "aliases": {
@@ -94,6 +102,28 @@
           {
             "language": "zh",
             "value": "狗子"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "perro doméstico"
+          },
+          {
+            "language": "es",
+            "value": "can"
+          },
+          {
+            "language": "es",
+            "value": "dogo"
+          },
+          {
+            "language": "es",
+            "value": "canino"
+          },
+          {
+            "language": "es",
+            "value": "perra"
           }
         ]
       }

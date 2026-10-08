@@ -108,6 +108,21 @@ meanings
         text 使用搜索引擎
       surface
         text 网络搜索
+    lexeme es
+      surface
+        text "búsqueda web"
+      surface
+        text "búsqueda en internet"
+      surface
+        text "motores de búsqueda"
+      surface
+        text "puedes buscar en internet"
+      surface
+        text "puedes buscar en la web"
+      surface
+        text "tienes búsqueda web"
+      surface
+        text "tienes acceso a internet"
   feature_capability_diagnostics
     defined-by concept
     role feature_capability_alias
@@ -145,6 +160,13 @@ meanings
         text trace
       surface
         text 推理跟踪
+    lexeme es
+      surface
+        text diagnóstico
+      surface
+        text diagnósticos
+      surface
+        text "traza de razonamiento"
   feature_capability_agent_mode
     defined-by concept
     role feature_capability_alias
@@ -180,6 +202,15 @@ meanings
         text 代理
       surface
         text 多步骤
+    lexeme es
+      surface
+        text "modo agente"
+      surface
+        text agente
+      surface
+        text "varios pasos"
+      surface
+        text autónomo
   feature_capability_definition_fusion
     defined-by concept
     role feature_capability_alias
@@ -207,6 +238,11 @@ meanings
         text "definition fusion"
       surface
         text 合并定义
+    lexeme es
+      surface
+        text "fusión de definiciones"
+      surface
+        text "combinar definiciones"
   feature_capability_configuration
     defined-by concept
     role feature_capability_alias
@@ -274,6 +310,19 @@ meanings
         text 语言
       surface
         text 聊天样式
+    lexeme es
+      surface
+        text configuración
+      surface
+        text ajustes
+      surface
+        text tema
+      surface
+        text idioma
+      surface
+        text "estilo del chat"
+      surface
+        text preferencias
   feature_capability_memory_actions
     defined-by concept
     role feature_capability_alias
@@ -313,6 +362,15 @@ meanings
         text "memory export"
       surface
         text "memory import"
+    lexeme es
+      surface
+        text "exportar memoria"
+      surface
+        text "importar memoria"
+      surface
+        text "exportación de memoria"
+      surface
+        text "importación de memoria"
   feature_capability_greeting
     defined-by concept
     role feature_capability_alias
@@ -348,6 +406,15 @@ meanings
         text 打招呼
       surface
         text 你好
+    lexeme es
+      surface
+        text saludo
+      surface
+        text saludos
+      surface
+        text saludar
+      surface
+        text hola
   feature_capability_write_program
     defined-by concept
     role feature_capability_alias
@@ -387,6 +454,17 @@ meanings
         text 代码
       surface
         text 程序
+    lexeme es
+      surface
+        text "hola mundo"
+      surface
+        text "escribir código"
+      surface
+        text "generar código"
+      surface
+        text "escribir un programa"
+      surface
+        text programa
   feature_capability_concept_lookup
     defined-by concept
     role feature_capability_alias
@@ -410,6 +488,11 @@ meanings
     lexeme zh
       surface
         text 概念
+    lexeme es
+      surface
+        text "búsqueda de conceptos"
+      surface
+        text concepto
   feature_capability_arithmetic
     defined-by concept
     role feature_capability_alias
@@ -449,6 +532,15 @@ meanings
         text 数学
       surface
         text "2 + 2"
+    lexeme es
+      surface
+        text aritmética
+      surface
+        text calcular
+      surface
+        text matemáticas
+      surface
+        text "2 + 2"
   feature_capability_translation
     defined-by concept
     role feature_capability_alias
@@ -480,6 +572,11 @@ meanings
         text translation
       surface
         text translate
+    lexeme es
+      surface
+        text traducción
+      surface
+        text traducir
   feature_capability_memory
     defined-by concept
     role feature_capability_alias
@@ -519,6 +616,13 @@ meanings
         text 回忆
       surface
         text 上下文
+    lexeme es
+      surface
+        text memoria
+      surface
+        text recordar
+      surface
+        text "contexto de la conversación"
   feature_capability_demo_mode
     defined-by concept
     role feature_capability_alias
@@ -546,6 +650,13 @@ meanings
         text demo
       surface
         text 演示
+    lexeme es
+      surface
+        text "modo demo"
+      surface
+        text demo
+      surface
+        text demostración
   feature_capability_http_url
     defined-by concept
     role feature_capability_alias
@@ -595,6 +706,17 @@ meanings
         text 打开链接
       surface
         text 访问链接
+    lexeme es
+      surface
+        text "petición http"
+      surface
+        text "abrir url"
+      surface
+        text "abrir un enlace"
+      surface
+        text "visitar url"
+      surface
+        text "navegar a la url"
   feature_capability_javascript_execution
     defined-by concept
     role feature_capability_alias
@@ -630,6 +752,13 @@ meanings
         text 脚本执行
       surface
         text 执行脚本
+    lexeme es
+      surface
+        text javascript
+      surface
+        text "ejecutar javascript"
+      surface
+        text js
   feature_capability_planning
     defined-by concept
     role feature_capability_alias
@@ -675,6 +804,17 @@ meanings
         text 角色扮演
       surface
         text 项目计划
+    lexeme es
+      surface
+        text resumir
+      surface
+        text "lluvia de ideas"
+      surface
+        text "juego de rol"
+      surface
+        text "proyecto de software"
+      surface
+        text "plan de proyecto"
   feature_capability_question
     defined-by action
     role feature_capability_question
@@ -748,6 +888,23 @@ meanings
         text 启用
       surface
         text 可用
+    lexeme es
+      surface
+        text puedes
+      surface
+        text puede
+      surface
+        text sabes
+      surface
+        text "eres capaz"
+      surface
+        text admites
+      surface
+        text tienes
+      surface
+        text "está disponible"
+      surface
+        text "está activado"
   feature_action_arithmetic
     defined-by action
     role feature_action_arithmetic
@@ -767,6 +924,11 @@ meanings
     lexeme zh
       surface
         text 你能计算
+    lexeme es
+      surface
+        text "puedes calcular"
+      surface
+        text "puedes computar"
   feature_action_planning
     defined-by action
     role feature_action_planning
@@ -790,3 +952,10 @@ meanings
     lexeme zh
       surface
         text 你能总结
+    lexeme es
+      surface
+        text "puedes resumir"
+      surface
+        text "puedes hacer una lluvia de ideas"
+      surface
+        text "puedes hacer un juego de rol"

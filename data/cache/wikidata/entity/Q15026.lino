@@ -4,12 +4,14 @@ Q15026
     zh ("座椅" "椅子")
   descriptions
     en "piece of furniture for sitting on"
+    es "mueble para sentarse"
     hi "बैठने के लिए फर्नीचर का टुकड़ा"
     ru "мебельное изделие для сидения одного человека"
     zh "椅子"
   id Q15026
   labels
     en chair
+    es silla
     hi "कुर्सी"
     ru "стул"
     zh "椅"

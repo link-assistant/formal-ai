@@ -1,16 +1,19 @@
 Q503
   aliases
     en (bananas "banana fruit")
+    es (banana banano cambur topocho platano guineo gualele)
     ru ("Músa" Musa)
     zh ("蕉")
   descriptions
     en "elongated, edible fruit produced by several kinds of large herbaceous flowering plants in the genus Musa"
+    es "fruto comestible, botánicamente una baya, de varios tipos de grandes plantas herbáceas del género Musa"
     hi "फल"
     ru "плод многолетних травянистых растений рода Банан (Musa)"
     zh "蕉果是从蕉树长出来的"
   id Q503
   labels
     en banana
+    es "plátano"
     hi "केला"
     ru "банан"
     zh "香蕉"

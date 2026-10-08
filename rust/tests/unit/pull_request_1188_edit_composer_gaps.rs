@@ -294,3 +294,29 @@ fn a_path_names_a_file_not_the_answer_language() {
         Some("Inserted `x` after `one` in `formalization_segment.mjs` and observed the result.")
     );
 }
+
+#[test]
+fn an_article_between_the_target_cues_is_no_part_of_the_new_text() {
+    // G98: the file clause runs back over the seeded function words between
+    // its cues, so `in the file f.txt` leaves `the` out of the new text.
+    let expected =
+        |old: &str, new: &str| Some(("f.txt".to_owned(), old.to_owned(), new.to_owned()));
+    assert_eq!(
+        compose_edit_request("Change 'mundo' to 'amigo' in the file f.txt."),
+        expected("mundo", "amigo")
+    );
+    assert_eq!(
+        compose_edit_request("Cambia 'mundo' a 'amigo' en el archivo f.txt."),
+        expected("mundo", "amigo")
+    );
+    assert_eq!(
+        compose_edit_request("Replace foo with bar in the file f.txt."),
+        expected("foo", "bar")
+    );
+    assert_eq!(
+        compose_edit_request("Change 'a' to 'b' in the f.txt file."),
+        expected("a", "b")
+    );
+    let run = drive("Change 'two' to 'deux' in the file f.txt.", THREE, "f.txt");
+    assert_eq!(run.file, "one\ndeux\nthree\n");
+}

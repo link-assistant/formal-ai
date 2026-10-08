@@ -30,6 +30,12 @@ meanings
         notation word_surface
         denotation semantic_facet
         part_of_speech noun_phrase
+    lexeme es
+      surface
+        text "faceta semántica"
+        notation word_surface
+        denotation semantic_facet
+        part_of_speech noun_phrase
   notation
     defined-by semantic_facet
     role semantic_facet_kind
@@ -58,6 +64,12 @@ meanings
     lexeme zh
       surface
         text 记法
+        notation word_surface
+        denotation notation
+        part_of_speech noun
+    lexeme es
+      surface
+        text notación
         notation word_surface
         denotation notation
         part_of_speech noun
@@ -92,6 +104,12 @@ meanings
         notation word_surface
         denotation annotation
         part_of_speech noun
+    lexeme es
+      surface
+        text anotación
+        notation word_surface
+        denotation annotation
+        part_of_speech noun
   denotation
     defined-by semantic_facet
     role semantic_facet_kind
@@ -120,6 +138,12 @@ meanings
     lexeme zh
       surface
         text 外延
+        notation word_surface
+        denotation denotation
+        part_of_speech noun
+    lexeme es
+      surface
+        text denotación
         notation word_surface
         denotation denotation
         part_of_speech noun
@@ -154,6 +178,12 @@ meanings
         notation word_surface
         denotation connotation
         part_of_speech noun
+    lexeme es
+      surface
+        text connotación
+        notation word_surface
+        denotation connotation
+        part_of_speech noun
   semantic_gloss
     defined-by annotation
     role semantic_annotation_artifact
@@ -178,6 +208,12 @@ meanings
     lexeme zh
       surface
         text 释义
+        notation word_surface
+        denotation semantic_gloss
+        part_of_speech noun
+    lexeme es
+      surface
+        text glosa
         notation word_surface
         denotation semantic_gloss
         part_of_speech noun
@@ -209,6 +245,12 @@ meanings
         notation word_surface
         denotation external_knowledge_source
         part_of_speech noun_phrase
+    lexeme es
+      surface
+        text "fuente externa"
+        notation word_surface
+        denotation external_knowledge_source
+        part_of_speech noun_phrase
   cached_source_response
     defined-by external_knowledge_source
     defined-by annotation
@@ -234,6 +276,12 @@ meanings
     lexeme zh
       surface
         text 缓存来源响应
+        notation word_surface
+        denotation cached_source_response
+        part_of_speech noun_phrase
+    lexeme es
+      surface
+        text "respuesta de fuente en caché"
         notation word_surface
         denotation cached_source_response
         part_of_speech noun_phrase

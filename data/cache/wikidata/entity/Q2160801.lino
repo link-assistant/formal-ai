@@ -1,14 +1,17 @@
 Q2160801
   aliases
+    es (Jalda polleras pollera)
     zh ("裙子" "半裙")
   descriptions
     en "type of clothing worn from the waist downwards"
+    es "prenda de vestir"
     hi "कमर पर पहने जाने वाला कपड़ा"
     ru "предмет одежды"
     zh "服飾"
   id Q2160801
   labels
     en skirt
+    es falda
     hi "स्कर्ट"
     ru "юбка"
     zh "裙"

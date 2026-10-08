@@ -1,13 +1,16 @@
 Q321767
   aliases
     en (Pocket)
+    es (Ficka)
     zh ("橐袋仔" "簏袋仔" "袋仔" "橐仔" "懷" "通懷仔" "通櫃仔")
   descriptions
     en "small compartment in clothing where minor objects can be carried inside"
+    es "trozo de tela en forma de bolsa cosido por dentro a una ranura de una prenda de vestir"
     ru "сопутствующее хранилище, часть предмета одежды"
   id Q321767
   labels
     en pocket
+    es bolsillo
     hi "जेब"
     ru "карман"
     zh "口袋"

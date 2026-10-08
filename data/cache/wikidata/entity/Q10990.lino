@@ -1,13 +1,16 @@
 Q10990
   aliases
+    es (vianda)
     ru ("мясопродукты")
   descriptions
     en "culinary name for animal flesh eaten as food"
+    es "parte de un animal consumida como alimento"
     ru "продукт питания, плоть животных"
     zh "可食用的动物肉"
   id Q10990
   labels
     en meat
+    es carne
     hi "मांस"
     ru "мясо"
     zh "肉类食物"

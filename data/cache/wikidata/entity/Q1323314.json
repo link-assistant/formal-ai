@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "袋"
+        },
+        "es": {
+          "language": "es",
+          "value": "bolsa"
         }
       },
       "descriptions": {
@@ -29,6 +33,10 @@
         "ru": {
           "language": "ru",
           "value": "мягкая упаковка для переноски предметов в руках или на плече"
+        },
+        "es": {
+          "language": "es",
+          "value": "objeto que sirve para contener y llevar cosas dentro de él, hecho de algún material flexible como papel, tela o piel; es cerrado por todos sus lados, excepto por la parte superior, y es de fácil manejo"
         }
       },
       "aliases": {

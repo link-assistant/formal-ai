@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "父親"
+        },
+        "es": {
+          "language": "es",
+          "value": "padre"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "亲属"
+        },
+        "es": {
+          "language": "es",
+          "value": "ser vivo masculino que ha tenido descendencia directa"
         }
       },
       "aliases": {
@@ -160,6 +168,28 @@
           {
             "language": "zh",
             "value": "爹地"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "papá"
+          },
+          {
+            "language": "es",
+            "value": "papi"
+          },
+          {
+            "language": "es",
+            "value": "papito"
+          },
+          {
+            "language": "es",
+            "value": "pa"
+          },
+          {
+            "language": "es",
+            "value": "papa"
           }
         ]
       }

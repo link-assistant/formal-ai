@@ -113,7 +113,8 @@ pub use handler_precedence::{
     handler_precedence_from,
 };
 pub use intent_routing::{
-    INTENT_ROUTING_PATH, IntentRoute, IntentRouting, intent_routing, intent_routing_from,
+    INTENT_ROUTING_PATH, IntentRoute, IntentRouting, intent_examples, intent_routing,
+    intent_routing_from,
 };
 pub use market_price_references::{MarketPriceAsset, MarketPricePeriod, market_price_assets};
 pub use meanings::{

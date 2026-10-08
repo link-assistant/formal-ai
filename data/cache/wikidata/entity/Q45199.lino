@@ -1,14 +1,17 @@
 Q45199
   aliases
     en (seaman mariner seafarer "merchant sailor" "merchant seaman" "merchant mariner")
+    es ("marinero mercante" "marino mercante" marinero)
     ru ("торговый моряк" "моряк торгового флота" "морячка" "торговая морячка" "морячка торгового флота")
     zh ("船員")
   descriptions
     en "person who navigates water-borne vessels or assists in doing so"
+    es "denominación genérica que reciben todos los miembros de la tripulación de un barco"
     zh "职业"
   id Q45199
   labels
     en sailor
+    es marino
     hi "नाविक"
     ru "моряк"
     zh "海員"

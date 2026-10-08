@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "锚"
+        },
+        "es": {
+          "language": "es",
+          "value": "ancla"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "系泊设备"
+        },
+        "es": {
+          "language": "es",
+          "value": "amarradero náutico"
         }
       },
       "aliases": {
@@ -64,6 +72,20 @@
           {
             "language": "zh",
             "value": "小移船錨"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "⚓"
+          },
+          {
+            "language": "es",
+            "value": "áncoras"
+          },
+          {
+            "language": "es",
+            "value": "áncora"
           }
         ]
       }

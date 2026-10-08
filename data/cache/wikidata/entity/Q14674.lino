@@ -1,14 +1,17 @@
 Q14674
   aliases
     en (Pencils "Writing Pencils")
+    es (lapiz)
   descriptions
     en "writing implement"
+    es "instrumento para escribir, dibujar o marcar que consiste o contiene un cilindro delgado o una tira de una sustancia sólida para marcar"
     hi "लिख ने का परिकर"
     ru "инструмент в виде стержня, изготавливаемого из пишущего материала, применяемый для письма, рисования, черчения"
     zh "書寫工具"
   id Q14674
   labels
     en pencil
+    es "lápiz"
     hi "पेंसिल"
     ru "карандаш"
     zh "鉛筆"

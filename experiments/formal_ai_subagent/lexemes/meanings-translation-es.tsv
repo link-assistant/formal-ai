@@ -1,0 +1,45 @@
+human_language	idioma	lengua
+language_english	inglés
+language_russian	ruso
+language_hindi	hindi	hindí
+language_chinese	chino
+translate	traducir	traduce	traduzca
+comprehension_failure	no entiendo	no comprendo	no lo entiendo
+translate_from_english	del inglés
+translate_from_russian	del ruso
+translate_from_hindi	del hindi	del hindí
+translate_from_chinese	del chino
+translate_into_english	al inglés	en inglés
+translate_into_russian	al ruso	en ruso
+translate_into_hindi	al hindi	al hindí	en hindi
+translate_into_chinese	al chino	en chino
+translation_unquoted_frame	traduce … al 	traducir … al 	… traduce al 
+translation_into_marker	traducir al
+definition_command	define	definir	da una definición de
+links_notation_format	notación links	en links
+negation_no	no
+cucumber	pepino
+carrot	zanahoria
+good	bueno	buena	buenos	buenas
+find	encuentra	halla	encontrar
+synonym	sinónimo	sinónimos
+example	ejemplo	ejemplos
+agreement	concordancia
+conjunction_or	o
+who_are_you	quién eres	quién es usted	quién eres tú
+what_is_this	qué es esto	qué es eso
+how_are_you	cómo estás	qué tal
+formal_system_incomplete_or_inconsistent	todo sistema formal es incompleto o inconsistente
+es	código del idioma español
+full	estado de protocolo de idioma completo
+partial	estado de protocolo de idioma parcial
+explicit_gap	política de carencia de idioma explícita
+explicit_language_context	detección explícita del contexto de idioma
+language_gap	carencia de cobertura de idioma
+response_greeting_es	respuesta de saludo en español
+response_identity_es	respuesta de identidad en español
+response_language_gap_en	respuesta de carencia de idioma en inglés
+response_language_gap_ru	respuesta de carencia de idioma en ruso
+response_language_gap_hi	respuesta de carencia de idioma en hindi
+response_language_gap_zh	respuesta de carencia de idioma en chino
+response_language_gap_es	respuesta de carencia de idioma en español

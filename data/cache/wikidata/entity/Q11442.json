@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "自行車"
+        },
+        "es": {
+          "language": "es",
+          "value": "bicicleta"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "载具"
+        },
+        "es": {
+          "language": "es",
+          "value": "vehículo de dos ruedas impulsado por pedales"
         }
       },
       "aliases": {
@@ -108,6 +116,20 @@
           {
             "language": "zh",
             "value": "雙輪車"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "velocípedo"
+          },
+          {
+            "language": "es",
+            "value": "velocipedo"
+          },
+          {
+            "language": "es",
+            "value": "bici"
           }
         ]
       }

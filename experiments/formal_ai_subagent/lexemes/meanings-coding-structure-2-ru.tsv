@@ -1,0 +1,36 @@
+reduce_mean	среднее	среднее значение
+absolute_deviation	абсолютное отклонение	абсолютная разность
+prefix_negative	ниже нуля	опускается ниже нуля
+interpose_each	между каждыми двумя соседними элементами
+balanced_delimiter_groups	сбалансированные группы	отдельные группы
+group_max_nesting	максимальная вложенность	самый глубокий уровень вложенности
+prefix_enumeration	все префиксы	префиксы от самого короткого до самого длинного
+zero_based_range	начиная с 0	начиная с нуля
+stringify_each	строка, содержащая	в виде строки
+palindrome_extension	кратчайший палиндром	палиндромный суффикс
+aligned_binary_xor	двоичный xor	выполни xor
+stable_longest	самый длинный	верни самый длинный
+explicit_value_mapping	легенда	соответствующий
+explicit_ordering	допустимые варианты	заданный порядок
+bounded_top	наибольшие элементы	n наибольших
+bounded_bottom	наименьшие элементы	n наименьших
+power_square_each	квадраты отдельных элементов	возведи каждый в квадрат
+keyed_sum_order	по сумме	по сумме строки
+frequency_rank	самый частый	ранг частоты
+regex_minimum_word_length	символов в длину	минимальная длина слова
+regex_lowercase_chunks	раздели строку по строчным буквам
+regex_lowercase_underscore	строчные буквы, соединённые подчёркиванием
+exclude_membership	удали символы	исключи символы
+remove_boundary_occurrences	удали первое и последнее вхождение
+rotation_period	минимальное число поворотов	наименьший период вращения
+duplicate_exists	есть дубликаты	содержит дубликаты
+composite_number	непростые числа	составное число
+one_bit_difference	отличаются в одном бите	разница в один бит
+grid_minimum_cost_path	путь минимальной стоимости	путь наименьшей стоимости
+recurrence_conditional	если
+recurrence_less_equal	меньше или равно
+recurrence_equal	равенство
+recurrence_add	сложить	сложение
+recurrence_multiply	умножить	умножение
+recurrence_subtract	вычесть	вычитание
+recurrence_subtract_one	декремент	уменьшить на единицу

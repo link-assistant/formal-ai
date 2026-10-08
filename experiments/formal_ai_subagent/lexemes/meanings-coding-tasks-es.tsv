@@ -1,0 +1,61 @@
+coding_constant	constante
+coding_test	prueba	test
+coding_public_visibility	pública	público
+coding_return	devuelve	devolver	retorna
+coding_division	dividido entre	dividido por	dividir
+coding_module_registration	registra el módulo	exporta el módulo	añade el módulo
+coding_identifier_rename	renombra
+coding_artifact_name	llamado …	llamada …	con el nombre …
+coding_string_value	con el valor …	cuyo valor es …
+coding_search_string	cadena
+coding_search_function	función
+coding_search_array	arreglo
+coding_search_struct	estructura
+coding_bound	límite	tope	máximo
+completion_criterion	criterio de finalización
+coding_search_rendering	renderizado	serialización
+coding_search_adapter	adaptador	adaptadores
+coding_relationship_reference	relación	relaciones	asociación
+coding_serialization_action	serializar	serializado	codificación
+coding_search_check	comprobación
+coding_search_completion_criterion	contrato de finalización	criterio de finalización
+coding_search_missing_leaf_contract	hoja sin un contrato de finalización observable
+binary_decomposition_invariant	un nodo interno tiene exactamente dos hijos
+coding_search_binary_decomposition_invariant	un nodo interno tiene exactamente dos hijos
+atomic_leaf_invariant	la hoja es atómica y se puede comprobar de forma independiente
+coding_search_atomic_leaf_invariant	la hoja es atómica y se puede comprobar de forma independiente
+decomposition_node_identifier	identificador estable direccionado por contenido
+coding_search_decomposition_node_identifier	identificador estable direccionado por contenido
+dotted_child_path	las rutas hijas siguen la convención numérica con puntos
+coding_search_dotted_child_path	las rutas hijas siguen la convención numérica con puntos
+complete_tree_node_count	un árbol completo de profundidad cinco tiene exactamente 63 nodos contando la raíz
+coding_search_complete_tree_node_count	un árbol completo de profundidad cinco tiene exactamente 63 nodos contando la raíz
+agent_cli_ladder_depth_selector	selector de profundidad de la escalera de Agent-CLI
+coding_search_agent_cli_ladder_depth_selector	selector de profundidad de la escalera de Agent-CLI
+leaf_first_ladder_order	las hojas atómicas se ejecutan antes que los padres compuestos
+coding_search_leaf_first_ladder_order_fact	las hojas atómicas se ejecutan antes que los padres compuestos
+fresh_ladder_repository_copy	cada nodo seleccionado se ejecuta en una copia temporal nueva del repositorio
+coding_search_fresh_ladder_repository_copy_fact	cada nodo seleccionado se ejecuta en una copia temporal nueva del repositorio
+real_agent_formal_ai_ladder	el nodo seleccionado usa el Agent CLI real contra el servidor real de Formal AI
+coding_search_real_agent_formal_ai_ladder_fact	el nodo seleccionado usa el Agent CLI real contra el servidor real de Formal AI
+exact_node_path_proof	archivo de prueba observable con la ruta exacta del nodo
+coding_search_exact_node_path_proof_fact	archivo de prueba observable con la ruta exacta del nodo
+complete_binary_tree_not_flat	el caso de estudio describe un árbol y no una lista plana
+coding_search_complete_binary_tree_not_flat_fact	el caso de estudio describe un árbol y no una lista plana
+ladder_leaf_count	la escalera ejecutable formula exactamente 32 hojas atómicas distintas
+coding_search_ladder_leaf_count_fact	la escalera ejecutable formula exactamente 32 hojas atómicas distintas
+generated_child_path_existence	las rutas hijas generadas deben existir en el árbol completo
+coding_search_generated_child_path_existence_fact	las rutas hijas generadas deben existir en el árbol completo
+decomposition_prompt_matrix	las pruebas de descomposición recorren una matriz de peticiones multilingüe
+coding_search_decomposition_prompt_matrix_fact	las pruebas de descomposición recorren una matriz de peticiones multilingüe
+composed_observations_heading	el compositor de notas titula las observaciones de la sesión actual
+coding_search_composed_observations_heading_fact	el compositor de notas titula las observaciones de la sesión actual
+dotted_binary_node_filter	selección de un nodo por su ruta con puntos
+coding_search_dotted_binary_node_filter	selección de un nodo por su ruta con puntos
+decomposition_node_counts	nodos de descomposición en la profundidad
+coding_search_decomposition_node_counts_fact	nodos de descomposición en la profundidad
+coding_search_power_of_two_levels_invariant	niveles de potencias de dos hasta 32
+coding_search_recursive_task_conversion	ejecución del árbol de descomposición
+coding_search_approved_task_strategy	estrategias de descomposición aprobadas
+coding_search_independent_leaf_lower_bound	número mínimo de hojas verificables de forma independiente
+coding_search_issue_creation	comando de creación de incidencias de GitHub

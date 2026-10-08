@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "夢"
+        },
+        "es": {
+          "language": "es",
+          "value": "ensueño"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "睡觉时的幻象"
+        },
+        "es": {
+          "language": "es",
+          "value": "sucesos imaginarios que aparecen en la mente al dormir"
         }
       },
       "aliases": {
@@ -86,6 +94,32 @@
           {
             "language": "zh",
             "value": "做梦"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "ensueno"
+          },
+          {
+            "language": "es",
+            "value": "suenos"
+          },
+          {
+            "language": "es",
+            "value": "sueños"
+          },
+          {
+            "language": "es",
+            "value": "soñar"
+          },
+          {
+            "language": "es",
+            "value": "sueño"
+          },
+          {
+            "language": "es",
+            "value": "ensoñación"
           }
         ]
       }

@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "宗教"
+        },
+        "es": {
+          "language": "es",
+          "value": "religión"
         }
       },
       "descriptions": {
@@ -37,6 +41,10 @@
         "zh": {
           "language": "zh",
           "value": "信仰體系"
+        },
+        "es": {
+          "language": "es",
+          "value": "sistema de creencias, prácticas y valores que vinculan a los seres humanos con lo sagrado, lo divino o lo trascendental"
         }
       },
       "aliases": {
@@ -52,6 +60,92 @@
           {
             "language": "en",
             "value": "spiritual tradition"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "religion"
+          },
+          {
+            "language": "es",
+            "value": "culto"
+          },
+          {
+            "language": "es",
+            "value": "fe"
+          },
+          {
+            "language": "es",
+            "value": "doctrina"
+          },
+          {
+            "language": "es",
+            "value": "sistema de creencias"
+          },
+          {
+            "language": "es",
+            "value": "creencias sagradas"
+          },
+          {
+            "language": "es",
+            "value": "prácticas espirituales"
+          },
+          {
+            "language": "es",
+            "value": "tradición religiosa"
+          },
+          {
+            "language": "es",
+            "value": "espiritualidad organizada"
+          },
+          {
+            "language": "es",
+            "value": "adoración"
+          },
+          {
+            "language": "es",
+            "value": "ritos"
+          },
+          {
+            "language": "es",
+            "value": "confesión religiosa"
+          },
+          {
+            "language": "es",
+            "value": "filosofía religiosa"
+          },
+          {
+            "language": "es",
+            "value": "credo"
+          },
+          {
+            "language": "es",
+            "value": "teología"
+          },
+          {
+            "language": "es",
+            "value": "cosmovisión espiritual"
+          },
+          {
+            "language": "es",
+            "value": "religiones"
+          },
+          {
+            "language": "es",
+            "value": "cultos"
+          },
+          {
+            "language": "es",
+            "value": "teologías"
+          },
+          {
+            "language": "es",
+            "value": "teologias"
+          },
+          {
+            "language": "es",
+            "value": "rito"
           }
         ]
       }

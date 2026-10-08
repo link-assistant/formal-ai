@@ -267,6 +267,10 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-decomposition-ladder
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-definition-merge
     bundle true
     lexicon meaning
@@ -321,6 +325,10 @@ seed_registry
   seed meanings-language-projection
     bundle true
     lexicon meaning
+  seed meanings-language-protocol
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-lexical-meta
     bundle true
     lexicon meaning
@@ -335,6 +343,9 @@ seed_registry
     bundle true
     lexicon meaning
   seed meanings-lexicon-import-04
+    bundle true
+    lexicon meaning
+  seed meanings-lexicon-import-05
     bundle true
     lexicon meaning
   seed meanings-links-root
@@ -470,6 +481,9 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-translation-phrases
+    bundle true
+    web true
   seed meanings-units
     bundle true
     lexicon meaning
@@ -529,6 +543,10 @@ seed_registry
     lexicon response
     web true
   seed multilingual-responses-agentic-tools
+    bundle true
+    lexicon response
+    web true
+  seed multilingual-responses-behavior-rules
     bundle true
     lexicon response
     web true

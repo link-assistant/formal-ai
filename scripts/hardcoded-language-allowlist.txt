@@ -54,8 +54,8 @@ rust/src/agentic_coding/file_read.rs	find {} -maxdepth 1 -type f | sed 's#^.*/##
 rust/src/agentic_coding/file_read/audit.rs	Read {} file(s):
 rust/src/agentic_coding/file_read/audit.rs	Value of `{key}` in `{path}`: {value}
 rust/src/agentic_coding/formalization_recipe.rs	the source text ({})
-rust/src/agentic_coding/general_planner.rs	write the composed plan to {PLAN_PATH}
 rust/src/agentic_coding/general_planner.rs	workspace file {target}
+rust/src/agentic_coding/general_planner.rs	write the composed plan to {PLAN_PATH}
 rust/src/agentic_coding/general_planner.rs	write the requested content to {target}
 rust/src/agentic_coding/general_planner.rs	written plan event {}
 rust/src/agentic_coding/google_trends_catalog.rs	    source_news\n
@@ -248,18 +248,7 @@ rust/src/engine.rs	Статус выполнения: {status_phrase} в сре�
 rust/src/engine.rs	निष्पादन स्थिति: {status_phrase} ({environment} में)।
 rust/src/engine.rs	यहाँ {language_name} में एक न्यूनतम प्रोग्राम है ({task_label}):
 rust/src/engine.rs	这是一个最小的 {language_name} 程序（{task_label}）：
-rust/src/engine_assistant_name.rs	I'm formal AI, and currently I don't have a name. But you can name me as you like.
-rust/src/engine_assistant_name.rs	What is your name?
-rust/src/engine_assistant_name.rs	Как твое имя?
-rust/src/engine_assistant_name.rs	Как тебя зовут?
-rust/src/engine_assistant_name.rs	Я formal AI, и сейчас у меня нет имени. Но вы можете назвать меня как хотите.
-rust/src/engine_assistant_name.rs	आपका नाम क्या है?
-rust/src/engine_responses.rs	What are you?
-rust/src/engine_responses.rs	What do you do in your free time?
-rust/src/engine_responses.rs	What is formal-ai?
-rust/src/engine_responses.rs	Who are you?
 rust/src/engine_responses.rs	add a rule in Links Notation, then run the request again.
-rust/src/engine_responses.rs	Что делаешь в свободное время?
 rust/src/es_meta.rs	token_class {class}
 rust/src/external_benchmarks/cases.rs	no case parser for suite `{other}`
 rust/src/external_benchmarks/cases.rs	{}: record {index} is missing a `target`
@@ -499,83 +488,6 @@ rust/src/solver_handlers/agent_workspace.rs	Execution status: failed in isolated
 rust/src/solver_handlers/agent_workspace.rs	Execution status: {status} in isolated sandbox.\nWorkspace isolation: {} (paths are confined to this workspace; command environment is cleared).\n\nAction log:
 rust/src/solver_handlers/agent_workspace.rs	\nTimed out: true
 rust/src/solver_handlers/agent_workspace.rs	failed to {failed} {}: {}
-rust/src/solver_handlers/behavior_rule_followups.rs	Briefly: {total} behavior rules ({built_in} built-in, {runtime} dialog-local): {groups}.
-rust/src/solver_handlers/behavior_rule_followups.rs	Reasoning: I count the built-in behavior-rule catalog and add dialog-local rules compiled from earlier user turns.
-rust/src/solver_handlers/behavior_rule_followups.rs	Reasoning: मैं built-in behavior-rule catalog गिनता हूँ और पहले user turns से compiled dialog-local rules जोड़ता हूँ.
-rust/src/solver_handlers/behavior_rule_followups.rs	Total behavior rules: {total} (built-in: {built_in}; dialog-local: {runtime}).
-rust/src/solver_handlers/behavior_rule_followups.rs	Всего правил: {total} (встроенных: {built_in}; изученных в этом диалоге: {runtime}).
-rust/src/solver_handlers/behavior_rule_followups.rs	Всего: {total} правил поведения ({built_in} встроенных, {runtime} из диалога). Кратко: {groups}.
-rust/src/solver_handlers/behavior_rule_followups.rs	Рассуждение: я считаю встроенный каталог правил поведения и добавляю правила, скомпилированные из предыдущих сообщений пользователя.
-rust/src/solver_handlers/behavior_rule_followups.rs	कुल व्यवहार नियम: {total} (built-in: {built_in}; dialog-local: {runtime}).
-rust/src/solver_handlers/behavior_rule_followups.rs	कुल: {total} व्यवहार नियम ({built_in} built-in, {runtime} dialog-local). संक्षेप में: {groups}.
-rust/src/solver_handlers/behavior_rule_followups.rs	总计：{total} 条行为规则（{built_in} 条内置，{runtime} 条来自对话）。简要：{groups}。
-rust/src/solver_handlers/behavior_rules.rs	Behavior rule compiled for this dialog.
-rust/src/solver_handlers/behavior_rules.rs	Lists the supported symbolic chat capabilities.
-rust/src/solver_handlers/behavior_rules.rs	Multilingual forms: Russian ``Когда `X` тогда `Y` `` / ``Когда `X` делай `Y` ``, Hindi ``जब `X` तब `Y` ``, Chinese ``当 `X` 时 `Y` ``.
-rust/src/solver_handlers/behavior_rules.rs	Parameterized template catalog से न्यूनतम program लौटाता है.
-rust/src/solver_handlers/behavior_rules.rs	Read one with `Show behavior rule unknown` or `Show behavior rule rule_greeting`.
-rust/src/solver_handlers/behavior_rules.rs	Returns a minimal program from the parameterized template catalog.
-rust/src/solver_handlers/behavior_rules.rs	Returns the assistant-name answer; browser surfaces can override it from the assistant name setting.
-rust/src/solver_handlers/behavior_rules.rs	Send `{}` now and I will answer with the configured response. Export memory to keep this rule message with the dialog.
-rust/src/solver_handlers/behavior_rules.rs	Teach this dialog with: ``When `your prompt` then `your answer` ``. Equivalent forms: ``When I say `your prompt`, answer `your answer` ``; ``If I ask `your prompt`, reply `your answer` ``; ``When `your prompt` do `your answer` ``.
-rust/src/solver_handlers/behavior_rules.rs	The write is append-only: export memory to preserve the rule message with the dialog.
-rust/src/solver_handlers/behavior_rules.rs	To change this behavior in the current dialog, send: ``When `your prompt` then `your answer` ``. Equivalent: ``When I say `your prompt`, answer `your answer` ``.
-rust/src/solver_handlers/behavior_rules.rs	When no earlier rule or handler matches the prompt then respond with the multilingual unknown-intent guide (`List behavior rules`, `Show behavior rule`, `When I say … answer …`, `Report issue`, `Export memory`).
-rust/src/solver_handlers/behavior_rules.rs	When the user asks `What can you do?` or `Что ты умеешь?` then respond with the multilingual capability listing.
-rust/src/solver_handlers/behavior_rules.rs	When the user asks `What is your name?` or `Как тебя зовут?` then respond with the assistant-name answer; if a surface has an assistant-name setting, include that configured name.
-rust/src/solver_handlers/behavior_rules.rs	When the user asks `Who are you?` or `Кто ты?` then respond with `{}`.
-rust/src/solver_handlers/behavior_rules.rs	When the user asks what I do in free time then respond with `{}`.
-rust/src/solver_handlers/behavior_rules.rs	When the user requests a program with a supported `language` and `task`, resolve those parameters and render the matching template through the single `write_program` intent.
-rust/src/solver_handlers/behavior_rules.rs	When the user says `Hi`, `Hello`, or `Hey` then respond with `{}`.
-rust/src/solver_handlers/behavior_rules.rs	When the user says `bye`, `goodbye`, or `пока` then respond with `{}`.
-rust/src/solver_handlers/behavior_rules.rs	When the user says `{}` then respond with `{}`.
-rust/src/solver_handlers/behavior_rules.rs	`language` और `task` parameter: {}
-rust/src/solver_handlers/behavior_rules.rs	`language` 和 `task` 参数：{}
-rust/src/solver_handlers/behavior_rules.rs	`write_program(language, task)` with languages [{}] and tasks [{}]
-rust/src/solver_handlers/behavior_rules.rs	`{}` अभी भेजें और मैं configured response से उत्तर दूँगा. इस rule message को dialog के साथ रखने के लिए memory export करें.
-rust/src/solver_handlers/behavior_rules.rs	assistant-name उत्तर लौटाता है; browser surfaces assistant name setting से इसे बदल सकते हैं.
-rust/src/solver_handlers/behavior_rules.rs	Возвращает минимальную программу из параметризованного каталога шаблонов.
-rust/src/solver_handlers/behavior_rules.rs	Возвращает ответ об имени ассистента; браузерные поверхности могут переопределить его настройкой имени ассистента.
-rust/src/solver_handlers/behavior_rules.rs	Запись добавляется только в конец: экспортируйте память, чтобы сохранить сообщение с правилом вместе с диалогом.
-rust/src/solver_handlers/behavior_rules.rs	Когда ни одно более раннее правило или обработчик не подходит к запросу, ответь многоязычной подсказкой для неизвестного намерения (`Покажи правила`, `Покажи правило`, `Когда ... тогда ...`, `Сообщить о проблеме`, `Экспорт памяти`).
-rust/src/solver_handlers/behavior_rules.rs	Когда пользователь говорит `Hi`, `Hello`, `Hey` или многоязычную фразу приветствия, ответь `{}`.
-rust/src/solver_handlers/behavior_rules.rs	Когда пользователь говорит `bye`, `goodbye`, `poka` или многоязычную фразу прощания, ответь `{}`.
-rust/src/solver_handlers/behavior_rules.rs	Когда пользователь говорит `{}`, ответь `{}`.
-rust/src/solver_handlers/behavior_rules.rs	Когда пользователь просит программу с поддерживаемыми параметрами `language` и `task`, выбери соответствующий шаблон через единое намерение `write_program`.
-rust/src/solver_handlers/behavior_rules.rs	Когда пользователь спрашивает `What can you do?` или `Что ты умеешь?`, ответь многоязычным списком возможностей.
-rust/src/solver_handlers/behavior_rules.rs	Когда пользователь спрашивает `What is your name?` или `Как тебя зовут?`, ответь сообщением об имени ассистента; если поверхность поддерживает настройку имени, включи настроенное имя.
-rust/src/solver_handlers/behavior_rules.rs	Когда пользователь спрашивает `Who are you?` или `Кто ты?`, ответь `{}`.
-rust/src/solver_handlers/behavior_rules.rs	Когда пользователь спрашивает, что я делаю в свободное время, ответь `{}`.
-rust/src/solver_handlers/behavior_rules.rs	Многоязычные формы: английская ``When `X` then `Y` ``, хинди ``जब `X` तब `Y` ``, китайская ``当 `X` 时 `Y` ``.
-rust/src/solver_handlers/behavior_rules.rs	Научить этот диалог можно так: ``Когда `ваш запрос` тогда `ваш ответ` ``. Другие формы: ``Когда я скажу `ваш запрос`, ответь `ваш ответ` ``; ``Если я спрошу `ваш запрос`, ответь `ваш ответ` ``; ``Когда `ваш запрос` делай `ваш ответ` ``.
-rust/src/solver_handlers/behavior_rules.rs	Отправьте `{}` сейчас, и я отвечу настроенным ответом. Экспортируйте память, чтобы сохранить это правило вместе с диалогом.
-rust/src/solver_handlers/behavior_rules.rs	Параметры `language` и `task`: {}
-rust/src/solver_handlers/behavior_rules.rs	Перечисляет поддерживаемые возможности символьного чата.
-rust/src/solver_handlers/behavior_rules.rs	Правило поведения скомпилировано для этого диалога.
-rust/src/solver_handlers/behavior_rules.rs	Прочитать одно правило можно командой `Покажи правило unknown` или `Покажи правило rule_greeting`.
-rust/src/solver_handlers/behavior_rules.rs	Чтобы изменить это поведение в текущем диалоге, отправьте: ``Когда `ваш запрос` тогда `ваш ответ` ``. Также можно: ``Когда я скажу `ваш запрос`, ответь `ваш ответ` ``.
-rust/src/solver_handlers/behavior_rules.rs	इस व्यवहार को वर्तमान संवाद में बदलने के लिए भेजें: ``जब `आपका प्रश्न` तब `आपका उत्तर` ``. दूसरा रूप: ``When I say `your prompt`, answer `your answer` ``.
-rust/src/solver_handlers/behavior_rules.rs	इस संवाद के लिए व्यवहार नियम compile किया गया.
-rust/src/solver_handlers/behavior_rules.rs	इस संवाद को सिखाएँ: ``जब `आपका प्रश्न` तब `आपका उत्तर` ``. अन्य रूप: ``When I say `your prompt`, answer `your answer` ``; ``If I ask `your prompt`, reply `your answer` ``; ``जब `आपका प्रश्न` तो `आपका उत्तर` ``.
-rust/src/solver_handlers/behavior_rules.rs	एक नियम पढ़ने के लिए `Show behavior rule unknown` या `Show behavior rule rule_greeting` भेजें.
-rust/src/solver_handlers/behavior_rules.rs	जब उपयोगकर्ता `Hi`, `Hello`, `Hey` या बहुभाषी greeting phrase कहे, तब `{}` उत्तर दें.
-rust/src/solver_handlers/behavior_rules.rs	जब उपयोगकर्ता `What can you do?` या `Что ты умеешь?` पूछे, तब बहुभाषी capability listing दें.
-rust/src/solver_handlers/behavior_rules.rs	जब उपयोगकर्ता `What is your name?` या `Как тебя зовут?` पूछे, तब assistant-name उत्तर दें; अगर surface में assistant-name setting है, तो configured name शामिल करें.
-rust/src/solver_handlers/behavior_rules.rs	जब उपयोगकर्ता `Who are you?` या `Кто ты?` पूछे, तब `{}` उत्तर दें.
-rust/src/solver_handlers/behavior_rules.rs	जब उपयोगकर्ता `bye`, `goodbye`, `poka` या बहुभाषी farewell phrase कहे, तब `{}` उत्तर दें.
-rust/src/solver_handlers/behavior_rules.rs	जब उपयोगकर्ता `{}` कहे, तब `{}` उत्तर दें.
-rust/src/solver_handlers/behavior_rules.rs	जब उपयोगकर्ता supported `language` और `task` parameter वाला program माँगे, तब single `write_program` intent से matching template दें.
-rust/src/solver_handlers/behavior_rules.rs	जब उपयोगकर्ता पूछे कि मैं खाली समय में क्या करता हूँ, तब `{}` उत्तर दें.
-rust/src/solver_handlers/behavior_rules.rs	जब कोई पहले का rule या handler prompt से मेल न खाए, तब unknown-intent guide दें (`नियम दिखाएँ`, `rule दिखाएँ`, `जब ... तब ...`, `Report issue`, `Export memory`).
-rust/src/solver_handlers/behavior_rules.rs	बहुभाषी रूप: रूसी ``Когда `X` тогда `Y` ``, अंग्रेज़ी ``When `X` then `Y` ``, चीनी ``当 `X` 时 `Y` ``.
-rust/src/solver_handlers/behavior_rules.rs	लेखन केवल append-only है: नियम संदेश को संवाद के साथ रखने के लिए memory export करें.
-rust/src/solver_handlers/behavior_rules.rs	समर्थित symbolic chat क्षमताओं को सूचीबद्ध करता है.
-rust/src/solver_handlers/behavior_rules.rs	当用户说 `Hi`、`Hello`、`Hey` 或多语言问候短语时，回答 `{}`。
-rust/src/solver_handlers/behavior_rules.rs	当用户说 `bye`、`goodbye`、`poka` 或多语言告别短语时，回答 `{}`。
-rust/src/solver_handlers/behavior_rules.rs	当用户说 `{}` 时，回答 `{}`。
-rust/src/solver_handlers/behavior_rules.rs	当用户问 `Who are you?` 或 `Кто ты?` 时，回答 `{}`。
-rust/src/solver_handlers/behavior_rules.rs	当用户问我空闲时间做什么时，回答 `{}`。
-rust/src/solver_handlers/behavior_rules.rs	现在发送 `{}`，我会使用配置的回答。导出 memory 可把这条规则消息随对话一起保存。
 rust/src/solver_handlers/calculator_rate.rs	For currency calculations I use link-calculator. For USD/RUB it returns: {calculation_body}.
 rust/src/solver_handlers/calculator_rate.rs	I recognized this as a question about the USD/RUB rate used for calculations, but link-calculator could not evaluate it: {error}.
 rust/src/solver_handlers/calculator_rate.rs	При расчетах валюты я использую link-calculator. Для USD/RUB он возвращает: {calculation_body}.
@@ -788,12 +700,6 @@ rust/src/telegram.rs	<pre><code class=\"{class}\">
 rust/src/telegram.rs	I can only process Telegram text messages in this implementation. Send a text prompt or a message caption.
 rust/src/telegram.rs	formal-ai {FORMAL_AI_VERSION}
 rust/src/telegram_runtime.rs	curl exited with {status}: {stderr}
-# Issue #918 (MIGRATE4, translation): the rust/src/translation/ rows below are
-# operator diagnostics, not answers. cache.rs and http.rs name a cache or curl
-# failure in an error value that try_translation never shows (a failed pipeline
-# answers the seeded translation_gap_* response); pipeline.rs writes the
-# FORMAL_AI_TRANSLATION_DEBUG stderr trace; wikidata.rs is a SPARQL query. Their user-facing
-# translation wording is seeded translation_* responses.
 rust/src/translation/cache.rs	failed to create cache directory {}: {error}
 rust/src/translation/cache.rs	failed to write cache body {}: {error}
 rust/src/translation/cache.rs	failed to write cache url marker {}: {error}

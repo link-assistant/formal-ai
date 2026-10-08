@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "道路"
+        },
+        "es": {
+          "language": "es",
+          "value": "carretera"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "基础设施"
+        },
+        "es": {
+          "language": "es",
+          "value": "camino ancho que une un lugar con otro, normalmente con una superficie especialmente acondicionada para el tránsito de vehículos"
         }
       },
       "aliases": {
@@ -84,6 +92,24 @@
           {
             "language": "zh",
             "value": "馬路"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "ruta"
+          },
+          {
+            "language": "es",
+            "value": "tráfico rodado"
+          },
+          {
+            "language": "es",
+            "value": "camino"
+          },
+          {
+            "language": "es",
+            "value": "carreteras"
           }
         ]
       }

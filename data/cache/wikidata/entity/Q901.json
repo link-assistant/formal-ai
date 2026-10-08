@@ -19,6 +19,10 @@
         "zh": {
           "language": "zh",
           "value": "科學家"
+        },
+        "es": {
+          "language": "es",
+          "value": "científico"
         }
       },
       "descriptions": {
@@ -33,6 +37,10 @@
         "zh": {
           "language": "zh",
           "value": "使用科學方法做研究的人"
+        },
+        "es": {
+          "language": "es",
+          "value": "persona dedicada al estudio de una ciencia"
         }
       },
       "aliases": {
@@ -52,6 +60,20 @@
           {
             "language": "zh",
             "value": "科学家"
+          }
+        ],
+        "es": [
+          {
+            "language": "es",
+            "value": "científica"
+          },
+          {
+            "language": "es",
+            "value": "cientifico"
+          },
+          {
+            "language": "es",
+            "value": "cientifica"
           }
         ]
       }
