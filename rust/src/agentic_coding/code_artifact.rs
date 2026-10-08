@@ -236,7 +236,7 @@ fn requested_rewrite(task: &str, artifact: &WorkspaceArtifact) -> Option<Workspa
 /// only route to link-cli's `()` creation and deletion shorthands and to
 /// terminal rules. The whole turn must be the query: requiring that keeps the
 /// route unambiguous against ordinary prose that merely contains parentheses.
-fn explicit_substitution_query(task: &str) -> Option<RewriteProgram> {
+pub(super) fn explicit_substitution_query(task: &str) -> Option<RewriteProgram> {
     let trimmed = task.trim();
     if !trimmed.starts_with('(') {
         return None;

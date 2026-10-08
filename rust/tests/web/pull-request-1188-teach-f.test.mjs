@@ -341,6 +341,7 @@ describe('G75: a command is a listing or a search by its own word, never by a wo
 
   test('a silent ls is still an empty folder', async () => {
     assert.equal(await quietRun('ls empty'), 'This folder is empty.');
+    assert.equal(await quietRun('ls'), 'This folder is empty.');
   });
 });
 

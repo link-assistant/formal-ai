@@ -190,8 +190,10 @@ fn clause_insert(
     // (PR #1188 G16). Without a block, the seeded blank line is the line
     // inserted beside it (G31). With a block and a seeded anchor context, a
     // second literal is the line the anchor follows (G51).
-    let blank =
-        block_text.is_none() && contexts.is_empty() && lexicon.mentions_role(BLANK_LINE, &outside);
+    let blank = block_text.is_none()
+        && literals.len() == 1
+        && contexts.is_empty()
+        && lexicon.mentions_role(BLANK_LINE, &outside);
     if let Some(text) = block_text
         && literals.is_empty()
     {

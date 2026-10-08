@@ -59,8 +59,11 @@ fn command_kind(lower: &str) -> Option<&'static str> {
 /// Whether the result labelled `label` is a listing.
 pub(super) fn is_listing(label: &str) -> bool {
     let lower = label.to_ascii_lowercase();
+    if let Some(kind) = command_kind(&lower) {
+        return kind == "listing";
+    }
     if is_command(&lower) {
-        return command_kind(&lower) == Some("listing");
+        return false;
     }
     lower.contains("list") || lower.contains("glob")
 }
@@ -68,8 +71,11 @@ pub(super) fn is_listing(label: &str) -> bool {
 /// Whether the result labelled `label` is a search.
 pub(super) fn is_search(label: &str) -> bool {
     let lower = label.to_ascii_lowercase();
+    if let Some(kind) = command_kind(&lower) {
+        return kind == "search";
+    }
     if is_command(&lower) {
-        return command_kind(&lower) == Some("search");
+        return false;
     }
     ["grep", "find", "search"]
         .iter()

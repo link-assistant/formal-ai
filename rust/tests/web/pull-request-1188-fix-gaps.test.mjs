@@ -287,3 +287,28 @@ test('G115: replacement preserves a new-only source newline escape', async () =>
   const { files } = await drive('In f.mjs replace «' + old + '» with «' + next + '»', { 'f.mjs': old });
   assert.equal(files.get('f.mjs'), next);
 });
+
+
+test('formal rewrite queries validate escaped literals before the prose quote guard', async () => {
+  const source = 'fn main() {\n    println!("Hello, world!");\n}\n';
+  const query = '((terminal: "    println!(\\\"Hello, world!\\\");\\n")) ()';
+  const messages = [
+    { role: 'user', content: 'Give me a hello world program in Rust' },
+    { role: 'assistant', content: '', tool_calls: [{ id: 'written', type: 'function', function: {
+      name: 'write', arguments: JSON.stringify({ filePath: 'main.rs', content: source }),
+    } }] },
+    { role: 'tool', tool_call_id: 'written', content: '' },
+    { role: 'user', content: query },
+  ];
+  const read = await planChatStep(messages, ['read', 'write']);
+  assert.equal(read.kind, 'tool_calls');
+  assert.equal(read.calls[0].tool, 'read');
+  messages.push({ role: 'assistant', content: '', tool_calls: [{ id: 'read', type: 'function', function: {
+    name: 'read', arguments: read.calls[0].arguments,
+  } }] }, { role: 'tool', tool_call_id: 'read', content: source });
+  const write = await planChatStep(messages, ['read', 'write']);
+  assert.equal(write.calls[0].tool, 'write');
+  assert.equal(JSON.parse(write.calls[0].arguments).content, 'fn main() {\n}\n');
+  const { explicitSubstitutionQuery } = await import('../../../js/agentic/code_artifact.mjs');
+  assert.equal(explicitSubstitutionQuery('((terminal: "unterminated)) ()'), null);
+});
