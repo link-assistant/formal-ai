@@ -41,7 +41,7 @@ struct Entity {
 
 impl Entity {
     fn label(&self, key: &str) -> Option<&str> {
-        lookup(&self.labels, key)
+        lookup(&self.labels, key).map(String::as_str)
     }
 }
 
