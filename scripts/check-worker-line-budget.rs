@@ -445,11 +445,12 @@ mod tests {
         // A non-JS sibling must be ignored.
         fs::write(repo.join(WORKER_DIR).join("README.md"), "notes\n").unwrap();
 
+        // Sorted by path: `concept_queries…` before `seed_responses…`.
         let files = collect_worker_files(&repo);
         assert_eq!(files.len(), 2);
-        assert_eq!(files[0].path, "js/worker/formal_ai_worker_seed_responses_and_language.js");
-        assert_eq!(files[0].lines, 12);
-        assert_eq!(files[1].lines, 8);
+        assert_eq!(files[0].path, "js/worker/formal_ai_worker_concept_queries_and_arithmetic.js");
+        assert_eq!(files[0].lines, 8);
+        assert_eq!(files[1].lines, 12);
         assert_eq!(total_lines(&files), 20);
     }
 
