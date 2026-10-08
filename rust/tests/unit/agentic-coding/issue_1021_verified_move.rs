@@ -198,3 +198,32 @@ fn a_move_of_a_missing_source_stops_on_the_first_check() {
     assert_eq!(commands, vec![String::from("test -e report.txt")]);
     assert!(!answer.to_lowercase().contains("completed the"), "{answer}");
 }
+
+#[test]
+fn declared_directory_options_bind_paths_without_leaking_flags() {
+    let command = "mkdir -p -m 700 -- \"evidence rows/nested\"";
+    assert_eq!(
+        verified_recipe(command),
+        Some(vec![
+            String::from("test ! -e \"evidence rows/nested\" || test -d \"evidence rows/nested\""),
+            command.to_owned(),
+            String::from("test -d \"evidence rows/nested\""),
+        ])
+    );
+}
+
+#[test]
+fn source_collections_check_each_expanded_destination_without_implicit_overwrite() {
+    let recipe = verified_recipe("cp logs/*.log evidence/").expect("collection recipe");
+    assert_eq!(recipe.len(), 6);
+    assert!(recipe[0].starts_with("for formal_ai_source in logs/*.log;"));
+    assert!(recipe[0].contains("test -e \"$formal_ai_source\""));
+    assert!(recipe[1].contains("test ! -e \"$formal_ai_destination\""));
+    assert_eq!(recipe[3], "cp logs/*.log evidence/");
+    assert!(recipe[4].contains("test -e \"$formal_ai_destination\""));
+    assert!(recipe[5].contains("test -e \"$formal_ai_source\""));
+    let forced = verified_recipe("cp -f logs/*.log evidence/").expect("consented recipe");
+    assert_eq!(forced.len(), 5);
+    assert!(!forced.iter().any(|step| step.contains("test ! -e")));
+    assert!(forced[0].contains("test -e \"$formal_ai_source\""));
+}

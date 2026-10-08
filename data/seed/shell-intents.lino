@@ -765,6 +765,13 @@ shell_intents
       command mkdir
       argument "name_lead"
       effect
+        flag "-p"
+        flag "--parents"
+        value_option "-m"
+        value_option "--mode"
+        reuse_option "-p"
+        reuse_option "--parents"
+        before_reuse "test ! -e {path} || test -d {path}"
         before "test ! -e {path}"
         after "test -d {path}"
       language en
@@ -855,6 +862,19 @@ shell_intents
       command cp
       argument two_paths
       effect
+        flag "-f"
+        flag "--force"
+        flag "-n"
+        flag "--no-clobber"
+        flag "-r"
+        flag "-R"
+        flag "--recursive"
+        flag "-a"
+        flag "-p"
+        reuse_option "-f"
+        reuse_option "--force"
+        before_reuse "test -e {source}"
+        directory_targets true
         before "test -e {source}"
         before "test ! -e {destination}"
         prepare "mkdir -p -- {destination_parent}"
@@ -877,6 +897,14 @@ shell_intents
       command mv
       argument two_paths
       effect
+        flag "-f"
+        flag "--force"
+        flag "-n"
+        flag "--no-clobber"
+        reuse_option "-f"
+        reuse_option "--force"
+        before_reuse "test -e {source}"
+        directory_targets true
         before "test -e {source}"
         before "test ! -e {destination}"
         prepare "mkdir -p -- {destination_parent}"

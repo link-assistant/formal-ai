@@ -799,6 +799,26 @@ multilingual_responses
     intent tool_result_failed_exit_code
     language es
     text "El comando falló: `{tool}` terminó con código {exit_code}.\n\n```text\n{error}\n```"
+  response response_mutating_action_observed_failure_en
+    intent mutating_action_observed_failure
+    language en
+    text "I attempted `{action}`. The step `{check}` exited {exit_code}, so completion is not verified."
+  response response_mutating_action_observed_failure_ru
+    intent mutating_action_observed_failure
+    language ru
+    text "Я попытался выполнить `{action}`. Шаг `{check}` завершился с кодом {exit_code}, поэтому завершение не подтверждено."
+  response response_mutating_action_observed_failure_hi
+    intent mutating_action_observed_failure
+    language hi
+    text "मैंने `{action}` चलाने का प्रयास किया। चरण `{check}` {exit_code} कोड के साथ समाप्त हुआ, इसलिए पूरा होना सत्यापित नहीं है।"
+  response response_mutating_action_observed_failure_zh
+    intent mutating_action_observed_failure
+    language zh
+    text "我尝试执行了 `{action}`。步骤 `{check}` 以退出码 {exit_code} 结束，因此尚未验证操作完成。"
+  response response_mutating_action_observed_failure_es
+    intent mutating_action_observed_failure
+    language es
+    text "Intenté ejecutar `{action}`. El paso `{check}` terminó con código {exit_code}, así que la finalización no está verificada."
   response response_mutating_action_completed_en
     intent mutating_action_completed
     language en
@@ -1319,3 +1339,43 @@ multilingual_responses
     intent module_exports_none
     language es
     text "`{path}` no exporta ninguna función."
+  response read-file-tool-schema-en
+    intent read-file-tool-schema
+    language en
+    text "Read observed workspace file bytes. Arguments: path string."
+  response read-file-tool-schema-ru
+    intent read-file-tool-schema
+    language ru
+    text "Читает байты файла рабочей области. Аргументы: path — строка."
+  response read-file-tool-schema-hi
+    intent read-file-tool-schema
+    language hi
+    text "कार्यक्षेत्र फ़ाइल के देखे गए बाइट पढ़ता है। तर्क: path स्ट्रिंग।"
+  response read-file-tool-schema-zh
+    intent read-file-tool-schema
+    language zh
+    text "读取工作区文件的实际字节。参数：path 字符串。"
+  response read-file-tool-schema-es
+    intent read-file-tool-schema
+    language es
+    text "Lee los bytes observados del archivo del espacio de trabajo. Argumentos: path cadena."
+  response general-plan-append-action-en
+    intent general-plan-append-action
+    language en
+    text "append the composed plan to {plan_path}"
+  response general-plan-append-action-ru
+    intent general-plan-append-action
+    language ru
+    text "добавить составленный план в {plan_path}"
+  response general-plan-append-action-hi
+    intent general-plan-append-action
+    language hi
+    text "बनाई गई योजना को {plan_path} में जोड़ें"
+  response general-plan-append-action-zh
+    intent general-plan-append-action
+    language zh
+    text "将组合计划追加到 {plan_path}"
+  response general-plan-append-action-es
+    intent general-plan-append-action
+    language es
+    text "anexar el plan compuesto a {plan_path}"

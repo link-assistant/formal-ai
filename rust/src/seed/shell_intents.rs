@@ -56,6 +56,16 @@ pub enum ShellIntentArgument {
 /// for verbs it has never heard of.
 #[derive(Debug, Clone, Default)]
 pub struct ShellIntentEffect {
+    /// Declared options with no following value.
+    pub flags: Vec<String>,
+    /// Declared options that consume a following or attached value.
+    pub value_options: Vec<String>,
+    /// Explicit consent to the declared reuse preconditions.
+    pub reuse_options: Vec<String>,
+    /// Preconditions for the explicitly requested reuse mode.
+    pub before_reuse: Vec<String>,
+    /// Source collections may target a directory, with one target per basename.
+    pub directory_targets: bool,
     /// Predicates that must hold *before* the action runs, in order.
     pub before: Vec<String>,
     /// Commands that make the workspace ready for the action (`mkdir -p`).
@@ -343,6 +353,11 @@ fn parse_intent_effect(node: &LinoNode) -> ShellIntentEffect {
             .collect()
     };
     ShellIntentEffect {
+        flags: templates("flag"),
+        value_options: templates("value_option"),
+        reuse_options: templates("reuse_option"),
+        before_reuse: templates("before_reuse"),
+        directory_targets: node.find_child_value("directory_targets") == "true",
         before: templates("before"),
         prepare: templates("prepare"),
         after: templates("after"),
