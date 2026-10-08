@@ -23,9 +23,11 @@ Keep the available slots busy. This environment admits four active agents includ
 
 All requirement, code, test and documentation changes go through Formal AI or the checked generation rules. A repaired planner must be exercised against the original task. Preserve failures and any exceptional repair authorship honestly in the dogfood tally.
 
+Check JavaScript syntax after changing a module the driver imports, before other agents start a fresh driver. Helper modules must guard executable entry points so importing them cannot apply a draft twice. If an unfinished repair prevents boot, temporarily supply only that module from a known-good committed source through an in-memory Node loader, ask Formal AI to restore the reviewed source, and verify syntax plus an unmasked fresh-process retry. The loader is bootstrap infrastructure; all repository mutations still go through Formal AI. Keep the failed requests and actual tool effects.
+
 ## Commits and push barriers
 
-Create many small, coherent commits as completed pieces become reviewable. Use an isolated Git index to avoid committing another agent's unfinished files. Do not push each individual change.
+Create many small, coherent commits as completed pieces become reviewable. Serialize commits with the shared atomic directory lock `/private/tmp/formal-ai-pr1188-commit.lock`: acquire it before reading HEAD or creating the private index, stage only owned files, confirm HEAD still equals the captured base, commit, refresh the default index and release the lock. A private index based on an older HEAD can otherwise revert another agent's committed work. Do not push each individual change.
 
 The coordinator pushes only at one of two barriers: all contributing subagents have completed their current bulk batch, or every fix in the current CI/CD failure batch is fully committed. Before a push, inspect the complete committed batch and make required generated records current. New unrelated work can remain in the working tree.
 

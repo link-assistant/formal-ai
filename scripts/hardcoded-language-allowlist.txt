@@ -55,7 +55,6 @@ rust/src/agentic_coding/file_read/audit.rs	Read {} file(s):
 rust/src/agentic_coding/file_read/audit.rs	Value of `{key}` in `{path}`: {value}
 rust/src/agentic_coding/formalization_recipe.rs	the source text ({})
 rust/src/agentic_coding/general_planner.rs	workspace file {target}
-rust/src/agentic_coding/general_planner.rs	write the composed plan to {PLAN_PATH}
 rust/src/agentic_coding/general_planner.rs	write the requested content to {target}
 rust/src/agentic_coding/general_planner.rs	written plan event {}
 rust/src/agentic_coding/google_trends_catalog.rs	    source_news\n

@@ -22,8 +22,8 @@ requirement_status_ledger_shard
     automated_test "rust/tests/unit/repository-workspace/issue_1138_repository_workspace.rs"
   requirement
     id "R1138-3-5"
-    verdict "partial"
-    automated_test "rust/tests/web/issue-1138-protocol-trace.test.mjs"
+    verdict "implemented"
+    automated_test "rust/tests/web/repository-workspace-node.test.mjs"
   requirement
     id "R1138-3-6"
     verdict "implemented"

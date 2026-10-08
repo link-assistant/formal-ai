@@ -4,7 +4,7 @@ requirement_status_ledger
   verdict_vocabulary "implemented | partial | not-delivered | superseded | withdrawn"
   manual_column "aspirational since 2026-09-30 (issue #1090): not yet confirmed rows carry no debt"
   requirement_count 1369
-  implemented_count 1312
+  implemented_count 1313
   shard "data/meta/requirement-status-ledger/doctrine-standing-doctrine-compiled-logic-interfacing-only-javascript-2026-08-04.lino"
   shard "data/meta/requirement-status-ledger/doctrine-standing-doctrine-javascript-first-full-parity-then-translate-2026-10-06.lino"
   shard "data/meta/requirement-status-ledger/doctrine-standing-doctrine-javascript-server-parity-2026-10-07.lino"

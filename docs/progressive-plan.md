@@ -10,8 +10,8 @@ requirement is on a resolution level, and the next pass raises the lowest level 
 | 0 closed | superseded or withdrawn; no pass raises it | 8 |
 | 1 recorded | the row exists, nothing measures it yet | 1 |
 | 2 measured | a test pins it, but the row says it is not delivered | 2 |
-| 3 partial | delivered in part | 46 |
-| 4 implemented | delivered, with a test | 1312 |
+| 3 partial | delivered in part | 45 |
+| 4 implemented | delivered, with a test | 1313 |
 | | **all** | **1369** |
 
 ## JavaScript first
@@ -20,9 +20,9 @@ The root the test that pins each requirement runs in (R1188-U29: the JavaScript 
 
 | Pinned by | Requirements |
 | --- | ---: |
-| a JavaScript test | 432 |
+| a JavaScript test | 433 |
 | a Rust test only | 921 |
-| no test | 16 |
+| no test | 15 |
 
 ## Next pass
 
@@ -49,7 +49,6 @@ Level 1 (recorded): 1 requirement(s) to raise before any level above it is refin
 - `docs/requirements/issue-0914-vision-implementation-planning-coding-first.md`: R914-5, R914-6
 - `docs/requirements/issue-1021-full-range-coding-and-contribution-artifacts.md`: R1021-22
 - `docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md`: R1085-9, R1085-15
-- `docs/requirements/issue-1138-repository-workspace-protocol.md`: R1138-3-5
 - `docs/requirements/issue-1165-discovery-production-path.md`: R1165-1, R1165-2, R1165-4, R1165-8
 - `docs/requirements/issue-1173-no-canned-search-answer.md`: R1173-3
 - `docs/requirements/issue-1186-formalization-as-a-user-facing-task.md`: R1186-4

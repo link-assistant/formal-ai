@@ -55,9 +55,15 @@ test('U25: no Rust builds and no repository copies on the workstation', () => {
   assert.match(read('data/meta/ci-gates/check-disk-usage-policy.lino'), /disk policy/u);
 });
 
-test('U26: one subagent is the CI fixer and commits as each run reports', () => {
+test('U26: the CI fixer continuously monitors and uses the coordinated batch barrier', () => {
   const task = read('experiments/formal_ai_subagent/tasks/cifix-loop.md');
-  assert.match(task, /You commit and push CI fixes as soon as each run reports/u);
+  assert.match(task, /continuously monitor CI\/CD/u);
   assert.match(task, /R1188-U26/u);
-  assert.match(task, /never commit; LEAD integrates/u);
+  assert.match(task, /never push independently/u);
+  assert.match(task, /every fix in the current CI failure batch is fully committed/u);
+  assert.match(task, /before reading HEAD/u);
+  const arrangement = read('docs/case-studies/pull-request-1188/multi-agent-workflow.md');
+  assert.match(arrangement, /four active agents including the coordinator/u);
+  assert.match(arrangement, /must never implement the requirement itself manually/u);
+  assert.match(arrangement, /retry the original request unchanged/u);
 });

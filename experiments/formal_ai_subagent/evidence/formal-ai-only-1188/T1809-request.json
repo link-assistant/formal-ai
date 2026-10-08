@@ -1,0 +1,13 @@
+{
+  "id": "T1809",
+  "dir": "/private/tmp/formal-ai-only-1188/composition-fixtures",
+  "steps": 12,
+  "prompt": "Read solver_formalization.mjs and translation_formalization.mjs and selected-summary.test.mjs. Explain a general implementation mechanism that can compose existing exports to meet these fixtures without coordinator-supplied wrapper bodies. Identify actual declaration spans, source content identities, input/result/effect contracts, aliases and import dependencies, optional candidate handling, and fixed acceptance evidence. State exactly what the current planner cannot do. Produce the repair plan as the final answer only.",
+  "tools": [
+    "read",
+    "grep",
+    "list",
+    "glob"
+  ],
+  "purpose": "Original broad Formal AI repair-plan ask with read-only tools"
+}

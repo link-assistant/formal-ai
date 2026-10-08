@@ -1,10 +1,11 @@
 {
   "first_task": "T1600",
-  "last_task": "T1632",
-  "invocations": 33,
-  "failed_task_outcomes": 6,
+  "last_completed_task": "T1630",
+  "invocations": 31,
+  "failed_task_outcomes": 5,
   "non_plan_write_edit_calls": 24,
   "manual_source_document_test_edits": 0,
+  "transcript_bytes": 2613992,
   "actual_model_tokens": null,
   "actual_cost": null,
   "closest_regressions": {
@@ -12,12 +13,12 @@
     "local_search_selected_passed": 21,
     "unselected_skipped": 25
   },
-  "native_validation": "Standalone rustfmt; native compile and runtime tests remain CI only.",
-  "worker_budget": "Unchanged ceilings; check passed.",
-  "G126": "Authored literal pin and content cue scope repaired.",
-  "G127": "Direct workspace listing vs catalog alias and later existential clause repaired.",
-  "G112": "Broad source implementation asks remain open.",
-  "L07": "Obsolete GREETING_EXAMPLES task remains failed; current canonical seed task separately proves source effect, proof and greeting caller.",
-  "T1631": "Quoted Node evidence collector misrouted to websearch; remains an open shell capability failure. T1632 simpler copier is a recorded workaround.",
-  "transcript_bytes": 2616350
+  "native_validation": "standalone rustfmt only; native compile and runtime tests reserved for CI",
+  "worker_budget": "unchanged ceilings; check passed",
+  "gap_scope": {
+    "G126": "authored literal pin/content cue scope fixed",
+    "G127": "direct workspace enumeration vs catalog and later existential clause fixed",
+    "G112": "broad source implementation synthesis remains open",
+    "L07": "obsolete GREETING_EXAMPLES request remains failed; current canonical greeting seed task separately passes source/effect/proof and runtime meaning"
+  }
 }

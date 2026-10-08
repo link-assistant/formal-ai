@@ -9,16 +9,17 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 
 | Who | Tasks | Passed | Failed | Partial | Fixed | Open | Not reproduced | Unresolved |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **All** | 427 | 243 | 165 | 5 | 160 | 5 | 5 | 0 |
+| **All** | 1207 | 938 | 233 | 22 | 206 | 44 | 5 | 0 |
 | CHAT-ROUTES | 13 | 10 | 3 | 0 | 3 | 0 | 0 | 0 |
 | CI-SPEED | 6 | 6 | 0 | 0 | 0 | 0 | 0 | 0 |
-| CIFIX | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
+| CIFIX | 177 | 173 | 4 | 0 | 4 | 0 | 0 | 0 |
 | CIFIX2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
-| coordinator | 153 | 25 | 115 | 1 | 114 | 1 | 1 | 0 |
+| coordinator | 276 | 132 | 128 | 4 | 124 | 7 | 1 | 0 |
 | DEBUG2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
 | DEBUG3 | 2 | 1 | 1 | 0 | 1 | 0 | 0 | 0 |
 | DISCOVER | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | FIX-GAPS | 15 | 15 | 0 | 0 | 0 | 0 | 0 | 0 |
+| FORMAL-AI-ONLY | 44 | 29 | 12 | 3 | 3 | 12 | 0 | 0 |
 | GENERALIZE | 16 | 16 | 0 | 0 | 0 | 0 | 0 | 0 |
 | LEAD | 18 | 16 | 0 | 1 | 1 | 0 | 0 | 0 |
 | LEXEMES | 4 | 3 | 1 | 0 | 1 | 0 | 0 | 0 |
@@ -28,13 +29,16 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 | READABLE | 10 | 8 | 2 | 0 | 2 | 0 | 0 | 0 |
 | RENAME | 47 | 39 | 8 | 0 | 6 | 0 | 2 | 0 |
 | REPO-PROTO | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
+| REPO-RUNNERS | 89 | 78 | 5 | 6 | 11 | 0 | 0 | 0 |
 | REQ-AUDIT | 9 | 9 | 0 | 0 | 0 | 0 | 0 | 0 |
 | REQ-ROUTE | 12 | 7 | 5 | 0 | 4 | 0 | 1 | 0 |
+| ROOT | 170 | 158 | 10 | 2 | 8 | 4 | 0 | 0 |
 | ROUTE2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
 | ROUTE3 | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | SCRIPTS-A | 5 | 4 | 1 | 0 | 1 | 0 | 0 | 0 |
 | SCRIPTS-B | 5 | 5 | 0 | 0 | 0 | 0 | 0 | 0 |
 | SPANISH | 3 | 2 | 1 | 0 | 1 | 0 | 0 | 0 |
+| SPEC-DELIVERY | 178 | 150 | 25 | 3 | 11 | 17 | 0 | 0 |
 | SPEC-PARITY | 15 | 11 | 2 | 2 | 0 | 4 | 0 | 0 |
 | TEACH-C | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | TEACH-F | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
@@ -53,7 +57,12 @@ and the files it wrote itself. A tool run by rule counts as neither.
 
 | Who | By Formal AI | By hand | Delegated share |
 | --- | ---: | ---: | ---: |
-| **All** | 203 | 71 | 74% |
+| **All** | 730 | 72 | 91% |
+| CIFIX | 212 | 0 | 100% |
+| FORMAL-AI-ONLY | 111 | 0 | 100% |
 | LEAD | 9 | 41 | 18% |
 | RENAME | 157 | 16 | 91% |
+| REPO-RUNNERS | 23 | 1 | 96% |
+| ROOT | 49 | 0 | 100% |
+| SPEC-DELIVERY | 132 | 0 | 100% |
 | TRANSLATE | 37 | 14 | 73% |
