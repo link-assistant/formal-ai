@@ -1213,7 +1213,7 @@ line number, which had gone stale for every row.
 | R1085-11 | docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md | none recorded | rust/tests/unit/issue_1085_upstream_frontier.rs | not yet confirmed |
 | R1085-14 | docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md | none recorded | rust/tests/unit/issue_1138_frontier_classes.rs, rust/tests/unit/issue_869_meeting_scheduling.rs | not yet confirmed |
 | R1085-15 | docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md | none recorded | rust/tests/unit/issue_1088_evidence_index.rs | not yet confirmed |
-| R1085-16 | docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md | none recorded | rust/tests/web/r1085-16-ci-gate-justifications.test.mjs | not yet confirmed |
+| R1085-16 | docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md | PR #1188, 2026-10-08 | rust/tests/web/r1085-16-ci-gate-justifications.test.mjs | not yet confirmed |
 | R1085-17 | docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md | none recorded | rust/tests/unit/issue_1090_manual_column_retired.rs | not yet confirmed |
 | R1138-B7-1 | docs/requirements/issue-1138-learning-effects.md | none recorded | rust/tests/unit/issue_1138_learned_items_change_answers.rs | not yet confirmed |
 | R1138-B7-2 | docs/requirements/issue-1138-learning-effects.md | none recorded | rust/tests/unit/issue_1138_learning_ratchet.rs | not yet confirmed |
