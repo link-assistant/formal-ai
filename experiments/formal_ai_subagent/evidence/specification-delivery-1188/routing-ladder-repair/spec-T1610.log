@@ -1,0 +1,335 @@
+>> read {"filePath":"data/seed/meanings-conversation.lino","file_path":"data/seed/meanings-conversation.lino","path":"data/seed/meanings-conversation.lino"}
+   <file>
+   00001| meanings
+   00002|   conversation_preference_avoid
+   00003|     defined-by inquiry
+   00004|     defined-by conversation_reference
+   00005|     role conversation_preference_avoid
+   00006|     lexeme en "do not use" "stop using" "avoid using"
+   00007|     lexeme ru "не используй" "не используйте"
+   00008|     lexeme hi "उपयोग मत करो" "इस्तेमाल मत करो"
+   00009|     lexeme zh 不要使用 别再用
+   00010|     lexeme es "no uses" "deja de usar" "evita usar"
+   00011|   unauthorized_mutation_correction
+   00012|     defined-by inquiry
+   00013|     defined-by conversation_reference
+   00014|     role unauthorized_mutation_correction
+   00015|     lexeme en "i did not ask to update" "i did not ask to change"
+   00016|     lexeme ru "я не просил обновлять" "я не просила обновлять"
+   00017|     lexeme hi "मैंने अपडेट करने को नहीं कहा"
+   00018|     lexeme zh 我没让你更新
+   00019|     lexeme es "no te pedí actualizar" "no te pedí cambiar"
+   00020|   memory_link_count_query
+   00021|     defined-by inquiry
+   00022|     defined-by knowledge
+   00023|     role memory_link_count_query
+   00024|     lexeme en "how many links are in your memory"
+   00025|     lexeme ru "сколько ссылок в твоей памяти"
+   00026|     lexeme hi "तुम्हारी स्मृति में कितने लिंक हैं"
+   00027|     lexeme zh 你的记忆中有多少链接
+   00028|     lexeme es "cuántos enlaces hay en tu memoria"
+   00029|   memory_inventory_query
+   00030|     defined-by inquiry
+   00031|     defined-by knowledge
+   00032|     role memory_inventory_query
+   00033|     lexeme en "what is available in your local memory"
+   00034|     lexeme ru "что доступно в твоей локальной памяти"
+   00035|     lexeme hi "तुम्हारी स्थानीय स्मृति में क्या उपलब्ध है"
+   00036|     lexeme zh 你的本地记忆中有什么
+   00037|     lexeme es "qué hay disponible en tu memoria local"
+   00038|   memory_root_links_query
+   00039|     defined-by inquiry
+   00040|     defined-by knowledge
+   00041|     role memory_root_links_query
+   00042|     lexeme en "give me root links you have in your memory" "show root links in your memory"
+   00043|     lexeme ru "покажи корневые ссылки в твоей памяти"
+   00044|     lexeme hi "अपनी स्मृति के रूट लिंक दिखाओ"
+   00045|     lexeme zh 显示你记忆中的根链接
+   00046|     lexeme es "muéstrame los enlaces raíz de tu memoria" "dame los enlaces raíz que tienes en tu memoria"
+   00047|   memory_retrieval_correction
+   00048|     defined-by inquiry
+   00049|     defined-by knowledge
+   00050|     role memory_retrieval_correction
+   00051|     lexeme en "not about document generation it is about associative memory data retrieval"
+   00052|     lexeme ru "речь не о создании документа а об извлечении данных из ассоциативной памяти"
+   00053|     lexeme hi "यह दस्तावेज़ बनाने के बारे में नहीं बल्कि एसोसिएटिव मेमोरी डेटा प्राप्त करने के बारे में है"
+   00054|     lexeme zh 这不是生成文档而是检索关联记忆数据
+   00055|     lexeme es "no se trata de generar documentos sino de recuperar datos de la memoria asociativa"
+   00056|   conversation_topic_opener
+   00057|     defined-by inquiry
+   00058|     defined-by action
+   00059|     role conversation_topic_opener
+   00060|     lexeme en "let's talk about …" "lets talk about …" "can we talk about …" "talk about …"
+   00061|     lexeme ru
+   00062|       surface
+   00063|         text "давай поговорим о …"
+   00064|       surface
+   00065|         text "давай поговорим об …"
+   00066|       surface
+   00067|         text "давайте поговорим о …"
+   00068|       surface
+   00069|         text "давайте поговорим об …"
+   00070|       surface
+   00071|         text "поговорим о …"
+   00072|         action scan
+   00073|       surface
+   00074|         text "поговорим об …"
+   00075|       surface
+   00076|         text "обсудим …"
+   00077|     lexeme hi "चलो बात करें …" "बात करें …"
+   00078|     lexeme zh 聊聊… 谈谈…
+   00079|     lexeme es "hablemos de …" "hablemos sobre …" "podemos hablar de …"
+   00080|   conversation_recall_query
+   00081|     defined-by inquiry
+   00082|     defined-by conversation_reference
+   00083|     role conversation_recall_query
+   00084|     lexeme en
+   00085|       words "when did i ask about …" "when did i ask …" "when did i mention …" "when did i talk about …"
+   00086|       words "have i asked about …" "have i mentioned …" "did i ask about …" "did i mention …"
+   00087|       words "search my conversations for …" "search conversations for …" "search my chats for …" "recall …"
+   00088|     lexeme ru
+   00089|       words "когда я спрашивал про …" "когда я спрашивал о …" "когда я спрашивал …" "когда я упоминал …"
+   00090|       words "поиск по беседам …" "поиск в беседах …" "найди в беседах …"
+   00091|     lexeme hi "मेरी बातचीत में खोजो …" "मेरी चैट में खोजो …" "याद करो …"
+   00092|     lexeme zh 我什么时候问过… 我什么时候提到… 搜索我的对话… 在对话中搜索…
+   00093|     lexeme es
+   00094|       words "cuándo pregunté por …" "cuándo pregunté …" "cuándo mencioné …" "he preguntado por …" "he mencionado …"
+   00095|       words "busca en mis conversaciones …" "busca en las conversaciones …"
+   00096|   conversation_recall_previous_message
+   00097|     defined-by inquiry
+   00098|     defined-by conversation_reference
+   00099|     role conversation_recall_previous_message
+   00100|     lexeme en
+   00101|       words "what was written in the previous message" "what was in the previous message"
+   00102|       words "what did the previous message say" "what was the previous message" "what was the last message"
+   00103|       words "what was written before" "show the previous message" "the previous message" "previous message"
+   00104|     lexeme ru
+   00105|       words "что было написано в прошлом сообщении" "что было в прошлом сообщении"
+   00106|       words "что было написано в предыдущем сообщении" "что было в предыдущем сообщении" "в прошлом сообщении"
+   00107|       words "в предыдущем сообщении" "покажи прошлое сообщение" "прошлое сообщение" "предыдущее сообщение"
+   00108|     lexeme hi
+   00109|       words "पिछले संदेश में क्या लिखा था" "पिछले संदेश में क्या था" "पिछला संदेश क्या था" "पिछला संदेश दिखाओ"
+   00110|       words "पिछले संदेश में" "पिछला संदेश"
+   00111|     lexeme zh 上一条消息写了什么 上一条消息是什么 显示上一条消息 上一条消息 前一条消息 上条消息
+   00112|     lexeme es
+   00113|       words "qué estaba escrito en el mensaje anterior" "qué había en el mensaje anterior"
+   00114|       words "qué decía el mensaje anterior" "cuál fue el mensaje anterior" "muestra el mensaje anterior"
+   00115|       words "el mensaje anterior" "mensaje anterior"
+   00116|   conversation_recall_previous_user_message
+   00117|     defined-by inquiry
+   00118|     defined-by conversation_reference
+   00119|     role conversation_recall_previous_user_message
+   00120|     lexeme en
+   00121|       words "what did i ask" "what did i ask in the previous message" "what did i ask in the last message"
+   00122|       words "what was my previous question" "what was the previous question" "what was my last question"
+   00123|       words "what was my previous message" "repeat my last message" "what did i say"
+   00124|     lexeme ru
+   00125|       words "что я спрашивал" "я что спрашивал" "а я что спрашивал" "а что я спрашивал"
+   00126|       words "что я спрашивал в прошлом сообщении" "что я спрашивал в предыдущем сообщении" "что я спросил"
+   00127|       words "что я просил" "что я писал" "какой был мой прошлый вопрос" "какой был мой предыдущий вопрос"
+   00128|     lexeme hi "मैंने क्या पूछा था" "मेरा पिछला सवाल क्या था" "मैंने पिछले संदेश में क्या पूछा था"
+   00129|     lexeme zh 我刚才问了什么 我之前问了什么 我的上一个问题是什么
+   00130|     lexeme es
+   00131|       words "qué pregunté" "qué pregunté en el mensaje anterior" "cuál fue mi pregunta anterior"
+   00132|       words "cuál fue mi última pregunta" "repite mi último mensaje" "qué dije"
+   00133|   conversation_recall_other_query
+   00134|     defined-by inquiry
+   00135|     defined-by conversation_reference
+   00136|     role conversation_recall_other_query
+   00137|     lexeme en
+   00138|       words "find … in another conversation" "find … in other conversations" "find … in my other conversations"
+   00139|       words "find … in my conversations" "find … in another chat" "find … in other chats"
+   00140|       words "search for … in another conversation" "search for … in other conversations"
+   00141|     lexeme ru
+   00142|       words "найди … в другой беседе" "найди … в других беседах" "найди … в другом чате" "найди … в других чатах"
+   00143|       words "поищи … в других беседах"
+   00144|     lexeme hi "… दूसरी बातचीत में खोजो" "… दूसरी चैट में खोजो"
+   00145|     lexeme zh 查找…在其他对话中 搜索…在其他对话中 查找…在另一个对话中
+   00146|     lexeme es
+   00147|       words "busca … en otra conversación" "busca … en otras conversaciones" "encuentra … en otra conversación"
+   00148|       words "encuentra … en otras conversaciones"
+   00149|   memory_append_directive
+   00150|     defined-by action
+   00151|     defined-by answer
+   00152|     role memory_append_directive
+   00153|     lexeme en
+   00154|       words "remember that …" "remember …" "record memory …" "record that …" "append memory …" "note that …"
+   00155|       words "save to memory …" "memorize …"
+   00156|     lexeme ru
+   00157|       words "запомни что …" "запомни …" "запиши в память …" "запиши что …" "запиши …" "сохрани в память …"
+   00158|       words "заметь что …"
+   00159|     lexeme hi "याद रखो कि …" "याद रखो …" "याद रखना …" "स्मृति में सहेजो …" "नोट करो कि …" "नोट करो …"
+   00160|     lexeme zh 记住… 记下… 记录… 存入记忆…
+   00161|     lexeme es "recuerda que …" "recuerda …" "guarda en la memoria …" "anota que …" "memoriza …"
+   00162|   memory_scope
+   00163|     defined-by action
+   00164|     defined-by answer
+   00165|     role memory_scope
+   00166|     lexeme en "in memory" "into memory" "to memory" "in the memory"
+   00167|     lexeme ru "в памяти" "в память"
+   00168|     lexeme hi "स्मृति में" "मेमोरी में" "याद में"
+   00169|     lexeme zh 在记忆中 记忆中 在内存中
+   00170|     lexeme es "en la memoria" "en memoria"
+   00171|   memory_substitution_connector
+   00172|     defined-by action
+   00173|     defined-by answer
+   00174|     role memory_substitution_connector
+   00175|     lexeme en with by
+   00176|     lexeme ru на
+   00177|     lexeme hi "की जगह" "के बजाय" "की बजाय"
+   00178|     lexeme zh 换成 替换为 替换成 更换为
+   00179|     lexeme es por
+   00180|   memory_substitution_directive
+   00181|     defined-by action
+   00182|     defined-by answer
+   00183|     role memory_substitution_directive
+   00184|     lexeme en replace substitute
+   00185|     lexeme ru замени заменить замените поменяй
+   00186|     lexeme hi बदलो "बदल दो" रखो लिखो
+   00187|     lexeme zh 把 将 替换 更换
+   00188|     lexeme es reemplaza sustituye
+   00189|   agentic_continuation_cue
+   00190|     defined-by conversation_reference
+   00191|     role agentic_continuation_cue
+   00192|     lexeme en "continue if you have next steps" "continue" "go on" "please continue" "next steps"
+   00193|     lexeme ru "продолжай" "продолжи" "продолжи если есть следующие шаги" "продолжай если есть следующие шаги"
+   00194|     lexeme hi "जारी रखें" "जारी रखो" "अगर अगले कदम हैं तो जारी रखें"
+   00195|     lexeme zh
+   00196|       surface
+   00197|         text 继续
+   00198|       surface
+   00199|         text 请继续
+   00200|       surface
+   00201|         text 如果还有下一步请继续
+   00202|       surface
+   00203|         text 如果还有下一步 请继续
+   00204|     lexeme es "continúa" "continua si tienes próximos pasos"
+   00205|   enumeration_cue
+   00206|     defined-by conversation_reference
+   00207|     role enumeration_cue
+   00208|     lexeme en "first" "second" "third" "then" "next" "after that" "also" "finally" "lastly"
+   00209|     lexeme ru "сначала" "во-первых" "во-вторых" "затем" "потом" "далее" "также" "наконец" "после этого"
+   00210|     lexeme hi "पहले" "दूसरा" "फिर" "उसके बाद" "अंत में"
+   00211|     lexeme zh 首先 其次 然后 接着 之后 最后
+   00212|     lexeme es "primero" "segundo" "luego" "después" "finalmente"
+   00213|   social_greeting
+   00214|     defined-by inquiry
+   00215|     defined-by conversation_reference
+   00216|     role social_greeting
+   00217|     lexeme en "hi" hello hey howdy greetings "hi there" "hello there" "good morning" "good afternoon" "good evening"
+   00218|     lexeme ru привет здравствуйте здравствуй приветствую шалом "шабат шалом" "доброе утро" "добрый день" "добрый вечер"
+   00219|     lexeme hi नमस्ते नमस्कार सलाम हाय "राम राम" "शुभ प्रभात" "शुभ संध्या"
+   00220|     lexeme zh 你好 您好 嗨 哈喽 早上好 早安 大家好 晚上好
+   00221|     lexeme es hola "buenos días" "buenas tardes" "buenas noches" saludos
+   00222| 
+   00223|   social_wellbeing
+   00224|     defined-by inquiry
+   00225|     defined-by conversation_reference
+   00226|     role social_wellbeing
+   00227|     lexeme en "how are you" "how are you doing" "how do you do" "how is it going" "how are things"
+   00228|     lexeme ru
+   00229|       words "как дела" "как твои дела" "как ваши дела" "как у тебя дела" "как у вас дела" "привет как дела"
+   00230|       words "здравствуйте как ваши дела" "как поживаешь" "как вы поживаете"
+   00231|     lexeme hi "कैसे हो" "आप कैसे हैं" "तुम कैसे हो" "क्या हाल है" "आपका क्या हाल है" "सब कैसा चल रहा है"
+   00232|     lexeme zh 你好吗 你还好吗 你怎么样 您怎么样 最近怎么样 过得怎么样
+   00233|     lexeme es "cómo estás" "cómo está usted" "qué tal" "cómo te va" "cómo andas"
+   00234| 
+   00235|   social_farewell
+   00236|     defined-by inquiry
+   00237|     defined-by conversation_reference
+   00238|     role social_farewell
+   00239|     lexeme en bye goodbye farewell "see you" "see you later" "take care" "so long" ciao tschüss
+   00240|     lexeme ru пока прощай увидимся "до свидания" досвидания "до встречи" "до скорого" "всего доброго"
+   00241|     lexeme hi अलविदा विदा बाय टाटा "फिर मिलेंगे"
+   00242|     lexeme zh 再见 拜拜 回见 改天见 后会有期
+   00243|     lexeme es adiós "hasta luego" "hasta pronto" "hasta mañana" "nos vemos" chau
+   00244| 
+   00245|   social_courtesy_response
+   00246|     defined-by inquiry
+   00247|     defined-by conversation_reference
+   00248|     role social_courtesy_response
+   00249|     lexeme en
+   00250|       words thanks "thank you" "i am fine thank you" "i am fine thanks" "i am good thank you" "i am good thanks"
+   00251|       words "fine thank you" "fine thanks" "good thank you" "good thanks" "doing well thank you" "doing well thanks"
+   00252|       words "thank you very much" "thank you so much" "thanks a lot" "thanks so much" "many thanks"
+   00253|     lexeme ru
+   00254|       words спасибо благодарю "у меня все хорошо спасибо" "у меня всё хорошо спасибо" "все хорошо спасибо"
+   00255|       words "всё хорошо спасибо" "хорошо спасибо" "нормально спасибо" "ого чето начал соображать"
+   00256|       words "ого чёто начал соображать" "ого чё то начал соображать" "ого что то начал соображать"
+   00257|     lexeme hi धन्यवाद शुक्रिया "मैं ठीक हूँ धन्यवाद" "ठीक हूँ धन्यवाद" "मैं अच्छा हूँ धन्यवाद"
+   00258|     lexeme zh 谢谢 多谢 我很好谢谢 "我很好 谢谢" 好的谢谢 "好的 谢谢" 非常感谢 谢谢你
+   00259|     lexeme es gracias "muchas gracias" "muy bien gracias" "todo bien gracias"
+   00260| 
+   00261|   social_test_status
+   00262|     defined-by inquiry
+   00263|     defined-by conversation_reference
+   00264|     role social_test_status
+   00265|     lexeme en test ping pong testing "test passed" "testing 123" "are you there" "you there" "i am here"
+   00266|     lexeme ru тест пинг "я здесь" "я тут" "тест пройден" "ты здесь" "ты тут" "вы здесь" "вы тут"
+   00267|     lexeme hi टेस्ट परीक्षण "परीक्षण सफल रहा" "मैं यहाँ हूँ" "मैं यहां हूं" "क्या आप वहाँ हैं" "क्या आप वहां हैं"
+   00268|     lexeme zh 测试 測試 测试通过 測試通過 我在这里 我在這裡 你在吗 您在吗 你在嗎 您在嗎
+   00269|     lexeme es prueba "prueba superada" "estoy aquí" "estoy aqui" "estás ahí" "estas ahi" "sigues ahí" "sigues ahi"
+   00270| 
+   00271|   social_assistant_name
+   00272|     defined-by inquiry
+   00273|     defined-by conversation_reference
+   00274|     role social_assistant_name
+   00275|     lexeme en
+   00276|       words "what is your name" "what's your name" "do you have a name" "what should i call you" "tell me your name"
+   00277|       words "may i know your name"
+   00278|     lexeme ru
+   00279|       words "как твое имя" "как твоё имя" "как тебя зовут" "как вас зовут" "у тебя есть имя" "назови своё имя"
+   00280|       words "назови свое имя"
+   00281|     lexeme hi
+   00282|       words "आपका नाम क्या है" "तुम्हारा नाम क्या है" "क्या तुम्हारा कोई नाम है" "मैं तुम्हें क्या कहूँ" "अपना नाम बताओ"
+   00283|     lexeme zh 你叫什么名字 您叫什么名字 你的名字是什么 你有名字吗 "告诉我你的名字"
+   00284|     lexeme es "cómo te llamas" "cuál es tu nombre" "cómo se llama usted" "puedo saber tu nombre"
+   00285| 
+   00286|   social_identity
+   00287|     defined-by inquiry
+   00288|     defined-by conversation_reference
+   00289|     role social_identity
+   00290|     lexeme en
+   00291|       words "who are you" "what are you" "who is formal ai" "what is formal ai" "who is formalai" "what is formalai"
+   00292|       words "tell me about yourself" "introduce yourself" "let s get acquainted" "lets get acquainted"
+   00293|       words "let us get acquainted" "let s get to know each other"
+   00294|     lexeme ru
+   00295|       words "кто ты" "что ты" "расскажи о себе" "расскажи мне о себе" "расскажи про себя" "опиши себя" представься
+   00296|       words "давай знакомиться" "давай познакомимся" "давайте познакомимся"
+   00297|     lexeme hi
+   00298|       words "तुम कौन हो" "तू कौन है" "आप कौन हैं" "अपना परिचय दो" "अपने बारे में बताओ" "चलो परिचय करते हैं"
+   00299|       words "आइए परिचय करें" "चलो एक दूसरे को जानें"
+   00300|     lexeme zh 你是谁 您是谁 你是什么 介绍一下你自己 告诉我你自己 我们认识一下吧 认识一下吧 让我们认识一下
+   00301|     lexeme es "quién eres" "qué eres" preséntate "cuéntame de ti"
+   00302| 
+   00303|   social_assistant_free_time
+   00304|     defined-by inquiry
+   00305|     defined-by conversation_reference
+   00306|     role social_assistant_free_time
+   00307|     lexeme en
+   00308|       words "what do you do in your free time" "what do you do in free time" "how do you spend your free time"
+   00309|       words "what do you do when you are not working" "how do you spend your spare time"
+   00310|     lexeme ru
+   00311|       words "что делаешь в свободное время" "что ты делаешь в свободное время" "чем занимаешься в свободное время"
+   00312|       words "чем ты занимаешься в свободное время" "что делаешь когда свободен" "как проводишь свободное время"
+   00313|     lexeme hi
+   00314|       words "खाली समय में क्या करते हो" "आप खाली समय में क्या करते हैं" "फुर्सत में क्या करते हो"
+   00315|       words "खाली वक्त में क्या करते हो" "जब आप काम नहीं करते तो क्या करते हैं"
+   00316|     lexeme zh 你空闲时间做什么 你有空的时候做什么 你业余时间做什么 你休息的时候做什么 你不工作的时候做什么
+   00317|     lexeme es "qué haces en tu tiempo libre" "cómo pasas tu tiempo libre" "qué haces cuando no trabajas"
+   00318| 
+   00319| 
+   
+   (End of file - total 319 lines)
+   </file>
+>> edit {"filePath":"data/seed/meanings-conversation.lino","file_path":"data/seed/meanings-conversation.lino","new":"good day","newString":"good day","new_str":"good day","new_string":"good day","old":"good evening","oldString":"good evening","old_str":"good evening","old_string":"good evening","path":"data/seed/meanings-conversation.lino"}
+>> bash {"command":"sha256sum -- data/seed/meanings-conversation.lino"}
+   b932b719a5e88bbe1ad4a20eaebce25da936404d3765142e721e029f23104ca2  data/seed/meanings-conversation.lino
+   
+>> write {"content":"node_path=1.1.2.2.1\n\nReplaced `good evening` with `good day` in `data/seed/meanings-conversation.lino` and observed the result.\n","filePath":".agent-ladder/node-1.1.2.2.1-proof.md","file_path":".agent-ladder/node-1.1.2.2.1-proof.md","path":".agent-ladder/node-1.1.2.2.1-proof.md"}
+>> write {"content":"node_path=1.1.2.2.1\nnode_depth=5\nnode_kind=leaf\nresult=Replaced `good evening` with `good day` in `data/seed/meanings-conversation.lino` and observed the result.\n","filePath":"agent-ladder-effects/node-1.1.2.2.1.lino","file_path":"agent-ladder-effects/node-1.1.2.2.1.lino","path":"agent-ladder-effects/node-1.1.2.2.1.lino"}
+== answer ==
+node_path=1.1.2.2.1
+node_depth=5
+node_kind=leaf
+result=Replaced `good evening` with `good day` in `data/seed/meanings-conversation.lino` and observed the result.
