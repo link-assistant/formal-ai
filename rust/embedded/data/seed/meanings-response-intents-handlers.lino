@@ -869,7 +869,7 @@ meanings
     unit "not applicable"
     example "Should I read"
     grounding "data/seed/multilingual-responses-text-transform.lino"
-  requirement_listing
+  requirement-listing-response
     defined-by answer
     role localized_response_template
     precondition "a request carries its own text and asks for the requirements that text states"

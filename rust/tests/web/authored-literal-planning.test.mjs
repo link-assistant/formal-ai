@@ -101,3 +101,27 @@ test('seed-like words inside quoted payloads and ordinary leading prose remain c
   }
   await observe('Set the contents of output.mjs to exactly what I asked for', 'exactly what I asked for', 'previous\n');
 });
+
+test('G125: quoted edit payloads with skill cues stay data', async () => {
+  const old = '// When `input` then `output`' + String.fromCharCode(10);
+  const next = '// When `input` then `result`' + String.fromCharCode(10);
+  await observe('In output.mjs replace ' + openQuote + old + closeQuote
+    + ' with ' + openQuote + next + closeQuote, next, old, 'edit');
+});
+
+test('G125: genuine unquoted skill teaching keeps its guard', async () => {
+  const result = await planChatStep([{ role: 'user', content: 'When `input` then `output`' }], ['read', 'write', 'edit', 'bash']);
+  assert.equal(result, null);
+});
+
+test('G125: a malformed quoted replacement changes nothing', async () => {
+  const directory = mkdtempSync(join(tmpdir(), 'formal-ai-skill-quote-'));
+  const initial = '// When `input` then `output`' + String.fromCharCode(10);
+  try {
+    writeFileSync(join(directory, 'output.mjs'), initial);
+    const prompt = 'In output.mjs replace ' + openQuote + initial + closeQuote + ' with ' + openQuote + 'unterminated';
+    const result = await drive(planChatStep, directory, prompt, { steps: 12 });
+    assert.equal(readFileSync(join(directory, 'output.mjs'), 'utf8'), initial);
+    assert.ok(!result.transcript.some((entry) => entry.tool === 'write' || entry.tool === 'edit'));
+  } finally { rmSync(directory, { recursive: true, force: true }); }
+});

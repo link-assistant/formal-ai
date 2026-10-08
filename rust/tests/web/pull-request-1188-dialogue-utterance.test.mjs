@@ -65,3 +65,20 @@ describe('a dialogue act is answered by the engine, not searched', () => {
     assert.equal(plan?.calls?.[0]?.tool, 'websearch');
   });
 });
+
+test('calendar day evidence requires a whole word outside CJK', () => {
+  for (const prompt of ['Describe India.', 'Explain multimedia archives.', 'daylight']) {
+    assert.ok(!routing.objectType(prompt).includes('time_expression'), prompt);
+  }
+  for (const prompt of ['day', 'days', 'dia', 'día', '今天', '日子']) {
+    assert.ok(routing.objectType(prompt).includes('time_expression'), prompt);
+  }
+});
+
+test('Wikipedia summary is not a calendar request', async () => {
+  const prompt = 'Summarize the Wikipedia article on Rust in one paragraph.';
+  assert.ok(!routing.objectType(prompt).includes('time_expression'));
+  assert.notEqual(routing.routePlaced(prompt, ['calendar_create_event', 'web_search', 'summarize_topic'])?.capability, 'calendar_create_event');
+  const response = await solve(prompt, []);
+  assert.ok(response.intent.startsWith('summarize'), response.intent);
+});

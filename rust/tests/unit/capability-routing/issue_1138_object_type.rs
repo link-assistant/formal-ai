@@ -200,3 +200,29 @@ fn a_verb_synonym_never_changes_the_act() {
         assert_eq!(act(prompt), Act::Enumerate, "`{prompt}` asks to enumerate");
     }
 }
+
+#[test]
+fn calendar_day_surfaces_require_token_boundaries_except_cjk() {
+    for prompt in [
+        "Describe India.",
+        "Explain multimedia archives.",
+        "daylight",
+    ] {
+        assert!(
+            !object_type(prompt).contains(&ObjectType::TimeExpression),
+            "{prompt}"
+        );
+    }
+    for prompt in ["day", "days", "dia", "día", "今天", "日子"] {
+        assert!(
+            object_type(prompt).contains(&ObjectType::TimeExpression),
+            "{prompt}"
+        );
+    }
+}
+
+#[test]
+fn wikipedia_summary_carries_no_calendar_day_operand() {
+    let prompt = "Summarize the Wikipedia article on Rust in one paragraph.";
+    assert!(!object_type(prompt).contains(&ObjectType::TimeExpression));
+}

@@ -102,7 +102,7 @@ meanings
     unit "not applicable"
     example "- The page must load in under a second."
     grounding "data/seed/handler-rules.lino"
-  command_head
+  requirement-extraction-command-subject
     # R1188-U20: the handler-rule subject that holds the request before its free-text payload.
     defined-by concept
     role action

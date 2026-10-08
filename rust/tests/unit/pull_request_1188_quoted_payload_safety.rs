@@ -239,3 +239,32 @@ fn every_generated_request_changes_exactly_what_it_asked_for_or_nothing() {
     }
     assert!(violations.is_empty(), "{violations:#?}");
 }
+
+#[test]
+fn g125_quoted_skill_cues_are_literal_edit_data() {
+    let old = "// When `input` then `output`\n";
+    let next = "// When `input` then `result`\n";
+    let request = format!("In output.mjs replace «{old}» with «{next}»");
+    let run = drive(&request, &[("output.mjs", old)]);
+    assert_eq!(run.files["output.mjs"], next);
+    assert!(run.tools.iter().any(|tool| tool == "edit"));
+}
+
+#[test]
+fn g125_unquoted_skill_teaching_keeps_its_guard() {
+    let messages = [ChatMessage::user("When `input` then `output`")];
+    assert!(plan_chat_step(&messages, &TOOLS).is_none());
+}
+
+#[test]
+fn g125_malformed_literal_edit_changes_nothing() {
+    let old = "// When `input` then `output`\n";
+    let request = format!("In output.mjs replace «{old}» with «unterminated");
+    let run = drive(&request, &[("output.mjs", old)]);
+    assert_eq!(run.files["output.mjs"], old);
+    assert!(
+        !run.tools
+            .iter()
+            .any(|tool| tool == "write" || tool == "edit")
+    );
+}

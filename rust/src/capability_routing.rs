@@ -469,7 +469,7 @@ pub fn object_type(prompt: &str) -> Vec<ObjectType> {
     note(
         ObjectType::TimeExpression,
         has_clock_time(prompt)
-            || evidences(ROLE_CALENDAR_DAY_REFERENCE, &normalized)
+            || seed::lexicon().mentions_role(ROLE_CALENDAR_DAY_REFERENCE, &normalized)
             || evidences(ROLE_CAPABILITY_CLOCK_REFERENCE, &normalized),
         &mut found,
     );
@@ -485,7 +485,7 @@ pub fn object_type(prompt: &str) -> Vec<ObjectType> {
     note(
         ObjectType::RelativePeriod,
         crate::seed::lexicon().mentions_role(ROLE_CALENDAR_HOUR_REFERENCE, &normalized)
-            && !evidences(ROLE_CALENDAR_DAY_REFERENCE, &normalized)
+            && !seed::lexicon().mentions_role(ROLE_CALENDAR_DAY_REFERENCE, &normalized)
             && !has_clock_time(prompt)
             && !evidences(ROLE_CAPABILITY_CLOCK_REFERENCE, &normalized)
             && !evidences(ROLE_CALENDAR_SCHEDULE_ACTION, &normalized),

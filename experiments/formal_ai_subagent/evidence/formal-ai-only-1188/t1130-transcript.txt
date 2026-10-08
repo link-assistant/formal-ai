@@ -1,0 +1,2 @@
+== answer ==
+What should the test in `js/agentic/crate/capability_routing.mjs` check: which call, and what result? The request states no expected result, so nothing was written or run. Say what the function should return for which inputs.

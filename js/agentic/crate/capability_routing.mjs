@@ -137,10 +137,10 @@ export function objectType(prompt) {
     (evidences(ROLE.translationLanguage, normalized) || evidences(ROLE.languageReference, normalized))
       && (evidences(actRole('demonstrate'), normalized) || evidences(actRole('transform'), normalized))
       && !isResponseLanguageObligation(prompt, normalized));
-  note('time_expression', hasClockTime(prompt) || evidences(ROLE.calendarDayReference, normalized)
+  note('time_expression', hasClockTime(prompt) || mentionsRole(ROLE.calendarDayReference, normalized)
     || evidences(ROLE.clockReference, normalized));
   note('relative_period', mentionsRole(ROLE.calendarHourReference, normalized)
-    && !evidences(ROLE.calendarDayReference, normalized)
+    && !mentionsRole(ROLE.calendarDayReference, normalized)
     && !hasClockTime(prompt)
     && !evidences(ROLE.clockReference, normalized)
     && !evidences(ROLE.calendarScheduleAction, normalized));

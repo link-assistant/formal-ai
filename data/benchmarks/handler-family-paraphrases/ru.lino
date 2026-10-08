@@ -99,7 +99,7 @@ handler_family_case_ru_procedure_interpreter_01
   id "ru_procedure_interpreter_01"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Преврати раздел установки из этого README в сценарий PowerShell."
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_procedure_interpreter_02
@@ -107,7 +107,7 @@ handler_family_case_ru_procedure_interpreter_02
   id "ru_procedure_interpreter_02"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Перепиши шаги установки из этого README как цель Makefile."
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_procedure_interpreter_03
@@ -115,7 +115,7 @@ handler_family_case_ru_procedure_interpreter_03
   id "ru_procedure_interpreter_03"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Возьми часть «с чего начать» из этого README и сделай функцию для fish."
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_procedure_interpreter_04
@@ -123,7 +123,7 @@ handler_family_case_ru_procedure_interpreter_04
   id "ru_procedure_interpreter_04"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Мне нужны инструкции по установке из этого README в виде стадию Dockerfile."
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_procedure_interpreter_05
@@ -131,7 +131,7 @@ handler_family_case_ru_procedure_interpreter_05
   id "ru_procedure_interpreter_05"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Преврати раздел установки из этого README в функцию для fish."
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_procedure_interpreter_06
@@ -139,7 +139,7 @@ handler_family_case_ru_procedure_interpreter_06
   id "ru_procedure_interpreter_06"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Перепиши шаги установки из этого README как стадию Dockerfile."
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_procedure_interpreter_07
@@ -147,7 +147,7 @@ handler_family_case_ru_procedure_interpreter_07
   id "ru_procedure_interpreter_07"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Возьми часть «с чего начать» из этого README и сделай список задач Ansible."
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_procedure_interpreter_08
@@ -155,7 +155,7 @@ handler_family_case_ru_procedure_interpreter_08
   id "ru_procedure_interpreter_08"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Мне нужны инструкции по установке из этого README в виде сценарий PowerShell."
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_procedure_interpreter_09
@@ -163,7 +163,7 @@ handler_family_case_ru_procedure_interpreter_09
   id "ru_procedure_interpreter_09"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Преврати раздел установки из этого README в список задач Ansible."
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_procedure_interpreter_10
@@ -171,7 +171,7 @@ handler_family_case_ru_procedure_interpreter_10
   id "ru_procedure_interpreter_10"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Перепиши шаги установки из этого README как функцию для fish."
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_procedure_interpreter_11
@@ -179,7 +179,7 @@ handler_family_case_ru_procedure_interpreter_11
   id "ru_procedure_interpreter_11"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Возьми часть «с чего начать» из этого README и сделай сценарий PowerShell."
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_procedure_interpreter_12
@@ -187,7 +187,7 @@ handler_family_case_ru_procedure_interpreter_12
   id "ru_procedure_interpreter_12"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "procedure_interpreter"
+  expected_family "procedure-interpreter"
   prompt "Мне нужны инструкции по установке из этого README в виде список задач Ansible."
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_structural_operator_01
@@ -195,7 +195,7 @@ handler_family_case_ru_structural_operator_01
   id "ru_structural_operator_01"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Циклически сдвинь эти числа на две позиции влево и покажи код на Go: 4 9 1 7"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_structural_operator_02
@@ -203,7 +203,7 @@ handler_family_case_ru_structural_operator_02
   id "ru_structural_operator_02"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Выстрой их от меньшего к большему и дай код на Kotlin: 12 5 5 30 8"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_structural_operator_03
@@ -211,7 +211,7 @@ handler_family_case_ru_structural_operator_03
   id "ru_structural_operator_03"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Раздели их на чётные и нечётные и покажи код на Swift: 7 7 2 9 2"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_structural_operator_04
@@ -219,7 +219,7 @@ handler_family_case_ru_structural_operator_04
   id "ru_structural_operator_04"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Оставь только повторяющиеся и покажи код на Elixir: 31 4 18 4 6"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_structural_operator_05
@@ -227,7 +227,7 @@ handler_family_case_ru_structural_operator_05
   id "ru_structural_operator_05"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Расположи эти числа в обратном порядке и покажи код на Swift: 7 7 2 9 2"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_structural_operator_06
@@ -235,7 +235,7 @@ handler_family_case_ru_structural_operator_06
   id "ru_structural_operator_06"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Выстрой их от меньшего к большему и дай код на Elixir: 31 4 18 4 6"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_structural_operator_07
@@ -243,7 +243,7 @@ handler_family_case_ru_structural_operator_07
   id "ru_structural_operator_07"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Раздели их на чётные и нечётные и покажи код на Ruby: 2 11 11 3 20"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_structural_operator_08
@@ -251,7 +251,7 @@ handler_family_case_ru_structural_operator_08
   id "ru_structural_operator_08"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Оставь только повторяющиеся и покажи код на Go: 4 9 1 7"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_structural_operator_09
@@ -259,7 +259,7 @@ handler_family_case_ru_structural_operator_09
   id "ru_structural_operator_09"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Циклически сдвинь эти числа на одну позицию вправо и покажи код на Ruby: 2 11 11 3 20"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_structural_operator_10
@@ -267,7 +267,7 @@ handler_family_case_ru_structural_operator_10
   id "ru_structural_operator_10"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Выстрой их от меньшего к большему и дай код на Swift: 7 7 2 9 2"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_structural_operator_11
@@ -275,7 +275,7 @@ handler_family_case_ru_structural_operator_11
   id "ru_structural_operator_11"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Раздели их на чётные и нечётные и покажи код на Go: 4 9 1 7"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_structural_operator_12
@@ -283,7 +283,7 @@ handler_family_case_ru_structural_operator_12
   id "ru_structural_operator_12"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "structural_operator"
+  expected_family "structural-operator"
   prompt "Оставь только повторяющиеся и покажи код на Ruby: 2 11 11 3 20"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_dialogue_state_query_01
@@ -291,7 +291,7 @@ handler_family_case_ru_dialogue_state_query_01
   id "ru_dialogue_state_query_01"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "О чём из того, что я спрашивал раньше, не нашлось источника?"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_dialogue_state_query_02
@@ -299,7 +299,7 @@ handler_family_case_ru_dialogue_state_query_02
   id "ru_dialogue_state_query_02"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "Что я спросил у тебя первым в этом разговоре?"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_dialogue_state_query_03
@@ -307,7 +307,7 @@ handler_family_case_ru_dialogue_state_query_03
   id "ru_dialogue_state_query_03"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "Напомни, на какой мой прежний вопрос ты так и не ответил."
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_dialogue_state_query_04
@@ -315,7 +315,7 @@ handler_family_case_ru_dialogue_state_query_04
   id "ru_dialogue_state_query_04"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "Из всего, что было, в каком ответе ты сам сомневался?"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_dialogue_state_query_05
@@ -323,7 +323,7 @@ handler_family_case_ru_dialogue_state_query_05
   id "ru_dialogue_state_query_05"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "Сколько разных тем мы уже затронули?"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_dialogue_state_query_06
@@ -331,7 +331,7 @@ handler_family_case_ru_dialogue_state_query_06
   id "ru_dialogue_state_query_06"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "На каком языке я написал тебе в первый раз?"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_dialogue_state_query_07
@@ -339,7 +339,7 @@ handler_family_case_ru_dialogue_state_query_07
   id "ru_dialogue_state_query_07"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "Вернись к тому, о чём я говорил перед последним, и скажи, что это было."
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_dialogue_state_query_08
@@ -347,7 +347,7 @@ handler_family_case_ru_dialogue_state_query_08
   id "ru_dialogue_state_query_08"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "Я это уже спрашивал или повторяюсь?"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_dialogue_state_query_09
@@ -355,7 +355,7 @@ handler_family_case_ru_dialogue_state_query_09
   id "ru_dialogue_state_query_09"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "Какое имя файла я называл последним?"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_dialogue_state_query_10
@@ -363,7 +363,7 @@ handler_family_case_ru_dialogue_state_query_10
   id "ru_dialogue_state_query_10"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "Перечисли мне мои вопросы по порядку."
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_dialogue_state_query_11
@@ -371,7 +371,7 @@ handler_family_case_ru_dialogue_state_query_11
   id "ru_dialogue_state_query_11"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "С каким твоим прежним ответом я не согласился?"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_dialogue_state_query_12
@@ -379,7 +379,7 @@ handler_family_case_ru_dialogue_state_query_12
   id "ru_dialogue_state_query_12"
   source "self_authored_multilingual_variation"
   language "ru"
-  expected_family "dialogue_state_query"
+  expected_family "dialogue-state-query"
   prompt "О чём я спрашивал прямо перед тем, как сменил тему?"
   prohibited_answer_source "seed_body_field"
 handler_family_case_ru_rule_interpreter_01
