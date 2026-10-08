@@ -117,10 +117,7 @@ export function renderSeededChange(intent, task, path, slots) {
 
 /** Mirrors `fn render_seeded_list_change`: an explicitly typed list slot. */
 export function renderSeededListChange(intent, task, path, slot, values) {
-  const template = renderSeededChange(intent, task, path, []);
-  if (template === null) return null;
-  const rendered = values.map(codeSpanItem).join(', ');
-  return template.split(`\`${slot}\``).join(rendered).split(slot).join(rendered);
+  return renderSeededChange(intent, task, path, [[slot, values]]);
 }
 
 // A placeholder the seed sentence wraps in backticks becomes a CommonMark code
@@ -139,8 +136,22 @@ function codeSpanItem(value) {
 const codeSpan = codeSpanItem;
 
 function renderTemplate(template, substitutions) {
-  return substitutions.reduce((text, [placeholder, value]) =>
-    text.split(`\`${placeholder}\``).join(codeSpan(value)).split(placeholder).join(value), template);
+  const values = substitutions.map(([slot, value]) => {
+    const quoted = Array.isArray(value) ? value.map(codeSpanItem).join(', ') : codeSpan(value);
+    return [slot, Array.isArray(value) ? quoted : value, quoted];
+  });
+  let rendered = '';
+  let cursor = 0;
+  while (cursor < template.length) {
+    const found = values.map(([slot, plain, quoted]) => {
+      const fenced = '`' + slot + '`';
+      if (template.startsWith(fenced, cursor)) return [fenced.length, quoted];
+      return template.startsWith(slot, cursor) ? [slot.length, plain] : null;
+    }).find((value) => value !== null);
+    if (found) { rendered += found[1]; cursor += found[0]; }
+    else { rendered += template[cursor]; cursor += 1; }
+  }
+  return rendered;
 }
 
 const isPathCharacter = (character) => isAsciiAlphanumeric(character) || '_-./'.includes(character);

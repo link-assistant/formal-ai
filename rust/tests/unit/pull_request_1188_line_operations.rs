@@ -175,6 +175,34 @@ fn a_quoted_line_and_the_named_line_directly_above_it_go_together() {
 }
 
 #[test]
+fn removed_lines_with_backticks_are_independent_list_values() {
+    let result = drive(
+        "In m.lino, delete the line 'x `{old}` `{path}`' and the 'a' line directly above it.",
+        "header\na\nx `{old}` `{path}`\nfooter\n",
+        "m.lino",
+    );
+    assert_eq!(result.file, "header\nfooter\n");
+    assert_eq!(
+        result.answer.as_deref(),
+        Some("Removed `a`, `` x `{old}` `{path}` `` from `m.lino` and observed the result.")
+    );
+}
+
+#[test]
+fn scalar_removal_payload_keeps_placeholder_text() {
+    let result = drive(
+        "Remove 'literal {old} {path}' from m.lino.",
+        "header\nliteral {old} {path}\nfooter\n",
+        "m.lino",
+    );
+    assert_eq!(result.file, "header\nfooter\n");
+    assert_eq!(
+        result.answer.as_deref(),
+        Some("Removed `literal {old} {path}` from `m.lino` and observed the result.")
+    );
+}
+
+#[test]
 fn an_insert_anchored_at_a_numbered_line() {
     let after = drive("Insert the line 'X' after line 2 in f.txt.", SIX, "f.txt");
     assert_eq!(after.tools, ["read", "edit", "bash"]);

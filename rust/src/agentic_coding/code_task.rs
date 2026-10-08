@@ -241,17 +241,36 @@ pub(super) fn render_seeded_list_change(
     slot: &str,
     values: &[String],
 ) -> Option<String> {
-    let template = render_seeded_change(intent, task, path, &[])?;
-    let rendered = values
-        .iter()
-        .map(|value| code_span_item(value))
-        .collect::<Vec<_>>()
-        .join(", ");
-    Some(
-        template
-            .replace(&format!("`{slot}`"), &rendered)
-            .replace(slot, &rendered),
-    )
+    render_seeded_change_with_lists(intent, task, path, &[], &[(slot, values)])
+}
+
+/// Render scalar slots and explicitly typed lists without interpreting scalar text.
+#[allow(clippy::literal_string_with_formatting_args)]
+pub(super) fn render_seeded_change_with_lists(
+    intent: &str,
+    task: &str,
+    path: &str,
+    slots: &[(&str, &str)],
+    lists: &[(&str, &[String])],
+) -> Option<String> {
+    let language = super::tool_result::response_language(task);
+    let template = seed::localized_response(intent, language)?;
+    let mut substitutions = vec![("{path}", path)];
+    substitutions.extend_from_slice(slots);
+    let mut values: Vec<(&str, String, String)> = substitutions
+        .into_iter()
+        .filter(|(slot, _)| !lists.iter().any(|(listed, _)| listed == slot))
+        .map(|(slot, value)| (slot, value.to_owned(), code_span(value)))
+        .collect();
+    for (slot, items) in lists {
+        let rendered = items
+            .iter()
+            .map(|value| code_span_item(value))
+            .collect::<Vec<_>>()
+            .join(", ");
+        values.push((slot, rendered.clone(), rendered));
+    }
+    Some(render_template_values(&template, &values))
 }
 
 /// A placeholder the seed sentence wraps in backticks becomes a `CommonMark`
@@ -279,13 +298,37 @@ fn code_span(value: &str) -> String {
     code_span_item(value)
 }
 
-fn render_template(mut template: String, substitutions: &[(&str, &str)]) -> String {
-    for (placeholder, value) in substitutions {
-        template = template
-            .replace(&format!("`{placeholder}`"), &code_span(value))
-            .replace(placeholder, value);
+fn render_template(template: String, substitutions: &[(&str, &str)]) -> String {
+    let values: Vec<(&str, String, String)> = substitutions
+        .iter()
+        .map(|(slot, value)| (*slot, (*value).to_owned(), code_span(value)))
+        .collect();
+    render_template_values(&template, &values)
+}
+
+/// Substitute only seed-owned slots; inserted literal values are never templates.
+fn render_template_values(mut template: &str, values: &[(&str, String, String)]) -> String {
+    let mut rendered = String::new();
+    while !template.is_empty() {
+        let found = values.iter().find_map(|(slot, plain, quoted)| {
+            let fenced = format!("`{slot}`");
+            if template.starts_with(&fenced) {
+                return Some((fenced.len(), quoted.as_str()));
+            }
+            template
+                .starts_with(*slot)
+                .then_some((slot.len(), plain.as_str()))
+        });
+        if let Some((length, value)) = found {
+            rendered.push_str(value);
+            template = &template[length..];
+        } else {
+            let character = template.chars().next().expect("nonempty template");
+            rendered.push(character);
+            template = &template[character.len_utf8()..];
+        }
     }
-    template
+    rendered
 }
 
 fn rust_path(task: &str) -> Option<String> {

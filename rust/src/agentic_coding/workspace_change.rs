@@ -12,7 +12,8 @@ use std::path::Path;
 
 use super::code_artifact::source_from_read_result;
 use super::code_task::{
-    render_rust_template, render_seeded_change, render_seeded_outcome, rust_source_for_task,
+    render_rust_template, render_seeded_change, render_seeded_change_with_lists,
+    render_seeded_outcome, rust_source_for_task,
 };
 use super::general_planner::compose_edit_request;
 use super::intent_router::edit_arguments;
@@ -92,6 +93,7 @@ pub(super) struct VerifiedChange<'a> {
     pub(super) expected: &'a str,
     pub(super) intent: &'a str,
     pub(super) slots: &'a [(&'a str, &'a str)],
+    pub(super) list_slots: &'a [(&'a str, &'a [String])],
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -305,6 +307,7 @@ fn plan_rewrite_step(
                     expected: &updated,
                     intent: rewrite.stated_intent(),
                     slots: &rewrite.stated_slots(),
+                    list_slots: &[],
                 },
             );
         }
@@ -324,6 +327,7 @@ fn plan_rewrite_step(
                 expected: &updated,
                 intent: rewrite.stated_intent(),
                 slots: &rewrite.stated_slots(),
+                list_slots: &[],
             },
         );
     }
@@ -435,6 +439,7 @@ fn plan_composite_step(
                 expected: &updated,
                 intent: "coding_member_inserted",
                 slots: &[("{members}", &registered)],
+                list_slots: &[],
             },
         );
     }
@@ -952,11 +957,12 @@ pub(super) fn plan_digest_verification(
             change.target,
         )?));
     }
-    Some(AgenticPlan::Final(render_seeded_change(
+    Some(AgenticPlan::Final(render_seeded_change_with_lists(
         change.intent,
         task,
         change.target,
         change.slots,
+        change.list_slots,
     )?))
 }
 

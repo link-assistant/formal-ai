@@ -688,7 +688,7 @@ function groundedDeclarationRemoval(task) {
     bounded: true,
     reported: (source) => {
       const removed = removedDeclarations(source, names);
-      return removed ? { intent: 'coding_text_remove', slots: [['{old}', removed.names.join('`, `')]] } : null;
+      return removed ? { intent: 'coding_text_remove', slots: [['{old}', removed.names]] } : null;
     },
   };
 }

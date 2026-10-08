@@ -403,7 +403,7 @@ export function groundedLineOperation(task) {
         const pair = adjacentPair(lines, anchor, neighbour, above);
         if (pair === null) return null;
         const removed = [...pair].sort((left, right) => left - right).map((index) => bare(lines[index]));
-        return { intent: 'coding_text_remove', slots: [['{old}', removed.join('`, `')]] };
+        return { intent: 'coding_text_remove', slots: [['{old}', removed]] };
       },
     });
   }

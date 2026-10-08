@@ -94,6 +94,21 @@ describe('a quoted line and its neighbour are removed together (T29)', () => {
     assert.equal(answer, 'Removed `      surface`, `        text "get it"` from `m.lino` and observed the result.');
   });
 
+  test('each removed line is a list value even when it contains backticks', async () => {
+    const { file, answer } = await drive(
+      "In m.lino, delete the line 'x `{old}` `{path}`' and the 'a' line directly above it.",
+      'header\na\nx `{old}` `{path}`\nfooter\n', 'm.lino');
+    assert.equal(file, 'header\nfooter\n');
+    assert.equal(answer, 'Removed `a`, `` x `{old}` `{path}` `` from `m.lino` and observed the result.');
+  });
+
+  test('a scalar removal payload retains placeholder-shaped text', async () => {
+    const { file, answer } = await drive("Remove 'literal {old} {path}' from m.lino.",
+      'header\nliteral {old} {path}\nfooter\n', 'm.lino');
+    assert.equal(file, 'header\nfooter\n');
+    assert.equal(answer, 'Removed `literal {old} {path}` from `m.lino` and observed the result.');
+  });
+
   test('a neighbour that is not the named line is refused, never guessed', async () => {
     const { calls, file } = await drive("In m.lino, delete the line 'footer' and the 'header' line directly above it.", LINO, 'm.lino');
     assert.deepEqual(calls, ['read']);

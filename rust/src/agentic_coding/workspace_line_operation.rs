@@ -691,6 +691,12 @@ impl LineOperation {
             }
             _ => {}
         }
+        let removed = self.reported_values(source)?;
+        Some(("coding_text_remove", vec![(OLD_SLOT, removed.join("\n"))]))
+    }
+
+    /// Original removed lines, retained as list values rather than presentation text.
+    pub(super) fn reported_values(&self, source: &str) -> Option<Vec<String>> {
         let Self::AdjacentRemoval {
             anchor,
             neighbour,
@@ -701,8 +707,11 @@ impl LineOperation {
         };
         let (lines, _) = file_lines(source);
         let (one, two) = adjacent_pair(&lines, anchor, neighbour.as_deref(), *above)?;
-        let removed = [bare(lines[one.min(two)]), bare(lines[one.max(two)])];
-        Some(("coding_text_remove", vec![(OLD_SLOT, removed.join("`, `"))]))
+        Some(
+            [one.min(two), one.max(two)]
+                .map(|index| bare(lines[index]).to_owned())
+                .to_vec(),
+        )
     }
 }
 
