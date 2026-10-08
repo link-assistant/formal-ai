@@ -10,11 +10,12 @@
  * so their original sections are matched by exact fragment body.
  *
  * CHANGELOG.md keeps only the newest releases. No maintained file may exceed
- * 1500 lines, so older releases roll into `docs/changelog/archive-NN.md`. The
- * archive is packed oldest first, so a full archive file never changes again:
- * each release only moves the oldest sections of CHANGELOG.md into the newest
- * archive file, which opens a new one once it is full. CHANGELOG.md links every
- * archive file above the insert marker.
+ * 1500 lines, so older releases roll into `docs/changelog/releases-from-<version>.md`,
+ * each named for the oldest release it holds (R1188-U5). The archive is packed
+ * oldest first, so a full archive file never changes again and an archive's
+ * name never changes: each release only moves the oldest sections of
+ * CHANGELOG.md into the newest archive file, which opens a new one once it is
+ * full. CHANGELOG.md links every archive file above the insert marker.
  *
  * Usage:
  *   node experiments/issue_711_rebuild_changelog.mjs --write
@@ -290,8 +291,27 @@ export function splitHistory(sections) {
   return { recent, archives };
 }
 
-function archivePath(index) {
-  return `${ARCHIVE_DIR}/archive-${String(index + 1).padStart(2, "0")}.md`;
+// An archive file is named for the oldest release it holds, which never
+// changes once the archive is opened.
+export const ARCHIVE_PREFIX = "releases-from-";
+
+function archivePath(archive) {
+  return `${ARCHIVE_DIR}/${ARCHIVE_PREFIX}${archive[0].version}.md`;
+}
+
+// The version an archive file name starts from, as numbers, for ordering.
+export function archiveVersion(name) {
+  const match = new RegExp(`^${ARCHIVE_PREFIX}(.+)\\.md$`).exec(name);
+  return match ? match[1].split(/[.-]/).map((part) => Number.parseInt(part, 10) || 0) : [];
+}
+
+function compareArchiveNames(left, right) {
+  const [a, b] = [archiveVersion(left), archiveVersion(right)];
+  for (let index = 0; index < Math.max(a.length, b.length); index += 1) {
+    const difference = (a[index] ?? 0) - (b[index] ?? 0);
+    if (difference !== 0) return difference;
+  }
+  return left.localeCompare(right);
 }
 
 function archiveRange(archive) {
@@ -317,7 +337,7 @@ export function renderReconstruction(groups, assignments) {
   let header = INTRO;
   if (archives.length > 0) {
     const links = archives
-      .map((archive, index) => `- [${archiveRange(archive)}](${archivePath(index)})`)
+      .map((archive) => `- [${archiveRange(archive)}](${archivePath(archive)})`)
       .reverse();
     header += "\n\nOlder releases are archived under `docs/changelog/` so that no file\n" +
       `exceeds the repository's 1500-line cap (newest first):\n\n${links.join("\n")}`;
@@ -325,8 +345,8 @@ export function renderReconstruction(groups, assignments) {
   header += `\n\n${INSERT_MARKER}`;
 
   const changelog = `${header}\n\n${recent.map(({ text }) => text).join("\n\n")}\n`;
-  const archiveFiles = archives.map((archive, index) => ({
-    path: archivePath(index),
+  const archiveFiles = archives.map((archive) => ({
+    path: archivePath(archive),
     content: renderArchive(archive),
   }));
   const map = [
@@ -340,12 +360,13 @@ export function renderReconstruction(groups, assignments) {
   return { changelog, archives: archiveFiles, map, assignments, groups };
 }
 
-// The archive files on disk, by repository-relative path.
+// The archive files on disk, by repository-relative path, oldest first. The
+// numbered names used before R1188-U5 count too, so --write removes them.
 function existingArchives() {
   if (!existsSync(ARCHIVE_DIR)) return [];
   return readdirSync(ARCHIVE_DIR)
-    .filter((name) => /^archive-\d+\.md$/.test(name))
-    .sort()
+    .filter((name) => /^archive-\d+\.md$/.test(name) || archiveVersion(name).length > 0)
+    .sort(compareArchiveNames)
     .map((name) => `${ARCHIVE_DIR}/${name}`);
 }
 

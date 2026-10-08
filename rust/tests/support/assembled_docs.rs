@@ -7,7 +7,8 @@
 //!   `docs/requirements/assembled/<area>.md`, one file per area, written by
 //!   `rust-script scripts/assemble-requirements.rs --write`;
 //! - `CHANGELOG.md` keeps the newest releases, and older ones roll into
-//!   `docs/changelog/archive-NN.md`, written by
+//!   `docs/changelog/releases-from-<version>.md`, each named for the oldest
+//!   release it holds, written by
 //!   `node experiments/issue_711_rebuild_changelog.mjs --write`.
 //!
 //! A test that asks "does the requirements document (or the changelog) say X"
@@ -21,6 +22,8 @@ use std::path::{Path, PathBuf};
 pub const REQUIREMENT_PARTS: &str = "docs/requirements/assembled";
 /// Where releases rolled out of `CHANGELOG.md` live.
 pub const CHANGELOG_ARCHIVE: &str = "docs/changelog";
+/// An archive file is named for the oldest release it holds.
+const CHANGELOG_ARCHIVE_PREFIX: &str = "releases-from-";
 
 /// The repository root: the crate lives in `rust/`.
 #[must_use]
@@ -90,14 +93,28 @@ pub fn requirements() -> String {
 pub fn changelog_at<P: AsRef<Path> + ?Sized>(root: &P) -> String {
     let root = root.as_ref();
     let mut text = read(&root.join("CHANGELOG.md"));
-    for archive in markdown_files(&root.join(CHANGELOG_ARCHIVE), "archive-")
-        .iter()
-        .rev()
-    {
+    let mut archives = markdown_files(&root.join(CHANGELOG_ARCHIVE), CHANGELOG_ARCHIVE_PREFIX);
+    archives.sort_by_key(|path| oldest_release(path));
+    for archive in archives.iter().rev() {
         text.push('\n');
         text.push_str(&read(archive));
     }
     text
+}
+
+/// The oldest release an archive file holds, from its name
+/// (`releases-from-0.105.0.md` is `[0, 105, 0]`), so archives sort by version.
+fn oldest_release(path: &Path) -> Vec<u64> {
+    path.file_stem()
+        .and_then(|stem| stem.to_str())
+        .and_then(|stem| stem.strip_prefix(CHANGELOG_ARCHIVE_PREFIX))
+        .map(|version| {
+            version
+                .split(['.', '-'])
+                .map(|part| part.parse().unwrap_or(0))
+                .collect()
+        })
+        .unwrap_or_default()
 }
 
 /// The whole changelog of this repository.

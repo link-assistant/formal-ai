@@ -1309,3 +1309,32 @@ rename-map
       from "data/seed/meanings-lexicon-import-05.lino"
       to "data/seed/meanings-lexicon-import-war-to-wood.lino"
       reason "The imported common-noun lexemes from war to wood, in concept order; rust/src/lexeme_import.rs names each shard by its first and last concept."
+  tree changelog-archives-by-release
+    rename
+      from "docs/changelog/archive-01.md"
+      to "docs/changelog/releases-from-0.1.0.md"
+      reason "The changelog archive of releases 0.1.0 to 0.104.0, named for the oldest release it holds, which never changes once the archive opens (experiments/issue_711_rebuild_changelog.mjs)."
+    rename
+      from "docs/changelog/archive-02.md"
+      to "docs/changelog/releases-from-0.105.0.md"
+      reason "The changelog archive of releases 0.105.0 to 0.175.0, named for the oldest release it holds, which never changes once the archive opens (experiments/issue_711_rebuild_changelog.mjs)."
+    rename
+      from "docs/changelog/archive-03.md"
+      to "docs/changelog/releases-from-0.177.0.md"
+      reason "The changelog archive of releases 0.177.0 to 0.182.0, named for the oldest release it holds, which never changes once the archive opens (experiments/issue_711_rebuild_changelog.mjs)."
+    rename
+      from "docs/changelog/archive-04.md"
+      to "docs/changelog/releases-from-0.183.0.md"
+      reason "The changelog archive of releases 0.183.0 to 0.241.0, named for the oldest release it holds, which never changes once the archive opens (experiments/issue_711_rebuild_changelog.mjs)."
+    rename
+      from "docs/changelog/archive-05.md"
+      to "docs/changelog/releases-from-0.242.0.md"
+      reason "The changelog archive of releases 0.242.0 to 0.306.1, named for the oldest release it holds, which never changes once the archive opens (experiments/issue_711_rebuild_changelog.mjs)."
+    rename
+      from "docs/changelog/archive-06.md"
+      to "docs/changelog/releases-from-0.307.0.md"
+      reason "The changelog archive of releases 0.307.0 to 0.345.0, named for the oldest release it holds, which never changes once the archive opens (experiments/issue_711_rebuild_changelog.mjs)."
+    rename
+      from "docs/changelog/archive-07.md"
+      to "docs/changelog/releases-from-0.346.0.md"
+      reason "The changelog archive of releases 0.346.0, named for the oldest release it holds, which never changes once the archive opens (experiments/issue_711_rebuild_changelog.mjs)."

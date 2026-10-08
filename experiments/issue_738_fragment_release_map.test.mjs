@@ -145,7 +145,10 @@ test("older releases roll into size-capped archives linked from CHANGELOG.md", (
   assert.ok(lines(result.changelog) <= 1400, `${lines(result.changelog)} lines`);
   assert.ok(result.archives.length >= 2);
   for (const { path, content } of result.archives) {
-    assert.match(path, /^docs\/changelog\/archive-\d{2}\.md$/);
+    assert.match(path, /^docs\/changelog\/releases-from-[\d.]+\.md$/);
+    // An archive is named for the oldest release it holds, its last section.
+    const oldest = [...content.matchAll(/^## \[([^\]]+)\]/gmu)].at(-1)[1];
+    assert.equal(path, `docs/changelog/releases-from-${oldest}.md`);
     assert.ok(lines(content) <= ARCHIVE_LINE_LIMIT, `${path}: ${lines(content)} lines`);
     assert.match(content, /\[CHANGELOG\.md]\(\.\.\/\.\.\/CHANGELOG\.md\)/);
     assert.match(result.changelog, new RegExp(`\\]\\(${path.replaceAll(".", "\\.")}\\)`));

@@ -398,7 +398,7 @@ contradiction contributing-naming-standard
 contradiction contributing-changelog-archive
   document "CONTRIBUTING.md"
   text "Describes the changelog roll-over into docs/changelog/archive-NN.md as the process."
-  action "Wording: marked as numbered parts that R1188-U5 replaces. Code first: the release roll-over script."
+  action "Code first: the roll-over script names each archive for the oldest release it holds, and the wording follows (R1188-U5)."
 
 contradiction vision-missing-latest-rules
   document "VISION.md"

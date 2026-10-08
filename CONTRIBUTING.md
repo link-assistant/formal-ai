@@ -1320,7 +1320,7 @@ Fragments are automatically collected into CHANGELOG.md during the release proce
 
 1. Collects all fragments
 2. Updates CHANGELOG.md with the new version entry; CHANGELOG.md keeps only
-   the newest releases, and older ones roll into `docs/changelog/archive-NN.md` (numbered parts, which R1188-U5 replaces with named ones)
+   the newest releases, and older ones roll into `docs/changelog/releases-from-<version>.md`, each named for the oldest release it holds (R1188-U5),
    so no changelog file exceeds the 1500-line cap
 3. Removes processed fragment files
 4. Bumps the version in Cargo.toml

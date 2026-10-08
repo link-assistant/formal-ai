@@ -8,13 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Older releases are archived under `docs/changelog/` so that no file
 exceeds the repository's 1500-line cap (newest first):
 
-- [0.346.0](docs/changelog/archive-07.md)
-- [0.307.0 to 0.345.0](docs/changelog/archive-06.md)
-- [0.242.0 to 0.306.1](docs/changelog/archive-05.md)
-- [0.183.0 to 0.241.0](docs/changelog/archive-04.md)
-- [0.177.0 to 0.182.0](docs/changelog/archive-03.md)
-- [0.105.0 to 0.175.0](docs/changelog/archive-02.md)
-- [0.1.0 to 0.104.0](docs/changelog/archive-01.md)
+- [0.346.0](docs/changelog/releases-from-0.346.0.md)
+- [0.307.0 to 0.345.0](docs/changelog/releases-from-0.307.0.md)
+- [0.242.0 to 0.306.1](docs/changelog/releases-from-0.242.0.md)
+- [0.183.0 to 0.241.0](docs/changelog/releases-from-0.183.0.md)
+- [0.177.0 to 0.182.0](docs/changelog/releases-from-0.177.0.md)
+- [0.105.0 to 0.175.0](docs/changelog/releases-from-0.105.0.md)
+- [0.1.0 to 0.104.0](docs/changelog/releases-from-0.1.0.md)
 
 <!-- changelog-insert-here -->
 

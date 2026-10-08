@@ -372,15 +372,24 @@ const CHANGELOG_ARCHIVE_DIR: &str = "docs/changelog";
 fn changelog_sources() -> Vec<String> {
     let mut sources = vec!["CHANGELOG.md".to_string()];
     if let Ok(entries) = fs::read_dir(CHANGELOG_ARCHIVE_DIR) {
-        let mut archives: Vec<String> = entries
+        // Each archive is named for the oldest release it holds
+        // (`releases-from-<version>.md`); newest first, by version.
+        let mut archives: Vec<(Vec<u64>, String)> = entries
             .filter_map(Result::ok)
             .filter_map(|entry| entry.file_name().into_string().ok())
-            .filter(|name| name.starts_with("archive-") && name.ends_with(".md"))
-            .map(|name| format!("{CHANGELOG_ARCHIVE_DIR}/{name}"))
+            .filter_map(|name| {
+                let version = name
+                    .strip_prefix("releases-from-")?
+                    .strip_suffix(".md")?
+                    .split(['.', '-'])
+                    .map(|part| part.parse().unwrap_or(0))
+                    .collect();
+                Some((version, format!("{CHANGELOG_ARCHIVE_DIR}/{name}")))
+            })
             .collect();
         archives.sort();
         archives.reverse();
-        sources.extend(archives);
+        sources.extend(archives.into_iter().map(|(_, path)| path));
     }
     sources
 }

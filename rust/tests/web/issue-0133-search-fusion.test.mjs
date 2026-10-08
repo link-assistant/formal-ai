@@ -162,7 +162,7 @@ describe('the evidence names the web-search release the bundle is built from', (
 
 describe('R193: the change was released as a minor version with its changelog entry', () => {
   test('the 0.71.0 section records the issue #133 addition', () => {
-    const archive = readFileSync(join(REPO_ROOT, 'docs/changelog/archive-01.md'), 'utf8');
+    const archive = readFileSync(join(REPO_ROOT, 'docs/changelog/releases-from-0.1.0.md'), 'utf8');
     const section = archive.slice(archive.indexOf('## [0.71.0]'));
     assert.match(section.slice(0, section.indexOf('\n## ', 1)), /### Added[\s\S]*Issue #133: DuckDuckGo Instant Answer is now the default web search engine/);
   });
