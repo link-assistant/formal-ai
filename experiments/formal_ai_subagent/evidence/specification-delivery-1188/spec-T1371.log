@@ -1,0 +1,565 @@
+>> read {"filePath":"js/agentic/file_read.mjs","file_path":"js/agentic/file_read.mjs","path":"js/agentic/file_read.mjs"}
+   <file>
+   00001| // File-reading agentic recipe for local workspace prompts (issue #627):
+   00002| // rust/src/agentic_coding/file_read.rs.
+   00003| //
+   00004| // A `FileReadTask` is `{kind: 'direct', path, mode, prefer_run}`,
+   00005| // `{kind: 'direct_many', paths, mode}` or
+   00006| // `{kind: 'list_then_read', directory, selection, mode}`; every task also
+   00007| // carries a non-enumerable `isAnalysis()` method (`FileReadTask::is_analysis`).
+   00008| // A `FileReadMode` is `{kind: 'full' | 'first_line' | 'summary' | 'audit'}` or
+   00009| // `{kind: 'extract_value', key}`; a `FileSelection` is 'first' | 'last' | 'all'.
+   00010| 
+   00011| import { classifyTool } from './capability_router.mjs';
+   00012| import { Capability } from './capability.mjs';
+   00013| import { latestUserRequest, plainText, rustLines } from './content.mjs';
+   00014| import { isDottedNumber, peelSentencePunctuation } from './file_path_shape.mjs';
+   00015| import { hasFileWriteIntent } from './general_planner.mjs';
+   00016| import { agenticMessage } from './messages.mjs';
+   00017| import { finalAnswer, jsonText, plannedCall, toolCalls } from './plan.mjs';
+   00018| import { sentences } from './shell_command_policy.mjs';
+   00019| import { explicitPassthroughCommand } from './shell_command.mjs';
+   00020| 
+   00021| /** Mirrors `SHELL_OPERATORS`: shell syntax that chains, pipes or redirects commands. */
+   00022| const SHELL_OPERATORS = ['&&', '||', ';', '|', '>'];
+   00023| import { commandArgument, harnessReportedFailure, render, stripTransportEnvelope } from './tool_result.mjs';
+   00024| import { isStatedWriteTarget } from './write_request.mjs';
+   00025| import { sourceFromReadResult } from './code_artifact.mjs';
+   00026| import { byteOrder, eqIgnoreAsciiCase, replaceAllLiteral, rsplitOnce, splitWhitespace, toAsciiLowercase,
+   00027|   trim, trimMatches } from './crate/rust_str.mjs';
+   00028| import { mentionsRole, wordsForRole } from './crate/seed_meanings.mjs';
+   00029| import { fileReadFinalAnswer } from './file_read/audit.mjs';
+   00030| import { lineSlice } from './workspace_line_operation.mjs';
+   00031| import { exactLineKey, planDirectFileReads } from './file_read/exact.mjs';
+   00032| 
+   00033| export { suppliedFileAnswer } from './file_read/supplied.mjs';
+   00034| 
+   00035| const AUDIT_READ_LINE_LIMIT = 160;
+   00036| /** A cue phrase the Rust recipe spells inline, read from the messages file. */
+   00037| const cue = (key) => agenticMessage(`file_read_cue_${key}`);
+   00038| const AUDIT_READ_COLUMN_LIMIT = 320;
+   00039| const ROLE_FILE_READ_ACTION_CUE = 'file_read_action_cue';
+   00040| const ROLE_WORKSPACE_INSPECTION_ACTION = 'workspace_inspection_action';
+   00041| const ROLE_FILE_ANALYSIS_GAP_MARKER = 'file_analysis_gap_marker';
+   00042| 
+   00043| /** `FileReadMode` constructors. */
+   00044| export const FileReadMode = Object.freeze({
+   00045|   Full: Object.freeze({ kind: 'full' }),
+   00046|   FirstLine: Object.freeze({ kind: 'first_line' }),
+   00047|   Summary: Object.freeze({ kind: 'summary' }),
+   00048|   Audit: Object.freeze({ kind: 'audit' }),
+   00049|   extractValue: (key) => ({ kind: 'extract_value', key }),
+   00050|   /** A run of lines (`lineSlice` in workspace_line_operation.mjs, PR #1188 G33). */
+   00051|   lineSlice: (slice) => ({ kind: 'line_slice', ...slice }),
+   00052| });
+   00053| 
+   00054| /** `FileReadMode` equality (`==`): Rust built-in `#[derive(PartialEq)]` on `FileReadMode`. */
+   00055| export function sameMode(left, right) {
+   00056|   return left.kind === right.kind && (left.kind !== 'extract_value' || left.key === right.key)
+   00057|     && (left.kind !== 'line_slice'
+   00058|       || (left.from === right.from && left.to === right.to && left.fromEnd === right.fromEnd));
+   00059| }
+   00060| 
+   00061| const isAudit = (mode) => mode.kind === 'audit';
+   00062| 
+   00063| function withAnalysis(task) {
+   00064|   Object.defineProperty(task, 'isAnalysis', { value: () => isAnalysis(task), enumerable: false });
+   00065|   return task;
+   00066| }
+   00067| 
+   00068| /** Mirrors `FileReadTask::is_analysis` in rust/src/agentic_coding/file_read.rs. */
+   00069| export function isAnalysis(task) {
+   00070|   return isAudit(task.mode);
+   00071| }
+   00072| 
+   00073| /** `FileReadTask::Direct`. */
+   00074| export const directTask = (path, mode, preferRun = false) =>
+   00075|   withAnalysis({ kind: 'direct', path, mode, prefer_run: preferRun });
+   00076| /** `FileReadTask::DirectMany`. */
+   00077| export const directManyTask = (paths, mode) => withAnalysis({ kind: 'direct_many', paths, mode });
+   00078| /** `FileReadTask::ListThenRead`. */
+   00079| export const listThenReadTask = (directory, selection, mode) =>
+   00080|   withAnalysis({ kind: 'list_then_read', directory, selection, mode });
+   00081| 
+   00082| /**
+   00083|  * Mirrors `fn plan_file_read_step` in rust/src/agentic_coding/file_read.rs.
+   00084|  * @param {object} task a `FileReadTask`
+   00085|  * @param {Array<object>} messages
+   00086|  * @param {Array<string>} toolNames
+   00087|  */
+   00088| export function planFileReadStep(task, messages, toolNames) {
+   00089|   const readTool = toolFor(toolNames, Capability.Read);
+   00090|   const runTool = toolFor(toolNames, Capability.Run);
+   00091|   const grepTool = toolFor(toolNames, Capability.Grep);
+   00092|   const records = toolResultRecords(messages);
+   00093|   const request = latestUserRequest(messages) ?? '';
+   00094|   switch (task.kind) {
+   00095|     case 'direct':
+   00096|       return planDirectFileRead(task.path, task.mode, task.prefer_run, readTool, runTool, grepTool, records, request);
+   00097|     case 'direct_many':
+   00098|       return planDirectFileReads(task.paths, task.mode, readTool, runTool, grepTool, records, request);
+   00099|     default:
+   00100|       return planListThenRead(task.directory, task.selection, task.mode, readTool, runTool, records, request);
+   00101|   }
+   00102| }
+   00103| 
+   00104| /** Mirrors `fn failed_step_answer`. */
+   00105| export function failedStepAnswer(label, raw, request) {
+   00106|   return harnessReportedFailure(raw) ? render(label, raw, request) : null;
+   00107| }
+   00108| 
+   00109| /** Mirrors `fn plan_direct_file_read`. */
+   00110| function planDirectFileRead(path, mode, preferRun, readTool, runTool, grepTool, records, request) {
+   00111|   if (isAudit(mode)) {
+   00112|     return planDirectFileReads([path], mode, readTool, runTool, grepTool, records, request);
+   00113|   }
+   00114|   const readCommand = readCommandFor(path, mode);
+   00115|   const exactRun = exactLineKey(request) !== null && runTool !== null;
+   00116|   const fromRun = () => {
+   00117|     const raw = runRecordForCommand(records, readCommand);
+   00118|     return raw === null ? null : [readCommand, raw, stripTransportEnvelope(raw)];
+   00119|   };
+   00120|   let recorded;
+   00121|   if (exactRun) {
+   00122|     recorded = fromRun();
+   00123|   } else {
+   00124|     const raw = readResultForPath(records, path);
+   00125|     recorded = raw !== null ? [path, raw, raw] : fromRun();
+   00126|   }
+   00127|   if (recorded !== null) {
+   00128|     const [label, raw, observed] = recorded;
+   00129|     const failure = failedStepAnswer(label, raw, request);
+   00130|     if (failure !== null) return finalAnswer(failure);
+   00131|     const content = label === path ? sourceFromReadResult(observed) : observed;
+   00132|     return finalAnswer(fileReadFinalAnswer(mode, [[path, content]], request));
+   00133|   }
+   00134|   if ((preferRun || exactRun) && runTool !== null) {
+   00135|     return planOne(runTool, jsonText({ command: readCommandFor(path, mode) }));
+   00136|   }
+   00137|   if (readTool !== null) return planOne(readTool, readArguments(path, mode));
+   00138|   if (runTool !== null) return planOne(runTool, jsonText({ command: readCommandFor(path, mode) }));
+   00139|   return finalAnswer(agenticMessage('file_read_tool_missing', { path }));
+   00140| }
+   00141| 
+   00142| /** Mirrors `fn plan_list_then_read`. */
+   00143| function planListThenRead(directory, selection, mode, readTool, runTool, records, request) {
+   00144|   const listCommand = listFilesCommand(directory);
+   00145|   const rawListing = runRecordForCommand(records, listCommand);
+   00146|   if (rawListing === null) {
+   00147|     if (runTool !== null) return planOne(runTool, jsonText({ command: listCommand }));
+   00148|     return finalAnswer(agenticMessage('file_read_listing_tool_missing'));
+   00149|   }
+   00150|   const listingFailure = failedStepAnswer(listCommand, rawListing, request);
+   00151|   if (listingFailure !== null) return finalAnswer(listingFailure);
+   00152|   const listing = stripTransportEnvelope(rawListing);
+   00153|   const paths = selectedPathsFromListing(directory, listing, selection);
+   00154|   if (!paths.length) return finalAnswer(agenticMessage('file_read_listing_empty', { directory }));
+   00155| 
+   00156|   const contents = readResultsForPaths(records, paths);
+   00157|   if (contents !== null) {
+   00158|     for (const [path, raw] of contents) {
+   00159|       const failure = failedStepAnswer(path, raw, request);
+   00160|       if (failure !== null) return finalAnswer(failure);
+   00161|     }
+   00162|     return finalAnswer(fileReadFinalAnswer(mode, contents, request));
+   00163|   }
+   00164| 
+   00165|   if (selection === 'all') {
+   00166|     if (readTool !== null) {
+   00167|       return toolCalls(paths
+   00168|         .filter((path) => readResultForPath(records, path) === null)
+   00169|         .map((path) => plannedCall(readTool, readArguments(path, mode))));
+   00170|     }
+   00171|   } else if (paths.length && readTool !== null) {
+   00172|     return planOne(readTool, readArguments(paths[0], mode));
+   00173|   }
+   00174| 
+   00175|   if (runTool !== null) {
+   00176|     const command = selection === 'all' ? catManyCommand(paths) : readCommandFor(paths[0], mode);
+   00177|     const raw = runRecordForCommand(records, command);
+   00178|     if (raw !== null) {
+   00179|       const failure = failedStepAnswer(command, raw, request);
+   00180|       if (failure !== null) return finalAnswer(failure);
+   00181|       return finalAnswer(fileReadFinalAnswer(mode, [[paths.join(', '), stripTransportEnvelope(raw)]], request));
+   00182|     }
+   00183|     return planOne(runTool, jsonText({ command }));
+   00184|   }
+   00185|   return finalAnswer(agenticMessage('file_read_selected_tool_missing'));
+   00186| }
+   00187| 
+   00188| /**
+   00189|  * Mirrors `fn file_read_task_for` in rust/src/agentic_coding/file_read.rs.
+   00190|  * @param {string} prompt
+   00191|  * @returns {object|null} a `FileReadTask`
+   00192|  */
+   00193| export function fileReadTaskFor(prompt) {
+   00194|   const lower = prompt.toLowerCase();
+   00195|   if (hasFileWriteIntent(lower)) return null;
+   00196|   // A command quoted after a run prefix that chains, pipes or redirects is
+   00197|   // run as written, not read file by file (PR #1188 G62).
+   00198|   if (SHELL_OPERATORS.some((operator) => explicitPassthroughCommand(prompt)?.includes(operator))) return null;
+   00199|   const catPath = leadingCatPath(prompt);
+   00200|   if (catPath !== null) return directTask(catPath, FileReadMode.Full, false);
+   00201|   if (asksToReadEveryFile(lower)) return listThenReadTask('.', 'all', FileReadMode.Summary);
+   00202|   if (asksToListThenRead(lower)) {
+   00203|     return listThenReadTask(directoryForListRead(prompt) ?? '.', selectionForPrompt(lower), modeForPrompt(prompt));
+   00204|   }
+   00205|   if (asksToReadFileInFolder(lower)) {
+   00206|     return listThenReadTask(directoryForListRead(prompt) ?? '.', 'first', modeForPrompt(prompt));
+   00207|   }
+   00208|   const readPaths = readPathsNamedBesideTheirCue(prompt);
+   00209|   if (readPaths.length > 1) return directManyTask(readPaths, modeForPrompt(prompt));
+   00210|   if (readPaths.length === 1) return directTask(readPaths[0], modeForPrompt(prompt), false);
+   00211|   if (hasFileReadIntent(lower)) {
+   00212|     const path = firstLocalFilePath(prompt);
+   00213|     if (path !== null && !isStatedWriteTarget(prompt, path)) {
+   00214|       return directTask(path, modeForPrompt(prompt), false);
+   00215|     }
+   00216|   }
+   00217|   return null;
+   00218| }
+   00219| 
+   00220| /** Mirrors `fn read_paths_named_beside_their_cue`. */
+   00221| function readPathsNamedBesideTheirCue(prompt) {
+   00222|   for (const sentence of sentences(prompt)) {
+   00223|     if (hasFileReadIntent(sentence.text.toLowerCase())) return localFilePaths(sentence.text);
+   00224|   }
+   00225|   return [];
+   00226| }
+   00227| 
+   00228| /** Mirrors `fn has_file_read_intent`. */
+   00229| function hasFileReadIntent(lower) {
+   00230|   return mentionsRole(ROLE_FILE_READ_ACTION_CUE, lower);
+   00231| }
+   00232| 
+   00233| /** Mirrors `fn asks_to_read_every_file`. */
+   00234| function asksToReadEveryFile(lower) {
+   00235|   return (lower.includes(cue('read_every_file')) || lower.includes(cue('read_all_files')))
+   00236|     && (lower.includes('summarize') || lower.includes('summary') || lower.includes('here'));
+   00237| }
+   00238| 
+   00239| /** Mirrors `fn asks_to_list_then_read`. */
+   00240| function asksToListThenRead(lower) {
+   00241|   const listsFiles = lower.includes(cue('list_the_files')) || lower.includes('list files')
+   00242|     || lower.includes(cue('ls_the_folder')) || lower.includes('ls ');
+   00243|   const readsAfter = lower.includes('read') || lower.includes('contents') || lower.includes('content')
+   00244|     || lower.includes('show me');
+   00245|   return listsFiles && readsAfter;
+   00246| }
+   00247| 
+   00248| /** Mirrors `fn asks_to_read_file_in_folder`. */
+   00249| function asksToReadFileInFolder(lower) {
+   00250|   return lower.includes(cue('read_the_file')) && (lower.includes(' folder') || lower.includes(' directory'));
+   00251| }
+   00252| 
+   00253| /** Mirrors `fn selection_for_prompt`. */
+   00254| function selectionForPrompt(lower) {
+   00255|   return lower.includes('last') ? 'last' : 'first';
+   00256| }
+   00257| 
+   00258| /** Mirrors `fn mode_for_prompt`. */
+   00259| function modeForPrompt(prompt) {
+   00260|   const lower = prompt.toLowerCase();
+   00261|   if (lower.includes('first line')) return FileReadMode.FirstLine;
+   00262|   const key = extractValueKey(prompt) ?? exactLineKey(prompt);
+   00263|   if (key !== null) return FileReadMode.extractValue(key);
+   00264|   if (mentionsRole(ROLE_WORKSPACE_INSPECTION_ACTION, lower)) return FileReadMode.Audit;
+   00265|   if (lower.includes('summarize') || lower.includes('summary')) return FileReadMode.Summary;
+   00266|   const slice = lineSlice(prompt);
+   00267|   return slice === null ? FileReadMode.Full : FileReadMode.lineSlice(slice);
+   00268| }
+   00269| 
+   00270| /** Mirrors `fn extract_value_key`. */
+   00271| function extractValueKey(prompt) {
+   00272|   const marker = 'value of ';
+   00273|   const at = toAsciiLowercase(prompt).indexOf(marker);
+   00274|   if (at < 0) return null;
+   00275|   const rest = prompt.slice(at + marker.length);
+   00276|   const key = trimMatches(splitWhitespace(rest)[0] ?? '', (character) => !isFilePathChar(character));
+   00277|   return key ? key : null;
+   00278| }
+   00279| 
+   00280| /** Mirrors `fn leading_cat_path`. */
+   00281| function leadingCatPath(prompt) {
+   00282|   const trimmed = trim(trimMatches(trim(prompt), (character) => character === '`'));
+   00283|   const parts = splitWhitespace(trimmed);
+   00284|   if (!parts.length || !eqIgnoreAsciiCase(parts[0], 'cat') || parts.length < 2) return null;
+   00285|   const path = cleanFileToken(parts[1]);
+   00286|   return path ? path : null;
+   00287| }
+   00288| 
+   00289| /** Mirrors `fn first_local_file_path`. */
+   00290| function firstLocalFilePath(prompt) {
+   00291|   return localFilePaths(prompt)[0] ?? null;
+   00292| }
+   00293| 
+   00294| /** Mirrors `fn local_file_paths` (consecutive duplicates removed). */
+   00295| function localFilePaths(prompt) {
+   00296|   const out = [];
+   00297|   for (const token of splitWhitespace(prompt).map(cleanFileToken)) {
+   00298|     if (!looksLikeLocalFilePath(token)) continue;
+   00299|     if (out[out.length - 1] !== token) out.push(token);
+   00300|   }
+   00301|   return out;
+   00302| }
+   00303| 
+   00304| const SENTENCE_MARKS = new Set([',', ';', ':', '!', '?', ')', '(', '[', ']', '{', '}']);
+   00305| 
+   00306| /** Mirrors `fn clean_file_token`. */
+   00307| export function cleanFileToken(token) {
+   00308|   return peelSentencePunctuation(token, (current) => {
+   00309|     let text = trimMatches(current, (character) => character === '`');
+   00310|     text = trimMatches(text, (character) => character === '"');
+   00311|     text = trimMatches(text, (character) => character === "'");
+   00312|     return trimMatches(text, (character) => SENTENCE_MARKS.has(character));
+   00313|   });
+   00314| }
+   00315| 
+   00316| /** Mirrors `fn looks_like_local_file_path`. */
+   00317| function looksLikeLocalFilePath(token) {
+   00318|   if (!token || token.includes('://') || token.startsWith('http:') || token.startsWith('https:')
+   00319|     || isDottedNumber(token)) return false;
+   00320|   const allPathChars = Array.from(token).every(isFilePathChar);
+   00321|   if (token.includes('/')) return allPathChars;
+   00322|   const split = rsplitOnce(token, '.');
+   00323|   if (split === null) return false;
+   00324|   const [stem, extension] = split;
+   00325|   return stem !== '' && extension !== '' && new TextEncoder().encode(extension).length <= 12 && allPathChars;
+   00326| }
+   00327| 
+   00328| /** Mirrors `const fn is_file_path_char`. */
+   00329| export function isFilePathChar(character) {
+   00330|   return /^[0-9A-Za-z_\-./\\@]$/.test(character);
+   00331| }
+   00332| 
+   00333| /** Mirrors `fn directory_for_list_read`. */
+   00334| function directoryForListRead(prompt) {
+   00335|   const tokens = splitWhitespace(prompt).map(cleanFileToken);
+   00336|   for (let index = 0; index + 3 <= tokens.length; index += 1) {
+   00337|     const [first, second, third] = tokens.slice(index, index + 3);
+   00338|     if (eqIgnoreAsciiCase(first, 'the') && second !== ''
+   00339|       && (eqIgnoreAsciiCase(third, 'folder') || eqIgnoreAsciiCase(third, 'directory'))) return second;
+   00340|     if ((eqIgnoreAsciiCase(first, 'in') || eqIgnoreAsciiCase(first, 'inside'))
+   00341|       && eqIgnoreAsciiCase(second, 'the') && third !== '') return third;
+   00342|   }
+   00343|   for (let index = 0; index + 2 <= tokens.length; index += 1) {
+   00344|     const [first, second] = tokens.slice(index, index + 2);
+   00345|     const lower = toAsciiLowercase(first);
+   00346|     if (first !== '' && (eqIgnoreAsciiCase(second, 'folder') || eqIgnoreAsciiCase(second, 'directory'))
+   00347|       && !['the', 'a', 'this', 'current'].includes(lower)) return first;
+   00348|   }
+   00349|   return null;
+   00350| }
+   00351| 
+   00352| /** Mirrors `fn tool_result_records`: `{capability, arguments, content}` per current-turn result. */
+   00353| export function toolResultRecords(messages) {
+   00354|   let turnStart = 0;
+   00355|   for (let index = messages.length - 1; index >= 0; index -= 1) {
+   00356|     if (messages[index].role.toLowerCase() === 'user') {
+   00357|       turnStart = index + 1;
+   00358|       break;
+   00359|     }
+   00360|   }
+   00361|   const records = [];
+   00362|   for (let index = turnStart; index < messages.length; index += 1) {
+   00363|     const message = messages[index];
+   00364|     if (message.role.toLowerCase() !== 'tool') continue;
+   00365|     const call = toolResultCall(messages, index);
+   00366|     let capability = null;
+   00367|     let args = null;
+   00368|     if (call) {
+   00369|       capability = classifyTool(call.function.name);
+   00370|       try {
+   00371|         args = JSON.parse(call.function.arguments);
+   00372|       } catch {
+   00373|         args = null;
+   00374|       }
+   00375|     }
+   00376|     records.push({ capability, arguments: args, content: plainText(message.content) });
+   00377|   }
+   00378|   return records;
+   00379| }
+   00380| 
+   00381| /** Mirrors `fn tool_result_call`: the first prior call whose id matches. */
+   00382| function toolResultCall(messages, index) {
+   00383|   const callId = messages[index].tool_call_id;
+   00384|   if (callId === null || callId === undefined) return null;
+   00385|   for (const prior of messages.slice(0, index)) {
+   00386|     for (const call of prior.tool_calls || []) if (call.id === callId) return call;
+   00387|   }
+   00388|   return null;
+   00389| }
+   00390| 
+   00391| const stringField = (value, key) =>
+   00392|   (value && typeof value === 'object' && !Array.isArray(value) && typeof value[key] === 'string' ? value[key] : null);
+   00393| 
+   00394| /** Mirrors `fn read_result_for_path`. */
+   00395| export function readResultForPath(records, path) {
+   00396|   const found = records.find((record) => record.capability === Capability.Read
+   00397|     && (() => {
+   00398|       const recorded = pathArgument(record.arguments);
+   00399|       return recorded !== null && samePath(recorded, path);
+   00400|     })());
+   00401|   return found ? found.content : null;
+   00402| }
+   00403| 
+   00404| /** Mirrors `fn grep_result_for_path`. */
+   00405| export function grepResultForPath(records, path, pattern) {
+   00406|   const found = records.find((record) => {
+   00407|     if (record.capability !== Capability.Grep) return false;
+   00408|     const recorded = pathArgument(record.arguments);
+   00409|     return recorded !== null && samePath(recorded, path) && stringField(record.arguments, 'pattern') === pattern;
+   00410|   });
+   00411|   return found ? found.content : null;
+   00412| }
+   00413| 
+   00414| /** Mirrors `fn same_path`. */
+   00415| export function samePath(recorded, planned) {
+   00416|   if (recorded === planned) return true;
+   00417|   const wanted = trimStartMatchesStr(planned, './');
+   00418|   const actual = trimStartMatchesStr(recorded, './');
+   00419|   if (!actual.endsWith(wanted)) return false;
+   00420|   const prefix = actual.slice(0, actual.length - wanted.length);
+   00421|   return prefix === '' || prefix.endsWith('/');
+   00422| }
+   00423| 
+   00424| /** `str::trim_start_matches(&str)`. */
+   00425| function trimStartMatchesStr(text, prefix) {
+   00426|   let rest = text;
+   00427|   while (prefix && rest.startsWith(prefix)) rest = rest.slice(prefix.length);
+   00428|   return rest;
+   00429| }
+   00430| 
+   00431| /** Mirrors `fn read_results_for_paths`. */
+   00432| function readResultsForPaths(records, paths) {
+   00433|   const out = [];
+   00434|   for (const path of paths) {
+   00435|     const content = readResultForPath(records, path);
+   00436|     if (content === null) return null;
+   00437|     out.push([path, content]);
+   00438|   }
+   00439|   return out;
+   00440| }
+   00441| 
+   00442| /** Mirrors `fn run_record_for_command`. */
+   00443| export function runRecordForCommand(records, command) {
+   00444|   const found = records.find((record) => record.capability === Capability.Run
+   00445|     && commandArgument(jsonText(record.arguments)) === command);
+   00446|   return found ? found.content : null;
+   00447| }
+   00448| 
+   00449| /** Mirrors `fn path_argument`. */
+   00450| function pathArgument(args) {
+   00451|   for (const key of ['filePath', 'path', 'file_path', 'absolute_path']) {
+   00452|     const value = stringField(args, key);
+   00453|     if (value !== null) return value;
+   00454|   }
+   00455|   return null;
+   00456| }
+   00457| 
+   00458| /** Mirrors `fn read_arguments`. */
+   00459| export function readArguments(path, mode) {
+   00460|   const args = { filePath: path, path, file_path: path };
+   00461|   if (isAudit(mode)) {
+   00462|     args.offset = 0;
+   00463|     args.limit = AUDIT_READ_LINE_LIMIT;
+   00464|     args.columnOffset = 0;
+   00465|     args.columnLimit = AUDIT_READ_COLUMN_LIMIT;
+   00466|   }
+   00467|   return jsonText(args);
+   00468| }
+   00469| 
+   00470| /** Mirrors `fn grep_arguments`. */
+   00471| export function grepArguments(path, pattern) {
+   00472|   return jsonText({ path, pattern });
+   00473| }
+   00474| 
+   00475| /** Mirrors `fn file_analysis_pattern`. */
+   00476| export function fileAnalysisPattern() {
+   00477|   const alternatives = ['\\[\\s*\\]'];
+   00478|   for (const surface of wordsForRole(ROLE_FILE_ANALYSIS_GAP_MARKER)) {
+   00479|     if (trim(surface) !== '') alternatives.push(regexEscape(surface));
+   00480|   }
+   00481|   alternatives.sort(byteOrder);
+   00482|   const unique = alternatives.filter((value, index) => index === 0 || alternatives[index - 1] !== value);
+   00483|   return `(?i)(?:${unique.join('|')})`;
+   00484| }
+   00485| 
+   00486| /** Mirrors `fn regex_escape`. */
+   00487| function regexEscape(surface) {
+   00488|   return Array.from(surface, (character) => ('.+*?()|[]{}^$\\'.includes(character) ? `\\${character}` : character))
+   00489|     .join('');
+   00490| }
+   00491| 
+   00492| /** Mirrors `fn read_command_for`. */
+   00493| export function readCommandFor(path, mode) {
+   00494|   switch (mode.kind) {
+   00495|     case 'first_line':
+   00496|       return `head -n 1 ${shellPath(path)}`;
+   00497|     case 'extract_value':
+   00498|       return ['sed', '-n', shellString(`s/^${mode.key}=//p`), shellPath(path)].join(' ');
+   00499|     case 'audit':
+   00500|       return ['sed', '-n', `'1,${AUDIT_READ_LINE_LIMIT}p'`, shellPath(path), '|', 'cut', '-c',
+   00501|         `1-${AUDIT_READ_COLUMN_LIMIT}`].join(' ');
+   00502|     default:
+   00503|       return `cat ${shellPath(path)}`;
+   00504|   }
+   00505| }
+   00506| 
+   00507| /** Mirrors `fn list_files_command`. */
+   00508| function listFilesCommand(directory) {
+   00509|   if (directory === '.') return "find . -maxdepth 1 -type f | sed 's#^./##' | sort";
+   00510|   return `find ${shellPath(directory)} -maxdepth 1 -type f | sed 's#^.*/##' | sort`;
+   00511| }
+   00512| 
+   00513| /** Mirrors `fn cat_many_command`. */
+   00514| function catManyCommand(paths) {
+   00515|   return paths.map((path) => `printf '==> %s <==\\n' ${shellPath(path)}; cat ${shellPath(path)}`).join('; ');
+   00516| }
+   00517| 
+   00518| /** Mirrors `fn shell_path`. */
+   00519| function shellPath(path) {
+   00520|   if (/^[0-9A-Za-z_\-./]*$/.test(path)) return path;
+   00521|   return `'${replaceAllLiteral(path, "'", "'\\''")}'`;
+   00522| }
+   00523| 
+   00524| /** Mirrors `fn shell_string`. */
+   00525| function shellString(value) {
+   00526|   return `'${replaceAllLiteral(value, "'", "'\\''")}'`;
+   00527| }
+   00528| 
+   00529| /** Mirrors `fn selected_paths_from_listing`. */
+   00530| function selectedPathsFromListing(directory, listing, selection) {
+   00531|   const entries = rustLines(listing)
+   00532|     .map(trim)
+   00533|     .filter((line) => line !== '')
+   00534|     .map((line) => trimStartMatchesStr(line, './'));
+   00535|   entries.sort(byteOrder);
+   00536|   const unique = entries.filter((entry, index) => index === 0 || entries[index - 1] !== entry);
+   00537|   let selected;
+   00538|   if (selection === 'first') selected = unique.slice(0, 1);
+   00539|   else if (selection === 'last') selected = unique.slice(-1);
+   00540|   else selected = unique;
+   00541|   return selected.map((entry) => (directory === '.' || entry.includes('/') ? entry : `${directory}/${entry}`));
+   00542| }
+   00543| 
+   00544| /** Mirrors `fn tool_for` in rust/src/agentic_coding/file_read.rs (first advertised name of `capability`). */
+   00545| function toolFor(toolNames, capability) {
+   00546|   return toolNames.find((name) => classifyTool(name) === capability) ?? null;
+   00547| }
+   00548| 
+   00549| /** Mirrors `fn plan_one`. */
+   00550| function planOne(tool, args) {
+   00551|   return toolCalls([plannedCall(tool, args)]);
+   00552| }
+   00553| 
+   00554| 
+   
+   (End of file - total 554 lines)
+   </file>
+>> edit {"filePath":"js/agentic/file_read.mjs","file_path":"js/agentic/file_read.mjs","new":"|| lower.includes(cue('ls_the_folder')) || splitWhitespace(lower).includes('ls');","newString":"|| lower.includes(cue('ls_the_folder')) || splitWhitespace(lower).includes('ls');","new_str":"|| lower.includes(cue('ls_the_folder')) || splitWhitespace(lower).includes('ls');","new_string":"|| lower.includes(cue('ls_the_folder')) || splitWhitespace(lower).includes('ls');","old":"|| lower.includes(cue('ls_the_folder')) || lower.includes('ls ');","oldString":"|| lower.includes(cue('ls_the_folder')) || lower.includes('ls ');","old_str":"|| lower.includes(cue('ls_the_folder')) || lower.includes('ls ');","old_string":"|| lower.includes(cue('ls_the_folder')) || lower.includes('ls ');","path":"js/agentic/file_read.mjs"}
+>> bash {"command":"sha256sum -- js/agentic/file_read.mjs"}
+   6a6f6def73cdd8a568af75eceb0914a390def03e23ed8c441fc9f36ee195c063  js/agentic/file_read.mjs
+   
+== answer ==
+Replaced `|| lower.includes(cue('ls_the_folder')) || lower.includes('ls ');` with `|| lower.includes(cue('ls_the_folder')) || splitWhitespace(lower).includes('ls');` in `js/agentic/file_read.mjs` and observed the result.

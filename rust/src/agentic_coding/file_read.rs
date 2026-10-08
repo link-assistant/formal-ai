@@ -434,7 +434,7 @@ fn asks_to_list_then_read(lower: &str) -> bool {
     let lists_files = lower.contains("list the files")
         || lower.contains("list files")
         || lower.contains("ls the folder")
-        || lower.contains("ls ");
+        || lower.split_whitespace().any(|word| word == "ls");
     let reads_after = lower.contains("read")
         || lower.contains("contents")
         || lower.contains("content")

@@ -235,3 +235,22 @@ fn read_every_file_lists_then_reads_each_file() {
         other => panic!("expected final summary, got {other:?}"),
     }
 }
+
+#[test]
+fn plural_nouns_do_not_request_a_shell_listing() {
+    for noun in ["calls", "details", "signals", "goals"] {
+        let prompt = format!("Read alpha.mjs and inspect {noun} with their supplied context.");
+        let call = expect_single_call(&[ChatMessage::user(prompt)]);
+        assert_eq!(call.tool, "read", "{noun}");
+        assert_eq!(arguments(&call)["filePath"], "alpha.mjs");
+    }
+    let list = expect_single_call(&[ChatMessage::user(
+        "ls then read the first one alphabetically",
+    )]);
+    assert_eq!(list.tool, "bash");
+    assert!(
+        arguments(&list)["command"]
+            .as_str()
+            .is_some_and(|command| command.starts_with("find . -maxdepth 1 -type f"))
+    );
+}
