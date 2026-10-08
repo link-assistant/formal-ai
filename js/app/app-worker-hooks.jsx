@@ -9,7 +9,6 @@ import {
   requestDesktopAgentProvider, requestDesktopAnswer, requestDesktopToolCall,
 } from "./desktop-bridge.jsx";
 import { normalizeAssistantName } from "./interface-commands.jsx";
-import { localFallbackAnswer } from "./local-fallback.jsx";
 import { waitForMemoryWrites } from "./memory-events.jsx";
 import {
   desktopToolRouterGrants, persistPreferences, serializeDesktopToolGrants,
@@ -360,7 +359,13 @@ export function useAnswerRequest({
   locationPreferenceRef, assistantNameRef, desktopStatusRef,
 }) {
   const requestAnswer = useCallback(async (text, history = []) => {
-    const worker = workerRef.current;
+    // The worker is the only answerer (R1188-U1): a request made before the
+    // mount effect created it waits for it, instead of answering from a
+    // second, smaller rule set kept in the page.
+    const worker = workerRef.current || await new Promise((resolve) => {
+      const poll = () => (workerRef.current ? resolve(workerRef.current) : setTimeout(poll, 25));
+      poll();
+    });
     // Issue #529: snapshot every searchable persistent-memory value (after the
     // previous answer's background writes, e.g. its #1184 derivation record,
     // settle) so the worker sees them; handleMemoryOperation writes back.
@@ -402,6 +407,19 @@ export function useAnswerRequest({
       location: locationPreferenceRef.current,
       assistantName: normalizeAssistantName(assistantNameRef.current),
     };
+    const askWorker = () => new Promise((resolve) => {
+      const requestId = `request-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      pendingResponses.current.set(requestId, resolve);
+      worker.postMessage({
+        prompt: text,
+        requestId,
+        history,
+        prefs,
+        userContext: userContextRef.current,
+        memory,
+        memoryEvents,
+      });
+    });
     const currentDesktopStatus = desktopStatusRef.current;
     let answerPromise;
     if (currentDesktopStatus && currentDesktopStatus.activeEngine !== "out-of-box") {
@@ -425,40 +443,9 @@ export function useAnswerRequest({
         toolCalls: [],
       });
     } else if (currentDesktopStatus && currentDesktopStatus.apiReady && currentDesktopStatus.apiBase) {
-      answerPromise = requestDesktopAnswer(text, history, currentDesktopStatus, prefs).catch(() => {
-        if (!worker) {
-          return localFallbackAnswer(text, history, prefs);
-        }
-        return new Promise((resolve) => {
-          const requestId = `request-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-          pendingResponses.current.set(requestId, resolve);
-          worker.postMessage({
-            prompt: text,
-            requestId,
-            history,
-            prefs,
-            userContext: userContextRef.current,
-            memory,
-            memoryEvents,
-          });
-        });
-      });
-    } else if (!worker) {
-      answerPromise = Promise.resolve(localFallbackAnswer(text, history, prefs));
+      answerPromise = requestDesktopAnswer(text, history, currentDesktopStatus, prefs).catch(askWorker);
     } else {
-      answerPromise = new Promise((resolve) => {
-        const requestId = `request-${Date.now()}-${Math.random().toString(16).slice(2)}`;
-        pendingResponses.current.set(requestId, resolve);
-        worker.postMessage({
-          prompt: text,
-          requestId,
-          history,
-          prefs,
-          userContext: userContextRef.current,
-          memory,
-          memoryEvents,
-        });
-      });
+      answerPromise = askWorker();
     }
     const answer = await answerPromise;
     const bridge = desktopBridge();

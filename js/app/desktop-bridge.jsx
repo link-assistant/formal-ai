@@ -2,7 +2,7 @@
 // installer labels, data-migration notice and desktop agent/tool requests.
 
 import React from "react";
-import { APP_VERSION, UNKNOWN_ANSWER } from "./app-constants.jsx";
+import { APP_VERSION } from "./app-constants.jsx";
 import { desktopToolRouterGrants, normalizeSliderPreference } from "./preferences.jsx";
 
 const { createElement: h } = React;
@@ -538,6 +538,10 @@ export async function requestDesktopAnswer(text, history, desktopStatus, prefere
       : {};
   const answerText =
     message && message.content !== undefined ? String(message.content || "") : "";
+  if (!answerText) {
+    // The caller asks the in-page worker instead of inventing an answer.
+    throw new Error("desktop API returned no answer");
+  }
   const apiThinkingSteps = Array.isArray(message.thinking_steps)
     ? message.thinking_steps.map(normalizeApiThinkingStep).filter(Boolean)
     : [];
@@ -549,7 +553,7 @@ export async function requestDesktopAnswer(text, history, desktopStatus, prefere
 
   return {
     intent: "desktop_http_chat",
-    content: answerText || UNKNOWN_ANSWER,
+    content: answerText,
     source: "desktop_http",
     evidence: [
       "surface:desktop",

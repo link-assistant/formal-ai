@@ -14,5 +14,9 @@
 # skipped, and found 17 pairs there (the sidebar example prompts of
 # js/app/app-constants.jsx and the local fallbacks of js/app/local-*.jsx), so
 # the ceiling was re-based to 17 from a wider measurement, not a regression.
+# Later that day it fell to 0: the local fallbacks were a second, smaller
+# answerer kept in the page for when the worker was missing, and the page always
+# creates the worker, so they were deleted and every request waits for the
+# worker; the sidebar example prompts became data (js/app/example-prompts.lino).
 prompt-specialization-ratchet
-  specialization-ceiling 17
+  specialization-ceiling 0

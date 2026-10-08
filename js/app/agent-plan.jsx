@@ -1,7 +1,5 @@
 // Agent mode: decomposes a multi-step request into an ordered task plan.
 
-import { normalizePrompt } from "./local-prompts.jsx";
-
 // Issue #27: agent-mode task decomposition. Splits a multi-step prompt into
 // sequential sub-tasks on a small, deterministic set of separators that span
 // the languages the demo already supports. The split is intentionally
@@ -26,7 +24,8 @@ const AGENT_LEADING_CONJUNCTIONS =
   /^(?:and\s+then|then|next|after\s+that|потом|затем|после\s+этого|然后|接着)[\s,:]+/i;
 
 function isAgentFormattingDirective(segment) {
-  const normalized = normalizePrompt(segment);
+  // Lower-case letters and digits, every other run of characters one space.
+  const normalized = String(segment || "").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
   if (!normalized) return false;
   return /^(?:format|return|output|respond|write|show)\s+(?:(?:this|that|it|the result|the answer|the information|the output)\s+)?(?:as|in)\s+(?:a\s+|an\s+)?(?:json object|json|markdown table|table|csv|yaml|xml)$/.test(normalized);
 }
