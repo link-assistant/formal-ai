@@ -126,6 +126,11 @@
           "type": "boolean",
           "default": false,
           "description": "Enable agent mode (which drives tool grants) by default when the chat view opens."
+        },
+        "formal-ai.debugger.stepping": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Start the local server with `--debug-session` (loopback hosts only) so **Formal AI: Open Debugger** can pause a solved turn and step through its stages. Requires `formal-ai.server.enabled`; desktop (Node) host only."
         }
       }
     }

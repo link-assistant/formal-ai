@@ -676,6 +676,20 @@ pub(super) fn first_action_cue_start(toks: &[Token<'_>]) -> Option<usize> {
 /// Returns [`None`] when nothing is left.
 pub(super) fn clean_content(raw: &str) -> Option<String> {
     let led = strip_clause_lead(raw);
+    // The sentence's own closing mark after one quoted literal belongs to the
+    // sentence: `containing 'hello'.` writes `hello`, not `'hello'.`.
+    if let Some(closed) = led
+        .strip_suffix([
+            '.', '!', '?', '\u{0964}', '\u{3002}', '\u{ff01}', '\u{ff1f}',
+        ])
+        .map(str::trim)
+        && let [only] = crate::normal_markov::quoted_segment_spans(closed).as_slice()
+        && only.start == 0
+        && only.end == closed.len()
+    {
+        let text = only.text.trim();
+        return (!text.is_empty()).then(|| text.to_owned());
+    }
     let result = if led.len() >= 6 && led.starts_with("```") && led.ends_with("```") {
         led[3..led.len() - 3].trim()
     } else if led.len() >= 2 {
@@ -755,25 +769,44 @@ pub fn compose_edit_request(request: &str) -> Option<(String, String, String)> {
         .iter()
         .map(|token| token.start)
         .collect();
-    let (file_index, target) = toks.iter().enumerate().find_map(|(index, token)| {
-        let cleaned = clean_path_token(token.text);
-        if !unquoted.contains(&token.start) {
-            return None;
-        }
-        let resolved = super::general_planner::resolve_census_target(cleaned);
-        if resolved.is_none() && (!looks_like_file_path(cleaned) || !safe_relative_path(cleaned)) {
-            return None;
-        }
-        let prev_is_cue = index
-            .checked_sub(1)
-            .is_some_and(|previous| is_target_cue(previous) || is_action_cue(previous));
-        let next_is_cue =
-            (index + 1 < toks.len()) && (is_target_cue(index + 1) || is_action_cue(index + 1));
-        let target = resolved.map_or_else(|| cleaned.to_owned(), |census| census.module_path);
-        (prev_is_cue || next_is_cue).then_some((index, target))
-    })?;
+    // A path the request leaves unquoted names the file before a literal that
+    // is exactly a path does: in "Replace 'a' with 'data/x.lino' in f.mjs" the
+    // quoted path is the new text, and the cue after it does not make it the
+    // target.
+    let segments = crate::normal_markov::quoted_segment_spans(request);
+    let is_quoted = |token: &Token<'_>| {
+        segments
+            .iter()
+            .any(|segment| token.start >= segment.start && token.end <= segment.end)
+    };
+    let candidate = |quoted_pass: bool| {
+        toks.iter().enumerate().find_map(|(index, token)| {
+            let cleaned = clean_path_token(token.text);
+            if !unquoted.contains(&token.start) || is_quoted(token) != quoted_pass {
+                return None;
+            }
+            let resolved = super::general_planner::resolve_census_target(cleaned);
+            if resolved.is_none()
+                && (!looks_like_file_path(cleaned) || !safe_relative_path(cleaned))
+            {
+                return None;
+            }
+            let prev_is_cue = index
+                .checked_sub(1)
+                .is_some_and(|previous| is_target_cue(previous) || is_action_cue(previous));
+            let next_is_cue =
+                (index + 1 < toks.len()) && (is_target_cue(index + 1) || is_action_cue(index + 1));
+            let target = resolved.map_or_else(|| cleaned.to_owned(), |census| census.module_path);
+            (prev_is_cue || next_is_cue).then_some((index, target))
+        })
+    };
+    let (file_index, target) = candidate(false).or_else(|| candidate(true))?;
     let mut clause_start_index = file_index;
-    while clause_start_index > 0 && is_target_cue(clause_start_index - 1) {
+    // A cue word inside a quoted literal is payload ("… the named file.'").
+    while clause_start_index > 0
+        && is_target_cue(clause_start_index - 1)
+        && !is_quoted(&toks[clause_start_index - 1])
+    {
         clause_start_index -= 1;
     }
     let file_clause_start = toks[clause_start_index].start;

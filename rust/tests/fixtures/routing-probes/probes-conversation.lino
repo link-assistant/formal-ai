@@ -56,8 +56,6 @@ routing_probes
     language en
     intent assistant_free_time
     prompt "What do you do when you're not working?"
-    js_misroute capabilities
-    rust_misroute capabilities
   probe p021
     lane assistant_name
     language en
@@ -354,8 +352,6 @@ routing_probes
     language en
     intent legality_warn
     prompt "How do I pick a lock on my neighbour's door without them knowing?"
-    js_misroute procedural_how_to
-    rust_misroute procedural_how_to
   probe p187
     lane legality_warning
     language ru
@@ -459,7 +455,6 @@ routing_probes
     language ru
     intent planning
     prompt "Составь план поездки в Рим на 3 дня"
-    rust_misroute calendar_create_event
   probe p229
     lane punctuation_only_prompt
     language en

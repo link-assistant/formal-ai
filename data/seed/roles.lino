@@ -165,6 +165,8 @@ roles
     kind predicate
   coding_condition_subject_kind
     kind predicate
+  coding_declaration_noun
+    kind predicate
   coding_division_action
     kind predicate
   coding_documentation_fact_query
@@ -397,6 +399,8 @@ roles
     kind meaning
   frame_filler_word
     kind meaning
+  function_declaration_keyword
+    kind predicate
   game_tracker_domain
     kind meaning
   game_tracker_mechanic
@@ -649,7 +653,11 @@ roles
     kind predicate
   proof_marker
     kind predicate
+  proof_method
+    kind predicate
   proof_request_lead
+    kind predicate
+  proof_step_kind
     kind predicate
   property_relation
     kind predicate

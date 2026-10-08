@@ -344,13 +344,19 @@ handler_migration_ledger
   handler write_script
     status pending
   handler document_generation_plan
-    status pending
-    justification "Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_code_plans.js answers the same seed records in the worker."
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/multilingual-responses-synthesis.lino"
+    primitive "rust/src/solver_handlers/document_request.rs"
+    justification "issue #918 (R914-6): every recognition cue is a table of data/seed/handler-rules.lino (document_software_artifact, document_authoring_action, document_format in priority order, document_ebook_marker with document_book_noun, document_noun; and for conversion document_conversion_action, document_format_alias, document_source_marker, document_target_marker, document_output_fence), read natively through rule_interpreter::handler_table_row and in the worker through handlerRulesTableRow. The four-language plan, its format suffix and every line of the conversion answer are seeded responses of data/seed/multilingual-responses-synthesis.lino; the DocFormat enum, the marker constants and the inline en/ru/hi/zh templates are deleted natively and documentPlanTemplate with the documentPlanMentions* cue lists in js/worker/formal_ai_worker_code_plans.js. The row keeps a native primitive rather than a rule set because its conversion branch runs the meta-language converter, which the browser does not have, and one precedence name is either native or a rule set. Every plan is byte-identical to the deleted code in en, ru, hi and zh."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler software_project
     status pending
   handler algorithm
-    status pending
-    justification "Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_code_plans.js answers the same seed records in the worker."
+    status migrated
+    data "data/seed/handler-rules.lino|data/seed/multilingual-responses-code-tasks.lino|data/seed/operation-vocabulary.lino"
+    primitive "rust/src/rule_interpreter.rs"
+    justification "issue #918 (R914-6): the row is four rules of data/seed/handler-rules.lino: the seeded sort operation (the new operation condition over data/seed/operation-vocabulary.lino) or the word algorithm, with or without a test requested; the language is the first row of the algorithm_language table the request contains and the snippet family the algorithm_snippet row it keys, both read by the new table value; the snippets, their tests and the English-only answer are seeded algorithm_sort* responses read by the new response value. try_algorithm, detect_algorithm_language and build_sorting_algorithm_answer are deleted natively and handleAlgorithm, algorithmDetectLanguage and algorithmSortingAnswer in the worker, which runs the same rules through runHandlerRuleSet. Every answer is byte-identical to the deleted code in en, ru, hi and zh."
+    held_out "rust/tests/unit/issue_918_handler_rules_batch.rs"
   handler source_refresh
     status migrated
     data "data/seed/handler-rules.lino|data/seed/multilingual-responses-synthesis.lino"

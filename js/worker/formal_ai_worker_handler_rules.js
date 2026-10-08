@@ -122,6 +122,7 @@ function handlerRulesParseCondition(node) {
     case "history_role":
     case "prior_turn":
     case "evidence":
+    case "operation":
       return { kind: node.name, value: handlerRulesFirstArg(node), subject };
     case "unbalanced_parentheses":
       return { kind: node.name, subject };
@@ -242,6 +243,18 @@ function handlerRulesParseValue(node) {
     case "operand": // #1175 R3: the operand a claim-evidence reader extracts, by index (Rust ValueSource::Operand)
       if (node.args.length < 3) throw new Error("handler_rules:operand_without_kind");
       return { name, source, text: node.args[3] || "0", key: node.args[2] };
+    case "table": { // #918: a row of a `table` block, by containment `of <subject>` or by `key <capture>`
+      if (node.args.length < 3) throw new Error("handler_rules:table_without_name");
+      const mode = node.args[3];
+      if ((mode !== "of" && mode !== "key") || node.args.length < 5) throw new Error("handler_rules:table_without_lookup");
+      if (mode === "of" && !["normalized", "cleaned", "lowercase", "prompt", "trimmed", "padded"].includes(node.args[4])) {
+        throw new Error("handler_rules:unknown_subject");
+      }
+      return { name, source, text: node.args[4], key: node.args[2], mode };
+    }
+    case "response": // #918: the seeded response whose intent the template names, in the prompt language
+      if (node.args.length < 3) throw new Error("handler_rules:response_without_intent");
+      return { name, source, text: "", key: node.args[2] };
     default:
       throw new Error("handler_rules:unknown_value_source");
   }
@@ -269,6 +282,45 @@ function handlerRulesDocument() {
   }
   cachedHandlerRules = handlers;
   return cachedHandlerRules;
+}
+
+let cachedHandlerRuleTables = null;
+
+/**
+ * The `table <name>` blocks of the rule document: ordered `row <key> <value>`
+ * pairs and an optional `default` (Rust `parser::tables`).
+ * @returns {Object<string, {rows: string[][], fallback: (string|null)}>}
+ */
+function handlerRulesTables() {
+  if (cachedHandlerRuleTables) return cachedHandlerRuleTables;
+  const root = handlerRulesParseTree(seedRawText(SEED_RAW, "handler-rules.lino"))
+    .find((node) => node.name === "handler_rules");
+  const tables = {};
+  for (const node of root ? root.children : []) {
+    if (node.name !== "table" || node.args.length === 0) continue;
+    const table = { rows: [], fallback: null };
+    for (const child of node.children) {
+      if (child.name === "row" && child.args.length >= 2) table.rows.push([child.args[0], child.args[1]]);
+      else if (child.name === "default" && child.args.length > 0) table.fallback = child.args[0];
+    }
+    tables[node.args[0]] = table;
+  }
+  cachedHandlerRuleTables = tables;
+  return tables;
+}
+
+/**
+ * The value of the first row of `table <name>` whose key occurs in `text`,
+ * or null when none does (Rust `rule_interpreter::handler_table_row`): the
+ * reader a native-primitive handler takes its vocabulary tables through.
+ * @param {string} name
+ * @param {string} text
+ * @returns {string|null}
+ */
+function handlerRulesTableRow(name, text) {
+  const table = handlerRulesTables()[name];
+  const row = table ? table.rows.find((entry) => entry[0] !== "" && String(text).includes(entry[0])) : null;
+  return row ? row[1] : null;
 }
 
 /**
@@ -508,6 +560,8 @@ function handlerRulesHolds(condition, context) {
       return context.history.some((turn) => turn && (turn.content || turn.text) && (condition.value === "any" || turn.role === condition.value));
     case "shape":
       return handlerRulesShapeHolds(condition.value, text);
+    case "operation": // #918: the seeded operation vocabulary requests it (Rust Condition::Operation)
+      return operationMatchesSlug(condition.value, text);
     case "evidence": {
       // The claim-evidence kind the capability table admits a handler on
       // (Rust `capability_routing::claim_evidence_holds_in_dialogue`), so a
@@ -643,6 +697,32 @@ function handlerRulesResolveValues(rule, context) {
         const operand = operands[Number(value.text)];
         if (operand === undefined) return null;
         text = operand;
+        break;
+      }
+      case "table": { // Rust `values::lookup_table`
+        const table = handlerRulesTables()[value.key];
+        if (!table) return null;
+        let row;
+        if (value.mode === "of") {
+          const subject = context.subjects[value.text] || "";
+          row = table.rows.find((entry) => entry[0] !== "" && subject.includes(entry[0]));
+        } else {
+          const capture = resolved.find((entry) => entry.name === value.text);
+          if (!capture) return null;
+          row = table.rows.find((entry) => entry[0] === capture.value);
+        }
+        if (row) text = row[1];
+        else if (table.fallback !== null) text = table.fallback;
+        else return null;
+        break;
+      }
+      case "response": { // Rust `seed::localized_response` under the templated intent
+        const intent = handlerRulesSubstitute(value.key, resolved);
+        let found = handlerRulesResponseFor(intent, context.language);
+        if (found === null) found = handlerRulesResponseFor(intent, "unknown");
+        if (found === null) found = handlerRulesResponseFor(intent, "en");
+        if (found === null) return null;
+        text = found;
         break;
       }
       default:

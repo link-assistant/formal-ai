@@ -17,8 +17,21 @@ import { replaceAllLiteral, trim, trimStartMatches, utf16ToByte, utf8Len } from 
  * @returns {string|null}
  */
 export function literalText(span) {
-  const text = quotedVerbatim(span) ?? cleanContent(span) ?? null;
+  const text = quotedVerbatim(span) ?? describedLiteral(span) ?? cleanContent(span) ?? null;
   return text === null ? null : unescapeProseNewlines(text);
+}
+
+/**
+ * Mirrors `fn described_literal`: `the heading '# Title'` -- one quoted
+ * literal led only by the words that say what it is -- stands for the literal.
+ */
+function describedLiteral(span) {
+  const segments = quotedSegmentSpans(span);
+  if (segments.length !== 1) return null;
+  const [segment] = segments;
+  const lead = span.slice(0, segment.start);
+  if (span.slice(segment.end).trim() !== '' || !/^[\p{Alphabetic}\p{White_Space}]*$/u.test(lead)) return null;
+  return segment.text;
 }
 
 /**
@@ -27,25 +40,60 @@ export function literalText(span) {
  * @param {string} request
  */
 export function composePositionalInsert(request) {
-  const normalized = normalizePrompt(request);
-  const after = mentionsRole('file_edit_position_after', normalized);
-  const before = mentionsRole('file_edit_position_before', normalized);
+  // `… after the line 'x':` followed by lines: the first line is the request
+  // and the lines under it are the text inserted, whatever they quote.
+  const block = introducedBlock(request);
+  const sentence = block === null ? request : block.head;
+  const normalized = normalizePrompt(sentence);
+  // The position is the request's, not the payload's: a cue inside a quoted
+  // literal ("Insert the line «… before …» after …") is text being inserted.
+  const outside = normalizePrompt(quotedSegmentSpans(sentence)
+    .reduceRight((text, segment) => `${text.slice(0, segment.start)} ${text.slice(segment.end)}`, sentence));
+  const after = mentionsRole('file_edit_position_after', outside);
+  const before = mentionsRole('file_edit_position_before', outside);
   if (after === before || !mentionsRole('coding_member_add_action', normalized)) return null;
-  const literals = quotedLiterals(request);
-  if (literals.length !== 2) return null;
-  const [first, second] = literals;
-  const target = unquotedPathTokens(request)
+  const literals = quotedLiterals(sentence);
+  if (literals.length !== (block === null ? 2 : 1)) return null;
+  const target = unquotedPathTokens(sentence)
     .map((token) => cleanPathToken(token.text))
     .find((candidate) => looksLikeFilePath(candidate) && safeRelativePath(candidate));
   if (target === undefined) return null;
-  const role = after ? 'file_edit_position_after' : 'file_edit_position_before';
-  const governed = cueGovernedLiteral(request, role, first, second);
-  if (governed === null) return null;
-  const [insertedLiteral, anchorLiteral] = governed === 1 ? [first, second] : [second, first];
-  const inserted = unescapeProseNewlines(insertedLiteral.text);
-  const anchor = unescapeProseNewlines(anchorLiteral.text);
+  let inserted;
+  let anchor;
+  if (block === null) {
+    const [first, second] = literals;
+    const role = after ? 'file_edit_position_after' : 'file_edit_position_before';
+    const governed = cueGovernedLiteral(request, role, first, second);
+    if (governed === null) return null;
+    const [insertedLiteral, anchorLiteral] = governed === 1 ? [first, second] : [second, first];
+    inserted = unescapeProseNewlines(insertedLiteral.text);
+    anchor = unescapeProseNewlines(anchorLiteral.text);
+  } else {
+    inserted = block.text;
+    anchor = unescapeProseNewlines(literals[0].text);
+  }
   const replacement = after ? `${anchor}\n${inserted}` : `${inserted}\n${anchor}`;
   return [target, anchor, replacement];
+}
+
+/**
+ * Mirrors `fn introduced_block`: a request whose first line ends in a colon
+ * and is followed by lines -- `{head, text}`, the lines with their shared
+ * indentation removed (one quoted literal stands for itself), or null.
+ */
+function introducedBlock(request) {
+  const breakAt = request.indexOf('\n');
+  if (breakAt < 0) return null;
+  const head = request.slice(0, breakAt).trimEnd();
+  if (!head.endsWith(':')) return null;
+  const lines = request.slice(breakAt + 1).split('\n').map((line) => line.trimEnd());
+  while (lines.length > 0 && lines[0] === '') lines.shift();
+  while (lines.length > 0 && lines[lines.length - 1] === '') lines.pop();
+  if (lines.length === 0) return null;
+  const indentOf = (line) => line.length - line.trimStart().length;
+  const shared = Math.min(...lines.filter((line) => line !== '').map(indentOf));
+  const text = lines.map((line) => line.slice(Math.min(shared, indentOf(line)))).join('\n');
+  return { head, text: quotedVerbatim(text) ?? text };
 }
 
 /**
@@ -80,6 +128,10 @@ function quotedLiterals(request) {
  */
 function cueGovernedLiteral(request, role, first, second) {
   const lowered = request.toLowerCase();
+  // A cue word inside a quoted literal is payload ("Insert the line «… before
+  // …» after …"), never the position the request asks for.
+  const literals = quotedLiterals(request);
+  const insideLiteral = (start) => literals.some((literal) => start >= literal.start && start < literal.end);
   const occurrences = [];
   for (const meaning of meaningsWithRole(role)) {
     for (const lexeme of meaning.lexemes) {
@@ -92,7 +144,7 @@ function cueGovernedLiteral(request, role, first, second) {
           const at = lowered.indexOf(surface, from);
           if (at < 0) break;
           const start = utf16ToByte(lowered, at);
-          occurrences.push([start, start + utf8Len(surface), postpositional]);
+          if (!insideLiteral(start)) occurrences.push([start, start + utf8Len(surface), postpositional]);
           from = at + surface.length;
         }
       }

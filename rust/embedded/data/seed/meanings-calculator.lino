@@ -347,6 +347,8 @@ meanings
         text "solve equation"
       surface
         text solve
+      surface
+        text find
     lexeme ru
       surface
         text "сколько будет"

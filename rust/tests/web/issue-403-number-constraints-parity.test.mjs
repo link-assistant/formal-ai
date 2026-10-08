@@ -38,11 +38,11 @@ test("a Russian interval riddle returns formal reasoning, not the unknown fallba
       "",
       "Утверждение: x > 1 and x < 3 is satisfiable",
       "",
-      "1. Определение: Delegate the normalized claim to the relative-meta-logic / SMT decision procedure for quantifier-free linear real arithmetic.",
-      "2. Определение: Constraints: x > 1 and x < 3.",
-      "3. Вывод: The constraints reduce to x: > 1 and < 3.",
-      "4. Вывод: Witness found: x = 2.",
-      "Therefore the constraint system is satisfiable. ∎",
+      "1. Определение: Передадим нормализованное утверждение процедуре разрешения relative-meta-logic / SMT для бескванторной линейной арифметики действительных чисел.",
+      "2. Определение: Ограничения: x > 1 and x < 3.",
+      "3. Вывод: Ограничения сводятся к x: > 1 and < 3.",
+      "4. Вывод: Найден пример: x = 2.",
+      "Следовательно, система ограничений выполнима. ∎",
     ].join("\n"),
   );
   assert.ok(!answer.content.includes("не удаётся сопоставить"));

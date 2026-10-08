@@ -60,6 +60,8 @@ legality_patterns
       act "вскрыть"
       act "влезть в"
       act "проникнуть в"
+      act "pick a lock on"
+      act "pick the lock on"
       object house
       object home
       object car
@@ -71,6 +73,7 @@ legality_patterns
       object гараж
       object офис
       object магазин
+      object door
   pattern warn_stolen_goods
     category theft_and_handling
     disposition warn

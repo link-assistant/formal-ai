@@ -93,3 +93,131 @@ meanings
     unit "not applicable"
     example "I am not an LLM runtime and I do not perform neural inference."
     grounding "data/seed/multilingual-responses-capabilities.lino"
+  algorithm_sort
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks for a sorting algorithm or names an algorithm without a test"
+    effect "the answer lays out the seeded snippet of the found language with its execution status"
+    unit "not applicable"
+    example "Here is a reviewable sorting algorithm in rust:"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  algorithm_sort_with_tests
+    defined-by answer
+    role localized_response_template
+    precondition "a request asks for a sorting algorithm with a test"
+    effect "the answer lays out the seeded snippet and its test with the execution status"
+    unit "not applicable"
+    example "Here is a reviewable sorting algorithm in python with a test:"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  algorithm_sort_code_python
+    defined-by answer
+    role localized_response_template
+    precondition "the algorithm answer needs the python sorting snippet"
+    effect "the snippet is the python function that returns the values in ascending order"
+    unit "not applicable"
+    example "sort"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  algorithm_sort_tests_python
+    defined-by answer
+    role localized_response_template
+    precondition "the algorithm answer needs the python test of its sorting snippet"
+    effect "the test asserts that sorting 3, 1, 2 gives 1, 2, 3 in python"
+    unit "not applicable"
+    example "test_sort_ascending"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  algorithm_sort_code_rust
+    defined-by answer
+    role localized_response_template
+    precondition "the algorithm answer needs the rust sorting snippet"
+    effect "the snippet is the rust function that returns the values in ascending order"
+    unit "not applicable"
+    example "sort"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  algorithm_sort_tests_rust
+    defined-by answer
+    role localized_response_template
+    precondition "the algorithm answer needs the rust test of its sorting snippet"
+    effect "the test asserts that sorting 3, 1, 2 gives 1, 2, 3 in rust"
+    unit "not applicable"
+    example "test_sort_ascending"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  algorithm_sort_code_javascript
+    defined-by answer
+    role localized_response_template
+    precondition "the algorithm answer needs the javascript sorting snippet"
+    effect "the snippet is the javascript function that returns the values in ascending order"
+    unit "not applicable"
+    example "sort"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  algorithm_sort_tests_javascript
+    defined-by answer
+    role localized_response_template
+    precondition "the algorithm answer needs the javascript test of its sorting snippet"
+    effect "the test asserts that sorting 3, 1, 2 gives 1, 2, 3 in javascript"
+    unit "not applicable"
+    example "test_sort_ascending"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  algorithm_sort_code_typescript
+    defined-by answer
+    role localized_response_template
+    precondition "the algorithm answer needs the typescript sorting snippet"
+    effect "the snippet is the typescript function that returns the values in ascending order"
+    unit "not applicable"
+    example "sort"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  algorithm_sort_tests_typescript
+    defined-by answer
+    role localized_response_template
+    precondition "the algorithm answer needs the typescript test of its sorting snippet"
+    effect "the test asserts that sorting 3, 1, 2 gives 1, 2, 3 in typescript"
+    unit "not applicable"
+    example "test_sort_ascending"
+    grounding "data/seed/multilingual-responses-code-tasks.lino"
+  document_generation_plan_format
+    defined-by answer
+    role localized_response_template
+    precondition "a document plan names the format the request asked for"
+    effect "the plan's opening sentence carries the requested format label"
+    unit "not applicable"
+    example " in PDF format"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  document_format_conversion
+    defined-by answer
+    role localized_response_template
+    precondition "a document conversion answer opens with the engine, the source, the target and the supported formats"
+    effect "the answer names the conversion engine and both formats before the converted output"
+    unit "not applicable"
+    example "Source: Markdown; target: HTML."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  document_format_conversion_native_concepts
+    defined-by answer
+    role localized_response_template
+    precondition "a conversion answer lists the target's native concepts"
+    effect "the answer names the concepts the target format represents natively"
+    unit "not applicable"
+    example "Native target concepts: heading, paragraph."
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  document_format_conversion_fallbacks
+    defined-by answer
+    role localized_response_template
+    precondition "a conversion answer introduces the concepts the target lacks"
+    effect "the answer heads the list of concepts that fall back to another form"
+    unit "not applicable"
+    example "Documented target fallbacks:"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  document_format_conversion_fallback
+    defined-by answer
+    role localized_response_template
+    precondition "a conversion answer lists one concept the target lacks"
+    effect "the answer pairs the concept with the form it falls back to"
+    unit "not applicable"
+    example "- emphasis -> plain text"
+    grounding "data/seed/multilingual-responses-synthesis.lino"
+  document_format_conversion_package
+    defined-by answer
+    role localized_response_template
+    precondition "a conversion answer reports the size of a packaged target"
+    effect "the answer gives the package layer size in bytes"
+    unit "not applicable"
+    example "Package layer: 1024 bytes in the DOCX OPC stored-entry profile."
+    grounding "data/seed/multilingual-responses-synthesis.lino"

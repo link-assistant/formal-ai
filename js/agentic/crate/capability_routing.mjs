@@ -14,6 +14,7 @@ import { agenticToolCapabilities } from './seed_agentic_tool_capabilities.mjs';
 import { extractConceptQuery } from './concepts_lookup.mjs';
 import { detectResponseLanguage } from './translation_language_markers.mjs';
 import { findChildValue, parseRoot } from './seed_parser.mjs';
+import { quotedSegmentSpans } from './normal_markov.mjs';
 import {
   eqIgnoreAsciiCase, isAlphabetic, isAlphanumeric, isLowercase, isUppercase, rsplitOnce, splitOnce, splitWhitespace,
   trim, trimMatches,
@@ -532,8 +533,16 @@ export function assignedContent(prompt) {
 /** Mirrors `fn first_path`. */
 export function firstPath(prompt) {
   const normalized = normalizePrompt(prompt);
-  const token = splitWhitespace(prompt).find((candidate) => isPath(candidate, normalized));
-  return token === undefined ? null : trimMatches(token, (character) => ',;"\'()。'.includes(character));
+  // A path the request leaves unquoted names the file before one inside a
+  // quoted payload does (`Insert the line "path '/v1/x'" after … in r.lino`).
+  const outside = quotedSegmentSpans(prompt)
+    .reduceRight((text, segment) => `${text.slice(0, segment.start)} ${text.slice(segment.end)}`, prompt);
+  // The sentence's closing period is not the path's (`… in r.lino.`).
+  const peeled = (candidate) => candidate.replace(/^[,;"'()。]+/u, '').replace(/[,;"'()。.]+$/u, '');
+  const token = [outside, prompt]
+    .map((text) => splitWhitespace(text).find((candidate) => isPath(candidate, normalized) || isPath(peeled(candidate), normalized)))
+    .find((candidate) => candidate !== undefined);
+  return token === undefined ? null : peeled(token) || null;
 }
 
 /** Mirrors `fn first_url`. */

@@ -27,10 +27,10 @@ use crate::solver_dispatch::{
     try_contextual_override,
 };
 use crate::solver_handlers::{
-    CapabilityRuntime, SelfAwarenessRuntime, try_behavior_rules_with_runtime,
-    try_explicit_repository_lookup, try_feature_capability, try_learn_from_source,
-    try_natural_language_tool_request, try_playwright_script, try_project_lookup,
-    try_project_lookup_with_response_language, try_response_language_followup,
+    CapabilityRuntime, SelfAwarenessRuntime, handle_statistics, try_behavior_rules_with_runtime,
+    try_document_originality_check, try_explicit_repository_lookup, try_feature_capability,
+    try_learn_from_source, try_natural_language_tool_request, try_playwright_script,
+    try_project_lookup, try_project_lookup_with_response_language, try_response_language_followup,
     try_routed_calendar_create_event, try_routed_http_fetch_with_offline,
 };
 
@@ -350,8 +350,11 @@ fn try_capability_route(
     // A text operation the manipulation handler recognizes is its turn: the
     // table reads "title case this text: ..." as a write gap, but the edit
     // answers on the chat surface itself, so the table declines and method
-    // dispatch claims the edit (issue #1138: text operations).
-    if crate::solver_handlers::names_text_operation(&normalized) {
+    // dispatch claims the edit (issue #1138: text operations), as a plagiarism
+    // check claims its supplied text (issue #1175 p102-p104).
+    let normal = crate::engine::normalize_prompt(prompt);
+    let check = try_document_originality_check(prompt, &normal, &mut EventLog::default());
+    if crate::solver_handlers::names_text_operation(&normalized) || check.is_some() {
         return None;
     }
     if !crate::capability_routing::table_routing_enabled() {
@@ -617,8 +620,12 @@ fn try_capability_route(
             // "是多少"), and executing a source capability for them reports a
             // measurement miss where the calculator answers, so the table
             // declines before either arm runs (issue #1138 specification:
-            // the calculator-delegation family).
-            if crate::solver_handler_units::names_arithmetic_quantity(&normalized) {
+            // the calculator-delegation family). A statistic of a stated list
+            // is likewise computed (issue #1175 p273).
+            let statistic = handle_statistics(prompt, &normal, &mut EventLog::default());
+            if crate::solver_handler_units::names_arithmetic_quantity(&normalized)
+                || statistic.is_some()
+            {
                 return None;
             }
             // A summarization seed trigger is the summarization method's turn:
@@ -714,16 +721,12 @@ fn promoted_calendar_claims(promoted_methods: &[String], normalized: &str) -> bo
         && crate::solver_handlers::calendar_claims(normalized)
 }
 
-/// Whether the lexicon recognises all four roles of the GitHub
-/// repository-traffic handler: the platform, a repository reference, a
-/// traffic signal, and a visibility question (issue #497). Mirrors the
-/// `github_repository_traffic` rule in `data/seed/handler-rules.lino`.
-fn github_repository_traffic_claims(normalized: &str) -> bool {
-    let lex = crate::seed::lexicon();
-    lex.mentions_role("github_repository_platform", normalized)
-        && lex.mentions_role("repository_reference", normalized)
-        && lex.mentions_role("github_repository_traffic_signal", normalized)
-        && lex.mentions_role("github_repository_traffic_question", normalized)
+/// Whether the seeded `github_repository_traffic` rules claim the prompt.
+///
+/// Read as the browser's `tryGithubRepositoryTraffic` reads them (issues #497,
+/// #1175 p133, p135, p136).
+fn github_repository_traffic_claims(prompt: &str) -> bool {
+    crate::rule_interpreter::handler_matches("github_repository_traffic", prompt)
 }
 
 /// Whether a grounded capability decision is more specific than a promoted

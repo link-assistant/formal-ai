@@ -223,3 +223,67 @@ meanings
     lexeme zh
       surface
         text 元理论
+  hypothesis
+    defined-by concept
+    role proof_step_kind
+    precondition "a proof or a proof plan states what it assumes before it derives anything"
+    effect "the step is presented as an assumption the later steps build on"
+    unit "not applicable"
+    example "Assume for contradiction that only finitely many primes exist."
+    grounding "data/seed/proof-library.lino"
+  axiom
+    defined-by concept
+    role proof_step_kind
+    precondition "a proof fixes the formal system it reasons inside"
+    effect "the step is presented as an accepted starting point that is not itself proved"
+    unit "not applicable"
+    example "Take the axiom set N of Newtonian mechanics."
+    grounding "data/seed/proof-library.lino"
+  inference
+    defined-by concept
+    role proof_step_kind
+    precondition "earlier steps of a proof license a new statement"
+    effect "the step is presented as derived from the steps before it"
+    unit "not applicable"
+    example "Hence q is a prime not in the list."
+    grounding "data/seed/proof-library.lino"
+  sub_proof
+    defined-by concept
+    role proof_step_kind
+    precondition "a proof needs an auxiliary argument inside its main line"
+    effect "the step is presented as a nested argument whose result the main proof uses"
+    unit "not applicable"
+    example "A side note marks the limit of the reduction before the conclusion."
+    grounding "data/seed/proof-library.lino"
+  conclusion
+    defined-by concept
+    role proof_step_kind
+    precondition "the steps of a proof or a plan reach their goal"
+    effect "the step states what has been established or what the plan will establish"
+    unit "not applicable"
+    example "The assumption fails, so there are infinitely many primes."
+    grounding "data/seed/proof-library.lino"
+  known_theorem
+    defined-by method
+    role proof_method
+    precondition "a claim names a classical result the proof library holds"
+    effect "the claim is discharged by restating the library's textbook proof"
+    unit "not applicable"
+    example "the Pythagorean theorem proved through the similar triangles cut by the altitude"
+    grounding "data/seed/proof-library.lino"
+  induction
+    defined-by method
+    role proof_method
+    precondition "a claim ranges over the natural numbers or another well-founded order"
+    effect "the claim is proved for a base case and carried from each case to the next"
+    unit "not applicable"
+    example "Fermat's little theorem proved by induction on a"
+    grounding "data/seed/proof-library.lino"
+  axiom_reduction
+    defined-by method
+    role proof_method
+    precondition "a claim only becomes checkable inside a chosen axiom set"
+    effect "the claim is restated inside that axiom set and reduced to statements the set decides"
+    unit "not applicable"
+    example "Laplacian determinism reduced to existence and uniqueness of solutions of an ODE"
+    grounding "data/seed/proof-library.lino"

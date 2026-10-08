@@ -312,8 +312,6 @@ routing_probes
     intent javascript_execution
     prompt "Evaluate this JS: [1,2,3].map(x => x * 2)"
     rust_intent tool_call_refused
-    js_misroute meta_reasoned_program
-    rust_misroute meta_reasoned_program
   probe p171
     lane javascript_execution
     language en

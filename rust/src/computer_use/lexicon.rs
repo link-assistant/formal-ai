@@ -59,7 +59,11 @@ pub fn normalize(prompt: &str) -> String {
 /// neither of them language-specific:
 ///
 ///   * an indented line continues a structured block, so it is payload; and
-///   * a double-quoted span is a literal the speaker is quoting, not naming.
+///   * a quoted span is a literal the speaker is quoting, not naming — every
+///     pair [`crate::solver_handlers::text_outside_quoted_segments`] reads, so
+///     the single-quoted payloads of a `Replace 'X' with 'Y'` edit request too
+///     (PR #1188 dogfooding: a payload naming a precedence "order" and a
+///     "list" was planned as a computer-use order listing).
 ///
 /// Recognition therefore runs over the remainder. A request written as ordinary
 /// prose — one line, unquoted, in any of the four languages — is unaffected.
@@ -70,15 +74,7 @@ pub fn instruction_surface(prompt: &str) -> String {
         if line.starts_with(' ') || line.starts_with('\t') {
             continue;
         }
-        let mut quoted = false;
-        for character in line.chars() {
-            if character == '"' {
-                quoted = !quoted;
-                instruction.push(' ');
-            } else if !quoted {
-                instruction.push(character);
-            }
-        }
+        instruction.push_str(&crate::solver_handlers::text_outside_quoted_segments(line));
         instruction.push('\n');
     }
     instruction

@@ -1,6 +1,6 @@
 handler_rules
   issue 1085
-  purpose "Specialized handlers expressed as links: conditions over seed roles and prompt shape, logged steps, and a seeded multilingual response. src/rule_interpreter.rs walks each rule; specialized_handlers() resolves a precedence name to a handler block here when no native function claims it. A policy block holds a value a native handler reads instead of a constant of its own (issue #918)."
+  purpose "Specialized handlers expressed as links: conditions over seed roles and prompt shape, logged steps, and a seeded multilingual response. src/rule_interpreter.rs walks each rule; specialized_handlers() resolves a precedence name to a handler block here when no native function claims it. A policy block holds a value a native handler reads instead of a constant of its own (issue #918); a table block holds the ordered rows a rule value reads by containment or by key (issue #918, the algorithm rule set)."
   handler conversation_control
     rule conversation_preference
       when
@@ -360,6 +360,61 @@ handler_rules
       respond filter_user
       link "response:filter_user"
       confidence 1.0
+  handler algorithm
+    rule algorithm_sort_with_tests
+      when
+        operation sort of cleaned
+        substring test
+      value language table algorithm_language of normalized
+      value snippet table algorithm_snippet key language
+      value code response "algorithm_sort_code_{snippet}"
+      value tests response "algorithm_sort_tests_{snippet}"
+      log "execution_status" "unavailable"
+      log "execution_environment" "no compile/run sandbox configured for this generated snippet"
+      respond algorithm_sort_with_tests
+      intent "algorithm_sort_{language}"
+      link "response:algorithm"
+      confidence 1.0
+    rule algorithm_sort
+      when
+        operation sort of cleaned
+      value language table algorithm_language of normalized
+      value snippet table algorithm_snippet key language
+      value code response "algorithm_sort_code_{snippet}"
+      log "execution_status" "unavailable"
+      log "execution_environment" "no compile/run sandbox configured for this generated snippet"
+      respond algorithm_sort
+      intent "algorithm_sort_{language}"
+      link "response:algorithm"
+      confidence 1.0
+    rule algorithm_unnamed_with_tests
+      when
+        substring algorithm
+        substring test
+      value language table algorithm_language of normalized
+      value snippet table algorithm_snippet key language
+      value code response "algorithm_sort_code_{snippet}"
+      value tests response "algorithm_sort_tests_{snippet}"
+      log "algorithm:refusal" "no operation named"
+      log "execution_status" "unavailable"
+      log "execution_environment" "no compile/run sandbox configured for this generated snippet"
+      respond algorithm_sort_with_tests
+      intent "algorithm_sort_{language}"
+      link "response:algorithm"
+      confidence 1.0
+    rule algorithm_unnamed
+      when
+        substring algorithm
+      value language table algorithm_language of normalized
+      value snippet table algorithm_snippet key language
+      value code response "algorithm_sort_code_{snippet}"
+      log "algorithm:refusal" "no operation named"
+      log "execution_status" "unavailable"
+      log "execution_environment" "no compile/run sandbox configured for this generated snippet"
+      respond algorithm_sort
+      intent "algorithm_sort_{language}"
+      link "response:algorithm"
+      confidence 1.0
   policy response_language_followup
     terse_word_limit 4
   policy compound_interest
@@ -395,3 +450,208 @@ handler_rules
     rationale_lead_languages "en ru"
     compositional_why_languages "hi zh"
     operating_principle_languages "ru"
+  table algorithm_language
+    row python python
+    row " py " python
+    row rust rust
+    row " rs " rust
+    row javascript javascript
+    row typescript typescript
+    row "go " go
+    row golang go
+    row java java
+    row ruby ruby
+    default python
+  table algorithm_snippet
+    row rust rust
+    row javascript javascript
+    row typescript typescript
+    default python
+  table document_software_artifact
+    row "app" "software"
+    row "application" "software"
+    row "extension" "software"
+    row "plugin" "software"
+    row "addon" "software"
+    row "add-on" "software"
+    row "bot" "software"
+    row "program" "software"
+    row "script" "software"
+    row "website" "software"
+    row "web site" "software"
+    row "web app" "software"
+    row "webapp" "software"
+    row "game" "software"
+    row "api" "software"
+    row "library" "software"
+    row "framework" "software"
+    row "tool" "software"
+    row "cli" "software"
+    row "daemon" "software"
+    row "server" "software"
+    row "приложени" "software"
+    row "программ" "software"
+    row "скрипт" "software"
+    row "расширени" "software"
+    row "плагин" "software"
+    row "бот" "software"
+    row "сайт" "software"
+    row "веб-сайт" "software"
+    row "игр" "software"
+    row "утилит" "software"
+    row "сервер" "software"
+    row "библиотек" "software"
+  table document_authoring_action
+    row "make me" "authoring"
+    row "make a" "authoring"
+    row "make an" "authoring"
+    row "create" "authoring"
+    row "generate" "authoring"
+    row "produce" "authoring"
+    row "compile" "authoring"
+    row "prepare" "authoring"
+    row "assemble" "authoring"
+    row "draft" "authoring"
+    row "build me" "authoring"
+    row "export" "authoring"
+    row "give me" "authoring"
+    row "i need" "authoring"
+    row "i want" "authoring"
+    row "put together" "authoring"
+    row "сдела" "authoring"
+    row "созда" "authoring"
+    row "сгенерир" "authoring"
+    row "подготов" "authoring"
+    row "сформир" "authoring"
+    row "состав" "authoring"
+    row "собери" "authoring"
+    row "собрать" "authoring"
+    row "оформ" "authoring"
+    row "выгрузи" "authoring"
+    row "экспортир" "authoring"
+    row "сверста" "authoring"
+    row "बना" "authoring"
+    row "तैयार" "authoring"
+    row "उत्पन्न" "authoring"
+    row "चाहिए" "authoring"
+    row "做" "authoring"
+    row "制作" "authoring"
+    row "生成" "authoring"
+    row "创建" "authoring"
+    row "编写" "authoring"
+    row "整理" "authoring"
+    row "给我" "authoring"
+    row "帮我" "authoring"
+  table document_format
+    row "pdf" "PDF"
+    row "пдф" "PDF"
+    row "docx" "DOCX"
+    row ".doc" "DOCX"
+    row "word document" "DOCX"
+    row "ворд" "DOCX"
+    row "документ word" "DOCX"
+    row "xlsx" "CSV/XLSX"
+    row "csv" "CSV/XLSX"
+    row "spreadsheet" "CSV/XLSX"
+    row "excel" "CSV/XLSX"
+    row "эксель" "CSV/XLSX"
+    row "табличк" "CSV/XLSX"
+    row "电子表格" "CSV/XLSX"
+    row "表格" "CSV/XLSX"
+    row "स्प्रेडशीट" "CSV/XLSX"
+    row "pptx" "PPTX"
+    row "powerpoint" "PPTX"
+    row "slide deck" "PPTX"
+    row "презентаци" "PPTX"
+    row "слайд" "PPTX"
+    row "演示" "PPTX"
+    row "幻灯片" "PPTX"
+    row "प्रस्तुति" "PPTX"
+  table document_ebook_marker
+    row "epub" "EPUB"
+    row "e-book" "EPUB"
+    row "ebook" "EPUB"
+    row "электронн" "EPUB"
+  table document_book_noun
+    row "book" "book"
+    row "книг" "book"
+  table document_noun
+    row "document" "document"
+    row "документ" "document"
+    row "report" "document"
+    row "отчет" "document"
+    row "отчёт" "document"
+    row "dossier" "document"
+    row "досье" "document"
+    row "brochure" "document"
+    row "брошюр" "document"
+    row "booklet" "document"
+    row "буклет" "document"
+    row "memo" "document"
+    row "записку" "document"
+    row "записка" "document"
+    row "दस्तावेज़" "document"
+    row "दस्तावेज" "document"
+    row "रिपोर्ट" "document"
+    row "文档" "document"
+    row "文件" "document"
+    row "报告" "document"
+  table document_conversion_action
+    row "convert" "conversion"
+    row "translate" "conversion"
+    row "transform" "conversion"
+    row "render" "conversion"
+    row "export" "conversion"
+    row "turn into" "conversion"
+    row "turn this into" "conversion"
+    row "change into" "conversion"
+    row "конверт" "conversion"
+    row "преобраз" "conversion"
+    row "переведи" "conversion"
+    row "перевести" "conversion"
+    row "экспорт" "conversion"
+    row "बदल" "conversion"
+    row "रूपांतर" "conversion"
+    row "转换" "conversion"
+    row "转成" "conversion"
+    row "变成" "conversion"
+    row "导出" "conversion"
+  table document_format_alias
+    row "plain text" "txt"
+    row "plaintext" "txt"
+    row "txt" "txt"
+    row "markdown" "Markdown"
+    row "md" "Markdown"
+    row "html" "HTML"
+    row "htm" "HTML"
+    row "pdf" "PDF"
+    row "docx" "DOCX"
+    row "word document" "DOCX"
+    row "wordprocessingml" "DOCX"
+  table document_source_marker
+    row "from " "source"
+    row "source " "source"
+    row "из " "source"
+    row "с " "source"
+    row "от " "source"
+    row "से " "source"
+    row "从" "source"
+  table document_target_marker
+    row "to " "target"
+    row "into " "target"
+    row "as " "target"
+    row "target " "target"
+    row "в " "target"
+    row "на " "target"
+    row "में " "target"
+    row "को " "target"
+    row "为" "target"
+    row "成" "target"
+    row "到" "target"
+  table document_output_fence
+    row "HTML" "html"
+    row "Markdown" "markdown"
+    row "PDF" "pdf"
+    row "DOCX" "xml"
+    row "txt" "text"
+    default ""

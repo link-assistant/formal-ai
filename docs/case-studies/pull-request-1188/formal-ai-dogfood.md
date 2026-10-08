@@ -49,6 +49,22 @@ possible tasks you encounter on the way must be fully supported by it".
 | T18q | `Create hello.py that prints "Hello, World!" and run it.` | **Fail**: same chat answer. | **Pass in-process**: writes `hello.py` + `tests/verify-output.sh`, runs `python3 -m py_compile hello.py` and the output check (`Hello, World!`), reports. Through the Agent CLI the files are written and the compile step runs, then **the CLI crashes** (see "Client defect"). **After the bytecode-free check: passes end-to-end through the CLI** (rc=0, no `__pycache__`). |
 | T19 | `Write a Python function add(a, b) that returns their sum in add.py and run it with 2 and 3.` | **Fail**: general-change `literal_file` plan, `add.py` = `2 and 3.` | **Pass end-to-end through the CLI**: write `add.py` → `py_compile` check → `python3 -B -c "from add import add; print(add(2, 3))"` → `5`; answer "Created and verified `add.py` …", no `__pycache__` in the workspace. |
 | T20 | `Write a Python function add(a, b) that returns their sum.` (solver) | **Fail, wrong code**: `def add(a, b): return sum(a)`; `multiply(a, b) … a times b` gave `math.prod(b)`. | **Pass**: `return a + b` / `return a * b` (browser); native pinned at the IR. `add3(a, b, c)` still stops at `a + b` (open). |
+| T21 | `Replace 'rust/src/solver_handlers/feature_capability.rs' with 'data/seed/feature-capabilities.lino' in check.mjs.` | **Fail**: no plan ("I didn't understand you"); with a filename-shaped literal (`'feature_capability.rs'`) the request was explained as a `sed` command instead. The edit reader took the quoted path as the file to edit, because the cue after it (`in`) reads as the target cue. | **Pass**: read → edit → `sha256sum`; a path the request leaves unquoted names the file before a quoted literal that is exactly a path (`composeEditRequest` / `compose_edit_request`); pinned by `rust/tests/web/pull-request-1188-quoted-path-payload.test.mjs` and `rust/tests/unit/pull_request_1188_quoted_path_payload.rs`. Formal AI then made both edits of the CI fix it was asked for. |
+| T22 | `Insert the line <T21 row> after the line containing <the T20 cell> in ledger.md.` (this ledger's own T21 row) | **Fail**: first no plan -- the payload itself contains the word "before", so the position read both cues and gave up; then the row was spliced into the middle of the T20 row, since the anchor `\| T20 \|` was replaced as a bare substring. | **Pass**: read → edit → `sha256sum`; position cues are read only outside quoted literals (`composePositionalInsert` / `compose_positional_insert`), and a positional anchor widens to the whole line it sits on (`anchoredLines` / `anchored_lines`); pinned by `rust/tests/web/pull-request-1188-line-anchor.test.mjs` and `rust/tests/unit/pull_request_1188_line_anchor.rs`. Formal AI then wrote rows T21 and T22 of this ledger. |
+| T23 | `Replace '<R382 status cell>' with '<new status: "... every handler in precedence order, ... every subcommand (also equal to the built formal-ai --help list), ...">' in docs/requirements/issue-0538-detailed-meanings-and-words.md.` (this PR's own R382 row) | **Fail**: read the file, then answered `computer_use_incomplete: verification failed for plan synthesized-computer_use_resource_orders-computer_use_list_directory` -- the single-quoted replacement named a precedence "order" and a built "list", and the computer-use route (tried before every edit arm) read them as a resource and an operation. | **Pass**: the row is replaced and observed. `instructionSurface` / `instruction_surface` drop every quote pair `textOutsideQuotedSegments` reads, not only double quotes; tests `rust/tests/web/pull-request-1188-quoted-payload-cues.test.mjs`, `rust/tests/unit/pull_request_1188_quoted_payload_cues.rs`. |
+| T24 | `Set beta to 5 in cfg.toml.` (a probe on a sandbox copy, `alpha = 1` / `beta = 2` / `gamma = 3`) | **Fail, destructive**: the key was overwritten (`5 = 2`) by an edit sent without reading the file, and the answer only relayed the tool result. "Set" was an edit action and nothing else, so the unquoted key read as the text to replace. | **Pass**: read → edit → `sha256sum`, `beta = 5`; "set" (and its ru, hi, zh and es surfaces) now also names a setting in the seeded `config_value_lead` meaning, so the setting interpreter assigns the key; a key assigned nowhere is an honest verification failure with the file untouched. Pinned by `rust/tests/web/pull-request-1188-setting-verb.test.mjs` and `rust/tests/unit/pull_request_1188_setting_verb.rs`. |
+| T25 | `Replace the heading '# Title' with '# Project' in README.md.` (a probe on a sandbox copy) | **Fail**: the edit was sent with the whole clause `the heading '# Title'` as its old text, which the file does not contain. | **Pass**: read → edit → `sha256sum`; a clause holding one quoted literal led only by the words that say what it is (`the heading`, `the word`) stands for the literal (`describedLiteral` / `described_literal`, shared by every edit composer). Pinned in `rust/tests/web/pull-request-1188-quoted-path-payload.test.mjs` and `rust/tests/unit/pull_request_1188_quoted_path_payload.rs`. |
+| T26 | `Create a file new.txt containing 'hello'.` (a probe on a sandbox copy) | **Fail**: the file held `'hello'.` -- the sentence's closing period stayed on the payload, so the quotes were never recognised as one literal. | **Pass**: the file holds `hello`; a closing sentence mark after exactly one quoted literal belongs to the sentence (`cleanContent` / `clean_content`). Pinned in `rust/tests/web/pull-request-1188-quoted-path-payload.test.mjs` and `rust/tests/unit/pull_request_1188_quoted_path_payload.rs`. |
+| T29 | `In meanings-web-navigation.lino, delete the line '        text "get …"' and the '      surface' line directly above it.` (issue #1175 p154, a sandbox copy) | **Fail, destructive**: one `write` replaced the whole 380-line file with the text `get …`, without reading it first. | **Open**: the positional-edit planner (`js/agentic/positional_edit.mjs`, `write_request.mjs`) is another agent's claim in this batch; the move was made by hand. A request that names lines to delete must never become a whole-file write. |
+| T30 | `Delete lines 266-267 from meanings-web-navigation.lino.` (a sandbox copy) | **Fail**: the file was read and nothing was edited; the answer was `The read command completed.` | **Open**: a numeric line range is not yet a deletion target (same claimed planner). |
+| T31 | `In meanings-calculator.lino, insert the two lines '      surface' and '        text find' after the line '        text solve'.` (issue #1175 p014) | **Fail**: the unknown fallback answered; no tool call was planned. | **Open**: two single-line inserts after the same anchor, the second line first, did the edit (Formal AI made both). |
+| T32 | `Replace the line '        text pay' with '        text "pay"' in meanings-statistics.lino.` (issue #1175 p350) | **Fail**: the replacement acted on the substring, so `text pays` became `text "pay"s` as well. | **Open**: `Replace the line …` should match whole lines only; the edit was made by hand. |
+| T33 | `Insert the line '…' after line N in seed-registry.lino.` (R379 proof-library registration) | **Fail**: a numeric line anchor is not an insertion target; the planner fell back without editing. | **Open** (`js/agentic/positional_edit.mjs` is claimed by another agent): the same insert worded with a unique text anchor (`after the line '…'`) succeeded and was made by Formal AI. |
+| T34 | `Insert '    web true' after the line '    bundle true' that follows '  seed coding-guidance' in seed-registry.lino.` (R379 coding-guidance registration) | **Fail**: a nested anchor ("the line X that follows Y") is not parsed; the edit was not planned. | **Open**: the edit was reworded with a unique anchor and Formal AI made it. |
+| T35 | `Delete the lines containing 'rust/src/proof_engine/presenter.rs' from hardcoded-language-allowlist.txt.` (R379 allowlist prune) | **Fail**: the path-shaped needle was read as a file to `cat`, so the planner read a missing file and deleted nothing. | **Open** (`js/agentic/workspace_change.mjs` carries another agent's uncommitted edits): the allowlist rows were deleted by hand. |
+| T36 | The third open edit shape below: a double-quoted line payload holding double quotes, `… after the line "    path '/v1/x/learn'" in r.lino.` | **Fail, unsafe**: the payload split apart, and the read fallback took `/v1/x/learn` -- a path inside the payload -- as the file, outside the workspace. The named file `r.lino.` was never a candidate, because its sentence period left it no extension. | **Pass (safe)**: the read goes to `r.lino`; a path the request leaves unquoted outranks one inside a quoted payload, and the sentence's period is peeled (`firstPath` / `first_path`). The nested-quote payload itself is still ambiguous and makes no edit; backtick-delimited lines work. Pinned in `rust/tests/web/pull-request-1188-quoted-path-payload.test.mjs` and `rust/tests/unit/pull_request_1188_quoted_path_payload.rs`. |
+| T37 | `Replace '… works.' with '… works. The escape is fixed (T36): the read now goes to the named file.' in ledger.md.` (the note on this ledger's open section) | **Fail**: the line became `'… goes to the named` -- the new text was cut before "file" and kept its opening quote, because the walk back to the target clause ("in ledger.md") read the quoted word "file" as a target cue. | **Pass**: a cue word inside a quoted literal is payload for the target clause too (`composeEditRequest` / `compose_edit_request`); Formal AI then repaired the line it had damaged. Pinned in `rust/tests/web/pull-request-1188-quoted-path-payload.test.mjs` and `rust/tests/unit/pull_request_1188_quoted_path_payload.rs`. |
+| T38 | The second open edit shape below: `In m.mjs, insert these lines after the line 'import b from "b";':` followed by an indented block of two import lines | **Fail**: "I didn't understand you" -- a positional insert needed exactly two quoted literals, and the block's own double quotes made more. | **Pass**: read → edit → `sha256sum`, both lines in place; a request whose first line ends in a colon is read from that line alone (cues, anchor, file), and the lines under it, their shared indentation removed, are the text inserted (`introducedBlock` / `introduced_block`). Pinned in `rust/tests/web/pull-request-1188-line-anchor.test.mjs` and `rust/tests/unit/pull_request_1188_line_anchor.rs`. |
 
 ## Root causes and fixes
 
@@ -987,3 +1003,84 @@ ASCII-only `normalizeCommandWord`, so it never saw them. It now also matches
 the bare word in any script and a word ending in a CJK run verb (然后运行). A
 verb-final clause ("node --test चलाओ") takes the command from the shell token
 up to the verb. The request's own `node --test` now runs in ru, hi and zh.
+
+### T23 — a single-quoted replacement payload was read as a computer-use request
+
+**Root cause.** The computer-use route (`computerUsePlanAgenticStep`, tried
+before every edit arm in `planChatStepRoutes`) recognises a resource and an
+operation on the request's *instruction surface*. `instructionSurface`
+(`js/agentic/crate/computer_use_lexicon.mjs`, twin `instruction_surface` in
+`rust/src/computer_use/lexicon.rs`) removed indented payload lines and only
+double-quoted spans, so the single-quoted payloads of `Replace 'X' with 'Y'`
+stayed in. A payload that happened to say "precedence order" and "the built
+`formal-ai --help` list" evidenced the seeded `computer_use_resource_orders`
+resource and the list-directory operation, the first step mapped onto the
+Agent CLI's `read`, and the second step's `http.fetch` failed verification.
+
+**Fix (general).** The instruction surface now drops every quote pair the
+shared quote reader knows (`textOutsideQuotedSegments` /
+`text_outside_quoted_segments`: single, double, backtick, guillemet and CJK
+quotes, with in-word apostrophes such as `system's` left alone). A request
+written in ordinary prose is unaffected; the seeded computer-use suites still
+pass. Tests: `rust/tests/web/pull-request-1188-quoted-payload-cues.test.mjs`
+and `rust/tests/unit/pull_request_1188_quoted_payload_cues.rs` (the edit is no
+plan; an unquoted computer-use request still plans).
+
+### T27 — a removal that names functions instead of quoting text
+
+`Delete the functions algorithmDetectLanguage, algorithmSortingAnswer and
+handleAlgorithm from formal_ai_worker_code_plans.js.` (coordinator, while
+using Formal AI for the issue #918 algorithm migration) read the file and
+answered with the read output; the file was unchanged. The singular
+`Delete the function try_algorithm from mod.rs.` did the same.
+
+**Root cause.** Every computed removal (`groundedRemoval` /
+`grounded_removal`) needed one quoted payload. A request that names
+declarations by their identifiers had no arm, so the planner fell through to a
+bare read.
+
+**Fix (both roots).** `groundedDeclarationRemoval` /
+`grounded_declaration_removal` takes the seeded `coding_text_remove_action`
+with the new `coding_declaration_noun` (function, functions, method, функцию,
+फ़ंक्शन, 函数, función …), no quoted text and one named path. The names are
+the request's identifiers that the file itself declares as functions: a
+seeded `function_declaration_keyword` (`function`, `fn`, `def`, `func`,
+`fun`) right before the name, then `(` or `<`. Each declaration goes whole: a
+braced body to the first later line that closes at the header's indentation,
+an indented body (a header ending in `:`) to its last deeper line, with the
+comment, doc-comment and attribute lines directly above it; a block left
+between two blank lines takes one of them, and a block that ended the file the
+blank line before it. A name declared nowhere, or more than once, is left
+alone; if no name is declared the change is not verifiable and the seeded
+failure is stated. The answer is the seeded `coding_text_remove` sentence
+naming the removed functions (``Removed `double`, `triple` from `util.js` …``,
+also ru/hi/zh/es).
+
+**Tests.** JS: `rust/tests/web/pull-request-1188-declaration-removal.test.mjs`
+(one name with its JSDoc, several names with one undeclared, a Rust function
+with its doc comment and attribute in Russian, an undeclared name refused).
+Rust: the twin cases appended to
+`rust/tests/unit/pull_request_1188_line_removal.rs` (uncompiled here). After
+the fix the same requests deleted the three worker functions and the three
+Rust functions of the algorithm migration on the first try.
+
+### Open — three edit shapes found while delegating the R383 server edits
+
+Found while Formal AI made 41 single-line edits for the R383 debug session
+(`js/server/*`, `rust/src/server*`, the route manifest, the parity corpus).
+Each needs the positional-edit arm (`js/agentic/positional_edit.mjs`, twin
+`rust/src/agentic_coding/positional_edit.rs`). Another agent was editing
+that arm at the same time, so these three were worked around and are still
+open:
+
+- Two inserts in one request, joined by `, and insert …`, went to the
+  capability router's read-many fallback (`cat '/debug-session.mjs'
+  '/conversations.mjs'`) and made no edit. Each insert works on its own.
+- `insert these lines after the line '…':` followed by an indented
+  multi-line block got no plan. Seven single-line inserts, sent in reverse
+  order, worked. Fixed since (T38): the block is the text inserted.
+- A double-quoted line payload that itself contains double quotes
+  (`Insert the line "    body '{"token":"p"}'" after the line "    path
+  '/v1/x/learn'" in r.lino.`) read the inner `/v1/x/learn` as the target
+  file, a sandbox escape. A variant went to web search. The same request
+  with backtick-delimited lines works. The escape is fixed (T36): the read now goes to the named file.

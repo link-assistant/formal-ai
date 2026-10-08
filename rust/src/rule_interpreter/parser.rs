@@ -1,5 +1,8 @@
 //! Parsing of data-owned handler rules into the interpreter's runtime model.
 
+use std::collections::BTreeMap;
+
+use super::values::{Table, TableLookup};
 use super::{
     Condition, Fallback, Node, Response, RoleMode, Rule, Shape, Step, Subject, ValueRef,
     ValueSource,
@@ -103,6 +106,31 @@ pub(super) fn policy_value(text: &str, handler: &str, key: &str) -> Option<Strin
         .args
         .first()
         .cloned()
+}
+
+/// The `table <name>` blocks of a rule document: ordered `row <key> <value>`
+/// pairs and an optional `default` value, by table name.
+pub(super) fn tables(text: &str) -> BTreeMap<String, Table> {
+    let mut tables = BTreeMap::new();
+    let roots = parse_tree(text);
+    let Some(root) = roots.iter().find(|node| node.name == "handler_rules") else {
+        return tables;
+    };
+    for node in root.children.iter().filter(|node| node.name == "table") {
+        let Some(name) = node.args.first() else {
+            continue;
+        };
+        let mut table = Table::default();
+        for child in &node.children {
+            match (child.name.as_str(), child.args.as_slice()) {
+                ("row", [key, value, ..]) => table.rows.push((key.clone(), value.clone())),
+                ("default", [value, ..]) => table.default = Some(value.clone()),
+                _ => {}
+            }
+        }
+        tables.insert(name.clone(), table);
+    }
+    tables
 }
 
 pub(super) fn parse_rule(node: &Node) -> Result<Rule, String> {
@@ -221,6 +249,7 @@ fn parse_condition(node: &Node) -> Result<Condition, String> {
         "prior_turn" => Condition::PriorTurn(node.first_arg()?),
         "evidence" => Condition::Evidence(node.first_arg()?),
         "shape" => Condition::Shape(parse_shape(node, &node.first_arg()?)?, subject),
+        "operation" => Condition::Operation(node.first_arg()?, subject),
         _ => return Err(node.error("unknown_condition")),
     })
 }
@@ -304,6 +333,26 @@ fn parse_value(node: &Node) -> Result<(String, ValueSource), String> {
                 None => 0,
             },
         },
+        "table" => ValueSource::Table {
+            table: node
+                .args
+                .get(2)
+                .cloned()
+                .ok_or_else(|| node.error("table_without_name"))?,
+            lookup: match (node.args.get(3).map(String::as_str), node.args.get(4)) {
+                (Some("of"), Some(subject)) => {
+                    TableLookup::Contained(parse_subject(node, subject)?)
+                }
+                (Some("key"), Some(capture)) => TableLookup::Key(capture.clone()),
+                _ => return Err(node.error("table_without_lookup")),
+            },
+        },
+        "response" => ValueSource::Response(
+            node.args
+                .get(2)
+                .cloned()
+                .ok_or_else(|| node.error("response_without_intent"))?,
+        ),
         "agent_info" => {
             let key = node
                 .args

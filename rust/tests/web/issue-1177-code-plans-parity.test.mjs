@@ -33,7 +33,7 @@ test("a sorting-algorithm request gets the reviewable snippet with its execution
 });
 
 test("the sorting snippet carries a test when one is requested", () => {
-  const answer = worker.handleAlgorithm("x", "write a sorting algorithm in python with tests");
+  const answer = worker.runHandlerRuleSet("algorithm", "x", "write a sorting algorithm in python with tests", []);
   assert.equal(answer.intent, "algorithm_sort_python");
   assert.ok(answer.content.includes("Tests:\n```python\ndef test_sort_ascending():"), answer.content);
 });

@@ -261,57 +261,6 @@ pub fn translate_surface_detailed(
     crate::translation::translate_via_default_pipeline(surface, source, target)
 }
 
-pub fn detect_algorithm_language(normalized: &str) -> &'static str {
-    let langs = [
-        ("python", "python"),
-        (" py ", "python"),
-        ("rust", "rust"),
-        (" rs ", "rust"),
-        ("javascript", "javascript"),
-        ("typescript", "typescript"),
-        ("go ", "go"),
-        ("golang", "go"),
-        ("java", "java"),
-        ("ruby", "ruby"),
-    ];
-    for (needle, slug) in langs {
-        if normalized.contains(needle) {
-            return slug;
-        }
-    }
-    "python"
-}
-
-pub fn build_sorting_algorithm_answer(lang: &str, with_tests: bool) -> String {
-    let (fence, code, tests) = match lang {
-        "rust" => (
-            "rust",
-            "fn sort(values: &mut Vec<i32>) {\n    values.sort();\n}",
-            "#[test]\nfn test_sort_ascending() {\n    let mut v = vec![3, 1, 2];\n    sort(&mut v);\n    assert_eq!(v, vec![1, 2, 3]);\n}",
-        ),
-        "javascript" | "typescript" => (
-            lang,
-            "function sort(values) {\n  return [...values].sort((a, b) => a - b);\n}",
-            "function test_sort_ascending() {\n  assert.deepEqual(sort([3,1,2]), [1,2,3]);\n}",
-        ),
-        _ => (
-            "python",
-            "def sort(values):\n    return sorted(values)\n",
-            "def test_sort_ascending():\n    assert sort([3, 1, 2]) == [1, 2, 3]\n",
-        ),
-    };
-
-    if with_tests {
-        format!(
-            "Here is a reviewable sorting algorithm in {lang} with a test:\n\n```{fence}\n{code}\n```\n\nTests:\n```{fence}\n{tests}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable."
-        )
-    } else {
-        format!(
-            "Here is a reviewable sorting algorithm in {lang}:\n\n```{fence}\n{code}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable."
-        )
-    }
-}
-
 /// Extract a JavaScript program from a prompt that asks the solver to run it.
 /// Looks for triple-backtick code fences first (with optional `js`/`javascript`
 /// language tag), then single-backtick spans, then `run "...";` quoted bodies.

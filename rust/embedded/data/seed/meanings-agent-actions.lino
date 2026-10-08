@@ -623,3 +623,107 @@ meanings
     unit "not applicable"
     example "the formal_ai_knowledge header, the concept index and one record per seeded rule"
     grounding "data/seed/handler-rules.lino"
+  algorithm_language
+    defined-by method
+    role action
+    precondition "an algorithm rule needs the programming language a request names"
+    effect "reads the first row of the algorithm_language table whose surface occurs in the request, and python when none does"
+    unit "not applicable"
+    example "rust from write me a sorting algorithm in Rust"
+    grounding "data/seed/handler-rules.lino"
+  algorithm_snippet
+    defined-by method
+    role action
+    precondition "an algorithm rule needs the snippet family of the language it found"
+    effect "reads the algorithm_snippet row keyed by that language, and the python family for a language with no snippet of its own"
+    unit "not applicable"
+    example "javascript for javascript, python for go"
+    grounding "data/seed/handler-rules.lino"
+  document_software_artifact
+    defined-by method
+    role action
+    precondition "a document request must not be a request to build software that happens to produce documents"
+    effect "reads the first software-artifact surface that occurs in the request; any match leaves the request to the coding handlers"
+    unit "not applicable"
+    example "app from build me an app that exports pdf"
+    grounding "data/seed/handler-rules.lino"
+  document_authoring_action
+    defined-by method
+    role action
+    precondition "a document plan needs a request that asks to make, write or prepare something"
+    effect "reads the first authoring surface that occurs in the request"
+    unit "not applicable"
+    example "сделай from Сделай отчёт по продажам"
+    grounding "data/seed/handler-rules.lino"
+  document_format
+    defined-by method
+    role action
+    precondition "a document plan names the output format the request asks for"
+    effect "reads the first format label, in priority order, whose surface occurs in the request"
+    unit "not applicable"
+    example "PDF from make me a pdf"
+    grounding "data/seed/handler-rules.lino"
+  document_ebook_marker
+    defined-by method
+    role action
+    precondition "an electronic-book request names the EPUB format without naming a file format"
+    effect "reads EPUB when an ebook surface occurs together with a book noun"
+    unit "not applicable"
+    example "EPUB from write an ebook"
+    grounding "data/seed/handler-rules.lino"
+  document_book_noun
+    defined-by method
+    role action
+    precondition "an ebook marker counts only beside a book noun"
+    effect "reads the first book-noun surface that occurs in the request"
+    unit "not applicable"
+    example "book from write an e-book"
+    grounding "data/seed/handler-rules.lino"
+  document_noun
+    defined-by method
+    role action
+    precondition "a request naming a generic document still asks for a document plan"
+    effect "reads document when a generic document surface occurs in the request"
+    unit "not applicable"
+    example "document from Сделай отчёт"
+    grounding "data/seed/handler-rules.lino"
+  document_conversion_action
+    defined-by method
+    role action
+    precondition "a conversion request asks to convert, export or render one document format into another"
+    effect "reads the first conversion surface that occurs in the request"
+    unit "not applicable"
+    example "convert from Convert this Markdown document to HTML"
+    grounding "data/seed/handler-rules.lino"
+  document_format_alias
+    defined-by method
+    role action
+    precondition "a conversion request names its formats by any of their usual spellings"
+    effect "maps each format spelling to the converter's format name"
+    unit "not applicable"
+    example "md to Markdown"
+    grounding "data/seed/handler-rules.lino"
+  document_source_marker
+    defined-by method
+    role action
+    precondition "the source format of a conversion follows a from-style marker"
+    effect "reads the surfaces that mark the next format as the source"
+    unit "not applicable"
+    example "from"
+    grounding "data/seed/handler-rules.lino"
+  document_target_marker
+    defined-by method
+    role action
+    precondition "the target format of a conversion follows a to-style marker"
+    effect "reads the surfaces that mark the next format as the target"
+    unit "not applicable"
+    example "to"
+    grounding "data/seed/handler-rules.lino"
+  document_output_fence
+    defined-by method
+    role action
+    precondition "the converted output is fenced with the code language of its target format"
+    effect "reads the fence language keyed by the target format, and no fence language when it has none"
+    unit "not applicable"
+    example "html for HTML"
+    grounding "data/seed/handler-rules.lino"

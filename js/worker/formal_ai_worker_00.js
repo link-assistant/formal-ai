@@ -895,7 +895,7 @@ function responseLanguageFor(detected, preferences, userContext) {
 function normalizePrompt(prompt) {
   const text = String(prompt || "");
   const fromWasm = wasmNormalizePrompt(text);
-  if (fromWasm !== null) return fromWasm;
+  if (fromWasm !== null) return expandSeededContractions(fromWasm);
   // Keep letters, numbers and every Unicode mark (category M): Devanagari
   // matras, the nukta and the virama are marks, so a bare \p{L}\p{N} filter
   // would strip them and corrupt Hindi words (issue #312). Mark-awareness via
@@ -906,10 +906,34 @@ function normalizePrompt(prompt) {
   // boundary-aware role matcher (issue #386) depends on that parity — a
   // retained danda would defeat the whole-token match for phrases like
   // "अपना परिचय दो।".
-  return text
-    .toLowerCase()
-    .replace(/[^\p{L}\p{N}\p{M}]+/gu, " ")
-    .trim();
+  return expandSeededContractions(text.toLowerCase().replace(/[^\p{L}\p{N}\p{M}]+/gu, " ").trim());
+}
+
+// Issue #1175 p020: normalization turns an apostrophe into a space, so "you're" reaches every matcher as the
+// token pair `you re` and never equals a surface the seed writes out ("you are"). The `contraction` /
+// `expansion` pairs of data/seed/languages.lino rewrite such a pair in place. Mirrors `expand_contractions`
+// in rust/src/engine.rs; a pair is cached only once the ledger has loaded.
+let cachedSeededContractions = null;
+function expandSeededContractions(normalized) {
+  if (!cachedSeededContractions) {
+    const ledger = seedRawText(SEED_RAW, "languages.lino");
+    if (!ledger) return normalized;
+    cachedSeededContractions = [];
+    let contracted = null;
+    for (const [, key, value] of ledger.matchAll(/^\s*(contraction|expansion) "([^"]*)"\s*$/gmu)) {
+      if (key === "contraction") contracted = value.split(" ").filter(Boolean);
+      else if (contracted && contracted.length) cachedSeededContractions.push({ contracted, expansion: value });
+      if (key === "expansion") contracted = null;
+    }
+  }
+  const tokens = String(normalized || "").split(" ");
+  const out = [];
+  for (let index = 0; index < tokens.length;) {
+    const pair = cachedSeededContractions.find((p) => p.contracted.every((token, at) => tokens[index + at] === token));
+    out.push(pair ? pair.expansion : tokens[index]);
+    index += pair ? pair.contracted.length : 1;
+  }
+  return out.join(" ");
 }
 
 function normalizeConceptTerm(value) {

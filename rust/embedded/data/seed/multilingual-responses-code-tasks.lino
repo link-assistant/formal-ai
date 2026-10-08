@@ -242,3 +242,43 @@ multilingual_responses
     intent code_refactoring_execution_skipped
     language en
     text "Execution check in the browser worker was skipped ({detail}); only the structural check above applies."
+  response response_algorithm_sort_en
+    intent algorithm_sort
+    language en
+    text "Here is a reviewable sorting algorithm in {language}:\n\n```{snippet}\n{code}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable."
+  response response_algorithm_sort_with_tests_en
+    intent algorithm_sort_with_tests
+    language en
+    text "Here is a reviewable sorting algorithm in {language} with a test:\n\n```{snippet}\n{code}\n```\n\nTests:\n```{snippet}\n{tests}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable."
+  response response_algorithm_sort_code_python_en
+    intent algorithm_sort_code_python
+    language en
+    text "def sort(values):\n    return sorted(values)\n"
+  response response_algorithm_sort_tests_python_en
+    intent algorithm_sort_tests_python
+    language en
+    text "def test_sort_ascending():\n    assert sort([3, 1, 2]) == [1, 2, 3]\n"
+  response response_algorithm_sort_code_rust_en
+    intent algorithm_sort_code_rust
+    language en
+    text "fn sort(values: &mut Vec<i32>) {\n    values.sort();\n}"
+  response response_algorithm_sort_tests_rust_en
+    intent algorithm_sort_tests_rust
+    language en
+    text "#[test]\nfn test_sort_ascending() {\n    let mut v = vec![3, 1, 2];\n    sort(&mut v);\n    assert_eq!(v, vec![1, 2, 3]);\n}"
+  response response_algorithm_sort_code_javascript_en
+    intent algorithm_sort_code_javascript
+    language en
+    text "function sort(values) {\n  return [...values].sort((a, b) => a - b);\n}"
+  response response_algorithm_sort_tests_javascript_en
+    intent algorithm_sort_tests_javascript
+    language en
+    text "function test_sort_ascending() {\n  assert.deepEqual(sort([3,1,2]), [1,2,3]);\n}"
+  response response_algorithm_sort_code_typescript_en
+    intent algorithm_sort_code_typescript
+    language en
+    text "function sort(values) {\n  return [...values].sort((a, b) => a - b);\n}"
+  response response_algorithm_sort_tests_typescript_en
+    intent algorithm_sort_tests_typescript
+    language en
+    text "function test_sort_ascending() {\n  assert.deepEqual(sort([3,1,2]), [1,2,3]);\n}"

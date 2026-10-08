@@ -68,6 +68,7 @@ seed_registry
     web true
   seed coding-guidance
     bundle true
+    web true
   seed coding-idioms
     bundle true
     web true
@@ -667,6 +668,9 @@ seed_registry
     bundle true
     web true
   seed prompt-patterns
+    bundle true
+    web true
+  seed proof-library
     bundle true
     web true
   seed proof-program-templates

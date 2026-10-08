@@ -285,6 +285,7 @@ export function normalizeDesktopStatus(status) {
     toolCallPolicy: String(status.toolCallPolicy || "explicit-permission"),
     apiReady: status.apiReady !== false && Boolean(apiBase),
     apiError: String(status.apiError || ""),
+    debugToken: String(status.debugToken || ""),
     agentProvider,
     engines,
     activeEngine,

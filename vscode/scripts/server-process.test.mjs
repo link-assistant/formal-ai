@@ -97,3 +97,12 @@ test("waitForApi throws once the timeout window has elapsed", async () => {
   // this neither hits the network nor waits — it just proves the timeout path.
   await assert.rejects(() => waitForApi("127.0.0.1", 1, 0), /did not become ready/);
 });
+
+test("apiCandidates passes --debug-session only when a debug session is asked for", () => {
+  for (const candidate of apiCandidates({ repoRoot, debugSession: true })) {
+    assert.equal(candidate.args.at(-1), "--debug-session", candidate.label);
+  }
+  for (const candidate of apiCandidates({ repoRoot })) {
+    assert.equal(candidate.args.includes("--debug-session"), false, candidate.label);
+  }
+});

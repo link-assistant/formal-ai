@@ -27,21 +27,21 @@ use crate::solver_handlers::{
     handle_planning_request, handle_product_search, handle_regex_synthesis,
     handle_shell_command_compose, handle_sql_synthesis, handle_statistics,
     handle_summarization_request, handle_test_generation, handle_text_rewrite,
-    handle_unit_conversion, handle_word_problem, try_algorithm, try_arithmetic,
-    try_brainstorming_request, try_calendar_create_event, try_calendar_reasoning,
-    try_compound_interest, try_concept_lookup, try_conversation_memory, try_coreference_request,
-    try_document_originality_check, try_document_request, try_fact_checking, try_fact_lookup,
-    try_fact_lookup_with_offline, try_http_fetch, try_http_fetch_with_offline,
-    try_installation_conversion, try_javascript_execution, try_learn_from_source,
-    try_meta_explanation, try_meta_explanation_with_runtime, try_numeric_list,
-    try_numeric_list_with_history, try_program_synthesis, try_program_synthesis_with_online,
-    try_proof_request, try_proof_request_with_config, try_research_comparison_table,
-    try_research_result_followup, try_response_language_followup, try_roleplay_request,
-    try_shell_command_transform, try_shell_command_transform_with_history,
-    try_software_project_followup, try_software_project_request, try_summarization_request,
-    try_task_decomposition_with_depth, try_text_manipulation, try_text_manipulation_with_history,
-    try_translation, try_url_navigate, try_verifiable_task, try_web_search,
-    try_web_search_with_offline, try_world_state, try_write_script,
+    handle_unit_conversion, handle_word_problem, try_arithmetic, try_brainstorming_request,
+    try_calendar_create_event, try_calendar_reasoning, try_compound_interest, try_concept_lookup,
+    try_conversation_memory, try_coreference_request, try_document_originality_check,
+    try_document_request, try_fact_checking, try_fact_lookup, try_fact_lookup_with_offline,
+    try_http_fetch, try_http_fetch_with_offline, try_installation_conversion,
+    try_javascript_execution, try_learn_from_source, try_meta_explanation,
+    try_meta_explanation_with_runtime, try_numeric_list, try_numeric_list_with_history,
+    try_program_synthesis, try_program_synthesis_with_online, try_proof_request,
+    try_proof_request_with_config, try_research_comparison_table, try_research_result_followup,
+    try_response_language_followup, try_roleplay_request, try_shell_command_transform,
+    try_shell_command_transform_with_history, try_software_project_followup,
+    try_software_project_request, try_summarization_request, try_task_decomposition_with_depth,
+    try_text_manipulation, try_text_manipulation_with_history, try_translation, try_url_navigate,
+    try_verifiable_task, try_web_search, try_web_search_with_offline, try_world_state,
+    try_write_script,
 };
 use crate::triz_solver::handle_triz;
 
@@ -492,7 +492,6 @@ const HANDLER_FUNCTIONS: &[(&str, NativeHandler)] = &[
     // converts the would-be unknown response into the universal-algorithm plan.
     ("document_generation_plan", try_document_request),
     ("software_project", try_software_project_request),
-    ("algorithm", try_algorithm),
     // Proof requests must beat `opinion_question` so prompts like
     // "Do you think you can prove …" land on the formalization pipeline
     // explanation instead of the no-opinion policy.

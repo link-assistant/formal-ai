@@ -59,6 +59,7 @@ function readConfig(raw) {
     dockerImage: String(get("docker.image", DEFAULT_IMAGE) || DEFAULT_IMAGE),
     allowToolsByDefault: Boolean(get("tools.allowByDefault", false)),
     agentDefaultOn: Boolean(get("agent.defaultOn", false)),
+    debugSession: Boolean(get("debugger.stepping", false)),
   };
 }
 
@@ -87,11 +88,13 @@ function statusFromConfig(raw, options = {}) {
     toolCallPolicy: "explicit-permission",
     apiReady: false,
     apiError: "",
+    debugToken: "",
     // Host-side extras (ignored by the web app, used by the extension host).
     dockerImage: cfg.dockerImage,
     allowToolsByDefault: cfg.allowToolsByDefault,
     serverCapable,
     serverEnabled,
+    debugSessionEnabled: serverEnabled && cfg.debugSession,
     host: cfg.host,
     port: cfg.port,
   };
@@ -128,15 +131,28 @@ function withApiError(status, error) {
   };
 }
 
+// Advertise a running `--debug-session` to the web app (issue #667, R383):
+// the debugger view enables its Pause / Next stage / Continue controls only
+// when the status carries the session token the host started the server with.
+function withDebugSession(status, token) {
+  const debugToken = String(token || "");
+  return debugToken && status.apiReady ? { ...status, debugToken } : { ...status, debugToken: "" };
+}
+
 // Environment for the spawned `formal-ai serve` process (mirrors
-// `desktop/main.cjs` `scrubbedEnvironment`).
+// `desktop/main.cjs` `scrubbedEnvironment`). A debug session's token is handed
+// over through `FORMAL_AI_DEBUG_SESSION_TOKEN`, never on the command line.
 function serverEnv(raw, options = {}) {
   const cfg = readConfig(raw);
-  return {
+  const env = {
     FORMAL_AI_HOST: cfg.host,
     FORMAL_AI_PORT: String(cfg.port),
     FORMAL_AI_MEMORY_PATH: String(options.memoryPath || "").trim(),
   };
+  if (options.debugToken) {
+    env.FORMAL_AI_DEBUG_SESSION_TOKEN = String(options.debugToken);
+  }
+  return env;
 }
 
 module.exports = {
@@ -149,5 +165,6 @@ module.exports = {
   statusFromConfig,
   withApiReady,
   withApiError,
+  withDebugSession,
   serverEnv,
 };

@@ -674,7 +674,66 @@ pub(crate) fn normalize_prompt(prompt: &str) -> String {
         }
     }
 
-    normalized.split_whitespace().collect::<Vec<_>>().join(" ")
+    expand_contractions(&normalized.split_whitespace().collect::<Vec<_>>().join(" "))
+}
+
+/// The seeded contracted token pairs, each with the words it stands for.
+///
+/// Normalization turns an apostrophe into a space, so "you're" reaches every
+/// matcher as the pair `you re` and never equals a surface the seed writes out
+/// ("you are"), issue #1175 p020. The pairs are the `contraction` /
+/// `expansion` records of `data/seed/languages.lino`.
+fn contractions() -> &'static [(Vec<String>, String)] {
+    static CELL: OnceLock<Vec<(Vec<String>, String)>> = OnceLock::new();
+    CELL.get_or_init(|| {
+        let ledger = seed::seed_files()
+            .into_iter()
+            .find(|(path, _)| *path == "data/seed/languages.lino")
+            .map_or("", |(_, text)| text);
+        let mut pairs = Vec::new();
+        let mut contracted: Option<Vec<String>> = None;
+        for line in ledger.lines() {
+            let Some((key, value)) = line.trim().split_once(' ') else {
+                continue;
+            };
+            let value = value.trim().trim_matches('"');
+            match key {
+                "contraction" => {
+                    contracted = Some(value.split_whitespace().map(ToOwned::to_owned).collect());
+                }
+                "expansion" => {
+                    if let Some(tokens) = contracted.take().filter(|tokens| !tokens.is_empty()) {
+                        pairs.push((tokens, value.to_owned()));
+                    }
+                }
+                _ => {}
+            }
+        }
+        pairs
+    })
+}
+
+/// `normalized` with every seeded contracted pair rewritten into its expansion.
+///
+/// Mirrors `expandSeededContractions` in `js/worker/formal_ai_worker_00.js`.
+fn expand_contractions(normalized: &str) -> String {
+    let pairs = contractions();
+    let tokens: Vec<&str> = normalized.split(' ').collect();
+    let mut out: Vec<&str> = Vec::with_capacity(tokens.len());
+    let mut index = 0;
+    while index < tokens.len() {
+        let pair = pairs.iter().find(|(contracted, _)| {
+            tokens
+                .get(index..index + contracted.len())
+                .is_some_and(|window| window.iter().zip(contracted).all(|(a, b)| *a == b.as_str()))
+        });
+        let (word, step) = pair.map_or((tokens[index], 1), |(contracted, expansion)| {
+            (expansion.as_str(), contracted.len())
+        });
+        out.push(word);
+        index += step;
+    }
+    out.join(" ")
 }
 
 const fn is_script_combining_mark(character: char) -> bool {

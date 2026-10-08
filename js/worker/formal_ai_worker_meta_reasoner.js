@@ -258,7 +258,7 @@ function metaExamples(prompt, literals) {
     const between = ` ${prompt.slice(literals[index].end, literals[index + 1].start).toLowerCase()} `;
     if (between.length > 28) continue;
     const marker = markers.find((item) => between.includes(item));
-    if (!marker) continue;
+    if (!marker || (!/\p{L}/u.test(marker) && /\p{L}/u.test(between.replace(marker, "")))) continue; // an arrow beside a name is code (.map(x => x * 2)), not an example
     // An arrow is unambiguous; a word marker ("into", "в") may be prose.
     examples.push({ input: literals[index].value, output: literals[index + 1].value, symbolic: !/\p{L}/u.test(marker) });
     index += 1;

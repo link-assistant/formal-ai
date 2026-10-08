@@ -4,10 +4,11 @@
 //! never touches a socket, which is what lets the whole API be driven from a
 //! test. This module is the only place that reads bytes off the wire.
 
-use std::io::{Read as _, Write as _};
+use std::io::{ErrorKind, Read as _, Write as _};
 use std::net::{TcpListener, TcpStream};
+use std::time::Duration;
 
-use super::{ApiHttpResponse, handle_api_request_with_headers};
+use super::{ApiHttpResponse, handle_api_request_with_headers, with_connection_scope};
 
 /// One request as it arrived, before any routing decision is made.
 struct ParsedHttpRequest {
@@ -82,9 +83,27 @@ fn handle_connection(stream: &mut TcpStream) -> std::io::Result<()> {
         .iter()
         .map(|(name, value)| (name.as_str(), value.as_str()))
         .collect::<Vec<_>>();
-    let response =
-        handle_api_request_with_headers(&request.method, &request.path, &headers, &request.body);
+    // A `--debug-session` turn held between stages polls this probe, so a
+    // client that hangs up never leaves its solve paused (issue #667).
+    let probe = stream.try_clone().ok();
+    let response = with_connection_scope(
+        move || probe.as_ref().is_none_or(client_connected),
+        || handle_api_request_with_headers(&request.method, &request.path, &headers, &request.body),
+    );
     write_response(stream, &response)
+}
+
+/// Whether the client is still connected: a zero-byte peek means it hung up.
+fn client_connected(stream: &TcpStream) -> bool {
+    let _ = stream.set_read_timeout(Some(Duration::from_millis(1)));
+    let mut byte = [0_u8; 1];
+    match stream.peek(&mut byte) {
+        Ok(read) => read > 0,
+        Err(error) => matches!(
+            error.kind(),
+            ErrorKind::WouldBlock | ErrorKind::TimedOut | ErrorKind::Interrupted
+        ),
+    }
 }
 
 fn read_request(stream: &mut TcpStream) -> std::io::Result<Option<ParsedHttpRequest>> {
@@ -145,6 +164,7 @@ fn write_response(stream: &mut TcpStream, response: &ApiHttpResponse) -> std::io
         403 => "403 Forbidden",
         404 => "404 Not Found",
         405 => "405 Method Not Allowed",
+        409 => "409 Conflict",
         _ => "500 Internal Server Error",
     };
 

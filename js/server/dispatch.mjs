@@ -5,6 +5,7 @@
 import { handleAnthropicMessages } from './anthropic.mjs';
 import { handleChatCompletions } from './openai.mjs';
 import { handleConversationContext, handleConversationLearn } from './conversations.mjs';
+import { handleDebug } from './debug-session.mjs';
 import { recordApiExchangeIfEnabled, withDialogScope } from './dialog-log.mjs';
 import { handleGeminiGenerateContent, handleGeminiModel, handleGeminiModels, handleVertexModels } from './gemini.mjs';
 import { handleMcp } from './mcp.mjs';
@@ -40,6 +41,7 @@ export const ROUTE_HANDLERS = Object.freeze({
   telegram_webhook: handleTelegramWebhook,
   conversation_context: handleConversationContext,
   conversation_learn: handleConversationLearn,
+  debug_session: handleDebug,
   gemini_models: handleGeminiModels,
   gemini_model: handleGeminiModel,
   gemini_generate_content: (ctx, request) => handleGeminiGenerateContent(ctx, request, false),

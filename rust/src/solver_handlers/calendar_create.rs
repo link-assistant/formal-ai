@@ -73,6 +73,14 @@ pub fn try_routed_calendar_create_event(
     if super::software_project_claims(normalized) {
         return None;
     }
+    // A trip plan ("составь план поездки в Рим на 3 дня") reads a period off
+    // its day count, but it is the planner's request when the event recognizer
+    // finds no event in it (issue #1175 p215), as the browser twin declines.
+    if !mentions_calendar_create_request(normalized)
+        && lexicon().mentions_role("planning_request", normalized)
+    {
+        return None;
+    }
     let base = current_utc_date()?;
     log.append("calendar:clock", "system_utc".to_owned());
 

@@ -16,6 +16,7 @@
 
 const vscode = require("vscode");
 const childProcess = require("node:child_process");
+const crypto = require("node:crypto");
 const fs = require("node:fs");
 const os = require("node:os");
 const path = require("node:path");
@@ -24,6 +25,7 @@ const {
   statusFromConfig,
   withApiReady,
   withApiError,
+  withDebugSession,
   serverEnv,
   DEFAULT_IMAGE,
 } = require("./lib/config.cjs");
@@ -278,16 +280,20 @@ function activate(context) {
 
     if (status.serverEnabled) {
       log(`starting local server on ${status.host}:${status.port}`);
+      // `formal-ai.debugger.stepping` starts a loopback-only debug session
+      // whose token only this host and its webview know (issue #667).
+      const debugToken = status.debugSessionEnabled ? crypto.randomBytes(24).toString("hex") : "";
       try {
         const started = await startServer({
           host: status.host,
           port: status.port,
           repoRoot: REPO_ROOT,
-          env: serverEnv(config, { memoryPath: resolveSharedMemoryPath(process.env) }),
+          debugSession: Boolean(debugToken),
+          env: serverEnv(config, { memoryPath: resolveSharedMemoryPath(process.env), debugToken }),
           log,
         });
         serverProc = started.process;
-        status = withApiReady(status, started.apiBase);
+        status = withDebugSession(withApiReady(status, started.apiBase), debugToken);
         memorySync = createMemorySync({ apiBase: status.apiBase, fetchImpl: globalThis.fetch });
         log(`local server ready at ${status.apiBase} (${started.label})`);
       } catch (error) {

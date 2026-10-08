@@ -312,3 +312,65 @@ test("a topic summary is the seeded record, run after web search as the native r
   const conversation = await solve("Summarize our conversation");
   assert.notEqual(conversation.intent, "summarize_topic");
 });
+
+const SORT_RUST = "Here is a reviewable sorting algorithm in rust:\n\n```rust\nfn sort(values: &mut Vec<i32>) {\n    values.sort();\n}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
+const SORT_GO = "Here is a reviewable sorting algorithm in go:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
+const SORT_TYPESCRIPT_TESTS = "Here is a reviewable sorting algorithm in typescript with a test:\n\n```typescript\nfunction sort(values) {\n  return [...values].sort((a, b) => a - b);\n}\n```\n\nTests:\n```typescript\nfunction test_sort_ascending() {\n  assert.deepEqual(sort([3,1,2]), [1,2,3]);\n}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
+const SORT_PYTHON_TESTS = "Here is a reviewable sorting algorithm in python with a test:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nTests:\n```python\ndef test_sort_ascending():\n    assert sort([3, 1, 2]) == [1, 2, 3]\n\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
+const SORT_PYTHON = "Here is a reviewable sorting algorithm in python:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
+
+// The algorithm rule set (issue #918): the sort operation or the word
+// "algorithm", the language table and the seeded snippets answer exactly as
+// the deleted handleAlgorithm / try_algorithm did, in every prompt language.
+test("the algorithm rule set answers unchanged in english, russian, hindi and chinese", async () => {
+  const english = await solve("Write me a sorting algorithm in Rust");
+  assert.equal(english.intent, "algorithm_sort_rust");
+  assert.equal(english.content, SORT_RUST);
+  assert.ok(english.evidence.includes("execution_status:unavailable"));
+  for (const [prompt, intent, expected] of [
+    ["write a sorting algorithm in python with tests", "algorithm_sort_python", SORT_PYTHON_TESTS],
+    ["Напиши сортировку списка на go с тестом", "algorithm_sort_go", SORT_GO],
+    ["Rust में सॉर्टिंग एल्गोरिदम लिखो", "algorithm_sort_rust", SORT_RUST],
+    ["写一个 typescript 排序 algorithm 带 test", "algorithm_sort_typescript", SORT_TYPESCRIPT_TESTS],
+  ]) {
+    const response = await rule("algorithm", prompt);
+    assert.equal(response.intent, intent, prompt);
+    assert.equal(response.content, expected, prompt);
+    assert.ok(!response.evidence.some((link) => link.startsWith("algorithm:refusal")), prompt);
+  }
+  const unnamed = await rule("algorithm", "explain the algorithm");
+  assert.equal(unnamed.content, SORT_PYTHON);
+  assert.ok(unnamed.evidence.includes("algorithm:refusal:no operation named"));
+  assert.equal(await rule("algorithm", "What is the capital of France?"), null);
+});
+
+const PLAN_EN_PDF = "This is a document-generation request in PDF format. I am a deterministic symbolic solver: I cannot research arbitrary live data on the web and I do not render binary files directly, so I decompose the task into the formal plan the universal algorithm produces (decompose → tests → drafts → composition). The document workflow uses link-foundation/meta-language for txt, Markdown, HTML, PDF, and DOCX representation/conversion, with concept profiles for headings, paragraphs, lists, strong/bold text, emphasis, and hyperlinks:\n\n1. Scope the document and its criteria: which items to include and which attributes distinguish them.\n2. Collect the list of items from verifiable sources and record links to those sources.\n3. Classify each item against the stated criteria.\n4. Assemble the document structure: title, sections, and a table or list.\n5. Export the finished structure to the requested format.\n\nConfirm the plan or refine the criteria and sources and I will continue with concrete steps. If you need facts that are not in the local Links Notation memory, name a source and I will add it as a links rule.";
+const PLAN_RU_PDF = "Это запрос на создание документа в формате PDF. Я детерминированный символьный решатель: у меня нет доступа к произвольным актуальным данным в вебе и я не рендерю бинарные файлы напрямую, поэтому я раскладываю задачу на формальный план по универсальному алгоритму (декомпозиция → проверки → черновики → композиция):\n\n1. Уточнить объём и критерии документа: какие элементы включать и по каким признакам их различать.\n2. Собрать список элементов из проверяемых источников и зафиксировать ссылки на эти источники.\n3. Классифицировать каждый элемент по заявленным критериям.\n4. Собрать структуру документа: заголовок, разделы и таблицу или список.\n5. Экспортировать готовую структуру в запрошенный формат.\n\nПодтвердите план или уточните критерии и источники — и я продолжу с конкретными шагами. Если нужны фактические данные, которых нет в локальной памяти Links Notation, укажите источник, и я добавлю его как правило связей.";
+const PLAN_HI_PDF = "यह एक दस्तावेज़ बनाने का अनुरोध है (PDF प्रारूप में). मैं एक नियतात्मक प्रतीकात्मक हल करने वाला हूँ: मैं वेब पर मनमाना सजीव डेटा नहीं खोज सकता और बाइनरी फ़ाइलें सीधे नहीं बनाता, इसलिए मैं इस कार्य को सार्वभौमिक एल्गोरिदम की औपचारिक योजना में विभाजित करता हूँ (विभाजन → जाँच → मसौदे → रचना):\n\n1. दस्तावेज़ और उसके मानदंड का दायरा तय करें: कौन-सी वस्तुएँ शामिल करनी हैं और कौन-से गुण उन्हें अलग करते हैं।\n2. सत्यापन योग्य स्रोतों से वस्तुओं की सूची एकत्र करें और उन स्रोतों के लिंक दर्ज करें।\n3. प्रत्येक वस्तु को बताए गए मानदंड के अनुसार वर्गीकृत करें।\n4. दस्तावेज़ की संरचना बनाएँ: शीर्षक, अनुभाग और एक तालिका या सूची।\n5. तैयार संरचना को अनुरोधित प्रारूप में निर्यात करें।\n\nयोजना की पुष्टि करें या मानदंड और स्रोत स्पष्ट करें, और मैं ठोस चरणों के साथ आगे बढ़ूँगा।";
+const PLAN_ZH_PDF = "这是一个生成文档的请求（PDF 格式）。我是一个确定性的符号求解器：我无法在网络上检索任意实时数据，也不会直接渲染二进制文件，因此我把任务分解为通用算法生成的形式化计划（分解 → 校验 → 草稿 → 组合）：\n\n1. 界定文档及其标准：包含哪些条目以及用哪些属性区分它们。\n2. 从可验证的来源收集条目清单，并记录这些来源的链接。\n3. 根据所述标准对每个条目进行分类。\n4. 组装文档结构：标题、章节以及表格或列表。\n5. 将完成的结构导出为所请求的格式。\n\n请确认计划或细化标准与来源，我将继续给出具体步骤。";
+const PLAN_RU_DOCUMENT = "Это запрос на создание документа. Я детерминированный символьный решатель: у меня нет доступа к произвольным актуальным данным в вебе и я не рендерю бинарные файлы напрямую, поэтому я раскладываю задачу на формальный план по универсальному алгоритму (декомпозиция → проверки → черновики → композиция):\n\n1. Уточнить объём и критерии документа: какие элементы включать и по каким признакам их различать.\n2. Собрать список элементов из проверяемых источников и зафиксировать ссылки на эти источники.\n3. Классифицировать каждый элемент по заявленным критериям.\n4. Собрать структуру документа: заголовок, разделы и таблицу или список.\n5. Экспортировать готовую структуру в запрошенный формат.\n\nПодтвердите план или уточните критерии и источники — и я продолжу с конкретными шагами. Если нужны фактические данные, которых нет в локальной памяти Links Notation, укажите источник, и я добавлю его как правило связей.";
+
+// The document-generation plan (issue #918): its software, authoring, format
+// and noun cues are the document_* tables of data/seed/handler-rules.lino and
+// its four-language plan the seeded document_generation_plan responses; every
+// answer is byte-identical to the deleted inline templates.
+test("the document plan renders the seeded plan in english, russian, hindi and chinese", async () => {
+  const english = await solve("Make me a PDF document listing countries with food subsidies for low-income people.");
+  assert.equal(english.intent, "document_generation_plan");
+  assert.equal(english.content, PLAN_EN_PDF);
+  await ready;
+  for (const [prompt, expected, format] of [
+    ["Сделай мне пдф файл со списком стран, где есть пособия/скидки на еду для малоимущих, как в виде прямых денежных дотаций, так и в косвенной форме, например, талоны.", PLAN_RU_PDF, "PDF"],
+    ["गरीब लोगों के लिए खाद्य सब्सिडी वाले देशों की सूची के साथ एक PDF दस्तावेज़ बनाओ।", PLAN_HI_PDF, "PDF"],
+    ["给我做一个包含为低收入者提供食品补贴的国家列表的PDF文档。", PLAN_ZH_PDF, "PDF"],
+    ["Сделай отчёт по продажам", PLAN_RU_DOCUMENT, "document"],
+  ]) {
+    const response = plain(evaluate(worker, `tryDocumentGenerationPlan(${JSON.stringify(prompt)})`));
+    assert.equal(response.intent, "document_generation_plan", prompt);
+    assert.equal(response.content, expected, prompt);
+    assert.ok(response.evidence.includes(`document_request:format:${format}`), prompt);
+  }
+  for (const prompt of ["Build me a CLI tool that generates PDF invoices", "[agent] create report.txt", "Create a list of prime numbers under 100"]) {
+    assert.equal(plain(evaluate(worker, `tryDocumentGenerationPlan(${JSON.stringify(prompt)})`)), null, prompt);
+  }
+});

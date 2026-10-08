@@ -380,20 +380,34 @@ pub(super) fn quoted_span(prompt: &str) -> Option<String> {
     None
 }
 
-/// The first token of `prompt` that reads as a workspace path.
+/// The first token of `prompt` that reads as a workspace path. A path the
+/// request leaves unquoted names the file before one inside a quoted payload
+/// does (`Insert the line "path '/v1/x'" after … in r.lino`).
 #[must_use]
 pub fn first_path(prompt: &str) -> Option<String> {
     let normalized = normalize_prompt(prompt);
-    prompt
-        .split_whitespace()
-        .find(|token| is_path(token, &normalized))
-        .map(|token| {
-            token
-                .trim_matches(|character: char| {
-                    matches!(character, ',' | ';' | '"' | '\'' | '(' | ')' | '\u{3002}')
-                })
-                .to_owned()
+    let outside = crate::normal_markov::quoted_segment_spans(prompt)
+        .iter()
+        .rev()
+        .fold(prompt.to_owned(), |text, segment| {
+            [&text[..segment.start], " ", &text[segment.end..]].concat()
+        });
+    // The sentence's closing period is not the path's (`… in r.lino.`).
+    const EDGES: [char; 7] = [',', ';', '"', '\'', '(', ')', '\u{3002}'];
+    let peeled = |token: &str| -> String {
+        token
+            .trim_start_matches(EDGES)
+            .trim_end_matches(|character: char| EDGES.contains(&character) || character == '.')
+            .to_owned()
+    };
+    [outside.as_str(), prompt]
+        .into_iter()
+        .find_map(|text| {
+            text.split_whitespace()
+                .find(|token| is_path(token, &normalized) || is_path(&peeled(token), &normalized))
         })
+        .map(peeled)
+        .filter(|path| !path.is_empty())
 }
 
 /// The first token of `prompt` that parses as an absolute URL.

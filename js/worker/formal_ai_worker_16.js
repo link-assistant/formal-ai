@@ -252,6 +252,7 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
     const oracleTask = task || programTaskFromPrompt(normalizeProgramPrompt(prompt));
     const oracleAnswer = language ? codingOracleAnswer(oracleTask, language) : null;
     if (oracleAnswer) return oracleAnswer;
+    if (tryFactLookup(prompt, normalizePrompt(prompt))) return null; // native: an unsupported request reaches meta dispatch, whose fact_lookup row (issue #1175 p112) answers a seeded fact first
     // Issue #906: an unfilled parameter is not a skill gap — the dead end the
     // request reached decides the intent, the event and the response link.
     const deadEnd = programDeadEnd(task, language);

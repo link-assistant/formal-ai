@@ -23,8 +23,6 @@ const ROLE_NUMBER_CONSTRAINT_UPPER_STRICT = "number_constraint_upper_strict";
 const NUMBER_CONSTRAINT_I64_MAX = (1n << 63n) - 1n;
 const NUMBER_CONSTRAINT_I64_MIN = -(1n << 63n);
 const LINEAR_EPSILON = 1e-9;
-const LINEAR_DELEGATED_STEP =
-  "Delegate the normalized claim to the relative-meta-logic / SMT decision procedure for quantifier-free linear real arithmetic.";
 
 /**
  * Parse a decimal integer that fits i64, or null (Rust `str::parse::<i64>`).
@@ -373,7 +371,7 @@ function linearParseIntervalAtom(text) {
 /**
  * Apply the atoms to an interval exactly as `build_interval_system` does.
  * @param {Array<{original: string, comparison: string, threshold: number}>} atoms
- * @returns {{lower: {value: number, strict: boolean}|null, upper: {value: number, strict: boolean}|null, contradiction: string|null}}
+ * @returns {{lower: {value: number, strict: boolean}|null, upper: {value: number, strict: boolean}|null, contradiction: {lower: {value: number, strict: boolean}, upper: {value: number, strict: boolean}}|null}}
  */
 function linearIntervalSystem(atoms) {
   const interval = { lower: null, upper: null, contradiction: null };
@@ -408,7 +406,7 @@ function linearIntervalSystem(atoms) {
     if (interval.contradiction === null && lower !== null && upper !== null &&
       (lower.value > upper.value + LINEAR_EPSILON ||
         (linearNearlyEqual(lower.value, upper.value) && (lower.strict || upper.strict)))) {
-      interval.contradiction = `requires x ${lower.strict ? ">" : ">="} ${linearFormatNumber(lower.value)} and x ${upper.strict ? "<" : "<="} ${linearFormatNumber(upper.value)}`;
+      interval.contradiction = { lower: lower, upper: upper };
     }
   }
   return interval;
@@ -435,7 +433,7 @@ function linearIntervalContains(interval, value) {
 
 /**
  * The witness `witness_value` picks, or null.
- * @param {{lower: {value: number, strict: boolean}|null, upper: {value: number, strict: boolean}|null, contradiction: string|null}} interval
+ * @param {{lower: {value: number, strict: boolean}|null, upper: {value: number, strict: boolean}|null, contradiction: object|null}} interval
  * @returns {number|null}
  */
 function linearWitness(interval) {
@@ -469,102 +467,89 @@ function linearIntervalSummary(interval) {
   return `x: ${lower} and ${upper}`;
 }
 
+let PROOF_LIBRARY_TEMPLATES = null;
+
 /**
- * Seed-free localized labels of the native proof presenter.
- * @param {string} key
- * @param {string} language
- * @returns {string}
+ * The `template` records of data/seed/proof-library.lino by id, read once the
+ * seed is loaded. Mirrors `proof_library()` in rust/src/seed/proof_library.rs.
+ * @returns {Map<string, object>}
  */
-function proofPresenterLabel(key, language) {
-  const table = {
-    method: { ru: "процедура разрешения relative-meta-logic / SMT", zh: "relative-meta-logic / SMT 判定过程", hi: "relative-meta-logic / SMT निर्णय प्रक्रिया", en: "relative-meta-logic / SMT decision procedure" },
-    definition: { ru: "Определение", zh: "定义", hi: "परिभाषा", en: "Definition" },
-    inference: { ru: "Вывод", zh: "推理", hi: "निष्कर्षण", en: "Inference" },
-    interpretation: { ru: "Как я понял запрос", hi: "मैंने प्रश्न को कैसे समझा", zh: "对问题的理解", en: "How I interpreted the request" },
-    proof: { ru: "Доказательство", hi: "प्रमाण", zh: "证明", en: "Proof" },
-    disproof: { ru: "Опровержение", hi: "खंडन", zh: "反驳", en: "Disproof" },
-    statement: { ru: "Утверждение", hi: "कथन", zh: "命题", en: "Statement" },
-    counterexample: { ru: "Контрпример", hi: "प्रतिउदाहरण", zh: "反例", en: "Counterexample" },
-    method_intro: { ru: "метод", hi: "विधि", zh: "方法", en: "method" },
-    follow_up: { ru: "Уточняющие вопросы:", hi: "स्पष्टीकरण के प्रश्न:", zh: "澄清问题:", en: "Clarifying questions:" },
-  };
-  const row = table[key];
-  if (!row) throw new Error("unknown proof presenter label");
-  return row[language] || row.en;
+function proofLibraryTemplates() {
+  if (PROOF_LIBRARY_TEMPLATES !== null) return PROOF_LIBRARY_TEMPLATES;
+  const root = parseLinoTree(seedRawText(SEED_RAW, "proof-library.lino"));
+  const section = root.children.find((child) => child.name === "proof_library");
+  if (!section) return new Map();
+  PROOF_LIBRARY_TEMPLATES = new Map(
+    section.children.filter((child) => child.name === "template").map((child) => [child.value, child]),
+  );
+  return PROOF_LIBRARY_TEMPLATES;
 }
 
 /**
- * The interpretation detail for a proven or disproven decision.
+ * A record's surface for `language`, falling back to English. Mirrors
+ * `LocalizedText::get`.
+ * @param {object} node
+ * @param {string} language
+ * @returns {string}
+ */
+function proofLibrarySurface(node, language) {
+  const surface = (slug) =>
+    node.children.find((child) => child.name === slug && child.children.length === 0 && child.value !== "");
+  const found = surface(language) || surface("en");
+  return found ? found.value : "";
+}
+
+/**
+ * The phrase `id` in `language`, each `{name}` slot filled in one pass; a
+ * missing record degrades to its id. Mirrors `ProofLibrary::text`.
+ * @param {string} id
+ * @param {string} language
+ * @param {Object<string, string>} [values]
+ * @returns {string}
+ */
+function proofLibraryText(id, language, values = {}) {
+  const node = proofLibraryTemplates().get(id);
+  if (!node) return id;
+  return proofLibrarySurface(node, language).replace(/\{([^{}]*)\}/gu, (slot, name) =>
+    Object.prototype.hasOwnProperty.call(values, name) ? values[name] : slot);
+}
+
+/**
+ * The item phrases of the list template `id`. Mirrors `ProofLibrary::items`.
+ * @param {string} id
+ * @param {string} language
+ * @returns {Array<string>}
+ */
+function proofLibraryItems(id, language) {
+  const node = proofLibraryTemplates().get(id);
+  if (!node) return [];
+  return node.children.filter((child) => child.name === "item").map((item) => proofLibrarySurface(item, language));
+}
+
+/**
+ * The interpretation header for a proven or disproven decision. Mirrors
+ * `render_interpretation` in rust/src/proof_engine/presenter.rs.
  * @param {boolean} proven
  * @param {string} statement
  * @param {string} language
  * @returns {string}
  */
 function proofPresenterInterpretation(proven, statement, language) {
-  const method = proofPresenterLabel("method", language);
-  let detail;
-  if (proven) {
-    switch (language) {
-      case "ru":
-        detail = `трактуем запрос как формальное утверждение «${statement}» и доказываем методом «${method}» в relative-meta-logic.`;
-        break;
-      case "hi":
-        detail = `प्रश्न को औपचारिक कथन "${statement}" मानकर relative-meta-logic में "${method}" विधि से प्रमाणित कर रहे हैं।`;
-        break;
-      case "zh":
-        detail = `把问题视为形式命题“${statement}”,在 relative-meta-logic 中用“${method}”方法证明。`;
-        break;
-      default:
-        detail = `treating the request as the formal claim "${statement}" and discharging it by ${method} inside relative-meta-logic.`;
-        break;
-    }
-  } else {
-    switch (language) {
-      case "ru":
-        detail = `трактуем запрос как утверждение, которое нужно опровергнуть; используем ${method} и приводим контрпример.`;
-        break;
-      case "hi":
-        detail = `प्रश्न को खंडन योग्य कथन मानकर ${method} का उपयोग कर रहे हैं और प्रतिउदाहरण देते हैं।`;
-        break;
-      case "zh":
-        detail = `把问题视为应予反驳的断言,用${method}并给出反例。`;
-        break;
-      default:
-        detail = `treating the request as a claim to be refuted; applying ${method} and producing a counterexample.`;
-        break;
-    }
-  }
-  return `${proofPresenterLabel("interpretation", language)}: ${detail}`;
+  const method = proofLibraryText("method_decision_procedure", language);
+  const detail = proven
+    ? proofLibraryText("interpretation_proven", language, { statement, method })
+    : proofLibraryText("interpretation_disproven", language, { method });
+  return `${proofLibraryText("interpretation_label", language)}: ${detail}`;
 }
 
 /**
- * The follow-up questions after a disproof.
+ * `Heading (method: label).`, as `method_line`.
+ * @param {string} headingId
  * @param {string} language
- * @returns {Array<string>}
+ * @returns {string}
  */
-function proofPresenterDisprovenQuestions(language) {
-  switch (language) {
-    case "ru":
-      return [
-        "хотите ли вы ослабить утверждение до проверяемой формы (например, заменить равенство неравенством или ограничить область)?",
-        "если требуется ровно это утверждение, нужно ли добавить аксиому, при которой контрпример исключается?",
-      ];
-    case "hi":
-      return [
-        "क्या आप कथन को जाँचने योग्य रूप तक शिथिल करना चाहते हैं (जैसे समता को असमिका से बदलना या क्षेत्र सीमित करना)?",
-        "यदि वही कथन ज़रूरी है, क्या आप कोई अभिगृहीत जोड़ना चाहते हैं जिससे प्रतिउदाहरण बाहर रहे?",
-      ];
-    case "zh":
-      return [
-        "是否希望把命题弱化为可证形式(例如把等式改为不等式,或限制定义域)?",
-        "若需保留原命题,是否要新增一条公理以排除该反例?",
-      ];
-    default:
-      return [
-        "do you want to weaken the claim into a checkable form (e.g. replace equality with an inequality, or restrict the domain)?",
-        "if the exact claim is required, should we add an axiom under which the counterexample is excluded?",
-      ];
-  }
+function proofPresenterMethodLine(headingId, language) {
+  return `${proofLibraryText(headingId, language)} (${proofLibraryText("method_intro", language)}: ${proofLibraryText("method_decision_procedure", language)}).`;
 }
 
 /**
@@ -575,7 +560,26 @@ function proofPresenterDisprovenQuestions(language) {
  */
 function proofPresenterSteps(steps, language) {
   return steps.map((step, index) =>
-    `\n${index + 1}. ${proofPresenterLabel(step.kind, language)}: ${step.text}`).join("");
+    `\n${index + 1}. ${proofLibraryText(`step_${step.kind}`, language)}: ${step.text}`).join("");
+}
+
+/**
+ * Why an interval system has no model, in `language`. Mirrors
+ * `IntervalSystem::contradiction` with the `linear_empty_intersection`
+ * fallback; the bound conflict is the only contradiction interval riddles
+ * produce.
+ * @param {{lower: {value: number, strict: boolean}, upper: {value: number, strict: boolean}}|null} contradiction
+ * @param {string} language
+ * @returns {string}
+ */
+function linearContradiction(contradiction, language) {
+  if (contradiction === null) return proofLibraryText("linear_empty_intersection", language);
+  return proofLibraryText("linear_conflicting_bounds", language, {
+    lower_symbol: contradiction.lower.strict ? ">" : ">=",
+    lower: linearFormatNumber(contradiction.lower.value),
+    upper_symbol: contradiction.upper.strict ? "<" : "<=",
+    upper: linearFormatNumber(contradiction.upper.value),
+  });
 }
 
 /**
@@ -600,36 +604,38 @@ function numberConstraintFormalCheck(claim, language) {
   const constraintsText = atoms.map((atom) => atom.original).join(" and ");
   const statement = `${constraints} is satisfiable`;
   const witness = linearWitness(interval);
+  const values = {
+    constraints: constraintsText,
+    interval: linearIntervalSummary(interval),
+    assignment: witness === null ? "" : `x = ${linearFormatNumber(witness)}`,
+  };
+  const delegated = { kind: "definition", text: proofLibraryText("linear_delegate", language) };
+  const constraintsStep = { kind: "definition", text: proofLibraryText("linear_constraints", language, values) };
   if (interval.contradiction === null && witness !== null) {
     const steps = [
-      { kind: "definition", text: LINEAR_DELEGATED_STEP },
-      { kind: "definition", text: `Constraints: ${constraintsText}.` },
-      { kind: "inference", text: `The constraints reduce to ${linearIntervalSummary(interval)}.` },
-      { kind: "inference", text: `Witness found: x = ${linearFormatNumber(witness)}.` },
+      delegated,
+      constraintsStep,
+      { kind: "inference", text: proofLibraryText("linear_constraints_reduce", language, values) },
+      { kind: "inference", text: proofLibraryText("linear_witness", language, values) },
     ];
-    const core = `${proofPresenterLabel("proof", language)} (${proofPresenterLabel("method_intro", language)}: ${proofPresenterLabel("method", language)}).\n\n${proofPresenterLabel("statement", language)}: ${statement}\n${proofPresenterSteps(steps, language)}\nTherefore the constraint system is satisfiable. ∎`;
+    const core = `${proofPresenterMethodLine("proof_heading", language)}\n\n${proofLibraryText("statement_label", language)}: ${statement}\n${proofPresenterSteps(steps, language)}\n${proofLibraryText("linear_satisfiable", language)}`;
     return `${proofPresenterInterpretation(true, statement, language)}\n\n${core}`;
   }
-  const contradiction = interval.contradiction === null
-    ? "the interval constraints have empty intersection"
-    : interval.contradiction;
+  values.contradiction = linearContradiction(interval.contradiction, language);
   const steps = [
-    { kind: "definition", text: LINEAR_DELEGATED_STEP },
-    { kind: "definition", text: `Constraints: ${constraintsText}.` },
-    {
-      kind: "inference",
-      text: `The interval solver reports an empty model set: ${contradiction}. Last interval state: ${linearIntervalSummary(interval)}.`,
-    },
+    delegated,
+    constraintsStep,
+    { kind: "inference", text: proofLibraryText("linear_empty_model_set", language, values) },
   ];
-  const core = `${proofPresenterLabel("disproof", language)} (${proofPresenterLabel("method_intro", language)}: ${proofPresenterLabel("method", language)}).\n\n${proofPresenterLabel("counterexample", language)}: No assignment exists: ${contradiction}.\n\n${proofPresenterSteps(steps, language)}\nTherefore the constraint system is unsatisfiable. ∎`;
+  const core = `${proofPresenterMethodLine("disproof_heading", language)}\n\n${proofLibraryText("counterexample_label", language)}: ${proofLibraryText("linear_no_assignment", language, values)}\n\n${proofPresenterSteps(steps, language)}\n${proofLibraryText("linear_unsatisfiable", language)}`;
   // `enforce_questions` (rust/src/question_necessity.rs) authorizes one
   // question per answer: the first follow-up stays, and every later one loses
   // its sentence, which starts after the item's "N. " prefix (the seeded
   // questions carry no inner sentence terminator), leaving the bare "N.".
-  const questions = proofPresenterDisprovenQuestions(language)
+  const questions = proofLibraryItems("disproven_follow_ups", language)
     .map((question, index) => (index === 0 ? `${index + 1}. ${question}` : `${index + 1}.`))
     .join("\n");
-  return `${proofPresenterInterpretation(false, statement, language)}\n\n${core}\n\n${proofPresenterLabel("follow_up", language)}\n${questions}`;
+  return `${proofPresenterInterpretation(false, statement, language)}\n\n${core}\n\n${proofLibraryText("follow_up_label", language)}\n${questions}`;
 }
 
 /**
@@ -655,57 +661,48 @@ function numberConstraintCompactBody(body) {
 }
 
 /**
- * The integer-solution sentence in the answer language.
+ * The integer-solution sentence in the answer language, a
+ * `number_constraint_integer_*` phrase of data/seed/proof-library.lino.
  * @param {{kind: string, start: bigint, end: bigint}} solutions
- * @param {boolean} russian
+ * @param {string} language
  * @returns {string}
  */
-function numberConstraintIntegerLine(solutions, russian) {
+function numberConstraintIntegerLine(solutions, language) {
   switch (solutions.kind) {
     case "unique":
-      return russian
-        ? `Если это задача про целое число, единственный ответ: ${solutions.start}.`
-        : `If this is an integer-number riddle, the unique answer is ${solutions.start}.`;
+      return proofLibraryText("number_constraint_integer_unique", language, { only: String(solutions.start) });
     case "none":
-      return russian
-        ? "Если это задача про целое число, решения нет."
-        : "If this is an integer-number riddle, there is no solution.";
+      return proofLibraryText("number_constraint_integer_none", language);
     case "range":
-      return russian
-        ? `Если это задача про целые числа, ответ не единственный: подходит любое целое от ${solutions.start} до ${solutions.end}.`
-        : `If this is an integer-number riddle, the answer is not unique: every integer from ${solutions.start} through ${solutions.end} fits.`;
-    case "multiple": {
-      const candidates = numberConstraintFormatCandidates(solutions.start, solutions.end);
-      return russian
-        ? `Если это задача про целые числа, ответ не единственный: подходят ${candidates}.`
-        : `If this is an integer-number riddle, the answer is not unique: ${candidates} all fit.`;
-    }
+      return proofLibraryText("number_constraint_integer_range", language, {
+        start: String(solutions.start),
+        end: String(solutions.end),
+      });
+    case "multiple":
+      return proofLibraryText("number_constraint_integer_multiple", language, {
+        candidates: numberConstraintFormatCandidates(solutions.start, solutions.end),
+      });
     default:
       throw new Error("unknown integer solution kind");
   }
 }
 
 /**
- * The real-domain sentence in the answer language.
+ * The real-domain sentence in the answer language. Mirrors
+ * `real_domain_line` in rust/src/number_constraints.rs.
  * @param {{lower: {value: bigint, inclusive: boolean}, upper: {value: bigint, inclusive: boolean}}} bounds
- * @param {boolean} russian
+ * @param {string} language
  * @returns {string}
  */
-function numberConstraintRealLine(bounds, russian) {
+function numberConstraintRealLine(bounds, language) {
   if (bounds.lower.value < bounds.upper.value) {
     const example = numberConstraintFormatHalf(bounds.lower.value * 2n + 1n);
-    return russian
-      ? `Если разрешены вещественные числа, ответ не единственный: например, x = ${example} тоже подходит.`
-      : `If real numbers are allowed, the answer is not unique; for example, x = ${example} also fits.`;
+    return proofLibraryText("number_constraint_real_multiple", language, { example });
   }
   if (bounds.lower.value === bounds.upper.value && bounds.lower.inclusive && bounds.upper.inclusive) {
-    return russian
-      ? `На вещественных числах тоже есть единственное решение: x = ${bounds.lower.value}.`
-      : `Over the real numbers there is also a single solution: x = ${bounds.lower.value}.`;
+    return proofLibraryText("number_constraint_real_single", language, { value: String(bounds.lower.value) });
   }
-  return russian
-    ? "На вещественных числах эти ограничения несовместимы."
-    : "Over the real numbers, these constraints are inconsistent.";
+  return proofLibraryText("number_constraint_real_inconsistent", language);
 }
 
 /**
@@ -728,15 +725,15 @@ function tryNumberConstraintReasoning(prompt, normalized, language) {
   const decisionStatement = `x ${lowerOperator} ${bounds.lower.value} and x ${upperOperator} ${bounds.upper.value} is satisfiable`;
   const formalCheck = numberConstraintFormalCheck(decisionStatement, language);
   const solutions = numberConstraintIntegerSolutions(bounds);
-  const russian = language === "ru";
-  const integerLine = numberConstraintIntegerLine(solutions, russian);
-  const realLine = numberConstraintRealLine(bounds, russian);
-  const formalization = `x ${lowerOperator} ${bounds.lower.value}, x ${upperOperator} ${bounds.upper.value}`;
-  const body = russian
-    ? `${integerLine}\n\nФормализация над целыми: x in Z, ${formalization}. Проверяемая форма для решателя: \`${statement}\`.\n\n${realLine}\n\nФормальная проверка relative-meta-logic / SMT:\n${formalCheck}`
-    : `${integerLine}\n\nInteger formalization: x in Z, ${formalization}. Solver form: \`${statement}\`.\n\n${realLine}\n\nFormal relative-meta-logic / SMT check:\n${formalCheck}`;
+  const body = proofLibraryText("number_constraint_answer", language, {
+    integer_line: numberConstraintIntegerLine(solutions, language),
+    formalization: `x ${lowerOperator} ${bounds.lower.value}, x ${upperOperator} ${bounds.upper.value}`,
+    statement: statement,
+    real_line: numberConstraintRealLine(bounds, language),
+    formal_check: formalCheck,
+  });
   // Only the disproof carries follow-up questions, so only it is compacted.
-  const content = formalCheck.includes(`${proofPresenterLabel("follow_up", language)}\n`)
+  const content = formalCheck.includes(`${proofLibraryText("follow_up_label", language)}\n`)
     ? numberConstraintCompactBody(body)
     : body;
   return {

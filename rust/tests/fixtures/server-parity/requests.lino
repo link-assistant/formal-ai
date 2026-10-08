@@ -427,6 +427,11 @@ server_parity_requests
     route conversation_learn
     method POST
     path '/v1/conversations/server-parity-dialog/learn'
+  request debug_session_disabled
+    route debug_session
+    method POST
+    path '/v1/debug/advance'
+    body '{"token":"server-parity"}'
   request gemini_models
     route gemini_models
     method GET

@@ -167,6 +167,20 @@ fn natural_language_markdown_to_html_conversion_uses_meta_language() {
     );
 
     assert_eq!(response.intent, "document_format_conversion");
+    // Every line around the converted block is a seeded response (issue #918
+    // document batch), not prose in the handler.
+    assert!(
+        response.answer.starts_with(
+            "Document format conversion via link-foundation/meta-language (meta_language).\nSource: Markdown; target: HTML.\nSupported document formats: "
+        ),
+        "{}",
+        response.answer
+    );
+    assert!(
+        response.answer.contains("\n```html\n") && response.answer.ends_with("\n```"),
+        "{}",
+        response.answer
+    );
     assert!(
         response.answer.contains(DOCUMENT_FORMAT_ENGINE),
         "conversion answer should name the meta-language engine, got: {}",

@@ -1,0 +1,18 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+#
+# The system diagrams under docs/diagrams/ (issue #538, R382) are generated
+# from live data: the handler precedence and promotion seeds, the clap CLI
+# definition and the server route manifest. A seed, CLI or route edit that
+# is committed without regenerating them leaves the published architecture
+# view describing a system that no longer exists, so this gate re-renders
+# them and fails on any byte of drift. The Rust twin is pinned to the same
+# committed parts by rust/tests/unit/system_diagrams.rs.
+ci_gate check_system_diagrams
+  stage web
+  description "The generated system diagrams in docs/diagrams/ (overview, solver handlers, CLI subcommands, HTTP routes) are byte-current against the live seed, CLI definition and route manifest."
+  run "node scripts/generate-system-diagrams.mjs --check"
+  justification "Issue #538 (R382) asked for generated, split mermaid diagrams of every entry point; a hand-maintained or stale diagram silently misdescribes routing, so the committed parts must equal what the generator renders from the live sources."

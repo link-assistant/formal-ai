@@ -30,6 +30,14 @@ fn render_proof_text(intent: &str, language: &str, values: &[(&str, &str)]) -> S
         .unwrap_or_else(|| intent.to_owned())
 }
 
+/// The satisfiability claim over `constraints` in the grammar
+/// [`attempt_decision_procedure`] reads: the constraints joined by the
+/// grammar's conjunction, then its satisfiability suffix.
+#[must_use]
+pub fn satisfiability_claim(constraints: &[String]) -> String {
+    linear::satisfiability_claim(constraints)
+}
+
 /// Try to discharge a claim with an in-process decision procedure.
 #[must_use]
 pub fn attempt_decision_procedure(claim: &str, language: &str) -> Option<ProofOutcome> {

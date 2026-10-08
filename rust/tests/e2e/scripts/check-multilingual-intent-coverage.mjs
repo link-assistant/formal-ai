@@ -370,8 +370,8 @@ function parseContextRecords() {
 
 function parseFeatureCapabilitySlugs() {
   return [
-    ...readRepoFile('rust/src/solver_handlers/feature_capability.rs').matchAll(
-      /slug:\s*"([^"]+)"/g,
+    ...readRepoFile('data/seed/feature-capabilities.lino').matchAll(
+      /^  feature feature_capability_(\S+)$/gm,
     ),
   ].map((match) => match[1]);
 }

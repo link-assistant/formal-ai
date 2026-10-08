@@ -222,6 +222,9 @@ pub(crate) fn finalize_answer(answer: &mut crate::engine::SymbolicAnswer, log: &
             .evidence_links
             .push(format!("derivation:persistence_failed:{error}")),
     }
+    // Issue #667 (R383): under `serve --debug-session` with stepping on, the
+    // finished turn is held here and its stages handed out one per advance.
+    crate::server::gate_turn(&answer.thinking_steps);
 }
 
 impl Derivation {

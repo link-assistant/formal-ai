@@ -109,14 +109,14 @@ use crate::calculation::{
     interpretation_statements,
 };
 use crate::engine::{
-    ExecutionStatus, SymbolicAnswer, answer_links_notation, hello_world_program_by_alias, stable_id,
+    SymbolicAnswer, answer_links_notation, hello_world_program_by_alias, stable_id,
 };
 use crate::event_log::{EventLog, build_evidence_links};
 use crate::solver_helpers::{
-    build_sorting_algorithm_answer, detect_algorithm_language, detect_program_languages,
-    extract_backticked, extract_javascript_program, extract_quoted_phrase,
-    format_write_script_execution, infer_program_languages_from_code, infer_source_from_prompt,
-    is_write_script_request, normalize_code_meaning, normalize_meaning, translate_program,
+    detect_program_languages, extract_backticked, extract_javascript_program,
+    extract_quoted_phrase, format_write_script_execution, infer_program_languages_from_code,
+    infer_source_from_prompt, is_write_script_request, normalize_code_meaning, normalize_meaning,
+    translate_program,
 };
 use crate::translation::{
     detect_source_language, detect_target_language, extract_unquoted_translation_surface,
@@ -705,40 +705,6 @@ pub fn try_write_script(
             "response:write_program:hello_world:{}",
             program.language.slug
         ),
-        &body,
-        1.0,
-    ))
-}
-
-pub fn try_algorithm(prompt: &str, normalized: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
-    if !normalized.contains("algorithm")
-        && !crate::seed::operation_vocabulary()
-            .matches("sort", &crate::engine::normalize_prompt(normalized))
-    {
-        return None;
-    }
-    if !crate::seed::operation_vocabulary()
-        .matches("sort", &crate::engine::normalize_prompt(normalized))
-    {
-        log.append("algorithm:refusal", "no operation named".to_owned());
-    }
-    let with_tests = normalized.contains("test");
-    let lang_slug = detect_algorithm_language(normalized);
-    let body = build_sorting_algorithm_answer(lang_slug, with_tests);
-    let intent = format!("algorithm_sort_{lang_slug}");
-    log.append(
-        "execution_status",
-        ExecutionStatus::Unavailable.label().to_owned(),
-    );
-    log.append(
-        "execution_environment",
-        "no compile/run sandbox configured for this generated snippet".to_owned(),
-    );
-    Some(finalize_simple(
-        prompt,
-        log,
-        &intent,
-        "response:algorithm",
         &body,
         1.0,
     ))

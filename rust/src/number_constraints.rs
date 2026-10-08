@@ -10,6 +10,7 @@ use std::fmt::Write as _;
 use crate::engine::{SymbolicAnswer, normalize_prompt};
 use crate::event_log::EventLog;
 use crate::language::detect as detect_language;
+use crate::proof_engine::decision::satisfiability_claim;
 use crate::proof_engine::{
     ProofRenderConfig, attempt_proof_with_config, render_outcome_with_config,
 };
@@ -236,14 +237,12 @@ fn parse_leading_integer(text: &str) -> Option<i64> {
     trimmed[..end].parse().ok()
 }
 
+/// The interval as a claim in the linear decision procedure's grammar.
 fn formal_statement(bounds: IntervalBounds) -> String {
-    format!(
-        "x {} {} and x {} {} is satisfiable",
-        bounds.lower.lower_operator(),
-        bounds.lower.value,
-        bounds.upper.upper_operator(),
-        bounds.upper.value
-    )
+    satisfiability_claim(&[
+        format!("x {} {}", bounds.lower.lower_operator(), bounds.lower.value),
+        format!("x {} {}", bounds.upper.upper_operator(), bounds.upper.value),
+    ])
 }
 
 enum IntegerSolutions {
@@ -279,6 +278,9 @@ fn integer_solutions(bounds: IntervalBounds) -> IntegerSolutions {
     IntegerSolutions::Multiple((start..=end).collect())
 }
 
+/// The interval answer in `language`: the integer reading, the formalization,
+/// the real-number reading and the rendered formal check, every sentence a
+/// `number_constraint_*` phrase of `data/seed/proof-library.lino`.
 fn render_interval_answer(
     language: &str,
     bounds: IntervalBounds,
@@ -286,109 +288,62 @@ fn render_interval_answer(
     statement: &str,
     formal_check: &str,
 ) -> String {
-    match language {
-        "ru" => render_interval_answer_ru(bounds, integer_solutions, statement, formal_check),
-        _ => render_interval_answer_en(bounds, integer_solutions, statement, formal_check),
-    }
-}
-
-fn render_interval_answer_ru(
-    bounds: IntervalBounds,
-    integer_solutions: &IntegerSolutions,
-    statement: &str,
-    formal_check: &str,
-) -> String {
+    let library = seed::proof_library();
     let integer_line = match integer_solutions {
-        IntegerSolutions::Unique(only) => {
-            format!("Если это задача про целое число, единственный ответ: {only}.")
-        }
-        IntegerSolutions::None => String::from("Если это задача про целое число, решения нет."),
-        IntegerSolutions::Range { start, end } => format!(
-            "Если это задача про целые числа, ответ не единственный: подходит любое целое от {start} до {end}."
+        IntegerSolutions::Unique(only) => library.text(
+            "number_constraint_integer_unique",
+            language,
+            &[("only", &only.to_string())],
         ),
-        IntegerSolutions::Multiple(candidates) => format!(
-            "Если это задача про целые числа, ответ не единственный: подходят {}.",
-            format_candidates(candidates)
+        IntegerSolutions::None => library.text("number_constraint_integer_none", language, &[]),
+        IntegerSolutions::Range { start, end } => library.text(
+            "number_constraint_integer_range",
+            language,
+            &[("start", &start.to_string()), ("end", &end.to_string())],
+        ),
+        IntegerSolutions::Multiple(candidates) => library.text(
+            "number_constraint_integer_multiple",
+            language,
+            &[("candidates", &format_candidates(candidates))],
         ),
     };
-    let real_line = real_domain_line_ru(bounds);
-    format!(
-        "{integer_line}\n\n\
-         Формализация над целыми: x in Z, x {} {}, x {} {}. \
-         Проверяемая форма для решателя: `{statement}`.\n\n\
-         {real_line}\n\n\
-         Формальная проверка relative-meta-logic / SMT:\n{formal_check}",
+    let real_line = real_domain_line(bounds, language);
+    let formalization = format!(
+        "x {} {}, x {} {}",
         bounds.lower.lower_operator(),
         bounds.lower.value,
         bounds.upper.upper_operator(),
         bounds.upper.value
+    );
+    library.text(
+        "number_constraint_answer",
+        language,
+        &[
+            ("integer_line", &integer_line),
+            ("formalization", &formalization),
+            ("statement", statement),
+            ("real_line", &real_line),
+            ("formal_check", formal_check),
+        ],
     )
 }
 
-fn render_interval_answer_en(
-    bounds: IntervalBounds,
-    integer_solutions: &IntegerSolutions,
-    statement: &str,
-    formal_check: &str,
-) -> String {
-    let integer_line = match integer_solutions {
-        IntegerSolutions::Unique(only) => {
-            format!("If this is an integer-number riddle, the unique answer is {only}.")
-        }
-        IntegerSolutions::None => {
-            String::from("If this is an integer-number riddle, there is no solution.")
-        }
-        IntegerSolutions::Range { start, end } => format!(
-            "If this is an integer-number riddle, the answer is not unique: every integer from {start} through {end} fits."
-        ),
-        IntegerSolutions::Multiple(candidates) => format!(
-            "If this is an integer-number riddle, the answer is not unique: {} all fit.",
-            format_candidates(candidates)
-        ),
-    };
-    let real_line = real_domain_line_en(bounds);
-    format!(
-        "{integer_line}\n\n\
-         Integer formalization: x in Z, x {} {}, x {} {}. \
-         Solver form: `{statement}`.\n\n\
-         {real_line}\n\n\
-         Formal relative-meta-logic / SMT check:\n{formal_check}",
-        bounds.lower.lower_operator(),
-        bounds.lower.value,
-        bounds.upper.upper_operator(),
-        bounds.upper.value
-    )
-}
-
-fn real_domain_line_ru(bounds: IntervalBounds) -> String {
+fn real_domain_line(bounds: IntervalBounds, language: &str) -> String {
+    let library = seed::proof_library();
     if has_multiple_real_solutions(bounds) {
-        format!(
-            "Если разрешены вещественные числа, ответ не единственный: например, x = {} тоже подходит.",
-            real_example(bounds)
+        library.text(
+            "number_constraint_real_multiple",
+            language,
+            &[("example", &real_example(bounds))],
         )
     } else if has_single_real_solution(bounds) {
-        format!(
-            "На вещественных числах тоже есть единственное решение: x = {}.",
-            bounds.lower.value
+        library.text(
+            "number_constraint_real_single",
+            language,
+            &[("value", &bounds.lower.value.to_string())],
         )
     } else {
-        String::from("На вещественных числах эти ограничения несовместимы.")
-    }
-}
-
-fn real_domain_line_en(bounds: IntervalBounds) -> String {
-    if has_multiple_real_solutions(bounds) {
-        format!(
-            "If real numbers are allowed, the answer is not unique; for example, x = {} also fits.",
-            real_example(bounds)
-        )
-    } else if has_single_real_solution(bounds) {
-        format!(
-            "Over the real numbers there is also a single solution: x = {}.",
-            bounds.lower.value
-        )
-    } else {
-        String::from("Over the real numbers, these constraints are inconsistent.")
+        library.text("number_constraint_real_inconsistent", language, &[])
     }
 }
 

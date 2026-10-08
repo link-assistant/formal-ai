@@ -128,6 +128,13 @@ server_routes
     path "/api/formal-ai/v1/conversations/{dialog_id}/learn"
     auth bearer
     example "/v1/conversations/server-parity-dialog/learn"
+  route debug_session
+    method POST
+    path "/v1/debug/{action}"
+    param action
+      pattern "session|pause|advance|release"
+    auth bearer
+    example "/v1/debug/session"
   route gemini_models
     method GET
     path "/api/gemini/v1beta/models"

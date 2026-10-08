@@ -41,6 +41,8 @@ meanings
       surface
         text "fetch …"
       surface
+        text "get …"
+      surface
         text "fetch url …"
       surface
         text "http fetch …"
@@ -263,8 +265,6 @@ meanings
         text "view …"
       surface
         text "see …"
-      surface
-        text "get …"
       surface
         text "navigate to"
       surface

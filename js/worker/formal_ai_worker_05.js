@@ -388,7 +388,7 @@ async function tryTranslation(prompt, normalized) {
     wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ["en", "ru", "hi", "zh"])
       .some((stem) => normalized.includes(stem));
   const isTranslationRequest = headInitialCommand || headFinalCommand || sourceFirstCommand;
-  if (!isTranslationRequest) return null;
+  if (!isTranslationRequest || (!targetHint && tryUnitConversion(prompt, normalized, "en"))) return null; // a quantity between two units is a conversion (#1175 p324)
   if (formalStatementTranslation) return formalStatementTranslation;
   if (proofTranslation) return proofTranslation;
   // Issue #216: fall back to an unquoted surface (`translate apple to

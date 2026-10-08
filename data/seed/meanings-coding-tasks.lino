@@ -307,6 +307,112 @@ meanings
         text borrar
       surface
         text quita
+  coding_declaration
+    defined-by code
+    role coding_declaration_noun
+    precondition "a removal request names the functions it removes by name, with no quoted text"
+    effect "the request's names are read as functions the file declares, each removed whole with the comments and attributes directly above it"
+    unit "not applicable"
+    example "delete the function parse_header from util.rs"
+    lexeme en
+      surface
+        text "function"
+      surface
+        text "functions"
+      surface
+        text "method"
+      surface
+        text "methods"
+    lexeme ru
+      surface
+        text "функцию"
+      surface
+        text "функции"
+      surface
+        text "функций"
+      surface
+        text "метод"
+      surface
+        text "методы"
+    lexeme hi
+      surface
+        text "फ़ंक्शन"
+      surface
+        text "फंक्शन"
+    lexeme zh
+      surface
+        text "函数"
+      surface
+        text "方法"
+    lexeme es
+      surface
+        text "función"
+      surface
+        text "funciones"
+  # A programming-language keyword is the same word whatever language the
+  # request is written in, so every lexeme lists the same keywords.
+  function_declaration
+    defined-by code
+    role function_declaration_keyword
+    precondition "a source line declares a function"
+    effect "the keyword right before a name followed by its parameter list marks the line as that function's declaration"
+    unit "not applicable"
+    example "fn in fn parse_header(line: &str)"
+    lexeme en
+      surface
+        text "function"
+      surface
+        text "fn"
+      surface
+        text "def"
+      surface
+        text "func"
+      surface
+        text "fun"
+    lexeme ru
+      surface
+        text "function"
+      surface
+        text "fn"
+      surface
+        text "def"
+      surface
+        text "func"
+      surface
+        text "fun"
+    lexeme hi
+      surface
+        text "function"
+      surface
+        text "fn"
+      surface
+        text "def"
+      surface
+        text "func"
+      surface
+        text "fun"
+    lexeme zh
+      surface
+        text "function"
+      surface
+        text "fn"
+      surface
+        text "def"
+      surface
+        text "func"
+      surface
+        text "fun"
+    lexeme es
+      surface
+        text "function"
+      surface
+        text "fn"
+      surface
+        text "def"
+      surface
+        text "func"
+      surface
+        text "fun"
   setting
     defined-by concept
     role config_value_lead
@@ -319,20 +425,34 @@ meanings
         text "value of"
       surface
         text setting
+      surface
+        text set
     lexeme ru
       surface
         text значение
       surface
         text настройку
+      surface
+        text установи
+      surface
+        text задай
     lexeme hi
       surface
         text मान
+      surface
+        text "सेट करो"
     lexeme zh
       surface
         text 值
+      surface
+        text 设置
+      surface
+        text 设为
     lexeme es
       surface
         text "valor de"
+      surface
+        text establece
   coding_artifact_name
     defined-by relation
     role coding_name_slot

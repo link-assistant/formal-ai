@@ -26,6 +26,7 @@ total_closure_schema
   declaration_identity_head option
   declaration_identity_head package
   declaration_identity_head pattern
+  declaration_identity_head plan
   declaration_identity_head primitive
   declaration_identity_head promotion
   declaration_identity_head response
@@ -38,6 +39,7 @@ total_closure_schema
   declaration_identity_head surface
   declaration_identity_head task
   declaration_identity_head template
+  declaration_identity_head theorem
   declaration_identity_head timeline
   declaration_identity_head token_class
   declaration_identity_head tool

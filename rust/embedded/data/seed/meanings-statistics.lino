@@ -247,6 +247,10 @@ meanings
         text "paying with"
       surface
         text pays
+      surface
+        text "pay"
+      surface
+        text "paid"
     lexeme ru
       surface
         text платит

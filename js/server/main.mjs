@@ -11,11 +11,14 @@
 // derivation record a served answer persisted (js/server/derivation-store.mjs).
 // `memory upgrade-status [--path P] [--format json]` and `memory migrate
 // [--path P] [--backup B] [--receipt R] [--format json]` are the explicit
-// persisted-memory upgrade (js/server/memory-upgrade.mjs).
+// persisted-memory upgrade (js/server/memory-upgrade.mjs). `--debug-session`
+// (loopback binds only) holds each solved turn for step-through debugging
+// (js/server/debug-session.mjs, docs/vscode/debugger.md).
 
 import { pathToFileURL } from 'node:url';
 
 import { runExplain } from './derivation-store.mjs';
+import { DebugSession, debugSessionBanner, debugTokenFrom, isLoopbackHost } from './debug-session.mjs';
 import { startCoreDreaming } from './dreaming-runtime.mjs';
 import { createServer } from './http.mjs';
 import { createMemory, memoryPath } from './memory.mjs';
@@ -46,6 +49,7 @@ export function parseArgs(argv, env = process.env) {
     host: env.FORMAL_AI_HOST || '127.0.0.1',
     port: Number.parseInt(env.FORMAL_AI_PORT || '8080', 10),
     agentMode: flagEnabled(env.FORMAL_AI_AGENT_MODE),
+    debugSession: false,
     unsupported: null,
   };
   for (let index = 0; index < argv.length; index += 1) {
@@ -55,6 +59,7 @@ export function parseArgs(argv, env = process.env) {
     if (name === '--host') options.host = value();
     else if (name === '--port') options.port = Number.parseInt(value(), 10);
     else if (name === '--agent-mode') options.agentMode = true;
+    else if (name === '--debug-session') options.debugSession = true;
     else if (name === 'serve' && index === 0) continue;
     else options.unsupported = arg;
   }
@@ -65,7 +70,8 @@ export function parseArgs(argv, env = process.env) {
  * Start a server; resolves once it listens.
  * @returns {Promise<{server: import('node:http').Server, ctx: object, url: string}>}
  */
-export async function startServer({ host = '127.0.0.1', port = 0, agentMode = false, env = process.env, worker } = {}) {
+export async function startServer({ host = '127.0.0.1', port = 0, agentMode = false, debugSession = false, env = process.env, worker } = {}) {
+  if (debugSession && !isLoopbackHost(host)) throw new Error(`debug_session_requires_loopback:${host}`);
   const ctx = {
     // The server can start processes, so the formalization task's prover
     // seam runs `lean`/`coqc` when PATH has them (js/server/prover-host.mjs).
@@ -73,6 +79,7 @@ export async function startServer({ host = '127.0.0.1', port = 0, agentMode = fa
     memory: createMemory(env),
     agentMode,
     bearerToken: bearerTokenFromEnv(env),
+    debugSession: debugSession ? new DebugSession(debugTokenFrom(env)) : null,
     env,
   };
   await ctx.worker.boot();
@@ -106,13 +113,19 @@ async function main(argv) {
     process.stderr.write(`unsupported argument: ${options.unsupported}\n`);
     return 2;
   }
+  // `serve --debug-session` binds loopback only (issue #667, R383).
+  if (options.debugSession && !isLoopbackHost(options.host)) {
+    process.stderr.write(`debug_session_requires_loopback:${options.host}\n`);
+    return 2;
+  }
   process.stderr.write(`${serverMessage('server_shared_memory', { path: memoryPath(process.env) })}\n`);
   // `serve()` starts the default-on dreaming worker before accepting
   // connections (rust/src/server/transport.rs); the embeddable `startServer`
   // leaves it to the caller.
   startCoreDreaming({ env: process.env, memoryPath: memoryPath(process.env) });
-  const { url } = await startServer(options);
+  const { url, ctx } = await startServer(options);
   process.stderr.write(`${serverMessage('server_listening', { url })}\n`);
+  if (ctx.debugSession) process.stderr.write(`${debugSessionBanner(ctx.debugSession)}\n`);
   return null;
 }
 

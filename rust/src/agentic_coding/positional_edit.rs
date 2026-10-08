@@ -17,8 +17,20 @@ use crate::seed;
 /// The bytes a quoted or clause-led span of edit prose stands for.
 pub(super) fn literal_text(span: &str) -> Option<String> {
     quoted_verbatim(span)
+        .or_else(|| described_literal(span))
         .or_else(|| clean_content(span))
         .map(|text| unescape_prose_newlines(&text))
+}
+
+/// `the heading '# Title'`: one quoted literal led only by the words that say
+/// what it is stands for the literal.
+fn described_literal(span: &str) -> Option<String> {
+    let [segment]: [_; 1] = quoted_segment_spans(span).try_into().ok()?;
+    let described = span[segment.end..].trim().is_empty()
+        && span[..segment.start]
+            .chars()
+            .all(|character| character.is_alphabetic() || character.is_whitespace());
+    described.then_some(segment.text)
 }
 
 /// An additive edit: "add a line X directly after the line Y in F", "insert X
@@ -27,42 +39,95 @@ pub(super) fn literal_text(span: &str) -> Option<String> {
 /// exact-match contract holds without a separate insert primitive.
 pub(super) fn compose_positional_insert(request: &str) -> Option<(String, String, String)> {
     let lexicon = seed::lexicon();
-    let normalized = crate::engine::normalize_prompt(request);
-    let after = lexicon.mentions_role(seed::ROLE_FILE_EDIT_POSITION_AFTER, &normalized);
-    let before = lexicon.mentions_role(seed::ROLE_FILE_EDIT_POSITION_BEFORE, &normalized);
+    // `… after the line 'x':` followed by lines: the first line is the request
+    // and the lines under it are the text inserted, whatever they quote.
+    let block = introduced_block(request);
+    let sentence = block.as_ref().map_or(request, |(head, _)| *head);
+    let normalized = crate::engine::normalize_prompt(sentence);
+    // The position is the request's, not the payload's: a cue inside a quoted
+    // literal ("Insert the line «… before …» after …") is text being inserted.
+    let outside = crate::engine::normalize_prompt(
+        &quoted_segment_spans(sentence)
+            .iter()
+            .rev()
+            .fold(sentence.to_owned(), |text, segment| {
+                [&text[..segment.start], " ", &text[segment.end..]].concat()
+            }),
+    );
+    let after = lexicon.mentions_role(seed::ROLE_FILE_EDIT_POSITION_AFTER, &outside);
+    let before = lexicon.mentions_role(seed::ROLE_FILE_EDIT_POSITION_BEFORE, &outside);
     if after == before || !lexicon.mentions_role(seed::ROLE_CODING_MEMBER_ADD_ACTION, &normalized) {
         return None;
     }
-    let literals = quoted_literals(request);
-    let [first, second] = literals.as_slice() else {
-        return None;
-    };
-    let target = unquoted_path_tokens(request)
+    let literals = quoted_literals(sentence);
+    let target = unquoted_path_tokens(sentence)
         .iter()
         .map(|token| clean_path_token(token.text))
         .find(|candidate| looks_like_file_path(candidate) && safe_relative_path(candidate))?
         .to_owned();
-    // The anchor is the literal the position cue governs: the one after it in
-    // a prepositional language ("after the line "on:""), the one before it in
-    // a postpositional language (""on:" के बाद", ""on:" 行后"). Which side a
-    // language uses is a fact of the language, recorded in its ledger entry.
-    let role = if after {
-        seed::ROLE_FILE_EDIT_POSITION_AFTER
-    } else {
-        seed::ROLE_FILE_EDIT_POSITION_BEFORE
+    let (inserted, anchor) = match (block, literals.as_slice()) {
+        (Some((_, text)), [anchor]) => (text, unescape_prose_newlines(&anchor.text)),
+        (None, [first, second]) => {
+            // The anchor is the literal the position cue governs: the one
+            // after it in a prepositional language ("after the line "on:""),
+            // the one before it in a postpositional language (""on:" के बाद",
+            // ""on:" 行后"). Which side a language uses is a fact of the
+            // language, recorded in its ledger entry.
+            let role = if after {
+                seed::ROLE_FILE_EDIT_POSITION_AFTER
+            } else {
+                seed::ROLE_FILE_EDIT_POSITION_BEFORE
+            };
+            let (inserted, anchor) = match cue_governed_literal(request, role, first, second)? {
+                1 => (first, second),
+                _ => (second, first),
+            };
+            (
+                unescape_prose_newlines(&inserted.text),
+                unescape_prose_newlines(&anchor.text),
+            )
+        }
+        _ => return None,
     };
-    let (inserted, anchor) = match cue_governed_literal(request, role, first, second)? {
-        1 => (first, second),
-        _ => (second, first),
-    };
-    let inserted = unescape_prose_newlines(&inserted.text);
-    let anchor = unescape_prose_newlines(&anchor.text);
     let new = if after {
         [anchor.as_str(), inserted.as_str()].join("\n")
     } else {
         [inserted.as_str(), anchor.as_str()].join("\n")
     };
     Some((target, anchor, new))
+}
+
+/// A request whose first line ends in a colon and is followed by lines: that
+/// first line, and the lines with their shared indentation removed (one quoted
+/// literal stands for itself).
+fn introduced_block(request: &str) -> Option<(&str, String)> {
+    let (head, rest) = request.split_once('\n')?;
+    let head = head.trim_end();
+    if !head.ends_with(':') {
+        return None;
+    }
+    let mut lines: Vec<&str> = rest.split('\n').map(str::trim_end).collect();
+    while lines.first().is_some_and(|line| line.is_empty()) {
+        lines.remove(0);
+    }
+    while lines.last().is_some_and(|line| line.is_empty()) {
+        lines.pop();
+    }
+    let indent_of = |line: &str| line.len() - line.trim_start().len();
+    let shared = lines
+        .iter()
+        .copied()
+        .filter(|line| !line.is_empty())
+        .map(indent_of)
+        .min()?;
+    let text = lines
+        .iter()
+        .copied()
+        .map(|line| &line[shared.min(indent_of(line))..])
+        .collect::<Vec<_>>()
+        .join("\n");
+    let text = quoted_verbatim(&text).unwrap_or(text);
+    Some((head, text))
 }
 
 /// One quoted span of a request and where it sits.
@@ -107,6 +172,14 @@ fn cue_governed_literal(
     second: &QuotedLiteral,
 ) -> Option<usize> {
     let lowered = request.to_lowercase();
+    // A cue word inside a quoted literal is payload ("Insert the line «… before
+    // …» after …"), never the position the request asks for.
+    let literals = quoted_literals(request);
+    let inside_literal = |start: usize| {
+        literals
+            .iter()
+            .any(|literal| start >= literal.start && start < literal.end)
+    };
     let mut occurrences: Vec<(usize, usize, bool)> = Vec::new();
     for meaning in seed::lexicon().meanings_with_role(role) {
         for lexeme in &meaning.lexemes {
@@ -116,6 +189,7 @@ fn cue_governed_literal(
                 occurrences.extend(
                     lowered
                         .match_indices(surface.as_str())
+                        .filter(|(start, _)| !inside_literal(*start))
                         .map(|(start, matched)| (start, start + matched.len(), postpositional)),
                 );
             }

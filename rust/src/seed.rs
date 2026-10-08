@@ -44,6 +44,7 @@ pub(crate) mod parser;
 mod personas;
 mod planner_precedence;
 mod projects;
+mod proof_library;
 mod proof_programs;
 mod release_timelines;
 mod reports;
@@ -130,6 +131,10 @@ pub use planner_precedence::{
 };
 pub use projects::{
     LocalizedProject, ProjectRecord, ProjectStatement, ProjectsRegistry, projects_registry,
+};
+pub use proof_library::{
+    LocalizedText, ProofLibrary, ProofLibraryEntry, ProofLibraryStep, ProofTemplate,
+    parse_proof_library, proof_library,
 };
 pub use proof_programs::{ProofLanguageTemplates, ProofProgramTemplates, proof_program_templates};
 pub use release_timelines::{

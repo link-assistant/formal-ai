@@ -1,6 +1,7 @@
 //! Workspace changes whose new bytes are computed from the file they change
 //! (PR #1188 dogfooding): text added at one end of a file, quoted text
-//! removed from it, a configuration setting assigned a new value.
+//! removed from it, a configuration setting assigned a new value, a named
+//! function removed whole.
 //!
 //! Each is read → compute → smallest unique edit (or the whole file) → digest
 //! check → the seeded sentence that states the change, the same state machine
@@ -43,6 +44,9 @@ pub(super) enum Computation {
     Setting { key: String, value: String },
     /// Every whole-word `word` becomes its discovered `correction`.
     TypoFix { word: String, correction: String },
+    /// The functions the file declares under these names go whole, with the
+    /// comment and attribute lines directly above them.
+    DeclarationRemoval { names: Vec<String> },
 }
 
 /// A computed change: the file, how its bytes are computed, and the seed
@@ -59,6 +63,7 @@ pub(super) struct ComputedChange {
 pub(super) fn grounded_computed_change(task: &str) -> Option<ComputedChange> {
     grounded_end_insertion(task)
         .or_else(|| grounded_removal(task))
+        .or_else(|| grounded_declaration_removal(task))
         .or_else(|| grounded_setting(task))
         .or_else(|| grounded_typo_fix(task))
 }
@@ -230,6 +235,51 @@ fn grounded_removal(task: &str) -> Option<ComputedChange> {
     })
 }
 
+/// `Delete the functions a and b from util.rs`: the seeded
+/// `coding_text_remove_action` and `coding_declaration_noun` with no add
+/// action, no quoted text and one named path. The names are the request's
+/// identifiers; [`removed_declarations`] keeps those the file itself declares
+/// as functions (mirrors `groundedDeclarationRemoval`, PR #1188 dogfooding).
+fn grounded_declaration_removal(task: &str) -> Option<ComputedChange> {
+    if !mentions("coding_text_remove_action", task)
+        || mentions("coding_member_add_action", task)
+        || !mentions("coding_declaration_noun", task)
+        || !quoted_segment_spans(task).is_empty()
+    {
+        return None;
+    }
+    let mut paths: Vec<String> = super::positional_edit::unquoted_path_tokens(task)
+        .iter()
+        .map(|token| clean_path_token(token.text).to_owned())
+        .filter(|path| looks_like_file_path(path) && safe_relative_path(path))
+        .collect();
+    paths.sort();
+    paths.dedup();
+    let [target] = paths.as_slice() else {
+        return None;
+    };
+    let mut names: Vec<String> = Vec::new();
+    for token in tokens(task) {
+        if clean_path_token(token.text) == target {
+            continue;
+        }
+        for name in identifier_tokens(token.text) {
+            if !names.iter().any(|known| known == name) {
+                names.push(name.to_owned());
+            }
+        }
+    }
+    if names.is_empty() {
+        return None;
+    }
+    Some(ComputedChange {
+        target: target.clone(),
+        intent: "coding_text_remove",
+        slots: vec![("{old}", names.join("`, `"))],
+        computation: Computation::DeclarationRemoval { names },
+    })
+}
+
 /// `Change the value of "debug" to true in config.json`: the seeded
 /// `config_value_lead` names a setting; the edit request's old clause names its
 /// key (quoted, or its last identifier) and the new clause its value.
@@ -278,6 +328,9 @@ impl ComputedChange {
                         .map(|execution| execution.output)
                 })
                 .flatten(),
+            Computation::DeclarationRemoval { names } => (!missing)
+                .then(|| removed_declarations(source, names).map(|(updated, _)| updated))
+                .flatten(),
         }
     }
 
@@ -289,7 +342,8 @@ impl ComputedChange {
             Computation::Removal { .. }
             | Computation::LineRemoval { .. }
             | Computation::Setting { .. }
-            | Computation::TypoFix { .. } => changed_lines_edit(source, updated),
+            | Computation::TypoFix { .. }
+            | Computation::DeclarationRemoval { .. } => changed_lines_edit(source, updated),
         }
     }
 }
@@ -365,8 +419,161 @@ impl ComputedChange {
                 );
             }
         }
+        if let Computation::DeclarationRemoval { names } = &self.computation
+            && let Some((_, declared)) = removed_declarations(source, names)
+        {
+            return (self.intent, vec![("{old}", declared.join("`, `"))]);
+        }
         (self.intent, self.slots.clone())
     }
+}
+
+/// `source` without the function each of `names` declares, and the names that
+/// were declared; `None` when none is. A name declared zero or several times
+/// is left alone; a block left between two blank lines takes one of them with
+/// it, and a block that ended the file the blank line before it (mirrors
+/// `removedDeclarations`).
+fn removed_declarations(source: &str, names: &[String]) -> Option<(String, Vec<String>)> {
+    let lines: Vec<&str> = source.split_inclusive('\n').collect();
+    let keywords = seed::lexicon().words_for_role("function_declaration_keyword");
+    let mut removed = std::collections::BTreeSet::new();
+    let mut declared = Vec::new();
+    for name in names {
+        let headers: Vec<usize> = lines
+            .iter()
+            .enumerate()
+            .filter(|(_, line)| declares_function(line, name, &keywords))
+            .map(|(index, _)| index)
+            .collect();
+        let [header] = headers.as_slice() else {
+            continue;
+        };
+        let Some((start, end)) = declaration_span(&lines, *header) else {
+            continue;
+        };
+        removed.extend(start..=end);
+        declared.push(name.clone());
+    }
+    if declared.is_empty() {
+        return None;
+    }
+    let blank = |index: usize| lines.get(index).is_some_and(|line| line.trim().is_empty());
+    for index in removed.clone() {
+        let next = index + 1;
+        if removed.contains(&next) {
+            continue;
+        }
+        let mut start = index;
+        while start > 0 && removed.contains(&(start - 1)) {
+            start -= 1;
+        }
+        if next == lines.len() {
+            // A block that ended the file takes the blank line before it.
+            if start > 0 && blank(start - 1) {
+                removed.insert(start - 1);
+            }
+        } else if blank(next) && (start == 0 || blank(start - 1)) {
+            removed.insert(next);
+        }
+    }
+    let kept: String = lines
+        .iter()
+        .enumerate()
+        .filter(|(index, _)| !removed.contains(index))
+        .map(|(_, line)| *line)
+        .collect();
+    Some((kept, declared))
+}
+
+/// A seeded `function_declaration_keyword`, then `name`, then `(` or `<`
+/// (mirrors `declaresFunction`). The line is read as identifier runs and
+/// single other characters, so `fn name (` and `function name<T>(` both count.
+fn declares_function(line: &str, name: &str, keywords: &[String]) -> bool {
+    let is_identifier =
+        |character: char| character.is_ascii_alphanumeric() || "_$".contains(character);
+    let mut words: Vec<&str> = Vec::new();
+    let mut run: Option<usize> = None;
+    for (index, character) in line.char_indices() {
+        if is_identifier(character) {
+            if run.is_none() {
+                run = Some(index);
+            }
+            continue;
+        }
+        if let Some(from) = run.take() {
+            words.push(&line[from..index]);
+        }
+        words.push(&line[index..index + character.len_utf8()]);
+    }
+    if let Some(from) = run {
+        words.push(&line[from..]);
+    }
+    let skip_blank = |mut at: usize| {
+        while words.get(at).is_some_and(|word| word.trim().is_empty()) {
+            at += 1;
+        }
+        at
+    };
+    words.iter().enumerate().any(|(index, word)| {
+        if !keywords.iter().any(|keyword| keyword == word) {
+            return false;
+        }
+        let at = skip_blank(index + 1);
+        if words.get(at) != Some(&name) {
+            return false;
+        }
+        matches!(words.get(skip_blank(at + 1)), Some(&("(" | "<")))
+    })
+}
+
+/// The first and last line of the declaration whose header is line `header`,
+/// with the comment and attribute lines directly above it (mirrors
+/// `declarationSpan`). A braced body ends at the first later line that closes
+/// at the header's indentation; an indented body (a header ending in `:`) at
+/// the last line indented deeper.
+fn declaration_span(lines: &[&str], header: usize) -> Option<(usize, usize)> {
+    let indent = |line: &str| line.len() - line.trim_start_matches([' ', '\t']).len();
+    let header_line = bare_line(lines[header]);
+    let depth = indent(header_line);
+    let closing = header_line.trim_end();
+    let end = if closing.ends_with(['}', ';']) {
+        header
+    } else if closing.ends_with(':') {
+        let mut end = header;
+        for (index, line) in lines.iter().copied().enumerate().skip(header + 1) {
+            if line.trim().is_empty() {
+                continue;
+            }
+            if indent(line) <= depth {
+                break;
+            }
+            end = index;
+        }
+        end
+    } else {
+        (header + 1..lines.len())
+            .find(|index| indent(lines[*index]) == depth && lines[*index].trim().starts_with('}'))?
+    };
+    let opens_comment = |line: &str| line.trim().starts_with("/*");
+    let mut start = header;
+    while start > 0 {
+        let above = lines[start - 1].trim();
+        if above.ends_with("*/") {
+            let mut open = start - 1;
+            while open > 0 && !opens_comment(lines[open]) {
+                open -= 1;
+            }
+            if !opens_comment(lines[open]) {
+                break;
+            }
+            start = open;
+        } else if ["//", "#[", "@"].iter().any(|lead| above.starts_with(lead)) {
+            start -= 1;
+        } else {
+            break;
+        }
+    }
+    Some((start, end))
 }
 
 /// A line without its `\n` or `\r\n` ending.

@@ -75,6 +75,7 @@ mod stated_request;
 pub mod statement_audit;
 mod structured_document;
 pub(crate) mod structured_edit;
+pub mod system_diagram;
 pub mod task_obligations;
 mod task_structure;
 pub mod tool_result;

@@ -15,14 +15,14 @@ js_rust_translation
   modules 128
   translated_items 243
   inferred_signatures 2
-  carried_items 2106
+  carried_items 2108
   translated_modules 78
   fully_translated_modules 1
   refused_modules 50
 module js/agentic/crate/algorithm_discovery.mjs translated 6 inferred 0 carried 40
 module js/agentic/crate/associative_persistence.mjs translated 1 inferred 0 carried 7
 module js/agentic/crate/calculation.mjs translated 0 inferred 0 carried 2
-module js/agentic/crate/capability_routing.mjs translated 7 inferred 0 carried 63
+module js/agentic/crate/capability_routing.mjs translated 7 inferred 0 carried 64
 module js/agentic/crate/change_request.mjs translated 1 inferred 0 carried 16
 module js/agentic/crate/client_contract_learning.mjs translated 0 inferred 0 carried 14
 module js/agentic/crate/coding_catalog.mjs translated 4 inferred 0 carried 28
@@ -30,7 +30,7 @@ module js/agentic/crate/coding_cjk.mjs translated 0 inferred 0 carried 1
 module js/agentic/crate/coding_program_contract.mjs translated 0 inferred 0 carried 32
 module js/agentic/crate/computer_use.mjs translated 2 inferred 0 carried 14
 module js/agentic/crate/computer_use_induction.mjs translated 4 inferred 0 carried 22
-module js/agentic/crate/computer_use_lexicon.mjs translated 5 inferred 0 carried 12
+module js/agentic/crate/computer_use_lexicon.mjs translated 5 inferred 0 carried 13
 module js/agentic/crate/computer_use_planner.mjs translated 2 inferred 0 carried 10
 module js/agentic/crate/computer_use_seed.mjs translated 2 inferred 0 carried 27
 module js/agentic/crate/computer_use_synthesis.mjs translated 2 inferred 0 carried 16
@@ -147,15 +147,15 @@ module js/agentic/crate/workspace_change_learning.mjs translated 2 inferred 0 ca
 module js/worker/formal_ai_worker_meta_composite.js translated 0 inferred 0 carried 6
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 inferred 0 carried 25
-refusal "import { … }" 403
+refusal "import { … }" 405
 refusal "JSDoc type {…}" 196
 refusal "null" 162
-refusal "type: unknown name (a sibling item or an import)" 112
+refusal "type: unknown name (a sibling item or an import)" 113
 refusal "arrow function" 96
 refusal "function value …" 94
 refusal "object without a $ tag" 77
 refusal "new expression" 74
-refusal "method call .find()" 58
+refusal "method call .find()" 57
 refusal "regular expression" 52
 refusal "method call .split()" 51
 refusal "method call .map()" 47
@@ -196,15 +196,15 @@ refusal "throw new …" 5
 refusal "Object.keys" 4
 refusal "method call .has()" 4
 refusal "syntax: unsupported template escape" 4
+refusal "syntax: unterminated string literal" 4
 refusal "top-level class statement" 4
 refusal "type: one value is used as a Uint8Array and as an array; declare the types of the function with JSDoc" 4
-refusal "type: one value is used as a string and as an array; declare the types of the function with JSDoc" 4
 refusal "JSON.stringify" 3
 refusal "Object.prototype.hasOwnProperty.call" 3
 refusal "let …" 3
 refusal "method call .repeat()" 3
 refusal "method call .toFixed()" 3
-refusal "syntax: unterminated string literal" 3
+refusal "type: one value is used as a string and as an array; declare the types of the function with JSDoc" 3
 refusal "type: one value is used as an array and as a string; declare the types of the function with JSDoc" 3
 refusal "bitwise &" 2
 refusal "call of a computed function" 2

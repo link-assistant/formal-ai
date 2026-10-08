@@ -1,9 +1,12 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=ecfc48968aa85c351fb86365ae766d6f6499da3882ba4dc2c97d38f344064b78 bytes=22348
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=bc0035ab97f259704a4e704921c611879c86f4f43241ad4428b0135aaae366ad bytes=22972
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import { … }
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import { … }
@@ -229,8 +232,8 @@ pub static QUOTE_PAIRS: std::sync::LazyLock<Vec<Vec<String>>> = std::sync::LazyL
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal null
 
-// meta-language:carried JavaScript export_statement (unsupported)
-// formal-ai:refusal method call .find()
+// meta-language:carried JavaScript export_statement (syntax)
+// formal-ai:refusal syntax: unterminated string literal
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .find()

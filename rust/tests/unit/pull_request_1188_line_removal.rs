@@ -98,3 +98,54 @@ fn without_a_line_named_quoted_text_is_removed_from_inside_its_line() {
         Some("Removed `drop me` from `t.md` and observed the result.")
     );
 }
+
+/// PR #1188 dogfooding: `Delete the functions a, b and c from f.js.` read the
+/// file and answered with the read output, because a removal had to quote its
+/// text. A removal naming functions (the seeded `coding_declaration_noun`)
+/// removes each function the file declares under one of the request's names,
+/// whole, with the comment and attribute lines directly above it. Twin of
+/// `rust/tests/web/pull-request-1188-declaration-removal.test.mjs`; `drive`
+/// names the file `t.md`, which the digest step reads back.
+const DECLARATIONS: &str = "// helpers\n\n/**\n * Double a value.\n */\nfunction double(value) {\n  return value * 2;\n}\n\n/** Keep me. */\nfunction keep(value) {\n  return double(value);\n}\n\nexport function triple(value) {\n  if (value) {\n    return value * 3;\n  }\n  return 0;\n}\n";
+
+#[test]
+fn a_named_function_goes_whole_with_its_doc_comment() {
+    let (file, answer) = drive("Delete the function double from t.md.", DECLARATIONS);
+    assert_eq!(
+        file,
+        "// helpers\n\n/** Keep me. */\nfunction keep(value) {\n  return double(value);\n}\n\nexport function triple(value) {\n  if (value) {\n    return value * 3;\n  }\n  return 0;\n}\n"
+    );
+    assert_eq!(
+        answer.as_deref(),
+        Some("Removed `double` from `t.md` and observed the result.")
+    );
+    let (file, answer) = drive(
+        "Delete the functions double, triple and missing from t.md.",
+        DECLARATIONS,
+    );
+    assert_eq!(
+        file,
+        "// helpers\n\n/** Keep me. */\nfunction keep(value) {\n  return double(value);\n}\n"
+    );
+    assert_eq!(
+        answer.as_deref(),
+        Some("Removed `double`, `triple` from `t.md` and observed the result.")
+    );
+}
+
+#[test]
+fn a_rust_function_goes_with_its_attributes_in_the_request_language() {
+    let source = "use std::fmt;\n\n/// Parse a header.\n#[must_use]\npub fn parse_header(line: &str) -> Option<&str> {\n    line.strip_prefix(\"# \")\n}\n\nfn keep() {}\n";
+    let (file, answer) = drive("Удали функцию parse_header из t.md.", source);
+    assert_eq!(file, "use std::fmt;\n\nfn keep() {}\n");
+    assert_eq!(
+        answer.as_deref(),
+        Some("Из `t.md` удалено `parse_header`, результат проверен.")
+    );
+    let (file, answer) = drive("Delete the function absent from t.md.", source);
+    assert_eq!(file, source);
+    assert!(
+        !answer.as_deref().unwrap_or_default().starts_with("Removed"),
+        "{answer:?}"
+    );
+}

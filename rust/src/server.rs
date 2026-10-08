@@ -28,8 +28,15 @@ use crate::solver::{ExecutionSurface, SolverConfig, UniversalSolver};
 use crate::telegram::handle_telegram_webhook;
 
 mod conversation_reports;
+mod debug_session;
 mod transport;
 
+pub(crate) use debug_session::gate_turn;
+pub use debug_session::{
+    DEBUG_TOKEN_ENV, DebugSession, DebugToken, active_debug_session, debug_session_banner,
+    debug_token_from_env, enable_debug_session, generate_debug_token, handle_debug_request,
+    is_loopback_host, with_connection_scope,
+};
 pub use transport::serve;
 
 static HTTP_AGENT_MODE_FORCED: AtomicBool = AtomicBool::new(false);
@@ -166,6 +173,9 @@ fn dispatch_api_request_with_auth(
     }
 
     crate::dialog_log::trace_request_if_enabled(method, normalized_path, body);
+    if let Some(response) = debug_session::handle_debug_route(method, normalized_path, body) {
+        return response;
+    }
 
     if let Some(response) = handle_dynamic_protocol_route(method, normalized_path, query, body) {
         return response;

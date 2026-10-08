@@ -29,6 +29,18 @@
 //! quoted phrase, and `network_snapshot`, the runtime's own link network), and
 //! a rule's intent may now name a captured value.
 //!
+//! A later batch moved `algorithm` into the rule document: the sort
+//! operation (a new `operation` condition over the seeded operation
+//! vocabulary) or the word "algorithm", the language a `table` block finds,
+//! and the snippets as seeded responses read by a `response` value. Its
+//! answers are byte-identical to the deleted `try_algorithm` in every prompt
+//! language.
+//!
+//! The same batch moved the document-generation plan's vocabulary into the
+//! `document_*` tables of the rule document, read by the native handler
+//! through `rule_interpreter::handler_table_row`, and its four-language plan
+//! and the conversion answer's lines into seeded responses.
+//!
 //! The English and Russian answers below are byte-identical to the ones the
 //! deleted Rust produced (`tests/unit/specification/issue_146.rs` pins the
 //! same two conversation-topic answers). The browser twin is
@@ -59,6 +71,7 @@ fn the_migrated_handlers_are_seed_rule_sets() {
         "source_conflict",
         "execution_failure",
         "network_query",
+        "algorithm",
     ] {
         assert!(
             rules().handler(name).is_some(),
@@ -490,4 +503,126 @@ fn a_topic_summary_is_the_seeded_record_in_both_runtimes() {
         assert_eq!(response.intent, "summarize_topic", "{prompt}");
         assert_eq!(response.answer, expected, "{prompt}");
     }
+}
+
+const SORT_RUST: &str = "Here is a reviewable sorting algorithm in rust:\n\n```rust\nfn sort(values: &mut Vec<i32>) {\n    values.sort();\n}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
+const SORT_GO: &str = "Here is a reviewable sorting algorithm in go:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
+const SORT_TYPESCRIPT_TESTS: &str = "Here is a reviewable sorting algorithm in typescript with a test:\n\n```typescript\nfunction sort(values) {\n  return [...values].sort((a, b) => a - b);\n}\n```\n\nTests:\n```typescript\nfunction test_sort_ascending() {\n  assert.deepEqual(sort([3,1,2]), [1,2,3]);\n}\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
+const SORT_PYTHON_TESTS: &str = "Here is a reviewable sorting algorithm in python with a test:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nTests:\n```python\ndef test_sort_ascending():\n    assert sort([3, 1, 2]) == [1, 2, 3]\n\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
+const SORT_PYTHON: &str = "Here is a reviewable sorting algorithm in python:\n\n```python\ndef sort(values):\n    return sorted(values)\n\n```\n\nExecution status: unavailable in this runtime. The snippet is intended to be copy-paste reviewable.";
+
+#[test]
+fn the_algorithm_rule_set_answers_unchanged_in_every_prompt_language() {
+    let english = FormalAiEngine.answer("Write me a sorting algorithm in Rust");
+    assert_eq!(english.intent, "algorithm_sort_rust");
+    assert_eq!(english.answer, SORT_RUST);
+    for (prompt, intent, expected) in [
+        (
+            "write a sorting algorithm in python with tests",
+            "algorithm_sort_python",
+            SORT_PYTHON_TESTS,
+        ),
+        (
+            "Напиши сортировку списка на go с тестом",
+            "algorithm_sort_go",
+            SORT_GO,
+        ),
+        (
+            "Rust में सॉर्टिंग एल्गोरिदम लिखो",
+            "algorithm_sort_rust",
+            SORT_RUST,
+        ),
+        (
+            "写一个 typescript 排序 algorithm 带 test",
+            "algorithm_sort_typescript",
+            SORT_TYPESCRIPT_TESTS,
+        ),
+    ] {
+        let mut log = EventLog::default();
+        let answer = run_handler("algorithm", prompt, &prompt.to_lowercase(), &mut log)
+            .unwrap_or_else(|| panic!("{prompt} is answered by the algorithm rules"));
+        assert_eq!(answer.intent, intent, "{prompt}");
+        assert_eq!(answer.answer, expected, "{prompt}");
+        assert!(
+            log.events()
+                .iter()
+                .any(|event| event.kind == "execution_status" && event.payload == "unavailable"),
+            "{prompt} records the execution status"
+        );
+        assert!(
+            !log.events()
+                .iter()
+                .any(|event| event.kind == "algorithm:refusal"),
+            "{prompt} names the sort operation"
+        );
+    }
+    let mut log = EventLog::default();
+    let unnamed = run_handler(
+        "algorithm",
+        "explain the algorithm",
+        "explain the algorithm",
+        &mut log,
+    )
+    .expect("an algorithm request without an operation is still answered");
+    assert_eq!(unnamed.answer, SORT_PYTHON);
+    assert!(
+        log.events()
+            .iter()
+            .any(|event| event.kind == "algorithm:refusal" && event.payload == "no operation named")
+    );
+    let mut log = EventLog::default();
+    assert!(
+        run_handler(
+            "algorithm",
+            "What is the capital of France?",
+            "what is the capital of france?",
+            &mut log
+        )
+        .is_none()
+    );
+}
+
+const PLAN_EN_PDF: &str = "This is a document-generation request in PDF format. I am a deterministic symbolic solver: I cannot research arbitrary live data on the web and I do not render binary files directly, so I decompose the task into the formal plan the universal algorithm produces (decompose → tests → drafts → composition). The document workflow uses link-foundation/meta-language for txt, Markdown, HTML, PDF, and DOCX representation/conversion, with concept profiles for headings, paragraphs, lists, strong/bold text, emphasis, and hyperlinks:\n\n1. Scope the document and its criteria: which items to include and which attributes distinguish them.\n2. Collect the list of items from verifiable sources and record links to those sources.\n3. Classify each item against the stated criteria.\n4. Assemble the document structure: title, sections, and a table or list.\n5. Export the finished structure to the requested format.\n\nConfirm the plan or refine the criteria and sources and I will continue with concrete steps. If you need facts that are not in the local Links Notation memory, name a source and I will add it as a links rule.";
+const PLAN_RU_PDF: &str = "Это запрос на создание документа в формате PDF. Я детерминированный символьный решатель: у меня нет доступа к произвольным актуальным данным в вебе и я не рендерю бинарные файлы напрямую, поэтому я раскладываю задачу на формальный план по универсальному алгоритму (декомпозиция → проверки → черновики → композиция):\n\n1. Уточнить объём и критерии документа: какие элементы включать и по каким признакам их различать.\n2. Собрать список элементов из проверяемых источников и зафиксировать ссылки на эти источники.\n3. Классифицировать каждый элемент по заявленным критериям.\n4. Собрать структуру документа: заголовок, разделы и таблицу или список.\n5. Экспортировать готовую структуру в запрошенный формат.\n\nПодтвердите план или уточните критерии и источники — и я продолжу с конкретными шагами. Если нужны фактические данные, которых нет в локальной памяти Links Notation, укажите источник, и я добавлю его как правило связей.";
+const PLAN_HI_PDF: &str = "यह एक दस्तावेज़ बनाने का अनुरोध है (PDF प्रारूप में). मैं एक नियतात्मक प्रतीकात्मक हल करने वाला हूँ: मैं वेब पर मनमाना सजीव डेटा नहीं खोज सकता और बाइनरी फ़ाइलें सीधे नहीं बनाता, इसलिए मैं इस कार्य को सार्वभौमिक एल्गोरिदम की औपचारिक योजना में विभाजित करता हूँ (विभाजन → जाँच → मसौदे → रचना):\n\n1. दस्तावेज़ और उसके मानदंड का दायरा तय करें: कौन-सी वस्तुएँ शामिल करनी हैं और कौन-से गुण उन्हें अलग करते हैं।\n2. सत्यापन योग्य स्रोतों से वस्तुओं की सूची एकत्र करें और उन स्रोतों के लिंक दर्ज करें।\n3. प्रत्येक वस्तु को बताए गए मानदंड के अनुसार वर्गीकृत करें।\n4. दस्तावेज़ की संरचना बनाएँ: शीर्षक, अनुभाग और एक तालिका या सूची।\n5. तैयार संरचना को अनुरोधित प्रारूप में निर्यात करें।\n\nयोजना की पुष्टि करें या मानदंड और स्रोत स्पष्ट करें, और मैं ठोस चरणों के साथ आगे बढ़ूँगा।";
+const PLAN_ZH_PDF: &str = "这是一个生成文档的请求（PDF 格式）。我是一个确定性的符号求解器：我无法在网络上检索任意实时数据，也不会直接渲染二进制文件，因此我把任务分解为通用算法生成的形式化计划（分解 → 校验 → 草稿 → 组合）：\n\n1. 界定文档及其标准：包含哪些条目以及用哪些属性区分它们。\n2. 从可验证的来源收集条目清单，并记录这些来源的链接。\n3. 根据所述标准对每个条目进行分类。\n4. 组装文档结构：标题、章节以及表格或列表。\n5. 将完成的结构导出为所请求的格式。\n\n请确认计划或细化标准与来源，我将继续给出具体步骤。";
+const PLAN_RU_DOCUMENT: &str = "Это запрос на создание документа. Я детерминированный символьный решатель: у меня нет доступа к произвольным актуальным данным в вебе и я не рендерю бинарные файлы напрямую, поэтому я раскладываю задачу на формальный план по универсальному алгоритму (декомпозиция → проверки → черновики → композиция):\n\n1. Уточнить объём и критерии документа: какие элементы включать и по каким признакам их различать.\n2. Собрать список элементов из проверяемых источников и зафиксировать ссылки на эти источники.\n3. Классифицировать каждый элемент по заявленным критериям.\n4. Собрать структуру документа: заголовок, разделы и таблицу или список.\n5. Экспортировать готовую структуру в запрошенный формат.\n\nПодтвердите план или уточните критерии и источники — и я продолжу с конкретными шагами. Если нужны фактические данные, которых нет в локальной памяти Links Notation, укажите источник, и я добавлю его как правило связей.";
+
+#[test]
+fn the_document_plan_renders_the_seeded_plan_in_every_prompt_language() {
+    for (prompt, expected) in [
+        (
+            "Make me a PDF document listing countries with food subsidies for low-income people.",
+            PLAN_EN_PDF,
+        ),
+        (
+            "Сделай мне пдф файл со списком стран, где есть пособия/скидки на еду для малоимущих, как в виде прямых денежных дотаций, так и в косвенной форме, например, талоны.",
+            PLAN_RU_PDF,
+        ),
+        (
+            "गरीब लोगों के लिए खाद्य सब्सिडी वाले देशों की सूची के साथ एक PDF दस्तावेज़ बनाओ।",
+            PLAN_HI_PDF,
+        ),
+        (
+            "给我做一个包含为低收入者提供食品补贴的国家列表的PDF文档。",
+            PLAN_ZH_PDF,
+        ),
+    ] {
+        let response = FormalAiEngine.answer(prompt);
+        assert_eq!(response.intent, "document_generation_plan", "{prompt}");
+        assert_eq!(response.answer, expected, "{prompt}");
+    }
+    assert!(PLAN_RU_DOCUMENT.starts_with("Это запрос на создание документа. "));
+    assert_eq!(
+        formal_ai::rule_interpreter::handler_table_row("document_format", "make me a pdf"),
+        Some("PDF")
+    );
+    assert_eq!(
+        formal_ai::rule_interpreter::handler_table_row("document_noun", "сделай отчёт"),
+        Some("document")
+    );
+    assert_eq!(
+        formal_ai::rule_interpreter::handler_table_value("document_output_fence", "TOML"),
+        Some("")
+    );
 }

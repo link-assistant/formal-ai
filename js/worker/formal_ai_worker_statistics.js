@@ -877,6 +877,33 @@ function wordProblemMarkerPosition(lowered, slug) {
 }
 
 /**
+ * Change for one item (issue #1175 p350): a payment and a price, no unit price ("I pay 20 dollars for a 13
+ * dollar book; how much change?" → 20 - 13 = 7). The payment is the first number stated after the payment
+ * marker; the price is the other. Mirrors `one_item_change` in statistics.rs.
+ */
+function tryOneItemChange(prompt, normalized, language) {
+  if (!wordProblemMentionsMarker(normalized, WORD_PROBLEM_MARKER_PAYMENT) ||
+    !wordProblemMentionsMarker(normalized, WORD_PROBLEM_MARKER_CHANGE)) return null;
+  const lowered = String(prompt || "").toLowerCase();
+  const stated = statisticsStatedNumbers(lowered);
+  const paidAt = wordProblemMarkerPosition(lowered, WORD_PROBLEM_MARKER_PAYMENT);
+  if (stated === null || stated.values.length !== 2 || paidAt === null) return null;
+  const paymentIndex = stated.positions.findIndex((position) => position >= paidAt);
+  if (paymentIndex === -1) return null;
+  const payment = stated.values[paymentIndex];
+  const price = stated.values[1 - paymentIndex];
+  const change = exactDecimalSub(payment, price);
+  if (change === null || change.mantissa < 0n) return null;
+  const derivation = `${exactDecimalRender(payment)} - ${exactDecimalRender(price)} = ${exactDecimalRender(change)}`;
+  const log = [`word_problem:price:${exactDecimalRender(price)}`, `word_problem:payment:${exactDecimalRender(payment)}`,
+    `word_problem:change:${exactDecimalRender(change)}`, `word_problem:derivation:${derivation}`];
+  const template = quantityLocalizedTemplate("word_problem_change", language);
+  const body = template === null ? derivation
+    : quantityFillTemplate(template, [["change", exactDecimalRender(change)], ["derivation", derivation]]);
+  return quantityAnswer("word_problem_change", body, log, language);
+}
+
+/**
  * Word-problem entry point (issue #1176): the price×count change and total
  * patterns. Mirrors `handle_word_problem` in statistics.rs.
  * @param {string} prompt
@@ -886,7 +913,7 @@ function wordProblemMarkerPosition(lowered, slug) {
  */
 function tryWordProblem(prompt, normalized, language) {
   if (!wordProblemMentionsMarker(normalized, WORD_PROBLEM_MARKER_UNIT_PRICE)) {
-    return tryRelationWordProblem(prompt, normalized, language);
+    return tryOneItemChange(prompt, normalized, language) || tryRelationWordProblem(prompt, normalized, language);
   }
   const lowered = String(prompt || "").toLowerCase();
   const stated = statisticsStatedNumbers(lowered);

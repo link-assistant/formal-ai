@@ -347,6 +347,13 @@ export function firstActionCueStart(toks) {
 /** Mirrors `fn clean_content`. @param {string} raw @returns {string|null} */
 export function cleanContent(raw) {
   const led = stripClauseLead(raw);
+  // The sentence's own closing mark after one quoted literal belongs to the
+  // sentence: `containing 'hello'.` writes `hello`, not `'hello'.`.
+  const closed = trim(led.replace(/[.!?\u0964\u3002\uff01\uff1f]$/u, ''));
+  const [only, ...others] = quotedSegmentSpans(closed);
+  if (closed !== led && only && others.length === 0 && only.start === 0 && only.end === closed.length) {
+    return trim(only.text) || null;
+  }
   let result = led;
   const bytes = new TextEncoder().encode(led);
   if (bytes.length >= 6 && led.startsWith('```') && led.endsWith('```')) {
@@ -403,22 +410,34 @@ export function composeEditRequest(request) {
   let fileIndex = -1;
   let target = null;
   const unquoted = new Set(unquotedPathTokens(request).map((token) => token.start));
-  for (let index = 0; index < toks.length; index += 1) {
-    if (!unquoted.has(toks[index].start)) continue;
-    const cleaned = cleanPathToken(toks[index].text);
-    const resolved = resolveCensusTarget(cleaned);
-    if (resolved === null && (!looksLikeFilePath(cleaned) || !safeRelativePath(cleaned))) continue;
-    const prevIsCue = index > 0 && (isTargetCue(index - 1) || isActionCue(index - 1));
-    const nextIsCue = index + 1 < toks.length && (isTargetCue(index + 1) || isActionCue(index + 1));
-    if (prevIsCue || nextIsCue) {
-      fileIndex = index;
-      target = resolved === null ? cleaned : resolved.module_path;
-      break;
+  // A path the request leaves unquoted names the file before a literal that
+  // is exactly a path does: in "Replace 'a' with 'data/x.lino' in f.mjs" the
+  // quoted path is the new text, and the cue after it ("in") does not make it
+  // the target.
+  const segments = quotedSegmentSpans(request);
+  const isQuoted = (token) => segments.some((segment) => token.start >= segment.start && token.end <= segment.end);
+  for (const quotedPass of [false, true]) {
+    for (let index = 0; index < toks.length; index += 1) {
+      if (!unquoted.has(toks[index].start) || isQuoted(toks[index]) !== quotedPass) continue;
+      const cleaned = cleanPathToken(toks[index].text);
+      const resolved = resolveCensusTarget(cleaned);
+      if (resolved === null && (!looksLikeFilePath(cleaned) || !safeRelativePath(cleaned))) continue;
+      const prevIsCue = index > 0 && (isTargetCue(index - 1) || isActionCue(index - 1));
+      const nextIsCue = index + 1 < toks.length && (isTargetCue(index + 1) || isActionCue(index + 1));
+      if (prevIsCue || nextIsCue) {
+        fileIndex = index;
+        target = resolved === null ? cleaned : resolved.module_path;
+        break;
+      }
     }
+    if (fileIndex >= 0) break;
   }
   if (fileIndex < 0) return null;
   let clauseStartIndex = fileIndex;
-  while (clauseStartIndex > 0 && isTargetCue(clauseStartIndex - 1)) clauseStartIndex -= 1;
+  // A cue word inside a quoted literal is payload ("… the named file.'").
+  while (clauseStartIndex > 0 && isTargetCue(clauseStartIndex - 1) && !isQuoted(toks[clauseStartIndex - 1])) {
+    clauseStartIndex -= 1;
+  }
   const fileClauseStart = toks[clauseStartIndex].start;
   // Cue words inside a quoted literal are payload (`replace 'covered by x'`).
   const actionTokens = toks.filter((token) => unquoted.has(token.start) && actionCues.includes(cleanCueToken(token.text)));

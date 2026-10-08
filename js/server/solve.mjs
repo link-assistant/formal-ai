@@ -5,6 +5,7 @@
 // rust/src/protocol_policy.rs.
 
 import { finalizeServerAnswer } from './derivation-store.mjs';
+import { gateTurn } from './debug-session.mjs';
 import { ensureNodeHost } from './node-host-install.mjs';
 import { EventLog, buildEvidenceLinks } from './evidence-links.mjs';
 import { f32 } from './json.mjs';
@@ -138,7 +139,9 @@ export async function solveSymbolic(ctx, prompt, history) {
   }
   // Issue #1184 R1184-9: every native solve ends in `finalize_answer`, which
   // links, appends and persists the answer's derivation record.
-  return finalizeServerAnswer(ctx, symbolicFromWorker(result, history, await seedReportReader(ctx)), result);
+  const answer = await finalizeServerAnswer(ctx, symbolicFromWorker(result, history, await seedReportReader(ctx)), result);
+  await gateTurn(ctx, answer.thinking_steps);
+  return answer;
 }
 
 /** The store's `MemoryEvent`s the protocol surfaces answer with (`store.events()`). */

@@ -81,6 +81,7 @@ const PROBES = {
   telegram_webhook: { status: 200, type: "application/json", body: JSON.stringify({ update_id: 1 }) },
   conversation_context: { status: 404, type: "application/json" },
   conversation_learn: { status: 404, type: "application/json" },
+  debug_session: { status: 404, type: "application/json", error: "debug_session_disabled" },
   gemini_models: { status: 200, type: "application/json", json: (body) => assert.ok(Array.isArray(body.models)) },
   gemini_model: { status: 200, type: "application/json", json: (body) => assert.equal(body.name, "models/formal-ai") },
   gemini_generate_content: { status: 200, type: "application/json", body: geminiBody, json: (body) => assert.ok(body.candidates) },

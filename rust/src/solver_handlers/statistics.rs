@@ -814,6 +814,56 @@ fn marker_position(lowered: &str, slug: &str) -> Option<usize> {
     })
 }
 
+/// Change for one item: a payment and a price, with no unit price.
+///
+/// "I pay 20 dollars for a 13 dollar book; how much change?" → 20 − 13 = 7
+/// (issue #1175 p350). The payment is the first number stated after the
+/// payment marker; the price is the other. Mirrors `tryOneItemChange` in
+/// `js/worker/formal_ai_worker_statistics.js`.
+fn one_item_change(prompt: &str, normalized: &str, log: &mut EventLog) -> Option<SymbolicAnswer> {
+    if !mentions_marker(normalized, MARKER_PAYMENT) || !mentions_marker(normalized, MARKER_CHANGE) {
+        return None;
+    }
+    let lowered = prompt.to_lowercase();
+    let (values, positions) = stated_numbers(&lowered)?;
+    let paid_at = marker_position(&lowered, MARKER_PAYMENT)?;
+    if values.len() != 2 {
+        return None;
+    }
+    let payment_index = positions.iter().position(|position| *position >= paid_at)?;
+    let payment = values[payment_index];
+    let price = values[1 - payment_index];
+    let change = payment.sub(price)?;
+    if change.is_negative() {
+        return None;
+    }
+    log.append("word_problem:price", price.render());
+    log.append("word_problem:payment", payment.render());
+    log.append("word_problem:change", change.render());
+    let derivation = format!(
+        "{} - {} = {}",
+        payment.render(),
+        price.render(),
+        change.render()
+    );
+    log.append("word_problem:derivation", derivation.clone());
+    let body = localized_response("word_problem_change", detect_language(prompt).slug())
+        .map(|template| {
+            template
+                .replace(concat!("{", "change}"), &change.render())
+                .replace(concat!("{", "derivation}"), &derivation)
+        })
+        .unwrap_or(derivation);
+    Some(finalize_simple(
+        prompt,
+        log,
+        "word_problem_change",
+        "response:word_problem_change",
+        &body,
+        1.0,
+    ))
+}
+
 /// Word-problem entry point for the price×count pattern of issue #1176.
 ///
 /// "buys 4 pens at 3 dollars each and pays with 20; what is the change?" → 20 −
@@ -825,6 +875,9 @@ pub fn handle_word_problem(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     if !mentions_marker(normalized, MARKER_UNIT_PRICE) {
+        if let Some(answer) = one_item_change(prompt, normalized, log) {
+            return Some(answer);
+        }
         return word_relations::relation_word_problem(prompt, normalized, log);
     }
     let lowered = prompt.to_lowercase();

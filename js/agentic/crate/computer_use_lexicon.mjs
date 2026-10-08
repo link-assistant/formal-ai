@@ -7,6 +7,7 @@
 // length}`, where `position` and `length` are UTF-8 byte counts like Rust's.
 
 import { rustLines } from '../content.mjs';
+import { textOutsideQuotedSegments } from './coding_program_contract.mjs';
 import { containsCjk, meaningsWithRole, words } from './seed_meanings.mjs';
 import { byteOrder, isAlphanumeric, splitWhitespace, utf16ToByte, utf8Len } from './rust_str.mjs';
 
@@ -56,23 +57,15 @@ export function normalize(prompt) {
 
 /**
  * Mirrors `fn instruction_surface`: the prompt without indented payload lines
- * and without double-quoted spans.
+ * and without quoted spans (every pair `textOutsideQuotedSegments` reads, so
+ * the single-quoted payloads of a `Replace 'X' with 'Y'` request too).
  * @param {string} prompt
  */
 export function instructionSurface(prompt) {
   let instruction = '';
   for (const line of rustLines(prompt)) {
     if (line.startsWith(' ') || line.startsWith('\t')) continue;
-    let quoted = false;
-    for (const character of line) {
-      if (character === '"') {
-        quoted = !quoted;
-        instruction += ' ';
-      } else if (!quoted) {
-        instruction += character;
-      }
-    }
-    instruction += '\n';
+    instruction += `${textOutsideQuotedSegments(line)}\n`;
   }
   return instruction;
 }

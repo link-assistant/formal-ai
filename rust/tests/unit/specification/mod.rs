@@ -52,6 +52,7 @@ mod computer_use_meta_algorithm;
 mod concept_lookup_meta_algorithm;
 mod conversation_history;
 mod cue_lexicon;
+mod debug_session;
 mod definition_fusion;
 mod desktop_surface;
 mod document_verification_meta_algorithm;

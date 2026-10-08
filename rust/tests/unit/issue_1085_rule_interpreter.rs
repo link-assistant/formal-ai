@@ -38,9 +38,9 @@ impl ConditionSource for FixtureTables<'_> {
 }
 
 /// The precedence names that are now data rather than Rust functions. The
-/// last five moved in the issue #918 minimal-core batches
+/// last six moved in the issue #918 minimal-core batches
 /// (`rust/tests/unit/issue_918_handler_rules_batch.rs`).
-const MIGRATED_HANDLERS: [&str; 17] = [
+const MIGRATED_HANDLERS: [&str; 18] = [
     "conversation_control",
     "github_repository_traffic",
     "docs_method_explanation",
@@ -58,6 +58,7 @@ const MIGRATED_HANDLERS: [&str; 17] = [
     "source_conflict",
     "execution_failure",
     "network_query",
+    "algorithm",
 ];
 
 fn answer(prompt: &str) -> SymbolicAnswer {
@@ -79,8 +80,9 @@ fn the_embedded_rule_document_declares_every_migrated_handler() {
     // rules of the no-input arms (action correction, clarification and
     // continuation without their operand, commit 602456cea); 30 with the
     // unnamed-repository and unattributed-conflict refusal rules of issue
-    // #1175 R3.
-    assert_eq!(parsed.rule_count(), 30);
+    // #1175 R3; 34 with the four algorithm rules (operation named or not,
+    // test requested or not) of the issue #918 algorithm batch.
+    assert_eq!(parsed.rule_count(), 34);
     let precedence = formal_ai::seed::handler_precedence();
     for name in MIGRATED_HANDLERS {
         assert!(

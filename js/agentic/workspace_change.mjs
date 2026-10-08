@@ -42,7 +42,8 @@ export function planWorkspaceChangeStep(rawTask, messages, toolNames) {
   if (change) return planCompositeStep(task, currentTurn, toolNames, change);
   const rewrite = groundedRewrite(task);
   if (rewrite) return planRewriteStep(task, currentTurn, toolNames, rewrite);
-  const computed = groundedEndInsertion(task) ?? groundedRemoval(task) ?? groundedSetting(task) ?? groundedTypoFix(task);
+  const computed = groundedEndInsertion(task) ?? groundedRemoval(task) ?? groundedDeclarationRemoval(task)
+    ?? groundedSetting(task) ?? groundedTypoFix(task);
   return computed ? planComputedChangeStep(task, currentTurn, toolNames, computed) : null;
 }
 
@@ -75,9 +76,11 @@ function planRewriteStep(task, currentTurn, toolNames, rewrite) {
   const verified = { target: rewrite.target, expected: updated, intent: statedIntent(rewrite), slots: statedSlots(rewrite) };
   if (occurrences === 1) {
     const tool = toolFor(toolNames, Capability.Edit);
-    const edit = matchIndices(source, rewrite.pattern).length === 1
-      ? [rewrite.pattern, rewrite.replacement]
-      : changedLinesEdit(source, updated);
+    const edit = rewrite.unique
+      ? anchoredLines(source, rewrite).slice(1)
+      : matchIndices(source, rewrite.pattern).length === 1
+        ? [rewrite.pattern, rewrite.replacement]
+        : changedLinesEdit(source, updated);
     if (tool && edit) {
       if (resultForEdit(currentTurn, rewrite.target, edit[0], edit[1]) === null) {
         return planOne(tool, editArguments(rewrite.target, edit[0], edit[1]));
@@ -147,12 +150,32 @@ function planCompositeStep(task, currentTurn, toolNames, change) {
  */
 function rewrittenSource(source, rewrite) {
   if (rewrite.unique) {
-    return matchIndices(source, rewrite.pattern).length === 1
-      ? source.replace(rewrite.pattern, () => rewrite.replacement)
-      : null;
+    const lines = anchoredLines(source, rewrite);
+    return lines && `${source.slice(0, lines[0])}${lines[2]}${source.slice(lines[0] + lines[1].length)}`;
   }
   const execution = executeScopedWorkspaceRewrite(source, rewrite.pattern, rewrite.replacement, rewrite.scope);
   return execution.ok ? execution.ok.output : null;
+}
+
+/**
+ * A positional insertion's one anchor occurrence widened to the whole lines
+ * it sits on, as `[start, oldLines, newLines]`, or null unless the anchor
+ * occurs exactly once. The inserted text is a line, so an anchor that is only
+ * part of a line (`after the line containing '| T20 |'`) must not split it.
+ */
+function anchoredLines(source, rewrite) {
+  const at = matchIndices(source, rewrite.pattern);
+  if (at.length !== 1) return null;
+  const { pattern, replacement } = rewrite;
+  const start = at[0] === 0 ? 0 : source.lastIndexOf('\n', at[0] - 1) + 1;
+  const tail = at[0] + pattern.length;
+  const lineEnd = pattern.endsWith('\n') ? tail - 1 : source.indexOf('\n', tail);
+  const end = lineEnd < 0 ? source.length : lineEnd;
+  const old = source.slice(start, end);
+  const next = replacement.startsWith(pattern)
+    ? `${old}${replacement.slice(pattern.length)}`
+    : `${replacement.slice(0, replacement.length - pattern.length)}${old}`;
+  return [start, old, next];
 }
 
 /**
@@ -289,6 +312,129 @@ function groundedRemoval(task) {
     slots: [['{old}', named.text]],
     reported: byLine ? (source) => removedLinesReport(source, named.text) : null,
   };
+}
+
+/**
+ * `Delete the functions a and b from util.js`: the seeded
+ * `coding_text_remove_action` and `coding_declaration_noun` with no add
+ * action, no quoted text and one named path. The names are the request's
+ * identifiers that the file itself declares as functions (a seeded
+ * `function_declaration_keyword` right before the name); each goes whole,
+ * with the comments and attributes directly above it. A name the file does
+ * not declare is not removed; a request none of whose names is declared is
+ * not a removal anyone can verify (PR #1188 dogfooding).
+ */
+function groundedDeclarationRemoval(task) {
+  const lowered = sentenceWords(task);
+  if (!mentionsRole('coding_text_remove_action', lowered) || mentionsRole('coding_member_add_action', lowered)) return null;
+  if (!mentionsRole('coding_declaration_noun', lowered) || quotedSegmentSpans(task).length > 0) return null;
+  const paths = [...new Set(unquotedPathTokens(task).map((token) => cleanPathToken(token.text))
+    .filter((path) => looksLikeFilePath(path) && safeRelativePath(path)))];
+  if (paths.length !== 1) return null;
+  const names = [...new Set(tokens(task).map((token) => token.text)
+    .filter((text) => cleanPathToken(text) !== paths[0]).flatMap(identifierTokens))];
+  if (names.length === 0) return null;
+  return {
+    target: paths[0],
+    compute: (source, missing) => (missing ? null : removedDeclarations(source, names)?.source ?? null),
+    edit: changedLinesEdit,
+    intent: 'coding_text_remove',
+    slots: [['{old}', names.join('`, `')]],
+    reported: (source) => {
+      const removed = removedDeclarations(source, names);
+      return removed ? { intent: 'coding_text_remove', slots: [['{old}', removed.names.join('`, `')]] } : null;
+    },
+  };
+}
+
+/**
+ * Mirrors `fn removed_declarations`: `source` without the function each of
+ * `names` declares, and the names that were declared; null when none is.
+ */
+function removedDeclarations(source, names) {
+  const sourceLines = source.split(/(?<=\n)/u);
+  const keywords = wordsForRole('function_declaration_keyword');
+  const removed = new Set();
+  const declared = [];
+  for (const name of names) {
+    const headers = sourceLines.map((line, index) => [index, line]).filter(([, line]) => declaresFunction(line, name, keywords));
+    if (headers.length !== 1) continue;
+    const span = declarationSpan(sourceLines, headers[0][0]);
+    if (span === null) continue;
+    for (let index = span[0]; index <= span[1]; index += 1) removed.add(index);
+    declared.push(name);
+  }
+  if (declared.length === 0) return null;
+  const blank = (index) => index < 0 || (index < sourceLines.length && trim(sourceLines[index]) === '');
+  for (const index of [...removed].sort((left, right) => left - right)) {
+    // A block left between two blank lines takes one of them with it; a
+    // block that ended the file takes the blank line before it.
+    if (removed.has(index + 1)) continue;
+    let start = index;
+    while (removed.has(start - 1)) start -= 1;
+    if (index + 1 === sourceLines.length) {
+      if (start > 0 && blank(start - 1)) removed.add(start - 1);
+    } else if (blank(index + 1) && blank(start - 1)) {
+      removed.add(index + 1);
+    }
+  }
+  return { source: sourceLines.filter((_, index) => !removed.has(index)).join(''), names: declared };
+}
+
+/** Mirrors `fn declares_function`: a seeded keyword, then `name`, then `(` or `<`. */
+function declaresFunction(line, name, keywords) {
+  const words = line.split(/(?=[^A-Za-z0-9_$])|(?<=[^A-Za-z0-9_$])/u);
+  for (let index = 0; index < words.length; index += 1) {
+    if (!keywords.includes(words[index])) continue;
+    let next = index + 1;
+    while (next < words.length && trim(words[next]) === '') next += 1;
+    if (words[next] !== name) continue;
+    next += 1;
+    while (next < words.length && trim(words[next]) === '') next += 1;
+    if (words[next] === '(' || words[next] === '<') return true;
+  }
+  return false;
+}
+
+/**
+ * Mirrors `fn declaration_span`: the first and last line of the declaration
+ * whose header is line `header`, with the comment and attribute lines directly
+ * above it. A braced body ends at the first later line that closes at the
+ * header's indentation; an indented body (a header ending in `:`) at the last
+ * line indented deeper.
+ */
+function declarationSpan(sourceLines, header) {
+  const indent = (line) => line.length - line.replace(/^[ \t]+/u, '').length;
+  const headerLine = sourceLines[header].replace(/\r?\n$/u, '');
+  const depth = indent(headerLine);
+  let end = null;
+  if (/[};]\s*$/u.test(headerLine)) end = header;
+  else if (/:\s*$/u.test(headerLine)) {
+    end = header;
+    for (let index = header + 1; index < sourceLines.length; index += 1) {
+      if (trim(sourceLines[index]) === '') continue;
+      if (indent(sourceLines[index]) <= depth) break;
+      end = index;
+    }
+  } else {
+    for (let index = header + 1; index < sourceLines.length && end === null; index += 1) {
+      if (indent(sourceLines[index]) === depth && trim(sourceLines[index]).startsWith('}')) end = index;
+    }
+  }
+  if (end === null) return null;
+  let start = header;
+  while (start > 0) {
+    const above = trim(sourceLines[start - 1]);
+    if (above.endsWith('*/')) {
+      let open = start - 1;
+      while (open > 0 && !trim(sourceLines[open]).startsWith('/*')) open -= 1;
+      if (!trim(sourceLines[open]).startsWith('/*')) break;
+      start = open;
+    } else if (['//', '#[', '@'].some((lead) => above.startsWith(lead))) {
+      start -= 1;
+    } else break;
+  }
+  return [start, end];
 }
 
 /**

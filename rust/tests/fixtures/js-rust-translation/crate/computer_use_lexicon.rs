@@ -1,9 +1,12 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=735c4cbca9dc284d78b783966faf2929f34fcb3c9b74673e04f4bb6283e2572d bytes=5873
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=e92ff93f3773e19a19bf17d13ac9b6df568c00fa708fc2c77bdf329cc9ace054 bytes=5875
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:prelude begin
 #![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 // meta-language:prelude end
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import { … }
 
 // meta-language:carried JavaScript import_statement (unsupported)
 // formal-ai:refusal import { … }
@@ -53,7 +56,7 @@ pub static COMBINING_RANGES: std::sync::LazyLock<Vec<Vec<f64>>> = std::sync::Laz
 // formal-ai:refusal method call .join()
 
 // meta-language:carried JavaScript export_statement (type)
-// formal-ai:refusal type: one value is used as a string and as an array; declare the types of the function with JSDoc
+// formal-ai:refusal type: unknown name (a sibling item or an import)
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal function value …

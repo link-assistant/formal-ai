@@ -4,6 +4,7 @@
 import http from 'node:http';
 
 import { dispatch } from './dispatch.mjs';
+import { runInRequestScope } from './debug-session.mjs';
 import { beginForegroundActivity } from './dreaming-runtime.mjs';
 import { serverMessage } from './messages.mjs';
 
@@ -15,6 +16,7 @@ const STATUS_TEXT = new Map([
   [403, 'Forbidden'],
   [404, 'Not Found'],
   [405, serverMessage('status_text_405')],
+  [409, 'Conflict'],
 ]);
 
 const ALLOW_HEADERS = 'content-type,authorization,x-api-key,x-goog-api-key,anthropic-api-key';
@@ -71,13 +73,15 @@ export function createServer(ctx) {
     // Every request holds the dreaming idle gate (rust/src/server.rs
     // `ForegroundActivity::begin`), the Telegram webhook included.
     const foreground = beginForegroundActivity();
+    const disconnected = new AbortController();
+    socketResponse.on('close', () => { if (!socketResponse.writableEnded) disconnected.abort(); });
     try {
       const headers = requestHeaders(request);
       const raw = await readBody(request);
       // Like the Rust reader, only a declared content-length carries a body.
       const declared = Number.parseInt(request.headers['content-length'] || '0', 10) || 0;
       const body = raw.subarray(0, Math.min(declared, raw.length)).toString('utf8');
-      const response = await dispatch(ctx, { method: request.method, path: request.url, headers, body });
+      const response = await runInRequestScope(disconnected.signal, () => dispatch(ctx, { method: request.method, path: request.url, headers, body }));
       writeResponse(socketResponse, response);
     } catch (error) {
       process.stderr.write(`request failed: ${error?.stack || error}\n`);

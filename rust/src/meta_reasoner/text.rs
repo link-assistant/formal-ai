@@ -399,9 +399,17 @@ pub fn meta_examples(prompt: &str, literals: &[Literal]) -> Vec<Example> {
     while index + 1 < literals.len() {
         let gap = &prompt[literals[index].end..literals[index + 1].start];
         let between = [" ", &gap.to_lowercase(), " "].concat();
+        // An arrow beside a name is code (`.map(x => x * 2)`), not an example.
         let marker = markers
             .iter()
-            .find(|marker| between.contains(marker.as_str()));
+            .find(|marker| between.contains(marker.as_str()))
+            .filter(|marker| {
+                marker.chars().any(is_letter)
+                    || !between
+                        .replacen(marker.as_str(), "", 1)
+                        .chars()
+                        .any(is_letter)
+            });
         if utf16_len(&between) <= 28
             && let Some(marker) = marker
         {

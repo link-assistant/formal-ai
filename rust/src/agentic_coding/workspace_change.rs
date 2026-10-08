@@ -171,7 +171,9 @@ fn plan_rewrite_step(
         // The bare pattern when it is unique in the file; otherwise the
         // smallest unique run of changed lines -- the edit tool refuses an
         // `oldString` it finds twice, and `smal` also sits inside `small`.
-        let edit = if source.matches(rewrite.pattern.as_str()).count() == 1 {
+        let edit = if rewrite.unique {
+            anchored_lines(&source, rewrite).map(|(_, old, new)| (old, new))
+        } else if source.matches(rewrite.pattern.as_str()).count() == 1 {
             Some((rewrite.pattern.clone(), rewrite.replacement.clone()))
         } else {
             changed_lines_edit(&source, &updated)
@@ -367,8 +369,8 @@ fn plan_composite_step(
 /// several times does not say where the line goes.
 fn rewritten_source(source: &str, rewrite: &GroundedRewrite) -> Option<String> {
     if rewrite.unique {
-        return (source.matches(rewrite.pattern.as_str()).count() == 1)
-            .then(|| source.replacen(rewrite.pattern.as_str(), &rewrite.replacement, 1));
+        let (start, old, new) = anchored_lines(source, rewrite)?;
+        return Some([&source[..start], new.as_str(), &source[start + old.len()..]].concat());
     }
     execute_scoped_workspace_rewrite(
         source,
@@ -378,6 +380,31 @@ fn rewritten_source(source: &str, rewrite: &GroundedRewrite) -> Option<String> {
     )
     .ok()
     .map(|execution| execution.output)
+}
+
+/// A positional insertion's one anchor occurrence widened to the whole lines
+/// it sits on, as `(start, old_lines, new_lines)`, or `None` unless the anchor
+/// occurs exactly once. The inserted text is a line, so an anchor that is only
+/// part of a line (`after the line containing '| T20 |'`) must not split it.
+fn anchored_lines(source: &str, rewrite: &GroundedRewrite) -> Option<(usize, String, String)> {
+    let (pattern, replacement) = (rewrite.pattern.as_str(), rewrite.replacement.as_str());
+    let mut found = source.match_indices(pattern).map(|(at, _)| at);
+    let (Some(at), None) = (found.next(), found.next()) else {
+        return None;
+    };
+    let start = source[..at].rfind('\n').map_or(0, |newline| newline + 1);
+    let tail = at + pattern.len();
+    let end = if pattern.ends_with('\n') {
+        tail - 1
+    } else {
+        source[tail..].find('\n').map_or(source.len(), |newline| tail + newline)
+    };
+    let old = &source[start..end];
+    let new = replacement.strip_prefix(pattern).map_or_else(
+        || [&replacement[..replacement.len() - pattern.len()], old].concat(),
+        |rest| [old, rest].concat(),
+    );
+    Some((start, old.to_owned(), new))
 }
 
 /// The smallest run of whole lines holding every change from `source` to
