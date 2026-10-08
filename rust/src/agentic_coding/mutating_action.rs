@@ -166,17 +166,28 @@ fn expand_with(command: &str, vocab: &ShellIntentVocabulary) -> Option<VerifiedA
         }
     }
     let fill = |template: &String| -> Vec<String> {
-        groups.iter().map(|bindings| {
-            let check = bind(template, bindings);
-            if let Some((sources, destination)) = &collection {
-                let setup = format!("formal_ai_destination={destination}; {}", concat!(
-                    "if test -d \"$formal_ai_destination\" || [ \"${formal_ai_destination%/}\" != \"$formal_ai_destination\" ]; then ",
-                    "formal_ai_leaf=\"${formal_ai_source%/}\"; formal_ai_destination=\"${formal_ai_destination%/}/${formal_ai_leaf##*/}\"; fi; ",
-                    "formal_ai_parent=\"${formal_ai_destination%/*}\"; ",
-                    "if [ \"$formal_ai_parent\" = \"$formal_ai_destination\" ]; then formal_ai_parent=.; fi; "));
-                format!("for formal_ai_source in {sources}; do {setup}{check} || exit $?; done")
-            } else { check }
-        }).collect()
+        groups
+            .iter()
+            .map(|bindings| {
+                let check = bind(template, bindings);
+                if let Some((sources, destination)) = &collection {
+                    let setup = super::work_item_steps::fill(
+                        "filesystem-collection-setup",
+                        &[("{destination}", destination)],
+                    );
+                    super::work_item_steps::fill(
+                        "filesystem-collection-check",
+                        &[
+                            ("{sources}", sources),
+                            ("{setup}", &setup),
+                            ("{check}", &check),
+                        ],
+                    )
+                } else {
+                    check
+                }
+            })
+            .collect()
     };
     let mut steps: Vec<String> = before.iter().flat_map(fill).collect();
     steps.extend(effect.prepare.iter().flat_map(fill));

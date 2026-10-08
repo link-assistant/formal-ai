@@ -9,6 +9,7 @@ import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
 import { finalAnswer, jsonText, planOne } from './plan.mjs';
 import { Progress } from './progress.mjs';
+import { fill as fillSeededStep } from './work_item_steps.mjs';
 import { StepOutcome, render, reportedExitCode, responseLanguage, stepOutcome } from './tool_result.mjs';
 import { localizedResponse } from './crate/seed.mjs';
 import { effectIsDeclared, shellIntentVocabulary } from './crate/seed_shell_intents.mjs';
@@ -57,15 +58,11 @@ function expandWith(command, vocab) {
     const collection = effect.directory_targets && (sources.length > 1
       || sources.some(hasShellExpansion) || destination.replace(/^['"]|['"]$/gu, '').endsWith('/'));
     if (collection) {
-      const setup = 'formal_ai_destination=' + destination + '; '
-        + 'if test -d "$formal_ai_destination" || [ "${formal_ai_destination%/}" != "$formal_ai_destination" ]; then '
-        + 'formal_ai_leaf="${formal_ai_source%/}"; formal_ai_destination="${formal_ai_destination%/}/${formal_ai_leaf##*/}"; fi; '
-        + 'formal_ai_parent="${formal_ai_destination%/*}"; '
-        + 'if [ "$formal_ai_parent" = "$formal_ai_destination" ]; then formal_ai_parent=.; fi; ';
+      const setup = fillSeededStep('filesystem-collection-setup', [['{destination}', destination]]);
       const bindings = [[SOURCE_PLACEHOLDER, '"$formal_ai_source"'],
         [DESTINATION_PARENT_PLACEHOLDER, '"$formal_ai_parent"'], [DESTINATION_PLACEHOLDER, '"$formal_ai_destination"']];
-      groups = [(template) => 'for formal_ai_source in ' + sources.join(' ') + '; do ' + setup
-        + fill(template, bindings) + ' || exit $?; done'];
+      groups = [(template) => fillSeededStep('filesystem-collection-check',
+        [['{sources}', sources.join(' ')], ['{setup}', setup], ['{check}', fill(template, bindings)]])];
     } else {
       groups = [(template) => fill(template, [[SOURCE_PLACEHOLDER, sources[0]],
         [DESTINATION_PARENT_PLACEHOLDER, parentOf(destination)], [DESTINATION_PLACEHOLDER, destination]])];
