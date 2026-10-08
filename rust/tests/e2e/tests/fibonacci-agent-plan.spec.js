@@ -10,6 +10,7 @@
 // exactly as the production demo runs) to prove both the standalone prompts and
 // the full agent plan now resolve correctly.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 // The exact two-sentence prompt the user pasted into the demo (issue #334).
 const FULL_PROMPT =
@@ -19,7 +20,7 @@ const FULL_PROMPT =
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 15_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
 
   const messages = page.locator('[data-testid="chat-message"]');

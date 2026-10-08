@@ -3,6 +3,7 @@
 // Issue #466: authorship questions for unseeded works must route through the
 // Wikidata fact-query pipeline instead of falling through to `unknown`.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 const WAR_AND_PEACE_QID = 'Q161531';
 const TOLSTOY_QID = 'Q7243';
@@ -25,7 +26,7 @@ const TOLSTOY_LABELS = {
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 15_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
 
   const messages = page.locator('[data-testid="chat-message"]');
@@ -183,9 +184,7 @@ test.describe('Issue #466 - authorship fact query routing', () => {
     await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
     await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
-    await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
-      timeout: 5_000,
-    });
+    await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   });
 
   test('resolves English authorship questions through Wikidata P50', async ({ page }) => {

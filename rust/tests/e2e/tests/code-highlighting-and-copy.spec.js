@@ -5,6 +5,7 @@
 // button. These end-to-end tests drive the real browser bundle to prove the
 // feature works against a freshly built `js` tree.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 // A prompt that resolves to `write_program(rust, list_files)` and therefore
 // returns a fenced ```rust code block — the canonical surface for this feature.
@@ -13,7 +14,7 @@ const RUST_PROMPT =
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 15_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
 
   const messages = page.locator('[data-testid="chat-message"]');

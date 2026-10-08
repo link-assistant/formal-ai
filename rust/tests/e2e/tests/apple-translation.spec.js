@@ -8,6 +8,7 @@
 //   - #216: `translate apple to russian` (no quotes)
 //   - #217: `переведи "яблоко" на английский` (single Russian noun)
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 async function switchToManualMode(page) {
   const demoToggle = page.locator('.mode-toggle');
@@ -16,14 +17,12 @@ async function switchToManualMode(page) {
   });
   await demoToggle.click();
   await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
-  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
-    timeout: 5_000,
-  });
+  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
 }
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 15_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
 
   const messages = page.locator('[data-testid="chat-message"]');

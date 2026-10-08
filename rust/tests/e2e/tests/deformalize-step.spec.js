@@ -1,6 +1,7 @@
 // @ts-check
 // Issue #180: Every answer ends its reasoning with a deformalize step, including unknown and web-search answers.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 // Issue #180 — every solve() turn must end with a `deformalize` diagnostics
 // step that projects the resolved formalization back to natural language. The
@@ -28,14 +29,12 @@ async function switchToManualMode(page) {
     timeout: 10_000,
   });
   await demoToggle.click();
-  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
-    timeout: 5_000,
-  });
+  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
 }
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 15_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
   const messages = page.locator('[data-testid="chat-message"]');
   const initial = await messages.count();

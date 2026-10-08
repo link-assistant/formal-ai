@@ -1,12 +1,13 @@
 // @ts-check
 // Issue #288: The Russian false-totality concept resolves from local seed data instead of the unknown fallback.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 const UNKNOWN_ANSWER_MARKER = 'не могу ответить на это по локальным правилам';
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 15_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
 
   const messages = page.locator('[data-testid="chat-message"]');

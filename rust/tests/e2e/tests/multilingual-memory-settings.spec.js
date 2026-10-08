@@ -4,6 +4,7 @@
 // (Split from the former multilingual.spec.js; shared helpers live in
 // ./support/multilingual.js.)
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 const {
   switchToManualMode,
   disableGreetingVariations,
@@ -250,7 +251,7 @@ test.describe('memory export/import', () => {
 
   test('Issue #27: typing "Export memory" triggers the export button', async ({ page }) => {
     const input = page.locator('[data-testid="chat-composer-input"]');
-    await expect(input).toBeEnabled({ timeout: 15_000 });
+    await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
     await input.fill('Export memory');
     const [download] = await Promise.all([
       page.waitForEvent('download'),
@@ -263,7 +264,7 @@ test.describe('memory export/import', () => {
 
   test('Issue #27: typing "Export your memory" also triggers the export button', async ({ page }) => {
     const input = page.locator('[data-testid="chat-composer-input"]');
-    await expect(input).toBeEnabled({ timeout: 15_000 });
+    await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
     await input.fill('Export your memory');
     const [download] = await Promise.all([
       page.waitForEvent('download'),
@@ -274,7 +275,7 @@ test.describe('memory export/import', () => {
 
   test('Issue #27: typing "Import memory" opens the file picker', async ({ page }) => {
     const input = page.locator('[data-testid="chat-composer-input"]');
-    await expect(input).toBeEnabled({ timeout: 15_000 });
+    await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
     // We cannot programmatically observe a native file dialog opening, but we
     // can confirm the assistant acknowledges the trigger and the file input
     // remains in the DOM ready to accept a file.
@@ -305,7 +306,7 @@ test.describe('memory export/import', () => {
     for (const { language, phrase } of resetPromptCases) {
       await sendPrompt(page, `Memory reset seed ${language}`);
       const input = page.locator('[data-testid="chat-composer-input"]');
-      await expect(input).toBeEnabled({ timeout: 15_000 });
+      await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
       await input.fill(phrase);
       await page.locator('[data-testid="chat-composer-submit"]').click();
       await expect(page.locator('[data-testid="chat-message"]')).toHaveCount(0);

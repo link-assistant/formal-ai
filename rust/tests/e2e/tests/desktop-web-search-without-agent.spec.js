@@ -1,6 +1,7 @@
 // @ts-check
 // Issue #747: Multilingual desktop web search works with agent permission off and no local API.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 const searchPrompts = [
   {
@@ -67,7 +68,7 @@ test('multilingual desktop web search works with agent permission off and no loc
 
   await page.goto('./');
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 10_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   const messages = page.locator('[data-testid="chat-message"]');
   for (const { prompt } of searchPrompts) {
     await input.fill(prompt);

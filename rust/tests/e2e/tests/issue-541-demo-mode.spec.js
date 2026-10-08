@@ -20,6 +20,7 @@
 // conversation we should automatically disable demo mode, and keep last
 // example in the newly created demo conversation."
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 async function disableGreetingVariations(page) {
   await page.addInitScript(() => {
@@ -55,9 +56,7 @@ async function disableDemoFromStart(page) {
 
 async function waitForReady(page) {
   await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
-  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
-    timeout: 10_000,
-  });
+  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
 }
 
 async function listEvents(page) {
@@ -66,7 +65,7 @@ async function listEvents(page) {
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 15_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
   const messages = page.locator('[data-testid="chat-message"]');
   const initialCount = await messages.count();
@@ -171,9 +170,7 @@ test.describe('issue #541 R4: demo mode is non-destructive', () => {
 
     // Switch demo off. The user's seed conversation must come back exactly.
     await clickDemoToggle(page);
-    await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
-      timeout: 10_000,
-    });
+    await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
     await expect(messages).toHaveCount(2, { timeout: 10_000 });
     const userBubbleTextAfter = await userBody.textContent();
     expect(userBubbleTextAfter).toBe(userBubbleTextBefore);
@@ -211,9 +208,7 @@ test.describe('issue #541 R4: demo mode is non-destructive', () => {
       .click();
 
     // Demo mode must auto-disable: composer enabled, status not "Demo playing".
-    await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
-      timeout: 10_000,
-    });
+    await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
     await expect(page.locator('[data-testid="demo-status"]')).not.toContainText(
       /Demo playing|Next dialog in/,
       { timeout: 5_000 },

@@ -1,6 +1,7 @@
 // @ts-check
 // Issue #687: Seed-backed natural-language commands control settings that had no message-command route.
 const { test, expect } = require("@playwright/test");
+const { WORKER_READY_TIMEOUT_MS } = require("./support/worker-ready");
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
@@ -28,7 +29,7 @@ test.describe("Issue #687 - seed-backed natural-language interface control", () 
     }
     await expect(
       page.locator('[data-testid="chat-composer-input"]'),
-    ).toBeEnabled();
+    ).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
     const tools = page.getByRole("button", { name: "Tools", exact: true });
     if ((await tools.getAttribute("aria-expanded")) !== "true") {
       await tools.click();

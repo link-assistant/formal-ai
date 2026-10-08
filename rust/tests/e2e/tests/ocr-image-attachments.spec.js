@@ -1,6 +1,7 @@
 // @ts-check
 // Issue #205: Optional OCR image attachments stay out of the initial page and export their text into memory when enabled.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 const ONE_PIXEL_PNG = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=',
@@ -16,9 +17,7 @@ async function switchToManualMode(page) {
   await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
   // The composer waits for the WASM worker to boot (`workerReady`), which can
   // outlast 5s on a loaded runner; match the 15s app-boot budget.
-  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
-    timeout: 15_000,
-  });
+  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
 }
 
 async function expandSidebarSection(page, testId) {

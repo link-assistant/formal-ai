@@ -33,6 +33,7 @@
 // FormalAiDesktop bridge that captures runAgentProvider calls and tool grants.
 
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 const PREF_KEY = 'formal-ai.preferences.v1';
 
@@ -130,16 +131,14 @@ async function bootIssue541Permissions(page, { uiLanguage = 'en' } = {}) {
   );
   await page.goto('./');
   await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
-  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
-    timeout: 10_000,
-  });
+  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
 }
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
   const messages = page.locator('[data-testid="chat-message"]');
   const initial = await messages.count();
-  await expect(input).toBeEnabled({ timeout: 15_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
   await page.locator('[data-testid="chat-composer-submit"]').click();
   await expect

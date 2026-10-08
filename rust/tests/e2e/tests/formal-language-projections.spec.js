@@ -2,6 +2,7 @@
 // Issue #917: every registered seed language round-trips through the
 // seed-defined FOL projection in the browser's Rust-to-WASM path.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 async function switchToManualMode(page) {
   const demoToggle = page.locator('.mode-toggle');
@@ -10,7 +11,7 @@ async function switchToManualMode(page) {
   });
   await demoToggle.click();
   await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
-  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled();
+  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
 }
 
 async function enableDiagnostics(page) {

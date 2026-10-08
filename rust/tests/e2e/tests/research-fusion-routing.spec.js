@@ -1,6 +1,7 @@
 // @ts-check
 // Issue #870: A reported request routes through permission and the task list, and unknown requests fuse trusted research.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 const REPORTED_PROMPT = 'Проверь какие процессы запущены на моём компьютере';
 const UNKNOWN_PROMPT = 'zyxqv glorbax ritual';
@@ -64,22 +65,20 @@ async function installDesktopBridge(page, shell) {
 async function boot(page) {
   await page.goto('./');
   await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
-  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
-    timeout: 10_000,
-  });
+  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
 }
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
   const assistants = page.locator('[data-testid="chat-message"].assistant');
   const initial = await assistants.count();
-  await expect(input).toBeEnabled({ timeout: 10_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
   await page.locator('[data-testid="chat-composer-submit"]').click();
   await expect
     .poll(() => assistants.count(), { timeout: 20_000 })
     .toBeGreaterThan(initial);
-  await expect(input).toBeEnabled({ timeout: 20_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   return assistants.last();
 }
 

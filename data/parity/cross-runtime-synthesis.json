@@ -91,6 +91,7 @@
       "The Halley research station"
     ],
     "forbiddenAnswerFragments": ["Radar masts"],
+    "forbiddenEvidenceFragments": ["summarization_statement:kept Radar masts"],
     "expectedEvidencePrefixes": [
       "summarization_statement:",
       "summarization_bound:",

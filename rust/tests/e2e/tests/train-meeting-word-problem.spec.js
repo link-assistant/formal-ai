@@ -4,6 +4,7 @@
 // problem as `unknown`. This spec drives the real browser worker and asserts
 // that the relative-speed solution keeps the requested verification tags.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 const REPORTED_PROMPT =
   'Solve this step-by-step, but with verification at each stage:\n' +
@@ -14,7 +15,7 @@ const REPORTED_PROMPT =
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 15_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
 
   const messages = page.locator('[data-testid="chat-message"]');
@@ -39,9 +40,7 @@ test.describe('Issue #460 - train meeting word problem', () => {
     await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
     await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
-    await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
-      timeout: 5_000,
-    });
+    await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   });
 
   test('solves with verification tags and meeting location', async ({ page }) => {

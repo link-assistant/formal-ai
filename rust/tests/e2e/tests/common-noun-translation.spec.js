@@ -9,20 +9,19 @@
 // missing forms. The Rust pipeline uses the same seed/cache data so the two
 // surfaces agree without depending on the MediaWiki API for covered nouns.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 async function switchToManualMode(page) {
   const demoToggle = page.locator('.mode-toggle');
   await expect(demoToggle).toContainText(/Demo on|Demo off|Демо/, { timeout: 10_000 });
   await demoToggle.click();
   await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
-  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
-    timeout: 5_000,
-  });
+  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
 }
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 15_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
 
   const messages = page.locator('[data-testid="chat-message"]');

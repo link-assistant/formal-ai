@@ -1,6 +1,7 @@
 // @ts-check
 // Issue #708: Seeded memory programs run identically across languages in the browser and refuse destructive effects.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 const PREF_KEY = 'formal-ai.preferences.v1';
 
@@ -19,7 +20,7 @@ async function boot(page) {
   }, { key: PREF_KEY });
   await page.goto('./');
   await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
-  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled();
+  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await page.evaluate(() => window.FormalAiMemory.clearEvents());
 }
 
@@ -37,7 +38,7 @@ async function sendPrompt(page, prompt) {
   await input.fill(prompt);
   await page.locator('[data-testid="chat-composer-submit"]').click();
   await expect.poll(() => answers.count(), { timeout: 20_000 }).toBeGreaterThan(before);
-  await expect(input).toBeEnabled({ timeout: 20_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   return answers.last();
 }
 

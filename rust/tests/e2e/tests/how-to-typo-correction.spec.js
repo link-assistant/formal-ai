@@ -1,6 +1,7 @@
 // @ts-check
 // Issue #343: A how-to prompt with a typo routes to the procedural how-to with the typo corrected.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 const PROMPTS = [
   {
@@ -24,7 +25,7 @@ const UNKNOWN_ANSWER_MARKER = 'не могу ответить на это по �
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 15_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
 
   const messages = page.locator('[data-testid="chat-message"]');

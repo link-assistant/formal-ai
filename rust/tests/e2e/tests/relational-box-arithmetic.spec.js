@@ -4,6 +4,7 @@
 // unknown fallback for a simple box/apple arithmetic word problem. The worker
 // must reduce the object relations to arithmetic and show the requested steps.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 const PROMPT =
   'I have 3 boxes. Box A has twice as many apples as Box B. ' +
@@ -29,7 +30,7 @@ function preferencesForUiLanguage(language) {
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 15_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
 
   const messages = page.locator('[data-testid="chat-message"]');

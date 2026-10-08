@@ -5,6 +5,7 @@
 // (Split from the former multilingual.spec.js; shared helpers live in
 // ./support/multilingual.js.)
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 const {
   UNKNOWN_ANSWER_MARKER,
   switchToManualMode,
@@ -221,7 +222,7 @@ test.describe('Issue #27: mobile layout', () => {
   test('Issue #112: focused composer grows to content with equal padding and a half-panel cap', async ({ page }) => {
     await page.locator('.mode-toggle').click();
     const input = page.locator('[data-testid="chat-composer-input"]');
-    await expect(input).toBeEnabled({ timeout: 15_000 });
+    await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
     await input.fill('line one\nline two\nline three\nline four');
 
     const metrics = await input.evaluate((node) => {

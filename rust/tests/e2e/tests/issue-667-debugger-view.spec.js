@@ -25,6 +25,7 @@
 // older than .bun-version bundles Mermaid's ELK layout with a bare `__require`,
 // so every diagram fell back to its source text.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 // R1188-U11: the suite runs fully parallel, test by test; this file starts one debug server in beforeAll and shares it through module state,
 // so its tests stay in one worker, in order.
@@ -113,7 +114,7 @@ test('the debugger view steps a held turn in the built app', async ({ page }) =>
   const messages = page.getByTestId('chat-message');
   const before = await messages.count();
   const input = page.getByTestId('chat-composer-input');
-  await expect(input).toBeEnabled({ timeout: 15_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill('What is 2 + 2?');
   await page.getByTestId('chat-composer-submit').click();
   const answer = messages.nth(before + 1);

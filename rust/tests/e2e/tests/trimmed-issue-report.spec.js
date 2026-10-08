@@ -9,6 +9,7 @@
 //     GitHub's URL cap, since the dialog is then no longer complete;
 //   * the "Attach full memory" section is a short pointer to the docs.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 async function disableGreetingVariations(page) {
   await page.addInitScript(() => {
@@ -29,9 +30,7 @@ async function switchToManualMode(page) {
     timeout: 10_000,
   });
   await demoToggle.click();
-  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
-    timeout: 5_000,
-  });
+  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
 }
 
 async function reportBody(page, locator = '[data-testid="report-issue"]') {
@@ -220,7 +219,7 @@ test.describe('Issue #386 - reset settings to default', () => {
 test.describe('Issue #386 - copy a conversation as Markdown', () => {
   async function sendPrompt(page, text) {
     const input = page.locator('[data-testid="chat-composer-input"]');
-    await expect(input).toBeEnabled({ timeout: 15_000 });
+    await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
     await input.fill(text);
     const messages = page.locator('[data-testid="chat-message"]');
     const count = await messages.count();
@@ -311,7 +310,7 @@ test.describe('Issue #386 - cancel a program modification', () => {
 
   async function sendPrompt(page, text) {
     const input = page.locator('[data-testid="chat-composer-input"]');
-    await expect(input).toBeEnabled({ timeout: 15_000 });
+    await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
     await input.fill(text);
     const messages = page.locator('[data-testid="chat-message"]');
     const initial = await messages.count();

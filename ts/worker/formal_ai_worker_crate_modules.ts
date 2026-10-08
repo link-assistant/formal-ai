@@ -24,19 +24,39 @@ const crateInstances = new Map();
 let crateHostSeed = null;
 let CRATE_SEED_RAW = {};
 
+/** The crate meaning seeds `present(fileName)` does not hold, as seed paths. */
+function missingCrateSeeds(present) {
+  const files = (self.FORMAL_AI_CRATE_MEANING_SEEDS || []).map((seed) => `seed/${seed}.lino`);
+  return files.filter((file) => !present(seedFileBaseName(file)));
+}
+
 /**
  * Fetch the meaning seeds the worker's own seed list leaves out.
- * `loadSeed` awaits it once the worker seed is loaded.
+ * `loadSeed` awaits it once the worker seed is loaded; the first load takes the
+ * fetch started at boot (below), so it adds no round trip before ready.
  * @param {Record<string, string>} raw the worker's seed texts
  * @returns {Promise<void>}
  */
 async function loadCrateSeeds(raw) {
-  const missing = (self.FORMAL_AI_CRATE_MEANING_SEEDS || [])
-    .map((seed) => `seed/${seed}.lino`)
-    .filter((file) => !seedRawText(raw, seedFileBaseName(file)));
-  const loaded = missing.length > 0 ? await self.FormalAiSeed.loadAll(missing) : null;
+  const missing = missingCrateSeeds((file) => Boolean(seedRawText(raw, file)));
+  const prefetch = crateSeedPrefetch;
+  crateSeedPrefetch = null;
+  const fetchNow = () => (missing.length > 0 ? self.FormalAiSeed.loadAll(missing) : null);
+  const reuse = prefetch && prefetch.files.join("\n") === missing.join("\n");
+  const loaded = await (reuse ? prefetch.promise : fetchNow());
   CRATE_SEED_RAW = (loaded && loaded.raw) || {};
 }
+
+// Once every module has loaded, fetch the meaning seeds missing from the
+// worker's list (FORMAL_AI_SEED_FILES, what `loadAll()` fetches) beside it.
+let crateSeedPrefetch = null;
+Promise.resolve().then(() => {
+  const listed = new Set((self.FORMAL_AI_SEED_FILES || []).map(seedFileBaseName));
+  const files = self.FormalAiSeed ? missingCrateSeeds((file) => listed.has(file)) : [];
+  if (files.length === 0) return;
+  crateSeedPrefetch = { files, promise: self.FormalAiSeed.loadAll(files) };
+  crateSeedPrefetch.promise.catch(() => {}); // reported where `loadSeed` awaits it
+});
 
 /**
  * The seed registry as the crate modules read it: its meaning seeds, in order.

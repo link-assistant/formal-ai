@@ -6,6 +6,7 @@
 // provide a small clipboard shim that only accepts writes during the immediate
 // click task, matching browsers that reject clipboard writes after async work.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 const RUST_PROMPT =
   'Write me a Rust program that lists files in the current directory';
@@ -107,7 +108,7 @@ async function openApp(page, uiLanguage) {
 
 async function sendPrompt(page, text = RUST_PROMPT) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 15_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
 
   const messages = page.locator('[data-testid="chat-message"]');

@@ -4,6 +4,7 @@
 // ("17:30 - 14:00") nor natural-language elapsed-time prompts ("how long is the
 // trip?"). Both must route to the calculator instead of the unknown fallback.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 const ELAPSED_TIME_PROMPTS = [
   {
@@ -26,7 +27,7 @@ const ELAPSED_TIME_PROMPTS = [
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 15_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
 
   const messages = page.locator('[data-testid="chat-message"]');
@@ -51,9 +52,7 @@ test.describe('Issue #464 - clock-time duration routing', () => {
     await page.goto('./');
     await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
     await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
-    await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
-      timeout: 5_000,
-    });
+    await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   });
 
   test('direct clock subtraction delegates to the calculator', async ({ page }) => {

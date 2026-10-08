@@ -1,6 +1,7 @@
 // @ts-check
 // Issue #513: A terminal-command request suggests Agent mode, and the mode radio switches modes.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 // Issue #513 (visible fix for #511): a terminal-command request used to fall
 // through to the `unknown` fallback. It must now resolve to an
@@ -14,14 +15,12 @@ async function switchToManualMode(page) {
   await expect(demoToggle).toContainText(/Demo on|Demo off|Демо/, { timeout: 10_000 });
   await demoToggle.click();
   await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
-  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
-    timeout: 5_000,
-  });
+  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
 }
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 15_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
   const messages = page.locator('[data-testid="chat-message"]');
   const initial = await messages.count();

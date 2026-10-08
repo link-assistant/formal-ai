@@ -1,6 +1,7 @@
 // @ts-check
 // Issue #493: OCR text is used to flag a false market-price claim across assets and languages.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 const ONE_PIXEL_PNG = Buffer.from(
   'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/p9sAAAAASUVORK5CYII=',
@@ -77,7 +78,7 @@ async function attachAndVerify(page, name) {
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 15_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
   const messages = page.locator('[data-testid="chat-message"]');
   const initialAssistant = await page.locator('[data-testid="chat-message"].assistant').count();

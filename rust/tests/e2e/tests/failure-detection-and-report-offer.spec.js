@@ -1,6 +1,7 @@
 // @ts-check
 // Issue #864: Failure detection uses semantic signals, and a detected failure offers a contextual issue report.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 
@@ -68,7 +69,7 @@ test('detected provider failures proactively offer a contextual issue report', a
 
   await page.goto('./');
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 10_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill('inspect this workspace');
   await page.locator('[data-testid="chat-composer-submit"]').click();
 

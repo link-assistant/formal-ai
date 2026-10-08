@@ -1,6 +1,7 @@
 // @ts-check
 // Issue #845: Current-dialogue fact checking is live in the browser worker in every language.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 const factCheckQueries = [
   { language: 'en', query: 'fact-check this dialogue' },
@@ -27,7 +28,7 @@ async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
   // The composer stays disabled until the browser worker has booted (#776);
   // on a loaded runner that boot alone can outlast five seconds.
-  await expect(input).toBeEnabled({ timeout: 20_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
   const messages = page.locator('[data-testid="chat-message"]');
   const initialCount = await messages.count();

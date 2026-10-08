@@ -10,6 +10,7 @@
 // recursive "robotic detail" layer. These tests assert that headline is present,
 // human, and genuinely per-intent (greeting vs wellbeing vs calculation).
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 async function bootManualChat(page) {
   await page.addInitScript(() => {
@@ -37,7 +38,7 @@ async function bootManualChat(page) {
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 15_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
 
   const messages = page.locator('[data-testid="chat-message"]');

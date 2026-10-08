@@ -3,6 +3,7 @@
 // web-capture HTTP boundaries before using its bounded local fallbacks.
 const path = require('path');
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 // The evidence pins the published package the web bundle actually loads, so
 // the expected marker follows the root manifest instead of a frozen version.
@@ -26,7 +27,7 @@ async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
   const assistants = page.locator('[data-testid="chat-message"].assistant');
   const before = await assistants.count();
-  await expect(input).toBeEnabled({ timeout: 10_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
   await page.locator('[data-testid="chat-composer-submit"]').click();
   await expect.poll(() => assistants.count(), { timeout: 20_000 }).toBeGreaterThan(before);

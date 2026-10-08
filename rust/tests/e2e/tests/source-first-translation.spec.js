@@ -1,6 +1,7 @@
 // @ts-check
 // Issue #776: source-first translation commands and semantic round trips.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 
 async function switchToManualMode(page) {
   const demoToggle = page.locator('.mode-toggle');
@@ -13,7 +14,7 @@ async function switchToManualMode(page) {
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 15_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
   const messages = page.locator('[data-testid="chat-message"]');
   const initialCount = await messages.count();
@@ -89,6 +90,6 @@ test.describe('Issue #776 source-first translation', () => {
     } finally {
       releaseWasm();
     }
-    await expect(input).toBeEnabled({ timeout: 15_000 });
+    await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   });
 });

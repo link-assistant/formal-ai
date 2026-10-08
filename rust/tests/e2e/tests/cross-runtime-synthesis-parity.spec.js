@@ -1,13 +1,14 @@
 // @ts-check
 // Issue #327: Browser text synthesis matches the Rust parity fixture and accepts supported-language wrappers.
 const { test, expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./support/worker-ready');
 // Plan 16 L1 moved this spec to rust/tests/e2e/tests/, so the repo root is
 // four levels up, not three.
 const parityCases = require('../../../../data/parity/cross-runtime-synthesis.json');
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 15_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
 
   const messages = page.locator('[data-testid="chat-message"]');
@@ -62,6 +63,14 @@ test.describe('Issue #327 cross-runtime synthesis parity', () => {
       }
       for (const forbidden of item.forbiddenAnswerFragments) {
         await expect(body).not.toContainText(forbidden);
+      }
+      // A forbidden answer fragment must not reach the evidence either,
+      // unless the case names what its evidence may not hold: a summary's
+      // evidence lists the statements it dropped, so only keeping the
+      // forbidden statement is wrong there.
+      const forbiddenEvidence =
+        item.forbiddenEvidenceFragments || item.forbiddenAnswerFragments;
+      for (const forbidden of forbiddenEvidence) {
         if (/[A-Za-z_]/.test(forbidden)) {
           await expect(evidence).not.toContainText(forbidden);
         }

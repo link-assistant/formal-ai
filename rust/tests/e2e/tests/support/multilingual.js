@@ -2,6 +2,7 @@
 // Shared constants and page helpers for the multilingual-*.spec.js suites
 // (split from the former multilingual.spec.js; this file is not itself a spec).
 const { expect } = require('@playwright/test');
+const { WORKER_READY_TIMEOUT_MS } = require('./worker-ready');
 
 const UNKNOWN_ANSWER_MARKER = 'cannot answer that from local links rules';
 const TEN_POW_100 =
@@ -177,9 +178,7 @@ async function switchToManualMode(page) {
   });
   await demoToggle.click();
   await expect(page.locator('[data-testid="demo-status"]')).toHaveText('Manual mode');
-  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
-    timeout: 5_000,
-  });
+  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   const tools = page.locator('[data-testid="sidebar-tools"]');
   await expect(tools).toBeVisible({ timeout: 10_000 });
   if ((await tools.getAttribute('data-collapsed')) === 'true') {
@@ -200,9 +199,7 @@ async function setUiLanguage(page, language) {
   await page.reload();
   await expect(page.locator('.app')).toBeVisible({ timeout: 15_000 });
   await expect(page.locator('html')).toHaveAttribute('lang', language);
-  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({
-    timeout: 5_000,
-  });
+  await expect(page.locator('[data-testid="chat-composer-input"]')).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
 }
 
 // Issue #27: greeting randomisation defaults to ON. Tests below pin the
@@ -241,7 +238,7 @@ async function disableGreetingVariations(page) {
 
 async function sendPrompt(page, text) {
   const input = page.locator('[data-testid="chat-composer-input"]');
-  await expect(input).toBeEnabled({ timeout: 15_000 });
+  await expect(input).toBeEnabled({ timeout: WORKER_READY_TIMEOUT_MS });
   await input.fill(text);
   const messages = page.locator('[data-testid="chat-message"]');
   const initial = await messages.count();
