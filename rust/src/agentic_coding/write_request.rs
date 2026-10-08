@@ -678,14 +678,15 @@ pub(super) fn first_action_cue_start(toks: &[Token<'_>]) -> Option<usize> {
 /// Returns [`None`] when nothing is left.
 pub(super) fn clean_content(raw: &str) -> Option<String> {
     let led = strip_clause_lead(raw);
-    // The sentence's own closing mark after one quoted literal belongs to the
-    // sentence: `containing 'hello'.` writes `hello`, not `'hello'.`.
-    if let Some(closed) = led
+    // One quoted literal, in any pair of quotes (`'a'`, «a», “a”; PR #1188 G100),
+    // is the content; the sentence's closing mark after it is the sentence's:
+    // `containing 'hello'.` writes `hello`, not `'hello'.`.
+    let closed = led
         .strip_suffix([
             '.', '!', '?', '\u{0964}', '\u{3002}', '\u{ff01}', '\u{ff1f}',
         ])
-        .map(str::trim)
-        && let [only] = crate::normal_markov::quoted_segment_spans(closed).as_slice()
+        .map_or(led, str::trim);
+    if let [only] = crate::normal_markov::quoted_segment_spans(closed).as_slice()
         && only.start == 0
         && only.end == closed.len()
     {

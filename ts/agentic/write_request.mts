@@ -348,11 +348,12 @@ export function firstActionCueStart(toks) {
 /** Mirrors `fn clean_content`. @param {string} raw @returns {string|null} */
 export function cleanContent(raw) {
   const led = stripClauseLead(raw);
-  // The sentence's own closing mark after one quoted literal belongs to the
-  // sentence: `containing 'hello'.` writes `hello`, not `'hello'.`.
+  // One quoted literal, in any pair of quotes (`'a'`, «a», “a”; PR #1188 G100),
+  // is the content; the sentence's closing mark after it is the sentence's:
+  // `containing 'hello'.` writes `hello`, not `'hello'.`.
   const closed = trim(led.replace(/[.!?\u0964\u3002\uff01\uff1f]$/u, ''));
   const [only, ...others] = quotedSegmentSpans(closed);
-  if (closed !== led && only && others.length === 0 && only.start === 0 && only.end === closed.length) {
+  if (only && others.length === 0 && only.start === 0 && only.end === closed.length) {
     return trim(only.text) || null;
   }
   let result = led;
