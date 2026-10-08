@@ -635,8 +635,8 @@ requirement_status_ledger_shard requirements_05
   requirement
     id "R1188-U14"
     shard "docs/requirements/issue-1188-user-requirements.md"
-    verdict "partial"
+    verdict "implemented"
     delivered ""
     issue "1188"
-    automated_test ""
+    automated_test "rust/tests/web/architect-note-verbatim.test.mjs"
     manual "not yet confirmed"

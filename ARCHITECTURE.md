@@ -47,6 +47,11 @@ idea to the source modules that implement (or will implement) it.
 Each topic file keeps the original section numbers, so references such as
 "§16" or "ARCHITECTURE.md §18" still resolve through this table.
 
+- [Architecture Principles](docs/architecture/principles.md): how the code
+  follows [code-architecture-principles](https://github.com/link-foundation/code-architecture-principles),
+  the gate that enforces each principle and the requirement row tracking each
+  gap (R1188-U2)
+
 - [System Context, Pipeline, and Links Notation Input](docs/architecture/system-and-pipeline.md)
   - [1. System Context](docs/architecture/system-and-pipeline.md#1-system-context)
   - [2. Pipeline Overview](docs/architecture/system-and-pipeline.md#2-pipeline-overview)

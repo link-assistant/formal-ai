@@ -1,0 +1,191 @@
+architecture-principles
+  # R1188-U2: how this repository applies link-foundation/code-architecture-principles.
+  # One `principle` per universal principle of the pinned README, in its order.
+  # `practice` says how the principle is applied here, `enforced-by` names a gate
+  # under data/meta/ci-gates/ that fails a pull request breaking it, and `gap`
+  # names the requirement row that tracks what is still missing. A principle
+  # with neither is a convention the repository follows without a gate yet.
+  # `node scripts/render-architecture-principles.mjs --write` renders
+  # docs/architecture/principles.md; `--check` (gate check-architecture-principles)
+  # fails on a stale page, an unknown gate or an unknown requirement row.
+  source "https://github.com/link-foundation/code-architecture-principles"
+  commit "f8a3d6ce6312b2e6f752bab43c4c28d003df3ae7"
+  group "Structure & Modularity"
+    principle "Modularity"
+      practice "Files stay small: at most 1500 lines, Rust at most 1000, worker shards under recorded line budgets, and no packed one-line code."
+      enforced-by check-file-size
+      enforced-by check-worker-line-budget
+      enforced-by check-readable-code
+    principle "Separation of Concerns"
+      practice "Behaviour lives in seed data, mechanisms in code, presentation in the web UI; the compiled core stays minimal and the UI holds no solver logic."
+      enforced-by check-minimal-core-boundary
+      enforced-by check-web-hardcoded-ui
+    principle "High Cohesion"
+      practice "A module owns one capability (one handler, one planner route family, one seed category file); split files are named by what they hold."
+      gap R1188-U5
+    principle "Low Coupling"
+      practice "Handlers meet only through the precedence table and the seed registry, never by calling each other directly."
+      enforced-by check-worker-handler-registry
+      enforced-by check-seed-registry
+    principle "Composition Over Complexity"
+      practice "Answers are composed from small rules: seed handler rules, substitution passes and the recursive meta reasoner, instead of one large function per request shape."
+      enforced-by check-debt-ratchet
+    principle "Layers / Tiered Architecture"
+      practice "Surfaces (web, CLI, server, Telegram, agent CLI) sit over one solver, which sits over the seed and the links memory; dependencies point inward."
+    principle "Hexagonal / Ports and Adapters"
+      practice "The agentic planner talks to a host port (js/agentic/host.mjs); the browser worker, the Node server and native Rust are adapters behind it."
+    principle "Clean Architecture Dependency Rule"
+      practice "Reasoning code never names a network, file system or UI framework; it reads them through the host and the source cache."
+      enforced-by check-minimal-core-boundary
+  group "Behavior, Interfaces & Abstraction"
+    principle "Abstraction"
+      practice "A capability is reached by its meaning (a seed role), not by the words of one language or one prompt."
+      enforced-by check-hardcoded-language
+      gap R1188-U1
+    principle "Stable Contracts"
+      practice "The OpenAI-compatible server protocol, the links notation formats and the generated ledgers are versioned contracts with --check generators."
+      enforced-by check-requirement-status
+      enforced-by check-status-render
+    principle "Explicit Interfaces"
+      practice "Every JavaScript module and its Rust twin cite each other, so the shared surface is named in both roots."
+      enforced-by check-twin-citations
+      gap R1188-U16
+    principle "Principle of Least Surprise"
+      practice "Formal AI as a coding agent takes no action it was not asked for: quoted payloads are data, unpaired quotes are declined, a line edit never becomes a whole-file write."
+      gap R1188-U17
+    principle "Clear Naming"
+      practice "Names are full English words; files and directories say what they hold."
+      gap R1188-U4
+      gap R1188-U5
+    principle "Extensible Public Surface"
+      practice "New behaviour is added as seed data (a meaning, a response row, a handler rule) without changing the compiled surface."
+      enforced-by check-seed-registry
+    principle "Small Public Documentation"
+      practice "ARCHITECTURE.md is a table of contents; each topic lives in one file under docs/architecture/."
+    principle "Intent-Revealing Interfaces"
+      practice "Tests read as documentation of the behaviour they pin, named by the requirement they cover."
+      enforced-by check-tests-as-docs
+    principle "Protected Variations"
+      practice "Language differences are confined to seed lexemes and response rows; code reads roles, so adding a language changes data only."
+      enforced-by check-language-parity
+      enforced-by check-response-parity-debt
+  group "State & Data"
+    principle "Prefer Immutability"
+      practice "Memory is append-only: events, learned facts and dreaming results are added, never rewritten."
+    principle "Controlled Mutability"
+      practice "Mutating actions (file writes, shell commands, GitHub writes) pass the mutating-action ladder and are refused unless explicitly allowed."
+      enforced-by repository-workspace-protocol
+    principle "Single Source of Truth"
+      practice "Seed files are listed once in data/meta/seed-registry.lino; generated ledgers and documents are rendered from one source with --check; seed mirrors are byte copies."
+      enforced-by check-seed-registry
+      enforced-by check-seed-registry-js-twin
+      enforced-by check-requirement-status
+    principle "Clear State Transitions"
+      practice "Requirement verdicts, handler migrations and ratchets move one way: a ceiling may only fall and a floor only rise."
+      enforced-by check-debt-ratchet
+      enforced-by check-coverage-ratchet
+    principle "Make Invalid States Impossible"
+      practice "Every role and response intent resolves to an authored definition, so a dangling reference cannot be merged."
+      enforced-by check-closure-audit
+      enforced-by check-semantic-grounding
+  group "Side Effects, I/O & Boundaries"
+    principle "Keep Side Effects at the Edges"
+      practice "The solver is a pure function of the prompt, the history and the seed; network and disk access happen in the host and the source cache."
+      enforced-by check-minimal-core-boundary
+    principle "Functional Core, Imperative Shell"
+      practice "The agentic planner returns the next tool call as data; the driver or the agent CLI performs it."
+      enforced-by repository-workspace-protocol
+    principle "Explicit Side Effects"
+      practice "Every executed command is recorded with its argv, exit status and output hash, and answers cite that evidence."
+    principle "Idempotence"
+      practice "Generators and substitution passes produce the same bytes on a second run; --check modes prove it."
+      enforced-by check-status-render
+      gap R1188-U8
+    principle "Stateless Processes (Where Possible)"
+      practice "Server requests carry their history; the worker and the Node server keep no per-request state outside memory events."
+  group "Correctness, Types & Testing"
+    principle "Design for Testability"
+      practice "Every requirement row names the test that pins it; JavaScript tests run with node, Rust twins in CI."
+      enforced-by check-requirement-status
+      enforced-by check-language-test-coverage
+    principle "Deterministic Core Logic"
+      practice "No neural inference: the same prompt, history and seed always give the same answer and trace."
+      enforced-by check-tests-as-docs
+    principle "Use Types or Schemas to Model Reality"
+      practice "Links notation records have a declared shape (role registry, seed registry, gate registry), and the Rust core is typed."
+      enforced-by check-ci-gate-registry
+      enforced-by run-clippy
+    principle "Fail Fast and Clearly"
+      practice "A gate prints the file, the measured value and the limit, and says how to fix it instead of raising the limit."
+      enforced-by check-debt-ratchet
+    principle "Validation at Boundaries"
+      practice "Prompts, tool results and fetched pages are parsed at the surface; quoted payloads are data and never choose a route."
+      gap R1188-U17
+  group "Domain & Understanding"
+    principle "Ubiquitous Language"
+      practice "Code, seed and documents use the architect's terms (links, meanings, formalization, associative memory), recorded in docs/architect-notes/."
+      enforced-by check-associative-terminology
+    principle "Domain-Centered Design"
+      practice "The domain is meaning: concepts carry Wikidata ids, and every language reaches the same meaning."
+      enforced-by check-semantic-grounding
+    principle "Bounded Contexts"
+      practice "Capabilities are separate contexts (calculation, translation, coding, research), each with its own seed category files and routing row."
+      enforced-by check-capability-routing
+    principle "Value Objects"
+      practice "Quantities, units, dates and identifiers are values compared by content, as links in the notation."
+    principle "Aggregates / Consistency Boundaries"
+      practice "A conversation, a memory export and a repository workspace are each written and restored as one consistent document."
+  group "Simplicity, Clarity & Maintenance"
+    principle "Simplicity Over Cleverness"
+      practice "A failing prompt is fixed by the smallest more universal rule, never by a case for that prompt."
+      enforced-by check-hardcoded-language
+      gap R1188-U1
+    principle "Self-documented Code"
+      practice "Doc comments say why; names are full words; generated files say which command regenerates them."
+      enforced-by check-rust-api-documentation
+      gap R1188-U4
+    principle "Minimize Cognitive Load"
+      practice "Code is readable multi-line text and links notation stays human readable and deduplicated."
+      enforced-by check-readable-code
+      gap R1188-U6
+      gap R1188-U7
+    principle "Minimize nesting"
+      practice "Early returns and small helpers; clippy's cognitive-complexity lints run with warnings denied."
+      enforced-by run-clippy
+    principle "Small Units"
+      practice "Small files, small functions and small CI steps: no job over 30 minutes."
+      enforced-by check-file-size
+      enforced-by check-ci-speed
+    principle "Continuous refactoring"
+      practice "Debt is measured and ratcheted down on every pull request rather than scheduled for later."
+      enforced-by check-debt-ratchet
+      enforced-by check-worker-line-budget
+    principle "The Unix “Do One Thing Well” Principle"
+      practice "Each script does one job (assemble, generate, render, check) and each CI gate checks one rule."
+      enforced-by check-ci-gate-registry
+    principle "Programs Should Work Together"
+      practice "Every surface speaks plain text and links notation; the server is OpenAI compatible, so any agent CLI drives Formal AI."
+      enforced-by repository-workspace-protocol
+  group "APIs, Services & Deployment"
+    principle "Consistent API Design"
+      practice "JavaScript and Rust expose the same functions under the same names (camelCase and snake_case of the same words)."
+      enforced-by check-js-rust-translation
+      enforced-by check-twin-citations
+    principle "Backwards Compatibility When Possible"
+      practice "Memory exports and seed formats stay readable by earlier releases; changelog fragments record every change."
+      enforced-by check-changelog-fragment-js-twin
+      enforced-by check-reconstructed-changelog
+    principle "Configuration vs. Code"
+      practice "Thresholds, vocabularies, gate lists and CI limits are data under data/meta and data/seed, not constants in code."
+      enforced-by check-ci-gate-registry
+      enforced-by check-hardcoded-language
+    principle "Declarative Dependencies"
+      practice "Dependencies are pinned in Cargo.lock and package locks and kept at their latest versions."
+      enforced-by check-cargo-lock-is-synchronized
+      enforced-by check-dependencies-latest
+      enforced-by check-javascript-dependencies
+    principle "Logs as Streams, Not Internal Storage"
+      practice "The solver emits an append-only event log that surfaces stream and memory stores as links."
+    principle "Environment Parity"
+      practice "The browser, the Node server and the native binary give the same answers for the same prompt."
+      gap R994

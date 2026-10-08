@@ -157,19 +157,22 @@ migration are recorded in the 2026-09-24 standing doctrine in
 
 ### Code shape (2026-10-08)
 
-The 2026-10-08 instructions, as summarised in [`experiments/formal_ai_subagent/preamble.md`](experiments/formal_ai_subagent/preamble.md) until the verbatim note is recorded ([R1188-U14, R1188-U15](docs/requirements/issue-1188-user-requirements.md)):
+The 2026-10-08 instructions, recorded verbatim in [the 2026-10-08 architect note](docs/architect-notes/2026-10-08-architecture-naming-ci-speed-and-text-understanding.md) ([R1188-U14](docs/requirements/issue-1188-user-requirements.md)):
 
 - Generalize, don't specialize: specific tests are fine, but they all pass through smaller, more universal code; a fix that adds a case for one prompt is wrong (R1188-U1).
-- Code follows [code-architecture-principles](https://github.com/link-foundation/code-architecture-principles) (R1188-U2).
+- Code follows [code-architecture-principles](https://github.com/link-foundation/code-architecture-principles); [`docs/architecture/principles.md`](docs/architecture/principles.md) maps each principle to its gate (R1188-U2).
 - Names are full English words, and file and directory names say what they hold, with no numbered parts where a meaningful category exists (R1188-U4, R1188-U5).
 - The links notation we own prefers `-` over `_`, stays human readable, and is deduplicated: shared structure is stated once and referenced (R1188-U6, R1188-U7).
 - Bulk changes are automated as rules; small edits are delegated to Formal AI, and Formal AI is fixed when it fails (R1188-U8, R1188-U13).
 - CI: no job or step runs over 15-30 minutes, long-running jobs and tests start first, and work runs in parallel at job and test level, enforced by a gate (R1188-U9 to R1188-U12).
+- Formal AI understands real text without an LLM: it formalizes web pages, translates by the round trip that survives every language, lists the exact requirements of an issue, and summarizes by keeping the statements others depend on (R1188-U18 to R1188-U21).
+- Every regular source file in `js/`, `ts/` and `rust/` is readable multi-line code; only distribution bundles may be exempt (R1188-U23).
+- Locally, Formal AI runs from its JavaScript source, Rust is not built, only the tests next to a change run, and disk space is kept free; CI checks the rest (R1188-U24, R1188-U25).
 
 ### Where the architect's notes live
 
 This section is kept up to date from
-[`docs/architect-notes/`](docs/architect-notes/), which records his statements in
+[`docs/architect-notes/`](docs/architect-notes/), which records the architect's statements in
 chronological order, quoted and referenced. Where a document, gate, requirement
 or plan contradicts the latest note, the document is wrong and must be fixed. Do
 not invent terminology the architect does not use.

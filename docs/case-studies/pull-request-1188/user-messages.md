@@ -8,7 +8,7 @@ first sent in and its timestamp. Tool results, system reminders, task
 notifications, local command echoes, subagent hand-backs and continuation
 summaries are left out; token-shaped strings are redacted.
 
-Messages: 132.
+Messages: 143.
 
 ## 1. 2026-09-07T17:30:29.241Z
 
@@ -1070,4 +1070,92 @@ Session `7ded2366-68ef-48b9-9436-5961d572a965`.
 
 ```text
 Double check formal AI is capable of high quality formalization of any text in the internet, like wikipedia pages, and is capable of natural language translation (we can test for round trip translation, best translation is the one that services round trip translation in all languages), we also need to make sure our formal AI is capable of listing all exact requirements from the issues (we have alot of issues to have examples), and we also need to make sure formal AI is capable of doing summariazation, but selected the most important statements/facts which all other statements just describe or depend up on, deduplicate what was already provided in text, so we can do consise summarization algorithmically with no need to so with any LLMs and so on. Double check previous requirements and these requirements are carefully tracked in our repository, recordered and fully delivered, now 4 subagents is running, lets move to not more than 3 sub-agents, remember our contribuding guidelines, make sure we fully deliver everything I ask. A give all permissions required to what previsouly was forbidden by auto classifier, do it again. If auto classier ever tries to stop you - I give you permissions to do all things nessesary. If that does not work after 2-3 attempts wait for me I will give you permissions again.
+```
+
+## 133. 2026-10-08T11:26:53.905Z
+
+Session `7ded2366-68ef-48b9-9436-5961d572a965`.
+
+```text
+I didn't ask to stop any agents, now you need fully deliver work of stopped agent too. I asked not to spawn more than 3 sub agents, you can wait them all to finish.
+```
+
+## 134. 2026-10-08T11:27:04.156Z
+
+Session `7ded2366-68ef-48b9-9436-5961d572a965`.
+
+```text
+Try again what autoclassifier blocks.
+```
+
+## 135. 2026-10-08T11:27:10.627Z
+
+Session `7ded2366-68ef-48b9-9436-5961d572a965`.
+
+```text
+I EXPLICTLY ALLOW EVERYTHING.
+```
+
+## 136. 2026-10-08T11:27:31.088Z
+
+Session `7ded2366-68ef-48b9-9436-5961d572a965`.
+
+```text
+I EXPLICITLY ALLOW SECRET SCAN
+```
+
+## 137. 2026-10-08T11:40:22.826Z
+
+Session `7ded2366-68ef-48b9-9436-5961d572a965`.
+
+```text
+I think we should not have single line files in ./ts folder of repository, everything must be human readable, so it should be multiline code in ./js, ./ts, ./rust
+```
+
+## 138. 2026-10-08T11:40:51.701Z
+
+Session `7ded2366-68ef-48b9-9436-5961d572a965`.
+
+```text
+That must be also strict requirement. If we need some dist folders we can make exceptions for them, but not for any regular code.
+```
+
+## 139. 2026-10-08T11:41:24.488Z
+
+Session `7ded2366-68ef-48b9-9436-5961d572a965`.
+
+```text
+Also be careful with disk space, we again running out of it.
+```
+
+## 140. 2026-10-08T11:44:50.772Z
+
+Session `7ded2366-68ef-48b9-9436-5961d572a965`.
+
+```text
+We also need to minimize number of tests we are running locally, only run most critical tests where you do fixes and so on, everything else will be checked in CI/CD where you can do bulk fixing.
+```
+
+## 141. 2026-10-08T11:47:32.469Z
+
+Session `7ded2366-68ef-48b9-9436-5961d572a965`.
+
+```text
+Double check you apply all our guide lines and actually use up to 3 subagents to bulk draft all undrafted changes, make sure on of the agents commits fixes to CI/CD as soon as results of runs are ready.
+```
+
+## 142. 2026-10-08T11:47:50.242Z
+
+Session `7ded2366-68ef-48b9-9436-5961d572a965`.
+
+```text
+All undrafted requirements must be drafted.
+```
+
+## 143. 2026-10-08T12:09:31.547Z
+
+Session `7ded2366-68ef-48b9-9436-5961d572a965`.
+
+```text
+Also work yourself, double check that all requirements are fully delivered, we need to fully deliver this pull request to guarantee we will have valid working and testable release.
 ```

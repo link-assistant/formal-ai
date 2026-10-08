@@ -1261,8 +1261,15 @@ differently.
 
 ## Pull Request Process
 
-1. Ensure all tests pass locally
-2. Update documentation if needed
+1. Run only the tests next to your change locally (`node --test <file>`) and
+   the JavaScript twins of the gates it touches
+   (`node experiments/formal_ai_subagent/local-gates.mjs --only <gate>`); do
+   not build Rust locally. CI runs everything else, and its failures are fixed
+   in bulk (R1188-U24, R1188-U25).
+2. Check the change against the review checklist in
+   [`docs/architecture/principles.md`](docs/architecture/principles.md), which
+   maps every code-architecture principle to the gate that enforces it
+   (R1188-U2), and update documentation if needed
 3. Add a changelog fragment (see step 5 in Development Workflow)
 4. Ensure the PR description clearly describes the changes
 5. Link the issue the PR closes with a GitHub closing keyword — `Fixes #146` or

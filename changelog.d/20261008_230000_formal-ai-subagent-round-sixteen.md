@@ -5,8 +5,12 @@
   - **Readable code (R1188-U23):** `scripts/check-readable-code.mjs` (gate `check_readable_code`) fails packed files and lines over 300 characters of code under `js/`, `ts/`, `rust/`, `scripts/` and `packages/`. Exemptions need a reason and may only shrink. `translate-es` now carries the JavaScript layout through the pivot, so every `ts/` twin keeps its source's lines, indentation and comments. Long JSX lines are wrapped. The meta-language projections stay exempt until link-foundation/meta-language#217.
   - **Response languages:** 1,272 ru/hi/zh/es response rows were added. The response-language debt falls from 382 to 0: the 16 machine-text templates (code, log lines) are marked `audience machine`, which the ledger generator and its Rust twin test exempt. `multilingual-responses-synthesis.lino` is split into web, procedural-how-to, installation and documents files.
 
+  - **Architecture principles (R1188-U2):** `data/meta/architecture-principles.lino` maps the 51 universal principles of link-foundation/code-architecture-principles to how the repository applies each, the gate that enforces it (37 have one) and the requirement row tracking any gap. `scripts/render-architecture-principles.mjs` renders `docs/architecture/principles.md`; gate `check_architecture_principles`.
+  - **The 2026-10-08 vision, verbatim (R1188-U14):** a new architect note quotes the owner's messages byte for byte from the collected `user-messages.md`. `VISION.md` folds them in, and a test proves the quotes are exact.
+
 ### Changed
 
 - The JS meaning lexicon reads its file list from `data/meta/seed-registry.lino`. The hand-kept list had missed `meanings-response-intents-handlers`.
 - The web UI boundary ratchet counts non-whitespace characters, so wrapping a line no longer changes the measure.
 - JS -> Rust translated items: 254 -> 263.
+- CONTRIBUTING's pull request process asks for the tests next to a change and the JavaScript gate twins locally, not every test; CI runs the rest.
