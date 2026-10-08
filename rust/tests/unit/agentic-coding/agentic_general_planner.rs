@@ -142,7 +142,7 @@ fn compound_github_work_item_routes_to_agentic_planning_before_project_lookup() 
             .iter()
             .map(|step| step.tool.as_str())
             .collect::<Vec<_>>(),
-        ["web_fetch", "write_file"]
+        ["web_fetch", "read_file", "write_file", "read_file"]
     );
     assert!(outcome.steps[1].arguments.contains(PLAN_PATH));
     assert!(outcome.final_answer.contains("Planned, not executed"));
@@ -226,14 +226,23 @@ fn general_task_runs_end_to_end() {
         .iter()
         .map(|step| step.tool.as_str())
         .collect();
-    assert_eq!(tools, ["write_file", "write_file", "run_command"]);
+    assert_eq!(
+        tools,
+        [
+            "read_file",
+            "write_file",
+            "read_file",
+            "write_file",
+            "run_command"
+        ]
+    );
     assert!(outcome.steps[0].arguments.contains(PLAN_PATH));
     assert!(
-        outcome.steps[1]
+        outcome.steps[3]
             .arguments
             .contains("notes/general-demo.txt")
     );
-    assert!(outcome.steps[2].result.contains("planner fallback works"));
+    assert!(outcome.steps[4].result.contains("planner fallback works"));
 }
 
 #[test]
@@ -247,7 +256,7 @@ fn general_task_preserves_exact_multiline_lino_payload() {
 
     let outcome = run_agentic_task(&task).expect("agentic execution");
     let write: serde_json::Value =
-        serde_json::from_str(&outcome.steps[1].arguments).expect("write arguments");
+        serde_json::from_str(&outcome.steps[3].arguments).expect("write arguments");
     assert_eq!(write["path"], "data/seed/learned-program-rules.lino");
     assert_eq!(write["content"], payload);
 }
@@ -269,7 +278,7 @@ fn bare_with_preserves_an_exact_backticked_multiline_payload() {
         panic!("the literal file plan must persist its plan before execution")
     };
     assert_eq!(calls.len(), 1);
-    assert_eq!(calls[0].tool, "write");
+    assert_eq!(calls[0].tool, "bash");
     assert!(
         calls[0].arguments.contains(PLAN_PATH),
         "the evidence-record route must not search for the payload before it is created: {}",
@@ -305,7 +314,7 @@ fn literal_file_marker_routes_before_edit_shaped_payload() {
             panic!("literal file plan must persist its plan before execution: {task}")
         };
         assert_eq!(calls.len(), 1);
-        assert_eq!(calls[0].tool, "write", "{task}");
+        assert_eq!(calls[0].tool, "bash", "{task}");
         assert!(
             calls[0].arguments.contains(PLAN_PATH),
             "edit-shaped payload must not route to a read of the new target: {}",
@@ -341,36 +350,57 @@ fn command_stdout_requests_run_the_command_instead_of_writing_the_reference_phra
 fn command_stdout_plan_executes_generate_then_verify_through_cli_tools() {
     let task = "Execute the auto-learning task. Run 'printf learned-output' and write its exact \
                 stdout to reports/learned.txt";
-    let tools = ["write", "bash"];
+    let tools = ["read", "write", "run_command"];
     let mut messages = vec![ChatMessage::user(task)];
     let mut commands = Vec::new();
-
-    for (index, result) in [
-        "wrote the plan",
-        "created reports/learned.txt",
-        "learned-output",
-    ]
-    .into_iter()
-    .enumerate()
-    {
-        let AgenticPlan::ToolCalls(calls) =
-            plan_chat_step(&messages, &tools).expect("next planned tool call")
-        else {
-            panic!("step {index} must be a tool call");
+    let mut files = std::collections::BTreeMap::<String, String>::new();
+    for index in 0..8 {
+        let step = plan_chat_step(&messages, &tools).expect("planned step");
+        let AgenticPlan::ToolCalls(calls) = step else {
+            break;
         };
         let call = &calls[0];
         let arguments: serde_json::Value =
             serde_json::from_str(&call.arguments).expect("tool arguments");
-        if call.tool == "bash" {
-            commands.push(arguments["command"].as_str().expect("command").to_owned());
-        }
+        let path = arguments["path"].as_str().unwrap_or_default();
+        let output = match call.tool.as_str() {
+            "read" => files
+                .get(path)
+                .cloned()
+                .unwrap_or_else(|| format!("Error: File not found: {path}")),
+            "write" => {
+                files.insert(
+                    path.to_owned(),
+                    arguments["content"]
+                        .as_str()
+                        .expect("write bytes")
+                        .to_owned(),
+                );
+                String::new()
+            }
+            "run_command" => {
+                let command = arguments["command"].as_str().expect("command");
+                commands.push(command.to_owned());
+                if command == "printf learned-output > 'reports/learned.txt'" {
+                    files.insert(
+                        "reports/learned.txt".to_owned(),
+                        "learned-output".to_owned(),
+                    );
+                    String::new()
+                } else {
+                    assert_eq!(command, "cat reports/learned.txt");
+                    files["reports/learned.txt"].clone()
+                }
+            }
+            other => panic!("unexpected tool {other}"),
+        };
         let id = format!("command-output-{index}");
         messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
             &id,
             &call.tool,
             call.arguments.clone(),
         )]));
-        messages.push(ChatMessage::tool_result(id, &call.tool, result));
+        messages.push(ChatMessage::tool_result(id, &call.tool, output));
     }
 
     assert_eq!(

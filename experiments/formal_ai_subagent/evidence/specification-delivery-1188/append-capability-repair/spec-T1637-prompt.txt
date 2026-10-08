@@ -1,0 +1,1 @@
+Fix js/agentic/general_execution.mjs so plan events preserve every previous event and store the new event once. Implement real append-only persistence for .formal-ai/general-change-plan.lino, with read-back evidence and retry deduplication. Preserve the requested output-file bytes.

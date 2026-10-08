@@ -20,16 +20,16 @@
 use std::fmt::Write as _;
 
 use serde::{Deserialize, Serialize};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 use super::corpus;
 use crate::agent::{AgentCommandResult, AgentError, AgentWorkspace, AgentWorkspaceConfig};
 use crate::algorithm_discovery::{
-    discover_algorithms, traces_from_memory_events, AlgorithmCandidate,
+    AlgorithmCandidate, discover_algorithms, traces_from_memory_events,
 };
 use crate::memory::MemoryStore;
 use crate::protocol::{
-    create_chat_completion_with_solver, ChatCompletionRequest, ChatMessage, ToolCall,
+    ChatCompletionRequest, ChatMessage, ToolCall, create_chat_completion_with_solver,
 };
 use crate::skill_procedure::CompiledProcedure;
 use crate::solver::{SolverConfig, UniversalSolver};
@@ -44,14 +44,15 @@ pub const CORE_RECIPE_TOOLS: [&str; 4] = ["web_search", "web_fetch", "write_file
 
 /// The tool set the driver advertises.
 ///
-/// [`CORE_RECIPE_TOOLS`] plus the source-tree translator (plan 16 L2g) so the
+/// [`CORE_RECIPE_TOOLS`] plus observed workspace reads and the translator so the
 /// agent CLI can turn the js/ts cycle mid-session without shelling out.
-pub const DRIVER_TOOLS: [&str; 5] = [
+pub const DRIVER_TOOLS: [&str; 6] = [
     "web_search",
     "web_fetch",
     "write_file",
     "run_command",
     "translate",
+    "read_file",
 ];
 
 /// A hard cap on agentic turns (server round-trips). The recipe needs five; the
@@ -242,6 +243,30 @@ fn execute_tool_call(call: &ToolCall, workspace: &mut AgentWorkspace) -> (String
     match call.function.name.as_str() {
         "web_search" => (corpus::web_search(arg_str(&arguments, "query")), false),
         "web_fetch" => (corpus::web_fetch(arg_str(&arguments, "url")), false),
+        "read_file" => {
+            let path = arg_str(&arguments, "path");
+            match workspace.read_file(path) {
+                Ok(content) => {
+                    let body = content
+                        .split('\n')
+                        .enumerate()
+                        .map(|(index, line)| format!("{:05}| {line}", index + 1))
+                        .collect::<Vec<_>>()
+                        .join("\n");
+                    (
+                        super::work_item_steps::fill(
+                            "agent-file-read-frame",
+                            &[
+                                ("{body}", &body),
+                                ("{lines}", &content.split('\n').count().to_string()),
+                            ],
+                        ),
+                        false,
+                    )
+                }
+                Err(error) => (error.to_string(), true),
+            }
+        }
         "write_file" => {
             let path = arg_str(&arguments, "path");
             let content = arg_str(&arguments, "content");
@@ -276,11 +301,17 @@ fn execute_tool_call(call: &ToolCall, workspace: &mut AgentWorkspace) -> (String
         "translate" => {
             let Some(from) = crate::meta_translate::SourceRoot::parse(arg_str(&arguments, "from"))
             else {
-                return ("error: translate needs a known from root (js, ts)".to_owned(), true);
+                return (
+                    "error: translate needs a known from root (js, ts)".to_owned(),
+                    true,
+                );
             };
             let Some(to) = crate::meta_translate::SourceRoot::parse(arg_str(&arguments, "to"))
             else {
-                return ("error: translate needs a known to root (js, ts)".to_owned(), true);
+                return (
+                    "error: translate needs a known to root (js, ts)".to_owned(),
+                    true,
+                );
             };
             let path = arg_str(&arguments, "path");
             let write = arguments
@@ -326,16 +357,20 @@ fn translate_without_write(
     let report = match std::fs::read_to_string(root.join(repo_relative)) {
         Ok(source) => match crate::meta_translate::translate(from, to, repo_relative, &source) {
             TranslationOutcome::Rendered { target, .. } => return (target, false),
-            TranslationOutcome::Refused { refusals } => crate::translate_write::WriteReport::Refused {
-                items: crate::translate_write::refusal_items(repo_relative, &refusals),
-            },
+            TranslationOutcome::Refused { refusals } => {
+                crate::translate_write::WriteReport::Refused {
+                    items: crate::translate_write::refusal_items(repo_relative, &refusals),
+                }
+            }
             TranslationOutcome::Pending { .. } => {
                 crate::translate_write::WriteReport::UnsupportedLeg { from, to }
             }
-            TranslationOutcome::Invalid { reason } => crate::translate_write::WriteReport::Invalid {
-                path: repo_relative.to_owned(),
-                reason,
-            },
+            TranslationOutcome::Invalid { reason } => {
+                crate::translate_write::WriteReport::Invalid {
+                    path: repo_relative.to_owned(),
+                    reason,
+                }
+            }
         },
         Err(_) => crate::translate_write::WriteReport::Missing {
             path: repo_relative.to_owned(),
@@ -346,8 +381,8 @@ fn translate_without_write(
         .iter()
         .map(|(key, value)| (*key, value.as_str()))
         .collect::<Vec<_>>();
-    let rendered = crate::seed::render_response(intent, "en", &values)
-        .unwrap_or_else(|| intent.to_owned());
+    let rendered =
+        crate::seed::render_response(intent, "en", &values).unwrap_or_else(|| intent.to_owned());
     (rendered, true)
 }
 
@@ -461,8 +496,9 @@ fn tool_definitions(names: &[&str]) -> Vec<Value> {
 fn tool_description(name: &str) -> String {
     match name {
         "web_search" => "Search the web for sources. Arguments: {\"query\": string}.".to_owned(),
-        "web_fetch" => {
-            "Fetch the text at a URL. Arguments: {\"url\": string}.".to_owned()
+        "web_fetch" => "Fetch the text at a URL. Arguments: {\"url\": string}.".to_owned(),
+        "read_file" => {
+            crate::seed::render_response("read-file-tool-schema", "en", &[]).unwrap_or_default()
         }
         "write_file" => {
             "Write a workspace file. Arguments: {\"path\": string, \"content\": string}.".to_owned()

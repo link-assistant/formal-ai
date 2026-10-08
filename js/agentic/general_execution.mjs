@@ -5,6 +5,9 @@ import { Capability } from './capability.mjs';
 import { isHostedResearchTool, shellCommandTool, toolFor } from './capability_router.mjs';
 import { attach, requestedIn } from './ci_workflow.mjs';
 import { executionRecipeFinalAnswer, planSymbolicCommandReroute } from './command_reroute.mjs';
+import { sourceFromReadResult } from './code_artifact.mjs';
+import { mentionsRoleRaw } from './write_lexicon.mjs';
+import { normalizePrompt } from './crate/engine.mjs';
 import { plainText } from './content.mjs';
 import {
   GeneralPlanMode, PLAN_PATH, composeGeneralChangePlan, planLinksNotation, plannedNotExecutedAnswer,
@@ -51,7 +54,9 @@ function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
   const targetMissing = latestFailure !== null && isGuardRead(plan,
     latestFailure.arguments === null || latestFailure.arguments === undefined ? null : toolArgumentPath(latestFailure.arguments),
     latestFailure.capability);
-  const failure = workItemUnreadable || targetMissing ? null : latestFailure;
+  const eventMissing = latestFailure !== null && latestFailure.capability === Capability.Read
+    && toolArgumentPath(latestFailure.arguments) === PLAN_PATH && absentPlanEvent(latestFailure.detail);
+  const failure = workItemUnreadable || targetMissing || eventMissing ? null : latestFailure;
   if (failure) {
     if (failure.capability === Capability.Write) {
       const path = failure.arguments === null || failure.arguments === undefined ? null : toolArgumentPath(failure.arguments);
@@ -105,15 +110,11 @@ function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
     const report = workItemReadFailureReport(plan, progress);
     if (report !== null) return finalAnswer(report);
   }
+  const eventStep = planEventStep(plan, progress, toolNames);
+  if (eventStep !== null) return eventStep;
   const writeTool = toolFor(toolNames, Capability.Write);
-  if (writeTool) {
-    const planAttempted = progress.attemptedWriteFor(PLAN_PATH);
-    const planWritten = progress.successfulWriteFor(PLAN_PATH);
-    if (!planAttempted) return planOne(writeTool, writeArguments(PLAN_PATH, planLinksNotation(plan)));
-    if (plan.mode === GeneralPlanMode.LiteralFile && !progress.successfulWriteFor(plan.target)
-      && (planWritten || planAttempted)) {
-      return planOne(writeTool, writeArguments(plan.target, plan.content));
-    }
+  if (writeTool && plan.mode === GeneralPlanMode.LiteralFile && !progress.successfulWriteFor(plan.target)) {
+    return planOne(writeTool, writeArguments(plan.target, plan.content));
   }
   const runTool = shellCommandTool(toolNames);
   if (runTool) {
@@ -130,6 +131,58 @@ function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
     }
   }
   return finishGeneralChange(plan, progress, resolvedFromWorkItem);
+}
+
+// The event stream is an observed artifact: generic Write replaces bytes, so
+// read its previous contents before composing an append and verify afterwards.
+function absentPlanEvent(detail) {
+  return mentionsRoleRaw('filesystem-absent-result', normalizePrompt(detail));
+}
+
+function planEventAppendCommand(plan) {
+  const event = planLinksNotation(plan);
+  const identity = event.split('\n')[1];
+  const path = shellQuote(PLAN_PATH);
+  return fill('plan-event-append-command', [['{lock_path}', shellQuote(PLAN_PATH + '.lock')], ['{path}', path], ['{identity}', shellQuote(identity)], ['{event}', shellQuote(event)]]);
+}
+
+function unverifiedPlanEvent(plan) {
+  return finalAnswer(generalPlanUnverified({ ...plan, target: PLAN_PATH, verification_command: 'cat ' + PLAN_PATH }));
+}
+
+function planEventStep(plan, progress, toolNames) {
+  const event = planLinksNotation(plan);
+  const identity = event.split('\n')[1];
+  const read = toolFor(toolNames, Capability.Read);
+  const write = toolFor(toolNames, Capability.Write);
+  const run = shellCommandTool(toolNames);
+  const leaf = run === null ? null : run.split('__').pop().split(/[./:]/u).pop().toLowerCase();
+  const atomicShell = leaf !== null && splitWhitespace(fill('plan-event-shell-aliases', [])).includes(leaf);
+  if (read && write && !atomicShell) {
+    const output = progress.successfulReadOutputFor(PLAN_PATH);
+    const prior = output === null ? null : sourceFromReadResult(output);
+    const expected = progress.successfulWriteContentFor(PLAN_PATH);
+    if (expected !== null) {
+      if (prior !== null && prior.startsWith(expected)) return null;
+      if (progress.last() === Capability.Read
+        && toolArgumentPath(progress.latestSuccessfulArguments(Capability.Read)) === PLAN_PATH) return unverifiedPlanEvent(plan);
+      return planOne(read, readArguments(PLAN_PATH));
+    }
+    if (prior !== null && prior.split('\n').includes(identity)) return prior.includes(event) ? null : unverifiedPlanEvent(plan);
+    const failure = progress.latestFailure();
+    const missing = failure !== null && failure.capability === Capability.Read
+      && toolArgumentPath(failure.arguments) === PLAN_PATH && absentPlanEvent(failure.detail);
+    if (prior === null && !missing) return planOne(read, readArguments(PLAN_PATH));
+    const before = prior ?? '';
+    const separator = before !== '' && !before.endsWith('\n') ? '\n' : '';
+    return planOne(write, writeArguments(PLAN_PATH, before + separator + event));
+  }
+  if (!run) return finalAnswer(plannedNotExecutedAnswer(plan));
+  const append = planEventAppendCommand(plan);
+  if (progress.successfulRunCountFor(append) === 0) return planOne(run, command(append));
+  const raw = progress.latestSuccessfulRunOutputFor(append);
+  const observed = raw === null ? null : observedPayload(raw);
+  return observed !== null && observed.includes(trim(event)) ? null : unverifiedPlanEvent(plan);
 }
 
 /**

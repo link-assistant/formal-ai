@@ -1,0 +1,6 @@
+Set the contents of changelog.d/20261009_234500_plan-event-append.md to «General change plans now retain earlier plan events instead of overwriting the event stream. Known shell clients append under a bounded lock, check the stable event identity for retries, and read back the actual event. Clients with file reads preserve the observed stream and verify it after writing; clients that expose only an overwrite tool cannot claim an append.
+
+The native driver exposes protected workspace file reads. Structurally valid numbered file-read frames preserve authored error narratives as data while explicit tool failures still block completion. The repository-root JavaScript dogfood driver maps append execution into the same ignored plan sandbox as file tools, preserving the committed historical log.
+
+Closest JavaScript checks passed: eighteen append and authored-content tests, plus the two selected G15 tests. They cover actual shell execution, simultaneous retries, denied reads, lost-history readback, bounded lock failure and sandbox mapping. Native sources and closest tests pass standalone Rust formatting checks; native execution remains a CI check. Broad source-change synthesis still needs further capability work: the unchanged implementation request read the source without implementing it.
+»

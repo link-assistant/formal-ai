@@ -8,6 +8,10 @@
 import { before, describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
@@ -51,6 +55,17 @@ function execute(files, tool, args) {
     return '';
   }
   if (tool === 'bash') {
+    if (args.command.startsWith('mkdir -p -- .formal-ai && (lock=')) {
+      const directory = mkdtempSync(join(tmpdir(), 'formal-ai-map-events-'));
+      try {
+        mkdirSync(join(directory, '.formal-ai'));
+        const eventPath = '.formal-ai/general-change-plan.lino';
+        if (files.has(eventPath)) writeFileSync(join(directory, eventPath), files.get(eventPath));
+        const output = execFileSync('/bin/sh', ['-c', args.command], { cwd: directory, encoding: 'utf8', timeout: 5000 });
+        files.set(eventPath, readFileSync(join(directory, eventPath), 'utf8'));
+        return output;
+      } finally { rmSync(directory, { recursive: true, force: true }); }
+    }
     const digest = /^sha256sum -- (\S+)$/u.exec(args.command);
     if (digest) return `${createHash('sha256').update(files.get(digest[1]) ?? '').digest('hex')}  ${digest[1]}\n`;
     const cat = /^cat (\S+)$/u.exec(args.command);
@@ -273,10 +288,13 @@ describe('G72: an anchor line found more than once is named, never reported as a
 });
 
 describe('G15: the plan event step says what it does, and a run from the repository root keeps the committed plan log', () => {
-  test('the step writes the composed plan, and says so', async () => {
-    const { files } = await drive('Write hello to x.txt', {});
+  test('the event preserves prior events and records a real append', async () => {
+    const before = 'general_change_plan\n  id "previous"\n';
+    const { files, calls } = await drive('Write hello to x.txt', { '.formal-ai/general-change-plan.lino': before });
+    assert.ok(files.get('.formal-ai/general-change-plan.lino').startsWith(before));
+    assert.deepEqual(calls, ['bash', 'write', 'bash']);
     assert.equal(files.get('x.txt'), 'hello');
-    assert.match(files.get('.formal-ai/general-change-plan.lino'), /\n {4}action "write the composed plan to \.formal-ai\/general-change-plan\.lino"\n/u);
+    assert.match(files.get('.formal-ai/general-change-plan.lino'), /\n {4}action "append the composed plan to \.formal-ai\/general-change-plan\.lino"\n/u);
   });
 
   test('the dogfood driver writes plan events under a git-ignored sandbox at the repository root', async () => {

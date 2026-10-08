@@ -222,6 +222,11 @@ impl AgentWorkspace {
         self.command_results.last()
     }
 
+    /// Read observed bytes using the same workspace path restrictions as writes.
+    pub fn read_file(&self, path: &str) -> Result<String, AgentError> {
+        Ok(fs::read_to_string(self.workspace_path(path)?)?)
+    }
+
     pub fn create_file(&mut self, path: &str, content: &str) {
         let result = self.write_file(path, content);
         self.record_fs_action(AgentActionKind::CreateFile, path, result);

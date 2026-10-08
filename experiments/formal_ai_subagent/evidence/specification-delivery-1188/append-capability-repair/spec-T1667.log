@@ -1,0 +1,13 @@
+>> bash {"command":"exactly «node -e 'const fs=require(\"fs\");fs.copyFileSync(\"/tmp/spec-native-general-planner-tests-reviewed.rs\",\"rust/tests/unit/agentic-coding/agentic_general_planner.rs\");fs.copyFileSync(\"/tmp/spec-g15-tests-reviewed.mjs\",\"rust/tests/web/pull-request-1188-teach-f.test.mjs\");fs.copyFileSync(\"/tmp/spec-g15-native-reviewed.rs\",\"rust/tests/unit/pull_request_1188_teach_f.rs\");'»"}
+   Output: 
+   Error: /bin/sh: exactly: command not found
+   
+   Exit Code: 127
+== answer ==
+The command failed: `exactly «node -e 'const fs=require("fs");fs.copyFileSync("/tmp/spec-native-general-planner-tests-reviewed.rs","rust/tests/unit/agentic-coding/agentic_general_planner.rs");fs.copyFileSync("/tmp/spec-g15-tests-reviewed.mjs","rust/tests/web/pull-request-1188-teach-f.test.mjs");fs.copyFileSync("/tmp/spec-g15-native-reviewed.rs","rust/tests/unit/pull_request_1188_teach_f.rs");'»` exited with code 127.
+
+```text
+/bin/sh: exactly: command not found
+```
+
+I detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.

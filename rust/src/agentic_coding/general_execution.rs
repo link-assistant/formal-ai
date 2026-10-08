@@ -70,9 +70,19 @@ fn general_change_step(
             failure.capability,
         )
     });
+    let event_missing = progress.latest_failure().is_some_and(|failure| {
+        failure.capability == Capability::Read
+            && failure
+                .arguments
+                .as_deref()
+                .and_then(tool_argument_path)
+                .as_deref()
+                == Some(PLAN_PATH)
+            && absent_plan_event(&failure.detail)
+    });
     if let Some(failure) = progress
         .latest_failure()
-        .filter(|_| !work_item_unreadable && !target_missing)
+        .filter(|_| !work_item_unreadable && !target_missing && !event_missing)
     {
         if failure.capability == Capability::Write {
             let path = failure.arguments.as_deref().and_then(tool_argument_path);
@@ -179,18 +189,14 @@ fn general_change_step(
     {
         return AgenticPlan::Final(report);
     }
-    if let Some(tool) = tool_for(tool_names, Capability::Write) {
-        let plan_attempted = progress.attempted_write_for(PLAN_PATH);
-        let plan_written = progress.successful_write_for(PLAN_PATH);
-        if !plan_attempted {
-            return plan_one(tool, write_arguments(PLAN_PATH, &plan.links_notation()));
-        }
-        if plan.mode == GeneralPlanMode::LiteralFile
-            && !progress.successful_write_for(&plan.target)
-            && (plan_written || plan_attempted)
-        {
-            return plan_one(tool, write_arguments(&plan.target, &plan.content));
-        }
+    if let Some(step) = plan_event_step(plan, &progress, tool_names) {
+        return step;
+    }
+    if let Some(tool) = tool_for(tool_names, Capability::Write)
+        && plan.mode == GeneralPlanMode::LiteralFile
+        && !progress.successful_write_for(&plan.target)
+    {
+        return plan_one(tool, write_arguments(&plan.target, &plan.content));
     }
     if let Some(tool) = shell_command_tool(tool_names) {
         match plan.mode {
@@ -223,6 +229,130 @@ fn general_change_step(
         }
     }
     finish_general_change(plan, &progress, resolved_from_work_item)
+}
+
+// Write is an overwrite operation. Preserve observed history and read back the
+// entire expected stream before treating its new event as recorded.
+fn absent_plan_event(detail: &str) -> bool {
+    crate::seed::lexicon().mentions_role_raw(
+        "filesystem-absent-result",
+        &crate::engine::normalize_prompt(detail),
+    )
+}
+
+fn plan_event_append_command(plan: &GeneralChangePlan) -> String {
+    let event = plan.links_notation();
+    let identity = event.lines().nth(1).unwrap_or_default();
+    let path = super::general_planner::shell_quote(PLAN_PATH);
+    let identity = super::general_planner::shell_quote(identity);
+    let event = super::general_planner::shell_quote(&event);
+    super::work_item_steps::fill(
+        "plan-event-append-command",
+        &[
+            (
+                "{lock_path}",
+                &super::general_planner::shell_quote(&format!("{PLAN_PATH}.lock")),
+            ),
+            ("{path}", &path),
+            ("{identity}", &identity),
+            ("{event}", &event),
+        ],
+    )
+}
+
+fn unverified_plan_event(plan: &GeneralChangePlan) -> AgenticPlan {
+    let mut evidence = plan.clone();
+    evidence.target = PLAN_PATH.to_owned();
+    evidence.verification_command = format!("cat {PLAN_PATH}");
+    AgenticPlan::Final(general_plan_unverified(&evidence))
+}
+
+fn plan_event_step(
+    plan: &GeneralChangePlan,
+    progress: &Progress,
+    tool_names: &[&str],
+) -> Option<AgenticPlan> {
+    let event = plan.links_notation();
+    let identity = event.lines().nth(1).unwrap_or_default();
+    let run = shell_command_tool(tool_names);
+    let aliases = super::work_item_steps::fill("plan-event-shell-aliases", &[]);
+    let atomic_shell = run.is_some_and(|name| {
+        let leaf = name
+            .rsplit("__")
+            .next()
+            .unwrap_or(name)
+            .rsplit(['.', '/', ':'])
+            .next()
+            .unwrap_or(name);
+        aliases
+            .split_whitespace()
+            .any(|alias| leaf.eq_ignore_ascii_case(alias))
+    });
+    if let (Some(read), Some(write)) = (
+        tool_for(tool_names, Capability::Read),
+        tool_for(tool_names, Capability::Write),
+    ) && !atomic_shell
+    {
+        let prior = progress
+            .successful_read_output_for(PLAN_PATH)
+            .map(super::code_artifact::source_from_read_result);
+        if let Some(expected) = progress.successful_write_content_for(PLAN_PATH) {
+            if prior
+                .as_deref()
+                .is_some_and(|prior| prior.starts_with(&expected))
+            {
+                return None;
+            }
+            if progress.last() == Some(Capability::Read)
+                && progress
+                    .latest_successful_arguments(Capability::Read)
+                    .and_then(tool_argument_path)
+                    .as_deref()
+                    == Some(PLAN_PATH)
+            {
+                return Some(unverified_plan_event(plan));
+            }
+            return Some(plan_one(read, read_arguments(PLAN_PATH)));
+        }
+        if prior
+            .as_deref()
+            .is_some_and(|prior| prior.lines().any(|line| line == identity))
+        {
+            return (!prior.as_deref().is_some_and(|prior| prior.contains(&event)))
+                .then(|| unverified_plan_event(plan));
+        }
+        let missing = progress.latest_failure().is_some_and(|failure| {
+            failure.capability == Capability::Read
+                && failure
+                    .arguments
+                    .as_deref()
+                    .and_then(tool_argument_path)
+                    .as_deref()
+                    == Some(PLAN_PATH)
+                && absent_plan_event(&failure.detail)
+        });
+        if prior.is_none() && !missing {
+            return Some(plan_one(read, read_arguments(PLAN_PATH)));
+        }
+        let mut stream = prior.unwrap_or_default();
+        if !stream.is_empty() && !stream.ends_with('\n') {
+            stream.push('\n');
+        }
+        stream.push_str(&event);
+        return Some(plan_one(write, write_arguments(PLAN_PATH, &stream)));
+    }
+    let Some(run) = run else {
+        return Some(AgenticPlan::Final(plan.planned_not_executed_answer()));
+    };
+    let append = plan_event_append_command(plan);
+    if progress.successful_run_count_for(&append) == 0 {
+        return Some(plan_one(run, json!({"command": append}).to_string()));
+    }
+    let observed = progress
+        .latest_successful_run_output_for(&append)
+        .and_then(tool_result::observed_payload);
+    (!observed.is_some_and(|observed| observed.contains(event.trim_end())))
+        .then(|| unverified_plan_event(plan))
 }
 
 /// Plan the next step from what the fetched work item actually asks for.

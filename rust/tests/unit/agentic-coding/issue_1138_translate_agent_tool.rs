@@ -49,7 +49,8 @@ fn the_translate_tool_is_registered_in_the_seed() {
 
 #[test]
 fn the_driver_advertises_and_executes_the_translate_tool() {
-    assert_eq!(DRIVER_TOOLS.len(), 5);
+    assert_eq!(DRIVER_TOOLS.len(), 6);
+    assert!(DRIVER_TOOLS.contains(&"read_file"));
     assert!(
         DRIVER_TOOLS.contains(&"translate"),
         "DRIVER_TOOLS must advertise translate: {DRIVER_TOOLS:?}"

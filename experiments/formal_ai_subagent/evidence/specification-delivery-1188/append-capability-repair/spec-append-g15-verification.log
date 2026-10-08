@@ -1,0 +1,535 @@
+TAP version 13
+# Subtest: G71: a request whose quotes do not pair is declined, never acted on
+    # Subtest: an escaped quote inside a quoted line names the problem and touches nothing
+    ok 1 - an escaped quote inside a quoted line names the problem and touches nothing # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.257042
+      ...
+    # Subtest: an opening quote that never closes is declined in the language of the request
+    ok 2 - an opening quote that never closes is declined in the language of the request # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.041583
+      ...
+    # Subtest: quotes that pair, apostrophes and code literals holding quotes are not faults
+    ok 3 - quotes that pair, apostrophes and code literals holding quotes are not faults # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.041875
+      ...
+    # Subtest: the same request with «» quotes is carried out
+    ok 4 - the same request with «» quotes is carried out # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.028708
+      ...
+    1..4
+ok 1 - G71: a request whose quotes do not pair is declined, never acted on
+  ---
+  duration_ms: 145.439791
+  type: 'suite'
+  ...
+# Subtest: G70: both roots expand the seeded contractions, and no seed surface is written contracted
+    # Subtest: the agentic normalizer expands what languages.lino seeds
+    ok 1 - the agentic normalizer expands what languages.lino seeds # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.04275
+      ...
+    # Subtest: a provider denial written with a contraction is a failure
+    ok 2 - a provider denial written with a contraction is a failure # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.083666
+      ...
+    # Subtest: no seed surface, phrase, cue or follow-up holds a seeded contraction written apart
+    ok 3 - no seed surface, phrase, cue or follow-up holds a seeded contraction written apart # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.081584
+      ...
+    1..3
+ok 2 - G70: both roots expand the seeded contractions, and no seed surface is written contracted
+  ---
+  duration_ms: 0.286125
+  type: 'suite'
+  ...
+# Subtest: G69: an addition that quotes no text earns a question, never a write
+    # Subtest: add, append and add-to-the-end with unquoted text ask what and where
+    ok 1 - add, append and add-to-the-end with unquoted text ask what and where # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.039375
+      ...
+    # Subtest: a request that only names a function add is no addition
+    ok 2 - a request that only names a function add is no addition # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.022375
+      ...
+    # Subtest: the quoted addition is appended
+    ok 3 - the quoted addition is appended # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.078542
+      ...
+    1..3
+ok 3 - G69: an addition that quotes no text earns a question, never a write
+  ---
+  duration_ms: 0.207833
+  type: 'suite'
+  ...
+# Subtest: G63: a backtick payload whose inner spans pair among themselves is one literal
+    # Subtest: a sentence break followed by more backtick spans keeps the whole replacement
+    ok 1 - a sentence break followed by more backtick spans keeps the whole replacement # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.100583
+      ...
+    # Subtest: a payload ending in a backtick span names no target file
+    ok 2 - a payload ending in a backtick span names no target file # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.026833
+      ...
+    1..2
+ok 4 - G63: a backtick payload whose inner spans pair among themselves is one literal
+  ---
+  duration_ms: 0.206583
+  type: 'suite'
+  ...
+# Subtest: T181: a correct Replace the edit tool answered quietly names the replacement
+    # Subtest: an unquoted change is stated, not "completed without output"
+    ok 1 - an unquoted change is stated, not "completed without output" # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.023541
+      ...
+    1..1
+ok 5 - T181: a correct Replace the edit tool answered quietly names the replacement
+  ---
+  duration_ms: 0.047792
+  type: 'suite'
+  ...
+# Subtest: G78: a Replace whose new text holds the old one is a verified edit, never a refused whole-file write
+    # Subtest: In s.txt replace 'key 3' with 'key 33'
+    ok 1 - In s.txt replace 'key 3' with 'key 33' # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.029125
+      ...
+    # Subtest: Replace `run();` with `guard(); run();` in s.mjs.
+    ok 2 - Replace `run();` with `guard(); run();` in s.mjs. # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.017
+      ...
+    1..2
+ok 6 - G78: a Replace whose new text holds the old one is a verified edit, never a refused whole-file write
+  ---
+  duration_ms: 0.11975
+  type: 'suite'
+  ...
+# Subtest: G64: an append whose quoted payload names paths and positions appends it
+    # Subtest: the payload is appended; no path inside it is read or run
+    ok 1 - the payload is appended; no path inside it is read or run # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.05375
+      ...
+    1..1
+ok 7 - G64: an append whose quoted payload names paths and positions appends it
+  ---
+  duration_ms: 0.075708
+  type: 'suite'
+  ...
+# Subtest: G72: an anchor line found more than once is named, never reported as a failed verification
+    # Subtest: the answer counts the anchor and nothing is edited
+    ok 1 - the answer counts the anchor and nothing is edited # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.089416
+      ...
+    1..1
+ok 8 - G72: an anchor line found more than once is named, never reported as a failed verification
+  ---
+  duration_ms: 0.2105
+  type: 'suite'
+  ...
+# Subtest: G15: the plan event step says what it does, and a run from the repository root keeps the committed plan log
+    # Subtest: the event preserves prior events and records a real append
+    ok 1 - the event preserves prior events and records a real append
+      ---
+      duration_ms: 355.422208
+      ...
+    # Subtest: the dogfood driver writes plan events under a git-ignored sandbox at the repository root
+    ok 2 - the dogfood driver writes plan events under a git-ignored sandbox at the repository root
+      ---
+      duration_ms: 5.191125
+      ...
+    1..2
+ok 9 - G15: the plan event step says what it does, and a run from the repository root keeps the committed plan log
+  ---
+  duration_ms: 360.682333
+  type: 'suite'
+  ...
+# Subtest: G73: a whole-line anchor that also ends another line is edited once
+    # Subtest: the edit widens back over the line before until its old text is unique
+    ok 1 - the edit widens back over the line before until its old text is unique # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.038208
+      ...
+    1..1
+ok 10 - G73: a whole-line anchor that also ends another line is edited once
+  ---
+  duration_ms: 0.145541
+  type: 'suite'
+  ...
+# Subtest: G74: an inserted line followed by an empty line keeps the empty line
+    # Subtest: the empty line is written and stated
+    ok 1 - the empty line is written and stated # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.025334
+      ...
+    1..1
+ok 11 - G74: an inserted line followed by an empty line keeps the empty line
+  ---
+  duration_ms: 0.100834
+  type: 'suite'
+  ...
+# Subtest: G25: a test asked for with no expected result is a question, never a bare interpreter run
+    # Subtest: nothing is written or run
+    ok 1 - nothing is written or run # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.022667
+      ...
+    1..1
+ok 12 - G25: a test asked for with no expected result is a question, never a bare interpreter run
+  ---
+  duration_ms: 0.045708
+  type: 'suite'
+  ...
+# Subtest: G75: a command is a listing or a search by its own word, never by a word in its operands
+    # Subtest: a silent sed on allowlist.txt is no empty folder
+    ok 1 - a silent sed on allowlist.txt is no empty folder # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.021
+      ...
+    # Subtest: a silent ls is still an empty folder
+    ok 2 - a silent ls is still an empty folder # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.015
+      ...
+    1..2
+ok 13 - G75: a command is a listing or a search by its own word, never by a word in its operands
+  ---
+  duration_ms: 0.060459
+  type: 'suite'
+  ...
+# Subtest: G51: a file inserted after an unquoted anchor line that follows another
+    # Subtest: the unquoted line words are resolved to the lines they name
+    ok 1 - the unquoted line words are resolved to the lines they name # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.016875
+      ...
+    1..1
+ok 14 - G51: a file inserted after an unquoted anchor line that follows another
+  ---
+  duration_ms: 0.035458
+  type: 'suite'
+  ...
+# Subtest: G79: a Replace scoped to a part of the file
+    # Subtest: an old text found more than once is declined, naming the part
+    ok 1 - an old text found more than once is declined, naming the part # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.022292
+      ...
+    # Subtest: an old text found once is replaced, the part notwithstanding
+    ok 2 - an old text found once is replaced, the part notwithstanding # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.0135
+      ...
+    # Subtest: words that name no part are no scope
+    ok 3 - words that name no part are no scope # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.013458
+      ...
+    1..3
+ok 15 - G79: a Replace scoped to a part of the file
+  ---
+  duration_ms: 0.077791
+  type: 'suite'
+  ...
+# Subtest: G80: listed lines replaced as one block
+    # Subtest: the three listed lines become the one new line at their indentation
+    ok 1 - the three listed lines become the one new line at their indentation # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.016542
+      ...
+    1..1
+ok 16 - G80: listed lines replaced as one block
+  ---
+  duration_ms: 0.03225
+  type: 'suite'
+  ...
+# Subtest: G13: an assertion added in the test file's own form
+    # Subtest: a file of assert.equal lines gets one more, and is run
+    ok 1 - a file of assert.equal lines gets one more, and is run # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.018625
+      ...
+    # Subtest: a file of expect lines gets an expect line
+    ok 2 - a file of expect lines gets an expect line # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.013542
+      ...
+    1..2
+ok 17 - G13: an assertion added in the test file's own form
+  ---
+  duration_ms: 0.053542
+  type: 'suite'
+  ...
+# Subtest: G25: a test written from a stated expectation
+    # Subtest: a missing JavaScript test file is written around the one assertion, then run
+    ok 1 - a missing JavaScript test file is written around the one assertion, then run # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.063375
+      ...
+    # Subtest: a missing Python test file imports the function from the module its name names
+    ok 2 - a missing Python test file imports the function from the module its name names # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.014708
+      ...
+    # Subtest: a shell word inside the sentence is no command unless it is named as one
+    ok 3 - a shell word inside the sentence is no command unless it is named as one # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.013292
+      ...
+    1..3
+ok 18 - G25: a test written from a stated expectation
+  ---
+  duration_ms: 0.121667
+  type: 'suite'
+  ...
+# Subtest: G76: a backticked command followed by prose
+    # Subtest: the leading code span is the command, never the sentence after it
+    ok 1 - the leading code span is the command, never the sentence after it # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.017459
+      ...
+    # Subtest: a command whose backticks do not pair is not run
+    ok 2 - a command whose backticks do not pair is not run # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.0125
+      ...
+    1..2
+ok 19 - G76: a backticked command followed by prose
+  ---
+  duration_ms: 0.049709
+  type: 'suite'
+  ...
+# Subtest: G77: a bash call killed at the timeout
+    # Subtest: the answer states the kill and invents no exit code
+    ok 1 - the answer states the kill and invents no exit code # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.014125
+      ...
+    1..1
+ok 20 - G77: a bash call killed at the timeout
+  ---
+  duration_ms: 0.027792
+  type: 'suite'
+  ...
+# Subtest: G81: a line moved so that it follows another
+    # Subtest: the line named by its start is moved after the line named by its start
+    ok 1 - the line named by its start is moved after the line named by its start # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.014
+      ...
+    1..1
+ok 21 - G81: a line moved so that it follows another
+  ---
+  duration_ms: 0.028541
+  type: 'suite'
+  ...
+# Subtest: G83: a file name that holds the word line
+    # Subtest: a Replace in x-line.lino is a text replace, not a line replace
+    ok 1 - a Replace in x-line.lino is a text replace, not a line replace # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.016625
+      ...
+    # Subtest: a Replace in line-budget.lino is a text replace, not a line replace
+    ok 2 - a Replace in line-budget.lino is a text replace, not a line replace # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.011834
+      ...
+    1..2
+ok 22 - G83: a file name that holds the word line
+  ---
+  duration_ms: 0.047417
+  type: 'suite'
+  ...
+# Subtest: G82: a copy followed by edits of the copy
+    # Subtest: the copy is made, then the replacements, each as it would be alone
+    ok 1 - the copy is made, then the replacements, each as it would be alone # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.014541
+      ...
+    1..1
+ok 23 - G82: a copy followed by edits of the copy
+  ---
+  duration_ms: 0.028334
+  type: 'suite'
+  ...
+# Subtest: G86: guillemets nested inside a guillemet payload
+    # Subtest: pairs as a stack: the inner pairs are part of the payload
+    ok 1 - pairs as a stack: the inner pairs are part of the payload # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.020167
+      ...
+    # Subtest: the row is inserted into the named file, and no other file is written
+    ok 2 - the row is inserted into the named file, and no other file is written # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.012042
+      ...
+    # Subtest: an outer guillemet whose stack never empties is declined as unpaired
+    ok 3 - an outer guillemet whose stack never empties is declined as unpaired # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.0125
+      ...
+    # Subtest: a write never targets a path named only inside quoted text
+    ok 4 - a write never targets a path named only inside quoted text # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.012208
+      ...
+    1..4
+ok 24 - G86: guillemets nested inside a guillemet payload
+  ---
+  duration_ms: 0.086583
+  type: 'suite'
+  ...
+# Subtest: G84: a replace asked for everywhere
+    # Subtest: "everywhere" is no part of the new text, and every occurrence is replaced
+    ok 1 - "everywhere" is no part of the new text, and every occurrence is replaced # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.021583
+      ...
+    # Subtest: "in all occurrences" is no part of the new text, and every occurrence is replaced
+    ok 2 - "in all occurrences" is no part of the new text, and every occurrence is replaced # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.0115
+      ...
+    # Subtest: "throughout the file" is no part of the new text, and every occurrence is replaced
+    ok 3 - "throughout the file" is no part of the new text, and every occurrence is replaced # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.011625
+      ...
+    # Subtest: a cue word inside the quotes is part of the text
+    ok 4 - a cue word inside the quotes is part of the text # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.012083
+      ...
+    # Subtest: the cue is seeded in every registered language
+    ok 5 - the cue is seeded in every registered language # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.011459
+      ...
+    1..5
+ok 25 - G84: a replace asked for everywhere
+  ---
+  duration_ms: 0.103792
+  type: 'suite'
+  ...
+# Subtest: G87: a replace asked again after its old text is gone
+    # Subtest: the new text already there: the replacement is already made
+    ok 1 - the new text already there: the replacement is already made # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.017667
+      ...
+    # Subtest: neither text there: the old text does not occur
+    ok 2 - neither text there: the old text does not occur # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.01125
+      ...
+    # Subtest: a line replace whose line is gone is answered the same way
+    ok 3 - a line replace whose line is gone is answered the same way # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.014584
+      ...
+    1..3
+ok 26 - G87: a replace asked again after its old text is gone
+  ---
+  duration_ms: 0.067458
+  type: 'suite'
+  ...
+# Subtest: G84: the dogfood driver never prints a bare null answer
+    # Subtest: a session cut by the step budget says so
+    ok 1 - a session cut by the step budget says so # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.0135
+      ...
+    1..1
+ok 27 - G84: the dogfood driver never prints a bare null answer
+  ---
+  duration_ms: 0.027666
+  type: 'suite'
+  ...
+# Subtest: G85: numbered lines moved to another file
+    # Subtest: the range is appended to the destination, then removed from the source; no file is renamed
+    ok 1 - the range is appended to the destination, then removed from the source; no file is renamed # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.019625
+      ...
+    # Subtest: the destination is the path after the cue, wherever the source is named
+    ok 2 - the destination is the path after the cue, wherever the source is named # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.010875
+      ...
+    # Subtest: one line, asked in Russian
+    ok 3 - one line, asked in Russian # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.011584
+      ...
+    # Subtest: a range past the end of the source changes nothing and says why
+    ok 4 - a range past the end of the source changes nothing and says why # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.01125
+      ...
+    # Subtest: a file move without line numbers is still a file move
+    ok 5 - a file move without line numbers is still a file move # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.011625
+      ...
+    1..5
+ok 28 - G85: numbered lines moved to another file
+  ---
+  duration_ms: 0.099417
+  type: 'suite'
+  ...
+# Subtest: G88, G89, G91: replace lists
+    # Subtest: G89: a list whose file is named last makes every replacement
+    ok 1 - G89: a list whose file is named last makes every replacement # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.016417
+      ...
+    # Subtest: G88: new texts that spell a newline as an escape are a list too
+    ok 2 - G88: new texts that spell a newline as an escape are a list too # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.012083
+      ...
+    # Subtest: G91: an edit naming several files is declined, naming them, and changes nothing
+    ok 3 - G91: an edit naming several files is declined, naming them, and changes nothing # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.0115
+      ...
+    1..3
+ok 29 - G88, G89, G91: replace lists
+  ---
+  duration_ms: 0.064083
+  type: 'suite'
+  ...
+# Subtest: G92: the answer follows the request, not its quoted payload
+    # Subtest: an English replace whose new text is Spanish is answered in English
+    ok 1 - an English replace whose new text is Spanish is answered in English # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.01275
+      ...
+    1..1
+ok 30 - G92: the answer follows the request, not its quoted payload
+  ---
+  duration_ms: 0.025709
+  type: 'suite'
+  ...
+1..30
+# tests 63
+# suites 30
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 61
+# todo 0
+# duration_ms 845.169959

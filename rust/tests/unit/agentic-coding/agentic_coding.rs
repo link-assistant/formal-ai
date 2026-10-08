@@ -704,7 +704,7 @@ fn driver_runs_the_full_search_fetch_write_run_loop_to_a_final_answer() {
 
     assert!(!outcome.hit_turn_cap, "the loop must finish, not run away");
 
-    // The driver advertises DRIVER_TOOLS (five, translator included); this
+    // The driver advertises DRIVER_TOOLS (six, reads and translator included); this
     // recipe executes exactly the four core tools, in canonical order — the
     // advertised surface and the executed surface are pinned separately so a
     // new tool cannot hide inside an old recipe's expectations.

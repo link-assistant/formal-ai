@@ -208,7 +208,7 @@ export function composeGeneralChangePlan(fullRequest) {
   const verificationCommand = `cat ${target}`;
   const steps = [{
     capability: Capability.Write,
-    action: agenticMessage('general_planner_append_plan_action', { plan_path: PLAN_PATH }),
+    action: (localizedResponse('general-plan-append-action', 'en') ?? '').replace('{plan_path}', PLAN_PATH),
     expected_evidence: agenticMessage('general_planner_plan_event_evidence', { impulse_id: intent.impulse_id }),
     command: null,
   }];

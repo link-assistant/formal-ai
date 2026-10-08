@@ -58,6 +58,29 @@ fn execute(
         }
         "bash" => {
             let command = arguments["command"].as_str().unwrap_or_default();
+            if command.starts_with("mkdir -p -- .formal-ai && (lock=") {
+                let directory = tempfile::tempdir().expect("append workspace");
+                std::fs::create_dir(directory.path().join(".formal-ai")).expect("event directory");
+                let event_path = ".formal-ai/general-change-plan.lino";
+                if let Some(before) = files.get(event_path) {
+                    std::fs::write(directory.path().join(event_path), before)
+                        .expect("earlier stream");
+                }
+                let output = std::process::Command::new("sh")
+                    .args(["-c", command])
+                    .current_dir(directory.path())
+                    .output()
+                    .expect("real shell append");
+                let stream = std::fs::read_to_string(directory.path().join(event_path))
+                    .expect("appended stream");
+                files.insert(event_path.to_owned(), stream);
+                return format!(
+                    "Output: {}\nError: {}\nExit Code: {}",
+                    String::from_utf8_lossy(&output.stdout),
+                    String::from_utf8_lossy(&output.stderr),
+                    output.status.code().unwrap_or(-1)
+                );
+            }
             if let Some(path) = command.strip_prefix("sha256sum -- ") {
                 let text = files.get(path).cloned().unwrap_or_default();
                 return format!("{}  {path}\n", sha256_hex(text.as_bytes()));
@@ -464,12 +487,18 @@ fn g72_an_anchor_line_found_more_than_once_is_named() {
 }
 
 #[test]
-fn g15_the_plan_event_step_says_it_writes_the_composed_plan() {
-    let run = drive("Write hello to x.txt", &[]);
+fn g15_the_plan_event_preserves_history_and_records_a_real_append() {
+    let before = "general_change_plan\n  id \"previous\"\n";
+    let run = drive(
+        "Write hello to x.txt",
+        &[(".formal-ai/general-change-plan.lino", before)],
+    );
+    assert!(run.files[".formal-ai/general-change-plan.lino"].starts_with(before));
+    assert_eq!(run.tools, ["bash", "write", "bash"]);
     assert_eq!(run.files["x.txt"], "hello");
     assert!(
         run.files[".formal-ai/general-change-plan.lino"].contains(
-            "\n    action \"write the composed plan to .formal-ai/general-change-plan.lino\"\n"
+            "\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n"
         ),
         "{}",
         run.files[".formal-ai/general-change-plan.lino"]

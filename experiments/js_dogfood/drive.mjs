@@ -17,9 +17,11 @@
 // `edit` return an empty string, `bash` returns stdout+stderr.
 
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync, writeSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, symlinkSync, writeFileSync, writeSync } from 'node:fs';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { tmpdir } from 'node:os';
+import { template } from '../../js/agentic/work_item_steps.mjs';
 
 import { WorkerHost } from '../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../js/agentic/node-host.mjs';
@@ -119,8 +121,17 @@ export function execute(dir, call) {
         return '';
       }
       case 'bash': {
+        let eventDirectory = null;
+        let commandDirectory = dir;
+        const eventPrefix = template('plan-event-append-command')?.split('{lock_path}')[0];
+        if (resolve(dir) === REPOSITORY_ROOT && eventPrefix && args.command.startsWith(eventPrefix)) {
+          mkdirSync(PLAN_EVENTS_SANDBOX, { recursive: true });
+          eventDirectory = mkdtempSync(join(tmpdir(), 'formal-ai-plan-events-'));
+          symlinkSync(PLAN_EVENTS_SANDBOX, join(eventDirectory, '.formal-ai'), process.platform === 'win32' ? 'junction' : 'dir');
+          commandDirectory = eventDirectory;
+        }
         try {
-          return execFileSync('/bin/sh', ['-c', args.command], { cwd: dir, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: BASH_TIMEOUT_MS });
+          return execFileSync('/bin/sh', ['-c', args.command], { cwd: commandDirectory, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: BASH_TIMEOUT_MS });
         } catch (error) {
           // A call killed at the timeout reports the kill, never an exit code:
           // a killed `node --test` exits 1 on SIGTERM, which is not the
@@ -133,6 +144,8 @@ export function execute(dir, call) {
           // shell envelope does, so a recipe's failed precondition blocks it.
           if (typeof error.status !== 'number') return `${error.stdout ?? ''}${error.stderr ?? ''}`;
           return `Output: ${error.stdout ?? ''}\nError: ${error.stderr ?? ''}\nExit Code: ${error.status}`;
+        } finally {
+          if (eventDirectory !== null) rmSync(eventDirectory, { recursive: true, force: true });
         }
       }
       case 'list':

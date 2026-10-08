@@ -100,7 +100,9 @@ impl Progress {
             let failure = super::tool_result::failure_message(
                 &raw,
                 message.is_error,
-                capability != Capability::Run,
+                capability != Capability::Run
+                    && !(capability == Capability::Read
+                        && super::code_artifact::source_from_agent_read_result(&raw).is_some()),
             );
             let arguments =
                 result_tool_call(messages, index).map(|call| call.function.arguments.clone());

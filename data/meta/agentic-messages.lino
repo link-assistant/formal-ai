@@ -109,7 +109,7 @@ agentic_messages
   message restart_feedback_diff_check_command
     text "git diff --check && git diff --cached --check"
   message general_planner_append_plan_action
-    text "write the composed plan to {plan_path}"
+    text "append the composed plan to {plan_path}"
   message general_planner_plan_event_evidence
     text "written plan event {impulse_id}"
   message general_planner_write_content_action

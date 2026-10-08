@@ -1,0 +1,1 @@
+Run node -e 'const fs=require("fs");fs.copyFileSync("/tmp/spec-native-general-planner-tests-reviewed.rs","rust/tests/unit/agentic-coding/agentic_general_planner.rs");fs.copyFileSync("/tmp/spec-g15-tests-reviewed.mjs","rust/tests/web/pull-request-1188-teach-f.test.mjs");fs.copyFileSync("/tmp/spec-g15-native-reviewed.rs","rust/tests/unit/pull_request_1188_teach_f.rs");'

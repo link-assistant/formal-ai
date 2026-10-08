@@ -5,6 +5,7 @@
 // its methods are camelCase. A `ToolAttempt` is `{capability, succeeded,
 // detail, arguments, tool}` with `arguments` / `tool` null when unknown.
 
+import { sourceFromAgentReadResult } from './code_artifact.mjs';
 import { plainText, rustLines } from './content.mjs';
 import { agenticMessage } from './messages.mjs';
 import { Capability } from './capability.mjs';
@@ -51,7 +52,8 @@ export class Progress {
       const capability = resultCapability(messages, index);
       if (capability === null) continue;
       const raw = plainText(message.content);
-      const failure = failureMessage(raw, Boolean(message.is_error), capability !== Capability.Run);
+      const framedFileRead = capability === Capability.Read && sourceFromAgentReadResult(raw) !== null;
+      const failure = failureMessage(raw, Boolean(message.is_error), capability !== Capability.Run && !framedFileRead);
       const call = resultToolCall(messages, index);
       progress.attempts.push({
         capability,
