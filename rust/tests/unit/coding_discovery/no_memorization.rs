@@ -784,26 +784,41 @@ fn formalization_grammar_and_runtime_memorize_no_probe_clause() {
 /// and the catalog carries no Laravel grammar.
 const HELLO_WORLD_PROGRAM_LITERALS_MAX: usize = 1;
 
-/// The documentation captures seed (R1165-1): source data, not programs.
+/// Data captured from a source, each with the Hello World literals it may
+/// hold: source data, not programs. A path ending in `/` names a directory.
 ///
-/// Its block rows are the code blocks the page formalizer reads from
-/// byte-for-byte captures of documentation pages, each pinned by SHA-256 and
-/// re-derived from the capture by
+/// The documentation captures seed (R1165-1) holds the code blocks the page
+/// formalizer reads from byte-for-byte captures of documentation pages, each
+/// pinned by SHA-256 and re-derived from the capture by
 /// `documentation_captures_are_the_formalized_fixtures`, so a Hello World it
-/// holds is what a real page shows, not an authored answer. It is counted on
-/// its own ratchet so the source data stays visible and cannot grow without
-/// a new pinned capture.
-const DOCUMENTATION_CAPTURES_SEED: &str = "data/seed/coding-documentation-captures.lino";
-
-/// Hello World literals the documentation captures hold, as page content.
+/// holds is what a real page shows, not an authored answer. Its ceiling rose
+/// from 7 to 19 with the eight captures of 2026-10-08 (Python wiki, MDN, the
+/// TypeScript handbook, Microsoft's C, C++ and C# pages, ruby-lang.org and
+/// the Swift book), to 22 with Oracle's Java tutorial and php.net's first
+/// page, and to 23 with lua.org's Programming in Lua.
 ///
-/// It rose from 7 to 19 with the eight captures of 2026-10-08 (Python wiki,
-/// MDN, the TypeScript handbook, Microsoft's C, C++ and C# pages, ruby-lang.org
-/// and the Swift book), to 22 with Oracle's Java tutorial and php.net's
-/// first page, and to 23 with lua.org's Programming in Lua, each pinned by
-/// SHA-256 and re-derived from its fixture; it is the visible size of the
-/// source data, not of stored answers.
-const DOCUMENTATION_CAPTURE_PROGRAM_LITERALS_MAX: usize = 23;
+/// The requirement-extraction corpus (PR #1188 R1188-U20) holds issue bodies
+/// as their authors wrote them; the 5 are code the issues quote (issues 408,
+/// 1156 and 1188), read as requirements and never answered from.
+///
+/// Each is counted on its own ratchet so the source data stays visible and
+/// cannot grow without a new capture.
+const SOURCE_CAPTURES: [(&str, usize); 2] = [
+    ("data/seed/coding-documentation-captures.lino", 23),
+    ("data/benchmarks/issue-requirements/", 5),
+];
+
+/// The index of the capture a repository-relative path belongs to (mirrors
+/// `sourceCapture`).
+fn source_capture(relative: &str) -> Option<usize> {
+    SOURCE_CAPTURES.iter().position(|&(capture, _)| {
+        if capture.ends_with('/') {
+            relative.starts_with(capture)
+        } else {
+            relative == capture
+        }
+    })
+}
 
 /// The quote spellings a stored program may wrap its literal in: an escaped
 /// double quote, a single quote, the `\x27` escape of a single quote, and a
@@ -881,10 +896,9 @@ fn the_hello_world_counter_reads_every_program_quote_spelling() {
 fn data_stores_no_more_verbatim_hello_world_programs_than_the_ratchet() {
     let root = repository_root();
     let mut stack = vec![root.join("data")];
-    let captures_seed = root.join(DOCUMENTATION_CAPTURES_SEED);
     let mut offenders = Vec::new();
     let mut total = 0;
-    let mut captured = 0;
+    let mut captured = [0; SOURCE_CAPTURES.len()];
     while let Some(directory) = stack.pop() {
         for entry in fs::read_dir(&directory).expect("data/ is readable") {
             let path = entry.expect("a data/ entry").path();
@@ -896,8 +910,15 @@ fn data_stores_no_more_verbatim_hello_world_programs_than_the_ratchet() {
                 continue;
             };
             let found = hello_world_program_literals(&text);
-            if path == captures_seed {
-                captured += found;
+            let relative = path
+                .strip_prefix(root)
+                .unwrap_or(path.as_path())
+                .components()
+                .map(|component| component.as_os_str().to_string_lossy())
+                .collect::<Vec<_>>()
+                .join("/");
+            if let Some(index) = source_capture(&relative) {
+                captured[index] += found;
             } else if found > 0 {
                 total += found;
                 offenders.push(format!("{} ({found})", path.display()));
@@ -909,9 +930,10 @@ fn data_stores_no_more_verbatim_hello_world_programs_than_the_ratchet() {
         "data/ stores {total} verbatim Hello World program literals, above the ratchet of \
          {HELLO_WORLD_PROGRAM_LITERALS_MAX}: {offenders:?}"
     );
-    assert!(
-        captured <= DOCUMENTATION_CAPTURE_PROGRAM_LITERALS_MAX,
-        "{DOCUMENTATION_CAPTURES_SEED} holds {captured} Hello World literals, above its \
-         ratchet of {DOCUMENTATION_CAPTURE_PROGRAM_LITERALS_MAX}"
-    );
+    for (count, (capture, maximum)) in captured.into_iter().zip(SOURCE_CAPTURES) {
+        assert!(
+            count <= maximum,
+            "{capture} holds {count} Hello World literals, above its ratchet of {maximum}"
+        );
+    }
 }

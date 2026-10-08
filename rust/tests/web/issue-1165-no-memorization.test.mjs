@@ -5,8 +5,9 @@
 // rust/tests/unit/coding_discovery/no_memorization.rs does; both ratchets fall
 // together. The one stored program left is Laravel's (no documentation page
 // shows a Laravel Hello World command), so the gate is a ratchet at 1 and
-// becomes a hard gate at 0. The documentation captures seed is page content
-// re-derived from SHA-pinned fixtures and is counted on its own ratchet.
+// becomes a hard gate at 0. Source captures (the documentation captures seed,
+// page content re-derived from SHA-pinned fixtures, and the issue bodies of
+// the requirement-extraction corpus) are counted each on its own ratchet.
 
 import assert from 'node:assert/strict';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
@@ -17,9 +18,19 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 /** Mirrors `HELLO_WORLD_PROGRAM_LITERALS_MAX`. */
 const HELLO_WORLD_PROGRAM_LITERALS_MAX = 1;
-/** Mirrors `DOCUMENTATION_CAPTURE_PROGRAM_LITERALS_MAX`. */
-const DOCUMENTATION_CAPTURE_PROGRAM_LITERALS_MAX = 23;
-const DOCUMENTATION_CAPTURES_SEED = 'data/seed/coding-documentation-captures.lino';
+/**
+ * Mirrors `SOURCE_CAPTURES`: data captured from a source, each with the Hello
+ * World literals it may hold. A path ending in `/` names a directory.
+ */
+const SOURCE_CAPTURES = [
+  ['data/seed/coding-documentation-captures.lino', 23],
+  ['data/benchmarks/issue-requirements/', 5],
+];
+
+/** Mirrors `source_capture`: the capture a repository-relative path belongs to. */
+function sourceCapture(relative) {
+  return SOURCE_CAPTURES.find(([capture]) => (capture.endsWith('/') ? relative.startsWith(capture) : relative === capture));
+}
 /** Mirrors `PROGRAM_QUOTES`: escaped double, single, `\x27`, plain double. */
 const PROGRAM_QUOTES = ['\\"', "'", '\\x27', '"'];
 const LINE_FEED = '\\\\n';
@@ -78,18 +89,22 @@ test('R1165-8: the counter reads every program quote spelling and leaves an expe
 
 test('R1165-8: data/ stores no more verbatim Hello World programs than the ratchet', () => {
   let total = 0;
-  let captured = 0;
+  const captured = new Map(SOURCE_CAPTURES.map(([capture]) => [capture, 0]));
   const offenders = [];
   for (const file of walk(path.join(ROOT, 'data'))) {
+    const relative = path.relative(ROOT, file).split(path.sep).join('/');
     const found = helloWorldProgramLiterals(readFileSync(file, 'utf8'));
-    if (path.relative(ROOT, file) === DOCUMENTATION_CAPTURES_SEED) captured += found;
+    const capture = sourceCapture(relative);
+    if (capture) captured.set(capture[0], captured.get(capture[0]) + found);
     else if (found > 0) {
       total += found;
-      offenders.push(`${path.relative(ROOT, file)} (${found})`);
+      offenders.push(`${relative} (${found})`);
     }
   }
   assert.ok(total <= HELLO_WORLD_PROGRAM_LITERALS_MAX, `data/ stores ${total}: ${offenders.join(', ')}`);
-  assert.ok(captured <= DOCUMENTATION_CAPTURE_PROGRAM_LITERALS_MAX, `${DOCUMENTATION_CAPTURES_SEED} holds ${captured}`);
+  for (const [capture, maximum] of SOURCE_CAPTURES) {
+    assert.ok(captured.get(capture) <= maximum, `${capture} holds ${captured.get(capture)}, above its ratchet of ${maximum}`);
+  }
   // The ratchet only goes down: a count below the ceiling means the ceiling
   // must fall with it, in both roots.
   assert.equal(total, HELLO_WORLD_PROGRAM_LITERALS_MAX, `lower the ratchet to ${total}: ${offenders.join(', ')}`);
