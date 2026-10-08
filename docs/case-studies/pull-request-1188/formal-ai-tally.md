@@ -9,21 +9,21 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 
 | Who | Tasks | Passed | Failed | Partial | Fixed | Open | Not reproduced | Unresolved |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **All** | 356 | 183 | 159 | 3 | 127 | 32 | 3 | 0 |
+| **All** | 356 | 183 | 159 | 3 | 121 | 38 | 3 | 0 |
 | CI-SPEED | 6 | 6 | 0 | 0 | 0 | 0 | 0 | 0 |
 | CIFIX | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | CIFIX2 | 3 | 0 | 3 | 0 | 2 | 1 | 0 | 0 |
-| coordinator | 150 | 25 | 115 | 1 | 108 | 7 | 1 | 0 |
+| coordinator | 150 | 25 | 115 | 1 | 106 | 9 | 1 | 0 |
 | DEBUG2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
 | DEBUG3 | 2 | 1 | 1 | 0 | 0 | 1 | 0 | 0 |
 | DISCOVER | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | GENERALIZE | 16 | 16 | 0 | 0 | 0 | 0 | 0 | 0 |
 | LEAD | 8 | 6 | 0 | 1 | 1 | 0 | 0 | 0 |
-| LEXEMES | 4 | 3 | 1 | 0 | 1 | 0 | 0 | 0 |
+| LEXEMES | 4 | 3 | 1 | 0 | 0 | 1 | 0 | 0 |
 | MIGRATE3 | 4 | 0 | 4 | 0 | 0 | 4 | 0 | 0 |
 | MIGRATE4 | 3 | 0 | 2 | 1 | 0 | 3 | 0 | 0 |
 | NOTATION | 22 | 22 | 0 | 0 | 0 | 0 | 0 | 0 |
-| READABLE | 10 | 8 | 2 | 0 | 2 | 0 | 0 | 0 |
+| READABLE | 10 | 8 | 2 | 0 | 0 | 2 | 0 | 0 |
 | RENAME | 47 | 39 | 8 | 0 | 0 | 7 | 1 | 0 |
 | REPO-PROTO | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0 |
 | REQ-AUDIT | 9 | 9 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -32,7 +32,7 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 | ROUTE3 | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0 |
 | SCRIPTS-A | 5 | 4 | 1 | 0 | 0 | 1 | 0 | 0 |
 | SCRIPTS-B | 5 | 5 | 0 | 0 | 0 | 0 | 0 | 0 |
-| SPANISH | 3 | 2 | 1 | 0 | 1 | 0 | 0 | 0 |
+| SPANISH | 3 | 2 | 1 | 0 | 0 | 1 | 0 | 0 |
 | TEACH-C | 1 | 0 | 1 | 0 | 0 | 1 | 0 | 0 |
 | TEACH-F | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | TEXT-CAPABILITY | 9 | 9 | 0 | 0 | 0 | 0 | 0 | 0 |

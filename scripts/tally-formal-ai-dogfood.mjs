@@ -146,7 +146,7 @@ export function resolutionOf(after) {
   if (/^(?:Not reproduced|No change needed)/iu.test(lead)) {
     return 'not-reproduced';
   }
-  if (/^Open\b/iu.test(lead) || /^Rephrased\b.*\bG\d+\b/iu.test(lead)) {
+  if (/^(?:Open|Not fixed)\b/iu.test(lead) || /^Rephrased\b.*\bG\d+\b/iu.test(lead)) {
     return 'open';
   }
   if (/^(?:Pass|Fixed|Fix\b|Safe\b)/iu.test(lead) || /\bfixed\b/iu.test(lead)) {

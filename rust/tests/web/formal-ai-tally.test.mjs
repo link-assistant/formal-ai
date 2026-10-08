@@ -41,6 +41,7 @@ test('outcomes, resolutions and agents are read from the cells', () => {
   assert.equal(outcomeOf('**Partial fail**'), 'partial');
   assert.equal(resolutionOf('**Fixed in T530** (G94).'), 'fixed');
   assert.equal(resolutionOf('**Safe**: cues outside quotes only'), 'fixed');
+  assert.equal(resolutionOf('Not fixed in this cycle: the module is claimed; recorded as G98.'), 'open');
   assert.equal(resolutionOf('Open (TEACH-D owns it)'), 'open');
   assert.equal(resolutionOf('Not reproduced on a re-run'), 'not-reproduced');
   assert.equal(resolutionOf('Rephrased; recorded as part of G53.'), 'open');
