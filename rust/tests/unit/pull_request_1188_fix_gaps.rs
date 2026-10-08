@@ -218,10 +218,11 @@ fn g108_scalar_backtick_comma_payload_is_fenced_whole() {
     let request = format!("In f.txt replace «x» with «{payload}»");
     let run = drive(&request, &[("f.txt", "x")]);
     assert_eq!(run.files["f.txt"], payload);
-    assert!(
-        run.answer
-            .as_deref()
-            .is_some_and(|answer| answer.contains(&format!("``{payload}``")))
+    assert_eq!(
+        run.answer.as_deref(),
+        Some(
+            "Replaced `x` with ``values `left`, `right` remain scalar`` in `f.txt` and observed the result."
+        )
     );
 }
 

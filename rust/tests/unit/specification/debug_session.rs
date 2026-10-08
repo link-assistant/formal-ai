@@ -415,14 +415,14 @@ fn every_stage_carries_the_recipe_diagram_its_own_emitters_and_the_routed_method
     });
     // Each stage names the code that emits it; the highlight moves with it.
     let events = session.snapshot(None)["events"].clone();
-    let staged: Vec<&Value> = events
+    let paused_events: Vec<&Value> = events
         .as_array()
         .expect("events")
         .iter()
         .filter(|event| event["kind"] == "stage_paused")
         .collect();
     assert_stage_sources(
-        &staged,
+        &paused_events,
         &[
             ("impulse", SOLVE_ENTRY, EVENT_LOG),
             ("formalize", INTENT_RECORD.0, INTENT_RECORD.1),
@@ -430,7 +430,7 @@ fn every_stage_carries_the_recipe_diagram_its_own_emitters_and_the_routed_method
             ("compute_engine", ARITHMETIC, CALCULATION_EVENTS),
         ],
     );
-    let highlighted: Vec<&str> = staged
+    let highlighted: Vec<&str> = paused_events
         .iter()
         .map(|event| text(event, "mermaid").rsplit('\n').next().unwrap_or(""))
         .collect();
@@ -604,13 +604,13 @@ fn debug_requests_answer_the_twin_errors() {
         assert_eq!(refused.status_code, 401, "{action}");
         assert_eq!(error_message(&refused), "debug_session_token_invalid");
     }
-    let stale = handle_debug_request(
+    let rejected_advance = handle_debug_request(
         Some(&session),
         "advance",
         &json!({ "token": TOKEN, "turn": "turn_1", "stage": 0 }).to_string(),
     );
-    assert_eq!(stale.status_code, 409);
-    assert_eq!(error_message(&stale), "debug_stage_not_paused");
+    assert_eq!(rejected_advance.status_code, 409);
+    assert_eq!(error_message(&rejected_advance), "debug_stage_not_paused");
     let state = handle_debug_request(
         Some(&session),
         "pause",

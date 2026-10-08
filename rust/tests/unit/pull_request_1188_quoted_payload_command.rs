@@ -41,9 +41,9 @@ fn commands(prompt: &str) -> Vec<String> {
 
 #[test]
 fn a_line_to_add_that_names_a_test_run_runs_nothing() {
-    assert!(
-        commands("Add the line '- run tests' at the end of the section '## Usage' in README.md.")
-            .is_empty()
+    assert_eq!(
+        commands("Add the line '- run tests' at the end of the section '## Usage' in README.md."),
+        Vec::<String>::new()
     );
 }
 

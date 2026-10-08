@@ -115,13 +115,14 @@ impl Generator {
         self.0 = self.0.wrapping_add(0x6d2b_79f5);
         let mut value = self.0;
         value = (value ^ (value >> 15)).wrapping_mul(value | 1);
-        value ^= value.wrapping_add((value ^ (value >> 7)).wrapping_mul(value | 61));
+        value ^= value.wrapping_add((value ^ (value >> 7)).wrapping_mul(value | 0x3d));
         f64::from(value ^ (value >> 14)) / 4_294_967_296.0
     }
 
     fn below(&mut self, count: usize) -> usize {
+        let bound = u32::try_from(count).expect("fixture collection fits in u32");
         #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
-        let index = (self.next() * count as f64) as usize;
+        let index = (self.next() * f64::from(bound)) as usize;
         index
     }
 }

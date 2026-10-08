@@ -234,8 +234,8 @@ fn the_cached_corpus_holds_the_same_topics_in_every_language() {
             .collect();
         assert_eq!(pages.len(), 8, "{language}");
         for page in pages {
-            assert!(!page.find_child_value("source-url").is_empty());
-            assert!(!page.find_child_value("revision-id").is_empty());
+            assert_ne!(page.find_child_value("source-url"), "");
+            assert_ne!(page.find_child_value("revision-id"), "");
         }
     }
 }

@@ -13,7 +13,7 @@ const TOOLS: [&str; 7] = ["bash", "edit", "glob", "grep", "list", "read", "write
 
 /// One driven session: the workspace afterwards, the bash commands and tools
 /// it ran, and its final answer.
-pub(crate) struct Run {
+pub struct Run {
     pub(crate) files: BTreeMap<String, String>,
     pub(crate) tools: Vec<String>,
     pub(crate) commands: Vec<String>,
@@ -121,7 +121,7 @@ fn perl_replace(command: &str) -> Option<(&str, &str, &str)> {
     (word(old) && word(new)).then_some((old, new, path))
 }
 
-pub(crate) fn drive(prompt: &str, workspace: &[(&str, &str)]) -> Run {
+pub fn drive(prompt: &str, workspace: &[(&str, &str)]) -> Run {
     let mut run = Run {
         files: workspace
             .iter()

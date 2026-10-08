@@ -53,7 +53,10 @@ fn drive(prompt: &str, source: &str, name: &str) -> Run {
                 String::new()
             }
             "write" => {
-                file = arguments["content"].as_str().unwrap_or_default().to_owned();
+                arguments["content"]
+                    .as_str()
+                    .unwrap_or_default()
+                    .clone_into(&mut file);
                 String::new()
             }
             "bash" => format!("{}  {name}\n", sha256_hex(file.as_bytes())),
@@ -305,7 +308,8 @@ fn two_lines_are_swapped() {
 fn a_computed_change_never_leaves_a_fragment_of_the_file() {
     let mostly: String = (0..9)
         .map(|index| format!("x {index}\n"))
-        .collect::<String>()
+        .collect::<Vec<_>>()
+        .join("")
         + "keep\n";
     let run = drive(
         "Delete the lines containing 'x' from f.txt.",

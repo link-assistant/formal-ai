@@ -53,7 +53,10 @@ fn drive(prompt: &str, source: &str, name: &str) -> Run {
                 String::new()
             }
             "write" => {
-                file = arguments["content"].as_str().unwrap_or_default().to_owned();
+                arguments["content"]
+                    .as_str()
+                    .unwrap_or_default()
+                    .clone_into(&mut file);
                 String::new()
             }
             "bash" => format!("{}  {name}\n", sha256_hex(file.as_bytes())),

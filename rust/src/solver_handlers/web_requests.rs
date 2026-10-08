@@ -380,8 +380,7 @@ impl RepositoryReference {
 }
 
 /// Lookup repository/project prompts. Runs *after* `concept_lookup` so
-/// seed-backed concept terms (`Links Notation`, `Wikipedia`, `Rust`, …) keep
-/// their existing intent.
+/// seed-backed concept terms (`Links Notation`, `Wikipedia`, `Rust`, …) keep their intent.
 ///
 /// With promotion enabled (the default), known projects from Link Assistant,
 /// Link Foundation, and `LinksPlatform` are listed first. With promotion

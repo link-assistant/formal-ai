@@ -6,7 +6,7 @@
 //! seeded vocabulary (`workspace_content_search_form`, every registered
 //! language): the arm greps the named identifier or quoted literal -- the
 //! client's grep tool when advertised, else `grep -rn` through the shell --
-//! and answers with the file:line hits, or a seeded not-found naming the
+//! and answers with the `file:line` hits, or a seeded not-found naming the
 //! pattern and the scope. Twin of
 //! `rust/tests/web/pull-request-1188-workspace-search.test.mjs`.
 

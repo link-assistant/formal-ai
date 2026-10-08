@@ -274,7 +274,15 @@ fn translation_wording_is_the_seeded_english_responses() {
         ),
         (
             "translation_clarify_reading",
-            "Should I read \"{text}\" as \"{top}\" or \"{other}\"?",
+            concat!(
+                "Should I read \"",
+                "{text}",
+                "\" as \"",
+                "{top}",
+                "\" or \"",
+                "{other}",
+                "\"?"
+            ),
         ),
     ] {
         assert_eq!(

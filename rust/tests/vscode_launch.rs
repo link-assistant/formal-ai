@@ -1,4 +1,4 @@
-//! Issue #763: The VS Code aliases launch with an isolated OpenCode provider, and global setup can be undone.
+//! Issue #763: The VS Code aliases launch with an isolated `OpenCode` provider, and global setup can be undone.
 
 #[cfg(unix)]
 mod unix {

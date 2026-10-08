@@ -70,7 +70,10 @@ fn each_command_procedure_row_derives_the_catalog_command_from_its_page() {
             "{language}"
         );
     }
-    assert!(documented_language_commands("go", "main.go").is_empty());
+    assert_eq!(
+        documented_language_commands("go", "main.go"),
+        Vec::<formal_ai::discovery_production::SourcedCommand>::new()
+    );
 }
 
 /// R1165-6: the catalog rows run with the derived commands, for a task the

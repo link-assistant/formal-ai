@@ -195,9 +195,13 @@ fn committed_gaps(root: &Path) -> BTreeMap<(String, String), String> {
                 );
                 entries.push((id.to_owned(), String::new(), shared_missing.clone()));
             } else if let Some(value) = line.strip_prefix("    record ") {
-                entries.last_mut().expect("gap record").1 = value.trim_matches('"').to_owned();
+                value
+                    .trim_matches('"')
+                    .clone_into(&mut entries.last_mut().expect("gap record").1);
             } else if let Some(value) = line.strip_prefix("    missing ") {
-                entries.last_mut().expect("gap missing").2 = value.trim_matches('"').to_owned();
+                value
+                    .trim_matches('"')
+                    .clone_into(&mut entries.last_mut().expect("gap missing").2);
             }
         }
         for (_, record, missing) in entries {

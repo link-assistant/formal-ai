@@ -48,7 +48,7 @@ impl SourceTransport for FixtureTransport {
         }
         let paragraphs: String = fixture_paragraphs("Moon")
             .iter()
-            .map(|text| format!("<p>{text}</p>"))
+            .map(|text| ["<p>", text.as_str(), "</p>"].concat())
             .collect();
         Ok(format!("<html><body><h1>Moon</h1>{paragraphs}</body></html>").into_bytes())
     }

@@ -87,7 +87,7 @@ fn every_handler_appears_in_precedence_order() {
 fn every_promotion_appears_in_rank_order() {
     let text = part("solver-handlers.md");
     let promotions = formal_ai::handler_promotion::promotions();
-    assert!(!promotions.is_empty());
+    assert_ne!(promotions.len(), 0);
     let mut last = 0;
     for promotion in &promotions {
         let label = format!("[\"{}: {}\"]", promotion.rank, promotion.handler);

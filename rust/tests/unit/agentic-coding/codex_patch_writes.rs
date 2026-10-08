@@ -1,4 +1,4 @@
-//! Issue #859: Codex workspace writes use apply_patch instead of process input.
+//! Issue #859: Codex workspace writes use `apply_patch` instead of process input.
 
 use formal_ai::agentic_coding::planner::tool_capability;
 use formal_ai::agentic_coding::{AgenticPlan, plan_symbolic_command_reroute};
