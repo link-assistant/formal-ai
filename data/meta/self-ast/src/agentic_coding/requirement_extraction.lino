@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/requirement_extraction.rs
   language rust
   fidelity full_ast
-  byte_len 10086
+  byte_len 10074
   line_count 296
-  content_id source_module_7a3459340f387c27
+  content_id source_module_cd1ba0951c1896aa
   symbol_count 23
   symbols
     const OBLIGATION_ROLE 22 22
@@ -35,9 +35,9 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 7681
-    named_node_count 1534
-    distinct_node_kinds 70
+    total_link_count 7667
+    named_node_count 1532
+    distinct_node_kinds 71
     node_kinds
       arguments 132
       array_expression 4
@@ -46,7 +46,7 @@ self_ast_census
       attribute 13
       attribute_item 13
       binary_expression 34
-      block 49
+      block 48
       boolean_literal 3
       call_expression 132
       char_literal 20
@@ -57,7 +57,7 @@ self_ast_census
       crate 2
       doc_comment 38
       else_clause 4
-      expression_statement 49
+      expression_statement 48
       field_declaration 2
       field_declaration_list 1
       field_expression 104
@@ -70,10 +70,11 @@ self_ast_census
       generic_function 1
       generic_type 11
       identifier 333
-      if_expression 21
+      if_expression 20
       index_expression 2
       inner_doc_comment_marker 12
       integer_literal 15
+      let_chain 1
       let_condition 4
       let_declaration 30
       line_comment 38

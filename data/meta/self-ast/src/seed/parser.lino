@@ -2,9 +2,9 @@ self_ast_census
   target src/seed/parser.rs
   language rust
   fidelity signature
-  byte_len 20187
-  line_count 615
-  content_id source_module_3233b4ea4547ff86
+  byte_len 20247
+  line_count 616
+  content_id source_module_894a4e269048a225
   symbol_count 36
   symbols
     struct LinoNode 21 25
@@ -37,9 +37,9 @@ self_ast_census
     function lexeme_head 504 522
     function leading_spaces 524 526
     function is_blank_line 528 530
-    function word_tokens 535 568
-    struct ChildBlock 571 575
-    function is_words 578 580
-    function is_surface 582 584
-    function reindented 587 592
-    function child_blocks 596 615
+    function word_tokens 535 569
+    struct ChildBlock 572 576
+    function is_words 579 581
+    function is_surface 583 585
+    function reindented 588 593
+    function child_blocks 597 616

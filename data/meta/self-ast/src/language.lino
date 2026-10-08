@@ -2,9 +2,9 @@ self_ast_census
   target src/language.rs
   language rust
   fidelity signature
-  byte_len 23051
+  byte_len 23053
   line_count 633
-  content_id source_module_d97f5b86ff52136a
+  content_id source_module_28c54ee5b0624ece
   symbol_count 56
   symbols
     const LANGUAGE_DETECTION 22 22

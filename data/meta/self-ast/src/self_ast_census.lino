@@ -2,9 +2,9 @@ self_ast_census
   target src/self_ast_census.rs
   language rust
   fidelity signature
-  byte_len 33305
+  byte_len 33307
   line_count 895
-  content_id source_module_3f6091d4dbc60083
+  content_id source_module_c21a798dd82f8fe1
   symbol_count 50
   symbols
     const CENSUS_DIR 41 41

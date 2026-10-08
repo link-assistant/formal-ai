@@ -2,9 +2,9 @@ self_ast_census
   target src/shared_memory.rs
   language rust
   fidelity signature
-  byte_len 7773
+  byte_len 7800
   line_count 193
-  content_id source_module_54c6126fadbeefc0
+  content_id source_module_7212c2e2643026ab
   symbol_count 13
   symbols
     const MEMORY_PATH_ENV 6 6

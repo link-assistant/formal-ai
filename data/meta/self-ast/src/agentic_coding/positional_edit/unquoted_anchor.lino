@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/positional_edit/unquoted_anchor.rs
   language rust
   fidelity full_ast
-  byte_len 4990
+  byte_len 4992
   line_count 137
-  content_id source_module_f206cc31c1c949e6
+  content_id source_module_a3d4abf0219e47e2
   symbol_count 5
   symbols
     function unquoted_anchor_insert 18 59

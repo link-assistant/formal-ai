@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_formalization.rs
   language rust
   fidelity signature
-  byte_len 5110
+  byte_len 5112
   line_count 135
-  content_id source_module_e5a73eb54e83cf1a
+  content_id source_module_64976d57a6b672d4
   symbol_count 4
   symbols
     function record_formalization 7 21

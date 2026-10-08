@@ -2,9 +2,9 @@ self_ast_census
   target src/formalization/text_statements.rs
   language rust
   fidelity signature
-  byte_len 29495
+  byte_len 29505
   line_count 900
-  content_id source_module_2a99a31ce8e70903
+  content_id source_module_638d2b1e645e7146
   symbol_count 59
   symbols
     const FUNCTION_WORD_ROLES 35 35

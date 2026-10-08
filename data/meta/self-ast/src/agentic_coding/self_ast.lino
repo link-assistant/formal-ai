@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/self_ast.rs
   language rust
   fidelity full_ast
-  byte_len 15967
+  byte_len 15971
   line_count 363
-  content_id source_module_6fbab02199e74dce
+  content_id source_module_648fab5903aec4fa
   symbol_count 28
   symbols
     static AST_CENSUS_RUNS 32 32

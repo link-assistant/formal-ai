@@ -2,9 +2,9 @@ self_ast_census
   target src/server/debug_session.rs
   language rust
   fidelity signature
-  byte_len 22982
-  line_count 631
-  content_id source_module_5c78993856b25720
+  byte_len 23121
+  line_count 632
+  content_id source_module_22ffae927aaa7125
   symbol_count 51
   symbols
     const DEBUG_TOKEN_ENV 41 41
@@ -34,27 +34,27 @@ self_ast_census
     function lock 282 284
     function pause 287 289
     function hold 293 318
-    function begin 325 333
-    function resume 339 359
-    function gate 364 371
-    function abandon 374 377
-    function advance 383 410
-    function release 413 426
-    function snapshot 430 456
-    static SESSION 459 459
-    function enable_debug_session 466 471
-    function active_debug_session 475 477
-    function debug_session_banner 482 488
-    type Liveness 490 490
-    static CONNECTION 493 493
-    static OPEN_TURN 495 495
-    static SOLVE_DEPTH 497 497
-    function with_connection_scope 503 511
-    function with_liveness 515 521
-    struct SolveTurn 526 528
-    function drop 531 542
-    function begin_turn 550 561
-    function gate_turn 566 575
-    function field_text 578 582
-    function handle_debug_route 587 593
-    function handle_debug_request 597 631
+    function begin 325 334
+    function resume 340 360
+    function gate 365 372
+    function abandon 375 378
+    function advance 384 411
+    function release 414 427
+    function snapshot 431 457
+    static SESSION 460 460
+    function enable_debug_session 467 472
+    function active_debug_session 476 478
+    function debug_session_banner 483 489
+    type Liveness 491 491
+    static CONNECTION 494 494
+    static OPEN_TURN 496 496
+    static SOLVE_DEPTH 498 498
+    function with_connection_scope 504 512
+    function with_liveness 516 522
+    struct SolveTurn 527 529
+    function drop 532 543
+    function begin_turn 551 562
+    function gate_turn 567 576
+    function field_text 579 583
+    function handle_debug_route 588 594
+    function handle_debug_request 598 632
