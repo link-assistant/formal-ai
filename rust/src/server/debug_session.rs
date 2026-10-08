@@ -290,9 +290,9 @@ impl DebugSession {
 
     /// Mirrors `hold`: wait until the turn is no longer held — its last known
     /// stage advanced, or the turn released (a disconnect releases it).
-    fn hold(
-        &self,
-        mut state: MutexGuard<'_, State>,
+    fn hold<'a>(
+        &'a self,
+        mut state: MutexGuard<'a, State>,
         turn_id: &str,
         alive: &mut dyn FnMut() -> bool,
     ) {
