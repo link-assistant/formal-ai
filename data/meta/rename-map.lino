@@ -1288,3 +1288,24 @@ rename-map
       to "rust/tests/unit/specification/release_order_snapshot.rs"
       reason "The release-order answer is computed from a dated, source-backed snapshot."
       review "Reviewed on 2026-10-08: the proposal read from the test names was snapshot_release_timeline.rs; renamed for the behaviour the doc comment and the tests pin. The issue number stays in the doc comment."
+  tree lexicon-import-by-concept-range
+    rename
+      from "data/seed/meanings-lexicon-import-01.lino"
+      to "data/seed/meanings-lexicon-import-actor-to-diamond.lino"
+      reason "The imported common-noun lexemes from actor to diamond, in concept order; rust/src/lexeme_import.rs names each shard by its first and last concept."
+    rename
+      from "data/seed/meanings-lexicon-import-02.lino"
+      to "data/seed/meanings-lexicon-import-dog-to-lake.lino"
+      reason "The imported common-noun lexemes from dog to lake, in concept order; rust/src/lexeme_import.rs names each shard by its first and last concept."
+    rename
+      from "data/seed/meanings-lexicon-import-03.lino"
+      to "data/seed/meanings-lexicon-import-lamp-to-rainbow.lino"
+      reason "The imported common-noun lexemes from lamp to rainbow, in concept order; rust/src/lexeme_import.rs names each shard by its first and last concept."
+    rename
+      from "data/seed/meanings-lexicon-import-04.lino"
+      to "data/seed/meanings-lexicon-import-religion-to-wall.lino"
+      reason "The imported common-noun lexemes from religion to wall, in concept order; rust/src/lexeme_import.rs names each shard by its first and last concept."
+    rename
+      from "data/seed/meanings-lexicon-import-05.lino"
+      to "data/seed/meanings-lexicon-import-war-to-wood.lino"
+      reason "The imported common-noun lexemes from war to wood, in concept order; rust/src/lexeme_import.rs names each shard by its first and last concept."

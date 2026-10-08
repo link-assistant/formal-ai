@@ -333,19 +333,19 @@ seed_registry
     bundle true
     lexicon meaning
     web true
-  seed meanings-lexicon-import-01
+  seed meanings-lexicon-import-actor-to-diamond
     bundle true
     lexicon meaning
-  seed meanings-lexicon-import-02
+  seed meanings-lexicon-import-dog-to-lake
     bundle true
     lexicon meaning
-  seed meanings-lexicon-import-03
+  seed meanings-lexicon-import-lamp-to-rainbow
     bundle true
     lexicon meaning
-  seed meanings-lexicon-import-04
+  seed meanings-lexicon-import-religion-to-wall
     bundle true
     lexicon meaning
-  seed meanings-lexicon-import-05
+  seed meanings-lexicon-import-war-to-wood
     bundle true
     lexicon meaning
   seed meanings-links-root

@@ -178,16 +178,16 @@ pub const MEANINGS_LANGUAGE_PROTOCOL_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-language-protocol.lino");
 pub const MEANINGS_LEXICAL_META_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-lexical-meta.lino");
-pub const MEANINGS_LEXICON_IMPORT_01_LINO: &str =
-    include_str!("../../embedded/data/seed/meanings-lexicon-import-01.lino");
-pub const MEANINGS_LEXICON_IMPORT_02_LINO: &str =
-    include_str!("../../embedded/data/seed/meanings-lexicon-import-02.lino");
-pub const MEANINGS_LEXICON_IMPORT_03_LINO: &str =
-    include_str!("../../embedded/data/seed/meanings-lexicon-import-03.lino");
-pub const MEANINGS_LEXICON_IMPORT_04_LINO: &str =
-    include_str!("../../embedded/data/seed/meanings-lexicon-import-04.lino");
-pub const MEANINGS_LEXICON_IMPORT_05_LINO: &str =
-    include_str!("../../embedded/data/seed/meanings-lexicon-import-05.lino");
+pub const MEANINGS_LEXICON_IMPORT_ACTOR_TO_DIAMOND_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-lexicon-import-actor-to-diamond.lino");
+pub const MEANINGS_LEXICON_IMPORT_DOG_TO_LAKE_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-lexicon-import-dog-to-lake.lino");
+pub const MEANINGS_LEXICON_IMPORT_LAMP_TO_RAINBOW_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-lexicon-import-lamp-to-rainbow.lino");
+pub const MEANINGS_LEXICON_IMPORT_RELIGION_TO_WALL_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-lexicon-import-religion-to-wall.lino");
+pub const MEANINGS_LEXICON_IMPORT_WAR_TO_WOOD_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-lexicon-import-war-to-wood.lino");
 pub const MEANINGS_LINKS_ROOT_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-links-root.lino");
 pub const MEANINGS_LOCAL_SEARCH_LINO: &str =
@@ -542,11 +542,26 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-language-projection.lino", MEANINGS_LANGUAGE_PROJECTION_LINO),
         ("data/seed/meanings-language-protocol.lino", MEANINGS_LANGUAGE_PROTOCOL_LINO),
         ("data/seed/meanings-lexical-meta.lino", MEANINGS_LEXICAL_META_LINO),
-        ("data/seed/meanings-lexicon-import-01.lino", MEANINGS_LEXICON_IMPORT_01_LINO),
-        ("data/seed/meanings-lexicon-import-02.lino", MEANINGS_LEXICON_IMPORT_02_LINO),
-        ("data/seed/meanings-lexicon-import-03.lino", MEANINGS_LEXICON_IMPORT_03_LINO),
-        ("data/seed/meanings-lexicon-import-04.lino", MEANINGS_LEXICON_IMPORT_04_LINO),
-        ("data/seed/meanings-lexicon-import-05.lino", MEANINGS_LEXICON_IMPORT_05_LINO),
+        (
+            "data/seed/meanings-lexicon-import-actor-to-diamond.lino",
+            MEANINGS_LEXICON_IMPORT_ACTOR_TO_DIAMOND_LINO,
+        ),
+        (
+            "data/seed/meanings-lexicon-import-dog-to-lake.lino",
+            MEANINGS_LEXICON_IMPORT_DOG_TO_LAKE_LINO,
+        ),
+        (
+            "data/seed/meanings-lexicon-import-lamp-to-rainbow.lino",
+            MEANINGS_LEXICON_IMPORT_LAMP_TO_RAINBOW_LINO,
+        ),
+        (
+            "data/seed/meanings-lexicon-import-religion-to-wall.lino",
+            MEANINGS_LEXICON_IMPORT_RELIGION_TO_WALL_LINO,
+        ),
+        (
+            "data/seed/meanings-lexicon-import-war-to-wood.lino",
+            MEANINGS_LEXICON_IMPORT_WAR_TO_WOOD_LINO,
+        ),
         ("data/seed/meanings-links-root.lino", MEANINGS_LINKS_ROOT_LINO),
         ("data/seed/meanings-local-search.lino", MEANINGS_LOCAL_SEARCH_LINO),
         ("data/seed/meanings-membership.lino", MEANINGS_MEMBERSHIP_LINO),
@@ -857,11 +872,11 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_LANGUAGE_PROJECTION_LINO,
     MEANINGS_LANGUAGE_PROTOCOL_LINO,
     MEANINGS_LEXICAL_META_LINO,
-    MEANINGS_LEXICON_IMPORT_01_LINO,
-    MEANINGS_LEXICON_IMPORT_02_LINO,
-    MEANINGS_LEXICON_IMPORT_03_LINO,
-    MEANINGS_LEXICON_IMPORT_04_LINO,
-    MEANINGS_LEXICON_IMPORT_05_LINO,
+    MEANINGS_LEXICON_IMPORT_ACTOR_TO_DIAMOND_LINO,
+    MEANINGS_LEXICON_IMPORT_DOG_TO_LAKE_LINO,
+    MEANINGS_LEXICON_IMPORT_LAMP_TO_RAINBOW_LINO,
+    MEANINGS_LEXICON_IMPORT_RELIGION_TO_WALL_LINO,
+    MEANINGS_LEXICON_IMPORT_WAR_TO_WOOD_LINO,
     MEANINGS_LINKS_ROOT_LINO,
     MEANINGS_LOCAL_SEARCH_LINO,
     MEANINGS_MEMBERSHIP_LINO,

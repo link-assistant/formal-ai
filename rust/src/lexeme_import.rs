@@ -760,35 +760,41 @@ pub fn render_block(lexeme: &GroundedLexeme) -> String {
 ///
 /// Each shard carries the header and as many whole blocks as fit in
 /// [`SHARD_LINE_BUDGET`] lines (a single block longer than the budget still gets
-/// a shard of its own). Shards are named `meanings-lexicon-import` with a
-/// zero-padded, one-based index when there is more than one.
+/// a shard of its own). A shard is named for the concepts it holds
+/// (R1188-U5): `meanings-lexicon-import-<first>-to-<last>.lino`, after its
+/// first and last concept slugs, or `meanings-lexicon-import.lino` when one
+/// shard holds them all.
 #[must_use]
 pub fn shard(accepted: &[GroundedLexeme]) -> Vec<Shard> {
     let header_lines = SHARD_HEADER.lines().count();
-    let mut bodies: Vec<String> = Vec::new();
+    let mut bodies: Vec<(String, &str, &str)> = Vec::new();
     let mut body_lines = 0;
     for lexeme in accepted {
         let block = render_block(lexeme);
         let block_lines = block.lines().count();
         let full = header_lines + body_lines + block_lines > SHARD_LINE_BUDGET;
         if bodies.is_empty() || (body_lines > 0 && full) {
-            bodies.push(String::new());
+            bodies.push((String::new(), lexeme.slug.as_str(), lexeme.slug.as_str()));
             body_lines = 0;
         }
-        if let Some(body) = bodies.last_mut() {
+        if let Some((body, _, last)) = bodies.last_mut() {
             body.push_str(&block);
+            *last = lexeme.slug.as_str();
         }
         body_lines += block_lines;
     }
     let single = bodies.len() == 1;
     bodies
         .into_iter()
-        .enumerate()
-        .map(|(index, body)| {
+        .map(|(body, first, last)| {
             let file_name = if single {
                 String::from("meanings-lexicon-import.lino")
             } else {
-                format!("meanings-lexicon-import-{:02}.lino", index + 1)
+                format!(
+                    "meanings-lexicon-import-{}-to-{}.lino",
+                    first.replace('_', "-"),
+                    last.replace('_', "-")
+                )
             };
             let mut content = String::from(SHARD_HEADER);
             content.push_str(&body);
