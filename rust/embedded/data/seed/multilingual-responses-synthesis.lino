@@ -1162,6 +1162,7 @@ multilingual_responses
   response response_playwright_starter_typescript_en
     intent playwright_starter_typescript
     language en
+    audience machine
     text "import { test, expect } from '@playwright/test';\n\ntest('opens the Playwright docs', async ({ page }) => {\n  await page.goto('https://playwright.dev/');\n  await expect(page).toHaveTitle(/Playwright/);\n\n  await page.getByRole('link', { name: 'Docs' }).click();\n  await expect(page.getByRole('heading', { name: /Playwright/ })).toBeVisible();\n});"
   response response_concept_introspection_en
     intent concept_introspection

@@ -122,6 +122,7 @@ multilingual_responses
   response response_external_benchmark_frontier_recorded_from_en
     intent external_benchmark_frontier_recorded_from
     language en
+    audience machine
     text "formal-ai benchmark run --append --frontier-record data/meta/learning-frontier-upstream-benchmarks.lino in .github/workflows/external-benchmarks.yml"
   response response_external_benchmark_frontier_written_en
     intent external_benchmark_frontier_written

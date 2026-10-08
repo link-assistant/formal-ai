@@ -1249,32 +1249,40 @@ multilingual_responses
   response response_algorithm_sort_code_python_en
     intent algorithm_sort_code_python
     language en
+    audience machine
     text "def sort(values):\n    return sorted(values)\n"
   response response_algorithm_sort_tests_python_en
     intent algorithm_sort_tests_python
     language en
+    audience machine
     text "def test_sort_ascending():\n    assert sort([3, 1, 2]) == [1, 2, 3]\n"
   response response_algorithm_sort_code_rust_en
     intent algorithm_sort_code_rust
     language en
+    audience machine
     text "fn sort(values: &mut Vec<i32>) {\n    values.sort();\n}"
   response response_algorithm_sort_tests_rust_en
     intent algorithm_sort_tests_rust
     language en
+    audience machine
     text "#[test]\nfn test_sort_ascending() {\n    let mut v = vec![3, 1, 2];\n    sort(&mut v);\n    assert_eq!(v, vec![1, 2, 3]);\n}"
   response response_algorithm_sort_code_javascript_en
     intent algorithm_sort_code_javascript
     language en
+    audience machine
     text "function sort(values) {\n  return [...values].sort((a, b) => a - b);\n}"
   response response_algorithm_sort_tests_javascript_en
     intent algorithm_sort_tests_javascript
     language en
+    audience machine
     text "function test_sort_ascending() {\n  assert.deepEqual(sort([3,1,2]), [1,2,3]);\n}"
   response response_algorithm_sort_code_typescript_en
     intent algorithm_sort_code_typescript
     language en
+    audience machine
     text "function sort(values) {\n  return [...values].sort((a, b) => a - b);\n}"
   response response_algorithm_sort_tests_typescript_en
     intent algorithm_sort_tests_typescript
     language en
+    audience machine
     text "function test_sort_ascending() {\n  assert.deepEqual(sort([3,1,2]), [1,2,3]);\n}"

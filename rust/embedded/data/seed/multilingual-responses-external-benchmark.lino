@@ -62,6 +62,7 @@ multilingual_responses
   response response_external_benchmark_provenance_en
     intent external_benchmark_provenance
     language en
+    audience machine
     text "external_benchmark_cache\n  suite {suite}\n  source_ref {source_ref}\n  download_url {url}\n  payload_bytes {payload_bytes}\n  content_id fnv1a64:{content_id}\n"
   response response_external_benchmark_parquet_module_unavailable_en
     intent external_benchmark_parquet_module_unavailable
@@ -86,6 +87,7 @@ multilingual_responses
   response response_external_benchmark_python_import_en
     intent external_benchmark_python_import
     language en
+    audience machine
     text "import {module}"
   response response_external_benchmark_parquet_start_error_en
     intent external_benchmark_parquet_start_error
@@ -450,6 +452,7 @@ multilingual_responses
   response response_external_benchmark_pytest_command_en
     intent external_benchmark_pytest_command
     language en
+    audience machine
     text "python3 -m pytest {tests}"
   response response_external_benchmark_test_field_missing_en
     intent external_benchmark_test_field_missing
@@ -614,14 +617,17 @@ multilingual_responses
   response response_external_benchmark_unavailable_observation_en
     intent external_benchmark_unavailable_observation
     language en
+    audience machine
     text "suite={suite} benchmark_unavailable evaluator_detail={reason}"
   response response_external_benchmark_failure_observation_en
     intent external_benchmark_failure_observation
     language en
+    audience machine
     text "suite={suite} case={case} evaluator_detail={detail}"
   response response_external_benchmark_learning_event_en
     intent external_benchmark_learning_event
     language en
+    audience machine
     text "  event lesson:evaluator-grounded-repair\n"
   response response_external_benchmark_learning_lesson_en
     intent external_benchmark_learning_lesson

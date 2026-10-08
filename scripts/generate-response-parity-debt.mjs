@@ -13,6 +13,7 @@ const SEED_DIRECTORY = 'data/seed';
 const SEED_PREFIX = 'multilingual-responses';
 const SEED_SUFFIX = '.lino';
 const LANGUAGES = ['en', 'ru', 'hi', 'zh', 'es'];
+const MACHINE_AUDIENCE = 'audience machine';
 
 const unquote = (raw) => {
   const trimmed = raw.trim();
@@ -27,12 +28,18 @@ export function seededResponseLanguages(root = '.') {
     .sort();
   for (const name of names) {
     let intent = '';
+    let language = '';
     for (const line of readFileSync(`${root}/${SEED_DIRECTORY}/${name}`, 'utf8').split('\n')) {
       const trimmed = line.trim();
       if (trimmed.startsWith('intent ')) intent = unquote(trimmed.slice('intent '.length));
       else if (trimmed.startsWith('language ') && intent !== '') {
+        language = unquote(trimmed.slice('language '.length));
         if (!languagesByIntent.has(intent)) languagesByIntent.set(intent, new Set());
-        languagesByIntent.get(intent).add(unquote(trimmed.slice('language '.length)));
+        languagesByIntent.get(intent).add(language);
+      } else if (trimmed === MACHINE_AUDIENCE && intent !== '') {
+        // A row read by a program (a code template, a log line) is not a
+        // reply to a person, so its language owes no translation.
+        languagesByIntent.get(intent)?.delete(language);
       }
     }
   }
@@ -45,7 +52,8 @@ export function renderLedger(languagesByIntent, measuredOn) {
   const intentsByMissing = new Map();
   for (const [intent, languages] of languagesByIntent) {
     // An intent with no target-language row at all is a code template
-    // (`language rust`), not a reply to a person, so it owes no translation.
+    // (`language rust`) or a row marked `audience machine`, not a reply to a
+    // person, so it owes no translation.
     if (!LANGUAGES.some((language) => languages.has(language))) continue;
     const missing = LANGUAGES.filter((language) => !languages.has(language)).join(',');
     if (missing === '') continue;

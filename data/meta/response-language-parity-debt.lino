@@ -2,7 +2,6 @@
 response_language_parity_debt
   record_type "response_language_parity_debt"
   measured_on "2026-10-08"
-  ceiling 16
+  ceiling 0
   target_languages "en,ru,hi,zh,es"
   source "data/seed/multilingual-responses*.lino"
-  uncovered_behavior missing_languages "ru,hi,zh,es" observed_on "2026-10-08" response_intents "algorithm_sort_code_javascript,algorithm_sort_code_python,algorithm_sort_code_rust,algorithm_sort_code_typescript,algorithm_sort_tests_javascript,algorithm_sort_tests_python,algorithm_sort_tests_rust,algorithm_sort_tests_typescript,external_benchmark_failure_observation,external_benchmark_frontier_recorded_from,external_benchmark_learning_event,external_benchmark_provenance,external_benchmark_pytest_command,external_benchmark_python_import,external_benchmark_unavailable_observation,playwright_starter_typescript"

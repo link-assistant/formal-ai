@@ -134,8 +134,12 @@ fn seeded_response_languages() -> BTreeMap<String, BTreeSet<String>> {
     out
 }
 
+/// The marker of a response row read by a program rather than a person.
+const MACHINE_AUDIENCE: &str = "audience machine";
+
 fn collect_response_languages(text: &str, out: &mut BTreeMap<String, BTreeSet<String>>) {
     let mut intent = String::new();
+    let mut language = String::new();
     for line in text.lines() {
         let trimmed = line.trim();
         if let Some(value) = trimmed.strip_prefix("intent ") {
@@ -143,9 +147,16 @@ fn collect_response_languages(text: &str, out: &mut BTreeMap<String, BTreeSet<St
         } else if let Some(value) = trimmed.strip_prefix("language ")
             && !intent.is_empty()
         {
+            language = unquote(value);
             out.entry(intent.clone())
                 .or_default()
-                .insert(unquote(value));
+                .insert(language.clone());
+        } else if trimmed == MACHINE_AUDIENCE
+            && let Some(languages) = out.get_mut(&intent)
+        {
+            // A row read by a program (a code template, a log line) is not a
+            // reply to a person, so its language owes no translation.
+            languages.remove(&language);
         }
     }
 }
