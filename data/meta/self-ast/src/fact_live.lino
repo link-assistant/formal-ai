@@ -2,9 +2,9 @@ self_ast_census
   target src/fact_live.rs
   language rust
   fidelity signature
-  byte_len 7913
+  byte_len 7937
   line_count 210
-  content_id source_module_c350c7285c3252c4
+  content_id source_module_f35f2b4a7925fcc7
   symbol_count 12
   symbols
     const REGISTRY_TEXT 25 25

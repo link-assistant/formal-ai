@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/playwright_script.rs
   language rust
   fidelity signature
-  byte_len 4148
+  byte_len 4168
   line_count 108
-  content_id source_module_5c263f550dc511f5
+  content_id source_module_98f0edd5adbb757f
   symbol_count 5
   symbols
     function docs_url 18 20

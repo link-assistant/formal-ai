@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/local_search.rs
   language rust
   fidelity full_ast
-  byte_len 23780
-  line_count 709
-  content_id source_module_e88b96ff98139bc3
+  byte_len 23986
+  line_count 712
+  content_id source_module_fcff7375834078a4
   symbol_count 46
   symbols
     const DESKTOP_ROOT 17 17
@@ -22,44 +22,44 @@ self_ast_census
     struct LocalSearchNarration 51 54
     function plan_local_search_step 57 98
     function narration_for 100 118
-    function request_for 122 232
-    function role_matches 234 249
-    function surface_position 251 268
-    function explicit_file_literal 270 294
-    function quoted_literal 296 330
-    function strip_role 332 345
-    function longest_role_surface 347 354
-    function remove_surface 356 375
-    function surface_present 377 385
-    function contains_cjk 387 390
-    function plan_find 392 435
-    function answer_for_candidates 437 499
-    function plan_contents 501 536
-    function run 538 541
-    function exact_command 543 545
-    function substring_command 547 555
-    function find_command 557 570
-    function inventory_command 572 582
-    function scope_listing_command 584 590
-    function contents_command 592 597
-    function metadata_command 599 601
-    function kind_predicate 603 609
-    function run_results 611 633
-    function best_candidate 635 644
-    function similarity 646 663
-    function basename 665 671
-    function render_listing 673 677
-    function render_not_found 679 683
-    function render_type 685 701
-    function localized 703 705
-    function shell_quote 707 709
+    function request_for 122 235
+    function role_matches 237 252
+    function surface_position 254 271
+    function explicit_file_literal 273 297
+    function quoted_literal 299 333
+    function strip_role 335 348
+    function longest_role_surface 350 357
+    function remove_surface 359 378
+    function surface_present 380 388
+    function contains_cjk 390 393
+    function plan_find 395 438
+    function answer_for_candidates 440 502
+    function plan_contents 504 539
+    function run 541 544
+    function exact_command 546 548
+    function substring_command 550 558
+    function find_command 560 573
+    function inventory_command 575 585
+    function scope_listing_command 587 593
+    function contents_command 595 600
+    function metadata_command 602 604
+    function kind_predicate 606 612
+    function run_results 614 636
+    function best_candidate 638 647
+    function similarity 649 666
+    function basename 668 674
+    function render_listing 676 680
+    function render_not_found 682 686
+    function render_type 688 704
+    function localized 706 708
+    function shell_quote 710 712
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 20332
-    named_node_count 4070
+    total_link_count 20364
+    named_node_count 4075
     distinct_node_kinds 81
     node_kinds
       arguments 371
@@ -96,7 +96,7 @@ self_ast_census
       function_modifiers 1
       generic_function 5
       generic_type 24
-      identifier 1043
+      identifier 1045
       if_expression 37
       index_expression 26
       inner_doc_comment_marker 6
@@ -105,7 +105,7 @@ self_ast_census
       let_condition 6
       let_declaration 70
       lifetime 3
-      line_comment 17
+      line_comment 19
       macro_invocation 21
       match_arm 24
       match_block 8
@@ -122,7 +122,7 @@ self_ast_census
       reference_expression 68
       reference_type 80
       return_expression 25
-      scoped_identifier 104
+      scoped_identifier 105
       scoped_use_list 1
       shorthand_field_initializer 6
       source_file 1

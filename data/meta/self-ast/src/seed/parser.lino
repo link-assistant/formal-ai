@@ -2,10 +2,10 @@ self_ast_census
   target src/seed/parser.rs
   language rust
   fidelity signature
-  byte_len 13027
-  line_count 406
-  content_id source_module_478f8d9a7e13beb4
-  symbol_count 21
+  byte_len 20187
+  line_count 615
+  content_id source_module_3233b4ea4547ff86
+  symbol_count 36
   symbols
     struct LinoNode 21 25
     function find_child_value 29 36
@@ -28,3 +28,18 @@ self_ast_census
     function parse_codepoint 328 337
     function split_pipe_list 339 356
     function split_reference_tokens 362 406
+    function expand_concise_lexemes 417 481
+    const LEXEME 484 484
+    const WORDS 485 485
+    const SURFACE 486 486
+    function opens_with 489 493
+    function is_concise_hint 497 501
+    function lexeme_head 504 522
+    function leading_spaces 524 526
+    function is_blank_line 528 530
+    function word_tokens 535 568
+    struct ChildBlock 571 575
+    function is_words 578 580
+    function is_surface 582 584
+    function reindented 587 592
+    function child_blocks 596 615

@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/feature_capability.rs
   language rust
   fidelity signature
-  byte_len 10646
-  line_count 314
-  content_id source_module_87f8b5fadc8dac65
+  byte_len 10741
+  line_count 311
+  content_id source_module_97e0b60ac8142fa9
   symbol_count 18
   symbols
     const FEATURES_PATH 20 20
@@ -19,9 +19,9 @@ self_ast_census
     function feature_capabilities 156 181
     static FEATURES 157 157
     function detect_feature_capability 189 208
-    function is_feature_capability_question 214 229
-    function is_english_availability_question 231 240
-    function is_feature_action_request 248 261
-    function feature_capability_body 263 291
-    function web_search_capability_body 293 306
-    function capability_response 308 314
+    function is_feature_capability_question 215 226
+    function is_english_availability_question 228 237
+    function is_feature_action_request 245 258
+    function feature_capability_body 260 288
+    function web_search_capability_body 290 303
+    function capability_response 305 311

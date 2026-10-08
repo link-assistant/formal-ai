@@ -1,0 +1,18 @@
+self_ast_census
+  target src/lexeme_import/cache_trim.rs
+  language rust
+  fidelity signature
+  byte_len 6071
+  line_count 175
+  content_id source_module_c64c50cb1384dbd9
+  symbol_count 9
+  symbols
+    function trim_entity 18 42
+    enum Ordered 46 51
+    function keep_languages 53 62
+    function keep_language_arrays 64 78
+    function value_to_ordered 80 93
+    function serialize_trimmed 99 104
+    function write_ordered 106 154
+    function pad 156 160
+    function escape_json 162 175

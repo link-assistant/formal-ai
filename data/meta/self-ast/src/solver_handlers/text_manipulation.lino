@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/text_manipulation.rs
   language rust
   fidelity signature
-  byte_len 34110
+  byte_len 34176
   line_count 949
-  content_id source_module_bf98636f2182c467
+  content_id source_module_53074e0d6d28c971
   symbol_count 49
   symbols
     const REPLACEMENT_CUE_TABLE 26 26

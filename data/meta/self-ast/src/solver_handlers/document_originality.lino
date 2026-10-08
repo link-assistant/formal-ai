@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/document_originality.rs
   language rust
   fidelity signature
-  byte_len 13729
+  byte_len 13749
   line_count 399
-  content_id source_module_6032a9e7b7dc45e5
+  content_id source_module_1c00153d94a2750d
   symbol_count 25
   symbols
     const TARGET_PLACEHOLDER 21 21

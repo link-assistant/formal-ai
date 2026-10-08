@@ -2,9 +2,9 @@ self_ast_census
   target src/meta_reasoner/integration.rs
   language rust
   fidelity signature
-  byte_len 7662
+  byte_len 7671
   line_count 201
-  content_id source_module_2a69b6a3c861339d
+  content_id source_module_32ab3e3d6ae6fe24
   symbol_count 7
   symbols
     const RESPONSE_LINK 23 23

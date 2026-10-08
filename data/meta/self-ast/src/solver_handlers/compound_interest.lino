@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/compound_interest.rs
   language rust
   fidelity signature
-  byte_len 16431
+  byte_len 16469
   line_count 488
-  content_id source_module_17776aed2c890757
+  content_id source_module_9305dbbc0f48f752
   symbol_count 32
   symbols
     const POLICY 23 23
