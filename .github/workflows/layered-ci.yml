@@ -7,7 +7,7 @@
 #   js   -- `node --check` over every committed js/**/*.js. Measured green on
 #           the whole 63-file corpus on 2026-09-25, so this tier is a real
 #           parse gate, not ceremony. It also runs the JavaScript suites
-#           (rust/tests/web/), in two budgeted shards, and an edit to a suite
+#           (rust/tests/web/), in four budgeted shards, and an edit to a suite
 #           wakes it (issue #1017).
 #   ts   -- the js<->ts file-set parity: every .js has its .ts sibling and
 #           the ts tree holds no extras. The fast tier-2 rung; it fails in
@@ -114,7 +114,7 @@ jobs:
         run: rust-script scripts/detect-code-changes.rs
 
   js:
-    name: js tier (node --check over js, suites ${{ matrix.shard }}/2)
+    name: js tier (node --check over js, suites ${{ matrix.shard }}/4)
     needs: [changes]
     # Only this tier's own predicate and no `always()`: another tier's
     # folder changing alone must let this tier stand on its last green run.
@@ -127,7 +127,9 @@ jobs:
     # shards on parallel runners each run half the files -- `--test-shard`
     # splits the sorted file list round-robin, so the shards together run
     # every file exactly once -- and each owns a 360s budget (60% of the
-    # cap) that fails with an `::error` instead of being cancelled.
+    # cap) that fails with an `::error` instead of being cancelled. Run
+    # 37706284975 (2026-10-08) had shard 2/2 terminated at that budget once
+    # the requirement audit added 54 suites, so the files now split four ways.
     timeout-minutes: 10
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-js-${{ matrix.shard }}
@@ -135,7 +137,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        shard: [1, 2]
+        shard: [1, 2, 3, 4]
     steps:
       - uses: actions/checkout@v7
         with:
@@ -197,7 +199,7 @@ jobs:
       - name: Run this shard of the JavaScript suites
         env:
           SHARD: ${{ matrix.shard }}
-          SHARDS: 2
+          SHARDS: 4
           TEST_BUDGET_SECONDS: 360
           TEST_WARN_RATIO_PERCENT: 75
         run: |
