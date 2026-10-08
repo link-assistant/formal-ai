@@ -39,11 +39,11 @@ requirement_status_ledger_shard
   requirement
     id "R378"
     verdict "implemented"
-    automated_test "rust/tests/unit/bulk_lexeme_import.rs"
+    automated_test "rust/tests/web/agentic-recipes-b.test.mjs"
   requirement
     id "R379"
     verdict "partial"
-    automated_test "rust/tests/unit/proof_request.rs"
+    automated_test "rust/tests/web/issue-403-number-constraints-parity.test.mjs"
   requirement
     id "R380"
     verdict "superseded"

@@ -102,6 +102,7 @@ fn quoted(value: &str) -> String {
 }
 
 fn test_path(text: &str, root: &Path) -> String {
+    let mut rust_test = None;
     for token in text.split(|character: char| {
         character.is_whitespace()
             || matches!(character, '`' | '|' | ',' | ';' | '(' | ')' | '[' | ']')
@@ -126,10 +127,15 @@ fn test_path(text: &str, root: &Path) -> String {
             || candidate.starts_with("desktop/scripts/"))
             && root.join(candidate).is_file()
         {
-            return candidate.to_owned();
+            // JavaScript first (R1188-U29): a row that names tests in both
+            // roots cites the JavaScript one.
+            if !candidate.ends_with(".rs") {
+                return candidate.to_owned();
+            }
+            rust_test = rust_test.or(Some(candidate));
         }
     }
-    String::new()
+    rust_test.unwrap_or_default().to_owned()
 }
 
 fn trace_rows(text: &str, root: &Path) -> BTreeMap<String, TraceRow> {

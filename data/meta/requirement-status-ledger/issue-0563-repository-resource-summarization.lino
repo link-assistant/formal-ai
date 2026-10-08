@@ -3,31 +3,26 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0563-repository-resource-summarization.md"
   issue "0563"
   delivered "PR #564 (issue #563)"
+  automated_test "rust/tests/web/issue-0563-repository-summarization.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R345"
     verdict "implemented"
-    automated_test "rust/tests/unit/specification/summarization_pipeline.rs"
   requirement
     id "R346"
     verdict "implemented"
-    automated_test "rust/tests/unit/specification/summarization_pipeline.rs"
   requirement
     id "R347"
     verdict "implemented"
-    automated_test "rust/tests/source/source_tests/summarization/mod/tests.rs"
   requirement
     id "R348"
     verdict "implemented"
-    automated_test "rust/tests/source/source_tests/summarization/mod/tests.rs"
   requirement
     id "R349"
     verdict "implemented"
-    automated_test "rust/tests/unit/specification/summarization_pipeline.rs"
   requirement
     id "R350"
     verdict "implemented"
-    automated_test "rust/tests/source/source_tests/summarization/mod/tests.rs"
   requirement
     id "R351"
     verdict "implemented"
@@ -47,20 +42,15 @@ requirement_status_ledger_shard
   requirement
     id "R355"
     verdict "implemented"
-    automated_test "rust/tests/unit/specification/summarization_pipeline.rs"
   requirement
     id "R356"
     verdict "implemented"
-    automated_test "rust/tests/unit/specification/summarization_pipeline.rs"
   requirement
     id "R357"
     verdict "implemented"
-    automated_test "rust/tests/unit/specification/summarization_pipeline.rs"
   requirement
     id "R358"
     verdict "implemented"
-    automated_test "rust/tests/unit/specification/summarization_pipeline.rs"
   requirement
     id "R359"
     verdict "implemented"
-    automated_test "rust/tests/source/source_tests/summarization/mod/tests.rs"

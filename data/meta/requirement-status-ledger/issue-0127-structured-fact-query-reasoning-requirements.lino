@@ -7,7 +7,7 @@ requirement_status_ledger_shard
   requirement
     id "R173"
     verdict "implemented"
-    automated_test "rust/tests/unit/specification/prompt_variations_facts.rs"
+    automated_test "rust/tests/web/issue-1172-live-fact-parity.test.mjs"
   requirement
     id "R174"
     verdict "implemented"
@@ -35,4 +35,4 @@ requirement_status_ledger_shard
   requirement
     id "R180"
     verdict "implemented"
-    automated_test "rust/tests/unit/specification/prompt_variations.rs"
+    automated_test "rust/tests/e2e/tests/multilingual-issue-27.spec.js"

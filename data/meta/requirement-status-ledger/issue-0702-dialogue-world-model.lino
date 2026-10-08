@@ -27,7 +27,7 @@ requirement_status_ledger_shard
   requirement
     id "R702-14"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_702_nested_contexts.rs"
+    automated_test "rust/tests/web/issue-0702-nested-contexts.test.mjs"
   requirement
     id "R702-15"
     verdict "implemented"

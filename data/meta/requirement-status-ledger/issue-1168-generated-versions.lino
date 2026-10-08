@@ -3,7 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-1168-generated-versions.md"
   issue "1168"
   delivered "implemented — 2026-10-07 (this pull request); see the shard"
-  automated_test "rust/tests/unit/issue_1168_latest_versions.rs"
+  automated_test "rust/tests/web/issue-1168-source-cache.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R1168-1"
@@ -24,10 +24,12 @@ requirement_status_ledger_shard
     id "R1168-6"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); coursier/scala pins resolved; data/ scans clean"
+    automated_test "rust/tests/unit/issue_1168_latest_versions.rs"
   requirement
     id "R1168-7"
     verdict "implemented"
     delivered "2026-10-07 (this pull request): gate registered in data/meta/ci-gates/check-generated-version-literals.lino; repository data asserted clean"
+    automated_test "rust/tests/unit/issue_1168_latest_versions.rs"
   requirement
     id "R1168-8"
     verdict "implemented"

@@ -2,24 +2,27 @@
 requirement_status_ledger_shard
   shard "docs/requirements/issue-1176-quantities-dates-statistics.md"
   issue "1176"
-  automated_test "rust/tests/unit/issue_1176_quantities_dates.rs"
   manual "not yet confirmed"
   requirement
     id "R1176-1"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); live P2370 reads at answer time and full item resolution not delivered"
+    automated_test "rust/tests/web/issue-1176-wikidata-grounding.test.mjs"
   requirement
     id "R1176-2"
     verdict "implemented"
     delivered "2026-10-07 (this pull request; relation word problems in Rust and JS)"
+    automated_test "rust/tests/web/issue-1176-word-relations.test.mjs"
   requirement
     id "R1176-3"
     verdict "implemented"
     delivered "2026-10-07 (this pull request) — all seven seed statistics including the percentile (linear interpolation between closest ranks, exact, derivation in five languages); the 2026-09-30 batch delivered the other six"
+    automated_test "rust/tests/web/issue-1176-statistics-parity.test.mjs"
   requirement
     id "R1176-4"
     verdict "implemented"
     delivered "2026-10-07 (this pull request) — month offsets: modulo-12 arithmetic from a month name, and a clarification naming the 28–31-day month and the day span from a weekday; days and weeks offsets delivered 2026-09-30"
+    automated_test "rust/tests/web/issue-1176-calendar-offset-parity.test.mjs"
   requirement
     id "R1176-5"
     verdict "implemented"

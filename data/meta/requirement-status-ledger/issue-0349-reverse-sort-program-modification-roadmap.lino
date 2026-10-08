@@ -23,7 +23,7 @@ requirement_status_ledger_shard
   requirement
     id "R260"
     verdict "implemented"
-    automated_test "rust/tests/integration/issue_349_reverse_sort.rs"
+    automated_test "rust/tests/e2e/tests/write-program-diagnostics.spec.js"
   requirement
     id "R261"
     verdict "implemented"

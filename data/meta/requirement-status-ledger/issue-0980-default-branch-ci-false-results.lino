@@ -11,6 +11,7 @@ requirement_status_ledger_shard
   requirement
     id "R980-2"
     verdict "implemented"
+    automated_test "rust/tests/e2e/tests/rust-wasm-worker-parity.spec.js"
     manual "manually confirmed 2026-08-08: opener parity passed 12/12 repeated cases and permission replay passed 9/9 repeated cases"
   requirement
     id "R980-3"

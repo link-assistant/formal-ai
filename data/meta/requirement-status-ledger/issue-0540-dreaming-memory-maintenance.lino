@@ -11,7 +11,7 @@ requirement_status_ledger_shard
   requirement
     id "R409"
     verdict "implemented"
-    automated_test "rust/tests/unit/memory_maintenance.rs"
+    automated_test "rust/tests/web/server-dreaming-learning.test.mjs"
   requirement
     id "R410"
     verdict "implemented"
@@ -31,19 +31,19 @@ requirement_status_ledger_shard
   requirement
     id "R414"
     verdict "implemented"
-    automated_test "rust/tests/unit/memory_maintenance.rs"
+    automated_test "rust/tests/web/server-dreaming-learning.test.mjs"
   requirement
     id "R415"
     verdict "implemented"
-    automated_test "rust/tests/integration/issue_540_memory_dream_cli.rs"
+    automated_test "rust/tests/web/server-dreaming-learning.test.mjs"
   requirement
     id "R416"
     verdict "implemented"
-    automated_test "rust/tests/unit/memory_maintenance.rs"
+    automated_test "rust/tests/web/server-dreaming-learning.test.mjs"
   requirement
     id "R417"
     verdict "implemented"
-    automated_test "rust/tests/unit/memory_maintenance.rs"
+    automated_test "rust/tests/web/server-auto-free-space.test.mjs"
   requirement
     id "R418"
     verdict "implemented"
@@ -51,7 +51,7 @@ requirement_status_ledger_shard
   requirement
     id "R419"
     verdict "implemented"
-    automated_test "rust/tests/unit/dreaming_runtime.rs"
+    automated_test "rust/tests/web/server-dreaming-runtime.test.mjs"
   requirement
     id "R420"
     verdict "implemented"
@@ -71,7 +71,7 @@ requirement_status_ledger_shard
   requirement
     id "R424"
     verdict "implemented"
-    automated_test "rust/tests/unit/memory_learning.rs"
+    automated_test "rust/tests/web/server-dreaming-learning.test.mjs"
   requirement
     id "R425"
     verdict "implemented"
@@ -79,11 +79,11 @@ requirement_status_ledger_shard
   requirement
     id "R426"
     verdict "implemented"
-    automated_test "rust/tests/unit/memory_learning.rs"
+    automated_test "rust/tests/web/server-dreaming-learning.test.mjs"
   requirement
     id "R427"
     verdict "implemented"
-    automated_test "rust/tests/unit/dreaming_runtime.rs"
+    automated_test "desktop/scripts/dreaming.test.mjs"
   requirement
     id "R537"
     verdict "implemented"
@@ -95,7 +95,7 @@ requirement_status_ledger_shard
   requirement
     id "R539"
     verdict "implemented"
-    automated_test "rust/tests/integration/issue_540_memory_dream_cli.rs"
+    automated_test "rust/tests/web/server-dreaming-learning.test.mjs"
   requirement
     id "R540"
     verdict "implemented"
@@ -107,11 +107,11 @@ requirement_status_ledger_shard
   requirement
     id "R542"
     verdict "implemented"
-    automated_test "rust/tests/unit/memory_learning.rs"
+    automated_test "rust/tests/web/server-dreaming-learning.test.mjs"
   requirement
     id "R543"
     verdict "implemented"
-    automated_test "rust/tests/unit/memory_maintenance.rs"
+    automated_test "rust/tests/web/server-auto-free-space.test.mjs"
   requirement
     id "R544"
     verdict "implemented"
@@ -131,5 +131,5 @@ requirement_status_ledger_shard
   requirement
     id "R548"
     verdict "implemented"
-    automated_test "rust/tests/unit/memory_maintenance.rs"
+    automated_test "desktop/scripts/dreaming.test.mjs"
     manual "manually confirmed 2026-08-04 (audit): `npm --prefix desktop run smoke` passed (desktop/scripts/smoke.mjs)"

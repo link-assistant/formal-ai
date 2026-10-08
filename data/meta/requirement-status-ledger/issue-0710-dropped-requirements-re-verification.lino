@@ -17,7 +17,7 @@ requirement_status_ledger_shard
     id "R710-03"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 3 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/unit/specification/conversational_reverification.rs"
+    automated_test "rust/tests/e2e/tests/conversational-requirement-recovery.spec.js"
   requirement
     id "R710-04"
     verdict "implemented"
@@ -41,7 +41,7 @@ requirement_status_ledger_shard
     id "R710-08"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 8 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/unit/specification/conversational_reverification.rs"
+    automated_test "rust/tests/e2e/tests/conversational-requirement-recovery.spec.js"
   requirement
     id "R710-09"
     verdict "implemented"
@@ -51,7 +51,7 @@ requirement_status_ledger_shard
     id "R710-10"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 10 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/unit/specification/conversational_reverification.rs"
+    automated_test "rust/tests/e2e/tests/creator-question.spec.js"
   requirement
     id "R710-11"
     verdict "implemented"
@@ -101,7 +101,7 @@ requirement_status_ledger_shard
     id "R710-20"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 20 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/unit/issue_991_how_to_synthesis.rs"
+    automated_test "rust/tests/web/issue-991-how-to-synthesis.test.mjs"
   requirement
     id "R710-21"
     verdict "implemented"
@@ -156,7 +156,7 @@ requirement_status_ledger_shard
     id "R710-31"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 31 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/unit/issue_896_component_boundaries.rs"
+    automated_test "rust/tests/e2e/tests/published-search-boundaries.spec.js"
   requirement
     id "R710-32"
     verdict "implemented"

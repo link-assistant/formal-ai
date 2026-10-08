@@ -40,4 +40,4 @@ requirement_status_ledger_shard
     id "R1174-9"
     verdict "implemented"
     delivered "2026-10-07 (this pull request) — rule events projected into the derivation record's rule stage via derivation-schema.lino; shown by formal-ai explain"
-    automated_test "rust/tests/unit/issue_1184_derivation_records.rs"
+    automated_test "rust/tests/web/issue-1184-derivation-worker.test.mjs"

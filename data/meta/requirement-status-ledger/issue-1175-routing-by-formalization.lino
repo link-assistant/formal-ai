@@ -17,7 +17,7 @@ requirement_status_ledger_shard
     id "R1175-3"
     verdict "implemented"
     delivered "2026-10-08 (this pull request): every handler of the precedence table carries a claim row; the last five read their operand through claim_operands"
-    automated_test "rust/tests/unit/issue_1175_claim_routing.rs"
+    automated_test "rust/tests/web/issue-1175-claim-routing.test.mjs"
   requirement
     id "R1175-4"
     verdict "implemented"

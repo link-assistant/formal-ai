@@ -7,7 +7,7 @@ requirement_status_ledger_shard
     id "R1185-1"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); one shape table formalizes all fourteen languages"
-    automated_test "rust/tests/unit/issue_1185_error_repair_loop.rs"
+    automated_test "rust/tests/web/issue-1185-fourteen-languages.test.mjs"
   requirement
     id "R1185-2"
     verdict "implemented"
@@ -17,7 +17,7 @@ requirement_status_ledger_shard
     id "R1185-3"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); the `repair_edit` record is rendered back into source (`render_repair_edit`, CST-validated) and applied by `repair_step` before the re-run; JS twin refuses as unvalidated without a validator"
-    automated_test "rust/tests/unit/issue_1185_repair_apply.rs"
+    automated_test "rust/tests/web/issue-1185-repair-apply.test.mjs"
   requirement
     id "R1185-4"
     verdict "implemented"
@@ -27,12 +27,12 @@ requirement_status_ledger_shard
     id "R1185-5"
     verdict "implemented"
     delivered "2026-10-07 (this pull request) — the repair_attempts evidence record follows the stop note in the answer"
-    automated_test "rust/tests/unit/issue_1185_error_repair_loop.rs"
+    automated_test "rust/tests/web/issue-1185-stop-note.test.mjs"
   requirement
     id "R1185-6"
     verdict "implemented"
     delivered "2026-10-07 (this pull request) — unmatched diagnostic stops with the unresolved-need note in the answer"
-    automated_test "rust/tests/unit/issue_1185_error_repair_loop.rs"
+    automated_test "rust/tests/web/issue-1185-stop-note.test.mjs"
   requirement
     id "R1185-7"
     verdict "implemented"

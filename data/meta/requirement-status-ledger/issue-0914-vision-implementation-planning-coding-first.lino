@@ -21,7 +21,7 @@ requirement_status_ledger_shard
   requirement
     id "R914-12"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/coding_first_planning.rs"
+    automated_test "rust/tests/web/issue-0914-vision-plan.test.mjs"
   requirement
     id "R914-13"
     verdict "implemented"
@@ -45,7 +45,7 @@ requirement_status_ledger_shard
   requirement
     id "R914-4"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/coding_first_planning.rs"
+    automated_test "rust/tests/web/issue-0914-vision-plan.test.mjs"
   requirement
     id "R914-5"
     verdict "partial"
@@ -55,7 +55,7 @@ requirement_status_ledger_shard
     id "R914-6"
     verdict "partial"
     delivered "partial: enforced by the #918 minimal-core boundary (PR #986) and the open handler-migration continuation #959"
-    automated_test "rust/tests/unit/issue_918_handler_rules_batch.rs"
+    automated_test "rust/tests/web/issue-0918-handler-rules-batch.test.mjs"
   requirement
     id "R914-7"
     verdict "implemented"

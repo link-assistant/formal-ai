@@ -23,7 +23,7 @@ requirement_status_ledger_shard
   requirement
     id "R1138-3-5"
     verdict "partial"
-    automated_test "rust/tests/unit/ci-cd/protocol_callers.rs"
+    automated_test "rust/tests/web/issue-1138-protocol-trace.test.mjs"
   requirement
     id "R1138-3-6"
     verdict "implemented"

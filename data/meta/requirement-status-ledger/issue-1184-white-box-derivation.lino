@@ -3,12 +3,12 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-1184-white-box-derivation.md"
   issue "1184"
   delivered "implemented — 2026-10-07 (this pull request); see the shard"
-  automated_test "rust/tests/unit/issue_1184_derivation_records.rs"
   manual "not yet confirmed"
   requirement
     id "R1184-1"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); Rust `SymbolicAnswer::derivation_id`, browser worker `derivationId`, JS server"
+    automated_test "rust/tests/web/issue-1184-derivation-id-surfaces.test.mjs"
   requirement
     id "R1184-2"
     verdict "implemented"
@@ -16,22 +16,28 @@ requirement_status_ledger_shard
   requirement
     id "R1184-3"
     verdict "implemented"
+    automated_test "rust/tests/web/issue-1184-derivation-server.test.mjs"
   requirement
     id "R1184-4"
     verdict "implemented"
+    automated_test "rust/tests/web/issue-1184-derivation-server.test.mjs"
   requirement
     id "R1184-5"
     verdict "implemented"
+    automated_test "rust/tests/unit/issue_1184_derivation_records.rs"
   requirement
     id "R1184-6"
     verdict "implemented"
+    automated_test "rust/tests/unit/issue_1184_derivation_records.rs"
   requirement
     id "R1184-7"
     verdict "implemented"
+    automated_test "rust/tests/unit/issue_1184_derivation_records.rs"
   requirement
     id "R1184-8"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); `ResponseObject.derivation_id` beside `evidence_links` (Rust and JS servers)"
+    automated_test "rust/tests/web/issue-1184-derivation-id-surfaces.test.mjs"
   requirement
     id "R1184-9"
     verdict "implemented"

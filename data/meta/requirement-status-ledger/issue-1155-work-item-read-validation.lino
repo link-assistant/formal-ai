@@ -3,7 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-1155-work-item-read-validation.md"
   issue "1155"
   delivered "implemented — 2026-10-07 (this pull request); see the shard"
-  automated_test "rust/tests/unit/issue_1155_read_validation.rs"
+  automated_test "rust/tests/web/issue-1155-read-validation.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R1155-1"
@@ -22,3 +22,4 @@ requirement_status_ledger_shard
     id "R1155-5"
     verdict "implemented"
     delivered "this pull request — see the shard"
+    automated_test "rust/tests/unit/issue_1155_read_validation.rs"

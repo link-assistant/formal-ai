@@ -43,7 +43,7 @@ requirement_status_ledger_shard
   requirement
     id "R924-8"
     verdict "implemented"
-    automated_test "rust/tests/integration/issue_991_incremental_dispatch.rs"
+    automated_test "rust/tests/web/issue-0703-session-replay.test.mjs"
   requirement
     id "R924-9"
     verdict "implemented"

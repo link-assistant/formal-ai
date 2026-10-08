@@ -11,7 +11,7 @@ requirement_status_ledger_shard
   requirement
     id "R10"
     verdict "implemented"
-    automated_test "rust/tests/unit/formal_ai.rs"
+    automated_test "rust/tests/e2e/tests/demo.spec.js"
     manual 'manually confirmed 2026-08-04 (audit): README `chat --prompt "Write me hello world program in Rust"` run, JSON chat format checked'
   requirement
     id "R11"
@@ -58,7 +58,7 @@ requirement_status_ledger_shard
   requirement
     id "R20"
     verdict "implemented"
-    automated_test "rust/tests/unit/formal_ai.rs"
+    automated_test "rust/tests/e2e/tests/demo.spec.js"
   requirement
     id "R21"
     verdict "implemented"
@@ -87,7 +87,7 @@ requirement_status_ledger_shard
   requirement
     id "R4"
     verdict "implemented"
-    automated_test "rust/tests/unit/formal_ai.rs"
+    automated_test "rust/tests/web/server.test.mjs"
   requirement
     id "R5"
     verdict "implemented"
@@ -107,5 +107,5 @@ requirement_status_ledger_shard
   requirement
     id "R9"
     verdict "implemented"
-    automated_test "rust/tests/unit/formal_ai.rs"
+    automated_test "rust/tests/e2e/tests/demo.spec.js"
     manual 'manually confirmed 2026-08-04 (audit): README `chat --prompt "Hi"` en greeting run via built binary'

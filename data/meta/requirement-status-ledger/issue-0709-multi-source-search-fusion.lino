@@ -17,6 +17,7 @@ requirement_status_ledger_shard
   requirement
     id "R709-4"
     verdict "implemented"
+    automated_test "rust/tests/e2e/tests/ranked-provenance-answers.spec.js"
   requirement
     id "R709-5"
     verdict "implemented"

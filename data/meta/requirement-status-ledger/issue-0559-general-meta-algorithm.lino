@@ -63,4 +63,4 @@ requirement_status_ledger_shard
   requirement
     id "R344"
     verdict "partial"
-    automated_test "rust/tests/unit/specification/behavior_rules.rs"
+    automated_test "rust/tests/web/behavior-rule-catalog.test.mjs"

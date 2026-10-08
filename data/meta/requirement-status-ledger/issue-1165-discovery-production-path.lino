@@ -7,7 +7,7 @@ requirement_status_ledger_shard
     id "R1165-1"
     verdict "partial"
     delivered "Partial (2026-10-07, this pull request): the `WriteProgram` branch of `rust/src/solver.rs` loads the procedure cache and calls `discovery_production::cached_write_program`; a verified row for the `(language, task)` pair replaces the catalog template in both the answer and the `ExecutionRecipe`, with"
-    automated_test "rust/tests/unit/issue_1165_discovery_production.rs"
+    automated_test "rust/tests/web/issue-1163-1164-captured-pages.test.mjs"
   requirement
     id "R1165-10"
     verdict "implemented"
@@ -22,7 +22,7 @@ requirement_status_ledger_shard
     id "R1165-3"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); see the shard"
-    automated_test "rust/tests/unit/issue_1165_discovery_production.rs"
+    automated_test "rust/tests/web/issue-1165-procedure-cache-parity.test.mjs"
   requirement
     id "R1165-4"
     verdict "partial"
@@ -47,7 +47,7 @@ requirement_status_ledger_shard
     id "R1165-8"
     verdict "partial"
     delivered "Partial (2026-10-07): the gate exists as a ratchet — `data_stores_no_more_verbatim_hello_world_programs_than_the_ratchet` in `rust/tests/unit/coding_discovery/no_memorization.rs` walks every file under `data/`, counts Hello World output literals written as code strings (escaped or single quotes, so"
-    automated_test "rust/tests/unit/coding_discovery/no_memorization.rs"
+    automated_test "rust/tests/web/issue-1165-no-memorization.test.mjs"
   requirement
     id "R1165-9"
     verdict "implemented"

@@ -31,11 +31,11 @@ requirement_status_ledger_shard
   requirement
     id "R402"
     verdict "implemented"
-    automated_test "rust/tests/unit/sequences_store.rs"
+    automated_test "rust/tests/web/issue-0531-pattern-inference.test.mjs"
   requirement
     id "R403"
     verdict "implemented"
-    automated_test "rust/tests/unit/sequences_patterns_1d.rs"
+    automated_test "rust/tests/web/issue-0531-pattern-inference.test.mjs"
   requirement
     id "R404"
     verdict "implemented"
@@ -43,7 +43,7 @@ requirement_status_ledger_shard
   requirement
     id "R405"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_531_pattern_inference.rs"
+    automated_test "rust/tests/web/issue-0531-pattern-inference.test.mjs"
   requirement
     id "R406"
     verdict "implemented"
@@ -64,19 +64,19 @@ requirement_status_ledger_shard
   requirement
     id "R531-19"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_531_algorithm_discovery.rs"
+    automated_test "rust/tests/web/issue-0531-pattern-inference.test.mjs"
   requirement
     id "R531-20"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_531_algorithm_discovery.rs"
+    automated_test "rust/tests/web/agentic-recipes-b.test.mjs"
   requirement
     id "R531-21"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_531_algorithm_discovery.rs"
+    automated_test "rust/tests/web/issue-0531-pattern-inference.test.mjs"
   requirement
     id "R531-22"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_531_algorithm_discovery.rs"
+    automated_test "rust/tests/web/agentic-recipes-b.test.mjs"
   requirement
     id "R531-23"
     verdict "implemented"
@@ -84,8 +84,8 @@ requirement_status_ledger_shard
   requirement
     id "R531-24"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_531_algorithm_discovery.rs"
+    automated_test "rust/tests/web/agentic-recipes-b.test.mjs"
   requirement
     id "R531-25"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/pattern_inference_research.rs"
+    automated_test "rust/tests/web/issue-0531-pattern-inference.test.mjs"

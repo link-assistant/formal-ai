@@ -20,6 +20,7 @@ requirement_status_ledger_shard
   requirement
     id "R154"
     verdict "implemented"
+    automated_test "rust/tests/e2e/tests/multilingual-chat.spec.js"
   requirement
     id "R155"
     verdict "implemented"

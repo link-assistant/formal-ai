@@ -3,14 +3,15 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0982-persisted-memory-compatibility-contract.md"
   issue "0982"
   delivered "none recorded"
-  automated_test "rust/tests/integration/issue_982_memory_upgrade.rs"
   manual "not yet confirmed"
   requirement
     id "R982-1"
     verdict "implemented"
+    automated_test "rust/tests/web/server-memory-upgrade.test.mjs"
   requirement
     id "R982-10"
     verdict "implemented"
+    automated_test "rust/tests/integration/issue_982_memory_upgrade.rs"
   requirement
     id "R982-11"
     verdict "implemented"
@@ -18,24 +19,32 @@ requirement_status_ledger_shard
   requirement
     id "R982-2"
     verdict "implemented"
+    automated_test "rust/tests/web/server-memory-schema.test.mjs"
   requirement
     id "R982-3"
     verdict "implemented"
+    automated_test "rust/tests/web/server-memory-schema.test.mjs"
   requirement
     id "R982-4"
     verdict "implemented"
+    automated_test "rust/tests/web/server-memory-schema.test.mjs"
   requirement
     id "R982-5"
     verdict "implemented"
+    automated_test "rust/tests/web/server-memory-upgrade.test.mjs"
   requirement
     id "R982-6"
     verdict "implemented"
+    automated_test "rust/tests/web/server-memory-upgrade.test.mjs"
   requirement
     id "R982-7"
     verdict "implemented"
+    automated_test "rust/tests/web/server-memory-schema.test.mjs"
   requirement
     id "R982-8"
     verdict "implemented"
+    automated_test "rust/tests/web/server-memory-upgrade.test.mjs"
   requirement
     id "R982-9"
     verdict "implemented"
+    automated_test "rust/tests/web/server-memory-schema.test.mjs"

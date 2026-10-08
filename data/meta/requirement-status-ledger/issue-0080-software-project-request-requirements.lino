@@ -3,12 +3,11 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0080-software-project-request-requirements.md"
   issue "0080"
   delivered "pre-2026-07 (undated); issue #80"
-  automated_test "rust/tests/unit/software_project.rs"
+  automated_test "rust/tests/web/issue-0080-software-project.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R156"
     verdict "implemented"
-    automated_test "rust/tests/unit/formal_ai.rs"
   requirement
     id "R157"
     verdict "implemented"
@@ -21,14 +20,12 @@ requirement_status_ledger_shard
   requirement
     id "R160"
     verdict "implemented"
-    automated_test "rust/tests/unit/formal_ai.rs"
   requirement
     id "R161"
     verdict "implemented"
   requirement
     id "R162"
     verdict "implemented"
-    automated_test "rust/tests/unit/formal_ai.rs"
   requirement
     id "R163"
     verdict "implemented"

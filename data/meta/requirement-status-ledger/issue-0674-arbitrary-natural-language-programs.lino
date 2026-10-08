@@ -3,7 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0674-arbitrary-natural-language-programs.md"
   issue "0674"
   delivered "PR #815 (issue #674)"
-  automated_test "rust/tests/unit/specification/arbitrary_skill_compilation.rs"
+  automated_test "rust/tests/web/agentic-recipes-b.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R550"
@@ -20,15 +20,18 @@ requirement_status_ledger_shard
   requirement
     id "R554"
     verdict "implemented"
+    automated_test "rust/tests/unit/specification/arbitrary_skill_compilation.rs"
   requirement
     id "R555"
     verdict "implemented"
   requirement
     id "R556"
     verdict "implemented"
+    automated_test "rust/tests/unit/specification/arbitrary_skill_compilation.rs"
   requirement
     id "R557"
     verdict "implemented"
   requirement
     id "R558"
     verdict "implemented"
+    automated_test "rust/tests/unit/specification/arbitrary_skill_compilation.rs"

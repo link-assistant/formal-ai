@@ -3,38 +3,43 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0703-external-agent-orchestration.md"
   issue "0703"
   delivered "PR #876 (issue #703)"
-  automated_test "rust/tests/integration/issue_703_orchestration_followup.rs"
   manual "not yet confirmed"
   requirement
     id "R703-1"
     verdict "implemented"
-    automated_test "rust/tests/integration/issue_703_orchestration.rs"
+    automated_test "rust/tests/web/issue-0703-orchestration-run.test.mjs"
   requirement
     id "R703-10"
     verdict "implemented"
+    automated_test "rust/tests/web/issue-0703-orchestration-analysis.test.mjs"
   requirement
     id "R703-11"
     verdict "implemented"
+    automated_test "rust/tests/web/issue-0703-orchestration-analysis.test.mjs"
   requirement
     id "R703-12"
     verdict "implemented"
+    automated_test "rust/tests/web/issue-0703-session-replay.test.mjs"
   requirement
     id "R703-2"
     verdict "implemented"
-    automated_test "rust/tests/integration/issue_703_orchestration.rs"
+    automated_test "rust/tests/web/issue-0703-orchestration-run.test.mjs"
   requirement
     id "R703-3"
     verdict "implemented"
+    automated_test "rust/tests/web/issue-0703-orchestration-dispatch.test.mjs"
   requirement
     id "R703-4"
     verdict "implemented"
+    automated_test "rust/tests/web/issue-0703-orchestration-dispatch.test.mjs"
   requirement
     id "R703-5"
     verdict "implemented"
-    automated_test "rust/tests/integration/issue_703_orchestration.rs"
+    automated_test "rust/tests/web/issue-0703-orchestration-run.test.mjs"
   requirement
     id "R703-6"
     verdict "implemented"
+    automated_test "rust/tests/web/issue-0703-orchestration-run.test.mjs"
   requirement
     id "R703-7"
     verdict "implemented"
@@ -42,6 +47,8 @@ requirement_status_ledger_shard
   requirement
     id "R703-8"
     verdict "implemented"
+    automated_test "rust/tests/web/issue-0703-orchestration-analysis.test.mjs"
   requirement
     id "R703-9"
     verdict "implemented"
+    automated_test "rust/tests/web/issue-0703-orchestration-analysis.test.mjs"

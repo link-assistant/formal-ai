@@ -54,4 +54,4 @@ requirement_status_ledger_shard
     id "R1012"
     verdict "partial"
     delivered "hand-ported Rust twin (rust/src/meta_reasoner); translation measured 2026-10-08: 1 of 73 meta reasoner items translates"
-    automated_test "rust/tests/unit/meta_reasoner.rs"
+    automated_test "rust/tests/web/js-rust-translation.test.mjs"

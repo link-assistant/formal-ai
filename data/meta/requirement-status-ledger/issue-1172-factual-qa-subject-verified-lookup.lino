@@ -12,7 +12,7 @@ requirement_status_ledger_shard
     id "R1172-10"
     verdict "implemented"
     delivered "2026-10-07 (this pull request; Rust, JS and the regenerated TS twin)"
-    automated_test "rust/tests/unit/issue_1172_factual_qa_subject_match.rs"
+    automated_test "rust/tests/web/issue-1172-1173-worker-parity.test.mjs"
   requirement
     id "R1172-11"
     verdict "implemented"
@@ -22,7 +22,7 @@ requirement_status_ledger_shard
     id "R1172-12"
     verdict "implemented"
     delivered "2026-10-07 (this pull request; parity case e1172_seeded_capital_subject_gate)"
-    automated_test "rust/tests/unit/specification/synthesis.rs"
+    automated_test "rust/tests/web/issue-1172-factual-qa-subject-gate.test.mjs"
   requirement
     id "R1172-2"
     verdict "implemented"
@@ -32,7 +32,7 @@ requirement_status_ledger_shard
     id "R1172-3"
     verdict "implemented"
     delivered "2026-10-07 (this pull request): contextual fact_lookup calls the live resolver with a seed-cue subject extractor and the fact_live_answer template; JS verified locally, Rust awaiting CI"
-    automated_test "rust/tests/unit/issue_1172_live_fact_answer.rs"
+    automated_test "rust/tests/web/issue-1172-live-fact-parity.test.mjs"
   requirement
     id "R1172-4"
     verdict "implemented"
@@ -42,7 +42,7 @@ requirement_status_ledger_shard
     id "R1172-5"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); owned by the #1173 lane of this pull request (canned paragraph deleted there)"
-    automated_test "rust/tests/unit/issue_1172_word_definition.rs"
+    automated_test "rust/tests/web/issue-1172-word-definition.test.mjs"
   requirement
     id "R1172-6"
     verdict "implemented"

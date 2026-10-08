@@ -2,16 +2,17 @@
 requirement_status_ledger_shard
   shard "docs/requirements/issue-1164-code-node-decomposition.md"
   issue "1164"
-  automated_test "rust/tests/unit/issue_1164_code_example_knowledge.rs"
   manual "not yet confirmed"
   requirement
     id "R1164-1"
     verdict "implemented"
     delivered "2026-09-30 (this pull request)"
+    automated_test "rust/tests/unit/issue_1164_code_example_knowledge.rs"
   requirement
     id "R1164-10"
     verdict "implemented"
     delivered "2026-09-30 (this pull request; program_body rendering 2026-10-07)"
+    automated_test "rust/tests/web/issue-1164-code-examples-parity.test.mjs"
   requirement
     id "R1164-11"
     verdict "implemented"
@@ -21,7 +22,7 @@ requirement_status_ledger_shard
     id "R1164-12"
     verdict "implemented"
     delivered "2026-10-07 (this pull request): byte-for-byte Hello World captures decompose; Rust awaiting CI"
-    automated_test "rust/tests/unit/issue_1163_1164_captured_pages.rs"
+    automated_test "rust/tests/web/issue-1163-1164-captured-pages.test.mjs"
   requirement
     id "R1164-13"
     verdict "implemented"
@@ -41,26 +42,32 @@ requirement_status_ledger_shard
     id "R1164-2"
     verdict "implemented"
     delivered "2026-10-07 (this pull request): all fifteen registered languages checked for output and literal; r vocabulary row added"
+    automated_test "rust/tests/unit/issue_1164_code_example_knowledge.rs"
   requirement
     id "R1164-3"
     verdict "implemented"
     delivered "2026-09-30 (this pull request)"
+    automated_test "rust/tests/unit/issue_1164_code_example_knowledge.rs"
   requirement
     id "R1164-4"
     verdict "implemented"
     delivered "2026-09-30 (this pull request)"
+    automated_test "rust/tests/unit/issue_1164_code_example_knowledge.rs"
   requirement
     id "R1164-5"
     verdict "implemented"
     delivered "2026-09-30 (this pull request)"
+    automated_test "rust/tests/unit/issue_1164_code_example_knowledge.rs"
   requirement
     id "R1164-6"
     verdict "implemented"
     delivered "2026-10-07 (this pull request): recomposition built from aligned example bodies and output_call; code parts carry the page URL; no stored templates"
+    automated_test "rust/tests/web/issue-1164-code-examples-parity.test.mjs"
   requirement
     id "R1164-7"
     verdict "implemented"
     delivered "2026-10-07 (this pull request): adopt_decomposed_procedure through the adopt_extracted_procedure gate"
+    automated_test "rust/tests/unit/issue_1164_code_example_knowledge.rs"
   requirement
     id "R1164-8"
     verdict "implemented"
@@ -70,4 +77,4 @@ requirement_status_ledger_shard
     id "R1164-9"
     verdict "implemented"
     delivered "2026-10-07 (this pull request): Pascal grammar row (meta-language ships tree-sitter-pascal) with no stored Pascal vocabulary or program; the Free Pascal Quick Start example plus the RTL page's `print` prose relation yield the program; fpc run where installed; no answer text yet links meta-language#195"
-    automated_test "rust/tests/unit/issue_1167_grammar_coverage.rs"
+    automated_test "rust/tests/web/issue-1164-code-examples-parity.test.mjs"

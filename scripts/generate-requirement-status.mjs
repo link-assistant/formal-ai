@@ -52,6 +52,7 @@ const SEPARATORS = '`|,;()[]';
 
 /** Mirrors `fn test_path`. */
 export function testPath(text, root) {
+  let rustTest = '';
   const tokens = [''];
   for (const character of text) {
     if (isWhitespace(character) || SEPARATORS.includes(character)) tokens.push('');
@@ -70,10 +71,13 @@ export function testPath(text, root) {
     if (found === null) continue;
     if ((found.startsWith('tests/') || found.startsWith('rust/tests/') || found.startsWith('desktop/scripts/'))
       && isFile(joinPath(root, found))) {
-      return found;
+      // JavaScript first (R1188-U29): a row that names tests in both roots
+      // cites the JavaScript one.
+      if (!found.endsWith('.rs')) return found;
+      if (rustTest === '') rustTest = found;
     }
   }
-  return '';
+  return rustTest;
 }
 
 /** Mirrors `fn trace_rows`. */

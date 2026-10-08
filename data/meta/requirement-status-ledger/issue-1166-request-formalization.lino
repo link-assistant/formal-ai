@@ -3,12 +3,13 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-1166-request-formalization.md"
   issue "1166"
   delivered "implemented — 2026-10-07 (this pull request); see the shard"
-  automated_test "rust/tests/unit/issue_1166_obligation_routing.rs"
+  automated_test "rust/tests/web/issue-1166-obligation-routing.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R1166-1"
     verdict "implemented"
     delivered "this pull request — see the shard"
+    automated_test "rust/tests/unit/issue_1166_obligation_routing.rs"
   requirement
     id "R1166-2"
     verdict "implemented"
@@ -16,7 +17,7 @@ requirement_status_ledger_shard
     id "R1166-3"
     verdict "implemented"
     delivered "2026-10-07 (this pull request; JS verified locally, Rust awaiting CI): ci_workflow::requested_in reads request_demands(CiWorkflow) in both roots; explicit_stdout and its JS twin read the graph's clauses through bound_output_literals (a print verb no longer binds a literal in a later enumerated clause); clause vocabularies are seed roles"
-    automated_test "rust/tests/unit/issue_1166_executor_gaps.rs"
+    automated_test "rust/tests/web/issue-1166-executor-gaps.test.mjs"
   requirement
     id "R1166-4"
     verdict "implemented"

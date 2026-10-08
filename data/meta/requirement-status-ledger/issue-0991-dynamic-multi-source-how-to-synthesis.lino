@@ -3,11 +3,11 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0991-dynamic-multi-source-how-to-synthesis.md"
   issue "0991"
   delivered "none recorded"
-  automated_test "rust/tests/unit/issue_991_how_to_synthesis.rs"
   manual "not yet confirmed"
   requirement
     id "R991-1"
     verdict "implemented"
+    automated_test "rust/tests/web/issue-991-how-to-synthesis.test.mjs"
   requirement
     id "R991-2"
     verdict "implemented"
@@ -15,6 +15,7 @@ requirement_status_ledger_shard
   requirement
     id "R991-3"
     verdict "implemented"
+    automated_test "rust/tests/unit/issue_991_how_to_synthesis.rs"
   requirement
     id "R991-4"
     verdict "implemented"
@@ -22,12 +23,15 @@ requirement_status_ledger_shard
   requirement
     id "R991-5"
     verdict "implemented"
+    automated_test "rust/tests/web/issue-991-how-to-synthesis.test.mjs"
   requirement
     id "R991-6"
     verdict "implemented"
+    automated_test "rust/tests/unit/issue_991_how_to_synthesis.rs"
   requirement
     id "R991-7"
     verdict "implemented"
+    automated_test "rust/tests/web/issue-991-how-to-synthesis.test.mjs"
   requirement
     id "R991-8"
     verdict "implemented"

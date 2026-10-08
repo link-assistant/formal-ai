@@ -45,7 +45,7 @@ requirement_status_ledger_shard
   requirement
     id "R1188-U19"
     verdict "partial"
-    automated_test "rust/tests/unit/specification/translation_round_trip.rs"
+    automated_test "rust/tests/web/web-formalization.test.mjs"
   requirement
     id "R1188-U2"
     verdict "partial"
@@ -88,6 +88,7 @@ requirement_status_ledger_shard
   requirement
     id "R1188-U29"
     verdict "partial"
+    automated_test "rust/tests/web/requirement-status-test-path.test.mjs"
   requirement
     id "R1188-U3"
     verdict "partial"

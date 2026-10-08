@@ -12,7 +12,7 @@ requirement_status_ledger_shard
     id "R1177-10"
     verdict "implemented"
     delivered "2026-10-07 (this pull request; all three roots, dispatch wired)"
-    automated_test "rust/tests/unit/issue_1177_code_task_handlers.rs"
+    automated_test "rust/tests/web/issue-1177-code-tasks-parity.test.mjs"
   requirement
     id "R1177-11"
     verdict "implemented"
@@ -27,7 +27,7 @@ requirement_status_ledger_shard
     id "R1177-2"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); no match ever run"
-    automated_test "rust/tests/unit/issue_1177_requirement_closure.rs"
+    automated_test "rust/tests/web/issue-1177-requirement-closure.test.mjs"
   requirement
     id "R1177-3"
     verdict "implemented"
@@ -37,29 +37,29 @@ requirement_status_ledger_shard
     id "R1177-4"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); head/tail, grep, ls and wc -l families from seed cues (pinned 2026-10-07); literal sed substitution from seed cues (2026-10-07); awk, xargs and archive tools refused by name"
-    automated_test "rust/tests/unit/issue_1177_code_task_handlers.rs"
+    automated_test "rust/tests/web/issue-1177-shell-compose-parity.test.mjs"
   requirement
     id "R1177-5"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); unknown lines skipped, not guessed"
-    automated_test "rust/tests/unit/issue_1177_requirement_closure.rs"
+    automated_test "rust/tests/web/issue-1177-requirement-closure.test.mjs"
   requirement
     id "R1177-6"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); no linter run"
-    automated_test "rust/tests/unit/issue_1177_code_task_handlers.rs"
+    automated_test "rust/tests/web/issue-1177-code-tasks-parity.test.mjs"
   requirement
     id "R1177-7"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); unrecognized shapes get a smoke skeleton"
-    automated_test "rust/tests/unit/issue_1177_requirement_closure.rs"
+    automated_test "rust/tests/web/issue-1177-requirement-closure.test.mjs"
   requirement
     id "R1177-8"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); other refactoring targets refused by name"
-    automated_test "rust/tests/unit/issue_1177_code_task_handlers.rs"
+    automated_test "rust/tests/web/issue-1177-code-tasks-parity.test.mjs"
   requirement
     id "R1177-9"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); subset exits named on refusal"
-    automated_test "rust/tests/unit/issue_1177_code_task_handlers.rs"
+    automated_test "rust/tests/web/issue-1177-format-conversion-parity.test.mjs"

@@ -12,6 +12,7 @@ requirement_status_ledger_shard
     id "R1180-10"
     verdict "implemented"
     delivered 'implemented — 2026-10-07 (this pull request); lineage, self-development-status explanation (ledger floor/target, tag range, session trailers, rule\x27s issue) and "what does fn X do" from the self-AST census, doc comment and `git log -S`; engine-level answers verified by CI'
+    automated_test "rust/tests/web/issue-1180-history-statements-lineage.test.mjs"
   requirement
     id "R1180-11"
     verdict "implemented"
@@ -25,6 +26,7 @@ requirement_status_ledger_shard
     id "R1180-3"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); body requirement statements and dated lifecycle transitions (rust/src/history_context/statements.rs, JS twin js/agentic/crate/history_github.mjs)"
+    automated_test "rust/tests/web/issue-1180-history-statements-lineage.test.mjs"
   requirement
     id "R1180-4"
     verdict "implemented"
