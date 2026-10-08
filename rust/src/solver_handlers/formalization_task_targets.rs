@@ -95,7 +95,9 @@ fn match_template(template: &str, text: &str, anchored: bool) -> Option<BTreeMap
 }
 
 /// Read one atom back through the target's atom templates (the object
-/// shape first, so `Passes x exam` keeps its object).
+/// shape first, so `Passes x exam` keeps its object). Guillemet quoting
+/// (or whatever `identifier_quoted` the language declares) is stripped
+/// from the captured predicate name and object before they are returned.
 fn parse_target_atom(
     language: &FormalLanguage,
     text: &str,
@@ -106,13 +108,16 @@ fn parse_target_atom(
         let name = captures.get("predicate")?;
         let object = captures.get("object")?;
         return Some(AppliedPredicate {
-            name: capitalize(name),
-            object: Some(object.clone()),
+            name: capitalize(&strip_identifier_quoting(language, name)),
+            object: Some(strip_identifier_quoting(language, object)),
         });
     }
     let captures = match_template(&bound(&language.atom), text, true)?;
     Some(AppliedPredicate {
-        name: capitalize(captures.get("predicate")?),
+        name: capitalize(&strip_identifier_quoting(
+            language,
+            captures.get("predicate")?,
+        )),
         object: None,
     })
 }

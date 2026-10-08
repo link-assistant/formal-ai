@@ -205,3 +205,40 @@ fn the_unit_file_name_is_its_fnv1a_hash() {
     // (`proverFileStem` in js/server/prover-host.mjs) names files the same way.
     assert_eq!(prover_file_stem(""), "clause_cbf29ce484222325");
 }
+
+/// Cyrillic predicate and object names in a Lean compile unit must be wrapped
+/// in guillemets so Lean 4 accepts the file (issue #1188 R9172).
+#[test]
+fn russian_clause_lean_unit_uses_guillemets_for_cyrillic_names() {
+    let clause = QuantifiedClause {
+        quantifier: "forall".to_owned(),
+        variable: "x".to_owned(),
+        antecedent: vec![predicate("студент", None), predicate("учится", None)],
+        consequent: predicate("сдаёт", Some("экзамен")),
+    };
+    let lean_prover = prover_records()
+        .iter()
+        .find(|p| p.id == "lean")
+        .expect("lean prover is seeded");
+    let unit = prover_unit(&clause, lean_prover).expect("lean unit renders");
+    assert!(
+        unit.contains("axiom «студент» : U → Prop"),
+        "Cyrillic predicate must be quoted in Lean axiom: {unit}"
+    );
+    assert!(
+        unit.contains("axiom «учится» : U → Prop"),
+        "Cyrillic predicate must be quoted in Lean axiom: {unit}"
+    );
+    assert!(
+        unit.contains("axiom «сдаёт» : U → U → Prop"),
+        "Cyrillic two-place predicate must be quoted: {unit}"
+    );
+    assert!(
+        unit.contains("axiom «экзамен» : U"),
+        "Cyrillic object constant must be quoted: {unit}"
+    );
+    assert!(
+        unit.contains("«студент» x ∧ «учится» x → «сдаёт» x «экзамен»"),
+        "theorem body must use quoted identifiers: {unit}"
+    );
+}

@@ -87,6 +87,20 @@ function formalMatchTemplate(template, source, anchored) {
 }
 
 /**
+ * Strip the identifier quoting the language declares from `name`, using the
+ * `identifier_quoted` template in reverse (e.g. `«студент»` → `студент` for
+ * Lean). If the name was not quoted, it is returned unchanged.
+ * @param {object} language
+ * @param {string} name
+ * @returns {string}
+ */
+function formalStripIdentifierQuoting(language, name) {
+  if (!language.identifierQuoted) return name;
+  const match = formalMatchTemplate(language.identifierQuoted, name, true);
+  return (match && match.name) ? match.name : name;
+}
+
+/**
  * Read one atom back through the target's atom templates.
  * @param {object} language
  * @param {string} text
@@ -97,11 +111,14 @@ function formalParseTargetAtom(language, text, variable) {
   const bind = (template) => textTransformFill(template, [["variable", variable]]);
   const withObject = formalMatchTemplate(bind(language.atomWithObject), text, true);
   if (withObject !== null && withObject.predicate && withObject.object) {
-    return { name: formalCapitalize(withObject.predicate), object: withObject.object };
+    return {
+      name: formalCapitalize(formalStripIdentifierQuoting(language, withObject.predicate)),
+      object: formalStripIdentifierQuoting(language, withObject.object),
+    };
   }
   const bare = formalMatchTemplate(bind(language.atom), text, true);
   if (bare === null || !bare.predicate) return null;
-  return { name: formalCapitalize(bare.predicate), object: null };
+  return { name: formalCapitalize(formalStripIdentifierQuoting(language, bare.predicate)), object: null };
 }
 
 /**
@@ -411,18 +428,20 @@ function formalProverUnit(grammar, clause, prover) {
   if (rendered === null) return null;
   const templates = formalRmlTemplates();
   const domain = templates === null ? "" : templates.domain;
+  const targetLanguage = grammar.formal.find((item) => item.slug === prover.target);
+  const applyRule = (name) => targetLanguage ? formalApplyIdentifierRule(targetLanguage, name) : name;
   const lines = [textTransformFill(prover.domain_declaration, [["domain", domain]])];
   const declared = [];
   const constants = [];
   for (const predicate of clause.antecedent.concat([clause.consequent])) {
     if (!declared.includes(predicate.name)) {
       const template = predicate.object === null ? prover.predicate : prover.predicate_with_object;
-      lines.push(textTransformFill(template, [["name", predicate.name], ["domain", domain]]));
+      lines.push(textTransformFill(template, [["name", applyRule(predicate.name)], ["domain", domain]]));
       declared.push(predicate.name);
     }
     if (predicate.object !== null && !constants.includes(predicate.object)) constants.push(predicate.object);
   }
-  for (const constant of constants) lines.push(textTransformFill(prover.constant, [["constant", constant], ["domain", domain]]));
+  for (const constant of constants) lines.push(textTransformFill(prover.constant, [["constant", applyRule(constant)], ["domain", domain]]));
   return `${lines.join("\n")}\n\n${rendered}\n`;
 }
 

@@ -129,3 +129,33 @@ test("the worker answers the cued formalization request", async () => {
   assert.ok(answer.content.includes("∀x"), answer.content);
   assert.ok(!answer.content.includes("Web search requested"), answer.content);
 });
+
+// Issue #1188 R9172 (Lean identifier quoting): Cyrillic names must be
+// wrapped in guillemets in Lean output; ASCII names must not be.
+test("Russian Lean rendering uses guillemets for Cyrillic identifiers", async () => {
+  const answer = await handlerAnswer(
+    "Формализуй в логике первого порядка: Каждый студент, который учится, сдаёт экзамен",
+  );
+  const lean = fenced(answer, "lean");
+  assert.ok(lean.includes("«студент» x"), `Lean clause must quote Cyrillic predicate: ${lean}`);
+  assert.ok(lean.includes("«учится» x"), `Lean clause must quote Cyrillic predicate: ${lean}`);
+  assert.ok(lean.includes("«сдаёт» x «экзамен»"), `Lean clause must quote Cyrillic object: ${lean}`);
+});
+
+test("English Lean rendering does not add guillemets to ASCII identifiers", async () => {
+  const answer = await handlerAnswer(
+    "Formalize in first-order logic: Every student who studies passes the exam",
+  );
+  const lean = fenced(answer, "lean");
+  assert.ok(lean.includes("Student x"), `ASCII predicate must not be quoted: ${lean}`);
+  assert.ok(!lean.includes("«"), `No guillemets in English Lean output: ${lean}`);
+});
+
+test("Russian Lean round trip preserves structure", async () => {
+  const answer = await handlerAnswer(
+    "Формализуй в логике первого порядка: Каждый студент, который учится, сдаёт экзамен",
+  );
+  const lean = fenced(answer, "lean").trimEnd();
+  const back = await handlerAnswer(`Деформализуй:\n${lean}`);
+  assert.ok(back.includes("structure preserved"), `Lean round trip must hold: ${back}`);
+});

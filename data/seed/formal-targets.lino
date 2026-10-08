@@ -93,6 +93,8 @@ formal_targets
     name "Lean 4"
     alias "lean"
     alias "lean 4"
+    identifier_quoted "«{name}»"
+    identifier_plain ascii
     clause_conditional "theorem formalized : ∀ ({variable} : U), {antecedent} → {consequent} := by sorry"
     clause_conjunctive "theorem formalized : {quantifier} ({variable} : U), {joined} := by sorry"
     atom "{predicate} {variable}"

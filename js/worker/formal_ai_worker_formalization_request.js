@@ -78,6 +78,8 @@ function formalGrammar() {
         clauseConditional: childValue(record, "clause_conditional"),
         clauseConjunctive: childValue(record, "clause_conjunctive"),
         clauseNegative: childValue(record, "clause_negative"),
+        identifierQuoted: childValue(record, "identifier_quoted"),
+        identifierPlain: childValue(record, "identifier_plain"),
       });
     } else if (record.name === "natural_language") {
       natural.push({
@@ -130,6 +132,31 @@ function formalResponse(intent, language) {
  */
 function formalCapitalize(word) {
   return /^[a-z]/.test(word) ? word[0].toUpperCase() + word.slice(1) : word;
+}
+
+/**
+ * Whether `name` is a plain identifier under the `plain` rule.
+ * `"ascii"` means ASCII letters, digits and `_`, not starting with a digit.
+ * @param {string} name
+ * @param {string} plain
+ * @returns {boolean}
+ */
+function formalIsPlainIdentifier(name, plain) {
+  if (plain === "ascii") return /^[A-Za-z_][A-Za-z0-9_]*$/u.test(name);
+  return true;
+}
+
+/**
+ * Apply the language's identifier quoting rule to `name`, returning the
+ * quoted form when the name is not a plain identifier, else `name` as-is.
+ * @param {object} language a formal grammar entry
+ * @param {string} name
+ * @returns {string}
+ */
+function formalApplyIdentifierRule(language, name) {
+  if (!language.identifierQuoted || !language.identifierPlain) return name;
+  if (formalIsPlainIdentifier(name, language.identifierPlain)) return name;
+  return textTransformFill(language.identifierQuoted, [["name", name]]);
 }
 
 /**
@@ -334,11 +361,13 @@ function formalParseQuantifiedClause(text, language) {
  * @returns {string}
  */
 function formalRenderAtom(language, predicate, variable) {
+  const predName = formalApplyIdentifierRule(language, predicate.name);
+  const objName = predicate.object === null ? "" : formalApplyIdentifierRule(language, predicate.object);
   const template = predicate.object !== null ? language.atomWithObject : language.atom;
   return textTransformFill(template, [
-    ["predicate", predicate.name],
+    ["predicate", predName],
     ["variable", variable],
-    ["object", predicate.object === null ? "" : predicate.object],
+    ["object", objName],
   ]);
 }
 

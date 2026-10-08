@@ -399,3 +399,62 @@ fn engine_answers_formalization_request() {
         "never the canned search paragraph: {answer}"
     );
 }
+
+// ---------------------------------------------------------------------------
+// Issue #1188 R9172: Lean identifier quoting — Cyrillic names wrapped in
+// guillemets, ASCII names unchanged.
+// ---------------------------------------------------------------------------
+
+/// Cyrillic predicate and object names in a Lean rendering must be wrapped
+/// in guillemets (`«name»`) so the Lean 4 parser accepts the unit.
+#[test]
+fn russian_lean_rendering_uses_guillemets_for_cyrillic_identifiers() {
+    let answer = handler_answer(
+        "Формализуй в логике первого порядка: Каждый студент, который учится, сдаёт экзамен",
+    );
+    let lean = fenced(&answer, "lean");
+    assert!(
+        lean.contains("«студент» x"),
+        "Lean clause must quote Cyrillic predicate: {answer}"
+    );
+    assert!(
+        lean.contains("«учится» x"),
+        "Lean clause must quote Cyrillic predicate: {answer}"
+    );
+    assert!(
+        lean.contains("«сдаёт» x «экзамен»"),
+        "Lean clause must quote Cyrillic object: {answer}"
+    );
+}
+
+/// Plain ASCII predicate names must not be wrapped in guillemets.
+#[test]
+fn english_lean_rendering_has_no_guillemets_for_ascii_identifiers() {
+    let answer = handler_answer(
+        "Formalize in first-order logic: Every student who studies passes the exam",
+    );
+    let lean = fenced(&answer, "lean");
+    assert!(
+        lean.contains("Student x"),
+        "ASCII predicate must not be quoted in Lean: {answer}"
+    );
+    assert!(
+        !lean.contains('«'),
+        "No guillemets should appear in English Lean output: {answer}"
+    );
+}
+
+/// Re-rendering a Russian Lean clause and parsing it back must reproduce the
+/// same clause structure (the Lean leg of the round trip, issue R5/R9172).
+#[test]
+fn russian_lean_round_trip_preserves_structure() {
+    let answer = handler_answer(
+        "Формализуй в логике первого порядка: Каждый студент, который учится, сдаёт экзамен",
+    );
+    let lean = fenced(&answer, "lean");
+    let back = handler_answer(&format!("Деформализуй:\n{lean}"));
+    assert!(
+        back.contains("structure preserved"),
+        "Lean round trip must preserve structure: {back}"
+    );
+}

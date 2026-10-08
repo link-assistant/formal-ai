@@ -4,6 +4,12 @@
 
 /// Render one atom (`Name(x)` / `Name(x, object)`) in a target language.
 fn render_atom(language: &FormalLanguage, predicate: &AppliedPredicate, variable: &str) -> String {
+    let pred_name = apply_identifier_rule(language, &predicate.name);
+    let obj_name = predicate
+        .object
+        .as_deref()
+        .map(|o| apply_identifier_rule(language, o))
+        .unwrap_or_default();
     let template = if predicate.object.is_some() {
         &language.atom_with_object
     } else {
@@ -12,9 +18,9 @@ fn render_atom(language: &FormalLanguage, predicate: &AppliedPredicate, variable
     fill(
         template,
         &[
-            ("predicate", &predicate.name),
+            ("predicate", &pred_name),
             ("variable", variable),
-            ("object", predicate.object.as_deref().unwrap_or_default()),
+            ("object", &obj_name),
         ],
     )
 }

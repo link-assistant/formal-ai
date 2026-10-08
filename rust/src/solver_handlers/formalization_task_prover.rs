@@ -104,6 +104,15 @@ pub fn prover_records() -> &'static [ProverRecord] {
 pub fn prover_unit(clause: &QuantifiedClause, prover: &ProverRecord) -> Option<String> {
     let rendered = ClauseExporter::active().export(clause, &prover.target)?;
     let domain = rml_templates().domain.as_str();
+    // Apply the target language's identifier quoting rule to names that are
+    // not plain identifiers (e.g. Cyrillic names in Lean get «…»).
+    let target_language = grammar().formal.iter().find(|l| l.slug == prover.target);
+    let apply = |name: &str| -> String {
+        match target_language {
+            Some(lang) => apply_identifier_rule(lang, name),
+            None => name.to_owned(),
+        }
+    };
     let mut lines = vec![fill(&prover.domain_declaration, &[("domain", domain)])];
     let mut declared: Vec<&str> = Vec::new();
     let mut constants: Vec<&str> = Vec::new();
@@ -114,9 +123,10 @@ pub fn prover_unit(clause: &QuantifiedClause, prover: &ProverRecord) -> Option<S
             } else {
                 &prover.predicate
             };
+            let quoted_name = apply(&predicate.name);
             lines.push(fill(
                 template,
-                &[("name", &predicate.name), ("domain", domain)],
+                &[("name", &quoted_name), ("domain", domain)],
             ));
             declared.push(&predicate.name);
         }
@@ -127,9 +137,10 @@ pub fn prover_unit(clause: &QuantifiedClause, prover: &ProverRecord) -> Option<S
         }
     }
     for constant in constants {
+        let quoted_constant = apply(constant);
         lines.push(fill(
             &prover.constant,
-            &[("constant", constant), ("domain", domain)],
+            &[("constant", &quoted_constant), ("domain", domain)],
         ));
     }
     Some(format!("{}\n\n{rendered}\n", lines.join("\n")))

@@ -66,6 +66,14 @@ struct FormalLanguage {
     /// needs one distinct from the conjunctive shape (Rocq's `~` binds
     /// tighter than `exists`); empty means "use `clause_conjunctive`".
     clause_negative: String,
+    /// Template for quoting a non-plain identifier (e.g. `«{name}»` for
+    /// Lean 4, which rejects Cyrillic bare identifiers); empty means no
+    /// quoting rule applies.
+    identifier_quoted: String,
+    /// The identifier class that needs no quoting (`ascii` = ASCII
+    /// letters, digits and `_`, not starting with a digit); empty means
+    /// the `identifier_quoted` template is never applied.
+    identifier_plain: String,
 }
 
 /// One natural language's recognition surfaces and templates.
@@ -165,6 +173,45 @@ fn structure_key(clause: &QuantifiedClause) -> (String, Vec<(String, Option<Stri
     (clause.quantifier.clone(), predicates)
 }
 
+/// Whether `name` is a plain identifier under the `plain` rule.
+/// `"ascii"` means ASCII letters, digits and `_`, not starting with a digit.
+fn is_plain_identifier(name: &str, plain: &str) -> bool {
+    if plain != "ascii" {
+        return true;
+    }
+    let mut chars = name.chars();
+    match chars.next() {
+        Some(first) if first.is_ascii_alphabetic() || first == '_' => {
+            chars.all(|c| c.is_ascii_alphanumeric() || c == '_')
+        }
+        _ => false,
+    }
+}
+
+/// Apply the language's identifier quoting rule to `name`, returning the
+/// quoted form when the name is not a plain identifier, else `name` as-is.
+fn apply_identifier_rule(language: &FormalLanguage, name: &str) -> String {
+    if language.identifier_quoted.is_empty() || language.identifier_plain.is_empty() {
+        return name.to_owned();
+    }
+    if is_plain_identifier(name, &language.identifier_plain) {
+        return name.to_owned();
+    }
+    fill(&language.identifier_quoted, &[("name", name)])
+}
+
+/// Strip the identifier quoting the language declares from `name` (e.g.
+/// `«студент»` → `студент` for Lean 4). If the name was not quoted or the
+/// language has no quoting rule, it is returned unchanged.
+fn strip_identifier_quoting(language: &FormalLanguage, name: &str) -> String {
+    if language.identifier_quoted.is_empty() {
+        return name.to_owned();
+    }
+    match_template(&language.identifier_quoted, name, true)
+        .and_then(|captures| captures.get("name").cloned())
+        .unwrap_or_else(|| name.to_owned())
+}
+
 /// All values of `name` children directly under `node`.
 fn child_values(node: &LinoNode, name: &str) -> Vec<String> {
     node.children
@@ -230,6 +277,8 @@ fn grammar() -> &'static Grammar {
                 clause_conditional: record.find_child_value("clause_conditional").to_owned(),
                 clause_conjunctive: record.find_child_value("clause_conjunctive").to_owned(),
                 clause_negative: record.find_child_value("clause_negative").to_owned(),
+                identifier_quoted: record.find_child_value("identifier_quoted").to_owned(),
+                identifier_plain: record.find_child_value("identifier_plain").to_owned(),
             });
         }
         for record in target_records(&tree).filter(|child| child.name == "natural_language") {
