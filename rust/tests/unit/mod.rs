@@ -145,6 +145,7 @@ mod proxy;
 mod pull_request_1188_fix_gaps;
 mod pull_request_1188_function_recipe;
 mod pull_request_1188_line_anchor;
+mod pull_request_1188_line_moves;
 mod pull_request_1188_line_operations;
 mod pull_request_1188_line_removal;
 mod pull_request_1188_quoted_payload_command;
