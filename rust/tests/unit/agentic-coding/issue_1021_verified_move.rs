@@ -226,4 +226,6 @@ fn source_collections_check_each_expanded_destination_without_implicit_overwrite
     assert_eq!(forced.len(), 5);
     assert!(!forced.iter().any(|step| step.contains("test ! -e")));
     assert!(forced[0].contains("test -e \"$formal_ai_source\""));
+    assert!(verified_recipe("mv logs/*.log evidence/").is_none());
+    assert!(verified_recipe("mv logs/one.log evidence/one.log").is_some());
 }

@@ -60,6 +60,11 @@ test('G121: each glob match gets its own destination and source checks', () => w
   }
 }));
 
+test('consumed-source glob effects require a stable collection contract', () => {
+  assert.equal(verifiedRecipe('mv logs/*.log evidence/'), null);
+  assert.ok(verifiedRecipe('mv logs/one.log evidence/one.log'));
+});
+
 test('G121: an unmatched glob stops before preparation or action', () => workspace((directory) => {
   const result = execute(directory, 'cp absent-*.log evidence/');
   assert.equal(result.steps.length, 1);

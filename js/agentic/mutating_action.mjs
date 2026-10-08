@@ -53,6 +53,7 @@ function expandWith(command, vocab) {
     if (operands.length < 2 || (operands.length > 2 && !effect.directory_targets)) return null;
     const destination = operands.at(-1);
     const sources = operands.slice(0, -1);
+    if (!effect.directory_targets && sources.some(hasShellExpansion)) return null;
     const collection = effect.directory_targets && (sources.length > 1
       || sources.some(hasShellExpansion) || destination.replace(/^['"]|['"]$/gu, '').endsWith('/'));
     if (collection) {

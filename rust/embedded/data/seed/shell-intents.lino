@@ -904,7 +904,6 @@ shell_intents
         reuse_option "-f"
         reuse_option "--force"
         before_reuse "test -e {source}"
-        directory_targets true
         before "test -e {source}"
         before "test ! -e {destination}"
         prepare "mkdir -p -- {destination_parent}"

@@ -137,6 +137,9 @@ fn expand_with(command: &str, vocab: &ShellIntentVocabulary) -> Option<VerifiedA
         }
         let destination = *operands.last()?;
         let sources = &operands[..operands.len() - 1];
+        if !effect.directory_targets && sources.iter().any(|source| has_shell_expansion(source)) {
+            return None;
+        }
         if effect.directory_targets
             && (sources.len() > 1
                 || sources.iter().any(|source| has_shell_expansion(source))
