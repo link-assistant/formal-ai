@@ -1,0 +1,67 @@
+self_ast_census
+  target src/agentic_coding/general_planner/content_shape.rs
+  language rust
+  fidelity full_ast
+  byte_len 3447
+  line_count 81
+  content_id source_module_4fc7e87f99b69b61
+  symbol_count 4
+  symbols
+    function describes_code_to_author 18 32
+    function names_an_addition 42 59
+    function asks_to_author_code 64 69
+    function prose_around 73 81
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 2018
+    named_node_count 434
+    distinct_node_kinds 45
+    node_kinds
+      arguments 40
+      binary_expression 7
+      block 7
+      boolean_literal 3
+      call_expression 40
+      closure_expression 4
+      closure_parameters 4
+      crate 5
+      doc_comment 23
+      expression_statement 5
+      field_expression 25
+      field_identifier 25
+      function_item 4
+      generic_function 1
+      generic_type 1
+      identifier 93
+      if_expression 2
+      index_expression 1
+      inner_doc_comment_marker 5
+      let_declaration 5
+      line_comment 23
+      outer_doc_comment_marker 18
+      parameter 8
+      parameters 4
+      parenthesized_expression 1
+      primitive_type 11
+      range_expression 1
+      reference_expression 11
+      reference_type 8
+      return_expression 3
+      scoped_identifier 16
+      scoped_use_list 1
+      source_file 1
+      string_content 4
+      string_literal 4
+      super 4
+      tuple_expression 1
+      tuple_pattern 2
+      tuple_struct_pattern 2
+      type_arguments 2
+      type_identifier 3
+      unary_expression 1
+      use_declaration 2
+      use_list 1
+      visibility_modifier 2

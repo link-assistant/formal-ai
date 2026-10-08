@@ -2,23 +2,23 @@ self_ast_census
   target src/agentic_coding/file_read/supplied.rs
   language rust
   fidelity full_ast
-  byte_len 6932
-  line_count 171
-  content_id source_module_78f0884b741750b3
+  byte_len 6917
+  line_count 174
+  content_id source_module_33fdfe95760f53e4
   symbol_count 5
   symbols
-    function extract_jsonish_value 6 40
-    function supplied_file_answer 56 63
-    function supplied_file_final_answer 80 113
-    function supplied_file_template 121 134
-    function supplied_file_content 144 171
+    function extract_jsonish_value 9 44
+    function supplied_file_answer 60 67
+    function supplied_file_final_answer 84 116
+    function supplied_file_template 124 137
+    function supplied_file_content 147 174
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 4429
-    named_node_count 916
+    total_link_count 4455
+    named_node_count 921
     distinct_node_kinds 70
     node_kinds
       arguments 73
@@ -45,7 +45,7 @@ self_ast_census
       function_item 5
       generic_function 2
       generic_type 6
-      identifier 192
+      identifier 194
       if_expression 6
       index_expression 4
       inner_doc_comment_marker 2
@@ -60,7 +60,7 @@ self_ast_census
       match_expression 2
       match_pattern 5
       mutable_specifier 2
-      or_pattern 2
+      or_pattern 3
       outer_doc_comment_marker 41
       parameter 14
       parameters 5
@@ -70,7 +70,7 @@ self_ast_census
       reference_type 16
       remaining_field_pattern 1
       return_expression 4
-      scoped_identifier 14
+      scoped_identifier 15
       scoped_type_identifier 2
       scoped_use_list 1
       shorthand_field_identifier 2
@@ -83,7 +83,7 @@ self_ast_census
       try_expression 6
       tuple_expression 3
       tuple_pattern 3
-      tuple_struct_pattern 7
+      tuple_struct_pattern 8
       tuple_type 1
       type_arguments 8
       type_identifier 18

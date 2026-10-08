@@ -1,0 +1,80 @@
+self_ast_census
+  target src/agentic_coding/module_exports.rs
+  language rust
+  fidelity full_ast
+  byte_len 4132
+  line_count 114
+  content_id source_module_c993bc5214f23a67
+  symbol_count 6
+  symbols
+    const MARKER_REACH 16 16
+    const CHANGE_ROLES 17 17
+    function is_identifier_char 23 25
+    function export_question 28 42
+    function exported_functions 46 76
+    function plan_module_exports_step 79 114
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 3308
+    named_node_count 646
+    distinct_node_kinds 56
+    node_kinds
+      arguments 58
+      array_expression 2
+      array_type 3
+      binary_expression 14
+      block 15
+      call_expression 58
+      char_literal 3
+      closure_expression 7
+      closure_parameters 7
+      const_item 2
+      continue_expression 4
+      crate 4
+      doc_comment 13
+      else_clause 1
+      expression_statement 11
+      field_expression 41
+      field_identifier 41
+      for_expression 1
+      function_item 4
+      function_modifiers 1
+      generic_function 1
+      generic_type 6
+      identifier 147
+      if_expression 4
+      index_expression 1
+      inner_doc_comment_marker 9
+      integer_literal 4
+      let_declaration 21
+      line_comment 15
+      macro_invocation 1
+      mutable_specifier 1
+      outer_doc_comment_marker 4
+      parameter 6
+      parameters 4
+      primitive_type 9
+      range_expression 1
+      reference_expression 10
+      reference_type 8
+      return_expression 2
+      scoped_identifier 20
+      scoped_use_list 2
+      source_file 1
+      string_content 15
+      string_literal 15
+      super 5
+      token_tree 1
+      try_expression 2
+      tuple_expression 3
+      tuple_pattern 1
+      tuple_struct_pattern 4
+      type_arguments 7
+      type_identifier 13
+      unary_expression 6
+      use_declaration 4
+      use_list 2
+      visibility_modifier 1

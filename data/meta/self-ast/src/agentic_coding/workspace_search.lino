@@ -1,0 +1,140 @@
+self_ast_census
+  target src/agentic_coding/workspace_search.rs
+  language rust
+  fidelity full_ast
+  byte_len 18218
+  line_count 528
+  content_id source_module_01b19c850364174b
+  symbol_count 41
+  symbols
+    const ROLE_SEARCH_FORM 22 22
+    const ROLE_SEARCH_NOISE 23 23
+    const ROLE_WEB_MEDIUM 24 24
+    const EDIT_ROLES 25 25
+    const CURRENT_SCOPE 30 30
+    const MODE_SLOT 31 31
+    const PATTERN_SLOT 32 32
+    const SCOPE_SLOT 33 33
+    const NOISE_SKIP_LIMIT 34 34
+    const PATTERN_CHAR_LIMIT 35 35
+    const NO_FILES_FOUND 36 36
+    const QUOTE_PAIRS 37 37
+    const WRAPPERS 45 48
+    struct ContentSearch 52 59
+    struct Token 62 66
+    function is_cjk 68 70
+    function is_wrapper 72 74
+    function lower_chars 77 88
+    function starts_at 91 102
+    function token_after 108 136
+    function token_before 139 169
+    function pattern_of 172 182
+    function is_noise 185 193
+    function pattern_beside 196 210
+    function offsets_of 213 217
+    function form_match 220 252
+    function scope_of 255 274
+    function is_identifier 277 283
+    function content_search_for 287 322
+    function escaped_regex 325 334
+    function grep_arguments 337 345
+    function content_search_seed 349 369
+    static SEED 350 350
+    function shell_command 373 387
+    function turn_results 390 406
+    function relative_path 409 421
+    function numbered_text 424 428
+    function shell_hit 431 438
+    function hits_of 442 469
+    function answer_for 472 497
+    function plan_workspace_search_step 500 528
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 16523
+    named_node_count 3250
+    distinct_node_kinds 81
+    node_kinds
+      arguments 271
+      array_expression 7
+      array_type 18
+      assignment_expression 6
+      attribute 2
+      attribute_item 2
+      binary_expression 77
+      block 81
+      boolean_literal 9
+      call_expression 271
+      char_literal 56
+      closure_expression 38
+      closure_parameters 38
+      compound_assignment_expr 5
+      const_item 13
+      continue_expression 3
+      crate 9
+      doc_comment 44
+      else_clause 5
+      escape_sequence 4
+      expression_statement 72
+      field_declaration 6
+      field_declaration_list 2
+      field_expression 218
+      field_identifier 236
+      field_initializer 14
+      field_initializer_list 5
+      for_expression 5
+      function_item 25
+      generic_function 1
+      generic_type 23
+      identifier 731
+      if_expression 29
+      index_expression 24
+      inner_doc_comment_marker 10
+      integer_literal 40
+      let_chain 3
+      let_condition 13
+      let_declaration 53
+      lifetime 1
+      line_comment 46
+      macro_invocation 9
+      match_arm 2
+      match_block 1
+      match_expression 1
+      match_pattern 2
+      mutable_specifier 14
+      outer_doc_comment_marker 34
+      parameter 41
+      parameters 25
+      parenthesized_expression 6
+      primitive_type 65
+      range_expression 13
+      reference_expression 38
+      reference_pattern 8
+      reference_type 44
+      return_expression 19
+      scoped_identifier 53
+      scoped_type_identifier 1
+      scoped_use_list 2
+      shorthand_field_initializer 1
+      source_file 1
+      static_item 1
+      string_content 44
+      string_literal 44
+      struct_expression 5
+      struct_item 2
+      super 10
+      token_tree 14
+      try_expression 7
+      tuple_expression 27
+      tuple_pattern 24
+      tuple_struct_pattern 21
+      tuple_type 14
+      type_arguments 24
+      type_identifier 78
+      unary_expression 17
+      use_declaration 7
+      use_list 2
+      visibility_modifier 7
+      while_expression 6

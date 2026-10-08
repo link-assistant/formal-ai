@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/code_task.rs
   language rust
   fidelity full_ast
-  byte_len 14173
-  line_count 371
-  content_id source_module_ced5692cb4b5c67c
-  symbol_count 15
+  byte_len 15277
+  line_count 406
+  content_id source_module_4228b7eeaf456fdd
+  symbol_count 18
   symbols
     enum RustItemKind 19 23
     struct GeneratedSource 26 29
@@ -14,99 +14,103 @@ self_ast_census
     function render_rust_template 191 196
     function render_seeded_outcome 200 206
     function render_seeded_change 221 234
-    function render_template 236 241
-    function rust_path 243 256
-    function is_path_character 258 260
-    function requested_identifier 262 284
-    function slot_identifier 286 317
-    function identifier_tokens 319 322
-    function valid_identifier 324 335
-    function numeric_literals 337 371
+    function code_span_item 239 255
+    const LIST_JOIN 259 259
+    function code_span 261 267
+    function render_template 269 276
+    function rust_path 278 291
+    function is_path_character 293 295
+    function requested_identifier 297 319
+    function slot_identifier 321 352
+    function identifier_tokens 354 357
+    function valid_identifier 359 370
+    function numeric_literals 372 406
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 10494
-    named_node_count 2088
-    distinct_node_kinds 81
+    total_link_count 11260
+    named_node_count 2241
+    distinct_node_kinds 82
     node_kinds
       abstract_type 1
-      arguments 180
+      arguments 191
       array_expression 6
       array_type 5
       assignment_expression 3
       attribute 5
       attribute_item 5
-      binary_expression 36
-      block 53
+      binary_expression 40
+      block 58
       boolean_literal 1
-      call_expression 180
-      char_literal 14
-      closure_expression 22
-      closure_parameters 22
+      call_expression 191
+      char_literal 17
+      closure_expression 23
+      closure_parameters 23
       compound_assignment_expr 2
+      const_item 1
       continue_expression 2
-      crate 5
-      doc_comment 18
-      else_clause 11
+      crate 3
+      doc_comment 23
+      else_clause 12
       enum_item 1
       enum_variant 3
       enum_variant_list 1
-      expression_statement 35
+      expression_statement 37
       field_declaration 2
       field_declaration_list 1
-      field_expression 142
-      field_identifier 140
+      field_expression 152
+      field_identifier 150
       field_initializer_list 1
       for_expression 1
-      function_item 13
+      function_item 15
       function_modifiers 1
-      generic_function 2
-      generic_type 12
-      identifier 508
-      if_expression 20
+      generic_function 3
+      generic_type 13
+      identifier 533
+      if_expression 22
       index_expression 8
       inner_doc_comment_marker 8
-      integer_literal 17
+      integer_literal 20
       let_chain 1
       let_condition 3
-      let_declaration 48
-      line_comment 30
-      macro_invocation 3
+      let_declaration 51
+      line_comment 35
+      macro_invocation 6
       match_arm 9
       match_block 3
       match_expression 3
       match_pattern 9
       mutable_specifier 7
-      outer_doc_comment_marker 10
-      parameter 26
-      parameters 13
+      outer_doc_comment_marker 15
+      parameter 28
+      parameters 15
       parenthesized_expression 3
-      primitive_type 29
+      primitive_type 32
       range_expression 8
-      reference_expression 37
-      reference_type 30
-      return_expression 9
-      scoped_identifier 56
+      reference_expression 39
+      reference_type 33
+      return_expression 10
+      scoped_identifier 57
       scoped_use_list 2
       self 1
       shorthand_field_initializer 2
       source_file 1
-      string_content 41
-      string_literal 46
+      string_content 48
+      string_literal 54
       struct_expression 1
       struct_item 1
-      super 11
-      token_tree 11
+      super 13
+      token_tree 14
       try_expression 33
       tuple_expression 19
       tuple_pattern 6
       tuple_struct_pattern 6
       tuple_type 3
-      type_arguments 14
+      type_arguments 16
       type_binding 1
-      type_identifier 33
+      type_identifier 37
       unary_expression 14
       use_declaration 6
       use_list 2

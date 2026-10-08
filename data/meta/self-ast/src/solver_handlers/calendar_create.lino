@@ -2,28 +2,29 @@ self_ast_census
   target src/solver_handlers/calendar_create.rs
   language rust
   fidelity signature
-  byte_len 23047
-  line_count 636
-  content_id source_module_e7a25ee7351e7803
-  symbol_count 20
+  byte_len 21722
+  line_count 591
+  content_id source_module_4dcc19b6173a0e5b
+  symbol_count 21
   symbols
-    function try_calendar_create_event 38 56
-    function try_routed_calendar_create_event 65 165
-    function default_title 168 175
-    function calendar_claims 181 183
-    function mentions_calendar_create_request 185 237
-    function extract_day_number 239 278
-    function relative_date_offset 280 293
-    function extract_event_title 295 303
-    function compute_target_date_with_rollover 305 325
-    function extract_clock_time 327 374
-    function extract_spoken_hour_time 376 407
-    struct PlaceZone 411 415
-    function resolve_timezone 430 466
-    function normalize_zone_text 470 485
-    function extract_title 487 518
-    function extract_participant_title 520 526
-    function tidy_title 528 573
-    function strip_action_words 575 589
-    function capitalize_first 591 596
-    function render_create_confirmation 598 636
+    function try_calendar_create_event 40 58
+    function try_routed_calendar_create_event 67 167
+    function default_title 171 173
+    function table_keys 177 179
+    function calendar_claims 185 187
+    function mentions_calendar_create_request 189 231
+    function extract_day_number 233 272
+    function relative_date_offset 274 287
+    function extract_event_title 289 297
+    function compute_target_date_with_rollover 299 319
+    function extract_clock_time 321 371
+    function extract_spoken_hour_time 373 403
+    struct PlaceZone 407 411
+    function resolve_timezone 426 462
+    function normalize_zone_text 466 481
+    function extract_title 483 506
+    function extract_participant_title 508 516
+    function tidy_title 518 548
+    function strip_action_words 550 556
+    function capitalize_first 558 563
+    function render_create_confirmation 567 591

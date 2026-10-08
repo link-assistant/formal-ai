@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/module_function.rs
   language rust
   fidelity full_ast
-  byte_len 28550
-  line_count 768
-  content_id source_module_d5157cdbfb3a1cf5
-  symbol_count 32
+  byte_len 29304
+  line_count 789
+  content_id source_module_66e98f2cc71ba1bb
+  symbol_count 33
   symbols
     const CONTRACTS 34 34
     const EXTENSIONS 35 35
@@ -31,34 +31,35 @@ self_ast_census
     function relation_operations 389 421
     function relation_expression 426 449
     function evaluated 452 456
-    function specified_value 463 494
-    function synthesized_source 501 557
-    function with_import 561 587
-    function specifier_from 591 611
-    function with_final_newline 614 620
-    function module_function_recipe 624 716
-    function read_source 720 730
-    function plan_module_function_step 735 768
+    function specified_value 463 481
+    function stated_value 489 515
+    function synthesized_source 522 578
+    function with_import 582 608
+    function specifier_from 612 632
+    function with_final_newline 635 641
+    function module_function_recipe 645 737
+    function read_source 741 751
+    function plan_module_function_step 756 789
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 22436
-    named_node_count 4673
+    total_link_count 22896
+    named_node_count 4765
     distinct_node_kinds 81
     node_kinds
-      arguments 444
+      arguments 447
       array_expression 9
-      array_type 11
+      array_type 14
       assignment_expression 4
       attribute 2
       attribute_item 2
       binary_expression 81
-      block 92
+      block 94
       boolean_literal 2
       break_expression 2
-      call_expression 444
+      call_expression 447
       char_literal 45
       closure_expression 69
       closure_parameters 69
@@ -66,43 +67,43 @@ self_ast_census
       const_item 5
       continue_expression 5
       crate 14
-      doc_comment 88
+      doc_comment 94
       else_clause 11
       escape_sequence 4
-      expression_statement 68
+      expression_statement 69
       field_declaration 14
       field_declaration_list 3
-      field_expression 406
-      field_identifier 452
+      field_expression 408
+      field_identifier 454
       field_initializer 32
       field_initializer_list 9
       float_literal 1
-      for_expression 6
-      function_item 24
+      for_expression 7
+      function_item 25
       generic_function 3
-      generic_type 45
-      identifier 945
+      generic_type 46
+      identifier 958
       if_expression 28
-      index_expression 33
+      index_expression 34
       inner_doc_comment_marker 25
-      integer_literal 33
+      integer_literal 34
       let_condition 4
       let_declaration 106
-      line_comment 100
+      line_comment 106
       macro_invocation 13
       match_arm 5
       match_block 2
       match_expression 2
       match_pattern 5
       mutable_specifier 15
-      outer_doc_comment_marker 63
-      parameter 41
-      parameters 24
-      parenthesized_expression 6
-      primitive_type 51
-      range_expression 22
-      reference_expression 70
-      reference_type 55
+      outer_doc_comment_marker 69
+      parameter 45
+      parameters 25
+      parenthesized_expression 7
+      primitive_type 53
+      range_expression 24
+      reference_expression 72
+      reference_type 60
       return_expression 13
       scoped_identifier 102
       scoped_type_identifier 2
@@ -115,17 +116,17 @@ self_ast_census
       string_literal 59
       struct_expression 9
       struct_item 3
-      super 16
+      super 25
       token_tree 19
       try_expression 20
       tuple_expression 12
       tuple_pattern 11
       tuple_struct_pattern 11
       tuple_type 2
-      type_arguments 48
-      type_identifier 117
+      type_arguments 49
+      type_identifier 121
       unary_expression 22
       use_declaration 6
       use_list 4
-      visibility_modifier 11
+      visibility_modifier 20
       while_expression 1

@@ -2,47 +2,59 @@ self_ast_census
   target src/server/debug_session.rs
   language rust
   fidelity signature
-  byte_len 16223
-  line_count 475
-  content_id source_module_339d76bde6375d64
-  symbol_count 39
+  byte_len 22982
+  line_count 631
+  content_id source_module_5c78993856b25720
+  symbol_count 51
   symbols
-    const DEBUG_TOKEN_ENV 37 37
-    const STAGE_PAUSED 39 39
-    const STAGE_ADVANCED 40 40
-    const TURN_RELEASED 41 41
-    const DEBUG_ROUTE_PREFIX 42 42
-    const DEBUG_ACTIONS 43 43
-    const LIVENESS_POLL 46 46
-    function is_loopback_host 50 67
-    struct DebugToken 71 76
-    function generate_debug_token 81 101
-    function debug_token_from_env 105 119
-    struct Stage 122 126
-    struct Turn 129 133
-    struct State 136 141
-    function stage_fields 144 153
-    function record 156 167
-    function finish 169 180
-    function holds 182 184
-    struct DebugSession 190 195
-    function new 200 208
-    function id 212 214
-    function authorizes 218 229
-    function lock 231 233
-    function pause 236 238
-    function gate 243 284
-    function advance 289 310
-    function release 313 326
-    function snapshot 330 355
-    static SESSION 358 358
-    function enable_debug_session 365 370
-    function active_debug_session 374 376
-    function debug_session_banner 381 387
-    type Liveness 389 389
-    static CONNECTION 392 392
-    function with_connection_scope 398 406
-    function gate_turn 410 419
-    function field_text 422 426
-    function handle_debug_route 431 437
-    function handle_debug_request 441 475
+    const DEBUG_TOKEN_ENV 41 41
+    const STAGE_PAUSED 43 43
+    const STAGE_ADVANCED 44 44
+    const TURN_RELEASED 45 45
+    const IMPULSE 46 46
+    const IMPULSE_LEVEL 47 47
+    const DEBUG_ROUTE_PREFIX 48 48
+    const DEBUG_ACTIONS 49 49
+    const LIVENESS_POLL 52 52
+    function is_loopback_host 56 73
+    struct DebugToken 77 82
+    function generate_debug_token 87 107
+    function debug_token_from_env 111 125
+    struct Turn 128 137
+    struct State 140 145
+    function stage_fields 153 183
+    function record 186 197
+    function finish 199 210
+    function holds 213 217
+    function start 220 235
+    struct DebugSession 241 246
+    function new 251 259
+    function id 263 265
+    function authorizes 269 280
+    function lock 282 284
+    function pause 287 289
+    function hold 293 318
+    function begin 325 333
+    function resume 339 359
+    function gate 364 371
+    function abandon 374 377
+    function advance 383 410
+    function release 413 426
+    function snapshot 430 456
+    static SESSION 459 459
+    function enable_debug_session 466 471
+    function active_debug_session 475 477
+    function debug_session_banner 482 488
+    type Liveness 490 490
+    static CONNECTION 493 493
+    static OPEN_TURN 495 495
+    static SOLVE_DEPTH 497 497
+    function with_connection_scope 503 511
+    function with_liveness 515 521
+    struct SolveTurn 526 528
+    function drop 531 542
+    function begin_turn 550 561
+    function gate_turn 566 575
+    function field_text 578 582
+    function handle_debug_route 587 593
+    function handle_debug_request 597 631

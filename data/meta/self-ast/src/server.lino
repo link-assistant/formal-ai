@@ -2,53 +2,55 @@ self_ast_census
   target src/server.rs
   language rust
   fidelity signature
-  byte_len 36885
-  line_count 944
-  content_id source_module_700f77fe5aed9d54
-  symbol_count 45
+  byte_len 37098
+  line_count 950
+  content_id source_module_e4c0292d6fd0b4b8
+  symbol_count 47
   symbols
     module conversation_reports 30 30
     module debug_session 31 31
-    module transport 32 32
-    static HTTP_AGENT_MODE_FORCED 42 42
-    const ADVERTISED_MAX_OUTPUT_TOKENS 44 44
-    struct ApiHttpResponse 47 58
-    function into_deprecated_alias 66 69
-    struct ApiAuthConfig 73 75
-    function bearer_token 79 83
-    function from_env 86 94
-    function allows 97 103
-    function handle_api_request 107 109
-    function handle_api_request_with_headers 112 119
-    function record_exchange_best_effort 124 135
-    function handle_api_request_with_auth 138 155
-    function dispatch_api_request_with_auth 157 337
-    function memory_health_status 339 361
-    function requires_bearer_auth 363 368
-    function mcp_origin_allowed 370 388
-    function handle_dynamic_protocol_route 390 452
-    function handle_openai_models_request 454 499
-    function handle_gemini_generate_content_request 501 551
-    function normalize_protocol_model_id 553 559
-    function gemini_model_metadata_path 561 564
-    function gemini_model_action_path 566 570
-    function vertex_models_path 572 578
-    struct VertexModelRoute 581 583
-    function vertex_model_action_path 585 594
-    function first_non_empty_env 596 606
-    function bearer_token_from_headers 608 616
-    function api_key_from_headers 618 626
-    function parse_bearer_token 628 636
-    function is_vendor_hardcoded_gemini_model 654 656
-    function unsupported_model_response 658 671
-    function enable_http_agent_mode_for_current_process 678 680
-    function http_solver 682 689
-    function chat_completion_sse_response 706 815
-    function sse_chunk 819 825
-    function handle_anthropic_messages_request 831 869
-    function handle_memory_since_request 877 881
-    function handle_memory_import_request 885 898
-    function query_param 900 908
-    function links_notation_response 910 917
-    function json_response 919 929
-    function error_response 931 944
+    module debug_stage 32 32
+    module debug_stage_sources 33 33
+    module transport 34 34
+    static HTTP_AGENT_MODE_FORCED 48 48
+    const ADVERTISED_MAX_OUTPUT_TOKENS 50 50
+    struct ApiHttpResponse 53 64
+    function into_deprecated_alias 72 75
+    struct ApiAuthConfig 79 81
+    function bearer_token 85 89
+    function from_env 92 100
+    function allows 103 109
+    function handle_api_request 113 115
+    function handle_api_request_with_headers 118 125
+    function record_exchange_best_effort 130 141
+    function handle_api_request_with_auth 144 161
+    function dispatch_api_request_with_auth 163 343
+    function memory_health_status 345 367
+    function requires_bearer_auth 369 374
+    function mcp_origin_allowed 376 394
+    function handle_dynamic_protocol_route 396 458
+    function handle_openai_models_request 460 505
+    function handle_gemini_generate_content_request 507 557
+    function normalize_protocol_model_id 559 565
+    function gemini_model_metadata_path 567 570
+    function gemini_model_action_path 572 576
+    function vertex_models_path 578 584
+    struct VertexModelRoute 587 589
+    function vertex_model_action_path 591 600
+    function first_non_empty_env 602 612
+    function bearer_token_from_headers 614 622
+    function api_key_from_headers 624 632
+    function parse_bearer_token 634 642
+    function is_vendor_hardcoded_gemini_model 660 662
+    function unsupported_model_response 664 677
+    function enable_http_agent_mode_for_current_process 684 686
+    function http_solver 688 695
+    function chat_completion_sse_response 712 821
+    function sse_chunk 825 831
+    function handle_anthropic_messages_request 837 875
+    function handle_memory_since_request 883 887
+    function handle_memory_import_request 891 904
+    function query_param 906 914
+    function links_notation_response 916 923
+    function json_response 925 935
+    function error_response 937 950

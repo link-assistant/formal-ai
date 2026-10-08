@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/capability_router.rs
   language rust
   fidelity full_ast
-  byte_len 36765
-  line_count 831
-  content_id source_module_ee1e52c27ea35bb1
+  byte_len 37700
+  line_count 853
+  content_id source_module_46920f92545ab8ff
   symbol_count 29
   symbols
     function tool_for 24 59
@@ -28,64 +28,64 @@ self_ast_census
     function plan_routed_capability_step 389 396
     const NAMED_CAPABILITY_SLUGS 408 408
     function plan_named_capability_step 421 433
-    function plan_routed_capability_step_in 435 620
-    function lowered_search_command 631 638
-    function routed_arguments 646 735
-    function arguments_for 743 774
-    function wildcard_token 776 780
-    function file_tokens 782 795
-    function shell_fallback 797 827
-    function shell_quote 829 831
+    function plan_routed_capability_step_in 435 624
+    function lowered_search_command 635 642
+    function routed_arguments 650 748
+    function arguments_for 756 789
+    function wildcard_token 791 795
+    function file_tokens 797 810
+    function shell_fallback 812 849
+    function shell_quote 851 853
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 18851
-    named_node_count 3854
+    total_link_count 19278
+    named_node_count 3933
     distinct_node_kinds 78
     node_kinds
-      arguments 290
+      arguments 295
       array_expression 9
       array_type 16
       assignment_expression 1
       attribute 1
       attribute_item 1
-      binary_expression 69
-      block 79
+      binary_expression 72
+      block 84
       boolean_literal 12
-      call_expression 290
+      call_expression 295
       char_literal 28
       closure_expression 39
       closure_parameters 39
       const_item 5
-      crate 19
+      crate 21
       doc_comment 152
-      else_clause 10
+      else_clause 11
       enum_item 1
       enum_variant 2
       enum_variant_list 1
       escape_sequence 2
-      expression_statement 53
-      field_expression 189
-      field_identifier 189
+      expression_statement 55
+      field_expression 190
+      field_identifier 190
       field_pattern 3
       for_expression 1
       function_item 23
       generic_function 2
       generic_type 17
-      identifier 839
-      if_expression 29
+      identifier 863
+      if_expression 31
       index_expression 1
       inner_doc_comment_marker 1
       integer_literal 9
       let_chain 2
       let_condition 4
-      let_declaration 46
+      let_declaration 48
       lifetime 11
       lifetime_parameter 3
-      line_comment 255
-      macro_invocation 20
+      line_comment 260
+      macro_invocation 21
       match_arm 27
       match_block 5
       match_expression 5
@@ -97,20 +97,20 @@ self_ast_census
       parameters 23
       parenthesized_expression 4
       primitive_type 52
-      reference_expression 15
+      reference_expression 17
       reference_type 54
       remaining_field_pattern 2
-      return_expression 19
-      scoped_identifier 164
+      return_expression 20
+      scoped_identifier 172
       scoped_type_identifier 4
       scoped_use_list 3
       shorthand_field_identifier 3
       source_file 1
-      string_content 128
-      string_literal 126
+      string_content 130
+      string_literal 128
       struct_pattern 4
-      super 34
-      token_tree 42
+      super 36
+      token_tree 45
       try_expression 12
       tuple_expression 15
       tuple_pattern 12

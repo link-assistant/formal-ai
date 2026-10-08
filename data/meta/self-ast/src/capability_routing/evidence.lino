@@ -4,7 +4,7 @@ self_ast_census
   fidelity signature
   byte_len 17823
   line_count 424
-  content_id source_module_e718ba83b58b4d4b
+  content_id source_module_d0c7793cd2e70aef
   symbol_count 26
   symbols
     function evidences 22 25
@@ -31,5 +31,5 @@ self_ast_census
     function assigned_content 345 360
     function quoted_span 363 381
     function first_path 387 411
-    const EDGES 396 396
+    const EDGES 388 388
     function first_url 415 424

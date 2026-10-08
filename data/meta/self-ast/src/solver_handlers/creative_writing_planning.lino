@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/creative_writing_planning.rs
   language rust
   fidelity signature
-  byte_len 16232
-  line_count 473
-  content_id source_module_caf33f1027077331
+  byte_len 16615
+  line_count 482
+  content_id source_module_25143bdbd7a2cbac
   symbol_count 13
   symbols
     struct Place 7 17
@@ -19,4 +19,4 @@ self_ast_census
     struct ScheduledItem 152 156
     function schedule_days 167 271
     function check_schedule 276 338
-    function handle_planning_request 346 473
+    function handle_planning_request 346 482

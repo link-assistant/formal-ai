@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_unknown_reasoning.rs
   language rust
   fidelity signature
-  byte_len 32298
-  line_count 832
-  content_id source_module_37fbe32843ac5093
-  symbol_count 32
+  byte_len 32976
+  line_count 847
+  content_id source_module_4e15c032839aff57
+  symbol_count 33
   symbols
     const FOCUS_PLACEHOLDER 20 20
     struct UnknownReasoningConfig 23 27
@@ -21,21 +21,22 @@ self_ast_census
     function answer_from_public_knowledge_cache 485 529
     function public_concepts 531 534
     static CELL 532 532
-    function public_concept_candidate_terms 536 563
-    function concept_candidate_surfaces 565 575
-    function render_concept_plain 577 597
-    function concept_source 599 605
-    function render_source_link 607 614
-    function render_unresolved_unknown 616 624
-    function localized_seed_response 626 629
-    function infer_missing_focus 631 661
-    function is_question_shape 666 669
-    function focus_is_specific 679 682
-    function is_unresolved_bare_term_prompt 684 696
-    function extract_question_subject 698 766
-    function tail_after_marker 768 772
-    function extract_memory_fact 774 790
-    function split_fact_statement 792 803
-    function clean_focus 805 811
-    function normalize_fact_subject 813 821
-    function normalize_search_surface 823 832
+    function public_concept_candidate_terms 536 570
+    function concept_candidate_surfaces 572 582
+    function render_concept_plain 584 604
+    function concept_source 606 612
+    function render_source_link 614 621
+    function render_unresolved_unknown 623 631
+    function localized_seed_response 633 636
+    function infer_missing_focus 638 668
+    function is_question_shape 673 676
+    function focus_is_specific 686 689
+    function is_unresolved_bare_term_prompt 691 703
+    function extract_question_subject 705 773
+    function tail_after_marker 775 779
+    function extract_memory_fact 781 797
+    function split_fact_statement 799 810
+    function clean_focus 812 818
+    function normalize_fact_subject 820 828
+    function is_unspaced_script 831 836
+    function normalize_search_surface 838 847

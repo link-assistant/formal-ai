@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/modules.rs
   language rust
   fidelity full_ast
-  byte_len 6220
-  line_count 165
-  content_id source_module_2fded4cd09941636
-  symbol_count 79
+  byte_len 6467
+  line_count 176
+  content_id source_module_c867f33ae9cce040
+  symbol_count 90
   symbols
     module algorithm_learning 10 10
     module associative_learning 11 11
@@ -17,88 +17,99 @@ self_ast_census
     module code_task 17 17
     module command_reroute 18 18
     module comparison 19 19
-    module conversation_recall 20 20
-    module corpus 21 21
-    module diagram 22 22
-    module directory_listing 23 23
-    module document_recipe 24 24
-    module dreaming_audit 25 25
-    module driver 26 26
-    module evidence_record 27 27
-    module execution_learning 28 28
-    module explain 29 29
-    module external_benchmark_learning 30 30
-    module file_path_shape 31 31
-    module file_read 32 32
-    module formalization_recipe 33 33
-    module formalize 34 34
-    module general_execution 35 35
-    module general_planner 36 36
-    module git_commit 37 37
-    module google_trends_catalog 38 38
-    module google_trends_learning 39 39
-    module harness_envelope 40 40
-    module intent_router 41 41
-    module learning_report 42 42
-    module ledger 43 43
-    module lexicon 44 44
-    module link_edit_rules 45 45
-    module local_search 46 46
-    module meaning_detail 47 47
-    module module_function 48 48
-    module mutating_action 49 49
-    module narration 50 50
-    module note_composition 51 51
-    module planner 52 52
-    module positional_edit 53 53
-    module prerequisite_recovery 54 54
-    module procedure 55 55
-    module progress 56 56
-    module question_catalog 57 57
-    module rebuild_plan 58 58
-    module repair_apply 59 59
-    module repair_loop 60 60
-    module repair_strategy 61 61
-    module report_issue 62 62
-    module report_script 63 63
-    module requirement_resolution 64 64
-    module restart_feedback 65 65
-    module routing_learning 66 66
-    module self_ast 67 67
-    module self_heal 68 68
-    module shell_command 69 69
-    module shell_command_policy 70 70
-    module shell_file_fallback 71 71
-    module source_links 72 72
-    module spelling 73 73
-    module stated_request 74 74
-    module statement_audit 75 75
-    module structured_document 76 76
-    module structured_edit 77 77
-    module system_diagram 78 78
-    module task_obligations 79 79
-    module task_structure 80 80
-    module tool_result 81 81
-    module transcript_evidence 82 82
-    module web_research 83 83
-    module work_item_steps 84 84
-    module workspace_change 85 85
-    module workspace_computed_change 86 86
-    module workspace_inspection 87 87
-    module write_request 88 88
+    module contents_source 20 20
+    module conversation_recall 21 21
+    module corpus 22 22
+    module diagram 23 23
+    module directory_listing 24 24
+    module document_recipe 25 25
+    module dreaming_audit 26 26
+    module driver 27 27
+    module evidence_record 28 28
+    module execution_learning 29 29
+    module explain 30 30
+    module external_benchmark_learning 31 31
+    module file_path_shape 32 32
+    module file_read 33 33
+    module file_summary 34 34
+    module formalization_recipe 35 35
+    module formalize 36 36
+    module function_expectation 37 37
+    module general_execution 38 38
+    module general_planner 39 39
+    module git_commit 40 40
+    module google_trends_catalog 41 41
+    module google_trends_learning 42 42
+    module harness_envelope 43 43
+    module intent_router 44 44
+    module learning_report 45 45
+    module ledger 46 46
+    module lexicon 47 47
+    module line_removal 48 48
+    module link_edit_rules 49 49
+    module literal_write_guard 50 50
+    module local_search 51 51
+    module markdown_section 52 52
+    module meaning_detail 53 53
+    module module_exports 54 54
+    module module_function 55 55
+    module mutating_action 56 56
+    module narration 57 57
+    module note_composition 58 58
+    module planner 59 59
+    module positional_edit 60 60
+    module prerequisite_recovery 61 61
+    module procedure 62 62
+    module progress 63 63
+    module question_catalog 64 64
+    module rebuild_plan 65 65
+    module repair_apply 66 66
+    module repair_loop 67 67
+    module repair_strategy 68 68
+    module report_issue 69 69
+    module report_script 70 70
+    module requirement_resolution 71 71
+    module restart_feedback 72 72
+    module routing_learning 73 73
+    module self_ast 74 74
+    module self_heal 75 75
+    module shell_command 76 76
+    module shell_command_policy 77 77
+    module shell_file_fallback 78 78
+    module source_links 79 79
+    module spelling 80 80
+    module stated_request 81 81
+    module statement_audit 82 82
+    module structured_document 83 83
+    module structured_edit 84 84
+    module system_diagram 85 85
+    module task_obligations 86 86
+    module task_structure 87 87
+    module test_file_runner 88 88
+    module tool_result 89 89
+    module transcript_evidence 90 90
+    module web_research 91 91
+    module work_item_steps 92 92
+    module workspace_change 93 93
+    module workspace_computed_change 94 94
+    module workspace_inspection 95 95
+    module workspace_line_operation 96 96
+    module workspace_search 97 97
+    module workspace_setting 98 98
+    module write_request 99 99
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 3452
-    named_node_count 533
+    total_link_count 3606
+    named_node_count 555
     distinct_node_kinds 11
     node_kinds
       crate 7
-      identifier 243
+      identifier 254
       line_comment 8
-      mod_item 79
+      mod_item 90
       scoped_identifier 11
       scoped_use_list 32
       source_file 1

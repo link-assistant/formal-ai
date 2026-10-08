@@ -1,0 +1,80 @@
+self_ast_census
+  target src/agentic_coding/contents_source.rs
+  language rust
+  fidelity full_ast
+  byte_len 3824
+  line_count 94
+  content_id source_module_3705f21f18e9a1fa
+  symbol_count 5
+  symbols
+    const ROLE 17 17
+    const FENCE 18 18
+    struct ContentsSource 22 26
+    function contents_source 30 80
+    function with_contents 85 94
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 2857
+    named_node_count 582
+    distinct_node_kinds 57
+    node_kinds
+      arguments 53
+      array_expression 2
+      binary_expression 11
+      block 9
+      call_expression 53
+      char_literal 6
+      closure_expression 9
+      closure_parameters 9
+      const_item 2
+      continue_expression 2
+      crate 2
+      doc_comment 16
+      escape_sequence 3
+      expression_statement 10
+      field_declaration 3
+      field_declaration_list 1
+      field_expression 52
+      field_identifier 60
+      field_initializer 5
+      field_initializer_list 2
+      for_expression 2
+      function_item 2
+      generic_type 2
+      identifier 125
+      if_expression 4
+      index_expression 3
+      inner_doc_comment_marker 9
+      let_condition 2
+      let_declaration 16
+      lifetime 1
+      line_comment 18
+      macro_invocation 1
+      outer_doc_comment_marker 7
+      parameter 7
+      parameters 2
+      primitive_type 9
+      range_expression 3
+      reference_expression 2
+      reference_type 7
+      return_expression 2
+      scoped_identifier 5
+      scoped_use_list 1
+      shorthand_field_initializer 1
+      source_file 1
+      string_content 6
+      string_literal 3
+      struct_expression 2
+      struct_item 1
+      super 5
+      token_tree 1
+      tuple_pattern 1
+      tuple_struct_pattern 2
+      type_arguments 2
+      type_identifier 9
+      use_declaration 3
+      use_list 1
+      visibility_modifier 4

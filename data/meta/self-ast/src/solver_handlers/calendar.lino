@@ -2,57 +2,55 @@ self_ast_census
   target src/solver_handlers/calendar.rs
   language rust
   fidelity signature
-  byte_len 28156
-  line_count 756
-  content_id source_module_70d7bf0cd706130b
-  symbol_count 49
+  byte_len 24276
+  line_count 662
+  content_id source_module_cdf00774ecc3676b
+  symbol_count 47
   symbols
-    module date_weekday 18 18
-    module month 19 19
-    enum Weekday 22 30
-    function index 33 43
-    function from_index 45 55
-    function shifted_by 60 73
-    function slug 75 85
-    function from_slug 90 101
-    function en 103 113
-    function ru 115 125
-    function ru_genitive 127 137
-    function ru_instrumental 139 149
-    function hi 151 161
-    function zh 163 173
-    function es 178 188
-    enum WeekdayOperation 192 195
-    function sign 199 204
-    function delta 206 211
-    function event_kind 213 218
-    struct CalendarDate 230 235
-    function iso 238 240
-    function try_calendar_reasoning 243 317
-    function try_current_day_reasoning 319 339
-    function mentions_current_day_question 341 365
-    function mentions_weekday_context 367 372
-    function detect_operation 374 392
-    function detect_weekday 394 402
-    enum OffsetUnit 408 411
-    function multiplier 414 419
-    function meaning_slug 422 427
-    struct Offset 432 435
-    function total 438 440
-    function detect_offset 449 463
-    function stated_count_with_unit 469 498
-    function is_numeral_token_character 502 504
-    function starts_with_term 509 520
-    function contains_term 522 532
-    function term_position 539 544
-    function is_cjk_character 546 548
-    function is_word_character 550 552
-    function current_utc_date 554 558
-    function date_from_unix_days 560 568
-    function days_to_date 570 587
-    function weekday_for_unix_days 589 599
-    function render_current_day_answer 601 613
-    function render_answer 615 687
-    function weekday_label 692 700
-    function weekday_direction_label 704 714
-    function render_offset_answer 721 756
+    module date_weekday 20 20
+    module month 21 21
+    const WEEKDAY_LABEL_TABLE 24 24
+    enum Weekday 27 35
+    function index 38 48
+    function from_index 50 60
+    function shifted_by 65 78
+    function slug 80 90
+    function from_slug 95 106
+    function label 113 115
+    enum WeekdayOperation 119 122
+    function sign 126 131
+    function delta 133 138
+    function slug 141 146
+    function relation_intent 149 154
+    function event_kind 156 161
+    struct CalendarDate 173 178
+    function iso 181 183
+    function try_calendar_reasoning 186 261
+    function try_current_day_reasoning 263 283
+    function mentions_current_day_question 285 309
+    function mentions_weekday_context 311 316
+    function detect_operation 318 336
+    function detect_weekday 338 346
+    enum OffsetUnit 352 355
+    function multiplier 358 363
+    function meaning_slug 366 371
+    struct Offset 376 379
+    function total 382 384
+    function detect_offset 393 407
+    function stated_count_with_unit 413 442
+    function is_numeral_token_character 446 448
+    function starts_with_term 453 464
+    function contains_term 466 476
+    function term_position 483 491
+    function is_cjk_character 493 495
+    function is_word_character 497 499
+    function current_utc_date 501 505
+    function date_from_unix_days 507 515
+    function days_to_date 517 534
+    function weekday_for_unix_days 536 546
+    function template_for 550 555
+    function render_current_day_answer 557 572
+    function render_answer 576 595
+    function weekday_label 599 604
+    function weekday_direction_label 609 617
+    function render_offset_answer 624 662

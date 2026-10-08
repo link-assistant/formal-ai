@@ -1,0 +1,27 @@
+self_ast_census
+  target src/repository_workspace/trace.rs
+  language rust
+  fidelity signature
+  byte_len 7924
+  line_count 228
+  content_id source_module_185756fa82bbe59b
+  symbol_count 18
+  symbols
+    const EDITOR_STRUCTURAL 16 16
+    const EDITOR_AGENT_SESSION 20 20
+    const TRACE_RECORD 23 23
+    const STAGE_FIELD 26 26
+    enum StageStatus 30 46
+    function token 51 61
+    struct StageRecord 66 71
+    struct ProtocolTrace 75 86
+    function new 92 111
+    function from_outcome 116 149
+    function record 153 157
+    function set_field 160 168
+    function status 172 177
+    function render 181 200
+    function stage_ids 205 207
+    function stage_statuses 211 215
+    function stage_lines 217 224
+    function quote 226 228

@@ -1,0 +1,86 @@
+self_ast_census
+  target src/agentic_coding/markdown_section.rs
+  language rust
+  fidelity full_ast
+  byte_len 3603
+  line_count 110
+  content_id source_module_0d6714aac1b840d7
+  symbol_count 5
+  symbols
+    const FENCE 11 11
+    function heading_level 14 28
+    struct SectionScope 32 36
+    function section_scope 41 63
+    function inserted_in_section 68 110
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 3157
+    named_node_count 624
+    distinct_node_kinds 63
+    node_kinds
+      arguments 53
+      assignment_expression 3
+      attribute 1
+      attribute_item 1
+      binary_expression 16
+      block 17
+      boolean_literal 1
+      break_expression 1
+      call_expression 53
+      char_literal 3
+      closure_expression 6
+      closure_parameters 6
+      const_item 1
+      crate 1
+      doc_comment 14
+      else_clause 4
+      escape_sequence 1
+      expression_statement 15
+      field_declaration 3
+      field_declaration_list 1
+      field_expression 46
+      field_identifier 49
+      field_initializer_list 1
+      for_expression 1
+      function_item 3
+      generic_type 6
+      identifier 127
+      if_expression 9
+      index_expression 9
+      inner_doc_comment_marker 6
+      integer_literal 10
+      let_declaration 16
+      line_comment 14
+      mutable_specifier 3
+      outer_doc_comment_marker 8
+      parameter 7
+      parameters 3
+      parenthesized_expression 2
+      primitive_type 12
+      range_expression 5
+      reference_expression 1
+      reference_pattern 3
+      reference_type 9
+      return_expression 4
+      scoped_identifier 5
+      shorthand_field_initializer 3
+      slice_pattern 1
+      source_file 1
+      string_content 2
+      string_literal 3
+      struct_expression 1
+      struct_item 1
+      super 8
+      token_tree 1
+      try_expression 4
+      tuple_expression 1
+      tuple_pattern 2
+      tuple_type 1
+      type_arguments 6
+      type_identifier 14
+      unary_expression 6
+      use_declaration 2
+      visibility_modifier 7

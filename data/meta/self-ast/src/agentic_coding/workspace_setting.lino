@@ -1,0 +1,104 @@
+self_ast_census
+  target src/agentic_coding/workspace_setting.rs
+  language rust
+  fidelity full_ast
+  byte_len 11602
+  line_count 322
+  content_id source_module_925f1835e24f0a66
+  symbol_count 10
+  symbols
+    const OLD_LEAD_CUE 13 13
+    function stated_old_value 20 55
+    function last_run 58 75
+    function literal_value 78 84
+    function unquoted_value 87 94
+    function is_bare_literal 97 108
+    function assigned_setting 117 168
+    function assignment 175 199
+    function keyed_value 202 250
+    function replaced_lines 259 322
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 10987
+    named_node_count 2209
+    distinct_node_kinds 76
+    node_kinds
+      abstract_type 1
+      arguments 195
+      array_expression 10
+      array_type 1
+      assignment_expression 4
+      binary_expression 44
+      block 50
+      boolean_literal 7
+      call_expression 195
+      captured_pattern 2
+      char_literal 36
+      closure_expression 27
+      closure_parameters 27
+      compound_assignment_expr 1
+      const_item 1
+      crate 4
+      doc_comment 35
+      else_clause 8
+      escape_sequence 2
+      expression_statement 38
+      field_expression 175
+      field_identifier 175
+      for_expression 3
+      function_item 9
+      function_type 1
+      generic_type 22
+      identifier 486
+      if_expression 20
+      index_expression 24
+      inner_doc_comment_marker 5
+      integer_literal 14
+      let_chain 1
+      let_condition 4
+      let_declaration 57
+      lifetime 13
+      lifetime_parameter 2
+      line_comment 36
+      loop_expression 1
+      macro_invocation 4
+      match_arm 13
+      match_block 6
+      match_expression 6
+      match_pattern 13
+      mut_pattern 1
+      mutable_specifier 6
+      or_pattern 2
+      outer_doc_comment_marker 30
+      parameter 28
+      parameters 10
+      parenthesized_expression 7
+      primitive_type 54
+      range_expression 22
+      reference_expression 23
+      reference_pattern 1
+      reference_type 44
+      return_expression 15
+      scoped_identifier 14
+      scoped_use_list 1
+      slice_pattern 3
+      source_file 1
+      string_content 8
+      string_literal 11
+      super 4
+      token_tree 4
+      try_expression 7
+      tuple_expression 15
+      tuple_pattern 22
+      tuple_struct_pattern 10
+      tuple_type 7
+      type_arguments 22
+      type_identifier 30
+      type_parameters 2
+      unary_expression 19
+      use_declaration 4
+      use_list 1
+      visibility_modifier 3

@@ -2,25 +2,28 @@ self_ast_census
   target src/solver_handlers/software_project_followup.rs
   language rust
   fidelity signature
-  byte_len 14995
-  line_count 404
-  content_id source_module_1eeabc3c1cdc0c9b
-  symbol_count 17
+  byte_len 16281
+  line_count 445
+  content_id source_module_05ea71dba56350ce
+  symbol_count 20
   symbols
-    enum FollowUpKind 24 28
-    function label 31 37
-    function action 39 45
-    struct SoftwareProjectFollowUp 49 53
-    function try_software_project_followup 62 92
-    function detect_follow_up 94 101
-    function follow_up_kind 118 143
-    function extract_target_site 147 166
-    function extract_expected_output 179 199
-    function record_follow_up 201 227
-    function follow_up_meaning_id 229 241
-    function follow_up_gates 243 243
-    function follow_up_reasoning_steps 247 274
-    function follow_up_plan_steps 276 304
-    function render_follow_up_response 306 374
-    function prior_software_project_dialogue 386 396
-    function continues_software_project 402 404
+    enum FollowUpKind 26 30
+    function label 33 39
+    function role 42 48
+    function action 52 54
+    function follow_up_policy 59 61
+    function follow_up_text 68 74
+    struct SoftwareProjectFollowUp 77 81
+    function try_software_project_followup 90 121
+    function detect_follow_up 123 130
+    function follow_up_kind 147 164
+    function extract_target_site 168 187
+    function extract_expected_output 201 222
+    function record_follow_up 224 250
+    function follow_up_meaning_id 252 264
+    function follow_up_gates 266 271
+    function follow_up_reasoning_steps 273 304
+    function follow_up_plan_steps 306 341
+    function render_follow_up_response 343 415
+    function prior_software_project_dialogue 427 437
+    function continues_software_project 443 445
