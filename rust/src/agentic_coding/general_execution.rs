@@ -4,11 +4,9 @@ use serde_json::json;
 
 use super::capability_router::shell_command_tool;
 use super::general_planner::{
-    compose_general_change_plan, GeneralChangePlan, GeneralPlanMode, PLAN_PATH,
+    GeneralChangePlan, GeneralPlanMode, PLAN_PATH, compose_general_change_plan,
 };
-use super::planner::{
-    plan_one, tool_for, write_arguments, AgenticPlan, Capability,
-};
+use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
 use super::progress::Progress;
 use super::tool_result;
 use crate::protocol::ChatMessage;
@@ -58,9 +56,9 @@ fn general_change_step(
     // run's failure would replace the honest terminal state of issue #904 with
     // a transport message about a URL the user never asked to see.
     let work_item_unreadable = plan.mode == GeneralPlanMode::RepositoryWorkItem
-        && progress
-            .latest_failure()
-            .is_some_and(|failure| failure.capability == Capability::Fetch || failure.is_work_item_read());
+        && progress.latest_failure().is_some_and(|failure| {
+            failure.capability == Capability::Fetch || failure.is_work_item_read()
+        });
     let target_missing = progress.latest_failure().is_some_and(|failure| {
         super::literal_write_guard::is_guard_read(
             plan,
@@ -80,9 +78,10 @@ fn general_change_step(
             let path = failure.arguments.as_deref().and_then(tool_argument_path);
             if let (Some(path), Some(read_tool)) =
                 (path.as_deref(), tool_for(tool_names, Capability::Read))
-                && progress.failed_write_count_for(path) == 1 {
-                    return plan_one(read_tool, read_arguments(path));
-                }
+                && progress.failed_write_count_for(path) == 1
+            {
+                return plan_one(read_tool, read_arguments(path));
+            }
             // The plan event is auxiliary. A write-only client cannot perform
             // the preferred read-before-retry recovery, but its failure must
             // not swallow the user's primary literal-file write.
@@ -90,9 +89,10 @@ fn general_change_step(
                 && plan.mode == GeneralPlanMode::LiteralFile
                 && tool_for(tool_names, Capability::Read).is_none()
                 && progress.failed_write_count_for(PLAN_PATH) == 1
-                && let Some(write_tool) = tool_for(tool_names, Capability::Write) {
-                    return plan_one(write_tool, write_arguments(&plan.target, &plan.content));
-                }
+                && let Some(write_tool) = tool_for(tool_names, Capability::Write)
+            {
+                return plan_one(write_tool, write_arguments(&plan.target, &plan.content));
+            }
             // Recovery is exhausted, but the failed call is not the last word:
             // run the check the plan itself named so the report can carry the
             // status the workspace answered with rather than a transport
@@ -100,12 +100,13 @@ fn general_change_step(
             if plan.mode != GeneralPlanMode::RepositoryWorkItem
                 && !plan.verification_command.trim().is_empty()
                 && progress.run_count_for(&plan.verification_command) == 0
-                && let Some(run_tool) = shell_command_tool(tool_names) {
-                    return plan_one(
-                        run_tool,
-                        json!({ "command": plan.verification_command }).to_string(),
-                    );
-                }
+                && let Some(run_tool) = shell_command_tool(tool_names)
+            {
+                return plan_one(
+                    run_tool,
+                    json!({ "command": plan.verification_command }).to_string(),
+                );
+            }
             return AgenticPlan::Final(tool_result::render_failure(
                 path.as_deref().unwrap_or("write"),
                 &failure.detail,
@@ -120,9 +121,10 @@ fn general_change_step(
                 std::slice::from_ref(output),
                 &plan.verification_command,
                 &plan.goal,
-            ) {
-                return AgenticPlan::Final(report);
-            }
+            )
+        {
+            return AgenticPlan::Final(report);
+        }
         // A client may require an attempted read before creating a missing
         // file. Whether that read found bytes or reported absence, retry the
         // original write once; its per-target failure budget remains bounded.
@@ -148,9 +150,10 @@ fn general_change_step(
             progress
                 .previous_attempt()
                 .and_then(|attempt| attempt.arguments.as_deref()),
-        ) {
-            return plan_one(tool, arguments.to_owned());
-        }
+        )
+    {
+        return plan_one(tool, arguments.to_owned());
+    }
     // A repository work item names an issue, not an artifact. Recording the
     // reference and stopping is what issue #904 reported: nothing the request
     // asked for was ever produced. The issue itself is where the artifact is
@@ -161,7 +164,8 @@ fn general_change_step(
             if let Some(step) = plan_work_item_execution(&fetched, messages, tool_names) {
                 return step;
             }
-        } else if let Some(step) = plan_work_item_read(messages, tool_names, &plan.target, &progress)
+        } else if let Some(step) =
+            plan_work_item_read(messages, tool_names, &plan.target, &progress)
         {
             return step;
         }
@@ -261,7 +265,11 @@ fn plan_work_item_execution(
     }
     let executable = compose_general_change_plan(objective)
         .filter(|executable| executable.mode != GeneralPlanMode::RepositoryWorkItem)?;
-    Some(plan_work_item_change_step(messages, tool_names, &executable))
+    Some(plan_work_item_change_step(
+        messages,
+        tool_names,
+        &executable,
+    ))
 }
 
 /// The step that reads the work item, through whichever client tool reaches it.
@@ -292,7 +300,10 @@ fn plan_work_item_read(
     if !progress.attempted_work_item_read_of(target)
         && let Some(run) = shell_command_tool(tool_names)
     {
-        return Some(plan_one(run, json!({ "command": issue_view_command(target) }).to_string()));
+        return Some(plan_one(
+            run,
+            json!({ "command": issue_view_command(target) }).to_string(),
+        ));
     }
     // A read that failed — or one a client echoed without its status, which
     // the sentinel now exposes (issue #1155) — must not end the retrieval
@@ -302,13 +313,18 @@ fn plan_work_item_read(
     // public repository — exactly the case an unauthenticated `gh` used to
     // end a session for), the authenticated REST read, and last the prepared
     // pull request's own page, whose title and body restate the issue.
-    if !progress.attempted_fetch_of(target) && let Some(tool) = fetch {
+    if !progress.attempted_fetch_of(target)
+        && let Some(tool) = fetch
+    {
         return Some(plan_one(tool, work_item_fetch_arguments(target)));
     }
     if let Some(run) = shell_command_tool(tool_names) {
-        for fallback in [issue_rest_read_command(target), issue_api_read_command(target)]
-            .into_iter()
-            .flatten()
+        for fallback in [
+            issue_rest_read_command(target),
+            issue_api_read_command(target),
+        ]
+        .into_iter()
+        .flatten()
         {
             if !progress.has_run(&fallback) {
                 return Some(plan_one(run, json!({ "command": fallback }).to_string()));
@@ -452,6 +468,15 @@ fn repository_work_item_objective(plan: &GeneralChangePlan, progress: &Progress)
         .filter(|text| !text.trim().is_empty())
 }
 
+// Exact declared data can describe failures without reporting an execution failure.
+// Explicit harness errors and nonzero status always remain authoritative.
+fn literal_verification_matches(plan: &GeneralChangePlan, output: &str) -> bool {
+    plan.mode == GeneralPlanMode::LiteralFile
+        && !tool_result::harness_reported_failure(output)
+        && tool_result::reported_exit_code(output).is_none_or(|code| code == 0)
+        && output.trim() == plan.content.trim()
+}
+
 fn finish_general_change(
     plan: &GeneralChangePlan,
     progress: &Progress,
@@ -464,6 +489,7 @@ fn finish_general_change(
     // command that exited non-zero replaces the claim with its own report.
     if let Some(report) = progress
         .latest_run_output_for(&plan.verification_command)
+        .filter(|output| !literal_verification_matches(plan, output))
         .and_then(|output| {
             tool_result::failed_verification(
                 std::slice::from_ref(output),
@@ -481,7 +507,10 @@ fn finish_general_change(
         let observed = progress
             .latest_successful_run_output_for(&plan.verification_command)
             .and_then(tool_result::observed_payload);
-        if observed.as_deref().map(str::trim) != Some(plan.content.trim()) {
+        let exact_literal = progress
+            .latest_successful_run_output_for(&plan.verification_command)
+            .is_some_and(|output| literal_verification_matches(plan, output));
+        if !exact_literal && observed.as_deref().map(str::trim) != Some(plan.content.trim()) {
             return AgenticPlan::Final(general_plan_mismatch(
                 plan,
                 observed.as_deref().unwrap_or_default(),

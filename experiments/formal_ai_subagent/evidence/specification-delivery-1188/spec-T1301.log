@@ -1,0 +1,257 @@
+>> read {"filePath":"scripts/generate-worker-crate-modules.mjs","file_path":"scripts/generate-worker-crate-modules.mjs","path":"scripts/generate-worker-crate-modules.mjs"}
+   <file>
+   00001| #!/usr/bin/env node
+   00002| // Generate the browser worker's copies of the crate modules the chat routes
+   00003| // call (R1188-U18, U19, U21): text formalization, dependency summarization,
+   00004| // page formalization and round-trip translation; and the event log's evidence
+   00005| // projection every answer carries (R1188-U29).
+   00006| //
+   00007| // The browser worker is a classic script (js/worker/formal_ai_worker.js loads
+   00008| // its modules with `importScripts`), so it cannot import the ES modules of
+   00009| // js/agentic/crate/. Instead of a second, hand-kept port, every module in the
+   00010| // import closure of the entry modules below is written to
+   00011| // js/worker/formal_ai_worker_crate_<name>.js as a factory:
+   00012| //
+   00013| //   (self.FORMAL_AI_CRATE_FACTORIES ||= {})["crate/text_formalization.mjs"] =
+   00014| //     (crateRequire) => { <the module body>; return { <its exports> }; };
+   00015| //
+   00016| // Its body is the module's own text, byte for byte, with each `import` turned
+   00017| // into a `crateRequire` of the module it names and each `export` keyword
+   00018| // dropped. A factory runs on first use, so the worker loads the files in any
+   00019| // order. js/worker/formal_ai_worker_crate_modules.js instantiates them and
+   00020| // installs the worker as the host of js/agentic/host.mjs.
+   00021| //
+   00022| // host.mjs reads the seed registry to find the meaning lexicon's files; the
+   00023| // browser does not fetch data/meta/, so the registry's meaning seeds are
+   00024| // written to formal_ai_worker_crate_seed_registry.js in its order.
+   00025| //
+   00026| // Usage:
+   00027| //   node scripts/generate-worker-crate-modules.mjs --write   regenerate the files
+   00028| //   node scripts/generate-worker-crate-modules.mjs --check   fail when a file drifts (CI gate)
+   00029| 
+   00030| import { existsSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from 'node:fs';
+   00031| import path from 'node:path';
+   00032| 
+   00033| import { REPO_ROOT } from '../js/server/lino.mjs';
+   00034| 
+   00035| /** The modules the chat routes call; their import closure is generated. */
+   00036| export const ENTRY_MODULES = Object.freeze([
+   00037|   'crate/dependency_summarization.mjs',
+   00038|   'crate/event_log.mjs',
+   00039|   'crate/page_formalization.mjs',
+   00040|   'crate/round_trip_translation.mjs',
+   00041| ]);
+   00042| 
+   00043| const AGENTIC_ROOT = 'js/agentic';
+   00044| const WORKER_ROOT = 'js/worker';
+   00045| const FILE_PREFIX = 'formal_ai_worker_crate_';
+   00046| const REGISTRY_FILE = `${FILE_PREFIX}seed_registry.js`;
+   00047| const LOADER_FILE = `${FILE_PREFIX}modules.js`;
+   00048| const SEED_REGISTRY = 'data/meta/seed-registry.lino';
+   00049| const COMMAND = 'node scripts/generate-worker-crate-modules.mjs --write';
+   00050| 
+   00051| const IMPORT = /^import\s*\{([^}]*)\}\s*from\s*'([^']+)';\n/gmu;
+   00052| const EXPORT_DECLARATION = /^export (async function|function|const|let|class) ([A-Za-z_$][\w$]*)/gmu;
+   00053| 
+   00054| /**
+   00055|  * The module name of `specifier` imported from `from`, both relative to
+   00056|  * js/agentic (`crate/x.mjs`, `host.mjs`).
+   00057|  * @param {string} from
+   00058|  * @param {string} specifier
+   00059|  */
+   00060| export function resolveModule(from, specifier) {
+   00061|   return path.posix.normalize(path.posix.join(path.posix.dirname(from), specifier));
+   00062| }
+   00063| 
+   00064| /**
+   00065|  * The names a module exports, in source order.
+   00066|  * @param {string} source
+   00067|  */
+   00068| export function exportedNames(source) {
+   00069|   return [...source.matchAll(EXPORT_DECLARATION)].map((match) => match[2]);
+   00070| }
+   00071| 
+   00072| /**
+   00073|  * The bindings of one import list as a destructuring pattern
+   00074|  * (`a, b as c` gives `a, b: c`).
+   00075|  * @param {string} list
+   00076|  */
+   00077| export function bindingPattern(list) {
+   00078|   return list
+   00079|     .split(',')
+   00080|     .map((binding) => binding.trim())
+   00081|     .filter(Boolean)
+   00082|     .map((binding) => binding.replace(/^([\w$]+)\s+as\s+([\w$]+)$/u, '$1: $2'))
+   00083|     .join(', ');
+   00084| }
+   00085| 
+   00086| /**
+   00087|  * The modules `name` imports, as `{module, pattern, text}` with the import
+   00088|  * statement's text.
+   00089|  * @param {string} name
+   00090|  * @param {string} source
+   00091|  */
+   00092| export function importsOf(name, source) {
+   00093|   return [...source.matchAll(IMPORT)].map((match) => ({
+   00094|     module: resolveModule(name, match[2]),
+   00095|     pattern: bindingPattern(match[1]),
+   00096|     text: match[0],
+   00097|   }));
+   00098| }
+   00099| 
+   00100| /**
+   00101|  * The import closure of `entries`, dependencies before the modules that
+   00102|  * import them.
+   00103|  * @param {readonly string[]} entries
+   00104|  * @param {(name: string) => string} read
+   00105|  */
+   00106| export function importClosure(entries, read) {
+   00107|   const order = [];
+   00108|   const visit = (name) => {
+   00109|     if (order.includes(name)) return;
+   00110|     order.push(name);
+   00111|     for (const dependency of importsOf(name, read(name))) visit(dependency.module);
+   00112|   };
+   00113|   for (const entry of entries) visit(entry);
+   00114|   return order.sort();
+   00115| }
+   00116| 
+   00117| /**
+   00118|  * The worker file a module is written to.
+   00119|  * @param {string} name
+   00120|  */
+   00121| export function workerFileOf(name) {
+   00122|   const stem = path.posix.basename(name, '.mjs');
+   00123|   return `${FILE_PREFIX}${stem}.js`;
+   00124| }
+   00125| 
+   00126| /**
+   00127|  * The factory text of one module.
+   00128|  * @param {string} name
+   00129|  * @param {string} source
+   00130|  */
+   00131| export function factoryOf(name, source) {
+   00132|   let body = source;
+   00133|   for (const dependency of importsOf(name, source)) {
+   00134|     const binding = `const { ${dependency.pattern} } = crateRequire("${dependency.module}");\n`;
+   00135|     body = body.replace(dependency.text, binding);
+   00136|   }
+   00137|   body = body.replace(EXPORT_DECLARATION, '$1 $2');
+   00138|   const exports = exportedNames(source).map((exported) => `  ${exported},`).join('\n');
+   00139|   return [
+   00140|     `// Generated by \`${COMMAND}\``,
+   00141|     `// from ${AGENTIC_ROOT}/${name}.`,
+   00142|     '// Do not edit by hand: edit that module and regenerate. The browser worker',
+   00143|     '// cannot import ES modules, so the module is a factory that',
+   00144|     '// formal_ai_worker_crate_modules.js runs on first use.',
+   00145|     '',
+   00146|     `(self.FORMAL_AI_CRATE_FACTORIES ||= {})["${name}"] = (crateRequire) => {`,
+   00147|     body.trimEnd(),
+   00148|     '',
+   00149|     'return Object.freeze({',
+   00150|     exports,
+   00151|     '});',
+   00152|     '};',
+   00153|     '',
+   00154|   ].join('\n');
+   00155| }
+   00156| 
+   00157| /**
+   00158|  * The seeds the registry gives the meaning lexicon, in its order.
+   00159|  * @param {string} registry
+   00160|  */
+   00161| export function meaningSeeds(registry) {
+   00162|   const seeds = [];
+   00163|   let current = null;
+   00164|   for (const line of registry.split('\n')) {
+   00165|     const seed = /^ {2}seed (\S+)\s*$/u.exec(line);
+   00166|     if (seed) {
+   00167|       current = seed[1];
+   00168|       continue;
+   00169|     }
+   00170|     if (current !== null && /^ {4}lexicon meaning\s*$/u.test(line)) seeds.push(current);
+   00171|   }
+   00172|   return seeds;
+   00173| }
+   00174| 
+   00175| /**
+   00176|  * The registry file text.
+   00177|  * @param {string[]} seeds
+   00178|  */
+   00179| export function registryFileOf(seeds) {
+   00180|   return [
+   00181|     `// Generated by \`${COMMAND}\``,
+   00182|     `// from ${SEED_REGISTRY}. Do not edit by hand.`,
+   00183|     '//',
+   00184|     '// The seeds the registry gives the meaning lexicon (`lexicon meaning`), in',
+   00185|     '// its order: js/agentic/crate/seed_meanings.mjs reads the lexicon from',
+   00186|     '// them, and the browser does not fetch the registry itself.',
+   00187|     '',
+   00188|     'self.FORMAL_AI_CRATE_MEANING_SEEDS = Object.freeze([',
+   00189|     ...seeds.map((seed) => `  "${seed}",`),
+   00190|     ']);',
+   00191|     '',
+   00192|   ].join('\n');
+   00193| }
+   00194| 
+   00195| /** Every generated file, as a map from its worker path to its text. */
+   00196| export function generatedFiles() {
+   00197|   const read = (name) => readFileSync(path.join(REPO_ROOT, AGENTIC_ROOT, name), 'utf8');
+   00198|   const files = new Map();
+   00199|   for (const name of importClosure(ENTRY_MODULES, read)) {
+   00200|     files.set(`${WORKER_ROOT}/${workerFileOf(name)}`, factoryOf(name, read(name)));
+   00201|   }
+   00202|   const registry = readFileSync(path.join(REPO_ROOT, SEED_REGISTRY), 'utf8');
+   00203|   files.set(`${WORKER_ROOT}/${REGISTRY_FILE}`, registryFileOf(meaningSeeds(registry)));
+   00204|   return files;
+   00205| }
+   00206| 
+   00207| /** The generated worker files on disk now (the hand-written loader excluded). */
+   00208| function filesOnDisk() {
+   00209|   return readdirSync(path.join(REPO_ROOT, WORKER_ROOT))
+   00210|     .filter((file) => file.startsWith(FILE_PREFIX) && file !== LOADER_FILE)
+   00211|     .map((file) => `${WORKER_ROOT}/${file}`);
+   00212| }
+   00213| 
+   00214| function main(argv) {
+   00215|   const write = argv.includes('--write');
+   00216|   const expected = generatedFiles();
+   00217|   const drift = [];
+   00218|   for (const [file, text] of expected) {
+   00219|     const full = path.join(REPO_ROOT, file);
+   00220|     if (existsSync(full) && readFileSync(full, 'utf8') === text) continue;
+   00221|     drift.push(file);
+   00222|     if (write) writeFileSync(full, text);
+   00223|   }
+   00224|   for (const file of filesOnDisk()) {
+   00225|     if (expected.has(file)) continue;
+   00226|     drift.push(file);
+   00227|     if (write) unlinkSync(path.join(REPO_ROOT, file));
+   00228|   }
+   00229|   if (write) {
+   00230|     console.log(`${expected.size} worker crate files, ${drift.length} rewritten.`);
+   00231|     return 0;
+   00232|   }
+   00233|   if (drift.length === 0) {
+   00234|     console.log(`The ${expected.size} worker crate files are current.`);
+   00235|     return 0;
+   00236|   }
+   00237|   console.error(`Stale worker crate files (run \`${COMMAND}\`):`);
+   00238|   for (const file of drift) console.error(`  ${file}`);
+   00239|   return 1;
+   00240| }
+   00241| 
+   00242| if (import.meta.url === `file://${process.argv[1]}`) process.exitCode = main(process.argv.slice(2));
+   00243| 
+   
+   (End of file - total 243 lines)
+   </file>
+>> edit {"filePath":"scripts/generate-worker-crate-modules.mjs","file_path":"scripts/generate-worker-crate-modules.mjs","new":"  'crate/page_formalization.mjs',\n  'crate/skill_procedure.mjs',\n  'crate/skill_procedure_artifact.mjs',\n  'crate/solver_formalization.mjs',","newString":"  'crate/page_formalization.mjs',\n  'crate/skill_procedure.mjs',\n  'crate/skill_procedure_artifact.mjs',\n  'crate/solver_formalization.mjs',","new_str":"  'crate/page_formalization.mjs',\n  'crate/skill_procedure.mjs',\n  'crate/skill_procedure_artifact.mjs',\n  'crate/solver_formalization.mjs',","new_string":"  'crate/page_formalization.mjs',\n  'crate/skill_procedure.mjs',\n  'crate/skill_procedure_artifact.mjs',\n  'crate/solver_formalization.mjs',","old":"  'crate/page_formalization.mjs',","oldString":"  'crate/page_formalization.mjs',","old_str":"  'crate/page_formalization.mjs',","old_string":"  'crate/page_formalization.mjs',","path":"scripts/generate-worker-crate-modules.mjs"}
+>> bash {"command":"sha256sum -- scripts/generate-worker-crate-modules.mjs"}
+   dacd4e70211c4b3a68082b9488fd7f4c763056f4be8fe9f2b78014b4c315ffb8  scripts/generate-worker-crate-modules.mjs
+   
+== answer ==
+Replaced `  'crate/page_formalization.mjs',` with `  'crate/page_formalization.mjs',
+  'crate/skill_procedure.mjs',
+  'crate/skill_procedure_artifact.mjs',
+  'crate/solver_formalization.mjs',` in `scripts/generate-worker-crate-modules.mjs` and observed the result.

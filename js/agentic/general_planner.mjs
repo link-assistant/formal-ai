@@ -150,6 +150,25 @@ export function objectiveText(request) {
   return trim(request.slice(lead[1]));
 }
 
+/** Mirrors `fn literal_payload`: a closed literal immediately introduced by a seeded content lead. */
+function literalPayload(request) {
+  const quoted = quotedSegmentSpans(request);
+  const literal = quoted.find((segment) => /^[\s.!?。！？।]*$/u.test(request.slice(segment.end)));
+  if (!literal) return null;
+  let prefix = request.slice(0, literal.start);
+  for (const segment of quoted.filter((segment) => segment.end <= literal.start).reverse()) {
+    prefix = prefix.slice(0, segment.start) + ' '.repeat(segment.end - segment.start) + prefix.slice(segment.end);
+  }
+  const normalized = normalizePrompt(prefix);
+  const overwrite = mentionsRole('file_overwrite_consent', normalized);
+  if (firstContentLeadEnd(prefix.toLowerCase()) === null && !overwrite) return null;
+  const words = tokens(prefix);
+  const actionStart = firstActionCueStart(words);
+  const actionEnd = firstActionCueEnd(words);
+  if (actionStart === null || actionEnd === null) return null;
+  return overwrite || mentionsRole('file_whole_write_action', normalizePrompt(prefix.slice(actionStart, actionEnd))) ? literal : null;
+}
+
 function lineAnchored(text, start) {
   const before = Array.from(text.slice(0, start)).reverse();
   for (const character of before) {
@@ -167,13 +186,15 @@ export function composeGeneralChangePlan(fullRequest) {
   const request = objectiveText(fullRequest);
   // An additive edit (append, prepend) never rewrites the whole file: the
   // workspace-change arm owns it, and a request it cannot ground is declined.
-  const lowered = request.toLowerCase();
+  const literal = literalPayload(request);
+  const instruction = literal === null ? request : request.slice(0, literal.start) + request.slice(literal.end);
+  const lowered = instruction.toLowerCase();
   if (mentionsRole('file_edit_position_end', lowered) || mentionsRole('file_edit_position_start', lowered)) return null;
   const commandOutput = parseCommandOutputRequest(request);
   const fileRequest = commandOutput ? [commandOutput[0], ''] : parseWriteRequest(request);
   if (!fileRequest) return composeRepositoryWorkPlan(request);
   const target = fileRequest[0];
-  let content = withoutTrailingKnownModifier(fileRequest[1]) ?? fileRequest[1];
+  let content = literal === null ? withoutTrailingKnownModifier(fileRequest[1]) ?? fileRequest[1] : fileRequest[1];
   const repaired = honouringPinnedFirstLine(fullRequest, content);
   if (repaired !== null) {
     traceRoute('general_change_plan', 'repaired_pinned_first_line');
@@ -347,8 +368,8 @@ export function hasFileWriteIntent(lower) {
 
 /** Mirrors `fn has_authoritative_literal_write`. @param {string} request */
 export function hasAuthoritativeLiteralWrite(request) {
-  return firstPrefixLeadEnd(request.toLowerCase(), 'file_write_authoritative_content_lead') !== null
-    && composeGeneralChangePlan(request)?.mode === GeneralPlanMode.LiteralFile;
+  return (firstPrefixLeadEnd(request.toLowerCase(), 'file_write_authoritative_content_lead') !== null
+    || literalPayload(request) !== null) && composeGeneralChangePlan(request)?.mode === GeneralPlanMode.LiteralFile;
 }
 
 function parseWriteRequest(request) {
@@ -387,7 +408,8 @@ function parseWriteRequestBound(request, toks, binding) {
         const content = markerSpan === null ? null : cleanContent(markerSpan);
         if (content !== null && isLiteralContent(content)
           && (!namesDeferredWorkProduct(content)
-            || firstPrefixLeadEnd(lowered, 'file_write_authoritative_content_lead') !== null)) {
+            || firstPrefixLeadEnd(lowered, 'file_write_authoritative_content_lead') !== null
+            || literalPayload(request) !== null)) {
           return [target, content];
         }
       }

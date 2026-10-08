@@ -17,7 +17,7 @@
 // runs it as a generated crate factory over the native log it records
 // (`solverEvents`), so a worker answer carries the native links too.
 
-const { stableId } = crateRequire("crate/engine_stable_id.mjs");
+const { stableId } = crateRequire("crate/engine_stable_identifier.mjs");
 
 /** Mirrors rust/src/event_log.rs `EventLog` (append, events, first_of). */
 class EventLog {

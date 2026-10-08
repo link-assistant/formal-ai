@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_crate_modules.js"
-  ceiling 112
-  rationale "The loader of the generated crate factories (R1188-U18, U19, U21, 2026-10-09): crateModule runs a formal_ai_worker_crate_*.js factory once, on first use, and installs the worker as the host of js/agentic/host.mjs (seed texts from SEED_RAW and the meaning seeds the worker list leaves out, fetched by loadCrateSeeds from a fetch started at boot beside the worker seed load, so it adds no round trip before ready; the registry's meaning seeds; FormalAiSeed.parse), so the chat routes run the JavaScript root's crate modules in the browser."
+  ceiling 115
+  rationale "The factory loader now supplies both meaning and response lexicons from the seed registry, so generated compilers read canonical gap names and responses. This adds three registry projection lines."

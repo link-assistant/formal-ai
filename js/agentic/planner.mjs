@@ -234,7 +234,7 @@ async function planChatStepRoutes(messages, toolNames, received) {
   if (handlerMatches('conversation_control', task) || isContinuationCue(task)
     // An edit request's block is its payload: a `when … then` inside it is text
     // being written, not a skill being taught (PR #1188 T57).
-    || looksLikeSkillDescription(positionalEdit.ownText(task))) {
+    || (!hasAuthoritativeLiteralWrite(task) && looksLikeSkillDescription(positionalEdit.ownText(task)))) {
     return null;
   }
   // The computer_use arm. Ahead of it, quotes that do not pair leave no

@@ -297,7 +297,8 @@ fn plan_chat_step_routes(
         || is_continuation_cue(&task)
         // An edit request's block is its payload: a `when … then` inside it is
         // text being written, not a skill being taught (PR #1188 T57).
-        || looks_like_skill_description(super::positional_edit::own_text(&task))
+        || (!has_authoritative_literal_write(&task)
+            && looks_like_skill_description(super::positional_edit::own_text(&task)))
     {
         return None;
     }

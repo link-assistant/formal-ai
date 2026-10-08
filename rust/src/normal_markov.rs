@@ -339,11 +339,18 @@ pub fn quotes_whole(text: &str, literal: &str) -> bool {
             .any(|(open, close)| text.contains(&format!("{open}{literal}{close}")))
 }
 
-fn next_delimiter(text: &str, cursor: usize) -> Option<(usize, &'static str, &'static str)> {
-    PAIRS
+fn next_delimiter(text: &str, cursor: usize) -> Option<(usize, &str, &str)> {
+    let (at, open, close) = PAIRS
         .iter()
         .filter_map(|&(open, close)| next_complete_pair(text, cursor, open, close))
-        .min_by_key(|(at, open, _)| (*at, usize::MAX - open.len()))
+        .min_by_key(|(at, open, _)| (*at, usize::MAX - open.len()))?;
+    if open == "```" {
+        let length = text[at..].bytes().take_while(|byte| *byte == b'`').count();
+        let fence = &text[at..at + length];
+        closing_delimiter(text, at + length, fence, fence)?;
+        return Some((at, fence, fence));
+    }
+    Some((at, open, close))
 }
 
 fn next_complete_pair(

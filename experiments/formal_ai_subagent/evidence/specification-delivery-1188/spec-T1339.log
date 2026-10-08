@@ -1,0 +1,731 @@
+>> read {"filePath":"js/worker/formal_ai_worker_capabilities_and_runtime_rules.js","file_path":"js/worker/formal_ai_worker_capabilities_and_runtime_rules.js","path":"js/worker/formal_ai_worker_capabilities_and_runtime_rules.js"}
+   <file>
+   00001| // Known-fact inventory queries, runtime rule updates, feature capability
+   00002| // status, the architecture explanation and translation phrase normalization.
+   00003| // Loaded by ../formal_ai_worker.js.
+   00004| // Issue #386: a known-facts inventory query is recognised by composing meaning
+   00005| // roles, not by matching raw words per language. The universal algorithm is
+   00006| // identical for every language: the prompt either names the knowledge `fact`
+   00007| // noun together with an enumerating interrogative and a second-person
+   00008| // attribution of knowing, or it matches one of the complete standalone
+   00009| // phrasings that ask what the assistant knows even without the noun. The
+   00010| // prompt is re-normalised first so the boundary-aware matcher sees punctuation
+   00011| // collapsed to spaces. Mirror of is_known_fact_query in
+   00012| // src/solver_handlers/self_awareness.rs.
+   00013| function isKnownFactQuery(normalized) {
+   00014|   if (isSelfFactQuery(normalized)) return false;
+   00015|   const cleaned = normalizePrompt(normalized);
+   00016|   const composed =
+   00017|     lexiconMentionsRole(ROLE_KNOWLEDGE_INVENTORY_NOUN, cleaned) &&
+   00018|     lexiconMentionsRole(ROLE_KNOWLEDGE_INVENTORY_INTERROGATIVE, cleaned) &&
+   00019|     lexiconMentionsRole(ROLE_KNOWLEDGE_POSSESSION, cleaned);
+   00020|   return (
+   00021|     composed || lexiconMentionsRole(ROLE_KNOWLEDGE_INVENTORY_PHRASE, cleaned)
+   00022|   );
+   00023| }
+   00024| 
+   00025| function cleanRuleQuery(raw) {
+   00026|   return String(raw || "")
+   00027|     .trim()
+   00028|     .replace(/^[\s`"':._,\-?!]+|[\s`"':._,\-?!]+$/g, "")
+   00029|     .toLowerCase();
+   00030| }
+   00031| 
+   00032| // The rule a prompt asks to read: the text after its longest seeded
+   00033| // `rule_detail_request` opening. Mirrors `fn detail_query` in
+   00034| // rust/src/solver_handlers/behavior_rules.rs.
+   00035| const ROLE_RULE_DETAIL_REQUEST = "rule_detail_request";
+   00036| 
+   00037| function detailQuery(prompt) {
+   00038|   const lower = String(prompt || "").toLowerCase();
+   00039|   const opening = wordsForRole(ROLE_RULE_DETAIL_REQUEST)
+   00040|     .map((surface) => String(surface).toLowerCase())
+   00041|     .filter((surface) => surface && lower.startsWith(surface))
+   00042|     .sort((left, right) => right.length - left.length)[0];
+   00043|   if (opening) return cleanRuleQuery(String(prompt || "").slice(opening.length));
+   00044|   if (lower.includes("rule_unknown")) return "unknown";
+   00045|   return "";
+   00046| }
+   00047| 
+   00048| function findBehaviorRule(query) {
+   00049|   const cleaned = cleanRuleQuery(query);
+   00050|   const withoutPrefix = cleaned.startsWith("rule_") ? cleaned.slice(5) : cleaned;
+   00051|   return behaviorRuleRecords().find(
+   00052|     (rule) =>
+   00053|       rule.id === cleaned ||
+   00054|       rule.id === `rule_${withoutPrefix}` ||
+   00055|       rule.intent === cleaned ||
+   00056|       rule.intent === withoutPrefix ||
+   00057|       rule.label.toLowerCase().includes(withoutPrefix),
+   00058|   );
+   00059| }
+   00060| 
+   00061| function codeSpans(text) {
+   00062|   return String(text || "")
+   00063|     .split("`")
+   00064|     .map((part, index) => (index % 2 === 1 ? part.trim() : ""))
+   00065|     .filter(Boolean);
+   00066| }
+   00067| 
+   00068| // Issue #144 / #386: recognize behavior-rule updates expressed as `When X then
+   00069| // Y` (and translations) in addition to the explicit `When I say … answer …`
+   00070| // grammar. No keyword is named here any more — every surface lives in the
+   00071| // embedded meaning lexicon (data/seed/meanings-skill-compiler.lino) and is read
+   00072| // by semantic role, mirroring explicit_teaching_form + looks_like_skill_description
+   00073| // in src/skill_compiler.rs:
+   00074| //   * a teaching trigger lead that co-occurs with a teaching response verb, or a
+   00075| //     standalone behaviour-rule edit directive (the explicit teaching form); and
+   00076| //   * a when-then frame whose circumfix surface brackets the trigger and answer —
+   00077| //     the literal before the … (U+2026) is the head, the literal after it is the
+   00078| //     link; both must appear in order, with a backtick on each side.
+   00079| const ROLE_SKILL_TEACHING_TRIGGER_LEAD = "skill_teaching_trigger_lead";
+   00080| const ROLE_SKILL_TEACHING_RESPONSE_VERB = "skill_teaching_response_verb";
+   00081| const ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE = "behavior_rule_edit_directive";
+   00082| const ROLE_SKILL_WHEN_THEN_PAIR = "skill_when_then_pair";
+   00083| 
+   00084| const directRoleSurfacePresent = (role, lower) => roleWordForms(role).some((form) => form.text && lower.includes(form.text));
+   00085| function looksLikeRuntimeRuleUpdate(text) {
+   00086|   const raw = String(text || "");
+   00087|   const lower = raw.toLowerCase();
+   00088|   if (
+   00089|     (directRoleSurfacePresent(ROLE_SKILL_TEACHING_TRIGGER_LEAD, lower) &&
+   00090|       directRoleSurfacePresent(ROLE_SKILL_TEACHING_RESPONSE_VERB, lower)) ||
+   00091|     directRoleSurfacePresent(ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE, lower)
+   00092|   ) {
+   00093|     return true;
+   00094|   }
+   00095|   for (const form of roleWordForms(ROLE_SKILL_WHEN_THEN_PAIR)) {
+   00096|     if (form.slot !== "circumfix") continue;
+   00097|     const head = form.before;
+   00098|     const link = form.after;
+   00099|     const headPos = lower.indexOf(head);
+   00100|     if (headPos === -1) continue;
+   00101|     const tail = lower.slice(headPos + head.length);
+   00102|     const linkPos = tail.indexOf(link);
+   00103|     if (linkPos === -1) continue;
+   00104|     const absoluteLinkPos = headPos + head.length + linkPos;
+   00105|     const beforeLink = raw.slice(headPos, absoluteLinkPos);
+   00106|     const afterLink = raw.slice(absoluteLinkPos + link.length);
+   00107|     if (beforeLink.includes("`") && afterLink.includes("`")) return true;
+   00108|   }
+   00109|   return false;
+   00110| }
+   00111| 
+   00112| function runtimeRuleFromText(text) {
+   00113|   if (!looksLikeRuntimeRuleUpdate(text)) return null;
+   00114|   const spans = codeSpans(text);
+   00115|   let trigger = spans.length >= 2 ? spans[0].trim() : "";
+   00116|   let answer = spans.length >= 2 ? spans[1].trim() : "";
+   00117|   if (spans.length < 2) {
+   00118|     const raw = String(text || "");
+   00119|     const lower = raw.toLowerCase();
+   00120|     for (const lead of roleWordForms(ROLE_SKILL_TEACHING_TRIGGER_LEAD)) {
+   00121|       const leadText = String(lead.text || "");
+   00122|       const leadPos = lower.indexOf(leadText);
+   00123|       if (leadPos === -1) continue;
+   00124|       const triggerStart = leadPos + leadText.length;
+   00125|       const responseVerbs = roleWordForms(ROLE_SKILL_TEACHING_RESPONSE_VERB)
+   00126|         .sort((left, right) => String(right.text || "").length - String(left.text || "").length);
+   00127|       for (const responseVerb of responseVerbs) {
+   00128|         const verb = String(responseVerb.text || "");
+   00129|         const relativeVerbPos = lower.slice(triggerStart).indexOf(verb);
+   00130|         if (relativeVerbPos === -1) continue;
+   00131|         const verbPos = triggerStart + relativeVerbPos;
+   00132|         trigger = raw.slice(triggerStart, verbPos).trim().replace(/^[`"':,\s]+|[`"':,\s]+$/gu, "");
+   00133|         answer = raw
+   00134|           .slice(verbPos + verb.length)
+   00135|           .trim()
+   00136|           .replace(/^[`"':,\s]+|[`"':,.!?\s]+$/gu, "");
+   00137|         if (trigger && answer) break;
+   00138|       }
+   00139|       if (trigger && answer) break;
+   00140|     }
+   00141|   }
+   00142|   if (!trigger || !answer) return null;
+   00143|   return {
+   00144|     id: stableBehaviorRuleId("behavior_rule_runtime", `${trigger}\n${answer}`),
+   00145|     trigger,
+   00146|     answer,
+   00147|   };
+   00148| }
+   00149| 
+   00150| function runtimeRuleForPrompt(prompt, history) {
+   00151|   const normalizedPrompt = normalizePrompt(prompt);
+   00152|   const turns = Array.isArray(history) ? history : [];
+   00153|   for (let index = turns.length - 1; index >= 0; index -= 1) {
+   00154|     const turn = turns[index] || {};
+   00155|     if (String(turn.role || "").toLowerCase() !== "user") continue;
+   00156|     const rule = runtimeRuleFromText(turn.content);
+   00157|     if (rule && normalizePrompt(rule.trigger) === normalizedPrompt) {
+   00158|       return rule;
+   00159|     }
+   00160|   }
+   00161|   return null;
+   00162| }
+   00163| 
+   00164| function collectRuntimeRules(history) {
+   00165|   const turns = Array.isArray(history) ? history : [];
+   00166|   const seen = new Set();
+   00167|   const rules = [];
+   00168|   for (const turn of turns) {
+   00169|     const role = String((turn || {}).role || "").toLowerCase();
+   00170|     if (role !== "user") continue;
+   00171|     const rule = runtimeRuleFromText((turn || {}).content);
+   00172|     if (rule && !seen.has(rule.id)) {
+   00173|       seen.add(rule.id);
+   00174|       rules.push(rule);
+   00175|     }
+   00176|   }
+   00177|   return rules;
+   00178| }
+   00179| 
+   00180| function tryBehaviorRules(prompt, normalized, history, preferences) {
+   00181|   const language = behaviorRuleResponseLanguage(normalized, detectLanguage(prompt));
+   00182|   const preferenceMatch = String(prompt || "").match(/`([^`]+)`/u);
+   00183|   if (
+   00184|     preferenceMatch &&
+   00185|     directRoleSurfacePresent(ROLE_CONVERSATION_PREFERENCE_AVOID, normalized)
+   00186|   ) {
+   00187|     return {
+   00188|       intent: "conversation_preference",
+   00189|       content: answerFor("conversation_preference", language)
+   00190|         .replace("{term}", preferenceMatch[1].trim()),
+   00191|       confidence: 1.0,
+   00192|       evidence: ["conversation_preference:avoid_term"],
+   00193|     };
+   00194|   }
+   00195|   if (
+   00196|     directRoleSurfacePresent(ROLE_UNAUTHORIZED_MUTATION_CORRECTION, normalized)
+   00197|   ) {
+   00198|     return {
+   00199|       intent: "action_correction",
+   00200|       content: answerFor("action_correction", language),
+   00201|       confidence: 1.0,
+   00202|       evidence: ["action_correction:unauthorized_mutation"] // #1175 R3: no earlier action is the refusal lane
+   00203|         .concat(lastHistoryTurn(history, "assistant") ? [] : ["conversation_control:refusal:no earlier action"]),
+   00204|     };
+   00205|   }
+   00206|   const updateRule = runtimeRuleFromText(prompt);
+   00207|   if (updateRule) {
+   00208|     return {
+   00209|       intent: "behavior_rule_update",
+   00210|       content: renderRuntimeRuleUpdate(updateRule, language),
+   00211|       confidence: 1.0,
+   00212|       evidence: ["behavior_rule:update", updateRule.id],
+   00213|     };
+   00214|   }
+   00215| 
+   00216|   if (isBehaviorRulesCountQuery(normalized, history)) {
+   00217|     const runtimeRules = collectRuntimeRules(history);
+   00218|     const counts = behaviorRuleCounts(runtimeRules);
+   00219|     return {
+   00220|       intent: "behavior_rules_count",
+   00221|       content: renderBehaviorRuleCount(runtimeRules, language),
+   00222|       confidence: 1.0,
+   00223|       evidence: [
+   00224|         "behavior_rules:count",
+   00225|         `behavior_rules:built_in_count:${counts.builtIn}`,
+   00226|         `behavior_rules:runtime_count:${counts.runtime}`,
+   00227|         `reasoning:result:total:${counts.total}`,
+   00228|       ],
+   00229|     };
+   00230|   }
+   00231| 
+   00232|   if (isBehaviorRulesBriefFollowup(normalized, history)) {
+   00233|     const runtimeRules = collectRuntimeRules(history);
+   00234|     const counts = behaviorRuleCounts(runtimeRules);
+   00235|     return {
+   00236|       intent: "behavior_rules_brief",
+   00237|       content: renderBehaviorRulesBrief(runtimeRules, language),
+   00238|       confidence: 1.0,
+   00239|       evidence: [
+   00240|         "behavior_rules:brief",
+   00241|         `behavior_rules:built_in_count:${counts.builtIn}`,
+   00242|         `behavior_rules:runtime_count:${counts.runtime}`,
+   00243|         `reasoning:result:total:${counts.total}`,
+   00244|       ],
+   00245|     };
+   00246|   }
+   00247| 
+   00248|   if (isBehaviorRulesList(normalized)) {
+   00249|     return {
+   00250|       intent: "behavior_rules_list",
+   00251|       content: renderBehaviorRuleList(collectRuntimeRules(history), language),
+   00252|       confidence: 1.0,
+   00253|       evidence: ["behavior_rules:list", "all"],
+   00254|     };
+   00255|   }
+   00256| 
+   00257|   const query = detailQuery(prompt);
+   00258|   if (query) {
+   00259|     const rule = findBehaviorRule(query);
+   00260|     if (rule) {
+   00261|       return {
+   00262|         intent: "behavior_rule_detail",
+   00263|         content: renderBehaviorRuleDetail(rule, language),
+   00264|         confidence: 1.0,
+   00265|         evidence: ["behavior_rule:read", rule.id],
+   00266|       };
+   00267|     }
+   00268|   }
+   00269| 
+   00270|   if (isSelfIntroductionQuery(normalized)) {
+   00271|     const language = selfAwarenessLanguage(prompt, normalized);
+   00272|     return {
+   00273|       intent: "identity",
+   00274|       content: selfIntroductionContent(language, preferences),
+   00275|       confidence: 1.0,
+   00276|       evidence: [
+   00277|         "identity:self_introduction",
+   00278|         `language:${language}`,
+   00279|         `assistant_name:${assistantNameStatus(preferences)}`,
+   00280|       ],
+   00281|     };
+   00282|   }
+   00283| 
+   00284|   if (isArchitectureQuestion(normalized)) {
+   00285|     const language = architectureLanguage(prompt, normalized);
+   00286|     return {
+   00287|       intent: "meta_explanation",
+   00288|       content: architectureExplanationContent(language),
+   00289|       confidence: 1.0,
+   00290|       evidence: [
+   00291|         "response:meta_explanation",
+   00292|         "meta_explanation:self_awareness",
+   00293|         `language:${language}`,
+   00294|       ],
+   00295|     };
+   00296|   }
+   00297| 
+   00298|   if (isSelfFactQuery(normalized)) {
+   00299|     return {
+   00300|       intent: "self_facts",
+   00301|       content: renderSelfFacts(preferences),
+   00302|       confidence: 1.0,
+   00303|       evidence: ["self_facts:list", "formal-ai"],
+   00304|     };
+   00305|   }
+   00306| 
+   00307|   if (isKnownFactQuery(normalized)) {
+   00308|     const language = selfAwarenessLanguage(prompt, normalized);
+   00309|     return {
+   00310|       intent: "known_facts",
+   00311|       content: renderKnownFacts(language, preferences),
+   00312|       confidence: 1.0,
+   00313|       evidence: ["known_facts:list", "formal-ai", `language:${language}`],
+   00314|     };
+   00315|   }
+   00316| 
+   00317|   // The `conversation_topic` rule of data/seed/handler-rules.lino: the topic is
+   00318|   // the slot of a conversation_topic_opener surface, the wording is seeded.
+   00319|   const topic = runHandlerRuleSet("conversation_topic", prompt, String(prompt || "").toLowerCase(), []);
+   00320|   if (topic) return topic;
+   00321| 
+   00322|   const runtimeRule = runtimeRuleForPrompt(prompt, history);
+   00323|   if (runtimeRule) {
+   00324|     return {
+   00325|       intent: "behavior_rule_custom",
+   00326|       content: runtimeRule.answer,
+   00327|       confidence: 1.0,
+   00328|       evidence: ["behavior_rule:match", runtimeRule.id],
+   00329|     };
+   00330|   }
+   00331| 
+   00332|   return null;
+   00333| }
+   00334| 
+   00335| function containsAny(normalized, values) {
+   00336|   if (!normalized || !Array.isArray(values)) return false;
+   00337|   return values.some((value) => value && normalized.includes(String(value).toLowerCase()));
+   00338| }
+   00339| 
+   00340| // Issue #386 feature-capability roles — mirror the ROLE_FEATURE_* consts in
+   00341| // src/seed/roles.rs. Their surface forms live in
+   00342| // data/seed/meanings-feature-capability.lino (loaded into MEANINGS_LINO).
+   00343| // detectFeatureCapability walks the `feature_capability_alias` meanings in seed
+   00344| // declaration order (= the historical FEATURE_CAPABILITIES priority) and takes
+   00345| // the first whose multilingual aliases occur as a raw substring; the question
+   00346| // gate and the two action gates reference the other roles. No surface word is
+   00347| // named here — they all live in the data.
+   00348| const ROLE_FEATURE_CAPABILITY_ALIAS = "feature_capability_alias";
+   00349| const ROLE_FEATURE_CAPABILITY_QUESTION = "feature_capability_question";
+   00350| const ROLE_FEATURE_ACTION_ARITHMETIC = "feature_action_arithmetic";
+   00351| const ROLE_FEATURE_ACTION_PLANNING = "feature_action_planning";
+   00352| 
+   00353| // Issue #918: the features, their runtime switches and their localized labels
+   00354| // and examples are data/seed/feature-capabilities.lino, read here as the
+   00355| // native handler reads it; a language without an entry falls back to English.
+   00356| function featureCapabilities() {
+   00357|   const out = [];
+   00358|   for (const root of codeTaskSeedRecords("feature-capabilities.lino")) {
+   00359|     for (const node of codeTaskChildren(root, "feature")) {
+   00360|       const localized = (kind) => {
+   00361|         const group = codeTaskChildren(node, kind)[0];
+   00362|         const table = {};
+   00363|         for (const entry of (group && group.children) || []) table[entry.name] = String(entry.id || "");
+   00364|         return table;
+   00365|       };
+   00366|       out.push({
+   00367|         slug: String(node.id || "").replace(/^feature_capability_/u, ""),
+   00368|         state: codeTaskChildValue(node, "state"),
+   00369|         labels: localized("label"),
+   00370|         examples: localized("example"),
+   00371|       });
+   00372|     }
+   00373|   }
+   00374|   return out;
+   00375| }
+   00376| 
+   00377| function localizedValue(record, language) {
+   00378|   if (!record || typeof record !== "object") return "";
+   00379|   return record[language] || record.en || "";
+   00380| }
+   00381| 
+   00382| // Walk the `feature_capability_alias` meanings in seed declaration order — the
+   00383| // historical FEATURE_CAPABILITIES priority — and return the first capability
+   00384| // whose multilingual forms occur as a raw substring of `normalized`, checked in
+   00385| // the prompt's own language plus English (English prompts check English only).
+   00386| // The matched meaning's slug, minus its `feature_capability_` prefix, keys
+   00387| // FEATURE_CAPABILITIES, so no surface alias is named here. Mirrors
+   00388| // detect_feature_capability in src/solver_handlers/feature_capability.rs (#386).
+   00389| function detectFeatureCapability(normalized, language) {
+   00390|   const languages = language === "en" ? ["en"] : [language, "en"];
+   00391|   const meaning = firstRoleMatchInLanguagesRaw(
+   00392|     ROLE_FEATURE_CAPABILITY_ALIAS,
+   00393|     normalized,
+   00394|     languages,
+   00395|   );
+   00396|   if (!meaning) return null;
+   00397|   const prefix = "feature_capability_";
+   00398|   if (!meaning.slug.startsWith(prefix)) return null;
+   00399|   const slug = meaning.slug.slice(prefix.length);
+   00400|   return featureCapabilities().find((feature) => feature.slug === slug) || null;
+   00401| }
+   00402| 
+   00403| // A prompt is a capability question when one of the `feature_capability_question`
+   00404| // interrogative cues occurs as a raw substring, checked in the prompt's own
+   00405| // detected language only. A language the seed gives no cue reads as English,
+   00406| // which also accepts a grammatical "is/are ... enabled/available" frame
+   00407| // computed in code. Mirrors is_feature_capability_question in
+   00408| // src/solver_handlers/feature_capability.rs (#386, R1188-U1).
+   00409| function isFeatureCapabilityQuestion(normalized, language) {
+   00410|   const mentions = (lang) =>
+   00411|     mentionsRoleInLanguagesRaw(ROLE_FEATURE_CAPABILITY_QUESTION, normalized, [lang]);
+   00412|   const cues = wordsForRoleInLanguages(ROLE_FEATURE_CAPABILITY_QUESTION, [language]);
+   00413|   if (language !== "en" && cues.length > 0) return mentions(language);
+   00414|   return mentions("en") || isEnglishAvailabilityQuestion(normalized);
+   00415| }
+   00416| 
+   00417| // English-only grammatical "is/are ... enabled/available" availability frame —
+   00418| // a grammatical pattern (not a vocabulary list), so it stays in code. Mirrors
+   00419| // is_english_availability_question in
+   00420| // src/solver_handlers/feature_capability.rs (#386).
+   00421| function isEnglishAvailabilityQuestion(normalized) {
+   00422|   return /\b(?:is|are)\s+(?:your\s+|the\s+|this\s+|formal-ai\s+)?[\w\s/-]{1,80}\s+(?:enabled|available)\b/.test(
+   00423|     normalized,
+   00424|   );
+   00425| }
+   00426| 
+   00427| // True when a detected capability question is actually an action request that a
+   00428| // dedicated handler should answer. The English action frames live in the
+   00429| // `feature_action_arithmetic` / `feature_action_planning` meanings; they are
+   00430| // read through wordsForRoleInLanguages restricted to English and reconstructed
+   00431| // as space-padded forms (prefix for arithmetic, anywhere for planning), so no
+   00432| // frame is named here. Mirrors is_feature_action_request in
+   00433| // src/solver_handlers/feature_capability.rs (#386).
+   00434| function isFeatureActionRequest(normalized, feature) {
+   00435|   if (!feature) return false;
+   00436|   if (feature.slug === "arithmetic") {
+   00437|     return wordsForRoleInLanguages(ROLE_FEATURE_ACTION_ARITHMETIC, ["en"]).some(
+   00438|       (frame) => normalized.startsWith(`${frame} `),
+   00439|     );
+   00440|   }
+   00441|   if (feature.slug === "planning") {
+   00442|     return wordsForRoleInLanguages(ROLE_FEATURE_ACTION_PLANNING, ["en"]).some(
+   00443|       (frame) => normalized.includes(`${frame} `),
+   00444|     );
+   00445|   }
+   00446|   return false;
+   00447| }
+   00448| 
+   00449| function capabilityResponse(intent, language, values = {}) {
+   00450|   let text = answerFor(intent, language);
+   00451|   for (const [name, value] of Object.entries(values)) text = text.split(`{${name}}`).join(String(value));
+   00452|   return text;
+   00453| }
+   00454| 
+   00455| function webSearchStatusContent(language, available, providers) {
+   00456|   return available
+   00457|     ? capabilityResponse("feature_capability_web_search_available", language, { k: webSearchRrfK(), providers: providers || "none" })
+   00458|     : capabilityResponse("feature_capability_web_search_unavailable_browser", language);
+   00459| }
+   00460| 
+   00461| function featureAvailability(feature, preferences) {
+   00462|   if (!feature) return { available: false, reason: "unknown" };
+   00463|   if (feature.state === "web_search") {
+   00464|     const providers = WEB_SEARCH_PROVIDERS.filter((provider) => !webSearchIsDisabled(provider.id));
+   00465|     const online = typeof navigator === "undefined" || navigator.onLine !== false;
+   00466|     return {
+   00467|       available: online && providers.length > 0,
+   00468|       reason: online && providers.length > 0 ? "none" : "offline_or_no_providers",
+   00469|       providers,
+   00470|     };
+   00471|   }
+   00472|   const switches = {
+   00473|     diagnostic_mode: [Boolean(preferences && preferences.diagnosticsMode), "diagnostic_mode_off"],
+   00474|     agent_mode: [Boolean(preferences && preferences.agentMode), "agent_mode_off"],
+   00475|     definition_fusion: [definitionFusionByDefault(preferences || {}), "definition_fusion_explicit"],
+   00476|   };
+   00477|   const [available, reason] = switches[feature.state] || [true, "none"];
+   00478|   return { available, reason: available ? "none" : reason };
+   00479| }
+   00480| 
+   00481| function featureCapabilityContent(feature, language, availability) {
+   00482|   if (feature.slug === "web_search") {
+   00483|     const providers = availability.providers || [];
+   00484|     return webSearchStatusContent(
+   00485|       language,
+   00486|       availability.available,
+   00487|       providers.map((provider) => provider.id).join(", "),
+   00488|     );
+   00489|   }
+   00490|   const label = localizedValue(feature.labels, language);
+   00491|   const example = localizedValue(feature.examples, language);
+   00492|   if (availability.available) {
+   00493|     return capabilityResponse("feature_capability_available", language, { label, example });
+   00494|   }
+   00495|   const reason = answerFor(`feature_capability_reason_${availability.reason}`, language);
+   00496|   return capabilityResponse("feature_capability_unavailable", language, { reason, label, example });
+   00497| }
+   00498| 
+   00499| function tryFeatureCapabilityStatus(prompt, normalized, language, preferences) {
+   00500|   if (!isFeatureCapabilityQuestion(normalized, language)) return null;
+   00501|   const feature = detectFeatureCapability(normalized, language);
+   00502|   if (!feature) return null;
+   00503|   if (isFeatureActionRequest(normalized, feature)) return null;
+   00504|   const availability = featureAvailability(feature, preferences || {});
+   00505|   const providers = WEB_SEARCH_PROVIDERS.filter((provider) => !webSearchIsDisabled(provider.id));
+   00506|   return {
+   00507|     intent: "capabilities",
+   00508|     content: featureCapabilityContent(feature, language, availability),
+   00509|     confidence: availability.available ? 0.95 : 0.6,
+   00510|     evidence: [
+   00511|       "handler:capabilities",
+   00512|       `feature:question:${feature.slug}`,
+   00513|       availability.available
+   00514|         ? `feature:available:${feature.slug}`
+   00515|         : `feature:unavailable:${feature.slug}:${availability.reason}`,
+   00516|       ...(feature.slug === "web_search" ? providers.map((provider) => `web_search:provider:${provider.id}`) : []),
+   00517|       `language:${language}`,
+   00518|     ],
+   00519|   };
+   00520| }
+   00521| 
+   00522| // Issue #386: recognise "what else can you do" / "что ещё ты умеешь" /
+   00523| // "और क्या कर सकते" / "你还能做什么" by the capability_query_more meaning role
+   00524| // rather than a hardcoded per-language phrase list. Recognition is
+   00525| // language-agnostic because the surface words are script-specific; the response
+   00526| // body is still chosen by the caller from detectLanguage. The prompt is
+   00527| // re-normalised so trailing punctuation collapses to the canonical spacing the
+   00528| // seed stores. Mirror of is_more_capabilities_prompt in
+   00529| // src/solver_handlers/user_intent.rs.
+   00530| function isMoreCapabilitiesPrompt(normalized) {
+   00531|   return lexiconMentionsRole(ROLE_CAPABILITY_QUERY_MORE, normalizePrompt(normalized));
+   00532| }
+   00533| 
+   00534| // Issue #386: recognise "what can you do" / "что ты умеешь" / "что за дичь" /
+   00535| // "आप क्या कर सकते" / "你能做什么" by the capability_query meaning role — plus
+   00536| // its follow-up capability_query_more, so "what else can you do" still counts —
+   00537| // rather than a hardcoded per-language phrase list. Mirror of
+   00538| // is_capability_query in src/solver_handlers/user_intent.rs.
+   00539| function isCapabilityQuery(normalized) {
+   00540|   const cleaned = normalizePrompt(normalized);
+   00541|   return (
+   00542|     lexiconMentionsRole(ROLE_CAPABILITY_QUERY, cleaned) ||
+   00543|     lexiconMentionsRole(ROLE_CAPABILITY_QUERY_MORE, cleaned)
+   00544|   );
+   00545| }
+   00546| 
+   00547| function historyMentionsWebSearch(history) {
+   00548|   if (!Array.isArray(history)) return false;
+   00549|   return history.some((turn) => {
+   00550|     const content = String(turn && turn.content ? turn.content : "").toLowerCase();
+   00551|     return lexiconMentionsRoleSubstring(ROLE_WEB_SEARCH_HISTORY_SIGNAL, content);
+   00552|   });
+   00553| }
+   00554| 
+   00555| // R1188-U1: the capability listings are the seeded `capabilities` and
+   00556| // `capabilities_more` responses, as rust/src/solver_handlers/user_intent.rs
+   00557| // answers them; no listing or example prompt lives here.
+   00558| function additionalCapabilitiesContent(language) {
+   00559|   return answerFor("capabilities_more", language);
+   00560| }
+   00561| 
+   00562| // True when the prompt asks how the assistant itself is built rather than
+   00563| // requesting a task. Decomposes exactly like the Rust is_architecture_question:
+   00564| // the prompt must address the assistant — carry an assistant_self_reference
+   00565| // surface — and name an architecture_concept such as a language model, neural
+   00566| // network, or the project's local rules. Both are matched as raw substrings
+   00567| // across all four languages; no architecture word is hardcoded here.
+   00568| function isArchitectureQuestion(normalized) {
+   00569|   if (!lexiconMentionsRoleSubstring(ROLE_ASSISTANT_SELF_REFERENCE, normalized)) {
+   00570|     return false;
+   00571|   }
+   00572|   return lexiconMentionsRoleSubstring(ROLE_ARCHITECTURE_CONCEPT, normalized);
+   00573| }
+   00574| 
+   00575| function architectureLanguage(prompt, normalized) {
+   00576|   return selfAwarenessLanguage(prompt, normalized);
+   00577| }
+   00578| 
+   00579| function architectureExplanationContent(language) {
+   00580|   // Issue #918: the seeded meta_explanation_architecture record, filled with
+   00581|   // this surface's notes in one pass as architecture_explanation_body fills
+   00582|   // the native ones.
+   00583|   const surface = BROWSER_SURFACE;
+   00584|   const values = { surface_label: surface.label, surface: surface.slug, runtime: surface.runtime, memory: surface.memory, web_search: surface.webSearch };
+   00585|   return answerFor("meta_explanation_architecture", language).replace(/\{([^{}]*)\}/gu, (whole, name) =>
+   00586|     Object.prototype.hasOwnProperty.call(values, name) ? String(values[name]) : whole);
+   00587| }
+   00588| 
+   00589| function tryArchitectureExplanation(prompt, normalized) {
+   00590|   if (!isArchitectureQuestion(normalized)) return null;
+   00591|   const language = architectureLanguage(prompt, normalized);
+   00592|   return {
+   00593|     intent: "meta_explanation",
+   00594|     content: architectureExplanationContent(language),
+   00595|     confidence: 1.0,
+   00596|     evidence: ["response:meta_explanation", "meta_explanation:architecture", `language:${language}`],
+   00597|   };
+   00598| }
+   00599| 
+   00600| function tryCapabilities(prompt, normalized, preferences, history) {
+   00601|   const language = detectLanguage(prompt);
+   00602|   const featureStatus = tryFeatureCapabilityStatus(prompt, normalized, language, preferences);
+   00603|   if (featureStatus) return featureStatus;
+   00604|   const moreCapabilities = isMoreCapabilitiesPrompt(normalized);
+   00605|   if (!isCapabilityQuery(normalized)) return null;
+   00606|   if (moreCapabilities) {
+   00607|     const priorSearch = historyMentionsWebSearch(history);
+   00608|     return {
+   00609|       intent: "capabilities",
+   00610|       content: additionalCapabilitiesContent(language),
+   00611|       confidence: 1.0,
+   00612|       evidence: [
+   00613|         "handler:capabilities",
+   00614|         "capabilities:follow_up",
+   00615|         ...(priorSearch ? ["capabilities:history:prior-web-search"] : []),
+   00616|         `language:${language}`,
+   00617|       ],
+   00618|     };
+   00619|   }
+   00620|   const content = answerFor("capabilities", language);
+   00621|   return {
+   00622|     intent: "capabilities",
+   00623|     content,
+   00624|     confidence: 1.0,
+   00625|     evidence: ["handler:capabilities", `language:${language}`],
+   00626|   };
+   00627| }
+   00628| 
+   00629| // Issue #386: the source/target language of a translation prompt is read from
+   00630| // the lexicon, not a hardcoded per-language phrase ladder. Each translation
+   00631| // source/target marker meaning enumerates its surfaces across all four
+   00632| // languages and is defined_by the language_* meaning it names; detection walks
+   00633| // those meanings in declaration order (en, ru, hi, zh) and resolves the code
+   00634| // through defined_by. Mirrors detect_source_language / detect_target_language
+   00635| // in src/translation/language_markers.rs.
+   00636| function detectTranslationSourceLanguage(normalized) {
+   00637|   return detectTranslationMarkerLanguage(
+   00638|     ROLE_TRANSLATION_SOURCE_MARKER,
+   00639|     normalized,
+   00640|   );
+   00641| }
+   00642| 
+   00643| function detectTranslationTargetLanguage(normalized) {
+   00644|   return detectTranslationMarkerLanguage(
+   00645|     ROLE_TRANSLATION_TARGET_MARKER,
+   00646|     normalized,
+   00647|   );
+   00648| }
+   00649| 
+   00650| // Offline phrase registry for the browser worker.
+   00651| //
+   00652| // The Rust pipeline (`src/translation/pipeline.rs`) resolves any pair
+   00653| // of surfaces through Wiktionary + Wikidata using cached HTTP
+   00654| // responses. The worker mirrors that with a live `liveWiktionaryTranslate`
+   00655| // fallback below (MediaWiki action API is CORS-friendly via
+   00656| // `origin=*`), and first looks up the stock phrases of the seed so the demo
+   00657| // stays snappy when the network is slow. Each is a meaning carrying the role
+   00658| // `translation_phrase` (data/seed/meanings-translation-phrases.lino,
+   00659| // R1188-U1): the first surface of a language is the form deformalization
+   00660| // renders, every surface is a phrasing formalization recognizes.
+   00661| const ROLE_TRANSLATION_PHRASE = "translation_phrase";
+   00662| 
+   00663| function translationPhraseRegistry() {
+   00664|   return meaningsWithRole(ROLE_TRANSLATION_PHRASE).map((meaning) => ({
+   00665|     token: meaning.slug,
+   00666|     forms: Object.fromEntries((meaning.lexemes || []).map((lexeme) => [lexeme.language, lexeme.words])),
+   00667|   }));
+   00668| }
+   00669| 
+   00670| const TRANSLATION_TERMINAL_PUNCTUATION = ["?", "!", ".", "。", "？", "！", "．"];
+   00671| 
+   00672| function normalizeTranslationAlias(surface) {
+   00673|   return Array.from(String(surface || "").toLowerCase())
+   00674|     .filter((character) => /[\p{L}\p{N}]/u.test(character))
+   00675|     .join("");
+   00676| }
+   00677| 
+   00678| function formalizeSurface(surface, source) {
+   00679|   const normalized = normalizeTranslationAlias(surface);
+   00680|   if (!normalized) return null;
+   00681|   const entry = translationPhraseRegistry().find((phrase) =>
+   00682|     (phrase.forms[source] || []).some((form) => normalizeTranslationAlias(form) === normalized));
+   00683|   return entry ? entry.token : null;
+   00684| }
+   00685| 
+   00686| // The surface among `candidates`, offered in `target` for `surface` in
+   00687| // `source`, that survives the round trip best (Rust
+   00688| // `Translation::round_trip_surface`, R1188-U19): the crate's
+   00689| // `roundTripChoice`, with the first candidate standing wherever the round
+   00690| // trip cannot tell them apart.
+   00691| function roundTripSurface(surface, source, target, candidates) {
+   00692|   if (candidates.length === 0) return null;
+   00693|   const { roundTripChoice } = crateModule("crate/round_trip_translation.mjs");
+   00694|   return candidates[roundTripChoice(String(surface || ""), source, target, candidates) ?? 0];
+   00695| }
+   00696| 
+   00697| function deformalizeMeaning(token, target, surface, source) {
+   00698|   const entry = translationPhraseRegistry().find((phrase) => phrase.token === token);
+   00699|   return roundTripSurface(surface, source, target, (entry && entry.forms[target]) || []);
+   00700| }
+   00701| 
+   00702| function canonicalTokenForNormalized(normalized) {
+   00703|   if (!normalized) return null;
+   00704|   const entry = translationPhraseRegistry().find((phrase) =>
+   00705|     Object.values(phrase.forms).some((forms) => forms.some((form) => normalizeTranslationAlias(form) === normalized)));
+   00706|   return entry ? entry.token : null;
+   00707| }
+   00708| 
+   00709| function canonicalMeaningToken(raw) {
+   00710|   return canonicalTokenForNormalized(raw) || raw;
+   00711| }
+   00712| 
+   00713| function normalizeMeaningText(surface) {
+   00714|   const raw = normalizeTranslationAlias(surface);
+   00715|   return canonicalMeaningToken(raw);
+   00716| }
+   00717| 
+   
+   (End of file - total 717 lines)
+   </file>
+>> edit {"filePath":"js/worker/formal_ai_worker_capabilities_and_runtime_rules.js","file_path":"js/worker/formal_ai_worker_capabilities_and_runtime_rules.js","new":"  const compiled = tryCompiledProcedure(prompt, language);\n  if (compiled) return compiled;\n\n  if (isBehaviorRulesCountQuery(normalized, history)) {","newString":"  const compiled = tryCompiledProcedure(prompt, language);\n  if (compiled) return compiled;\n\n  if (isBehaviorRulesCountQuery(normalized, history)) {","new_str":"  const compiled = tryCompiledProcedure(prompt, language);\n  if (compiled) return compiled;\n\n  if (isBehaviorRulesCountQuery(normalized, history)) {","new_string":"  const compiled = tryCompiledProcedure(prompt, language);\n  if (compiled) return compiled;\n\n  if (isBehaviorRulesCountQuery(normalized, history)) {","old":"  if (isBehaviorRulesCountQuery(normalized, history)) {","oldString":"  if (isBehaviorRulesCountQuery(normalized, history)) {","old_str":"  if (isBehaviorRulesCountQuery(normalized, history)) {","old_string":"  if (isBehaviorRulesCountQuery(normalized, history)) {","path":"js/worker/formal_ai_worker_capabilities_and_runtime_rules.js"}
+>> bash {"command":"sha256sum -- js/worker/formal_ai_worker_capabilities_and_runtime_rules.js"}
+   5a6a6d458bf9c4deec26d2dcdb5d9bde58dd5b4619584b7148421f843132456e  js/worker/formal_ai_worker_capabilities_and_runtime_rules.js
+   
+== answer ==
+Replaced `  if (isBehaviorRulesCountQuery(normalized, history)) {` with `  const compiled = tryCompiledProcedure(prompt, language);
+  if (compiled) return compiled;
+
+  if (isBehaviorRulesCountQuery(normalized, history)) {` in `js/worker/formal_ai_worker_capabilities_and_runtime_rules.js` and observed the result.

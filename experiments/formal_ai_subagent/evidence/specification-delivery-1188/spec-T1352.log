@@ -1,0 +1,7 @@
+>> bash {"command":"test -e /tmp/spec-T*.log"}
+   Output: 
+   Error: /bin/sh: line 0: test: too many arguments
+   
+   Exit Code: 2
+== answer ==
+I did not run `cp /tmp/spec-T*.log experiments/formal_ai_subagent/evidence/specification-delivery-1188/`. The check `test -e /tmp/spec-T*.log` exited 2, so the action was skipped and nothing in the workspace changed.

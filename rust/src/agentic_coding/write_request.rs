@@ -675,8 +675,10 @@ pub(super) fn first_action_cue_start(toks: &[Token<'_>]) -> Option<usize> {
 /// Returns [`None`] when nothing is left.
 pub(super) fn clean_content(raw: &str) -> Option<String> {
     let led = strip_clause_lead(raw);
-    if led.len() >= 6 && led.starts_with("```") && led.ends_with("```") {
-        let body = super::markdown_section::fenced_body(&led[3..led.len() - 3]);
+    let fence_length = led.bytes().take_while(|byte| *byte == b'`').count();
+    if fence_length >= 3 && led.len() >= fence_length * 2 && led.ends_with(&led[..fence_length]) {
+        let body =
+            super::markdown_section::fenced_body(&led[fence_length..led.len() - fence_length]);
         return (!body.is_empty()).then(|| body.to_owned());
     }
     // One quoted literal, in any pair of quotes (`'a'`, «a», “a”; PR #1188 G100),

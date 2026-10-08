@@ -1,0 +1,75 @@
+>> bash {"command":"node experiments/formal_ai_subagent/generate-worker-factory-budgets.mjs"}
+   data/meta/worker-line-budget/formal_ai_worker_crate_content.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_dependency_summarization.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_engine.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_engine_stable_identifier.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_event_log.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_formalization_segment.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_host.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_intent_formalization.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_intent_formalization_requirements.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_language.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_links_format.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_messages.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_method_registry.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_normal_markov.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_page_formalization.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_plan.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_round_trip_translation.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_rust_str.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_seed.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_seed_concepts.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_seed_meanings.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_seed_parser.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_seed_registry.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_skill_procedure.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_skill_procedure_artifact.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_solver_formalization.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_summarization.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_summarization_dedup.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_summarization_identifier.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_summarization_vocabulary.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_text_formalization.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_translation_formalization.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_write_lino.lino
+   data/meta/worker-line-budget/formal_ai_worker_crate_write_str.lino
+   
+== answer ==
+The `node experiments/formal_ai_subagent/generate-worker-factory-budgets.mjs` command completed. Output:
+
+```text
+data/meta/worker-line-budget/formal_ai_worker_crate_content.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_dependency_summarization.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_engine.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_engine_stable_identifier.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_event_log.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_formalization_segment.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_host.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_intent_formalization.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_intent_formalization_requirements.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_language.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_links_format.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_messages.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_method_registry.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_normal_markov.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_page_formalization.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_plan.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_round_trip_translation.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_rust_str.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_seed.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_seed_concepts.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_seed_meanings.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_seed_parser.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_seed_registry.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_skill_procedure.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_skill_procedure_artifact.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_solver_formalization.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_summarization.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_summarization_dedup.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_summarization_identifier.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_summarization_vocabulary.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_text_formalization.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_translation_formalization.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_write_lino.lino
+data/meta/worker-line-budget/formal_ai_worker_crate_write_str.lino
+```

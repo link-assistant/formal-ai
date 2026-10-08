@@ -155,6 +155,40 @@ pub fn objective_text(request: &str) -> &str {
 /// Whether a marker at `start` opens its own line, so a delimiter quoted inside
 /// running prose ("write the words request: hello to notes.txt") does not
 /// silently truncate the request.
+/// A closed literal introduced by seeded creation or whole-content consent.
+fn literal_payload(request: &str) -> Option<crate::normal_markov::QuotedSegment> {
+    let quoted = crate::normal_markov::quoted_segment_spans(request);
+    let literal = quoted.iter().find(|segment| {
+        request[segment.end..].chars().all(|character| {
+            character.is_whitespace()
+                || matches!(character, '.' | '!' | '?' | '。' | '！' | '？' | '।')
+        })
+    })?;
+    let mut prefix = request[..literal.start].to_owned();
+    for segment in quoted
+        .iter()
+        .rev()
+        .filter(|segment| segment.end <= literal.start)
+    {
+        prefix.replace_range(
+            segment.start..segment.end,
+            &" ".repeat(segment.end - segment.start),
+        );
+    }
+    let normalized = crate::engine::normalize_prompt(&prefix);
+    let lexicon = crate::seed::lexicon();
+    let overwrite = lexicon.mentions_role("file_overwrite_consent", &normalized);
+    if first_content_lead_end(&prefix.to_lowercase()).is_none() && !overwrite {
+        return None;
+    }
+    let words = tokens(&prefix);
+    let action_start = super::write_request::first_action_cue_start(&words)?;
+    let action_end = first_action_cue_end(&words)?;
+    let action = crate::engine::normalize_prompt(&prefix[action_start..action_end]);
+    (overwrite || lexicon.mentions_role("file_whole_write_action", &action))
+        .then(|| literal.clone())
+}
+
 fn line_anchored(text: &str, start: usize) -> bool {
     text[..start]
         .chars()
@@ -167,7 +201,12 @@ pub fn compose_general_change_plan(full_request: &str) -> Option<GeneralChangePl
     let request = objective_text(full_request);
     // An additive edit (append, prepend) never rewrites the whole file: the
     // workspace-change arm owns it, and a request it cannot ground is declined.
-    let lowered = request.to_lowercase();
+    let literal = literal_payload(request);
+    let instruction = literal.as_ref().map_or_else(
+        || request.to_owned(),
+        |segment| format!("{}{}", &request[..segment.start], &request[segment.end..]),
+    );
+    let lowered = instruction.to_lowercase();
     let lexicon = crate::seed::lexicon();
     if lexicon.mentions_role("file_edit_position_end", &lowered)
         || lexicon.mentions_role("file_edit_position_start", &lowered)
@@ -184,8 +223,11 @@ pub fn compose_general_change_plan(full_request: &str) -> Option<GeneralChangePl
     };
     // Issue #906: "…containing Hello World, in JavaScript." names the bytes and,
     // separately, the language to write them with. Only the bytes are content.
-    let content = crate::implementation_language::without_trailing_known_modifier(&content)
-        .unwrap_or(content);
+    let content = if literal.is_some() {
+        content
+    } else {
+        crate::implementation_language::without_trailing_known_modifier(&content).unwrap_or(content)
+    };
     // Issue #1066: the same request can state the bytes and, separately,
     // constrain the line the file has to open with. The repair belongs here
     // rather than at the call sites, because every step of the plan quotes the
@@ -511,11 +553,13 @@ pub(crate) fn has_file_write_intent(lower: &str) -> bool {
 /// containing "exactly" from changing planner precedence.
 pub(super) fn has_authoritative_literal_write(request: &str) -> bool {
     let normalized = request.to_lowercase();
-    first_prefix_lead_end(
+    let authoritative = first_prefix_lead_end(
         &normalized,
         seed::ROLE_FILE_WRITE_AUTHORITATIVE_CONTENT_LEAD,
     )
     .is_some()
+        || literal_payload(request).is_some();
+    authoritative
         && compose_general_change_plan(request)
             .is_some_and(|plan| plan.mode == GeneralPlanMode::LiteralFile)
 }
@@ -617,7 +661,8 @@ fn parse_write_request_bound(
                             &lowered,
                             seed::ROLE_FILE_WRITE_AUTHORITATIVE_CONTENT_LEAD,
                         )
-                        .is_some())
+                        .is_some()
+                        || literal_payload(request).is_some())
             })
         {
             return Some((target, content));

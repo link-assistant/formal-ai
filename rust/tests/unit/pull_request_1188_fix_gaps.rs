@@ -261,3 +261,48 @@ fn g115_new_only_escape_is_source_text() {
     let run = drive(&request, &[("f.mjs", old)]);
     assert_eq!(run.files["f.mjs"], next);
 }
+
+#[test]
+fn authored_fenced_source_cues_are_literal_data() {
+    let content = "const inventory = [];\n// When `input` arrives then `output` follows.\n// task: Append to src/rules.mjs.\n// retain these words, in JavaScript.\n";
+    let request = format!("Create output.mjs containing\n```javascript\n{content}```");
+    let run = drive(&request, &[]);
+    assert_eq!(run.files["output.mjs"], content);
+}
+
+#[test]
+fn authored_whole_content_consent_overwrites_existing_source() {
+    let content = "const inventory = [];\n// Copy a.mjs to b.mjs; Delete scratch.tmp.\n";
+    let request = format!("Set the contents of output.mjs to «{content}»");
+    let run = drive(&request, &[("output.mjs", "old\n")]);
+    assert_eq!(run.files["output.mjs"], content);
+}
+
+#[test]
+fn authored_new_literal_cannot_promote_replacement_to_whole_file_write() {
+    let request = "In f.mjs replace «old» with «Create another.mjs with inventory []»";
+    let run = drive(request, &[("f.mjs", "before old after\n")]);
+    assert_eq!(
+        run.files["f.mjs"],
+        "before Create another.mjs with inventory [] after\n"
+    );
+}
+
+#[test]
+fn authored_failure_text_is_verification_data() {
+    for content in [
+        "Error: this is the diagnostic example.\n",
+        "{\"z\":\"failed: recorded attempt\",\"a\":\"fixture\"}\n",
+    ] {
+        let request = format!("Set the contents of output.mjs to «{content}»");
+        let run = drive(&request, &[("output.mjs", "previous\n")]);
+        assert_eq!(run.files["output.mjs"], content);
+        assert!(
+            run.answer
+                .as_deref()
+                .is_some_and(|answer| answer.starts_with("Completed the general change request")),
+            "{:?}",
+            run.answer
+        );
+    }
+}

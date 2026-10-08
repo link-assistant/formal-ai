@@ -13,7 +13,7 @@ import {
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { guardedStep, isGuardRead } from './literal_write_guard.mjs';
 import { Progress, isWorkItemRead } from './progress.mjs';
-import { failedVerification, observedPayload, renderFailure } from './tool_result.mjs';
+import { failedVerification, harnessReportedFailure, observedPayload, reportedExitCode, renderFailure } from './tool_result.mjs';
 import { fill } from './work_item_steps.mjs';
 import { programContractAnswer } from './crate/coding_program_contract.mjs';
 import { fencedBlock, LINO_FENCE_LANGUAGE } from './crate/issue_report.mjs';
@@ -236,10 +236,18 @@ function repositoryWorkItemObjective(plan, progress) {
   return found[1];
 }
 
+// Exact declared literal data is evidence, even when its words describe failures.
+// Explicit harness errors and nonzero exit status still veto completion.
+function literalVerificationMatches(plan, output) {
+  return plan.mode === GeneralPlanMode.LiteralFile && output !== null && output !== undefined
+    && !harnessReportedFailure(output) && [null, 0].includes(reportedExitCode(output))
+    && trim(output) === trim(plan.content);
+}
+
 function finishGeneralChange(plan, progress, resolvedFromWorkItem) {
   if (plan.mode === GeneralPlanMode.RepositoryWorkItem) return finalAnswer(plannedNotExecutedAnswer(plan));
   const latest = progress.latestRunOutputFor(plan.verification_command);
-  const report = latest === null || latest === undefined
+  const report = latest === null || latest === undefined || literalVerificationMatches(plan, latest)
     ? null
     : failedVerification([latest], plan.verification_command, plan.goal);
   if (report !== null && report !== undefined) return finalAnswer(report);
@@ -247,7 +255,8 @@ function finishGeneralChange(plan, progress, resolvedFromWorkItem) {
   if (plan.mode === GeneralPlanMode.LiteralFile) {
     const output = progress.latestSuccessfulRunOutputFor(plan.verification_command);
     const observed = output === null || output === undefined ? null : observedPayload(output);
-    if (observed === null || observed === undefined || trim(observed) !== trim(plan.content)) {
+    if (!literalVerificationMatches(plan, output)
+      && (observed === null || observed === undefined || trim(observed) !== trim(plan.content))) {
       return finalAnswer(generalPlanMismatch(plan, observed ?? ''));
     }
   }
