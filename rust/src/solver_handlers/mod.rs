@@ -202,9 +202,10 @@ pub fn try_arithmetic(prompt: &str, log: &mut EventLog) -> Option<SymbolicAnswer
             Err(error) => {
                 let error = error.to_string();
                 log.append("calculation:error", error.clone());
-                // A backtick span is pasted code, not a calculator expression
-                // (the worker's charset gate): its failure is no arithmetic answer.
-                if candidate.explicit && first_explicit_error.is_none() && !expression.contains('`')
+                // Pasted code is no calculator expression (the worker's gate).
+                if candidate.explicit
+                    && first_explicit_error.is_none()
+                    && crate::calculation::reads_as_calculator_expression(&expression)
                 {
                     first_explicit_error = Some((expression, error, interpretations));
                 }

@@ -102,7 +102,6 @@ routing_probes
     language en
     intent code_explanation
     prompt "What does this code do: x = [i*i for i in range(5)]"
-    rust_misroute calculation_error
   probe p060
     lane code_explanation
     language en
@@ -241,14 +240,12 @@ routing_probes
     intent format_conversion
     prompt "Convert this JSON to YAML: {""sort"": ""words"", ""reverse"": true}"
     adversarial true
-    rust_misroute numeric_list_result
   probe p126
     lane format_conversion
     language en
     intent format_conversion
     prompt "Convert this JSON to YAML: {""text"": ""count the lines in this file""}"
     adversarial true
-    rust_misroute capability_gap
   probe p127
     lane format_conversion
     language en
@@ -309,7 +306,6 @@ routing_probes
     intent installation_conversion
     prompt "Turn this installation guide into a bash script: git clone https://github.com/acme/widget && cd widget && make install"
     adversarial true
-    rust_misroute write_program_request_unspecified
   probe p170
     lane javascript_execution
     language en

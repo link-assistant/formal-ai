@@ -391,6 +391,22 @@ pub fn contains_word_operator(expression: &str) -> bool {
     )
 }
 
+/// Whether an expression that failed to evaluate still reads as a calculator
+/// request, so its failure is an arithmetic answer. The browser worker's
+/// extractor keeps only a colon-free expression over the calculator charset, or
+/// one a word operator spells; pasted code (a backtick span, `x = [i*i …]`
+/// after "what does this code do:") is the code handler's.
+#[must_use]
+pub fn reads_as_calculator_expression(expression: &str) -> bool {
+    const SYMBOLS: &str = "+-*/%^().=?_×·÷−,";
+    !expression.contains(':')
+        && (expression.chars().all(|character| {
+            character.is_ascii_alphanumeric()
+                || character.is_whitespace()
+                || SYMBOLS.contains(character)
+        }) || contains_word_operator(expression))
+}
+
 /// Evaluate an expression, delegating calculator-supported syntax to
 /// `link-calculator` and preserving the in-repo evaluator as a fallback for
 /// syntax the upstream crate does not support yet.

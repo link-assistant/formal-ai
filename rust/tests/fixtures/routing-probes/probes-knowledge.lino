@@ -516,7 +516,6 @@ routing_probes
     language hi
     intent unit_conversion
     prompt "5 फीट कितने मीटर हैं?"
-    rust_misroute concept_measurement_lookup
   probe p324
     lane unit_conversion
     language ru

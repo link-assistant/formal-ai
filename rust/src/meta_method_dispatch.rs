@@ -360,8 +360,10 @@ fn try_capability_route(
     // A request over pasted code is its code-task handler's: the `/` inside
     // the code or the `fetch(url)` a refactoring rewrites is no object for a
     // workspace or web tool, so the table declines and the rank walk reaches
-    // the handler (issue #1177).
-    if crate::solver_dispatch::code_artifact_task_claims(prompt) {
+    // the handler (issue #1177). A document to convert is its converter's.
+    if crate::solver_dispatch::code_artifact_task_claims(prompt)
+        || crate::solver_dispatch::format_conversion_claims(prompt)
+    {
         return None;
     }
     let decision = crate::capability_routing::route_decision(prompt, SOLVER_CAPABILITIES);

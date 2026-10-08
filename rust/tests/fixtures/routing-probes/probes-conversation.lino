@@ -416,7 +416,6 @@ routing_probes
     language ru
     intent opinion_question
     prompt "Как ты думаешь, есть ли свобода воли?"
-    rust_misroute compound_response
   probe p208
     lane physical_action_question
     language en

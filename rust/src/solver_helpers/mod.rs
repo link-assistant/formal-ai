@@ -173,6 +173,12 @@ pub fn record_decomposition(
     {
         return record_sub_impulses(log, independent_parts, true);
     }
+    // A question asking the assistant's opinion is one utterance: the clause
+    // after its lead ("Как ты думаешь, …") is what the opinion is about, not a
+    // second request (the browser worker splits only at sentence ends).
+    if crate::rule_interpreter::handler_matches("opinion_question", prompt) {
+        return Vec::new();
+    }
 
     let language = detect_language(prompt);
     let whole_intent = formalize_intent(prompt, language.slug(), None);

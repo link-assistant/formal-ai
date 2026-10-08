@@ -76,6 +76,9 @@ impl InstallationConversion {
             steps = extract_install_steps(prompt, source_format);
         }
         if steps.is_empty() {
+            steps = colon_payload_steps(prompt);
+        }
+        if steps.is_empty() {
             return None;
         }
         Some(Self {
@@ -440,6 +443,17 @@ pub fn carries_install_steps(prompt: &str, normalized: &str) -> bool {
         || (source_format == InstallFormat::Markdown
             && source_text != prompt
             && !extract_install_steps(prompt, source_format).is_empty())
+        || !colon_payload_steps(prompt).is_empty()
+}
+
+/// The commands a one-line request states after its colon ("Turn this
+/// installation guide into a bash script: git clone … && make install"): the
+/// request line itself is prose, so its payload is read as the guide's text.
+fn colon_payload_steps(prompt: &str) -> Vec<InstallStep> {
+    prompt
+        .split_once(": ")
+        .map(|(_, payload)| extract_install_steps(payload, InstallFormat::Markdown))
+        .unwrap_or_default()
 }
 
 fn collect_inline_commands(source: &str, commands: &mut Vec<String>) {

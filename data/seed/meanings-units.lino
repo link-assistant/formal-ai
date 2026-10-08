@@ -545,6 +545,8 @@ meanings
     lexeme hi
       surface
         text फुट
+      surface
+        text फीट
     lexeme zh
       surface
         text 英尺

@@ -31,6 +31,10 @@ pub(super) fn try_stated_result(prompt: &str, log: &mut EventLog) -> Option<Symb
     if asks_for_code || crate::coding::composition_language(&normalized, None).is_some() {
         return None;
     }
+    // A named format conversion's payload is data, whatever its keys spell.
+    if super::super::text_manipulation::names_format_conversion(prompt) {
+        return None;
+    }
     let operation = detect_operation(&vocabulary, &normalized)?;
     if !matches!(operation, Operation::Transform(_)) {
         return None;

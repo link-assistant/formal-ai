@@ -144,6 +144,16 @@ pub fn shell_compose_claims(prompt: &str) -> bool {
     any_handler_claims(&[handle_shell_command_compose], prompt)
 }
 
+/// True when the format converter claims the request with the document it
+/// converts. The document is data, so the file words inside it ("count the
+/// lines in this file") name no workspace object for the capability table
+/// (issue #1175).
+#[must_use]
+pub fn format_conversion_claims(prompt: &str) -> bool {
+    crate::solver_handlers::carries_structured_document(prompt)
+        && any_handler_claims(&[handle_format_conversion], prompt)
+}
+
 #[derive(Clone, Copy)]
 pub struct ContextualRuntime {
     proof_render_config: ProofRenderConfig,
