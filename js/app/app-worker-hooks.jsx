@@ -136,26 +136,27 @@ export function useFormalAiWorker({
         : workerUrl,
     );
     workerRef.current = worker;
-    worker.onmessage = (event) => {
-      if (event.data.kind === "ready") {
-        setWorkerState(event.data.mode);
+    worker.onmessage = ({ data }) => {
+      if (data.kind === "ready") {
+        setWorkerState(data.mode);
         setWorkerReady(true);
-        if (event.data.mode === "engine unavailable") {
-          setEngineUnavailable(String(event.data.engineError || "unknown error"));
+        dispatchEvent(new Event("formal-ai-ready"));
+        if (data.mode === "engine unavailable") {
+          setEngineUnavailable(String(data.engineError || "unknown error"));
         }
         return;
       }
-      if (event.data.kind === "engine_unavailable") {
-        setEngineUnavailable(String(event.data.error || "unknown error"));
+      if (data.kind === "engine_unavailable") {
+        setEngineUnavailable(String(data.error || "unknown error"));
         setWorkerReady(true);
         return;
       }
 
-      const requestId = event.data.requestId;
+      const requestId = data.requestId;
       const resolver = pendingResponses.current.get(requestId);
       if (resolver) {
         pendingResponses.current.delete(requestId);
-        resolver(event.data);
+        resolver(data);
       }
     };
 
