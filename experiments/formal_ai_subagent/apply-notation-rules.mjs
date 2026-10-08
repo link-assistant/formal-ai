@@ -207,9 +207,19 @@ function writeIfChanged(path, before, after, changed) {
  */
 export function applyMapping(mapping, files) {
   const changed = [];
-  for (const path of files) {
+  // Captured names also appear in response templates outside this family.
+  // Other handler fields may share a spelling with unrelated code variables.
+  const captures = new Set(
+    [...read("data/seed/handler-rules.lino").matchAll(/^\s+value ([A-Za-z][A-Za-z0-9_-]*) /gmu)]
+      .map((match) => match[1]),
+  );
+  const placeholderMapping = new Map([...mapping].filter(([, renamed]) => captures.has(renamed)));
+  const placeholderFiles = tracked(["data/seed/*.lino"]).filter((path) =>
+    [...read(path).matchAll(/\{([A-Za-z][A-Za-z0-9_-]*)\}/gu)].some((match) => placeholderMapping.has(match[1])),
+  );
+  for (const path of new Set([...files, ...placeholderFiles])) {
     const before = read(path);
-    const after = rewriteNotation(before, mapping);
+    const after = rewriteNotation(before, files.includes(path) ? mapping : placeholderMapping);
     writeIfChanged(path, before, after, changed);
     for (const mirror of mirrorsOf(path)) {
       writeIfChanged(mirror, read(mirror), after, changed);

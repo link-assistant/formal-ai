@@ -120,7 +120,7 @@ multilingual_responses
   response response_github_repository_traffic_es
     intent github_repository_traffic
     language es
-    text "En parte. Para un repositorio de GitHub como {repository}, GitHub puede mostrar tráfico agregado a las personas con acceso de push o escritura: visualizaciones, visitantes únicos, clones, sitios de referencia y contenido popular durante el periodo reciente. No muestra la identidad de cada visitante. Consulta GitHub Insights > Traffic o los endpoints REST de tráfico: {traffic_ui_docs}; {traffic_api_docs}."
+    text "En parte. Para un repositorio de GitHub como {repository}, GitHub puede mostrar tráfico agregado a las personas con acceso de push o escritura: visualizaciones, visitantes únicos, clones, sitios de referencia y contenido popular durante el periodo reciente. No muestra la identidad de cada visitante. Consulta GitHub Insights > Traffic o los endpoints REST de tráfico: {traffic-ui-docs}; {traffic-api-docs}."
   response response_document_originality_check_sample_present_es
     intent document_originality_check_sample_present
     language es

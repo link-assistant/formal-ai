@@ -15,7 +15,7 @@ const NAME_CHARACTER = /[A-Za-z0-9_-]/u;
 
 /**
  * Rewrite the names of a `.lino` document by `mapping`, only where a name is
- * an unquoted token.
+ * an unquoted token or a response-template placeholder. Literal prose stays unchanged.
  * @param {string} text
  * @param {Map<string, string>} mapping
  * @returns {string}
@@ -31,7 +31,10 @@ export function rewriteNotation(text, mapping) {
           output = output.slice(0, start) + renamed + output.slice(start + name.length);
         }
       }
-      return output;
+      return output.replace(/\{([A-Za-z][A-Za-z0-9_-]*)\}/gu, (placeholder, name) => {
+        const renamed = mapping.get(name);
+        return renamed === undefined ? placeholder : `{${renamed}}`;
+      });
     })
     .join('\n');
 }
@@ -315,6 +318,14 @@ export function rewriteSource(source, language, mapping, identifiers) {
       let result = { text: piece, count: 0 };
       if (span.kind === 'string') {
         result = replaceTokens(piece, mapping);
+        // A template placeholder is notation when no code identifier owns it.
+        // Rust formatting variables retain their language spelling.
+        result.text = result.text.replace(/\{([A-Za-z][A-Za-z0-9_-]*)\}/gu, (placeholder, name) => {
+          const renamed = identifiers.has(name) ? undefined : mapping.get(name);
+          if (renamed === undefined) return placeholder;
+          count += 1;
+          return `{${renamed}}`;
+        });
       } else if (span.kind === 'regex') {
         result = replaceTokens(piece, mapping, (old) => bothSpellingsPattern(old));
       } else if (span.kind === 'comment') {
