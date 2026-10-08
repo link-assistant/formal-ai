@@ -108,3 +108,17 @@ fn captured_third_party_html_is_not_link_checked() {
          page links to a site that later disappears"
     );
 }
+
+/// Captured issue bodies are a corpus, not maintained pages (PR #1188 R1188-U20).
+///
+/// The requirement-extraction corpus keeps each issue's text as its author
+/// wrote it, so a link that later disappears stays in the capture.
+#[test]
+fn captured_issue_bodies_are_not_link_checked() {
+    let workflow = links_workflow();
+
+    assert!(
+        workflow.contains("--exclude-path data/benchmarks/issue-requirements"),
+        "a captured issue body must stay verbatim even when a site it cites disappears"
+    );
+}
