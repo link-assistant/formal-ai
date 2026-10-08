@@ -2,25 +2,33 @@ self_ast_census
   target src/discovery_production_documentation.rs
   language rust
   fidelity signature
-  byte_len 16359
-  line_count 414
-  content_id source_module_f41d46813274fa84
-  symbol_count 17
+  byte_len 21509
+  line_count 549
+  content_id source_module_618e10b28691ca31
+  symbol_count 25
   symbols
     const DOCUMENTATION_CAPTURES 14 15
     const RUNTIME_CACHE_ENV 18 18
     const NO_DOCUMENTATION_CAPTURE 22 22
-    struct DocumentationCapture 26 43
-    struct RunContract 47 52
-    function invoked_names 59 71
-    function documentation_route_active 76 87
-    function documentation_captures 91 96
-    function all_documentation_captures 100 133
-    function documented_example 142 179
-    function rediscover_from_documentation 197 266
-    function rediscover_from_documentation 276 287
-    function record_discovered 300 306
-    function answer_cache_miss 317 355
-    const DOCUMENTATION_ROUTE_SOURCE 359 359
-    struct DocumentedCatalogProgram 363 372
-    function documented_catalog_programs 382 414
+    struct DocumentationCapture 26 45
+    struct RunContract 49 56
+    function invoked_names 63 75
+    function documentation_route_active 80 91
+    function documentation_captures 95 100
+    function all_documentation_captures 104 138
+    function block_names_language 147 156
+    function documented_example 165 202
+    function rediscover_from_documentation 212 220
+    function rediscover_documented_program 242 306
+    function rediscover_documented_program 316 327
+    function record_discovered 340 346
+    function answer_cache_miss 357 395
+    function catalog_run_commands 400 408
+    function rediscover_catalog_program 421 435
+    function documented_pairs 440 452
+    struct DocumentedCommand 456 462
+    function documented_run_commands 472 487
+    function language_has_documented_procedure 496 509
+    const DOCUMENTATION_ROUTE_SOURCE 513 513
+    struct DocumentedCatalogProgram 517 524
+    function documented_catalog_programs 533 549

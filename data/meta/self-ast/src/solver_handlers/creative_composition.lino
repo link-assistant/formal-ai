@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/creative_composition.rs
   language rust
   fidelity signature
-  byte_len 28186
-  line_count 797
-  content_id source_module_1f22a8427a3c34e7
-  symbol_count 42
+  byte_len 28846
+  line_count 815
+  content_id source_module_8fe28f1fdae1a22e
+  symbol_count 43
   symbols
     const RULES_PATH 38 38
     const RULES_ROOT 40 40
@@ -48,4 +48,5 @@ self_ast_census
     struct Recommendation 664 669
     function recommendations 671 682
     function advice_topics 685 701
-    function handle_advice_request 709 797
+    function names_advice_topic 707 711
+    function handle_advice_request 719 815

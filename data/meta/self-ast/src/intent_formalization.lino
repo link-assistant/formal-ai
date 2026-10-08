@@ -2,53 +2,53 @@ self_ast_census
   target src/intent_formalization.rs
   language rust
   fidelity signature
-  byte_len 27421
-  line_count 761
-  content_id source_module_27453a230982af6a
+  byte_len 27490
+  line_count 762
+  content_id source_module_34275db6eb23899d
   symbol_count 45
   symbols
     module obligations 26 26
     module prompt_relevants 27 27
     module requirements 28 28
     module write_program_request 29 29
-    enum IntentKind 41 48
-    function slug 52 61
-    struct IntentFormalization 65 76
-    function to_links_notation 82 121
-    function has_relevant_handler 124 128
-    struct IntentFormalizationCacheEntry 132 135
-    struct IntentFormalizationCache 138 140
-    function new 144 148
-    function len 151 153
-    function is_empty 156 158
-    function get 161 164
-    function formalize_or_insert 166 186
-    function append_to_link_store 188 204
-    function solve_with_intent_cache 209 220
-    function impulse_id_for 224 226
-    function formalize_intent 229 280
-    function record_intent_formalization 282 310
-    function select_rule_for_intent 313 326
-    struct MatchedRoute 329 332
-    function route_for_prompt 334 366
-    function declared_role_surface_route 377 394
-    function matches_route 396 406
-    function contains_token 408 416
-    function write_program_rule_for_intent 418 427
-    struct WriteProgramRecovery 431 443
-    struct ProgramCoreferenceRewrite 447 450
-    function rewrite_bare_program_coreference_rule 460 489
-    struct ActiveProgramContext 491 494
-    function active_program_context 496 518
-    function recover_write_program_rule 534 605
-    function operation_vocabulary 607 610
-    static VOCABULARY 608 608
-    function detected_program_modifiers 619 626
-    function append_candidate_knowns 628 646
-    function slot_known_link 648 673
-    function has_any_token 675 677
-    function route_from_relevants 679 688
-    function infer_kind 690 734
-    function starts_with_question_word 736 751
-    function contains_question_mark 753 755
-    function push_unique 757 761
+    enum IntentKind 42 49
+    function slug 53 62
+    struct IntentFormalization 66 77
+    function to_links_notation 83 122
+    function has_relevant_handler 125 129
+    struct IntentFormalizationCacheEntry 133 136
+    struct IntentFormalizationCache 139 141
+    function new 145 149
+    function len 152 154
+    function is_empty 157 159
+    function get 162 165
+    function formalize_or_insert 167 187
+    function append_to_link_store 189 205
+    function solve_with_intent_cache 210 221
+    function impulse_id_for 225 227
+    function formalize_intent 230 281
+    function record_intent_formalization 283 311
+    function select_rule_for_intent 314 327
+    struct MatchedRoute 330 333
+    function route_for_prompt 335 367
+    function declared_role_surface_route 378 395
+    function matches_route 397 407
+    function contains_token 409 417
+    function write_program_rule_for_intent 419 428
+    struct WriteProgramRecovery 432 444
+    struct ProgramCoreferenceRewrite 448 451
+    function rewrite_bare_program_coreference_rule 461 490
+    struct ActiveProgramContext 492 495
+    function active_program_context 497 519
+    function recover_write_program_rule 535 606
+    function operation_vocabulary 608 611
+    static VOCABULARY 609 609
+    function detected_program_modifiers 620 627
+    function append_candidate_knowns 629 647
+    function slot_known_link 649 674
+    function has_any_token 676 678
+    function route_from_relevants 680 689
+    function infer_kind 691 735
+    function starts_with_question_word 737 752
+    function contains_question_mark 754 756
+    function push_unique 758 762

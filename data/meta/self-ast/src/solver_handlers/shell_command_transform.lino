@@ -2,25 +2,30 @@ self_ast_census
   target src/solver_handlers/shell_command_transform.rs
   language rust
   fidelity signature
-  byte_len 8219
-  line_count 272
-  content_id source_module_94673b5f43c82793
-  symbol_count 17
+  byte_len 9725
+  line_count 298
+  content_id source_module_7873ff15e4157caa
+  symbol_count 22
   symbols
-    function try_shell_command_transform 9 15
-    function try_shell_command_transform_with_history 17 47
-    function build_screen_command 49 75
-    function finalize_shell_transform 77 92
-    function wants_infinite_loop 97 99
-    function wants_screen_execution 104 106
-    function extract_shell_command 108 130
-    function command_span 138 152
-    function command_after_shell_prompt 154 164
-    function strip_code_fence 166 168
-    function looks_like_shell_command 170 212
-    function wrap_in_infinite_loop 214 219
-    function extract_screen_session 221 244
-    function extract_loop_command 246 256
-    function last_loop_command_from_history 258 264
-    function is_loop_command 266 268
-    function shell_single_quote 270 272
+    const CUE_INTENT 16 16
+    function syntax 19 25
+    function syntax_template 28 30
+    function opens_session 34 38
+    function try_shell_command_transform 40 46
+    function try_shell_command_transform_with_history 48 78
+    function build_screen_command 80 107
+    function finalize_shell_transform 109 124
+    function wants_infinite_loop 129 131
+    function wants_screen_execution 136 138
+    function extract_shell_command 140 162
+    function names_shell_command 168 170
+    function command_span 178 192
+    function command_after_shell_prompt 194 204
+    function strip_code_fence 206 208
+    function looks_like_shell_command 210 232
+    function wrap_in_infinite_loop 234 239
+    function extract_screen_session 241 264
+    function extract_loop_command 266 276
+    function last_loop_command_from_history 278 284
+    function is_loop_command 288 294
+    function shell_single_quote 296 298

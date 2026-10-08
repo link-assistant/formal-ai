@@ -2,78 +2,84 @@ self_ast_census
   target src/agentic_coding/planner/continuation.rs
   language rust
   fidelity full_ast
-  byte_len 7039
-  line_count 159
-  content_id source_module_d1281273e1dd4243
-  symbol_count 7
+  byte_len 8882
+  line_count 205
+  content_id source_module_c773e5045ae7b47a
+  symbol_count 10
   symbols
     function is_continuation_cue 14 16
     function evidence_window_start 28 36
     function continued_agent_task 47 63
-    function compacted_agent_task 67 93
-    function repair_compacted_dot_paths 101 133
-    function preserved_first_user_turn 141 147
-    function trace_route 155 159
+    function compacted_agent_task 73 95
+    function standing_sentences 100 111
+    function is_standing_task 116 123
+    function mentions_envelope_marker 127 131
+    function repair_compacted_dot_paths 139 171
+    function preserved_first_user_turn 179 193
+    function trace_route 201 205
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 3878
-    named_node_count 831
-    distinct_node_kinds 54
+    total_link_count 5197
+    named_node_count 1132
+    distinct_node_kinds 57
     node_kinds
-      arguments 63
+      arguments 92
       array_expression 1
       array_type 3
-      assignment_expression 2
-      binary_expression 10
-      block 18
+      assignment_expression 3
+      binary_expression 17
+      block 25
       break_expression 1
-      call_expression 63
+      call_expression 92
       char_literal 9
-      closure_expression 15
-      closure_parameters 15
-      crate 5
-      doc_comment 49
+      closure_expression 18
+      closure_parameters 18
+      compound_assignment_expr 1
+      crate 10
+      doc_comment 63
       else_clause 1
       escape_sequence 6
-      expression_statement 12
-      field_expression 64
-      field_identifier 62
-      function_item 7
-      generic_type 3
-      identifier 139
-      if_expression 4
-      index_expression 7
+      expression_statement 17
+      field_expression 84
+      field_identifier 83
+      function_item 10
+      generic_function 1
+      generic_type 6
+      identifier 193
+      if_expression 5
+      index_expression 9
       inner_doc_comment_marker 5
-      integer_literal 7
+      integer_literal 11
       let_condition 1
-      let_declaration 17
-      line_comment 55
-      macro_invocation 3
-      mutable_specifier 2
-      outer_doc_comment_marker 44
-      parameter 11
-      parameters 7
+      let_declaration 20
+      line_comment 63
+      loop_expression 1
+      macro_invocation 5
+      mutable_specifier 4
+      outer_doc_comment_marker 58
+      parameter 15
+      parameters 10
       parenthesized_expression 1
-      primitive_type 9
-      range_expression 8
-      reference_expression 3
-      reference_type 8
-      return_expression 2
-      scoped_identifier 13
+      primitive_type 16
+      range_expression 9
+      reference_expression 5
+      reference_type 13
+      return_expression 3
+      scoped_identifier 23
       source_file 1
-      string_content 14
-      string_literal 15
+      string_content 18
+      string_literal 19
       super 5
-      token_tree 3
+      token_tree 5
       try_expression 4
       tuple_pattern 1
       tuple_struct_pattern 2
-      type_arguments 3
-      type_identifier 11
-      unary_expression 8
+      type_arguments 7
+      type_identifier 16
+      unary_expression 14
       use_declaration 1
       visibility_modifier 7
       while_expression 1

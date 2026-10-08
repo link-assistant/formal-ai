@@ -2,32 +2,34 @@ self_ast_census
   target src/coding/catalog/types.rs
   language rust
   fidelity signature
-  byte_len 12960
-  line_count 313
-  content_id source_module_41424b4e79b1224d
-  symbol_count 24
+  byte_len 14223
+  line_count 345
+  content_id source_module_97160b83b24fa781
+  symbol_count 26
   symbols
-    struct ProgramLanguage 15 39
-    function base_language 49 53
-    function is_framework 57 59
-    function setup_hint 71 73
-    function execution_notes 81 87
-    function environment 91 93
-    function execution_status 103 109
-    function probe_now 116 123
-    struct ProgramTask 127 143
-    function output_for_language 147 150
-    struct ProgramTemplate 154 158
-    struct ProgramSpec 161 165
-    function response_link 169 174
-    function parameter_summary 177 182
-    function legacy_intent 185 191
-    function expected_output 194 196
-    function stdin_fixture 200 202
-    function run_command_line 213 219
-    function shell_escaped 224 237
-    function list_files_sample_output 239 251
-    struct ProgramExecution 262 266
-    enum ExecutionStatus 276 283
-    function label 286 292
-    function from_verdict 305 312
+    struct ProgramLanguage 23 47
+    function base_language 57 61
+    function is_framework 65 67
+    function setup_hint 79 81
+    function execution_notes 89 95
+    function environment 99 101
+    function execution_status 111 117
+    function probe_now 124 131
+    struct ProgramTask 135 151
+    function output_for_language 155 158
+    struct CompiledTemplate 163 167
+    struct ProgramTemplate 176 180
+    function from 183 189
+    struct ProgramSpec 193 197
+    function response_link 201 206
+    function parameter_summary 209 214
+    function legacy_intent 217 223
+    function expected_output 226 228
+    function stdin_fixture 232 234
+    function run_command_line 245 251
+    function shell_escaped 256 269
+    function list_files_sample_output 271 283
+    struct ProgramExecution 294 298
+    enum ExecutionStatus 308 315
+    function label 318 324
+    function from_verdict 337 344

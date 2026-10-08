@@ -1,0 +1,27 @@
+self_ast_census
+  target src/capability_routing/claim_operands.rs
+  language rust
+  fidelity signature
+  byte_len 11680
+  line_count 306
+  content_id source_module_dfdab9d28e94a7ee
+  symbol_count 18
+  symbols
+    const WORD_MARKS 22 22
+    const CLAUSE_MARKS 24 24
+    const FRAME_ROLES 26 26
+    function claim_operands 35 46
+    function unspaced 49 51
+    function is_unspaced_script 54 59
+    function role_surfaces 62 69
+    function separates 72 74
+    function words 77 82
+    function names_surface 86 101
+    function without_surfaces 105 117
+    function only_frame_words 123 135
+    function documented_method 143 176
+    function idiom_utterance 180 193
+    function clauses 197 242
+    function after_colon 245 251
+    function attributed_alternatives 255 271
+    function named_repository 276 306

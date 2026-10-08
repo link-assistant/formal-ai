@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_helpers/code.rs
   language rust
   fidelity signature
-  byte_len 14586
-  line_count 354
-  content_id source_module_be26d8ee59ffafdb
-  symbol_count 19
+  byte_len 14298
+  line_count 345
+  content_id source_module_c16b20ce855ca56e
+  symbol_count 18
   symbols
     function detect_program_languages 14 37
     enum CodeMeaning 51 64
@@ -22,7 +22,6 @@ self_ast_census
     function infer_source_from_prompt 200 224
     function infer_program_languages_from_code 226 249
     function translate_surface_detailed 256 262
-    function extract_concept_from_query 264 271
-    function detect_algorithm_language 273 292
-    function build_sorting_algorithm_answer 294 322
-    function extract_javascript_program 328 354
+    function detect_algorithm_language 264 283
+    function build_sorting_algorithm_answer 285 313
+    function extract_javascript_program 319 345

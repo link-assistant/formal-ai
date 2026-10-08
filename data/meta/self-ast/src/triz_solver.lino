@@ -2,9 +2,9 @@ self_ast_census
   target src/triz_solver.rs
   language rust
   fidelity signature
-  byte_len 9678
-  line_count 254
-  content_id source_module_4071343de507f7fa
+  byte_len 9834
+  line_count 260
+  content_id source_module_091cd23daed5c099
   symbol_count 14
   symbols
     const SEED_PATH 34 34
@@ -20,4 +20,4 @@ self_ast_census
     function families_text 180 186
     function precedents_text 189 203
     const LINK_NOTE_INTENT 207 207
-    function handle_triz 212 254
+    function handle_triz 212 260

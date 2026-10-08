@@ -1,0 +1,13 @@
+self_ast_census
+  target src/rule_interpreter/values.rs
+  language rust
+  fidelity signature
+  byte_len 3843
+  line_count 92
+  content_id source_module_e1d6e990d976dfa2
+  symbol_count 4
+  symbols
+    const SLOT_EDGE_MARKS 10 10
+    function resolve_values 13 45
+    function resolve 49 63
+    function role_slot 74 92

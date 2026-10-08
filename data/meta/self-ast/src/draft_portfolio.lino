@@ -2,35 +2,34 @@ self_ast_census
   target src/draft_portfolio.rs
   language rust
   fidelity signature
-  byte_len 19801
-  line_count 504
-  content_id source_module_decca918ca5f74d6
-  symbol_count 27
+  byte_len 20282
+  line_count 514
+  content_id source_module_f8581a38b65d8d0c
+  symbol_count 26
   symbols
-    const MAX_ATTEMPTS 43 43
-    struct DraftPlan 48 57
-    struct DraftArtifact 65 73
-    trait PortfolioLeaf 76 101
-    type Artifact 78 78
-    function supports 83 83
-    function draft 87 87
-    function run_tests 91 91
-    function test_count 95 95
-    function composes 100 100
-    struct PortfolioSelection 104 110
-    struct DraftEvaluation 113 125
-    function passed 128 130
-    function strategy_catalog 140 142
-    function plan_drafts 154 174
-    function seed_for_draft 182 190
-    function run_portfolio 198 229
-    function evaluate_slot 236 269
-    function is_better 273 283
-    function evaluate_attempt 285 308
-    function evaluate_in_parallel 318 334
-    function rank_passing_drafts 347 362
-    function ranking_parameters 367 373
-    function select_composable_draft 378 382
-    function record_draft_results 384 422
-    function failure_record 430 444
-    function comparison_record 446 504
+    const MAX_ATTEMPTS 44 44
+    struct DraftPlan 49 58
+    struct DraftArtifact 66 74
+    trait PortfolioLeaf 77 102
+    type Artifact 79 79
+    function supports 84 84
+    function draft 88 88
+    function run_tests 92 92
+    function test_count 96 96
+    function composes 101 101
+    struct PortfolioSelection 105 111
+    struct DraftEvaluation 114 126
+    function passed 129 131
+    function strategy_catalog 141 143
+    function plan_drafts 155 175
+    function seed_for_draft 183 191
+    function run_portfolio 199 230
+    function evaluate_slot 237 270
+    function is_better 274 284
+    function evaluate_attempt 286 309
+    function evaluate_in_parallel 319 335
+    function rank_passing_drafts 354 383
+    function select_composable_draft 388 392
+    function record_draft_results 394 432
+    function failure_record 440 454
+    function comparison_record 456 514

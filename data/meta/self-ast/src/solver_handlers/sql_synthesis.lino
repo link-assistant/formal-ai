@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/sql_synthesis.rs
   language rust
   fidelity signature
-  byte_len 23100
-  line_count 646
-  content_id source_module_5c08f7e35ee49b52
-  symbol_count 24
+  byte_len 23581
+  line_count 660
+  content_id source_module_f84ef0e206d33a7b
+  symbol_count 25
   symbols
     const CUES_PATH 20 20
     const INTENT 21 21
@@ -18,16 +18,17 @@ self_ast_census
     function number_value 121 129
     function identifier 131 135
     function table_name 138 179
-    struct Filter 182 186
-    function filters 191 259
-    function aggregate 262 287
-    function group_clause 293 312
-    function having_clause 321 363
-    function join_role 366 372
-    function join_clause 379 399
-    function order_clause 402 428
-    function limit_clause 431 442
-    function select_columns 446 474
-    function carries_code 478 481
-    function is_sql_request 486 502
-    function handle_sql_synthesis 506 646
+    function names_query_table 185 193
+    struct Filter 196 200
+    function filters 205 273
+    function aggregate 276 301
+    function group_clause 307 326
+    function having_clause 335 377
+    function join_role 380 386
+    function join_clause 393 413
+    function order_clause 416 442
+    function limit_clause 445 456
+    function select_columns 460 488
+    function carries_code 492 495
+    function is_sql_request 500 516
+    function handle_sql_synthesis 520 660

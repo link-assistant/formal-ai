@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/installation_conversion.rs
   language rust
   fidelity signature
-  byte_len 30039
-  line_count 887
-  content_id source_module_119ee9031943056f
-  symbol_count 46
+  byte_len 30615
+  line_count 900
+  content_id source_module_852949e033c2908f
+  symbol_count 47
   symbols
     enum InstallFormat 17 21
     function label 24 30
@@ -27,29 +27,30 @@ self_ast_census
     function is_shell_fence 396 398
     function is_powershell_fence 400 402
     function extract_install_steps 404 430
-    function collect_inline_commands 432 451
-    function collect_bullet_commands 453 473
-    function collect_script_commands 475 484
-    function normalize_script_line 486 492
-    function should_skip_script_line 494 502
-    enum Provenance 509 514
-    function push_command 516 524
-    function looks_like_command 530 575
-    function is_executable_head 580 593
-    function has_shell_operator 596 601
-    function reads_as_prose 606 615
-    const FUNCTION_WORDS 607 610
-    function describe_command 622 627
-    struct ParsedCommand 632 636
-    function parse 639 687
-    function action 690 710
-    function synthesized_description 714 719
-    function classify_verb 726 740
-    function extract_project 742 758
-    function record_conversion 760 788
-    function render_conversion 790 817
-    function render_lino 819 843
-    function render_markdown_guide 845 854
-    function render_shell_script 856 863
-    function render_powershell_script 865 872
-    function lino_string 874 887
+    function carries_install_steps 436 443
+    function collect_inline_commands 445 464
+    function collect_bullet_commands 466 486
+    function collect_script_commands 488 497
+    function normalize_script_line 499 505
+    function should_skip_script_line 507 515
+    enum Provenance 522 527
+    function push_command 529 537
+    function looks_like_command 543 588
+    function is_executable_head 593 606
+    function has_shell_operator 609 614
+    function reads_as_prose 619 628
+    const FUNCTION_WORDS 620 623
+    function describe_command 635 640
+    struct ParsedCommand 645 649
+    function parse 652 700
+    function action 703 723
+    function synthesized_description 727 732
+    function classify_verb 739 753
+    function extract_project 755 771
+    function record_conversion 773 801
+    function render_conversion 803 830
+    function render_lino 832 856
+    function render_markdown_guide 858 867
+    function render_shell_script 869 876
+    function render_powershell_script 878 885
+    function lino_string 887 900

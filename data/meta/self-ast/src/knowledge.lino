@@ -2,10 +2,10 @@ self_ast_census
   target src/knowledge.rs
   language rust
   fidelity signature
-  byte_len 15002
-  line_count 345
-  content_id source_module_2813a8aba2900d2d
-  symbol_count 19
+  byte_len 16636
+  line_count 376
+  content_id source_module_793223de406f02fe
+  symbol_count 21
   symbols
     const PROCEDURE_CACHE_POLICY 46 47
     function bootstrap_cache_active 56 67
@@ -13,16 +13,18 @@ self_ast_census
     const KNOWLEDGE_CACHE_FLOOR 71 71
     function cache_capacity 84 96
     function within_cache_capacity 104 106
-    enum KnowledgeSource 113 127
-    function slug 133 140
-    function display_name 144 151
-    function base_url 155 162
-    function approximate_catalog_size 171 178
-    struct OracleSnippet 188 196
-    const ORACLE_SNAPSHOTS 205 214
-    struct CodingOracle 273 273
-    function snapshots 278 280
-    function lookup 292 302
-    function knows_language 314 322
-    function languages 327 335
-    function cached_count 339 344
+    enum KnowledgeSource 113 132
+    function slug 138 146
+    function display_name 150 158
+    function base_url 162 170
+    function approximate_catalog_size 179 187
+    struct OracleSnippet 197 205
+    const ORACLE_SNAPSHOTS 216 225
+    struct OracleAnswer 250 258
+    struct CodingOracle 262 262
+    function snapshots 267 269
+    function lookup 281 291
+    function answer 300 330
+    function knows_language 342 353
+    function languages 358 366
+    function cached_count 370 375

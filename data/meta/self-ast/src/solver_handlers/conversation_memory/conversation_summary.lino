@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/conversation_memory/conversation_summary.rs
   language rust
   fidelity signature
-  byte_len 8500
-  line_count 194
-  content_id source_module_00fb758d1f598fa1
+  byte_len 8625
+  line_count 198
+  content_id source_module_3bac9d863c802ead
   symbol_count 6
   symbols
     const RETURN_RECAP_MAX_WORDS 14 14
@@ -12,4 +12,4 @@ self_ast_census
     function asks_for_conversation_summary 27 37
     function courtesy_frame_leaves_no_object 50 66
     function summary_directive_leads 78 89
-    function try_summarize_conversation 91 194
+    function try_summarize_conversation 91 198

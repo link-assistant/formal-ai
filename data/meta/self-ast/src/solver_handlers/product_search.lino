@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/product_search.rs
   language rust
   fidelity signature
-  byte_len 12885
-  line_count 365
-  content_id source_module_e417d551a021cbd1
-  symbol_count 15
+  byte_len 13378
+  line_count 379
+  content_id source_module_63613c1d5cec342d
+  symbol_count 16
   symbols
     const CUES_PATH 27 27
     const INTENT 28 28
@@ -22,3 +22,4 @@ self_ast_census
     function template 227 233
     function matched_noun_surface 238 247
     function handle_product_search 255 365
+    function names_marketplace 371 379

@@ -2,17 +2,19 @@ self_ast_census
   target src/solver_handlers/user_intent.rs
   language rust
   fidelity signature
-  byte_len 10112
-  line_count 236
-  content_id source_module_86614f9c792a0e0e
-  symbol_count 9
+  byte_len 10891
+  line_count 258
+  content_id source_module_1e91571f132d64e4
+  symbol_count 11
   symbols
     function prefix_literals 17 24
     function bare_literals 29 36
     function try_proof_request 49 55
-    function try_proof_request_with_config 70 161
-    function is_known_unsolved_bounded_proof_request 163 173
-    function extract_claim_from_prompt 179 203
-    function is_claim_intro_boundary 205 211
-    function strip_claim_prefix_noise 213 215
-    function pipeline_footer 217 236
+    function try_proof_request_with_config 70 164
+    const PROOF_SCAFFOLD_ROLES 167 172
+    function names_stated_claim 178 183
+    function is_known_unsolved_bounded_proof_request 185 195
+    function extract_claim_from_prompt 201 225
+    function is_claim_intro_boundary 227 233
+    function strip_claim_prefix_noise 235 237
+    function pipeline_footer 239 258

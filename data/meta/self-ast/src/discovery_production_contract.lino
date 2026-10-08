@@ -1,0 +1,28 @@
+self_ast_census
+  target src/discovery_production_contract.rs
+  language rust
+  fidelity signature
+  byte_len 16191
+  line_count 422
+  content_id source_module_dc1eff690853754c
+  symbol_count 19
+  symbols
+    const CODE_EXAMPLE_PARTS 14 14
+    const COMMAND_SOURCE_CATALOG 17 17
+    const COMMAND_PROMPTS 20 20
+    struct SourcedCommand 24 32
+    struct DocumentedContract 36 41
+    struct DocumentedProgram 46 56
+    function file_stem 59 62
+    function language_rows 66 80
+    function documented_command_binding 91 126
+    function documented_command_matches 134 136
+    function documentation_command_lines 140 158
+    function rebind 161 168
+    function documented_run_contract 185 256
+    function documentation_deviation 267 282
+    enum ProgramVerification 286 297
+    function rediscovered_page 302 307
+    function program_verification 317 344
+    function documentation_events 354 399
+    function documented_oracle_program 409 422

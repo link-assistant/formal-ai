@@ -2,58 +2,58 @@ self_ast_census
   target src/agentic_coding/narration.rs
   language rust
   fidelity full_ast
-  byte_len 5320
-  line_count 128
-  content_id source_module_e7122e939f899056
+  byte_len 5589
+  line_count 133
+  content_id source_module_c005bb0cd8ea5533
   symbol_count 9
   symbols
-    function tool_action_narration 17 44
+    function tool_action_narration 17 45
     const TARGET_SLOT 18 18
     const SUBJECT_SLOT 19 19
-    function capability_intent 52 64
-    function localized 68 70
-    function program_command_intent 76 88
-    function tool_action_target 90 128
-    const TARGET_FIELDS 91 103
-    function first_text 105 115
+    function capability_intent 53 65
+    function localized 69 71
+    function program_command_intent 77 93
+    function tool_action_target 95 133
+    const TARGET_FIELDS 96 108
+    function first_text 110 120
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 3554
-    named_node_count 729
+    total_link_count 3724
+    named_node_count 764
     distinct_node_kinds 56
     node_kinds
-      arguments 51
+      arguments 54
       array_expression 1
       array_type 2
       binary_expression 4
       block 15
-      call_expression 51
+      call_expression 54
       char_literal 1
-      closure_expression 2
-      closure_parameters 2
+      closure_expression 3
+      closure_parameters 3
       const_item 3
-      crate 4
+      crate 5
       doc_comment 21
       else_clause 2
-      expression_statement 12
-      field_expression 41
-      field_identifier 41
+      expression_statement 11
+      field_expression 46
+      field_identifier 46
       function_item 6
       function_modifiers 1
       generic_function 2
       generic_type 3
-      identifier 170
+      identifier 179
       if_expression 6
       inner_doc_comment_marker 1
       integer_literal 2
       let_chain 1
       let_condition 3
-      let_declaration 12
+      let_declaration 14
       lifetime 2
-      line_comment 24
+      line_comment 26
       macro_invocation 2
       match_arm 11
       match_block 2
@@ -68,7 +68,7 @@ self_ast_census
       reference_expression 8
       reference_type 15
       return_expression 3
-      scoped_identifier 39
+      scoped_identifier 41
       source_file 1
       string_content 27
       string_literal 27
@@ -78,6 +78,6 @@ self_ast_census
       tuple_struct_pattern 7
       type_arguments 5
       type_identifier 11
-      unary_expression 2
+      unary_expression 4
       use_declaration 4
       visibility_modifier 1

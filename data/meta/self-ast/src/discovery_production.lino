@@ -2,9 +2,9 @@ self_ast_census
   target src/discovery_production.rs
   language rust
   fidelity signature
-  byte_len 22327
-  line_count 580
-  content_id source_module_0e7268e1e2884351
+  byte_len 22485
+  line_count 583
+  content_id source_module_dca5625c4acfd0d9
   symbol_count 35
   symbols
     const POLICY 42 42
@@ -23,22 +23,22 @@ self_ast_census
     function miss_research_missing 176 198
     function cache_file_header 202 218
     function grammar_exists 222 241
-    function knows_language 247 251
-    function language_has_cache_row 253 258
-    struct ProcedureCache 267 270
-    function load_at 276 285
-    function load 291 293
-    function recipes 297 299
-    function lookup 303 308
-    function store 316 329
-    function delete_all 333 336
-    function parse 338 371
-    function write 373 415
-    function cached_write_program 432 443
-    enum CachedOrDiscovered 448 451
-    function recipe 456 460
-    function was_cached 464 466
-    function cached_or_research 483 529
-    function gap_field 535 545
-    function default_cache_path 550 567
-    function quote 570 578
+    function knows_language 248 253
+    function language_has_cache_row 255 260
+    struct ProcedureCache 269 272
+    function load_at 278 287
+    function load 293 295
+    function recipes 299 301
+    function lookup 305 310
+    function store 318 331
+    function delete_all 335 338
+    function parse 340 373
+    function write 375 417
+    function cached_write_program 434 445
+    enum CachedOrDiscovered 450 453
+    function recipe 458 462
+    function was_cached 466 468
+    function cached_or_research 485 531
+    function gap_field 537 547
+    function default_cache_path 552 569
+    function quote 572 580

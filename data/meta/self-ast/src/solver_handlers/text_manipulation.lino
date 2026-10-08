@@ -2,48 +2,49 @@ self_ast_census
   target src/solver_handlers/text_manipulation.rs
   language rust
   fidelity signature
-  byte_len 32150
-  line_count 911
-  content_id source_module_4fc293de2b4c271e
-  symbol_count 40
+  byte_len 32517
+  line_count 920
+  content_id source_module_f68424ed2fffc620
+  symbol_count 41
   symbols
     function names_a_quoted_replacement 33 35
     function text_outside_quoted_segments 46 59
     function names_format_conversion 66 69
     function try_text_manipulation 71 77
     function names_text_operation 84 87
-    function try_text_manipulation_with_history 89 139
-    struct TextRequest 142 145
-    function parse_with_history 148 214
-    function build 216 221
-    function matches_specific_remove_operation 224 230
-    function append_simple_operations 232 343
-    enum TextOperation 346 384
-    function yields_count 387 397
-    function slug 399 439
-    function apply 441 511
-    function last_assistant_text_artifact 514 520
-    function replace_text 522 537
-    function replace_word_sequence 539 542
-    struct ReplacementRange 545 548
-    function exact_match_ranges 550 564
-    function word_sequence_match_ranges 566 607
-    function ranges_overlap 609 611
-    function replace_ranges 613 638
-    function parse_replace_request 640 663
-    function parse_remove_request 665 681
-    function parse_affix_request 683 699
-    function looks_like_input_first_unary_edit 701 708
-    function looks_like_input_first_replacement 710 723
-    function input_context_before_first_quote 725 739
-    function contains_input_continuation 741 749
-    function contains_replacement_keyword 751 757
-    struct TextStep 760 765
-    struct SubstitutionTextChain 768 774
-    function build 777 812
-    function unique_rule_id 815 827
-    function build_rules_links_notation 829 873
-    function text_node 875 877
-    function hex_encode 879 885
-    function normalize_replacement_prompt 887 897
-    function text_after_colon 899 911
+    function parses_text_operation 94 96
+    function try_text_manipulation_with_history 98 148
+    struct TextRequest 151 154
+    function parse_with_history 157 223
+    function build 225 230
+    function matches_specific_remove_operation 233 239
+    function append_simple_operations 241 352
+    enum TextOperation 355 393
+    function yields_count 396 406
+    function slug 408 448
+    function apply 450 520
+    function last_assistant_text_artifact 523 529
+    function replace_text 531 546
+    function replace_word_sequence 548 551
+    struct ReplacementRange 554 557
+    function exact_match_ranges 559 573
+    function word_sequence_match_ranges 575 616
+    function ranges_overlap 618 620
+    function replace_ranges 622 647
+    function parse_replace_request 649 672
+    function parse_remove_request 674 690
+    function parse_affix_request 692 708
+    function looks_like_input_first_unary_edit 710 717
+    function looks_like_input_first_replacement 719 732
+    function input_context_before_first_quote 734 748
+    function contains_input_continuation 750 758
+    function contains_replacement_keyword 760 766
+    struct TextStep 769 774
+    struct SubstitutionTextChain 777 783
+    function build 786 821
+    function unique_rule_id 824 836
+    function build_rules_links_notation 838 882
+    function text_node 884 886
+    function hex_encode 888 894
+    function normalize_replacement_prompt 896 906
+    function text_after_colon 908 920

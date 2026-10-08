@@ -2,10 +2,10 @@ self_ast_census
   target src/intent_formalization/obligations.rs
   language rust
   fidelity signature
-  byte_len 24557
-  line_count 596
-  content_id source_module_e1c9b2b765c25e86
-  symbol_count 35
+  byte_len 30402
+  line_count 726
+  content_id source_module_4b64d2a341f5f2bd
+  symbol_count 42
   symbols
     const GRAPH_RECORD 46 46
     const SPLIT_DEPTH_BOUND 49 49
@@ -35,10 +35,17 @@ self_ast_census
     function request_carries_work_obligations 414 426
     function request_demands 437 444
     function gap_line 447 458
-    function bound_output_literals 473 502
-    const OBLIGATION_GAP_KIND 505 505
-    function obligation_gap_lines 514 519
-    function record_obligation_gaps 525 531
-    function classify_clause 538 562
-    function authoring_kind 566 588
-    function graph_id 594 596
+    function bound_output_literals 477 524
+    function followed_by_print 530 545
+    const UNQUOTED_OUTPUT_ENDS 548 548
+    const UNQUOTED_OUTPUT_PEEL 555 555
+    function bare_word 558 561
+    function unquoted_output 567 575
+    function unquoted_utterance 592 609
+    function describes_a_value 622 632
+    const OBLIGATION_GAP_KIND 635 635
+    function obligation_gap_lines 644 649
+    function record_obligation_gaps 655 661
+    function classify_clause 668 692
+    function authoring_kind 696 718
+    function graph_id 724 726

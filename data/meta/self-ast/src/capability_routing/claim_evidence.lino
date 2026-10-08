@@ -1,0 +1,24 @@
+self_ast_census
+  target src/capability_routing/claim_evidence.rs
+  language rust
+  fidelity signature
+  byte_len 15621
+  line_count 356
+  content_id source_module_aa8f35a156094278
+  symbol_count 15
+  symbols
+    function class_evidence_holds 23 136
+    function dialogue_turns 139 149
+    function continues_procedure 152 160
+    function names_fact_subject 167 173
+    function names_translation_text 179 185
+    function content_beyond_roles 192 213
+    function names_other_subject 219 227
+    function names_call_expression 233 244
+    function names_verifiable_spec 247 250
+    function words 253 258
+    function addresses_assistant 265 282
+    function is_unspaced_script 285 287
+    function carries_no_word 290 293
+    function unbalanced_brackets 296 309
+    function without_answer_shape_directive 319 356

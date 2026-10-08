@@ -2,9 +2,9 @@ self_ast_census
   target src/coding/catalog/templates_stdin.rs
   language rust
   fidelity signature
-  byte_len 3784
+  byte_len 3799
   line_count 141
-  content_id source_module_2761beeb16164aa6
+  content_id source_module_6138ac57e82461a5
   symbol_count 4
   symbols
     const TEMPLATES_STDIN 16 27

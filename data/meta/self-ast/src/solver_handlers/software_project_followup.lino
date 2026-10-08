@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/software_project_followup.rs
   language rust
   fidelity signature
-  byte_len 14729
-  line_count 396
-  content_id source_module_2d33c1dfc0b4efb4
-  symbol_count 16
+  byte_len 14995
+  line_count 404
+  content_id source_module_1eeabc3c1cdc0c9b
+  symbol_count 17
   symbols
     enum FollowUpKind 24 28
     function label 31 37
@@ -23,3 +23,4 @@ self_ast_census
     function follow_up_plan_steps 276 304
     function render_follow_up_response 306 374
     function prior_software_project_dialogue 386 396
+    function continues_software_project 402 404

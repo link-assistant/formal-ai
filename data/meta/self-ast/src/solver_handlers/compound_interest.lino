@@ -2,42 +2,40 @@ self_ast_census
   target src/solver_handlers/compound_interest.rs
   language rust
   fidelity signature
-  byte_len 18586
-  line_count 569
-  content_id source_module_36d538be07ce05b4
-  symbol_count 34
+  byte_len 16229
+  line_count 488
+  content_id source_module_1f4bf32a5631a31f
+  symbol_count 32
   symbols
-    const USD_EUR_FALLBACK_RATE 15 15
-    struct CompoundInterestRequest 18 25
-    struct CurrencyRate 28 33
-    function try_compound_interest 35 56
-    function answer_compound_interest 58 141
-    function answer_final_amount_conversion 143 177
-    function append_conversion_lines 179 231
-    function parse_compound_interest_request 233 261
-    function parse_final_amount_conversion_request 263 278
-    function prior_final_amount 280 286
-    function parse_final_amount_from_text 288 296
-    function parse_currency_amount 298 318
-    function parse_percent_before_symbol 320 324
-    function years_in_prompt 326 347
-    function parse_compounds_per_year 349 358
-    function compounds_per_year_for_slug 360 369
-    function target_currency 371 382
-    function asks_for_web_rate 384 389
-    function currency_rate 391 422
-    function rate_from_evaluation 424 444
-    function rate_source_step 446 452
-    function parse_number_left 454 465
-    function parse_number_right 467 478
-    function parse_first_number 480 494
-    function leading_number 496 498
-    function is_number_byte 500 502
-    function parse_number_slice 504 511
-    function currency_after 513 534
-    function compounding_label 536 545
-    function format_number 547 553
-    function format_money 555 557
-    function round_money 559 561
-    function format_rate 563 565
-    function trim_decimal 567 569
+    const POLICY 23 23
+    const CURRENCIES 28 28
+    const PRINCIPAL_CURRENCY 35 35
+    struct CompoundInterestRequest 38 45
+    function try_compound_interest 47 68
+    function policy 70 72
+    function response 74 76
+    function answer_compound_interest 78 138
+    function answer_final_amount_conversion 140 172
+    function append_conversion 174 232
+    function default_rate 236 246
+    function parse_compound_interest_request 248 274
+    function parse_final_amount_conversion_request 276 291
+    function prior_final_amount 293 299
+    function parse_final_amount_from_text 303 330
+    function parse_currency_amount 332 351
+    function parse_percent_before_symbol 353 357
+    function years_in_prompt 359 379
+    function parse_compounds_per_year 381 389
+    function target_currency 394 403
+    function asks_for_web_rate 405 409
+    function compounding_label 411 414
+    function is_ascii_space 416 418
+    function is_number_char 420 422
+    function parse_number_left 424 434
+    function parse_number_right 436 444
+    function parse_number_slice 448 464
+    function format_number 466 472
+    function format_money 474 476
+    function round_money 478 480
+    function format_rate 482 484
+    function trim_decimal 486 488

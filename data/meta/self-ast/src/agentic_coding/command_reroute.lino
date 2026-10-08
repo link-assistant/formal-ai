@@ -2,96 +2,99 @@ self_ast_census
   target src/agentic_coding/command_reroute.rs
   language rust
   fidelity full_ast
-  byte_len 19791
-  line_count 513
-  content_id source_module_af3be2b9d561c3b7
-  symbol_count 18
+  byte_len 23083
+  line_count 599
+  content_id source_module_c147565ddf37a312
+  symbol_count 21
   symbols
-    function plan_symbolic_command_reroute 27 139
-    function pr_completion_commands 141 180
-    function one_call 182 187
-    function final_answer 194 239
-    struct RecipeProgress 243 249
-    struct StepFailure 254 258
-    function report 267 292
-    const STEP_PLACEHOLDER 268 268
-    const PATH_PLACEHOLDER 269 269
-    const CODE_PLACEHOLDER 270 270
-    const REPORT_PLACEHOLDER 271 271
-    function after_latest_user 296 402
-    const EXIT_CODE_LABELS 406 406
-    const ABSENT_FIELD_VALUES 414 414
-    function reported_exit_code 429 439
-    function from_result 450 477
-    function reports_failure_in_prose 481 503
-    function run_command_of 506 513
+    function plan_symbolic_command_reroute 27 141
+    function pr_completion_commands 143 182
+    function one_call 184 189
+    function final_answer 196 241
+    struct RecipeProgress 245 251
+    struct StepFailure 256 260
+    function report 269 294
+    const STEP_PLACEHOLDER 270 270
+    const PATH_PLACEHOLDER 271 271
+    const CODE_PLACEHOLDER 272 272
+    const REPORT_PLACEHOLDER 273 273
+    function after_latest_user 298 404
+    const EXIT_CODE_LABELS 408 408
+    const ABSENT_FIELD_VALUES 416 416
+    function reported_exit_code 431 441
+    function from_result 452 479
+    function reports_failure_in_prose 483 505
+    function run_command_of 508 515
+    function requested_recipe 521 548
+    function stated_call_arguments 552 588
+    function is_decimal 591 599
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 12709
-    named_node_count 2560
+    total_link_count 15487
+    named_node_count 3149
     distinct_node_kinds 82
     node_kinds
-      arguments 197
-      array_expression 6
+      arguments 252
+      array_expression 7
       array_type 9
-      assignment_expression 6
+      assignment_expression 8
       attribute 2
       attribute_item 2
-      binary_expression 19
-      block 54
+      binary_expression 27
+      block 65
       boolean_literal 2
-      call_expression 197
-      char_literal 1
-      closure_expression 32
-      closure_parameters 32
+      call_expression 252
+      char_literal 9
+      closure_expression 43
+      closure_parameters 43
       compound_assignment_expr 2
       const_item 6
-      continue_expression 7
-      crate 6
+      continue_expression 8
+      crate 10
       declaration_list 4
-      doc_comment 41
+      doc_comment 48
       else_clause 3
       escape_sequence 29
-      expression_statement 55
+      expression_statement 69
       field_declaration 8
       field_declaration_list 2
-      field_expression 205
-      field_identifier 219
+      field_expression 268
+      field_identifier 282
       field_initializer 6
       field_initializer_list 4
-      for_expression 3
-      function_item 10
+      for_expression 5
+      function_item 13
       generic_function 2
-      generic_type 13
-      identifier 568
-      if_expression 24
+      generic_type 16
+      identifier 710
+      if_expression 28
       impl_item 4
-      index_expression 3
+      index_expression 5
       inner_doc_comment_marker 7
-      integer_literal 10
-      let_chain 1
-      let_condition 11
-      let_declaration 47
-      line_comment 64
+      integer_literal 11
+      let_chain 3
+      let_condition 13
+      let_declaration 61
+      line_comment 71
       macro_invocation 11
       match_arm 7
       match_block 3
       match_expression 3
       match_pattern 7
-      mutable_specifier 6
-      outer_doc_comment_marker 34
-      parameter 25
-      parameters 10
+      mutable_specifier 8
+      outer_doc_comment_marker 41
+      parameter 30
+      parameters 13
       parenthesized_expression 2
-      primitive_type 26
-      range_expression 3
-      reference_expression 37
-      reference_type 29
-      return_expression 10
-      scoped_identifier 79
+      primitive_type 32
+      range_expression 4
+      reference_expression 49
+      reference_type 34
+      return_expression 11
+      scoped_identifier 101
       scoped_type_identifier 1
       scoped_use_list 3
       self 14
@@ -102,16 +105,16 @@ self_ast_census
       string_literal 56
       struct_expression 4
       struct_item 2
-      super 26
+      super 29
       token_tree 32
       try_expression 6
-      tuple_expression 11
-      tuple_pattern 8
-      tuple_struct_pattern 17
-      tuple_type 1
-      type_arguments 15
-      type_identifier 51
-      unary_expression 10
+      tuple_expression 15
+      tuple_pattern 12
+      tuple_struct_pattern 20
+      tuple_type 2
+      type_arguments 18
+      type_identifier 59
+      unary_expression 13
       use_as_clause 1
       use_declaration 7
       use_list 3

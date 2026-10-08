@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/regex_synthesis.rs
   language rust
   fidelity signature
-  byte_len 17157
-  line_count 488
-  content_id source_module_611ac379e99aed91
-  symbol_count 18
+  byte_len 17493
+  line_count 497
+  content_id source_module_db8a35726ff72446
+  symbol_count 19
   symbols
     const CUES_PATH 27 27
     const INTENT 28 28
@@ -20,8 +20,9 @@ self_ast_census
     function render_class 211 217
     function separator_between 220 230
     function compose 233 250
-    function verify_structurally 256 302
-    function problem_text 305 308
-    function witness_check 314 370
-    function triggered 374 379
-    function handle_regex_synthesis 383 488
+    function names_pattern_constraints 256 259
+    function verify_structurally 265 311
+    function problem_text 314 317
+    function witness_check 323 379
+    function triggered 383 388
+    function handle_regex_synthesis 392 497

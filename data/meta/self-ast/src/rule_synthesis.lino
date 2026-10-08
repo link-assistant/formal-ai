@@ -2,9 +2,9 @@ self_ast_census
   target src/rule_synthesis.rs
   language rust
   fidelity signature
-  byte_len 17816
+  byte_len 17817
   line_count 505
-  content_id source_module_ec47dbc4e8a153de
+  content_id source_module_af4850433a7c3a3a
   symbol_count 20
   symbols
     struct UnknownRuleConstruction 27 37

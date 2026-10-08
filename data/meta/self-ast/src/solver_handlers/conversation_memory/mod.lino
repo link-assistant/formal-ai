@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/conversation_memory/mod.rs
   language rust
   fidelity signature
-  byte_len 27559
-  line_count 829
-  content_id source_module_dbd55a7b1b5f2043
-  symbol_count 46
+  byte_len 27933
+  line_count 841
+  content_id source_module_2929e60cc57b351a
+  symbol_count 47
   symbols
     module conversation_summary 3 3
     module link_query 4 4
@@ -30,26 +30,27 @@ self_ast_census
     function previous_user_request_turn 268 281
     function is_recall_meta_prompt 283 290
     function render_previous_user_message 292 299
-    function try_recall_previous_message 309 337
-    function localized_role 340 351
-    function render_previous_message 353 361
-    function render_no_previous_message 363 370
-    function try_conversation_recall 372 401
-    function try_memory_recall 403 443
-    function recognize_recall_query 445 459
-    function recall_term_for_role 461 467
-    function term_from_form 469 479
-    function clean_recall_term 481 495
-    function recall_matches 497 519
-    function memory_recall_matches 521 571
-    function event_in_recall_scope 573 581
-    function memory_event_field_values 583 609
-    function push_memory_field 611 619
-    function memory_field_match 621 635
-    function memory_link_match 637 646
-    function memory_match 648 675
-    function log_fragment 678 683
-    function render_line 685 698
-    function memory_conversation_count 701 709
-    function render_recall_report 711 758
-    function render_memory_recall_report 760 829
+    function try_recall_previous_message 309 341
+    function localized_role 344 355
+    function render_previous_message 357 365
+    function render_no_previous_message 367 374
+    function try_conversation_recall 376 405
+    function try_memory_recall 407 447
+    function names_recall_query 453 455
+    function recognize_recall_query 457 471
+    function recall_term_for_role 473 479
+    function term_from_form 481 491
+    function clean_recall_term 493 507
+    function recall_matches 509 531
+    function memory_recall_matches 533 583
+    function event_in_recall_scope 585 593
+    function memory_event_field_values 595 621
+    function push_memory_field 623 631
+    function memory_field_match 633 647
+    function memory_link_match 649 658
+    function memory_match 660 687
+    function log_fragment 690 695
+    function render_line 697 710
+    function memory_conversation_count 713 721
+    function render_recall_report 723 770
+    function render_memory_recall_report 772 841

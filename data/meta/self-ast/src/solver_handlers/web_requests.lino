@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_handlers/web_requests.rs
   language rust
   fidelity signature
-  byte_len 30590
-  line_count 752
-  content_id source_module_15ad29e39a685e49
-  symbol_count 39
+  byte_len 32143
+  line_count 792
+  content_id source_module_84c3626fe58f0707
+  symbol_count 40
   symbols
     module live_search 14 14
     module url_parse 15 15
@@ -41,8 +41,9 @@ self_ast_census
     function repository_from_concept_term 656 663
     function repository_from_slug 665 685
     function repository_from_url 687 715
-    function clean_repository_segment 717 729
-    function is_text_url_extraction_prompt 731 735
-    function normalize_concept_term 737 743
-    function registry_static 748 752
-    static REGISTRY 750 750
+    function repository_slug_candidates 723 755
+    function clean_repository_segment 757 769
+    function is_text_url_extraction_prompt 771 775
+    function normalize_concept_term 777 783
+    function registry_static 788 792
+    static REGISTRY 790 790

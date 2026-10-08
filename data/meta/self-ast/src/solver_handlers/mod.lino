@@ -2,18 +2,17 @@ self_ast_census
   target src/solver_handlers/mod.rs
   language rust
   fidelity signature
-  byte_len 33805
-  line_count 798
-  content_id source_module_ffba9da1dcfe0fe1
-  symbol_count 10
+  byte_len 33553
+  line_count 781
+  content_id source_module_b27db956a6c8cf0d
+  symbol_count 9
   symbols
-    function try_arithmetic 117 236
-    function render_calculation_reasoning_step 238 244
-    function try_javascript_execution 252 275
-    function try_translation 284 568
-    function render_translation_gap 570 582
-    function translate_free_sentence 590 666
-    function try_write_script 668 701
-    function try_algorithm 703 730
-    function try_execution_failure 732 761
-    function finalize_simple 763 798
+    function try_arithmetic 125 244
+    function render_calculation_reasoning_step 246 252
+    function try_javascript_execution 260 283
+    function try_translation 290 577
+    function render_translation_gap 579 591
+    function translate_free_sentence 599 675
+    function try_write_script 677 710
+    function try_algorithm 712 744
+    function finalize_simple 746 781
