@@ -98,7 +98,10 @@ fn the_specification_lane_still_runs_the_shard_it_owns() {
         .expect("the test job runs a `Run specification tests` step");
 
     assert!(
-        spec_step.contains("specification::"),
+        spec_step.contains("TEST_SUITE: specification")
+            && spec_step.contains("bash scripts/run-prebuilt-tests.sh")
+            && repository_file("scripts/run-prebuilt-tests.sh")
+                .contains("selection=(specification::)"),
         "the specification lane must run `specification::` -- it is the only \
          lane that does now that the full lane skips them"
     );

@@ -103,7 +103,7 @@ fn the_build_accepts_a_skipped_macos_job_but_not_a_failed_one() {
 fn the_linux_leg_is_not_guarded_by_the_switch() {
     let workflow = release_workflow();
     assert!(
-        workflow.contains("{ os: ubuntu-latest, test-suite: full }"),
+        workflow.matches("{ os: ubuntu-latest, test-suite: full,").count() == 5,
         "the Linux leg must still run the full suite"
     );
     let test_job = job_block(&workflow, "test");
