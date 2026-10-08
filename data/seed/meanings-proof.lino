@@ -5,268 +5,62 @@ meanings
     role proof_directive
     role proof_claim_scaffold
     lexeme en
-      surface
-        text prove
-      surface
-        text proof
-      surface
-        text "prove that …"
-      surface
-        text "prove …"
-      surface
-        text "proof of …"
-      surface
-        text "proof that …"
-      surface
-        text "show that …"
-      surface
-        text "demonstrate that …"
-      surface
-        text "demonstrate …"
-      surface
-        text "can you prove that …"
-      surface
-        text "can you prove …"
-      surface
-        text "could you prove that …"
-      surface
-        text "could you prove …"
-      surface
-        text "please prove that …"
-      surface
-        text "please prove …"
-      surface
-        text "give me a proof of …"
-      surface
-        text "give me a proof that …"
-      surface
-        text "give a proof of …"
-      surface
-        text "give a proof that …"
+      words prove proof "prove that …" "prove …" "proof of …" "proof that …" "show that …" "demonstrate that …"
+      words "demonstrate …" "can you prove that …" "can you prove …" "could you prove that …" "could you prove …"
+      words "please prove that …" "please prove …" "give me a proof of …" "give me a proof that …" "give a proof of …"
+      words "give a proof that …"
     lexeme ru
-      surface
-        text докажи
-      surface
-        text докажите
-      surface
-        text доказать
-      surface
-        text доказательство
-      surface
-        text "докажи что …"
-      surface
-        text "докажите что …"
-      surface
-        text "доказать что …"
-      surface
-        text "докажите …"
-      surface
-        text "докажи …"
-      surface
-        text "доказать …"
-      surface
-        text "доказательство …"
-    lexeme hi
-      surface
-        text "साबित करो कि …"
-      surface
-        text "साबित कीजिए कि …"
-      surface
-        text "साबित कर …"
-      surface
-        text "सिद्ध कीजिए कि …"
-      surface
-        text "सिद्ध करो कि …"
-    lexeme zh
-      surface
-        text 证明…
-      surface
-        text 證明…
+      words докажи докажите доказать доказательство "докажи что …" "докажите что …" "доказать что …" "докажите …"
+      words "докажи …" "доказать …" "доказательство …"
+    lexeme hi "साबित करो कि …" "साबित कीजिए कि …" "साबित कर …" "सिद्ध कीजिए कि …" "सिद्ध करो कि …"
+    lexeme zh 证明… 證明…
     lexeme es
-      surface
-        text demuestra
-      surface
-        text demostración
-      surface
-        text "prueba que …"
-      surface
-        text "demuestra que …"
-      surface
-        text "demuestra …"
-      surface
-        text "demostración de …"
-      surface
-        text "puedes demostrar que …"
-      surface
-        text "dame una demostración de …"
+      words demuestra demostración "prueba que …" "demuestra que …" "demuestra …" "demostración de …"
+      words "puedes demostrar que …" "dame una demostración de …"
   proof_request_frame
     defined-by inquiry
     defined-by prove
     role proof_request_lead
     lexeme en
-      surface
-        text "can you prove…"
-      surface
-        text "could you prove…"
-      surface
-        text "please prove…"
-      surface
-        text "give me a proof…"
-      surface
-        text "give a proof…"
-      surface
-        text "show that …"
-      surface
-        text "demonstrate that …"
-    lexeme ru
-      surface
-        text "можешь доказать…"
-      surface
-        text "можете доказать…"
-      surface
-        text "сможешь доказать…"
-      surface
-        text "пожалуйста докажи…"
-      surface
-        text "пожалуйста докажите…"
-    lexeme hi
-      surface
-        text "क्या आप साबित कर सकते हैं…"
-      surface
-        text "क्या आप सिद्ध कर सकते हैं…"
-      surface
-        text "कृपया सिद्ध कीजिए…"
-      surface
-        text "कृपया साबित कीजिए…"
-    lexeme zh
-      surface
-        text 你能证明…
-      surface
-        text 你能證明…
-      surface
-        text 请证明…
-      surface
-        text 請證明…
-    lexeme es
-      surface
-        text "puedes demostrar…"
-      surface
-        text "podrías demostrar…"
-      surface
-        text "por favor demuestra…"
-      surface
-        text "dame una demostración…"
+      words "can you prove…" "could you prove…" "please prove…" "give me a proof…" "give a proof…" "show that …"
+      words "demonstrate that …"
+    lexeme ru "можешь доказать…" "можете доказать…" "сможешь доказать…" "пожалуйста докажи…" "пожалуйста докажите…"
+    lexeme hi "क्या आप साबित कर सकते हैं…" "क्या आप सिद्ध कर सकते हैं…" "कृपया सिद्ध कीजिए…" "कृपया साबित कीजिए…"
+    lexeme zh 你能证明… 你能證明… 请证明… 請證明…
+    lexeme es "puedes demostrar…" "podrías demostrar…" "por favor demuestra…" "dame una demostración…"
   proof_assertion
     defined-by inquiry
     defined-by prove
     role proof_marker
-    lexeme en
-      surface
-        text " prove that "
-      surface
-        text " proof of "
-    lexeme ru
-      surface
-        text " докажи "
-      surface
-        text " докажите "
-      surface
-        text " доказать "
-      surface
-        text " доказательство "
-    lexeme hi
-      surface
-        text "साबित कर"
-      surface
-        text "साबित कीजिए"
-      surface
-        text "साबित कीजिये"
-      surface
-        text "सिद्ध कर"
-      surface
-        text "सिद्ध कीजिए"
-      surface
-        text "सिद्ध कीजिये"
-      surface
-        text प्रमाण
-    lexeme zh
-      surface
-        text 证明
-      surface
-        text 證明
-    lexeme es
-      surface
-        text " demuestra que "
-      surface
-        text " demostración de "
+    lexeme en " prove that " " proof of "
+    lexeme ru " докажи " " докажите " " доказать " " доказательство "
+    lexeme hi "साबित कर" "साबित कीजिए" "साबित कीजिये" "सिद्ध कर" "सिद्ध कीजिए" "सिद्ध कीजिये" प्रमाण
+    lexeme zh 证明 證明
+    lexeme es " demuestra que " " demostración de "
   godel
     defined-by concept
     role proof_concept_godel
-    lexeme en
-      surface
-        text godel
-      surface
-        text gödel
-    lexeme ru
-      surface
-        text гёдел
-      surface
-        text гёделя
-      surface
-        text гедел
-    lexeme hi
-      surface
-        text गोडेल
-    lexeme zh
-      surface
-        text 哥德尔
-    lexeme es
-      surface
-        text gödel
-      surface
-        text godel
+    lexeme en godel gödel
+    lexeme ru гёдел гёделя гедел
+    lexeme hi गोडेल
+    lexeme zh 哥德尔
+    lexeme es gödel godel
   determinism
     defined-by concept
     role proof_concept_determinism
-    lexeme en
-      surface
-        text determinism
-      surface
-        text deterministic
-    lexeme ru
-      surface
-        text детерминизм
-    lexeme hi
-      surface
-        text निर्धारणवाद
-    lexeme zh
-      surface
-        text 决定论
-    lexeme es
-      surface
-        text determinismo
-      surface
-        text determinista
+    lexeme en determinism deterministic
+    lexeme ru детерминизм
+    lexeme hi निर्धारणवाद
+    lexeme zh 决定论
+    lexeme es determinismo determinista
   metatheory
     defined-by concept
     role proof_concept_metatheory
-    lexeme en
-      surface
-        text metatheory
-      surface
-        text meta-theory
-    lexeme ru
-      surface
-        text метатеория
-    lexeme hi
-      surface
-        text परासिद्धांत
-    lexeme zh
-      surface
-        text 元理论
-    lexeme es
-      surface
-        text metateoría
+    lexeme en metatheory meta-theory
+    lexeme ru метатеория
+    lexeme hi परासिद्धांत
+    lexeme zh 元理论
+    lexeme es metateoría
   hypothesis
     defined-by concept
     role proof_step_kind

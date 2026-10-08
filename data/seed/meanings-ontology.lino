@@ -8,112 +8,36 @@ meanings
     annotation semantic_gloss
     denotation relation
     connotation concept
-    lexeme en
-      surface
-        text link
-      surface
-        text connection
-    lexeme ru
-      surface
-        text связь
-      surface
-        text ссылка
-    lexeme hi
-      surface
-        text लिंक
-      surface
-        text कड़ी
-    lexeme zh
-      surface
-        text 链接
-      surface
-        text 连接
+    lexeme en link connection
+    lexeme ru связь ссылка
+    lexeme hi लिंक कड़ी
+    lexeme zh 链接 连接
   type
     defined-by link
     defined-by type
     role ontology_type
     self-equation type
-    lexeme en
-      surface
-        text type
-      surface
-        text kind
-    lexeme ru
-      surface
-        text тип
-      surface
-        text вид
-    lexeme hi
-      surface
-        text प्रकार
-      surface
-        text क़िस्म
-    lexeme zh
-      surface
-        text 类型
-      surface
-        text 种类
-    lexeme es
-      surface
-        text tipo
-      surface
-        text clase
+    lexeme en type kind
+    lexeme ru тип вид
+    lexeme hi प्रकार क़िस्म
+    lexeme zh 类型 种类
+    lexeme es tipo clase
   entity
     defined-by type
     role ontology_category
-    lexeme en
-      surface
-        text entity
-      surface
-        text thing
-    lexeme ru
-      surface
-        text сущность
-      surface
-        text объект
-    lexeme hi
-      surface
-        text इकाई
-      surface
-        text वस्तु
-    lexeme zh
-      surface
-        text 实体
-      surface
-        text 事物
-    lexeme es
-      surface
-        text entidad
-      surface
-        text cosa
+    lexeme en entity thing
+    lexeme ru сущность объект
+    lexeme hi इकाई वस्तु
+    lexeme zh 实体 事物
+    lexeme es entidad cosa
   concept
     defined-by type
     role ontology_category
-    lexeme en
-      surface
-        text concept
-      surface
-        text notion
-    lexeme ru
-      surface
-        text понятие
-      surface
-        text концепция
-    lexeme hi
-      surface
-        text अवधारणा
-      surface
-        text संकल्पना
-    lexeme zh
-      surface
-        text 概念
-      surface
-        text 观念
-    lexeme es
-      surface
-        text concepto
-      surface
-        text noción
+    lexeme en concept notion
+    lexeme ru понятие концепция
+    lexeme hi अवधारणा संकल्पना
+    lexeme zh 概念 观念
+    lexeme es concepto noción
   relation
     defined-by link
     source-lexeme L3743 # wikidata english noun relation
@@ -145,82 +69,24 @@ meanings
       text relationship
       language en
       sense L3744-S1 # wikidata relationship sense
-    lexeme en
-      surface
-        text relation
-      surface
-        text relationship
-    lexeme ru
-      surface
-        text отношение
-      surface
-        text соотношение
-    lexeme hi
-      surface
-        text संबंध
-      surface
-        text रिश्ता
-    lexeme zh
-      surface
-        text 关系
-      surface
-        text 联系
-    lexeme es
-      surface
-        text relación
+    lexeme en relation relationship
+    lexeme ru отношение соотношение
+    lexeme hi संबंध रिश्ता
+    lexeme zh 关系 联系
+    lexeme es relación
   action
     defined-by concept
     role ontology_category
-    lexeme en
-      surface
-        text action
-      surface
-        text act
-    lexeme ru
-      surface
-        text действие
-      surface
-        text операция
-    lexeme hi
-      surface
-        text क्रिया
-      surface
-        text कार्य
-    lexeme zh
-      surface
-        text 动作
-      surface
-        text 操作
-    lexeme es
-      surface
-        text acción
-      surface
-        text acto
+    lexeme en action act
+    lexeme ru действие операция
+    lexeme hi क्रिया कार्य
+    lexeme zh 动作 操作
+    lexeme es acción acto
   property
     defined-by concept
     role ontology_category
-    lexeme en
-      surface
-        text property
-      surface
-        text attribute
-    lexeme ru
-      surface
-        text свойство
-      surface
-        text атрибут
-    lexeme hi
-      surface
-        text गुण
-      surface
-        text विशेषता
-    lexeme zh
-      surface
-        text 属性
-      surface
-        text 特性
-    lexeme es
-      surface
-        text propiedad
-      surface
-        text atributo
+    lexeme en property attribute
+    lexeme ru свойство атрибут
+    lexeme hi गुण विशेषता
+    lexeme zh 属性 特性
+    lexeme es propiedad atributo

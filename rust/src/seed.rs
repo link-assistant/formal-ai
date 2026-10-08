@@ -57,12 +57,13 @@ mod tool_resource_scopes;
 
 use std::collections::BTreeMap;
 
-/// The local seed parser, re-exported for the issue #1182 conformance
-/// harness that compares it against `links_notation` until it is deleted.
-pub use parser::parse_lino;
 use parser::{
     LinoNode, escape_value, find_closing_quote, parse_codepoint, split_pipe_list, unescape_value,
 };
+/// The local seed parser, re-exported for the issue #1182 conformance
+/// harness that compares it against `links_notation` until it is deleted,
+/// with the concise lexeme expansion both parsers read through.
+pub use parser::{expand_concise_lexemes, parse_lino};
 pub use reports::{fill_slots, report_text};
 
 pub use agentic_tool_capabilities::{AgenticToolCapability, agentic_tool_capabilities};

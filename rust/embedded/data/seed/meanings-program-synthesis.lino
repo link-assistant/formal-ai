@@ -4,235 +4,81 @@ meanings
     defined-by code
     defined-by implement
     role program_synthesis
-    lexeme en
-      surface
-        text "program synthesis"
-      surface
-        text "function synthesis"
-    lexeme ru
-      surface
-        text "синтез программ"
-      surface
-        text "синтез функции"
-    lexeme hi
-      surface
-        text "प्रोग्राम संश्लेषण"
-    lexeme zh
-      surface
-        text 程序合成
-    lexeme es
-      surface
-        text "síntesis de programas"
-      surface
-        text "síntesis de funciones"
+    lexeme en "program synthesis" "function synthesis"
+    lexeme ru "синтез программ" "синтез функции"
+    lexeme hi "प्रोग्राम संश्लेषण"
+    lexeme zh 程序合成
+    lexeme es "síntesis de programas" "síntesis de funciones"
   synthesis_subject_function
     defined-by program_synthesis
     defined-by function
     role program_synthesis_subject
-    lexeme en
-      surface
-        text function
-      surface
-        text func
-    lexeme ru
-      surface
-        text функция
-      surface
-        text функцию
-    lexeme hi
-      surface
-        text फ़ंक्शन
-      surface
-        text फंक्शन
-    lexeme zh
-      surface
-        text 函数
-    lexeme es
-      surface
-        text función
-      surface
-        text funcion
+    lexeme en function func
+    lexeme ru функция функцию
+    lexeme hi फ़ंक्शन फंक्शन
+    lexeme zh 函数
+    lexeme es función funcion
   synthesis_domain_python
     defined-by program_synthesis
     defined-by language_python
     role program_synthesis_domain
-    lexeme en
-      surface
-        text python
-    lexeme ru
-      surface
-        text питон
-      surface
-        text пайтон
-    lexeme hi
-      surface
-        text पायथन
-    lexeme zh
-      surface
-        text python
-    lexeme es
-      surface
-        text python
+    lexeme en python
+    lexeme ru питон пайтон
+    lexeme hi पायथन
+    lexeme zh python
+    lexeme es python
   synthesis_domain_tuple
     defined-by program_synthesis
     defined-by code
     role program_synthesis_domain
-    lexeme en
-      surface
-        text tuple
-      surface
-        text tuples
-    lexeme ru
-      surface
-        text кортеж
-      surface
-        text кортежи
-    lexeme hi
-      surface
-        text टपल
-    lexeme zh
-      surface
-        text 元组
-    lexeme es
-      surface
-        text tupla
-      surface
-        text tuplas
+    lexeme en tuple tuples
+    lexeme ru кортеж кортежи
+    lexeme hi टपल
+    lexeme zh 元组
+    lexeme es tupla tuplas
   synthesis_domain_numbers
     defined-by program_synthesis
     defined-by result
     role program_synthesis_domain
-    lexeme en
-      surface
-        text numbers
-    lexeme ru
-      surface
-        text числа
-      surface
-        text чисел
-    lexeme hi
-      surface
-        text संख्याएँ
-      surface
-        text संख्याओं
-    lexeme zh
-      surface
-        text 数字
-    lexeme es
-      surface
-        text números
+    lexeme en numbers
+    lexeme ru числа чисел
+    lexeme hi संख्याएँ संख्याओं
+    lexeme zh 数字
+    lexeme es números
   synthesis_domain_vowels
     defined-by program_synthesis
     defined-by result
     role program_synthesis_domain
-    lexeme en
-      surface
-        text vowels
-      surface
-        text vowel
-    lexeme ru
-      surface
-        text гласные
-      surface
-        text гласных
-    lexeme hi
-      surface
-        text स्वर
-      surface
-        text स्वरों
-    lexeme zh
-      surface
-        text 元音
-    lexeme es
-      surface
-        text vocales
-      surface
-        text vocal
+    lexeme en vowels vowel
+    lexeme ru гласные гласных
+    lexeme hi स्वर स्वरों
+    lexeme zh 元音
+    lexeme es vocales vocal
   synthesis_action_implement
     defined-by program_synthesis
     defined-by implement
     role program_synthesis_action
-    lexeme en
-      surface
-        text implement
-    lexeme ru
-      surface
-        text реализуй
-      surface
-        text реализовать
-    lexeme hi
-      surface
-        text लागू
-    lexeme zh
-      surface
-        text 实现
-    lexeme es
-      surface
-        text implementa
-      surface
-        text implementar
+    lexeme en implement
+    lexeme ru реализуй реализовать
+    lexeme hi लागू
+    lexeme zh 实现
+    lexeme es implementa implementar
   synthesis_action_write
     defined-by program_synthesis
     defined-by write
     role program_synthesis_action
-    lexeme en
-      surface
-        text write
-    lexeme ru
-      surface
-        text напиши
-      surface
-        text напишите
-    lexeme hi
-      surface
-        text लिखो
-      surface
-        text लिखें
-    lexeme zh
-      surface
-        text 编写
-      surface
-        text 写
-    lexeme es
-      surface
-        text escribe
-      surface
-        text escribir
+    lexeme en write
+    lexeme ru напиши напишите
+    lexeme hi लिखो लिखें
+    lexeme zh 编写 写
+    lexeme es escribe escribir
   synthesis_action_return
     defined-by program_synthesis
     defined-by output
     defined-by result
     role program_synthesis_action
-    lexeme en
-      surface
-        text return
-      surface
-        text returns
-    lexeme ru
-      surface
-        text верни
-      surface
-        text вернуть
-      surface
-        text возврати
-    lexeme hi
-      surface
-        text लौटाएँ
-      surface
-        text लौटाओ
-      surface
-        text लौटा
-      surface
-        text लौटाता
-    lexeme zh
-      surface
-        text 返回
-    lexeme es
-      surface
-        text devuelve
-      surface
-        text devolver
-      surface
-        text retorna
-      surface
-        text retornar
+    lexeme en return returns
+    lexeme ru верни вернуть возврати
+    lexeme hi लौटाएँ लौटाओ लौटा लौटाता
+    lexeme zh 返回
+    lexeme es devuelve devolver retorna retornar

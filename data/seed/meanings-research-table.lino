@@ -2,230 +2,64 @@ meanings
   compare
     defined-by action
     role comparison_table_trigger
-    lexeme en
-      surface
-        text "comparison table"
-      surface
-        text compare
-      surface
-        text comparing
-    lexeme ru
-      surface
-        text "сравнительная таблица"
-      surface
-        text сравнить
-      surface
-        text сравнение
-    lexeme hi
-      surface
-        text "तुलना तालिका"
-      surface
-        text तुलना
-    lexeme zh
-      surface
-        text 比较表
-      surface
-        text 比较
-      surface
-        text 对比
-    lexeme es
-      surface
-        text "tabla comparativa"
-      surface
-        text comparar
-      surface
-        text comparación
+    lexeme en "comparison table" compare comparing
+    lexeme ru "сравнительная таблица" сравнить сравнение
+    lexeme hi "तुलना तालिका" तुलना
+    lexeme zh 比较表 比较 对比
+    lexeme es "tabla comparativa" comparar comparación
   table
     defined-by concept
     role comparison_table_noun
-    lexeme en
-      surface
-        text table
-    lexeme ru
-      surface
-        text таблица
-    lexeme hi
-      surface
-        text तालिका
-    lexeme zh
-      surface
-        text 表格
-    lexeme es
-      surface
-        text tabla
+    lexeme en table
+    lexeme ru таблица
+    lexeme hi तालिका
+    lexeme zh 表格
+    lexeme es tabla
   differences
     defined-by relation
     role comparison_difference_cue
-    lexeme en
-      surface
-        text differences
-    lexeme ru
-      surface
-        text различия
-      surface
-        text отличия
-    lexeme hi
-      surface
-        text अंतर
-    lexeme zh
-      surface
-        text 差异
-      surface
-        text 区别
-    lexeme es
-      surface
-        text diferencias
+    lexeme en differences
+    lexeme ru различия отличия
+    lexeme hi अंतर
+    lexeme zh 差异 区别
+    lexeme es diferencias
   research_prompt_signal
     defined-by concept
     role research_prompt_signal
-    lexeme en
-      surface
-        text "search …"
-      surface
-        text "find information …"
-      surface
-        text "look up information …"
-      surface
-        text "search for information"
-      surface
-        text "web search"
-      surface
-        text research
-    lexeme ru
-      surface
-        text поиск
-      surface
-        text исследование
-      surface
-        text веб-поиск
-    lexeme hi
-      surface
-        text खोज
-      surface
-        text अनुसंधान
-    lexeme zh
-      surface
-        text 搜索
-      surface
-        text 研究
-    lexeme es
-      surface
-        text "busca …"
-      surface
-        text "busca información …"
-      surface
-        text "búsqueda web"
-      surface
-        text investigación
+    lexeme en "search …" "find information …" "look up information …" "search for information" "web search" research
+    lexeme ru поиск исследование веб-поиск
+    lexeme hi खोज अनुसंधान
+    lexeme zh 搜索 研究
+    lexeme es "busca …" "busca información …" "búsqueda web" investigación
   key_differences
     defined-by relation
     role research_criterion
-    lexeme en
-      surface
-        text "key difference"
-      surface
-        text difference
-    lexeme ru
-      surface
-        text "ключевые различия"
-      surface
-        text различия
-    lexeme hi
-      surface
-        text "मुख्य अंतर"
-      surface
-        text अंतर
-    lexeme zh
-      surface
-        text 主要区别
-      surface
-        text 区别
-    lexeme es
-      surface
-        text "diferencias clave"
-      surface
-        text diferencia
+    lexeme en "key difference" difference
+    lexeme ru "ключевые различия" различия
+    lexeme hi "मुख्य अंतर" अंतर
+    lexeme zh 主要区别 区别
+    lexeme es "diferencias clave" diferencia
   use_cases
     defined-by concept
     role research_criterion
-    lexeme en
-      surface
-        text "use case"
-      surface
-        text application
-    lexeme ru
-      surface
-        text "сценарии использования"
-      surface
-        text применение
-    lexeme hi
-      surface
-        text "उपयोग के मामले"
-      surface
-        text अनुप्रयोग
-    lexeme zh
-      surface
-        text 用例
-      surface
-        text 应用
-    lexeme es
-      surface
-        text "casos de uso"
-      surface
-        text aplicación
+    lexeme en "use case" application
+    lexeme ru "сценарии использования" применение
+    lexeme hi "उपयोग के मामले" अनुप्रयोग
+    lexeme zh 用例 应用
+    lexeme es "casos de uso" aplicación
   advantages
     defined-by property
     role research_criterion
-    lexeme en
-      surface
-        text advantage
-      surface
-        text "pro "
-    lexeme ru
-      surface
-        text преимущества
-      surface
-        text плюсы
-    lexeme hi
-      surface
-        text फायदे
-      surface
-        text लाभ
-    lexeme zh
-      surface
-        text 优点
-      surface
-        text 优势
-    lexeme es
-      surface
-        text ventajas
-      surface
-        text ventaja
+    lexeme en advantage "pro "
+    lexeme ru преимущества плюсы
+    lexeme hi फायदे लाभ
+    lexeme zh 优点 优势
+    lexeme es ventajas ventaja
   disadvantages
     defined-by property
     role research_criterion
-    lexeme en
-      surface
-        text disadvantage
-      surface
-        text " con "
-    lexeme ru
-      surface
-        text недостатки
-      surface
-        text минусы
-    lexeme hi
-      surface
-        text नुकसान
-      surface
-        text हानि
-    lexeme zh
-      surface
-        text 缺点
-      surface
-        text 劣势
-    lexeme es
-      surface
-        text desventajas
-      surface
-        text desventaja
+    lexeme en disadvantage " con "
+    lexeme ru недостатки минусы
+    lexeme hi नुकसान हानि
+    lexeme zh 缺点 劣势
+    lexeme es desventajas desventaja

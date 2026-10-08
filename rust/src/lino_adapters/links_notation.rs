@@ -19,7 +19,9 @@ pub fn parse_lino(text: &str) -> Result<LinoNode, ParseError> {
     // Comments follow the crate's own rule (0.23): a `#` that opens a line or
     // follows whitespace, outside a quoted reference, runs to the end of the
     // line. They are blanked rather than removed, so positions still match.
-    let prepared = strip_comments(text);
+    // The concise lexeme form expands first, as in `seed::parser` (R1188-U7).
+    let expanded = crate::seed::expand_concise_lexemes(text);
+    let prepared = strip_comments(&expanded);
     let links = links_notation::parser::parse_document_with_diagnostics(&prepared)
         .map_err(|_| located_error(text))?;
     let children = links.iter().map(convert).collect::<Result<Vec<_>, _>>()?;

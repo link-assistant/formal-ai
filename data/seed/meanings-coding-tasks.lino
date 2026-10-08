@@ -6,23 +6,11 @@ meanings
     effect "the artifact-kind slot is bound to constant"
     unit "not applicable"
     example "constant"
-    lexeme en
-      surface
-        text constant
-    lexeme ru
-      surface
-        text константа
-      surface
-        text константу
-    lexeme hi
-      surface
-        text स्थिरांक
-    lexeme zh
-      surface
-        text 常量
-    lexeme es
-      surface
-        text constante
+    lexeme en constant
+    lexeme ru константа константу
+    lexeme hi स्थिरांक
+    lexeme zh 常量
+    lexeme es constante
   coding_test
     defined-by code
     role coding_artifact_kind
@@ -31,27 +19,11 @@ meanings
     effect "the artifact-kind slot is bound to test"
     unit "not applicable"
     example "test"
-    lexeme en
-      surface
-        text test
-      surface
-        text regression
-    lexeme ru
-      surface
-        text тест
-      surface
-        text теста
-    lexeme hi
-      surface
-        text परीक्षण
-    lexeme zh
-      surface
-        text 测试
-    lexeme es
-      surface
-        text prueba
-      surface
-        text test
+    lexeme en test regression
+    lexeme ru тест теста
+    lexeme hi परीक्षण
+    lexeme zh 测试
+    lexeme es prueba test
   coding_public_visibility
     defined-by relation
     role coding_visibility
@@ -59,27 +31,11 @@ meanings
     effect "the visibility slot is bound to public"
     unit "not applicable"
     example "public"
-    lexeme en
-      surface
-        text public
-    lexeme ru
-      surface
-        text публичная
-      surface
-        text публичной
-      surface
-        text публичную
-    lexeme hi
-      surface
-        text सार्वजनिक
-    lexeme zh
-      surface
-        text 公共
-    lexeme es
-      surface
-        text pública
-      surface
-        text público
+    lexeme en public
+    lexeme ru публичная публичной публичную
+    lexeme hi सार्वजनिक
+    lexeme zh 公共
+    lexeme es pública público
   coding_return
     defined-by action
     role coding_return_action
@@ -87,31 +43,11 @@ meanings
     effect "the requested operation is bound to return"
     unit "not applicable"
     example "return"
-    lexeme en
-      surface
-        text return
-      surface
-        text returns
-    lexeme ru
-      surface
-        text возвращает
-      surface
-        text вернуть
-    lexeme hi
-      surface
-        text लौटाता
-      surface
-        text लौटाए
-    lexeme zh
-      surface
-        text 返回
-    lexeme es
-      surface
-        text devuelve
-      surface
-        text devolver
-      surface
-        text retorna
+    lexeme en return returns
+    lexeme ru возвращает вернуть
+    lexeme hi लौटाता लौटाए
+    lexeme zh 返回
+    lexeme es devuelve devolver retorna
   coding_division
     defined-by action
     role coding_division_action
@@ -119,31 +55,11 @@ meanings
     effect "the requested operation is bound to division"
     unit "not applicable"
     example "divided by"
-    lexeme en
-      surface
-        text "divided by"
-      surface
-        text divide
-      surface
-        text dividing
-    lexeme ru
-      surface
-        text делит
-      surface
-        text разделить
-    lexeme hi
-      surface
-        text विभाजित
-    lexeme zh
-      surface
-        text 除以
-    lexeme es
-      surface
-        text "dividido entre"
-      surface
-        text "dividido por"
-      surface
-        text dividir
+    lexeme en "divided by" divide dividing
+    lexeme ru делит разделить
+    lexeme hi विभाजित
+    lexeme zh 除以
+    lexeme es "dividido entre" "dividido por" dividir
   coding_member_add
     defined-by action
     role coding_member_add_action
@@ -152,60 +68,12 @@ meanings
     unit "not applicable"
     example "add"
     lexeme en
-      surface
-        text add
-      surface
-        text adds
-      surface
-        text insert
-      surface
-        text inserts
-      surface
-        text append
-      surface
-        text appends
-      surface
-        text include
-      surface
-        text includes
-      surface
-        text into
-      surface
-        text "also holds"
-      surface
-        text "also hold"
-      surface
-        text "also contains"
-      surface
-        text "also contain"
-    lexeme ru
-      surface
-        text добавь
-      surface
-        text добавить
-      surface
-        text вставь
-      surface
-        text вставить
-    lexeme hi
-      surface
-        text जोड़ें
-      surface
-        text जोड़ो
-    lexeme zh
-      surface
-        text 添加
-      surface
-        text 插入
-    lexeme es
-      surface
-        text añade
-      surface
-        text añadir
-      surface
-        text inserta
-      surface
-        text insertar
+      words add adds insert inserts append appends include includes into "also holds" "also hold" "also contains"
+      words "also contain"
+    lexeme ru добавь добавить вставь вставить
+    lexeme hi जोड़ें जोड़ो
+    lexeme zh 添加 插入
+    lexeme es añade añadir inserta insertar
   coding_module_registration
     defined-by action
     role coding_module_registration_action
@@ -213,35 +81,11 @@ meanings
     effect "the requested operation is bound to module registration"
     unit "not applicable"
     example "register the module"
-    lexeme en
-      surface
-        text "register the module"
-      surface
-        text "export the module"
-      surface
-        text "add the module"
-    lexeme ru
-      surface
-        text "зарегистрируй модуль"
-      surface
-        text "добавь модуль"
-    lexeme hi
-      surface
-        text "मॉड्यूल पंजीकृत करें"
-      surface
-        text "मॉड्यूल जोड़ें"
-    lexeme zh
-      surface
-        text 注册模块
-      surface
-        text 添加模块
-    lexeme es
-      surface
-        text "registra el módulo"
-      surface
-        text "exporta el módulo"
-      surface
-        text "añade el módulo"
+    lexeme en "register the module" "export the module" "add the module"
+    lexeme ru "зарегистрируй модуль" "добавь модуль"
+    lexeme hi "मॉड्यूल पंजीकृत करें" "मॉड्यूल जोड़ें"
+    lexeme zh 注册模块 添加模块
+    lexeme es "registra el módulo" "exporta el módulo" "añade el módulo"
   coding_identifier_rename
     defined-by action
     role coding_identifier_rename_action
@@ -249,21 +93,11 @@ meanings
     effect "the requested operation is bound to identifier rename"
     unit "not applicable"
     example "rename"
-    lexeme en
-      surface
-        text rename
-    lexeme ru
-      surface
-        text переименуй
-    lexeme hi
-      surface
-        text "नाम बदलो"
-    lexeme zh
-      surface
-        text 重命名
-    lexeme es
-      surface
-        text renombra
+    lexeme en rename
+    lexeme ru переименуй
+    lexeme hi "नाम बदलो"
+    lexeme zh 重命名
+    lexeme es renombra
   typo
     defined-by concept
     role typo_fix_lead
@@ -271,27 +105,11 @@ meanings
     effect "the word is corrected to the unique most frequent known word one edit away"
     unit "not applicable"
     example "fix the typo"
-    lexeme en
-      surface
-        text typo
-    lexeme ru
-      surface
-        text опечатку
-      surface
-        text опечатка
-    lexeme hi
-      surface
-        text "वर्तनी की गलती"
-    lexeme zh
-      surface
-        text 错别字
-      surface
-        text 拼写错误
-    lexeme es
-      surface
-        text errata
-      surface
-        text "error ortográfico"
+    lexeme en typo
+    lexeme ru опечатку опечатка
+    lexeme hi "वर्तनी की गलती"
+    lexeme zh 错别字 拼写错误
+    lexeme es errata "error ortográfico"
   coding_text_remove
     defined-by action
     role coding_text_remove_action
@@ -299,51 +117,11 @@ meanings
     effect "the requested operation is bound to removing that text from the file"
     unit "not applicable"
     example "delete the line"
-    lexeme en
-      surface
-        text delete
-      surface
-        text remove
-      surface
-        text "get rid of"
-    lexeme ru
-      surface
-        text удали
-      surface
-        text удалить
-      surface
-        text убери
-      surface
-        text убрать
-      surface
-        text сотри
-    lexeme hi
-      surface
-        text हटाओ
-      surface
-        text हटाएं
-      surface
-        text मिटाओ
-    lexeme zh
-      surface
-        text 删除
-      surface
-        text 删掉
-      surface
-        text 去掉
-      surface
-        text 移除
-    lexeme es
-      surface
-        text elimina
-      surface
-        text eliminar
-      surface
-        text borra
-      surface
-        text borrar
-      surface
-        text quita
+    lexeme en delete remove "get rid of"
+    lexeme ru удали удалить убери убрать сотри
+    lexeme hi हटाओ हटाएं मिटाओ
+    lexeme zh 删除 删掉 去掉 移除
+    lexeme es elimina eliminar borra borrar quita
   coding_declaration
     defined-by code
     role coding_declaration_noun
@@ -351,41 +129,11 @@ meanings
     effect "the request's names are read as functions the file declares, each removed whole with the comments and attributes directly above it"
     unit "not applicable"
     example "delete the function parse_header from util.rs"
-    lexeme en
-      surface
-        text "function"
-      surface
-        text "functions"
-      surface
-        text "method"
-      surface
-        text "methods"
-    lexeme ru
-      surface
-        text "функцию"
-      surface
-        text "функции"
-      surface
-        text "функций"
-      surface
-        text "метод"
-      surface
-        text "методы"
-    lexeme hi
-      surface
-        text "फ़ंक्शन"
-      surface
-        text "फंक्शन"
-    lexeme zh
-      surface
-        text "函数"
-      surface
-        text "方法"
-    lexeme es
-      surface
-        text "función"
-      surface
-        text "funciones"
+    lexeme en "function" "functions" "method" "methods"
+    lexeme ru "функцию" "функции" "функций" "метод" "методы"
+    lexeme hi "फ़ंक्शन" "फंक्शन"
+    lexeme zh "函数" "方法"
+    lexeme es "función" "funciones"
   # A programming-language keyword is the same word whatever language the
   # request is written in, so every lexeme lists the same keywords.
   function_declaration
@@ -395,61 +143,11 @@ meanings
     effect "the keyword right before a name followed by its parameter list marks the line as that function's declaration"
     unit "not applicable"
     example "fn in fn parse_header(line: &str)"
-    lexeme en
-      surface
-        text "function"
-      surface
-        text "fn"
-      surface
-        text "def"
-      surface
-        text "func"
-      surface
-        text "fun"
-    lexeme ru
-      surface
-        text "function"
-      surface
-        text "fn"
-      surface
-        text "def"
-      surface
-        text "func"
-      surface
-        text "fun"
-    lexeme hi
-      surface
-        text "function"
-      surface
-        text "fn"
-      surface
-        text "def"
-      surface
-        text "func"
-      surface
-        text "fun"
-    lexeme zh
-      surface
-        text "function"
-      surface
-        text "fn"
-      surface
-        text "def"
-      surface
-        text "func"
-      surface
-        text "fun"
-    lexeme es
-      surface
-        text "function"
-      surface
-        text "fn"
-      surface
-        text "def"
-      surface
-        text "func"
-      surface
-        text "fun"
+    lexeme en "function" "fn" "def" "func" "fun"
+    lexeme ru "function" "fn" "def" "func" "fun"
+    lexeme hi "function" "fn" "def" "func" "fun"
+    lexeme zh "function" "fn" "def" "func" "fun"
+    lexeme es "function" "fn" "def" "func" "fun"
   coding_artifact_name
     defined-by relation
     role coding_name_slot
@@ -457,29 +155,11 @@ meanings
     effect "the artifact-name slot can be bound from the request"
     unit "not applicable"
     example "named …"
-    lexeme en
-      surface
-        text "named …"
-      surface
-        text "with the name …"
-    lexeme ru
-      surface
-        text "с именем …"
-      surface
-        text "под названием …"
-    lexeme hi
-      surface
-        text "… नाम का"
-    lexeme zh
-      surface
-        text "名为 …"
-    lexeme es
-      surface
-        text "llamado …"
-      surface
-        text "llamada …"
-      surface
-        text "con el nombre …"
+    lexeme en "named …" "with the name …"
+    lexeme ru "с именем …" "под названием …"
+    lexeme hi "… नाम का"
+    lexeme zh "名为 …"
+    lexeme es "llamado …" "llamada …" "con el nombre …"
   coding_string_value
     defined-by relation
     role coding_value_slot
@@ -487,25 +167,11 @@ meanings
     effect "the string-value slot can be bound from the request"
     unit "not applicable"
     example "with the value …"
-    lexeme en
-      surface
-        text "with the value …"
-      surface
-        text "whose value is …"
-    lexeme ru
-      surface
-        text "со значением …"
-    lexeme hi
-      surface
-        text "जिसका मान …"
-    lexeme zh
-      surface
-        text "值为 …"
-    lexeme es
-      surface
-        text "con el valor …"
-      surface
-        text "cuyo valor es …"
+    lexeme en "with the value …" "whose value is …"
+    lexeme ru "со значением …"
+    lexeme hi "जिसका मान …"
+    lexeme zh "值为 …"
+    lexeme es "con el valor …" "cuyo valor es …"
   coding_bound
     defined-by code
     role coding_bound_cue
@@ -513,51 +179,11 @@ meanings
     effect "the fact or identifier is read as naming a configured bound"
     unit "not applicable"
     example "max_items is the limit on item count"
-    lexeme en
-      surface
-        text limit
-      surface
-        text limits
-      surface
-        text bound
-      surface
-        text bounds
-      surface
-        text cap
-      surface
-        text ceiling
-      surface
-        text maximum
-      surface
-        text max
-    lexeme ru
-      surface
-        text лимит
-      surface
-        text предел
-      surface
-        text ограничение
-      surface
-        text максимум
-    lexeme hi
-      surface
-        text सीमा
-      surface
-        text अधिकतम
-    lexeme zh
-      surface
-        text 上限
-      surface
-        text 限制
-      surface
-        text 最大值
-    lexeme es
-      surface
-        text límite
-      surface
-        text tope
-      surface
-        text máximo
+    lexeme en limit limits bound bounds cap ceiling maximum max
+    lexeme ru лимит предел ограничение максимум
+    lexeme hi सीमा अधिकतम
+    lexeme zh 上限 限制 最大值
+    lexeme es límite tope máximo
   completion_criterion
     defined-by code
     role coding_search_literal_query
@@ -565,21 +191,11 @@ meanings
     effect "completion_criterion denotes that model field"
     unit "not applicable"
     example "completion_criterion"
-    lexeme en
-      surface
-        text completion_criterion
-    lexeme ru
-      surface
-        text "критерий завершения"
-    lexeme hi
-      surface
-        text "पूर्णता मानदंड"
-    lexeme zh
-      surface
-        text 完成标准
-    lexeme es
-      surface
-        text "criterio de finalización"
+    lexeme en completion_criterion
+    lexeme ru "критерий завершения"
+    lexeme hi "पूर्णता मानदंड"
+    lexeme zh 完成标准
+    lexeme es "criterio de finalización"
   coding_search_string
     defined-by code
     role coding_search_subject_kind
@@ -587,21 +203,11 @@ meanings
     effect "the search-subject slot is bound to string"
     unit "not applicable"
     example "string"
-    lexeme en
-      surface
-        text string
-    lexeme ru
-      surface
-        text строка
-    lexeme hi
-      surface
-        text स्ट्रिंग
-    lexeme zh
-      surface
-        text 字符串
-    lexeme es
-      surface
-        text cadena
+    lexeme en string
+    lexeme ru строка
+    lexeme hi स्ट्रिंग
+    lexeme zh 字符串
+    lexeme es cadena
   coding_search_function
     defined-by function
     role coding_search_subject_kind
@@ -609,21 +215,11 @@ meanings
     effect "the search-subject slot is bound to function"
     unit "not applicable"
     example "function"
-    lexeme en
-      surface
-        text function
-    lexeme ru
-      surface
-        text функция
-    lexeme hi
-      surface
-        text फ़ंक्शन
-    lexeme zh
-      surface
-        text 函数
-    lexeme es
-      surface
-        text función
+    lexeme en function
+    lexeme ru функция
+    lexeme hi फ़ंक्शन
+    lexeme zh 函数
+    lexeme es función
   coding_search_array
     defined-by code
     role coding_search_subject_kind
@@ -632,21 +228,11 @@ meanings
     effect "the search-subject slot is bound to array"
     unit "not applicable"
     example "array"
-    lexeme en
-      surface
-        text array
-    lexeme ru
-      surface
-        text массив
-    lexeme hi
-      surface
-        text सरणी
-    lexeme zh
-      surface
-        text 数组
-    lexeme es
-      surface
-        text arreglo
+    lexeme en array
+    lexeme ru массив
+    lexeme hi सरणी
+    lexeme zh 数组
+    lexeme es arreglo
   coding_member_list_sequence
     defined-by code
     role coding_member_list_kind
@@ -654,35 +240,11 @@ meanings
     effect "the subject slot is bound to an ordered member list"
     unit "not applicable"
     example "list"
-    lexeme en
-      surface
-        text list
-      surface
-        text lists
-      surface
-        text sequence
-      surface
-        text vector
-    lexeme ru
-      surface
-        text список
-      surface
-        text списке
-      surface
-        text перечень
-    lexeme hi
-      surface
-        text सूची
-    lexeme zh
-      surface
-        text 列表
-    lexeme es
-      surface
-        text lista
-      surface
-        text listas
-      surface
-        text secuencia
+    lexeme en list lists sequence vector
+    lexeme ru список списке перечень
+    lexeme hi सूची
+    lexeme zh 列表
+    lexeme es lista listas secuencia
   coding_member_list_set
     defined-by code
     role coding_member_list_kind
@@ -690,29 +252,11 @@ meanings
     effect "the subject slot is bound to an unordered member list"
     unit "not applicable"
     example "set"
-    lexeme en
-      surface
-        text set
-      surface
-        text collection
-    lexeme ru
-      surface
-        text множество
-      surface
-        text коллекция
-    lexeme hi
-      surface
-        text समुच्चय
-      surface
-        text संग्रह
-    lexeme zh
-      surface
-        text 集合
-    lexeme es
-      surface
-        text conjunto
-      surface
-        text colección
+    lexeme en set collection
+    lexeme ru множество коллекция
+    lexeme hi समुच्चय संग्रह
+    lexeme zh 集合
+    lexeme es conjunto colección
   coding_member_list_group
     defined-by code
     role coding_member_list_kind
@@ -720,31 +264,11 @@ meanings
     effect "the subject slot is bound to a delimited group of members"
     unit "not applicable"
     example "group"
-    lexeme en
-      surface
-        text group
-      surface
-        text tuple
-      surface
-        text alternation
-    lexeme ru
-      surface
-        text группа
-      surface
-        text группе
-      surface
-        text кортеж
-    lexeme hi
-      surface
-        text समूह
-      surface
-        text टपल
-    lexeme zh
-      surface
-        text 元组
-    lexeme es
-      surface
-        text grupo
+    lexeme en group tuple alternation
+    lexeme ru группа группе кортеж
+    lexeme hi समूह टपल
+    lexeme zh 元组
+    lexeme es grupo
   coding_search_struct
     defined-by code
     role coding_search_subject_kind
@@ -752,21 +276,11 @@ meanings
     effect "the search-subject slot is bound to struct"
     unit "not applicable"
     example "struct"
-    lexeme en
-      surface
-        text struct
-    lexeme ru
-      surface
-        text структура
-    lexeme hi
-      surface
-        text स्ट्रक्ट
-    lexeme zh
-      surface
-        text 结构体
-    lexeme es
-      surface
-        text estructura
+    lexeme en struct
+    lexeme ru структура
+    lexeme hi स्ट्रक्ट
+    lexeme zh 结构体
+    lexeme es estructura
   coding_search_rendering
     defined-by code
     role coding_search_subject_kind
@@ -775,33 +289,11 @@ meanings
     effect "the search-subject slot is bound to a production rendering artifact"
     unit "not applicable"
     example "Links Notation rendering"
-    lexeme en
-      surface
-        text rendering
-      surface
-        text renderer
-      surface
-        text serialization
-    lexeme ru
-      surface
-        text рендеринг
-      surface
-        text сериализация
-    lexeme hi
-      surface
-        text रेंडरिंग
-      surface
-        text क्रमांकन
-    lexeme zh
-      surface
-        text 渲染
-      surface
-        text 序列化
-    lexeme es
-      surface
-        text renderizado
-      surface
-        text serialización
+    lexeme en rendering renderer serialization
+    lexeme ru рендеринг сериализация
+    lexeme hi रेंडरिंग क्रमांकन
+    lexeme zh 渲染 序列化
+    lexeme es renderizado serialización
   coding_search_adapter
     defined-by code
     role coding_search_subject_kind
@@ -810,27 +302,11 @@ meanings
     effect "the search-subject slot is bound to a production adapter"
     unit "not applicable"
     example "transport adapter"
-    lexeme en
-      surface
-        text adapter
-      surface
-        text adapters
-    lexeme ru
-      surface
-        text адаптер
-      surface
-        text адаптеры
-    lexeme hi
-      surface
-        text एडाप्टर
-    lexeme zh
-      surface
-        text 适配器
-    lexeme es
-      surface
-        text adaptador
-      surface
-        text adaptadores
+    lexeme en adapter adapters
+    lexeme ru адаптер адаптеры
+    lexeme hi एडाप्टर
+    lexeme zh 适配器
+    lexeme es adaptador adaptadores
   coding_relationship_reference
     defined-by code
     role coding_relationship_subject_kind
@@ -838,39 +314,11 @@ meanings
     effect "the adjacent source identifier is a relationship key"
     unit "not applicable"
     example "parent relationships"
-    lexeme en
-      surface
-        text relationship
-      surface
-        text relationships
-      surface
-        text association
-      surface
-        text associations
-    lexeme ru
-      surface
-        text связь
-      surface
-        text связи
-      surface
-        text ассоциация
-    lexeme hi
-      surface
-        text रिलेशनशिप
-      surface
-        text एसोसिएशन
-    lexeme zh
-      surface
-        text 关系
-      surface
-        text 关联
-    lexeme es
-      surface
-        text relación
-      surface
-        text relaciones
-      surface
-        text asociación
+    lexeme en relationship relationships association associations
+    lexeme ru связь связи ассоциация
+    lexeme hi रिलेशनशिप एसोसिएशन
+    lexeme zh 关系 关联
+    lexeme es relación relaciones asociación
   coding_serialization_action
     defined-by action
     role coding_serialization_action
@@ -878,39 +326,11 @@ meanings
     effect "the requested source fact is a serialized representation"
     unit "not applicable"
     example "relationships are encoded"
-    lexeme en
-      surface
-        text serialize
-      surface
-        text serialized
-      surface
-        text encoding
-      surface
-        text encoded
-    lexeme ru
-      surface
-        text сериализовать
-      surface
-        text сериализованный
-      surface
-        text кодирование
-    lexeme hi
-      surface
-        text "क्रमबद्ध करना"
-      surface
-        text एन्कोडिंग
-    lexeme zh
-      surface
-        text 序列化
-      surface
-        text 编码
-    lexeme es
-      surface
-        text serializar
-      surface
-        text serializado
-      surface
-        text codificación
+    lexeme en serialize serialized encoding encoded
+    lexeme ru сериализовать сериализованный кодирование
+    lexeme hi "क्रमबद्ध करना" एन्कोडिंग
+    lexeme zh 序列化 编码
+    lexeme es serializar serializado codificación
   coding_search_check
     defined-by code
     role coding_search_subject_kind
@@ -919,21 +339,11 @@ meanings
     effect "the search-subject slot is bound to check"
     unit "not applicable"
     example "retry check"
-    lexeme en
-      surface
-        text check
-    lexeme ru
-      surface
-        text проверка
-    lexeme hi
-      surface
-        text जांच
-    lexeme zh
-      surface
-        text 检查
-    lexeme es
-      surface
-        text comprobación
+    lexeme en check
+    lexeme ru проверка
+    lexeme hi जांच
+    lexeme zh 检查
+    lexeme es comprobación
   coding_search_completion_criterion
     defined-by code
     role coding_search_fact_query
@@ -941,44 +351,16 @@ meanings
     effect "the requested fact is searched with its canonical source expression"
     unit "not applicable"
     example "completion contract"
-    lexeme en
-      surface
-        text "completion contract"
-        action completion_criterion
-      surface
-        text "completion criterion"
-        action completion_criterion
-      surface
-        text "completion criteria"
-        action completion_criterion
-    lexeme ru
-      surface
-        text "контракт завершения"
-        action completion_criterion
-      surface
-        text "критерий завершения"
-        action completion_criterion
-    lexeme hi
-      surface
-        text "पूर्णता अनुबंध"
-        action completion_criterion
-      surface
-        text "पूर्णता मानदंड"
-        action completion_criterion
-    lexeme zh
-      surface
-        text 完成契约
-        action completion_criterion
-      surface
-        text 完成标准
-        action completion_criterion
-    lexeme es
-      surface
-        text "contrato de finalización"
-        action completion_criterion
-      surface
-        text "criterio de finalización"
-        action completion_criterion
+    lexeme en "completion contract" "completion criterion" "completion criteria"
+      action completion_criterion
+    lexeme ru "контракт завершения" "критерий завершения"
+      action completion_criterion
+    lexeme hi "पूर्णता अनुबंध" "पूर्णता मानदंड"
+      action completion_criterion
+    lexeme zh 完成契约 完成标准
+      action completion_criterion
+    lexeme es "contrato de finalización" "criterio de finalización"
+      action completion_criterion
   coding_search_missing_leaf_contract
     defined-by code
     role coding_search_fact_query
@@ -986,29 +368,16 @@ meanings
     effect "the requested fact is searched by the unresolved single-need sentinel"
     unit "not applicable"
     example "leaf without an observable completion contract"
-    lexeme en
-      surface
-        text "leaf without an observable completion contract"
-        action "unresolved_single_need"
-      surface
-        text "leaf without an observable completion criterion"
-        action "unresolved_single_need"
-    lexeme ru
-      surface
-        text "лист без наблюдаемого контракта завершения"
-        action "unresolved_single_need"
-    lexeme hi
-      surface
-        text "बिना अवलोकनीय पूर्णता अनुबंध वाला पत्ता"
-        action "unresolved_single_need"
-    lexeme zh
-      surface
-        text 没有可观察完成契约的叶子
-        action "unresolved_single_need"
-    lexeme es
-      surface
-        text "hoja sin un contrato de finalización observable"
-        action "unresolved_single_need"
+    lexeme en "leaf without an observable completion contract" "leaf without an observable completion criterion"
+      action "unresolved_single_need"
+    lexeme ru "лист без наблюдаемого контракта завершения"
+      action "unresolved_single_need"
+    lexeme hi "बिना अवलोकनीय पूर्णता अनुबंध वाला पत्ता"
+      action "unresolved_single_need"
+    lexeme zh 没有可观察完成契约的叶子
+      action "unresolved_single_need"
+    lexeme es "hoja sin un contrato de finalización observable"
+      action "unresolved_single_need"
   coding_search_issue_creation
     defined-by code
     role coding_search_literal_query
@@ -1016,26 +385,16 @@ meanings
     effect "the literal-search slot is bound to issue creation"
     unit "not applicable"
     example "GitHub issue creation command"
-    lexeme en
-      surface
-        text "GitHub issue creation command"
-        action "gh issue create"
-    lexeme ru
-      surface
-        text "команда создания задачи GitHub"
-        action "gh issue create"
-    lexeme hi
-      surface
-        text "GitHub इश्यू बनाने का कमांड"
-        action "gh issue create"
-    lexeme zh
-      surface
-        text "GitHub 议题创建命令"
-        action "gh issue create"
-    lexeme es
-      surface
-        text "comando de creación de incidencias de GitHub"
-        action "gh issue create"
+    lexeme en "GitHub issue creation command"
+      action "gh issue create"
+    lexeme ru "команда создания задачи GitHub"
+      action "gh issue create"
+    lexeme hi "GitHub इश्यू बनाने का कमांड"
+      action "gh issue create"
+    lexeme zh "GitHub 议题创建命令"
+      action "gh issue create"
+    lexeme es "comando de creación de incidencias de GitHub"
+      action "gh issue create"
   workspace_inspection_examine
     defined-by action
     role workspace_inspection_action
@@ -1043,45 +402,11 @@ meanings
     effect "the request is read as looking at what the workspace already holds"
     unit "not applicable"
     example "inspect"
-    lexeme en
-      surface
-        text inspect
-      surface
-        text examine
-      surface
-        text review
-      surface
-        text audit
-    lexeme ru
-      surface
-        text изучи
-      surface
-        text изучите
-      surface
-        text осмотри
-      surface
-        text просмотри
-    lexeme hi
-      surface
-        text "निरीक्षण करें"
-      surface
-        text "समीक्षा करें"
-    lexeme zh
-      surface
-        text 检查
-      surface
-        text 审查
-      surface
-        text 审阅
-    lexeme es
-      surface
-        text inspecciona
-      surface
-        text revisa
-      surface
-        text audita
-      surface
-        text examina
+    lexeme en inspect examine review audit
+    lexeme ru изучи изучите осмотри просмотри
+    lexeme hi "निरीक्षण करें" "समीक्षा करें"
+    lexeme zh 检查 审查 审阅
+    lexeme es inspecciona revisa audita examina
   workspace_inspection_verify
     defined-by action
     role workspace_inspection_action
@@ -1089,35 +414,11 @@ meanings
     effect "the request is read as confirming a claim against what the workspace holds"
     unit "not applicable"
     example "verify"
-    lexeme en
-      surface
-        text verify
-      surface
-        text confirm
-    lexeme ru
-      surface
-        text проверь
-      surface
-        text проверьте
-      surface
-        text убедись
-      surface
-        text подтверди
-    lexeme hi
-      surface
-        text "सत्यापित करें"
-      surface
-        text "पुष्टि करें"
-    lexeme zh
-      surface
-        text 验证
-      surface
-        text 确认
-    lexeme es
-      surface
-        text verifica
-      surface
-        text confirma
+    lexeme en verify confirm
+    lexeme ru проверь проверьте убедись подтверди
+    lexeme hi "सत्यापित करें" "पुष्टि करें"
+    lexeme zh 验证 确认
+    lexeme es verifica confirma
   workspace_inspection_identify
     defined-by action
     role workspace_inspection_action
@@ -1125,42 +426,8 @@ meanings
     effect "the request is read as locating something inside the workspace"
     unit "not applicable"
     example "identify"
-    lexeme en
-      surface
-        text identify
-      surface
-        text locate
-      surface
-        text "find where"
-      surface
-        text "where does"
-      surface
-        text "where the"
-    lexeme ru
-      surface
-        text определи
-      surface
-        text "найди где"
-      surface
-        text "где находится"
-    lexeme hi
-      surface
-        text "पहचानें"
-      surface
-        text "पता लगाएँ"
-      surface
-        text "कहाँ है"
-    lexeme zh
-      surface
-        text 确定
-      surface
-        text 找出
-      surface
-        text 在哪里
-    lexeme es
-      surface
-        text identifica
-      surface
-        text localiza
-      surface
-        text "dónde se define"
+    lexeme en identify locate "find where" "where does" "where the"
+    lexeme ru определи "найди где" "где находится"
+    lexeme hi "पहचानें" "पता लगाएँ" "कहाँ है"
+    lexeme zh 确定 找出 在哪里
+    lexeme es identifica localiza "dónde se define"

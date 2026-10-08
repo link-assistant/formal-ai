@@ -15,6 +15,8 @@ import path from 'node:path';
 import { test } from 'node:test';
 import { fileURLToPath } from 'node:url';
 
+import { expandConciseLexemes } from '../../../js/server/lino.mjs';
+
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../..');
 /** Mirrors `HELLO_WORLD_PROGRAM_LITERALS_MAX`. */
 const HELLO_WORLD_PROGRAM_LITERALS_MAX = 1;
@@ -93,7 +95,8 @@ test('R1165-8: data/ stores no more verbatim Hello World programs than the ratch
   const offenders = [];
   for (const file of walk(path.join(ROOT, 'data'))) {
     const relative = path.relative(ROOT, file).split(path.sep).join('/');
-    const found = helloWorldProgramLiterals(readFileSync(file, 'utf8'));
+    // A concise lexeme's words are `text` values, read as the long form.
+    const found = helloWorldProgramLiterals(expandConciseLexemes(readFileSync(file, 'utf8')));
     const capture = sourceCapture(relative);
     if (capture) captured.set(capture[0], captured.get(capture[0]) + found);
     else if (found > 0) {

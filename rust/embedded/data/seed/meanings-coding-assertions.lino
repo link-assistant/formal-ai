@@ -9,23 +9,11 @@ meanings
     effect "one assertion is written in the test file's own assertion form and the file is run (PR #1188 G13)"
     unit "not applicable"
     example "assertion"
-    lexeme en
-      surface
-        text "assertion"
-    lexeme ru
-      surface
-        text утверждение
-      surface
-        text проверку
-    lexeme hi
-      surface
-        text अभिकथन
-    lexeme zh
-      surface
-        text 断言
-    lexeme es
-      surface
-        text aserción
+    lexeme en "assertion"
+    lexeme ru утверждение проверку
+    lexeme hi अभिकथन
+    lexeme zh 断言
+    lexeme es aserción
   coding_assertion_equality
     defined-by relation
     role coding_assertion_equality_cue
@@ -33,30 +21,8 @@ meanings
     effect "the text before the cue is the asserted call and the text after it the expected value"
     unit "not applicable"
     example "equals"
-    lexeme en
-      surface
-        text "is equal to"
-      surface
-        text equals
-      surface
-        text returns
-    lexeme ru
-      surface
-        text равно
-      surface
-        text возвращает
-    lexeme hi
-      surface
-        text "के बराबर है"
-      surface
-        text "लौटाता है"
-    lexeme zh
-      surface
-        text 等于
-      surface
-        text 返回
-    lexeme es
-      surface
-        text "es igual a"
-      surface
-        text devuelve
+    lexeme en "is equal to" equals returns
+    lexeme ru равно возвращает
+    lexeme hi "के बराबर है" "लौटाता है"
+    lexeme zh 等于 返回
+    lexeme es "es igual a" devuelve

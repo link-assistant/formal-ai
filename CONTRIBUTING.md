@@ -681,7 +681,7 @@ This project uses:
 - Keep functions focused and reasonably sized
 - Keep Rust files under 1000 lines (`.lino` files and the browser worker JavaScript are capped at 1500); all limits are enforced by `rust-script scripts/check-file-size.rs`
 - Name things in full English words (`index`, not `idx`; `arguments`, not `args`) in code and in the links notation we own, and name files and directories after what they hold, never with numbered parts (R1188-U4, R1188-U5)
-- In the links notation we own, prefer `-` over `_` in names, keep it human readable, and state shared structure once and reference it (R1188-U6, R1188-U7)
+- In the links notation we own, prefer `-` over `_` in names, keep it human readable, and state shared structure once and reference it (R1188-U6, R1188-U7; `docs/links-notation-style.md`)
 - Generalize, don't specialize: fix a failing case with the smallest universal rule that covers its class, so specific tests pass through shared code (R1188-U1), and follow [code-architecture-principles](https://github.com/link-foundation/code-architecture-principles) (R1188-U2)
 - Make bulk changes by rules, such as a substitution pass or a generator with `--check`, not by hand (R1188-U8)
 
@@ -781,7 +781,7 @@ pub fn example_function(left: i32, right: i32) -> i32 {
 
   `scripts/plan-test-partition.rs` implements it for the macOS test slices from
   the durations recorded in `data/meta/test-durations.lino`, and the
-  `check_test_partition_balance` CI gate fails when the plan drifts out of
+  `check-test-partition-balance` CI gate fails when the plan drifts out of
   balance -- so a regression back to index order cannot land quietly. Apply the
   same rule to any new fan-out: sort by cost, descending, before assigning.
 

@@ -11,10 +11,10 @@ import vm from 'node:vm';
 
 export const REPO_ROOT = path.resolve(import.meta.dirname, '../..');
 
-let parser = null;
+let loader = null;
 
-function seedParser() {
-  if (parser) return parser;
+function seedLoader() {
+  if (loader) return loader;
   const sandbox = { console };
   sandbox.self = sandbox;
   sandbox.globalThis = sandbox;
@@ -22,8 +22,23 @@ function seedParser() {
   const context = vm.createContext(sandbox);
   const file = path.join(REPO_ROOT, 'js/seed_loader.js');
   new vm.Script(readFileSync(file, 'utf8'), { filename: file }).runInContext(context);
-  parser = sandbox.FormalAiSeed.parse;
-  return parser;
+  loader = sandbox.FormalAiSeed;
+  return loader;
+}
+
+function seedParser() {
+  return seedLoader().parse;
+}
+
+/**
+ * Links Notation text with the concise lexeme form written out long
+ * (`lexeme en "read" "open"` as one `surface` per word), for a reader that
+ * scans seed lines instead of parsing them (PR #1188, R1188-U7).
+ * @param {string} text
+ * @returns {string}
+ */
+export function expandConciseLexemes(text) {
+  return seedLoader().expandConciseLexemes(text);
 }
 
 /**

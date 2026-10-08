@@ -27,12 +27,8 @@ meanings
       text ссылка
       language ru
       source-lexeme L166085 # wikidata russian lexeme
-    lexeme hi
-      surface
-        text संदर्भ
-    lexeme zh
-      surface
-        text 引用
+    lexeme hi संदर्भ
+    lexeme zh 引用
   reference-action: makes reference point-at link # concept reference-action
     source-lexeme L41576 # wikidata english verb reference
       language Q1860 # wikidata language english
@@ -44,679 +40,283 @@ meanings
       text reference
       language en
       sense L41576-S1 # wikidata refer to sense
-    lexeme ru
-      surface
-        text "действие ссылки"
-    lexeme hi
-      surface
-        text "संदर्भ क्रिया"
-    lexeme zh
-      surface
-        text 引用动作
+    lexeme ru "действие ссылки"
+    lexeme hi "संदर्भ क्रिया"
+    lexeme zh 引用动作
   link-action: makes link from any-of-reference # concept link-action
     role links_root
-    lexeme en
-      surface
-        text "link action"
-    lexeme ru
-      surface
-        text "действие связи"
-    lexeme hi
-      surface
-        text "लिंक क्रिया"
-    lexeme zh
-      surface
-        text 链接动作
-    lexeme es
-      surface
-        text "acción de enlace"
+    lexeme en "link action"
+    lexeme ru "действие связи"
+    lexeme hi "लिंक क्रिया"
+    lexeme zh 链接动作
+    lexeme es "acción de enlace"
   any-of-reference: reference repeatable-from-zero # concept any-of-reference
     role links_root
-    lexeme en
-      surface
-        text "any of reference"
-    lexeme ru
-      surface
-        text "любые ссылки"
-    lexeme hi
-      surface
-        text "कोई भी संदर्भ"
-    lexeme zh
-      surface
-        text 任意引用
-    lexeme es
-      surface
-        text "cualquier referencia"
+    lexeme en "any of reference"
+    lexeme ru "любые ссылки"
+    lexeme hi "कोई भी संदर्भ"
+    lexeme zh 任意引用
+    lexeme es "cualquier referencia"
   any-of-link: link repeatable-from-zero # concept any-of-link
     role links_root
-    lexeme en
-      surface
-        text "any of link"
-    lexeme ru
-      surface
-        text "любые связи"
-    lexeme hi
-      surface
-        text "कोई भी लिंक"
-    lexeme zh
-      surface
-        text 任意链接
-    lexeme es
-      surface
-        text "cualquier enlace"
+    lexeme en "any of link"
+    lexeme ru "любые связи"
+    lexeme hi "कोई भी लिंक"
+    lexeme zh 任意链接
+    lexeme es "cualquier enlace"
   repeatable-from-zero: same link-action zero-or-more # concept repeatable-from-zero
     role links_root
-    lexeme en
-      surface
-        text "repeatable from zero"
-    lexeme ru
-      surface
-        text "повторяемое с нуля"
-    lexeme hi
-      surface
-        text "शून्य से दोहरनीय"
-    lexeme zh
-      surface
-        text 从零可重复
-    lexeme es
-      surface
-        text "repetible desde cero"
+    lexeme en "repeatable from zero"
+    lexeme ru "повторяемое с нуля"
+    lexeme hi "शून्य से दोहरनीय"
+    lexeme zh 从零可重复
+    lexeme es "repetible desde cero"
   zero-or-more: zero or-else more # concept zero-or-more
     role links_root
-    lexeme en
-      surface
-        text "zero or more"
-    lexeme ru
-      surface
-        text "ноль или больше"
-    lexeme hi
-      surface
-        text "शून्य या अधिक"
-    lexeme zh
-      surface
-        text 零个或多个
-    lexeme es
-      surface
-        text "cero o más"
+    lexeme en "zero or more"
+    lexeme ru "ноль или больше"
+    lexeme hi "शून्य या अधिक"
+    lexeme zh 零个或多个
+    lexeme es "cero o más"
   makes: link-action action # concept makes
     role links_root
-    lexeme en
-      surface
-        text makes
-    lexeme ru
-      surface
-        text создает
-    lexeme hi
-      surface
-        text "बनाता है"
-    lexeme zh
-      surface
-        text 生成
-    lexeme es
-      surface
-        text crea
+    lexeme en makes
+    lexeme ru создает
+    lexeme hi "बनाता है"
+    lexeme zh 生成
+    lexeme es crea
   point-at: reference-action to link # concept point-at
     role links_root
-    lexeme en
-      surface
-        text "point at"
-    lexeme ru
-      surface
-        text "указывать на"
-    lexeme hi
-      surface
-        text "इशारा करना"
-    lexeme zh
-      surface
-        text 指向
-    lexeme es
-      surface
-        text "apuntar a"
+    lexeme en "point at"
+    lexeme ru "указывать на"
+    lexeme hi "इशारा करना"
+    lexeme zh 指向
+    lexeme es "apuntar a"
   of: belonging from part to whole # concept of
     role links_root
-    lexeme en
-      surface
-        text of
-    lexeme ru
-      surface
-        text от
-    lexeme hi
-      surface
-        text का
-    lexeme zh
-      surface
-        text 的
-    lexeme es
-      surface
-        text de
+    lexeme en of
+    lexeme ru от
+    lexeme hi का
+    lexeme zh 的
+    lexeme es de
   from: source end direction # concept from
     role links_root
-    lexeme en
-      surface
-        text from
-    lexeme ru
-      surface
-        text из
-    lexeme hi
-      surface
-        text से
-    lexeme zh
-      surface
-        text 从
+    lexeme en from
+    lexeme ru из
+    lexeme hi से
+    lexeme zh 从
   to: target end direction # concept to
     role links_root
-    lexeme en
-      surface
-        text to
-    lexeme ru
-      surface
-        text к
-    lexeme hi
-      surface
-        text को
-    lexeme zh
-      surface
-        text 到
-    lexeme es
-      surface
-        text hacia
+    lexeme en to
+    lexeme ru к
+    lexeme hi को
+    lexeme zh 到
+    lexeme es hacia
   and: together-with # concept and
     role links_root
-    lexeme en
-      surface
-        text and
-    lexeme ru
-      surface
-        text и
-    lexeme hi
-      surface
-        text और
-    lexeme zh
-      surface
-        text 和
-    lexeme es
-      surface
-        text y
+    lexeme en and
+    lexeme ru и
+    lexeme hi और
+    lexeme zh 和
+    lexeme es y
   not: not (not not) # concept not
     self-equation not
     role links_root
-    lexeme en
-      surface
-        text not
-    lexeme ru
-      surface
-        text не
-    lexeme hi
-      surface
-        text नहीं
-    lexeme zh
-      surface
-        text 非
-    lexeme es
-      surface
-        text no
+    lexeme en not
+    lexeme ru не
+    lexeme hi नहीं
+    lexeme zh 非
+    lexeme es no
   same: not (not same) link # concept same
     self-equation same
     role links_root
-    lexeme en
-      surface
-        text same
-    lexeme ru
-      surface
-        text "тот же"
-    lexeme hi
-      surface
-        text समान
-    lexeme zh
-      surface
-        text 相同
-    lexeme es
-      surface
-        text mismo
+    lexeme en same
+    lexeme ru "тот же"
+    lexeme hi समान
+    lexeme zh 相同
+    lexeme es mismo
   other: not same # concept other
     role links_root
-    lexeme en
-      surface
-        text other
-    lexeme ru
-      surface
-        text другой
-    lexeme hi
-      surface
-        text अन्य
-    lexeme zh
-      surface
-        text 其他
-    lexeme es
-      surface
-        text otro
+    lexeme en other
+    lexeme ru другой
+    lexeme hi अन्य
+    lexeme zh 其他
+    lexeme es otro
   single: not other # concept single
     role links_root
-    lexeme en
-      surface
-        text single
-    lexeme ru
-      surface
-        text одиночный
-    lexeme hi
-      surface
-        text एकल
-    lexeme zh
-      surface
-        text 单一
-    lexeme es
-      surface
-        text único
+    lexeme en single
+    lexeme ru одиночный
+    lexeme hi एकल
+    lexeme zh 单一
+    lexeme es único
   or-else: choice between other # concept or-else
     role links_root
-    lexeme en
-      surface
-        text "or else"
-    lexeme ru
-      surface
-        text "или иначе"
-    lexeme hi
-      surface
-        text "या अन्य"
-    lexeme zh
-      surface
-        text 或者
-    lexeme es
-      surface
-        text "o bien"
+    lexeme en "or else"
+    lexeme ru "или иначе"
+    lexeme hi "या अन्य"
+    lexeme zh 或者
+    lexeme es "o bien"
   more: one and one # concept more
     role links_root
-    lexeme en
-      surface
-        text more
-    lexeme ru
-      surface
-        text больше
-    lexeme hi
-      surface
-        text अधिक
-    lexeme zh
-      surface
-        text 更多
-    lexeme es
-      surface
-        text más
+    lexeme en more
+    lexeme ru больше
+    lexeme hi अधिक
+    lexeme zh 更多
+    lexeme es más
   is-identity: same # concept is-identity
     role links_root
-    lexeme en
-      surface
-        text "is identity"
-    lexeme ru
-      surface
-        text "есть тождество"
-    lexeme hi
-      surface
-        text "पहचान है"
-    lexeme zh
-      surface
-        text 是同一
-    lexeme es
-      surface
-        text "es identidad"
+    lexeme en "is identity"
+    lexeme ru "есть тождество"
+    lexeme hi "पहचान है"
+    lexeme zh 是同一
+    lexeme es "es identidad"
   is-a-kind-of: subtype supertype direction # concept is-a-kind-of
     role links_root
-    lexeme en
-      surface
-        text "is a kind of"
-    lexeme ru
-      surface
-        text "является видом"
-    lexeme hi
-      surface
-        text "का प्रकार है"
-    lexeme zh
-      surface
-        text 是一种
-    lexeme es
-      surface
-        text "es un tipo de"
+    lexeme en "is a kind of"
+    lexeme ru "является видом"
+    lexeme hi "का प्रकार है"
+    lexeme zh 是一种
+    lexeme es "es un tipo de"
   subtype: is-a-kind-of type # concept subtype
     role links_root
-    lexeme en
-      surface
-        text subtype
-    lexeme ru
-      surface
-        text подтип
-    lexeme hi
-      surface
-        text उपप्रकार
-    lexeme zh
-      surface
-        text 子类型
-    lexeme es
-      surface
-        text subtipo
+    lexeme en subtype
+    lexeme ru подтип
+    lexeme hi उपप्रकार
+    lexeme zh 子类型
+    lexeme es subtipo
   supertype: type type # concept supertype
     role links_root
-    lexeme en
-      surface
-        text supertype
-    lexeme ru
-      surface
-        text супертип
-    lexeme hi
-      surface
-        text अधिप्रकार
-    lexeme zh
-      surface
-        text 超类型
-    lexeme es
-      surface
-        text supertipo
+    lexeme en supertype
+    lexeme ru супертип
+    lexeme hi अधिप्रकार
+    lexeme zh 超类型
+    lexeme es supertipo
   held-by: from property to entity # concept held-by
     role links_root
-    lexeme en
-      surface
-        text "held by"
-    lexeme ru
-      surface
-        text удерживается
-    lexeme hi
-      surface
-        text "द्वारा धारित"
-    lexeme zh
-      surface
-        text 持有于
-    lexeme es
-      surface
-        text "poseído por"
+    lexeme en "held by"
+    lexeme ru удерживается
+    lexeme hi "द्वारा धारित"
+    lexeme zh 持有于
+    lexeme es "poseído por"
   amount: count any-of-link # concept amount
     role links_root
-    lexeme en
-      surface
-        text amount
-    lexeme ru
-      surface
-        text количество
-    lexeme hi
-      surface
-        text परिमाण
-    lexeme zh
-      surface
-        text 数额
-    lexeme es
-      surface
-        text monto
-      surface
-        text importe
+    lexeme en amount
+    lexeme ru количество
+    lexeme hi परिमाण
+    lexeme zh 数额
+    lexeme es monto importe
   size: extent single link # concept size
     role links_root
-    lexeme en
-      surface
-        text size
-    lexeme ru
-      surface
-        text размер
-    lexeme hi
-      surface
-        text आकार
-    lexeme zh
-      surface
-        text 大小
-    lexeme es
-      surface
-        text tamaño
+    lexeme en size
+    lexeme ru размер
+    lexeme hi आकार
+    lexeme zh 大小
+    lexeme es tamaño
   count: amount distinct reference # concept count
     role links_root
-    lexeme en
-      surface
-        text count
-    lexeme ru
-      surface
-        text счет
-    lexeme hi
-      surface
-        text गिनती
-    lexeme zh
-      surface
-        text 计数
-    lexeme es
-      surface
-        text recuento
+    lexeme en count
+    lexeme ru счет
+    lexeme hi गिनती
+    lexeme zh 计数
+    lexeme es recuento
   extent: size single reference # concept extent
     role links_root
-    lexeme en
-      surface
-        text extent
-    lexeme ru
-      surface
-        text протяженность
-    lexeme hi
-      surface
-        text विस्तार
-    lexeme zh
-      surface
-        text 范围
-    lexeme es
-      surface
-        text extensión
+    lexeme en extent
+    lexeme ru протяженность
+    lexeme hi विस्तार
+    lexeme zh 范围
+    lexeme es extensión
   distinct: other # concept distinct
     role links_root
-    lexeme en
-      surface
-        text distinct
-    lexeme ru
-      surface
-        text различный
-    lexeme hi
-      surface
-        text भिन्न
-    lexeme zh
-      surface
-        text 不同
-    lexeme es
-      surface
-        text distinto
+    lexeme en distinct
+    lexeme ru различный
+    lexeme hi भिन्न
+    lexeme zh 不同
+    lexeme es distinto
   any: quantity not fixed # concept any
     role links_root
-    lexeme en
-      surface
-        text any
-    lexeme ru
-      surface
-        text любой
-    lexeme hi
-      surface
-        text "कोई भी"
-    lexeme zh
-      surface
-        text 任意
-    lexeme es
-      surface
-        text cualquier
+    lexeme en any
+    lexeme ru любой
+    lexeme hi "कोई भी"
+    lexeme zh 任意
+    lexeme es cualquier
   fixed: same repeatable-from-zero # concept fixed
     role links_root
-    lexeme en
-      surface
-        text fixed
-    lexeme ru
-      surface
-        text фиксированный
-    lexeme hi
-      surface
-        text निश्चित
-    lexeme zh
-      surface
-        text 固定
-    lexeme es
-      surface
-        text fijo
+    lexeme en fixed
+    lexeme ru фиксированный
+    lexeme hi निश्चित
+    lexeme zh 固定
+    lexeme es fijo
   empty: any-of-reference zero # concept empty
     role links_root
-    lexeme en
-      surface
-        text empty
-    lexeme ru
-      surface
-        text пустой
-    lexeme hi
-      surface
-        text खाली
-    lexeme zh
-      surface
-        text 空
-    lexeme es
-      surface
-        text vacío
+    lexeme en empty
+    lexeme ru пустой
+    lexeme hi खाली
+    lexeme zh 空
+    lexeme es vacío
   source: relation direction # concept source
     role links_root
-    lexeme en
-      surface
-        text source
-    lexeme ru
-      surface
-        text источник
-    lexeme hi
-      surface
-        text स्रोत
-    lexeme zh
-      surface
-        text 来源
-    lexeme es
-      surface
-        text origen
+    lexeme en source
+    lexeme ru источник
+    lexeme hi स्रोत
+    lexeme zh 来源
+    lexeme es origen
   target: relation direction # concept target
     role links_root
-    lexeme en
-      surface
-        text target
-    lexeme ru
-      surface
-        text цель
-    lexeme hi
-      surface
-        text लक्ष्य
-    lexeme zh
-      surface
-        text 目标
-    lexeme es
-      surface
-        text destino
+    lexeme en target
+    lexeme ru цель
+    lexeme hi लक्ष्य
+    lexeme zh 目标
+    lexeme es destino
   end: relation direction # concept end
     role links_root
-    lexeme en
-      surface
-        text end
-    lexeme ru
-      surface
-        text конец
-    lexeme hi
-      surface
-        text सिरा
-    lexeme zh
-      surface
-        text 端点
-    lexeme es
-      surface
-        text extremo
+    lexeme en end
+    lexeme ru конец
+    lexeme hi सिरा
+    lexeme zh 端点
+    lexeme es extremo
   direction: relation source target # concept direction
     role links_root
-    lexeme en
-      surface
-        text direction
-    lexeme ru
-      surface
-        text направление
-    lexeme hi
-      surface
-        text दिशा
-    lexeme zh
-      surface
-        text 方向
-    lexeme es
-      surface
-        text dirección
+    lexeme en direction
+    lexeme ru направление
+    lexeme hi दिशा
+    lexeme zh 方向
+    lexeme es dirección
   belonging: relation part whole # concept belonging
     role links_root
-    lexeme en
-      surface
-        text belonging
-    lexeme ru
-      surface
-        text принадлежность
-    lexeme hi
-      surface
-        text संबद्धता
-    lexeme zh
-      surface
-        text 归属
-    lexeme es
-      surface
-        text pertenencia
+    lexeme en belonging
+    lexeme ru принадлежность
+    lexeme hi संबद्धता
+    lexeme zh 归属
+    lexeme es pertenencia
   part: link whole # concept part
     role links_root
-    lexeme en
-      surface
-        text part
-    lexeme ru
-      surface
-        text часть
-    lexeme hi
-      surface
-        text भाग
-    lexeme zh
-      surface
-        text 部分
-    lexeme es
-      surface
-        text parte
+    lexeme en part
+    lexeme ru часть
+    lexeme hi भाग
+    lexeme zh 部分
+    lexeme es parte
   whole: link part # concept whole
     role links_root
-    lexeme en
-      surface
-        text whole
-    lexeme ru
-      surface
-        text целое
-    lexeme hi
-      surface
-        text संपूर्ण
-    lexeme zh
-      surface
-        text 整体
-    lexeme es
-      surface
-        text todo
+    lexeme en whole
+    lexeme ru целое
+    lexeme hi संपूर्ण
+    lexeme zh 整体
+    lexeme es todo
   together-with: relation and # concept together-with
     role links_root
-    lexeme en
-      surface
-        text "together with"
-    lexeme ru
-      surface
-        text "вместе с"
-    lexeme hi
-      surface
-        text "साथ में"
-    lexeme zh
-      surface
-        text 一起
-    lexeme es
-      surface
-        text "junto con"
+    lexeme en "together with"
+    lexeme ru "вместе с"
+    lexeme hi "साथ में"
+    lexeme zh 一起
+    lexeme es "junto con"
   choice: relation # concept choice
     role links_root
-    lexeme en
-      surface
-        text choice
-    lexeme ru
-      surface
-        text выбор
-    lexeme hi
-      surface
-        text चयन
-    lexeme zh
-      surface
-        text 选择
-    lexeme es
-      surface
-        text elección
+    lexeme en choice
+    lexeme ru выбор
+    lexeme hi चयन
+    lexeme zh 选择
+    lexeme es elección
   between: relation # concept between
     source-lexeme L3412 # wikidata english adposition between
       language Q1860 # wikidata language english
@@ -727,149 +327,63 @@ meanings
       text between
       language en
       sense L3412-S1 # wikidata spatial relation sense
-    lexeme ru
-      surface
-        text между
-    lexeme hi
-      surface
-        text "बीच में"
-    lexeme zh
-      surface
-        text 之间
+    lexeme ru между
+    lexeme hi "बीच में"
+    lexeme zh 之间
   semantic-facet: relation # concept semantic-facet
     role links_root
-    lexeme en
-      surface
-        text "semantic facet"
-    lexeme ru
-      surface
-        text "семантический аспект"
-    lexeme hi
-      surface
-        text "अर्थगत पहलू"
-    lexeme zh
-      surface
-        text 语义侧面
-    lexeme es
-      surface
-        text "faceta semántica"
+    lexeme en "semantic facet"
+    lexeme ru "семантический аспект"
+    lexeme hi "अर्थगत पहलू"
+    lexeme zh 语义侧面
+    lexeme es "faceta semántica"
   lexical-sense: denotation concept # concept lexical-sense
     role links_root
-    lexeme en
-      surface
-        text "lexical sense"
-    lexeme ru
-      surface
-        text "лексическое значение"
-    lexeme hi
-      surface
-        text "शाब्दिक अर्थ"
-    lexeme zh
-      surface
-        text 词汇义项
-    lexeme es
-      surface
-        text "sentido léxico"
+    lexeme en "lexical sense"
+    lexeme ru "лексическое значение"
+    lexeme hi "शाब्दिक अर्थ"
+    lexeme zh 词汇义项
+    lexeme es "sentido léxico"
   self-equation: semantic-facet same # concept self-equation
     role semantic_facet_kind
     role links_root
-    lexeme en
-      surface
-        text "self equation"
-    lexeme ru
-      surface
-        text самоуравнение
-    lexeme hi
-      surface
-        text स्व-समीकरण
-    lexeme zh
-      surface
-        text 自方程
-    lexeme es
-      surface
-        text autoecuación
+    lexeme en "self equation"
+    lexeme ru самоуравнение
+    lexeme hi स्व-समीकरण
+    lexeme zh 自方程
+    lexeme es autoecuación
   symbol: reference notation # concept symbol
     role links_root
-    lexeme en
-      surface
-        text symbol
-    lexeme ru
-      surface
-        text символ
-    lexeme hi
-      surface
-        text प्रतीक
-    lexeme zh
-      surface
-        text 符号
-    lexeme es
-      surface
-        text símbolo
+    lexeme en symbol
+    lexeme ru символ
+    lexeme hi प्रतीक
+    lexeme zh 符号
+    lexeme es símbolo
   one-symbol-one-meaning: symbol single lexical-sense # concept one-symbol-one-meaning
     role links_root
-    lexeme en
-      surface
-        text "one symbol one meaning"
-    lexeme ru
-      surface
-        text "один символ одно значение"
-    lexeme hi
-      surface
-        text "एक प्रतीक एक अर्थ"
-    lexeme zh
-      surface
-        text 一符一义
-    lexeme es
-      surface
-        text "un símbolo un significado"
+    lexeme en "one symbol one meaning"
+    lexeme ru "один символ одно значение"
+    lexeme hi "एक प्रतीक एक अर्थ"
+    lexeme zh 一符一义
+    lexeme es "un símbolo un significado"
   sense-split: lexical-sense other symbol # concept sense-split
     role links_root
-    lexeme en
-      surface
-        text "sense split"
-    lexeme ru
-      surface
-        text "разделение значений"
-    lexeme hi
-      surface
-        text "अर्थ विभाजन"
-    lexeme zh
-      surface
-        text 义项拆分
-    lexeme es
-      surface
-        text "división de sentidos"
+    lexeme en "sense split"
+    lexeme ru "разделение значений"
+    lexeme hi "अर्थ विभाजन"
+    lexeme zh 义项拆分
+    lexeme es "división de sentidos"
   bank-river: sense-split part whole # concept bank-river
     role links_root
-    lexeme en
-      surface
-        text "river bank"
-    lexeme ru
-      surface
-        text "речной берег"
-    lexeme hi
-      surface
-        text "नदी तट"
-    lexeme zh
-      surface
-        text 河岸
-    lexeme es
-      surface
-        text "orilla del río"
+    lexeme en "river bank"
+    lexeme ru "речной берег"
+    lexeme hi "नदी तट"
+    lexeme zh 河岸
+    lexeme es "orilla del río"
   bank-money: sense-split entity property # concept bank-money
     role links_root
-    lexeme en
-      surface
-        text "financial bank"
-    lexeme ru
-      surface
-        text "финансовый банк"
-    lexeme hi
-      surface
-        text "वित्तीय बैंक"
-    lexeme zh
-      surface
-        text 银行
-    lexeme es
-      surface
-        text "banco financiero"
+    lexeme en "financial bank"
+    lexeme ru "финансовый банк"
+    lexeme hi "वित्तीय बैंक"
+    lexeme zh 银行
+    lexeme es "banco financiero"

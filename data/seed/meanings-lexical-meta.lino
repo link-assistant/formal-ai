@@ -8,36 +8,26 @@ meanings
     annotation semantic_gloss
     denotation lexical_sense
     connotation part_of_speech
-    lexeme en
-      surface
-        text "lexical form"
-        notation word_surface
-        denotation lexical_form
-        part_of_speech noun_phrase
-    lexeme ru
-      surface
-        text "лексическая форма"
-        notation word_surface
-        denotation lexical_form
-        part_of_speech noun_phrase
-    lexeme hi
-      surface
-        text "शाब्दिक रूप"
-        notation word_surface
-        denotation lexical_form
-        part_of_speech noun_phrase
-    lexeme zh
-      surface
-        text 词形
-        notation word_surface
-        denotation lexical_form
-        part_of_speech noun
-    lexeme es
-      surface
-        text "forma léxica"
-        notation word_surface
-        denotation lexical_form
-        part_of_speech noun_phrase
+    lexeme en "lexical form"
+      notation word_surface
+      denotation lexical_form
+      part_of_speech noun_phrase
+    lexeme ru "лексическая форма"
+      notation word_surface
+      denotation lexical_form
+      part_of_speech noun_phrase
+    lexeme hi "शाब्दिक रूप"
+      notation word_surface
+      denotation lexical_form
+      part_of_speech noun_phrase
+    lexeme zh 词形
+      notation word_surface
+      denotation lexical_form
+      part_of_speech noun
+    lexeme es "forma léxica"
+      notation word_surface
+      denotation lexical_form
+      part_of_speech noun_phrase
   word_surface
     defined-by lexical_form
     defined-by notation
@@ -46,36 +36,26 @@ meanings
     annotation semantic_gloss
     denotation lexical_form
     connotation lexical_sense
-    lexeme en
-      surface
-        text "word surface"
-        notation word_surface
-        denotation word_surface
-        part_of_speech noun_phrase
-    lexeme ru
-      surface
-        text "словесная форма"
-        notation word_surface
-        denotation word_surface
-        part_of_speech noun_phrase
-    lexeme hi
-      surface
-        text "शब्द सतह"
-        notation word_surface
-        denotation word_surface
-        part_of_speech noun_phrase
-    lexeme zh
-      surface
-        text 词面
-        notation word_surface
-        denotation word_surface
-        part_of_speech noun
-    lexeme es
-      surface
-        text "forma de palabra"
-        notation word_surface
-        denotation word_surface
-        part_of_speech noun_phrase
+    lexeme en "word surface"
+      notation word_surface
+      denotation word_surface
+      part_of_speech noun_phrase
+    lexeme ru "словесная форма"
+      notation word_surface
+      denotation word_surface
+      part_of_speech noun_phrase
+    lexeme hi "शब्द सतह"
+      notation word_surface
+      denotation word_surface
+      part_of_speech noun_phrase
+    lexeme zh 词面
+      notation word_surface
+      denotation word_surface
+      part_of_speech noun
+    lexeme es "forma de palabra"
+      notation word_surface
+      denotation word_surface
+      part_of_speech noun_phrase
   lexical_sense
     grounded-in Q1570700
     defined-by denotation
@@ -85,36 +65,26 @@ meanings
     annotation semantic_gloss
     denotation concept
     connotation lexical_form
-    lexeme en
-      surface
-        text "lexical sense"
-        notation word_surface
-        denotation lexical_sense
-        part_of_speech noun_phrase
-    lexeme ru
-      surface
-        text "лексическое значение"
-        notation word_surface
-        denotation lexical_sense
-        part_of_speech noun_phrase
-    lexeme hi
-      surface
-        text "शाब्दिक अर्थ"
-        notation word_surface
-        denotation lexical_sense
-        part_of_speech noun_phrase
-    lexeme zh
-      surface
-        text 词义
-        notation word_surface
-        denotation lexical_sense
-        part_of_speech noun
-    lexeme es
-      surface
-        text "sentido léxico"
-        notation word_surface
-        denotation lexical_sense
-        part_of_speech noun_phrase
+    lexeme en "lexical sense"
+      notation word_surface
+      denotation lexical_sense
+      part_of_speech noun_phrase
+    lexeme ru "лексическое значение"
+      notation word_surface
+      denotation lexical_sense
+      part_of_speech noun_phrase
+    lexeme hi "शाब्दिक अर्थ"
+      notation word_surface
+      denotation lexical_sense
+      part_of_speech noun_phrase
+    lexeme zh 词义
+      notation word_surface
+      denotation lexical_sense
+      part_of_speech noun
+    lexeme es "sentido léxico"
+      notation word_surface
+      denotation lexical_sense
+      part_of_speech noun_phrase
   part_of_speech
     grounded-in Q82042
     defined-by semantic_facet
@@ -125,36 +95,26 @@ meanings
     annotation semantic_gloss
     denotation semantic_facet
     connotation lexical_form
-    lexeme en
-      surface
-        text "part of speech"
-        notation word_surface
-        denotation part_of_speech
-        part_of_speech noun_phrase
-    lexeme ru
-      surface
-        text "часть речи"
-        notation word_surface
-        denotation part_of_speech
-        part_of_speech noun_phrase
-    lexeme hi
-      surface
-        text "शब्द भेद"
-        notation word_surface
-        denotation part_of_speech
-        part_of_speech noun_phrase
-    lexeme zh
-      surface
-        text 词类
-        notation word_surface
-        denotation part_of_speech
-        part_of_speech noun
-    lexeme es
-      surface
-        text "categoría gramatical"
-        notation word_surface
-        denotation part_of_speech
-        part_of_speech noun_phrase
+    lexeme en "part of speech"
+      notation word_surface
+      denotation part_of_speech
+      part_of_speech noun_phrase
+    lexeme ru "часть речи"
+      notation word_surface
+      denotation part_of_speech
+      part_of_speech noun_phrase
+    lexeme hi "शब्द भेद"
+      notation word_surface
+      denotation part_of_speech
+      part_of_speech noun_phrase
+    lexeme zh 词类
+      notation word_surface
+      denotation part_of_speech
+      part_of_speech noun
+    lexeme es "categoría gramatical"
+      notation word_surface
+      denotation part_of_speech
+      part_of_speech noun_phrase
   noun
     grounded-in Q1084
     defined-by part_of_speech
@@ -163,36 +123,26 @@ meanings
     annotation semantic_gloss
     denotation part_of_speech
     connotation lexical_form
-    lexeme en
-      surface
-        text noun
-        notation word_surface
-        denotation noun
-        part_of_speech noun
-    lexeme ru
-      surface
-        text существительное
-        notation word_surface
-        denotation noun
-        part_of_speech noun
-    lexeme hi
-      surface
-        text संज्ञा
-        notation word_surface
-        denotation noun
-        part_of_speech noun
-    lexeme zh
-      surface
-        text 名词
-        notation word_surface
-        denotation noun
-        part_of_speech noun
-    lexeme es
-      surface
-        text sustantivo
-        notation word_surface
-        denotation noun
-        part_of_speech noun
+    lexeme en noun
+      notation word_surface
+      denotation noun
+      part_of_speech noun
+    lexeme ru существительное
+      notation word_surface
+      denotation noun
+      part_of_speech noun
+    lexeme hi संज्ञा
+      notation word_surface
+      denotation noun
+      part_of_speech noun
+    lexeme zh 名词
+      notation word_surface
+      denotation noun
+      part_of_speech noun
+    lexeme es sustantivo
+      notation word_surface
+      denotation noun
+      part_of_speech noun
   noun_phrase
     grounded-in Q1401131
     defined-by noun
@@ -202,36 +152,26 @@ meanings
     annotation semantic_gloss
     denotation part_of_speech
     connotation noun
-    lexeme en
-      surface
-        text "noun phrase"
-        notation word_surface
-        denotation noun_phrase
-        part_of_speech noun_phrase
-    lexeme ru
-      surface
-        text "именная группа"
-        notation word_surface
-        denotation noun_phrase
-        part_of_speech noun_phrase
-    lexeme hi
-      surface
-        text "संज्ञा पद"
-        notation word_surface
-        denotation noun_phrase
-        part_of_speech noun_phrase
-    lexeme zh
-      surface
-        text 名词短语
-        notation word_surface
-        denotation noun_phrase
-        part_of_speech noun_phrase
-    lexeme es
-      surface
-        text "sintagma nominal"
-        notation word_surface
-        denotation noun_phrase
-        part_of_speech noun_phrase
+    lexeme en "noun phrase"
+      notation word_surface
+      denotation noun_phrase
+      part_of_speech noun_phrase
+    lexeme ru "именная группа"
+      notation word_surface
+      denotation noun_phrase
+      part_of_speech noun_phrase
+    lexeme hi "संज्ञा पद"
+      notation word_surface
+      denotation noun_phrase
+      part_of_speech noun_phrase
+    lexeme zh 名词短语
+      notation word_surface
+      denotation noun_phrase
+      part_of_speech noun_phrase
+    lexeme es "sintagma nominal"
+      notation word_surface
+      denotation noun_phrase
+      part_of_speech noun_phrase
   grammatical_number
     grounded-in Q104083
     defined-by semantic_facet
@@ -242,36 +182,26 @@ meanings
     annotation semantic_gloss
     denotation semantic_facet
     connotation lexical_form
-    lexeme en
-      surface
-        text "grammatical number"
-        notation word_surface
-        denotation grammatical_number
-        part_of_speech noun_phrase
-    lexeme ru
-      surface
-        text "грамматическое число"
-        notation word_surface
-        denotation grammatical_number
-        part_of_speech noun_phrase
-    lexeme hi
-      surface
-        text "व्याकरणिक संख्या"
-        notation word_surface
-        denotation grammatical_number
-        part_of_speech noun_phrase
-    lexeme zh
-      surface
-        text 语法数
-        notation word_surface
-        denotation grammatical_number
-        part_of_speech noun
-    lexeme es
-      surface
-        text "número gramatical"
-        notation word_surface
-        denotation grammatical_number
-        part_of_speech noun_phrase
+    lexeme en "grammatical number"
+      notation word_surface
+      denotation grammatical_number
+      part_of_speech noun_phrase
+    lexeme ru "грамматическое число"
+      notation word_surface
+      denotation grammatical_number
+      part_of_speech noun_phrase
+    lexeme hi "व्याकरणिक संख्या"
+      notation word_surface
+      denotation grammatical_number
+      part_of_speech noun_phrase
+    lexeme zh 语法数
+      notation word_surface
+      denotation grammatical_number
+      part_of_speech noun
+    lexeme es "número gramatical"
+      notation word_surface
+      denotation grammatical_number
+      part_of_speech noun_phrase
   singular
     grounded-in Q110786
     defined-by grammatical_number
@@ -280,36 +210,26 @@ meanings
     annotation semantic_gloss
     denotation grammatical_number
     connotation lexical_form
-    lexeme en
-      surface
-        text singular
-        notation word_surface
-        denotation singular
-        part_of_speech noun
-    lexeme ru
-      surface
-        text "единственное число"
-        notation word_surface
-        denotation singular
-        part_of_speech noun_phrase
-    lexeme hi
-      surface
-        text एकवचन
-        notation word_surface
-        denotation singular
-        part_of_speech noun
-    lexeme zh
-      surface
-        text 单数
-        notation word_surface
-        denotation singular
-        part_of_speech noun
-    lexeme es
-      surface
-        text singular
-        notation word_surface
-        denotation singular
-        part_of_speech noun
+    lexeme en singular
+      notation word_surface
+      denotation singular
+      part_of_speech noun
+    lexeme ru "единственное число"
+      notation word_surface
+      denotation singular
+      part_of_speech noun_phrase
+    lexeme hi एकवचन
+      notation word_surface
+      denotation singular
+      part_of_speech noun
+    lexeme zh 单数
+      notation word_surface
+      denotation singular
+      part_of_speech noun
+    lexeme es singular
+      notation word_surface
+      denotation singular
+      part_of_speech noun
   plural
     grounded-in Q146786
     defined-by grammatical_number
@@ -318,33 +238,23 @@ meanings
     annotation semantic_gloss
     denotation grammatical_number
     connotation lexical_form
-    lexeme en
-      surface
-        text plural
-        notation word_surface
-        denotation plural
-        part_of_speech noun
-    lexeme ru
-      surface
-        text "множественное число"
-        notation word_surface
-        denotation plural
-        part_of_speech noun_phrase
-    lexeme hi
-      surface
-        text बहुवचन
-        notation word_surface
-        denotation plural
-        part_of_speech noun
-    lexeme zh
-      surface
-        text 复数
-        notation word_surface
-        denotation plural
-        part_of_speech noun
-    lexeme es
-      surface
-        text plural
-        notation word_surface
-        denotation plural
-        part_of_speech noun
+    lexeme en plural
+      notation word_surface
+      denotation plural
+      part_of_speech noun
+    lexeme ru "множественное число"
+      notation word_surface
+      denotation plural
+      part_of_speech noun_phrase
+    lexeme hi बहुवचन
+      notation word_surface
+      denotation plural
+      part_of_speech noun
+    lexeme zh 复数
+      notation word_surface
+      denotation plural
+      part_of_speech noun
+    lexeme es plural
+      notation word_surface
+      denotation plural
+      part_of_speech noun

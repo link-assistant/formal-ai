@@ -909,7 +909,9 @@ fn data_stores_no_more_verbatim_hello_world_programs_than_the_ratchet() {
             let Ok(text) = fs::read_to_string(&path) else {
                 continue;
             };
-            let found = hello_world_program_literals(&text);
+            // A concise lexeme's words are `text` values, read as the long form.
+            let found =
+                hello_world_program_literals(&formal_ai::seed::expand_concise_lexemes(&text));
             let relative = path
                 .strip_prefix(root)
                 .unwrap_or(path.as_path())

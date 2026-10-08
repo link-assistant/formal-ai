@@ -2,353 +2,89 @@ meanings
   tool_invocation_cue
     defined-by action
     role tool_invocation_cue
-    lexeme en
-      surface
-        text call
-      surface
-        text invoke
-      surface
-        text run
-      surface
-        text api
-      surface
-        text tool
-    lexeme ru
-      surface
-        text вызови
-      surface
-        text вызвать
-      surface
-        text запусти
-      surface
-        text инструмент
-    lexeme hi
-      surface
-        text कॉल
-      surface
-        text चलाओ
-      surface
-        text उपकरण
-    lexeme zh
-      surface
-        text 调用
-      surface
-        text 运行
-      surface
-        text 工具
-    lexeme es
-      surface
-        text llama
-      surface
-        text invoca
-      surface
-        text ejecuta
-      surface
-        text herramienta
+    lexeme en call invoke run api tool
+    lexeme ru вызови вызвать запусти инструмент
+    lexeme hi कॉल चलाओ उपकरण
+    lexeme zh 调用 运行 工具
+    lexeme es llama invoca ejecuta herramienta
   calculator_tool
     defined-by entity
     role calculator_tool_name
-    lexeme en
-      surface
-        text calculator
-    lexeme ru
-      surface
-        text калькулятор
-    lexeme hi
-      surface
-        text कैलकुलेटर
-    lexeme zh
-      surface
-        text 计算器
-    lexeme es
-      surface
-        text calculadora
+    lexeme en calculator
+    lexeme ru калькулятор
+    lexeme hi कैलकुलेटर
+    lexeme zh 计算器
+    lexeme es calculadora
   web_search_tool
     defined-by entity
     role web_search_tool_name
-    lexeme en
-      surface
-        text web_search
-      surface
-        text "web search"
-      surface
-        text web-search
-    lexeme ru
-      surface
-        text веб-поиск
-      surface
-        text "поиск в интернете"
-    lexeme hi
-      surface
-        text "वेब खोज"
-      surface
-        text "इंटरनेट खोज"
-    lexeme zh
-      surface
-        text 网络搜索
-      surface
-        text 网页搜索
-    lexeme es
-      surface
-        text "búsqueda web"
-      surface
-        text "búsqueda en internet"
+    lexeme en web_search "web search" web-search
+    lexeme ru веб-поиск "поиск в интернете"
+    lexeme hi "वेब खोज" "इंटरनेट खोज"
+    lexeme zh 网络搜索 网页搜索
+    lexeme es "búsqueda web" "búsqueda en internet"
   local_shell_tool
     defined-by entity
     role local_shell_request_cue
-    lexeme en
-      surface
-        text local_shell
-      surface
-        text "local shell tool"
-      surface
-        text "local shell api"
-      surface
-        text "call the shell tool"
-      surface
-        text "invoke the shell tool"
-    lexeme ru
-      surface
-        text "локальная оболочка"
-      surface
-        text "вызови оболочку"
-    lexeme hi
-      surface
-        text "लोकल शेल"
-      surface
-        text "शेल टूल चलाओ"
-    lexeme zh
-      surface
-        text 本地外壳
-      surface
-        text 调用外壳工具
-    lexeme es
-      surface
-        text "shell local"
-      surface
-        text "terminal local"
-      surface
-        text "llama a la herramienta de shell"
+    lexeme en local_shell "local shell tool" "local shell api" "call the shell tool" "invoke the shell tool"
+    lexeme ru "локальная оболочка" "вызови оболочку"
+    lexeme hi "लोकल शेल" "शेल टूल चलाओ"
+    lexeme zh 本地外壳 调用外壳工具
+    lexeme es "shell local" "terminal local" "llama a la herramienta de shell"
   tool_argument_marker
     defined-by relation
     role tool_argument_marker
-    lexeme en
-      surface
-        text "with query"
-      surface
-        text query
-      surface
-        text with
-      surface
-        text for
-    lexeme ru
-      surface
-        text "с запросом"
-      surface
-        text для
-    lexeme hi
-      surface
-        text "क्वेरी के साथ"
-      surface
-        text "के लिए"
-    lexeme zh
-      surface
-        text 查询
-      surface
-        text 用于
-    lexeme es
-      surface
-        text "con la consulta"
-      surface
-        text consulta
-      surface
-        text para
+    lexeme en "with query" query with for
+    lexeme ru "с запросом" для
+    lexeme hi "क्वेरी के साथ" "के लिए"
+    lexeme zh 查询 用于
+    lexeme es "con la consulta" consulta para
   tool_result_failure
     defined-by concept
     role tool_result_failure_signal
     lexeme en
-      surface
-        text "error"
-      surface
-        text "failed"
-      surface
-        text "not found"
-      surface
-        text 404
-      surface
-        text "non 2xx status code"
-      surface
-        text "you cannot perform that action at this time"
-      surface
-        text "too many requests"
-      surface
-        text "rate limit"
-      surface
-        text "temporarily unavailable"
-    lexeme ru
-      surface
-        text "не удалось"
-      surface
-        text "действие недоступно"
-      surface
-        text "слишком много запросов"
-    lexeme hi
-      surface
-        text "कार्रवाई नहीं कर सकते"
-      surface
-        text "बहुत अधिक अनुरोध"
-    lexeme zh
-      surface
-        text 无法执行此操作
-      surface
-        text 请求过多
-    lexeme es
-      surface
-        text error
-      surface
-        text falló
-      surface
-        text "no encontrado"
-      surface
-        text "demasiadas solicitudes"
-      surface
-        text "no disponible temporalmente"
-      surface
-        text "no se pudo"
+      words "error" "failed" "not found" 404 "non 2xx status code" "you cannot perform that action at this time"
+      words "too many requests" "rate limit" "temporarily unavailable"
+    lexeme ru "не удалось" "действие недоступно" "слишком много запросов"
+    lexeme hi "कार्रवाई नहीं कर सकते" "बहुत अधिक अनुरोध"
+    lexeme zh 无法执行此操作 请求过多
+    lexeme es error falló "no encontrado" "demasiadas solicitudes" "no disponible temporalmente" "no se pudo"
   tool_result_detail_request
     defined-by action
     role tool_result_detail_request
-    lexeme en
-      surface
-        text "full result"
-      surface
-        text "more detail"
-      surface
-        text "original result"
-    lexeme ru
-      surface
-        text "полный результат"
-      surface
-        text подробнее
-      surface
-        text "исходный результат"
-    lexeme hi
-      surface
-        text "पूरा परिणाम"
-      surface
-        text "अधिक विवरण"
-      surface
-        text "मूल परिणाम"
-    lexeme zh
-      surface
-        text 完整结果
-      surface
-        text 更多详情
-      surface
-        text 原始结果
-    lexeme es
-      surface
-        text "resultado completo"
-      surface
-        text "más detalles"
-      surface
-        text "resultado original"
+    lexeme en "full result" "more detail" "original result"
+    lexeme ru "полный результат" подробнее "исходный результат"
+    lexeme hi "पूरा परिणाम" "अधिक विवरण" "मूल परिणाम"
+    lexeme zh 完整结果 更多详情 原始结果
+    lexeme es "resultado completo" "más detalles" "resultado original"
   tool_result_url_request
     defined-by entity
     role tool_result_url_request
-    lexeme en
-      surface
-        text url
-      surface
-        text link
-    lexeme ru
-      surface
-        text ссылка
-    lexeme hi
-      surface
-        text यूआरएल
-      surface
-        text लिंक
-    lexeme zh
-      surface
-        text 网址
-      surface
-        text 链接
+    lexeme en url link
+    lexeme ru ссылка
+    lexeme hi यूआरएल लिंक
+    lexeme zh 网址 链接
   tool_result_line_request
     defined-by entity
     role tool_result_line_request
-    lexeme en
-      surface
-        text line
-    lexeme ru
-      surface
-        text строка
-      surface
-        text строку
-    lexeme hi
-      surface
-        text पंक्ति
-    lexeme zh
-      surface
-        text 行
-    lexeme es
-      surface
-        text línea
+    lexeme en line
+    lexeme ru строка строку
+    lexeme hi पंक्ति
+    lexeme zh 行
+    lexeme es línea
   tool_result_first_reference
     defined-by concept
     role tool_result_first_reference
-    lexeme en
-      surface
-        text first
-    lexeme ru
-      surface
-        text первый
-      surface
-        text первого
-      surface
-        text первую
-    lexeme hi
-      surface
-        text पहले
-      surface
-        text पहली
-    lexeme zh
-      surface
-        text 第一个
-      surface
-        text 第一
-    lexeme es
-      surface
-        text primero
-      surface
-        text primera
-      surface
-        text primer
+    lexeme en first
+    lexeme ru первый первого первую
+    lexeme hi पहले पहली
+    lexeme zh 第一个 第一
+    lexeme es primero primera primer
   tool_result_second_reference
     defined-by concept
     role tool_result_second_reference
-    lexeme en
-      surface
-        text second
-    lexeme ru
-      surface
-        text второй
-      surface
-        text второго
-      surface
-        text вторую
-    lexeme hi
-      surface
-        text दूसरे
-      surface
-        text दूसरी
-    lexeme zh
-      surface
-        text 第二个
-      surface
-        text 第二
-    lexeme es
-      surface
-        text segundo
-      surface
-        text segunda
+    lexeme en second
+    lexeme ru второй второго вторую
+    lexeme hi दूसरे दूसरी
+    lexeme zh 第二个 第二
+    lexeme es segundo segunda

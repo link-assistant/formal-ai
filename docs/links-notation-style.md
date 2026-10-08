@@ -55,6 +55,66 @@ with its full word, are listed under `abbreviations` in
 (`json`, `url`, `qid`, `triz`) are listed under `proper-terms` with what they
 stand for; they stay as they are.
 
+## Lexemes are written concisely
+
+Lexemes are the most repeated structure of the seed. Before this rule they
+took about 46,000 of its 102,000 lines. A lexeme lists its words after its
+language. The fields that every one of its surfaces shares are stated once,
+below the lexeme. Before (`data/seed/meanings-membership.lino`):
+
+```lino
+    lexeme en
+      surface
+        text clarinet # source Q8343 labels.en.value
+        part_of_speech noun
+        grammatical_number singular
+    lexeme ru
+      surface
+        text кларнет # source Q8343 labels.ru.value
+        part_of_speech noun
+        grammatical_number singular
+```
+
+After:
+
+```lino
+    lexeme en clarinet # source Q8343 labels.en.value
+      part_of_speech noun
+      grammatical_number singular
+    lexeme ru кларнет # source Q8343 labels.ru.value
+      part_of_speech noun
+      grammatical_number singular
+```
+
+A word list (`data/seed/meanings-file-write.lino`):
+
+```lino
+  file_read_action
+    defined-by action
+    role file_read_action_cue
+    lexeme en
+      words "read" "read the file" "show me the contents of" "open" "print" "show" "get the contents of" "display"
+      words "view the file" "load" "what is in" "tell me what" "cat" "inspect" "preview" "contents" "inside" "what does"
+      words "say" "first line" "value of" "summarize"
+```
+
+A list that would make the line longer than 120 characters continues on
+`words` lines under the lexeme. Both forms are read: the seed parsers of both
+roots, `expandConciseLexemes` in `js/seed_loader.js` and
+`expand_concise_lexemes` in `rust/src/seed/parser.rs`, write the concise form
+out long before they build the tree. A reader that scans seed lines instead of
+parsing them reads the expanded text: the browser keeps the raw seed text that
+way, and a node script imports `expandConciseLexemes` from
+`js/server/lino.mjs`. A surface with fields of its own, or a lexeme whose
+surfaces differ in their fields, stays long.
+
+The `seed-lexemes` family of `data/meta/notation-rules.lino` applies the rule.
+Its converter (`scripts/lib/notation-concise-lexemes.mjs`) writes a file only
+when the result parses to exactly the same tree as before. On 2026-10-08 it
+wrote 4916 lexemes in the concise form. That removed about 28,000 lines, and
+`data/seed` fell from 3,532,300 to 3,150,411 characters, 11 percent. The files
+the family still excepts are listed there, each with its reason.
+
 ## Shared structure is stated once
 
 Two measures find structure that is repeated instead of stated once:

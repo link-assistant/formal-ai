@@ -21,329 +21,45 @@ meanings
     defined-by action
     role brainstorming_request
     lexeme en
-      surface
-        text "name ideas for"
-      surface
-        text "names for a"
-      surface
-        text "names for the"
-      surface
-        text "ideas for a"
-      surface
-        text "ideas for the"
-      surface
-        text "idea for a"
-      surface
-        text "come up with names"
-      surface
-        text "come up with a name"
-      surface
-        text "suggest names for"
-      surface
-        text "suggest a name for"
-      surface
-        text "brainstorm names for"
-      surface
-        text "brainstorm a name for"
-      surface
-        text "brainstorm ideas for"
-      surface
-        text "name ideas"
+      words "name ideas for" "names for a" "names for the" "ideas for a" "ideas for the" "idea for a"
+      words "come up with names" "come up with a name" "suggest names for" "suggest a name for" "brainstorm names for"
+      words "brainstorm a name for" "brainstorm ideas for" "name ideas"
     lexeme ru
-      surface
-        text "название для"
-      surface
-        text "названия для"
-      surface
-        text "имя для"
-      surface
-        text "имена для"
-      surface
-        text "идеи для"
-      surface
-        text "идей для"
-      surface
-        text "придумай название для"
-      surface
-        text "придумай имя для"
-      surface
-        text "предложи названия для"
-      surface
-        text "придумай идеи для"
-    lexeme hi
-      surface
-        text "नाम के विचार"
-      surface
-        text "नाम सुझाओ"
-      surface
-        text "के लिए नाम"
-      surface
-        text "के लिए विचार"
-      surface
-        text "विचार दो"
-    lexeme zh
-      surface
-        text "起个名字"
-      surface
-        text "起名字"
-      surface
-        text "想几个名字"
-      surface
-        text "起名"
-      surface
-        text "给我一些想法"
-      surface
-        text "名字想法"
-    lexeme es
-      surface
-        text "ideas para"
-      surface
-        text "idea para"
-      surface
-        text "nombres para"
-      surface
-        text "un nombre para"
-      surface
-        text "sugiere nombres"
-      surface
-        text "dame ideas"
+      words "название для" "названия для" "имя для" "имена для" "идеи для" "идей для" "придумай название для"
+      words "придумай имя для" "предложи названия для" "придумай идеи для"
+    lexeme hi "नाम के विचार" "नाम सुझाओ" "के लिए नाम" "के लिए विचार" "विचार दो"
+    lexeme zh "起个名字" "起名字" "想几个名字" "起名" "给我一些想法" "名字想法"
+    lexeme es "ideas para" "idea para" "nombres para" "un nombre para" "sugiere nombres" "dame ideas"
   creative_writing_request
     defined-by action
     role creative_writing_request
     lexeme en
-      surface
-        text "write a poem"
-      surface
-        text "write a haiku"
-      surface
-        text "write a limerick"
-      surface
-        text "write a sonnet"
-      surface
-        text "write a couplet"
-      surface
-        text "poem about"
-      surface
-        text "poem on the"
-      surface
-        text "four-line poem"
-      surface
-        text "four line poem"
-      surface
-        text "rhyming poem"
-      surface
-        text "rhyming sonnet"
-      surface
-        text "sonnet about"
-      surface
-        text "haiku about"
-      surface
-        text "limerick about"
-      surface
-        text "couplet about"
-      surface
-        text "short poem"
-      surface
-        text "write a story"
-      surface
-        text "compose a poem"
+      words "write a poem" "write a haiku" "write a limerick" "write a sonnet" "write a couplet" "poem about"
+      words "poem on the" "four-line poem" "four line poem" "rhyming poem" "rhyming sonnet" "sonnet about" "haiku about"
+      words "limerick about" "couplet about" "short poem" "write a story" "compose a poem"
     lexeme ru
-      surface
-        text "напиши стихотворение"
-      surface
-        text "напиши стих"
-      surface
-        text "стихотворение о"
-      surface
-        text "стихотворение про"
-      surface
-        text "стих о"
-      surface
-        text "стих про"
-      surface
-        text "хокку"
-      surface
-        text "хайку"
-      surface
-        text "лимерик"
-      surface
-        text "четверостишие"
-    lexeme hi
-      surface
-        text "कविता लिखो"
-      surface
-        text "कविता लिखें"
-      surface
-        text "के बारे में कविता"
-      surface
-        text "कविता बनाओ"
-      surface
-        text "हाइकू"
-    lexeme zh
-      surface
-        text "写一首诗"
-      surface
-        text "写一首"
-      surface
-        text "写诗"
-      surface
-        text "首诗"
-      surface
-        text "一首诗"
-      surface
-        text "行诗"
-      surface
-        text "俳句"
-      surface
-        text "打油诗"
-    lexeme es
-      surface
-        text "escribe un poema"
-      surface
-        text "escribe una historia"
-      surface
-        text "poema sobre"
-      surface
-        text "poema acerca"
-      surface
-        text "un haiku"
-      surface
-        text "escribe un haiku"
+      words "напиши стихотворение" "напиши стих" "стихотворение о" "стихотворение про" "стих о" "стих про" "хокку"
+      words "хайку" "лимерик" "четверостишие"
+    lexeme hi "कविता लिखो" "कविता लिखें" "के बारे में कविता" "कविता बनाओ" "हाइकू"
+    lexeme zh "写一首诗" "写一首" "写诗" "首诗" "一首诗" "行诗" "俳句" "打油诗"
+    lexeme es "escribe un poema" "escribe una historia" "poema sobre" "poema acerca" "un haiku" "escribe un haiku"
   planning_request
     defined-by action
     role planning_request
     lexeme en
-      surface
-        text "itinerary"
-      surface
-        text "plan a trip"
-      surface
-        text "plan a visit"
-      surface
-        text "day trip"
-      surface
-        text "travel plan"
-      surface
-        text "day plan"
-      surface
-        text "plan for"
-      surface
-        text "schedule for"
-      surface
-        text "plan me"
-    lexeme ru
-      surface
-        text "маршрут"
-      surface
-        text "план поездки"
-      surface
-        text "составь маршрут"
-      surface
-        text "составь план"
-      surface
-        text "спланируй"
-      surface
-        text "планируй"
-    lexeme hi
-      surface
-        text "यात्रा की योजना"
-      surface
-        text "यात्रा योजना"
-      surface
-        text "कार्यक्रम बनाओ"
-      surface
-        text "योजना बनाओ"
-      surface
-        text "इनिरेरी"
-    lexeme zh
-      surface
-        text "行程"
-      surface
-        text "旅行计划"
-      surface
-        text "旅游计划"
-      surface
-        text "规划一次"
-      surface
-        text "计划一次旅行"
-      surface
-        text "安排行程"
-    lexeme es
-      surface
-        text "itinerario"
-      surface
-        text "planifica un viaje"
-      surface
-        text "plan de viaje"
-      surface
-        text "planear un viaje"
-      surface
-        text "organiza un viaje"
+      words "itinerary" "plan a trip" "plan a visit" "day trip" "travel plan" "day plan" "plan for" "schedule for"
+      words "plan me"
+    lexeme ru "маршрут" "план поездки" "составь маршрут" "составь план" "спланируй" "планируй"
+    lexeme hi "यात्रा की योजना" "यात्रा योजना" "कार्यक्रम बनाओ" "योजना बनाओ" "इनिरेरी"
+    lexeme zh "行程" "旅行计划" "旅游计划" "规划一次" "计划一次旅行" "安排行程"
+    lexeme es "itinerario" "planifica un viaje" "plan de viaje" "planear un viaje" "organiza un viaje"
   advice_request
     defined-by action
     role advice_request
     lexeme en
-      surface
-        text "tips for"
-      surface
-        text "advice for"
-      surface
-        text "advice on"
-      surface
-        text "any advice"
-      surface
-        text "what should i do about"
-      surface
-        text "how can i improve"
-      surface
-        text "recommend"
-      surface
-        text "evidence-based tips"
-      surface
-        text "give me tips"
-    lexeme ru
-      surface
-        text "совет"
-      surface
-        text "советы"
-      surface
-        text "посоветуй"
-      surface
-        text "как мне улучшить"
-      surface
-        text "как улучшить"
-      surface
-        text "что мне делать с"
-    lexeme hi
-      surface
-        text "सलाह दो"
-      surface
-        text "सलाह के लिए"
-      surface
-        text "सुझाव दो"
-      surface
-        text "सुझाव के लिए"
-      surface
-        text "कैसे सुधारूँ"
-    lexeme zh
-      surface
-        text "建议"
-      surface
-        text "给点建议"
-      surface
-        text "小贴士"
-      surface
-        text "有什么建议"
-      surface
-        text "怎样才能改善"
-    lexeme es
-      surface
-        text "consejos para"
-      surface
-        text "un consejo para"
-      surface
-        text "recomendaciones para"
-      surface
-        text "recomienda"
-      surface
-        text "como puedo mejorar"
+      words "tips for" "advice for" "advice on" "any advice" "what should i do about" "how can i improve" "recommend"
+      words "evidence-based tips" "give me tips"
+    lexeme ru "совет" "советы" "посоветуй" "как мне улучшить" "как улучшить" "что мне делать с"
+    lexeme hi "सलाह दो" "सलाह के लिए" "सुझाव दो" "सुझाव के लिए" "कैसे सुधारूँ"
+    lexeme zh "建议" "给点建议" "小贴士" "有什么建议" "怎样才能改善"
+    lexeme es "consejos para" "un consejo para" "recomendaciones para" "recomienda" "como puedo mejorar"

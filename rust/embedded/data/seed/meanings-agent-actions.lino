@@ -2,183 +2,37 @@ meanings
   formalize_document_action
     defined-by action
     role agent_action_formalize_verb
-    lexeme en
-      surface
-        text formalize
-      surface
-        text formalise
-    lexeme ru
-      surface
-        text формализуй
-      surface
-        text формализировать
-      surface
-        text формализовать
-    lexeme hi
-      surface
-        text "औपचारिक रूप दें"
-      surface
-        text formalize
-    lexeme zh
-      surface
-        text 形式化
-    lexeme es
-      surface
-        text formaliza
-      surface
-        text formalizar
+    lexeme en formalize formalise
+    lexeme ru формализуй формализировать формализовать
+    lexeme hi "औपचारिक रूप दें" formalize
+    lexeme zh 形式化
+    lexeme es formaliza formalizar
   report_issue_action
     defined-by action
     role agent_action_report_verb
-    lexeme en
-      surface
-        text report
-      surface
-        text file
-      surface
-        text open
-      surface
-        text submit
-      surface
-        text create
-    lexeme ru
-      surface
-        text сообщи
-      surface
-        text сообщить
-      surface
-        text создай
-      surface
-        text создать
-      surface
-        text зарепорти
-    lexeme hi
-      surface
-        text रिपोर्ट
-    lexeme zh
-      surface
-        text 报告
-      surface
-        text 提交
-    lexeme es
-      surface
-        text reporta
-      surface
-        text reportar
-      surface
-        text notifica
-      surface
-        text notificar
+    lexeme en report file open submit create
+    lexeme ru сообщи сообщить создай создать зарепорти
+    lexeme hi रिपोर्ट
+    lexeme zh 报告 提交
+    lexeme es reporta reportar notifica notificar
   report_issue_subject
     defined-by inquiry
     role agent_action_report_subject
-    lexeme en
-      surface
-        text issue
-      surface
-        text bug
-      surface
-        text problem
-      surface
-        text github
-      surface
-        text repository
-      surface
-        text repo
-    lexeme ru
-      surface
-        text баг
-      surface
-        text проблема
-      surface
-        text проблеме
-      surface
-        text ошибка
-      surface
-        text ошибке
-      surface
-        text issue
-    lexeme hi
-      surface
-        text समस्या
-      surface
-        text त्रुटि
-    lexeme zh
-      surface
-        text 问题
-      surface
-        text 错误
-    lexeme es
-      surface
-        text issue
-      surface
-        text incidencia
-      surface
-        text problema
-      surface
-        text error
-      surface
-        text fallo
-      surface
-        text repositorio
+    lexeme en issue bug problem github repository repo
+    lexeme ru баг проблема проблеме ошибка ошибке issue
+    lexeme hi समस्या त्रुटि
+    lexeme zh 问题 错误
+    lexeme es issue incidencia problema error fallo repositorio
   request_objective
     defined-by relation
     role request_objective_lead
-    lexeme en
-      surface
-        text "issue to solve: …"
-      surface
-        text "task to solve: …"
-      surface
-        text "objective: …"
-      surface
-        text "request: …"
-      surface
-        text "task: …"
-      surface
-        text "goal: …"
-    lexeme ru
-      surface
-        text "задача для решения: …"
-      surface
-        text "запрос: …"
-      surface
-        text "задача: …"
-      surface
-        text "цель: …"
-    lexeme hi
-      surface
-        text "हल करने का कार्य: …"
-      surface
-        text "अनुरोध: …"
-      surface
-        text "कार्य: …"
-      surface
-        text "लक्ष्य: …"
-    lexeme zh
-      surface
-        text "待解决的问题：…"
-      surface
-        text "请求：…"
-      surface
-        text "任务：…"
-      surface
-        text "目标：…"
+    lexeme en "issue to solve: …" "task to solve: …" "objective: …" "request: …" "task: …" "goal: …"
+    lexeme ru "задача для решения: …" "запрос: …" "задача: …" "цель: …"
+    lexeme hi "हल करने का कार्य: …" "अनुरोध: …" "कार्य: …" "लक्ष्य: …"
+    lexeme zh "待解决的问题：…" "请求：…" "任务：…" "目标：…"
     lexeme es
-      surface
-        text "problema a resolver: …"
-      surface
-        text "tarea a resolver: …"
-      surface
-        text "objetivo: …"
-      surface
-        text "solicitud: …"
-      surface
-        text "petición: …"
-      surface
-        text "tarea: …"
-      surface
-        text "meta: …"
+      words "problema a resolver: …" "tarea a resolver: …" "objetivo: …" "solicitud: …" "petición: …" "tarea: …"
+      words "meta: …"
   method
     defined-by concept
     defined-by action

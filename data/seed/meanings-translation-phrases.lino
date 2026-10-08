@@ -19,35 +19,11 @@ meanings
     effect "the translation answers with the first form of the target language"
     unit "not applicable"
     example "translate 'Hello' to Russian"
-    lexeme en
-      surface
-        text "Hello"
-      surface
-        text "hi"
-      surface
-        text "hey"
-    lexeme ru
-      surface
-        text "Привет"
-      surface
-        text "здравствуйте"
-      surface
-        text "здравствуй"
-    lexeme hi
-      surface
-        text "नमस्ते"
-      surface
-        text "नमस्कार"
-    lexeme zh
-      surface
-        text "你好"
-      surface
-        text "您好"
-    lexeme es
-      surface
-        text "Hola"
-      surface
-        text "buenas"
+    lexeme en "Hello" "hi" "hey"
+    lexeme ru "Привет" "здравствуйте" "здравствуй"
+    lexeme hi "नमस्ते" "नमस्कार"
+    lexeme zh "你好" "您好"
+    lexeme es "Hola" "buenas"
   translation_phrase_how_are_you
     defined-by concept
     role translation_phrase
@@ -55,45 +31,13 @@ meanings
     effect "the translation answers with the first form of the target language"
     unit "not applicable"
     example "translate 'How are you?' to Russian"
-    lexeme en
-      surface
-        text "How are you?"
-      surface
-        text "hello how are you"
-      surface
-        text "hi how are you"
+    lexeme en "How are you?" "hello how are you" "hi how are you"
     lexeme ru
-      surface
-        text "Как у тебя дела?"
-      surface
-        text "как дела"
-      surface
-        text "как у вас дела"
-      surface
-        text "как ваши дела"
-      surface
-        text "как твои дела"
-      surface
-        text "привет как дела"
-      surface
-        text "здравствуйте как ваши дела"
-    lexeme hi
-      surface
-        text "आप कैसे हैं?"
-      surface
-        text "तुम कैसे हो"
-    lexeme zh
-      surface
-        text "你好吗？"
-      surface
-        text "你怎么样"
-    lexeme es
-      surface
-        text "¿Cómo estás?"
-      surface
-        text "cómo está"
-      surface
-        text "qué tal"
+      words "Как у тебя дела?" "как дела" "как у вас дела" "как ваши дела" "как твои дела" "привет как дела"
+      words "здравствуйте как ваши дела"
+    lexeme hi "आप कैसे हैं?" "तुम कैसे हो"
+    lexeme zh "你好吗？" "你怎么样"
+    lexeme es "¿Cómo estás?" "cómo está" "qué tal"
   translation_phrase_thank_you
     defined-by concept
     role translation_phrase
@@ -101,37 +45,11 @@ meanings
     effect "the translation answers with the first form of the target language"
     unit "not applicable"
     example "translate 'Thank you' to Russian"
-    lexeme en
-      surface
-        text "Thank you"
-      surface
-        text "thanks"
-      surface
-        text "thank you very much"
-    lexeme ru
-      surface
-        text "Спасибо"
-      surface
-        text "благодарю"
-      surface
-        text "большое спасибо"
-    lexeme hi
-      surface
-        text "धन्यवाद"
-      surface
-        text "शुक्रिया"
-    lexeme zh
-      surface
-        text "谢谢"
-      surface
-        text "多谢"
-      surface
-        text "感谢"
-    lexeme es
-      surface
-        text "Gracias"
-      surface
-        text "muchas gracias"
+    lexeme en "Thank you" "thanks" "thank you very much"
+    lexeme ru "Спасибо" "благодарю" "большое спасибо"
+    lexeme hi "धन्यवाद" "शुक्रिया"
+    lexeme zh "谢谢" "多谢" "感谢"
+    lexeme es "Gracias" "muchas gracias"
   translation_phrase_you_are_welcome
     defined-by concept
     role translation_phrase
@@ -139,33 +57,11 @@ meanings
     effect "the translation answers with the first form of the target language"
     unit "not applicable"
     example "translate 'You are welcome' to Russian"
-    lexeme en
-      surface
-        text "You are welcome"
-      surface
-        text "you're welcome"
-      surface
-        text "not to worry"
-    lexeme ru
-      surface
-        text "Пожалуйста"
-      surface
-        text "не за что"
-    lexeme hi
-      surface
-        text "आपका स्वागत है"
-      surface
-        text "कोई बात नहीं"
-    lexeme zh
-      surface
-        text "不客气"
-      surface
-        text "不用谢"
-    lexeme es
-      surface
-        text "De nada"
-      surface
-        text "no hay de qué"
+    lexeme en "You are welcome" "you're welcome" "not to worry"
+    lexeme ru "Пожалуйста" "не за что"
+    lexeme hi "आपका स्वागत है" "कोई बात नहीं"
+    lexeme zh "不客气" "不用谢"
+    lexeme es "De nada" "no hay de qué"
   translation_phrase_goodbye
     defined-by concept
     role translation_phrase
@@ -173,39 +69,11 @@ meanings
     effect "the translation answers with the first form of the target language"
     unit "not applicable"
     example "translate 'Goodbye' to Russian"
-    lexeme en
-      surface
-        text "Goodbye"
-      surface
-        text "bye"
-      surface
-        text "see you"
-      surface
-        text "bye bye"
-    lexeme ru
-      surface
-        text "До свидания"
-      surface
-        text "пока"
-      surface
-        text "прощай"
-    lexeme hi
-      surface
-        text "अलविदा"
-      surface
-        text "फिर मिलेंगे"
-    lexeme zh
-      surface
-        text "再见"
-      surface
-        text "拜拜"
-    lexeme es
-      surface
-        text "Adiós"
-      surface
-        text "hasta luego"
-      surface
-        text "chao"
+    lexeme en "Goodbye" "bye" "see you" "bye bye"
+    lexeme ru "До свидания" "пока" "прощай"
+    lexeme hi "अलविदा" "फिर मिलेंगे"
+    lexeme zh "再见" "拜拜"
+    lexeme es "Adiós" "hasta luego" "chao"
   translation_phrase_good_morning
     defined-by concept
     role translation_phrase
@@ -213,25 +81,11 @@ meanings
     effect "the translation answers with the first form of the target language"
     unit "not applicable"
     example "translate 'Good morning' to Russian"
-    lexeme en
-      surface
-        text "Good morning"
-    lexeme ru
-      surface
-        text "Доброе утро"
-    lexeme hi
-      surface
-        text "सुप्रभात"
-      surface
-        text "शुभ प्रभात"
-    lexeme zh
-      surface
-        text "早上好"
-      surface
-        text "早安"
-    lexeme es
-      surface
-        text "Buenos días"
+    lexeme en "Good morning"
+    lexeme ru "Доброе утро"
+    lexeme hi "सुप्रभात" "शुभ प्रभात"
+    lexeme zh "早上好" "早安"
+    lexeme es "Buenos días"
   translation_phrase_good_evening
     defined-by concept
     role translation_phrase
@@ -239,25 +93,11 @@ meanings
     effect "the translation answers with the first form of the target language"
     unit "not applicable"
     example "translate 'Good evening' to Russian"
-    lexeme en
-      surface
-        text "Good evening"
-    lexeme ru
-      surface
-        text "Добрый вечер"
-    lexeme hi
-      surface
-        text "शुभ संध्या"
-    lexeme zh
-      surface
-        text "晚上好"
-      surface
-        text "晚安"
-    lexeme es
-      surface
-        text "Buenas noches"
-      surface
-        text "buenas tardes"
+    lexeme en "Good evening"
+    lexeme ru "Добрый вечер"
+    lexeme hi "शुभ संध्या"
+    lexeme zh "晚上好" "晚安"
+    lexeme es "Buenas noches" "buenas tardes"
   translation_phrase_what_is_your_name
     defined-by concept
     role translation_phrase
@@ -265,33 +105,11 @@ meanings
     effect "the translation answers with the first form of the target language"
     unit "not applicable"
     example "translate 'What is your name?' to Russian"
-    lexeme en
-      surface
-        text "What is your name?"
-      surface
-        text "what's your name"
-    lexeme ru
-      surface
-        text "Как тебя зовут?"
-      surface
-        text "как вас зовут"
-    lexeme hi
-      surface
-        text "तुम्हारा नाम क्या है?"
-      surface
-        text "आपका नाम क्या है"
-    lexeme zh
-      surface
-        text "你叫什么名字？"
-      surface
-        text "您叫什么名字"
-    lexeme es
-      surface
-        text "¿Cómo te llamas?"
-      surface
-        text "cómo se llama"
-      surface
-        text "cuál es tu nombre"
+    lexeme en "What is your name?" "what's your name"
+    lexeme ru "Как тебя зовут?" "как вас зовут"
+    lexeme hi "तुम्हारा नाम क्या है?" "आपका नाम क्या है"
+    lexeme zh "你叫什么名字？" "您叫什么名字"
+    lexeme es "¿Cómo te llamas?" "cómo se llama" "cuál es tu nombre"
   translation_phrase_who_are_you
     defined-by concept
     role translation_phrase
@@ -299,37 +117,11 @@ meanings
     effect "the translation answers with the first form of the target language"
     unit "not applicable"
     example "translate 'Who are you?' to Russian"
-    lexeme en
-      surface
-        text "Who are you?"
-    lexeme ru
-      surface
-        text "Кто ты такой?"
-      surface
-        text "кто ты"
-      surface
-        text "кто ты такая"
-      surface
-        text "кто вы"
-      surface
-        text "кто вы такой"
-      surface
-        text "кто вы такая"
-    lexeme hi
-      surface
-        text "तुम कौन हो?"
-      surface
-        text "आप कौन हैं"
-    lexeme zh
-      surface
-        text "你是谁？"
-      surface
-        text "您是谁"
-    lexeme es
-      surface
-        text "¿Quién eres?"
-      surface
-        text "quién es usted"
+    lexeme en "Who are you?"
+    lexeme ru "Кто ты такой?" "кто ты" "кто ты такая" "кто вы" "кто вы такой" "кто вы такая"
+    lexeme hi "तुम कौन हो?" "आप कौन हैं"
+    lexeme zh "你是谁？" "您是谁"
+    lexeme es "¿Quién eres?" "quién es usted"
   translation_phrase_what_is_this
     defined-by concept
     role translation_phrase
@@ -337,31 +129,11 @@ meanings
     effect "the translation answers with the first form of the target language"
     unit "not applicable"
     example "translate 'What is this?' to Russian"
-    lexeme en
-      surface
-        text "What is this?"
-      surface
-        text "what is it"
-    lexeme ru
-      surface
-        text "Что это такое?"
-      surface
-        text "что это"
-    lexeme hi
-      surface
-        text "यह क्या है?"
-      surface
-        text "ये क्या है"
-    lexeme zh
-      surface
-        text "这是什么？"
-      surface
-        text "這是什麼"
-    lexeme es
-      surface
-        text "¿Qué es esto?"
-      surface
-        text "qué es eso"
+    lexeme en "What is this?" "what is it"
+    lexeme ru "Что это такое?" "что это"
+    lexeme hi "यह क्या है?" "ये क्या है"
+    lexeme zh "这是什么？" "這是什麼"
+    lexeme es "¿Qué es esto?" "qué es eso"
   translation_phrase_i_am_fine
     defined-by concept
     role translation_phrase
@@ -369,37 +141,11 @@ meanings
     effect "the translation answers with the first form of the target language"
     unit "not applicable"
     example "translate 'I am fine' to Russian"
-    lexeme en
-      surface
-        text "I am fine"
-      surface
-        text "I'm fine"
-      surface
-        text "I'm doing fine"
-      surface
-        text "I'm doing well"
-    lexeme ru
-      surface
-        text "У меня всё хорошо"
-      surface
-        text "у меня все хорошо"
-      surface
-        text "всё хорошо"
-    lexeme hi
-      surface
-        text "मैं ठीक हूँ"
-      surface
-        text "मैं ठीक हूं"
-    lexeme zh
-      surface
-        text "我很好"
-      surface
-        text "我挺好的"
-    lexeme es
-      surface
-        text "Estoy bien"
-      surface
-        text "muy bien"
+    lexeme en "I am fine" "I'm fine" "I'm doing fine" "I'm doing well"
+    lexeme ru "У меня всё хорошо" "у меня все хорошо" "всё хорошо"
+    lexeme hi "मैं ठीक हूँ" "मैं ठीक हूं"
+    lexeme zh "我很好" "我挺好的"
+    lexeme es "Estoy bien" "muy bien"
   translation_phrase_yes
     defined-by concept
     role translation_phrase
@@ -407,41 +153,11 @@ meanings
     effect "the translation answers with the first form of the target language"
     unit "not applicable"
     example "translate 'Yes' to Russian"
-    lexeme en
-      surface
-        text "Yes"
-      surface
-        text "yeah"
-      surface
-        text "yep"
-      surface
-        text "aye"
-    lexeme ru
-      surface
-        text "Да"
-      surface
-        text "ага"
-      surface
-        text "конечно"
-    lexeme hi
-      surface
-        text "हाँ"
-      surface
-        text "हां"
-      surface
-        text "जी"
-    lexeme zh
-      surface
-        text "是"
-      surface
-        text "是的"
-      surface
-        text "对"
-    lexeme es
-      surface
-        text "Sí"
-      surface
-        text "claro"
+    lexeme en "Yes" "yeah" "yep" "aye"
+    lexeme ru "Да" "ага" "конечно"
+    lexeme hi "हाँ" "हां" "जी"
+    lexeme zh "是" "是的" "对"
+    lexeme es "Sí" "claro"
   translation_phrase_no
     defined-by concept
     role translation_phrase
@@ -449,31 +165,11 @@ meanings
     effect "the translation answers with the first form of the target language"
     unit "not applicable"
     example "translate 'No' to Russian"
-    lexeme en
-      surface
-        text "No"
-      surface
-        text "nope"
-      surface
-        text "nah"
-    lexeme ru
-      surface
-        text "Нет"
-      surface
-        text "неа"
-    lexeme hi
-      surface
-        text "नहीं"
-      surface
-        text "ना"
-    lexeme zh
-      surface
-        text "不"
-      surface
-        text "不是"
-    lexeme es
-      surface
-        text "No"
+    lexeme en "No" "nope" "nah"
+    lexeme ru "Нет" "неа"
+    lexeme hi "नहीं" "ना"
+    lexeme zh "不" "不是"
+    lexeme es "No"
   translation_phrase_apple
     defined-by concept
     role translation_phrase
@@ -481,40 +177,8 @@ meanings
     effect "the translation answers with the first form of the target language"
     unit "not applicable"
     example "translate 'apple' to Russian"
-    lexeme en
-      surface
-        text "apple"
-      surface
-        text "apples"
-    lexeme ru
-      surface
-        text "яблоко"
-      surface
-        text "яблока"
-      surface
-        text "яблоку"
-      surface
-        text "яблоком"
-      surface
-        text "яблоке"
-      surface
-        text "яблоки"
-      surface
-        text "яблок"
-      surface
-        text "яблокам"
-      surface
-        text "яблоками"
-      surface
-        text "яблоках"
-    lexeme hi
-      surface
-        text "सेब"
-    lexeme zh
-      surface
-        text "苹果"
-    lexeme es
-      surface
-        text "manzana"
-      surface
-        text "manzanas"
+    lexeme en "apple" "apples"
+    lexeme ru "яблоко" "яблока" "яблоку" "яблоком" "яблоке" "яблоки" "яблок" "яблокам" "яблоками" "яблоках"
+    lexeme hi "सेब"
+    lexeme zh "苹果"
+    lexeme es "manzana" "manzanas"

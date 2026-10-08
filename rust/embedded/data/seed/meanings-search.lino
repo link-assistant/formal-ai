@@ -3,107 +3,23 @@ meanings
     grounded-in Q1329258
     defined-by concept
     role reachability_operand_framing
-    lexeme en
-      surface
-        text number
-    lexeme ru
-      surface
-        text числ
-    lexeme hi
-      surface
-        text संख्या
-    lexeme zh
-      surface
-        text 数字
+    lexeme en number
+    lexeme ru числ
+    lexeme hi संख्या
+    lexeme zh 数字
   reachability_search_action
     grounded-in Q12170668
     defined-by action
     role reachability_search_cue
-    lexeme en
-      surface
-        text find
-      surface
-        text combine
-      surface
-        text reach
-      surface
-        text make
-      surface
-        text express
-      surface
-        text arrange
-    lexeme ru
-      surface
-        text найд
-      surface
-        text комбин
-      surface
-        text состав
-      surface
-        text получ
-      surface
-        text выраз
-      surface
-        text достич
-    lexeme hi
-      surface
-        text खोज
-      surface
-        text बनाए
-      surface
-        text संयोज
-      surface
-        text प्राप्त
-      surface
-        text व्यक्त
-      surface
-        text पहुँच
-    lexeme zh
-      surface
-        text 找
-      surface
-        text 组合
-      surface
-        text 得到
-      surface
-        text 表达
-      surface
-        text 达到
-      surface
-        text 使
+    lexeme en find combine reach make express arrange
+    lexeme ru найд комбин состав получ выраз достич
+    lexeme hi खोज बनाए संयोज प्राप्त व्यक्त पहुँच
+    lexeme zh 找 组合 得到 表达 达到 使
   reachability_target_marker
     grounded-in Q309314
     defined-by relation
     role reachability_target_marker
-    lexeme en
-      surface
-        text equals
-      surface
-        text "equal to"
-      surface
-        text "results in"
-      surface
-        text gives
-      surface
-        text reach
-      surface
-        text make
-      surface
-        text get
-    lexeme ru
-      surface
-        text равно
-      surface
-        text равн
-      surface
-        text получ
-    lexeme hi
-      surface
-        text बराबर
-    lexeme zh
-      surface
-        text 等于
-      surface
-        text 得到
-      surface
-        text 达到
+    lexeme en equals "equal to" "results in" gives reach make get
+    lexeme ru равно равн получ
+    lexeme hi बराबर
+    lexeme zh 等于 得到 达到

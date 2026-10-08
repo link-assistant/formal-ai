@@ -2,352 +2,58 @@ meanings
   requirement_state_tracking
     defined-by software_feature
     role software_requirement_category
-    lexeme en
-      surface
-        text track
-      surface
-        text hp
-      surface
-        text status
-      surface
-        text damage
-      surface
-        text cooldown
-    lexeme ru
-      surface
-        text состояние
-      surface
-        text урон
-      surface
-        text откат
-    lexeme hi
-      surface
-        text स्थिति
-      surface
-        text क्षति
-    lexeme zh
-      surface
-        text 状态
-      surface
-        text 伤害
-      surface
-        text 冷却
-    lexeme es
-      surface
-        text seguimiento
-      surface
-        text "puntos de vida"
-      surface
-        text estado
-      surface
-        text daño
-      surface
-        text enfriamiento
+    lexeme en track hp status damage cooldown
+    lexeme ru состояние урон откат
+    lexeme hi स्थिति क्षति
+    lexeme zh 状态 伤害 冷却
+    lexeme es seguimiento "puntos de vida" estado daño enfriamiento
   requirement_data_exchange
     defined-by software_feature
     role software_requirement_category
-    lexeme en
-      surface
-        text import
-      surface
-        text export
-      surface
-        text csv
-      surface
-        text backup
-      surface
-        text report
-      surface
-        text calendar
-    lexeme ru
-      surface
-        text импорт
-      surface
-        text экспорт
-      surface
-        text "резервная копия"
-      surface
-        text отчёт
-    lexeme hi
-      surface
-        text आयात
-      surface
-        text निर्यात
-      surface
-        text रिपोर्ट
-    lexeme zh
-      surface
-        text 导入
-      surface
-        text 导出
-      surface
-        text 备份
-      surface
-        text 报告
-    lexeme es
-      surface
-        text importar
-      surface
-        text exportar
-      surface
-        text csv
-      surface
-        text "copia de seguridad"
-      surface
-        text informe
-      surface
-        text calendario
+    lexeme en import export csv backup report calendar
+    lexeme ru импорт экспорт "резервная копия" отчёт
+    lexeme hi आयात निर्यात रिपोर्ट
+    lexeme zh 导入 导出 备份 报告
+    lexeme es importar exportar csv "copia de seguridad" informe calendario
   requirement_automation
     defined-by software_feature
     role software_requirement_category
-    lexeme en
-      surface
-        text reminder
-      surface
-        text notification
-      surface
-        text schedule
-      surface
-        text weekly
-    lexeme ru
-      surface
-        text напоминание
-      surface
-        text уведомление
-      surface
-        text расписание
-    lexeme hi
-      surface
-        text अनुस्मारक
-      surface
-        text सूचना
-    lexeme zh
-      surface
-        text 提醒
-      surface
-        text 通知
-      surface
-        text 计划
-    lexeme es
-      surface
-        text recordatorio
-      surface
-        text notificación
-      surface
-        text programación
-      surface
-        text semanal
+    lexeme en reminder notification schedule weekly
+    lexeme ru напоминание уведомление расписание
+    lexeme hi अनुस्मारक सूचना
+    lexeme zh 提醒 通知 计划
+    lexeme es recordatorio notificación programación semanal
   requirement_validation
     defined-by software_feature
     role software_requirement_category
-    lexeme en
-      surface
-        text validate
-      surface
-        text check
-      surface
-        text conflict
-      surface
-        text audit
-    lexeme ru
-      surface
-        text проверка
-      surface
-        text проверь
-      surface
-        text аудит
-    lexeme hi
-      surface
-        text सत्यापन
-      surface
-        text जाँच
-    lexeme zh
-      surface
-        text 验证
-      surface
-        text 检查
-      surface
-        text 审计
-    lexeme es
-      surface
-        text validar
-      surface
-        text comprobar
-      surface
-        text conflicto
-      surface
-        text auditoría
+    lexeme en validate check conflict audit
+    lexeme ru проверка проверь аудит
+    lexeme hi सत्यापन जाँच
+    lexeme zh 验证 检查 审计
+    lexeme es validar comprobar conflicto auditoría
   requirement_integration
     defined-by software_feature
     role software_requirement_category
-    lexeme en
-      surface
-        text api
-      surface
-        text discord
-      surface
-        text telegram
-      surface
-        text github
-      surface
-        text browser
-    lexeme ru
-      surface
-        text интеграция
-      surface
-        text апи
-      surface
-        text браузер
-    lexeme hi
-      surface
-        text एकीकरण
-      surface
-        text एपीआई
-    lexeme zh
-      surface
-        text 集成
-      surface
-        text 接口
-      surface
-        text 浏览器
-    lexeme es
-      surface
-        text integración
-      surface
-        text api
-      surface
-        text discord
-      surface
-        text telegram
-      surface
-        text navegador
+    lexeme en api discord telegram github browser
+    lexeme ru интеграция апи браузер
+    lexeme hi एकीकरण एपीआई
+    lexeme zh 集成 接口 浏览器
+    lexeme es integración api discord telegram navegador
   requirement_user_interface
     defined-by software_feature
     role software_requirement_category
-    lexeme en
-      surface
-        text dashboard
-      surface
-        text chart
-      surface
-        text filter
-      surface
-        text progress
-    lexeme ru
-      surface
-        text панель
-      surface
-        text график
-      surface
-        text фильтр
-    lexeme hi
-      surface
-        text डैशबोर्ड
-      surface
-        text चार्ट
-    lexeme zh
-      surface
-        text 仪表板
-      surface
-        text 图表
-      surface
-        text 筛选
-    lexeme es
-      surface
-        text panel
-      surface
-        text gráfico
-      surface
-        text filtro
-      surface
-        text progreso
+    lexeme en dashboard chart filter progress
+    lexeme ru панель график фильтр
+    lexeme hi डैशबोर्ड चार्ट
+    lexeme zh 仪表板 图表 筛选
+    lexeme es panel gráfico filtro progreso
   requirement_project_behavior
     defined-by software_feature
     role software_requirement_category
     lexeme en
-      surface
-        text add
-      surface
-        text admin
-      surface
-        text customer
-      surface
-        text date
-      surface
-        text email
-      surface
-        text expense
-      surface
-        text file
-      surface
-        text history
-      surface
-        text invoice
-      surface
-        text log
-      surface
-        text maintenance
-      surface
-        text payment
-      surface
-        text protection
-      surface
-        text record
-      surface
-        text rename
-      surface
-        text resistance
-      surface
-        text retry
-      surface
-        text scrape
-      surface
-        text stack
-      surface
-        text sync
-      surface
-        text tracking
-      surface
-        text upload
-    lexeme ru
-      surface
-        text добавить
-      surface
-        text клиент
-      surface
-        text файл
-      surface
-        text загрузка
-    lexeme hi
-      surface
-        text जोड़ें
-      surface
-        text फ़ाइल
-    lexeme zh
-      surface
-        text 添加
-      surface
-        text 文件
-      surface
-        text 上传
-    lexeme es
-      surface
-        text añadir
-      surface
-        text administrador
-      surface
-        text cliente
-      surface
-        text archivo
-      surface
-        text historial
-      surface
-        text factura
-      surface
-        text registro
-      surface
-        text pago
-      surface
-        text subir
-      surface
-        text sincronizar
+      words add admin customer date email expense file history invoice log maintenance payment protection record rename
+      words resistance retry scrape stack sync tracking upload
+    lexeme ru добавить клиент файл загрузка
+    lexeme hi जोड़ें फ़ाइल
+    lexeme zh 添加 文件 上传
+    lexeme es añadir administrador cliente archivo historial factura registro pago subir sincronizar

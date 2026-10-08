@@ -3,269 +3,109 @@ meanings
     grounded-in Q1329258
     defined-by quantity
     role numeric_concept
-    lexeme en
-      surface
-        text "cardinal number"
-      surface
-        text number
-    lexeme ru
-      surface
-        text "количественное число"
-    lexeme hi
-      surface
-        text "गणन संख्या"
-    lexeme zh
-      surface
-        text 基数
-    lexeme es
-      surface
-        text "número cardinal"
-      surface
-        text número
+    lexeme en "cardinal number" number
+    lexeme ru "количественное число"
+    lexeme hi "गणन संख्या"
+    lexeme zh 基数
+    lexeme es "número cardinal" número
   zero
     grounded-in Q204
     defined-by cardinal_number
     defined-by empty
     role cardinal_number_word
-    lexeme en
-      surface
-        text zero
-      surface
-        text 0
-    lexeme ru
-      surface
-        text ноль
-      surface
-        text нуль
-    lexeme hi
-      surface
-        text शून्य
-    lexeme zh
-      surface
-        text 零
-    lexeme es
-      surface
-        text cero
+    lexeme en zero 0
+    lexeme ru ноль нуль
+    lexeme hi शून्य
+    lexeme zh 零
+    lexeme es cero
   one
     grounded-in Q199
     defined-by cardinal_number
     defined-by single
     role cardinal_number_word
-    lexeme en
-      surface
-        text one
-      surface
-        text 1
-    lexeme ru
-      surface
-        text один
-      surface
-        text одна
-      surface
-        text одно
-    lexeme hi
-      surface
-        text एक
-    lexeme zh
-      surface
-        text 一
-    lexeme es
-      surface
-        text un
-      surface
-        text una
-      surface
-        text uno
+    lexeme en one 1
+    lexeme ru один одна одно
+    lexeme hi एक
+    lexeme zh 一
+    lexeme es un una uno
   two
     grounded-in Q200
     defined-by cardinal_number
     role cardinal_number_word
-    lexeme en
-      surface
-        text two
-      surface
-        text 2
-    lexeme ru
-      surface
-        text два
-      surface
-        text две
-    lexeme hi
-      surface
-        text दो
-    lexeme zh
-      surface
-        text 二
-      surface
-        text 两
-    lexeme es
-      surface
-        text dos
+    lexeme en two 2
+    lexeme ru два две
+    lexeme hi दो
+    lexeme zh 二 两
+    lexeme es dos
   three
     grounded-in Q201
     defined-by cardinal_number
     role cardinal_number_word
-    lexeme en
-      surface
-        text three
-      surface
-        text 3
-    lexeme ru
-      surface
-        text три
-    lexeme hi
-      surface
-        text तीन
-    lexeme zh
-      surface
-        text 三
-    lexeme es
-      surface
-        text tres
+    lexeme en three 3
+    lexeme ru три
+    lexeme hi तीन
+    lexeme zh 三
+    lexeme es tres
   four
     grounded-in Q202
     defined-by cardinal_number
     role cardinal_number_word
-    lexeme en
-      surface
-        text four
-      surface
-        text 4
-    lexeme ru
-      surface
-        text четыре
-    lexeme hi
-      surface
-        text चार
-    lexeme zh
-      surface
-        text 四
-    lexeme es
-      surface
-        text cuatro
+    lexeme en four 4
+    lexeme ru четыре
+    lexeme hi चार
+    lexeme zh 四
+    lexeme es cuatro
   five
     grounded-in Q203
     defined-by cardinal_number
     role cardinal_number_word
-    lexeme en
-      surface
-        text five
-      surface
-        text 5
-    lexeme ru
-      surface
-        text пять
-    lexeme hi
-      surface
-        text पाँच
-    lexeme zh
-      surface
-        text 五
-    lexeme es
-      surface
-        text cinco
+    lexeme en five 5
+    lexeme ru пять
+    lexeme hi पाँच
+    lexeme zh 五
+    lexeme es cinco
   six
     grounded-in Q23488
     defined-by cardinal_number
     role cardinal_number_word
-    lexeme en
-      surface
-        text six
-      surface
-        text 6
-    lexeme ru
-      surface
-        text шесть
-    lexeme hi
-      surface
-        text छह
-    lexeme zh
-      surface
-        text 六
-    lexeme es
-      surface
-        text seis
+    lexeme en six 6
+    lexeme ru шесть
+    lexeme hi छह
+    lexeme zh 六
+    lexeme es seis
   seven
     grounded-in Q23350
     defined-by cardinal_number
     role cardinal_number_word
-    lexeme en
-      surface
-        text seven
-      surface
-        text 7
-    lexeme ru
-      surface
-        text семь
-    lexeme hi
-      surface
-        text सात
-    lexeme zh
-      surface
-        text 七
-    lexeme es
-      surface
-        text siete
+    lexeme en seven 7
+    lexeme ru семь
+    lexeme hi सात
+    lexeme zh 七
+    lexeme es siete
   eight
     grounded-in Q23355
     defined-by cardinal_number
     role cardinal_number_word
-    lexeme en
-      surface
-        text eight
-      surface
-        text 8
-    lexeme ru
-      surface
-        text восемь
-    lexeme hi
-      surface
-        text आठ
-    lexeme zh
-      surface
-        text 八
-    lexeme es
-      surface
-        text ocho
+    lexeme en eight 8
+    lexeme ru восемь
+    lexeme hi आठ
+    lexeme zh 八
+    lexeme es ocho
   nine
     grounded-in Q19108
     defined-by cardinal_number
     role cardinal_number_word
-    lexeme en
-      surface
-        text nine
-      surface
-        text 9
-    lexeme ru
-      surface
-        text девять
-    lexeme hi
-      surface
-        text नौ
-    lexeme zh
-      surface
-        text 九
-    lexeme es
-      surface
-        text nueve
+    lexeme en nine 9
+    lexeme ru девять
+    lexeme hi नौ
+    lexeme zh 九
+    lexeme es nueve
   ten
     grounded-in Q23806
     defined-by cardinal_number
     role cardinal_number_word
-    lexeme en
-      surface
-        text ten
-      surface
-        text 10
-    lexeme ru
-      surface
-        text десять
-    lexeme hi
-      surface
-        text दस
-    lexeme zh
-      surface
-        text 十
-    lexeme es
-      surface
-        text diez
+    lexeme en ten 10
+    lexeme ru десять
+    lexeme hi दस
+    lexeme zh 十
+    lexeme es diez

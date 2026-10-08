@@ -3,146 +3,32 @@ meanings
     defined-by inquiry
     defined-by action
     role physical_action_trigger
-    lexeme en
-      surface
-        text "did you suck"
-    lexeme ru
-      surface
-        text сосал
-      surface
-        text сосала
-      surface
-        text сосёшь
-      surface
-        text соси
-      surface
-        text сосать
-    lexeme hi
-      surface
-        text "क्या तुमने चूसा"
-    lexeme zh
-      surface
-        text 你吸了吗
-    lexeme es
-      surface
-        text "la chupaste"
+    lexeme en "did you suck"
+    lexeme ru сосал сосала сосёшь соси сосать
+    lexeme hi "क्या तुमने चूसा"
+    lexeme zh 你吸了吗
+    lexeme es "la chupaste"
   circular_joke_idiom
     defined-by inquiry
     defined-by concept
     role circular_joke_phrase
-    lexeme en
-      surface
-        text "buy an elephant"
-    lexeme ru
-      surface
-        text "купи слона"
-    lexeme hi
-      surface
-        text "हाथी खरीदो"
-    lexeme zh
-      surface
-        text 买大象
-    lexeme es
-      surface
-        text "compra un elefante"
+    lexeme en "buy an elephant"
+    lexeme ru "купи слона"
+    lexeme hi "हाथी खरीदो"
+    lexeme zh 买大象
+    lexeme es "compra un elefante"
   vulgar_content
     defined-by concept
     role vulgar_content_marker
     lexeme en
-      surface
-        text "fuck you"
-      surface
-        text fuckyou
-      surface
-        text "suck my"
-      surface
-        text "suck my dick"
-      surface
-        text "suck my cock"
-      surface
-        text "you suck"
-      surface
-        text "eat shit"
-      surface
-        text "go to hell"
-      surface
-        text asshole
-      surface
-        text motherfucker
-      surface
-        text "you fucking"
-      surface
-        text "piece of shit"
+      words "fuck you" fuckyou "suck my" "suck my dick" "suck my cock" "you suck" "eat shit" "go to hell" asshole
+      words motherfucker "you fucking" "piece of shit"
     lexeme ru
-      surface
-        text ебать
-      surface
-        text ебёт
-      surface
-        text ебал
-      surface
-        text ёб
-      surface
-        text еблан
-      surface
-        text пизда
-      surface
-        text пиздец
-      surface
-        text пиздёж
-      surface
-        text хуй
-      surface
-        text хуёв
-      surface
-        text хуйня
-      surface
-        text блядь
-      surface
-        text блядство
-      surface
-        text залупа
-      surface
-        text мудак
-      surface
-        text мудила
-      surface
-        text шлюха
-      surface
-        text проститутка
-      surface
-        text ублюдок
-      surface
-        text сука
-      surface
-        text пидор
-      surface
-        text пидорас
-    lexeme hi
-      surface
-        text मादरचोद
-      surface
-        text बहनचोद
-    lexeme zh
-      surface
-        text 操你妈
-      surface
-        text 傻逼
-    lexeme es
-      surface
-        text "hijo de puta"
-      surface
-        text "vete a la mierda"
-      surface
-        text chúpamela
-      surface
-        text cabrón
-      surface
-        text gilipollas
-      surface
-        text pendejo
-      surface
-        text "puta madre"
+      words ебать ебёт ебал ёб еблан пизда пиздец пиздёж хуй хуёв хуйня блядь блядство залупа мудак мудила шлюха
+      words проститутка ублюдок сука пидор пидорас
+    lexeme hi मादरचोद बहनचोद
+    lexeme zh 操你妈 傻逼
+    lexeme es "hijo de puta" "vete a la mierda" chúpamela cabrón gilipollas pendejo "puta madre"
   frame_filler_word
     defined-by concept
     role frame_filler_word
@@ -152,104 +38,11 @@ meanings
     example "hey"
     grounding "data/seed/capability-routing.lino"
     lexeme en
-      surface
-        text "hey"
-      surface
-        text "come on"
-      surface
-        text "ok"
-      surface
-        text "okay"
-      surface
-        text "oh"
-      surface
-        text "well"
-      surface
-        text "everyone says"
-      surface
-        text "everybody says"
-      surface
-        text "statement"
-      surface
-        text "sentence"
-      surface
-        text "following"
-    lexeme ru
-      surface
-        text "ну"
-      surface
-        text "давай"
-      surface
-        text "ладно"
-      surface
-        text "все говорят"
-      surface
-        text "все так говорят"
-      surface
-        text "а ты"
-      surface
-        text "утверждение"
-      surface
-        text "предложение"
-      surface
-        text "следующее"
-    lexeme hi
-      surface
-        text "चलो"
-      surface
-        text "ना"
-      surface
-        text "अरे"
-      surface
-        text "सब कहते हैं"
-      surface
-        text "इसे"
-      surface
-        text "कथन"
-      surface
-        text "वाक्य"
-      surface
-        text "निम्नलिखित"
-    lexeme zh
-      surface
-        text "快"
-      surface
-        text "吧"
-      surface
-        text "啊"
-      surface
-        text "呀"
-      surface
-        text "嘛"
-      surface
-        text "请"
-      surface
-        text "这个"
-      surface
-        text "这句话"
-      surface
-        text "句子"
-      surface
-        text "命题"
-      surface
-        text "一下"
-      surface
-        text "大家都说"
-    lexeme es
-      surface
-        text "oye"
-      surface
-        text "vamos"
-      surface
-        text "por favor"
-      surface
-        text "todos dicen"
-      surface
-        text "esto"
-      surface
-        text "enunciado"
-      surface
-        text "frase"
+      words "hey" "come on" "ok" "okay" "oh" "well" "everyone says" "everybody says" "statement" "sentence" "following"
+    lexeme ru "ну" "давай" "ладно" "все говорят" "все так говорят" "а ты" "утверждение" "предложение" "следующее"
+    lexeme hi "चलो" "ना" "अरे" "सब कहते हैं" "इसे" "कथन" "वाक्य" "निम्नलिखित"
+    lexeme zh "快" "吧" "啊" "呀" "嘛" "请" "这个" "这句话" "句子" "命题" "一下" "大家都说"
+    lexeme es "oye" "vamos" "por favor" "todos dicen" "esto" "enunciado" "frase"
   source_conflict_cue
     defined-by concept
     role source_conflict_cue
@@ -258,45 +51,11 @@ meanings
     unit "not applicable"
     example "the sources conflict"
     grounding "data/seed/capability-routing.lino"
-    lexeme en
-      surface
-        text "conflict"
-      surface
-        text "disagree"
-      surface
-        text "contradict"
-    lexeme ru
-      surface
-        text "противореч"
-      surface
-        text "расходятся"
-      surface
-        text "не сходятся"
-      surface
-        text "конфликт"
-    lexeme hi
-      surface
-        text "विरोधाभास"
-      surface
-        text "असहमत"
-      surface
-        text "मेल नहीं खाते"
-    lexeme zh
-      surface
-        text "矛盾"
-      surface
-        text "冲突"
-      surface
-        text "不一致"
-      surface
-        text "说法不一"
-    lexeme es
-      surface
-        text "contradic"
-      surface
-        text "no coinciden"
-      surface
-        text "conflicto"
+    lexeme en "conflict" "disagree" "contradict"
+    lexeme ru "противореч" "расходятся" "не сходятся" "конфликт"
+    lexeme hi "विरोधाभास" "असहमत" "मेल नहीं खाते"
+    lexeme zh "矛盾" "冲突" "不一致" "说法不一"
+    lexeme es "contradic" "no coinciden" "conflicto"
   information_source_noun
     defined-by concept
     role information_source_noun
@@ -305,23 +64,11 @@ meanings
     unit "not applicable"
     example "sources"
     grounding "data/seed/capability-routing.lino"
-    lexeme en
-      surface
-        text "source"
-    lexeme ru
-      surface
-        text "источник"
-    lexeme hi
-      surface
-        text "स्रोत"
-    lexeme zh
-      surface
-        text "来源"
-      surface
-        text "资料"
-    lexeme es
-      surface
-        text "fuente"
+    lexeme en "source"
+    lexeme ru "источник"
+    lexeme hi "स्रोत"
+    lexeme zh "来源" "资料"
+    lexeme es "fuente"
   source_attribution_marker
     defined-by concept
     role source_attribution_marker
@@ -330,73 +77,11 @@ meanings
     unit "not applicable"
     example "according to"
     grounding "data/seed/capability-routing.lino"
-    lexeme en
-      surface
-        text "says"
-      surface
-        text "say"
-      surface
-        text "said"
-      surface
-        text "according to"
-      surface
-        text "states"
-      surface
-        text "claims"
-      surface
-        text "reports"
-      surface
-        text "lists"
-      surface
-        text "gives"
-    lexeme ru
-      surface
-        text "пишет"
-      surface
-        text "говорит"
-      surface
-        text "утверждает"
-      surface
-        text "по данным"
-      surface
-        text "согласно"
-      surface
-        text "указывает"
-      surface
-        text "сообщает"
-    lexeme hi
-      surface
-        text "के अनुसार"
-      surface
-        text "कहता है"
-      surface
-        text "कहती है"
-      surface
-        text "लिखता है"
-      surface
-        text "बताता है"
-    lexeme zh
-      surface
-        text "说"
-      surface
-        text "称"
-      surface
-        text "据"
-      surface
-        text "根据"
-      surface
-        text "写道"
-      surface
-        text "记载"
-    lexeme es
-      surface
-        text "dice"
-      surface
-        text "según"
-      surface
-        text "afirma"
-      surface
-        text "indica"
+    lexeme en "says" "say" "said" "according to" "states" "claims" "reports" "lists" "gives"
+    lexeme ru "пишет" "говорит" "утверждает" "по данным" "согласно" "указывает" "сообщает"
+    lexeme hi "के अनुसार" "कहता है" "कहती है" "लिखता है" "बताता है"
+    lexeme zh "说" "称" "据" "根据" "写道" "记载"
+    lexeme es "dice" "según" "afirma" "indica"
   clause_joiner
     defined-by concept
     role clause_joiner
@@ -405,45 +90,11 @@ meanings
     unit "not applicable"
     example "but"
     grounding "data/seed/capability-routing.lino"
-    lexeme en
-      surface
-        text "but"
-      surface
-        text "while"
-      surface
-        text "whereas"
-    lexeme ru
-      surface
-        text "а"
-      surface
-        text "но"
-      surface
-        text "тогда как"
-      surface
-        text "однако"
-    lexeme hi
-      surface
-        text "लेकिन"
-      surface
-        text "जबकि"
-      surface
-        text "पर"
-      surface
-        text "मगर"
-    lexeme zh
-      surface
-        text "但是"
-      surface
-        text "但"
-      surface
-        text "而"
-      surface
-        text "可是"
-    lexeme es
-      surface
-        text "pero"
-      surface
-        text "mientras que"
+    lexeme en "but" "while" "whereas"
+    lexeme ru "а" "но" "тогда как" "однако"
+    lexeme hi "लेकिन" "जबकि" "पर" "मगर"
+    lexeme zh "但是" "但" "而" "可是"
+    lexeme es "pero" "mientras que"
   second_person_possessive
     defined-by concept
     role second_person_possessive
@@ -452,56 +103,8 @@ meanings
     unit "not applicable"
     example "your"
     grounding "data/seed/capability-routing.lino"
-    lexeme en
-      surface
-        text "your"
-      surface
-        text "yours"
-    lexeme ru
-      surface
-        text "твое"
-      surface
-        text "твоё"
-      surface
-        text "твой"
-      surface
-        text "твоя"
-      surface
-        text "твоего"
-      surface
-        text "твоем"
-      surface
-        text "твоём"
-      surface
-        text "ваш"
-      surface
-        text "ваше"
-      surface
-        text "ваша"
-      surface
-        text "вашего"
-      surface
-        text "вашем"
-    lexeme hi
-      surface
-        text "तुम्हारा"
-      surface
-        text "तुम्हारे"
-      surface
-        text "तुम्हारी"
-      surface
-        text "आपका"
-      surface
-        text "आपके"
-      surface
-        text "आपकी"
-    lexeme zh
-      surface
-        text "你的"
-      surface
-        text "您的"
-    lexeme es
-      surface
-        text "tu"
-      surface
-        text "tus"
+    lexeme en "your" "yours"
+    lexeme ru "твое" "твоё" "твой" "твоя" "твоего" "твоем" "твоём" "ваш" "ваше" "ваша" "вашего" "вашем"
+    lexeme hi "तुम्हारा" "तुम्हारे" "तुम्हारी" "आपका" "आपके" "आपकी"
+    lexeme zh "你的" "您的"
+    lexeme es "tu" "tus"

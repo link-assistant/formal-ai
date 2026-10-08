@@ -249,8 +249,15 @@ def semantic_reference_inventory(
         lex_lang: str | None = None
         for index, (indent, toks) in enumerate(significant):
             head, values = toks[0], toks[1:]
+            # The concise lexeme form (R1188-U7, docs/links-notation-style.md):
+            # the words after the language, and the words of a `words` line,
+            # are the lexeme's surfaces, read as the `text` values they expand to.
+            surfaces: list[str] = []
             if head == "lexeme" and values:
                 lex_lang = values[0]
+                values, surfaces = values[:1], values[1:]
+            elif head == "words":
+                values, surfaces = [], values
             has_children = (
                 index + 1 < len(significant) and significant[index + 1][0] > indent
             )
@@ -260,13 +267,15 @@ def semantic_reference_inventory(
             if head in literal_heads:
                 literals.update(_expand_slug_values(values))
                 continue
-            for value in _expand_slug_values(values):
+            for value_head, value in [(head, value) for value in _expand_slug_values(values)] + [
+                ("text", value) for value in _expand_slug_values(surfaces)
+            ]:
                 # Non-English surface forms are attested by their grounded
                 # parent meaning, not by an English lexical record.
-                if head in {"text", "phrase"} and lex_lang not in (None, "en"):
+                if value_head in {"text", "phrase"} and lex_lang not in (None, "en"):
                     continue
                 counts[value] += 1
-                heads.setdefault(value, Counter())[head] += 1
+                heads.setdefault(value, Counter())[value_head] += 1
     diagnostics: dict[str, object] = {
         "ignored_full_line_comments": ignored_full_line_comments,
         "excluded_declaration_identities": len(declarations),

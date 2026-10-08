@@ -39,8 +39,11 @@ fn issue_712_case_study_and_semantic_routing_contract_are_traceable() {
         );
     }
 
+    // The seed may write the lexeme concisely; it is read as the long form.
     let semantic_actions = read("data/seed/meanings-web-search.lino");
-    assert!(semantic_actions.contains("text \"google …\""));
+    assert!(
+        formal_ai::seed::expand_concise_lexemes(&semantic_actions).contains("text \"google …\"")
+    );
     let learning = read("data/meta/issue-712-routing-learning.lino");
     assert!(learning.contains("lesson:argument-shape"));
 }

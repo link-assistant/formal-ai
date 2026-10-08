@@ -2,549 +2,132 @@ meanings
   local_path_search_action
     defined-by action
     role local_path_search_action
-    lexeme en
-      surface
-        text find
-      surface
-        text search
-      surface
-        text locate
-      surface
-        text "look for"
-      surface
-        text "is there"
-    lexeme ru
-      surface
-        text найди
-      surface
-        text найти
-      surface
-        text отыщи
-      surface
-        text поиск
-      surface
-        text "есть ли"
-    lexeme hi
-      surface
-        text खोजें
-      surface
-        text खोजिए
-      surface
-        text ढूँढें
-      surface
-        text खोज
-    lexeme zh
-      surface
-        text 查找
-      surface
-        text 搜索
-      surface
-        text 定位
-      surface
-        text 有没有
-    lexeme es
-      surface
-        text busca
-      surface
-        text buscar
-      surface
-        text encuentra
-      surface
-        text localiza
-      surface
-        text "hay …"
+    lexeme en find search locate "look for" "is there"
+    lexeme ru найди найти отыщи поиск "есть ли"
+    lexeme hi खोजें खोजिए ढूँढें खोज
+    lexeme zh 查找 搜索 定位 有没有
+    lexeme es busca buscar encuentra localiza "hay …"
   local_path_list_action
     defined-by action
     role local_path_list_action
-    lexeme en
-      surface
-        text list
-      surface
-        text show
-    lexeme ru
-      surface
-        text перечисли
-      surface
-        text покажи
-    lexeme hi
-      surface
-        text सूची
-      surface
-        text दिखाएँ
-    lexeme zh
-      surface
-        text 列出
-      surface
-        text 显示
-    lexeme es
-      surface
-        text lista
-      surface
-        text muestra
+    lexeme en list show
+    lexeme ru перечисли покажи
+    lexeme hi सूची दिखाएँ
+    lexeme zh 列出 显示
+    lexeme es lista muestra
   local_path_contents_request
     defined-by inquiry
     role local_path_contents_request
-    lexeme en
-      surface
-        text "what is inside …"
-      surface
-        text "what's inside …"
-      surface
-        text "show contents of …"
-    lexeme ru
-      surface
-        text "что внутри …"
-      surface
-        text "покажи содержимое …"
-    lexeme hi
-      surface
-        text "… के अंदर क्या है"
-      surface
-        text "… की सामग्री दिखाएँ"
-    lexeme zh
-      surface
-        text "…里面有什么"
-      surface
-        text "显示…的内容"
-    lexeme es
-      surface
-        text "qué hay dentro de …"
-      surface
-        text "muestra el contenido de …"
+    lexeme en "what is inside …" "what's inside …" "show contents of …"
+    lexeme ru "что внутри …" "покажи содержимое …"
+    lexeme hi "… के अंदर क्या है" "… की सामग्री दिखाएँ"
+    lexeme zh "…里面有什么" "显示…的内容"
+    lexeme es "qué hay dentro de …" "muestra el contenido de …"
   local_path_type_request
     defined-by inquiry
     role local_path_type_request
-    lexeme en
-      surface
-        text "file or a folder"
-      surface
-        text "file or folder"
-      surface
-        text "folder or a file"
-    lexeme ru
-      surface
-        text "файл или папка"
-      surface
-        text "папка или файл"
-    lexeme hi
-      surface
-        text "फ़ाइल या फ़ोल्डर"
-    lexeme zh
-      surface
-        text 文件还是文件夹
-    lexeme es
-      surface
-        text "archivo o carpeta"
-      surface
-        text "carpeta o archivo"
+    lexeme en "file or a folder" "file or folder" "folder or a file"
+    lexeme ru "файл или папка" "папка или файл"
+    lexeme hi "फ़ाइल या फ़ोल्डर"
+    lexeme zh 文件还是文件夹
+    lexeme es "archivo o carpeta" "carpeta o archivo"
   local_path_scope_desktop
     defined-by concept
     role local_path_scope_desktop
-    lexeme en
-      surface
-        text "on my desktop"
-      surface
-        text "on the desktop"
-      surface
-        text "on desktop"
-      surface
-        text "in my desktop"
-      surface
-        text "in the desktop"
-      surface
-        text "in desktop"
-    lexeme ru
-      surface
-        text "на моём рабочем столе"
-      surface
-        text "на моем рабочем столе"
-      surface
-        text "на рабочем столе"
-    lexeme hi
-      surface
-        text "मेरे डेस्कटॉप पर"
-      surface
-        text "डेस्कटॉप पर"
-    lexeme zh
-      surface
-        text 在我的桌面上
-      surface
-        text 在桌面上
-    lexeme es
-      surface
-        text "en mi escritorio"
-      surface
-        text "en el escritorio"
-      surface
-        text "en escritorio"
-      surface
-        text "del escritorio"
+    lexeme en "on my desktop" "on the desktop" "on desktop" "in my desktop" "in the desktop" "in desktop"
+    lexeme ru "на моём рабочем столе" "на моем рабочем столе" "на рабочем столе"
+    lexeme hi "मेरे डेस्कटॉप पर" "डेस्कटॉप पर"
+    lexeme zh 在我的桌面上 在桌面上
+    lexeme es "en mi escritorio" "en el escritorio" "en escritorio" "del escritorio"
   local_path_scope_home
     defined-by concept
     role local_path_scope_home
-    lexeme en
-      surface
-        text "on this computer"
-      surface
-        text "on my computer"
-      surface
-        text "on this machine"
-      surface
-        text "on my machine"
-      surface
-        text "in my home folder"
-    lexeme ru
-      surface
-        text "на этом компьютере"
-      surface
-        text "на моём компьютере"
-      surface
-        text "на моем компьютере"
-      surface
-        text "в домашней папке"
-    lexeme hi
-      surface
-        text "इस कंप्यूटर पर"
-      surface
-        text "मेरे कंप्यूटर पर"
-      surface
-        text "होम फ़ोल्डर में"
-    lexeme zh
-      surface
-        text 在这台电脑上
-      surface
-        text 在我的电脑上
-      surface
-        text 在主文件夹中
-    lexeme es
-      surface
-        text "en este ordenador"
-      surface
-        text "en mi ordenador"
-      surface
-        text "en esta computadora"
-      surface
-        text "en mi computadora"
-      surface
-        text "en mi carpeta personal"
+    lexeme en "on this computer" "on my computer" "on this machine" "on my machine" "in my home folder"
+    lexeme ru "на этом компьютере" "на моём компьютере" "на моем компьютере" "в домашней папке"
+    lexeme hi "इस कंप्यूटर पर" "मेरे कंप्यूटर पर" "होम फ़ोल्डर में"
+    lexeme zh 在这台电脑上 在我的电脑上 在主文件夹中
+    lexeme es "en este ordenador" "en mi ordenador" "en esta computadora" "en mi computadora" "en mi carpeta personal"
   local_path_scope_current
     defined-by concept
     role local_path_scope_current
     lexeme en
-      surface
-        text "in this directory"
-      surface
-        text "in the current directory"
-      surface
-        text "in this folder"
-      surface
-        text "in the current folder"
-      surface
-        text "in this workspace"
-    lexeme ru
-      surface
-        text "в этом каталоге"
-      surface
-        text "в текущем каталоге"
-      surface
-        text "в этой папке"
-    lexeme hi
-      surface
-        text "इस निर्देशिका में"
-      surface
-        text "वर्तमान फ़ोल्डर में"
-    lexeme zh
-      surface
-        text 在此目录中
-      surface
-        text 在当前目录中
-      surface
-        text 在此文件夹中
-    lexeme es
-      surface
-        text "en este directorio"
-      surface
-        text "en el directorio actual"
-      surface
-        text "en esta carpeta"
-      surface
-        text "en la carpeta actual"
+      words "in this directory" "in the current directory" "in this folder" "in the current folder" "in this workspace"
+    lexeme ru "в этом каталоге" "в текущем каталоге" "в этой папке"
+    lexeme hi "इस निर्देशिका में" "वर्तमान फ़ोल्डर में"
+    lexeme zh 在此目录中 在当前目录中 在此文件夹中
+    lexeme es "en este directorio" "en el directorio actual" "en esta carpeta" "en la carpeta actual"
   local_path_directory_kind
     defined-by concept
     role local_path_directory_kind
-    lexeme en
-      surface
-        text folder
-      surface
-        text folders
-      surface
-        text directory
-      surface
-        text directories
-    lexeme ru
-      surface
-        text папку
-      surface
-        text папка
-      surface
-        text папки
-      surface
-        text каталог
-    lexeme hi
-      surface
-        text फ़ोल्डर
-      surface
-        text निर्देशिका
-    lexeme zh
-      surface
-        text 文件夹
-      surface
-        text 目录
-    lexeme es
-      surface
-        text carpeta
-      surface
-        text carpetas
-      surface
-        text directorio
-      surface
-        text directorios
+    lexeme en folder folders directory directories
+    lexeme ru папку папка папки каталог
+    lexeme hi फ़ोल्डर निर्देशिका
+    lexeme zh 文件夹 目录
+    lexeme es carpeta carpetas directorio directorios
   local_path_file_kind
     defined-by concept
     role local_path_file_kind
-    lexeme en
-      surface
-        text file
-      surface
-        text files
-      surface
-        text document
-    lexeme ru
-      surface
-        text файл
-      surface
-        text файла
-      surface
-        text файлы
-      surface
-        text документ
-    lexeme hi
-      surface
-        text फ़ाइल
-      surface
-        text दस्तावेज़
-    lexeme zh
-      surface
-        text 文件
-      surface
-        text 文档
-    lexeme es
-      surface
-        text archivo
-      surface
-        text archivos
-      surface
-        text fichero
-      surface
-        text documento
-      surface
-        text documentos
+    lexeme en file files document
+    lexeme ru файл файла файлы документ
+    lexeme hi फ़ाइल दस्तावेज़
+    lexeme zh 文件 文档
+    lexeme es archivo archivos fichero documento documentos
   local_path_query_noise
     defined-by concept
     role local_path_query_noise
-    lexeme en
-      surface
-        text the
-      surface
-        text a
-      surface
-        text an
-      surface
-        text called
-      surface
-        text named
-      surface
-        text exactly
-      surface
-        text for
-      surface
-        text request
-      surface
-        text is
-    lexeme ru
-      surface
-        text с
-      surface
-        text именем
-      surface
-        text точно
-      surface
-        text это
-    lexeme hi
-      surface
-        text नामक
-    lexeme zh
-      surface
-        text 名为
-    lexeme es
-      surface
-        text la
-      surface
-        text el
-      surface
-        text una
-      surface
-        text un
-      surface
-        text llamada
-      surface
-        text llamado
-      surface
-        text exactamente
+    lexeme en the a an called named exactly for request is
+    lexeme ru с именем точно это
+    lexeme hi नामक
+    lexeme zh 名为
+    lexeme es la el una un llamada llamado exactamente
   local_path_route_question
     defined-by inquiry
     role local_path_route_question
-    lexeme en
-      surface
-        text "local filesystem search or a web search"
-    lexeme ru
-      surface
-        text "локальный поиск или веб-поиск"
-    lexeme hi
-      surface
-        text "स्थानीय फ़ाइल खोज या वेब खोज"
-    lexeme zh
-      surface
-        text 本地文件搜索还是网络搜索
-    lexeme es
-      surface
-        text "búsqueda local de archivos o búsqueda web"
+    lexeme en "local filesystem search or a web search"
+    lexeme ru "локальный поиск или веб-поиск"
+    lexeme hi "स्थानीय फ़ाइल खोज या वेब खोज"
+    lexeme zh 本地文件搜索还是网络搜索
+    lexeme es "búsqueda local de archivos o búsqueda web"
   definition_antecedent_followup
     defined-by inquiry
     role definition_antecedent_followup
-    lexeme en
-      surface
-        text "so what is it then"
-      surface
-        text "what is that then"
-    lexeme ru
-      surface
-        text "так что это такое то"
-      surface
-        text "так что же это"
-    lexeme hi
-      surface
-        text "तो यह क्या है"
-    lexeme zh
-      surface
-        text 那这到底是什么
-    lexeme es
-      surface
-        text "entonces qué es"
-      surface
-        text "y entonces qué es eso"
+    lexeme en "so what is it then" "what is that then"
+    lexeme ru "так что это такое то" "так что же это"
+    lexeme hi "तो यह क्या है"
+    lexeme zh 那这到底是什么
+    lexeme es "entonces qué es" "y entonces qué es eso"
   definition_example_request
     defined-by inquiry
     role definition_example_request
-    lexeme en
-      surface
-        text "give one example of …"
-      surface
-        text "give me an example of …"
-    lexeme ru
-      surface
-        text "приведи один пример …"
-      surface
-        text "приведи пример …"
-    lexeme hi
-      surface
-        text "… का एक उदाहरण दें"
-    lexeme zh
-      surface
-        text 举一个…的例子
-    lexeme es
-      surface
-        text "da un ejemplo de …"
-      surface
-        text "dame un ejemplo de …"
+    lexeme en "give one example of …" "give me an example of …"
+    lexeme ru "приведи один пример …" "приведи пример …"
+    lexeme hi "… का एक उदाहरण दें"
+    lexeme zh 举一个…的例子
+    lexeme es "da un ejemplo de …" "dame un ejemplo de …"
   comparison_infix
     defined-by relation
     role comparison_infix
-    lexeme en
-      surface
-        text vs
-      surface
-        text versus
-      surface
-        text "different from"
-    lexeme ru
-      surface
-        text vs
-      surface
-        text против
-      surface
-        text отличается
-    lexeme hi
-      surface
-        text बनाम
-    lexeme zh
-      surface
-        text 对比
-      surface
-        text 与
-    lexeme es
-      surface
-        text vs
-      surface
-        text versus
-      surface
-        text "frente a"
-      surface
-        text "diferente de"
+    lexeme en vs versus "different from"
+    lexeme ru vs против отличается
+    lexeme hi बनाम
+    lexeme zh 对比 与
+    lexeme es vs versus "frente a" "diferente de"
   comparison_rhs_marker
     defined-by relation
     role comparison_rhs_marker
-    lexeme en
-      surface
-        text from
-    lexeme ru
-      surface
-        text от
-    lexeme hi
-      surface
-        text से
-    lexeme zh
-      surface
-        text 和
-    lexeme es
-      surface
-        text de
+    lexeme en from
+    lexeme ru от
+    lexeme hi से
+    lexeme zh 和
+    lexeme es de
   comparison_query_noise
     defined-by concept
     role comparison_query_noise
-    lexeme en
-      surface
-        text "in one sentence"
-      surface
-        text "one sentence"
-    lexeme ru
-      surface
-        text "одним предложением"
-      surface
-        text "в одном предложении"
-    lexeme hi
-      surface
-        text "एक वाक्य में"
-    lexeme zh
-      surface
-        text 用一句话
-      surface
-        text 一句话
-    lexeme es
-      surface
-        text "en una frase"
-      surface
-        text "una frase"
+    lexeme en "in one sentence" "one sentence"
+    lexeme ru "одним предложением" "в одном предложении"
+    lexeme hi "एक वाक्य में"
+    lexeme zh 用一句话 一句话
+    lexeme es "en una frase" "una frase"
   workspace_content_search_form
     # PR #1188 T90 (gap G12): a request for the places a name or literal is
     # used inside the workspace's files. `…` is the searched pattern (one
@@ -557,186 +140,27 @@ meanings
     unit "not applicable"
     example "usages of add"
     lexeme en
-      surface
-        text "usages of …"
-      surface
-        text "usage of …"
-      surface
-        text "uses of …"
-      surface
-        text "occurrences of …"
-      surface
-        text "references to …"
-      surface
-        text "references of …"
-      surface
-        text "callers of …"
-      surface
-        text "who calls …"
-      surface
-        text "what uses …"
-      surface
-        text "where is … used"
-      surface
-        text "where are … used"
-      surface
-        text "where is … called"
-      surface
-        text "where is … referenced"
-      surface
-        text "where does … appear"
-      surface
-        text "grep for …"
-      surface
-        text "grep …"
-      surface
-        text "search for … in the files"
-      surface
-        text "search for … in the code"
-      surface
-        text "search for … in the source"
-      surface
-        text "search for … in this project"
-      surface
-        text "search for … in the project"
-      surface
-        text "search for … in this repository"
-      surface
-        text "search for … in the repository"
-      surface
-        text "search for … in this directory"
-      surface
-        text "search for … in the current directory"
-      surface
-        text "search for … in the workspace"
-      surface
-        text "search for … in this workspace"
-      surface
-        text "find … in the code"
-      surface
-        text "find … in the repository"
-      surface
-        text "find … in this project"
-      surface
-        text "search the files for …"
-      surface
-        text "search the code for …"
-      surface
-        text "lines containing …"
-      surface
-        text "files that mention …"
-      surface
-        text "files containing …"
+      words "usages of …" "usage of …" "uses of …" "occurrences of …" "references to …" "references of …" "callers of …"
+      words "who calls …" "what uses …" "where is … used" "where are … used" "where is … called" "where is … referenced"
+      words "where does … appear" "grep for …" "grep …" "search for … in the files" "search for … in the code"
+      words "search for … in the source" "search for … in this project" "search for … in the project"
+      words "search for … in this repository" "search for … in the repository" "search for … in this directory"
+      words "search for … in the current directory" "search for … in the workspace" "search for … in this workspace"
+      words "find … in the code" "find … in the repository" "find … in this project" "search the files for …"
+      words "search the code for …" "lines containing …" "files that mention …" "files containing …"
     lexeme ru
-      surface
-        text "использования …"
-      surface
-        text "использование …"
-      surface
-        text "вхождения …"
-      surface
-        text "упоминания …"
-      surface
-        text "ссылки на …"
-      surface
-        text "где используется …"
-      surface
-        text "где используются …"
-      surface
-        text "где вызывается …"
-      surface
-        text "кто вызывает …"
-      surface
-        text "грепни …"
-      surface
-        text "найди … в файлах"
-      surface
-        text "поищи … в файлах"
-      surface
-        text "найди … в коде"
-      surface
-        text "найди … в проекте"
-      surface
-        text "найди … в репозитории"
-      surface
-        text "поищи … в проекте"
-      surface
-        text "строки с …"
+      words "использования …" "использование …" "вхождения …" "упоминания …" "ссылки на …" "где используется …"
+      words "где используются …" "где вызывается …" "кто вызывает …" "грепни …" "найди … в файлах" "поищи … в файлах"
+      words "найди … в коде" "найди … в проекте" "найди … в репозитории" "поищи … в проекте" "строки с …"
     lexeme hi
-      surface
-        text "… के सभी उपयोग"
-      surface
-        text "… के उपयोग"
-      surface
-        text "… का उपयोग कहाँ"
-      surface
-        text "… कहाँ उपयोग"
-      surface
-        text "… कहाँ इस्तेमाल"
-      surface
-        text "… के सभी संदर्भ"
-      surface
-        text "… के संदर्भ"
-      surface
-        text "… की सभी घटनाएँ"
-      surface
-        text "फ़ाइलों में … खोजें"
-      surface
-        text "प्रोजेक्ट में … खोजें"
-      surface
-        text "कोड में … खोजें"
+      words "… के सभी उपयोग" "… के उपयोग" "… का उपयोग कहाँ" "… कहाँ उपयोग" "… कहाँ इस्तेमाल" "… के सभी संदर्भ"
+      words "… के संदर्भ" "… की सभी घटनाएँ" "फ़ाइलों में … खोजें" "प्रोजेक्ट में … खोजें" "कोड में … खोजें"
     lexeme zh
-      surface
-        text "…的所有用法"
-      surface
-        text "…的用法"
-      surface
-        text "…的所有引用"
-      surface
-        text "…的引用"
-      surface
-        text "…的所有出现"
-      surface
-        text "…在哪里被使用"
-      surface
-        text "…在哪里使用"
-      surface
-        text "…在哪里被调用"
-      surface
-        text "…被用在哪里"
-      surface
-        text "在文件中搜索…"
-      surface
-        text "在项目中搜索…"
-      surface
-        text "在代码中搜索…"
+      words "…的所有用法" "…的用法" "…的所有引用" "…的引用" "…的所有出现" "…在哪里被使用" "…在哪里使用" "…在哪里被调用" "…被用在哪里" "在文件中搜索…" "在项目中搜索…" "在代码中搜索…"
     lexeme es
-      surface
-        text "usos de …"
-      surface
-        text "ocurrencias de …"
-      surface
-        text "apariciones de …"
-      surface
-        text "referencias a …"
-      surface
-        text "dónde se usa …"
-      surface
-        text "dónde se utiliza …"
-      surface
-        text "dónde se llama a …"
-      surface
-        text "quién llama a …"
-      surface
-        text "busca … en los archivos"
-      surface
-        text "busca … en el código"
-      surface
-        text "busca … en el proyecto"
-      surface
-        text "busca … en este proyecto"
-      surface
-        text "busca … en el repositorio"
+      words "usos de …" "ocurrencias de …" "apariciones de …" "referencias a …" "dónde se usa …" "dónde se utiliza …"
+      words "dónde se llama a …" "quién llama a …" "busca … en los archivos" "busca … en el código"
+      words "busca … en el proyecto" "busca … en este proyecto" "busca … en el repositorio"
   workspace_content_search_noise
     # Words that stand in the searched slot of a content-search form without
     # being the pattern ("usages of the function add"): skipped, never grepped.
@@ -747,135 +171,11 @@ meanings
     unit "not applicable"
     example "the"
     lexeme en
-      surface
-        text the
-      surface
-        text a
-      surface
-        text an
-      surface
-        text all
-      surface
-        text every
-      surface
-        text each
-      surface
-        text "for"
-      surface
-        text function
-      surface
-        text method
-      surface
-        text "variable"
-      surface
-        text constant
-      surface
-        text class
-      surface
-        text "field"
-      surface
-        text property
-      surface
-        text symbol
-      surface
-        text identifier
-      surface
-        text name
-      surface
-        text word
-      surface
-        text string
-      surface
-        text text
-      surface
-        text term
+      words the a an all every each "for" function method "variable" constant class "field" property symbol identifier
+      words name word string text term
     lexeme ru
-      surface
-        text все
-      surface
-        text всех
-      surface
-        text функции
-      surface
-        text функция
-      surface
-        text функцию
-      surface
-        text метода
-      surface
-        text метод
-      surface
-        text переменной
-      surface
-        text переменная
-      surface
-        text класса
-      surface
-        text слова
-      surface
-        text слово
-      surface
-        text строки
-      surface
-        text строку
-      surface
-        text имени
-      surface
-        text идентификатора
-    lexeme hi
-      surface
-        text सभी
-      surface
-        text फ़ंक्शन
-      surface
-        text फंक्शन
-      surface
-        text चर
-      surface
-        text शब्द
-      surface
-        text नाम
-    lexeme zh
-      surface
-        text 函数
-      surface
-        text 方法
-      surface
-        text 变量
-      surface
-        text 所有
-    lexeme es
-      surface
-        text el
-      surface
-        text la
-      surface
-        text los
-      surface
-        text las
-      surface
-        text un
-      surface
-        text una
-      surface
-        text todos
-      surface
-        text todas
-      surface
-        text función
-      surface
-        text método
-      surface
-        text "variable"
-      surface
-        text clase
-      surface
-        text palabra
-      surface
-        text cadena
-      surface
-        text texto
-      surface
-        text nombre
-      surface
-        text identificador
+      words все всех функции функция функцию метода метод переменной переменная класса слова слово строки строку имени
+      words идентификатора
+    lexeme hi सभी फ़ंक्शन फंक्शन चर शब्द नाम
+    lexeme zh 函数 方法 变量 所有
+    lexeme es el la los las un una todos todas función método "variable" clase palabra cadena texto nombre identificador

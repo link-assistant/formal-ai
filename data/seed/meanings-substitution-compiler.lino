@@ -6,21 +6,11 @@ meanings
     unit "not applicable"
     example "export the substitution rule"
     defined-by action
-    lexeme en
-      surface
-        text "export substitution rule"
-    lexeme ru
-      surface
-        text "экспорт правила подстановки"
-    lexeme hi
-      surface
-        text "प्रतिस्थापन नियम निर्यात"
-    lexeme zh
-      surface
-        text 导出替换规则
-    lexeme es
-      surface
-        text "exportar regla de sustitución"
+    lexeme en "export substitution rule"
+    lexeme ru "экспорт правила подстановки"
+    lexeme hi "प्रतिस्थापन नियम निर्यात"
+    lexeme zh 导出替换规则
+    lexeme es "exportar regla de sustitución"
   response_substitution_rule_export_en
     role substitution_export_response
     precondition "a verified substitution-rule export was requested in English"
@@ -63,21 +53,11 @@ meanings
     unit "not applicable"
     example "replace x with y"
     defined-by concept
-    lexeme en
-      surface
-        text substitution
-    lexeme ru
-      surface
-        text подстановка
-    lexeme hi
-      surface
-        text प्रतिस्थापन
-    lexeme zh
-      surface
-        text 替换
-    lexeme es
-      surface
-        text sustitución
+    lexeme en substitution
+    lexeme ru подстановка
+    lexeme hi प्रतिस्थापन
+    lexeme zh 替换
+    lexeme es sustitución
   substitution_rule_export
     role substitution_export_intent
     precondition "the request names substitution-rule export and one target"
@@ -85,21 +65,11 @@ meanings
     unit "not applicable"
     example "export the substitution rule to Rust"
     defined-by inquiry
-    lexeme en
-      surface
-        text "substitution rule export"
-    lexeme ru
-      surface
-        text "экспорт правил подстановки"
-    lexeme hi
-      surface
-        text "प्रतिस्थापन नियमों का निर्यात"
-    lexeme zh
-      surface
-        text 替换规则导出
-    lexeme es
-      surface
-        text "exportación de reglas de sustitución"
+    lexeme en "substitution rule export"
+    lexeme ru "экспорт правил подстановки"
+    lexeme hi "प्रतिस्थापन नियमों का निर्यात"
+    lexeme zh 替换规则导出
+    lexeme es "exportación de reglas de sustitución"
   target_javascript
     role substitution_export_target
     precondition "the export request names JavaScript"
@@ -107,21 +77,11 @@ meanings
     unit "not applicable"
     example "export to JavaScript"
     defined-by concept
-    lexeme en
-      surface
-        text "target javascript"
-    lexeme ru
-      surface
-        text "цель javascript"
-    lexeme hi
-      surface
-        text "लक्ष्य javascript"
-    lexeme zh
-      surface
-        text "目标 javascript"
-    lexeme es
-      surface
-        text "destino javascript"
+    lexeme en "target javascript"
+    lexeme ru "цель javascript"
+    lexeme hi "लक्ष्य javascript"
+    lexeme zh "目标 javascript"
+    lexeme es "destino javascript"
   target_rust
     role substitution_export_target
     precondition "the export request names Rust"
@@ -129,21 +89,11 @@ meanings
     unit "not applicable"
     example "export to Rust"
     defined-by concept
-    lexeme en
-      surface
-        text "target rust"
-    lexeme ru
-      surface
-        text "цель rust"
-    lexeme hi
-      surface
-        text "लक्ष्य rust"
-    lexeme zh
-      surface
-        text "目标 rust"
-    lexeme es
-      surface
-        text "destino rust"
+    lexeme en "target rust"
+    lexeme ru "цель rust"
+    lexeme hi "लक्ष्य rust"
+    lexeme zh "目标 rust"
+    lexeme es "destino rust"
   target_webassembly
     role substitution_export_target
     precondition "the export request names WebAssembly or WASM"
@@ -151,21 +101,11 @@ meanings
     unit "not applicable"
     example "export to WebAssembly"
     defined-by concept
-    lexeme en
-      surface
-        text "target webassembly"
-    lexeme ru
-      surface
-        text "цель webassembly"
-    lexeme hi
-      surface
-        text "लक्ष्य webassembly"
-    lexeme zh
-      surface
-        text "目标 webassembly"
-    lexeme es
-      surface
-        text "destino webassembly"
+    lexeme en "target webassembly"
+    lexeme ru "цель webassembly"
+    lexeme hi "लक्ष्य webassembly"
+    lexeme zh "目标 webassembly"
+    lexeme es "destino webassembly"
   wasm
     role substitution_compiler_concept
     precondition "a target request uses the WASM abbreviation"
@@ -173,21 +113,11 @@ meanings
     unit "not applicable"
     example "export to WASM"
     defined-by concept
-    lexeme en
-      surface
-        text wasm
-    lexeme ru
-      surface
-        text wasm
-    lexeme hi
-      surface
-        text wasm
-    lexeme zh
-      surface
-        text wasm
-    lexeme es
-      surface
-        text wasm
+    lexeme en wasm
+    lexeme ru wasm
+    lexeme hi wasm
+    lexeme zh wasm
+    lexeme es wasm
   webassembly
     role substitution_compiler_concept
     precondition "a target request uses the WebAssembly name"
@@ -195,18 +125,8 @@ meanings
     unit "not applicable"
     example "export to WebAssembly"
     defined-by concept
-    lexeme en
-      surface
-        text webassembly
-    lexeme ru
-      surface
-        text webassembly
-    lexeme hi
-      surface
-        text वेबअसेंबली
-    lexeme zh
-      surface
-        text webassembly
-    lexeme es
-      surface
-        text webassembly
+    lexeme en webassembly
+    lexeme ru webassembly
+    lexeme hi वेबअसेंबली
+    lexeme zh webassembly
+    lexeme es webassembly

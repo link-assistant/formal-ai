@@ -4,518 +4,88 @@ meanings
     defined-by action
     defined-by web_resource
     role web_search_concept
-    lexeme en
-      surface
-        text "web search"
-      surface
-        text "search the web"
-    lexeme ru
-      surface
-        text "поиск в интернете"
-      surface
-        text веб-поиск
-    lexeme hi
-      surface
-        text "वेब खोज"
-      surface
-        text "इंटरनेट पर खोज"
-    lexeme zh
-      surface
-        text 网络搜索
-      surface
-        text 在网上搜索
-    lexeme es
-      surface
-        text "búsqueda web"
-      surface
-        text "busca en internet"
-      surface
-        text "buscar en internet"
-      surface
-        text "búsqueda en internet"
+    lexeme en "web search" "search the web"
+    lexeme ru "поиск в интернете" веб-поиск
+    lexeme hi "वेब खोज" "इंटरनेट पर खोज"
+    lexeme zh 网络搜索 在网上搜索
+    lexeme es "búsqueda web" "busca en internet" "buscar en internet" "búsqueda en internet"
   reference_internet
     defined-by web_resource
     defined-by entity
     role web_search_signal
     role web_search_source_only
     role web_medium
-    lexeme en
-      surface
-        text " web "
-      surface
-        text " internet "
-      surface
-        text " online "
-    lexeme ru
-      surface
-        text " интернете "
-      surface
-        text " интернет "
-      surface
-        text " онлайн "
-      surface
-        text " сети "
-    lexeme hi
-      surface
-        text इंटरनेट
-      surface
-        text ऑनलाइन
-      surface
-        text वेब
-    lexeme zh
-      surface
-        text 网上
-      surface
-        text 網上
-      surface
-        text 在线
-      surface
-        text 在線
-      surface
-        text 互联网
-      surface
-        text 網路
-      surface
-        text 网络
-    lexeme es
-      surface
-        text " web "
-      surface
-        text " internet "
-      surface
-        text " en línea "
-      surface
-        text " online "
-      surface
-        text " la red "
+    lexeme en " web " " internet " " online "
+    lexeme ru " интернете " " интернет " " онлайн " " сети "
+    lexeme hi इंटरनेट ऑनलाइन वेब
+    lexeme zh 网上 網上 在线 在線 互联网 網路 网络
+    lexeme es " web " " internet " " en línea " " online " " la red "
   reference_encyclopedia
     defined-by web_resource
     defined-by entity
     role web_search_signal
     role web_search_source_only
-    lexeme en
-      surface
-        text " wikipedia "
-      surface
-        text " wikidata "
-      surface
-        text " wiktionary "
-    lexeme ru
-      surface
-        text " википед"
-      surface
-        text " викиданн"
-      surface
-        text википедии
-    lexeme hi
-      surface
-        text विकिपीडिया
-      surface
-        text विकिडाटा
-    lexeme zh
-      surface
-        text 百科
-      surface
-        text 维基百科
-      surface
-        text 維基百科
-      surface
-        text 维基数据
-      surface
-        text 維基數據
-    lexeme es
-      surface
-        text " wikipedia "
-      surface
-        text " wikidata "
-      surface
-        text " wikcionario "
-      surface
-        text " wiktionary "
+    lexeme en " wikipedia " " wikidata " " wiktionary "
+    lexeme ru " википед" " викиданн" википедии
+    lexeme hi विकिपीडिया विकिडाटा
+    lexeme zh 百科 维基百科 維基百科 维基数据 維基數據
+    lexeme es " wikipedia " " wikidata " " wikcionario " " wiktionary "
   reference_information
     defined-by concept
     role web_search_signal
     lexeme en
-      surface
-        text " information "
-      surface
-        text " info "
-      surface
-        text " details "
-      surface
-        text " data "
-      surface
-        text " material "
-      surface
-        text " materials "
-      surface
-        text " resource "
-      surface
-        text " resources "
-      surface
-        text " source "
-      surface
-        text " sources "
-      surface
-        text " article "
-      surface
-        text " articles "
-      surface
-        text " fact "
-      surface
-        text " facts "
-    lexeme ru
-      surface
-        text " информац"
-      surface
-        text " инфу "
-      surface
-        text " сведения "
-      surface
-        text " материал"
-      surface
-        text " данные "
-      surface
-        text " источник"
-    lexeme hi
-      surface
-        text जानकारी
-      surface
-        text सूचना
-      surface
-        text विवरण
-      surface
-        text सामग्री
-      surface
-        text स्रोत
-      surface
-        text लेख
-    lexeme zh
-      surface
-        text 信息
-      surface
-        text 資料
-      surface
-        text 资料
-      surface
-        text 内容
-      surface
-        text 來源
-      surface
-        text 来源
-      surface
-        text 资源
-      surface
-        text 資源
-      surface
-        text 文章
+      words " information " " info " " details " " data " " material " " materials " " resource " " resources "
+      words " source " " sources " " article " " articles " " fact " " facts "
+    lexeme ru " информац" " инфу " " сведения " " материал" " данные " " источник"
+    lexeme hi जानकारी सूचना विवरण सामग्री स्रोत लेख
+    lexeme zh 信息 資料 资料 内容 來源 来源 资源 資源 文章
     lexeme es
-      surface
-        text " información "
-      surface
-        text " info "
-      surface
-        text " datos "
-      surface
-        text " detalles "
-      surface
-        text " material "
-      surface
-        text " materiales "
-      surface
-        text " recurso "
-      surface
-        text " recursos "
-      surface
-        text " fuente "
-      surface
-        text " fuentes "
-      surface
-        text " artículo "
-      surface
-        text " artículos "
-      surface
-        text " hecho "
-      surface
-        text " hechos "
+      words " información " " info " " datos " " detalles " " material " " materiales " " recurso " " recursos "
+      words " fuente " " fuentes " " artículo " " artículos " " hecho " " hechos "
   reference_news
     defined-by web_resource
     defined-by concept
     role web_search_signal
     role web_search_news_subject
-    lexeme en
-      surface
-        text " news "
-      surface
-        text " headlines "
-    lexeme ru
-      surface
-        text " новост"
-    lexeme hi
-      surface
-        text समाचार
-      surface
-        text खबर
-    lexeme zh
-      surface
-        text 新闻
-      surface
-        text 新聞
-      surface
-        text 头条
-      surface
-        text 頭條
-    lexeme es
-      surface
-        text " noticia"
-      surface
-        text " titulares "
+    lexeme en " news " " headlines "
+    lexeme ru " новост"
+    lexeme hi समाचार खबर
+    lexeme zh 新闻 新聞 头条 頭條
+    lexeme es " noticia" " titulares "
   news_recency_request
     defined-by time
     role web_search_news_recency
-    lexeme en
-      surface
-        text " latest "
-      surface
-        text " current "
-      surface
-        text " now "
-      surface
-        text " breaking "
-      surface
-        text " today "
-    lexeme ru
-      surface
-        text " последн"
-      surface
-        text " свеж"
-      surface
-        text " актуальн"
-      surface
-        text " сейчас"
-      surface
-        text " сегодня"
-    lexeme hi
-      surface
-        text नवीनतम
-      surface
-        text ताज़ा
-      surface
-        text ताजा
-      surface
-        text अभी
-      surface
-        text आज
-    lexeme zh
-      surface
-        text 最新
-      surface
-        text 当前
-      surface
-        text 现在
-      surface
-        text 今日
-      surface
-        text 今天
-    lexeme es
-      surface
-        text " últim"
-      surface
-        text " reciente"
-      surface
-        text " actual "
-      surface
-        text " actuales "
-      surface
-        text " ahora "
-      surface
-        text " hoy "
+    lexeme en " latest " " current " " now " " breaking " " today "
+    lexeme ru " последн" " свеж" " актуальн" " сейчас" " сегодня"
+    lexeme hi नवीनतम ताज़ा ताजा अभी आज
+    lexeme zh 最新 当前 现在 今日 今天
+    lexeme es " últim" " reciente" " actual " " actuales " " ahora " " hoy "
   reference_records
     defined-by web_resource
     defined-by concept
     role web_search_signal
     role web_search_records_subject
     lexeme en
-      surface
-        text " records "
-      surface
-        text " record "
-      surface
-        text " filings "
-      surface
-        text " filing "
-      surface
-        text " statements "
-      surface
-        text " statement "
-      surface
-        text " financials "
-      surface
-        text " statistics "
-      surface
-        text " dossier "
-    lexeme ru
-      surface
-        text " записи "
-      surface
-        text " отчет"
-      surface
-        text " отчёт"
-      surface
-        text " ведомост"
-      surface
-        text " статистик"
-      surface
-        text " досье "
-    lexeme hi
-      surface
-        text रिकॉर्ड
-      surface
-        text आंकड़े
-      surface
-        text आँकड़े
-      surface
-        text दस्तावेज़
-      surface
-        text दस्तावेज
-      surface
-        text ब्योरा
-    lexeme zh
-      surface
-        text 记录
-      surface
-        text 記錄
-      surface
-        text 档案
-      surface
-        text 檔案
-      surface
-        text 报表
-      surface
-        text 報表
-      surface
-        text 统计
-      surface
-        text 統計
+      words " records " " record " " filings " " filing " " statements " " statement " " financials " " statistics "
+      words " dossier "
+    lexeme ru " записи " " отчет" " отчёт" " ведомост" " статистик" " досье "
+    lexeme hi रिकॉर्ड आंकड़े आँकड़े दस्तावेज़ दस्तावेज ब्योरा
+    lexeme zh 记录 記錄 档案 檔案 报表 報表 统计 統計
     lexeme es
-      surface
-        text " registros "
-      surface
-        text " registro "
-      surface
-        text " expediente"
-      surface
-        text " informe "
-      surface
-        text " informes "
-      surface
-        text " estados financieros "
-      surface
-        text " estadístic"
-      surface
-        text " dosier "
+      words " registros " " registro " " expediente" " informe " " informes " " estados financieros " " estadístic"
+      words " dosier "
   reference_public_events
     defined-by web_resource
     defined-by concept
     role web_search_signal
     role web_search_public_event_subject
-    lexeme en
-      surface
-        text " event "
-      surface
-        text " events "
-      surface
-        text " hackathon"
-      surface
-        text " conference"
-      surface
-        text " meetup"
-      surface
-        text " workshop"
-      surface
-        text " competition"
-      surface
-        text " webinar"
-    lexeme ru
-      surface
-        text " событ"
-      surface
-        text " мероприят"
-      surface
-        text " хакатон"
-      surface
-        text " конференц"
-      surface
-        text " митап"
-      surface
-        text " конкурс"
-      surface
-        text " вебинар"
-    lexeme hi
-      surface
-        text इवेंट
-      surface
-        text कार्यक्रम
-      surface
-        text हैकाथॉन
-      surface
-        text सम्मेलन
-      surface
-        text मीटअप
-      surface
-        text प्रतियोगिता
-      surface
-        text वेबिनार
-    lexeme zh
-      surface
-        text 活动
-      surface
-        text 活動
-      surface
-        text 黑客松
-      surface
-        text 会议
-      surface
-        text 會議
-      surface
-        text 大会
-      surface
-        text 大會
-      surface
-        text 见面会
-      surface
-        text 見面會
-      surface
-        text 比赛
-      surface
-        text 比賽
-      surface
-        text 竞赛
-      surface
-        text 競賽
-      surface
-        text 网络研讨会
-      surface
-        text 網路研討會
+    lexeme en " event " " events " " hackathon" " conference" " meetup" " workshop" " competition" " webinar"
+    lexeme ru " событ" " мероприят" " хакатон" " конференц" " митап" " конкурс" " вебинар"
+    lexeme hi इवेंट कार्यक्रम हैकाथॉन सम्मेलन मीटअप प्रतियोगिता वेबिनार
+    lexeme zh 活动 活動 黑客松 会议 會議 大会 大會 见面会 見面會 比赛 比賽 竞赛 競賽 网络研讨会 網路研討會
     lexeme es
-      surface
-        text " evento"
-      surface
-        text " hackathon"
-      surface
-        text " conferencia"
-      surface
-        text " meetup"
-      surface
-        text " taller"
-      surface
-        text " concurso"
-      surface
-        text " competición"
-      surface
-        text " webinar"
-      surface
-        text " seminario web"
+      words " evento" " hackathon" " conferencia" " meetup" " taller" " concurso" " competición" " webinar"
+      words " seminario web"
   act_search_strong
     defined-by inquiry
     defined-by action
@@ -523,484 +93,70 @@ meanings
     role web_search_strong_action
     role web_search_imperative_lead
     lexeme en
-      surface
-        text " search "
-      surface
-        text " look up "
-      surface
-        text " lookup "
-      surface
-        text " research "
-      surface
-        text " investigate "
-      surface
-        text " learn "
-      surface
-        text "search for …"
-      surface
-        text "search …"
-      surface
-        text "look up …"
-      surface
-        text "lookup …"
-      surface
-        text "research …"
-      surface
-        text "investigate …"
-      surface
-        text "learn about …"
-      surface
-        text "learn more about …"
-      surface
-        text "google …"
+      words " search " " look up " " lookup " " research " " investigate " " learn " "search for …" "search …"
+      words "look up …" "lookup …" "research …" "investigate …" "learn about …" "learn more about …" "google …"
     lexeme ru
-      surface
-        text " поищи "
-      surface
-        text " поиск "
-      surface
-        text " поискать "
-      surface
-        text " ищи "
-      surface
-        text " изучи "
-      surface
-        text " узнай "
-      surface
-        text "поищи …"
-      surface
-        text "поискать …"
-      surface
-        text "ищи …"
-      surface
-        text "изучи …"
-      surface
-        text "узнай о …"
+      words " поищи " " поиск " " поискать " " ищи " " изучи " " узнай " "поищи …" "поискать …" "ищи …" "изучи …"
+      words "узнай о …"
     lexeme hi
-      surface
-        text खोज
-      surface
-        text ढूंढ
-      surface
-        text ढूँढ
-      surface
-        text "खोजो …"
-      surface
-        text "खोजें …"
-      surface
-        text "खोजिए …"
-      surface
-        text "ढूंढो …"
-      surface
-        text "ढूँढो …"
-      surface
-        text "ढूंढें …"
-      surface
-        text "ढूँढें …"
-      surface
-        text "… खोजो"
-      surface
-        text "… खोजें"
-      surface
-        text "… खोजिए"
-      surface
-        text "… ढूंढो"
-      surface
-        text "… ढूँढो"
-      surface
-        text "… ढूंढें"
-      surface
-        text "… ढूँढें"
-      surface
-        text "… के बारे में जानें"
-    lexeme zh
-      surface
-        text 搜索
-      surface
-        text 查找
-      surface
-        text 查询
-      surface
-        text 檢索
-      surface
-        text 检索
-      surface
-        text 搜一下
-      surface
-        text 查一下
-      surface
-        text 搜索…
-      surface
-        text 查找…
-      surface
-        text 查询…
-      surface
-        text 檢索…
-      surface
-        text 检索…
-      surface
-        text 搜一下…
-      surface
-        text 查一下…
-      surface
-        text 了解…
+      words खोज ढूंढ ढूँढ "खोजो …" "खोजें …" "खोजिए …" "ढूंढो …" "ढूँढो …" "ढूंढें …" "ढूँढें …" "… खोजो" "… खोजें"
+      words "… खोजिए" "… ढूंढो" "… ढूँढो" "… ढूंढें" "… ढूँढें" "… के बारे में जानें"
+    lexeme zh 搜索 查找 查询 檢索 检索 搜一下 查一下 搜索… 查找… 查询… 檢索… 检索… 搜一下… 查一下… 了解…
     lexeme es
-      surface
-        text " busca "
-      surface
-        text " buscar "
-      surface
-        text " búsqueda "
-      surface
-        text " investiga "
-      surface
-        text " investigar "
-      surface
-        text " averigua "
-      surface
-        text "busca …"
-      surface
-        text "buscar …"
-      surface
-        text "investiga …"
-      surface
-        text "averigua …"
-      surface
-        text "infórmate sobre …"
-      surface
-        text "googlea …"
+      words " busca " " buscar " " búsqueda " " investiga " " investigar " " averigua " "busca …" "buscar …"
+      words "investiga …" "averigua …" "infórmate sobre …" "googlea …"
   act_find_weak
     defined-by inquiry
     defined-by action
     role web_search_action
     role web_search_imperative_lead
-    lexeme en
-      surface
-        text " find "
-      surface
-        text " see "
-      surface
-        text " view "
-      surface
-        text "find …"
-      surface
-        text "see …"
-      surface
-        text "view …"
+    lexeme en " find " " see " " view " "find …" "see …" "view …"
     lexeme ru
-      surface
-        text " найди "
-      surface
-        text " найти "
-      surface
-        text " разыщи "
-      surface
-        text " узнай "
-      surface
-        text " посмотреть "
-      surface
-        text " смотреть "
-      surface
-        text "найди …"
-      surface
-        text "найти …"
-      surface
-        text "разыщи …"
-      surface
-        text "узнай …"
-      surface
-        text "посмотреть …"
-      surface
-        text "смотреть …"
-    lexeme hi
-      surface
-        text "पता लगाओ"
-      surface
-        text "पता लगाओ …"
-      surface
-        text देखो
-      surface
-        text "देखो …"
-      surface
-        text देखें
-      surface
-        text "देखें …"
-    lexeme zh
-      surface
-        text 找到
-      surface
-        text 找到…
-      surface
-        text 查看
-      surface
-        text 查看…
-    lexeme es
-      surface
-        text " encuentra "
-      surface
-        text " encontrar "
-      surface
-        text " consulta "
-      surface
-        text " mira "
-      surface
-        text "encuentra …"
-      surface
-        text "encontrar …"
-      surface
-        text "consulta …"
-      surface
-        text "mira …"
+      words " найди " " найти " " разыщи " " узнай " " посмотреть " " смотреть " "найди …" "найти …" "разыщи …"
+      words "узнай …" "посмотреть …" "смотреть …"
+    lexeme hi "पता लगाओ" "पता लगाओ …" देखो "देखो …" देखें "देखें …"
+    lexeme zh 找到 找到… 查看 查看…
+    lexeme es " encuentra " " encontrar " " consulta " " mira " "encuentra …" "encontrar …" "consulta …" "mira …"
   web_search_mention
     defined-by web_search
     role web_search_history_signal
-    lexeme en
-      surface
-        text duckduckgo
-      surface
-        text "web search"
-      surface
-        text "search the internet"
-    lexeme ru
-      surface
-        text веб-поиск
-      surface
-        text "веб поиск"
-      surface
-        text интернет
-    lexeme hi
-      surface
-        text "वेब खोज"
-      surface
-        text "इंटरनेट पर खोज"
-      surface
-        text इंटरनेट
-    lexeme zh
-      surface
-        text 网络搜索
-      surface
-        text 在网上搜索
-      surface
-        text 互联网
-      surface
-        text 網路
-    lexeme es
-      surface
-        text duckduckgo
-      surface
-        text "búsqueda web"
-      surface
-        text "busca en internet"
-      surface
-        text "búsqueda en internet"
+    lexeme en duckduckgo "web search" "search the internet"
+    lexeme ru веб-поиск "веб поиск" интернет
+    lexeme hi "वेब खोज" "इंटरनेट पर खोज" इंटरनेट
+    lexeme zh 网络搜索 在网上搜索 互联网 網路
+    lexeme es duckduckgo "búsqueda web" "busca en internet" "búsqueda en internet"
   github_repository_platform
     defined-by web_resource
     defined-by repository_reference
     role github_repository_platform
-    lexeme en
-      surface
-        text github
-      surface
-        text "git hub"
-    lexeme ru
-      surface
-        text гитхаб
-      surface
-        text "гит хаб"
-      surface
-        text github
-    lexeme hi
-      surface
-        text github
-      surface
-        text गिटहब
-    lexeme zh
-      surface
-        text github
-      surface
-        text GitHub
-    lexeme es
-      surface
-        text github
-      surface
-        text "git hub"
+    lexeme en github "git hub"
+    lexeme ru гитхаб "гит хаб" github
+    lexeme hi github गिटहब
+    lexeme zh github GitHub
+    lexeme es github "git hub"
   repository_reference
     defined-by web_resource
     defined-by entity
     role repository_reference
-    lexeme en
-      surface
-        text repo
-      surface
-        text repository
-      surface
-        text repositories
-    lexeme ru
-      surface
-        text репо
-      surface
-        text репозитор
-    lexeme hi
-      surface
-        text रेपो
-      surface
-        text रिपॉजिटरी
-      surface
-        text repository
-    lexeme zh
-      surface
-        text 仓库
-      surface
-        text 倉庫
-      surface
-        text 存储库
-      surface
-        text 存儲庫
-    lexeme es
-      surface
-        text repo
-      surface
-        text repositorio
-      surface
-        text repositorios
+    lexeme en repo repository repositories
+    lexeme ru репо репозитор
+    lexeme hi रेपो रिपॉजिटरी repository
+    lexeme zh 仓库 倉庫 存储库 存儲庫
+    lexeme es repo repositorio repositorios
   github_repository_traffic_signal
     defined-by repository_reference
     defined-by inquiry
     role github_repository_traffic_signal
-    lexeme en
-      surface
-        text traffic
-      surface
-        text views
-      surface
-        text visitors
-      surface
-        text visitor
-      surface
-        text visited
-      surface
-        text visit
-      surface
-        text clones
-      surface
-        text referrers
-    lexeme ru
-      surface
-        text заход
-      surface
-        text посещ
-      surface
-        text посет
-      surface
-        text просмотр
-      surface
-        text смотр
-      surface
-        text трафик
-      surface
-        text клон
-    lexeme hi
-      surface
-        text आया
-      surface
-        text आए
-      surface
-        text देखा
-      surface
-        text देखी
-      surface
-        text विज़िटर
-      surface
-        text विजिटर
-      surface
-        text ट्रैफिक
-      surface
-        text क्लोन
-    lexeme zh
-      surface
-        text 访问
-      surface
-        text 訪問
-      surface
-        text 访客
-      surface
-        text 訪客
-      surface
-        text 流量
-      surface
-        text 浏览
-      surface
-        text 瀏覽
-      surface
-        text 克隆
-      surface
-        text 来源
-      surface
-        text 來源
-    lexeme es
-      surface
-        text tráfico
-      surface
-        text visita
-      surface
-        text vistas
-      surface
-        text visitó
-      surface
-        text clon
-      surface
-        text referentes
+    lexeme en traffic views visitors visitor visited visit clones referrers
+    lexeme ru заход посещ посет просмотр смотр трафик клон
+    lexeme hi आया आए देखा देखी विज़िटर विजिटर ट्रैफिक क्लोन
+    lexeme zh 访问 訪問 访客 訪客 流量 浏览 瀏覽 克隆 来源 來源
+    lexeme es tráfico visita vistas visitó clon referentes
   github_repository_traffic_question
     defined-by inquiry
     role github_repository_traffic_question
-    lexeme en
-      surface
-        text "can i know"
-      surface
-        text "can you know"
-      surface
-        text "who visited"
-      surface
-        text "is it possible"
-      surface
-        text "does github show"
-      surface
-        text "can i see"
-    lexeme ru
-      surface
-        text "можно ли"
-      surface
-        text узнать
-      surface
-        text кто
-      surface
-        text показывает
-    lexeme hi
-      surface
-        text क्या
-      surface
-        text "जान सकता"
-      surface
-        text कौन
-    lexeme zh
-      surface
-        text 能知道
-      surface
-        text 可以知道
-      surface
-        text 谁
-      surface
-        text 誰
-    lexeme es
-      surface
-        text "se puede saber"
-      surface
-        text "puedo saber"
-      surface
-        text "quién visitó"
-      surface
-        text "es posible"
-      surface
-        text "muestra github"
-      surface
-        text "puedo ver"
+    lexeme en "can i know" "can you know" "who visited" "is it possible" "does github show" "can i see"
+    lexeme ru "можно ли" узнать кто показывает
+    lexeme hi क्या "जान सकता" कौन
+    lexeme zh 能知道 可以知道 谁 誰
+    lexeme es "se puede saber" "puedo saber" "quién visitó" "es posible" "muestra github" "puedo ver"

@@ -1,0 +1,32 @@
+meanings
+  actor
+    grounded-in Q33999
+    lexeme en
+      surface
+        text actor
+        part_of_speech noun
+        grammatical_number singular
+    lexeme ru
+      surface
+        text "актёр"
+      surface
+        text 'it''s'
+      surface
+        text "a \"b\""
+    lexeme es
+      surface
+        text "uno"
+      surface
+        text "dos"
+      surface
+        text tres
+        action x
+      surface
+        text cuatro
+    role x
+  other
+    lexeme old
+      work tale
+    lexeme zh
+      surface
+        text "一"

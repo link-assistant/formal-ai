@@ -11,6 +11,7 @@ mod ci_gates;
 mod cli_paths;
 mod coding_discovery;
 mod concept_sense_ledger;
+mod concise_lexemes;
 mod conversational_variations;
 mod courtesy_response;
 mod data_files;

@@ -8,6 +8,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 import { fileURLToPath } from 'node:url';
+import { expandConciseLexemes } from '../../../../js/server/lino.mjs';
 import {
   parseLinoEntry,
   parseLinoField,
@@ -20,6 +21,8 @@ const repoRoot = path.resolve(scriptDir, '../../../..');
 function readRepoFile(relativePath) {
   const filePath = path.join(repoRoot, relativePath);
   const sources = [fs.readFileSync(filePath, 'utf8')];
+  // A seed is scanned line by line, so its concise lexemes are written out long.
+  if (relativePath.endsWith('.lino')) return expandConciseLexemes(sources[0]);
   if (!relativePath.endsWith('.rs')) return sources[0];
 
   // Rust test modules may be split into a same-named directory to satisfy the
@@ -150,7 +153,7 @@ function parseMeaningsRoleInventories() {
     let language = null;
     let inSurface = false;
 
-    for (const line of fs.readFileSync(path.join(seedDir, file), 'utf8').split(/\r?\n/)) {
+    for (const line of expandConciseLexemes(fs.readFileSync(path.join(seedDir, file), 'utf8')).split(/\r?\n/)) {
       const meaningHeader = line.match(/^ {2}([a-z0-9_]+)$/);
       if (meaningHeader) {
         if (meaning) flushMeaning(meaning);

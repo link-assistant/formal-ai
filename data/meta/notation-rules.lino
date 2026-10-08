@@ -16,6 +16,33 @@ notation-rules
     reason "the record of every rename keeps the old spellings on purpose"
   family ratchets
     files data/meta/*-ratchet.lino
+  family seed-lexemes
+    rule concise-lexemes
+    files data/seed/*.lino
+    except data/seed/meanings-intent.lino
+      reason "CIFIX-LOOP is editing it; converted in the next application"
+    except data/seed/meanings-translation.lino
+      reason "the meaning-detail recipe (js/agentic/meaning_detail.mjs and its Rust twin) writes its tomato and potato blocks long, byte for byte; converted when the recipe writes the concise form"
+    except data/seed/meanings-wikidata.lino
+      reason "rust/src/web_search_fusion_core.rs, also built into the WASM worker, scans it line by line; converted when that reader parses the seed"
+    except data/seed/meanings-statement-merge.lino
+      reason "rust/src/web_search_fusion_core.rs, also built into the WASM worker, scans it line by line; converted when that reader parses the seed"
+    except data/seed/meanings-lexicon-import-01.lino
+      reason "RENAME tree 5 renames the lexicon-import shards; converted after it"
+    except data/seed/meanings-lexicon-import-02.lino
+      reason "RENAME tree 5 renames the lexicon-import shards; converted after it"
+    except data/seed/meanings-lexicon-import-03.lino
+      reason "RENAME tree 5 renames the lexicon-import shards; converted after it"
+    except data/seed/meanings-lexicon-import-04.lino
+      reason "RENAME tree 5 renames the lexicon-import shards; converted after it"
+    except data/seed/meanings-lexicon-import-05.lino
+      reason "RENAME tree 5 renames the lexicon-import shards; converted after it"
+  family gate-names
+    files data/meta/ci-gates/*.lino
+    merge-collisions true
+      reason "a gate's name and the shard file it lives in (data/meta/ci-gates/check-file-size.lino, enforced-by check-file-size) are one name in two spellings"
+    except data/meta/ci-gates/check-rename-map.lino
+      reason "RENAME owns it while its trees are open"
   abbreviations
     app application
     arg argument

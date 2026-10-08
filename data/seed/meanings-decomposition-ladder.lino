@@ -13,29 +13,16 @@ meanings
     effect "the repository-search subject is bound to the binary decomposition invariant"
     unit "not applicable"
     example "internal node has exactly two children"
-    lexeme en
-      surface
-        text "internal node has exactly two children"
-        action binary_decomposition_invariant
-      surface
-        text "internal nodes have exactly two children"
-        action binary_decomposition_invariant
-    lexeme ru
-      surface
-        text "внутренний узел имеет ровно двух потомков"
-        action binary_decomposition_invariant
-    lexeme hi
-      surface
-        text "आंतरिक नोड के ठीक दो बच्चे होते हैं"
-        action binary_decomposition_invariant
-    lexeme zh
-      surface
-        text 内部节点恰好有两个子节点
-        action binary_decomposition_invariant
-    lexeme es
-      surface
-        text "un nodo interno tiene exactamente dos hijos"
-        action binary_decomposition_invariant
+    lexeme en "internal node has exactly two children" "internal nodes have exactly two children"
+      action binary_decomposition_invariant
+    lexeme ru "внутренний узел имеет ровно двух потомков"
+      action binary_decomposition_invariant
+    lexeme hi "आंतरिक नोड के ठीक दो बच्चे होते हैं"
+      action binary_decomposition_invariant
+    lexeme zh 内部节点恰好有两个子节点
+      action binary_decomposition_invariant
+    lexeme es "un nodo interno tiene exactamente dos hijos"
+      action binary_decomposition_invariant
   coding_search_binary_decomposition_invariant
     defined-by code
     role coding_search_fact_query
@@ -45,34 +32,17 @@ meanings
     unit "not applicable"
     example "exactly-two-children requirement"
     lexeme en
-      surface
-        text "exactly-two-children requirement"
-        action "Every internal node has exactly two children"
-      surface
-        text "exactly two children requirement"
-        action "Every internal node has exactly two children"
-      surface
-        text "internal node has exactly two children"
-        action "Every internal node has exactly two children"
-      surface
-        text "internal nodes have exactly two children"
-        action "Every internal node has exactly two children"
-    lexeme ru
-      surface
-        text "внутренний узел имеет ровно двух потомков"
-        action "Every internal node has exactly two children"
-    lexeme hi
-      surface
-        text "आंतरिक नोड के ठीक दो बच्चे होते हैं"
-        action "Every internal node has exactly two children"
-    lexeme zh
-      surface
-        text 内部节点恰好有两个子节点
-        action "Every internal node has exactly two children"
-    lexeme es
-      surface
-        text "un nodo interno tiene exactamente dos hijos"
-        action "Every internal node has exactly two children"
+      words "exactly-two-children requirement" "exactly two children requirement"
+      words "internal node has exactly two children" "internal nodes have exactly two children"
+      action "Every internal node has exactly two children"
+    lexeme ru "внутренний узел имеет ровно двух потомков"
+      action "Every internal node has exactly two children"
+    lexeme hi "आंतरिक नोड के ठीक दो बच्चे होते हैं"
+      action "Every internal node has exactly two children"
+    lexeme zh 内部节点恰好有两个子节点
+      action "Every internal node has exactly two children"
+    lexeme es "un nodo interno tiene exactamente dos hijos"
+      action "Every internal node has exactly two children"
   atomic_leaf_invariant
     defined-by code
     role coding_search_literal_query
@@ -80,29 +50,16 @@ meanings
     effect "the repository-search subject is bound to the atomic leaf invariant"
     unit "not applicable"
     example "leaf is atomic and independently checkable"
-    lexeme en
-      surface
-        text "leaf is atomic and independently checkable"
-        action atomic_leaf_invariant
-      surface
-        text "leaves are atomic and independently checkable"
-        action atomic_leaf_invariant
-    lexeme ru
-      surface
-        text "лист атомарен и проверяется независимо"
-        action atomic_leaf_invariant
-    lexeme hi
-      surface
-        text "पत्ता परमाणु है और स्वतंत्र रूप से जांचने योग्य है"
-        action atomic_leaf_invariant
-    lexeme zh
-      surface
-        text 叶子是原子的并且可以独立检查
-        action atomic_leaf_invariant
-    lexeme es
-      surface
-        text "la hoja es atómica y se puede comprobar de forma independiente"
-        action atomic_leaf_invariant
+    lexeme en "leaf is atomic and independently checkable" "leaves are atomic and independently checkable"
+      action atomic_leaf_invariant
+    lexeme ru "лист атомарен и проверяется независимо"
+      action atomic_leaf_invariant
+    lexeme hi "पत्ता परमाणु है और स्वतंत्र रूप से जांचने योग्य है"
+      action atomic_leaf_invariant
+    lexeme zh 叶子是原子的并且可以独立检查
+      action atomic_leaf_invariant
+    lexeme es "la hoja es atómica y se puede comprobar de forma independiente"
+      action atomic_leaf_invariant
   coding_search_atomic_leaf_invariant
     defined-by code
     role coding_search_fact_query
@@ -111,29 +68,16 @@ meanings
     effect "the requested fact is searched by its canonical documentation sentence"
     unit "not applicable"
     example "leaf is atomic and independently checkable"
-    lexeme en
-      surface
-        text "leaf is atomic and independently checkable"
-        action "every leaf is atomic and independently checkable"
-      surface
-        text "leaves are atomic and independently checkable"
-        action "every leaf is atomic and independently checkable"
-    lexeme ru
-      surface
-        text "лист атомарен и проверяется независимо"
-        action "every leaf is atomic and independently checkable"
-    lexeme hi
-      surface
-        text "पत्ता परमाणु है और स्वतंत्र रूप से जांचने योग्य है"
-        action "every leaf is atomic and independently checkable"
-    lexeme zh
-      surface
-        text 叶子是原子的并且可以独立检查
-        action "every leaf is atomic and independently checkable"
-    lexeme es
-      surface
-        text "la hoja es atómica y se puede comprobar de forma independiente"
-        action "every leaf is atomic and independently checkable"
+    lexeme en "leaf is atomic and independently checkable" "leaves are atomic and independently checkable"
+      action "every leaf is atomic and independently checkable"
+    lexeme ru "лист атомарен и проверяется независимо"
+      action "every leaf is atomic and independently checkable"
+    lexeme hi "पत्ता परमाणु है और स्वतंत्र रूप से जांचने योग्य है"
+      action "every leaf is atomic and independently checkable"
+    lexeme zh 叶子是原子的并且可以独立检查
+      action "every leaf is atomic and independently checkable"
+    lexeme es "la hoja es atómica y se puede comprobar de forma independiente"
+      action "every leaf is atomic and independently checkable"
   decomposition_node_identifier
     defined-by code
     role coding_search_literal_query
@@ -141,29 +85,16 @@ meanings
     effect "the repository-search subject is bound to the decomposition node identifier"
     unit "not applicable"
     example "content-addressed stable identifier"
-    lexeme en
-      surface
-        text "content-addressed stable identifier"
-        action decomposition_node_identifier
-      surface
-        text "content addressed stable identifier"
-        action decomposition_node_identifier
-    lexeme ru
-      surface
-        text "стабильный идентификатор по содержимому"
-        action decomposition_node_identifier
-    lexeme hi
-      surface
-        text "सामग्री-आधारित स्थिर पहचानकर्ता"
-        action decomposition_node_identifier
-    lexeme zh
-      surface
-        text 基于内容寻址的稳定标识符
-        action decomposition_node_identifier
-    lexeme es
-      surface
-        text "identificador estable direccionado por contenido"
-        action decomposition_node_identifier
+    lexeme en "content-addressed stable identifier" "content addressed stable identifier"
+      action decomposition_node_identifier
+    lexeme ru "стабильный идентификатор по содержимому"
+      action decomposition_node_identifier
+    lexeme hi "सामग्री-आधारित स्थिर पहचानकर्ता"
+      action decomposition_node_identifier
+    lexeme zh 基于内容寻址的稳定标识符
+      action decomposition_node_identifier
+    lexeme es "identificador estable direccionado por contenido"
+      action decomposition_node_identifier
   coding_search_decomposition_node_identifier
     defined-by code
     role coding_search_fact_query
@@ -171,29 +102,16 @@ meanings
     effect "the requested fact is searched by the node identifier field declaration"
     unit "not applicable"
     example "content-addressed stable identifier"
-    lexeme en
-      surface
-        text "content-addressed stable identifier"
-        action "pub id: String"
-      surface
-        text "content addressed stable identifier"
-        action "pub id: String"
-    lexeme ru
-      surface
-        text "стабильный идентификатор по содержимому"
-        action "pub id: String"
-    lexeme hi
-      surface
-        text "सामग्री-आधारित स्थिर पहचानकर्ता"
-        action "pub id: String"
-    lexeme zh
-      surface
-        text 基于内容寻址的稳定标识符
-        action "pub id: String"
-    lexeme es
-      surface
-        text "identificador estable direccionado por contenido"
-        action "pub id: String"
+    lexeme en "content-addressed stable identifier" "content addressed stable identifier"
+      action "pub id: String"
+    lexeme ru "стабильный идентификатор по содержимому"
+      action "pub id: String"
+    lexeme hi "सामग्री-आधारित स्थिर पहचानकर्ता"
+      action "pub id: String"
+    lexeme zh 基于内容寻址的稳定标识符
+      action "pub id: String"
+    lexeme es "identificador estable direccionado por contenido"
+      action "pub id: String"
   dotted_child_path
     defined-by code
     role coding_search_literal_query
@@ -202,28 +120,17 @@ meanings
     unit "not applicable"
     example "child paths follow the dotted numeric convention"
     lexeme en
-      surface
-        text "child paths follow the dotted numeric convention"
-        action dotted_child_path
-      surface
-        text "child paths append a dot and their one-based numeric ordinal"
-        action dotted_child_path
-    lexeme ru
-      surface
-        text "пути потомков следуют точечной числовой схеме"
-        action dotted_child_path
-    lexeme hi
-      surface
-        text "चाइल्ड पथ बिंदीदार संख्यात्मक परिपाटी का पालन करते हैं"
-        action dotted_child_path
-    lexeme zh
-      surface
-        text 子路径遵循点分数字约定
-        action dotted_child_path
-    lexeme es
-      surface
-        text "las rutas hijas siguen la convención numérica con puntos"
-        action dotted_child_path
+      words "child paths follow the dotted numeric convention"
+      words "child paths append a dot and their one-based numeric ordinal"
+      action dotted_child_path
+    lexeme ru "пути потомков следуют точечной числовой схеме"
+      action dotted_child_path
+    lexeme hi "चाइल्ड पथ बिंदीदार संख्यात्मक परिपाटी का पालन करते हैं"
+      action dotted_child_path
+    lexeme zh 子路径遵循点分数字约定
+      action dotted_child_path
+    lexeme es "las rutas hijas siguen la convención numérica con puntos"
+      action dotted_child_path
   coding_search_dotted_child_path
     defined-by code
     role coding_search_fact_query
@@ -232,28 +139,17 @@ meanings
     unit "not applicable"
     example "child paths follow the dotted numeric convention"
     lexeme en
-      surface
-        text "child paths follow the dotted numeric convention"
-        action "format![(]""[{]parent[}][.][{]number[}]""[)]"
-      surface
-        text "child paths append a dot and their one-based numeric ordinal"
-        action "format![(]""[{]parent[}][.][{]number[}]""[)]"
-    lexeme ru
-      surface
-        text "пути потомков следуют точечной числовой схеме"
-        action "format![(]""[{]parent[}][.][{]number[}]""[)]"
-    lexeme hi
-      surface
-        text "चाइल्ड पथ बिंदीदार संख्यात्मक परिपाटी का पालन करते हैं"
-        action "format![(]""[{]parent[}][.][{]number[}]""[)]"
-    lexeme zh
-      surface
-        text 子路径遵循点分数字约定
-        action "format![(]""[{]parent[}][.][{]number[}]""[)]"
-    lexeme es
-      surface
-        text "las rutas hijas siguen la convención numérica con puntos"
-        action "format![(]""[{]parent[}][.][{]number[}]""[)]"
+      words "child paths follow the dotted numeric convention"
+      words "child paths append a dot and their one-based numeric ordinal"
+      action "format![(]""[{]parent[}][.][{]number[}]""[)]"
+    lexeme ru "пути потомков следуют точечной числовой схеме"
+      action "format![(]""[{]parent[}][.][{]number[}]""[)]"
+    lexeme hi "चाइल्ड पथ बिंदीदार संख्यात्मक परिपाटी का पालन करते हैं"
+      action "format![(]""[{]parent[}][.][{]number[}]""[)]"
+    lexeme zh 子路径遵循点分数字约定
+      action "format![(]""[{]parent[}][.][{]number[}]""[)]"
+    lexeme es "las rutas hijas siguen la convención numérica con puntos"
+      action "format![(]""[{]parent[}][.][{]number[}]""[)]"
   complete_tree_node_count
     defined-by code
     role coding_search_literal_query
@@ -263,31 +159,17 @@ meanings
     unit "not applicable"
     example "node count of a complete depth-five tree is exactly 63 including the root"
     lexeme en
-      surface
-        text "node count of a complete depth-five tree is exactly 63 including the root"
-        action complete_tree_node_count
-      surface
-        text "complete depth-five tree assertion"
-        action complete_tree_node_count
-      surface
-        text "root-inclusive node total is 63"
-        action complete_tree_node_count
-    lexeme ru
-      surface
-        text "полное дерево глубины пять содержит ровно 63 узла вместе с корнем"
-        action complete_tree_node_count
-    lexeme hi
-      surface
-        text "गहराई पाँच के पूर्ण वृक्ष में मूल सहित ठीक 63 नोड होते हैं"
-        action complete_tree_node_count
-    lexeme zh
-      surface
-        text "深度为五的完全树包括根在内恰好有 63 个节点"
-        action complete_tree_node_count
-    lexeme es
-      surface
-        text "un árbol completo de profundidad cinco tiene exactamente 63 nodos contando la raíz"
-        action complete_tree_node_count
+      words "node count of a complete depth-five tree is exactly 63 including the root"
+      words "complete depth-five tree assertion" "root-inclusive node total is 63"
+      action complete_tree_node_count
+    lexeme ru "полное дерево глубины пять содержит ровно 63 узла вместе с корнем"
+      action complete_tree_node_count
+    lexeme hi "गहराई पाँच के पूर्ण वृक्ष में मूल सहित ठीक 63 नोड होते हैं"
+      action complete_tree_node_count
+    lexeme zh "深度为五的完全树包括根在内恰好有 63 个节点"
+      action complete_tree_node_count
+    lexeme es "un árbol completo de profundidad cinco tiene exactamente 63 nodos contando la raíz"
+      action complete_tree_node_count
   coding_search_complete_tree_node_count
     defined-by code
     role coding_search_fact_query
@@ -296,31 +178,17 @@ meanings
     unit "not applicable"
     example "node count of a complete depth-five tree is exactly 63 including the root"
     lexeme en
-      surface
-        text "node count of a complete depth-five tree is exactly 63 including the root"
-        action "const NODE_COUNT: usize = 63"
-      surface
-        text "complete depth-five tree assertion"
-        action "const NODE_COUNT: usize = 63"
-      surface
-        text "root-inclusive node total is 63"
-        action "const NODE_COUNT: usize = 63"
-    lexeme ru
-      surface
-        text "полное дерево глубины пять содержит ровно 63 узла вместе с корнем"
-        action "const NODE_COUNT: usize = 63"
-    lexeme hi
-      surface
-        text "गहराई पाँच के पूर्ण वृक्ष में मूल सहित ठीक 63 नोड होते हैं"
-        action "const NODE_COUNT: usize = 63"
-    lexeme zh
-      surface
-        text "深度为五的完全树包括根在内恰好有 63 个节点"
-        action "const NODE_COUNT: usize = 63"
-    lexeme es
-      surface
-        text "un árbol completo de profundidad cinco tiene exactamente 63 nodos contando la raíz"
-        action "const NODE_COUNT: usize = 63"
+      words "node count of a complete depth-five tree is exactly 63 including the root"
+      words "complete depth-five tree assertion" "root-inclusive node total is 63"
+      action "const NODE_COUNT: usize = 63"
+    lexeme ru "полное дерево глубины пять содержит ровно 63 узла вместе с корнем"
+      action "const NODE_COUNT: usize = 63"
+    lexeme hi "गहराई पाँच के पूर्ण वृक्ष में मूल सहित ठीक 63 नोड होते हैं"
+      action "const NODE_COUNT: usize = 63"
+    lexeme zh "深度为五的完全树包括根在内恰好有 63 个节点"
+      action "const NODE_COUNT: usize = 63"
+    lexeme es "un árbol completo de profundidad cinco tiene exactamente 63 nodos contando la raíz"
+      action "const NODE_COUNT: usize = 63"
   agent_cli_ladder_depth_selector
     defined-by code
     role coding_search_literal_query
@@ -330,28 +198,17 @@ meanings
     unit "not applicable"
     example "Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all"
     lexeme en
-      surface
-        text "Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all"
-        action agent_cli_ladder_depth_selector
-      surface
-        text "Agent-CLI ladder depth selector"
-        action agent_cli_ladder_depth_selector
-    lexeme ru
-      surface
-        text "селектор глубины лестницы Agent-CLI"
-        action agent_cli_ladder_depth_selector
-    lexeme hi
-      surface
-        text "Agent-CLI सीढ़ी गहराई चयनकर्ता"
-        action agent_cli_ladder_depth_selector
-    lexeme zh
-      surface
-        text "Agent-CLI 阶梯深度选择器"
-        action agent_cli_ladder_depth_selector
-    lexeme es
-      surface
-        text "selector de profundidad de la escalera de Agent-CLI"
-        action agent_cli_ladder_depth_selector
+      words "Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all"
+      words "Agent-CLI ladder depth selector"
+      action agent_cli_ladder_depth_selector
+    lexeme ru "селектор глубины лестницы Agent-CLI"
+      action agent_cli_ladder_depth_selector
+    lexeme hi "Agent-CLI सीढ़ी गहराई चयनकर्ता"
+      action agent_cli_ladder_depth_selector
+    lexeme zh "Agent-CLI 阶梯深度选择器"
+      action agent_cli_ladder_depth_selector
+    lexeme es "selector de profundidad de la escalera de Agent-CLI"
+      action agent_cli_ladder_depth_selector
   coding_search_agent_cli_ladder_depth_selector
     defined-by code
     role coding_search_fact_query
@@ -360,28 +217,17 @@ meanings
     unit "not applicable"
     example "Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all"
     lexeme en
-      surface
-        text "Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all"
-        action "all[)] ;;$"
-      surface
-        text "Agent-CLI ladder depth selector"
-        action "all[)] ;;$"
-    lexeme ru
-      surface
-        text "селектор глубины лестницы Agent-CLI"
-        action "all[)] ;;$"
-    lexeme hi
-      surface
-        text "Agent-CLI सीढ़ी गहराई चयनकर्ता"
-        action "all[)] ;;$"
-    lexeme zh
-      surface
-        text "Agent-CLI 阶梯深度选择器"
-        action "all[)] ;;$"
-    lexeme es
-      surface
-        text "selector de profundidad de la escalera de Agent-CLI"
-        action "all[)] ;;$"
+      words "Agent-CLI ladder workflow and verify depth selection supports 0 through 5 and all"
+      words "Agent-CLI ladder depth selector"
+      action "all[)] ;;$"
+    lexeme ru "селектор глубины лестницы Agent-CLI"
+      action "all[)] ;;$"
+    lexeme hi "Agent-CLI सीढ़ी गहराई चयनकर्ता"
+      action "all[)] ;;$"
+    lexeme zh "Agent-CLI 阶梯深度选择器"
+      action "all[)] ;;$"
+    lexeme es "selector de profundidad de la escalera de Agent-CLI"
+      action "all[)] ;;$"
   leaf_first_ladder_order
     defined-by code
     role coding_search_literal_query
@@ -391,34 +237,18 @@ meanings
     unit "not applicable"
     example "atomic leaves run before composite parents"
     lexeme en
-      surface
-        text "ladder can execute the 32 smallest leaves before moving to larger composite nodes"
-        action leaf_first_ladder_order
-      surface
-        text "atomic leaves run before composite parents"
-        action leaf_first_ladder_order
-      surface
-        text "ladder order for all mode is 32, 16, 8, 4, 2, then the root"
-        action leaf_first_ladder_order
-      surface
-        text "all-mode traversal visits depth five through depth zero in descending order"
-        action leaf_first_ladder_order
-    lexeme ru
-      surface
-        text "атомарные листья выполняются раньше составных родителей"
-        action leaf_first_ladder_order
-    lexeme hi
-      surface
-        text "परमाणु पत्ते संयुक्त माता-पिता से पहले चलते हैं"
-        action leaf_first_ladder_order
-    lexeme zh
-      surface
-        text 原子叶子先于复合父节点执行
-        action leaf_first_ladder_order
-    lexeme es
-      surface
-        text "las hojas atómicas se ejecutan antes que los padres compuestos"
-        action leaf_first_ladder_order
+      words "ladder can execute the 32 smallest leaves before moving to larger composite nodes"
+      words "atomic leaves run before composite parents" "ladder order for all mode is 32, 16, 8, 4, 2, then the root"
+      words "all-mode traversal visits depth five through depth zero in descending order"
+      action leaf_first_ladder_order
+    lexeme ru "атомарные листья выполняются раньше составных родителей"
+      action leaf_first_ladder_order
+    lexeme hi "परमाणु पत्ते संयुक्त माता-पिता से पहले चलते हैं"
+      action leaf_first_ladder_order
+    lexeme zh 原子叶子先于复合父节点执行
+      action leaf_first_ladder_order
+    lexeme es "las hojas atómicas se ejecutan antes que los padres compuestos"
+      action leaf_first_ladder_order
   coding_search_leaf_first_ladder_order_fact
     defined-by code
     role coding_search_fact_query
@@ -427,34 +257,18 @@ meanings
     unit "not applicable"
     example "atomic leaves run before composite parents"
     lexeme en
-      surface
-        text "ladder can execute the 32 smallest leaves before moving to larger composite nodes"
-        action "levels=list[(]range[(]5,-1,-1"
-      surface
-        text "atomic leaves run before composite parents"
-        action "levels=list[(]range[(]5,-1,-1"
-      surface
-        text "ladder order for all mode is 32, 16, 8, 4, 2, then the root"
-        action "levels=list[(]range[(]5,-1,-1"
-      surface
-        text "all-mode traversal visits depth five through depth zero in descending order"
-        action "levels=list[(]range[(]5,-1,-1"
-    lexeme ru
-      surface
-        text "атомарные листья выполняются раньше составных родителей"
-        action "levels=list[(]range[(]5,-1,-1"
-    lexeme hi
-      surface
-        text "परमाणु पत्ते संयुक्त माता-पिता से पहले चलते हैं"
-        action "levels=list[(]range[(]5,-1,-1"
-    lexeme zh
-      surface
-        text 原子叶子先于复合父节点执行
-        action "levels=list[(]range[(]5,-1,-1"
-    lexeme es
-      surface
-        text "las hojas atómicas se ejecutan antes que los padres compuestos"
-        action "levels=list[(]range[(]5,-1,-1"
+      words "ladder can execute the 32 smallest leaves before moving to larger composite nodes"
+      words "atomic leaves run before composite parents" "ladder order for all mode is 32, 16, 8, 4, 2, then the root"
+      words "all-mode traversal visits depth five through depth zero in descending order"
+      action "levels=list[(]range[(]5,-1,-1"
+    lexeme ru "атомарные листья выполняются раньше составных родителей"
+      action "levels=list[(]range[(]5,-1,-1"
+    lexeme hi "परमाणु पत्ते संयुक्त माता-पिता से पहले चलते हैं"
+      action "levels=list[(]range[(]5,-1,-1"
+    lexeme zh 原子叶子先于复合父节点执行
+      action "levels=list[(]range[(]5,-1,-1"
+    lexeme es "las hojas atómicas se ejecutan antes que los padres compuestos"
+      action "levels=list[(]range[(]5,-1,-1"
   fresh_ladder_repository_copy
     defined-by code
     role coding_search_literal_query
@@ -464,28 +278,17 @@ meanings
     unit "not applicable"
     example "every selected node runs in a fresh temporary repository copy"
     lexeme en
-      surface
-        text "every selected node runs in a fresh temporary repository copy"
-        action fresh_ladder_repository_copy
-      surface
-        text "each ladder task receives an isolated scratch checkout"
-        action fresh_ladder_repository_copy
-    lexeme ru
-      surface
-        text "каждый выбранный узел выполняется в свежей временной копии репозитория"
-        action fresh_ladder_repository_copy
-    lexeme hi
-      surface
-        text "हर चुना गया नोड रिपॉजिटरी की नई अस्थायी प्रति में चलता है"
-        action fresh_ladder_repository_copy
-    lexeme zh
-      surface
-        text 每个选中的节点都在新的临时仓库副本中运行
-        action fresh_ladder_repository_copy
-    lexeme es
-      surface
-        text "cada nodo seleccionado se ejecuta en una copia temporal nueva del repositorio"
-        action fresh_ladder_repository_copy
+      words "every selected node runs in a fresh temporary repository copy"
+      words "each ladder task receives an isolated scratch checkout"
+      action fresh_ladder_repository_copy
+    lexeme ru "каждый выбранный узел выполняется в свежей временной копии репозитория"
+      action fresh_ladder_repository_copy
+    lexeme hi "हर चुना गया नोड रिपॉजिटरी की नई अस्थायी प्रति में चलता है"
+      action fresh_ladder_repository_copy
+    lexeme zh 每个选中的节点都在新的临时仓库副本中运行
+      action fresh_ladder_repository_copy
+    lexeme es "cada nodo seleccionado se ejecuta en una copia temporal nueva del repositorio"
+      action fresh_ladder_repository_copy
   coding_search_fresh_ladder_repository_copy_fact
     defined-by code
     role coding_search_fact_query
@@ -494,28 +297,17 @@ meanings
     unit "not applicable"
     example "every selected node runs in a fresh temporary repository copy"
     lexeme en
-      surface
-        text "every selected node runs in a fresh temporary repository copy"
-        action "work=.*mktemp -d"
-      surface
-        text "each ladder task receives an isolated scratch checkout"
-        action "work=.*mktemp -d"
-    lexeme ru
-      surface
-        text "каждый выбранный узел выполняется в свежей временной копии репозитория"
-        action "work=.*mktemp -d"
-    lexeme hi
-      surface
-        text "हर चुना गया नोड रिपॉजिटरी की नई अस्थायी प्रति में चलता है"
-        action "work=.*mktemp -d"
-    lexeme zh
-      surface
-        text 每个选中的节点都在新的临时仓库副本中运行
-        action "work=.*mktemp -d"
-    lexeme es
-      surface
-        text "cada nodo seleccionado se ejecuta en una copia temporal nueva del repositorio"
-        action "work=.*mktemp -d"
+      words "every selected node runs in a fresh temporary repository copy"
+      words "each ladder task receives an isolated scratch checkout"
+      action "work=.*mktemp -d"
+    lexeme ru "каждый выбранный узел выполняется в свежей временной копии репозитория"
+      action "work=.*mktemp -d"
+    lexeme hi "हर चुना गया नोड रिपॉजिटरी की नई अस्थायी प्रति में चलता है"
+      action "work=.*mktemp -d"
+    lexeme zh 每个选中的节点都在新的临时仓库副本中运行
+      action "work=.*mktemp -d"
+    lexeme es "cada nodo seleccionado se ejecuta en una copia temporal nueva del repositorio"
+      action "work=.*mktemp -d"
   real_agent_formal_ai_ladder
     defined-by code
     role coding_search_literal_query
@@ -525,28 +317,17 @@ meanings
     unit "not applicable"
     example "selected node uses the real Agent CLI against the real Formal AI server"
     lexeme en
-      surface
-        text "selected node uses the real Agent CLI against the real Formal AI server"
-        action real_agent_formal_ai_ladder
-      surface
-        text "ladder leaves invoke Agent through the served Formal AI model"
-        action real_agent_formal_ai_ladder
-    lexeme ru
-      surface
-        text "выбранный узел использует настоящий Agent CLI с настоящим сервером Formal AI"
-        action real_agent_formal_ai_ladder
-    lexeme hi
-      surface
-        text "चुना गया नोड असली Formal AI सर्वर के साथ असली Agent CLI का उपयोग करता है"
-        action real_agent_formal_ai_ladder
-    lexeme zh
-      surface
-        text "选中的节点使用真实的 Agent CLI 和真实的 Formal AI 服务器"
-        action real_agent_formal_ai_ladder
-    lexeme es
-      surface
-        text "el nodo seleccionado usa el Agent CLI real contra el servidor real de Formal AI"
-        action real_agent_formal_ai_ladder
+      words "selected node uses the real Agent CLI against the real Formal AI server"
+      words "ladder leaves invoke Agent through the served Formal AI model"
+      action real_agent_formal_ai_ladder
+    lexeme ru "выбранный узел использует настоящий Agent CLI с настоящим сервером Formal AI"
+      action real_agent_formal_ai_ladder
+    lexeme hi "चुना गया नोड असली Formal AI सर्वर के साथ असली Agent CLI का उपयोग करता है"
+      action real_agent_formal_ai_ladder
+    lexeme zh "选中的节点使用真实的 Agent CLI 和真实的 Formal AI 服务器"
+      action real_agent_formal_ai_ladder
+    lexeme es "el nodo seleccionado usa el Agent CLI real contra el servidor real de Formal AI"
+      action real_agent_formal_ai_ladder
   coding_search_real_agent_formal_ai_ladder_fact
     defined-by code
     role coding_search_fact_query
@@ -555,28 +336,17 @@ meanings
     unit "not applicable"
     example "selected node uses the real Agent CLI against the real Formal AI server"
     lexeme en
-      surface
-        text "selected node uses the real Agent CLI against the real Formal AI server"
-        action "AGENT.*formalai/formal-ai"
-      surface
-        text "ladder leaves invoke Agent through the served Formal AI model"
-        action "AGENT.*formalai/formal-ai"
-    lexeme ru
-      surface
-        text "выбранный узел использует настоящий Agent CLI с настоящим сервером Formal AI"
-        action "AGENT.*formalai/formal-ai"
-    lexeme hi
-      surface
-        text "चुना गया नोड असली Formal AI सर्वर के साथ असली Agent CLI का उपयोग करता है"
-        action "AGENT.*formalai/formal-ai"
-    lexeme zh
-      surface
-        text "选中的节点使用真实的 Agent CLI 和真实的 Formal AI 服务器"
-        action "AGENT.*formalai/formal-ai"
-    lexeme es
-      surface
-        text "el nodo seleccionado usa el Agent CLI real contra el servidor real de Formal AI"
-        action "AGENT.*formalai/formal-ai"
+      words "selected node uses the real Agent CLI against the real Formal AI server"
+      words "ladder leaves invoke Agent through the served Formal AI model"
+      action "AGENT.*formalai/formal-ai"
+    lexeme ru "выбранный узел использует настоящий Agent CLI с настоящим сервером Formal AI"
+      action "AGENT.*formalai/formal-ai"
+    lexeme hi "चुना गया नोड असली Formal AI सर्वर के साथ असली Agent CLI का उपयोग करता है"
+      action "AGENT.*formalai/formal-ai"
+    lexeme zh "选中的节点使用真实的 Agent CLI 和真实的 Formal AI 服务器"
+      action "AGENT.*formalai/formal-ai"
+    lexeme es "el nodo seleccionado usa el Agent CLI real contra el servidor real de Formal AI"
+      action "AGENT.*formalai/formal-ai"
   exact_node_path_proof
     defined-by code
     role coding_search_literal_query
@@ -586,28 +356,17 @@ meanings
     unit "not applicable"
     example "observable proof file with its exact node path"
     lexeme en
-      surface
-        text "observable proof file with its exact node path"
-        action exact_node_path_proof
-      surface
-        text "node evidence is rejected unless its proof names the selected path"
-        action exact_node_path_proof
-    lexeme ru
-      surface
-        text "наблюдаемый файл доказательства с точным путём узла"
-        action exact_node_path_proof
-    lexeme hi
-      surface
-        text "सटीक नोड पथ वाली अवलोकनीय प्रमाण फ़ाइल"
-        action exact_node_path_proof
-    lexeme zh
-      surface
-        text 带有确切节点路径的可观察证明文件
-        action exact_node_path_proof
-    lexeme es
-      surface
-        text "archivo de prueba observable con la ruta exacta del nodo"
-        action exact_node_path_proof
+      words "observable proof file with its exact node path"
+      words "node evidence is rejected unless its proof names the selected path"
+      action exact_node_path_proof
+    lexeme ru "наблюдаемый файл доказательства с точным путём узла"
+      action exact_node_path_proof
+    lexeme hi "सटीक नोड पथ वाली अवलोकनीय प्रमाण फ़ाइल"
+      action exact_node_path_proof
+    lexeme zh 带有确切节点路径的可观察证明文件
+      action exact_node_path_proof
+    lexeme es "archivo de prueba observable con la ruta exacta del nodo"
+      action exact_node_path_proof
   coding_search_exact_node_path_proof_fact
     defined-by code
     role coding_search_fact_query
@@ -616,28 +375,17 @@ meanings
     unit "not applicable"
     example "observable proof file with its exact node path"
     lexeme en
-      surface
-        text "observable proof file with its exact node path"
-        action "grep -q.*node_path=.*proof"
-      surface
-        text "node evidence is rejected unless its proof names the selected path"
-        action "grep -q.*node_path=.*proof"
-    lexeme ru
-      surface
-        text "наблюдаемый файл доказательства с точным путём узла"
-        action "grep -q.*node_path=.*proof"
-    lexeme hi
-      surface
-        text "सटीक नोड पथ वाली अवलोकनीय प्रमाण फ़ाइल"
-        action "grep -q.*node_path=.*proof"
-    lexeme zh
-      surface
-        text 带有确切节点路径的可观察证明文件
-        action "grep -q.*node_path=.*proof"
-    lexeme es
-      surface
-        text "archivo de prueba observable con la ruta exacta del nodo"
-        action "grep -q.*node_path=.*proof"
+      words "observable proof file with its exact node path"
+      words "node evidence is rejected unless its proof names the selected path"
+      action "grep -q.*node_path=.*proof"
+    lexeme ru "наблюдаемый файл доказательства с точным путём узла"
+      action "grep -q.*node_path=.*proof"
+    lexeme hi "सटीक नोड पथ वाली अवलोकनीय प्रमाण फ़ाइल"
+      action "grep -q.*node_path=.*proof"
+    lexeme zh 带有确切节点路径的可观察证明文件
+      action "grep -q.*node_path=.*proof"
+    lexeme es "archivo de prueba observable con la ruta exacta del nodo"
+      action "grep -q.*node_path=.*proof"
   complete_binary_tree_not_flat
     defined-by code
     role coding_search_literal_query
@@ -646,28 +394,17 @@ meanings
     unit "not applicable"
     example "case-study describes a tree rather than a flat list"
     lexeme en
-      surface
-        text "case-study and verify it describes a tree rather than a flat list"
-        action complete_binary_tree_not_flat
-      surface
-        text "case study explicitly rejects a flat-list interpretation"
-        action complete_binary_tree_not_flat
-    lexeme ru
-      surface
-        text "исследование описывает дерево, а не плоский список"
-        action complete_binary_tree_not_flat
-    lexeme hi
-      surface
-        text "केस स्टडी एक वृक्ष का वर्णन करती है, सपाट सूची का नहीं"
-        action complete_binary_tree_not_flat
-    lexeme zh
-      surface
-        text 案例研究描述的是树而不是扁平列表
-        action complete_binary_tree_not_flat
-    lexeme es
-      surface
-        text "el caso de estudio describe un árbol y no una lista plana"
-        action complete_binary_tree_not_flat
+      words "case-study and verify it describes a tree rather than a flat list"
+      words "case study explicitly rejects a flat-list interpretation"
+      action complete_binary_tree_not_flat
+    lexeme ru "исследование описывает дерево, а не плоский список"
+      action complete_binary_tree_not_flat
+    lexeme hi "केस स्टडी एक वृक्ष का वर्णन करती है, सपाट सूची का नहीं"
+      action complete_binary_tree_not_flat
+    lexeme zh 案例研究描述的是树而不是扁平列表
+      action complete_binary_tree_not_flat
+    lexeme es "el caso de estudio describe un árbol y no una lista plana"
+      action complete_binary_tree_not_flat
   coding_search_complete_binary_tree_not_flat_fact
     defined-by code
     role coding_search_fact_query
@@ -677,28 +414,17 @@ meanings
     unit "not applicable"
     example "case-study describes a tree rather than a flat list"
     lexeme en
-      surface
-        text "case-study and verify it describes a tree rather than a flat list"
-        action "complete full binary tree, not a flat list"
-      surface
-        text "case study explicitly rejects a flat-list interpretation"
-        action "complete full binary tree, not a flat list"
-    lexeme ru
-      surface
-        text "исследование описывает дерево, а не плоский список"
-        action "complete full binary tree, not a flat list"
-    lexeme hi
-      surface
-        text "केस स्टडी एक वृक्ष का वर्णन करती है, सपाट सूची का नहीं"
-        action "complete full binary tree, not a flat list"
-    lexeme zh
-      surface
-        text 案例研究描述的是树而不是扁平列表
-        action "complete full binary tree, not a flat list"
-    lexeme es
-      surface
-        text "el caso de estudio describe un árbol y no una lista plana"
-        action "complete full binary tree, not a flat list"
+      words "case-study and verify it describes a tree rather than a flat list"
+      words "case study explicitly rejects a flat-list interpretation"
+      action "complete full binary tree, not a flat list"
+    lexeme ru "исследование описывает дерево, а не плоский список"
+      action "complete full binary tree, not a flat list"
+    lexeme hi "केस स्टडी एक वृक्ष का वर्णन करती है, सपाट सूची का नहीं"
+      action "complete full binary tree, not a flat list"
+    lexeme zh 案例研究描述的是树而不是扁平列表
+      action "complete full binary tree, not a flat list"
+    lexeme es "el caso de estudio describe un árbol y no una lista plana"
+      action "complete full binary tree, not a flat list"
   ladder_leaf_count
     defined-by code
     role coding_search_literal_query
@@ -708,28 +434,17 @@ meanings
     unit "not applicable"
     example "executable ladder formulates exactly 32 distinct atomic leaves"
     lexeme en
-      surface
-        text "executable ladder formulates exactly 32 distinct atomic leaves"
-        action ladder_leaf_count
-      surface
-        text "ladder regression fixes the atomic leaf total at thirty-two"
-        action ladder_leaf_count
-    lexeme ru
-      surface
-        text "исполняемая лестница формулирует ровно 32 различных атомарных листа"
-        action ladder_leaf_count
-    lexeme hi
-      surface
-        text "निष्पादन योग्य सीढ़ी ठीक 32 अलग परमाणु पत्ते बनाती है"
-        action ladder_leaf_count
-    lexeme zh
-      surface
-        text "可执行阶梯恰好形成 32 个不同的原子叶子"
-        action ladder_leaf_count
-    lexeme es
-      surface
-        text "la escalera ejecutable formula exactamente 32 hojas atómicas distintas"
-        action ladder_leaf_count
+      words "executable ladder formulates exactly 32 distinct atomic leaves"
+      words "ladder regression fixes the atomic leaf total at thirty-two"
+      action ladder_leaf_count
+    lexeme ru "исполняемая лестница формулирует ровно 32 различных атомарных листа"
+      action ladder_leaf_count
+    lexeme hi "निष्पादन योग्य सीढ़ी ठीक 32 अलग परमाणु पत्ते बनाती है"
+      action ladder_leaf_count
+    lexeme zh "可执行阶梯恰好形成 32 个不同的原子叶子"
+      action ladder_leaf_count
+    lexeme es "la escalera ejecutable formula exactamente 32 hojas atómicas distintas"
+      action ladder_leaf_count
   coding_search_ladder_leaf_count_fact
     defined-by code
     role coding_search_fact_query
@@ -738,28 +453,17 @@ meanings
     unit "not applicable"
     example "executable ladder formulates exactly 32 distinct atomic leaves"
     lexeme en
-      surface
-        text "executable ladder formulates exactly 32 distinct atomic leaves"
-        action "const LEAF_COUNT: usize = 32"
-      surface
-        text "ladder regression fixes the atomic leaf total at thirty-two"
-        action "const LEAF_COUNT: usize = 32"
-    lexeme ru
-      surface
-        text "исполняемая лестница формулирует ровно 32 различных атомарных листа"
-        action "const LEAF_COUNT: usize = 32"
-    lexeme hi
-      surface
-        text "निष्पादन योग्य सीढ़ी ठीक 32 अलग परमाणु पत्ते बनाती है"
-        action "const LEAF_COUNT: usize = 32"
-    lexeme zh
-      surface
-        text "可执行阶梯恰好形成 32 个不同的原子叶子"
-        action "const LEAF_COUNT: usize = 32"
-    lexeme es
-      surface
-        text "la escalera ejecutable formula exactamente 32 hojas atómicas distintas"
-        action "const LEAF_COUNT: usize = 32"
+      words "executable ladder formulates exactly 32 distinct atomic leaves"
+      words "ladder regression fixes the atomic leaf total at thirty-two"
+      action "const LEAF_COUNT: usize = 32"
+    lexeme ru "исполняемая лестница формулирует ровно 32 различных атомарных листа"
+      action "const LEAF_COUNT: usize = 32"
+    lexeme hi "निष्पादन योग्य सीढ़ी ठीक 32 अलग परमाणु पत्ते बनाती है"
+      action "const LEAF_COUNT: usize = 32"
+    lexeme zh "可执行阶梯恰好形成 32 个不同的原子叶子"
+      action "const LEAF_COUNT: usize = 32"
+    lexeme es "la escalera ejecutable formula exactamente 32 hojas atómicas distintas"
+      action "const LEAF_COUNT: usize = 32"
   generated_child_path_existence
     defined-by code
     role coding_search_literal_query
@@ -769,28 +473,17 @@ meanings
     unit "not applicable"
     example "generated child paths are required to exist in the complete tree"
     lexeme en
-      surface
-        text "generated child paths are required to exist in the complete tree"
-        action generated_child_path_existence
-      surface
-        text "tree regression checks that every generated left child path exists"
-        action generated_child_path_existence
-    lexeme ru
-      surface
-        text "сгенерированные пути потомков должны существовать в полном дереве"
-        action generated_child_path_existence
-    lexeme hi
-      surface
-        text "उत्पन्न चाइल्ड पथ पूर्ण वृक्ष में मौजूद होने चाहिए"
-        action generated_child_path_existence
-    lexeme zh
-      surface
-        text 生成的子路径必须存在于完全树中
-        action generated_child_path_existence
-    lexeme es
-      surface
-        text "las rutas hijas generadas deben existir en el árbol completo"
-        action generated_child_path_existence
+      words "generated child paths are required to exist in the complete tree"
+      words "tree regression checks that every generated left child path exists"
+      action generated_child_path_existence
+    lexeme ru "сгенерированные пути потомков должны существовать в полном дереве"
+      action generated_child_path_existence
+    lexeme hi "उत्पन्न चाइल्ड पथ पूर्ण वृक्ष में मौजूद होने चाहिए"
+      action generated_child_path_existence
+    lexeme zh 生成的子路径必须存在于完全树中
+      action generated_child_path_existence
+    lexeme es "las rutas hijas generadas deben existir en el árbol completo"
+      action generated_child_path_existence
   coding_search_generated_child_path_existence_fact
     defined-by code
     role coding_search_fact_query
@@ -799,28 +492,17 @@ meanings
     unit "not applicable"
     example "generated child paths are required to exist in the complete tree"
     lexeme en
-      surface
-        text "generated child paths are required to exist in the complete tree"
-        action "paths[.]contains[(]&node[.]left[)]"
-      surface
-        text "tree regression checks that every generated left child path exists"
-        action "paths[.]contains[(]&node[.]left[)]"
-    lexeme ru
-      surface
-        text "сгенерированные пути потомков должны существовать в полном дереве"
-        action "paths[.]contains[(]&node[.]left[)]"
-    lexeme hi
-      surface
-        text "उत्पन्न चाइल्ड पथ पूर्ण वृक्ष में मौजूद होने चाहिए"
-        action "paths[.]contains[(]&node[.]left[)]"
-    lexeme zh
-      surface
-        text 生成的子路径必须存在于完全树中
-        action "paths[.]contains[(]&node[.]left[)]"
-    lexeme es
-      surface
-        text "las rutas hijas generadas deben existir en el árbol completo"
-        action "paths[.]contains[(]&node[.]left[)]"
+      words "generated child paths are required to exist in the complete tree"
+      words "tree regression checks that every generated left child path exists"
+      action "paths[.]contains[(]&node[.]left[)]"
+    lexeme ru "сгенерированные пути потомков должны существовать в полном дереве"
+      action "paths[.]contains[(]&node[.]left[)]"
+    lexeme hi "उत्पन्न चाइल्ड पथ पूर्ण वृक्ष में मौजूद होने चाहिए"
+      action "paths[.]contains[(]&node[.]left[)]"
+    lexeme zh 生成的子路径必须存在于完全树中
+      action "paths[.]contains[(]&node[.]left[)]"
+    lexeme es "las rutas hijas generadas deben existir en el árbol completo"
+      action "paths[.]contains[(]&node[.]left[)]"
   decomposition_prompt_matrix
     defined-by code
     role coding_search_literal_query
@@ -830,28 +512,17 @@ meanings
     unit "not applicable"
     example "decomposition regression matrix requests are not limited to one fixed wording"
     lexeme en
-      surface
-        text "decomposition regression matrix and verify requests are not limited to one fixed wording"
-        action decomposition_prompt_matrix
-      surface
-        text "decomposition tests iterate a multilingual prompt matrix"
-        action decomposition_prompt_matrix
-    lexeme ru
-      surface
-        text "тесты декомпозиции перебирают многоязычную матрицу запросов"
-        action decomposition_prompt_matrix
-    lexeme hi
-      surface
-        text "विघटन परीक्षण बहुभाषी प्रॉम्प्ट मैट्रिक्स पर चलते हैं"
-        action decomposition_prompt_matrix
-    lexeme zh
-      surface
-        text 分解测试遍历多语言提示矩阵
-        action decomposition_prompt_matrix
-    lexeme es
-      surface
-        text "las pruebas de descomposición recorren una matriz de peticiones multilingüe"
-        action decomposition_prompt_matrix
+      words "decomposition regression matrix and verify requests are not limited to one fixed wording"
+      words "decomposition tests iterate a multilingual prompt matrix"
+      action decomposition_prompt_matrix
+    lexeme ru "тесты декомпозиции перебирают многоязычную матрицу запросов"
+      action decomposition_prompt_matrix
+    lexeme hi "विघटन परीक्षण बहुभाषी प्रॉम्प्ट मैट्रिक्स पर चलते हैं"
+      action decomposition_prompt_matrix
+    lexeme zh 分解测试遍历多语言提示矩阵
+      action decomposition_prompt_matrix
+    lexeme es "las pruebas de descomposición recorren una matriz de peticiones multilingüe"
+      action decomposition_prompt_matrix
   coding_search_decomposition_prompt_matrix_fact
     defined-by code
     role coding_search_fact_query
@@ -860,28 +531,17 @@ meanings
     unit "not applicable"
     example "decomposition regression matrix requests are not limited to one fixed wording"
     lexeme en
-      surface
-        text "decomposition regression matrix and verify requests are not limited to one fixed wording"
-        action "for [(]language, prompt[)] in SPLIT_PROMPTS"
-      surface
-        text "decomposition tests iterate a multilingual prompt matrix"
-        action "for [(]language, prompt[)] in SPLIT_PROMPTS"
-    lexeme ru
-      surface
-        text "тесты декомпозиции перебирают многоязычную матрицу запросов"
-        action "for [(]language, prompt[)] in SPLIT_PROMPTS"
-    lexeme hi
-      surface
-        text "विघटन परीक्षण बहुभाषी प्रॉम्प्ट मैट्रिक्स पर चलते हैं"
-        action "for [(]language, prompt[)] in SPLIT_PROMPTS"
-    lexeme zh
-      surface
-        text 分解测试遍历多语言提示矩阵
-        action "for [(]language, prompt[)] in SPLIT_PROMPTS"
-    lexeme es
-      surface
-        text "las pruebas de descomposición recorren una matriz de peticiones multilingüe"
-        action "for [(]language, prompt[)] in SPLIT_PROMPTS"
+      words "decomposition regression matrix and verify requests are not limited to one fixed wording"
+      words "decomposition tests iterate a multilingual prompt matrix"
+      action "for [(]language, prompt[)] in SPLIT_PROMPTS"
+    lexeme ru "тесты декомпозиции перебирают многоязычную матрицу запросов"
+      action "for [(]language, prompt[)] in SPLIT_PROMPTS"
+    lexeme hi "विघटन परीक्षण बहुभाषी प्रॉम्प्ट मैट्रिक्स पर चलते हैं"
+      action "for [(]language, prompt[)] in SPLIT_PROMPTS"
+    lexeme zh 分解测试遍历多语言提示矩阵
+      action "for [(]language, prompt[)] in SPLIT_PROMPTS"
+    lexeme es "las pruebas de descomposición recorren una matriz de peticiones multilingüe"
+      action "for [(]language, prompt[)] in SPLIT_PROMPTS"
   composed_observations_heading
     defined-by code
     role coding_search_literal_query
@@ -890,28 +550,17 @@ meanings
     unit "not applicable"
     example "heading used for composed observations"
     lexeme en
-      surface
-        text "final evidence-note planner and record the heading used for composed observations"
-        action composed_observations_heading
-      surface
-        text "note composer labels observations gathered in the current session"
-        action composed_observations_heading
-    lexeme ru
-      surface
-        text "составитель заметок озаглавливает наблюдения текущей сессии"
-        action composed_observations_heading
-    lexeme hi
-      surface
-        text "नोट रचयिता वर्तमान सत्र के अवलोकनों को शीर्षक देता है"
-        action composed_observations_heading
-    lexeme zh
-      surface
-        text 笔记编写器为当前会话收集的观察添加标题
-        action composed_observations_heading
-    lexeme es
-      surface
-        text "el compositor de notas titula las observaciones de la sesión actual"
-        action composed_observations_heading
+      words "final evidence-note planner and record the heading used for composed observations"
+      words "note composer labels observations gathered in the current session"
+      action composed_observations_heading
+    lexeme ru "составитель заметок озаглавливает наблюдения текущей сессии"
+      action composed_observations_heading
+    lexeme hi "नोट रचयिता वर्तमान सत्र के अवलोकनों को शीर्षक देता है"
+      action composed_observations_heading
+    lexeme zh 笔记编写器为当前会话收集的观察添加标题
+      action composed_observations_heading
+    lexeme es "el compositor de notas titula las observaciones de la sesión actual"
+      action composed_observations_heading
   coding_search_composed_observations_heading_fact
     defined-by code
     role coding_search_fact_query
@@ -920,28 +569,17 @@ meanings
     unit "not applicable"
     example "heading used for composed observations"
     lexeme en
-      surface
-        text "final evidence-note planner and record the heading used for composed observations"
-        action "Observed in this session:"
-      surface
-        text "note composer labels observations gathered in the current session"
-        action "Observed in this session:"
-    lexeme ru
-      surface
-        text "составитель заметок озаглавливает наблюдения текущей сессии"
-        action "Observed in this session:"
-    lexeme hi
-      surface
-        text "नोट रचयिता वर्तमान सत्र के अवलोकनों को शीर्षक देता है"
-        action "Observed in this session:"
-    lexeme zh
-      surface
-        text 笔记编写器为当前会话收集的观察添加标题
-        action "Observed in this session:"
-    lexeme es
-      surface
-        text "el compositor de notas titula las observaciones de la sesión actual"
-        action "Observed in this session:"
+      words "final evidence-note planner and record the heading used for composed observations"
+      words "note composer labels observations gathered in the current session"
+      action "Observed in this session:"
+    lexeme ru "составитель заметок озаглавливает наблюдения текущей сессии"
+      action "Observed in this session:"
+    lexeme hi "नोट रचयिता वर्तमान सत्र के अवलोकनों को शीर्षक देता है"
+      action "Observed in this session:"
+    lexeme zh 笔记编写器为当前会话收集的观察添加标题
+      action "Observed in this session:"
+    lexeme es "el compositor de notas titula las observaciones de la sesión actual"
+      action "Observed in this session:"
   dotted_binary_node_filter
     defined-by code
     role coding_search_literal_query
@@ -951,28 +589,17 @@ meanings
     unit "not applicable"
     example "single node can be selected by dotted binary path for focused debugging"
     lexeme en
-      surface
-        text "single node can be selected by dotted binary path for focused debugging"
-        action dotted_binary_node_filter
-      surface
-        text "focused dotted-path node selection"
-        action dotted_binary_node_filter
-    lexeme ru
-      surface
-        text "выбор одного узла по точечному пути"
-        action dotted_binary_node_filter
-    lexeme hi
-      surface
-        text "बिंदीदार पथ से एकल नोड चयन"
-        action dotted_binary_node_filter
-    lexeme zh
-      surface
-        text 按点分路径选择单个节点
-        action dotted_binary_node_filter
-    lexeme es
-      surface
-        text "selección de un nodo por su ruta con puntos"
-        action dotted_binary_node_filter
+      words "single node can be selected by dotted binary path for focused debugging"
+      words "focused dotted-path node selection"
+      action dotted_binary_node_filter
+    lexeme ru "выбор одного узла по точечному пути"
+      action dotted_binary_node_filter
+    lexeme hi "बिंदीदार पथ से एकल नोड चयन"
+      action dotted_binary_node_filter
+    lexeme zh 按点分路径选择单个节点
+      action dotted_binary_node_filter
+    lexeme es "selección de un nodo por su ruta con puntos"
+      action dotted_binary_node_filter
   coding_search_dotted_binary_node_filter
     defined-by code
     role coding_search_fact_query
@@ -981,28 +608,17 @@ meanings
     unit "not applicable"
     example "single node can be selected by dotted binary path for focused debugging"
     lexeme en
-      surface
-        text "single node can be selected by dotted binary path for focused debugging"
-        action "^        if depth == level and [(]not filt or node == filt[)]:$"
-      surface
-        text "focused dotted-path node selection"
-        action "^        if depth == level and [(]not filt or node == filt[)]:$"
-    lexeme ru
-      surface
-        text "выбор одного узла по точечному пути"
-        action "^        if depth == level and [(]not filt or node == filt[)]:$"
-    lexeme hi
-      surface
-        text "बिंदीदार पथ से एकल नोड चयन"
-        action "^        if depth == level and [(]not filt or node == filt[)]:$"
-    lexeme zh
-      surface
-        text 按点分路径选择单个节点
-        action "^        if depth == level and [(]not filt or node == filt[)]:$"
-    lexeme es
-      surface
-        text "selección de un nodo por su ruta con puntos"
-        action "^        if depth == level and [(]not filt or node == filt[)]:$"
+      words "single node can be selected by dotted binary path for focused debugging"
+      words "focused dotted-path node selection"
+      action "^        if depth == level and [(]not filt or node == filt[)]:$"
+    lexeme ru "выбор одного узла по точечному пути"
+      action "^        if depth == level and [(]not filt or node == filt[)]:$"
+    lexeme hi "बिंदीदार पथ से एकल नोड चयन"
+      action "^        if depth == level and [(]not filt or node == filt[)]:$"
+    lexeme zh 按点分路径选择单个节点
+      action "^        if depth == level and [(]not filt or node == filt[)]:$"
+    lexeme es "selección de un nodo por su ruta con puntos"
+      action "^        if depth == level and [(]not filt or node == filt[)]:$"
   coding_search_power_of_two_levels_invariant
     defined-by code
     role coding_search_fact_query
@@ -1012,31 +628,16 @@ meanings
     unit "not applicable"
     example "supported power-of-two levels through 32"
     lexeme en
-      surface
-        text "supported power-of-two levels through 32"
-        action "2, 4, 8, 16, and 32 nodes respectively"
-      surface
-        text "power-of-two levels through 32"
-        action "2, 4, 8, 16, and 32 nodes respectively"
-      surface
-        text "power of two levels through 32"
-        action "2, 4, 8, 16, and 32 nodes respectively"
-    lexeme ru
-      surface
-        text "уровни степеней двойки до 32"
-        action "2, 4, 8, 16, and 32 nodes respectively"
-    lexeme hi
-      surface
-        text "32 तक दो की घात वाले स्तर"
-        action "2, 4, 8, 16, and 32 nodes respectively"
-    lexeme zh
-      surface
-        text "直到 32 的二的幂层级"
-        action "2, 4, 8, 16, and 32 nodes respectively"
-    lexeme es
-      surface
-        text "niveles de potencias de dos hasta 32"
-        action "2, 4, 8, 16, and 32 nodes respectively"
+      words "supported power-of-two levels through 32" "power-of-two levels through 32" "power of two levels through 32"
+      action "2, 4, 8, 16, and 32 nodes respectively"
+    lexeme ru "уровни степеней двойки до 32"
+      action "2, 4, 8, 16, and 32 nodes respectively"
+    lexeme hi "32 तक दो की घात वाले स्तर"
+      action "2, 4, 8, 16, and 32 nodes respectively"
+    lexeme zh "直到 32 的二的幂层级"
+      action "2, 4, 8, 16, and 32 nodes respectively"
+    lexeme es "niveles de potencias de dos hasta 32"
+      action "2, 4, 8, 16, and 32 nodes respectively"
   decomposition_node_counts
     defined-by code
     role coding_search_literal_query
@@ -1044,26 +645,16 @@ meanings
     effect "the repository-search subject is bound to the decomposition node-count regression"
     unit "not applicable"
     example "decomposition nodes at depth"
-    lexeme en
-      surface
-        text "decomposition nodes at depth"
-        action decomposition_node_counts
-    lexeme ru
-      surface
-        text "узлы декомпозиции на глубине"
-        action decomposition_node_counts
-    lexeme hi
-      surface
-        text "गहराई पर विघटन नोड"
-        action decomposition_node_counts
-    lexeme zh
-      surface
-        text 各深度的分解节点
-        action decomposition_node_counts
-    lexeme es
-      surface
-        text "nodos de descomposición en la profundidad"
-        action decomposition_node_counts
+    lexeme en "decomposition nodes at depth"
+      action decomposition_node_counts
+    lexeme ru "узлы декомпозиции на глубине"
+      action decomposition_node_counts
+    lexeme hi "गहराई पर विघटन नोड"
+      action decomposition_node_counts
+    lexeme zh 各深度的分解节点
+      action decomposition_node_counts
+    lexeme es "nodos de descomposición en la profundidad"
+      action decomposition_node_counts
   coding_search_decomposition_node_counts_fact
     defined-by code
     role coding_search_fact_query
@@ -1071,26 +662,16 @@ meanings
     effect "the requested fact is searched by the complete regex-safe depth map assertion"
     unit "not applicable"
     example "decomposition nodes at depth"
-    lexeme en
-      surface
-        text "decomposition nodes at depth"
-        action "BTreeMap::from[(].*[(]0, 1[)].*[(]1, 2[)].*[(]2, 4[)].*[(]3, 8[)].*[(]4, 16[)].*[(]5, 32[)]"
-    lexeme ru
-      surface
-        text "узлы декомпозиции на глубине"
-        action "BTreeMap::from[(].*[(]0, 1[)].*[(]1, 2[)].*[(]2, 4[)].*[(]3, 8[)].*[(]4, 16[)].*[(]5, 32[)]"
-    lexeme hi
-      surface
-        text "गहराई पर विघटन नोड"
-        action "BTreeMap::from[(].*[(]0, 1[)].*[(]1, 2[)].*[(]2, 4[)].*[(]3, 8[)].*[(]4, 16[)].*[(]5, 32[)]"
-    lexeme zh
-      surface
-        text 各深度的分解节点
-        action "BTreeMap::from[(].*[(]0, 1[)].*[(]1, 2[)].*[(]2, 4[)].*[(]3, 8[)].*[(]4, 16[)].*[(]5, 32[)]"
-    lexeme es
-      surface
-        text "nodos de descomposición en la profundidad"
-        action "BTreeMap::from[(].*[(]0, 1[)].*[(]1, 2[)].*[(]2, 4[)].*[(]3, 8[)].*[(]4, 16[)].*[(]5, 32[)]"
+    lexeme en "decomposition nodes at depth"
+      action "BTreeMap::from[(].*[(]0, 1[)].*[(]1, 2[)].*[(]2, 4[)].*[(]3, 8[)].*[(]4, 16[)].*[(]5, 32[)]"
+    lexeme ru "узлы декомпозиции на глубине"
+      action "BTreeMap::from[(].*[(]0, 1[)].*[(]1, 2[)].*[(]2, 4[)].*[(]3, 8[)].*[(]4, 16[)].*[(]5, 32[)]"
+    lexeme hi "गहराई पर विघटन नोड"
+      action "BTreeMap::from[(].*[(]0, 1[)].*[(]1, 2[)].*[(]2, 4[)].*[(]3, 8[)].*[(]4, 16[)].*[(]5, 32[)]"
+    lexeme zh 各深度的分解节点
+      action "BTreeMap::from[(].*[(]0, 1[)].*[(]1, 2[)].*[(]2, 4[)].*[(]3, 8[)].*[(]4, 16[)].*[(]5, 32[)]"
+    lexeme es "nodos de descomposición en la profundidad"
+      action "BTreeMap::from[(].*[(]0, 1[)].*[(]1, 2[)].*[(]2, 4[)].*[(]3, 8[)].*[(]4, 16[)].*[(]5, 32[)]"
   coding_search_recursive_task_conversion
     defined-by code
     role coding_search_fact_query
@@ -1098,29 +679,16 @@ meanings
     effect "the requested fact is searched by its recursive-task conversion entry point"
     unit "not applicable"
     example "decomposition tree execution"
-    lexeme en
-      surface
-        text "decomposition tree execution"
-        action to_recursive_task
-      surface
-        text "decomposition tree is executed"
-        action to_recursive_task
-    lexeme ru
-      surface
-        text "выполнение дерева декомпозиции"
-        action to_recursive_task
-    lexeme hi
-      surface
-        text "विघटन वृक्ष का निष्पादन"
-        action to_recursive_task
-    lexeme zh
-      surface
-        text 分解树的执行
-        action to_recursive_task
-    lexeme es
-      surface
-        text "ejecución del árbol de descomposición"
-        action to_recursive_task
+    lexeme en "decomposition tree execution" "decomposition tree is executed"
+      action to_recursive_task
+    lexeme ru "выполнение дерева декомпозиции"
+      action to_recursive_task
+    lexeme hi "विघटन वृक्ष का निष्पादन"
+      action to_recursive_task
+    lexeme zh 分解树的执行
+      action to_recursive_task
+    lexeme es "ejecución del árbol de descomposición"
+      action to_recursive_task
   coding_search_approved_task_strategy
     defined-by code
     role coding_search_fact_query
@@ -1128,32 +696,16 @@ meanings
     effect "the requested fact is searched by the review-gated decomposition entry point"
     unit "not applicable"
     example "approved decomposition strategies"
-    lexeme en
-      surface
-        text "approved decomposition strategies"
-        action "decompose_task_with_ledger[(]task, max_depth, &TaskStrategyLedger::shipped[(][)][)]"
-      surface
-        text "reviewed decomposition strategies"
-        action "decompose_task_with_ledger[(]task, max_depth, &TaskStrategyLedger::shipped[(][)][)]"
-      surface
-        text "approved task strategies"
-        action "decompose_task_with_ledger[(]task, max_depth, &TaskStrategyLedger::shipped[(][)][)]"
-    lexeme ru
-      surface
-        text "одобренные стратегии декомпозиции"
-        action "decompose_task_with_ledger[(]task, max_depth, &TaskStrategyLedger::shipped[(][)][)]"
-    lexeme hi
-      surface
-        text "स्वीकृत विघटन रणनीतियाँ"
-        action "decompose_task_with_ledger[(]task, max_depth, &TaskStrategyLedger::shipped[(][)][)]"
-    lexeme zh
-      surface
-        text 已批准的分解策略
-        action "decompose_task_with_ledger[(]task, max_depth, &TaskStrategyLedger::shipped[(][)][)]"
-    lexeme es
-      surface
-        text "estrategias de descomposición aprobadas"
-        action "decompose_task_with_ledger[(]task, max_depth, &TaskStrategyLedger::shipped[(][)][)]"
+    lexeme en "approved decomposition strategies" "reviewed decomposition strategies" "approved task strategies"
+      action "decompose_task_with_ledger[(]task, max_depth, &TaskStrategyLedger::shipped[(][)][)]"
+    lexeme ru "одобренные стратегии декомпозиции"
+      action "decompose_task_with_ledger[(]task, max_depth, &TaskStrategyLedger::shipped[(][)][)]"
+    lexeme hi "स्वीकृत विघटन रणनीतियाँ"
+      action "decompose_task_with_ledger[(]task, max_depth, &TaskStrategyLedger::shipped[(][)][)]"
+    lexeme zh 已批准的分解策略
+      action "decompose_task_with_ledger[(]task, max_depth, &TaskStrategyLedger::shipped[(][)][)]"
+    lexeme es "estrategias de descomposición aprobadas"
+      action "decompose_task_with_ledger[(]task, max_depth, &TaskStrategyLedger::shipped[(][)][)]"
   coding_search_independent_leaf_lower_bound
     defined-by code
     role coding_search_fact_query
@@ -1162,25 +714,13 @@ meanings
     unit "not applicable"
     example "minimum number of independently verifiable leaves"
     lexeme en
-      surface
-        text "required lower bound on independently checkable leaves"
-        action "leaves.*len.*>="
-      surface
-        text "minimum number of independently verifiable leaves"
-        action "leaves.*len.*>="
-    lexeme ru
-      surface
-        text "минимальное число независимо проверяемых листьев"
-        action "leaves.*len.*>="
-    lexeme hi
-      surface
-        text "स्वतंत्र रूप से जांचने योग्य पत्तों की न्यूनतम संख्या"
-        action "leaves.*len.*>="
-    lexeme zh
-      surface
-        text 可独立验证叶子的最少数量
-        action "leaves.*len.*>="
-    lexeme es
-      surface
-        text "número mínimo de hojas verificables de forma independiente"
-        action "leaves.*len.*>="
+      words "required lower bound on independently checkable leaves" "minimum number of independently verifiable leaves"
+      action "leaves.*len.*>="
+    lexeme ru "минимальное число независимо проверяемых листьев"
+      action "leaves.*len.*>="
+    lexeme hi "स्वतंत्र रूप से जांचने योग्य पत्तों की न्यूनतम संख्या"
+      action "leaves.*len.*>="
+    lexeme zh 可独立验证叶子的最少数量
+      action "leaves.*len.*>="
+    lexeme es "número mínimo de hojas verificables de forma independiente"
+      action "leaves.*len.*>="

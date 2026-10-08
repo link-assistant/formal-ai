@@ -8,29 +8,11 @@ meanings
     effect "the name that follows the cue is the branch the result is pushed to"
     unit "not applicable"
     example "branch"
-    lexeme en
-      surface
-        text branch
-    lexeme ru
-      surface
-        text ветке
-      surface
-        text ветка
-      surface
-        text ветку
-      surface
-        text ветки
-    lexeme hi
-      surface
-        text शाखा
-      surface
-        text ब्रांच
-    lexeme zh
-      surface
-        text 分支
-    lexeme es
-      surface
-        text rama
+    lexeme en branch
+    lexeme ru ветке ветка ветку ветки
+    lexeme hi शाखा ब्रांच
+    lexeme zh 分支
+    lexeme es rama
   message
     defined-by concept
     role git_commit_message_lead
@@ -38,27 +20,11 @@ meanings
     effect "the first quoted text after the lead becomes the commit subject"
     unit "not applicable"
     example "with the message"
-    lexeme en
-      surface
-        text message
-      surface
-        text "commit message"
-    lexeme ru
-      surface
-        text сообщением
-      surface
-        text сообщение
-    lexeme hi
-      surface
-        text संदेश
-    lexeme zh
-      surface
-        text 消息
-      surface
-        text 提交信息
-    lexeme es
-      surface
-        text mensaje
+    lexeme en message "commit message"
+    lexeme ru сообщением сообщение
+    lexeme hi संदेश
+    lexeme zh 消息 提交信息
+    lexeme es mensaje
   git_commit_request
     defined-by action
     role git_commit_request
@@ -67,60 +33,12 @@ meanings
     unit "not applicable"
     example "commit them"
     lexeme en
-      surface
-        text "commit them"
-      surface
-        text "commit these changes"
-      surface
-        text "commit the changes"
-      surface
-        text "commit your changes"
-      surface
-        text "commit and push"
-      surface
-        text "commit it"
-      surface
-        text "commit all"
-      surface
-        text "commit everything"
-      surface
-        text "commit my changes"
-    lexeme ru
-      surface
-        text закоммить
-      surface
-        text закоммитьте
-      surface
-        text "сделай коммит"
-      surface
-        text "зафиксируй изменения"
-      surface
-        text "зафиксируйте изменения"
-    lexeme hi
-      surface
-        text "कमिट करें"
-      surface
-        text "कमिट करो"
-      surface
-        text "बदलाव कमिट करें"
-    lexeme zh
-      surface
-        text 提交这些更改
-      surface
-        text 提交更改
-      surface
-        text 提交这些修改
-      surface
-        text 提交代码
-    lexeme es
-      surface
-        text "haz commit"
-      surface
-        text "haz el commit"
-      surface
-        text "confirma los cambios"
-      surface
-        text "commitea los cambios"
+      words "commit them" "commit these changes" "commit the changes" "commit your changes" "commit and push"
+      words "commit it" "commit all" "commit everything" "commit my changes"
+    lexeme ru закоммить закоммитьте "сделай коммит" "зафиксируй изменения" "зафиксируйте изменения"
+    lexeme hi "कमिट करें" "कमिट करो" "बदलाव कमिट करें"
+    lexeme zh 提交这些更改 提交更改 提交这些修改 提交代码
+    lexeme es "haz commit" "haz el commit" "confirma los cambios" "commitea los cambios"
   ci_workflow_request
     defined-by concept
     role ci_workflow_request
@@ -128,45 +46,11 @@ meanings
     effect "the execution recipe carries the workflow as a supporting file"
     unit "not applicable"
     example "github actions workflow"
-    lexeme en
-      surface
-        text "github actions workflow"
-      surface
-        text "actions workflow"
-      surface
-        text "ci workflow"
-      surface
-        text "workflow that automatically runs"
-    lexeme ru
-      surface
-        text "рабочий процесс github actions"
-      surface
-        text "workflow github actions"
-      surface
-        text "ci workflow"
-      surface
-        text "рабочий процесс ci"
-    lexeme hi
-      surface
-        text "github actions वर्कफ़्लो"
-      surface
-        text "सीआई वर्कफ़्लो"
-      surface
-        text "ci वर्कफ़्लो"
-    lexeme zh
-      surface
-        text "github actions 工作流"
-      surface
-        text "ci 工作流"
-      surface
-        text 工作流程
-    lexeme es
-      surface
-        text "flujo de trabajo de github actions"
-      surface
-        text "workflow de github actions"
-      surface
-        text "flujo de trabajo de ci"
+    lexeme en "github actions workflow" "actions workflow" "ci workflow" "workflow that automatically runs"
+    lexeme ru "рабочий процесс github actions" "workflow github actions" "ci workflow" "рабочий процесс ci"
+    lexeme hi "github actions वर्कफ़्लो" "सीआई वर्कफ़्लो" "ci वर्कफ़्लो"
+    lexeme zh "github actions 工作流" "ci 工作流" 工作流程
+    lexeme es "flujo de trabajo de github actions" "workflow de github actions" "flujo de trabajo de ci"
   file_edit_position_after
     defined-by concept
     role file_edit_position_after
@@ -174,41 +58,11 @@ meanings
     effect "the anchor is replaced by the anchor followed by the new text"
     unit "not applicable"
     example "directly after the line"
-    lexeme en
-      surface
-        text "after the line"
-      surface
-        text "directly after"
-      surface
-        text "right after"
-      surface
-        text after
-    lexeme ru
-      surface
-        text "после строки"
-      surface
-        text "сразу после"
-      surface
-        text после
-    lexeme hi
-      surface
-        text "पंक्ति के बाद"
-      surface
-        text "के बाद"
-    lexeme zh
-      surface
-        text 之后
-      surface
-        text 后面
-      surface
-        text 行后
-    lexeme es
-      surface
-        text "después de la línea"
-      surface
-        text "justo después de"
-      surface
-        text "después de"
+    lexeme en "after the line" "directly after" "right after" after
+    lexeme ru "после строки" "сразу после" после
+    lexeme hi "पंक्ति के बाद" "के बाद"
+    lexeme zh 之后 后面 行后
+    lexeme es "después de la línea" "justo después de" "después de"
   file_edit_position_before
     defined-by concept
     role file_edit_position_before
@@ -216,41 +70,11 @@ meanings
     effect "the anchor is replaced by the new text followed by the anchor"
     unit "not applicable"
     example "before the line"
-    lexeme en
-      surface
-        text "before the line"
-      surface
-        text "directly before"
-      surface
-        text "right before"
-      surface
-        text before
-    lexeme ru
-      surface
-        text "перед строкой"
-      surface
-        text "прямо перед"
-      surface
-        text перед
-    lexeme hi
-      surface
-        text "पंक्ति से पहले"
-      surface
-        text "से पहले"
-    lexeme zh
-      surface
-        text 之前
-      surface
-        text 前面
-      surface
-        text 行前
-    lexeme es
-      surface
-        text "antes de la línea"
-      surface
-        text "justo antes de"
-      surface
-        text "antes de"
+    lexeme en "before the line" "directly before" "right before" before
+    lexeme ru "перед строкой" "прямо перед" перед
+    lexeme hi "पंक्ति से पहले" "से पहले"
+    lexeme zh 之前 前面 行前
+    lexeme es "antes de la línea" "justo antes de" "antes de"
   file_edit_position_end
     defined-by concept
     role file_edit_position_end
@@ -258,43 +82,11 @@ meanings
     effect "the file keeps its content and gains the quoted text as its last line"
     unit "not applicable"
     example "append the line to the file"
-    lexeme en
-      surface
-        text append
-      surface
-        text "to the end of"
-      surface
-        text "at the end of"
-      surface
-        text "to the bottom of"
-      surface
-        text "at the bottom of"
-    lexeme ru
-      surface
-        text "в конец"
-      surface
-        text "в конце"
-      surface
-        text допиши
-      surface
-        text дописать
-    lexeme hi
-      surface
-        text "के अंत में"
-      surface
-        text "अंत में"
-    lexeme zh
-      surface
-        text 追加
-      surface
-        text 末尾
-      surface
-        text 结尾
-    lexeme es
-      surface
-        text "al final de"
-      surface
-        text "añade al final"
+    lexeme en append "to the end of" "at the end of" "to the bottom of" "at the bottom of"
+    lexeme ru "в конец" "в конце" допиши дописать
+    lexeme hi "के अंत में" "अंत में"
+    lexeme zh 追加 末尾 结尾
+    lexeme es "al final de" "añade al final"
   line
     defined-by concept
     role file_edit_line_lead
@@ -302,39 +94,11 @@ meanings
     effect "the words after the lead, up to the destination cue before the path, are the line"
     unit "not applicable"
     example "append the line third to notes.txt"
-    lexeme en
-      surface
-        text "the line"
-      surface
-        text "a line"
-      surface
-        text line
-      surface
-        text lines
-    lexeme ru
-      surface
-        text строку
-      surface
-        text строка
-      surface
-        text строки
-    lexeme hi
-      surface
-        text पंक्ति
-      surface
-        text पंक्तियाँ
-    lexeme zh
-      surface
-        text 一行
-      surface
-        text 的行
-    lexeme es
-      surface
-        text "la línea"
-      surface
-        text línea
-      surface
-        text líneas
+    lexeme en "the line" "a line" line lines
+    lexeme ru строку строка строки
+    lexeme hi पंक्ति पंक्तियाँ
+    lexeme zh 一行 的行
+    lexeme es "la línea" línea líneas
   file_text_unit
     defined-by concept
     role file_text_unit
@@ -342,51 +106,11 @@ meanings
     effect "the request edits inside the file; a destructive file command never reads it as deleting the file"
     unit "not applicable"
     example "delete the word drop from notes.txt"
-    lexeme en
-      surface
-        text word
-      surface
-        text words
-      surface
-        text phrase
-      surface
-        text occurrence
-      surface
-        text text
-    lexeme ru
-      surface
-        text слово
-      surface
-        text слова
-      surface
-        text фразу
-      surface
-        text вхождение
-      surface
-        text текст
-    lexeme hi
-      surface
-        text शब्द
-      surface
-        text वाक्यांश
-      surface
-        text पाठ
-    lexeme zh
-      surface
-        text 一词
-      surface
-        text 词语
-      surface
-        text 文字
-      surface
-        text 文本
-    lexeme es
-      surface
-        text palabra
-      surface
-        text frase
-      surface
-        text texto
+    lexeme en word words phrase occurrence text
+    lexeme ru слово слова фразу вхождение текст
+    lexeme hi शब्द वाक्यांश पाठ
+    lexeme zh 一词 词语 文字 文本
+    lexeme es palabra frase texto
   file_edit_blank_line
     defined-by concept
     role file_edit_blank_line
@@ -394,31 +118,11 @@ meanings
     effect "the file keeps its content and gains one empty line at the named end"
     unit "not applicable"
     example "append an empty line to the file"
-    lexeme en
-      surface
-        text "an empty line"
-      surface
-        text "a blank line"
-      surface
-        text "empty line"
-      surface
-        text "blank line"
-    lexeme ru
-      surface
-        text "пустую строку"
-      surface
-        text "пустая строка"
-    lexeme hi
-      surface
-        text "खाली पंक्ति"
-    lexeme zh
-      surface
-        text 空行
-    lexeme es
-      surface
-        text "una línea vacía"
-      surface
-        text "línea en blanco"
+    lexeme en "an empty line" "a blank line" "empty line" "blank line"
+    lexeme ru "пустую строку" "пустая строка"
+    lexeme hi "खाली पंक्ति"
+    lexeme zh 空行
+    lexeme es "una línea vacía" "línea en blanco"
   file_edit_position_start
     defined-by concept
     role file_edit_position_start
@@ -427,40 +131,12 @@ meanings
     unit "not applicable"
     example "prepend the line to the file"
     lexeme en
-      surface
-        text prepend
-      surface
-        text "to the beginning of"
-      surface
-        text "at the beginning of"
-      surface
-        text "to the top of"
-      surface
-        text "at the top of"
-      surface
-        text "at the start of"
-      surface
-        text "to the start of"
-    lexeme ru
-      surface
-        text "в начало"
-      surface
-        text "в начале"
-    lexeme hi
-      surface
-        text "की शुरुआत में"
-      surface
-        text "शुरुआत में"
-    lexeme zh
-      surface
-        text 开头
-      surface
-        text 最前面
-    lexeme es
-      surface
-        text "al principio de"
-      surface
-        text "al inicio de"
+      words prepend "to the beginning of" "at the beginning of" "to the top of" "at the top of" "at the start of"
+      words "to the start of"
+    lexeme ru "в начало" "в начале"
+    lexeme hi "की शुरुआत में" "शुरुआत में"
+    lexeme zh 开头 最前面
+    lexeme es "al principio de" "al inicio de"
   output_obligation_verb
     defined-by concept
     role output_obligation_verb
@@ -468,59 +144,11 @@ meanings
     effect "the clause formalizes into an output-literal obligation (issue #1166)"
     unit "not applicable"
     example "print exactly"
-    lexeme en
-      surface
-        text "print"
-      surface
-        text "prints"
-      surface
-        text "write"
-      surface
-        text "writes"
-      surface
-        text "output"
-    lexeme ru
-      surface
-        text "выведи"
-      surface
-        text "вывести"
-      surface
-        text "вывод"
-      surface
-        text "напечатай"
-      surface
-        text "напиши"
-      surface
-        text "печатать"
-    lexeme hi
-      surface
-        text "छापो"
-      surface
-        text "छाप"
-      surface
-        text "प्रिंट"
-      surface
-        text "आउटपुट"
-      surface
-        text "लिखो"
-    lexeme zh
-      surface
-        text "打印"
-      surface
-        text "输出"
-      surface
-        text "打印出"
-    lexeme es
-      surface
-        text "imprime"
-      surface
-        text "imprimir"
-      surface
-        text "escribe"
-      surface
-        text "escribir"
-      surface
-        text "salida"
+    lexeme en "print" "prints" "write" "writes" "output"
+    lexeme ru "выведи" "вывести" "вывод" "напечатай" "напиши" "печатать"
+    lexeme hi "छापो" "छाप" "प्रिंट" "आउटपुट" "लिखो"
+    lexeme zh "打印" "输出" "打印出"
+    lexeme es "imprime" "imprimir" "escribe" "escribir" "salida"
   code_style_obligation
     defined-by concept
     role code_style_obligation
@@ -528,47 +156,11 @@ meanings
     effect "the clause formalizes into a code-style obligation (issue #1166)"
     unit "not applicable"
     example "add clear comments"
-    lexeme en
-      surface
-        text "comment"
-      surface
-        text "comments"
-      surface
-        text "best practice"
-      surface
-        text "best practices"
-      surface
-        text "clean code"
-      surface
-        text "readable"
-    lexeme ru
-      surface
-        text "комментар"
-      surface
-        text "лучшие практики"
-      surface
-        text "понятн"
-    lexeme hi
-      surface
-        text "टिप्पणी"
-      surface
-        text "सर्वोत्तम अभ्यास"
-    lexeme zh
-      surface
-        text "注释"
-      surface
-        text "最佳实践"
-      surface
-        text "可读"
-    lexeme es
-      surface
-        text "comentario"
-      surface
-        text "comentarios"
-      surface
-        text "buenas prácticas"
-      surface
-        text "prácticas recomendadas"
+    lexeme en "comment" "comments" "best practice" "best practices" "clean code" "readable"
+    lexeme ru "комментар" "лучшие практики" "понятн"
+    lexeme hi "टिप्पणी" "सर्वोत्तम अभ्यास"
+    lexeme zh "注释" "最佳实践" "可读"
+    lexeme es "comentario" "comentarios" "buenas prácticas" "prácticas recomendadas"
   file_naming_obligation
     defined-by concept
     role file_naming_obligation
@@ -576,45 +168,11 @@ meanings
     effect "the clause formalizes into a file-naming obligation (issue #1166); a bare filename token is not one"
     unit "not applicable"
     example "a meaningful name like"
-    lexeme en
-      surface
-        text "name like"
-      surface
-        text "named"
-      surface
-        text "meaningful name"
-    lexeme ru
-      surface
-        text "назови"
-      surface
-        text "название файла"
-      surface
-        text "имя файла"
-      surface
-        text "осмысленное имя"
-    lexeme hi
-      surface
-        text "नाम रखो"
-      surface
-        text "सार्थक नाम"
-    lexeme zh
-      surface
-        text "命名"
-      surface
-        text "名为"
-      surface
-        text "文件名"
-      surface
-        text "有意义的名字"
-    lexeme es
-      surface
-        text "llama al archivo"
-      surface
-        text "llámalo"
-      surface
-        text "nombre del archivo"
-      surface
-        text "nombre significativo"
+    lexeme en "name like" "named" "meaningful name"
+    lexeme ru "назови" "название файла" "имя файла" "осмысленное имя"
+    lexeme hi "नाम रखो" "सार्थक नाम"
+    lexeme zh "命名" "名为" "文件名" "有意义的名字"
+    lexeme es "llama al archivo" "llámalo" "nombre del archivo" "nombre significativo"
   ci_badge_obligation
     defined-by concept
     role ci_badge_obligation
@@ -622,25 +180,11 @@ meanings
     effect "the clause formalizes into a CI-badge obligation (issue #1166)"
     unit "not applicable"
     example "a CI badge"
-    lexeme en
-      surface
-        text "badge"
-    lexeme ru
-      surface
-        text "значок"
-      surface
-        text "бейдж"
-    lexeme hi
-      surface
-        text "प्रतीक"
-    lexeme zh
-      surface
-        text "徽章"
-    lexeme es
-      surface
-        text "escudo"
-      surface
-        text "insignia"
+    lexeme en "badge"
+    lexeme ru "значок" "бейдж"
+    lexeme hi "प्रतीक"
+    lexeme zh "徽章"
+    lexeme es "escudo" "insignia"
   numbered_line_noun
     defined-by concept
     role numbered_line_noun
@@ -648,39 +192,11 @@ meanings
     effect "the number beside the noun is a one-based line number of the named file"
     unit "not applicable"
     example "delete lines 3-5"
-    lexeme en
-      surface
-        text "line"
-      surface
-        text "lines"
-    lexeme ru
-      surface
-        text "строка"
-      surface
-        text "строку"
-      surface
-        text "строки"
-      surface
-        text "строк"
-      surface
-        text "строке"
-    lexeme hi
-      surface
-        text "पंक्ति"
-      surface
-        text "पंक्तियाँ"
-      surface
-        text "पंक्तियों"
-      surface
-        text "लाइन"
-    lexeme zh
-      surface
-        text "行"
-    lexeme es
-      surface
-        text "línea"
-      surface
-        text "líneas"
+    lexeme en "line" "lines"
+    lexeme ru "строка" "строку" "строки" "строк" "строке"
+    lexeme hi "पंक्ति" "पंक्तियाँ" "पंक्तियों" "लाइन"
+    lexeme zh "行"
+    lexeme es "línea" "líneas"
   numbered_line_lead
     defined-by concept
     role numbered_line_lead
@@ -688,41 +204,11 @@ meanings
     effect "the number after the lead is still the line number"
     unit "not applicable"
     example "lines from 3 to 5"
-    lexeme en
-      surface
-        text "from"
-      surface
-        text "number"
-    lexeme ru
-      surface
-        text "с"
-      surface
-        text "со"
-      surface
-        text "номер"
-    lexeme hi
-      surface
-        text "संख्या"
-      surface
-        text "क्रमांक"
-    lexeme zh
-      surface
-        text "第"
-      surface
-        text "从"
-    lexeme es
-      surface
-        text "de"
-      surface
-        text "del"
-      surface
-        text "desde"
-      surface
-        text "la"
-      surface
-        text "las"
-      surface
-        text "número"
+    lexeme en "from" "number"
+    lexeme ru "с" "со" "номер"
+    lexeme hi "संख्या" "क्रमांक"
+    lexeme zh "第" "从"
+    lexeme es "de" "del" "desde" "la" "las" "número"
   line_range_connector
     defined-by concept
     role line_range_connector
@@ -730,37 +216,11 @@ meanings
     effect "the lines from the first number to the second are named"
     unit "not applicable"
     example "lines 3 to 5"
-    lexeme en
-      surface
-        text "to"
-      surface
-        text "through"
-      surface
-        text "thru"
-      surface
-        text "until"
-    lexeme ru
-      surface
-        text "по"
-      surface
-        text "до"
-    lexeme hi
-      surface
-        text "से"
-      surface
-        text "तक"
-    lexeme zh
-      surface
-        text "到"
-      surface
-        text "至"
-    lexeme es
-      surface
-        text "a"
-      surface
-        text "al"
-      surface
-        text "hasta"
+    lexeme en "to" "through" "thru" "until"
+    lexeme ru "по" "до"
+    lexeme hi "से" "तक"
+    lexeme zh "到" "至"
+    lexeme es "a" "al" "hasta"
   line_adjacent_above
     defined-by concept
     role line_adjacent_above
@@ -768,49 +228,11 @@ meanings
     effect "that line goes as well"
     unit "not applicable"
     example "delete the line and the line above it"
-    lexeme en
-      surface
-        text "above it"
-      surface
-        text "before it"
-      surface
-        text "preceding it"
-      surface
-        text "the line above"
-      surface
-        text "the previous line"
-    lexeme ru
-      surface
-        text "над ней"
-      surface
-        text "перед ней"
-      surface
-        text "выше неё"
-      surface
-        text "выше нее"
-      surface
-        text "предыдущую строку"
-    lexeme hi
-      surface
-        text "उसके ऊपर"
-      surface
-        text "उससे पहले"
-      surface
-        text "ऊपर वाली"
-    lexeme zh
-      surface
-        text "上面的"
-      surface
-        text "上一行"
-      surface
-        text "前一行"
-    lexeme es
-      surface
-        text "encima de ella"
-      surface
-        text "antes de ella"
-      surface
-        text "la línea anterior"
+    lexeme en "above it" "before it" "preceding it" "the line above" "the previous line"
+    lexeme ru "над ней" "перед ней" "выше неё" "выше нее" "предыдущую строку"
+    lexeme hi "उसके ऊपर" "उससे पहले" "ऊपर वाली"
+    lexeme zh "上面的" "上一行" "前一行"
+    lexeme es "encima de ella" "antes de ella" "la línea anterior"
   line_adjacent_below
     defined-by concept
     role line_adjacent_below
@@ -818,53 +240,11 @@ meanings
     effect "that line goes as well"
     unit "not applicable"
     example "delete the line and the line below it"
-    lexeme en
-      surface
-        text "below it"
-      surface
-        text "after it"
-      surface
-        text "following it"
-      surface
-        text "under it"
-      surface
-        text "the line below"
-      surface
-        text "the next line"
-    lexeme ru
-      surface
-        text "под ней"
-      surface
-        text "после неё"
-      surface
-        text "после нее"
-      surface
-        text "ниже неё"
-      surface
-        text "ниже нее"
-      surface
-        text "следующую строку"
-    lexeme hi
-      surface
-        text "उसके नीचे"
-      surface
-        text "उसके बाद वाली"
-      surface
-        text "नीचे वाली"
-    lexeme zh
-      surface
-        text "下面的"
-      surface
-        text "下一行"
-      surface
-        text "后一行"
-    lexeme es
-      surface
-        text "debajo de ella"
-      surface
-        text "después de ella"
-      surface
-        text "la línea siguiente"
+    lexeme en "below it" "after it" "following it" "under it" "the line below" "the next line"
+    lexeme ru "под ней" "после неё" "после нее" "ниже неё" "ниже нее" "следующую строку"
+    lexeme hi "उसके नीचे" "उसके बाद वाली" "नीचे वाली"
+    lexeme zh "下面的" "下一行" "后一行"
+    lexeme es "debajo de ella" "después de ella" "la línea siguiente"
   line_move_action
     defined-by concept
     role line_move_action
@@ -872,41 +252,11 @@ meanings
     effect "the line is taken out of its place and inserted at the start, the end, or beside an anchor line"
     unit "not applicable"
     example "move the line to the top of the file"
-    lexeme en
-      surface
-        text "move"
-    lexeme ru
-      surface
-        text "перемести"
-      surface
-        text "переместить"
-      surface
-        text "перенеси"
-      surface
-        text "перенести"
-    lexeme hi
-      surface
-        text "ले जाओ"
-      surface
-        text "खिसकाओ"
-      surface
-        text "स्थानांतरित करो"
-    lexeme zh
-      surface
-        text "移动"
-      surface
-        text "移到"
-      surface
-        text "挪到"
-    lexeme es
-      surface
-        text "mueve"
-      surface
-        text "mover"
-      surface
-        text "traslada"
-      surface
-        text "trasladar"
+    lexeme en "move"
+    lexeme ru "перемести" "переместить" "перенеси" "перенести"
+    lexeme hi "ले जाओ" "खिसकाओ" "स्थानांतरित करो"
+    lexeme zh "移动" "移到" "挪到"
+    lexeme es "mueve" "mover" "traslada" "trasladar"
   line_move_follow
     defined-by relation
     role line_move_after_cue
@@ -914,29 +264,11 @@ meanings
     effect "the moved line is placed directly after the anchor line (PR #1188 G81)"
     unit "not applicable"
     example "so that it follows the line"
-    lexeme en
-      surface
-        text "so that it follows"
-      surface
-        text "so it follows"
-      surface
-        text "comes after"
-    lexeme ru
-      surface
-        text "чтобы она шла после"
-      surface
-        text "чтобы она следовала за"
-    lexeme hi
-      surface
-        text "ताकि वह उसके बाद आए"
-    lexeme zh
-      surface
-        text "使其跟在"
-    lexeme es
-      surface
-        text "de modo que siga a"
-      surface
-        text "para que siga a"
+    lexeme en "so that it follows" "so it follows" "comes after"
+    lexeme ru "чтобы она шла после" "чтобы она следовала за"
+    lexeme hi "ताकि वह उसके बाद आए"
+    lexeme zh "使其跟在"
+    lexeme es "de modo que siga a" "para que siga a"
   line_move_precede
     defined-by relation
     role line_move_before_cue
@@ -944,29 +276,11 @@ meanings
     effect "the moved line is placed directly before the anchor line (PR #1188 G81)"
     unit "not applicable"
     example "so that it precedes the line"
-    lexeme en
-      surface
-        text "so that it precedes"
-      surface
-        text "so it precedes"
-      surface
-        text "comes before"
-    lexeme ru
-      surface
-        text "чтобы она шла перед"
-      surface
-        text "чтобы она предшествовала"
-    lexeme hi
-      surface
-        text "ताकि वह उससे पहले आए"
-    lexeme zh
-      surface
-        text "使其排在"
-    lexeme es
-      surface
-        text "de modo que preceda a"
-      surface
-        text "para que preceda a"
+    lexeme en "so that it precedes" "so it precedes" "comes before"
+    lexeme ru "чтобы она шла перед" "чтобы она предшествовала"
+    lexeme hi "ताकि वह उससे पहले आए"
+    lexeme zh "使其排在"
+    lexeme es "de modo que preceda a" "para que preceda a"
   line_swap_action
     defined-by concept
     role line_swap_action
@@ -974,35 +288,11 @@ meanings
     effect "each line takes the other's place"
     unit "not applicable"
     example "swap the lines"
-    lexeme en
-      surface
-        text "swap"
-      surface
-        text "exchange"
-    lexeme ru
-      surface
-        text "поменяй местами"
-      surface
-        text "поменять местами"
-      surface
-        text "переставь местами"
-    lexeme hi
-      surface
-        text "अदला-बदली करो"
-      surface
-        text "आपस में बदलो"
-    lexeme zh
-      surface
-        text "交换"
-      surface
-        text "互换"
-      surface
-        text "对调"
-    lexeme es
-      surface
-        text "intercambia"
-      surface
-        text "intercambiar"
+    lexeme en "swap" "exchange"
+    lexeme ru "поменяй местами" "поменять местами" "переставь местами"
+    lexeme hi "अदला-बदली करो" "आपस में बदलो"
+    lexeme zh "交换" "互换" "对调"
+    lexeme es "intercambia" "intercambiar"
   line_ordinal_first
     defined-by concept
     defined-by one
@@ -1011,29 +301,11 @@ meanings
     effect "the line the ordinal counts to from the start of the file; the number is the one its cardinal meaning spells in digits"
     unit "not applicable"
     example "remove the first line"
-    lexeme en
-      surface
-        text "first"
-    lexeme ru
-      surface
-        text "первую"
-      surface
-        text "первая"
-      surface
-        text "первой"
-    lexeme hi
-      surface
-        text "पहली"
-      surface
-        text "पहला"
-    lexeme zh
-      surface
-        text "第一"
-    lexeme es
-      surface
-        text "primera"
-      surface
-        text "primer"
+    lexeme en "first"
+    lexeme ru "первую" "первая" "первой"
+    lexeme hi "पहली" "पहला"
+    lexeme zh "第一"
+    lexeme es "primera" "primer"
   line_ordinal_second
     defined-by concept
     defined-by two
@@ -1042,29 +314,11 @@ meanings
     effect "the line the ordinal counts to from the start of the file"
     unit "not applicable"
     example "delete the second line"
-    lexeme en
-      surface
-        text "second"
-    lexeme ru
-      surface
-        text "вторую"
-      surface
-        text "вторая"
-      surface
-        text "второй"
-    lexeme hi
-      surface
-        text "दूसरी"
-      surface
-        text "दूसरा"
-    lexeme zh
-      surface
-        text "第二"
-    lexeme es
-      surface
-        text "segunda"
-      surface
-        text "segundo"
+    lexeme en "second"
+    lexeme ru "вторую" "вторая" "второй"
+    lexeme hi "दूसरी" "दूसरा"
+    lexeme zh "第二"
+    lexeme es "segunda" "segundo"
   line_ordinal_third
     defined-by concept
     defined-by three
@@ -1073,29 +327,11 @@ meanings
     effect "the line the ordinal counts to from the start of the file"
     unit "not applicable"
     example "delete the third line"
-    lexeme en
-      surface
-        text "third"
-    lexeme ru
-      surface
-        text "третью"
-      surface
-        text "третья"
-      surface
-        text "третьей"
-    lexeme hi
-      surface
-        text "तीसरी"
-      surface
-        text "तीसरा"
-    lexeme zh
-      surface
-        text "第三"
-    lexeme es
-      surface
-        text "tercera"
-      surface
-        text "tercer"
+    lexeme en "third"
+    lexeme ru "третью" "третья" "третьей"
+    lexeme hi "तीसरी" "तीसरा"
+    lexeme zh "第三"
+    lexeme es "tercera" "tercer"
   line_ordinal_last
     defined-by concept
     defined-by one
@@ -1104,26 +340,8 @@ meanings
     effect "the line the ordinal counts to from the end of the file"
     unit "not applicable"
     example "remove the last line"
-    lexeme en
-      surface
-        text "last"
-    lexeme ru
-      surface
-        text "последнюю"
-      surface
-        text "последняя"
-      surface
-        text "последней"
-    lexeme hi
-      surface
-        text "आखिरी"
-      surface
-        text "अंतिम"
-    lexeme zh
-      surface
-        text "最后一"
-    lexeme es
-      surface
-        text "última"
-      surface
-        text "último"
+    lexeme en "last"
+    lexeme ru "последнюю" "последняя" "последней"
+    lexeme hi "आखिरी" "अंतिम"
+    lexeme zh "最后一"
+    lexeme es "última" "último"

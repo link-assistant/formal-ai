@@ -3,285 +3,53 @@ meanings
     defined-by inquiry
     defined-by answer
     role conversation_summary_directive
-    lexeme en
-      surface
-        text summarize
-      surface
-        text summarise
-      surface
-        text summary
-    lexeme ru
-      surface
-        text суммируй
-      surface
-        text суммируйте
-      surface
-        text резюмируй
-      surface
-        text резюмируйте
-      surface
-        text резюме
-    lexeme hi
-      surface
-        text सारांश
-      surface
-        text संक्षेप
-      surface
-        text सारांशित
-    lexeme zh
-      surface
-        text 总结
-      surface
-        text 總結
-      surface
-        text 概括
-      surface
-        text 摘要
-      surface
-        text 归纳
-      surface
-        text 歸納
-    lexeme es
-      surface
-        text resume
-      surface
-        text resumir
-      surface
-        text resumen
+    lexeme en summarize summarise summary
+    lexeme ru суммируй суммируйте резюмируй резюмируйте резюме
+    lexeme hi सारांश संक्षेप सारांशित
+    lexeme zh 总结 總結 概括 摘要 归纳 歸納
+    lexeme es resume resumir resumen
   conversation_reference
     defined-by inquiry
     defined-by answer
     role conversation_reference
-    lexeme en
-      surface
-        text conversation
-      surface
-        text chat
-      surface
-        text dialogue
-      surface
-        text dialog
-      surface
-        text discussion
-    lexeme ru
-      surface
-        text беседа
-      surface
-        text беседы
-      surface
-        text беседу
-      surface
-        text беседе
-      surface
-        text разговор
-      surface
-        text разговора
-      surface
-        text разговоре
-      surface
-        text разговором
-      surface
-        text чат
-      surface
-        text чата
-      surface
-        text чате
-      surface
-        text диалог
-      surface
-        text диалога
-    lexeme hi
-      surface
-        text बातचीत
-      surface
-        text संवाद
-      surface
-        text वार्तालाप
-    lexeme zh
-      surface
-        text 对话
-      surface
-        text 對話
-      surface
-        text 聊天
-      surface
-        text 会话
-      surface
-        text 會話
-      surface
-        text 谈话
-      surface
-        text 談話
-    lexeme es
-      surface
-        text conversación
-      surface
-        text chat
-      surface
-        text diálogo
-      surface
-        text charla
-      surface
-        text discusión
+    lexeme en conversation chat dialogue dialog discussion
+    lexeme ru беседа беседы беседу беседе разговор разговора разговоре разговором чат чата чате диалог диалога
+    lexeme hi बातचीत संवाद वार्तालाप
+    lexeme zh 对话 對話 聊天 会话 會話 谈话 談話
+    lexeme es conversación chat diálogo charla discusión
   conversation_summary_phrase
     defined-by inquiry
     defined-by conversation_reference
     role conversation_summary_phrase
     lexeme en
-      surface
-        text "what have we talked about"
-      surface
-        text "what did we talk about"
-      surface
-        text "what we were talking about"
-      surface
-        text "what were we talking about"
-      surface
-        text "what have we discussed"
-      surface
-        text "remind me what we discussed"
-      surface
-        text "summary of our chat"
-      surface
-        text "summary of our conversation"
-      surface
-        text "summarize so far"
-      surface
-        text "summarise so far"
-      surface
-        text "what did we do so far"
-      surface
-        text "what have we done so far"
+      words "what have we talked about" "what did we talk about" "what we were talking about"
+      words "what were we talking about" "what have we discussed" "remind me what we discussed" "summary of our chat"
+      words "summary of our conversation" "summarize so far" "summarise so far" "what did we do so far"
+      words "what have we done so far"
     lexeme ru
-      surface
-        text "о чём мы разговаривали"
-      surface
-        text "о чем мы разговаривали"
-      surface
-        text "о чём мы говорили"
-      surface
-        text "о чем мы говорили"
-      surface
-        text "что мы сделали"
-      surface
-        text "что мы уже сделали"
-    lexeme hi
-      surface
-        text "हमने किस बारे में बात की"
-      surface
-        text "हमने क्या बात की"
-      surface
-        text "हमने अब तक क्या किया"
-      surface
-        text "हमने क्या किया"
-    lexeme zh
-      surface
-        text 我们聊了什么
-      surface
-        text 我们谈了什么
-      surface
-        text 我们说了什么
-      surface
-        text 我們聊了什麼
-      surface
-        text 我们做了什么
-      surface
-        text 我们刚才做了什么
+      words "о чём мы разговаривали" "о чем мы разговаривали" "о чём мы говорили" "о чем мы говорили" "что мы сделали"
+      words "что мы уже сделали"
+    lexeme hi "हमने किस बारे में बात की" "हमने क्या बात की" "हमने अब तक क्या किया" "हमने क्या किया"
+    lexeme zh 我们聊了什么 我们谈了什么 我们说了什么 我們聊了什麼 我们做了什么 我们刚才做了什么
     lexeme es
-      surface
-        text "de qué hemos hablado"
-      surface
-        text "de qué hablamos"
-      surface
-        text "qué hemos hecho hasta ahora"
-      surface
-        text "qué hicimos hasta ahora"
-      surface
-        text "resumen de nuestra conversación"
-      surface
-        text "recuérdame de qué hablamos"
+      words "de qué hemos hablado" "de qué hablamos" "qué hemos hecho hasta ahora" "qué hicimos hasta ahora"
+      words "resumen de nuestra conversación" "recuérdame de qué hablamos"
   conversation_summary_courtesy
     defined-by inquiry
     defined-by conversation_summary_directive
     role conversation_summary_courtesy
-    lexeme en
-      surface
-        text "give me a summary"
-      surface
-        text "can you summarize"
-      surface
-        text "can you summarise"
-      surface
-        text "please summarize"
-      surface
-        text "please summarise"
-    lexeme ru
-      surface
-        text "подведи итог"
-      surface
-        text "подведи итоги"
-      surface
-        text "краткое резюме"
-      surface
-        text "сделай резюме"
-      surface
-        text "краткое содержание"
-    lexeme hi
-      surface
-        text "सार दो"
-      surface
-        text "सारांश दो"
-      surface
-        text "संक्षेप में बताओ"
-    lexeme zh
-      surface
-        text 帮我总结
-      surface
-        text 帮我概括
-      surface
-        text 请总结
-      surface
-        text 请概括
-      surface
-        text 总结一下
-      surface
-        text 概括一下
-    lexeme es
-      surface
-        text "dame un resumen"
-      surface
-        text "puedes resumir"
-      surface
-        text "por favor resume"
-      surface
-        text "haz un resumen"
+    lexeme en "give me a summary" "can you summarize" "can you summarise" "please summarize" "please summarise"
+    lexeme ru "подведи итог" "подведи итоги" "краткое резюме" "сделай резюме" "краткое содержание"
+    lexeme hi "सार दो" "सारांश दो" "संक्षेप में बताओ"
+    lexeme zh 帮我总结 帮我概括 请总结 请概括 总结一下 概括一下
+    lexeme es "dame un resumen" "puedes resumir" "por favor resume" "haz un resumen"
   conversation_return_recap
     defined-by inquiry
     defined-by conversation_reference
     defined-by conversation_summary_directive
     role conversation_return_recap
-    lexeme en
-      surface
-        text "the user stepped away and is coming back"
-      surface
-        text "i am back after stepping away"
-    lexeme ru
-      surface
-        text "пользователь отошёл и возвращается"
-      surface
-        text "я вернулся после перерыва"
-    lexeme hi
-      surface
-        text "उपयोगकर्ता वापस आ रहा है"
-      surface
-        text "मैं विराम के बाद वापस आया हूँ"
-    lexeme zh
-      surface
-        text 用户离开后回来了
-      surface
-        text 我离开后回来了
-    lexeme es
-      surface
-        text "el usuario se alejó y está regresando"
-      surface
-        text "he vuelto después de ausentarme"
+    lexeme en "the user stepped away and is coming back" "i am back after stepping away"
+    lexeme ru "пользователь отошёл и возвращается" "я вернулся после перерыва"
+    lexeme hi "उपयोगकर्ता वापस आ रहा है" "मैं विराम के बाद वापस आया हूँ"
+    lexeme zh 用户离开后回来了 我离开后回来了
+    lexeme es "el usuario se alejó y está regresando" "he vuelto después de ausentarme"

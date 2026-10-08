@@ -8,152 +8,17 @@ meanings
     unit "not applicable"
     example "The page must load in under a second."
     lexeme en
-      surface
-        text "must"
-      surface
-        text "must not"
-      surface
-        text "should"
-      surface
-        text "should not"
-      surface
-        text "shall"
-      surface
-        text "need to"
-      surface
-        text "needs to"
-      surface
-        text "we need"
-      surface
-        text "i need"
-      surface
-        text "have to"
-      surface
-        text "has to"
-      surface
-        text "required"
-      surface
-        text "is required"
-      surface
-        text "are required"
-      surface
-        text "ensure"
-      surface
-        text "make sure"
-      surface
-        text "it is important"
-      surface
-        text "we want"
-      surface
-        text "i want"
-      surface
-        text "please"
-      surface
-        text "never"
-      surface
-        text "always"
-      surface
-        text "cannot"
-      surface
-        text "is expected"
-      surface
-        text "are expected"
-      surface
-        text "expected to"
+      words "must" "must not" "should" "should not" "shall" "need to" "needs to" "we need" "i need" "have to" "has to"
+      words "required" "is required" "are required" "ensure" "make sure" "it is important" "we want" "i want" "please"
+      words "never" "always" "cannot" "is expected" "are expected" "expected to"
     lexeme ru
-      surface
-        text "должен"
-      surface
-        text "должна"
-      surface
-        text "должно"
-      surface
-        text "должны"
-      surface
-        text "нужно"
-      surface
-        text "необходимо"
-      surface
-        text "надо"
-      surface
-        text "следует"
-      surface
-        text "требуется"
-      surface
-        text "обязательно"
-      surface
-        text "пожалуйста"
-      surface
-        text "нельзя"
-      surface
-        text "всегда"
-      surface
-        text "никогда"
-    lexeme hi
-      surface
-        text "चाहिए"
-      surface
-        text "ज़रूरी"
-      surface
-        text "जरूरी"
-      surface
-        text "आवश्यक"
-      surface
-        text "अनिवार्य"
-      surface
-        text "कृपया"
-      surface
-        text "हमेशा"
-      surface
-        text "कभी नहीं"
-    lexeme zh
-      surface
-        text "必须"
-      surface
-        text "应该"
-      surface
-        text "需要"
-      surface
-        text "应当"
-      surface
-        text "请"
-      surface
-        text "不能"
-      surface
-        text "务必"
-      surface
-        text "总是"
-      surface
-        text "不要"
+      words "должен" "должна" "должно" "должны" "нужно" "необходимо" "надо" "следует" "требуется" "обязательно"
+      words "пожалуйста" "нельзя" "всегда" "никогда"
+    lexeme hi "चाहिए" "ज़रूरी" "जरूरी" "आवश्यक" "अनिवार्य" "कृपया" "हमेशा" "कभी नहीं"
+    lexeme zh "必须" "应该" "需要" "应当" "请" "不能" "务必" "总是" "不要"
     lexeme es
-      surface
-        text "debe"
-      surface
-        text "deben"
-      surface
-        text "debería"
-      surface
-        text "deberían"
-      surface
-        text "hay que"
-      surface
-        text "necesita"
-      surface
-        text "necesitamos"
-      surface
-        text "es necesario"
-      surface
-        text "tiene que"
-      surface
-        text "tienen que"
-      surface
-        text "por favor"
-      surface
-        text "siempre"
-      surface
-        text "nunca"
-      surface
-        text "no debe"
+      words "debe" "deben" "debería" "deberían" "hay que" "necesita" "necesitamos" "es necesario" "tiene que"
+      words "tienen que" "por favor" "siempre" "nunca" "no debe"
   requirement_directive
     defined-by relation
     role requirement_directive_verb
@@ -162,322 +27,25 @@ meanings
     unit "not applicable"
     example "Add a dark mode toggle."
     lexeme en
-      surface
-        text "add"
-      surface
-        text "make"
-      surface
-        text "fix"
-      surface
-        text "use"
-      surface
-        text "check"
-      surface
-        text "double check"
-      surface
-        text "create"
-      surface
-        text "implement"
-      surface
-        text "support"
-      surface
-        text "remove"
-      surface
-        text "update"
-      surface
-        text "keep"
-      surface
-        text "allow"
-      surface
-        text "provide"
-      surface
-        text "write"
-      surface
-        text "show"
-      surface
-        text "test"
-      surface
-        text "delete"
-      surface
-        text "move"
-      surface
-        text "rename"
-      surface
-        text "split"
-      surface
-        text "convert"
-      surface
-        text "translate"
-      surface
-        text "run"
-      surface
-        text "avoid"
-      surface
-        text "prefer"
-      surface
-        text "do"
-      surface
-        text "deliver"
-      surface
-        text "report"
-      surface
-        text "upload"
-      surface
-        text "store"
-      surface
-        text "record"
-      surface
-        text "document"
-      surface
-        text "replace"
-      surface
-        text "generate"
-      surface
-        text "enforce"
-      surface
-        text "track"
-      surface
-        text "verify"
-      surface
-        text "publish"
-      surface
-        text "release"
-      surface
-        text "include"
-      surface
-        text "list"
-      surface
-        text "collect"
-      surface
-        text "find"
-      surface
-        text "try"
-      surface
-        text "continue"
-      surface
-        text "start"
-      surface
-        text "stop"
-      surface
-        text "integrate"
-      surface
-        text "build"
-      surface
-        text "design"
-      surface
-        text "measure"
-      surface
-        text "display"
-      surface
-        text "return"
-      surface
-        text "answer"
-      surface
-        text "accept"
-      surface
-        text "reject"
-      surface
-        text "handle"
-      surface
-        text "detect"
-      surface
-        text "ignore"
-      surface
-        text "mark"
-      surface
-        text "merge"
-      surface
-        text "open"
-      surface
-        text "close"
-      surface
-        text "send"
-      surface
-        text "save"
-      surface
-        text "load"
-      surface
-        text "parse"
-      surface
-        text "render"
-      surface
-        text "print"
-      surface
-        text "reuse"
-      surface
-        text "extract"
-      surface
-        text "expose"
-      surface
-        text "limit"
-      surface
-        text "restore"
-      surface
-        text "teach"
-      surface
-        text "learn"
+      words "add" "make" "fix" "use" "check" "double check" "create" "implement" "support" "remove" "update" "keep"
+      words "allow" "provide" "write" "show" "test" "delete" "move" "rename" "split" "convert" "translate" "run" "avoid"
+      words "prefer" "do" "deliver" "report" "upload" "store" "record" "document" "replace" "generate" "enforce" "track"
+      words "verify" "publish" "release" "include" "list" "collect" "find" "try" "continue" "start" "stop" "integrate"
+      words "build" "design" "measure" "display" "return" "answer" "accept" "reject" "handle" "detect" "ignore" "mark"
+      words "merge" "open" "close" "send" "save" "load" "parse" "render" "print" "reuse" "extract" "expose" "limit"
+      words "restore" "teach" "learn"
     lexeme ru
-      surface
-        text "добавь"
-      surface
-        text "добавить"
-      surface
-        text "сделай"
-      surface
-        text "сделать"
-      surface
-        text "исправь"
-      surface
-        text "исправить"
-      surface
-        text "используй"
-      surface
-        text "использовать"
-      surface
-        text "проверь"
-      surface
-        text "проверить"
-      surface
-        text "создай"
-      surface
-        text "создать"
-      surface
-        text "реализуй"
-      surface
-        text "реализовать"
-      surface
-        text "удали"
-      surface
-        text "удалить"
-      surface
-        text "обнови"
-      surface
-        text "обновить"
-      surface
-        text "покажи"
-      surface
-        text "показать"
-      surface
-        text "напиши"
-      surface
-        text "написать"
-      surface
-        text "переведи"
-      surface
-        text "перевести"
-      surface
-        text "запусти"
-      surface
-        text "запустить"
-      surface
-        text "избегай"
-      surface
-        text "сохрани"
-      surface
-        text "сохранить"
-      surface
-        text "поддержи"
-      surface
-        text "поддерживать"
+      words "добавь" "добавить" "сделай" "сделать" "исправь" "исправить" "используй" "использовать" "проверь"
+      words "проверить" "создай" "создать" "реализуй" "реализовать" "удали" "удалить" "обнови" "обновить" "покажи"
+      words "показать" "напиши" "написать" "переведи" "перевести" "запусти" "запустить" "избегай" "сохрани" "сохранить"
+      words "поддержи" "поддерживать"
     lexeme hi
-      surface
-        text "जोड़ें"
-      surface
-        text "बनाएं"
-      surface
-        text "ठीक करें"
-      surface
-        text "उपयोग करें"
-      surface
-        text "जांचें"
-      surface
-        text "लागू करें"
-      surface
-        text "हटाएं"
-      surface
-        text "अपडेट करें"
-      surface
-        text "दिखाएं"
-      surface
-        text "लिखें"
-      surface
-        text "चलाएं"
-      surface
-        text "अनुवाद करें"
-      surface
-        text "सहेजें"
-    lexeme zh
-      surface
-        text "添加"
-      surface
-        text "修复"
-      surface
-        text "使用"
-      surface
-        text "检查"
-      surface
-        text "创建"
-      surface
-        text "实现"
-      surface
-        text "删除"
-      surface
-        text "更新"
-      surface
-        text "显示"
-      surface
-        text "编写"
-      surface
-        text "运行"
-      surface
-        text "翻译"
-      surface
-        text "保存"
-      surface
-        text "支持"
-      surface
-        text "避免"
+      words "जोड़ें" "बनाएं" "ठीक करें" "उपयोग करें" "जांचें" "लागू करें" "हटाएं" "अपडेट करें" "दिखाएं" "लिखें" "चलाएं"
+      words "अनुवाद करें" "सहेजें"
+    lexeme zh "添加" "修复" "使用" "检查" "创建" "实现" "删除" "更新" "显示" "编写" "运行" "翻译" "保存" "支持" "避免"
     lexeme es
-      surface
-        text "añade"
-      surface
-        text "agrega"
-      surface
-        text "haz"
-      surface
-        text "corrige"
-      surface
-        text "usa"
-      surface
-        text "comprueba"
-      surface
-        text "verifica"
-      surface
-        text "crea"
-      surface
-        text "implementa"
-      surface
-        text "elimina"
-      surface
-        text "actualiza"
-      surface
-        text "muestra"
-      surface
-        text "escribe"
-      surface
-        text "ejecuta"
-      surface
-        text "traduce"
-      surface
-        text "guarda"
-      surface
-        text "evita"
-      surface
-        text "mantén"
-      surface
-        text "permite"
-      surface
-        text "soporta"
+      words "añade" "agrega" "haz" "corrige" "usa" "comprueba" "verifica" "crea" "implementa" "elimina" "actualiza"
+      words "muestra" "escribe" "ejecuta" "traduce" "guarda" "evita" "mantén" "permite" "soporta"
   requirement_section
     defined-by relation
     role requirement_section_heading
@@ -486,118 +54,17 @@ meanings
     unit "not applicable"
     example "## Acceptance criteria"
     lexeme en
-      surface
-        text "requirements"
-      surface
-        text "requirement"
-      surface
-        text "acceptance criteria"
-      surface
-        text "definition of done"
-      surface
-        text "tasks"
-      surface
-        text "to do"
-      surface
-        text "todo"
-      surface
-        text "deliverables"
-      surface
-        text "scope"
-      surface
-        text "goals"
-      surface
-        text "expected behavior"
-      surface
-        text "expected behaviour"
-      surface
-        text "proposal"
-      surface
-        text "proposed solution"
-      surface
-        text "what to do"
-      surface
-        text "checklist"
-      surface
-        text "must have"
-      surface
-        text "plan"
+      words "requirements" "requirement" "acceptance criteria" "definition of done" "tasks" "to do" "todo"
+      words "deliverables" "scope" "goals" "expected behavior" "expected behaviour" "proposal" "proposed solution"
+      words "what to do" "checklist" "must have" "plan"
     lexeme ru
-      surface
-        text "требования"
-      surface
-        text "требование"
-      surface
-        text "критерии приёмки"
-      surface
-        text "критерии приемки"
-      surface
-        text "задачи"
-      surface
-        text "что сделать"
-      surface
-        text "что нужно сделать"
-      surface
-        text "ожидаемое поведение"
-      surface
-        text "предложение"
-      surface
-        text "план"
-      surface
-        text "цели"
-    lexeme hi
-      surface
-        text "आवश्यकताएँ"
-      surface
-        text "आवश्यकताएं"
-      surface
-        text "आवश्यकता"
-      surface
-        text "स्वीकृति मानदंड"
-      surface
-        text "कार्य"
-      surface
-        text "लक्ष्य"
-      surface
-        text "योजना"
-      surface
-        text "अपेक्षित व्यवहार"
-    lexeme zh
-      surface
-        text "需求"
-      surface
-        text "要求"
-      surface
-        text "验收标准"
-      surface
-        text "任务"
-      surface
-        text "待办"
-      surface
-        text "目标"
-      surface
-        text "计划"
-      surface
-        text "预期行为"
+      words "требования" "требование" "критерии приёмки" "критерии приемки" "задачи" "что сделать" "что нужно сделать"
+      words "ожидаемое поведение" "предложение" "план" "цели"
+    lexeme hi "आवश्यकताएँ" "आवश्यकताएं" "आवश्यकता" "स्वीकृति मानदंड" "कार्य" "लक्ष्य" "योजना" "अपेक्षित व्यवहार"
+    lexeme zh "需求" "要求" "验收标准" "任务" "待办" "目标" "计划" "预期行为"
     lexeme es
-      surface
-        text "requisitos"
-      surface
-        text "requisito"
-      surface
-        text "criterios de aceptación"
-      surface
-        text "tareas"
-      surface
-        text "objetivos"
-      surface
-        text "alcance"
-      surface
-        text "comportamiento esperado"
-      surface
-        text "propuesta"
-      surface
-        text "plan"
+      words "requisitos" "requisito" "criterios de aceptación" "tareas" "objetivos" "alcance" "comportamiento esperado"
+      words "propuesta" "plan"
   requirement_listing_action
     # R1188-U20: a request to list the requirements of the text it carries (after a colon, a line break or in quotes).
     # Read only in the command head (the `command_head` subject of data/seed/handler-rules.lino), so a phrase inside the pasted text never routes.
@@ -608,104 +75,21 @@ meanings
     unit "not applicable"
     example "List the requirements of this issue: The page must load in under a second."
     lexeme en
-      surface
-        text "list the requirements"
-      surface
-        text "list requirements"
-      surface
-        text "list all requirements"
-      surface
-        text "list all the requirements"
-      surface
-        text "list the … requirements"
-      surface
-        text "extract the requirements"
-      surface
-        text "extract requirements"
-      surface
-        text "enumerate the requirements"
-      surface
-        text "enumerate requirements"
-      surface
-        text "what are the requirements"
+      words "list the requirements" "list requirements" "list all requirements" "list all the requirements"
+      words "list the … requirements" "extract the requirements" "extract requirements" "enumerate the requirements"
+      words "enumerate requirements" "what are the requirements"
     lexeme ru
-      surface
-        text "перечисли требования"
-      surface
-        text "перечислите требования"
-      surface
-        text "перечисли все требования"
-      surface
-        text "перечисли … требования"
-      surface
-        text "выпиши требования"
-      surface
-        text "выпишите требования"
-      surface
-        text "выдели требования"
-      surface
-        text "выделите требования"
-      surface
-        text "извлеки требования"
-      surface
-        text "список требований"
+      words "перечисли требования" "перечислите требования" "перечисли все требования" "перечисли … требования"
+      words "выпиши требования" "выпишите требования" "выдели требования" "выделите требования" "извлеки требования"
+      words "список требований"
     lexeme hi
-      surface
-        text "आवश्यकताएँ सूचीबद्ध करें"
-      surface
-        text "आवश्यकताएं सूचीबद्ध करें"
-      surface
-        text "आवश्यकताओं की सूची बनाएं"
-      surface
-        text "आवश्यकताओं की सूची बनाओ"
-      surface
-        text "आवश्यकताएँ निकालें"
-      surface
-        text "आवश्यकताएं निकालें"
-      surface
-        text "क्या आवश्यकताएँ हैं"
-      surface
-        text "क्या आवश्यकताएं हैं"
-    lexeme zh
-      surface
-        text "列出需求"
-      surface
-        text "列出要求"
-      surface
-        text "列出…需求"
-      surface
-        text "列出…要求"
-      surface
-        text "列举需求"
-      surface
-        text "列举…需求"
-      surface
-        text "提取需求"
-      surface
-        text "提取…需求"
-      surface
-        text "有哪些需求"
-      surface
-        text "有哪些要求"
+      words "आवश्यकताएँ सूचीबद्ध करें" "आवश्यकताएं सूचीबद्ध करें" "आवश्यकताओं की सूची बनाएं" "आवश्यकताओं की सूची बनाओ"
+      words "आवश्यकताएँ निकालें" "आवश्यकताएं निकालें" "क्या आवश्यकताएँ हैं" "क्या आवश्यकताएं हैं"
+    lexeme zh "列出需求" "列出要求" "列出…需求" "列出…要求" "列举需求" "列举…需求" "提取需求" "提取…需求" "有哪些需求" "有哪些要求"
     lexeme es
-      surface
-        text "enumera los requisitos"
-      surface
-        text "enumere los requisitos"
-      surface
-        text "enumera todos los requisitos"
-      surface
-        text "lista los requisitos"
-      surface
-        text "extrae los requisitos"
-      surface
-        text "cuáles son los requisitos"
-      surface
-        text "enumera los requerimientos"
-      surface
-        text "lista los requerimientos"
-      surface
-        text "cuáles son los requerimientos"
+      words "enumera los requisitos" "enumere los requisitos" "enumera todos los requisitos" "lista los requisitos"
+      words "extrae los requisitos" "cuáles son los requisitos" "enumera los requerimientos" "lista los requerimientos"
+      words "cuáles son los requerimientos"
   requirement_list
     # R1188-U20: the named text transform of the handler-rule `transform` value source that lists requirements.
     defined-by method

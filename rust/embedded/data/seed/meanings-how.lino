@@ -4,110 +4,17 @@ meanings
     defined-by action
     role mechanism_inquiry
     lexeme en
-      surface
-        text "how it works"
-      surface
-        text "how does it work"
-      surface
-        text "how does …"
-      surface
-        text "how do …"
-      surface
-        text "how did …"
-      surface
-        text "how is …"
-      surface
-        text "how … works"
-      surface
-        text "how … work"
+      words "how it works" "how does it work" "how does …" "how do …" "how did …" "how is …" "how … works" "how … work"
     lexeme ru
-      surface
-        text "как это работает"
-      surface
-        text "как оно работает"
-      surface
-        text "как устроен …"
-      surface
-        text "как устроена …"
-      surface
-        text "как устроено …"
-      surface
-        text "как устроены …"
-      surface
-        text "как работает …"
-      surface
-        text "как работают …"
-      surface
-        text "как … работает"
-      surface
-        text "как … работают"
-      surface
-        text "… как работает"
-      surface
-        text "… как работают"
+      words "как это работает" "как оно работает" "как устроен …" "как устроена …" "как устроено …" "как устроены …"
+      words "как работает …" "как работают …" "как … работает" "как … работают" "… как работает" "… как работают"
     lexeme hi
-      surface
-        text "यह कैसे काम करता है"
-      surface
-        text "यह कैसे काम करती है"
-      surface
-        text "यह कैसे काम करता"
-      surface
-        text "… कैसे काम करता है"
-      surface
-        text "… कैसे काम करती है"
-      surface
-        text "… कैसे काम करते हैं"
-      surface
-        text "… कैसे काम करता"
-      surface
-        text "… कैसे काम करती"
-      surface
-        text "… कैसे काम करते"
+      words "यह कैसे काम करता है" "यह कैसे काम करती है" "यह कैसे काम करता" "… कैसे काम करता है" "… कैसे काम करती है"
+      words "… कैसे काम करते हैं" "… कैसे काम करता" "… कैसे काम करती" "… कैसे काम करते"
     lexeme zh
-      surface
-        text 这是如何工作的
-      surface
-        text 这是怎么工作的
-      surface
-        text 这个如何工作
-      surface
-        text 它如何工作
-      surface
-        text 它是如何工作的
-      surface
-        text 它怎么工作
-      surface
-        text "… 是如何工作的"
-      surface
-        text …是如何工作的
-      surface
-        text "… 是怎么工作的"
-      surface
-        text …是怎么工作的
-      surface
-        text "… 如何工作"
-      surface
-        text …如何工作
-      surface
-        text "… 怎么工作"
-      surface
-        text …怎么工作
-      surface
-        text "… 的工作原理是什么"
-      surface
-        text …的工作原理是什么
-    lexeme es
-      surface
-        text "cómo funciona esto"
-      surface
-        text "cómo funciona …"
-      surface
-        text "cómo funcionan …"
-      surface
-        text "cómo está hecho …"
-      surface
-        text "cómo está hecha …"
+      words 这是如何工作的 这是怎么工作的 这个如何工作 它如何工作 它是如何工作的 它怎么工作 "… 是如何工作的" …是如何工作的 "… 是怎么工作的" …是怎么工作的 "… 如何工作" …如何工作 "… 怎么工作"
+      words …怎么工作 "… 的工作原理是什么" …的工作原理是什么
+    lexeme es "cómo funciona esto" "cómo funciona …" "cómo funcionan …" "cómo está hecho …" "cómo está hecha …"
   procedural_request
     defined-by inquiry
     defined-by action
@@ -246,485 +153,118 @@ meanings
     defined-by inquiry
     defined-by procedural_request
     role procedural_request_elided_lead
-    lexeme en
-      surface
-        text "how …"
-    lexeme ru
-      surface
-        text "как …"
-    lexeme hi
-      surface
-        text "कैसे …"
-    lexeme zh
-      surface
-        text 如何…
-      surface
-        text 怎么…
-    lexeme es
-      surface
-        text "cómo …"
+    lexeme en "how …"
+    lexeme ru "как …"
+    lexeme hi "कैसे …"
+    lexeme zh 如何… 怎么…
+    lexeme es "cómo …"
   procedural_action_order
     defined-by action
     defined-by procedural_request
     role procedural_action_verb
-    lexeme en
-      surface
-        text order
-    lexeme ru
-      surface
-        text заказать
-      surface
-        text заказывать
-    lexeme hi
-      surface
-        text "ऑर्डर करें"
-    lexeme zh
-      surface
-        text 订购
-      surface
-        text 下单
-    lexeme es
-      surface
-        text pedir
-      surface
-        text encargar
+    lexeme en order
+    lexeme ru заказать заказывать
+    lexeme hi "ऑर्डर करें"
+    lexeme zh 订购 下单
+    lexeme es pedir encargar
   procedural_action_install
     defined-by action
     defined-by procedural_request
     role procedural_action_verb
-    lexeme en
-      surface
-        text install
-        action install
-    lexeme ru
-      surface
-        text установить
-        action install
-      surface
-        text устанавливать
-        action install
-    lexeme hi
-      surface
-        text "इंस्टॉल करें"
-        action install
-      surface
-        text "स्थापित करें"
-        action install
-    lexeme zh
-      surface
-        text 安装
-        action install
-    lexeme es
-      surface
-        text instalar
-        action install
+    lexeme en install
+      action install
+    lexeme ru установить устанавливать
+      action install
+    lexeme hi "इंस्टॉल करें" "स्थापित करें"
+      action install
+    lexeme zh 安装
+      action install
+    lexeme es instalar
+      action install
   connect
     defined-by action
     defined-by procedural_request
     role procedural_action_verb
-    lexeme en
-      surface
-        text connect
-        action connect
-    lexeme ru
-      surface
-        text подключить
-        action connect
-      surface
-        text подключать
-        action connect
-    lexeme hi
-      surface
-        text "कनेक्ट करें"
-        action connect
-      surface
-        text जोड़ें
-        action connect
-    lexeme zh
-      surface
-        text 连接
-        action connect
-    lexeme es
-      surface
-        text conectar
-        action connect
+    lexeme en connect
+      action connect
+    lexeme ru подключить подключать
+      action connect
+    lexeme hi "कनेक्ट करें" जोड़ें
+      action connect
+    lexeme zh 连接
+      action connect
+    lexeme es conectar
+      action connect
   mechanism_predicate
     defined-by action
     defined-by mechanism_inquiry
     role mechanism_predicate
-    lexeme en
-      surface
-        text "… work"
-      surface
-        text "… works"
-      surface
-        text "… structured"
-      surface
-        text "… organized"
-      surface
-        text "… organised"
-      surface
-        text "… built"
-    lexeme ru
-      surface
-        text "… работает"
-      surface
-        text "… устроен"
-    lexeme hi
-      surface
-        text "… काम करता है"
-      surface
-        text "… बना है"
-    lexeme zh
-      surface
-        text …工作
-      surface
-        text …构建
-    lexeme es
-      surface
-        text "… funciona"
-      surface
-        text "… funcionan"
-      surface
-        text "… está hecho"
-      surface
-        text "… está construido"
+    lexeme en "… work" "… works" "… structured" "… organized" "… organised" "… built"
+    lexeme ru "… работает" "… устроен"
+    lexeme hi "… काम करता है" "… बना है"
+    lexeme zh …工作 …构建
+    lexeme es "… funciona" "… funcionan" "… está hecho" "… está construido"
   detail_modifier
     defined-by property
     defined-by mechanism_inquiry
     role detail_modifier
-    lexeme en
-      surface
-        text "… in detail"
-      surface
-        text "… internally"
-      surface
-        text "… exactly"
-      surface
-        text "… please"
-    lexeme ru
-      surface
-        text "… подробнее"
-      surface
-        text "… подробно"
-      surface
-        text "… пожалуйста"
-    lexeme hi
-      surface
-        text "… विस्तार से"
-      surface
-        text "… कृपया"
-    lexeme zh
-      surface
-        text …详细
-      surface
-        text …请
-    lexeme es
-      surface
-        text "… en detalle"
-      surface
-        text "… detalladamente"
-      surface
-        text "… por favor"
+    lexeme en "… in detail" "… internally" "… exactly" "… please"
+    lexeme ru "… подробнее" "… подробно" "… пожалуйста"
+    lexeme hi "… विस्तार से" "… कृपया"
+    lexeme zh …详细 …请
+    lexeme es "… en detalle" "… detalladamente" "… por favor"
   non_referential_subject
     defined-by entity
     defined-by mechanism_inquiry
     role non_referential_subject
-    lexeme en
-      surface
-        text it
-      surface
-        text this
-      surface
-        text that
-      surface
-        text you
-      surface
-        text yourself
-      surface
-        text does
-      surface
-        text do
-      surface
-        text "does …"
-      surface
-        text "do …"
-      surface
-        text "to …"
-      surface
-        text "you …"
-    lexeme ru
-      surface
-        text это
-      surface
-        text оно
-      surface
-        text он
-      surface
-        text она
-      surface
-        text они
-      surface
-        text ты
-      surface
-        text вы
-    lexeme hi
-      surface
-        text यह
-      surface
-        text ये
-    lexeme zh
-      surface
-        text 这
-      surface
-        text 这个
-      surface
-        text 它
+    lexeme en it this that you yourself does do "does …" "do …" "to …" "you …"
+    lexeme ru это оно он она они ты вы
+    lexeme hi यह ये
+    lexeme zh 这 这个 它
   procedural_task_modifier
     defined-by property
     defined-by procedural_request
     role procedural_task_modifier
-    lexeme en
-      surface
-        text "… step by step"
-      surface
-        text "… in steps"
-      surface
-        text "… with steps"
-      surface
-        text "… for me"
-      surface
-        text "… please"
-    lexeme ru
-      surface
-        text "… напиши по шагам"
-      surface
-        text "… по шагам"
-      surface
-        text "… пошагово"
-      surface
-        text "… пожалуйста"
-    lexeme hi
-      surface
-        text "… चरणों में लिखो"
-      surface
-        text "… चरणों में बताओ"
-      surface
-        text "… कदम दर कदम"
-      surface
-        text "… कृपया"
-    lexeme zh
-      surface
-        text "… 按步骤写"
-      surface
-        text "… 按步骤说明"
-      surface
-        text "… 一步一步写"
-      surface
-        text "… 请"
-    lexeme es
-      surface
-        text "… paso a paso"
-      surface
-        text "… por pasos"
-      surface
-        text "… por favor"
+    lexeme en "… step by step" "… in steps" "… with steps" "… for me" "… please"
+    lexeme ru "… напиши по шагам" "… по шагам" "… пошагово" "… пожалуйста"
+    lexeme hi "… चरणों में लिखो" "… चरणों में बताओ" "… कदम दर कदम" "… कृपया"
+    lexeme zh "… 按步骤写" "… 按步骤说明" "… 一步一步写" "… 请"
+    lexeme es "… paso a paso" "… por pasos" "… por favor"
   procedural_elaboration
     defined-by inquiry
     defined-by procedural_request
     role procedural_elaboration
     lexeme en
-      surface
-        text "specific instructions"
-      surface
-        text "specific steps"
-      surface
-        text "detailed instructions"
-      surface
-        text "detailed steps"
-      surface
-        text "exact steps"
-      surface
-        text "exact instructions"
-      surface
-        text "the steps"
-      surface
-        text "step by step"
-      surface
-        text "step-by-step"
-      surface
-        text "more specific"
-      surface
-        text "more detail"
-      surface
-        text "more details"
-      surface
-        text "in detail"
-      surface
-        text "elaborate"
+      words "specific instructions" "specific steps" "detailed instructions" "detailed steps" "exact steps"
+      words "exact instructions" "the steps" "step by step" "step-by-step" "more specific" "more detail" "more details"
+      words "in detail" "elaborate"
     lexeme ru
-      surface
-        text "конкретные инструкции"
-      surface
-        text "конкретные шаги"
-      surface
-        text "подробные инструкции"
-      surface
-        text "подробные шаги"
-      surface
-        text "точные шаги"
-      surface
-        text "пошагово"
-      surface
-        text "по шагам"
-      surface
-        text "поподробнее"
-      surface
-        text "подробнее"
-      surface
-        text "более конкретно"
-      surface
-        text "конкретнее"
+      words "конкретные инструкции" "конкретные шаги" "подробные инструкции" "подробные шаги" "точные шаги" "пошагово"
+      words "по шагам" "поподробнее" "подробнее" "более конкретно" "конкретнее"
     lexeme hi
-      surface
-        text "विशिष्ट निर्देश"
-      surface
-        text "विस्तृत निर्देश"
-      surface
-        text "विस्तृत चरण"
-      surface
-        text "सटीक चरण"
-      surface
-        text "चरण दर चरण"
-      surface
-        text "कदम दर कदम"
-      surface
-        text "अधिक विस्तार"
-      surface
-        text "और विस्तार"
-    lexeme zh
-      surface
-        text 具体说明
-      surface
-        text 具体步骤
-      surface
-        text 详细步骤
-      surface
-        text 详细说明
-      surface
-        text 确切步骤
-      surface
-        text 一步一步
-      surface
-        text 更具体
-      surface
-        text 更详细
+      words "विशिष्ट निर्देश" "विस्तृत निर्देश" "विस्तृत चरण" "सटीक चरण" "चरण दर चरण" "कदम दर कदम" "अधिक विस्तार"
+      words "और विस्तार"
+    lexeme zh 具体说明 具体步骤 详细步骤 详细说明 确切步骤 一步一步 更具体 更详细
     lexeme es
-      surface
-        text "instrucciones concretas"
-      surface
-        text "pasos concretos"
-      surface
-        text "instrucciones detalladas"
-      surface
-        text "pasos detallados"
-      surface
-        text "pasos exactos"
-      surface
-        text "paso a paso"
-      surface
-        text "más detalle"
-      surface
-        text "más detalles"
-      surface
-        text "más concreto"
+      words "instrucciones concretas" "pasos concretos" "instrucciones detalladas" "pasos detallados" "pasos exactos"
+      words "paso a paso" "más detalle" "más detalles" "más concreto"
   common_typo
     defined-by relation
     role common_typo
-    lexeme en
-      surface
-        text dirven
-        action driven
-    lexeme ru
-      surface
-        text руский
-        action русский
-    lexeme hi
-      surface
-        text वेबसाईट
-        action वेबसाइट
-    lexeme zh
-      surface
-        text 登陆
-        action 登录
-    lexeme es
-      surface
-        text porfavor
-        action "por favor"
+    lexeme en dirven
+      action driven
+    lexeme ru руский
+      action русский
+    lexeme hi वेबसाईट
+      action वेबसाइट
+    lexeme zh 登陆
+      action 登录
+    lexeme es porfavor
+      action "por favor"
   topic_scan_stop_word
     defined-by concept
     role topic_scan_stop_word
-    lexeme en
-      surface
-        text i
-      surface
-        text the
-      surface
-        text a
-      surface
-        text an
-      surface
-        text in
-      surface
-        text to
-      surface
-        text for
-      surface
-        text of
-      surface
-        text and
-      surface
-        text or
-      surface
-        text source
-    lexeme ru
-      surface
-        text и
-      surface
-        text или
-      surface
-        text в
-      surface
-        text к
-      surface
-        text для
-      surface
-        text из
-      surface
-        text источник
-    lexeme hi
-      surface
-        text और
-      surface
-        text या
-      surface
-        text में
-      surface
-        text को
-      surface
-        text के
-      surface
-        text का
-      surface
-        text स्रोत
-    lexeme zh
-      surface
-        text 和
-      surface
-        text 或
-      surface
-        text 在
-      surface
-        text 的
-      surface
-        text 来源
+    lexeme en i the a an in to for of and or source
+    lexeme ru и или в к для из источник
+    lexeme hi और या में को के का स्रोत
+    lexeme zh 和 或 在 的 来源

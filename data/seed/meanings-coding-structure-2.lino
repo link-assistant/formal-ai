@@ -6,31 +6,11 @@ meanings
     fragment_signature "sequence<float>"
     fragment_result float
     grounding "https://docs.python.org/3.12/library/statistics.html#statistics.mean"
-    lexeme en
-      surface
-        text mean
-      surface
-        text average
-    lexeme ru
-      surface
-        text среднее
-      surface
-        text "среднее значение"
-    lexeme hi
-      surface
-        text औसत
-      surface
-        text माध्य
-    lexeme zh
-      surface
-        text 平均值
-      surface
-        text 均值
-    lexeme es
-      surface
-        text media
-      surface
-        text promedio
+    lexeme en mean average
+    lexeme ru среднее "среднее значение"
+    lexeme hi औसत माध्य
+    lexeme zh 平均值 均值
+    lexeme es media promedio
     bootstrap true
     rediscovery_query "the average of the elements"
   absolute_deviation
@@ -40,31 +20,11 @@ meanings
     fragment_signature (float float)
     fragment_result float
     grounding "https://docs.python.org/3.12/library/functions.html#abs"
-    lexeme en
-      surface
-        text "absolute deviation"
-      surface
-        text "absolute difference"
-    lexeme ru
-      surface
-        text "абсолютное отклонение"
-      surface
-        text "абсолютная разность"
-    lexeme hi
-      surface
-        text "निरपेक्ष विचलन"
-      surface
-        text "निरपेक्ष अंतर"
-    lexeme zh
-      surface
-        text 绝对偏差
-      surface
-        text 绝对差
-    lexeme es
-      surface
-        text "desviación absoluta"
-      surface
-        text "diferencia absoluta"
+    lexeme en "absolute deviation" "absolute difference"
+    lexeme ru "абсолютное отклонение" "абсолютная разность"
+    lexeme hi "निरपेक्ष विचलन" "निरपेक्ष अंतर"
+    lexeme zh 绝对偏差 绝对差
+    lexeme es "desviación absoluta" "diferencia absoluta"
     bootstrap true
     rediscovery_query "how far each value sits from its center"
   prefix_negative
@@ -74,29 +34,11 @@ meanings
     fragment_signature float
     fragment_result boolean
     grounding "https://docs.python.org/3.12/reference/expressions.html#comparisons"
-    lexeme en
-      surface
-        text "below zero"
-      surface
-        text "falls below zero"
-    lexeme ru
-      surface
-        text "ниже нуля"
-      surface
-        text "опускается ниже нуля"
-    lexeme hi
-      surface
-        text "शून्य से नीचे"
-    lexeme zh
-      surface
-        text 低于零
-      surface
-        text 降到零以下
-    lexeme es
-      surface
-        text "por debajo de cero"
-      surface
-        text "baja de cero"
+    lexeme en "below zero" "falls below zero"
+    lexeme ru "ниже нуля" "опускается ниже нуля"
+    lexeme hi "शून्य से नीचे"
+    lexeme zh 低于零 降到零以下
+    lexeme es "por debajo de cero" "baja de cero"
     bootstrap true
     rediscovery_query "whether the value is negative"
   interpose_each
@@ -106,83 +48,31 @@ meanings
     fragment_signature ("sequence<unknown:0>" "unknown:0")
     fragment_result "sequence<unknown:0>"
     grounding "https://docs.python.org/3.12/tutorial/datastructures.html#list-comprehensions"
-    lexeme en
-      surface
-        text "between every two consecutive elements"
-      surface
-        text "between consecutive elements"
-    lexeme ru
-      surface
-        text "между каждыми двумя соседними элементами"
-    lexeme hi
-      surface
-        text "हर दो लगातार तत्वों के बीच"
-    lexeme zh
-      surface
-        text 每两个相邻元素之间
-    lexeme es
-      surface
-        text "entre cada dos elementos consecutivos"
+    lexeme en "between every two consecutive elements" "between consecutive elements"
+    lexeme ru "между каждыми двумя соседними элементами"
+    lexeme hi "हर दो लगातार तत्वों के बीच"
+    lexeme zh 每两个相邻元素之间
+    lexeme es "entre cada dos elementos consecutivos"
     bootstrap true
     rediscovery_query "place the separator between consecutive elements"
   balanced_delimiter_groups
     defined-by sequence
     role coding_structure
     grounding "https://docs.python.org/3.12/tutorial/controlflow.html#for-statements"
-    lexeme en
-      surface
-        text "balanced groups"
-      surface
-        text "separate groups"
-    lexeme ru
-      surface
-        text "сбалансированные группы"
-      surface
-        text "отдельные группы"
-    lexeme hi
-      surface
-        text "संतुलित समूह"
-      surface
-        text "अलग समूह"
-    lexeme zh
-      surface
-        text 平衡的分组
-      surface
-        text 独立的分组
-    lexeme es
-      surface
-        text "grupos balanceados"
-      surface
-        text "grupos separados"
+    lexeme en "balanced groups" "separate groups"
+    lexeme ru "сбалансированные группы" "отдельные группы"
+    lexeme hi "संतुलित समूह" "अलग समूह"
+    lexeme zh 平衡的分组 独立的分组
+    lexeme es "grupos balanceados" "grupos separados"
   group_max_nesting
     defined-by sequence
     role coding_structure
     grounding "https://docs.python.org/3.12/library/functions.html#max"
-    lexeme en
-      surface
-        text "deepest level of nesting"
-      surface
-        text "maximum nesting"
-    lexeme ru
-      surface
-        text "максимальная вложенность"
-      surface
-        text "самый глубокий уровень вложенности"
-    lexeme hi
-      surface
-        text "अधिकतम नेस्टिंग"
-      surface
-        text "नेस्टिंग का सबसे गहरा स्तर"
-    lexeme zh
-      surface
-        text 最大嵌套
-      surface
-        text 最深的嵌套层级
-    lexeme es
-      surface
-        text "anidamiento máximo"
-      surface
-        text "nivel de anidamiento más profundo"
+    lexeme en "deepest level of nesting" "maximum nesting"
+    lexeme ru "максимальная вложенность" "самый глубокий уровень вложенности"
+    lexeme hi "अधिकतम नेस्टिंग" "नेस्टिंग का सबसे गहरा स्तर"
+    lexeme zh 最大嵌套 最深的嵌套层级
+    lexeme es "anidamiento máximo" "nivel de anidamiento más profundo"
   prefix_enumeration
     defined-by sequence
     role coding_structure
@@ -190,29 +80,11 @@ meanings
     fragment_signature text
     fragment_result "sequence<text>"
     grounding "https://docs.python.org/3.12/library/stdtypes.html#common-sequence-operations"
-    lexeme en
-      surface
-        text "all prefixes"
-      surface
-        text "prefixes from shortest to longest"
-    lexeme ru
-      surface
-        text "все префиксы"
-      surface
-        text "префиксы от самого короткого до самого длинного"
-    lexeme hi
-      surface
-        text "सभी उपसर्ग"
-    lexeme zh
-      surface
-        text 所有前缀
-      surface
-        text 从最短到最长的前缀
-    lexeme es
-      surface
-        text "todos los prefijos"
-      surface
-        text "prefijos del más corto al más largo"
+    lexeme en "all prefixes" "prefixes from shortest to longest"
+    lexeme ru "все префиксы" "префиксы от самого короткого до самого длинного"
+    lexeme hi "सभी उपसर्ग"
+    lexeme zh 所有前缀 从最短到最长的前缀
+    lexeme es "todos los prefijos" "prefijos del más corto al más largo"
     bootstrap true
     rediscovery_query "every prefix of the text, shortest first"
   zero_based_range
@@ -222,31 +94,11 @@ meanings
     fragment_signature integer
     fragment_result "sequence<integer>"
     grounding "https://docs.python.org/3.12/library/stdtypes.html#range"
-    lexeme en
-      surface
-        text "starting from 0"
-      surface
-        text "starting at zero"
-    lexeme ru
-      surface
-        text "начиная с 0"
-      surface
-        text "начиная с нуля"
-    lexeme hi
-      surface
-        text "0 से शुरू"
-      surface
-        text "शून्य से शुरू"
-    lexeme zh
-      surface
-        text "从 0 开始"
-      surface
-        text 从零开始
-    lexeme es
-      surface
-        text "empezando desde 0"
-      surface
-        text "empezando en cero"
+    lexeme en "starting from 0" "starting at zero"
+    lexeme ru "начиная с 0" "начиная с нуля"
+    lexeme hi "0 से शुरू" "शून्य से शुरू"
+    lexeme zh "从 0 开始" 从零开始
+    lexeme es "empezando desde 0" "empezando en cero"
     bootstrap true
     rediscovery_query "every position from zero through the bound"
   stringify_each
@@ -256,89 +108,31 @@ meanings
     fragment_signature ("unknown:0" "sequence<unknown:0>")
     fragment_result "sequence<text>"
     grounding "https://docs.python.org/3.12/library/functions.html#func-str"
-    lexeme en
-      surface
-        text "string containing"
-      surface
-        text "as a string"
-    lexeme ru
-      surface
-        text "строка, содержащая"
-      surface
-        text "в виде строки"
-    lexeme hi
-      surface
-        text "स्ट्रिंग के रूप में"
-    lexeme zh
-      surface
-        text 包含的字符串
-      surface
-        text 作为字符串
-    lexeme es
-      surface
-        text "cadena que contiene"
-      surface
-        text "como cadena"
+    lexeme en "string containing" "as a string"
+    lexeme ru "строка, содержащая" "в виде строки"
+    lexeme hi "स्ट्रिंग के रूप में"
+    lexeme zh 包含的字符串 作为字符串
+    lexeme es "cadena que contiene" "como cadena"
     bootstrap true
     rediscovery_query "turn every element into its text form"
   palindrome_extension
     defined-by sequence
     role coding_structure
     grounding "https://docs.python.org/3.12/library/stdtypes.html#common-sequence-operations"
-    lexeme en
-      surface
-        text "shortest palindrome"
-      surface
-        text "palindromic suffix"
-    lexeme ru
-      surface
-        text "кратчайший палиндром"
-      surface
-        text "палиндромный суффикс"
-    lexeme hi
-      surface
-        text "सबसे छोटा पैलिंड्रोम"
-      surface
-        text "पैलिंड्रोमिक प्रत्यय"
-    lexeme zh
-      surface
-        text 最短回文
-      surface
-        text 回文后缀
-    lexeme es
-      surface
-        text "palíndromo más corto"
-      surface
-        text "sufijo palíndromo"
+    lexeme en "shortest palindrome" "palindromic suffix"
+    lexeme ru "кратчайший палиндром" "палиндромный суффикс"
+    lexeme hi "सबसे छोटा पैलिंड्रोम" "पैलिंड्रोमिक प्रत्यय"
+    lexeme zh 最短回文 回文后缀
+    lexeme es "palíndromo más corto" "sufijo palíndromo"
   aligned_binary_xor
     defined-by mapping
     role coding_structure
     grounding "https://docs.python.org/3.12/reference/expressions.html#comparisons"
-    lexeme en
-      surface
-        text "binary xor"
-      surface
-        text "perform xor"
-    lexeme ru
-      surface
-        text "двоичный xor"
-      surface
-        text "выполни xor"
-    lexeme hi
-      surface
-        text "बाइनरी xor"
-      surface
-        text "xor करें"
-    lexeme zh
-      surface
-        text 二进制异或
-      surface
-        text 执行异或
-    lexeme es
-      surface
-        text "xor binario"
-      surface
-        text "realiza xor"
+    lexeme en "binary xor" "perform xor"
+    lexeme ru "двоичный xor" "выполни xor"
+    lexeme hi "बाइनरी xor" "xor करें"
+    lexeme zh 二进制异或 执行异或
+    lexeme es "xor binario" "realiza xor"
   stable_longest
     defined-by reduction
     role coding_structure
@@ -346,91 +140,31 @@ meanings
     fragment_signature "sequence<unknown:0>"
     fragment_result "unknown:0"
     grounding "https://docs.python.org/3.12/library/functions.html#max"
-    lexeme en
-      surface
-        text "longest one"
-      surface
-        text "return the longest"
-    lexeme ru
-      surface
-        text "самый длинный"
-      surface
-        text "верни самый длинный"
-    lexeme hi
-      surface
-        text "सबसे लंबा"
-      surface
-        text "सबसे लंबा लौटाएं"
-    lexeme zh
-      surface
-        text 最长的
-      surface
-        text 返回最长的
-    lexeme es
-      surface
-        text "el más largo"
-      surface
-        text "devuelve el más largo"
+    lexeme en "longest one" "return the longest"
+    lexeme ru "самый длинный" "верни самый длинный"
+    lexeme hi "सबसे लंबा" "सबसे लंबा लौटाएं"
+    lexeme zh 最长的 返回最长的
+    lexeme es "el más largo" "devuelve el más largo"
     bootstrap true
     rediscovery_query "the longest element, keeping first-wins order"
   explicit_value_mapping
     defined-by mapping
     role coding_structure
     grounding "https://docs.python.org/3.12/library/stdtypes.html#mapping-types-dict"
-    lexeme en
-      surface
-        text legend
-      surface
-        text "corresponding to"
-    lexeme ru
-      surface
-        text легенда
-      surface
-        text соответствующий
-    lexeme hi
-      surface
-        text लीजेंड
-      surface
-        text "के अनुरूप"
-    lexeme zh
-      surface
-        text 图例
-      surface
-        text 对应于
-    lexeme es
-      surface
-        text leyenda
-      surface
-        text "correspondiente a"
+    lexeme en legend "corresponding to"
+    lexeme ru легенда соответствующий
+    lexeme hi लीजेंड "के अनुरूप"
+    lexeme zh 图例 对应于
+    lexeme es leyenda "correspondiente a"
   explicit_ordering
     defined-by ordering
     role coding_structure
     grounding "https://docs.python.org/3.12/library/functions.html#sorted"
-    lexeme en
-      surface
-        text "valid choices are"
-      surface
-        text "given order"
-    lexeme ru
-      surface
-        text "допустимые варианты"
-      surface
-        text "заданный порядок"
-    lexeme hi
-      surface
-        text "मान्य विकल्प हैं"
-      surface
-        text "दिया गया क्रम"
-    lexeme zh
-      surface
-        text 有效选项为
-      surface
-        text 给定顺序
-    lexeme es
-      surface
-        text "las opciones válidas son"
-      surface
-        text "orden dado"
+    lexeme en "valid choices are" "given order"
+    lexeme ru "допустимые варианты" "заданный порядок"
+    lexeme hi "मान्य विकल्प हैं" "दिया गया क्रम"
+    lexeme zh 有效选项为 给定顺序
+    lexeme es "las opciones válidas son" "orden dado"
   bounded_top
     defined-by ordering
     role coding_structure
@@ -438,33 +172,11 @@ meanings
     fragment_signature ("sequence<unknown:0>" integer)
     fragment_result "sequence<unknown:0>"
     grounding "https://docs.python.org/3.12/library/functions.html#sorted"
-    lexeme en
-      surface
-        text "largest items"
-      surface
-        text "largest integers"
-      surface
-        text "n largest"
-    lexeme ru
-      surface
-        text "наибольшие элементы"
-      surface
-        text "n наибольших"
-    lexeme hi
-      surface
-        text "सबसे बड़े तत्व"
-      surface
-        text "n सबसे बड़े"
-    lexeme zh
-      surface
-        text 最大的元素
-      surface
-        text "前 n 大"
-    lexeme es
-      surface
-        text "elementos más grandes"
-      surface
-        text "n mayores"
+    lexeme en "largest items" "largest integers" "n largest"
+    lexeme ru "наибольшие элементы" "n наибольших"
+    lexeme hi "सबसे बड़े तत्व" "n सबसे बड़े"
+    lexeme zh 最大的元素 "前 n 大"
+    lexeme es "elementos más grandes" "n mayores"
     bootstrap true
     rediscovery_query "the few largest elements in order"
   bounded_bottom
@@ -474,31 +186,11 @@ meanings
     fragment_signature ("sequence<unknown:0>" integer)
     fragment_result "sequence<unknown:0>"
     grounding "https://docs.python.org/3.12/library/functions.html#sorted"
-    lexeme en
-      surface
-        text "smallest items"
-      surface
-        text "n smallest"
-    lexeme ru
-      surface
-        text "наименьшие элементы"
-      surface
-        text "n наименьших"
-    lexeme hi
-      surface
-        text "सबसे छोटे तत्व"
-      surface
-        text "n सबसे छोटे"
-    lexeme zh
-      surface
-        text 最小的元素
-      surface
-        text "前 n 小"
-    lexeme es
-      surface
-        text "elementos más pequeños"
-      surface
-        text "n menores"
+    lexeme en "smallest items" "n smallest"
+    lexeme ru "наименьшие элементы" "n наименьших"
+    lexeme hi "सबसे छोटे तत्व" "n सबसे छोटे"
+    lexeme zh 最小的元素 "前 n 小"
+    lexeme es "elementos más pequeños" "n menores"
     bootstrap true
     rediscovery_query "the few smallest elements in order"
   power_square_each
@@ -508,29 +200,11 @@ meanings
     fragment_signature ("unknown:0" "sequence<unknown:0>")
     fragment_result "sequence<unknown:0>"
     grounding "https://docs.python.org/3.12/reference/expressions.html#the-power-operator"
-    lexeme en
-      surface
-        text "squares of individual elements"
-      surface
-        text "square each"
-    lexeme ru
-      surface
-        text "квадраты отдельных элементов"
-      surface
-        text "возведи каждый в квадрат"
-    lexeme hi
-      surface
-        text "प्रत्येक तत्व का वर्ग"
-    lexeme zh
-      surface
-        text 各个元素的平方
-      surface
-        text 每个数平方
-    lexeme es
-      surface
-        text "cuadrados de los elementos"
-      surface
-        text "eleva cada uno al cuadrado"
+    lexeme en "squares of individual elements" "square each"
+    lexeme ru "квадраты отдельных элементов" "возведи каждый в квадрат"
+    lexeme hi "प्रत्येक तत्व का वर्ग"
+    lexeme zh 各个元素的平方 每个数平方
+    lexeme es "cuadrados de los elementos" "eleva cada uno al cuadrado"
     bootstrap true
     rediscovery_query "square every element"
   keyed_sum_order
@@ -540,31 +214,11 @@ meanings
     fragment_signature "sequence<sequence<unknown:0>>"
     fragment_result "sequence<sequence<unknown:0>>"
     grounding "https://docs.python.org/3.12/library/functions.html#sorted"
-    lexeme en
-      surface
-        text "according to the sum"
-      surface
-        text "by row sum"
-    lexeme ru
-      surface
-        text "по сумме"
-      surface
-        text "по сумме строки"
-    lexeme hi
-      surface
-        text "योग के अनुसार"
-      surface
-        text "पंक्ति योग के अनुसार"
-    lexeme zh
-      surface
-        text 按总和
-      surface
-        text 按行和
-    lexeme es
-      surface
-        text "según la suma"
-      surface
-        text "por la suma de la fila"
+    lexeme en "according to the sum" "by row sum"
+    lexeme ru "по сумме" "по сумме строки"
+    lexeme hi "योग के अनुसार" "पंक्ति योग के अनुसार"
+    lexeme zh 按总和 按行和
+    lexeme es "según la suma" "por la suma de la fila"
     bootstrap true
     rediscovery_query "arrange the items by their total"
   frequency_rank
@@ -574,104 +228,40 @@ meanings
     fragment_signature ("sequence<unknown:0>" integer)
     fragment_result "sequence<pair<unknown:0,integer>>"
     grounding "https://docs.python.org/3.12/library/collections.html#collections.Counter.most_common"
-    lexeme en
-      surface
-        text "most common"
-      surface
-        text "frequency rank"
-    lexeme ru
-      surface
-        text "самый частый"
-      surface
-        text "ранг частоты"
-    lexeme hi
-      surface
-        text "सबसे आम"
-      surface
-        text "आवृत्ति क्रम"
-    lexeme zh
-      surface
-        text 最常见
-      surface
-        text 频率排名
-    lexeme es
-      surface
-        text "más común"
-      surface
-        text "rango de frecuencia"
+    lexeme en "most common" "frequency rank"
+    lexeme ru "самый частый" "ранг частоты"
+    lexeme hi "सबसे आम" "आवृत्ति क्रम"
+    lexeme zh 最常见 频率排名
+    lexeme es "más común" "rango de frecuencia"
     bootstrap true
     rediscovery_query "the most frequent values, most common first"
   regex_minimum_word_length
     defined-by character_class
     role coding_structure
     grounding "https://docs.python.org/3.12/library/re.html#regular-expression-syntax"
-    lexeme en
-      surface
-        text "characters long"
-      surface
-        text "minimum word length"
-    lexeme ru
-      surface
-        text "символов в длину"
-      surface
-        text "минимальная длина слова"
-    lexeme hi
-      surface
-        text "अक्षर लंबा"
-      surface
-        text "न्यूनतम शब्द लंबाई"
-    lexeme zh
-      surface
-        text 个字符长
-      surface
-        text 最小单词长度
-    lexeme es
-      surface
-        text "caracteres de largo"
-      surface
-        text "longitud mínima de palabra"
+    lexeme en "characters long" "minimum word length"
+    lexeme ru "символов в длину" "минимальная длина слова"
+    lexeme hi "अक्षर लंबा" "न्यूनतम शब्द लंबाई"
+    lexeme zh 个字符长 最小单词长度
+    lexeme es "caracteres de largo" "longitud mínima de palabra"
   regex_lowercase_chunks
     defined-by character_class
     role coding_structure
     grounding "https://docs.python.org/3.12/library/re.html#regular-expression-syntax"
-    lexeme en
-      surface
-        text "split a string at lowercase letters"
-      surface
-        text "split at lowercase"
-    lexeme ru
-      surface
-        text "раздели строку по строчным буквам"
-    lexeme hi
-      surface
-        text "छोटे अक्षरों पर स्ट्रिंग विभाजित करें"
-    lexeme zh
-      surface
-        text 在小写字母处分割字符串
-    lexeme es
-      surface
-        text "divide una cadena en las minúsculas"
+    lexeme en "split a string at lowercase letters" "split at lowercase"
+    lexeme ru "раздели строку по строчным буквам"
+    lexeme hi "छोटे अक्षरों पर स्ट्रिंग विभाजित करें"
+    lexeme zh 在小写字母处分割字符串
+    lexeme es "divide una cadena en las minúsculas"
   regex_lowercase_underscore
     defined-by character_class
     role coding_structure
     grounding "https://docs.python.org/3.12/library/re.html#regular-expression-syntax"
-    lexeme en
-      surface
-        text "lowercase letters joined with an underscore"
-      surface
-        text "lowercase joined by underscore"
-    lexeme ru
-      surface
-        text "строчные буквы, соединённые подчёркиванием"
-    lexeme hi
-      surface
-        text "अंडरस्कोर से जुड़े छोटे अक्षर"
-    lexeme zh
-      surface
-        text 用下划线连接的小写字母
-    lexeme es
-      surface
-        text "minúsculas unidas con un guion bajo"
+    lexeme en "lowercase letters joined with an underscore" "lowercase joined by underscore"
+    lexeme ru "строчные буквы, соединённые подчёркиванием"
+    lexeme hi "अंडरस्कोर से जुड़े छोटे अक्षर"
+    lexeme zh 用下划线连接的小写字母
+    lexeme es "minúsculas unidas con un guion bajo"
   exclude_membership
     defined-by filter
     role coding_structure
@@ -679,31 +269,11 @@ meanings
     fragment_signature (text text)
     fragment_result text
     grounding "https://docs.python.org/3.12/reference/expressions.html#membership-test-operations"
-    lexeme en
-      surface
-        text "remove characters"
-      surface
-        text "exclude characters"
-    lexeme ru
-      surface
-        text "удали символы"
-      surface
-        text "исключи символы"
-    lexeme hi
-      surface
-        text "अक्षर हटाएं"
-      surface
-        text "अक्षर बाहर करें"
-    lexeme zh
-      surface
-        text 删除字符
-      surface
-        text 排除字符
-    lexeme es
-      surface
-        text "elimina caracteres"
-      surface
-        text "excluye caracteres"
+    lexeme en "remove characters" "exclude characters"
+    lexeme ru "удали символы" "исключи символы"
+    lexeme hi "अक्षर हटाएं" "अक्षर बाहर करें"
+    lexeme zh 删除字符 排除字符
+    lexeme es "elimina caracteres" "excluye caracteres"
     bootstrap true
     rediscovery_query "keep only the values the excluded set does not contain"
   remove_first_occurrence
@@ -740,23 +310,11 @@ meanings
     defined-by sequence
     role coding_structure
     grounding "https://docs.python.org/3.12/library/stdtypes.html#str.find"
-    lexeme en
-      surface
-        text "remove first and last occurrence"
-      surface
-        text "remove the first and last occurrence"
-    lexeme ru
-      surface
-        text "удали первое и последнее вхождение"
-    lexeme hi
-      surface
-        text "पहली और आखिरी घटना हटाएं"
-    lexeme zh
-      surface
-        text 删除第一次和最后一次出现
-    lexeme es
-      surface
-        text "elimina la primera y la última aparición"
+    lexeme en "remove first and last occurrence" "remove the first and last occurrence"
+    lexeme ru "удали первое и последнее вхождение"
+    lexeme hi "पहली और आखिरी घटना हटाएं"
+    lexeme zh 删除第一次和最后一次出现
+    lexeme es "elimina la primera y la última aparición"
   positive_offsets
     defined-by range
     role coding_fragment
@@ -822,29 +380,11 @@ meanings
     defined-by sequence
     role coding_structure
     grounding "https://docs.python.org/3.12/library/stdtypes.html#common-sequence-operations"
-    lexeme en
-      surface
-        text "minimum number of rotations"
-      surface
-        text "smallest rotation period"
-    lexeme ru
-      surface
-        text "минимальное число поворотов"
-      surface
-        text "наименьший период вращения"
-    lexeme hi
-      surface
-        text "न्यूनतम घुमावों की संख्या"
-    lexeme zh
-      surface
-        text 最少旋转次数
-      surface
-        text 最小旋转周期
-    lexeme es
-      surface
-        text "número mínimo de rotaciones"
-      surface
-        text "periodo de rotación mínimo"
+    lexeme en "minimum number of rotations" "smallest rotation period"
+    lexeme ru "минимальное число поворотов" "наименьший период вращения"
+    lexeme hi "न्यूनतम घुमावों की संख्या"
+    lexeme zh 最少旋转次数 最小旋转周期
+    lexeme es "número mínimo de rotaciones" "periodo de rotación mínimo"
   duplicate_exists
     defined-by predicate
     role coding_structure
@@ -852,62 +392,22 @@ meanings
     fragment_signature "sequence<unknown:0>"
     fragment_result boolean
     grounding "https://docs.python.org/3.12/library/stdtypes.html#set"
-    lexeme en
-      surface
-        text "any duplicate"
-      surface
-        text "contains duplicates"
-    lexeme ru
-      surface
-        text "есть дубликаты"
-      surface
-        text "содержит дубликаты"
-    lexeme hi
-      surface
-        text "कोई डुप्लिकेट"
-      surface
-        text "डुप्लिकेट हैं"
-    lexeme zh
-      surface
-        text 有重复
-      surface
-        text 包含重复
-    lexeme es
-      surface
-        text "algún duplicado"
-      surface
-        text "contiene duplicados"
+    lexeme en "any duplicate" "contains duplicates"
+    lexeme ru "есть дубликаты" "содержит дубликаты"
+    lexeme hi "कोई डुप्लिकेट" "डुप्लिकेट हैं"
+    lexeme zh 有重复 包含重复
+    lexeme es "algún duplicado" "contiene duplicados"
     bootstrap true
     rediscovery_query "whether any value occurs more than once"
   composite_number
     defined-by predicate
     role coding_structure
     grounding "https://docs.python.org/3.12/library/math.html#math.isqrt"
-    lexeme en
-      surface
-        text "non-prime numbers"
-      surface
-        text "composite number"
-    lexeme ru
-      surface
-        text "непростые числа"
-      surface
-        text "составное число"
-    lexeme hi
-      surface
-        text "अभाज्य नहीं संख्याएँ"
-      surface
-        text "भाज्य संख्या"
-    lexeme zh
-      surface
-        text 非素数
-      surface
-        text 合数
-    lexeme es
-      surface
-        text "números no primos"
-      surface
-        text "número compuesto"
+    lexeme en "non-prime numbers" "composite number"
+    lexeme ru "непростые числа" "составное число"
+    lexeme hi "अभाज्य नहीं संख्याएँ" "भाज्य संख्या"
+    lexeme zh 非素数 合数
+    lexeme es "números no primos" "número compuesto"
   bitwise_xor
     defined-by reduction
     role coding_fragment
@@ -942,60 +442,20 @@ meanings
     defined-by predicate
     role coding_structure
     grounding "https://docs.python.org/3.12/reference/expressions.html#binary-bitwise-operations"
-    lexeme en
-      surface
-        text "differ at one bit position"
-      surface
-        text "one bit difference"
-    lexeme ru
-      surface
-        text "отличаются в одном бите"
-      surface
-        text "разница в один бит"
-    lexeme hi
-      surface
-        text "एक बिट स्थिति पर अलग"
-      surface
-        text "एक बिट का अंतर"
-    lexeme zh
-      surface
-        text 只在一个位上不同
-      surface
-        text 一位差异
-    lexeme es
-      surface
-        text "difieren en una posición de bit"
-      surface
-        text "diferencia de un bit"
+    lexeme en "differ at one bit position" "one bit difference"
+    lexeme ru "отличаются в одном бите" "разница в один бит"
+    lexeme hi "एक बिट स्थिति पर अलग" "एक बिट का अंतर"
+    lexeme zh 只在一个位上不同 一位差异
+    lexeme es "difieren en una posición de bit" "diferencia de un bit"
   grid_minimum_cost_path
     defined-by optimization
     role coding_structure
     grounding "https://competitive-programming.cs.princeton.edu/files/lec_f22_w4.pdf"
-    lexeme en
-      surface
-        text "minimum cost path"
-      surface
-        text "lowest cost path"
-      surface
-        text "minimum weight path"
-    lexeme ru
-      surface
-        text "путь минимальной стоимости"
-      surface
-        text "путь наименьшей стоимости"
-    lexeme hi
-      surface
-        text "न्यूनतम लागत पथ"
-    lexeme zh
-      surface
-        text 最小成本路径
-      surface
-        text 最低代价路径
-    lexeme es
-      surface
-        text "camino de costo mínimo"
-      surface
-        text "camino de menor costo"
+    lexeme en "minimum cost path" "lowest cost path" "minimum weight path"
+    lexeme ru "путь минимальной стоимости" "путь наименьшей стоимости"
+    lexeme hi "न्यूनतम लागत पथ"
+    lexeme zh 最小成本路径 最低代价路径
+    lexeme es "camino de costo mínimo" "camino de menor costo"
   recurrence_operator
     defined-by concept
     grounding "https://docs.python.org/3.12/reference/expressions.html"
@@ -1003,212 +463,100 @@ meanings
     defined-by recurrence_operator
     role coding_recurrence_operator
     grounding "https://docs.python.org/3.12/reference/expressions.html#conditional-expressions"
-    lexeme en
-      surface
-        text if
-        action conditional
-    lexeme ru
-      surface
-        text если
-        action conditional
-    lexeme hi
-      surface
-        text यदि
-        action conditional
-    lexeme zh
-      surface
-        text 如果
-        action conditional
-    lexeme es
-      surface
-        text si
-        action conditional
+    lexeme en if
+      action conditional
+    lexeme ru если
+      action conditional
+    lexeme hi यदि
+      action conditional
+    lexeme zh 如果
+      action conditional
+    lexeme es si
+      action conditional
   recurrence_less_equal
     defined-by recurrence_operator
     role coding_recurrence_operator
     grounding "https://docs.python.org/3.12/reference/expressions.html#comparisons"
-    lexeme en
-      surface
-        text "less than or equal"
-        action less_equal
-    lexeme ru
-      surface
-        text "меньше или равно"
-        action less_equal
-    lexeme hi
-      surface
-        text "से कम या बराबर"
-        action less_equal
-    lexeme zh
-      surface
-        text 小于或等于
-        action less_equal
-    lexeme es
-      surface
-        text "menor o igual"
-        action less_equal
+    lexeme en "less than or equal"
+      action less_equal
+    lexeme ru "меньше или равно"
+      action less_equal
+    lexeme hi "से कम या बराबर"
+      action less_equal
+    lexeme zh 小于或等于
+      action less_equal
+    lexeme es "menor o igual"
+      action less_equal
   recurrence_equal
     defined-by recurrence_operator
     role coding_recurrence_operator
     grounding "https://docs.python.org/3.12/reference/expressions.html#comparisons"
-    lexeme en
-      surface
-        text equality
-        action equal
-    lexeme ru
-      surface
-        text равенство
-        action equal
-    lexeme hi
-      surface
-        text समानता
-        action equal
-    lexeme zh
-      surface
-        text 相等
-        action equal
-    lexeme es
-      surface
-        text igualdad
-        action equal
+    lexeme en equality
+      action equal
+    lexeme ru равенство
+      action equal
+    lexeme hi समानता
+      action equal
+    lexeme zh 相等
+      action equal
+    lexeme es igualdad
+      action equal
   recurrence_add
     defined-by recurrence_operator
     role coding_recurrence_operator
     grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
-    lexeme en
-      surface
-        text add
-        action add
-    lexeme ru
-      surface
-        text сложить
-        action add
-      surface
-        text сложение
-        action add
-    lexeme hi
-      surface
-        text जोड़ें
-        action add
-      surface
-        text जोड़
-        action add
-    lexeme zh
-      surface
-        text 加法
-        action add
-      surface
-        text 相加
-        action add
-    lexeme es
-      surface
-        text sumar
-        action add
-      surface
-        text suma
-        action add
+    lexeme en add
+      action add
+    lexeme ru сложить сложение
+      action add
+    lexeme hi जोड़ें जोड़
+      action add
+    lexeme zh 加法 相加
+      action add
+    lexeme es sumar suma
+      action add
   recurrence_multiply
     defined-by recurrence_operator
     role coding_recurrence_operator
     grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
-    lexeme en
-      surface
-        text multiply
-        action multiply
-    lexeme ru
-      surface
-        text умножить
-        action multiply
-      surface
-        text умножение
-        action multiply
-    lexeme hi
-      surface
-        text गुणा
-        action multiply
-    lexeme zh
-      surface
-        text 乘法
-        action multiply
-      surface
-        text 相乘
-        action multiply
-    lexeme es
-      surface
-        text multiplicar
-        action multiply
-      surface
-        text multiplicación
-        action multiply
+    lexeme en multiply
+      action multiply
+    lexeme ru умножить умножение
+      action multiply
+    lexeme hi गुणा
+      action multiply
+    lexeme zh 乘法 相乘
+      action multiply
+    lexeme es multiplicar multiplicación
+      action multiply
   recurrence_subtract
     defined-by recurrence_operator
     role coding_recurrence_operator
     grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
-    lexeme en
-      surface
-        text subtract
-        action subtract
-    lexeme ru
-      surface
-        text вычесть
-        action subtract
-      surface
-        text вычитание
-        action subtract
-    lexeme hi
-      surface
-        text घटाव
-        action subtract
-    lexeme zh
-      surface
-        text 减法
-        action subtract
-      surface
-        text 相减
-        action subtract
-    lexeme es
-      surface
-        text restar
-        action subtract
-      surface
-        text resta
-        action subtract
+    lexeme en subtract
+      action subtract
+    lexeme ru вычесть вычитание
+      action subtract
+    lexeme hi घटाव
+      action subtract
+    lexeme zh 减法 相减
+      action subtract
+    lexeme es restar resta
+      action subtract
   recurrence_subtract_one
     defined-by recurrence_operator
     role coding_recurrence_operator
     grounding "https://docs.python.org/3.12/reference/expressions.html#binary-arithmetic-operations"
-    lexeme en
-      surface
-        text decrement
-        action subtract_one
-    lexeme ru
-      surface
-        text декремент
-        action subtract_one
-      surface
-        text "уменьшить на единицу"
-        action subtract_one
-    lexeme hi
-      surface
-        text डिक्रीमेंट
-        action subtract_one
-      surface
-        text "एक घटाएं"
-        action subtract_one
-    lexeme zh
-      surface
-        text 递减
-        action subtract_one
-      surface
-        text 减一
-        action subtract_one
-    lexeme es
-      surface
-        text decrementar
-        action subtract_one
-      surface
-        text "disminuir en uno"
-        action subtract_one
+    lexeme en decrement
+      action subtract_one
+    lexeme ru декремент "уменьшить на единицу"
+      action subtract_one
+    lexeme hi डिक्रीमेंट "एक घटाएं"
+      action subtract_one
+    lexeme zh 递减 减一
+      action subtract_one
+    lexeme es decrementar "disminuir en uno"
+      action subtract_one
   extend_run
     defined-by reduction
     role coding_fragment
@@ -1226,33 +574,11 @@ meanings
       rust "{ let mut extended = {accumulator}; match extended.last_mut() { Some(last) if last.0 == {item} => last.1 += 1, _ => extended.push(({item}, 1_usize)), } extended }"
     fragment_signature (sequence<pair<text,integer>> text)
     fragment_result "sequence<pair<text,integer>>"
-    lexeme en
-      surface
-        text "runs of equal characters"
-      surface
-        text "run of equal characters"
-      surface
-        text "consecutive equal values"
-    lexeme ru
-      surface
-        text "серии одинаковых"
-      surface
-        text "одинаковых символов"
-    lexeme hi
-      surface
-        text "लगातार श्रृंखलाओं"
-      surface
-        text "समान अक्षरों"
-    lexeme zh
-      surface
-        text "连续相同字符"
-      surface
-        text "连续相同"
-    lexeme es
-      surface
-        text "rachas de caracteres iguales"
-      surface
-        text "caracteres iguales"
+    lexeme en "runs of equal characters" "run of equal characters" "consecutive equal values"
+    lexeme ru "серии одинаковых" "одинаковых символов"
+    lexeme hi "लगातार श्रृंखलाओं" "समान अक्षरों"
+    lexeme zh "连续相同字符" "连续相同"
+    lexeme es "rachas de caracteres iguales" "caracteres iguales"
   integer_at_least
     defined-by comparison
     role coding_structure
@@ -1263,25 +589,11 @@ meanings
     grounding "https://docs.python.org/3.12/reference/expressions.html#comparisons"
     license "PSF-2.0"
     cites false
-    lexeme en
-      surface
-        text "no less than"
-      surface
-        text "no fewer than"
-    lexeme ru
-      surface
-        text "не менее"
-      surface
-        text "не меньше"
-    lexeme zh
-      surface
-        text 不少于
-    lexeme hi
-      surface
-        text "से कम नहीं"
-    lexeme es
-      surface
-        text "no menos de"
+    lexeme en "no less than" "no fewer than"
+    lexeme ru "не менее" "не меньше"
+    lexeme zh 不少于
+    lexeme hi "से कम नहीं"
+    lexeme es "no menos de"
     bootstrap true
     rediscovery_query "test whether a value reaches a lower bound"
   range_between
@@ -1307,25 +619,11 @@ meanings
     grounding "https://docs.python.org/3.12/library/functions.html#sorted"
     license "PSF-2.0"
     cites false
-    lexeme en
-      surface
-        text "sorted by"
-      surface
-        text "ordered by"
-      surface
-        text "ranked by"
-    lexeme ru
-      surface
-        text "отсортированный по"
-    lexeme hi
-      surface
-        text "के अनुसार क्रमबद्ध"
-    lexeme zh
-      surface
-        text 排序依据
-    lexeme es
-      surface
-        text "ordenado por"
+    lexeme en "sorted by" "ordered by" "ranked by"
+    lexeme ru "отсортированный по"
+    lexeme hi "के अनुसार क्रमबद्ध"
+    lexeme zh 排序依据
+    lexeme es "ordenado por"
     bootstrap true
     rediscovery_query "arrange the items by looking up a rank for each one"
   conditional_expression
@@ -1338,24 +636,10 @@ meanings
     grounding "https://docs.python.org/3.12/reference/expressions.html#conditional-expressions"
     license "PSF-2.0"
     cites false
-    lexeme en
-      surface
-        text otherwise
-      surface
-        text "if not"
-    lexeme ru
-      surface
-        text иначе
-      surface
-        text "в противном случае"
-    lexeme hi
-      surface
-        text अन्यथा
-    lexeme zh
-      surface
-        text 否则
-    lexeme es
-      surface
-        text "de lo contrario"
+    lexeme en otherwise "if not"
+    lexeme ru иначе "в противном случае"
+    lexeme hi अन्यथा
+    lexeme zh 否则
+    lexeme es "de lo contrario"
     bootstrap true
     rediscovery_query "pick one of two values depending on a condition"

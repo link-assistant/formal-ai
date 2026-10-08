@@ -176,6 +176,148 @@
     return line;
   }
 
+  // The concise lexeme form (PR #1188, R1188-U7; docs/links-notation-style.md):
+  //
+  //   lexeme en "read" "read the file"      lexeme en
+  //     part_of_speech verb          ==>      surface
+  //                                             text "read"
+  //                                             part_of_speech verb
+  //                                           surface
+  //                                             text "read the file"
+  //                                             part_of_speech verb
+  //
+  // The words after the language, then the words of each `words` child, become
+  // one `surface` each, in order. The lexeme's other children are the fields
+  // of every such surface, and an explicit `surface` child stays as written.
+  // The expansion is textual, so every reader of the parsed tree sees the long
+  // form. Mirrors `expand_concise_lexemes` in rust/src/seed/parser.rs.
+  var CONCISE_LEXEME_HINT = /^[ \t]*(?:lexeme[ \t]+[^\s#]+[ \t]+[^\s#]|words[ \t]+[^\s#])/m;
+
+  function leadingSpaces(line) {
+    return /^ */.exec(line)[0].length;
+  }
+
+  function spaces(count) {
+    return new Array(count + 1).join(" ");
+  }
+
+  function isBlankLine(line) {
+    return /^\s*$/.test(stripComment(line));
+  }
+
+  // The word tokens of a comment-free line tail: quoted words keep their
+  // quotes (so `text <word>` reads them exactly as written), bare words end
+  // at whitespace.
+  function wordTokens(rest) {
+    var tokens = [];
+    var i = 0;
+    while (i < rest.length) {
+      var ch = rest[i];
+      if (/\s/.test(ch)) {
+        i += 1;
+        continue;
+      }
+      var start = i;
+      if (ch === '"' || ch === "'" || ch === "`") {
+        i += 1;
+        while (i < rest.length) {
+          if (rest[i] === "\\") {
+            i += 2;
+          } else if (rest[i] === ch && rest[i + 1] === ch) {
+            i += 2;
+          } else if (rest[i] === ch) {
+            i += 1;
+            break;
+          } else {
+            i += 1;
+          }
+        }
+      } else {
+        while (i < rest.length && !/\s/.test(rest[i])) i += 1;
+      }
+      tokens.push(rest.slice(start, i));
+    }
+    return tokens;
+  }
+
+  // The direct children of the block `lines[start..end)` whose first child
+  // line sets the child indentation: `{content, depth, lines}` each.
+  function childBlocks(lines, start, end) {
+    var children = [];
+    var childIndent = -1;
+    for (var j = start; j < end; j += 1) {
+      if (isBlankLine(lines[j])) continue;
+      var depth = leadingSpaces(lines[j]);
+      if (childIndent === -1) childIndent = depth;
+      if (depth <= childIndent || children.length === 0) {
+        children.push({ content: stripComment(lines[j]).trim(), depth: depth, lines: [lines[j]] });
+      } else {
+        children[children.length - 1].lines.push(lines[j]);
+      }
+    }
+    return children;
+  }
+
+  function reindented(block, depth) {
+    return block.lines.map(function (line) {
+      var own = leadingSpaces(line);
+      return spaces(own - block.depth + depth) + line.slice(own);
+    });
+  }
+
+  function expandConciseLexemes(text) {
+    var source = String(text || "");
+    if (!CONCISE_LEXEME_HINT.test(source)) return source;
+    var lines = source.split(/\r?\n/);
+    var out = [];
+    var i = 0;
+    while (i < lines.length) {
+      var line = lines[i];
+      var head = isBlankLine(line) ? null : /^( *)lexeme[ \t]+([^\s#]+)(.*)$/.exec(stripComment(line));
+      if (!head) {
+        out.push(line);
+        i += 1;
+        continue;
+      }
+      var indent = head[1].length;
+      var end = i + 1;
+      while (end < lines.length && (isBlankLine(lines[end]) || leadingSpaces(lines[end]) > indent)) end += 1;
+      while (end > i + 1 && isBlankLine(lines[end - 1])) end -= 1;
+      var inline = wordTokens(head[3]);
+      var children = childBlocks(lines, i + 1, end);
+      var isWords = function (child) {
+        return /^words(?:\s|$)/.test(child.content);
+      };
+      if (inline.length === 0 && !children.some(isWords)) {
+        out.push(line);
+        i += 1;
+        continue;
+      }
+      var step = children.length > 0 && children[0].depth > indent ? children[0].depth - indent : 2;
+      var fields = children.filter(function (child) {
+        return !isWords(child) && !/^surface(?:\s|$)/.test(child.content);
+      });
+      var emitWord = function (word) {
+        out.push(spaces(indent + step) + "surface");
+        out.push(spaces(indent + 2 * step) + "text " + word);
+        fields.forEach(function (field) {
+          Array.prototype.push.apply(out, reindented(field, indent + 2 * step));
+        });
+      };
+      out.push(head[1] + "lexeme " + head[2]);
+      inline.forEach(emitWord);
+      children.forEach(function (child) {
+        if (isWords(child)) {
+          wordTokens(child.content.slice("words".length)).forEach(emitWord);
+        } else if (/^surface(?:\s|$)/.test(child.content)) {
+          Array.prototype.push.apply(out, reindented(child, indent + step));
+        }
+      });
+      i = end;
+    }
+    return out.join("\n");
+  }
+
   // Parse an indented Links Notation document into a nested structure:
   //
   //   root_node
@@ -185,7 +327,7 @@
   // -> { name: "root_node", children: [ { name: "child", id: "name",
   //          children: [ { name: "key", id: "value", children: [] } ] } ] }
   function parseLino(text) {
-    var lines = String(text || "").split(/\r?\n/);
+    var lines = expandConciseLexemes(text).split(/\r?\n/);
     var root = { name: "", id: "", value: "", children: [], indent: -1 };
     var stack = [root];
     for (var i = 0; i < lines.length; i += 1) {
@@ -1065,9 +1207,12 @@
     };
     for (var i = 0; i < results.length; i += 1) {
       var item = results[i];
-      seed.raw[item.file] = item.text;
-      if (!item.text) continue;
-      var root = parseLino(item.text);
+      // Raw text is read line by line by some worker readers, so it is kept
+      // with the concise lexeme form already written out long.
+      var text = expandConciseLexemes(item.text);
+      seed.raw[item.file] = text;
+      if (!text) continue;
+      var root = parseLino(text);
       if (item.file.indexOf("browser-handler-precedence") !== -1) {
         seed.browserHandlerPrecedence = extractBrowserHandlerPrecedence(root);
       } else if (item.file.indexOf("multilingual") !== -1) {
@@ -1184,6 +1329,7 @@
 
   global.FormalAiSeed = {
     parse: parseLino,
+    expandConciseLexemes: expandConciseLexemes,
     loadAll: loadAll,
     loadFromBundle: loadFromBundle,
     parseBundle: parseBundle,
