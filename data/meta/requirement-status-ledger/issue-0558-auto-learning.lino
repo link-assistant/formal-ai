@@ -27,12 +27,12 @@ requirement_status_ledger_shard
   requirement
     id "R393"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_558_self_healing.rs"
+    automated_test "rust/tests/unit/agentic-coding/issue_558_self_healing.rs"
   requirement
     id "R394"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_558_self_healing.rs"
+    automated_test "rust/tests/unit/agentic-coding/issue_558_self_healing.rs"
   requirement
     id "R395"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_558_self_healing.rs"
+    automated_test "rust/tests/unit/agentic-coding/issue_558_self_healing.rs"

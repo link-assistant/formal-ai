@@ -21,7 +21,7 @@
 import { readText } from '../host.mjs';
 import { agenticMessage } from '../messages.mjs';
 import { parseLinoRoot } from '../write_lino.mjs';
-import { debugString, stableId } from './engine_stable_id.mjs';
+import { debugString, stableId } from './engine_stable_identifier.mjs';
 import { formatLinoRecord, pushLinoNode } from './links_format.mjs';
 import { methodForRoute, recordMethodRegistry } from './method_registry.mjs';
 import { ledgerCount, needLedgerLinksNotation, recordNeedLedger, recordProblemFrame, recordWorkUnits } from './meta_frame.mjs';

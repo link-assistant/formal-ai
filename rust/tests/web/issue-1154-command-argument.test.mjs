@@ -1,7 +1,7 @@
 // Issue #1154 in the JavaScript root: one shell-argument reading for the
 // whole agentic module (R1154-1), the repeat invariant (R1154-2), and the
 // fetched issue driving execution (R1154-3). Twin of
-// rust/tests/unit/issue_1154_progress_arguments.rs, driven through the
+// rust/tests/unit/agentic-coding/issue_1154_progress_arguments.rs, driven through the
 // JavaScript planner (`planChatStep`) and the server's agentic entry
 // (`agenticOutcome`), which projects the request's tool schemas onto the
 // transcript before planning.

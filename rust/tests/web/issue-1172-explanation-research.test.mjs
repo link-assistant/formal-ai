@@ -5,7 +5,7 @@
 // the answer quotes each statement that mentions the concept with the page
 // URL and digest -- the same fixture and the same expected answer as
 // `explanation_answers_from_retrieved_statements_with_citations` in
-// rust/tests/unit/issue_1172_live_fact_answer.rs. Every byte comes from a
+// rust/tests/unit/seed/issue_1172_live_fact_answer.rs. Every byte comes from a
 // fixture fetch; no test reaches the network.
 
 import assert from 'node:assert/strict';

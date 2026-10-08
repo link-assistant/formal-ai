@@ -10,7 +10,7 @@ import { impulseIdFor } from './intent_formalization.mjs';
 import { pushLinoNode } from './links_format.mjs';
 import { byteToUtf16 } from './rust_str.mjs';
 import { findChildValue, parseRoot } from './seed_parser.mjs';
-import { stableId } from './engine_stable_id.mjs';
+import { stableId } from './engine_stable_identifier.mjs';
 import {
   KNOWLEDGE_SCHEMA_VERSION, MINIMUM_STEPS, ROLE_SKILL_PROCEDURE_STEP_OBJECT, ROLE_SKILL_PROCEDURE_STEP_VERB,
   ROLE_TRANSLATION_LANGUAGE, canonicalProgram, meaningHasRole, requirementId, stepId,

@@ -2,7 +2,7 @@
 requirement_status_ledger_shard
   shard "docs/requirements/issue-1180-repository-history-formalization.md"
   issue "1180"
-  automated_test "rust/tests/unit/issue_1180_history_context.rs"
+  automated_test "rust/tests/unit/memory/issue_1180_history_context.rs"
   manual "not yet confirmed"
   requirement
     id "R1180-1"

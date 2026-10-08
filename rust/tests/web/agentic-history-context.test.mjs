@@ -1,7 +1,7 @@
 // Issue #1180 R11: the JavaScript twin of rust/src/history_context
 // (js/agentic/crate/history_context.mjs) reads the same rules seed and maps
 // a commit to the same memory event as the Rust tests in
-// rust/tests/unit/issue_1180_history_context.rs expect.
+// rust/tests/unit/memory/issue_1180_history_context.rs expect.
 
 import { before, describe, test } from 'node:test';
 import assert from 'node:assert/strict';

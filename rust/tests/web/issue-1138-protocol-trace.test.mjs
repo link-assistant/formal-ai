@@ -4,7 +4,8 @@
 //
 // The JavaScript twin (js/agentic/crate/repository_workspace.mjs) ports the
 // document parser, the step applicability rule and the trace renderer; the
-// runners stay native. Mirrors rust/tests/unit/ci-cd/protocol_callers.rs.
+// live callers stay native; repository-workspace-runners.test.mjs pins the injected JavaScript runners.
+// Mirrors rust/tests/unit/ci-cd/protocol_callers.rs.
 
 import assert from 'node:assert/strict';
 import { before, describe, it } from 'node:test';

@@ -456,6 +456,18 @@ possible tasks you encounter on the way must be fully supported by it".
 | T541 | LEXEMES: `Reemplaza 'hola' por 'adiós' en f.txt.` and `Cambia 'mundo' a 'amigo' en f.txt.` with the new Spanish edit cues | **Pass**: both edited and answered in Spanish. | No change needed. |
 | T542 | LEXEMES: `Cambia 'mundo' a 'amigo' en el archivo f.txt.` (and the English `Change 'mundo' to 'amigo' in the file f.txt.`) | **Fail** (destructive): the new text became `'amigo' en el` / `'amigo' in the`; the file clause is walked back only over target cues, so an article between two cues (`in the file`) stays in the new text (G98). | **Fixed** later (G98 fixed by GENERALIZE, T620; see experiments/formal_ai_subagent/gaps.md). Was: Not fixed in this cycle: `composeEditClauses` (js/agentic/write_request.mjs) and its Rust twin are claimed by other agents; recorded as G98. |
 | T543 | LEXEMES: in a sandbox, `In formal-ai-dogfood.md insert the contents of row.txt after the line that starts with "| T542 "` | **Pass**: one edit placed this row after T542. | No change needed. |
+| T1000 | REPO-RUNNERS: copy stages.txt to repository_workspace_stages.mjs using the JavaScript driver | **Pass**: Formal AI copied the reviewed payload byte-for-byte; seed command shapes, bounded injected processes, semantic location and structural edit. | No change needed. |
+| T1001 | REPO-RUNNERS: copy runner.txt to repository_workspace_runner.mjs using the JavaScript driver | **Pass**: Formal AI copied the reviewed injected structural stage-loop payload byte-for-byte. | No change needed. |
+| T1002 | REPO-RUNNERS: copy authoring.txt to repository_workspace_authoring.mjs using the JavaScript driver | **Pass**: Formal AI copied the reviewed authoring stage-port loop byte-for-byte. | No change needed. |
+| T1003 | REPO-RUNNERS: copy tests.txt to repository-workspace-runners.test.mjs using the JavaScript driver | **Pass**: Formal AI copied the reviewed closest test payload byte-for-byte; the first run exposed an incomplete fixture instruction, corrected in T1004-T1005. | No change needed. |
+| T1004 | REPO-RUNNERS: replace the fixture instruction with an explicit edit/list instruction | **Pass**: Formal AI replaced both literal occurrences and observed the result. | No change needed. |
+| T1005 | REPO-RUNNERS: use the seeded imperative add in the structural test instruction | **Pass**: Formal AI replaced both occurrences; all seven focused runner tests passed. | No change needed. |
+| T1006 | REPO-RUNNERS: append the reviewed file claim from claim-row.txt to claims.md | **Pass**: Formal AI appended exactly the claim row. | No change needed. |
+| T1007 | REPO-RUNNERS: replace the R1138-3-5 delivery sentence with the JS runners and their pins | **Pass**: Formal AI replaced exactly the delivery sentence; the requirement stays partial. | No change needed. |
+| T1008 | REPO-RUNNERS: replace the obsolete R1138-3-5 missing clause with verified remaining live-caller gaps | **Pass**: Formal AI recorded caller integration, authoring adapters and partial-census fallback as still missing. | No change needed. |
+| T1009 | REPO-RUNNERS: update the protocol parser comment to name the sibling JS runner modules | **Pass**: Formal AI replaced the obsolete native-only comment. | No change needed. |
+| T1010 | REPO-RUNNERS: update the protocol trace test comment to cite the new runner pins | **Pass**: Formal AI replaced the obsolete native-only comment. | No change needed. |
+| T1011 | REPO-RUNNERS: insert these dogfood rows after the T543 row using a payload file | **Pass**: Formal AI inserted exactly the reviewed task rows. | No change needed. |
 
 ## Root causes and fixes
 

@@ -5,7 +5,7 @@
 // into its output literal, never a stored program. And a handler the
 // precedence seed marks `before-promotion` is asked in solve()'s fixed early
 // phase, which the native dispatcher now mirrors (issue #1175 p133). Native
-// pins: rust/tests/unit/issue_1173_route3_probes.rs.
+// pins: rust/tests/unit/seed/issue_1173_route3_probes.rs.
 
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";

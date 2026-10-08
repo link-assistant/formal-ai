@@ -3,7 +3,7 @@
 // native memory surface does. Both runtimes compile a request against
 // data/seed/memory-programs.lino and render the outcome through the seeded
 // `memory_program_*` responses. Prompts, stores and expected wording are the
-// ones rust/tests/unit/issue_918_browser_twins.rs asserts against
+// ones rust/tests/unit/memory/issue_918_browser_twins.rs asserts against
 // `execute_memory_query_with_options`.
 
 import assert from "node:assert/strict";
@@ -120,11 +120,11 @@ test("a follow-up converts the earlier final amount", async () => {
 // Issue #918 (R914-6): the playwright_script prelude row renders the seeded
 // playwright_* responses and the docs URL of `policy playwright_script` in
 // both runtimes. The expected answers are read from the native pins in
-// rust/tests/unit/playwright_script.rs, so the two suites hold one text.
+// rust/tests/unit/solver/playwright_script.rs, so the two suites hold one text.
 function rustRawConstant(name) {
-  const source = readFileSync(new URL("../unit/playwright_script.rs", import.meta.url), "utf8");
+  const source = readFileSync(new URL("../unit/solver/playwright_script.rs", import.meta.url), "utf8");
   const match = new RegExp(`const ${name}: &str = r"([\\s\\S]*?)";`).exec(source);
-  assert.ok(match, `${name} in rust/tests/unit/playwright_script.rs`);
+  assert.ok(match, `${name} in rust/tests/unit/solver/playwright_script.rs`);
   return match[1];
 }
 
@@ -285,7 +285,7 @@ test("the mechanism discovery plan answers as the native row does", async () => 
 // and a dozen labels and examples differed); the seed holds the native
 // table, so these answers are the ones the native pins in
 // rust/tests/unit/specification/capabilities.rs and
-// rust/tests/unit/issue_918_browser_twins.rs assert.
+// rust/tests/unit/memory/issue_918_browser_twins.rs assert.
 test("feature capability questions answer from the seeded table", async () => {
   for (const [prompt, preferences, expected] of [
     ["Can you show diagnostics?", {}, "No. diagnostic trace is not available in this configuration: diagnostics are off; enable them to show traces. Example message after enabling it: `Turn on diagnostics`."],

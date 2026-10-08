@@ -17,7 +17,7 @@ import assert from 'node:assert/strict';
 import { before, test } from 'node:test';
 
 import { learnClientContracts, learningLinksNotation } from '../../../js/agentic/crate/client_contract_learning.mjs';
-import { stableId } from '../../../js/agentic/crate/engine_stable_id.mjs';
+import { stableId } from '../../../js/agentic/crate/engine_stable_identifier.mjs';
 import { pushLinoNode } from '../../../js/agentic/crate/links_format.mjs';
 import { selectWinner } from '../../../js/agentic/crate/orchestration_dispatch.mjs';
 import { observeOrchestrationSession } from '../../../js/agentic/crate/orchestration_analysis.mjs';

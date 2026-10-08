@@ -3,7 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0498-google-trends-requirements.md"
   issue "0498"
   delivered "pre-2026-07 (undated); issue #498"
-  automated_test "rust/tests/unit/issue_498_google_trends_learning.rs"
+  automated_test "rust/tests/unit/agentic-coding/issue_498_google_trends_learning.rs"
   manual "not yet confirmed"
   requirement
     id "R498-1"
@@ -29,7 +29,7 @@ requirement_status_ledger_shard
   requirement
     id "R498-7"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_498_google_trends_catalog.rs"
+    automated_test "rust/tests/unit/agentic-coding/issue_498_google_trends_catalog.rs"
   requirement
     id "R498-8"
     verdict "implemented"

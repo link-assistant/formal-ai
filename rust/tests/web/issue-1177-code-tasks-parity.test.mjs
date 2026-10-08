@@ -2,7 +2,7 @@
 // debugging, explanation, review, test generation and refactoring.
 //
 // The worker twins in js/worker/formal_ai_worker_code_tasks.js must answer the
-// prompts rust/tests/unit/issue_1177_code_task_handlers.rs pins, both through
+// prompts rust/tests/unit/web-engine-core/issue_1177_code_task_handlers.rs pins, both through
 // the full dispatcher (engine level) and through each `handle*` function with
 // the normalized prompt (handler level). The refactoring twin goes beyond Rust
 // (R7): it runs the chain and its rewrite in the worker and compares traces.

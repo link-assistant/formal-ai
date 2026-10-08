@@ -4,7 +4,7 @@
 // prompts. These are the coordination edits Formal AI is asked to make there
 // with the repository root as its workspace; a regression here takes Formal AI
 // out of its own improvement loop. The Rust twin is
-// rust/tests/unit/pull_request_1188_subagent_folder.rs.
+// rust/tests/unit/agentic-coding/pull_request_1188_subagent_folder.rs.
 
 import { before, describe, test } from 'node:test';
 import assert from 'node:assert/strict';

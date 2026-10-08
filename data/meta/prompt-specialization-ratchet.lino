@@ -12,7 +12,7 @@
 # knowledge export and the offline translation phrases moved to seed data).
 # The same day the scan widened to the browser app's .jsx files, which it had
 # skipped, and found 17 pairs there (the sidebar example prompts of
-# js/app/app-constants.jsx and the local fallbacks of js/app/local-*.jsx), so
+# js/app/application-constants.jsx and the local fallbacks of js/app/local-*.jsx), so
 # the ceiling was re-based to 17 from a wider measurement, not a regression.
 # Later that day it fell to 0: the local fallbacks were a second, smaller
 # answerer kept in the page for when the worker was missing, and the page always

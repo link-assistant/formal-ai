@@ -7,11 +7,11 @@ requirement_status_ledger_shard
   requirement
     id "R1138-6-1"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_1138_prerequisite_need.rs"
+    automated_test "rust/tests/unit/prerequisite/issue_1138_prerequisite_need.rs"
   requirement
     id "R1138-6-10"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_1138_named_tests.rs"
+    automated_test "rust/tests/unit/repository-workspace/issue_1138_named_tests.rs"
   requirement
     id "R1138-6-11"
     verdict "implemented"
@@ -23,32 +23,32 @@ requirement_status_ledger_shard
   requirement
     id "R1138-6-2"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_1138_prerequisite_need.rs"
+    automated_test "rust/tests/unit/prerequisite/issue_1138_prerequisite_need.rs"
   requirement
     id "R1138-6-3"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_1138_prerequisite_need.rs"
+    automated_test "rust/tests/unit/prerequisite/issue_1138_prerequisite_need.rs"
   requirement
     id "R1138-6-4"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_1138_prerequisite_need.rs"
+    automated_test "rust/tests/unit/prerequisite/issue_1138_prerequisite_need.rs"
   requirement
     id "R1138-6-5"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_1138_setup_publisher.rs"
+    automated_test "rust/tests/unit/prerequisite/issue_1138_setup_publisher.rs"
   requirement
     id "R1138-6-6"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_1138_install_scope.rs"
+    automated_test "rust/tests/unit/prerequisite/issue_1138_install_scope.rs"
   requirement
     id "R1138-6-7"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_1138_prerequisite_need.rs"
+    automated_test "rust/tests/unit/prerequisite/issue_1138_prerequisite_need.rs"
   requirement
     id "R1138-6-8"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_1138_prerequisite_need.rs"
+    automated_test "rust/tests/unit/prerequisite/issue_1138_prerequisite_need.rs"
   requirement
     id "R1138-6-9"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_1138_install_scope.rs"
+    automated_test "rust/tests/unit/prerequisite/issue_1138_install_scope.rs"

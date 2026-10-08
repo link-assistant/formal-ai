@@ -10,7 +10,7 @@
 // runs it as a generated crate factory over the native log it records
 // (`solverEvents`), so a worker answer carries the native links too.
 
-import { stableId } from './engine_stable_id.mjs';
+import { stableId } from './engine_stable_identifier.mjs';
 
 /** Mirrors rust/src/event_log.rs `EventLog` (append, events, first_of). */
 export class EventLog {

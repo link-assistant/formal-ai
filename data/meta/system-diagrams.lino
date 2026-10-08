@@ -4,7 +4,7 @@
 # js/agentic/system_diagram.mjs renders them (driven by
 # `node scripts/generate-system-diagrams.mjs --write`, and `--check` in CI)
 # and rust/src/agentic_coding/system_diagram.rs is its twin, pinned
-# byte-for-byte to the committed parts by rust/tests/unit/system_diagrams.rs.
+# byte-for-byte to the committed parts by rust/tests/unit/agentic-coding/system_diagrams.rs.
 #
 # Everything a diagram lists is read from the live sources named below: the
 # solver's handler precedence and promotions from the seed, the CLI

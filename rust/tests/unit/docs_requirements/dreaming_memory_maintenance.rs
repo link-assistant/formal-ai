@@ -214,7 +214,7 @@ fn issue_540_dreaming_documents_are_traceable() {
         "data/meta/dreaming-recipe.lino",
         "docs/case-studies/issue-540/dreaming-gap-analysis.lino",
         "docs/case-studies/issue-540/agent-cli-session-dreaming-audit.json",
-        "rust/tests/unit/issue_540_agent_cli.rs",
+        "rust/tests/unit/agentic-coding/issue_540_agent_cli.rs",
         "rust/tests/unit/specification/dreaming_meta_algorithm.rs",
     ] {
         let path = root.join(relative);

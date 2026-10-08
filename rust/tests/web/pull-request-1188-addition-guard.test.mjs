@@ -4,7 +4,7 @@
 // write verb is the seeded add action and the content comes before the file,
 // the request names an addition to that file, never its whole new content;
 // content a seeded content lead introduces (`containing`) is still bytes. The
-// Rust twin is rust/tests/unit/pull_request_1188_addition_guard.rs.
+// Rust twin is rust/tests/unit/agentic-coding/pull_request_1188_addition_guard.rs.
 
 import { before, describe, test } from 'node:test';
 import assert from 'node:assert/strict';

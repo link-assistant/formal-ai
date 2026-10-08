@@ -1,0 +1,38 @@
+rename-map
+  tree javascript-full-word-file-names
+    rename
+      from "js/agentic/crate/engine_stable_id.mjs"
+      to "js/agentic/crate/engine_stable_identifier.mjs"
+      reason "Existing abbreviation-rules full-word proposal for JavaScript source names."
+    rename
+      from "js/app/app-constants.jsx"
+      to "js/app/application-constants.jsx"
+      reason "Existing abbreviation-rules full-word proposal for JavaScript source names."
+    rename
+      from "js/app/app-conversation-hooks.jsx"
+      to "js/app/application-conversation-hooks.jsx"
+      reason "Existing abbreviation-rules full-word proposal for JavaScript source names."
+    rename
+      from "js/app/app-desktop-hooks.jsx"
+      to "js/app/application-desktop-hooks.jsx"
+      reason "Existing abbreviation-rules full-word proposal for JavaScript source names."
+    rename
+      from "js/app/app-layout-hooks.jsx"
+      to "js/app/application-layout-hooks.jsx"
+      reason "Existing abbreviation-rules full-word proposal for JavaScript source names."
+    rename
+      from "js/app/app-memory-hooks.jsx"
+      to "js/app/application-memory-hooks.jsx"
+      reason "Existing abbreviation-rules full-word proposal for JavaScript source names."
+    rename
+      from "js/app/app-worker-hooks.jsx"
+      to "js/app/application-worker-hooks.jsx"
+      reason "Existing abbreviation-rules full-word proposal for JavaScript source names."
+    rename
+      from "js/app/app.jsx"
+      to "js/app/application.jsx"
+      reason "Existing abbreviation-rules full-word proposal for JavaScript source names."
+    rename
+      from "js/worker/formal_ai_worker_crate_engine_stable_id.js"
+      to "js/worker/formal_ai_worker_crate_engine_stable_identifier.js"
+      reason "generated browser factory follows renamed JavaScript module; rewrite boot inventory and companion budget"

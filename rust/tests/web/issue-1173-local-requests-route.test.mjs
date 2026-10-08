@@ -1,6 +1,6 @@
 // Issue #1173 R1173-3 browser twin: a request that needs no outside
 // knowledge reaches its class handler, never the fallback. Native pins:
-// rust/tests/unit/issue_1173_local_requests_route.rs.
+// rust/tests/unit/solver/issue_1173_local_requests_route.rs.
 
 import assert from "node:assert/strict";
 import test from "node:test";

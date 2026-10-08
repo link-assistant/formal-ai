@@ -15,7 +15,7 @@ requirement_status_ledger_shard
   requirement
     id "R802-3"
     verdict "implemented"
-    automated_test "rust/tests/unit/budget_search.rs"
+    automated_test "rust/tests/unit/solver/budget_search.rs"
   requirement
     id "R802-4"
     verdict "implemented"

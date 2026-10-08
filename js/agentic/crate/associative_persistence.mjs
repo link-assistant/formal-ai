@@ -7,7 +7,7 @@
 // `from -> to` links, kept here as a `Set` of keys.
 
 import { agenticMessage } from '../messages.mjs';
-import { stableId } from './engine_stable_id.mjs';
+import { stableId } from './engine_stable_identifier.mjs';
 import { byteOrder } from './rust_str.mjs';
 
 const LINK_SEPARATOR = '\u0000';

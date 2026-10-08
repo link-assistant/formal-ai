@@ -85,7 +85,7 @@ summarization_quality_baseline
     index "4"
     percent "100"
     file
-      path "tests/unit/file_read_tool_calls.rs"
+      path "tests/unit/agentic-coding/file_read_tool_calls.rs"
       format "rust"
       percent "100"
       embedded_grammar_blocks "0"

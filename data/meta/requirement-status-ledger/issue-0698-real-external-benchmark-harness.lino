@@ -30,4 +30,4 @@ requirement_status_ledger_shard
   requirement
     id "R535"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_698_external_benchmark_learning.rs"
+    automated_test "rust/tests/unit/agentic-coding/issue_698_external_benchmark_learning.rs"

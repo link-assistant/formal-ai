@@ -9,7 +9,7 @@
 
 import { cached, readText } from '../host.mjs';
 import { agenticMessage } from '../messages.mjs';
-import { stableId } from './engine_stable_id.mjs';
+import { stableId } from './engine_stable_identifier.mjs';
 import { splitWhitespace, trim, trimEnd, trimEndMatches, trimMatches, utf8Len } from './rust_str.mjs';
 import { byteSlice } from './formalization_segment.mjs';
 

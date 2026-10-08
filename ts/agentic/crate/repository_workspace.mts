@@ -1,7 +1,8 @@
 // Named repository-protocol templates (rust/src/repository_workspace/mod.rs).
 // The protocol document parser, the step applicability rule and the
 // `repository-protocol.lino` trace renderer are ported; the protocol runners
-// (`WorkspaceProtocol::execute`, the authoring loop) stay native.
+// live callers stay native; injected JavaScript runners live in the sibling
+// repository_workspace_runner.mjs and repository_workspace_authoring.mjs modules.
 
 import { readText } from '../host.mjs';
 import { findChildValue, parseLinoRoot } from '../write_lino.mjs';

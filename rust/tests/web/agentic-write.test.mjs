@@ -28,7 +28,7 @@ const EN_TASK = 'Create file notes/general-demo.txt containing planner fallback 
 const EN_TASK_ALT = 'Write file artifacts/unseen-case.md with text capability composed plan';
 const RU_TASK = 'Создай файл output/пример.txt с текстом общий план работает';
 
-describe('general_planner (rust/tests/unit/agentic_general_planner.rs)', () => {
+describe('general_planner (rust/tests/unit/agentic-coding/agentic_general_planner.rs)', () => {
   test('composes capability steps and verification (line 20)', () => {
     const plan = composeGeneralChangePlan(EN_TASK);
     assert.ok(plan.steps.length >= 3);
@@ -77,7 +77,7 @@ describe('general_planner (rust/tests/unit/agentic_general_planner.rs)', () => {
   });
 });
 
-describe('task_obligations (rust/tests/unit/issue_1099_multiple_obligations.rs)', () => {
+describe('task_obligations (rust/tests/unit/agentic-coding/issue_1099_multiple_obligations.rs)', () => {
   const fileTargets = (found) => found.filter((node) => node.expectation.kind === 'file_bytes').map((node) => node.expectation.path);
 
   test('two named files are two obligations, in order (line 93)', () => {
@@ -116,7 +116,7 @@ describe('task_obligations (rust/tests/unit/issue_1099_multiple_obligations.rs)'
   });
 });
 
-describe('structured_edit (rust/tests/unit/issue_1069_structural_edit.rs)', () => {
+describe('structured_edit (rust/tests/unit/agentic-coding/issue_1069_structural_edit.rs)', () => {
   const TOOLS = ['read_file', 'write_file', 'run_shell_command'];
   const argument = (plan, key) => JSON.parse(plan.calls[0].arguments)[key];
 
@@ -262,7 +262,7 @@ describe('workspace rewrites, read results and repair diagnostics', () => {
     assert.equal(sourceFromReadResult('<content>\n1: a\n2: b\n(End of file - total 2 lines)\n</content>'), 'a\nb\n');
   });
 
-  test('formalize_diagnostic reads file, line, code and message (rust/tests/unit/issue_1185_error_repair_loop.rs)', () => {
+  test('formalize_diagnostic reads file, line, code and message (rust/tests/unit/agentic-coding/issue_1185_error_repair_loop.rs)', () => {
     assert.deepEqual(formalizeDiagnostic('rust', 'finished in 0.3s\nall good'), []);
     const [rust] = formalizeDiagnostic('rust', 'error[E0308]: mismatched types\n --> src/main.rs:6:33\n');
     assert.deepEqual([rust.file, rust.line, rust.code, rust.message], ['src/main.rs', 6, 'E0308', 'mismatched types']);

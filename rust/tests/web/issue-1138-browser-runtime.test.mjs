@@ -58,7 +58,7 @@ test("an explicit load enables observed Python output without changing shipped W
   assert.ok(answer.evidence.includes("execution_exit:0"));
   assert.equal(wasmDigest(), before, "lazy runtime loading never modifies the shipped worker binary");
 
-  const app = readFileSync(path.join(REPO_ROOT, "js/app/app.jsx"), "utf8");
+  const app = readFileSync(path.join(REPO_ROOT, "js/app/application.jsx"), "utf8");
   assert.match(app, /data-testid="setting-browser-runtime-load"/u);
   assert.match(app, /onClick=\{loadBrowserRuntime\}/u);
   const catalog = readFileSync(

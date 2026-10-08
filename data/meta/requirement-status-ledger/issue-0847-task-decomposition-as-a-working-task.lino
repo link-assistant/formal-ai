@@ -3,7 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0847-task-decomposition-as-a-working-task.md"
   issue "0847"
   delivered "PR #857 (issue #847)"
-  automated_test "rust/tests/unit/issue_847_task_decomposition.rs"
+  automated_test "rust/tests/unit/solver/issue_847_task_decomposition.rs"
   manual "not yet confirmed"
   requirement
     id "R847-1"

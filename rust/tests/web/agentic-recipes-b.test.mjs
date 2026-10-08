@@ -3,7 +3,7 @@
 // dreaming_audit, google_trends_*, question_catalog). Expectations mirror
 // rust/tests/unit/issue_531_algorithm_discovery.rs,
 // rust/tests/unit/specification/arbitrary_skill_compilation.rs,
-// rust/tests/unit/issue_686_agent_cli.rs, issue_657/709 learning reports,
+// rust/tests/unit/agentic-coding/issue_686_agent_cli.rs, issue_657/709 learning reports,
 // issue_538/540/527/498/499 recipes, and the committed Agent CLI sessions
 // those Rust tests pin byte-for-byte (docs/case-studies/*/agent-cli-session-*.json).
 

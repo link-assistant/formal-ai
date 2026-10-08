@@ -13,7 +13,7 @@
 # `js_misroute` / `rust_misroute` line, may only fall, and must be lowered in
 # the same change that fixes a misroute. Each line names the measured intent
 # its runtime answers instead (rust/tests/web/r1175-routing-probes.test.mjs
-# for the browser, rust/tests/unit/issue_1175_routing_probes.rs for the native
+# for the browser, rust/tests/unit/solver/issue_1175_routing_probes.rs for the native
 # solver), so neither runtime has an unmeasured probe.
 routing_probe_budget
   minimum_probes 200
@@ -23,7 +23,7 @@ routing_probe_budget
   extra_lane agent_suggestion
     reason "the terminal-command detector answers before the handler table; it is not a precedence row"
   exempt_lane repository_lineage
-    reason "native_only: answers from the working repository's git history, which an offline single-turn probe and the browser worker do not carry; pinned by rust/tests/unit/issue_1180_history_context.rs"
+    reason "native_only: answers from the working repository's git history, which an offline single-turn probe and the browser worker do not carry; pinned by rust/tests/unit/memory/issue_1180_history_context.rs"
   exempt_lane exact_memory_query
     reason "browser_only: needs the worker's memory store"
   exempt_lane memory_program

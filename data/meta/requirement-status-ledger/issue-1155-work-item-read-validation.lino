@@ -22,4 +22,4 @@ requirement_status_ledger_shard
     id "R1155-5"
     verdict "implemented"
     delivered "this pull request — see the shard"
-    automated_test "rust/tests/unit/issue_1155_read_validation.rs"
+    automated_test "rust/tests/unit/agentic-coding/issue_1155_read_validation.rs"

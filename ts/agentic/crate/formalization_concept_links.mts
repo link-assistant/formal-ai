@@ -3,7 +3,7 @@
 
 import { emitNeeds, satisfy } from './formalization_needs.mjs';
 import { sentences } from './formalization_segment.mjs';
-import { stableId } from './engine_stable_id.mjs';
+import { stableId } from './engine_stable_identifier.mjs';
 import { pushLinoNode } from './links_format.mjs';
 import { NeedState, needLinksNotation } from './needs.mjs';
 import { byteOrder, eqIgnoreAsciiCase, trimEnd } from './rust_str.mjs';

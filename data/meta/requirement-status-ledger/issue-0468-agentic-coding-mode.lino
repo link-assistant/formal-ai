@@ -11,7 +11,7 @@ requirement_status_ledger_shard
   requirement
     id "R307"
     verdict "implemented"
-    automated_test "rust/tests/unit/agentic_coding.rs"
+    automated_test "rust/tests/unit/agentic-coding/agentic_coding.rs"
   requirement
     id "R308"
     verdict "implemented"
@@ -21,14 +21,14 @@ requirement_status_ledger_shard
   requirement
     id "R310"
     verdict "implemented"
-    automated_test "rust/tests/unit/agentic_coding.rs"
+    automated_test "rust/tests/unit/agentic-coding/agentic_coding.rs"
   requirement
     id "R311"
     verdict "implemented"
   requirement
     id "R312"
     verdict "implemented"
-    automated_test "rust/tests/unit/agentic_coding.rs"
+    automated_test "rust/tests/unit/agentic-coding/agentic_coding.rs"
   requirement
     id "R313"
     verdict "implemented"
@@ -36,7 +36,7 @@ requirement_status_ledger_shard
     id "R314"
     verdict "implemented"
     delivered "PR #469 (issue #468); custom-task fallback repaired by #1138 B4"
-    automated_test "rust/tests/unit/agentic_coding.rs"
+    automated_test "rust/tests/unit/agentic-coding/agentic_coding.rs"
     manual 'manually confirmed 2026-08-04 (audit): `formal-ai agent --help` run; offline `agent --silent --task ...` exit 0 — the 2026-08-04 finding "falls back to seeded fairy-tale KB rather than reflecting custom --task" is now pinned as a regression'
   requirement
     id "R315"
@@ -53,4 +53,4 @@ requirement_status_ledger_shard
   requirement
     id "R319"
     verdict "implemented"
-    automated_test "rust/tests/unit/agentic_coding.rs"
+    automated_test "rust/tests/unit/agentic-coding/agentic_coding.rs"

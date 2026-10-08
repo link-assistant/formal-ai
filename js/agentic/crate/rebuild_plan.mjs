@@ -8,7 +8,7 @@
 import { cached, readText } from '../host.mjs';
 import { agenticMessage } from '../messages.mjs';
 import { acceptedChange, canonicalChangeRequest, ownedContentId, quote } from './change_request.mjs';
-import { stableId } from './engine_stable_id.mjs';
+import { stableId } from './engine_stable_identifier.mjs';
 import { trimEnd } from './rust_str.mjs';
 
 /** The `include_str!` paths of rust/src/rebuild_plan.rs `grounded_artifacts`. */

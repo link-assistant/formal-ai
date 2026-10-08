@@ -284,7 +284,7 @@ plural and what part of speech it is; every surface denotes its meaning
 (bidirectional word ⇄ meaning); the previously missing plural `томаты` is added
 so both Russian synonyms are symmetric; and the grammatical values are grounded
 in Wikidata (`Q104083`/`Q110786`/`Q146786`) and lexicalised in en/ru/hi/zh. This
-is captured by `REQUIREMENTS.md` rows R370–R377 and `rust/tests/unit/word_surface_grammar.rs`.
+is captured by `REQUIREMENTS.md` rows R370–R377 and `rust/tests/unit/seed/word_surface_grammar.rs`.
 
 The issue also states a large aspirational programme. Rather than half-build it,
 this PR decomposes it into tracked follow-ups (`REQUIREMENTS.md` R378–R386,
@@ -590,11 +590,11 @@ one branch, and this section records what each push delivered.
 | D4 compile-and-test ladder | Delivered: per-leaf `cargo check` and `cargo test`, depth-4 diff merge, requirement-shaped depth 0 to 3, pull-request and weekly runs, deepest-level ratchet (`data/meta/ladder-ratchet.lino`) | `experiments/issue_1028_agent_cli_ladder/{run.sh,verify-node.sh,leaves.tsv,rules/}` |
 | D5.4 upstream numbers beside every curated citation | Delivered: every curated ratio in this file, `VISION.md`, `ARCHITECTURE.md`, `README.md`, and `docs/benchmarks.md` carries the upstream slice numbers beside it, and `rust/tests/unit/docs_benchmarks.rs` fails a curated ratio published without its upstream comparison | this file, `VISION.md`, `ARCHITECTURE.md`, `docs/benchmarks.md`, `rust/tests/unit/docs_benchmarks.rs` |
 | #1081 remainder: crates.io probe false positive, macOS archive budget | Delivered | `scripts/preflight-credentials.sh`, `.github/workflows/macos-core-tests.yml` |
-| D2.1 links-to-code edit rules | Delivered (three ladder shapes as link substitutions) | `rust/src/agentic_coding/link_edit_rules.rs`, `data/meta/link-edit-rules.lino`, `rust/tests/unit/issue_1085_link_edit_rules.rs` |
+| D2.1 links-to-code edit rules | Delivered (three ladder shapes as link substitutions) | `rust/src/agentic_coding/link_edit_rules.rs`, `data/meta/link-edit-rules.lino`, `rust/tests/unit/agentic-coding/issue_1085_link_edit_rules.rs` |
 | D5.3 upstream transfer of the seeded tasks | Delivered: HumanEval/0 lost `from typing import List`, MBPP/2 took an `assert` call for a signature | `rust/src/solver_handlers/program_synthesis.rs`, `rust/tests/unit/issue_1085_upstream_prompt_transfer.rs` |
 | D5.1-D5.2 upstream failures as frontier inputs; red on a fallen suite, yellow after three equal runs | Delivered | `data/meta/learning-frontier-upstream-benchmarks.lino`, `rust/src/external_benchmarks/ratchet.rs`, `rust/tests/unit/issue_1085_upstream_frontier.rs` |
 | D6-D9 | Sub-issues #1087, #1088, #1089, #1090, blocked by #1085 | `docs/case-studies/issue-1085/solution-plan.md` |
-| D2.2 requirement-derived edits | Delivered: `rust/src/agentic_coding/requirement_resolution.rs` resolves behaviour wording through the self-AST census; all 32 leaf requirements resolve to their files | `rust/tests/unit/issue_1085_requirement_resolution.rs` |
+| D2.2 requirement-derived edits | Delivered: `rust/src/agentic_coding/requirement_resolution.rs` resolves behaviour wording through the self-AST census; all 32 leaf requirements resolve to their files | `rust/tests/unit/agentic-coding/issue_1085_requirement_resolution.rs` |
 | D2.3 bot-opened pull request | Delivered as a workflow: `self-authored-pull-request.yml` opens the pull request under `github-actions[bot]` and Formal AI authors the commit with the metric trailers; first task #1091; the real-issue root is #1087 | `docs/case-studies/issue-1085/solution-plan.md` |
 
 ## Issue #710 Dynamic Coding Discovery (PR #888, merged 2026-09-16)

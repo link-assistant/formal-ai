@@ -1,6 +1,6 @@
 // Issue #531 pattern inference, JavaScript first. The Rust twins:
 //
-// - rust/tests/unit/issue_531_pattern_inference.rs: the browser worker's
+// - rust/tests/unit/solver/issue_531_pattern_inference.rs: the browser worker's
 //   tryPatternInference (js/worker/formal_ai_worker_pattern_inference.js),
 //   entered through tryVerifiableTask exactly as the native verifiable-task
 //   route enters try_pattern_inference, answers the same prompts with the same

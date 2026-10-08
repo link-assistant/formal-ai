@@ -1,7 +1,7 @@
 // Issue #1177 browser parity: regex and SQL composition.
 //
 // The worker twins in js/worker/formal_ai_worker_code_synthesis.js must answer
-// the prompts rust/tests/unit/issue_1177_code_task_handlers.rs pins, at engine
+// the prompts rust/tests/unit/web-engine-core/issue_1177_code_task_handlers.rs pins, at engine
 // and handler level. The regex twin goes beyond Rust (R4): it compiles the
 // composed pattern with RegExp and runs it on positive and negative examples.
 

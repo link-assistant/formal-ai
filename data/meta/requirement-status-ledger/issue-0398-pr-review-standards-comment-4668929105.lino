@@ -3,7 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0398-pr-review-standards-comment-4668929105.md"
   issue "0398"
   delivered "pre-2026-07 (undated); issue #398"
-  automated_test "rust/tests/unit/reference_closure.rs"
+  automated_test "rust/tests/unit/seed/reference_closure.rs"
   manual "not yet confirmed"
   requirement
     id "R284"

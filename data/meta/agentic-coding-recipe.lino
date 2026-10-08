@@ -232,5 +232,5 @@ surface_example
 surface_integration_test
   record_type "meta_surface"
   surface "integration_test"
-  source_file "tests/unit/agentic_coding.rs"
+  source_file "tests/unit/agentic-coding/agentic_coding.rs"
   needle "fn driver_runs_the_full_search_fetch_write_run_loop_to_a_final_answer"

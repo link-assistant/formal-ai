@@ -27,7 +27,7 @@
 
 import { cached, readText } from '../host.mjs';
 import { trim } from '../write_str.mjs';
-import { stableId } from './engine_stable_id.mjs';
+import { stableId } from './engine_stable_identifier.mjs';
 import { pushLinoNode } from './links_format.mjs';
 import { findChildValue, parseRoot } from './seed_parser.mjs';
 import { reportText } from './seed_reports.mjs';

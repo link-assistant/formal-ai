@@ -12,7 +12,7 @@
 //!
 //! JavaScript twin: `js/agentic/system_diagram.mjs`, driven by
 //! `scripts/generate-system-diagrams.mjs` (`--write`, and `--check` in CI).
-//! `rust/tests/unit/system_diagrams.rs` pins this renderer byte-for-byte to the
+//! `rust/tests/unit/agentic-coding/system_diagrams.rs` pins this renderer byte-for-byte to the
 //! committed `docs/diagrams/*.md` parts.
 
 use crate::seed::parser::{LinoNode, parse_lino};

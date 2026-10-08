@@ -14,7 +14,7 @@ requirement_status_ledger_shard
   requirement
     id "R1173-3"
     verdict "partial"
-    delivered "Partial, re-checked 2026-10-07 against the held-out routing probe corpus (`rust/tests/fixtures/routing-probes/`), which runs every lane through the browser worker (`rust/tests/web/r1175-routing-probes.test.mjs`) and the native solver (`rust/tests/unit/issue_1175_routing_probes.rs`)."
+    delivered "Partial, re-checked 2026-10-07 against the held-out routing probe corpus (`rust/tests/fixtures/routing-probes/`), which runs every lane through the browser worker (`rust/tests/web/r1175-routing-probes.test.mjs`) and the native solver (`rust/tests/unit/solver/issue_1175_routing_probes.rs`)."
     automated_test "rust/tests/web/r1175-routing-probes.test.mjs"
   requirement
     id "R1173-4"

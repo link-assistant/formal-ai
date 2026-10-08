@@ -1,6 +1,6 @@
 // Issue #1178 JS parity (PR #1188, JavaScript-first): brainstorming, creative
 // writing, planning and advice compose in the browser worker exactly as the
-// native handlers do, for the prompts rust/tests/unit/issue_1178_creative_composition.rs
+// native handlers do, for the prompts rust/tests/unit/web-engine-core/issue_1178_creative_composition.rs
 // pins, and the four precedence rows bind worker functions.
 
 import assert from "node:assert/strict";

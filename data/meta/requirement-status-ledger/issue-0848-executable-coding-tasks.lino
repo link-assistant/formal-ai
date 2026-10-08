@@ -7,7 +7,7 @@ requirement_status_ledger_shard
   requirement
     id "R848-1"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_848_coding_ladder.rs"
+    automated_test "rust/tests/unit/agentic-coding/issue_848_coding_ladder.rs"
   requirement
     id "R848-10"
     verdict "implemented"
@@ -19,11 +19,11 @@ requirement_status_ledger_shard
   requirement
     id "R848-3"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_848_coding_ladder.rs"
+    automated_test "rust/tests/unit/agentic-coding/issue_848_coding_ladder.rs"
   requirement
     id "R848-4"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_848_coding_ladder.rs"
+    automated_test "rust/tests/unit/agentic-coding/issue_848_coding_ladder.rs"
   requirement
     id "R848-5"
     verdict "implemented"
@@ -39,7 +39,7 @@ requirement_status_ledger_shard
   requirement
     id "R848-8"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_848_coding_ladder.rs"
+    automated_test "rust/tests/unit/agentic-coding/issue_848_coding_ladder.rs"
   requirement
     id "R848-9"
     verdict "implemented"

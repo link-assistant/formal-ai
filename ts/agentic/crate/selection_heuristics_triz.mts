@@ -18,7 +18,7 @@
 //   different cost dimension; `TrizRanker` resolves the trade-off.
 
 import { cached, readText } from '../host.mjs';
-import { stableId } from './engine_stable_id.mjs';
+import { stableId } from './engine_stable_identifier.mjs';
 import { normalizePrompt } from './web_engine_core.mjs';
 import { mentionsRoleRaw } from './seed_meanings.mjs';
 import { parseRoot, findChildValue } from './seed_parser.mjs';

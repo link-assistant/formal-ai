@@ -16,7 +16,7 @@
 
 import { cached, childValue, childrenNamed, readText, realm } from '../host.mjs';
 import { parseLinoRoot } from '../write_lino.mjs';
-import { stableId } from './engine_stable_id.mjs';
+import { stableId } from './engine_stable_identifier.mjs';
 import { normalizePrompt } from './engine.mjs';
 import { formatLinoRecord, escapeReference } from './links_format.mjs';
 import { explicitLearnedMethodRelevants, methodForRoute, methodRegistry } from './method_registry.mjs';

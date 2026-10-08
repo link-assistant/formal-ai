@@ -17,7 +17,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import { learnClientContracts, learningLinksNotation } from './client_contract_learning.mjs';
-import { stableId } from './engine_stable_id.mjs';
+import { stableId } from './engine_stable_identifier.mjs';
 import { pushLinoNode } from './links_format.mjs';
 import { observeOrchestrationSession } from './orchestration_analysis.mjs';
 import { commitVerifiedEffect, validateEffectAttribution } from './orchestration_attribution.mjs';

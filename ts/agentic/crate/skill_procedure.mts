@@ -14,7 +14,7 @@
 // UTF-8 byte ranges, as in Rust.
 
 import { cached, parseLino, readText } from '../host.mjs';
-import { stableId } from './engine_stable_id.mjs';
+import { stableId } from './engine_stable_identifier.mjs';
 import { impulseIdFor } from './intent_formalization.mjs';
 import { matchIndices, orderedRequirementSpans } from './intent_formalization_requirements.mjs';
 import { pushLinoNode } from './links_format.mjs';

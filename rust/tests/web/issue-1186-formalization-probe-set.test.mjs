@@ -1,6 +1,6 @@
 // Issue #1186 R10 (with R5): the per-language formalization probe set,
 // data/benchmarks/formalization/{en,ru,hi,zh}.lino, answered by the browser
-// worker — the twin of rust/tests/unit/issue_1186_formalization_probe_set.rs.
+// worker — the twin of rust/tests/unit/web-engine-core/issue_1186_formalization_probe_set.rs.
 // Every probe must formalize to its expected first-order clause, and every
 // rendered target (Lean 4, Rocq, Links Notation) must deformalize back to the
 // same clause structure in the probe's own language.

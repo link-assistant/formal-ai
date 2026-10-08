@@ -14,7 +14,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 // Chakra semantic tokens with the global reset/body styling disabled, so
 // styles.css stays authoritative while the UI migrates to Chakra primitives.
 import { system as chakraSystem } from "./theme.js";
-import { App } from "./app.jsx";
+import { App } from "./application.jsx";
 
 const { createElement: h } = React;
 

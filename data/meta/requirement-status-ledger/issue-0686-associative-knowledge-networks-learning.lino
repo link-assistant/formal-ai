@@ -3,7 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0686-associative-knowledge-networks-learning.md"
   issue "0686"
   delivered "PR #689 (issue #686)"
-  automated_test "rust/tests/unit/issue_686_associative_persistence.rs"
+  automated_test "rust/tests/unit/memory/issue_686_associative_persistence.rs"
   manual "not yet confirmed"
   requirement
     id "R445"

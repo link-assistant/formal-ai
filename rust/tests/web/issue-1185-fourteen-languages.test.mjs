@@ -2,7 +2,7 @@
 // (data/seed/diagnostic-code-shapes.lino) formalizes a diagnostic of each of
 // the fourteen emitted languages through the generic `{slot}` matcher of
 // js/agentic/repair_loop.mjs. The table is the one
-// rust/tests/unit/issue_1185_error_repair_loop.rs
+// rust/tests/unit/agentic-coding/issue_1185_error_repair_loop.rs
 // (`every_emitted_language_formalizes_through_the_one_shape_table`) replays.
 
 import assert from 'node:assert/strict';

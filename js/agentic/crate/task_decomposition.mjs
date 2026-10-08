@@ -14,7 +14,7 @@ import { isAlphanumeric, isAsciiDigit, splitWhitespace, trim, trimEndMatches, tr
 import { containsCjk } from './coding_catalog.mjs';
 import { normalizePrompt } from './engine.mjs';
 import { quotedSegmentSpans } from './normal_markov.mjs';
-import { stableId } from './engine_stable_id.mjs';
+import { stableId } from './engine_stable_identifier.mjs';
 import { detect } from './language.mjs';
 import { localizedResponse } from './seed.mjs';
 

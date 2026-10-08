@@ -11,7 +11,7 @@ import { classifyTool } from './capability_router.mjs';
 import { composeGeneralChangePlan } from './general_planner.mjs';
 import { Progress } from './progress.mjs';
 import { records } from './transcript_evidence.mjs';
-import { stableId } from './crate/engine_stable_id.mjs';
+import { stableId } from './crate/engine_stable_identifier.mjs';
 import { EvidenceSource, ObservationKind, evidenceNames, observedEvidence, reportsSuccess } from './crate/execution_evidence.mjs';
 import { formatLinoRecord } from './crate/links_format.mjs';
 import {

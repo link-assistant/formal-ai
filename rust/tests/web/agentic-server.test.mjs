@@ -3,7 +3,7 @@
 // requests.lino, `agent_mode true`) answers on a real socket with the tool
 // call or final answer the Rust server gives. The expectations are the ones
 // the Rust suites assert - rust/tests/integration/issue_749_shell_routing.rs,
-// rust/tests/unit/agentic_surfaces.rs, rust/src/protocol.rs's gates - and,
+// rust/tests/unit/agentic-coding/agentic_surfaces.rs, rust/src/protocol.rs's gates - and,
 // where those suites do not pin a value, the Rust server's own answer.
 
 import assert from "node:assert/strict";

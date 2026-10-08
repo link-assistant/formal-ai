@@ -180,7 +180,7 @@ fn task_ladder_ratchet_preserves_real_formal_ai_authorship_evidence() {
 /// The committed artifact is what a real Agent CLI run produced, and it may
 /// not be rewritten: it is the evidence for that run. The canonical document
 /// is generated from `src/agentic_coding/planner.rs` and
-/// `tests/unit/issue_558_self_healing.rs` fails when it drifts from that
+/// `tests/unit/agentic-coding/issue_558_self_healing.rs` fails when it drifts from that
 /// source. Byte equality between the two therefore held only while the planner
 /// was frozen; issue #1085 moved eleven handlers out of Rust and the planner's
 /// link count moved with it. What still has to hold -- and does -- is that

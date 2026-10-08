@@ -67,7 +67,7 @@ fn main() {
         ),
         (
             // The shell-routing offline replay (kept in sync with
-            // tests/unit/issue_749_shell_routing.rs).
+            // tests/unit/agentic-coding/issue_749_shell_routing.rs).
             "execute printf 'issue-749-driver=passed\\n'",
             "docs/case-studies/issue-749/agent-cli-evidence/session.json",
         ),

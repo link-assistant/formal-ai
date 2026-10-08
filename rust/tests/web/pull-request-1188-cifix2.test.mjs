@@ -2,7 +2,7 @@
 // 6e1c539fc (dogfood ledger rows T310-T319 in
 // docs/case-studies/pull-request-1188/formal-ai-dogfood.md). Each request is
 // planned by the planner the JS server runs (`planChatStep`). The Rust twin is
-// rust/tests/unit/pull_request_1188_cifix2.rs.
+// rust/tests/unit/agentic-coding/pull_request_1188_cifix2.rs.
 
 import { before, describe, test } from 'node:test';
 import assert from 'node:assert/strict';

@@ -3,7 +3,7 @@
 // docs/case-studies/pull-request-1188/formal-ai-dogfood.md). Each request is
 // replayed through the planner the JS server runs (`planChatStep`) over an
 // in-memory workspace. The Rust twin is
-// rust/tests/unit/pull_request_1188_cifix.rs.
+// rust/tests/unit/agentic-coding/pull_request_1188_cifix.rs.
 
 import { before, describe, test } from 'node:test';
 import assert from 'node:assert/strict';

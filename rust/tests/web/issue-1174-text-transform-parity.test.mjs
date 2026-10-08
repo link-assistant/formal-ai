@@ -2,7 +2,7 @@
 // worker answers free-text summarization (summarization_text, the dependency
 // summary of R1188-U21) and register /
 // grammar / genre rewriting (text_rewrite) with the same intents and bodies as
-// rust/tests/unit/issue_1174_text_transform.rs pins for the native handlers.
+// rust/tests/unit/web-engine-core/issue_1174_text_transform.rs pins for the native handlers.
 // Every probe below is one of the native test's prompts.
 
 import assert from "node:assert/strict";
@@ -22,7 +22,7 @@ async function solve(prompt) {
  * Free-text prompts and the dependency summaries both runtimes answer
  * (R1188-U21): the worker runs js/agentic/crate/dependency_summarization.mjs
  * itself (formal_ai_worker_crate_modules.js), and
- * rust/tests/unit/issue_1174_text_transform.rs pins the same answers natively.
+ * rust/tests/unit/web-engine-core/issue_1174_text_transform.rs pins the same answers natively.
  */
 const SUMMARIES = [
   [

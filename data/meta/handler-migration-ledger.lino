@@ -8,7 +8,7 @@ handler_migration_ledger
     data "data/seed/handler-rules.lino|data/seed/meanings-conversation.lino|data/seed/multilingual-responses.lino"
     primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: Both turns are role recognition plus a backtick capture rendered through seeded responses; the rule interpreter walks them with no handler-specific Rust."
-    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/seed/issue_1085_rule_interpreter.rs"
   handler agentic_continuation
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-conversation.lino|data/seed/multilingual-responses-agentic.lino"
@@ -23,13 +23,13 @@ handler_migration_ledger
     data "data/seed/memory-programs.lino|data/seed/multilingual-responses-memory-program.lino"
     primitive "rust/src/memory_program.rs"
     justification "issue #918 (R914-6): the row compiles a request against the reviewed templates and ordered steps of data/seed/memory-programs.lino and renders the outcome through the seeded memory_program_* responses; the interpreter names no word and no prose. The worker holds the memory store its solve table reads, so the precedence row stays browser_only; the native twin is the same interpreter on the native memory surface (execute_memory_query_with_options, behind the CLI memory query and the protocol's memory events), and js/worker/formal_ai_worker_memory_programs.js mirrors it step for step. Pinned byte-for-byte in both runtimes over the same store, with the browser recomputing the native stable id of the canonical program."
-    held_out "rust/tests/unit/issue_918_browser_twins.rs"
+    held_out "rust/tests/unit/memory/issue_918_browser_twins.rs"
   handler memory_program_gap
     status migrated
     data "data/seed/memory-programs.lino|data/seed/multilingual-responses-memory-program.lino"
     primitive "rust/src/memory_program.rs"
     justification "issue #918 (R914-6): a request that names a seeded memory cue and set scope but matches no complete seeded family is an honest program_gap rendered through the seeded memory_program_compilation_gap response; the cues, scopes and families are data/seed/memory-programs.lino. The native twin is the gap arm of execute_memory_query_with_options on the native memory surface; the browser row stays browser_only because the worker owns the store. Pinned byte-for-byte in both runtimes."
-    held_out "rust/tests/unit/issue_918_browser_twins.rs"
+    held_out "rust/tests/unit/memory/issue_918_browser_twins.rs"
   handler current_dialogue_fact_checking
     status pending
     justification "plan 09 leaf 13: browser-only dialogue fact checking against the worker's memory, recorded by the same census correction."
@@ -76,7 +76,7 @@ handler_migration_ledger
     data "data/seed/handler-rules.lino|data/seed/meanings-web-search.lino|data/seed/multilingual-responses.lino"
     primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: Four role conjunctions in the detected language and English, seeded reply with the documentation links as rule values."
-    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/seed/issue_1085_rule_interpreter.rs"
   handler requirement_listing
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-requirement-extraction.lino|data/seed/multilingual-responses-text-transform.lino"
@@ -126,7 +126,7 @@ handler_migration_ledger
     data "data/seed/handler-rules.lino|data/seed/meanings-docs.lino|data/seed/multilingual-responses-policy.lino"
     primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: The scoped pandas explanation is role and word conditions over the prompt with the four-language wording moved from Rust into seed responses."
-    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/seed/issue_1085_rule_interpreter.rs"
   handler procedural_how_to
     status migrated
     data "data/seed/meanings-how.lino|data/seed/handler-rules.lino|data/seed/multilingual-responses-procedural-how-to.lino"
@@ -232,7 +232,7 @@ handler_migration_ledger
     data "data/seed/handler-rules.lino|data/seed/meanings-intent.lino|data/seed/multilingual-responses.lino"
     primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: Capability queries are role conditions with the assistant-free-time route excluded; the prior-web-search note is a history condition."
-    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/seed/issue_1085_rule_interpreter.rs"
   handler planning_request
     status "justified-native"
     primitive "rust/src/solver_handlers/creative_writing.rs"
@@ -254,7 +254,7 @@ handler_migration_ledger
     data "data/seed/handler-rules.lino|data/seed/multilingual-responses-synthesis.lino|data/seed/meanings-finance.lino|data/seed/meanings-calculator.lino"
     primitive "rust/src/solver_handlers/compound_interest.rs"
     justification "issue #918 (R914-6): the twins diverged (the native row took its rate from the calculator and converted only to euros; the worker kept a rate table of its own, also converted to rubles, appended a USD-to-USD conversion for a principal spelled in dollars, and read a decimal comma differently). Both now read the finance and currency meanings for recognition, the policy compound_interest block of data/seed/handler-rules.lino for the periods per compounding meaning, the frequency labels, the default exchange rates and the final-amount marker, and the seeded compound_interest_* responses for every line of wording; the handler keeps only the formula and the number readers. Pinned byte-for-byte in both runtimes; the worker's answers are unchanged except for the dropped USD-to-USD lines."
-    held_out "rust/tests/unit/issue_918_browser_twins.rs"
+    held_out "rust/tests/unit/memory/issue_918_browser_twins.rs"
   handler word_problem
     status "justified-native"
     primitive "rust/src/solver_handlers/statistics.rs"
@@ -292,7 +292,7 @@ handler_migration_ledger
     data "data/seed/meanings-number-constraints.lino"
     primitive "rust/src/number_constraints.rs"
     justification "Interval extraction, integer enumeration, and proof-engine invocation are native operations; all recognition surfaces and relation vocabulary are seed roles, while the existing response projection is preserved. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_number_constraints.js answers the same seed records in the worker."
-    held_out "rust/tests/unit/issue_699_handler_migration.rs"
+    held_out "rust/tests/unit/seed/issue_699_handler_migration.rs"
   handler code_explanation
     status "justified-native"
     primitive "rust/src/solver_handlers/code_explanation.rs"
@@ -318,7 +318,7 @@ handler_migration_ledger
     data "data/seed/coding-idioms.lino|data/seed/multilingual-responses-synthesis.lino"
     primitive "rust/src/program_skill_gap.rs"
     justification "Synthesis already reaches outside the curated catalogue through the blueprint recipes, the cached coding oracle and the seed idiom composer; the migrated part is the dead end, which no longer recites the templates the catalogue happens to hold but names a skill gap from seed wording in en/ru/hi/zh and logs the stable English gap identity as a skill_gap event."
-    held_out "rust/tests/unit/issue_699_handler_migration.rs"
+    held_out "rust/tests/unit/seed/issue_699_handler_migration.rs"
   handler arithmetic
     status "justified-native"
     primitive "rust/src/calculation.rs"
@@ -336,7 +336,7 @@ handler_migration_ledger
     data "data/seed/language-detection.lino|data/seed/multilingual-responses.lino"
     primitive "rust/src/definition_merge.rs"
     justification "Fragment deduplication, ordering, and rendering are language-neutral operations; the source-host language mapping moved to the language-detection rules and every rendered label is a seed response with en/ru/hi/zh coverage."
-    held_out "rust/tests/unit/issue_699_handler_migration.rs"
+    held_out "rust/tests/unit/seed/issue_699_handler_migration.rs"
   handler triz_resolution
     status "justified-native"
     primitive "rust/src/triz_solver.rs"
@@ -352,7 +352,7 @@ handler_migration_ledger
     data "data/seed/entity-names.lino|data/seed/multilingual-responses.lino"
     primitive "rust/src/entity_resolution.rs"
     justification "The fixed table of eight people and their hand-written misspellings is gone; nearest-surface search under a length-scaled edit budget is the only native part, and candidate names come from the entity registry, concept terms and aliases, and fact labels, so no misspelling is stored anywhere."
-    held_out "rust/tests/unit/issue_699_handler_migration.rs"
+    held_out "rust/tests/unit/seed/issue_699_handler_migration.rs"
   handler how_it_works
     status migrated
     data "data/seed/meanings-how.lino|data/seed/handler-rules.lino|data/seed/multilingual-responses-synthesis.lino"
@@ -416,37 +416,37 @@ handler_migration_ledger
     data "data/seed/handler-rules.lino|data/seed/meanings-intent.lino|data/seed/multilingual-responses.lino"
     primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: A single role condition and the seeded clarification reply. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_handler_rules.js answers the same seed records in the worker."
-    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/seed/issue_1085_rule_interpreter.rs"
   handler punctuation_only_prompt
     status migrated
     data "data/seed/handler-rules.lino|data/seed/multilingual-responses-policy.lino"
     primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: A character-set condition over the trimmed prompt; the wording moved from a Rust format string into seed responses. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_handler_rules.js answers the same seed records in the worker."
-    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/seed/issue_1085_rule_interpreter.rs"
   handler ill_formed
     status migrated
     data "data/seed/handler-rules.lino"
     primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: A phrase and an unbalanced-parentheses condition answering with the shared unknown response. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_handler_rules.js answers the same seed records in the worker."
-    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/seed/issue_1085_rule_interpreter.rs"
   handler physical_action_question
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-policy.lino|data/seed/multilingual-responses.lino"
     primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: A raw role condition with the seeded reply and its Russian fallback expressed as rule data. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_handler_rules.js answers the same seed records in the worker."
-    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/seed/issue_1085_rule_interpreter.rs"
   handler kupi_slona
     status migrated
     data "data/seed/handler-rules.lino|data/seed/meanings-policy.lino|data/seed/multilingual-responses.lino"
     primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: A raw role condition with the seeded idiom explanation and its Russian fallback expressed as rule data."
-    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/seed/issue_1085_rule_interpreter.rs"
   handler shell_refusal
     status migrated
     data "data/seed/handler-rules.lino|data/seed/multilingual-responses-policy.lino"
     primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: Substring conditions over the normalized prompt with an agent-mode exclusion; the refusal wording moved into seed responses in four languages. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_handler_rules.js answers the same seed records in the worker. tryShellRefusal routes through runHandlerRuleSet."
-    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/seed/issue_1085_rule_interpreter.rs"
   handler proof_request
     status pending
   handler opinion_question
@@ -454,7 +454,7 @@ handler_migration_ledger
     data "data/seed/handler-rules.lino|data/seed/multilingual-responses-policy.lino"
     primitive "rust/src/rule_interpreter.rs"
     justification "issue #1085 D1.3: Fifteen opener prefixes as rule data; the no-opinion wording moved into seed responses in four languages. Browser twin (PR #1188, JavaScript-first parity): js/worker/formal_ai_worker_handler_rules.js answers the same seed records in the worker."
-    held_out "rust/tests/unit/issue_1085_rule_interpreter.rs"
+    held_out "rust/tests/unit/seed/issue_1085_rule_interpreter.rs"
   handler unit_conversion
     status "justified-native"
     primitive "rust/src/solver_handlers/unit_conversion.rs"
@@ -499,4 +499,4 @@ handler_migration_ledger
     data "data/seed/meanings-playwright.lino|data/seed/handler-rules.lino|data/seed/multilingual-responses-synthesis.lino"
     primitive "rust/src/solver_handlers/playwright_script.rs"
     justification "issue #918 (R914-6): the prelude row recognizes the tool name, its misspelling and the script cues through the playwright_tool_name and playwright_script_cue roles, reads the docs URL from the policy playwright_script block of data/seed/handler-rules.lino, and renders the clarification, the plain and corrected leads, the starter layout and the starter TypeScript from seeded playwright_* responses; the handler names no word and holds no prose or example. The browser twin renders the same records; its pins read the expected answers from the native pins, so both runtimes hold one text."
-    held_out "rust/tests/unit/playwright_script.rs"
+    held_out "rust/tests/unit/solver/playwright_script.rs"

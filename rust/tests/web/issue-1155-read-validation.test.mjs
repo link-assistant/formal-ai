@@ -1,6 +1,6 @@
 // Issue #1155 in the JavaScript root: a work-item read is validated before it
 // becomes page evidence, and a failed read walks the fallbacks instead of
-// ending the retrieval. Twin of rust/tests/unit/issue_1155_read_validation.rs,
+// ending the retrieval. Twin of rust/tests/unit/agentic-coding/issue_1155_read_validation.rs,
 // driven through the JavaScript planner (`planChatStep`) the server runs, so
 // the sentinel (R1155-1), the shape check (R1155-2), the fallback order
 // (R1155-3) and the honest exhausted report (R1155-4) hold in both roots.

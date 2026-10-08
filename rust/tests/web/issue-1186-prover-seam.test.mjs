@@ -7,7 +7,7 @@
 // the PATH it is given and runs it. These tests stub PATH with a scratch
 // directory holding fake `lean` and `coqc` executables, so the "ran" branch is
 // pinned without either prover installed. Twin of
-// rust/tests/unit/issue_1186_prover_step.rs.
+// rust/tests/unit/solver/issue_1186_prover_step.rs.
 
 import assert from "node:assert/strict";
 import { chmodSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";

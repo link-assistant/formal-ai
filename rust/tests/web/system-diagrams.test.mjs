@@ -1,7 +1,7 @@
 // The generated system diagrams (issue #538, R382): js/agentic/system_diagram.mjs
 // renders docs/diagrams/{system-overview,solver-handlers,cli-subcommands,
 // http-routes}.md from live data, and scripts/generate-system-diagrams.mjs
-// --check is the CI drift gate. Twin of rust/tests/unit/system_diagrams.rs.
+// --check is the CI drift gate. Twin of rust/tests/unit/agentic-coding/system_diagrams.rs.
 
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
@@ -19,7 +19,7 @@ if (!hasHost()) installHost({ readText: readRepoFile, parseLino });
 
 const part = (file) => renderSystemDiagrams(readRepoFile).find(([name]) => name === file)[1];
 
-describe('system diagrams (rust/tests/unit/system_diagrams.rs)', () => {
+describe('system diagrams (rust/tests/unit/agentic-coding/system_diagrams.rs)', () => {
   it('committed_parts_are_the_generated_parts', () => {
     const parts = renderSystemDiagrams(readRepoFile);
     assert.deepEqual(parts.map(([file]) => file),

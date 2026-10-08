@@ -7,7 +7,7 @@ llm_task_classes
     formal_version "Formalize the question to a subject and a property, read the live statement from the grounded store, and answer with its cited references"
     status "0.347.0: wrong (answered the US capital for an Australia question); branch: word-boundary subject match landed, unmeasured until the release probe runs"
     tracking_issue 1172
-    evidence "rust/tests/unit/issue_1172_factual_qa_subject_match.rs"
+    evidence "rust/tests/unit/web-engine-core/issue_1172_factual_qa_subject_match.rs"
   class explanation
     name "Explanation (ELI5)"
     llm_strength "Fluent multi-sentence explanations assembled from pretrained knowledge, unsourced"
@@ -57,7 +57,7 @@ llm_task_classes
     formal_version "Parse the source sentence, project the parse through the language pair's rules, and render with a back-check"
     status "0.347.0: could not identify a source phrase; branch: free-sentence translation pipeline landed, unmeasured until the release probe runs"
     tracking_issue 1174
-    evidence "rust/tests/unit/issue_1174_text_transform.rs"
+    evidence "rust/tests/unit/web-engine-core/issue_1174_text_transform.rs"
   class rewriting
     name "Rewriting and style transfer"
     llm_strength "Register and tone rewriting of fluent prose"
@@ -65,7 +65,7 @@ llm_task_classes
     formal_version "Decompose the request into text operations, apply each as a traced substitution, and verify the stated constraints"
     status "0.347.0: canned search paragraph, no answer; branch: text-rewrite handler landed, unmeasured until the release probe runs"
     tracking_issue 1174
-    evidence "rust/tests/unit/issue_1174_text_transform.rs"
+    evidence "rust/tests/unit/web-engine-core/issue_1174_text_transform.rs"
   class grammar_correction
     name "Grammar correction"
     llm_strength "Fluent minimal edits of near-native text"
@@ -73,7 +73,7 @@ llm_task_classes
     formal_version "Parse the sentence, detect agreement violations from the rule seed, and propose the minimal repairs"
     status "0.347.0: canned search paragraph, no answer; branch: grammar-correction rules landed with the text-transform family, unmeasured until the release probe runs"
     tracking_issue 1174
-    evidence "rust/tests/unit/issue_1174_text_transform.rs"
+    evidence "rust/tests/unit/web-engine-core/issue_1174_text_transform.rs"
   class text_writing
     name "Text writing (email, commit message)"
     llm_strength "Conventional short-form drafting in the requested genre"
@@ -81,7 +81,7 @@ llm_task_classes
     formal_version "Compose from the genre's styleguide seed under the stated constraints, showing which convention each line follows"
     status "0.347.0: canned search paragraph, no answer; branch: genre writing landed with the text-transform family, unmeasured until the release probe runs"
     tracking_issue 1174
-    evidence "rust/tests/unit/issue_1174_text_transform.rs"
+    evidence "rust/tests/unit/web-engine-core/issue_1174_text_transform.rs"
   class classification
     name "Classification and sentiment"
     llm_strength "Accurate label prediction for common facets"
@@ -137,7 +137,7 @@ llm_task_classes
     formal_version "Parse the code to its structure, name each construct from the code-structure meanings, and build the explanation from the parse"
     status "0.347.0: canned search paragraph, no answer; branch: explanation handler landed, unmeasured until the release probe runs"
     tracking_issue 1177
-    evidence "rust/tests/unit/issue_1177_code_task_handlers.rs"
+    evidence "rust/tests/unit/web-engine-core/issue_1177_code_task_handlers.rs"
   class debugging
     name "Debugging"
     llm_strength "Plausible defect hypotheses from pattern memory"
@@ -146,28 +146,28 @@ llm_task_classes
     formal_version "Parse the snippet, locate the construct whose behavior contradicts the stated intent, and name the defect structurally without executing"
     status "0.347.0: misrouted to a terminal-command prompt; branch: debugging handler landed behind the routing guards, unmeasured until the release probe runs"
     tracking_issue 1177
-    evidence "rust/tests/unit/issue_1177_code_task_handlers.rs"
+    evidence "rust/tests/unit/web-engine-core/issue_1177_code_task_handlers.rs"
   class code_review
     name "Code review"
     llm_strength "Broad commentary in the style of human reviews"
     formal_version "Check the parse against the review-rules seed and report each violated rule with its location"
     status "0.347.0: canned search paragraph, no answer; branch: review handler landed, unmeasured until the release probe runs"
     tracking_issue 1177
-    evidence "rust/tests/unit/issue_1177_code_task_handlers.rs"
+    evidence "rust/tests/unit/web-engine-core/issue_1177_code_task_handlers.rs"
   class refactoring
     name "Refactoring"
     llm_strength "Idiomatic rewrites of small snippets"
     formal_version "Propose the structural rewrite as an edit program over the parse, never a blind textual replace"
     status "0.347.0: canned search paragraph, no answer; branch: refactoring handler landed, unmeasured until the release probe runs"
     tracking_issue 1177
-    evidence "rust/tests/unit/issue_1177_code_task_handlers.rs"
+    evidence "rust/tests/unit/web-engine-core/issue_1177_code_task_handlers.rs"
   class test_generation
     name "Test generation"
     llm_strength "Thorough-looking test suites that may not assert the contract"
     formal_version "Derive the test set from the parsed contract shapes and emit it with the coverage note"
     status "0.347.0: refused claiming the language was missing although given; branch: test-generation handler landed, unmeasured until the release probe runs"
     tracking_issue 1177
-    evidence "rust/tests/unit/issue_1177_code_task_handlers.rs"
+    evidence "rust/tests/unit/web-engine-core/issue_1177_code_task_handlers.rs"
   class regex
     name "Regular expression synthesis"
     llm_strength "Compact patterns for common match shapes"
@@ -175,7 +175,7 @@ llm_task_classes
     formal_version "Compose the expression from the match-shape meanings and state each part's role"
     status "0.347.0: misrouted to an extension project plan by the surface word extension; branch: regex handler landed behind the routing guards, unmeasured until the release probe runs"
     tracking_issue 1177
-    evidence "rust/tests/unit/issue_1177_code_task_handlers.rs"
+    evidence "rust/tests/unit/web-engine-core/issue_1177_code_task_handlers.rs"
   class sql
     name "SQL synthesis"
     llm_strength "Correct queries for common relational shapes"
@@ -184,7 +184,7 @@ llm_task_classes
     formal_version "Map the question to the schema's relations and compose the query as a relational plan"
     status "0.347.0: canned search paragraph, no answer; branch: SQL handler landed, unmeasured until the release probe runs"
     tracking_issue 1177
-    evidence "rust/tests/unit/issue_1177_code_task_handlers.rs"
+    evidence "rust/tests/unit/web-engine-core/issue_1177_code_task_handlers.rs"
   class shell_command
     name "Shell command composition"
     llm_strength "Recall of common command incantations"
@@ -192,14 +192,14 @@ llm_task_classes
     formal_version "Map the intent to the command grammar's flags and compose with the safety check"
     status "0.347.0: only an offer to run a command in Agent mode; branch: shell-compose handler landed, unmeasured until the release probe runs"
     tracking_issue 1177
-    evidence "rust/tests/unit/issue_1177_code_task_handlers.rs"
+    evidence "rust/tests/unit/web-engine-core/issue_1177_code_task_handlers.rs"
   class format_conversion
     name "Format conversion (JSON, YAML, CSV)"
     llm_strength "Lossless re-serialization of small documents"
     formal_version "Parse the source format to the meta structure and re-render in the target format"
     status "0.347.0: canned search paragraph, no answer; branch: format-conversion handler landed, unmeasured until the release probe runs"
     tracking_issue 1177
-    evidence "rust/tests/unit/issue_1177_code_task_handlers.rs"
+    evidence "rust/tests/unit/web-engine-core/issue_1177_code_task_handlers.rs"
   class creative_writing
     name "Creative writing"
     llm_strength "Fluent constrained prose and verse"
@@ -248,7 +248,7 @@ llm_task_classes
     formal_version "Render the informal statement in the target formal system through the relative meta logic and round-trip check"
     status "0.347.0: canned search paragraph, no answer; branch: formalization handler landed with the 44-probe set in data/benchmarks/formalization and parity case e1186, unmeasured until the release probe runs"
     tracking_issue 1186
-    evidence "rust/tests/unit/issue_1186_formalization_probe_set.rs"
+    evidence "rust/tests/unit/web-engine-core/issue_1186_formalization_probe_set.rs"
   class repository_qa
     name "Repository question answering"
     llm_strength "Recall of popular-library APIs, weak on private code"

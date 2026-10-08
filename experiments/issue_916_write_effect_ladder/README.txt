@@ -189,7 +189,7 @@ a recorded reason, each fix tied to a named ladder rung. This is that record.
         document is where the artifact is named — and keeps
         `planned_not_executed` for a genuinely unavailable capability.  The
         rungs here judge workspace effects from a prompt, so this one is pinned
-        by tests/unit/work_item_planning.rs instead: its effect depends on a fetched
+        by tests/unit/agentic-coding/work_item_planning.rs instead: its effect depends on a fetched
         document rather than on the prompt alone.
   #905  "Completed ... and verified it with `cat hello.txt`" after exit 1
         FIXED here.  R916-01, R916-04, R916-05.

@@ -54,7 +54,7 @@ test('string, template and comment text is data, not code; the code around it is
 
 test('the measured roots and code extensions', () => {
   assert.equal(familyOf('ts/agentic/planner.mts'), 'script');
-  assert.equal(familyOf('js/app/app.jsx'), 'script');
+  assert.equal(familyOf('js/app/application.jsx'), 'script');
   assert.equal(familyOf('rust/src/es_meta.rs'), 'rust');
   assert.equal(familyOf('scripts/check-closure-audit.py'), 'python');
   assert.equal(familyOf('scripts/run-prebuilt-tests.sh'), 'shell');

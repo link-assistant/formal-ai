@@ -12,7 +12,7 @@
 // recorded preferred label variants. This test pins that every answer the
 // retired records gave is reproduced verbatim, that every surface their label
 // index resolved still resolves, and that nothing derived is written down.
-// The Rust twin is rust/tests/unit/issue_1172_fact_derivation.rs.
+// The Rust twin is rust/tests/unit/seed/issue_1172_fact_derivation.rs.
 
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";

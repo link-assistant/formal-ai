@@ -52,17 +52,17 @@ export class SystemExplanation {
       section('source_to_links_round_trip', [
         sourceCitation('src/self_source_links.rs'),
         sourceCitation('src/agentic_coding/self_ast.rs'),
-        testCitation('rust/tests/unit/issue_558_source_links.rs'),
+        testCitation('rust/tests/unit/agentic-coding/issue_558_source_links.rs'),
       ]),
       section('self_healing_loop', [
         sourceCitation('src/self_healing.rs'),
         dataCitation('data/meta/self-healing-case.lino'),
-        testCitation('rust/tests/unit/issue_558_self_healing.rs'),
+        testCitation('rust/tests/unit/agentic-coding/issue_558_self_healing.rs'),
       ]),
       section('human_gated_promotion_ledger', [
         sourceCitation('src/learning_ledger.rs'),
         dataCitation('data/meta/learning-ledger.lino'),
-        testCitation('rust/tests/unit/issue_558_learning_ledger.rs'),
+        testCitation('rust/tests/unit/agentic-coding/issue_558_learning_ledger.rs'),
       ]),
       section('agentic_interface', [
         sourceCitation('src/agentic_coding/driver.rs'),

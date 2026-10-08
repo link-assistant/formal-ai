@@ -59,7 +59,7 @@ before(async () => {
   await installNodeHost(new WorkerHost());
 });
 
-describe('file_read (rust/tests/unit/file_read_tool_calls.rs)', () => {
+describe('file_read (rust/tests/unit/agentic-coding/file_read_tool_calls.rs)', () => {
   const TOOLS = ['read', 'bash'];
 
   it('direct file read prompts emit read tool calls', () => {
@@ -144,7 +144,7 @@ describe('file_read (rust/tests/unit/file_read_tool_calls.rs)', () => {
     assert.equal(final(readStep(messages, TOOLS)), 'Value of `gamma_marker` in `gamma.json`: GAMMA_33333');
   });
 
-  it('write intent beats read intent (rust/tests/unit/file_creation_writes.rs)', () => {
+  it('write intent beats read intent (rust/tests/unit/agentic-coding/file_creation_writes.rs)', () => {
     assert.equal(fileReadTaskFor('create a file notes.txt with hello'), null);
   });
 });

@@ -387,7 +387,7 @@ recipes' facts now flow through links. The representation layer is issue
 #558's delivery (PR #637): a committed `.lino` census covers every owned file
 under `rust/src/`, one to one on every merged pull request, and the lossless
 round-trip (`source → links → source`, byte for byte) exists in
-`rust/tests/unit/issue_558_source_links.rs` -- it is exhaustive, so it is
+`rust/tests/unit/agentic-coding/issue_558_source_links.rs` -- it is exhaustive, so it is
 `#[ignore]`d there and runs on demand with `--ignored`, not on every CI run;
 until it runs by default the committed census is a signature, not the source.
 The direction is unchanged: the meta-language

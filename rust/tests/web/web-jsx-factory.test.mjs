@@ -31,7 +31,7 @@ const sources = readdirSync(APP)
 describe('every JSX file binds the factory the bundler calls', () => {
   test('the heuristic sees the files known to write JSX', () => {
     const writers = sources.filter(([, text]) => ELEMENT.test(text)).map(([file]) => file);
-    for (const file of ['app.jsx', 'debugger-view.jsx']) assert.ok(writers.includes(file), file);
+    for (const file of ['application.jsx', 'debugger-view.jsx']) assert.ok(writers.includes(file), file);
   });
 
   for (const [file, text] of sources) {

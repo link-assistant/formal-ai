@@ -1,7 +1,7 @@
 // Issue #1177 browser parity: JSON↔YAML format conversion.
 //
 // The worker twin in js/worker/formal_ai_worker_format_conversion.js must
-// convert the probe rust/tests/unit/issue_1177_code_task_handlers.rs pins and
+// convert the probe rust/tests/unit/web-engine-core/issue_1177_code_task_handlers.rs pins and
 // feed its own YAML back to the same JSON value. R10: the round trip must be
 // lossless on every probe — integer vs float numbers, u64 range, key order,
 // strings that would otherwise read as YAML scalars, and empty containers —

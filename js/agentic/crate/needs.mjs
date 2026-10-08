@@ -1,7 +1,7 @@
 // The need record of plan 00 section 4.1 (rust/src/needs.rs): one thing the
 // system does not know, with its Links Notation projection.
 
-import { stableId } from './engine_stable_id.mjs';
+import { stableId } from './engine_stable_identifier.mjs';
 import { trim } from './rust_str.mjs';
 
 /** Mirrors `enum NeedKind` (`NeedKind::slug` values). */

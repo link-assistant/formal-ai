@@ -13,8 +13,8 @@
 # (formal_ai_worker_nl_tools is formal_ai_worker_natural_language_tools).
 abbreviation-ratchet
   file-names
-    abbreviated-file-names 100
+    abbreviated-file-names 92
   bindings js
     abbreviated-bindings 729
   bindings rust/src
-    abbreviated-bindings 913
+    abbreviated-bindings 912

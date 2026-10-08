@@ -24,7 +24,7 @@
 
 import { cached, readText } from '../host.mjs';
 import { pushLinoNode } from './links_format.mjs';
-import { stableId } from './engine_stable_id.mjs';
+import { stableId } from './engine_stable_identifier.mjs';
 import { byteOrder as cmpStr, trim, utf8Len as stringBytes } from './rust_str.mjs';
 import { parseRoot, findChildValue } from './seed_parser.mjs';
 import { NULL_LINK, SequenceStore, SymbolTable, balancedConvert, compress } from './sequences.mjs';

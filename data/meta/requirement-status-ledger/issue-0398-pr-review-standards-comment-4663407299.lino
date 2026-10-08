@@ -3,7 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0398-pr-review-standards-comment-4663407299.md"
   issue "0398"
   delivered "PR #399 (issue #398)"
-  automated_test "rust/tests/unit/reference_closure.rs"
+  automated_test "rust/tests/unit/seed/reference_closure.rs"
   manual "not yet confirmed"
   requirement
     id "R278"
@@ -12,7 +12,7 @@ requirement_status_ledger_shard
   requirement
     id "R279"
     verdict "implemented"
-    automated_test "rust/tests/unit/overrides.rs"
+    automated_test "rust/tests/unit/seed/overrides.rs"
   requirement
     id "R280"
     verdict "implemented"

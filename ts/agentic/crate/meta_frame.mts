@@ -8,7 +8,7 @@
 // Spans are UTF-16 offsets here where Rust keeps UTF-8 byte offsets; only the
 // span texts reach a record, so the projection is the same.
 
-import { debugOption, stableId } from './engine_stable_id.mjs';
+import { debugOption, stableId } from './engine_stable_identifier.mjs';
 import { containsCjk } from './coding_catalog.mjs';
 import { formatLinoRecord } from './links_format.mjs';
 import { formalizeIntentRecord } from './intent_formalization.mjs';

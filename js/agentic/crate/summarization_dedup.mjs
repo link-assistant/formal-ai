@@ -11,7 +11,7 @@
 // derived `Ord` on strings is byte order, which for valid text is code point
 // order (`compareStrings`), not JavaScript's UTF-16 code unit order.
 
-import { stableId } from './engine_stable_id.mjs';
+import { stableId } from './engine_stable_identifier.mjs';
 import { StatementKind, classifySentence, statement, weightForKind } from './summarization.mjs';
 import {
   functionWords, mentionsWord, negationCues, stripWords, tokenize,

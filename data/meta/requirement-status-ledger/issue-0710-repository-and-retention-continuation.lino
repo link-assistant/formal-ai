@@ -16,12 +16,12 @@ requirement_status_ledger_shard
   requirement
     id "R710-R3"
     verdict "partial"
-    automated_test "rust/tests/unit/issue_1138_prerequisite_need.rs"
+    automated_test "rust/tests/unit/prerequisite/issue_1138_prerequisite_need.rs"
   requirement
     id "R710-R4"
     verdict "implemented"
     delivered "implemented — PR #888 continuation (issue #710)"
-    automated_test "rust/tests/unit/recipe_evidence.rs"
+    automated_test "rust/tests/unit/agentic-coding/recipe_evidence.rs"
   requirement
     id "R710-R5"
     verdict "implemented"

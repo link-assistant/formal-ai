@@ -31,7 +31,7 @@ requirement_status_ledger_shard
   requirement
     id "R921-7"
     verdict "implemented"
-    automated_test "rust/tests/unit/work_item_planning.rs"
+    automated_test "rust/tests/unit/agentic-coding/work_item_planning.rs"
   requirement
     id "R921-8"
     verdict "implemented"

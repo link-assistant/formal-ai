@@ -8,7 +8,7 @@
 // rust/tests/unit/specification/code_generation/single_turn.rs and
 // agent_isolation.rs (execution failure), rust/tests/unit/document_generation_plan.rs
 // (document plan), rust/tests/unit/specification/source_cache.rs (source
-// conflict) and rust/tests/unit/issue_1085_rule_interpreter.rs (shell refusal).
+// conflict) and rust/tests/unit/seed/issue_1085_rule_interpreter.rs (shell refusal).
 
 import assert from "node:assert/strict";
 import test from "node:test";

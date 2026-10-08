@@ -1,7 +1,7 @@
 // Issue #1188 JS parity for the issue #1186 user-facing formalization task:
 // the browser worker parses the quantified clause, renders every seeded target
 // grammar with the named one first, and deformalizes with a structural round
-// trip, for the prompts rust/tests/unit/issue_1186_formalization_task.rs pins.
+// trip, for the prompts rust/tests/unit/web-engine-core/issue_1186_formalization_task.rs pins.
 
 import assert from "node:assert/strict";
 import test from "node:test";

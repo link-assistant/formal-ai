@@ -1409,3 +1409,5 @@ rename-map
       to "rust/tests/unit/issue_1164_pascal_from_documentation.rs"
       reason "Issue #1164: the held-out Pascal path learned from documentation and the execution half of recomposition."
       review "Reviewed on 2026-10-08: the full-word spelling scripts/measure-abbreviations.mjs --propose writes by the abbreviation rule (R1188-U4), kept as proposed."
+  include "data/meta/rename-map/unit-tests-by-area.lino"
+  include "data/meta/rename-map/javascript-full-word-file-names.lino"

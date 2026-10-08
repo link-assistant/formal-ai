@@ -30,7 +30,7 @@ const FNV_PRIME_LOW = 0x1b3;
 const encoder = new TextEncoder();
 
 /**
- * `crate::engine::stable_id` (js/agentic/crate/engine_stable_id.mjs) over 16-bit
+ * `crate::engine::stable_id` (js/agentic/crate/engine_stable_identifier.mjs) over 16-bit
  * limbs instead of BigInt: the manifest hashes the whole ~10 MB source tree,
  * where the BigInt loop is seconds slower. FNV-1a 64: `prime = 2^40 + 0x1b3`,
  * so `h * prime = h * 0x1b3 + (h << 40)` modulo 2^64.

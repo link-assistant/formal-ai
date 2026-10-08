@@ -253,7 +253,7 @@ fn static_measures(root: &Path) -> Result<BTreeMap<String, u64>, String> {
         "planner-route-arms".to_owned(),
         planner_route_arms(&planner),
     );
-    let frontier = fs::read_to_string(root.join("rust/tests/unit/issue_1138_frontier_classes.rs"))
+    let frontier = fs::read_to_string(root.join("rust/tests/unit/capability-routing/issue_1138_frontier_classes.rs"))
         .map_err(|error| format!("issue_1138_frontier_classes.rs: {error}"))?;
     let expected = [
         "news_class_routes_to_a_live_search",

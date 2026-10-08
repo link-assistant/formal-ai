@@ -1,7 +1,7 @@
 # Issue #1186 R10 formalization probe set (zh). Every prompt names a sentence
 # the formal-targets seed never mentions; the expected clause is what the
 # quantifier, relative-clause and object grammar derives from its own words.
-# Read by rust/tests/unit/issue_1186_formalization_probe_set.rs and
+# Read by rust/tests/unit/web-engine-core/issue_1186_formalization_probe_set.rs and
 # rust/tests/web/issue-1186-formalization-probe-set.test.mjs.
 formalization_probe_zh_01
   record_type "formalization_probe"

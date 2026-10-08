@@ -1,7 +1,7 @@
 // Issue #1175 R3, browser root: the claim rows of
 // data/seed/capability-routing.lino are consulted before a handler runs
 // (claimRouteAdmits in js/worker/formal_ai_worker_dispatch.js), as
-// rust/tests/unit/issue_1175_claim_routing.rs pins for the native router.
+// rust/tests/unit/capability-routing/issue_1175_claim_routing.rs pins for the native router.
 
 import assert from "node:assert/strict";
 import test from "node:test";
@@ -334,7 +334,7 @@ test("R1175-3: a class handler answers only where its row admits", async () => {
 // Issue #1175 R3, follow-up round: a handler that answered without its input
 // records a named refusal event there and keeps that answer through the
 // refusal lane; the assistant is the subject of a question that addresses it
-// or names no other subject (rust/tests/unit/issue_1175_claim_routing.rs).
+// or names no other subject (rust/tests/unit/capability-routing/issue_1175_claim_routing.rs).
 test("R1175-3 follow-up round: a handler without its input is admitted to its refusal lane only", async () => {
   await seeded;
   const admission = (handler, prompt, history = []) => plain(evaluate(worker,
@@ -373,7 +373,7 @@ test("R1173-3: a comma after the advice verb still reaches the advice handler", 
 // Issue #1175 R3, the last five rows: the handlers that read nothing but their
 // cue now read the operand their answer is about (formal_ai_worker_claim_operands.js),
 // so every precedence handler carries a row. Held-out probes in en, ru, hi and zh,
-// as rust/tests/unit/issue_1175_claim_routing_operands.rs pins natively.
+// as rust/tests/unit/capability-routing/issue_1175_claim_routing_operands.rs pins natively.
 async function operands(kind, prompt) {
   await seeded;
   return plain(evaluate(worker, `CLAIM_OPERANDS[${JSON.stringify(kind)}](${JSON.stringify(prompt)})`));

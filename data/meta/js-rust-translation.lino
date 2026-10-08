@@ -50,7 +50,7 @@ module js/agentic/crate/dialog_log.mjs translated 0 workaround 0 inferred 0 carr
 module js/agentic/crate/discovery_production.mjs translated 10 workaround 1 inferred 0 carried 37
 module js/agentic/crate/engine.mjs translated 1 workaround 1 inferred 0 carried 5
 module js/agentic/crate/engine_answer.mjs translated 0 workaround 0 inferred 0 carried 4
-module js/agentic/crate/engine_stable_id.mjs translated 2 workaround 0 inferred 0 carried 5
+module js/agentic/crate/engine_stable_identifier.mjs translated 2 workaround 0 inferred 0 carried 5
 module js/agentic/crate/es_tokenizer.mjs translated 6 workaround 0 inferred 0 carried 10
 module js/agentic/crate/event_log.mjs translated 3 workaround 0 inferred 0 carried 10
 module js/agentic/crate/execution_evidence.mjs translated 0 workaround 0 inferred 0 carried 11

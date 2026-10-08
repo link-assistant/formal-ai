@@ -3,7 +3,7 @@
 // the file to edit: a literal that is exactly a path may name the file, and the
 // cue after it ("in") read as the target cue. A path the request leaves
 // unquoted now names the file first; a quoted path still does when nothing else
-// can. The Rust twin is rust/tests/unit/pull_request_1188_quoted_path_payload.rs.
+// can. The Rust twin is rust/tests/unit/agentic-coding/pull_request_1188_quoted_path_payload.rs.
 
 import { before, describe, test } from 'node:test';
 import assert from 'node:assert/strict';

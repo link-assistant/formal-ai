@@ -63,7 +63,7 @@ requirement_status_ledger_shard
   requirement
     id "R422"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_540_agent_cli.rs"
+    automated_test "rust/tests/unit/agentic-coding/issue_540_agent_cli.rs"
   requirement
     id "R423"
     verdict "implemented"

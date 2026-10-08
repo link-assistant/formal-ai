@@ -2,7 +2,7 @@
 // importer twin (js/agentic/crate/history_github.mjs) formalizes a body into
 // requirement statements and the capture into dated lifecycle transitions,
 // and the lineage route twin (js/agentic/crate/history_lineage.mjs) claims
-// and answers exactly as rust/tests/unit/issue_1180_history_context.rs pins
+// and answers exactly as rust/tests/unit/memory/issue_1180_history_context.rs pins
 // for the native route.
 
 import assert from 'node:assert/strict';

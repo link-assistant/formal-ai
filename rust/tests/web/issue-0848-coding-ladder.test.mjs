@@ -1,6 +1,6 @@
 // Issue #848: the coding-task ladder, pinned on the JavaScript root.
 //
-// rust/tests/unit/issue_848_coding_ladder.rs inspects the bytes the offline
+// rust/tests/unit/agentic-coding/issue_848_coding_ladder.rs inspects the bytes the offline
 // Agent CLI loop writes and reads back. The same dialogues are driven here
 // through the agentic planner twin (js/agentic/planner.mjs and its code_task,
 // structured_edit, workspace_change and shell_command modules): a passing

@@ -1,5 +1,5 @@
 // Issue #1172 R3 JS parity: the browser worker's live fact path, the twin of
-// rust/tests/unit/issue_1172_live_fact_answer.rs. The question is formalized
+// rust/tests/unit/seed/issue_1172_live_fact_answer.rs. The question is formalized
 // from seed cues alone (factLiveQuestion, same expectations as the native
 // live_fact_question), and a Wikidata resolution answers through the seeded
 // fact_live_answer template citing the claim's reference URL, else the

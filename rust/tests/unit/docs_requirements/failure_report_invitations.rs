@@ -5,7 +5,7 @@ use std::path::PathBuf;
 
 const CASE_STUDY: &str = "docs/case-studies/issue-864/README.md";
 const REQUIREMENTS: &str = "docs/case-studies/issue-864/requirements.md";
-const RUST_REGRESSIONS: &str = "rust/tests/unit/proactive_failure_reports.rs";
+const RUST_REGRESSIONS: &str = "rust/tests/unit/agentic-coding/proactive_failure_reports.rs";
 const BROWSER_REGRESSION: &str = "rust/tests/e2e/tests/failure-detection-and-report-offer.spec.js";
 
 fn root() -> PathBuf {
@@ -100,7 +100,7 @@ fn r864_03_invitation_language_and_failure_state_survive_every_ui_path() {
         &["detectedFailure: event.detectedFailure === true"],
     );
     assert_contains_all(
-        "js/app/app-conversation-hooks.jsx",
+        "js/app/application-conversation-hooks.jsx",
         &["detectedFailure = detectedFailure || answerHasDetectedFailure(answer)"],
     );
     assert_contains_all(

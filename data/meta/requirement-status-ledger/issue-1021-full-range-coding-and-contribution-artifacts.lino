@@ -23,7 +23,7 @@ requirement_status_ledger_shard
     id "R1021-12"
     verdict "implemented"
     delivered "PR #1027 (issue #1021), 2026-08-20"
-    automated_test "rust/tests/unit/issue_1021_recoverable_memory.rs"
+    automated_test "rust/tests/unit/memory/issue_1021_recoverable_memory.rs"
     manual "not yet confirmed"
   requirement
     id "R1021-13"
@@ -135,7 +135,7 @@ requirement_status_ledger_shard
     verdict "implemented"
     delivered "PR #1027 (issue #1021), 2026-08-20"
     automated_test "rust/tests/web/agentic-core.test.mjs"
-    manual "measured 2026-08-20 end to end against a real filesystem by ladder rungs `824.L1`-`824.L5`, all green; falsified 2026-08-20 before the helpers were updated -- driving the recipe made `rust/tests/unit/issue_749_shell_routing.rs` assert `test -e a.txt` where it expected `cp a.txt b.txt`, which is the observable difference between issuing a command and carrying it out, and both unit matrices and the HTTP matrix now assert the whole recipe rather than its first step"
+    manual "measured 2026-08-20 end to end against a real filesystem by ladder rungs `824.L1`-`824.L5`, all green; falsified 2026-08-20 before the helpers were updated -- driving the recipe made `rust/tests/unit/agentic-coding/issue_749_shell_routing.rs` assert `test -e a.txt` where it expected `cp a.txt b.txt`, which is the observable difference between issuing a command and carrying it out, and both unit matrices and the HTTP matrix now assert the whole recipe rather than its first step"
   requirement
     id "R1021-33"
     verdict "implemented"

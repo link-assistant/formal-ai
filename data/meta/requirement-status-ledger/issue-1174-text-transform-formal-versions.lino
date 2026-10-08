@@ -2,7 +2,7 @@
 requirement_status_ledger_shard
   shard "docs/requirements/issue-1174-text-transform-formal-versions.md"
   issue "1174"
-  automated_test "rust/tests/unit/issue_1174_text_transform.rs"
+  automated_test "rust/tests/unit/web-engine-core/issue_1174_text_transform.rs"
   manual "not yet confirmed"
   requirement
     id "R1174-1"

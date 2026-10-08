@@ -5,7 +5,7 @@
 // repair_strategy.mjs, rebuild_plan.mjs, source_links.mjs,
 // document_recipe.mjs and their crate/ dependencies).
 //
-// Each case mirrors a Rust test (rust/tests/unit/agentic_coding.rs,
+// Each case mirrors a Rust test (rust/tests/unit/agentic-coding/agentic_coding.rs,
 // agentic_surfaces.rs, issue_538_agentic.rs, custom_formalization_subject.rs, issue_558_*.rs,
 // issue_1138_formalization_depth.rs); committed artifacts the Rust tests pin
 // byte-for-byte (docs/diagrams/agentic-recipes.md, the issue-538 Agent CLI
@@ -39,7 +39,7 @@ import {
   ownedTotalBytes,
 } from '../../../js/agentic/crate/self_source_links.mjs';
 import { sourceCitation } from '../../../js/agentic/crate/self_explanation.mjs';
-import { stableId } from '../../../js/agentic/crate/engine_stable_id.mjs';
+import { stableId } from '../../../js/agentic/crate/engine_stable_identifier.mjs';
 import { sentences, clauses } from '../../../js/agentic/crate/formalization_segment.mjs';
 import { unknownSurfaceSpans, unknownSurfaces } from '../../../js/agentic/crate/concept_lookup.mjs';
 import { ConceptGraph, formalizeDeeply } from '../../../js/agentic/crate/formalization_concept_links.mjs';
@@ -90,7 +90,7 @@ before(async () => {
   await installNodeHost(new WorkerHost());
 });
 
-describe('formalize (rust/tests/unit/agentic_coding.rs)', () => {
+describe('formalize (rust/tests/unit/agentic-coding/agentic_coding.rs)', () => {
   it('canonical_synopsis_covers_all_nine_primitives', () => {
     const { summary } = formalizeTextToLinks(canonicalFishermanSynopsis(), '');
     assert.ok(coversAllNine(summary));
@@ -302,7 +302,7 @@ describe('formalization recipe (agentic_coding.rs, agentic_surfaces.rs, custom_f
   });
 });
 
-describe('meaning detail (rust/tests/unit/issue_538_agentic.rs)', () => {
+describe('meaning detail (rust/tests/unit/agentic-coding/issue_538_agentic.rs)', () => {
   const seed = repo('data/seed/meanings-translation.lino');
   const block = (head, next) => {
     const start = seed.indexOf(`\n  ${head}\n`) + 1;
@@ -356,7 +356,7 @@ async function documentRecipeModule() {
   }
 }
 
-describe('diagram (rust/tests/unit/issue_538_agentic.rs)', () => {
+describe('diagram (rust/tests/unit/agentic-coding/issue_538_agentic.rs)', () => {
   it('recognises_the_diagram_task', () => {
     assert.ok(diagram.isDiagramTask(TASKS.diagram));
     assert.ok(diagram.isDiagramTask('please draw a mermaid flowchart of the recipes'));

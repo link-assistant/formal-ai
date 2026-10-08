@@ -1,6 +1,6 @@
 // Issue #661 (R384 of issue #538): the browser worker warns when a requirement
 // contradicts one an earlier user turn stated, before a contextual handler can
-// act on it. JavaScript twin of rust/tests/unit/weighted_statement_formalization.rs over
+// act on it. JavaScript twin of rust/tests/unit/solver/weighted_statement_formalization.rs over
 // js/worker/formal_ai_worker_requirement_contradiction.js; both runtimes read
 // the required and forbidden surfaces from data/seed/statement-audit-registry.lino.
 

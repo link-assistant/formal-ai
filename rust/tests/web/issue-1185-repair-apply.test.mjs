@@ -2,7 +2,7 @@
 // back and rendered into the artifact's source, mirroring
 // `repair_edit_record_renders_back_into_the_source` and
 // `repair_loop_applies_the_recorded_fix_before_the_retry` in
-// rust/tests/unit/issue_1185_repair_apply.rs. This root has no CST engine, so
+// rust/tests/unit/agentic-coding/issue_1185_repair_apply.rs. This root has no CST engine, so
 // the loop applies only with a validator supplied, and without one it goes on
 // to the retry exactly as the Rust build does with `meta-language` off.
 

@@ -1,7 +1,7 @@
 // Browser-worker twins of issue #1172 (word-boundary subject matching, R10)
 // and issue #1173 (no canned search description as an answer, R5).
 //
-// The Rust root pins both in rust/tests/unit/issue_1172_factual_qa_subject_match.rs
+// The Rust root pins both in rust/tests/unit/web-engine-core/issue_1172_factual_qa_subject_match.rs
 // and rust/tests/unit/issue_1173_fallback_executes_search.rs; these cases hold
 // the worker to the same rule.
 

@@ -4,7 +4,7 @@
 // browser worker answers both from their documentation captures and says the
 // program was not run; rust/tests/integration/issue_412_oracle_languages.rs
 // pins the native answer's "not run" status, and
-// rust/tests/unit/issue_1138_toolchain_probe.rs that no catalog row may assert
+// rust/tests/unit/prerequisite/issue_1138_toolchain_probe.rs that no catalog row may assert
 // its own availability.
 
 import assert from 'node:assert/strict';

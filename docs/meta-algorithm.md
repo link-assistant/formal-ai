@@ -949,7 +949,7 @@ section is grounded by
 [`data/meta/budget-search-recipe.lino`](../data/meta/budget-search-recipe.lino) and
 pinned by
 [`rust/tests/unit/specification/budget_search_meta_algorithm.rs`](../rust/tests/unit/specification/budget_search_meta_algorithm.rs)
-and [`rust/tests/unit/budget_search.rs`](../rust/tests/unit/budget_search.rs).
+and [`rust/tests/unit/solver/budget_search.rs`](../rust/tests/unit/solver/budget_search.rs).
 
 ### The nine steps
 

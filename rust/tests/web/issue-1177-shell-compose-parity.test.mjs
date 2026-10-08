@@ -1,7 +1,7 @@
 // Issue #1177 browser parity: natural-language shell-command composition.
 //
 // The worker twin in js/worker/formal_ai_worker_shell_compose.js must compose
-// the command rust/tests/unit/issue_1177_code_task_handlers.rs pins, explain
+// the command rust/tests/unit/web-engine-core/issue_1177_code_task_handlers.rs pins, explain
 // every emitted flag from data/seed/manual-pages.lino, and never execute it.
 
 import assert from "node:assert/strict";

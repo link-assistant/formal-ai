@@ -3,7 +3,7 @@
 // `is_identifier_word`). The recipe-learning ledger is not ported.
 
 import { isAlphanumeric, matchIndices, trimMatches } from '../write_str.mjs';
-import { stableId } from './engine_stable_id.mjs';
+import { stableId } from './engine_stable_identifier.mjs';
 import { executeRewrite, rewriteProgram, rewriteRule } from './normal_markov.mjs';
 
 const MAX_REWRITE_STEPS = 100000;

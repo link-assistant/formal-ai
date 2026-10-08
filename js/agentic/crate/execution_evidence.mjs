@@ -3,7 +3,7 @@
 // planner reaches (`Evidence::observed`, `Evidence::from_tool_result`) and the
 // two readers (`reports_success`, `names`) are ported.
 
-import { stableId } from './engine_stable_id.mjs';
+import { stableId } from './engine_stable_identifier.mjs';
 import { sha256Hex } from './source_fetch.mjs';
 import { reportedExitCode } from '../tool_result.mjs';
 

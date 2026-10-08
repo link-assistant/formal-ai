@@ -46,6 +46,22 @@ const MAP = 'data/meta/rename-map.lino';
 const LARGEST_SCANNED_FILE = 4 * 1024 * 1024;
 const PATH_CHARACTER = /[A-Za-z0-9_\-./~@+]/u;
 const WORD_CHARACTER = /[A-Za-z0-9_]/u;
+
+/** Resolve historical destination chains so later area moves preserve old rules. */
+export function resolveRenameChains(renames, allRenames = renames) {
+  const destinations = new Map(allRenames.map((rename) => [rename.from, rename.to]));
+  return renames.map((rename) => {
+    const seen = new Set([rename.from]);
+    let destination = rename.to;
+    while (destinations.has(destination)) {
+      if (seen.has(destination)) throw new Error(`rename cycle at ${destination}`);
+      seen.add(destination);
+      destination = destinations.get(destination);
+    }
+    if (seen.has(destination)) throw new Error(`rename cycle at ${destination}`);
+    return { ...rename, to: destination };
+  });
+}
 /**
  * The directories whose Rust files are the top modules of a test binary, so
  * their parent module is not written in a test path (`rust/tests/x.rs` is the
@@ -100,6 +116,27 @@ export function parseRenameMap(source) {
     if (!rename.from || !rename.to) throw new Error(`${MAP}: a rename in tree ${rename.tree} lacks from or to`);
   }
   return map;
+}
+
+/** Load the map and named shards without repeating shared exclusions. */
+export function loadRenameMap(root = ROOT) {
+  const visiting = new Set();
+  const load = (path) => {
+    if (visiting.has(path)) throw new Error(`rename-map include cycle at ${path}`);
+    visiting.add(path);
+    const source = readFileSync(join(root, path), 'utf8');
+    const map = parseRenameMap(source);
+    map.exclude.push(path);
+    for (const match of source.matchAll(/^\s*include "([^"]+)"\s*$/gmu)) {
+      const shard = load(match[1]);
+      map.exclude.push(...shard.exclude);
+      map.resort.push(...shard.resort);
+      map.renames.push(...shard.renames);
+    }
+    visiting.delete(path);
+    return map;
+  };
+  return load(MAP);
 }
 
 /** The TypeScript twin path of a `js/` source, or null. */
@@ -567,13 +604,13 @@ function main() {
   const args = process.argv.slice(2);
   const treeAt = args.indexOf('--tree');
   const tree = treeAt >= 0 ? args[treeAt + 1] : '';
-  const map = parseRenameMap(readFileSync(join(ROOT, MAP), 'utf8'));
+  const map = loadRenameMap();
   const renames = selectedRenames(map, tree);
   if (renames.length === 0) {
     console.error(tree ? `${MAP} has no renames in tree ${tree}` : `${MAP} has no renames`);
     process.exit(tree ? 1 : 0);
   }
-  const moves = allMoves(renames);
+  const moves = allMoves(resolveRenameChains(renames, map.renames));
   if (args.includes('--list')) {
     for (const move of moves) console.log(`${move.rename.tree}\t${move.from}\t${move.to}${move.companion ? `\t(${move.companion})` : ''}`);
   } else if (args.includes('--check')) {

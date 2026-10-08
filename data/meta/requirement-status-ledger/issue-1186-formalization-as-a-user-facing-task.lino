@@ -17,12 +17,12 @@ requirement_status_ledger_shard
     id "R1186-2"
     verdict "implemented"
     delivered "PR #1188 (dc3671dc7, 2026-09-30; seed-root read fix 4566820cb, 2026-10-06)"
-    automated_test "rust/tests/unit/issue_1186_formalization_task.rs"
+    automated_test "rust/tests/unit/web-engine-core/issue_1186_formalization_task.rs"
   requirement
     id "R1186-3"
     verdict "implemented"
     delivered "PR #1188 (dc3671dc7), 2026-09-30"
-    automated_test "rust/tests/unit/issue_1186_formalization_task.rs"
+    automated_test "rust/tests/unit/web-engine-core/issue_1186_formalization_task.rs"
   requirement
     id "R1186-4"
     verdict "partial"
@@ -47,7 +47,7 @@ requirement_status_ledger_shard
     id "R1186-8"
     verdict "implemented"
     delivered "2026-10-07 (this pull request); row regenerated from data/meta/llm-task-classes.lino, unmeasured until the release probe runs"
-    automated_test "rust/tests/unit/issue_1186_formalization_probe_set.rs"
+    automated_test "rust/tests/unit/web-engine-core/issue_1186_formalization_probe_set.rs"
   requirement
     id "R1186-9"
     verdict "implemented"

@@ -158,7 +158,7 @@ network (`data/meta/issue-663-handler-precedence-learning.lino`) that the
 The report is one row in the `REPORTS` table
 (`rust/src/agentic_coding/learning_report.rs`) — data-routed, not a planner branch —
 and its committed evidence is byte-for-byte reproducible by the in-process
-renderer (`rust/tests/unit/issue_663_handler_precedence_learning.rs`), so the tool,
+renderer (`rust/tests/unit/agentic-coding/issue_663_handler_precedence_learning.rs`), so the tool,
 not a hand-edit, is the author. See `docs/case-studies/issue-663/`.
 
 ---

@@ -1,5 +1,5 @@
 // Issue #1177 browser twins of the closed requirement gaps; the native pins
-// are rust/tests/unit/issue_1177_requirement_closure.rs.
+// are rust/tests/unit/web-engine-core/issue_1177_requirement_closure.rs.
 //
 // R1177-2: the composed pattern fills its execution line with the derived
 // examples it was run against. R1177-5: every explained line is listed with

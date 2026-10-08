@@ -63,7 +63,7 @@ test("an engine ready before the page load registers on the load", async () => {
 });
 
 test("the app announces the ready engine the moment the worker reports it", () => {
-  const hooks = read("js/app/app-worker-hooks.jsx");
+  const hooks = read("js/app/application-worker-hooks.jsx");
   const ready = hooks.slice(hooks.indexOf('data.kind === "ready"'));
   assert.match(ready.slice(0, ready.indexOf("return;")), /dispatchEvent\(new Event\("formal-ai-ready"\)\)/);
 });

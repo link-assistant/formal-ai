@@ -10,7 +10,7 @@
 // JSONL transcript loaders (`load_observations`, `observe_proxy_transcript`)
 // belong to `formal-ai learn clients` and are not orchestration inputs.
 
-import { stableId } from './engine_stable_id.mjs';
+import { stableId } from './engine_stable_identifier.mjs';
 
 const byteOrder = (left, right) => Buffer.compare(Buffer.from(left), Buffer.from(right));
 const sorted = (values) => [...values].sort(byteOrder);

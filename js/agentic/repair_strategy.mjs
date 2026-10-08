@@ -2,7 +2,7 @@
 //
 // The Rust document is rendered from `crate::repair_strategy::canonical_strategies()`;
 // the committed data/meta/repair-strategies.lino is asserted byte-for-byte equal
-// to it (rust/tests/unit/issue_558_repair_strategy.rs), so the port reads it.
+// to it (rust/tests/unit/agentic-coding/issue_558_repair_strategy.rs), so the port reads it.
 
 import { cached, childValue, childrenNamed, parseLino, readText } from './host.mjs';
 import { agenticMessage } from './messages.mjs';

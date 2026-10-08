@@ -2,7 +2,7 @@
 // runs them in a dedicated demo conversation.
 
 import React from "react";
-import { EXAMPLE_PROMPTS } from "./app-constants.jsx";
+import { EXAMPLE_PROMPTS } from "./application-constants.jsx";
 import { messagesForConversation, randomInt } from "./conversations.jsx";
 
 const { useEffect, useRef } = React;

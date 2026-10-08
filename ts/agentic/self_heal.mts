@@ -3,7 +3,7 @@
 // The Rust document is `crate::self_healing::canonical_case().links_notation()`,
 // which parses a real module through the CST/AST engine; the committed
 // data/meta/self-healing-case.lino is asserted byte-for-byte equal to it
-// (rust/tests/unit/issue_558_self_healing.rs), so the port reads that artifact.
+// (rust/tests/unit/agentic-coding/issue_558_self_healing.rs), so the port reads that artifact.
 
 import { cached, childValue, childrenNamed, parseLino, readText } from './host.mjs';
 import { agenticMessage } from './messages.mjs';

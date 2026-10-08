@@ -7,7 +7,7 @@
 // f:` replaced the line by the words (G22); `Rename the file m.py to x.py`
 // rewrote the word `the` (G24); an empty line beside an anchor only read the
 // file (G31). The Rust twin is
-// rust/tests/unit/pull_request_1188_edit_composer_gaps.rs.
+// rust/tests/unit/agentic-coding/pull_request_1188_edit_composer_gaps.rs.
 
 import { before, describe, test } from 'node:test';
 import assert from 'node:assert/strict';

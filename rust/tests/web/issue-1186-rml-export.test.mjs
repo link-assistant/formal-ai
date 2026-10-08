@@ -1,6 +1,6 @@
 // Issue #1186 R4/R6, JavaScript root: the clause is rendered as the typed
 // relative-meta-logic fragment `rml export lean` reads (formalRmlSource, the
-// twin of `rml_source` pinned by rust/tests/unit/issue_1186_rml_export.rs),
+// twin of `rml_source` pinned by rust/tests/unit/solver/issue_1186_rml_export.rs),
 // and the honesty block states the rml step. The browser has no process to run
 // rml in, so its step is "absent" for a universal clause and "outside the
 // subset" for the existential and negative readings.

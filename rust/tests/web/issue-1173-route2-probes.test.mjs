@@ -1,7 +1,7 @@
 // Issue #1173 R1173-3 browser twin, the fourth routing-probe pass: requests
 // that need no outside knowledge reach their class handler, never another
 // lane or the fallback, each read from seed data. Native pins:
-// rust/tests/unit/issue_1173_route2_probes.rs.
+// rust/tests/unit/capability-routing/issue_1173_route2_probes.rs.
 
 import assert from "node:assert/strict";
 import test from "node:test";

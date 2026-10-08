@@ -1,7 +1,7 @@
 // Browser-worker drafts of issue #1172 R2 (subject Q-id gate), R6 (seeded
 // comparisons) and R7 (questions over prompt-supplied text), JavaScript first.
 //
-// The native twins are pinned in rust/tests/unit/issue_1172_factual_qa_gate.rs.
+// The native twins are pinned in rust/tests/unit/web-engine-core/issue_1172_factual_qa_gate.rs.
 // Every case runs offline: an external fetch is counted, and the R7 cases
 // assert none happened.
 

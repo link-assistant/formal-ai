@@ -7,23 +7,23 @@ requirement_status_ledger_shard
   requirement
     id "R370"
     verdict "implemented"
-    automated_test "rust/tests/unit/word_surface_grammar.rs"
+    automated_test "rust/tests/unit/seed/word_surface_grammar.rs"
   requirement
     id "R371"
     verdict "implemented"
-    automated_test "rust/tests/unit/word_surface_grammar.rs"
+    automated_test "rust/tests/unit/seed/word_surface_grammar.rs"
   requirement
     id "R372"
     verdict "implemented"
-    automated_test "rust/tests/unit/word_surface_grammar.rs"
+    automated_test "rust/tests/unit/seed/word_surface_grammar.rs"
   requirement
     id "R373"
     verdict "implemented"
-    automated_test "rust/tests/unit/word_surface_grammar.rs"
+    automated_test "rust/tests/unit/seed/word_surface_grammar.rs"
   requirement
     id "R374"
     verdict "implemented"
-    automated_test "rust/tests/unit/semantic_grounding.rs"
+    automated_test "rust/tests/unit/seed/semantic_grounding.rs"
   requirement
     id "R375"
     verdict "implemented"
@@ -31,7 +31,7 @@ requirement_status_ledger_shard
   requirement
     id "R376"
     verdict "implemented"
-    automated_test "rust/tests/unit/word_surface_grammar.rs"
+    automated_test "rust/tests/unit/seed/word_surface_grammar.rs"
   requirement
     id "R377"
     verdict "implemented"
@@ -66,7 +66,7 @@ requirement_status_ledger_shard
   requirement
     id "R385"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_538_agentic.rs"
+    automated_test "rust/tests/unit/agentic-coding/issue_538_agentic.rs"
   requirement
     id "R386"
     verdict "implemented"

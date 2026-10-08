@@ -18,7 +18,7 @@ import { composeGeneralChangePlan } from '../general_planner.mjs';
 import { findChildValue, parseLinoRoot } from '../write_lino.mjs';
 import { wordsForRole } from '../write_lexicon.mjs';
 import { isAlphanumeric, isWhitespace, lines, trim, trimEnd, trimEndMatches, utf8Len } from '../write_str.mjs';
-import { debugOption, stableId } from './engine_stable_id.mjs';
+import { debugOption, stableId } from './engine_stable_identifier.mjs';
 import { evidenceNames, reportsSuccess } from './execution_evidence.mjs';
 import { detect } from './language.mjs';
 import { sha256Hex } from './source_fetch.mjs';

@@ -2,7 +2,7 @@
 // punctuation_only_prompt, ill_formed, physical_action_question,
 // opinion_question) answer in the browser through the same
 // data/seed/handler-rules.lino the native rule interpreter walks. Prompts and
-// expected wording are the ones rust/tests/unit/issue_1085_rule_interpreter.rs
+// expected wording are the ones rust/tests/unit/seed/issue_1085_rule_interpreter.rs
 // asserts against the native engine.
 
 import assert from "node:assert/strict";

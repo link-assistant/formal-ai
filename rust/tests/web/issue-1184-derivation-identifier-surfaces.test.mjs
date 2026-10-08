@@ -1,7 +1,7 @@
 // Issue #1184 R1 and R8: every calling surface carries the answer's
 // content-addressed derivation id (`SymbolicAnswer::derivation_id`,
 // rust/src/engine_answer.rs) — the browser worker's `finalize` result
-// (`derivationId`, read by js/app/app-conversation-hooks.jsx) and the
+// (`derivationId`, read by js/app/application-conversation-hooks.jsx) and the
 // JavaScript server's `/v1/responses` object (`derivation_id` beside
 // `evidence_links`, as rust/src/protocol/output.rs `ResponseObject`). The
 // constant is the one rust/tests/unit/issue_1184_derivation_records.rs pins.

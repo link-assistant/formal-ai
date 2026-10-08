@@ -11,15 +11,15 @@ requirement_status_ledger_shard
   requirement
     id "R527-10"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_527_question_catalog.rs"
+    automated_test "rust/tests/unit/agentic-coding/issue_527_question_catalog.rs"
   requirement
     id "R527-11"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_527_question_catalog.rs"
+    automated_test "rust/tests/unit/agentic-coding/issue_527_question_catalog.rs"
   requirement
     id "R527-12"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_527_question_catalog.rs"
+    automated_test "rust/tests/unit/agentic-coding/issue_527_question_catalog.rs"
   requirement
     id "R527-2"
     verdict "implemented"
@@ -51,4 +51,4 @@ requirement_status_ledger_shard
   requirement
     id "R527-9"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_527_question_catalog.rs"
+    automated_test "rust/tests/unit/agentic-coding/issue_527_question_catalog.rs"

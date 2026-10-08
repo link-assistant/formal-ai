@@ -53,7 +53,7 @@ const AUTHORED_LADDER_RULES: &str = "experiments/issue_1028_agent_cli_ladder/rul
 ///
 /// `handler_files` used to be measured here by a second directory walk with
 /// slightly different rules from `scripts/check-minimal-core-boundary.rs`'s, and
-/// `tests/unit/issue_699_handler_migration.rs` held a third copy as Rust
+/// `tests/unit/seed/issue_699_handler_migration.rs` held a third copy as Rust
 /// constants. Three copies of one number is how 37/50 drifted from 36/39
 /// unnoticed. There is now one census — the boundary ledger's `source` rows,
 /// which that gate proves equal to the tree file for file — and this script
@@ -209,7 +209,7 @@ fn between<'a>(text: &'a str, open: &str, close: &str) -> &'a str {
 
 /// Native dispatch entries that are still a compiled `try_*` arm.
 ///
-/// The same reading `tests/unit/issue_699_handler_migration.rs` performs, so the
+/// The same reading `tests/unit/seed/issue_699_handler_migration.rs` performs, so the
 /// test and the gate cannot disagree about what a dispatch entry is.
 fn try_dispatch_entries(root: &Path) -> Result<u64, String> {
     let dispatch = read(root, "rust/src/solver_dispatch.rs")?;

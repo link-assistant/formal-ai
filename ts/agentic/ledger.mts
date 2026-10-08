@@ -2,7 +2,7 @@
 //
 // The Rust document is `crate::learning_ledger::canonical_ledger().links_notation()`;
 // the committed data/meta/learning-ledger.lino is asserted byte-for-byte equal
-// to it (rust/tests/unit/issue_558_learning_ledger.rs), so the port reads it.
+// to it (rust/tests/unit/agentic-coding/issue_558_learning_ledger.rs), so the port reads it.
 
 import { cached, childrenNamed, parseLino, readText } from './host.mjs';
 import { agenticMessage } from './messages.mjs';

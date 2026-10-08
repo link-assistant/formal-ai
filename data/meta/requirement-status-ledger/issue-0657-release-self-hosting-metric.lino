@@ -3,7 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0657-release-self-hosting-metric.md"
   issue "0657"
   delivered "PR #735 (issue #657)"
-  automated_test "rust/tests/unit/issue_657_self_hosting_learning.rs"
+  automated_test "rust/tests/unit/agentic-coding/issue_657_self_hosting_learning.rs"
   manual "not yet confirmed"
   requirement
     id "R473"

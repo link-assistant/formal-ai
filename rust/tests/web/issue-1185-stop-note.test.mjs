@@ -1,6 +1,6 @@
 // Issue #1185 R4/R5/R6 parity: a stopped repair loop reports why it stopped
 // and carries the attempt chain, as `stop_note` does in
-// rust/tests/unit/issue_1185_error_repair_loop.rs.
+// rust/tests/unit/agentic-coding/issue_1185_error_repair_loop.rs.
 
 import { before, test } from 'node:test';
 import assert from 'node:assert/strict';

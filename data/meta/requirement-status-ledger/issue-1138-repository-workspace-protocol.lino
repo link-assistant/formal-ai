@@ -7,19 +7,19 @@ requirement_status_ledger_shard
   requirement
     id "R1138-3-1"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_1138_repository_workspace.rs"
+    automated_test "rust/tests/unit/repository-workspace/issue_1138_repository_workspace.rs"
   requirement
     id "R1138-3-2"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_1138_locate_targets.rs"
+    automated_test "rust/tests/unit/repository-workspace/issue_1138_locate_targets.rs"
   requirement
     id "R1138-3-3"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_1138_named_tests.rs"
+    automated_test "rust/tests/unit/repository-workspace/issue_1138_named_tests.rs"
   requirement
     id "R1138-3-4"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_1138_repository_workspace.rs"
+    automated_test "rust/tests/unit/repository-workspace/issue_1138_repository_workspace.rs"
   requirement
     id "R1138-3-5"
     verdict "partial"
@@ -27,7 +27,7 @@ requirement_status_ledger_shard
   requirement
     id "R1138-3-6"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_1138_command_allowlist.rs"
+    automated_test "rust/tests/unit/repository-workspace/issue_1138_command_allowlist.rs"
   requirement
     id "R1138-3-7"
     verdict "implemented"
@@ -35,7 +35,7 @@ requirement_status_ledger_shard
   requirement
     id "R1138-3-8"
     verdict "implemented"
-    automated_test "rust/tests/unit/issue_1138_repository_workspace.rs"
+    automated_test "rust/tests/unit/repository-workspace/issue_1138_repository_workspace.rs"
   requirement
     id "R1138-3-9"
     verdict "implemented"

@@ -31,7 +31,7 @@ requirement_status_ledger_shard
     id "R1085-14"
     verdict "implemented"
     delivered "none recorded"
-    automated_test "rust/tests/unit/issue_1138_frontier_classes.rs"
+    automated_test "rust/tests/unit/capability-routing/issue_1138_frontier_classes.rs"
   requirement
     id "R1085-15"
     verdict "partial"
@@ -51,12 +51,12 @@ requirement_status_ledger_shard
     id "R1085-2"
     verdict "implemented"
     delivered "none recorded"
-    automated_test "rust/tests/unit/issue_1085_seed_links.rs"
+    automated_test "rust/tests/unit/seed/issue_1085_seed_links.rs"
   requirement
     id "R1085-3"
     verdict "implemented"
     delivered "none recorded"
-    automated_test "rust/tests/unit/issue_1085_requirement_resolution.rs"
+    automated_test "rust/tests/unit/agentic-coding/issue_1085_requirement_resolution.rs"
   requirement
     id "R1085-4"
     verdict "implemented"
@@ -80,4 +80,4 @@ requirement_status_ledger_shard
   requirement
     id "R1085-9"
     verdict "partial"
-    automated_test "rust/tests/unit/issue_1085_requirement_resolution.rs"
+    automated_test "rust/tests/unit/agentic-coding/issue_1085_requirement_resolution.rs"
