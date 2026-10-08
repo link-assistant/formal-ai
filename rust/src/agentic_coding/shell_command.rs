@@ -236,6 +236,7 @@ pub(super) fn explicit_passthrough_command(prompt: &str) -> Option<String> {
         return None;
     }
     prefixed_shell_command(prompt, &seed::terminal_command_vocabulary())
+        .filter(|command| super::shell_command_policy::shell_quotes_paired(command))
 }
 
 fn bare_shell_command(prompt: &str, vocab: &TerminalCommandVocabulary) -> Option<String> {

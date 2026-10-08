@@ -173,7 +173,10 @@ fn orders_a_named_command(clause: &str) -> bool {
 /// only a pronoun and does not.
 pub(super) fn governs_commands_rather_than_requesting_one(prompt: &str) -> bool {
     let sentences = sentence_spans(prompt);
-    !sentences.is_empty() && sentences.iter().all(|sentence| states_a_command_policy(sentence))
+    !sentences.is_empty()
+        && sentences
+            .iter()
+            .all(|sentence| states_a_command_policy(sentence))
 }
 
 /// The command text after a passthrough prefix, past an optional colon.
@@ -363,4 +366,28 @@ pub(super) fn is_prose_word(word: &str) -> bool {
         .trim_matches(|c: char| !c.is_ascii_alphanumeric())
         .to_ascii_lowercase();
     PROSE_WORDS.contains(&normalized.as_str())
+}
+
+/// Pair outer shell quotes; actual shell execution remains the syntax authority.
+pub(super) fn shell_quotes_paired(command: &str) -> bool {
+    let mut quote = None;
+    let mut escaped = false;
+    for character in command.chars() {
+        if quote == Some('\'') {
+            if Some(character) == quote {
+                quote = None;
+            }
+        } else if escaped {
+            escaped = false;
+        } else if character == '\\' {
+            escaped = true;
+        } else if quote.is_some() {
+            if Some(character) == quote {
+                quote = None;
+            }
+        } else if ['\'', '"', '`'].contains(&character) {
+            quote = Some(character);
+        }
+    }
+    quote.is_none() && !escaped
 }

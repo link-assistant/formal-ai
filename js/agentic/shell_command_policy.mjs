@@ -155,3 +155,23 @@ export function isProseWord(word) {
   const normalized = toAsciiLowercase(trimMatches(word, (character) => !/^[0-9A-Za-z]$/.test(character)));
   return PROSE_WORDS.has(normalized);
 }
+
+/** Mirrors `fn shell_quotes_paired`; the shell remains the syntax authority. */
+export function shellQuotesPaired(command) {
+  let quote = null;
+  let escaped = false;
+  for (const character of command) {
+    if (quote === "'") {
+      if (character === quote) quote = null;
+    } else if (escaped) {
+      escaped = false;
+    } else if (character === '\\') {
+      escaped = true;
+    } else if (quote !== null) {
+      if (character === quote) quote = null;
+    } else if (["'", '"', '`'].includes(character)) {
+      quote = character;
+    }
+  }
+  return quote === null && !escaped;
+}

@@ -384,3 +384,11 @@ fn g128_explicit_command_payload_does_not_become_research() {
     let arguments: serde_json::Value = serde_json::from_str(&calls[0].arguments).unwrap();
     assert_eq!(arguments["command"].as_str(), Some(command));
 }
+
+#[test]
+fn explicit_shell_quoted_apostrophe_remains_command_data() {
+    let command = r#"node -e 'process.stdout.write("don'\''t expand $HOME")'"#;
+    let prompt = format!("Run {command}");
+    assert_eq!(shell_command(&prompt).as_deref(), Some(command));
+    assert!(shell_command("Run node -e 'unclosed").is_none());
+}

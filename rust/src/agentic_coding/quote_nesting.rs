@@ -151,7 +151,9 @@ pub(super) fn nested_quote_fault(text: &str) -> Option<NestedQuote> {
 /// Steps joined by a sequence cue are each checked alone (G99).
 pub(super) fn request_fault_answer(task: &str, allow_multiple_files: bool) -> Option<AgenticPlan> {
     // Formal query escapes belong to its parser, rather than prose quote pairing.
-    if super::code_artifact::explicit_substitution_query(task).is_some() {
+    if super::code_artifact::explicit_substitution_query(task).is_some()
+        || super::shell_command::explicit_passthrough_command(task).is_some()
+    {
         return None;
     }
     let fault = crate::normal_markov::quote_fault(task)

@@ -3,7 +3,7 @@
 
 import {
   commandSpan, governsCommandsRatherThanRequestingOne, isProseWord, namedShellCommandInSentence,
-  normalizeCommandWord, sentenceSpans, statesACommandPolicy,
+  normalizeCommandWord, sentenceSpans, shellQuotesPaired, statesACommandPolicy,
 } from './shell_command_policy.mjs';
 import { asksForDirectoryListing } from './directory_listing.mjs';
 import { withoutPathWords } from './workspace_line_operation.mjs';
@@ -143,7 +143,8 @@ function readsAsProse(remainder, vocab) {
 export function explicitPassthroughCommand(task) {
   const prompt = stripBalancedOuterQuotes(trim(task));
   if (governsCommandsRatherThanRequestingOne(prompt)) return null;
-  return prefixedShellCommand(prompt, terminalCommandVocabulary());
+  const command = prefixedShellCommand(prompt, terminalCommandVocabulary());
+  return command !== null && shellQuotesPaired(command) ? command : null;
 }
 
 /** Mirrors `fn bare_shell_command`. */

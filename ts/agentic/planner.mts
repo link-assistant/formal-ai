@@ -152,7 +152,8 @@ async function planWorkspaceChangeArm(task, messages, toolNames) {
  */
 function requestFaultAnswer(task, allowMultipleFiles = false) {
   // Formal query escapes are validated by its own grammar before prose pairing.
-  if (codeArtifact.explicitSubstitutionQuery(task) !== null) return null;
+  if (codeArtifact.explicitSubstitutionQuery(task) !== null
+    || shellCommand.explicitPassthroughCommand(task) !== null) return null;
   const fault = quoteFault(task) ?? quoteNesting.nestedQuoteFault(task);
   if (fault !== null) {
     const answer = codeTask.renderSeededChange(fault.intent ?? `request_quote_${fault.kind}`, task, '', [['{fragment}', fault.fragment]]);
