@@ -201,5 +201,5 @@ fn the_ladder_can_measure_without_per_leaf_authored_answers() {
     assert!(ratchet.contains("leaf_nodes_passing_without_authored_rules"));
 
     let debt = fs::read_to_string(root().join("data/meta/debt-ratchet.lino")).expect("debt");
-    assert!(debt.contains("measure authored_ladder_rules\n    value 32"));
+    assert!(debt.contains("measure authored-ladder-rules\n    value 32"));
 }

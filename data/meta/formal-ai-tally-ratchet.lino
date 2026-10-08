@@ -6,5 +6,5 @@
 # names no test, pin, gap or carrying row, and no test file under rust/tests/
 # cites its id. scripts/tally-formal-ai-dogfood.mjs --check fails above the
 # ceiling and asks for it to be lowered below it, so the number only falls.
-formal_ai_tally_ratchet
-  fixed_without_test_ceiling 0
+formal-ai-tally-ratchet
+  fixed-without-test-ceiling 0

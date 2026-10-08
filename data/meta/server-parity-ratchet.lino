@@ -8,5 +8,5 @@
 # differences are never listed, they fail outright. The list must match the
 # run exactly, so the ceiling only falls - regenerate it with
 # `node scripts/check-server-parity.mjs --write-ratchet` once a twin closes.
-server_parity_ratchet
-  answer_divergence_ceiling 0
+server-parity-ratchet
+  answer-divergence-ceiling 0

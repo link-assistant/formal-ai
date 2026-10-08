@@ -192,9 +192,9 @@ function citedTaskIds(root) {
 }
 
 function ceilingOf(text) {
-  const match = /^\s*fixed_without_test_ceiling\s+(\d+)\s*$/mu.exec(text);
+  const match = /^\s*fixed[-_]without[-_]test[-_]ceiling\s+(\d+)\s*$/mu.exec(text);
   if (!match) {
-    throw new Error(`${RATCHET} names no fixed_without_test_ceiling`);
+    throw new Error(`${RATCHET} names no fixed-without-test-ceiling`);
   }
   return Number(match[1]);
 }
@@ -227,7 +227,7 @@ function main(argv) {
   if (measured > ceiling) {
     problems.push(`fixed failures naming no regression test: ${measured} above the ceiling ${ceiling} (${result.fixedWithoutTest.join(', ')})`);
   } else if (measured < ceiling) {
-    problems.push(`fixed failures naming no regression test fell to ${measured}; lower fixed_without_test_ceiling in ${RATCHET}`);
+    problems.push(`fixed failures naming no regression test fell to ${measured}; lower fixed-without-test-ceiling in ${RATCHET}`);
   }
   for (const problem of problems) {
     console.error(`::error::${problem}`);

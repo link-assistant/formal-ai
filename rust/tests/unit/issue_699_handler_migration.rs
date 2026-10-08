@@ -48,8 +48,8 @@ fn reviewed_ceiling(measure: &str) -> usize {
     }
     panic!(
         "data/meta/debt-ratchet.lino names no `{measure}` ceiling; plan 09 leaf 4 adds \
-         try_dispatch_entries, promotion_predicates, dispatch_name_special_cases, \
-         worker_sync_handler_literals and store_read_share through the strict checker"
+         try-dispatch-entries, promotion-predicates, dispatch-name-special-cases, \
+         worker-sync-handler-literals and store-read-share through the strict checker"
     );
 }
 
@@ -291,7 +291,7 @@ fn handler_migration_ratchet() {
         .expect("the repository root sits one level above the crate");
     let files = handler_files();
     let handler_files = files.len();
-    let handler_ceiling = reviewed_ceiling("handler_files");
+    let handler_ceiling = reviewed_ceiling("handler-files");
     assert!(
         handler_files <= handler_ceiling,
         "specialized handler files grew from {handler_ceiling} to {handler_files}; the \
@@ -317,7 +317,7 @@ fn handler_migration_ratchet() {
                 .is_some_and(|(_, function)| function.trim_start().starts_with("try_"))
         })
         .count();
-    let try_ceiling = reviewed_ceiling("try_dispatch_entries");
+    let try_ceiling = reviewed_ceiling("try-dispatch-entries");
     assert!(
         try_entries <= try_ceiling,
         "try_* dispatch entries grew from {try_ceiling} to {try_entries}; the reviewed \
@@ -395,7 +395,7 @@ fn migration_ledger_is_a_complete_live_registry_census() {
     );
     assert_eq!(
         pending,
-        reviewed_ceiling("handler_migration_pending"),
+        reviewed_ceiling("handler-migration-pending"),
         "the pending count and its ceiling in data/meta/debt-ratchet.lino are one number, \
          recorded once. Plan 09 leaf 5 raises it 40 -> 45 with note \"corrected undercount\" \
          when the five prelude rows join the census, and it only falls afterwards",

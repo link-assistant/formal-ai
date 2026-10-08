@@ -13,8 +13,8 @@
 #
 # `exempt` lists a module that exists only on the JavaScript side by design,
 # with the reason. A module that ports a Rust module is never exempt.
-planner_twin_ratchet
-  no_twin_ceiling 0
+planner-twin-ratchet
+  no-twin-ceiling 0
   exempt js/agentic/host.mjs
     reason "The host port the planner reads files, the clock and the network through; native Rust calls std directly."
   exempt js/agentic/node-host.mjs

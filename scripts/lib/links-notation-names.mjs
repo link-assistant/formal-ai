@@ -186,11 +186,15 @@ function quotedChild(node, key) {
 }
 
 function familyOf(name, node) {
-  const family = { name, files: [], readers: [], keepNames: new Map(), applied: false };
+  const family = { name, rule: 'dash-names', files: [], except: new Map(), readers: [], keepNames: new Map(), applied: false };
   for (const child of node.children) {
     const [key, ...rest] = child.line.split(/\s+/u);
     if (key === 'files') {
       family.files.push(rest.join(' '));
+    } else if (key === 'rule') {
+      family.rule = rest[0];
+    } else if (key === 'except') {
+      family.except.set(rest[0], quotedChild(child, 'reason'));
     } else if (key === 'readers') {
       family.readers.push(...rest);
     } else if (key === 'keep') {

@@ -124,9 +124,9 @@ export function rustFunctions(source) {
  * @returns {{ceiling: number, exempt: Set<string>}}
  */
 export function ratchetFrom(lino) {
-  const ceiling = /^\s*no_twin_ceiling\s+(\d+)\s*$/m.exec(lino);
+  const ceiling = /^\s*no[-_]twin[-_]ceiling\s+(\d+)\s*$/m.exec(lino);
   if (!ceiling) {
-    throw new Error('no_twin_ceiling missing');
+    throw new Error('no-twin-ceiling missing');
   }
   const exempt = new Set([...lino.matchAll(/^\s*exempt\s+(\S+)/gm)].map((match) => match[1]));
   return { ceiling: Number(ceiling[1]), exempt };
@@ -202,7 +202,7 @@ function main(argv) {
   }
   if (missing.length < ceiling) {
     console.error(
-      `::error file=${RATCHET_FILE}::parity improved: lower no_twin_ceiling to ${missing.length} ` +
+      `::error file=${RATCHET_FILE}::parity improved: lower no-twin-ceiling to ${missing.length} ` +
         'in this commit so it cannot regress.',
     );
     return 1;

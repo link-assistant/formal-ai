@@ -51,7 +51,7 @@ test('R996: the ts/ row matches what ts/ holds', () => {
 
 test('R996: the js/ row reports the measured native-only handler count', () => {
   const ratchet = readFileSync(`${REPO_ROOT}/data/meta/js-parity-ratchet.lino`, 'utf8');
-  const ceiling = Number(/native_only_ceiling (\d+)/.exec(ratchet)?.[1]);
+  const ceiling = Number(/native[-_]only[-_]ceiling (\d+)/.exec(ratchet)?.[1]);
   assert.ok(Number.isInteger(ceiling), 'the parity ratchet records a ceiling');
   const js = row('js/');
   assert.match(js, new RegExp(`measures ${ceiling} native-only handler-registry rows`));

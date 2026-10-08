@@ -94,7 +94,7 @@ export function loadCorpus(text) {
 export function loadRatchet(text) {
   const root = parseLino(text);
   return {
-    ceiling: Number(childValue(root, 'answer_divergence_ceiling') || 0),
+    ceiling: Number(childValue(root, 'answer-divergence-ceiling') || 0),
     listed: childrenNamed(root, 'divergence').map((node) => node.value),
   };
 }
@@ -112,8 +112,8 @@ export function renderRatchet(ids) {
     '# differences are never listed, they fail outright. The list must match the',
     '# run exactly, so the ceiling only falls - regenerate it with',
     '# `node scripts/check-server-parity.mjs --write-ratchet` once a twin closes.',
-    'server_parity_ratchet',
-    `  answer_divergence_ceiling ${ids.length}`,
+    'server-parity-ratchet',
+    `  answer-divergence-ceiling ${ids.length}`,
     ...ids.map((id) => `  divergence ${id}`),
   ];
   return `${lines.join('\n')}\n`;

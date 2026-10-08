@@ -257,28 +257,28 @@ describe('check-debt-ratchet.mjs', () => {
   });
 
   test('a measure above its ceiling and one below it print as the Rust script prints them', () => {
-    const root = ratchetTree([['literal_predicates', 1], ['handler_files', 2], ['language_parity_gaps', 1], ['try_dispatch_entries', 1]]);
+    const root = ratchetTree([['literal-predicates', 1], ['handler-files', 2], ['language-parity-gaps', 1], ['try-dispatch-entries', 1]]);
     try {
       const result = run('check-debt-ratchet.mjs', ['--repo', root, '--base', 'HEAD'], root);
       assert.equal(result.status, 1);
       const out = result.stdout.split('\n');
       assert.deepEqual(out.slice(0, 5), [
         'debt ratchet (data/meta/debt-ratchet.lino):',
-        '  handler_files: measured 1 / ceiling 2',
-        '  language_parity_gaps: measured 1 / ceiling 1',
-        '  literal_predicates: measured 2 / ceiling 1',
-        '  try_dispatch_entries: measured 1 / ceiling 1',
+        '  handler-files: measured 1 / ceiling 2',
+        '  language-parity-gaps: measured 1 / ceiling 1',
+        '  literal-predicates: measured 2 / ceiling 1',
+        '  try-dispatch-entries: measured 1 / ceiling 1',
       ]);
       // Outside a git work tree the base cannot be read; the Rust script says so and goes on.
       assert.match(out[5], /^ {2}\(skipping the base comparison: git \["show", "HEAD:data\/meta\/debt-ratchet\.lino"\] failed: /);
       assert.deepEqual(out.slice(6), [
-        '::error file=data/meta/debt-ratchet.lino::handler_files: improved from 2 to 1; lower the reviewed ceiling in data/meta/debt-ratchet.lino in this commit',
-        '::error file=data/meta/debt-ratchet.lino::literal_predicates: measured 2, ceiling 1; move the behaviour into data/seed or data/meta rules instead of raising the ceiling (issue #1085 D1)',
+        '::error file=data/meta/debt-ratchet.lino::handler-files: improved from 2 to 1; lower the reviewed ceiling in data/meta/debt-ratchet.lino in this commit',
+        '::error file=data/meta/debt-ratchet.lino::literal-predicates: measured 2, ceiling 1; move the behaviour into data/seed or data/meta rules instead of raising the ceiling (issue #1085 D1)',
         '',
       ]);
       assert.equal(result.stderr, 'check-debt-ratchet: 2 debt ratchet failure(s)\n');
 
-      write(root, 'data/meta/debt-ratchet.lino', 'ceiling\n  measure "literal_predicates"\n  value 2\n');
+      write(root, 'data/meta/debt-ratchet.lino', 'ceiling\n  measure "literal-predicates"\n  value 2\n');
       const held = run('check-debt-ratchet.mjs', ['--repo', root, '--base', 'HEAD'], root);
       assert.equal(held.status, 0);
       assert.ok(held.stdout.endsWith('debt ratchet holds\n'));

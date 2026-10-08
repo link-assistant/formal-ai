@@ -51,7 +51,9 @@ export function parseRatchet(text) {
       continue;
     }
     if (trimmed.startsWith('measure ')) {
-      measure = unquote(trimmed.slice('measure '.length));
+      // A measure name reads in its `-` spelling, so a base revision that still
+      // spells it with `_` compares with this one (R1188-U6).
+      measure = unquote(trimmed.slice('measure '.length)).replaceAll('_', '-');
       named = measure;
       continue;
     }
@@ -207,19 +209,19 @@ export function measure(root) {
   const rows = lines(readRelative(root, ALLOWLIST))
     .filter((line) => trim(line) !== '' && !line.startsWith('#')).length;
   const measured = new Map();
-  measured.set('handler_files', handlerFiles);
-  measured.set('handler_migration_pending', pending);
-  measured.set('literal_predicates', literals);
-  measured.set('hardcoded_language_rows', rows);
-  measured.set('try_dispatch_entries', tryDispatchEntries(root));
-  measured.set('promotion_predicates', promotionPredicates(root));
-  measured.set('dispatch_name_special_cases', dispatchNameSpecialCases(root));
-  measured.set('worker_sync_handler_literals', workerSyncHandlerLiterals(root));
-  measured.set('store_read_share', storeReadShare(root));
-  measured.set('docs_requirements_suites', countEntries(join(root, 'rust/tests/unit'), 'tests/unit', (entry) => entry.name.startsWith('docs_')));
+  measured.set('handler-files', handlerFiles);
+  measured.set('handler-migration-pending', pending);
+  measured.set('literal-predicates', literals);
+  measured.set('hardcoded-language-rows', rows);
+  measured.set('try-dispatch-entries', tryDispatchEntries(root));
+  measured.set('promotion-predicates', promotionPredicates(root));
+  measured.set('dispatch-name-special-cases', dispatchNameSpecialCases(root));
+  measured.set('worker-sync-handler-literals', workerSyncHandlerLiterals(root));
+  measured.set('store-read-share', storeReadShare(root));
+  measured.set('docs-requirements-suites', countEntries(join(root, 'rust/tests/unit'), 'tests/unit', (entry) => entry.name.startsWith('docs_')));
   const ladder = join(root, AUTHORED_LADDER_RULES);
-  measured.set('authored_ladder_rules', countEntries(ladder, ladder, (entry) => extension(entry.path) === 'lino'));
-  measured.set('language_parity_gaps', currentGapCount(root));
+  measured.set('authored-ladder-rules', countEntries(ladder, ladder, (entry) => extension(entry.path) === 'lino'));
+  measured.set('language-parity-gaps', currentGapCount(root));
   return measured;
 }
 

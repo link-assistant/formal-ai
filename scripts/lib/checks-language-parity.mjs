@@ -1,5 +1,5 @@
 // JavaScript twin of the structural census in `scripts/language-parity-lib.rs`
-// that `scripts/check-debt-ratchet.rs` embeds for its `language_parity_gaps`
+// that `scripts/check-debt-ratchet.rs` embeds for its `language-parity-gaps`
 // measure (PR #1188, SCRIPTS-B). The debt ratchet reads the live gap count;
 // `scripts/check-language-parity.mjs` reads the gaps themselves.
 //

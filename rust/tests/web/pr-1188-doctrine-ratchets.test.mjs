@@ -17,7 +17,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..');
 function ceilings(relative) {
   const values = new Map();
   for (const line of readFileSync(join(ROOT, relative), 'utf8').split('\n')) {
-    const match = /^\s+(\w+_ceiling)\s+(\d+)\s*$/.exec(line);
+    const match = /^\s+([\w-]+[-_]ceiling)\s+(\d+)\s*$/.exec(line);
     if (match) values.set(match[1], Number(match[2]));
   }
   return values;
@@ -29,7 +29,7 @@ function gate(script) {
 
 describe('R997/R998: every handler the Rust engine has is a JavaScript twin', () => {
   test('the native-only ceiling is zero', () => {
-    assert.equal(ceilings('data/meta/js-parity-ratchet.lino').get('native_only_ceiling'), 0);
+    assert.equal(ceilings('data/meta/js-parity-ratchet.lino').get('native-only-ceiling'), 0);
   });
 
   test('the registry measures no native-only row', () => {
@@ -41,11 +41,11 @@ describe('R1005/R1010: wording is seed data, not code', () => {
   const held = ceilings('data/meta/js-literal-ratchet.lino');
 
   test('the meta reasoner, the server and the agentic planner are held at zero', () => {
-    for (const key of ['meta_ceiling', 'server_ceiling', 'agentic_ceiling']) assert.equal(held.get(key), 0, key);
+    for (const key of ['meta-ceiling', 'server-ceiling', 'agentic-ceiling']) assert.equal(held.get(key), 0, key);
   });
 
   test('the worker has a finite ceiling the gate measures against', () => {
-    assert.ok(Number.isInteger(held.get('worker_ceiling')) && held.get('worker_ceiling') > 0);
+    assert.ok(Number.isInteger(held.get('worker-ceiling')) && held.get('worker-ceiling') > 0);
   });
 
   test('each zero-ceiling surface measures zero literals', () => {

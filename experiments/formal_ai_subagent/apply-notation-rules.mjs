@@ -21,7 +21,12 @@
 //     studies and logs, which are history).
 //
 // Every renamed name is recorded in data/meta/notation-renames.lino, so the
-// check can prove no reader went back to an old spelling. ts/ is regenerated
+// check can prove no reader went back to an old spelling.
+//
+// A family with `rule concise-lexemes` instead writes each long lexeme block
+// that has one in the concise form (scripts/lib/notation-concise-lexemes.mjs),
+// file by file, only when the result parses to the same tree; its check fails
+// while a family file still holds a long lexeme with a concise form. ts/ is regenerated
 // with `node scripts/translate-es.mjs --write` after a pass.
 //
 // Usage:
@@ -36,6 +41,8 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import { RULES_FILE, namesOfLine, parseTree, readRules } from '../../scripts/lib/links-notation-names.mjs';
+import { conciseLexemes } from '../../scripts/lib/notation-concise-lexemes.mjs';
+import { parseLino } from '../../js/server/lino.mjs';
 import {
   identifiersIn,
   replaceTokens,
@@ -79,7 +86,9 @@ const read = (path) => readFileSync(join(ROOT, path), 'utf8');
 
 /** The files a family names, by glob. */
 export function familyFiles(family) {
-  return tracked(family.files.map((pattern) => `:(glob)${pattern}`)).filter((path) => path.endsWith('.lino')).sort();
+  return tracked(family.files.map((pattern) => `:(glob)${pattern}`))
+    .filter((path) => path.endsWith('.lino') && !family.except.has(path))
+    .sort();
 }
 
 /** Every `.lino` file whose names are notation (not history, not a copy). */
@@ -223,6 +232,40 @@ export function applyMappingDry(mapping, files) {
   }
 }
 
+/** A parsed tree without the parser's indentation bookkeeping. */
+function shape(node) {
+  return { name: node.name, id: node.id, value: node.value, children: node.children.map(shape) };
+}
+
+/**
+ * Apply the concise lexeme rule to a family's files and their mirrors. A file
+ * is written only when its concise form parses to the same tree as before.
+ * Returns `{changed, converted, refused}`.
+ * @param {Array<string>} files
+ */
+export function applyConciseLexemes(files) {
+  const changed = [];
+  const refused = [];
+  let converted = 0;
+  for (const path of files) {
+    const before = read(path);
+    const result = conciseLexemes(before);
+    if (result.converted === 0) {
+      continue;
+    }
+    if (JSON.stringify(shape(parseLino(before))) !== JSON.stringify(shape(parseLino(result.text)))) {
+      refused.push(path);
+      continue;
+    }
+    converted += result.converted;
+    writeIfChanged(path, before, result.text, changed);
+    for (const mirror of mirrorsOf(path)) {
+      writeIfChanged(mirror, read(mirror), result.text, changed);
+    }
+  }
+  return { changed, converted, refused };
+}
+
 /** The recorded renames, per family. */
 export function readRenames(text) {
   const renames = new Map();
@@ -291,6 +334,19 @@ export function checkApplied(rules) {
       });
     }
   }
+  for (const family of rules.families.filter((entry) => entry.rule === 'concise-lexemes')) {
+    for (const path of familyFiles(family)) {
+      const left = conciseLexemes(read(path)).converted;
+      if (left > 0) {
+        problems.push(`family ${family.name}: ${path} holds ${left} long lexeme(s) with a concise form; run --family ${family.name} --write`);
+      }
+      for (const mirror of mirrorsOf(path).filter((candidate) => candidate.startsWith('rust/embedded/'))) {
+        if (read(mirror) !== read(path)) {
+          problems.push(`${mirror} differs from ${path}`);
+        }
+      }
+    }
+  }
   for (const family of rules.families.filter((entry) => renames.has(entry.name))) {
     const plan = planFamily(family);
     for (const name of plan.mapping.keys()) {
@@ -313,6 +369,16 @@ function main(argv) {
   if (!argv.includes('--family') || !family) {
     console.error(`name a family of ${RULES_FILE} with --family: ${rules.families.map((entry) => entry.name).join(', ')}`);
     return 2;
+  }
+  if (family.rule === 'concise-lexemes') {
+    dryRun = !argv.includes('--write');
+    showLines = argv.includes('--lines');
+    const result = applyConciseLexemes(familyFiles(family));
+    console.log(`family ${family.name}: ${result.converted} lexemes to the concise form in ${result.changed.length} files` +
+      `${dryRun ? ' (dry run; --write applies)' : ''}`);
+    result.refused.forEach((path) => console.error(`  refused ${path}: its concise form parses to a different tree`));
+    result.changed.forEach((path) => console.log(`  ${path}`));
+    return result.refused.length === 0 ? 0 : 1;
   }
   const plan = planFamily(family);
   console.log(`family ${family.name}: ${plan.files.length} files, ${plan.mapping.size} names to rename`);

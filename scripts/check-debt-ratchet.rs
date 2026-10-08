@@ -107,7 +107,9 @@ fn parse_ratchet(text: &str) -> Result<Ratchet, String> {
             continue;
         }
         if let Some(rest) = trimmed.strip_prefix("measure ") {
-            measure = Some(unquote(rest));
+            // A measure name reads in its `-` spelling, so a base revision that
+            // still spells it with `_` compares with this one (R1188-U6).
+            measure = Some(unquote(rest).replace('_', "-"));
             named = measure.clone();
             continue;
         }
@@ -342,37 +344,37 @@ fn measure(root: &Path) -> Result<BTreeMap<String, u64>, String> {
         .filter(|line| !line.trim().is_empty() && !line.starts_with('#'))
         .count() as u64;
     let mut measured = BTreeMap::new();
-    measured.insert("handler_files".to_owned(), handler_files);
-    measured.insert("handler_migration_pending".to_owned(), pending);
-    measured.insert("literal_predicates".to_owned(), literals);
-    measured.insert("hardcoded_language_rows".to_owned(), rows);
+    measured.insert("handler-files".to_owned(), handler_files);
+    measured.insert("handler-migration-pending".to_owned(), pending);
+    measured.insert("literal-predicates".to_owned(), literals);
+    measured.insert("hardcoded-language-rows".to_owned(), rows);
     measured.insert(
-        "try_dispatch_entries".to_owned(),
+        "try-dispatch-entries".to_owned(),
         try_dispatch_entries(root)?,
     );
     measured.insert(
-        "promotion_predicates".to_owned(),
+        "promotion-predicates".to_owned(),
         promotion_predicates(root)?,
     );
     measured.insert(
-        "dispatch_name_special_cases".to_owned(),
+        "dispatch-name-special-cases".to_owned(),
         dispatch_name_special_cases(root)?,
     );
     measured.insert(
-        "worker_sync_handler_literals".to_owned(),
+        "worker-sync-handler-literals".to_owned(),
         worker_sync_handler_literals(root)?,
     );
-    measured.insert("store_read_share".to_owned(), store_read_share(root)?);
+    measured.insert("store-read-share".to_owned(), store_read_share(root)?);
     measured.insert(
-        "docs_requirements_suites".to_owned(),
+        "docs-requirements-suites".to_owned(),
         docs_requirements_suites(root)?,
     );
     measured.insert(
-        "authored_ladder_rules".to_owned(),
+        "authored-ladder-rules".to_owned(),
         authored_ladder_rules(root)?,
     );
     measured.insert(
-        "language_parity_gaps".to_owned(),
+        "language-parity-gaps".to_owned(),
         language_parity::current_gap_count(root)?,
     );
     Ok(measured)
@@ -381,7 +383,7 @@ fn measure(root: &Path) -> Result<BTreeMap<String, u64>, String> {
 /// Every measured value **exactly at** its ceiling.
 ///
 /// Issue #1138 B9, plan 09 leaf 2: this was an at-or-below comparison, which is
-/// how `literal_predicates` sat at 548 against a ceiling of 549 for weeks — the
+/// how `literal-predicates` sat at 548 against a ceiling of 549 for weeks — the
 /// gate was green while the ledger stated a number the tree had already beaten,
 /// so the next commit could add a literal back for free. The rule is now
 /// `check-minimal-core-boundary.rs`'s exact two-sided one: a value above its
@@ -600,12 +602,12 @@ mod tests {
             .unwrap_or(root)
     }
 
-    const SAMPLE: &str = "debt_ratchet\n  ceiling\n    measure literal_predicates\n    value 10\n  ceiling\n    measure handler_files\n    value 2\n";
+    const SAMPLE: &str = "debt-ratchet\n  ceiling\n    measure literal-predicates\n    value 10\n  ceiling\n    measure handler-files\n    value 2\n";
 
     fn ratchet(literals: u64, handlers: u64) -> Ratchet {
         let mut ceilings = BTreeMap::new();
-        ceilings.insert("literal_predicates".to_owned(), literals);
-        ceilings.insert("handler_files".to_owned(), handlers);
+        ceilings.insert("literal-predicates".to_owned(), literals);
+        ceilings.insert("handler-files".to_owned(), handlers);
         Ratchet {
             ceilings,
             upward: BTreeSet::new(),
@@ -616,8 +618,8 @@ mod tests {
     #[test]
     fn the_ledger_parses_into_ceilings() {
         let parsed = parse_ratchet(SAMPLE).expect("the sample parses");
-        assert_eq!(parsed.ceilings["literal_predicates"], 10);
-        assert_eq!(parsed.ceilings["handler_files"], 2);
+        assert_eq!(parsed.ceilings["literal-predicates"], 10);
+        assert_eq!(parsed.ceilings["handler-files"], 2);
     }
 
     #[test]
@@ -651,12 +653,12 @@ mod tests {
     fn a_measurement_above_its_ceiling_fails_and_names_the_remedy() {
         let failures = check_measured(&ratchet(10, 2), &{
             let mut measured = BTreeMap::new();
-            measured.insert("literal_predicates".to_owned(), 11);
-            measured.insert("handler_files".to_owned(), 2);
+            measured.insert("literal-predicates".to_owned(), 11);
+            measured.insert("handler-files".to_owned(), 2);
             measured
         });
         assert_eq!(failures.len(), 1, "{failures:?}");
-        assert!(failures[0].contains("literal_predicates: measured 11, ceiling 10"));
+        assert!(failures[0].contains("literal-predicates: measured 11, ceiling 10"));
     }
 
     #[test]
@@ -679,7 +681,7 @@ mod tests {
         );
     }
 
-    /// Issue #1138 B9, plan 09 leaf 2. `literal_predicates` measured 548
+    /// Issue #1138 B9, plan 09 leaf 2. `literal-predicates` measured 548
     /// against a ceiling of 549 and the gate was green, so the ledger stated a
     /// number the tree had already beaten and the next commit could add the
     /// literal back for free. Below the ceiling is now a failure that names the
@@ -688,13 +690,13 @@ mod tests {
     fn a_measurement_below_its_ceiling_fails_and_asks_for_the_ceiling_to_be_lowered() {
         let failures = check_measured(&ratchet(10, 2), &{
             let mut measured = BTreeMap::new();
-            measured.insert("literal_predicates".to_owned(), 9);
-            measured.insert("handler_files".to_owned(), 2);
+            measured.insert("literal-predicates".to_owned(), 9);
+            measured.insert("handler-files".to_owned(), 2);
             measured
         });
         assert_eq!(failures.len(), 1, "{failures:?}");
         assert!(
-            failures[0].contains("literal_predicates: improved from 10 to 9")
+            failures[0].contains("literal-predicates: improved from 10 to 9")
                 && failures[0].contains("lower the reviewed ceiling"),
             "{failures:?}"
         );
@@ -705,21 +707,21 @@ mod tests {
     /// improvement that must be recorded (plan 00 §6.7).
     #[test]
     fn an_upward_measure_inverts_both_comparisons() {
-        let text = "debt_ratchet\n  ceiling\n    measure store_read_share\n    value 3\n    \
+        let text = "debt-ratchet\n  ceiling\n    measure store-read-share\n    value 3\n    \
                     how \"share of reads served by the link store; strict direction upward\"\n";
         let parsed = parse_ratchet(text).expect("the sample parses");
-        assert!(parsed.upward.contains("store_read_share"));
+        assert!(parsed.upward.contains("store-read-share"));
 
         let below = check_measured(
             &parsed,
-            &BTreeMap::from([("store_read_share".to_owned(), 2)]),
+            &BTreeMap::from([("store-read-share".to_owned(), 2)]),
         );
         assert_eq!(below.len(), 1, "{below:?}");
         assert!(below[0].contains("measured 2, ceiling 3"), "{below:?}");
 
         let above = check_measured(
             &parsed,
-            &BTreeMap::from([("store_read_share".to_owned(), 4)]),
+            &BTreeMap::from([("store-read-share".to_owned(), 4)]),
         );
         assert_eq!(above.len(), 1, "{above:?}");
         assert!(above[0].contains("improved from 3 to 4"), "{above:?}");
@@ -727,7 +729,7 @@ mod tests {
         assert!(
             check_measured(
                 &parsed,
-                &BTreeMap::from([("store_read_share".to_owned(), 3)])
+                &BTreeMap::from([("store-read-share".to_owned(), 3)])
             )
             .is_empty()
         );
@@ -740,7 +742,7 @@ mod tests {
     fn an_announced_corrected_undercount_may_rise_once_and_not_twice() {
         let mut corrected = ratchet(10, 46);
         corrected.notes.insert(
-            "handler_files".to_owned(),
+            "handler-files".to_owned(),
             "corrected undercount. 42 counted one directory only.".to_owned(),
         );
         assert!(
@@ -749,7 +751,7 @@ mod tests {
         );
 
         let mut again = corrected.clone();
-        again.ceilings.insert("handler_files".to_owned(), 47);
+        again.ceilings.insert("handler-files".to_owned(), 47);
         let failures = check_against_previous(&corrected, &again);
         assert_eq!(failures.len(), 1, "{failures:?}");
         assert!(
@@ -759,7 +761,7 @@ mod tests {
 
         let mut unexplained = ratchet(10, 46);
         unexplained.notes.insert(
-            "handler_files".to_owned(),
+            "handler-files".to_owned(),
             "corrected undercount.".to_owned(),
         );
         assert_eq!(

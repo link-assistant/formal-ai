@@ -46,7 +46,7 @@ fn code_search_prefers_an_advertised_grep_capability_over_shell_lowering() {
 }
 
 /// Issue #1138 B10, plan 10 leaf 11: the variation floor rises 15 -> 20 and is
-/// recorded as `paraphrases_per_intent_per_language` in
+/// recorded as `paraphrases-per-intent-per-language` in
 /// `data/meta/capability-routing-ratchet.lino`, where it may only rise again.
 const VARIATION_FLOOR: usize = 20;
 

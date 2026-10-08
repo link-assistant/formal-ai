@@ -134,17 +134,17 @@ fn the_store_read_share_is_a_declared_upward_ratchet() {
     let ledger = fs::read_to_string(repo_root().join("data/meta/debt-ratchet.lino"))
         .expect("debt ratchet readable");
     assert!(
-        ledger.contains("measure store_read_share"),
-        "plan 09 leaf 4 adds `store_read_share` to data/meta/debt-ratchet.lino"
+        ledger.contains("measure store-read-share"),
+        "plan 09 leaf 4 adds `store-read-share` to data/meta/debt-ratchet.lino"
     );
     let block = ledger
-        .split("measure store_read_share")
+        .split("measure store-read-share")
         .nth(1)
         .unwrap_or_default();
     let head: String = block.lines().take(4).collect::<Vec<_>>().join("\n");
     assert!(
         head.contains("up"),
-        "the `store_read_share` block must declare its upward direction in its own \
+        "the `store-read-share` block must declare its upward direction in its own \
          fields, since every other measure here ratchets down: {head}"
     );
 }

@@ -51,9 +51,9 @@ export function nativeOnlyKeys(body) {
  * @returns {number}
  */
 export function ceilingFrom(lino) {
-  const match = /^\s*native_only_ceiling\s+(\d+)\s*$/m.exec(lino);
+  const match = /^\s*native[-_]only[-_]ceiling\s+(\d+)\s*$/m.exec(lino);
   if (!match) {
-    throw new Error('native_only_ceiling missing');
+    throw new Error('native-only-ceiling missing');
   }
   return Number(match[1]);
 }
@@ -76,7 +76,7 @@ function main(argv) {
   }
   if (keys.length < ceiling) {
     console.error(
-      `::error::parity improved: lower native_only_ceiling to ${keys.length} in ${RATCHET_FILE} so it cannot regress.`,
+      `::error::parity improved: lower native-only-ceiling to ${keys.length} in ${RATCHET_FILE} so it cannot regress.`,
     );
     return 1;
   }

@@ -30,7 +30,7 @@ fn the_parity_census_library_counts_the_committed_debt_file() {
     assert!(root.join(language_parity_lib::DEBT_FILE).is_file());
     let gaps = language_parity_lib::current_gap_count(root)
         .expect("the committed parity debt file parses with the gate's own reader");
-    // The debt ratchet (data/meta/debt-ratchet.lino, `language_parity_gaps`)
+    // The debt ratchet (data/meta/debt-ratchet.lino, `language-parity-gaps`)
     // holds this measure at 915 and only allows it to fall. The bound here
     // mirrors the ratchet so this suite is also a tripwire for a regression
     // the gate would catch one job later.

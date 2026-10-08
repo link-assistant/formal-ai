@@ -109,7 +109,7 @@ function main(argv) {
     perFile.push([relative.slice('js/'.length), count]);
   }
   let status = 0;
-  for (const [key, name] of [['worker', 'worker_ceiling'], ['meta', 'meta_ceiling'], ['server', 'server_ceiling'], ['agentic', 'agentic_ceiling']]) {
+  for (const [key, name] of [['worker', 'worker-ceiling'], ['meta', 'meta-ceiling'], ['server', 'server-ceiling'], ['agentic', 'agentic-ceiling']]) {
     const ceiling = ceilingFrom(lino, name);
     console.log(`natural-language literals (${key}): ${totals[key]} (ceiling ${ceiling})`);
     if (totals[key] > ceiling) {

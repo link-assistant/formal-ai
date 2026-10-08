@@ -75,7 +75,7 @@ fn docs_suites() -> Vec<String> {
 #[test]
 fn the_docs_requirements_suite_count_is_at_or_below_its_ceiling() {
     let suites = docs_suites();
-    let ceiling = reviewed_ceiling("docs_requirements_suites");
+    let ceiling = reviewed_ceiling("docs-requirements-suites");
     assert!(
         suites.len() <= ceiling,
         "the docs_* suite count grew from {ceiling} to {}: {suites:?}",
@@ -86,7 +86,7 @@ fn the_docs_requirements_suite_count_is_at_or_below_its_ceiling() {
 #[test]
 fn the_docs_requirements_suite_count_ratchets_strictly_downward() {
     let suites = docs_suites();
-    let ceiling = reviewed_ceiling("docs_requirements_suites");
+    let ceiling = reviewed_ceiling("docs-requirements-suites");
     assert!(
         suites.len() >= ceiling,
         "the docs_* suite count improved from {ceiling} to {}; lower the reviewed \
@@ -100,7 +100,7 @@ fn the_docs_requirements_suite_count_ratchets_strictly_downward() {
 fn the_target_is_five_and_the_five_survivors_are_named() {
     // #1089's own target. The five that survive are named so retiring a suite is
     // a decision rather than an accident.
-    let ceiling = reviewed_ceiling("docs_requirements_suites");
+    let ceiling = reviewed_ceiling("docs-requirements-suites");
     assert_eq!(
         ceiling, 5,
         "the ceiling has reached #1089's target of five; until then it falls one \

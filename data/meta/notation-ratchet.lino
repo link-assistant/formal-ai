@@ -11,14 +11,14 @@
 # passes and is not a ceiling, since new seed data rightly adds characters.
 notation-ratchet
   scope data/meta
-    underscore-names 3017
-    abbreviated-names 202
+    underscore-names 2955
+    abbreviated-names 200
     duplicated-blocks 9
-    repeated-fields 86
-    characters 1850173
+    repeated-fields 84
+    characters 1871134
   scope data/seed
     underscore-names 9506
     abbreviated-names 245
     duplicated-blocks 45
     repeated-fields 115
-    characters 3532129
+    characters 3532300

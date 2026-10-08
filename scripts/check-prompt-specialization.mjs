@@ -85,9 +85,9 @@ export function specializations(prompts, sources) {
 }
 
 function ceilingOf(text) {
-  const match = /^\s*specialization_ceiling\s+(\d+)\s*$/mu.exec(text);
+  const match = /^\s*specialization[-_]ceiling\s+(\d+)\s*$/mu.exec(text);
   if (!match) {
-    throw new Error(`${RATCHET} names no specialization_ceiling`);
+    throw new Error(`${RATCHET} names no specialization-ceiling`);
   }
   return Number(match[1]);
 }
@@ -125,7 +125,7 @@ function main(argv) {
     return 1;
   }
   if (found.length < ceiling) {
-    console.error(`::error file=${RATCHET}::specializations fell to ${found.length}; lower specialization_ceiling in this commit.`);
+    console.error(`::error file=${RATCHET}::specializations fell to ${found.length}; lower specialization-ceiling in this commit.`);
     return 1;
   }
   return 0;
