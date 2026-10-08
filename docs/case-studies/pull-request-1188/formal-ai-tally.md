@@ -9,7 +9,7 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 
 | Who | Tasks | Passed | Failed | Partial | Fixed | Open | Not reproduced | Unresolved |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **All** | 356 | 183 | 159 | 3 | 121 | 38 | 3 | 0 |
+| **All** | 357 | 184 | 159 | 3 | 121 | 38 | 3 | 0 |
 | CI-SPEED | 6 | 6 | 0 | 0 | 0 | 0 | 0 | 0 |
 | CIFIX | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | CIFIX2 | 3 | 0 | 3 | 0 | 2 | 1 | 0 | 0 |
@@ -18,7 +18,7 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 | DEBUG3 | 2 | 1 | 1 | 0 | 0 | 1 | 0 | 0 |
 | DISCOVER | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | GENERALIZE | 16 | 16 | 0 | 0 | 0 | 0 | 0 | 0 |
-| LEAD | 8 | 6 | 0 | 1 | 1 | 0 | 0 | 0 |
+| LEAD | 9 | 7 | 0 | 1 | 1 | 0 | 0 | 0 |
 | LEXEMES | 4 | 3 | 1 | 0 | 0 | 1 | 0 | 0 |
 | MIGRATE3 | 4 | 0 | 4 | 0 | 0 | 4 | 0 | 0 |
 | MIGRATE4 | 3 | 0 | 2 | 1 | 0 | 3 | 0 | 0 |
