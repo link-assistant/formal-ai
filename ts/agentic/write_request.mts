@@ -229,7 +229,7 @@ export function typedWriteTarget(request, extension) {
   return cuedWriteTargets(tokens(request)).map(([, path]) => path).find((path) => pathExtension(path) === extension) ?? null;
 }
 
-/** `Path::extension` of a relative path, or null. */
+/** `Path::extension` of a relative path, or null: Rust built-in `Path::extension`. */
 export function pathExtension(path) {
   const name = path.split('/').filter(Boolean).pop() ?? '';
   if (name === '..') return null;
@@ -499,12 +499,13 @@ export function composeEditClauses(raw) {
   }
   const fileClauseStart = toks[clauseStartIndex].start;
   // Cue words inside a quoted literal are payload (`replace 'covered by x'`).
-  const actionTokens = toks.filter((token) => unquoted.has(token.start) && actionCues.includes(cleanCueToken(token.text)));
+  // A cue word quoted whole is payload too: `replace 'with' with ','`.
+  const isCue = (token, cues) => unquoted.has(token.start) && !isQuoted(token) && cues.includes(cleanCueToken(token.text));
+  const actionTokens = toks.filter((token) => isCue(token, actionCues));
   const action = actionTokens.find((token) => token.start > toks[fileIndex].end) ?? actionTokens[0];
   if (!action) return null;
   const actionEnd = action.end;
-  const newLead = toks.find((token) => token.start >= actionEnd && unquoted.has(token.start)
-    && newLeads.includes(cleanCueToken(token.text)));
+  const newLead = toks.find((token) => token.start >= actionEnd && isCue(token, newLeads));
   if (!newLead) return null;
   // `Bump the version in package.json to 1.1.0`: a file clause right before
   // the new lead ends the old text; anything else between them is no edit.

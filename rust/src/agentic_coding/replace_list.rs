@@ -2,12 +2,15 @@
 //!
 //! `In b.lino replace 'x' with 'y', replace 'p' with 'q', and replace 'm'
 //! with 'n'.` The sentence is cut before every repeated seeded edit action
-//! outside its quotes; a clause that names no file takes the file the first
+//! outside its quotes; a clause that names no file takes the file another
 //! one names, and each clause is the edit request one replacement alone would
 //! be. The replacements are applied in order to the file as read. The Rust
 //! original of `js/agentic/replace_list.mjs`.
 
-use super::write_request::{bare_surfaces, clean_cue_token, compose_edit_request, tokens};
+use super::positional_edit::{instruction_end, unescape_prose_newlines};
+use super::write_request::{
+    bare_surfaces, clean_cue_token, compose_edit_request, cued_write_targets, tokens,
+};
 use crate::normal_markov::{quoted_segment_spans, quoted_segments};
 use crate::seed;
 
@@ -32,12 +35,14 @@ fn replace_clauses(request: &str) -> Option<Vec<String>> {
     let segments = quoted_segment_spans(request);
     let actions = bare_surfaces(seed::ROLE_FILE_EDIT_ACTION_CUE);
     let joiners = bare_surfaces("file_edit_joiner_cue");
+    let end = instruction_end(request);
     let cuts: Vec<usize> = tokens(request)
         .iter()
         .filter(|token| {
-            !segments
-                .iter()
-                .any(|segment| token.start < segment.end && token.end > segment.start)
+            token.start < end
+                && !segments
+                    .iter()
+                    .any(|segment| token.start < segment.end && token.end > segment.start)
                 && actions.contains(&clean_cue_token(token.text))
         })
         .map(|token| token.start)
@@ -71,8 +76,20 @@ fn replace_clauses(request: &str) -> Option<Vec<String>> {
 /// (mirrors `replaceList`).
 pub(super) fn replace_list(request: &str) -> Option<(String, Vec<(String, String)>)> {
     let clauses = replace_clauses(request)?;
-    let (target, _, _) = compose_edit_request(clauses.first()?)?;
-    let quoted = quoted_segments(request);
+    // The file may be named in any clause: `In m.js, replace ...` names it
+    // first and `Replace ... and replace ... in m.js` last (PR #1188 G89).
+    let (target, _, _) = clauses
+        .iter()
+        .find_map(|clause| compose_edit_request(clause))?;
+    // A quoted text may spell a newline as an escape, which the composed edit
+    // has already turned into the character (PR #1188 G88).
+    let quoted: Vec<String> = quoted_segments(request)
+        .into_iter()
+        .flat_map(|segment| {
+            let unescaped = unescape_prose_newlines(&segment);
+            [segment, unescaped]
+        })
+        .collect();
     let mut pairs = Vec::new();
     for clause in &clauses {
         let (file, old, new) = if clause.contains(target.as_str()) {
@@ -91,6 +108,30 @@ pub(super) fn replace_list(request: &str) -> Option<(String, Vec<(String, String
         pairs.push((old, new));
     }
     Some((target, pairs))
+}
+
+/// The distinct files an edit request names outside its quotes, when it names
+/// more than one (PR #1188 G91).
+///
+/// One edit request changes one file, so such a request is declined with the
+/// files named rather than applied to the first alone (mirrors
+/// `severalEditTargets`).
+pub(super) fn several_edit_targets(request: &str) -> Option<Vec<String>> {
+    compose_edit_request(request)?;
+    let segments = quoted_segment_spans(request);
+    let toks = tokens(request);
+    let end = instruction_end(request);
+    let mut paths: Vec<String> = Vec::new();
+    for (index, path) in cued_write_targets(&toks) {
+        let token = &toks[index];
+        let quoted = segments
+            .iter()
+            .any(|segment| token.start < segment.end && token.end > segment.start);
+        if token.start < end && !quoted && !paths.contains(&path) {
+            paths.push(path);
+        }
+    }
+    (paths.len() > 1).then_some(paths)
 }
 
 /// `source` with each pair's old text replaced everywhere, in order.

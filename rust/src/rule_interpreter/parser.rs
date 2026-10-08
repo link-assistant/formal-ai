@@ -287,6 +287,7 @@ fn parse_subject(node: &Node, name: &str) -> Result<Subject, String> {
         "prompt" => Subject::Prompt,
         "trimmed" => Subject::Trimmed,
         "padded" => Subject::Padded,
+        "command_head" => Subject::CommandHead,
         _ => return Err(node.error("unknown_subject")),
     })
 }
@@ -352,6 +353,12 @@ fn parse_value(node: &Node) -> Result<(String, ValueSource), String> {
                 .get(2)
                 .cloned()
                 .ok_or_else(|| node.error("response_without_intent"))?,
+        ),
+        "transform" => ValueSource::Transform(
+            node.args
+                .get(2)
+                .cloned()
+                .ok_or_else(|| node.error("transform_without_name"))?,
         ),
         "agent_info" => {
             let key = node

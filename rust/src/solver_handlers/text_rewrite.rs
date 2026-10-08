@@ -83,7 +83,8 @@ fn head_cue_matches(normalized_head: &str, cue: &str) -> bool {
 
 /// The command head: the text before the command colon, the first newline, or
 /// the first quoted payload — whichever comes first.
-fn command_head(prompt: &str) -> &str {
+#[must_use]
+pub fn command_head(prompt: &str) -> &str {
     let mut cut = command_colon(prompt).map(|(colon, _)| colon);
     for marker in [prompt.find('\n'), prompt.find('"'), prompt.find('«')] {
         if let Some(index) = marker.filter(|index| *index > 0) {
@@ -93,35 +94,54 @@ fn command_head(prompt: &str) -> &str {
     cut.map_or(prompt, |index| &prompt[..index])
 }
 
+/// The colons that end a command head: ASCII and the CJK full-width one.
+const PAYLOAD_COLONS: [char; 2] = [':', '：'];
+
+/// The words of a payload: its whitespace-separated tokens, where a token
+/// written in a CJK script counts each of its CJK characters, since CJK text
+/// has no spaces between words (R1188-U20).
+fn payload_word_count(text: &str) -> usize {
+    text.split_whitespace()
+        .map(|token| {
+            token
+                .chars()
+                .filter(|character| crate::coding::contains_cjk(character.encode_utf8(&mut [0; 4])))
+                .count()
+                .max(1)
+        })
+        .sum()
+}
+
 /// The colon that separates a command head from its free-text payload, if the
 /// text on both sides is shaped like one: a head of at most twelve words and
 /// a payload of at least three. Colons inside times, ratios, and URLs are not
-/// command colons.
+/// command colons; the full-width colon of CJK text is one (R1188-U20).
 fn command_colon(prompt: &str) -> Option<(usize, usize)> {
-    for (index, _) in prompt.match_indices(':') {
+    for (index, colon) in prompt.match_indices(PAYLOAD_COLONS) {
+        let tail_start = index + colon.len();
         let before_is_digit = prompt[..index]
             .chars()
             .next_back()
             .is_some_and(|c| c.is_ascii_digit());
-        let after_is_digit = prompt[index + 1..]
+        let after_is_digit = prompt[tail_start..]
             .chars()
             .next()
             .is_some_and(|c| c.is_ascii_digit());
         if before_is_digit && after_is_digit {
             continue;
         }
-        if prompt.get(index + 1..index + 3) == Some("//") {
+        if prompt.get(tail_start..tail_start + 2) == Some("//") {
             continue;
         }
         let head = &prompt[..index];
-        let tail = prompt[index + 1..].trim();
+        let tail = prompt[tail_start..].trim();
         if head.split_whitespace().count() > 12 {
             continue;
         }
-        if tail.split_whitespace().count() < 3 {
+        if payload_word_count(tail) < 3 {
             continue;
         }
-        return Some((index, index + 1));
+        return Some((index, tail_start));
     }
     None
 }
@@ -133,17 +153,17 @@ fn command_colon(prompt: &str) -> Option<(usize, usize)> {
 pub fn free_text_payload(prompt: &str) -> Option<String> {
     if let Some((_, tail_start)) = command_colon(prompt) {
         let tail = strip_outer_quotes(prompt[tail_start..].trim());
-        if tail.split_whitespace().count() >= 3 {
+        if payload_word_count(&tail) >= 3 {
             return Some(tail);
         }
     }
     if let Some(newline) = prompt.find('\n') {
         let rest = strip_outer_quotes(prompt[newline + 1..].trim());
-        if rest.split_whitespace().count() >= 3 {
+        if payload_word_count(&rest) >= 3 {
             return Some(rest);
         }
     }
-    double_quoted(prompt).filter(|text| text.split_whitespace().count() >= 3)
+    double_quoted(prompt).filter(|text| payload_word_count(text) >= 3)
 }
 
 /// Strip one matched pair of surrounding quotes, any kind.

@@ -16,6 +16,7 @@ const ENVELOPE_LANGUAGES = new Set(['ru', 'zh']);
 /**
  * Mirrors the summary body of `fn try_summarize_conversation`: the envelope
  * over `history` (`{role, content}` turns), or null without a user turn.
+ * Mirrors `fn conversation_summary_envelope` in rust/src/solver_handlers/conversation_memory/conversation_summary.rs.
  * @param {string} prompt
  * @param {Array<{role: string, content: unknown}>} history
  */

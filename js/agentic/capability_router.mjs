@@ -17,6 +17,7 @@ import { catalogClaims } from './code_artifact.mjs';
 import { composeEditRequest, statedWriteTarget, statesWriteAction } from './write_request.mjs';
 import { workspaceInspectionSearchForTask } from './workspace_inspection.mjs';
 import { listedDirectory } from './directory_listing.mjs';
+import { writesWholeFile } from './literal_write_guard.mjs';
 import {
   Act, Locus, ObjectType, acts, evidencesRetrieveAct, explicitContent, firstPath, firstUrl, locus, namesOpenWeb,
   isDialogueUtterance, objectType, route, tableRoutingEnabled,
@@ -289,8 +290,13 @@ function routedArguments(capability, loweredFrom, task) {
     }
     case Capability.Write: {
       // A removal never writes new content over the file (PR #1188 T29: a
-      // line deletion was routed here and the file became one quoted line).
-      if (mentionsRole('coding_text_remove_action', normalizePrompt(textOutsideQuotedSegments(task)))) return null;
+      // line deletion was routed here and the file became one quoted line),
+      // and neither does an edit the edit composer could not read: unless the
+      // request states a whole-file write, its edit word asks for a change
+      // inside the file (U17: `In notes.txt replace with ','` wrote `','`).
+      const outside = normalizePrompt(textOutsideQuotedSegments(task));
+      if (mentionsRole('coding_text_remove_action', outside)) return null;
+      if (mentionsRole('file_edit_action_cue', outside) && !writesWholeFile(task)) return null;
       const path = firstPath(task);
       if (path === null) return null;
       const content = explicitContent(task);

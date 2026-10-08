@@ -1,0 +1,12 @@
+knowledge_relation	relación	propiedad
+knowledge_subject	sujeto	entidad	tema
+knowledge_value	valor	respuesta
+capital	capital
+population	población	cuántas personas	cuántos habitantes
+currency	moneda	divisa
+official_language	idioma oficial	lengua oficial	qué idioma
+continent	continente
+author_of_book	quién escribió	autor	autora	escrito por
+painter_of_painting	quién pintó	pintó	pintor	pintora	artista
+built_year	cuándo	construido	construida	construcción
+physical_constant	velocidad de la luz	cuál es	qué tan rápido

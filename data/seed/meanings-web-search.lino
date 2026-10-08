@@ -24,6 +24,15 @@ meanings
         text 网络搜索
       surface
         text 在网上搜索
+    lexeme es
+      surface
+        text "búsqueda web"
+      surface
+        text "busca en internet"
+      surface
+        text "buscar en internet"
+      surface
+        text "búsqueda en internet"
   reference_internet
     defined-by web_resource
     defined-by entity
@@ -68,6 +77,17 @@ meanings
         text 網路
       surface
         text 网络
+    lexeme es
+      surface
+        text " web "
+      surface
+        text " internet "
+      surface
+        text " en línea "
+      surface
+        text " online "
+      surface
+        text " la red "
   reference_encyclopedia
     defined-by web_resource
     defined-by entity
@@ -103,6 +123,15 @@ meanings
         text 维基数据
       surface
         text 維基數據
+    lexeme es
+      surface
+        text " wikipedia "
+      surface
+        text " wikidata "
+      surface
+        text " wikcionario "
+      surface
+        text " wiktionary "
   reference_information
     defined-by concept
     role web_search_signal
@@ -180,6 +209,35 @@ meanings
         text 資源
       surface
         text 文章
+    lexeme es
+      surface
+        text " información "
+      surface
+        text " info "
+      surface
+        text " datos "
+      surface
+        text " detalles "
+      surface
+        text " material "
+      surface
+        text " materiales "
+      surface
+        text " recurso "
+      surface
+        text " recursos "
+      surface
+        text " fuente "
+      surface
+        text " fuentes "
+      surface
+        text " artículo "
+      surface
+        text " artículos "
+      surface
+        text " hecho "
+      surface
+        text " hechos "
   reference_news
     defined-by web_resource
     defined-by concept
@@ -207,6 +265,11 @@ meanings
         text 头条
       surface
         text 頭條
+    lexeme es
+      surface
+        text " noticia"
+      surface
+        text " titulares "
   news_recency_request
     defined-by time
     role web_search_news_recency
@@ -254,6 +317,19 @@ meanings
         text 今日
       surface
         text 今天
+    lexeme es
+      surface
+        text " últim"
+      surface
+        text " reciente"
+      surface
+        text " actual "
+      surface
+        text " actuales "
+      surface
+        text " ahora "
+      surface
+        text " hoy "
   reference_records
     defined-by web_resource
     defined-by concept
@@ -321,6 +397,23 @@ meanings
         text 统计
       surface
         text 統計
+    lexeme es
+      surface
+        text " registros "
+      surface
+        text " registro "
+      surface
+        text " expediente"
+      surface
+        text " informe "
+      surface
+        text " informes "
+      surface
+        text " estados financieros "
+      surface
+        text " estadístic"
+      surface
+        text " dosier "
   reference_public_events
     defined-by web_resource
     defined-by concept
@@ -404,6 +497,25 @@ meanings
         text 网络研讨会
       surface
         text 網路研討會
+    lexeme es
+      surface
+        text " evento"
+      surface
+        text " hackathon"
+      surface
+        text " conferencia"
+      surface
+        text " meetup"
+      surface
+        text " taller"
+      surface
+        text " concurso"
+      surface
+        text " competición"
+      surface
+        text " webinar"
+      surface
+        text " seminario web"
   act_search_strong
     defined-by inquiry
     defined-by action
@@ -532,6 +644,31 @@ meanings
         text 查一下…
       surface
         text 了解…
+    lexeme es
+      surface
+        text " busca "
+      surface
+        text " buscar "
+      surface
+        text " búsqueda "
+      surface
+        text " investiga "
+      surface
+        text " investigar "
+      surface
+        text " averigua "
+      surface
+        text "busca …"
+      surface
+        text "buscar …"
+      surface
+        text "investiga …"
+      surface
+        text "averigua …"
+      surface
+        text "infórmate sobre …"
+      surface
+        text "googlea …"
   act_find_weak
     defined-by inquiry
     defined-by action
@@ -597,6 +734,23 @@ meanings
         text 查看
       surface
         text 查看…
+    lexeme es
+      surface
+        text " encuentra "
+      surface
+        text " encontrar "
+      surface
+        text " consulta "
+      surface
+        text " mira "
+      surface
+        text "encuentra …"
+      surface
+        text "encontrar …"
+      surface
+        text "consulta …"
+      surface
+        text "mira …"
   web_search_mention
     defined-by web_search
     role web_search_history_signal
@@ -630,6 +784,15 @@ meanings
         text 互联网
       surface
         text 網路
+    lexeme es
+      surface
+        text duckduckgo
+      surface
+        text "búsqueda web"
+      surface
+        text "busca en internet"
+      surface
+        text "búsqueda en internet"
   github_repository_platform
     defined-by web_resource
     defined-by repository_reference
@@ -656,6 +819,11 @@ meanings
         text github
       surface
         text GitHub
+    lexeme es
+      surface
+        text github
+      surface
+        text "git hub"
   repository_reference
     defined-by web_resource
     defined-by entity
@@ -688,6 +856,13 @@ meanings
         text 存储库
       surface
         text 存儲庫
+    lexeme es
+      surface
+        text repo
+      surface
+        text repositorio
+      surface
+        text repositorios
   github_repository_traffic_signal
     defined-by repository_reference
     defined-by inquiry
@@ -762,6 +937,19 @@ meanings
         text 来源
       surface
         text 來源
+    lexeme es
+      surface
+        text tráfico
+      surface
+        text visita
+      surface
+        text vistas
+      surface
+        text visitó
+      surface
+        text clon
+      surface
+        text referentes
   github_repository_traffic_question
     defined-by inquiry
     role github_repository_traffic_question
@@ -803,3 +991,16 @@ meanings
         text 谁
       surface
         text 誰
+    lexeme es
+      surface
+        text "se puede saber"
+      surface
+        text "puedo saber"
+      surface
+        text "quién visitó"
+      surface
+        text "es posible"
+      surface
+        text "muestra github"
+      surface
+        text "puedo ver"

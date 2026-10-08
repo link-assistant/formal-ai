@@ -101,7 +101,7 @@ pub use embedded::{
     PROMPT_PATTERNS_LINO, PROOF_PROGRAM_TEMPLATES_LINO, QUESTION_NECESSITY_LINO,
     RELEASE_TIMELINES_LINO, RESPONSE_FILES, SELF_IMPROVEMENT_LOOP_LINO, SENTENCE_PUNCTUATION_LINO,
     SHELL_INTENTS_LINO, SOURCES_REGISTRY_LINO, SUMMARY_TOPICS_LINO, TERMINAL_COMMANDS_LINO,
-    TOOL_RESOURCE_SCOPES_LINO, TOOLS_LINO, seed_files,
+    TEXT_FORMALIZATION_LINO, TOOL_RESOURCE_SCOPES_LINO, TOOLS_LINO, seed_files,
 };
 pub use entity_names::{EntityName, entity_names};
 pub use facts::{FactRecord, LocalizedFact, facts};
@@ -473,6 +473,14 @@ pub fn agent_info() -> BTreeMap<String, String> {
         }
     }
     out
+}
+
+/// One `agent-info.lino` field (`agent_info().remove(key)`), or `None`.
+///
+/// Mirrored by `agentInfoValue` in js/agentic/crate/seed_agent_info.mjs.
+#[must_use]
+pub fn agent_info_value(key: &str) -> Option<String> {
+    agent_info().remove(key)
 }
 
 /// The languages the agent answers in, declared by `agent-info.lino`.

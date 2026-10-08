@@ -27,6 +27,9 @@ meanings
         text 星期一
       surface
         text 周一
+    lexeme es
+      surface
+        text lunes
   tuesday
     grounded-in Q127
     defined-by calendar_day
@@ -57,6 +60,9 @@ meanings
         text 星期二
       surface
         text 周二
+    lexeme es
+      surface
+        text martes
   wednesday
     grounded-in Q128
     defined-by calendar_day
@@ -85,6 +91,11 @@ meanings
         text 星期三
       surface
         text 周三
+    lexeme es
+      surface
+        text miércoles
+      surface
+        text miercoles
   thursday
     grounded-in Q129
     defined-by calendar_day
@@ -117,6 +128,9 @@ meanings
         text 星期四
       surface
         text 周四
+    lexeme es
+      surface
+        text jueves
   friday
     grounded-in Q130
     defined-by calendar_day
@@ -145,6 +159,9 @@ meanings
         text 星期五
       surface
         text 周五
+    lexeme es
+      surface
+        text viernes
   saturday
     grounded-in Q131
     defined-by calendar_day
@@ -173,6 +190,13 @@ meanings
         text 星期六
       surface
         text 周六
+    lexeme es
+      surface
+        text sábado
+      surface
+        text sabado
+      surface
+        text sábados
   sunday
     grounded-in Q132
     defined-by calendar_day
@@ -201,6 +225,11 @@ meanings
         text 星期天
       surface
         text 周日
+    lexeme es
+      surface
+        text domingo
+      surface
+        text domingos
   calendar_day
     grounded-in Q573
     defined-by calendar_week
@@ -235,6 +264,17 @@ meanings
         text 日子
       surface
         text 天
+    lexeme es
+      surface
+        text día
+      surface
+        text días
+      surface
+        text dia
+      surface
+        text dias
+      surface
+        text "día de la semana"
   calendar_date
     grounded-in Q205892
     defined-by calendar_day
@@ -259,6 +299,9 @@ meanings
         text 日期
       surface
         text 几号
+    lexeme es
+      surface
+        text fecha
   calendar_weekday_query
     defined-by calendar_day
     role calendar_weekday_query
@@ -323,6 +366,11 @@ meanings
         text 星期
       surface
         text 周
+    lexeme es
+      surface
+        text semana
+      surface
+        text semanas
   calendar_month
     grounded-in Q5151
     defined-by calendar_day
@@ -872,6 +920,9 @@ meanings
     lexeme zh
       surface
         text 今天
+    lexeme es
+      surface
+        text hoy
   calendar_tomorrow
     grounded-in Q1209716
     defined-by calendar_day
@@ -896,6 +947,11 @@ meanings
         text 明天
       surface
         text 明日
+    lexeme es
+      surface
+        text mañana
+      surface
+        text "el día siguiente"
   calendar_day_after_tomorrow
     grounded-in Q1036448
     defined-by calendar_day
@@ -914,6 +970,9 @@ meanings
     lexeme zh
       surface
         text 后天
+    lexeme es
+      surface
+        text "pasado mañana"
   calendar_interrogative
     defined-by calendar_day
     role calendar_question
@@ -957,6 +1016,17 @@ meanings
         text 告诉
       surface
         text 显示
+    lexeme es
+      surface
+        text qué
+      surface
+        text cuál
+      surface
+        text dime
+      surface
+        text muestra
+      surface
+        text muéstrame
   calendar_schedule_action
     defined-by calendar_day
     role calendar_schedule_action
@@ -1010,6 +1080,31 @@ meanings
         text 安排
       surface
         text 添加到日历
+    lexeme es
+      surface
+        text agenda
+      surface
+        text agéndame
+      surface
+        text agendar
+      surface
+        text reserva
+      surface
+        text resérvame
+      surface
+        text "pon en el calendario"
+      surface
+        text "pon en mi calendario"
+      surface
+        text "añade al calendario"
+      surface
+        text "añade a mi calendario"
+      surface
+        text "agrega al calendario"
+      surface
+        text "agrega a mi calendario"
+      surface
+        text "crea un evento"
   calendar_event
     defined-by calendar_day
     role calendar_event
@@ -1055,6 +1150,17 @@ meanings
         text 事件
       surface
         text 通话
+    lexeme es
+      surface
+        text reunión
+      surface
+        text reuniones
+      surface
+        text llamada
+      surface
+        text evento
+      surface
+        text cita
   calendar_clock_time
     defined-by calendar_day
     role calendar_time
@@ -1084,6 +1190,15 @@ meanings
     lexeme zh
       surface
         text 下午5点
+    lexeme es
+      surface
+        text "17:00"
+      surface
+        text "5 pm"
+      surface
+        text "a las 17:00"
+      surface
+        text "a las 5 de la tarde"
   calendar_hour
     grounded-in Q2746606
     defined-by calendar_day

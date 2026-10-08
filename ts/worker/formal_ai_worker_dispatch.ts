@@ -4,6 +4,8 @@
 // data/seed/browser-handler-precedence.lino. The JavaScript side only resolves
 // those seed records to executable functions. This is the same separation the
 // native dispatcher uses: data owns behaviour; code supplies implementations.
+// A `rule_set` row names a data/seed/handler-rules.lino handler block, run by
+// the rule interpreter with no worker function of its own.
 let BROWSER_HANDLER_PRECEDENCE = [];
 
 function handlerContextValue(context, path) {
@@ -13,6 +15,9 @@ function handlerContextValue(context, path) {
 }
 
 function handlerImplementation(record, context) {
+  if (record.ruleSet) {
+    return (prompt, normalized, history) => runHandlerRuleSet(record.name, prompt, normalized, history);
+  }
   if (record.contextBinding) {
     const contextual = handlerContextValue(context, record.contextBinding);
     if (typeof contextual !== "function") {
@@ -46,7 +51,7 @@ function validateBrowserHandlerPrecedence(registry) {
       throw new Error(`browser handler precedence has an invalid or duplicate name: ${record && record.name}`);
     }
     names.add(record.name);
-    if (!record.contextBinding && typeof self[record.name] !== "function") {
+    if (!record.ruleSet && !record.contextBinding && typeof self[record.name] !== "function") {
       throw new Error(`browser handler ${record.name} has no executable implementation`);
     }
   }
@@ -58,6 +63,7 @@ function installBrowserHandlerPrecedence(registry) {
     name: record.name,
     arguments: Object.freeze(Array.isArray(record.arguments) ? record.arguments.slice() : []),
     contextBinding: record.contextBinding || "",
+    ruleSet: record.ruleSet === true,
     resultIntent: record.resultIntent || "",
     evidenceKind: record.evidenceKind || "",
   }));

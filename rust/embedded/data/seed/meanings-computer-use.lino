@@ -32,6 +32,15 @@ meanings
         text 获取
       surface
         text 下载
+    lexeme es
+      surface
+        text obtén
+      surface
+        text descarga
+      surface
+        text recupera
+      surface
+        text trae
   computer_use_filter_rows
     defined-by action
     role computer_use_operation_cue
@@ -57,6 +66,15 @@ meanings
         text 筛选
       surface
         text 过滤
+    lexeme es
+      surface
+        text filtra
+      surface
+        text filtrar
+      surface
+        text filtrado
+      surface
+        text filtradas
   computer_use_count_lines
     defined-by action
     role computer_use_operation_cue
@@ -84,6 +102,13 @@ meanings
         text 统计
       surface
         text 行数
+    lexeme es
+      surface
+        text cuenta
+      surface
+        text "cuenta las líneas"
+      surface
+        text "cuántas líneas"
   computer_use_unique_values
     defined-by action
     role computer_use_operation_cue
@@ -109,6 +134,15 @@ meanings
         text 唯一
       surface
         text 去重
+    lexeme es
+      surface
+        text únicos
+      surface
+        text únicas
+      surface
+        text distintos
+      surface
+        text distintas
   computer_use_extract_field
     defined-by action
     role computer_use_operation_cue
@@ -138,6 +172,15 @@ meanings
         text 编号
       surface
         text 标识
+    lexeme es
+      surface
+        text "id del pedido"
+      surface
+        text identificador
+      surface
+        text "primer pedido"
+      surface
+        text extrae
   computer_use_query_selector
     defined-by action
     role computer_use_operation_cue
@@ -171,6 +214,15 @@ meanings
         text 标题
       surface
         text 令牌
+    lexeme es
+      surface
+        text título
+      surface
+        text encabezado
+      surface
+        text token
+      surface
+        text selector
   computer_use_submit_form
     defined-by action
     role computer_use_operation_cue
@@ -198,6 +250,13 @@ meanings
         text 提交
       surface
         text 发送
+    lexeme es
+      surface
+        text envía
+      surface
+        text enviar
+      surface
+        text manda
   computer_use_list_directory
     defined-by action
     role computer_use_operation_cue
@@ -225,6 +284,13 @@ meanings
         text 列出
       surface
         text 列表
+    lexeme es
+      surface
+        text lista
+      surface
+        text enumera
+      surface
+        text "lista los"
   computer_use_pack_archive
     defined-by action
     role computer_use_operation_cue
@@ -256,6 +322,13 @@ meanings
         text 打包
       surface
         text 归档
+    lexeme es
+      surface
+        text empaqueta
+      surface
+        text archiva
+      surface
+        text comprime
   computer_use_unpack_archive
     defined-by action
     role computer_use_operation_cue
@@ -281,6 +354,13 @@ meanings
         text 解包
       surface
         text 解压
+    lexeme es
+      surface
+        text desempaqueta
+      surface
+        text descomprime
+      surface
+        text restaura
   computer_use_move_file
     defined-by action
     role computer_use_operation_cue
@@ -302,6 +382,11 @@ meanings
     lexeme zh
       surface
         text 移动
+    lexeme es
+      surface
+        text mueve
+      surface
+        text traslada
   computer_use_process_status
     defined-by action
     role computer_use_operation_cue
@@ -329,6 +414,13 @@ meanings
         text 进程状态
       surface
         text 进程
+    lexeme es
+      surface
+        text "estado del proceso"
+      surface
+        text "proceso aislado"
+      surface
+        text proceso
   computer_use_resource_customers
     defined-by entity
     role computer_use_resource_cue
@@ -358,6 +450,11 @@ meanings
     lexeme zh
       surface
         text 客户
+    lexeme es
+      surface
+        text clientes
+      surface
+        text cliente
   computer_use_resource_notes
     defined-by entity
     role computer_use_resource_cue
@@ -383,6 +480,11 @@ meanings
     lexeme zh
       surface
         text 笔记
+    lexeme es
+      surface
+        text notas
+      surface
+        text "archivo de notas"
   computer_use_resource_documents
     defined-by entity
     role computer_use_resource_cue
@@ -410,6 +512,11 @@ meanings
     lexeme zh
       surface
         text 文档
+    lexeme es
+      surface
+        text documentos
+      surface
+        text documento
   computer_use_resource_inbox_note
     defined-by entity
     role computer_use_resource_cue
@@ -431,6 +538,11 @@ meanings
         text 收件箱笔记
       surface
         text 收件箱
+    lexeme es
+      surface
+        text "nota de la bandeja de entrada"
+      surface
+        text "bandeja de entrada"
   computer_use_resource_orders
     defined-by entity
     role computer_use_resource_cue
@@ -458,6 +570,11 @@ meanings
     lexeme zh
       surface
         text 订单
+    lexeme es
+      surface
+        text pedidos
+      surface
+        text pedido
   computer_use_resource_status_page
     defined-by entity
     role computer_use_resource_cue
@@ -479,6 +596,9 @@ meanings
     lexeme zh
       surface
         text 状态页面
+    lexeme es
+      surface
+        text "página de estado"
   computer_use_resource_form
     defined-by entity
     role computer_use_resource_cue
@@ -504,6 +624,9 @@ meanings
     lexeme zh
       surface
         text 表单
+    lexeme es
+      surface
+        text formulario
   computer_use_resource_inventory
     defined-by entity
     role computer_use_resource_cue
@@ -527,6 +650,9 @@ meanings
     lexeme zh
       surface
         text 库存
+    lexeme es
+      surface
+        text inventario
   computer_use_gap_gui_rendering
     defined-by concept
     role computer_use_capability_gap_cue
@@ -560,3 +686,12 @@ meanings
         text 屏幕截图
       surface
         text 像素
+    lexeme es
+      surface
+        text "captura de pantalla"
+      surface
+        text píxeles
+      surface
+        text píxel
+      surface
+        text "interfaz gráfica"

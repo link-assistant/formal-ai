@@ -133,7 +133,7 @@ function verifyBindings(session) {
   if (kinds.includes(NATIVE_SESSION_RESUMED) !== (session.continuation != null)) fail('event_binding', 'continuation');
 }
 
-/** Mirrors `serde_json::to_vec_pretty` plus the terminal newline. */
+/** Mirrors `fn canonical_bytes` in rust/src/orchestration/replay.rs: `serde_json::to_vec_pretty` plus the terminal newline. */
 export function canonicalSessionText(session) {
   return `${JSON.stringify(session, null, 2)}\n`;
 }

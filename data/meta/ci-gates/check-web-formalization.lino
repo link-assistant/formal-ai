@@ -1,0 +1,12 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+#
+# PR #1188: R1188-U18, page formalization measured on cached Wikipedia intros.
+ci_gate check_web_formalization
+  stage web
+  description "Every sentence of the cached Wikipedia intros in data/benchmarks/web-formalization/ (eight topics in en, ru, hi, zh and es, intro sections with source URL and revision id) is formalized by js/agentic/crate/page_formalization.mjs; sentence coverage, fact survival through deformalization and the known-term share, overall and per language, may not fall below data/meta/web-formalization-ratchet.lino."
+  run "node scripts/measure-web-formalization.mjs"
+  justification "PR #1188 R1188-U18 (owner, 2026-10-08): Formal AI must formalize whole pages from the internet, not only single sentences; before this gate no benchmark formalized a fetched page end to end, so a change to the lexicon or the formalizer could silently lose sentences or facts. The measure takes about a second."

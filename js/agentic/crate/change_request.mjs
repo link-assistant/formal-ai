@@ -19,6 +19,7 @@ export const CANONICAL_TARGET_MODULE = 'src/agentic_coding/planner.rs';
 /**
  * The owned manifest's `content_id` of `path` (`SourceModuleDigest::content_id`),
  * or null when the host cannot read the embedded source.
+ * Mirrors `fn owned_content_id` in rust/src/change_request.rs.
  * @param {string} path
  */
 export function ownedContentId(path) {

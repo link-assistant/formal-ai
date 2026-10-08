@@ -109,13 +109,14 @@ flowchart TD
 | 162 | `repository_lineage` | native and browser |
 | 165 | `formalization_request` | native and browser |
 
-## Part 3 — Precedence, ranks 167 to 320
+## Part 3 — Precedence, ranks 167 to 310
 
 ```mermaid
 flowchart TD
     before_3(["ranks before 167"])
     before_3 --> h_product_search["167: product_search"]
-    h_product_search --> h_web_search["170: web_search"]
+    h_product_search --> h_requirement_listing["168: requirement_listing"]
+    h_requirement_listing --> h_web_search["170: web_search"]
     h_web_search --> h_learn_from_source["180: learn_from_source"]
     h_learn_from_source --> h_research_comparison_table["190: research_comparison_table"]
     h_research_comparison_table --> h_research_result_followup["200: research_result_followup"]
@@ -133,13 +134,13 @@ flowchart TD
     h_brainstorming --> h_conversation_topic["300: conversation_topic"]
     h_conversation_topic --> h_advice_request["305: advice_request"]
     h_advice_request --> h_fact_lookup["310: fact_lookup"]
-    h_fact_lookup --> h_coreference["320: coreference"]
-    h_coreference --> after_3(["ranks after 320"])
+    h_fact_lookup --> after_3(["ranks after 310"])
 ```
 
 | Rank | Handler | Runs on |
 | --- | --- | --- |
 | 167 | `product_search` | native and browser |
+| 168 | `requirement_listing` | native and browser |
 | 170 | `web_search` | native and browser |
 | 180 | `learn_from_source` | native and browser |
 | 190 | `research_comparison_table` | native and browser |
@@ -158,14 +159,14 @@ flowchart TD
 | 300 | `conversation_topic` | native and browser |
 | 305 | `advice_request` | native and browser |
 | 310 | `fact_lookup` | native and browser |
-| 320 | `coreference` | native and browser |
 
-## Part 4 — Precedence, ranks 330 to 424
+## Part 4 — Precedence, ranks 320 to 422
 
 ```mermaid
 flowchart TD
-    before_4(["ranks before 330"])
-    before_4 --> h_roleplay["330: roleplay"]
+    before_4(["ranks before 320"])
+    before_4 --> h_coreference["320: coreference"]
+    h_coreference --> h_roleplay["330: roleplay"]
     h_roleplay --> h_creative_writing["335: creative_writing"]
     h_creative_writing --> h_translation["340: translation"]
     h_translation --> h_text_rewrite["345: text_rewrite"]
@@ -184,12 +185,12 @@ flowchart TD
     h_sql_synthesis --> h_shell_command_compose["418: shell_command_compose"]
     h_shell_command_compose --> h_number_constraint_reasoning["420: number_constraint_reasoning"]
     h_number_constraint_reasoning --> h_code_explanation["422: code_explanation"]
-    h_code_explanation --> h_code_review["424: code_review"]
-    h_code_review --> after_4(["ranks after 424"])
+    h_code_explanation --> after_4(["ranks after 422"])
 ```
 
 | Rank | Handler | Runs on |
 | --- | --- | --- |
+| 320 | `coreference` | native and browser |
 | 330 | `roleplay` | native and browser |
 | 335 | `creative_writing` | native and browser |
 | 340 | `translation` | native and browser |
@@ -209,14 +210,14 @@ flowchart TD
 | 418 | `shell_command_compose` | native and browser |
 | 420 | `number_constraint_reasoning` | native and browser |
 | 422 | `code_explanation` | native and browser |
-| 424 | `code_review` | native and browser |
 
-## Part 5 — Precedence, ranks 426 to 570
+## Part 5 — Precedence, ranks 424 to 560
 
 ```mermaid
 flowchart TD
-    before_5(["ranks before 426"])
-    before_5 --> h_test_generation["426: test_generation"]
+    before_5(["ranks before 424"])
+    before_5 --> h_code_review["424: code_review"]
+    h_code_review --> h_test_generation["426: test_generation"]
     h_test_generation --> h_code_refactoring["428: code_refactoring"]
     h_code_refactoring --> h_format_conversion["429: format_conversion"]
     h_format_conversion --> h_program_synthesis["430: program_synthesis"]
@@ -235,12 +236,12 @@ flowchart TD
     h_installation_conversion --> h_write_script["540: write_script"]
     h_write_script --> h_document_generation_plan["550: document_generation_plan"]
     h_document_generation_plan --> h_software_project["560: software_project"]
-    h_software_project --> h_algorithm["570: algorithm"]
-    h_algorithm --> after_5(["ranks after 570"])
+    h_software_project --> after_5(["ranks after 560"])
 ```
 
 | Rank | Handler | Runs on |
 | --- | --- | --- |
+| 424 | `code_review` | native and browser |
 | 426 | `test_generation` | native and browser |
 | 428 | `code_refactoring` | native and browser |
 | 429 | `format_conversion` | native and browser |
@@ -260,14 +261,14 @@ flowchart TD
 | 540 | `write_script` | native and browser |
 | 550 | `document_generation_plan` | native and browser |
 | 560 | `software_project` | native and browser |
-| 570 | `algorithm` | native and browser |
 
-## Part 6 — Precedence, ranks 580 to 680
+## Part 6 — Precedence, ranks 570 to 680
 
 ```mermaid
 flowchart TD
-    before_6(["ranks before 580"])
-    before_6 --> h_source_refresh["580: source_refresh"]
+    before_6(["ranks before 570"])
+    before_6 --> h_algorithm["570: algorithm"]
+    h_algorithm --> h_source_refresh["580: source_refresh"]
     h_source_refresh --> h_source_conflict["590: source_conflict"]
     h_source_conflict --> h_clarification["600: clarification"]
     h_clarification --> h_punctuation_only_prompt["610: punctuation_only_prompt"]
@@ -283,6 +284,7 @@ flowchart TD
 
 | Rank | Handler | Runs on |
 | --- | --- | --- |
+| 570 | `algorithm` | native and browser |
 | 580 | `source_refresh` | native and browser |
 | 590 | `source_conflict` | native and browser |
 | 600 | `clarification` | native and browser |

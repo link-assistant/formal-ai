@@ -39,10 +39,12 @@ impl ConditionSource for FixtureTables<'_> {
 
 /// The precedence names that are now data rather than Rust functions. The
 /// last six moved in the issue #918 minimal-core batches
-/// (`rust/tests/unit/issue_918_handler_rules_batch.rs`).
-const MIGRATED_HANDLERS: [&str; 18] = [
+/// (`rust/tests/unit/issue_918_handler_rules_batch.rs`); `requirement_listing`
+/// was a rule set from its first day (R1188-U20).
+const MIGRATED_HANDLERS: [&str; 19] = [
     "conversation_control",
     "github_repository_traffic",
+    "requirement_listing",
     "docs_method_explanation",
     "capabilities",
     "clarification",
@@ -81,8 +83,9 @@ fn the_embedded_rule_document_declares_every_migrated_handler() {
     // continuation without their operand, commit 602456cea); 30 with the
     // unnamed-repository and unattributed-conflict refusal rules of issue
     // #1175 R3; 34 with the four algorithm rules (operation named or not,
-    // test requested or not) of the issue #918 algorithm batch.
-    assert_eq!(parsed.rule_count(), 34);
+    // test requested or not) of the issue #918 algorithm batch; 35 with the
+    // requirement-listing rule of R1188-U20.
+    assert_eq!(parsed.rule_count(), 35);
     let precedence = formal_ai::seed::handler_precedence();
     for name in MIGRATED_HANDLERS {
         assert!(

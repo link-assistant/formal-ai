@@ -1,0 +1,17 @@
+monday	lunes
+tuesday	martes
+wednesday	miércoles	miercoles
+thursday	jueves
+friday	viernes
+saturday	sábado	sabado	sábados
+sunday	domingo	domingos
+calendar_day	día	días	dia	dias	día de la semana
+calendar_date	fecha
+calendar_week	semana	semanas
+calendar_today	hoy
+calendar_tomorrow	mañana	el día siguiente
+calendar_day_after_tomorrow	pasado mañana
+calendar_interrogative	qué	cuál	dime	muestra	muéstrame
+calendar_schedule_action	agenda	agéndame	agendar	reserva	resérvame	pon en el calendario	pon en mi calendario	añade al calendario	añade a mi calendario	agrega al calendario	agrega a mi calendario	crea un evento
+calendar_event	reunión	reuniones	llamada	evento	cita
+calendar_clock_time	17:00	5 pm	a las 17:00	a las 5 de la tarde

@@ -180,9 +180,14 @@ describe('the speed rule', () => {
       'if [ $((position % SHARD_TOTAL)) -eq 0 ]',
       'node --test --test-shard="$SHARD/$SHARDS" a.test.mjs',
       'cargo nextest run --partition slice:1/4',
+      'npx playwright test --config=playwright.local.config.js --shard="${SHARD}/3"',
+      'npx playwright test --shard=2/3',
     ]) {
       assert.ok(INDEX_ORDER_SHARDING.some((pattern) => pattern.test(text)), text);
     }
+    // The planner's own flags are not index-order sharding.
+    const planned = 'node scripts/plan-test-shards.mjs --shard "$SHARD" --of 3 < specs';
+    assert.ok(!INDEX_ORDER_SHARDING.some((pattern) => pattern.test(planned)), planned);
   });
 
   test('the critical path follows the longest needs chain by median', () => {

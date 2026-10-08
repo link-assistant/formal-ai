@@ -528,6 +528,21 @@ routing_probes
     language ru
     intent summarization_free_text
     prompt "Кратко перескажи текст: Ракета стартовала на рассвете. Она вышла на орбиту за девять минут."
+  probe p362
+    lane requirement_listing
+    language en
+    intent requirement_listing
+    prompt "List the requirements of this issue: The page must load in under a second. Add a progress bar to the upload form. The cache works well."
+  probe p363
+    lane requirement_listing
+    language ru
+    intent requirement_listing
+    prompt "Перечисли требования этой задачи: Страница должна загружаться быстрее секунды. Добавь индикатор загрузки. Кэш работает хорошо."
+  probe p364
+    lane requirement_listing
+    language zh
+    intent requirement_listing
+    prompt "列出这个问题的需求：页面必须在一秒内加载。添加上传进度条。缓存运行良好。"
   probe p280
     lane test_status
     language en

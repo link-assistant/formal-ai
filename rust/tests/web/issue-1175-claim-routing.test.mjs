@@ -32,6 +32,7 @@ test("the claim rows are read from the capability table", async () => {
     { handler: "code_explanation", browserHandler: "tryCodeExplanation", admitsOn: ["code_artifact"], refusalEvents: [] },
     { handler: "code_review", browserHandler: "tryCodeReview", admitsOn: ["code_artifact"], refusalEvents: [] },
     { handler: "summarization_text", browserHandler: "trySummarizationText", admitsOn: ["supplied_text"], refusalEvents: [] },
+    { handler: "requirement_listing", browserHandler: "requirement_listing", admitsOn: ["supplied_text"], refusalEvents: [] },
     { handler: "text_rewrite", browserHandler: "tryTextRewrite", admitsOn: ["supplied_text"], refusalEvents: [] },
     { handler: "statistics", browserHandler: "tryStatistics", admitsOn: ["stated_number"], refusalEvents: [] },
     { handler: "word_problem", browserHandler: "tryWordProblem", admitsOn: ["stated_number"], refusalEvents: [] },
@@ -120,7 +121,8 @@ test("every row names browser functions and evidence kinds the worker knows", as
   const unknown = plain(evaluate(worker, `claimRouteRows().flatMap((row) => [
     ...row.admitsOn.filter((kind) => typeof CLAIM_EVIDENCE[kind] !== "function"),
     ...(row.browserHandler && typeof self[row.browserHandler] !== "function"
-      && !browserHandlerPrecedence().some((record) => record.name === row.browserHandler && record.contextBinding) ? [row.browserHandler] : []),
+      && !browserHandlerPrecedence().some((record) => record.name === row.browserHandler && (record.contextBinding || record.ruleSet))
+      ? [row.browserHandler] : []),
   ])`));
   assert.deepEqual(unknown, []);
 });

@@ -639,6 +639,26 @@ multilingual_responses
     intent request_quote_unpaired
     language es
     text "Una comilla de esta solicitud se abre y nunca se cierra (`{fragment}`), así que no puedo distinguir el texto citado de la instrucción y no se hizo nada. Cierre la comilla, o use «» o comillas invertidas cuando el texto contenga comillas propias."
+  response response_request_several_edit_targets_en
+    intent request_several_edit_targets
+    language en
+    text "This edit names several files (`{files}`), and one edit request changes one file, so nothing was changed. Ask for the edit once for each file."
+  response response_request_several_edit_targets_ru
+    intent request_several_edit_targets
+    language ru
+    text "Эта правка называет несколько файлов (`{files}`), а один запрос на правку меняет один файл, поэтому ничего не изменено. Попросите правку отдельно для каждого файла."
+  response response_request_several_edit_targets_hi
+    intent request_several_edit_targets
+    language hi
+    text "यह संपादन कई फ़ाइलों का नाम लेता है (`{files}`), और एक संपादन अनुरोध एक ही फ़ाइल बदलता है, इसलिए कुछ नहीं बदला गया। हर फ़ाइल के लिए संपादन अलग से माँगें।"
+  response response_request_several_edit_targets_zh
+    intent request_several_edit_targets
+    language zh
+    text "此编辑指定了多个文件（`{files}`），而一个编辑请求只修改一个文件，因此未做任何更改。请为每个文件分别提出编辑请求。"
+  response response_request_several_edit_targets_es
+    intent request_several_edit_targets
+    language es
+    text "Esta edición nombra varios archivos (`{files}`), y una solicitud de edición cambia un solo archivo, así que no se cambió nada. Pide la edición una vez para cada archivo."
   response response_setting_en
     intent setting
     language en

@@ -1,4 +1,6 @@
 // @ts-check
+const { existsSync, readFileSync } = require('node:fs');
+const path = require('node:path');
 const { defineConfig, devices } = require('@playwright/test');
 
 const PORT = process.env.E2E_PORT || 3456;
@@ -9,105 +11,141 @@ const ORIGIN = `http://localhost:${PORT}`;
 // relative ../tests/ continue to reach their siblings unchanged.
 const BASE_URL = `${ORIGIN}/app/`;
 
+// The spec files of the local suite.
+const TEST_MATCH = [
+  '**/demo.spec.js',
+  '**/multilingual-*.spec.js',
+  '**/connectivity.spec.js',
+  '**/issue-135.spec.js',
+  '**/issue-667-debugger-view.spec.js',
+  '**/issue-157.spec.js',
+  '**/issue-153.spec.js',
+  '**/issue-193.spec.js',
+  '**/issue-205.spec.js',
+  '**/issue-209.spec.js',
+  '**/issue-210.spec.js',
+  '**/issue-180.spec.js',
+  '**/issue-218.spec.js',
+  '**/issue-221.spec.js',
+  '**/issue-223.spec.js',
+  '**/issue-224.spec.js',
+  '**/issue-228.spec.js',
+  '**/issue-230.spec.js',
+  '**/issue-242.spec.js',
+  '**/issue-280.spec.js',
+  '**/issue-282.spec.js',
+  '**/issue-327.spec.js',
+  '**/issue-286.spec.js',
+  '**/issue-288.spec.js',
+  '**/issue-330.spec.js',
+  '**/issue-334.spec.js',
+  '**/issue-335.spec.js',
+  '**/issue-336.spec.js',
+  '**/issue-337.spec.js',
+  '**/issue-338.spec.js',
+  '**/issue-339.spec.js',
+  '**/issue-343.spec.js',
+  '**/issue-347.spec.js',
+  '**/issue-353.spec.js',
+  '**/issue-360.spec.js',
+  '**/issue-363.spec.js',
+  '**/issue-386.spec.js',
+  '**/issue-388.spec.js',
+  '**/issue-392.spec.js',
+  '**/issue-402.spec.js',
+  '**/issue-404.spec.js',
+  '**/issue-409.spec.js',
+  '**/issue-426.spec.js',
+  '**/issue-435.spec.js',
+  '**/issue-438.spec.js',
+  '**/issue-439.spec.js',
+  '**/issue-440.spec.js',
+  '**/issue-441.spec.js',
+  '**/issue-460.spec.js',
+  '**/issue-464.spec.js',
+  '**/issue-466.spec.js',
+  '**/issue-476.spec.js',
+  '**/issue-478.spec.js',
+  '**/issue-479.spec.js',
+  '**/issue-479-site.spec.js',
+  '**/issue-481.spec.js',
+  '**/issue-485.spec.js',
+  '**/issue-488.spec.js',
+  '**/issue-493.spec.js',
+  '**/issue-497.spec.js',
+  '**/issue-500.spec.js',
+  '**/issue-501.spec.js',
+  '**/issue-511-cold-start.spec.js',
+  '**/issue-513.spec.js',
+  '**/issue-514.spec.js',
+  '**/issue-518.spec.js',
+  '**/issue-535.spec.js',
+  '**/issue-541-demo-mode.spec.js',
+  '**/issue-541-permissions.spec.js',
+  '**/issue-541-theme.spec.js',
+  '**/issue-548.spec.js',
+  '**/issue-550-chakra-migration.spec.js',
+  '**/issue-554-site.spec.js',
+  '**/issue-556.spec.js',
+  '**/issue-672-theme-snapshots.spec.js',
+  '**/issue-672-animation-override.spec.js',
+  '**/issue-672-reasoning-hierarchy.spec.js',
+  '**/issue-672-migration-replay.spec.js',
+  '**/issue-541-permissions-cold-start.spec.js',
+  '**/issue-676-thinking-narrative.spec.js',
+  '**/issue-687.spec.js',
+  '**/issue-707.spec.js',
+  '**/issue-710.spec.js',
+  '**/issue-709.spec.js',
+  '**/issue-708.spec.js',
+  '**/issue-747.spec.js',
+  '**/issue-759.spec.js',
+  '**/issue-776.spec.js',
+  '**/issue-845.spec.js',
+  '**/issue-864.spec.js',
+  '**/issue-870.spec.js',
+  '**/issue-890.spec.js',
+  '**/issue-896.spec.js',
+  '**/issue-917.spec.js',
+  '**/issue-1963.spec.js',
+];
+
+// R1188-U10: long specs start first. A spec file whose tests took at least
+// this many seconds in CI (data/meta/playwright-test-durations.lino, recorded
+// by `node experiments/formal_ai_subagent/ci-durations.mjs --playwright-files
+// --write`) runs in the `chromium-long` project. Playwright dispatches the
+// test groups of the projects in their order here, so those specs start
+// before the rest. The legs themselves are planned longest-first by
+// scripts/plan-test-shards.mjs in .github/workflows/e2e-local.yml.
+const LONG_SPEC_SECONDS = 60;
+
+/** Glob patterns of the recorded long spec files that still exist. */
+function longSpecs() {
+  let text = '';
+  try {
+    text = readFileSync(path.join(__dirname, '../../../data/meta/playwright-test-durations.lino'), 'utf8');
+  } catch {
+    return [];
+  }
+  const long = [];
+  let spec = null;
+  for (const line of text.split('\n')) {
+    const test = /^ {2}test "tests\/([^"]+)"$/.exec(line);
+    const seconds = /^ {4}seconds (\d+(?:\.\d+)?)$/.exec(line);
+    if (test) {
+      spec = test[1];
+    } else if (seconds && spec && Number(seconds[1]) >= LONG_SPEC_SECONDS) {
+      long.push(`**/${spec}`);
+    }
+  }
+  return long.filter((pattern) => existsSync(path.join(__dirname, 'tests', pattern.slice('**/'.length))));
+}
+
+const LONG_SPECS = longSpecs();
+
 module.exports = defineConfig({
   testDir: './tests',
-  testMatch: [
-    '**/demo.spec.js',
-    '**/multilingual-*.spec.js',
-    '**/connectivity.spec.js',
-    '**/issue-135.spec.js',
-    '**/issue-667-debugger-view.spec.js',
-    '**/issue-157.spec.js',
-    '**/issue-153.spec.js',
-    '**/issue-193.spec.js',
-    '**/issue-205.spec.js',
-    '**/issue-209.spec.js',
-    '**/issue-210.spec.js',
-    '**/issue-180.spec.js',
-    '**/issue-218.spec.js',
-    '**/issue-221.spec.js',
-    '**/issue-223.spec.js',
-    '**/issue-224.spec.js',
-    '**/issue-228.spec.js',
-    '**/issue-230.spec.js',
-    '**/issue-242.spec.js',
-    '**/issue-280.spec.js',
-    '**/issue-282.spec.js',
-    '**/issue-327.spec.js',
-    '**/issue-286.spec.js',
-    '**/issue-288.spec.js',
-    '**/issue-330.spec.js',
-    '**/issue-334.spec.js',
-    '**/issue-335.spec.js',
-    '**/issue-336.spec.js',
-    '**/issue-337.spec.js',
-    '**/issue-338.spec.js',
-    '**/issue-339.spec.js',
-    '**/issue-343.spec.js',
-    '**/issue-347.spec.js',
-    '**/issue-353.spec.js',
-    '**/issue-360.spec.js',
-    '**/issue-363.spec.js',
-    '**/issue-386.spec.js',
-    '**/issue-388.spec.js',
-    '**/issue-392.spec.js',
-    '**/issue-402.spec.js',
-    '**/issue-404.spec.js',
-    '**/issue-409.spec.js',
-    '**/issue-426.spec.js',
-    '**/issue-435.spec.js',
-    '**/issue-438.spec.js',
-    '**/issue-439.spec.js',
-    '**/issue-440.spec.js',
-    '**/issue-441.spec.js',
-    '**/issue-460.spec.js',
-    '**/issue-464.spec.js',
-    '**/issue-466.spec.js',
-    '**/issue-476.spec.js',
-    '**/issue-478.spec.js',
-    '**/issue-479.spec.js',
-    '**/issue-479-site.spec.js',
-    '**/issue-481.spec.js',
-    '**/issue-485.spec.js',
-    '**/issue-488.spec.js',
-    '**/issue-493.spec.js',
-    '**/issue-497.spec.js',
-    '**/issue-500.spec.js',
-    '**/issue-501.spec.js',
-    '**/issue-511-cold-start.spec.js',
-    '**/issue-513.spec.js',
-    '**/issue-514.spec.js',
-    '**/issue-518.spec.js',
-    '**/issue-535.spec.js',
-    '**/issue-541-demo-mode.spec.js',
-    '**/issue-541-permissions.spec.js',
-    '**/issue-541-theme.spec.js',
-    '**/issue-548.spec.js',
-    '**/issue-550-chakra-migration.spec.js',
-    '**/issue-554-site.spec.js',
-    '**/issue-556.spec.js',
-    '**/issue-672-theme-snapshots.spec.js',
-    '**/issue-672-animation-override.spec.js',
-    '**/issue-672-reasoning-hierarchy.spec.js',
-    '**/issue-672-migration-replay.spec.js',
-    '**/issue-541-permissions-cold-start.spec.js',
-    '**/issue-676-thinking-narrative.spec.js',
-    '**/issue-687.spec.js',
-    '**/issue-707.spec.js',
-    '**/issue-710.spec.js',
-    '**/issue-709.spec.js',
-    '**/issue-708.spec.js',
-    '**/issue-747.spec.js',
-    '**/issue-759.spec.js',
-    '**/issue-776.spec.js',
-    '**/issue-845.spec.js',
-    '**/issue-864.spec.js',
-    '**/issue-870.spec.js',
-    '**/issue-890.spec.js',
-    '**/issue-896.spec.js',
-    '**/issue-917.spec.js',
-    '**/issue-1963.spec.js',
-  ],
+  testMatch: TEST_MATCH,
   // Per-test cap. A single app spec navigates, waits for the worker to boot,
   // and asserts on one answer — comfortably under 30s even on a cold worker.
   timeout: 30_000,
@@ -134,6 +172,10 @@ module.exports = defineConfig({
   // (navigate, wait for the wasm worker, assert), so one worker per vCPU is the
   // right trade. Locally the default is kept so a dev machine is not saturated.
   workers: process.env.CI ? 4 : undefined,
+  // R1188-U11: parallel at test level, not only by file: a spec file's tests
+  // spread over the workers. The two files whose tests share state (a server
+  // or screenshots made in beforeAll) opt back to `mode: 'default'`.
+  fullyParallel: true,
   // Fail individual web-first assertions fast (default is 5s) so flakes surface
   // quickly rather than each burning the full per-test budget.
   expect: { timeout: 10_000 },
@@ -173,7 +215,13 @@ module.exports = defineConfig({
   },
   projects: [
     {
+      name: 'chromium-long',
+      testMatch: LONG_SPECS,
+      use: { ...devices['Desktop Chrome'] },
+    },
+    {
       name: 'chromium',
+      testIgnore: LONG_SPECS,
       use: { ...devices['Desktop Chrome'] },
     },
   ],

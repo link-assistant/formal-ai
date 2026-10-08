@@ -49,6 +49,9 @@ meanings
     lexeme zh
       surface
         text 输出
+    lexeme es
+      surface
+        text salida
   program
     grounded-in Q40056
     defined-by code
@@ -153,6 +156,9 @@ meanings
         text 你好世界
       surface
         text 你好，世界
+    lexeme es
+      surface
+        text "hola mundo"
   program_modification_reference
     defined-by reference
     role program_modification_reference
@@ -339,6 +345,21 @@ meanings
         text 去掉
       surface
         text 去除
+    lexeme es
+      surface
+        text cancela
+      surface
+        text cancelar
+      surface
+        text deshaz
+      surface
+        text deshacer
+      surface
+        text quita
+      surface
+        text quitar
+      surface
+        text revierte
   modify
     defined-by update
     defined-by action
@@ -393,6 +414,11 @@ meanings
     lexeme zh
       surface
         text 更新
+    lexeme es
+      surface
+        text actualiza
+      surface
+        text actualizar
   make
     defined-by program
     defined-by output
@@ -417,6 +443,13 @@ meanings
     lexeme zh
       surface
         text 制作
+    lexeme es
+      surface
+        text haz
+      surface
+        text hacer
+      surface
+        text hazme
   function
     defined-by code
     defined-by program
@@ -442,6 +475,11 @@ meanings
     lexeme zh
       surface
         text 函数
+    lexeme es
+      surface
+        text función
+      surface
+        text funciones
   class
     defined-by code
     defined-by program
@@ -461,6 +499,11 @@ meanings
     lexeme zh
       surface
         text 类
+    lexeme es
+      surface
+        text clase
+      surface
+        text clases
   write
     defined-by code
     defined-by program
@@ -830,6 +873,13 @@ meanings
     lexeme zh
       surface
         text 创建
+    lexeme es
+      surface
+        text crea
+      surface
+        text crear
+      surface
+        text créame
   show
     defined-by output
     defined-by result
@@ -850,6 +900,13 @@ meanings
     lexeme zh
       surface
         text 显示
+    lexeme es
+      surface
+        text muestra
+      surface
+        text mostrar
+      surface
+        text muéstrame
   generate
     defined-by output
     defined-by program
@@ -871,6 +928,13 @@ meanings
     lexeme zh
       surface
         text 生成
+    lexeme es
+      surface
+        text genera
+      surface
+        text generar
+      surface
+        text genérame
   build
     defined-by make
     defined-by program
@@ -892,3 +956,10 @@ meanings
     lexeme zh
       surface
         text 构建
+    lexeme es
+      surface
+        text construye
+      surface
+        text construir
+      surface
+        text compila

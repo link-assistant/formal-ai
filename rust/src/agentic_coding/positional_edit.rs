@@ -84,9 +84,11 @@ pub(super) struct PositionalInsert {
     pub(super) inserted: String,
     pub(super) after: bool,
     pub(super) context: Option<String>,
-    /// Lines given under the request, neither fenced nor quoted: rebased on
-    /// the anchor line's indentation once the file is read (PR #1188 G16).
-    pub(super) rebase: bool,
+    /// Lines given under the request, neither fenced nor quoted: the
+    /// indentation they shared, kept when the file indents lines so, else
+    /// rebased on the anchor line's indentation once the file is read (PR
+    /// #1188 G16, G93). `None` for lines kept as written.
+    pub(super) rebase: Option<String>,
     /// The anchor and context are unquoted word spans, resolved against the
     /// file's lines once it is read (PR #1188 G51).
     pub(super) spans: bool,
@@ -106,10 +108,14 @@ pub(super) fn positional_inserts(request: &str) -> Option<Vec<PositionalInsert>>
         .as_ref()
         .map_or_else(|| insert_clauses(request), |block| vec![block.head]);
     let block_text = block.as_ref().map(|block| block.text.as_str());
-    let rebase = block.as_ref().is_some_and(|block| !block.verbatim);
+    let rebase = block
+        .as_ref()
+        .filter(|block| !block.verbatim)
+        .map(|block| block.indentation.to_owned());
     let mut inserts = Vec::new();
     for clause in clauses {
         let (target, insert) = clause_insert(clause, block_text)?;
+        let rebase = rebase.clone();
         inserts.push((target, PositionalInsert { rebase, ..insert }));
     }
     let mut named: Vec<&str> = Vec::new();
@@ -211,7 +217,7 @@ fn clause_insert(
             inserted: text.to_owned(),
             after,
             context: context_at.map(|index| unescape_prose_newlines(&literals[index].text)),
-            rebase: false,
+            rebase: None,
             spans: false,
         };
         return Some((target, insert));
@@ -269,7 +275,7 @@ fn clause_insert(
         inserted,
         after,
         context: context_at.map(|index| unescape_prose_newlines(&literals[index].text)),
-        rebase: false,
+        rebase: None,
         spans: false,
     };
     Some((target, insert))
@@ -324,6 +330,17 @@ pub(super) fn rebased_block(text: &str, indentation: &str) -> String {
 /// The whitespace a line starts with.
 pub(super) fn leading_indentation(line: &str) -> &str {
     &line[..line.len() - line.trim_start().len()]
+}
+
+/// Whether `source` has a non-blank line indented by exactly `indentation`.
+///
+/// Never for the empty indentation: lines given flush left say nothing about
+/// where they belong (PR #1188 G16, G93).
+pub(super) fn indents_lines_at(source: &str, indentation: &str) -> bool {
+    !indentation.is_empty()
+        && source
+            .split('\n')
+            .any(|line| !line.trim().is_empty() && leading_indentation(line) == indentation)
 }
 
 /// The seeded role of the words that name the line an anchor follows.
@@ -574,6 +591,15 @@ pub(super) struct IntroducedBlock<'a> {
     pub(super) indentation: &'a str,
 }
 
+/// Where the instruction of `request` ends.
+///
+/// At the end of its first line when that line ends in a colon and lines
+/// follow it, since those lines are the payload whatever they say (PR #1188
+/// G94, G95); else at the end of the request (mirrors `instructionEnd`).
+pub(super) fn instruction_end(request: &str) -> usize {
+    introduced_block(request).map_or(request.len(), |block| block.head.len())
+}
+
 /// A request whose first line ends in a colon and is followed by lines: that
 /// first line, and the lines with their shared indentation removed (one quoted
 /// literal stands for itself; a fenced block keeps its own).
@@ -755,7 +781,7 @@ fn insert_edit(source: &str, given: &PositionalInsert) -> Option<(usize, String,
     let resolved = if given.spans {
         Some(unquoted_anchor::resolved_spans(source, given)?)
     } else {
-        None
+        unquoted_anchor::written_escapes(source, given)
     };
     let insert = resolved.as_ref().unwrap_or(given);
     let anchor = insert.anchor.as_str();
@@ -849,11 +875,15 @@ fn lone_line_occurrences(source: &str, text: &str) -> Vec<usize> {
 
 /// The lines an insert puts beside the anchor's line.
 ///
-/// Rebased on that line's indentation when they came as an unfenced block, so
-/// they land as its siblings (PR #1188 G16).
+/// An unfenced block keeps the indentation it was given when the file already
+/// indents lines so (G93, as appended lines do); otherwise it is rebased on
+/// the anchor line's indentation, so it lands as its siblings (PR #1188 G16).
 fn inserted_text(source: &str, anchor_line: usize, insert: &PositionalInsert) -> String {
-    if !insert.rebase {
+    let Some(given) = insert.rebase.as_deref() else {
         return insert.inserted.clone();
+    };
+    if indents_lines_at(source, given) {
+        return rebased_block(&insert.inserted, given);
     }
     let line_end = source[anchor_line..]
         .find('\n')

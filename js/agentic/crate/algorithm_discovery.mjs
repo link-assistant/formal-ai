@@ -719,7 +719,7 @@ export function conformanceLinksNotation(candidate, trigger, bindings) {
   return pushLinoNode(out, 2, 'result', 'passed');
 }
 
-/** Mirrors `#[derive(PartialEq)]` on `AlgorithmCandidate`. */
+/** Rust built-in `#[derive(PartialEq)]` on `AlgorithmCandidate`. */
 export function candidatesEqual(left, right) {
   if (!left || !right) return left === right;
   const stepsEqual = left.steps.length === right.steps.length && left.steps.every((step, index) => {

@@ -191,7 +191,7 @@ function addQualifier(qualifiers, name, value) {
   if (value !== null && value !== undefined && value !== '') qualifiers.set(name, value);
 }
 
-/** The qualifiers of an expression as sorted `[name, value]` pairs (`BTreeMap` order). */
+/** The qualifiers of an expression as sorted `[name, value]` pairs: Rust built-in `BTreeMap::iter` order. */
 export function sortedQualifiers(expression) {
   return [...expression.qualifiers.entries()].sort(([left], [right]) => byteOrder(left, right));
 }

@@ -7,7 +7,9 @@
 // vocabulary and their wording all live in data/seed; this module only walks
 // the links, so the browser answers the rule-backed handlers (clarification,
 // punctuation_only_prompt, ill_formed, physical_action_question,
-// opinion_question) exactly as the native interpreter does.
+// opinion_question) exactly as the native interpreter does. The subjects and
+// captured values (rust/src/rule_interpreter/values.rs) are
+// formal_ai_worker_handler_rule_values.js.
 
 /**
  * Tokens of one rule line: whitespace-separated, quotes keep spaces.
@@ -97,8 +99,7 @@ function handlerRulesParseCondition(node) {
       options.push(rest[index]);
     }
   }
-  const subjects = ["normalized", "cleaned", "lowercase", "prompt", "trimmed", "padded"];
-  if (!subjects.includes(subject)) throw new Error("handler_rules:unknown_subject");
+  if (!HANDLER_RULES_SUBJECT_NAMES.includes(subject)) throw new Error("handler_rules:unknown_subject");
   switch (node.name) {
     case "all":
     case "any":
@@ -247,11 +248,14 @@ function handlerRulesParseValue(node) {
       if (node.args.length < 3) throw new Error("handler_rules:table_without_name");
       const mode = node.args[3];
       if ((mode !== "of" && mode !== "key") || node.args.length < 5) throw new Error("handler_rules:table_without_lookup");
-      if (mode === "of" && !["normalized", "cleaned", "lowercase", "prompt", "trimmed", "padded"].includes(node.args[4])) {
+      if (mode === "of" && !HANDLER_RULES_SUBJECT_NAMES.includes(node.args[4])) {
         throw new Error("handler_rules:unknown_subject");
       }
       return { name, source, text: node.args[4], key: node.args[2], mode };
     }
+    case "transform": // R1188-U20: a named text transform of the free-text payload (Rust ValueSource::Transform)
+      if (node.args.length < 3) throw new Error("handler_rules:transform_without_name");
+      return { name, source, text: "", key: node.args[2] };
     case "response": // #918: the seeded response whose intent the template names, in the prompt language
       if (node.args.length < 3) throw new Error("handler_rules:response_without_intent");
       return { name, source, text: "", key: node.args[2] };
@@ -688,150 +692,6 @@ function handlerRulesRender(response, context, values) {
 }
 
 /**
- * Resolve a rule's captured values; null when a capture is missing.
- * @param {object} rule
- * @param {object} context
- * @returns {{name: string, value: string}[]|null}
- */
-function handlerRulesResolveValues(rule, context) {
-  const resolved = [];
-  for (const value of rule.values) {
-    let text = "";
-    switch (value.source) {
-      case "backticks": {
-        const parts = context.prompt.split("`");
-        const term = parts.length > 1 ? parts[1].trim() : "";
-        if (term === "") return null;
-        text = term;
-        break;
-      }
-      case "agent_info":
-        text = AGENT_INFO[value.key] !== undefined ? String(AGENT_INFO[value.key]) : value.text;
-        break;
-      case "literal":
-        text = value.text;
-        break;
-      case "stable_id":
-        text = stableBehaviorRuleId(value.key, context.prompt);
-        break;
-      case "role_slot": {
-        const slot = handlerRulesRoleSlot(value.key, context);
-        if (slot === null) return null;
-        text = slot;
-        break;
-      }
-      case "quoted": {
-        const quoted = handlerRulesQuotedPhrase(context.prompt);
-        if (quoted === null) return null;
-        text = quoted;
-        break;
-      }
-      case "network_snapshot":
-        text = networkSnapshotLinksNotation();
-        break;
-      case "operand": {
-        const reader = typeof CLAIM_OPERANDS === "object" ? CLAIM_OPERANDS[value.key] : null;
-        const operands = typeof reader === "function" ? reader(context.prompt) : [];
-        const operand = operands[Number(value.text)];
-        if (operand === undefined) return null;
-        text = operand;
-        break;
-      }
-      case "table": { // Rust `values::lookup_table`
-        const table = handlerRulesTables()[value.key];
-        if (!table) return null;
-        let row;
-        if (value.mode === "of") {
-          const subject = context.subjects[value.text] || "";
-          row = table.rows.find((entry) => entry[0] !== "" && subject.includes(entry[0]));
-        } else {
-          const capture = resolved.find((entry) => entry.name === value.text);
-          if (!capture) return null;
-          row = table.rows.find((entry) => entry[0] === capture.value);
-        }
-        if (row) text = row[1];
-        else if (table.fallback !== null) text = table.fallback;
-        else return null;
-        break;
-      }
-      case "response": { // Rust `seed::localized_response` under the templated intent
-        const intent = handlerRulesSubstitute(value.key, resolved);
-        let found = handlerRulesResponseFor(intent, context.language);
-        if (found === null) found = handlerRulesResponseFor(intent, "unknown");
-        if (found === null) found = handlerRulesResponseFor(intent, "en");
-        if (found === null) return null;
-        text = found;
-        break;
-      }
-      default:
-        text = context.prompt.trim();
-        break;
-    }
-    resolved.push({ name: value.name, value: text });
-  }
-  return resolved;
-}
-
-/**
- * The first quoted phrase of the prompt, trying the quote pairs in the order
- * the native `extract_quoted_phrase` does; null without one.
- * @param {string} prompt
- * @returns {string|null}
- */
-function handlerRulesQuotedPhrase(prompt) {
-  for (const [open, close] of [["'", "'"], ['"', '"'], ["`", "`"], ["«", "»"]]) {
-    const start = prompt.indexOf(open);
-    if (start === -1) continue;
-    const end = prompt.indexOf(close, start + open.length);
-    if (end !== -1) return prompt.slice(start + open.length, end);
-  }
-  return null;
-}
-
-/**
- * Marks a captured slot sheds at its edges besides whitespace: the quotation
- * and sentence punctuation a request wraps its object in (Rust
- * `SLOT_EDGE_MARKS`).
- */
-const HANDLER_RULES_SLOT_EDGE_MARKS = "`\"':-_.,?!";
-
-/**
- * The text filling the open slot of a role's prefix surface (Rust
- * `values::role_slot`): the first surface whose lead opens the normalized
- * subject, else the first `scan` surface whose lead occurs anywhere in the
- * lowercased prompt. Null when no surface opens the subject or the slot is
- * empty once its edge marks are shed.
- * @param {string} role
- * @param {object} context
- * @returns {string|null}
- */
-function handlerRulesRoleSlot(role, context) {
-  const forms = roleWordForms(role);
-  const opening = context.subjects.normalized;
-  const lowercase = context.subjects.lowercase;
-  let slot = null;
-  const opener = forms.find((form) => opening.startsWith(form.before));
-  if (opener) {
-    slot = opening.slice(opener.before.length);
-  } else {
-    for (const form of forms) {
-      if (form.action !== "scan") continue;
-      const index = lowercase.indexOf(form.before);
-      if (index >= 0) {
-        slot = lowercase.slice(index + form.before.length);
-        break;
-      }
-    }
-  }
-  if (slot === null) return null;
-  const characters = Array.from(slot);
-  const shed = (character) => /\s/u.test(character) || HANDLER_RULES_SLOT_EDGE_MARKS.includes(character);
-  while (characters.length > 0 && shed(characters[0])) characters.shift();
-  while (characters.length > 0 && shed(characters[characters.length - 1])) characters.pop();
-  return characters.length > 0 ? characters.join("") : null;
-}
-
-/**
  * Whether any rule behind `name` accepts the prompt, without answering (Rust
  * `rule_interpreter::handler_claims`): the claim-evidence probe a migrated
  * handler's recognition answers through.
@@ -864,14 +724,7 @@ function runHandlerRuleSet(name, prompt, normalized, history) {
     language,
     languages: language === "en" ? ["en"] : [language, "en"],
     history: Array.isArray(history) ? history : [],
-    subjects: {
-      normalized: normalizedText,
-      cleaned: normalizePrompt(normalizedText),
-      lowercase: source.toLowerCase(),
-      prompt: source,
-      trimmed: normalizedText.trim(),
-      padded: ` ${normalizedText} `,
-    },
+    subjects: handlerRulesSubjects(source, normalizedText),
   };
   for (const rule of rules) {
     if (!handlerRulesHolds(rule.when, context)) continue;

@@ -65,6 +65,11 @@ fn the_claim_rows_are_read_from_the_capability_table() {
                 "trySummarizationText",
                 vec!["supplied_text"],
             ),
+            (
+                "requirement_listing",
+                "requirement_listing",
+                vec!["supplied_text"],
+            ),
             ("text_rewrite", "tryTextRewrite", vec!["supplied_text"]),
             ("statistics", "tryStatistics", vec!["stated_number"]),
             ("word_problem", "tryWordProblem", vec!["stated_number"]),

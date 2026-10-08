@@ -25,6 +25,10 @@
 // older than .bun-version bundles Mermaid's ELK layout with a bare `__require`,
 // so every diagram fell back to its source text.
 const { test, expect } = require('@playwright/test');
+
+// R1188-U11: the suite runs fully parallel, test by test; this file starts one debug server in beforeAll and shares it through module state,
+// so its tests stay in one worker, in order.
+test.describe.configure({ mode: 'default' });
 const { spawn } = require('node:child_process');
 const fs = require('node:fs');
 const os = require('node:os');

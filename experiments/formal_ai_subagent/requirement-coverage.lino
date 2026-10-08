@@ -25,6 +25,7 @@ source october-messages "experiments/issue_1138_feedback_recovery/recovered-2026
 source delegation-doctrine "docs/requirements/doctrine-standing-doctrine-work-delegated-to-formal-ai-2026-10-07.md"
 source latest-vision "experiments/formal_ai_subagent/preamble.md"
 source subagent-gaps "experiments/formal_ai_subagent/gaps.md"
+source user-messages "docs/case-studies/pull-request-1188/user-messages.md"
 
 requirement generalize-not-specialize
   group architecture
@@ -297,6 +298,60 @@ requirement upstream-dependencies
 reviewed R1016 "js/styles.css is named as the stylesheet that was split into js/styles/, not as evidence"
 reviewed R1161-6 "the regression test lives in link-assistant/hive-mind, not in this repository; this repository's side is pinned by rust/tests/web/issue-1161-host-contract.test.mjs"
 reviewed R1172-9 "fact_lotr_author is named as a seed record that was deleted, not as evidence"
+
+requirement web-text-formalization
+  group translation
+  text "Formalize any text from the internet with high quality, a whole Wikipedia page included, and restate its facts from the formal statements."
+  source user-messages "2026-10-08 11:25 (message 132)"
+  rows R1188-U18
+
+requirement round-trip-translation
+  group translation
+  text "Translate between all languages and choose the translation that survives the round trip source, meta, target, meta, source, for sentences and whole texts."
+  source user-messages "2026-10-08 11:25 (message 132)"
+  rows R1188-U19 R526-1
+
+requirement issue-requirement-extraction
+  group translation
+  text "List every exact requirement an issue states, measured against the repository's own reviewed requirement rows."
+  source user-messages "2026-10-08 11:25 (message 132)"
+  rows R1188-U20
+
+requirement algorithmic-summarization
+  group translation
+  text "Summarize algorithmically with no language model: keep what the other statements depend on, drop restatements, deformalize the core concisely."
+  source user-messages "2026-10-08 11:25 (message 132)"
+  rows R1188-U21 R197
+
+requirement three-subagents
+  group process
+  text "Run at most three subagents at once, never stop a running agent early, and fully deliver the work of every started agent."
+  source user-messages "2026-10-08 11:25, 11:47 (messages 132, 141)"
+  rows R1188-U22
+
+requirement readable-multi-line-code
+  group architecture
+  text "Every regular code file in js/, ts/ and rust/ is human-readable multi-line code; only listed distribution bundles may be exempt."
+  source user-messages "2026-10-08 11:40 (messages 137, 138)"
+  rows R1188-U23
+
+requirement minimal-local-tests
+  group process
+  text "Run only the tests closest to a fix locally; the full suites run in CI, where failures are fixed in bulk."
+  source user-messages "2026-10-08 11:44 (message 140)"
+  rows R1188-U24
+
+requirement careful-disk-use
+  group safety
+  text "Be careful with disk space: no local Rust builds, no repository copies, and scratch copies deleted after use."
+  source user-messages "2026-10-08 07:36, 11:41 (messages 130, 139)"
+  rows R1188-U25
+
+requirement ci-fixer-subagent
+  group process
+  text "One of the subagents commits CI fixes as soon as each run reports, while the others bulk-draft undrafted requirements."
+  source user-messages "2026-10-08 11:47 (message 141)"
+  rows R1188-U26
 
 contradiction requirements-readme-numbered-parts
   document "docs/requirements/README.md"

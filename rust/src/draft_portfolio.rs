@@ -29,12 +29,8 @@
 
 use crate::event_log::EventLog;
 use crate::links_format::format_lino_record;
-use crate::method_registry::MethodRegistry;
 use crate::seed;
-use crate::selection_heuristics::{
-    ActionCost, CandidateRanker, CandidateScore, HeuristicRole, LeastActionRanker, TrizRanker,
-    contradictions_in,
-};
+use crate::selection_heuristics::{ActionCost, CandidateScore, rank_with_heuristic, situation_for};
 
 /// Bounded retry budget for one draft slot.
 ///
@@ -365,21 +361,7 @@ fn rank_passing_drafts<A>(drafts: &[DraftEvaluation<A>]) -> Vec<usize> {
             },
         })
         .collect();
-    let situation = if contradictions_in(&scores, "").is_empty() {
-        ""
-    } else {
-        "contradiction_detected"
-    };
-    let registry = MethodRegistry::shared();
-    let heuristics = registry.heuristics_for(HeuristicRole::Rank, situation);
-    let heuristic = heuristics.last();
-    let slug = heuristic.and_then(|h| h.parameter("slug")).unwrap_or("");
-    let params = heuristic.map(|h| h.parameters.clone()).unwrap_or_default();
-    if slug == TrizRanker.slug() {
-        TrizRanker.rank(&scores, &params)
-    } else {
-        LeastActionRanker.rank(&scores, &params)
-    }
+    rank_with_heuristic(&scores, situation_for(&scores))
 }
 
 /// The first ranked draft that also composes. Passing drafts that fail

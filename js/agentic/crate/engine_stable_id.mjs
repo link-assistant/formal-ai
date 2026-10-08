@@ -25,6 +25,7 @@ export function stableId(prefix, text) {
 /**
  * Rust `format!("{:?}", text)` for a `str`: the Debug quoting of a string.
  * Used where Rust hashes a Debug rendering (`format!("{parent:?}")`).
+ * Rust built-in `impl Debug for str`.
  * @param {string} text
  * @returns {string}
  */
@@ -46,6 +47,7 @@ export function debugString(text) {
 
 /**
  * Rust `format!("{:?}", option)` for an `Option<String>`.
+ * Rust built-in `impl Debug for Option<String>`.
  * @param {string|null} value
  */
 export function debugOption(value) {

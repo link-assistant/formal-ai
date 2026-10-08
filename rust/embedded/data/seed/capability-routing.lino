@@ -436,6 +436,11 @@ capability_routing
     admits_on supplied_text
     because "issue 1175 R3: a free-text summary claims only with the text the request carries after a command colon, a line break or quotes"
   claim
+    handler requirement_listing
+    browser_handler requirement_listing
+    admits_on supplied_text
+    because "R1188-U20: a requirement listing claims only with the text the request carries after a command colon, a line break or quotes"
+  claim
     handler text_rewrite
     browser_handler tryTextRewrite
     admits_on supplied_text

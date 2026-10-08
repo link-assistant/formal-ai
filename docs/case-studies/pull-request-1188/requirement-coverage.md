@@ -12,11 +12,11 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 
 ## Summary
 
-- Distinct requirements: 106 (43 from the owner's messages and the vision, 63 items of the 8 fixed issues).
-- Covered by rows that existed before this audit: 94 (every issue item has its own row).
-- Drafted in `docs/requirements/issue-1188-user-requirements.md`: 17 rows for 17 requirements, 12 of which no earlier row covered and 5 of which earlier rows covered only in part.
-- Row verdicts in scope: implemented 110, not-delivered 8, partial 15, superseded 1.
-- Evidence check: 110 implemented rows re-read; 0 cite evidence that does not exist, and 3 more cite something the check could not find that was reviewed and is not evidence.
+- Distinct requirements: 115 (52 from the owner's messages and the vision, 63 items of the 8 fixed issues).
+- Covered by rows that existed before this audit: 96 (every issue item has its own row).
+- Drafted in `docs/requirements/issue-1188-user-requirements.md`: 26 rows for 26 requirements, 19 of which no earlier row covered and 7 of which earlier rows covered only in part.
+- Row verdicts in scope: implemented 121, not-delivered 6, partial 17, superseded 1.
+- Evidence check: 121 implemented rows re-read; 0 cite evidence that does not exist, and 3 more cite something the check could not find that was reviewed and is not evidence.
 
 ## The owner's requirements
 
@@ -34,8 +34,9 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 | The .lino representation and the source are one to one and lossless on every merge. | [lino-and-source](../../../docs/architect-notes/2026-09-11-lino-and-src-one-to-one.md) 2026-09-11 | R480, R482, R1188-U3 | R480 implemented; R482 implemented; R1188-U3 partial |
 | Nothing is a hard task: a big task is split in halves recursively until each leaf is simple. | [nothing-is-hard](../../../docs/architect-notes/2026-09-12-nothing-is-a-hard-task.md) 2026-09-12 | R847-1, R847-4, R703-3 | R847-1 implemented; R847-4 implemented; R703-3 implemented |
 | Start from a working Hello World in the top 10 to 20 languages, discovered rather than memorized, tested through Hive Mind on isolated branches. | [hello-world](../../../docs/architect-notes/2026-09-11-start-from-hello-world.md) 2026-09-11 | R1165-1, R1165-8, R1187-4 | R1165-1 partial; R1165-8 partial; R1187-4 implemented |
-| Code follows link-foundation/code-architecture-principles. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U2 | R1188-U2 not-delivered |
+| Code follows link-foundation/code-architecture-principles. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U2 | R1188-U2 partial |
 | No data or source file is larger than 1500 lines. | [october-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-10-07.md) 2026-10-06 18:53 | R1016 | R1016 implemented |
+| Every regular code file in js/, ts/ and rust/ is human-readable multi-line code; only listed distribution bundles may be exempt. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 11:40 (messages 137, 138) | R1188-U23 | R1188-U23 partial |
 
 ### Naming
 
@@ -57,9 +58,9 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 | Requirement | Source | Rows | Status |
 | --- | --- | --- | --- |
 | No CI job or step runs longer than 15 to 30 minutes; the root cause of the longest runs is fixed. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1085-16, R1017-1, R1188-U9 | R1085-16 implemented; R1017-1 implemented; R1188-U9 partial |
-| Long-running jobs and tests start first. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U10 | R1188-U10 not-delivered |
-| CI runs in parallel at job level and at test level. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U11 | R1188-U11 partial |
-| The CI speed rules are enforced automatically by a gate. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U12 | R1188-U12 not-delivered |
+| Long-running jobs and tests start first. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U10 | R1188-U10 partial |
+| CI runs in parallel at job level and at test level. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U11 | R1188-U11 not-delivered |
+| The CI speed rules are enforced automatically by a gate. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U12 | R1188-U12 implemented |
 | CI runs only the parts a change affects: js, then ts, then rust, each only when its root changed. | [september-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-09-25.md) 2026-09-20 17:48 | R994 | R994 not-delivered |
 | No errors, warnings, false positives or false negatives land in CI checks, and all CI passes, pre-existing failures included, so a merge always produces a release. | [september-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-09-25.md) 2026-09-20 17:34, 2026-09-24 02:00 | R1017-1, R1017-11, R1022 | R1017-1 implemented; R1017-11 implemented; R1022 implemented |
 
@@ -75,8 +76,8 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 
 | Requirement | Source | Rows | Status |
 | --- | --- | --- | --- |
-| Docs and vision are kept in sync: VISION.md takes in the latest notes, architect notes are listed chronologically, and no document contradicts the latest vision. | [notes-and-vision](../../../docs/architect-notes/2026-09-12-notes-are-notes-vision-is-vision.md) 2026-09-12; [september-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-09-25.md) 2026-09-15 22:39; [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R914-3, R250, R1188-U14 | R914-3 implemented; R250 implemented; R1188-U14 partial |
-| All the owner's messages are compiled into one regenerable file, and every requirement in them is delivered in code, not kept as memories. | [deliver-in-code](../../../docs/architect-notes/2026-09-25-deliver-the-requirements-in-code.md) 2026-09-24; [september-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-09-25.md) 2026-09-23 07:54 | R1188-U15 | R1188-U15 partial |
+| Docs and vision are kept in sync: VISION.md takes in the latest notes, architect notes are listed chronologically, and no document contradicts the latest vision. | [notes-and-vision](../../../docs/architect-notes/2026-09-12-notes-are-notes-vision-is-vision.md) 2026-09-12; [september-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-09-25.md) 2026-09-15 22:39; [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R914-3, R250, R1188-U14 | R914-3 implemented; R250 implemented; R1188-U14 implemented |
+| All the owner's messages are compiled into one regenerable file, and every requirement in them is delivered in code, not kept as memories. | [deliver-in-code](../../../docs/architect-notes/2026-09-25-deliver-the-requirements-in-code.md) 2026-09-24; [september-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-09-25.md) 2026-09-23 07:54 | R1188-U15 | R1188-U15 implemented |
 | The working practices (bulk drafting, selective tests, commit at least every four hours) are written in the contributing guidelines. | [september-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-09-25.md) 2026-09-19 16:35, 2026-09-20 17:33 | R1018, R1020, R1022 | R1018 implemented; R1020 implemented; R1022 implemented |
 | The requirement status in the repository is kept current while the pull request is worked on. | [october-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-10-07.md) 2026-10-06 20:08 | R1021 | R1021 implemented |
 
@@ -87,7 +88,7 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 | JavaScript first with full feature parity, then automated translation into Rust. | [javascript-first](../../../docs/architect-notes/2026-10-06-javascript-first-full-parity.md) 2026-10-06 | R997, R998, R999, R1000 | R997 implemented; R998 implemented; R999 implemented; R1000 implemented |
 | JavaScript implements the server as well as the client, with parity to the Rust server guaranteed by CI. | [october-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-10-07.md) 2026-10-06 18:55 | R1013, R1014, R1015 | R1013 implemented; R1014 implemented; R1015 implemented |
 | Full parity between Rust, JavaScript and TypeScript, client and backend, reported honestly. | [three-roots](../../../docs/architect-notes/2026-09-24-three-roots-full-parity-via-the-meta-language.md) 2026-09-24 | R992, R996 | R992 partial; R996 implemented |
-| The agentic planner lands in JavaScript first and its Rust twin follows with the same behaviour. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U16 | R1188-U16 partial |
+| The agentic planner lands in JavaScript first and its Rust twin follows with the same behaviour. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U16 | R1188-U16 implemented |
 
 ### Translation
 
@@ -95,14 +96,19 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 | --- | --- | --- | --- |
 | js -> ts runs without a Rust build, js -> rust runs through meta-language, and the translated count never falls. | [javascript-first](../../../docs/architect-notes/2026-10-06-javascript-first-full-parity.md) 2026-10-06 | R1000, R1012, R993 | R1000 implemented; R1012 partial; R993 implemented |
 | Adopt the conversion practices of link-foundation/meta-language and relative-meta-logic. | [october-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-10-07.md) 2026-10-06 13:17 | R1024 | R1024 implemented |
+| Formalize any text from the internet with high quality, a whole Wikipedia page included, and restate its facts from the formal statements. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 11:25 (message 132) | R1188-U18 | R1188-U18 partial |
+| Translate between all languages and choose the translation that survives the round trip source, meta, target, meta, source, for sentences and whole texts. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 11:25 (message 132) | R1188-U19, R526-1 | R1188-U19 partial; R526-1 implemented |
+| List every exact requirement an issue states, measured against the repository's own reviewed requirement rows. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 11:25 (message 132) | R1188-U20 | R1188-U20 partial |
+| Summarize algorithmically with no language model: keep what the other statements depend on, drop restatements, deformalize the core concisely. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 11:25 (message 132) | R1188-U21, R197 | R1188-U21 partial; R197 implemented |
 
 ### Safety
 
 | Requirement | Source | Rows | Status |
 | --- | --- | --- | --- |
-| Formal AI as a coding agent never takes an action it was not asked for: quoted payloads are data, unpaired quotes decline, edits never become whole-file writes. | [subagent-gaps](../../../experiments/formal_ai_subagent/gaps.md) 2026-10-07 to 2026-10-08 | R1188-U17 | R1188-U17 partial |
+| Formal AI as a coding agent never takes an action it was not asked for: quoted payloads are data, unpaired quotes decline, edits never become whole-file writes. | [subagent-gaps](../../../experiments/formal_ai_subagent/gaps.md) 2026-10-07 to 2026-10-08 | R1188-U17 | R1188-U17 implemented |
 | Use the workstation carefully: one test at a time, two or three subagents, mind disk, RAM and CPU, and never kill processes another agent started. | [october-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-10-07.md) 2026-10-06 20:32, 21:19 | R1018, R1019 | R1018 implemented; R1019 implemented |
 | Rust is never built locally; pushing triggers the build and CI verifies it. | [october-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-10-07.md) 2026-10-06 13:17 | R1020 | R1020 implemented |
+| Be careful with disk space: no local Rust builds, no repository copies, and scratch copies deleted after use. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 07:36, 11:41 (messages 130, 139) | R1188-U25 | R1188-U25 implemented |
 
 ### Process
 
@@ -112,6 +118,9 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 | Decide open technical choices from the best available practices instead of asking the owner. | [october-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-10-07.md) 2026-10-06 18:54 | R1023 | R1023 implemented |
 | Check the meta algorithm against current best practices and record the comparison. | [october-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-10-07.md) 2026-10-06 15:07 | R1025 | R1025 implemented |
 | Report general defects to our own dependencies, and track each patched source install by one issue per dependency. | [september-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-09-25.md) 2026-09-20 18:02 | R1021-26 | R1021-26 implemented |
+| Run at most three subagents at once, never stop a running agent early, and fully deliver the work of every started agent. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 11:25, 11:47 (messages 132, 141) | R1188-U22 | R1188-U22 implemented |
+| Run only the tests closest to a fix locally; the full suites run in CI, where failures are fixed in bulk. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 11:44 (message 140) | R1188-U24 | R1188-U24 implemented |
+| One of the subagents commits CI fixes as soon as each run reports, while the others bulk-draft undrafted requirements. | [user-messages](../../../docs/case-studies/pull-request-1188/user-messages.md) 2026-10-08 11:47 (message 141) | R1188-U26 | R1188-U26 implemented |
 
 ## The fixed issues' requirements
 

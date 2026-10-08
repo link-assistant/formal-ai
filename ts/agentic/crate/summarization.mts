@@ -409,6 +409,7 @@ export function toTopic(explicitTopic, statements) {
 /**
  * `Iterator::max_by_key(|s| s.weight)`: the last statement of maximal weight,
  * or null for an empty slice.
+ * Rust built-in `Iterator::max_by_key`.
  * @param {Array<{weight: number}>} statements
  */
 export function maxByWeight(statements) {

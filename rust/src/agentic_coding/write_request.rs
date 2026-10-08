@@ -852,24 +852,21 @@ pub(super) fn compose_edit_clauses(raw: &str) -> Option<EditClauses> {
         clause_start_index -= 1;
     }
     let file_clause_start = toks[clause_start_index].start;
+    // A cue word quoted whole is payload too: `replace 'with' with ','`.
+    let is_cue = |token: &Token<'_>, cues: &[String]| {
+        unquoted.contains(&token.start)
+            && !is_quoted(token)
+            && cues.contains(&clean_cue_token(token.text))
+    };
     let action = toks
         .iter()
-        .filter(|token| {
-            unquoted.contains(&token.start) && action_cues.contains(&clean_cue_token(token.text))
-        })
+        .filter(|token| is_cue(token, &action_cues))
         .find(|token| token.start > toks[file_index].end)
-        .or_else(|| {
-            toks.iter().find(|token| {
-                unquoted.contains(&token.start)
-                    && action_cues.contains(&clean_cue_token(token.text))
-            })
-        })?;
+        .or_else(|| toks.iter().find(|token| is_cue(token, &action_cues)))?;
     let action_end = action.end;
-    let new_lead = toks.iter().find(|token| {
-        token.start >= action_end
-            && unquoted.contains(&token.start)
-            && new_leads.contains(&clean_cue_token(token.text))
-    })?;
+    let new_lead = toks
+        .iter()
+        .find(|token| token.start >= action_end && is_cue(token, &new_leads))?;
     // `Bump the version in package.json to 1.1.0`: a file clause right before
     // the new lead ends the old text; anything else between them is no edit.
     let file_between = file_clause_start >= action_end && file_clause_start < new_lead.start;

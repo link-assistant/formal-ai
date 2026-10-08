@@ -70,6 +70,16 @@ handler_rules
       intent github_repository_traffic
       link "response:github_repository_traffic"
       confidence 0.92
+  handler requirement_listing
+    rule requirement_listing
+      when
+        role requirement_listing_action of command_head
+      value requirements transform requirement_list
+      log "text_transform" requirement_list
+      respond requirement_listing
+      intent requirement_listing
+      link "response:requirement_listing"
+      confidence 0.9
   handler docs_method_explanation
     rule docs_method_explanation
       when

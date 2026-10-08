@@ -79,6 +79,7 @@ function valueAt(text, start) {
 /**
  * Mirrors `Deserializer::from_str(text).into_iter::<Value>()`: yields
  * `{value}` for each value and a final `{error: true}` at the first malformed one.
+ * Rust dependency `serde_json::StreamDeserializer`.
  * @param {string} text
  * @returns {Generator<{value?: *, error?: boolean}>}
  */
@@ -100,6 +101,7 @@ export function* jsonValueStream(text) {
 /**
  * Mirrors `Deserializer::from_str(text).into_iter::<Value>().next()` in rust/src/orchestration/analysis.rs taken
  * as `Some(Ok(value))`: the first JSON value of `text`, or `undefined`.
+ * Rust dependency `serde_json::StreamDeserializer::next`.
  * @param {string} text
  */
 export function firstJsonValue(text) {
@@ -107,7 +109,7 @@ export function firstJsonValue(text) {
   return start >= text.length ? undefined : valueAt(text, start)?.value;
 }
 
-/** Mirrors `serde_json::Value::as_object().values()` in rust/src/orchestration/runner.rs. `serde_json::Value::as_object().values()` order: a `BTreeMap` visits keys in byte order. */
+/** Rust dependency `serde_json::Map::values`, as rust/src/orchestration/runner.rs reads it: a `BTreeMap` visits keys in byte order. */
 export function sortedValues(object) {
   return Object.keys(object)
     .sort((left, right) => Buffer.compare(Buffer.from(left), Buffer.from(right)))

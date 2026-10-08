@@ -58,7 +58,7 @@ export function astCensus() {
 }
 
 /**
- * Mirrors the formatting half of `fn render_ast_document` in
+ * Mirrors `fn render_census_document`, the formatting half of `fn render_ast_document` in
  * rust/src/agentic_coding/self_ast.rs for an already computed census.
  * @param {string} targetPath
  * @param {ReturnType<typeof astCensus>} census

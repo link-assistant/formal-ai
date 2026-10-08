@@ -35,3 +35,8 @@ meanings
     lexeme zh
       surface
         text "给出 … 的 google trends 背景"
+    lexeme es
+      surface
+        text "dame contexto de google trends para …"
+      surface
+        text "da contexto de google trends para …"

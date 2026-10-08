@@ -34,6 +34,7 @@ export function documentPathFor(modulePath) {
  * Parse one committed census document into `{path, fidelity, symbols:
  * [{kind, name, start_line, end_line}]}` (the inverse of
  * `ModuleCensus::links_notation`), or null.
+ * Mirrors `fn module_from_document` in rust/src/self_ast_census.rs.
  * @param {string} text
  */
 export function moduleFromDocument(text) {

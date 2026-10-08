@@ -673,7 +673,10 @@ function commandKind(lower) {
  * @param {string} prompt
  */
 export function responseLanguage(prompt) {
-  const detected = detect(prompt);
+  // The request's own words choose the language, never its quoted payload
+  // (PR #1188 G92); a request that is all quotation keeps the whole text.
+  const outside = textOutsideQuotedSegments(prompt);
+  const detected = detect(/\p{L}/u.test(outside) ? outside : prompt);
   return detected === fallbackLanguage() ? lexicalLanguage(prompt) ?? detected : detected;
 }
 

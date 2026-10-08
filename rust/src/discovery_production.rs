@@ -373,7 +373,10 @@ impl ProcedureCache {
         }
     }
 
-    fn write(&self) -> Result<(), String> {
+    /// The text [`Self::write`] puts on disk: the header comment, the cache
+    /// record and one row per recipe. Mirrored by `cacheFileText` in
+    /// js/agentic/crate/discovery_production.mjs.
+    fn cache_file_text(&self) -> String {
         let mut out = cache_file_header();
         crate::links_format::push_lino_field(&mut out, 0, "coding_procedure_cache", None);
         crate::links_format::push_lino_field(&mut out, 2, "version", Some("\"1\""));
@@ -409,6 +412,11 @@ impl ProcedureCache {
             );
             let _ = writeln!(out, "    content_id \"0x{:016x}\"", recipe.content_id);
         }
+        out
+    }
+
+    fn write(&self) -> Result<(), String> {
+        let out = self.cache_file_text();
         if let Some(parent) = self.path.parent() {
             std::fs::create_dir_all(parent)
                 .map_err(|error| format!("procedure_cache_create_dir_failed:{error}"))?;

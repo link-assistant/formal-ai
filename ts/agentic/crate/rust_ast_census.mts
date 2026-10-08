@@ -30,6 +30,7 @@ function byteOrder(left, right) {
 
 /**
  * Count the named nodes of a tree per kind (the census walk).
+ * Mirrors `fn named_node_histogram` in rust/src/agentic_coding/self_ast.rs.
  * @param {object} root a web-tree-sitter root node
  * @returns {{named_node_count: number, node_kinds: Array<{kind: string, count: number}>}}
  */
@@ -49,6 +50,7 @@ export function namedNodeHistogram(root) {
 /**
  * The census of one Rust source: named-node count, whether the parse is
  * free of error and missing nodes, and the node-kind histogram in byte order.
+ * Mirrors `fn ast_census` in rust/src/agentic_coding/self_ast.rs.
  * @param {{Parser: Function, Language: object}} runtime the web-tree-sitter namespace
  * @param {string|URL|Uint8Array} grammar the tree-sitter-rust wasm
  * @returns {Promise<(source: string) => {named_node_count: number, clean: boolean, node_kinds: Array<{kind: string, count: number}>}>}
@@ -71,6 +73,7 @@ export async function loadRustAstCensus(runtime, grammar) {
 
 /**
  * The `io.astCensus` history_store.mjs takes: a census's histogram rows.
+ * Mirrors `fn census_kinds` in rust/src/history_context/commits.rs.
  * @param {(source: string) => {node_kinds: Array<{kind: string, count: number}>}} census
  * @returns {(source: string) => Array<{kind: string, count: number}>}
  */

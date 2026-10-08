@@ -91,7 +91,7 @@ export function quoteFault(text) {
       const character = text[index];
       const ascii = ASCII_QUOTES.includes(character);
       if (ascii && text[index - 1] === '\\') faults.push(['escaped', index - 1]);
-      else if ((ascii && !isAsciiAlphanumeric(previousChar(text, index))) || OPEN_ONLY.includes(character)) {
+      else if ((ascii && !wordInternalMark(character, previousChar(text, index))) || OPEN_ONLY.includes(character)) {
         faults.push(['unpaired', index]);
       }
     }
@@ -111,6 +111,19 @@ export function quoteFault(text) {
   if (faults.length === 0) return null;
   const [kind, at] = faults.reduce((first, fault) => (fault[1] < first[1] ? fault : first));
   return { kind, at, fragment: trimEnd(Array.from(text.slice(at)).slice(0, FAULT_FRAGMENT_CHARS).join('')) };
+}
+
+/**
+ * Mirrors `fn word_internal_mark`: whether an unpaired ASCII quote belongs to
+ * the word before it -- an apostrophe after a letter or digit (`it's`), an
+ * inch mark after a digit (`5"`) -- rather than opening a quote that never
+ * closes (`say "hi" in` with an odd count of `"`, U17).
+ * @param {string} character
+ * @param {string|undefined} before
+ */
+function wordInternalMark(character, before) {
+  if (before === undefined) return false;
+  return character === "'" ? isAsciiAlphanumeric(before) : character === '"' && /[0-9]/u.test(before);
 }
 
 /** Mirrors `fn unwrap_transport_quotes`. @param {string} text */

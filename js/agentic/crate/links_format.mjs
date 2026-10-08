@@ -3,7 +3,7 @@
 // (lino-objects-codec 0.7.0 `format_indented_ordered`, `escape_reference`,
 // `format_indented_value`).
 
-/** Mirrors `fn escape_reference` in lino-objects-codec `format`. @param {string} value */
+/** Rust dependency `lino_objects_codec::format::escape_reference`. @param {string} value */
 export function escapeReference(value) {
   const needsEscaping = /[\s()'":]/u.test(value) || value.includes('\n');
   if (!needsEscaping) return value;
@@ -31,7 +31,7 @@ function formatIndentedValue(value) {
 }
 
 /**
- * Mirrors `fn format_indented_ordered` in lino-objects-codec `format`.
+ * Rust dependency `lino_objects_codec::format::format_indented_ordered`.
  * @param {string} id
  * @param {Array<[string, string]>} pairs
  * @param {string} indent

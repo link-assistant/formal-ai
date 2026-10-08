@@ -297,7 +297,7 @@ function rowSlug(recipe) {
   return slug;
 }
 
-/** Mirrors the text `fn write` puts on disk. */
+/** Mirrors `fn cache_file_text` in rust/src/discovery_production.rs: the text `fn write` puts on disk. */
 export function cacheFileText(cache) {
   let out = cacheFileHeader();
   out = pushLinoField(out, 0, 'coding_procedure_cache', null);

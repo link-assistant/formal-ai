@@ -29,7 +29,7 @@ Before asking for review, check the change against each group below: the gates r
 | --- | --- | --- | --- |
 | Abstraction | A capability is reached by its meaning (a seed role), not by the words of one language or one prompt. | [`check-hardcoded-language`](../../data/meta/ci-gates/check-hardcoded-language.lino) | R1188-U1 |
 | Stable Contracts | The OpenAI-compatible server protocol, the links notation formats and the generated ledgers are versioned contracts with --check generators. | [`check-requirement-status`](../../data/meta/ci-gates/check-requirement-status.lino), [`check-status-render`](../../data/meta/ci-gates/check-status-render.lino) | — |
-| Explicit Interfaces | Every JavaScript module and its Rust twin cite each other, so the shared surface is named in both roots. | [`check-twin-citations`](../../data/meta/ci-gates/check-twin-citations.lino) | R1188-U16 |
+| Explicit Interfaces | Every JavaScript module and its Rust twin cite each other, so the shared surface is named in both roots. | [`check-twin-citations`](../../data/meta/ci-gates/check-twin-citations.lino), [`check-planner-twins`](../../data/meta/ci-gates/check-planner-twins.lino) | R1188-U16 |
 | Principle of Least Surprise | Formal AI as a coding agent takes no action it was not asked for: quoted payloads are data, unpaired quotes are declined, a line edit never becomes a whole-file write. | — | R1188-U17 |
 | Clear Naming | Names are full English words; files and directories say what they hold. | — | R1188-U4, R1188-U5 |
 | Extensible Public Surface | New behaviour is added as seed data (a meaning, a response row, a handler rule) without changing the compiled surface. | [`check-seed-registry`](../../data/meta/ci-gates/check-seed-registry.lino) | — |
@@ -54,14 +54,14 @@ Before asking for review, check the change against each group below: the gates r
 | Keep Side Effects at the Edges | The solver is a pure function of the prompt, the history and the seed; network and disk access happen in the host and the source cache. | [`check-minimal-core-boundary`](../../data/meta/ci-gates/check-minimal-core-boundary.lino) | — |
 | Functional Core, Imperative Shell | The agentic planner returns the next tool call as data; the driver or the agent CLI performs it. | [`repository-workspace-protocol`](../../data/meta/ci-gates/repository-workspace-protocol.lino) | — |
 | Explicit Side Effects | Every executed command is recorded with its argv, exit status and output hash, and answers cite that evidence. | — | — |
-| Idempotence | Generators and substitution passes produce the same bytes on a second run; --check modes prove it. | [`check-status-render`](../../data/meta/ci-gates/check-status-render.lino) | R1188-U8 |
+| Idempotence | Generators and substitution passes produce the same bytes on a second run; --check modes prove it. | [`check-status-render`](../../data/meta/ci-gates/check-status-render.lino), [`check-generated-files`](../../data/meta/ci-gates/check-generated-files.lino) | R1188-U8 |
 | Stateless Processes (Where Possible) | Server requests carry their history; the worker and the Node server keep no per-request state outside memory events. | — | — |
 
 ## Correctness, Types & Testing
 
 | Principle | How this repository applies it | Enforced by | Still missing |
 | --- | --- | --- | --- |
-| Design for Testability | Every requirement row names the test that pins it; JavaScript tests run with node, Rust twins in CI. | [`check-requirement-status`](../../data/meta/ci-gates/check-requirement-status.lino), [`check-language-test-coverage`](../../data/meta/ci-gates/check-language-test-coverage.lino) | — |
+| Design for Testability | Every requirement row names the test that pins it; JavaScript tests run with node, Rust twins in CI. | [`check-requirement-status`](../../data/meta/ci-gates/check-requirement-status.lino), [`check-language-test-coverage`](../../data/meta/ci-gates/check-language-test-coverage.lino), [`check-formal-ai-tally`](../../data/meta/ci-gates/check-formal-ai-tally.lino) | — |
 | Deterministic Core Logic | No neural inference: the same prompt, history and seed always give the same answer and trace. | [`check-tests-as-docs`](../../data/meta/ci-gates/check-tests-as-docs.lino) | — |
 | Use Types or Schemas to Model Reality | Links notation records have a declared shape (role registry, seed registry, gate registry), and the Rust core is typed. | [`check-ci-gate-registry`](../../data/meta/ci-gates/check-ci-gate-registry.lino), [`run-clippy`](../../data/meta/ci-gates/run-clippy.lino) | — |
 | Fail Fast and Clearly | A gate prints the file, the measured value and the limit, and says how to fix it instead of raising the limit. | [`check-debt-ratchet`](../../data/meta/ci-gates/check-debt-ratchet.lino) | — |
@@ -81,7 +81,7 @@ Before asking for review, check the change against each group below: the gates r
 
 | Principle | How this repository applies it | Enforced by | Still missing |
 | --- | --- | --- | --- |
-| Simplicity Over Cleverness | A failing prompt is fixed by the smallest more universal rule, never by a case for that prompt. | [`check-hardcoded-language`](../../data/meta/ci-gates/check-hardcoded-language.lino) | R1188-U1 |
+| Simplicity Over Cleverness | A failing prompt is fixed by the smallest more universal rule, never by a case for that prompt. | [`check-hardcoded-language`](../../data/meta/ci-gates/check-hardcoded-language.lino), [`check-prompt-specialization`](../../data/meta/ci-gates/check-prompt-specialization.lino) | R1188-U1 |
 | Self-documented Code | Doc comments say why; names are full words; generated files say which command regenerates them. | [`check-rust-api-documentation`](../../data/meta/ci-gates/check-rust-api-documentation.lino) | R1188-U4 |
 | Minimize Cognitive Load | Code is readable multi-line text and links notation stays human readable and deduplicated. | [`check-readable-code`](../../data/meta/ci-gates/check-readable-code.lino) | R1188-U6, R1188-U7 |
 | Minimize nesting | Early returns and small helpers; clippy's cognitive-complexity lints run with warnings denied. | [`run-clippy`](../../data/meta/ci-gates/run-clippy.lino) | — |

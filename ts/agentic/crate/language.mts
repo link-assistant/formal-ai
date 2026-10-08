@@ -171,6 +171,19 @@ const maxExcluding = (counts, script) =>
   counts.counts.filter(([name]) => name !== script).reduce((max, [, count]) => Math.max(max, count), 0);
 const total = (counts) => counts.counts.reduce((sum, [, count]) => sum + count, 0) + counts.other;
 
+/**
+ * Mirrors `fn in_identifier`: whether the whitespace-delimited token around
+ * `at` is a path or an identifier (`_`, `/`, `\`, or a `.` before a letter or
+ * a digit), whose words are no language's (PR #1188 G97).
+ */
+function inIdentifier(text, at) {
+  let start = at;
+  while (start > 0 && !/\s/u.test(text[start - 1])) start -= 1;
+  let end = at;
+  while (end < text.length && !/\s/u.test(text[end])) end += 1;
+  return /[_/\\]|\.[\p{Alphabetic}\p{N}]/u.test(text.slice(start, end));
+}
+
 /** Mirrors `fn marker_present`. */
 function markerPresent(normalized, marker, all, fallbackScript) {
   const first = Array.from(marker)[0];
@@ -182,7 +195,7 @@ function markerPresent(normalized, marker, all, fallbackScript) {
     if (at < 0) return false;
     const previous = Array.from(normalized.slice(0, at)).pop();
     const wordStart = previous === undefined || !isAlphabetic(previous);
-    if (wordStart || !needsWordStart) return true;
+    if (!needsWordStart || (wordStart && !inIdentifier(normalized, at))) return true;
     from = at + marker.length;
   }
 }

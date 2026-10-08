@@ -694,13 +694,7 @@ impl ComputedChange {
 /// (PR #1188 G16).
 fn appended_block(source: &str, text: &str, indentation: Option<&str>) -> String {
     match indentation {
-        Some(indentation)
-            if !indentation.is_empty()
-                && source.split('\n').any(|line| {
-                    !line.trim().is_empty()
-                        && super::positional_edit::leading_indentation(line) == indentation
-                }) =>
-        {
+        Some(indentation) if super::positional_edit::indents_lines_at(source, indentation) => {
             super::positional_edit::rebased_block(text, indentation)
         }
         _ => text.to_owned(),

@@ -85,6 +85,9 @@ handler_precedence
   handler product_search
     rank 167
     note "issues 800 and 872 marketplace and model cues precede generic search"
+  handler requirement_listing
+    rank 168
+    note "issue 1188 R1188-U20 a requirement-listing request carrying its own text is answered from that text before web search reads it as an enumeration query and before summarization_text summarizes it"
   handler web_search
     rank 170
     note "phase async -- the worker answers searches in its async network phase"

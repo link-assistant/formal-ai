@@ -245,3 +245,23 @@ multilingual_responses
     intent translation_clarify_reading
     language es
     text "¿Debo leer «{text}» como «{top}» o como «{other}»?"
+  response response_requirement_listing_en
+    intent requirement_listing
+    language en
+    text "Requirements stated in the text:\n{requirements}"
+  response response_requirement_listing_ru
+    intent requirement_listing
+    language ru
+    text "Требования, изложенные в тексте:\n{requirements}"
+  response response_requirement_listing_hi
+    intent requirement_listing
+    language hi
+    text "पाठ में बताई गई आवश्यकताएँ:\n{requirements}"
+  response response_requirement_listing_zh
+    intent requirement_listing
+    language zh
+    text "文本中提出的需求：\n{requirements}"
+  response response_requirement_listing_es
+    intent requirement_listing
+    language es
+    text "Requisitos que plantea el texto:\n{requirements}"

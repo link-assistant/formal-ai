@@ -69,8 +69,13 @@ struct DeliveryBinding {
 
 /// `text` with every quoted segment that holds whitespace replaced, delimiters
 /// included, by as many `x` as it has bytes, so spans still index the
-/// original. A single-token quote -- a backticked path or name -- stays
-/// readable.
+/// original.
+///
+/// A single-token quote -- a backticked path or name -- stays readable. The
+/// lines under a colon-ended first line are the request's payload, whatever
+/// they say, so they are masked the same way, line breaks kept (PR #1188 G95:
+/// a row that read "append ... to gaps.md" was taken for a delivery, and the
+/// answer was written over that file).
 fn masked_multi_word_quotes(text: &str) -> String {
     let mut masked = text.to_owned();
     for segment in crate::normal_markov::quoted_segment_spans(text) {
@@ -81,6 +86,18 @@ fn masked_multi_word_quotes(text: &str) -> String {
             );
         }
     }
+    let end = super::positional_edit::instruction_end(text);
+    let payload: String = masked[end..]
+        .chars()
+        .map(|character| {
+            if character.is_whitespace() {
+                character.to_string()
+            } else {
+                "x".repeat(character.len_utf8())
+            }
+        })
+        .collect();
+    masked.replace_range(end.., &payload);
     masked
 }
 

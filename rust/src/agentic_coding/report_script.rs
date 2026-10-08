@@ -96,8 +96,7 @@ impl ReportScript {
 
 /// The `command -v` guard for one program.
 fn preflight(program: &str) -> String {
-    let message = seed::agent_info()
-        .remove("issue_report_command_missing")
+    let message = seed::agent_info_value("issue_report_command_missing")
         .unwrap_or_default()
         .replace(COMMAND_PLACEHOLDER, program);
     PREFLIGHT

@@ -7,7 +7,7 @@ const PATCH_BEGIN = '*** Begin Patch';
 const PATCH_ADD_FILE = '*** Add File:';
 const PATCH_END = '*** End Patch';
 
-/** A JSON object parsed from `text`, or null (serde `from_str::<Value>` + `.get`). */
+/** A JSON object parsed from `text`, or null: Rust dependency `serde_json::from_str::<Value>`. */
 export function jsonObject(text) {
   try {
     const value = JSON.parse(text);

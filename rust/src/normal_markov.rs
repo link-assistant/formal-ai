@@ -263,16 +263,25 @@ fn gap_faults(text: &str, from: usize, to: usize, faults: &mut Vec<(&'static str
         let ascii = ASCII_QUOTES.contains(&character);
         if ascii && text[..index].ends_with('\\') {
             faults.push(("escaped", index - 1));
-        } else if (ascii
-            && !text[..index]
-                .chars()
-                .next_back()
-                .is_some_and(|before| before.is_ascii_alphanumeric()))
+        } else if (ascii && !word_internal_mark(character, text[..index].chars().next_back()))
             || OPEN_ONLY.contains(&character)
         {
             faults.push(("unpaired", index));
         }
     }
+}
+
+/// Whether an unpaired ASCII quote belongs to the word before it.
+///
+/// An apostrophe after a letter or digit (`it's`), an inch mark after a digit
+/// (`5"`); any other lone quote opens a quote that never closes (`say "hi" in`
+/// with an odd count of `"`, U17). Mirrors `wordInternalMark`.
+fn word_internal_mark(character: char, before: Option<char>) -> bool {
+    before.is_some_and(|before| match character {
+        '\'' => before.is_ascii_alphanumeric(),
+        '"' => before.is_ascii_digit(),
+        _ => false,
+    })
 }
 
 /// Remove one pair of client-added framing quotes without consuming literal

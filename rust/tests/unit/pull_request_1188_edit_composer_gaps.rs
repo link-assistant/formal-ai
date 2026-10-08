@@ -105,6 +105,37 @@ fn lines_under_a_request_keep_their_structure() {
         "f.lino",
     );
     assert_eq!(appended.file, [LINO, "  table z\n    row 9\n"].concat());
+    // G93: an indentation the file already uses is kept, whatever the anchor's.
+    let given = drive(
+        "Insert these lines after the line containing 'row x' in f.lino:\n  table q\n    row 1",
+        LINO,
+        "f.lino",
+    );
+    assert_eq!(
+        given.file,
+        "meanings\n  table a\n    row x\n  table q\n    row 1\n  b\nc\n"
+    );
+}
+
+#[test]
+fn lines_under_a_request_are_its_payload_whatever_they_say() {
+    // G94, G95: a delivery or a path inside the inserted rows is not acted on.
+    let rows = "| T527 | z, append gap G93 to `gaps.md` | **Pass** | w. |\n\
+                | T528 | x in js/a.mjs and rust/b.rs | **Pass** | y. |";
+    let run = drive(
+        &format!("In d.md, insert these lines after the line containing '| T447 |':\n{rows}"),
+        "| T446 | a |\n| T447 | b |\n| T448 | c |\n",
+        "d.md",
+    );
+    assert_eq!(
+        run.file,
+        format!("| T446 | a |\n| T447 | b |\n{rows}\n| T448 | c |\n")
+    );
+    assert!(
+        !run.calls.iter().any(|call| call == "write"),
+        "{:?}",
+        run.calls
+    );
 }
 
 #[test]
@@ -232,4 +263,34 @@ fn an_empty_line_beside_an_anchor_line() {
         "README.md",
     );
     assert_eq!(after.file, "# T\ntext\n\n## Probe\nx\n");
+}
+
+#[test]
+fn a_quoted_anchor_line_holding_an_escape() {
+    // G96: a `\n` inside a quoted anchor is its two characters when the file
+    // holds them so inside the line, and a line break when it holds two lines.
+    let source = " * `\\r`, as `split('\\n')` does.)\n * @param {string} text\n";
+    let prompt = "Insert the line « * Rust built-in `str::lines`.» after the line « * `\\r`, as `split('\\n')` does.)» in m.mjs.";
+    assert_eq!(
+        drive(prompt, source, "m.mjs").file,
+        " * `\\r`, as `split('\\n')` does.)\n * Rust built-in `str::lines`.\n * @param {string} text\n"
+    );
+    let prompt = "Insert the line 'x' after the line 'one\\ntwo' in f.txt.";
+    assert_eq!(drive(prompt, THREE, "f.txt").file, "one\ntwo\nx\nthree\n");
+}
+
+#[test]
+fn a_path_names_a_file_not_the_answer_language() {
+    // G97: Spanish "formaliza" begins `formalization_segment.mjs`, a path, so
+    // the English request is answered in English.
+    let run = drive(
+        "Insert the line 'x' after the line 'one' in formalization_segment.mjs.",
+        THREE,
+        "formalization_segment.mjs",
+    );
+    assert_eq!(run.file, "one\nx\ntwo\nthree\n");
+    assert_eq!(
+        run.answer.as_deref(),
+        Some("Inserted `x` after `one` in `formalization_segment.mjs` and observed the result.")
+    );
 }

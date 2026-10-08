@@ -149,10 +149,27 @@ pub struct AstCensus {
 pub fn ast_census(source: &str) -> AstCensus {
     let started = std::time::Instant::now();
     let network = LinkNetwork::parse(source, RUST_GRAMMAR_LABEL, ParseConfiguration::default());
+    let (named_node_count, node_kinds) = named_node_histogram(&network);
+    let census = AstCensus {
+        total_link_count: network.len(),
+        named_node_count,
+        text_preserved: network.reconstruct_text() == source,
+        clean: network.verify_full_match(None).is_clean(),
+        node_kinds,
+    };
+    record_census_run(source.len(), started.elapsed());
+    census
+}
 
-    // The AST proper: named syntax links in the abstract-syntax projection, which
-    // drops lossless tokens and trivia. Grouping by term() (the grammar node kind)
-    // yields the node-kind census.
+/// The named-node census walk over a parsed `network`: the named-node count
+/// and the node-kind histogram, sorted by kind.
+///
+/// The AST proper is the named syntax links in the abstract-syntax projection,
+/// which drops lossless tokens and trivia; grouping them by `term()` (the
+/// grammar node kind) yields the histogram. Mirrored by `namedNodeHistogram`
+/// in js/agentic/crate/rust_ast_census.mjs.
+#[cfg(feature = "meta-language")]
+fn named_node_histogram(network: &LinkNetwork) -> (usize, Vec<AstNodeCount>) {
     let mut histogram: BTreeMap<String, usize> = BTreeMap::new();
     for link in network.projected_links(NetworkProjection::AbstractSyntax) {
         let metadata = link.metadata();
@@ -163,22 +180,12 @@ pub fn ast_census(source: &str) -> AstCensus {
             *histogram.entry(kind.to_owned()).or_insert(0) += 1;
         }
     }
-
     let named_node_count = histogram.values().sum();
     let node_kinds = histogram
         .into_iter()
         .map(|(kind, count)| AstNodeCount { kind, count })
         .collect();
-
-    let census = AstCensus {
-        total_link_count: network.len(),
-        named_node_count,
-        text_preserved: network.reconstruct_text() == source,
-        clean: network.verify_full_match(None).is_clean(),
-        node_kinds,
-    };
-    record_census_run(source.len(), started.elapsed());
-    census
+    (named_node_count, node_kinds)
 }
 
 /// Return an unavailable census when the optional parsing engine is disabled.
@@ -202,7 +209,15 @@ pub const fn ast_census(_source: &str) -> AstCensus {
 /// issue-#538 tests.
 #[must_use]
 pub fn render_ast_document(target_path: &str, source: &str) -> String {
-    let census = ast_census(source);
+    render_census_document(target_path, &ast_census(source))
+}
+
+/// The formatting half of [`render_ast_document`]: the CST/AST-in-data
+/// document for an already computed `census`.
+///
+/// Mirrored by `renderCensusDocument` in js/agentic/self_ast.mjs.
+#[must_use]
+pub fn render_census_document(target_path: &str, census: &AstCensus) -> String {
     let mut out = String::new();
     let _ = writeln!(out, "self_ast");
     let _ = writeln!(out, "  target {target_path}");

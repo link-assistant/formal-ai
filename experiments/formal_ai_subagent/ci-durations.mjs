@@ -12,12 +12,17 @@
 //   which the shard planner reads to put the longest tests first;
 // - `--javascript-files`: per suite file under rust/tests/web/, the seconds it
 //   takes alone on this machine, written to `data/meta/javascript-test-durations.lino`
-//   for the js tier's shard plan.
+//   for the js tier's shard plan;
+// - `--playwright-files`: per spec file of the local web E2E suite, the seconds
+//   its tests took in the latest `E2E Tests (local web app)` jobs (Playwright's
+//   list reporter prints each test's time), written to
+//   `data/meta/playwright-test-durations.lino` for that suite's shard plan.
 //
 // Usage:
 //   node experiments/formal_ai_subagent/ci-durations.mjs [--branch B] [--runs N] [--write]
 //   node experiments/formal_ai_subagent/ci-durations.mjs --tests [--run ID ...] [--write]
 //   node experiments/formal_ai_subagent/ci-durations.mjs --javascript-files [--write]
+//   node experiments/formal_ai_subagent/ci-durations.mjs --playwright-files [--run ID ...] [--write]
 //
 // Without `--write` it prints what it would write. It only reads from GitHub.
 // Cancelled runs and skipped jobs are left out: they say nothing about how
@@ -36,6 +41,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const JOBS_OUTPUT = join(ROOT, 'data/meta/ci-durations.lino');
 const TESTS_OUTPUT = join(ROOT, 'data/meta/test-durations.lino');
 const JAVASCRIPT_OUTPUT = join(ROOT, 'data/meta/javascript-test-durations.lino');
+const PLAYWRIGHT_OUTPUT = join(ROOT, 'data/meta/playwright-test-durations.lino');
 // Tests faster than this are noise for scheduling; their mean is recorded once
 // as `default-seconds` instead, so the planner still weighs them.
 const TEST_FLOOR_SECONDS = 1;
@@ -234,10 +240,74 @@ function measureJavaScriptFiles() {
   return `${lines.join('\n')}\n`;
 }
 
+/**
+ * Seconds per spec file from Playwright list-reporter lines:
+ * `✓  4 [chromium] › tests/demo.spec.js:71:3 › title (1.2s)`. A retried test
+ * counts every attempt, since every attempt holds a worker.
+ */
+export function parsePlaywrightList(log) {
+  const seconds = new Map();
+  const line = /› (tests\/\S+?\.spec\.js):\d+:\d+ ›.*\((\d+(?:\.\d+)?)(ms|s|m)\)\s*$/gmu;
+  for (const match of log.matchAll(line)) {
+    const scale = { ms: 0.001, s: 1, m: 60 }[match[3]];
+    seconds.set(match[1], (seconds.get(match[1]) ?? 0) + Number(match[2]) * scale);
+  }
+  return seconds;
+}
+
+function measurePlaywrightFiles() {
+  const branch = option('--branch', currentBranch());
+  let runIds = options('--run');
+  if (runIds.length === 0) {
+    const runs = recentRuns(branch, 3).get('.github/workflows/release.yml') ?? [];
+    runIds = runs.map((run) => String(run.id));
+  }
+  const seconds = new Map();
+  const sources = [];
+  for (const runId of runIds) {
+    for (const job of runJobs(runId)) {
+      if (!/local web app/.test(job.name) || !['success', 'failure'].includes(job.conclusion)) continue;
+      let log = '';
+      try {
+        log = gh(['api', `repos/{owner}/{repo}/actions/jobs/${job.id}/logs`]);
+      } catch {
+        continue;
+      }
+      const measured = parsePlaywrightList(log);
+      if (measured.size > 0) sources.push(runId);
+      for (const [file, value] of measured) seconds.set(file, Math.max(seconds.get(file) ?? 0, value));
+    }
+    if (seconds.size > 0) break;
+  }
+  if (seconds.size === 0) {
+    throw new Error(`no Playwright list lines in the local web E2E jobs of run(s) ${runIds.join(', ')}`);
+  }
+  const files = [...seconds].sort(([leftName, left], [rightName, right]) => right - left || leftName.localeCompare(rightName));
+  const total = files.reduce((sum, [, value]) => sum + value, 0);
+  const lines = [
+    '# Seconds per spec file of the local web E2E suite (rust/tests/e2e/tests/),',
+    '# summed over its tests as Playwright\'s list reporter printed them in CI.',
+    '# The input of that suite\'s longest-first shard plan and of the long-specs',
+    '# project rust/tests/e2e/playwright.local.config.js runs first (PR #1188,',
+    '# R1188-U10). Generated; do not edit by hand.',
+    'playwright-test-durations',
+    '  issue 1188',
+    `  source_run ${[...new Set(sources)].join(' ')}`,
+    `  recorded ${new Date().toISOString().slice(0, 10)}`,
+    '  unit seconds',
+    `  default-seconds ${Math.round((total / files.length) * 10) / 10}`,
+    '  regenerate "node experiments/formal_ai_subagent/ci-durations.mjs --playwright-files --write"',
+  ];
+  for (const [file, value] of files) lines.push(`  test "${file}"`, `    seconds ${Math.round(value * 10) / 10}`);
+  return `${lines.join('\n')}\n`;
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const mode = argv.includes('--tests') ? 'tests' : argv.includes('--javascript-files') ? 'javascript' : 'jobs';
-  const output = { tests: TESTS_OUTPUT, javascript: JAVASCRIPT_OUTPUT, jobs: JOBS_OUTPUT }[mode];
-  const text = { tests: measureTests, javascript: measureJavaScriptFiles, jobs: measureJobs }[mode]();
+  const modes = [['--tests', 'tests'], ['--javascript-files', 'javascript'], ['--playwright-files', 'playwright']];
+  const mode = modes.find(([flag]) => argv.includes(flag))?.[1] ?? 'jobs';
+  const output = { tests: TESTS_OUTPUT, javascript: JAVASCRIPT_OUTPUT, playwright: PLAYWRIGHT_OUTPUT, jobs: JOBS_OUTPUT }[mode];
+  const measure = { tests: measureTests, javascript: measureJavaScriptFiles, playwright: measurePlaywrightFiles, jobs: measureJobs };
+  const text = measure[mode]();
   if (argv.includes('--write')) {
     writeFileSync(output, text);
     process.stderr.write(`wrote ${output}\n`);

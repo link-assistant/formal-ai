@@ -1,0 +1,6 @@
+# One CI gate, one file (issue #991).
+ci_gate check_prompt_specialization
+  stage web
+  description "R1188-U1: the prompts that tests send to Formal AI held verbatim in code under rust/src/ or js/ stay at or below the ceiling in data/meta/prompt-specialization-ratchet.lino, which only falls."
+  run "node scripts/check-prompt-specialization.mjs"
+  justification "PR #1188 (R1188-U1): a fix must be the universal rule for a class of requests, never a branch for one prompt; without a check this was decided in review only."

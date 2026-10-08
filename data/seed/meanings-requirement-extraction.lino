@@ -598,3 +598,129 @@ meanings
         text "propuesta"
       surface
         text "plan"
+  requirement_listing_action
+    # R1188-U20: a request to list the requirements of the text it carries (after a colon, a line break or in quotes).
+    # Read only in the command head (the `command_head` subject of data/seed/handler-rules.lino), so a phrase inside the pasted text never routes.
+    defined-by action
+    role requirement_listing_action
+    precondition "the command head of a request carrying its own text contains this phrase"
+    effect "the reply lists the requirements that text states, one per line, through the requirement_listing rule set"
+    unit "not applicable"
+    example "List the requirements of this issue: The page must load in under a second."
+    lexeme en
+      surface
+        text "list the requirements"
+      surface
+        text "list requirements"
+      surface
+        text "list all requirements"
+      surface
+        text "list all the requirements"
+      surface
+        text "list the … requirements"
+      surface
+        text "extract the requirements"
+      surface
+        text "extract requirements"
+      surface
+        text "enumerate the requirements"
+      surface
+        text "enumerate requirements"
+      surface
+        text "what are the requirements"
+    lexeme ru
+      surface
+        text "перечисли требования"
+      surface
+        text "перечислите требования"
+      surface
+        text "перечисли все требования"
+      surface
+        text "перечисли … требования"
+      surface
+        text "выпиши требования"
+      surface
+        text "выпишите требования"
+      surface
+        text "выдели требования"
+      surface
+        text "выделите требования"
+      surface
+        text "извлеки требования"
+      surface
+        text "список требований"
+    lexeme hi
+      surface
+        text "आवश्यकताएँ सूचीबद्ध करें"
+      surface
+        text "आवश्यकताएं सूचीबद्ध करें"
+      surface
+        text "आवश्यकताओं की सूची बनाएं"
+      surface
+        text "आवश्यकताओं की सूची बनाओ"
+      surface
+        text "आवश्यकताएँ निकालें"
+      surface
+        text "आवश्यकताएं निकालें"
+      surface
+        text "क्या आवश्यकताएँ हैं"
+      surface
+        text "क्या आवश्यकताएं हैं"
+    lexeme zh
+      surface
+        text "列出需求"
+      surface
+        text "列出要求"
+      surface
+        text "列出…需求"
+      surface
+        text "列出…要求"
+      surface
+        text "列举需求"
+      surface
+        text "列举…需求"
+      surface
+        text "提取需求"
+      surface
+        text "提取…需求"
+      surface
+        text "有哪些需求"
+      surface
+        text "有哪些要求"
+    lexeme es
+      surface
+        text "enumera los requisitos"
+      surface
+        text "enumere los requisitos"
+      surface
+        text "enumera todos los requisitos"
+      surface
+        text "lista los requisitos"
+      surface
+        text "extrae los requisitos"
+      surface
+        text "cuáles son los requisitos"
+      surface
+        text "enumera los requerimientos"
+      surface
+        text "lista los requerimientos"
+      surface
+        text "cuáles son los requerimientos"
+  requirement_list
+    # R1188-U20: the named text transform of the handler-rule `transform` value source that lists requirements.
+    defined-by method
+    role action
+    precondition "a handler rule captures a value through the requirement_list transform of a request carrying its own text"
+    effect "the requirements the text states, one Markdown list item per line, or no value when it states none"
+    unit "not applicable"
+    example "- The page must load in under a second."
+    grounding "data/seed/handler-rules.lino"
+  command_head
+    # R1188-U20: the handler-rule subject that holds the request before its free-text payload.
+    defined-by concept
+    role action
+    precondition "a request carries its own text after a command colon, a line break or inside quotes"
+    effect "a rule condition read of command_head sees only the instruction, so a phrase inside the pasted text never decides the route"
+    unit "not applicable"
+    example "list the requirements of this issue"
+    grounding "data/seed/handler-rules.lino"

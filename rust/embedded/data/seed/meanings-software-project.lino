@@ -25,6 +25,11 @@ meanings
         text 后续
       surface
         text 演练
+    lexeme es
+      surface
+        text seguimiento
+      surface
+        text ejercicio
   software_followup_verification
     defined-by software_followup
     role software_followup_verification
@@ -66,6 +71,21 @@ meanings
         text 检验
       surface
         text 检查
+    lexeme es
+      surface
+        text pruébalo
+      surface
+        text "prueba el"
+      surface
+        text "prueba esto"
+      surface
+        text verifica
+      surface
+        text compruébalo
+      surface
+        text "comprueba que"
+      surface
+        text "ejecuta las pruebas"
   software_followup_execution
     defined-by software_followup
     role software_followup_execution
@@ -97,6 +117,17 @@ meanings
         text 运行
       surface
         text 执行
+    lexeme es
+      surface
+        text ejecútalo
+      surface
+        text "ejecuta esto"
+      surface
+        text "ejecuta el"
+      surface
+        text córrelo
+      surface
+        text "pruébalo ya"
   software_followup_demonstration
     defined-by software_followup
     role software_followup_demonstration
@@ -120,6 +151,15 @@ meanings
         text 显示
       surface
         text 展示
+    lexeme es
+      surface
+        text "haz una demostración"
+      surface
+        text muéstrame
+      surface
+        text "muestra el"
+      surface
+        text "imprime el"
   output_display_request
     defined-by software_followup
     defined-by action
@@ -150,6 +190,15 @@ meanings
         text 给我看…
       surface
         text 显示…
+    lexeme es
+      surface
+        text "muéstrame …"
+      surface
+        text "muestra …"
+      surface
+        text "imprime …"
+      surface
+        text "visualiza …"
   implement
     defined-by code
     defined-by program
@@ -251,6 +300,13 @@ meanings
     lexeme zh
       surface
         text 搭建
+    lexeme es
+      surface
+        text "crea el esqueleto"
+      surface
+        text "genera el esqueleto"
+      surface
+        text andamiaje
   software_artifact
     defined-by artifact_application
     defined-by artifact_tool
@@ -272,6 +328,11 @@ meanings
     lexeme zh
       surface
         text 软件制品
+    lexeme es
+      surface
+        text "artefacto de software"
+      surface
+        text entregable
   artifact_browser_extension
     defined-by software_artifact
     role software_artifact_kind
@@ -287,6 +348,11 @@ meanings
     lexeme zh
       surface
         text 浏览器扩展
+    lexeme es
+      surface
+        text "extensión del navegador"
+      surface
+        text "extensión de navegador"
   artifact_command_line_tool
     defined-by software_artifact
     role software_artifact_kind
@@ -306,6 +372,11 @@ meanings
     lexeme zh
       surface
         text 命令行工具
+    lexeme es
+      surface
+        text "herramienta de línea de comandos"
+      surface
+        text "herramienta cli"
   artifact_github_action
     defined-by software_artifact
     role software_artifact_kind
@@ -321,6 +392,9 @@ meanings
     lexeme zh
       surface
         text "github 操作"
+    lexeme es
+      surface
+        text "acción de github"
   artifact_mobile_app
     defined-by software_artifact
     role software_artifact_kind
@@ -336,6 +410,11 @@ meanings
     lexeme zh
       surface
         text 移动应用
+    lexeme es
+      surface
+        text "aplicación móvil"
+      surface
+        text "app móvil"
   artifact_web_app
     defined-by software_artifact
     role software_artifact_kind
@@ -351,6 +430,11 @@ meanings
     lexeme zh
       surface
         text 网页应用
+    lexeme es
+      surface
+        text "aplicación web"
+      surface
+        text "app web"
   artifact_application
     defined-by software_artifact
     role software_artifact_kind
@@ -366,6 +450,9 @@ meanings
     lexeme zh
       surface
         text 应用程序
+    lexeme es
+      surface
+        text aplicación
   artifact_extension
     defined-by software_artifact
     role software_artifact_kind
@@ -393,6 +480,11 @@ meanings
         text 扩展
       surface
         text 扩展程序
+    lexeme es
+      surface
+        text extensión
+      surface
+        text complemento
   artifact_dashboard
     defined-by software_artifact
     role software_artifact_kind
@@ -410,6 +502,11 @@ meanings
     lexeme zh
       surface
         text 仪表板
+    lexeme es
+      surface
+        text "panel de control"
+      surface
+        text tablero
   artifact_scraper
     defined-by software_artifact
     role software_artifact_kind
@@ -427,6 +524,11 @@ meanings
     lexeme zh
       surface
         text 爬虫
+    lexeme es
+      surface
+        text scraper
+      surface
+        text raspador
   artifact_library
     defined-by software_artifact
     role software_artifact_kind
@@ -444,6 +546,11 @@ meanings
     lexeme zh
       surface
         text 库
+    lexeme es
+      surface
+        text biblioteca
+      surface
+        text librería
   artifact_website
     defined-by software_artifact
     role software_artifact_kind
@@ -461,6 +568,11 @@ meanings
     lexeme zh
       surface
         text 网站
+    lexeme es
+      surface
+        text "sitio web"
+      surface
+        text "página web"
   artifact_plugin
     defined-by software_artifact
     role software_artifact_kind
@@ -476,6 +588,11 @@ meanings
     lexeme zh
       surface
         text 插件
+    lexeme es
+      surface
+        text plugin
+      surface
+        text complemento
   artifact_service
     defined-by software_artifact
     role software_artifact_kind
@@ -495,6 +612,9 @@ meanings
     lexeme zh
       surface
         text 服务
+    lexeme es
+      surface
+        text servicio
   artifact_bot
     defined-by software_artifact
     role software_artifact_kind
@@ -510,6 +630,9 @@ meanings
     lexeme zh
       surface
         text 机器人
+    lexeme es
+      surface
+        text bot
   artifact_app
     defined-by software_artifact
     role software_artifact_kind
@@ -525,6 +648,9 @@ meanings
     lexeme zh
       surface
         text 应用
+    lexeme es
+      surface
+        text app
   artifact_api
     defined-by software_artifact
     role software_artifact_kind
@@ -540,6 +666,9 @@ meanings
     lexeme zh
       surface
         text 接口
+    lexeme es
+      surface
+        text api
   artifact_sdk
     defined-by software_artifact
     role software_artifact_kind
@@ -555,6 +684,9 @@ meanings
     lexeme zh
       surface
         text 开发包
+    lexeme es
+      surface
+        text sdk
   artifact_tool
     defined-by software_artifact
     role software_artifact_kind
@@ -572,6 +704,9 @@ meanings
     lexeme zh
       surface
         text 工具
+    lexeme es
+      surface
+        text herramienta
   artifact_mod
     defined-by software_artifact
     role software_artifact_kind
@@ -587,6 +722,9 @@ meanings
     lexeme zh
       surface
         text 模组
+    lexeme es
+      surface
+        text mod
   software_feature
     defined-by requirement_state_tracking
     defined-by requirement_project_behavior
@@ -616,275 +754,15 @@ meanings
         text 功能
       surface
         text 需求
-  requirement_state_tracking
-    defined-by software_feature
-    role software_requirement_category
-    lexeme en
+    lexeme es
       surface
-        text track
+        text funcionalidad
       surface
-        text hp
+        text funcionalidades
       surface
-        text status
+        text requisito
       surface
-        text damage
-      surface
-        text cooldown
-    lexeme ru
-      surface
-        text состояние
-      surface
-        text урон
-      surface
-        text откат
-    lexeme hi
-      surface
-        text स्थिति
-      surface
-        text क्षति
-    lexeme zh
-      surface
-        text 状态
-      surface
-        text 伤害
-      surface
-        text 冷却
-  requirement_data_exchange
-    defined-by software_feature
-    role software_requirement_category
-    lexeme en
-      surface
-        text import
-      surface
-        text export
-      surface
-        text csv
-      surface
-        text backup
-      surface
-        text report
-      surface
-        text calendar
-    lexeme ru
-      surface
-        text импорт
-      surface
-        text экспорт
-      surface
-        text "резервная копия"
-      surface
-        text отчёт
-    lexeme hi
-      surface
-        text आयात
-      surface
-        text निर्यात
-      surface
-        text रिपोर्ट
-    lexeme zh
-      surface
-        text 导入
-      surface
-        text 导出
-      surface
-        text 备份
-      surface
-        text 报告
-  requirement_automation
-    defined-by software_feature
-    role software_requirement_category
-    lexeme en
-      surface
-        text reminder
-      surface
-        text notification
-      surface
-        text schedule
-      surface
-        text weekly
-    lexeme ru
-      surface
-        text напоминание
-      surface
-        text уведомление
-      surface
-        text расписание
-    lexeme hi
-      surface
-        text अनुस्मारक
-      surface
-        text सूचना
-    lexeme zh
-      surface
-        text 提醒
-      surface
-        text 通知
-      surface
-        text 计划
-  requirement_validation
-    defined-by software_feature
-    role software_requirement_category
-    lexeme en
-      surface
-        text validate
-      surface
-        text check
-      surface
-        text conflict
-      surface
-        text audit
-    lexeme ru
-      surface
-        text проверка
-      surface
-        text проверь
-      surface
-        text аудит
-    lexeme hi
-      surface
-        text सत्यापन
-      surface
-        text जाँच
-    lexeme zh
-      surface
-        text 验证
-      surface
-        text 检查
-      surface
-        text 审计
-  requirement_integration
-    defined-by software_feature
-    role software_requirement_category
-    lexeme en
-      surface
-        text api
-      surface
-        text discord
-      surface
-        text telegram
-      surface
-        text github
-      surface
-        text browser
-    lexeme ru
-      surface
-        text интеграция
-      surface
-        text апи
-      surface
-        text браузер
-    lexeme hi
-      surface
-        text एकीकरण
-      surface
-        text एपीआई
-    lexeme zh
-      surface
-        text 集成
-      surface
-        text 接口
-      surface
-        text 浏览器
-  requirement_user_interface
-    defined-by software_feature
-    role software_requirement_category
-    lexeme en
-      surface
-        text dashboard
-      surface
-        text chart
-      surface
-        text filter
-      surface
-        text progress
-    lexeme ru
-      surface
-        text панель
-      surface
-        text график
-      surface
-        text фильтр
-    lexeme hi
-      surface
-        text डैशबोर्ड
-      surface
-        text चार्ट
-    lexeme zh
-      surface
-        text 仪表板
-      surface
-        text 图表
-      surface
-        text 筛选
-  requirement_project_behavior
-    defined-by software_feature
-    role software_requirement_category
-    lexeme en
-      surface
-        text add
-      surface
-        text admin
-      surface
-        text customer
-      surface
-        text date
-      surface
-        text email
-      surface
-        text expense
-      surface
-        text file
-      surface
-        text history
-      surface
-        text invoice
-      surface
-        text log
-      surface
-        text maintenance
-      surface
-        text payment
-      surface
-        text protection
-      surface
-        text record
-      surface
-        text rename
-      surface
-        text resistance
-      surface
-        text retry
-      surface
-        text scrape
-      surface
-        text stack
-      surface
-        text sync
-      surface
-        text tracking
-      surface
-        text upload
-    lexeme ru
-      surface
-        text добавить
-      surface
-        text клиент
-      surface
-        text файл
-      surface
-        text загрузка
-    lexeme hi
-      surface
-        text जोड़ें
-      surface
-        text फ़ाइल
-    lexeme zh
-      surface
-        text 添加
-      surface
-        text 文件
-      surface
-        text 上传
+        text requisitos
   software_delivery
     defined-by software_artifact
     defined-by delivery_manual_instructions
@@ -901,6 +779,9 @@ meanings
     lexeme zh
       surface
         text 交付
+    lexeme es
+      surface
+        text entrega
   delivery_manual_instructions
     defined-by software_delivery
     role software_delivery_mode
@@ -932,6 +813,15 @@ meanings
         text 手动说明
       surface
         text 说明
+    lexeme es
+      surface
+        text "instrucciones manuales"
+      surface
+        text "instrucción manual"
+      surface
+        text instrucciones
+      surface
+        text "sin código"
   delivery_immediate_execution
     defined-by software_delivery
     role software_delivery_mode
@@ -961,6 +851,17 @@ meanings
         text 立即运行
       surface
         text 执行
+    lexeme es
+      surface
+        text ejecuta
+      surface
+        text "ejecuta el comando"
+      surface
+        text "ejecuta los comandos"
+      surface
+        text ejecútalo
+      surface
+        text webvm
   delivery_script_generation
     defined-by software_delivery
     role software_delivery_mode
@@ -992,6 +893,17 @@ meanings
         text 脚本
       surface
         text 外壳脚本
+    lexeme es
+      surface
+        text bash
+      surface
+        text shell
+      surface
+        text script
+      surface
+        text scripts
+      surface
+        text comandos
   software_language
     defined-by software_artifact
     defined-by language_python
@@ -1008,6 +920,9 @@ meanings
     lexeme zh
       surface
         text 编程语言
+    lexeme es
+      surface
+        text "lenguaje de programación"
   language_python
     defined-by software_language
     role software_implementation_language
@@ -1029,6 +944,13 @@ meanings
     lexeme zh
       surface
         text python
+    lexeme es
+      surface
+        text python
+      surface
+        text django
+      surface
+        text fastapi
   language_rust
     defined-by software_language
     role software_implementation_language
@@ -1046,6 +968,11 @@ meanings
     lexeme zh
       surface
         text rust
+    lexeme es
+      surface
+        text rust
+      surface
+        text cargo
   language_javascript
     defined-by software_language
     role software_implementation_language
@@ -1063,6 +990,11 @@ meanings
     lexeme zh
       surface
         text javascript
+    lexeme es
+      surface
+        text javascript
+      surface
+        text node
   language_php
     defined-by software_language
     role software_implementation_language
@@ -1084,6 +1016,13 @@ meanings
     lexeme zh
       surface
         text php
+    lexeme es
+      surface
+        text php
+      surface
+        text laravel
+      surface
+        text symfony
   implementation_language_preposition
     defined-by software_language
     role implementation_language_preposition
@@ -1099,6 +1038,9 @@ meanings
     lexeme zh
       surface
         text 用
+    lexeme es
+      surface
+        text en
   implementation_language_noun
     defined-by software_language
     role implementation_language_noun
@@ -1114,6 +1056,9 @@ meanings
     lexeme zh
       surface
         text 语言
+    lexeme es
+      surface
+        text lenguaje
   tabletop_game_tracker
     defined-by game_tracker_domain
     defined-by game_tracker_mechanic
@@ -1130,6 +1075,11 @@ meanings
     lexeme zh
       surface
         text 桌游追踪器
+    lexeme es
+      surface
+        text "rastreador de juegos de mesa"
+      surface
+        text "seguimiento de juego de mesa"
   game_tracker_domain
     defined-by tabletop_game_tracker
     role game_tracker_domain
@@ -1165,6 +1115,19 @@ meanings
         text 棋子
       surface
         text 战棋
+    lexeme es
+      surface
+        text dnd
+      surface
+        text "juego de mesa"
+      surface
+        text wargame
+      surface
+        text ficha
+      surface
+        text token
+      surface
+        text owlbear
   game_tracker_mechanic
     defined-by tabletop_game_tracker
     defined-by requirement_state_tracking
@@ -1211,6 +1174,17 @@ meanings
         text 抗性
       surface
         text 冷却
+    lexeme es
+      surface
+        text "puntos de vida"
+      surface
+        text daño
+      surface
+        text protección
+      surface
+        text resistencia
+      surface
+        text enfriamiento
   software_approval
     defined-by software_approval_trigger
     defined-by software_step_granularity
@@ -1228,6 +1202,9 @@ meanings
     lexeme zh
       surface
         text 批准
+    lexeme es
+      surface
+        text aprobación
   software_approval_trigger
     defined-by software_approval
     role software_approval_trigger
@@ -1279,6 +1256,27 @@ meanings
         text 同意
       surface
         text 开始
+    lexeme es
+      surface
+        text apruebo
+      surface
+        text aprobado
+      surface
+        text "aprueba el plan"
+      surface
+        text sí
+      surface
+        text "sí adelante"
+      surface
+        text adelante
+      surface
+        text procede
+      surface
+        text hazlo
+      surface
+        text "empieza la implementación"
+      surface
+        text "genera el código"
   software_step_granularity
     defined-by software_approval
     role software_step_granularity
@@ -1302,6 +1300,11 @@ meanings
         text 每一步
       surface
         text 逐步
+    lexeme es
+      surface
+        text "cada paso"
+      surface
+        text "paso a paso"
   software_bash_command
     defined-by software_delivery
     role software_bash_command
@@ -1337,3 +1340,16 @@ meanings
         text 命令
       surface
         text docker
+    lexeme es
+      surface
+        text shell
+      surface
+        text bash
+      surface
+        text comando
+      surface
+        text comandos
+      surface
+        text docker
+      surface
+        text webvm

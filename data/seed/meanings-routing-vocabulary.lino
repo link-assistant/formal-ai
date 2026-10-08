@@ -479,6 +479,14 @@ meanings
     unit "not applicable"
     example "summarize: the text on the following lines"
     grounding "data/seed/capability-routing.lino"
+  requirement_listing
+    defined-by method
+    role action
+    precondition "a request asks for the requirements of text it carries"
+    effect "names the handler whose claim row admits it only on supplied text"
+    unit "not applicable"
+    example "list the requirements of this issue: the text on the following lines"
+    grounding "data/seed/capability-routing.lino"
   text_rewrite
     defined-by method
     role action

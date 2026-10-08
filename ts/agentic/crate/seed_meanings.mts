@@ -14,6 +14,7 @@ import { cached, childrenNamed, parseLino, readText } from '../host.mjs';
 const SEED_REGISTRY = 'data/meta/seed-registry.lino';
 
 /** `MEANING_FILES`: every seed the registry gives the `meaning` lexicon, in the
+ * Mirrors `const MEANING_FILES` in rust/src/seed/embedded_registry.rs.
  * registry's (name) order, as rust/src/seed/embedded_registry.rs lists them. */
 export function meaningFiles() {
   return cached('meaning-files', () => childrenNamed(parseLino(readText(SEED_REGISTRY)), 'seed')

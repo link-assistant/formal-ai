@@ -248,6 +248,7 @@ function heuristicsFor(role, situation) {
  * (rust/src/draft_portfolio.rs) and `fn rank_survivors`
  * (rust/src/algorithm_discovery/ranking.rs): resolve `scores` with the
  * most-specific `rank` heuristic that applies in `situation` (R901-3).
+ * Mirrors `fn rank_with_heuristic` in rust/src/selection_heuristics.rs, which both call.
  *
  * When `situation` is `contradiction_detected`, `TrizRanker` (order 3) wins
  * over `LeastActionRanker` (order 1). Every other situation keeps today's
@@ -268,6 +269,7 @@ export function rankWithHeuristic(scores, situation) {
 /**
  * The situation slug for a scored candidate set: `contradiction_detected` when
  * any two satisfying candidates each win on a different cost dimension, else `''`.
+ * Mirrors `fn situation_for` in rust/src/selection_heuristics.rs.
  * Mirrors the situation detection in `fn rank_passing_drafts`
  * (rust/src/draft_portfolio.rs) and `fn rank_survivors`
  * (rust/src/algorithm_discovery/ranking.rs).

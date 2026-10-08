@@ -16,7 +16,7 @@ import { editArguments } from './intent_router.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import {
-  anchorContext, composePositionalInsert, introducedBlock, leadingIndentation, positionalInserts, rebasedBlock,
+  anchorContext, composePositionalInsert, indentsLinesAt, introducedBlock, leadingIndentation, positionalInserts, rebasedBlock,
   joinedLiteralLines, unescapeProseNewlines, unquotedPathTokens,
 } from './positional_edit.mjs';
 import { bareSurfaces, cleanCueToken, cleanPathToken, looksLikeFilePath, safeRelativePath, tokens } from './write_request.mjs';
@@ -346,7 +346,7 @@ function loneLineOccurrences(source, text) {
  * when a span names no line.
  */
 function resolvedSpans(source, insert) {
-  if (!insert.spans) return insert;
+  if (!insert.spans) return writtenEscapes(source, insert);
   const lines = [...new Set(source.split('\n').map((line) => trim(line)).filter((line) => line !== ''))];
   const resolve = (span) => lines.filter((line) => span === line || span.endsWith(` ${line}`))
     .reduce((best, line) => (best === null || line.length > best.length ? line : best), null);
@@ -354,6 +354,24 @@ function resolvedSpans(source, insert) {
   const context = insert.context === null ? null : resolve(insert.context);
   if (anchor === null || (insert.context !== null && context === null)) return null;
   return { ...insert, anchor, context, spans: false };
+}
+
+/**
+ * Mirrors `fn written_escapes`: the insert with an anchor or context the file
+ * holds only as written. A quoted `\n` or `\t` reads as a line break or a tab
+ * where the file holds it so, and as its two characters where the file holds
+ * those inside a line of code (`split_inclusive('\n')`, PR #1188 G96).
+ */
+function writtenEscapes(source, insert) {
+  const written = (text) => {
+    if (text === null || source.includes(text)) return null;
+    const raw = text.replaceAll('\n', '\\n').replaceAll('\t', '\\t');
+    return raw !== text && source.includes(raw) ? raw : null;
+  };
+  const anchor = written(insert.anchor);
+  const context = written(insert.context);
+  if (anchor === null && context === null) return insert;
+  return { ...insert, anchor: anchor ?? insert.anchor, context: context ?? insert.context };
 }
 
 /**
@@ -429,11 +447,14 @@ function uniqueFrom(source, start, end) {
 
 /**
  * Mirrors `fn inserted_text`: the lines an insert puts beside the anchor's
- * line -- rebased on that line's indentation when they came as an unfenced
- * block, so they land as its siblings (PR #1188 G16).
+ * line. An unfenced block keeps the indentation it was given when the file
+ * already indents lines so (G93, as `appendedBlock` does); otherwise it is
+ * rebased on the anchor line's indentation, so it lands as its siblings
+ * (PR #1188 G16).
  */
 function insertedText(source, anchorLine, insert) {
-  if (!insert.rebase) return insert.inserted;
+  if (insert.rebase === null || insert.rebase === undefined) return insert.inserted;
+  if (indentsLinesAt(source, insert.rebase)) return rebasedBlock(insert.inserted, insert.rebase);
   const newline = source.indexOf('\n', anchorLine);
   return rebasedBlock(insert.inserted, leadingIndentation(source.slice(anchorLine, newline < 0 ? source.length : newline)));
 }
@@ -1224,9 +1245,8 @@ function linePayloadAndPath(task) {
  * otherwise only the request's layout (PR #1188 G16).
  */
 function appendedBlock(source, block) {
-  if (block.verbatim || block.indentation === '') return block.text;
-  const levels = source.split('\n').filter((line) => trim(line) !== '').map(leadingIndentation);
-  return levels.includes(block.indentation) ? rebasedBlock(block.text, block.indentation) : block.text;
+  if (block.verbatim || !indentsLinesAt(source, block.indentation)) return block.text;
+  return rebasedBlock(block.text, block.indentation);
 }
 
 /**

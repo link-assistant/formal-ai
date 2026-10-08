@@ -66,6 +66,20 @@ describe('lines under a request keep their structure (G16)', () => {
     const { file } = await drive('Append these lines to f.lino:\n  table z\n    row 9', LINO, 'f.lino');
     assert.equal(file, `${LINO}  table z\n    row 9\n`);
   });
+
+  test('inserted lines keep an indentation the file already uses, whatever the anchor\'s (G93)', async () => {
+    const prompt = "Insert these lines after the line containing 'row x' in f.lino:\n  table q\n    row 1";
+    const { file } = await drive(prompt, LINO, 'f.lino');
+    assert.equal(file, 'meanings\n  table a\n    row x\n  table q\n    row 1\n  b\nc\n');
+  });
+
+  test('lines under a request are its payload: a delivery or a path inside them is not acted on (G94, G95)', async () => {
+    const rows = '| T527 | z, append gap G93 to `gaps.md` | **Pass** | w. |\n| T528 | x in js/a.mjs and rust/b.rs | **Pass** | y. |';
+    const prompt = `In d.md, insert these lines after the line containing '| T447 |':\n${rows}`;
+    const { file, calls } = await drive(prompt, '| T446 | a |\n| T447 | b |\n| T448 | c |\n', 'd.md');
+    assert.equal(file, `| T446 | a |\n| T447 | b |\n${rows}\n| T448 | c |\n`);
+    assert.ok(!calls.includes('write'), calls.join(', '));
+  });
 });
 
 describe('a line named by its ordinal (G19)', () => {
@@ -146,5 +160,27 @@ describe('an empty line beside an anchor line (G31)', () => {
     assert.equal(before.answer, 'Added an empty line to `README.md` and observed the result.');
     const after = await drive("Add a blank line after the line 'text' in README.md.", readme, 'README.md');
     assert.equal(after.file, '# T\ntext\n\n## Probe\nx\n');
+  });
+});
+
+describe('a quoted anchor line holding an escape (G96)', () => {
+  test('the escape is its two characters when the file holds them so inside the line', async () => {
+    const source = " * `\\r`, as `split('\\n')` does.)\n * @param {string} text\n";
+    const prompt = "Insert the line « * Rust built-in `str::lines`.» after the line « * `\\r`, as `split('\\n')` does.)» in m.mjs.";
+    const { file } = await drive(prompt, source, 'm.mjs');
+    assert.equal(file, " * `\\r`, as `split('\\n')` does.)\n * Rust built-in `str::lines`.\n * @param {string} text\n");
+  });
+
+  test('the escape stays a line break when the file holds the two lines', async () => {
+    const { file } = await drive("Insert the line 'x' after the line 'one\\ntwo' in f.txt.", THREE, 'f.txt');
+    assert.equal(file, 'one\ntwo\nx\nthree\n');
+  });
+});
+
+describe('a path names a file, not the answer language (G97)', () => {
+  test('an English request naming a file whose name starts with a Spanish marker is answered in English', async () => {
+    const { file, answer } = await drive("Insert the line 'x' after the line 'one' in formalization_segment.mjs.", THREE, 'formalization_segment.mjs');
+    assert.equal(file, 'one\nx\ntwo\nthree\n');
+    assert.equal(answer, 'Inserted `x` after `one` in `formalization_segment.mjs` and observed the result.');
   });
 });

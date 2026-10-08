@@ -212,7 +212,7 @@ export function extractCompiledProcedureArtifact(text) {
   }
 }
 
-/** Mirrors `#[derive(PartialEq)]` on `CompiledProcedure`. */
+/** Rust built-in `#[derive(PartialEq)]` on `CompiledProcedure`. */
 export function proceduresEqual(left, right) {
   return jsonText(left) === jsonText(right);
 }

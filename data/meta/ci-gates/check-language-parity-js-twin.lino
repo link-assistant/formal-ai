@@ -1,0 +1,10 @@
+# One CI gate, one file. Issue #991 moved the gate list out of
+# `.github/workflows/release.yml`, the repository's third most conflicted path,
+# because its step list was append-only. A gate lives here instead, so two
+# branches adding gates create two files, never one shared region.
+# `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
+ci_gate check_language_parity_js_twin
+  stage rust
+  description "scripts/check-language-parity.mjs prints exactly what scripts/check-language-parity.rs prints, with the same exit code, so agents can run the JavaScript twin instead of compiling Rust."
+  run "node scripts/lib/checks-twin-parity.mjs check-language-parity"
+  justification "Coding agents run the JavaScript twin because compiling Rust scripts locally filled the rust-script cache to 3.7 GB (PR #1188); a twin that drifted from the Rust gate would pass work that CI then rejects, and the meaning-lexeme debt is regenerated with the twin's --write."

@@ -1,0 +1,10 @@
+# Prompt specialization ratchet (R1188-U1: generalize, don't specialize).
+#
+# The ceiling on (source file, prompt) pairs where code under rust/src/ or js/
+# holds verbatim, outside comments, a prompt that a test sends to Formal AI.
+# Such a string is a branch, cue or canned answer keyed to one prompt; the
+# general rule lives in seed data. scripts/check-prompt-specialization.mjs
+# fails above the ceiling and asks for it to be lowered below it, so the
+# number only falls.
+prompt_specialization_ratchet
+  specialization_ceiling 23

@@ -1,0 +1,6 @@
+# One CI gate, one file (issue #991).
+ci_gate check_fact_captures
+  stage web
+  description "data/seed/fact-captures.lino and its rust/embedded mirror are exactly what scripts/ground-fact-captures.py projects from the cached Wikidata fact claims."
+  run "python3 scripts/ground-fact-captures.py --check"
+  justification "PR #1188 (R1188-U8): a generated seed file is checked against its generator in CI, so a hand edit cannot be merged; this one had a --check mode that no gate ran."

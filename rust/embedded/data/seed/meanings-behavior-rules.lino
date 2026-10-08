@@ -25,6 +25,13 @@ meanings
         text 规则
       surface
         text 規則
+    lexeme es
+      surface
+        text reglas
+      surface
+        text "lista de reglas"
+      surface
+        text regla
   rule_enumeration_request
     defined-by action
     defined-by inquiry
@@ -75,6 +82,19 @@ meanings
         text 哪些
       surface
         text 什么
+    lexeme es
+      surface
+        text lista
+      surface
+        text enumera
+      surface
+        text muestra
+      surface
+        text muéstrame
+      surface
+        text cuáles
+      surface
+        text qué
   rule_count_request
     defined-by inquiry
     defined-by quantity
@@ -103,6 +123,15 @@ meanings
         text 几条
       surface
         text 幾條
+    lexeme es
+      surface
+        text cuántas
+      surface
+        text cuántos
+      surface
+        text "número de"
+      surface
+        text "cantidad de"
   rule_count_scope
     defined-by inquiry
     defined-by quantity
@@ -137,6 +166,15 @@ meanings
         text 一共
       surface
         text 所有
+    lexeme es
+      surface
+        text total
+      surface
+        text existentes
+      surface
+        text actuales
+      surface
+        text todas
   rule_brief_request
     defined-by action
     defined-by property
@@ -175,6 +213,17 @@ meanings
         text 简要
       surface
         text 簡要
+    lexeme es
+      surface
+        text breve
+      surface
+        text brevemente
+      surface
+        text corto
+      surface
+        text conciso
+      surface
+        text "en resumen"
   behavior_domain
     defined-by self_reference
     defined-by concept
@@ -195,6 +244,11 @@ meanings
         text 行为
       surface
         text 行為
+    lexeme es
+      surface
+        text comportamiento
+      surface
+        text conducta
   assistant_own_ruleset
     defined-by self_reference
     defined-by knowledge
@@ -241,6 +295,17 @@ meanings
         text 规则列表
       surface
         text 規則列表
+    lexeme es
+      surface
+        text tus
+      surface
+        text tuyas
+      surface
+        text propias
+      surface
+        text actuales
+      surface
+        text "lista de reglas"
   behavior_rule_set_phrase
     defined-by inquiry
     defined-by knowledge
@@ -291,3 +356,20 @@ meanings
         text 显示规则
       surface
         text 列出行为规则
+    lexeme es
+      surface
+        text "lista las reglas de comportamiento"
+      surface
+        text "lista todas las reglas de comportamiento"
+      surface
+        text "muestra las reglas de comportamiento"
+      surface
+        text "muéstrame las reglas de comportamiento"
+      surface
+        text "muestra las reglas"
+      surface
+        text "qué reglas de comportamiento"
+      surface
+        text "cuáles son tus reglas de comportamiento"
+      surface
+        text "reglas de comportamiento existentes"

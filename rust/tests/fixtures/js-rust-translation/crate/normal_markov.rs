@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=f5b6bbaad87a9af44dea1c43432bd58fef0d6fc68fbc0dc87255847840d95f74 bytes=9524
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=62557d1fac8a26e8488ca73cb6186dc41e2185ce026e64c0932927779f9a4e46 bytes=10088
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:prelude begin
@@ -41,6 +41,9 @@ pub const FAULT_FRAGMENT_CHARS: f64 = 32f64;
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal JSDoc type {…}
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal method call .slice()

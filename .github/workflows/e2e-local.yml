@@ -105,9 +105,21 @@ jobs:
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
         env:
           SHARD: ${{ matrix.shard }}
+        # R1188-U10: the legs are planned longest-first from the seconds each
+        # spec file took (data/meta/playwright-test-durations.lino) by
+        # scripts/plan-test-shards.mjs, not cut by test count in file order,
+        # and the config runs its long specs first within a leg.
         run: |
           cd rust/tests/e2e
-          npx playwright test --config=playwright.local.config.js --shard="${SHARD}/3"
+          durations=../../../data/meta/playwright-test-durations.lino
+          specs=$(mktemp)
+          npx playwright test --config=playwright.local.config.js --list \
+            | sed -nE 's/.* › (tests\/)?([^: ]+\.spec\.js):[0-9]+:[0-9]+ › .*/tests\/\2/p' | sort -u > "$specs"
+          node ../../../scripts/plan-test-shards.mjs --of 3 --durations "$durations" --check < "$specs"
+          node ../../../scripts/plan-test-shards.mjs --of 3 --durations "$durations" --report < "$specs"
+          mapfile -t files < <(node ../../../scripts/plan-test-shards.mjs --shard "$SHARD" --of 3 --durations "$durations" < "$specs")
+          if [ "${#files[@]}" -eq 0 ]; then echo "leg $SHARD has no specs"; exit 0; fi
+          npx playwright test --config=playwright.local.config.js "${files[@]}"
       - name: Upload Playwright report on failure
         if: ${{ (failure()) && steps.ledger.outputs.already-green != 'true' }}
         uses: actions/upload-artifact@v7

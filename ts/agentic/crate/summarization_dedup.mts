@@ -27,6 +27,7 @@ export function flippedPolarity(polarity) {
 
 /**
  * `String::cmp`: UTF-8 byte order, i.e. code point order.
+ * Rust built-in `impl Ord for String`.
  * @param {string} left
  * @param {string} right
  */
@@ -89,7 +90,7 @@ export function signatureIsEmpty(signature) {
   return signature.terms.length === 0;
 }
 
-/** `StatementSignature == StatementSignature`. */
+/** `StatementSignature == StatementSignature`: Rust built-in `#[derive(PartialEq)]` on `StatementSignature`. */
 export function sameSignature(left, right) {
   return left.polarity === right.polarity && left.terms.length === right.terms.length
     && left.terms.every((term, index) => term === right.terms[index]);

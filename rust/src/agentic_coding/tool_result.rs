@@ -955,7 +955,15 @@ fn extract_urls(text: &str) -> Vec<String> {
 /// The language detected from the request's script, or -- when the script
 /// leaves it at the fallback language -- the one its words are seeded in.
 pub(super) fn response_language(prompt: &str) -> &'static str {
-    let detected = crate::language::detect(prompt).slug();
+    // The request's own words choose the language, never its quoted payload
+    // (PR #1188 G92); a request that is all quotation keeps the whole text.
+    let outside = crate::solver_handlers::text_outside_quoted_segments(prompt);
+    let words = if outside.chars().any(char::is_alphabetic) {
+        outside.as_str()
+    } else {
+        prompt
+    };
+    let detected = crate::language::detect(words).slug();
     if detected == crate::language::fallback_language().slug() {
         return response_language::lexical_language(prompt).unwrap_or(detected);
     }

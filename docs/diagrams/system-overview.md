@@ -21,7 +21,7 @@ flowchart LR
         planner["agentic planner<br/>recipes in agentic-recipes.md"]
         solver["universal solver<br/>one turn, first match wins"]
         promotions["handler promotions<br/>21 rules hoist a handler"]
-        precedence["specialized-handler precedence<br/>92 handlers in rank order"]
+        precedence["specialized-handler precedence<br/>93 handlers in rank order"]
         answer["answer<br/>text, tool calls or a trace"]
     end
     cli -->|"formal-ai chat"| solver

@@ -72,6 +72,51 @@ meanings
         text 重命名
       surface
         text 提升
+    lexeme es
+      surface
+        text cambia
+      surface
+        text cambiar
+      surface
+        text reemplaza
+      surface
+        text reemplazar
+      surface
+        text edita
+      surface
+        text editar
+      surface
+        text modifica
+      surface
+        text modificar
+      surface
+        text sustituye
+      surface
+        text sustituir
+      surface
+        text intercambia
+      surface
+        text corrige
+      surface
+        text corregir
+      surface
+        text actualiza
+      surface
+        text actualizar
+      surface
+        text parchea
+      surface
+        text reescribe
+      surface
+        text refactoriza
+      surface
+        text renombra
+      surface
+        text renombrar
+      surface
+        text establece
+      surface
+        text incrementa
   file_edit_new_lead
     defined-by relation
     role file_edit_new_lead_cue
@@ -95,6 +140,13 @@ meanings
         text 为
       surface
         text 成
+    lexeme es
+      surface
+        text por
+      surface
+        text con
+      surface
+        text a
   file_edit_target
     defined-by relation
     role file_edit_target_cue
@@ -128,6 +180,15 @@ meanings
         text 文件
       surface
         text 中
+    lexeme es
+      surface
+        text en
+      surface
+        text "dentro de"
+      surface
+        text de
+      surface
+        text archivo
   file_edit_old_lead
     defined-by relation
     role file_edit_old_lead_cue

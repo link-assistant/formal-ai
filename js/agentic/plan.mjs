@@ -6,7 +6,7 @@
 // `{kind: 'final', answer}`; `arguments` is the JSON text Rust's
 // `serde_json::Value::to_string` prints (see `jsonText`).
 
-/** `AgenticPlan::ToolCalls`. @param {Array<{tool: string, arguments: string}>} calls */
+/** Mirrors `enum AgenticPlan` in rust/src/agentic_coding/planner.rs (`ToolCalls`). @param {Array<{tool: string, arguments: string}>} calls */
 export function toolCalls(calls) {
   return { kind: 'tool_calls', calls };
 }
@@ -16,17 +16,17 @@ export function finalAnswer(answer) {
   return { kind: 'final', answer };
 }
 
-/** `PlannedToolCall`. @param {string} tool @param {string} args */
+/** Mirrors `struct PlannedToolCall` in rust/src/agentic_coding/planner.rs. @param {string} tool @param {string} args */
 export function plannedCall(tool, args) {
   return { tool, arguments: args };
 }
 
-/** Whether `plan` is `AgenticPlan::ToolCalls`. */
+/** Whether `plan` is `AgenticPlan::ToolCalls`: Rust built-in `matches!`. */
 export function isToolCalls(plan) {
   return plan?.kind === 'tool_calls';
 }
 
-/** Whether `plan` is `AgenticPlan::Final`. */
+/** Whether `plan` is `AgenticPlan::Final`: Rust built-in `matches!`. */
 export function isFinal(plan) {
   return plan?.kind === 'final';
 }

@@ -1,20 +1,27 @@
 // JavaScript twin of the structural census in `scripts/language-parity-lib.rs`
 // that `scripts/check-debt-ratchet.rs` embeds for its `language_parity_gaps`
-// measure (PR #1188, SCRIPTS-B). Only the live gap count is ported: the debt
-// ratchet reads nothing else from that module.
+// measure (PR #1188, SCRIPTS-B). The debt ratchet reads the live gap count;
+// `scripts/check-language-parity.mjs` reads the gaps themselves.
 //
 // A meaning owns the `lexeme <language>` lines nested under it; a meaning that
 // declares some of the five target languages but not all of them is one gap.
-
-import { join } from 'node:path';
 
 import {
   RustError, compareStrings, extension, ioErrorMessage, isDir, lines, readDirEntries, readToString,
   splitWhitespace, trim,
 } from './checks-rust-compat.mjs';
 
-const SEED_ROOT = 'data/seed';
-const TARGET_LANGUAGES = ['en', 'ru', 'hi', 'zh', 'es'];
+export const SEED_ROOT = 'data/seed';
+export const TARGET_LANGUAGES = ['en', 'ru', 'hi', 'zh', 'es'];
+
+/**
+ * `Path::join` for a relative `path`: `.` joined with `data/seed` displays as
+ * `./data/seed`, as the Rust original prints it in its error messages.
+ */
+export function joinPath(root, path) {
+  if (root === '') return path;
+  return root.endsWith('/') ? `${root}${path}` : `${root}/${path}`;
+}
 
 /** `Ord for Path`: component by component, not character by character. */
 function comparePaths(left, right) {
@@ -90,10 +97,10 @@ export function gapsFromDocuments(documents) {
     .sort((left, right) => compareStrings(left.source, right.source) || compareStrings(left.ownerPath, right.ownerPath));
 }
 
-/** `language_parity::current_gap_count`; throws `RustError` with Rust's text. */
-export function currentGapCount(root) {
+/** `repository_gaps`: every gap under `<root>/data/seed`; throws `RustError`. */
+export function repositoryGaps(root) {
   const files = [];
-  linoFiles(join(root, SEED_ROOT), files);
+  linoFiles(joinPath(root, SEED_ROOT), files);
   files.sort(comparePaths);
   const documents = files.map((path) => {
     const source = path.startsWith(`${root}/`) ? path.slice(root.length + 1) : path;
@@ -103,5 +110,10 @@ export function currentGapCount(root) {
       throw new RustError(`cannot read ${path}: ${ioErrorMessage(error)}`);
     }
   });
-  return gapsFromDocuments(documents).length;
+  return gapsFromDocuments(documents);
+}
+
+/** `language_parity::current_gap_count`; throws `RustError` with Rust's text. */
+export function currentGapCount(root) {
+  return repositoryGaps(root).length;
 }

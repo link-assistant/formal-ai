@@ -101,6 +101,7 @@ impl Rule {
                 ValueSource::Table { table, lookup } => {
                     lookup_table(table, lookup, context, &resolved)?
                 }
+                ValueSource::Transform(name) => transform_payload(name, context.prompt)?,
                 ValueSource::Response(template) => {
                     let pairs: Vec<(&str, &str)> = resolved
                         .iter()
@@ -131,6 +132,40 @@ impl ValueRef {
             Self::Literal(text) => Some(text.clone()),
         }
     }
+}
+
+/// A pure text transform a rule may apply to the request's free-text payload:
+/// the captured text, or `None` when it has nothing to say about the payload.
+type TextTransform = fn(&str) -> Option<String>;
+
+/// The named text transforms of the `value <name> transform <transform>`
+/// source (R1188-U20), the twin of `HANDLER_RULES_TEXT_TRANSFORMS` in
+/// `js/worker/formal_ai_worker_handler_rule_values.js`. A summary or a
+/// translation of the payload joins as one more row.
+const TEXT_TRANSFORMS: &[(&str, TextTransform)] = &[("requirement_list", requirement_list)];
+
+/// The requirements the text states, one Markdown list item per line; `None`
+/// when it states none.
+fn requirement_list(text: &str) -> Option<String> {
+    let requirements = crate::agentic_coding::requirement_extraction::extract_requirements(text);
+    (!requirements.is_empty()).then(|| {
+        requirements
+            .iter()
+            .map(|requirement| format!("- {requirement}"))
+            .collect::<Vec<_>>()
+            .join("\n")
+    })
+}
+
+/// The text transform `name` applied to the free-text payload of `prompt`;
+/// `None` when the transform is unknown, the prompt carries no payload, or the
+/// transform declines it.
+fn transform_payload(name: &str, prompt: &str) -> Option<String> {
+    let (_, transform) = TEXT_TRANSFORMS
+        .iter()
+        .find(|(candidate, _)| *candidate == name)?;
+    let payload = crate::solver_handlers::text_rewrite::free_text_payload(prompt)?;
+    transform(&payload)
 }
 
 /// The value a `table` block answers for one lookup; `None` when the table is

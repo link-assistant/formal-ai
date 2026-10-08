@@ -75,6 +75,7 @@ function dominantScript(text) {
 
 /**
  * The characters of `text` with their UTF-8 byte offsets (Rust `char_indices`).
+ * Rust built-in `str::char_indices`.
  * @param {string} text
  * @returns {Array<[number, string]>}
  */
@@ -88,7 +89,7 @@ export function charIndices(text) {
   return out;
 }
 
-/** Rust `&text[start..end]` over UTF-8 byte offsets. */
+/** Rust built-in `&text[start..end]`: byte slicing over UTF-8 byte offsets. */
 export function byteSlice(text, start, end) {
   return new TextDecoder().decode(new TextEncoder().encode(text).slice(start, end));
 }

@@ -25,7 +25,7 @@ function charBefore(text, index) {
   return text[index - 1];
 }
 
-/** Every UTF-16 index where `needle` occurs in `hay` (Rust `str::match_indices`, non-overlapping). */
+/** Every UTF-16 index where `needle` occurs in `hay`, non-overlapping: Rust built-in `str::match_indices`. */
 export function matchIndices(hay, needle) {
   const out = [];
   if (needle === '') return out;

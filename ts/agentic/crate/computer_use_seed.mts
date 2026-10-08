@@ -172,7 +172,7 @@ function parsed() {
 
 const gapKey = (capability, locale) => JSON.stringify([capability, locale]);
 
-/** A deep copy of a plan step (`ComputerPlanStep::clone`). */
+/** A deep copy of a plan step: Rust built-in `#[derive(Clone)]` on `ComputerPlanStep`. */
 export function cloneStep(step) {
   return { ...step, arguments: structuredClone(step.arguments) };
 }

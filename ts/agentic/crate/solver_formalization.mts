@@ -219,7 +219,7 @@ export function recordFormalizationSelection(log, selection) {
 }
 
 /**
- * Mirrors the `(role, anchor kind)` match of `fn record_formalization`.
+ * Mirrors `fn formalization_slot_kind` in rust/src/solver_formalization.rs: the `(role, anchor kind)` match.
  * @param {string} role
  * @param {string} anchorKind
  * @returns {string}

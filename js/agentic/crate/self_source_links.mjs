@@ -34,6 +34,7 @@ const encoder = new TextEncoder();
  * limbs instead of BigInt: the manifest hashes the whole ~10 MB source tree,
  * where the BigInt loop is seconds slower. FNV-1a 64: `prime = 2^40 + 0x1b3`,
  * so `h * prime = h * 0x1b3 + (h << 40)` modulo 2^64.
+ * Mirrors `fn stable_id` in rust/src/engine.rs.
  * @param {string} prefix
  * @param {string} text
  */

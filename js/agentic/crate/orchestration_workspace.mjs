@@ -42,7 +42,7 @@ export const ioError = (kind, message) => new IoError(kind, message);
 export const ioOther = (message) => new IoError('Other', String(message), `Custom { kind: Other, error: ${JSON.stringify(String(message))} }`);
 
 /**
- * Mirrors `fn map_err(io::Error)` in rust/src/orchestration/workspace.rs.
+ * Rust built-in `std::io::Error`, which the native calls of rust/src/orchestration/workspace.rs return.
  * The `io::Error` a failed Node call corresponds to; an `IoError` passes through.
  * @param {Error & {code?: string}} error
  */

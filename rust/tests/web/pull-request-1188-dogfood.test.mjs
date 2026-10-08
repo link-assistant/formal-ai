@@ -92,6 +92,7 @@ async function drive(prompt, workspace, maxSteps = 8) {
 }
 
 describe('PR #1188 dogfood: an append keeps the file it appends to', () => {
+  // Ladder row T4 of docs/case-studies/pull-request-1188/formal-ai-dogfood.md.
   test('`Append the line \'third line\' to notes.txt.` adds one line instead of overwriting the file', async () => {
     const { calls, files, answer } = await drive("Append the line 'third line' to notes.txt.", {
       'notes.txt': 'first line\nsecond line\n',
@@ -132,6 +133,7 @@ describe('PR #1188 dogfood: an append keeps the file it appends to', () => {
 describe('PR #1188 dogfood: a replacement edits only what it names', () => {
   const README = '# Project\n\nA small tool.\nThis is a smal project.\n';
 
+  // Ladder row T7 of docs/case-studies/pull-request-1188/formal-ai-dogfood.md.
   test('`smal` -> `small` fixes the word, not the `smal` inside `small`', async () => {
     const { calls, files, answer } = await drive("Replace 'smal' with 'small' in README.md.", { 'README.md': README });
     assert.deepEqual(calls, ['read', 'edit', 'bash']);
@@ -139,6 +141,7 @@ describe('PR #1188 dogfood: a replacement edits only what it names', () => {
     assert.equal(answer, 'Replaced `smal` with `small` in `README.md` and observed the result.');
   });
 
+  // Ladder row T8 of docs/case-studies/pull-request-1188/formal-ai-dogfood.md.
   test('a single-quoted positional insert places the line after its anchor', async () => {
     const { calls, files, answer } = await drive("Insert 'middle' after the line 'first line' in notes.txt.", {
       'notes.txt': 'first line\nsecond line\n',
@@ -156,6 +159,7 @@ describe('PR #1188 dogfood: a replacement edits only what it names', () => {
 });
 
 describe('PR #1188 dogfood: a removal takes out what it quotes', () => {
+  // Ladder row T9 of docs/case-studies/pull-request-1188/formal-ai-dogfood.md.
   test('`Delete the line \'second line\' from notes.txt.` removes that line', async () => {
     const { calls, files, answer } = await drive("Delete the line 'second line' from notes.txt.", {
       'notes.txt': 'first line\nsecond line\n',
@@ -184,6 +188,7 @@ describe('PR #1188 dogfood: a removal takes out what it quotes', () => {
 });
 
 describe('PR #1188 dogfood: shell requests run what they name', () => {
+  // Ladder row T13 of docs/case-studies/pull-request-1188/formal-ai-dogfood.md.
   test('`Run python3 greet.py.` runs the command without the sentence\'s full stop', async () => {
     const { calls, answer } = await drive('Run python3 greet.py.', { 'greet.py': 'print("Hello, World")\n' });
     assert.deepEqual(calls, ['bash']);
@@ -197,6 +202,7 @@ describe('PR #1188 dogfood: shell requests run what they name', () => {
     assert.equal(answer, 'Completed the action `mkdir src` and verified it with `test -d src`.');
   });
 
+  // Ladder row T15 of docs/case-studies/pull-request-1188/formal-ai-dogfood.md.
   test('a commit carries the message the request quotes and pushes only where a remote exists', async () => {
     const files = new Map();
     const messages = [{ role: 'user', content: "Commit all changes with the message 'initial notes'." }];
@@ -208,6 +214,7 @@ describe('PR #1188 dogfood: shell requests run what they name', () => {
   });
 });
 
+// Ladder row T16 of docs/case-studies/pull-request-1188/formal-ai-dogfood.md.
 describe('PR #1188 dogfood: a filler word inside a cue phrase keeps the cue', () => {
   for (const [prompt, command] of [
     ['Show me git status.', 'git status'],
@@ -226,6 +233,7 @@ describe('PR #1188 dogfood: a filler word inside a cue phrase keeps the cue', ()
 describe('PR #1188 dogfood: a setting changes on the line that assigns it', () => {
   const CONFIG = '{\n  "debug": false,\n  "name": "demo"\n}\n';
 
+  // Ladder row T17 of docs/case-studies/pull-request-1188/formal-ai-dogfood.md.
   test('`Change the value of "debug" to true in config.json.` writes a bare boolean', async () => {
     const { calls, files, answer } = await drive('Change the value of "debug" to true in config.json.', { 'config.json': CONFIG });
     assert.deepEqual(calls, ['read', 'edit', 'bash']);
@@ -345,6 +353,7 @@ describe('PR #1188 dogfood: a synthesized function is written to the named file 
   const PROMPT = 'Write a Python function add(a, b) that returns their sum in add.py and run it with 2 and 3.';
   const CHECK = 'python3 -X pycache_prefix=/tmp/formal-ai-pycache -m py_compile';
 
+  // Ladder row T19 of docs/case-studies/pull-request-1188/formal-ai-dogfood.md.
   test('write add.py -> check -> call with 2 and 3 -> report', async () => {
     const { solve } = await import('../../../js/agentic/host.mjs');
     const { planSymbolicCommandReroute } = await import('../../../js/agentic/command_reroute.mjs');
@@ -384,6 +393,7 @@ describe('PR #1188 dogfood: a synthesized function is written to the named file 
 });
 
 describe('PR #1188 dogfood: a typo without its correction is corrected by discovery', () => {
+  // Ladder row T6 of docs/case-studies/pull-request-1188/formal-ai-dogfood.md.
   test('`Fix the typo \'smal\' in README.md.` -> small, from the seed vocabulary', async () => {
     const { calls, files, answer } = await drive("Fix the typo 'smal' in README.md.", { 'README.md': '# P\n\nA small tool.\nThis is a smal project.\n' });
     assert.deepEqual(calls, ['read', 'edit', 'bash']);

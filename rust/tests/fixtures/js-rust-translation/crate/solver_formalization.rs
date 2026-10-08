@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=e067c27a8d4142b0977952c101e94a7648f04e1430e5adc31ff9e169a903843f bytes=10877
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=46d2b2b7b006935a1a1cb03d180faf63ba71dfa1f758cb16ca1cc925286d7c8c bytes=10914
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:prelude begin
@@ -464,7 +464,7 @@ pub fn finite_clamped(value: f64, min: f64, max: f64) -> f64 {
 
 // meta-language:translated JavaScript export_statement items=1 sha256=043cb6d98a6087e7a857f37da47301ca7cc63c9b0e2a07a004d845b12d936674
 // | /**
-// |  * Mirrors the `(role, anchor kind)` match of `fn record_formalization`.
+// |  * Mirrors `fn formalization_slot_kind` in rust/src/solver_formalization.rs: the `(role, anchor kind)` match.
 // |  * @param {string} role
 // |  * @param {string} anchorKind
 // |  * @returns {string}

@@ -46,6 +46,7 @@ export const LOCAL_REPOSITORY = 'local-repository';
 /**
  * An `io` over node's own modules, plus the optional Rust census
  * (`historyAstCensus` of rust_ast_census.mjs).
+ * Rust built-in `std::fs` and `std::process::Command`, which native Rust calls directly.
  * @param {{fs: object, path: object, childProcess: object, astCensus?: Function}} modules
  */
 export function nodeHistoryIo({ fs, path, childProcess, astCensus }) {
@@ -176,7 +177,7 @@ export function importCommitsForPath(io, repoRoot, sinceSha, file, rules) {
   return importCommitsImpl(io, repoRoot, sinceSha, file, rules);
 }
 
-/** A history event (camelCase, as the importers return it) as a stored `MemoryEvent`. */
+/** A history event (camelCase) as a stored `MemoryEvent`: Rust built-in `#[derive(Clone)]` on `MemoryEvent`. */
 export function toMemoryEvent(event) {
   return memoryEvent({
     id: event.id,
@@ -238,7 +239,7 @@ export function cursorText(cursor) {
   return out;
 }
 
-/** Writes the cursor document, creating parent directories. */
+/** Mirrors `RepositoryHistoryCursor::write` in rust/src/history_context/cursor.rs: the cursor document, parent directories created. */
 export function writeCursor(io, cursor, cursorPath) {
   if (io.createDirAll) io.createDirAll(dirname(io, cursorPath));
   io.writeText(cursorPath, cursorText(cursor));

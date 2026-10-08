@@ -1,0 +1,37 @@
+# R1188-U18 page formalization ratchet. Written by
+# `node scripts/measure-web-formalization.mjs --write`; the CI gate
+# data/meta/ci-gates/check-web-formalization.lino fails when a value falls.
+# Shares are rounded down to three decimals; counts are exact.
+web-formalization-ratchet
+  source "scripts/measure-web-formalization.mjs"
+  corpus "data/benchmarks/web-formalization"
+  pages 40
+  sentences 611
+  sentence-coverage 0.042
+  fact-survival 0.988
+  known-term-share 0.399
+  en-pages 8
+  en-sentences 155
+  en-sentence-coverage 0.058
+  en-fact-survival 0.988
+  en-known-term-share 0.464
+  ru-pages 8
+  ru-sentences 98
+  ru-sentence-coverage 0.061
+  ru-fact-survival 0.979
+  ru-known-term-share 0.377
+  hi-pages 8
+  hi-sentences 110
+  hi-sentence-coverage 0.009
+  hi-fact-survival 1
+  hi-known-term-share 0.289
+  zh-pages 8
+  zh-sentences 119
+  zh-sentence-coverage 0.05
+  zh-fact-survival 1
+  zh-known-term-share 0.506
+  es-pages 8
+  es-sentences 129
+  es-sentence-coverage 0.031
+  es-fact-survival 0.975
+  es-known-term-share 0.313

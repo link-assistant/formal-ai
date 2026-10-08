@@ -231,7 +231,7 @@ export function canonicalProgram(trigger, steps) {
   return out;
 }
 
-/** Mirrors the step id derivation in `compile_procedure_with_ledger`. */
+/** Mirrors `fn step_id` in rust/src/skill_procedure.rs: the step id `compile_procedure_with_ledger` derives. */
 export function stepId(procedureId, step) {
   return stableId('compiled_procedure_step', `${procedureId}:${step.index}:${step.kind}:${stepArguments(step).join('+')}`);
 }

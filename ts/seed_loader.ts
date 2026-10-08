@@ -277,7 +277,8 @@
   // Project the ordered, uniform browser-handler bindings from seed data.
   // Executable symbols are stored as node names (`argument_prompt`,
   // `context_binding_writeProgram`, …) so the meaning-closure audit does not
-  // mistake JavaScript identifiers for natural-language references.
+  // mistake JavaScript identifiers for natural-language references. A bare
+  // `rule_set` field marks a row the seed rule interpreter runs by its name.
   function extractBrowserHandlerPrecedence(root) {
     if (!root) return [];
     var section = root.name === "browser_handler_precedence"
@@ -289,6 +290,7 @@
         name: handler.id,
         arguments: [],
         contextBinding: "",
+        ruleSet: false,
         resultIntent: "",
         evidenceKind: "",
       };
@@ -298,6 +300,8 @@
           record.arguments.push(field.slice("argument_".length));
         } else if (field.indexOf("context_binding_") === 0) {
           record.contextBinding = field.slice("context_binding_".length);
+        } else if (field === "rule_set") {
+          record.ruleSet = true;
         } else if (field.indexOf("result_intent_") === 0) {
           record.resultIntent = field.slice("result_intent_".length);
         } else if (field.indexOf("evidence_kind_") === 0) {

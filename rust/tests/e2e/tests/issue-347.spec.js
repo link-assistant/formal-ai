@@ -25,6 +25,10 @@
 // live GitHub Releases API (rate limits / offline CI) and the screenshots always
 // show resolvable, version-stamped download links.
 const { test, expect } = require('@playwright/test');
+
+// R1188-U11: the suite runs fully parallel, test by test; this file writes the /download screenshots in beforeAll and compares them across tests,
+// so its tests stay in one worker, in order.
+test.describe.configure({ mode: 'default' });
 const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');

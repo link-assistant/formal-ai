@@ -23,6 +23,13 @@ meanings
         text 货币
       surface
         text 钱
+    lexeme es
+      surface
+        text dinero
+      surface
+        text moneda
+      surface
+        text divisa
   exchange_rate
     grounded-in Q66100
     defined-by money
@@ -42,6 +49,13 @@ meanings
     lexeme zh
       surface
         text 汇率
+    lexeme es
+      surface
+        text "tipo de cambio"
+      surface
+        text "tasa de cambio"
+      surface
+        text cotización
   us_dollar
     grounded-in Q4917
     defined-by money
@@ -67,6 +81,13 @@ meanings
     lexeme zh
       surface
         text 美元
+    lexeme es
+      surface
+        text dólar
+      surface
+        text dólares
+      surface
+        text usd
   euro
     grounded-in Q4916
     defined-by money
@@ -88,6 +109,13 @@ meanings
     lexeme zh
       surface
         text 欧元
+    lexeme es
+      surface
+        text euro
+      surface
+        text euros
+      surface
+        text eur
   ruble
     grounded-in Q41044
     defined-by money
@@ -113,6 +141,13 @@ meanings
     lexeme zh
       surface
         text 卢布
+    lexeme es
+      surface
+        text rublo
+      surface
+        text rublos
+      surface
+        text rub
   calculation_basis
     defined-by action
     defined-by inquiry
@@ -161,6 +196,21 @@ meanings
         text 计算
       surface
         text 使用
+    lexeme es
+      surface
+        text cálculo
+      surface
+        text cálculos
+      surface
+        text usas
+      surface
+        text utilizas
+      surface
+        text aplicas
+      surface
+        text "tu tasa"
+      surface
+        text "tu tipo de cambio"
   arithmetic_operation
     grounded-in Q12170668
     defined-by action
@@ -179,6 +229,11 @@ meanings
     lexeme zh
       surface
         text 算术运算
+    lexeme es
+      surface
+        text "operación aritmética"
+      surface
+        text operador
   addition
     grounded-in Q32043
     defined-by arithmetic_operation
@@ -431,6 +486,11 @@ meanings
     lexeme zh
       surface
         text 请
+    lexeme es
+      surface
+        text "por favor"
+      surface
+        text porfa
   calculation_result_query
     defined-by action
     defined-by inquiry
@@ -502,6 +562,17 @@ meanings
         text 时长
       surface
         text 经过时间
+    lexeme es
+      surface
+        text "cuánto tiempo"
+      surface
+        text "cuánto dura"
+      surface
+        text duración
+      surface
+        text "tiempo transcurrido"
+      surface
+        text "tiempo de viaje"
   quantity_conversion
     grounded-in Q618655
     defined-by action
@@ -533,6 +604,17 @@ meanings
         text 兑换
       surface
         text 换成
+    lexeme es
+      surface
+        text convierte
+      surface
+        text convertir
+      surface
+        text conversión
+      surface
+        text "cambia a"
+      surface
+        text "pasa a"
   mathematical_function
     grounded-in Q11348
     defined-by function
@@ -549,6 +631,9 @@ meanings
     lexeme zh
       surface
         text 数学函数
+    lexeme es
+      surface
+        text "función matemática"
   square_root
     grounded-in Q134237
     defined-by mathematical_function
@@ -569,6 +654,9 @@ meanings
     lexeme zh
       surface
         text 平方根
+    lexeme es
+      surface
+        text "raíz cuadrada"
   sine
     grounded-in Q152415
     defined-by mathematical_function
@@ -587,6 +675,9 @@ meanings
     lexeme zh
       surface
         text 正弦
+    lexeme es
+      surface
+        text seno
   cosine
     grounded-in Q1256164
     defined-by mathematical_function
@@ -605,6 +696,9 @@ meanings
     lexeme zh
       surface
         text 余弦
+    lexeme es
+      surface
+        text coseno
   tangent
     grounded-in Q1129196
     defined-by mathematical_function
@@ -623,6 +717,9 @@ meanings
     lexeme zh
       surface
         text 正切
+    lexeme es
+      surface
+        text tangente
   logarithm
     grounded-in Q11197
     defined-by mathematical_function
@@ -641,6 +738,9 @@ meanings
     lexeme zh
       surface
         text 对数
+    lexeme es
+      surface
+        text logaritmo
   natural_logarithm
     grounded-in Q204037
     defined-by mathematical_function
@@ -659,6 +759,11 @@ meanings
     lexeme zh
       surface
         text 自然对数
+    lexeme es
+      surface
+        text "logaritmo natural"
+      surface
+        text "logaritmo neperiano"
   math_function_argument
     defined-by mathematical_function
     role math_function_argument_marker

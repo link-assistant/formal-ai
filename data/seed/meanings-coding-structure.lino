@@ -1022,6 +1022,30 @@ meanings
         text "fractional part"
       surface
         text "leftover part"
+    lexeme ru
+      surface
+        text "дробная часть"
+      surface
+        text "дробную часть"
+      surface
+        text "остаток после запятой"
+    lexeme hi
+      surface
+        text "दशमलव भाग"
+      surface
+        text "भिन्नात्मक भाग"
+    lexeme zh
+      surface
+        text 小数部分
+      surface
+        text 分数部分
+    lexeme es
+      surface
+        text "parte decimal"
+      surface
+        text "parte fraccionaria"
+      surface
+        text "parte sobrante"
     bootstrap true
     rediscovery_query "the part of the number after its decimal point"
   arithmetic_difference
@@ -1068,3 +1092,33 @@ meanings
         text volume
       surface
         text area
+    lexeme ru
+      surface
+        text периметр
+      surface
+        text объём
+      surface
+        text объем
+      surface
+        text площадь
+    lexeme hi
+      surface
+        text परिमाप
+      surface
+        text आयतन
+      surface
+        text क्षेत्रफल
+    lexeme zh
+      surface
+        text 周长
+      surface
+        text 体积
+      surface
+        text 面积
+    lexeme es
+      surface
+        text perímetro
+      surface
+        text volumen
+      surface
+        text área

@@ -19,6 +19,7 @@ use crate::language::detect as detect_language;
 use crate::seed::{self, HANDLER_RULES_LINO, Slot};
 use crate::seed_links::SeedLinkNetwork;
 use crate::solver_handlers::finalize_simple;
+use crate::solver_handlers::text_rewrite::command_head;
 
 mod parser;
 mod shape;
@@ -71,6 +72,10 @@ enum Subject {
     /// `role temporal_preposition of padded` — seed data in every language
     /// rather than one Russian preposition compiled into Rust.
     Padded,
+    /// The normalized command head: the request before its free-text payload
+    /// (`crate::solver_handlers::text_rewrite::command_head`), so a cue inside
+    /// the pasted text never decides the route (R1188-U20).
+    CommandHead,
 }
 
 /// A structural property of the input that carries no natural language
@@ -206,6 +211,10 @@ enum ValueSource {
     /// The seeded response whose intent this template names once earlier
     /// captures fill it, in the prompt language (issue #918).
     Response(String),
+    /// The named text transform (`values::TEXT_TRANSFORMS`) applied to the
+    /// request's free-text payload; the rule does not match without a payload
+    /// or when the transform declines it (R1188-U20).
+    Transform(String),
 }
 
 #[derive(Debug)]
@@ -254,6 +263,8 @@ struct Context<'a> {
     /// The normalized prompt with one leading and one trailing space; see
     /// [`Subject::Padded`].
     padded: String,
+    /// The normalized command head; see [`Subject::CommandHead`].
+    command_head: String,
     language: String,
 }
 
@@ -613,6 +624,7 @@ impl<'a> Context<'a> {
                 padded.push(' ');
                 padded
             },
+            command_head: normalize_prompt(command_head(prompt)),
             language: language.to_owned(),
         }
     }
@@ -625,6 +637,7 @@ impl<'a> Context<'a> {
             Subject::Prompt => self.prompt,
             Subject::Trimmed => self.normalized.trim(),
             Subject::Padded => &self.padded,
+            Subject::CommandHead => &self.command_head,
         }
     }
 

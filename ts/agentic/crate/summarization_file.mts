@@ -49,6 +49,7 @@ const META = { parser: null };
  * Install the host's meta-language parser, or `null` to remove it. Mirrors the
  * crate's `meta-language` cargo feature: with no parser installed the file
  * formalizer behaves like the featureless Rust build.
+ * Rust built-in `#[cfg(feature = "meta-language")]`.
  * @param {((label: string, source: string) => object)|null} parser
  */
 export function installMetaLanguageParser(parser) {

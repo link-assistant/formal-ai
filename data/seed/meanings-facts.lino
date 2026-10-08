@@ -24,6 +24,11 @@ meanings
         text 关系
       surface
         text 属性
+    lexeme es
+      surface
+        text relación
+      surface
+        text propiedad
   knowledge_subject
     defined-by knowledge_relation
     role knowledge_subject
@@ -51,6 +56,13 @@ meanings
         text 主体
       surface
         text 实体
+    lexeme es
+      surface
+        text sujeto
+      surface
+        text entidad
+      surface
+        text tema
   knowledge_value
     defined-by knowledge_relation
     role knowledge_value
@@ -74,6 +86,11 @@ meanings
         text 值
       surface
         text 答案
+    lexeme es
+      surface
+        text valor
+      surface
+        text respuesta
   capital
     grounded-in P36
     defined-by knowledge_relation
@@ -94,6 +111,9 @@ meanings
     lexeme zh
       surface
         text 首都
+    lexeme es
+      surface
+        text capital
   population
     grounded-in P1082
     defined-by knowledge_relation
@@ -114,6 +134,13 @@ meanings
     lexeme zh
       surface
         text 人口
+    lexeme es
+      surface
+        text población
+      surface
+        text "cuántas personas"
+      surface
+        text "cuántos habitantes"
   currency
     grounded-in P38
     defined-by knowledge_relation
@@ -132,6 +159,11 @@ meanings
         text 货币
       surface
         text 貨幣
+    lexeme es
+      surface
+        text moneda
+      surface
+        text divisa
   official_language
     grounded-in P37
     defined-by knowledge_relation
@@ -156,6 +188,13 @@ meanings
         text 官方语言
       surface
         text 官方語言
+    lexeme es
+      surface
+        text "idioma oficial"
+      surface
+        text "lengua oficial"
+      surface
+        text "qué idioma"
   continent
     grounded-in P30
     defined-by knowledge_relation
@@ -172,6 +211,9 @@ meanings
     lexeme zh
       surface
         text 大洲
+    lexeme es
+      surface
+        text continente
   author_of_book
     grounded-in P50
     defined-by knowledge_relation
@@ -202,6 +244,15 @@ meanings
         text 是谁写的
       surface
         text 作者
+    lexeme es
+      surface
+        text "quién escribió"
+      surface
+        text autor
+      surface
+        text autora
+      surface
+        text "escrito por"
   painter_of_painting
     grounded-in P170
     defined-by knowledge_relation
@@ -234,6 +285,17 @@ meanings
         text 谁画的
       surface
         text 画家
+    lexeme es
+      surface
+        text "quién pintó"
+      surface
+        text pintó
+      surface
+        text pintor
+      surface
+        text pintora
+      surface
+        text artista
   built_year
     grounded-in P571
     defined-by knowledge_relation
@@ -266,6 +328,15 @@ meanings
         text 建于
       surface
         text 建造
+    lexeme es
+      surface
+        text cuándo
+      surface
+        text construido
+      surface
+        text construida
+      surface
+        text construcción
   physical_constant
     grounded-in Q173227
     defined-by knowledge_relation
@@ -294,6 +365,13 @@ meanings
         text 光速
       surface
         text 是多少
+    lexeme es
+      surface
+        text "velocidad de la luz"
+      surface
+        text "cuál es"
+      surface
+        text "qué tan rápido"
   fact_comparison_request
     defined-by compare
     defined-by knowledge_relation

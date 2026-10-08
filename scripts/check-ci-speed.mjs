@@ -37,6 +37,8 @@ export const INDEX_ORDER_SHARDING = [
   /\bposition\s*%\s*SHARD_TOTAL\b/,
   /--test-shard[= ]/,
   /--partition[= ](?:slice|count):/,
+  // Playwright's `--shard=<i>/<n>` cuts the suite by test count in file order.
+  /--shard[= ]"?[$\w{}]+\/[$\w{}]+/,
 ];
 
 const exceptionFor = (policy, workflow, job) =>
@@ -238,7 +240,7 @@ export function checkCiSpeed(root = ROOT) {
   const policy = parseSpeedPolicy(readFileSync(join(root, 'data/meta/ci-speed.lino'), 'utf8'));
   const durations = parseCiDurations(readFileSync(join(root, policy.durations), 'utf8'));
   const workflows = readWorkflows(root);
-  const testDurations = [policy.testDurations, policy.javascriptTestDurations]
+  const testDurations = [policy.testDurations, policy.javascriptTestDurations, policy.playwrightTestDurations]
     .filter((path) => path && existsSync(join(root, path)))
     .map((path) => [path, parseTestDurations(readFileSync(join(root, path), 'utf8'))]);
   return {

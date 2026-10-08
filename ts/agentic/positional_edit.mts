@@ -81,9 +81,11 @@ export function positionalInserts(request) {
   const clauses = block === null ? insertClauses(request) : [block.head];
   const inserts = clauses.map((clause) => clauseInsert(clause, block === null ? null : block.text));
   if (inserts.some((insert) => insert === null)) return null;
-  // Lines under the request that were neither fenced nor quoted are rebased on
-  // the anchor's indentation once the file is read (PR #1188 G16).
-  for (const insert of inserts) insert.rebase = block !== null && !block.verbatim;
+  // Lines under the request that were neither fenced nor quoted keep the
+  // indentation they were given when the file uses it, else are rebased on the
+  // anchor's indentation once the file is read (PR #1188 G16, G93). `rebase`
+  // is that given indentation, or null for lines kept as written.
+  for (const insert of inserts) insert.rebase = block !== null && !block.verbatim ? block.indentation : null;
   const named = [...new Set(namedPaths(request))];
   for (const insert of inserts) {
     if (insert.target !== null) continue;
@@ -352,9 +354,32 @@ export function rebasedBlock(text, indentation) {
   return text.split('\n').map((line) => (line === '' ? line : `${indentation}${line}`)).join('\n');
 }
 
+/**
+ * Mirrors `fn indents_lines_at`: whether `source` has a non-blank line
+ * indented by exactly `indentation`; never for the empty indentation.
+ * @param {string} source
+ * @param {string} indentation
+ */
+export function indentsLinesAt(source, indentation) {
+  if (indentation === '') return false;
+  return source.split('\n').some((line) => line.trim() !== '' && leadingIndentation(line) === indentation);
+}
+
 /** Mirrors `fn leading_indentation`: the whitespace a line starts with. */
 export function leadingIndentation(line) {
   return line.slice(0, line.length - line.trimStart().length);
+}
+
+/**
+ * Mirrors `fn instruction_end`: where the instruction of `request` ends -- at
+ * the end of its first line when that line ends in a colon and lines follow
+ * it, since those lines are the payload, whatever they say (PR #1188 G94, G95);
+ * else at the end of the request.
+ * @param {string} request
+ */
+export function instructionEnd(request) {
+  const block = introducedBlock(request);
+  return block === null ? request.length : block.head.length;
 }
 
 /**

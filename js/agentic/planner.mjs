@@ -20,6 +20,7 @@ import { sourceTreeRequest as metaSourceTreeRequest } from './crate/meta_transla
 import { handlerMatches } from './crate/rule_interpreter.mjs';
 import { quoteFault } from './crate/normal_markov.mjs';
 import * as testAssertion from './test_assertion.mjs';
+import * as replaceList from './replace_list.mjs';
 import * as requestSequence from './request_sequence.mjs';
 import { plannerPrecedence } from './crate/seed.mjs';
 import { looksLikeSkillDescription } from './crate/skill_compiler.mjs';
@@ -143,14 +144,18 @@ async function planWorkspaceChangeArm(task, messages, toolNames) {
 }
 
 /**
- * Mirrors `fn quote_fault_answer`: the seeded answer declining a request whose
- * quotes do not pair (PR #1188 G71), or null.
+ * Mirrors `fn request_fault_answer`: the seeded answer declining a request
+ * whose quotes do not pair (PR #1188 G71) or whose edit names several files
+ * (G91), or null.
  * @param {string} task
  */
-function quoteFaultAnswer(task) {
+function requestFaultAnswer(task) {
   const fault = quoteFault(task);
-  if (fault === null) return null;
-  const answer = codeTask.renderSeededChange(`request_quote_${fault.kind}`, task, '', [['{fragment}', fault.fragment]]);
+  const files = fault === null ? replaceList.severalEditTargets(task) : null;
+  if (fault === null && files === null) return null;
+  const answer = fault === null
+    ? codeTask.renderSeededChange('request_several_edit_targets', task, '', [['{files}', files.join('`, `')]])
+    : codeTask.renderSeededChange(`request_quote_${fault.kind}`, task, '', [['{fragment}', fault.fragment]]);
   return answer === null ? null : finalAnswer(answer);
 }
 
@@ -226,7 +231,7 @@ async function planChatStepRoutes(messages, toolNames, received) {
   // The computer_use arm. Ahead of it, quotes that do not pair leave no
   // telling the quoted text from the instruction, so the request is declined
   // before any arm reads its payload as words to act on (PR #1188 G71).
-  const computerUse = quoteFaultAnswer(task) ?? computerUsePlanAgenticStep(messages, toolNames);
+  const computerUse = requestFaultAnswer(task) ?? computerUsePlanAgenticStep(messages, toolNames);
   if (computerUse !== null) return computerUse;
   if (hasAuthoritativeLiteralWrite(task) && capabilityRouter.workspaceCreationTool(toolNames) !== null) {
     const general = composeGeneralChangePlan(task);

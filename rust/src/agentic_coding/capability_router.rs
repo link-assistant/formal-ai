@@ -694,6 +694,14 @@ fn routed_arguments(
             if seed::lexicon().mentions_role("coding_text_remove_action", &outside) {
                 return None;
             }
+            // Neither does an edit the edit composer could not read: unless the
+            // request states a whole-file write, its edit word asks for a change
+            // inside the file (U17: `In notes.txt replace with ','` wrote `','`).
+            if seed::lexicon().mentions_role(seed::ROLE_FILE_EDIT_ACTION_CUE, &outside)
+                && !super::literal_write_guard::writes_whole_file(task)
+            {
+                return None;
+            }
             let path = crate::capability_routing::first_path(task)?;
             let content = crate::capability_routing::explicit_content(task)?;
             Some(super::planner::write_arguments(&path, &content))

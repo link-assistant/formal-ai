@@ -20,6 +20,11 @@ meanings
     lexeme zh
       surface
         text 程序合成
+    lexeme es
+      surface
+        text "síntesis de programas"
+      surface
+        text "síntesis de funciones"
   synthesis_subject_function
     defined-by program_synthesis
     defined-by function
@@ -65,6 +70,9 @@ meanings
     lexeme zh
       surface
         text python
+    lexeme es
+      surface
+        text python
   synthesis_domain_tuple
     defined-by program_synthesis
     defined-by code
@@ -85,6 +93,11 @@ meanings
     lexeme zh
       surface
         text 元组
+    lexeme es
+      surface
+        text tupla
+      surface
+        text tuplas
   synthesis_domain_numbers
     defined-by program_synthesis
     defined-by result
@@ -105,6 +118,9 @@ meanings
     lexeme zh
       surface
         text 数字
+    lexeme es
+      surface
+        text números
   synthesis_domain_vowels
     defined-by program_synthesis
     defined-by result
@@ -127,6 +143,11 @@ meanings
     lexeme zh
       surface
         text 元音
+    lexeme es
+      surface
+        text vocales
+      surface
+        text vocal
   synthesis_action_implement
     defined-by program_synthesis
     defined-by implement
@@ -206,3 +227,12 @@ meanings
     lexeme zh
       surface
         text 返回
+    lexeme es
+      surface
+        text devuelve
+      surface
+        text devolver
+      surface
+        text retorna
+      surface
+        text retornar

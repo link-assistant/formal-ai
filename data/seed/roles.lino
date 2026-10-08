@@ -741,6 +741,8 @@ roles
     kind predicate
   requirement_directive_verb
     kind predicate
+  requirement_listing_action
+    kind meaning
   requirement_obligation_cue
     kind predicate
   requirement_section_heading
@@ -757,6 +759,8 @@ roles
     kind meaning
   research_superlative_modifier
     kind meaning
+  response_audience
+    kind predicate
   response_language_marker
     kind predicate
   rule_brief_request

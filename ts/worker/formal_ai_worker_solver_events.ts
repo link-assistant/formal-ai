@@ -183,14 +183,7 @@ function solverPromotedHandlers(prompt, cueSets = null) {
     languages: language === "en" ? ["en"] : [language, "en"],
     history: [],
     cueSets,
-    subjects: {
-      normalized,
-      cleaned: normalizePrompt(normalized),
-      lowercase: source.toLowerCase(),
-      prompt: source,
-      trimmed: normalized.trim(),
-      padded: ` ${normalized} `,
-    },
+    subjects: handlerRulesSubjects(source, normalized),
   };
   return solverHandlerPromotions()
     .filter((row) => handlerRulesHolds(row.when, context))

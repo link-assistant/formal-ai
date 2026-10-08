@@ -477,6 +477,14 @@ meanings
     unit "not applicable"
     example "A quote in this request opens and never closes (`'x with y in f.txt.`), so I cannot tell the quoted text from the instruction, and nothing was done."
     grounding "data/seed/multilingual-responses-agentic-tools.lino"
+  request_several_edit_targets
+    defined-by answer
+    role localized_response_template
+    precondition "an edit request names more than one file outside its quotes"
+    effect "nothing is changed and the answer names the files, asking for one edit request per file"
+    unit "not applicable"
+    example "This edit names several files (`p.txt`, `q.txt`), and one edit request changes one file, so nothing was changed. Ask for the edit once for each file."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"
   file_addition_unquoted
     defined-by answer
     role localized_response_template
@@ -845,3 +853,19 @@ meanings
     unit "not applicable"
     example "Should I read"
     grounding "data/seed/multilingual-responses-text-transform.lino"
+  requirement_listing
+    defined-by answer
+    role localized_response_template
+    precondition "a request carries its own text and asks for the requirements that text states"
+    effect "lists the requirements the text states, one per line, under a localized intro"
+    unit "not applicable"
+    example "Requirements stated in the text:"
+    grounding "data/seed/multilingual-responses-text-transform.lino"
+  machine
+    defined-by concept
+    role response_audience
+    precondition "a multilingual response row is read by a program (a code template, a log line), not by a person"
+    effect "marks the row with audience machine, so its language owes no translation in the response-language debt"
+    unit "not applicable"
+    example "audience machine"
+    grounding "scripts/generate-response-parity-debt.mjs"

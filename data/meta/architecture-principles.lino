@@ -49,6 +49,7 @@ architecture-principles
     principle "Explicit Interfaces"
       practice "Every JavaScript module and its Rust twin cite each other, so the shared surface is named in both roots."
       enforced-by check-twin-citations
+      enforced-by check-planner-twins
       gap R1188-U16
     principle "Principle of Least Surprise"
       practice "Formal AI as a coding agent takes no action it was not asked for: quoted payloads are data, unpaired quotes are declined, a line edit never becomes a whole-file write."
@@ -100,6 +101,7 @@ architecture-principles
     principle "Idempotence"
       practice "Generators and substitution passes produce the same bytes on a second run; --check modes prove it."
       enforced-by check-status-render
+      enforced-by check-generated-files
       gap R1188-U8
     principle "Stateless Processes (Where Possible)"
       practice "Server requests carry their history; the worker and the Node server keep no per-request state outside memory events."
@@ -108,6 +110,7 @@ architecture-principles
       practice "Every requirement row names the test that pins it; JavaScript tests run with node, Rust twins in CI."
       enforced-by check-requirement-status
       enforced-by check-language-test-coverage
+      enforced-by check-formal-ai-tally
     principle "Deterministic Core Logic"
       practice "No neural inference: the same prompt, history and seed always give the same answer and trace."
       enforced-by check-tests-as-docs
@@ -139,6 +142,7 @@ architecture-principles
     principle "Simplicity Over Cleverness"
       practice "A failing prompt is fixed by the smallest more universal rule, never by a case for that prompt."
       enforced-by check-hardcoded-language
+      enforced-by check-prompt-specialization
       gap R1188-U1
     principle "Self-documented Code"
       practice "Doc comments say why; names are full words; generated files say which command regenerates them."

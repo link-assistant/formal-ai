@@ -10,10 +10,7 @@
 //! only this module knew about, so two seams that both mean "prefer the cheaper
 //! candidate" could disagree without anything noticing.
 
-use crate::selection_heuristics::{
-    ActionCost, CandidateRanker, CandidateScore, HeuristicRole, LeastActionRanker, TrizRanker,
-    contradictions_in,
-};
+use crate::selection_heuristics::{ActionCost, CandidateScore, rank_with_heuristic, situation_for};
 
 use super::AlgorithmCandidate;
 
@@ -46,21 +43,7 @@ pub(super) fn rank_survivors(candidates: Vec<AlgorithmCandidate>) -> Vec<Algorit
             },
         })
         .collect();
-    let situation = if contradictions_in(&scores, "").is_empty() {
-        ""
-    } else {
-        "contradiction_detected"
-    };
-    let registry = crate::method_registry::MethodRegistry::shared();
-    let heuristics = registry.heuristics_for(HeuristicRole::Rank, situation);
-    let heuristic = heuristics.last();
-    let slug = heuristic.and_then(|h| h.parameter("slug")).unwrap_or("");
-    let params = heuristic.map(|h| h.parameters.clone()).unwrap_or_default();
-    let ranked = if slug == TrizRanker.slug() {
-        TrizRanker.rank(&scores, &params)
-    } else {
-        LeastActionRanker.rank(&scores, &params)
-    };
+    let ranked = rank_with_heuristic(&scores, situation_for(&scores));
 
     let mut ordered: Vec<Option<AlgorithmCandidate>> = candidates.into_iter().map(Some).collect();
     let mut out: Vec<AlgorithmCandidate> = Vec::with_capacity(ordered.len());

@@ -18,6 +18,9 @@ meanings
     lexeme zh
       surface
         text 数量
+    lexeme es
+      surface
+        text cantidad
   unit
     grounded-in Q47574
     defined-by quantity
@@ -34,271 +37,9 @@ meanings
     lexeme zh
       surface
         text 单位
-  cardinal_number
-    grounded-in Q1329258
-    defined-by quantity
-    role numeric_concept
-    lexeme en
-      surface
-        text "cardinal number"
-      surface
-        text number
-    lexeme ru
-      surface
-        text "количественное число"
-    lexeme hi
-      surface
-        text "गणन संख्या"
-    lexeme zh
-      surface
-        text 基数
-  zero
-    grounded-in Q204
-    defined-by cardinal_number
-    defined-by empty
-    role cardinal_number_word
-    lexeme en
-      surface
-        text zero
-      surface
-        text 0
-    lexeme ru
-      surface
-        text ноль
-      surface
-        text нуль
-    lexeme hi
-      surface
-        text शून्य
-    lexeme zh
-      surface
-        text 零
     lexeme es
       surface
-        text cero
-  one
-    grounded-in Q199
-    defined-by cardinal_number
-    defined-by single
-    role cardinal_number_word
-    lexeme en
-      surface
-        text one
-      surface
-        text 1
-    lexeme ru
-      surface
-        text один
-      surface
-        text одна
-      surface
-        text одно
-    lexeme hi
-      surface
-        text एक
-    lexeme zh
-      surface
-        text 一
-    lexeme es
-      surface
-        text un
-      surface
-        text una
-      surface
-        text uno
-  two
-    grounded-in Q200
-    defined-by cardinal_number
-    role cardinal_number_word
-    lexeme en
-      surface
-        text two
-      surface
-        text 2
-    lexeme ru
-      surface
-        text два
-      surface
-        text две
-    lexeme hi
-      surface
-        text दो
-    lexeme zh
-      surface
-        text 二
-      surface
-        text 两
-    lexeme es
-      surface
-        text dos
-  three
-    grounded-in Q201
-    defined-by cardinal_number
-    role cardinal_number_word
-    lexeme en
-      surface
-        text three
-      surface
-        text 3
-    lexeme ru
-      surface
-        text три
-    lexeme hi
-      surface
-        text तीन
-    lexeme zh
-      surface
-        text 三
-    lexeme es
-      surface
-        text tres
-  four
-    grounded-in Q202
-    defined-by cardinal_number
-    role cardinal_number_word
-    lexeme en
-      surface
-        text four
-      surface
-        text 4
-    lexeme ru
-      surface
-        text четыре
-    lexeme hi
-      surface
-        text चार
-    lexeme zh
-      surface
-        text 四
-    lexeme es
-      surface
-        text cuatro
-  five
-    grounded-in Q203
-    defined-by cardinal_number
-    role cardinal_number_word
-    lexeme en
-      surface
-        text five
-      surface
-        text 5
-    lexeme ru
-      surface
-        text пять
-    lexeme hi
-      surface
-        text पाँच
-    lexeme zh
-      surface
-        text 五
-    lexeme es
-      surface
-        text cinco
-  six
-    grounded-in Q23488
-    defined-by cardinal_number
-    role cardinal_number_word
-    lexeme en
-      surface
-        text six
-      surface
-        text 6
-    lexeme ru
-      surface
-        text шесть
-    lexeme hi
-      surface
-        text छह
-    lexeme zh
-      surface
-        text 六
-    lexeme es
-      surface
-        text seis
-  seven
-    grounded-in Q23350
-    defined-by cardinal_number
-    role cardinal_number_word
-    lexeme en
-      surface
-        text seven
-      surface
-        text 7
-    lexeme ru
-      surface
-        text семь
-    lexeme hi
-      surface
-        text सात
-    lexeme zh
-      surface
-        text 七
-    lexeme es
-      surface
-        text siete
-  eight
-    grounded-in Q23355
-    defined-by cardinal_number
-    role cardinal_number_word
-    lexeme en
-      surface
-        text eight
-      surface
-        text 8
-    lexeme ru
-      surface
-        text восемь
-    lexeme hi
-      surface
-        text आठ
-    lexeme zh
-      surface
-        text 八
-    lexeme es
-      surface
-        text ocho
-  nine
-    grounded-in Q19108
-    defined-by cardinal_number
-    role cardinal_number_word
-    lexeme en
-      surface
-        text nine
-      surface
-        text 9
-    lexeme ru
-      surface
-        text девять
-    lexeme hi
-      surface
-        text नौ
-    lexeme zh
-      surface
-        text 九
-    lexeme es
-      surface
-        text nueve
-  ten
-    grounded-in Q23806
-    defined-by cardinal_number
-    role cardinal_number_word
-    lexeme en
-      surface
-        text ten
-      surface
-        text 10
-    lexeme ru
-      surface
-        text десять
-    lexeme hi
-      surface
-        text दस
-    lexeme zh
-      surface
-        text 十
-    lexeme es
-      surface
-        text diez
+        text unidad
   length
     grounded-in Q36253
     defined-by quantity
@@ -315,6 +56,9 @@ meanings
     lexeme zh
       surface
         text 长度
+    lexeme es
+      surface
+        text longitud
   data_storage
     grounded-in Q105666562
     defined-by quantity
@@ -331,6 +75,9 @@ meanings
     lexeme zh
       surface
         text 数据存储
+    lexeme es
+      surface
+        text "almacenamiento de datos"
   mass
     grounded-in Q11423
     defined-by quantity
@@ -347,6 +94,9 @@ meanings
     lexeme zh
       surface
         text 质量
+    lexeme es
+      surface
+        text masa
   time
     grounded-in Q11471
     defined-by quantity
@@ -363,6 +113,9 @@ meanings
     lexeme zh
       surface
         text 时间
+    lexeme es
+      surface
+        text tiempo
   temperature
     grounded-in Q11466
     defined-by quantity
@@ -379,6 +132,9 @@ meanings
     lexeme zh
       surface
         text 温度
+    lexeme es
+      surface
+        text temperatura
   meter
     grounded-in Q11573
     defined-by length
@@ -412,6 +168,11 @@ meanings
     lexeme zh
       surface
         text 米
+    lexeme es
+      surface
+        text metro
+      surface
+        text metros
   kilometer
     grounded-in Q828224
     defined-by length
@@ -443,6 +204,13 @@ meanings
         text 千米
       surface
         text 公里
+    lexeme es
+      surface
+        text kilómetro
+      surface
+        text kilómetros
+      surface
+        text km
   centimeter
     grounded-in Q174728
     defined-by length
@@ -468,6 +236,13 @@ meanings
     lexeme zh
       surface
         text 厘米
+    lexeme es
+      surface
+        text centímetro
+      surface
+        text centímetros
+      surface
+        text cm
   millimeter
     grounded-in Q174789
     defined-by length
@@ -493,6 +268,13 @@ meanings
     lexeme zh
       surface
         text 毫米
+    lexeme es
+      surface
+        text milímetro
+      surface
+        text milímetros
+      surface
+        text mm
   mile
     grounded-in Q253276
     defined-by length
@@ -638,6 +420,11 @@ meanings
     lexeme zh
       surface
         text 字节
+    lexeme es
+      surface
+        text byte
+      surface
+        text bytes
   kilobyte
     grounded-in Q79726
     defined-by data_storage
@@ -660,6 +447,13 @@ meanings
     lexeme zh
       surface
         text 千字节
+    lexeme es
+      surface
+        text kilobyte
+      surface
+        text kilobytes
+      surface
+        text kb
   megabyte
     grounded-in Q79735
     defined-by data_storage
@@ -682,6 +476,13 @@ meanings
     lexeme zh
       surface
         text 兆字节
+    lexeme es
+      surface
+        text megabyte
+      surface
+        text megabytes
+      surface
+        text mb
   gigabyte
     grounded-in Q79738
     defined-by data_storage
@@ -703,6 +504,13 @@ meanings
     lexeme zh
       surface
         text 吉字节
+    lexeme es
+      surface
+        text gigabyte
+      surface
+        text gigabytes
+      surface
+        text gb
   terabyte
     grounded-in Q79741
     defined-by data_storage
@@ -724,6 +532,13 @@ meanings
     lexeme zh
       surface
         text 太字节
+    lexeme es
+      surface
+        text terabyte
+      surface
+        text terabytes
+      surface
+        text tb
   bit
     grounded-in Q8805
     defined-by data_storage
@@ -747,6 +562,11 @@ meanings
     lexeme zh
       surface
         text 比特
+    lexeme es
+      surface
+        text bit
+      surface
+        text bits
   kilogram
     grounded-in Q11570
     defined-by mass
@@ -783,6 +603,17 @@ meanings
         text 千克
       surface
         text 公斤
+    lexeme es
+      surface
+        text kilogramo
+      surface
+        text kilogramos
+      surface
+        text kilo
+      surface
+        text kilos
+      surface
+        text kg
   gram
     grounded-in Q41803
     defined-by mass
@@ -813,6 +644,11 @@ meanings
     lexeme zh
       surface
         text 克
+    lexeme es
+      surface
+        text gramo
+      surface
+        text gramos
   pound
     grounded-in Q100995
     defined-by mass
@@ -838,6 +674,11 @@ meanings
     lexeme zh
       surface
         text 磅
+    lexeme es
+      surface
+        text libra
+      surface
+        text libras
   ounce
     grounded-in Q48013
     defined-by mass
@@ -894,6 +735,11 @@ meanings
     lexeme zh
       surface
         text 吨
+    lexeme es
+      surface
+        text tonelada
+      surface
+        text toneladas
   second
     grounded-in Q11574
     defined-by time
@@ -918,6 +764,11 @@ meanings
     lexeme zh
       surface
         text 秒
+    lexeme es
+      surface
+        text segundo
+      surface
+        text segundos
   minute
     grounded-in Q7727
     defined-by time
@@ -942,6 +793,11 @@ meanings
     lexeme zh
       surface
         text 分钟
+    lexeme es
+      surface
+        text minuto
+      surface
+        text minutos
   hour
     grounded-in Q25235
     defined-by time
@@ -966,6 +822,11 @@ meanings
     lexeme zh
       surface
         text 小时
+    lexeme es
+      surface
+        text hora
+      surface
+        text horas
   millisecond
     grounded-in Q723733
     defined-by time
@@ -990,6 +851,13 @@ meanings
     lexeme zh
       surface
         text 毫秒
+    lexeme es
+      surface
+        text milisegundo
+      surface
+        text milisegundos
+      surface
+        text ms
   day
     grounded-in Q573
     defined-by time
@@ -1016,6 +884,11 @@ meanings
         text 天
       surface
         text 日
+    lexeme es
+      surface
+        text día
+      surface
+        text días
   month
     grounded-in Q5151
     defined-by time
@@ -1044,6 +917,11 @@ meanings
         text 月
       surface
         text 个月
+    lexeme es
+      surface
+        text mes
+      surface
+        text meses
   celsius
     grounded-in Q25267
     defined-by temperature
@@ -1064,6 +942,11 @@ meanings
     lexeme zh
       surface
         text 摄氏度
+    lexeme es
+      surface
+        text celsius
+      surface
+        text "grados celsius"
   fahrenheit
     grounded-in Q42289
     defined-by temperature
@@ -1083,6 +966,9 @@ meanings
     lexeme zh
       surface
         text 华氏度
+    lexeme es
+      surface
+        text fahrenheit
   kelvin
     grounded-in Q11579
     defined-by temperature
@@ -1102,6 +988,9 @@ meanings
     lexeme zh
       surface
         text 开尔文
+    lexeme es
+      surface
+        text kelvin
   volume
     defined-by quantity
     role physical_dimension

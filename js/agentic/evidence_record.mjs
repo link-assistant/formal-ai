@@ -12,6 +12,7 @@ import { plainText } from './content.mjs';
 import { composeGeneralChangePlan } from './general_planner.mjs';
 import { agenticMessage } from './messages.mjs';
 import { planOne, writeArguments } from './plan.mjs';
+import { instructionEnd } from './positional_edit.mjs';
 import { planChatStep, planSettledRoutes } from './planner.mjs';
 import { isContinuationCue, traceRoute } from './planner/continuation.mjs';
 import { Progress } from './progress.mjs';
@@ -47,7 +48,10 @@ const deliveryProbeAnswers = new Map();
  * Mirrors `fn masked_multi_word_quotes`: `text` with every quoted segment that
  * holds whitespace replaced, delimiters included, by as many `x` as it is long,
  * so spans still index the original. A single-token quote — a backticked path
- * or name — stays readable.
+ * or name — stays readable. The lines under a colon-ended first line are the
+ * request's payload, whatever they say, so they are masked the same way, line
+ * breaks kept (PR #1188 G95: a row that read "append ... to gaps.md" was taken
+ * for a delivery, and the answer was written over that file).
  */
 function maskedMultiWordQuotes(text) {
   let masked = text;
@@ -55,7 +59,8 @@ function maskedMultiWordQuotes(text) {
     if (!/\s/u.test(segment.text)) continue;
     masked = masked.slice(0, segment.start) + 'x'.repeat(segment.end - segment.start) + masked.slice(segment.end);
   }
-  return masked;
+  const end = instructionEnd(text);
+  return masked.slice(0, end) + masked.slice(end).replace(/\S/g, 'x');
 }
 
 function parseObligation(request) {

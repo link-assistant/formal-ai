@@ -64,6 +64,7 @@ export function stripSystemEcho(request, system) {
 /**
  * `str::lines`: split on `\n`, drop one trailing `\r` per line, and no final
  * empty line after a trailing newline.
+ * Rust built-in `str::lines`.
  * @param {string} text
  * @returns {Array<string>}
  */

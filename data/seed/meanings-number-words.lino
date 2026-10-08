@@ -1,0 +1,271 @@
+meanings
+  cardinal_number
+    grounded-in Q1329258
+    defined-by quantity
+    role numeric_concept
+    lexeme en
+      surface
+        text "cardinal number"
+      surface
+        text number
+    lexeme ru
+      surface
+        text "количественное число"
+    lexeme hi
+      surface
+        text "गणन संख्या"
+    lexeme zh
+      surface
+        text 基数
+    lexeme es
+      surface
+        text "número cardinal"
+      surface
+        text número
+  zero
+    grounded-in Q204
+    defined-by cardinal_number
+    defined-by empty
+    role cardinal_number_word
+    lexeme en
+      surface
+        text zero
+      surface
+        text 0
+    lexeme ru
+      surface
+        text ноль
+      surface
+        text нуль
+    lexeme hi
+      surface
+        text शून्य
+    lexeme zh
+      surface
+        text 零
+    lexeme es
+      surface
+        text cero
+  one
+    grounded-in Q199
+    defined-by cardinal_number
+    defined-by single
+    role cardinal_number_word
+    lexeme en
+      surface
+        text one
+      surface
+        text 1
+    lexeme ru
+      surface
+        text один
+      surface
+        text одна
+      surface
+        text одно
+    lexeme hi
+      surface
+        text एक
+    lexeme zh
+      surface
+        text 一
+    lexeme es
+      surface
+        text un
+      surface
+        text una
+      surface
+        text uno
+  two
+    grounded-in Q200
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text two
+      surface
+        text 2
+    lexeme ru
+      surface
+        text два
+      surface
+        text две
+    lexeme hi
+      surface
+        text दो
+    lexeme zh
+      surface
+        text 二
+      surface
+        text 两
+    lexeme es
+      surface
+        text dos
+  three
+    grounded-in Q201
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text three
+      surface
+        text 3
+    lexeme ru
+      surface
+        text три
+    lexeme hi
+      surface
+        text तीन
+    lexeme zh
+      surface
+        text 三
+    lexeme es
+      surface
+        text tres
+  four
+    grounded-in Q202
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text four
+      surface
+        text 4
+    lexeme ru
+      surface
+        text четыре
+    lexeme hi
+      surface
+        text चार
+    lexeme zh
+      surface
+        text 四
+    lexeme es
+      surface
+        text cuatro
+  five
+    grounded-in Q203
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text five
+      surface
+        text 5
+    lexeme ru
+      surface
+        text пять
+    lexeme hi
+      surface
+        text पाँच
+    lexeme zh
+      surface
+        text 五
+    lexeme es
+      surface
+        text cinco
+  six
+    grounded-in Q23488
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text six
+      surface
+        text 6
+    lexeme ru
+      surface
+        text шесть
+    lexeme hi
+      surface
+        text छह
+    lexeme zh
+      surface
+        text 六
+    lexeme es
+      surface
+        text seis
+  seven
+    grounded-in Q23350
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text seven
+      surface
+        text 7
+    lexeme ru
+      surface
+        text семь
+    lexeme hi
+      surface
+        text सात
+    lexeme zh
+      surface
+        text 七
+    lexeme es
+      surface
+        text siete
+  eight
+    grounded-in Q23355
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text eight
+      surface
+        text 8
+    lexeme ru
+      surface
+        text восемь
+    lexeme hi
+      surface
+        text आठ
+    lexeme zh
+      surface
+        text 八
+    lexeme es
+      surface
+        text ocho
+  nine
+    grounded-in Q19108
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text nine
+      surface
+        text 9
+    lexeme ru
+      surface
+        text девять
+    lexeme hi
+      surface
+        text नौ
+    lexeme zh
+      surface
+        text 九
+    lexeme es
+      surface
+        text nueve
+  ten
+    grounded-in Q23806
+    defined-by cardinal_number
+    role cardinal_number_word
+    lexeme en
+      surface
+        text ten
+      surface
+        text 10
+    lexeme ru
+      surface
+        text десять
+    lexeme hi
+      surface
+        text दस
+    lexeme zh
+      surface
+        text 十
+    lexeme es
+      surface
+        text diez

@@ -603,3 +603,37 @@ describe('G85: numbered lines moved to another file', () => {
     assert.ok(commands.includes('test -e a.md'), commands.join('\n'));
   });
 });
+
+describe('G88, G89, G91: replace lists', () => {
+  test('G89: a list whose file is named last makes every replacement', async () => {
+    const { files, answer } = await drive("Replace ', two:' with ', TWO:' and replace ', three:' with ', THREE:' in m.js.", {
+      'm.js': 'const m = { one: 1, two: 2, three: 3 };\n',
+    });
+    assert.equal(files.get('m.js'), 'const m = { one: 1, TWO: 2, THREE: 3 };\n');
+    assert.equal(answer, 'Made 2 replacements in `m.js`, in order: `, two:` → `, TWO:`, `, three:` → `, THREE:`; and observed the result.');
+  });
+
+  test('G88: new texts that spell a newline as an escape are a list too', async () => {
+    const { files } = await drive("In m.js, replace ', two:' with ',\\n  two:' and replace ', three:' with ',\\n  three:'.", {
+      'm.js': 'const m = { one: 1, two: 2, three: 3 };\n',
+    });
+    assert.equal(files.get('m.js'), 'const m = { one: 1,\n  two: 2,\n  three: 3 };\n');
+  });
+
+  test('G91: an edit naming several files is declined, naming them, and changes nothing', async () => {
+    const { files, answer, calls } = await drive('Replace «x» with «y» in p.txt and in q.txt.', { 'p.txt': 'a x\n', 'q.txt': 'b x\n' });
+    assert.deepEqual(calls, []);
+    assert.equal(files.get('p.txt'), 'a x\n');
+    assert.equal(files.get('q.txt'), 'b x\n');
+    assert.equal(answer, 'This edit names several files (`p.txt`, `q.txt`), and one edit request changes one file, so nothing was changed. '
+      + 'Ask for the edit once for each file.');
+  });
+});
+
+describe('G92: the answer follows the request, not its quoted payload', () => {
+  test('an English replace whose new text is Spanish is answered in English', async () => {
+    const { files, answer } = await drive('In r.md replace «old» with «la página está aquí».', { 'r.md': '| R1 | old |\n' });
+    assert.equal(files.get('r.md'), '| R1 | la página está aquí |\n');
+    assert.equal(answer, 'Replaced `old` with `la página está aquí` in `r.md` and observed the result.');
+  });
+});

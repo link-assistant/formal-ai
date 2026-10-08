@@ -23,6 +23,13 @@ market_price_references
     lexeme zh
       surface
         text "以太坊"
+    lexeme es
+      surface
+        text ethereum
+      surface
+        text éter
+      surface
+        text ether
     reference 2021
       source-id "binance_ethusdt_1d_2021"
       source-label "Binance ETHUSDT daily klines"
@@ -79,6 +86,11 @@ market_price_references
         text "比特币"
       surface
         text "比特幣"
+    lexeme es
+      surface
+        text bitcoin
+      surface
+        text bitcóin
     reference 2024
       source-id "binance_btcusdt_1d_2024"
       source-label "Binance BTCUSDT daily klines"

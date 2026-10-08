@@ -1,0 +1,7 @@
+skill_teaching_trigger	cuando diga	cuando el usuario diga	cuando el usuario pregunte	si pregunto
+skill_teaching_response	responde con	responde	contesta
+behavior_rule_edit	añade una regla de comportamiento	agrega una regla de comportamiento	actualiza la regla de comportamiento
+skill_when_then	cuando … entonces 	cuando … haz 	si … entonces 
+nondeterministic_step	aleatorio	no determinista	código arbitrario
+shell_capability_need	shell	consola	sistema de archivos	lista los archivos	escribe un archivo	borra un archivo
+network_capability_need	http	red	solicitud web	petición web

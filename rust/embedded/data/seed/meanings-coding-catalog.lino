@@ -19,6 +19,9 @@ meanings
     lexeme zh
       surface
         text 编程语言
+    lexeme es
+      surface
+        text "lenguaje de programación"
   program_language_rust
     grounded-in Q575650
     defined-by program_language
@@ -42,6 +45,9 @@ meanings
       surface
         text रस्ट
     lexeme zh
+      surface
+        text rust
+    lexeme es
       surface
         text rust
   program_language_python
@@ -69,6 +75,11 @@ meanings
     lexeme zh
       surface
         text python
+    lexeme es
+      surface
+        text python
+      surface
+        text py
   program_language_javascript
     grounded-in Q2005
     defined-by program_language
@@ -94,6 +105,13 @@ meanings
     lexeme zh
       surface
         text javascript
+    lexeme es
+      surface
+        text javascript
+      surface
+        text js
+      surface
+        text node
   program_language_typescript
     grounded-in Q978185
     defined-by program_language
@@ -116,6 +134,11 @@ meanings
     lexeme zh
       surface
         text typescript
+    lexeme es
+      surface
+        text typescript
+      surface
+        text ts
   program_language_go
     grounded-in Q37227
     defined-by program_language
@@ -138,6 +161,11 @@ meanings
     lexeme zh
       surface
         text go
+    lexeme es
+      surface
+        text go
+      surface
+        text golang
   program_language_c
     grounded-in Q15777
     defined-by program_language
@@ -156,6 +184,9 @@ meanings
       surface
         text सी
     lexeme zh
+      surface
+        text c
+    lexeme es
       surface
         text c
   program_language_cpp
@@ -182,6 +213,11 @@ meanings
     lexeme zh
       surface
         text c++
+    lexeme es
+      surface
+        text c++
+      surface
+        text cpp
   program_language_java
     grounded-in Q251
     defined-by program_language
@@ -200,6 +236,9 @@ meanings
       surface
         text जावा
     lexeme zh
+      surface
+        text java
+    lexeme es
       surface
         text java
   program_language_csharp
@@ -228,6 +267,11 @@ meanings
     lexeme zh
       surface
         text "c#"
+    lexeme es
+      surface
+        text "c#"
+      surface
+        text csharp
   program_language_ruby
     grounded-in Q161053
     defined-by program_language
@@ -250,6 +294,9 @@ meanings
     lexeme zh
       surface
         text ruby
+    lexeme es
+      surface
+        text ruby
   program_language_scala
     grounded-in Q460584
     defined-by program_language
@@ -268,6 +315,9 @@ meanings
       surface
         text स्काला
     lexeme zh
+      surface
+        text scala
+    lexeme es
       surface
         text scala
   program_language_kotlin
@@ -292,6 +342,9 @@ meanings
     lexeme zh
       surface
         text kotlin
+    lexeme es
+      surface
+        text kotlin
   program_language_php
     grounded-in Q59
     defined-by program_language
@@ -313,6 +366,9 @@ meanings
       surface
         text पीएचपी
     lexeme zh
+      surface
+        text php
+    lexeme es
       surface
         text php
   program_language_swift
@@ -388,6 +444,9 @@ meanings
     lexeme zh
       surface
         text laravel
+    lexeme es
+      surface
+        text laravel
   program_task
     defined-by program
     role program_task
@@ -407,6 +466,9 @@ meanings
     lexeme zh
       surface
         text 编程任务
+    lexeme es
+      surface
+        text "tarea de programación"
   program_task_hello_world
     defined-by program_task
     defined-by hello_world
@@ -427,6 +489,9 @@ meanings
     lexeme zh
       surface
         text 你好世界
+    lexeme es
+      surface
+        text "hola mundo"
   program_task_count_to_three
     defined-by program_task
     role program_task_alias
@@ -458,6 +523,17 @@ meanings
         text 数到三
       surface
         text 数到3
+    lexeme es
+      surface
+        text "cuenta hasta tres"
+      surface
+        text "cuenta hasta 3"
+      surface
+        text "cuente hasta tres"
+      surface
+        text "contar hasta tres"
+      surface
+        text "contar hasta 3"
   program_task_list_files
     defined-by program_task
     role program_task_alias
@@ -539,6 +615,27 @@ meanings
         text 列出目录中的文件
       surface
         text 列出文件
+    lexeme es
+      surface
+        text "lista los archivos del directorio actual"
+      surface
+        text "lista los archivos en el directorio actual"
+      surface
+        text "lista los archivos del directorio"
+      surface
+        text "lista de archivos del directorio actual"
+      surface
+        text "listar archivos del directorio actual"
+      surface
+        text "listar los archivos"
+      surface
+        text "lista los archivos"
+      surface
+        text "lista de archivos"
+      surface
+        text "archivos del directorio actual"
+      surface
+        text "archivos en el directorio actual"
   program_task_list_files_arg
     defined-by program_task
     role program_task_alias
@@ -574,6 +671,15 @@ meanings
         text 列出作为路径参数给出的目录中的文件
       surface
         text 列出路径参数指定目录中的文件
+    lexeme es
+      surface
+        text "lista los archivos del directorio indicado como argumento de ruta"
+      surface
+        text "lista los archivos del directorio pasado como argumento"
+      surface
+        text "lista los archivos de un directorio dado como argumento"
+      surface
+        text "lista los archivos con un argumento de ruta"
   program_task_list_files_reverse_sort
     defined-by program_task
     role program_task_alias
@@ -605,6 +711,15 @@ meanings
         text 按相反顺序列出文件
       surface
         text 倒序列出文件
+    lexeme es
+      surface
+        text "lista los archivos en orden inverso"
+      surface
+        text "lista los archivos en orden descendente"
+      surface
+        text "lista los archivos ordenados al revés"
+      surface
+        text "listar archivos en orden inverso"
   program_task_list_files_arg_reverse_sort
     defined-by program_task
     role program_task_alias
@@ -636,6 +751,13 @@ meanings
         text 按相反顺序列出路径参数中的文件
       surface
         text 倒序列出路径参数指定目录中的文件
+    lexeme es
+      surface
+        text "lista los archivos de un argumento de ruta en orden inverso"
+      surface
+        text "lista los archivos con un argumento de ruta en orden inverso"
+      surface
+        text "lista los archivos con un argumento de ruta en orden descendente"
   program_task_fizzbuzz
     defined-by program_task
     role program_task_alias
@@ -663,6 +785,11 @@ meanings
     lexeme zh
       surface
         text 菲茨巴兹
+    lexeme es
+      surface
+        text fizzbuzz
+      surface
+        text "fizz buzz"
   function_call
     defined-by program
     role function_call_verb
@@ -740,6 +867,15 @@ meanings
         text 5的阶乘
       surface
         text 五的阶乘
+    lexeme es
+      surface
+        text "factorial de 5"
+      surface
+        text "factorial de cinco"
+      surface
+        text "el factorial de 5"
+      surface
+        text "el factorial de cinco"
   program_task_reverse_string
     defined-by program_task
     role program_task_alias
@@ -777,6 +913,19 @@ meanings
         text 翻转字符串
       surface
         text 反转hello
+    lexeme es
+      surface
+        text "invierte una cadena"
+      surface
+        text "invertir una cadena"
+      surface
+        text "invierte la cadena hello"
+      surface
+        text "invierte hello"
+      surface
+        text "invierte la palabra hello"
+      surface
+        text "da la vuelta a una cadena"
   program_task_sum_to_ten
     defined-by program_task
     role program_task_alias
@@ -816,6 +965,19 @@ meanings
         text 1到10求和
       surface
         text 求1到10的和
+    lexeme es
+      surface
+        text "suma de 1 a 10"
+      surface
+        text "suma del 1 al 10"
+      surface
+        text "suma los números del 1 al 10"
+      surface
+        text "suma de los números del 1 al 10"
+      surface
+        text "suma hasta diez"
+      surface
+        text "suma de uno a diez"
   program_task_fibonacci
     defined-by program_task
     role program_task_alias
@@ -879,6 +1041,27 @@ meanings
         text 斐波那契数
       surface
         text 递归斐波那契
+    lexeme es
+      surface
+        text "sucesión de fibonacci"
+      surface
+        text "secuencia de fibonacci"
+      surface
+        text "fibonacci recursivo"
+      surface
+        text "fibonacci de forma recursiva"
+      surface
+        text "función de fibonacci"
+      surface
+        text "números de fibonacci"
+      surface
+        text "número de fibonacci"
+      surface
+        text "el décimo número de fibonacci"
+      surface
+        text "décimo número de fibonacci"
+      surface
+        text "el n-ésimo número de fibonacci"
   program_task_copy_stdin_to_stdout
     defined-by program_task
     role program_task_alias

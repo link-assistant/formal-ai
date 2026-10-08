@@ -5,7 +5,8 @@
 //! context cue or the target clause, are the anchor span, and the words after
 //! the context cue the context span. Each span is resolved against the file's
 //! lines once it is read. Split out of `positional_edit.rs` (the 1000-line
-//! Rust ceiling).
+//! Rust ceiling), as is the reading of a quoted anchor the file holds only as
+//! written ([`written_escapes`]).
 
 use super::{CueOccurrence, PositionalInsert};
 use crate::agentic_coding::write_request::bare_surfaces;
@@ -51,7 +52,7 @@ pub(super) fn unquoted_anchor_insert(
         inserted: text.to_owned(),
         after,
         context,
-        rebase: false,
+        rebase: None,
         spans: true,
     };
     Some((target, insert))
@@ -107,6 +108,30 @@ pub(super) fn resolved_spans(source: &str, insert: &PositionalInsert) -> Option<
         anchor,
         context,
         spans: false,
+        ..insert.clone()
+    })
+}
+
+/// The insert with an anchor or context the file holds only as written, or
+/// `None` when nothing changes.
+///
+/// A quoted `\n` or `\t` reads as a line break or a tab where the file holds
+/// it so, and as its two characters where the file holds those inside a line
+/// of code (`split_inclusive('\n')`, PR #1188 G96). Mirrored by
+/// `writtenEscapes` in js/agentic/workspace_change.mjs.
+pub(super) fn written_escapes(source: &str, insert: &PositionalInsert) -> Option<PositionalInsert> {
+    let written = |text: &str| {
+        let raw = text.replace('\n', "\\n").replace('\t', "\\t");
+        (!source.contains(text) && raw != text && source.contains(&raw)).then_some(raw)
+    };
+    let anchor = written(&insert.anchor);
+    let context = insert.context.as_deref().and_then(written);
+    if anchor.is_none() && context.is_none() {
+        return None;
+    }
+    Some(PositionalInsert {
+        anchor: anchor.unwrap_or_else(|| insert.anchor.clone()),
+        context: context.or_else(|| insert.context.clone()),
         ..insert.clone()
     })
 }

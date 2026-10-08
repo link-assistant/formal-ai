@@ -146,6 +146,7 @@ export function parseWithTreeSitter(parser, label, source) {
  * Load the grammars and return the synchronous parser
  * `installMetaLanguageParser` takes: `(label, source) => evidence`, `null` for a
  * label whose grammar was not loaded.
+ * Rust dependency `meta_language::LinkNetwork::parse`, whose grammars are compiled in.
  * @param {{Parser: Function, Language: object}} runtime the web-tree-sitter namespace
  * @param {Object<string, string|URL|Uint8Array>} grammars label -> grammar wasm
  * @returns {Promise<(label: string, source: string) => (object|null)>}

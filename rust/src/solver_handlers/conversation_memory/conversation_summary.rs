@@ -159,6 +159,27 @@ pub(super) fn try_summarize_conversation(
         ));
     }
     let language = detect_language(prompt).slug();
+    let (body, title) = conversation_summary_envelope(&turns, language);
+    log.append("filter:user", "conversation_summary".to_owned());
+    log.append("summarization:mode", "standard".to_owned());
+    log.append("summarization:language", language.to_owned());
+    log.append("chat_title", title);
+    Some(finalize_simple(
+        prompt,
+        log,
+        "summarize_conversation",
+        "response:summarize_conversation",
+        &body,
+        0.9,
+    ))
+}
+
+/// The summary envelope over `turns` in `language`, with the chat title.
+///
+/// The envelope holds the summary, the title and the numbered user turns,
+/// trimmed at the end. Mirrored by `conversationSummaryEnvelope` in
+/// js/agentic/crate/conversation_summary.mjs.
+fn conversation_summary_envelope(turns: &[DialogTurn], language: &str) -> (String, String) {
     // Standard mode keeps roughly 50% of the highest-weighted statements; with
     // the dialog bias (user +20, assistant -10) the user's questions dominate
     // the output while still keeping room for any assistant prose worth
@@ -166,8 +187,8 @@ pub(super) fn try_summarize_conversation(
     let config = SummarizationConfig::default()
         .with_mode(SummarizationMode::Standard)
         .with_language(language);
-    let summary = summarize_dialog(&turns, &config);
-    let title = generate_chat_title(&turns, language);
+    let summary = summarize_dialog(turns, &config);
+    let title = generate_chat_title(turns, language);
     let user_turns: Vec<&str> = turns
         .iter()
         .filter(|turn| turn.role == "user")
@@ -183,16 +204,5 @@ pub(super) fn try_summarize_conversation(
     for (index, turn) in user_turns.iter().enumerate() {
         writeln!(body, "  {}. {turn}", index + 1).expect("string write is infallible");
     }
-    log.append("filter:user", "conversation_summary".to_owned());
-    log.append("summarization:mode", "standard".to_owned());
-    log.append("summarization:language", language.to_owned());
-    log.append("chat_title", title);
-    Some(finalize_simple(
-        prompt,
-        log,
-        "summarize_conversation",
-        "response:summarize_conversation",
-        body.trim_end(),
-        0.9,
-    ))
+    (body.trim_end().to_owned(), title)
 }

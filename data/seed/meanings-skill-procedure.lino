@@ -29,6 +29,13 @@ meanings
         text 当我
       surface
         text 每当我
+    lexeme es
+      surface
+        text "cuando yo "
+      surface
+        text "siempre que "
+      surface
+        text "cada vez que "
   skill_procedure_separator
     defined-by relation
     defined-by concept
@@ -63,6 +70,15 @@ meanings
         text 接着
       surface
         text 并且
+    lexeme es
+      surface
+        text y
+      surface
+        text luego
+      surface
+        text después
+      surface
+        text "después de eso"
   skill_procedure_fetch
     defined-by action
     defined-by knowledge
@@ -99,6 +115,15 @@ meanings
         text 获取
       surface
         text 抓取
+    lexeme es
+      surface
+        text obtén
+      surface
+        text recupera
+      surface
+        text consulta
+      surface
+        text trae
   skill_procedure_transform
     defined-by action
     defined-by concept
@@ -125,6 +150,13 @@ meanings
         text 缩短
       surface
         text 摘要
+    lexeme es
+      surface
+        text acorta
+      surface
+        text resume
+      surface
+        text limpia
   skill_procedure_translate
     defined-by action
     defined-by concept
@@ -143,6 +175,11 @@ meanings
     lexeme zh
       surface
         text 翻译
+    lexeme es
+      surface
+        text traduce
+      surface
+        text traducir
   skill_procedure_store
     defined-by action
     defined-by knowledge
@@ -169,6 +206,13 @@ meanings
         text 保存
       surface
         text 记住
+    lexeme es
+      surface
+        text guarda
+      surface
+        text almacena
+      surface
+        text recuerda
   skill_procedure_reply
     defined-by action
     defined-by answer
@@ -199,6 +243,13 @@ meanings
         text 回复
       surface
         text 回答
+    lexeme es
+      surface
+        text responde
+      surface
+        text contesta
+      surface
+        text muéstrame
   skill_procedure_condition
     defined-by relation
     defined-by concept
@@ -219,6 +270,13 @@ meanings
     lexeme zh
       surface
         text 仅当
+    lexeme es
+      surface
+        text "solo si"
+      surface
+        text "sólo si"
+      surface
+        text "si es"
   skill_procedure_object_link
     defined-by concept
     defined-by relation
@@ -245,6 +303,13 @@ meanings
         text 链接
       surface
         text 网址
+    lexeme es
+      surface
+        text enlace
+      surface
+        text url
+      surface
+        text dirección
   skill_procedure_object_title
     defined-by concept
     defined-by knowledge
@@ -265,6 +330,11 @@ meanings
     lexeme zh
       surface
         text 标题
+    lexeme es
+      surface
+        text título
+      surface
+        text titular
   skill_procedure_object_content
     defined-by concept
     defined-by knowledge
@@ -287,6 +357,13 @@ meanings
     lexeme zh
       surface
         text 内容
+    lexeme es
+      surface
+        text contenido
+      surface
+        text texto
+      surface
+        text cuerpo
   skill_procedure_object_translation
     defined-by concept
     defined-by knowledge
@@ -303,6 +380,9 @@ meanings
     lexeme zh
       surface
         text 译文
+    lexeme es
+      surface
+        text traducción
   skill_procedure_object_both
     defined-by concept
     defined-by relation
@@ -323,3 +403,10 @@ meanings
     lexeme zh
       surface
         text 两者
+    lexeme es
+      surface
+        text ambos
+      surface
+        text ambas
+      surface
+        text "los dos"

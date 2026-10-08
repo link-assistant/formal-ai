@@ -21,11 +21,13 @@ ci-speed
   durations "data/meta/ci-durations.lino"
   test-durations "data/meta/test-durations.lino"
   javascript-test-durations "data/meta/javascript-test-durations.lino"
+  playwright-test-durations "data/meta/playwright-test-durations.lino"
   shard-planner "scripts/plan-test-shards.mjs"
   sharded-suite "scripts/run-prebuilt-tests.sh"
   sharded-suite "scripts/run-coverage-shard.sh"
   sharded-suite ".github/workflows/release.yml"
   sharded-suite ".github/workflows/layered-ci.yml"
+  sharded-suite ".github/workflows/e2e-local.yml"
   workflow ".github/workflows/agent-cli-e2e.yml"
     over-limit-job agent-cli-e2e
       timeout-minutes 45

@@ -598,7 +598,7 @@ requirement_status_ledger_shard requirements_05
     verdict "partial"
     delivered ""
     issue "1188"
-    automated_test ""
+    automated_test "rust/tests/web/prompt-specialization.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R1188-U10"
@@ -611,10 +611,10 @@ requirement_status_ledger_shard requirements_05
   requirement
     id "R1188-U11"
     shard "docs/requirements/issue-1188-user-requirements.md"
-    verdict "partial"
+    verdict "not-delivered"
     delivered ""
     issue "1188"
-    automated_test ""
+    automated_test "rust/tests/web/e2e-local-parallel.test.mjs"
     manual "not yet confirmed"
   requirement
     id "R1188-U12"

@@ -19,7 +19,7 @@ export function agentInfo() {
 }
 
 /**
- * `agent_info().remove(key)`: the field value, or null.
+ * Mirrors `fn agent_info_value` in rust/src/seed.rs: the field value, or null.
  * @param {string} key
  */
 export function agentInfoValue(key) {

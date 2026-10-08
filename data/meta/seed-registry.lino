@@ -255,6 +255,10 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-conversation-summary
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-creative-tasks
     bundle true
     lexicon meaning
@@ -356,6 +360,10 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-number-words
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-object-shapes
     bundle true
     lexicon meaning
@@ -420,6 +428,10 @@ seed_registry
     lexicon meaning
     web true
   seed meanings-software-project
+    bundle true
+    lexicon meaning
+    web true
+  seed meanings-software-requirements
     bundle true
     lexicon meaning
     web true
@@ -754,6 +766,9 @@ seed_registry
   seed telemetry-consent
     bundle true
   seed terminal-commands
+    bundle true
+    web true
+  seed text-formalization
     bundle true
     web true
   seed tool-resource-scopes

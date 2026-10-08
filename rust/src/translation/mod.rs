@@ -58,6 +58,7 @@ mod language_markers;
 pub mod meaning;
 pub mod pipeline;
 pub mod prompt;
+pub mod round_trip;
 pub mod selection;
 pub mod wikidata;
 pub mod wiktionary;

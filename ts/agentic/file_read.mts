@@ -51,7 +51,7 @@ export const FileReadMode = Object.freeze({
   lineSlice: (slice) => ({ kind: 'line_slice', ...slice }),
 });
 
-/** `FileReadMode` equality (`==`). */
+/** `FileReadMode` equality (`==`): Rust built-in `#[derive(PartialEq)]` on `FileReadMode`. */
 export function sameMode(left, right) {
   return left.kind === right.kind && (left.kind !== 'extract_value' || left.key === right.key)
     && (left.kind !== 'line_slice'

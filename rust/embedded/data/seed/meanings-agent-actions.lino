@@ -60,6 +60,15 @@ meanings
         text 报告
       surface
         text 提交
+    lexeme es
+      surface
+        text reporta
+      surface
+        text reportar
+      surface
+        text notifica
+      surface
+        text notificar
   report_issue_subject
     defined-by inquiry
     role agent_action_report_subject
@@ -99,6 +108,19 @@ meanings
         text 问题
       surface
         text 错误
+    lexeme es
+      surface
+        text issue
+      surface
+        text incidencia
+      surface
+        text problema
+      surface
+        text error
+      surface
+        text fallo
+      surface
+        text repositorio
   request_objective
     defined-by relation
     role request_objective_lead
@@ -142,6 +164,21 @@ meanings
         text "任务：…"
       surface
         text "目标：…"
+    lexeme es
+      surface
+        text "problema a resolver: …"
+      surface
+        text "tarea a resolver: …"
+      surface
+        text "objetivo: …"
+      surface
+        text "solicitud: …"
+      surface
+        text "petición: …"
+      surface
+        text "tarea: …"
+      surface
+        text "meta: …"
   method
     defined-by concept
     defined-by action

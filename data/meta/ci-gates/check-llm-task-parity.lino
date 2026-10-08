@@ -1,0 +1,6 @@
+# One CI gate, one file (issue #991).
+ci_gate check_llm_task_parity
+  stage rust
+  description "docs/llm-task-parity.md is exactly what scripts/generate-llm-task-parity.rs renders from its sources."
+  run "rust-script scripts/generate-llm-task-parity.rs --check"
+  justification "PR #1188 (R1188-U8): a generated document is checked against its generator in CI, so a hand edit cannot be merged; this one had a --check mode that no gate ran."

@@ -912,6 +912,7 @@ function workerHandlerRegistryDefinition() {
     repository_lineage: null, // native: git history of the working repository (#1180 R10)
     formalization_request: "tryFormalizationRequest",
     product_search: "tryProductSearch",
+    requirement_listing: "requirement_listing", // seed rule set (handler-rules.lino), bound by its `rule_set` browser row
     web_search: null, // phase async
     learn_from_source: "tryLearnFromSource",
     research_comparison_table: "tryResearchComparisonTable",
@@ -1026,7 +1027,7 @@ function installWorkerHandlerRegistry(seedText) {
       if (implementation.length < 2) {
         throw new Error(`worker handler ${slug} declares an empty context binding`);
       }
-    } else if (implementation !== null && typeof self[implementation] !== "function") {
+    } else if (implementation !== null && typeof self[implementation] !== "function" && !handlerRulesDocument()[implementation]) {
       throw new Error(`worker handler ${slug} resolves to missing implementation ${implementation}`);
     }
   }

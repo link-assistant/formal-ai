@@ -754,9 +754,7 @@ fn truncate_chars(value: &str, max: usize) -> String {
 }
 
 fn seed_text(key: &str) -> String {
-    seed::agent_info()
-        .remove(key)
-        .unwrap_or_else(|| key.to_owned())
+    seed::agent_info_value(key).unwrap_or_else(|| key.to_owned())
 }
 
 fn render_seed_text(key: &str, name: &str, value: &str) -> String {

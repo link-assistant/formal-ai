@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=69129325d6108497efef0af0b0ce2b47ea76c7743d1c64a321aeacd4bad2cf32 bytes=10048
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=be99f5259dc9fc6c1b1a4ee042e859ca6a566e821be825b830a1cd9fd428fec7 bytes=10578
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:prelude begin
@@ -84,6 +84,9 @@ pub const ENGLISH: &str = "en";
 
 // meta-language:carried JavaScript lexical_declaration (unsupported)
 // formal-ai:refusal method call .reduce()
+
+// meta-language:carried JavaScript function_declaration (unsupported)
+// formal-ai:refusal regular expression
 
 // meta-language:carried JavaScript function_declaration (unsupported)
 // formal-ai:refusal Array.from

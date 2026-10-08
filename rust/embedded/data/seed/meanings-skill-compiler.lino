@@ -29,6 +29,15 @@ meanings
         text 当用户说
       surface
         text 当用户问
+    lexeme es
+      surface
+        text "cuando diga"
+      surface
+        text "cuando el usuario diga"
+      surface
+        text "cuando el usuario pregunte"
+      surface
+        text "si pregunto"
   skill_teaching_response
     defined-by action
     defined-by answer
@@ -55,6 +64,13 @@ meanings
         text 回答
       surface
         text 回复
+    lexeme es
+      surface
+        text "responde con"
+      surface
+        text responde
+      surface
+        text contesta
   behavior_rule_edit
     defined-by action
     defined-by knowledge
@@ -79,6 +95,13 @@ meanings
         text 添加行为规则
       surface
         text 更新行为规则
+    lexeme es
+      surface
+        text "añade una regla de comportamiento"
+      surface
+        text "agrega una regla de comportamiento"
+      surface
+        text "actualiza la regla de comportamiento"
   skill_when_then
     defined-by relation
     defined-by concept
@@ -117,6 +140,13 @@ meanings
         text "当 …时回答 "
       surface
         text "当 …则回答 "
+    lexeme es
+      surface
+        text "cuando … entonces "
+      surface
+        text "cuando … haz "
+      surface
+        text "si … entonces "
   nondeterministic_step
     defined-by property
     defined-by concept
@@ -145,6 +175,13 @@ meanings
         text 随机
       surface
         text 不确定
+    lexeme es
+      surface
+        text aleatorio
+      surface
+        text "no determinista"
+      surface
+        text "código arbitrario"
   shell_capability_need
     defined-by capability
     defined-by action
@@ -185,6 +222,19 @@ meanings
         text 文件系统
       surface
         text 列出文件
+    lexeme es
+      surface
+        text shell
+      surface
+        text consola
+      surface
+        text "sistema de archivos"
+      surface
+        text "lista los archivos"
+      surface
+        text "escribe un archivo"
+      surface
+        text "borra un archivo"
   network_capability_need
     defined-by capability
     defined-by action
@@ -217,3 +267,12 @@ meanings
         text 网络请求
       surface
         text 获取
+    lexeme es
+      surface
+        text http
+      surface
+        text red
+      surface
+        text "solicitud web"
+      surface
+        text "petición web"

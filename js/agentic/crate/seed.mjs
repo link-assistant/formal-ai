@@ -9,6 +9,7 @@ import { languageFromSlug } from './language.mjs';
 const SEED_REGISTRY = 'data/meta/seed-registry.lino';
 
 /** `RESPONSE_FILES`: every seed the registry (data/meta/seed-registry.lino) gives the
+ * Mirrors `const RESPONSE_FILES` in rust/src/seed/embedded_registry.rs.
  * `response` lexicon, in its order, as rust/src/seed/embedded_registry.rs lists them. */
 export function responseFiles() {
   return cached('response-files', () => childrenNamed(parseLino(readText(SEED_REGISTRY)), 'seed')

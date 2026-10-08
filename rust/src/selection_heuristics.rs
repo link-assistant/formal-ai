@@ -521,6 +521,41 @@ impl CandidateRanker for TrizRanker {
     }
 }
 
+/// The situation slug for a scored candidate set: `contradiction_detected` when
+/// any two candidates each win on a different cost dimension, else empty.
+///
+/// Mirrored by `situationFor` in js/agentic/crate/selection_heuristics_triz.mjs.
+#[must_use]
+pub fn situation_for(scores: &[CandidateScore]) -> &'static str {
+    if contradictions_in(scores, "").is_empty() {
+        ""
+    } else {
+        "contradiction_detected"
+    }
+}
+
+/// Rank `scores` with the most specific registry `Rank` heuristic that applies
+/// in `situation` (R901-3).
+///
+/// When `situation` is `contradiction_detected`, `TrizRanker` (order 3) wins
+/// over `LeastActionRanker` (order 1); every other situation keeps the least
+/// action order. The draft portfolio and the algorithm-discovery survivors
+/// both rank through it. Mirrored by `rankWithHeuristic` in
+/// js/agentic/crate/selection_heuristics_triz.mjs.
+#[must_use]
+pub fn rank_with_heuristic(scores: &[CandidateScore], situation: &str) -> Vec<usize> {
+    let registry = crate::method_registry::MethodRegistry::shared();
+    let heuristics = registry.heuristics_for(HeuristicRole::Rank, situation);
+    let heuristic = heuristics.last();
+    let slug = heuristic.and_then(|h| h.parameter("slug")).unwrap_or("");
+    let params = heuristic.map(|h| h.parameters.clone()).unwrap_or_default();
+    if slug == TrizRanker.slug() {
+        TrizRanker.rank(scores, &params)
+    } else {
+        LeastActionRanker.rank(scores, &params)
+    }
+}
+
 /// One rule under test. `SearchHypothesis`, not `Hypothesis`, because
 /// `StepKind::Hypothesis` already owns the word in a different sense.
 #[derive(Debug, Clone, PartialEq, Eq)]

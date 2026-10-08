@@ -452,9 +452,8 @@ pub(super) fn valid_search_identifier(token: &str) -> bool {
 /// argument-less command that would hang (`wc -l` on stdin).
 /// The prompt split into sentences, each paired with whether it is a question.
 ///
-/// Sentence boundaries are what separate the user's request from a sentence
-/// merely *placed next to* it, so intent cues are read one sentence at a time
-/// (issue #907).
+/// Sentence boundaries are what separate the user's request from a sentence merely
+/// *placed next to* it, so intent cues are read one sentence at a time (issue #907).
 fn sentences_with_mood(lower: &str) -> Vec<(&str, bool)> {
     let mut sentences = Vec::new();
     let mut start = 0;
@@ -741,18 +740,24 @@ pub fn names_mutating_shell_intent(prompt: &str) -> bool {
         .is_some_and(|(intent, _)| intent.effect.is_declared())
 }
 
-/// When the request's seeded intent is destructive but the request edits
-/// inside a file, the honest decline naming the file (the seeded
-/// `file_text_unit` response), never the command (PR #1188: `t.md से drop
-/// शब्द हटाओ।` ran `rm t.md`).
+/// The honest decline of a destructive intent that edits inside a file: the
+/// seeded `file_text_unit` response naming the file, never the command
+/// (PR #1188: `t.md से drop शब्द हटाओ।` ran `rm t.md`).
 pub(super) fn destructive_edit_decline(task: &str) -> Option<super::planner::AgenticPlan> {
+    let path = refused_destructive_edit(task)?;
+    super::code_task::render_seeded_change("file_text_unit", task, &path, &[])
+        .map(super::planner::AgenticPlan::Final)
+}
+
+/// The file a destructive in-file edit names (twin of `refusedDestructiveEdit`).
+fn refused_destructive_edit(task: &str) -> Option<String> {
     let prompt = strip_balanced_outer_quotes(task.trim());
     let vocab = seed::shell_intent_vocabulary();
     let (intent, cue) = matched_intent_cue(&prompt.to_lowercase(), &vocab)?;
     if !intent.destructive || !super::workspace_computed_change::edits_inside_a_file(prompt) {
         return None;
     }
-    let path = crate::solver_handlers::text_outside_quoted_segments(prompt)
+    let written = crate::solver_handlers::text_outside_quoted_segments(prompt)
         .split_whitespace()
         .map(|token| {
             trim_trailing_sentence_dot(token.trim_matches(|character: char| {
@@ -761,10 +766,8 @@ pub(super) fn destructive_edit_decline(task: &str) -> Option<super::planner::Age
             .to_owned()
         })
         .find(|token| looks_like_a_path(token))
-        .or_else(|| path_arguments(prompt, cue, &vocab, 1))
-        .unwrap_or_default();
-    super::code_task::render_seeded_change("file_text_unit", task, &path, &[])
-        .map(super::planner::AgenticPlan::Final)
+        .or_else(|| path_arguments(prompt, cue, &vocab, 1));
+    Some(written.unwrap_or_default())
 }
 
 fn path_arguments(

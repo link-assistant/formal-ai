@@ -19,6 +19,7 @@ const UTF8 = new TextEncoder();
  * Rust `str::lines`: split on `\n`, drop one `\r` before each `\n`, and no empty
  * line after a trailing newline. (A final line without `\n` keeps a trailing
  * `\r`, as `split_inclusive('\n')` + `strip_suffix` does.)
+ * Rust built-in `str::lines`.
  * @param {string} text
  * @returns {Array<string>}
  */
