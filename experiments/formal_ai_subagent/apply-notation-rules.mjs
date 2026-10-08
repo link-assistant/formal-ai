@@ -234,7 +234,7 @@ export function applyMapping(mapping, files) {
   const identifiers = new Set();
   readers.forEach(({ text, language }) => identifiersIn(text, language, mapping).forEach((name) => identifiers.add(name)));
   for (const { path, language, text } of readers) {
-    writeIfChanged(path, text, rewriteSource(text, language, mapping, identifiers).text, changed);
+    writeIfChanged(path, text, rewriteSource(text, language, mapping, identifiers, new Set(placeholderMapping.keys())).text, changed);
   }
   for (const path of tracked(['*.md']).filter((candidate) => DOCUMENTS.test(candidate))) {
     const text = read(path);

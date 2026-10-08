@@ -48,6 +48,15 @@ test('source templates migrate notation placeholders while Rust format variables
   assert.equal(rewriteSource(source, 'rust', mapping, new Set(['sample_value'])).text, source);
 });
 
+test('Rust variable-backed template keys retain their spelling while policy names migrate', () => {
+  const source = 'fn plan(fallback_query: &str) { policy("fallback_query"); fill(&[("fallback_query", fallback_query)]); }';
+  const mapping = new Map([['fallback_query', 'fallback-query']]);
+  const rewritten = rewriteSource(source, 'rust', mapping, new Set(['fallback_query']), new Set()).text;
+  assert.equal(rewritten, 'fn plan(fallback_query: &str) { policy("fallback-query"); fill(&[("fallback_query", fallback_query)]); }');
+  assert.equal(rewriteSource(source, 'rust', mapping, new Set(['fallback_query']), new Set(['fallback_query'])).text,
+    'fn plan(fallback_query: &str) { policy("fallback-query"); fill(&[("fallback-query", fallback_query)]); }');
+});
+
 test('capture ownership carries related templates on the first pass and on replay without renaming unrelated fields', () => {
   const mapping = new Map([['sample_value', 'sample-value'], ['unrelated_field', 'unrelated-field']]);
   for (const spelling of ['sample_value', 'sample-value']) {

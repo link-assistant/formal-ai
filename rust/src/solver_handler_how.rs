@@ -752,7 +752,7 @@ fn render_procedural_how_to_body(
             language,
             &[
                 ("search_query", search_query),
-                ("fallback-query", fallback_query),
+                ("fallback_query", fallback_query),
             ],
         )
     } else {
