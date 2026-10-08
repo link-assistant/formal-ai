@@ -164,29 +164,37 @@ fn expand_with(command: &str, vocab: &ShellIntentVocabulary) -> Option<VerifiedA
             .map(|bindings| {
                 let check = bind_template(template, bindings);
                 if let Some((sources, destination)) = &collection {
-                    let setup = super::work_item_steps::fill(
-                        "filesystem-collection-setup",
-                        &[("{destination}", destination)],
-                    );
-                    super::work_item_steps::fill(
-                        "filesystem-collection-check",
-                        &[
-                            ("{sources}", sources),
-                            ("{setup}", &setup),
-                            ("{check}", &check),
-                        ],
-                    )
+                    collection_check(sources, destination, &check)
                 } else {
                     check
                 }
             })
             .collect()
     };
-    let mut steps: Vec<String> = before.iter().chain(&effect.prepare).flat_map(fill).collect();
+    let mut steps: Vec<String> = before
+        .iter()
+        .chain(&effect.prepare)
+        .flat_map(fill)
+        .collect();
     let action = steps.len();
     steps.push(command.to_owned());
     steps.extend(effect.after.iter().flat_map(fill));
     Some(VerifiedAction { steps, action })
+}
+
+fn collection_check(sources: &str, destination: &str, check: &str) -> String {
+    let setup = super::work_item_steps::fill(
+        "filesystem-collection-setup",
+        &[("{destination}", destination)],
+    );
+    super::work_item_steps::fill(
+        "filesystem-collection-check",
+        &[
+            ("{sources}", sources),
+            ("{setup}", &setup),
+            ("{check}", check),
+        ],
+    )
 }
 
 fn bind_template(template: &str, bindings: &[(&str, String)]) -> String {
