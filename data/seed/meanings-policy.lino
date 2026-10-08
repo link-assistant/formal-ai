@@ -23,6 +23,9 @@ meanings
     lexeme zh
       surface
         text 你吸了吗
+    lexeme es
+      surface
+        text "la chupaste"
   circular_joke_idiom
     defined-by inquiry
     defined-by concept
@@ -39,6 +42,9 @@ meanings
     lexeme zh
       surface
         text 买大象
+    lexeme es
+      surface
+        text "compra un elefante"
   vulgar_content
     defined-by concept
     role vulgar_content_marker
@@ -122,6 +128,21 @@ meanings
         text 操你妈
       surface
         text 傻逼
+    lexeme es
+      surface
+        text "hijo de puta"
+      surface
+        text "vete a la mierda"
+      surface
+        text chúpamela
+      surface
+        text cabrón
+      surface
+        text gilipollas
+      surface
+        text pendejo
+      surface
+        text "puta madre"
   frame_filler_word
     defined-by concept
     role frame_filler_word

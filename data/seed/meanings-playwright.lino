@@ -19,6 +19,9 @@ meanings
     lexeme zh
       surface
         text 普莱赖特
+    lexeme es
+      surface
+        text playwright
   playwright_script_request_cue
     defined-by concept
     role playwright_script_cue

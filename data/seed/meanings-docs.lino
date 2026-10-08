@@ -63,3 +63,6 @@ meanings
     lexeme zh
       surface
         text 方法
+    lexeme es
+      surface
+        text método

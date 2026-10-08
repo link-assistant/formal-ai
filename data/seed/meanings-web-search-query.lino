@@ -339,6 +339,13 @@ meanings
         text 有关…
       surface
         text 有關…
+    lexeme es
+      surface
+        text " sobre …"
+      surface
+        text " acerca de …"
+      surface
+        text " respecto a …"
   query_leading_noise
     defined-by concept
     role web_search_query_leading_noise
@@ -464,6 +471,23 @@ meanings
         text 有关…
       surface
         text 有關…
+    lexeme es
+      surface
+        text "por favor …"
+      surface
+        text "puedes …"
+      surface
+        text "podrías …"
+      surface
+        text "información sobre …"
+      surface
+        text "información de …"
+      surface
+        text "detalles sobre …"
+      surface
+        text "datos sobre …"
+      surface
+        text "lo último sobre …"
   query_trailing_noise
     defined-by concept
     role web_search_query_trailing_noise
@@ -615,3 +639,22 @@ meanings
         text …查一下
       surface
         text …搜一下
+    lexeme es
+      surface
+        text "… en internet"
+      surface
+        text "… en línea"
+      surface
+        text "… en la web"
+      surface
+        text "… en wikipedia"
+      surface
+        text "… información"
+      surface
+        text "… detalles"
+      surface
+        text "… datos"
+      surface
+        text "… fuentes"
+      surface
+        text "… artículos"

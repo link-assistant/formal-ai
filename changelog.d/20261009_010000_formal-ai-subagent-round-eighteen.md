@@ -14,7 +14,7 @@
 
     `behavior_rules` is migrated to seed (R344: 58 migrated, 13 pending).
   - **G98 (destructive) fixed in both roots.** "Change 'a' to 'b' in the file f.txt" wrote `'b' in the`. The new text now ends before any article or function word that comes ahead of the target cue.
-  - **Meaning language parity (LEXEMES):** the language-parity debt falls from 611 to 53 rows (from 910 at the start of the batch).
+  - **Meaning language parity (LEXEMES):** the language-parity debt falls from 611 to 43 rows (from 910 at the start of the batch).
     - Spanish lexemes were added across the meaning files, plus ru, hi and zh where English stood alone.
     - The lexicon importer now takes the registry's partial languages (es) from the cached Wikidata labels as optional surfaces. It packs shards by line budget, and its offline reproduction regenerates the five import shards by rule.
     - Files that passed 1500 lines are split by category: number words, conversation summary, software requirements, language protocol and decomposition ladder.

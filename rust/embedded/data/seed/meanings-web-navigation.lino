@@ -213,6 +213,17 @@ meanings
         text 告诉我关于…
       surface
         text 上面有什么…
+    lexeme es
+      surface
+        text "obtén …"
+      surface
+        text "descarga …"
+      surface
+        text "haz una petición a …"
+      surface
+        text "haz una solicitud http a …"
+      surface
+        text "recupera …"
   url_navigate
     defined-by inquiry
     defined-by action
@@ -378,3 +389,20 @@ meanings
         text 前往…
       surface
         text 查看…
+    lexeme es
+      surface
+        text "ve a …"
+      surface
+        text "navega a …"
+      surface
+        text "abre …"
+      surface
+        text "abre la página …"
+      surface
+        text "abre el sitio …"
+      surface
+        text "visita …"
+      surface
+        text "muéstrame …"
+      surface
+        text "llévame a …"
