@@ -46,8 +46,6 @@ mod google_trends_documents;
 mod hardcoded_language_scanner;
 #[path = "headless_client_configuration.rs"]
 mod headless_client_configuration;
-#[path = "issue_712.rs"]
-mod issue_712;
 #[path = "learn_from_data_source.rs"]
 mod learn_from_data_source;
 #[path = "legal_compliance_self_audit.rs"]
@@ -82,6 +80,8 @@ mod returning_user_recap;
 mod self_development_loop;
 #[path = "self_hosting_metric_evidence.rs"]
 mod self_hosting_metric_evidence;
+#[path = "semantic_routing_contract.rs"]
+mod semantic_routing_contract;
 #[path = "statement_merging.rs"]
 mod statement_merging;
 #[path = "summarization_validation.rs"]

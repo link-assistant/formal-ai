@@ -56,6 +56,22 @@ test('every seeded language states requirements', () => {
   assert.deepEqual(extractRequirements('पेज को जल्दी लोड होना चाहिए। यह एक नोट है।'), ['पेज को जल्दी लोड होना चाहिए।']);
 });
 
+test('a definition of done states a requirement in every seeded language', () => {
+  assert.deepEqual(extractRequirements('Fixed means: every node carries a record. The loop is old.'), [
+    'Fixed means: every node carries a record.',
+  ]);
+  assert.deepEqual(extractRequirements('Исправлено значит: каждый узел хранит запись. Цикл старый.'), [
+    'Исправлено значит: каждый узел хранит запись.',
+  ]);
+  assert.deepEqual(extractRequirements('完成标准：每个节点都有记录。循环很旧。'), ['完成标准：每个节点都有记录。']);
+  assert.deepEqual(extractRequirements('Arreglado significa: cada nodo guarda un registro. El bucle es viejo.'), [
+    'Arreglado significa: cada nodo guarda un registro.',
+  ]);
+  assert.deepEqual(extractRequirements('पूरा तब माना जाएगा जब हर नोड रिकॉर्ड रखे। लूप पुराना है।'), [
+    'पूरा तब माना जाएगा जब हर नोड रिकॉर्ड रखे।',
+  ]);
+});
+
 test('the issue benchmark keeps its floors', () => {
   const score = measure();
   const floors = readFloors();

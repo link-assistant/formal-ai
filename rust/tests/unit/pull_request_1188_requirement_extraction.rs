@@ -47,6 +47,32 @@ fn code_quotes_and_headings_are_never_units() {
 }
 
 #[test]
+fn a_definition_of_done_states_a_requirement_in_every_seeded_language() {
+    assert_eq!(
+        extract_requirements("Fixed means: every node carries a record. The loop is old."),
+        ["Fixed means: every node carries a record."]
+    );
+    assert_eq!(
+        extract_requirements("Исправлено значит: каждый узел хранит запись. Цикл старый."),
+        ["Исправлено значит: каждый узел хранит запись."]
+    );
+    assert_eq!(
+        extract_requirements("完成标准：每个节点都有记录。循环很旧。"),
+        ["完成标准：每个节点都有记录。"]
+    );
+    assert_eq!(
+        extract_requirements(
+            "Arreglado significa: cada nodo guarda un registro. El bucle es viejo."
+        ),
+        ["Arreglado significa: cada nodo guarda un registro."]
+    );
+    assert_eq!(
+        extract_requirements("पूरा तब माना जाएगा जब हर नोड रिकॉर्ड रखे। लूप पुराना है।"),
+        ["पूरा तब माना जाएगा जब हर नोड रिकॉर्ड रखे।"]
+    );
+}
+
+#[test]
 fn every_seeded_language_states_requirements() {
     assert_eq!(
         extract_requirements("Страница должна загружаться быстро. Это просто заметка."),

@@ -72,7 +72,7 @@ const TEST_MATCH = [
   '**/elided-procedural-how-to.spec.js',
   '**/visible-thinking-preview.spec.js',
   '**/ocr-market-price-check.spec.js',
-  '**/issue-497.spec.js',
+  '**/repository-traffic-prompt.spec.js',
   '**/unresolved-term-web-search.spec.js',
   '**/install-how-to-discovery.spec.js',
   '**/issue-511-cold-start.spec.js',

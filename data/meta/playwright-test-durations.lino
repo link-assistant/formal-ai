@@ -124,7 +124,7 @@ playwright-test-durations
     seconds 7.9
   test "tests/ocr-image-attachments.spec.js"
     seconds 7.9
-  test "tests/issue-497.spec.js"
+  test "tests/repository-traffic-prompt.spec.js"
     seconds 7.8
   test "tests/elided-procedural-how-to.spec.js"
     seconds 7.5

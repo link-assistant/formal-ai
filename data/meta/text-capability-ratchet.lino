@@ -1,4 +1,4 @@
 text-capability-ratchet
   source scripts/measure-requirement-extraction.mjs
-  requirement-extraction-recall 0.411
-  requirement-extraction-precision 0.406
+  requirement-extraction-recall 0.419
+  requirement-extraction-precision 0.407

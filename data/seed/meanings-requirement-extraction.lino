@@ -11,14 +11,17 @@ meanings
       words "must" "must not" "should" "should not" "shall" "need to" "needs to" "we need" "i need" "have to" "has to"
       words "required" "is required" "are required" "ensure" "make sure" "it is important" "we want" "i want" "please"
       words "never" "always" "cannot" "is expected" "are expected" "expected to"
+      words "fixed means" "done means" "done when"
     lexeme ru
       words "должен" "должна" "должно" "должны" "нужно" "необходимо" "надо" "следует" "требуется" "обязательно"
       words "пожалуйста" "нельзя" "всегда" "никогда"
-    lexeme hi "चाहिए" "ज़रूरी" "जरूरी" "आवश्यक" "अनिवार्य" "कृपया" "हमेशा" "कभी नहीं"
-    lexeme zh "必须" "应该" "需要" "应当" "请" "不能" "务必" "总是" "不要"
+      words "исправлено значит" "готово когда"
+    lexeme hi "चाहिए" "ज़रूरी" "जरूरी" "आवश्यक" "अनिवार्य" "कृपया" "हमेशा" "कभी नहीं" "पूरा तब माना जाएगा जब"
+    lexeme zh "必须" "应该" "需要" "应当" "请" "不能" "务必" "总是" "不要" "完成标准"
     lexeme es
       words "debe" "deben" "debería" "deberían" "hay que" "necesita" "necesitamos" "es necesario" "tiene que"
       words "tienen que" "por favor" "siempre" "nunca" "no debe"
+      words "arreglado significa" "listo cuando"
   requirement_directive
     defined-by relation
     role requirement_directive_verb

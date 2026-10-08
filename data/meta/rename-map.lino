@@ -154,6 +154,21 @@ rename-map
       review "Read on 2026-10-08: 110 lines, 6 top-level functions from memoryInspectionStableId to tryMemoryInspection; the name covers the largest groups, and the module reads no other module's bindings while it loads."
   tree test-files-by-behaviour
     rename
+      from "rust/tests/issue_712.rs"
+      to "rust/tests/equivalent_tool_requests.rs"
+      reason "Semantically equivalent tool requests are planned alike, whatever their phrasing: the regression matrix copied from the issue #712 report."
+      review "Reviewed on 2026-10-09 by LEAD after the editing agent finished; the issue number stays in the doc comment."
+    rename
+      from "rust/tests/unit/docs_requirements/issue_712.rs"
+      to "rust/tests/unit/docs_requirements/semantic_routing_contract.rs"
+      reason "The issue #712 case study and the semantic routing contract stay traceable to each other."
+      review "Reviewed on 2026-10-09 by LEAD after the editing agent finished; the issue number stays in the test name."
+    rename
+      from "rust/tests/e2e/tests/issue-497.spec.js"
+      to "rust/tests/e2e/tests/repository-traffic-prompt.spec.js"
+      reason "The GitHub repository traffic prompt is answered in the browser, including the reported Russian visitor-visibility question."
+      review "Reviewed on 2026-10-09 by LEAD after the editing agent finished; the issue number stays in the describe title."
+    rename
       from "desktop/scripts/issue-756.test.mjs"
       to "desktop/scripts/shared-memory-path.test.mjs"
       reason "The desktop shared memory path honors overrides and platform defaults, and every desktop service shares one memory mount."
