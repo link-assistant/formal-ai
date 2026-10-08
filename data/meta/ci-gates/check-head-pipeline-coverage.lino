@@ -15,7 +15,7 @@
 # beneath a covered tip are not a gap at all, because a batch push creates one
 # run for its last commit, and an empty sample -- a failed query -- is never a
 # pass.
-ci_gate check_head_pipeline_coverage
+ci_gate check-head-pipeline-coverage
   stage rust
   description "The default-branch coverage audit still tells a gap apart from a run that has not appeared yet."
   run "rust-script --test scripts/check-head-pipeline-coverage.rs"

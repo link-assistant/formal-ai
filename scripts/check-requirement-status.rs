@@ -14,7 +14,7 @@ const LEDGER_DIRECTORY: &str = "data/meta/requirement-status-ledger";
 /// The assembled register, split into parts under the 1500-line cap.
 const REQUIREMENT_PARTS: &str = "docs/requirements/assembled";
 
-#[derive(Default)]
+#[derive(Clone, Default)]
 struct Row {
     shard: String,
     verdict: String,
@@ -126,20 +126,30 @@ fn ledger_rows(root: &Path, failures: &mut Vec<String>) -> BTreeMap<String, Row>
     for path in paths {
         let source = fs::read_to_string(&path)
             .unwrap_or_else(|error| panic!("{} readable: {error}", path.display()));
+        // A field stated before the first record is the file's value, which
+        // a record inherits unless it states its own (`render_shard` in
+        // scripts/generate-requirement-status.rs).
+        let mut defaults = Row::default();
         let mut id = String::new();
         let mut row = Row::default();
+        let mut in_record = false;
         for line in source.lines() {
             let trimmed = line.trim();
             if trimmed == "requirement" {
                 close_row(&mut id, &mut row, &mut rows, failures);
-            } else if let Some(value) = trimmed.strip_prefix("id ") {
+                row = defaults.clone();
+                in_record = true;
+                continue;
+            }
+            let target = if in_record { &mut row } else { &mut defaults };
+            if let Some(value) = trimmed.strip_prefix("id ") {
                 id = unquote(value);
             } else if let Some(value) = trimmed.strip_prefix("shard ") {
-                row.shard = unquote(value);
+                target.shard = unquote(value);
             } else if let Some(value) = trimmed.strip_prefix("verdict ") {
-                row.verdict = unquote(value);
+                target.verdict = unquote(value);
             } else if let Some(value) = trimmed.strip_prefix("automated_test ") {
-                row.automated_test = unquote(value);
+                target.automated_test = unquote(value);
             }
         }
         close_row(&mut id, &mut row, &mut rows, failures);
@@ -148,7 +158,7 @@ fn ledger_rows(root: &Path, failures: &mut Vec<String>) -> BTreeMap<String, Row>
 }
 
 /// The assembled requirement register: `REQUIREMENTS.md` is an index, and the
-/// register itself is `docs/requirements/assembled/part-NN.md`, read in name
+/// register itself is `docs/requirements/assembled/<area>.md`, read in name
 /// order (`scripts/assemble-requirements.rs` writes both).
 fn read_register(root: &Path) -> Result<String, String> {
     let directory = root.join(REQUIREMENT_PARTS);
@@ -159,12 +169,12 @@ fn read_register(root: &Path) -> Result<String, String> {
         .filter(|path| {
             path.file_name()
                 .and_then(|name| name.to_str())
-                .is_some_and(|name| name.starts_with("part-") && name.ends_with(".md"))
+                .is_some_and(|name| name.ends_with(".md"))
         })
         .collect();
     parts.sort();
     if parts.is_empty() {
-        return Err(format!("{REQUIREMENT_PARTS} holds no part-NN.md files"));
+        return Err(format!("{REQUIREMENT_PARTS} holds no assembled area files"));
     }
     let mut register = String::new();
     for part in parts {

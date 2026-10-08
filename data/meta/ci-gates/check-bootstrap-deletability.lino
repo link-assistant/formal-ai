@@ -5,7 +5,7 @@
 # bootstrap is a runtime seed, so the suite must stay green when the seed is
 # moved aside, and a forgotten fragment must rediscover to the same content id.
 # `rust-script scripts/run-ci-gates.rs --stage rust` runs them.
-ci_gate check_bootstrap_deletability
+ci_gate check-bootstrap-deletability
   stage rust
   lane 2
   description "The fragment bootstrap is deletable: an absent seed yields an empty, logged catalog and a forgotten fragment rediscovers to the same content id, all offline."

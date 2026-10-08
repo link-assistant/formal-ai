@@ -215,14 +215,6 @@ fn an_implemented_verdict_names_a_test_that_exists() {
         .filter(|path| path.extension().and_then(|value| value.to_str()) == Some("lino"))
         .collect();
     ledger_paths.sort();
-    let ledger = ledger_paths
-        .iter()
-        .map(|path| {
-            fs::read_to_string(path)
-                .unwrap_or_else(|error| panic!("{} readable: {error}", path.display()))
-        })
-        .collect::<Vec<_>>()
-        .join("\n");
 
     let mut current_id: Option<String> = None;
     let mut verdict: Option<String> = None;
@@ -252,36 +244,53 @@ fn an_implemented_verdict_names_a_test_that_exists() {
         }
     };
 
-    for line in ledger.lines() {
-        let trimmed = line.trim();
-        if trimmed == "requirement" {
-            close(
-                &current_id,
-                &verdict,
-                &automated,
-                &mut failures,
-                &mut checked,
-            );
-            current_id = None;
-            verdict = None;
-            automated = None;
-            continue;
+    // A ledger file states a test most of its records share once, before its
+    // first record; a record inherits it unless it states its own.
+    for path in &ledger_paths {
+        let source = fs::read_to_string(path)
+            .unwrap_or_else(|error| panic!("{} readable: {error}", path.display()));
+        let mut file_test: Option<String> = None;
+        let mut in_record = false;
+        for line in source.lines() {
+            let trimmed = line.trim();
+            if trimmed == "requirement" {
+                close(
+                    &current_id,
+                    &verdict,
+                    &automated,
+                    &mut failures,
+                    &mut checked,
+                );
+                current_id = None;
+                verdict = None;
+                automated.clone_from(&file_test);
+                in_record = true;
+                continue;
+            }
+            if let Some(rest) = trimmed.strip_prefix("id ") {
+                current_id = Some(rest.trim().trim_matches('"').to_owned());
+            } else if let Some(rest) = trimmed.strip_prefix("verdict ") {
+                verdict = Some(rest.trim().trim_matches('"').to_owned());
+            } else if let Some(rest) = trimmed.strip_prefix("automated_test ") {
+                let value = Some(rest.trim().trim_matches('"').to_owned());
+                if in_record {
+                    automated = value;
+                } else {
+                    file_test = value;
+                }
+            }
         }
-        if let Some(rest) = trimmed.strip_prefix("id ") {
-            current_id = Some(rest.trim().trim_matches('"').to_owned());
-        } else if let Some(rest) = trimmed.strip_prefix("verdict ") {
-            verdict = Some(rest.trim().trim_matches('"').to_owned());
-        } else if let Some(rest) = trimmed.strip_prefix("automated_test ") {
-            automated = Some(rest.trim().trim_matches('"').to_owned());
-        }
+        close(
+            &current_id,
+            &verdict,
+            &automated,
+            &mut failures,
+            &mut checked,
+        );
+        current_id = None;
+        verdict = None;
+        automated = None;
     }
-    close(
-        &current_id,
-        &verdict,
-        &automated,
-        &mut failures,
-        &mut checked,
-    );
 
     assert!(
         failures.is_empty(),

@@ -5,20 +5,23 @@
 for your issue; never edit the generated files.
 
 ```bash
-rust-script scripts/assemble-requirements.rs           # check the index and parts are current
+rust-script scripts/assemble-requirements.rs           # check the index and areas are current
 rust-script scripts/assemble-requirements.rs --write   # rebuild them from these shards
 ```
 
 ## The assembled register
 
 No maintained file may exceed 1500 lines, and the assembled register is larger
-than that, so it is written as ordered parts: `assembled/part-01.md`,
-`assembled/part-02.md`, and so on, each at most 1400 lines. Sections are packed
-into parts in assembly order and never cut in half. `REQUIREMENTS.md` is the
-index: it links every part and lists the sections each part holds.
-The numbered part names contradict the 2026-10-08 vision that file names say what they hold; [R1188-U5](issue-1188-user-requirements.md) replaces them with named parts once both generators change.
+than that, so it is written as one file per area: `assembled/standing-doctrine.md`,
+`assembled/coding-and-agents.md` and so on, each at most 1400 lines. A shard
+belongs to the first area of
+[`data/meta/requirement-areas.lino`](../../data/meta/requirement-areas.lino) whose
+`match` text occurs in its file name, and the last area takes every other shard.
+Sections are never cut in half; an area that outgrows 1400 lines fails the
+assembly until some of its shards get a more specific `match`. `REQUIREMENTS.md`
+is the index: it links every area and lists the sections each one holds.
 
-Anything that reads "the requirements document" reads every part in file-name
+Anything that reads "the requirements document" reads every area file in file-name
 order — `scripts/generate-requirement-status.rs`,
 `scripts/check-requirement-status.rs`, `scripts/check-issue-citations.rs`, and
 the Rust tests through `rust/tests/support/assembled_docs.rs`.
@@ -60,7 +63,7 @@ slug; they assemble in file-name order.
 Write links relative to the shard, because a shard is read on its own page as
 well as through the assembled document: `../upload-memory.md`, not
 `docs/upload-memory.md`. Assembly rebases them to the parts directory, so the
-generated `assembled/part-NN.md` carries `../../upload-memory.md`, and `--split`
+generated `assembled/<area>.md` carries `../../upload-memory.md`, and `--split`
 rebases them back. Absolute URLs, in-page anchors, and root-anchored paths mean
 the same thing from both places and are left untouched.
 

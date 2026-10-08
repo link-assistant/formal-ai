@@ -5,7 +5,7 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_semantic_grounding
+ci_gate check-semantic-grounding
   stage rust
   lane 2
   description "Every answer the solver produces is grounded in the seed lexicon rather than hardcoded."

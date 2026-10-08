@@ -2,7 +2,10 @@
 //! Generate the requirement-status ledger from requirement shards.
 //!
 //! The ledger is sharded because a record for every requirement cannot fit the
-//! repository's 1,500-line data-file limit. Requirement prose remains owned by
+//! repository's 1,500-line data-file limit. It is sharded the way the
+//! requirements are (R1188-U5): one ledger file per requirement shard, named
+//! after it, so a file says whose requirements it holds and a branch that edits
+//! one issue's requirements changes one ledger file. Requirement prose remains owned by
 //! `docs/requirements/`; this projection records only machine-checkable status
 //! and attribution. A verdict is `implemented` only when the owning row names
 //! a test file that exists. Unknown prose is kept honest as `partial`.
@@ -26,7 +29,6 @@ const REQUIREMENT_SHARDS: &str = "docs/requirements";
 const TRACEABILITY: &str = "docs/requirements-traceability.md";
 const MANIFEST: &str = "data/meta/requirement-status-ledger.lino";
 const LEDGER_DIRECTORY: &str = "data/meta/requirement-status-ledger";
-const RECORDS_PER_SHARD: usize = 80;
 
 #[derive(Clone, Debug, Default)]
 struct TraceRow {
@@ -214,7 +216,7 @@ fn verdict(line: &str, automated_test: &str) -> String {
 }
 
 /// The assembled requirement register: `REQUIREMENTS.md` is an index, and the
-/// register itself is `docs/requirements/assembled/part-NN.md`, read in name
+/// register itself is `docs/requirements/assembled/<area>.md`, read in name
 /// order (`scripts/assemble-requirements.rs` writes both).
 fn read_register(root: &Path) -> Result<String, String> {
     let directory = root.join(REQUIREMENT_PARTS);
@@ -225,12 +227,12 @@ fn read_register(root: &Path) -> Result<String, String> {
         .filter(|path| {
             path.file_name()
                 .and_then(|name| name.to_str())
-                .is_some_and(|name| name.starts_with("part-") && name.ends_with(".md"))
+                .is_some_and(|name| name.ends_with(".md"))
         })
         .collect();
     parts.sort();
     if parts.is_empty() {
-        return Err(format!("{REQUIREMENT_PARTS} holds no part-NN.md files"));
+        return Err(format!("{REQUIREMENT_PARTS} holds no assembled area files"));
     }
     let mut register = String::new();
     for part in parts {
@@ -327,7 +329,7 @@ fn requirement_rows(root: &Path) -> Result<Vec<Requirement>, String> {
     Ok(rows)
 }
 
-fn render_manifest(rows: &[Requirement], shard_count: usize) -> String {
+fn render_manifest(rows: &[Requirement], ledger_files: &[String]) -> String {
     let implemented = rows
         .iter()
         .filter(|row| row.verdict == "implemented")
@@ -350,49 +352,112 @@ fn render_manifest(rows: &[Requirement], shard_count: usize) -> String {
     );
     output.push_str(&format!("  requirement_count {}\n", rows.len()));
     output.push_str(&format!("  implemented_count {implemented}\n"));
-    for index in 0..shard_count {
-        output.push_str(&format!(
-            "  shard \"{LEDGER_DIRECTORY}/requirements-{:02}.lino\"\n",
-            index + 1
-        ));
+    for name in ledger_files {
+        output.push_str(&format!("  shard \"{LEDGER_DIRECTORY}/{name}.lino\"\n"));
     }
     output
 }
 
-fn render_shard(rows: &[Requirement], index: usize) -> String {
-    let mut output = format!(
+/// The value more than half of `values` share, or the empty text when none
+/// does.
+fn shared_value(values: &[&str]) -> String {
+    let mut counts: BTreeMap<&str, usize> = BTreeMap::new();
+    for value in values {
+        *counts.entry(value).or_default() += 1;
+    }
+    counts
+        .into_iter()
+        .find(|(_, count)| count * 2 > values.len())
+        .map_or_else(String::new, |(value, _)| value.to_owned())
+}
+
+/// The fields a ledger file may state once for its records, in record order.
+const SHARED_FIELDS: [&str; 3] = ["delivered", "automated_test", "manual"];
+
+/// The value of one of the `SHARED_FIELDS` of a record.
+fn shared_field<'a>(row: &'a Requirement, name: &str) -> &'a str {
+    match name {
+        "delivered" => &row.delivered,
+        "automated_test" => &row.automated_test,
+        _ => &row.manual,
+    }
+}
+
+/// One ledger file. Shared structure is stated once (R1188-U7,
+/// docs/links-notation-style.md): the shard and its issue are the same for
+/// every record of the file, so the file states them, and each of the
+/// `SHARED_FIELDS` whose value more than half of the records share (such as
+/// `manual "not yet confirmed"`) is stated on the file as the default. A
+/// record states such a field only where it differs from the file's value
+/// (the empty text when the file states none), so a reader that applies the
+/// defaults reads the same values as before. `id` and `verdict` stay on every
+/// record.
+fn render_shard(rows: &[&Requirement]) -> String {
+    let shared: Vec<String> = SHARED_FIELDS
+        .iter()
+        .map(|name| {
+            shared_value(
+                &rows
+                    .iter()
+                    .map(|row| shared_field(row, name))
+                    .collect::<Vec<_>>(),
+            )
+        })
+        .collect();
+    // The file name and the `shard` line already say whose requirements these
+    // are, so the root line does not repeat the shard's file name.
+    let mut output = String::from(
         "# Generated by `rust-script scripts/generate-requirement-status.rs --write`.\n\
-         requirement_status_ledger_shard requirements_{:02}\n",
-        index + 1
+         requirement_status_ledger_shard\n",
     );
+    if let Some(row) = rows.first() {
+        output.push_str(&format!("  shard {}\n", quoted(&row.shard)));
+        output.push_str(&format!("  issue {}\n", quoted(&row.issue)));
+    }
+    for (name, value) in SHARED_FIELDS.iter().zip(&shared) {
+        if !value.is_empty() {
+            output.push_str(&format!("  {name} {}\n", quoted(value)));
+        }
+    }
     for row in rows {
         output.push_str("  requirement\n");
         output.push_str(&format!("    id {}\n", quoted(&row.id)));
-        output.push_str(&format!("    shard {}\n", quoted(&row.shard)));
         output.push_str(&format!("    verdict {}\n", quoted(&row.verdict)));
-        output.push_str(&format!("    delivered {}\n", quoted(&row.delivered)));
-        output.push_str(&format!("    issue {}\n", quoted(&row.issue)));
-        output.push_str(&format!(
-            "    automated_test {}\n",
-            quoted(&row.automated_test)
-        ));
-        output.push_str(&format!("    manual {}\n", quoted(&row.manual)));
+        for (name, value) in SHARED_FIELDS.iter().zip(&shared) {
+            let own = shared_field(row, name);
+            if own != value.as_str() {
+                output.push_str(&format!("    {name} {}\n", quoted(own)));
+            }
+        }
     }
     output
+}
+
+/// The ledger file a requirement's record lives in: its shard's file stem.
+fn ledger_name(shard: &str) -> String {
+    Path::new(shard)
+        .file_stem()
+        .and_then(|stem| stem.to_str())
+        .unwrap_or(shard)
+        .to_owned()
 }
 
 fn generated(root: &Path) -> Result<BTreeMap<PathBuf, String>, String> {
     let rows = requirement_rows(root)?;
-    let chunks: Vec<&[Requirement]> = rows.chunks(RECORDS_PER_SHARD).collect();
+    let mut by_shard: BTreeMap<String, Vec<&Requirement>> = BTreeMap::new();
+    for row in &rows {
+        by_shard
+            .entry(ledger_name(&row.shard))
+            .or_default()
+            .push(row);
+    }
+    let names: Vec<String> = by_shard.keys().cloned().collect();
     let mut files = BTreeMap::new();
-    files.insert(root.join(MANIFEST), render_manifest(&rows, chunks.len()));
-    for (index, chunk) in chunks.into_iter().enumerate() {
+    files.insert(root.join(MANIFEST), render_manifest(&rows, &names));
+    for (name, shard_rows) in &by_shard {
         files.insert(
-            root.join(format!(
-                "{LEDGER_DIRECTORY}/requirements-{:02}.lino",
-                index + 1
-            )),
-            render_shard(chunk, index),
+            root.join(format!("{LEDGER_DIRECTORY}/{name}.lino")),
+            render_shard(shard_rows),
         );
     }
     Ok(files)

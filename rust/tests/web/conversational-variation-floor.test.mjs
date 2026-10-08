@@ -311,7 +311,7 @@ test("removing one Hindi wording fails the gate and names exactly that case", ()
 
 test("the gate is registered as a web-stage CI gate that runs the npm script", () => {
   const gate = readFileSync(path.join(REPO_ROOT, "data/meta/ci-gates/check-conversational-variation-floor.lino"), "utf8");
-  assert.match(gate, /^ci_gate check_conversational_variation_floor\n {2}stage web\n/m);
+  assert.match(gate, /^ci_gate check[-_]conversational[-_]variation[-_]floor\n {2}stage web\n/m);
   assert.match(gate, /^ {2}run "npm run --prefix rust\/tests\/e2e check:variation-floor"$/m);
   const scripts = JSON.parse(readFileSync(path.join(REPO_ROOT, "rust/tests/e2e/package.json"), "utf8")).scripts;
   assert.equal(scripts["check:variation-floor"], "node scripts/check-conversational-variation-floor.mjs");

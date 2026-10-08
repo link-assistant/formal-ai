@@ -1,5 +1,5 @@
 # One CI gate, one file (issue #991).
-ci_gate check_planner_twins
+ci_gate check-planner-twins
   stage web
   description "R1188-U16: the functions that modules under js/agentic/ export with no Rust twin in rust/src/ (by snake_case name or by a Mirrors citation) stay at or below the ceiling in data/meta/planner-twin-ratchet.lino, and the ceiling only falls."
   run "node scripts/check-planner-twins.mjs"

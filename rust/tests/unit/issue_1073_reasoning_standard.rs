@@ -163,7 +163,7 @@ fn the_depth_floor_holds_for_the_smallest_request_the_pipeline_can_formalize() {
 /// `statement` where `hello`, `привет`, `नमस्ते` and `你好` route to `courtesy`,
 /// because `data/seed/prompt-patterns.lino` carries greeting keywords for en, ru,
 /// hi and zh and none for es. That gap predates this branch and is left to a
-/// change of its own — `check_language_change_parity` requires every supported
+/// change of its own — `check-language-change-parity` requires every supported
 /// language to move together in one pull request, and four of them need no
 /// change. What is asserted here is that the standard reports the same seven
 /// gates, the same triggers, the same statuses, the same finding shapes and the

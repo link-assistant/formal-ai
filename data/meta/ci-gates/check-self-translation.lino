@@ -3,7 +3,7 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_self_translation
+ci_gate check-self-translation
   stage web
   description "R1024: the shared self-translation corpus (rust/tests/fixtures/self-translation/) is exactly what scripts/self-translate.mjs produces from its sources, including the round-trip cases that must give a source back byte for byte. Its calls run on the JavaScript side in rust/tests/web/self-translation.test.mjs (the js tier's web suite) and on the Rust side in rust/tests/unit/issue_1188_self_translation_corpus.rs."
   run "node scripts/self-translate.mjs --check"

@@ -127,7 +127,7 @@ fn the_probe_tool_runs_as_asked() {
 
 #[test]
 fn the_local_gate_runner_runs_as_asked() {
-    let command = "node experiments/formal_ai_subagent/local-gates.mjs --only check_file_size";
+    let command = "node experiments/formal_ai_subagent/local-gates.mjs --only check-file-size";
     let messages = [ChatMessage::user(format!("Run {command}"))];
     let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &TOOLS) else {
         panic!("a run request plans a tool call");

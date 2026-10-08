@@ -8,6 +8,7 @@ import { test } from "node:test";
 
 import {
   companionMoves,
+  findModuleReferences,
   findReferences,
   indexByBasename,
   parseRenameMap,
@@ -93,6 +94,28 @@ test("a Rust rename changes the parent's mod line and the module's paths", () =>
   assert.equal(user.text, "use crate::file_write_routing::helper;\n");
   const elsewhere = renameRustModules("mod issue_745;\n", "rust/tests/unit/ci/mod.rs", [move], byBasename);
   assert.equal(elsewhere.text, "mod issue_745;\n", "a namesake module in another directory keeps its name");
+});
+
+test("a #[path] module declaration follows its file", () => {
+  const move = { from: "rust/tests/unit/area/issue_9.rs", to: "rust/tests/unit/area/fixture_area_rule.rs" };
+  const byBasename = indexByBasename([move.from]);
+  const declared = renameRustModules('#[path = "fixture_area_rule.rs"]\nmod issue_9;\nmod issue_90;\n', "rust/tests/unit/area/list.rs", [move], byBasename);
+  assert.equal(declared.text, '#[path = "fixture_area_rule.rs"]\nmod fixture_area_rule;\nmod issue_90;\n');
+});
+
+test("a test path names a module outside Rust: unique, qualified by its parent, or at a binary root", () => {
+  const root = { from: "rust/tests/unit/issue_9.rs", to: "rust/tests/unit/fixture_root_rule.rs" };
+  const nested = { from: "rust/tests/unit/ci-cd/issue_9.rs", to: "rust/tests/unit/ci-cd/fixture_nested_rule.rs" };
+  const byBasename = indexByBasename([root.from, nested.from]);
+  const durations = 'test "issue_9::a"\ntest "ci_cd::issue_9::b"\ntest "issue_90::c"\n';
+  const renamed = renameRustModules(durations, "data/meta/test-durations.lino", [root, nested], byBasename);
+  assert.equal(renamed.text, 'test "fixture_root_rule::a"\ntest "ci_cd::fixture_nested_rule::b"\ntest "issue_90::c"\n');
+  assert.deepEqual(findModuleReferences(renamed.text, "data/meta/test-durations.lino", [root, nested], byBasename), []);
+  // Two namesakes below other modules and no qualifier: the occurrence is left alone.
+  const left = { from: "rust/tests/unit/a/issue_8.rs", to: "rust/tests/unit/a/fixture_left.rs" };
+  const right = { from: "rust/tests/unit/b/issue_8.rs", to: "rust/tests/unit/b/fixture_right.rs" };
+  const ambiguous = findModuleReferences("see issue_8::case", "docs/x.md", [left, right], indexByBasename([left.from, right.from]));
+  assert.deepEqual(ambiguous, []);
 });
 
 test("a generated one-entry-per-line list is re-sorted after a rename", () => {

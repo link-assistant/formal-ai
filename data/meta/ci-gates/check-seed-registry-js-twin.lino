@@ -3,7 +3,7 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_seed_registry_js_twin
+ci_gate check-seed-registry-js-twin
   stage rust
   description "scripts/generate-seed-registry.mjs prints exactly what scripts/generate-seed-registry.rs prints, with the same exit code, and so generates byte-identical registry files without compiling Rust."
   run "node scripts/lib/checks-twin-parity.mjs generate-seed-registry"

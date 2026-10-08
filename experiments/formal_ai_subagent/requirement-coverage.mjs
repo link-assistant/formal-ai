@@ -106,12 +106,18 @@ function readLedger() {
   const ledger = new Map();
   const directory = join(repositoryRoot, ledgerDirectory);
   for (const name of readdirSync(directory).filter((file) => file.endsWith('.lino')).sort()) {
+    // A test most of a file's records share is stated once on the file (two
+    // spaces in, before the first record); a record inherits it unless it
+    // states its own.
     let record = null;
+    let fileTest = '';
     for (const line of readFileSync(join(directory, name), 'utf8').split('\n')) {
+      const fileField = /^ {2}automated_test "(.*)"$/.exec(line);
+      if (fileField) fileTest = fileField[1];
       const field = /^ {4}(\w+) "(.*)"$/.exec(line);
       if (!field) continue;
       if (field[1] === 'id') {
-        record = { verdict: '', automatedTest: '' };
+        record = { verdict: '', automatedTest: fileTest };
         ledger.set(field[2], record);
       } else if (record && field[1] === 'verdict') record.verdict = field[2];
       else if (record && field[1] === 'automated_test') record.automatedTest = field[2];

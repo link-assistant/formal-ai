@@ -22,16 +22,19 @@
 //!
 //! The assembled register is itself split. The maintainer's rule is that no
 //! maintained file may exceed 1500 lines, and the register outgrew that, so the
-//! sections are packed, in assembly order and never cut in half, into
-//! `docs/requirements/assembled/part-NN.md` files of at most
-//! `PART_LINE_LIMIT` lines. `REQUIREMENTS.md` is the index: it links every part
-//! and lists the sections each one holds. Reading the parts in name order gives
-//! the whole register; readers do exactly that rather than reading the index.
+//! sections are grouped by area (R1188-U5): `data/meta/requirement-areas.lino`
+//! names each area and the file-name fragments that place a shard in it, and
+//! each area is one file, `docs/requirements/assembled/<area>.md`, of at most
+//! `PART_LINE_LIMIT` lines. A file name then says what the part holds, where
+//! numbered pages said only where it fell. `REQUIREMENTS.md` is the index: it
+//! links every area and lists the sections each one holds. Reading every part
+//! gives the whole register; readers do exactly that rather than reading the
+//! index.
 //!
 //! Usage:
 //!   rust-script scripts/assemble-requirements.rs           # check the index and parts are current
 //!   rust-script scripts/assemble-requirements.rs --write   # rebuild the index and parts
-//!   rust-script scripts/assemble-requirements.rs --split   # re-shard the assembled parts
+//!   rust-script scripts/assemble-requirements.rs --split   # re-shard the assembled areas
 //!
 //! ```cargo
 //! [package]
@@ -46,8 +49,10 @@ use std::path::{Path, PathBuf};
 #[cfg(not(test))]
 const DOCUMENT: &str = "REQUIREMENTS.md";
 const SHARDS: &str = "docs/requirements";
-/// Where the assembled register lives, one ordered part per file.
+/// Where the assembled register lives, one area per file.
 const PARTS: &str = "docs/requirements/assembled";
+/// The areas the register is grouped into, in reading order.
+const AREAS: &str = "data/meta/requirement-areas.lino";
 /// The most lines one part may hold: under the 1500-line cap and under the
 /// 1400-line warning threshold of `scripts/check-file-size.rs`.
 const PART_LINE_LIMIT: usize = 1_400;
@@ -266,48 +271,104 @@ fn ordered_shards(directory: &Path) -> Result<Vec<PathBuf>, String> {
     Ok(shards.into_iter().map(|(_, _, path)| path).collect())
 }
 
-/// The file name of the part numbered `number` (counting from one).
-fn part_name(number: usize) -> String {
-    format!("part-{number:02}.md")
+/// One area of the assembled register: the file stem it is written to, its
+/// title, and the file-name fragments that place a shard in it.
+#[derive(Debug, Clone, PartialEq, Eq)]
+struct Area {
+    name: String,
+    title: String,
+    matches: Vec<String>,
+}
+
+/// A links-notation value without its surrounding double quotes.
+fn unquote(value: &str) -> String {
+    let value = value.trim();
+    value
+        .strip_prefix('"')
+        .and_then(|rest| rest.strip_suffix('"'))
+        .unwrap_or(value)
+        .to_string()
+}
+
+/// The areas `data/meta/requirement-areas.lino` declares, in order.
+fn parse_areas(text: &str) -> Vec<Area> {
+    let mut areas: Vec<Area> = Vec::new();
+    for line in text.lines() {
+        let trimmed = line.trim();
+        if let Some(name) = trimmed.strip_prefix("area ") {
+            areas.push(Area {
+                name: name.trim().to_string(),
+                title: String::new(),
+                matches: Vec::new(),
+            });
+        } else if let Some(area) = areas.last_mut() {
+            if let Some(title) = trimmed.strip_prefix("title ") {
+                area.title = unquote(title);
+            } else if let Some(fragment) = trimmed.strip_prefix("match ") {
+                area.matches.push(unquote(fragment));
+            }
+        }
+    }
+    areas
+}
+
+/// The file name of an area's part.
+fn part_name(area: &Area) -> String {
+    format!("{}.md", area.name)
 }
 
 /// The lines every part opens with: the banner and where the index is.
-fn part_header(number: usize, total: usize) -> String {
+fn part_header(area: &Area) -> String {
     format!(
-        "{BANNER}\n\nPart {number} of {total} of the assembled requirement register; \
-         [`REQUIREMENTS.md`](../../../REQUIREMENTS.md) lists every part.\n\n"
+        "{BANNER}\n\nThe {} area of the assembled requirement register; \
+         [`REQUIREMENTS.md`](../../../REQUIREMENTS.md) lists every area.\n\n",
+        area.title
     )
 }
 
-/// Pack section sizes, in order, into consecutive parts of at most
-/// `PART_LINE_LIMIT` lines each. A section is never cut in half.
-fn pack(sizes: &[(String, usize)]) -> Result<Vec<Vec<usize>>, String> {
-    let mut parts: Vec<Vec<usize>> = Vec::new();
-    let mut lines = 0;
-    for (index, (name, size)) in sizes.iter().enumerate() {
-        if PART_HEADER_LINES + size > PART_LINE_LIMIT {
+/// Group sections, in order, by the first area whose `match` text occurs in
+/// the shard's file name: `(area index, section indexes)` for every area that
+/// holds a section. A section is never cut in half, and an area must fit one
+/// part of at most `PART_LINE_LIMIT` lines.
+fn group(sizes: &[(String, usize)], areas: &[Area]) -> Result<Vec<(usize, Vec<usize>)>, String> {
+    let mut grouped: Vec<Vec<usize>> = vec![Vec::new(); areas.len()];
+    for (index, (name, _)) in sizes.iter().enumerate() {
+        let area = areas
+            .iter()
+            .position(|area| {
+                area.matches
+                    .iter()
+                    .any(|fragment| name.contains(fragment.as_str()))
+            })
+            .ok_or_else(|| {
+                format!("{SHARDS}/{name} matches no area of {AREAS}; add a `match` for it")
+            })?;
+        grouped[area].push(index);
+    }
+    let mut parts = Vec::new();
+    for (area, members) in grouped.into_iter().enumerate() {
+        if members.is_empty() {
+            continue;
+        }
+        // One blank line separates a section from the one before it.
+        let lines = PART_HEADER_LINES
+            + members.iter().map(|&index| sizes[index].1).sum::<usize>()
+            + members.len()
+            - 1;
+        if lines > PART_LINE_LIMIT {
             return Err(format!(
-                "{SHARDS}/{name} has {size} lines, but an assembled part holds at most {} lines \
-                 of shards; split the shard",
-                PART_LINE_LIMIT - PART_HEADER_LINES
+                "the {} area of {AREAS} assembles to {lines} lines, but an assembled part \
+                 holds at most {PART_LINE_LIMIT}; give some of its shards a more specific \
+                 `match` in another area",
+                areas[area].name
             ));
         }
-        match parts.last_mut() {
-            // One blank line separates a section from the one before it.
-            Some(part) if lines + 1 + size <= PART_LINE_LIMIT => {
-                part.push(index);
-                lines += 1 + size;
-            }
-            _ => {
-                parts.push(vec![index]);
-                lines = PART_HEADER_LINES + size;
-            }
-        }
+        parts.push((area, members));
     }
     Ok(parts)
 }
 
-/// The assembled register: the index document and its ordered parts.
+/// The assembled register: the index document and its area parts.
 #[derive(Debug, PartialEq, Eq)]
 struct Assembly {
     index: String,
@@ -325,30 +386,33 @@ fn section_title(body: &str) -> String {
         .to_string()
 }
 
-/// The index: every part, in order, with the sections it holds.
-fn index_document(parts: &[Vec<usize>], titles: &[String]) -> String {
+/// The index: every area, in order, with the sections it holds.
+fn index_document(parts: &[(usize, Vec<usize>)], areas: &[Area], titles: &[String]) -> String {
     let mut index = format!(
         "{BANNER}\n\n# Requirements\n\n\
          The requirement register is assembled from one shard per issue under\n\
          [`docs/requirements/`](docs/requirements/README.md). No maintained file may exceed\n\
-         1500 lines, so the assembled register is split into ordered parts. Read them in\n\
-         order: together they are the whole register.\n"
+         1500 lines, so the assembled register is split by area, as\n\
+         [`{AREAS}`]({AREAS}) groups the shards. Together\n\
+         the areas are the whole register.\n"
     );
-    for (number, part) in parts.iter().enumerate() {
-        let number = number + 1;
+    for (number, (area, sections)) in parts.iter().enumerate() {
+        let area = &areas[*area];
         index.push_str(&format!(
-            "\n{number}. [Part {number}]({PARTS}/{})\n",
-            part_name(number)
+            "\n{}. [{}]({PARTS}/{})\n",
+            number + 1,
+            area.title,
+            part_name(area)
         ));
-        for &section in part {
+        for &section in sections {
             index.push_str(&format!("   - {}\n", titles[section]));
         }
     }
     index
 }
 
-/// The register the shards currently describe.
-fn assemble(shards: &[PathBuf]) -> Result<Assembly, String> {
+/// The register the shards currently describe, grouped into `areas`.
+fn assemble(shards: &[PathBuf], areas: &[Area]) -> Result<Assembly, String> {
     let mut bodies: Vec<String> = Vec::new();
     let mut sizes: Vec<(String, usize)> = Vec::new();
     for shard in shards {
@@ -363,30 +427,25 @@ fn assemble(shards: &[PathBuf]) -> Result<Assembly, String> {
         sizes.push((name, body.lines().count()));
         bodies.push(body);
     }
-    let packed = pack(&sizes)?;
+    let packed = group(&sizes, areas)?;
     let titles: Vec<String> = bodies
         .iter()
         .map(|body| section_title(&rewrite_links(body, &to_root_relative)))
         .collect();
-    let total = packed.len();
     let parts = packed
         .iter()
-        .enumerate()
-        .map(|(number, part)| {
-            let sections: Vec<String> = part
+        .map(|(area, members)| {
+            let area = &areas[*area];
+            let sections: Vec<String> = members
                 .iter()
                 .map(|&section| rewrite_links(&bodies[section], &shard_to_part_relative))
                 .collect();
-            let text = format!(
-                "{}{}\n",
-                part_header(number + 1, total),
-                sections.join("\n\n")
-            );
-            (part_name(number + 1), text)
+            let text = format!("{}{}\n", part_header(area), sections.join("\n\n"));
+            (part_name(area), text)
         })
         .collect();
     Ok(Assembly {
-        index: index_document(&packed, &titles),
+        index: index_document(&packed, areas, &titles),
         parts,
     })
 }
@@ -402,7 +461,7 @@ fn existing_parts(directory: &Path) -> Vec<PathBuf> {
                 .filter(|path| {
                     path.file_name()
                         .and_then(|name| name.to_str())
-                        .is_some_and(|name| name.starts_with("part-") && name.ends_with(".md"))
+                        .is_some_and(|name| name.ends_with(".md"))
                 })
                 .collect()
         })
@@ -517,13 +576,13 @@ fn link_violations(
     failures
 }
 
-/// The assembled register as one document: its parts in order, headers
+/// The assembled register as one document: its parts in name order, headers
 /// removed, links rebased to the shard directory.
 #[cfg(not(test))]
 fn assembled_register(root: &Path) -> Result<String, String> {
     let parts = existing_parts(&root.join(PARTS));
     if parts.is_empty() {
-        return Err(format!("{PARTS}/ holds no part-NN.md files"));
+        return Err(format!("{PARTS}/ holds no assembled area files"));
     }
     let mut sections = Vec::new();
     for part in parts {
@@ -604,7 +663,13 @@ fn main() {
         std::process::exit(1);
     }
 
-    let assembly = assemble(&shards).unwrap_or_else(|error| {
+    let areas = parse_areas(
+        &fs::read_to_string(root.join(AREAS)).unwrap_or_else(|error| {
+            println!("::error::cannot read {AREAS}: {error}");
+            std::process::exit(1);
+        }),
+    );
+    let assembly = assemble(&shards, &areas).unwrap_or_else(|error| {
         println!("::error::{error}");
         std::process::exit(1);
     });
@@ -718,6 +783,35 @@ mod tests {
         assert_eq!(sections, ["## One\n\na\n\n", "## Two\n\nb\n"]);
     }
 
+    /// One area that holds every shard.
+    fn everything() -> Vec<Area> {
+        parse_areas("requirement-areas\n  area all\n    title \"All\"\n    match \"\"\n")
+    }
+
+    #[test]
+    fn areas_are_read_in_order_with_their_titles_and_fragments() {
+        let areas = parse_areas(
+            "# comment\nrequirement-areas\n  area doctrine\n    title \"Doctrine\"\n    \
+             match \"doctrine-\"\n    match \"preamble-\"\n  area rest\n    title \"Rest\"\n    \
+             match \"\"\n",
+        );
+        assert_eq!(
+            areas,
+            vec![
+                Area {
+                    name: "doctrine".to_string(),
+                    title: "Doctrine".to_string(),
+                    matches: vec!["doctrine-".to_string(), "preamble-".to_string()],
+                },
+                Area {
+                    name: "rest".to_string(),
+                    title: "Rest".to_string(),
+                    matches: vec![String::new()],
+                },
+            ]
+        );
+    }
+
     #[test]
     fn assembly_separates_sections_by_exactly_one_blank_line() {
         let directory = std::env::temp_dir().join("assemble-requirements-blank-lines");
@@ -726,48 +820,69 @@ mod tests {
         fs::write(directory.join("preamble-a.md"), "# Title\n\nIntro.\n").expect("write");
         fs::write(directory.join("issue-0002-b.md"), "## Issue #2\n\nb\n\n\n").expect("write");
         let shards = ordered_shards(&directory).expect("ordered");
-        let assembly = assemble(&shards).expect("assembled");
+        let areas = everything();
+        let assembly = assemble(&shards, &areas).expect("assembled");
         assert_eq!(assembly.parts.len(), 1);
-        assert_eq!(assembly.parts[0].0, "part-01.md");
+        assert_eq!(assembly.parts[0].0, "all.md");
         assert_eq!(
             assembly.parts[0].1,
-            format!("{}# Title\n\nIntro.\n\n## Issue #2\n\nb\n", part_header(1, 1))
+            format!(
+                "{}# Title\n\nIntro.\n\n## Issue #2\n\nb\n",
+                part_header(&areas[0])
+            )
         );
-        assert!(assembly.index.contains("1. [Part 1](docs/requirements/assembled/part-01.md)\n"));
+        assert!(
+            assembly
+                .index
+                .contains("1. [All](docs/requirements/assembled/all.md)\n")
+        );
         assert!(assembly.index.contains("   - Title\n   - Issue #2\n"));
         let _ = fs::remove_dir_all(&directory);
     }
 
     #[test]
     fn a_part_header_is_exactly_its_counted_lines() {
-        assert_eq!(part_header(2, 3).lines().count(), PART_HEADER_LINES);
+        assert_eq!(
+            part_header(&everything()[0]).lines().count(),
+            PART_HEADER_LINES
+        );
     }
 
     #[test]
-    fn sections_pack_in_order_and_no_part_exceeds_the_limit() {
+    fn a_shard_joins_the_first_area_that_matches_its_name() {
+        let areas = parse_areas(
+            "requirement-areas\n  area doctrine\n    title \"Doctrine\"\n    match \"doctrine-\"\n  \
+             area coding\n    title \"Coding\"\n    match \"coding\"\n  area rest\n    \
+             title \"Rest\"\n    match \"\"\n",
+        );
+        let sizes = vec![
+            ("issue-0001-coding.md".to_string(), 5),
+            ("issue-0002-facts.md".to_string(), 5),
+            ("doctrine-a.md".to_string(), 5),
+        ];
+        assert_eq!(
+            group(&sizes, &areas).expect("grouped"),
+            vec![(0, vec![2]), (1, vec![0]), (2, vec![1])]
+        );
+    }
+
+    #[test]
+    fn an_area_too_large_for_one_part_is_rejected() {
         let half = PART_LINE_LIMIT / 2;
         let sizes = vec![
-            ("preamble-a.md".to_string(), 10),
             ("issue-0001-a.md".to_string(), half),
             ("issue-0002-a.md".to_string(), half),
-            ("issue-0003-a.md".to_string(), 5),
         ];
-        let parts = pack(&sizes).expect("packed");
-        assert_eq!(parts, vec![vec![0, 1], vec![2, 3]]);
-        for part in &parts {
-            let lines = PART_HEADER_LINES
-                + part.iter().map(|&index| sizes[index].1).sum::<usize>()
-                + part.len()
-                - 1;
-            assert!(lines <= PART_LINE_LIMIT, "{lines} lines in {part:?}");
-        }
+        let error = group(&sizes, &everything()).expect_err("too large");
+        assert!(error.contains("the all area"), "{error}");
     }
 
     #[test]
-    fn a_section_too_large_for_any_part_is_rejected() {
-        let sizes = vec![("issue-0001-huge.md".to_string(), PART_LINE_LIMIT)];
-        let error = pack(&sizes).expect_err("too large");
-        assert!(error.contains("issue-0001-huge.md"), "{error}");
+    fn a_shard_in_no_area_is_rejected() {
+        let areas = parse_areas("requirement-areas\n  area doctrine\n    match \"doctrine-\"\n");
+        let sizes = vec![("issue-0001-a.md".to_string(), 5)];
+        let error = group(&sizes, &areas).expect_err("no area");
+        assert!(error.contains("issue-0001-a.md"), "{error}");
     }
 
     #[test]

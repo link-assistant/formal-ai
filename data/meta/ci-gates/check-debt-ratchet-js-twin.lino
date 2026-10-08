@@ -3,7 +3,7 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_debt_ratchet_js_twin
+ci_gate check-debt-ratchet-js-twin
   stage rust
   description "scripts/check-debt-ratchet.mjs prints exactly what scripts/check-debt-ratchet.rs prints, with the same exit code, so agents can run the JavaScript twin instead of compiling Rust."
   run "node scripts/lib/checks-twin-parity.mjs check-debt-ratchet --base origin/main"

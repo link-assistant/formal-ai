@@ -3,7 +3,7 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_language_change_parity
+ci_gate check-language-change-parity
   stage web
   description "A change to one language's seed data is mirrored in every other language."
   run "npm run --prefix rust/tests/e2e check:language-parity"

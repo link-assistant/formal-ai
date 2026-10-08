@@ -3,7 +3,7 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_package_self_containment
+ci_gate check-package-self-containment
   stage rust
   description "No rust/src include_str! resolves outside the package root, and the rust/embedded/ byte mirror it demands is current."
   run "rust-script --test scripts/mirror-package-data.rs && rust-script scripts/mirror-package-data.rs --check"

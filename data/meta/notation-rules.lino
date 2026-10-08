@@ -43,6 +43,21 @@ notation-rules
       reason "a gate's name and the shard file it lives in (data/meta/ci-gates/check-file-size.lino, enforced-by check-file-size) are one name in two spellings"
     except data/meta/ci-gates/check-rename-map.lino
       reason "RENAME owns it while its trees are open"
+  family handler-rules
+    files data/seed/handler-*.lino
+    files data/seed/*-precedence.lino
+    merge-collisions true
+      reason "a seed's root link and its seed-registry slug (handler_rules in handler-rules.lino, seed handler-rules) are one name in two spellings"
+    keep prior_turn
+      reason "also the event-log kind prior_turn:user and prior_turn:assistant that both roots append and read; renamed with the event-log vocabulary"
+    keep mechanism_query
+      reason "also the event-log kind mechanism_query:request, which the evidence lines of both roots print; renamed with the event-log vocabulary"
+    keep undefined_function
+      reason "the text a prompt is searched for (substring undefined_function of lowercase), not a name"
+    keep world_state_query
+      reason "the cue set of data/meta/cue-lexicon.lino names it in quotes; renamed with that file"
+    keep periods_compounding_monthly periods_compounding_quarterly periods_compounding_weekly periods_compounding_daily periods_compounding_annual
+      reason "the compound-interest readers build the key from a meaning slug (periods_compounding_monthly); renamed with the meanings family"
   abbreviations
     app application
     arg argument

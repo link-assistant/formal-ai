@@ -32,8 +32,10 @@ architecture-principles
       enforced-by check-debt-ratchet
     principle "Layers / Tiered Architecture"
       practice "Surfaces (web, CLI, server, Telegram, agent CLI) sit over one solver, which sits over the seed and the links memory; dependencies point inward."
+      enforced-by check-dependency-direction
     principle "Hexagonal / Ports and Adapters"
       practice "The agentic planner talks to a host port (js/agentic/host.mjs); the browser worker, the Node server and native Rust are adapters behind it."
+      enforced-by check-dependency-direction
     principle "Clean Architecture Dependency Rule"
       practice "Reasoning code never names a network, file system or UI framework; it reads them through the host and the source cache."
       enforced-by check-minimal-core-boundary

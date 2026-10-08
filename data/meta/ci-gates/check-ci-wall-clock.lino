@@ -5,7 +5,7 @@
 # pull request with no timeout, a workflow that does not parse, or a path
 # above data/meta/ci-wall-clock.lino's ceiling fails this gate.
 # `rust-script scripts/run-ci-gates.rs --stage rust` runs it.
-ci_gate check_ci_wall_clock
+ci_gate check-ci-wall-clock
   stage rust
   description "The PR pipeline's longest timeout-weighted needs path, over every PR-triggered workflow, matches data/meta/ci-wall-clock.lino and does not exceed its ceiling; no PR-reachable job is unbounded."
   run "rust-script --test scripts/check-ci-wall-clock.rs && rust-script scripts/check-ci-wall-clock.rs"

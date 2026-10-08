@@ -186,7 +186,7 @@ function quotedChild(node, key) {
 }
 
 function familyOf(name, node) {
-  const family = { name, rule: 'dash-names', files: [], except: new Map(), readers: [], keepNames: new Map(), applied: false };
+  const family = { name, rule: 'dash-names', files: [], except: new Map(), readers: [], keepNames: new Map(), mergeCollisions: false, applied: false };
   for (const child of node.children) {
     const [key, ...rest] = child.line.split(/\s+/u);
     if (key === 'files') {
@@ -198,7 +198,11 @@ function familyOf(name, node) {
     } else if (key === 'readers') {
       family.readers.push(...rest);
     } else if (key === 'keep') {
-      family.keepNames.set(rest[0], quotedChild(child, 'reason'));
+      for (const kept of rest) {
+        family.keepNames.set(kept, quotedChild(child, 'reason'));
+      }
+    } else if (key === 'merge-collisions') {
+      family.mergeCollisions = rest[0] === 'true';
     } else if (key === 'applied') {
       family.applied = rest[0] === 'true';
     }

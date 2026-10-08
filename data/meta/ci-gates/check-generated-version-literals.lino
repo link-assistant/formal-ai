@@ -4,7 +4,7 @@
 # version; captured evidence under `data/cache` and `data/source-cache` is
 # not generated code. `rust-script scripts/run-ci-gates.rs --stage rust`
 # runs it.
-ci_gate check_generated_version_literals
+ci_gate check-generated-version-literals
   stage rust
   description "No third-party action SHA or bare toolchain version is memorized in data/, because workflow templates and ci_setup rows carry placeholders that version_resolution fills at generation time, issue #1168 R1168-6 and R1168-7."
   run "rust-script scripts/check-generated-version-literals.rs"

@@ -5,7 +5,7 @@
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
 #
 # PR #1188: R1188-U18, page formalization measured on cached Wikipedia intros.
-ci_gate check_web_formalization
+ci_gate check-web-formalization
   stage web
   description "Every sentence of the cached Wikipedia intros in data/benchmarks/web-formalization/ (eight topics in en, ru, hi, zh and es, intro sections with source URL and revision id) is formalized by js/agentic/crate/page_formalization.mjs; sentence coverage, fact survival through deformalization and the known-term share, overall and per language, may not fall below data/meta/web-formalization-ratchet.lino."
   run "node scripts/measure-web-formalization.mjs"

@@ -21,7 +21,7 @@ use std::path::{Path, PathBuf};
 
 fn read(relative: &str) -> String {
     // `REQUIREMENTS.md` is the index of the assembled register; its text lives
-    // in the ordered parts under `docs/requirements/assembled/`.
+    // in the area parts under `docs/requirements/assembled/`.
     if relative == "REQUIREMENTS.md" {
         return crate::assembled_docs::requirements();
     }

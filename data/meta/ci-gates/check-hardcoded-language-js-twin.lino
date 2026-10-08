@@ -3,7 +3,7 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_hardcoded_language_js_twin
+ci_gate check-hardcoded-language-js-twin
   stage rust
   description "scripts/check-hardcoded-language.mjs prints exactly what scripts/check-hardcoded-language.rs prints, with the same exit code, so agents can run the JavaScript twin instead of compiling Rust."
   run "node scripts/lib/checks-twin-parity.mjs check-hardcoded-language"

@@ -243,7 +243,7 @@ fn issue_117_lino_i18n_catalog_documents_and_ci_rule_are_traceable() {
         "the CI surface",
         &crate::ci_gates::ci_surface(),
         &[
-            "check_i18n_catalog_coverage",
+            "check-i18n-catalog-coverage",
             "npm run --prefix rust/tests/e2e check:i18n",
         ],
     );

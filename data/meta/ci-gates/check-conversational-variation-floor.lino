@@ -3,7 +3,7 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_conversational_variation_floor
+ci_gate check-conversational-variation-floor
   stage web
   description "Every conversational test case holds at least five wording variations in every advertised language."
   run "npm run --prefix rust/tests/e2e check:variation-floor"

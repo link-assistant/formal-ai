@@ -1,6 +1,6 @@
 # PR #1188 runs this gate in lane 4 of the parallel `lint` matrix, where its
 # measurement (about 80s of rust-script) fits beside that lane's build.
-ci_gate check_capability_routing
+ci_gate check-capability-routing
   stage rust
   lane 4
   description "Capability-routing coverage is re-measured from the held-out corpus and the production router; every recorded value must equal the tree, upward measures may not fall, and routing debt may not rise."

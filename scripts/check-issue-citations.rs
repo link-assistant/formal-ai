@@ -48,7 +48,7 @@ fn documents(root: &Path) -> Vec<String> {
             entries
                 .filter_map(Result::ok)
                 .filter_map(|entry| entry.file_name().into_string().ok())
-                .filter(|name| name.starts_with("part-") && name.ends_with(".md"))
+                .filter(|name| name.ends_with(".md"))
                 .map(|name| format!("{REQUIREMENT_PARTS}/{name}"))
                 .collect()
         })

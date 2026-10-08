@@ -1,4 +1,4 @@
-//! `check_javascript_dependencies` must fail on advisories, not on outages.
+//! `check-javascript-dependencies` must fail on advisories, not on outages.
 //!
 //! In run 100928011479 `Lint and Format Check` went red on a branch that
 //! touched no lockfile at all. `bun audit` had spent five minutes inside one

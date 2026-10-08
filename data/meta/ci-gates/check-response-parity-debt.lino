@@ -3,7 +3,7 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_response_parity_debt
+ci_gate check-response-parity-debt
   stage web
   description "data/meta/response-language-parity-debt.lino equals what node scripts/generate-response-parity-debt.mjs derives from every data/seed/multilingual-responses*.lino, so a response intent's missing languages are always on the ledger whichever response file holds it."
   run "node scripts/generate-response-parity-debt.mjs --check"

@@ -13,7 +13,7 @@
 # naming code that no longer emits the stage, so this gate regenerates it and
 # fails on any byte of drift. rust/tests/web/server-debug-session.test.mjs pins
 # the same check and the exact emitters of a served `What is 2 + 2?` turn.
-ci_gate check_debug_stage_sources
+ci_gate check-debug-stage-sources
   stage web
   description "data/meta/debug-stage-sources.lino, the per-stage emitter table the debug session reads, is byte-current against the solver sources it is generated from."
   run "node scripts/generate-debug-stage-sources.mjs --check"

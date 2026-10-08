@@ -213,25 +213,16 @@ fn detect_feature_capability(
 // which also accepts a grammatical "is/are ... enabled/available" frame
 // computed in code (R1188-U1: no per-language branch).
 fn is_feature_capability_question(normalized: &str, language: &str) -> bool {
-    let lexicon = seed::lexicon();
-    let mentions = |lang: &str| {
-        lexicon.mentions_role_in_languages_raw(
-            seed::ROLE_FEATURE_CAPABILITY_QUESTION,
-            normalized,
-            &[lang],
-        )
-    };
-    // The prompt's own language decides; a language the seed gives no cue
-    // reads as English, which also accepts the grammatical availability frame.
-    let cued = language != "en"
+    let (lexicon, role) = (seed::lexicon(), seed::ROLE_FEATURE_CAPABILITY_QUESTION);
+    let mentions = |lang: &str| lexicon.mentions_role_in_languages_raw(role, normalized, &[lang]);
+    if language != "en"
         && !lexicon
-            .words_for_role_in_languages(seed::ROLE_FEATURE_CAPABILITY_QUESTION, &[language])
-            .is_empty();
-    if cued {
-        mentions(language)
-    } else {
-        mentions("en") || is_english_availability_question(normalized)
+            .words_for_role_in_languages(role, &[language])
+            .is_empty()
+    {
+        return mentions(language);
     }
+    mentions("en") || is_english_availability_question(normalized)
 }
 
 fn is_english_availability_question(normalized: &str) -> bool {

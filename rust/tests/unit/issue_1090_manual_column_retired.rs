@@ -71,14 +71,28 @@ fn the_generated_manifest_carries_the_decision() {
     // issue_1021 pins that vocabulary and must keep passing.
     let shards = fs::read_dir(repo_root().join("data/meta/requirement-status-ledger"))
         .expect("the ledger directory should list");
+    // A ledger file states the manual value most of its records share once,
+    // as the file's default (R1188-U7), and a record states its own only
+    // where it differs; every record still reads a manual value.
     let mut rows = 0usize;
+    let mut without_manual = 0usize;
     for entry in shards.flatten() {
         let body = fs::read_to_string(entry.path()).unwrap_or_default();
-        rows += body.lines().filter(|line| line.contains("manual ")).count();
+        let file_default = body.lines().any(|line| line.starts_with("  manual "));
+        for record in body.split("\n  requirement\n").skip(1) {
+            rows += 1;
+            if !file_default && !record.lines().any(|line| line.starts_with("    manual ")) {
+                without_manual += 1;
+            }
+        }
     }
     assert!(
         rows > 1_000,
-        "every requirement keeps its manual row ({rows})"
+        "the ledger keeps a record for every requirement ({rows})"
+    );
+    assert_eq!(
+        without_manual, 0,
+        "every requirement reads a manual value, its own or its file's default"
     );
 }
 

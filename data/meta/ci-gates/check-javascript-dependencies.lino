@@ -3,7 +3,7 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_javascript_dependencies
+ci_gate check-javascript-dependencies
   stage web
   description "Every committed Bun and npm lockfile is checked for moderate-or-higher advisories."
   run "bash scripts/check-javascript-dependencies.sh"

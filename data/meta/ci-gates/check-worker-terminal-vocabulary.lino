@@ -3,7 +3,7 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_worker_terminal_vocabulary
+ci_gate check-worker-terminal-vocabulary
   stage web
   description "The browser worker's terminal vocabulary stays in sync with the seed data."
   run "node experiments/issue-513-sync-worker-terminal.mjs --check"

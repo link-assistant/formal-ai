@@ -15,7 +15,7 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 - Distinct requirements: 116 (53 from the owner's messages and the vision, 63 items of the 8 fixed issues).
 - Covered by rows that existed before this audit: 96 (every issue item has its own row).
 - Drafted in `docs/requirements/issue-1188-user-requirements.md`: 27 rows for 27 requirements, 20 of which no earlier row covered and 7 of which earlier rows covered only in part.
-- Row verdicts in scope: implemented 121, not-delivered 5, partial 19, superseded 1.
+- Row verdicts in scope: implemented 121, not-delivered 3, partial 21, superseded 1.
 - Evidence check: 121 implemented rows re-read; 0 cite evidence that does not exist, and 3 more cite something the check could not find that was reviewed and is not evidence.
 
 ## The owner's requirements
@@ -49,8 +49,8 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 
 | Requirement | Source | Rows | Status |
 | --- | --- | --- | --- |
-| Owned links notation prefers - over _ in names. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U6 | R1188-U6 not-delivered |
-| Owned links notation is human readable and deduplicated: shared structure is stated once and referenced. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U7 | R1188-U7 not-delivered |
+| Owned links notation prefers - over _ in names. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U6 | R1188-U6 partial |
+| Owned links notation is human readable and deduplicated: shared structure is stated once and referenced. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U7 | R1188-U7 partial |
 | Bulk changes are automated as rules (substitution passes, generators with --check), not hand edits. | [latest-vision](../../../experiments/formal_ai_subagent/preamble.md) 2026-10-08 | R1188-U8 | R1188-U8 partial |
 
 ### CI speed
@@ -207,7 +207,7 @@ A row listed here cites a path, name or test title that the check did not find. 
 
 | Document | Contradiction | Action |
 | --- | --- | --- |
-| `docs/requirements/README.md` | Describes the assembled register's numbered parts (assembled/part-01.md, part-02.md, ...) as the design. | Wording: a sentence now says the numbered names contradict the vision. Code first: the generators must write named parts (R1188-U5). |
+| `docs/requirements/README.md` | Describes the assembled register's numbered parts (assembled/part-01.md, part-02.md, ...) as the design. | Wording: a sentence said the numbered names contradict the vision; R1188-U5 then made the generators write one file per area, and the README describes the areas. |
 | `docs/architecture/runtime-and-surfaces.md` | Listed the browser solver as the numbered modules js/worker/formal_ai_worker_NN.js, 00 ... _23 (stale: the shards ran to _24), without saying the numbered layout was to go. | Wording fixed to _24 and marked as numbered parts; R1188-U5 then renamed the modules after what each holds, and the sentence now names them by subject. |
 | `CONTRIBUTING.md` | Code Standards said only 'use meaningful variable and function names', and the documentation example named its parameters arg1 and arg2. | Wording fixed: full English words, no numbered file parts, - over _ and deduplication in owned links notation, generalize over specialize, code-architecture-principles, bulk changes by rules (R1188-U1, R1188-U2, R1188-U4 to R1188-U8); the example now names left and right. |
 | `CONTRIBUTING.md` | Describes the changelog roll-over into docs/changelog/archive-NN.md as the process. | Wording: marked as numbered parts that R1188-U5 replaces. Code first: the release roll-over script. |

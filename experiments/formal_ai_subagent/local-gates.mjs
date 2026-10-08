@@ -43,7 +43,7 @@ const LOGS = join(ROOT, 'experiments/formal_ai_subagent/sandboxes/gates');
 const NEEDS_BUILD = /\bcargo\b|\btarget\/(debug|release)\b|\bwasm-pack\b|\bnpm run vscode:test\b/;
 // A script that launches cargo itself: a Rust `Command::new("cargo")`, a
 // `"cargo",` program argument, or a shell line that runs cargo. The command
-// text of `check_capability_routing` names only rust-script, but the script
+// text of `check-capability-routing` names only rust-script, but the script
 // runs `cargo run --example …`, a full crate build.
 const LAUNCHES_CARGO = /Command::new\("cargo"\)|"cargo",|^\s*(?:exec\s+)?cargo\s+(?:build|test|run|package|check|clippy|metadata)\b/m;
 

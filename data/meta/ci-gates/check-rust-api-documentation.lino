@@ -3,7 +3,7 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_rust_api_documentation
+ci_gate check-rust-api-documentation
   stage rust
   description "rustdoc builds the public API without a single warning, including broken intra-doc links."
   run "cargo doc --manifest-path rust/Cargo.toml --no-deps --lib"

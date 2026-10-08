@@ -5,7 +5,7 @@
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
 #
 # PR #1188: the CI speed rule (data/meta/ci-speed.lino, docs/ci-cd/speed.md).
-ci_gate check_ci_speed
+ci_gate check-ci-speed
   stage web
   description "No CI job or step may run longer than 30 minutes (15 is the target), long jobs wait only on jobs whose outputs they use, and test shards are planned longest-first from recorded durations with every test in exactly one shard; the jobs that cannot meet the limit yet are listed with their reason, and that list only shrinks."
   run "node scripts/check-ci-speed.mjs --report"

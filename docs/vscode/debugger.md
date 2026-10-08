@@ -170,7 +170,7 @@ A stage's emitter is the function that appends the stage's `source` event:
 
 - **The table.** `data/meta/debug-stage-sources.lino` is written by
   `node scripts/generate-debug-stage-sources.mjs --write`. The CI gate
-  `check_debug_stage_sources` runs it with `--check`. For every event kind
+  `check-debug-stage-sources` runs it with `--check`. For every event kind
   that becomes a thinking step, it lists the functions that append it in each
   runtime: Rust `<log>.append("<kind>", …)`, JavaScript
   `solverEvent("<kind>", …)` and `<log>.push({ kind: "<kind>", … })`. A kind

@@ -560,7 +560,7 @@ fn main() {
 mod tests {
     use super::*;
 
-    const SHARD: &str = "ci_gate check_formatting\n  stage rust\n  \
+    const SHARD: &str = "ci_gate check-formatting\n  stage rust\n  \
         description \"rustfmt owns the layout of every Rust file.\"\n  \
         run \"cargo fmt --all -- --check\"\n  \
         justification \"Formatting drift makes diffs noisy and wastes review time; \
@@ -573,7 +573,7 @@ mod tests {
     #[test]
     fn a_shard_parses_into_one_gate() {
         let gate = gate();
-        assert_eq!(gate.name, "check_formatting");
+        assert_eq!(gate.name, "check-formatting");
         assert_eq!(gate.stage, "rust");
         assert_eq!(gate.run, "cargo fmt --all -- --check");
         assert_eq!(
@@ -597,7 +597,7 @@ mod tests {
 
     #[test]
     fn a_gate_without_a_description_is_rejected() {
-        let source = "ci_gate check_formatting\n  stage rust\n  run \"cargo fmt\"\n";
+        let source = "ci_gate check-formatting\n  stage rust\n  run \"cargo fmt\"\n";
         let error = parse_gate(source, "shard.lino").unwrap_err();
         assert!(error.contains("no description"), "{error}");
     }
@@ -605,7 +605,7 @@ mod tests {
     #[test]
     fn a_gate_without_a_justification_is_rejected() {
         // R1085-16: every gate must carry a justification.
-        let source = "ci_gate check_formatting\n  stage rust\n  \
+        let source = "ci_gate check-formatting\n  stage rust\n  \
             description \"rustfmt owns the layout.\"\n  run \"cargo fmt\"\n";
         let error = parse_gate(source, "shard.lino").unwrap_err();
         assert!(error.contains("no `justification`"), "{error}");
@@ -614,7 +614,7 @@ mod tests {
     #[test]
     fn a_justification_without_a_citation_is_rejected() {
         // The justification must name an issue/PR (#NNN) or a commit hash.
-        let source = "ci_gate check_formatting\n  stage rust\n  \
+        let source = "ci_gate check-formatting\n  stage rust\n  \
             description \"rustfmt owns the layout.\"\n  \
             run \"cargo fmt\"\n  \
             justification \"prevents formatting drift\"\n";
@@ -624,7 +624,7 @@ mod tests {
 
     #[test]
     fn a_justification_with_an_issue_citation_is_accepted() {
-        let source = "ci_gate check_formatting\n  stage rust\n  \
+        let source = "ci_gate check-formatting\n  stage rust\n  \
             description \"rustfmt owns the layout.\"\n  \
             run \"cargo fmt\"\n  \
             justification \"prevents formatting drift, introduced in #991\"\n";
@@ -633,7 +633,7 @@ mod tests {
 
     #[test]
     fn a_justification_with_a_commit_hash_is_accepted() {
-        let source = "ci_gate check_formatting\n  stage rust\n  \
+        let source = "ci_gate check-formatting\n  stage rust\n  \
             description \"rustfmt owns the layout.\"\n  \
             run \"cargo fmt\"\n  \
             justification \"prevents formatting drift, commit 2b656e5cc\"\n";

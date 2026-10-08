@@ -173,7 +173,7 @@ fn the_scheduling_rule_is_documented_for_contributors() {
          fan-out repeats the mistake"
     );
     assert!(
-        contributing.contains("check_test_partition_balance"),
+        contributing.contains("check-test-partition-balance"),
         "the rule should name the gate that enforces it, so a contributor \
          knows what will fail and why"
     );

@@ -364,7 +364,7 @@ requirement ci-fixer-subagent
 contradiction requirements-readme-numbered-parts
   document "docs/requirements/README.md"
   text "Describes the assembled register's numbered parts (assembled/part-01.md, part-02.md, ...) as the design."
-  action "Wording: a sentence now says the numbered names contradict the vision. Code first: the generators must write named parts (R1188-U5)."
+  action "Wording: a sentence said the numbered names contradict the vision; R1188-U5 then made the generators write one file per area, and the README describes the areas."
 
 contradiction runtime-numbered-worker-shards
   document "docs/architecture/runtime-and-surfaces.md"

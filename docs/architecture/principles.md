@@ -19,8 +19,8 @@ Before asking for review, check the change against each group below: the gates r
 | High Cohesion | A module owns one capability (one handler, one planner route family, one seed category file); split files are named by what they hold. | — | R1188-U5 |
 | Low Coupling | Handlers meet only through the precedence table and the seed registry, never by calling each other directly. | [`check-worker-handler-registry`](../../data/meta/ci-gates/check-worker-handler-registry.lino), [`check-seed-registry`](../../data/meta/ci-gates/check-seed-registry.lino) | — |
 | Composition Over Complexity | Answers are composed from small rules: seed handler rules, substitution passes and the recursive meta reasoner, instead of one large function per request shape. | [`check-debt-ratchet`](../../data/meta/ci-gates/check-debt-ratchet.lino) | — |
-| Layers / Tiered Architecture | Surfaces (web, CLI, server, Telegram, agent CLI) sit over one solver, which sits over the seed and the links memory; dependencies point inward. | — | — |
-| Hexagonal / Ports and Adapters | The agentic planner talks to a host port (js/agentic/host.mjs); the browser worker, the Node server and native Rust are adapters behind it. | — | — |
+| Layers / Tiered Architecture | Surfaces (web, CLI, server, Telegram, agent CLI) sit over one solver, which sits over the seed and the links memory; dependencies point inward. | [`check-dependency-direction`](../../data/meta/ci-gates/check-dependency-direction.lino) | — |
+| Hexagonal / Ports and Adapters | The agentic planner talks to a host port (js/agentic/host.mjs); the browser worker, the Node server and native Rust are adapters behind it. | [`check-dependency-direction`](../../data/meta/ci-gates/check-dependency-direction.lino) | — |
 | Clean Architecture Dependency Rule | Reasoning code never names a network, file system or UI framework; it reads them through the host and the source cache. | [`check-minimal-core-boundary`](../../data/meta/ci-gates/check-minimal-core-boundary.lino) | — |
 
 ## Behavior, Interfaces & Abstraction

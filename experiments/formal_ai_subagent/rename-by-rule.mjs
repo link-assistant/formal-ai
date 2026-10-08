@@ -45,6 +45,12 @@ const MAP = 'data/meta/rename-map.lino';
 const LARGEST_SCANNED_FILE = 4 * 1024 * 1024;
 const PATH_CHARACTER = /[A-Za-z0-9_\-./~@+]/u;
 const WORD_CHARACTER = /[A-Za-z0-9_]/u;
+/**
+ * The directories whose Rust files are the top modules of a test binary, so
+ * their parent module is not written in a test path (`rust/tests/x.rs` is the
+ * binary `x`; `rust/tests/unit/x.rs` is `x::` in the `unit` binary).
+ */
+const TEST_BINARY_ROOTS = ['rust/tests', 'rust/tests/unit', 'rust/tests/integration', 'rust/tests/source'];
 
 // ---------------------------------------------------------------------------
 // The map
@@ -263,19 +269,69 @@ function declaresModulesOf(file, directory) {
   return posix.dirname(file) === directory && ['mod.rs', 'main.rs', 'lib.rs'].includes(basename(file));
 }
 
+/** The module name of the directory that holds a Rust file (`ci-cd` -> `ci_cd`). */
+function parentModuleName(path) {
+  return basename(dirname(path)).replaceAll('-', '_');
+}
+
+/**
+ * Every `old::` module path that names a renamed Rust module, in any file:
+ * a test filter or a test name such as `ci_cd::old::case` in a durations list,
+ * a workflow or a document. An occurrence names the move when the module name
+ * is unique among the Rust files of the repository, or, among namesakes, when
+ * it is qualified by the parent module (`ci_cd::old::`) or, unqualified, when
+ * exactly one namesake sits at the root of a test binary (its parent module is
+ * not written in test paths). Inside a Rust source of the same source tree an
+ * unqualified occurrence follows the source's own rule instead (see
+ * `renameRustModules`).
+ * @param {string} text
+ * @param {string} file
+ * @param {Array<{from: string, to: string}>} moves
+ * @param {Map<string, Array<string>>} byBasename
+ * @returns {Array<{start: number, end: number, from: string, to: string, move: object}>}
+ */
+export function findModuleReferences(text, file, moves, byBasename) {
+  const found = [];
+  for (const move of moves) {
+    const oldName = rustModuleName(move.from);
+    const newName = rustModuleName(move.to);
+    if (!oldName || !newName || oldName === newName) continue;
+    if (posix.dirname(move.from) !== posix.dirname(move.to)) continue;
+    if (file.endsWith('.rs') && rustTree(move.from) === rustTree(file)) continue;
+    const namesakes = (byBasename.get(`${oldName}.rs`) ?? []).filter((path) => !moves.some((other) => other !== move && other.to === path));
+    const roots = namesakes.filter((path) => TEST_BINARY_ROOTS.includes(posix.dirname(path)));
+    const pattern = new RegExp(`(^|[^A-Za-z0-9_])${escapeRegExp(oldName)}(?=::)`, 'gmu');
+    for (const match of text.matchAll(pattern)) {
+      const start = match.index + match[1].length;
+      const qualifier = /([A-Za-z_][A-Za-z0-9_]*)::$/u.exec(text.slice(Math.max(0, start - 80), start));
+      let names = namesakes.length <= 1;
+      if (!names && qualifier) names = qualifier[1] === parentModuleName(move.from);
+      else if (!names) names = roots.length === 1 && roots[0] === move.from;
+      if (names) found.push({ start, end: start + oldName.length, from: oldName, to: newName, move });
+    }
+  }
+  return found.sort((left, right) => left.start - right.start);
+}
+
 /**
  * Rename the Rust modules of `moves` in the Rust source `text` of `file`: the
- * `mod old;` line of the parent module, and `old::` paths within the same
- * source tree when no other module of that tree shares the old name.
+ * `mod old;` line of the parent module (or a `mod old;` whose `#[path]`
+ * attribute names the new file), and `old::` paths within the same source
+ * tree when no other module of that tree shares the old name. Elsewhere,
+ * `findModuleReferences` finds the `old::` paths.
  * @param {string} text
  * @param {string} file
  * @param {Array<{from: string, to: string}>} moves
  * @param {Map<string, Array<string>>} byBasename
  */
 export function renameRustModules(text, file, moves, byBasename) {
-  if (!file.endsWith('.rs')) return { text, count: 0 };
   let count = 0;
   let result = text;
+  for (const reference of findModuleReferences(text, file, moves, byBasename).reverse()) {
+    result = result.slice(0, reference.start) + reference.to + result.slice(reference.end);
+    count += 1;
+  }
+  if (!file.endsWith('.rs')) return { text: result, count };
   for (const move of moves) {
     const oldName = rustModuleName(move.from);
     const newName = rustModuleName(move.to);
@@ -288,6 +344,12 @@ export function renameRustModules(text, file, moves, byBasename) {
         return `${before}${newName}${after}`;
       });
     }
+    const attributed = new RegExp(`(#\\[path\\s*=\\s*"([^"]*)"\\]\\s*(?:pub(?:\\([a-z]+\\))?\\s+)?mod\\s+)${escapeRegExp(oldName)}(\\s*;)`, 'gmu');
+    result = result.replace(attributed, (whole, before, path, after) => {
+      if (posix.normalize(posix.join(posix.dirname(file), path)) !== move.to && basename(path) !== basename(move.to)) return whole;
+      count += 1;
+      return `${before}${newName}${after}`;
+    });
     const namesakes = (byBasename.get(`${oldName}.rs`) ?? []).filter((path) => rustTree(path) === rustTree(file));
     if (namesakes.length > 1) continue;
     const usePath = new RegExp(`(^|[^A-Za-z0-9_])${escapeRegExp(oldName)}(?=::)`, 'gmu');
@@ -407,6 +469,9 @@ function check(map, moves) {
     if (text === null) continue;
     for (const reference of findReferences(text, file, moves, byBasename)) {
       failures.push(`${file}:${lineOf(text, reference.start)} still references ${reference.move.from} (now ${reference.move.to})`);
+    }
+    for (const reference of findModuleReferences(text, file, moves, byBasename)) {
+      failures.push(`${file}:${lineOf(text, reference.start)} still names the module ${reference.from}:: (now ${reference.to}::)`);
     }
   }
   if (failures.length > 0) {

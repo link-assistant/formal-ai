@@ -76,22 +76,31 @@ export function ledgerRows(root, failures) {
     } catch (error) {
       throw new Panic(`${path} readable: ${ioErrorDisplay(error)}`);
     }
+    // A field stated before the first record is the file's value, which a
+    // record inherits unless it states its own (`render_shard`).
+    const defaults = { shard: '', verdict: '', automatedTest: '' };
     let id = '';
-    let row = { shard: '', verdict: '', automatedTest: '' };
+    let row = defaults;
+    let inRecord = false;
     const close = () => {
       if (id === '') return;
       if (rows.has(id)) failures.push('the status ledger contains a duplicate requirement id');
       rows.set(id, row);
       id = '';
-      row = { shard: '', verdict: '', automatedTest: '' };
     };
     for (const line of lines(source)) {
       const trimmed = trim(line);
-      if (trimmed === 'requirement') close();
-      else if (trimmed.startsWith('id ')) id = unquote(trimmed.slice(3));
-      else if (trimmed.startsWith('shard ')) row.shard = unquote(trimmed.slice(6));
-      else if (trimmed.startsWith('verdict ')) row.verdict = unquote(trimmed.slice(8));
-      else if (trimmed.startsWith('automated_test ')) row.automatedTest = unquote(trimmed.slice(15));
+      if (trimmed === 'requirement') {
+        close();
+        row = { ...defaults };
+        inRecord = true;
+        continue;
+      }
+      const target = inRecord ? row : defaults;
+      if (trimmed.startsWith('id ')) id = unquote(trimmed.slice(3));
+      else if (trimmed.startsWith('shard ')) target.shard = unquote(trimmed.slice(6));
+      else if (trimmed.startsWith('verdict ')) target.verdict = unquote(trimmed.slice(8));
+      else if (trimmed.startsWith('automated_test ')) target.automatedTest = unquote(trimmed.slice(15));
     }
     close();
   }

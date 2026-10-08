@@ -1,5 +1,5 @@
 # One CI gate, one file (issue #991).
-ci_gate check_architecture_principles
+ci_gate check-architecture-principles
   stage web
   description "docs/architecture/principles.md is byte-current against data/meta/architecture-principles.lino, every gate it cites exists under data/meta/ci-gates/, and every gap it cites is a requirement row, so the map of how the repository applies code-architecture-principles cannot drift from the gates that enforce it."
   run "node scripts/render-architecture-principles.mjs --check"

@@ -4,7 +4,7 @@
 //! No maintained file may exceed 1500 lines, so:
 //!
 //! - `REQUIREMENTS.md` is an index; the assembled requirement register is
-//!   `docs/requirements/assembled/part-NN.md`, written in order by
+//!   `docs/requirements/assembled/<area>.md`, one file per area, written by
 //!   `rust-script scripts/assemble-requirements.rs --write`;
 //! - `CHANGELOG.md` keeps the newest releases, and older ones roll into
 //!   `docs/changelog/archive-NN.md`, written by
@@ -31,9 +31,9 @@ pub fn repository_root() -> PathBuf {
         .to_path_buf()
 }
 
-/// The `<prefix>NN.md` files of `directory`, in file-name order. A missing
+/// The `<prefix>*.md` files of `directory`, in file-name order. A missing
 /// directory has none.
-fn numbered_files(directory: &Path, prefix: &str) -> Vec<PathBuf> {
+fn markdown_files(directory: &Path, prefix: &str) -> Vec<PathBuf> {
     let mut files: Vec<PathBuf> = fs::read_dir(directory)
         .map(|entries| {
             entries
@@ -61,13 +61,14 @@ fn read(path: &Path) -> String {
         .unwrap_or_else(|error| panic!("{} should be readable: {error}", path.display()))
 }
 
-/// The whole assembled requirement register under `root`: every part, in order.
+/// The whole assembled requirement register under `root`: every area, in
+/// file-name order.
 #[must_use]
 pub fn requirements_at<P: AsRef<Path> + ?Sized>(root: &P) -> String {
-    let parts = numbered_files(&root.as_ref().join(REQUIREMENT_PARTS), "part-");
+    let parts = markdown_files(&root.as_ref().join(REQUIREMENT_PARTS), "");
     assert!(
         !parts.is_empty(),
-        "{REQUIREMENT_PARTS}/ holds no part-NN.md files; run \
+        "{REQUIREMENT_PARTS}/ holds no assembled area files; run \
          `rust-script scripts/assemble-requirements.rs --write`"
     );
     parts
@@ -89,7 +90,7 @@ pub fn requirements() -> String {
 pub fn changelog_at<P: AsRef<Path> + ?Sized>(root: &P) -> String {
     let root = root.as_ref();
     let mut text = read(&root.join("CHANGELOG.md"));
-    for archive in numbered_files(&root.join(CHANGELOG_ARCHIVE), "archive-")
+    for archive in markdown_files(&root.join(CHANGELOG_ARCHIVE), "archive-")
         .iter()
         .rev()
     {

@@ -69,8 +69,12 @@ const NOT_NOTATION = /^(?:rust\/embedded|docs\/case-studies|dev|experiments)\/|\
 const UNREWRITTEN = /\.(?:sh|py|yml|yaml|toml)$/u;
 const UNREWRITTEN_ROOTS = ['.github', 'scripts', 'experiments', 'rust', 'js', 'packages', 'desktop'];
 
-/** The documentation we own: history (case studies, logs, changelogs) stays. */
-const DOCUMENTS = /^(?:docs\/(?!case-studies\/).*|[^/]+|data\/README|rust\/README|js\/README)\.md$/u;
+/**
+ * The documentation we own. History stays as written (case studies, logs,
+ * changelogs, verbatim architect notes), and generated documents are
+ * regenerated from their sources instead of rewritten.
+ */
+const DOCUMENTS = /^(?:docs\/(?!case-studies\/|changelog\/|architect-notes\/|requirements\/assembled\/).*|(?!CHANGELOG|REQUIREMENTS)[^/]+|data\/README|rust\/README|js\/README)\.md$/u;
 
 function tracked(paths = []) {
   return execFileSync('git', ['ls-files', '--cached', '--others', '--exclude-standard', ...paths], {
@@ -143,7 +147,9 @@ export function planFamily(family) {
       shared.push(name);
     } else if (unrewritten.has(name)) {
       outsideCode.push(name);
-    } else if (own.has(renamed) || elsewhere.has(renamed)) {
+    } else if ((own.has(renamed) || elsewhere.has(renamed)) && !family.mergeCollisions) {
+      // An existing `-` spelling may name another thing; a family that knows
+      // both spellings name the same thing says `merge-collisions true`.
       collisions.push(name);
     } else {
       mapping.set(name, renamed);
@@ -184,7 +190,7 @@ function writeIfChanged(path, before, after, changed) {
       const old = before.split('\n');
       after.split('\n').forEach((line, index) => {
         if (line !== old[index]) {
-          console.log(`${path}:${index + 1}\n  - ${old[index].trim()}\n  + ${line.trim()}`);
+          console.log(`${path}:${index + 1}\n  - ${(old[index] ?? "").trim()}\n  + ${line.trim()}`);
         }
       });
     }

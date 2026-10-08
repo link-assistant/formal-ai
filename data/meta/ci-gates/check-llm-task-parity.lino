@@ -1,5 +1,5 @@
 # One CI gate, one file (issue #991).
-ci_gate check_llm_task_parity
+ci_gate check-llm-task-parity
   stage rust
   description "docs/llm-task-parity.md is exactly what scripts/generate-llm-task-parity.rs renders from its sources."
   run "rust-script scripts/generate-llm-task-parity.rs --check"

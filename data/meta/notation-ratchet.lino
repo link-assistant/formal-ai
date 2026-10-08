@@ -20,11 +20,11 @@
 # is the next deduplication: state it once on the meaning.
 notation-ratchet
   scope data/meta
-    underscore-names 2955
+    underscore-names 2867
     abbreviated-names 200
     duplicated-blocks 9
     repeated-fields 84
-    characters 1871134
+    characters 1707426
   scope data/seed
     underscore-names 9506
     abbreviated-names 245

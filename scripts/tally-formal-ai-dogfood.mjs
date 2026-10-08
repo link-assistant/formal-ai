@@ -20,7 +20,7 @@
 //
 // Usage: node scripts/tally-formal-ai-dogfood.mjs [--write | --check]
 //   --write renders docs/case-studies/pull-request-1188/formal-ai-tally.md;
-//   --check compares it and checks the ratchet (gate check_formal_ai_tally).
+//   --check compares it and checks the ratchet (gate check-formal-ai-tally).
 
 import { execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync } from 'node:fs';

@@ -4,54 +4,139 @@
 
 The requirement register is assembled from one shard per issue under
 [`docs/requirements/`](docs/requirements/README.md). No maintained file may exceed
-1500 lines, so the assembled register is split into ordered parts. Read them in
-order: together they are the whole register.
+1500 lines, so the assembled register is split by area, as
+[`data/meta/requirement-areas.lino`](data/meta/requirement-areas.lino) groups the shards. Together
+the areas are the whole register.
 
-1. [Part 1](docs/requirements/assembled/part-01.md)
+1. [Standing doctrine, vision and scope](docs/requirements/assembled/standing-doctrine.md)
    - Requirements for Issue #1
    - Current Scope Boundary
-   - Issue #6 UI Follow-Up Requirements
-   - Issue #8 Telegram Bot Requirements
-   - Issue #10 Demo Feedback and Identity Requirements
    - Issue #12 Holistic Vision Requirements
-   - Issue #14 Unified-Surface Requirements
-   - Issue #16 Follow-Up: Universal Data/Seed Across Every Interface (PR #17 reopen)
-   - Issue #16 Multilingual, Wikipedia, and Append-Only Memory Requirements
-   - Issue #18 Full-Memory Export/Import Requirements
-   - Issue #63 Cross-Language Definition Fusion Requirements
-   - Issue #78 Shorter Issue Reporting Requirements
-   - Issue #80 Software Project Request Requirements
-   - Issue #96 Calculator Delegation Requirements
-   - Issue #103 Test-Matrix And Architecture Requirements
-   - Issue #115 GitHub Evidence Collection And Hive-Mind Trace Requirements
-   - Issue #117 Lino I18n Catalog Requirements
-   - Issue #127 Structured Fact-Query Reasoning Requirements
-   - Issue #129 Connectivity Diagnostics Requirements
-   - Issue #133 DuckDuckGo Default, Combined Ranking, and Expanded Provider Diagnostics
-   - Issue #159 Hive Mind Lookup and Curated Project Summarization
-   - Issue #162 Calendar Weekday Reasoning
-   - Issue #187 Current Day Calendar Prompt
-   - Issue #195 Docker-in-Docker Telegram Runtime
-   - Issue #196 Permanent Memory Deletion And Reset
-   - Issue #207 Natural Translation Pipeline
    - Issue #244 Vision Implementation Planning
-   - Issue #278 Native Doublets Store Default Requirements
-   - Issue #279 Symbolic Probabilistic Reasoning
-   - Issue #283 Generalized Natural-Language Skill Compiler
-   - Issue #327 Cross-Runtime Synthesis Parity
-   - Issue #349 Reverse-Sort Program Modification Roadmap
    - Issue #398 PR Review Standards (comment 4663407299)
    - Issue #398 PR Review Standards (comment 4668929105)
    - Issue #398 Recursive Semantic Meta-Language
-   - Issue #408 Text And Code Editing Requirements
    - Issue #412 PR Review Standards (comment 4674…, knowledge-source breadth)
-   - Issue #438 Prepared Telegram Docker Image
    - Issue #451 Symbolic AI Reference And Best Practices
    - Issue #453 Moonshot Task Splitting and Approach Provenance
-   - Issue #468 Agentic-Coding Mode
-   - Issue #482 Nemotron Training-Data Samples
    - Issue #491 Least Action Continuation
+   - Issue #710 Dropped-Requirements Re-verification
+   - Issue #914 Vision Implementation Planning, Coding First
+   - Issue #924 Formal AI Self-Development Loop
+   - Issue #1073 Reasoning Standard: Unconditional Depth, Refutation First, Computed Trust
+   - Issue #1085 The Links Network Is Not The System That Reasons (E108)
+   - Issue #1188 User Requirements
+   - Standing Doctrine: Compiled Logic, Interfacing-Only JavaScript (2026-08-04)
+   - Standing Doctrine: JavaScript First, Full Parity, Then Translate (2026-10-06)
+   - Standing Doctrine: The JavaScript Server Has Full Parity With the Rust Server (2026-10-07)
+   - Standing Doctrine: The Recursive Meta Algorithm Is the Main Path (2026-10-06)
+   - Standing Doctrine: Three Roots, Full Parity, Through The Meta Language (2026-09-24)
+   - Standing Doctrine: Work Is Delegated to Formal AI Itself (2026-10-07)
+   - Standing Doctrine: Workstation Resources and Continuous Delivery (2026-10-07)
+
+2. [Delivery, quality and compliance](docs/requirements/assembled/delivery-quality-and-compliance.md)
+   - Issue #103 Test-Matrix And Architecture Requirements
+   - Issue #115 GitHub Evidence Collection And Hive-Mind Trace Requirements
    - Issue #492 Release Badge Stability
+   - Issue #656 Benchmark-Gated Promotion Protocol
+   - Issue #657 Release Self-Hosting Metric
+   - Issue #673 Workspace Self-AST Census
+   - Issue #698 Real External Benchmark Harness
+   - Issue #834 Legal & Compliance Self-Audit
+   - Issue #835 Multi-Jurisdiction File Legal-Risk Assessment
+   - Issue #891 Equation Corpus Ratchet
+   - Issue #893 Iterative Summarization Validation and the 80% Quality Ratchet
+   - Issue #894 CI Template Upstream Filings
+   - Issue #895 Coverage Publication And Ratchet
+   - Issue #921 Hive-Mind Full-Circle Integration Gate
+   - Issue #923 Symbolic-Kernel Coverage Growth
+   - Issue #960 Enforcing Recorded-But-Unenforced Conventions
+   - Issue #961 macOS CI Parity
+   - Issue #973 Automated Solve Session Evidence
+   - Issue #980 Default-Branch CI False Results
+   - Issue #1012 Complete CI/CD Diagnostic Audit
+   - Issue #1014 Complete CI/CD Diagnostic Audit
+   - Issue #1017 CI/CD False Positives, False Negatives, Warnings And Errors
+   - Issue #1137 Pre-Merge Four-Client Routing Replay
+   - Issue #1138 Bottleneck Audit
+   - Issue #1168 Generated Code Uses Versions Resolved at Generation Time
+   - Issue #1169 Every Dependency at Its Latest Release
+
+3. [Interfaces and integrations](docs/requirements/assembled/interfaces-and-integrations.md)
+   - Issue #6 UI Follow-Up Requirements
+   - Issue #8 Telegram Bot Requirements
+   - Issue #10 Demo Feedback and Identity Requirements
+   - Issue #14 Unified-Surface Requirements
+   - Issue #18 Full-Memory Export/Import Requirements
+   - Issue #78 Shorter Issue Reporting Requirements
+   - Issue #117 Lino I18n Catalog Requirements
+   - Issue #129 Connectivity Diagnostics Requirements
+   - Issue #159 Hive Mind Lookup and Curated Project Summarization
+   - Issue #195 Docker-in-Docker Telegram Runtime
+   - Issue #196 Permanent Memory Deletion And Reset
+   - Issue #438 Prepared Telegram Docker Image
+   - Issue #482 Nemotron Training-Data Samples
+   - Issue #668 Shareable associative packages
+   - Issue #669 Cloud memory sync
+   - Issue #703 External-Agent Orchestration
+   - Issue #839 Full-Conversation Issue Reports
+   - Issue #858 Claude Code Returning-User Recap
+   - Issue #861 Optional anonymous Sentry reporting
+   - Issue #864 Proactive Failure-Report Invitations
+   - Issue #909 Headless-Ready Global Client Configuration
+   - Issue 931: local WebSocket and WebRTC transports
+   - Issue #1154: One Shell-Argument Reading for the Whole Agentic Module
+   - Issue #1161 Client Registry Names the Agent Config Env
+   - Issue #1181 Standalone CLI Binaries and Consistent Boolean Env Switches
+   - Issue #1187 Optional GitHub Credentials in Every Workflow
+
+4. [Coding and agents](docs/requirements/assembled/coding-and-agents.md)
+   - Issue #80 Software Project Request Requirements
+   - Issue #283 Generalized Natural-Language Skill Compiler
+   - Issue #327 Cross-Runtime Synthesis Parity
+   - Issue #349 Reverse-Sort Program Modification Roadmap
+   - Issue #408 Text And Code Editing Requirements
+   - Issue #468 Agentic-Coding Mode
+   - Issue #563 Repository Resource Summarization
+   - Issue #674 Arbitrary Natural-Language Programs
+   - Issue #708 Bounded Natural-Language Memory Programs
+   - Issue #710 Dynamic Coding Discovery Continuation
+   - Issue #710 Repository Completion and Durable Retention Continuation
+   - Issue #847 Task Decomposition As A Working Task
+   - Issue #848 Executable Coding Tasks
+   - Issue #890 Formal Proof Program Translation
+   - Issue #919 Research-Driven Coding Procedures
+   - Issue 932: exercise generated language projects inside matching box images
+   - Issue #936 Substitution-Rule Compilation
+   - Issue #1021 Full-Range Coding And Contribution Artifacts
+   - Issue #1138 Prerequisite Discovery
+   - Issue #1138 Repository Workspace Protocol
+   - Issue #1138 Verifiable Task Routing
+   - Issue #1155: Work-Item Read Validation and Honest Fallbacks
+   - Issue #1156: Single output obligations
+   - Issue #1157: Idempotent recipe commits
+   - Issue #1158: Pull request completion and feedback
+   - Issue #1159: Workspace prerequisite recovery
+   - Issue #1160: Hive Mind prepared work continuation
+   - Issue #1164 Code Node Decomposition
+   - Issue #1165 Discovery on the Production Path
+   - Issue #1177 Code Tasks Answered Formally
+   - Issue #1180 Repository History as Formal Context
+   - Issue #1182 Duplication gates and maintained-parser adoption
+   - Issue #1185 Error-Driven Repair Loop
+
+5. [Reasoning and knowledge](docs/requirements/assembled/reasoning-and-knowledge.md)
+   - Issue #16 Follow-Up: Universal Data/Seed Across Every Interface (PR #17 reopen)
+   - Issue #16 Multilingual, Wikipedia, and Append-Only Memory Requirements
+   - Issue #63 Cross-Language Definition Fusion Requirements
+   - Issue #96 Calculator Delegation Requirements
+   - Issue #127 Structured Fact-Query Reasoning Requirements
+   - Issue #133 DuckDuckGo Default, Combined Ranking, and Expanded Provider Diagnostics
+   - Issue #162 Calendar Weekday Reasoning
+   - Issue #187 Current Day Calendar Prompt
+   - Issue #207 Natural Translation Pipeline
+   - Issue #278 Native Doublets Store Default Requirements
+   - Issue #279 Symbolic Probabilistic Reasoning
    - Issue #498 Google Trends Requirements
    - Issue #499 Learn From This Data Source Requirements
    - Issue #526 Translation Quality Test
@@ -61,114 +146,34 @@ order: together they are the whole register.
    - Issue #540 Dreaming Memory Maintenance
    - Issue #558 Auto Learning
    - Issue #559 General Meta Algorithm
-   - Issue #563 Repository Resource Summarization
    - Issue #649 World Models And Contexts
-   - Issue #656 Benchmark-Gated Promotion Protocol
-   - Issue #657 Release Self-Hosting Metric
-   - Issue #668 Shareable associative packages
-   - Issue #669 Cloud memory sync
-   - Issue #673 Workspace Self-AST Census
-   - Issue #674 Arbitrary Natural-Language Programs
-
-2. [Part 2](docs/requirements/assembled/part-02.md)
    - Issue #686 Associative Knowledge Networks Learning
-   - Issue #698 Real External Benchmark Harness
    - Issue #701 Auto-Learning Adoption Gap
    - Issue #702 Dialogue World Model
-   - Issue #703 External-Agent Orchestration
    - Issue #705 Anticipatory Dreaming
    - Issue #706 Any-Language Protocol
-   - Issue #708 Bounded Natural-Language Memory Programs
    - Issue #709 Multi-Source Search Fusion
-   - Issue #710 Dropped-Requirements Re-verification
-   - Issue #710 Dynamic Coding Discovery Continuation
-   - Issue #710 Repository Completion and Durable Retention Continuation
    - Issue #802 Refutation-First Hypothesis Search
-   - Issue #834 Legal & Compliance Self-Audit
-   - Issue #835 Multi-Jurisdiction File Legal-Risk Assessment
-   - Issue #839 Full-Conversation Issue Reports
    - Issue #844 Statement-Level Merging Into A Context
-   - Issue #847 Task Decomposition As A Working Task
-   - Issue #848 Executable Coding Tasks
-   - Issue #858 Claude Code Returning-User Recap
-   - Issue #861 Optional anonymous Sentry reporting
-   - Issue #864 Proactive Failure-Report Invitations
    - Issue #873 Research-Driven Unknown Recovery
-   - Issue #890 Formal Proof Program Translation
-   - Issue #891 Equation Corpus Ratchet
-   - Issue #893 Iterative Summarization Validation and the 80% Quality Ratchet
-   - Issue #894 CI Template Upstream Filings
-   - Issue #895 Coverage Publication And Ratchet
    - Issue #901 TRIZ Contradictions
-   - Issue #909 Headless-Ready Global Client Configuration
-   - Issue #914 Vision Implementation Planning, Coding First
    - Issue #917 General Natural-Formal Translation
    - Issue #918 Minimal-Core Boundary And Seed-Metadata Audit
-   - Issue #919 Research-Driven Coding Procedures
-   - Issue #921 Hive-Mind Full-Circle Integration Gate
    - Issue #922 Method Learning From Experience
-   - Issue #923 Symbolic-Kernel Coverage Growth
-   - Issue #924 Formal AI Self-Development Loop
-   - Issue 931: local WebSocket and WebRTC transports
-   - Issue 932: exercise generated language projects inside matching box images
    - Issue #933 Conversational Wording-Variation Floor
-   - Issue #936 Substitution-Rule Compilation
-   - Issue #960 Enforcing Recorded-But-Unenforced Conventions
-   - Issue #961 macOS CI Parity
-   - Issue #973 Automated Solve Session Evidence
-   - Issue #980 Default-Branch CI False Results
    - Issue #982 Persisted-Memory Compatibility Contract
    - Issue #991 Dynamic Multi-Source How-To Synthesis
-   - Issue #1012 Complete CI/CD Diagnostic Audit
-   - Issue #1014 Complete CI/CD Diagnostic Audit
-   - Issue #1017 CI/CD False Positives, False Negatives, Warnings And Errors
-   - Issue #1021 Full-Range Coding And Contribution Artifacts
-   - Issue #1073 Reasoning Standard: Unconditional Depth, Refutation First, Computed Trust
-   - Issue #1085 The Links Network Is Not The System That Reasons (E108)
-   - Issue #1137 Pre-Merge Four-Client Routing Replay
-   - Issue #1138 Bottleneck Audit
    - Issue #1138 Composition From Retrieved Sources
    - Issue #1138 Formalization Depth
    - Issue #1138 Learning Effects
    - Issue #1138 Live Concept Lookup
-   - Issue #1138 Prerequisite Discovery
-   - Issue #1138 Repository Workspace Protocol
    - Issue #1138 Selection Heuristics
-   - Issue #1138 Verifiable Task Routing
-
-3. [Part 3](docs/requirements/assembled/part-03.md)
-   - Issue #1154: One Shell-Argument Reading for the Whole Agentic Module
-   - Issue #1155: Work-Item Read Validation and Honest Fallbacks
-   - Issue #1156: Single output obligations
-   - Issue #1157: Idempotent recipe commits
-   - Issue #1158: Pull request completion and feedback
-   - Issue #1159: Workspace prerequisite recovery
-   - Issue #1160: Hive Mind prepared work continuation
-   - Issue #1161 Client Registry Names the Agent Config Env
    - Issue #1163 Internet as Formal Knowledge
-   - Issue #1164 Code Node Decomposition
-   - Issue #1165 Discovery on the Production Path
    - Issue #1166 The Request Formalized into Obligations
-   - Issue #1168 Generated Code Uses Versions Resolved at Generation Time
-   - Issue #1169 Every Dependency at Its Latest Release
    - Issue #1172 Factual QA Subject-Verified Lookup
    - Issue #1173 No Canned Search Answer in the Unknown-Reasoning Fallback
    - Issue #1174 Text Transforms Answered Formally
    - Issue #1175 Routing by Formalization, Not by a Surface Word
    - Issue #1176 Quantities, Dates and Statistics Computed Exactly
-   - Issue #1177 Code Tasks Answered Formally
-   - Issue #1180 Repository History as Formal Context
-   - Issue #1181 Standalone CLI Binaries and Consistent Boolean Env Switches
-   - Issue #1182 Duplication gates and maintained-parser adoption
    - Issue #1184 White-Box Derivation for Every Answer
-   - Issue #1185 Error-Driven Repair Loop
    - Issue #1186 Formalization as a User-Facing Task
-   - Issue #1187 Optional GitHub Credentials in Every Workflow
-   - Issue #1188 User Requirements
-   - Standing Doctrine: Compiled Logic, Interfacing-Only JavaScript (2026-08-04)
-   - Standing Doctrine: JavaScript First, Full Parity, Then Translate (2026-10-06)
-   - Standing Doctrine: The JavaScript Server Has Full Parity With the Rust Server (2026-10-07)
-   - Standing Doctrine: The Recursive Meta Algorithm Is the Main Path (2026-10-06)
-   - Standing Doctrine: Three Roots, Full Parity, Through The Meta Language (2026-09-24)
-   - Standing Doctrine: Work Is Delegated to Formal AI Itself (2026-10-07)
-   - Standing Doctrine: Workstation Resources and Continuous Delivery (2026-10-07)

@@ -77,7 +77,7 @@ describe('Formal AI edits its own coordination files', () => {
   });
 
   test('the local gate runner runs as asked', async () => {
-    const command = 'node experiments/formal_ai_subagent/local-gates.mjs --only check_file_size';
+    const command = 'node experiments/formal_ai_subagent/local-gates.mjs --only check-file-size';
     const plan = await planChatStep([{ role: 'user', content: `Run ${command}` }], ['read', 'edit', 'bash', 'write']);
     assert.deepEqual(plan.calls.map((call) => [call.tool, JSON.parse(call.arguments).command]), [['bash', command]]);
   });
@@ -91,7 +91,7 @@ describe('the local gate runner reads the gates CI runs', () => {
   const row = (name) => listed.find((line) => line.split(/\s+/)[1] === name);
 
   test('a registry gate runs locally', () => {
-    assert.match(row('check_file_size'), /^run {3}check_file_size +node scripts\/check-file-size\.mjs$/);
+    assert.match(row('check-file-size'), /^run {3}check[-_]file[-_]size +node scripts\/check-file-size\.mjs$/);
   });
 
   test('a gate that needs a Rust build is left to CI', () => {

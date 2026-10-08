@@ -5,7 +5,7 @@
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
 #
 # PR #1188: R1188-U23, every code file is human-readable multi-line code.
-ci_gate check_readable_code
+ci_gate check-readable-code
   stage web
   description "Every tracked code file under js/, ts/, rust/, scripts/ and packages/ is human-readable multi-line code: no file averages more than 160 characters per line and no line holds more than 300 characters of code (string and comment text not counted); the only exceptions are the distribution bundles and untouchable generated output listed with their reasons in data/meta/readable-code-exemptions.lino, and a stale exemption fails."
   run "node scripts/check-readable-code.mjs"

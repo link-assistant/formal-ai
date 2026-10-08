@@ -11,7 +11,7 @@
 # view describing a system that no longer exists, so this gate re-renders
 # them and fails on any byte of drift. The Rust twin is pinned to the same
 # committed parts by rust/tests/unit/system_diagrams.rs.
-ci_gate check_system_diagrams
+ci_gate check-system-diagrams
   stage web
   description "The generated system diagrams in docs/diagrams/ (overview, solver handlers, CLI subcommands, HTTP routes) are byte-current against the live seed, CLI definition and route manifest."
   run "node scripts/generate-system-diagrams.mjs --check"

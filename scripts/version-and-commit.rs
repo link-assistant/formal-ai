@@ -548,7 +548,7 @@ fn regenerate_release_artifacts(version: &str, date: &str) -> Result<bool, Strin
 // re-rendered here, or they are stale from this commit onward. The push
 // carries the bot token and triggers no workflow of its own, so nothing
 // catches the drift until the next pull request or merge runs the
-// check_status_render gate against a tree that contains this commit --
+// check-status-render gate against a tree that contains this commit --
 // exactly what happened to release commit b9378cdeb (v0.352.0), which
 // failed PR #1152's gate eight minutes after the release job went green.
 fn regenerate_status_surfaces() -> Result<(), String> {

@@ -3,7 +3,7 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_vscode_extension
+ci_gate check-vscode-extension
   stage web
   description "The VS Code extension's node tests pass."
   run "npm run vscode:test"

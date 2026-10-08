@@ -24,6 +24,7 @@ export const PIPELINE_COMMITTED = [
   'docs/benchmarks.md',
   'data/meta/requirement-status-ledger.lino',
   'data/meta/requirement-status-ledger',
+  'data/meta/requirement-areas.lino',
   'data/meta/self-hosting-ledger.lino',
   'data/meta/debt-ratchet.lino',
   'data/meta/core-boundary-ledger.lino',

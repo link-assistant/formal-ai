@@ -3,7 +3,7 @@
 # because its step list was append-only. A gate lives here instead, so two
 # branches adding gates create two files, never one shared region.
 # `rust-script scripts/run-ci-gates.rs --stage <stage>` runs them.
-ci_gate check_docs_rs_dependency_profile
+ci_gate check-docs-rs-dependency-profile
   stage rust
   description "The docs.rs build profile -- no default features -- still documents cleanly."
   run "cargo doc --manifest-path rust/Cargo.toml --no-deps --lib --no-default-features"

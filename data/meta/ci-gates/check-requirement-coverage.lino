@@ -1,5 +1,5 @@
 # One CI gate, one file (issue #991).
-ci_gate check_requirement_coverage
+ci_gate check-requirement-coverage
   stage web
   description "docs/case-studies/pull-request-1188/requirement-coverage.md is exactly what experiments/formal_ai_subagent/requirement-coverage.mjs renders from the mapping, the requirement shards and the status ledger."
   run "node experiments/formal_ai_subagent/requirement-coverage.mjs --check"

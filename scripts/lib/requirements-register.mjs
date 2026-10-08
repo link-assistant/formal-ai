@@ -33,9 +33,9 @@ export function readRegister(root) {
   }
   const parts = paths.filter((path) => {
     const name = fileName(path);
-    return name.startsWith('part-') && name.endsWith('.md');
+    return name.endsWith('.md');
   }).sort(compareStrings);
-  if (!parts.length) throw new Error(`${REQUIREMENT_PARTS} holds no part-NN.md files`);
+  if (!parts.length) throw new Error(`${REQUIREMENT_PARTS} holds no assembled area files`);
   let register = '';
   for (const part of parts) {
     try {
