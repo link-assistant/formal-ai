@@ -32,7 +32,10 @@ test("R105: every web-serving surface regenerates the mirror before serving js/"
   for (const config of ["rust/tests/e2e/playwright.local.config.js", "rust/tests/e2e/playwright.adhoc.config.js"]) {
     assert.match(read(config), /sync-seed\.sh && npx serve \.\.\/\.\.\/\.\.\/js /u, config);
   }
-  for (const workflow of [".github/workflows/e2e-local.yml", ".github/workflows/release.yml"]) {
+  // The Pages bundle is built by the reusable pages-artifact.yml, which
+  // release.yml calls (PR #1188 R1188-U9 moved the build out of release.yml).
+  for (const workflow of [".github/workflows/e2e-local.yml", ".github/workflows/pages-artifact.yml"]) {
     assert.match(read(workflow), /run: scripts\/sync-seed\.sh$/mu, workflow);
   }
+  assert.match(read(".github/workflows/release.yml"), /uses: \.\/\.github\/workflows\/pages-artifact\.yml$/mu);
 });
