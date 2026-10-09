@@ -1,0 +1,10 @@
+{
+  "id": "T3554",
+  "unchangedOriginal": "T3551",
+  "stop": "final",
+  "tools": [],
+  "disposition": "gap",
+  "origin": "semantic-authoring-missing-contract",
+  "preimagesUnchanged": true,
+  "autonomousFeatureWrites": 0
+}

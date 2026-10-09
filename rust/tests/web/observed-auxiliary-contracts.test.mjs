@@ -8,7 +8,7 @@ import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { planChatStep } from '../../../js/agentic/planner.mjs';
 import { composeGeneralChangePlan, PLAN_PATH } from '../../../js/agentic/general_planner.mjs';
-import { execute } from '../../../experiments/js_dogfood/drive.mjs';
+import { executeResult } from '../../../experiments/js_dogfood/drive.mjs';
 before(async () => installNodeHost(new WorkerHost()));
 const PROMPT = 'Create a file hello.txt containing exactly: Hello World';
 const TOOLS = ['read_file', 'write_file', 'run_command'];
@@ -26,12 +26,14 @@ async function run(prompt, { tools = TOOLS, inject = null } = {}) {
       assert.equal(step.calls.length, 1);
       const call = step.calls[0], args = JSON.parse(call.arguments);
       const override = inject?.(call, args, calls);
-      const output = override ?? execute(directory, { ...call, tool: aliases[call.tool] });
+      const receipt = override === undefined || override === null
+        ? executeResult(directory, { ...call, tool: aliases[call.tool] }) : { content: override };
+      const output = receipt.content;
       calls.push({ ...call, args, result: output, injected: override !== undefined && override !== null });
       const id = 'contract-' + turn;
       messages.push({ role: 'assistant', content: '', tool_calls: [{ id, type: 'function',
         function: { name: call.tool, arguments: call.arguments } }] },
-        { role: 'tool', tool_call_id: id, name: call.tool, content: output });
+        { role: 'tool', tool_call_id: id, name: call.tool, ...receipt });
     }
     assert.fail('bounded contract did not terminate');
   } finally {

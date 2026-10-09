@@ -1,0 +1,21 @@
+{
+  "id": "T3551",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Implement a reusable truthful Read provider result boundary in experiments/js_dogfood/drive.mjs and the actual providers in rust/tests/web/general-plan-event-append.test.mjs and rust/tests/web/observed-auxiliary-contracts.test.mjs. Preserve raw source bytes separately from outer provider status and complete-file metadata; only actual caught filesystem failures own is_error. Preserve the existing execute text API, exact target/history/corrupt-read assertions, unknown bare-source behavior, and independent negative controls for source files whose JSON keys resemble failure metadata. Validate the unchanged original auxiliary-record tests and nearest provider controls. Do not infer provider success or completeness from source text.",
+  "taskUtf8Bytes": 736,
+  "before": [
+    {
+      "path": "experiments/js_dogfood/drive.mjs",
+      "sha256": "0784651a1e421733f637e7709b556decf2a7d7aefdee78310a58b6180ec0acd7"
+    },
+    {
+      "path": "rust/tests/web/general-plan-event-append.test.mjs",
+      "sha256": "18f5ffb2f92965b8c66a377e230493e3bee8ac6751e23e317cd1126b8fcb5286"
+    },
+    {
+      "path": "rust/tests/web/observed-auxiliary-contracts.test.mjs",
+      "sha256": "b8643e1dda449746b2ea961fc621c684621e5a81a101f9ce6421fcf830f69da3"
+    }
+  ],
+  "patchContextBytes": 0
+}

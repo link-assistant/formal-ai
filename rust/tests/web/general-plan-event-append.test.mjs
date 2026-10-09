@@ -13,10 +13,10 @@ import { reportedExitCode, harnessReportedFailure, observedPayload } from '../..
 
 before(async () => { await installNodeHost(new WorkerHost()); });
 const request = 'Set the contents of result.txt to «hello»';
-function result(messages, call, output) {
+function result(messages, call, output, metadata = {}) {
   const id = `event-${messages.length}`;
   messages.push({ role: 'assistant', content: '', tool_calls: [{ id, type: 'function', function: { name: call.tool, arguments: call.arguments } }] });
-  messages.push({ role: 'tool', tool_call_id: id, content: output });
+  messages.push({ role: 'tool', tool_call_id: id, content: output, ...metadata });
 }
 function readWriteSession(files, options = {}) {
   const plan = composeGeneralChangePlan(request);
@@ -31,14 +31,25 @@ function readWriteSession(files, options = {}) {
     calls.push({ tool: call.tool, args });
     const path = args.path ?? args.filePath;
     let output;
+    const metadata = {};
     if (call.tool === 'read') {
-      output = files.has(path) ? files.get(path) : `Error: File not found: ${path}`;
-      if (path === PLAN_PATH && options.denied) output = 'Error: Permission denied';
+      if (files.has(path)) {
+        output = files.get(path);
+        metadata.source_read = { path, success: true, complete: true, format: 'raw' };
+      } else {
+        output = `Error: File not found: ${path}`;
+        metadata.is_error = true;
+      }
+      if (path === PLAN_PATH && options.denied) {
+        output = 'Error: Permission denied';
+        delete metadata.source_read;
+        metadata.is_error = true;
+      }
       if (path === PLAN_PATH && options.corrupt && calls.some((entry) => entry.tool === 'write' && entry.args.path === PLAN_PATH)) output = planLinksNotation(plan);
     } else if (call.tool === 'write') {
       files.set(path, args.content); output = '';
     } else { assert.equal(args.command, 'cat result.txt'); output = files.get('result.txt'); }
-    result(messages, call, output);
+    result(messages, call, output, metadata);
   }
   assert.fail('append session exhausted its turn budget');
 }

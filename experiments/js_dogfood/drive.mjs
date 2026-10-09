@@ -12,9 +12,9 @@
 // Usage:
 //   node experiments/js_dogfood/drive.mjs --dir <sandbox> [--steps 12] <prompt>
 //
-// The tool result shapes follow the Agent CLI 0.26 transcripts recorded in the
-// server's dialog log: `read` returns the numbered `<file>` block, `write` and
-// `edit` return an empty string, `bash` returns stdout+stderr.
+// The legacy execute projection keeps Agent CLI numbered Read blocks.
+// drive attaches actual raw Read bytes and provider status in separate fields;
+// Write/Edit text receipts and actual Bash process observations keep their APIs.
 
 import { shellCapture } from './shell-capture.mjs';
 import { grepCapture } from './grep-capture.mjs';
@@ -76,6 +76,19 @@ function toolFailure(message) {
   return JSON.stringify({ is_error: true, error: String(message) });
 }
 
+/** Read provider metadata is attached outside the actual file bytes. */
+export function executeResult(dir, call) {
+  if (call.tool !== 'read') return { content: execute(dir, call) };
+  const args = argsOf(call);
+  const path = args.filePath ?? args.file_path ?? args.path;
+  try {
+    const content = readFileSync(within(dir, path), 'utf8');
+    return { content, source_read: { path, success: true, complete: true, format: 'raw' } };
+  } catch (error) {
+    return { content: toolFailure(error.message), is_error: true };
+  }
+}
+
 /** Execute one tool call the way the Agent CLI does; returns its result text. */
 export function execute(dir, call) {
   const args = argsOf(call);
@@ -83,7 +96,9 @@ export function execute(dir, call) {
   try {
     switch (call.tool) {
       case 'read': {
-        const text = readFileSync(within(dir, path), 'utf8');
+        const receipt = executeResult(dir, call);
+        if (receipt.is_error) return receipt.content;
+        const text = receipt.content;
         const lines = text.split('\n');
         const body = lines.map((line, index) => `${String(index + 1).padStart(5, '0')}| ${line}`).join('\n');
         return `<file>\n${body}\n\n(End of file - total ${lines.length} lines)\n</file>`;
@@ -171,9 +186,10 @@ export async function drive(planChatStep, dir, prompt, { tools = AGENT_CLI_TOOLS
     }));
     messages.push({ role: 'assistant', content: '', tool_calls: toolCalls });
     plan.calls.forEach((call, index) => {
-      const result = execute(dir, call);
-      transcript.push({ tool: call.tool, arguments: call.arguments, result });
-      messages.push({ role: 'tool', tool_call_id: toolCalls[index].id, name: call.tool, content: result });
+      const receipt = executeResult(dir, call);
+      const { content: result, ...metadata } = receipt;
+      transcript.push({ tool: call.tool, arguments: call.arguments, result, ...metadata });
+      messages.push({ role: 'tool', tool_call_id: toolCalls[index].id, name: call.tool, ...receipt });
     });
   }
   return { transcript, answer: null, stop: 'steps', toolsAdvertised: tools };
