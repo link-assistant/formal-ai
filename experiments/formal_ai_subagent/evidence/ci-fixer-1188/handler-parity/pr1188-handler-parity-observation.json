@@ -27,7 +27,7 @@
       "sha256": "e55eaed34dbc838d2f869354c7b560fa21c2c7bf1e45172fff6412cbdc8e1cba"
     }
   ],
-  "originalReport": "pr1188-three-case-original-report.json",
+  "originalReport": "pr1188-three-case-original-report.json.gz",
   "originalReportSha256": "9ce3b6ec883d1f0b2b7c61fe4f27578926243d0e78ade374cbdf7ba0304f299c",
   "retrySummary": {
     "nativeTotal": 1178,
@@ -94,5 +94,7 @@
     "coreference": 118,
     "toolPolicy": 14,
     "program": 1291
-  }
+  },
+  "originalReportEncoding": "gzip",
+  "originalReportStoredSha256": "11ce8a7123a7ed85487b2f769ddfd61a13f884f17db41299bb0c5787ccec2c1a"
 }
