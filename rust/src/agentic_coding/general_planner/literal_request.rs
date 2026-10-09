@@ -149,7 +149,7 @@ fn parse_write_request_bound(
                 is_literal_content(
                     content,
                     marker_span,
-                    seed::mentions_role(
+                    seed::lexicon().mentions_role(
                         seed::ROLE_FILE_WRITE_CONTENT_QUALIFIER,
                         &crate::engine::normalize_prompt(&request[marker_start..marker_end]),
                     ),

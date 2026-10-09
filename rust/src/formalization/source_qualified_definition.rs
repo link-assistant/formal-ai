@@ -39,8 +39,35 @@ fn unquote(value: &str) -> String {
     }
     value.to_owned()
 }
-fn literal_pattern(text: &str) -> String {
-    regex::escape(text).replace(' ', "\\s+")
+/// Match a seeded literal at a UTF-8 boundary, with case and whitespace folding.
+fn literal_end(input: &str, start: usize, literal: &str) -> Option<usize> {
+    let mut cursor = start;
+    let mut expected = literal.chars().peekable();
+    while let Some(character) = expected.next() {
+        if character.is_whitespace() {
+            while expected.peek().is_some_and(|next| next.is_whitespace()) {
+                expected.next();
+            }
+            let mut found = false;
+            for actual in input.get(cursor..)?.chars() {
+                if !actual.is_whitespace() {
+                    break;
+                }
+                cursor += actual.len_utf8();
+                found = true;
+            }
+            if !found {
+                return None;
+            }
+        } else {
+            let actual = input.get(cursor..)?.chars().next()?;
+            if !actual.to_lowercase().eq(character.to_lowercase()) {
+                return None;
+            }
+            cursor += actual.len_utf8();
+        }
+    }
+    Some(cursor)
 }
 /// Bind the seeded subject/provider slots without performing a lookup.
 pub fn request(prompt: &str) -> Option<Request> {
@@ -79,29 +106,32 @@ pub fn request(prompt: &str) -> Option<Request> {
         {
             continue;
         }
-        let Ok(outer) = regex::RegexBuilder::new(&format!(
-            "^{}(.*){}$",
-            literal_pattern(before),
-            literal_pattern(after)
-        ))
-        .case_insensitive(true)
-        .build() else {
+        let Some(body_start) = literal_end(input, 0, before) else {
             continue;
         };
-        let Some(captures) = outer.captures(input) else {
-            continue;
-        };
-        let body = &captures[1];
-        let Ok(separator) = regex::RegexBuilder::new(&literal_pattern(middle))
-            .case_insensitive(true)
-            .build()
+        let Some(body_end) = input
+            .char_indices()
+            .map(|(start, _)| start)
+            .chain(std::iter::once(input.len()))
+            .filter(|start| *start >= body_start)
+            .rev()
+            .find(|start| literal_end(input, *start, after) == Some(input.len()))
         else {
             continue;
         };
+        let body = &input[body_start..body_end];
         let mut candidates = Vec::new();
-        for boundary in separator.find_iter(body) {
-            let left = unquote(&body[..boundary.start()]);
-            let right = unquote(&body[boundary.end()..]);
+        let mut next_boundary = 0;
+        for (start, _) in body.char_indices() {
+            if start < next_boundary {
+                continue;
+            }
+            let Some(end) = literal_end(body, start, middle) else {
+                continue;
+            };
+            next_boundary = end;
+            let left = unquote(&body[..start]);
+            let right = unquote(&body[end..]);
             let (term, source) = if term_first {
                 (left, right)
             } else {

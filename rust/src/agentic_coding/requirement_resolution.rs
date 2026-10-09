@@ -131,7 +131,7 @@ pub fn resolve_seed_target(
         if candidates.is_empty() {
             continue;
         }
-        for meaning in crate::seed::meanings::parse_lexicon_text(source).meanings {
+        for meaning in crate::seed::parse_lexicon_text(source).meanings {
             if !meaning.roles.iter().any(|role| {
                 role.split(['_', '-'])
                     .any(|part| role_words.contains(&singular(&part.to_lowercase())))

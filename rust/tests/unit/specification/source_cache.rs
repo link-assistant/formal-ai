@@ -224,3 +224,41 @@ fn an_unknown_named_provider_has_no_fabricated_provenance() {
             .all(|link| !link.starts_with("source:http") && !link.starts_with("cache_hit:"))
     );
 }
+
+#[test]
+fn seeded_source_frames_preserve_utf8_slots_and_fold_only_literal_whitespace() {
+    use formal_ai::formalization::source_qualified_definition::request;
+    for (prompt, term, language) in [
+        ("CITE\tA definition of café from Wikipedia", "café", "en"),
+        ("According to Wikipedia, define entropy", "entropy", "en"),
+        (
+            "Cita una definición de red de nodos de Wikipedia",
+            "red de nodos",
+            "es",
+        ),
+        (
+            "Приведи определение энтропия из Wikipedia",
+            "энтропия",
+            "ru",
+        ),
+        ("Wikipedia से ऊर्जा की परिभाषा उद्धृत करें", "ऊर्जा", "hi"),
+        ("引用Wikipedia对熵的定义", "熵", "zh"),
+    ] {
+        let bound = request(prompt).expect("both declared frame slots bind");
+        assert_eq!(bound.term, term);
+        assert_eq!(bound.source, "Wikipedia");
+        assert_eq!(bound.language, language);
+    }
+    let unknown = request("Cite a definition of café from Unknown provider")
+        .expect("an unknown provider remains a bound unresolved request");
+    assert_eq!(unknown.term, "café");
+    assert_eq!(unknown.source, "Unknown provider");
+    for prompt in [
+        "Before cite a definition of entropy from Wikipedia",
+        "Cite a definition of \"\" from Wikipedia",
+        "Cite a definition of entropy\nextra from Wikipedia",
+        "引用Wikipedia对的定义",
+    ] {
+        assert!(request(prompt).is_none(), "{prompt}");
+    }
+}
