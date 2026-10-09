@@ -1,4 +1,4 @@
-// Content-addressed captures in the same registry as their providers.
+// Rust: SourceCapture::from_seed_registry; source_fetch/seed_captures.rs owns body provenance.
 async function sourceWalkSeedCapture(url, raw = seedRawText(SEED_RAW, "sources-registry.lino")) {
   const root = self.FormalAiSeed.parse(raw || "");
   const sections = root.name === "source-captures" ? [root] : (root.children || []).filter(node => node.name === "source-captures");

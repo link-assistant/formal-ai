@@ -2,9 +2,9 @@ self_ast_census
   target src/source_walk.rs
   language rust
   fidelity signature
-  byte_len 22447
-  line_count 577
-  content_id source_module_4c49863b4d712870
+  byte_len 22451
+  line_count 578
+  content_id source_module_02b9b7e2353923b5
   symbol_count 30
   symbols
     struct LookupBounds 20 34
@@ -26,14 +26,14 @@ self_ast_census
     function is_word_boundary 199 202
     function capitalize 203 208
     function entry_url 217 219
-    function entry_url_in 224 245
-    function fallback_entry_url_in 248 260
-    function select_sources 270 303
-    function candidates 307 312
-    function skipped_sources 319 344
-    struct Walk 346 353
-    function walk_source 359 445
-    function walk_sources 450 511
-    function endpoint_key 520 532
-    function observe_failure 535 569
-    function trusted_sources 575 577
+    function entry_url_in 225 246
+    function fallback_entry_url_in 249 261
+    function select_sources 271 304
+    function candidates 308 313
+    function skipped_sources 320 345
+    struct Walk 347 354
+    function walk_source 360 446
+    function walk_sources 451 512
+    function endpoint_key 521 533
+    function observe_failure 536 570
+    function trusted_sources 576 578

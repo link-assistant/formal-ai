@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/module_function/callable_catalog.rs
   language rust
   fidelity full_ast
-  byte_len 17559
-  line_count 450
-  content_id source_module_282fd9c8f1d966d1
+  byte_len 17634
+  line_count 456
+  content_id source_module_451f6ee06a3d0404
   symbol_count 14
   symbols
     function tree_value 6 37
@@ -17,26 +17,26 @@ self_ast_census
     function unknown 122 124
     function span_start 125 127
     function span_end 128 130
-    function observe_source_callables 134 314
-    function resolve_entry 315 381
-    function observed_guarded_graph 385 404
-    function observed_callable_graphs 408 450
+    function observe_source_callables 134 320
+    function resolve_entry 321 387
+    function observed_guarded_graph 391 410
+    function observed_callable_graphs 414 456
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 16523
-    named_node_count 3388
-    distinct_node_kinds 72
+    total_link_count 16483
+    named_node_count 3377
+    distinct_node_kinds 73
     node_kinds
       arguments 241
       array_type 5
       assignment_expression 16
       attribute 3
       attribute_item 3
-      binary_expression 84
-      block 84
+      binary_expression 82
+      block 81
       boolean_literal 1
       call_expression 241
       char_literal 9
@@ -47,7 +47,7 @@ self_ast_census
       crate 5
       doc_comment 4
       else_clause 4
-      expression_statement 125
+      expression_statement 122
       field_expression 174
       field_identifier 174
       field_pattern 5
@@ -55,10 +55,11 @@ self_ast_census
       function_item 14
       generic_type 18
       identifier 745
-      if_expression 43
+      if_expression 40
       index_expression 80
       inner_doc_comment_marker 1
       integer_literal 40
+      let_chain 2
       let_condition 7
       let_declaration 58
       lifetime 1
@@ -97,7 +98,7 @@ self_ast_census
       tuple_struct_pattern 12
       type_arguments 18
       type_identifier 53
-      unary_expression 15
+      unary_expression 13
       use_declaration 3
       use_list 3
       visibility_modifier 3

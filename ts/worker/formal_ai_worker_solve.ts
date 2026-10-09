@@ -113,7 +113,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
   events.push(`meta:${meta.goal}:${meta.status}`);
   steps.push({ step: "meta_reason", detail: `${meta.goal} ${meta.status}`, derivation: meta.derivationLino });
   // A bare imperative after earlier turns refines their artifact: it never takes the turn ahead of the handlers.
-  if (meta.status === "solved" && (meta.program || meta.subgoals) && !(meta.imperative && history?.length) && !isTargetlessProgramModification(normalized)) {
+  if (meta.status === "solved" && (meta.program || meta.subgoals) && !(meta.imperative && history?.length) && !isTargetlessProgramModification(normalized) && !(matchingCoreferencePronoun(normalizePrompt(textTransformCommandHead(prompt))) && nearestCoreferenceAntecedent(history))) {
     events.push("handler:meta_reasoner");
     return finalize(events, steps, toolCalls, solverMetaProjection(metaAnswer(meta)), formalizationContext);
   }

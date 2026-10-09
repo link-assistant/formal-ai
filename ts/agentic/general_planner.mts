@@ -14,7 +14,8 @@ import { proseSentences } from './shell_command_policy.mjs';
 import { traceRoute } from './planner/continuation.mjs';
 import {
   CueFamily, actionCueStartAfter, bareSurfaces, cleanContent, cleanCueToken, cleanPathToken,
-  contentLeadClose, firstActionCueEnd, firstActionCueStart, firstContentLeadEnd, firstPrefixLeadEnd,
+  rawContentLeadClose, firstActionCueEnd, firstActionCueStart, firstContentLeadEnd, firstPrefixLeadEnd,
+  firstRawContentLeadEnd, firstRawPrefixLeadEnd,
   honouringPinnedFirstLine, looksLikeFilePath, payloadContinuesPastItsFirstLine, rankedBindings,
   safeRelativePath, spanOf, tokens,
 } from './write_request.mjs';
@@ -143,9 +144,8 @@ export function plannedNotExecutedAnswer(plan) {
  * @param {string} request
  */
 export function objectiveText(request) {
-  const lowered = request.toLowerCase();
-  const lead = firstPrefixLeadEnd(lowered, 'request_objective_lead');
-  if (!lead || !lineAnchored(lowered, lead[0])
+  const lead = firstRawPrefixLeadEnd(request, 'request_objective_lead');
+  if (!lead || !lineAnchored(request, lead[0])
     || quotedSegmentSpans(request).some((segment) => lead[0] >= segment.start && lead[0] < segment.end)) return request;
   return trim(request.slice(lead[1]));
 }
@@ -161,7 +161,7 @@ function literalPayload(request) {
   }
   const normalized = normalizePrompt(prefix);
   const overwrite = mentionsRole('file_overwrite_consent', normalized);
-  const lead = firstContentLeadEnd(prefix.toLowerCase());
+  const lead = firstRawContentLeadEnd(prefix);
   if (lead === null && !overwrite) return null;
   // An embedded quoted field is not the entire marker-led payload.
   if (lead !== null && !/^[\s:]*$/u.test(prefix.slice(lead[1]))
@@ -427,7 +427,7 @@ function parseWriteRequestBound(request, toks, binding) {
   const cueIsDestination = binding.family === CueFamily.Destination;
   const specification = composedDocumentSpecificationSpan(request);
   const specificationSpan = specification ? spanOf({ span: specification }) : null;
-  const lead = firstContentLeadEnd(lowered);
+  const lead = firstRawContentLeadEnd(request);
   if (lead) {
     const markerEnd = lead[1];
     const insideSpecification = specificationSpan && markerEnd >= specificationSpan.start && markerEnd < specificationSpan.end;
@@ -436,7 +436,7 @@ function parseWriteRequestBound(request, toks, binding) {
       const statementEnd = markerLeads
         ? endOfStatement(request, markerEnd, clauseStart)
         : endOfStatement(request, markerEnd, request.length);
-      const close = contentLeadClose(lowered, markerEnd);
+      const close = rawContentLeadClose(request, markerEnd);
       const payloadEnd = close === null ? statementEnd : Math.min(close, statementEnd);
       const markerSpan = slice(request, markerEnd, payloadEnd);
       if (!markerLeads || firstActionCueEnd(toks) !== null) {

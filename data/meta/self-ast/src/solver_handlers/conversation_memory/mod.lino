@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/conversation_memory/mod.rs
   language rust
   fidelity signature
-  byte_len 27933
-  line_count 841
-  content_id source_module_2929e60cc57b351a
+  byte_len 27045
+  line_count 819
+  content_id source_module_41425a465e26aef0
   symbol_count 47
   symbols
     module conversation_summary 3 3
@@ -52,5 +52,5 @@ self_ast_census
     function log_fragment 690 695
     function render_line 697 710
     function memory_conversation_count 713 721
-    function render_recall_report 723 770
-    function render_memory_recall_report 772 841
+    function render_recall_report 723 748
+    function render_memory_recall_report 750 819

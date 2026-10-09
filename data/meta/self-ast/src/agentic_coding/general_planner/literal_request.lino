@@ -2,61 +2,61 @@ self_ast_census
   target src/agentic_coding/general_planner/literal_request.rs
   language rust
   fidelity full_ast
-  byte_len 19004
-  line_count 389
-  content_id source_module_620a7956cec396c0
+  byte_len 19359
+  line_count 404
+  content_id source_module_ea9cdf4d426aa408
   symbol_count 11
   symbols
-    function binding_has_write_instruction 13 37
-    function parse_write_request 63 87
-    function parse_write_request_bound 90 217
-    function statement_scope 219 228
-    function end_of_statement 256 272
-    function literal_statement_end 283 292
-    function positions_share_statement 293 300
-    function is_literal_content 302 325
-    function is_non_referential_content 332 338
-    function names_deferred_work_product 358 372
-    function ends_with_head_noun 381 389
+    function binding_has_write_instruction 13 52
+    function parse_write_request 78 102
+    function parse_write_request_bound 105 232
+    function statement_scope 234 243
+    function end_of_statement 271 287
+    function literal_statement_end 298 307
+    function positions_share_statement 308 315
+    function is_literal_content 317 340
+    function is_non_referential_content 347 353
+    function names_deferred_work_product 373 387
+    function ends_with_head_noun 396 404
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 9049
-    named_node_count 1868
+    total_link_count 9439
+    named_node_count 1943
     distinct_node_kinds 68
     node_kinds
-      arguments 142
+      arguments 144
       array_expression 1
       array_type 2
-      binary_expression 36
-      block 42
-      boolean_literal 6
+      binary_expression 44
+      block 45
+      boolean_literal 9
       break_expression 1
-      call_expression 142
+      call_expression 144
       char_literal 13
-      closure_expression 22
-      closure_parameters 22
+      closure_expression 21
+      closure_parameters 21
       compound_assignment_expr 1
       crate 8
       doc_comment 99
       else_clause 8
       escape_sequence 1
-      expression_statement 25
-      field_expression 137
-      field_identifier 137
+      expression_statement 28
+      field_expression 155
+      field_identifier 155
       for_expression 2
       function_item 11
       generic_type 5
-      identifier 430
+      identifier 443
       if_expression 18
       index_expression 9
       inner_doc_comment_marker 1
-      integer_literal 2
+      integer_literal 1
       let_chain 3
       let_condition 6
-      let_declaration 32
+      let_declaration 34
       lifetime 2
       line_comment 149
       macro_invocation 1
@@ -72,9 +72,9 @@ self_ast_census
       parenthesized_expression 5
       primitive_type 27
       range_expression 12
-      reference_expression 24
+      reference_expression 25
       reference_type 17
-      return_expression 9
+      return_expression 12
       scoped_identifier 35
       scoped_use_list 2
       self 1
@@ -87,11 +87,11 @@ self_ast_census
       try_expression 8
       tuple_expression 5
       tuple_pattern 2
-      tuple_struct_pattern 7
+      tuple_struct_pattern 10
       tuple_type 2
       type_arguments 5
       type_identifier 12
-      unary_expression 13
+      unary_expression 12
       use_declaration 4
       use_list 2
       visibility_modifier 1

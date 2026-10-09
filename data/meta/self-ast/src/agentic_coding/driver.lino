@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/driver.rs
   language rust
   fidelity full_ast
-  byte_len 24667
+  byte_len 24643
   line_count 592
-  content_id source_module_2f93a97bba47f454
+  content_id source_module_897973a6ca581650
   symbol_count 21
   symbols
     const CORE_RECIPE_TOOLS 43 43
@@ -33,11 +33,11 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 15953
-    named_node_count 3238
+    total_link_count 15908
+    named_node_count 3226
     distinct_node_kinds 89
     node_kinds
-      arguments 226
+      arguments 223
       array_expression 8
       array_type 6
       attribute 5
@@ -46,7 +46,7 @@ self_ast_census
       binary_expression 17
       block 61
       boolean_literal 21
-      call_expression 226
+      call_expression 223
       char_literal 3
       closure_expression 13
       closure_parameters 13
@@ -61,8 +61,8 @@ self_ast_census
       expression_statement 59
       field_declaration 9
       field_declaration_list 2
-      field_expression 168
-      field_identifier 205
+      field_expression 165
+      field_identifier 202
       field_initializer 28
       field_initializer_list 10
       field_pattern 3

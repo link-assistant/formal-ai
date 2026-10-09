@@ -7,9 +7,9 @@
 
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
-import { latestResult, resultForCommand, sourceFromReadResult } from './code_artifact.mjs';
-import { observedBytesMatch } from './tool_result.mjs';
-import { renderSeededChange, renderSeededOutcome } from './code_task.mjs';
+import { latestResult, sourceFromReadResult } from './code_artifact.mjs';
+import { planWriteDigestVerification } from './workspace_change/digest_verification.mjs';
+import { renderSeededChange } from './code_task.mjs';
 import { insertMembersViaLinks } from './link_edit_rules.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
@@ -64,21 +64,12 @@ export function planStructuredEditStep(rawTask, messages, toolNames) {
     const writeTool = toolFor(toolNames, Capability.Write);
     return writeTool ? planOne(writeTool, writeArguments(edit.target, updated)) : null;
   }
-  const observed = resultForCommand(currentTurn, `cat ${edit.target}`);
-  if (observed !== null) {
-    let rendered;
-    if (observedBytesMatch(observed, updated)) {
-      const [intent, change] = inserted.length
-        ? ['coding_member_inserted', quotedList(inserted)]
-        : ['coding_member_already_present', quotedList(edit.values)];
-      rendered = renderSeededChange(intent, task, edit.target, [['{members}', change]]);
-    } else {
-      rendered = renderSeededOutcome('coding_workspace_verification_failed', task, edit.target);
-    }
-    return rendered === null ? null : finalAnswer(rendered);
-  }
-  const runTool = toolFor(toolNames, Capability.Run);
-  return runTool ? planOne(runTool, jsonText({ command: `cat ${edit.target}` })) : null;
+  const [intent, members] = inserted.length
+    ? ['coding_member_inserted', quotedList(inserted)]
+    : ['coding_member_already_present', quotedList(edit.values)];
+  return planWriteDigestVerification(task, currentTurn, toolNames, {
+    target: edit.target, expected: updated, intent, slots: [['{members}', members]],
+  });
 }
 
 function wordsJoined(text) {

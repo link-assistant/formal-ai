@@ -42,7 +42,7 @@ function matchingCoreferenceAntecedent(previous) {
     const aliases = Array.isArray(antecedent && antecedent.aliases)
       ? antecedent.aliases
       : [];
-    return aliases.some((alias) => alias && previous.includes(alias));
+    return aliases.some((alias) => alias && surfacePresent(normalizePrompt(previous), normalizePrompt(alias)));
   }) || null;
 }
 
@@ -72,7 +72,7 @@ function nearestCoreferenceAntecedent(history) {
 }
 
 function tryCoreferenceFactLookup(prompt, normalized, history) {
-  const pronoun = matchingCoreferencePronoun(normalized);
+  const pronoun = matchingCoreferencePronoun(normalizePrompt(textTransformCommandHead(prompt)));
   if (!pronoun || !pronoun.token) return null;
 
   const resolved = nearestCoreferenceAntecedent(history);

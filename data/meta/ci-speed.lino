@@ -28,10 +28,6 @@ ci-speed
   sharded-suite ".github/workflows/release.yml"
   sharded-suite ".github/workflows/layered-ci.yml"
   sharded-suite ".github/workflows/e2e-local.yml"
-  workflow ".github/workflows/container-images.yml"
-    over-limit-job build
-      timeout-minutes 90
-      reason "Dispatch and workflow_call only, never on a pull request: one multi-architecture image build per Dockerfile, arm64 under emulation, with a 45-minute build step. To meet 30: build each architecture on its own native runner."
   workflow ".github/workflows/coverage.yml"
     over-limit-job coverage-build
       timeout-minutes 40
@@ -40,13 +36,6 @@ ci-speed
     over-limit-job update
       timeout-minutes 90
       reason "Weekly schedule and dispatch only: updates every dependency, then builds and tests the whole crate in one job."
-  workflow ".github/workflows/desktop-release.yml"
-    over-limit-job build
-      timeout-minutes 50
-      reason "Measured 41.3 minutes at most (macos-x64; windows-arm64 37.6): one release build plus Electron packaging per operating system, which one machine has to do. Pull requests run it only when desktop, vscode or Rust sources change. To meet 30: package a release binary built once per target."
-    over-limit-job cli
-      timeout-minutes 50
-      reason "Measured 34.4 minutes at most (cli-macos-x64): one cold release build per target on the slowest runner. To meet 30: share the release build with the desktop job for the same target."
   workflow ".github/workflows/external-benchmarks.yml"
     over-limit-job external-benchmarks
       timeout-minutes 90

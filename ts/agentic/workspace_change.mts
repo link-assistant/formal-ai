@@ -2,6 +2,7 @@
 // (rust/src/agentic_coding/workspace_change.rs).
 
 import { scopedDecline } from './edit_scope.mjs';
+import { planDigestVerification, planWriteDigestVerification } from './workspace_change/digest_verification.mjs';
 import { absentTextAnswer, replaceList, replacedInOrder } from './replace_list.mjs';
 import { Capability } from './capability.mjs';
 import { classifyTool, toolFor } from './capability_router.mjs';
@@ -142,12 +143,7 @@ function planRewriteStep(task, currentTurn, toolNames, grounded) {
   if (resultForPath(currentTurn, Capability.Write, rewrite.target, updated) === null) {
     return planWithTool(toolNames, Capability.Write, writeArguments(rewrite.target, updated));
   }
-  const command = `cat ${rewrite.target}`;
-  const observed = resultForCommand(currentTurn, command);
-  if (observed === null) return planWithTool(toolNames, Capability.Run, jsonText({ command }));
-  if (!observedBytesMatch(observed, updated)) return failed(task, rewrite.target);
-  return finalOrNull(renderSeededChange(statedIntent(rewrite), task, rewrite.target, statedSlots(rewrite)),
-    FinalDisposition.Finding, statedIntent(rewrite));
+  return planWriteDigestVerification(task, currentTurn, toolNames, verified);
 }
 
 /**
@@ -1158,15 +1154,6 @@ function workspacePathMatches(expected, observed) {
 
 export function resultForCommand(messages, command) {
   return commandResult(messages, command);
-}
-
-function planDigestVerification(task, currentTurn, toolNames, change) {
-  const command = `sha256sum -- ${change.target}`;
-  const observed = resultForCommand(currentTurn, command);
-  if (observed === null) return planWithTool(toolNames, Capability.Run, jsonText({ command }));
-  if (!observedDigestMatches(observed, sha256Hex(change.expected))) return failed(task, change.target);
-  return finalOrNull(renderSeededChange(change.intent, task, change.target, change.slots),
-    FinalDisposition.Finding, change.intent);
 }
 
 function matchingResult(messages, matches) {

@@ -29,14 +29,14 @@
 # records of the same change are already written with `-`.
 notation-ratchet
   scope data/meta
-    underscore-names 2071
+    underscore-names 2067
     abbreviated-names 200
     duplicated-blocks 9
     repeated-fields 80
-    characters 1868669
+    characters 1890141
   scope data/seed
     underscore-names 9420
     abbreviated-names 245
     duplicated-blocks 27
     repeated-fields 184
-    characters 3190666
+    characters 3210614

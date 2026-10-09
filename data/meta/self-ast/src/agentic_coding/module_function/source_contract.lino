@@ -2,34 +2,34 @@ self_ast_census
   target src/agentic_coding/module_function/source_contract.rs
   language rust
   fidelity full_ast
-  byte_len 8122
-  line_count 223
-  content_id source_module_c23a6423d3dce7ec
+  byte_len 8104
+  line_count 222
+  content_id source_module_539d795bc3fd1db8
   symbol_count 8
   symbols
     function text 4 10
     function optional 11 17
     function merge 18 28
-    function decimal_number 29 58
-    function expression 59 142
-    function infer_return_contract 145 186
-    function instantiate 187 195
-    function guarded_call_graph 198 223
+    function decimal_number 29 57
+    function expression 58 141
+    function infer_return_contract 144 185
+    function instantiate 186 194
+    function guarded_call_graph 197 222
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 8649
-    named_node_count 1766
-    distinct_node_kinds 63
+    total_link_count 8640
+    named_node_count 1765
+    distinct_node_kinds 64
     node_kinds
       arguments 132
       array_expression 5
       array_type 4
       assignment_expression 6
       binary_expression 59
-      block 60
+      block 59
       boolean_literal 5
       break_expression 1
       call_expression 132
@@ -39,17 +39,18 @@ self_ast_census
       compound_assignment_expr 2
       doc_comment 3
       else_clause 9
-      expression_statement 72
+      expression_statement 71
       field_expression 80
       field_identifier 80
       for_expression 1
       function_item 8
       generic_type 4
       identifier 328
-      if_expression 40
+      if_expression 39
       index_expression 60
       inner_doc_comment_marker 1
       integer_literal 19
+      let_chain 1
       let_condition 6
       let_declaration 17
       lifetime 3
@@ -63,7 +64,7 @@ self_ast_census
       outer_doc_comment_marker 2
       parameter 14
       parameters 8
-      parenthesized_expression 3
+      parenthesized_expression 4
       primitive_type 7
       range_expression 10
       reference_expression 12

@@ -2,67 +2,68 @@ self_ast_census
   target src/agentic_coding/tool_result.rs
   language rust
   fidelity full_ast
-  byte_len 34770
-  line_count 936
-  content_id source_module_183f4580458c9f65
-  symbol_count 46
+  byte_len 34891
+  line_count 939
+  content_id source_module_a715e159e90444d6
+  symbol_count 47
   symbols
     module command_keys 14 14
     module response_language 15 15
     module result_kind 16 16
     module source_observation 17 17
-    struct NormalizedResult 26 34
-    enum StepOutcome 44 51
-    function step_outcome 55 66
-    function failed_verification 75 84
-    struct ShellStep 88 90
-    function failure_message 95 112
-    const PROSE_FAILURE_PREFIX_CHARS 118 118
-    function looks_like_error 120 127
-    const CITED_LINES_THAT_MAKE_A_QUOTATION 134 134
-    function own_words 157 172
-    function citation_offset 182 192
-    function word_start 195 200
-    function render 202 238
-    function render_failure 243 247
-    function failure_report 253 276
-    function latest_turn_answer 278 297
-    function latest_turn_quiet_success 302 320
-    function has_latest_turn_result 322 333
-    function is_write_run_recipe 335 345
-    function follow_up_answer 347 378
-    function requested_index 380 392
-    function normalize 394 488
-    struct ShellEnvelope 496 500
-    function into_result 503 529
-    function parse_shell_envelope 532 590
-    function is_field 592 598
-    function envelope_section 602 622
-    function from_payload 624 670
-    function mcp_text_content 672 703
-    function structured_content_text 708 732
-    function strip_transport_envelope 738 770
-    function nonzero_status 772 780
-    function failed_status 782 795
-    function expected_stop_status 797 811
-    function nonempty_text 813 823
-    function pretty_json 825 827
-    function command_argument 845 863
-    function result_tool 865 875
-    function result_label 877 892
-    function extract_urls 894 910
-    function response_language 914 928
-    function fill 930 936
+    function reported_exit_code 21 23
+    struct NormalizedResult 29 37
+    enum StepOutcome 47 54
+    function step_outcome 58 69
+    function failed_verification 78 87
+    struct ShellStep 91 93
+    function failure_message 98 115
+    const PROSE_FAILURE_PREFIX_CHARS 121 121
+    function looks_like_error 123 130
+    const CITED_LINES_THAT_MAKE_A_QUOTATION 137 137
+    function own_words 160 175
+    function citation_offset 185 195
+    function word_start 198 203
+    function render 205 241
+    function render_failure 246 250
+    function failure_report 256 279
+    function latest_turn_answer 281 300
+    function latest_turn_quiet_success 305 323
+    function has_latest_turn_result 325 336
+    function is_write_run_recipe 338 348
+    function follow_up_answer 350 381
+    function requested_index 383 395
+    function normalize 397 491
+    struct ShellEnvelope 499 503
+    function into_result 506 532
+    function parse_shell_envelope 535 593
+    function is_field 595 601
+    function envelope_section 605 625
+    function from_payload 627 673
+    function mcp_text_content 675 706
+    function structured_content_text 711 735
+    function strip_transport_envelope 741 773
+    function nonzero_status 775 783
+    function failed_status 785 798
+    function expected_stop_status 800 814
+    function nonempty_text 816 826
+    function pretty_json 828 830
+    function command_argument 848 866
+    function result_tool 868 878
+    function result_label 880 895
+    function extract_urls 897 913
+    function response_language 917 931
+    function fill 933 939
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 25107
-    named_node_count 5125
+    total_link_count 25185
+    named_node_count 5142
     distinct_node_kinds 88
     node_kinds
-      arguments 458
+      arguments 459
       array_expression 15
       array_type 12
       assignment_expression 3
@@ -70,10 +71,10 @@ self_ast_census
       attribute_item 3
       base_field_initializer 5
       binary_expression 61
-      block 117
+      block 118
       boolean_literal 4
       break_expression 2
-      call_expression 458
+      call_expression 459
       char_literal 9
       closure_expression 86
       closure_parameters 86
@@ -81,7 +82,7 @@ self_ast_census
       const_item 2
       crate 13
       declaration_list 1
-      doc_comment 108
+      doc_comment 109
       else_clause 14
       enum_item 1
       enum_variant 3
@@ -95,10 +96,10 @@ self_ast_census
       field_initializer 17
       field_initializer_list 10
       for_expression 3
-      function_item 36
+      function_item 37
       generic_function 11
-      generic_type 23
-      identifier 1062
+      generic_type 24
+      identifier 1065
       if_expression 41
       impl_item 1
       index_expression 16
@@ -107,7 +108,7 @@ self_ast_census
       let_condition 11
       let_declaration 100
       lifetime 2
-      line_comment 132
+      line_comment 133
       macro_invocation 10
       match_arm 29
       match_block 10
@@ -116,14 +117,14 @@ self_ast_census
       mod_item 4
       mutable_specifier 11
       or_pattern 2
-      outer_doc_comment_marker 107
-      parameter 62
-      parameters 36
+      outer_doc_comment_marker 108
+      parameter 63
+      parameters 37
       parenthesized_expression 7
-      primitive_type 69
+      primitive_type 71
       range_expression 12
       reference_expression 50
-      reference_type 63
+      reference_type 64
       return_expression 30
       scoped_identifier 71
       scoped_type_identifier 1
@@ -143,10 +144,10 @@ self_ast_census
       tuple_pattern 19
       tuple_struct_pattern 35
       tuple_type 1
-      type_arguments 34
-      type_identifier 92
+      type_arguments 35
+      type_identifier 93
       unary_expression 23
-      use_declaration 8
+      use_declaration 7
       use_list 4
       visibility_modifier 18
       while_expression 2

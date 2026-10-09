@@ -2,75 +2,75 @@ self_ast_census
   target src/agentic_coding/requirement_resolution.rs
   language rust
   fidelity full_ast
-  byte_len 11681
-  line_count 321
-  content_id source_module_c40569585dba3131
+  byte_len 11827
+  line_count 327
+  content_id source_module_b9059f24603eb9e4
   symbol_count 13
   symbols
     struct RequirementTarget 16 20
     function resolve_requirement_target 24 26
     function resolve_in 37 46
     function resolve_scoped_literal 49 87
-    function explicit_module_scope 90 114
-    function resolve_scoped 117 171
-    function resolve_seed_target 177 248
-    function unique 250 281
-    function target 283 289
-    function path_words 291 296
-    function tokens_of 298 303
-    function looks_like_declared_name 305 313
-    function singular 315 321
+    function explicit_module_scope 90 119
+    function resolve_scoped 122 176
+    function resolve_seed_target 183 254
+    function unique 256 287
+    function target 289 295
+    function path_words 297 302
+    function tokens_of 304 309
+    function looks_like_declared_name 311 319
+    function singular 321 327
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 9997
-    named_node_count 2047
+    total_link_count 10097
+    named_node_count 2069
     distinct_node_kinds 72
     node_kinds
-      arguments 200
+      arguments 202
       array_expression 2
       array_type 3
       assignment_expression 3
       attribute 4
       attribute_item 4
-      binary_expression 45
-      block 57
+      binary_expression 46
+      block 58
       boolean_literal 3
-      call_expression 200
+      call_expression 202
       char_literal 24
-      closure_expression 37
-      closure_parameters 37
+      closure_expression 38
+      closure_parameters 38
       continue_expression 9
       crate 5
-      doc_comment 24
+      doc_comment 25
       else_clause 4
       expression_statement 54
       field_declaration 3
       field_declaration_list 1
-      field_expression 190
-      field_identifier 196
+      field_expression 191
+      field_identifier 197
       field_initializer 3
       field_initializer_list 2
       for_expression 8
       function_item 12
       generic_type 24
-      identifier 400
+      identifier 406
       if_expression 22
       index_expression 2
       inner_doc_comment_marker 8
       integer_literal 11
       let_condition 2
       let_declaration 37
-      line_comment 24
+      line_comment 25
       macro_invocation 6
       match_arm 3
       match_block 1
       match_expression 1
       match_pattern 3
       mutable_specifier 6
-      outer_doc_comment_marker 16
+      outer_doc_comment_marker 17
       parameter 23
       parameters 12
       parenthesized_expression 1
@@ -79,7 +79,7 @@ self_ast_census
       reference_expression 22
       reference_type 31
       return_expression 8
-      scoped_identifier 20
+      scoped_identifier 23
       scoped_use_list 1
       shorthand_field_initializer 1
       slice_pattern 3

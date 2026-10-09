@@ -1,0 +1,90 @@
+self_ast_census
+  target src/agentic_coding/evidence_record/record_observation.rs
+  language rust
+  fidelity full_ast
+  byte_len 5365
+  line_count 151
+  content_id source_module_da4e1ea6d7db3f44
+  symbol_count 5
+  symbols
+    enum RecordObservation 14 19
+    function record_readback_command 21 31
+    function attempt_targets 33 47
+    function record_observation_outcome 49 101
+    function plan_record_readback_step 103 151
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 3955
+    named_node_count 772
+    distinct_node_kinds 67
+    node_kinds
+      arguments 55
+      array_expression 1
+      array_type 1
+      binary_expression 18
+      block 23
+      call_expression 55
+      char_literal 1
+      closure_expression 7
+      closure_parameters 7
+      continue_expression 1
+      crate 8
+      doc_comment 1
+      else_clause 4
+      enum_item 1
+      enum_variant 4
+      enum_variant_list 1
+      expression_statement 14
+      field_declaration 2
+      field_declaration_list 1
+      field_expression 45
+      field_identifier 49
+      field_initializer 2
+      field_initializer_list 1
+      field_pattern 2
+      for_expression 1
+      function_item 4
+      generic_function 1
+      generic_type 4
+      identifier 222
+      if_expression 9
+      inner_doc_comment_marker 1
+      integer_literal 1
+      let_condition 2
+      let_declaration 9
+      line_comment 1
+      macro_invocation 4
+      match_arm 4
+      match_block 1
+      match_expression 1
+      match_pattern 4
+      mutable_specifier 1
+      parameter 12
+      parameters 4
+      primitive_type 9
+      reference_expression 8
+      reference_type 13
+      return_expression 7
+      scoped_identifier 43
+      scoped_type_identifier 3
+      scoped_use_list 4
+      shorthand_field_identifier 2
+      source_file 1
+      string_content 15
+      string_literal 15
+      struct_expression 1
+      struct_pattern 1
+      super 2
+      token_tree 8
+      tuple_expression 3
+      tuple_pattern 1
+      tuple_struct_pattern 4
+      type_arguments 5
+      type_identifier 17
+      unary_expression 6
+      use_declaration 8
+      use_list 4
+      visibility_modifier 2

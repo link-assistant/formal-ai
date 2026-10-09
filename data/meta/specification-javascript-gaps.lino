@@ -3,6 +3,6 @@
 # (R1188-U29, R1188-U30): how many are carried to JavaScript and pass, and every
 # carried case the worker fails, with what it answered. `passing` never falls.
 specification-javascript-gaps
-  specification-tests 1178
-  carried 201
-  passing 201
+  specification-tests 1181
+  carried 202
+  passing 202

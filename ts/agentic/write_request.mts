@@ -5,6 +5,8 @@
 // offset is produced and consumed inside the same string, so slicing agrees.
 // Sentences come from shell_command_policy.mjs as `{text, span: {start, end}}`.
 
+import { firstRawPrefixLeadEnd } from './write_request/lowercase_spans.mjs';
+export { firstRawContentLeadEnd, firstRawPrefixLeadEnd, rawContentLeadClose } from './write_request/lowercase_spans.mjs';
 import { isDottedNumber, peelSentencePunctuation } from './file_path_shape.mjs';
 import { proseSentences, sentences } from './shell_command_policy.mjs';
 import { composePositionalInsert, introducedBlock, literalText, unquotedPathTokens } from './positional_edit.mjs';
@@ -263,8 +265,7 @@ export function isStatedWriteTarget(request, path) {
 
 /** Mirrors `fn pinned_first_line`. @param {string} sentence @returns {string|null} */
 export function pinnedFirstLine(sentence) {
-  const lowered = sentence.toLowerCase();
-  const lead = firstPrefixLeadEnd(lowered, 'file_leading_line_constraint_lead');
+  const lead = firstRawPrefixLeadEnd(sentence, 'file_leading_line_constraint_lead');
   if (!lead) return null;
   const raw = trim(trimStartMatches(trim(sentence.slice(lead[1])), charIn(':-—–')));
   const line = trimMatches(delimitedFirstLine(raw) ?? unquotedMachineFirstLine(raw) ?? raw, charIn('`"\''));

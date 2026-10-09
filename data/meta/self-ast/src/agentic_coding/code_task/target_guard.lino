@@ -2,49 +2,45 @@ self_ast_census
   target src/agentic_coding/code_task/target_guard.rs
   language rust
   fidelity full_ast
-  byte_len 3000
-  line_count 85
-  content_id source_module_e3de31124b0844ed
+  byte_len 3071
+  line_count 87
+  content_id source_module_ba115c5312981b7a
   symbol_count 1
   symbols
-    function guarded_source_step 10 85
+    function guarded_source_step 10 87
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 2195
+    total_link_count 2193
     named_node_count 431
-    distinct_node_kinds 50
+    distinct_node_kinds 46
     node_kinds
-      arguments 35
+      arguments 36
       array_expression 2
       array_type 3
       binary_expression 3
-      block 8
+      block 9
       boolean_literal 2
-      call_expression 35
-      closure_expression 3
-      closure_parameters 3
+      call_expression 36
+      closure_expression 5
+      closure_parameters 5
       crate 5
       doc_comment 2
       else_clause 1
       expression_statement 7
-      field_expression 14
-      field_identifier 14
+      field_expression 15
+      field_identifier 15
       function_item 1
       generic_type 2
-      identifier 125
+      identifier 123
       if_expression 4
       inner_doc_comment_marker 2
       let_condition 1
       let_declaration 6
       line_comment 2
       macro_invocation 1
-      match_arm 2
-      match_block 1
-      match_expression 1
-      match_pattern 2
       mutable_specifier 1
       parameter 7
       parameters 1
@@ -60,7 +56,7 @@ self_ast_census
       super 10
       token_tree 1
       tuple_expression 3
-      tuple_struct_pattern 3
+      tuple_struct_pattern 2
       tuple_type 1
       type_arguments 2
       type_identifier 6

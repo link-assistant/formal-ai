@@ -3,6 +3,18 @@ seed-metadata-gaps
   source "data/seed/meanings-conversation-summary.lino"
   audit-scope "problem-solving concept records under data/seed meanings roots"
   missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-e84c3dea0ec41b11
+    record "conversation-recall-empty"
+    missing "role,precondition,effect,unit,example"
+  gap seed-metadata-gap-3524213c9749a515
+    record "conversation-recall-header"
+    missing "role,precondition,effect,unit,example"
+  gap seed-metadata-gap-808de843cece384f
+    record "conversation-recall-turn"
+    missing "role,precondition,effect,unit,example"
+  gap seed-metadata-gap-2eefc3ae5bfba073
+    record "conversation-summary-envelope"
+    missing "role,precondition,effect,unit,example"
   gap seed-metadata-gap-be63d15852614983
     record "conversation_reference"
   gap seed-metadata-gap-87ea02a2f9c029d0

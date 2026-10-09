@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/progress.rs
   language rust
   fidelity full_ast
-  byte_len 35895
-  line_count 830
-  content_id source_module_0483d54e1980f9e0
-  symbol_count 50
+  byte_len 36180
+  line_count 836
+  content_id source_module_ab296b572c277e89
+  symbol_count 51
   symbols
     struct ToolAttempt 15 22
     function is_work_item_read 29 36
@@ -33,113 +33,114 @@ self_ast_census
     function successful_read_output_for 522 532
     function attempted_write_for 534 542
     function successful_write_for 544 553
-    function successful_write_content_for 560 568
-    function latest_successful_write_index 573 582
-    function last 590 592
-    function latest_failure 596 598
-    function previous_attempt 600 602
-    function failed_write_count_for 606 618
-    function search_result 620 622
-    function argument_path 625 631
-    function argument_content 633 639
-    function write_matches 643 649
-    function argument_targets 651 657
-    function result_capability 662 670
-    function result_tool_call 672 679
-    function fetch_call_url 681 683
-    function argument_url 685 692
-    function run_attempt_matches 694 701
-    function is_issue_view_command 703 708
-    function is_work_item_read_command 712 716
-    function work_item_read_url 723 725
-    function issue_view_command_url 728 739
-    function rest_read_url 742 767
-    function exit_sentinel 776 781
-    function without_exit_sentinel 785 790
-    function work_item_read_failure_reason 801 830
+    function attempts_after_latest_write 556 559
+    function successful_write_content_for 566 574
+    function latest_successful_write_index 579 588
+    function last 596 598
+    function latest_failure 602 604
+    function previous_attempt 606 608
+    function failed_write_count_for 612 624
+    function search_result 626 628
+    function argument_path 631 637
+    function argument_content 639 645
+    function write_matches 649 655
+    function argument_targets 657 663
+    function result_capability 668 676
+    function result_tool_call 678 685
+    function fetch_call_url 687 689
+    function argument_url 691 698
+    function run_attempt_matches 700 707
+    function is_issue_view_command 709 714
+    function is_work_item_read_command 718 722
+    function work_item_read_url 729 731
+    function issue_view_command_url 734 745
+    function rest_read_url 748 773
+    function exit_sentinel 782 787
+    function without_exit_sentinel 791 796
+    function work_item_read_failure_reason 807 836
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 22099
-    named_node_count 4608
+    total_link_count 22306
+    named_node_count 4650
     distinct_node_kinds 77
     node_kinds
-      arguments 385
+      arguments 387
       array_expression 6
-      array_type 3
+      array_type 4
       assignment_expression 4
       attribute 1
       attribute_item 1
-      binary_expression 97
-      block 106
+      binary_expression 98
+      block 107
       boolean_literal 3
-      call_expression 385
+      call_expression 387
       char_literal 2
       closure_expression 76
       closure_parameters 76
       continue_expression 3
       crate 4
       declaration_list 2
-      doc_comment 145
+      doc_comment 146
       else_clause 5
       escape_sequence 3
       expression_statement 54
       field_declaration 16
       field_declaration_list 2
-      field_expression 426
-      field_identifier 444
+      field_expression 428
+      field_identifier 446
       field_initializer 2
       field_initializer_list 2
       for_expression 2
-      function_item 48
+      function_item 49
       generic_function 1
-      generic_type 41
-      identifier 815
+      generic_type 42
+      identifier 821
       if_expression 27
       impl_item 2
-      index_expression 7
+      index_expression 8
       inner_doc_comment_marker 7
-      integer_literal 6
+      integer_literal 7
       let_chain 4
       let_condition 12
-      let_declaration 55
-      line_comment 173
+      let_declaration 56
+      line_comment 174
       macro_invocation 11
       match_arm 8
       match_block 3
       match_expression 3
       match_pattern 8
       mutable_specifier 16
-      outer_doc_comment_marker 138
-      parameter 53
-      parameters 48
+      outer_doc_comment_marker 139
+      parameter 54
+      parameters 49
       parenthesized_expression 10
-      primitive_type 67
-      range_expression 5
-      reference_expression 30
-      reference_type 58
+      primitive_type 68
+      range_expression 6
+      reference_expression 31
+      reference_type 60
       return_expression 11
       scoped_identifier 97
       scoped_type_identifier 7
-      self 65
-      self_parameter 28
+      self 68
+      self_parameter 29
       shorthand_field_initializer 14
       source_file 1
       string_content 55
       string_literal 59
       struct_expression 2
       struct_item 2
-      super 66
+      super 67
       token_tree 15
-      try_expression 12
+      try_expression 13
       tuple_expression 13
       tuple_pattern 9
       tuple_struct_pattern 18
       tuple_type 3
-      type_arguments 42
-      type_identifier 105
+      type_arguments 43
+      type_identifier 107
       unary_expression 26
       use_declaration 3
-      visibility_modifier 44
+      visibility_modifier 45

@@ -12,10 +12,10 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 
 ## Summary
 
-- Distinct requirements: 119 (56 from the owner's messages and the vision, 63 items of the 8 fixed issues).
+- Distinct requirements: 120 (57 from the owner's messages and the vision, 63 items of the 8 fixed issues).
 - Covered by rows that existed before this audit: 96 (every issue item has its own row).
-- Drafted in `docs/requirements/issue-1188-user-requirements.md`: 30 rows for 30 requirements, 23 of which no earlier row covered and 7 of which earlier rows covered only in part.
-- Row verdicts in scope: implemented 123, not-delivered 1, partial 24, superseded 1.
+- Drafted in `docs/requirements/issue-1188-user-requirements.md`: 35 rows for 31 requirements, 24 of which no earlier row covered and 7 of which earlier rows covered only in part.
+- Row verdicts in scope: implemented 123, not-delivered 1, partial 29, superseded 1.
 - Evidence check: 123 implemented rows re-read; 0 cite evidence that does not exist, and 3 more cite something the check could not find that was reviewed and is not evidence.
 
 ## The owner's requirements
@@ -71,6 +71,7 @@ comments on 2026-10-08) and the latest vision of 2026-10-08.
 | Delegate development work to Formal AI, ideally each small step; a task it fails is fixed by a general mechanism, never a handler for that request. | [october-messages](../../../experiments/issue_1138_feedback_recovery/recovered-2026-10-07.md) 2026-10-06 20:18; [delegation-doctrine](../../../docs/requirements/doctrine-standing-doctrine-work-delegated-to-formal-ai-2026-10-07.md) 2026-10-07 | R1017, R1009, R1188-U13 | R1017 implemented; R1009 implemented; R1188-U13 partial |
 | Each pull request uses Formal AI to code part of itself, and small tasks reach it through issues and bot branches; this must not block releases. | [do-not-obstruct](../../../docs/architect-notes/2026-09-11-do-not-obstruct-the-vision.md) 2026-09-11 | R924-1, R1085-8 | R924-1 implemented; R1085-8 implemented |
 | What the coding agents keep (probes, gaps, task prompts, claims, sandboxes) lives in experiments/, so Formal AI can work as a subagent on its own requirements. | [delegation-doctrine](../../../docs/requirements/doctrine-standing-doctrine-work-delegated-to-formal-ai-2026-10-07.md) 2026-10-08 | R1026 | R1026 implemented |
+| Prefer small coding and self-coding inputs yielding larger useful validated net code changes, without padding or a growth floor for mathematics; account for retries, patches, source reads and actual costs honestly. | [compact-coding-work](../../../docs/case-studies/pull-request-1188/coding-amplification.md) 2026-10-09 | R1188-U31, R1188-U32, R1188-U33, R1188-U34, R1188-U35 | R1188-U31 partial; R1188-U32 partial; R1188-U33 partial; R1188-U34 partial; R1188-U35 partial |
 
 ### Docs sync
 
