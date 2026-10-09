@@ -100,17 +100,20 @@ impl Progress {
                         &source_read_path(&call.function.arguments).unwrap_or_default(),
                     )
                 });
-            let failure = if let Some(observation) = source_read.as_ref() {
-                observation.error.clone()
-            } else if capability == Capability::Read {
-                message.is_error.then(|| raw.clone())
-            } else {
-                super::tool_result::failure_message(
-                    &raw,
-                    message.is_error,
-                    capability != Capability::Run,
-                )
-            };
+            let failure = source_read.as_ref().map_or_else(
+                || {
+                    if capability == Capability::Read {
+                        message.is_error.then(|| raw.clone())
+                    } else {
+                        super::tool_result::failure_message(
+                            &raw,
+                            message.is_error,
+                            capability != Capability::Run,
+                        )
+                    }
+                },
+                |observation| observation.error.clone(),
+            );
             let arguments =
                 result_tool_call(messages, index).map(|call| call.function.arguments.clone());
             let tool = message.name.clone().or_else(|| {

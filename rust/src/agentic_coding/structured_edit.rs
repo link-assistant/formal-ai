@@ -31,6 +31,7 @@ use crate::seed;
 /// *sentence* — prose the caller happened to quote — from being written into
 /// source as if it were a member.
 const MAX_MEMBER_LENGTH: usize = 96;
+const MEMBERS_SLOT: &str = concat!("{", "members", "}");
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct MemberInsertion {
@@ -76,7 +77,7 @@ pub(super) fn plan_structured_edit_step(
             "coding_member_already_present",
             task,
             &edit.target,
-            &[("{members}", &quoted_list(&edit.values))],
+            &[(MEMBERS_SLOT, &quoted_list(&edit.values))],
         )?));
     }
 
@@ -104,7 +105,7 @@ pub(super) fn plan_structured_edit_step(
             target: &edit.target,
             expected: &updated,
             intent,
-            slots: &[("{members}", members.as_str())],
+            slots: &[(MEMBERS_SLOT, members.as_str())],
             list_slots: &[],
         },
         result,
