@@ -26,7 +26,7 @@ function fixture() {
 }
 
 test('live Node SWE-bench, solve and ladder callers observe source, named tests and shared trace', async () => {
-  for (const caller of ['swe_bench', 'solve', 'coding_ladder']) {
+  for (const caller of ['swe_bench', 'solve', 'coding-ladder']) {
     const { root, task } = fixture();
     const outcome = await runRepositoryCase(root, task, { caller });
     assert.equal(outcome.stopped_at, null, outcome.open.join('\n'));

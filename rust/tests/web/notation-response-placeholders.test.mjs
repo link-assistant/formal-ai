@@ -49,12 +49,12 @@ test('source templates migrate notation placeholders while Rust format variables
 });
 
 test('Rust variable-backed template keys retain their spelling while policy names migrate', () => {
-  const source = 'fn plan(fallback_query: &str) { policy("fallback_query"); fill(&[("fallback_query", fallback_query)]); }';
-  const mapping = new Map([['fallback_query', 'fallback-query']]);
-  const rewritten = rewriteSource(source, 'rust', mapping, new Set(['fallback_query']), new Set()).text;
-  assert.equal(rewritten, 'fn plan(fallback_query: &str) { policy("fallback-query"); fill(&[("fallback_query", fallback_query)]); }');
-  assert.equal(rewriteSource(source, 'rust', mapping, new Set(['fallback_query']), new Set(['fallback_query'])).text,
-    'fn plan(fallback_query: &str) { policy("fallback-query"); fill(&[("fallback-query", fallback_query)]); }');
+  const source = 'fn plan(sample_backup_value: &str) { policy("sample_backup_value"); fill(&[("sample_backup_value", sample_backup_value)]); }';
+  const mapping = new Map([['sample_backup_value', 'sample-backup-value']]);
+  const rewritten = rewriteSource(source, 'rust', mapping, new Set(['sample_backup_value']), new Set()).text;
+  assert.equal(rewritten, 'fn plan(sample_backup_value: &str) { policy("sample-backup-value"); fill(&[("sample_backup_value", sample_backup_value)]); }');
+  assert.equal(rewriteSource(source, 'rust', mapping, new Set(['sample_backup_value']), new Set(['sample_backup_value'])).text,
+    'fn plan(sample_backup_value: &str) { policy("sample-backup-value"); fill(&[("sample-backup-value", sample_backup_value)]); }');
 });
 
 test('capture ownership carries related templates on the first pass and on replay without renaming unrelated fields', () => {

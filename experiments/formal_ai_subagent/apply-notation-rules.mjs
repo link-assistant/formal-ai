@@ -50,6 +50,7 @@ import {
   rewriteNotation,
   rewriteSource,
   sourceSpans,
+  sourceStringMapping,
 } from '../../scripts/lib/notation-substitution.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
@@ -343,13 +344,14 @@ export function checkApplied(rules) {
       }
     }
   }
+  const capturedNames = new Set(capturePlaceholderMapping(old, read("data/seed/handler-rules.lino")).keys());
   for (const path of readerFiles()) {
     const text = read(path);
     for (const span of sourceSpans(text, languageOf(path))) {
       if (span.kind !== 'string') {
         continue;
       }
-      replaceTokens(text.slice(span.start, span.end), old, (name) => {
+      replaceTokens(text.slice(span.start, span.end), sourceStringMapping(text, languageOf(path), span, old, capturedNames), (name) => {
         problems.push(`${path}: a literal holds the old spelling ${name} (now ${old.get(name)})`);
         return name;
       });

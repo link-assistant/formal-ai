@@ -360,3 +360,12 @@ meanings
     unit "not applicable"
     example "Execution status: not run; this program was rediscovered from https://docs.python.org and its output contract was checked by decomposition, not by executing it."
     grounding "data/seed/multilingual-responses-engine-reports.lino"
+
+  project-lookup-promoted
+    defined-by answer
+    role localized_response_template
+    precondition "a curated project lookup promotes the configured authoritative repository source"
+    effect "the response names the selected repository and the grounded source-registry promotion"
+    unit "not applicable"
+    example "a curated repository source was selected"
+    grounding "data/seed/multilingual-responses-parity.lino"

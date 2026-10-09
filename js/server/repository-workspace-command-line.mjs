@@ -14,7 +14,7 @@ import { runNodeAuthoring } from './repository-authoring.mjs';
 
 export async function runRepositoryCommandLine(argumentsList, { install = async () => installNodeHost(new WorkerHost()) } = {}) {
   const [action, ...flags] = argumentsList;
-  const caller = { solve: 'solve', 'swe-bench': 'swe_bench', 'coding-ladder': 'coding_ladder' }[action];
+  const caller = { solve: 'solve', 'swe-bench': 'swe_bench', 'coding-ladder': 'coding-ladder' }[action];
   if (!caller && action !== 'authoring') throw new Error(serverMessage('repository-caller-required'));
   const options = {};
   for (let position = 0; position < flags.length; position += 2) {

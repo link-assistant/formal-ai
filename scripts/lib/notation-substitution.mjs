@@ -309,6 +309,16 @@ export function identifiersIn(source, language, mapping) {
  * @param {Set<string>} identifiers
  * @returns {{text: string, count: number}}
  */
+
+/** A Rust tuple key bound to a code variable retains that variable's spelling unless a seed capture owns it. */
+export function sourceStringMapping(source, language, span, mapping, capturedNames) {
+  const piece = source.slice(span.start, span.end);
+  const bound = language === "rust" && /^,\s*([A-Za-z_][A-Za-z0-9_]*)\s*\)/u.exec(source.slice(span.end));
+  return bound && piece === JSON.stringify(bound[1]) && !capturedNames.has(bound[1])
+    ? new Map([...mapping].filter(([old]) => old !== bound[1]))
+    : mapping;
+}
+
 export function rewriteSource(source, language, mapping, identifiers, capturedNames = new Set(mapping.keys())) {
   const commentMapping = new Map([...mapping].filter(([old]) => !identifiers.has(old)));
   let count = 0;
@@ -317,10 +327,7 @@ export function rewriteSource(source, language, mapping, identifiers, capturedNa
       const piece = source.slice(span.start, span.end);
       let result = { text: piece, count: 0 };
       if (span.kind === 'string') {
-        // Rust template-key tuples bind a code variable, unless seed capture ownership migrates it.
-        const bound = language === "rust" && /^,\s*([A-Za-z_][A-Za-z0-9_]*)\s*\)/u.exec(source.slice(span.end));
-        const variableKey = bound && piece === JSON.stringify(bound[1]) && !capturedNames.has(bound[1]);
-        const stringMapping = variableKey ? new Map([...mapping].filter(([old]) => old !== bound[1])) : mapping;
+        const stringMapping = sourceStringMapping(source, language, span, mapping, capturedNames);
         result = replaceTokens(piece, stringMapping);
         // A template placeholder is notation when no code identifier owns it.
         // Rust formatting variables retain their language spelling.

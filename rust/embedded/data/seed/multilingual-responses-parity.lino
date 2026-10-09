@@ -537,3 +537,23 @@ multilingual_responses
     intent learn_from_source_browser_summary
     language es
     text "Reconocí {source} como una fuente de datos declarada de la que puedo aprender ({capability}). El ciclo que aprende de ella se ejecuta en el motor nativo: reproduce las solicitudes de la fuente con las reglas de enlaces locales y envía las que quedan sin respuesta al ciclo de automejora supervisado por humanos. Este worker del navegador registra la fuente pero no ejecuta ese ciclo, así que aquí no se aprendió nada."
+  response response-project-lookup-promoted-en
+    intent project-lookup-promoted
+    language en
+    text "In the {promoted-orgs} repository context, `{display-name}` should first mean [{repo-slug}]({project-url}) — {description}\n\nOther repositories and entities found online are shown by the browser demo through a web search for `{display-name}`. Providers: {provider-summary}. Combined ranking: reciprocal rank fusion (k = {reciprocal-rank-constant}). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path."
+  response response-project-lookup-promoted-ru
+    intent project-lookup-promoted
+    language ru
+    text "В контексте репозиториев {promoted-orgs} под `{display-name}` я прежде всего имею в виду [{repo-slug}]({project-url}) — {description}\n\nДругие найденные в интернете репозитории и сущности должна показывать браузерная демо-версия через поиск по запросу `{display-name}`. Провайдеры: {provider-summary}. Ранжирование: reciprocal rank fusion (k = {reciprocal-rank-constant}). Продвижение ассоциативных репозиториев можно отключить, тогда ответ пойдет по обычному поиску GitHub, GitLab и Bitbucket."
+  response response-project-lookup-promoted-hi
+    intent project-lookup-promoted
+    language hi
+    text "{promoted-orgs} repository context में `{display-name}` से मेरा पहला मतलब [{repo-slug}]({project-url}) है — {description}\n\nदूसरे matching repositories और entities browser demo में `{display-name}` web search से दिखाए जाते हैं. Providers: {provider-summary}. Combined ranking: reciprocal rank fusion (k = {reciprocal-rank-constant}). Associative repository promotion बंद करने पर जवाब generic GitHub, GitLab, और Bitbucket project lookup path से जाता है."
+  response response-project-lookup-promoted-zh
+    intent project-lookup-promoted
+    language zh
+    text "在 {promoted-orgs} 仓库上下文中，`{display-name}` 首先指 [{repo-slug}]({project-url}) — {description}\n\n浏览器 demo 会通过 `{display-name}` 的网页搜索显示其他匹配的仓库和实体。Providers: {provider-summary}. Combined ranking: reciprocal rank fusion (k = {reciprocal-rank-constant}). 关闭 associative repository promotion 后，回答会走通用 GitHub、GitLab 和 Bitbucket project lookup 路径。"
+  response response-project-lookup-promoted-es
+    intent project-lookup-promoted
+    language es
+    text "In the {promoted-orgs} repository context, `{display-name}` should first mean [{repo-slug}]({project-url}) — {description}\n\nOther repositories and entities found online are shown by the browser demo through a web search for `{display-name}`. Providers: {provider-summary}. Combined ranking: reciprocal rank fusion (k = {reciprocal-rank-constant}). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path."

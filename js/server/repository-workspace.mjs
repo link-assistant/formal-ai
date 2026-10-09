@@ -128,7 +128,7 @@ export async function cloneRepositoryWorkspace(spec, root, { io = nodeRepository
 
 /** Live SWE-bench and solve/ladder surface over an explicitly owned isolated checkout. */
 export async function runRepositoryCase(root, task, { caller = 'solve', io = nodeRepositoryIo(), ...options } = {}) {
-  if (!['solve', 'swe_bench', 'coding_ladder'].includes(caller)) throw new Error(serverMessage('repository-caller-unknown') + caller);
+  if (!['solve', 'swe_bench', 'coding-ladder'].includes(caller)) throw new Error(serverMessage('repository-caller-unknown') + caller);
   const workspaceRoot = fs.existsSync(root) ? fs.realpathSync(root)
     : await cloneRepositoryWorkspace(task.clone, root, { io, allowRemoteClone: options.allowRemoteClone === true });
   return executeWorkspaceProtocol({ root: workspaceRoot, io }, task, { caller, ...options });
