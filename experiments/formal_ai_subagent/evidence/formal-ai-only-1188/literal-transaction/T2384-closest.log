@@ -1,0 +1,328 @@
+TAP version 13
+# Subtest: fenced creation preserves source with task labels, command cues and paths
+ok 1 - fenced creation preserves source with task labels, command cues and paths
+  ---
+  duration_ms: 1080.543417
+  ...
+# Subtest: closed quoted whole-content consent replaces an existing source file
+ok 2 - closed quoted whole-content consent replaces an existing source file
+  ---
+  duration_ms: 66.887125
+  ...
+# Subtest: a plain replacement stays an edit even when its new literal names a file write
+ok 3 - a plain replacement stays an edit even when its new literal names a file write
+  ---
+  duration_ms: 33.164709
+  ...
+# Subtest: longer fences preserve payloads containing their own Markdown examples
+ok 4 - longer fences preserve payloads containing their own Markdown examples
+  ---
+  duration_ms: 78.304875
+  ...
+# Subtest: literal verification reads failure narratives and compact JSON as authored data
+ok 5 - literal verification reads failure narratives and compact JSON as authored data
+  ---
+  duration_ms: 71.194792
+  ...
+# Subtest: explicit verification failure still vetoes exact literal output
+ok 6 - explicit verification failure still vetoes exact literal output
+  ---
+  duration_ms: 1.264792
+  ...
+# Subtest: exact-content Set forms consume seed leads while preserving the declared literal bytes
+ok 7 - exact-content Set forms consume seed leads while preserving the declared literal bytes
+  ---
+  duration_ms: 306.049292
+  ...
+# Subtest: seed-like words inside quoted payloads and ordinary leading prose remain content
+ok 8 - seed-like words inside quoted payloads and ordinary leading prose remain content
+  ---
+  duration_ms: 157.0345
+  ...
+# Subtest: G125: quoted edit payloads with skill cues stay data
+ok 9 - G125: quoted edit payloads with skill cues stay data
+  ---
+  duration_ms: 38.793375
+  ...
+# Subtest: G125: genuine unquoted skill teaching keeps its guard
+ok 10 - G125: genuine unquoted skill teaching keeps its guard
+  ---
+  duration_ms: 1.017792
+  ...
+# Subtest: G125: a malformed quoted replacement changes nothing
+ok 11 - G125: a malformed quoted replacement changes nothing
+  ---
+  duration_ms: 2.009875
+  ...
+# Subtest: a successful shell envelope advances the exact file obligation and preserves raw records
+ok 12 - a successful shell envelope advances the exact file obligation and preserves raw records
+  ---
+  duration_ms: 987.302917
+  ...
+# Subtest: bare successful readback remains supported
+ok 13 - bare successful readback remains supported
+  ---
+  duration_ms: 14.107875
+  ...
+# Subtest: write acknowledgements and auxiliary commands do not certify file contents
+ok 14 - write acknowledgements and auxiliary commands do not certify file contents
+  ---
+  duration_ms: 47.357792
+  ...
+# Subtest: mismatch, nonzero status and a later failed receipt cannot reuse an older success
+ok 15 - mismatch, nonzero status and a later failed receipt cannot reuse an older success
+  ---
+  duration_ms: 44.628625
+  ...
+# Subtest: a different path sharing a filename suffix cannot fulfill the declared file
+ok 16 - a different path sharing a filename suffix cannot fulfill the declared file
+  ---
+  duration_ms: 24.977917
+  ...
+# Subtest: the unchanged issue1099 request persists both artifacts through real shell receipts
+ok 17 - the unchanged issue1099 request persists both artifacts through real shell receipts
+  ---
+  duration_ms: 839.657125
+  ...
+# Subtest: exact compact JSON and UTF8 payload bytes, including terminal newline, discharge only their file
+ok 18 - exact compact JSON and UTF8 payload bytes, including terminal newline, discharge only their file
+  ---
+  duration_ms: 10.164167
+  ...
+# Subtest: read clients preserve earlier bytes, verify the stream and deduplicate a replay
+ok 19 - read clients preserve earlier bytes, verify the stream and deduplicate a replay
+  ---
+  duration_ms: 1080.819333
+  ...
+# Subtest: an absent log is created, while a permission failure never overwrites it
+ok 20 - an absent log is created, while a permission failure never overwrites it
+  ---
+  duration_ms: 18.91
+  ...
+# Subtest: read-back that loses earlier events cannot authorize the requested write
+ok 21 - read-back that loses earlier events cannot authorize the requested write
+  ---
+  duration_ms: 3.031375
+  ...
+# Subtest: run-only clients execute a quoted append and preserve history on retries
+ok 22 - run-only clients execute a quoted append and preserve history on retries
+  ---
+  duration_ms: 45.492958
+  ...
+# Subtest: write-only clients deliver the target without overwriting an unobserved event stream
+ok 23 - write-only clients deliver the target without overwriting an unobserved event stream
+  ---
+  duration_ms: 3.39875
+  ...
+# Subtest: simultaneous retries take the bounded lock and retain exactly one event
+ok 24 - simultaneous retries take the bounded lock and retain exactly one event
+  ---
+  duration_ms: 1500.995708
+  ...
+# Subtest: repository-root shell events use the same sandbox as file tools
+ok 25 - repository-root shell events use the same sandbox as file tools
+  ---
+  duration_ms: 67.507625
+  ...
+# Subtest: cached event readback excludes the separator before a later canonical record
+ok 26 - cached event readback excludes the separator before a later canonical record
+  ---
+  duration_ms: 14.495458
+  ...
+# Subtest: ci_workflow_demand_is_read_from_the_obligation_graph
+ok 27 - ci_workflow_demand_is_read_from_the_obligation_graph
+  ---
+  duration_ms: 797.396542
+  ...
+# Subtest: issue \#1166 obligation graph (agentic JavaScript root)
+    # Subtest: the canonical body anchors its output literal once
+    ok 1 - the canonical body anchors its output literal once
+      ---
+      duration_ms: 241.421583
+      ...
+    # Subtest: R1166-2: two identical output clauses produce one node
+    ok 2 - R1166-2: two identical output clauses produce one node
+      ---
+      duration_ms: 17.227916
+      ...
+    # Subtest: distinct literals stay distinct nodes and have no unique literal
+    ok 3 - distinct literals stay distinct nodes and have no unique literal
+      ---
+      duration_ms: 3.743708
+      ...
+    # Subtest: coreference does not merge a filename with an output literal
+    ok 4 - coreference does not merge a filename with an output literal
+      ---
+      duration_ms: 8.198333
+      ...
+    # Subtest: the canonical body yields CI, naming, style and badge obligations
+    ok 5 - the canonical body yields CI, naming, style and badge obligations
+      ---
+      duration_ms: 14.810167
+      ...
+    # Subtest: R1166-5: an unknown clause yields an underivable node with its span, reported
+    ok 6 - R1166-5: an unknown clause yields an underivable node with its span, reported
+      ---
+      duration_ms: 2.560416
+      ...
+    # Subtest: R1166-6: ru, hi, zh and es bodies yield the same graph modulo the language tag
+    ok 7 - R1166-6: ru, hi, zh and es bodies yield the same graph modulo the language tag
+      ---
+      duration_ms: 97.684417
+      ...
+    # Subtest: R1166-7: a paraphrase yields an equivalent graph
+    ok 8 - R1166-7: a paraphrase yields an equivalent graph
+      ---
+      duration_ms: 287.980958
+      ...
+    # Subtest: R1166-3: request_demands reads the CI clause from the graph
+    ok 9 - R1166-3: request_demands reads the CI clause from the graph
+      ---
+      duration_ms: 10.522375
+      ...
+    1..9
+ok 28 - issue \#1166 obligation graph (agentic JavaScript root)
+  ---
+  duration_ms: 873.946833
+  type: 'suite'
+  ...
+# Subtest: issue \#1166 R1166-8 routing by the formalized request
+    # Subtest: work-obligation requests carry work; command lines do not
+    ok 1 - work-obligation requests carry work; command lines do not
+      ---
+      duration_ms: 9.233125
+      ...
+    # Subtest: the browser worker agrees with the agentic root
+    ok 2 - the browser worker agrees with the agentic root
+      ---
+      duration_ms: 39.212125
+      ...
+    # Subtest: the worker terminal router keeps commands and refuses sentences about building something
+    ok 3 - the worker terminal router keeps commands and refuses sentences about building something
+      ---
+      duration_ms: 3.178583
+      ...
+    1..3
+ok 29 - issue \#1166 R1166-8 routing by the formalized request
+  ---
+  duration_ms: 51.75175
+  type: 'suite'
+  ...
+# Subtest: unchanged T2379 writes and independently verifies both artifacts
+ok 30 - unchanged T2379 writes and independently verifies both artifacts
+  ---
+  duration_ms: 1242.961583
+  ...
+# Subtest: quoted operation and teaching keywords remain literal in every obligation
+ok 31 - quoted operation and teaching keywords remain literal in every obligation
+  ---
+  duration_ms: 202.610958
+  ...
+# Subtest: a first-file receipt cannot certify a second file or its failed readback
+not ok 32 - a first-file receipt cannot certify a second file or its failed readback
+  ---
+  duration_ms: 21.199792
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/literal-obligation-transaction.test.mjs:47:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'final'
+    - 'tool_calls'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'tool_calls'
+  actual: 'final'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/literal-obligation-transaction.test.mjs:54:10)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: write-only delivery retains first target and reports verification unavailable
+not ok 33 - write-only delivery retains first target and reports verification unavailable
+  ---
+  duration_ms: 55.815583
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/literal-obligation-transaction.test.mjs:57:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'unknown'
+    - 'gap'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'gap'
+  actual: 'unknown'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/literal-obligation-transaction.test.mjs:65:10)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: read-only clients cannot mutate either literal target
+ok 34 - read-only clients cannot mutate either literal target
+  ---
+  duration_ms: 394.14975
+  ...
+# Subtest: a successful artifact never hides an underivable mandatory clause
+ok 35 - a successful artifact never hides an underivable mandatory clause
+  ---
+  duration_ms: 77.015667
+  ...
+# Subtest: the original repair instruction does not become destructive source contents
+ok 36 - the original repair instruction does not become destructive source contents
+  ---
+  duration_ms: 604.786416
+  ...
+# Subtest: a later write does not license an earlier read with a content-like preposition
+ok 37 - a later write does not license an earlier read with a content-like preposition
+  ---
+  duration_ms: 341.330417
+  ...
+# Subtest: payload write vocabulary cannot turn an explicit read into a whole-file write
+ok 38 - payload write vocabulary cannot turn an explicit read into a whole-file write
+  ---
+  duration_ms: 1.992167
+  ...
+# Subtest: declarative creation and a real write action retain their original bytes
+ok 39 - declarative creation and a real write action retain their original bytes
+  ---
+  duration_ms: 111.273084
+  ...
+# Subtest: a write-only client receives the actual target and a truthful auxiliary gap
+ok 40 - a write-only client receives the actual target and a truthful auxiliary gap
+  ---
+  duration_ms: 22.439042
+  ...
+# Subtest: write-only target transport failure remains an actual failure
+ok 41 - write-only target transport failure remains an actual failure
+  ---
+  duration_ms: 8.898375
+  ...
+# Subtest: closed punctuation operands retain their exact bytes
+ok 42 - closed punctuation operands retain their exact bytes
+  ---
+  duration_ms: 4.96275
+  ...
+# Subtest: seeded explicit content qualifiers license unquoted punctuation
+ok 43 - seeded explicit content qualifiers license unquoted punctuation
+  ---
+  duration_ms: 1.146958
+  ...
+# Subtest: empty or unclosed punctuation operands cannot authorize literal writes
+ok 44 - empty or unclosed punctuation operands cannot authorize literal writes
+  ---
+  duration_ms: 1.686167
+  ...
+1..44
+# tests 54
+# suites 2
+# pass 52
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2915.760667

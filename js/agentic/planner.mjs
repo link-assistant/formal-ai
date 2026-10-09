@@ -72,6 +72,7 @@ import * as statementAudit from './statement_audit.mjs';
 import * as structuredDocument from './structured_document.mjs';
 import * as structuredEdit from './structured_edit.mjs';
 import * as taskObligations from './task_obligations.mjs';
+import { planObligationsStep } from './planner/obligations.mjs';
 import * as taskStructure from './task_structure.mjs';
 import * as toolResult from './tool_result.mjs';
 import * as webResearch from './web_research.mjs';
@@ -253,6 +254,8 @@ async function planChatStepRoutes(messages, toolNames, received) {
   const computerUse = requestFaultAnswer(task, toolFor(toolNames, Capability.MultiEdit) !== null) ?? computerUsePlanAgenticStep(messages, toolNames);
   if (computerUse !== null) return computerUse;
   if (hasAuthoritativeLiteralWrite(task) && capabilityRouter.workspaceCreationTool(toolNames) !== null) {
+    const obligations = taskObligations.obligations(task);
+    if (obligations !== null) return await planObligationsStep(task, messages, toolNames, obligations);
     const general = composeGeneralChangePlan(task);
     if (general !== null) return await planGeneralChangeStep(messages, toolNames, general);
   }
@@ -294,23 +297,7 @@ export async function planSettledRoutes(task, messages, toolNames) {
     ? taskObligations.obligations(task)
     : null;
   if (obligations !== null) {
-    const next = taskObligations.nextStep(task, messages);
-    if (next && (next.kind === 'observe' || next.kind === 'decompose')) {
-      const general = composeGeneralChangePlan(next.node.clause);
-      return general === null ? null : await planGeneralChangeStep(messages, toolNames, general);
-    }
-    if (next && next.kind === 'report_gap') {
-      return resolvedFinalAnswer(taskObligations.gapAnswer(next.node_id, next.clause, next.span, next.reason),
-        FinalDisposition.Gap, 'task_obligation_gap');
-    }
-    if (taskObligations.successfullyDischarged(task, messages)) {
-      for (const obligation of [...obligations].reverse()) {
-        const general = composeGeneralChangePlan(obligation.clause);
-        if (general !== null) return await planGeneralChangeStep(messages, toolNames, general);
-      }
-      return null;
-    }
-    return null;
+    return await planObligationsStep(task, messages, toolNames, obligations);
   }
   if (capabilityRouter.workspaceCreationTool(toolNames) !== null) {
     const general = composeGeneralChangePlan(task);

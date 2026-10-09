@@ -223,3 +223,6 @@ fn explicit_file_receipts_advance_the_declared_leaf_without_hashing_shell_metada
 
 #[path = "../../fixtures/literal-punctuation-contract.rs"]
 mod literal_punctuation_contract;
+
+#[path = "../../fixtures/literal-obligation-transaction.rs"]
+mod literal_obligation_transaction;

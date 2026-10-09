@@ -3,6 +3,7 @@
 
 use serde_json::json;
 mod continuation;
+mod obligations;
 mod precedence;
 mod steps;
 use super::final_result::{FinalDisposition, FinalResult, ResolvedPlan, record};
@@ -295,11 +296,16 @@ fn plan_chat_step_routes(
     // literal bytes may themselves say "rename X to Y" (issue #708). Broader
     // file-write requests remain below the semantic coding routes.
     if has_authoritative_literal_write(&task)
-        && let Some(plan) = capability_router::workspace_creation_tool(tool_names)
-            .and_then(|_| compose_general_change_plan(&task))
-            .map(|plan| plan_general_change_step(messages, tool_names, &plan, result))
+        && capability_router::workspace_creation_tool(tool_names).is_some()
     {
-        return Some(plan);
+        if let Some(nodes) = task_obligations::obligations(&task) {
+            return obligations::plan_obligations_step(&task, messages, tool_names, &nodes, result);
+        }
+        if let Some(plan) = compose_general_change_plan(&task) {
+            return Some(plan_general_change_step(
+                messages, tool_names, &plan, result,
+            ));
+        }
     }
     // Bind a program's semantic operands before treating its source path as a
     // destination for a report about the rest of the request.
@@ -471,41 +477,13 @@ pub(super) fn plan_settled_routes(
         && !shell_owned
         && let Some(obligations) = task_obligations::obligations(task)
     {
-        match task_obligations::next_step(task, messages) {
-            Some(
-                task_obligations::ObligationStep::Observe(node)
-                | task_obligations::ObligationStep::Decompose(node),
-            ) => {
-                // Observable artifact nodes re-enter the ordinary composer;
-                // underivable nodes have already been recursively split by
-                // `ObligationNode::build`. If no executable plan can be
-                // derived, decline instead of turning an unobserved node into
-                // completion prose.
-                return compose_general_change_plan(&node.clause)
-                    .map(|plan| plan_general_change_step(messages, tool_names, &plan, result));
-            }
-            Some(task_obligations::ObligationStep::ReportGap {
-                node_id,
-                clause,
-                span,
-                reason,
-            }) => {
-                return Some(AgenticPlan::Final(task_obligations::gap_answer(
-                    &node_id, &clause, span, &reason,
-                )));
-            }
-            None if task_obligations::successfully_discharged(task, messages) => {
-                // Re-enter the final executable obligation's ordinary state
-                // machine so the completion wording and verification report
-                // stay identical to a single-target request.
-                return obligations
-                    .iter()
-                    .rev()
-                    .find_map(|obligation| compose_general_change_plan(&obligation.clause))
-                    .map(|plan| plan_general_change_step(messages, tool_names, &plan, result));
-            }
-            None => return None,
-        }
+        return obligations::plan_obligations_step(
+            task,
+            messages,
+            tool_names,
+            &obligations,
+            result,
+        );
     }
     if let Some(plan) = capability_router::workspace_creation_tool(tool_names)
         .and_then(|_| compose_general_change_plan(task))
