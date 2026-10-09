@@ -1,5 +1,5 @@
 name: Publish the slim server image
-description: Publish and smoke test the exact release binary as a small production sidecar.
+description: Publish and verify the immutable release sidecar against actual selected source and executable bytes.
 inputs:
   version:
     description: The released crate version
@@ -10,7 +10,20 @@ inputs:
 runs:
   using: composite
   steps:
+    - name: Capture the actual release source and binary identity
+      id: source
+      shell: bash
+      env:
+        RELEASE_VERSION: ${{ inputs.version }}
+      run: |
+        set -euo pipefail
+        test "$(rust/target/release/formal-ai --version)" = "formal-ai $RELEASE_VERSION"
+        binary_sha=$(sha256sum rust/target/release/formal-ai)
+        binary_sha=${binary_sha%% *}
+        echo "revision=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+        echo "binary-sha256=$binary_sha" >> "$GITHUB_OUTPUT"
     - uses: docker/build-push-action@v7
+      id: publish
       with:
         context: .
         file: Dockerfile.slim
@@ -19,14 +32,23 @@ runs:
         tags: |
           ${{ inputs.image }}:slim
           ${{ inputs.image }}:${{ inputs.version }}-slim
+        labels: |
+          org.opencontainers.image.revision=${{ steps.source.outputs.revision }}
+          org.opencontainers.image.version=${{ inputs.version }}
+          io.link-assistant.formal-ai.executable.sha256=${{ steps.source.outputs.binary-sha256 }}
         cache-to: type=inline
     - name: Verify the published sidecar
       shell: bash
       env:
-        SLIM_IMAGE: ${{ inputs.image }}:${{ inputs.version }}-slim
+        SLIM_IMAGE: ${{ inputs.image }}@${{ steps.publish.outputs.digest }}
+        SOURCE_COMMIT: ${{ steps.source.outputs.revision }}
+        RELEASE_VERSION: ${{ inputs.version }}
+        BINARY_SHA256: ${{ steps.source.outputs.binary-sha256 }}
       run: |
         set -euo pipefail
         docker pull "$SLIM_IMAGE"
+        node scripts/verify-published-native-image.mjs "$SLIM_IMAGE" "$SOURCE_COMMIT" "$RELEASE_VERSION" "$BINARY_SHA256" slim-image-release-receipt.json
         docker run --rm --entrypoint verify-formal-ai-slim "$SLIM_IMAGE"
         bytes=$(docker image inspect "$SLIM_IMAGE" --format '{{.Size}}')
         test "$bytes" -le 2147483648
+        sha256sum slim-image-release-receipt.json > slim-image-release-receipt.json.sha256

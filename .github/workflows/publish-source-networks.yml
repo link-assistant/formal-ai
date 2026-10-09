@@ -159,6 +159,8 @@ jobs:
         with:
           node-version: '24.x'
       - uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           pattern: formal-ai-source-networks-*
           path: ${{ runner.temp }}/source-network-archives
