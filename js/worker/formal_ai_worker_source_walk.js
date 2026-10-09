@@ -193,33 +193,6 @@ async function sourceWalkSha256Hex(text) {
     .join("");
 }
 
-async function sourceWalkFetchCapture(url) {
-  const cached = sourceWalkCaptureCache.get(url);
-  if (cached) return { ...cached, cached: true };
-  const seeded = await sourceWalkSeedCapture(url);
-  if (seeded) return seeded;
-  if (typeof fetch !== "function") return { ok: false, url, error: "fetch_unavailable" };
-  try {
-    const response = await fetch(url, { method: "GET", mode: "cors" });
-    if (!response || !response.ok) {
-      return { ok: false, url, error: `http_${response ? response.status : 0}` };
-    }
-    const text = await response.text();
-    const capture = {
-      ok: true,
-      url,
-      text,
-      sha256: await sourceWalkSha256Hex(text),
-      fetchedAt: String(sourceWalkNowSeconds()),
-      cached: false,
-    };
-    sourceWalkCaptureCache.set(url, capture);
-    return capture;
-  } catch (error) {
-    return { ok: false, url, error: error instanceof Error ? error.message : String(error) };
-  }
-}
-
 async function sourceWalkSources(kind, subject, language, preferences, bounds, extractor) {
   const entryUrl = extractor.entryUrl || sourceWalkEntryUrl;
   const candidates = sourceWalkCandidates(
@@ -252,14 +225,15 @@ async function sourceWalkSources(kind, subject, language, preferences, bounds, e
       if (outcome.pages >= bounds.maxPagesPerService || visited.includes(url)) continue;
       visited.push(url);
       // eslint-disable-next-line no-await-in-loop -- capture order is evidence.
-      const capture = await sourceWalkFetchCapture(url);
+      const capture = await sourceWalkFetchCapture(url, { online: extractor.online !== false });
       if (!capture.ok) {
+        const offline = capture.failureKind === "offline_cache_miss";
         const missing = sourceWalkResourceMissing(capture.error);
-        outcome.status = missing
+        outcome.status = offline ? "offline_cache_miss" : missing
           ? "not_found"
           : (url === firstUrl ? "unreachable" : "fallback_failed");
         outcome.detail = `${capture.error} url=${url}`;
-        if (url === firstUrl && !missing) {
+        if (url === firstUrl && !missing && !offline) {
           sourceWalkObserveService(record.id, "unreachable", capture.error, now);
         }
         const fallback = missing && url === firstUrl

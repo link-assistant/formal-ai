@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_source_fetch.js"
+  ceiling 29
+  rationale "Lossless shared capture provider extraction plus typed offline policy; exact current authored source, zero headroom and no existing ceiling increase."

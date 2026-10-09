@@ -542,12 +542,11 @@ pub fn observe_failure(
     outcome: &mut WalkSourceOutcome,
     is_entry_endpoint: bool,
 ) {
-    let status = if is_entry_endpoint {
-        if matches!(error, FetchError::OfflineCacheMiss(_)) {
-            // An offline replay without this capture says nothing about whether
-            // the service is up, so it must not poison the accessibility record.
-            "offline_cache_miss"
-        } else if !error.speaks_for_the_service() {
+    let status = if matches!(error, FetchError::OfflineCacheMiss(_)) {
+        // Absence of an offline capture at any endpoint is not service health.
+        "offline_cache_miss"
+    } else if is_entry_endpoint {
+        if !error.speaks_for_the_service() {
             // The service answered and said it has no such page. That is a fact
             // about this subject in this language, not about the service: one
             // absent Russian article must not blank Wikipedia for every
