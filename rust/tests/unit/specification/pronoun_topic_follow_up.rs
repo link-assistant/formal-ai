@@ -247,7 +247,7 @@ fn seed_claim_and_handler_share_normalized_bounded_pronoun_contexts() {
         "यह प्रोग्राम?",
         "解释程序？",
     ] {
-        let normalized = formal_ai::engine::normalize_prompt(prompt);
+        let normalized = formal_ai::normalize_prompt_text(prompt);
         assert!(seeds.matches_pronoun(&normalized), "{prompt}");
         assert!(seeds.matching_pronoun(&normalized).is_some(), "{prompt}");
     }
@@ -258,7 +258,7 @@ fn seed_claim_and_handler_share_normalized_bounded_pronoun_contexts() {
         "xрезультатыx",
         "xपरिणामोंx",
     ] {
-        let normalized = formal_ai::engine::normalize_prompt(prompt);
+        let normalized = formal_ai::normalize_prompt_text(prompt);
         assert!(!seeds.matches_pronoun(&normalized), "{prompt}");
         assert!(seeds.matching_pronoun(&normalized).is_none(), "{prompt}");
     }
