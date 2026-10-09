@@ -55,3 +55,13 @@ test('each packaging job captures the pinned workflow protocol before checking o
   assert.ok(body.includes('FORMAL_AI_NATIVE_PROTOCOL_DIR'));
  }
 });
+
+test('long Windows checkout paths are enabled before any native, desktop or CLI checkout',()=>{
+ for(const name of ['native','build','cli']){
+  const body=job(name),setup=body.indexOf('Enable long Windows checkout paths'),checkout=body.indexOf('uses: actions/checkout@');
+  assert.ok(setup>=0&&setup<checkout,name+' must configure Git before checkout');
+  const step=body.slice(setup,checkout);
+  assert.match(step,/if: runner\.os == 'Windows'/u);
+  assert.match(step,/run: git config --system core\.longpaths true/u);
+ }
+});

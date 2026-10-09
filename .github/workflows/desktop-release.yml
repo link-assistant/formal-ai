@@ -260,6 +260,10 @@ jobs:
       NATIVE_SELECTED_HEAD: ${{ needs.native-source.outputs.selected-head }}
       NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
     steps:
+      - name: Enable long Windows checkout paths
+        if: runner.os == 'Windows'
+        shell: bash
+        run: git config --system core.longpaths true
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
         with:
@@ -389,6 +393,10 @@ jobs:
           deadline=$(( $(date +%s) + JOB_TIMEOUT_MINUTES * 60 - POST_PACKAGING_RESERVE_SECONDS ))
           echo "FORMAL_AI_JOB_DEADLINE_EPOCH=${deadline}" >> "$GITHUB_ENV"
 
+      - name: Enable long Windows checkout paths
+        if: runner.os == 'Windows'
+        shell: bash
+        run: git config --system core.longpaths true
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
         with:
@@ -814,6 +822,10 @@ jobs:
       run:
         shell: bash
     steps:
+      - name: Enable long Windows checkout paths
+        if: runner.os == 'Windows'
+        shell: bash
+        run: git config --system core.longpaths true
       - name: Check out this workflow's pinned release protocol
         uses: actions/checkout@v7
         with:
