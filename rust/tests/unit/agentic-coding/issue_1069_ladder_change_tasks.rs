@@ -448,9 +448,9 @@ fn sha256sum(content: &str) -> String {
 fn run_command(workspace: &mut Workspace, command: &str) -> Result<String, String> {
     if let Some(path) = command.strip_prefix("cat ") {
         let path = path.trim();
-        return Ok(workspace_get(workspace, path)
-            .unwrap_or_default()
-            .to_owned());
+        let bytes = workspace_get(workspace, path)
+            .ok_or_else(|| format!("cat on a file that is not there: {path}"))?;
+        return Ok(serde_json::json!({"stdout": bytes, "exit_code": 0}).to_string());
     }
     // A verify step that reads the file back through a digest rather than by
     // printing it. The planner compares this digest against the one it computed

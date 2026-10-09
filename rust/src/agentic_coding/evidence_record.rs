@@ -4,8 +4,10 @@
 //! evidence destinations, and clarifications, gaps and failures remain chat answers.
 
 mod artifact_header;
+mod record_observation;
 
 use artifact_header::names_callable_artifact;
+use record_observation::plan_record_readback_step;
 use std::cell::RefCell;
 use std::collections::HashMap;
 
@@ -273,6 +275,17 @@ pub(super) fn plan_evidence_record_step(
     let progress = Progress::scan(messages);
     match super::task_obligations::observed_file_outcome(task, &obligation.target, messages) {
         ObligationOutcome::Satisfied { .. } => {
+            let content = progress.successful_write_content_for(&obligation.target);
+            if let Some(plan) = plan_record_readback_step(
+                task,
+                &obligation.target,
+                content.as_deref(),
+                &progress,
+                tool_names,
+                result,
+            ) {
+                return Some(plan);
+            }
             trace_route("evidence_record", "already_written");
             return Some(record(
                 AgenticPlan::Final(

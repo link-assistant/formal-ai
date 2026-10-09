@@ -150,7 +150,7 @@ for (const [label, request, target, expected] of cases) {
   });
 }
 
-// Physical bytes are checked independently here; Write acknowledgement is not a readback receipt.
+// Actual per-record receipts supplement independent physical byte checks.
 for (const steps of [8, 16]) {
   test('unchanged L21 persists both mandatory records in ' + steps + ' turns', async () => {
     const fs = await import('node:fs');
@@ -178,6 +178,10 @@ for (const steps of [8, 16]) {
       assert.ok(proof.includes('FORMAL_AI_HOW_SOURCE_CACHE_DIR'));
       for (const path of ['agent-ladder-effects/node-2.1.2.1.1.lino', '.agent-ladder/node-2.1.2.1.1-proof.md']) {
         assert.ok(out.transcript.some((entry) => entry.tool === 'write' && JSON.parse(entry.arguments).path === path));
+        const { observedPayload } = await import('../../../js/agentic/tool_result.mjs');
+        const receipt = out.transcript.find((entry) => entry.tool === 'bash' && JSON.parse(entry.arguments).command === 'cat ' + path);
+        assert.ok(receipt, path + ' has its own actual receipt');
+        assert.equal(observedPayload(receipt.result), fs.readFileSync(join(directory, path), 'utf8'));
       }
       assert.equal(out.stop, 'final');
     } finally { fs.rmSync(directory, { recursive: true, force: true }); }

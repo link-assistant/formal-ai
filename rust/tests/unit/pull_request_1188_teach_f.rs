@@ -152,7 +152,10 @@ fn execute(
             }
             command.strip_prefix("cat ").map_or_else(
                 || format!("Error: {command} is not simulated"),
-                |path| files.get(path).cloned().unwrap_or_default(),
+                |path| files.get(path).map_or_else(
+                    || serde_json::json!({"error": format!("cat: {path}: No such file or directory"), "exit_code": 1}).to_string(),
+                    |bytes| serde_json::json!({"stdout": bytes, "exit_code": 0}).to_string(),
+                ),
             )
         }
         _ => format!("Error: {tool} is not simulated"),

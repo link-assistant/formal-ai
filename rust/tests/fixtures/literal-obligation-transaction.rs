@@ -406,6 +406,62 @@ fn unchanged_l21_preserves_source_and_both_independent_records() {
         .expect("independent proof");
     assert_eq!(proof.lines().next(), Some("node_path=2.1.2.1.1"));
     assert!(proof.contains("FORMAL_AI_HOW_SOURCE_CACHE_DIR"));
+    assert!(outcome.receipts.contains(&(
+        "cat agent-ladder-effects/node-2.1.2.1.1.lino".to_owned(),
+        effect
+    )));
+    assert!(outcome.receipts.contains(&(
+        "cat .agent-ladder/node-2.1.2.1.1-proof.md".to_owned(),
+        proof
+    )));
     assert_eq!(outcome.writes, 3);
     assert!(outcome.answer.is_some());
+}
+
+#[test]
+fn failed_record_observation_blocks_the_other_independent_delivery() {
+    fn wrong_receipt(_: &str) -> String {
+        serde_json::json!({"stdout": "wrong", "exit_code": 0}).to_string()
+    }
+    fn nonzero_receipt(stdout: &str) -> String {
+        serde_json::json!({"stdout": stdout, "exit_code": 1}).to_string()
+    }
+    for receipt in [wrong_receipt as fn(&str) -> String, nonzero_receipt] {
+        let source = include_str!("l21-original-source.txt");
+        let target = "rust/src/solver_handler_how_synthesis.rs";
+        let outcome = run_with_sources(
+            include_str!("l21-original-task.txt"),
+            &["read", "write", "bash"],
+            &[(target, source)],
+            receipt,
+        );
+        assert_eq!(
+            fs::read_to_string(outcome.root.join(target)).expect("actual source effect"),
+            source.replace(
+                "FORMAL_AI_SOURCE_CACHE_DIR",
+                "FORMAL_AI_HOW_SOURCE_CACHE_DIR"
+            )
+        );
+        assert!(
+            outcome
+                .root
+                .join(".agent-ladder/node-2.1.2.1.1-proof.md")
+                .exists()
+        );
+        assert!(
+            !outcome
+                .root
+                .join("agent-ladder-effects/node-2.1.2.1.1.lino")
+                .exists()
+        );
+        assert_eq!(outcome.writes, 2);
+        assert_eq!(outcome.receipts.len(), 1);
+        assert!(
+            outcome
+                .answer
+                .as_deref()
+                .expect("honest failure")
+                .contains("failed")
+        );
+    }
 }

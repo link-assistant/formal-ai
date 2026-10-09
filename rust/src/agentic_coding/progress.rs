@@ -552,6 +552,12 @@ impl Progress {
         })
     }
 
+    /// Observation window following the current successful write of this path.
+    pub(super) fn attempts_after_latest_write(&self, path: &str) -> Option<&[ToolAttempt]> {
+        let index = self.latest_successful_write_index(path)?;
+        Some(&self.attempts[index + 1..])
+    }
+
     /// Content supplied to the latest successful write of `path`.
     ///
     /// A composed request can deliver one observation to more than one file.

@@ -13,6 +13,7 @@ import { planTestExpectationQuestion } from './function_expectation.mjs';
 import { composeGeneralChangePlan } from './general_planner.mjs';
 import { agenticMessage } from './messages.mjs';
 import { namesCallableArtifact } from './evidence_record/artifact_header.mjs';
+import { planRecordReadbackStep } from './evidence_record/record_observation.mjs';
 import { FinalDisposition, canDeliverFinal, planOne, resolvedFinalAnswer, writeArguments } from './plan.mjs';
 import { instructionEnd } from './positional_edit.mjs';
 import { planChatStepResolved, planSettledRoutes } from './planner.mjs';
@@ -161,8 +162,10 @@ export async function planEvidenceRecordStep(task, messages, toolNames) {
   const progress = Progress.scan(messages);
   const outcome = observedFileOutcome(task, obligation.target, messages);
   if (outcome.kind === 'satisfied') {
-    traceRoute('evidence_record', 'already_written');
     const content = progress.successfulWriteContentFor(obligation.target);
+    const verification = planRecordReadbackStep(task, obligation.target, content, progress, toolNames);
+    if (verification !== null) return verification;
+    traceRoute('evidence_record', 'already_written');
     const written = content === null || content === undefined ? '' : writtenObservation(obligation, content);
     return resolvedFinalAnswer(written !== '' ? written : agenticMessage('evidence_record_recorded', { target: obligation.target }),
       FinalDisposition.Finding, 'evidence_record_observed');

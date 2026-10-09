@@ -61,7 +61,7 @@ function execute(files, tool, args) {
     const digest = /^sha256sum -- (\S+)$/u.exec(args.command);
     if (digest) return `${createHash('sha256').update(files.get(digest[1]) ?? '').digest('hex')}  ${digest[1]}\n`;
     const cat = /^cat (\S+)$/u.exec(args.command);
-    if (cat) return files.get(cat[1]) ?? `Output: \nError: cat: ${cat[1]}: No such file or directory\nExit Code: 1`;
+    if (cat) return files.has(cat[1]) ? JSON.stringify({ stdout: files.get(cat[1]), exit_code: 0 }) : `Output: \nError: cat: ${cat[1]}: No such file or directory\nExit Code: 1`;
   }
   return `Error: ${tool} is not simulated`;
 }

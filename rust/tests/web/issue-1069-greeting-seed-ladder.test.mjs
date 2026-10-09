@@ -35,6 +35,7 @@ test('L07 derives a real canonical greeting edit and fulfills every whole-node o
   const workspace = new Map([[path, source]]);
   const messages = [{ role: 'user', content: prompt }];
   let finished = false;
+  const recordReceipts = [];
   for (let step = 0; step < 16; step += 1) {
     const plan = await planChatStep(messages, ['read_file', 'write_file', 'edit_file', 'run_shell_command']);
     assert.ok(plan);
@@ -49,8 +50,17 @@ test('L07 derives a real canonical greeting edit and fulfills every whole-node o
       else if (call.tool === 'write_file') workspace.set(args.path, args.content);
       else {
         assert.equal(call.tool, 'run_shell_command');
-        assert.equal(args.command, 'sha256sum -- ' + path);
-        result = createHash('sha256').update(workspace.get(path)).digest('hex') + '  ' + path + '\n';
+        if (args.command.startsWith('cat ')) {
+          const target = args.command.slice(4);
+          assert.ok(['agent-ladder-effects/node-' + node + '.lino', '.agent-ladder/node-' + node + '-proof.md'].includes(target));
+          assert.ok(workspace.has(target));
+          const bytes = workspace.get(target);
+          recordReceipts.push([target, bytes]);
+          result = JSON.stringify({ stdout: bytes, exit_code: 0 });
+        } else {
+          assert.equal(args.command, 'sha256sum -- ' + path);
+          result = createHash('sha256').update(workspace.get(path)).digest('hex') + '  ' + path + '\n';
+        }
       }
       messages.push({ role: 'tool', tool_call_id: calls[index].id, name: call.tool, content: result });
     }
@@ -64,6 +74,9 @@ test('L07 derives a real canonical greeting edit and fulfills every whole-node o
   assert.ok(result.split(/\s+/u).length >= 4);
   assert.equal(workspace.get('.agent-ladder/node-' + node + '-proof.md').split('\n')[0], 'node_path=' + node);
   assert.equal(workspace.size, 3);
+  for (const target of ['agent-ladder-effects/node-' + node + '.lino', '.agent-ladder/node-' + node + '-proof.md']) {
+    assert.ok(recordReceipts.some(([path, bytes]) => path === target && bytes === workspace.get(target)));
+  }
 });
 
 test('the changed Links Notation greeting lexeme reaches the production greeting caller', async () => {
