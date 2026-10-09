@@ -1,0 +1,24 @@
+{
+  "id": "T2311",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Repair Formal AI with reusable typed discovery for requests adding exported callables from observed source operations. Inspect js/agentic/module_function.mjs and its native counterpart rust/src/agentic_coding/module_function.rs, and reuse existing request parsing, source-read evidence, language catalogs and typed final outcomes. Recognize a stated callable signature plus its program destination even when the prose omits the word function. Distinguish immutable source inputs and acceptance tests from the writable destination and bind the request-derived acceptance command. Read actual destination, source operands and acceptance before any authoring. Preserve request-local source identities and report an exact typed MissingContract gap when supported callable contracts are unavailable; never emit clarification or audit prose as source. Preserve the existing arithmetic module-and-test route. Add meaningful closest JavaScript regressions for destination/signature scope, multiple observed inputs, read failures, missing contracts, and unchanged operands. Mirror the general behavior natively without local compilation. Then retry the unchanged original request saved at /private/tmp/formal-ai-only-1188/T1804-request.json against its original selected-file fixture. Do not supply a selected-summary implementation, edit the fixture/callees, commit or push.",
+  "steps": 24,
+  "preimages": {
+    "js/agentic/module_function.mjs": {
+      "sha256": "7ca152029104b76b8eeea3319ef177122edf0c7719099e25606976fefb7926c3",
+      "bytes": 21291
+    },
+    "rust/src/agentic_coding/module_function.rs": {
+      "sha256": "376d3daaa61fa4b8c9ea99fb87c42afba84df04133aa54fef781a0f3283fd4e8",
+      "bytes": 29392
+    },
+    "js/agentic/final_result.mjs": {
+      "sha256": "ae0a0d1c5cd37b8b1dd0e23edf2bd2f2ce4202e447bf4adc33b795e2d8f72c55",
+      "bytes": 1667
+    },
+    "js/agentic/plan.mjs": {
+      "sha256": "13ce26b73c938585bfe5121b2157def196a9a8788709bd525d474667fefd38e7",
+      "bytes": 2580
+    }
+  }
+}

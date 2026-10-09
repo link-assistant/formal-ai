@@ -24,6 +24,8 @@
 //! specification at every sample pair of the contract is lowered through the
 //! language's IR lowering (`coding/ir_lowering`).
 
+mod discovery;
+
 use super::final_result::FinalResult;
 use super::planner::{AgenticPlan, Capability};
 use crate::coding::fragment_catalog::FragmentCatalog;
@@ -268,6 +270,16 @@ fn stated_command(request: &str) -> Option<String> {
     };
     if let Some(after) = command_from(&words[verb + 1..]) {
         return Some(after);
+    }
+    for (index, word) in words[verb + 1..].iter().enumerate() {
+        if heads.iter().any(|known| known.as_str() == *word) {
+            return command_from(&words[verb + 1 + index..]);
+        }
+        if word.ends_with([
+            '.', '!', '?', '\u{ff01}', '\u{ff1f}', '\u{3002}', '\u{0964}',
+        ]) {
+            break;
+        }
     }
     let head = words[..verb]
         .iter()
@@ -758,8 +770,13 @@ pub(super) fn plan_module_function_step(
     task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
-    _result: &mut Option<FinalResult>,
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
+    if let Some(request) = discovery::observed_callable_request(task) {
+        return Some(discovery::plan_observed_callable_step(
+            &request, messages, tool_names, result,
+        ));
+    }
     let request = module_function_request(task)?;
     let current_turn = &messages[super::planner::evidence_window_start(messages)..];
     let read_tool = super::capability_router::tool_for(tool_names, Capability::Read);
