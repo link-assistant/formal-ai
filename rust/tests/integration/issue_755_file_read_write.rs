@@ -158,7 +158,13 @@ fn the_whole_write_read_task_persists_and_reads_back_the_users_content() {
     // create -> read back, driven end to end through the protocol with a client
     // loop that actually applies the writes to a scratch workspace.
     let tools = vec![write_tool(&strict_write_schema()), read_tool()];
-    let mut workspace: Vec<(String, String)> = Vec::new();
+    let plan = formal_ai::agentic_coding::general_planner::compose_general_change_plan(
+        "write 10 to 1.txt file",
+    )
+    .expect("original literal write plan");
+    let plan_path = formal_ai::agentic_coding::general_planner::PLAN_PATH;
+    let prior = "earlier observed fixture event\n";
+    let mut workspace: Vec<(String, String)> = vec![(plan_path.to_owned(), prior.to_owned())];
     let transcript = drive_with(
         "write 10 to 1.txt file",
         &tools,
@@ -170,10 +176,42 @@ fn the_whole_write_read_task_persists_and_reads_back_the_users_content() {
                 workspace.push((path.to_owned(), content.to_owned()));
                 String::from("ok")
             }
-            _ => String::from("ok"),
+            "Read" => {
+                let path = arguments["file_path"]
+                    .as_str()
+                    .expect("advertised read path");
+                workspace
+                    .iter()
+                    .rev()
+                    .find(|(written, _)| written == path)
+                    .map_or_else(
+                        || {
+                            json!({"is_error": true, "error": format!("File not found: {path}")})
+                                .to_string()
+                        },
+                        |(_, content)| content.clone(),
+                    )
+            }
+            other => panic!("unadvertised workspace operation: {other}"),
         },
     );
     assert!(!transcript.is_empty(), "the request should drive a write");
+    let observed_stream = workspace
+        .iter()
+        .rev()
+        .find(|(path, _)| path == plan_path)
+        .expect("actual written plan stream");
+    assert_eq!(
+        observed_stream.1,
+        format!("{prior}{}", plan.links_notation())
+    );
+    assert_eq!(
+        transcript
+            .iter()
+            .filter(|(tool, arguments)| tool == "Write" && arguments["file_path"] == plan_path)
+            .count(),
+        1
+    );
     assert!(
         workspace
             .iter()
@@ -222,9 +260,16 @@ fn a_multi_turn_lifecycle_reads_back_the_current_content_each_time() {
                     }
                     "Read" => {
                         let path = args["file_path"].as_str().unwrap_or_default();
-                        let content = workspace.borrow().get(path).cloned().unwrap_or_default();
-                        last_read = content.clone();
-                        content
+                        let content = workspace.borrow().get(path).cloned();
+                        if let Some(content) = content {
+                            if path == "1.txt" {
+                                last_read = content.clone();
+                            }
+                            content
+                        } else {
+                            json!({"is_error": true, "error": format!("File not found: {path}")})
+                                .to_string()
+                        }
                     }
                     _ => String::new(),
                 };
