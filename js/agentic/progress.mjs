@@ -58,9 +58,10 @@ export class Progress {
         && (!message.name || eqIgnoreAsciiCase(message.name, call.function.name));
       const observation = boundRead ? sourceReadObservation(raw, Boolean(message.is_error || message.isError),
         message.source_read ?? message.sourceRead ?? null, path) : null;
-      const failure = observation !== null ? observation.error : capability === Capability.Read
-        ? (message.is_error || message.isError ? raw : null)
-        : failureMessage(raw, Boolean(message.is_error || message.isError), capability !== Capability.Run);
+      const failure = observation !== null ? observation.error
+        : capability === Capability.Read || capability === Capability.Fetch
+          ? (message.is_error || message.isError ? raw : null)
+          : failureMessage(raw, Boolean(message.is_error || message.isError), capability !== Capability.Run);
       progress.attempts.push({
         capability,
         source_read: observation,
@@ -70,12 +71,13 @@ export class Progress {
         tool: message.name ?? (call ? call.function.name : null),
       });
       if (capability === Capability.Fetch) {
-        const payload = normalizedPayload(raw);
+        const payload = raw;
         const fetchUrl = call ? argumentUrl(call.function.arguments) : null;
         if (fetchUrl !== null && !progress.attempted_fetches.includes(fetchUrl)) {
           progress.attempted_fetches.push(fetchUrl);
         }
-        if (payload !== null && trim(payload)) {
+        if (failure !== null && fetchUrl !== null) progress.failed_work_item_reads.push([fetchUrl, failure]);
+        if (failure === null && payload !== null && trim(payload)) {
           if (fetchUrl !== null) progress.fetched_pages.push([fetchUrl, payload]);
           progress.fetched_text = payload;
         }
@@ -120,6 +122,7 @@ export class Progress {
 
   /** Mirrors `Progress::failed_work_item_read_of`. */
   failedWorkItemReadOf(url) {
+    if (this.fetched_pages.some(([fetched]) => fetched === url)) return null;
     for (let index = this.failed_work_item_reads.length - 1; index >= 0; index -= 1) {
       const [failed, reason] = this.failed_work_item_reads[index];
       if (failed === url) return reason;
@@ -150,6 +153,7 @@ export class Progress {
         if (forThisUrl) {
           const outcome = trim(rustLines(attempt.detail)[0] ?? '');
           lines.push(fill('read_attempt_fetch_line', [['{url}', url], ['{outcome}', outcome]]));
+          if (!attempt.succeeded && fetched === url && nextReason < reasons.length) nextReason++;
         }
       }
     }

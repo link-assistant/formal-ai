@@ -281,7 +281,10 @@ fn execute_tool_call(call: &ToolCall, workspace: &mut AgentWorkspace) -> (String
     let arguments: Value = serde_json::from_str(&call.function.arguments).unwrap_or(Value::Null);
     match call.function.name.as_str() {
         "web_search" => (corpus::web_search(arg_str(&arguments, "query")), false),
-        "web_fetch" => (corpus::web_fetch(arg_str(&arguments, "url")), false),
+        "web_fetch" => match corpus::web_fetch_result(arg_str(&arguments, "url")) {
+            Ok(body) => (body, false),
+            Err(detail) => (detail, true),
+        },
         "read_file" => {
             let path = arg_str(&arguments, "path");
             match workspace.read_file(path) {

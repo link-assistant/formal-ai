@@ -102,7 +102,7 @@ impl Progress {
                 });
             let failure = source_read.as_ref().map_or_else(
                 || {
-                    if capability == Capability::Read {
+                    if matches!(capability, Capability::Read | Capability::Fetch) {
                         message.is_error.then(|| raw.clone())
                     } else {
                         super::tool_result::failure_message(
@@ -128,14 +128,19 @@ impl Progress {
                 tool,
             });
             if capability == Capability::Fetch {
-                let payload = super::tool_result::normalized_payload(&raw);
+                let payload = Some(raw.clone());
                 let fetch_url = result_tool_call(messages, index).and_then(fetch_call_url);
                 if let Some(url) = fetch_url.as_ref()
                     && !attempted_fetches.contains(url)
                 {
                     attempted_fetches.push(url.clone());
                 }
-                if let Some(text) = payload.filter(|text| !text.trim().is_empty()) {
+                if let (Some(reason), Some(url)) = (failure.as_ref(), fetch_url.as_ref()) {
+                    failed_work_item_reads.push((url.clone(), reason.clone()));
+                }
+                if failure.is_none()
+                    && let Some(text) = payload.filter(|text| !text.trim().is_empty())
+                {
                     if let Some(url) = fetch_url {
                         fetched_pages.push((url, text.clone()));
                     }
@@ -224,6 +229,9 @@ impl Progress {
 
     /// Why the work item at `url` could not be read, when no read of it succeeded (issue #1155).
     pub(super) fn failed_work_item_read_of(&self, url: &str) -> Option<&str> {
+        if self.fetched_pages.iter().any(|(fetched, _)| fetched == url) {
+            return None;
+        }
         self.failed_work_item_reads
             .iter()
             .rev()
@@ -233,9 +241,8 @@ impl Progress {
 
     /// Every read attempted for `url` this turn, as report lines — the command (or fetch) tried, what it answered, and why it was not page evidence.
     pub(super) fn work_item_read_attempts(&self, url: &str) -> Vec<String> {
-        // The shell reads' reasons were recorded in scan order alongside the
-        // attempts they belong to; only the failed shell reads consumed one,
-        // so draining this list against the attempts in order pairs them.
+        // Failed reads retain source order; consume Fetch reasons as well so
+        // each following shell read keeps its own observed failure.
         let mut reasons = self
             .failed_work_item_reads
             .iter()
@@ -310,6 +317,15 @@ impl Progress {
                                 (concat!("{", "outcome}"), outcome),
                             ],
                         ));
+                        if !attempt.succeeded
+                            && attempt
+                                .arguments
+                                .as_deref()
+                                .and_then(argument_url)
+                                .is_some_and(|fetched| fetched == url)
+                        {
+                            let _ = reasons.next();
+                        }
                     }
                 }
                 _ => {}

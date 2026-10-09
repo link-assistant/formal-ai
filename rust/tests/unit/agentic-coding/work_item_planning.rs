@@ -22,6 +22,9 @@ use formal_ai::agentic_coding::general_planner::{
 use formal_ai::agentic_coding::{AgenticPlan, run_agentic_task};
 use formal_ai::protocol::ChatMessage;
 
+#[path = "../issue_1066_ladder_capability/tool_workspace.rs"]
+mod tool_workspace;
+
 /// The prompt shape from the issue: a harness system-prompt preamble, then the
 /// caller's objective introduced by an explicit lead.
 const HARNESS_PROMPT: &str = "\
@@ -156,28 +159,20 @@ fn repository_work_item_run_reports_planned_not_executed_instead_of_success() {
 
     let outcome = run_agentic_task(HARNESS_PROMPT).expect("Agent CLI replay");
     assert!(!outcome.hit_turn_cap);
-    // The driver advertises a fetch tool, so the run reads the work item before
-    // concluding anything (the follow-up below). Its offline corpus holds no
-    // such issue, so the read comes back empty and the record is still the only
-    // honest end — but no step reads that record back, which is the defect this
-    // test was opened for.
-    assert_eq!(
-        outcome
-            .steps
-            .iter()
-            .map(|step| step.tool.as_str())
-            .collect::<Vec<_>>(),
-        ["web_fetch", "write_file"],
-        "the run must read the work item, then record it — and never read its own plan back",
-    );
+    // The exact original request is still missing from the offline corpus.
+    // A known failed provider read must not be recorded as a retrieved goal.
+    assert!(outcome.steps.iter().all(|step| step.tool != "write_file"));
+    assert!(outcome.steps.iter().any(|step| step.tool == "web_fetch"));
     assert!(
         !outcome.final_answer.contains("Recorded and verified"),
         "a run that changed no requested artefact must not read as a success: {}",
         outcome.final_answer
     );
     assert!(
-        outcome.final_answer.contains("Planned"),
-        "the run must end in a planned, not executed state: {}",
+        outcome
+            .final_answer
+            .contains("https://github.com/link-assistant/formal-ai/issues/904"),
+        "the unavailable-source report must identify the original issue: {}",
         outcome.final_answer
     );
     assert!(
@@ -399,24 +394,92 @@ fn a_read_work_item_produces_the_artifact_it_names() {
 /// read the work item is not available — and nowhere else.
 #[test]
 fn planned_not_executed_remains_only_when_the_work_item_cannot_be_read() {
-    let AgenticPlan::ToolCalls(calls) = formal_ai::agentic_coding::plan_chat_step(
+    let plan = compose_general_change_plan(HARNESS_PROMPT).expect("work-item plan");
+    let AgenticPlan::Final(answer) = formal_ai::agentic_coding::plan_chat_step(
         &[ChatMessage::user(HARNESS_PROMPT)],
         &["write_file"],
     )
-    .expect("a write-only client still records the reference") else {
-        panic!("the plan record is still written")
+    .expect("a client without Read or Run can still state its boundary") else {
+        panic!("an unobserved auxiliary Write must not claim persisted history")
     };
-    assert_eq!(
-        calls[0].tool, "write_file",
-        "with no way to read the work item, recording it is still the honest end",
-    );
-
+    assert_eq!(answer, plan.planned_not_executed_answer());
+    assert!(!answer.contains("Recorded and verified"));
     let outcome = run_agentic_task(HARNESS_PROMPT).expect("Agent CLI replay");
-    assert!(
-        outcome.final_answer.contains("Planned"),
-        "a run that could not read the work item must still say so: {}",
-        outcome.final_answer,
+    assert!(outcome.steps.iter().all(|step| step.tool != "write_file"));
+    assert!(!outcome.final_answer.contains("Recorded and verified"));
+}
+
+#[test]
+fn a_genuinely_fetched_non_artifact_work_item_preserves_verified_history_and_stays_planned() {
+    let plan = compose_general_change_plan(HARNESS_PROMPT).expect("work-item plan");
+    let previous = compose_general_change_plan("Create file prior.txt containing earlier history")
+        .expect("prior event")
+        .links_notation();
+    let mut workspace = tool_workspace::ToolWorkspace::new(HARNESS_PROMPT);
+    workspace
+        .write_initial(PLAN_PATH, &previous)
+        .expect("physical prior history");
+    let mut messages = work_item_transcript("Investigate why the nightly job is slow.");
+    let mut final_answer = None;
+    let mut calls = Vec::new();
+    for turn in 0..12 {
+        match formal_ai::agentic_coding::plan_chat_step(
+            &messages,
+            &["fetch_url", "read_file", "write_file"],
+        )
+        .expect("source-bound planned replay")
+        {
+            AgenticPlan::Final(answer) => {
+                final_answer = Some(answer);
+                break;
+            }
+            AgenticPlan::ToolCalls(planned) => {
+                for (index, call) in planned.iter().enumerate() {
+                    assert!(matches!(
+                        formal_ai::agentic_coding::planner::tool_capability(&call.tool),
+                        Some(
+                            formal_ai::agentic_coding::planner::Capability::Read
+                                | formal_ai::agentic_coding::planner::Capability::Write
+                        )
+                    ));
+                    let args: serde_json::Value =
+                        serde_json::from_str(&call.arguments).expect("arguments");
+                    assert_eq!(args["path"].as_str(), Some(PLAN_PATH));
+                    let id = format!("planned-history-{turn}-{index}");
+                    messages.push(ChatMessage::assistant_tool_calls(vec![
+                        formal_ai::protocol::ToolCall::function(
+                            &id,
+                            &call.tool,
+                            call.arguments.clone(),
+                        ),
+                    ]));
+                    messages.push(workspace.execute(&id, call));
+                    calls.push(call.tool.clone());
+                }
+            }
+        }
+    }
+    let answer = final_answer.expect("bounded replay settles");
+    assert_eq!(answer, plan.planned_not_executed_answer());
+    assert!(!answer.contains("Recorded and verified"));
+    assert!(!answer.contains("You are an AI issue solver"));
+    assert_eq!(calls, ["read_file", "write_file", "read_file"]);
+    let history = workspace.read(PLAN_PATH).expect("physical history");
+    assert!(history.starts_with(&previous));
+    assert!(history.ends_with(&plan.links_notation()));
+    assert!(workspace.read("greeting.txt").is_err());
+    assert!(plan.verification_command.is_empty());
+}
+
+#[test]
+fn offline_fetch_status_is_owned_by_registry_membership_and_preserves_wrapper_bytes() {
+    use formal_ai::agentic_coding::{CANONICAL_SOURCE_URL, corpus};
+    assert_eq!(
+        corpus::web_fetch_result(CANONICAL_SOURCE_URL),
+        Ok(corpus::web_fetch(CANONICAL_SOURCE_URL))
     );
+    let url = "https://example.com/missing";
+    assert_eq!(corpus::web_fetch_result(url), Err(corpus::web_fetch(url)));
 }
 
 /// A work item that names no artifact is not turned into one. Fabricating a file

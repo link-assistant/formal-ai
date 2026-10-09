@@ -116,3 +116,14 @@ for(const[polite,familiar,path]of[
  assert.equal(politeResult.files.get(path),familiarResult.files.get(path));
  assert.equal(politeResult.calls.filter(call=>call.tool==='write').length,familiarResult.calls.filter(call=>call.tool==='write').length);
 });
+
+test('the unchanged local readiness observation delivers both nested artifacts before optional research',async()=>{
+ const prompt='Review the existing readiness check and record the observable completion contract for workers. Create `audit-effects/readiness.lino` with these exact field lines: `subject=readiness`, `kind=inspection`, and `result=` followed by the observed result. Leave supporting evidence in `.audit/readiness-proof.md`. The first line must be exactly `proof_for=readiness`. Use web research when it materially improves factual accuracy.';
+ const observed='Found 3 matches\n/tmp/work/src/work.rs:\n  Line 70:     pub completion_criterion: String,\n  Line 89:             && !self.completion_criterion.starts_with("unresolved_")\n  Line 130:                 self.completion_criterion.clone(),';
+ const history=[{role:'assistant',content:'',tool_calls:[{id:'search-readiness',type:'function',function:{name:'grep',arguments:'{"pattern":"completion_criterion"}'}}]},{role:'tool',tool_call_id:'search-readiness',name:'grep',content:observed}];
+ const result=await replay(prompt,null,{history});assert.equal(result.calls.some(call=>call.tool==='websearch'),false);
+ const effectBytes=result.files.get('audit-effects/readiness.lino'),proofBytes=result.files.get('.audit/readiness-proof.md');
+ assert.ok(effectBytes.includes('result=Line 89:'));assert.ok(effectBytes.includes('!self.completion_criterion.starts_with'));
+ assert.ok(proofBytes.startsWith('proof_for=readiness\n'));assert.ok(proofBytes.includes('!self.completion_criterion.starts_with'));
+ assert.equal(proofBytes.includes('Line 70:'),false);assert.equal(proofBytes.includes('Line 130:'),false);
+});

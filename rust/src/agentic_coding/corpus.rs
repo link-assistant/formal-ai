@@ -109,14 +109,21 @@ pub fn web_search(query: &str) -> String {
 
 /// Resolve a `web_fetch` url into deterministic page text.
 ///
-/// An unknown url yields an error string the planner recognises via its error
-/// heuristic and ignores (falling back to the canonical synopsis), exactly as a
-/// real 404 would behave — which is how the driver exercises the *"understand
-/// errors from tools"* requirement.
+/// This compatibility wrapper preserves response bytes for existing callers.
+/// Providers use [`web_fetch_result`] to distinguish registry absence from
+/// document text without treating words in the body as process status.
 #[must_use]
 pub fn web_fetch(url: &str) -> String {
+    web_fetch_result(url).unwrap_or_else(|detail| detail)
+}
+
+/// Fetch an actual registered page without interpreting its body as status.
+///
+/// # Errors
+/// Returns the unchanged offline 404 detail when the requested URL is absent.
+pub fn web_fetch_result(url: &str) -> Result<String, String> {
     pages().iter().find(|page| page.url == url).map_or_else(
-        || format!("web_fetch error: 404 not found for {url}"),
-        |page| page.body.clone(),
+        || Err(format!("web_fetch error: 404 not found for {url}")),
+        |page| Ok(page.body.clone()),
     )
 }

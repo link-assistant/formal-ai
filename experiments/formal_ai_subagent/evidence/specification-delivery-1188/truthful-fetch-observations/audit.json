@@ -1,0 +1,81 @@
+{
+  "archive": "T3928-T3962.json.gz",
+  "compressedSha256": "00007f7af37c95ff826a3f0a26fa36e1315de21faf12d8d05b2343dc3729716c",
+  "decodedSha256": "d4270c4d942461861bcb62d1f13342e3a341428505006f37f5112c9dca058d16",
+  "entries": 183,
+  "head": "439757f5f45850fbb7fac6016676d1c36f537328",
+  "source": [
+    {
+      "path": "js/agentic/progress.mjs",
+      "sha256": "24a5662d6155754ce638d377eab1e5195580810798845069c7eb2fbc49157580",
+      "bytes": 22931
+    },
+    {
+      "path": "rust/src/agentic_coding/progress.rs",
+      "sha256": "608e04fa370c199fddb32fdc052c57d0ae19b2dfc3a4398e1a996d002937feca",
+      "bytes": 34315
+    },
+    {
+      "path": "rust/src/agentic_coding/corpus.rs",
+      "sha256": "c863324730d340d2a0bebde0aeb29d8b9154e6e5a49a23bbf0ee9ba2ae9a2d4d",
+      "bytes": 5061
+    },
+    {
+      "path": "rust/src/agentic_coding/driver.rs",
+      "sha256": "b02e5eeb991e48a49ec4d23c72de5e595d9003a36cf9f8eb82664707c32d4759",
+      "bytes": 26439
+    },
+    {
+      "path": "rust/tests/unit/agentic-coding/work_item_planning.rs",
+      "sha256": "6cf6d07add7fcc83d84e8395cd9a6356c4259012ae4b756b350691eb790478dc",
+      "bytes": 22777
+    },
+    {
+      "path": "rust/tests/unit/issue_1066_ladder_capability/written_files.rs",
+      "sha256": "a3d36c9a06c38f6a659e67208c70d8c04186512d0f54b8bf08f63203d0d788ef",
+      "bytes": 36055
+    },
+    {
+      "path": "rust/tests/web/ladder-document-delivery.test.mjs",
+      "sha256": "20ecb5f3079acb5ca06fb3b0783795927f5fd214b32025e156fc61eb5f5a4750",
+      "bytes": 13011
+    },
+    {
+      "path": "rust/tests/web/fetch-work-item-observations.test.mjs",
+      "sha256": "6ef1fd2bb27e36107abb4eedd643ae865e36bab2854f0a38afb6db39cca15ef2",
+      "bytes": 8438
+    },
+    {
+      "path": "changelog.d/20261010_014500_truthful_fetch_observations.md",
+      "sha256": "3417bd1ea11a0a6ae6c2d928b10deab4678f1b7e4f8501779cda25d0d535913b",
+      "bytes": 823
+    }
+  ],
+  "counts": {
+    "tasks": 35,
+    "physicalCalls": 79,
+    "writeCalls": 23,
+    "bashCalls": 55,
+    "readCalls": 1
+  },
+  "claims": {
+    "autonomousSynthesis": false,
+    "nativeCompilation": false,
+    "nativeExecution": false,
+    "actualShellExecution": true,
+    "publication": false,
+    "specificationCountIncrease": false,
+    "actualCostMeasured": false,
+    "promptBytesOnlyProxy": true
+  },
+  "verification": {
+    "closestPassing": 113,
+    "totalTests": 114,
+    "todo": 1,
+    "skipped": 0,
+    "failures": 0,
+    "durationMs": 4206.475,
+    "targetedRustfmt": true,
+    "ownedSizeViolations": 0
+  }
+}
