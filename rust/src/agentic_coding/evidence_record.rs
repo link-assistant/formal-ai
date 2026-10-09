@@ -347,8 +347,8 @@ pub(super) fn plan_evidence_record_step(
     let is_workspace_observation = observed.is_some();
     let answer = match observed {
         Some(answer) => answer,
-        None => match plan_chat_step_resolved(&residual_messages, tool_names) {
-            Some(resolved) => {
+        None => {
+            if let Some(resolved) = plan_chat_step_resolved(&residual_messages, tool_names) {
                 if !resolved.can_deliver() {
                     trace_route("evidence_record", "residual_not_finding");
                     return Some(resolved.into_plan(result));
@@ -365,12 +365,11 @@ pub(super) fn plan_evidence_record_step(
                     ));
                 }
                 answer
-            }
-            None => {
+            } else {
                 trace_route("evidence_record", "symbolic_residual");
                 symbolic_answer(&obligation.residual)?.text
             }
-        },
+        }
     };
     trace_route("evidence_record", &obligation.target);
     let delivered_answer = if is_workspace_observation {

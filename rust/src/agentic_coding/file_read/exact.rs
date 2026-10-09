@@ -6,9 +6,10 @@ use super::super::final_result::{
 use serde_json::json;
 
 use super::{
-    AgenticPlan, FileReadMode, PlannedToolCall, ToolResultRecord, failed_step_answer,
-    file_analysis_pattern, file_read_final_answer, grep_arguments, grep_result_for_path,
-    read_arguments, read_command_for, read_result_for_path, run_record_for_command,
+    AgenticPlan, FileReadMode, FileReadTools, PlannedToolCall, ToolResultRecord,
+    failed_step_answer, file_analysis_pattern, file_read_final_answer, grep_arguments,
+    grep_result_for_path, read_arguments, read_command_for, read_result_for_path,
+    run_record_for_command,
 };
 use crate::seed;
 
@@ -21,13 +22,16 @@ use crate::seed;
 pub(super) fn plan_direct_file_reads(
     paths: &[String],
     mode: &FileReadMode,
-    read_tool: Option<&str>,
-    run_tool: Option<&str>,
-    grep_tool: Option<&str>,
+    tools: FileReadTools<'_>,
     records: &[ToolResultRecord],
     request: &str,
     result: &mut Option<FinalResult>,
 ) -> AgenticPlan {
+    let FileReadTools {
+        read: read_tool,
+        run: run_tool,
+        grep: grep_tool,
+    } = tools;
     if mode == &FileReadMode::Audit
         && let Some(tool) = grep_tool
     {

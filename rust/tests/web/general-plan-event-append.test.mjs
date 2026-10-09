@@ -9,6 +9,7 @@ import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { composeGeneralChangePlan, planLinksNotation, PLAN_PATH } from '../../../js/agentic/general_planner.mjs';
 import { planGeneralChangeStep } from '../../../js/agentic/general_execution.mjs';
+import { reportedExitCode, harnessReportedFailure, observedPayload } from '../../../js/agentic/tool_result.mjs';
 
 before(async () => { await installNodeHost(new WorkerHost()); });
 const request = 'Set the contents of result.txt to «hello»';
@@ -132,7 +133,9 @@ test('repository-root shell events use the same sandbox as file tools', async ()
   const plan = composeGeneralChangePlan('Set the contents of mapper-proof.txt to «sandboxed plan event»');
   const step = planGeneralChangeStep([{ role: 'user', content: plan.goal }], ['bash', 'read', 'write'], plan);
   const output = execute(REPOSITORY_ROOT, step.calls[0]);
-  assert.equal(output, planLinksNotation(plan));
+  assert.equal(reportedExitCode(output), 0);
+  assert.equal(harnessReportedFailure(output), false);
+  assert.equal(observedPayload(output), planLinksNotation(plan));
   assert.equal(readFileSync(committed, 'utf8'), before);
   assert.ok(readFileSync(join(PLAN_EVENTS_SANDBOX, 'general-change-plan.lino'), 'utf8').includes(planLinksNotation(plan)));
 });

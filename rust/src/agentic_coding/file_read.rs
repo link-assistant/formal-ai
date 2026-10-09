@@ -68,6 +68,14 @@ pub(super) enum FileSelection {
     All,
 }
 
+/// Advertised capability ports shared by each local file-read branch.
+#[derive(Clone, Copy)]
+struct FileReadTools<'a> {
+    read: Option<&'a str>,
+    run: Option<&'a str>,
+    grep: Option<&'a str>,
+}
+
 struct ToolResultRecord {
     capability: Option<Capability>,
     arguments: serde_json::Value,
@@ -86,6 +94,11 @@ pub(super) fn plan_file_read_step(
     let read_tool = tool_for(tool_names, Capability::Read);
     let run_tool = tool_for(tool_names, Capability::Run);
     let grep_tool = tool_for(tool_names, Capability::Grep);
+    let tools = FileReadTools {
+        read: read_tool,
+        run: run_tool,
+        grep: grep_tool,
+    };
     let records = tool_result_records(messages);
     let request = crate::protocol::latest_user_request(messages).unwrap_or_default();
 
@@ -94,26 +107,16 @@ pub(super) fn plan_file_read_step(
             path,
             mode,
             prefer_run,
-        } => plan_direct_file_read(
-            path,
-            mode,
-            *prefer_run,
-            read_tool,
-            run_tool,
-            grep_tool,
-            &records,
-            &request,
-            result,
-        ),
-        FileReadTask::DirectMany { paths, mode } => exact::plan_direct_file_reads(
-            paths, mode, read_tool, run_tool, grep_tool, &records, &request, result,
-        ),
+        } => plan_direct_file_read(path, mode, *prefer_run, tools, &records, &request, result),
+        FileReadTask::DirectMany { paths, mode } => {
+            exact::plan_direct_file_reads(paths, mode, tools, &records, &request, result)
+        }
         FileReadTask::ListThenRead {
             directory,
             selection,
             mode,
         } => plan_list_then_read(
-            directory, *selection, mode, read_tool, run_tool, &records, &request, result,
+            directory, *selection, mode, tools, &records, &request, result,
         ),
     }
 }
@@ -131,28 +134,25 @@ fn failed_step_answer(label: &str, raw: &str, request: &str) -> Option<String> {
         .then(|| super::tool_result::render(label, raw, request))
 }
 
-// The eight parameters are the read plan's own slots (path, mode, tool
-// availability, prior records, request); bundling them would invent a struct
-// only this planner reads.
-#[allow(clippy::too_many_arguments)]
 fn plan_direct_file_read(
     path: &str,
     mode: &FileReadMode,
     prefer_run: bool,
-    read_tool: Option<&str>,
-    run_tool: Option<&str>,
-    grep_tool: Option<&str>,
+    tools: FileReadTools<'_>,
     records: &[ToolResultRecord],
     request: &str,
     result: &mut Option<FinalResult>,
 ) -> AgenticPlan {
+    let FileReadTools {
+        read: read_tool,
+        run: run_tool,
+        ..
+    } = tools;
     if mode == &FileReadMode::Audit {
         return exact::plan_direct_file_reads(
             &[path.to_owned()],
             mode,
-            read_tool,
-            run_tool,
-            grep_tool,
+            tools,
             records,
             request,
             result,
@@ -230,12 +230,16 @@ fn plan_list_then_read(
     directory: &str,
     selection: FileSelection,
     mode: &FileReadMode,
-    read_tool: Option<&str>,
-    run_tool: Option<&str>,
+    tools: FileReadTools<'_>,
     records: &[ToolResultRecord],
     request: &str,
     result: &mut Option<FinalResult>,
 ) -> AgenticPlan {
+    let FileReadTools {
+        read: read_tool,
+        run: run_tool,
+        ..
+    } = tools;
     let list_command = list_files_command(directory);
     let Some(raw_listing) = run_record_for_command(records, &list_command) else {
         if let Some(tool) = run_tool {

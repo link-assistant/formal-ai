@@ -183,10 +183,10 @@ fn literal_payload(request: &str) -> Option<crate::normal_markov::QuotedSegment>
         return None;
     }
     if lead.is_some_and(|(_, end)| {
-        !prefix[end..]
+        !(prefix[end..]
             .chars()
             .all(|character| character.is_whitespace() || character == ':')
-            && !(overwrite && !prefix[end..].trim_end().contains('\n'))
+            || (overwrite && !prefix[end..].trim_end().contains('\n')))
     }) {
         return None;
     }

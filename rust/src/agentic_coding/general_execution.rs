@@ -256,7 +256,7 @@ fn plan_event_append_command(plan: &GeneralChangePlan) -> String {
                 concat!("{", "lock_path", "}"),
                 &super::general_planner::shell_quote(&format!("{PLAN_PATH}.lock")),
             ),
-            ("{path}", &path),
+            (concat!("{", "path", "}"), &path),
             (concat!("{", "identity", "}"), &identity),
             (concat!("{", "event", "}"), &event),
         ],
