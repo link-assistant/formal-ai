@@ -168,3 +168,55 @@ fn file_targets(
         })
         .collect()
 }
+
+#[test]
+fn explicit_file_receipts_advance_the_declared_leaf_without_hashing_shell_metadata() {
+    use formal_ai::agentic_coding::task_obligations::next_step;
+    use formal_ai::obligation_ledger::ObligationStep;
+    let task =
+        "First, create file a.txt containing alpha. Second, create file b.txt containing beta.";
+    let receipt = |messages: &mut Vec<ChatMessage>, command: &str, raw: &str| {
+        let id = format!("receipt-{}", messages.len());
+        messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            &id,
+            "bash",
+            serde_json::json!({"command":command}).to_string(),
+        )]));
+        messages.push(ChatMessage::tool_result(id, "bash", raw));
+    };
+    for raw in ["Output: alpha.\nExit Code: 0", "alpha."] {
+        let mut messages = vec![ChatMessage::user(task)];
+        receipt(&mut messages, "cat a.txt", raw);
+        let Some(ObligationStep::Observe(node)) = next_step(task, &messages) else {
+            panic!("second file remains open");
+        };
+        assert!(
+            matches!(node.expectation, ObligationExpectation::FileBytes { ref path, .. } if path == "b.txt")
+        );
+    }
+    for (command, raw) in [
+        ("cat a.txt", "Output: wrong\nExit Code: 0"),
+        ("cat a.txt", "Output: alpha.\nExit Code: 1"),
+        ("cat other-a.txt", "Output: alpha.\nExit Code: 0"),
+        ("cat other-a.txt", "alpha."),
+        ("printf a.txt", "alpha."),
+    ] {
+        let mut messages = vec![ChatMessage::user(task)];
+        receipt(&mut messages, command, raw);
+        let Some(ObligationStep::Observe(node)) = next_step(task, &messages) else {
+            panic!("first file remains open");
+        };
+        assert!(
+            matches!(node.expectation, ObligationExpectation::FileBytes { ref path, .. } if path == "a.txt")
+        );
+    }
+    let mut messages = vec![ChatMessage::user(task)];
+    receipt(&mut messages, "cat a.txt", "Output: alpha.\nExit Code: 0");
+    receipt(&mut messages, "cat a.txt", "Output: wrong\nExit Code: 1");
+    let Some(ObligationStep::Observe(node)) = next_step(task, &messages) else {
+        panic!("failed latest receipt must remain open");
+    };
+    assert!(
+        matches!(node.expectation, ObligationExpectation::FileBytes { ref path, .. } if path == "a.txt")
+    );
+}

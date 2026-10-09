@@ -1,0 +1,71 @@
+TAP version 13
+# Subtest: a successful shell envelope advances the exact file obligation and preserves raw records
+ok 1 - a successful shell envelope advances the exact file obligation and preserves raw records
+  ---
+  duration_ms: 655.903042
+  ...
+# Subtest: bare successful readback remains supported
+ok 2 - bare successful readback remains supported
+  ---
+  duration_ms: 11.001125
+  ...
+# Subtest: write acknowledgements and auxiliary commands do not certify file contents
+not ok 3 - write acknowledgements and auxiliary commands do not certify file contents
+  ---
+  duration_ms: 20.85475
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/file-obligation-receipts.test.mjs:35:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'b.txt'
+    - 'a.txt'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'a.txt'
+  actual: 'b.txt'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/file-obligation-receipts.test.mjs:39:12)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: mismatch, nonzero status and a later failed receipt cannot reuse an older success
+ok 4 - mismatch, nonzero status and a later failed receipt cannot reuse an older success
+  ---
+  duration_ms: 28.310125
+  ...
+# Subtest: a different path sharing a filename suffix cannot fulfill the declared file
+not ok 5 - a different path sharing a filename suffix cannot fulfill the declared file
+  ---
+  duration_ms: 17.818167
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/file-obligation-receipts.test.mjs:53:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'b.txt'
+    - 'a.txt'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'a.txt'
+  actual: 'b.txt'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/file-obligation-receipts.test.mjs:58:12)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 3
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 856.572625
