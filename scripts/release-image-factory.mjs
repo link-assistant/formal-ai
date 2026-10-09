@@ -11,6 +11,14 @@ import {verifyPublishedNativeImage} from './verify-published-native-image.mjs';
 import {verifyAnonymousImageManifest} from './verify-anonymous-image-manifest.mjs';
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 const repository=value=>{assert.match(value,/^[a-z0-9.-]+\/[a-z0-9_./-]+$/u);return value;};
+export function releaseImageCacheSettings(environment=process.env) {
+ const required={'cache-from':'type=gha,scope=docker-image','cache-to':'type=gha,mode=max,scope=docker-image'};
+ if(environment.BUILD_CACHE_SETTINGS===undefined)return required;
+ assert.equal(typeof environment.BUILD_CACHE_SETTINGS,'string','BuildKit cache settings must be text');
+ const lines=environment.BUILD_CACHE_SETTINGS.trimEnd().split(/\r?\n/u);assert.equal(lines.length,2,'exactly two cache settings required');
+ const settings={};for(const line of lines){const match=/^(cache-from|cache-to): (.+)$/u.exec(line);assert.ok(match,'unknown or malformed BuildKit cache setting');assert.ok(!Object.hasOwn(settings,match[1]),'duplicate cache setting');settings[match[1]]=match[2];}
+ assert.deepEqual(settings,required,'cache kind, mode and scope must preserve the source publish contract');return settings;
+}
 function completed(result,label) {if(result.error)throw result.error;assert.equal(result.signal,null,label+' interrupted');assert.equal(result.status,0,label+' failed: '+String(result.stderr??''));return result.stdout;}
 export function validatePreparedBinary({cwd,directory,version,environment=process.env,repositoryUrl=null}) {
  const record=JSON.parse(readFileSync(join(directory,'prepared-build.json'),'utf8'));
@@ -67,11 +75,12 @@ export async function publishPreparedFullImage({cwd,directory,version,image,envi
  const {record}=validatePreparedBinary({cwd,directory,version,environment,repositoryUrl});
  assert.ok(typeof environment.ACTIONS_RUNTIME_TOKEN==='string'&&environment.ACTIONS_RUNTIME_TOKEN.length>0,'GHA cache runtime token missing');
  assert.ok(typeof environment.ACTIONS_RESULTS_URL==='string'&&/^https:\/\/[^\s,]+$/u.test(environment.ACTIONS_RESULTS_URL),'GHA cache endpoint missing or invalid');
+ const cache=releaseImageCacheSettings(environment);
  const invoke=dockerRunner(run,cwd,environment),local='formal-ai:prepared-full-'+environment.GITHUB_RUN_ID;
  invoke(['buildx','build','--load','--file','Dockerfile','--build-arg','BINARY_SOURCE=prebuilt','--platform','linux/amd64','--tag',local,
   '--label','org.opencontainers.image.revision='+record.selection.head,'--label','org.opencontainers.image.version='+version,
   '--label','io.link-assistant.formal-ai.executable.sha256='+record.executable.sha256,
-  '--cache-from','type=gha,scope=docker-image','--cache-to','type=gha,mode=max,scope=docker-image','.']);
+  '--cache-from',cache['cache-from'],'--cache-to',cache['cache-to'],'.']);
  for(const suffix of [version,'latest']){invoke(['tag',local,image+':'+suffix]);invoke(['push',image+':'+suffix]);}
  invoke(['pull',image+':'+version]);const reference=immutableReference(image+':'+version,invoke);
  const expected={revision:record.selection.head,version,binarySha256:record.executable.sha256};

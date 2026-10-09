@@ -37,10 +37,14 @@ jobs:
           node-version: 22
       - uses: dtolnay/rust-toolchain@stable
       - uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: formal-ai-release-binary
           path: dist
       - uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: formal-ai-test-executables
           path: dist/tests

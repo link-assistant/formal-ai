@@ -812,6 +812,9 @@ jobs:
         env:
           RELEASE_VERSION: ${{ steps.current_version.outputs.version }}
           RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
+          BUILD_CACHE_SETTINGS: |
+            cache-from: type=gha,scope=docker-image
+            cache-to: type=gha,mode=max,scope=docker-image
         run: node scripts/release-image-factory.mjs publish prepared-release "$RELEASE_VERSION" "$GHCR_IMAGE"
       - name: Publish and verify the slim GHCR sidecar
         if: |
@@ -1037,6 +1040,9 @@ jobs:
         env:
           RELEASE_VERSION: ${{ steps.version.outputs.new_version }}
           RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
+          BUILD_CACHE_SETTINGS: |
+            cache-from: type=gha,scope=docker-image
+            cache-to: type=gha,mode=max,scope=docker-image
         run: node scripts/release-image-factory.mjs publish prepared-release "$RELEASE_VERSION" "$GHCR_IMAGE"
       - name: Publish and verify the slim GHCR sidecar
         if: |
@@ -1260,6 +1266,9 @@ jobs:
           path: dist/tests
           retention-days: 1
   native-response-observations:
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-native-response-observations
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     needs: [build-artifacts]
     if: ${{ !cancelled() && needs.build-artifacts.result == 'success' }}
     uses: ./.github/workflows/native-response-observations.yml
