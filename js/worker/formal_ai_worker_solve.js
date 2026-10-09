@@ -323,7 +323,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     return finalize(events, steps, toolCalls, githubRepoInfo, formalizationContext);
   }
 
-  const nlTool = tryNaturalLanguageToolRequest(prompt, preferences); // the nl_tool prelude row, ahead of feature_capability as natively
+  const nlTool = tryNaturalLanguageToolRequest(prompt, { ...preferences, agentMode: options?.agentMode ?? preferences.agentMode }); // the nl_tool prelude row, ahead of feature_capability as natively
   if (nlTool) return finalizeInlineHandler(events, steps, toolCalls, nlTool, "tryNaturalLanguageToolRequest", formalizationContext);
   const capabilities = !isAssistantFreeTimePrompt(normalized, prompt)
     && claimRouteRun("tryCapabilities", prompt, normalized, history, () => tryCapabilities(prompt, normalized, preferences, history));
@@ -742,7 +742,7 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
     return finalize(events, steps, toolCalls, whoIs, formalizationContext);
   }
   // Route literal and seeded semantic shell requests before unknown fallback.
-  const terminal = claimRouteAdmits("tryTerminalCommand", prompt) ? tryTerminalCommand(prompt, language, preferences) : null;
+  const terminal = !(isAgentModeRequest(prompt) && browserWorkspacePlan(prompt).length) && claimRouteAdmits("tryTerminalCommand", prompt) ? tryTerminalCommand(prompt, language, preferences) : null;
   if (terminal) {
     events.push(`handler:${terminal.intent}`);
     steps.push({ step: "dispatch_handler", detail: "tryTerminalCommand" });
@@ -817,16 +817,16 @@ async function solveImpl(prompt, history, prefs, userContext = {}, memory = [], 
       outputs: { intent: researchedUnknown.intent, confidence: researchedUnknown.confidence, associationId } });
     return finalize(events, steps, toolCalls, researchedUnknown, formalizationContext);
   }
-  const comparisonGap = tryFactComparisonGap(prompt, normalized);
+  const comparisonGap = tryFactComparisonGap(prompt, normalized), validation = solverPrimeIntervalValidation(prompt), unresolved = solverUnknownLanguage(prompt, language, history, memory, preferences);
   if (comparisonGap) return finalizeInlineHandler(events, steps, toolCalls, comparisonGap, "tryFactComparisonGap", formalizationContext);
   events.push("fallback:unknown");
   steps.push({ step: "fallback", detail: "unknown" });
   return finalize(events, steps, toolCalls, {
     intent: "unknown",
-    content: unknownAnswerWithVariation(prompt, language),
-    confidence: 0.1,
+    content: validation?.answer ?? unresolved?.content ?? unknownAnswerWithVariation(prompt, language),
+    confidence: validation?.answer ? 1 : unresolved ? 0 : 0.1,
     evidence: ["fallback:unknown", `language:${language}`],
-    solverEvents: [{ kind: "search:external", payload: prompt }], // the research above ran: rust/src/solver_search.rs record_external_search
+    solverEvents: [{ kind: "search:external", payload: prompt }, ...(validation?.events || []), ...(unresolved?.events || [])], // observed research and candidate checks
   }, formalizationContext);
 }
 function finalize(events, steps, toolCalls, answer, formalizationContext) {

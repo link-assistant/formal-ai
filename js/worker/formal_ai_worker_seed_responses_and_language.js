@@ -500,15 +500,7 @@ function detectLanguage(prompt) {
   if (FORCED_RESPONSE_LANGUAGE) return FORCED_RESPONSE_LANGUAGE;
   const text = String(prompt || "");
   const fromWasm = wasmDetectLanguage(text);
-  if (fromWasm !== null) {
-    if (fromWasm === "unknown") {
-      return AGENT_INFO.default_language || "en";
-    }
-    return fromWasm;
-  }
-  const detected = detectLanguageFromRules(text);
-  if (detected === "unknown") return AGENT_INFO.default_language || "en";
-  return detected;
+  return fromWasm !== null ? fromWasm : crateModule("crate/language.mjs").detect(text);
 }
 
 // Registry-driven fallback detection, reached only when the Rust→WASM worker is
