@@ -1,0 +1,5 @@
+{
+  "taskId": "T2429",
+  "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Run `node scripts/check-worker-line-budget.mjs`"
+}

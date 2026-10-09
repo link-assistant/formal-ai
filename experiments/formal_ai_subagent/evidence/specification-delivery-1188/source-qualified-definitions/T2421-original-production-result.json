@@ -1,0 +1,203 @@
+{
+  "prompt": "Cite a definition of associative memory from Wikipedia",
+  "answer": {
+    "intent": "concept_lookup",
+    "content": "associative memory — Wikipedia (disambiguation):\n  1. Associative memory (psychology), the ability to learn and remember the relationship between unrelated items\n  2. Associative storage, or content-addressable memory, a type of computer memory used in certain very high speed searching applications\n  3. Autoassociative memory, all computer memories that enable one to retrieve a piece of data from only a tiny sample of itself\n  4. Bidirectional associative memory, a type of recurrent neural network\n  5. Hopfield network, a form of recurrent artificial neural network\n  6. Transderivational search in psychology or cybernetics, a search for a fuzzy match across a broad field\nSource: https://en.wikipedia.org/api/rest_v1/page/summary/associative%20memory (sha256 d8c37a8c6e2e0abcb15cab4ece37127ab3a1d6335319be0fc79be0be66f5fa09; captured-at 1791508773; cached true; CC BY-SA 4.0; https://creativecommons.org/licenses/by-sa/4.0/)",
+    "confidence": 0.85,
+    "evidence": [
+      "source-qualified-definition:term:associative memory",
+      "source-qualified-definition:status:captured",
+      "source-qualified-definition:source:wikipedia",
+      "source:https://en.wikipedia.org/api/rest_v1/page/summary/associative%20memory",
+      "source:http:https://en.wikipedia.org/api/rest_v1/page/summary/associative%20memory fetched_at=1791508773 sha256=d8c37a8c6e2e0abcb15cab4ece37127ab3a1d6335319be0fc79be0be66f5fa09 cached=true",
+      "source-qualified-definition:kind:disambiguation",
+      "cache_hit:https://en.wikipedia.org/api/rest_v1/page/summary/associative%20memory",
+      "trace:impulse:Cite a definition of associative memory from Wikipedia",
+      "trace:formalization:(@USER OP:express ?cite a definition of associative memory from wikipedia)",
+      "trace:language:en",
+      "trace:meta:understand:open",
+      "trace:handler:concept_lookup",
+      "trace:deformalize:(@USER OP:express ?cite a definition of associative memory from wikipedia):concept_lookup",
+      "prompt:prompt_5acba2ab87e04c86",
+      "impulse:impulse_5870a457ba915147",
+      "language:en",
+      "candidate:candidate_7537785773b89178",
+      "statement_weight:formalization:0 weight=1.000000 empty",
+      "policy:temperature_selection:policy:temperature_selection_ca0d529473261fbc",
+      "intent_formalization_cache:miss:impulse_d2f7f4a2e8212646",
+      "intent_formalization:intent_formalization_0e93cc1843863e39",
+      "intent_formalization:kind:unknown",
+      "search:local:search:local_3ed66cd469a42557",
+      "selected_rule:selected_rule_c462a8ecb2667aef",
+      "intent:concept_lookup",
+      "validation:validation_27bbade9cb1d4714",
+      "response:concept_lookup",
+      "trace:simplification:trace:simplification_0a0f7cc1a07c5ba9",
+      "trace:trace_99d407442170cdc6"
+    ],
+    "steps": [
+      {
+        "step": "impulse",
+        "detail": "Cite a definition of associative memory from Wikipedia",
+        "level": "high"
+      },
+      {
+        "step": "formalize",
+        "detail": "Cite a definition of associative memory from Wikipedia -> (@USER OP:express ?cite a definition of associative memory from wikipedia)",
+        "formalization": {
+          "raw": "Cite a definition of associative memory from Wikipedia",
+          "subject": "@USER",
+          "verb": "OP:express",
+          "object": "?cite a definition of associative memory from wikipedia",
+          "tuple": "(@USER OP:express ?cite a definition of associative memory from wikipedia)",
+          "interpretations": []
+        },
+        "level": "detailed"
+      },
+      {
+        "step": "detect_language",
+        "detail": "en",
+        "level": "high"
+      },
+      {
+        "step": "meta_reason",
+        "detail": "understand open",
+        "derivation": "derivation\n  goal understand\n  status open\n  event 1\n    kind impulse\n    detail \"Cite a definition of associative memory from Wikipedia\"\n  event 2\n    kind formalize\n    detail \"goal understand; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind unknowns\n    detail \"cite, definition, associative, memory, wikipedia\"",
+        "level": "detailed"
+      },
+      {
+        "step": "invoke_tool",
+        "detail": "response_language_followup",
+        "level": "detailed"
+      },
+      {
+        "step": "invoke_tool",
+        "detail": "project_lookup",
+        "level": "detailed"
+      },
+      {
+        "step": "dispatch_handler",
+        "detail": "tryWordDefinition",
+        "level": "high"
+      },
+      {
+        "step": "deformalize",
+        "detail": "(@USER OP:express ?cite a definition of associative memory from wikipedia) ⇒ concept_lookup: associative memory — Wikipedia (disambiguation):",
+        "projection": {
+          "tuple": "(@USER OP:express ?cite a definition of associative memory from wikipedia)",
+          "intent": "concept_lookup",
+          "contentChars": 932,
+          "evidenceCount": 7,
+          "language": "en",
+          "summary": "(@USER OP:express ?cite a definition of associative memory from wikipedia) ⇒ concept_lookup: associative memory — Wikipedia (disambiguation):"
+        },
+        "answer": "associative memory — Wikipedia (disambiguation):",
+        "level": "high"
+      }
+    ],
+    "toolCalls": [],
+    "derivationId": "answer_ea2b8acd26c81b4d",
+    "rawSolverEvents": [
+      {
+        "kind": "impulse",
+        "payload": "Cite a definition of associative memory from Wikipedia"
+      },
+      {
+        "kind": "language",
+        "payload": "en"
+      },
+      {
+        "kind": "intent",
+        "payload": "concept_lookup"
+      },
+      {
+        "kind": "candidate",
+        "payload": "concept_lookup"
+      },
+      {
+        "kind": "validation",
+        "payload": "accepted_without_extra_constraints"
+      },
+      {
+        "kind": "response",
+        "payload": "response:concept_lookup"
+      },
+      {
+        "kind": "trace:simplification",
+        "payload": "smallest_sufficient"
+      },
+      {
+        "kind": "trace",
+        "payload": "concept_lookup"
+      }
+    ],
+    "solverEvents": [
+      {
+        "kind": "impulse",
+        "payload": "Cite a definition of associative memory from Wikipedia"
+      },
+      {
+        "kind": "language",
+        "payload": "en"
+      },
+      {
+        "kind": "candidate",
+        "payload": "formalization:0 score=0 probability=1.000000 empty"
+      },
+      {
+        "kind": "statement_weight",
+        "payload": "formalization:0 weight=1.000000 empty"
+      },
+      {
+        "kind": "policy:temperature_selection",
+        "payload": "selected=formalization:0 probability=1.000000 margin=1.000000 epsilon=0.112000 reason=only_candidate"
+      },
+      {
+        "kind": "intent_formalization_cache",
+        "payload": "miss impulse_d2f7f4a2e8212646"
+      },
+      {
+        "kind": "intent_formalization",
+        "payload": "intent_formalization impulse_d2f7f4a2e8212646\n  impulse_id \"impulse_d2f7f4a2e8212646\"\n  source_text \"Cite a definition of associative memory from Wikipedia\"\n  normalized_text \"cite a definition of associative memory from wikipedia\"\n  language \"en\"\n  kind \"unknown\"\n  known \"impulse:impulse_d2f7f4a2e8212646\"\n  known \"language:en\"\n"
+      },
+      {
+        "kind": "intent_formalization:kind",
+        "payload": "unknown"
+      },
+      {
+        "kind": "search:local",
+        "payload": "Cite a definition of associative memory from Wikipedia"
+      },
+      {
+        "kind": "selected_rule",
+        "payload": "initial unknown reason no_seed_route next try_rule_synthesis"
+      },
+      {
+        "kind": "intent",
+        "payload": "concept_lookup"
+      },
+      {
+        "kind": "validation",
+        "payload": "accepted_without_extra_constraints"
+      },
+      {
+        "kind": "response",
+        "payload": "response:concept_lookup"
+      },
+      {
+        "kind": "trace:simplification",
+        "payload": "smallest_sufficient"
+      },
+      {
+        "kind": "trace",
+        "payload": "concept_lookup"
+      }
+    ],
+    "derivation": "derivation\n  goal understand\n  status open\n  event 1\n    kind impulse\n    detail \"Cite a definition of associative memory from Wikipedia\"\n  event 2\n    kind formalize\n    detail \"goal understand; 0 example(s); 0 definition(s) in the request\"\n  event 3\n    kind unknowns\n    detail \"cite, definition, associative, memory, wikipedia\""
+  },
+  "projection": {
+    "term": "associative memory",
+    "source": "Wikipedia",
+    "language": "en"
+  }
+}

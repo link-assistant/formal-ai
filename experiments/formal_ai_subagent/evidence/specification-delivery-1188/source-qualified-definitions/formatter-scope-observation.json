@@ -1,0 +1,49 @@
+{
+  "task": "T2415",
+  "requestedTargets": 5,
+  "unintendedTargets": 5,
+  "restorationTasks": [
+    "T2416",
+    "T2417",
+    "T2418",
+    "T2419",
+    "T2420"
+  ],
+  "accidental": [
+    {
+      "path": "rust/src/solver_handlers/software_project_phrases.rs",
+      "beforeSha256": "6fb507416c732dae41ab82cadad620241505041e52166945f6106b135801cc0e",
+      "reconstructedFormattedSha256": "9d33c5d2a564b41ff4c87e8a19158464915cda27838d8b826cbd571985ded39e",
+      "unchangedRestoration": true,
+      "provenance": "Original accidental full postimage was not persisted before restoration. This postimage is a deterministic scratch reconstruction from the exact preimage and formatter, not claimed as a retained original capture."
+    },
+    {
+      "path": "rust/src/solver_handlers/statistics.rs",
+      "beforeSha256": "c814f89b738590aa82a0009a0078ed47de3dd4572d65a01fbe41b2331c865a0b",
+      "reconstructedFormattedSha256": "e2089e1291694e33a45d905e4570a3a886aa65d6d6b3eb72c24a65b0d3340a1c",
+      "unchangedRestoration": true,
+      "provenance": "Original accidental full postimage was not persisted before restoration. This postimage is a deterministic scratch reconstruction from the exact preimage and formatter, not claimed as a retained original capture."
+    },
+    {
+      "path": "rust/src/solver_handlers/text_rewrite.rs",
+      "beforeSha256": "fdd519aaa90811b18a9945bbea670d83b7575fd998ca56843d84a99b655cedd6",
+      "reconstructedFormattedSha256": "490a10d308c0db21602e9318adc371c00b7959ff64d69217e87d1f99dde0590a",
+      "unchangedRestoration": true,
+      "provenance": "Original accidental full postimage was not persisted before restoration. This postimage is a deterministic scratch reconstruction from the exact preimage and formatter, not claimed as a retained original capture."
+    },
+    {
+      "path": "rust/src/solver_handlers/verifiable_task.rs",
+      "beforeSha256": "f1fa5ed170cdc64b2e28eb09403cce0b325608b1789d69ee3ec2a725b4e7069a",
+      "reconstructedFormattedSha256": "1cc50857f504562f1c6d0f2b700af0a2be87cd6c0fcad706017d0e4de1cf9f1c",
+      "unchangedRestoration": true,
+      "provenance": "Original accidental full postimage was not persisted before restoration. This postimage is a deterministic scratch reconstruction from the exact preimage and formatter, not claimed as a retained original capture."
+    },
+    {
+      "path": "rust/src/solver_handlers/web_search_intent.rs",
+      "beforeSha256": "66fb13dc037f4917af70abf6adca5aedee7a6eded34a23d9709f2d95c2ad90c5",
+      "reconstructedFormattedSha256": "a92f8f08937b04e43152151340979224369ce016395a64ce9b24880e0a040b93",
+      "unchangedRestoration": true,
+      "provenance": "Original accidental full postimage was not persisted before restoration. This postimage is a deterministic scratch reconstruction from the exact preimage and formatter, not claimed as a retained original capture."
+    }
+  ]
+}

@@ -15,6 +15,8 @@ use std::time::{SystemTime, UNIX_EPOCH};
 
 use sha2::{Digest, Sha256};
 
+mod seed_captures;
+
 use crate::event_log::EventLog;
 use crate::translation::cache::cache_key;
 
@@ -289,7 +291,17 @@ impl<T: SourceTransport> CachedSourceClient<T> {
                     return Ok(capture);
                 }
             }
-            Ok(None) => {}
+            Ok(None) => {
+                if let Some(capture) =
+                    seed_captures::read_seed_capture(url, crate::seed::SOURCES_REGISTRY_LINO)?
+                {
+                    let age =
+                        (self.now)().saturating_sub(capture.fetched_at.parse::<u64>().unwrap_or(0));
+                    if !self.online || age <= self.ttl_seconds {
+                        return Ok(capture);
+                    }
+                }
+            }
             Err(error) => return Err(error),
         }
         if !self.online {

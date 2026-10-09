@@ -1,0 +1,5 @@
+{
+  "taskId": "T2412",
+  "target": "rust/src/solver_handlers/modules.rs",
+  "byteEqual": true
+}

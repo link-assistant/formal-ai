@@ -193,14 +193,12 @@ async function composeFromConcepts(prompt, preferences = {}) {
   };
 }
 
-// ---------------------------------------------------------------------------
 // Issue #1172 R1172-5: "What does X mean?" resolves through a dictionary
 // source of the registry (Wiktionary), never through a canned paragraph.
 // The frames that read the word, the registry kind that answers, and the
 // per-edition section titles, example markers and annotation labels are
 // `word_definition` rows of data/seed/prompt-patterns.lino. Mirrors
 // rust/src/solver_handlers/word_definition.rs.
-// ---------------------------------------------------------------------------
 
 const WORD_DEFINITION_MAX_SENSES = 3;
 
@@ -335,6 +333,8 @@ function wordDefinitionRender(intent, language, values) {
  * @returns {Promise<object|null>} the worker answer, or null to fall through
  */
 async function tryWordDefinition(prompt, preferences = {}) {
+  const qualified = await trySourceQualifiedDefinition(prompt, preferences);
+  if (qualified) return qualified;
   const request = wordDefinitionTerm(prompt);
   if (request === null) return null;
   // A seeded concept record answers first, as the native concept_lookup row does.

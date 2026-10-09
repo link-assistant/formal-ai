@@ -2,7 +2,6 @@
 // walk. Procedure and concept extractors decide what captured bytes mean; this
 // module alone owns registry selection, bounds, recursion, accessibility and
 // content-addressed capture provenance.
-
 const SOURCE_WALK_TIER_WEIGHTS = Object.freeze({
   original_first_party: 100,
   original_journalism: 85,
@@ -11,7 +10,6 @@ const SOURCE_WALK_TIER_WEIGHTS = Object.freeze({
 });
 const SOURCE_WALK_ROLE_ORDER = Object.freeze({ primary: 0, secondary: 1 });
 const SOURCE_WALK_ACCESSIBILITY_TTL_SECONDS = 7 * 24 * 60 * 60;
-
 let cachedSourceWalkRegistry = null;
 const sourceWalkAccessibility = new Map();
 const sourceWalkCaptureCache = new Map();
@@ -226,6 +224,8 @@ async function sourceWalkSha256Hex(text) {
 async function sourceWalkFetchCapture(url) {
   const cached = sourceWalkCaptureCache.get(url);
   if (cached) return { ...cached, cached: true };
+  const seeded = await sourceWalkSeedCapture(url);
+  if (seeded) return seeded;
   if (typeof fetch !== "function") return { ok: false, url, error: "fetch_unavailable" };
   try {
     const response = await fetch(url, { method: "GET", mode: "cors" });

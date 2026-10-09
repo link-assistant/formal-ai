@@ -1,0 +1,5 @@
+{
+  "taskId": "T2423",
+  "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Run `node --test rust/tests/web/source-qualified-definition.test.mjs rust/tests/web/issue-1172-word-definition.test.mjs`"
+}

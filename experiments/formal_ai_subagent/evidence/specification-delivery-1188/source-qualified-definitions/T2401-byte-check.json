@@ -1,0 +1,5 @@
+{
+  "taskId": "T2401",
+  "target": "data/seed/sources-registry.lino",
+  "byteEqual": true
+}

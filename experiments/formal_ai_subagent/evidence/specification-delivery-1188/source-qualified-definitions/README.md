@@ -1,0 +1,5 @@
+The production source-qualified definition observer and cache replay were applied through Formal AI using reviewed general mechanisms. T2400 and unchanged T2445 broad synthesis remain open. T2421 is the unchanged original production citation; T2426/T2442 pass13/13; T2437/T2446 prove all136carried cases out of1171native cases. Native compilation/execution is CI only.
+
+Captured API bytes and URL/time/hash manifest are genuine network observations. Article revision timestamps are separate from capture timestamps. Raw HTTP headers/cookies stay private and are excluded. Synthetic arbitrary-provider probes are identified as fixtures. Five accidental recursive formatter effects were restored throughFA; their original full postimages were not captured, so included formatted postimages are explicitly reconstructed.
+
+Audit excludes history appends and counts source Writes, actual formatter Bash calls and one shared record generation separately. No actual token/cost measurements. Evidence-copy taskT2450 is reported separately by coordinator.

@@ -1,0 +1,4 @@
+worker-module-budget
+  module "formal_ai_worker_seed_captures.js"
+  ceiling 20
+  rationale "Generic source registry replay verifies actual captured body content address, URL and observed timestamp before provenance; native source_fetch/seed_captures.rs twin."

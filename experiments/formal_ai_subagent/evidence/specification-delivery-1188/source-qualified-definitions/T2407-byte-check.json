@@ -1,0 +1,5 @@
+{
+  "taskId": "T2407",
+  "target": "data/seed/multilingual-responses-concept-lookup.lino",
+  "byteEqual": true
+}

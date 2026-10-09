@@ -65,6 +65,7 @@ pub mod unit_conversion;
 pub mod numeric_list;
 pub mod page_query_text;
 pub mod policy_gates;
+mod source_qualified_definition;
 pub mod summarization_request;
 pub mod text_rewrite;
 mod user_intent;

@@ -157,3 +157,70 @@ fn offline_mode_disables_external_lookups() {
         "offline mode must record a policy refusal for external lookups"
     );
 }
+
+// The original source-prefix pin above is retained. This stronger pin binds
+// the actual requested subject to the genuine captured disambiguation body.
+#[test]
+fn source_qualified_definition_replays_all_meanings_with_actual_provenance() {
+    let client = formal_ai::CachedSourceClient::new(
+        std::env::temp_dir().join("formal-ai-source-qualified-definition-offline"),
+        formal_ai::CurlSourceTransport,
+    )
+    .with_online(false);
+    let mut log = formal_ai::event_log::EventLog::new();
+    let response = formal_ai::try_word_definition_with_client(
+        "Cite a definition of associative memory from Wikipedia",
+        &mut log,
+        &client,
+    )
+    .expect("the genuine committed API capture is available offline");
+    assert_eq!(
+        response.answer,
+        r###"associative memory — Wikipedia (disambiguation):
+  1. Associative memory (psychology), the ability to learn and remember the relationship between unrelated items
+  2. Associative storage, or content-addressable memory, a type of computer memory used in certain very high speed searching applications
+  3. Autoassociative memory, all computer memories that enable one to retrieve a piece of data from only a tiny sample of itself
+  4. Bidirectional associative memory, a type of recurrent neural network
+  5. Hopfield network, a form of recurrent artificial neural network
+  6. Transderivational search in psychology or cybernetics, a search for a fuzzy match across a broad field
+Source: https://en.wikipedia.org/api/rest_v1/page/summary/associative%20memory (sha256 d8c37a8c6e2e0abcb15cab4ece37127ab3a1d6335319be0fc79be0be66f5fa09; captured-at 1791508773; cached true; CC BY-SA 4.0; https://creativecommons.org/licenses/by-sa/4.0/)"###
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .any(|link| link.starts_with("source:http")
+                && link.contains("/summary/associative%20memory")
+                && link.contains("fetched_at=1791508773")
+                && link.contains(
+                    "sha256=d8c37a8c6e2e0abcb15cab4ece37127ab3a1d6335319be0fc79be0be66f5fa09"
+                )
+                && link.contains("cached=true"))
+    );
+}
+
+#[test]
+fn an_unknown_named_provider_has_no_fabricated_provenance() {
+    let client = formal_ai::CachedSourceClient::new(
+        std::env::temp_dir().join("formal-ai-source-qualified-definition-offline"),
+        formal_ai::CurlSourceTransport,
+    )
+    .with_online(false);
+    let mut log = formal_ai::event_log::EventLog::new();
+    let response = formal_ai::try_word_definition_with_client(
+        "Cite a definition of entropy from Unknown provider",
+        &mut log,
+        &client,
+    )
+    .expect("an explicit unbound provider produces an honest outcome");
+    assert_eq!(
+        response.answer,
+        "No verified definition of entropy from Unknown provider: missing-source."
+    );
+    assert!(
+        response
+            .evidence_links
+            .iter()
+            .all(|link| !link.starts_with("source:http") && !link.starts_with("cache_hit:"))
+    );
+}

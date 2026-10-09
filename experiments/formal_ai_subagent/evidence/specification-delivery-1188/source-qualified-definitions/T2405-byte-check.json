@@ -1,0 +1,5 @@
+{
+  "taskId": "T2405",
+  "target": "rust/src/source_fetch.rs",
+  "byteEqual": true
+}

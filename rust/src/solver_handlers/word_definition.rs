@@ -253,6 +253,9 @@ pub fn try_word_definition_with_client<T: SourceTransport>(
     log: &mut EventLog,
     client: &CachedSourceClient<T>,
 ) -> Option<SymbolicAnswer> {
+    if let Some(answer) = super::source_qualified_definition::try_definition(prompt, log, client) {
+        return Some(answer);
+    }
     let (term, language) = definition_term(prompt)?;
     log.append("word_definition:term", term.clone());
     let kinds: Vec<String> = patterns("source_kind", None)
@@ -341,7 +344,11 @@ pub fn try_word_definition_with_offline(
     log: &mut EventLog,
     offline: bool,
 ) -> Option<SymbolicAnswer> {
-    definition_term(prompt)?;
+    if definition_term(prompt).is_none()
+        && super::source_qualified_definition::request(prompt).is_none()
+    {
+        return None;
+    }
     let cache_root = crate::coding::synthesis_runtime::source_cache_root();
     let client = CachedSourceClient::new(&cache_root, CurlSourceTransport).with_online(!offline);
     try_word_definition_with_client(prompt, log, &client)

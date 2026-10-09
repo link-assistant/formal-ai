@@ -1,0 +1,5 @@
+{
+  "taskId": "T2427",
+  "target": "rust/tests/unit/specification/source_cache.rs",
+  "byteEqual": true
+}
