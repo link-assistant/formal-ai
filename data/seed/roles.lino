@@ -899,6 +899,18 @@ roles
     kind meaning
   software_step_granularity
     kind meaning
+  source-links-report-cue
+    kind meaning
+  source-projection-format
+    kind predicate
+  source-projection-origin
+    kind meaning
+  source-projection-return
+    kind meaning
+  source-projection-scope
+    kind meaning
+  source-recompilation-action
+    kind meaning
   source_attribution_marker
     kind meaning
   source_conflict_cue

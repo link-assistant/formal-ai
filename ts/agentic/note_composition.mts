@@ -6,7 +6,7 @@ import { normalizePrompt } from './crate/engine.mjs';
 import { eqIgnoreAsciiCase, splitWhitespace, trim, trimEndMatches, trimStartMatches } from './crate/rust_str.mjs';
 import { mentionsRole, wordsForRole } from './crate/seed_meanings.mjs';
 import { agenticMessage } from './messages.mjs';
-import { finalAnswer } from './plan.mjs';
+import { FinalDisposition, FinalPayloadRole, resolvedFinalAnswer } from './plan.mjs';
 import { sentences } from './shell_command_policy.mjs';
 import { firstContentLeadEnd } from './write_request.mjs';
 
@@ -21,7 +21,8 @@ const ROLE_CLAUSE_CONTINUATION_MARKER = 'clause_continuation_marker';
  */
 export function planNoteCompositionStep(task, messages) {
   const specification = parseSpecification(task);
-  return specification === null ? null : finalAnswer(compose(specification, messages));
+  return specification === null ? null : resolvedFinalAnswer(compose(specification, messages),
+    FinalDisposition.Finding, 'note_composition', FinalPayloadRole.AuditReport);
 }
 
 /**

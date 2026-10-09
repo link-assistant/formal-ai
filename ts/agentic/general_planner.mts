@@ -11,6 +11,7 @@ import { describesCodeToAuthor as contentRequiresAuthoring, semanticAuthoringLea
 import { endOfStatement } from './crate/literal_content.mjs';
 export { semanticAuthoringLead };
 import { Capability } from './capability.mjs';
+import { fill as fillWorkStep, template as workStepTemplate } from './work_item_steps.mjs';
 import { agenticMessage } from './messages.mjs';
 import { composedDocumentSpecificationSpan } from './note_composition.mjs';
 import { proseSentences } from './shell_command_policy.mjs';
@@ -199,7 +200,8 @@ export function composeGeneralChangePlan(fullRequest) {
   if (!commandOutput && namesAnAddition(request, content, target)) return null;
   const responseLanguage = detect(request);
   const intent = formalizeIntent(request, responseLanguage);
-  const verificationCommand = `cat ${target}`;
+  const verificationCommand = commandOutput
+    ? fillWorkStep('command-capture-readback', [['{target}', shellQuote(target)]]) : `cat ${target}`;
   const steps = [{
     capability: Capability.Write,
     action: (localizedResponse('general-plan-append-action', 'en') ?? '').replace('{plan_path}', PLAN_PATH),
@@ -211,7 +213,8 @@ export function composeGeneralChangePlan(fullRequest) {
       capability: Capability.Run,
       action: commandPlanText('general_plan_command_capture_action', responseLanguage, target),
       expected_evidence: commandPlanText('general_plan_command_output_evidence', responseLanguage, target),
-      command: `${commandOutput[1]} > ${shellQuote(target)}`,
+      command: fillWorkStep('command-capture-setup', [['{target}', shellQuote(target)]])
+        + commandOutput[1] + workStepTemplate('command-capture-end'),
     });
   } else {
     steps.push({

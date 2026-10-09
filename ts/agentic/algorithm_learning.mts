@@ -7,16 +7,18 @@
 // side-effect-free conformance check a human can replay.
 
 import { Capability } from './capability.mjs';
-import { toolFor } from './capability_router.mjs';
+import { classifyTool, toolFor } from './capability_router.mjs';
 import {
   candidateFromLinksNotation, candidatesEqual, conformanceLinksNotation, discoverAlgorithms,
   tracesFromMemoryEvents, validatedCandidates,
 } from './crate/algorithm_discovery.mjs';
 import { pushLinoNode } from './crate/links_format.mjs';
 import { MemoryStore } from './crate/memory.mjs';
-import { byteOrder, trim } from './crate/rust_str.mjs';
+import { byteOrder } from './crate/rust_str.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { Progress } from './progress.mjs';
+import { plainText } from './content.mjs';
+import { commandArgument, observedBytesMatch, observedPayload } from './tool_result.mjs';
 
 /** Mirrors `OBSERVATIONS_PATH` in rust/src/agentic_coding/algorithm_learning.rs. */
 export const OBSERVATIONS_PATH = 'algorithm-observations.lino';
@@ -58,28 +60,43 @@ export function planStep(messages, toolNames, task) {
   if (writeTool === null) return finalAnswer(resultDocument(task, 'observation_write_unavailable', ''));
   const runTool = toolFor(toolNames, Capability.Run);
   if (runTool === null) return finalAnswer(resultDocument(task, 'shell_unavailable', ''));
-  switch (progress.run_outputs.length) {
-    case 0:
-      return planOne(runTool, jsonText({ command: discoveryCommand() }));
-    case 1:
-      return planOne(runTool, jsonText({ command: readbackCommand() }));
-    case 2: {
-      const output = progress.run_outputs[1];
-      const verified = output === undefined ? null : candidateFromLinksNotation(output);
-      if (!candidatesEqual(verified, task.candidate)) {
-        return finalAnswer(resultDocument(task, 'artifact_verification_failed', ''));
-      }
-      return planOne(runTool, jsonText({ command: conformanceCommand(task.candidate) }));
+  const discovery = discoveryCommand(), readback = readbackCommand();
+  if (!progress.hasRun(discovery)) return planOne(runTool, jsonText({ command: discovery }));
+  if (commandPayload(messages, discovery, 'algorithm-command-receipt/v1') === null) return finalAnswer(resultDocument(task, 'artifact_verification_failed', ''));
+  if (!progress.hasRun(readback)) return planOne(runTool, jsonText({ command: readback }));
+  const output = commandPayload(messages, readback, 'algorithm-command-receipt/v1');
+  const verified = output === null ? null : candidateFromLinksNotation(output);
+  if (!candidatesEqual(verified, task.candidate)) return finalAnswer(resultDocument(task, 'artifact_verification_failed', ''));
+  const command = conformanceCommand(task.candidate);
+  if (!progress.hasRun(command)) return planOne(runTool, jsonText({ command }));
+  const expected = expectedConformance(task.candidate);
+  if (commandPayload(messages, command, 'algorithm-command-receipt/v1') !== expected) return finalAnswer(resultDocument(task, 'conformance_failed', ''));
+  return finalAnswer(resultDocument(task, 'conformance_passed', expected));
+}
+
+/** Mirrors `fn command_payload`: exact current-call binding precedes transport decoding. */
+export function commandPayload(messages, command, operationSchema) {
+  const current = messages.slice(Math.max(0, messages.findLastIndex(message => message.role.toLowerCase() === 'user')));
+  for (let index = current.length - 1; index >= 0; index -= 1) {
+    const message = current[index];
+    if (message.role.toLowerCase() !== 'tool' || message.tool_call_id == null) continue;
+    const call = current.slice(0, index).flatMap(prior => prior.tool_calls ?? []).findLast(item => item.id === message.tool_call_id);
+    if (!call || classifyTool(call.function.name) !== Capability.Run || commandArgument(call.function.arguments) !== command) continue;
+    if (message.is_error === true || message.isError === true || (message.name && message.name !== call.function.name)) return null;
+    const raw = plainText(message.content);
+    let receipt; try { receipt = JSON.parse(raw); } catch { receipt = null; }
+    if (receipt?.command !== undefined && receipt.command !== command) return null;
+    if (operationSchema !== null && receipt?.schema === operationSchema) {
+      return receipt.command === command && receipt.operation_success === true && receipt.exit_code === null
+        && receipt.complete === true && receipt.truncated === false && receipt.timed_out === false
+        && receipt.stderr === '' && receipt.error === null && typeof receipt.stdout === 'string'
+        && receipt.aborted !== true && receipt.is_error !== true && receipt.isError !== true
+        && receipt.stream_complete !== false && receipt.signal == null ? receipt.stdout : null;
     }
-    default: {
-      const expected = expectedConformance(task.candidate);
-      const output = progress.run_outputs[2];
-      if (output === undefined || trim(output) !== trim(expected)) {
-        return finalAnswer(resultDocument(task, 'conformance_failed', ''));
-      }
-      return finalAnswer(resultDocument(task, 'conformance_passed', expected));
-    }
+    const payload = observedPayload(raw);
+    return payload !== null && observedBytesMatch(raw, payload) ? payload : null;
   }
+  return null;
 }
 
 /** Mirrors `fn discovery_command` in rust/src/agentic_coding/algorithm_learning.rs. */

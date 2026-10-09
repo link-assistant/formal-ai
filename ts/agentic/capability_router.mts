@@ -2,7 +2,7 @@
 // rust/src/agentic_coding/capability_router.rs.
 
 import { Capability, registryId } from './capability.mjs';
-import { composeGeneralChangePlan, GeneralPlanMode } from './general_planner.mjs';
+import { composeGeneralChangePlan, GeneralPlanMode, hasFileWriteIntent } from './general_planner.mjs';
 import { fetchArguments, finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { requestBlocks } from './stated_request.mjs';
 import {
@@ -15,7 +15,7 @@ import {
 import { hasLatestTurnResult, latestTurnAnswer } from './tool_result.mjs';
 import { conceptLookupLeavesUnknown, openWebQueryForBlock } from './web_research.mjs';
 import { catalogClaims } from './code_artifact.mjs';
-import { composeEditRequest, statedWriteTarget, statesWriteAction } from './write_request.mjs';
+import { composeEditRequest, firstActionCueStart, statedWriteTarget, statesWriteAction, tokens } from './write_request.mjs';
 import { workspaceInspectionSearchForTask } from './workspace_inspection.mjs';
 import { listedDirectory } from './directory_listing.mjs';
 import { writesWholeFile } from './literal_write_guard.mjs';
@@ -26,7 +26,7 @@ import {
 import { extractConceptQuery } from './crate/concepts_lookup.mjs';
 import { textOutsideQuotedSegments } from './crate/coding_program_contract.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
-import { mentionsRole } from './write_lexicon.mjs';
+import { mentionsRole, wordsForRole } from './write_lexicon.mjs';
 import { factStoreResolves } from './crate/solver_handlers_benchmark_prompts.mjs';
 import { cleanSearchQuery } from './crate/solver_handlers_web_search.mjs';
 import { agenticToolCapabilities } from './crate/seed_agentic_tool_capabilities.mjs';
@@ -251,7 +251,8 @@ function planRoutedCapabilityStepIn(task, messages, toolNames, stage, only) {
       if (command !== null && !command.startsWith(listing)) return null;
     }
   }
-  if (capability === Capability.Read && statesWriteAction(routedTask) && statedWriteTarget(routedTask) !== null) {
+  if (capability === Capability.Read && statesWriteAction(routedTask) && statedWriteTarget(routedTask) !== null
+    && (hasFileWriteIntent(routedTask) || !retrievalOwnsWriteCue(routedTask))) {
     return null;
   }
   // Nor is it one of several files to read (PR #1188 G102).
@@ -400,3 +401,14 @@ function shellFallback(capability, task) {
 }
 
 const shellQuote = (value) => `'${value.split("'").join("'\\''")}'`;
+
+/** Mirrors `fn retrieval_owns_write_cue` in capability_router.rs. */
+function retrievalOwnsWriteCue(task) {
+  const start = firstActionCueStart(tokens(task));
+  if (start === null) return false;
+  const action = normalizePrompt(task.slice(start));
+  return wordsForRole('capability_act_retrieve').some(surface => {
+    const cue = normalizePrompt(surface);
+    return cue !== '' && action.startsWith(cue);
+  });
+}
