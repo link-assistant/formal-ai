@@ -5,6 +5,7 @@
 // unquoted now names the file first; a quoted path still does when nothing else
 // can. The Rust twin is rust/tests/unit/agentic-coding/pull_request_1188_quoted_path_payload.rs.
 
+import { runPlanEvent } from './helpers/plan-event-shell.mjs';
 import { before, describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 
@@ -52,6 +53,7 @@ describe('a quoted path in an edit request is payload, not the target', () => {
 
   test('a sentence mark after one quoted literal is the sentence\'s, not the content\'s (T26)', async () => {
     const messages = [{ role: 'user', content: "Create a file new.txt containing 'hello'." }];
+    const files = new Map();
     let written = null;
     for (let step = 0; step < 4 && written === null; step += 1) {
       const plan = await planChatStep(messages, ['read', 'write', 'edit', 'bash']);
@@ -61,7 +63,8 @@ describe('a quoted path in an edit request is payload, not the target', () => {
       if (call.tool === 'write' && args.filePath === 'new.txt') written = args.content;
       const id = `call_${step}`;
       messages.push({ role: 'assistant', content: '', tool_calls: [{ id, type: 'function', function: { name: call.tool, arguments: call.arguments } }] });
-      messages.push({ role: 'tool', tool_call_id: id, content: '' });
+      const event = call.tool === 'bash' ? runPlanEvent(files, args.command) : null;
+      messages.push({ role: 'tool', tool_call_id: id, content: event ?? '' });
     }
     assert.equal(written, 'hello');
   });

@@ -1,0 +1,11 @@
+{
+  "transcript": [
+    {
+      "tool": "write",
+      "arguments": "{\"content\":\"Правило поведения скомпилировано для этого диалога.\\n\\nКогда пользователь говорит `planChatStep`, ответь `read`.\\n\\n```links\\nbehavior_rule_runtime_e703d24f7aa500b0\\n  type \\\"behavior_rule_runtime\\\"\\n  match_prompt \\\"planChatStep\\\"\\n  answer \\\"read\\\"\\n  when_then \\\"Когда пользователь говорит `planChatStep`, ответь `read`.\\\"\\n  source \\\"user_message\\\"\\n```\\n\\nОтправьте `planChatStep` сейчас, и я отвечу настроенным ответом. Экспортируйте память, чтобы сохранить это правило вместе с диалогом.\\n\",\"filePath\":\"rust/tests/web/pull-request-1188-dogfood.test.mjs\",\"file_path\":\"rust/tests/web/pull-request-1188-dogfood.test.mjs\",\"path\":\"rust/tests/web/pull-request-1188-dogfood.test.mjs\"}",
+      "result": ""
+    }
+  ],
+  "answer": "Правило поведения скомпилировано для этого диалога.\n\nКогда пользователь говорит `planChatStep`, ответь `read`.\n\n```links\nbehavior_rule_runtime_e703d24f7aa500b0\n  type \"behavior_rule_runtime\"\n  match_prompt \"planChatStep\"\n  answer \"read\"\n  when_then \"Когда пользователь говорит `planChatStep`, ответь `read`.\"\n  source \"user_message\"\n```\n\nОтправьте `planChatStep` сейчас, и я отвечу настроенным ответом. Экспортируйте память, чтобы сохранить это правило вместе с диалогом.",
+  "stop": "final"
+}

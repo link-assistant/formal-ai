@@ -4,6 +4,7 @@
 // planned by the planner the JS server runs (`planChatStep`). The Rust twin is
 // rust/tests/unit/agentic-coding/pull_request_1188_cifix2.rs.
 
+import { runPlanEvent } from './helpers/plan-event-shell.mjs';
 import { before, describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 
@@ -19,10 +20,20 @@ before(async () => {
 
 /** The first planned call: `{tool, args}`. */
 async function firstCall(prompt, tools) {
-  const plan = await planChatStep([{ role: 'user', content: prompt }], tools);
-  assert.equal(plan?.kind, 'tool_calls', `${prompt}: ${JSON.stringify(plan)}`);
-  const [call] = plan.calls;
-  return { tool: call.tool, args: JSON.parse(call.arguments) };
+  const messages = [{ role: 'user', content: prompt }];
+  const files = new Map();
+  for (let step = 0; step < 12; step += 1) {
+    const plan = await planChatStep(messages, tools);
+    assert.equal(plan?.kind, 'tool_calls', prompt + ': ' + JSON.stringify(plan));
+    const [call] = plan.calls;
+    const args = JSON.parse(call.arguments);
+    const event = typeof args.command === 'string' ? runPlanEvent(files, args.command) : null;
+    if (event === null) return { tool: call.tool, args };
+    const id = 'event-' + step;
+    messages.push({ role: 'assistant', content: '', tool_calls: [{ id, type: 'function', function: { name: call.tool, arguments: call.arguments } }] });
+    messages.push({ role: 'tool', tool_call_id: id, name: call.tool, content: event });
+  }
+  assert.fail('No workspace call followed the verified plan events.');
 }
 
 describe('a request that declares the file it writes creates it unread (T310)', () => {

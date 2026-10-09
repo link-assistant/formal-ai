@@ -14,7 +14,7 @@ import { latestUserRequest, plainText, rustLines } from './content.mjs';
 import { isDottedNumber, peelSentencePunctuation } from './file_path_shape.mjs';
 import { hasFileWriteIntent } from './general_planner.mjs';
 import { agenticMessage } from './messages.mjs';
-import { finalAnswer, jsonText, plannedCall, toolCalls } from './plan.mjs';
+import { FinalDisposition, finalAnswer, jsonText, plannedCall, resolvedFinalAnswer, toolCalls } from './plan.mjs';
 import { sentences } from './shell_command_policy.mjs';
 import { explicitPassthroughCommand } from './shell_command.mjs';
 
@@ -129,7 +129,7 @@ function planDirectFileRead(path, mode, preferRun, readTool, runTool, grepTool, 
     const failure = failedStepAnswer(label, raw, request);
     if (failure !== null) return finalAnswer(failure);
     const content = label === path ? sourceFromReadResult(observed) : observed;
-    return finalAnswer(fileReadFinalAnswer(mode, [[path, content]], request));
+    return resolvedFinalAnswer(fileReadFinalAnswer(mode, [[path, content]], request), FinalDisposition.Finding, 'file_read_observed');
   }
   if ((preferRun || exactRun) && runTool !== null) {
     return planOne(runTool, jsonText({ command: readCommandFor(path, mode) }));
@@ -159,7 +159,7 @@ function planListThenRead(directory, selection, mode, readTool, runTool, records
       const failure = failedStepAnswer(path, raw, request);
       if (failure !== null) return finalAnswer(failure);
     }
-    return finalAnswer(fileReadFinalAnswer(mode, contents, request));
+    return resolvedFinalAnswer(fileReadFinalAnswer(mode, contents, request), FinalDisposition.Finding, 'file_read_observed');
   }
 
   if (selection === 'all') {
@@ -178,7 +178,7 @@ function planListThenRead(directory, selection, mode, readTool, runTool, records
     if (raw !== null) {
       const failure = failedStepAnswer(command, raw, request);
       if (failure !== null) return finalAnswer(failure);
-      return finalAnswer(fileReadFinalAnswer(mode, [[paths.join(', '), stripTransportEnvelope(raw)]], request));
+      return resolvedFinalAnswer(fileReadFinalAnswer(mode, [[paths.join(', '), stripTransportEnvelope(raw)]], request), FinalDisposition.Finding, 'file_read_observed');
     }
     return planOne(runTool, jsonText({ command }));
   }

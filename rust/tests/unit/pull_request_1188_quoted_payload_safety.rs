@@ -268,3 +268,33 @@ fn g125_malformed_literal_edit_changes_nothing() {
             .any(|tool| tool == "write" || tool == "edit")
     );
 }
+
+#[test]
+fn g132_clarification_is_never_written_as_evidence() {
+    let run = drive(
+        "Create the test in missing.test.mjs. Record the findings in report.md.",
+        &[],
+    );
+    assert!(!run.files.contains_key("missing.test.mjs"));
+    assert!(!run.files.contains_key("report.md"));
+    assert!(run.tools.is_empty());
+    assert_eq!(
+        run.answer.as_deref(),
+        Some(
+            "What should the test in `missing.test.mjs` check: which call, and what result? The request states no expected result, so nothing was written or run. Say what the function should return for which inputs."
+        )
+    );
+}
+
+#[test]
+fn g132_observed_source_finding_can_be_delivered() {
+    let content = "source identity: observed unique payload";
+    let run = drive(
+        "Read f.txt. Record the findings in report.md.",
+        &[("f.txt", content)],
+    );
+    assert_eq!(run.files["f.txt"], content);
+    assert!(run.files["report.md"].contains(content));
+    let expected = format!("Contents of `f.txt`:\n\n```text\n{content}\n```");
+    assert_eq!(run.answer.as_deref(), Some(expected.as_str()));
+}

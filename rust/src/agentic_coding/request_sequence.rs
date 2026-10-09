@@ -12,6 +12,7 @@
 //! file as the step before left it. The Rust original of
 //! `js/agentic/request_sequence.mjs`.
 
+use super::final_result::{FinalDisposition, FinalResult, ResolvedPlan, record};
 use super::planner::AgenticPlan;
 use super::write_request::{
     bare_surfaces, clean_cue_token, clean_path_token, looks_like_file_path, safe_relative_path,
@@ -216,7 +217,8 @@ pub(super) fn plan_request_sequence_step(
     task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
-    plan_for: fn(&[ChatMessage], &[&str]) -> Option<AgenticPlan>,
+    plan_for: fn(&[ChatMessage], &[&str]) -> Option<ResolvedPlan>,
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let parts = request_sequence(task).or_else(|| sequence_steps(task))?;
     let (base, exchanges) = turn_exchanges(messages);
@@ -227,7 +229,11 @@ pub(super) fn plan_request_sequence_step(
         // one exchange at a time until it answers or asks for its next call.
         let mut own: Vec<ChatMessage> = base.to_vec();
         loop {
-            match plan_for(&with_request(&own, part), tool_names)? {
+            let resolved = plan_for(&with_request(&own, part), tool_names)?;
+            if matches!(&resolved.plan, AgenticPlan::Final(_)) && !resolved.can_deliver() {
+                return Some(resolved.into_plan(result));
+            }
+            match resolved.plan {
                 AgenticPlan::Final(answer) => {
                     answers.push(answer);
                     break;
@@ -242,7 +248,12 @@ pub(super) fn plan_request_sequence_step(
             }
         }
     }
-    Some(AgenticPlan::Final(answers.join("\n\n")))
+    Some(record(
+        AgenticPlan::Final(answers.join("\n\n")),
+        FinalDisposition::Finding,
+        "request_sequence_verified",
+        result,
+    ))
 }
 
 /// The conversation up to its latest user turn, and the tool exchanges after

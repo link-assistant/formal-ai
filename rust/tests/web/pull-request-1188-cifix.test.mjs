@@ -5,6 +5,7 @@
 // in-memory workspace. The Rust twin is
 // rust/tests/unit/agentic-coding/pull_request_1188_cifix.rs.
 
+import { runPlanEvent } from './helpers/plan-event-shell.mjs';
 import { before, describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 
@@ -52,6 +53,7 @@ describe('a member the request quotes twice is inserted once (T180)', () => {
 
 /** Plan up to six steps and return what is written to `path` (null when nothing is). */
 async function writeTo(prompt, path, source) {
+  const files = new Map([[path, source]]);
   const messages = [{ role: 'user', content: prompt }];
   for (let turn = 0; turn < 6; turn += 1) {
     const plan = await planChatStep(messages, TOOLS);
@@ -62,7 +64,9 @@ async function writeTo(prompt, path, source) {
     if (call.tool === 'write' && named === path) return args.content;
     const id = `call_${turn}`;
     messages.push({ role: 'assistant', content: '', tool_calls: [{ id, type: 'function', function: { name: call.tool, arguments: call.arguments } }] });
-    messages.push({ role: 'tool', tool_call_id: id, name: call.tool, content: call.tool === 'read' && named === path ? source : '' });
+    const event = call.tool === 'bash' ? runPlanEvent(files, args.command) : null;
+    const result = event ?? (call.tool === 'read' && named === path ? source : '');
+    messages.push({ role: 'tool', tool_call_id: id, name: call.tool, content: result });
   }
   return null;
 }

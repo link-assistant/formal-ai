@@ -32,6 +32,7 @@
 //! thirty-one of the issue-#1028 ladder's thirty-two leaves came back with a
 //! four-step template where their evidence should have been (issue #1066).
 
+use super::final_result::{FinalDisposition, FinalResult, record};
 use super::planner::{AgenticPlan, trace_route};
 use super::tool_result;
 use crate::engine::{FormalAiEngine, normalize_prompt};
@@ -60,6 +61,7 @@ use crate::solver_handlers::looks_like_task_decomposition;
 pub(super) fn plan_task_structure_step(
     messages: &[ChatMessage],
     task: &str,
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     if !nothing_has_been_observed_yet(messages) {
         return None;
@@ -97,7 +99,12 @@ pub(super) fn plan_task_structure_step(
         return None;
     }
     trace_route("task_structure", &answer.intent);
-    Some(AgenticPlan::Final(text.to_owned()))
+    Some(record(
+        AgenticPlan::Final(text.to_owned()),
+        FinalDisposition::Finding,
+        &answer.intent,
+        result,
+    ))
 }
 
 /// Whether the turn is still one this route may answer.

@@ -7,6 +7,7 @@
 //! to the shared solver's summarization handlers. Twin of
 //! `js/agentic/file_summary.mjs`.
 
+use super::final_result::{FinalDisposition, FinalResult, record};
 use super::module_function::{paths_in, read_source};
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
 use crate::protocol::ChatMessage;
@@ -43,6 +44,7 @@ pub(super) fn plan_file_summary_step(
     task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let path = summarized_file(task)?;
     let current_turn = &messages[super::planner::evidence_window_start(messages)..];
@@ -58,6 +60,12 @@ pub(super) fn plan_file_summary_step(
     }
     let answer =
         crate::solver::UniversalSolver::default().solve(&summary_request(task, &path, &source));
-    (answer.intent.starts_with(SUMMARY_INTENT_PREFIX) && !answer.answer.is_empty())
-        .then_some(AgenticPlan::Final(answer.answer))
+    (answer.intent.starts_with(SUMMARY_INTENT_PREFIX) && !answer.answer.is_empty()).then(|| {
+        record(
+            AgenticPlan::Final(answer.answer),
+            FinalDisposition::Finding,
+            &answer.intent,
+            result,
+        )
+    })
 }

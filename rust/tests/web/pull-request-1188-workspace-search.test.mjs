@@ -9,6 +9,7 @@
 // the file:line hits, or a seeded not-found naming the pattern and the scope.
 // The Rust twin is rust/tests/unit/pull_request_1188_workspace_search.rs.
 
+import { runPlanEvent } from './helpers/plan-event-shell.mjs';
 import { before, describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 
@@ -250,8 +251,10 @@ describe('a literal-file write never replaces an existing file unasked', () => {
       let result = '';
       if (call.tool === 'read') result = files.has(path) ? files.get(path) : `Error: File not found: ${path}`;
       if (call.tool === 'write') files.set(path, args.content);
-      if (call.tool === 'bash') result = files.get(args.command.replace(/^cat /u, '')) ?? '';
-      calls.push(call.tool === 'bash' ? args.command : `${call.tool} ${path}`);
+      const event = call.tool === 'bash' ? runPlanEvent(files, args.command) : null;
+      if (call.tool === 'bash') result = event ?? files.get(args.command.replace(/^cat /u, '')) ?? '';
+      calls.push(event !== null ? 'append .formal-ai/general-change-plan.lino'
+        : call.tool === 'bash' ? args.command : `${call.tool} ${path}`);
       const id = `w${step}`;
       messages.push({ role: 'assistant', content: '', tool_calls: [{ id, type: 'function', function: { name: call.tool, arguments: call.arguments } }] });
       messages.push({ role: 'tool', tool_call_id: id, name: call.tool, content: result });
@@ -270,7 +273,7 @@ describe('a literal-file write never replaces an existing file unasked', () => {
   test('a missing target is created after the read finds nothing', async () => {
     const files = new Map();
     const { calls } = await run("Put 'hello' into notes.txt.", files);
-    assert.deepEqual(calls, ['read notes.txt', 'write .formal-ai/general-change-plan.lino', 'write notes.txt', 'cat notes.txt']);
+    assert.deepEqual(calls, ['read notes.txt', 'append .formal-ai/general-change-plan.lino', 'write notes.txt', 'cat notes.txt']);
     assert.equal(files.get('notes.txt'), 'hello');
   });
 
@@ -281,7 +284,7 @@ describe('a literal-file write never replaces an existing file unasked', () => {
     assert.match(answer, /^Left `notes\.txt` unchanged/u);
     const replaced = new Map([['a.txt', 'old']]);
     const { calls } = await run('Create a file a.txt containing hello', replaced);
-    assert.equal(calls[0], 'write .formal-ai/general-change-plan.lino');
+    assert.equal(calls[0], 'append .formal-ai/general-change-plan.lino');
     assert.equal(replaced.get('a.txt'), 'hello');
   });
 });

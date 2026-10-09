@@ -3,6 +3,7 @@
 use serde_json::json;
 
 use super::capability_router::shell_command_tool;
+use super::final_result::{FinalDisposition, FinalResult, record};
 use super::general_planner::{
     GeneralChangePlan, GeneralPlanMode, PLAN_PATH, compose_general_change_plan,
 };
@@ -20,8 +21,9 @@ pub(super) fn plan_general_change_step(
     messages: &[ChatMessage],
     tool_names: &[&str],
     plan: &GeneralChangePlan,
+    result: &mut Option<FinalResult>,
 ) -> AgenticPlan {
-    general_change_step(messages, tool_names, plan, false)
+    general_change_step(messages, tool_names, plan, false, result)
 }
 
 /// The same state machine entered from a resolved work item. Every step is
@@ -34,7 +36,7 @@ pub(super) fn plan_work_item_change_step(
     tool_names: &[&str],
     plan: &GeneralChangePlan,
 ) -> AgenticPlan {
-    general_change_step(messages, tool_names, plan, true)
+    general_change_step(messages, tool_names, plan, true, &mut None)
 }
 
 fn general_change_step(
@@ -42,6 +44,7 @@ fn general_change_step(
     tool_names: &[&str],
     plan: &GeneralChangePlan,
     resolved_from_work_item: bool,
+    result: &mut Option<FinalResult>,
 ) -> AgenticPlan {
     // A literal-file write reads its target first unless the request names a
     // whole-file write, and never replaces an existing file unasked (PR #1188 T96).
@@ -228,7 +231,7 @@ fn general_change_step(
             GeneralPlanMode::LiteralFile | GeneralPlanMode::RepositoryWorkItem => {}
         }
     }
-    finish_general_change(plan, &progress, resolved_from_work_item)
+    finish_general_change(plan, &progress, resolved_from_work_item, result)
 }
 
 // Write is an overwrite operation. Preserve observed history and read back the
@@ -250,19 +253,19 @@ fn plan_event_append_command(plan: &GeneralChangePlan) -> String {
         "plan-event-append-command",
         &[
             (
-                "{lock_path}",
+                concat!("{", "lock_path", "}"),
                 &super::general_planner::shell_quote(&format!("{PLAN_PATH}.lock")),
             ),
             ("{path}", &path),
-            ("{identity}", &identity),
-            ("{event}", &event),
+            (concat!("{", "identity", "}"), &identity),
+            (concat!("{", "event", "}"), &event),
         ],
     )
 }
 
 fn unverified_plan_event(plan: &GeneralChangePlan) -> AgenticPlan {
     let mut evidence = plan.clone();
-    evidence.target = PLAN_PATH.to_owned();
+    PLAN_PATH.clone_into(&mut evidence.target);
     evidence.verification_command = format!("cat {PLAN_PATH}");
     AgenticPlan::Final(general_plan_unverified(&evidence))
 }
@@ -611,9 +614,15 @@ fn finish_general_change(
     plan: &GeneralChangePlan,
     progress: &Progress,
     resolved_from_work_item: bool,
+    result: &mut Option<FinalResult>,
 ) -> AgenticPlan {
     if plan.mode == GeneralPlanMode::RepositoryWorkItem {
-        return AgenticPlan::Final(plan.planned_not_executed_answer());
+        return record(
+            AgenticPlan::Final(plan.planned_not_executed_answer()),
+            FinalDisposition::Gap,
+            "repository_work_not_executed",
+            result,
+        );
     }
     // The workspace gets the last word over a completion claim: a verification
     // command that exited non-zero replaces the claim with its own report.
@@ -648,9 +657,19 @@ fn finish_general_change(
         }
     }
     if resolved_from_work_item && plan.mode == GeneralPlanMode::LiteralFile {
-        return AgenticPlan::Final(work_item_completion(plan, progress));
+        return record(
+            AgenticPlan::Final(work_item_completion(plan, progress)),
+            FinalDisposition::Finding,
+            "work_item_completion_verified",
+            result,
+        );
     }
-    AgenticPlan::Final(general_plan_completed(plan))
+    record(
+        AgenticPlan::Final(general_plan_completed(plan)),
+        FinalDisposition::Finding,
+        "general_plan_completed_verified",
+        result,
+    )
 }
 
 /// The completion a resolved work item earns: the harness voice the execution

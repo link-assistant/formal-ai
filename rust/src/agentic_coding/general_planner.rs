@@ -178,7 +178,16 @@ fn literal_payload(request: &str) -> Option<crate::normal_markov::QuotedSegment>
     let normalized = crate::engine::normalize_prompt(&prefix);
     let lexicon = crate::seed::lexicon();
     let overwrite = lexicon.mentions_role("file_overwrite_consent", &normalized);
-    if first_content_lead_end(&prefix.to_lowercase()).is_none() && !overwrite {
+    let lead = first_content_lead_end(&prefix.to_lowercase());
+    if lead.is_none() && !overwrite {
+        return None;
+    }
+    if lead.is_some_and(|(_, end)| {
+        !prefix[end..]
+            .chars()
+            .all(|character| character.is_whitespace() || character == ':')
+            && !(overwrite && !prefix[end..].trim_end().contains('\n'))
+    }) {
         return None;
     }
     let words = tokens(&prefix);

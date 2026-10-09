@@ -11,6 +11,7 @@
 
 use super::code_artifact::{source_from_agent_read_result, source_from_read_result};
 use super::code_task::render_seeded_change;
+use super::final_result::FinalResult;
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
 use super::workspace_change::{read_arguments, result_for_path};
 use super::workspace_computed_change::{
@@ -155,6 +156,7 @@ pub(super) fn plan_line_range_move_step(
     current_turn: &[ChatMessage],
     tool_names: &[&str],
     order: &LineRangeMove,
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let Some(read) = result_for_path(current_turn, Capability::Read, &order.source, None) else {
         let tool = tool_for(tool_names, Capability::Read)?;
@@ -204,7 +206,7 @@ pub(super) fn plan_line_range_move_step(
             (SOURCE_SLOT, order.source.clone()),
         ],
     };
-    let placed = plan_computed_change_step(task, current_turn, tool_names, &placed_change);
+    let placed = plan_computed_change_step(task, current_turn, tool_names, &placed_change, result);
     let stated = render_seeded_change(
         intent,
         task,
@@ -228,7 +230,9 @@ pub(super) fn plan_line_range_move_step(
         intent: "numbered_lines_removed",
         slots: vec![(LINES_SLOT, lines.clone())],
     };
-    let removed = plan_computed_change_step(task, current_turn, tool_names, &removed_change);
+    *result = None;
+    let removed =
+        plan_computed_change_step(task, current_turn, tool_names, &removed_change, result);
     let removed_stated = render_seeded_change(
         "numbered_lines_removed",
         task,

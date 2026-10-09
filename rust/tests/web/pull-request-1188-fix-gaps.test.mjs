@@ -6,6 +6,7 @@
 // whose tools answer as the Agent CLI's do. The Rust twin is
 // rust/tests/unit/pull_request_1188_fix_gaps.rs.
 
+import { runPlanEvent } from './helpers/plan-event-shell.mjs';
 import { before, describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
@@ -46,6 +47,8 @@ function execute(files, tool, args) {
     return '';
   }
   if (tool === 'bash') {
+    const event = runPlanEvent(files, args.command);
+    if (event !== null) return event;
     const presence = args.command.match(/^test (! )?-e (\S+)$/u);
     if (presence) return files.has(presence[2]) !== Boolean(presence[1]) ? '' : ['Output: ', 'Error: ', 'Exit Code: 1'].join(String.fromCharCode(10));
     if (args.command.startsWith('mkdir -p -- ')) return '';
@@ -311,4 +314,57 @@ test('formal rewrite queries validate escaped literals before the prose quote gu
   assert.equal(JSON.parse(write.calls[0].arguments).content, 'fn main() {\n}\n');
   const { explicitSubstitutionQuery } = await import('../../../js/agentic/code_artifact.mjs');
   assert.equal(explicitSubstitutionQuery('((terminal: "unterminated)) ()'), null);
+});
+
+// G132 exercises delivery through the public planner, with real plan receipts.
+test('G132: an underspecified test stays a clarification and creates no evidence', async () => {
+  const { files, calls, answer } = await drive('Create the test in missing.test.mjs. Record the findings in report.md.', {});
+  assert.deepEqual(calls, []);
+  assert.equal(files.has('missing.test.mjs'), false);
+  assert.equal(files.has('report.md'), false);
+  assert.equal(answer, 'What should the test in `missing.test.mjs` check: which call, and what result? The request states no expected result, so nothing was written or run. Say what the function should return for which inputs.');
+});
+
+test('G132: an observed file finding can still be delivered', async () => {
+  const content = 'source identity: observed unique payload';
+  const { files, answer } = await drive('Read f.txt. Record the findings in report.md.', { 'f.txt': content });
+  assert.equal(files.get('f.txt'), content);
+  assert.ok(files.get('report.md')?.includes(content));
+  assert.equal(answer, ['Contents of `f.txt`:', '', '```text', content, '```'].join(String.fromCharCode(10)));
+});
+
+test('G132: another sentence acceptance command is no test-authoring question', async () => {
+  const { planTestExpectationQuestion } = await import('../../../js/agentic/function_expectation.mjs');
+  const { canDeliverFinal, projectPlan } = await import('../../../js/agentic/plan.mjs');
+  for (const prompt of ['Add exported describe(selection) to result.mjs. Run node --test acceptance.test.mjs.', 'Create output.mjs. Run node --test checks.test.mjs.']) {
+    assert.equal(planTestExpectationQuestion(prompt), null);
+  }
+  const question = planTestExpectationQuestion('Create the test in missing.test.mjs.');
+  assert.equal(question.result.disposition, 'clarification');
+  assert.equal(canDeliverFinal(question), false);
+  assert.deepEqual(Object.keys(projectPlan(question)), ['kind', 'answer']);
+});
+
+test('G132: unknown finals and observed failures cannot be delivery findings', async () => {
+  const { planChatStepResolved } = await import('../../../js/agentic/planner.mjs');
+  const { finalAnswer, canDeliverFinal } = await import('../../../js/agentic/plan.mjs');
+  assert.equal(canDeliverFinal(finalAnswer('plausible result prose')), false);
+  const messages = [
+    { role: 'user', content: 'Run custom-inspection' },
+    { role: 'assistant', content: '', tool_calls: [{ id: 'probe', type: 'function', function: { name: 'bash', arguments: JSON.stringify({ command: 'custom-inspection' }) } }] },
+    { role: 'tool', tool_call_id: 'probe', content: ['Output: ', 'Error: missing input', 'Exit Code: 1'].join(String.fromCharCode(10)) },
+  ];
+  const failed = await planChatStepResolved(messages, ['bash']);
+  assert.equal(failed.result.disposition, 'failure');
+  assert.equal(canDeliverFinal(failed), false);
+});
+
+test('G132: a certificate belongs only to its selected final bytes', async () => {
+  const { FinalDisposition, resolvedFinalAnswer, canDeliverFinal, finalResult } = await import('../../../js/agentic/plan.mjs');
+  const selected = resolvedFinalAnswer('observed bytes', FinalDisposition.Finding, 'fixture_observed');
+  assert.equal(canDeliverFinal(selected), true);
+  const different = { ...selected, answer: 'a declined branch supplied different bytes' };
+  assert.equal(finalResult(different).disposition, FinalDisposition.Unknown);
+  assert.equal(canDeliverFinal(different), false);
+  assert.equal(canDeliverFinal({ kind: 'tool_calls', calls: [], result: selected.result }), false);
 });

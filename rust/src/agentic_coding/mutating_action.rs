@@ -33,6 +33,7 @@
 
 use serde_json::json;
 
+use super::final_result::{FinalDisposition, FinalResult, record};
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
 use super::progress::Progress;
 use super::tool_result;
@@ -41,6 +42,8 @@ use crate::seed::{self, ShellIntentVocabulary};
 
 const PATH_PLACEHOLDER: &str = concat!("{", "path", "}");
 const SOURCE_PLACEHOLDER: &str = concat!("{", "source", "}");
+const SOURCES_PLACEHOLDER: &str = concat!("{", "sources", "}");
+const SETUP_PLACEHOLDER: &str = concat!("{", "setup", "}");
 const DESTINATION_PLACEHOLDER: &str = concat!("{", "destination", "}");
 const DESTINATION_PARENT_PLACEHOLDER: &str = concat!("{", "destination_parent", "}");
 const ACTION_PLACEHOLDER: &str = concat!("{", "action", "}");
@@ -185,14 +188,14 @@ fn expand_with(command: &str, vocab: &ShellIntentVocabulary) -> Option<VerifiedA
 fn collection_check(sources: &str, destination: &str, check: &str) -> String {
     let setup = super::work_item_steps::fill(
         "filesystem-collection-setup",
-        &[("{destination}", destination)],
+        &[(DESTINATION_PLACEHOLDER, destination)],
     );
     super::work_item_steps::fill(
         "filesystem-collection-check",
         &[
-            ("{sources}", sources),
-            ("{setup}", &setup),
-            ("{check}", check),
+            (SOURCES_PLACEHOLDER, sources),
+            (SETUP_PLACEHOLDER, &setup),
+            (CHECK_PLACEHOLDER, check),
         ],
     )
 }
@@ -356,6 +359,7 @@ pub(super) fn plan_step(
     messages: &[ChatMessage],
     tool_names: &[&str],
     prompt: &str,
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let recipe = expand(command)?;
     let tool = tool_for(tool_names, Capability::Run)?;
@@ -367,19 +371,29 @@ pub(super) fn plan_step(
     if let Some(index) = taken.checked_sub(1) {
         let observed = &progress.run_outputs[index];
         if tool_result::step_outcome(observed) == tool_result::StepOutcome::Failed {
-            return Some(AgenticPlan::Final(blocked_report(
-                &recipe,
-                recipe.steps().get(index).map_or(command, String::as_str),
-                observed,
-                prompt,
-                index >= recipe.action,
-            )));
+            return Some(record(
+                AgenticPlan::Final(blocked_report(
+                    &recipe,
+                    recipe.steps().get(index).map_or(command, String::as_str),
+                    observed,
+                    prompt,
+                    index >= recipe.action,
+                )),
+                FinalDisposition::Failure,
+                "mutating_action_failed",
+                result,
+            ));
         }
     }
     if let Some(step) = recipe.steps().get(taken) {
         return Some(plan_one(tool, json!({ "command": step }).to_string()));
     }
-    Some(AgenticPlan::Final(completed_report(&recipe, prompt)))
+    Some(record(
+        AgenticPlan::Final(completed_report(&recipe, prompt)),
+        FinalDisposition::Finding,
+        "mutating_action_verified",
+        result,
+    ))
 }
 
 /// The report for a recipe that stopped: which check stopped it, with what

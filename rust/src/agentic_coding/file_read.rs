@@ -7,6 +7,7 @@ mod supplied;
 use audit::file_read_final_answer;
 pub use supplied::supplied_file_answer;
 
+use super::final_result::{FinalDisposition, FinalResult, record};
 use serde_json::json;
 
 use super::file_path_shape::{is_dotted_number, peel_sentence_punctuation};
@@ -80,6 +81,7 @@ pub(super) fn plan_file_read_step(
     task: &FileReadTask,
     messages: &[ChatMessage],
     tool_names: &[&str],
+    result: &mut Option<FinalResult>,
 ) -> AgenticPlan {
     let read_tool = tool_for(tool_names, Capability::Read);
     let run_tool = tool_for(tool_names, Capability::Run);
@@ -101,16 +103,17 @@ pub(super) fn plan_file_read_step(
             grep_tool,
             &records,
             &request,
+            result,
         ),
         FileReadTask::DirectMany { paths, mode } => exact::plan_direct_file_reads(
-            paths, mode, read_tool, run_tool, grep_tool, &records, &request,
+            paths, mode, read_tool, run_tool, grep_tool, &records, &request, result,
         ),
         FileReadTask::ListThenRead {
             directory,
             selection,
             mode,
         } => plan_list_then_read(
-            directory, *selection, mode, read_tool, run_tool, &records, &request,
+            directory, *selection, mode, read_tool, run_tool, &records, &request, result,
         ),
     }
 }
@@ -141,6 +144,7 @@ fn plan_direct_file_read(
     grep_tool: Option<&str>,
     records: &[ToolResultRecord],
     request: &str,
+    result: &mut Option<FinalResult>,
 ) -> AgenticPlan {
     if mode == &FileReadMode::Audit {
         return exact::plan_direct_file_reads(
@@ -151,6 +155,7 @@ fn plan_direct_file_read(
             grep_tool,
             records,
             request,
+            result,
         );
     }
     let read_command = read_command_for(path, mode);
@@ -185,11 +190,16 @@ fn plan_direct_file_read(
         } else {
             content
         };
-        return AgenticPlan::Final(file_read_final_answer(
-            mode,
-            &[(path.to_owned(), content)],
-            request,
-        ));
+        return record(
+            AgenticPlan::Final(file_read_final_answer(
+                mode,
+                &[(path.to_owned(), content)],
+                request,
+            )),
+            FinalDisposition::Finding,
+            "file_read_observed",
+            result,
+        );
     }
 
     if (prefer_run || exact_run)
@@ -224,6 +234,7 @@ fn plan_list_then_read(
     run_tool: Option<&str>,
     records: &[ToolResultRecord],
     request: &str,
+    result: &mut Option<FinalResult>,
 ) -> AgenticPlan {
     let list_command = list_files_command(directory);
     let Some(raw_listing) = run_record_for_command(records, &list_command) else {
@@ -252,7 +263,12 @@ fn plan_list_then_read(
         {
             return AgenticPlan::Final(failure);
         }
-        return AgenticPlan::Final(file_read_final_answer(mode, &contents, request));
+        return record(
+            AgenticPlan::Final(file_read_final_answer(mode, &contents, request)),
+            FinalDisposition::Finding,
+            "file_read_observed",
+            result,
+        );
     }
 
     if selection == FileSelection::All {
@@ -283,14 +299,19 @@ fn plan_list_then_read(
             if let Some(failure) = failed_step_answer(&command, raw, request) {
                 return AgenticPlan::Final(failure);
             }
-            return AgenticPlan::Final(file_read_final_answer(
-                mode,
-                &[(
-                    paths.join(", "),
-                    super::tool_result::strip_transport_envelope(raw),
-                )],
-                request,
-            ));
+            return record(
+                AgenticPlan::Final(file_read_final_answer(
+                    mode,
+                    &[(
+                        paths.join(", "),
+                        super::tool_result::strip_transport_envelope(raw),
+                    )],
+                    request,
+                )),
+                FinalDisposition::Finding,
+                "file_read_observed",
+                result,
+            );
         }
         return plan_one(tool, json!({ "command": command }).to_string());
     }

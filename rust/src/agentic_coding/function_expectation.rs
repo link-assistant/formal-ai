@@ -13,6 +13,7 @@
 //! reported as confirmed, the file unchanged. Twin of
 //! `js/agentic/function_expectation.mjs`.
 
+use super::final_result::{FinalDisposition, FinalResult, record};
 use serde_json::json;
 
 use super::module_function::{
@@ -196,6 +197,7 @@ pub(super) fn plan_function_expectation_step(
     task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let request = expectation_request(task)?;
     let current_turn = &messages[super::planner::evidence_window_start(messages)..];
@@ -215,11 +217,12 @@ pub(super) fn plan_function_expectation_step(
         ));
     };
     let Some(payload) = super::tool_result::normalized_payload(&raw) else {
-        return Some(AgenticPlan::Final(super::tool_result::render(
-            &checked.command,
-            &raw,
-            task,
-        )));
+        return Some(record(
+            AgenticPlan::Final(super::tool_result::render(&checked.command, &raw, task)),
+            FinalDisposition::Failure,
+            "function_probe_failed",
+            result,
+        ));
     };
     let observed = payload.trim();
     let intent = if observed == checked.expected {
@@ -236,7 +239,14 @@ pub(super) fn plan_function_expectation_step(
     let language = crate::language::detect(task).slug();
     seed::render_response(intent, language, &values)
         .or_else(|| seed::render_response(intent, "en", &values))
-        .map(AgenticPlan::Final)
+        .map(|text| {
+            record(
+                AgenticPlan::Final(text),
+                FinalDisposition::Finding,
+                intent,
+                result,
+            )
+        })
 }
 
 /// The seeded question a test request earns when it states no expected result.
@@ -244,24 +254,38 @@ pub(super) fn plan_function_expectation_step(
 /// A request to write a test into a named file with no quoted literal, no
 /// seeded expectation cue and no value names nothing the test could check, so
 /// nothing is written and no interpreter is guessed (PR #1188 G25).
-pub(super) fn test_expectation_question(task: &str) -> Option<AgenticPlan> {
+pub(super) fn test_expectation_question(
+    task: &str,
+    result: &mut Option<FinalResult>,
+) -> Option<AgenticPlan> {
     if !crate::normal_markov::quoted_segment_spans(task).is_empty() {
         return None;
     }
-    let paths = paths_in(task);
-    let path = paths.first()?;
-    let prose =
-        crate::engine::normalize_prompt(&paths.iter().fold(task.to_owned(), |text, named| {
-            text.replace(named.as_str(), " ")
-        }));
-    let lexicon = seed::lexicon();
-    if prose.chars().any(|character| character.is_ascii_digit())
-        || !lexicon.mentions_role("coding_request_verb", &prose)
-        || !lexicon.mentions_role("coding_test_artifact_kind", &prose)
-        || lexicon.mentions_role(ROLE_EXPECTATION, &prose)
-    {
-        return None;
+    for sentence in super::shell_command_policy::sentences(task) {
+        let paths = paths_in(sentence.text);
+        let Some(path) = paths.first() else { continue };
+        let prose = crate::engine::normalize_prompt(
+            &paths.iter().fold(sentence.text.to_owned(), |text, named| {
+                text.replace(named.as_str(), " ")
+            }),
+        );
+        let lexicon = seed::lexicon();
+        if prose.chars().any(|character| character.is_ascii_digit())
+            || !lexicon.mentions_role("coding_request_verb", &prose)
+            || !lexicon.mentions_role("coding_test_artifact_kind", &prose)
+            || lexicon.mentions_role(ROLE_EXPECTATION, &prose)
+        {
+            continue;
+        }
+        return super::code_task::render_seeded_change("test_expectation_missing", task, path, &[])
+            .map(|text| {
+                record(
+                    AgenticPlan::Final(text),
+                    FinalDisposition::Clarification,
+                    "test_expectation_missing",
+                    result,
+                )
+            });
     }
-    super::code_task::render_seeded_change("test_expectation_missing", task, path, &[])
-        .map(AgenticPlan::Final)
+    None
 }

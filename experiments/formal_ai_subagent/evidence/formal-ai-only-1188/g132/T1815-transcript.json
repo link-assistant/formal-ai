@@ -1,0 +1,6 @@
+{
+  "transcript": [],
+  "answer": null,
+  "stop": "host-boot-error",
+  "error": "SyntaxError: Unexpected token export in js/worker/formal_ai_worker_crate_implementation_language.js:43 before installNodeHost completed; no Formal AI call or mutation"
+}

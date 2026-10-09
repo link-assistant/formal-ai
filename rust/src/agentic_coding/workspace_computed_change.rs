@@ -11,6 +11,7 @@
 
 use super::code_artifact::source_from_read_result;
 use super::code_task::render_seeded_outcome;
+use super::final_result::FinalResult;
 use super::general_planner::compose_edit_request;
 use super::intent_router::edit_arguments;
 use super::line_removal::{
@@ -817,6 +818,7 @@ pub(super) fn plan_computed_change_step(
     current_turn: &[ChatMessage],
     tool_names: &[&str],
     change: &ComputedChange,
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let target = change.target.as_str();
     let Some(read) = result_for_path(current_turn, Capability::Read, target, None) else {
@@ -882,13 +884,13 @@ pub(super) fn plan_computed_change_step(
         if result_for_edit(current_turn, target, &old, &new).is_none() {
             return Some(plan_one(tool, edit_arguments(target, &old, &new)));
         }
-        return plan_digest_verification(task, current_turn, tool_names, &verified);
+        return plan_digest_verification(task, current_turn, tool_names, &verified, result);
     }
     if result_for_path(current_turn, Capability::Write, target, Some(&updated)).is_none() {
         let tool = tool_for(tool_names, Capability::Write)?;
         return Some(plan_one(tool, write_arguments(target, &updated)));
     }
-    plan_digest_verification(task, current_turn, tool_names, &verified)
+    plan_digest_verification(task, current_turn, tool_names, &verified, result)
 }
 
 /// `Append the line third to notes.txt`: no quoted text, one path, and the

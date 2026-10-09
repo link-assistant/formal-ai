@@ -12,6 +12,7 @@
 use serde_json::json;
 
 use super::code_task::{render_seeded_change, render_seeded_outcome};
+use super::final_result::{FinalDisposition, FinalResult, record};
 use super::intent_router::edit_arguments;
 use super::module_function::{extension_language, paths_in, read_source};
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
@@ -230,6 +231,7 @@ pub(super) fn plan_test_assertion_step(
     task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let request = assertion_request(task)?;
     let current_turn = &messages[super::planner::evidence_window_start(messages)..];
@@ -238,7 +240,7 @@ pub(super) fn plan_test_assertion_step(
         return Some(plan_one(read, read_arguments(&request.path)));
     };
     if source.is_empty() {
-        return plan_new_test_file(task, &request, current_turn, tool_names);
+        return plan_new_test_file(task, &request, current_turn, tool_names, result);
     }
     let (index, style, indentation) =
         last_assertion(&source, &assertion_styles(&request.language))?;
@@ -266,6 +268,7 @@ pub(super) fn plan_test_assertion_step(
         current_turn,
         tool_names,
         ("test_assertion_added", &written),
+        result,
     )
 }
 
@@ -277,6 +280,7 @@ fn plan_new_test_file(
     request: &AssertionRequest,
     current_turn: &[ChatMessage],
     tool_names: &[&str],
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let style = assertion_styles(&request.language).into_iter().next()?;
     let written = style
@@ -310,6 +314,7 @@ fn plan_new_test_file(
         current_turn,
         tool_names,
         ("test_file_written", &written),
+        result,
     )
 }
 
@@ -322,6 +327,7 @@ fn plan_run_step(
     current_turn: &[ChatMessage],
     tool_names: &[&str],
     stated: (&str, &str),
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let run = super::test_file_runner::test_file_command(WORKSPACE_TEST_COMMAND, Some(path))?;
     let shell = tool_for(tool_names, Capability::Run)?;
@@ -334,8 +340,16 @@ fn plan_run_step(
         path,
         &[(ASSERTION_SLOT, stated.1), (COMMAND_SLOT, &run)],
     )?;
-    Some(AgenticPlan::Final(format!(
-        "{change}\n\n{}",
-        render(&run, &raw, task)
-    )))
+    let disposition =
+        if super::tool_result::step_outcome(&raw) == super::tool_result::StepOutcome::Failed {
+            FinalDisposition::Failure
+        } else {
+            FinalDisposition::Finding
+        };
+    Some(record(
+        AgenticPlan::Final(format!("{change}\n\n{}", render(&run, &raw, task))),
+        disposition,
+        "test_assertion_observed",
+        result,
+    ))
 }

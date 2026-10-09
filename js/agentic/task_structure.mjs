@@ -7,7 +7,7 @@ import { trim } from './crate/rust_str.mjs';
 import { looksLikeTaskDecomposition } from './crate/solver_handlers_task_decomposition.mjs';
 import { solve } from './host.mjs';
 import { composedDocumentSpecificationSpan } from './note_composition.mjs';
-import { finalAnswer } from './plan.mjs';
+import { FinalDisposition, resolvedFinalAnswer } from './plan.mjs';
 import { traceRoute } from './planner/continuation.mjs';
 import { hasLatestTurnResult } from './tool_result.mjs';
 
@@ -27,7 +27,7 @@ export async function planTaskStructureStep(messages, task) {
   const text = trim(answer.answer);
   if (text === '') return null;
   traceRoute('task_structure', answer.intent);
-  return finalAnswer(text);
+  return resolvedFinalAnswer(text, FinalDisposition.Finding, answer.intent);
 }
 
 /** Mirrors `fn nothing_has_been_observed_yet`. */

@@ -8,6 +8,7 @@
 //! function within its next words (`function_declaration_keyword`) exports
 //! that function. Twin of `js/agentic/module_exports.mjs`.
 
+use super::final_result::{FinalDisposition, FinalResult, record};
 use super::module_function::{paths_in, read_source};
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
 use crate::protocol::ChatMessage;
@@ -80,6 +81,7 @@ pub(super) fn plan_module_exports_step(
     task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let path = export_question(task)?;
     let current_turn = &messages[super::planner::evidence_window_start(messages)..];
@@ -110,5 +112,12 @@ pub(super) fn plan_module_exports_step(
     let language = crate::language::detect(task).slug();
     seed::render_response(intent, language, &values)
         .or_else(|| seed::render_response(intent, "en", &values))
-        .map(AgenticPlan::Final)
+        .map(|text| {
+            record(
+                AgenticPlan::Final(text),
+                FinalDisposition::Finding,
+                intent,
+                result,
+            )
+        })
 }

@@ -24,6 +24,7 @@
 //! specification at every sample pair of the contract is lowered through the
 //! language's IR lowering (`coding/ir_lowering`).
 
+use super::final_result::FinalResult;
 use super::planner::{AgenticPlan, Capability};
 use crate::coding::fragment_catalog::FragmentCatalog;
 use crate::coding::program_ir::{IrNode, IrType, ProgramIr, ReuseMode};
@@ -64,7 +65,7 @@ pub struct ModuleFunctionRequest {
 pub(super) struct Signature {
     pub(super) name: String,
     pub(super) parameters: Vec<String>,
-    at: usize,
+    pub(super) at: usize,
 }
 
 /// The import-line slot the imported names fill.
@@ -757,6 +758,7 @@ pub(super) fn plan_module_function_step(
     task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
+    _result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let request = module_function_request(task)?;
     let current_turn = &messages[super::planner::evidence_window_start(messages)..];

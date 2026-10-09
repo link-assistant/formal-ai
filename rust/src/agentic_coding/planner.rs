@@ -4,10 +4,13 @@
 use serde_json::json;
 mod continuation;
 mod precedence;
+mod steps;
+use super::final_result::{FinalDisposition, FinalResult, ResolvedPlan, record};
 use continuation::continued_agent_task;
 pub use continuation::trace_route;
 pub(in crate::agentic_coding) use continuation::{evidence_window_start, is_continuation_cue};
 pub use precedence::checked_route_precedence;
+use steps::{stop_repeated_call, stop_repeated_failure};
 
 pub(super) use super::capability_router::tool_for;
 use super::code_task;
@@ -169,11 +172,33 @@ pub fn tool_capability(name: &str) -> Option<Capability> {
 /// Returns [`None`] when neither a stored recipe nor a safe general plan applies.
 #[must_use]
 pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<AgenticPlan> {
+    plan_chat_step_resolved(messages, tool_names).map(|resolved| resolved.plan)
+}
+
+pub(super) fn plan_chat_step_resolved(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+) -> Option<ResolvedPlan> {
+    let mut result = None;
+    let plan = plan_chat_step_inner(messages, tool_names, &mut result)?;
+    Some(ResolvedPlan::new(plan, result))
+}
+
+fn plan_chat_step_inner(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    result: &mut Option<FinalResult>,
+) -> Option<AgenticPlan> {
     let received = crate::protocol::latest_user_request(messages)?;
     // A harness prompt that quotes the task to have it summarized is answered
     // with the summary, never by doing the task again (issue #1133).
     if let Some(summary) = harness_envelope::summarize_request(&received) {
-        return Some(AgenticPlan::Final(summary));
+        return Some(record(
+            AgenticPlan::Final(summary),
+            FinalDisposition::Finding,
+            "harness_summary",
+            result,
+        ));
     }
     // A restart over prepared work (changed paths plus a pull request link)
     // is the whole turn's shape, not one arm of the precedence cascade: it is
@@ -185,80 +210,28 @@ pub fn plan_chat_step(messages: &[ChatMessage], tool_names: &[&str]) -> Option<A
         messages,
         tool_names,
     );
-    let plan = restart.or_else(|| plan_chat_step_routes(messages, tool_names, received))?;
-    Some(stop_repeated_failure(
-        stop_repeated_call(plan, messages),
-        messages,
-    ))
-}
-
-/// A tool call this turn already completed is not a plan again (issue #1154).
-///
-/// Independent of any argument parsing: whatever keys a client names its
-/// arguments by, a stateless planner that re-derives a call whose result is
-/// already in the transcript ignored that result. The Codex Rust run planned
-/// the identical `gh issue view` 78 times over 6.2M input tokens because the
-/// read's accounting could not see the `cmd` key; this stop would have ended
-/// the loop on the second attempt whatever the parser did. The repeat is
-/// answered by reporting the stuck step and its last result.
-fn stop_repeated_call(plan: AgenticPlan, messages: &[ChatMessage]) -> AgenticPlan {
-    let AgenticPlan::ToolCalls(calls) = &plan else {
-        return plan;
-    };
-    let progress = Progress::scan(messages);
-    let Some((repeated, attempt)) = calls
-        .iter()
-        .find_map(|call| progress.repeated_call(call).map(|attempt| (call, attempt)))
-    else {
-        return plan;
-    };
-    AgenticPlan::Final(super::work_item_steps::fill(
-        "stuck_step_report",
-        &[
-            (
-                "{step}",
-                &format!("{} {}", repeated.tool, repeated.arguments),
-            ),
-            ("{result}", attempt.detail.trim()),
-        ],
-    ))
-}
-
-/// A tool call that has already failed twice this turn with the same report
-/// is not a plan; the third attempt is replaced by the report of the failure.
-///
-/// Issue #1133: the Kotlin run planned `mcp__playwright__browser_click` 547
-/// times, each answered by the same selector error, until the context window
-/// overflowed. No route knows it is looping -- each re-derives the same next
-/// step from the same transcript -- so the stop is applied to whatever any
-/// route planned.
-fn stop_repeated_failure(plan: AgenticPlan, messages: &[ChatMessage]) -> AgenticPlan {
-    const REPEATED_FAILURES_THAT_STOP: usize = 2;
-    let AgenticPlan::ToolCalls(calls) = &plan else {
-        return plan;
-    };
-    let progress = Progress::scan(messages);
-    let Some(repeated) = calls
-        .iter()
-        .find(|call| progress.identical_failures_of(&call.tool) >= REPEATED_FAILURES_THAT_STOP)
-    else {
-        return plan;
-    };
-    let Some(failure) = progress.latest_failure_of_tool(&repeated.tool) else {
-        return plan;
-    };
-    let prompt = crate::protocol::latest_user_request(messages).unwrap_or_default();
-    AgenticPlan::Final(tool_result::render_failure(
-        &repeated.tool,
-        &failure.detail,
-        &prompt,
-    ))
+    let plan = restart.or_else(|| plan_chat_step_routes(messages, tool_names, received, result))?;
+    let was_tool_calls = matches!(plan, AgenticPlan::ToolCalls(_));
+    let stopped = stop_repeated_failure(stop_repeated_call(plan, messages), messages);
+    Some(
+        if was_tool_calls && matches!(stopped, AgenticPlan::Final(_)) {
+            record(
+                stopped,
+                FinalDisposition::Failure,
+                "repeated_step_stopped",
+                result,
+            )
+        } else {
+            stopped
+        },
+    )
 }
 
 fn plan_chat_step_routes(
     messages: &[ChatMessage],
     tool_names: &[&str],
     received: String,
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     // Load-time precedence join (plan 10 leaf 18): first plan step of a run
     // proves the seed still names the cascade this function is about to walk.
@@ -324,7 +297,7 @@ fn plan_chat_step_routes(
     if has_authoritative_literal_write(&task)
         && let Some(plan) = capability_router::workspace_creation_tool(tool_names)
             .and_then(|_| compose_general_change_plan(&task))
-            .map(|plan| plan_general_change_step(messages, tool_names, &plan))
+            .map(|plan| plan_general_change_step(messages, tool_names, &plan, result))
     {
         return Some(plan);
     }
@@ -360,10 +333,12 @@ fn plan_chat_step_routes(
     // the node fails `missing_proof` having done the work. This route peels one
     // delivery at a time and re-plans the residual (see `parse_obligation`), so
     // the change route still receives the edit -- with only the edit left in it.
-    if let Some(plan) = evidence_record::plan_evidence_record_step(&task, messages, tool_names) {
+    if let Some(plan) =
+        evidence_record::plan_evidence_record_step(&task, messages, tool_names, result)
+    {
         return Some(plan);
     }
-    plan_settled_routes(&task, messages, tool_names)
+    plan_settled_routes(&task, messages, tool_names, result)
 }
 
 /// Every route below the delivery peeling above, as one function.
@@ -384,20 +359,16 @@ pub(super) fn plan_settled_routes(
     task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
-    if tool_for(tool_names, Capability::Run).is_some()
-        && let Some(command) = shell_command::explicit_passthrough_command(task)
-    {
-        return shell_file_fallback::plan_step(task, messages, tool_names, &command)
-            .or_else(|| mutating_action::plan_step(&command, messages, tool_names, task))
-            .or_else(|| Some(plan_shell_step(messages, tool_names, &command)));
-    }
     // A request to commit what is already in the tree is one shell step. It
     // is claimed first because its words ("review these changes and commit
     // them", with a `?? Main.scala` listing) read to later routes as a search
     // for the file; the route itself declines any request that also names the
     // work to do (issue #1133).
-    if let Some(plan) = git_commit::plan_commit_step(task, messages, tool_names) {
+    if let Some(plan) = steps::explicit_shell_step(task, messages, tool_names, result)
+        .or_else(|| git_commit::plan_commit_step(task, messages, tool_names))
+    {
         return Some(plan);
     }
     // A learned workspace-change procedure owns grounded repository rewrites
@@ -411,21 +382,28 @@ pub(super) fn plan_settled_routes(
         task,
         messages,
         tool_names,
-        plan_chat_step,
+        plan_chat_step_resolved,
+        result,
     )
-    .or_else(|| super::workspace_change::plan_workspace_change_step(task, messages, tool_names))
-    .or_else(|| super::module_function::plan_module_function_step(task, messages, tool_names))
+    .or_else(|| {
+        super::workspace_change::plan_workspace_change_step(task, messages, tool_names, result)
+    })
+    .or_else(|| {
+        super::module_function::plan_module_function_step(task, messages, tool_names, result)
+    })
     // A bug report with a stated expectation is checked before anything is
     // rewritten (PR #1188 T93).
     .or_else(|| {
-        super::function_expectation::plan_function_expectation_step(task, messages, tool_names)
+        super::function_expectation::plan_function_expectation_step(
+            task, messages, tool_names, result,
+        )
     })
     // An assertion of a stated call and value is added in the test
     // file's own form, and the file is run (PR #1188 G13).
-    .or_else(|| super::test_assertion::plan_test_assertion_step(task, messages, tool_names))
+    .or_else(|| super::test_assertion::plan_test_assertion_step(task, messages, tool_names, result))
     // A test asked for with no expected result is a question (PR #1188
     // G25).
-    .or_else(|| super::function_expectation::test_expectation_question(task))
+    .or_else(|| super::function_expectation::test_expectation_question(task, result))
     {
         return Some(plan);
     }
@@ -454,6 +432,7 @@ pub(super) fn plan_settled_routes(
             messages,
             tool_names,
             statement_audit::command_for(task),
+            result,
         ));
     }
     // Resolve an unambiguous literal write before keyword recipes: arbitrary
@@ -503,7 +482,7 @@ pub(super) fn plan_settled_routes(
                 // derived, decline instead of turning an unobserved node into
                 // completion prose.
                 return compose_general_change_plan(&node.clause)
-                    .map(|plan| plan_general_change_step(messages, tool_names, &plan));
+                    .map(|plan| plan_general_change_step(messages, tool_names, &plan, result));
             }
             Some(task_obligations::ObligationStep::ReportGap {
                 node_id,
@@ -523,14 +502,14 @@ pub(super) fn plan_settled_routes(
                     .iter()
                     .rev()
                     .find_map(|obligation| compose_general_change_plan(&obligation.clause))
-                    .map(|plan| plan_general_change_step(messages, tool_names, &plan));
+                    .map(|plan| plan_general_change_step(messages, tool_names, &plan, result));
             }
             None => return None,
         }
     }
     if let Some(plan) = capability_router::workspace_creation_tool(tool_names)
         .and_then(|_| compose_general_change_plan(task))
-        .map(|plan| plan_general_change_step(messages, tool_names, &plan))
+        .map(|plan| plan_general_change_step(messages, tool_names, &plan, result))
     {
         return Some(plan);
     }
@@ -645,12 +624,14 @@ pub(super) fn plan_settled_routes(
     // and web search.
     if let Some(plan) = file_read_task_for(task)
         .filter(super::file_read::FileReadTask::is_analysis)
-        .map(|file_task| plan_file_read_step(&file_task, messages, tool_names))
+        .map(|file_task| plan_file_read_step(&file_task, messages, tool_names, result))
         .or_else(|| workspace_search::plan_workspace_search_step(task, messages, tool_names))
         // What a named module exports is answered from its declarations (T99).
-        .or_else(|| super::module_exports::plan_module_exports_step(task, messages, tool_names))
+        .or_else(|| {
+            super::module_exports::plan_module_exports_step(task, messages, tool_names, result)
+        })
         // A summary of a named file summarizes the file's text (T100).
-        .or_else(|| super::file_summary::plan_file_summary_step(task, messages, tool_names))
+        .or_else(|| super::file_summary::plan_file_summary_step(task, messages, tool_names, result))
     {
         return Some(plan);
     }
@@ -698,7 +679,9 @@ pub(super) fn plan_settled_routes(
     if tool_for(tool_names, Capability::Read).is_some()
         && let Some(file_task) = file_read_task_for(task)
     {
-        return Some(plan_file_read_step(&file_task, messages, tool_names));
+        return Some(plan_file_read_step(
+            &file_task, messages, tool_names, result,
+        ));
     }
     // A meanings-driven explicit local scope dominates generic search verbs.
     // This state machine observes each result and widens only after emptiness.
@@ -718,11 +701,13 @@ pub(super) fn plan_settled_routes(
     if let Some(plan) = capability_router::plan_named_capability_step(task, messages, tool_names) {
         return Some(plan);
     }
-    if let Some(plan) = plan_shell_command_arm(task, messages, tool_names) {
+    if let Some(plan) = plan_shell_command_arm(task, messages, tool_names, result) {
         return Some(plan);
     }
     if let Some(file_task) = file_read_task_for(task) {
-        return Some(plan_file_read_step(&file_task, messages, tool_names));
+        return Some(plan_file_read_step(
+            &file_task, messages, tool_names, result,
+        ));
     }
     if formalization_recipe::is_formalization_task(task) {
         return Some(formalization_recipe::plan_formalization_step(
@@ -769,7 +754,7 @@ pub(super) fn plan_settled_routes(
     // The route reads `messages` for the same reason its neighbour above does,
     // and it makes that judgement itself: a turn on which a tool has already run
     // is not one an answer composed from the request alone may claim.
-    if let Some(plan) = task_structure::plan_task_structure_step(messages, task) {
+    if let Some(plan) = task_structure::plan_task_structure_step(messages, task, result) {
         return Some(plan);
     }
     // The decision table of `data/seed/capability-routing.lino` (issue #1138 B10,
@@ -862,7 +847,7 @@ pub(super) fn plan_settled_routes(
         return Some(plan);
     }
     if let Some(plan) = compose_general_change_plan(task)
-        .map(|plan| plan_general_change_step(messages, tool_names, &plan))
+        .map(|plan| plan_general_change_step(messages, tool_names, &plan, result))
     {
         return Some(plan);
     }
@@ -898,6 +883,7 @@ fn plan_shell_command_arm(
     task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     if let Some(decline) = shell_command::destructive_edit_decline(task) {
         return Some(decline);
@@ -909,23 +895,39 @@ fn plan_shell_command_arm(
     // A command that changes the workspace answers by what the workspace
     // holds afterwards, so it is carried out as the verified recipe its seed
     // intent declares rather than issued once (issues #824 and #944).
-    if let Some(plan) = mutating_action::plan_step(&command, messages, tool_names, task) {
+    if let Some(plan) = mutating_action::plan_step(&command, messages, tool_names, task, result) {
         return Some(plan);
     }
-    Some(plan_shell_step(messages, tool_names, &command))
+    Some(plan_shell_step(messages, tool_names, &command, result))
 }
 
 /// Run a shell command through the client-owned tool loop, then present its result.
-fn plan_shell_step(messages: &[ChatMessage], tool_names: &[&str], command: &str) -> AgenticPlan {
+fn plan_shell_step(
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    command: &str,
+    result: &mut Option<FinalResult>,
+) -> AgenticPlan {
     let progress = Progress::scan(messages);
     if progress.done(Capability::Run) {
-        return AgenticPlan::Final(tool_result::render(
-            command,
-            progress.run_outputs.last().map_or("", String::as_str),
-            crate::protocol::latest_user_request(messages)
-                .as_deref()
-                .unwrap_or_default(),
-        ));
+        let raw = progress.run_outputs.last().map_or("", String::as_str);
+        let disposition = if tool_result::step_outcome(raw) == tool_result::StepOutcome::Failed {
+            FinalDisposition::Failure
+        } else {
+            FinalDisposition::Finding
+        };
+        return record(
+            AgenticPlan::Final(tool_result::render(
+                command,
+                raw,
+                crate::protocol::latest_user_request(messages)
+                    .as_deref()
+                    .unwrap_or_default(),
+            )),
+            disposition,
+            "shell_result_observed",
+            result,
+        );
     }
 
     if let Some(tool) = tool_for(tool_names, Capability::Run) {

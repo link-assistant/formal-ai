@@ -1,5 +1,6 @@
 //! Exact-field and multi-file branches of the local file-read recipe.
 
+use super::super::final_result::{FinalDisposition, FinalResult, record};
 use serde_json::json;
 
 use super::{
@@ -23,6 +24,7 @@ pub(super) fn plan_direct_file_reads(
     grep_tool: Option<&str>,
     records: &[ToolResultRecord],
     request: &str,
+    result: &mut Option<FinalResult>,
 ) -> AgenticPlan {
     if mode == &FileReadMode::Audit
         && let Some(tool) = grep_tool
@@ -38,7 +40,12 @@ pub(super) fn plan_direct_file_reads(
             }
         }
         if contents.len() == paths.len() {
-            return AgenticPlan::Final(file_read_final_answer(mode, &contents, request));
+            return record(
+                AgenticPlan::Final(file_read_final_answer(mode, &contents, request)),
+                FinalDisposition::Finding,
+                "file_read_observed",
+                result,
+            );
         }
         let calls = paths
             .iter()
@@ -90,7 +97,12 @@ pub(super) fn plan_direct_file_reads(
         }
     }
     if contents.len() == paths.len() {
-        return AgenticPlan::Final(file_read_final_answer(mode, &contents, request));
+        return record(
+            AgenticPlan::Final(file_read_final_answer(mode, &contents, request)),
+            FinalDisposition::Finding,
+            "file_read_observed",
+            result,
+        );
     }
 
     if exact_run && let Some(tool) = run_tool {

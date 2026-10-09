@@ -1,49 +1,16 @@
-//! Recording what an investigation found into a file the caller named (#1066).
+//! Deliver only conclusive observed findings to an explicitly bound evidence file.
 //!
-//! A caller can ask for two things at once: *find something out*, and *leave the
-//! answer at a named place*. The Agent-CLI ladder does exactly that — "Inspect
-//! the decomposition data model … Leave observable evidence in
-//! `.agent-ladder/node-1.2-proof.md`. The first line must be exactly
-//! `node_path=1.2`" — and so does any harness that reads a run's result from a
-//! file rather than from the transcript.
-//!
-//! The literal-write route ([`super::general_planner`]) declines this shape: it
-//! composes a write only when the request spells the bytes out, and here the
-//! bytes are the *outcome* of work that has not happened yet.
-//!
-//! Left to the remaining routes, the named path is the only file-shaped token in
-//! the request, so it was opened for reading and the run ended with the
-//! evidence file never written.
-//!
-//! This module closes that gap without duplicating either half. It splits the
-//! request into the delivery obligation (where the answer goes, and what its
-//! first line must be) and the residual investigation, re-plans the residual
-//! through the ordinary router, and turns the answer that router eventually
-//! produces into the write the caller asked for.
-//!
-//! The agentic router is not the only thing that can answer the residual, and
-//! for this shape of request it is usually not the thing that does. "Complete
-//! recursive decomposition node 1.1.1, covering the four atomic tasks it names"
-//! needs no tool: it is a question about task structure, which is what Formal
-//! AI's symbolic engine answers. Delivering only what the *agentic* router produces
-//! drops the obligation on every residual of that kind, and the request ends
-//! with nothing written. So when the router has no plan, the residual is put to
-//! [`crate::engine::FormalAiEngine`] and its answer delivered instead.
-//!
-//! An evidence file is still never invented. The engine's own verdict on
-//! whether it reached a conclusion ([`crate::engine::SymbolicAnswer::is_inconclusive`],
-//! [`crate::engine::SymbolicAnswer::defers_to_the_open_web`]) decides: an
-//! unknown prompt, an ill-formed one, every clarification request and every
-//! answer that only describes the web search it would run leave this route
-//! declining exactly as before.
+//! Recursive investigation retains typed provenance; authoring operands are not
+//! evidence destinations, and clarifications, gaps and failures remain chat answers.
 
 use std::cell::RefCell;
 use std::collections::HashMap;
 
 use super::capability_router::tool_for;
+use super::final_result::{FinalDisposition, FinalResult, record};
 use super::general_planner::compose_general_change_plan;
 use super::planner::{
-    AgenticPlan, Capability, plan_chat_step, plan_one, plan_settled_routes, trace_route,
+    AgenticPlan, Capability, plan_chat_step_resolved, plan_one, plan_settled_routes, trace_route,
     write_arguments,
 };
 use super::progress::Progress;
@@ -123,6 +90,23 @@ fn masked_multi_word_quotes(text: &str) -> String {
 ///
 /// Declines when the residual is empty: a request whose every sentence is about
 /// delivery states no work to do, so there is nothing to record.
+/// A call-shaped authoring request binds its path as a code operand.
+fn names_callable_artifact(sentence: &str, target: &str) -> bool {
+    let Some(call) = super::module_function::signature(sentence) else {
+        return false;
+    };
+    if !super::module_function::paths_in(&sentence[call.at..])
+        .iter()
+        .any(|path| path == target)
+    {
+        return false;
+    }
+    let prefix = crate::engine::normalize_prompt(&sentence[..call.at]);
+    let lexicon = crate::seed::lexicon();
+    lexicon.mentions_role("coding_request_verb", &prefix)
+        || lexicon.mentions_role("coding_member_add_action", &prefix)
+}
+
 fn parse_obligation(request: &str) -> Option<DeliveryBinding> {
     let mut target = None;
     let mut first_line = None;
@@ -162,7 +146,12 @@ fn parse_obligation(request: &str) -> Option<DeliveryBinding> {
         // having deleted the file it was asked to edit.
         let delivered = (!carries_authoring_task(&crate::engine::normalize_prompt(sentence.text)))
             .then(|| delivered_write_target(sentence.text))
-            .flatten();
+            .flatten()
+            .filter(|target| {
+                !names_callable_artifact(text, target)
+                    && super::function_expectation::test_expectation_question(text, &mut None)
+                        .is_none()
+            });
         if let Some(named) = delivered {
             if target.is_none() {
                 field_lines = exact_field_lines(text, &named);
@@ -285,31 +274,10 @@ pub(super) fn plan_evidence_record_step(
     task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let obligation = parse_obligation(task)?;
-    // The bytes this route delivers are bytes that still have to be found, and
-    // peeling the destination off the sentence is how it goes looking for them.
-    // That reading is wrong whenever a route further down already produces this
-    // very file from the request as it stands, because peeling then hands the
-    // remainder to a router that can no longer reach that route:
-    //
-    // * "Create file `policy/retention.md` containing Logs are kept for ninety
-    //   days; backups are kept for a year" became a destination plus a residual,
-    //   the residual was put to the router as though it were a question, and the
-    //   file received the router's status line in place of the caller's payload.
-    // * A registered auto-learning report is *identified* by its artifact --
-    //   `LearningReport::matches` looks for its own `path` in the prompt -- so
-    //   removing "and write self-hosting-learning-report.lino" leaves a residual
-    //   that reaches the self-healing recipe instead, and the run writes one
-    //   file nobody asked for before writing the one that was.
-    //
-    // So ask, rather than enumerate. A route below can answer in either of two
-    // ways, and both are asked: it can *declare* the file, the way a composed
-    // general change plan carries the `target` it was compiled for, or it can be
-    // watched *planning* it. Only a route that produces this same target
-    // disqualifies the delivery -- a request may spell out one file's bytes and
-    // ask for another file's findings, and the second obligation is still this
-    // route's.
+    // A later producer of the same target owns its bytes.
     if let Some(reason) = later_route_delivering(task, &obligation, tool_names) {
         trace_route("evidence_record", reason);
         return None;
@@ -319,22 +287,32 @@ pub(super) fn plan_evidence_record_step(
     match super::task_obligations::observed_file_outcome(task, &obligation.target, messages) {
         ObligationOutcome::Satisfied { .. } => {
             trace_route("evidence_record", "already_written");
-            return Some(AgenticPlan::Final(
-                progress
-                    .successful_write_content_for(&obligation.target)
-                    .map(|content| written_observation(&obligation, &content))
-                    .filter(|answer| !answer.is_empty())
-                    .unwrap_or_else(|| {
-                        format!("Recorded the findings in `{}`.", obligation.target)
-                    }),
+            return Some(record(
+                AgenticPlan::Final(
+                    progress
+                        .successful_write_content_for(&obligation.target)
+                        .map(|content| written_observation(&obligation, &content))
+                        .filter(|answer| !answer.is_empty())
+                        .unwrap_or_else(|| {
+                            format!("Recorded the findings in `{}`.", obligation.target)
+                        }),
+                ),
+                FinalDisposition::Finding,
+                "evidence_record_observed",
+                result,
             ));
         }
         ObligationOutcome::Refuted { .. } | ObligationOutcome::Unsatisfiable { .. } => {
             trace_route("evidence_record", "write_not_observed");
-            return Some(AgenticPlan::Final(format!(
-                "The findings could not be recorded in `{}`: the write step failed.",
-                obligation.target
-            )));
+            return Some(record(
+                AgenticPlan::Final(format!(
+                    "The findings could not be recorded in `{}`: the write step failed.",
+                    obligation.target
+                )),
+                FinalDisposition::Failure,
+                "evidence_record_write_failed",
+                result,
+            ));
         }
         ObligationOutcome::Unattempted => {}
     }
@@ -357,36 +335,28 @@ pub(super) fn plan_evidence_record_step(
     let is_workspace_observation = observed.is_some();
     let answer = match observed {
         Some(answer) => answer,
-        None => match plan_chat_step(&residual_messages, tool_names) {
-            Some(plan @ AgenticPlan::ToolCalls(_)) => {
-                trace_route("evidence_record", "investigating");
-                return Some(plan);
-            }
-            Some(AgenticPlan::Final(answer)) => {
-                // A route that answers the residual with its own failure
-                // prose has produced a chat report, not the bytes the caller
-                // asked to record: delivering it would write the failure
-                // template into the requested file (issue #1138: the
-                // ladder's effect file carried "Verification failed ..." on
-                // its `result=` line). The report itself stays the answer.
-                if super::workspace_change::is_verification_failure_answer(
-                    &obligation.residual,
-                    &answer,
-                ) {
-                    trace_route("evidence_record", "residual_reported_failure");
-                    return Some(AgenticPlan::Final(answer));
+        None => match plan_chat_step_resolved(&residual_messages, tool_names) {
+            Some(resolved) => {
+                if !resolved.can_deliver() {
+                    trace_route("evidence_record", "residual_not_finding");
+                    return Some(resolved.into_plan(result));
                 }
-                // A failed step's output is never a file's content: the answer
-                // that reports it is the answer (PR #1188 G102).
+                let AgenticPlan::Final(answer) = resolved.plan else {
+                    unreachable!()
+                };
                 if progress.latest_failure().is_some() {
-                    trace_route("evidence_record", "residual_step_failed");
-                    return Some(AgenticPlan::Final(answer));
+                    return Some(record(
+                        AgenticPlan::Final(answer),
+                        FinalDisposition::Failure,
+                        "evidence_record_residual_failed",
+                        result,
+                    ));
                 }
                 answer
             }
             None => {
                 trace_route("evidence_record", "symbolic_residual");
-                symbolic_answer(&obligation.residual)?
+                symbolic_answer(&obligation.residual)?.text
             }
         },
     };
@@ -498,7 +468,8 @@ const DELIVERY_PROBE_MEMO_CAPACITY: usize = 512;
 fn probe_settled_routes(task: &str, target: &str, tool_names: &[&str]) -> bool {
     let mut probe = vec![ChatMessage::user(task)];
     for turn in 0..DELIVERY_PROBE_TURNS {
-        let Some(AgenticPlan::ToolCalls(calls)) = plan_settled_routes(task, &probe, tool_names)
+        let Some(AgenticPlan::ToolCalls(calls)) =
+            plan_settled_routes(task, &probe, tool_names, &mut None)
         else {
             return false;
         };
@@ -932,7 +903,7 @@ fn source_authority(path_or_line: &str) -> usize {
 /// text is non-empty, so it survives every check made of the file afterwards,
 /// and a harness reading the file finds a heading with no list and calls the
 /// node proved.
-fn symbolic_answer(residual: &str) -> Option<String> {
+fn symbolic_answer(residual: &str) -> Option<FinalResult> {
     // Any gap (`capability_gap`, `write_program_skill_gap`) is such a refusal
     // (PR #1188 G102).
     let answer = crate::engine::FormalAiEngine.answer(residual);
@@ -947,7 +918,11 @@ fn symbolic_answer(residual: &str) -> Option<String> {
         return None;
     }
     let text = answer.answer.trim().to_owned();
-    (!text.is_empty()).then_some(text)
+    (!text.is_empty()).then_some(FinalResult {
+        text,
+        disposition: FinalDisposition::Finding,
+        origin: answer.intent,
+    })
 }
 
 /// The suffix of an intent that reports a gap: a refusal, never content.
@@ -964,7 +939,8 @@ const GAP_INTENT_SUFFIX: &str = "_gap";
 /// the investigation re-read what it had already read, forever.
 fn with_residual_request(messages: &[ChatMessage], residual: &str) -> Option<Vec<ChatMessage>> {
     let index = messages.iter().rposition(|message| {
-        message.role == "user" && !super::planner::is_continuation_cue(&message.content.plain_text())
+        message.role == "user"
+            && !super::planner::is_continuation_cue(&message.content.plain_text())
     })?;
     let mut residual_messages = messages.to_vec();
     residual_messages[index].content = MessageContent::Text(residual.to_owned());

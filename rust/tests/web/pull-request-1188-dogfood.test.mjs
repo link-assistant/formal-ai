@@ -6,6 +6,7 @@
 // `bash` → stdout). The workspace is an in-memory map, so a regression shows
 // up as the exact wrong file content the CLI run produced.
 
+import { runPlanEvent } from './helpers/plan-event-shell.mjs';
 import { before, describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
@@ -51,6 +52,8 @@ function execute(files, tool, args) {
     return '';
   }
   if (tool === 'bash') {
+    const event = runPlanEvent(files, args.command);
+    if (event !== null) return event;
     const digest = /^sha256sum -- (\S+)$/.exec(args.command);
     if (digest) return `${createHash('sha256').update(files.get(digest[1]) ?? '').digest('hex')}  ${digest[1]}\n`;
     const cat = /^cat (\S+)$/.exec(args.command);

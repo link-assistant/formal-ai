@@ -12,7 +12,7 @@ import { splitWhitespace } from './crate/rust_str.mjs';
 import { mentionsRole } from './crate/seed_meanings.mjs';
 import { solve } from './host.mjs';
 import { pathsIn, readSource } from './module_function.mjs';
-import { finalAnswer, planOne } from './plan.mjs';
+import { FinalDisposition, planOne, resolvedFinalAnswer } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import { readArguments } from './workspace_change.mjs';
 
@@ -55,5 +55,6 @@ export async function planFileSummaryStep(task, messages, toolNames) {
   if (source.trim() === '') return null;
   const answer = await solve(summaryRequest(task, path, source), []);
   const intent = String(answer?.intent ?? '');
-  return intent.startsWith(SUMMARY_INTENT_PREFIX) && answer.answer ? finalAnswer(answer.answer) : null;
+  return intent.startsWith(SUMMARY_INTENT_PREFIX) && answer.answer
+    ? resolvedFinalAnswer(answer.answer, FinalDisposition.Finding, intent) : null;
 }

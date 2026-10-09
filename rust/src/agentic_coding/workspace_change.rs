@@ -15,6 +15,7 @@ use super::code_task::{
     render_rust_template, render_seeded_change, render_seeded_change_with_lists,
     render_seeded_outcome, rust_source_for_task,
 };
+use super::final_result::{FinalDisposition, FinalResult, record};
 use super::general_planner::compose_edit_request;
 use super::intent_router::edit_arguments;
 use super::planner::{
@@ -108,6 +109,7 @@ pub(super) fn plan_workspace_change_step(
     task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let task = unwrap_transport_quotes(task);
     // A continuation cue resumes this run rather than opening a new request,
@@ -128,7 +130,7 @@ pub(super) fn plan_workspace_change_step(
     let task = sourced.as_deref().unwrap_or(task);
 
     if let Some(change) = composite_module_change(task) {
-        return plan_composite_step(task, current_turn, tool_names, &change);
+        return plan_composite_step(task, current_turn, tool_names, &change, result);
     }
     // Numbered lines moved to another file: placed there, then removed (G85).
     if let Some(order) = super::line_range_move::line_range_move(task) {
@@ -137,6 +139,7 @@ pub(super) fn plan_workspace_change_step(
             current_turn,
             tool_names,
             &order,
+            result,
         );
     }
     if let Some(change) = super::workspace_computed_change::grounded_line_change(task) {
@@ -145,6 +148,7 @@ pub(super) fn plan_workspace_change_step(
             current_turn,
             tool_names,
             &change,
+            result,
         );
     }
     if let Some(inserts) = insert_sequence(task) {
@@ -153,6 +157,7 @@ pub(super) fn plan_workspace_change_step(
             current_turn,
             tool_names,
             &inserts,
+            result,
         );
     }
     // Several replacements asked in one sentence are made in order (G82).
@@ -162,10 +167,11 @@ pub(super) fn plan_workspace_change_step(
             current_turn,
             tool_names,
             &change,
+            result,
         );
     }
     if let Some(rewrite) = grounded_rewrite(task) {
-        return plan_rewrite_step(task, current_turn, tool_names, &rewrite);
+        return plan_rewrite_step(task, current_turn, tool_names, &rewrite, result);
     }
     let change = super::workspace_computed_change::grounded_computed_change(task)?;
     super::workspace_computed_change::plan_computed_change_step(
@@ -173,6 +179,7 @@ pub(super) fn plan_workspace_change_step(
         current_turn,
         tool_names,
         &change,
+        result,
     )
 }
 
@@ -206,45 +213,12 @@ fn sourced_request(task: &str, current_turn: &[ChatMessage]) -> Option<Sourced> 
     Some(Sourced::Task(with_contents(task, &source, &contents)))
 }
 
-/// Whether `answer` is one of this module's seeded verification-failure
-/// renderings for `task`'s targets.
-///
-/// The rendering is deterministic in the task and the target, so equality
-/// against it is a structural test with no phrase table: it recognises the
-/// failure report in whatever language the seed rendered it. The delivery
-/// route uses it to keep such prose out of the files it writes -- a report
-/// that a check failed is chat, never the `result=` line of an effect file
-/// (issue #1138: the binary-tree ladder's effect files carried the failure
-/// template and every leaf read as an unverified result).
-pub(super) fn is_verification_failure_answer(task: &str, answer: &str) -> bool {
-    let task = unwrap_transport_quotes(task);
-    let mut targets: Vec<String> = compose_edit_request(task)
-        .map(|(target, _, _)| target)
-        .into_iter()
-        .chain(rust_paths(task))
-        .collect();
-    if let Some((target, _)) = super::workspace_line_operation::named_target_and_payloads(task)
-        && !targets.contains(&target)
-    {
-        targets.push(target);
-    }
-    targets.iter().any(|target| {
-        [
-            "coding_workspace_verification_failed",
-            "coding_workspace_fragment_refused",
-        ]
-        .iter()
-        .any(|intent| {
-            render_seeded_outcome(intent, task, target).is_some_and(|rendered| rendered == answer)
-        })
-    })
-}
-
 fn plan_rewrite_step(
     task: &str,
     current_turn: &[ChatMessage],
     tool_names: &[&str],
     rewrite: &GroundedRewrite,
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let Some(read) = result_for_path(current_turn, Capability::Read, &rewrite.target, None) else {
         let tool = tool_for(tool_names, Capability::Read)?;
@@ -309,6 +283,7 @@ fn plan_rewrite_step(
                     slots: &rewrite.stated_slots(),
                     list_slots: &[],
                 },
+                result,
             );
         }
     } else if tool_for(tool_names, Capability::Edit).is_some()
@@ -329,6 +304,7 @@ fn plan_rewrite_step(
                 slots: &rewrite.stated_slots(),
                 list_slots: &[],
             },
+            result,
         );
     }
 
@@ -355,12 +331,17 @@ fn plan_rewrite_step(
             &rewrite.target,
         )?));
     }
-    Some(AgenticPlan::Final(render_seeded_change(
-        rewrite.stated_intent(),
-        task,
-        &rewrite.target,
-        &rewrite.stated_slots(),
-    )?))
+    Some(record(
+        AgenticPlan::Final(render_seeded_change(
+            rewrite.stated_intent(),
+            task,
+            &rewrite.target,
+            &rewrite.stated_slots(),
+        )?),
+        FinalDisposition::Finding,
+        "workspace_change_observed",
+        result,
+    ))
 }
 
 fn plan_composite_step(
@@ -368,6 +349,7 @@ fn plan_composite_step(
     current_turn: &[ChatMessage],
     tool_names: &[&str],
     change: &CompositeModuleChange,
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     if result_for_path(
         current_turn,
@@ -413,12 +395,17 @@ fn plan_composite_step(
     let updated = insert_registration(&current, &change.registration);
     let registered = ["`", change.registration.trim(), "`"].concat();
     if updated == current {
-        return Some(AgenticPlan::Final(render_seeded_change(
-            "coding_member_already_present",
-            task,
-            &change.registration_path,
-            &[("{members}", &registered)],
-        )?));
+        return Some(record(
+            AgenticPlan::Final(render_seeded_change(
+                "coding_member_already_present",
+                task,
+                &change.registration_path,
+                &[("{members}", &registered)],
+            )?),
+            FinalDisposition::Finding,
+            "workspace_change_observed",
+            result,
+        ));
     }
 
     if let Some((old, new)) = compact_registration_edit(&current, &change.registration)
@@ -441,6 +428,7 @@ fn plan_composite_step(
                 slots: &[("{members}", &registered)],
                 list_slots: &[],
             },
+            result,
         );
     }
 
@@ -475,12 +463,17 @@ fn plan_composite_step(
             &change.registration_path,
         )?));
     }
-    Some(AgenticPlan::Final(render_seeded_change(
-        "coding_member_inserted",
-        task,
-        &change.registration_path,
-        &[("{members}", &registered)],
-    )?))
+    Some(record(
+        AgenticPlan::Final(render_seeded_change(
+            "coding_member_inserted",
+            task,
+            &change.registration_path,
+            &[("{members}", &registered)],
+        )?),
+        FinalDisposition::Finding,
+        "workspace_change_observed",
+        result,
+    ))
 }
 
 /// The file after `rewrite`, or `None` when it cannot apply. A positional
@@ -943,6 +936,7 @@ pub(super) fn plan_digest_verification(
     current_turn: &[ChatMessage],
     tool_names: &[&str],
     change: &VerifiedChange<'_>,
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let command = ["sha256sum -- ", change.target].concat();
     let Some(observed) = result_for_command(current_turn, &command) else {
@@ -957,13 +951,18 @@ pub(super) fn plan_digest_verification(
             change.target,
         )?));
     }
-    Some(AgenticPlan::Final(render_seeded_change_with_lists(
-        change.intent,
-        task,
-        change.target,
-        change.slots,
-        change.list_slots,
-    )?))
+    Some(record(
+        AgenticPlan::Final(render_seeded_change_with_lists(
+            change.intent,
+            task,
+            change.target,
+            change.slots,
+            change.list_slots,
+        )?),
+        FinalDisposition::Finding,
+        "workspace_change_observed",
+        result,
+    ))
 }
 
 fn matching_result(

@@ -1,15 +1,9 @@
-//! Additive edits and the words that place them (issues #1115, #1116, #1133).
-//!
-//! "Add a line X directly after the line Y in F" names no old→new pair, so the
-//! replacement composer in `general_planner` answered it with nothing and the
-//! request went to web search. The anchor line is the text an edit tool can
-//! match exactly, and the replacement is the anchor with the new line beside
-//! it -- so an insertion is an edit after all, and no insert primitive is
-//! needed. Which side of the position cue the anchor sits on is a fact of the
-//! cue's language (`languages.lino`, `adposition`), not of the sentence.
+//! Additive edits become replacements of the anchor with adjacent inserted bytes.
+//! Seeded language adposition decides which side of the cue governs the anchor.
 
 use super::code_artifact::source_from_read_result;
 use super::code_task::{render_seeded_change, render_seeded_outcome};
+use super::final_result::{FinalDisposition, FinalResult, record};
 use super::intent_router::edit_arguments;
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
 use super::workspace_change::{
@@ -917,6 +911,7 @@ pub(super) fn plan_insert_sequence_step(
     current_turn: &[ChatMessage],
     tool_names: &[&str],
     inserts: &[PositionalInsert],
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let edit_tool = tool_for(tool_names, Capability::Edit)?;
     let mut expected: Vec<(&str, String)> = Vec::new();
@@ -996,5 +991,10 @@ pub(super) fn plan_insert_sequence_step(
         }
     }
     let stated: Vec<String> = stated.into_iter().collect::<Option<_>>()?;
-    Some(AgenticPlan::Final(stated.join("\n")))
+    Some(record(
+        AgenticPlan::Final(stated.join("\n")),
+        FinalDisposition::Finding,
+        "insert_sequence_verified",
+        result,
+    ))
 }
