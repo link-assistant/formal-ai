@@ -182,7 +182,7 @@ describe('R848-10: symbol refactors and composite module requests terminate veri
     pushResult(messages, 'write_module', create, 'created');
     const verifyModule = onlyCall(await planner.planChatStep(messages, tools));
     assert.equal(JSON.parse(verifyModule.arguments).command, 'cat rust/src/ladder_units.rs');
-    pushResult(messages, 'verify_module', verifyModule, MODULE);
+    pushResult(messages, 'verify_module', verifyModule, JSON.stringify({ stdout: MODULE, exit_code: 0 }));
     const readLib = onlyCall(await planner.planChatStep(messages, tools));
     assert.deepEqual([readLib.tool, JSON.parse(readLib.arguments).path], ['read_file', 'rust/src/lib.rs']);
     pushResult(messages, 'read_lib', readLib, 'pub mod language;\npub mod seed;\n');
@@ -191,7 +191,7 @@ describe('R848-10: symbol refactors and composite module requests terminate veri
     pushResult(messages, 'write_lib', writeLib, 'updated');
     const verifyLib = onlyCall(await planner.planChatStep(messages, tools));
     assert.equal(JSON.parse(verifyLib.arguments).command, 'cat rust/src/lib.rs');
-    pushResult(messages, 'verify_lib', verifyLib, LIB_AFTER);
+    pushResult(messages, 'verify_lib', verifyLib, JSON.stringify({ stdout: LIB_AFTER, exit_code: 0 }));
     assert.ok((await finalAnswer(messages, tools)).includes('observed'));
   });
 
@@ -203,7 +203,7 @@ describe('R848-10: symbol refactors and composite module requests terminate veri
     pushResult(messages, 'agent_create_module', create, '');
     const verifyModule = onlyCall(await planner.planChatStep(messages, tools));
     assert.equal(verifyModule.tool, 'bash');
-    pushResult(messages, 'agent_verify_module', verifyModule, MODULE);
+    pushResult(messages, 'agent_verify_module', verifyModule, JSON.stringify({ stdout: MODULE, exit_code: 0 }));
     const readLib = onlyCall(await planner.planChatStep(messages, tools));
     assert.equal(readLib.tool, 'read');
     pushResult(messages, 'agent_read_lib', readLib,

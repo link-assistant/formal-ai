@@ -411,7 +411,12 @@ fn composite_module_request_creates_source_and_registers_the_module() {
         json_arguments(&verify_module.arguments)["command"],
         "cat rust/src/ladder_units.rs"
     );
-    push_result(&mut messages, "verify_module", &verify_module, MODULE);
+    push_result(
+        &mut messages,
+        "verify_module",
+        &verify_module,
+        &serde_json::json!({"stdout": MODULE, "exit_code": 0}).to_string(),
+    );
 
     let read_lib = only_call(plan_chat_step(&messages, &tools));
     assert_eq!(read_lib.tool, "read_file");
@@ -434,7 +439,12 @@ fn composite_module_request_creates_source_and_registers_the_module() {
         json_arguments(&verify_lib.arguments)["command"],
         "cat rust/src/lib.rs"
     );
-    push_result(&mut messages, "verify_lib", &verify_lib, LIB_AFTER);
+    push_result(
+        &mut messages,
+        "verify_lib",
+        &verify_lib,
+        &serde_json::json!({"stdout": LIB_AFTER, "exit_code": 0}).to_string(),
+    );
 
     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
         panic!("a fully observed composite change must finish");
@@ -470,7 +480,12 @@ fn composite_module_uses_a_compact_agent_registration_edit() {
 
     let verify_module = only_call(plan_chat_step(&messages, &tools));
     assert_eq!(verify_module.tool, "bash");
-    push_result(&mut messages, "agent_verify_module", &verify_module, MODULE);
+    push_result(
+        &mut messages,
+        "agent_verify_module",
+        &verify_module,
+        &serde_json::json!({"stdout": MODULE, "exit_code": 0}).to_string(),
+    );
 
     let read_lib = only_call(plan_chat_step(&messages, &tools));
     assert_eq!(read_lib.tool, "read");
