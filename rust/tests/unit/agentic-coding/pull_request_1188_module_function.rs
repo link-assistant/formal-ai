@@ -232,3 +232,8 @@ fn a_relation_the_request_names_is_the_expected_value_in_every_seeded_language()
         assert_eq!(test, tested("both", expected), "{prompt}");
     }
 }
+
+#[path = "../../fixtures/observed-callable-contracts.rs"]
+mod observed_callable_contracts;
+#[path = "../../fixtures/observed-callable-discovery.rs"]
+mod observed_callable_discovery;

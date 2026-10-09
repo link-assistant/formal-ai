@@ -24,7 +24,14 @@
 //! specification at every sample pair of the contract is lowered through the
 //! language's IR lowering (`coding/ir_lowering`).
 
+pub mod callable_catalog;
 mod discovery;
+mod source_contract;
+
+pub use discovery::{
+    ObservedCallableDisposition, ObservedCallableOutcome, ObservedCallableRequest,
+    observed_callable_request, plan_observed_callable_outcome,
+};
 
 use super::final_result::FinalResult;
 use super::planner::{AgenticPlan, Capability};

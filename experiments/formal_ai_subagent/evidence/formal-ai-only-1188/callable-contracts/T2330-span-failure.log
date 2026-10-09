@@ -1,0 +1,55 @@
+TAP version 13
+# Subtest: Unicode comments and identifiers: lossless byte spans preserve the existing public tree
+ok 1 - Unicode comments and identifiers: lossless byte spans preserve the existing public tree
+  ---
+  duration_ms: 1.245833
+  ...
+# Subtest: BOM preimage: lossless byte spans preserve the existing public tree
+not ok 2 - BOM preimage: lossless byte spans preserve the existing public tree
+  ---
+  duration_ms: 1.012459
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/observed-token-spans.test.mjs:20:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    '﻿co' !== 'const'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'const'
+  actual: '﻿co'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/observed-token-spans.test.mjs:26:43)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:526:18)
+    Test.postRun (node:internal/test_runner/test:889:19)
+    Test.run (node:internal/test_runner/test:835:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: nested template and comments: lossless byte spans preserve the existing public tree
+ok 3 - nested template and comments: lossless byte spans preserve the existing public tree
+  ---
+  duration_ms: 0.390625
+  ...
+# Subtest: regex and escaped literal: lossless byte spans preserve the existing public tree
+ok 4 - regex and escaped literal: lossless byte spans preserve the existing public tree
+  ---
+  duration_ms: 0.173583
+  ...
+# Subtest: malformed observed source retains the same exact tokenizer failure
+ok 5 - malformed observed source retains the same exact tokenizer failure
+  ---
+  duration_ms: 0.258
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 4
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 39.736583

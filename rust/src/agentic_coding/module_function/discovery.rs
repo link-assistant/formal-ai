@@ -5,13 +5,26 @@ use crate::protocol::ChatMessage;
 use serde_json::{Value, json};
 
 #[derive(Clone, Debug)]
-pub(super) struct ObservedCallableRequest {
-    name: String,
-    parameters: Vec<String>,
-    destination: String,
-    inputs: Vec<String>,
-    acceptance: Vec<String>,
-    command: Option<String>,
+pub struct ObservedCallableRequest {
+    pub name: String,
+    pub parameters: Vec<String>,
+    pub destination: String,
+    pub inputs: Vec<String>,
+    pub acceptance: Vec<String>,
+    pub command: Option<String>,
+}
+
+/// The request-local outcome of discovery, independent of presentation prose.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ObservedCallableDisposition {
+    Gap,
+    Failure,
+}
+/// A planned read or a final typed discovery gap/failure with its actual witness.
+pub struct ObservedCallableOutcome {
+    pub plan: AgenticPlan,
+    pub disposition: Option<ObservedCallableDisposition>,
+    pub witness: Option<Value>,
 }
 
 fn instruction_clause(part: &str) -> String {
@@ -31,7 +44,8 @@ fn instruction_clause(part: &str) -> String {
 }
 
 /// Mirrors observedCallableRequest: destination belongs to the declaration clause.
-pub(super) fn observed_callable_request(task: &str) -> Option<ObservedCallableRequest> {
+#[must_use]
+pub fn observed_callable_request(task: &str) -> Option<ObservedCallableRequest> {
     let outside = super::outside_quotes(task);
     let parts = super::clauses(&outside);
     let stated = super::signature(&outside)?;
@@ -92,10 +106,9 @@ fn finish(
     request: &ObservedCallableRequest,
     observations: &[Value],
     reason: &str,
-    disposition: FinalDisposition,
+    disposition: ObservedCallableDisposition,
     detail: &Value,
-    result: &mut Option<FinalResult>,
-) -> AgenticPlan {
+) -> ObservedCallableOutcome {
     let discovery = json!({"reason":reason,"request":{"name":request.name,"parameters":request.parameters,
         "destination":request.destination,"inputs":request.inputs,"acceptance":request.acceptance,"command":request.command},
         "observations":observations,"detail":detail,
@@ -119,26 +132,26 @@ fn finish(
         .replace("\\n", "\n")
         .replace(concat!("{", "reason", "}"), reason)
         .replace(concat!("{", "discovery", "}"), &discovery.to_string());
-    record(
-        AgenticPlan::Final(answer),
-        disposition,
-        "observed-callable-discovery",
-        result,
-    )
+    ObservedCallableOutcome {
+        plan: AgenticPlan::Final(answer),
+        disposition: Some(disposition),
+        witness: Some(discovery),
+    }
 }
 
 /// Mirrors planObservedCallableStep: read all operands before unsupported-contract failure.
-pub(super) fn plan_observed_callable_step(
+#[must_use]
+pub fn plan_observed_callable_outcome(
     request: &ObservedCallableRequest,
     messages: &[ChatMessage],
     tool_names: &[&str],
-    result: &mut Option<FinalResult>,
-) -> AgenticPlan {
+) -> ObservedCallableOutcome {
     use crate::agentic_coding::{
         capability_router, code_artifact, planner, tool_result, workspace_change,
     };
     let current = &messages[planner::evidence_window_start(messages)..];
     let mut observations = Vec::new();
+    let mut sources = Vec::new();
     let operands = std::iter::once((&request.destination, "destination"))
         .chain(request.inputs.iter().map(|path| (path, "source")))
         .chain(request.acceptance.iter().map(|path| (path, "acceptance")));
@@ -150,12 +163,15 @@ pub(super) fn plan_observed_callable_step(
                         request,
                         &observations,
                         "MissingReadTool",
-                        FinalDisposition::Gap,
+                        ObservedCallableDisposition::Gap,
                         &json!({"path":path,"role":role}),
-                        result,
                     )
                 },
-                |tool| planner::plan_one(tool, workspace_change::read_arguments(path)),
+                |tool| ObservedCallableOutcome {
+                    plan: planner::plan_one(tool, workspace_change::read_arguments(path)),
+                    disposition: None,
+                    witness: None,
+                },
             );
         };
         let agent_source = code_artifact::source_from_agent_read_result(&receipt);
@@ -179,23 +195,27 @@ pub(super) fn plan_observed_callable_step(
                 request,
                 &observations,
                 "ReadFailed",
-                FinalDisposition::Failure,
+                ObservedCallableDisposition::Failure,
                 &json!({"path":path,"role":role,"error":error}),
-                result,
             );
         }
         let content =
             agent_source.unwrap_or_else(|| code_artifact::source_from_read_result(&receipt));
-        observations.push(json!({"path":path,"role":role,"state":"observed",
-            "contentId":crate::source_fetch::sha256_hex(content.as_bytes()),"bytes":content.len()}));
+        let mut observation = json!({"path":path,"role":role,"state":"observed",
+            "contentId":crate::source_fetch::sha256_hex(content.as_bytes()),"bytes":content.len()});
+        if role == "source" {
+            observation["catalog"] =
+                super::callable_catalog::observe_source_callables(&content, path);
+            sources.push(json!({"path":path,"content":content}));
+        }
+        observations.push(observation);
     }
     finish(
         request,
         &observations,
         "MissingContract",
-        FinalDisposition::Gap,
-        &Value::Null,
-        result,
+        ObservedCallableDisposition::Gap,
+        &json!({"graphs":super::callable_catalog::observed_callable_graphs(&sources),"goal":"unbound"}),
     )
 }
 
@@ -232,6 +252,25 @@ fn read_receipt(messages: &[ChatMessage], path: &str) -> Option<(String, bool)> 
     None
 }
 
-#[cfg(test)]
-#[path = "../../../tests/fixtures/observed-callable-discovery.rs"]
-mod tests;
+/// Project the real discovery outcome while keeping final provenance internal.
+pub(super) fn plan_observed_callable_step(
+    request: &ObservedCallableRequest,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    result: &mut Option<FinalResult>,
+) -> AgenticPlan {
+    let outcome = plan_observed_callable_outcome(request, messages, tool_names);
+    let Some(disposition) = outcome.disposition else {
+        return outcome.plan;
+    };
+    let disposition = match disposition {
+        ObservedCallableDisposition::Gap => FinalDisposition::Gap,
+        ObservedCallableDisposition::Failure => FinalDisposition::Failure,
+    };
+    record(
+        outcome.plan,
+        disposition,
+        "observed-callable-discovery",
+        result,
+    )
+}

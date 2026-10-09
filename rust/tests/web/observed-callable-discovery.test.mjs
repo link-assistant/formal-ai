@@ -142,3 +142,36 @@ test('signature identifiers and path components cannot supply instruction verbs'
   }
   assert.equal(observedCallableRequest(prompt).destination, 'nested/output.mjs');
 });
+
+test('public request-local outcome preserves the actual typed gap and complete witness', async () => {
+  const { planObservedCallableOutcome } = await import('../../../js/agentic/module_function/discovery.mjs');
+  const request = observedCallableRequest(prompt);
+  const messages = [{ role: 'user', content: prompt }, ...receipt('nested/output.mjs', '// destination'),
+    ...receipt('first.mjs', 'export function take(x) { return x; }'),
+    ...receipt('second.mjs', 'export function render(x) { return x === null; }'),
+    ...receipt('accept.test.mjs', '// immutable acceptance')];
+  const outcome = planObservedCallableOutcome(request, messages, ['read', 'write']);
+  assert.equal(outcome.disposition, FinalDisposition.Gap);
+  assert.equal(outcome.witness, outcome.plan.result.discovery);
+  assert.equal(outcome.witness.reason, 'MissingContract');
+  assert.equal(outcome.witness.authored, false);
+  assert.equal(outcome.witness.observations[1].contentId, sha('export function take(x) { return x; }'));
+  assert.equal(canDeliverFinal(outcome.plan), false);
+});
+
+test('public request-local outcome retains failure metadata without prose classification', async () => {
+  const { planObservedCallableOutcome } = await import('../../../js/agentic/module_function/discovery.mjs');
+  const records = receipt('nested/output.mjs', 'apparently successful prose'); records[1].is_error = true;
+  const outcome = planObservedCallableOutcome(observedCallableRequest(prompt), [{ role: 'user', content: prompt }, ...records], ['read']);
+  assert.equal(outcome.disposition, FinalDisposition.Failure);
+  assert.equal(outcome.witness.reason, 'ReadFailed');
+  assert.equal(canDeliverFinal(outcome.plan), false);
+});
+
+test('a planned read has no final disposition or stale discovery witness', async () => {
+  const { planObservedCallableOutcome } = await import('../../../js/agentic/module_function/discovery.mjs');
+  const outcome = planObservedCallableOutcome(observedCallableRequest(prompt), [{ role: 'user', content: prompt }], ['read']);
+  assert.equal(outcome.plan.kind, 'tool_calls');
+  assert.equal(outcome.disposition, null);
+  assert.equal(outcome.witness, null);
+});

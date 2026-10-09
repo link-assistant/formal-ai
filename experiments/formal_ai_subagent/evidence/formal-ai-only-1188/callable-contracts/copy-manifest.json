@@ -1,0 +1,338 @@
+[
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2328-request.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2328-request.json",
+    "sha256": "bb6ddca0b8d12556746979ca6c7023667c6090e87fa01cbd06a25e738e8e0913",
+    "bytes": 79115
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2328-transcript.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2328-transcript.json",
+    "sha256": "fce48dd116b48bca1c9ea7c37f1060b92519afcc4089d39e84b9be1d8922262d",
+    "bytes": 4408
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2328-transcript.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2328-transcript.log",
+    "sha256": "ac51a4530592adfcafd610b581ee758a7e0a195b48453ff26e503ac87156d0ee",
+    "bytes": 4409
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2329-request.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2329-request.json",
+    "sha256": "1443622048904eef4c0b6b86ed3e2bfdaeca07532b96b32890cc80598d9d54a1",
+    "bytes": 1612
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2329-transcript.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2329-transcript.json",
+    "sha256": "125dba41b8b070f38fba23bcd0dbc5e46df19000f082612c5522734a9b2826e8",
+    "bytes": 521
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2329-transcript.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2329-transcript.log",
+    "sha256": "97812d8a334b04164597357ca7ebd8accfc5776c16d01cadcfeab6141400fe0d",
+    "bytes": 522
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2330-request.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2330-request.json",
+    "sha256": "ad390c90beba73fa2aed6c15de11d4bf808c8d4201a0eb2921c9c369c315ab13",
+    "bytes": 26127
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2330-transcript.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2330-transcript.json",
+    "sha256": "e9472e88cd4fdc3789972de0cbf5ba3c8c952464951b46289a2db3f2a30206cf",
+    "bytes": 565
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2330-transcript.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2330-transcript.log",
+    "sha256": "372751195717f02d39119ff5b4c223a42daf72488dd60d328f406de44ca36555",
+    "bytes": 566
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2331-request.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2331-request.json",
+    "sha256": "e770d2906c30c73869117c1418cbca600fba0e2e0af96814f96d803454ecd0d1",
+    "bytes": 28988
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2331-transcript.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2331-transcript.json",
+    "sha256": "c8980c235e9248bb7d06fd87fd75299f6835e8906c9c25d5953cd93796f310cd",
+    "bytes": 527
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2331-transcript.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2331-transcript.log",
+    "sha256": "2c5acd27eda6b7a05ae3696c9f21a98d61352e2f265aad396c8ced41ec0962f3",
+    "bytes": 528
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2332-request.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2332-request.json",
+    "sha256": "539c3c969b3d2e8597a038ad3ec06d0fe0b8b08f86be85e49f167025f0b7f8ad",
+    "bytes": 30128
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2332-transcript.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2332-transcript.json",
+    "sha256": "db191a36b5e6aa24832c135833bd9bed908f1ef2bad025bbf0aa81441acae647",
+    "bytes": 565
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2332-transcript.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2332-transcript.log",
+    "sha256": "c6456b2cc3ade55e4941ce8dafadabc7d3ade8ddb93ff8bc38f745b8d4bf85f3",
+    "bytes": 566
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2333-request.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2333-request.json",
+    "sha256": "635bbf2cf9bdc4eb52a57fdfc8dab131513b341f8d87fe30fd79b5b901ac8b3e",
+    "bytes": 1557
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2333-transcript.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2333-transcript.json",
+    "sha256": "ccb7f8d35bae379b7e933df50d3fb147b5b43e747ac2ec2dfa0335a6c0a3454a",
+    "bytes": 112678
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2333-transcript.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2333-transcript.log",
+    "sha256": "23fa6358c16340137c83438abd14fab2457121e4c7bf3dda2b1fb9e3300b9bb3",
+    "bytes": 112679
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2334-request.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2334-request.json",
+    "sha256": "4105d61caad3582315076c0ad13f1e6650ef8c8a3c1b651bb29b1563baaa420a",
+    "bytes": 1601
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2334-transcript.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2334-transcript.json",
+    "sha256": "2a08093732c66e9736b1a13a44a2acf7e841031606970a8b6e1c8ca7f9d18430",
+    "bytes": 112732
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2334-transcript.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2334-transcript.log",
+    "sha256": "7d0725667beaa38e2b3d7a84f6b2950204968526e7ac632474b33434e3e1f2d0",
+    "bytes": 112733
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2335-request.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2335-request.json",
+    "sha256": "b12519510fa328258eb8ea25a0bc3166c9b204a9faed22f814a103ff328a5e45",
+    "bytes": 1602
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2335-transcript.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2335-transcript.json",
+    "sha256": "59823be36203a64e7f9317bccce9c630612592bad7a31d2ad5b9122bf30b05f7",
+    "bytes": 112682
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2335-transcript.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2335-transcript.log",
+    "sha256": "c219efaa0f121fec436d37a876b1da0d8c24d20ed3e2988286dbc76c9d77f078",
+    "bytes": 112683
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2336-request.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2336-request.json",
+    "sha256": "77e5c88e5bf64035e2066d20631b9abec74ee17ab4536c650addd40a0944fe48",
+    "bytes": 43571
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2336-transcript.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2336-transcript.json",
+    "sha256": "25842a030924049c8c0b6dc157eb19c7e51016b833b9d5696acc0cd19f1436d7",
+    "bytes": 527
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2336-transcript.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2336-transcript.log",
+    "sha256": "87922b5b92b4eec31850812fd05317085f7063a2bcf6458f0a56ce2859089042",
+    "bytes": 528
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2337-request.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2337-request.json",
+    "sha256": "d94c3cd0274a48382945b19ce80fca8814f4ad1b333ef02ecc4a77b51d499add",
+    "bytes": 186526
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2337-transcript.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2337-transcript.json",
+    "sha256": "a72ddca554d7ab34c075519a9fab2551cd4c2476b5568d2a39a5b1920da507fa",
+    "bytes": 565
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2337-transcript.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2337-transcript.log",
+    "sha256": "bfe15363d6f2cdaaf6f4830a234dcf7b26f63eca9a83f11621c3afa64a9869a6",
+    "bytes": 566
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2338-request.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2338-request.json",
+    "sha256": "7e7aa7fdd6669f1802bd47d5360078702fc94049fa835a881d9787398d588d66",
+    "bytes": 19764
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2338-transcript.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2338-transcript.json",
+    "sha256": "928885e18138af7f9fb7ec501e9fc4a37f18f1b5619f5f61b308bdc947f934f3",
+    "bytes": 527
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2338-transcript.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2338-transcript.log",
+    "sha256": "64dc7edbca08c87dc57124475499532fa1d17d320c25416c8f309863cc819036",
+    "bytes": 528
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2339-request.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2339-request.json",
+    "sha256": "bba72322ccdb44d972074dc6308156f4cce01c94e0831aa22489f88a7563795e",
+    "bytes": 31328
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2339-transcript.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2339-transcript.json",
+    "sha256": "f1232a993ec1b626d675dcaeecd74784c1eac8f1ca00ef3f3025bf07408d00fa",
+    "bytes": 527
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2339-transcript.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2339-transcript.log",
+    "sha256": "f306d9c57a0e7f6c0d3b8f77ef8c6c629bfae04e2cd8d65230b301074abfe309",
+    "bytes": 528
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2340-request.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2340-request.json",
+    "sha256": "c0432594d3c98ddc662981399db3dddfb6cb2d715a0ffe7967c9e5b8e045ae01",
+    "bytes": 246831
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2340-transcript.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2340-transcript.json",
+    "sha256": "84bb45116f960c6fe27328d243a0026c5f272e7c084dfb99f8b430636e46ddda",
+    "bytes": 781
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2340-transcript.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2340-transcript.log",
+    "sha256": "81fe8e3fd4ccc7a4f78b7992865faa521045d6481c7832eb48c63a3bcad18a46",
+    "bytes": 782
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2341-request.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2341-request.json",
+    "sha256": "4d1e78c4b55757c35dfa5abfa1416fbbea7ab7a477e370c61d19c7f623551b06",
+    "bytes": 7449
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2341-transcript.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2341-transcript.json",
+    "sha256": "8078eded694766e1cd8e583746ea0c923be88302955dcecf3030b74b45cab3a8",
+    "bytes": 603
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2341-transcript.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2341-transcript.log",
+    "sha256": "7996a71a0eed17fe3e9821d93f434131d5222f7d2de4291c057f41b263577ca9",
+    "bytes": 604
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2330-span-failure.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2330-span-failure.log",
+    "sha256": "817c24dbcf7cc23c6fed45b9dbd1b1b7b3389beff3d7edbc5161afad2f5cb603",
+    "bytes": 2029
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2331-span-check.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2331-span-check.log",
+    "sha256": "c25068a09354cb8711873ea4fcda326bacc74a6c692b79ffdc6f4c9e5aa3d045",
+    "bytes": 1163
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2332-closest.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2332-closest.log",
+    "sha256": "5c683c4c9121b4072ec74dd7ec8911dc845f0e64a048685eb8e07461b5150ee1",
+    "bytes": 5823
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2333-original-acceptance.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2333-original-acceptance.log",
+    "sha256": "0fa489a4c13adedc723f70f749aa2fa3a11b26431fbfba9ba9ed9c11f72465b1",
+    "bytes": 9312
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2336-contract-check.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2336-contract-check.log",
+    "sha256": "fdda244ac241db947eca7480bfd5effee185e5689fcb90845d6e078c7d1f38b1",
+    "bytes": 2519
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2337-closest.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2337-closest.log",
+    "sha256": "06e00d1cff840ac31334da4caeaef6939c03bf60ba5ab094b107339523fcb563",
+    "bytes": 8931
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2337-hardcoded.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2337-hardcoded.log",
+    "sha256": "7cd99856a264a831a4cf3fe877221685e94b0e7206a7dcb58b62771af198d5d2",
+    "bytes": 195
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2338-closest.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2338-closest.log",
+    "sha256": "2db2829ff15b3155d9d594840de944817e6a4f4abd54268d18f7e8dacedf5080",
+    "bytes": 7959
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2340-closest.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2340-closest.log",
+    "sha256": "a1b9ddbfb3902230483d205a67361ad688f8d84f9e37f0c7fce273aede311939",
+    "bytes": 8588
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2340-hardcoded.log",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2340-hardcoded.log",
+    "sha256": "7cd99856a264a831a4cf3fe877221685e94b0e7206a7dcb58b62771af198d5d2",
+    "bytes": 195
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/callable-contracts-finite-ledger.md",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/finite-ledger.md",
+    "sha256": "e14532c8999b1f6792ee5cea1697f82615b25569f8c40e2a05134f5649d5b4fd",
+    "bytes": 6039
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/callable-contracts-source-manifest.json",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/callable-contracts-source-manifest.json",
+    "sha256": "68b08a2ae149cd3a1762dc5d5198cdbe70d7e1bc07d0053f0132105c97282f39",
+    "bytes": 2448
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2328-wrong-requested-change.lino",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2328-wrong-requested-change.log",
+    "sha256": "99f5d67283ec66aca39882563f8a7ba414e206ab1e311a81b925dd73539f626f",
+    "bytes": 1047
+  },
+  {
+    "source": "/private/tmp/formal-ai-only-1188/T2340-original-discovery-fixture.rs",
+    "destination": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/callable-contracts/T2340-original-discovery-fixture.log",
+    "sha256": "afe57e7ecb0934992db71bc0f85d19d24530d02582a4f87b6aad87ba5b43b198",
+    "bytes": 3745
+  }
+]

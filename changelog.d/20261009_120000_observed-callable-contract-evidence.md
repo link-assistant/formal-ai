@@ -1,0 +1,3 @@
+Observe complete callable declaration spans, module/declaration content identities and actual export/import bindings before attempting composition. Supported scalar and Optional return bodies produce typed guarded graphs; unsupported structural schemas, calls, input writes and module initialization/import effects remain explicit contract gaps. The request-local discovery outcome exposes its actual typed Gap/Failure witness, while the public final-plan projection stays unchanged.
+
+The original selected-summary composition remains unimplemented (real acceptance3/10). Closest JavaScript probes pass41/41, native fixtures register from the integration harness, and native compilation remains a CI check.
