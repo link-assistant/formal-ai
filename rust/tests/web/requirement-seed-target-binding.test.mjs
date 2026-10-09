@@ -70,3 +70,17 @@ test('the unchanged L07 requirement binds the actual canonical conversation seed
   const declaration=registry.slice(registry.indexOf('pub const '+target.symbol)).split('\n').slice(0,3).join('\n');
   assert.ok(declaration.includes('../../embedded/'+row[2]));
 });
+
+
+test('a seed surface cannot supply its own independent role evidence',()=>{
+  for (const [surface,role,negative,positive] of [
+    ['signal','request_signal','Improve signal.','Change request surface from signal.'],
+    ['code','script_or_code_artifact','Improve the code.','Change artifact surface from code.'],
+    ['request signal','request_signal','Improve request signal.','Change signal surface from request signal.'],
+    ['返回结果','request_signal','Improve 返回结果.','Change request surface from 返回结果.'],
+  ]) {
+    const seed=`meanings\n  arbitrary\n    role ${role}\n    lexeme en "${surface}"\n`;
+    assert.equal(resolveSeedTarget(census,negative,[['data/seed/alpha.lino',seed]]),null,negative);
+    assert.deepEqual(resolveSeedTarget(census,positive,[['data/seed/alpha.lino',seed]]),expected,positive);
+  }
+});

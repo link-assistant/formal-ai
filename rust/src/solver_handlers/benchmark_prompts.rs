@@ -345,7 +345,9 @@ pub fn try_coreference_request(
     log: &mut EventLog,
 ) -> Option<SymbolicAnswer> {
     let seeds = coreference_seed_data();
-    let pronoun = matching_coreference_pronoun(seeds, normalized)?;
+    let pronoun = seeds.matching_pronoun(&crate::engine::normalize_prompt(
+        super::text_rewrite::command_head(prompt),
+    ))?;
 
     let (antecedent, resolution) = resolve_coreference_antecedent(seeds, log)?;
     log.append("context_resolution", resolution.links_notation());
@@ -437,19 +439,11 @@ pub fn names_coreference_antecedent(log: &EventLog) -> bool {
     resolve_coreference_antecedent(coreference_seed_data(), log).is_some()
 }
 
-fn matching_coreference_pronoun<'a>(
-    seeds: &'a CoreferenceSeeds,
-    normalized: &str,
-) -> Option<&'a Pronoun> {
-    seeds.pronouns.iter().find(|pronoun| {
-        pronoun.contexts.iter().any(|context| {
-            let surface = crate::engine::normalize_prompt(context);
-            crate::seed::surface_present(normalized, &surface)
-        }) || pronoun.starts_with.iter().any(|prefix| {
-            let surface = crate::engine::normalize_prompt(prefix);
-            normalized.starts_with(&surface) && crate::seed::surface_present(normalized, &surface)
-        })
-    })
+/// A seeded command-head reference with a real earlier user antecedent.
+#[must_use]
+pub fn resolves_coreference_request(prompt: &str, log: &EventLog) -> bool {
+    let head = crate::engine::normalize_prompt(super::text_rewrite::command_head(prompt));
+    coreference_seed_data().matching_pronoun(&head).is_some() && names_coreference_antecedent(log)
 }
 
 fn rewrite_coreference_prompt(

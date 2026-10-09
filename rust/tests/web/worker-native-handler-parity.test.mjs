@@ -68,3 +68,36 @@ test('actual matching seed is required before any coreference event is recorded'
   assert.ok(Array.isArray(answer.solverEvents));
   assert.ok(!answer.solverEvents.some(item => item.kind.startsWith('coreference:')));
 });
+
+
+test('embedded antecedent words do not fabricate a recognized prior user topic',async()=>{
+  const host=new WorkerHost();
+  for(const content of ['Rustic furniture is handmade.','A programming textbook.','xпрограммаx']){
+    const reply=await host.solve('Explain the program?',[{role:'user',content}]);
+    assert.ok(!reply.solverEvents.some(event=>event.kind==='coreference:resolved'),content);
+    assert.equal(await host.run('nearestCoreferenceAntecedent(__turns)',{__turns:[{role:'user',content}]}),null,content);
+  }
+});
+
+
+test('real seeded antecedents defer meta reasoning only for command-head references', async()=>{
+  const host=new WorkerHost();
+  const original='Write me a Rust program that lists the files in the current directory';
+  const first=await host.solve(original);
+  assert.equal(first.intent,'write_program');
+  const history=[{role:'user',content:original},{role:'assistant',content:first.content}];
+  for(const prompt of ['Explain the program?','Объясни результаты?','Объясни программу.','इन परिणामों?','यह प्रोग्राम?','解释结果。','解释程序？']){
+    const reply=await host.solve(prompt,history);
+    assert.equal(reply.intent,'coreference_program_artifact',prompt);
+    assert.ok(reply.solverEvents.some(event=>event.kind==='coreference:resolved'),prompt);
+  }
+  for(const [prompt,turns]of [
+    ['Explain the program?',[]],['Explain the program?',[{role:'user',content:'I enjoy fresh apples.'}]],
+    ['Explain programming?',history],['itself',history],['xрезультатыx',history],['xपरिणामोंx',history],
+    ['Summarize: Explain the program? It has three steps.',history],
+    ['Rewrite "Explain the program? It has three steps."',history],
+  ]){
+    const reply=await host.solve(prompt,turns);
+    assert.ok(!reply.solverEvents.some(event=>event.kind==='coreference:resolved'),prompt);
+  }
+});

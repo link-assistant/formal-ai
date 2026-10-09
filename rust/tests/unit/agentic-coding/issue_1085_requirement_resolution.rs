@@ -381,3 +381,57 @@ fn scoped_literal_owner_is_unique_and_requires_complete_scalar_initializer() {
         None
     );
 }
+
+#[test]
+fn canonical_surface_requires_role_evidence_outside_its_own_span() {
+    use formal_ai::agentic_coding::requirement_resolution::{
+        RequirementTarget, resolve_seed_target,
+    };
+    use formal_ai::self_ast_census::WorkspaceCensus;
+    let census =
+        WorkspaceCensus::compile(&[("src/a.rs", "pub const ALPHA_LINO: &str = \"source\";")]);
+    let expected = Some(RequirementTarget {
+        module_path: "src/a.rs".to_owned(),
+        symbol: "ALPHA_LINO".to_owned(),
+        kind: "const".to_owned(),
+    });
+    for (surface, role, negative, positive) in [
+        (
+            "signal",
+            "request_signal",
+            "Improve signal.",
+            "Change request surface from signal.",
+        ),
+        (
+            "code",
+            "script_or_code_artifact",
+            "Improve the code.",
+            "Change artifact surface from code.",
+        ),
+        (
+            "request signal",
+            "request_signal",
+            "Improve request signal.",
+            "Change signal surface from request signal.",
+        ),
+        (
+            "返回结果",
+            "request_signal",
+            "Improve 返回结果.",
+            "Change request surface from 返回结果.",
+        ),
+    ] {
+        let seed = format!("meanings\n  arbitrary\n    role {role}\n    lexeme en \"{surface}\"\n");
+        let sources = [("data/seed/alpha.lino", seed.as_str())];
+        assert_eq!(
+            resolve_seed_target(&census, negative, &sources),
+            None,
+            "{negative}"
+        );
+        assert_eq!(
+            resolve_seed_target(&census, positive, &sources),
+            expected,
+            "{positive}"
+        );
+    }
+}

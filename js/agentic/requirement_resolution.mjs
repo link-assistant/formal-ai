@@ -109,11 +109,14 @@ export function resolveSeedTarget(census, requirement, sources) {
       .filter(([, symbol]) => symbol.kind === 'const' || symbol.kind === 'static');
     if (!candidates.length) continue;
     for (const meaning of parseLexiconText(source)) {
-      if (!meaning.roles.some((role) => role.split(/[_-]/u).some((part) => roleWords.includes(singular(part.toLowerCase()))))) continue;
       for (const surface of meaningWords(meaning)) {
         if (surface.includes('…')) continue;
         const parts = tokensOf(surface).map((token) => token.toLowerCase());
-        if (!parts.length || !tokens.some((_, at) => parts.every((part, offset) => tokens[at + offset] === part))) continue;
+        // A role must have independent request evidence outside the matched surface.
+        if (!parts.length || !tokens.some((_, at) =>
+          parts.every((part, offset) => tokens[at + offset] === part) &&
+          meaning.roles.some((role) => role.split(/[_-]/u).some((part) =>
+            roleWords.some((word, index) => (index < at || index >= at + parts.length) && word === singular(part.toLowerCase())))))) continue;
         if (parts.length > bestLength) { bestLength = parts.length; best.clear(); }
         if (parts.length === bestLength) for (const [module, symbol] of candidates) best.set(module.path + ':' + symbol.name, target(module, symbol));
       }

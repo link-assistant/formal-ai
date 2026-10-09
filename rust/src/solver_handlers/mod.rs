@@ -3,8 +3,9 @@ include!("modules.rs");
 pub use agent_workspace::try_agent_workspace_task;
 pub use behavior_rules::try_behavior_rules_with_runtime;
 pub use benchmark_prompts::{
-    fact_store_resolves, names_coreference_antecedent, try_brainstorming_request,
-    try_coreference_request, try_fact_lookup, try_roleplay_request, try_summarization_request,
+    fact_store_resolves, names_coreference_antecedent, resolves_coreference_request,
+    try_brainstorming_request, try_coreference_request, try_fact_lookup, try_roleplay_request,
+    try_summarization_request,
 };
 pub use calendar::try_calendar_reasoning;
 pub use calendar_create::{
@@ -253,8 +254,7 @@ fn render_calculation_reasoning_step(index: usize, step: &str) -> String {
     }
 }
 
-// Plan 09 leaf 18: the concept-lookup orchestration and its renderers live in
-// `src/concepts.rs`, beside the extraction and ranking machinery they drive.
+// Concept lookup, rendering, extraction and ranking live in `src/concepts.rs`.
 pub use crate::concepts::{
     render_source_link, try_concept_lookup, try_concept_lookup_with_response_language,
 };

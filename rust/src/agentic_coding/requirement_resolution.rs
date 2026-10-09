@@ -218,12 +218,6 @@ pub fn resolve_seed_target(
             continue;
         }
         for meaning in crate::seed::parse_lexicon_text(source).meanings {
-            if !meaning.roles.iter().any(|role| {
-                role.split(['_', '-'])
-                    .any(|part| role_words.contains(&singular(&part.to_lowercase())))
-            }) {
-                continue;
-            }
             for surface in meaning.words() {
                 if surface.contains('…') {
                     continue;
@@ -232,7 +226,24 @@ pub fn resolve_seed_target(
                     .into_iter()
                     .map(|word| word.to_lowercase())
                     .collect();
-                if parts.is_empty() || !tokens.windows(parts.len()).any(|window| window == parts) {
+                // A role must have independent request evidence outside the matched surface.
+                if parts.is_empty()
+                    || !tokens
+                        .windows(parts.len())
+                        .enumerate()
+                        .any(|(start, window)| {
+                            window == parts
+                                && meaning.roles.iter().any(|role| {
+                                    role.split(['_', '-']).any(|part| {
+                                        let part = singular(&part.to_lowercase());
+                                        role_words.iter().enumerate().any(|(index, word)| {
+                                            (index < start || index >= start + parts.len())
+                                                && *word == part
+                                        })
+                                    })
+                                })
+                        })
+                {
                     continue;
                 }
                 if parts.len() > best_length {
