@@ -11,7 +11,8 @@ use formal_ai::{ChatMessage, ToolCall};
 /// call for *"copy a.txt to b.txt"* is `test -e a.txt` and the copy itself comes
 /// three steps later. This helper therefore drives the plan the way a client
 /// would — reporting each step as having succeeded — and returns the one step
-/// that is a recipe of its own, which is exactly the mutating action. For every
+/// whose complete recipe equals the observed sequence, so a preparatory mkdir
+/// cannot outrank the actual copy or move. For every
 /// read-only command the plan is a single step and that step is the answer, so
 /// the question this helper asks is unchanged.
 fn shell_command(prompt: &str) -> Option<String> {
@@ -40,7 +41,7 @@ fn shell_command(prompt: &str) -> Option<String> {
     }
     commands
         .iter()
-        .find(|command| verified_recipe(command).is_some())
+        .find(|command| verified_recipe(command).is_some_and(|recipe| recipe == commands))
         .or_else(|| commands.first())
         .cloned()
 }
@@ -327,7 +328,15 @@ fn committed_agent_cli_session_is_byte_reproducible() {
     const TASK: &str = "execute printf 'issue-749-driver=passed\\n'";
     let committed =
         include_str!("../../../../docs/case-studies/issue-749/agent-cli-evidence/session.json");
-    let fresh = formal_ai::agentic_coding::run_agentic_task(TASK).expect("offline replay");
+    let archived: serde_json::Value = serde_json::from_str(committed).expect("capture JSON");
+    let tools = archived["tools_advertised"]
+        .as_array()
+        .expect("recorded tools")
+        .iter()
+        .map(|tool| tool.as_str().expect("tool name"))
+        .collect::<Vec<_>>();
+    let fresh = formal_ai::agentic_coding::run_agentic_task_with_tools(TASK, &tools)
+        .expect("offline replay with exact captured tools");
     assert_eq!(
         committed.trim(),
         serde_json::to_string_pretty(&fresh.session_json())

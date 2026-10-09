@@ -21,7 +21,7 @@ use formal_ai::{ChatMessage, ToolCall, UniversalSolver};
 /// A command that changes the workspace is planned as the verified recipe its
 /// seed intent declares (issue #944), so the plan is driven to its end — each
 /// step reported as having succeeded — and the mutating action is picked out of
-/// it as the one step that is a recipe of its own. A read-only command is a
+/// it as the step whose complete verified recipe equals the observed sequence. A read-only command is a
 /// single-step plan and is returned unchanged.
 fn shell_command(prompt: &str) -> Option<String> {
     let mut messages = vec![ChatMessage::user(prompt)];
@@ -49,7 +49,7 @@ fn shell_command(prompt: &str) -> Option<String> {
     }
     commands
         .iter()
-        .find(|command| verified_recipe(command).is_some())
+        .find(|command| verified_recipe(command).is_some_and(|recipe| recipe == commands))
         .or_else(|| commands.first())
         .cloned()
 }

@@ -1347,6 +1347,9 @@ jobs:
         run: scripts/prune-docker.sh
   build-pages:
     name: Build GitHub Pages artifact
+    concurrency:
+      group: formal-ai-pages-build-${{ github.ref }}
+      cancel-in-progress: true
     needs: [build, auto-release, manual-release]
     if: |
       !cancelled() &&

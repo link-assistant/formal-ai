@@ -49,7 +49,8 @@ const TWO_PLUS_TWO: [(&str, &str, &str); 10] = [
     ("compute_expression", ARITHMETIC, CALCULATION_EVENTS),
     ("compute_steps", ARITHMETIC, CALCULATION_EVENTS),
     ("dispatch_handler", FINALIZE, EVENT_LOG),
-    ("rule_verification", FINALIZE, EVENT_LOG),
+    // No browser raw emitter appends the native rule-verification event.
+    ("rule_verification", FINALIZE, ""),
     ("deformalize", FINALIZE, EVENT_LOG),
 ];
 
