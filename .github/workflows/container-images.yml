@@ -25,13 +25,6 @@ on:
   release:
     types:
     - published
-  workflow_run:
-    workflows:
-    - CI/CD Pipeline
-    types:
-    - completed
-    branches:
-    - main
   workflow_dispatch:
     inputs:
       push:
@@ -73,6 +66,7 @@ jobs:
     - uses: actions/setup-node@v7
       with:
         node-version: 22
+        package-manager-cache: false
     - name: Resolve only the matching published stable source or unprivileged validation
       run: |
         node --input-type=module - <<'NODE'
@@ -133,6 +127,7 @@ jobs:
     - uses: actions/setup-node@v7
       with:
         node-version: 22
+        package-manager-cache: false
     - name: Capture immutable workflow-owned container protocol
       run: |
         set -euo pipefail
@@ -267,6 +262,7 @@ jobs:
     - uses: actions/setup-node@v7
       with:
         node-version: 22
+        package-manager-cache: false
     - name: Capture immutable workflow-owned container protocol
       run: |
         set -euo pipefail
@@ -383,6 +379,7 @@ jobs:
     - uses: actions/setup-node@v7
       with:
         node-version: 22
+        package-manager-cache: false
     - name: Capture immutable workflow-owned container protocol
       run: |
         set -euo pipefail
@@ -526,6 +523,7 @@ jobs:
     - uses: actions/setup-node@v7
       with:
         node-version: 22
+        package-manager-cache: false
     - name: Capture immutable workflow-owned container protocol
       run: |
         set -euo pipefail
@@ -663,6 +661,7 @@ jobs:
     - uses: actions/setup-node@v7
       with:
         node-version: 22
+        package-manager-cache: false
     - name: Capture immutable workflow-owned container protocol
       run: |
         set -euo pipefail
@@ -785,6 +784,7 @@ jobs:
     - uses: actions/setup-node@v7
       with:
         node-version: 22
+        package-manager-cache: false
     - name: Capture immutable workflow-owned container protocol
       run: |
         set -euo pipefail

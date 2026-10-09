@@ -8,10 +8,19 @@ function job(name) {
  const remainder=workflow.slice(start+1),next=/\n  [a-z][a-z0-9-]*:\n/u.exec(remainder);
  return next?remainder.slice(0,next.index):remainder;
 }
-test('successful trusted main completion and stable releases actually invoke container delivery',()=>{
- assert.match(workflow,/workflow_run:/u);assert.match(workflow,/CI\/CD Pipeline/u);assert.match(workflow,/branches:\n    - main/u);
- const resolver=job('resolve');assert.match(resolver,/RUN_CONCLUSION!==['"]success['"]/u);
- assert.match(resolver,/resolvePackageRelease/u);assert.match(resolver,/publication cannot select an arbitrary custom source/u);
+test('release creation calls trusted container delivery without a completion trigger',()=>{
+ const events=workflow.slice(0,workflow.indexOf('\npermissions:'));
+ assert.match(events,/^  workflow_call:/mu);assert.match(events,/^  release:/mu);
+ assert.doesNotMatch(events,/^  workflow_run:/mu);
+ const release=readFileSync(new URL('../../../.github/workflows/release.yml',import.meta.url),'utf8');
+ const publication=release.slice(release.indexOf('  native-container-images:'),release.indexOf('  pipeline-status:'));
+ assert.match(publication,/needs: \[auto-release, manual-release\]/u);
+ assert.match(publication,/needs\.auto-release\.result == 'success' && needs\.auto-release\.outputs\.container-tag != ''/u);
+ assert.match(publication,/needs\.manual-release\.result == 'success' && needs\.manual-release\.outputs\.container-tag != ''/u);
+ assert.match(publication,/uses: \.\/\.github\/workflows\/container-images\.yml/u);
+ assert.ok(publication.includes('tag: ${{ needs.auto-release.outputs.container-tag || needs.manual-release.outputs.container-tag }}'));
+ const resolver=job('resolve');assert.match(resolver,/resolvePackageRelease/u);
+ assert.match(resolver,/publication cannot select an arbitrary custom source/u);
  assert.match(job('source'),/native-release-trust\.mjs/u);assert.match(job('source'),/env\.NATIVE_AUTHORIZED_RELEASE_COMMIT/u);
 });
 test('two same-run native targets feed every full and slim architecture without a static exclusion',()=>{
