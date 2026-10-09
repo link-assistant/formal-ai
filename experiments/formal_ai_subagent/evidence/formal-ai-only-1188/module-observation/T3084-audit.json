@@ -1,0 +1,21 @@
+{
+  "id": "T3084",
+  "tools": [
+    "read"
+  ],
+  "stop": "final",
+  "answer": "The command failed: ENOENT: no such file or directory, open '/Users/konard/Code/Archive/link-assistant/formal-ai/JS/native'\n\nI detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.",
+  "before": {
+    "js/agentic/module_function/callable_catalog.mjs": "b8e0856d00a47984959cbfd8d7239bb143970bda4b526b9e617f956c9d3f727d",
+    "rust/src/agentic_coding/module_function/callable_catalog.rs": "e6e2f4c279fbb116554d06379b17dd20b6a6df9d7ed9fcd206f3223abb85cc63",
+    "js/agentic/module_function/source_contract.mjs": "a25adfe6924862dfbe268ca75cec10dd71bd76c6bebb16a223d987a59fc6b118",
+    "rust/src/agentic_coding/module_function/source_contract.rs": "8248ee70a01bb3276c7a4ab714226d5b2e9b8db696d85820f3b7fd3970dbade9"
+  },
+  "after": {
+    "js/agentic/module_function/callable_catalog.mjs": "b8e0856d00a47984959cbfd8d7239bb143970bda4b526b9e617f956c9d3f727d",
+    "rust/src/agentic_coding/module_function/callable_catalog.rs": "e6e2f4c279fbb116554d06379b17dd20b6a6df9d7ed9fcd206f3223abb85cc63",
+    "js/agentic/module_function/source_contract.mjs": "a25adfe6924862dfbe268ca75cec10dd71bd76c6bebb16a223d987a59fc6b118",
+    "rust/src/agentic_coding/module_function/source_contract.rs": "8248ee70a01bb3276c7a4ab714226d5b2e9b8db696d85820f3b7fd3970dbade9"
+  },
+  "sourceUnchanged": true
+}

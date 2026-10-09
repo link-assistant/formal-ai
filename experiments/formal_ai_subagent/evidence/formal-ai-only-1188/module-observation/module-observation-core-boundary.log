@@ -1,0 +1,4 @@
+minimal-core boundary audit failed:
+rust/src/solver_handlers/conversation_memory/conversation_summary.rs grew from 207 to 211 lines
+source_lines_max grew from 35656 to 35660
+outside_core_lines_max grew from 18602 to 18606

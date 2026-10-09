@@ -1,0 +1,11 @@
+{
+  "id": "T3084",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Implement a reusable observed-module and structural-callable contract capability in the existing JS/native module_function catalog and source_contract modules. Read actual sources first. Separate deferred function-body effects from module initialization; an unsupported function body must not pretend it executed during module loading. Retain exact complete spans, source bytes and content identities for observed import and unsupported top-level initialization statements. Derive source-backed structural read requirements from function bodies, including static property paths and dynamic index dependencies, without caller-supplied schemas or types. Keep getters, unresolved calls, dynamic behavior, missing structural schemas and unobserved import initialization effects unknown. Preserve existing constrained return contracts and no authoring for unbound goals. Add meaningful external JS/native tests for unsupported deferred bodies versus real module writes, imported initialization, Unicode byte spans, conditional member reads, dynamic indices and noncertification. Do not implement a selectedSummary wrapper or change its immutable source/test fixtures, and do not compile Rust locally.",
+  "before": {
+    "js/agentic/module_function/callable_catalog.mjs": "b8e0856d00a47984959cbfd8d7239bb143970bda4b526b9e617f956c9d3f727d",
+    "rust/src/agentic_coding/module_function/callable_catalog.rs": "e6e2f4c279fbb116554d06379b17dd20b6a6df9d7ed9fcd206f3223abb85cc63",
+    "js/agentic/module_function/source_contract.mjs": "a25adfe6924862dfbe268ca75cec10dd71bd76c6bebb16a223d987a59fc6b118",
+    "rust/src/agentic_coding/module_function/source_contract.rs": "8248ee70a01bb3276c7a4ab714226d5b2e9b8db696d85820f3b7fd3970dbade9"
+  }
+}

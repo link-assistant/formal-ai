@@ -1,7 +1,7 @@
 // Complete lexical declaration evidence and bounded contracts; no source is emitted.
 import { tokenizeWithSpans, isKeyword } from '../crate/es_tokenizer.mjs';
 import { sha256Hex } from '../crate/source_fetch.mjs';
-import { inferReturnContract, guardedCallGraph } from './source_contract.mjs';
+import { inferReturnContract, guardedCallGraph, sourceEvidence } from './source_contract.mjs';
 const text = (tree) => tree?.$ === 'leaf' ? tree.text : '';
 const group = (tree, delim) => tree?.$ === 'group' && tree.delim === delim;
 const identifier = (tree) => tree?.kind === 'identifier'
@@ -45,10 +45,10 @@ function dependency(path, specifier) {
 export function observeSourceCallables(source, path) {
   const bytes = new TextEncoder().encode(source);
   const catalog = { path, contentId: sha256Hex(bytes), bytes: bytes.length,
-    declarations: [], exports: [], imports: [], gaps: [], moduleEffects: 'none' };
+    declarations: [], exports: [], imports: [], initialization: [], gaps: [], moduleEffects: 'none', moduleSyntax: 'supported' };
   let trees;
   try { trees = tokenizeWithSpans(source); }
-  catch (error) { return { ...catalog, moduleEffects: 'unknown', gaps: [{ reason: 'LexicalFailure', start: error.start }] }; }
+  catch (error) { return { ...catalog, moduleEffects: 'unknown', moduleSyntax: 'unknown', gaps: [{ reason: 'LexicalFailure', start: error.start }] }; }
   for (let at = 0; at < trees.length;) {
     const start = at; let cursor = at;
     const exported = text(trees[cursor]) === 'export'; if (exported) cursor += 1;
@@ -66,8 +66,11 @@ export function observeSourceCallables(source, path) {
       catalog.declarations.push({ name, parameters, source: body, span, contract,
         identity: { path, moduleContentId: catalog.contentId, declarationContentId: sha256Hex(body), span } });
       if (exported) catalog.exports.push({ local: name, exposed: defaultExport ? 'default' : name });
-      // Only the grammar whose complete bodies were checked establishes a module effect boundary.
-      if (contract.status !== 'supported') catalog.moduleEffects = 'unknown';
+      // Invalid/unproved declaration syntax still blocks initialization certification.
+      if (!safeBinding(name) || parameters === null) catalog.moduleEffects = 'unknown';
+      // Unsupported bodies lack a syntax proof even though they do not execute here.
+      if (contract.status !== 'supported') catalog.moduleSyntax = 'unknown';
+      // A deferred body has its own effect contract; declaring it does not execute it.
       at = cursor + 4; if (text(trees[at]) === ';') at += 1; continue;
     }
     if (exported && group(trees[cursor], 'brace') && text(trees[cursor + 1]) !== 'from') {
@@ -87,11 +90,16 @@ export function observeSourceCallables(source, path) {
       const specifier = literal !== null && !literal.includes('\\') ? literal.slice(1, -1) : null;
       if (bindings === null || specifier === null) catalog.gaps.push({ reason: 'UnsupportedImport', start: trees[start].span.start });
       else catalog.imports.push({ specifier, path: dependency(path, specifier), bindings });
+      catalog.initialization.push({ kind: 'import', effects: 'unknown',
+        ...sourceEvidence(source, trees[start].span.start, trees[Math.min(end, trees.length - 1)].span.end) });
       catalog.moduleEffects = 'unknown'; at = end + 1; continue;
     }
     catalog.moduleEffects = 'unknown';
     catalog.gaps.push({ reason: 'UnprovedModuleStatement', start: trees[start].span.start });
-    at += 1; while (at < trees.length && text(trees[at]) !== ';') at += 1; at += 1;
+    at += 1; while (at < trees.length && text(trees[at]) !== ';') at += 1;
+    catalog.initialization.push({ kind: 'unclassified', effects: 'unknown',
+      ...sourceEvidence(source, trees[start].span.start, trees[Math.min(at, trees.length - 1)].span.end) });
+    at += 1;
   }
   const locals = [...catalog.declarations.map((entry) => entry.name), ...catalog.imports.flatMap((entry) => entry.bindings.map((binding) => binding.local))];
   if (new Set(locals).size !== locals.length) catalog.gaps.push({ reason: 'DuplicateBinding', start: null });
@@ -99,7 +107,7 @@ export function observeSourceCallables(source, path) {
   for (const exported of catalog.exports) {
     if (!locals.includes(exported.local)) catalog.gaps.push({ reason: 'ExportDeclarationUnobserved', start: null });
   }
-  if (catalog.gaps.length > 0) catalog.moduleEffects = 'unknown';
+  if (catalog.gaps.length > 0) { catalog.moduleEffects = 'unknown'; catalog.moduleSyntax = 'unknown'; }
   return catalog;
 }
 
@@ -113,6 +121,7 @@ export function observedGuardedGraph(observations, first, second) {
     if (catalog === undefined) return { kind: 'gap', reason: 'ModuleUnobserved' };
     if (binding.contentId !== undefined && binding.contentId !== catalog.contentId) return { kind: 'gap', reason: 'SourceChanged' };
     if (catalog.gaps.length > 0) return { kind: 'gap', reason: 'ModuleContractGap' };
+    if (catalog.moduleSyntax !== 'supported') return { kind: 'gap', reason: 'ModuleSyntaxUnknown' };
     const names = catalog.exports.filter((entry) => entry.exposed === binding.exported);
     if (names.length !== 1) return { kind: 'gap', reason: 'ExportUnresolved' };
     const declared = catalog.declarations.find((entry) => entry.name === names[0].local);
@@ -135,7 +144,7 @@ export function observedCallableGraphs(observations) {
   const bindings = [];
   for (const observation of observations) {
     const catalog = observeSourceCallables(observation.content, observation.path);
-    if (catalog.moduleEffects !== 'none' || catalog.gaps.length !== 0) continue;
+    if (catalog.moduleEffects !== 'none' || catalog.moduleSyntax !== 'supported' || catalog.gaps.length !== 0) continue;
     for (const exported of catalog.exports) {
       const declaration = catalog.declarations.find((entry) => entry.name === exported.local);
       if (declaration?.contract.status !== 'supported' || declaration.parameters.length !== 1) continue;

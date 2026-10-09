@@ -140,10 +140,118 @@ fn expression(trees: &[Value], parameters: &[String]) -> Result<Value, &'static 
     )
 }
 
+/// Mirrors sourceEvidence: observed bytes and coordinate systems, not semantics.
+pub(super) fn source_evidence(source: &str, start: usize, end: usize) -> Value {
+    let content = &source[start..end];
+    json!({"source":content,"contentId":crate::source_fetch::sha256_hex(content.as_bytes()),
+        "span":{"byteStart":start,"byteEnd":end,"start":source[..start].encode_utf16().count(),"end":source[..end].encode_utf16().count()}})
+}
+fn unsafe_access_scope(trees: &[Value]) -> bool {
+    trees.iter().any(|tree| {
+        matches!(
+            text(tree),
+            "=" | "+="
+                | "-="
+                | "*="
+                | "/="
+                | "%="
+                | "**="
+                | "&&="
+                | "||="
+                | "??="
+                | "&="
+                | "|="
+                | "^="
+                | "<<="
+                | ">>="
+                | ">>>="
+                | "++"
+                | "--"
+                | "=>"
+                | "function"
+                | "class"
+                | "delete"
+                | "yield"
+                | "await"
+        ) || (tree["$"] == "group"
+            && (tree["delim"] == "brace"
+                || unsafe_access_scope(tree["trees"].as_array().expect("token group"))))
+    })
+}
+fn structural_requirements(parameters: &[String], body: &[Value], source: &str) -> Vec<Value> {
+    fn visit(parameters: &[String], trees: &[Value], source: &str, result: &mut Vec<Value>) {
+        let span = |tree: &Value, key: &str| {
+            usize::try_from(tree["span"][key].as_u64().expect("token span")).expect("host span")
+        };
+        let mut at = 0;
+        while at < trees.len() {
+            let tree = &trees[at];
+            if parameters.iter().any(|name| name == text(tree)) {
+                let mut selectors = Vec::new();
+                let mut cursor = at + 1;
+                while cursor < trees.len() {
+                    if matches!(text(&trees[cursor]), "." | "?.")
+                        && trees
+                            .get(cursor + 1)
+                            .is_some_and(|tree| tree["kind"] == "identifier")
+                    {
+                        selectors.push(json!({"property":text(&trees[cursor + 1])}));
+                        cursor += 2;
+                    } else if trees[cursor]["$"] == "group" && trees[cursor]["delim"] == "bracket" {
+                        let index = &trees[cursor];
+                        selectors.push(json!({"index":source_evidence(source,span(index,"start") + 1,span(index,"end") - 1)["source"]}));
+                        cursor += 1;
+                    } else {
+                        break;
+                    }
+                }
+                if !selectors.is_empty() {
+                    let mut requirement = source_evidence(
+                        source,
+                        span(tree, "start"),
+                        span(&trees[cursor - 1], "end"),
+                    );
+                    requirement["root"] = json!(text(tree));
+                    requirement["selectors"] = json!(selectors);
+                    requirement["status"] = json!("unproved");
+                    result.push(requirement);
+                    for term in &trees[at + 1..cursor] {
+                        if term["$"] == "group" {
+                            visit(
+                                parameters,
+                                term["trees"].as_array().expect("token group"),
+                                source,
+                                result,
+                            );
+                        }
+                    }
+                    at = cursor;
+                    continue;
+                }
+            }
+            if tree["$"] == "group" {
+                visit(
+                    parameters,
+                    tree["trees"].as_array().expect("token group"),
+                    source,
+                    result,
+                );
+            }
+            at += 1;
+        }
+    }
+    let mut result = Vec::new();
+    if body.first().map_or("", text) == "return" && !unsafe_access_scope(body) {
+        visit(parameters, body, source, &mut result);
+    }
+    result
+}
+
 /// Mirrors inferReturnContract: no unsupported body is promoted to a type/effect proof.
 pub(super) fn infer_return_contract(parameters: &[String], body: &[Value], source: &str) -> Value {
     let mut contract = json!({"inputs":parameters.iter().map(|name| json!({"name":name,"type":{"kind":"parameter","name":name}})).collect::<Vec<_>>(),
-        "result":null,"callEffects":"unknown","preconditions":[],"status":"unknown","gap":null});
+        "result":null,"callEffects":"unknown","preconditions":[],"status":"unknown","gap":null,
+        "structuralRequirements":structural_requirements(parameters,body,source)});
     let checked = (|| -> Result<Value, &'static str> {
         let unique: std::collections::BTreeSet<_> = parameters.iter().collect();
         if unique.len() != parameters.len() {

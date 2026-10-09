@@ -1,4 +1,5 @@
 // A bounded return-expression contract. Unsupported constructs retain exact gaps.
+import { sha256Hex } from '../crate/source_fetch.mjs';
 const text = (tree) => tree?.$ === 'leaf' ? tree.text : '';
 const variable = (name) => ({ kind: 'parameter', name });
 const optional = (value) => value.kind === 'optional' ? value : { kind: 'optional', value };
@@ -49,10 +50,53 @@ function expression(trees, parameters) {
   throw { reason: trees.some((tree) => tree.$ === 'group' && tree.delim === 'paren') ? 'UnobservedCallEffect' : 'UnsupportedExpression' };
 }
 
+
+/** Mirrors `fn source_evidence`: bytes, coordinates and identity of an observed region. */
+export function sourceEvidence(source, start, end) {
+  const bytes = new TextEncoder().encode(source), decode = (value) => new TextDecoder('utf-8', { ignoreBOM: true }).decode(value);
+  const content = decode(bytes.subarray(start, end));
+  return { source: content, contentId: sha256Hex(content), span: { byteStart: start, byteEnd: end,
+    start: decode(bytes.subarray(0, start)).length, end: decode(bytes.subarray(0, end)).length } };
+}
+function unsafeAccessScope(trees) {
+  return trees.some((tree) => ['=', '+=', '-=', '*=', '/=', '%=', '**=', '&&=', '||=', '??=', '&=', '|=', '^=', '<<=', '>>=', '>>>=', '++', '--', '=>', 'function', 'class', 'delete', 'yield', 'await'].includes(text(tree))
+    || tree.$ === 'group' && (tree.delim === 'brace' || unsafeAccessScope(tree.trees)));
+}
+// These are unmet schema requirements, never proof that a property/getter is pure.
+function structuralRequirements(parameters, body, source) {
+  const result = [];
+  if (text(body[0]) !== 'return' || unsafeAccessScope(body)) return result;
+  const visit = (trees) => {
+    for (let at = 0; at < trees.length; at += 1) {
+      const tree = trees[at];
+      if (parameters.includes(text(tree))) {
+        const selectors = []; let cursor = at + 1;
+        while (cursor < trees.length) {
+          if (['.', '?.'].includes(text(trees[cursor])) && trees[cursor + 1]?.kind === 'identifier') {
+            selectors.push({ property: text(trees[cursor + 1]) }); cursor += 2;
+          } else if (trees[cursor].$ === 'group' && trees[cursor].delim === 'bracket') {
+            const index = trees[cursor];
+            selectors.push({ index: sourceEvidence(source, index.span.start + 1, index.span.end - 1).source }); cursor += 1;
+          } else break;
+        }
+        if (selectors.length > 0) {
+          result.push({ root: text(tree), selectors, status: 'unproved', ...sourceEvidence(source, tree.span.start, trees[cursor - 1].span.end) });
+          for (const term of trees.slice(at + 1, cursor)) if (term.$ === 'group') visit(term.trees);
+          at = cursor - 1; continue;
+        }
+      }
+      if (tree.$ === 'group') visit(tree.trees);
+    }
+  };
+  visit(body);
+  return result;
+}
+
 /** Mirrors `fn infer_return_contract` in rust/src/agentic_coding/module_function/source_contract.rs: only complete supported bodies establish constraints. */
 export function inferReturnContract(parameters, body, source) {
   const base = { inputs: parameters.map((name) => ({ name, type: variable(name) })), result: null,
-    callEffects: 'unknown', preconditions: [], status: 'unknown', gap: null };
+    callEffects: 'unknown', preconditions: [], status: 'unknown', gap: null,
+    structuralRequirements: structuralRequirements(parameters, body, source) };
   try {
     if (new Set(parameters).size !== parameters.length) throw { reason: 'DuplicateParameter' };
     if (text(body[0]) !== 'return') throw { reason: 'UnsupportedStatement' };

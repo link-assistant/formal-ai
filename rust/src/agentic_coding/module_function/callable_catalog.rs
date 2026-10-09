@@ -1,5 +1,5 @@
 //! Complete token-tree declaration observations and conservative contract graphs.
-use super::source_contract::{guarded_call_graph, infer_return_contract, text};
+use super::source_contract::{guarded_call_graph, infer_return_contract, source_evidence, text};
 use crate::es_tokenizer::{Delimiter, TemplatePart, TokenKind, Tree};
 use serde_json::{Value, json};
 
@@ -136,16 +136,18 @@ pub fn observe_source_callables(source: &str, path: &str) -> Value {
     let raw = match crate::es_tokenizer::tokenize(source) {
         Ok(trees) => trees,
         Err(error) => {
-            return json!({"path":path,"contentId":content_identifier,"bytes":source.len(),"declarations":[],"exports":[],"imports":[],
-            "gaps":[{"reason":"LexicalFailure","start":error.span.start}],"moduleEffects":"unknown"});
+            return json!({"path":path,"contentId":content_identifier,"bytes":source.len(),"declarations":[],"exports":[],"imports":[],"initialization":[],
+            "gaps":[{"reason":"LexicalFailure","start":error.span.start}],"moduleEffects":"unknown","moduleSyntax":"unknown"});
         }
     };
     let trees: Vec<_> = raw.iter().map(tree_value).collect();
     let mut declarations = Vec::new();
     let mut exports = Vec::new();
     let mut imports: Vec<Value> = Vec::new();
+    let mut initialization = Vec::new();
     let mut gaps = Vec::new();
     let mut module_effects = "none";
+    let mut module_syntax = "supported";
     let mut at = 0;
     while at < trees.len() {
         let start = at;
@@ -203,9 +205,13 @@ pub fn observe_source_callables(source: &str, path: &str) -> Value {
             } else {
                 unknown("UnsupportedBinding")
             };
-            if contract["status"] != "supported" {
+            if !safe_binding(name) || parameters.is_none() {
                 module_effects = "unknown";
             }
+            if contract["status"] != "supported" {
+                module_syntax = "unknown";
+            }
+            // Declaration does not execute its deferred body.
             declarations.push(json!({"name":name,"parameters":parameters,"source":body,"span":span,"contract":contract,
                 "identity":{"path":path,"moduleContentId":content_identifier,"declarationContentId":crate::source_fetch::sha256_hex(body.as_bytes()),"span":span}}));
             if exported {
@@ -272,6 +278,14 @@ pub fn observe_source_callables(source: &str, path: &str) -> Value {
             } else {
                 gaps.push(json!({"reason":"UnsupportedImport","start":span_start(&trees[start])}));
             }
+            let mut observation = source_evidence(
+                source,
+                span_start(&trees[start]),
+                span_end(&trees[end.min(trees.len() - 1)]),
+            );
+            observation["kind"] = json!("import");
+            observation["effects"] = json!("unknown");
+            initialization.push(observation);
             module_effects = "unknown";
             at = end + 1;
             continue;
@@ -282,6 +296,14 @@ pub fn observe_source_callables(source: &str, path: &str) -> Value {
         while at < trees.len() && text(&trees[at]) != ";" {
             at += 1;
         }
+        let mut observation = source_evidence(
+            source,
+            span_start(&trees[start]),
+            span_end(&trees[at.min(trees.len() - 1)]),
+        );
+        observation["kind"] = json!("unclassified");
+        observation["effects"] = json!("unknown");
+        initialization.push(observation);
         at += 1;
     }
     let mut locals: Vec<_> = declarations
@@ -315,8 +337,9 @@ pub fn observe_source_callables(source: &str, path: &str) -> Value {
     }
     if !gaps.is_empty() {
         module_effects = "unknown";
+        module_syntax = "unknown";
     }
-    json!({"path":path,"contentId":content_identifier,"bytes":source.len(),"declarations":declarations,"exports":exports,"imports":imports,"gaps":gaps,"moduleEffects":module_effects})
+    json!({"path":path,"contentId":content_identifier,"bytes":source.len(),"declarations":declarations,"exports":exports,"imports":imports,"initialization":initialization,"gaps":gaps,"moduleEffects":module_effects,"moduleSyntax":module_syntax})
 }
 fn resolve_entry(
     catalogs: &[Value],
@@ -341,6 +364,9 @@ fn resolve_entry(
     }
     if !catalog["gaps"].as_array().expect("catalog gaps").is_empty() {
         return json!({"kind":"gap","reason":"ModuleContractGap"});
+    }
+    if catalog["moduleSyntax"] != "supported" {
+        return json!({"kind":"gap","reason":"ModuleSyntaxUnknown"});
     }
     let names: Vec<_> = catalog["exports"]
         .as_array()
@@ -419,6 +445,7 @@ pub fn observed_callable_graphs(observations: &[Value]) -> Vec<Value> {
             observation["path"].as_str().expect("source path"),
         );
         if catalog["moduleEffects"] != "none"
+            || catalog["moduleSyntax"] != "supported"
             || !catalog["gaps"].as_array().expect("catalog gaps").is_empty()
         {
             continue;

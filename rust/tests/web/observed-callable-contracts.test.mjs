@@ -70,7 +70,7 @@ test('unknown calls, field schemas, input writes and local mutation remain contr
     assert.equal(entry.contract.callEffects, 'unknown');
     assert.equal(entry.contract.gap.reason, reason);
     const data = observations(); data[1].content = source;
-    assert.equal(observedGuardedGraph(data, first, { path: 'consumer.mjs', exported: 'f' }).reason, 'MissingContract');
+    assert.equal(observedGuardedGraph(data, first, { path: 'consumer.mjs', exported: 'f' }).reason, 'ModuleSyntaxUnknown');
   }
 });
 
@@ -144,4 +144,67 @@ test('balanced but invalid binding/export forms do not certify a module contract
   assert.equal(declaration(source).contract.status, 'unknown');
   const commented = 'export function f(x) { return /*\u2028*/ x; }';
   assert.equal(declaration(commented).contract.gap.reason, 'ReturnLineTerminator');
+});
+
+
+test('deferred unknown callable effects cannot contaminate module initialization', () => {
+  const source = firstSource + ' function deferred(value) { return external(value); }';
+  const catalog = observe(source);
+  assert.equal(catalog.moduleEffects, 'none');
+  assert.equal(catalog.declarations[1].contract.callEffects, 'unknown');
+  const data = observations(); data[0].content = source;
+  assert.equal(catalog.moduleSyntax, 'unknown');
+  assert.equal(observedGuardedGraph(data, { ...first, contentId: undefined }, second).reason, 'ModuleSyntaxUnknown');
+});
+
+test('actual initialization and import regions retain independent complete byte witnesses', () => {
+  const source = '// 文\n' + secondSource + ' globalThis.flag = 1;';
+  const catalog = observe(source, 'consumer.mjs');
+  const record = catalog.initialization[0];
+  assert.equal(record.kind, 'unclassified');
+  assert.equal(record.effects, 'unknown');
+  assert.equal(record.source, 'globalThis.flag = 1;');
+  assert.equal(source.slice(record.span.start, record.span.end), record.source);
+  assert.equal(Buffer.from(source).subarray(record.span.byteStart, record.span.byteEnd).toString(), record.source);
+  assert.equal(record.contentId, sha256Hex(record.source));
+  assert.equal(catalog.moduleEffects, 'unknown');
+  const imported = observe("import { render } from './consumer.mjs'; export { render };", 'facade.mjs');
+  assert.equal(imported.initialization[0].kind, 'import');
+  assert.equal(imported.initialization[0].source, "import { render } from './consumer.mjs';");
+  assert.equal(imported.moduleEffects, 'unknown');
+});
+
+test('structural return access witnesses retain dynamic indices without schema or purity certification', () => {
+  const source = '// 文\nexport function select(input) { return input.items[input.position] ?? null; }';
+  const contract = declaration(source).contract;
+  assert.equal(contract.status, 'unknown');
+  assert.equal(contract.callEffects, 'unknown');
+  assert.equal(contract.gap.reason, 'MissingStructuralSchema');
+  assert.deepEqual(contract.structuralRequirements.map((entry) => entry.source), ['input.items[input.position]', 'input.position']);
+  assert.deepEqual(contract.structuralRequirements[0].selectors, [{ property: 'items' }, { index: 'input.position' }]);
+  for (const requirement of contract.structuralRequirements) {
+    assert.equal(requirement.status, 'unproved');
+    assert.equal(source.slice(requirement.span.start, requirement.span.end), requirement.source);
+    assert.equal(Buffer.from(source).subarray(requirement.span.byteStart, requirement.span.byteEnd).toString(), requirement.source);
+  }
+});
+
+test('unknown closures and structural writes cannot acquire read-only contracts', () => {
+  for (const source of ['export function f(input) { return input.value = 1; }',
+    'export function f(input) { return values.map(input => input.value); }']) {
+    const contract = declaration(source).contract;
+    assert.equal(contract.status, 'unknown');
+    assert.equal(contract.callEffects, 'unknown');
+    assert.deepEqual(contract.structuralRequirements, []);
+  }
+});
+
+
+test('an unvalidated balanced body cannot certify an otherwise supported module import', () => {
+  const source = firstSource + ' function broken(value) { return value++++; }';
+  const catalog = observe(source);
+  assert.equal(catalog.moduleEffects, 'none');
+  assert.equal(catalog.moduleSyntax, 'unknown');
+  const data = observations(); data[0].content = source;
+  assert.equal(observedGuardedGraph(data, { ...first, contentId: undefined }, second).reason, 'ModuleSyntaxUnknown');
 });
