@@ -8,16 +8,20 @@
 import { spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
 
+const MAX_COMMAND_OUTPUT_BYTES = 16 * 1024 * 1024;
+
 function exec(command, args) {
-  const result = spawnSync(command, args, { encoding: 'utf8' });
+  const result = spawnSync(command, args, { encoding: 'utf8', maxBuffer: MAX_COMMAND_OUTPUT_BYTES });
   if (result.error) {
-    console.error(`Failed to execute ${command} ${debugList(args)}: ${result.error.message}`);
-    return '';
+    const reason = result.error.code === 'ENOBUFS'
+      ? `output exceeded ${MAX_COMMAND_OUTPUT_BYTES} bytes` : result.error.message;
+    console.error(`Failed to execute ${command} ${debugList(args)}: ${reason}`);
+    process.exit(1);
   }
   if (result.status !== 0) {
     console.error(`Error executing ${command} ${debugList(args)}`);
     console.error(result.stderr);
-    return '';
+    process.exit(1);
   }
   return result.stdout.trim();
 }
