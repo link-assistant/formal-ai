@@ -1,0 +1,862 @@
+{
+  "immutableCorpus": true,
+  "sourceFilesCompared": [
+    "data/seed/meanings-coding-request.lino",
+    "data/seed/meanings-engine-report-intents.lino"
+  ],
+  "comparisonCommit": "72e8e1d92054d48c053d4ea30087ce0b0141684f",
+  "counts": {
+    "beforeArtifactMeanings": {
+      "en": {
+        "total": 64,
+        "surviving": 209
+      },
+      "ru": {
+        "total": 64,
+        "surviving": 174
+      },
+      "hi": {
+        "total": 64,
+        "surviving": 204
+      }
+    },
+    "actualCurrent": {
+      "en": {
+        "total": 64,
+        "surviving": 207
+      },
+      "ru": {
+        "total": 64,
+        "surviving": 173
+      },
+      "hi": {
+        "total": 64,
+        "surviving": 202
+      }
+    }
+  },
+  "regressions": [
+    {
+      "before": {
+        "row": {
+          "language": "en",
+          "origin": "seed-response agentic_report_exported",
+          "text": "Report context exported."
+        },
+        "trip": {
+          "source": "Report context exported.",
+          "forward": "报告 context 导出",
+          "backward": "report context export",
+          "statements": [
+            {
+              "forward": "报告 context 导出",
+              "backward": "report context export",
+              "surviving": 2,
+              "known": 2,
+              "survives": false
+            }
+          ],
+          "survivingTerms": 2,
+          "knownTerms": 2,
+          "survives": false
+        },
+        "formalized": [
+          {
+            "text": "Report context exported.",
+            "language": "en",
+            "polarity": "asserted",
+            "subject": {
+              "kind": "meaning",
+              "id": "report_issue_action",
+              "surface": "Report"
+            },
+            "terms": [
+              {
+                "kind": "unknown",
+                "id": "unknown:context",
+                "surface": "context"
+              },
+              {
+                "kind": "meaning",
+                "id": "module_export_question",
+                "surface": "exported"
+              }
+            ],
+            "unknown": [
+              "context"
+            ]
+          }
+        ]
+      },
+      "current": {
+        "row": {
+          "language": "en",
+          "origin": "seed-response agentic_report_exported",
+          "text": "Report context exported."
+        },
+        "trip": {
+          "source": "Report context exported.",
+          "forward": "报告 context 导出",
+          "backward": "reports context export",
+          "statements": [
+            {
+              "forward": "报告 context 导出",
+              "backward": "reports context export",
+              "surviving": 1,
+              "known": 2,
+              "survives": false
+            }
+          ],
+          "survivingTerms": 1,
+          "knownTerms": 2,
+          "survives": false
+        },
+        "formalized": [
+          {
+            "text": "Report context exported.",
+            "language": "en",
+            "polarity": "asserted",
+            "subject": {
+              "kind": "meaning",
+              "id": "report_issue_action",
+              "surface": "Report"
+            },
+            "terms": [
+              {
+                "kind": "unknown",
+                "id": "unknown:context",
+                "surface": "context"
+              },
+              {
+                "kind": "meaning",
+                "id": "module_export_question",
+                "surface": "exported"
+              }
+            ],
+            "unknown": [
+              "context"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "before": {
+        "row": {
+          "language": "hi",
+          "origin": "seed-response agentic_report_exported",
+          "text": "रिपोर्ट का संदर्भ निर्यात किया गया।"
+        },
+        "trip": {
+          "source": "रिपोर्ट का संदर्भ निर्यात किया गया।",
+          "forward": "报告引用导出 किया गया",
+          "backward": "रिपोर्ट संदर्भ निर्यात किया गया",
+          "statements": [
+            {
+              "forward": "报告引用导出 किया गया",
+              "backward": "रिपोर्ट संदर्भ निर्यात किया गया",
+              "surviving": 3,
+              "known": 3,
+              "survives": false
+            }
+          ],
+          "survivingTerms": 3,
+          "knownTerms": 3,
+          "survives": false
+        },
+        "formalized": [
+          {
+            "text": "रिपोर्ट का संदर्भ निर्यात किया गया।",
+            "language": "hi",
+            "polarity": "asserted",
+            "subject": {
+              "kind": "meaning",
+              "id": "report_issue_action",
+              "surface": "रिपोर्ट"
+            },
+            "terms": [
+              {
+                "kind": "meaning",
+                "id": "reference",
+                "surface": "संदर्भ"
+              },
+              {
+                "kind": "meaning",
+                "id": "module_export_question",
+                "surface": "निर्यात"
+              },
+              {
+                "kind": "unknown",
+                "id": "unknown:किय",
+                "surface": "किया"
+              },
+              {
+                "kind": "unknown",
+                "id": "unknown:गया",
+                "surface": "गया"
+              }
+            ],
+            "unknown": [
+              "किया",
+              "गया"
+            ]
+          }
+        ]
+      },
+      "current": {
+        "row": {
+          "language": "hi",
+          "origin": "seed-response agentic_report_exported",
+          "text": "रिपोर्ट का संदर्भ निर्यात किया गया।"
+        },
+        "trip": {
+          "source": "रिपोर्ट का संदर्भ निर्यात किया गया।",
+          "forward": "报告引用导出 किया गया",
+          "backward": "रिपोर्टें संदर्भ निर्यात किया गया",
+          "statements": [
+            {
+              "forward": "报告引用导出 किया गया",
+              "backward": "रिपोर्टें संदर्भ निर्यात किया गया",
+              "surviving": 2,
+              "known": 3,
+              "survives": false
+            }
+          ],
+          "survivingTerms": 2,
+          "knownTerms": 3,
+          "survives": false
+        },
+        "formalized": [
+          {
+            "text": "रिपोर्ट का संदर्भ निर्यात किया गया।",
+            "language": "hi",
+            "polarity": "asserted",
+            "subject": {
+              "kind": "meaning",
+              "id": "report_issue_action",
+              "surface": "रिपोर्ट"
+            },
+            "terms": [
+              {
+                "kind": "meaning",
+                "id": "reference",
+                "surface": "संदर्भ"
+              },
+              {
+                "kind": "meaning",
+                "id": "module_export_question",
+                "surface": "निर्यात"
+              },
+              {
+                "kind": "unknown",
+                "id": "unknown:किय",
+                "surface": "किया"
+              },
+              {
+                "kind": "unknown",
+                "id": "unknown:गया",
+                "surface": "गया"
+              }
+            ],
+            "unknown": [
+              "किया",
+              "गया"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "before": {
+        "row": {
+          "language": "en",
+          "origin": "seed-response agentic_report_target_question",
+          "text": "What would you like to report? Select one or more."
+        },
+        "trip": {
+          "source": "What would you like to report? Select one or more.",
+          "forward": "什么你 like 报告 Select 一更多",
+          "backward": "what you like report Select more",
+          "statements": [
+            {
+              "forward": "什么你 like 报告",
+              "backward": "what you like report",
+              "surviving": 3,
+              "known": 3,
+              "survives": false
+            },
+            {
+              "forward": "Select 一更多",
+              "backward": "Select more",
+              "surviving": 1,
+              "known": 2,
+              "survives": false
+            }
+          ],
+          "survivingTerms": 4,
+          "knownTerms": 5,
+          "survives": false
+        },
+        "formalized": [
+          {
+            "text": "What would you like to report?",
+            "language": "en",
+            "polarity": "asserted",
+            "subject": {
+              "kind": "meaning",
+              "id": "calendar_interrogative",
+              "surface": "What"
+            },
+            "terms": [
+              {
+                "kind": "meaning",
+                "id": "assistant_self_reference",
+                "surface": "you"
+              },
+              {
+                "kind": "unknown",
+                "id": "unknown:like",
+                "surface": "like"
+              },
+              {
+                "kind": "meaning",
+                "id": "report_issue_action",
+                "surface": "report"
+              }
+            ],
+            "unknown": [
+              "like"
+            ]
+          },
+          {
+            "text": "Select one or more.",
+            "language": "en",
+            "polarity": "asserted",
+            "subject": {
+              "kind": "unknown",
+              "id": "unknown:select",
+              "surface": "Select"
+            },
+            "terms": [
+              {
+                "kind": "meaning",
+                "id": "one",
+                "surface": "one"
+              },
+              {
+                "kind": "meaning",
+                "id": "more",
+                "surface": "more"
+              }
+            ],
+            "unknown": [
+              "Select"
+            ]
+          }
+        ]
+      },
+      "current": {
+        "row": {
+          "language": "en",
+          "origin": "seed-response agentic_report_target_question",
+          "text": "What would you like to report? Select one or more."
+        },
+        "trip": {
+          "source": "What would you like to report? Select one or more.",
+          "forward": "什么你 like 报告 Select 一更多",
+          "backward": "what you like reports Select more",
+          "statements": [
+            {
+              "forward": "什么你 like 报告",
+              "backward": "what you like reports",
+              "surviving": 2,
+              "known": 3,
+              "survives": false
+            },
+            {
+              "forward": "Select 一更多",
+              "backward": "Select more",
+              "surviving": 1,
+              "known": 2,
+              "survives": false
+            }
+          ],
+          "survivingTerms": 3,
+          "knownTerms": 5,
+          "survives": false
+        },
+        "formalized": [
+          {
+            "text": "What would you like to report?",
+            "language": "en",
+            "polarity": "asserted",
+            "subject": {
+              "kind": "meaning",
+              "id": "calendar_interrogative",
+              "surface": "What"
+            },
+            "terms": [
+              {
+                "kind": "meaning",
+                "id": "assistant_self_reference",
+                "surface": "you"
+              },
+              {
+                "kind": "unknown",
+                "id": "unknown:like",
+                "surface": "like"
+              },
+              {
+                "kind": "meaning",
+                "id": "report_issue_action",
+                "surface": "report"
+              }
+            ],
+            "unknown": [
+              "like"
+            ]
+          },
+          {
+            "text": "Select one or more.",
+            "language": "en",
+            "polarity": "asserted",
+            "subject": {
+              "kind": "unknown",
+              "id": "unknown:select",
+              "surface": "Select"
+            },
+            "terms": [
+              {
+                "kind": "meaning",
+                "id": "one",
+                "surface": "one"
+              },
+              {
+                "kind": "meaning",
+                "id": "more",
+                "surface": "more"
+              }
+            ],
+            "unknown": [
+              "Select"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "before": {
+        "row": {
+          "language": "hi",
+          "origin": "seed-response agentic_report_target_question",
+          "text": "आप क्या रिपोर्ट करना चाहेंगे? एक या अधिक विकल्प चुनें।"
+        },
+        "trip": {
+          "source": "आप क्या रिपोर्ट करना चाहेंगे? एक या अधिक विकल्प चुनें।",
+          "forward": "你什么报告 करना चाहेंगे更多 विकल्प想的",
+          "backward": "आप क्या रिपोर्ट करना चाहेंगे अधिक विकल्प सोचा",
+          "statements": [
+            {
+              "forward": "你什么报告 करना चाहेंगे",
+              "backward": "आप क्या रिपोर्ट करना चाहेंगे",
+              "surviving": 3,
+              "known": 3,
+              "survives": false
+            },
+            {
+              "forward": "更多 विकल्प想的",
+              "backward": "अधिक विकल्प सोचा",
+              "surviving": 2,
+              "known": 2,
+              "survives": false
+            }
+          ],
+          "survivingTerms": 5,
+          "knownTerms": 5,
+          "survives": false
+        },
+        "formalized": [
+          {
+            "text": "आप क्या रिपोर्ट करना चाहेंगे?",
+            "language": "hi",
+            "polarity": "asserted",
+            "subject": {
+              "kind": "meaning",
+              "id": "assistant_self_reference",
+              "surface": "आप"
+            },
+            "terms": [
+              {
+                "kind": "meaning",
+                "id": "calendar_interrogative",
+                "surface": "क्या"
+              },
+              {
+                "kind": "meaning",
+                "id": "report_issue_action",
+                "surface": "रिपोर्ट"
+              },
+              {
+                "kind": "unknown",
+                "id": "unknown:करन",
+                "surface": "करना"
+              },
+              {
+                "kind": "unknown",
+                "id": "unknown:चाहेंग",
+                "surface": "चाहेंगे"
+              }
+            ],
+            "unknown": [
+              "करना",
+              "चाहेंगे"
+            ]
+          },
+          {
+            "text": "एक या अधिक विकल्प चुनें।",
+            "language": "hi",
+            "polarity": "asserted",
+            "subject": {
+              "kind": "meaning",
+              "id": "more",
+              "surface": "अधिक"
+            },
+            "terms": [
+              {
+                "kind": "unknown",
+                "id": "unknown:विकल्प",
+                "surface": "विकल्प"
+              },
+              {
+                "kind": "meaning",
+                "id": "number_constraint_hidden",
+                "surface": "चुनें"
+              }
+            ],
+            "unknown": [
+              "विकल्प"
+            ]
+          }
+        ]
+      },
+      "current": {
+        "row": {
+          "language": "hi",
+          "origin": "seed-response agentic_report_target_question",
+          "text": "आप क्या रिपोर्ट करना चाहेंगे? एक या अधिक विकल्प चुनें।"
+        },
+        "trip": {
+          "source": "आप क्या रिपोर्ट करना चाहेंगे? एक या अधिक विकल्प चुनें।",
+          "forward": "你什么报告 करना चाहेंगे更多 विकल्प想的",
+          "backward": "आप क्या रिपोर्टें करना चाहेंगे अधिक विकल्प सोचा",
+          "statements": [
+            {
+              "forward": "你什么报告 करना चाहेंगे",
+              "backward": "आप क्या रिपोर्टें करना चाहेंगे",
+              "surviving": 2,
+              "known": 3,
+              "survives": false
+            },
+            {
+              "forward": "更多 विकल्प想的",
+              "backward": "अधिक विकल्प सोचा",
+              "surviving": 2,
+              "known": 2,
+              "survives": false
+            }
+          ],
+          "survivingTerms": 4,
+          "knownTerms": 5,
+          "survives": false
+        },
+        "formalized": [
+          {
+            "text": "आप क्या रिपोर्ट करना चाहेंगे?",
+            "language": "hi",
+            "polarity": "asserted",
+            "subject": {
+              "kind": "meaning",
+              "id": "assistant_self_reference",
+              "surface": "आप"
+            },
+            "terms": [
+              {
+                "kind": "meaning",
+                "id": "calendar_interrogative",
+                "surface": "क्या"
+              },
+              {
+                "kind": "meaning",
+                "id": "report_issue_action",
+                "surface": "रिपोर्ट"
+              },
+              {
+                "kind": "unknown",
+                "id": "unknown:करन",
+                "surface": "करना"
+              },
+              {
+                "kind": "unknown",
+                "id": "unknown:चाहेंग",
+                "surface": "चाहेंगे"
+              }
+            ],
+            "unknown": [
+              "करना",
+              "चाहेंगे"
+            ]
+          },
+          {
+            "text": "एक या अधिक विकल्प चुनें।",
+            "language": "hi",
+            "polarity": "asserted",
+            "subject": {
+              "kind": "meaning",
+              "id": "more",
+              "surface": "अधिक"
+            },
+            "terms": [
+              {
+                "kind": "unknown",
+                "id": "unknown:विकल्प",
+                "surface": "विकल्प"
+              },
+              {
+                "kind": "meaning",
+                "id": "number_constraint_hidden",
+                "surface": "चुनें"
+              }
+            ],
+            "unknown": [
+              "विकल्प"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "before": {
+        "row": {
+          "language": "ru",
+          "origin": "seed-response coding_rosetta_workspace_unavailable",
+          "text": "Статус выполнения: недоступно; изолированную рабочую среду создать не удалось."
+        },
+        "trip": {
+          "source": "Статус выполнения: недоступно; изолированную рабочую среду создать не удалось.",
+          "forward": "Статус выполнения недоступно изолированную рабочую星期三报告无法执行此操作",
+          "backward": "Статус выполнения недоступно изолированную рабочую среда сообщи не удалось",
+          "statements": [
+            {
+              "forward": "Статус выполнения",
+              "backward": "Статус выполнения",
+              "surviving": 0,
+              "known": 0,
+              "survives": false
+            },
+            {
+              "forward": "недоступно",
+              "backward": "недоступно",
+              "surviving": 0,
+              "known": 0,
+              "survives": false
+            },
+            {
+              "forward": "изолированную рабочую星期三报告无法执行此操作",
+              "backward": "изолированную рабочую среда сообщи не удалось",
+              "surviving": 3,
+              "known": 3,
+              "survives": false
+            }
+          ],
+          "survivingTerms": 3,
+          "knownTerms": 3,
+          "survives": false
+        },
+        "formalized": [
+          {
+            "text": "Статус выполнения",
+            "language": "ru",
+            "polarity": "asserted",
+            "subject": {
+              "kind": "unknown",
+              "id": "unknown:статус",
+              "surface": "Статус"
+            },
+            "terms": [
+              {
+                "kind": "unknown",
+                "id": "unknown:выполнен",
+                "surface": "выполнения"
+              }
+            ],
+            "unknown": [
+              "Статус",
+              "выполнения"
+            ]
+          },
+          {
+            "text": "недоступно",
+            "language": "ru",
+            "polarity": "asserted",
+            "subject": {
+              "kind": "unknown",
+              "id": "unknown:недоступн",
+              "surface": "недоступно"
+            },
+            "terms": [],
+            "unknown": [
+              "недоступно"
+            ]
+          },
+          {
+            "text": "изолированную рабочую среду создать не удалось.",
+            "language": "ru",
+            "polarity": "asserted",
+            "subject": {
+              "kind": "unknown",
+              "id": "unknown:изолированн",
+              "surface": "изолированную"
+            },
+            "terms": [
+              {
+                "kind": "unknown",
+                "id": "unknown:рабоч",
+                "surface": "рабочую"
+              },
+              {
+                "kind": "meaning",
+                "id": "wednesday",
+                "surface": "среду"
+              },
+              {
+                "kind": "meaning",
+                "id": "report_issue_action",
+                "surface": "создать"
+              },
+              {
+                "kind": "meaning",
+                "id": "tool_result_failure",
+                "surface": "не удалось"
+              }
+            ],
+            "unknown": [
+              "изолированную",
+              "рабочую"
+            ]
+          }
+        ]
+      },
+      "current": {
+        "row": {
+          "language": "ru",
+          "origin": "seed-response coding_rosetta_workspace_unavailable",
+          "text": "Статус выполнения: недоступно; изолированную рабочую среду создать не удалось."
+        },
+        "trip": {
+          "source": "Статус выполнения: недоступно; изолированную рабочую среду создать не удалось.",
+          "forward": "Статус выполнения недоступно изолированную рабочую星期三报告无法执行此操作",
+          "backward": "Статус выполнения недоступно изолированную рабочую среда отчёты не удалось",
+          "statements": [
+            {
+              "forward": "Статус выполнения",
+              "backward": "Статус выполнения",
+              "surviving": 0,
+              "known": 0,
+              "survives": false
+            },
+            {
+              "forward": "недоступно",
+              "backward": "недоступно",
+              "surviving": 0,
+              "known": 0,
+              "survives": false
+            },
+            {
+              "forward": "изолированную рабочую星期三报告无法执行此操作",
+              "backward": "изолированную рабочую среда отчёты не удалось",
+              "surviving": 2,
+              "known": 3,
+              "survives": false
+            }
+          ],
+          "survivingTerms": 2,
+          "knownTerms": 3,
+          "survives": false
+        },
+        "formalized": [
+          {
+            "text": "Статус выполнения",
+            "language": "ru",
+            "polarity": "asserted",
+            "subject": {
+              "kind": "unknown",
+              "id": "unknown:статус",
+              "surface": "Статус"
+            },
+            "terms": [
+              {
+                "kind": "unknown",
+                "id": "unknown:выполнен",
+                "surface": "выполнения"
+              }
+            ],
+            "unknown": [
+              "Статус",
+              "выполнения"
+            ]
+          },
+          {
+            "text": "недоступно",
+            "language": "ru",
+            "polarity": "asserted",
+            "subject": {
+              "kind": "unknown",
+              "id": "unknown:недоступн",
+              "surface": "недоступно"
+            },
+            "terms": [],
+            "unknown": [
+              "недоступно"
+            ]
+          },
+          {
+            "text": "изолированную рабочую среду создать не удалось.",
+            "language": "ru",
+            "polarity": "asserted",
+            "subject": {
+              "kind": "unknown",
+              "id": "unknown:изолированн",
+              "surface": "изолированную"
+            },
+            "terms": [
+              {
+                "kind": "unknown",
+                "id": "unknown:рабоч",
+                "surface": "рабочую"
+              },
+              {
+                "kind": "meaning",
+                "id": "wednesday",
+                "surface": "среду"
+              },
+              {
+                "kind": "meaning",
+                "id": "report_issue_action",
+                "surface": "создать"
+              },
+              {
+                "kind": "meaning",
+                "id": "tool_result_failure",
+                "surface": "не удалось"
+              }
+            ],
+            "unknown": [
+              "изолированную",
+              "рабочую"
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

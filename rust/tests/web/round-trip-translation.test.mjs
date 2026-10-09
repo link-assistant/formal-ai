@@ -87,3 +87,21 @@ describe('the sentence corpus and its ratchet', () => {
     assert.deepEqual(compareRatchet(measures, recorded).falls, []);
   });
 });
+
+// General ambiguity: the report action and plural report artifact keep distinct
+// meaning identities when a new noun owns their shared Chinese surface.
+test('reporting actions and plural artifacts each retain a reversible Chinese surface', () => {
+  assert.equal(text.resolveSurface('上报', 'zh'), 'report_issue_action');
+  assert.equal(text.resolveSurface('报告', 'zh'), 'reports');
+  for (const [surface, language, forward, backward] of [
+    ['report', 'en', '上报', 'report'],
+    ['сообщить', 'ru', '上报', 'сообщи'],
+    ['रिपोर्ट', 'hi', '上报', 'रिपोर्ट'],
+    ['reports', 'en', '报告', 'reports'],
+    ['submit', 'en', '提交', 'submit'],
+  ]) {
+    const trip = roundTrip.roundTrip(surface, language, 'zh');
+    assert.deepEqual([trip.forward, trip.backward, trip.survives, trip.survivingTerms, trip.knownTerms],
+      [forward, backward, true, 1, 1], surface);
+  }
+});

@@ -122,3 +122,34 @@ fn the_chat_translation_answers_with_the_surface_that_survives_the_round_trip() 
     assert_eq!(unknown.round_trip_surface(), Some("бларг"));
     assert_eq!(offered("fix", &[]).round_trip_surface(), None);
 }
+
+// The declared report action and plural report noun both remain reversible;
+// their shared Chinese surface must not erase the action's meaning identity.
+#[test]
+fn reporting_actions_and_plural_artifacts_retain_reversible_chinese_surfaces() {
+    assert_eq!(
+        resolve_surface("上报", "zh").as_deref(),
+        Some("report_issue_action")
+    );
+    assert_eq!(resolve_surface("报告", "zh").as_deref(), Some("reports"));
+    for (surface, language, forward, backward) in [
+        ("report", "en", "上报", "report"),
+        ("сообщить", "ru", "上报", "сообщи"),
+        ("रिपोर्ट", "hi", "上报", "रिपोर्ट"),
+        ("reports", "en", "报告", "reports"),
+        ("submit", "en", "提交", "submit"),
+    ] {
+        let trip = round_trip(surface, language, "zh");
+        assert_eq!(
+            (
+                trip.forward.as_str(),
+                trip.backward.as_str(),
+                trip.survives,
+                trip.surviving_terms,
+                trip.known_terms
+            ),
+            (forward, backward, true, 1, 1),
+            "{surface}"
+        );
+    }
+}
