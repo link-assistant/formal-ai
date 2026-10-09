@@ -124,3 +124,35 @@ meanings
     lexeme hi "योजना घटना जोड़ने का वर्णन"
     lexeme zh "计划事件追加说明"
     lexeme es "descripción de anexar evento de plan"
+  observation
+    defined-by concept
+    role action
+    precondition "a host tool or engine returns a result from an operation that actually ran"
+    effect "the result can ground execution evidence; planned or invented output cannot"
+    unit "one observed result"
+    example "a real file read returns bytes or an observed missing-file condition"
+    grounding "js/agentic/crate/execution_evidence.mjs"
+  filesystem-absent-result
+    defined-by concept
+    role action
+    precondition "an observed file read reports that the requested pathname does not exist"
+    effect "the planner may create a missing event stream while preserving unreadable or existing history"
+    unit "one missing pathname"
+    example "ENOENT"
+    grounding "data/seed/meanings-tool-access.lino"
+  enoent
+    defined-by concept
+    role action
+    precondition "a filesystem operation cannot find a component of its requested pathname"
+    effect "the observed system error identifies an absent file or directory"
+    unit "one system error code"
+    example "ENOENT: no such file or directory"
+    grounding "https://nodejs.org/api/errors.html#common-system-errors"
+  mutating-action-observed-failure
+    defined-by answer
+    role localized_response_template
+    precondition "an attempted workspace mutation has an observed unsuccessful execution or verification step"
+    effect "the response reports the attempted action, failed check and exit status without claiming completion"
+    unit "not applicable"
+    example "I attempted the action; the verification step exited nonzero, so completion is not verified"
+    grounding "data/seed/multilingual-responses-agentic-tools.lino"

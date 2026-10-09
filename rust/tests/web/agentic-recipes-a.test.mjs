@@ -11,6 +11,7 @@
 // byte-for-byte (docs/diagrams/agentic-recipes.md, the issue-538 Agent CLI
 // sessions, the seed meaning blocks) are the expectations here too.
 
+import { loadRenameMap, resolveRenameChains } from '../../../experiments/formal_ai_subagent/rename-by-rule.mjs';
 import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { before, describe, it } from 'node:test';
@@ -552,11 +553,16 @@ describe('issue #558 owned manifest, self-explanation and source links (rust/tes
   });
 
   it('the explanation document matches the committed Agent CLI evidence modulo the live ids', () => {
-    // docs/case-studies/issue-839 recorded render_document() from a Rust run;
-    // only the manifest-derived values (and the later move of tests/ under
-    // rust/) differ.
+    // Preserve the captured Rust document and resolve only recorded path moves.
+    // Live source ids are compared separately against the current manifest.
+    const renamed = new Map(resolveRenameChains(loadRenameMap().renames).map(({ from, to }) => [from, to]));
     const live = (text) => text.replace(/ (content_id|source_file_count|source_manifest_content_id) .*/g, ' $1 X')
-      .replace(/path "tests\//g, 'path "rust/tests/');
+      .replace(/path "([^"]+)"/g, (whole, citation) => {
+        const rooted = citation.startsWith('tests/') ? `rust/${citation}` : citation;
+        const current = renamed.get(rooted) ?? rooted;
+        if (current !== rooted) assert.ok(existsSync(new URL(current, ROOT)), current);
+        return `path "${current}"`;
+      });
     const document = explain.renderDocument();
     assert.equal(live(document), live(repo('docs/case-studies/issue-839/self-hosting-evidence/how-formal-ai-works.lino')));
     assert.ok(document.includes(`  source_file_count ${ownedFileCount()}\n  source_manifest_content_id "${ownedManifestContentId()}"\n`));
