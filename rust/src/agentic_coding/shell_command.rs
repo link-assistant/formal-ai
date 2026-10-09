@@ -1,14 +1,7 @@
-//! Resolve a user turn into the concrete shell command the agentic loop should run.
-//!
-//! Split out of [`super::planner`] (issue #676): the agentic planner used to know
-//! only the hardcoded `ls`, so `execute pwd` and every other seed shell token fell
-//! through to the *unknown* fallback. The two data-driven strategies here — a named
-//! command backed by `data/seed/terminal-commands.lino`, and a natural-language
-//! directory-listing request — make the whole seed vocabulary reachable.
-//!
-//! Sentence scoping and command-policy classification live next door in
-//! [`super::shell_command_policy`], which keeps both files under the repository
-//! line budget.
+//! Resolve user turns to shell commands using seeded tokens and directory-listing intents.
+//! Split from [`super::planner`] in issue #676 so commands such as `execute pwd`
+//! reach the full vocabulary in `data/seed/terminal-commands.lino`.
+//! [`super::shell_command_policy`] owns sentence scoping and command-policy classification.
 
 use super::directory_listing::asks_for_directory_listing;
 use super::file_path_shape::{is_dotted_number, trim_trailing_sentence_dot};
