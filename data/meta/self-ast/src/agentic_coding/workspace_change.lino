@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/workspace_change.rs
   language rust
   fidelity full_ast
-  byte_len 37192
-  line_count 993
-  content_id source_module_a65775d8a4907d8b
+  byte_len 37187
+  line_count 990
+  content_id source_module_445a7b7c8b685bca
   symbol_count 39
   symbols
     struct GroundedRewrite 33 55
@@ -42,35 +42,35 @@ self_ast_census
     function argument_matches_path 904 911
     function argument_matches 913 916
     function workspace_path_matches 918 925
-    function result_for_command 927 932
-    function plan_digest_verification 934 966
-    function matching_result 968 989
-    function read_arguments 991 993
+    function result_for_command 927 929
+    function plan_digest_verification 931 963
+    function matching_result 965 986
+    function read_arguments 988 990
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 26748
-    named_node_count 5331
+    total_link_count 26670
+    named_node_count 5323
     distinct_node_kinds 92
     node_kinds
       abstract_type 2
-      arguments 460
+      arguments 455
       array_expression 19
       array_type 17
       assignment_expression 1
       attribute 3
       attribute_item 3
       base_field_initializer 1
-      binary_expression 97
-      block 110
+      binary_expression 90
+      block 109
       boolean_literal 13
       break_expression 1
-      call_expression 460
+      call_expression 455
       char_literal 21
-      closure_expression 49
-      closure_parameters 49
+      closure_expression 48
+      closure_parameters 48
       const_item 5
       continue_expression 1
       crate 6
@@ -84,8 +84,8 @@ self_ast_census
       expression_statement 106
       field_declaration 18
       field_declaration_list 3
-      field_expression 329
-      field_identifier 377
+      field_expression 325
+      field_identifier 373
       field_initializer 30
       field_initializer_list 7
       for_expression 2
@@ -94,7 +94,7 @@ self_ast_census
       function_type 1
       generic_function 3
       generic_type 34
-      identifier 1369
+      identifier 1366
       if_expression 51
       impl_item 1
       index_expression 15
@@ -119,10 +119,10 @@ self_ast_census
       parenthesized_expression 5
       primitive_type 70
       range_expression 15
-      reference_expression 143
+      reference_expression 151
       reference_type 87
       return_expression 50
-      scoped_identifier 132
+      scoped_identifier 139
       scoped_use_list 7
       self 7
       self_parameter 2
@@ -132,7 +132,7 @@ self_ast_census
       string_literal 71
       struct_expression 7
       struct_item 3
-      super 44
+      super 48
       token_tree 33
       try_expression 36
       tuple_expression 18
@@ -143,7 +143,7 @@ self_ast_census
       type_binding 1
       type_identifier 114
       type_parameters 1
-      unary_expression 22
+      unary_expression 26
       use_declaration 14
       use_list 7
       visibility_modifier 14

@@ -2,67 +2,70 @@ self_ast_census
   target src/agentic_coding/module_function.rs
   language rust
   fidelity full_ast
-  byte_len 29392
-  line_count 791
-  content_id source_module_34533d804bb11da8
-  symbol_count 33
+  byte_len 30176
+  line_count 815
+  content_id source_module_4c109f92a83983c7
+  symbol_count 36
   symbols
-    const CONTRACTS 35 35
-    const EXTENSIONS 36 36
-    const COMMAND_ENDS 40 40
-    const SCRIPT_CLAUSE_MARKS 45 45
-    struct ModuleFunctionRequest 53 62
-    struct Signature 65 69
-    const NAMES_SLOT 72 72
-    function fill 75 81
-    function bare 84 87
-    function contract 90 98
-    function extension_language 102 114
-    function outside_quotes 117 130
-    function clauses 134 160
-    function is_identifier 163 171
-    function signature 175 224
-    function stated_command 229 276
-    function paths_in 279 291
-    function returns_in 294 298
-    function module_function_request 307 368
-    struct RelationOperation 372 376
-    function is_binary_idiom 379 384
-    function relation_operations 390 422
-    function relation_expression 427 450
-    function evaluated 453 457
-    function specified_value 464 482
-    function stated_value 490 516
-    function synthesized_source 523 579
-    function with_import 583 609
-    function specifier_from 613 633
-    function with_final_newline 636 642
-    function module_function_recipe 646 738
-    function read_source 742 752
-    function plan_module_function_step 757 791
+    module callable_catalog 27 27
+    module discovery 28 28
+    module source_contract 29 29
+    const CONTRACTS 44 44
+    const EXTENSIONS 45 45
+    const COMMAND_ENDS 49 49
+    const SCRIPT_CLAUSE_MARKS 54 54
+    struct ModuleFunctionRequest 62 71
+    struct Signature 74 78
+    const NAMES_SLOT 81 81
+    function fill 84 90
+    function bare 93 96
+    function contract 99 107
+    function extension_language 111 123
+    function outside_quotes 126 139
+    function clauses 143 169
+    function is_identifier 172 180
+    function signature 184 233
+    function stated_command 238 295
+    function paths_in 298 310
+    function returns_in 313 317
+    function module_function_request 326 387
+    struct RelationOperation 391 395
+    function is_binary_idiom 398 403
+    function relation_operations 409 441
+    function relation_expression 446 469
+    function evaluated 472 476
+    function specified_value 483 501
+    function stated_value 509 535
+    function synthesized_source 542 598
+    function with_import 602 628
+    function specifier_from 632 652
+    function with_final_newline 655 661
+    function module_function_recipe 665 757
+    function read_source 761 771
+    function plan_module_function_step 776 815
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 22972
-    named_node_count 4781
-    distinct_node_kinds 81
+    total_link_count 23606
+    named_node_count 4901
+    distinct_node_kinds 82
     node_kinds
-      arguments 447
-      array_expression 9
+      arguments 457
+      array_expression 10
       array_type 14
       assignment_expression 4
       attribute 2
       attribute_item 2
-      binary_expression 81
-      block 94
+      binary_expression 85
+      block 98
       boolean_literal 2
-      break_expression 2
-      call_expression 447
-      char_literal 45
-      closure_expression 69
-      closure_parameters 69
+      break_expression 3
+      call_expression 457
+      char_literal 52
+      closure_expression 70
+      closure_parameters 70
       compound_assignment_expr 2
       const_item 5
       continue_expression 5
@@ -70,24 +73,24 @@ self_ast_census
       doc_comment 94
       else_clause 11
       escape_sequence 4
-      expression_statement 69
+      expression_statement 76
       field_declaration 14
       field_declaration_list 3
-      field_expression 408
-      field_identifier 454
+      field_expression 414
+      field_identifier 460
       field_initializer 32
       field_initializer_list 9
       float_literal 1
-      for_expression 7
+      for_expression 8
       function_item 25
       generic_function 3
       generic_type 47
-      identifier 961
-      if_expression 28
-      index_expression 34
+      identifier 995
+      if_expression 31
+      index_expression 36
       inner_doc_comment_marker 25
-      integer_literal 34
-      let_condition 4
+      integer_literal 36
+      let_condition 5
       let_declaration 106
       line_comment 106
       macro_invocation 13
@@ -95,19 +98,20 @@ self_ast_census
       match_block 2
       match_expression 2
       match_pattern 5
+      mod_item 3
       mutable_specifier 16
       outer_doc_comment_marker 69
       parameter 46
       parameters 25
       parenthesized_expression 7
       primitive_type 53
-      range_expression 24
-      reference_expression 72
+      range_expression 26
+      reference_expression 74
       reference_type 61
-      return_expression 13
-      scoped_identifier 104
+      return_expression 15
+      scoped_identifier 106
       scoped_type_identifier 2
-      scoped_use_list 4
+      scoped_use_list 5
       self 1
       shorthand_field_initializer 8
       slice_pattern 3
@@ -120,13 +124,13 @@ self_ast_census
       token_tree 19
       try_expression 20
       tuple_expression 12
-      tuple_pattern 11
-      tuple_struct_pattern 11
+      tuple_pattern 12
+      tuple_struct_pattern 12
       tuple_type 2
       type_arguments 50
       type_identifier 123
-      unary_expression 22
-      use_declaration 7
-      use_list 4
-      visibility_modifier 21
+      unary_expression 23
+      use_declaration 8
+      use_list 5
+      visibility_modifier 23
       while_expression 1

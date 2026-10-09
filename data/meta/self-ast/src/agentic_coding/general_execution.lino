@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/general_execution.rs
   language rust
   fidelity full_ast
-  byte_len 32808
-  line_count 775
-  content_id source_module_d486d989b7f99ba3
-  symbol_count 30
+  byte_len 33635
+  line_count 798
+  content_id source_module_b6a2e13aa684adad
+  symbol_count 31
   symbols
     const EXPECTED_PLACEHOLDER 15 15
     const OBSERVED_PLACEHOLDER 16 16
@@ -13,96 +13,101 @@ self_ast_census
     const PLAN_PATH_PLACEHOLDER 18 18
     function plan_general_change_step 20 27
     function plan_work_item_change_step 34 40
-    function general_change_step 42 235
-    function absent_plan_event 239 244
-    function plan_event_append_command 246 264
-    function unverified_plan_event 266 271
-    function plan_event_step 273 359
-    function plan_work_item_execution 375 406
-    function plan_work_item_read 421 475
-    function prepared_pull_reference 481 492
-    function work_item_fetch_arguments 494 501
-    function issue_view_command 505 517
-    function rest_segments 523 535
-    function issue_rest_read_command 541 552
-    function issue_api_read_command 557 568
-    function work_item_read_failure_report 576 588
-    function repository_work_item_objective 595 602
-    function literal_verification_matches 606 611
-    function finish_general_change 613 673
-    function work_item_completion 683 696
-    function general_plan_completed 702 716
-    function tool_argument_path 718 724
-    function read_arguments 726 733
-    function capability_label 735 752
-    function general_plan_mismatch 754 767
-    function general_plan_unverified 769 775
+    function general_change_step 42 245
+    enum PlanEventOutcome 248 252
+    function absent_plan_event 256 261
+    function plan_event_append_command 263 281
+    function unverified_plan_event 283 288
+    function plan_event_step 290 382
+    function plan_work_item_execution 398 429
+    function plan_work_item_read 444 498
+    function prepared_pull_reference 504 515
+    function work_item_fetch_arguments 517 524
+    function issue_view_command 528 540
+    function rest_segments 546 558
+    function issue_rest_read_command 564 575
+    function issue_api_read_command 580 591
+    function work_item_read_failure_report 599 611
+    function repository_work_item_objective 618 625
+    function literal_verification_matches 629 634
+    function finish_general_change 636 696
+    function work_item_completion 706 719
+    function general_plan_completed 725 739
+    function tool_argument_path 741 747
+    function read_arguments 749 756
+    function capability_label 758 775
+    function general_plan_mismatch 777 790
+    function general_plan_unverified 792 798
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 20404
-    named_node_count 4195
-    distinct_node_kinds 71
+    total_link_count 20757
+    named_node_count 4259
+    distinct_node_kinds 75
     node_kinds
-      arguments 356
+      arguments 355
       array_expression 9
       array_type 12
       assignment_expression 7
       attribute 1
       attribute_item 1
-      binary_expression 67
-      block 85
-      boolean_literal 2
-      call_expression 356
+      binary_expression 69
+      block 89
+      boolean_literal 4
+      call_expression 355
       char_literal 10
-      closure_expression 34
-      closure_parameters 34
+      closure_expression 32
+      closure_parameters 32
       const_item 4
       crate 13
-      doc_comment 72
-      else_clause 2
+      doc_comment 73
+      else_clause 4
+      enum_item 1
+      enum_variant 3
+      enum_variant_list 1
       escape_sequence 1
-      expression_statement 91
-      field_expression 294
-      field_identifier 299
+      expression_statement 92
+      field_expression 292
+      field_identifier 297
       field_initializer 5
       field_initializer_list 1
       for_expression 1
       function_item 26
       function_modifiers 1
-      generic_type 13
-      identifier 1014
-      if_expression 43
+      generic_type 12
+      identifier 1045
+      if_expression 45
       inner_doc_comment_marker 1
       integer_literal 14
       let_chain 12
-      let_condition 26
-      let_declaration 52
+      let_condition 25
+      let_declaration 53
       lifetime 2
-      line_comment 128
+      line_comment 129
       macro_invocation 30
-      match_arm 22
-      match_block 4
-      match_expression 4
-      match_pattern 22
+      match_arm 25
+      match_block 5
+      match_expression 5
+      match_pattern 25
       mutable_specifier 12
       or_pattern 3
-      outer_doc_comment_marker 71
+      ordered_field_declaration_list 1
+      outer_doc_comment_marker 72
       parameter 50
       parameters 26
-      parenthesized_expression 5
+      parenthesized_expression 3
       primitive_type 28
       reference_expression 81
       reference_type 59
-      return_expression 36
-      scoped_identifier 156
+      return_expression 37
+      scoped_identifier 171
       scoped_type_identifier 2
       scoped_use_list 3
       source_file 1
-      string_content 111
-      string_literal 112
+      string_content 112
+      string_literal 113
       struct_expression 1
       super 29
       token_tree 45
@@ -111,9 +116,9 @@ self_ast_census
       tuple_pattern 7
       tuple_struct_pattern 31
       tuple_type 1
-      type_arguments 13
-      type_identifier 70
-      unary_expression 26
+      type_arguments 12
+      type_identifier 71
+      unary_expression 24
       use_declaration 8
       use_list 3
       visibility_modifier 3

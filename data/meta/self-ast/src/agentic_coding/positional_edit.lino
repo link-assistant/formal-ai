@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/positional_edit.rs
   language rust
   fidelity full_ast
-  byte_len 39239
+  byte_len 39244
   line_count 1000
-  content_id source_module_b32c768f72457eda
+  content_id source_module_b7348386b6e579dd
   symbol_count 41
   symbols
     module insert_lines 21 21
@@ -53,21 +53,21 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 29170
-    named_node_count 5958
+    total_link_count 29143
+    named_node_count 5952
     distinct_node_kinds 87
     node_kinds
-      arguments 541
+      arguments 538
       array_expression 18
       array_type 10
       assignment_expression 4
       attribute 2
       attribute_item 2
       base_field_initializer 3
-      binary_expression 103
+      binary_expression 102
       block 132
       boolean_literal 3
-      call_expression 541
+      call_expression 538
       captured_pattern 1
       char_literal 26
       closure_expression 91
@@ -81,8 +81,8 @@ self_ast_census
       expression_statement 87
       field_declaration 14
       field_declaration_list 3
-      field_expression 483
-      field_identifier 510
+      field_expression 480
+      field_identifier 507
       field_initializer 16
       field_initializer_list 7
       for_expression 13
@@ -90,7 +90,7 @@ self_ast_census
       function_modifiers 1
       generic_function 5
       generic_type 55
-      identifier 1308
+      identifier 1309
       if_expression 46
       index_expression 47
       inner_doc_comment_marker 2
@@ -114,11 +114,11 @@ self_ast_census
       parenthesized_expression 10
       primitive_type 90
       range_expression 30
-      reference_expression 77
+      reference_expression 79
       reference_pattern 7
       reference_type 70
       return_expression 21
-      scoped_identifier 73
+      scoped_identifier 75
       scoped_type_identifier 4
       scoped_use_list 6
       shorthand_field_initializer 8
@@ -128,7 +128,7 @@ self_ast_census
       string_literal 37
       struct_expression 7
       struct_item 3
-      super 41
+      super 42
       token_tree 6
       try_expression 25
       tuple_expression 30
@@ -139,7 +139,7 @@ self_ast_census
       type_identifier 118
       type_item 1
       type_parameters 1
-      unary_expression 36
+      unary_expression 37
       use_declaration 12
       use_list 6
       visibility_modifier 30

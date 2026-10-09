@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/shell_command_policy.rs
   language rust
   fidelity full_ast
-  byte_len 15128
+  byte_len 15110
   line_count 393
-  content_id source_module_1349cf568dc07157
+  content_id source_module_4866fd610f240efc
   symbol_count 15
   symbols
     struct Sentence 21 26
@@ -27,12 +27,12 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 8774
-    named_node_count 1768
+    total_link_count 8735
+    named_node_count 1757
     distinct_node_kinds 73
     node_kinds
       abstract_type 1
-      arguments 130
+      arguments 128
       array_expression 2
       array_type 2
       assignment_expression 7
@@ -40,8 +40,8 @@ self_ast_census
       block 43
       boolean_literal 3
       break_expression 2
-      call_expression 130
-      char_literal 36
+      call_expression 128
+      char_literal 35
       closure_expression 24
       closure_parameters 24
       const_item 1
@@ -52,8 +52,8 @@ self_ast_census
       expression_statement 36
       field_declaration 2
       field_declaration_list 1
-      field_expression 109
-      field_identifier 114
+      field_expression 106
+      field_identifier 111
       field_initializer 3
       field_initializer_list 2
       for_expression 4
@@ -61,11 +61,11 @@ self_ast_census
       function_type 1
       generic_function 1
       generic_type 12
-      identifier 299
+      identifier 300
       if_expression 18
       index_expression 10
       inner_doc_comment_marker 12
-      integer_literal 9
+      integer_literal 8
       let_chain 2
       let_condition 2
       let_declaration 31

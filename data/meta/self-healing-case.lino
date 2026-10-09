@@ -5,8 +5,8 @@ repair_case
   human_gated "true"
   source_round_trip
     module_path "src/agentic_coding/planner.rs"
-    total_link_count "20425"
-    named_node_count "3976"
+    total_link_count "19868"
+    named_node_count "3854"
     faithful "true"
   failure_trace
     unknown_trace

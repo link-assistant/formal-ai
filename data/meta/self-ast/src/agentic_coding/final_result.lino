@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/final_result.rs
   language rust
   fidelity full_ast
-  byte_len 6575
-  line_count 187
-  content_id source_module_c0f251c8bbaa51f1
-  symbol_count 14
+  byte_len 3734
+  line_count 118
+  content_id source_module_69b3c9c13321fad5
+  symbol_count 11
   symbols
     enum FinalDisposition 6 12
     enum FinalPayloadRole 15 19
@@ -18,82 +18,70 @@ self_ast_census
     function into_plan 85 88
     function record 92 99
     function record_with_role 101 118
-    module tests 121 187
-    function certificate_belongs_only_to_selected_final_bytes 126 151
-    function source_operand_requires_a_complete_matching_successful_receipt 154 186
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 4700
-    named_node_count 916
-    distinct_node_kinds 67
+    total_link_count 2824
+    named_node_count 525
+    distinct_node_kinds 58
     node_kinds
-      arguments 47
-      assignment_expression 5
-      attribute 7
-      attribute_item 7
+      arguments 16
+      assignment_expression 2
+      attribute 4
+      attribute_item 4
       binary_expression 17
-      block 12
-      boolean_literal 1
-      call_expression 47
-      closure_expression 5
-      closure_parameters 5
-      crate 1
-      declaration_list 2
+      block 9
+      call_expression 16
+      closure_expression 4
+      closure_parameters 4
+      declaration_list 1
       doc_comment 2
       enum_item 2
       enum_variant 8
       enum_variant_list 2
-      expression_statement 15
+      expression_statement 3
       field_declaration 13
       field_declaration_list 3
-      field_expression 50
-      field_identifier 87
-      field_initializer 24
-      field_initializer_list 6
-      function_item 8
+      field_expression 29
+      field_identifier 50
+      field_initializer 8
+      field_initializer_list 3
+      function_item 6
       generic_type 6
-      identifier 240
+      identifier 118
       if_expression 1
       impl_item 1
       inner_doc_comment_marker 1
-      integer_literal 3
+      integer_literal 1
       let_condition 1
-      let_declaration 11
+      let_declaration 1
       line_comment 2
-      macro_invocation 9
       match_arm 2
       match_block 1
       match_expression 1
       match_pattern 2
-      mod_item 1
-      mutable_specifier 6
+      mutable_specifier 3
       outer_doc_comment_marker 1
       parameter 13
-      parameters 8
+      parameters 6
       parenthesized_expression 2
       primitive_type 6
       reference_expression 2
       reference_type 5
-      scoped_identifier 28
-      scoped_type_identifier 1
-      scoped_use_list 1
+      scoped_identifier 13
       self 7
       self_parameter 3
       shorthand_field_initializer 4
       source_file 1
-      string_content 9
-      string_literal 9
-      struct_expression 6
+      struct_expression 3
       struct_item 3
-      super 27
-      token_tree 30
+      super 25
+      token_tree 4
       tuple_struct_pattern 3
       type_arguments 6
-      type_identifier 44
+      type_identifier 41
       unary_expression 5
-      use_declaration 3
-      use_list 1
+      use_declaration 1
       visibility_modifier 24

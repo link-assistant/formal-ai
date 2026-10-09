@@ -1,0 +1,63 @@
+self_ast_census
+  target src/agentic_coding/shell_command/explicit.rs
+  language rust
+  fidelity full_ast
+  byte_len 1715
+  line_count 42
+  content_id source_module_5e633eca2cec28cd
+  symbol_count 1
+  symbols
+    function command 8 42
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 1341
+    named_node_count 259
+    distinct_node_kinds 44
+    node_kinds
+      arguments 30
+      array_expression 1
+      binary_expression 5
+      block 8
+      call_expression 30
+      char_literal 13
+      closure_expression 2
+      closure_parameters 2
+      crate 1
+      doc_comment 1
+      else_clause 1
+      expression_statement 7
+      field_expression 17
+      field_identifier 17
+      function_item 1
+      generic_type 1
+      identifier 66
+      if_expression 5
+      inner_doc_comment_marker 1
+      integer_literal 1
+      let_condition 1
+      let_declaration 7
+      line_comment 1
+      parameter 1
+      parameters 1
+      parenthesized_expression 1
+      primitive_type 1
+      reference_expression 5
+      reference_type 1
+      return_expression 3
+      scoped_identifier 8
+      scoped_use_list 1
+      source_file 1
+      string_content 1
+      string_literal 1
+      super 4
+      try_expression 2
+      tuple_struct_pattern 1
+      type_arguments 1
+      type_identifier 2
+      unary_expression 2
+      use_declaration 1
+      use_list 1
+      visibility_modifier 1

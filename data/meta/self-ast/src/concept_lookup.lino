@@ -2,10 +2,10 @@ self_ast_census
   target src/concept_lookup.rs
   language rust
   fidelity signature
-  byte_len 35963
+  byte_len 36134
   line_count 955
-  content_id source_module_508fcef4188edb47
-  symbol_count 49
+  content_id source_module_eec4730fd9fb31a6
+  symbol_count 50
   symbols
     struct ConceptSense 31 62
     function content_id 71 82
@@ -16,43 +16,44 @@ self_ast_census
     function new 159 164
     type Item 168 168
     function entry_url 170 172
-    function read 174 235
-    function sense_language 244 253
-    struct RawGloss 257 262
-    const GENERIC_PAGE_EXTRACTOR 267 267
-    function read_glosses 270 288
-    function extractor_gloss_texts 294 299
-    function extractor_statements 307 313
-    function generic_page_glosses 319 340
-    function wiktionary_entry 344 373
-    function wordnet_sense 377 398
-    function mediawiki_summary 402 413
-    function wiktionary_extract 439 487
-    function is_wikitext_heading 490 492
-    function is_respelling_of 500 511
-    function wikidata_entity 515 537
-    function projection_glosses 541 546
-    function collect_projection 548 575
-    function string_at 577 579
-    function strings_at 581 586
-    function array_at 588 594
-    function compact 597 599
-    struct RegistrySourceLookup 602 611
-    function new 616 634
-    function outcomes 638 640
-    function consulted 644 646
-    function bounds 650 652
-    function research_unmatched 660 683
-    function resolve 686 706
-    function lookup 710 734
-    function research_page_senses 749 771
-    function lookup_surface 775 802
-    function unknown_surfaces 813 828
-    function is_unknown_surface 839 844
-    function unknown_surface_spans 854 898
-    const PAIRS 855 855
-    function outside_quotes 902 926
-    const PAIRS 903 903
-    function has_quoted_span 935 937
+    function fallback_entry_url 173 175
+    function read 177 238
+    function sense_language 247 256
+    struct RawGloss 260 265
+    const GENERIC_PAGE_EXTRACTOR 270 270
+    function read_glosses 273 291
+    function extractor_gloss_texts 297 302
+    function extractor_statements 310 316
+    function generic_page_glosses 322 343
+    function wiktionary_entry 347 376
+    function wordnet_sense 380 401
+    function mediawiki_summary 405 416
+    function wiktionary_extract 442 490
+    function is_wikitext_heading 493 495
+    function is_respelling_of 503 514
+    function wikidata_entity 518 540
+    function projection_glosses 544 549
+    function collect_projection 551 578
+    function string_at 580 582
+    function strings_at 584 589
+    function array_at 591 597
+    function compact 600 602
+    struct RegistrySourceLookup 605 614
+    function new 619 637
+    function outcomes 641 643
+    function consulted 647 649
+    function bounds 653 655
+    function research_unmatched 663 686
+    function resolve 689 709
+    function lookup 713 737
+    function research_page_senses 752 774
+    function lookup_surface 778 805
+    function unknown_surfaces 816 831
+    function is_unknown_surface 842 847
+    function unknown_surface_spans 857 901
+    const PAIRS 858 858
+    function outside_quotes 904 928
+    const PAIRS 905 905
+    function has_quoted_span 936 938
     function seeded_surfaces 940 955
     static CACHE 941 941

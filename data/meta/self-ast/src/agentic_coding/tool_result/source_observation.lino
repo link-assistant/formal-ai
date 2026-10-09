@@ -1,0 +1,77 @@
+self_ast_census
+  target src/agentic_coding/tool_result/source_observation.rs
+  language rust
+  fidelity full_ast
+  byte_len 5386
+  line_count 137
+  content_id source_module_0f2af6ea98d1a0e1
+  symbol_count 7
+  symbols
+    function observed_bytes_match 10 55
+    function observed_digest_matches 57 63
+    function reported_exit_code 70 72
+    function harness_reported_failure 81 83
+    function shell_step 88 93
+    function normalized_payload 98 103
+    function observed_payload 109 137
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 4092
+    named_node_count 857
+    distinct_node_kinds 52
+    node_kinds
+      arguments 85
+      array_expression 5
+      binary_expression 16
+      block 15
+      boolean_literal 6
+      call_expression 85
+      char_literal 1
+      closure_expression 17
+      closure_parameters 17
+      crate 7
+      doc_comment 24
+      escape_sequence 2
+      expression_statement 14
+      field_expression 75
+      field_identifier 76
+      field_initializer 1
+      field_initializer_list 1
+      function_item 7
+      generic_function 2
+      generic_type 4
+      identifier 166
+      if_expression 6
+      inner_doc_comment_marker 1
+      integer_literal 4
+      let_chain 2
+      let_condition 6
+      let_declaration 11
+      line_comment 24
+      outer_doc_comment_marker 23
+      parameter 9
+      parameters 7
+      parenthesized_expression 2
+      primitive_type 13
+      reference_expression 1
+      reference_type 9
+      return_expression 8
+      scoped_identifier 7
+      scoped_use_list 1
+      source_file 1
+      string_content 24
+      string_literal 24
+      struct_expression 1
+      super 1
+      try_expression 1
+      tuple_pattern 5
+      tuple_struct_pattern 8
+      type_arguments 6
+      type_identifier 10
+      unary_expression 6
+      use_declaration 2
+      use_list 1
+      visibility_modifier 7

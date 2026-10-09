@@ -2,10 +2,10 @@ self_ast_census
   target src/solver_helpers/mod.rs
   language rust
   fidelity signature
-  byte_len 31907
-  line_count 828
-  content_id source_module_3df47956ecd53f53
-  symbol_count 51
+  byte_len 33652
+  line_count 873
+  content_id source_module_52742dd0b2fa69a0
+  symbol_count 53
   symbols
     module code 13 13
     struct DecomposedSubImpulse 23 27
@@ -22,39 +22,41 @@ self_ast_census
     function unresolved_surfaces_present 104 106
     function miss_names_consulted_sources 112 114
     function bare_concept_misses 125 133
-    function record_decomposition 135 191
-    function record_sub_impulses 193 208
-    function independent_actionable_segments 210 220
-    function split_candidate_actionable_parts 222 237
-    function split_sentences 239 255
-    function push_trimmed_segment 257 262
-    function strip_leading_coordinator 264 277
-    function looks_like_independent_impulse 279 304
-    function record_candidates 306 320
-    struct ValidationChoice 323 325
-    function record_validation 327 342
-    function extract_range 344 353
-    function is_prime 355 367
-    function extract_quoted_phrase 369 379
-    function extract_backticked 381 386
-    function recall_name_from_history 391 403
-    function last_user_turn 407 413
-    function last_assistant_turn 418 424
-    function last_turn 430 439
-    function extract_introduced_name 441 444
-    function extract_assistant_name 452 460
-    function extract_name_after_needles 464 487
-    function recall_assistant_name_from_history 494 503
-    function humanize_url 516 541
-    function hex_nibble 543 550
-    function is_reserved_uri_delimiter 552 557
-    function extract_fenced_block 562 582
-    function is_write_script_request 603 617
-    function names_no_task_beyond_the_minimal_script 631 656
-    function format_write_script_execution 658 698
-    function env_definition_fusion_by_default 701 707
-    function env_bool 714 716
-    function env_bool_with_extra_truthy 719 735
-    function env_bounded_f32 738 745
-    function env_truthy 748 757
-    function config_from_env 762 828
+    function record_decomposition 135 195
+    function record_sub_impulses 197 212
+    function request_after_leading_courtesy 216 234
+    function courtesy_context_for_single_directive 238 253
+    function independent_actionable_segments 255 265
+    function split_candidate_actionable_parts 267 282
+    function split_sentences 284 300
+    function push_trimmed_segment 302 307
+    function strip_leading_coordinator 309 322
+    function looks_like_independent_impulse 324 349
+    function record_candidates 351 365
+    struct ValidationChoice 368 370
+    function record_validation 372 387
+    function extract_range 389 398
+    function is_prime 400 412
+    function extract_quoted_phrase 414 424
+    function extract_backticked 426 431
+    function recall_name_from_history 436 448
+    function last_user_turn 452 458
+    function last_assistant_turn 463 469
+    function last_turn 475 484
+    function extract_introduced_name 486 489
+    function extract_assistant_name 497 505
+    function extract_name_after_needles 509 532
+    function recall_assistant_name_from_history 539 548
+    function humanize_url 561 586
+    function hex_nibble 588 595
+    function is_reserved_uri_delimiter 597 602
+    function extract_fenced_block 607 627
+    function is_write_script_request 648 662
+    function names_no_task_beyond_the_minimal_script 676 701
+    function format_write_script_execution 703 743
+    function env_definition_fusion_by_default 746 752
+    function env_bool 759 761
+    function env_bool_with_extra_truthy 764 780
+    function env_bounded_f32 783 790
+    function env_truthy 793 802
+    function config_from_env 807 873

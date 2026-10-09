@@ -1,0 +1,11 @@
+self_ast_census
+  target src/source_fetch/seed_captures.rs
+  language rust
+  fidelity signature
+  byte_len 1598
+  line_count 47
+  content_id source_module_0bae1a14814876d3
+  symbol_count 2
+  symbols
+    function read_seed_capture 5 43
+    module tests 47 47
