@@ -1,0 +1,97 @@
+{
+  "archive": "T4107-T4147.json.gz",
+  "entries": 186,
+  "compressedSHA": "92114c98603742de6f6b393f37c4314d190093c99feaff85ceaed042025bf7d9",
+  "decodedSHA": "39440d4ae592a6bdc5d34a8a38637f1f19286fb8c1e79cf0e4afa0cb58f610e4",
+  "head": "8eb4ef79fa996ca86d5b90e8036f23e3e617571c",
+  "source": [
+    {
+      "path": "scripts/prepared-release-binary.mjs",
+      "bytes": 6515,
+      "sha256": "3f06667000dbf019833d31530928c01d41d123564121ef7776525fc43cbd9630"
+    },
+    {
+      "path": "scripts/release-image-factory.mjs",
+      "bytes": 11685,
+      "sha256": "e904f99046f06521b8beb491b131072a3141f862e808b7bfb4cf381902e5c1d6"
+    },
+    {
+      "path": "rust/tests/web/prepared-release-factory.test.mjs",
+      "bytes": 19002,
+      "sha256": "f394ab5dae9432e53afe4aaa353565ae8999afcbaf51e3a38cfd12ab807f4553"
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "bytes": 66384,
+      "sha256": "e47adfc93ff5dd5c4cd1f2ed0d272f516634c54388559603b2d36f869f9ccf39"
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/job_timeouts_as_failures.rs",
+      "bytes": 22168,
+      "sha256": "2ec3d9f49f5557cdd8a7f020243e398a9b49d50c441435e9fd4bf564abdb0f94"
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/release_publishing.rs",
+      "bytes": 40806,
+      "sha256": "5726ff564c88d2d17a4607eaa4999b2a0e3aefcbe497c51451b55ece477e7d6d"
+    },
+    {
+      "path": "changelog.d/20261010_030000_prepared_release_images.md",
+      "bytes": 885,
+      "sha256": "f325891fb77350793c508e7a6f7a99ec4b0f161b091525a8e05cfcf39d83f14e"
+    }
+  ],
+  "counts": {
+    "tasks": 41,
+    "physicalCalls": 77,
+    "writeCalls": 19,
+    "bashCalls": 57,
+    "readCalls": 0,
+    "grepCalls": 1
+  },
+  "verification": {
+    "finalTask": "T4147",
+    "passing": 37,
+    "failures": 0,
+    "skipped": 0,
+    "todo": 0,
+    "newControls": 18,
+    "unchangedControls": 19,
+    "originalCommandsUnchanged": true,
+    "actualNodeStandIns": true,
+    "declaredCompilerFixture": true,
+    "actionlint": true,
+    "targetedRustfmt": true,
+    "readability": true,
+    "scopedDiff": true,
+    "sizeViolations": 0,
+    "actualCiPolicy": {
+      "meeting": 109,
+      "total": 115,
+      "exceptions": 6
+    },
+    "originalReleaseFloorUnchanged": true
+  },
+  "claims": {
+    "physicalEditsViaFormalAi": true,
+    "autonomousSynthesis": false,
+    "nativeCompilation": false,
+    "realDockerExecution": false,
+    "registryPublication": false,
+    "freshColdTiming": false,
+    "sixU9ExceptionsClosed": false,
+    "specificationCountIncrease": false,
+    "assertionWaivers": false,
+    "latestPublishedTrustWeakened": false
+  },
+  "authorship": {
+    "originalBroadTask": "T4114",
+    "exactBroadRetry": "T4136",
+    "originalTaskBytes": 460,
+    "suppliedSourceReplay": true,
+    "sourceReplayIsNotIndependentImplementation": true,
+    "initialInstallerPhysicalWrites": 6,
+    "followingProductionFileWrites": 7,
+    "costMeasured": false
+  }
+}

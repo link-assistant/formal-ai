@@ -475,17 +475,27 @@ fn release_workflow_publishes_prebuilt_ghcr_image_after_crate_is_visible_and_opt
         5,
         "release publishing and upgrade checks should authenticate to their registries"
     );
+    // Validated source/version labels are rendered by the compile-free factory;
+    // each of the two guarded release jobs retains a GHCR route and optional Hub mirror.
+    for mode in ["publish", "mirror"] {
+        let invocation = format!(
+            "run: node scripts/release-image-factory.mjs {mode} prepared-release \"$RELEASE_VERSION\""
+        );
+        assert_eq!(
+            workflow.matches(invocation.as_str()).count(),
+            2,
+            "both release jobs must retain the {mode} route"
+        );
+    }
     assert_eq!(
         workflow.matches("docker/metadata-action@v6").count(),
-        4,
-        "auto and manual release jobs should derive Docker tags for GHCR and optionally Docker Hub"
+        0,
+        "factory tags are selected version/latest, without unused action outputs"
     );
     assert_eq!(
         workflow.matches("docker/build-push-action@v7").count(),
-        // Four publishing builds, plus the issue #808 pull-request `docker-build`
-        // job, which builds the same image with `push: false`.
-        5,
-        "auto and manual release jobs should publish GHCR images and optionally Docker Hub mirrors"
+        1,
+        "the independent pull-request Docker build remains action-backed"
     );
     assert!(
         workflow.matches("packages: write").count() >= 2,

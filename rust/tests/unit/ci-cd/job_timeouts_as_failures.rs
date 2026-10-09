@@ -167,11 +167,64 @@ fn every_docker_build_push_step_uses_the_gha_layer_cache() {
         .skip(1)
         .collect();
 
+    let factory = repository_file("scripts/release-image-factory.mjs");
+    let producer = repository_file("scripts/prepared-release-binary.mjs");
+    let mut publishing_routes = 0;
+    for job in ["auto-release", "manual-release"] {
+        let body = job_block(&workflow, job);
+        assert_eq!(
+            body.matches("run: node scripts/prepared-release-binary.mjs")
+                .count(),
+            1
+        );
+        for mode in ["publish", "mirror"] {
+            let invocation = format!(
+                "run: node scripts/release-image-factory.mjs {mode} prepared-release \"$RELEASE_VERSION\""
+            );
+            assert_eq!(
+                body.matches(invocation.as_str()).count(),
+                1,
+                "{job} must bind one {mode} route"
+            );
+            publishing_routes += 1;
+        }
+        assert!(body.contains("ACTIONS_RUNTIME_TOKEN") && body.contains("ACTIONS_RESULTS_URL"));
+        assert!(
+            body.contains("core.setSecret(value)")
+                && body.contains("core.exportVariable(key, value)")
+        );
+        assert!(body.contains("if: steps.dockerhub.outputs.enabled == 'true'"));
+    }
     assert!(
-        build_steps.len() >= 4,
-        "expected the GHCR and Docker Hub publish steps in both auto-release \
-         and manual-release, found {}",
-        build_steps.len()
+        publishing_routes >= 4,
+        "both guarded jobs retain GHCR and optional Docker Hub routes"
+    );
+    assert_eq!(
+        build_steps.len(),
+        1,
+        "the independent pull-request Docker build remains action-backed"
+    );
+    for required in [
+        "BINARY_SOURCE=prebuilt",
+        "'--cache-from','type=gha,scope=docker-image'",
+        "'--cache-to','type=gha,mode=max,scope=docker-image'",
+        "record.selection.head",
+        "record.executable.sha256",
+        "['tag',source.image,image+':'+suffix]",
+        "[version,'latest']",
+    ] {
+        assert!(
+            factory.contains(required),
+            "factory contract missing {required}"
+        );
+    }
+    assert!(
+        producer.contains("validatePreparedSelection")
+            && producer.contains("selected release tag differs from actual source")
+    );
+    assert!(
+        producer.contains("assert.deepEqual(after,before")
+            && producer.contains("packageContract(metadata).version,version")
     );
 
     for (index, step) in build_steps.iter().enumerate() {

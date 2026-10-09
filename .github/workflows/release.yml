@@ -673,7 +673,7 @@ jobs:
       (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
       (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped') &&
       (needs.server-parity.result == 'success' || needs.server-parity.result == 'skipped')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 90
     outputs:
       pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
@@ -732,7 +732,10 @@ jobs:
         run: rust-script scripts/check-release-needed.rs
       - name: Build release
         if: steps.check.outputs.should_release == 'true'
-        run: cargo build --manifest-path rust/Cargo.toml --release
+        env:
+          RELEASE_VERSION: ${{ steps.current_version.outputs.version }}
+          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
+        run: node scripts/prepared-release-binary.mjs "$RELEASE_VERSION" prepared-release
       - name: Verify packaged crate archive
         if: steps.check.outputs.should_release == 'true'
         run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai
@@ -782,22 +785,22 @@ jobs:
             steps.publish-crate.outputs.publish_result == 'success'
           )
         uses: ./.github/actions/setup-buildx-resilient
-      - name: Extract GHCR Docker metadata
+      - name: Expose actual BuildKit cache runtime
         if: |
           steps.check.outputs.should_release == 'true' && (
             steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
-        id: ghcr-meta
-        uses: docker/metadata-action@v6
+        uses: actions/github-script@v8
         with:
-          context: git
-          images: ${{ env.GHCR_IMAGE }}
-          tags: |
-            type=raw,value=latest
-            type=raw,value=${{ steps.current_version.outputs.version }}
-          labels: |
-            org.opencontainers.image.version=${{ steps.current_version.outputs.version }}
+          script: |
+            for (const key of ['ACTIONS_RUNTIME_TOKEN', 'ACTIONS_RESULTS_URL']) {
+              const value = process.env[key];
+              if (!value) throw new Error(`Required BuildKit cache environment missing: ${key}`);
+              if (key === 'ACTIONS_RUNTIME_TOKEN') core.setSecret(value);
+              core.exportVariable(key, value);
+            }
+            core.exportVariable('ACTIONS_CACHE_SERVICE_V2', 'true');
       - name: Publish Docker image to GHCR
         id: ghcr-publish
         if: |
@@ -805,19 +808,11 @@ jobs:
             steps.prepared.outputs.crate_published == 'true' ||
             steps.publish-crate.outputs.publish_result == 'success'
           )
-        # Issue #1076: a step-level cap, unlike the job cap, reports an overrun
-        # as a step *failure*, and run 33955786226 spent 24.6 of the job's 60
-        # minutes here with seven steps pending and nothing red. 45m is 1.4x
-        # the worst measured build (32.5 min); see the D15 note in dev/log.
         timeout-minutes: 45
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.ghcr-meta.outputs.tags }}
-          labels: ${{ steps.ghcr-meta.outputs.labels }}
-          cache-from: type=gha,scope=docker-image
-          cache-to: type=gha,mode=max,scope=docker-image
+        env:
+          RELEASE_VERSION: ${{ steps.current_version.outputs.version }}
+          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
+        run: node scripts/release-image-factory.mjs publish prepared-release "$RELEASE_VERSION" "$GHCR_IMAGE"
       - name: Publish and verify the slim GHCR sidecar
         if: |
           steps.check.outputs.should_release == 'true' && (
@@ -856,32 +851,13 @@ jobs:
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ env.DOCKERHUB_TOKEN }}
-      - name: Extract Docker metadata
-        if: steps.dockerhub.outputs.enabled == 'true'
-        id: docker-meta
-        uses: docker/metadata-action@v6
-        with:
-          context: git
-          images: ${{ env.DOCKERHUB_IMAGE }}
-          tags: |
-            type=raw,value=latest
-            type=raw,value=${{ steps.current_version.outputs.version }}
-          labels: |
-            org.opencontainers.image.version=${{ steps.current_version.outputs.version }}
       - name: Publish Docker image to Docker Hub
         if: steps.dockerhub.outputs.enabled == 'true'
-        # Issue #1076: reuses the layers the GHCR step above exported, so 20m
-        # is generous; 45m + 20m still fires before the 90m job cap.
         timeout-minutes: 20
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.docker-meta.outputs.tags }}
-          labels: ${{ steps.docker-meta.outputs.labels }}
-          cache-from: type=gha,scope=docker-image
-          # Issue #1057: the GHCR leg above already exported these layers.
-          cache-to: type=inline
+        env:
+          RELEASE_VERSION: ${{ steps.current_version.outputs.version }}
+          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
+        run: node scripts/release-image-factory.mjs mirror prepared-release "$RELEASE_VERSION" "$DOCKERHUB_IMAGE"
       - name: Create GitHub Release
         id: create-release
         if: |
@@ -904,12 +880,24 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
+          MIRROR_ENABLED: ${{ steps.dockerhub.outputs.enabled }}
           RELEASE_VERSION: ${{ steps.version.outputs.new_version || steps.current_version.outputs.version }}
         run: |
           set -euo pipefail
           test -s slim-image-release-receipt.json
           test -s slim-image-release-receipt.json.sha256
           gh release upload "v$RELEASE_VERSION" slim-image-release-receipt.json slim-image-release-receipt.json.sha256 --repo "$REPO" --clobber
+          cp prepared-release/source/source-selection.json prepared-release-source.json
+          cp prepared-release/binary/native-executable-receipt.json prepared-release-executable.json
+          cp prepared-release/prepared-build.json prepared-release-build.json
+          cp prepared-release/full-image.json prepared-release-full-image.json
+          files=(prepared-release-source.json prepared-release-executable.json prepared-release-build.json prepared-release-full-image.json)
+          if [ "$MIRROR_ENABLED" = true ]; then
+            cp prepared-release/dockerhub-image.json prepared-release-dockerhub-image.json
+            files+=(prepared-release-dockerhub-image.json)
+          fi
+          sha256sum "${files[@]}" > prepared-release-SHA256SUMS.txt
+          gh release upload "v$RELEASE_VERSION" "${files[@]}" prepared-release-SHA256SUMS.txt --repo "$REPO" --clobber
       - name: Resolve Pages deploy ref
         id: release_pages_ref
         if: always()
@@ -944,7 +932,7 @@ jobs:
       (needs.test-e2e-local.result == 'success' || needs.test-e2e-local.result == 'skipped') &&
       (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped') &&
       (needs.server-parity.result == 'success' || needs.server-parity.result == 'skipped')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 90
     outputs:
       pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
@@ -976,7 +964,10 @@ jobs:
         run: rust-script scripts/version-and-commit.rs --bump-type "$BUMP_TYPE" --description "$DESCRIPTION"
       - name: Build release
         if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
-        run: cargo build --manifest-path rust/Cargo.toml --release
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}
+          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
+        run: node scripts/prepared-release-binary.mjs "$RELEASE_VERSION" prepared-release
       - name: Verify packaged crate archive
         if: steps.version.outputs.version_committed == 'true' || steps.version.outputs.already_released == 'true'
         run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai
@@ -1021,40 +1012,32 @@ jobs:
             steps.version.outputs.already_released == 'true') &&
           steps.publish-crate.outputs.publish_result == 'success'
         uses: ./.github/actions/setup-buildx-resilient
-      - name: Extract GHCR Docker metadata
+      - name: Expose actual BuildKit cache runtime
         if: |
           (steps.version.outputs.version_committed == 'true' ||
             steps.version.outputs.already_released == 'true') &&
           steps.publish-crate.outputs.publish_result == 'success'
-        id: ghcr-meta
-        uses: docker/metadata-action@v6
+        uses: actions/github-script@v8
         with:
-          context: git
-          images: ${{ env.GHCR_IMAGE }}
-          tags: |
-            type=raw,value=latest
-            type=raw,value=${{ steps.version.outputs.new_version }}
-          labels: |
-            org.opencontainers.image.version=${{ steps.version.outputs.new_version }}
+          script: |
+            for (const key of ['ACTIONS_RUNTIME_TOKEN', 'ACTIONS_RESULTS_URL']) {
+              const value = process.env[key];
+              if (!value) throw new Error(`Required BuildKit cache environment missing: ${key}`);
+              if (key === 'ACTIONS_RUNTIME_TOKEN') core.setSecret(value);
+              core.exportVariable(key, value);
+            }
+            core.exportVariable('ACTIONS_CACHE_SERVICE_V2', 'true');
       - name: Publish Docker image to GHCR
         id: ghcr-publish
         if: |
           (steps.version.outputs.version_committed == 'true' ||
             steps.version.outputs.already_released == 'true') &&
           steps.publish-crate.outputs.publish_result == 'success'
-        # Issue #1076: a step-level cap, unlike the job cap, reports an overrun
-        # as a step *failure*, and run 33955786226 spent 24.6 of the job's 60
-        # minutes here with seven steps pending and nothing red. 45m is 1.4x
-        # the worst measured build (32.5 min); see the D15 note in dev/log.
         timeout-minutes: 45
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.ghcr-meta.outputs.tags }}
-          labels: ${{ steps.ghcr-meta.outputs.labels }}
-          cache-from: type=gha,scope=docker-image
-          cache-to: type=gha,mode=max,scope=docker-image
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}
+          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
+        run: node scripts/release-image-factory.mjs publish prepared-release "$RELEASE_VERSION" "$GHCR_IMAGE"
       - name: Publish and verify the slim GHCR sidecar
         if: |
           (steps.version.outputs.version_committed == 'true' ||
@@ -1090,32 +1073,13 @@ jobs:
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ env.DOCKERHUB_TOKEN }}
-      - name: Extract Docker metadata
-        if: steps.dockerhub.outputs.enabled == 'true'
-        id: docker-meta
-        uses: docker/metadata-action@v6
-        with:
-          context: git
-          images: ${{ env.DOCKERHUB_IMAGE }}
-          tags: |
-            type=raw,value=latest
-            type=raw,value=${{ steps.version.outputs.new_version }}
-          labels: |
-            org.opencontainers.image.version=${{ steps.version.outputs.new_version }}
       - name: Publish Docker image to Docker Hub
         if: steps.dockerhub.outputs.enabled == 'true'
-        # Issue #1076: reuses the layers the GHCR step above exported, so 20m
-        # is generous; 45m + 20m still fires before the 90m job cap.
         timeout-minutes: 20
-        uses: docker/build-push-action@v7
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.docker-meta.outputs.tags }}
-          labels: ${{ steps.docker-meta.outputs.labels }}
-          cache-from: type=gha,scope=docker-image
-          # Issue #1057: the GHCR leg above already exported these layers.
-          cache-to: type=inline
+        env:
+          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}
+          RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
+        run: node scripts/release-image-factory.mjs mirror prepared-release "$RELEASE_VERSION" "$DOCKERHUB_IMAGE"
       - name: Create GitHub Release
         id: create-release
         if: |
@@ -1136,12 +1100,24 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
+          MIRROR_ENABLED: ${{ steps.dockerhub.outputs.enabled }}
           RELEASE_VERSION: ${{ steps.version.outputs.new_version }}
         run: |
           set -euo pipefail
           test -s slim-image-release-receipt.json
           test -s slim-image-release-receipt.json.sha256
           gh release upload "v$RELEASE_VERSION" slim-image-release-receipt.json slim-image-release-receipt.json.sha256 --repo "$REPO" --clobber
+          cp prepared-release/source/source-selection.json prepared-release-source.json
+          cp prepared-release/binary/native-executable-receipt.json prepared-release-executable.json
+          cp prepared-release/prepared-build.json prepared-release-build.json
+          cp prepared-release/full-image.json prepared-release-full-image.json
+          files=(prepared-release-source.json prepared-release-executable.json prepared-release-build.json prepared-release-full-image.json)
+          if [ "$MIRROR_ENABLED" = true ]; then
+            cp prepared-release/dockerhub-image.json prepared-release-dockerhub-image.json
+            files+=(prepared-release-dockerhub-image.json)
+          fi
+          sha256sum "${files[@]}" > prepared-release-SHA256SUMS.txt
+          gh release upload "v$RELEASE_VERSION" "${files[@]}" prepared-release-SHA256SUMS.txt --repo "$REPO" --clobber
       - name: Resolve Pages deploy ref
         id: release_pages_ref
         if: always()
