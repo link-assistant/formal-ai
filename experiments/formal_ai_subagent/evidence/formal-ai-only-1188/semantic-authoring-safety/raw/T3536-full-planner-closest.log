@@ -1,0 +1,63 @@
+TAP version 13
+# (node:16287) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("/private/tmp/formal-ai-only-1188/contextual-asset-resolver-phase/full-planner-candidate-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: unsupported semantic goal is a typed gap without tool effects Implement a reusable observed text-asset resolver in contextual_asset_resolver.mjs, with independently meaningful closest tests. Read proposal.json and the observed Rust projection/translation sources first. Support only ReuseExistingAsset initially: an explicit default import with exactly type=text, actual source and asset identities, explicit destination context, permitted root ownership and target-relative existing asset path. Preserve unknown effects, reject context-free imports, missing or drifted source/assets, duplicate/unknown/nontext attributes, escaping or outside-root symlinks and ambiguous bindings before writing target artifacts. Prove moved destinations, aliases, Unicode paths and exact content with actual selected fixtures; no Transport implementation, invented asset or emitted Rust wrapper. This is selected-file scratch only; production sources/seed/ratchets and native compilation are out of scope. Report precise MissingContract gaps if source-backed implementation is unsupported.
+ok 1 - unsupported semantic goal is a typed gap without tool effects Implement a reusable observed text-asset resolver in contextual_asset_resolver.mjs, with independently meaningful closest tests. Read proposal.json and the observed Rust projection/translation sources first. Support only ReuseExistingAsset initially: an explicit default import with exactly type=text, actual source and asset identities, explicit destination context, permitted root ownership and target-relative existing asset path. Preserve unknown effects, reject context-free imports, missing or drifted source/assets, duplicate/unknown/nontext attributes, escaping or outside-root symlinks and ambiguous bindings before writing target artifacts. Prove moved destinations, aliases, Unicode paths and exact content with actual selected fixtures; no Transport implementation, invented asset or emitted Rust wrapper. This is selected-file scratch only; production sources/seed/ratchets and native compilation are out of scope. Report precise MissingContract gaps if source-backed implementation is unsupported.
+  ---
+  duration_ms: 1324.734666
+  ...
+# Subtest: unsupported semantic goal is a typed gap without tool effects Implement a resolver in alias.mjs with meaningful tests. Read proposal.json first.
+ok 2 - unsupported semantic goal is a typed gap without tool effects Implement a resolver in alias.mjs with meaningful tests. Read proposal.json first.
+  ---
+  duration_ms: 40.56
+  ...
+# Subtest: unsupported semantic goal is a typed gap without tool effects Implement a reusable helper in folder/方法-α.mjs with existing source-backed symlinks initially.
+ok 3 - unsupported semantic goal is a typed gap without tool effects Implement a reusable helper in folder/方法-α.mjs with existing source-backed symlinks initially.
+  ---
+  duration_ms: 768.933
+  ...
+# Subtest: unsupported semantic goal is a typed gap without tool effects Implement a helper in output.mjs. Do not invent source links.
+ok 4 - unsupported semantic goal is a typed gap without tool effects Implement a helper in output.mjs. Do not invent source links.
+  ---
+  duration_ms: 29.8145
+  ...
+# Subtest: unsupported semantic goal is a typed gap without tool effects Implement a helper in output.mjs. Source links are background context.
+ok 5 - unsupported semantic goal is a typed gap without tool effects Implement a helper in output.mjs. Source links are background context.
+  ---
+  duration_ms: 29.640791
+  ...
+# Subtest: shared worker and root preserve literal content Create output.mjs with exactly this content: hello
+ok 6 - shared worker and root preserve literal content Create output.mjs with exactly this content: hello
+  ---
+  duration_ms: 135.339542
+  ...
+# Subtest: shared worker and root preserve literal content Implement a resolver in output.mjs with «const x = 1;».
+ok 7 - shared worker and root preserve literal content Implement a resolver in output.mjs with «const x = 1;».
+  ---
+  duration_ms: 2.62125
+  ...
+# Subtest: shared worker and root preserve literal content Implement a resolver in output.mjs with exactly this content: hello
+ok 8 - shared worker and root preserve literal content Implement a resolver in output.mjs with exactly this content: hello
+  ---
+  duration_ms: 1.704459
+  ...
+# Subtest: explicit source-links translation remains its own supported recipe
+ok 9 - explicit source-links translation remains its own supported recipe
+  ---
+  duration_ms: 118.065625
+  ...
+# Subtest: independent source reading is not relabeled semantic authoring
+ok 10 - independent source reading is not relabeled semantic authoring
+  ---
+  duration_ms: 452.065625
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3153.276417
