@@ -9,19 +9,19 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 
 | Who | Tasks | Passed | Failed | Partial | Fixed | Open | Not reproduced | Unresolved |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **All** | 2511 | 1792 | 449 | 51 | 365 | 126 | 9 | 0 |
+| **All** | 2775 | 1927 | 535 | 57 | 417 | 166 | 9 | 0 |
 | CHAT-ROUTES | 13 | 10 | 3 | 0 | 3 | 0 | 0 | 0 |
 | CI-FIXER | 41 | 38 | 3 | 0 | 3 | 0 | 0 | 0 |
 | CI-SPEED | 6 | 6 | 0 | 0 | 0 | 0 | 0 | 0 |
-| CIFIX | 315 | 310 | 5 | 0 | 5 | 0 | 0 | 0 |
+| CIFIX | 314 | 309 | 5 | 0 | 5 | 0 | 0 | 0 |
 | CIFIX2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
-| coordinator | 614 | 341 | 176 | 4 | 167 | 12 | 1 | 0 |
+| coordinator | 658 | 341 | 187 | 4 | 176 | 14 | 1 | 0 |
 | DEBUG2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
 | DEBUG3 | 2 | 1 | 1 | 0 | 1 | 0 | 0 | 0 |
 | DISCOVER | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | FINITE-GATE | 15 | 13 | 2 | 0 | 1 | 1 | 0 | 0 |
 | FIX-GAPS | 15 | 15 | 0 | 0 | 0 | 0 | 0 | 0 |
-| FORMAL-AI-ONLY | 205 | 104 | 31 | 10 | 10 | 31 | 0 | 0 |
+| FORMAL-AI-ONLY | 254 | 113 | 64 | 15 | 32 | 47 | 0 | 0 |
 | GENERALIZE | 16 | 16 | 0 | 0 | 0 | 0 | 0 | 0 |
 | LEAD | 18 | 16 | 0 | 1 | 1 | 0 | 0 | 0 |
 | LEXEMES | 4 | 3 | 1 | 0 | 1 | 0 | 0 | 0 |
@@ -34,14 +34,14 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 | REPO-RUNNERS | 89 | 78 | 5 | 6 | 11 | 0 | 0 | 0 |
 | REQ-AUDIT | 9 | 9 | 0 | 0 | 0 | 0 | 0 | 0 |
 | REQ-ROUTE | 12 | 7 | 5 | 0 | 4 | 0 | 1 | 0 |
-| ROOT | 377 | 273 | 84 | 20 | 70 | 31 | 3 | 0 |
+| ROOT | 399 | 284 | 94 | 21 | 76 | 36 | 3 | 0 |
 | ROUTE2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
 | ROUTE3 | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | SCRIPTS-A | 5 | 4 | 1 | 0 | 1 | 0 | 0 | 0 |
 | SCRIPTS-B | 5 | 5 | 0 | 0 | 0 | 0 | 0 | 0 |
 | SPANISH | 3 | 2 | 1 | 0 | 1 | 0 | 0 | 0 |
 | SPEC-DELIVERY | 535 | 386 | 78 | 7 | 44 | 40 | 1 | 0 |
-| SPEC-PARITY | 62 | 42 | 18 | 2 | 9 | 11 | 0 | 0 |
+| SPEC-PARITY | 212 | 158 | 50 | 2 | 24 | 28 | 0 | 0 |
 | TEACH-C | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | TEACH-F | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | TEXT-CAPABILITY | 9 | 9 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -59,13 +59,13 @@ and the files it wrote itself. A tool run by rule counts as neither.
 
 | Who | By Formal AI | By hand | Delegated share |
 | --- | ---: | ---: | ---: |
-| **All** | 1086 | 72 | 94% |
+| **All** | 1155 | 72 | 94% |
 | CIFIX | 255 | 0 | 100% |
-| FORMAL-AI-ONLY | 289 | 0 | 100% |
+| FORMAL-AI-ONLY | 312 | 0 | 100% |
 | LEAD | 9 | 41 | 18% |
 | RENAME | 157 | 16 | 91% |
 | REPO-RUNNERS | 23 | 1 | 96% |
-| ROOT | 114 | 0 | 100% |
+| ROOT | 160 | 0 | 100% |
 | SPEC-DELIVERY | 187 | 0 | 100% |
 | SPEC-PARITY | 15 | 0 | 100% |
 | TRANSLATE | 37 | 14 | 73% |
