@@ -1,0 +1,5 @@
+$ node scripts/check-minimal-core-boundary.mjs && node scripts/audit-seed-metadata.mjs
+minimal-core boundary audit failed:
+rust/src/solver_handlers/benchmark_prompts.rs shrank from 548 to 547 lines; lower its reviewed baseline
+source_lines_max improved from 35680 to 35679; lower the reviewed ceiling
+outside_core_lines_max improved from 18626 to 18625; lower the reviewed ceiling
