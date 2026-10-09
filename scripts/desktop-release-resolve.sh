@@ -127,6 +127,10 @@ expected_desktop_assets() {
     "latest.yml" \
     "latest-mac.yml" \
     "latest-linux.yml"
+  printf '%s\n' \
+    "formal-ai-vscode-${version}.vsix" \
+    "SHA256SUMS.txt" \
+    "BUILD-PROVENANCE.txt"
   expected_cli_assets
 }
 
@@ -260,7 +264,7 @@ else
   # naming in the log. Either way the fail-safe direction is the same (build),
   # so the status only drives diagnostics, never the decision.
   if existing_names="$(gh release view "$tag" --repo "$REPO" --json assets \
-    --jq '.assets[].name | select(startswith("formal-ai-desktop-") or startswith("formal-ai-cli-") or . == "latest.yml" or . == "latest-mac.yml" or . == "latest-linux.yml")' 2>/dev/null)"; then
+    --jq '.assets[].name | select(startswith("formal-ai-desktop-") or startswith("formal-ai-cli-") or startswith("formal-ai-vscode-") or . == "latest.yml" or . == "latest-mac.yml" or . == "latest-linux.yml" or . == "SHA256SUMS.txt" or . == "BUILD-PROVENANCE.txt")' 2>/dev/null)"; then
     :
   else
     log "warning: could not list assets for ${tag} (gh exited non-zero); treating them as absent and building."
@@ -278,7 +282,7 @@ else
 
   log "release version: ${release_version}"
   log "existing desktop assets: ${existing_count}"
-  log "required desktop assets: 17 desktop and updater files plus $(expected_cli_assets | wc -l | tr -d ' ') CLI archives"
+  log "required release assets: 17 desktop and updater files, one versioned VSIX, two consolidated manifests plus $(expected_cli_assets | wc -l | tr -d ' ') CLI archives"
   if [ ${#missing[@]} -eq 0 ]; then
     log "all required desktop assets are present."
   else

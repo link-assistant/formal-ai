@@ -100,3 +100,57 @@ test('a GitHub transport failure cannot authorize an unrelated release', (contex
   assert.notEqual(result.status, 0);
   assert.equal(result.outputs.should_build, undefined);
 });
+
+
+// Model the concrete assets emitted by the actual packaging/finalize jobs.
+function completeAssets(version) {
+  const desktop = [
+    ...['arm64', 'x64'].flatMap((arch) => ['dmg', 'zip'].map((format) =>
+      `formal-ai-desktop-macos-${arch}-${version}.${format}`)),
+    ...['installer', 'portable'].flatMap((kind) => ['x64', 'arm64'].map((arch) =>
+      `formal-ai-desktop-windows-${kind}-${arch}-${version}.exe`)),
+    ...['x64', 'arm64'].flatMap((arch) => ['AppImage', 'deb', 'tar.gz'].map((format) =>
+      `formal-ai-desktop-linux-${arch}-${version}.${format}`)),
+    'latest.yml', 'latest-mac.yml', 'latest-linux.yml',
+  ];
+  const workflow = readFileSync(new URL('../../../.github/workflows/desktop-release.yml', import.meta.url), 'utf8');
+  const cli = [...workflow.matchAll(/target: *([A-Za-z0-9_.-]+), *label: *cli-[^,]+,.*archive: *([a-z.]+),/gu)]
+    .map((match) => `formal-ai-cli-${match[1]}.${match[2]}`);
+  assert.equal(cli.length, 5);
+  return [...desktop, ...cli, `formal-ai-vscode-${version}.vsix`, 'SHA256SUMS.txt', 'BUILD-PROVENANCE.txt'];
+}
+
+for (const omitted of ['formal-ai-vscode-1.2.3.vsix', 'SHA256SUMS.txt', 'BUILD-PROVENANCE.txt']) {
+  test(`the matching release heals a missing ${omitted} after desktop and CLI success`, (context) => {
+    const assets = completeAssets('1.2.3').filter((name) => name !== omitted);
+    const result = resolve(context, { latest: 'v1.2.3', commits: { 'v1.2.3': child }, assets });
+    assert.equal(result.status, 0, result.stderr);
+    assert.equal(result.outputs.tag, 'v1.2.3');
+    assert.equal(result.outputs.should_build, 'true');
+    assert.ok(result.stdout.includes(omitted));
+  });
+}
+
+test('only a release with the complete package and manifest set skips an automatic build', (context) => {
+  const result = resolve(context, { latest: 'v1.2.3', commits: { 'v1.2.3': child }, assets: completeAssets('1.2.3') });
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.outputs.tag, 'v1.2.3');
+  assert.equal(result.outputs.should_build, 'false');
+});
+
+test('a VSIX from another version cannot complete the matching release', (context) => {
+  const assets = completeAssets('1.2.3').map((name) => name === 'formal-ai-vscode-1.2.3.vsix'
+    ? 'formal-ai-vscode-9.9.9.vsix' : name);
+  const result = resolve(context, { latest: 'v1.2.3', commits: { 'v1.2.3': child }, assets });
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.outputs.tag, 'v1.2.3');
+  assert.equal(result.outputs.should_build, 'true');
+});
+
+test('an explicit manual rebuild retains the complete-assets override', (context) => {
+  const result = resolve(context, { latest: 'v1.2.3', commits: { 'v1.2.3': child }, assets: completeAssets('1.2.3') },
+    { EVENT: 'workflow_dispatch', INPUT_TAG: 'v1.2.3' });
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.outputs.tag, 'v1.2.3');
+  assert.equal(result.outputs.should_build, 'true');
+});

@@ -204,6 +204,9 @@ fn expected_asset_names(version: &str) -> String {
         "latest.yml".to_string(),
         "latest-mac.yml".to_string(),
         "latest-linux.yml".to_string(),
+        format!("formal-ai-vscode-{version}.vsix"),
+        "SHA256SUMS.txt".to_string(),
+        "BUILD-PROVENANCE.txt".to_string(),
     ]
     .join("\n")
         + "\n"
