@@ -1,0 +1,1 @@
+Render conversation-summary history details from actual preceding UI records, showing recorded roles and intents in the selected UI language. Preserve canonical solver answers and explicit plain recap, escape source text, and exclude future/system turns. Original multilingual Browser scenarios pass on guarded scratch overrides; final-source CI remains required.

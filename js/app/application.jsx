@@ -1412,7 +1412,7 @@ export function App() {
             {diagnosticsMode ? <DebuggerView messages={messages} apiBase={desktopStatus?.apiReady ? desktopStatus.apiBase : ""}
             debugToken={desktopStatus?.apiReady ? desktopStatus.debugToken || "" : ""} /> : null}
             <section className="messages" aria-live="polite" data-testid="message-list">
-            {messages.map(message => <Message key={message.id} message={message} diagnosticsMode={diagnosticsMode} thinkingDetailLevel={thinkingDetailLevel}
+            {messages.map(message => <Message key={message.id} message={message} conversationMessages={messages} diagnosticsMode={diagnosticsMode} thinkingDetailLevel={thinkingDetailLevel}
             stepLevelOverrides={stepLevelOverrides} onEditStepLevel={editStepLevel} minMessageAnimationMs={minMessageAnimationMs}
             renderPermissionPanel={renderDesktopPermissionPanel} commandApprovals={commandApprovals} onApproveCommand={approveDesktopCommand} onDenyCommand={denyDesktopCommand}
             t={t} reportIssueUrl={shouldOfferMessageReport(message) ? createIssueUrl({

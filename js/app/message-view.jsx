@@ -2,6 +2,7 @@
 // diagnostics, approval and step-hierarchy panels.
 
 import React from "react";
+import { ConversationSummaryDetails } from "./conversation-summary-details.js";
 import { copyTextToClipboard, enhanceCodeBlocks, markdownHtml } from "./markdown-render.jsx";
 import {
   DESKTOP_TOOL_I18N_KEYS, DESKTOP_TOOL_OPTIONS, desktopToolGrantState,
@@ -458,6 +459,7 @@ function StepHierarchyMenu({ menu, currentLevel, overridden, onSelect, t }) {
 
 export function Message({
   message,
+  conversationMessages,
   diagnosticsMode,
   reportIssueUrl,
   stepLevelOverrides,
@@ -605,6 +607,8 @@ export function Message({
       {t("message.skipAnimation")}</button> : null}
       <div ref={markdownRef} className={`markdown-body${bodyRevealClass}`} aria-hidden={reveal.active && !reveal.bodyShown ? "true" : null} data-testid="message-markdown-body"
       dangerouslySetInnerHTML={markdownContent} />
+      <ConversationSummaryDetails message={message} messages={conversationMessages} t={t}
+        className={`markdown-body${bodyRevealClass}`} ariaHidden={reveal.active && !reveal.bodyShown} />
       {message.permissionPanel && typeof renderPermissionPanel === "function" ? <div className="message-permission-panel">
       {renderPermissionPanel("desktop-permission-panel-message")}
       </div> : null}{message.commandApproval ? <CommandApprovalPanel approval={message.commandApproval}
