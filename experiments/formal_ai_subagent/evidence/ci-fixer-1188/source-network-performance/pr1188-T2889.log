@@ -1,0 +1,56 @@
+>> read {"filePath":"rust/tests/web/source-network-workers.test.mjs","file_path":"rust/tests/web/source-network-workers.test.mjs","path":"rust/tests/web/source-network-workers.test.mjs"}
+   <file>
+   00001| import assert from 'node:assert/strict';
+   00002| import test from 'node:test';
+   00003| import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+   00004| import { tmpdir } from 'node:os';
+   00005| import { join } from 'node:path';
+   00006| import { pathToFileURL } from 'node:url';
+   00007| import { mapSourceNetworks } from '../../../scripts/lib/source-network-workers.mjs';
+   00008| 
+   00009| async function withWorker(body, check) {
+   00010|   const directory = mkdtempSync(join(tmpdir(), 'source-network-pool-'));
+   00011|   try {
+   00012|     const path = join(directory, 'worker.mjs');
+   00013|     writeFileSync(path, "import {parentPort} from 'node:worker_threads';\n" + body);
+   00014|     await check(pathToFileURL(path));
+   00015|   } finally { rmSync(directory, { recursive: true, force: true }); }
+   00016| }
+   00017| 
+   00018| test('bounded pool preserves complete input order across actual asynchronous workers', async () => {
+   00019|   await withWorker(`parentPort.on('message', ({index,path}) => {
+   00020|     parentPort.postMessage({event:'start',path});
+   00021|     setTimeout(() => parentPort.postMessage({index,receipt:{path}}), (12-index)*3);
+   00022|   });`, async (url) => {
+   00023|     const paths = Array.from({ length: 12 }, (_, index) => 'source-' + index);
+   00024|     const started = [];
+   00025|     const receipts = await mapSourceNetworks(paths, url, {}, (message) => started.push(message.path));
+   00026|     assert.deepEqual(receipts.map((receipt) => receipt.path), paths);
+   00027|     assert.equal(started.length, paths.length);
+   00028|     assert.equal(new Set(started).size, paths.length);
+   00029|   });
+   00030| });
+   00031| 
+   00032| test('worker errors, early exits and mismatched receipt identity never produce complete reports', async () => {
+   00033|   for (const body of [
+   00034|     "parentPort.on('message',()=>parentPort.postMessage({error:'actual parse failure'}));",
+   00035|     "parentPort.on('message',()=>process.exit(0));",
+   00036|     "parentPort.on('message',({index})=>parentPort.postMessage({index,receipt:{path:'wrong-source'}}));",
+   00037|   ]) await withWorker(body, async (url) => {
+   00038|     await assert.rejects(mapSourceNetworks(['expected-source','second-source'], url, {}));
+   00039|   });
+   00040| });
+   00041| 
+   
+   (End of file - total 41 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/source-network-workers.test.mjs","file_path":"rust/tests/web/source-network-workers.test.mjs","new":"    setTimeout(() => {\n      parentPort.postMessage({event:'finish',path});\n      parentPort.postMessage({index,receipt:{path}});\n    }, (12-index)*3);","newString":"    setTimeout(() => {\n      parentPort.postMessage({event:'finish',path});\n      parentPort.postMessage({index,receipt:{path}});\n    }, (12-index)*3);","new_str":"    setTimeout(() => {\n      parentPort.postMessage({event:'finish',path});\n      parentPort.postMessage({index,receipt:{path}});\n    }, (12-index)*3);","new_string":"    setTimeout(() => {\n      parentPort.postMessage({event:'finish',path});\n      parentPort.postMessage({index,receipt:{path}});\n    }, (12-index)*3);","old":"    setTimeout(() => parentPort.postMessage({index,receipt:{path}}), (12-index)*3);","oldString":"    setTimeout(() => parentPort.postMessage({index,receipt:{path}}), (12-index)*3);","old_str":"    setTimeout(() => parentPort.postMessage({index,receipt:{path}}), (12-index)*3);","old_string":"    setTimeout(() => parentPort.postMessage({index,receipt:{path}}), (12-index)*3);","path":"rust/tests/web/source-network-workers.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/source-network-workers.test.mjs"}
+   Output: 5f2a23386433fdc55deeb8b6b04c1d9c1bd94d639192d3a0bdfb9d47545c08bd  rust/tests/web/source-network-workers.test.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced `    setTimeout(() => parentPort.postMessage({index,receipt:{path}}), (12-index)*3);` with `    setTimeout(() => {
+      parentPort.postMessage({event:'finish',path});
+      parentPort.postMessage({index,receipt:{path}});
+    }, (12-index)*3);` in `rust/tests/web/source-network-workers.test.mjs` and observed the result.

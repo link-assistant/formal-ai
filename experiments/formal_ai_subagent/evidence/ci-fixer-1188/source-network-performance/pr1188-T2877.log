@@ -1,0 +1,170 @@
+>> read {"filePath":"scripts/lib/source-network-packets.mjs","file_path":"scripts/lib/source-network-packets.mjs","path":"scripts/lib/source-network-packets.mjs"}
+   <file>
+   00001| // Lossless network packets for owned source: full serialized bytes and verified reconstruction.
+   00002| import { createHash } from 'node:crypto';
+   00003| import { gzipSync, gunzipSync } from 'node:zlib';
+   00004| 
+   00005| export const sourceDigest = (bytes) => createHash('sha256').update(bytes).digest('hex');
+   00006| 
+   00007| /** Disjoint, exhaustive shards over a canonical source path list. */
+   00008| export function partitionSourcePaths(paths, shardIndex, shardCount) {
+   00009|   if (!Number.isSafeInteger(shardCount) || shardCount < 1 || !Number.isSafeInteger(shardIndex)
+   00010|     || shardIndex < 0 || shardIndex >= shardCount) throw new Error('invalid source shard');
+   00011|   if (paths.some((path) => typeof path !== 'string') || new Set(paths).size !== paths.length) {
+   00012|     throw new Error('source paths must be distinct strings');
+   00013|   }
+   00014|   return [...paths].sort((left, right) => Buffer.compare(Buffer.from(left), Buffer.from(right)))
+   00015|     .filter((_, index) => index % shardCount === shardIndex);
+   00016| }
+   00017| 
+   00018| /** The upstream serializer must preserve the actual source through its decoder, not its digest alone. */
+   00019| export function serializeSourceNetwork({ path, language, source }, LinkNetwork) {
+   00020|   const sourceBytes = Buffer.from(source, 'utf8');
+   00021|   const network = LinkNetwork.parse(source, language);
+   00022|   const document = network.toLino();
+   00023|   const restored = LinkNetwork.fromLino(document).reconstructText();
+   00024|   if (typeof restored !== 'string' || !Buffer.from(restored, 'utf8').equals(sourceBytes)) {
+   00025|     throw new Error('source network round trip differs: ' + path);
+   00026|   }
+   00027|   const serializedBytes = Buffer.from(document, 'utf8');
+   00028|   return {
+   00029|     document,
+   00030|     receipt: {
+   00031|       path, language, sourceBytes: sourceBytes.length, sourceSha256: sourceDigest(sourceBytes),
+   00032|       serializedBytes: serializedBytes.length, serializedSha256: sourceDigest(serializedBytes),
+   00033|       fidelity: 'lossless-network-serialization',
+   00034|     },
+   00035|   };
+   00036| }
+   00037| 
+   00038| /** Validate a downloaded packet's compressed/network identities and reconstruct the recorded source bytes. */
+   00039| export function verifySourcePacket(receipt, compressed, LinkNetwork) {
+   00040|   if (sourceDigest(compressed) !== receipt.compressedSha256 || compressed.length !== receipt.compressedBytes) {
+   00041|     throw new Error('compressed packet identity differs: ' + receipt.path);
+   00042|   }
+   00043|   const bytes = gunzipSync(compressed);
+   00044|   if (sourceDigest(bytes) !== receipt.serializedSha256 || bytes.length !== receipt.serializedBytes) {
+   00045|     throw new Error('serialized network identity differs: ' + receipt.path);
+   00046|   }
+   00047|   const source = LinkNetwork.fromLino(new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bytes)).reconstructText();
+   00048|   const restored = Buffer.from(source, 'utf8');
+   00049|   if (restored.length !== receipt.sourceBytes || sourceDigest(restored) !== receipt.sourceSha256) {
+   00050|     throw new Error('reconstructed source identity differs: ' + receipt.path);
+   00051|   }
+   00052|   return source;
+   00053| }
+   00054| 
+   00055| 
+   00056| /** Certify exact shard coverage and packet identities against a committed release source tree.
+   00057|  * Producers already ran the full upstream decoder; this join checks their content-bound packets.
+   00058|  */
+   00059| export function verifySourceDistribution({ reports, sourcePaths, sourceBytes, packetBytes,
+   00060|   sourceHead, upstreamCommit, shardCount = 8 }) {
+   00061|   if (!/^[a-f0-9]{40,64}$/u.test(sourceHead) || !/^[a-f0-9]{40}$/u.test(upstreamCommit)) {
+   00062|     throw new Error('distribution requires full source and upstream commits');
+   00063|   }
+   00064|   if (reports.length !== shardCount) throw new Error('source distribution is missing a shard');
+   00065|   const seen = new Set();
+   00066|   for (const report of reports) {
+   00067|     if (!Number.isSafeInteger(report.shardIndex) || report.shardIndex < 0
+   00068|       || report.shardIndex >= shardCount || seen.has(report.shardIndex)) {
+   00069|       throw new Error('source distribution shard identity differs');
+   00070|     }
+   00071|     seen.add(report.shardIndex);
+   00072|     const paths = partitionSourcePaths(sourcePaths, report.shardIndex, shardCount);
+   00073|     if (report.sourceHead !== sourceHead || report.baseHead !== sourceHead
+   00074|       || report.inputState !== 'committed-head' || report.upstreamCommit !== upstreamCommit
+   00075|       || report.shardCount !== shardCount || report.totalOwnedSources !== sourcePaths.length
+   00076|       || report.checkedSources !== paths.length || report.fidelity !== 'lossless-network-serialization'
+   00077|       || !Array.isArray(report.sources) || report.sources.length !== paths.length) {
+   00078|       throw new Error('source distribution report identity differs');
+   00079|     }
+   00080|     for (let index = 0; index < paths.length; index += 1) {
+   00081|       const receipt = report.sources[index], path = paths[index];
+   00082|       if (receipt.path !== path || receipt.packet !== path + '.lino.gz'
+   00083|         || receipt.fidelity !== 'lossless-network-serialization') {
+   00084|         throw new Error('source distribution coverage differs');
+   00085|       }
+   00086|       const source = sourceBytes(path), compressed = packetBytes(report.shardIndex, receipt.packet);
+   00087|       if (source.length !== receipt.sourceBytes || sourceDigest(source) !== receipt.sourceSha256) {
+   00088|         throw new Error('release source identity differs: ' + path);
+   00089|       }
+   00090|       if (compressed.length !== receipt.compressedBytes || sourceDigest(compressed) !== receipt.compressedSha256) {
+   00091|         throw new Error('distribution compressed packet identity differs: ' + path);
+   00092|       }
+   00093|       const serialized = gunzipSync(compressed);
+   00094|       if (serialized.length !== receipt.serializedBytes || sourceDigest(serialized) !== receipt.serializedSha256) {
+   00095|         throw new Error('distribution serialized packet identity differs: ' + path);
+   00096|       }
+   00097|     }
+   00098|   }
+   00099|   return { sourceHead, upstreamCommit, shardCount, checkedSources: sourcePaths.length };
+   00100| }
+   00101| 
+   
+   (End of file - total 101 lines)
+   </file>
+>> edit {"filePath":"scripts/lib/source-network-packets.mjs","file_path":"scripts/lib/source-network-packets.mjs","new":"/** Encode the complete pinned parser network without discarding its AST or metadata. */\nfunction sourceNetworkDocument({ path, language, source }, LinkNetwork) {\n  const sourceBytes = Buffer.from(source, 'utf8');\n  const document = LinkNetwork.parse(source, language).toLino();\n  const serializedBytes = Buffer.from(document, 'utf8');\n  return {\n    document,\n    receipt: {\n      path, language, sourceBytes: sourceBytes.length, sourceSha256: sourceDigest(sourceBytes),\n      serializedBytes: serializedBytes.length, serializedSha256: sourceDigest(serializedBytes),\n      fidelity: 'lossless-network-serialization',\n    },\n  };\n}\n\n/** The upstream decoder must preserve actual source bytes, not its digest alone. */\nexport function serializeSourceNetwork(options, LinkNetwork) {\n  const result = sourceNetworkDocument(options, LinkNetwork);\n  const restored = LinkNetwork.fromLino(result.document).reconstructText();\n  if (typeof restored !== 'string' || !Buffer.from(restored, 'utf8').equals(Buffer.from(options.source, 'utf8'))) {\n    throw new Error('source network round trip differs: ' + options.path);\n  }\n  return result;\n}\n\n/** Decode the actual compressed packet exactly once after its network and gzip identities are bound. */\nexport function createSourcePacket(options, LinkNetwork) {\n  const { document, receipt } = sourceNetworkDocument(options, LinkNetwork);\n  const compressed = gzipSync(Buffer.from(document, 'utf8'));\n  const packetReceipt = { ...receipt, packet: options.path + '.lino.gz',\n    compressedBytes: compressed.length, compressedSha256: sourceDigest(compressed) };\n  if (verifySourcePacket(packetReceipt, compressed, LinkNetwork) !== options.source) {\n    throw new Error('packet reconstruction differs: ' + options.path);\n  }\n  return { compressed, receipt: packetReceipt };\n}\n\n","newString":"/** Encode the complete pinned parser network without discarding its AST or metadata. */\nfunction sourceNetworkDocument({ path, language, source }, LinkNetwork) {\n  const sourceBytes = Buffer.from(source, 'utf8');\n  const document = LinkNetwork.parse(source, language).toLino();\n  const serializedBytes = Buffer.from(document, 'utf8');\n  return {\n    document,\n    receipt: {\n      path, language, sourceBytes: sourceBytes.length, sourceSha256: sourceDigest(sourceBytes),\n      serializedBytes: serializedBytes.length, serializedSha256: sourceDigest(serializedBytes),\n      fidelity: 'lossless-network-serialization',\n    },\n  };\n}\n\n/** The upstream decoder must preserve actual source bytes, not its digest alone. */\nexport function serializeSourceNetwork(options, LinkNetwork) {\n  const result = sourceNetworkDocument(options, LinkNetwork);\n  const restored = LinkNetwork.fromLino(result.document).reconstructText();\n  if (typeof restored !== 'string' || !Buffer.from(restored, 'utf8').equals(Buffer.from(options.source, 'utf8'))) {\n    throw new Error('source network round trip differs: ' + options.path);\n  }\n  return result;\n}\n\n/** Decode the actual compressed packet exactly once after its network and gzip identities are bound. */\nexport function createSourcePacket(options, LinkNetwork) {\n  const { document, receipt } = sourceNetworkDocument(options, LinkNetwork);\n  const compressed = gzipSync(Buffer.from(document, 'utf8'));\n  const packetReceipt = { ...receipt, packet: options.path + '.lino.gz',\n    compressedBytes: compressed.length, compressedSha256: sourceDigest(compressed) };\n  if (verifySourcePacket(packetReceipt, compressed, LinkNetwork) !== options.source) {\n    throw new Error('packet reconstruction differs: ' + options.path);\n  }\n  return { compressed, receipt: packetReceipt };\n}\n\n","new_str":"/** Encode the complete pinned parser network without discarding its AST or metadata. */\nfunction sourceNetworkDocument({ path, language, source }, LinkNetwork) {\n  const sourceBytes = Buffer.from(source, 'utf8');\n  const document = LinkNetwork.parse(source, language).toLino();\n  const serializedBytes = Buffer.from(document, 'utf8');\n  return {\n    document,\n    receipt: {\n      path, language, sourceBytes: sourceBytes.length, sourceSha256: sourceDigest(sourceBytes),\n      serializedBytes: serializedBytes.length, serializedSha256: sourceDigest(serializedBytes),\n      fidelity: 'lossless-network-serialization',\n    },\n  };\n}\n\n/** The upstream decoder must preserve actual source bytes, not its digest alone. */\nexport function serializeSourceNetwork(options, LinkNetwork) {\n  const result = sourceNetworkDocument(options, LinkNetwork);\n  const restored = LinkNetwork.fromLino(result.document).reconstructText();\n  if (typeof restored !== 'string' || !Buffer.from(restored, 'utf8').equals(Buffer.from(options.source, 'utf8'))) {\n    throw new Error('source network round trip differs: ' + options.path);\n  }\n  return result;\n}\n\n/** Decode the actual compressed packet exactly once after its network and gzip identities are bound. */\nexport function createSourcePacket(options, LinkNetwork) {\n  const { document, receipt } = sourceNetworkDocument(options, LinkNetwork);\n  const compressed = gzipSync(Buffer.from(document, 'utf8'));\n  const packetReceipt = { ...receipt, packet: options.path + '.lino.gz',\n    compressedBytes: compressed.length, compressedSha256: sourceDigest(compressed) };\n  if (verifySourcePacket(packetReceipt, compressed, LinkNetwork) !== options.source) {\n    throw new Error('packet reconstruction differs: ' + options.path);\n  }\n  return { compressed, receipt: packetReceipt };\n}\n\n","new_string":"/** Encode the complete pinned parser network without discarding its AST or metadata. */\nfunction sourceNetworkDocument({ path, language, source }, LinkNetwork) {\n  const sourceBytes = Buffer.from(source, 'utf8');\n  const document = LinkNetwork.parse(source, language).toLino();\n  const serializedBytes = Buffer.from(document, 'utf8');\n  return {\n    document,\n    receipt: {\n      path, language, sourceBytes: sourceBytes.length, sourceSha256: sourceDigest(sourceBytes),\n      serializedBytes: serializedBytes.length, serializedSha256: sourceDigest(serializedBytes),\n      fidelity: 'lossless-network-serialization',\n    },\n  };\n}\n\n/** The upstream decoder must preserve actual source bytes, not its digest alone. */\nexport function serializeSourceNetwork(options, LinkNetwork) {\n  const result = sourceNetworkDocument(options, LinkNetwork);\n  const restored = LinkNetwork.fromLino(result.document).reconstructText();\n  if (typeof restored !== 'string' || !Buffer.from(restored, 'utf8').equals(Buffer.from(options.source, 'utf8'))) {\n    throw new Error('source network round trip differs: ' + options.path);\n  }\n  return result;\n}\n\n/** Decode the actual compressed packet exactly once after its network and gzip identities are bound. */\nexport function createSourcePacket(options, LinkNetwork) {\n  const { document, receipt } = sourceNetworkDocument(options, LinkNetwork);\n  const compressed = gzipSync(Buffer.from(document, 'utf8'));\n  const packetReceipt = { ...receipt, packet: options.path + '.lino.gz',\n    compressedBytes: compressed.length, compressedSha256: sourceDigest(compressed) };\n  if (verifySourcePacket(packetReceipt, compressed, LinkNetwork) !== options.source) {\n    throw new Error('packet reconstruction differs: ' + options.path);\n  }\n  return { compressed, receipt: packetReceipt };\n}\n\n","old":"/** The upstream serializer must preserve the actual source through its decoder, not its digest alone. */\nexport function serializeSourceNetwork({ path, language, source }, LinkNetwork) {\n  const sourceBytes = Buffer.from(source, 'utf8');\n  const network = LinkNetwork.parse(source, language);\n  const document = network.toLino();\n  const restored = LinkNetwork.fromLino(document).reconstructText();\n  if (typeof restored !== 'string' || !Buffer.from(restored, 'utf8').equals(sourceBytes)) {\n    throw new Error('source network round trip differs: ' + path);\n  }\n  const serializedBytes = Buffer.from(document, 'utf8');\n  return {\n    document,\n    receipt: {\n      path, language, sourceBytes: sourceBytes.length, sourceSha256: sourceDigest(sourceBytes),\n      serializedBytes: serializedBytes.length, serializedSha256: sourceDigest(serializedBytes),\n      fidelity: 'lossless-network-serialization',\n    },\n  };\n}\n\n","oldString":"/** The upstream serializer must preserve the actual source through its decoder, not its digest alone. */\nexport function serializeSourceNetwork({ path, language, source }, LinkNetwork) {\n  const sourceBytes = Buffer.from(source, 'utf8');\n  const network = LinkNetwork.parse(source, language);\n  const document = network.toLino();\n  const restored = LinkNetwork.fromLino(document).reconstructText();\n  if (typeof restored !== 'string' || !Buffer.from(restored, 'utf8').equals(sourceBytes)) {\n    throw new Error('source network round trip differs: ' + path);\n  }\n  const serializedBytes = Buffer.from(document, 'utf8');\n  return {\n    document,\n    receipt: {\n      path, language, sourceBytes: sourceBytes.length, sourceSha256: sourceDigest(sourceBytes),\n      serializedBytes: serializedBytes.length, serializedSha256: sourceDigest(serializedBytes),\n      fidelity: 'lossless-network-serialization',\n    },\n  };\n}\n\n","old_str":"/** The upstream serializer must preserve the actual source through its decoder, not its digest alone. */\nexport function serializeSourceNetwork({ path, language, source }, LinkNetwork) {\n  const sourceBytes = Buffer.from(source, 'utf8');\n  const network = LinkNetwork.parse(source, language);\n  const document = network.toLino();\n  const restored = LinkNetwork.fromLino(document).reconstructText();\n  if (typeof restored !== 'string' || !Buffer.from(restored, 'utf8').equals(sourceBytes)) {\n    throw new Error('source network round trip differs: ' + path);\n  }\n  const serializedBytes = Buffer.from(document, 'utf8');\n  return {\n    document,\n    receipt: {\n      path, language, sourceBytes: sourceBytes.length, sourceSha256: sourceDigest(sourceBytes),\n      serializedBytes: serializedBytes.length, serializedSha256: sourceDigest(serializedBytes),\n      fidelity: 'lossless-network-serialization',\n    },\n  };\n}\n\n","old_string":"/** The upstream serializer must preserve the actual source through its decoder, not its digest alone. */\nexport function serializeSourceNetwork({ path, language, source }, LinkNetwork) {\n  const sourceBytes = Buffer.from(source, 'utf8');\n  const network = LinkNetwork.parse(source, language);\n  const document = network.toLino();\n  const restored = LinkNetwork.fromLino(document).reconstructText();\n  if (typeof restored !== 'string' || !Buffer.from(restored, 'utf8').equals(sourceBytes)) {\n    throw new Error('source network round trip differs: ' + path);\n  }\n  const serializedBytes = Buffer.from(document, 'utf8');\n  return {\n    document,\n    receipt: {\n      path, language, sourceBytes: sourceBytes.length, sourceSha256: sourceDigest(sourceBytes),\n      serializedBytes: serializedBytes.length, serializedSha256: sourceDigest(serializedBytes),\n      fidelity: 'lossless-network-serialization',\n    },\n  };\n}\n\n","path":"scripts/lib/source-network-packets.mjs"}
+>> bash {"command":"sha256sum -- scripts/lib/source-network-packets.mjs"}
+   Output: 71552b22c486d72730d193cbb6da6c51b1c52d764e8e0595f1e1ce885990cddf  scripts/lib/source-network-packets.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced `/** The upstream serializer must preserve the actual source through its decoder, not its digest alone. */
+export function serializeSourceNetwork({ path, language, source }, LinkNetwork) {
+  const sourceBytes = Buffer.from(source, 'utf8');
+  const network = LinkNetwork.parse(source, language);
+  const document = network.toLino();
+  const restored = LinkNetwork.fromLino(document).reconstructText();
+  if (typeof restored !== 'string' || !Buffer.from(restored, 'utf8').equals(sourceBytes)) {
+    throw new Error('source network round trip differs: ' + path);
+  }
+  const serializedBytes = Buffer.from(document, 'utf8');
+  return {
+    document,
+    receipt: {
+      path, language, sourceBytes: sourceBytes.length, sourceSha256: sourceDigest(sourceBytes),
+      serializedBytes: serializedBytes.length, serializedSha256: sourceDigest(serializedBytes),
+      fidelity: 'lossless-network-serialization',
+    },
+  };
+}
+
+` with `/** Encode the complete pinned parser network without discarding its AST or metadata. */
+function sourceNetworkDocument({ path, language, source }, LinkNetwork) {
+  const sourceBytes = Buffer.from(source, 'utf8');
+  const document = LinkNetwork.parse(source, language).toLino();
+  const serializedBytes = Buffer.from(document, 'utf8');
+  return {
+    document,
+    receipt: {
+      path, language, sourceBytes: sourceBytes.length, sourceSha256: sourceDigest(sourceBytes),
+      serializedBytes: serializedBytes.length, serializedSha256: sourceDigest(serializedBytes),
+      fidelity: 'lossless-network-serialization',
+    },
+  };
+}
+
+/** The upstream decoder must preserve actual source bytes, not its digest alone. */
+export function serializeSourceNetwork(options, LinkNetwork) {
+  const result = sourceNetworkDocument(options, LinkNetwork);
+  const restored = LinkNetwork.fromLino(result.document).reconstructText();
+  if (typeof restored !== 'string' || !Buffer.from(restored, 'utf8').equals(Buffer.from(options.source, 'utf8'))) {
+    throw new Error('source network round trip differs: ' + options.path);
+  }
+  return result;
+}
+
+/** Decode the actual compressed packet exactly once after its network and gzip identities are bound. */
+export function createSourcePacket(options, LinkNetwork) {
+  const { document, receipt } = sourceNetworkDocument(options, LinkNetwork);
+  const compressed = gzipSync(Buffer.from(document, 'utf8'));
+  const packetReceipt = { ...receipt, packet: options.path + '.lino.gz',
+    compressedBytes: compressed.length, compressedSha256: sourceDigest(compressed) };
+  if (verifySourcePacket(packetReceipt, compressed, LinkNetwork) !== options.source) {
+    throw new Error('packet reconstruction differs: ' + options.path);
+  }
+  return { compressed, receipt: packetReceipt };
+}
+
+` in `scripts/lib/source-network-packets.mjs` and observed the result.

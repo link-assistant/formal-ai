@@ -1,0 +1,97 @@
+>> read {"filePath":"scripts/check-source-networks.mjs","file_path":"scripts/check-source-networks.mjs","path":"scripts/check-source-networks.mjs"}
+   <file>
+   00001| #!/usr/bin/env node
+   00002| // R1188-U3: every owned production source survives full upstream network serialization.
+   00003| // Distribution packets contain full .lino.gz documents; receipts are identities, never substitutes for them.
+   00004| import { execFileSync } from 'node:child_process';
+   00005| import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+   00006| import { dirname, join, resolve } from 'node:path';
+   00007| import { fileURLToPath } from 'node:url';
+   00008| import { upstreamDirectory, workflowPin } from './translate-js-rust.mjs';
+   00009| import { partitionSourcePaths, serializeSourceNetwork, sourceDigest, verifySourcePacket } from './lib/source-network-packets.mjs';
+   00010| 
+   00011| const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+   00012| const languageFor = (path) => path.endsWith('.rs') ? 'rust'
+   00013|   : /\.(?:ts|mts|tsx)$/u.test(path) ? 'TypeScript' : 'JavaScript';
+   00014| 
+   00015| /** Authored or generated production sources, excluding vendored distributions and test harnesses. */
+   00016| export function ownedProductionSources(root = ROOT) {
+   00017|   return execFileSync('git', ['ls-files', '-z', '--', 'rust/src', 'js', 'ts'], { cwd: root, encoding: 'utf8' })
+   00018|     .split('\0').filter((path) => /\.(?:rs|js|mjs|jsx|ts|mts|tsx)$/u.test(path)
+   00019|       && !/^js\/(?:vendor|seed)\//u.test(path) && !/\.bundle\.js$/u.test(path));
+   00020| }
+   00021| 
+   00022| export async function main(argumentsList) {
+   00023|   const value = (name, fallback) => argumentsList.includes(name)
+   00024|     ? argumentsList[argumentsList.indexOf(name) + 1] : fallback;
+   00025|   const shardIndex = Number(value('--shard-index', '0')), shardCount = Number(value('--shard-count', '1'));
+   00026|   const commit = workflowPin(readFileSync(join(ROOT, '.github/workflows/layered-ci.yml'), 'utf8'));
+   00027|   const upstream = upstreamDirectory(argumentsList, commit);
+   00028|   const { LinkNetwork } = await import(pathToFileURL(join(upstream, 'js/src/index.js')).href);
+   00029|   const baseHead = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: ROOT, encoding: 'utf8' }).trim();
+   00030|   const workingTreeChanges = execFileSync('git', ['diff', '--name-only', 'HEAD', '--', 'rust/src', 'js', 'ts'],
+   00031|     { cwd: ROOT, encoding: 'utf8' }).trim();
+   00032|   const paths = ownedProductionSources();
+   00033|   const selected = partitionSourcePaths(paths, shardIndex, shardCount);
+   00034|   if (selected.length === 0) throw new Error('source shard contains no owned modules');
+   00035|   const output = value('--output', '');
+   00036|   if (output && !argumentsList.includes('--write')) throw new Error('--output requires --write');
+   00037|   const decoder = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true });
+   00038|   const receipts = [];
+   00039|   for (const path of selected) {
+   00040|     const started = performance.now();
+   00041|     const sourceBytes = readFileSync(join(ROOT, path)), source = decoder.decode(sourceBytes);
+   00042|     console.error(JSON.stringify({ event: 'source-network-start', shardIndex, path, sourceBytes: sourceBytes.length }));
+   00043|     if (!Buffer.from(source, 'utf8').equals(sourceBytes)) throw new Error('source is not losslessly decoded: ' + path);
+   00044|     const { document, receipt } = serializeSourceNetwork({ path, source, language: languageFor(path) }, LinkNetwork);
+   00045|     if (!readFileSync(join(ROOT, path)).equals(sourceBytes)) throw new Error('source changed during serialization: ' + path);
+   00046|     const compressed = gzipSync(Buffer.from(document, 'utf8'));
+   00047|     const packet = path + '.lino.gz';
+   00048|     const packetReceipt = { ...receipt, packet, compressedBytes: compressed.length, compressedSha256: sourceDigest(compressed) };
+   00049|     if (verifySourcePacket(packetReceipt, compressed, LinkNetwork) !== source) throw new Error('packet reconstruction differs');
+   00050|     receipts.push(packetReceipt);
+   00051|     if (output) {
+   00052|       const destination = join(resolve(output), packet);
+   00053|       mkdirSync(dirname(destination), { recursive: true });
+   00054|       writeFileSync(destination, compressed);
+   00055|     }
+   00056|     console.error(JSON.stringify({ event: 'source-network-complete', shardIndex, path,
+   00057|       elapsedMilliseconds: performance.now() - started, serializedBytes: receipt.serializedBytes,
+   00058|       compressedBytes: compressed.length }));
+   00059|   }
+   00060|   for (const receipt of receipts) {
+   00061|     if (sourceDigest(readFileSync(join(ROOT, receipt.path))) !== receipt.sourceSha256) {
+   00062|       throw new Error('source changed after serialization: ' + receipt.path);
+   00063|     }
+   00064|   }
+   00065|   const observedHead = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: ROOT, encoding: 'utf8' }).trim();
+   00066|   if (observedHead !== baseHead) throw new Error('repository HEAD changed during serialization');
+   00067|   const finalChanges = execFileSync('git', ['diff', '--name-only', 'HEAD', '--', 'rust/src', 'js', 'ts'],
+   00068|     { cwd: ROOT, encoding: 'utf8' }).trim();
+   00069|   const sourceHead = workingTreeChanges || finalChanges ? null : baseHead;
+   00070|   const report = { sourceHead, baseHead, inputState: sourceHead ? 'committed-head' : 'working-tree', upstreamCommit: commit, shardIndex, shardCount, totalOwnedSources: paths.length,
+   00071|     checkedSources: receipts.length, fidelity: 'lossless-network-serialization', sources: receipts };
+   00072|   if (output) {
+   00073|     mkdirSync(resolve(output), { recursive: true });
+   00074|     writeFileSync(join(resolve(output), 'source-network-receipts.json'), JSON.stringify(report, null, 2) + '\n');
+   00075|   }
+   00076|   console.log(JSON.stringify({ sourceHead, upstreamCommit: commit, shardIndex, shardCount,
+   00077|     totalOwnedSources: paths.length, checkedSources: receipts.length, fidelity: report.fidelity }));
+   00078|   return report;
+   00079| }
+   00080| 
+   00081| if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+   00082|   main(process.argv.slice(2)).catch((error) => { console.error(error.message); process.exitCode = 1; });
+   00083| }
+   00084| 
+   
+   (End of file - total 84 lines)
+   </file>
+>> edit {"filePath":"scripts/check-source-networks.mjs","file_path":"scripts/check-source-networks.mjs","new":"import { partitionSourcePaths, sourceDigest } from './lib/source-network-packets.mjs';\nimport { mapSourceNetworks } from './lib/source-network-workers.mjs';","newString":"import { partitionSourcePaths, sourceDigest } from './lib/source-network-packets.mjs';\nimport { mapSourceNetworks } from './lib/source-network-workers.mjs';","new_str":"import { partitionSourcePaths, sourceDigest } from './lib/source-network-packets.mjs';\nimport { mapSourceNetworks } from './lib/source-network-workers.mjs';","new_string":"import { partitionSourcePaths, sourceDigest } from './lib/source-network-packets.mjs';\nimport { mapSourceNetworks } from './lib/source-network-workers.mjs';","old":"import { partitionSourcePaths, serializeSourceNetwork, sourceDigest, verifySourcePacket } from './lib/source-network-packets.mjs';","oldString":"import { partitionSourcePaths, serializeSourceNetwork, sourceDigest, verifySourcePacket } from './lib/source-network-packets.mjs';","old_str":"import { partitionSourcePaths, serializeSourceNetwork, sourceDigest, verifySourcePacket } from './lib/source-network-packets.mjs';","old_string":"import { partitionSourcePaths, serializeSourceNetwork, sourceDigest, verifySourcePacket } from './lib/source-network-packets.mjs';","path":"scripts/check-source-networks.mjs"}
+>> bash {"command":"sha256sum -- scripts/check-source-networks.mjs"}
+   Output: b5030691090debb8a0ca1e96ee651fecf48ccbc2c5d9e73358322245eccc3c30  scripts/check-source-networks.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced `import { partitionSourcePaths, serializeSourceNetwork, sourceDigest, verifySourcePacket } from './lib/source-network-packets.mjs';` with `import { partitionSourcePaths, sourceDigest } from './lib/source-network-packets.mjs';
+import { mapSourceNetworks } from './lib/source-network-workers.mjs';` in `scripts/check-source-networks.mjs` and observed the result.
