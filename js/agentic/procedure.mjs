@@ -8,7 +8,6 @@
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
 import { detect } from './crate/language.mjs';
-import { trim } from './crate/rust_str.mjs';
 import { localizedResponse } from './crate/seed.mjs';
 import {
   PROCEDURE_CONFORMANCE_TRIGGER, compileProcedure, conformanceLinksNotation, restateSteps,
@@ -16,6 +15,7 @@ import {
 import { artifactLinksNotation, extractCompiledProcedureArtifact, proceduresEqual } from './crate/skill_procedure_artifact.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { Progress } from './progress.mjs';
+import { commandPayload } from './algorithm_learning.mjs';
 
 /** Mirrors `COMPILED_PROCEDURE_PATH` in rust/src/agentic_coding/procedure.rs. */
 export const COMPILED_PROCEDURE_PATH = 'compiled-procedure.lino';
@@ -49,23 +49,23 @@ export function planStep(messages, toolNames, procedure) {
     return finalAnswer(renderResponse('agent_procedure_write_unavailable', procedure, document, ''));
   }
   const runTool = toolFor(toolNames, Capability.Run);
-  if (runTool !== null && progress.run_outputs.length === 0) {
-    return planOne(runTool, jsonText({ command: ['cat', COMPILED_PROCEDURE_PATH].join(' ') }));
+  const readback = ['cat', COMPILED_PROCEDURE_PATH].join(' ');
+  if (runTool !== null && !progress.hasRun(readback)) {
+    return planOne(runTool, jsonText({ command: readback }));
   }
   if (runTool === null) {
     return finalAnswer(renderResponse('agent_procedure_readback_unavailable', procedure, document, ''));
   }
-  const restored = extractCompiledProcedureArtifact(progress.run_outputs[0]);
+  const output = commandPayload(messages, readback, null);
+  const restored = output === null ? null : extractCompiledProcedureArtifact(output);
   if (restored === null || !proceduresEqual(restored, procedure)) {
     return finalAnswer(renderResponse('agent_procedure_verification_failed', procedure, document, ''));
   }
   const expectedExecution = conformanceLinksNotation(procedure, PROCEDURE_CONFORMANCE_TRIGGER);
-  if (progress.run_outputs.length === 1) {
-    const command = ['formal-ai', 'procedure', 'conformance', '--artifact', COMPILED_PROCEDURE_PATH,
-      '--trigger', PROCEDURE_CONFORMANCE_TRIGGER].join(' ');
-    return planOne(runTool, jsonText({ command }));
-  }
-  if (trim(progress.run_outputs[1]) !== trim(expectedExecution)) {
+  const command = ['formal-ai', 'procedure', 'conformance', '--artifact', COMPILED_PROCEDURE_PATH,
+    '--trigger', PROCEDURE_CONFORMANCE_TRIGGER].join(' ');
+  if (!progress.hasRun(command)) return planOne(runTool, jsonText({ command }));
+  if (commandPayload(messages, command, 'procedure-command-receipt/v1') !== expectedExecution) {
     return finalAnswer(renderResponse('agent_procedure_execution_failed', procedure, document, ''));
   }
   return finalAnswer(renderResponse('agent_procedure_executed', procedure, document, expectedExecution));

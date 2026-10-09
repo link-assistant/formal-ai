@@ -331,7 +331,20 @@ fn execute_tool_call(call: &ToolCall, workspace: &mut AgentWorkspace) -> (String
                 );
             }
             if let Some(result) = execute_procedure_conformance(command, workspace) {
-                return (result, false);
+                let (stdout, error, operation_success) = match result {
+                    Ok(stdout) => (stdout, None, true),
+                    Err(error) => (String::new(), Some(error), false),
+                };
+                return (
+                    json!({
+                        "schema": "procedure-command-receipt/v1", "command": command,
+                        "operation_success": operation_success, "exit_code": null,
+                        "stdout": stdout, "stderr": "", "error": error,
+                        "complete": true, "truncated": false, "timed_out": false,
+                    })
+                    .to_string(),
+                    !operation_success,
+                );
             }
             workspace.run_command(command);
             workspace.last_command_result().map_or_else(
@@ -515,7 +528,10 @@ fn execute_algorithm_command(
 /// Mirror the public `formal-ai procedure conformance` command inside the
 /// in-repo sandbox. External Agent CLI runs the binary; this deterministic
 /// driver invokes the same library path without allowing arbitrary executables.
-fn execute_procedure_conformance(command: &str, workspace: &AgentWorkspace) -> Option<String> {
+fn execute_procedure_conformance(
+    command: &str,
+    workspace: &AgentWorkspace,
+) -> Option<Result<String, String>> {
     let parts = command.split_whitespace().collect::<Vec<_>>();
     if parts.get(..3) != Some(&["formal-ai", "procedure", "conformance"]) {
         return None;
@@ -523,15 +539,19 @@ fn execute_procedure_conformance(command: &str, workspace: &AgentWorkspace) -> O
     let artifact = option_value(&parts, "--artifact")?;
     let trigger = option_value(&parts, "--trigger")?;
     if artifact != super::procedure::COMPILED_PROCEDURE_PATH {
-        return Some(format!("procedure_artifact_unsupported:{artifact:?}"));
+        return Some(Err(format!("procedure_artifact_unsupported:{artifact:?}")));
     }
     let document = match std::fs::read_to_string(workspace.root().join(artifact)) {
         Ok(document) => document,
-        Err(error) => return Some(format!("procedure_artifact_read_failed:{artifact}:{error}")),
+        Err(error) => {
+            return Some(Err(format!(
+                "procedure_artifact_read_failed:{artifact}:{error}"
+            )));
+        }
     };
     match CompiledProcedure::from_artifact_links_notation(&document) {
-        Ok(procedure) => Some(procedure.conformance_links_notation(trigger)),
-        Err(error) => Some(format!("procedure_artifact_invalid:{error}")),
+        Ok(procedure) => Some(Ok(procedure.conformance_links_notation(trigger))),
+        Err(error) => Some(Err(format!("procedure_artifact_invalid:{error}"))),
     }
 }
 

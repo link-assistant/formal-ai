@@ -7,6 +7,7 @@
 // issue_538/540/527/498/499 recipes, and the committed Agent CLI sessions
 // those Rust tests pin byte-for-byte (docs/case-studies/*/agent-cli-session-*.json).
 
+import { procedureWorkspace } from './helpers/procedure-workspace.mjs';
 import { before, test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -124,13 +125,13 @@ test('Agent CLI algorithm learning: write, discover, read back, conformance', ()
   answerToolCall(messages, write.calls[0], 'wrote algorithm-observations.lino');
   const learn = algorithmLearning.planStep(messages, tools, task);
   assert.ok(learn.calls[0].arguments.includes('formal-ai learn algorithms'));
-  answerToolCall(messages, learn.calls[0], 'learned 1 held-out validated algorithm');
+  answerToolCall(messages, learn.calls[0], JSON.stringify({ schema: 'algorithm-command-receipt/v1', operation_success: true, exit_code: null, error: null, command: JSON.parse(learn.calls[0].arguments).command, stdout: 'learned 1 held-out validated algorithm', stderr: '', complete: true, truncated: false, timed_out: false }));
   const readback = algorithmLearning.planStep(messages, tools, task);
   assert.equal(JSON.parse(readback.calls[0].arguments).command, 'cat discovered-algorithms.lino');
-  answerToolCall(messages, readback.calls[0], candidateLinksNotation(task.candidate));
+  answerToolCall(messages, readback.calls[0], JSON.stringify({ schema: 'command-execution-receipt/v1', exit_code: 0, command: JSON.parse(readback.calls[0].arguments).command, stdout: candidateLinksNotation(task.candidate), stderr: '', complete: true, truncated: false, timed_out: false }));
   const conformance = algorithmLearning.planStep(messages, tools, task);
   assert.ok(conformance.calls[0].arguments.includes('formal-ai algorithm conformance'));
-  answerToolCall(messages, conformance.calls[0], algorithmLearning.expectedConformance(task.candidate));
+  answerToolCall(messages, conformance.calls[0], JSON.stringify({ schema: 'algorithm-command-receipt/v1', operation_success: true, exit_code: null, error: null, command: JSON.parse(conformance.calls[0].arguments).command, stdout: algorithmLearning.expectedConformance(task.candidate), stderr: '', complete: true, truncated: false, timed_out: false }));
   const final = algorithmLearning.planStep(messages, tools, task);
   assert.equal(final.kind, 'final');
   assert.ok(final.answer.includes('status "conformance_passed"'));
@@ -210,7 +211,8 @@ test('the compiled artifact round-trips and rejects tampering', () => {
   assert.equal(extractCompiledProcedureArtifact(artifact.replace('fetch its title', 'fetch its titles')), null);
 });
 
-test('Agent CLI procedure: write, verify, execute, and return the same artifact', () => {
+test('Agent CLI procedure: write, verify, execute, and return the same artifact', (context) => {
+  const workspace = procedureWorkspace(); context.after(() => workspace.close());
   const tools = ['write_file', 'run_command'];
   const messages = [user(ENGLISH_PROCEDURE)];
   const compiled = procedure.compileTask(ENGLISH_PROCEDURE);
@@ -220,16 +222,16 @@ test('Agent CLI procedure: write, verify, execute, and return the same artifact'
   const args = JSON.parse(write.calls[0].arguments);
   assert.equal(args.path, 'compiled-procedure.lino');
   assert.equal(args.content, artifactLinksNotation(compiled));
-  answerToolCall(messages, write.calls[0], 'wrote compiled-procedure.lino');
+  answerToolCall(messages, write.calls[0], workspace.execute(write.calls[0]));
   const verify = procedure.planStep(messages, tools, compiled);
   assert.equal(verify.calls[0].tool, 'run_command');
   assert.ok(verify.calls[0].arguments.includes('compiled-procedure.lino'));
-  answerToolCall(messages, verify.calls[0], artifactLinksNotation(compiled));
+  answerToolCall(messages, verify.calls[0], workspace.execute(verify.calls[0]));
   const execute = procedure.planStep(messages, tools, compiled);
   assert.ok(execute.calls[0].arguments.includes('formal-ai procedure conformance'));
   assert.ok(execute.calls[0].arguments.includes(PROCEDURE_CONFORMANCE_TRIGGER));
   const execution = procedureConformance(compiled, PROCEDURE_CONFORMANCE_TRIGGER);
-  answerToolCall(messages, execute.calls[0], execution);
+  answerToolCall(messages, execute.calls[0], workspace.execute(execute.calls[0]));
   const final = procedure.planStep(messages, tools, compiled);
   assert.equal(final.kind, 'final');
   assert.ok(final.answer.includes(compiled.id));
@@ -237,20 +239,23 @@ test('Agent CLI procedure: write, verify, execute, and return the same artifact'
   assert.ok(final.answer.includes(execution));
 });
 
-test('Agent CLI procedure rejects a corrupted readback and a failed execution', () => {
+test('Agent CLI procedure rejects a corrupted readback and a failed execution', (context) => {
+  const workspace = procedureWorkspace(); context.after(() => workspace.close());
   const tools = ['write_file', 'run_command'];
   const compiled = procedure.compileTask(ENGLISH_PROCEDURE);
   let messages = [user(ENGLISH_PROCEDURE)];
-  answerToolCall(messages, procedure.planStep(messages, tools, compiled).calls[0], 'wrote compiled-procedure.lino');
-  answerToolCall(messages, procedure.planStep(messages, tools, compiled).calls[0], 'compiled_procedure_artifact "corrupted"');
+  { const call = procedure.planStep(messages, tools, compiled).calls[0]; answerToolCall(messages, call, workspace.execute(call)); }
+  workspace.corrupt('compiled_procedure_artifact "corrupted"');
+  { const call = procedure.planStep(messages, tools, compiled).calls[0]; answerToolCall(messages, call, workspace.execute(call)); }
   const corrupted = procedure.planStep(messages, tools, compiled);
   assert.ok(corrupted.answer.includes('verification failed'), corrupted.answer);
   assert.ok(!corrupted.answer.includes('was written and verified'));
 
   messages = [user(ENGLISH_PROCEDURE)];
-  answerToolCall(messages, procedure.planStep(messages, tools, compiled).calls[0], 'wrote compiled-procedure.lino');
-  answerToolCall(messages, procedure.planStep(messages, tools, compiled).calls[0], artifactLinksNotation(compiled));
-  answerToolCall(messages, procedure.planStep(messages, tools, compiled).calls[0], 'command exited with status 1\nstderr:\nconformance host failed');
+  { const call = procedure.planStep(messages, tools, compiled).calls[0]; answerToolCall(messages, call, workspace.execute(call)); }
+  { const call = procedure.planStep(messages, tools, compiled).calls[0]; answerToolCall(messages, call, workspace.execute(call)); }
+  workspace.corrupt('compiled_procedure_artifact "corrupted"');
+  { const call = procedure.planStep(messages, tools, compiled).calls[0]; answerToolCall(messages, call, workspace.execute(call)); }
   const failed = procedure.planStep(messages, tools, compiled);
   assert.ok(failed.answer.includes('conformance execution failed'), failed.answer);
   assert.ok(!failed.answer.includes('executed end to end'));

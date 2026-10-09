@@ -75,13 +75,13 @@ pub(super) fn plan_step(
     if !progress.has_run(&discovery) {
         return plan_one(run_tool, json!({ "command": discovery }).to_string());
     }
-    if command_payload(messages, &discovery).is_none() {
+    if command_payload(messages, &discovery, Some("algorithm-command-receipt/v1")).is_none() {
         return AgenticPlan::Final(result_document(task, "artifact_verification_failed", ""));
     }
     if !progress.has_run(&readback) {
         return plan_one(run_tool, json!({ "command": readback }).to_string());
     }
-    let verified = command_payload(messages, &readback)
+    let verified = command_payload(messages, &readback, Some("algorithm-command-receipt/v1"))
         .and_then(|output| AlgorithmCandidate::from_links_notation(&output).ok());
     if verified.as_ref() != Some(&task.candidate) {
         return AgenticPlan::Final(result_document(task, "artifact_verification_failed", ""));
@@ -91,14 +91,20 @@ pub(super) fn plan_step(
         return plan_one(run_tool, json!({ "command": command }).to_string());
     }
     let expected = expected_conformance(&task.candidate);
-    if command_payload(messages, &command).as_deref() != Some(expected.as_str()) {
+    if command_payload(messages, &command, Some("algorithm-command-receipt/v1")).as_deref()
+        != Some(expected.as_str())
+    {
         return AgenticPlan::Final(result_document(task, "conformance_failed", ""));
     }
     AgenticPlan::Final(result_document(task, "conformance_passed", &expected))
 }
 
 /// Decode only a successful complete receipt bound to its current request call.
-fn command_payload(messages: &[ChatMessage], command: &str) -> Option<String> {
+pub(super) fn command_payload(
+    messages: &[ChatMessage],
+    command: &str,
+    operation_schema: Option<&str>,
+) -> Option<String> {
     let start = messages
         .iter()
         .rposition(|message| message.role.eq_ignore_ascii_case("user"))
@@ -141,7 +147,7 @@ fn command_payload(messages: &[ChatMessage], command: &str) -> Option<String> {
             return None;
         }
         if let Ok(receipt) = serde_json::from_str::<serde_json::Value>(&raw)
-            && receipt["schema"] == "algorithm-command-receipt/v1"
+            && operation_schema.is_some_and(|schema| receipt["schema"] == schema)
         {
             return (receipt["command"].as_str() == Some(command)
                 && receipt["operation_success"].as_bool() == Some(true)

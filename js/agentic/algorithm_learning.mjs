@@ -62,20 +62,20 @@ export function planStep(messages, toolNames, task) {
   if (runTool === null) return finalAnswer(resultDocument(task, 'shell_unavailable', ''));
   const discovery = discoveryCommand(), readback = readbackCommand();
   if (!progress.hasRun(discovery)) return planOne(runTool, jsonText({ command: discovery }));
-  if (commandPayload(messages, discovery) === null) return finalAnswer(resultDocument(task, 'artifact_verification_failed', ''));
+  if (commandPayload(messages, discovery, 'algorithm-command-receipt/v1') === null) return finalAnswer(resultDocument(task, 'artifact_verification_failed', ''));
   if (!progress.hasRun(readback)) return planOne(runTool, jsonText({ command: readback }));
-  const output = commandPayload(messages, readback);
+  const output = commandPayload(messages, readback, 'algorithm-command-receipt/v1');
   const verified = output === null ? null : candidateFromLinksNotation(output);
   if (!candidatesEqual(verified, task.candidate)) return finalAnswer(resultDocument(task, 'artifact_verification_failed', ''));
   const command = conformanceCommand(task.candidate);
   if (!progress.hasRun(command)) return planOne(runTool, jsonText({ command }));
   const expected = expectedConformance(task.candidate);
-  if (commandPayload(messages, command) !== expected) return finalAnswer(resultDocument(task, 'conformance_failed', ''));
+  if (commandPayload(messages, command, 'algorithm-command-receipt/v1') !== expected) return finalAnswer(resultDocument(task, 'conformance_failed', ''));
   return finalAnswer(resultDocument(task, 'conformance_passed', expected));
 }
 
 /** Mirrors `fn command_payload`: exact current-call binding precedes transport decoding. */
-function commandPayload(messages, command) {
+export function commandPayload(messages, command, operationSchema) {
   const current = messages.slice(Math.max(0, messages.findLastIndex(message => message.role.toLowerCase() === 'user')));
   for (let index = current.length - 1; index >= 0; index -= 1) {
     const message = current[index];
@@ -86,7 +86,7 @@ function commandPayload(messages, command) {
     const raw = plainText(message.content);
     let receipt; try { receipt = JSON.parse(raw); } catch { receipt = null; }
     if (receipt?.command !== undefined && receipt.command !== command) return null;
-    if (receipt?.schema === 'algorithm-command-receipt/v1') {
+    if (operationSchema !== null && receipt?.schema === operationSchema) {
       return receipt.command === command && receipt.operation_success === true && receipt.exit_code === null
         && receipt.complete === true && receipt.truncated === false && receipt.timed_out === false
         && receipt.stderr === '' && receipt.error === null && typeof receipt.stdout === 'string'
