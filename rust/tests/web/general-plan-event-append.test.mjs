@@ -98,11 +98,33 @@ test('run-only clients execute a quoted append and preserve history on retries',
   } finally { rmSync(directory, { recursive: true, force: true }); }
 });
 
-test('write-only clients cannot overwrite an unobserved event stream', () => {
-  const plan = composeGeneralChangePlan(request);
-  const step = planGeneralChangeStep([{ role: 'user', content: request }], ['write'], plan);
-  assert.equal(step.kind, 'final');
-  assert.match(step.answer, /not executed/u);
+test('write-only clients deliver the target without overwriting an unobserved event stream', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'formal-ai-events-write-only-'));
+  const prior = 'previous observed event\n';
+  try {
+    mkdirSync(join(directory, '.formal-ai'));
+    writeFileSync(join(directory, PLAN_PATH), prior);
+    const plan = composeGeneralChangePlan(request);
+    const messages = [{ role: 'user', content: request }];
+    const step = planGeneralChangeStep(messages, ['write'], plan);
+    assert.equal(step.kind, 'tool_calls');
+    assert.equal(step.calls.length, 1);
+    const call = step.calls[0];
+    assert.equal(call.tool, 'write');
+    const args = JSON.parse(call.arguments);
+    assert.equal(args.path, 'result.txt');
+    assert.notEqual(args.path, PLAN_PATH);
+    assert.equal(args.content, 'hello');
+    writeFileSync(join(directory, args.path), args.content);
+    result(messages, call, '');
+    const final = planGeneralChangeStep(messages, ['write'], plan);
+    assert.equal(final.kind, 'final');
+    assert.equal(final.result.disposition, 'gap');
+    assert.equal(final.result.origin, 'auxiliary_event_unavailable');
+    assert.match(final.answer, /not marked the change complete/u);
+    assert.equal(readFileSync(join(directory, 'result.txt'), 'utf8'), 'hello');
+    assert.equal(readFileSync(join(directory, PLAN_PATH), 'utf8'), prior);
+  } finally { rmSync(directory, { recursive: true, force: true }); }
 });
 
 

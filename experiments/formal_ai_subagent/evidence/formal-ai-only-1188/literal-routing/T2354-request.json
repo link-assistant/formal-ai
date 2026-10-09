@@ -1,0 +1,184 @@
+{
+  "id": "T2354",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "copies": [
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2343-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2343-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2343-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2343-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2343-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2343-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2344-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2344-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2344-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2344-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2344-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2344-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2345-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2345-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2345-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2345-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2345-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2345-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2346-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2346-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2346-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2346-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2346-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2346-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2347-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2347-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2347-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2347-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2347-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2347-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2348-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2348-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2348-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2348-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2348-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2348-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2349-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2349-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2349-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2349-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2349-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2349-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2350-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2350-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2350-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2350-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2350-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2350-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2351-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2351-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2351-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2351-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2351-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2351-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2352-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2352-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2352-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2352-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2352-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2352-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2353-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2353-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2353-transcript.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2353-transcript.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2353-transcript.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2353-transcript.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2354-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2354-request.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2343-wrong-planner.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2343-wrong-planner.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2344-routing-baseline.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2344-routing-baseline.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2345-closest.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2345-closest.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2347-closest.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2347-closest.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2350-closest.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2350-closest.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2352-closest.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2352-closest.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2353-static-checks.log",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/T2353-static-checks.log"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/literal-routing-source-manifest.json",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/literal-routing-source-manifest.json"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/T2353-finite-ledger.md",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/finite-ledger.md"
+    },
+    {
+      "source": "/private/tmp/formal-ai-only-1188/general-planner-boot-loader.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/general-planner-boot-loader.log"
+    }
+  ],
+  "manifest": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/literal-routing/copy-manifest.json",
+  "prompt": "Run node -e \"const fs=require('fs'),path=require('path'),crypto=require('crypto');const r=JSON.parse(fs.readFileSync('/private/tmp/formal-ai-only-1188/T2354-request.json'));for(const c of r.copies)if(!fs.existsSync(c.source)||fs.existsSync(c.target))throw Error('copy precondition');const manifest=[];for(const c of r.copies){fs.mkdirSync(path.dirname(c.target),{recursive:true});fs.copyFileSync(c.source,c.target);const a=fs.readFileSync(c.source),b=fs.readFileSync(c.target);if(!a.equals(b))throw Error('copy mismatch');manifest.push({source:c.source,target:c.target,bytes:b.length,sha256:crypto.createHash('sha256').update(b).digest('hex')});}fs.writeFileSync(r.manifest,JSON.stringify(manifest,null,2));\""
+}

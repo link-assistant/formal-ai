@@ -1,0 +1,353 @@
+//! Recover statement-bound literal writes without executing source prose.
+use super::literal_payload;
+use crate::agentic_coding::shell_command_policy::prose_sentences;
+use crate::agentic_coding::write_request::{
+    CueFamily, Token, WriteBinding, action_cue_start_after, bare_surfaces, clean_content,
+    clean_cue_token, content_lead_close, first_action_cue_end, first_action_cue_start,
+    first_content_lead_end, first_prefix_lead_end, payload_continues_past_its_first_line,
+    ranked_bindings, tokens,
+};
+use crate::seed::{self, Slot};
+
+/// A write cue cannot authorize a target in another statement or a preceding read request.
+fn binding_has_write_instruction(
+    request: &str,
+    toks: &[Token<'_>],
+    binding: &WriteBinding,
+) -> bool {
+    let clause_start = if binding.cue_precedes {
+        binding.cue_start
+    } else {
+        toks[binding.index].start
+    };
+    let action_start = first_action_cue_start(toks);
+    if action_start.is_some_and(|start| !positions_share_statement(request, start, clause_start)) {
+        return false;
+    }
+    let from = prose_sentences(request)
+        .into_iter()
+        .find(|sentence| sentence.span.contains(&clause_start))
+        .map_or(0, |sentence| sentence.span.start);
+    let before = &request[from..action_start.unwrap_or(toks[binding.index].start)];
+    !seed::lexicon().mentions_role(
+        "file_read_action_cue",
+        &crate::engine::normalize_prompt(before),
+    )
+}
+
+/// Recover the `(target, content)` of a write request from its wording.
+///
+/// The recogniser is entirely seed-driven (issue #680). It locates the target
+/// file by a `file_write_target_cue`/`file_write_destination_cue` that directly
+/// precedes a file-looking, safe relative path, then recovers the content two
+/// ways:
+///
+/// * **Marker-led** — a `file_write_content_lead` phrase ("containing", "with
+///   the following", …) introduces the payload. The content is the span after
+///   the marker (when the file precedes it) or the span between the marker and
+///   the file clause (when the content precedes the file).
+/// * **Destination-led** — the "write CONTENT to FILE" shape, where a
+///   `file_write_action_cue` opens the request and a *destination* cue (not a
+///   positional target cue) routes the preceding span into the file.
+/// * **Action-led** — the "write FILE saying CONTENT" shape, where a
+///   `file_write_action_cue` ("write"/"create"/"save"/…) directly names the file
+///   and a content-lead marker introduces the payload after it. An action cue
+///   licenses the file just like a target cue, but only marker-led content is
+///   accepted for it, so a bare "create app.rs" (no content) still falls through
+///   to the ordinary solver rather than fabricating an empty file.
+///
+/// Both byte offsets index the lowercased copy, which is byte-length preserving
+/// for en/ru/hi/zh, so the same offsets slice the original request and the
+/// recovered content keeps its case and punctuation.
+pub(super) fn parse_write_request(request: &str) -> Option<(String, String)> {
+    let toks = tokens(request);
+    if let Some(literal) = literal_payload(request) {
+        // A closed whole-file payload supplies the content. Only target cues
+        // before it bind the file; its internal prose is authored data.
+        if let Some(binding) = ranked_bindings(&toks).into_iter().find(|candidate| {
+            toks[candidate.index].end <= literal.start
+                && candidate.cue_end <= literal.start
+                && binding_has_write_instruction(request, &toks, candidate)
+        }) {
+            return Some((
+                binding.path,
+                clean_content(&request[literal.start..literal.end]).unwrap_or(literal.text),
+            ));
+        }
+    }
+    // A cue between two file-shaped tokens can belong to either of them, and the
+    // ranking only says which reading to try first. The reading that recovers a
+    // payload is the one the sentence supports, so the candidates are taken in
+    // order and the first that parses is the answer. A sentence that offers one
+    // candidate reaches exactly the branch it always did.
+    ranked_bindings(&toks)
+        .into_iter()
+        .find_map(|binding| parse_write_request_bound(request, &toks, &binding))
+}
+
+/// Read `request` as a write delivered through one particular binding.
+fn parse_write_request_bound(
+    request: &str,
+    toks: &[Token<'_>],
+    binding: &WriteBinding,
+) -> Option<(String, String)> {
+    if !binding_has_write_instruction(request, toks, binding) {
+        return None;
+    }
+    let lowered = request.to_lowercase();
+    let dest_cues = bare_surfaces(seed::ROLE_FILE_WRITE_DESTINATION_CUE);
+    let file_index = binding.index;
+    let target = binding.path.clone();
+    // The clause is the cue and its path together, so it begins at whichever of
+    // them the language puts first.
+    let clause_start = if binding.cue_precedes {
+        binding.cue_start
+    } else {
+        toks[file_index].start
+    };
+    let cue_is_destination = binding.family == CueFamily::Destination;
+    // Marker-led content. The payload sits after the marker, bounded by the file
+    // clause when the marker comes first ("write the following: hello to x.txt")
+    // and running to the end when the clause comes first ("store file x.txt
+    // containing hello").
+    //
+    // A marker that *precedes* the clause additionally needs a write verb, which
+    // is the same rule the destination-led and assignment-shaped branches below
+    // already apply — without it a read request whose object happens to be a
+    // content-lead surface claims a write. The issue-#671 matrix caught
+    // `show me the contents of the file beta.md` planning
+    // `write(beta.md, "of the")`, destroying the fixture it was asked to read.
+    // A marker inside a sentence that specifies a document to compose introduces
+    // that document's structure, not its bytes; see
+    // [`crate::agentic_coding::note_composition::composed_document_specification_span`]. Reading
+    // it as a literal payload is what wrote "the selected tree level, node
+    // outcomes, test results, and session id." into the ladder's final proof
+    // file (issue #1066), and it claimed the request too, so the note the caller
+    // asked for was never composed.
+    let specification =
+        crate::agentic_coding::note_composition::composed_document_specification_span(request);
+    if let Some((_, marker_end)) = first_content_lead_end(&lowered)
+        && !specification.is_some_and(|span| span.contains(&marker_end))
+        && positions_share_statement(request, marker_end, clause_start)
+    {
+        let marker_leads = marker_end <= clause_start;
+        let statement_end = if marker_leads {
+            end_of_statement(request, marker_end, clause_start)
+        } else {
+            end_of_statement(request, marker_end, request.len())
+        };
+        // A circumfix marker states where its payload ends as well as where it
+        // begins, and the closing literal is grammar rather than bytes: the
+        // Hindi "जिसमें Gemfile.lock हो" would otherwise write the verb into the
+        // file with the content.
+        let payload_end = content_lead_close(&lowered, marker_end)
+            .map_or(statement_end, |close| close.min(statement_end));
+        let marker_span = request.get(marker_end..payload_end);
+        if (!marker_leads || first_action_cue_end(toks).is_some())
+            && let Some(content) = marker_span.and_then(clean_content).filter(|content| {
+                is_literal_content(content)
+                    && (!names_deferred_work_product(content)
+                        || first_prefix_lead_end(
+                            &lowered,
+                            seed::ROLE_FILE_WRITE_AUTHORITATIVE_CONTENT_LEAD,
+                        )
+                        .is_some()
+                        || literal_payload(request).is_some())
+            })
+        {
+            return Some((target, content));
+        }
+    }
+    let content_span = if cue_is_destination && binding.cue_precedes {
+        let action_end = first_action_cue_end(toks)?;
+        (action_end <= clause_start && positions_share_statement(request, action_end, clause_start))
+            .then(|| request.get(action_end..clause_start))?
+    } else if cue_is_destination {
+        // The same shape read from the other side. A language that marks its
+        // destination with a postposition and closes the clause with the verb —
+        // "notes/attribution.md में Gemfile.lock लिखो" — states the payload
+        // between the two, exactly as the prepositional wording states it
+        // between the verb and the preposition.
+        let action_start = action_cue_start_after(toks, binding.cue_end)?;
+        (binding.cue_end <= action_start
+            && positions_share_statement(request, binding.cue_end, action_start))
+        .then(|| request.get(binding.cue_end..action_start))?
+    } else if let Some(value_lead) = toks
+        .iter()
+        .skip(file_index + 1)
+        .find(|token| dest_cues.contains(&clean_cue_token(token.text)))
+    {
+        // Assignment shape: "set the contents of FILE to VALUE". The target
+        // cue identifies the file object and a following destination cue
+        // introduces its literal value. Requiring a write action before the
+        // file keeps an unrelated "contents of FILE" read request out.
+        let action_end = first_action_cue_end(toks)?;
+        (action_end <= clause_start
+            && positions_share_statement(request, action_end, clause_start)
+            && positions_share_statement(request, clause_start, value_lead.start))
+        .then(|| request.get(value_lead.end..))?
+    } else {
+        None
+    };
+    let content = clean_content(content_span?)?;
+    // A recovered payload that is *only* a non-referential subject ("save it to
+    // FILE", "write this to FILE") names no literal content — the pronoun points
+    // back at content the request expects the recipe to still compose. Treating
+    // it as a literal write both fabricates the wrong file (the string "it") and
+    // steals the request from the keyword recipe that would author the real
+    // artifact, so fall through instead (issue #663).
+    //
+    // The same is true of a payload that names the *work product* rather than
+    // supplying it: "save the answer to FILE" states where an answer goes, not
+    // what it says (issue #1066).
+    if is_non_referential_content(&content)
+        || names_deferred_work_product(&content)
+        || !is_literal_content(&content)
+    {
+        return None;
+    }
+    Some((target, content))
+}
+/// Where the statement that begins at `from` ends, never past `limit`.
+///
+/// A literal payload is something the request *states*, and a statement ends
+/// where its sentence does. Bounding the span by the file clause alone reads
+/// across every sentence in between: "Draft a handover memo containing the
+/// migration status, the outstanding blockers, and the on-call owner. Leave the
+/// memo in `handover/2026-q3.md`" put the marker in the first sentence and the
+/// clause in the second, so the recovered payload ended with the words *Leave
+/// the memo* and the caller's memo opened by instructing them to leave it
+/// (issue #1066).
+///
+/// The clause bound still applies inside the sentence, because "write the
+/// following: hello to `x.txt`" states marker, payload and clause in one
+/// breath. This only refuses to look further than the sentence the marker is in.
+///
+/// A marker that says nothing more on its own line is the exception, because
+/// there the payload is a *block* rather than a phrase: "Create file
+/// `rules.lino` containing\n<three lines of lino>" leaves the marker with an
+/// empty tail, and a newline ends a sentence, so the sentence bound would
+/// recover nothing at all. When the marker's own line has no word left on it,
+/// the statement is the block that follows and runs to `limit`, which is what
+/// this route always did for block payloads.
+///
+/// The sentence is the one *prose* reads, so a semicolon inside the payload
+/// joins its two halves instead of ending it. Reading the payload at the scope
+/// shell routing reads at cut issue #918's minimal-core invariant in half at
+/// its semicolon.
+fn end_of_statement(request: &str, from: usize, limit: usize) -> usize {
+    let Some(sentence) = prose_sentences(request)
+        .into_iter()
+        .find(|sentence| sentence.span.contains(&from))
+    else {
+        return limit;
+    };
+    if let Some(literal) = crate::normal_markov::quoted_segment_spans(request)
+        .into_iter()
+        .find(|segment| {
+            segment.start >= from
+                && segment.start < sentence.span.end
+                && segment.end > sentence.span.end
+        })
+    {
+        return literal.end.min(limit);
+    }
+    let says_more = request
+        .get(from..sentence.span.end)
+        .is_some_and(|tail| tail.chars().any(char::is_alphanumeric));
+    if says_more && !payload_continues_past_its_first_line(request, from, sentence.span.end) {
+        sentence.span.end.min(limit)
+    } else {
+        limit
+    }
+}
+/// Whether two write-request cues belong to one prose statement.
+///
+/// Literal-write roles are structural only inside the statement that relates
+/// them. Without this check, a content lead in one issue-description paragraph
+/// can pair with an incidental file-shaped token in a later paragraph and turn
+/// repository policy prose into an executable write (issue #1069).
+///
+/// [`end_of_statement`] deliberately lets a marker-only line introduce the
+/// block below it. Reusing that boundary here preserves that supported block
+/// shape while rejecting ordinary completed sentences between the two cues.
+fn positions_share_statement(request: &str, left: usize, right: usize) -> bool {
+    let (from, limit) = if left <= right {
+        (left, right)
+    } else {
+        (right, left)
+    };
+    from == limit || end_of_statement(request, from, limit) == limit
+}
+/// Whether a recovered payload says anything at all. A span of nothing but
+/// punctuation is what a mis-parse leaves behind — the `opencode` leg of the
+/// issue-#671 matrix recovered a single `"`, the tail of a quoted prompt after
+/// its trailing content-lead marker — and writing it would replace real file
+/// bytes with a stray delimiter.
+fn is_literal_content(content: &str) -> bool {
+    content.chars().any(char::is_alphanumeric)
+}
+/// Whether a recovered write payload is nothing but a non-referential subject —
+/// a bare pronoun/function word ("it", "this", "that", …) that refers back to
+/// context rather than naming literal content. The surfaces carry the
+/// [`seed::ROLE_NON_REFERENTIAL_SUBJECT`] role; only whole-word
+/// ([`Slot::Bare`]) forms are rejected, so legitimate content that merely
+/// *begins* with such a word ("to be or not to be") is still accepted.
+fn is_non_referential_content(content: &str) -> bool {
+    let lower = content.to_lowercase();
+    seed::lexicon()
+        .role_word_forms(seed::ROLE_NON_REFERENTIAL_SUBJECT)
+        .iter()
+        .any(|form| form.slot() == Slot::Bare && lower == form.text)
+}
+/// Whether a recovered write payload names the result of work the same request
+/// asks for, instead of supplying bytes (issue #1066).
+///
+/// "Save the answer to `out/e.md`" and "leave observable evidence to
+/// `out/e.md`" have the destination-led shape of a literal write -- a write
+/// verb, a span, a destination cue, a path -- and supply no literal. Taking the
+/// span at face value wrote the words *the answer* into the file and, worse,
+/// claimed the request as finished, so the investigation that would have
+/// produced the real bytes never ran.
+///
+/// The surfaces carry [`seed::ROLE_FILE_WRITE_DEFERRED_CONTENT_REFERENCE`] as
+/// [`Slot::Suffix`] forms, because the head noun is what defers and the
+/// modifiers in front of it ("observable", "final") are the caller's, not the
+/// lexicon's.
+///
+/// Applied to marker-led content too: “with the observed result” uses a content
+/// marker syntactically, but still names work that has not happened. Explicit
+/// bytes remain expressible through the authoritative-content marker, whose
+/// distinct role is routed before derived-delivery planning.
+fn names_deferred_work_product(content: &str) -> bool {
+    let lower = content
+        .trim()
+        .trim_end_matches(['.', '!', '?', '。', '！', '？'])
+        .trim_end()
+        .to_lowercase();
+    seed::lexicon()
+        .role_word_forms(seed::ROLE_FILE_WRITE_DEFERRED_CONTENT_REFERENCE)
+        .iter()
+        .any(|form| match form.slot() {
+            Slot::Bare => lower == form.text,
+            Slot::Suffix => ends_with_head_noun(&lower, form.after_slot().trim_start()),
+            Slot::Prefix | Slot::Circumfix => false,
+        })
+}
+/// Whether `content` ends with `noun` standing as its own word.
+///
+/// English and Russian separate a head noun from its modifiers with a space, so
+/// the character before the match settles it. Chinese writes the same phrase
+/// with no separator at all, which is why the boundary is stated as "not an
+/// ASCII alphanumeric" rather than "whitespace": demanding a space would never
+/// match 结论, and demanding nothing would match the tail of an unrelated
+/// English word.
+fn ends_with_head_noun(content: &str, noun: &str) -> bool {
+    !noun.is_empty()
+        && content.strip_suffix(noun).is_some_and(|before| {
+            before
+                .chars()
+                .next_back()
+                .is_none_or(|character| !character.is_ascii_alphanumeric())
+        })
+}

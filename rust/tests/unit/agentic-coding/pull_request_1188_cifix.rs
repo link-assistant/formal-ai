@@ -104,3 +104,50 @@ fn setting_a_files_contents_writes_the_file() {
         );
     }
 }
+
+#[test]
+fn literal_write_authorization_does_not_cross_a_statement_or_a_read() {
+    use formal_ai::agentic_coding::compose_general_change_plan;
+    for prompt in [
+        "Inspect the shared literal-file request parser, whole-file guard and general planner in js/agentic/general_planner.mjs, js/agentic/write_request.mjs and js/agentic/literal_write_guard.mjs, with their native counterparts. Repair the general routing regression that sends declarative new files and explicit literal-content creation requests to read or semantic commands instead of write. Preserve read-before-replacement for existing edits, exact payload bytes, same-statement target/content binding, client-owned workspaces, bounded failed-write retries and honest verification status. Reproduce the original requests new file: notes.txt, contents: hello and Create a file named hello.txt with the content hello world using the actual planner before changes. Read the relevant tests and source before authoring; run only closest JavaScript checks, no native compiler. Report any exact missing capability instead of replacing tests or gates.",
+        "Read file f.txt with instructions to write a new document.",
+    ] {
+        assert!(compose_general_change_plan(prompt).is_none(), "{prompt}");
+    }
+    let plan =
+        compose_general_change_plan("Read file f.txt with care. Write report.txt containing done.");
+    assert!(plan.as_ref().is_none_or(|plan| plan.target != "f.txt"));
+    let declared = compose_general_change_plan("new file: notes.txt, contents: hello")
+        .expect("declarative creation");
+    assert_eq!(declared.target, "notes.txt");
+    assert_eq!(declared.content, "hello");
+}
+
+#[test]
+fn unavailable_auxiliary_append_does_not_block_a_write_only_client_target() {
+    let prompt = "Create a file named hello.txt with the content hello world";
+    let mut messages = vec![ChatMessage::user(prompt)];
+    let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &["write"]) else {
+        panic!("target write must be delivered");
+    };
+    let call = &calls[0];
+    assert_eq!(call.tool, "write");
+    let args: serde_json::Value = serde_json::from_str(&call.arguments).expect("write args");
+    assert_eq!(args["path"], "hello.txt");
+    assert_eq!(args["content"], "hello world");
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "target",
+        &call.tool,
+        &call.arguments,
+    )]));
+    messages.push(ChatMessage::tool_result(
+        "target",
+        &call.tool,
+        r#"{"success":true}"#,
+    ));
+    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &["write"]) else {
+        panic!("unavailable persistence must be reported honestly");
+    };
+    assert!(!answer.contains("Completed the general change request"));
+    assert!(answer.contains(".formal-ai/general-change-plan.lino"));
+}

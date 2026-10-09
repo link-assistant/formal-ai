@@ -1,0 +1,14 @@
+{
+  "id": "T2346",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Inspect the shared literal-file request parser, whole-file guard and general planner in js/agentic/general_planner.mjs, js/agentic/write_request.mjs and js/agentic/literal_write_guard.mjs, with their native counterparts. Repair the general routing regression that sends declarative new files and explicit literal-content creation requests to read or semantic commands instead of write. Preserve read-before-replacement for existing edits, exact payload bytes, same-statement target/content binding, client-owned workspaces, bounded failed-write retries and honest verification status. Reproduce the original requests new file: notes.txt, contents: hello and Create a file named hello.txt with the content hello world using the actual planner before changes. Read the relevant tests and source before authoring; run only closest JavaScript checks, no native compiler. Report any exact missing capability instead of replacing tests or gates.",
+  "original": "T2343",
+  "before": {
+    "js/agentic/general_planner.mjs": "0d1482065ec5dc408db9cf7acf6781ab3226e46e83bd4818fb2d438f179fdc6f",
+    "js/agentic/write_request.mjs": "ff13cf43cf472d278f560c6b7891c0ffb06523ceff7a56313e1e5e031bcf5ce5",
+    "js/agentic/literal_write_guard.mjs": "01b9e5be9c90ab2f3909221b99c615309fb9a4a2fb4adeaba4fb03cea459a350",
+    "rust/src/agentic_coding/general_planner.rs": "d8986e8d7bc1fc867c419730aa20c9c96588a18f4a72f74902254ff88b441697",
+    "rust/src/agentic_coding/write_request.rs": "c603495a91109d2cd620531d268a9d6052d1c2e79084bde084e490a315bb70bd",
+    "rust/src/agentic_coding/literal_write_guard.rs": "5761615c1e724f3d27b0ef7e669cdde23b4586e4cfe6f66f44370a3d20fd69af"
+  }
+}

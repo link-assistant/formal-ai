@@ -192,9 +192,11 @@ fn general_change_step(
     {
         return AgenticPlan::Final(report);
     }
-    if let Some(step) = plan_event_step(plan, &progress, tool_names) {
-        return step;
-    }
+    let event_unavailable = match plan_event_step(plan, &progress, tool_names) {
+        PlanEventOutcome::Pending(step) => return step,
+        PlanEventOutcome::Observed => false,
+        PlanEventOutcome::Unavailable => true,
+    };
     if let Some(tool) = tool_for(tool_names, Capability::Write)
         && plan.mode == GeneralPlanMode::LiteralFile
         && !progress.successful_write_for(&plan.target)
@@ -231,7 +233,22 @@ fn general_change_step(
             GeneralPlanMode::LiteralFile | GeneralPlanMode::RepositoryWorkItem => {}
         }
     }
+    if event_unavailable && plan.mode != GeneralPlanMode::RepositoryWorkItem {
+        return record(
+            unverified_plan_event(plan),
+            FinalDisposition::Gap,
+            "auxiliary_event_unavailable",
+            result,
+        );
+    }
     finish_general_change(plan, &progress, resolved_from_work_item, result)
+}
+
+/// Request-local persistence status, separate from the requested workspace effect.
+enum PlanEventOutcome {
+    Observed,
+    Pending(AgenticPlan),
+    Unavailable,
 }
 
 // Write is an overwrite operation. Preserve observed history and read back the
@@ -274,7 +291,7 @@ fn plan_event_step(
     plan: &GeneralChangePlan,
     progress: &Progress,
     tool_names: &[&str],
-) -> Option<AgenticPlan> {
+) -> PlanEventOutcome {
     let event = plan.links_notation();
     let identity = event.lines().nth(1).unwrap_or_default();
     let run = shell_command_tool(tool_names);
@@ -304,7 +321,7 @@ fn plan_event_step(
                 .as_deref()
                 .is_some_and(|prior| prior.starts_with(&expected))
             {
-                return None;
+                return PlanEventOutcome::Observed;
             }
             if progress.last() == Some(Capability::Read)
                 && progress
@@ -313,16 +330,19 @@ fn plan_event_step(
                     .as_deref()
                     == Some(PLAN_PATH)
             {
-                return Some(unverified_plan_event(plan));
+                return PlanEventOutcome::Pending(unverified_plan_event(plan));
             }
-            return Some(plan_one(read, read_arguments(PLAN_PATH)));
+            return PlanEventOutcome::Pending(plan_one(read, read_arguments(PLAN_PATH)));
         }
         if prior
             .as_deref()
             .is_some_and(|prior| prior.lines().any(|line| line == identity))
         {
-            return (!prior.as_deref().is_some_and(|prior| prior.contains(&event)))
-                .then(|| unverified_plan_event(plan));
+            return if prior.as_deref().is_some_and(|prior| prior.contains(&event)) {
+                PlanEventOutcome::Observed
+            } else {
+                PlanEventOutcome::Pending(unverified_plan_event(plan))
+            };
         }
         let missing = progress.latest_failure().is_some_and(|failure| {
             failure.capability == Capability::Read
@@ -335,27 +355,30 @@ fn plan_event_step(
                 && absent_plan_event(&failure.detail)
         });
         if prior.is_none() && !missing {
-            return Some(plan_one(read, read_arguments(PLAN_PATH)));
+            return PlanEventOutcome::Pending(plan_one(read, read_arguments(PLAN_PATH)));
         }
         let mut stream = prior.unwrap_or_default();
         if !stream.is_empty() && !stream.ends_with('\n') {
             stream.push('\n');
         }
         stream.push_str(&event);
-        return Some(plan_one(write, write_arguments(PLAN_PATH, &stream)));
+        return PlanEventOutcome::Pending(plan_one(write, write_arguments(PLAN_PATH, &stream)));
     }
     let Some(run) = run else {
-        return Some(AgenticPlan::Final(plan.planned_not_executed_answer()));
+        return PlanEventOutcome::Unavailable;
     };
     let append = plan_event_append_command(plan);
     if progress.successful_run_count_for(&append) == 0 {
-        return Some(plan_one(run, json!({"command": append}).to_string()));
+        return PlanEventOutcome::Pending(plan_one(run, json!({"command": append}).to_string()));
     }
     let observed = progress
         .latest_successful_run_output_for(&append)
         .and_then(tool_result::observed_payload);
-    (!observed.is_some_and(|observed| observed.contains(event.trim_end())))
-        .then(|| unverified_plan_event(plan))
+    if observed.is_some_and(|observed| observed.contains(event.trim_end())) {
+        PlanEventOutcome::Observed
+    } else {
+        PlanEventOutcome::Pending(unverified_plan_event(plan))
+    }
 }
 
 /// Plan the next step from what the fetched work item actually asks for.

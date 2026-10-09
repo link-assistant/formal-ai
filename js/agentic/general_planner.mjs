@@ -383,7 +383,8 @@ function parseWriteRequest(request) {
     // A closed whole-file payload has already supplied the content. Only
     // target cues before it bind the file; its internal prose is authored data.
     const binding = rankedBindings(toks).find((candidate) =>
-      toks[candidate.index].end <= literal.start && candidate.cue_end <= literal.start);
+      toks[candidate.index].end <= literal.start && candidate.cue_end <= literal.start
+      && bindingHasWriteInstruction(request, toks, candidate));
     if (binding) return [binding.path, cleanContent(request.slice(literal.start, literal.end)) ?? literal.text];
   }
   for (const binding of rankedBindings(toks)) {
@@ -393,9 +394,24 @@ function parseWriteRequest(request) {
   return null;
 }
 
+/** Mirrors `fn binding_has_write_instruction`: a write cue cannot authorize another statement. */
+function bindingHasWriteInstruction(request, toks, binding) {
+  const clauseStart = binding.cue_precedes ? binding.cue_start : toks[binding.index].start;
+  const actionStart = firstActionCueStart(toks);
+  if (actionStart !== null && !positionsShareStatement(request, actionStart, clauseStart)) return false;
+  const sentence = proseSentences(request).find((item) => {
+    const span = spanOf(item);
+    return clauseStart >= span.start && clauseStart < span.end;
+  });
+  const from = sentence === undefined ? 0 : spanOf(sentence).start;
+  const before = request.slice(from, actionStart ?? toks[binding.index].start);
+  return !mentionsRole('file_read_action_cue', normalizePrompt(before));
+}
+
 const slice = (text, start, end) => (start <= end && end <= text.length ? text.slice(start, end) : null);
 
 function parseWriteRequestBound(request, toks, binding) {
+  if (!bindingHasWriteInstruction(request, toks, binding)) return null;
   const lowered = request.toLowerCase();
   const destCues = bareSurfaces('file_write_destination_cue');
   const fileIndex = binding.index;

@@ -1,0 +1,59 @@
+// Literal file operands must be authorized in their own statement.
+import assert from 'node:assert/strict';
+import { before, test } from 'node:test';
+import { WorkerHost } from '../../../js/server/worker-host.mjs';
+import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import { composeGeneralChangePlan } from '../../../js/agentic/general_planner.mjs';
+before(async () => { await installNodeHost(new WorkerHost()); });
+test('the original repair instruction does not become destructive source contents', () => {
+  assert.equal(composeGeneralChangePlan("Inspect the shared literal-file request parser, whole-file guard and general planner in js/agentic/general_planner.mjs, js/agentic/write_request.mjs and js/agentic/literal_write_guard.mjs, with their native counterparts. Repair the general routing regression that sends declarative new files and explicit literal-content creation requests to read or semantic commands instead of write. Preserve read-before-replacement for existing edits, exact payload bytes, same-statement target/content binding, client-owned workspaces, bounded failed-write retries and honest verification status. Reproduce the original requests new file: notes.txt, contents: hello and Create a file named hello.txt with the content hello world using the actual planner before changes. Read the relevant tests and source before authoring; run only closest JavaScript checks, no native compiler. Report any exact missing capability instead of replacing tests or gates."), null);
+});
+test('a later write does not license an earlier read with a content-like preposition', () => {
+  const plan = composeGeneralChangePlan('Read file f.txt with care. Write report.txt containing done.');
+  assert.notEqual(plan?.target, 'f.txt');
+});
+test('payload write vocabulary cannot turn an explicit read into a whole-file write', () => {
+  assert.equal(composeGeneralChangePlan('Read file f.txt with instructions to write a new document.'), null);
+});
+test('declarative creation and a real write action retain their original bytes', () => {
+  for (const prompt of ['new file: notes.txt, contents: hello', 'Create a file named notes.txt with the content hello']) {
+    const plan = composeGeneralChangePlan(prompt);
+    assert.equal(plan.target, 'notes.txt');
+    assert.equal(plan.content, 'hello');
+  }
+});
+
+test('a write-only client receives the actual target and a truthful auxiliary gap', async () => {
+  const { planGeneralChangeStep } = await import('../../../js/agentic/general_execution.mjs');
+  const { finalResult, FinalDisposition } = await import('../../../js/agentic/final_result.mjs');
+  const prompt = 'Create a file named hello.txt with the content hello world';
+  const plan = composeGeneralChangePlan(prompt);
+  const messages = [{ role: 'user', content: prompt }];
+  const next = planGeneralChangeStep(messages, ['write'], plan);
+  assert.equal(next.kind, 'tool_calls');
+  const call = next.calls[0];
+  assert.equal(call.tool, 'write');
+  const args = JSON.parse(call.arguments);
+  assert.equal(args.path, 'hello.txt');
+  assert.equal(args.content, 'hello world');
+  messages.push({ role: 'assistant', tool_calls: [{ id: 'target', type: 'function', function: { name: call.tool, arguments: call.arguments } }] });
+  messages.push({ role: 'tool', tool_call_id: 'target', name: call.tool, content: '{"success":true}' });
+  const final = planGeneralChangeStep(messages, ['write'], plan);
+  assert.equal(final.kind, 'final');
+  assert.equal(finalResult(final).disposition, FinalDisposition.Gap);
+  assert.equal(finalResult(final).origin, 'auxiliary_event_unavailable');
+  assert.doesNotMatch(final.answer, /Completed the general change request/);
+});
+test('write-only target transport failure remains an actual failure', async () => {
+  const { planGeneralChangeStep } = await import('../../../js/agentic/general_execution.mjs');
+  const prompt = 'Create a file named hello.txt with the content hello world';
+  const plan = composeGeneralChangePlan(prompt);
+  const messages = [{ role: 'user', content: prompt }];
+  const call = planGeneralChangeStep(messages, ['write'], plan).calls[0];
+  messages.push({ role: 'assistant', tool_calls: [{ id: 'target', type: 'function', function: { name: call.tool, arguments: call.arguments } }] });
+  messages.push({ role: 'tool', tool_call_id: 'target', name: call.tool, content: '{"is_error":true,"error":"Write transport unavailable"}' });
+  const final = planGeneralChangeStep(messages, ['write'], plan);
+  assert.equal(final.kind, 'final');
+  assert.match(final.answer, /Write transport unavailable/);
+  assert.doesNotMatch(final.answer, /Completed the general change request/);
+});

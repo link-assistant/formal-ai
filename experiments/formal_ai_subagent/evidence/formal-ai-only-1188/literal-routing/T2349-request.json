@@ -1,0 +1,9 @@
+{
+  "id": "T2349",
+  "dir": "/private/tmp/formal-ai-only-1188/write-only-lrgunK",
+  "prompt": "Create a file named hello.txt with the content hello world",
+  "tools": [
+    "write"
+  ],
+  "steps": 4
+}
