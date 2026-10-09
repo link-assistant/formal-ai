@@ -1,0 +1,164 @@
+{
+  "id": "T3556",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "dirSelected": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations",
+  "prompt": "Run node -e 'const fs=require('\\''fs'\\''),path=require('\\''path'\\''),crypto=require('\\''crypto'\\'');const r=JSON.parse(fs.readFileSync('\\''/private/tmp/formal-ai-only-1188/T3556-request.json'\\'','\\''utf8'\\''));const hash=b=>crypto.createHash('\\''sha256'\\'').update(b).digest('\\''hex'\\'');if(fs.existsSync(r.dirSelected))throw Error('\\''fixture exists'\\'');for(const c of r.copies)if(hash(fs.readFileSync(c.from))!==c.sha256)throw Error('\\''source drift'\\'');for(const c of r.copies){fs.mkdirSync(path.dirname(c.to),{recursive:true});fs.copyFileSync(c.from,c.to);}fs.writeFileSync(r.dirSelected+'\\''/prospective-inputs.json'\\'',JSON.stringify(r.declaration,null,2)+'\\''\\n'\\'');console.log(JSON.stringify({neutralSelectedCopies:r.copies.length,prospectiveInputRecord:1,repositoryWrites:0}));'",
+  "copies": [
+    {
+      "from": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/cli_solve.rs",
+      "to": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/rust/src/cli_solve.rs",
+      "sha256": "ed7399c8e83d81376c0498af473b007cf5d54781fcbbcbbf2b556eeb670a144e",
+      "role": "observed-native-source"
+    },
+    {
+      "from": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/main.rs",
+      "to": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/rust/src/main.rs",
+      "sha256": "6b4d62c53e8f7b0858e73efc5f7f6728821cae13e3708ed9a2b6210fa46caee4",
+      "role": "observed-native-source"
+    },
+    {
+      "from": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/repository_workspace/mod.rs",
+      "to": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/rust/src/repository_workspace/mod.rs",
+      "sha256": "578d2c1181b3de300c6833103214aabbc25f13386d9c1fd6b440e8df3b76be7a",
+      "role": "observed-native-source"
+    },
+    {
+      "from": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/repository_workspace/locate.rs",
+      "to": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/rust/src/repository_workspace/locate.rs",
+      "sha256": "66ea65ae3f81419964a37fb33bc7e9439e5868ef57e54f29242c5cc8f88a8211",
+      "role": "observed-native-source"
+    },
+    {
+      "from": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/repository_workspace/verify.rs",
+      "to": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/rust/src/repository_workspace/verify.rs",
+      "sha256": "3fbf6f6baef4c5f0fdd3d6d0269de490fbf187aac32ff28cf5e8c4e60a8f495d",
+      "role": "observed-native-source"
+    },
+    {
+      "from": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/agentic_coding/driver.rs",
+      "to": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/rust/src/agentic_coding/driver.rs",
+      "sha256": "768493cbbd800577547e658d87a0cdc3ae475e393a316c80dab9262113424c0a",
+      "role": "observed-native-source"
+    },
+    {
+      "from": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/agent.rs",
+      "to": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/rust/src/agent.rs",
+      "sha256": "c6e161c906dc0d0432fe532428b01e4fc4ca5d60f543cbbf70c162cba82385ff",
+      "role": "observed-native-source"
+    },
+    {
+      "from": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/agentic_coding/shell_command.rs",
+      "to": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/rust/src/agentic_coding/shell_command.rs",
+      "sha256": "092c96d50ec79e427367e26c97be063a43021452fd0921e9f8a866c68ce6704c",
+      "role": "observed-native-source"
+    },
+    {
+      "from": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/agentic_coding/local_search.rs",
+      "to": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/rust/src/agentic_coding/local_search.rs",
+      "sha256": "724a04cf64b7e38ebda90b2e5bcb0d45068d23d81387fde7723d648192d7a0f6",
+      "role": "observed-native-source"
+    },
+    {
+      "from": "/Users/konard/Code/Archive/link-assistant/formal-ai/data/meta/repository-workspace-protocol.lino",
+      "to": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/data/meta/repository-workspace-protocol.lino",
+      "sha256": "92662ba6917419c328f08e2e1d25dc044d327af254e82ddee0b7a27e3904a641",
+      "role": "observed-native-source"
+    },
+    {
+      "from": "/Users/konard/Code/Archive/link-assistant/formal-ai/data/seed/repository-command-allowlist.lino",
+      "to": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/data/seed/repository-command-allowlist.lino",
+      "sha256": "59c2e25c59b24667e4dbeb8a36de479c63770e15b4dcfe5c601511e650f09285",
+      "role": "observed-native-source"
+    },
+    {
+      "from": "/Users/konard/Code/Archive/link-assistant/formal-ai/experiments/issue_847_coding_ladder/run_coding_ladder.sh",
+      "to": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/experiments/issue_847_coding_ladder/run_coding_ladder.sh",
+      "sha256": "0c07ce609480f417bf0664c1abf59c225fbf1a23b3dfe2fd9591db08ab646fcb",
+      "role": "observed-native-source"
+    },
+    {
+      "from": "/private/tmp/pr1188-d70e-130-ladder/two-lost-cases-source-owned-cause-and-reuse.reviewed.json",
+      "to": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/source-witness.json",
+      "sha256": "3c79bf81773e80d0002f6e4339b69b1ddee1e2a1d078d78e20c3df56a3387af3",
+      "role": "actual-CI-cause-review"
+    }
+  ],
+  "declaration": {
+    "schema": "prospective-scratch-authoring-inputs/v1",
+    "productionWritesPermitted": false,
+    "nativeCompilationPermitted": false,
+    "sourceInputs": [
+      {
+        "path": "rust/src/cli_solve.rs",
+        "sha256": "ed7399c8e83d81376c0498af473b007cf5d54781fcbbcbbf2b556eeb670a144e"
+      },
+      {
+        "path": "rust/src/main.rs",
+        "sha256": "6b4d62c53e8f7b0858e73efc5f7f6728821cae13e3708ed9a2b6210fa46caee4"
+      },
+      {
+        "path": "rust/src/repository_workspace/mod.rs",
+        "sha256": "578d2c1181b3de300c6833103214aabbc25f13386d9c1fd6b440e8df3b76be7a"
+      },
+      {
+        "path": "rust/src/repository_workspace/locate.rs",
+        "sha256": "66ea65ae3f81419964a37fb33bc7e9439e5868ef57e54f29242c5cc8f88a8211"
+      },
+      {
+        "path": "rust/src/repository_workspace/verify.rs",
+        "sha256": "3fbf6f6baef4c5f0fdd3d6d0269de490fbf187aac32ff28cf5e8c4e60a8f495d"
+      },
+      {
+        "path": "rust/src/agentic_coding/driver.rs",
+        "sha256": "768493cbbd800577547e658d87a0cdc3ae475e393a316c80dab9262113424c0a"
+      },
+      {
+        "path": "rust/src/agent.rs",
+        "sha256": "c6e161c906dc0d0432fe532428b01e4fc4ca5d60f543cbbf70c162cba82385ff"
+      },
+      {
+        "path": "rust/src/agentic_coding/shell_command.rs",
+        "sha256": "092c96d50ec79e427367e26c97be063a43021452fd0921e9f8a866c68ce6704c"
+      },
+      {
+        "path": "rust/src/agentic_coding/local_search.rs",
+        "sha256": "724a04cf64b7e38ebda90b2e5bcb0d45068d23d81387fde7723d648192d7a0f6"
+      },
+      {
+        "path": "data/meta/repository-workspace-protocol.lino",
+        "sha256": "92662ba6917419c328f08e2e1d25dc044d327af254e82ddee0b7a27e3904a641"
+      },
+      {
+        "path": "data/seed/repository-command-allowlist.lino",
+        "sha256": "59c2e25c59b24667e4dbeb8a36de479c63770e15b4dcfe5c601511e650f09285"
+      },
+      {
+        "path": "experiments/issue_847_coding_ladder/run_coding_ladder.sh",
+        "sha256": "0c07ce609480f417bf0664c1abf59c225fbf1a23b3dfe2fd9591db08ab646fcb"
+      }
+    ],
+    "originalCases": [
+      {
+        "id": "know.where_tests",
+        "prompt": "Where do unit tests live in this repository?",
+        "actualResult": "open: no registry-grounded structural edit was derivable\n",
+        "oldPassWasEchoFalsePositive": true
+      },
+      {
+        "id": "verify.cargo_check",
+        "prompt": "Run cargo check on this repository and tell me whether it succeeds.",
+        "actualResult": "open: no registry-grounded structural edit was derivable\n",
+        "oldPassWasEchoFalsePositive": true
+      }
+    ],
+    "requestedMechanisms": [
+      "typed-read-query-obligation",
+      "explicit-verified-run-obligation"
+    ],
+    "prospectiveEffects": [
+      "only selected scratch general capability implementation/tests if source-backed",
+      "real process verification not invoked for Cargo/Rust here"
+    ],
+    "requirementsUnmodified": true
+  }
+}

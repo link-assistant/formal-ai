@@ -1,0 +1,35 @@
+{
+  "transcript": [],
+  "answer": "Callable discovery MissingContract:\n{\"authored\":false,\"goal\":\"Implement a reusable goal-bound source observation bridge in goal-bound-bridge.mjs in this selected scratch workspace. Reuse the observed request clause, loaded role, Read provider provenance and typed final-result contracts. Plain full-file reads must still return exact full text; reads requested as inputs to an unsupported source-backed design must produce a bounded typed MissingContract Gap, not echo the inputs as the requested design. Retain explicit verified-Run status obligations without executing commands. Add independent closest controls for quoted goals, wrong-path/window/incomplete source evidence and exact plain reads. Do not implement repository-specific native answers or use Cargo or Rust compilation.\",\"missingContracts\":[\"source-bound-implementation-plan\",\"independent-goal-validation\"],\"reason\":\"MissingContract\",\"verified\":false}",
+  "stop": "final",
+  "toolsAdvertised": [
+    "bash",
+    "edit",
+    "grep",
+    "list",
+    "read",
+    "write"
+  ],
+  "selected": [
+    {
+      "kind": "final",
+      "result": {
+        "text": "Callable discovery MissingContract:\n{\"authored\":false,\"goal\":\"Implement a reusable goal-bound source observation bridge in goal-bound-bridge.mjs in this selected scratch workspace. Reuse the observed request clause, loaded role, Read provider provenance and typed final-result contracts. Plain full-file reads must still return exact full text; reads requested as inputs to an unsupported source-backed design must produce a bounded typed MissingContract Gap, not echo the inputs as the requested design. Retain explicit verified-Run status obligations without executing commands. Add independent closest controls for quoted goals, wrong-path/window/incomplete source evidence and exact plain reads. Do not implement repository-specific native answers or use Cargo or Rust compilation.\",\"missingContracts\":[\"source-bound-implementation-plan\",\"independent-goal-validation\"],\"reason\":\"MissingContract\",\"verified\":false}",
+        "disposition": "gap",
+        "origin": "semantic-authoring-missing-contract",
+        "payloadRole": "finding",
+        "artifact": null,
+        "discovery": {
+          "reason": "MissingContract",
+          "goal": "Implement a reusable goal-bound source observation bridge in goal-bound-bridge.mjs in this selected scratch workspace. Reuse the observed request clause, loaded role, Read provider provenance and typed final-result contracts. Plain full-file reads must still return exact full text; reads requested as inputs to an unsupported source-backed design must produce a bounded typed MissingContract Gap, not echo the inputs as the requested design. Retain explicit verified-Run status obligations without executing commands. Add independent closest controls for quoted goals, wrong-path/window/incomplete source evidence and exact plain reads. Do not implement repository-specific native answers or use Cargo or Rust compilation.",
+          "authored": false,
+          "verified": false,
+          "missingContracts": [
+            "source-bound-implementation-plan",
+            "independent-goal-validation"
+          ]
+        }
+      }
+    }
+  ]
+}

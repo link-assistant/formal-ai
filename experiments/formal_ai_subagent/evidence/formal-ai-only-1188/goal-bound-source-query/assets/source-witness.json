@@ -1,0 +1,183 @@
+{
+  "head": "d70e2e33f1fedb78c4ea9c17052b4b425f1d49a1",
+  "run": 37941877670,
+  "aggregateJob": 113880662915,
+  "complete": true,
+  "observedTotal": 130,
+  "observedPassing": 21,
+  "unchangedFloor": 23,
+  "regressions": [
+    {
+      "id": "know.where_tests",
+      "actual": {
+        "id": "know.where_tests",
+        "level": 4,
+        "seed": null,
+        "prompt": "Where do unit tests live in this repository?",
+        "note": "Repository knowledge; the questions a developer asks before editing.",
+        "pass": false,
+        "reason": "answer missing 'tests'",
+        "timed_out": false,
+        "refused": false,
+        "verified_effect": true,
+        "not_measured": false,
+        "expected_answer": "tests",
+        "output_tail": "open: no registry-grounded structural edit was derivable\n"
+      },
+      "committed_baseline": {
+        "id": "know.where_tests",
+        "level": 4,
+        "seed": null,
+        "prompt": "Where do unit tests live in this repository?",
+        "note": "Repository knowledge; the questions a developer asks before editing.",
+        "pass": true,
+        "reason": "",
+        "timed_out": false,
+        "refused": false,
+        "verified_effect": true,
+        "not_measured": false,
+        "expected_answer": "tests",
+        "output_tail": "open: Where do unit tests live in this repository?\n"
+      },
+      "baseline_false_positive": true,
+      "reason": "Recorded PASS matched tests/cargo in an echoed unresolved request; no observed knowledge or command execution was supplied."
+    },
+    {
+      "id": "verify.cargo_check",
+      "actual": {
+        "id": "verify.cargo_check",
+        "level": 4,
+        "seed": null,
+        "prompt": "Run cargo check on this repository and tell me whether it succeeds.",
+        "note": "Self-verification; a coding agent must be able to check its own work.",
+        "pass": false,
+        "reason": "answer missing 'cargo'",
+        "timed_out": false,
+        "refused": false,
+        "verified_effect": true,
+        "not_measured": false,
+        "expected_answer": "cargo",
+        "output_tail": "open: no registry-grounded structural edit was derivable\n"
+      },
+      "committed_baseline": {
+        "id": "verify.cargo_check",
+        "level": 4,
+        "seed": null,
+        "prompt": "Run cargo check on this repository and tell me whether it succeeds.",
+        "note": "Self-verification; a coding agent must be able to check its own work.",
+        "pass": true,
+        "reason": "",
+        "timed_out": false,
+        "refused": false,
+        "verified_effect": true,
+        "not_measured": false,
+        "expected_answer": "cargo",
+        "output_tail": "open: Run cargo check on this repository and tell me whether it succeeds.\n"
+      },
+      "baseline_false_positive": true,
+      "reason": "Recorded PASS matched tests/cargo in an echoed unresolved request; no observed knowledge or command execution was supplied."
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": "rust/src/cli_solve.rs",
+      "atProducerSha256": "ed7399c8e83d81376c0498af473b007cf5d54781fcbbcbbf2b556eeb670a144e",
+      "currentSha256": "ed7399c8e83d81376c0498af473b007cf5d54781fcbbcbbf2b556eeb670a144e"
+    },
+    {
+      "path": "rust/src/main.rs",
+      "atProducerSha256": "6b4d62c53e8f7b0858e73efc5f7f6728821cae13e3708ed9a2b6210fa46caee4",
+      "currentSha256": "6b4d62c53e8f7b0858e73efc5f7f6728821cae13e3708ed9a2b6210fa46caee4"
+    },
+    {
+      "path": "rust/src/repository_workspace/mod.rs",
+      "atProducerSha256": "578d2c1181b3de300c6833103214aabbc25f13386d9c1fd6b440e8df3b76be7a",
+      "currentSha256": "578d2c1181b3de300c6833103214aabbc25f13386d9c1fd6b440e8df3b76be7a"
+    },
+    {
+      "path": "rust/src/repository_workspace/locate.rs",
+      "atProducerSha256": "66ea65ae3f81419964a37fb33bc7e9439e5868ef57e54f29242c5cc8f88a8211",
+      "currentSha256": "66ea65ae3f81419964a37fb33bc7e9439e5868ef57e54f29242c5cc8f88a8211"
+    },
+    {
+      "path": "rust/src/repository_workspace/verify.rs",
+      "atProducerSha256": "3fbf6f6baef4c5f0fdd3d6d0269de490fbf187aac32ff28cf5e8c4e60a8f495d",
+      "currentSha256": "3fbf6f6baef4c5f0fdd3d6d0269de490fbf187aac32ff28cf5e8c4e60a8f495d"
+    },
+    {
+      "path": "rust/src/agentic_coding/driver.rs",
+      "atProducerSha256": "768493cbbd800577547e658d87a0cdc3ae475e393a316c80dab9262113424c0a",
+      "currentSha256": "768493cbbd800577547e658d87a0cdc3ae475e393a316c80dab9262113424c0a"
+    },
+    {
+      "path": "rust/src/agent.rs",
+      "atProducerSha256": "90f05d0db81fd8863fcc003dbd9a7b5e6dcef2969570656d91d96c6a39cbd19b",
+      "currentSha256": "c6e161c906dc0d0432fe532428b01e4fc4ca5d60f543cbbf70c162cba82385ff"
+    },
+    {
+      "path": "rust/src/agentic_coding/shell_command.rs",
+      "atProducerSha256": "092c96d50ec79e427367e26c97be063a43021452fd0921e9f8a866c68ce6704c",
+      "currentSha256": "092c96d50ec79e427367e26c97be063a43021452fd0921e9f8a866c68ce6704c"
+    },
+    {
+      "path": "rust/src/agentic_coding/local_search.rs",
+      "atProducerSha256": "724a04cf64b7e38ebda90b2e5bcb0d45068d23d81387fde7723d648192d7a0f6",
+      "currentSha256": "724a04cf64b7e38ebda90b2e5bcb0d45068d23d81387fde7723d648192d7a0f6"
+    },
+    {
+      "path": "data/meta/repository-workspace-protocol.lino",
+      "atProducerSha256": "92662ba6917419c328f08e2e1d25dc044d327af254e82ddee0b7a27e3904a641",
+      "currentSha256": "92662ba6917419c328f08e2e1d25dc044d327af254e82ddee0b7a27e3904a641"
+    },
+    {
+      "path": "data/seed/repository-command-allowlist.lino",
+      "atProducerSha256": "59c2e25c59b24667e4dbeb8a36de479c63770e15b4dcfe5c601511e650f09285",
+      "currentSha256": "59c2e25c59b24667e4dbeb8a36de479c63770e15b4dcfe5c601511e650f09285"
+    },
+    {
+      "path": "experiments/issue_847_coding_ladder/run_coding_ladder.sh",
+      "atProducerSha256": "0c07ce609480f417bf0664c1abf59c225fbf1a23b3dfe2fd9591db08ab646fcb",
+      "currentSha256": "0c07ce609480f417bf0664c1abf59c225fbf1a23b3dfe2fd9591db08ab646fcb"
+    }
+  ],
+  "actualInvocation": [
+    "formal-ai",
+    "solve",
+    "--repository",
+    ".",
+    "--base-commit",
+    "ACTUAL_HEAD",
+    "--task",
+    "ORIGINAL_PROMPT",
+    "--evidence",
+    "SELECTED_SCRATCH"
+  ],
+  "exactCause": {
+    "caller": "rust/src/cli_solve.rs::run_solve",
+    "task": "RepositoryTask currently carries requirement, clone and optional tests; CLI supplies tests=None unconditionally.",
+    "execution": "WorkspaceProtocol::execute filters all structural steps then executes clone/locate/read/edit/verify unconditionally. A repository question or explicit Run request reaches edit after actual location succeeds. edit::derive_change returns no change, so the observed open reason is now honest rather than echoed task.",
+    "presentation": "rust/src/main.rs Command::Solve prints outcome.diff and open diagnostics only. SolveOutcome has no observed answer/report field.",
+    "harnessQuality": "run_coding_ladder.sh answered currently searches combined stdout/stderr for expected_answer; old echoed unresolved task accidentally satisfied it. Do not restore echo or relax floor."
+  },
+  "reuseProposal": {
+    "status": "NOT IMPLEMENTED; proposed general mechanism, native CI required",
+    "classification": "Choose typed read/query/Run/mutation obligations from existing seeded role and planner contracts before selecting structural protocol steps. Keep task and complete obligation ledger; unsupported/ambiguous requests remain honest gaps.",
+    "query": "Resolve actual repository manifest test target/module hierarchy and read observed bounded Cargo/source paths; render actual owned paths with source identities. Reuse RepositoryWorkspace::source_files/read and locate::locate_targets; never hardcode repository-specific tests path or answer.",
+    "run": "Bind actual requested command to exact current workspace/root/source head, reuse repository_workspace::verify::RunCommand and run_named_tests / existing allows and deadlines. Explicit cargo check is already in canonical allowlist. No arbitrary command opt-in, timeout increase or empty-workspace driver.",
+    "driverBoundary": "run_agentic_task_in creates a new EMPTY AgentWorkspace; calling it with base_dir alone does not make the selected repository available. Any reuse needs an explicit already-owned existing workspace entrypoint or read/run adapter over RepositoryWorkspace, preserving workspace restrictions.",
+    "stdout": "Add a separately typed observed report/answer surface alongside diff/open; only publish actual source-backed query result or complete command receipt/status/timeout. Persist task/source/run/command bindings in evidence and whole output, never request echo as completion."
+  },
+  "meaningfulValidationRequired": [
+    "Two unchanged original prompts on tiny real Cargo repository: query resolves actual manifest target path; Run reports actual command exit/stdout from exact root.",
+    "Heldout different test target path/profile proves no hardcoded test directory answer.",
+    "Explicit command nonzero, missing interpreter/toolchain, timeout, wrong cwd/source head remain unsuccessful with original evidence.",
+    "Knowledge and command actions do not mutate/stage/commit; existing mutation protocol and all original attribution assertions retained.",
+    "Original 130 cases/floor23 preserved; no effect/read receipt is inferred from stdout word matching."
+  ],
+  "existingTests": [
+    "rust/tests/unit/issue_1138_solve_cli.rs",
+    "rust/tests/unit/repository-workspace/issue_1138_repository_workspace.rs",
+    "rust/tests/unit/specification/repository_workspace_protocol.rs",
+    "rust/tests/unit/terminal_command_intent.rs"
+  ]
+}
