@@ -1,0 +1,26 @@
+{
+  "task": "T4194",
+  "prompt": "Run node /private/tmp/spec-recurrence-1188/runtime-fixture-reviewed/install-source.mjs",
+  "started": "2026-10-09T21:13:21.952Z",
+  "result": {
+    "transcript": [
+      {
+        "tool": "bash",
+        "arguments": "{\"command\":\"node /private/tmp/spec-recurrence-1188/runtime-fixture-reviewed/install-source.mjs\"}",
+        "result": "Output: {\"before\":\"7e38111c330dbfe26bf3e1e881b2016ffda9e58a\",\"sourceGuardsVerified\":5,\"newSourceFiles\":4,\"ownedPaths\":12,\"priorActualFACalls\":2,\"sourceCallerUnchanged\":true,\"githubExecuted\":false,\"nativeExecutable\":false,\"compilerInvoked\":false,\"publication\":false}\nT4194_HARMLESS_RUNTIME_SOURCE_INSTALLED\n\nExit Code: 0"
+      }
+    ],
+    "answer": "The `node /private/tmp/spec-recurrence-1188/runtime-fixture-reviewed/install-source.mjs` command completed. Output:\n\n```text\n{\"before\":\"7e38111c330dbfe26bf3e1e881b2016ffda9e58a\",\"sourceGuardsVerified\":5,\"newSourceFiles\":4,\"ownedPaths\":12,\"priorActualFACalls\":2,\"sourceCallerUnchanged\":true,\"githubExecuted\":false,\"nativeExecutable\":false,\"compilerInvoked\":false,\"publication\":false}\nT4194_HARMLESS_RUNTIME_SOURCE_INSTALLED\n```",
+    "stop": "final",
+    "toolsAdvertised": [
+      "bash",
+      "edit",
+      "grep",
+      "list",
+      "read",
+      "write"
+    ]
+  },
+  "ok": true,
+  "finished": "2026-10-09T21:13:23.306Z"
+}

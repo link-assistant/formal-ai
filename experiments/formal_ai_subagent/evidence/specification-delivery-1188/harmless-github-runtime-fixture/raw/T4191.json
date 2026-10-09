@@ -1,0 +1,20 @@
+{
+  "task": "T4191",
+  "prompt": "Implement a harmless GitHub PR CI fixture in scratch u9-release-split for real same-run immutable artifact-ID transfer across caller/reusable callee, workflow_call active/inactive outputs and private fixture group caller lease with independent queued contender/observer. Use only controlled text tar and public seal/importBundle, actual source SHA/tree/run/attempt/producer identities and fixture compiler marker, no native/cargo/production callee/version/tag/main/publication actions. Read-only contents/actions permissions, no secrets inherit/environment/credential paths, no production authority invocation. Prepare source-backed workflow/helper/independent tests with actual queue observer gating, preserve raw failures and fixture-only truth; no repository writes yet.",
+  "started": "2026-10-09T21:00:58.503Z",
+  "result": {
+    "transcript": [],
+    "answer": "Callable discovery MissingContract:\n{\"authored\":false,\"goal\":\"Implement a harmless GitHub PR CI fixture in scratch u9-release-split for real same-run immutable artifact-ID transfer across caller/reusable callee, workflow_call active/inactive outputs and private fixture group caller lease with independent queued contender/observer. Use only controlled text tar and public seal/importBundle, actual source SHA/tree/run/attempt/producer identities and fixture compiler marker, no native/cargo/production callee/version/tag/main/publication actions. Read-only contents/actions permissions, no secrets inherit/environment/credential paths, no production authority invocation. Prepare source-backed workflow/helper/independent tests with actual queue observer gating, preserve raw failures and fixture-only truth; no repository writes yet.\",\"missingContracts\":[\"source-bound-implementation-plan\",\"independent-goal-validation\"],\"reason\":\"MissingContract\",\"verified\":false}",
+    "stop": "final",
+    "toolsAdvertised": [
+      "bash",
+      "edit",
+      "grep",
+      "list",
+      "read",
+      "write"
+    ]
+  },
+  "ok": false,
+  "finished": "2026-10-09T21:00:59.663Z"
+}

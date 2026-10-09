@@ -1,0 +1,139 @@
+name: Controlled text artifact reusable fixture
+on:
+  workflow_call:
+    inputs:
+      active:
+        required: true
+        type: boolean
+      source:
+        required: true
+        type: string
+      tree:
+        required: true
+        type: string
+      compiler-marker-sha:
+        required: true
+        type: string
+      artifact-id:
+        required: true
+        type: string
+      bundle-sha:
+        required: true
+        type: string
+      descriptor-sha:
+        required: true
+        type: string
+    outputs:
+      fixture-source:
+        value: ${{ jobs.fixture-final.outputs.fixture_source }}
+      artifact-observation:
+        value: ${{ jobs.fixture-final.outputs.artifact_observation }}
+      fixture-marker:
+        value: ${{ jobs.fixture-final.outputs.fixture_marker }}
+      lease-observation:
+        value: ${{ jobs.fixture-final.outputs.lease_observation }}
+permissions:
+  contents: read
+  actions: read
+env:
+  FIXTURE_ACTIVE: ${{ inputs.active }}
+  FIXTURE_SOURCE: ${{ inputs.source }}
+  FIXTURE_TREE: ${{ inputs.tree }}
+  FIXTURE_EVENT_HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+  FIXTURE_GROUP: formal-ai-release-fixture-${{ github.run_id }}-${{ github.run_attempt }}
+jobs:
+  lease-holder:
+    name: Fixture lease holder active
+    if: inputs.active
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Record actual private caller lease descendant start
+        run: node scripts/release-runtime-fixture.mjs lease-start
+      - name: Expose live callee witness before observer finishes
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-fixture-lease-start-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .release-fixture/lease-start.json
+          if-no-files-found: error
+          retention-days: 3
+      - name: Observe independently queued contender and caller ancestor lease
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/release-runtime-fixture.mjs wait-queue
+      - name: Upload bounded actual queue and ancestor observations
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-fixture-queue-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .release-fixture/lease-queue.json
+          if-no-files-found: error
+          retention-days: 3
+  artifact-consumer:
+    name: Fixture artifact consumer active
+    needs: lease-holder
+    if: inputs.active
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      artifact_observation: ${{ steps.consume.outputs.artifact_observation }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Download single immutable caller artifact by actual ID
+        uses: actions/download-artifact@v8
+        with:
+          artifact-ids: ${{ inputs.artifact-id }}
+          path: .release-fixture/consumer/.release-transfer/binary
+          digest-mismatch: error
+      - name: Import controlled text tar and verify exact independent fixture identity
+        id: consume
+        env:
+          EXPECT_BUNDLE: ${{ inputs.bundle-sha }}
+          EXPECT_DESCRIPTOR: ${{ inputs.descriptor-sha }}
+          EXPECT_COMPILER: ${{ inputs.compiler-marker-sha }}
+        run: node scripts/release-runtime-fixture.mjs consume
+      - name: Upload actual controlled text consumer receipt
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-fixture-consumer-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .release-fixture/consumer.json
+          if-no-files-found: error
+          retention-days: 3
+  fixture-final:
+    name: Fixture final ${{ inputs.active && 'active' || 'inactive' }}
+    needs: [lease-holder, artifact-consumer]
+    if: ${{ always() && (!inputs.active || (needs.lease-holder.result == 'success' && needs.artifact-consumer.result == 'success')) }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      fixture_source: ${{ steps.final.outputs.fixture_source }}
+      artifact_observation: ${{ steps.final.outputs.artifact_observation }}
+      fixture_marker: ${{ steps.final.outputs.fixture_marker }}
+      lease_observation: ${{ steps.final.outputs.lease_observation }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Record actual active or skipped inactive outputs and final ancestor lease
+        id: final
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_OBSERVATION: ${{ needs.artifact-consumer.outputs.artifact_observation }}
+        run: node scripts/release-runtime-fixture.mjs finalize
+      - name: Upload final fixture truth before caller lease release
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-fixture-final-${{ inputs.active && 'active' || 'inactive' }}-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .release-fixture/final-${{ inputs.active && 'active' || 'inactive' }}.json
+          if-no-files-found: error
+          retention-days: 3

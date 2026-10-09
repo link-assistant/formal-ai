@@ -1,0 +1,27 @@
+{
+  "task": "T4197",
+  "command": "/opt/homebrew/bin/actionlint",
+  "args": [
+    "-config-file",
+    "/Users/konard/Code/Archive/link-assistant/formal-ai/.github/actionlint.yaml",
+    "-shellcheck=",
+    "-pyflakes=",
+    ".github/workflows/release-runtime-fixture.yml",
+    ".github/workflows/release-runtime-fixture-callee.yml"
+  ],
+  "status": 0,
+  "stdout": "",
+  "stderr": "",
+  "explicitIgnoreFlag": false,
+  "repositoryPolicySha256": "bbc1baf164efb5b3be8bb8f6c72745acc237dc32d30d9ae51bbf5c730531c9f8",
+  "policyScope": ".github/workflows/**/*.{yml,yaml}",
+  "exactSchemaException": "unexpected key \"queue\" for \"concurrency\" section",
+  "officialSyntax": "https://docs.github.com/en/actions/how-tos/write-workflows/choose-when-workflows-run/control-workflow-concurrency",
+  "syntaxSupported": true,
+  "queueMaxCannotCombineCancelTrue": true,
+  "actualGitHubExecution": false,
+  "actualPrivateLease": false,
+  "productionQueueChanged": false,
+  "shellcheck": false,
+  "pyflakes": false
+}

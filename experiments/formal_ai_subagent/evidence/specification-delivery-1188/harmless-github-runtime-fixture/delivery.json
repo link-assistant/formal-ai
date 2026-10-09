@@ -1,0 +1,168 @@
+{
+  "schema": "harmless-github-runtime-fixture-delivery/v1",
+  "before": "7e38111c330dbfe26bf3e1e881b2016ffda9e58a",
+  "sourceGuards": [
+    {
+      "path": ".github/workflows/release.yml",
+      "sha256": "f57b9dbb18f672729c4878abd1d8afecb96ca90427e20ae1259858953ea86253"
+    },
+    {
+      "path": "scripts/release-stage-transfer.mjs",
+      "sha256": "ec8c781d8293cc4990ac3217e48569a9878ae6556defd9812d0ef91242934bdc"
+    },
+    {
+      "path": ".github/workflows/release-staged.yml",
+      "sha256": "c4241f7571d9e32fa7e460616a1179338fdcbd125ac4312e54b620650af2ed5d"
+    },
+    {
+      "path": "rust/tests/web/release-stage-transfer.test.mjs",
+      "sha256": "169f758848bb2f60c67b52f8d174b5b3e2b7ab940a4ab6ebff224ebaa623ba38"
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/job_timeouts_as_failures.rs",
+      "sha256": "2ec3d9f49f5557cdd8a7f020243e398a9b49d50c441435e9fd4bf564abdb0f94"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "file": "release-runtime-fixture.yml",
+      "bytes": 6934,
+      "sha256": "e6394ca8319e6cc3357ac109ef6b60320a6630e54a6a83a202f08e36b3bf35c2",
+      "target": ".github/workflows/release-runtime-fixture.yml"
+    },
+    {
+      "file": "release-runtime-fixture-callee.yml",
+      "bytes": 5298,
+      "sha256": "d004a1a5d03ca56c2c9766739317f40712f495121dc3991093dc720e2ddee8b0",
+      "target": ".github/workflows/release-runtime-fixture-callee.yml"
+    },
+    {
+      "file": "release-runtime-fixture.mjs",
+      "bytes": 14605,
+      "sha256": "38dfe388fef3a811dfa921b75a770230dc3a82e7e05220032df02b061b3fec2c",
+      "target": "scripts/release-runtime-fixture.mjs"
+    },
+    {
+      "file": "release-runtime-fixture.test.mjs",
+      "bytes": 9422,
+      "sha256": "0a9dc6f8f761b97b384f8372e61e820186d1eb44b8cec0c871d19e3eab769f98",
+      "target": "rust/tests/web/release-runtime-fixture.test.mjs"
+    }
+  ],
+  "initialRawTasks": 3,
+  "initialActualCalls": 2,
+  "initialTools": {
+    "bash": 2
+  },
+  "fourCells": {
+    "invocation": "T4191 genuinely asked for complete implementation and returned MissingContract with zero tools. Reviewed helper/workflows/controls materialized and checked by actualFA T4192/93 Bash.",
+    "physicalEffect": "Adds4newsource files,1scoped changelog fragment and bounded owned packet. PR-triggered fixture only; scoped contents/actionsread, no secretsinherit/environment/callercredentials. Existing release.yml, production callee, original timing floors/cold smoke/published source authority untouched. Local native/compiler/publication/workflow dispatch never invoked.",
+    "closestProof": "Scratch4tests passed: private queue identity8refusals,active/inactive output6refusals,graph/credential/nestedlease/artifact routing11refusals; sourcehelper parses and actionlintpasses except exact installed1.7.12 queue:max syntax diagnostic. Actual installedsource checks follow separately. Actual installed sourceT4195 passed5narrowguards,4sourcebytes,repository8/8Node tests,newqueue/output/graphcontrols plus original checked52operations104bindings; sourcegrammar/actionlintPASS.",
+    "limitation": "Not autonomous synthesis: reviewed implementation throughFA,autonomous0/amplification0. Actual GitHub upload/download/queued ancestor/outputs pending next coordinatedPR push. Privategroup evidence does not certify original production writerlease or fullrelease/cold<=30. Unknownqueue API remainsUnknown rather than guessedpass."
+  },
+  "truth": {
+    "controlledTextOnly": true,
+    "fixtureCompilerMarkerOnly": true,
+    "actualCompilerInvoked": false,
+    "nativeExecutable": false,
+    "productionAuthority": false,
+    "productionReleaseProof": false,
+    "coldProductionTimingProof": false
+  },
+  "runtime": {
+    "sameRun": "Upload outputs actualartifactID then callerwith→calleeinput→singleIDdownload; expectedphysicaldescriptor/bundle/source/tree/run/attempt/protocol bound, fixedproducerwireID auto_compile-release is compatibilitydiscriminator only/displaynameControlledText. Packageversion0.0.0/compilerfixturemarker/text-truth cannot pass productionnative receipt.",
+    "sourceRoles": "Checkedoutsource/protocolSHA is actualgithub.sha (PRmergeSHA); eventHead separately binds artifact APIworkflow_run.head_sha (PRheadSHA). No digestrole conflation.",
+    "inactive": "Realcallee holder/consumer jobs if inputs.active skipfalse branch. Finalalways guard returns actualsourcebaseline,SkippedInactive and emptymarker; callercollect validates actualworkflow_call outputs separately by namedactive/inactivecaller.",
+    "lease": "Private run/attempt group only. Independentobserver downloads livecallee-start witness then finishes; contender needsobserver/producer, never reusablecallercompletion. Childholder and final record actualGETgroup and ahead_of_job descendant ancestor state; pendingindependentcontender must present. Collectorchecks GitHubjob finalcompletion≤contenderstart; timestampsseconds noted. UnknownAPIkeepsleaseUnknown; actualartifact/output controls stillseparate.",
+    "permissions": "contents/actionsread only; scoped fixedGitHub ActionsGET routes, no APIwrites/tokenfiles/secretinherit or deploymentenvironment. Production callee/CLI never referenced; publicseal/importBundle used onlyfixedcontrolledtexttar in separatefixture workdirectory."
+  },
+  "primaryDocs": [
+    {
+      "url": "https://github.com/actions/download-artifact",
+      "basis": "Currentrun default; singleIDdirectpath; tar preserves innerpermissions."
+    },
+    {
+      "url": "https://docs.github.com/en/rest/actions/concurrency-groups",
+      "basis": "Read-only group endpoint; pending/in_progress states; ahead_of_job includes reusableancestor leases."
+    }
+  ],
+  "githubExecuted": false,
+  "actualArtifactService": false,
+  "actualPrivateLease": false,
+  "nativeExecutable": false,
+  "compilerInvoked": false,
+  "publication": false,
+  "autonomousCredit": 0,
+  "amplificationCredit": 0,
+  "rawTasks": 5,
+  "actualToolCalls": 4,
+  "tools": {
+    "bash": 4
+  },
+  "installedSourceAcceptance": {
+    "task": "T4195",
+    "sourceGuards": 5,
+    "newSourceFilesByteEqual": 4,
+    "sourceNodeTests": 8,
+    "fixtureTests": 4,
+    "checkedCanonicalTests": 4,
+    "queueRefusals": 8,
+    "outputRefusals": 6,
+    "graphRefusals": 11,
+    "canonicalProjectionRefusals": 15,
+    "original52operations104bindings": true,
+    "sourceParse": true,
+    "actionlintQueueCompatibilityExceptionOnly": true,
+    "actualGitHubService": false,
+    "actualPrivateLease": false
+  },
+  "observations": [
+    {
+      "task": "T4191",
+      "driverMarkerOk": false,
+      "tools": [],
+      "rawExitCodes": []
+    },
+    {
+      "task": "T4192",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4193",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4194",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4195",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    }
+  ],
+  "boundedCut": "Fullraw T4191–4195; final sealT4196 and Git bookkeeping outsidecut retained separately by coordinator. No predicted live service/scheduler receipt."
+}
