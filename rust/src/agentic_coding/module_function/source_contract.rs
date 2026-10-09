@@ -46,13 +46,12 @@ fn decimal_number(value: &str) -> bool {
     {
         return false;
     }
-    if let Some(digits) = fraction.next() {
-        if digits.is_empty()
+    if let Some(digits) = fraction.next()
+        && (digits.is_empty()
             || !digits.bytes().all(|byte| byte.is_ascii_digit())
-            || fraction.next().is_some()
-        {
-            return false;
-        }
+            || fraction.next().is_some())
+    {
+        return false;
     }
     true
 }

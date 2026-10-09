@@ -167,18 +167,10 @@ impl<'ast> Visit<'ast> for AnswerReference<'_> {
     fn visit_expr_field(&mut self, field: &'ast syn::ExprField) {
         if matches!(&field.member, syn::Member::Named(name) if name == "answer") {
             self.found = true;
-            return;
         }
-        if matches!(field.base.as_ref(), Expr::Field(inner)
-            if matches!(&inner.member, syn::Member::Named(name) if name == "answer"))
-        {
-            // `execution.answer.sources` names a structured search result, not
-            // the user-visible answer text governed by this documentation
-            // gate. A textual answer may be a terminal value or a receiver of
-            // string methods, but it has no Rust fields of its own.
-            return;
-        }
-        visit::visit_expr_field(self, field);
+        // Textual answer values have no Rust fields. Other projections expose
+        // structured metadata, even when their receiver was derived from an
+        // earlier answer through history or a solver call.
     }
 
     fn visit_expr_path(&mut self, path: &'ast syn::ExprPath) {
@@ -752,6 +744,30 @@ fn json_answer_is_exact() {
             }]
         );
         assert!(!difference.is_clean());
+    }
+
+    #[test]
+    fn history_projection_does_not_turn_metadata_into_answer_text() {
+        let before = "#[test] fn history_projection() { let first = solver.solve(\"Rust\"); let history = [ConversationTurn::assistant(first.answer)]; let reply = solver.solve_with_history(\"itself\", &history); ";
+        let metadata = "assert_eq!(reply.intent, \"unknown\"); assert!(!reply.links_notation.contains(\"coreference:resolved\"));";
+        let source = format!("{before}{metadata}}}");
+        assert_eq!(
+            scan_file("tests/unit/history_projection.rs", &source),
+            vec![]
+        );
+        let loose = format!("{before}{metadata} assert!(reply.answer.contains(\"unknown\")); }}");
+        assert_eq!(
+            scan_file("tests/unit/history_projection.rs", &loose),
+            vec![Entry {
+                file: "tests/unit/history_projection.rs".to_owned(),
+                test: "history_projection".to_owned()
+            }]
+        );
+        let exact = format!("{before}{metadata} assert_eq!(reply.answer, \"Exact answer\"); }}");
+        assert_eq!(
+            scan_file("tests/unit/history_projection.rs", &exact),
+            vec![]
+        );
     }
 
     #[test]

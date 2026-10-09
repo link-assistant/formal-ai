@@ -185,9 +185,7 @@ pub fn observe_source_callables(source: &str, path: &str) -> Value {
             let byte_end = span_end(&trees[cursor + 3]);
             let span = json!({"byteStart":byte_start,"byteEnd":byte_end,"start":source[..byte_start].encode_utf16().count(),"end":source[..byte_end].encode_utf16().count()});
             let body = &source[byte_start..byte_end];
-            let contract = if !safe_binding(name) {
-                unknown("UnsupportedBinding")
-            } else {
+            let contract = if safe_binding(name) {
                 parameters.as_deref().map_or_else(
                     || unknown("UnsupportedParameters"),
                     |parameters| {
@@ -202,6 +200,8 @@ pub fn observe_source_callables(source: &str, path: &str) -> Value {
                         }
                     },
                 )
+            } else {
+                unknown("UnsupportedBinding")
             };
             if contract["status"] != "supported" {
                 module_effects = "unknown";
@@ -221,9 +221,9 @@ pub fn observe_source_callables(source: &str, path: &str) -> Value {
         }
         if exported
             && trees.get(cursor).is_some_and(|tree| group(tree, "brace"))
-            && !trees
+            && trees
                 .get(cursor + 1)
-                .is_some_and(|tree| text(tree) == "from")
+                .is_none_or(|tree| text(tree) != "from")
         {
             if let Some(named) = aliases(trees[cursor]["trees"].as_array().expect("export group")) {
                 exports.extend(named);
@@ -244,19 +244,25 @@ pub fn observe_source_callables(source: &str, path: &str) -> Value {
             let terms = &trees[start + 1..end];
             let mut bindings = None;
             let mut literal = None;
-            if let [item] = terms {
-                if item["kind"] == "string" {
-                    literal = Some(text(item));
-                    bindings = Some(Vec::new());
-                }
+            if let [item] = terms
+                && item["kind"] == "string"
+            {
+                literal = Some(text(item));
+                bindings = Some(Vec::new());
             }
-            if let [named, from, item] = terms {
-                if group(named, "brace") && text(from) == "from" && item["kind"] == "string" {
-                    if let Some(named) = aliases(named["trees"].as_array().expect("import group")) {
-                        bindings = Some(named.into_iter().map(|entry| json!({"imported":entry["local"],"local":entry["exposed"]})).collect());
-                        literal = Some(text(item));
-                    }
-                }
+            if let [named, from, item] = terms
+                && group(named, "brace")
+                && text(from) == "from"
+                && item["kind"] == "string"
+                && let Some(named) = aliases(named["trees"].as_array().expect("import group"))
+            {
+                bindings = Some(
+                    named
+                        .into_iter()
+                        .map(|entry| json!({"imported":entry["local"],"local":entry["exposed"]}))
+                        .collect(),
+                );
+                literal = Some(text(item));
             }
             let specifier = literal
                 .filter(|literal| !literal.contains('\\'))

@@ -7,7 +7,7 @@ use super::{
 use serde_json::Value;
 
 /// Only explicit successful receipts of raw string stdout certify exact bytes.
-pub(crate) fn observed_bytes_match(raw: &str, expected: &str) -> bool {
+pub(in crate::agentic_coding) fn observed_bytes_match(raw: &str, expected: &str) -> bool {
     let result = normalize(raw);
     if result.exit_code != Some(0) || result.error.is_some() {
         return false;
@@ -54,7 +54,7 @@ pub(crate) fn observed_bytes_match(raw: &str, expected: &str) -> bool {
         == Some(expected)
 }
 
-pub(crate) fn observed_digest_matches(raw: &str, expected: &str) -> bool {
+pub(in crate::agentic_coding) fn observed_digest_matches(raw: &str, expected: &str) -> bool {
     step_outcome(raw) != StepOutcome::Failed
         && observed_payload(raw)
             .as_deref()
@@ -67,7 +67,7 @@ pub(crate) fn observed_digest_matches(raw: &str, expected: &str) -> bool {
 /// Callers that build their own report of a stopped step need the status the
 /// workspace answered with, not a rendering of it: a recipe that stops on a
 /// precondition says which check stopped it and with what code (issue #944).
-pub(crate) fn reported_exit_code(raw: &str) -> Option<i64> {
+pub(in crate::agentic_coding) fn reported_exit_code(raw: &str) -> Option<i64> {
     normalize(raw).exit_code
 }
 
@@ -78,7 +78,7 @@ pub(crate) fn reported_exit_code(raw: &str) -> Option<i64> {
 /// consulted here. Callers that hold bytes which are legitimately file contents
 /// use this: a file that merely *reads* like an error message is still that
 /// file's contents, and only the harness can say the read failed.
-pub(crate) fn harness_reported_failure(raw: &str) -> bool {
+pub(in crate::agentic_coding) fn harness_reported_failure(raw: &str) -> bool {
     normalize(raw).error.is_some()
 }
 
@@ -95,7 +95,7 @@ pub(in crate::agentic_coding) fn shell_step(raw: &str) -> Option<ShellStep> {
 /// Remove client transport wrappers while preserving the tool's actual text.
 /// Agentic planners consume this form; durable protocol recording still keeps
 /// the original result byte-for-byte.
-pub(crate) fn normalized_payload(raw: &str) -> Option<String> {
+pub(in crate::agentic_coding) fn normalized_payload(raw: &str) -> Option<String> {
     let result = normalize(raw);
     let succeeded = result.exit_code == Some(0);
     (result.error.is_none() && (succeeded || !looks_like_error(&result.payload)))
@@ -106,7 +106,7 @@ pub(crate) fn normalized_payload(raw: &str) -> Option<String> {
 /// succeeded. Unlike [`normalized_payload`], this does not classify arbitrary
 /// output vocabulary: verification targets are allowed to contain words such
 /// as `error` or `failed` when those are the requested bytes.
-pub(crate) fn observed_payload(raw: &str) -> Option<String> {
+pub(in crate::agentic_coding) fn observed_payload(raw: &str) -> Option<String> {
     if let Some(envelope) = parse_shell_envelope(raw)
         && envelope.exit_code == Some(0)
     {

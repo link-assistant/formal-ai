@@ -23,11 +23,7 @@ pub(super) fn read_seed_capture(url: &str, raw: &str) -> Result<Option<SourceCap
     let sha256 = sha256_hex(&bytes);
     if fetched_at.is_empty()
         || !fetched_at.bytes().all(|byte| byte.is_ascii_digit())
-        || fetched_at
-            .parse::<u64>()
-            .ok()
-            .filter(|time| *time > 0)
-            .is_none()
+        || fetched_at.parse::<u64>().ok().is_none_or(|time| time == 0)
         || sha256 != recorded
         || node.id != recorded
     {

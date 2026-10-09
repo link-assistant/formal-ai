@@ -17,7 +17,10 @@ mod result_kind;
 mod source_observation;
 pub use command_keys::{command_argument_key, project_declared_command_keys};
 use result_kind::{is_listing, is_search};
-pub(crate) use source_observation::reported_exit_code;
+/// The actual process exit code observed by the client harness.
+pub(crate) fn reported_exit_code(raw: &str) -> Option<i64> {
+    source_observation::reported_exit_code(raw)
+}
 pub(super) use source_observation::{
     harness_reported_failure, normalized_payload, observed_bytes_match, observed_digest_matches,
     observed_payload, shell_step,

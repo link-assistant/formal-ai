@@ -203,7 +203,7 @@ fn run_agentic_task_in_with_tools(
                 task: task.to_owned(),
                 steps,
                 final_answer: String::new(),
-                tools_advertised: advertised_tools.clone(),
+                tools_advertised: advertised_tools,
                 turns,
                 hit_turn_cap: true,
             });
@@ -227,7 +227,7 @@ fn run_agentic_task_in_with_tools(
                 task: task.to_owned(),
                 steps,
                 final_answer: String::new(),
-                tools_advertised: advertised_tools.clone(),
+                tools_advertised: advertised_tools,
                 turns,
                 hit_turn_cap: false,
             });
@@ -240,7 +240,7 @@ fn run_agentic_task_in_with_tools(
                 task: task.to_owned(),
                 steps,
                 final_answer: choice.message.content.plain_text(),
-                tools_advertised: advertised_tools.clone(),
+                tools_advertised: advertised_tools,
                 turns,
                 hit_turn_cap: false,
             });

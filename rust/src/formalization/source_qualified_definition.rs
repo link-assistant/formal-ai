@@ -70,6 +70,7 @@ fn literal_end(input: &str, start: usize, literal: &str) -> Option<usize> {
     Some(cursor)
 }
 /// Bind the seeded subject/provider slots without performing a lookup.
+#[must_use]
 pub fn request(prompt: &str) -> Option<Request> {
     let input = prompt
         .trim()
@@ -82,16 +83,18 @@ pub fn request(prompt: &str) -> Option<Request> {
         .collect();
     frames.sort_by_key(|row| std::cmp::Reverse(row.text.encode_utf16().count()));
     for frame in frames {
+        let term_slot = concat!("{", "term", "}");
+        let source_slot = concat!("{", "source", "}");
         let (Some(term_at), Some(source_at)) =
-            (frame.text.find("{term}"), frame.text.find("{source}"))
+            (frame.text.find(term_slot), frame.text.find(source_slot))
         else {
             continue;
         };
         let term_first = term_at < source_at;
         let (first, second) = if term_first {
-            ("{term}", "{source}")
+            (term_slot, source_slot)
         } else {
-            ("{source}", "{term}")
+            (source_slot, term_slot)
         };
         let Some((before, tail)) = frame.text.split_once(first) else {
             continue;

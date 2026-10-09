@@ -93,7 +93,12 @@ fn explicit_module_scope(census: &WorkspaceCensus, requirement: &str) -> Option<
             !character.is_alphanumeric() && !matches!(character, '_' | '.' | '/' | '-')
         })
         .map(|token| token.trim_end_matches('.'))
-        .filter(|token| token.contains('/') && token.ends_with(".rs"))
+        .filter(|token| {
+            token.contains('/')
+                && std::path::Path::new(token)
+                    .extension()
+                    .is_some_and(|extension| extension == "rs")
+        })
         .collect();
     let mut selected = Vec::new();
     for reference in references {
@@ -171,6 +176,7 @@ fn resolve_scoped(census: &WorkspaceCensus, requirement: &str) -> Option<Require
 }
 
 /// Bind a concrete canonical surface and semantic role to a declared seed constant.
+///
 /// Constant spelling follows the seed registry generator. No seed is privileged;
 /// equally supported distinct targets remain unresolved.
 #[must_use]

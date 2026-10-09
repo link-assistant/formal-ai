@@ -1,5 +1,5 @@
 //! Client-observed preimages authorize generated-source replacement.
-//! Twin: js/agentic/code_task/target_guard.mjs.
+//! Twin: `js/agentic/code_task/target_guard.mjs`.
 use super::super::code_artifact::{source_from_agent_read_result, source_from_read_result};
 use super::super::final_result::{FinalDisposition, FinalResult, record};
 use super::super::planner::{AgenticPlan, Capability, plan_one, tool_for};
@@ -23,21 +23,23 @@ pub(super) fn guarded_source_step(
     let Some(raw) =
         workspace_change::result_for_path(messages, Capability::Read, &artifact.path, None)
     else {
-        return Some(match read {
-            Some(read) => plan_one(read, workspace_change::read_arguments(&artifact.path)),
-            None => record(
-                AgenticPlan::Final(response(
-                    "general_plan_unverified",
-                    &[
-                        ("target", &artifact.path),
-                        ("command", &format!("read {}", artifact.path)),
-                    ],
-                )),
-                FinalDisposition::Gap,
-                "generated_source_preimage_unobserved",
-                result,
-            ),
-        });
+        return Some(read.map_or_else(
+            || {
+                record(
+                    AgenticPlan::Final(response(
+                        "general_plan_unverified",
+                        &[
+                            ("target", &artifact.path),
+                            ("command", &format!("read {}", artifact.path)),
+                        ],
+                    )),
+                    FinalDisposition::Gap,
+                    "generated_source_preimage_unobserved",
+                    result,
+                )
+            },
+            |read| plan_one(read, workspace_change::read_arguments(&artifact.path)),
+        ));
     };
     let envelope = source_from_agent_read_result(&raw);
     let failure = if envelope.is_none() {

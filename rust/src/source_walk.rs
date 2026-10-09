@@ -218,6 +218,7 @@ pub fn entry_url(record: &SourceRecord, subject: &str) -> Option<String> {
     entry_url_in(record, subject, "")
 }
 /// Bind the endpoint in a declared language, or the primary language when empty.
+///
 /// Unsupported languages and absent required bindings are refused, so a source
 /// cannot supply an English gloss for a need it does not serve.
 #[must_use]
