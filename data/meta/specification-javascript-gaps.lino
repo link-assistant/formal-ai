@@ -4,5 +4,5 @@
 # carried case the worker fails, with what it answered. `passing` never falls.
 specification-javascript-gaps
   specification-tests 1178
-  carried 180
-  passing 180
+  carried 201
+  passing 201

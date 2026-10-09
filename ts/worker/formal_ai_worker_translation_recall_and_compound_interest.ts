@@ -889,126 +889,26 @@ function tryMemoryWrite(prompt, normalized, memory) {
   return null;
 }
 
-// Issue #27: deterministic, logical summarisation — no neural net. We
-// project the conversation onto a small set of features (turn counts, intents,
-// concepts, languages, unanswered questions) and render them as a structured
-// Markdown report. Every value is derived directly from the append-only event
-// log so reruns on the same input produce byte-identical output.
-function trySummarizeConversation(history) {
-  if (!Array.isArray(history) || history.length === 0) return null;
-  const turns = history.filter((turn) => turn && turn.content);
-  if (turns.length === 0) return null;
-
-  let userCount = 0;
-  let assistantCount = 0;
-  const intentCounts = new Map();
-  const languages = new Map();
-  const concepts = new Set();
-  const calculations = [];
-  const programTemplates = new Set();
-  const unanswered = [];
-  let lastUser = null;
-
-  for (const turn of turns) {
-    const role = turn.role || "assistant";
-    const language = detectLanguage(turn.content);
-    languages.set(language, (languages.get(language) || 0) + 1);
-    if (role === "user") {
-      userCount += 1;
-      lastUser = turn.content;
-    } else {
-      assistantCount += 1;
-      if (lastUser) {
-        lastUser = null;
-      }
-      const intent = String(turn.intent || "unknown");
-      intentCounts.set(intent, (intentCounts.get(intent) || 0) + 1);
-      if (intent === "calculation" && typeof turn.content === "string") {
-        const match = turn.content.match(/^([^=]+=\s*[^\n]+)/);
-        if (match) calculations.push(match[1].trim());
-      }
-      if (intent === "write_program") {
-        const evidence = Array.isArray(turn.evidence) ? turn.evidence : [];
-        const languageEvidence = evidence.find((item) =>
-          String(item || "").startsWith("program_parameter:language:"),
-        );
-        const taskEvidence = evidence.find((item) =>
-          String(item || "").startsWith("program_parameter:task:"),
-        );
-        const generatedLanguage = languageEvidence
-          ? String(languageEvidence).slice("program_parameter:language:".length)
-          : "unknown";
-        const generatedTask = taskEvidence
-          ? String(taskEvidence).slice("program_parameter:task:".length)
-          : "program";
-        programTemplates.add(`${generatedTask}/${generatedLanguage}`);
-      }
-      if (intent.startsWith("hello_world_")) {
-        programTemplates.add(`hello_world/${intent.slice("hello_world_".length)}`);
-      }
-      if (intent.startsWith("concept_lookup")) {
-        const evidence = Array.isArray(turn.evidence) ? turn.evidence : [];
-        for (const item of evidence) {
-          if (typeof item !== "string") continue;
-          const conceptMatch = item.match(/^concept_lookup:request:(.+)$/);
-          if (conceptMatch) concepts.add(conceptMatch[1]);
-        }
-      }
-    }
-  }
-  if (lastUser) {
-    unanswered.push(lastUser);
-  }
-
-  const lines = [];
-  lines.push("## Conversation summary");
-  lines.push("");
-  lines.push(
-    `- ${turns.length} turn(s): ${userCount} user, ${assistantCount} assistant`,
-  );
-  if (languages.size > 0) {
-    const list = Array.from(languages.entries())
-      .sort((a, b) => b[1] - a[1])
-      .map(([lang, count]) => `${lang} (${count})`)
-      .join(", ");
-    lines.push(`- Languages: ${list}`);
-  }
-  if (intentCounts.size > 0) {
-    const list = Array.from(intentCounts.entries())
-      .sort((a, b) => b[1] - a[1])
-      .map(([intent, count]) => `${intent} (${count})`)
-      .join(", ");
-    lines.push(`- Intents: ${list}`);
-  }
-  if (concepts.size > 0) {
-    lines.push(`- Concepts looked up: ${Array.from(concepts).join(", ")}`);
-  }
-  if (calculations.length > 0) {
-    lines.push(`- Calculations: ${calculations.join("; ")}`);
-  }
-  if (programTemplates.size > 0) {
-    lines.push(
-      `- Program templates generated: ${Array.from(programTemplates).join(", ")}`,
-    );
-  }
-  if (unanswered.length > 0) {
-    lines.push(`- Unanswered: ${unanswered.join(" | ")}`);
-  }
-
-  const evidence = [
-    "summarize_conversation",
-    `turns:${turns.length}`,
-    `users:${userCount}`,
-    `assistants:${assistantCount}`,
+// Mirrors try_summarize_conversation in
+// rust/src/solver_handlers/conversation_memory/conversation_summary.rs through its shared crate projection.
+function trySummarizeConversation(prompt, history) {
+  const record = crateModule("crate/conversation_summary.mjs").conversationSummaryRecord(prompt, history);
+  if (!record) return null;
+  const solverEvents = [
+    { kind: "filter:user", payload: "conversation_summary" },
+    { kind: "summarization:mode", payload: "standard" },
+    { kind: "summarization:language", payload: record.language },
+    { kind: "chat_title", payload: record.title },
   ];
-  if (intentCounts.size > 0) {
-    evidence.push(`intents:${Array.from(intentCounts.keys()).join("|")}`);
+  const prior = (Array.isArray(history) ? history : []).some((turn) =>
+    ["user", "assistant"].includes(turn?.role) && String(turn.content ?? "").trim());
+  const supplied = prompt.includes(":") && prompt.slice(prompt.indexOf(":") + 1).trim();
+  if (!prior && !supplied) {
+    solverEvents.unshift({ kind: "conversation_recall:refusal", payload: "conversation not started" });
   }
   return {
-    intent: "summarize_conversation",
-    content: lines.join("\n"),
-    confidence: 0.9,
-    evidence,
+    intent: "summarize_conversation", content: record.content, confidence: 0.9, solverEvents,
+    evidence: solverEvents.map((event) => event.kind + ":" + event.payload),
   };
 }
 

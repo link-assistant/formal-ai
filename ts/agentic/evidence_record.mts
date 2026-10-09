@@ -12,7 +12,8 @@ import { plainText } from './content.mjs';
 import { planTestExpectationQuestion } from './function_expectation.mjs';
 import { composeGeneralChangePlan } from './general_planner.mjs';
 import { agenticMessage } from './messages.mjs';
-import { pathsIn, signature } from './module_function.mjs';
+import { namesCallableArtifact } from './evidence_record/artifact_header.mjs';
+import { planRecordReadbackStep } from './evidence_record/record_observation.mjs';
 import { FinalDisposition, canDeliverFinal, planOne, resolvedFinalAnswer, writeArguments } from './plan.mjs';
 import { instructionEnd } from './positional_edit.mjs';
 import { planChatStepResolved, planSettledRoutes } from './planner.mjs';
@@ -109,19 +110,6 @@ function parseObligation(request) {
   return { target, first_line: firstLine, field_lines: fieldLines, residual: trimmed };
 }
 
-// A declaration request names an authored artifact, not a findings destination.
-function namesCallableArtifact(sentence, target) {
-  const normalized = normalizePrompt(sentence);
-  const operand = normalized.split(' ').find((word) =>
-    mentionsRole('coding-source-artifact-kind', word) || mentionsRole('evidence-report-artifact-kind', word));
-  if (operand && mentionsRole('coding-source-artifact-kind', operand)
-    && ['coding_request_verb', 'coding_member_add_action'].some((role) => mentionsRole(role, normalized))) return true;
-  const stated = signature(sentence);
-  if (stated === null || !pathsIn(sentence.slice(stated.at)).includes(target)) return false;
-  const lead = normalizePrompt(sentence.slice(0, stated.at));
-  return ['coding_request_verb', 'coding_member_add_action'].some((role) => mentionsRole(role, lead));
-}
-
 function exactFieldLines(sentence, target) {
   const fields = sentence.split('`')
     .filter((_, index) => index % 2 === 1)
@@ -174,8 +162,10 @@ export async function planEvidenceRecordStep(task, messages, toolNames) {
   const progress = Progress.scan(messages);
   const outcome = observedFileOutcome(task, obligation.target, messages);
   if (outcome.kind === 'satisfied') {
-    traceRoute('evidence_record', 'already_written');
     const content = progress.successfulWriteContentFor(obligation.target);
+    const verification = planRecordReadbackStep(task, obligation.target, content, progress, toolNames);
+    if (verification !== null) return verification;
+    traceRoute('evidence_record', 'already_written');
     const written = content === null || content === undefined ? '' : writtenObservation(obligation, content);
     return resolvedFinalAnswer(written !== '' ? written : agenticMessage('evidence_record_recorded', { target: obligation.target }),
       FinalDisposition.Finding, 'evidence_record_observed');

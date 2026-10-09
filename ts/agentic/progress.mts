@@ -288,6 +288,12 @@ export class Progress {
     return null;
   }
 
+  /** Mirrors `Progress::attempts_after_latest_write`: observation window for the current write. */
+  attemptsAfterLatestWrite(path) {
+    const index = this.latestSuccessfulWriteIndex(path);
+    return index === null ? null : this.attempts.slice(index + 1);
+  }
+
   /** Mirrors `Progress::successful_write_content_for`. */
   successfulWriteContentFor(path) {
     for (let index = this.attempts.length - 1; index >= 0; index -= 1) {

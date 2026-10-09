@@ -18,7 +18,7 @@ js_rust_translation
   translated_items 293
   workaround_items 33
   inferred_signatures 2
-  carried_items 2259
+  carried_items 2261
   translated_modules 98
   fully_translated_modules 1
   refused_modules 41
@@ -43,7 +43,7 @@ module js/agentic/crate/computer_use_seed.mjs translated 2 workaround 0 inferred
 module js/agentic/crate/computer_use_synthesis.mjs translated 2 workaround 3 inferred 0 carried 13
 module js/agentic/crate/concept_lookup.mjs translated 1 workaround 0 inferred 0 carried 12
 module js/agentic/crate/concepts_lookup.mjs translated 0 workaround 0 inferred 0 carried 3
-module js/agentic/crate/conversation_summary.mjs translated 0 workaround 0 inferred 0 carried 6
+module js/agentic/crate/conversation_summary.mjs translated 0 workaround 0 inferred 0 carried 8
 module js/agentic/crate/dependency_summarization.mjs translated 3 workaround 0 inferred 0 carried 17
 module js/agentic/crate/derivation.mjs translated 13 workaround 1 inferred 0 carried 31
 module js/agentic/crate/dialog_log.mjs translated 0 workaround 0 inferred 0 carried 2
@@ -165,10 +165,10 @@ module js/agentic/crate/workspace_change_learning.mjs translated 2 workaround 0 
 module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 inferred 0 carried 6
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 25
-refusal "import of names its module does not translate" 295
+refusal "import of names its module does not translate" 297
 refusal "JSDoc type {…}" 212
 refusal "null" 182
-refusal "import from '…'" 146
+refusal "import from '…'" 145
 refusal "type: unknown name (a sibling item or an import)" 117
 refusal "arrow function" 112
 refusal "function value …" 101
@@ -187,7 +187,7 @@ refusal "method call .push()" 33
 refusal "method call .indexOf()" 27
 refusal "nullish coalescing" 26
 refusal "method call .replace()" 23
-refusal "optional chaining" 21
+refusal "optional chaining" 22
 refusal "syntax: malformed number" 19
 refusal "case test" 18
 refusal "export …" 18
