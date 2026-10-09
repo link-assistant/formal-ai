@@ -203,3 +203,80 @@ fn the_ladder_can_measure_without_per_leaf_authored_answers() {
     let debt = fs::read_to_string(root().join("data/meta/debt-ratchet.lino")).expect("debt");
     assert!(debt.contains("measure authored-ladder-rules\n    value 32"));
 }
+
+#[test]
+fn canonical_seed_goal_binding_preserves_ambiguity_and_declared_ownership() {
+    use formal_ai::agentic_coding::requirement_resolution::{
+        RequirementTarget, resolve_seed_target,
+    };
+    use formal_ai::self_ast_census::WorkspaceCensus;
+    let census = WorkspaceCensus::compile(&[
+        ("src/a.rs", "pub const ALPHA_LINO: &str = \"source\";"),
+        ("src/b.rs", "pub const BETA_LINO: &str = \"source\";"),
+    ]);
+    let source = "meanings\n  arbitrary\n    role request_signal\n    lexeme en \"azure dawn\"\n";
+    let sources = [("data/seed/alpha.lino", source)];
+    let expected = Some(RequirementTarget {
+        module_path: "src/a.rs".to_owned(),
+        symbol: "ALPHA_LINO".to_owned(),
+        kind: "const".to_owned(),
+    });
+    assert_eq!(
+        resolve_seed_target(
+            &census,
+            "Change signal surface from azure dawn to cobalt sun",
+            &sources
+        ),
+        expected
+    );
+    for request in [
+        "Improve the code",
+        "Change signal surface from azure dawnish",
+        "Change unrelated surface from azure dawn",
+    ] {
+        assert_eq!(resolve_seed_target(&census, request, &sources), None);
+    }
+    assert_eq!(
+        resolve_seed_target(
+            &census,
+            "Change signal surface from azure dawn",
+            &[("data/seed/missing.lino", source)]
+        ),
+        None
+    );
+    assert_eq!(
+        resolve_seed_target(
+            &census,
+            "Change signal surface from azure dawn",
+            &[
+                ("data/seed/alpha.lino", source),
+                ("data/seed/beta.lino", source)
+            ]
+        ),
+        None
+    );
+    let longer = source.replace("azure dawn", "azure dawn bright");
+    assert_eq!(
+        resolve_seed_target(
+            &census,
+            "Change signal surface from azure dawn bright",
+            &[
+                ("data/seed/alpha.lino", source),
+                ("data/seed/beta.lino", &longer)
+            ]
+        ),
+        Some(RequirementTarget {
+            module_path: "src/b.rs".to_owned(),
+            symbol: "BETA_LINO".to_owned(),
+            kind: "const".to_owned()
+        })
+    );
+    assert_eq!(
+        resolve_seed_target(
+            &census,
+            "Change signal surface from azure dawn",
+            &[("invalid.txt", source), ("data/seed/alpha.lino", source)]
+        ),
+        expected
+    );
+}

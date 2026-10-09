@@ -12,6 +12,8 @@ import { symbolicFromWorker } from '../server/solve.mjs';
 import * as webTreeSitter from '../vendor/tree-sitter/web-tree-sitter.mjs';
 import { loadRustAstCensus } from './crate/rust_ast_census.mjs';
 import { cachedSourceFetch } from './crate/source_cache.mjs';
+import { CENSUS_DIR } from './crate/self_ast_census.mjs';
+import { stableId } from './crate/engine_stable_identifier.mjs';
 import { installHost } from './host.mjs';
 
 function stat(path) {
@@ -36,6 +38,35 @@ function listRepoDirectory(relative) {
     return [];
   }
   return names.map((name) => ({ name, isDirectory: Boolean(stat(path.join(directory, name))?.isDirectory()) }));
+}
+
+/** Read committed census documents only when their actual source identity still agrees. */
+export function censusDocuments(repository = REPO_ROOT) {
+  const visit = (relative) => {
+    let entries;
+    try { entries = readdirSync(path.join(repository, relative), { withFileTypes: true }); }
+    catch { return []; }
+    return entries.sort((a, b) => a.name.localeCompare(b.name)).flatMap((entry) => {
+      const file = relative + '/' + entry.name;
+      if (entry.isDirectory()) return visit(file);
+      if (!entry.isFile() || !entry.name.endsWith('.lino')) return [];
+      const text = readFileSync(path.join(repository, file), 'utf8');
+      const parsed = parseLino(text);
+      const fields = parsed.name === 'self_ast_census' ? parsed.children
+        : parsed.children.find((node) => node.name === 'self_ast_census')?.children ?? [];
+      const field = (name) => fields.find((node) => node.name === name)?.value;
+      const target = field('target');
+      if (!target?.startsWith('src/') || !target.endsWith('.rs') || target.split('/').includes('..')) return [];
+      let source;
+      try { source = readFileSync(path.join(repository, 'rust', target), 'utf8'); }
+      catch { return []; }
+      const contentId = stableId('source_module', source);
+      const byteLength = Buffer.byteLength(source);
+      if (field('content_id') !== contentId || Number(field('byte_len')) !== byteLength) return [];
+      return [{ path: file, text, sourceIdentity: { path: target, content_id: contentId, byte_len: byteLength } }];
+    });
+  };
+  return visit(CENSUS_DIR);
 }
 
 /** `cli_env::flag_enabled`: a true spelling of the variable. */
@@ -97,6 +128,7 @@ export async function installNodeHost(worker) {
     isFile: (path) => Boolean(stat(path)?.isFile()),
     currentDirectory: () => process.cwd(),
     listDirectory: listRepoDirectory,
+    censusDocuments,
     sourceFetch: nodeSourceFetch,
   });
   return context;

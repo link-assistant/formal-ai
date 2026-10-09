@@ -4,6 +4,8 @@
 
 import { moduleSymbol, modulesDeclaring, workspace } from './crate/self_ast_census.mjs';
 import { isAlphanumeric } from './write_str.mjs';
+import { hasHost, readText } from './host.mjs';
+import { meaningFiles, parseLexiconText, words as meaningWords } from './crate/seed_meanings.mjs';
 
 /** Mirrors `fn resolve_requirement_target`: `{module_path, symbol, kind}` or null. */
 export function resolveRequirementTarget(requirement) {
@@ -34,7 +36,37 @@ export function resolveIn(census, requirement) {
       } else if (parts.length === bestLength) best.push([module, symbol]);
     }
   }
-  return best.length ? unique(best, tokens) : null;
+  return best.length ? unique(best, tokens) : hasHost()
+    ? resolveSeedTarget(census, requirement, meaningFiles().map((path) => [path, readText(path)])) : null;
+}
+
+/** Bind a concrete canonical surface and role to its actually declared registry constant.
+ * The constant spelling follows the seed registry generator; no seed or prompt is privileged.
+ * Equal evidence for different targets is unresolved. */
+export function resolveSeedTarget(census, requirement, sources) {
+  const tokens = tokensOf(requirement).map((token) => token.toLowerCase());
+  const roleWords = tokens.map(singular);
+  let bestLength = 0;
+  const best = new Map();
+  for (const [path, source] of sources) {
+    const stem = path.split('/').at(-1)?.replace(/\.lino$/u, '');
+    if (!path.endsWith('.lino') || !/^[A-Za-z0-9_-]+$/u.test(stem)) continue;
+    const name = stem.toUpperCase().replaceAll('-', '_') + '_LINO';
+    const candidates = modulesDeclaring(census, name).map((module) => [module, moduleSymbol(module, name)])
+      .filter(([, symbol]) => symbol.kind === 'const' || symbol.kind === 'static');
+    if (!candidates.length) continue;
+    for (const meaning of parseLexiconText(source)) {
+      if (!meaning.roles.some((role) => role.split(/[_-]/u).some((part) => roleWords.includes(singular(part.toLowerCase()))))) continue;
+      for (const surface of meaningWords(meaning)) {
+        if (surface.includes('…')) continue;
+        const parts = tokensOf(surface).map((token) => token.toLowerCase());
+        if (!parts.length || !tokens.some((_, at) => parts.every((part, offset) => tokens[at + offset] === part))) continue;
+        if (parts.length > bestLength) { bestLength = parts.length; best.clear(); }
+        if (parts.length === bestLength) for (const [module, symbol] of candidates) best.set(module.path + ':' + symbol.name, target(module, symbol));
+      }
+    }
+  }
+  return best.size === 1 ? best.values().next().value : null;
 }
 
 function unique(candidates, tokens) {

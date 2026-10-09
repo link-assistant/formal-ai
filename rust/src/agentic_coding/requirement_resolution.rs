@@ -31,7 +31,8 @@ pub fn resolve_requirement_target(requirement: &str) -> Option<RequirementTarget
 /// `static` whose identifier words (singularised) all occur in the requirement
 /// wins, longest identifier first. A tie between modules is broken by the
 /// module path words the requirement mentions; a remaining tie is ambiguity and
-/// resolves to nothing rather than to a guess.
+/// resolves to nothing rather than to a guess. When identifier words do not bind,
+/// an actual canonical seed surface and its semantic role can bind its declared owner.
 #[must_use]
 pub fn resolve_in(census: &WorkspaceCensus, requirement: &str) -> Option<RequirementTarget> {
     let tokens = tokens_of(requirement);
@@ -80,9 +81,90 @@ pub fn resolve_in(census: &WorkspaceCensus, requirement: &str) -> Option<Require
         }
     }
     if best.is_empty() {
-        return None;
+        let sources: Vec<_> = crate::seed::seed_files()
+            .into_iter()
+            .filter(|(_, text)| crate::seed::MEANING_FILES.contains(text))
+            .collect();
+        return resolve_seed_target(census, requirement, &sources);
     }
     unique(&best, &tokens)
+}
+
+/// Bind a concrete canonical surface and semantic role to a declared seed constant.
+/// Constant spelling follows the seed registry generator. No seed is privileged;
+/// equally supported distinct targets remain unresolved.
+#[must_use]
+pub fn resolve_seed_target(
+    census: &WorkspaceCensus,
+    requirement: &str,
+    sources: &[(&str, &str)],
+) -> Option<RequirementTarget> {
+    let tokens: Vec<_> = tokens_of(requirement)
+        .into_iter()
+        .map(|word| word.to_lowercase())
+        .collect();
+    let role_words: Vec<_> = tokens.iter().map(|word| singular(word)).collect();
+    let mut best_length = 0;
+    let mut best: Vec<RequirementTarget> = Vec::new();
+    for (path, source) in sources {
+        let Some(stem) = path
+            .rsplit('/')
+            .next()
+            .and_then(|name| name.strip_suffix(".lino"))
+        else {
+            continue;
+        };
+        if stem.is_empty()
+            || !stem.chars().all(|character| {
+                character.is_ascii_alphanumeric() || matches!(character, '_' | '-')
+            })
+        {
+            continue;
+        }
+        let name = format!("{}_LINO", stem.to_ascii_uppercase().replace('-', "_"));
+        let candidates: Vec<_> = census
+            .modules_declaring(&name)
+            .into_iter()
+            .filter_map(|module| module.symbol(&name).map(|symbol| (module, symbol)))
+            .filter(|(_, symbol)| matches!(symbol.kind.as_str(), "const" | "static"))
+            .collect();
+        if candidates.is_empty() {
+            continue;
+        }
+        for meaning in crate::seed::meanings::parse_lexicon_text(source).meanings {
+            if !meaning.roles.iter().any(|role| {
+                role.split(['_', '-'])
+                    .any(|part| role_words.contains(&singular(&part.to_lowercase())))
+            }) {
+                continue;
+            }
+            for surface in meaning.words() {
+                if surface.contains('…') {
+                    continue;
+                }
+                let parts: Vec<_> = tokens_of(surface)
+                    .into_iter()
+                    .map(|word| word.to_lowercase())
+                    .collect();
+                if parts.is_empty() || !tokens.windows(parts.len()).any(|window| window == parts) {
+                    continue;
+                }
+                if parts.len() > best_length {
+                    best_length = parts.len();
+                    best.clear();
+                }
+                if parts.len() == best_length {
+                    for (module, symbol) in &candidates {
+                        let candidate = target(module, symbol);
+                        if !best.contains(&candidate) {
+                            best.push(candidate);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    if best.len() == 1 { best.pop() } else { None }
 }
 
 fn unique(
