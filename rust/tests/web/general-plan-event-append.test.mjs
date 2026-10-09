@@ -136,3 +136,20 @@ test('repository-root shell events use the same sandbox as file tools', async ()
   assert.equal(readFileSync(committed, 'utf8'), before);
   assert.ok(readFileSync(join(PLAN_EVENTS_SANDBOX, 'general-change-plan.lino'), 'utf8').includes(planLinksNotation(plan)));
 });
+
+
+test('cached event readback excludes the separator before a later canonical record', async () => {
+  const directory = mkdtempSync(join(tmpdir(), 'formal-ai-events-middle-'));
+  try {
+    mkdirSync(join(directory, '.formal-ai'));
+    const first = composeGeneralChangePlan(request);
+    const later = composeGeneralChangePlan('Set the contents of later.txt to «second event»');
+    const before = planLinksNotation(first) + '\n' + planLinksNotation(later);
+    writeFileSync(join(directory, PLAN_PATH), before);
+    const step = planGeneralChangeStep([{ role: 'user', content: request }], ['bash', 'read', 'write'], first);
+    const command = JSON.parse(step.calls[0].arguments).command;
+    const output = execFileSync('/bin/sh', ['-c', command], { cwd: directory, encoding: 'utf8', timeout: 5000 });
+    assert.equal(output, planLinksNotation(first));
+    assert.equal(readFileSync(join(directory, PLAN_PATH), 'utf8'), before);
+  } finally { rmSync(directory, { recursive: true, force: true }); }
+});
