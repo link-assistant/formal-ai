@@ -1,5 +1,6 @@
 // Source-bound observation goals before mutation (PR #1188).
 // Native contracts: rust/src/repository_workspace/operation.rs and verify.rs.
+import { childValue, childrenNamed, parseLino, readText } from "../agentic/host.mjs";
 import { shellCommandForTask } from "../agentic/shell_command.mjs";
 import { asksAboutTheWorkspace } from "../agentic/workspace_inspection.mjs";
 import { mentionsRole } from "../agentic/crate/seed_meanings.mjs";
@@ -130,4 +131,20 @@ export function observedCommandReport({
     evidence_id: evidence.evidence_id,
     observed_output_sha256: evidence.observed_output_sha256,
   };
+}
+
+// Native contract: rust/src/repository_workspace/operation.rs:command_context_excluded.
+/** Reject actual operands using the canonical source-context policy; missing policy denies. */
+export function commandChangesSourceContext(program, argumentsList) {
+  const rule = childrenNamed(
+    parseLino(readText("data/seed/repository-command-allowlist.lino")),
+    "source-context-policy",
+  ).find((node) => childValue(node, "program") === program);
+  if (!rule) return true;
+  return argumentsList.some((argument) =>
+    (rule.children || []).some((field) =>
+      field.name === "exact" ? argument === field.value
+        : field.name === "prefix" && argument.startsWith(field.value),
+    ),
+  );
 }

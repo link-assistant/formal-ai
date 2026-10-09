@@ -194,3 +194,81 @@ fn wrong_source_head_refuses_before_observation_or_edit() {
     assert!(outcome.report.is_empty() && !outcome.open.is_empty());
     assert!(outcome.observations.is_empty());
 }
+
+#[test]
+fn source_context_options_preserve_exact_and_prefix_refusals() {
+    use formal_ai::repository_workspace::operation::command_context_excluded;
+    for (program, options) in [
+        ("git", vec!["-C", "-c", "--git-dir", "--work-tree"]),
+        ("cargo", vec!["--manifest-path", "--target-dir", "--config"]),
+    ] {
+        for option in options {
+            assert!(command_context_excluded(program, &[option.to_owned()]));
+            if option.len() > 2 {
+                for suffix in ["=outside", "-suffix"] {
+                    assert!(command_context_excluded(
+                        program,
+                        &[format!("{option}{suffix}")]
+                    ));
+                }
+            }
+        }
+    }
+    for (program, arguments) in [
+        ("git", vec!["status", "--porcelain", "-Cinside"]),
+        ("cargo", vec!["check", "--workspace", "--configuration"]),
+    ] {
+        // Cargo's --configuration is intentionally covered by the original --config prefix.
+        let expected = program == "cargo";
+        assert_eq!(
+            command_context_excluded(
+                program,
+                &arguments.into_iter().map(str::to_owned).collect::<Vec<_>>()
+            ),
+            expected
+        );
+    }
+    assert!(command_context_excluded("missing-program", &[]));
+}
+
+#[test]
+fn forbidden_context_options_are_refused_by_the_actual_command_binding() {
+    use formal_ai::repository_workspace::operation::bind_command;
+    use formal_ai::repository_workspace::verify::RunCommand;
+    let fixture = Fixture::new(false);
+    let workspace = RepositoryWorkspace::adopt(&fixture.root).unwrap();
+    for line in [
+        "git status -C outside",
+        "git status -c setting=value",
+        "git status --git-dir=outside",
+        "git status --work-tree=outside",
+        "cargo check --manifest-path=outside",
+        "cargo check --target-dir=outside",
+        "cargo check --config=outside",
+    ] {
+        assert!(
+            bind_command(
+                &workspace,
+                &RunCommand {
+                    line: line.to_owned(),
+                    names: Vec::new()
+                }
+            )
+            .is_err(),
+            "{line}"
+        );
+    }
+    for line in ["git status --porcelain", "cargo check --workspace"] {
+        assert!(
+            bind_command(
+                &workspace,
+                &RunCommand {
+                    line: line.to_owned(),
+                    names: Vec::new()
+                }
+            )
+            .is_ok(),
+            "{line}"
+        );
+    }
+}

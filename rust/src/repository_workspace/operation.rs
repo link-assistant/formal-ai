@@ -197,6 +197,25 @@ pub fn test_targets(workspace: &RepositoryWorkspace) -> Result<Vec<Location>, Wo
     Ok(result)
 }
 
+/// Whether actual command operands violate the loaded source-context policy.
+/// Missing program policy fails closed before any command can run.
+#[must_use]
+pub fn command_context_excluded(program: &str, arguments: &[String]) -> bool {
+    let policy = crate::seed::parser::parse_lino(super::ALLOWLIST_LINO);
+    let Some(rule) = policy.children.iter().find(|node| {
+        node.name == "source-context-policy" && node.find_child_value("program") == program
+    }) else {
+        return true;
+    };
+    arguments.iter().any(|argument| {
+        rule.children.iter().any(|field| match field.name.as_str() {
+            "exact" => argument == &field.id,
+            "prefix" => argument.starts_with(&field.id),
+            _ => false,
+        })
+    })
+}
+
 /// Bind a Cargo command to the actual manifest before the command port runs.
 ///
 /// # Errors
@@ -230,23 +249,14 @@ pub fn bind_command(
     }
     if program == "git" {
         // Global cwd/config flags would unbind the owned-workspace receipt.
-        if argv.iter().any(|argument| {
-            argument == "-C"
-                || argument == "-c"
-                || argument.starts_with("--git-dir")
-                || argument.starts_with("--work-tree")
-        }) {
+        if command_context_excluded(program, &argv) {
             return Err(WorkspaceError::Observed {
                 detail: String::from("command changes source context"),
             });
         }
         return Ok(command.clone());
     }
-    if argv.iter().any(|argument| {
-        argument.starts_with("--manifest-path")
-            || argument.starts_with("--target-dir")
-            || argument.starts_with("--config")
-    }) {
+    if command_context_excluded(program, &argv) {
         return Err(WorkspaceError::Observed {
             detail: String::from("explicit manifest binding not yet supported"),
         });

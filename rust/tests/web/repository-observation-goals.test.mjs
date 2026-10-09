@@ -10,6 +10,7 @@ import {
   selectsRepositoryStage,
   selectCargoManifest,
   observedCommandReport,
+  commandChangesSourceContext,
 } from "../../../js/repository-workspace/observation.mjs";
 before(async () => {
   await installNodeHost(new WorkerHost());
@@ -263,4 +264,23 @@ test("actual query refuses a missing declared target rather than naming an inven
     () => observeCargoTestTargets(fixture.root, fixture.head),
     /ENOENT/u,
   );
+});
+
+
+test("canonical context policy preserves every original refusal and attached prefix operand", () => {
+  for (const [program, options] of [
+    ["git", ["-C", "-c", "--git-dir", "--work-tree"]],
+    ["cargo", ["--manifest-path", "--target-dir", "--config"]],
+  ]) {
+    for (const option of options) {
+      assert.equal(commandChangesSourceContext(program, [option]), true, option);
+      if (option.length > 2) for (const suffix of ["=outside", "-suffix"]) {
+        assert.equal(commandChangesSourceContext(program, [option + suffix]), true, option + suffix);
+      }
+    }
+  }
+  assert.equal(commandChangesSourceContext("git", ["status", "--porcelain", "-Cinside"]), false);
+  assert.equal(commandChangesSourceContext("cargo", ["check", "--workspace"]), false);
+  assert.equal(commandChangesSourceContext("cargo", ["--configuration"]), true);
+  assert.equal(commandChangesSourceContext("missing-program", []), true);
 });

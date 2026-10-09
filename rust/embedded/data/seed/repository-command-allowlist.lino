@@ -163,3 +163,14 @@ allow_npm_test
   deadline_seconds "1800"
   precondition "The tree declares a package manifest with a test script."
   postcondition "Each named test is observed passing or failing."
+source-context-policy
+  program "git"
+  exact "-C"
+  exact "-c"
+  prefix "--git-dir"
+  prefix "--work-tree"
+source-context-policy
+  program "cargo"
+  prefix "--manifest-path"
+  prefix "--target-dir"
+  prefix "--config"
