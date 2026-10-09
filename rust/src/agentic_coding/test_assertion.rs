@@ -293,7 +293,7 @@ fn plan_new_test_file(
         .trim();
     let content = new_test_file(&request.language, &request.path, name, &written)?;
     let write_tool = tool_for(tool_names, Capability::Write)?;
-    let Some(result) = result_for_path(
+    let Some(written_result) = result_for_path(
         current_turn,
         Capability::Write,
         &request.path,
@@ -304,7 +304,7 @@ fn plan_new_test_file(
             super::planner::write_arguments(&request.path, &content),
         ));
     };
-    if failure_message(&result, false, true).is_some() {
+    if failure_message(&written_result, false, true).is_some() {
         return render_seeded_outcome("coding_workspace_verification_failed", task, &request.path)
             .map(AgenticPlan::Final);
     }

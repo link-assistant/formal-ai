@@ -30,7 +30,7 @@ pub(super) fn stop_repeated_call(plan: AgenticPlan, messages: &[ChatMessage]) ->
         &[
             (
                 "{step}",
-                &format!("{} {}", repeated.tool, repeated.arguments),
+                format!("{} {}", repeated.tool, repeated.arguments).as_str(),
             ),
             ("{result}", attempt.detail.trim()),
         ],
