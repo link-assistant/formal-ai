@@ -97,15 +97,21 @@ fn required_metadata(schema: &str) -> Vec<String> {
 }
 
 fn meaning_records(source: &str, text: &str) -> Vec<(String, String, BTreeSet<String>)> {
-    if text.lines().find(|line| !line.trim().is_empty()) != Some("meanings") {
+    let Some(root) = text
+        .lines()
+        .position(|line| !line.trim().is_empty() && !line.trim_start().starts_with('#'))
+    else {
+        return Vec::new();
+    };
+    if text.lines().nth(root) != Some("meanings") {
         return Vec::new();
     }
     let mut records = Vec::new();
     let mut current: Option<(String, String, BTreeSet<String>)> = None;
-    for line in text.lines().skip(1) {
+    for line in text.lines().skip(root + 1) {
         // A `#` line documents the records around it, as in the audit script
         // (`scripts/audit-seed-metadata.rs`); it is never a record itself.
-        if line.trim_start().starts_with('#') {
+        if line.trim().is_empty() || line.trim_start().starts_with('#') {
             continue;
         }
         let indentation = line.bytes().take_while(|byte| *byte == b' ').count();
@@ -674,4 +680,15 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // records (the number words among them), and the audit now writes one
     // file per seed source (R1188-U5).
     assert_eq!(expected_gaps.len(), 765);
+}
+
+#[test]
+fn metadata_records_ignore_leading_and_nested_comments() {
+    let plain = "meanings\n  arbitrary_concept\n    precondition \"observed input\"\n    effect \"grounded result\"\n";
+    let documented = format!("# scope\n\n   # explanation\n{plain}    # nested comment\n\n");
+    assert_eq!(
+        meaning_records("seed.lino", plain),
+        meaning_records("seed.lino", &documented)
+    );
+    assert!(meaning_records("seed.lino", "# empty\n\n").is_empty());
 }
