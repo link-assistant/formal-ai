@@ -58,4 +58,3 @@ function howItWorksPriorTopic(reply) {
   }
   return null;
 }
-
