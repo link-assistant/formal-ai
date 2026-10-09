@@ -1,0 +1,2 @@
+$ node scripts/lib/checks-twin-parity.mjs check-minimal-core-boundary
+check-minimal-core-boundary: JavaScript twin only (exit 1); the rust-script half runs in CI.

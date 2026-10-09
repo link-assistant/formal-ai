@@ -8,6 +8,10 @@ This document is for the next agent. It covers what the owner asked for, how the
 
 The owner resumed this work and requested up to four GPT-6.1-sol subagents, subject to the four-active-slot environment limit including the coordinator. Keep slots busy, one subagent continuously monitoring CI/CD, and one delivering requirements by asking Formal AI, repairing it after failures and retrying. The coordinator also works continuously. Follow [the recommended multi-agent workflow](multi-agent-workflow.md), including its bulk drafting, small commits, coordinated push barriers and honest capability evidence. It supersedes the older agent and immediate-push instructions below.
 
+The current finite source batch has finished. The coordinator refreshes JS/TS/worker/package mirrors and evidence, commits the contributing paths, and pushes once at the shared barrier so CI can capture the actual newly built native protocols and census. Whole-byte native historical comparisons and census remain open until those real artifacts exist. The last observed remote head4a560 has29 failed checks; local successes do not make the new source mergeable.
+
+The strict agent reproduced required-effect suppression when an exact result identifier contains a source-kind word, and a rename that leaves dependent imports unchanged. A release-report literal was also split at clause cues inside its quoted body. The next phase repairs those general Formal AI mechanisms and retries the unchanged originals. The separate compiled-skill and typed-reader prototypes are scratch evidence; they do not increase the authoritative136/136 carried production specification count. More delegation is intended to reduce model token cost, but no measured token or monetary saving is claimed.
+
 ## 1. Where the requirements live
 
 The owner's requirements are recorded in three places, from the most literal to the most structured:
@@ -65,7 +69,7 @@ All of these are still in force.
 ### 2.1 The loop for one change
 
 1. **Find the general cause.** Reproduce the failure, then fix the class by rule: seed vocabulary in all five languages (en, ru, hi, zh, es) or a general mechanism. Never fix only the prompt.
-2. **JavaScript first.** Change `js/…` first, then write the Rust twin by hand in `rust/src/…`, carefully, so it compiles in CI. A twin names its counterpart (`Mirrors \`fn x\``); gate `check-twin-citations` checks those names.
+2. **JavaScript first.** Ask Formal AI to change JavaScript first, then apply the pinned translator or a documented temporary native twin through Formal AI; compilation remains in CI. A twin names its counterpart (`Mirrors \`fn x\``); gate `check-twin-citations` checks those names.
 3. **Regenerate.**
    - `node scripts/translate-es.mjs --write` writes the `ts/` twins.
    - `bash scripts/sync-seed.sh` mirrors seed data. A seed edit also needs its `rust/embedded/data/seed/` copy.
@@ -148,7 +152,7 @@ Rules:
 
 ## 3. State at the handoff
 
-The table below preserves the earlier round20 snapshot; its local-gate and CI results are observations of that source state. Current integration adds later source and evidence commits, so all checks must run again on its exact final remote head. The checked specification record is135/136 with1 gap; the held-out300-case family audit still reports0/300 in JavaScript because its dispatcher lacks the native family interpreter. Broad G112 source-feature synthesis remains open. Follow the generated tally and requirement records for current counts, and [release-verification.md](release-verification.md) for actual artifact/publication evidence. No current mergeable or all-requirements-complete claim is made by this historical table.
+The table below preserves the earlier round20 snapshot; its local-gate and CI results are observations of that source state. Current integration adds later source and evidence commits, so all checks must run again on its exact final remote head. The checked specification record is136/136 with0 carried gaps;1037 native tests remain uncarried; the held-out300-case family audit still reports0/300 in JavaScript because its dispatcher lacks the native family interpreter. Broad G112 source-feature synthesis remains open. Follow the generated tally and requirement records for current counts, and [release-verification.md](release-verification.md) for actual artifact/publication evidence. No current mergeable or all-requirements-complete claim is made by this historical table.
 
 | Measure | Value |
 | --- | --- |

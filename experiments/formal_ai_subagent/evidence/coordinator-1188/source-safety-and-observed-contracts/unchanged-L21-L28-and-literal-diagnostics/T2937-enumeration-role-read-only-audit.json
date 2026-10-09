@@ -1,0 +1,148 @@
+{
+  "kind": "read-only lexical quote-boundary audit",
+  "rows": [
+    {
+      "cue": "first",
+      "clauses": 2
+    },
+    {
+      "cue": "second",
+      "clauses": 2
+    },
+    {
+      "cue": "third",
+      "clauses": 2
+    },
+    {
+      "cue": "then",
+      "clauses": 2
+    },
+    {
+      "cue": "next",
+      "clauses": 2
+    },
+    {
+      "cue": "after that",
+      "clauses": 2
+    },
+    {
+      "cue": "also",
+      "clauses": 2
+    },
+    {
+      "cue": "finally",
+      "clauses": 2
+    },
+    {
+      "cue": "lastly",
+      "clauses": 2
+    },
+    {
+      "cue": "сначала",
+      "clauses": 2
+    },
+    {
+      "cue": "во-первых",
+      "clauses": 2
+    },
+    {
+      "cue": "во-вторых",
+      "clauses": 2
+    },
+    {
+      "cue": "затем",
+      "clauses": 2
+    },
+    {
+      "cue": "потом",
+      "clauses": 2
+    },
+    {
+      "cue": "далее",
+      "clauses": 2
+    },
+    {
+      "cue": "также",
+      "clauses": 2
+    },
+    {
+      "cue": "наконец",
+      "clauses": 2
+    },
+    {
+      "cue": "после этого",
+      "clauses": 2
+    },
+    {
+      "cue": "पहले",
+      "clauses": 2
+    },
+    {
+      "cue": "दूसरा",
+      "clauses": 2
+    },
+    {
+      "cue": "फिर",
+      "clauses": 2
+    },
+    {
+      "cue": "उसके बाद",
+      "clauses": 2
+    },
+    {
+      "cue": "अंत में",
+      "clauses": 2
+    },
+    {
+      "cue": "首先",
+      "clauses": 2
+    },
+    {
+      "cue": "其次",
+      "clauses": 2
+    },
+    {
+      "cue": "然后",
+      "clauses": 2
+    },
+    {
+      "cue": "接着",
+      "clauses": 2
+    },
+    {
+      "cue": "之后",
+      "clauses": 2
+    },
+    {
+      "cue": "最后",
+      "clauses": 2
+    },
+    {
+      "cue": "primero",
+      "clauses": 2
+    },
+    {
+      "cue": "segundo",
+      "clauses": 2
+    },
+    {
+      "cue": "luego",
+      "clauses": 2
+    },
+    {
+      "cue": "después",
+      "clauses": 2
+    },
+    {
+      "cue": "finalmente",
+      "clauses": 2
+    }
+  ],
+  "total": 34,
+  "incorrectSplit": 34,
+  "sourceModules": [
+    "js/agentic/crate/obligation_ledger.mjs",
+    "rust/src/obligation_ledger/derivation.rs"
+  ],
+  "limits": "Pure public function probes only; no mutation, no native execution and no Formal AI retry."
+}

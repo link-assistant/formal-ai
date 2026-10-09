@@ -1,0 +1,111 @@
+>> read {"filePath":"rust/tests/unit/agentic-coding/issue_540_agent_cli.rs","file_path":"rust/tests/unit/agentic-coding/issue_540_agent_cli.rs","path":"rust/tests/unit/agentic-coding/issue_540_agent_cli.rs"}
+   <file>
+   00001| use formal_ai::agentic_coding::{
+   00002|     DREAMING_AUDIT_PATH, DREAMING_AUDIT_TASK, dreaming_audit, is_dreaming_audit_task,
+   00003|     run_agentic_task, run_agentic_task_with_tools,
+   00004| };
+   00005| 
+   00006| #[test]
+   00007| fn dreaming_audit_is_derived_from_the_live_recipe_not_hardcoded() {
+   00008|     assert!(is_dreaming_audit_task(DREAMING_AUDIT_TASK));
+   00009|     // The keyword hijack is gone (issue #540 review): generic prompts that
+   00010|     // merely mention dreaming and auditing are NOT captured — only prompts
+   00011|     // naming the audit artifact itself are.
+   00012|     assert!(!is_dreaming_audit_task(
+   00013|         "Perform a gap analysis for issue 540 dreaming"
+   00014|     ));
+   00015|     assert!(!is_dreaming_audit_task(
+   00016|         "Please audit my dreaming journal app"
+   00017|     ));
+   00018|     assert!(is_dreaming_audit_task(
+   00019|         "Regenerate dreaming-gap-analysis.lino from the recipe"
+   00020|     ));
+   00021| 
+   00022|     let document = dreaming_audit::render_document();
+   00023|     // The analysis is computed by cross-referencing the recipe's own records.
+   00024|     assert!(document.contains("method \"derived at runtime"));
+   00025|     assert!(document.contains("grounded_recipe_steps \"17\""));
+   00026|     assert!(document.contains("multilingual_cues \"22\""));
+   00027|     assert!(document.contains("stage \"apply_future_tasks\""));
+   00028|     assert!(document.contains("stage \"replay_candidates\""));
+   00029|     assert!(document.contains("stage \"measure_real_storage\""));
+   00030|     // Every stage of the current recipe is grounded in named functions.
+   00031|     assert!(document.contains("open_gaps \"0\""));
+   00032|     assert!(!document.contains("status \"open_gap\""));
+   00033|     // The analysis found real grounding functions, not "none" everywhere.
+   00034|     assert!(document.contains("grounding_functions \"apply_retained_amendments\""));
+   00035|     assert_eq!(
+   00036|         include_str!("../../../../docs/case-studies/issue-540/dreaming-gap-analysis.lino"),
+   00037|         document,
+   00038|     );
+   00039| }
+   00040| 
+   00041| #[test]
+   00042| fn dreaming_audit_reports_an_open_gap_when_a_stage_loses_its_grounding() {
+   00043|     // Analytical, not echoed: drop the recipe's function records and the same
+   00044|     // analyzer must now report every stage as an open gap.
+   00045|     let recipe = include_str!("../../../../data/meta/dreaming-recipe.lino");
+   00046|     let stripped = recipe
+   00047|         .lines()
+   00048|         .filter(|line| line.trim() != "record_type \"meta_function\"")
+   00049|         .fold(String::new(), |mut out, line| {
+   00050|             out.push_str(line);
+   00051|             out.push('\n');
+   00052|             out
+   00053|         });
+   00054|     let cues = include_str!("../../../../data/meta/dreaming-cues.lino");
+   00055|     let degraded = dreaming_audit::render_document_from(&stripped, cues);
+   00056|     assert!(!degraded.contains("open_gaps \"0\""));
+   00057|     assert!(degraded.contains("status \"open_gap\""));
+   00058|     // With the full recipe the same analyzer finds the grounding again.
+   00059|     let healthy = dreaming_audit::render_document_from(recipe, cues);
+   00060|     assert!(healthy.contains("open_gaps \"0\""));
+   00061|     assert!(healthy.contains("grounding_functions \"replay_candidate_tasks\""));
+   00062| }
+   00063| 
+   00064| #[test]
+   00065| fn formal_ai_drives_the_dreaming_audit_through_agent_cli() {
+   00066|     let outcome = run_agentic_task(DREAMING_AUDIT_TASK).expect("agent workspace");
+   00067|     assert!(!outcome.hit_turn_cap);
+   00068|     assert_eq!(outcome.turns, 3);
+   00069|     assert_eq!(outcome.steps.len(), 2);
+   00070|     assert_eq!(outcome.steps[0].tool, "write_file");
+   00071|     let arguments: serde_json::Value =
+   00072|         serde_json::from_str(&outcome.steps[0].arguments).expect("write arguments");
+   00073|     assert_eq!(arguments["path"], DREAMING_AUDIT_PATH);
+   00074|     assert_eq!(arguments["content"], dreaming_audit::render_document());
+   00075|     assert_eq!(outcome.steps[1].tool, "run_command");
+   00076|     assert!(outcome.final_answer.contains("17 stages analyzed"));
+   00077|     assert!(outcome.final_answer.contains("0 open gap(s)"));
+   00078| }
+   00079| 
+   00080| #[test]
+   00081| fn committed_agent_cli_session_matches_a_fresh_dreaming_audit() {
+   00082|     let committed = include_str!(
+   00083|         "../../../../docs/case-studies/issue-540/agent-cli-session-dreaming-audit.json"
+   00084|     );
+   00085|     let fresh = run_agentic_task(DREAMING_AUDIT_TASK).expect("agent workspace");
+   00086|     let rendered = format!(
+   00087|         "{}\n",
+   00088|         serde_json::to_string_pretty(&fresh.session_json()).expect("session JSON")
+   00089|     );
+   00090|     assert_eq!(committed, rendered);
+   00091| }
+   00092| 
+   
+   (End of file - total 92 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/agentic-coding/issue_540_agent_cli.rs","file_path":"rust/tests/unit/agentic-coding/issue_540_agent_cli.rs","new":"    let recorded: serde_json::Value = serde_json::from_str(committed).expect(\"immutable session JSON\");\n    let tools = recorded[\"tools_advertised\"]\n        .as_array()\n        .expect(\"archived advertised tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"advertised tool name\"))\n        .collect::<Vec<_>>();\n    let fresh = run_agentic_task_with_tools(DREAMING_AUDIT_TASK, &tools).expect(\"agent workspace\");","newString":"    let recorded: serde_json::Value = serde_json::from_str(committed).expect(\"immutable session JSON\");\n    let tools = recorded[\"tools_advertised\"]\n        .as_array()\n        .expect(\"archived advertised tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"advertised tool name\"))\n        .collect::<Vec<_>>();\n    let fresh = run_agentic_task_with_tools(DREAMING_AUDIT_TASK, &tools).expect(\"agent workspace\");","new_str":"    let recorded: serde_json::Value = serde_json::from_str(committed).expect(\"immutable session JSON\");\n    let tools = recorded[\"tools_advertised\"]\n        .as_array()\n        .expect(\"archived advertised tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"advertised tool name\"))\n        .collect::<Vec<_>>();\n    let fresh = run_agentic_task_with_tools(DREAMING_AUDIT_TASK, &tools).expect(\"agent workspace\");","new_string":"    let recorded: serde_json::Value = serde_json::from_str(committed).expect(\"immutable session JSON\");\n    let tools = recorded[\"tools_advertised\"]\n        .as_array()\n        .expect(\"archived advertised tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"advertised tool name\"))\n        .collect::<Vec<_>>();\n    let fresh = run_agentic_task_with_tools(DREAMING_AUDIT_TASK, &tools).expect(\"agent workspace\");","old":"    let fresh = run_agentic_task(DREAMING_AUDIT_TASK).expect(\"agent workspace\");","oldString":"    let fresh = run_agentic_task(DREAMING_AUDIT_TASK).expect(\"agent workspace\");","old_str":"    let fresh = run_agentic_task(DREAMING_AUDIT_TASK).expect(\"agent workspace\");","old_string":"    let fresh = run_agentic_task(DREAMING_AUDIT_TASK).expect(\"agent workspace\");","path":"rust/tests/unit/agentic-coding/issue_540_agent_cli.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/agentic-coding/issue_540_agent_cli.rs"}
+   Output: 59cb7e086ce85dbbf61c6fee716a7d30cfe1ebd5c039d0f9a821ed65c6690014  rust/tests/unit/agentic-coding/issue_540_agent_cli.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `    let fresh = run_agentic_task(DREAMING_AUDIT_TASK).expect("agent workspace");` with `    let recorded: serde_json::Value = serde_json::from_str(committed).expect("immutable session JSON");
+    let tools = recorded["tools_advertised"]
+        .as_array()
+        .expect("archived advertised tool schema")
+        .iter()
+        .map(|tool| tool.as_str().expect("advertised tool name"))
+        .collect::<Vec<_>>();
+    let fresh = run_agentic_task_with_tools(DREAMING_AUDIT_TASK, &tools).expect("agent workspace");` in `rust/tests/unit/agentic-coding/issue_540_agent_cli.rs` and observed the result.

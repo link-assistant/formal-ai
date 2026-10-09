@@ -1,0 +1,3 @@
+$ node scripts/tally-formal-ai-dogfood.mjs --check
+formal-ai tally: 2080 tasks, 345 failed, 279 fixed, 0 fixed without a named test (ceiling 0)
+::error::failure rows with no resolution in their After cell: T2502, T2504, T2507, T2509, T2511, T2513, T2514, T2520, T2521, T2522, T2523, T2525, T2730, T2733, T2734, T2740, T2923, T2527

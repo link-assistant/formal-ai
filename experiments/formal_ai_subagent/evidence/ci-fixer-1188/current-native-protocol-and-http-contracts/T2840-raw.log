@@ -1,0 +1,79 @@
+>> read {"filePath":"rust/tests/support/http_auxiliary_workspace.rs","file_path":"rust/tests/support/http_auxiliary_workspace.rs","path":"rust/tests/support/http_auxiliary_workspace.rs"}
+   <file>
+   00001| //! A client workspace for observing auxiliary plan persistence over HTTP.
+   00002| use formal_ai::agentic_coding::general_planner::{PLAN_PATH, compose_general_change_plan};
+   00003| use serde_json::{Value, json};
+   00004| use std::collections::HashMap;
+   00005| 
+   00006| pub(super) fn observed_target_write(
+   00007|     prompt: &str,
+   00008|     target: &str,
+   00009|     prior: &str,
+   00010|     next: &mut dyn FnMut(&[Value]) -> Value,
+   00011| ) -> Value {
+   00012|     let plan = compose_general_change_plan(prompt).expect("literal write plan");
+   00013|     assert_eq!(plan.target, target);
+   00014|     let prior = "earlier observed fixture event\n";
+   00015|     let expected = format!("{prior}{}", plan.links_notation());
+   00016|     let mut files = HashMap::from([(PLAN_PATH.to_owned(), prior.to_owned())]);
+   00017|     let mut messages = vec![json!({"role": "user", "content": prompt})];
+   00018|     let mut stream_observed = false;
+   00019|     for _ in 0..8 {
+   00020|         let response = next(&messages);
+   00021|         assert_eq!(response["choices"][0]["finish_reason"], "tool_calls");
+   00022|         let calls = response["choices"][0]["message"]["tool_calls"]
+   00023|             .as_array().expect("actual HTTP tool calls");
+   00024|         assert_eq!(calls.len(), 1);
+   00025|         let call = &calls[0];
+   00026|         let tool = call["function"]["name"].as_str().expect("tool name");
+   00027|         let arguments: Value = serde_json::from_str(
+   00028|             call["function"]["arguments"].as_str().expect("tool arguments"),
+   00029|         ).expect("JSON arguments");
+   00030|         let path = arguments["path"].as_str().expect("declared path");
+   00031|         assert!(path == PLAN_PATH || path == target, "unexpected path: {arguments}");
+   00032|         if tool == "write_file" && path == target {
+   00033|             assert!(stream_observed, "target write requires observed retained event");
+   00034|             assert_eq!(arguments["content"], plan.content);
+   00035|             assert_eq!(files.get(PLAN_PATH), Some(&expected));
+   00036|             return response;
+   00037|         }
+   00038|         let result = match tool {
+   00039|             "read_file" => {
+   00040|                 if path == PLAN_PATH && files.get(path) == Some(&expected) {
+   00041|                     stream_observed = true;
+   00042|                 }
+   00043|                 files.get(path).cloned().unwrap_or_else(|| {
+   00044|                     json!({"is_error": true, "error": format!("File not found: {path}")}).to_string()
+   00045|                 })
+   00046|             }
+   00047|             "write_file" => {
+   00048|                 assert_eq!(path, PLAN_PATH, "only the auxiliary write is consumed");
+   00049|                 let content = arguments["content"].as_str().expect("written stream");
+   00050|                 assert_eq!(content, expected, "earlier event bytes must be retained");
+   00051|                 files.insert(path.to_owned(), content.to_owned());
+   00052|                 json!({"success": true}).to_string()
+   00053|             }
+   00054|             _ => panic!("unexpected auxiliary tool: {tool}: {arguments}"),
+   00055|         };
+   00056|         messages.push(json!({"role": "assistant", "tool_calls": calls}));
+   00057|         messages.push(json!({"role": "tool", "tool_call_id": call["id"], "name": tool, "content": result}));
+   00058|     }
+   00059|     panic!("no target write after the bounded observed auxiliary setup");
+   00060| }
+   00061| 
+   
+   (End of file - total 61 lines)
+   </file>
+>> edit {"filePath":"rust/tests/support/http_auxiliary_workspace.rs","file_path":"rust/tests/support/http_auxiliary_workspace.rs","new":"    let expected = format!(\"{prior}{}\", plan.links_notation());\n    let mut files = HashMap::new();\n    if !prior.is_empty() {\n        files.insert(PLAN_PATH.to_owned(), prior.to_owned());\n    }","newString":"    let expected = format!(\"{prior}{}\", plan.links_notation());\n    let mut files = HashMap::new();\n    if !prior.is_empty() {\n        files.insert(PLAN_PATH.to_owned(), prior.to_owned());\n    }","new_str":"    let expected = format!(\"{prior}{}\", plan.links_notation());\n    let mut files = HashMap::new();\n    if !prior.is_empty() {\n        files.insert(PLAN_PATH.to_owned(), prior.to_owned());\n    }","new_string":"    let expected = format!(\"{prior}{}\", plan.links_notation());\n    let mut files = HashMap::new();\n    if !prior.is_empty() {\n        files.insert(PLAN_PATH.to_owned(), prior.to_owned());\n    }","old":"    let prior = \"earlier observed fixture event\\n\";\n    let expected = format!(\"{prior}{}\", plan.links_notation());\n    let mut files = HashMap::from([(PLAN_PATH.to_owned(), prior.to_owned())]);","oldString":"    let prior = \"earlier observed fixture event\\n\";\n    let expected = format!(\"{prior}{}\", plan.links_notation());\n    let mut files = HashMap::from([(PLAN_PATH.to_owned(), prior.to_owned())]);","old_str":"    let prior = \"earlier observed fixture event\\n\";\n    let expected = format!(\"{prior}{}\", plan.links_notation());\n    let mut files = HashMap::from([(PLAN_PATH.to_owned(), prior.to_owned())]);","old_string":"    let prior = \"earlier observed fixture event\\n\";\n    let expected = format!(\"{prior}{}\", plan.links_notation());\n    let mut files = HashMap::from([(PLAN_PATH.to_owned(), prior.to_owned())]);","path":"rust/tests/support/http_auxiliary_workspace.rs"}
+>> bash {"command":"sha256sum -- rust/tests/support/http_auxiliary_workspace.rs"}
+   Output: 9aaa5942bb821636882da0d1faa9155cd56c474fafcb00b0eeba902f9af3b3e1  rust/tests/support/http_auxiliary_workspace.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `    let prior = "earlier observed fixture event\n";
+    let expected = format!("{prior}{}", plan.links_notation());
+    let mut files = HashMap::from([(PLAN_PATH.to_owned(), prior.to_owned())]);` with `    let expected = format!("{prior}{}", plan.links_notation());
+    let mut files = HashMap::new();
+    if !prior.is_empty() {
+        files.insert(PLAN_PATH.to_owned(), prior.to_owned());
+    }` in `rust/tests/support/http_auxiliary_workspace.rs` and observed the result.

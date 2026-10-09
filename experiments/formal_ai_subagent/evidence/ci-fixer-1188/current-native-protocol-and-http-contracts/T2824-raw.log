@@ -1,0 +1,66 @@
+>> read {"filePath":"scripts/capture-native-agentic-protocol.mjs","file_path":"scripts/capture-native-agentic-protocol.mjs","path":"scripts/capture-native-agentic-protocol.mjs"}
+   <file>
+   00001| #!/usr/bin/env node
+   00002| // Retain complete actual native sessions; unavailable outcomes remain failures.
+   00003| import assert from 'node:assert/strict';
+   00004| import {createHash} from 'node:crypto';
+   00005| import {readFileSync,writeFileSync,mkdirSync} from 'node:fs';
+   00006| import {spawnSync} from 'node:child_process';
+   00007| import {join,resolve} from 'node:path';
+   00008| import {pathToFileURL} from 'node:url';
+   00009| import {buildIdentity,verifyReceipt} from './native-test-artifact.mjs';
+   00010| const CONTRACT='docs/case-studies/pull-request-1188/native-protocol-capture-provenance.json';
+   00011| export const bytesDigest=bytes=>createHash('sha256').update(bytes).digest('hex');
+   00012| export function checkedCapture(bytes,legacy){
+   00013|  const session=JSON.parse(bytes.toString('utf8'));
+   00014|  assert.equal(session.task,legacy.task);
+   00015|  assert.ok(Array.isArray(session.tools_advertised));
+   00016|  assert.equal(new Set(session.tools_advertised).size,session.tools_advertised.length);
+   00017|  assert.ok(session.tools_advertised.every(tool=>typeof tool==='string'));
+   00018|  assert.ok(Array.isArray(session.steps));
+   00019|  assert.ok(Number.isInteger(session.turns)&&session.turns>0);
+   00020|  assert.equal(session.hit_turn_cap,false);
+   00021|  assert.equal(typeof session.final_answer,'string');
+   00022|  return session;
+   00023| }
+   00024| if(import.meta.url===pathToFileURL(process.argv[1]??'').href){
+   00025|  const [directory,binaryPath]=process.argv.slice(2);assert.ok(directory&&binaryPath);
+   00026|  const cwd=process.cwd(),binary=resolve(binaryPath),identity=buildIdentity(cwd,'release','all');
+   00027|  verifyReceipt(resolve('dist/tests'),identity,binary);mkdirSync(directory,{recursive:true});
+   00028|  const contract=JSON.parse(readFileSync(CONTRACT,'utf8')),results=[];
+   00029|  const retain=()=>writeFileSync(join(directory,'provenance.json'),JSON.stringify({version:1,identity,run:process.env.GITHUB_RUN_ID,attempt:process.env.GITHUB_RUN_ATTEMPT,job:process.env.GITHUB_JOB,captures:results},null,2)+'\n');
+   00030|  retain();
+   00031|  for(const record of contract.captures){
+   00032|   const original=readFileSync(record.legacy);assert.equal(bytesDigest(original),record['legacy-sha256']);
+   00033|   const legacy=JSON.parse(original),path=resolve(directory,record.id+'.json');
+   00034|   const result=spawnSync(binary,['agent','--task',legacy.task,'--session-json',path],{cwd,encoding:'utf8',timeout:240000});
+   00035|   writeFileSync(join(directory,record.id+'.stdout.log'),result.stdout??'');
+   00036|   writeFileSync(join(directory,record.id+'.stderr.log'),result.stderr??String(result.error??''));
+   00037|   const observed={id:record.id,'legacy-sha256':record['legacy-sha256'],exit:result.status,signal:result.signal};
+   00038|   try{assert.equal(result.status,0);assert.equal(result.signal,null);if(result.error)throw result.error;
+   00039|    const bytes=readFileSync(path),session=checkedCapture(bytes,legacy);
+   00040|    observed['session-sha256']=bytesDigest(bytes);observed['tools-advertised']=session.tools_advertised;observed.status='captured';
+   00041|   }catch(error){observed.status='failed';observed.error=String(error);}
+   00042|   results.push(observed);retain();
+   00043|  }
+   00044|  assert.ok(results.every(result=>result.status==='captured'),'Every original task requires a complete actual native capture');
+   00045| }
+   00046| 
+   
+   (End of file - total 46 lines)
+   </file>
+>> edit {"filePath":"scripts/capture-native-agentic-protocol.mjs","file_path":"scripts/capture-native-agentic-protocol.mjs","new":" assert.equal(typeof session.final_answer,'string');\n const target=legacy.steps.filter(step=>step.tool==='write_file').at(-1);\n const verification=legacy.steps.filter(step=>step.tool==='run_command').at(-1);\n assert.ok(target&&verification,'Original capture must name its target and observed verification');\n const path=arguments_=>arguments_.path??arguments_.filePath??arguments_.file_path;\n assert.ok(session.steps.some(step=>step.tool==='write_file'&&path(step.arguments)===path(target.arguments)&&step.arguments.content===target.arguments.content),'Actual native capture must author the original exact target bytes');\n assert.ok(session.steps.some(step=>step.tool==='run_command'&&step.arguments.command===verification.arguments.command&&step.result===verification.result),'Actual native capture must observe the original target verification');\n return session;","newString":" assert.equal(typeof session.final_answer,'string');\n const target=legacy.steps.filter(step=>step.tool==='write_file').at(-1);\n const verification=legacy.steps.filter(step=>step.tool==='run_command').at(-1);\n assert.ok(target&&verification,'Original capture must name its target and observed verification');\n const path=arguments_=>arguments_.path??arguments_.filePath??arguments_.file_path;\n assert.ok(session.steps.some(step=>step.tool==='write_file'&&path(step.arguments)===path(target.arguments)&&step.arguments.content===target.arguments.content),'Actual native capture must author the original exact target bytes');\n assert.ok(session.steps.some(step=>step.tool==='run_command'&&step.arguments.command===verification.arguments.command&&step.result===verification.result),'Actual native capture must observe the original target verification');\n return session;","new_str":" assert.equal(typeof session.final_answer,'string');\n const target=legacy.steps.filter(step=>step.tool==='write_file').at(-1);\n const verification=legacy.steps.filter(step=>step.tool==='run_command').at(-1);\n assert.ok(target&&verification,'Original capture must name its target and observed verification');\n const path=arguments_=>arguments_.path??arguments_.filePath??arguments_.file_path;\n assert.ok(session.steps.some(step=>step.tool==='write_file'&&path(step.arguments)===path(target.arguments)&&step.arguments.content===target.arguments.content),'Actual native capture must author the original exact target bytes');\n assert.ok(session.steps.some(step=>step.tool==='run_command'&&step.arguments.command===verification.arguments.command&&step.result===verification.result),'Actual native capture must observe the original target verification');\n return session;","new_string":" assert.equal(typeof session.final_answer,'string');\n const target=legacy.steps.filter(step=>step.tool==='write_file').at(-1);\n const verification=legacy.steps.filter(step=>step.tool==='run_command').at(-1);\n assert.ok(target&&verification,'Original capture must name its target and observed verification');\n const path=arguments_=>arguments_.path??arguments_.filePath??arguments_.file_path;\n assert.ok(session.steps.some(step=>step.tool==='write_file'&&path(step.arguments)===path(target.arguments)&&step.arguments.content===target.arguments.content),'Actual native capture must author the original exact target bytes');\n assert.ok(session.steps.some(step=>step.tool==='run_command'&&step.arguments.command===verification.arguments.command&&step.result===verification.result),'Actual native capture must observe the original target verification');\n return session;","old":" assert.equal(typeof session.final_answer,'string');\n return session;","oldString":" assert.equal(typeof session.final_answer,'string');\n return session;","old_str":" assert.equal(typeof session.final_answer,'string');\n return session;","old_string":" assert.equal(typeof session.final_answer,'string');\n return session;","path":"scripts/capture-native-agentic-protocol.mjs"}
+>> bash {"command":"sha256sum -- scripts/capture-native-agentic-protocol.mjs"}
+   Output: 99235b6faf6839cda0dbaf1fe030b49231c5df828e60d6e729a4319585a46e35  scripts/capture-native-agentic-protocol.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced ` assert.equal(typeof session.final_answer,'string');
+ return session;` with ` assert.equal(typeof session.final_answer,'string');
+ const target=legacy.steps.filter(step=>step.tool==='write_file').at(-1);
+ const verification=legacy.steps.filter(step=>step.tool==='run_command').at(-1);
+ assert.ok(target&&verification,'Original capture must name its target and observed verification');
+ const path=arguments_=>arguments_.path??arguments_.filePath??arguments_.file_path;
+ assert.ok(session.steps.some(step=>step.tool==='write_file'&&path(step.arguments)===path(target.arguments)&&step.arguments.content===target.arguments.content),'Actual native capture must author the original exact target bytes');
+ assert.ok(session.steps.some(step=>step.tool==='run_command'&&step.arguments.command===verification.arguments.command&&step.result===verification.result),'Actual native capture must observe the original target verification');
+ return session;` in `scripts/capture-native-agentic-protocol.mjs` and observed the result.

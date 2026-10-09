@@ -1,0 +1,5 @@
+{
+  "source": "/private/tmp/spec-recurrence-1188/T2920-request.json",
+  "sha256": "b192d22fac0f2bd630fe9ab1c2dbb7fc852924f6d2117baa614360ec730a8647",
+  "rawUtf8": "{\n  \"taskId\": \"T2920\",\n  \"directory\": \"/Users/konard/Code/Archive/link-assistant/formal-ai\",\n  \"prompt\": \"Run node /private/tmp/spec-recurrence-1188/seal-reader-packet.mjs\"\n}\n"
+}

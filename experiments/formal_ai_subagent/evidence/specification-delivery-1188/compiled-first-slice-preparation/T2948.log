@@ -1,0 +1,17 @@
+>> bash {"command":"node /private/tmp/spec-recurrence-1188/seal-release-compression-evidence.mjs"}
+   Output: {"artifacts":112,"compressionTasks":3,"physicalCalls":3,"callKind":"bash","fileSizeGate":"FAIL root-owned remaining files only","sourceMutations":0}
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/spec-recurrence-1188/seal-release-compression-evidence.mjs` command completed. Output:
+
+```json
+{
+  "artifacts": 112,
+  "callKind": "bash",
+  "compressionTasks": 3,
+  "fileSizeGate": "FAIL root-owned remaining files only",
+  "physicalCalls": 3,
+  "sourceMutations": 0
+}
+```

@@ -1,0 +1,210 @@
+>> bash {"command":"node --test rust/tests/web/general-plan-event-append.test.mjs rust/tests/web/pull-request-1188-cifix2.test.mjs"}
+   Output: TAP version 13
+   # Subtest: read clients preserve earlier bytes, verify the stream and deduplicate a replay
+   ok 1 - read clients preserve earlier bytes, verify the stream and deduplicate a replay
+     ---
+     duration_ms: 733.546375
+     ...
+   # Subtest: an absent log is created, while a permission failure never overwrites it
+   ok 2 - an absent log is created, while a permission failure never overwrites it
+     ---
+     duration_ms: 12.187209
+     ...
+   # Subtest: read-back that loses earlier events cannot authorize the requested write
+   ok 3 - read-back that loses earlier events cannot authorize the requested write
+     ---
+     duration_ms: 2.750458
+     ...
+   # Subtest: run-only clients execute a quoted append and preserve history on retries
+   ok 4 - run-only clients execute a quoted append and preserve history on retries
+     ---
+     duration_ms: 31.270417
+     ...
+   # Subtest: write-only clients deliver the target without overwriting an unobserved event stream
+   ok 5 - write-only clients deliver the target without overwriting an unobserved event stream
+     ---
+     duration_ms: 2.617416
+     ...
+   # Subtest: simultaneous retries take the bounded lock and retain exactly one event
+   ok 6 - simultaneous retries take the bounded lock and retain exactly one event
+     ---
+     duration_ms: 1508.406917
+     ...
+   # Subtest: repository-root shell events use the same sandbox as file tools
+   ok 7 - repository-root shell events use the same sandbox as file tools
+     ---
+     duration_ms: 59.177125
+     ...
+   # Subtest: cached event readback excludes the separator before a later canonical record
+   ok 8 - cached event readback excludes the separator before a later canonical record
+     ---
+     duration_ms: 15.317584
+     ...
+   # Subtest: a request that declares the file it writes creates it unread (T310)
+       # Subtest: a file noun before the path and the content after it write first, whatever the verb
+       ok 1 - a file noun before the path and the content after it write first, whatever the verb
+         ---
+         duration_ms: 990.272834
+         ...
+       # Subtest: a destination ahead of the file noun keeps the read-first guard
+       ok 2 - a destination ahead of the file noun keeps the read-first guard
+         ---
+         duration_ms: 19.296375
+         ...
+       1..2
+   ok 9 - a request that declares the file it writes creates it unread (T310)
+     ---
+     duration_ms: 1169.1305
+     type: 'suite'
+     ...
+   # Subtest: an explicit grep runs as written; a search request is the workspace search (T311)
+       # Subtest: execute grep TODO note.txt is the command itself
+       ok 1 - execute grep TODO note.txt is the command itself
+         ---
+         duration_ms: 24.35625
+         ...
+       # Subtest: a local search request greps the workspace for the whole word
+       ok 2 - a local search request greps the workspace for the whole word
+         ---
+         duration_ms: 24.731333
+         ...
+       1..2
+   ok 10 - an explicit grep runs as written; a search request is the workspace search (T311)
+     ---
+     duration_ms: 49.194666
+     type: 'suite'
+     ...
+   # Subtest: an article after a place preposition is no directory (T312)
+       # Subtest: qué hay en la carpeta actual lists the current directory
+       ok 1 - qué hay en la carpeta actual lists the current directory
+         ---
+         duration_ms: 278.498792
+         ...
+       # Subtest: a named directory is still listed
+       ok 2 - a named directory is still listed
+         ---
+         duration_ms: 65.247166
+         ...
+       1..2
+   ok 11 - an article after a place preposition is no directory (T312)
+     ---
+     duration_ms: 343.932709
+     type: 'suite'
+     ...
+   1..11
+   # tests 14
+   # suites 3
+   # pass 14
+   # fail 0
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 2537.09925
+   
+   Exit Code: 0
+== answer ==
+The `node --test rust/tests/web/general-plan-event-append.test.mjs rust/tests/web/pull-request-1188-cifix2.test.mjs` command completed. Output:
+
+```text
+TAP version 13
+# Subtest: read clients preserve earlier bytes, verify the stream and deduplicate a replay
+ok 1 - read clients preserve earlier bytes, verify the stream and deduplicate a replay
+  ---
+  duration_ms: 733.546375
+  ...
+# Subtest: an absent log is created, while a permission failure never overwrites it
+ok 2 - an absent log is created, while a permission failure never overwrites it
+  ---
+  duration_ms: 12.187209
+  ...
+# Subtest: read-back that loses earlier events cannot authorize the requested write
+ok 3 - read-back that loses earlier events cannot authorize the requested write
+  ---
+  duration_ms: 2.750458
+  ...
+# Subtest: run-only clients execute a quoted append and preserve history on retries
+ok 4 - run-only clients execute a quoted append and preserve history on retries
+  ---
+  duration_ms: 31.270417
+  ...
+# Subtest: write-only clients deliver the target without overwriting an unobserved event stream
+ok 5 - write-only clients deliver the target without overwriting an unobserved event stream
+  ---
+  duration_ms: 2.617416
+  ...
+# Subtest: simultaneous retries take the bounded lock and retain exactly one event
+ok 6 - simultaneous retries take the bounded lock and retain exactly one event
+  ---
+  duration_ms: 1508.406917
+  ...
+# Subtest: repository-root shell events use the same sandbox as file tools
+ok 7 - repository-root shell events use the same sandbox as file tools
+  ---
+  duration_ms: 59.177125
+  ...
+# Subtest: cached event readback excludes the separator before a later canonical record
+ok 8 - cached event readback excludes the separator before a later canonical record
+  ---
+  duration_ms: 15.317584
+  ...
+# Subtest: a request that declares the file it writes creates it unread (T310)
+    # Subtest: a file noun before the path and the content after it write first, whatever the verb
+    ok 1 - a file noun before the path and the content after it write first, whatever the verb
+      ---
+      duration_ms: 990.272834
+      ...
+    # Subtest: a destination ahead of the file noun keeps the read-first guard
+    ok 2 - a destination ahead of the file noun keeps the read-first guard
+      ---
+      duration_ms: 19.296375
+      ...
+    1..2
+ok 9 - a request that declares the file it writes creates it unread (T310)
+  ---
+  duration_ms: 1169.1305
+  type: 'suite'
+  ...
+# Subtest: an explicit grep runs as written; a search request is the workspace search (T311)
+    # Subtest: execute grep TODO note.txt is the command itself
+    ok 1 - execute grep TODO note.txt is the command itself
+      ---
+      duration_ms: 24.35625
+      ...
+    # Subtest: a local search request greps the workspace for the whole word
+    ok 2 - a local search request greps the workspace for the whole word
+      ---
+      duration_ms: 24.731333
+      ...
+    1..2
+ok 10 - an explicit grep runs as written; a search request is the workspace search (T311)
+  ---
+  duration_ms: 49.194666
+  type: 'suite'
+  ...
+# Subtest: an article after a place preposition is no directory (T312)
+    # Subtest: qué hay en la carpeta actual lists the current directory
+    ok 1 - qué hay en la carpeta actual lists the current directory
+      ---
+      duration_ms: 278.498792
+      ...
+    # Subtest: a named directory is still listed
+    ok 2 - a named directory is still listed
+      ---
+      duration_ms: 65.247166
+      ...
+    1..2
+ok 11 - an article after a place preposition is no directory (T312)
+  ---
+  duration_ms: 343.932709
+  type: 'suite'
+  ...
+1..11
+# tests 14
+# suites 3
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2537.09925
+```

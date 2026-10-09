@@ -1,0 +1,1 @@
+{"task": "T1995", "prompt": "Run node --check scripts/check-source-networks.mjs && printf \"T1995_SOURCE_PRODUCER_SYNTAX_PASS\\n\"", "marker": "T1995_SOURCE_PRODUCER_SYNTAX_PASS"}

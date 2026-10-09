@@ -1,0 +1,464 @@
+>> read {"filePath":"rust/tests/integration/issue_755_file_read_write.rs","file_path":"rust/tests/integration/issue_755_file_read_write.rs","path":"rust/tests/integration/issue_755_file_read_write.rs"}
+   <file>
+   00001| //! Regression coverage for issue #755: file read and write over the agentic
+   00002| //! protocol.
+   00003| //!
+   00004| //! Three defects are pinned here:
+   00005| //!
+   00006| //! 1. **Read/Write parameter names.** The emitted arguments must contain exactly
+   00007| //!    the keys the client advertised — no `{filePath, file_path, path}` shotgun
+   00008| //!    that a `additionalProperties: false` schema rejects, and no missing
+   00009| //!    `absolute_path` that qwen requires.
+   00010| //! 2. **The write target.** A `write X to F` request must persist the *user's*
+   00011| //!    content to the *user's* file. The internal plan artifact may not preempt
+   00012| //!    or block that write.
+   00013| //! 3. **Read/list determinism.** A tool result produced for an *earlier* user
+   00014| //!    turn may never be replayed as the answer to the current one.
+   00015| 
+   00016| use formal_ai::server::{enable_http_agent_mode_for_current_process, handle_api_request};
+   00017| use serde_json::{Value, json};
+   00018| 
+   00019| /// The read tool as each supported CLI advertises it, with the single parameter
+   00020| /// name that CLI declares. Claude is listed for the projection assertions only;
+   00021| /// the driven sweep below excludes it, exactly as the issue asks.
+   00022| const READ_SCHEMAS: &[(&str, &str)] = &[
+   00023|     ("Read", "file_path"),
+   00024|     ("read_file", "absolute_path"),
+   00025|     ("read_file", "path"),
+   00026|     ("read_file", "filePath"),
+   00027| ];
+   00028| 
+   00029| /// The write tool as each supported CLI advertises its path parameter.
+   00030| const WRITE_SCHEMAS: &[(&str, &str)] = &[
+   00031|     ("Write", "file_path"),
+   00032|     ("write_file", "path"),
+   00033|     ("write", "filePath"),
+   00034|     ("create_file", "file_path"),
+   00035| ];
+   00036| 
+   00037| /// "write 10 to 1.txt" in every language the seed lexicon covers, so a passing
+   00038| /// sweep proves the routing is seed-driven rather than English-only.
+   00039| const WRITE_REQUESTS: &[(&str, &str)] = &[
+   00040|     ("en", "write 10 to 1.txt file"),
+   00041|     ("ru", "создай файл 1.txt с текстом 10"),
+   00042|     ("hi", "बनाओ 1.txt जिसमें लिखा हो 10"),
+   00043|     ("zh", "创建 文件 1.txt 内容为 10"),
+   00044| ];
+   00045| 
+   00046| #[test]
+   00047| fn read_emits_only_the_advertised_parameter_name() {
+   00048|     for (tool, parameter) in READ_SCHEMAS {
+   00049|         let arguments = call_arguments(
+   00050|             "read 1.txt",
+   00051|             tool,
+   00052|             &json!({
+   00053|                 "type": "object",
+   00054|                 "properties": {(*parameter): {"type": "string"}},
+   00055|                 "required": [*parameter],
+   00056|                 "additionalProperties": false
+   00057|             }),
+   00058|         );
+   00059|         let object = arguments.as_object().expect("object arguments");
+   00060|         assert_eq!(
+   00061|             object.len(),
+   00062|             1,
+   00063|             "{tool} declares only `{parameter}`, got {arguments}"
+   00064|         );
+   00065|         let path = object[*parameter].as_str().expect("string path");
+   00066|         assert!(
+   00067|             path.ends_with("1.txt"),
+   00068|             "{tool}.{parameter} should name the requested file, got {arguments}"
+   00069|         );
+   00070|         if *parameter == "absolute_path" {
+   00071|             assert!(
+   00072|                 std::path::Path::new(path).is_absolute(),
+   00073|                 "{tool} declares an absolute path, got {arguments}"
+   00074|             );
+   00075|         }
+   00076|     }
+   00077| }
+   00078| 
+   00079| #[test]
+   00080| fn write_emits_only_the_advertised_parameter_names() {
+   00081|     for (tool, parameter) in WRITE_SCHEMAS {
+   00082|         let arguments = call_arguments(
+   00083|             "write 10 to 1.txt file",
+   00084|             tool,
+   00085|             &json!({
+   00086|                 "type": "object",
+   00087|                 "properties": {
+   00088|                     (*parameter): {"type": "string"},
+   00089|                     "content": {"type": "string"}
+   00090|                 },
+   00091|                 "required": [*parameter, "content"],
+   00092|                 "additionalProperties": false
+   00093|             }),
+   00094|         );
+   00095|         let object = arguments.as_object().expect("object arguments");
+   00096|         assert_eq!(
+   00097|             object.len(),
+   00098|             2,
+   00099|             "{tool} declares only `{parameter}` and `content`, got {arguments}"
+   00100|         );
+   00101|         assert!(object.contains_key(*parameter), "{arguments}");
+   00102|         assert!(object.contains_key("content"), "{arguments}");
+   00103|     }
+   00104| }
+   00105| 
+   00106| #[test]
+   00107| fn the_users_content_reaches_the_users_file_in_every_language() {
+   00108|     // The plan-first design is fine internally; what the user asked for is that
+   00109|     // "10" ends up in "1.txt". Drive the whole loop in each supported language
+   00110|     // and assert the user's write is emitted with the advertised keys only.
+   00111|     for (language, request) in WRITE_REQUESTS {
+   00112|         let transcript = drive(request, &[write_tool(&strict_write_schema())], "ok", 4);
+   00113|         let user_write = transcript
+   00114|             .iter()
+   00115|             .find(|(tool, arguments)| tool == "Write" && arguments["file_path"] == "1.txt")
+   00116|             .unwrap_or_else(|| panic!("[{language}] no write targeted 1.txt: {transcript:?}"));
+   00117|         assert_eq!(
+   00118|             user_write.1["content"], "10",
+   00119|             "[{language}] the user's file must carry the user's content: {transcript:?}"
+   00120|         );
+   00121|         assert_eq!(
+   00122|             user_write.1.as_object().unwrap().len(),
+   00123|             2,
+   00124|             "[{language}] only file_path + content: {transcript:?}"
+   00125|         );
+   00126|     }
+   00127| }
+   00128| 
+   00129| #[test]
+   00130| fn a_failed_plan_write_never_blocks_the_users_write() {
+   00131|     // The client rejects every write it is handed. The internal plan artifact may
+   00132|     // be recorded first, but a failure there must not swallow the requested
+   00133|     // change: the user's file, with the user's content, must still be written.
+   00134|     let transcript = drive(
+   00135|         "write 10 to 1.txt file",
+   00136|         &[write_tool(&strict_write_schema())],
+   00137|         "<tool_use_error>Error writing file</tool_use_error>",
+   00138|         4,
+   00139|     );
+   00140|     assert!(
+   00141|         transcript.iter().any(|(tool, arguments)| tool == "Write"
+   00142|             && arguments["file_path"] == "1.txt"
+   00143|             && arguments["content"] == "10"),
+   00144|         "the user's write must still be attempted, got {transcript:?}"
+   00145|     );
+   00146|     // Every emitted write uses only the advertised keys, even the plan step.
+   00147|     for (tool, arguments) in &transcript {
+   00148|         assert_eq!(tool, "Write");
+   00149|         let object = arguments.as_object().expect("object arguments");
+   00150|         assert_eq!(object.len(), 2, "only file_path + content: {arguments}");
+   00151|         assert!(object.contains_key("file_path"), "{arguments}");
+   00152|         assert!(object.contains_key("content"), "{arguments}");
+   00153|     }
+   00154| }
+   00155| 
+   00156| #[test]
+   00157| fn the_whole_write_read_task_persists_and_reads_back_the_users_content() {
+   00158|     // create -> read back, driven end to end through the protocol with a client
+   00159|     // loop that actually applies the writes to a scratch workspace.
+   00160|     let tools = vec![write_tool(&strict_write_schema()), read_tool()];
+   00161|     let mut workspace: Vec<(String, String)> = Vec::new();
+   00162|     let transcript = drive_with(
+   00163|         "write 10 to 1.txt file",
+   00164|         &tools,
+   00165|         6,
+   00166|         &mut |name, arguments| match name {
+   00167|             "Write" => {
+   00168|                 let path = arguments["file_path"].as_str().unwrap_or_default();
+   00169|                 let content = arguments["content"].as_str().unwrap_or_default();
+   00170|                 workspace.push((path.to_owned(), content.to_owned()));
+   00171|                 String::from("ok")
+   00172|             }
+   00173|             "Read" => {
+   00174|                 let path = arguments["file_path"].as_str().expect("advertised read path");
+   00175|                 workspace.iter().rev().find(|(written, _)| written == path)
+   00176|                     .map_or_else(|| json!({"is_error": true, "error": format!("File not found: {path}")}).to_string(), |(_, content)| content.clone())
+   00177|             }
+   00178|             other => panic!("unadvertised workspace operation: {other}"),
+   00179|         },
+   00180|     );
+   00181|     assert!(!transcript.is_empty(), "the request should drive a write");
+   00182|     assert!(
+   00183|         workspace
+   00184|             .iter()
+   00185|             .any(|(path, content)| path == "1.txt" && content == "10"),
+   00186|         "the user's file must receive the user's content, wrote {workspace:?}"
+   00187|     );
+   00188| }
+   00189| 
+   00190| #[test]
+   00191| fn a_multi_turn_lifecycle_reads_back_the_current_content_each_time() {
+   00192|     // create -> read back -> overwrite -> read back, all in one session with a
+   00193|     // client loop that applies writes and answers reads from a scratch
+   00194|     // workspace. Each read turn must reflect the *current* bytes, never a value
+   00195|     // captured by an earlier turn (issue #755, read/list determinism).
+   00196|     use std::collections::HashMap;
+   00197|     enable_http_agent_mode_for_current_process();
+   00198|     let tools = vec![write_tool(&strict_write_schema()), read_tool()];
+   00199|     let workspace: std::cell::RefCell<HashMap<String, String>> =
+   00200|         std::cell::RefCell::new(HashMap::new());
+   00201|     let mut messages: Vec<Value> = Vec::new();
+   00202| 
+   00203|     let run_turn = |messages: &mut Vec<Value>, prompt: &str| -> String {
+   00204|         messages.push(json!({"role": "user", "content": prompt}));
+   00205|         let mut last_read = String::new();
+   00206|         for _ in 0..6 {
+   00207|             let message = next_step(&tools, messages);
+   00208|             let Some(calls) = message["tool_calls"].as_array().filter(|c| !c.is_empty()) else {
+   00209|                 messages.push(json!({
+   00210|                     "role": "assistant",
+   00211|                     "content": message["content"].as_str().unwrap_or_default()
+   00212|                 }));
+   00213|                 break;
+   00214|             };
+   00215|             messages.push(json!({"role": "assistant", "tool_calls": calls}));
+   00216|             for call in calls {
+   00217|                 let name = call["function"]["name"].as_str().unwrap_or_default();
+   00218|                 let args: Value =
+   00219|                     serde_json::from_str(call["function"]["arguments"].as_str().unwrap_or("{}"))
+   00220|                         .unwrap_or(Value::Null);
+   00221|                 let result = match name {
+   00222|                     "Write" => {
+   00223|                         let path = args["file_path"].as_str().unwrap_or_default().to_owned();
+   00224|                         let content = args["content"].as_str().unwrap_or_default().to_owned();
+   00225|                         workspace.borrow_mut().insert(path, content);
+   00226|                         String::from("ok")
+   00227|                     }
+   00228|                     "Read" => {
+   00229|                         let path = args["file_path"].as_str().unwrap_or_default();
+   00230|                         let content = workspace.borrow().get(path).cloned();
+   00231|                         if let Some(content) = content {
+   00232|                             if path == "1.txt" { last_read = content.clone(); }
+   00233|                             content
+   00234|                         } else {
+   00235|                             json!({"is_error": true, "error": format!("File not found: {path}")}).to_string()
+   00236|                         }
+   00237|                     }
+   00238|                     _ => String::new(),
+   00239|                 };
+   00240|                 messages.push(json!({
+   00241|                     "role": "tool",
+   00242|                     "tool_call_id": call["id"],
+   00243|                     "content": result
+   00244|                 }));
+   00245|             }
+   00246|         }
+   00247|         last_read
+   00248|     };
+   00249| 
+   00250|     run_turn(&mut messages, "write 10 to 1.txt file");
+   00251|     assert_eq!(
+   00252|         workspace.borrow().get("1.txt").map(String::as_str),
+   00253|         Some("10")
+   00254|     );
+   00255|     assert_eq!(run_turn(&mut messages, "read 1.txt"), "10");
+   00256| 
+   00257|     run_turn(&mut messages, "write 20 to 1.txt file");
+   00258|     assert_eq!(
+   00259|         workspace.borrow().get("1.txt").map(String::as_str),
+   00260|         Some("20")
+   00261|     );
+   00262|     // The second read must reflect the overwrite, not replay the first read's 10.
+   00263|     assert_eq!(run_turn(&mut messages, "read 1.txt"), "20");
+   00264| }
+   00265| 
+   00266| #[test]
+   00267| fn a_read_never_answers_from_a_previous_turns_tool_result() {
+   00268|     // Turn one runs `cat 1.txt` and the client reports "stale". Turn two asks to
+   00269|     // read the same file: the planner must issue a *fresh* read rather than
+   00270|     // replaying the earlier result.
+   00271|     enable_http_agent_mode_for_current_process();
+   00272|     let tools = vec![read_tool(), shell_tool()];
+   00273|     let mut messages = vec![json!({"role": "user", "content": "execute cat 1.txt"})];
+   00274|     let first = next_step(&tools, &messages);
+   00275|     let calls = first["tool_calls"]
+   00276|         .as_array()
+   00277|         .cloned()
+   00278|         .expect("the first turn should run the command");
+   00279|     messages.push(json!({"role": "assistant", "tool_calls": calls}));
+   00280|     messages.push(json!({
+   00281|         "role": "tool",
+   00282|         "tool_call_id": calls[0]["id"],
+   00283|         "content": "stale"
+   00284|     }));
+   00285|     // Close turn one so its result is history, then open a new user turn.
+   00286|     let closing = next_step(&tools, &messages);
+   00287|     messages.push(json!({
+   00288|         "role": "assistant",
+   00289|         "content": closing["content"].as_str().unwrap_or_default()
+   00290|     }));
+   00291|     messages.push(json!({"role": "user", "content": "read 1.txt"}));
+   00292| 
+   00293|     let second = next_step(&tools, &messages);
+   00294|     let calls = second["tool_calls"].as_array();
+   00295|     assert!(
+   00296|         calls.is_some_and(|calls| !calls.is_empty()),
+   00297|         "a new read turn must issue a fresh tool call, got {second}"
+   00298|     );
+   00299|     let answer = second["content"].as_str().unwrap_or_default();
+   00300|     assert!(
+   00301|         !answer.contains("stale"),
+   00302|         "a previous turn's result must never answer this one, got {second}"
+   00303|     );
+   00304| }
+   00305| 
+   00306| #[test]
+   00307| fn repeated_read_turns_are_deterministic() {
+   00308|     // The same request, asked twice in one session, must plan the same call both
+   00309|     // times rather than drifting into a stale-result answer.
+   00310|     enable_http_agent_mode_for_current_process();
+   00311|     let tools = vec![read_tool()];
+   00312|     let mut messages = vec![json!({"role": "user", "content": "read 1.txt"})];
+   00313|     let first = next_step(&tools, &messages);
+   00314|     let first_call = first["tool_calls"][0]["function"].clone();
+   00315| 
+   00316|     let calls = first["tool_calls"].as_array().cloned().unwrap();
+   00317|     messages.push(json!({"role": "assistant", "tool_calls": calls}));
+   00318|     messages.push(json!({"role": "tool", "tool_call_id": calls[0]["id"], "content": "10"}));
+   00319|     let answered = next_step(&tools, &messages);
+   00320|     messages.push(json!({
+   00321|         "role": "assistant",
+   00322|         "content": answered["content"].as_str().unwrap_or_default()
+   00323|     }));
+   00324|     messages.push(json!({"role": "user", "content": "read 1.txt"}));
+   00325| 
+   00326|     let second = next_step(&tools, &messages);
+   00327|     assert_eq!(
+   00328|         second["tool_calls"][0]["function"], first_call,
+   00329|         "the same request must plan the same call, got {second}"
+   00330|     );
+   00331| }
+   00332| 
+   00333| fn strict_write_schema() -> Value {
+   00334|     json!({
+   00335|         "type": "object",
+   00336|         "properties": {
+   00337|             "file_path": {"type": "string"},
+   00338|             "content": {"type": "string"}
+   00339|         },
+   00340|         "required": ["file_path", "content"],
+   00341|         "additionalProperties": false
+   00342|     })
+   00343| }
+   00344| 
+   00345| fn write_tool(parameters: &Value) -> Value {
+   00346|     json!({
+   00347|         "type": "function",
+   00348|         "function": {"name": "Write", "parameters": parameters}
+   00349|     })
+   00350| }
+   00351| 
+   00352| fn read_tool() -> Value {
+   00353|     json!({
+   00354|         "type": "function",
+   00355|         "function": {
+   00356|             "name": "Read",
+   00357|             "parameters": {
+   00358|                 "type": "object",
+   00359|                 "properties": {"file_path": {"type": "string"}},
+   00360|                 "required": ["file_path"],
+   00361|                 "additionalProperties": false
+   00362|             }
+   00363|         }
+   00364|     })
+   00365| }
+   00366| 
+   00367| fn shell_tool() -> Value {
+   00368|     json!({
+   00369|         "type": "function",
+   00370|         "function": {
+   00371|             "name": "Bash",
+   00372|             "parameters": {
+   00373|                 "type": "object",
+   00374|                 "properties": {"command": {"type": "string"}},
+   00375|                 "required": ["command"],
+   00376|                 "additionalProperties": false
+   00377|             }
+   00378|         }
+   00379|     })
+   00380| }
+   00381| 
+   00382| /// One planning round trip for an in-flight conversation.
+   00383| fn next_step(tools: &[Value], messages: &[Value]) -> Value {
+   00384|     enable_http_agent_mode_for_current_process();
+   00385|     let body = json!({"model": "formal-ai", "messages": messages, "tools": tools});
+   00386|     let response = handle_api_request("POST", "/v1/chat/completions", &body.to_string());
+   00387|     assert_eq!(response.status_code, 200, "{}", response.body);
+   00388|     let response: Value = serde_json::from_str(&response.body).unwrap();
+   00389|     response["choices"][0]["message"].clone()
+   00390| }
+   00391| 
+   00392| /// Drive the client tool loop, answering every call with `result`, and return
+   00393| /// the `(tool, arguments)` pairs the server asked for.
+   00394| fn drive(prompt: &str, tools: &[Value], result: &str, turns: usize) -> Vec<(String, Value)> {
+   00395|     let owned = result.to_owned();
+   00396|     drive_with(prompt, tools, turns, &mut |_, _| owned.clone())
+   00397| }
+   00398| 
+   00399| /// Drive the client tool loop, delegating each call to `execute`.
+   00400| fn drive_with(
+   00401|     prompt: &str,
+   00402|     tools: &[Value],
+   00403|     turns: usize,
+   00404|     execute: &mut dyn FnMut(&str, &Value) -> String,
+   00405| ) -> Vec<(String, Value)> {
+   00406|     enable_http_agent_mode_for_current_process();
+   00407|     let mut messages = vec![json!({"role": "user", "content": prompt})];
+   00408|     let mut transcript = Vec::new();
+   00409|     for _ in 0..turns {
+   00410|         let message = next_step(tools, &messages);
+   00411|         let Some(calls) = message["tool_calls"].as_array().filter(|c| !c.is_empty()) else {
+   00412|             break;
+   00413|         };
+   00414|         messages.push(json!({"role": "assistant", "tool_calls": calls}));
+   00415|         for call in calls {
+   00416|             let name = call["function"]["name"].as_str().unwrap_or_default();
+   00417|             let arguments: Value =
+   00418|                 serde_json::from_str(call["function"]["arguments"].as_str().unwrap_or("{}"))
+   00419|                     .unwrap_or(Value::Null);
+   00420|             let result = execute(name, &arguments);
+   00421|             transcript.push((name.to_owned(), arguments));
+   00422|             messages.push(json!({
+   00423|                 "role": "tool",
+   00424|                 "tool_call_id": call["id"],
+   00425|                 "content": result
+   00426|             }));
+   00427|         }
+   00428|     }
+   00429|     transcript
+   00430| }
+   00431| 
+   00432| fn call_arguments(prompt: &str, name: &str, parameters: &Value) -> Value {
+   00433|     enable_http_agent_mode_for_current_process();
+   00434|     let body = json!({
+   00435|         "model": "formal-ai",
+   00436|         "messages": [{"role": "user", "content": prompt}],
+   00437|         "tools": [{
+   00438|             "type": "function",
+   00439|             "function": {"name": name, "parameters": parameters}
+   00440|         }]
+   00441|     });
+   00442|     let response = handle_api_request("POST", "/v1/chat/completions", &body.to_string());
+   00443|     assert_eq!(response.status_code, 200, "{}", response.body);
+   00444|     let response: Value = serde_json::from_str(&response.body).unwrap();
+   00445|     let call = &response["choices"][0]["message"]["tool_calls"][0];
+   00446|     assert_eq!(call["function"]["name"], name, "{response}");
+   00447|     serde_json::from_str(call["function"]["arguments"].as_str().unwrap()).unwrap()
+   00448| }
+   00449| 
+   
+   (End of file - total 449 lines)
+   </file>
+>> edit {"filePath":"rust/tests/integration/issue_755_file_read_write.rs","file_path":"rust/tests/integration/issue_755_file_read_write.rs","new":"    let plan = formal_ai::agentic_coding::general_planner::compose_general_change_plan(\"write 10 to 1.txt file\").expect(\"original literal write plan\");\n    let plan_path = formal_ai::agentic_coding::general_planner::PLAN_PATH;\n    let prior = \"earlier observed fixture event\\n\";\n    let mut workspace: Vec<(String, String)> = vec![(plan_path.to_owned(), prior.to_owned())];","newString":"    let plan = formal_ai::agentic_coding::general_planner::compose_general_change_plan(\"write 10 to 1.txt file\").expect(\"original literal write plan\");\n    let plan_path = formal_ai::agentic_coding::general_planner::PLAN_PATH;\n    let prior = \"earlier observed fixture event\\n\";\n    let mut workspace: Vec<(String, String)> = vec![(plan_path.to_owned(), prior.to_owned())];","new_str":"    let plan = formal_ai::agentic_coding::general_planner::compose_general_change_plan(\"write 10 to 1.txt file\").expect(\"original literal write plan\");\n    let plan_path = formal_ai::agentic_coding::general_planner::PLAN_PATH;\n    let prior = \"earlier observed fixture event\\n\";\n    let mut workspace: Vec<(String, String)> = vec![(plan_path.to_owned(), prior.to_owned())];","new_string":"    let plan = formal_ai::agentic_coding::general_planner::compose_general_change_plan(\"write 10 to 1.txt file\").expect(\"original literal write plan\");\n    let plan_path = formal_ai::agentic_coding::general_planner::PLAN_PATH;\n    let prior = \"earlier observed fixture event\\n\";\n    let mut workspace: Vec<(String, String)> = vec![(plan_path.to_owned(), prior.to_owned())];","old":"    let mut workspace: Vec<(String, String)> = Vec::new();","oldString":"    let mut workspace: Vec<(String, String)> = Vec::new();","old_str":"    let mut workspace: Vec<(String, String)> = Vec::new();","old_string":"    let mut workspace: Vec<(String, String)> = Vec::new();","path":"rust/tests/integration/issue_755_file_read_write.rs"}
+>> bash {"command":"sha256sum -- rust/tests/integration/issue_755_file_read_write.rs"}
+   Output: 9d676e68ac1579625d862851f32aea76f558f8002a9b42ad36746ae611405ad0  rust/tests/integration/issue_755_file_read_write.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `    let mut workspace: Vec<(String, String)> = Vec::new();` with `    let plan = formal_ai::agentic_coding::general_planner::compose_general_change_plan("write 10 to 1.txt file").expect("original literal write plan");
+    let plan_path = formal_ai::agentic_coding::general_planner::PLAN_PATH;
+    let prior = "earlier observed fixture event\n";
+    let mut workspace: Vec<(String, String)> = vec![(plan_path.to_owned(), prior.to_owned())];` in `rust/tests/integration/issue_755_file_read_write.rs` and observed the result.

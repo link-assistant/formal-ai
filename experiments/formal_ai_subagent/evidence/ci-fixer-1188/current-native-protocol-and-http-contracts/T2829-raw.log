@@ -1,0 +1,444 @@
+>> read {"filePath":"rust/tests/integration/issue_680_intent_routing.rs","file_path":"rust/tests/integration/issue_680_intent_routing.rs","path":"rust/tests/integration/issue_680_intent_routing.rs"}
+   <file>
+   00001| //! Issue #680: over the wire, a web-search / web-fetch *intent* must emit a real
+   00002| //! tool call on every surface — not only for a pinned phrasing.
+   00003| //!
+   00004| //! The unit test `issue_680_intent_routing` proves the planner routes by intent;
+   00005| //! this boots a real agent-mode server and asserts the same routing survives the
+   00006| //! full HTTP round-trip on all three tool-calling surfaces the CLIs use:
+   00007| //!   * OpenAI Chat Completions (`tool_calls` + `finish_reason == "tool_calls"`)
+   00008| //!   * OpenAI Responses        (a `function_call` output item)
+   00009| //!   * Gemini generateContent  (a `functionCall` part)
+   00010| //!
+   00011| //! Each surface uses a *different* natural-language request (CONTRIBUTING rule 4)
+   00012| //! so a passing run proves the routing is general, not memorised.
+   00013| 
+   00014| use crate::http_server::{
+   00015|     http_post_json, reserve_loopback_port, spawn_formal_ai_server_agent_mode,
+   00016| };
+   00017| 
+   00018| const TOKEN: Option<&str> = Some("sk-local-agentic-tools");
+   00019| 
+   00020| /// Chat Completions: a plain web-search request routes to the `web_search` tool.
+   00021| #[test]
+   00022| fn chat_completions_routes_web_search_intent_to_tool_call() {
+   00023|     let port = reserve_loopback_port();
+   00024|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00025| 
+   00026|     let response = http_post_json(
+   00027|         port,
+   00028|         "/api/openai/v1/chat/completions",
+   00029|         TOKEN,
+   00030|         &serde_json::json!({
+   00031|             "model": "formal-ai",
+   00032|             "stream": false,
+   00033|             "messages": [{
+   00034|                 "role": "user",
+   00035|                 "content": "look up the latest news about renewable energy"
+   00036|             }],
+   00037|             "tools": [
+   00038|                 function_tool("web_search"),
+   00039|                 function_tool("web_fetch"),
+   00040|             ]
+   00041|         }),
+   00042|     );
+   00043| 
+   00044|     assert_eq!(response["choices"][0]["finish_reason"], "tool_calls");
+   00045|     let call = &response["choices"][0]["message"]["tool_calls"][0];
+   00046|     assert_eq!(call["function"]["name"], "web_search");
+   00047|     let arguments: serde_json::Value =
+   00048|         serde_json::from_str(call["function"]["arguments"].as_str().unwrap()).unwrap();
+   00049|     assert!(
+   00050|         arguments["query"]
+   00051|             .as_str()
+   00052|             .is_some_and(|query| !query.trim().is_empty()),
+   00053|         "search call should carry a non-empty query: {arguments}"
+   00054|     );
+   00055| }
+   00056| 
+   00057| /// Chat Completions: a web-fetch request routes to the `web_fetch` tool and keeps
+   00058| /// the requested URL.
+   00059| #[test]
+   00060| fn chat_completions_routes_web_fetch_intent_to_tool_call() {
+   00061|     let port = reserve_loopback_port();
+   00062|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00063| 
+   00064|     let response = http_post_json(
+   00065|         port,
+   00066|         "/api/openai/v1/chat/completions",
+   00067|         TOKEN,
+   00068|         &serde_json::json!({
+   00069|             "model": "formal-ai",
+   00070|             "stream": false,
+   00071|             "messages": [{
+   00072|                 "role": "user",
+   00073|                 "content": "download the page at https://api.github.com/repos/rust-lang/rust"
+   00074|             }],
+   00075|             "tools": [
+   00076|                 function_tool("web_search"),
+   00077|                 function_tool("web_fetch"),
+   00078|             ]
+   00079|         }),
+   00080|     );
+   00081| 
+   00082|     assert_eq!(response["choices"][0]["finish_reason"], "tool_calls");
+   00083|     let call = &response["choices"][0]["message"]["tool_calls"][0];
+   00084|     assert_eq!(call["function"]["name"], "web_fetch");
+   00085|     let arguments: serde_json::Value =
+   00086|         serde_json::from_str(call["function"]["arguments"].as_str().unwrap()).unwrap();
+   00087|     assert_eq!(
+   00088|         arguments["url"], "https://api.github.com/repos/rust-lang/rust",
+   00089|         "fetch call should preserve the requested URL: {arguments}"
+   00090|     );
+   00091| }
+   00092| 
+   00093| /// Chat Completions: a file-creation request routes to the advertised write tool
+   00094| /// rather than being answered as prose. The first turn records the plan event, so
+   00095| /// the write lands on the plan path and carries the composed plan for the target.
+   00096| #[test]
+   00097| fn chat_completions_routes_write_intent_to_tool_call() {
+   00098|     let port = reserve_loopback_port();
+   00099|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00100| 
+   00101|     let response = http_post_json(
+   00102|         port,
+   00103|         "/api/openai/v1/chat/completions",
+   00104|         TOKEN,
+   00105|         &serde_json::json!({
+   00106|             "model": "formal-ai",
+   00107|             "stream": false,
+   00108|             "messages": [{
+   00109|                 "role": "user",
+   00110|                 "content": "create a file called README.md with the following: hello world"
+   00111|             }],
+   00112|             "tools": [
+   00113|                 function_tool("write_file"),
+   00114|                 function_tool("read_file"),
+   00115|                 function_tool("run_command"),
+   00116|             ]
+   00117|         }),
+   00118|     );
+   00119| 
+   00120|     assert_eq!(response["choices"][0]["finish_reason"], "tool_calls");
+   00121|     let call = &response["choices"][0]["message"]["tool_calls"][0];
+   00122|     assert_eq!(call["function"]["name"], "write_file");
+   00123|     let arguments: serde_json::Value =
+   00124|         serde_json::from_str(call["function"]["arguments"].as_str().unwrap()).unwrap();
+   00125|     let content = arguments["content"].as_str().unwrap_or_default();
+   00126|     assert!(
+   00127|         content.contains("general_change_plan") && content.contains("README.md"),
+   00128|         "write call should carry the composed plan for the target: {arguments}"
+   00129|     );
+   00130| }
+   00131| 
+   00132| /// Chat Completions: a file-modification request reads the target first, then
+   00133| /// routes to the advertised edit tool carrying the recovered old/new text and
+   00134| /// target path rather than being answered as prose.
+   00135| #[test]
+   00136| fn chat_completions_routes_edit_intent_to_tool_call() {
+   00137|     let port = reserve_loopback_port();
+   00138|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00139| 
+   00140|     let tools = serde_json::json!([
+   00141|         function_tool("edit"),
+   00142|         function_tool("write_file"),
+   00143|         function_tool("read_file"),
+   00144|     ]);
+   00145|     let response = http_post_json(
+   00146|         port,
+   00147|         "/api/openai/v1/chat/completions",
+   00148|         TOKEN,
+   00149|         &serde_json::json!({
+   00150|             "model": "formal-ai",
+   00151|             "stream": false,
+   00152|             "messages": [{
+   00153|                 "role": "user",
+   00154|                 "content": "In greeting.txt, change hello to goodbye"
+   00155|             }],
+   00156|             "tools": tools
+   00157|         }),
+   00158|     );
+   00159| 
+   00160|     assert_eq!(response["choices"][0]["finish_reason"], "tool_calls");
+   00161|     let read = &response["choices"][0]["message"]["tool_calls"][0];
+   00162|     assert_eq!(read["function"]["name"], "read_file");
+   00163| 
+   00164|     let response = http_post_json(
+   00165|         port,
+   00166|         "/api/openai/v1/chat/completions",
+   00167|         TOKEN,
+   00168|         &serde_json::json!({
+   00169|             "model": "formal-ai",
+   00170|             "stream": false,
+   00171|             "messages": [
+   00172|                 {
+   00173|                     "role": "user",
+   00174|                     "content": "In greeting.txt, change hello to goodbye"
+   00175|                 },
+   00176|                 {
+   00177|                     "role": "assistant",
+   00178|                     "content": null,
+   00179|                     "tool_calls": [read]
+   00180|                 },
+   00181|                 {
+   00182|                     "role": "tool",
+   00183|                     "tool_call_id": read["id"],
+   00184|                     "name": "read_file",
+   00185|                     "content": "hello"
+   00186|                 }
+   00187|             ],
+   00188|             "tools": tools
+   00189|         }),
+   00190|     );
+   00191| 
+   00192|     assert_eq!(response["choices"][0]["finish_reason"], "tool_calls");
+   00193|     let call = &response["choices"][0]["message"]["tool_calls"][0];
+   00194|     assert_eq!(call["function"]["name"], "edit");
+   00195|     let arguments: serde_json::Value =
+   00196|         serde_json::from_str(call["function"]["arguments"].as_str().unwrap()).unwrap();
+   00197|     assert_eq!(
+   00198|         arguments["path"], "greeting.txt",
+   00199|         "edit target: {arguments}"
+   00200|     );
+   00201|     assert_eq!(arguments["oldString"], "hello", "old text: {arguments}");
+   00202|     assert_eq!(arguments["new_string"], "goodbye", "new text: {arguments}");
+   00203| }
+   00204| 
+   00205| /// Responses: a file-modification intent surfaces as a `function_call` output item
+   00206| /// on the advertised `replace` tool (Gemini/Qwen's edit-tool name).
+   00207| #[test]
+   00208| fn responses_routes_edit_intent_to_function_call() {
+   00209|     let port = reserve_loopback_port();
+   00210|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00211| 
+   00212|     let response = http_post_json(
+   00213|         port,
+   00214|         "/api/openai/v1/responses",
+   00215|         TOKEN,
+   00216|         &serde_json::json!({
+   00217|             "model": "formal-ai",
+   00218|             "input": "Replace foo with bar in notes.txt",
+   00219|             "tools": [{
+   00220|                 "type": "function",
+   00221|                 "name": "replace",
+   00222|                 "parameters": {"type": "object"}
+   00223|             }]
+   00224|         }),
+   00225|     );
+   00226| 
+   00227|     let call = response["output"]
+   00228|         .as_array()
+   00229|         .expect("Responses output should be an array")
+   00230|         .iter()
+   00231|         .find(|item| item["type"] == "function_call")
+   00232|         .expect("Responses output should include a function_call item");
+   00233|     assert_eq!(call["name"], "replace");
+   00234|     let arguments: serde_json::Value =
+   00235|         serde_json::from_str(call["arguments"].as_str().unwrap()).unwrap();
+   00236|     assert_eq!(arguments["path"], "notes.txt", "edit target: {arguments}");
+   00237|     assert_eq!(arguments["oldString"], "foo", "old text: {arguments}");
+   00238|     assert_eq!(arguments["new_string"], "bar", "new text: {arguments}");
+   00239| }
+   00240| 
+   00241| /// Gemini generateContent: a file-modification intent phrased in Russian surfaces
+   00242| /// as a `functionCall` part, proving the routing is language- and phrasing-general.
+   00243| #[test]
+   00244| fn gemini_routes_edit_intent_to_function_call() {
+   00245|     let port = reserve_loopback_port();
+   00246|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00247| 
+   00248|     let response = http_post_json(
+   00249|         port,
+   00250|         "/api/gemini/v1beta/models/formal-ai:generateContent",
+   00251|         TOKEN,
+   00252|         &serde_json::json!({
+   00253|             "contents": [{
+   00254|                 "role": "user",
+   00255|                 "parts": [{"text": "замени привет на пока в файле заметки.txt"}]
+   00256|             }],
+   00257|             "tools": [{
+   00258|                 "functionDeclarations": [
+   00259|                     {"name": "replace", "parameters": {"type": "object"}}
+   00260|                 ]
+   00261|             }]
+   00262|         }),
+   00263|     );
+   00264| 
+   00265|     let call = response["candidates"][0]["content"]["parts"]
+   00266|         .as_array()
+   00267|         .expect("Gemini parts should be an array")
+   00268|         .iter()
+   00269|         .find_map(|part| part.get("functionCall"))
+   00270|         .expect("Gemini content should include a functionCall part");
+   00271|     assert_eq!(call["name"], "replace");
+   00272|     assert_eq!(call["args"]["path"], "заметки.txt", "edit target: {call}");
+   00273|     assert_eq!(call["args"]["oldString"], "привет", "old text: {call}");
+   00274|     assert_eq!(call["args"]["new_string"], "пока", "new text: {call}");
+   00275| }
+   00276| 
+   00277| /// Chat Completions: a semantic shell request that never names the command ("How
+   00278| /// much disk space is free?") routes to the advertised run tool carrying the
+   00279| /// concrete command, proving intent-based shell routing survives the HTTP round-trip.
+   00280| #[test]
+   00281| fn chat_completions_routes_shell_intent_to_tool_call() {
+   00282|     let port = reserve_loopback_port();
+   00283|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00284| 
+   00285|     let response = http_post_json(
+   00286|         port,
+   00287|         "/api/openai/v1/chat/completions",
+   00288|         TOKEN,
+   00289|         &serde_json::json!({
+   00290|             "model": "formal-ai",
+   00291|             "stream": false,
+   00292|             "messages": [{
+   00293|                 "role": "user",
+   00294|                 "content": "How much disk space is free?"
+   00295|             }],
+   00296|             "tools": [
+   00297|                 function_tool("bash"),
+   00298|                 function_tool("read_file"),
+   00299|             ]
+   00300|         }),
+   00301|     );
+   00302| 
+   00303|     assert_eq!(response["choices"][0]["finish_reason"], "tool_calls");
+   00304|     let call = &response["choices"][0]["message"]["tool_calls"][0];
+   00305|     assert_eq!(call["function"]["name"], "bash");
+   00306|     let arguments: serde_json::Value =
+   00307|         serde_json::from_str(call["function"]["arguments"].as_str().unwrap()).unwrap();
+   00308|     assert_eq!(arguments["command"], "df -h", "shell command: {arguments}");
+   00309| }
+   00310| 
+   00311| /// Gemini generateContent: a semantic shell request phrased as a question ("What is
+   00312| /// my username?") surfaces as a `functionCall` part on the advertised run tool.
+   00313| #[test]
+   00314| fn gemini_routes_shell_intent_to_function_call() {
+   00315|     let port = reserve_loopback_port();
+   00316|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00317| 
+   00318|     let response = http_post_json(
+   00319|         port,
+   00320|         "/api/gemini/v1beta/models/formal-ai:generateContent",
+   00321|         TOKEN,
+   00322|         &serde_json::json!({
+   00323|             "contents": [{
+   00324|                 "role": "user",
+   00325|                 "parts": [{"text": "What is my username?"}]
+   00326|             }],
+   00327|             "tools": [{
+   00328|                 "functionDeclarations": [
+   00329|                     {"name": "shell", "parameters": {"type": "object"}}
+   00330|                 ]
+   00331|             }]
+   00332|         }),
+   00333|     );
+   00334| 
+   00335|     let call = response["candidates"][0]["content"]["parts"]
+   00336|         .as_array()
+   00337|         .expect("Gemini parts should be an array")
+   00338|         .iter()
+   00339|         .find_map(|part| part.get("functionCall"))
+   00340|         .expect("Gemini content should include a functionCall part");
+   00341|     assert_eq!(call["name"], "shell");
+   00342|     assert_eq!(call["args"]["command"], "whoami", "shell command: {call}");
+   00343| }
+   00344| 
+   00345| /// Responses: a web-search intent surfaces as a `function_call` output item.
+   00346| #[test]
+   00347| fn responses_routes_web_search_intent_to_function_call() {
+   00348|     let port = reserve_loopback_port();
+   00349|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00350| 
+   00351|     let response = http_post_json(
+   00352|         port,
+   00353|         "/api/openai/v1/responses",
+   00354|         TOKEN,
+   00355|         &serde_json::json!({
+   00356|             "model": "formal-ai",
+   00357|             "input": "find information about the 2022 FIFA World Cup winner",
+   00358|             "tools": [{
+   00359|                 "type": "function",
+   00360|                 "name": "web_search",
+   00361|                 "parameters": {"type": "object"}
+   00362|             }]
+   00363|         }),
+   00364|     );
+   00365| 
+   00366|     let call = response["output"]
+   00367|         .as_array()
+   00368|         .expect("Responses output should be an array")
+   00369|         .iter()
+   00370|         .find(|item| item["type"] == "function_call")
+   00371|         .expect("Responses output should include a function_call item");
+   00372|     assert_eq!(call["name"], "web_search");
+   00373|     assert!(
+   00374|         call["arguments"]
+   00375|             .as_str()
+   00376|             .is_some_and(|args| args.to_ascii_lowercase().contains("world cup")),
+   00377|         "search call should carry the query: {call}"
+   00378|     );
+   00379| }
+   00380| 
+   00381| /// Gemini generateContent: a web-fetch intent surfaces as a `functionCall` part.
+   00382| #[test]
+   00383| fn gemini_routes_web_fetch_intent_to_function_call() {
+   00384|     let port = reserve_loopback_port();
+   00385|     let _server = spawn_formal_ai_server_agent_mode(port);
+   00386| 
+   00387|     let response = http_post_json(
+   00388|         port,
+   00389|         "/api/gemini/v1beta/models/formal-ai:generateContent",
+   00390|         TOKEN,
+   00391|         &serde_json::json!({
+   00392|             "contents": [{
+   00393|                 "role": "user",
+   00394|                 "parts": [{"text": "fetch https://example.com/data.json"}]
+   00395|             }],
+   00396|             "tools": [{
+   00397|                 "functionDeclarations": [
+   00398|                     {"name": "web_search", "parameters": {"type": "object"}},
+   00399|                     {"name": "web_fetch", "parameters": {"type": "object"}}
+   00400|                 ]
+   00401|             }]
+   00402|         }),
+   00403|     );
+   00404| 
+   00405|     let call = response["candidates"][0]["content"]["parts"]
+   00406|         .as_array()
+   00407|         .expect("Gemini parts should be an array")
+   00408|         .iter()
+   00409|         .find_map(|part| part.get("functionCall"))
+   00410|         .expect("Gemini content should include a functionCall part");
+   00411|     assert_eq!(call["name"], "web_fetch");
+   00412|     assert_eq!(
+   00413|         call["args"]["url"], "https://example.com/data.json",
+   00414|         "fetch call should preserve the requested URL: {call}"
+   00415|     );
+   00416| }
+   00417| 
+   00418| /// Build an OpenAI Chat Completions function-tool advertisement.
+   00419| fn function_tool(name: &str) -> serde_json::Value {
+   00420|     serde_json::json!({
+   00421|         "type": "function",
+   00422|         "function": {
+   00423|             "name": name,
+   00424|             "description": format!("The {name} capability"),
+   00425|             "parameters": {"type": "object"}
+   00426|         }
+   00427|     })
+   00428| }
+   00429| 
+   
+   (End of file - total 429 lines)
+   </file>
+>> edit {"filePath":"rust/tests/integration/issue_680_intent_routing.rs","file_path":"rust/tests/integration/issue_680_intent_routing.rs","new":"#[path = \"../support/http_auxiliary_workspace.rs\"]\nmod auxiliary_workspace;\n\nconst TOKEN: Option<&str> = Some(\"sk-local-agentic-tools\");","newString":"#[path = \"../support/http_auxiliary_workspace.rs\"]\nmod auxiliary_workspace;\n\nconst TOKEN: Option<&str> = Some(\"sk-local-agentic-tools\");","new_str":"#[path = \"../support/http_auxiliary_workspace.rs\"]\nmod auxiliary_workspace;\n\nconst TOKEN: Option<&str> = Some(\"sk-local-agentic-tools\");","new_string":"#[path = \"../support/http_auxiliary_workspace.rs\"]\nmod auxiliary_workspace;\n\nconst TOKEN: Option<&str> = Some(\"sk-local-agentic-tools\");","old":"const TOKEN: Option<&str> = Some(\"sk-local-agentic-tools\");","oldString":"const TOKEN: Option<&str> = Some(\"sk-local-agentic-tools\");","old_str":"const TOKEN: Option<&str> = Some(\"sk-local-agentic-tools\");","old_string":"const TOKEN: Option<&str> = Some(\"sk-local-agentic-tools\");","path":"rust/tests/integration/issue_680_intent_routing.rs"}
+>> bash {"command":"sha256sum -- rust/tests/integration/issue_680_intent_routing.rs"}
+   Output: b6ad0e868fda61d71249e75215418b4acdf8aa7893f669b5ff3ac3812c95a678  rust/tests/integration/issue_680_intent_routing.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `const TOKEN: Option<&str> = Some("sk-local-agentic-tools");` with `#[path = "../support/http_auxiliary_workspace.rs"]
+mod auxiliary_workspace;
+
+const TOKEN: Option<&str> = Some("sk-local-agentic-tools");` in `rust/tests/integration/issue_680_intent_routing.rs` and observed the result.

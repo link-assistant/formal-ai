@@ -1,0 +1,60 @@
+>> read {"filePath":"scripts/native-test-artifact.mjs","file_path":"scripts/native-test-artifact.mjs","path":"scripts/native-test-artifact.mjs"}
+   <file>
+   00001| #!/usr/bin/env node
+   00002| // One actual native producer, with checked identities before any consumer execution.
+   00003| import assert from 'node:assert/strict';
+   00004| import {createHash} from 'node:crypto';
+   00005| import {readFileSync,writeFileSync,chmodSync} from 'node:fs';
+   00006| import {execFileSync,spawnSync} from 'node:child_process';
+   00007| import {resolve,join} from 'node:path';
+   00008| import {pathToFileURL} from 'node:url';
+   00009| const RECEIPT='native-build-receipt.json';
+   00010| const TARGETS=['unit','integration','source'];
+   00011| const hash=path=>createHash('sha256').update(readFileSync(path)).digest('hex');
+   00012| export function buildIdentity(cwd,profile,features){
+   00013|  const git=args=>execFileSync('git',args,{cwd,encoding:'utf8'}).trim();
+   00014|  return {'source-commit':git(['rev-parse','HEAD']),'source-tree':git(['rev-parse','HEAD^{tree}']),'cargo-lock-sha256':hash(join(cwd,'rust/Cargo.lock')),platform:process.platform,architecture:process.arch,compiler:execFileSync('rustc',['-vV'],{cwd,encoding:'utf8'}).trim(),profile,features};
+   00015| }
+   00016| export function writeReceipt(directory,identity,binary=resolve(directory,'../formal-ai')){
+   00017|  const files=Object.fromEntries(TARGETS.map(target=>[target,hash(join(directory,target))]));
+   00018|  files.binary=hash(binary);
+   00019|  const receipt={version:1,identity,files};
+   00020|  writeFileSync(join(directory,RECEIPT),JSON.stringify(receipt,null,2)+'\n');return receipt;
+   00021| }
+   00022| export function verifyReceipt(directory,identity,binary){
+   00023|  const receipt=JSON.parse(readFileSync(join(directory,RECEIPT),'utf8'));
+   00024|  assert.equal(receipt.version,1);
+   00025|  assert.deepEqual(receipt.identity,identity);
+   00026|  assert.deepEqual(Object.keys(receipt.files).sort(),[...TARGETS,'binary'].sort());
+   00027|  for(const target of TARGETS)assert.equal(hash(join(directory,target)),receipt.files[target]);
+   00028|  assert.equal(hash(binary),receipt.files.binary);
+   00029|  return receipt;
+   00030| }
+   00031| export function runVerifiedTest(directory,identity,binary,testName,cwd=process.cwd()){
+   00032|  verifyReceipt(directory,identity,binary);
+   00033|  const executable=resolve(directory,'unit');chmodSync(executable,0o755);
+   00034|  const listing=execFileSync(executable,['--list','--format','terse'],{cwd,encoding:'utf8',maxBuffer:10e6});
+   00035|  assert.equal(listing.split(/\r?\n/u).filter(line=>line===testName+': test').length,1);
+   00036|  const result=spawnSync(executable,['--exact',testName,'--nocapture'],{cwd,stdio:'inherit'});
+   00037|  if(result.error)throw result.error;
+   00038|  assert.equal(result.signal,null);assert.equal(result.status,0);return result.status;
+   00039| }
+   00040| if(import.meta.url===pathToFileURL(process.argv[1]??'').href){
+   00041|  const [mode,directory,profile,features,testName]=process.argv.slice(2),cwd=process.cwd();
+   00042|  assert.ok(directory&&profile&&features);
+   00043|  const identity=buildIdentity(cwd,profile,features);
+   00044|  if(mode==='write')writeReceipt(directory,identity);
+   00045|  else if(mode==='run')runVerifiedTest(directory,identity,resolve('rust/target/release/formal-ai'),testName,cwd);
+   00046|  else assert.fail(mode);
+   00047| }
+   00048| 
+   
+   (End of file - total 48 lines)
+   </file>
+>> edit {"filePath":"scripts/native-test-artifact.mjs","file_path":"scripts/native-test-artifact.mjs","new":"platform:process.platform,architecture:process.arch,'rust-flags':process.env.RUSTFLAGS??'',compiler:","newString":"platform:process.platform,architecture:process.arch,'rust-flags':process.env.RUSTFLAGS??'',compiler:","new_str":"platform:process.platform,architecture:process.arch,'rust-flags':process.env.RUSTFLAGS??'',compiler:","new_string":"platform:process.platform,architecture:process.arch,'rust-flags':process.env.RUSTFLAGS??'',compiler:","old":"platform:process.platform,architecture:process.arch,compiler:","oldString":"platform:process.platform,architecture:process.arch,compiler:","old_str":"platform:process.platform,architecture:process.arch,compiler:","old_string":"platform:process.platform,architecture:process.arch,compiler:","path":"scripts/native-test-artifact.mjs"}
+>> bash {"command":"sha256sum -- scripts/native-test-artifact.mjs"}
+   Output: c58929b02a506fbb45ee7a36213ca246a00a3a4bbd1c248b14132fb7b20aaac9  scripts/native-test-artifact.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced `platform:process.platform,architecture:process.arch,compiler:` with `platform:process.platform,architecture:process.arch,'rust-flags':process.env.RUSTFLAGS??'',compiler:` in `scripts/native-test-artifact.mjs` and observed the result.

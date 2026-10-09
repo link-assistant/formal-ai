@@ -1,0 +1,262 @@
+>> read {"filePath":"experiments/js_dogfood/drive.mjs","file_path":"experiments/js_dogfood/drive.mjs","path":"experiments/js_dogfood/drive.mjs"}
+   <file>
+   00001| #!/usr/bin/env node
+   00002| // Drive the JavaScript Formal AI planner (`planChatStep`, the function the JS
+   00003| // server runs for /v1/chat/completions in agent mode) through a whole agentic
+   00004| // session in-process, executing every planned tool call against a real
+   00005| // directory the way the link-assistant Agent CLI would.
+   00006| //
+   00007| // This is the fast inner loop of the PR #1188 dogfooding ledger
+   00008| // (docs/case-studies/pull-request-1188/formal-ai-dogfood.md): no server, no
+   00009| // CLI, no Rust build. A task that passes here is then confirmed through the
+   00010| // real Agent CLI against `node js/server/main.mjs --agent-mode`.
+   00011| //
+   00012| // Usage:
+   00013| //   node experiments/js_dogfood/drive.mjs --dir <sandbox> [--steps 12] <prompt>
+   00014| //
+   00015| // The tool result shapes follow the Agent CLI 0.26 transcripts recorded in the
+   00016| // server's dialog log: `read` returns the numbered `<file>` block, `write` and
+   00017| // `edit` return an empty string, `bash` returns stdout+stderr.
+   00018| 
+   00019| import { execFileSync } from 'node:child_process';
+   00020| import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync, writeSync } from 'node:fs';
+   00021| import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
+   00022| import { fileURLToPath } from 'node:url';
+   00023| import { tmpdir } from 'node:os';
+   00024| import { template } from '../../js/agentic/work_item_steps.mjs';
+   00025| 
+   00026| import { WorkerHost } from '../../js/server/worker-host.mjs';
+   00027| import { installNodeHost } from '../../js/agentic/node-host.mjs';
+   00028| 
+   00029| /** How long one bash call may run before the driver kills it. */
+   00030| const BASH_TIMEOUT_MS = Number(process.env.FORMAL_AI_BASH_TIMEOUT_MS ?? 60000);
+   00031| 
+   00032| // Only advertise adapters this in-process driver actually executes.
+   00033| export const AGENT_CLI_TOOLS = ['bash', 'edit', 'grep', 'list', 'read', 'write'];
+   00034| 
+   00035| function argsOf(call) {
+   00036|   try {
+   00037|     return JSON.parse(call.arguments);
+   00038|   } catch {
+   00039|     return {};
+   00040|   }
+   00041| }
+   00042| 
+   00043| /** The repository root this driver sits in. */
+   00044| export const REPOSITORY_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
+   00045| /** Formal AI's plan-event folder, committed in this repository. */
+   00046| const PLAN_EVENTS = join(REPOSITORY_ROOT, '.formal-ai');
+   00047| /** Where a run from the repository root writes its plan events instead (git-ignored). */
+   00048| export const PLAN_EVENTS_SANDBOX = join(REPOSITORY_ROOT, 'experiments/formal_ai_subagent/sandboxes/plan-events');
+   00049| 
+   00050| function within(dir, path) {
+   00051|   const full = isAbsolute(path) ? path : join(dir, path);
+   00052|   const resolved = resolve(full);
+   00053|   if (resolved !== resolve(dir) && !resolved.startsWith(resolve(dir) + sep)) throw new Error(`path escapes the sandbox: ${path}`);
+   00054|   // Run from the repository root, a plan event goes to a git-ignored sandbox,
+   00055|   // never over the committed `.formal-ai/` plan log (PR #1188 G15).
+   00056|   if (resolve(dir) === REPOSITORY_ROOT && (resolved === PLAN_EVENTS || resolved.startsWith(`${PLAN_EVENTS}${sep}`))) {
+   00057|     return join(PLAN_EVENTS_SANDBOX, relative(PLAN_EVENTS, resolved));
+   00058|   }
+   00059|   return resolved;
+   00060| }
+   00061| 
+   00062| /**
+   00063|  * The Agent CLI's `grep` (ripgrep underneath): "Found N matches" then each
+   00064|  * file's absolute path and its `  Line N: text` hits, or "No files found".
+   00065|  */
+   00066| function grep(dir, args) {
+   00067|   const argv = ['--json', '--sort', 'path', '--regexp', args.pattern ?? args.query ?? ''];
+   00068|   if (args.include) argv.push('--glob', args.include);
+   00069|   argv.push('--', within(dir, args.path ?? '.'));
+   00070|   let output;
+   00071|   try {
+   00072|     output = execFileSync('rg', argv, { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
+   00073|   } catch (error) {
+   00074|     if (error.status === 1) return 'No files found';
+   00075|     throw error;
+   00076|   }
+   00077|   const groups = new Map();
+   00078|   let count = 0;
+   00079|   for (const record of output.split('\n').filter(Boolean).map((line) => JSON.parse(line))) {
+   00080|     if (record.type !== 'match') continue;
+   00081|     const file = record.data.path.text;
+   00082|     const line = record.data.lines.text.replace(/\r?\n$/u, '');
+   00083|     if (!groups.has(file)) groups.set(file, []);
+   00084|     groups.get(file).push('  Line ' + record.data.line_number + ': ' + line);
+   00085|     count += 1;
+   00086|   }
+   00087|   return count ? 'Found ' + count + ' matches\n' + [...groups].map(([file, hits]) => [file + ':', ...hits].join('\n')).join('\n\n') : 'No files found';
+   00088| }
+   00089| 
+   00090| /** Adapter failures are transport metadata, distinct from authored file/stdout bytes. */
+   00091| function toolFailure(message) {
+   00092|   return JSON.stringify({ is_error: true, error: String(message) });
+   00093| }
+   00094| 
+   00095| /** Execute one tool call the way the Agent CLI does; returns its result text. */
+   00096| export function execute(dir, call) {
+   00097|   const args = argsOf(call);
+   00098|   const path = args.filePath ?? args.file_path ?? args.path;
+   00099|   try {
+   00100|     switch (call.tool) {
+   00101|       case 'read': {
+   00102|         const text = readFileSync(within(dir, path), 'utf8');
+   00103|         const lines = text.split('\n');
+   00104|         const body = lines.map((line, index) => `${String(index + 1).padStart(5, '0')}| ${line}`).join('\n');
+   00105|         return `<file>\n${body}\n\n(End of file - total ${lines.length} lines)\n</file>`;
+   00106|       }
+   00107|       case 'write': {
+   00108|         const target = within(dir, path);
+   00109|         mkdirSync(dirname(target), { recursive: true });
+   00110|         writeFileSync(target, args.content ?? '');
+   00111|         return '';
+   00112|       }
+   00113|       case 'edit': {
+   00114|         const target = within(dir, path);
+   00115|         const text = existsSync(target) ? readFileSync(target, 'utf8') : '';
+   00116|         const oldString = args.oldString ?? args.old_string ?? '';
+   00117|         const newString = args.newString ?? args.new_string ?? '';
+   00118|         if (oldString === '') {
+   00119|           writeFileSync(target, newString);
+   00120|           return '';
+   00121|         }
+   00122|         if (!text.includes(oldString)) return toolFailure('oldString not found in content');
+   00123|         // The Agent CLI refuses an ambiguous oldString rather than editing its first match.
+   00124|         if (!args.replaceAll && text.indexOf(oldString) !== text.lastIndexOf(oldString)) {
+   00125|           return toolFailure('Found multiple matches for oldString. Provide more surrounding lines in oldString to identify the correct match.');
+   00126|         }
+   00127|         const next = args.replaceAll ? text.split(oldString).join(newString) : text.replace(oldString, () => newString);
+   00128|         writeFileSync(target, next);
+   00129|         return '';
+   00130|       }
+   00131|       case 'bash': {
+   00132|         let eventDirectory = null;
+   00133|         let commandDirectory = dir;
+   00134|         const eventPrefix = template('plan-event-append-command')?.split('{lock_path}')[0];
+   00135|         if (resolve(dir) === REPOSITORY_ROOT && eventPrefix && args.command.startsWith(eventPrefix)) {
+   00136|           mkdirSync(PLAN_EVENTS_SANDBOX, { recursive: true });
+   00137|           eventDirectory = mkdtempSync(join(tmpdir(), 'formal-ai-plan-events-'));
+   00138|           symlinkSync(PLAN_EVENTS_SANDBOX, join(eventDirectory, '.formal-ai'), process.platform === 'win32' ? 'junction' : 'dir');
+   00139|           commandDirectory = eventDirectory;
+   00140|         }
+   00141|         try {
+   00142|           const output = execFileSync('/bin/sh', ['-c', args.command], { cwd: commandDirectory, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: BASH_TIMEOUT_MS });
+   00143|           return 'Output: ' + output + '\nExit Code: 0';
+   00144|         } catch (error) {
+   00145|           // A call killed at the timeout reports the kill, never an exit code:
+   00146|           // a killed `node --test` exits 1 on SIGTERM, which is not the
+   00147|           // command's own failure (PR #1188 G77).
+   00148|           if (error.code === 'ETIMEDOUT' || (error.signal && typeof error.status !== 'number')) {
+   00149|             const timeout = error.code === 'ETIMEDOUT' ? `\nTimeout: ${BASH_TIMEOUT_MS} ms` : '';
+   00150|             return `Output: ${error.stdout ?? ''}\nError: ${error.stderr ?? ''}\nSignal: ${error.signal ?? 'SIGTERM'}${timeout}`;
+   00151|           }
+   00152|           // A failing command reports its exit code the way the Agent CLI's
+   00153|           // shell envelope does, so a recipe's failed precondition blocks it.
+   00154|           if (typeof error.status !== 'number') return `${error.stdout ?? ''}${error.stderr ?? ''}`;
+   00155|           return `Output: ${error.stdout ?? ''}\nError: ${error.stderr ?? ''}\nExit Code: ${error.status}`;
+   00156|         } finally {
+   00157|           if (eventDirectory !== null) rmSync(eventDirectory, { recursive: true, force: true });
+   00158|         }
+   00159|       }
+   00160|       case 'list':
+   00161|         return readdirSync(within(dir, path ?? '.')).join('\n');
+   00162|       case 'grep':
+   00163|         return grep(dir, args);
+   00164|       default:
+   00165|         return toolFailure(`the dogfood driver does not execute ${call.tool}`);
+   00166|     }
+   00167|   } catch (error) {
+   00168|     return toolFailure(error.message);
+   00169|   }
+   00170| }
+   00171| 
+   00172| /**
+   00173|  * Run a whole session; returns `{transcript, answer, stop}`. `answer` is null
+   00174|  * when the session ends without one, and `stop` then says why: `no-plan` (the
+   00175|  * planner and its fall-through planned nothing) or `steps` (the step budget
+   00176|  * ran out mid-task, PR #1188 G84).
+   00177|  */
+   00178| export async function drive(planChatStep, dir, prompt, { tools = AGENT_CLI_TOOLS, steps = 12, fallthrough = null } = {}) {
+   00179|   if (!Array.isArray(tools) || new Set(tools).size !== tools.length || tools.some((tool) => !AGENT_CLI_TOOLS.includes(tool))) {
+   00180|     return { transcript: [], answer: null, stop: 'invalid-tools', toolsAdvertised: [] };
+   00181|   }
+   00182|   tools = [...tools];
+   00183|   const messages = [
+   00184|     { role: 'system', content: `<env>\n  Working directory: ${dir}\n  Is directory a git repo: yes\n</env>` },
+   00185|     { role: 'user', content: prompt },
+   00186|   ];
+   00187|   const transcript = [];
+   00188|   for (let step = 0; step < steps; step += 1) {
+   00189|     // The server's fall-through: no planned step means the solver answers and
+   00190|     // the symbolic command reroute may still turn that answer into tool calls
+   00191|     // (js/server/agentic.mjs commandReroutePlan).
+   00192|     const plan = (await planChatStep(messages, tools)) ?? (fallthrough ? await fallthrough(messages, tools) : null);
+   00193|     if (!plan) return { transcript, answer: null, stop: 'no-plan' };
+   00194|     if (plan.kind === 'final') return { transcript, answer: plan.answer, stop: 'final' };
+   00195|     if (plan.calls.some((call) => !tools.includes(call.tool))) {
+   00196|       return { transcript, answer: null, stop: 'undeclared-tool', toolsAdvertised: tools };
+   00197|     }
+   00198|     const toolCalls = plan.calls.map((call, index) => ({
+   00199|       id: `c${step}_${index}`, type: 'function', function: { name: call.tool, arguments: call.arguments },
+   00200|     }));
+   00201|     messages.push({ role: 'assistant', content: '', tool_calls: toolCalls });
+   00202|     plan.calls.forEach((call, index) => {
+   00203|       const result = execute(dir, call);
+   00204|       transcript.push({ tool: call.tool, arguments: call.arguments, result });
+   00205|       messages.push({ role: 'tool', tool_call_id: toolCalls[index].id, name: call.tool, content: result });
+   00206|     });
+   00207|   }
+   00208|   return { transcript, answer: null, stop: 'steps' };
+   00209| }
+   00210| 
+   00211| /** What the driver prints when a session ends with no answer: never a bare `null`. */
+   00212| export function unanswered(stop, steps, calls) {
+   00213|   if (stop === 'steps') return `(no answer: the ${steps}-step budget ran out after ${calls} tool calls, before the task finished; run again with a larger --steps)`;
+   00214|   return `(no answer: the planner planned no step after ${calls} tool calls)`;
+   00215| }
+   00216| 
+   00217| async function main(argv) {
+   00218|   let dir = null;
+   00219|   let steps = 12;
+   00220|   const rest = [];
+   00221|   for (let index = 0; index < argv.length; index += 1) {
+   00222|     if (argv[index] === '--dir') dir = argv[++index];
+   00223|     else if (argv[index] === '--steps') steps = Number(argv[++index]);
+   00224|     else rest.push(argv[index]);
+   00225|   }
+   00226|   if (!dir || rest.length === 0) throw new Error('usage: drive.mjs --dir <sandbox> [--steps N] <prompt>');
+   00227|   await installNodeHost(new WorkerHost());
+   00228|   const { planChatStep } = await import('../../js/agentic/planner.mjs');
+   00229|   const { solve } = await import('../../js/agentic/host.mjs');
+   00230|   const { planSymbolicCommandReroute } = await import('../../js/agentic/command_reroute.mjs');
+   00231|   const { latestUserRequest } = await import('../../js/agentic/content.mjs');
+   00232|   const fallthrough = async (messages, tools) => {
+   00233|     const symbolic = await solve(latestUserRequest(messages) ?? '', []);
+   00234|     return planSymbolicCommandReroute(messages, tools, symbolic) ?? { kind: 'final', answer: symbolic.answer };
+   00235|   };
+   00236|   const { transcript, answer, stop } = await drive(planChatStep, resolve(dir), rest.join(' '), { steps, fallthrough });
+   00237|   const out = [];
+   00238|   for (const entry of transcript) {
+   00239|     out.push(`>> ${entry.tool} ${entry.arguments}`);
+   00240|     if (entry.result) out.push(entry.result.split('\n').map((line) => `   ${line}`).join('\n'));
+   00241|   }
+   00242|   out.push(`== answer ==\n${answer ?? unanswered(stop, steps, transcript.length)}`);
+   00243|   // Written synchronously: process.exit drops what a pipe has not drained yet,
+   00244|   // which cut the answer off a long transcript.
+   00245|   writeSync(1, `${out.join('\n')}\n`);
+   00246|   process.exit(0);
+   00247| }
+   00248| 
+   00249| if (import.meta.url === `file://${process.argv[1]}`) await main(process.argv.slice(2));
+   00250| 
+   
+   (End of file - total 250 lines)
+   </file>
+>> edit {"filePath":"experiments/js_dogfood/drive.mjs","file_path":"experiments/js_dogfood/drive.mjs","new":"return { transcript, answer: null, stop: 'no-plan', toolsAdvertised: tools };","newString":"return { transcript, answer: null, stop: 'no-plan', toolsAdvertised: tools };","new_str":"return { transcript, answer: null, stop: 'no-plan', toolsAdvertised: tools };","new_string":"return { transcript, answer: null, stop: 'no-plan', toolsAdvertised: tools };","old":"return { transcript, answer: null, stop: 'no-plan' };","oldString":"return { transcript, answer: null, stop: 'no-plan' };","old_str":"return { transcript, answer: null, stop: 'no-plan' };","old_string":"return { transcript, answer: null, stop: 'no-plan' };","path":"experiments/js_dogfood/drive.mjs"}
+>> bash {"command":"sha256sum -- experiments/js_dogfood/drive.mjs"}
+   Output: 4abe58500430d75246e0fb7541ed679a85c7fedbcfad55cec3835914e184edbc  experiments/js_dogfood/drive.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced `return { transcript, answer: null, stop: 'no-plan' };` with `return { transcript, answer: null, stop: 'no-plan', toolsAdvertised: tools };` in `experiments/js_dogfood/drive.mjs` and observed the result.

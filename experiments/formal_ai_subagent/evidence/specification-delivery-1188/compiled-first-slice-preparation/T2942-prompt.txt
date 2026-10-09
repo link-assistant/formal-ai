@@ -1,0 +1,20 @@
+Set the contents of compiled-production-readiness.md to exactly this content:
+````````````text
+# Finite production compiler readiness after release audit
+
+No production source changes are authorized during the integration hold. T2941 read the actual native compiler through Formal AI. The release audit is committed separately as evidence only.
+
+Production coverage remains the coordinator T2528 observation:1173 native specification cases,136 carried,136 executed successfully. Earlier scratch inventory145 refers to parsed/candidate identifiers. Scratch25/25 is14reader plus11compiler/dispatch checks and does not raise the production metric.
+
+The pure JavaScript skill_compiler module currently exports only looksLikeSkillDescription. The native module exposes a package constructor, compile entry point, replay operation, fourteen package notation fields, three typed records and exact stable-ID formulas. The final JavaScript runtime-rule branch currently returns a legacy behavior-rule match evidence pair. Native replay records the actual package notation first, its matched rule second, cache hit third, then finalizes with the actual package response link. A production repair must replace this seam with real constructor/replay data, preserve all earlier routing and retain the existing solver event projection.
+
+The next bounded source phase should introduce the pure trigger/response package constructor and seeded extraction, then wire real replay. Native structured parsing executes before trigger/response parsing. The reviewed scratch prototype explicitly rejects structured lines; this is a truthful limitation, not an implementation of the structured native skill model. Arbitrary hardcoded translated teaching prompts or guessed package IDs are inappropriate. Structured input/precondition/effect/test/permission/stub support is a separate finite capability phase unless all native semantics are actually ported.
+
+Teaching, count and list are additional real consumers: native teaching logs compiled package ID plus legacy rule ID; count deduplicates package ID while respecting user-turn role; list displays both IDs. The existing scratch final-branch overlay proves replay only. Preserve the newest matching user source, ignore assistant teaching turns, deduplicate equivalent canonical packages and allow unchanged normal arithmetic on a nonmatch. The current prototype retains native legacy-ID spelling and genuine parser codec node.value, not a made-up values array.
+
+Minimum acceptance uses the unchanged native behavior-rule replay session with all five assertions, arbitrary held-out multilingual teaching, independent FNV doublets, every fourteen notation field in order, three actual typed records, package/rule/cache response event order, structured refusal, duplicate/newest/assistant history, and nonmatch dispatch. Count trailing newline must match actual native rendered text. A genuine source-owned teaching/list/count port must be tested separately before claiming those semantics. No comparator, assertion or fixture identity is weakened.
+
+After owned source/tests are finite, the coordinator generates the actual factory inventory and TypeScript mirrors. Fresh WorkerHost production checks must pass without an in-memory source replacement. Only then can the typed native reader carry the originally blocked sessions with their real runtime configurations, all assertions and immutable fixture identity. Native compilation remains CI-only. Full production checker execution determines the actual coverage increase.
+
+The original broad implementation asks T2907/T2917 and T2919/T2930 remain open. The literal release-report request T2937 also remains open; changed-command archival recovery T2939 is not its unchanged retry. Its payload-scope repair is owned by the dedicated general planner agent. There is no monetary/token-cost claim: task/tool call observations are a proxy only.
+````````````

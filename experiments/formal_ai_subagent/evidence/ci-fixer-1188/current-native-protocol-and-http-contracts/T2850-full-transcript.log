@@ -1,0 +1,1324 @@
+>> read {"filePath":"data/seed/meanings-coding-tasks.lino","file_path":"data/seed/meanings-coding-tasks.lino","path":"data/seed/meanings-coding-tasks.lino"}
+   <file>
+   00001| meanings
+   00002|   coding_constant
+   00003|     defined-by code
+   00004|     role coding_artifact_kind
+   00005|     precondition "a coding request contains this concept surface"
+   00006|     effect "the artifact-kind slot is bound to constant"
+   00007|     unit "not applicable"
+   00008|     example "constant"
+   00009|     lexeme en constant
+   00010|     lexeme ru константа константу
+   00011|     lexeme hi स्थिरांक
+   00012|     lexeme zh 常量
+   00013|     lexeme es constante
+   00014|   coding_test
+   00015|     defined-by code
+   00016|     role coding_artifact_kind
+   00017|     role coding_test_artifact_kind
+   00018|     precondition "a coding request contains this concept surface"
+   00019|     effect "the artifact-kind slot is bound to test"
+   00020|     unit "not applicable"
+   00021|     example "test"
+   00022|     lexeme en test regression
+   00023|     lexeme ru тест теста
+   00024|     lexeme hi परीक्षण
+   00025|     lexeme zh 测试
+   00026|     lexeme es prueba test
+   00027|   coding_public_visibility
+   00028|     defined-by relation
+   00029|     role coding_visibility
+   00030|     precondition "a coding request contains this concept surface"
+   00031|     effect "the visibility slot is bound to public"
+   00032|     unit "not applicable"
+   00033|     example "public"
+   00034|     lexeme en public
+   00035|     lexeme ru публичная публичной публичную
+   00036|     lexeme hi सार्वजनिक
+   00037|     lexeme zh 公共
+   00038|     lexeme es pública público
+   00039|   coding_return
+   00040|     defined-by action
+   00041|     role coding_return_action
+   00042|     precondition "a coding request contains this concept surface"
+   00043|     effect "the requested operation is bound to return"
+   00044|     unit "not applicable"
+   00045|     example "return"
+   00046|     lexeme en return returns returning
+   00047|     lexeme ru возвращает вернуть
+   00048|     lexeme hi लौटाता लौटाए
+   00049|     lexeme zh 返回
+   00050|     lexeme es devuelve devolver retorna
+   00051|   coding_division
+   00052|     defined-by action
+   00053|     role coding_division_action
+   00054|     precondition "a coding request contains this concept surface"
+   00055|     effect "the requested operation is bound to division"
+   00056|     unit "not applicable"
+   00057|     example "divided by"
+   00058|     lexeme en "divided by" divide dividing
+   00059|     lexeme ru делит разделить
+   00060|     lexeme hi विभाजित
+   00061|     lexeme zh 除以
+   00062|     lexeme es "dividido entre" "dividido por" dividir
+   00063|   coding_member_add
+   00064|     defined-by action
+   00065|     role coding_member_add_action
+   00066|     precondition "a coding request contains this concept surface"
+   00067|     effect "the requested operation is bound to member insertion"
+   00068|     unit "not applicable"
+   00069|     example "add"
+   00070|     lexeme en
+   00071|       words add adds insert inserts append appends include includes into "also holds" "also hold" "also contains"
+   00072|       words "also contain"
+   00073|     lexeme ru добавь добавить вставь вставить
+   00074|     lexeme hi जोड़ें जोड़ो
+   00075|     lexeme zh 添加 插入
+   00076|     lexeme es añade añadir inserta insertar
+   00077|   coding_module_registration
+   00078|     defined-by action
+   00079|     role coding_module_registration_action
+   00080|     precondition "a coding request contains this concept surface"
+   00081|     effect "the requested operation is bound to module registration"
+   00082|     unit "not applicable"
+   00083|     example "register the module"
+   00084|     lexeme en "register the module" "export the module" "add the module"
+   00085|     lexeme ru "зарегистрируй модуль" "добавь модуль"
+   00086|     lexeme hi "मॉड्यूल पंजीकृत करें" "मॉड्यूल जोड़ें"
+   00087|     lexeme zh 注册模块 添加模块
+   00088|     lexeme es "registra el módulo" "exporta el módulo" "añade el módulo"
+   00089|   coding_identifier_rename
+   00090|     defined-by action
+   00091|     role coding_identifier_rename_action
+   00092|     precondition "a coding request contains this concept surface"
+   00093|     effect "the requested operation is bound to identifier rename"
+   00094|     unit "not applicable"
+   00095|     example "rename"
+   00096|     lexeme en rename
+   00097|     lexeme ru переименуй
+   00098|     lexeme hi "नाम बदलो"
+   00099|     lexeme zh 重命名
+   00100|     lexeme es renombra
+   00101|   typo
+   00102|     defined-by concept
+   00103|     role typo_fix_lead
+   00104|     precondition "a request names a misspelled word in a file without stating its correction"
+   00105|     effect "the word is corrected to the unique most frequent known word one edit away"
+   00106|     unit "not applicable"
+   00107|     example "fix the typo"
+   00108|     lexeme en typo
+   00109|     lexeme ru опечатку опечатка
+   00110|     lexeme hi "वर्तनी की गलती"
+   00111|     lexeme zh 错别字 拼写错误
+   00112|     lexeme es errata "error ortográfico"
+   00113|   coding_text_remove
+   00114|     defined-by action
+   00115|     role coding_text_remove_action
+   00116|     precondition "a coding request names quoted text and the file it should leave"
+   00117|     effect "the requested operation is bound to removing that text from the file"
+   00118|     unit "not applicable"
+   00119|     example "delete the line"
+   00120|     lexeme en delete remove "get rid of"
+   00121|     lexeme ru удали удалить убери убрать сотри
+   00122|     lexeme hi हटाओ हटाएं मिटाओ
+   00123|     lexeme zh 删除 删掉 去掉 移除
+   00124|     lexeme es elimina eliminar borra borrar quita
+   00125|   coding_declaration
+   00126|     defined-by code
+   00127|     role coding_declaration_noun
+   00128|     precondition "a removal request names the functions it removes by name, with no quoted text"
+   00129|     effect "the request's names are read as functions the file declares, each removed whole with the comments and attributes directly above it"
+   00130|     unit "not applicable"
+   00131|     example "delete the function parse_header from util.rs"
+   00132|     lexeme en "function" "functions" "method" "methods"
+   00133|     lexeme ru "функцию" "функции" "функций" "метод" "методы"
+   00134|     lexeme hi "फ़ंक्शन" "फंक्शन"
+   00135|     lexeme zh "函数" "方法"
+   00136|     lexeme es "función" "funciones"
+   00137|   # A programming-language keyword is the same word whatever language the
+   00138|   # request is written in, so every lexeme lists the same keywords.
+   00139|   function_declaration
+   00140|     defined-by code
+   00141|     role function_declaration_keyword
+   00142|     precondition "a source line declares a function"
+   00143|     effect "the keyword right before a name followed by its parameter list marks the line as that function's declaration"
+   00144|     unit "not applicable"
+   00145|     example "fn in fn parse_header(line: &str)"
+   00146|     lexeme en "function" "fn" "def" "func" "fun"
+   00147|     lexeme ru "function" "fn" "def" "func" "fun"
+   00148|     lexeme hi "function" "fn" "def" "func" "fun"
+   00149|     lexeme zh "function" "fn" "def" "func" "fun"
+   00150|     lexeme es "function" "fn" "def" "func" "fun"
+   00151|   coding_artifact_name
+   00152|     defined-by relation
+   00153|     role coding_name_slot
+   00154|     precondition "a coding request contains this concept surface"
+   00155|     effect "the artifact-name slot can be bound from the request"
+   00156|     unit "not applicable"
+   00157|     example "named …"
+   00158|     lexeme en "named …" "with the name …"
+   00159|     lexeme ru "с именем …" "под названием …"
+   00160|     lexeme hi "… नाम का"
+   00161|     lexeme zh "名为 …"
+   00162|     lexeme es "llamado …" "llamada …" "con el nombre …"
+   00163|   coding_string_value
+   00164|     defined-by relation
+   00165|     role coding_value_slot
+   00166|     precondition "a coding request contains this concept surface"
+   00167|     effect "the string-value slot can be bound from the request"
+   00168|     unit "not applicable"
+   00169|     example "with the value …"
+   00170|     lexeme en "with the value …" "whose value is …"
+   00171|     lexeme ru "со значением …"
+   00172|     lexeme hi "जिसका मान …"
+   00173|     lexeme zh "值为 …"
+   00174|     lexeme es "con el valor …" "cuyo valor es …"
+   00175|   coding_bound
+   00176|     defined-by code
+   00177|     role coding_bound_cue
+   00178|     precondition "a workspace-inspection fact or source identifier contains this concept surface"
+   00179|     effect "the fact or identifier is read as naming a configured bound"
+   00180|     unit "not applicable"
+   00181|     example "max_items is the limit on item count"
+   00182|     lexeme en limit limits bound bounds cap ceiling maximum max
+   00183|     lexeme ru лимит предел ограничение максимум
+   00184|     lexeme hi सीमा अधिकतम
+   00185|     lexeme zh 上限 限制 最大值
+   00186|     lexeme es límite tope máximo
+   00187|   completion_criterion
+   00188|     defined-by code
+   00189|     role coding_search_literal_query
+   00190|     precondition "a source model names the observable condition for completion"
+   00191|     effect "completion_criterion denotes that model field"
+   00192|     unit "not applicable"
+   00193|     example "completion_criterion"
+   00194|     lexeme en completion_criterion
+   00195|     lexeme ru "критерий завершения"
+   00196|     lexeme hi "पूर्णता मानदंड"
+   00197|     lexeme zh 完成标准
+   00198|     lexeme es "criterio de finalización"
+   00199|   coding_search_string
+   00200|     defined-by code
+   00201|     role coding_search_subject_kind
+   00202|     precondition "a coding request contains this concept surface"
+   00203|     effect "the search-subject slot is bound to string"
+   00204|     unit "not applicable"
+   00205|     example "string"
+   00206|     lexeme en string
+   00207|     lexeme ru строка
+   00208|     lexeme hi स्ट्रिंग
+   00209|     lexeme zh 字符串
+   00210|     lexeme es cadena
+   00211|   coding_search_function
+   00212|     defined-by function
+   00213|     role coding_search_subject_kind
+   00214|     precondition "a coding request contains this concept surface"
+   00215|     effect "the search-subject slot is bound to function"
+   00216|     unit "not applicable"
+   00217|     example "function"
+   00218|     lexeme en function
+   00219|     lexeme ru функция
+   00220|     lexeme hi फ़ंक्शन
+   00221|     lexeme zh 函数
+   00222|     lexeme es función
+   00223|   coding_search_array
+   00224|     defined-by code
+   00225|     role coding_search_subject_kind
+   00226|     role coding_member_list_kind
+   00227|     precondition "a coding request contains this concept surface"
+   00228|     effect "the search-subject slot is bound to array"
+   00229|     unit "not applicable"
+   00230|     example "array"
+   00231|     lexeme en array
+   00232|     lexeme ru массив
+   00233|     lexeme hi सरणी
+   00234|     lexeme zh 数组
+   00235|     lexeme es arreglo
+   00236|   coding_member_list_sequence
+   00237|     defined-by code
+   00238|     role coding_member_list_kind
+   00239|     precondition "a coding request contains this concept surface"
+   00240|     effect "the subject slot is bound to an ordered member list"
+   00241|     unit "not applicable"
+   00242|     example "list"
+   00243|     lexeme en list lists sequence vector
+   00244|     lexeme ru список списке перечень
+   00245|     lexeme hi सूची
+   00246|     lexeme zh 列表
+   00247|     lexeme es lista listas secuencia
+   00248|   coding_member_list_set
+   00249|     defined-by code
+   00250|     role coding_member_list_kind
+   00251|     precondition "a coding request contains this concept surface"
+   00252|     effect "the subject slot is bound to an unordered member list"
+   00253|     unit "not applicable"
+   00254|     example "set"
+   00255|     lexeme en set collection
+   00256|     lexeme ru множество коллекция
+   00257|     lexeme hi समुच्चय संग्रह
+   00258|     lexeme zh 集合
+   00259|     lexeme es conjunto colección
+   00260|   coding_member_list_group
+   00261|     defined-by code
+   00262|     role coding_member_list_kind
+   00263|     precondition "a coding request contains this concept surface"
+   00264|     effect "the subject slot is bound to a delimited group of members"
+   00265|     unit "not applicable"
+   00266|     example "group"
+   00267|     lexeme en group tuple alternation
+   00268|     lexeme ru группа группе кортеж
+   00269|     lexeme hi समूह टपल
+   00270|     lexeme zh 元组
+   00271|     lexeme es grupo
+   00272|   coding_search_struct
+   00273|     defined-by code
+   00274|     role coding_search_subject_kind
+   00275|     precondition "a coding request contains this concept surface"
+   00276|     effect "the search-subject slot is bound to struct"
+   00277|     unit "not applicable"
+   00278|     example "struct"
+   00279|     lexeme en struct
+   00280|     lexeme ru структура
+   00281|     lexeme hi स्ट्रक्ट
+   00282|     lexeme zh 结构体
+   00283|     lexeme es estructura
+   00284|   coding_search_rendering
+   00285|     defined-by code
+   00286|     role coding_search_subject_kind
+   00287|     role coding_source_implementation_subject_kind
+   00288|     precondition "a coding request contains this concept surface"
+   00289|     effect "the search-subject slot is bound to a production rendering artifact"
+   00290|     unit "not applicable"
+   00291|     example "Links Notation rendering"
+   00292|     lexeme en rendering renderer serialization
+   00293|     lexeme ru рендеринг сериализация
+   00294|     lexeme hi रेंडरिंग क्रमांकन
+   00295|     lexeme zh 渲染 序列化
+   00296|     lexeme es renderizado serialización
+   00297|   coding_search_adapter
+   00298|     defined-by code
+   00299|     role coding_search_subject_kind
+   00300|     role coding_source_implementation_subject_kind
+   00301|     precondition "a coding request contains this concept surface"
+   00302|     effect "the search-subject slot is bound to a production adapter"
+   00303|     unit "not applicable"
+   00304|     example "transport adapter"
+   00305|     lexeme en adapter adapters
+   00306|     lexeme ru адаптер адаптеры
+   00307|     lexeme hi एडाप्टर
+   00308|     lexeme zh 适配器
+   00309|     lexeme es adaptador adaptadores
+   00310|   coding_relationship_reference
+   00311|     defined-by code
+   00312|     role coding_relationship_subject_kind
+   00313|     precondition "a coding request contains this concept surface"
+   00314|     effect "the adjacent source identifier is a relationship key"
+   00315|     unit "not applicable"
+   00316|     example "parent relationships"
+   00317|     lexeme en relationship relationships association associations
+   00318|     lexeme ru связь связи ассоциация
+   00319|     lexeme hi रिलेशनशिप एसोसिएशन
+   00320|     lexeme zh 关系 关联
+   00321|     lexeme es relación relaciones asociación
+   00322|   coding_serialization_action
+   00323|     defined-by action
+   00324|     role coding_serialization_action
+   00325|     precondition "a coding request contains this concept surface"
+   00326|     effect "the requested source fact is a serialized representation"
+   00327|     unit "not applicable"
+   00328|     example "relationships are encoded"
+   00329|     lexeme en serialize serialized encoding encoded
+   00330|     lexeme ru сериализовать сериализованный кодирование
+   00331|     lexeme hi "क्रमबद्ध करना" एन्कोडिंग
+   00332|     lexeme zh 序列化 编码
+   00333|     lexeme es serializar serializado codificación
+   00334|   coding_search_check
+   00335|     defined-by code
+   00336|     role coding_search_subject_kind
+   00337|     role coding_condition_subject_kind
+   00338|     precondition "a coding request contains this concept surface"
+   00339|     effect "the search-subject slot is bound to check"
+   00340|     unit "not applicable"
+   00341|     example "retry check"
+   00342|     lexeme en check
+   00343|     lexeme ru проверка
+   00344|     lexeme hi जांच
+   00345|     lexeme zh 检查
+   00346|     lexeme es comprobación
+   00347|   coding_search_completion_criterion
+   00348|     defined-by code
+   00349|     role coding_search_fact_query
+   00350|     precondition "a workspace-inspection request contains this concept surface"
+   00351|     effect "the requested fact is searched with its canonical source expression"
+   00352|     unit "not applicable"
+   00353|     example "completion contract"
+   00354|     lexeme en "completion contract" "completion criterion" "completion criteria"
+   00355|       action completion_criterion
+   00356|     lexeme ru "контракт завершения" "критерий завершения"
+   00357|       action completion_criterion
+   00358|     lexeme hi "पूर्णता अनुबंध" "पूर्णता मानदंड"
+   00359|       action completion_criterion
+   00360|     lexeme zh 完成契约 完成标准
+   00361|       action completion_criterion
+   00362|     lexeme es "contrato de finalización" "criterio de finalización"
+   00363|       action completion_criterion
+   00364|   coding_search_missing_leaf_contract
+   00365|     defined-by code
+   00366|     role coding_search_fact_query
+   00367|     precondition "a workspace-inspection request asks how a leaf without a completion contract is represented"
+   00368|     effect "the requested fact is searched by the unresolved single-need sentinel"
+   00369|     unit "not applicable"
+   00370|     example "leaf without an observable completion contract"
+   00371|     lexeme en "leaf without an observable completion contract" "leaf without an observable completion criterion"
+   00372|       action "unresolved_single_need"
+   00373|     lexeme ru "лист без наблюдаемого контракта завершения"
+   00374|       action "unresolved_single_need"
+   00375|     lexeme hi "बिना अवलोकनीय पूर्णता अनुबंध वाला पत्ता"
+   00376|       action "unresolved_single_need"
+   00377|     lexeme zh 没有可观察完成契约的叶子
+   00378|       action "unresolved_single_need"
+   00379|     lexeme es "hoja sin un contrato de finalización observable"
+   00380|       action "unresolved_single_need"
+   00381|   coding_search_issue_creation
+   00382|     defined-by code
+   00383|     role coding_search_literal_query
+   00384|     precondition "a coding request contains this concept surface"
+   00385|     effect "the literal-search slot is bound to issue creation"
+   00386|     unit "not applicable"
+   00387|     example "GitHub issue creation command"
+   00388|     lexeme en "GitHub issue creation command"
+   00389|       action "gh issue create"
+   00390|     lexeme ru "команда создания задачи GitHub"
+   00391|       action "gh issue create"
+   00392|     lexeme hi "GitHub इश्यू बनाने का कमांड"
+   00393|       action "gh issue create"
+   00394|     lexeme zh "GitHub 议题创建命令"
+   00395|       action "gh issue create"
+   00396|     lexeme es "comando de creación de incidencias de GitHub"
+   00397|       action "gh issue create"
+   00398|   workspace_inspection_examine
+   00399|     defined-by action
+   00400|     role workspace_inspection_action
+   00401|     precondition "a request contains this concept surface"
+   00402|     effect "the request is read as looking at what the workspace already holds"
+   00403|     unit "not applicable"
+   00404|     example "inspect"
+   00405|     lexeme en inspect examine review audit
+   00406|     lexeme ru изучи изучите осмотри просмотри
+   00407|     lexeme hi "निरीक्षण करें" "समीक्षा करें"
+   00408|     lexeme zh 检查 审查 审阅
+   00409|     lexeme es inspecciona revisa audita examina
+   00410|   workspace_inspection_verify
+   00411|     defined-by action
+   00412|     role workspace_inspection_action
+   00413|     precondition "a request contains this concept surface"
+   00414|     effect "the request is read as confirming a claim against what the workspace holds"
+   00415|     unit "not applicable"
+   00416|     example "verify"
+   00417|     lexeme en verify confirm
+   00418|     lexeme ru проверь проверьте убедись подтверди
+   00419|     lexeme hi "सत्यापित करें" "पुष्टि करें"
+   00420|     lexeme zh 验证 确认
+   00421|     lexeme es verifica confirma
+   00422|   workspace_inspection_identify
+   00423|     defined-by action
+   00424|     role workspace_inspection_action
+   00425|     precondition "a request contains this concept surface"
+   00426|     effect "the request is read as locating something inside the workspace"
+   00427|     unit "not applicable"
+   00428|     example "identify"
+   00429|     lexeme en identify locate "find where" "where does" "where the"
+   00430|     lexeme ru определи "найди где" "где находится"
+   00431|     lexeme hi "पहचानें" "पता लगाएँ" "कहाँ है"
+   00432|     lexeme zh 确定 找出 在哪里
+   00433|     lexeme es identifica localiza "dónde se define"
+   00434| 
+   
+   (End of file - total 434 lines)
+   </file>
+>> edit {"filePath":"data/seed/meanings-coding-tasks.lino","file_path":"data/seed/meanings-coding-tasks.lino","new":"meanings\n  coding_constant\n    defined-by code\n    role coding_artifact_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-kind slot is bound to constant\"\n    unit \"not applicable\"\n    example \"constant\"\n    lexeme en constant\n    lexeme ru константа константу\n    lexeme hi स्थिरांक\n    lexeme zh 常量\n    lexeme es constante\n  coding_test\n    defined-by code\n    role coding_artifact_kind\n    role coding_test_artifact_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-kind slot is bound to test\"\n    unit \"not applicable\"\n    example \"test\"\n    lexeme en test regression\n    lexeme ru тест теста\n    lexeme hi परीक्षण\n    lexeme zh 测试\n    lexeme es prueba test\n  coding_public_visibility\n    defined-by relation\n    role coding_visibility\n    precondition \"a coding request contains this concept surface\"\n    effect \"the visibility slot is bound to public\"\n    unit \"not applicable\"\n    example \"public\"\n    lexeme en public\n    lexeme ru публичная публичной публичную\n    lexeme hi सार्वजनिक\n    lexeme zh 公共\n    lexeme es pública público\n  coding_return\n    defined-by action\n    role coding_return_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to return\"\n    unit \"not applicable\"\n    example \"return\"\n    lexeme en return returns returning\n    lexeme ru возвращает вернуть\n    lexeme hi लौटाता लौटाए\n    lexeme zh 返回 返回结果\n    lexeme es devuelve devolver retorna\n  returning\n    defined-by coding_return\n    role coding_return_action\n    precondition \"a coding operation has an available result\"\n    effect \"the operation yields its result to its caller\"\n    unit \"not applicable\"\n    example \"returning a computed value\"\n    lexeme en returning\n    lexeme ru возвращая\n    lexeme hi \"लौटाते हुए\"\n    lexeme zh 正在返回\n    lexeme es devolviendo\n  coding_division\n    defined-by action\n    role coding_division_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to division\"\n    unit \"not applicable\"\n    example \"divided by\"\n    lexeme en \"divided by\" divide dividing\n    lexeme ru делит разделить\n    lexeme hi विभाजित\n    lexeme zh 除以\n    lexeme es \"dividido entre\" \"dividido por\" dividir\n  coding_member_add\n    defined-by action\n    role coding_member_add_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to member insertion\"\n    unit \"not applicable\"\n    example \"add\"\n    lexeme en\n      words add adds insert inserts append appends include includes into \"also holds\" \"also hold\" \"also contains\"\n      words \"also contain\"\n    lexeme ru добавь добавить вставь вставить\n    lexeme hi जोड़ें जोड़ो\n    lexeme zh 添加 插入\n    lexeme es añade añadir inserta insertar\n  coding_module_registration\n    defined-by action\n    role coding_module_registration_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to module registration\"\n    unit \"not applicable\"\n    example \"register the module\"\n    lexeme en \"register the module\" \"export the module\" \"add the module\"\n    lexeme ru \"зарегистрируй модуль\" \"добавь модуль\"\n    lexeme hi \"मॉड्यूल पंजीकृत करें\" \"मॉड्यूल जोड़ें\"\n    lexeme zh 注册模块 添加模块\n    lexeme es \"registra el módulo\" \"exporta el módulo\" \"añade el módulo\"\n  coding_identifier_rename\n    defined-by action\n    role coding_identifier_rename_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to identifier rename\"\n    unit \"not applicable\"\n    example \"rename\"\n    lexeme en rename\n    lexeme ru переименуй\n    lexeme hi \"नाम बदलो\"\n    lexeme zh 重命名\n    lexeme es renombra\n  typo\n    defined-by concept\n    role typo_fix_lead\n    precondition \"a request names a misspelled word in a file without stating its correction\"\n    effect \"the word is corrected to the unique most frequent known word one edit away\"\n    unit \"not applicable\"\n    example \"fix the typo\"\n    lexeme en typo\n    lexeme ru опечатку опечатка\n    lexeme hi \"वर्तनी की गलती\"\n    lexeme zh 错别字 拼写错误\n    lexeme es errata \"error ortográfico\"\n  coding_text_remove\n    defined-by action\n    role coding_text_remove_action\n    precondition \"a coding request names quoted text and the file it should leave\"\n    effect \"the requested operation is bound to removing that text from the file\"\n    unit \"not applicable\"\n    example \"delete the line\"\n    lexeme en delete remove \"get rid of\"\n    lexeme ru удали удалить убери убрать сотри\n    lexeme hi हटाओ हटाएं मिटाओ\n    lexeme zh 删除 删掉 去掉 移除\n    lexeme es elimina eliminar borra borrar quita\n  coding_declaration\n    defined-by code\n    role coding_declaration_noun\n    precondition \"a removal request names the functions it removes by name, with no quoted text\"\n    effect \"the request's names are read as functions the file declares, each removed whole with the comments and attributes directly above it\"\n    unit \"not applicable\"\n    example \"delete the function parse_header from util.rs\"\n    lexeme en \"function\" \"functions\" \"method\" \"methods\"\n    lexeme ru \"функцию\" \"функции\" \"функций\" \"метод\" \"методы\"\n    lexeme hi \"फ़ंक्शन\" \"फंक्शन\"\n    lexeme zh \"函数\" \"方法\"\n    lexeme es \"función\" \"funciones\"\n  # A programming-language keyword is the same word whatever language the\n  # request is written in, so every lexeme lists the same keywords.\n  function_declaration\n    defined-by code\n    role function_declaration_keyword\n    precondition \"a source line declares a function\"\n    effect \"the keyword right before a name followed by its parameter list marks the line as that function's declaration\"\n    unit \"not applicable\"\n    example \"fn in fn parse_header(line: &str)\"\n    lexeme en \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme ru \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme hi \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme zh \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme es \"function\" \"fn\" \"def\" \"func\" \"fun\"\n  coding_artifact_name\n    defined-by relation\n    role coding_name_slot\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-name slot can be bound from the request\"\n    unit \"not applicable\"\n    example \"named …\"\n    lexeme en \"named …\" \"with the name …\"\n    lexeme ru \"с именем …\" \"под названием …\"\n    lexeme hi \"… नाम का\"\n    lexeme zh \"名为 …\"\n    lexeme es \"llamado …\" \"llamada …\" \"con el nombre …\"\n  coding_string_value\n    defined-by relation\n    role coding_value_slot\n    precondition \"a coding request contains this concept surface\"\n    effect \"the string-value slot can be bound from the request\"\n    unit \"not applicable\"\n    example \"with the value …\"\n    lexeme en \"with the value …\" \"whose value is …\"\n    lexeme ru \"со значением …\"\n    lexeme hi \"जिसका मान …\"\n    lexeme zh \"值为 …\"\n    lexeme es \"con el valor …\" \"cuyo valor es …\"\n  coding_bound\n    defined-by code\n    role coding_bound_cue\n    precondition \"a workspace-inspection fact or source identifier contains this concept surface\"\n    effect \"the fact or identifier is read as naming a configured bound\"\n    unit \"not applicable\"\n    example \"max_items is the limit on item count\"\n    lexeme en limit limits bound bounds cap ceiling maximum max\n    lexeme ru лимит предел ограничение максимум\n    lexeme hi सीमा अधिकतम\n    lexeme zh 上限 限制 最大值\n    lexeme es límite tope máximo\n  completion_criterion\n    defined-by code\n    role coding_search_literal_query\n    precondition \"a source model names the observable condition for completion\"\n    effect \"completion_criterion denotes that model field\"\n    unit \"not applicable\"\n    example \"completion_criterion\"\n    lexeme en completion_criterion\n    lexeme ru \"критерий завершения\"\n    lexeme hi \"पूर्णता मानदंड\"\n    lexeme zh 完成标准\n    lexeme es \"criterio de finalización\"\n  coding_search_string\n    defined-by code\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to string\"\n    unit \"not applicable\"\n    example \"string\"\n    lexeme en string\n    lexeme ru строка\n    lexeme hi स्ट्रिंग\n    lexeme zh 字符串\n    lexeme es cadena\n  coding_search_function\n    defined-by function\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to function\"\n    unit \"not applicable\"\n    example \"function\"\n    lexeme en function\n    lexeme ru функция\n    lexeme hi फ़ंक्शन\n    lexeme zh 函数\n    lexeme es función\n  coding_search_array\n    defined-by code\n    role coding_search_subject_kind\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to array\"\n    unit \"not applicable\"\n    example \"array\"\n    lexeme en array\n    lexeme ru массив\n    lexeme hi सरणी\n    lexeme zh 数组\n    lexeme es arreglo\n  coding_member_list_sequence\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to an ordered member list\"\n    unit \"not applicable\"\n    example \"list\"\n    lexeme en list lists sequence vector\n    lexeme ru список списке перечень\n    lexeme hi सूची\n    lexeme zh 列表\n    lexeme es lista listas secuencia\n  coding_member_list_set\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to an unordered member list\"\n    unit \"not applicable\"\n    example \"set\"\n    lexeme en set collection\n    lexeme ru множество коллекция\n    lexeme hi समुच्चय संग्रह\n    lexeme zh 集合\n    lexeme es conjunto colección\n  coding_member_list_group\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to a delimited group of members\"\n    unit \"not applicable\"\n    example \"group\"\n    lexeme en group tuple alternation\n    lexeme ru группа группе кортеж\n    lexeme hi समूह टपल\n    lexeme zh 元组\n    lexeme es grupo\n  coding_search_struct\n    defined-by code\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to struct\"\n    unit \"not applicable\"\n    example \"struct\"\n    lexeme en struct\n    lexeme ru структура\n    lexeme hi स्ट्रक्ट\n    lexeme zh 结构体\n    lexeme es estructura\n  coding_search_rendering\n    defined-by code\n    role coding_search_subject_kind\n    role coding_source_implementation_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to a production rendering artifact\"\n    unit \"not applicable\"\n    example \"Links Notation rendering\"\n    lexeme en rendering renderer serialization\n    lexeme ru рендеринг сериализация\n    lexeme hi रेंडरिंग क्रमांकन\n    lexeme zh 渲染 序列化\n    lexeme es renderizado serialización\n  coding_search_adapter\n    defined-by code\n    role coding_search_subject_kind\n    role coding_source_implementation_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to a production adapter\"\n    unit \"not applicable\"\n    example \"transport adapter\"\n    lexeme en adapter adapters\n    lexeme ru адаптер адаптеры\n    lexeme hi एडाप्टर\n    lexeme zh 适配器\n    lexeme es adaptador adaptadores\n  coding_relationship_reference\n    defined-by code\n    role coding_relationship_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the adjacent source identifier is a relationship key\"\n    unit \"not applicable\"\n    example \"parent relationships\"\n    lexeme en relationship relationships association associations\n    lexeme ru связь связи ассоциация\n    lexeme hi रिलेशनशिप एसोसिएशन\n    lexeme zh 关系 关联\n    lexeme es relación relaciones asociación\n  coding_serialization_action\n    defined-by action\n    role coding_serialization_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested source fact is a serialized representation\"\n    unit \"not applicable\"\n    example \"relationships are encoded\"\n    lexeme en serialize serialized encoding encoded\n    lexeme ru сериализовать сериализованный кодирование\n    lexeme hi \"क्रमबद्ध करना\" एन्कोडिंग\n    lexeme zh 序列化 编码\n    lexeme es serializar serializado codificación\n  coding_search_check\n    defined-by code\n    role coding_search_subject_kind\n    role coding_condition_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to check\"\n    unit \"not applicable\"\n    example \"retry check\"\n    lexeme en check\n    lexeme ru проверка\n    lexeme hi जांच\n    lexeme zh 检查\n    lexeme es comprobación\n  coding_search_completion_criterion\n    defined-by code\n    role coding_search_fact_query\n    precondition \"a workspace-inspection request contains this concept surface\"\n    effect \"the requested fact is searched with its canonical source expression\"\n    unit \"not applicable\"\n    example \"completion contract\"\n    lexeme en \"completion contract\" \"completion criterion\" \"completion criteria\"\n      action completion_criterion\n    lexeme ru \"контракт завершения\" \"критерий завершения\"\n      action completion_criterion\n    lexeme hi \"पूर्णता अनुबंध\" \"पूर्णता मानदंड\"\n      action completion_criterion\n    lexeme zh 完成契约 完成标准\n      action completion_criterion\n    lexeme es \"contrato de finalización\" \"criterio de finalización\"\n      action completion_criterion\n  coding_search_missing_leaf_contract\n    defined-by code\n    role coding_search_fact_query\n    precondition \"a workspace-inspection request asks how a leaf without a completion contract is represented\"\n    effect \"the requested fact is searched by the unresolved single-need sentinel\"\n    unit \"not applicable\"\n    example \"leaf without an observable completion contract\"\n    lexeme en \"leaf without an observable completion contract\" \"leaf without an observable completion criterion\"\n      action \"unresolved_single_need\"\n    lexeme ru \"лист без наблюдаемого контракта завершения\"\n      action \"unresolved_single_need\"\n    lexeme hi \"बिना अवलोकनीय पूर्णता अनुबंध वाला पत्ता\"\n      action \"unresolved_single_need\"\n    lexeme zh 没有可观察完成契约的叶子\n      action \"unresolved_single_need\"\n    lexeme es \"hoja sin un contrato de finalización observable\"\n      action \"unresolved_single_need\"\n  coding_search_issue_creation\n    defined-by code\n    role coding_search_literal_query\n    precondition \"a coding request contains this concept surface\"\n    effect \"the literal-search slot is bound to issue creation\"\n    unit \"not applicable\"\n    example \"GitHub issue creation command\"\n    lexeme en \"GitHub issue creation command\"\n      action \"gh issue create\"\n    lexeme ru \"команда создания задачи GitHub\"\n      action \"gh issue create\"\n    lexeme hi \"GitHub इश्यू बनाने का कमांड\"\n      action \"gh issue create\"\n    lexeme zh \"GitHub 议题创建命令\"\n      action \"gh issue create\"\n    lexeme es \"comando de creación de incidencias de GitHub\"\n      action \"gh issue create\"\n  workspace_inspection_examine\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as looking at what the workspace already holds\"\n    unit \"not applicable\"\n    example \"inspect\"\n    lexeme en inspect examine review audit\n    lexeme ru изучи изучите осмотри просмотри\n    lexeme hi \"निरीक्षण करें\" \"समीक्षा करें\"\n    lexeme zh 检查 审查 审阅\n    lexeme es inspecciona revisa audita examina\n  workspace_inspection_verify\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as confirming a claim against what the workspace holds\"\n    unit \"not applicable\"\n    example \"verify\"\n    lexeme en verify confirm\n    lexeme ru проверь проверьте убедись подтверди\n    lexeme hi \"सत्यापित करें\" \"पुष्टि करें\"\n    lexeme zh 验证 确认\n    lexeme es verifica confirma\n  workspace_inspection_identify\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as locating something inside the workspace\"\n    unit \"not applicable\"\n    example \"identify\"\n    lexeme en identify locate \"find where\" \"where does\" \"where the\"\n    lexeme ru определи \"найди где\" \"где находится\"\n    lexeme hi \"पहचानें\" \"पता लगाएँ\" \"कहाँ है\"\n    lexeme zh 确定 找出 在哪里\n    lexeme es identifica localiza \"dónde se define\"\n","newString":"meanings\n  coding_constant\n    defined-by code\n    role coding_artifact_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-kind slot is bound to constant\"\n    unit \"not applicable\"\n    example \"constant\"\n    lexeme en constant\n    lexeme ru константа константу\n    lexeme hi स्थिरांक\n    lexeme zh 常量\n    lexeme es constante\n  coding_test\n    defined-by code\n    role coding_artifact_kind\n    role coding_test_artifact_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-kind slot is bound to test\"\n    unit \"not applicable\"\n    example \"test\"\n    lexeme en test regression\n    lexeme ru тест теста\n    lexeme hi परीक्षण\n    lexeme zh 测试\n    lexeme es prueba test\n  coding_public_visibility\n    defined-by relation\n    role coding_visibility\n    precondition \"a coding request contains this concept surface\"\n    effect \"the visibility slot is bound to public\"\n    unit \"not applicable\"\n    example \"public\"\n    lexeme en public\n    lexeme ru публичная публичной публичную\n    lexeme hi सार्वजनिक\n    lexeme zh 公共\n    lexeme es pública público\n  coding_return\n    defined-by action\n    role coding_return_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to return\"\n    unit \"not applicable\"\n    example \"return\"\n    lexeme en return returns returning\n    lexeme ru возвращает вернуть\n    lexeme hi लौटाता लौटाए\n    lexeme zh 返回 返回结果\n    lexeme es devuelve devolver retorna\n  returning\n    defined-by coding_return\n    role coding_return_action\n    precondition \"a coding operation has an available result\"\n    effect \"the operation yields its result to its caller\"\n    unit \"not applicable\"\n    example \"returning a computed value\"\n    lexeme en returning\n    lexeme ru возвращая\n    lexeme hi \"लौटाते हुए\"\n    lexeme zh 正在返回\n    lexeme es devolviendo\n  coding_division\n    defined-by action\n    role coding_division_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to division\"\n    unit \"not applicable\"\n    example \"divided by\"\n    lexeme en \"divided by\" divide dividing\n    lexeme ru делит разделить\n    lexeme hi विभाजित\n    lexeme zh 除以\n    lexeme es \"dividido entre\" \"dividido por\" dividir\n  coding_member_add\n    defined-by action\n    role coding_member_add_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to member insertion\"\n    unit \"not applicable\"\n    example \"add\"\n    lexeme en\n      words add adds insert inserts append appends include includes into \"also holds\" \"also hold\" \"also contains\"\n      words \"also contain\"\n    lexeme ru добавь добавить вставь вставить\n    lexeme hi जोड़ें जोड़ो\n    lexeme zh 添加 插入\n    lexeme es añade añadir inserta insertar\n  coding_module_registration\n    defined-by action\n    role coding_module_registration_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to module registration\"\n    unit \"not applicable\"\n    example \"register the module\"\n    lexeme en \"register the module\" \"export the module\" \"add the module\"\n    lexeme ru \"зарегистрируй модуль\" \"добавь модуль\"\n    lexeme hi \"मॉड्यूल पंजीकृत करें\" \"मॉड्यूल जोड़ें\"\n    lexeme zh 注册模块 添加模块\n    lexeme es \"registra el módulo\" \"exporta el módulo\" \"añade el módulo\"\n  coding_identifier_rename\n    defined-by action\n    role coding_identifier_rename_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to identifier rename\"\n    unit \"not applicable\"\n    example \"rename\"\n    lexeme en rename\n    lexeme ru переименуй\n    lexeme hi \"नाम बदलो\"\n    lexeme zh 重命名\n    lexeme es renombra\n  typo\n    defined-by concept\n    role typo_fix_lead\n    precondition \"a request names a misspelled word in a file without stating its correction\"\n    effect \"the word is corrected to the unique most frequent known word one edit away\"\n    unit \"not applicable\"\n    example \"fix the typo\"\n    lexeme en typo\n    lexeme ru опечатку опечатка\n    lexeme hi \"वर्तनी की गलती\"\n    lexeme zh 错别字 拼写错误\n    lexeme es errata \"error ortográfico\"\n  coding_text_remove\n    defined-by action\n    role coding_text_remove_action\n    precondition \"a coding request names quoted text and the file it should leave\"\n    effect \"the requested operation is bound to removing that text from the file\"\n    unit \"not applicable\"\n    example \"delete the line\"\n    lexeme en delete remove \"get rid of\"\n    lexeme ru удали удалить убери убрать сотри\n    lexeme hi हटाओ हटाएं मिटाओ\n    lexeme zh 删除 删掉 去掉 移除\n    lexeme es elimina eliminar borra borrar quita\n  coding_declaration\n    defined-by code\n    role coding_declaration_noun\n    precondition \"a removal request names the functions it removes by name, with no quoted text\"\n    effect \"the request's names are read as functions the file declares, each removed whole with the comments and attributes directly above it\"\n    unit \"not applicable\"\n    example \"delete the function parse_header from util.rs\"\n    lexeme en \"function\" \"functions\" \"method\" \"methods\"\n    lexeme ru \"функцию\" \"функции\" \"функций\" \"метод\" \"методы\"\n    lexeme hi \"फ़ंक्शन\" \"फंक्शन\"\n    lexeme zh \"函数\" \"方法\"\n    lexeme es \"función\" \"funciones\"\n  # A programming-language keyword is the same word whatever language the\n  # request is written in, so every lexeme lists the same keywords.\n  function_declaration\n    defined-by code\n    role function_declaration_keyword\n    precondition \"a source line declares a function\"\n    effect \"the keyword right before a name followed by its parameter list marks the line as that function's declaration\"\n    unit \"not applicable\"\n    example \"fn in fn parse_header(line: &str)\"\n    lexeme en \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme ru \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme hi \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme zh \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme es \"function\" \"fn\" \"def\" \"func\" \"fun\"\n  coding_artifact_name\n    defined-by relation\n    role coding_name_slot\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-name slot can be bound from the request\"\n    unit \"not applicable\"\n    example \"named …\"\n    lexeme en \"named …\" \"with the name …\"\n    lexeme ru \"с именем …\" \"под названием …\"\n    lexeme hi \"… नाम का\"\n    lexeme zh \"名为 …\"\n    lexeme es \"llamado …\" \"llamada …\" \"con el nombre …\"\n  coding_string_value\n    defined-by relation\n    role coding_value_slot\n    precondition \"a coding request contains this concept surface\"\n    effect \"the string-value slot can be bound from the request\"\n    unit \"not applicable\"\n    example \"with the value …\"\n    lexeme en \"with the value …\" \"whose value is …\"\n    lexeme ru \"со значением …\"\n    lexeme hi \"जिसका मान …\"\n    lexeme zh \"值为 …\"\n    lexeme es \"con el valor …\" \"cuyo valor es …\"\n  coding_bound\n    defined-by code\n    role coding_bound_cue\n    precondition \"a workspace-inspection fact or source identifier contains this concept surface\"\n    effect \"the fact or identifier is read as naming a configured bound\"\n    unit \"not applicable\"\n    example \"max_items is the limit on item count\"\n    lexeme en limit limits bound bounds cap ceiling maximum max\n    lexeme ru лимит предел ограничение максимум\n    lexeme hi सीमा अधिकतम\n    lexeme zh 上限 限制 最大值\n    lexeme es límite tope máximo\n  completion_criterion\n    defined-by code\n    role coding_search_literal_query\n    precondition \"a source model names the observable condition for completion\"\n    effect \"completion_criterion denotes that model field\"\n    unit \"not applicable\"\n    example \"completion_criterion\"\n    lexeme en completion_criterion\n    lexeme ru \"критерий завершения\"\n    lexeme hi \"पूर्णता मानदंड\"\n    lexeme zh 完成标准\n    lexeme es \"criterio de finalización\"\n  coding_search_string\n    defined-by code\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to string\"\n    unit \"not applicable\"\n    example \"string\"\n    lexeme en string\n    lexeme ru строка\n    lexeme hi स्ट्रिंग\n    lexeme zh 字符串\n    lexeme es cadena\n  coding_search_function\n    defined-by function\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to function\"\n    unit \"not applicable\"\n    example \"function\"\n    lexeme en function\n    lexeme ru функция\n    lexeme hi फ़ंक्शन\n    lexeme zh 函数\n    lexeme es función\n  coding_search_array\n    defined-by code\n    role coding_search_subject_kind\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to array\"\n    unit \"not applicable\"\n    example \"array\"\n    lexeme en array\n    lexeme ru массив\n    lexeme hi सरणी\n    lexeme zh 数组\n    lexeme es arreglo\n  coding_member_list_sequence\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to an ordered member list\"\n    unit \"not applicable\"\n    example \"list\"\n    lexeme en list lists sequence vector\n    lexeme ru список списке перечень\n    lexeme hi सूची\n    lexeme zh 列表\n    lexeme es lista listas secuencia\n  coding_member_list_set\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to an unordered member list\"\n    unit \"not applicable\"\n    example \"set\"\n    lexeme en set collection\n    lexeme ru множество коллекция\n    lexeme hi समुच्चय संग्रह\n    lexeme zh 集合\n    lexeme es conjunto colección\n  coding_member_list_group\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to a delimited group of members\"\n    unit \"not applicable\"\n    example \"group\"\n    lexeme en group tuple alternation\n    lexeme ru группа группе кортеж\n    lexeme hi समूह टपल\n    lexeme zh 元组\n    lexeme es grupo\n  coding_search_struct\n    defined-by code\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to struct\"\n    unit \"not applicable\"\n    example \"struct\"\n    lexeme en struct\n    lexeme ru структура\n    lexeme hi स्ट्रक्ट\n    lexeme zh 结构体\n    lexeme es estructura\n  coding_search_rendering\n    defined-by code\n    role coding_search_subject_kind\n    role coding_source_implementation_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to a production rendering artifact\"\n    unit \"not applicable\"\n    example \"Links Notation rendering\"\n    lexeme en rendering renderer serialization\n    lexeme ru рендеринг сериализация\n    lexeme hi रेंडरिंग क्रमांकन\n    lexeme zh 渲染 序列化\n    lexeme es renderizado serialización\n  coding_search_adapter\n    defined-by code\n    role coding_search_subject_kind\n    role coding_source_implementation_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to a production adapter\"\n    unit \"not applicable\"\n    example \"transport adapter\"\n    lexeme en adapter adapters\n    lexeme ru адаптер адаптеры\n    lexeme hi एडाप्टर\n    lexeme zh 适配器\n    lexeme es adaptador adaptadores\n  coding_relationship_reference\n    defined-by code\n    role coding_relationship_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the adjacent source identifier is a relationship key\"\n    unit \"not applicable\"\n    example \"parent relationships\"\n    lexeme en relationship relationships association associations\n    lexeme ru связь связи ассоциация\n    lexeme hi रिलेशनशिप एसोसिएशन\n    lexeme zh 关系 关联\n    lexeme es relación relaciones asociación\n  coding_serialization_action\n    defined-by action\n    role coding_serialization_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested source fact is a serialized representation\"\n    unit \"not applicable\"\n    example \"relationships are encoded\"\n    lexeme en serialize serialized encoding encoded\n    lexeme ru сериализовать сериализованный кодирование\n    lexeme hi \"क्रमबद्ध करना\" एन्कोडिंग\n    lexeme zh 序列化 编码\n    lexeme es serializar serializado codificación\n  coding_search_check\n    defined-by code\n    role coding_search_subject_kind\n    role coding_condition_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to check\"\n    unit \"not applicable\"\n    example \"retry check\"\n    lexeme en check\n    lexeme ru проверка\n    lexeme hi जांच\n    lexeme zh 检查\n    lexeme es comprobación\n  coding_search_completion_criterion\n    defined-by code\n    role coding_search_fact_query\n    precondition \"a workspace-inspection request contains this concept surface\"\n    effect \"the requested fact is searched with its canonical source expression\"\n    unit \"not applicable\"\n    example \"completion contract\"\n    lexeme en \"completion contract\" \"completion criterion\" \"completion criteria\"\n      action completion_criterion\n    lexeme ru \"контракт завершения\" \"критерий завершения\"\n      action completion_criterion\n    lexeme hi \"पूर्णता अनुबंध\" \"पूर्णता मानदंड\"\n      action completion_criterion\n    lexeme zh 完成契约 完成标准\n      action completion_criterion\n    lexeme es \"contrato de finalización\" \"criterio de finalización\"\n      action completion_criterion\n  coding_search_missing_leaf_contract\n    defined-by code\n    role coding_search_fact_query\n    precondition \"a workspace-inspection request asks how a leaf without a completion contract is represented\"\n    effect \"the requested fact is searched by the unresolved single-need sentinel\"\n    unit \"not applicable\"\n    example \"leaf without an observable completion contract\"\n    lexeme en \"leaf without an observable completion contract\" \"leaf without an observable completion criterion\"\n      action \"unresolved_single_need\"\n    lexeme ru \"лист без наблюдаемого контракта завершения\"\n      action \"unresolved_single_need\"\n    lexeme hi \"बिना अवलोकनीय पूर्णता अनुबंध वाला पत्ता\"\n      action \"unresolved_single_need\"\n    lexeme zh 没有可观察完成契约的叶子\n      action \"unresolved_single_need\"\n    lexeme es \"hoja sin un contrato de finalización observable\"\n      action \"unresolved_single_need\"\n  coding_search_issue_creation\n    defined-by code\n    role coding_search_literal_query\n    precondition \"a coding request contains this concept surface\"\n    effect \"the literal-search slot is bound to issue creation\"\n    unit \"not applicable\"\n    example \"GitHub issue creation command\"\n    lexeme en \"GitHub issue creation command\"\n      action \"gh issue create\"\n    lexeme ru \"команда создания задачи GitHub\"\n      action \"gh issue create\"\n    lexeme hi \"GitHub इश्यू बनाने का कमांड\"\n      action \"gh issue create\"\n    lexeme zh \"GitHub 议题创建命令\"\n      action \"gh issue create\"\n    lexeme es \"comando de creación de incidencias de GitHub\"\n      action \"gh issue create\"\n  workspace_inspection_examine\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as looking at what the workspace already holds\"\n    unit \"not applicable\"\n    example \"inspect\"\n    lexeme en inspect examine review audit\n    lexeme ru изучи изучите осмотри просмотри\n    lexeme hi \"निरीक्षण करें\" \"समीक्षा करें\"\n    lexeme zh 检查 审查 审阅\n    lexeme es inspecciona revisa audita examina\n  workspace_inspection_verify\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as confirming a claim against what the workspace holds\"\n    unit \"not applicable\"\n    example \"verify\"\n    lexeme en verify confirm\n    lexeme ru проверь проверьте убедись подтверди\n    lexeme hi \"सत्यापित करें\" \"पुष्टि करें\"\n    lexeme zh 验证 确认\n    lexeme es verifica confirma\n  workspace_inspection_identify\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as locating something inside the workspace\"\n    unit \"not applicable\"\n    example \"identify\"\n    lexeme en identify locate \"find where\" \"where does\" \"where the\"\n    lexeme ru определи \"найди где\" \"где находится\"\n    lexeme hi \"पहचानें\" \"पता लगाएँ\" \"कहाँ है\"\n    lexeme zh 确定 找出 在哪里\n    lexeme es identifica localiza \"dónde se define\"\n","new_str":"meanings\n  coding_constant\n    defined-by code\n    role coding_artifact_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-kind slot is bound to constant\"\n    unit \"not applicable\"\n    example \"constant\"\n    lexeme en constant\n    lexeme ru константа константу\n    lexeme hi स्थिरांक\n    lexeme zh 常量\n    lexeme es constante\n  coding_test\n    defined-by code\n    role coding_artifact_kind\n    role coding_test_artifact_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-kind slot is bound to test\"\n    unit \"not applicable\"\n    example \"test\"\n    lexeme en test regression\n    lexeme ru тест теста\n    lexeme hi परीक्षण\n    lexeme zh 测试\n    lexeme es prueba test\n  coding_public_visibility\n    defined-by relation\n    role coding_visibility\n    precondition \"a coding request contains this concept surface\"\n    effect \"the visibility slot is bound to public\"\n    unit \"not applicable\"\n    example \"public\"\n    lexeme en public\n    lexeme ru публичная публичной публичную\n    lexeme hi सार्वजनिक\n    lexeme zh 公共\n    lexeme es pública público\n  coding_return\n    defined-by action\n    role coding_return_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to return\"\n    unit \"not applicable\"\n    example \"return\"\n    lexeme en return returns returning\n    lexeme ru возвращает вернуть\n    lexeme hi लौटाता लौटाए\n    lexeme zh 返回 返回结果\n    lexeme es devuelve devolver retorna\n  returning\n    defined-by coding_return\n    role coding_return_action\n    precondition \"a coding operation has an available result\"\n    effect \"the operation yields its result to its caller\"\n    unit \"not applicable\"\n    example \"returning a computed value\"\n    lexeme en returning\n    lexeme ru возвращая\n    lexeme hi \"लौटाते हुए\"\n    lexeme zh 正在返回\n    lexeme es devolviendo\n  coding_division\n    defined-by action\n    role coding_division_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to division\"\n    unit \"not applicable\"\n    example \"divided by\"\n    lexeme en \"divided by\" divide dividing\n    lexeme ru делит разделить\n    lexeme hi विभाजित\n    lexeme zh 除以\n    lexeme es \"dividido entre\" \"dividido por\" dividir\n  coding_member_add\n    defined-by action\n    role coding_member_add_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to member insertion\"\n    unit \"not applicable\"\n    example \"add\"\n    lexeme en\n      words add adds insert inserts append appends include includes into \"also holds\" \"also hold\" \"also contains\"\n      words \"also contain\"\n    lexeme ru добавь добавить вставь вставить\n    lexeme hi जोड़ें जोड़ो\n    lexeme zh 添加 插入\n    lexeme es añade añadir inserta insertar\n  coding_module_registration\n    defined-by action\n    role coding_module_registration_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to module registration\"\n    unit \"not applicable\"\n    example \"register the module\"\n    lexeme en \"register the module\" \"export the module\" \"add the module\"\n    lexeme ru \"зарегистрируй модуль\" \"добавь модуль\"\n    lexeme hi \"मॉड्यूल पंजीकृत करें\" \"मॉड्यूल जोड़ें\"\n    lexeme zh 注册模块 添加模块\n    lexeme es \"registra el módulo\" \"exporta el módulo\" \"añade el módulo\"\n  coding_identifier_rename\n    defined-by action\n    role coding_identifier_rename_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to identifier rename\"\n    unit \"not applicable\"\n    example \"rename\"\n    lexeme en rename\n    lexeme ru переименуй\n    lexeme hi \"नाम बदलो\"\n    lexeme zh 重命名\n    lexeme es renombra\n  typo\n    defined-by concept\n    role typo_fix_lead\n    precondition \"a request names a misspelled word in a file without stating its correction\"\n    effect \"the word is corrected to the unique most frequent known word one edit away\"\n    unit \"not applicable\"\n    example \"fix the typo\"\n    lexeme en typo\n    lexeme ru опечатку опечатка\n    lexeme hi \"वर्तनी की गलती\"\n    lexeme zh 错别字 拼写错误\n    lexeme es errata \"error ortográfico\"\n  coding_text_remove\n    defined-by action\n    role coding_text_remove_action\n    precondition \"a coding request names quoted text and the file it should leave\"\n    effect \"the requested operation is bound to removing that text from the file\"\n    unit \"not applicable\"\n    example \"delete the line\"\n    lexeme en delete remove \"get rid of\"\n    lexeme ru удали удалить убери убрать сотри\n    lexeme hi हटाओ हटाएं मिटाओ\n    lexeme zh 删除 删掉 去掉 移除\n    lexeme es elimina eliminar borra borrar quita\n  coding_declaration\n    defined-by code\n    role coding_declaration_noun\n    precondition \"a removal request names the functions it removes by name, with no quoted text\"\n    effect \"the request's names are read as functions the file declares, each removed whole with the comments and attributes directly above it\"\n    unit \"not applicable\"\n    example \"delete the function parse_header from util.rs\"\n    lexeme en \"function\" \"functions\" \"method\" \"methods\"\n    lexeme ru \"функцию\" \"функции\" \"функций\" \"метод\" \"методы\"\n    lexeme hi \"फ़ंक्शन\" \"फंक्शन\"\n    lexeme zh \"函数\" \"方法\"\n    lexeme es \"función\" \"funciones\"\n  # A programming-language keyword is the same word whatever language the\n  # request is written in, so every lexeme lists the same keywords.\n  function_declaration\n    defined-by code\n    role function_declaration_keyword\n    precondition \"a source line declares a function\"\n    effect \"the keyword right before a name followed by its parameter list marks the line as that function's declaration\"\n    unit \"not applicable\"\n    example \"fn in fn parse_header(line: &str)\"\n    lexeme en \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme ru \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme hi \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme zh \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme es \"function\" \"fn\" \"def\" \"func\" \"fun\"\n  coding_artifact_name\n    defined-by relation\n    role coding_name_slot\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-name slot can be bound from the request\"\n    unit \"not applicable\"\n    example \"named …\"\n    lexeme en \"named …\" \"with the name …\"\n    lexeme ru \"с именем …\" \"под названием …\"\n    lexeme hi \"… नाम का\"\n    lexeme zh \"名为 …\"\n    lexeme es \"llamado …\" \"llamada …\" \"con el nombre …\"\n  coding_string_value\n    defined-by relation\n    role coding_value_slot\n    precondition \"a coding request contains this concept surface\"\n    effect \"the string-value slot can be bound from the request\"\n    unit \"not applicable\"\n    example \"with the value …\"\n    lexeme en \"with the value …\" \"whose value is …\"\n    lexeme ru \"со значением …\"\n    lexeme hi \"जिसका मान …\"\n    lexeme zh \"值为 …\"\n    lexeme es \"con el valor …\" \"cuyo valor es …\"\n  coding_bound\n    defined-by code\n    role coding_bound_cue\n    precondition \"a workspace-inspection fact or source identifier contains this concept surface\"\n    effect \"the fact or identifier is read as naming a configured bound\"\n    unit \"not applicable\"\n    example \"max_items is the limit on item count\"\n    lexeme en limit limits bound bounds cap ceiling maximum max\n    lexeme ru лимит предел ограничение максимум\n    lexeme hi सीमा अधिकतम\n    lexeme zh 上限 限制 最大值\n    lexeme es límite tope máximo\n  completion_criterion\n    defined-by code\n    role coding_search_literal_query\n    precondition \"a source model names the observable condition for completion\"\n    effect \"completion_criterion denotes that model field\"\n    unit \"not applicable\"\n    example \"completion_criterion\"\n    lexeme en completion_criterion\n    lexeme ru \"критерий завершения\"\n    lexeme hi \"पूर्णता मानदंड\"\n    lexeme zh 完成标准\n    lexeme es \"criterio de finalización\"\n  coding_search_string\n    defined-by code\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to string\"\n    unit \"not applicable\"\n    example \"string\"\n    lexeme en string\n    lexeme ru строка\n    lexeme hi स्ट्रिंग\n    lexeme zh 字符串\n    lexeme es cadena\n  coding_search_function\n    defined-by function\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to function\"\n    unit \"not applicable\"\n    example \"function\"\n    lexeme en function\n    lexeme ru функция\n    lexeme hi फ़ंक्शन\n    lexeme zh 函数\n    lexeme es función\n  coding_search_array\n    defined-by code\n    role coding_search_subject_kind\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to array\"\n    unit \"not applicable\"\n    example \"array\"\n    lexeme en array\n    lexeme ru массив\n    lexeme hi सरणी\n    lexeme zh 数组\n    lexeme es arreglo\n  coding_member_list_sequence\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to an ordered member list\"\n    unit \"not applicable\"\n    example \"list\"\n    lexeme en list lists sequence vector\n    lexeme ru список списке перечень\n    lexeme hi सूची\n    lexeme zh 列表\n    lexeme es lista listas secuencia\n  coding_member_list_set\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to an unordered member list\"\n    unit \"not applicable\"\n    example \"set\"\n    lexeme en set collection\n    lexeme ru множество коллекция\n    lexeme hi समुच्चय संग्रह\n    lexeme zh 集合\n    lexeme es conjunto colección\n  coding_member_list_group\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to a delimited group of members\"\n    unit \"not applicable\"\n    example \"group\"\n    lexeme en group tuple alternation\n    lexeme ru группа группе кортеж\n    lexeme hi समूह टपल\n    lexeme zh 元组\n    lexeme es grupo\n  coding_search_struct\n    defined-by code\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to struct\"\n    unit \"not applicable\"\n    example \"struct\"\n    lexeme en struct\n    lexeme ru структура\n    lexeme hi स्ट्रक्ट\n    lexeme zh 结构体\n    lexeme es estructura\n  coding_search_rendering\n    defined-by code\n    role coding_search_subject_kind\n    role coding_source_implementation_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to a production rendering artifact\"\n    unit \"not applicable\"\n    example \"Links Notation rendering\"\n    lexeme en rendering renderer serialization\n    lexeme ru рендеринг сериализация\n    lexeme hi रेंडरिंग क्रमांकन\n    lexeme zh 渲染 序列化\n    lexeme es renderizado serialización\n  coding_search_adapter\n    defined-by code\n    role coding_search_subject_kind\n    role coding_source_implementation_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to a production adapter\"\n    unit \"not applicable\"\n    example \"transport adapter\"\n    lexeme en adapter adapters\n    lexeme ru адаптер адаптеры\n    lexeme hi एडाप्टर\n    lexeme zh 适配器\n    lexeme es adaptador adaptadores\n  coding_relationship_reference\n    defined-by code\n    role coding_relationship_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the adjacent source identifier is a relationship key\"\n    unit \"not applicable\"\n    example \"parent relationships\"\n    lexeme en relationship relationships association associations\n    lexeme ru связь связи ассоциация\n    lexeme hi रिलेशनशिप एसोसिएशन\n    lexeme zh 关系 关联\n    lexeme es relación relaciones asociación\n  coding_serialization_action\n    defined-by action\n    role coding_serialization_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested source fact is a serialized representation\"\n    unit \"not applicable\"\n    example \"relationships are encoded\"\n    lexeme en serialize serialized encoding encoded\n    lexeme ru сериализовать сериализованный кодирование\n    lexeme hi \"क्रमबद्ध करना\" एन्कोडिंग\n    lexeme zh 序列化 编码\n    lexeme es serializar serializado codificación\n  coding_search_check\n    defined-by code\n    role coding_search_subject_kind\n    role coding_condition_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to check\"\n    unit \"not applicable\"\n    example \"retry check\"\n    lexeme en check\n    lexeme ru проверка\n    lexeme hi जांच\n    lexeme zh 检查\n    lexeme es comprobación\n  coding_search_completion_criterion\n    defined-by code\n    role coding_search_fact_query\n    precondition \"a workspace-inspection request contains this concept surface\"\n    effect \"the requested fact is searched with its canonical source expression\"\n    unit \"not applicable\"\n    example \"completion contract\"\n    lexeme en \"completion contract\" \"completion criterion\" \"completion criteria\"\n      action completion_criterion\n    lexeme ru \"контракт завершения\" \"критерий завершения\"\n      action completion_criterion\n    lexeme hi \"पूर्णता अनुबंध\" \"पूर्णता मानदंड\"\n      action completion_criterion\n    lexeme zh 完成契约 完成标准\n      action completion_criterion\n    lexeme es \"contrato de finalización\" \"criterio de finalización\"\n      action completion_criterion\n  coding_search_missing_leaf_contract\n    defined-by code\n    role coding_search_fact_query\n    precondition \"a workspace-inspection request asks how a leaf without a completion contract is represented\"\n    effect \"the requested fact is searched by the unresolved single-need sentinel\"\n    unit \"not applicable\"\n    example \"leaf without an observable completion contract\"\n    lexeme en \"leaf without an observable completion contract\" \"leaf without an observable completion criterion\"\n      action \"unresolved_single_need\"\n    lexeme ru \"лист без наблюдаемого контракта завершения\"\n      action \"unresolved_single_need\"\n    lexeme hi \"बिना अवलोकनीय पूर्णता अनुबंध वाला पत्ता\"\n      action \"unresolved_single_need\"\n    lexeme zh 没有可观察完成契约的叶子\n      action \"unresolved_single_need\"\n    lexeme es \"hoja sin un contrato de finalización observable\"\n      action \"unresolved_single_need\"\n  coding_search_issue_creation\n    defined-by code\n    role coding_search_literal_query\n    precondition \"a coding request contains this concept surface\"\n    effect \"the literal-search slot is bound to issue creation\"\n    unit \"not applicable\"\n    example \"GitHub issue creation command\"\n    lexeme en \"GitHub issue creation command\"\n      action \"gh issue create\"\n    lexeme ru \"команда создания задачи GitHub\"\n      action \"gh issue create\"\n    lexeme hi \"GitHub इश्यू बनाने का कमांड\"\n      action \"gh issue create\"\n    lexeme zh \"GitHub 议题创建命令\"\n      action \"gh issue create\"\n    lexeme es \"comando de creación de incidencias de GitHub\"\n      action \"gh issue create\"\n  workspace_inspection_examine\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as looking at what the workspace already holds\"\n    unit \"not applicable\"\n    example \"inspect\"\n    lexeme en inspect examine review audit\n    lexeme ru изучи изучите осмотри просмотри\n    lexeme hi \"निरीक्षण करें\" \"समीक्षा करें\"\n    lexeme zh 检查 审查 审阅\n    lexeme es inspecciona revisa audita examina\n  workspace_inspection_verify\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as confirming a claim against what the workspace holds\"\n    unit \"not applicable\"\n    example \"verify\"\n    lexeme en verify confirm\n    lexeme ru проверь проверьте убедись подтверди\n    lexeme hi \"सत्यापित करें\" \"पुष्टि करें\"\n    lexeme zh 验证 确认\n    lexeme es verifica confirma\n  workspace_inspection_identify\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as locating something inside the workspace\"\n    unit \"not applicable\"\n    example \"identify\"\n    lexeme en identify locate \"find where\" \"where does\" \"where the\"\n    lexeme ru определи \"найди где\" \"где находится\"\n    lexeme hi \"पहचानें\" \"पता लगाएँ\" \"कहाँ है\"\n    lexeme zh 确定 找出 在哪里\n    lexeme es identifica localiza \"dónde se define\"\n","new_string":"meanings\n  coding_constant\n    defined-by code\n    role coding_artifact_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-kind slot is bound to constant\"\n    unit \"not applicable\"\n    example \"constant\"\n    lexeme en constant\n    lexeme ru константа константу\n    lexeme hi स्थिरांक\n    lexeme zh 常量\n    lexeme es constante\n  coding_test\n    defined-by code\n    role coding_artifact_kind\n    role coding_test_artifact_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-kind slot is bound to test\"\n    unit \"not applicable\"\n    example \"test\"\n    lexeme en test regression\n    lexeme ru тест теста\n    lexeme hi परीक्षण\n    lexeme zh 测试\n    lexeme es prueba test\n  coding_public_visibility\n    defined-by relation\n    role coding_visibility\n    precondition \"a coding request contains this concept surface\"\n    effect \"the visibility slot is bound to public\"\n    unit \"not applicable\"\n    example \"public\"\n    lexeme en public\n    lexeme ru публичная публичной публичную\n    lexeme hi सार्वजनिक\n    lexeme zh 公共\n    lexeme es pública público\n  coding_return\n    defined-by action\n    role coding_return_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to return\"\n    unit \"not applicable\"\n    example \"return\"\n    lexeme en return returns returning\n    lexeme ru возвращает вернуть\n    lexeme hi लौटाता लौटाए\n    lexeme zh 返回 返回结果\n    lexeme es devuelve devolver retorna\n  returning\n    defined-by coding_return\n    role coding_return_action\n    precondition \"a coding operation has an available result\"\n    effect \"the operation yields its result to its caller\"\n    unit \"not applicable\"\n    example \"returning a computed value\"\n    lexeme en returning\n    lexeme ru возвращая\n    lexeme hi \"लौटाते हुए\"\n    lexeme zh 正在返回\n    lexeme es devolviendo\n  coding_division\n    defined-by action\n    role coding_division_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to division\"\n    unit \"not applicable\"\n    example \"divided by\"\n    lexeme en \"divided by\" divide dividing\n    lexeme ru делит разделить\n    lexeme hi विभाजित\n    lexeme zh 除以\n    lexeme es \"dividido entre\" \"dividido por\" dividir\n  coding_member_add\n    defined-by action\n    role coding_member_add_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to member insertion\"\n    unit \"not applicable\"\n    example \"add\"\n    lexeme en\n      words add adds insert inserts append appends include includes into \"also holds\" \"also hold\" \"also contains\"\n      words \"also contain\"\n    lexeme ru добавь добавить вставь вставить\n    lexeme hi जोड़ें जोड़ो\n    lexeme zh 添加 插入\n    lexeme es añade añadir inserta insertar\n  coding_module_registration\n    defined-by action\n    role coding_module_registration_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to module registration\"\n    unit \"not applicable\"\n    example \"register the module\"\n    lexeme en \"register the module\" \"export the module\" \"add the module\"\n    lexeme ru \"зарегистрируй модуль\" \"добавь модуль\"\n    lexeme hi \"मॉड्यूल पंजीकृत करें\" \"मॉड्यूल जोड़ें\"\n    lexeme zh 注册模块 添加模块\n    lexeme es \"registra el módulo\" \"exporta el módulo\" \"añade el módulo\"\n  coding_identifier_rename\n    defined-by action\n    role coding_identifier_rename_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to identifier rename\"\n    unit \"not applicable\"\n    example \"rename\"\n    lexeme en rename\n    lexeme ru переименуй\n    lexeme hi \"नाम बदलो\"\n    lexeme zh 重命名\n    lexeme es renombra\n  typo\n    defined-by concept\n    role typo_fix_lead\n    precondition \"a request names a misspelled word in a file without stating its correction\"\n    effect \"the word is corrected to the unique most frequent known word one edit away\"\n    unit \"not applicable\"\n    example \"fix the typo\"\n    lexeme en typo\n    lexeme ru опечатку опечатка\n    lexeme hi \"वर्तनी की गलती\"\n    lexeme zh 错别字 拼写错误\n    lexeme es errata \"error ortográfico\"\n  coding_text_remove\n    defined-by action\n    role coding_text_remove_action\n    precondition \"a coding request names quoted text and the file it should leave\"\n    effect \"the requested operation is bound to removing that text from the file\"\n    unit \"not applicable\"\n    example \"delete the line\"\n    lexeme en delete remove \"get rid of\"\n    lexeme ru удали удалить убери убрать сотри\n    lexeme hi हटाओ हटाएं मिटाओ\n    lexeme zh 删除 删掉 去掉 移除\n    lexeme es elimina eliminar borra borrar quita\n  coding_declaration\n    defined-by code\n    role coding_declaration_noun\n    precondition \"a removal request names the functions it removes by name, with no quoted text\"\n    effect \"the request's names are read as functions the file declares, each removed whole with the comments and attributes directly above it\"\n    unit \"not applicable\"\n    example \"delete the function parse_header from util.rs\"\n    lexeme en \"function\" \"functions\" \"method\" \"methods\"\n    lexeme ru \"функцию\" \"функции\" \"функций\" \"метод\" \"методы\"\n    lexeme hi \"फ़ंक्शन\" \"फंक्शन\"\n    lexeme zh \"函数\" \"方法\"\n    lexeme es \"función\" \"funciones\"\n  # A programming-language keyword is the same word whatever language the\n  # request is written in, so every lexeme lists the same keywords.\n  function_declaration\n    defined-by code\n    role function_declaration_keyword\n    precondition \"a source line declares a function\"\n    effect \"the keyword right before a name followed by its parameter list marks the line as that function's declaration\"\n    unit \"not applicable\"\n    example \"fn in fn parse_header(line: &str)\"\n    lexeme en \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme ru \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme hi \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme zh \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme es \"function\" \"fn\" \"def\" \"func\" \"fun\"\n  coding_artifact_name\n    defined-by relation\n    role coding_name_slot\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-name slot can be bound from the request\"\n    unit \"not applicable\"\n    example \"named …\"\n    lexeme en \"named …\" \"with the name …\"\n    lexeme ru \"с именем …\" \"под названием …\"\n    lexeme hi \"… नाम का\"\n    lexeme zh \"名为 …\"\n    lexeme es \"llamado …\" \"llamada …\" \"con el nombre …\"\n  coding_string_value\n    defined-by relation\n    role coding_value_slot\n    precondition \"a coding request contains this concept surface\"\n    effect \"the string-value slot can be bound from the request\"\n    unit \"not applicable\"\n    example \"with the value …\"\n    lexeme en \"with the value …\" \"whose value is …\"\n    lexeme ru \"со значением …\"\n    lexeme hi \"जिसका मान …\"\n    lexeme zh \"值为 …\"\n    lexeme es \"con el valor …\" \"cuyo valor es …\"\n  coding_bound\n    defined-by code\n    role coding_bound_cue\n    precondition \"a workspace-inspection fact or source identifier contains this concept surface\"\n    effect \"the fact or identifier is read as naming a configured bound\"\n    unit \"not applicable\"\n    example \"max_items is the limit on item count\"\n    lexeme en limit limits bound bounds cap ceiling maximum max\n    lexeme ru лимит предел ограничение максимум\n    lexeme hi सीमा अधिकतम\n    lexeme zh 上限 限制 最大值\n    lexeme es límite tope máximo\n  completion_criterion\n    defined-by code\n    role coding_search_literal_query\n    precondition \"a source model names the observable condition for completion\"\n    effect \"completion_criterion denotes that model field\"\n    unit \"not applicable\"\n    example \"completion_criterion\"\n    lexeme en completion_criterion\n    lexeme ru \"критерий завершения\"\n    lexeme hi \"पूर्णता मानदंड\"\n    lexeme zh 完成标准\n    lexeme es \"criterio de finalización\"\n  coding_search_string\n    defined-by code\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to string\"\n    unit \"not applicable\"\n    example \"string\"\n    lexeme en string\n    lexeme ru строка\n    lexeme hi स्ट्रिंग\n    lexeme zh 字符串\n    lexeme es cadena\n  coding_search_function\n    defined-by function\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to function\"\n    unit \"not applicable\"\n    example \"function\"\n    lexeme en function\n    lexeme ru функция\n    lexeme hi फ़ंक्शन\n    lexeme zh 函数\n    lexeme es función\n  coding_search_array\n    defined-by code\n    role coding_search_subject_kind\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to array\"\n    unit \"not applicable\"\n    example \"array\"\n    lexeme en array\n    lexeme ru массив\n    lexeme hi सरणी\n    lexeme zh 数组\n    lexeme es arreglo\n  coding_member_list_sequence\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to an ordered member list\"\n    unit \"not applicable\"\n    example \"list\"\n    lexeme en list lists sequence vector\n    lexeme ru список списке перечень\n    lexeme hi सूची\n    lexeme zh 列表\n    lexeme es lista listas secuencia\n  coding_member_list_set\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to an unordered member list\"\n    unit \"not applicable\"\n    example \"set\"\n    lexeme en set collection\n    lexeme ru множество коллекция\n    lexeme hi समुच्चय संग्रह\n    lexeme zh 集合\n    lexeme es conjunto colección\n  coding_member_list_group\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to a delimited group of members\"\n    unit \"not applicable\"\n    example \"group\"\n    lexeme en group tuple alternation\n    lexeme ru группа группе кортеж\n    lexeme hi समूह टपल\n    lexeme zh 元组\n    lexeme es grupo\n  coding_search_struct\n    defined-by code\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to struct\"\n    unit \"not applicable\"\n    example \"struct\"\n    lexeme en struct\n    lexeme ru структура\n    lexeme hi स्ट्रक्ट\n    lexeme zh 结构体\n    lexeme es estructura\n  coding_search_rendering\n    defined-by code\n    role coding_search_subject_kind\n    role coding_source_implementation_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to a production rendering artifact\"\n    unit \"not applicable\"\n    example \"Links Notation rendering\"\n    lexeme en rendering renderer serialization\n    lexeme ru рендеринг сериализация\n    lexeme hi रेंडरिंग क्रमांकन\n    lexeme zh 渲染 序列化\n    lexeme es renderizado serialización\n  coding_search_adapter\n    defined-by code\n    role coding_search_subject_kind\n    role coding_source_implementation_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to a production adapter\"\n    unit \"not applicable\"\n    example \"transport adapter\"\n    lexeme en adapter adapters\n    lexeme ru адаптер адаптеры\n    lexeme hi एडाप्टर\n    lexeme zh 适配器\n    lexeme es adaptador adaptadores\n  coding_relationship_reference\n    defined-by code\n    role coding_relationship_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the adjacent source identifier is a relationship key\"\n    unit \"not applicable\"\n    example \"parent relationships\"\n    lexeme en relationship relationships association associations\n    lexeme ru связь связи ассоциация\n    lexeme hi रिलेशनशिप एसोसिएशन\n    lexeme zh 关系 关联\n    lexeme es relación relaciones asociación\n  coding_serialization_action\n    defined-by action\n    role coding_serialization_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested source fact is a serialized representation\"\n    unit \"not applicable\"\n    example \"relationships are encoded\"\n    lexeme en serialize serialized encoding encoded\n    lexeme ru сериализовать сериализованный кодирование\n    lexeme hi \"क्रमबद्ध करना\" एन्कोडिंग\n    lexeme zh 序列化 编码\n    lexeme es serializar serializado codificación\n  coding_search_check\n    defined-by code\n    role coding_search_subject_kind\n    role coding_condition_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to check\"\n    unit \"not applicable\"\n    example \"retry check\"\n    lexeme en check\n    lexeme ru проверка\n    lexeme hi जांच\n    lexeme zh 检查\n    lexeme es comprobación\n  coding_search_completion_criterion\n    defined-by code\n    role coding_search_fact_query\n    precondition \"a workspace-inspection request contains this concept surface\"\n    effect \"the requested fact is searched with its canonical source expression\"\n    unit \"not applicable\"\n    example \"completion contract\"\n    lexeme en \"completion contract\" \"completion criterion\" \"completion criteria\"\n      action completion_criterion\n    lexeme ru \"контракт завершения\" \"критерий завершения\"\n      action completion_criterion\n    lexeme hi \"पूर्णता अनुबंध\" \"पूर्णता मानदंड\"\n      action completion_criterion\n    lexeme zh 完成契约 完成标准\n      action completion_criterion\n    lexeme es \"contrato de finalización\" \"criterio de finalización\"\n      action completion_criterion\n  coding_search_missing_leaf_contract\n    defined-by code\n    role coding_search_fact_query\n    precondition \"a workspace-inspection request asks how a leaf without a completion contract is represented\"\n    effect \"the requested fact is searched by the unresolved single-need sentinel\"\n    unit \"not applicable\"\n    example \"leaf without an observable completion contract\"\n    lexeme en \"leaf without an observable completion contract\" \"leaf without an observable completion criterion\"\n      action \"unresolved_single_need\"\n    lexeme ru \"лист без наблюдаемого контракта завершения\"\n      action \"unresolved_single_need\"\n    lexeme hi \"बिना अवलोकनीय पूर्णता अनुबंध वाला पत्ता\"\n      action \"unresolved_single_need\"\n    lexeme zh 没有可观察完成契约的叶子\n      action \"unresolved_single_need\"\n    lexeme es \"hoja sin un contrato de finalización observable\"\n      action \"unresolved_single_need\"\n  coding_search_issue_creation\n    defined-by code\n    role coding_search_literal_query\n    precondition \"a coding request contains this concept surface\"\n    effect \"the literal-search slot is bound to issue creation\"\n    unit \"not applicable\"\n    example \"GitHub issue creation command\"\n    lexeme en \"GitHub issue creation command\"\n      action \"gh issue create\"\n    lexeme ru \"команда создания задачи GitHub\"\n      action \"gh issue create\"\n    lexeme hi \"GitHub इश्यू बनाने का कमांड\"\n      action \"gh issue create\"\n    lexeme zh \"GitHub 议题创建命令\"\n      action \"gh issue create\"\n    lexeme es \"comando de creación de incidencias de GitHub\"\n      action \"gh issue create\"\n  workspace_inspection_examine\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as looking at what the workspace already holds\"\n    unit \"not applicable\"\n    example \"inspect\"\n    lexeme en inspect examine review audit\n    lexeme ru изучи изучите осмотри просмотри\n    lexeme hi \"निरीक्षण करें\" \"समीक्षा करें\"\n    lexeme zh 检查 审查 审阅\n    lexeme es inspecciona revisa audita examina\n  workspace_inspection_verify\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as confirming a claim against what the workspace holds\"\n    unit \"not applicable\"\n    example \"verify\"\n    lexeme en verify confirm\n    lexeme ru проверь проверьте убедись подтверди\n    lexeme hi \"सत्यापित करें\" \"पुष्टि करें\"\n    lexeme zh 验证 确认\n    lexeme es verifica confirma\n  workspace_inspection_identify\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as locating something inside the workspace\"\n    unit \"not applicable\"\n    example \"identify\"\n    lexeme en identify locate \"find where\" \"where does\" \"where the\"\n    lexeme ru определи \"найди где\" \"где находится\"\n    lexeme hi \"पहचानें\" \"पता लगाएँ\" \"कहाँ है\"\n    lexeme zh 确定 找出 在哪里\n    lexeme es identifica localiza \"dónde se define\"\n","old":"meanings\n  coding_constant\n    defined-by code\n    role coding_artifact_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-kind slot is bound to constant\"\n    unit \"not applicable\"\n    example \"constant\"\n    lexeme en constant\n    lexeme ru константа константу\n    lexeme hi स्थिरांक\n    lexeme zh 常量\n    lexeme es constante\n  coding_test\n    defined-by code\n    role coding_artifact_kind\n    role coding_test_artifact_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-kind slot is bound to test\"\n    unit \"not applicable\"\n    example \"test\"\n    lexeme en test regression\n    lexeme ru тест теста\n    lexeme hi परीक्षण\n    lexeme zh 测试\n    lexeme es prueba test\n  coding_public_visibility\n    defined-by relation\n    role coding_visibility\n    precondition \"a coding request contains this concept surface\"\n    effect \"the visibility slot is bound to public\"\n    unit \"not applicable\"\n    example \"public\"\n    lexeme en public\n    lexeme ru публичная публичной публичную\n    lexeme hi सार्वजनिक\n    lexeme zh 公共\n    lexeme es pública público\n  coding_return\n    defined-by action\n    role coding_return_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to return\"\n    unit \"not applicable\"\n    example \"return\"\n    lexeme en return returns returning\n    lexeme ru возвращает вернуть\n    lexeme hi लौटाता लौटाए\n    lexeme zh 返回\n    lexeme es devuelve devolver retorna\n  coding_division\n    defined-by action\n    role coding_division_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to division\"\n    unit \"not applicable\"\n    example \"divided by\"\n    lexeme en \"divided by\" divide dividing\n    lexeme ru делит разделить\n    lexeme hi विभाजित\n    lexeme zh 除以\n    lexeme es \"dividido entre\" \"dividido por\" dividir\n  coding_member_add\n    defined-by action\n    role coding_member_add_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to member insertion\"\n    unit \"not applicable\"\n    example \"add\"\n    lexeme en\n      words add adds insert inserts append appends include includes into \"also holds\" \"also hold\" \"also contains\"\n      words \"also contain\"\n    lexeme ru добавь добавить вставь вставить\n    lexeme hi जोड़ें जोड़ो\n    lexeme zh 添加 插入\n    lexeme es añade añadir inserta insertar\n  coding_module_registration\n    defined-by action\n    role coding_module_registration_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to module registration\"\n    unit \"not applicable\"\n    example \"register the module\"\n    lexeme en \"register the module\" \"export the module\" \"add the module\"\n    lexeme ru \"зарегистрируй модуль\" \"добавь модуль\"\n    lexeme hi \"मॉड्यूल पंजीकृत करें\" \"मॉड्यूल जोड़ें\"\n    lexeme zh 注册模块 添加模块\n    lexeme es \"registra el módulo\" \"exporta el módulo\" \"añade el módulo\"\n  coding_identifier_rename\n    defined-by action\n    role coding_identifier_rename_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to identifier rename\"\n    unit \"not applicable\"\n    example \"rename\"\n    lexeme en rename\n    lexeme ru переименуй\n    lexeme hi \"नाम बदलो\"\n    lexeme zh 重命名\n    lexeme es renombra\n  typo\n    defined-by concept\n    role typo_fix_lead\n    precondition \"a request names a misspelled word in a file without stating its correction\"\n    effect \"the word is corrected to the unique most frequent known word one edit away\"\n    unit \"not applicable\"\n    example \"fix the typo\"\n    lexeme en typo\n    lexeme ru опечатку опечатка\n    lexeme hi \"वर्तनी की गलती\"\n    lexeme zh 错别字 拼写错误\n    lexeme es errata \"error ortográfico\"\n  coding_text_remove\n    defined-by action\n    role coding_text_remove_action\n    precondition \"a coding request names quoted text and the file it should leave\"\n    effect \"the requested operation is bound to removing that text from the file\"\n    unit \"not applicable\"\n    example \"delete the line\"\n    lexeme en delete remove \"get rid of\"\n    lexeme ru удали удалить убери убрать сотри\n    lexeme hi हटाओ हटाएं मिटाओ\n    lexeme zh 删除 删掉 去掉 移除\n    lexeme es elimina eliminar borra borrar quita\n  coding_declaration\n    defined-by code\n    role coding_declaration_noun\n    precondition \"a removal request names the functions it removes by name, with no quoted text\"\n    effect \"the request's names are read as functions the file declares, each removed whole with the comments and attributes directly above it\"\n    unit \"not applicable\"\n    example \"delete the function parse_header from util.rs\"\n    lexeme en \"function\" \"functions\" \"method\" \"methods\"\n    lexeme ru \"функцию\" \"функции\" \"функций\" \"метод\" \"методы\"\n    lexeme hi \"फ़ंक्शन\" \"फंक्शन\"\n    lexeme zh \"函数\" \"方法\"\n    lexeme es \"función\" \"funciones\"\n  # A programming-language keyword is the same word whatever language the\n  # request is written in, so every lexeme lists the same keywords.\n  function_declaration\n    defined-by code\n    role function_declaration_keyword\n    precondition \"a source line declares a function\"\n    effect \"the keyword right before a name followed by its parameter list marks the line as that function's declaration\"\n    unit \"not applicable\"\n    example \"fn in fn parse_header(line: &str)\"\n    lexeme en \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme ru \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme hi \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme zh \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme es \"function\" \"fn\" \"def\" \"func\" \"fun\"\n  coding_artifact_name\n    defined-by relation\n    role coding_name_slot\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-name slot can be bound from the request\"\n    unit \"not applicable\"\n    example \"named …\"\n    lexeme en \"named …\" \"with the name …\"\n    lexeme ru \"с именем …\" \"под названием …\"\n    lexeme hi \"… नाम का\"\n    lexeme zh \"名为 …\"\n    lexeme es \"llamado …\" \"llamada …\" \"con el nombre …\"\n  coding_string_value\n    defined-by relation\n    role coding_value_slot\n    precondition \"a coding request contains this concept surface\"\n    effect \"the string-value slot can be bound from the request\"\n    unit \"not applicable\"\n    example \"with the value …\"\n    lexeme en \"with the value …\" \"whose value is …\"\n    lexeme ru \"со значением …\"\n    lexeme hi \"जिसका मान …\"\n    lexeme zh \"值为 …\"\n    lexeme es \"con el valor …\" \"cuyo valor es …\"\n  coding_bound\n    defined-by code\n    role coding_bound_cue\n    precondition \"a workspace-inspection fact or source identifier contains this concept surface\"\n    effect \"the fact or identifier is read as naming a configured bound\"\n    unit \"not applicable\"\n    example \"max_items is the limit on item count\"\n    lexeme en limit limits bound bounds cap ceiling maximum max\n    lexeme ru лимит предел ограничение максимум\n    lexeme hi सीमा अधिकतम\n    lexeme zh 上限 限制 最大值\n    lexeme es límite tope máximo\n  completion_criterion\n    defined-by code\n    role coding_search_literal_query\n    precondition \"a source model names the observable condition for completion\"\n    effect \"completion_criterion denotes that model field\"\n    unit \"not applicable\"\n    example \"completion_criterion\"\n    lexeme en completion_criterion\n    lexeme ru \"критерий завершения\"\n    lexeme hi \"पूर्णता मानदंड\"\n    lexeme zh 完成标准\n    lexeme es \"criterio de finalización\"\n  coding_search_string\n    defined-by code\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to string\"\n    unit \"not applicable\"\n    example \"string\"\n    lexeme en string\n    lexeme ru строка\n    lexeme hi स्ट्रिंग\n    lexeme zh 字符串\n    lexeme es cadena\n  coding_search_function\n    defined-by function\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to function\"\n    unit \"not applicable\"\n    example \"function\"\n    lexeme en function\n    lexeme ru функция\n    lexeme hi फ़ंक्शन\n    lexeme zh 函数\n    lexeme es función\n  coding_search_array\n    defined-by code\n    role coding_search_subject_kind\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to array\"\n    unit \"not applicable\"\n    example \"array\"\n    lexeme en array\n    lexeme ru массив\n    lexeme hi सरणी\n    lexeme zh 数组\n    lexeme es arreglo\n  coding_member_list_sequence\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to an ordered member list\"\n    unit \"not applicable\"\n    example \"list\"\n    lexeme en list lists sequence vector\n    lexeme ru список списке перечень\n    lexeme hi सूची\n    lexeme zh 列表\n    lexeme es lista listas secuencia\n  coding_member_list_set\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to an unordered member list\"\n    unit \"not applicable\"\n    example \"set\"\n    lexeme en set collection\n    lexeme ru множество коллекция\n    lexeme hi समुच्चय संग्रह\n    lexeme zh 集合\n    lexeme es conjunto colección\n  coding_member_list_group\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to a delimited group of members\"\n    unit \"not applicable\"\n    example \"group\"\n    lexeme en group tuple alternation\n    lexeme ru группа группе кортеж\n    lexeme hi समूह टपल\n    lexeme zh 元组\n    lexeme es grupo\n  coding_search_struct\n    defined-by code\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to struct\"\n    unit \"not applicable\"\n    example \"struct\"\n    lexeme en struct\n    lexeme ru структура\n    lexeme hi स्ट्रक्ट\n    lexeme zh 结构体\n    lexeme es estructura\n  coding_search_rendering\n    defined-by code\n    role coding_search_subject_kind\n    role coding_source_implementation_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to a production rendering artifact\"\n    unit \"not applicable\"\n    example \"Links Notation rendering\"\n    lexeme en rendering renderer serialization\n    lexeme ru рендеринг сериализация\n    lexeme hi रेंडरिंग क्रमांकन\n    lexeme zh 渲染 序列化\n    lexeme es renderizado serialización\n  coding_search_adapter\n    defined-by code\n    role coding_search_subject_kind\n    role coding_source_implementation_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to a production adapter\"\n    unit \"not applicable\"\n    example \"transport adapter\"\n    lexeme en adapter adapters\n    lexeme ru адаптер адаптеры\n    lexeme hi एडाप्टर\n    lexeme zh 适配器\n    lexeme es adaptador adaptadores\n  coding_relationship_reference\n    defined-by code\n    role coding_relationship_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the adjacent source identifier is a relationship key\"\n    unit \"not applicable\"\n    example \"parent relationships\"\n    lexeme en relationship relationships association associations\n    lexeme ru связь связи ассоциация\n    lexeme hi रिलेशनशिप एसोसिएशन\n    lexeme zh 关系 关联\n    lexeme es relación relaciones asociación\n  coding_serialization_action\n    defined-by action\n    role coding_serialization_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested source fact is a serialized representation\"\n    unit \"not applicable\"\n    example \"relationships are encoded\"\n    lexeme en serialize serialized encoding encoded\n    lexeme ru сериализовать сериализованный кодирование\n    lexeme hi \"क्रमबद्ध करना\" एन्कोडिंग\n    lexeme zh 序列化 编码\n    lexeme es serializar serializado codificación\n  coding_search_check\n    defined-by code\n    role coding_search_subject_kind\n    role coding_condition_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to check\"\n    unit \"not applicable\"\n    example \"retry check\"\n    lexeme en check\n    lexeme ru проверка\n    lexeme hi जांच\n    lexeme zh 检查\n    lexeme es comprobación\n  coding_search_completion_criterion\n    defined-by code\n    role coding_search_fact_query\n    precondition \"a workspace-inspection request contains this concept surface\"\n    effect \"the requested fact is searched with its canonical source expression\"\n    unit \"not applicable\"\n    example \"completion contract\"\n    lexeme en \"completion contract\" \"completion criterion\" \"completion criteria\"\n      action completion_criterion\n    lexeme ru \"контракт завершения\" \"критерий завершения\"\n      action completion_criterion\n    lexeme hi \"पूर्णता अनुबंध\" \"पूर्णता मानदंड\"\n      action completion_criterion\n    lexeme zh 完成契约 完成标准\n      action completion_criterion\n    lexeme es \"contrato de finalización\" \"criterio de finalización\"\n      action completion_criterion\n  coding_search_missing_leaf_contract\n    defined-by code\n    role coding_search_fact_query\n    precondition \"a workspace-inspection request asks how a leaf without a completion contract is represented\"\n    effect \"the requested fact is searched by the unresolved single-need sentinel\"\n    unit \"not applicable\"\n    example \"leaf without an observable completion contract\"\n    lexeme en \"leaf without an observable completion contract\" \"leaf without an observable completion criterion\"\n      action \"unresolved_single_need\"\n    lexeme ru \"лист без наблюдаемого контракта завершения\"\n      action \"unresolved_single_need\"\n    lexeme hi \"बिना अवलोकनीय पूर्णता अनुबंध वाला पत्ता\"\n      action \"unresolved_single_need\"\n    lexeme zh 没有可观察完成契约的叶子\n      action \"unresolved_single_need\"\n    lexeme es \"hoja sin un contrato de finalización observable\"\n      action \"unresolved_single_need\"\n  coding_search_issue_creation\n    defined-by code\n    role coding_search_literal_query\n    precondition \"a coding request contains this concept surface\"\n    effect \"the literal-search slot is bound to issue creation\"\n    unit \"not applicable\"\n    example \"GitHub issue creation command\"\n    lexeme en \"GitHub issue creation command\"\n      action \"gh issue create\"\n    lexeme ru \"команда создания задачи GitHub\"\n      action \"gh issue create\"\n    lexeme hi \"GitHub इश्यू बनाने का कमांड\"\n      action \"gh issue create\"\n    lexeme zh \"GitHub 议题创建命令\"\n      action \"gh issue create\"\n    lexeme es \"comando de creación de incidencias de GitHub\"\n      action \"gh issue create\"\n  workspace_inspection_examine\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as looking at what the workspace already holds\"\n    unit \"not applicable\"\n    example \"inspect\"\n    lexeme en inspect examine review audit\n    lexeme ru изучи изучите осмотри просмотри\n    lexeme hi \"निरीक्षण करें\" \"समीक्षा करें\"\n    lexeme zh 检查 审查 审阅\n    lexeme es inspecciona revisa audita examina\n  workspace_inspection_verify\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as confirming a claim against what the workspace holds\"\n    unit \"not applicable\"\n    example \"verify\"\n    lexeme en verify confirm\n    lexeme ru проверь проверьте убедись подтверди\n    lexeme hi \"सत्यापित करें\" \"पुष्टि करें\"\n    lexeme zh 验证 确认\n    lexeme es verifica confirma\n  workspace_inspection_identify\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as locating something inside the workspace\"\n    unit \"not applicable\"\n    example \"identify\"\n    lexeme en identify locate \"find where\" \"where does\" \"where the\"\n    lexeme ru определи \"найди где\" \"где находится\"\n    lexeme hi \"पहचानें\" \"पता लगाएँ\" \"कहाँ है\"\n    lexeme zh 确定 找出 在哪里\n    lexeme es identifica localiza \"dónde se define\"\n","oldString":"meanings\n  coding_constant\n    defined-by code\n    role coding_artifact_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-kind slot is bound to constant\"\n    unit \"not applicable\"\n    example \"constant\"\n    lexeme en constant\n    lexeme ru константа константу\n    lexeme hi स्थिरांक\n    lexeme zh 常量\n    lexeme es constante\n  coding_test\n    defined-by code\n    role coding_artifact_kind\n    role coding_test_artifact_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-kind slot is bound to test\"\n    unit \"not applicable\"\n    example \"test\"\n    lexeme en test regression\n    lexeme ru тест теста\n    lexeme hi परीक्षण\n    lexeme zh 测试\n    lexeme es prueba test\n  coding_public_visibility\n    defined-by relation\n    role coding_visibility\n    precondition \"a coding request contains this concept surface\"\n    effect \"the visibility slot is bound to public\"\n    unit \"not applicable\"\n    example \"public\"\n    lexeme en public\n    lexeme ru публичная публичной публичную\n    lexeme hi सार्वजनिक\n    lexeme zh 公共\n    lexeme es pública público\n  coding_return\n    defined-by action\n    role coding_return_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to return\"\n    unit \"not applicable\"\n    example \"return\"\n    lexeme en return returns returning\n    lexeme ru возвращает вернуть\n    lexeme hi लौटाता लौटाए\n    lexeme zh 返回\n    lexeme es devuelve devolver retorna\n  coding_division\n    defined-by action\n    role coding_division_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to division\"\n    unit \"not applicable\"\n    example \"divided by\"\n    lexeme en \"divided by\" divide dividing\n    lexeme ru делит разделить\n    lexeme hi विभाजित\n    lexeme zh 除以\n    lexeme es \"dividido entre\" \"dividido por\" dividir\n  coding_member_add\n    defined-by action\n    role coding_member_add_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to member insertion\"\n    unit \"not applicable\"\n    example \"add\"\n    lexeme en\n      words add adds insert inserts append appends include includes into \"also holds\" \"also hold\" \"also contains\"\n      words \"also contain\"\n    lexeme ru добавь добавить вставь вставить\n    lexeme hi जोड़ें जोड़ो\n    lexeme zh 添加 插入\n    lexeme es añade añadir inserta insertar\n  coding_module_registration\n    defined-by action\n    role coding_module_registration_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to module registration\"\n    unit \"not applicable\"\n    example \"register the module\"\n    lexeme en \"register the module\" \"export the module\" \"add the module\"\n    lexeme ru \"зарегистрируй модуль\" \"добавь модуль\"\n    lexeme hi \"मॉड्यूल पंजीकृत करें\" \"मॉड्यूल जोड़ें\"\n    lexeme zh 注册模块 添加模块\n    lexeme es \"registra el módulo\" \"exporta el módulo\" \"añade el módulo\"\n  coding_identifier_rename\n    defined-by action\n    role coding_identifier_rename_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to identifier rename\"\n    unit \"not applicable\"\n    example \"rename\"\n    lexeme en rename\n    lexeme ru переименуй\n    lexeme hi \"नाम बदलो\"\n    lexeme zh 重命名\n    lexeme es renombra\n  typo\n    defined-by concept\n    role typo_fix_lead\n    precondition \"a request names a misspelled word in a file without stating its correction\"\n    effect \"the word is corrected to the unique most frequent known word one edit away\"\n    unit \"not applicable\"\n    example \"fix the typo\"\n    lexeme en typo\n    lexeme ru опечатку опечатка\n    lexeme hi \"वर्तनी की गलती\"\n    lexeme zh 错别字 拼写错误\n    lexeme es errata \"error ortográfico\"\n  coding_text_remove\n    defined-by action\n    role coding_text_remove_action\n    precondition \"a coding request names quoted text and the file it should leave\"\n    effect \"the requested operation is bound to removing that text from the file\"\n    unit \"not applicable\"\n    example \"delete the line\"\n    lexeme en delete remove \"get rid of\"\n    lexeme ru удали удалить убери убрать сотри\n    lexeme hi हटाओ हटाएं मिटाओ\n    lexeme zh 删除 删掉 去掉 移除\n    lexeme es elimina eliminar borra borrar quita\n  coding_declaration\n    defined-by code\n    role coding_declaration_noun\n    precondition \"a removal request names the functions it removes by name, with no quoted text\"\n    effect \"the request's names are read as functions the file declares, each removed whole with the comments and attributes directly above it\"\n    unit \"not applicable\"\n    example \"delete the function parse_header from util.rs\"\n    lexeme en \"function\" \"functions\" \"method\" \"methods\"\n    lexeme ru \"функцию\" \"функции\" \"функций\" \"метод\" \"методы\"\n    lexeme hi \"फ़ंक्शन\" \"फंक्शन\"\n    lexeme zh \"函数\" \"方法\"\n    lexeme es \"función\" \"funciones\"\n  # A programming-language keyword is the same word whatever language the\n  # request is written in, so every lexeme lists the same keywords.\n  function_declaration\n    defined-by code\n    role function_declaration_keyword\n    precondition \"a source line declares a function\"\n    effect \"the keyword right before a name followed by its parameter list marks the line as that function's declaration\"\n    unit \"not applicable\"\n    example \"fn in fn parse_header(line: &str)\"\n    lexeme en \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme ru \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme hi \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme zh \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme es \"function\" \"fn\" \"def\" \"func\" \"fun\"\n  coding_artifact_name\n    defined-by relation\n    role coding_name_slot\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-name slot can be bound from the request\"\n    unit \"not applicable\"\n    example \"named …\"\n    lexeme en \"named …\" \"with the name …\"\n    lexeme ru \"с именем …\" \"под названием …\"\n    lexeme hi \"… नाम का\"\n    lexeme zh \"名为 …\"\n    lexeme es \"llamado …\" \"llamada …\" \"con el nombre …\"\n  coding_string_value\n    defined-by relation\n    role coding_value_slot\n    precondition \"a coding request contains this concept surface\"\n    effect \"the string-value slot can be bound from the request\"\n    unit \"not applicable\"\n    example \"with the value …\"\n    lexeme en \"with the value …\" \"whose value is …\"\n    lexeme ru \"со значением …\"\n    lexeme hi \"जिसका मान …\"\n    lexeme zh \"值为 …\"\n    lexeme es \"con el valor …\" \"cuyo valor es …\"\n  coding_bound\n    defined-by code\n    role coding_bound_cue\n    precondition \"a workspace-inspection fact or source identifier contains this concept surface\"\n    effect \"the fact or identifier is read as naming a configured bound\"\n    unit \"not applicable\"\n    example \"max_items is the limit on item count\"\n    lexeme en limit limits bound bounds cap ceiling maximum max\n    lexeme ru лимит предел ограничение максимум\n    lexeme hi सीमा अधिकतम\n    lexeme zh 上限 限制 最大值\n    lexeme es límite tope máximo\n  completion_criterion\n    defined-by code\n    role coding_search_literal_query\n    precondition \"a source model names the observable condition for completion\"\n    effect \"completion_criterion denotes that model field\"\n    unit \"not applicable\"\n    example \"completion_criterion\"\n    lexeme en completion_criterion\n    lexeme ru \"критерий завершения\"\n    lexeme hi \"पूर्णता मानदंड\"\n    lexeme zh 完成标准\n    lexeme es \"criterio de finalización\"\n  coding_search_string\n    defined-by code\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to string\"\n    unit \"not applicable\"\n    example \"string\"\n    lexeme en string\n    lexeme ru строка\n    lexeme hi स्ट्रिंग\n    lexeme zh 字符串\n    lexeme es cadena\n  coding_search_function\n    defined-by function\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to function\"\n    unit \"not applicable\"\n    example \"function\"\n    lexeme en function\n    lexeme ru функция\n    lexeme hi फ़ंक्शन\n    lexeme zh 函数\n    lexeme es función\n  coding_search_array\n    defined-by code\n    role coding_search_subject_kind\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to array\"\n    unit \"not applicable\"\n    example \"array\"\n    lexeme en array\n    lexeme ru массив\n    lexeme hi सरणी\n    lexeme zh 数组\n    lexeme es arreglo\n  coding_member_list_sequence\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to an ordered member list\"\n    unit \"not applicable\"\n    example \"list\"\n    lexeme en list lists sequence vector\n    lexeme ru список списке перечень\n    lexeme hi सूची\n    lexeme zh 列表\n    lexeme es lista listas secuencia\n  coding_member_list_set\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to an unordered member list\"\n    unit \"not applicable\"\n    example \"set\"\n    lexeme en set collection\n    lexeme ru множество коллекция\n    lexeme hi समुच्चय संग्रह\n    lexeme zh 集合\n    lexeme es conjunto colección\n  coding_member_list_group\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to a delimited group of members\"\n    unit \"not applicable\"\n    example \"group\"\n    lexeme en group tuple alternation\n    lexeme ru группа группе кортеж\n    lexeme hi समूह टपल\n    lexeme zh 元组\n    lexeme es grupo\n  coding_search_struct\n    defined-by code\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to struct\"\n    unit \"not applicable\"\n    example \"struct\"\n    lexeme en struct\n    lexeme ru структура\n    lexeme hi स्ट्रक्ट\n    lexeme zh 结构体\n    lexeme es estructura\n  coding_search_rendering\n    defined-by code\n    role coding_search_subject_kind\n    role coding_source_implementation_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to a production rendering artifact\"\n    unit \"not applicable\"\n    example \"Links Notation rendering\"\n    lexeme en rendering renderer serialization\n    lexeme ru рендеринг сериализация\n    lexeme hi रेंडरिंग क्रमांकन\n    lexeme zh 渲染 序列化\n    lexeme es renderizado serialización\n  coding_search_adapter\n    defined-by code\n    role coding_search_subject_kind\n    role coding_source_implementation_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to a production adapter\"\n    unit \"not applicable\"\n    example \"transport adapter\"\n    lexeme en adapter adapters\n    lexeme ru адаптер адаптеры\n    lexeme hi एडाप्टर\n    lexeme zh 适配器\n    lexeme es adaptador adaptadores\n  coding_relationship_reference\n    defined-by code\n    role coding_relationship_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the adjacent source identifier is a relationship key\"\n    unit \"not applicable\"\n    example \"parent relationships\"\n    lexeme en relationship relationships association associations\n    lexeme ru связь связи ассоциация\n    lexeme hi रिलेशनशिप एसोसिएशन\n    lexeme zh 关系 关联\n    lexeme es relación relaciones asociación\n  coding_serialization_action\n    defined-by action\n    role coding_serialization_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested source fact is a serialized representation\"\n    unit \"not applicable\"\n    example \"relationships are encoded\"\n    lexeme en serialize serialized encoding encoded\n    lexeme ru сериализовать сериализованный кодирование\n    lexeme hi \"क्रमबद्ध करना\" एन्कोडिंग\n    lexeme zh 序列化 编码\n    lexeme es serializar serializado codificación\n  coding_search_check\n    defined-by code\n    role coding_search_subject_kind\n    role coding_condition_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to check\"\n    unit \"not applicable\"\n    example \"retry check\"\n    lexeme en check\n    lexeme ru проверка\n    lexeme hi जांच\n    lexeme zh 检查\n    lexeme es comprobación\n  coding_search_completion_criterion\n    defined-by code\n    role coding_search_fact_query\n    precondition \"a workspace-inspection request contains this concept surface\"\n    effect \"the requested fact is searched with its canonical source expression\"\n    unit \"not applicable\"\n    example \"completion contract\"\n    lexeme en \"completion contract\" \"completion criterion\" \"completion criteria\"\n      action completion_criterion\n    lexeme ru \"контракт завершения\" \"критерий завершения\"\n      action completion_criterion\n    lexeme hi \"पूर्णता अनुबंध\" \"पूर्णता मानदंड\"\n      action completion_criterion\n    lexeme zh 完成契约 完成标准\n      action completion_criterion\n    lexeme es \"contrato de finalización\" \"criterio de finalización\"\n      action completion_criterion\n  coding_search_missing_leaf_contract\n    defined-by code\n    role coding_search_fact_query\n    precondition \"a workspace-inspection request asks how a leaf without a completion contract is represented\"\n    effect \"the requested fact is searched by the unresolved single-need sentinel\"\n    unit \"not applicable\"\n    example \"leaf without an observable completion contract\"\n    lexeme en \"leaf without an observable completion contract\" \"leaf without an observable completion criterion\"\n      action \"unresolved_single_need\"\n    lexeme ru \"лист без наблюдаемого контракта завершения\"\n      action \"unresolved_single_need\"\n    lexeme hi \"बिना अवलोकनीय पूर्णता अनुबंध वाला पत्ता\"\n      action \"unresolved_single_need\"\n    lexeme zh 没有可观察完成契约的叶子\n      action \"unresolved_single_need\"\n    lexeme es \"hoja sin un contrato de finalización observable\"\n      action \"unresolved_single_need\"\n  coding_search_issue_creation\n    defined-by code\n    role coding_search_literal_query\n    precondition \"a coding request contains this concept surface\"\n    effect \"the literal-search slot is bound to issue creation\"\n    unit \"not applicable\"\n    example \"GitHub issue creation command\"\n    lexeme en \"GitHub issue creation command\"\n      action \"gh issue create\"\n    lexeme ru \"команда создания задачи GitHub\"\n      action \"gh issue create\"\n    lexeme hi \"GitHub इश्यू बनाने का कमांड\"\n      action \"gh issue create\"\n    lexeme zh \"GitHub 议题创建命令\"\n      action \"gh issue create\"\n    lexeme es \"comando de creación de incidencias de GitHub\"\n      action \"gh issue create\"\n  workspace_inspection_examine\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as looking at what the workspace already holds\"\n    unit \"not applicable\"\n    example \"inspect\"\n    lexeme en inspect examine review audit\n    lexeme ru изучи изучите осмотри просмотри\n    lexeme hi \"निरीक्षण करें\" \"समीक्षा करें\"\n    lexeme zh 检查 审查 审阅\n    lexeme es inspecciona revisa audita examina\n  workspace_inspection_verify\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as confirming a claim against what the workspace holds\"\n    unit \"not applicable\"\n    example \"verify\"\n    lexeme en verify confirm\n    lexeme ru проверь проверьте убедись подтверди\n    lexeme hi \"सत्यापित करें\" \"पुष्टि करें\"\n    lexeme zh 验证 确认\n    lexeme es verifica confirma\n  workspace_inspection_identify\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as locating something inside the workspace\"\n    unit \"not applicable\"\n    example \"identify\"\n    lexeme en identify locate \"find where\" \"where does\" \"where the\"\n    lexeme ru определи \"найди где\" \"где находится\"\n    lexeme hi \"पहचानें\" \"पता लगाएँ\" \"कहाँ है\"\n    lexeme zh 确定 找出 在哪里\n    lexeme es identifica localiza \"dónde se define\"\n","old_str":"meanings\n  coding_constant\n    defined-by code\n    role coding_artifact_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-kind slot is bound to constant\"\n    unit \"not applicable\"\n    example \"constant\"\n    lexeme en constant\n    lexeme ru константа константу\n    lexeme hi स्थिरांक\n    lexeme zh 常量\n    lexeme es constante\n  coding_test\n    defined-by code\n    role coding_artifact_kind\n    role coding_test_artifact_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-kind slot is bound to test\"\n    unit \"not applicable\"\n    example \"test\"\n    lexeme en test regression\n    lexeme ru тест теста\n    lexeme hi परीक्षण\n    lexeme zh 测试\n    lexeme es prueba test\n  coding_public_visibility\n    defined-by relation\n    role coding_visibility\n    precondition \"a coding request contains this concept surface\"\n    effect \"the visibility slot is bound to public\"\n    unit \"not applicable\"\n    example \"public\"\n    lexeme en public\n    lexeme ru публичная публичной публичную\n    lexeme hi सार्वजनिक\n    lexeme zh 公共\n    lexeme es pública público\n  coding_return\n    defined-by action\n    role coding_return_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to return\"\n    unit \"not applicable\"\n    example \"return\"\n    lexeme en return returns returning\n    lexeme ru возвращает вернуть\n    lexeme hi लौटाता लौटाए\n    lexeme zh 返回\n    lexeme es devuelve devolver retorna\n  coding_division\n    defined-by action\n    role coding_division_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to division\"\n    unit \"not applicable\"\n    example \"divided by\"\n    lexeme en \"divided by\" divide dividing\n    lexeme ru делит разделить\n    lexeme hi विभाजित\n    lexeme zh 除以\n    lexeme es \"dividido entre\" \"dividido por\" dividir\n  coding_member_add\n    defined-by action\n    role coding_member_add_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to member insertion\"\n    unit \"not applicable\"\n    example \"add\"\n    lexeme en\n      words add adds insert inserts append appends include includes into \"also holds\" \"also hold\" \"also contains\"\n      words \"also contain\"\n    lexeme ru добавь добавить вставь вставить\n    lexeme hi जोड़ें जोड़ो\n    lexeme zh 添加 插入\n    lexeme es añade añadir inserta insertar\n  coding_module_registration\n    defined-by action\n    role coding_module_registration_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to module registration\"\n    unit \"not applicable\"\n    example \"register the module\"\n    lexeme en \"register the module\" \"export the module\" \"add the module\"\n    lexeme ru \"зарегистрируй модуль\" \"добавь модуль\"\n    lexeme hi \"मॉड्यूल पंजीकृत करें\" \"मॉड्यूल जोड़ें\"\n    lexeme zh 注册模块 添加模块\n    lexeme es \"registra el módulo\" \"exporta el módulo\" \"añade el módulo\"\n  coding_identifier_rename\n    defined-by action\n    role coding_identifier_rename_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to identifier rename\"\n    unit \"not applicable\"\n    example \"rename\"\n    lexeme en rename\n    lexeme ru переименуй\n    lexeme hi \"नाम बदलो\"\n    lexeme zh 重命名\n    lexeme es renombra\n  typo\n    defined-by concept\n    role typo_fix_lead\n    precondition \"a request names a misspelled word in a file without stating its correction\"\n    effect \"the word is corrected to the unique most frequent known word one edit away\"\n    unit \"not applicable\"\n    example \"fix the typo\"\n    lexeme en typo\n    lexeme ru опечатку опечатка\n    lexeme hi \"वर्तनी की गलती\"\n    lexeme zh 错别字 拼写错误\n    lexeme es errata \"error ortográfico\"\n  coding_text_remove\n    defined-by action\n    role coding_text_remove_action\n    precondition \"a coding request names quoted text and the file it should leave\"\n    effect \"the requested operation is bound to removing that text from the file\"\n    unit \"not applicable\"\n    example \"delete the line\"\n    lexeme en delete remove \"get rid of\"\n    lexeme ru удали удалить убери убрать сотри\n    lexeme hi हटाओ हटाएं मिटाओ\n    lexeme zh 删除 删掉 去掉 移除\n    lexeme es elimina eliminar borra borrar quita\n  coding_declaration\n    defined-by code\n    role coding_declaration_noun\n    precondition \"a removal request names the functions it removes by name, with no quoted text\"\n    effect \"the request's names are read as functions the file declares, each removed whole with the comments and attributes directly above it\"\n    unit \"not applicable\"\n    example \"delete the function parse_header from util.rs\"\n    lexeme en \"function\" \"functions\" \"method\" \"methods\"\n    lexeme ru \"функцию\" \"функции\" \"функций\" \"метод\" \"методы\"\n    lexeme hi \"फ़ंक्शन\" \"फंक्शन\"\n    lexeme zh \"函数\" \"方法\"\n    lexeme es \"función\" \"funciones\"\n  # A programming-language keyword is the same word whatever language the\n  # request is written in, so every lexeme lists the same keywords.\n  function_declaration\n    defined-by code\n    role function_declaration_keyword\n    precondition \"a source line declares a function\"\n    effect \"the keyword right before a name followed by its parameter list marks the line as that function's declaration\"\n    unit \"not applicable\"\n    example \"fn in fn parse_header(line: &str)\"\n    lexeme en \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme ru \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme hi \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme zh \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme es \"function\" \"fn\" \"def\" \"func\" \"fun\"\n  coding_artifact_name\n    defined-by relation\n    role coding_name_slot\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-name slot can be bound from the request\"\n    unit \"not applicable\"\n    example \"named …\"\n    lexeme en \"named …\" \"with the name …\"\n    lexeme ru \"с именем …\" \"под названием …\"\n    lexeme hi \"… नाम का\"\n    lexeme zh \"名为 …\"\n    lexeme es \"llamado …\" \"llamada …\" \"con el nombre …\"\n  coding_string_value\n    defined-by relation\n    role coding_value_slot\n    precondition \"a coding request contains this concept surface\"\n    effect \"the string-value slot can be bound from the request\"\n    unit \"not applicable\"\n    example \"with the value …\"\n    lexeme en \"with the value …\" \"whose value is …\"\n    lexeme ru \"со значением …\"\n    lexeme hi \"जिसका मान …\"\n    lexeme zh \"值为 …\"\n    lexeme es \"con el valor …\" \"cuyo valor es …\"\n  coding_bound\n    defined-by code\n    role coding_bound_cue\n    precondition \"a workspace-inspection fact or source identifier contains this concept surface\"\n    effect \"the fact or identifier is read as naming a configured bound\"\n    unit \"not applicable\"\n    example \"max_items is the limit on item count\"\n    lexeme en limit limits bound bounds cap ceiling maximum max\n    lexeme ru лимит предел ограничение максимум\n    lexeme hi सीमा अधिकतम\n    lexeme zh 上限 限制 最大值\n    lexeme es límite tope máximo\n  completion_criterion\n    defined-by code\n    role coding_search_literal_query\n    precondition \"a source model names the observable condition for completion\"\n    effect \"completion_criterion denotes that model field\"\n    unit \"not applicable\"\n    example \"completion_criterion\"\n    lexeme en completion_criterion\n    lexeme ru \"критерий завершения\"\n    lexeme hi \"पूर्णता मानदंड\"\n    lexeme zh 完成标准\n    lexeme es \"criterio de finalización\"\n  coding_search_string\n    defined-by code\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to string\"\n    unit \"not applicable\"\n    example \"string\"\n    lexeme en string\n    lexeme ru строка\n    lexeme hi स्ट्रिंग\n    lexeme zh 字符串\n    lexeme es cadena\n  coding_search_function\n    defined-by function\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to function\"\n    unit \"not applicable\"\n    example \"function\"\n    lexeme en function\n    lexeme ru функция\n    lexeme hi फ़ंक्शन\n    lexeme zh 函数\n    lexeme es función\n  coding_search_array\n    defined-by code\n    role coding_search_subject_kind\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to array\"\n    unit \"not applicable\"\n    example \"array\"\n    lexeme en array\n    lexeme ru массив\n    lexeme hi सरणी\n    lexeme zh 数组\n    lexeme es arreglo\n  coding_member_list_sequence\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to an ordered member list\"\n    unit \"not applicable\"\n    example \"list\"\n    lexeme en list lists sequence vector\n    lexeme ru список списке перечень\n    lexeme hi सूची\n    lexeme zh 列表\n    lexeme es lista listas secuencia\n  coding_member_list_set\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to an unordered member list\"\n    unit \"not applicable\"\n    example \"set\"\n    lexeme en set collection\n    lexeme ru множество коллекция\n    lexeme hi समुच्चय संग्रह\n    lexeme zh 集合\n    lexeme es conjunto colección\n  coding_member_list_group\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to a delimited group of members\"\n    unit \"not applicable\"\n    example \"group\"\n    lexeme en group tuple alternation\n    lexeme ru группа группе кортеж\n    lexeme hi समूह टपल\n    lexeme zh 元组\n    lexeme es grupo\n  coding_search_struct\n    defined-by code\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to struct\"\n    unit \"not applicable\"\n    example \"struct\"\n    lexeme en struct\n    lexeme ru структура\n    lexeme hi स्ट्रक्ट\n    lexeme zh 结构体\n    lexeme es estructura\n  coding_search_rendering\n    defined-by code\n    role coding_search_subject_kind\n    role coding_source_implementation_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to a production rendering artifact\"\n    unit \"not applicable\"\n    example \"Links Notation rendering\"\n    lexeme en rendering renderer serialization\n    lexeme ru рендеринг сериализация\n    lexeme hi रेंडरिंग क्रमांकन\n    lexeme zh 渲染 序列化\n    lexeme es renderizado serialización\n  coding_search_adapter\n    defined-by code\n    role coding_search_subject_kind\n    role coding_source_implementation_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to a production adapter\"\n    unit \"not applicable\"\n    example \"transport adapter\"\n    lexeme en adapter adapters\n    lexeme ru адаптер адаптеры\n    lexeme hi एडाप्टर\n    lexeme zh 适配器\n    lexeme es adaptador adaptadores\n  coding_relationship_reference\n    defined-by code\n    role coding_relationship_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the adjacent source identifier is a relationship key\"\n    unit \"not applicable\"\n    example \"parent relationships\"\n    lexeme en relationship relationships association associations\n    lexeme ru связь связи ассоциация\n    lexeme hi रिलेशनशिप एसोसिएशन\n    lexeme zh 关系 关联\n    lexeme es relación relaciones asociación\n  coding_serialization_action\n    defined-by action\n    role coding_serialization_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested source fact is a serialized representation\"\n    unit \"not applicable\"\n    example \"relationships are encoded\"\n    lexeme en serialize serialized encoding encoded\n    lexeme ru сериализовать сериализованный кодирование\n    lexeme hi \"क्रमबद्ध करना\" एन्कोडिंग\n    lexeme zh 序列化 编码\n    lexeme es serializar serializado codificación\n  coding_search_check\n    defined-by code\n    role coding_search_subject_kind\n    role coding_condition_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to check\"\n    unit \"not applicable\"\n    example \"retry check\"\n    lexeme en check\n    lexeme ru проверка\n    lexeme hi जांच\n    lexeme zh 检查\n    lexeme es comprobación\n  coding_search_completion_criterion\n    defined-by code\n    role coding_search_fact_query\n    precondition \"a workspace-inspection request contains this concept surface\"\n    effect \"the requested fact is searched with its canonical source expression\"\n    unit \"not applicable\"\n    example \"completion contract\"\n    lexeme en \"completion contract\" \"completion criterion\" \"completion criteria\"\n      action completion_criterion\n    lexeme ru \"контракт завершения\" \"критерий завершения\"\n      action completion_criterion\n    lexeme hi \"पूर्णता अनुबंध\" \"पूर्णता मानदंड\"\n      action completion_criterion\n    lexeme zh 完成契约 完成标准\n      action completion_criterion\n    lexeme es \"contrato de finalización\" \"criterio de finalización\"\n      action completion_criterion\n  coding_search_missing_leaf_contract\n    defined-by code\n    role coding_search_fact_query\n    precondition \"a workspace-inspection request asks how a leaf without a completion contract is represented\"\n    effect \"the requested fact is searched by the unresolved single-need sentinel\"\n    unit \"not applicable\"\n    example \"leaf without an observable completion contract\"\n    lexeme en \"leaf without an observable completion contract\" \"leaf without an observable completion criterion\"\n      action \"unresolved_single_need\"\n    lexeme ru \"лист без наблюдаемого контракта завершения\"\n      action \"unresolved_single_need\"\n    lexeme hi \"बिना अवलोकनीय पूर्णता अनुबंध वाला पत्ता\"\n      action \"unresolved_single_need\"\n    lexeme zh 没有可观察完成契约的叶子\n      action \"unresolved_single_need\"\n    lexeme es \"hoja sin un contrato de finalización observable\"\n      action \"unresolved_single_need\"\n  coding_search_issue_creation\n    defined-by code\n    role coding_search_literal_query\n    precondition \"a coding request contains this concept surface\"\n    effect \"the literal-search slot is bound to issue creation\"\n    unit \"not applicable\"\n    example \"GitHub issue creation command\"\n    lexeme en \"GitHub issue creation command\"\n      action \"gh issue create\"\n    lexeme ru \"команда создания задачи GitHub\"\n      action \"gh issue create\"\n    lexeme hi \"GitHub इश्यू बनाने का कमांड\"\n      action \"gh issue create\"\n    lexeme zh \"GitHub 议题创建命令\"\n      action \"gh issue create\"\n    lexeme es \"comando de creación de incidencias de GitHub\"\n      action \"gh issue create\"\n  workspace_inspection_examine\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as looking at what the workspace already holds\"\n    unit \"not applicable\"\n    example \"inspect\"\n    lexeme en inspect examine review audit\n    lexeme ru изучи изучите осмотри просмотри\n    lexeme hi \"निरीक्षण करें\" \"समीक्षा करें\"\n    lexeme zh 检查 审查 审阅\n    lexeme es inspecciona revisa audita examina\n  workspace_inspection_verify\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as confirming a claim against what the workspace holds\"\n    unit \"not applicable\"\n    example \"verify\"\n    lexeme en verify confirm\n    lexeme ru проверь проверьте убедись подтверди\n    lexeme hi \"सत्यापित करें\" \"पुष्टि करें\"\n    lexeme zh 验证 确认\n    lexeme es verifica confirma\n  workspace_inspection_identify\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as locating something inside the workspace\"\n    unit \"not applicable\"\n    example \"identify\"\n    lexeme en identify locate \"find where\" \"where does\" \"where the\"\n    lexeme ru определи \"найди где\" \"где находится\"\n    lexeme hi \"पहचानें\" \"पता लगाएँ\" \"कहाँ है\"\n    lexeme zh 确定 找出 在哪里\n    lexeme es identifica localiza \"dónde se define\"\n","old_string":"meanings\n  coding_constant\n    defined-by code\n    role coding_artifact_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-kind slot is bound to constant\"\n    unit \"not applicable\"\n    example \"constant\"\n    lexeme en constant\n    lexeme ru константа константу\n    lexeme hi स्थिरांक\n    lexeme zh 常量\n    lexeme es constante\n  coding_test\n    defined-by code\n    role coding_artifact_kind\n    role coding_test_artifact_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-kind slot is bound to test\"\n    unit \"not applicable\"\n    example \"test\"\n    lexeme en test regression\n    lexeme ru тест теста\n    lexeme hi परीक्षण\n    lexeme zh 测试\n    lexeme es prueba test\n  coding_public_visibility\n    defined-by relation\n    role coding_visibility\n    precondition \"a coding request contains this concept surface\"\n    effect \"the visibility slot is bound to public\"\n    unit \"not applicable\"\n    example \"public\"\n    lexeme en public\n    lexeme ru публичная публичной публичную\n    lexeme hi सार्वजनिक\n    lexeme zh 公共\n    lexeme es pública público\n  coding_return\n    defined-by action\n    role coding_return_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to return\"\n    unit \"not applicable\"\n    example \"return\"\n    lexeme en return returns returning\n    lexeme ru возвращает вернуть\n    lexeme hi लौटाता लौटाए\n    lexeme zh 返回\n    lexeme es devuelve devolver retorna\n  coding_division\n    defined-by action\n    role coding_division_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to division\"\n    unit \"not applicable\"\n    example \"divided by\"\n    lexeme en \"divided by\" divide dividing\n    lexeme ru делит разделить\n    lexeme hi विभाजित\n    lexeme zh 除以\n    lexeme es \"dividido entre\" \"dividido por\" dividir\n  coding_member_add\n    defined-by action\n    role coding_member_add_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to member insertion\"\n    unit \"not applicable\"\n    example \"add\"\n    lexeme en\n      words add adds insert inserts append appends include includes into \"also holds\" \"also hold\" \"also contains\"\n      words \"also contain\"\n    lexeme ru добавь добавить вставь вставить\n    lexeme hi जोड़ें जोड़ो\n    lexeme zh 添加 插入\n    lexeme es añade añadir inserta insertar\n  coding_module_registration\n    defined-by action\n    role coding_module_registration_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to module registration\"\n    unit \"not applicable\"\n    example \"register the module\"\n    lexeme en \"register the module\" \"export the module\" \"add the module\"\n    lexeme ru \"зарегистрируй модуль\" \"добавь модуль\"\n    lexeme hi \"मॉड्यूल पंजीकृत करें\" \"मॉड्यूल जोड़ें\"\n    lexeme zh 注册模块 添加模块\n    lexeme es \"registra el módulo\" \"exporta el módulo\" \"añade el módulo\"\n  coding_identifier_rename\n    defined-by action\n    role coding_identifier_rename_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested operation is bound to identifier rename\"\n    unit \"not applicable\"\n    example \"rename\"\n    lexeme en rename\n    lexeme ru переименуй\n    lexeme hi \"नाम बदलो\"\n    lexeme zh 重命名\n    lexeme es renombra\n  typo\n    defined-by concept\n    role typo_fix_lead\n    precondition \"a request names a misspelled word in a file without stating its correction\"\n    effect \"the word is corrected to the unique most frequent known word one edit away\"\n    unit \"not applicable\"\n    example \"fix the typo\"\n    lexeme en typo\n    lexeme ru опечатку опечатка\n    lexeme hi \"वर्तनी की गलती\"\n    lexeme zh 错别字 拼写错误\n    lexeme es errata \"error ortográfico\"\n  coding_text_remove\n    defined-by action\n    role coding_text_remove_action\n    precondition \"a coding request names quoted text and the file it should leave\"\n    effect \"the requested operation is bound to removing that text from the file\"\n    unit \"not applicable\"\n    example \"delete the line\"\n    lexeme en delete remove \"get rid of\"\n    lexeme ru удали удалить убери убрать сотри\n    lexeme hi हटाओ हटाएं मिटाओ\n    lexeme zh 删除 删掉 去掉 移除\n    lexeme es elimina eliminar borra borrar quita\n  coding_declaration\n    defined-by code\n    role coding_declaration_noun\n    precondition \"a removal request names the functions it removes by name, with no quoted text\"\n    effect \"the request's names are read as functions the file declares, each removed whole with the comments and attributes directly above it\"\n    unit \"not applicable\"\n    example \"delete the function parse_header from util.rs\"\n    lexeme en \"function\" \"functions\" \"method\" \"methods\"\n    lexeme ru \"функцию\" \"функции\" \"функций\" \"метод\" \"методы\"\n    lexeme hi \"फ़ंक्शन\" \"फंक्शन\"\n    lexeme zh \"函数\" \"方法\"\n    lexeme es \"función\" \"funciones\"\n  # A programming-language keyword is the same word whatever language the\n  # request is written in, so every lexeme lists the same keywords.\n  function_declaration\n    defined-by code\n    role function_declaration_keyword\n    precondition \"a source line declares a function\"\n    effect \"the keyword right before a name followed by its parameter list marks the line as that function's declaration\"\n    unit \"not applicable\"\n    example \"fn in fn parse_header(line: &str)\"\n    lexeme en \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme ru \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme hi \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme zh \"function\" \"fn\" \"def\" \"func\" \"fun\"\n    lexeme es \"function\" \"fn\" \"def\" \"func\" \"fun\"\n  coding_artifact_name\n    defined-by relation\n    role coding_name_slot\n    precondition \"a coding request contains this concept surface\"\n    effect \"the artifact-name slot can be bound from the request\"\n    unit \"not applicable\"\n    example \"named …\"\n    lexeme en \"named …\" \"with the name …\"\n    lexeme ru \"с именем …\" \"под названием …\"\n    lexeme hi \"… नाम का\"\n    lexeme zh \"名为 …\"\n    lexeme es \"llamado …\" \"llamada …\" \"con el nombre …\"\n  coding_string_value\n    defined-by relation\n    role coding_value_slot\n    precondition \"a coding request contains this concept surface\"\n    effect \"the string-value slot can be bound from the request\"\n    unit \"not applicable\"\n    example \"with the value …\"\n    lexeme en \"with the value …\" \"whose value is …\"\n    lexeme ru \"со значением …\"\n    lexeme hi \"जिसका मान …\"\n    lexeme zh \"值为 …\"\n    lexeme es \"con el valor …\" \"cuyo valor es …\"\n  coding_bound\n    defined-by code\n    role coding_bound_cue\n    precondition \"a workspace-inspection fact or source identifier contains this concept surface\"\n    effect \"the fact or identifier is read as naming a configured bound\"\n    unit \"not applicable\"\n    example \"max_items is the limit on item count\"\n    lexeme en limit limits bound bounds cap ceiling maximum max\n    lexeme ru лимит предел ограничение максимум\n    lexeme hi सीमा अधिकतम\n    lexeme zh 上限 限制 最大值\n    lexeme es límite tope máximo\n  completion_criterion\n    defined-by code\n    role coding_search_literal_query\n    precondition \"a source model names the observable condition for completion\"\n    effect \"completion_criterion denotes that model field\"\n    unit \"not applicable\"\n    example \"completion_criterion\"\n    lexeme en completion_criterion\n    lexeme ru \"критерий завершения\"\n    lexeme hi \"पूर्णता मानदंड\"\n    lexeme zh 完成标准\n    lexeme es \"criterio de finalización\"\n  coding_search_string\n    defined-by code\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to string\"\n    unit \"not applicable\"\n    example \"string\"\n    lexeme en string\n    lexeme ru строка\n    lexeme hi स्ट्रिंग\n    lexeme zh 字符串\n    lexeme es cadena\n  coding_search_function\n    defined-by function\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to function\"\n    unit \"not applicable\"\n    example \"function\"\n    lexeme en function\n    lexeme ru функция\n    lexeme hi फ़ंक्शन\n    lexeme zh 函数\n    lexeme es función\n  coding_search_array\n    defined-by code\n    role coding_search_subject_kind\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to array\"\n    unit \"not applicable\"\n    example \"array\"\n    lexeme en array\n    lexeme ru массив\n    lexeme hi सरणी\n    lexeme zh 数组\n    lexeme es arreglo\n  coding_member_list_sequence\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to an ordered member list\"\n    unit \"not applicable\"\n    example \"list\"\n    lexeme en list lists sequence vector\n    lexeme ru список списке перечень\n    lexeme hi सूची\n    lexeme zh 列表\n    lexeme es lista listas secuencia\n  coding_member_list_set\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to an unordered member list\"\n    unit \"not applicable\"\n    example \"set\"\n    lexeme en set collection\n    lexeme ru множество коллекция\n    lexeme hi समुच्चय संग्रह\n    lexeme zh 集合\n    lexeme es conjunto colección\n  coding_member_list_group\n    defined-by code\n    role coding_member_list_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the subject slot is bound to a delimited group of members\"\n    unit \"not applicable\"\n    example \"group\"\n    lexeme en group tuple alternation\n    lexeme ru группа группе кортеж\n    lexeme hi समूह टपल\n    lexeme zh 元组\n    lexeme es grupo\n  coding_search_struct\n    defined-by code\n    role coding_search_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to struct\"\n    unit \"not applicable\"\n    example \"struct\"\n    lexeme en struct\n    lexeme ru структура\n    lexeme hi स्ट्रक्ट\n    lexeme zh 结构体\n    lexeme es estructura\n  coding_search_rendering\n    defined-by code\n    role coding_search_subject_kind\n    role coding_source_implementation_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to a production rendering artifact\"\n    unit \"not applicable\"\n    example \"Links Notation rendering\"\n    lexeme en rendering renderer serialization\n    lexeme ru рендеринг сериализация\n    lexeme hi रेंडरिंग क्रमांकन\n    lexeme zh 渲染 序列化\n    lexeme es renderizado serialización\n  coding_search_adapter\n    defined-by code\n    role coding_search_subject_kind\n    role coding_source_implementation_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to a production adapter\"\n    unit \"not applicable\"\n    example \"transport adapter\"\n    lexeme en adapter adapters\n    lexeme ru адаптер адаптеры\n    lexeme hi एडाप्टर\n    lexeme zh 适配器\n    lexeme es adaptador adaptadores\n  coding_relationship_reference\n    defined-by code\n    role coding_relationship_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the adjacent source identifier is a relationship key\"\n    unit \"not applicable\"\n    example \"parent relationships\"\n    lexeme en relationship relationships association associations\n    lexeme ru связь связи ассоциация\n    lexeme hi रिलेशनशिप एसोसिएशन\n    lexeme zh 关系 关联\n    lexeme es relación relaciones asociación\n  coding_serialization_action\n    defined-by action\n    role coding_serialization_action\n    precondition \"a coding request contains this concept surface\"\n    effect \"the requested source fact is a serialized representation\"\n    unit \"not applicable\"\n    example \"relationships are encoded\"\n    lexeme en serialize serialized encoding encoded\n    lexeme ru сериализовать сериализованный кодирование\n    lexeme hi \"क्रमबद्ध करना\" एन्कोडिंग\n    lexeme zh 序列化 编码\n    lexeme es serializar serializado codificación\n  coding_search_check\n    defined-by code\n    role coding_search_subject_kind\n    role coding_condition_subject_kind\n    precondition \"a coding request contains this concept surface\"\n    effect \"the search-subject slot is bound to check\"\n    unit \"not applicable\"\n    example \"retry check\"\n    lexeme en check\n    lexeme ru проверка\n    lexeme hi जांच\n    lexeme zh 检查\n    lexeme es comprobación\n  coding_search_completion_criterion\n    defined-by code\n    role coding_search_fact_query\n    precondition \"a workspace-inspection request contains this concept surface\"\n    effect \"the requested fact is searched with its canonical source expression\"\n    unit \"not applicable\"\n    example \"completion contract\"\n    lexeme en \"completion contract\" \"completion criterion\" \"completion criteria\"\n      action completion_criterion\n    lexeme ru \"контракт завершения\" \"критерий завершения\"\n      action completion_criterion\n    lexeme hi \"पूर्णता अनुबंध\" \"पूर्णता मानदंड\"\n      action completion_criterion\n    lexeme zh 完成契约 完成标准\n      action completion_criterion\n    lexeme es \"contrato de finalización\" \"criterio de finalización\"\n      action completion_criterion\n  coding_search_missing_leaf_contract\n    defined-by code\n    role coding_search_fact_query\n    precondition \"a workspace-inspection request asks how a leaf without a completion contract is represented\"\n    effect \"the requested fact is searched by the unresolved single-need sentinel\"\n    unit \"not applicable\"\n    example \"leaf without an observable completion contract\"\n    lexeme en \"leaf without an observable completion contract\" \"leaf without an observable completion criterion\"\n      action \"unresolved_single_need\"\n    lexeme ru \"лист без наблюдаемого контракта завершения\"\n      action \"unresolved_single_need\"\n    lexeme hi \"बिना अवलोकनीय पूर्णता अनुबंध वाला पत्ता\"\n      action \"unresolved_single_need\"\n    lexeme zh 没有可观察完成契约的叶子\n      action \"unresolved_single_need\"\n    lexeme es \"hoja sin un contrato de finalización observable\"\n      action \"unresolved_single_need\"\n  coding_search_issue_creation\n    defined-by code\n    role coding_search_literal_query\n    precondition \"a coding request contains this concept surface\"\n    effect \"the literal-search slot is bound to issue creation\"\n    unit \"not applicable\"\n    example \"GitHub issue creation command\"\n    lexeme en \"GitHub issue creation command\"\n      action \"gh issue create\"\n    lexeme ru \"команда создания задачи GitHub\"\n      action \"gh issue create\"\n    lexeme hi \"GitHub इश्यू बनाने का कमांड\"\n      action \"gh issue create\"\n    lexeme zh \"GitHub 议题创建命令\"\n      action \"gh issue create\"\n    lexeme es \"comando de creación de incidencias de GitHub\"\n      action \"gh issue create\"\n  workspace_inspection_examine\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as looking at what the workspace already holds\"\n    unit \"not applicable\"\n    example \"inspect\"\n    lexeme en inspect examine review audit\n    lexeme ru изучи изучите осмотри просмотри\n    lexeme hi \"निरीक्षण करें\" \"समीक्षा करें\"\n    lexeme zh 检查 审查 审阅\n    lexeme es inspecciona revisa audita examina\n  workspace_inspection_verify\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as confirming a claim against what the workspace holds\"\n    unit \"not applicable\"\n    example \"verify\"\n    lexeme en verify confirm\n    lexeme ru проверь проверьте убедись подтверди\n    lexeme hi \"सत्यापित करें\" \"पुष्टि करें\"\n    lexeme zh 验证 确认\n    lexeme es verifica confirma\n  workspace_inspection_identify\n    defined-by action\n    role workspace_inspection_action\n    precondition \"a request contains this concept surface\"\n    effect \"the request is read as locating something inside the workspace\"\n    unit \"not applicable\"\n    example \"identify\"\n    lexeme en identify locate \"find where\" \"where does\" \"where the\"\n    lexeme ru определи \"найди где\" \"где находится\"\n    lexeme hi \"पहचानें\" \"पता लगाएँ\" \"कहाँ है\"\n    lexeme zh 确定 找出 在哪里\n    lexeme es identifica localiza \"dónde se define\"\n","path":"data/seed/meanings-coding-tasks.lino"}
+>> bash {"command":"sha256sum -- data/seed/meanings-coding-tasks.lino"}
+   Output: fa22dc584dfdbd38beafce165464a820e26e7b401dfcf3a9e0effe7c51161502  data/seed/meanings-coding-tasks.lino
+   
+   Exit Code: 0
+== answer ==
+Replaced `meanings
+  coding_constant
+    defined-by code
+    role coding_artifact_kind
+    precondition "a coding request contains this concept surface"
+    effect "the artifact-kind slot is bound to constant"
+    unit "not applicable"
+    example "constant"
+    lexeme en constant
+    lexeme ru константа константу
+    lexeme hi स्थिरांक
+    lexeme zh 常量
+    lexeme es constante
+  coding_test
+    defined-by code
+    role coding_artifact_kind
+    role coding_test_artifact_kind
+    precondition "a coding request contains this concept surface"
+    effect "the artifact-kind slot is bound to test"
+    unit "not applicable"
+    example "test"
+    lexeme en test regression
+    lexeme ru тест теста
+    lexeme hi परीक्षण
+    lexeme zh 测试
+    lexeme es prueba test
+  coding_public_visibility
+    defined-by relation
+    role coding_visibility
+    precondition "a coding request contains this concept surface"
+    effect "the visibility slot is bound to public"
+    unit "not applicable"
+    example "public"
+    lexeme en public
+    lexeme ru публичная публичной публичную
+    lexeme hi सार्वजनिक
+    lexeme zh 公共
+    lexeme es pública público
+  coding_return
+    defined-by action
+    role coding_return_action
+    precondition "a coding request contains this concept surface"
+    effect "the requested operation is bound to return"
+    unit "not applicable"
+    example "return"
+    lexeme en return returns returning
+    lexeme ru возвращает вернуть
+    lexeme hi लौटाता लौटाए
+    lexeme zh 返回
+    lexeme es devuelve devolver retorna
+  coding_division
+    defined-by action
+    role coding_division_action
+    precondition "a coding request contains this concept surface"
+    effect "the requested operation is bound to division"
+    unit "not applicable"
+    example "divided by"
+    lexeme en "divided by" divide dividing
+    lexeme ru делит разделить
+    lexeme hi विभाजित
+    lexeme zh 除以
+    lexeme es "dividido entre" "dividido por" dividir
+  coding_member_add
+    defined-by action
+    role coding_member_add_action
+    precondition "a coding request contains this concept surface"
+    effect "the requested operation is bound to member insertion"
+    unit "not applicable"
+    example "add"
+    lexeme en
+      words add adds insert inserts append appends include includes into "also holds" "also hold" "also contains"
+      words "also contain"
+    lexeme ru добавь добавить вставь вставить
+    lexeme hi जोड़ें जोड़ो
+    lexeme zh 添加 插入
+    lexeme es añade añadir inserta insertar
+  coding_module_registration
+    defined-by action
+    role coding_module_registration_action
+    precondition "a coding request contains this concept surface"
+    effect "the requested operation is bound to module registration"
+    unit "not applicable"
+    example "register the module"
+    lexeme en "register the module" "export the module" "add the module"
+    lexeme ru "зарегистрируй модуль" "добавь модуль"
+    lexeme hi "मॉड्यूल पंजीकृत करें" "मॉड्यूल जोड़ें"
+    lexeme zh 注册模块 添加模块
+    lexeme es "registra el módulo" "exporta el módulo" "añade el módulo"
+  coding_identifier_rename
+    defined-by action
+    role coding_identifier_rename_action
+    precondition "a coding request contains this concept surface"
+    effect "the requested operation is bound to identifier rename"
+    unit "not applicable"
+    example "rename"
+    lexeme en rename
+    lexeme ru переименуй
+    lexeme hi "नाम बदलो"
+    lexeme zh 重命名
+    lexeme es renombra
+  typo
+    defined-by concept
+    role typo_fix_lead
+    precondition "a request names a misspelled word in a file without stating its correction"
+    effect "the word is corrected to the unique most frequent known word one edit away"
+    unit "not applicable"
+    example "fix the typo"
+    lexeme en typo
+    lexeme ru опечатку опечатка
+    lexeme hi "वर्तनी की गलती"
+    lexeme zh 错别字 拼写错误
+    lexeme es errata "error ortográfico"
+  coding_text_remove
+    defined-by action
+    role coding_text_remove_action
+    precondition "a coding request names quoted text and the file it should leave"
+    effect "the requested operation is bound to removing that text from the file"
+    unit "not applicable"
+    example "delete the line"
+    lexeme en delete remove "get rid of"
+    lexeme ru удали удалить убери убрать сотри
+    lexeme hi हटाओ हटाएं मिटाओ
+    lexeme zh 删除 删掉 去掉 移除
+    lexeme es elimina eliminar borra borrar quita
+  coding_declaration
+    defined-by code
+    role coding_declaration_noun
+    precondition "a removal request names the functions it removes by name, with no quoted text"
+    effect "the request's names are read as functions the file declares, each removed whole with the comments and attributes directly above it"
+    unit "not applicable"
+    example "delete the function parse_header from util.rs"
+    lexeme en "function" "functions" "method" "methods"
+    lexeme ru "функцию" "функции" "функций" "метод" "методы"
+    lexeme hi "फ़ंक्शन" "फंक्शन"
+    lexeme zh "函数" "方法"
+    lexeme es "función" "funciones"
+  # A programming-language keyword is the same word whatever language the
+  # request is written in, so every lexeme lists the same keywords.
+  function_declaration
+    defined-by code
+    role function_declaration_keyword
+    precondition "a source line declares a function"
+    effect "the keyword right before a name followed by its parameter list marks the line as that function's declaration"
+    unit "not applicable"
+    example "fn in fn parse_header(line: &str)"
+    lexeme en "function" "fn" "def" "func" "fun"
+    lexeme ru "function" "fn" "def" "func" "fun"
+    lexeme hi "function" "fn" "def" "func" "fun"
+    lexeme zh "function" "fn" "def" "func" "fun"
+    lexeme es "function" "fn" "def" "func" "fun"
+  coding_artifact_name
+    defined-by relation
+    role coding_name_slot
+    precondition "a coding request contains this concept surface"
+    effect "the artifact-name slot can be bound from the request"
+    unit "not applicable"
+    example "named …"
+    lexeme en "named …" "with the name …"
+    lexeme ru "с именем …" "под названием …"
+    lexeme hi "… नाम का"
+    lexeme zh "名为 …"
+    lexeme es "llamado …" "llamada …" "con el nombre …"
+  coding_string_value
+    defined-by relation
+    role coding_value_slot
+    precondition "a coding request contains this concept surface"
+    effect "the string-value slot can be bound from the request"
+    unit "not applicable"
+    example "with the value …"
+    lexeme en "with the value …" "whose value is …"
+    lexeme ru "со значением …"
+    lexeme hi "जिसका मान …"
+    lexeme zh "值为 …"
+    lexeme es "con el valor …" "cuyo valor es …"
+  coding_bound
+    defined-by code
+    role coding_bound_cue
+    precondition "a workspace-inspection fact or source identifier contains this concept surface"
+    effect "the fact or identifier is read as naming a configured bound"
+    unit "not applicable"
+    example "max_items is the limit on item count"
+    lexeme en limit limits bound bounds cap ceiling maximum max
+    lexeme ru лимит предел ограничение максимум
+    lexeme hi सीमा अधिकतम
+    lexeme zh 上限 限制 最大值
+    lexeme es límite tope máximo
+  completion_criterion
+    defined-by code
+    role coding_search_literal_query
+    precondition "a source model names the observable condition for completion"
+    effect "completion_criterion denotes that model field"
+    unit "not applicable"
+    example "completion_criterion"
+    lexeme en completion_criterion
+    lexeme ru "критерий завершения"
+    lexeme hi "पूर्णता मानदंड"
+    lexeme zh 完成标准
+    lexeme es "criterio de finalización"
+  coding_search_string
+    defined-by code
+    role coding_search_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to string"
+    unit "not applicable"
+    example "string"
+    lexeme en string
+    lexeme ru строка
+    lexeme hi स्ट्रिंग
+    lexeme zh 字符串
+    lexeme es cadena
+  coding_search_function
+    defined-by function
+    role coding_search_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to function"
+    unit "not applicable"
+    example "function"
+    lexeme en function
+    lexeme ru функция
+    lexeme hi फ़ंक्शन
+    lexeme zh 函数
+    lexeme es función
+  coding_search_array
+    defined-by code
+    role coding_search_subject_kind
+    role coding_member_list_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to array"
+    unit "not applicable"
+    example "array"
+    lexeme en array
+    lexeme ru массив
+    lexeme hi सरणी
+    lexeme zh 数组
+    lexeme es arreglo
+  coding_member_list_sequence
+    defined-by code
+    role coding_member_list_kind
+    precondition "a coding request contains this concept surface"
+    effect "the subject slot is bound to an ordered member list"
+    unit "not applicable"
+    example "list"
+    lexeme en list lists sequence vector
+    lexeme ru список списке перечень
+    lexeme hi सूची
+    lexeme zh 列表
+    lexeme es lista listas secuencia
+  coding_member_list_set
+    defined-by code
+    role coding_member_list_kind
+    precondition "a coding request contains this concept surface"
+    effect "the subject slot is bound to an unordered member list"
+    unit "not applicable"
+    example "set"
+    lexeme en set collection
+    lexeme ru множество коллекция
+    lexeme hi समुच्चय संग्रह
+    lexeme zh 集合
+    lexeme es conjunto colección
+  coding_member_list_group
+    defined-by code
+    role coding_member_list_kind
+    precondition "a coding request contains this concept surface"
+    effect "the subject slot is bound to a delimited group of members"
+    unit "not applicable"
+    example "group"
+    lexeme en group tuple alternation
+    lexeme ru группа группе кортеж
+    lexeme hi समूह टपल
+    lexeme zh 元组
+    lexeme es grupo
+  coding_search_struct
+    defined-by code
+    role coding_search_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to struct"
+    unit "not applicable"
+    example "struct"
+    lexeme en struct
+    lexeme ru структура
+    lexeme hi स्ट्रक्ट
+    lexeme zh 结构体
+    lexeme es estructura
+  coding_search_rendering
+    defined-by code
+    role coding_search_subject_kind
+    role coding_source_implementation_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to a production rendering artifact"
+    unit "not applicable"
+    example "Links Notation rendering"
+    lexeme en rendering renderer serialization
+    lexeme ru рендеринг сериализация
+    lexeme hi रेंडरिंग क्रमांकन
+    lexeme zh 渲染 序列化
+    lexeme es renderizado serialización
+  coding_search_adapter
+    defined-by code
+    role coding_search_subject_kind
+    role coding_source_implementation_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to a production adapter"
+    unit "not applicable"
+    example "transport adapter"
+    lexeme en adapter adapters
+    lexeme ru адаптер адаптеры
+    lexeme hi एडाप्टर
+    lexeme zh 适配器
+    lexeme es adaptador adaptadores
+  coding_relationship_reference
+    defined-by code
+    role coding_relationship_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the adjacent source identifier is a relationship key"
+    unit "not applicable"
+    example "parent relationships"
+    lexeme en relationship relationships association associations
+    lexeme ru связь связи ассоциация
+    lexeme hi रिलेशनशिप एसोसिएशन
+    lexeme zh 关系 关联
+    lexeme es relación relaciones asociación
+  coding_serialization_action
+    defined-by action
+    role coding_serialization_action
+    precondition "a coding request contains this concept surface"
+    effect "the requested source fact is a serialized representation"
+    unit "not applicable"
+    example "relationships are encoded"
+    lexeme en serialize serialized encoding encoded
+    lexeme ru сериализовать сериализованный кодирование
+    lexeme hi "क्रमबद्ध करना" एन्कोडिंग
+    lexeme zh 序列化 编码
+    lexeme es serializar serializado codificación
+  coding_search_check
+    defined-by code
+    role coding_search_subject_kind
+    role coding_condition_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to check"
+    unit "not applicable"
+    example "retry check"
+    lexeme en check
+    lexeme ru проверка
+    lexeme hi जांच
+    lexeme zh 检查
+    lexeme es comprobación
+  coding_search_completion_criterion
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request contains this concept surface"
+    effect "the requested fact is searched with its canonical source expression"
+    unit "not applicable"
+    example "completion contract"
+    lexeme en "completion contract" "completion criterion" "completion criteria"
+      action completion_criterion
+    lexeme ru "контракт завершения" "критерий завершения"
+      action completion_criterion
+    lexeme hi "पूर्णता अनुबंध" "पूर्णता मानदंड"
+      action completion_criterion
+    lexeme zh 完成契约 完成标准
+      action completion_criterion
+    lexeme es "contrato de finalización" "criterio de finalización"
+      action completion_criterion
+  coding_search_missing_leaf_contract
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks how a leaf without a completion contract is represented"
+    effect "the requested fact is searched by the unresolved single-need sentinel"
+    unit "not applicable"
+    example "leaf without an observable completion contract"
+    lexeme en "leaf without an observable completion contract" "leaf without an observable completion criterion"
+      action "unresolved_single_need"
+    lexeme ru "лист без наблюдаемого контракта завершения"
+      action "unresolved_single_need"
+    lexeme hi "बिना अवलोकनीय पूर्णता अनुबंध वाला पत्ता"
+      action "unresolved_single_need"
+    lexeme zh 没有可观察完成契约的叶子
+      action "unresolved_single_need"
+    lexeme es "hoja sin un contrato de finalización observable"
+      action "unresolved_single_need"
+  coding_search_issue_creation
+    defined-by code
+    role coding_search_literal_query
+    precondition "a coding request contains this concept surface"
+    effect "the literal-search slot is bound to issue creation"
+    unit "not applicable"
+    example "GitHub issue creation command"
+    lexeme en "GitHub issue creation command"
+      action "gh issue create"
+    lexeme ru "команда создания задачи GitHub"
+      action "gh issue create"
+    lexeme hi "GitHub इश्यू बनाने का कमांड"
+      action "gh issue create"
+    lexeme zh "GitHub 议题创建命令"
+      action "gh issue create"
+    lexeme es "comando de creación de incidencias de GitHub"
+      action "gh issue create"
+  workspace_inspection_examine
+    defined-by action
+    role workspace_inspection_action
+    precondition "a request contains this concept surface"
+    effect "the request is read as looking at what the workspace already holds"
+    unit "not applicable"
+    example "inspect"
+    lexeme en inspect examine review audit
+    lexeme ru изучи изучите осмотри просмотри
+    lexeme hi "निरीक्षण करें" "समीक्षा करें"
+    lexeme zh 检查 审查 审阅
+    lexeme es inspecciona revisa audita examina
+  workspace_inspection_verify
+    defined-by action
+    role workspace_inspection_action
+    precondition "a request contains this concept surface"
+    effect "the request is read as confirming a claim against what the workspace holds"
+    unit "not applicable"
+    example "verify"
+    lexeme en verify confirm
+    lexeme ru проверь проверьте убедись подтверди
+    lexeme hi "सत्यापित करें" "पुष्टि करें"
+    lexeme zh 验证 确认
+    lexeme es verifica confirma
+  workspace_inspection_identify
+    defined-by action
+    role workspace_inspection_action
+    precondition "a request contains this concept surface"
+    effect "the request is read as locating something inside the workspace"
+    unit "not applicable"
+    example "identify"
+    lexeme en identify locate "find where" "where does" "where the"
+    lexeme ru определи "найди где" "где находится"
+    lexeme hi "पहचानें" "पता लगाएँ" "कहाँ है"
+    lexeme zh 确定 找出 在哪里
+    lexeme es identifica localiza "dónde se define"
+` with `meanings
+  coding_constant
+    defined-by code
+    role coding_artifact_kind
+    precondition "a coding request contains this concept surface"
+    effect "the artifact-kind slot is bound to constant"
+    unit "not applicable"
+    example "constant"
+    lexeme en constant
+    lexeme ru константа константу
+    lexeme hi स्थिरांक
+    lexeme zh 常量
+    lexeme es constante
+  coding_test
+    defined-by code
+    role coding_artifact_kind
+    role coding_test_artifact_kind
+    precondition "a coding request contains this concept surface"
+    effect "the artifact-kind slot is bound to test"
+    unit "not applicable"
+    example "test"
+    lexeme en test regression
+    lexeme ru тест теста
+    lexeme hi परीक्षण
+    lexeme zh 测试
+    lexeme es prueba test
+  coding_public_visibility
+    defined-by relation
+    role coding_visibility
+    precondition "a coding request contains this concept surface"
+    effect "the visibility slot is bound to public"
+    unit "not applicable"
+    example "public"
+    lexeme en public
+    lexeme ru публичная публичной публичную
+    lexeme hi सार्वजनिक
+    lexeme zh 公共
+    lexeme es pública público
+  coding_return
+    defined-by action
+    role coding_return_action
+    precondition "a coding request contains this concept surface"
+    effect "the requested operation is bound to return"
+    unit "not applicable"
+    example "return"
+    lexeme en return returns returning
+    lexeme ru возвращает вернуть
+    lexeme hi लौटाता लौटाए
+    lexeme zh 返回 返回结果
+    lexeme es devuelve devolver retorna
+  returning
+    defined-by coding_return
+    role coding_return_action
+    precondition "a coding operation has an available result"
+    effect "the operation yields its result to its caller"
+    unit "not applicable"
+    example "returning a computed value"
+    lexeme en returning
+    lexeme ru возвращая
+    lexeme hi "लौटाते हुए"
+    lexeme zh 正在返回
+    lexeme es devolviendo
+  coding_division
+    defined-by action
+    role coding_division_action
+    precondition "a coding request contains this concept surface"
+    effect "the requested operation is bound to division"
+    unit "not applicable"
+    example "divided by"
+    lexeme en "divided by" divide dividing
+    lexeme ru делит разделить
+    lexeme hi विभाजित
+    lexeme zh 除以
+    lexeme es "dividido entre" "dividido por" dividir
+  coding_member_add
+    defined-by action
+    role coding_member_add_action
+    precondition "a coding request contains this concept surface"
+    effect "the requested operation is bound to member insertion"
+    unit "not applicable"
+    example "add"
+    lexeme en
+      words add adds insert inserts append appends include includes into "also holds" "also hold" "also contains"
+      words "also contain"
+    lexeme ru добавь добавить вставь вставить
+    lexeme hi जोड़ें जोड़ो
+    lexeme zh 添加 插入
+    lexeme es añade añadir inserta insertar
+  coding_module_registration
+    defined-by action
+    role coding_module_registration_action
+    precondition "a coding request contains this concept surface"
+    effect "the requested operation is bound to module registration"
+    unit "not applicable"
+    example "register the module"
+    lexeme en "register the module" "export the module" "add the module"
+    lexeme ru "зарегистрируй модуль" "добавь модуль"
+    lexeme hi "मॉड्यूल पंजीकृत करें" "मॉड्यूल जोड़ें"
+    lexeme zh 注册模块 添加模块
+    lexeme es "registra el módulo" "exporta el módulo" "añade el módulo"
+  coding_identifier_rename
+    defined-by action
+    role coding_identifier_rename_action
+    precondition "a coding request contains this concept surface"
+    effect "the requested operation is bound to identifier rename"
+    unit "not applicable"
+    example "rename"
+    lexeme en rename
+    lexeme ru переименуй
+    lexeme hi "नाम बदलो"
+    lexeme zh 重命名
+    lexeme es renombra
+  typo
+    defined-by concept
+    role typo_fix_lead
+    precondition "a request names a misspelled word in a file without stating its correction"
+    effect "the word is corrected to the unique most frequent known word one edit away"
+    unit "not applicable"
+    example "fix the typo"
+    lexeme en typo
+    lexeme ru опечатку опечатка
+    lexeme hi "वर्तनी की गलती"
+    lexeme zh 错别字 拼写错误
+    lexeme es errata "error ortográfico"
+  coding_text_remove
+    defined-by action
+    role coding_text_remove_action
+    precondition "a coding request names quoted text and the file it should leave"
+    effect "the requested operation is bound to removing that text from the file"
+    unit "not applicable"
+    example "delete the line"
+    lexeme en delete remove "get rid of"
+    lexeme ru удали удалить убери убрать сотри
+    lexeme hi हटाओ हटाएं मिटाओ
+    lexeme zh 删除 删掉 去掉 移除
+    lexeme es elimina eliminar borra borrar quita
+  coding_declaration
+    defined-by code
+    role coding_declaration_noun
+    precondition "a removal request names the functions it removes by name, with no quoted text"
+    effect "the request's names are read as functions the file declares, each removed whole with the comments and attributes directly above it"
+    unit "not applicable"
+    example "delete the function parse_header from util.rs"
+    lexeme en "function" "functions" "method" "methods"
+    lexeme ru "функцию" "функции" "функций" "метод" "методы"
+    lexeme hi "फ़ंक्शन" "फंक्शन"
+    lexeme zh "函数" "方法"
+    lexeme es "función" "funciones"
+  # A programming-language keyword is the same word whatever language the
+  # request is written in, so every lexeme lists the same keywords.
+  function_declaration
+    defined-by code
+    role function_declaration_keyword
+    precondition "a source line declares a function"
+    effect "the keyword right before a name followed by its parameter list marks the line as that function's declaration"
+    unit "not applicable"
+    example "fn in fn parse_header(line: &str)"
+    lexeme en "function" "fn" "def" "func" "fun"
+    lexeme ru "function" "fn" "def" "func" "fun"
+    lexeme hi "function" "fn" "def" "func" "fun"
+    lexeme zh "function" "fn" "def" "func" "fun"
+    lexeme es "function" "fn" "def" "func" "fun"
+  coding_artifact_name
+    defined-by relation
+    role coding_name_slot
+    precondition "a coding request contains this concept surface"
+    effect "the artifact-name slot can be bound from the request"
+    unit "not applicable"
+    example "named …"
+    lexeme en "named …" "with the name …"
+    lexeme ru "с именем …" "под названием …"
+    lexeme hi "… नाम का"
+    lexeme zh "名为 …"
+    lexeme es "llamado …" "llamada …" "con el nombre …"
+  coding_string_value
+    defined-by relation
+    role coding_value_slot
+    precondition "a coding request contains this concept surface"
+    effect "the string-value slot can be bound from the request"
+    unit "not applicable"
+    example "with the value …"
+    lexeme en "with the value …" "whose value is …"
+    lexeme ru "со значением …"
+    lexeme hi "जिसका मान …"
+    lexeme zh "值为 …"
+    lexeme es "con el valor …" "cuyo valor es …"
+  coding_bound
+    defined-by code
+    role coding_bound_cue
+    precondition "a workspace-inspection fact or source identifier contains this concept surface"
+    effect "the fact or identifier is read as naming a configured bound"
+    unit "not applicable"
+    example "max_items is the limit on item count"
+    lexeme en limit limits bound bounds cap ceiling maximum max
+    lexeme ru лимит предел ограничение максимум
+    lexeme hi सीमा अधिकतम
+    lexeme zh 上限 限制 最大值
+    lexeme es límite tope máximo
+  completion_criterion
+    defined-by code
+    role coding_search_literal_query
+    precondition "a source model names the observable condition for completion"
+    effect "completion_criterion denotes that model field"
+    unit "not applicable"
+    example "completion_criterion"
+    lexeme en completion_criterion
+    lexeme ru "критерий завершения"
+    lexeme hi "पूर्णता मानदंड"
+    lexeme zh 完成标准
+    lexeme es "criterio de finalización"
+  coding_search_string
+    defined-by code
+    role coding_search_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to string"
+    unit "not applicable"
+    example "string"
+    lexeme en string
+    lexeme ru строка
+    lexeme hi स्ट्रिंग
+    lexeme zh 字符串
+    lexeme es cadena
+  coding_search_function
+    defined-by function
+    role coding_search_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to function"
+    unit "not applicable"
+    example "function"
+    lexeme en function
+    lexeme ru функция
+    lexeme hi फ़ंक्शन
+    lexeme zh 函数
+    lexeme es función
+  coding_search_array
+    defined-by code
+    role coding_search_subject_kind
+    role coding_member_list_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to array"
+    unit "not applicable"
+    example "array"
+    lexeme en array
+    lexeme ru массив
+    lexeme hi सरणी
+    lexeme zh 数组
+    lexeme es arreglo
+  coding_member_list_sequence
+    defined-by code
+    role coding_member_list_kind
+    precondition "a coding request contains this concept surface"
+    effect "the subject slot is bound to an ordered member list"
+    unit "not applicable"
+    example "list"
+    lexeme en list lists sequence vector
+    lexeme ru список списке перечень
+    lexeme hi सूची
+    lexeme zh 列表
+    lexeme es lista listas secuencia
+  coding_member_list_set
+    defined-by code
+    role coding_member_list_kind
+    precondition "a coding request contains this concept surface"
+    effect "the subject slot is bound to an unordered member list"
+    unit "not applicable"
+    example "set"
+    lexeme en set collection
+    lexeme ru множество коллекция
+    lexeme hi समुच्चय संग्रह
+    lexeme zh 集合
+    lexeme es conjunto colección
+  coding_member_list_group
+    defined-by code
+    role coding_member_list_kind
+    precondition "a coding request contains this concept surface"
+    effect "the subject slot is bound to a delimited group of members"
+    unit "not applicable"
+    example "group"
+    lexeme en group tuple alternation
+    lexeme ru группа группе кортеж
+    lexeme hi समूह टपल
+    lexeme zh 元组
+    lexeme es grupo
+  coding_search_struct
+    defined-by code
+    role coding_search_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to struct"
+    unit "not applicable"
+    example "struct"
+    lexeme en struct
+    lexeme ru структура
+    lexeme hi स्ट्रक्ट
+    lexeme zh 结构体
+    lexeme es estructura
+  coding_search_rendering
+    defined-by code
+    role coding_search_subject_kind
+    role coding_source_implementation_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to a production rendering artifact"
+    unit "not applicable"
+    example "Links Notation rendering"
+    lexeme en rendering renderer serialization
+    lexeme ru рендеринг сериализация
+    lexeme hi रेंडरिंग क्रमांकन
+    lexeme zh 渲染 序列化
+    lexeme es renderizado serialización
+  coding_search_adapter
+    defined-by code
+    role coding_search_subject_kind
+    role coding_source_implementation_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to a production adapter"
+    unit "not applicable"
+    example "transport adapter"
+    lexeme en adapter adapters
+    lexeme ru адаптер адаптеры
+    lexeme hi एडाप्टर
+    lexeme zh 适配器
+    lexeme es adaptador adaptadores
+  coding_relationship_reference
+    defined-by code
+    role coding_relationship_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the adjacent source identifier is a relationship key"
+    unit "not applicable"
+    example "parent relationships"
+    lexeme en relationship relationships association associations
+    lexeme ru связь связи ассоциация
+    lexeme hi रिलेशनशिप एसोसिएशन
+    lexeme zh 关系 关联
+    lexeme es relación relaciones asociación
+  coding_serialization_action
+    defined-by action
+    role coding_serialization_action
+    precondition "a coding request contains this concept surface"
+    effect "the requested source fact is a serialized representation"
+    unit "not applicable"
+    example "relationships are encoded"
+    lexeme en serialize serialized encoding encoded
+    lexeme ru сериализовать сериализованный кодирование
+    lexeme hi "क्रमबद्ध करना" एन्कोडिंग
+    lexeme zh 序列化 编码
+    lexeme es serializar serializado codificación
+  coding_search_check
+    defined-by code
+    role coding_search_subject_kind
+    role coding_condition_subject_kind
+    precondition "a coding request contains this concept surface"
+    effect "the search-subject slot is bound to check"
+    unit "not applicable"
+    example "retry check"
+    lexeme en check
+    lexeme ru проверка
+    lexeme hi जांच
+    lexeme zh 检查
+    lexeme es comprobación
+  coding_search_completion_criterion
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request contains this concept surface"
+    effect "the requested fact is searched with its canonical source expression"
+    unit "not applicable"
+    example "completion contract"
+    lexeme en "completion contract" "completion criterion" "completion criteria"
+      action completion_criterion
+    lexeme ru "контракт завершения" "критерий завершения"
+      action completion_criterion
+    lexeme hi "पूर्णता अनुबंध" "पूर्णता मानदंड"
+      action completion_criterion
+    lexeme zh 完成契约 完成标准
+      action completion_criterion
+    lexeme es "contrato de finalización" "criterio de finalización"
+      action completion_criterion
+  coding_search_missing_leaf_contract
+    defined-by code
+    role coding_search_fact_query
+    precondition "a workspace-inspection request asks how a leaf without a completion contract is represented"
+    effect "the requested fact is searched by the unresolved single-need sentinel"
+    unit "not applicable"
+    example "leaf without an observable completion contract"
+    lexeme en "leaf without an observable completion contract" "leaf without an observable completion criterion"
+      action "unresolved_single_need"
+    lexeme ru "лист без наблюдаемого контракта завершения"
+      action "unresolved_single_need"
+    lexeme hi "बिना अवलोकनीय पूर्णता अनुबंध वाला पत्ता"
+      action "unresolved_single_need"
+    lexeme zh 没有可观察完成契约的叶子
+      action "unresolved_single_need"
+    lexeme es "hoja sin un contrato de finalización observable"
+      action "unresolved_single_need"
+  coding_search_issue_creation
+    defined-by code
+    role coding_search_literal_query
+    precondition "a coding request contains this concept surface"
+    effect "the literal-search slot is bound to issue creation"
+    unit "not applicable"
+    example "GitHub issue creation command"
+    lexeme en "GitHub issue creation command"
+      action "gh issue create"
+    lexeme ru "команда создания задачи GitHub"
+      action "gh issue create"
+    lexeme hi "GitHub इश्यू बनाने का कमांड"
+      action "gh issue create"
+    lexeme zh "GitHub 议题创建命令"
+      action "gh issue create"
+    lexeme es "comando de creación de incidencias de GitHub"
+      action "gh issue create"
+  workspace_inspection_examine
+    defined-by action
+    role workspace_inspection_action
+    precondition "a request contains this concept surface"
+    effect "the request is read as looking at what the workspace already holds"
+    unit "not applicable"
+    example "inspect"
+    lexeme en inspect examine review audit
+    lexeme ru изучи изучите осмотри просмотри
+    lexeme hi "निरीक्षण करें" "समीक्षा करें"
+    lexeme zh 检查 审查 审阅
+    lexeme es inspecciona revisa audita examina
+  workspace_inspection_verify
+    defined-by action
+    role workspace_inspection_action
+    precondition "a request contains this concept surface"
+    effect "the request is read as confirming a claim against what the workspace holds"
+    unit "not applicable"
+    example "verify"
+    lexeme en verify confirm
+    lexeme ru проверь проверьте убедись подтверди
+    lexeme hi "सत्यापित करें" "पुष्टि करें"
+    lexeme zh 验证 确认
+    lexeme es verifica confirma
+  workspace_inspection_identify
+    defined-by action
+    role workspace_inspection_action
+    precondition "a request contains this concept surface"
+    effect "the request is read as locating something inside the workspace"
+    unit "not applicable"
+    example "identify"
+    lexeme en identify locate "find where" "where does" "where the"
+    lexeme ru определи "найди где" "где находится"
+    lexeme hi "पहचानें" "पता लगाएँ" "कहाँ है"
+    lexeme zh 确定 找出 在哪里
+    lexeme es identifica localiza "dónde se define"
+` in `data/seed/meanings-coding-tasks.lino` and observed the result.

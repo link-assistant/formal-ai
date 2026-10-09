@@ -1,0 +1,433 @@
+>> read {"filePath":"rust/tests/web/agentic-recipes-b.test.mjs","file_path":"rust/tests/web/agentic-recipes-b.test.mjs","path":"rust/tests/web/agentic-recipes-b.test.mjs"}
+   <file>
+   00001| // The JavaScript port of the agentic recipes in rust/src/agentic_coding/
+   00002| // (algorithm_learning, procedure, learning_report and its reports, self_ast,
+   00003| // dreaming_audit, google_trends_*, question_catalog). Expectations mirror
+   00004| // rust/tests/unit/issue_531_algorithm_discovery.rs,
+   00005| // rust/tests/unit/specification/arbitrary_skill_compilation.rs,
+   00006| // rust/tests/unit/agentic-coding/issue_686_agent_cli.rs, issue_657/709 learning reports,
+   00007| // issue_538/540/527/498/499 recipes, and the committed Agent CLI sessions
+   00008| // those Rust tests pin byte-for-byte (docs/case-studies/*/agent-cli-session-*.json).
+   00009| 
+   00010| import { before, test } from 'node:test';
+   00011| import assert from 'node:assert/strict';
+   00012| import { readFileSync } from 'node:fs';
+   00013| import { WorkerHost } from '../../../js/server/worker-host.mjs';
+   00014| import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+   00015| import * as algorithmLearning from '../../../js/agentic/algorithm_learning.mjs';
+   00016| import * as procedure from '../../../js/agentic/procedure.mjs';
+   00017| import * as learningReport from '../../../js/agentic/learning_report.mjs';
+   00018| import * as associativeLearning from '../../../js/agentic/associative_learning.mjs';
+   00019| import * as selfHostingLearning from '../../../js/agentic/learning_report/self_hosting_learning.mjs';
+   00020| import * as searchFusionLearning from '../../../js/agentic/learning_report/search_fusion_learning.mjs';
+   00021| import * as selfAst from '../../../js/agentic/self_ast.mjs';
+   00022| import * as dreamingAudit from '../../../js/agentic/dreaming_audit.mjs';
+   00023| import * as questionCatalog from '../../../js/agentic/question_catalog.mjs';
+   00024| import * as googleTrendsCatalog from '../../../js/agentic/google_trends_catalog.mjs';
+   00025| import * as googleTrendsLearning from '../../../js/agentic/google_trends_learning.mjs';
+   00026| import {
+   00027|   candidateFromLinksNotation, candidateLinksNotation, candidatesEqual, conformanceLinksNotation,
+   00028|   discoverAlgorithms, validatedCandidates,
+   00029| } from '../../../js/agentic/crate/algorithm_discovery.mjs';
+   00030| import { MemoryStore, exportLinksNotationWithSchema, parseLinksNotation } from '../../../js/agentic/crate/memory.mjs';
+   00031| import {
+   00032|   PROCEDURE_CONFORMANCE_TRIGGER, compileProcedure, compileProcedureResult, conformanceLinksNotation as procedureConformance,
+   00033|   procedureLinksNotation, restateSteps, stepArguments,
+   00034| } from '../../../js/agentic/crate/skill_procedure.mjs';
+   00035| import { artifactLinksNotation, extractCompiledProcedureArtifact, proceduresEqual } from '../../../js/agentic/crate/skill_procedure_artifact.mjs';
+   00036| import { impulseIdFor } from '../../../js/agentic/crate/intent_formalization.mjs';
+   00037| 
+   00038| const ROOT = new URL('../../../', import.meta.url);
+   00039| const read = (path) => readFileSync(new URL(path, ROOT), 'utf8');
+   00040| const session = (path) => JSON.parse(read(path));
+   00041| 
+   00042| const user = (content) => ({ role: 'user', content, tool_calls: [], tool_call_id: null, name: null });
+   00043| function answerToolCall(messages, call, result) {
+   00044|   const id = `call_${messages.length}`;
+   00045|   messages.push({ role: 'assistant', content: '', tool_calls: [{ id, type: 'function', function: { name: call.tool, arguments: call.arguments } }], tool_call_id: null, name: null });
+   00046|   messages.push({ role: 'tool', content: result, tool_calls: [], tool_call_id: id, name: call.tool });
+   00047| }
+   00048| const bytes = (text, [start, end]) => Buffer.from(text, 'utf8').subarray(start, end).toString('utf8');
+   00049| 
+   00050| before(async () => {
+   00051|   await installNodeHost(new WorkerHost());
+   00052| });
+   00053| 
+   00054| // ---- algorithm discovery / algorithm_learning (issue #531) -----------------
+   00055| 
+   00056| const step = (operation, args) => ({ operation, arguments: [...args].sort(([a], [b]) => (a < b ? -1 : 1)) });
+   00057| const trace = (id, subject, format) => ({
+   00058|   id,
+   00059|   steps: [step('fetch', [['subject', subject]]), step('normalize', [['subject', subject], ['format', format]]), step('persist', [['subject', subject]])],
+   00060| });
+   00061| const threeRuns = () => discoverAlgorithms([trace('run-alpha', 'alpha', 'json'), trace('run-beta', 'beta', 'json'), trace('run-gamma', 'gamma', 'json')]);
+   00062| 
+   00063| test('repeated event sequences become a validated parameterized algorithm', () => {
+   00064|   const run = threeRuns();
+   00065|   assert.ok(run.associative_compression_lossless);
+   00066|   assert.ok(run.associative_compression_steps > 0);
+   00067|   const candidates = validatedCandidates(run);
+   00068|   assert.equal(candidates.length, 1);
+   00069|   const [candidate] = candidates;
+   00070|   assert.equal(candidate.steps.length, 3);
+   00071|   assert.deepEqual(candidate.support_trace_ids, ['run-alpha', 'run-beta']);
+   00072|   assert.equal(candidate.held_out.length, 1);
+   00073|   assert.ok(candidate.held_out[0].passed);
+   00074|   const argument = (index, name) => candidate.steps[index].arguments.find(([key]) => key === name)[1];
+   00075|   assert.deepEqual(argument(0, 'subject'), argument(1, 'subject'));
+   00076|   assert.ok(argument(0, 'subject').parameter !== undefined);
+   00077|   assert.deepEqual(argument(1, 'format'), { constant: 'json' });
+   00078| });
+   00079| 
+   00080| test('held-out constant drift is preserved as a failed candidate', () => {
+   00081|   const run = discoverAlgorithms([trace('run-alpha', 'alpha', 'json'), trace('run-beta', 'beta', 'json'), trace('run-gamma', 'gamma', 'xml')]);
+   00082|   assert.equal(validatedCandidates(run).length, 0);
+   00083|   const candidate = run.candidates.find((entry) => entry.steps.length === 3);
+   00084|   assert.equal(candidate.held_out.length, 1);
+   00085|   assert.ok(!candidate.held_out[0].passed);
+   00086| });
+   00087| 
+   00088| test('artifact round trip and conformance do not implicitly approve execution', () => {
+   00089|   const [candidate] = validatedCandidates(threeRuns());
+   00090|   const document = candidateLinksNotation(candidate);
+   00091|   assert.ok(candidatesEqual(candidateFromLinksNotation(document), candidate));
+   00092|   const parameter = candidate.steps[0].arguments.find(([key]) => key === 'subject')[1].parameter;
+   00093|   const conformance = conformanceLinksNotation(candidate, 'dry-trigger', new Map([[parameter, 'delta']]));
+   00094|   assert.ok(conformance.includes('side_effects "false"'));
+   00095|   assert.ok(conformance.includes('result "passed"'));
+   00096|   assert.equal(candidateFromLinksNotation(document.replace(candidate.id, 'algorithm_tampered')), null);
+   00097|   assert.equal(candidateFromLinksNotation(document.replace('test "run-gamma"', 'test "forged-run"')), null);
+   00098| });
+   00099| 
+   00100| test('the memory reader round-trips the issue-531 observation document', () => {
+   00101|   const text = read('data/benchmarks/issue-531-algorithm-traces.lino');
+   00102|   const store = new MemoryStore();
+   00103|   store.replaceFromLinksNotation(text);
+   00104|   assert.ok(store.len() > 0);
+   00105|   const again = new MemoryStore();
+   00106|   again.replaceFromLinksNotation(store.exportLinksNotation());
+   00107|   assert.equal(again.exportLinksNotation(), store.exportLinksNotation());
+   00108|   assert.deepEqual(parseLinksNotation(store.exportLinksNotation()), store.events());
+   00109| });
+   00110| 
+   00111| test('Agent CLI algorithm learning: write, discover, read back, conformance', () => {
+   00112|   const store = new MemoryStore();
+   00113|   store.replaceFromLinksNotation(read('data/benchmarks/issue-531-algorithm-traces.lino'));
+   00114|   const memory = exportLinksNotationWithSchema(store.events(), 2);
+   00115|   const prompt = `Derive any reusable execution algorithm from these recorded events and verify it.\n${memory}`;
+   00116|   assert.equal(algorithmLearning.compileTask('Derive any reusable execution algorithm from these recorded events.'), null);
+   00117|   const task = algorithmLearning.compileTask(prompt);
+   00118|   assert.ok(task);
+   00119|   const tools = ['write_file', 'run_command'];
+   00120|   const messages = [user(prompt)];
+   00121|   const write = algorithmLearning.planStep(messages, tools, task);
+   00122|   assert.equal(write.calls[0].tool, 'write_file');
+   00123|   assert.equal(JSON.parse(write.calls[0].arguments).path, algorithmLearning.OBSERVATIONS_PATH);
+   00124|   answerToolCall(messages, write.calls[0], 'wrote algorithm-observations.lino');
+   00125|   const learn = algorithmLearning.planStep(messages, tools, task);
+   00126|   assert.ok(learn.calls[0].arguments.includes('formal-ai learn algorithms'));
+   00127|   answerToolCall(messages, learn.calls[0], 'learned 1 held-out validated algorithm');
+   00128|   const readback = algorithmLearning.planStep(messages, tools, task);
+   00129|   assert.equal(JSON.parse(readback.calls[0].arguments).command, 'cat discovered-algorithms.lino');
+   00130|   answerToolCall(messages, readback.calls[0], candidateLinksNotation(task.candidate));
+   00131|   const conformance = algorithmLearning.planStep(messages, tools, task);
+   00132|   assert.ok(conformance.calls[0].arguments.includes('formal-ai algorithm conformance'));
+   00133|   answerToolCall(messages, conformance.calls[0], algorithmLearning.expectedConformance(task.candidate));
+   00134|   const final = algorithmLearning.planStep(messages, tools, task);
+   00135|   assert.equal(final.kind, 'final');
+   00136|   assert.ok(final.answer.includes('status "conformance_passed"'));
+   00137|   assert.ok(final.answer.includes('human_gated "true"'));
+   00138|   assert.ok(final.answer.includes('associative_compression_lossless "true"'));
+   00139| });
+   00140| 
+   00141| // ---- skill procedures / procedure (issue #674) -----------------------------
+   00142| 
+   00143| const ENGLISH_PROCEDURE = 'When I paste a link, fetch its title, translate it to Russian, save both, and reply with the translation.';
+   00144| const RUSSIAN_PROCEDURE = 'Когда я вставляю ссылку, получи её заголовок, переведи его на русский, сохрани оба и ответь переводом.';
+   00145| const HINDI_PROCEDURE = 'जब मैं लिंक भेजूँ, उसका शीर्षक लाओ, उसे रूसी में अनुवाद करो, दोनों सहेजो और अनुवाद के साथ जवाब दो।';
+   00146| const CHINESE_PROCEDURE = '当我粘贴链接，获取标题，翻译成俄语，保存两者，然后用译文回复。';
+   00147| 
+   00148| test('an arbitrary four-step procedure compiles and restates its steps', () => {
+   00149|   const compiled = compileProcedure(ENGLISH_PROCEDURE);
+   00150|   assert.deepEqual(compiled.steps.map((entry) => entry.kind),
+   00151|     ['skill_procedure_fetch', 'skill_procedure_translate', 'skill_procedure_store', 'skill_procedure_reply']);
+   00152|   assert.deepEqual(stepArguments(compiled.steps[0]), ['skill_procedure_object_title']);
+   00153|   assert.deepEqual(stepArguments(compiled.steps[1]), ['language_russian']);
+   00154|   assert.deepEqual(compiled.trigger.objects, ['skill_procedure_object_link']);
+   00155|   assert.ok(procedureConformance(compiled, PROCEDURE_CONFORMANCE_TRIGGER).includes(
+   00156|     'answer "skill_procedure_reply(skill_procedure_store(skill_procedure_translate(skill_procedure_fetch(https://example.com/article))))"'));
+   00157|   const restated = restateSteps(compiled);
+   00158|   for (const entry of compiled.steps) {
+   00159|     assert.ok(restated.includes(entry.kind));
+   00160|     assert.equal(bytes(ENGLISH_PROCEDURE, entry.source_span), entry.source_text);
+   00161|   }
+   00162| });
+   00163| 
+   00164| test('the same procedure in every supported language compiles to the same skill links', () => {
+   00165|   const english = compileProcedure(ENGLISH_PROCEDURE);
+   00166|   for (const [language, description] of [['ru', RUSSIAN_PROCEDURE], ['hi', HINDI_PROCEDURE], ['zh', CHINESE_PROCEDURE]]) {
+   00167|     const other = compileProcedure(description);
+   00168|     assert.ok(other, language);
+   00169|     assert.equal(procedureLinksNotation(other), procedureLinksNotation(english), language);
+   00170|     assert.equal(other.id, english.id, language);
+   00171|     assert.notEqual(restateSteps(other), restateSteps(english), language);
+   00172|     for (const entry of other.steps) assert.equal(bytes(description, entry.source_span), entry.source_text, language);
+   00173|   }
+   00174| });
+   00175| 
+   00176| test('an uncompilable step reports a named gap and compiles nothing', () => {
+   00177|   const withGap = 'When I paste a link, fetch its title, print it on my printer, and reply with the title.';
+   00178|   const { error } = compileProcedureResult(withGap);
+   00179|   assert.equal(error.kind, 'uncompilable_step');
+   00180|   assert.equal(error.step, 'print it on my printer');
+   00181|   assert.equal(bytes(withGap, error.span), error.step);
+   00182|   assert.equal(procedure.compileTask(withGap), null);
+   00183|   assert.equal(procedure.compileTask('What is the capital of France?'), null);
+   00184| });
+   00185| 
+   00186| // The seed spells this gap name with doubled-quote escapes, which both Links
+   00187| // Notation readers (rust/src/seed/parser.rs, js/seed_loader.js) collapse.
+   00188| test('the gap name collapses the seed quote escape', () => {
+   00189|   const { error } = compileProcedureResult('When I paste a link, fetch its title, print it on my printer, and reply with the title.');
+   00190|   assert.equal(error.gap, 'no compiled capability for "print it on my printer"');
+   00191| });
+   00192| 
+   00193| test('the compiler records every ordered requirement under the solver impulse', () => {
+   00194|   const compiled = compileProcedure(ENGLISH_PROCEDURE);
+   00195|   assert.equal(compiled.impulse_id, impulseIdFor(ENGLISH_PROCEDURE));
+   00196|   assert.equal(compiled.requirements.length, 5);
+   00197|   compiled.requirements.forEach((requirement, index) => {
+   00198|     assert.equal(requirement.index, index + 1);
+   00199|     assert.equal(bytes(ENGLISH_PROCEDURE, requirement.source_span), requirement.source_text);
+   00200|   });
+   00201|   assert.equal(compiled.trigger.requirement_id, compiled.requirements[0].id);
+   00202|   compiled.steps.forEach((entry, index) => assert.equal(entry.requirement_id, compiled.requirements[index + 1].id));
+   00203| });
+   00204| 
+   00205| test('the compiled artifact round-trips and rejects tampering', () => {
+   00206|   const compiled = compileProcedure(ENGLISH_PROCEDURE);
+   00207|   const artifact = artifactLinksNotation(compiled);
+   00208|   assert.ok(proceduresEqual(extractCompiledProcedureArtifact(artifact), compiled));
+   00209|   assert.equal(extractCompiledProcedureArtifact(artifact.replace(compiled.id, 'procedure_tampered')), null);
+   00210|   assert.equal(extractCompiledProcedureArtifact(artifact.replace('fetch its title', 'fetch its titles')), null);
+   00211| });
+   00212| 
+   00213| test('Agent CLI procedure: write, verify, execute, and return the same artifact', () => {
+   00214|   const tools = ['write_file', 'run_command'];
+   00215|   const messages = [user(ENGLISH_PROCEDURE)];
+   00216|   const compiled = procedure.compileTask(ENGLISH_PROCEDURE);
+   00217|   const write = procedure.planStep(messages, tools, compiled);
+   00218|   assert.equal(write.calls.length, 1);
+   00219|   assert.equal(write.calls[0].tool, 'write_file');
+   00220|   const args = JSON.parse(write.calls[0].arguments);
+   00221|   assert.equal(args.path, 'compiled-procedure.lino');
+   00222|   assert.equal(args.content, artifactLinksNotation(compiled));
+   00223|   answerToolCall(messages, write.calls[0], 'wrote compiled-procedure.lino');
+   00224|   const verify = procedure.planStep(messages, tools, compiled);
+   00225|   assert.equal(verify.calls[0].tool, 'run_command');
+   00226|   assert.ok(verify.calls[0].arguments.includes('compiled-procedure.lino'));
+   00227|   answerToolCall(messages, verify.calls[0], artifactLinksNotation(compiled));
+   00228|   const execute = procedure.planStep(messages, tools, compiled);
+   00229|   assert.ok(execute.calls[0].arguments.includes('formal-ai procedure conformance'));
+   00230|   assert.ok(execute.calls[0].arguments.includes(PROCEDURE_CONFORMANCE_TRIGGER));
+   00231|   const execution = procedureConformance(compiled, PROCEDURE_CONFORMANCE_TRIGGER);
+   00232|   answerToolCall(messages, execute.calls[0], execution);
+   00233|   const final = procedure.planStep(messages, tools, compiled);
+   00234|   assert.equal(final.kind, 'final');
+   00235|   assert.ok(final.answer.includes(compiled.id));
+   00236|   assert.ok(final.answer.includes(restateSteps(compiled)));
+   00237|   assert.ok(final.answer.includes(execution));
+   00238| });
+   00239| 
+   00240| test('Agent CLI procedure rejects a corrupted readback and a failed execution', () => {
+   00241|   const tools = ['write_file', 'run_command'];
+   00242|   const compiled = procedure.compileTask(ENGLISH_PROCEDURE);
+   00243|   let messages = [user(ENGLISH_PROCEDURE)];
+   00244|   answerToolCall(messages, procedure.planStep(messages, tools, compiled).calls[0], 'wrote compiled-procedure.lino');
+   00245|   answerToolCall(messages, procedure.planStep(messages, tools, compiled).calls[0], 'compiled_procedure_artifact "corrupted"');
+   00246|   const corrupted = procedure.planStep(messages, tools, compiled);
+   00247|   assert.ok(corrupted.answer.includes('verification failed'), corrupted.answer);
+   00248|   assert.ok(!corrupted.answer.includes('was written and verified'));
+   00249| 
+   00250|   messages = [user(ENGLISH_PROCEDURE)];
+   00251|   answerToolCall(messages, procedure.planStep(messages, tools, compiled).calls[0], 'wrote compiled-procedure.lino');
+   00252|   answerToolCall(messages, procedure.planStep(messages, tools, compiled).calls[0], artifactLinksNotation(compiled));
+   00253|   answerToolCall(messages, procedure.planStep(messages, tools, compiled).calls[0], 'command exited with status 1\nstderr:\nconformance host failed');
+   00254|   const failed = procedure.planStep(messages, tools, compiled);
+   00255|   assert.ok(failed.answer.includes('conformance execution failed'), failed.answer);
+   00256|   assert.ok(!failed.answer.includes('executed end to end'));
+   00257| });
+   00258| 
+   00259| test('Agent CLI procedure localizes an honest unpersisted artifact', () => {
+   00260|   const compiled = procedure.compileTask(RUSSIAN_PROCEDURE);
+   00261|   const plan = procedure.planStep([user(RUSSIAN_PROCEDURE)], [], compiled);
+   00262|   assert.equal(plan.kind, 'final');
+   00263|   assert.ok(plan.answer.includes('Процедура скомпилирована'), plan.answer);
+   00264|   assert.ok(plan.answer.includes('не сохранён и не проверен'), plan.answer);
+   00265|   assert.ok(plan.answer.includes(compiled.id));
+   00266| });
+   00267| 
+   00268| // ---- learning reports (issues #686, #657, #709, ...) -----------------------
+   00269| 
+   00270| test('the associative report and answer match the committed Agent CLI session', () => {
+   00271|   const recorded = session('docs/case-studies/issue-686/agent-cli-session-associative-learning.json');
+   00272|   assert.equal(learningReport.route(recorded.task), associativeLearning.REPORT);
+   00273|   const document = associativeLearning.renderDocument();
+   00274|   assert.equal(document, recorded.steps[0].arguments.content);
+   00275|   assert.equal(associativeLearning.finalAnswer(document), recorded.final_answer);
+   00276|   const plan = learningReport.planReportStep(associativeLearning.REPORT, [user(recorded.task)], recorded.tools_advertised);
+   00277|   assert.equal(plan.calls[0].tool, recorded.steps[0].tool);
+   00278|   assert.deepEqual(JSON.parse(plan.calls[0].arguments), recorded.steps[0].arguments);
+   00279| });
+   00280| 
+   00281| test('the associative report is derived from persisted usage, not canned', () => {
+   00282|   const baseline = read('data/meta/associative-learning-case.lino');
+   00283|   const hotter = baseline.split('accessCount "2"').join('accessCount "8"');
+   00284|   const first = associativeLearning.renderDocumentFrom(baseline);
+   00285|   const second = associativeLearning.renderDocumentFrom(hotter);
+   00286|   assert.notEqual(first, second);
+   00287|   assert.ok(first.includes('retention_formula "reads + writes + incoming_links + outgoing_links"'));
+   00288|   assert.ok(second.includes('reads "9"'));
+   00289|   assert.ok(second.includes('multi_hop_recall'));
+   00290|   for (const prompt of [associativeLearning.task(), 'Please produce ASSOCIATIVE-LEARNING-REPORT.LINO from the learned memory.',
+   00291|     'Rank our linked facts, then save associative-learning-report.lino']) {
+   00292|     assert.ok(associativeLearning.isAssociativeLearningTask(prompt), prompt);
+   00293|   }
+   00294|   assert.ok(!associativeLearning.isAssociativeLearningTask('Explain associative memory without writing an artifact'));
+   00295| });
+   00296| 
+   00297| test('self-hosting and search-fusion reports are derived and review gated', () => {
+   00298|   const baseline = read('data/meta/issue-657-self-hosting-learning.lino');
+   00299|   const first = selfHostingLearning.renderDocumentFrom(baseline);
+   00300|   assert.notEqual(first, selfHostingLearning.renderDocumentFrom(baseline.split('accessCount "9"').join('accessCount "14"')));
+   00301|   for (const needle of ['self_hosting_learning_report', 'issue "657"', 'decision "awaiting_human_review"',
+   00302|     'promotion_gate "metric_fixture_exact_share_and_honest_ledger_ratchet_pass"', 'lesson:trailer-provenance',
+   00303|     'lesson:honest-baseline', 'lesson:changed-line-weighting', 'lesson:monotonic-window']) {
+   00304|     assert.ok(first.includes(needle), needle);
+   00305|   }
+   00306|   assert.ok(!first.includes('decision "promoted"'));
+   00307|   assert.ok(selfHostingLearning.finalAnswer(first).includes('human-review-gated report'));
+   00308|   const report = searchFusionLearning.renderDocument();
+   00309|   assert.ok(report.startsWith('search_fusion_learning_report\n  issue "709"\n'));
+   00310|   assert.ok(report.includes('lesson:gated-recipe-replay'));
+   00311| });
+   00312| 
+   00313| test('every registered report routes from its own task and identities are unique', () => {
+   00314|   const reports = learningReport.reports();
+   00315|   assert.equal(reports.length, 11);
+   00316|   for (const report of reports) assert.equal(learningReport.route(report.task)?.head, report.head, report.head);
+   00317|   assert.equal(new Set(reports.map((report) => report.head)).size, reports.length);
+   00318|   assert.equal(new Set(reports.map((report) => report.path)).size, reports.length);
+   00319|   assert.equal(learningReport.route('What is the capital of France?'), null);
+   00320| });
+   00321| 
+   00322| test('committed Agent CLI evidence reports match a fresh render', () => {
+   00323|   for (const [module, path] of [
+   00324|     ['learning_report/handler_precedence_learning', 'docs/case-studies/issue-663/agent-cli-evidence/handler-precedence-learning-report.lino'],
+   00325|     ['learning_report/lexeme_import_learning', 'docs/case-studies/issue-660/agent-cli-evidence/lexeme-import-learning-report.lino'],
+   00326|     ['learning_report/hardcoded_language_learning', 'docs/case-studies/issue-659/agent-cli-evidence/hardcoded-language-learning-report.lino'],
+   00327|   ]) {
+   00328|     const report = learningReport.reports().find((entry) => path.endsWith(entry.path));
+   00329|     assert.ok(report, module);
+   00330|     assert.equal(learningReport.renderDocument(report), read(path), path);
+   00331|   }
+   00332| });
+   00333| 
+   00334| // ---- document recipes (issues #538, #540, #527, #498, #499) ----------------
+   00335| 
+   00336| test('the dreaming audit is derived from the recipe and matches the committed session', () => {
+   00337|   const recorded = session('docs/case-studies/issue-540/agent-cli-session-dreaming-audit.json');
+   00338|   assert.ok(dreamingAudit.isDreamingAuditTask(dreamingAudit.dreamingAuditTask()));
+   00339|   assert.equal(recorded.task, dreamingAudit.dreamingAuditTask());
+   00340|   assert.ok(!dreamingAudit.isDreamingAuditTask('Perform a gap analysis for issue 540 dreaming'));
+   00341|   assert.ok(!dreamingAudit.isDreamingAuditTask('Please audit my dreaming journal app'));
+   00342|   assert.ok(dreamingAudit.isDreamingAuditTask('Regenerate dreaming-gap-analysis.lino from the recipe'));
+   00343|   const document = dreamingAudit.renderDocument();
+   00344|   assert.equal(document, recorded.steps[0].arguments.content);
+   00345|   assert.equal(document, read('docs/case-studies/issue-540/dreaming-gap-analysis.lino'));
+   00346|   assert.equal(dreamingAudit.finalAnswer(document), recorded.final_answer);
+   00347| });
+   00348| 
+   00349| test('the self-AST recipe routes narrowly and answers like the committed session', () => {
+   00350|   assert.ok(selfAst.isSelfAstTask(selfAst.astTask()));
+   00351|   assert.ok(selfAst.isSelfAstTask('record the abstract-syntax of our planner in our data'));
+   00352|   for (const prompt of ['make the tomato meaning more detailed', 'generate the mermaid diagrams of our recipes', 'What is the capital of France?']) {
+   00353|     assert.ok(!selfAst.isSelfAstTask(prompt), prompt);
+   00354|   }
+   00355|   const recorded = session('docs/case-studies/issue-538/agent-cli-session-self-ast.json');
+   00356|   assert.equal(recorded.task, selfAst.astTask());
+   00357|   const document = selfAst.renderDocument();
+   00358|   assert.equal(document, read('data/meta/self-ast.lino'));
+   00359|   assert.equal(selfAst.finalAnswer(recorded.steps[0].arguments.content), recorded.final_answer);
+   00360|   assert.equal(selfAst.renderCensusDocument(selfAst.TARGET_MODULE_PATH, {
+   00361|     total_link_count: 1, named_node_count: 1, text_preserved: true, clean: true, node_kinds: [{ kind: 'identifier', count: 1 }],
+   00362|   }).split('\n').slice(-3).join('\n'), '  node_kinds\n    identifier 1\n');
+   00363| });
+   00364| 
+   00365| test('the question catalog recipe routes narrowly and answers like the committed session', () => {
+   00366|   assert.ok(questionCatalog.isQuestionCatalogTask(questionCatalog.questionCatalogTask()));
+   00367|   for (const prompt of ['Please generate every possible question and answer each one.',
+   00368|     'Build the question catalog and record it in Links Notation.', 'Enumerate questions from smallest to largest and answer them.']) {
+   00369|     assert.ok(questionCatalog.isQuestionCatalogTask(prompt), prompt);
+   00370|   }
+   00371|   assert.ok(!questionCatalog.isQuestionCatalogTask('what files are in this folder?'));
+   00372|   assert.ok(!questionCatalog.isQuestionCatalogTask('what is formal ai?'));
+   00373|   const recorded = session('docs/case-studies/issue-527/agent-cli-session-question-catalog.json');
+   00374|   assert.equal(questionCatalog.renderDocument(), recorded.steps[0].arguments.content);
+   00375|   assert.equal(questionCatalog.finalAnswer(questionCatalog.renderDocument()), recorded.final_answer);
+   00376|   const catalog = questionCatalog.catalog();
+   00377|   const [first] = catalog.answered;
+   00378|   assert.equal(questionCatalog.answerFor(catalog, `  ${first.question.toUpperCase()} `), first);
+   00379|   assert.equal(questionCatalog.answerFor(catalog, 'what colour is the sky?'), null);
+   00380| });
+   00381| 
+   00382| test('the Google Trends recipes route and answer like the committed sessions', () => {
+   00383|   assert.ok(googleTrendsCatalog.isGoogleTrendsCatalogTask(googleTrendsCatalog.googleTrendsCatalogTask()));
+   00384|   assert.ok(googleTrendsCatalog.isGoogleTrendsCatalogTask('Build a Google Trends catalog from the top searches and answer each request.'));
+   00385|   assert.ok(googleTrendsCatalog.isGoogleTrendsCatalogTask('Convert trending searches into multilingual Formal AI test prompts.'));
+   00386|   assert.ok(!googleTrendsCatalog.isGoogleTrendsCatalogTask('what is formal ai?'));
+   00387|   assert.ok(!googleTrendsCatalog.isGoogleTrendsCatalogTask(questionCatalog.questionCatalogTask()));
+   00388|   assert.ok(!questionCatalog.isQuestionCatalogTask(googleTrendsCatalog.googleTrendsCatalogTask()));
+   00389|   assert.ok(googleTrendsLearning.isGoogleTrendsLearningTask(googleTrendsLearning.googleTrendsLearningTask()));
+   00390|   assert.ok(googleTrendsLearning.isGoogleTrendsLearningTask('Map the Google Trends learning frontier and hand it to the self-improvement loop.'));
+   00391|   assert.ok(googleTrendsLearning.isGoogleTrendsLearningTask('Which trending searches can Formal AI not yet resolve? Route them to the gated learner.'));
+   00392|   assert.ok(!googleTrendsLearning.isGoogleTrendsLearningTask(googleTrendsCatalog.googleTrendsCatalogTask()));
+   00393|   assert.ok(!googleTrendsCatalog.isGoogleTrendsCatalogTask(googleTrendsLearning.googleTrendsLearningTask()));
+   00394|   assert.ok(!googleTrendsLearning.isGoogleTrendsLearningTask('what is formal ai?'));
+   00395|   assert.ok(!googleTrendsLearning.isGoogleTrendsLearningTask('Here you can learn a lot from reading books'));
+   00396|   for (const [path, recipe] of [
+   00397|     ['docs/case-studies/issue-498/agent-cli-session-google-trends.json', googleTrendsCatalog],
+   00398|     ['docs/case-studies/issue-498/agent-cli-session-google-trends-learning.json', googleTrendsLearning],
+   00399|     ['docs/case-studies/issue-499/agent-cli-session-learn-from-source.json', googleTrendsLearning],
+   00400|   ]) {
+   00401|     const recorded = session(path);
+   00402|     if (recipe === googleTrendsLearning) assert.ok(recipe.isGoogleTrendsLearningTask(recorded.task), path);
+   00403|     else assert.ok(recipe.isGoogleTrendsCatalogTask(recorded.task), path);
+   00404|     assert.equal(recipe.renderDocument(), recorded.steps[0].arguments.content, path);
+   00405|     assert.equal(JSON.parse(JSON.stringify(recorded.steps[1].arguments)).command, recipe.verificationCommand(), path);
+   00406|     assert.equal(recipe.finalAnswer(recipe.renderDocument()), recorded.final_answer, path);
+   00407|   }
+   00408| });
+   00409| 
+   
+   (End of file - total 409 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/agentic-recipes-b.test.mjs","file_path":"rust/tests/web/agentic-recipes-b.test.mjs","new":"  const messages = [user(recorded.task)];\n  for (const step of recorded.steps) {\n    const plan = learningReport.planReportStep(associativeLearning.REPORT, messages, recorded.tools_advertised);\n    assert.equal(plan.calls[0].tool, step.tool);\n    assert.ok(recorded.tools_advertised.includes(plan.calls[0].tool));\n    assert.deepEqual(JSON.parse(plan.calls[0].arguments), step.arguments);\n    answerToolCall(messages, plan.calls[0], step.result);\n  }\n  const final = learningReport.planReportStep(associativeLearning.REPORT, messages, recorded.tools_advertised);\n  assert.equal(final.kind, 'final');\n  assert.equal(final.answer, recorded.final_answer);","newString":"  const messages = [user(recorded.task)];\n  for (const step of recorded.steps) {\n    const plan = learningReport.planReportStep(associativeLearning.REPORT, messages, recorded.tools_advertised);\n    assert.equal(plan.calls[0].tool, step.tool);\n    assert.ok(recorded.tools_advertised.includes(plan.calls[0].tool));\n    assert.deepEqual(JSON.parse(plan.calls[0].arguments), step.arguments);\n    answerToolCall(messages, plan.calls[0], step.result);\n  }\n  const final = learningReport.planReportStep(associativeLearning.REPORT, messages, recorded.tools_advertised);\n  assert.equal(final.kind, 'final');\n  assert.equal(final.answer, recorded.final_answer);","new_str":"  const messages = [user(recorded.task)];\n  for (const step of recorded.steps) {\n    const plan = learningReport.planReportStep(associativeLearning.REPORT, messages, recorded.tools_advertised);\n    assert.equal(plan.calls[0].tool, step.tool);\n    assert.ok(recorded.tools_advertised.includes(plan.calls[0].tool));\n    assert.deepEqual(JSON.parse(plan.calls[0].arguments), step.arguments);\n    answerToolCall(messages, plan.calls[0], step.result);\n  }\n  const final = learningReport.planReportStep(associativeLearning.REPORT, messages, recorded.tools_advertised);\n  assert.equal(final.kind, 'final');\n  assert.equal(final.answer, recorded.final_answer);","new_string":"  const messages = [user(recorded.task)];\n  for (const step of recorded.steps) {\n    const plan = learningReport.planReportStep(associativeLearning.REPORT, messages, recorded.tools_advertised);\n    assert.equal(plan.calls[0].tool, step.tool);\n    assert.ok(recorded.tools_advertised.includes(plan.calls[0].tool));\n    assert.deepEqual(JSON.parse(plan.calls[0].arguments), step.arguments);\n    answerToolCall(messages, plan.calls[0], step.result);\n  }\n  const final = learningReport.planReportStep(associativeLearning.REPORT, messages, recorded.tools_advertised);\n  assert.equal(final.kind, 'final');\n  assert.equal(final.answer, recorded.final_answer);","old":"  const plan = learningReport.planReportStep(associativeLearning.REPORT, [user(recorded.task)], recorded.tools_advertised);\n  assert.equal(plan.calls[0].tool, recorded.steps[0].tool);\n  assert.deepEqual(JSON.parse(plan.calls[0].arguments), recorded.steps[0].arguments);","oldString":"  const plan = learningReport.planReportStep(associativeLearning.REPORT, [user(recorded.task)], recorded.tools_advertised);\n  assert.equal(plan.calls[0].tool, recorded.steps[0].tool);\n  assert.deepEqual(JSON.parse(plan.calls[0].arguments), recorded.steps[0].arguments);","old_str":"  const plan = learningReport.planReportStep(associativeLearning.REPORT, [user(recorded.task)], recorded.tools_advertised);\n  assert.equal(plan.calls[0].tool, recorded.steps[0].tool);\n  assert.deepEqual(JSON.parse(plan.calls[0].arguments), recorded.steps[0].arguments);","old_string":"  const plan = learningReport.planReportStep(associativeLearning.REPORT, [user(recorded.task)], recorded.tools_advertised);\n  assert.equal(plan.calls[0].tool, recorded.steps[0].tool);\n  assert.deepEqual(JSON.parse(plan.calls[0].arguments), recorded.steps[0].arguments);","path":"rust/tests/web/agentic-recipes-b.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/agentic-recipes-b.test.mjs"}
+   Output: 4e079f1d540873c3421a15448a17efe05cff6afcf9ab8fae54725171076c2429  rust/tests/web/agentic-recipes-b.test.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced `  const plan = learningReport.planReportStep(associativeLearning.REPORT, [user(recorded.task)], recorded.tools_advertised);
+  assert.equal(plan.calls[0].tool, recorded.steps[0].tool);
+  assert.deepEqual(JSON.parse(plan.calls[0].arguments), recorded.steps[0].arguments);` with `  const messages = [user(recorded.task)];
+  for (const step of recorded.steps) {
+    const plan = learningReport.planReportStep(associativeLearning.REPORT, messages, recorded.tools_advertised);
+    assert.equal(plan.calls[0].tool, step.tool);
+    assert.ok(recorded.tools_advertised.includes(plan.calls[0].tool));
+    assert.deepEqual(JSON.parse(plan.calls[0].arguments), step.arguments);
+    answerToolCall(messages, plan.calls[0], step.result);
+  }
+  const final = learningReport.planReportStep(associativeLearning.REPORT, messages, recorded.tools_advertised);
+  assert.equal(final.kind, 'final');
+  assert.equal(final.answer, recorded.final_answer);` in `rust/tests/web/agentic-recipes-b.test.mjs` and observed the result.

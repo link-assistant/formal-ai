@@ -1,0 +1,1 @@
+Run node --test compiled-skill-prototype.test.mjs

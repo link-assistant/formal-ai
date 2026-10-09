@@ -1,0 +1,5 @@
+{
+  "source": "/private/tmp/spec-recurrence-1188/T2914-request.json",
+  "sha256": "1049a6ac848f974b4bdc8d6a8fc057b827e6b3e9a9e00a6e17b5e06b6c104449",
+  "rawUtf8": "{\n  \"taskId\": \"T2914\",\n  \"directory\": \"/private/tmp/spec-recurrence-1188/typed-reader-next\",\n  \"prompt\": \"Run node --test typed-spec-reader.test.mjs\"\n}\n"
+}

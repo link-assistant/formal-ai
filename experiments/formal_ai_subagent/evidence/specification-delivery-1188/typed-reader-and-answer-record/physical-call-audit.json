@@ -1,0 +1,13 @@
+{
+  "cutoff": "T2477",
+  "first": "T2459",
+  "tasks": 19,
+  "physicalCalls": 41,
+  "promptUtf8Bytes": 80557,
+  "transcriptUtf8Bytes": 869955,
+  "repositorySourceMutations": 0,
+  "publishedSpecificationRecordUpdated": false,
+  "actualModelTokensMeasured": false,
+  "actualCostMeasured": false,
+  "scope": "scratch-only FA preparations under production source hold"
+}

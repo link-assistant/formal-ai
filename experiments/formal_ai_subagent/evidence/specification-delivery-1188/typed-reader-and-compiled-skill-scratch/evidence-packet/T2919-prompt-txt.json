@@ -1,0 +1,5 @@
+{
+  "source": "/private/tmp/spec-recurrence-1188/T2919-prompt.txt",
+  "sha256": "aca4743ab4e0fe3664152f730d977015225a22e5ded3904a6b4e20ba9d657484",
+  "rawUtf8": "Implement a source-backed compiled natural-language skill compiler and replay prototype in this selected scratch workspace. Read the actual native /Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/skill_compiler.rs and existing JS engine/seed APIs. Preserve exact native package, rule, handler, legacy and doublet IDs, actual link-record fields/order, normalized trigger semantics and newest-history replay ordering. Add meaningful executable original and held-out tests, reject unsupported structured descriptions honestly, and do not alter repository sources or replace behavior with cache-hit markers.\n"
+}

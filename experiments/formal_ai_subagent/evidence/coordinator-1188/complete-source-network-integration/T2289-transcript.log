@@ -1,0 +1,5 @@
+>> bash {"command":"actionlint .github/workflows/issue-1028-agent-ladder.yml"}
+   Output: 
+   Exit Code: 0
+== answer ==
+The command completed successfully without output.

@@ -1,0 +1,20 @@
+>> bash {"command":"node /tmp/pr1188-cancel-a642.mjs"}
+   Output: {"id":37866292512,"status":"completed","conclusion":"cancelled"}
+   {"id":37866292420,"status":"completed","conclusion":"cancelled"}
+   {"id":37866292797,"action":"cancelled superseded source","head":"a642045d03717a7c21b12e959cd9dabd51a0fbef"}
+   {"id":37866292721,"action":"cancelled superseded source","head":"a642045d03717a7c21b12e959cd9dabd51a0fbef"}
+   {"id":37866292442,"status":"completed","conclusion":"cancelled"}
+   {"id":37866292763,"status":"completed","conclusion":"success"}
+   
+   Exit Code: 0
+== answer ==
+The `node /tmp/pr1188-cancel-a642.mjs` command completed. Output:
+
+```text
+{"id":37866292512,"status":"completed","conclusion":"cancelled"}
+{"id":37866292420,"status":"completed","conclusion":"cancelled"}
+{"id":37866292797,"action":"cancelled superseded source","head":"a642045d03717a7c21b12e959cd9dabd51a0fbef"}
+{"id":37866292721,"action":"cancelled superseded source","head":"a642045d03717a7c21b12e959cd9dabd51a0fbef"}
+{"id":37866292442,"status":"completed","conclusion":"cancelled"}
+{"id":37866292763,"status":"completed","conclusion":"success"}
+```

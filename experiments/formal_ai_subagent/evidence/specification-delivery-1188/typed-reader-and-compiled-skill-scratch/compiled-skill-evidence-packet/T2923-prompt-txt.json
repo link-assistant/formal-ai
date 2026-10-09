@@ -1,0 +1,5 @@
+{
+  "source": "/private/tmp/spec-recurrence-1188/T2923-prompt.txt",
+  "sha256": "251e6185e31608c6a9aff7e1e308e69d8c0bf3b65dec155d8e82e5b181428104",
+  "rawUtf8": "Run node --test compiled-skill-prototype.test.mjs\n"
+}

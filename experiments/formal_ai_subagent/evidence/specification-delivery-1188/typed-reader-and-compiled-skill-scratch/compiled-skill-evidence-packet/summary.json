@@ -1,0 +1,360 @@
+{
+  "taskRange": "T2920-T2931",
+  "taskCount": 12,
+  "physicalToolCallsThroughT2930": 24,
+  "physicalToolCallsIncludingSeal": 25,
+  "physicalWriteEditCalls": 6,
+  "requestUtf8BytesThroughT2930": 42257,
+  "costMeasurement": "No monetary/token savings measurement; request bytes are only a recorded proxy.",
+  "previousPacket": {
+    "path": "/private/tmp/spec-recurrence-1188/typed-reader-next/evidence-packet",
+    "tasks": 14,
+    "calls": 25,
+    "edits": 6
+  },
+  "totalSinceT2906": {
+    "tasks": 26,
+    "calls": 50,
+    "edits": 12
+  },
+  "actualChecks": {
+    "T2923": {
+      "passed": 7,
+      "total": 9
+    },
+    "T2925": {
+      "passed": 23,
+      "total": 23
+    },
+    "T2928": {
+      "passed": 25,
+      "total": 25
+    }
+  },
+  "originalSession": {
+    "nativeAssertions": 5,
+    "unmodifiedProduction": "failed",
+    "scratchCompilerRuntime": "passed",
+    "selectedRealWorkerMemoryOverlay": "passed"
+  },
+  "unsupported": [
+    "structured typed skill IR",
+    "permissions and target handlers",
+    "unmapped offline/engine-empty-memory configurations",
+    "production source compiled-skill implementation",
+    "production typed reader promotion",
+    "broad autonomous compiler synthesis T2919/T2930"
+  ],
+  "productionMutations": 0,
+  "observationalFileWriteBashTasks": [
+    "T2923 writes paired original observation",
+    "T2925 rewrites paired original observation",
+    "T2928 writes paired original and actual-worker overlay observations"
+  ],
+  "faithfulArchivalBashTasks": [
+    "T2920",
+    "T2931"
+  ],
+  "retained": [
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2920-observation.json",
+      "artifact": "T2920-observation-json.json",
+      "sha256": "5d6fa78f53f83fd88bec4becc3d583fbe9e80b71ad442c4fbbb09d56e6741781"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2920-prompt.txt",
+      "artifact": "T2920-prompt-txt.json",
+      "sha256": "bb4f4095a90f7eb1a68878ecef0d3c8447b4dc51366205213baeee4a49ad1a82"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2920-request.json",
+      "artifact": "T2920-request-json.json",
+      "sha256": "b192d22fac0f2bd630fe9ab1c2dbb7fc852924f6d2117baa614360ec730a8647"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2920.log",
+      "artifact": "T2920-log.json",
+      "sha256": "d93077fc9fdca588aac7d0d006efec2f7f22c05cff35f6fa7f36da7acb94f1ca"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2921-byte-check.json",
+      "artifact": "T2921-byte-check-json.json",
+      "sha256": "1cd17c402b2f3eea09be39a9548811c8ce155e6c77de5b52e28df8d5a1cd1d30"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2921-observation.json",
+      "artifact": "T2921-observation-json.json",
+      "sha256": "4cb833f5f50fdefdb4a966135b475383e09121d1a39ffd89690b37bf6cf97572"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2921-prompt.txt",
+      "artifact": "T2921-prompt-txt.json",
+      "sha256": "c718a4a43de188d64d0e3c646c3416f53725b8d59f04503fc2cc01b7a2230584"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2921-request.json",
+      "artifact": "T2921-request-json.json",
+      "sha256": "d1beb8eb71588ecdb2e6727a05a0843c6b98060a2cfea9e54ba3bc7c560c6c0a"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2921.log",
+      "artifact": "T2921-log.json",
+      "sha256": "8bdb671478cdacfed04d0225a22da093af903380e81406f59fc1e2e83fac1125"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2922-byte-check.json",
+      "artifact": "T2922-byte-check-json.json",
+      "sha256": "56fda9d62fbedd053e8aeb8bd435657fb5970fdaf995d7292db0a993882e4a7b"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2922-observation.json",
+      "artifact": "T2922-observation-json.json",
+      "sha256": "3e885b5b0dea682325131399fb4863064cf4b478fb00034f93d708280b6e9595"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2922-prompt.txt",
+      "artifact": "T2922-prompt-txt.json",
+      "sha256": "c3a1a5fb6fede247a37797b5e0f51fe6388023c9d3a195675ad996e20ff6e018"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2922-request.json",
+      "artifact": "T2922-request-json.json",
+      "sha256": "85b087dd5c5f5fb682caf428f5dccb7022476be15c38800b2a8ab0278d0e1520"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2922.log",
+      "artifact": "T2922-log.json",
+      "sha256": "cdc90b42d5620c76b11ec7677e8a84464801937012b951f423f04ff9693d1b2f"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2923-observation.json",
+      "artifact": "T2923-observation-json.json",
+      "sha256": "00f8c74091a61cfd3139fb7eff24638fcd234b57c5f58b0522a57ebd32bde974"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2923-prompt.txt",
+      "artifact": "T2923-prompt-txt.json",
+      "sha256": "251e6185e31608c6a9aff7e1e308e69d8c0bf3b65dec155d8e82e5b181428104"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2923-request.json",
+      "artifact": "T2923-request-json.json",
+      "sha256": "85684637dabf69020a64069e5dcb9ba56b369046c0cd9ccdcefbf6a82e90bda9"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2923.log",
+      "artifact": "T2923-log.json",
+      "sha256": "e2474a9256486cb513d8d0bc171a2a71a930a0d953d44f33cdb50c776db83422"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2924-byte-check.json",
+      "artifact": "T2924-byte-check-json.json",
+      "sha256": "b5a153225390a6dda873beda49af736854b66d090955f39feb95d4683bf8a30a"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2924-observation.json",
+      "artifact": "T2924-observation-json.json",
+      "sha256": "10dd9d2eb78f7770d4aa48477ff2c3f8d900981f8a0f42e265080dae932739af"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2924-prompt.txt",
+      "artifact": "T2924-prompt-txt.json",
+      "sha256": "3cb09186b45647d275af70f16e8e8b141499bed3b846917ff6a78d2b70ea7754"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2924-request.json",
+      "artifact": "T2924-request-json.json",
+      "sha256": "f5908e8b84b1a9c0a8a22db85244722b8f484186196343a852bed1472bbd27d2"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2924.log",
+      "artifact": "T2924-log.json",
+      "sha256": "cdaad0672eeeb87f4e738dc860476409c04935a5ad2f152d4acb5b814a050ac5"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2925-observation.json",
+      "artifact": "T2925-observation-json.json",
+      "sha256": "c6b4dc5b2393413afed5d2ac90eacaf0d0f41884876ff27ada4cd02965329d0d"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2925-prompt.txt",
+      "artifact": "T2925-prompt-txt.json",
+      "sha256": "06d6ac77e472edf261e1845e02165e4c90ba59cb65d0f872fcaf85b851c2abd2"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2925-request.json",
+      "artifact": "T2925-request-json.json",
+      "sha256": "7199c544118825c60c4cceb407bf87ddf55b14546ea2b37eeadf12f987808c68"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2925.log",
+      "artifact": "T2925-log.json",
+      "sha256": "9d9631609cd4f343b56dd88fa67ae069ff7757a7ddddb30b96d3427693190f18"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2926-byte-check.json",
+      "artifact": "T2926-byte-check-json.json",
+      "sha256": "d5a3f49cdf7f27cd235fee2cf62603b9846df5fed21838647c1f754db3492099"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2926-observation.json",
+      "artifact": "T2926-observation-json.json",
+      "sha256": "5519609d78f0863ef48b036cc0fbd085e70e895d100f53d3eb1c91b20e39cf38"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2926-prompt.txt",
+      "artifact": "T2926-prompt-txt.json",
+      "sha256": "1850c131e5000ee7580243e4ef1dedb291f7addc3e4b08f835e56981b435451a"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2926-request.json",
+      "artifact": "T2926-request-json.json",
+      "sha256": "d5488ff1e5a2cb8cf824d5b219d23ad228ec8b812a0e1676b0cc8cf24059c60e"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2926.log",
+      "artifact": "T2926-log.json",
+      "sha256": "b4dd7b8bda29ab003dcd0d8f57911c3757993b94e7fe57c961bce501aef18d79"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2927-byte-check.json",
+      "artifact": "T2927-byte-check-json.json",
+      "sha256": "a4118bfe8d44a85addf7c59c082fc5af818dcc88bd53d0b34097e9ff37b10700"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2927-observation.json",
+      "artifact": "T2927-observation-json.json",
+      "sha256": "19f35951f68e6f2215a2beb335d21ba4da86bbe45434cf21ac299e4721435fdf"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2927-prompt.txt",
+      "artifact": "T2927-prompt-txt.json",
+      "sha256": "84ee51be70a98b30c6256b241667f1372f15db549c29a6e0956ebb3688a4426a"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2927-request.json",
+      "artifact": "T2927-request-json.json",
+      "sha256": "62114396f0ebcde30e7e3618e68ef238531de605de97646ae593c39a2eeba131"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2927.log",
+      "artifact": "T2927-log.json",
+      "sha256": "05b8d658ddab3318d7ebb7230dfea6145ba43ca343e750e4500d7316e86774d6"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2928-observation.json",
+      "artifact": "T2928-observation-json.json",
+      "sha256": "065d9d691d38ee2b19f16e7f49dca60bb0120c501f4b117431f78d9d5400167a"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2928-prompt.txt",
+      "artifact": "T2928-prompt-txt.json",
+      "sha256": "06d6ac77e472edf261e1845e02165e4c90ba59cb65d0f872fcaf85b851c2abd2"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2928-request.json",
+      "artifact": "T2928-request-json.json",
+      "sha256": "1ebb2e5fb15331136020863fa035f317769833ed3025f3f04183a64fc0cc1348"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2928.log",
+      "artifact": "T2928-log.json",
+      "sha256": "87594be25259a3d5464408666a6c936e5d2408f62d4ce3287e4d79ac281ff6f6"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2929-byte-check.json",
+      "artifact": "T2929-byte-check-json.json",
+      "sha256": "e7e25fdd737170376cefcaafb65e01fa93e702c5b2ce364959e5ec3b756e8901"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2929-observation.json",
+      "artifact": "T2929-observation-json.json",
+      "sha256": "2a24473998ad10aa8f1929cf682b2a35c3774459485cffaa1350b92bf887e94f"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2929-prompt.txt",
+      "artifact": "T2929-prompt-txt.json",
+      "sha256": "db06e7766c0a14c4d6d6c1a9c1aaef468b6696c3183b661d5e32af15eabf7aab"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2929-request.json",
+      "artifact": "T2929-request-json.json",
+      "sha256": "c6404495ee04ab349dfab860d5138c438badee340b6914bc7f6873fa4e7ab50b"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2929.log",
+      "artifact": "T2929-log.json",
+      "sha256": "e3ada5b551cbc9125c449d58ddf480693d83bce6e5c4683fdbab4a420ea33c90"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2930-observation.json",
+      "artifact": "T2930-observation-json.json",
+      "sha256": "9b971ee16678175a90cf43057a77ab1eaeadaf3b06c9da5bb36f037e889a930f"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2930-prompt.txt",
+      "artifact": "T2930-prompt-txt.json",
+      "sha256": "aca4743ab4e0fe3664152f730d977015225a22e5ded3904a6b4e20ba9d657484"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2930-request.json",
+      "artifact": "T2930-request-json.json",
+      "sha256": "8461e591da204f723dd76dc6f54c94a5effbd55ee5df9bac693bdf0bf969917e"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/T2930.log",
+      "artifact": "T2930-log.json",
+      "sha256": "0e730f7d7cbcdafd00b588ea272d4cd76df5f7366cbedea24de76f920291bd01"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-delivery-plan.md",
+      "artifact": "scratch-compiled-skill-delivery-plan-md.json",
+      "sha256": "35dd0e926ff6f3c390a7d9103f907c01630b3b2c4525f27f876da4ddcd8af8cc"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-original-observation.json",
+      "artifact": "scratch-compiled-skill-original-observation-json.json",
+      "sha256": "6481b92aeb60339bce7595ca0ec143d2fd307c344b8bedf359ef46844ecc4497"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-prototype.mjs",
+      "artifact": "scratch-compiled-skill-prototype-mjs.json",
+      "sha256": "9df6840d6cf915b98050ed8a24b5944e35398efcd812a5d86e4ccba0637ce5c6"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-prototype.test.mjs",
+      "artifact": "scratch-compiled-skill-prototype-test-mjs.json",
+      "sha256": "a6cdf5785db26e252a3796023ebc92edadce373884170402b102e4b623c300d8"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-worker-observation.json",
+      "artifact": "scratch-compiled-skill-worker-observation-json.json",
+      "sha256": "2372df6c38f981df1bdfd7ce5fdab654e1aa535dca825d6e69d225bde7c51ec9"
+    },
+    {
+      "source": "/private/tmp/spec-recurrence-1188/typed-reader-next/compiled-skill-worker-overlay.mjs",
+      "artifact": "scratch-compiled-skill-worker-overlay-mjs.json",
+      "sha256": "6fb765e4fe0804f5470e77d37d21fe66a35d5032a017b16dd4b719884cff0204"
+    },
+    {
+      "source": "/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_capabilities_and_runtime_rules.js",
+      "artifact": "source-js-worker-formal_ai_worker_capabilities_and_runtime_rules-js.json",
+      "sha256": "5a6a6d458bf9c4deec26d2dcdb5d9bde58dd5b4619584b7148421f843132456e"
+    },
+    {
+      "source": "/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_solver_events.js",
+      "artifact": "source-js-worker-formal_ai_worker_solver_events-js.json",
+      "sha256": "62e9b1685c009b37a5ef6bacc27d193037c6d8d9029fe59a30aea23111c1335a"
+    },
+    {
+      "source": "/Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/crate/solver_event_projection.mjs",
+      "artifact": "source-js-agentic-crate-solver_event_projection-mjs.json",
+      "sha256": "04d42561767c6c0d5bec83098d90889f7291e98f76d50a807093084af4344273"
+    },
+    {
+      "source": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/engine.rs",
+      "artifact": "source-rust-src-engine-rs.json",
+      "sha256": "ed7645da703a27d1e5b613871030ee5fd656080e9ab483e54b28acb65c16e91a"
+    }
+  ]
+}

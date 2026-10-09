@@ -1,0 +1,247 @@
+>> read {"filePath":"rust/tests/unit/agentic-coding/issue_686_agent_cli.rs","file_path":"rust/tests/unit/agentic-coding/issue_686_agent_cli.rs","path":"rust/tests/unit/agentic-coding/issue_686_agent_cli.rs"}
+   <file>
+   00001| use formal_ai::agentic_coding::{
+   00002|     ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK, associative_learning,
+   00003|     is_associative_learning_task, run_agentic_task, run_agentic_task_with_tools,
+   00004| };
+   00005| 
+   00006| #[test]
+   00007| fn associative_report_is_derived_from_persisted_usage_not_canned() {
+   00008|     let baseline = include_str!("../../../../data/meta/associative-learning-case.lino");
+   00009|     let hotter = baseline.replace("accessCount \"2\"", "accessCount \"8\"");
+   00010| 
+   00011|     let first = associative_learning::render_document_from(baseline);
+   00012|     let second = associative_learning::render_document_from(&hotter);
+   00013| 
+   00014|     assert_ne!(first, second);
+   00015|     assert!(
+   00016|         first.contains("retention_formula \"reads + writes + incoming_links + outgoing_links\"")
+   00017|     );
+   00018|     assert!(second.contains("reads \"9\""));
+   00019|     assert!(second.contains("multi_hop_recall"));
+   00020| }
+   00021| 
+   00022| #[test]
+   00023| fn task_recognition_accepts_varied_phrasings_but_requires_the_artifact_scope() {
+   00024|     for prompt in [
+   00025|         ASSOCIATIVE_LEARNING_TASK,
+   00026|         "Please produce ASSOCIATIVE-LEARNING-REPORT.LINO from the learned memory.",
+   00027|         "Rank our linked facts, then save associative-learning-report.lino",
+   00028|     ] {
+   00029|         assert!(is_associative_learning_task(prompt), "{prompt}");
+   00030|     }
+   00031|     assert!(!is_associative_learning_task(
+   00032|         "Explain associative memory without writing an artifact"
+   00033|     ));
+   00034| }
+   00035| 
+   00036| #[test]
+   00037| fn formal_ai_executes_associative_learning_through_agent_cli() {
+   00038|     let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect("agent workspace");
+   00039| 
+   00040|     assert!(!outcome.hit_turn_cap);
+   00041|     assert_eq!(outcome.turns, 3);
+   00042|     assert_eq!(outcome.steps.len(), 2);
+   00043|     assert_eq!(outcome.steps[0].tool, "write_file");
+   00044|     let arguments: serde_json::Value =
+   00045|         serde_json::from_str(&outcome.steps[0].arguments).expect("write arguments");
+   00046|     assert_eq!(arguments["path"], ASSOCIATIVE_LEARNING_PATH);
+   00047|     assert_eq!(
+   00048|         arguments["content"],
+   00049|         associative_learning::render_document()
+   00050|     );
+   00051|     assert_eq!(outcome.steps[1].tool, "run_command");
+   00052|     assert!(
+   00053|         outcome
+   00054|             .final_answer
+   00055|             .contains("persisted and ranked 3 expressions")
+   00056|     );
+   00057| }
+   00058| 
+   00059| #[test]
+   00060| fn committed_agent_cli_session_is_byte_reproducible() {
+   00061|     let committed = include_str!(
+   00062|         "../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json"
+   00063|     );
+   00064|     let recorded: serde_json::Value = serde_json::from_str(committed).expect("immutable session JSON");
+   00065|     let tools = recorded["tools_advertised"]
+   00066|         .as_array()
+   00067|         .expect("archived advertised tool schema")
+   00068|         .iter()
+   00069|         .map(|tool| tool.as_str().expect("advertised tool name"))
+   00070|         .collect::<Vec<_>>();
+   00071|     let outcome = run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).expect("agent workspace");
+   00072|     let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect("session JSON");
+   00073| 
+   00074|     assert_eq!(format!("{fresh}\n"), committed);
+   00075| }
+   00076| 
+   
+   (End of file - total 76 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/agentic-coding/issue_686_agent_cli.rs","file_path":"rust/tests/unit/agentic-coding/issue_686_agent_cli.rs","new":"use formal_ai::agentic_coding::{\n    ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK, associative_learning,\n    is_associative_learning_task, run_agentic_task, run_agentic_task_with_tools,\n};\n\n#[test]\nfn associative_report_is_derived_from_persisted_usage_not_canned() {\n    let baseline = include_str!(\"../../../../data/meta/associative-learning-case.lino\");\n    let hotter = baseline.replace(\"accessCount \\\"2\\\"\", \"accessCount \\\"8\\\"\");\n\n    let first = associative_learning::render_document_from(baseline);\n    let second = associative_learning::render_document_from(&hotter);\n\n    assert_ne!(first, second);\n    assert!(\n        first.contains(\"retention_formula \\\"reads + writes + incoming_links + outgoing_links\\\"\")\n    );\n    assert!(second.contains(\"reads \\\"9\\\"\"));\n    assert!(second.contains(\"multi_hop_recall\"));\n}\n\n#[test]\nfn task_recognition_accepts_varied_phrasings_but_requires_the_artifact_scope() {\n    for prompt in [\n        ASSOCIATIVE_LEARNING_TASK,\n        \"Please produce ASSOCIATIVE-LEARNING-REPORT.LINO from the learned memory.\",\n        \"Rank our linked facts, then save associative-learning-report.lino\",\n    ] {\n        assert!(is_associative_learning_task(prompt), \"{prompt}\");\n    }\n    assert!(!is_associative_learning_task(\n        \"Explain associative memory without writing an artifact\"\n    ));\n}\n\n#[test]\nfn formal_ai_executes_associative_learning_through_agent_cli() {\n    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect(\"agent workspace\");\n\n    assert!(!outcome.hit_turn_cap);\n    assert_eq!(outcome.turns, 3);\n    assert_eq!(outcome.steps.len(), 2);\n    assert_eq!(outcome.steps[0].tool, \"write_file\");\n    let arguments: serde_json::Value =\n        serde_json::from_str(&outcome.steps[0].arguments).expect(\"write arguments\");\n    assert_eq!(arguments[\"path\"], ASSOCIATIVE_LEARNING_PATH);\n    assert_eq!(\n        arguments[\"content\"],\n        associative_learning::render_document()\n    );\n    assert_eq!(outcome.steps[1].tool, \"run_command\");\n    assert!(\n        outcome\n            .final_answer\n            .contains(\"persisted and ranked 3 expressions\")\n    );\n}\n\n#[test]\nfn committed_agent_cli_session_is_byte_reproducible() {\n    let committed = include_str!(\n        \"../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json\"\n    );\n    let recorded: serde_json::Value = serde_json::from_str(committed).expect(\"immutable session JSON\");\n    let tools = recorded[\"tools_advertised\"]\n        .as_array()\n        .expect(\"archived advertised tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"advertised tool name\"))\n        .collect::<Vec<_>>();\n    let outcome = run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).expect(\"agent workspace\");\n    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect(\"session JSON\");\n\n    assert_eq!(format!(\"{fresh}\\n\"), committed);\n}\n\n#[test]\nfn replay_driver_rejects_unavailable_or_repeated_adapters_before_execution() {\n    for tools in [vec![\"unsupported\"], vec![\"write_file\", \"write_file\"]] {\n        assert!(run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).is_err());\n    }\n    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect(\"default execution\");\n    assert_eq!(outcome.tools_advertised, formal_ai::agentic_coding::DRIVER_TOOLS);\n}\n","newString":"use formal_ai::agentic_coding::{\n    ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK, associative_learning,\n    is_associative_learning_task, run_agentic_task, run_agentic_task_with_tools,\n};\n\n#[test]\nfn associative_report_is_derived_from_persisted_usage_not_canned() {\n    let baseline = include_str!(\"../../../../data/meta/associative-learning-case.lino\");\n    let hotter = baseline.replace(\"accessCount \\\"2\\\"\", \"accessCount \\\"8\\\"\");\n\n    let first = associative_learning::render_document_from(baseline);\n    let second = associative_learning::render_document_from(&hotter);\n\n    assert_ne!(first, second);\n    assert!(\n        first.contains(\"retention_formula \\\"reads + writes + incoming_links + outgoing_links\\\"\")\n    );\n    assert!(second.contains(\"reads \\\"9\\\"\"));\n    assert!(second.contains(\"multi_hop_recall\"));\n}\n\n#[test]\nfn task_recognition_accepts_varied_phrasings_but_requires_the_artifact_scope() {\n    for prompt in [\n        ASSOCIATIVE_LEARNING_TASK,\n        \"Please produce ASSOCIATIVE-LEARNING-REPORT.LINO from the learned memory.\",\n        \"Rank our linked facts, then save associative-learning-report.lino\",\n    ] {\n        assert!(is_associative_learning_task(prompt), \"{prompt}\");\n    }\n    assert!(!is_associative_learning_task(\n        \"Explain associative memory without writing an artifact\"\n    ));\n}\n\n#[test]\nfn formal_ai_executes_associative_learning_through_agent_cli() {\n    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect(\"agent workspace\");\n\n    assert!(!outcome.hit_turn_cap);\n    assert_eq!(outcome.turns, 3);\n    assert_eq!(outcome.steps.len(), 2);\n    assert_eq!(outcome.steps[0].tool, \"write_file\");\n    let arguments: serde_json::Value =\n        serde_json::from_str(&outcome.steps[0].arguments).expect(\"write arguments\");\n    assert_eq!(arguments[\"path\"], ASSOCIATIVE_LEARNING_PATH);\n    assert_eq!(\n        arguments[\"content\"],\n        associative_learning::render_document()\n    );\n    assert_eq!(outcome.steps[1].tool, \"run_command\");\n    assert!(\n        outcome\n            .final_answer\n            .contains(\"persisted and ranked 3 expressions\")\n    );\n}\n\n#[test]\nfn committed_agent_cli_session_is_byte_reproducible() {\n    let committed = include_str!(\n        \"../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json\"\n    );\n    let recorded: serde_json::Value = serde_json::from_str(committed).expect(\"immutable session JSON\");\n    let tools = recorded[\"tools_advertised\"]\n        .as_array()\n        .expect(\"archived advertised tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"advertised tool name\"))\n        .collect::<Vec<_>>();\n    let outcome = run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).expect(\"agent workspace\");\n    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect(\"session JSON\");\n\n    assert_eq!(format!(\"{fresh}\\n\"), committed);\n}\n\n#[test]\nfn replay_driver_rejects_unavailable_or_repeated_adapters_before_execution() {\n    for tools in [vec![\"unsupported\"], vec![\"write_file\", \"write_file\"]] {\n        assert!(run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).is_err());\n    }\n    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect(\"default execution\");\n    assert_eq!(outcome.tools_advertised, formal_ai::agentic_coding::DRIVER_TOOLS);\n}\n","new_str":"use formal_ai::agentic_coding::{\n    ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK, associative_learning,\n    is_associative_learning_task, run_agentic_task, run_agentic_task_with_tools,\n};\n\n#[test]\nfn associative_report_is_derived_from_persisted_usage_not_canned() {\n    let baseline = include_str!(\"../../../../data/meta/associative-learning-case.lino\");\n    let hotter = baseline.replace(\"accessCount \\\"2\\\"\", \"accessCount \\\"8\\\"\");\n\n    let first = associative_learning::render_document_from(baseline);\n    let second = associative_learning::render_document_from(&hotter);\n\n    assert_ne!(first, second);\n    assert!(\n        first.contains(\"retention_formula \\\"reads + writes + incoming_links + outgoing_links\\\"\")\n    );\n    assert!(second.contains(\"reads \\\"9\\\"\"));\n    assert!(second.contains(\"multi_hop_recall\"));\n}\n\n#[test]\nfn task_recognition_accepts_varied_phrasings_but_requires_the_artifact_scope() {\n    for prompt in [\n        ASSOCIATIVE_LEARNING_TASK,\n        \"Please produce ASSOCIATIVE-LEARNING-REPORT.LINO from the learned memory.\",\n        \"Rank our linked facts, then save associative-learning-report.lino\",\n    ] {\n        assert!(is_associative_learning_task(prompt), \"{prompt}\");\n    }\n    assert!(!is_associative_learning_task(\n        \"Explain associative memory without writing an artifact\"\n    ));\n}\n\n#[test]\nfn formal_ai_executes_associative_learning_through_agent_cli() {\n    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect(\"agent workspace\");\n\n    assert!(!outcome.hit_turn_cap);\n    assert_eq!(outcome.turns, 3);\n    assert_eq!(outcome.steps.len(), 2);\n    assert_eq!(outcome.steps[0].tool, \"write_file\");\n    let arguments: serde_json::Value =\n        serde_json::from_str(&outcome.steps[0].arguments).expect(\"write arguments\");\n    assert_eq!(arguments[\"path\"], ASSOCIATIVE_LEARNING_PATH);\n    assert_eq!(\n        arguments[\"content\"],\n        associative_learning::render_document()\n    );\n    assert_eq!(outcome.steps[1].tool, \"run_command\");\n    assert!(\n        outcome\n            .final_answer\n            .contains(\"persisted and ranked 3 expressions\")\n    );\n}\n\n#[test]\nfn committed_agent_cli_session_is_byte_reproducible() {\n    let committed = include_str!(\n        \"../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json\"\n    );\n    let recorded: serde_json::Value = serde_json::from_str(committed).expect(\"immutable session JSON\");\n    let tools = recorded[\"tools_advertised\"]\n        .as_array()\n        .expect(\"archived advertised tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"advertised tool name\"))\n        .collect::<Vec<_>>();\n    let outcome = run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).expect(\"agent workspace\");\n    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect(\"session JSON\");\n\n    assert_eq!(format!(\"{fresh}\\n\"), committed);\n}\n\n#[test]\nfn replay_driver_rejects_unavailable_or_repeated_adapters_before_execution() {\n    for tools in [vec![\"unsupported\"], vec![\"write_file\", \"write_file\"]] {\n        assert!(run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).is_err());\n    }\n    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect(\"default execution\");\n    assert_eq!(outcome.tools_advertised, formal_ai::agentic_coding::DRIVER_TOOLS);\n}\n","new_string":"use formal_ai::agentic_coding::{\n    ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK, associative_learning,\n    is_associative_learning_task, run_agentic_task, run_agentic_task_with_tools,\n};\n\n#[test]\nfn associative_report_is_derived_from_persisted_usage_not_canned() {\n    let baseline = include_str!(\"../../../../data/meta/associative-learning-case.lino\");\n    let hotter = baseline.replace(\"accessCount \\\"2\\\"\", \"accessCount \\\"8\\\"\");\n\n    let first = associative_learning::render_document_from(baseline);\n    let second = associative_learning::render_document_from(&hotter);\n\n    assert_ne!(first, second);\n    assert!(\n        first.contains(\"retention_formula \\\"reads + writes + incoming_links + outgoing_links\\\"\")\n    );\n    assert!(second.contains(\"reads \\\"9\\\"\"));\n    assert!(second.contains(\"multi_hop_recall\"));\n}\n\n#[test]\nfn task_recognition_accepts_varied_phrasings_but_requires_the_artifact_scope() {\n    for prompt in [\n        ASSOCIATIVE_LEARNING_TASK,\n        \"Please produce ASSOCIATIVE-LEARNING-REPORT.LINO from the learned memory.\",\n        \"Rank our linked facts, then save associative-learning-report.lino\",\n    ] {\n        assert!(is_associative_learning_task(prompt), \"{prompt}\");\n    }\n    assert!(!is_associative_learning_task(\n        \"Explain associative memory without writing an artifact\"\n    ));\n}\n\n#[test]\nfn formal_ai_executes_associative_learning_through_agent_cli() {\n    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect(\"agent workspace\");\n\n    assert!(!outcome.hit_turn_cap);\n    assert_eq!(outcome.turns, 3);\n    assert_eq!(outcome.steps.len(), 2);\n    assert_eq!(outcome.steps[0].tool, \"write_file\");\n    let arguments: serde_json::Value =\n        serde_json::from_str(&outcome.steps[0].arguments).expect(\"write arguments\");\n    assert_eq!(arguments[\"path\"], ASSOCIATIVE_LEARNING_PATH);\n    assert_eq!(\n        arguments[\"content\"],\n        associative_learning::render_document()\n    );\n    assert_eq!(outcome.steps[1].tool, \"run_command\");\n    assert!(\n        outcome\n            .final_answer\n            .contains(\"persisted and ranked 3 expressions\")\n    );\n}\n\n#[test]\nfn committed_agent_cli_session_is_byte_reproducible() {\n    let committed = include_str!(\n        \"../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json\"\n    );\n    let recorded: serde_json::Value = serde_json::from_str(committed).expect(\"immutable session JSON\");\n    let tools = recorded[\"tools_advertised\"]\n        .as_array()\n        .expect(\"archived advertised tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"advertised tool name\"))\n        .collect::<Vec<_>>();\n    let outcome = run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).expect(\"agent workspace\");\n    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect(\"session JSON\");\n\n    assert_eq!(format!(\"{fresh}\\n\"), committed);\n}\n\n#[test]\nfn replay_driver_rejects_unavailable_or_repeated_adapters_before_execution() {\n    for tools in [vec![\"unsupported\"], vec![\"write_file\", \"write_file\"]] {\n        assert!(run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).is_err());\n    }\n    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect(\"default execution\");\n    assert_eq!(outcome.tools_advertised, formal_ai::agentic_coding::DRIVER_TOOLS);\n}\n","old":"use formal_ai::agentic_coding::{\n    ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK, associative_learning,\n    is_associative_learning_task, run_agentic_task, run_agentic_task_with_tools,\n};\n\n#[test]\nfn associative_report_is_derived_from_persisted_usage_not_canned() {\n    let baseline = include_str!(\"../../../../data/meta/associative-learning-case.lino\");\n    let hotter = baseline.replace(\"accessCount \\\"2\\\"\", \"accessCount \\\"8\\\"\");\n\n    let first = associative_learning::render_document_from(baseline);\n    let second = associative_learning::render_document_from(&hotter);\n\n    assert_ne!(first, second);\n    assert!(\n        first.contains(\"retention_formula \\\"reads + writes + incoming_links + outgoing_links\\\"\")\n    );\n    assert!(second.contains(\"reads \\\"9\\\"\"));\n    assert!(second.contains(\"multi_hop_recall\"));\n}\n\n#[test]\nfn task_recognition_accepts_varied_phrasings_but_requires_the_artifact_scope() {\n    for prompt in [\n        ASSOCIATIVE_LEARNING_TASK,\n        \"Please produce ASSOCIATIVE-LEARNING-REPORT.LINO from the learned memory.\",\n        \"Rank our linked facts, then save associative-learning-report.lino\",\n    ] {\n        assert!(is_associative_learning_task(prompt), \"{prompt}\");\n    }\n    assert!(!is_associative_learning_task(\n        \"Explain associative memory without writing an artifact\"\n    ));\n}\n\n#[test]\nfn formal_ai_executes_associative_learning_through_agent_cli() {\n    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect(\"agent workspace\");\n\n    assert!(!outcome.hit_turn_cap);\n    assert_eq!(outcome.turns, 3);\n    assert_eq!(outcome.steps.len(), 2);\n    assert_eq!(outcome.steps[0].tool, \"write_file\");\n    let arguments: serde_json::Value =\n        serde_json::from_str(&outcome.steps[0].arguments).expect(\"write arguments\");\n    assert_eq!(arguments[\"path\"], ASSOCIATIVE_LEARNING_PATH);\n    assert_eq!(\n        arguments[\"content\"],\n        associative_learning::render_document()\n    );\n    assert_eq!(outcome.steps[1].tool, \"run_command\");\n    assert!(\n        outcome\n            .final_answer\n            .contains(\"persisted and ranked 3 expressions\")\n    );\n}\n\n#[test]\nfn committed_agent_cli_session_is_byte_reproducible() {\n    let committed = include_str!(\n        \"../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json\"\n    );\n    let recorded: serde_json::Value = serde_json::from_str(committed).expect(\"immutable session JSON\");\n    let tools = recorded[\"tools_advertised\"]\n        .as_array()\n        .expect(\"archived advertised tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"advertised tool name\"))\n        .collect::<Vec<_>>();\n    let outcome = run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).expect(\"agent workspace\");\n    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect(\"session JSON\");\n\n    assert_eq!(format!(\"{fresh}\\n\"), committed);\n}\n","oldString":"use formal_ai::agentic_coding::{\n    ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK, associative_learning,\n    is_associative_learning_task, run_agentic_task, run_agentic_task_with_tools,\n};\n\n#[test]\nfn associative_report_is_derived_from_persisted_usage_not_canned() {\n    let baseline = include_str!(\"../../../../data/meta/associative-learning-case.lino\");\n    let hotter = baseline.replace(\"accessCount \\\"2\\\"\", \"accessCount \\\"8\\\"\");\n\n    let first = associative_learning::render_document_from(baseline);\n    let second = associative_learning::render_document_from(&hotter);\n\n    assert_ne!(first, second);\n    assert!(\n        first.contains(\"retention_formula \\\"reads + writes + incoming_links + outgoing_links\\\"\")\n    );\n    assert!(second.contains(\"reads \\\"9\\\"\"));\n    assert!(second.contains(\"multi_hop_recall\"));\n}\n\n#[test]\nfn task_recognition_accepts_varied_phrasings_but_requires_the_artifact_scope() {\n    for prompt in [\n        ASSOCIATIVE_LEARNING_TASK,\n        \"Please produce ASSOCIATIVE-LEARNING-REPORT.LINO from the learned memory.\",\n        \"Rank our linked facts, then save associative-learning-report.lino\",\n    ] {\n        assert!(is_associative_learning_task(prompt), \"{prompt}\");\n    }\n    assert!(!is_associative_learning_task(\n        \"Explain associative memory without writing an artifact\"\n    ));\n}\n\n#[test]\nfn formal_ai_executes_associative_learning_through_agent_cli() {\n    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect(\"agent workspace\");\n\n    assert!(!outcome.hit_turn_cap);\n    assert_eq!(outcome.turns, 3);\n    assert_eq!(outcome.steps.len(), 2);\n    assert_eq!(outcome.steps[0].tool, \"write_file\");\n    let arguments: serde_json::Value =\n        serde_json::from_str(&outcome.steps[0].arguments).expect(\"write arguments\");\n    assert_eq!(arguments[\"path\"], ASSOCIATIVE_LEARNING_PATH);\n    assert_eq!(\n        arguments[\"content\"],\n        associative_learning::render_document()\n    );\n    assert_eq!(outcome.steps[1].tool, \"run_command\");\n    assert!(\n        outcome\n            .final_answer\n            .contains(\"persisted and ranked 3 expressions\")\n    );\n}\n\n#[test]\nfn committed_agent_cli_session_is_byte_reproducible() {\n    let committed = include_str!(\n        \"../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json\"\n    );\n    let recorded: serde_json::Value = serde_json::from_str(committed).expect(\"immutable session JSON\");\n    let tools = recorded[\"tools_advertised\"]\n        .as_array()\n        .expect(\"archived advertised tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"advertised tool name\"))\n        .collect::<Vec<_>>();\n    let outcome = run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).expect(\"agent workspace\");\n    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect(\"session JSON\");\n\n    assert_eq!(format!(\"{fresh}\\n\"), committed);\n}\n","old_str":"use formal_ai::agentic_coding::{\n    ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK, associative_learning,\n    is_associative_learning_task, run_agentic_task, run_agentic_task_with_tools,\n};\n\n#[test]\nfn associative_report_is_derived_from_persisted_usage_not_canned() {\n    let baseline = include_str!(\"../../../../data/meta/associative-learning-case.lino\");\n    let hotter = baseline.replace(\"accessCount \\\"2\\\"\", \"accessCount \\\"8\\\"\");\n\n    let first = associative_learning::render_document_from(baseline);\n    let second = associative_learning::render_document_from(&hotter);\n\n    assert_ne!(first, second);\n    assert!(\n        first.contains(\"retention_formula \\\"reads + writes + incoming_links + outgoing_links\\\"\")\n    );\n    assert!(second.contains(\"reads \\\"9\\\"\"));\n    assert!(second.contains(\"multi_hop_recall\"));\n}\n\n#[test]\nfn task_recognition_accepts_varied_phrasings_but_requires_the_artifact_scope() {\n    for prompt in [\n        ASSOCIATIVE_LEARNING_TASK,\n        \"Please produce ASSOCIATIVE-LEARNING-REPORT.LINO from the learned memory.\",\n        \"Rank our linked facts, then save associative-learning-report.lino\",\n    ] {\n        assert!(is_associative_learning_task(prompt), \"{prompt}\");\n    }\n    assert!(!is_associative_learning_task(\n        \"Explain associative memory without writing an artifact\"\n    ));\n}\n\n#[test]\nfn formal_ai_executes_associative_learning_through_agent_cli() {\n    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect(\"agent workspace\");\n\n    assert!(!outcome.hit_turn_cap);\n    assert_eq!(outcome.turns, 3);\n    assert_eq!(outcome.steps.len(), 2);\n    assert_eq!(outcome.steps[0].tool, \"write_file\");\n    let arguments: serde_json::Value =\n        serde_json::from_str(&outcome.steps[0].arguments).expect(\"write arguments\");\n    assert_eq!(arguments[\"path\"], ASSOCIATIVE_LEARNING_PATH);\n    assert_eq!(\n        arguments[\"content\"],\n        associative_learning::render_document()\n    );\n    assert_eq!(outcome.steps[1].tool, \"run_command\");\n    assert!(\n        outcome\n            .final_answer\n            .contains(\"persisted and ranked 3 expressions\")\n    );\n}\n\n#[test]\nfn committed_agent_cli_session_is_byte_reproducible() {\n    let committed = include_str!(\n        \"../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json\"\n    );\n    let recorded: serde_json::Value = serde_json::from_str(committed).expect(\"immutable session JSON\");\n    let tools = recorded[\"tools_advertised\"]\n        .as_array()\n        .expect(\"archived advertised tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"advertised tool name\"))\n        .collect::<Vec<_>>();\n    let outcome = run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).expect(\"agent workspace\");\n    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect(\"session JSON\");\n\n    assert_eq!(format!(\"{fresh}\\n\"), committed);\n}\n","old_string":"use formal_ai::agentic_coding::{\n    ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK, associative_learning,\n    is_associative_learning_task, run_agentic_task, run_agentic_task_with_tools,\n};\n\n#[test]\nfn associative_report_is_derived_from_persisted_usage_not_canned() {\n    let baseline = include_str!(\"../../../../data/meta/associative-learning-case.lino\");\n    let hotter = baseline.replace(\"accessCount \\\"2\\\"\", \"accessCount \\\"8\\\"\");\n\n    let first = associative_learning::render_document_from(baseline);\n    let second = associative_learning::render_document_from(&hotter);\n\n    assert_ne!(first, second);\n    assert!(\n        first.contains(\"retention_formula \\\"reads + writes + incoming_links + outgoing_links\\\"\")\n    );\n    assert!(second.contains(\"reads \\\"9\\\"\"));\n    assert!(second.contains(\"multi_hop_recall\"));\n}\n\n#[test]\nfn task_recognition_accepts_varied_phrasings_but_requires_the_artifact_scope() {\n    for prompt in [\n        ASSOCIATIVE_LEARNING_TASK,\n        \"Please produce ASSOCIATIVE-LEARNING-REPORT.LINO from the learned memory.\",\n        \"Rank our linked facts, then save associative-learning-report.lino\",\n    ] {\n        assert!(is_associative_learning_task(prompt), \"{prompt}\");\n    }\n    assert!(!is_associative_learning_task(\n        \"Explain associative memory without writing an artifact\"\n    ));\n}\n\n#[test]\nfn formal_ai_executes_associative_learning_through_agent_cli() {\n    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect(\"agent workspace\");\n\n    assert!(!outcome.hit_turn_cap);\n    assert_eq!(outcome.turns, 3);\n    assert_eq!(outcome.steps.len(), 2);\n    assert_eq!(outcome.steps[0].tool, \"write_file\");\n    let arguments: serde_json::Value =\n        serde_json::from_str(&outcome.steps[0].arguments).expect(\"write arguments\");\n    assert_eq!(arguments[\"path\"], ASSOCIATIVE_LEARNING_PATH);\n    assert_eq!(\n        arguments[\"content\"],\n        associative_learning::render_document()\n    );\n    assert_eq!(outcome.steps[1].tool, \"run_command\");\n    assert!(\n        outcome\n            .final_answer\n            .contains(\"persisted and ranked 3 expressions\")\n    );\n}\n\n#[test]\nfn committed_agent_cli_session_is_byte_reproducible() {\n    let committed = include_str!(\n        \"../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json\"\n    );\n    let recorded: serde_json::Value = serde_json::from_str(committed).expect(\"immutable session JSON\");\n    let tools = recorded[\"tools_advertised\"]\n        .as_array()\n        .expect(\"archived advertised tool schema\")\n        .iter()\n        .map(|tool| tool.as_str().expect(\"advertised tool name\"))\n        .collect::<Vec<_>>();\n    let outcome = run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).expect(\"agent workspace\");\n    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect(\"session JSON\");\n\n    assert_eq!(format!(\"{fresh}\\n\"), committed);\n}\n","path":"rust/tests/unit/agentic-coding/issue_686_agent_cli.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/agentic-coding/issue_686_agent_cli.rs"}
+   Output: 6d35be69ea036cadf768b325cd8b53c1e22c41157c9ce8e9746dbfc06cc2cadb  rust/tests/unit/agentic-coding/issue_686_agent_cli.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `use formal_ai::agentic_coding::{
+    ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK, associative_learning,
+    is_associative_learning_task, run_agentic_task, run_agentic_task_with_tools,
+};
+
+#[test]
+fn associative_report_is_derived_from_persisted_usage_not_canned() {
+    let baseline = include_str!("../../../../data/meta/associative-learning-case.lino");
+    let hotter = baseline.replace("accessCount \"2\"", "accessCount \"8\"");
+
+    let first = associative_learning::render_document_from(baseline);
+    let second = associative_learning::render_document_from(&hotter);
+
+    assert_ne!(first, second);
+    assert!(
+        first.contains("retention_formula \"reads + writes + incoming_links + outgoing_links\"")
+    );
+    assert!(second.contains("reads \"9\""));
+    assert!(second.contains("multi_hop_recall"));
+}
+
+#[test]
+fn task_recognition_accepts_varied_phrasings_but_requires_the_artifact_scope() {
+    for prompt in [
+        ASSOCIATIVE_LEARNING_TASK,
+        "Please produce ASSOCIATIVE-LEARNING-REPORT.LINO from the learned memory.",
+        "Rank our linked facts, then save associative-learning-report.lino",
+    ] {
+        assert!(is_associative_learning_task(prompt), "{prompt}");
+    }
+    assert!(!is_associative_learning_task(
+        "Explain associative memory without writing an artifact"
+    ));
+}
+
+#[test]
+fn formal_ai_executes_associative_learning_through_agent_cli() {
+    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect("agent workspace");
+
+    assert!(!outcome.hit_turn_cap);
+    assert_eq!(outcome.turns, 3);
+    assert_eq!(outcome.steps.len(), 2);
+    assert_eq!(outcome.steps[0].tool, "write_file");
+    let arguments: serde_json::Value =
+        serde_json::from_str(&outcome.steps[0].arguments).expect("write arguments");
+    assert_eq!(arguments["path"], ASSOCIATIVE_LEARNING_PATH);
+    assert_eq!(
+        arguments["content"],
+        associative_learning::render_document()
+    );
+    assert_eq!(outcome.steps[1].tool, "run_command");
+    assert!(
+        outcome
+            .final_answer
+            .contains("persisted and ranked 3 expressions")
+    );
+}
+
+#[test]
+fn committed_agent_cli_session_is_byte_reproducible() {
+    let committed = include_str!(
+        "../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json"
+    );
+    let recorded: serde_json::Value = serde_json::from_str(committed).expect("immutable session JSON");
+    let tools = recorded["tools_advertised"]
+        .as_array()
+        .expect("archived advertised tool schema")
+        .iter()
+        .map(|tool| tool.as_str().expect("advertised tool name"))
+        .collect::<Vec<_>>();
+    let outcome = run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).expect("agent workspace");
+    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect("session JSON");
+
+    assert_eq!(format!("{fresh}\n"), committed);
+}
+` with `use formal_ai::agentic_coding::{
+    ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK, associative_learning,
+    is_associative_learning_task, run_agentic_task, run_agentic_task_with_tools,
+};
+
+#[test]
+fn associative_report_is_derived_from_persisted_usage_not_canned() {
+    let baseline = include_str!("../../../../data/meta/associative-learning-case.lino");
+    let hotter = baseline.replace("accessCount \"2\"", "accessCount \"8\"");
+
+    let first = associative_learning::render_document_from(baseline);
+    let second = associative_learning::render_document_from(&hotter);
+
+    assert_ne!(first, second);
+    assert!(
+        first.contains("retention_formula \"reads + writes + incoming_links + outgoing_links\"")
+    );
+    assert!(second.contains("reads \"9\""));
+    assert!(second.contains("multi_hop_recall"));
+}
+
+#[test]
+fn task_recognition_accepts_varied_phrasings_but_requires_the_artifact_scope() {
+    for prompt in [
+        ASSOCIATIVE_LEARNING_TASK,
+        "Please produce ASSOCIATIVE-LEARNING-REPORT.LINO from the learned memory.",
+        "Rank our linked facts, then save associative-learning-report.lino",
+    ] {
+        assert!(is_associative_learning_task(prompt), "{prompt}");
+    }
+    assert!(!is_associative_learning_task(
+        "Explain associative memory without writing an artifact"
+    ));
+}
+
+#[test]
+fn formal_ai_executes_associative_learning_through_agent_cli() {
+    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect("agent workspace");
+
+    assert!(!outcome.hit_turn_cap);
+    assert_eq!(outcome.turns, 3);
+    assert_eq!(outcome.steps.len(), 2);
+    assert_eq!(outcome.steps[0].tool, "write_file");
+    let arguments: serde_json::Value =
+        serde_json::from_str(&outcome.steps[0].arguments).expect("write arguments");
+    assert_eq!(arguments["path"], ASSOCIATIVE_LEARNING_PATH);
+    assert_eq!(
+        arguments["content"],
+        associative_learning::render_document()
+    );
+    assert_eq!(outcome.steps[1].tool, "run_command");
+    assert!(
+        outcome
+            .final_answer
+            .contains("persisted and ranked 3 expressions")
+    );
+}
+
+#[test]
+fn committed_agent_cli_session_is_byte_reproducible() {
+    let committed = include_str!(
+        "../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json"
+    );
+    let recorded: serde_json::Value = serde_json::from_str(committed).expect("immutable session JSON");
+    let tools = recorded["tools_advertised"]
+        .as_array()
+        .expect("archived advertised tool schema")
+        .iter()
+        .map(|tool| tool.as_str().expect("advertised tool name"))
+        .collect::<Vec<_>>();
+    let outcome = run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).expect("agent workspace");
+    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect("session JSON");
+
+    assert_eq!(format!("{fresh}\n"), committed);
+}
+
+#[test]
+fn replay_driver_rejects_unavailable_or_repeated_adapters_before_execution() {
+    for tools in [vec!["unsupported"], vec!["write_file", "write_file"]] {
+        assert!(run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).is_err());
+    }
+    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect("default execution");
+    assert_eq!(outcome.tools_advertised, formal_ai::agentic_coding::DRIVER_TOOLS);
+}
+` in `rust/tests/unit/agentic-coding/issue_686_agent_cli.rs` and observed the result.

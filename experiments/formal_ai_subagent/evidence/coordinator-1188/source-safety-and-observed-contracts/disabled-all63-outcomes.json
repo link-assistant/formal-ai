@@ -1,0 +1,385 @@
+{
+  "source": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+  "run": 37870805740,
+  "artifact": 11596306627,
+  "nodes": [
+    {
+      "node": "R",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 0
+    },
+    {
+      "node": "1",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 1
+    },
+    {
+      "node": "2",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 1
+    },
+    {
+      "node": "1.1",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 2
+    },
+    {
+      "node": "1.2",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 2
+    },
+    {
+      "node": "2.1",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 2
+    },
+    {
+      "node": "2.2",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 2
+    },
+    {
+      "node": "1.1.1",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 3
+    },
+    {
+      "node": "1.1.2",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 3
+    },
+    {
+      "node": "1.2.1",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 3
+    },
+    {
+      "node": "1.2.2",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 3
+    },
+    {
+      "node": "2.1.1",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 3
+    },
+    {
+      "node": "2.1.2",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 3
+    },
+    {
+      "node": "2.2.1",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 3
+    },
+    {
+      "node": "2.2.2",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 3
+    },
+    {
+      "node": "1.1.1.1",
+      "status": "FAIL",
+      "reason": "missing_current_run_child_effect",
+      "depth": 4
+    },
+    {
+      "node": "1.1.1.2",
+      "status": "FAIL",
+      "reason": "missing_current_run_child_effect",
+      "depth": 4
+    },
+    {
+      "node": "1.1.2.1",
+      "status": "FAIL",
+      "reason": "missing_current_run_child_effect",
+      "depth": 4
+    },
+    {
+      "node": "1.1.2.2",
+      "status": "FAIL",
+      "reason": "missing_current_run_child_effect",
+      "depth": 4
+    },
+    {
+      "node": "1.2.1.1",
+      "status": "FAIL",
+      "reason": "missing_current_run_child_effect",
+      "depth": 4
+    },
+    {
+      "node": "1.2.1.2",
+      "status": "FAIL",
+      "reason": "missing_current_run_child_effect",
+      "depth": 4
+    },
+    {
+      "node": "1.2.2.1",
+      "status": "PASS",
+      "reason": "depth=4",
+      "depth": 4
+    },
+    {
+      "node": "1.2.2.2",
+      "status": "FAIL",
+      "reason": "missing_current_run_child_effect",
+      "depth": 4
+    },
+    {
+      "node": "2.1.1.1",
+      "status": "PASS",
+      "reason": "depth=4",
+      "depth": 4
+    },
+    {
+      "node": "2.1.1.2",
+      "status": "PASS",
+      "reason": "depth=4",
+      "depth": 4
+    },
+    {
+      "node": "2.1.2.1",
+      "status": "FAIL",
+      "reason": "missing_current_run_child_effect",
+      "depth": 4
+    },
+    {
+      "node": "2.1.2.2",
+      "status": "FAIL",
+      "reason": "missing_current_run_child_effect",
+      "depth": 4
+    },
+    {
+      "node": "2.2.1.1",
+      "status": "PASS",
+      "reason": "depth=4",
+      "depth": 4
+    },
+    {
+      "node": "2.2.1.2",
+      "status": "FAIL",
+      "reason": "missing_current_run_child_effect",
+      "depth": 4
+    },
+    {
+      "node": "2.2.2.1",
+      "status": "PASS",
+      "reason": "depth=4",
+      "depth": 4
+    },
+    {
+      "node": "2.2.2.2",
+      "status": "PASS",
+      "reason": "depth=4",
+      "depth": 4
+    },
+    {
+      "node": "1.1.1.1.1",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 5
+    },
+    {
+      "node": "1.1.1.1.2",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 5
+    },
+    {
+      "node": "1.1.1.2.1",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 5
+    },
+    {
+      "node": "1.1.1.2.2",
+      "status": "PASS",
+      "reason": "depth=5",
+      "depth": 5
+    },
+    {
+      "node": "1.1.2.1.1",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 5
+    },
+    {
+      "node": "1.1.2.1.2",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 5
+    },
+    {
+      "node": "1.1.2.2.1",
+      "status": "PASS",
+      "reason": "depth=5",
+      "depth": 5
+    },
+    {
+      "node": "1.1.2.2.2",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 5
+    },
+    {
+      "node": "1.2.1.1.1",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 5
+    },
+    {
+      "node": "1.2.1.1.2",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 5
+    },
+    {
+      "node": "1.2.1.2.1",
+      "status": "FAIL",
+      "reason": "missing_proof",
+      "depth": 5
+    },
+    {
+      "node": "1.2.1.2.2",
+      "status": "PASS",
+      "reason": "depth=5",
+      "depth": 5
+    },
+    {
+      "node": "1.2.2.1.1",
+      "status": "PASS",
+      "reason": "depth=5",
+      "depth": 5
+    },
+    {
+      "node": "1.2.2.1.2",
+      "status": "PASS",
+      "reason": "depth=5",
+      "depth": 5
+    },
+    {
+      "node": "1.2.2.2.1",
+      "status": "PASS",
+      "reason": "depth=5",
+      "depth": 5
+    },
+    {
+      "node": "1.2.2.2.2",
+      "status": "FAIL",
+      "reason": "failing_leaf_tests",
+      "depth": 5
+    },
+    {
+      "node": "2.1.1.1.1",
+      "status": "PASS",
+      "reason": "depth=5",
+      "depth": 5
+    },
+    {
+      "node": "2.1.1.1.2",
+      "status": "PASS",
+      "reason": "depth=5",
+      "depth": 5
+    },
+    {
+      "node": "2.1.1.2.1",
+      "status": "PASS",
+      "reason": "depth=5",
+      "depth": 5
+    },
+    {
+      "node": "2.1.1.2.2",
+      "status": "PASS",
+      "reason": "depth=5",
+      "depth": 5
+    },
+    {
+      "node": "2.1.2.1.1",
+      "status": "FAIL",
+      "reason": "missing_effect",
+      "depth": 5
+    },
+    {
+      "node": "2.1.2.1.2",
+      "status": "PASS",
+      "reason": "depth=5",
+      "depth": 5
+    },
+    {
+      "node": "2.1.2.2.1",
+      "status": "PASS",
+      "reason": "depth=5",
+      "depth": 5
+    },
+    {
+      "node": "2.1.2.2.2",
+      "status": "FAIL",
+      "reason": "failing_leaf_tests",
+      "depth": 5
+    },
+    {
+      "node": "2.2.1.1.1",
+      "status": "PASS",
+      "reason": "depth=5",
+      "depth": 5
+    },
+    {
+      "node": "2.2.1.1.2",
+      "status": "PASS",
+      "reason": "depth=5",
+      "depth": 5
+    },
+    {
+      "node": "2.2.1.2.1",
+      "status": "PASS",
+      "reason": "depth=5",
+      "depth": 5
+    },
+    {
+      "node": "2.2.1.2.2",
+      "status": "FAIL",
+      "reason": "uncompilable_leaf_change",
+      "depth": 5
+    },
+    {
+      "node": "2.2.2.1.1",
+      "status": "PASS",
+      "reason": "depth=5",
+      "depth": 5
+    },
+    {
+      "node": "2.2.2.1.2",
+      "status": "PASS",
+      "reason": "depth=5",
+      "depth": 5
+    },
+    {
+      "node": "2.2.2.2.1",
+      "status": "PASS",
+      "reason": "depth=5",
+      "depth": 5
+    },
+    {
+      "node": "2.2.2.2.2",
+      "status": "PASS",
+      "reason": "depth=5",
+      "depth": 5
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "sourceCommit": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+  "L21": {
+    "source": "js/agentic/evidence_record.mjs",
+    "function": "namesCallableArtifact",
+    "effectOperandAfterGlobalNormalization": "source",
+    "effectTarget": "agent-ladder-effects/node-2.1.2.1.1.lino",
+    "requiredResultToken": "FORMAL_AI_HOW_SOURCE_CACHE_DIR",
+    "carriesAuthoringTask": false,
+    "deliveredWriteTarget": "agent-ladder-effects/node-2.1.2.1.1.lino",
+    "reason": "Normalized identifier fragments are scanned as artifact-kind operands anywhere in the sentence; required result value steals effect delivery into authored-source exclusion."
+  },
+  "L28": {
+    "reference": "4a560cdb5a47dd3d175ca16adf6d521619437a4e:rust/src/client_integrations.rs:41:const EMPTY_BACKUP_SENTINEL: &str = \"# formal-ai-empty-config-backup-v1\\n\";\n4a560cdb5a47dd3d175ca16adf6d521619437a4e:rust/src/client_integrations/global_config.rs:20:    EMPTY_BACKUP_SENTINEL, ERROR_PLACEHOLDER, RENDERED_PLACEHOLDER, RenderContext,\n4a560cdb5a47dd3d175ca16adf6d521619437a4e:rust/src/client_integrations/global_config.rs:173:    if backup == EMPTY_BACKUP_SENTINEL {\n4a560cdb5a47dd3d175ca16adf6d521619437a4e:rust/src/client_integrations/global_config.rs:196:        fs::write(backup_path, EMPTY_BACKUP_SENTINEL)?;\n",
+    "declaredTarget": "rust/src/client_integrations.rs",
+    "unmodifiedDependent": "rust/src/client_integrations/global_config.rs",
+    "reason": "Rename updates the parent constant declaration only. Explicit child import and two uses retain the old identifier. Digest observation proves modified bytes, not name resolution or valid complete task."
+  },
+  "generalRepairs": [
+    {
+      "scope": "artifact-kind binding",
+      "proposal": "Bind kind roles to the actual authored operand/action clause and preserve exact-value/identifier boundaries; include positive authored module cases, report clauses containing source names, multilingual source-kind contexts and nested quote values."
+    },
+    {
+      "scope": "identifier rename",
+      "proposal": "Observe imported/re-exported consumers from declared module links; reconcile edit scope before mutation. When only the declaration file may change, derive a valid compatibility binding or report exact scope/validation gap without certifying global resolution. Never hand-author a requirement-specific alias or fake compiler proof."
+    }
+  ],
+  "limits": [
+    "Read-only diagnosis and scratch-only probes; no production repair applied.",
+    "Neither8nor16turn outcomes certify the full native leaf or a complete repository compile.",
+    "No cargo/rustc/rust-script; no full repository copy; exact source preimages from original4a560 retained."
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "source": "/private/tmp/spec-recurrence-1188/T2907-request.json",
+  "sha256": "7b2ef792006f9aa6842a95f33514bbf5b63f1a211e538f6ce04149e2fecb366a",
+  "rawUtf8": "{\n  \"taskId\": \"T2907\",\n  \"directory\": \"/private/tmp/spec-recurrence-1188/typed-reader-next\",\n  \"prompt\": \"Implement lossless native answer-links assertions in typed-spec-reader.mjs using the actual JavaScript symbolic answer adapter, preserving original event/history order and every native assertion. Keep helper-body and fixture identity checks, reject unsupported runtime configurations and unknown fields, and add meaningful real-worker held-out probes. This scratch-only prototype must not modify repository files.\"\n}\n"
+}

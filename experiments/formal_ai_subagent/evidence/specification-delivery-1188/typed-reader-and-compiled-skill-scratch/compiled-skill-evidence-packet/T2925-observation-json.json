@@ -1,0 +1,5 @@
+{
+  "source": "/private/tmp/spec-recurrence-1188/T2925-observation.json",
+  "sha256": "c6b4dc5b2393413afed5d2ac90eacaf0d0f41884876ff27ada4cd02965329d0d",
+  "rawUtf8": "{\n  \"taskId\": \"T2925\",\n  \"calls\": [\n    \"bash\"\n  ]\n}\n"
+}

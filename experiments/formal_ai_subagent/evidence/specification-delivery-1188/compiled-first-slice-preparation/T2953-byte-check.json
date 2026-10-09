@@ -1,0 +1,5 @@
+{
+  "taskId": "T2953",
+  "target": "observe-compiled-consumer-baseline.mjs",
+  "byteEqual": true
+}

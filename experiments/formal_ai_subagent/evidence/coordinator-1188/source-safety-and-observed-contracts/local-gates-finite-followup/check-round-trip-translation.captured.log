@@ -1,0 +1,26 @@
+$ node scripts/measure-round-trip-translation.mjs
+en->ru: 6/64 sentences survive, 230/455 content terms survive (230/236 known)
+en->hi: 6/64 sentences survive, 204/455 content terms survive (204/236 known)
+en->zh: 6/64 sentences survive, 208/455 content terms survive (208/236 known)
+en->es: 7/64 sentences survive, 230/455 content terms survive (230/236 known)
+ru->en: 8/64 sentences survive, 180/493 content terms survive (180/187 known)
+ru->hi: 7/64 sentences survive, 166/493 content terms survive (166/187 known)
+ru->zh: 8/64 sentences survive, 174/493 content terms survive (174/187 known)
+ru->es: 8/64 sentences survive, 178/493 content terms survive (178/187 known)
+hi->en: 6/64 sentences survive, 200/520 content terms survive (200/211 known)
+hi->ru: 6/64 sentences survive, 209/520 content terms survive (209/211 known)
+hi->zh: 6/64 sentences survive, 204/520 content terms survive (204/211 known)
+hi->es: 6/64 sentences survive, 206/520 content terms survive (206/211 known)
+zh->en: 7/64 sentences survive, 349/696 content terms survive (349/383 known)
+zh->ru: 7/64 sentences survive, 359/696 content terms survive (359/383 known)
+zh->hi: 7/64 sentences survive, 352/696 content terms survive (352/383 known)
+zh->es: 7/64 sentences survive, 357/696 content terms survive (357/383 known)
+es->en: 7/64 sentences survive, 245/583 content terms survive (245/275 known)
+es->ru: 7/64 sentences survive, 258/583 content terms survive (258/275 known)
+es->hi: 6/64 sentences survive, 244/583 content terms survive (244/275 known)
+es->zh: 7/64 sentences survive, 245/583 content terms survive (245/275 known)
+all pairs: 135/1280 sentences survive, 4798/10988 content terms survive (4798/5168 known)
+rise ru-en-term-survival: recorded 0.363, measured 0.365
+rise zh-en-term-survival: recorded 0.5, measured 0.501
+FALL en-zh-term-survival: recorded 0.459, measured 0.457
+data/meta/round-trip-translation-ratchet.lino: 1 measure(s) fell below the ratchet; fix the regression (the ratchet only goes up).

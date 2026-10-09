@@ -1,0 +1,108 @@
+>> bash {"command":"node --test rust/tests/web/mutating-action-bindings.test.mjs"}
+   Output: TAP version 13
+   # Subtest: G120: declared flags and value options bind the directory path
+   ok 1 - G120: declared flags and value options bind the directory path
+     ---
+     duration_ms: 361.340292
+     ...
+   # Subtest: G120: reuse permits a directory and still blocks an occupied file
+   ok 2 - G120: reuse permits a directory and still blocks an occupied file
+     ---
+     duration_ms: 3.054584
+     ...
+   # Subtest: G121: each glob match gets its own destination and source checks
+   ok 3 - G121: each glob match gets its own destination and source checks
+     ---
+     duration_ms: 20.145417
+     ...
+   # Subtest: consumed-source glob effects require a stable collection contract
+   ok 4 - consumed-source glob effects require a stable collection contract
+     ---
+     duration_ms: 0.229583
+     ...
+   # Subtest: G121: an unmatched glob stops before preparation or action
+   ok 5 - G121: an unmatched glob stops before preparation or action
+     ---
+     duration_ms: 2.883541
+     ...
+   # Subtest: G121: occupied glob targets require explicit force consent
+   ok 6 - G121: occupied glob targets require explicit force consent
+     ---
+     duration_ms: 19.370042
+     ...
+   # Subtest: quoted operands and multiple sources keep their shell boundaries
+   ok 7 - quoted operands and multiple sources keep their shell boundaries
+     ---
+     duration_ms: 36.409958
+     ...
+   # Subtest: failed postconditions report the attempted action instead of a skipped action
+   ok 8 - failed postconditions report the attempted action instead of a skipped action
+     ---
+     duration_ms: 332.666166
+     ...
+   1..8
+   # tests 8
+   # suites 0
+   # pass 8
+   # fail 0
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 896.567791
+   
+   Exit Code: 0
+== answer ==
+The `node --test rust/tests/web/mutating-action-bindings.test.mjs` command completed. Output:
+
+```text
+TAP version 13
+# Subtest: G120: declared flags and value options bind the directory path
+ok 1 - G120: declared flags and value options bind the directory path
+  ---
+  duration_ms: 361.340292
+  ...
+# Subtest: G120: reuse permits a directory and still blocks an occupied file
+ok 2 - G120: reuse permits a directory and still blocks an occupied file
+  ---
+  duration_ms: 3.054584
+  ...
+# Subtest: G121: each glob match gets its own destination and source checks
+ok 3 - G121: each glob match gets its own destination and source checks
+  ---
+  duration_ms: 20.145417
+  ...
+# Subtest: consumed-source glob effects require a stable collection contract
+ok 4 - consumed-source glob effects require a stable collection contract
+  ---
+  duration_ms: 0.229583
+  ...
+# Subtest: G121: an unmatched glob stops before preparation or action
+ok 5 - G121: an unmatched glob stops before preparation or action
+  ---
+  duration_ms: 2.883541
+  ...
+# Subtest: G121: occupied glob targets require explicit force consent
+ok 6 - G121: occupied glob targets require explicit force consent
+  ---
+  duration_ms: 19.370042
+  ...
+# Subtest: quoted operands and multiple sources keep their shell boundaries
+ok 7 - quoted operands and multiple sources keep their shell boundaries
+  ---
+  duration_ms: 36.409958
+  ...
+# Subtest: failed postconditions report the attempted action instead of a skipped action
+ok 8 - failed postconditions report the attempted action instead of a skipped action
+  ---
+  duration_ms: 332.666166
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 896.567791
+```

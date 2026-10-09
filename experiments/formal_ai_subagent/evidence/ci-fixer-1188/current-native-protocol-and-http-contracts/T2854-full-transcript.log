@@ -1,0 +1,76 @@
+>> read {"filePath":"rust/tests/web/seed-routing-ci-regressions.test.mjs","file_path":"rust/tests/web/seed-routing-ci-regressions.test.mjs","path":"rust/tests/web/seed-routing-ci-regressions.test.mjs"}
+   <file>
+   00001| // Exact CI semantic failures and the general boundaries their repairs retain.
+   00002| import assert from 'node:assert/strict';
+   00003| import { before, test } from 'node:test';
+   00004| import { WorkerHost } from '../../../js/server/worker-host.mjs';
+   00005| import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+   00006| import { planChatStep } from '../../../js/agentic/planner.mjs';
+   00007| import { planCommitStep } from '../../../js/agentic/git_commit.mjs';
+   00008| import { mentionsRole } from '../../../js/agentic/write_lexicon.mjs';
+   00009| import { realm, solve } from '../../../js/agentic/host.mjs';
+   00010| import { objectType, routePlaced } from '../../../js/agentic/crate/capability_routing.mjs';
+   00011| import { EventLog, buildEvidenceLinks } from '../../../js/agentic/crate/event_log.mjs';
+   00012| before(async () => { await installNodeHost(new WorkerHost()); });
+   00013| const tools = ['bash', 'read', 'grep', 'write', 'edit'];
+   00014| const newline = String.fromCharCode(10);
+   00015| 
+   00016| test('complete commit cues own an existing-tree commit in every seeded language', async () => {
+   00017|   for (const instruction of ['Please review these changes and commit them.', 'Проверь изменения и закоммить изменения.', 'इन परिवर्तनों की समीक्षा करें और बदलाव कमिट करें।', '请检查并提交这些更改。', 'Revisa los cambios y haz commit.']) {
+   00018|     const prompt = instruction + newline + '?? Main.scala';
+   00019|     const plan = await planChatStep([{ role: 'user', content: prompt }], tools);
+   00020|     assert.equal(plan.calls[0].tool, 'bash', instruction);
+   00021|     assert.match(JSON.parse(plan.calls[0].arguments).command, /git commit/u);
+   00022|   }
+   00023| });
+   00024| 
+   00025| test('commit cue masking preserves independent authoring and token boundaries', () => {
+   00026|   for (const prompt of ['Implement a parser and haz commit.', 'Revisa haz committer y haz commit.', 'Revisa src/haz-committer.mjs y haz commit.', 'Append "haz commit" to notes.txt.']) {
+   00027|     assert.equal(planCommitStep(prompt, [{ role: 'user', content: prompt }], tools), null, prompt);
+   00028|   }
+   00029| });
+   00030| 
+   00031| test('avoidance aliases cover contracted and expanded seeded instruction forms', async () => {
+   00032|   for (const instruction of ['do not use', 'don t use', "don't use", 'don’t use']) {
+   00033|     assert.ok(mentionsRole('conversation_preference_avoid', 'please ' + instruction + ' these anymore'));
+   00034|     const result = await solve('`quick` is subjective opinion, please ' + instruction + ' these anymore.');
+   00035|     assert.equal(result.intent, 'conversation_preference');
+   00036|     assert.equal(result.answer, "Understood. I'll avoid `quick` in this dialog.");
+   00037|   }
+   00038| });
+   00039| 
+   00040| test('named transform metadata retains the original content-addressed provenance', () => {
+   00041|   for (const name of ['requirement_list', 'custom_transform']) {
+   00042|     const log = new EventLog();
+   00043|     const id = log.append('text_transform', name);
+   00044|     const links = buildEvidenceLinks('payload', log, 'response:result');
+   00045|     assert.ok(links.includes('text_transform:' + name));
+   00046|     assert.ok(links.includes('text_transform:' + id));
+   00047|   }
+   00048| });
+   00049| 
+   00050| test('proof promotion belongs to leading proof directives, not embedded test wording', () => {
+   00051|   for (const prompt of ['Prove that there are infinitely many primes.', 'Докажи что простых чисел бесконечно много.', 'साबित करो कि अभाज्य संख्याएँ अनंत हैं।', '证明素数无穷。', 'Demuestra que hay infinitos números primos.']) {
+   00052|     assert.ok(realm().solverPromotedHandlers(prompt).includes('proof_request'), prompt);
+   00053|   }
+   00054|   const prompt = 'Clona este proyecto en el commit indicado, localiza dónde se define el tiempo de espera por defecto, súbelo a sesenta segundos y ejecuta solo la prueba que comprueba ese valor por defecto.';
+   00055|   assert.ok(!realm().solverPromotedHandlers(prompt).includes('proof_request'));
+   00056|   assert.deepEqual(routePlaced(prompt, []), { kind: 'honest_gap', needed: 'grep', missing: 'shell' });
+   00057|   assert.ok(objectType(prompt).includes('bare_term'));
+   00058| });
+   00059| 
+   
+   (End of file - total 59 lines)
+   </file>
+>> edit {"filePath":"rust/tests/web/seed-routing-ci-regressions.test.mjs","file_path":"rust/tests/web/seed-routing-ci-regressions.test.mjs","new":"import { before, test } from 'node:test';\nimport { meaning, wordIn } from '../../../js/agentic/crate/seed_meanings.mjs';\nimport { resolveSurface } from '../../../js/agentic/crate/text_formalization.mjs';\nimport { roundTrip } from '../../../js/agentic/crate/round_trip_translation.mjs';\n","newString":"import { before, test } from 'node:test';\nimport { meaning, wordIn } from '../../../js/agentic/crate/seed_meanings.mjs';\nimport { resolveSurface } from '../../../js/agentic/crate/text_formalization.mjs';\nimport { roundTrip } from '../../../js/agentic/crate/round_trip_translation.mjs';\n","new_str":"import { before, test } from 'node:test';\nimport { meaning, wordIn } from '../../../js/agentic/crate/seed_meanings.mjs';\nimport { resolveSurface } from '../../../js/agentic/crate/text_formalization.mjs';\nimport { roundTrip } from '../../../js/agentic/crate/round_trip_translation.mjs';\n","new_string":"import { before, test } from 'node:test';\nimport { meaning, wordIn } from '../../../js/agentic/crate/seed_meanings.mjs';\nimport { resolveSurface } from '../../../js/agentic/crate/text_formalization.mjs';\nimport { roundTrip } from '../../../js/agentic/crate/round_trip_translation.mjs';\n","old":"import { before, test } from 'node:test';\n","oldString":"import { before, test } from 'node:test';\n","old_str":"import { before, test } from 'node:test';\n","old_string":"import { before, test } from 'node:test';\n","path":"rust/tests/web/seed-routing-ci-regressions.test.mjs"}
+>> bash {"command":"sha256sum -- rust/tests/web/seed-routing-ci-regressions.test.mjs"}
+   Output: bc8e362fdc9f827a10a29e3d47d0f4f22cc5449604a43ff9bca0be686e56f592  rust/tests/web/seed-routing-ci-regressions.test.mjs
+   
+   Exit Code: 0
+== answer ==
+Replaced `import { before, test } from 'node:test';
+` with `import { before, test } from 'node:test';
+import { meaning, wordIn } from '../../../js/agentic/crate/seed_meanings.mjs';
+import { resolveSurface } from '../../../js/agentic/crate/text_formalization.mjs';
+import { roundTrip } from '../../../js/agentic/crate/round_trip_translation.mjs';
+` in `rust/tests/web/seed-routing-ci-regressions.test.mjs` and observed the result.
