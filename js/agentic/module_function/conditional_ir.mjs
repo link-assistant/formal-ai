@@ -89,25 +89,25 @@ function parseExpression(trees) {
       const name = txt(trees[at + 1]);
       at += 2;
       if (trees[at]?.$ === 'group' && trees[at].delim === 'paren') {
-        const args = trees[at++].trees;
+        const argumentTrees = trees[at++].trees;
         if (name === 'map') {
           if (
-            args.length < 3 ||
-            args[0].$ !== 'group' ||
-            args[0].delim !== 'paren' ||
-            args[0].trees.length !== 1 ||
-            txt(args[1]) !== '=>' ||
-            !validBinding(txt(args[0].trees[0]))
+            argumentTrees.length < 3 ||
+            argumentTrees[0].$ !== 'group' ||
+            argumentTrees[0].delim !== 'paren' ||
+            argumentTrees[0].trees.length !== 1 ||
+            txt(argumentTrees[1]) !== '=>' ||
+            !validBinding(txt(argumentTrees[0].trees[0]))
           )
             fail('UnsupportedMapper');
           node = {
             op: 'map',
             receiver: node,
-            parameter: txt(args[0].trees[0]),
-            body: parseExpression(args.slice(2)),
+            parameter: txt(argumentTrees[0].trees[0]),
+            body: parseExpression(argumentTrees.slice(2)),
           };
         } else if (['join', 'push'].includes(name))
-          node = { op: name, receiver: node, argument: parseExpression(args) };
+          node = { op: name, receiver: node, argument: parseExpression(argumentTrees) };
         else fail('UnknownMethod');
       } else node = { op: 'member', receiver: node, name };
     } else if (trees[at].$ === 'group' && trees[at].delim === 'bracket')

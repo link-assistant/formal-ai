@@ -23,32 +23,32 @@ struct Operand {
 type Environment = BTreeMap<String, Operand>;
 impl Arena {
     fn node(&mut self, kind: &str) -> usize {
-        let id = self.nodes.len();
+        let identifier = self.nodes.len();
         self.nodes.push(TypeNode {
             kind: kind.to_owned(),
             ..TypeNode::default()
         });
-        id
+        identifier
     }
-    fn resolve(&self, mut id: usize) -> usize {
-        while let Some(next) = self.nodes[id].binding {
-            id = next;
+    fn resolve(&self, mut identifier: usize) -> usize {
+        while let Some(next) = self.nodes[identifier].binding {
+            identifier = next;
         }
-        id
+        identifier
     }
-    fn kind(&self, id: usize) -> &str {
-        &self.nodes[self.resolve(id)].kind
+    fn kind(&self, identifier: usize) -> &str {
+        &self.nodes[self.resolve(identifier)].kind
     }
     fn array(&mut self) -> usize {
-        let id = self.node("array");
+        let identifier = self.node("array");
         let item = self.node("variable");
-        self.nodes[id].item = Some(item);
-        id
+        self.nodes[identifier].item = Some(item);
+        identifier
     }
     fn optional(&mut self, value: usize) -> usize {
-        let id = self.node("optional");
-        self.nodes[id].item = Some(value);
-        id
+        let identifier = self.node("optional");
+        self.nodes[identifier].item = Some(value);
+        identifier
     }
     fn scalar(kind: &str) -> bool {
         matches!(
@@ -109,12 +109,12 @@ impl Arena {
         }
         Ok(left)
     }
-    fn require(&mut self, id: usize, kind: &str) -> Checked<usize> {
+    fn require(&mut self, identifier: usize, kind: &str) -> Checked<usize> {
         let required = self.node(kind);
-        self.constrain(id, required)
+        self.constrain(identifier, required)
     }
-    fn field(&mut self, id: usize, name: &str) -> Checked<usize> {
-        let record = self.require(id, "record")?;
+    fn field(&mut self, identifier: usize, name: &str) -> Checked<usize> {
+        let record = self.require(identifier, "record")?;
         if let Some(value) = self.nodes[record].fields.get(name) {
             return Ok(*value);
         }
@@ -122,14 +122,18 @@ impl Arena {
         self.nodes[record].fields.insert(name.to_owned(), value);
         Ok(value)
     }
-    fn clone_type(&mut self, id: usize, memo: &mut BTreeMap<usize, usize>) -> Checked<usize> {
-        let id = self.resolve(id);
-        if let Some(value) = memo.get(&id) {
+    fn clone_type(
+        &mut self,
+        identifier: usize,
+        memo: &mut BTreeMap<usize, usize>,
+    ) -> Checked<usize> {
+        let identifier = self.resolve(identifier);
+        if let Some(value) = memo.get(&identifier) {
             return Ok(*value);
         }
-        let old = self.nodes[id].clone();
+        let old = self.nodes[identifier].clone();
         let copy = self.node(&old.kind);
-        memo.insert(id, copy);
+        memo.insert(identifier, copy);
         for (key, value) in old.fields {
             let value = self.clone_type(value, memo)?;
             self.nodes[copy].fields.insert(key, value);
@@ -141,14 +145,14 @@ impl Arena {
         self.nodes[copy].value = old.value;
         Ok(copy)
     }
-    fn schema(&self, id: usize, seen: &BTreeSet<usize>) -> Checked<Value> {
-        let id = self.resolve(id);
-        if seen.contains(&id) {
+    fn schema(&self, identifier: usize, seen: &BTreeSet<usize>) -> Checked<Value> {
+        let identifier = self.resolve(identifier);
+        if seen.contains(&identifier) {
             return Err("RecursiveSchema");
         }
         let mut next = seen.clone();
-        next.insert(id);
-        let node = &self.nodes[id];
+        next.insert(identifier);
+        let node = &self.nodes[identifier];
         match node.kind.as_str() {
             "variable" => Ok(json!({"kind":"json"})),
             "sequence" => Err("UnresolvedSequenceIntrinsic"),
@@ -176,7 +180,7 @@ impl Arena {
             }),
         }
     }
-    fn expression(&mut self, node: &Value, env: &Environment) -> Checked<Operand> {
+    fn expression(&mut self, node: &Value, environment: &Environment) -> Checked<Operand> {
         let plain = |type_id| Operand {
             type_id,
             fresh: false,
@@ -189,12 +193,12 @@ impl Arena {
                 Value::Number(_) => "number",
                 _ => return Err("UnsupportedSourceIR"),
             }))),
-            "binding" => env
+            "binding" => environment
                 .get(node["name"].as_str().unwrap_or(""))
                 .copied()
                 .ok_or("UnknownBinding"),
             "member" => {
-                let receiver = self.expression(&node["receiver"], env)?;
+                let receiver = self.expression(&node["receiver"], environment)?;
                 if node["name"] == "length" {
                     self.require(receiver.type_id, "sequence")?;
                     return Ok(plain(self.node("number")));
@@ -205,10 +209,10 @@ impl Arena {
                 )?))
             }
             "index" => {
-                let receiver = self.expression(&node["receiver"], env)?;
+                let receiver = self.expression(&node["receiver"], environment)?;
                 let array = self.array();
                 let receiver = self.constrain(receiver.type_id, array)?;
-                let index = self.expression(&node["index"], env)?;
+                let index = self.expression(&node["index"], environment)?;
                 if !(node["index"]["op"] == "literal" && node["index"]["value"].as_u64().is_some())
                 {
                     self.require(index.type_id, "index")?;
@@ -219,23 +223,23 @@ impl Arena {
                 Ok(plain(self.optional(item)))
             }
             "===" | "!==" => {
-                self.expression(&node["left"], env)?;
-                self.expression(&node["right"], env)?;
+                self.expression(&node["left"], environment)?;
+                self.expression(&node["right"], environment)?;
                 Ok(plain(self.node("boolean")))
             }
             ">" => {
-                let left = self.expression(&node["left"], env)?;
+                let left = self.expression(&node["left"], environment)?;
                 self.require(left.type_id, "number")?;
-                let right = self.expression(&node["right"], env)?;
+                let right = self.expression(&node["right"], environment)?;
                 self.require(right.type_id, "number")?;
                 Ok(plain(self.node("boolean")))
             }
             "??" => {
-                let left = self.expression(&node["left"], env)?;
+                let left = self.expression(&node["left"], environment)?;
                 let value = self.node("variable");
                 let optional = self.optional(value);
                 let left = self.constrain(left.type_id, optional)?;
-                let right = self.expression(&node["right"], env)?;
+                let right = self.expression(&node["right"], environment)?;
                 if self.kind(right.type_id) == "null" {
                     Ok(plain(left))
                 } else {
@@ -245,10 +249,10 @@ impl Arena {
                 }
             }
             "conditional" => {
-                let condition = self.expression(&node["condition"], env)?;
+                let condition = self.expression(&node["condition"], environment)?;
                 self.require(condition.type_id, "boolean")?;
-                let yes = self.expression(&node["yes"], env)?;
-                let no = self.expression(&node["no"], env)?;
+                let yes = self.expression(&node["yes"], environment)?;
+                let no = self.expression(&node["no"], environment)?;
                 if self.kind(yes.type_id) == "null" {
                     Ok(plain(if self.kind(no.type_id) == "optional" {
                         no.type_id
@@ -267,23 +271,23 @@ impl Arena {
             }
             "template" => {
                 for part in node["parts"].as_array().ok_or("MissingParts")? {
-                    let value = self.expression(part, env)?;
+                    let value = self.expression(part, environment)?;
                     self.require(value.type_id, "scalar")?;
                 }
                 Ok(plain(self.node("text")))
             }
             "map" => {
-                let receiver = self.expression(&node["receiver"], env)?;
+                let receiver = self.expression(&node["receiver"], environment)?;
                 let array = self.array();
                 let receiver = self.constrain(receiver.type_id, array)?;
                 let parameter = node["parameter"].as_str().ok_or("MissingParameter")?;
-                if env.contains_key(parameter) {
+                if environment.contains_key(parameter) {
                     return Err("ShadowedMapper");
                 }
                 let item = self.nodes[self.resolve(receiver)]
                     .item
                     .ok_or("InvalidType")?;
-                let mut child = env.clone();
+                let mut child = environment.clone();
                 child.insert(parameter.to_owned(), plain(item));
                 let value = self.expression(&node["body"], &child)?;
                 self.require(value.type_id, "scalar")?;
@@ -295,13 +299,13 @@ impl Arena {
                 })
             }
             "push" => {
-                let receiver = self.expression(&node["receiver"], env)?;
+                let receiver = self.expression(&node["receiver"], environment)?;
                 if !receiver.fresh {
                     return Err("CallerMutation");
                 }
                 let array = self.array();
                 let receiver = self.constrain(receiver.type_id, array)?;
-                let argument = self.expression(&node["argument"], env)?;
+                let argument = self.expression(&node["argument"], environment)?;
                 self.require(argument.type_id, "scalar")?;
                 let item = self.nodes[self.resolve(receiver)]
                     .item
@@ -310,14 +314,14 @@ impl Arena {
                 Ok(plain(self.node("number")))
             }
             "join" => {
-                let receiver = self.expression(&node["receiver"], env)?;
+                let receiver = self.expression(&node["receiver"], environment)?;
                 let array = self.array();
                 let receiver = self.constrain(receiver.type_id, array)?;
                 let item = self.nodes[self.resolve(receiver)]
                     .item
                     .ok_or("InvalidType")?;
                 self.require(item, "scalar")?;
-                let separator = self.expression(&node["argument"], env)?;
+                let separator = self.expression(&node["argument"], environment)?;
                 self.require(separator.type_id, "text")?;
                 Ok(plain(self.node("text")))
             }
@@ -330,7 +334,7 @@ impl Arena {
         }
         let parameter = compiled["parameter"].as_str().ok_or("MissingParameter")?;
         let mut input = self.node("variable");
-        let mut env = Environment::from([(
+        let mut environment = Environment::from([(
             parameter.to_owned(),
             Operand {
                 type_id: input,
@@ -342,19 +346,19 @@ impl Arena {
             match statement["op"].as_str().unwrap_or("") {
                 "const" => {
                     let name = statement["name"].as_str().ok_or("MissingBinding")?;
-                    if env.contains_key(name) {
+                    if environment.contains_key(name) {
                         return Err("ShadowedLocal");
                     }
-                    let value = self.expression(&statement["value"], &env)?;
+                    let value = self.expression(&statement["value"], &environment)?;
                     if !value.fresh {
                         return Err("NonFreshLocal");
                     }
-                    env.insert(name.to_owned(), value);
+                    environment.insert(name.to_owned(), value);
                 }
                 "if" => {
-                    let condition = self.expression(&statement["condition"], &env)?;
+                    let condition = self.expression(&statement["condition"], &environment)?;
                     self.require(condition.type_id, "boolean")?;
-                    self.expression(&statement["body"]["value"], &env)?;
+                    self.expression(&statement["body"]["value"], &environment)?;
                 }
                 "return" => {
                     let node = &statement["value"];
@@ -368,7 +372,7 @@ impl Arena {
                         None
                     };
                     if let Some((root, path)) = path.filter(|(root, _)| root == parameter) {
-                        self.expression(condition, &env)?;
+                        self.expression(condition, &environment)?;
                         let yes_input = self.clone_type(input, &mut BTreeMap::new())?;
                         let no_input = self.clone_type(input, &mut BTreeMap::new())?;
                         let mut yes_field = yes_input;
@@ -383,24 +387,28 @@ impl Arena {
                         let no_literal = self.node("exceptLiteral");
                         self.nodes[no_literal].value = Some(condition["right"]["value"].clone());
                         self.constrain(no_field, no_literal)?;
-                        let mut yes_env = env.clone();
-                        let mut no_env = env.clone();
-                        yes_env.insert(
+                        let mut true_branch_environment = environment.clone();
+                        let mut false_branch_environment = environment.clone();
+                        true_branch_environment.insert(
                             root.clone(),
                             Operand {
                                 type_id: yes_input,
                                 fresh: false,
                             },
                         );
-                        no_env.insert(
+                        false_branch_environment.insert(
                             root,
                             Operand {
                                 type_id: no_input,
                                 fresh: false,
                             },
                         );
-                        let yes = self.expression(&node["yes"], &yes_env)?.type_id;
-                        let no = self.expression(&node["no"], &no_env)?.type_id;
+                        let yes = self
+                            .expression(&node["yes"], &true_branch_environment)?
+                            .type_id;
+                        let no = self
+                            .expression(&node["no"], &false_branch_environment)?
+                            .type_id;
                         result = Some(if self.kind(no) == "null" {
                             if self.kind(yes) == "optional" {
                                 yes
@@ -419,7 +427,7 @@ impl Arena {
                         input = self.node("union");
                         self.nodes[input].options = vec![yes_input, no_input];
                     } else {
-                        result = Some(self.expression(node, &env)?.type_id);
+                        result = Some(self.expression(node, &environment)?.type_id);
                     }
                 }
                 _ => return Err("UnsupportedStatement"),

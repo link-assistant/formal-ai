@@ -123,20 +123,21 @@ fn expression(trees: &[Value]) -> Checked {
             let name = text(&trees[cursor + 1]);
             cursor += 2;
             if trees.get(cursor).is_some_and(|tree| group(tree, "paren")) {
-                let args = children(&trees[cursor]);
+                let argument_trees = children(&trees[cursor]);
                 cursor += 1;
                 if name == "map" {
-                    if args.len() < 3
-                        || !group(&args[0], "paren")
-                        || children(&args[0]).len() != 1
-                        || text(&args[1]) != "=>"
-                        || !binding(text(&children(&args[0])[0]))
+                    if argument_trees.len() < 3
+                        || !group(&argument_trees[0], "paren")
+                        || children(&argument_trees[0]).len() != 1
+                        || text(&argument_trees[1]) != "=>"
+                        || !binding(text(&children(&argument_trees[0])[0]))
                     {
                         return Err("UnsupportedMapper");
                     }
-                    node = json!({"op":"map","receiver":node,"parameter":text(&children(&args[0])[0]),"body":expression(&args[2..])?});
+                    node = json!({"op":"map","receiver":node,"parameter":text(&children(&argument_trees[0])[0]),"body":expression(&argument_trees[2..])?});
                 } else if matches!(name, "join" | "push") {
-                    node = json!({"op":name,"receiver":node,"argument":expression(args)?});
+                    node =
+                        json!({"op":name,"receiver":node,"argument":expression(argument_trees)?});
                 } else {
                     return Err("UnknownMethod");
                 }

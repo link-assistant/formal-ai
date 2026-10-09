@@ -277,11 +277,11 @@ function inferSourceProgram(compiled) {
           kind: 'exceptLiteral',
           value: node.condition.right.value,
         });
-        const yesEnv = new Map(env),
+        const trueBranchEnvironment = new Map(env),
           noEnv = new Map(env);
-        yesEnv.set(compiled.parameter, { type: yesInput, fresh: false });
+        trueBranchEnvironment.set(compiled.parameter, { type: yesInput, fresh: false });
         noEnv.set(compiled.parameter, { type: noInput, fresh: false });
-        const yes = inferredSourceExpression(node.yes, yesEnv).type,
+        const yes = inferredSourceExpression(node.yes, trueBranchEnvironment).type,
           no = inferredSourceExpression(node.no, noEnv).type;
         if (dereference(no).kind === 'null')
           result =
