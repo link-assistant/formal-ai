@@ -22,6 +22,7 @@ const TARGET_PLACEHOLDER: &str = "{target}";
 mod content_shape;
 mod literal_request;
 use content_shape::{describes_code_to_author, names_an_addition};
+pub(super) use content_shape::{missing_implementation_contract, semantic_authoring_lead};
 use literal_request::parse_write_request;
 
 pub use super::write_request::compose_edit_request;

@@ -256,3 +256,75 @@ meanings
     unit "one findings document"
     example "a report of actual source reads and verification results"
     grounding "js/agentic/final_payload.mjs"
+  source-links-report-cue
+    defined-by source
+    role source-links-report-cue
+    precondition "a positive unquoted instruction owns this source projection cue"
+    effect "the source projection router can observe the requested scope"
+    unit "not applicable"
+    example "source links"
+    lexeme en "source links" "source graph" source-links
+    lexeme ru "ссылки исходного кода" "граф исходного кода"
+    lexeme hi "स्रोत लिंक" "स्रोत ग्राफ"
+    lexeme zh 源码链接 源码图
+    lexeme es "enlaces de código fuente" "grafo del código fuente"
+  source-recompilation-action
+    defined-by action
+    role source-recompilation-action
+    precondition "a positive unquoted instruction owns this source projection cue"
+    effect "the source projection router can observe the requested scope"
+    unit "not applicable"
+    example "recompile"
+    lexeme en recompile
+    lexeme ru пересобери перекомпилируй
+    lexeme hi "पुनः संकलित करो"
+    lexeme zh 重新编译
+    lexeme es recompila
+  source-projection-scope
+    defined-by concept
+    role source-projection-scope
+    precondition "a positive unquoted instruction owns this source projection cue"
+    effect "the source projection router can observe the requested scope"
+    unit "not applicable"
+    example "whole"
+    lexeme en entire whole all
+    lexeme ru весь все целиком
+    lexeme hi पूरा समस्त
+    lexeme zh 全部 整个
+    lexeme es entero todo completo
+  source-projection-origin
+    defined-by source
+    role source-projection-origin
+    precondition "a positive unquoted instruction owns this source projection cue"
+    effect "the source projection router can observe the requested scope"
+    unit "not applicable"
+    example "source"
+    lexeme en source
+    lexeme ru исходник "исходный код"
+    lexeme hi स्रोत
+    lexeme zh 源码
+    lexeme es fuente "código fuente"
+  source-projection-format
+    defined-by link
+    role source-projection-format
+    precondition "a positive unquoted instruction owns this source projection cue"
+    effect "the source projection router can observe the requested scope"
+    unit "not applicable"
+    example "links"
+    lexeme en links
+    lexeme ru ссылки
+    lexeme hi लिंक
+    lexeme zh 链接
+    lexeme es enlaces
+  source-projection-return
+    defined-by action
+    role source-projection-return
+    precondition "a positive unquoted instruction owns this source projection cue"
+    effect "the source projection router can observe the requested scope"
+    unit "not applicable"
+    example "back"
+    lexeme en back
+    lexeme ru обратно
+    lexeme hi वापस
+    lexeme zh 返回
+    lexeme es vuelta regreso

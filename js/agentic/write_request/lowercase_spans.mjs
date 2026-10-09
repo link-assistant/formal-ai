@@ -1,5 +1,5 @@
 // Match seeded lowercase cues while retaining original string boundaries.
-import { contentLeadClose, firstPrefixLeadEnd } from '../write_request.mjs';
+import { contentLeadClose, firstPrefixLeadEnd } from '../crate/literal_content.mjs';
 
 /** Mirrors fn raw_lowercase_boundary: expanded characters have no interior raw boundary. */
 function rawLowercaseBoundary(request, offset) {

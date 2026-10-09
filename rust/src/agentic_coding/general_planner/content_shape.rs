@@ -6,7 +6,7 @@
 
 use super::super::write_request::{
     clean_path_token, first_action_cue_end, first_action_cue_start, first_content_lead_end,
-    looks_like_file_path, tokens,
+    first_raw_prefix_lead_end, looks_like_file_path, tokens,
 };
 use crate::seed;
 
@@ -16,10 +16,15 @@ use crate::seed;
 /// dogfooding). Content a seeded content lead introduces (`containing`, `with
 /// exactly this content:`) is bytes whatever it mentions.
 pub(super) fn describes_code_to_author(request: &str, content: &str) -> bool {
-    if content.is_empty()
-        || crate::normal_markov::quoted_segments(request)
-            .iter()
-            .any(|segment| segment.contains(content))
+    if content.is_empty() {
+        return false;
+    }
+    if semantic_authoring_lead(request) {
+        return !owns_literal_body(request, content);
+    }
+    if crate::normal_markov::quoted_segments(request)
+        .iter()
+        .any(|segment| segment.contains(content))
     {
         return false;
     }
@@ -29,6 +34,65 @@ pub(super) fn describes_code_to_author(request: &str, content: &str) -> bool {
             &crate::engine::normalize_prompt(content),
         ))
         || asks_to_author_code(&prose_around(request, content))
+}
+
+fn owns_literal_body(request: &str, content: &str) -> bool {
+    let quotes = crate::normal_markov::quoted_segment_spans(request);
+    let outside = |start| {
+        !quotes
+            .iter()
+            .any(|span| start >= span.start && start < span.end)
+    };
+    if let Some((start, end)) = first_raw_prefix_lead_end(request, "file_write_content_lead") {
+        if outside(start)
+            && quotes.iter().any(|span| {
+                span.start >= end
+                    && request.get(end..span.start).is_some_and(|gap| {
+                        gap.chars()
+                            .all(|character| character.is_whitespace() || character == ':')
+                    })
+                    && super::super::write_request::clean_content(&request[span.start..span.end])
+                        .as_deref()
+                        == Some(content)
+            })
+        {
+            return true;
+        }
+    }
+    first_raw_prefix_lead_end(request, "file_write_authoritative_content_lead").is_some_and(
+        |(start, end)| {
+            outside(start)
+                && request.get(end..).is_some_and(|tail| {
+                    tail.trim_start_matches(|character: char| {
+                        character.is_whitespace() || character == ':'
+                    })
+                    .starts_with(content)
+                })
+        },
+    )
+}
+
+/// A seeded leading semantic action without a whole-file write action.
+pub(in crate::agentic_coding) fn semantic_authoring_lead(request: &str) -> bool {
+    let lowered = request.trim_start().to_lowercase();
+    let action = seed::lexicon()
+        .bare_literals_for_role(seed::ROLE_SOFTWARE_AUTHORING_ACTION)
+        .into_iter()
+        .map(str::to_lowercase)
+        .filter(|surface| {
+            lowered.strip_prefix(surface.as_str()).is_some_and(|tail| {
+                tail.chars().next().is_none_or(|character| {
+                    !character.is_alphanumeric() && character != '_' && character != '-'
+                }) || crate::coding::contains_cjk(surface)
+            })
+        })
+        .max_by_key(String::len);
+    action.is_some_and(|surface| {
+        !seed::lexicon().mentions_role(
+            "file_whole_write_action",
+            &crate::engine::normalize_prompt(&surface),
+        )
+    })
 }
 
 /// `Add <content> to <file>` -- the write verb is the seeded add action and
@@ -78,4 +142,30 @@ fn prose_around(request: &str, content: &str) -> String {
         .map(|token| token.text)
         .collect::<Vec<_>>()
         .join(" ")
+}
+
+/// Unsupported semantic goals retain a gap; source equality is not a behavioral proof.
+pub(in crate::agentic_coding) fn missing_implementation_contract(request: &str) -> String {
+    let discovery = serde_json::json!({"reason":"MissingContract","goal":request,"authored":false,"verified":false,
+        "missingContracts":["source-bound-implementation-plan","independent-goal-validation"]});
+    let root = crate::seed::parser::parse_lino(include_str!(
+        "../../../embedded/data/meta/agentic-messages.lino"
+    ));
+    let template = root
+        .children
+        .first()
+        .and_then(|root| {
+            root.children
+                .iter()
+                .find(|node| node.name == "message" && node.id == "callable-discovery-outcome")
+        })
+        .map(|node| node.find_child_value("text"));
+    template.map_or_else(
+        || discovery.to_string(),
+        |text| {
+            text.replace("\\n", "\n")
+                .replace(concat!("{", "reason", "}"), "MissingContract")
+                .replace(concat!("{", "discovery", "}"), &discovery.to_string())
+        },
+    )
 }

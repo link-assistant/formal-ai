@@ -1,0 +1,57 @@
+{
+  "id": "T3537",
+  "dir": "/private/tmp/formal-ai-only-1188/contextual-asset-resolver-phase/full-planner-full-shared-gap",
+  "prompt": "Implement a reusable observed text-asset resolver in contextual_asset_resolver.mjs, with independently meaningful closest tests. Read proposal.json and the observed Rust projection/translation sources first. Support only ReuseExistingAsset initially: an explicit default import with exactly type=text, actual source and asset identities, explicit destination context, permitted root ownership and target-relative existing asset path. Preserve unknown effects, reject context-free imports, missing or drifted source/assets, duplicate/unknown/nontext attributes, escaping or outside-root symlinks and ambiguous bindings before writing target artifacts. Prove moved destinations, aliases, Unicode paths and exact content with actual selected fixtures; no Transport implementation, invented asset or emitted Rust wrapper. This is selected-file scratch only; production sources/seed/ratchets and native compilation are out of scope. Report precise MissingContract gaps if source-backed implementation is unsupported.",
+  "unchangedOriginal": "T3517",
+  "requestByteIdentical": true,
+  "runtime": "Actual production planner imports a canonical-URI scratch candidate, full-shared-gap in-memory worker configuration; production source unchanged",
+  "sourcePreimages": [
+    {
+      "path": "proposal.json",
+      "sha256": "158b672509511355fe3f75c8c99d840f76560d4e16e9ae29c4344136de70c4e3"
+    },
+    {
+      "path": "observed/rust_projection.rs",
+      "sha256": "523fb572010132fce32f375dfc047fec06757971c37aef1664fc99a915956c77"
+    },
+    {
+      "path": "observed/meta_translate.rs",
+      "sha256": "8f71b98a8be1c68e0b415f9bfd86e3c184cc0d9e2d960e4ce59e8b90e4807f37"
+    },
+    {
+      "path": "observed/translate_write.rs",
+      "sha256": "2202facaa742c9b80cb0588664325c4274f6bf8d7b9a1a38c186a0bdece8b3cd"
+    },
+    {
+      "path": "fixture/js/app/application-constants.js",
+      "sha256": "9274511f512f21dad8322407be6890e85caca8b7f239f140f635e5941a007dd5"
+    },
+    {
+      "path": "fixture/js/app/example-prompts.lino",
+      "sha256": "6b49f31276455cce57aae4104261c05b56e30ff468743f77a4687e05d081f136"
+    }
+  ],
+  "production": [
+    {
+      "path": "js/agentic/general_planner.mjs",
+      "sha256": "4e67e54c37928e87cc80d8a8eeac34a97fc3c8246f8b505b77064343aa1f9045"
+    },
+    {
+      "path": "rust/src/agentic_coding/general_planner/content_shape.rs",
+      "sha256": "fbf87c0500847b5d0a472eef0aef145522afe16adf1a0f14a4cf45f1cf837c11"
+    },
+    {
+      "path": "js/worker/formal_ai_worker_obligation_plans.js",
+      "sha256": "b1a275434e0ae9231fded8e6d2fcb228d3114cbf3fff8d519dafc873fc0cf810"
+    },
+    {
+      "path": "js/agentic/source_links.mjs",
+      "sha256": "f4e88539bca5f4a177e8d1b1f6eadecef31b24139056719387f220becda53061"
+    },
+    {
+      "path": "js/agentic/planner.mjs",
+      "sha256": "02fec6676de1f7ff5c890c150311a97dfc90cee7e27f71464cc777953b7e6b12"
+    }
+  ],
+  "targetInitiallyAbsent": true
+}

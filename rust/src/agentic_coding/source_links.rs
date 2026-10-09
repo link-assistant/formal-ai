@@ -37,7 +37,7 @@ use std::fmt::Write as _;
 use std::sync::OnceLock;
 
 use crate::self_source_links::{
-    owned_file_count, owned_manifest_content_id, owned_source_files, owned_total_bytes, SourceLinks,
+    SourceLinks, owned_file_count, owned_manifest_content_id, owned_source_files, owned_total_bytes,
 };
 
 /// The workspace path the planner writes the generated projection document to.
@@ -54,44 +54,105 @@ const SLICE_SIZE: usize = 6;
 /// Deliberately avoids the self-AST keywords ("cst/ast", "abstract-syntax",
 /// "reason about itself") and the self-healing keywords so the self-inspection
 /// recipes never collide.
-pub const SOURCE_LINKS_TASK: &str =
-    "Translate the entire source code of our system to the links / meta language and \
+pub const SOURCE_LINKS_TASK: &str = "Translate the entire source code of our system to the links / meta language and \
      back to source, and record the whole-repository source-to-links projection in \
      Links Notation so we can recompile ourselves.";
 
-/// Keywords that mark a user turn as the whole-repository source-links recipe.
-///
-/// Deliberately narrow: `"source to links"` is *not* here because the self-healing
-/// recipe's own phrasing ("map it onto the source … with a source-to-links
-/// round-trip") legitimately uses it, and the two self-inspection recipes must never
-/// collide on a keyword. Whole-source-to-links intent is instead caught by the
-/// scoped fallback in [`is_source_links_task`].
-///
-/// The legacy `"source graph"` phrasing stays recognised as a synonym: user
-/// vocabulary is data (issue #651/#161), so a person who still says "graph" keeps
-/// routing to the canonical links-network recipe rather than being turned away.
-const SOURCE_LINKS_KEYWORDS: [&str; 4] =
-    ["source links", "source graph", "source-links", "recompile"];
-
-/// Whether `prompt` asks to translate the whole source to links and back (issue
-/// #558's "recompile itself" / whole-repository projection).
+/// Mask literal payloads and path operands before instruction matching.
+fn unquoted_instruction(prompt: &str) -> String {
+    let mut outside = String::new();
+    let mut cursor = 0;
+    for span in crate::normal_markov::quoted_segment_spans(prompt) {
+        outside.push_str(&prompt[cursor..span.start]);
+        outside.push_str(&" ".repeat(span.end - span.start));
+        cursor = span.end;
+    }
+    outside.push_str(&prompt[cursor..]);
+    outside
+        .split_whitespace()
+        .map(|token| {
+            let candidate = token.trim_matches(|character| "([{.,;!?)}]".contains(character));
+            if candidate.contains(['/', '\\'])
+                || candidate.split('.').count() > 1 && !candidate.starts_with('.')
+            {
+                String::new()
+            } else {
+                token.to_owned()
+            }
+        })
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+fn positive_cues(normalized: &str, role: &str) -> Vec<(usize, usize)> {
+    let lexicon = crate::seed::lexicon();
+    let mut positions = Vec::new();
+    for word in lexicon.words_for_role(role) {
+        let surface = crate::engine::normalize_prompt(&word);
+        if surface.is_empty() {
+            continue;
+        }
+        for (start, _) in normalized.match_indices(surface.as_str()) {
+            let end = start + surface.len();
+            let boundary = |character: Option<char>| {
+                character.is_none_or(|character| {
+                    !character.is_alphanumeric() && character != '_' && character != '-'
+                })
+            };
+            if (crate::coding::contains_cjk(&surface)
+                || boundary(normalized[..start].chars().next_back())
+                    && boundary(normalized[end..].chars().next()))
+                && !lexicon.mentions_role("statement_negation_cue", &normalized[..start])
+            {
+                positions.push((start, end));
+            }
+        }
+    }
+    positions
+}
+/// Only positively owned, unquoted projection instructions select this recipe.
 #[must_use]
 pub fn is_source_links_task(prompt: &str) -> bool {
-    let lower = prompt.to_lowercase();
-    // A dedicated keyword routes here directly. Otherwise require an explicit
-    // whole-source scope paired with the links-translation intent, so ordinary
-    // single-file "parse this" or self-AST requests do not match.
-    if SOURCE_LINKS_KEYWORDS
+    let outside = unquoted_instruction(prompt);
+    super::shell_command_policy::sentences(&outside)
         .iter()
-        .any(|keyword| lower.contains(keyword))
-    {
-        return true;
-    }
-    let whole_source =
-        (lower.contains("entire") || lower.contains("whole") || lower.contains("all"))
-            && lower.contains("source");
-    let to_links_and_back = lower.contains("links") && lower.contains("back");
-    whole_source && to_links_and_back
+        .any(|clause| {
+            let normalized = crate::engine::normalize_prompt(clause.text);
+            let lexicon = crate::seed::lexicon();
+            let owns_action = |prefix| {
+                lexicon.mentions_role("translation_action", prefix)
+                    || lexicon.mentions_role("file_whole_write_action", prefix)
+            };
+            if positive_cues(&normalized, "source-recompilation-action")
+                .iter()
+                .any(|&(start, _)| start == 0 || owns_action(&normalized[..start]))
+            {
+                return true;
+            }
+            if positive_cues(&normalized, "source-links-report-cue")
+                .iter()
+                .any(|&(start, end)| {
+                    start == 0 && end == normalized.len() || owns_action(&normalized[..start])
+                })
+            {
+                return true;
+            }
+            let groups = [
+                "source-projection-scope",
+                "source-projection-origin",
+                "source-projection-format",
+                "source-projection-return",
+            ]
+            .map(|role| positive_cues(&normalized, role).first().copied());
+            groups.iter().all(Option::is_some)
+                && groups
+                    .iter()
+                    .flatten()
+                    .map(|&(_, end)| end)
+                    .max()
+                    .is_some_and(|end| {
+                        lexicon.mentions_role("translation_action", &normalized[..end])
+                    })
+        })
 }
 
 /// The deterministic representative slice of owned modules the recipe verifies

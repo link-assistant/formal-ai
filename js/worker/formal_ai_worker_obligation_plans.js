@@ -175,46 +175,11 @@ function oblSafeRelativePath(path) {
 
 // Mirrors `fn first_prefix_lead_end`: `[start, end]` or null.
 function oblFirstPrefixLeadEnd(lowered, role) {
-  const markers = roleWordForms(role)
-    .filter((form) => form.slot === "prefix" || form.slot === "circumfix")
-    .map((form) => [oblTrim(form.before).toLowerCase(), oblTrim(form.after).toLowerCase()])
-    .filter(([marker]) => marker !== "");
-  let best = null;
-  for (const [marker, closer] of markers) {
-    let from = 0;
-    for (;;) {
-      const start = lowered.indexOf(marker, from);
-      if (start < 0) break;
-      const end = start + marker.length;
-      const cjk = !marker.includes(" ") && !oblIsAscii(marker);
-      const before = Array.from(lowered.slice(0, start)).pop();
-      const after = Array.from(lowered.slice(end, end + 2))[0];
-      const beforeOk = cjk || start === 0 || oblIsWhitespace(before);
-      const afterOk = cjk || end === lowered.length || oblIsWhitespace(after) || /^[!-/:-@[-`{-~]$/.test(after);
-      const closed = closer === "" || lowered.slice(end).includes(closer);
-      if (beforeOk && afterOk && closed) {
-        if (best === null || start < best[0] || (start === best[0] && end > best[1])) best = [start, end];
-        break;
-      }
-      from = end;
-    }
-  }
-  return best;
+  return crateModule("crate/literal_content.mjs").firstPrefixLeadEnd(lowered, role);
 }
 
-// Mirrors `fn content_lead_close`.
-function oblContentLeadClose(lowered, from) {
-  let best = null;
-  for (const form of roleWordForms("file_write_content_lead")) {
-    if (form.slot !== "circumfix") continue;
-    const opener = oblTrim(form.before).toLowerCase();
-    const closer = oblTrim(form.after).toLowerCase();
-    if (!opener || !closer || !oblTrimEnd(lowered.slice(0, from)).endsWith(opener)) continue;
-    const relative = lowered.slice(from).indexOf(closer);
-    if (relative < 0) continue;
-    if (best === null || from + relative < best) best = from + relative;
-  }
-  return best;
+function oblFirstRawPrefixLeadEnd(request, role) {
+  return crateModule("write_request/lowercase_spans.mjs").firstRawPrefixLeadEnd(request, role);
 }
 
 function oblCue(token, cues, fused, leading) {
@@ -277,33 +242,7 @@ function oblFirstActionCue(toks, from) {
 
 // Mirrors `fn clean_content`.
 function oblCleanContent(raw) {
-  const qualifiers = oblBareSurfaces("file_write_content_qualifier");
-  let led = oblTrim(raw);
-  for (;;) {
-    const separated = oblTrim(oblTrimStartMatches(led, oblCharIn(":-—–")));
-    const lowered = separated.toLowerCase();
-    let shortened = separated;
-    let shortest = null;
-    for (const qualifier of qualifiers) {
-      if (!lowered.startsWith(qualifier)) continue;
-      const rest = oblTrimStart(separated.slice(qualifier.length));
-      if (/^[:\-—–]/u.test(rest) && (shortest === null || oblUtf8Len(rest) < shortest)) {
-        shortened = rest;
-        shortest = oblUtf8Len(rest);
-      }
-    }
-    if (shortened.length === led.length) break;
-    led = shortened;
-  }
-  let result = led;
-  const bytes = new TextEncoder().encode(led);
-  if (bytes.length >= 6 && led.startsWith("```") && led.endsWith("```")) {
-    result = oblTrim(led.slice(3, led.length - 3));
-  } else if (bytes.length >= 2) {
-    const first = bytes[0];
-    if (first === bytes[bytes.length - 1] && (first === 0x60 || first === 0x22 || first === 0x27)) result = oblTrim(led.slice(1, -1));
-  }
-  return result ? result : null;
+  return crateModule("crate/literal_content.mjs").cleanContent(raw);
 }
 
 // Mirrors `fn composed_document_specification_span` in
@@ -315,7 +254,7 @@ function oblComposedDocumentSpecificationSpan(task) {
     const normalized = normalizePrompt(sentence.text);
     if (!lexiconMentionsRole("document_composition_action", normalized)
       || !lexiconMentionsRole("composed_document_kind", normalized)) continue;
-    const lead = oblFirstPrefixLeadEnd(sentence.text.toLowerCase(), "file_write_content_lead");
+    const lead = oblFirstRawPrefixLeadEnd(sentence.text, "file_write_content_lead");
     if (!lead || lead[1] > sentence.text.length) continue;
     const parts = sentence.text.slice(lead[1]).split(",").flatMap((span) => {
       const pieces = [""];
@@ -338,14 +277,7 @@ function oblComposedDocumentSpecificationSpan(task) {
 const oblSlice = (text, start, end) => (start <= end && end <= text.length ? text.slice(start, end) : null);
 
 function oblEndOfStatement(request, from, limit) {
-  const sentence = oblSentences(request, OBL_PROSE_ENDS).find((candidate) => from >= candidate.start && from < candidate.end);
-  if (!sentence) return limit;
-  const tail = oblSlice(request, from, sentence.end);
-  const saysMore = tail !== null && Array.from(tail).some(oblIsAlphanumeric);
-  const rest = from > request.length ? "" : request.slice(from);
-  const breakAt = rest.indexOf("\n");
-  const continues = breakAt >= 0 && from + breakAt < sentence.end && Array.from(rest.slice(breakAt)).some(oblIsAlphanumeric);
-  return saysMore && !continues ? Math.min(sentence.end, limit) : limit;
+  return crateModule("crate/literal_content.mjs").endOfStatement(request, from, limit);
 }
 
 function oblShareStatement(request, left, right) {
@@ -372,15 +304,15 @@ function oblWriteRequestBound(request, toks, binding) {
   const lowered = request.toLowerCase();
   const clauseStart = binding.cue_precedes ? binding.cue_start : toks[binding.index].start;
   const specification = oblComposedDocumentSpecificationSpan(request);
-  const authoritative = oblFirstPrefixLeadEnd(lowered, "file_write_authoritative_content_lead") !== null;
-  const lead = oblFirstPrefixLeadEnd(lowered, "file_write_content_lead");
+  const authoritative = oblFirstRawPrefixLeadEnd(request, "file_write_authoritative_content_lead") !== null;
+  const lead = oblFirstRawPrefixLeadEnd(request, "file_write_content_lead");
   if (lead) {
     const markerEnd = lead[1];
     const inside = specification && markerEnd >= specification.start && markerEnd < specification.end;
     if (!inside && oblShareStatement(request, markerEnd, clauseStart)) {
       const markerLeads = markerEnd <= clauseStart;
       const statementEnd = oblEndOfStatement(request, markerEnd, markerLeads ? clauseStart : request.length);
-      const close = oblContentLeadClose(lowered, markerEnd);
+      const close = crateModule("write_request/lowercase_spans.mjs").rawContentLeadClose(request, markerEnd);
       const markerSpan = oblSlice(request, markerEnd, close === null ? statementEnd : Math.min(close, statementEnd));
       if (!markerLeads || oblFirstActionCue(toks, 0) !== null) {
         const content = markerSpan === null ? null : oblCleanContent(markerSpan);
@@ -418,17 +350,10 @@ function oblWriteRequestBound(request, toks, binding) {
 // Mirrors `fn describes_code_to_author`: unquoted content without a content
 // lead that names a code construct is code to author, not the file's bytes.
 function oblDescribesCodeToAuthor(request, content) {
-  if (content === "" || quotedTextSegments(request).some((segment) => segment.includes(content))) return false;
-  return (oblFirstPrefixLeadEnd(request.toLowerCase(), "file_write_content_lead") === null
-    && lexiconMentionsRole("coding_request_object", normalizePrompt(content)))
-    || oblAsksToAuthorCode(oblTokens(request.split(content).join(" "))
-      .filter((token) => !oblLooksLikeFilePath(oblCleanPathToken(token.text))).map((token) => token.text).join(" "));
-}
-
-// Mirrors `fn asks_to_author_code`.
-function oblAsksToAuthorCode(prose) {
-  const normalized = normalizePrompt(prose);
-  return lexiconMentionsRole("coding_request_object", normalized) && lexiconMentionsRole("coding_request_verb", normalized);
+  const prose = oblTokens(request.split(content).join(" "))
+    .filter((token) => !oblLooksLikeFilePath(oblCleanPathToken(token.text))).map((token) => token.text).join(" ");
+  return crateModule("crate/literal_authoring_contract.mjs").describesCodeToAuthor(request, content, prose,
+    oblFirstRawPrefixLeadEnd(request, "file_write_content_lead") !== null);
 }
 
 // Mirrors `fn parse_command_output_request`: whether one is stated.
@@ -481,8 +406,9 @@ function oblRepositoryWorkReference(request) {
 // marker, trimmed; the request itself when it carries none.
 function oblObjectiveText(request) {
   const lowered = request.toLowerCase();
-  const lead = oblFirstPrefixLeadEnd(lowered, "request_objective_lead");
-  if (!lead) return request;
+  const lead = oblFirstRawPrefixLeadEnd(request, "request_objective_lead");
+  if (!lead || crateModule("crate/normal_markov.mjs").quotedSegmentSpans(request)
+    .some((segment) => lead[0] >= segment.start && lead[0] < segment.end)) return request;
   for (const character of Array.from(lowered.slice(0, lead[0])).reverse()) {
     if (character === "\n") break;
     if (!oblIsWhitespace(character)) return request;

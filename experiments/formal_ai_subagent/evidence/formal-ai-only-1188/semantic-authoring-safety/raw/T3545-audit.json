@@ -1,0 +1,9 @@
+{
+  "id": "T3545",
+  "stop": "final",
+  "answer": "The command completed successfully without output.",
+  "calls": [
+    "bash"
+  ],
+  "matches": []
+}

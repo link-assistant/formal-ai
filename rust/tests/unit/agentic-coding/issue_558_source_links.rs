@@ -412,3 +412,46 @@ fn serialized_owned_source_shard_6() {
 fn serialized_owned_source_shard_7() {
     assert_serialized_owned_source_shard(7);
 }
+
+#[test]
+fn source_projection_requires_positive_statement_owned_cues() {
+    for request in [
+        "source links",
+        "recompile yourself: project the whole source graph to links",
+        "translate the entire source of the system to links and back",
+        "Пересобери исходный код.",
+        "पुनः संकलित करो स्रोत।",
+        "重新编译源码。",
+        "Recompila el código fuente.",
+    ] {
+        assert!(source_links::is_source_links_task(request), "{request}");
+    }
+    for request in [
+        "Initially inspect source-backed symlinks.",
+        "Read source-links.mjs.",
+        "Do not invent fetch timestamps, source links or topic-specific records.",
+        "Create file x.txt containing «source links».",
+        "source linksHelper",
+        "Explain what recompile means.",
+        "不要生成 source links。",
+        "No crees source links.",
+    ] {
+        assert!(!source_links::is_source_links_task(request), "{request}");
+    }
+}
+#[test]
+fn unsupported_semantic_source_goal_retains_missing_contract() {
+    let request = "Implement a resolver in output.mjs with meaningful tests. Note «meaningful tests.» elsewhere.";
+    let Some(AgenticPlan::Final(answer)) =
+        plan_chat_step(&[ChatMessage::user(request)], &["read", "write", "bash"])
+    else {
+        panic!("semantic implementation must remain a gap");
+    };
+    let (_, serialized) = answer.split_once('\n').expect("structured contract gap");
+    let result: serde_json::Value =
+        serde_json::from_str(serialized).expect("structured goal witness");
+    assert_eq!(result["reason"], "MissingContract");
+    assert_eq!(result["goal"], request);
+    assert_eq!(result["authored"], false);
+    assert_eq!(result["verified"], false);
+}

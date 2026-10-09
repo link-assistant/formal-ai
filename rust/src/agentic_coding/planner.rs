@@ -513,7 +513,23 @@ pub(super) fn plan_settled_routes(
     // be mistaken for an edit, and precedes the generic edit/read/shell routers
     // below. Requests naming both a literal target and literal content are
     // already claimed by the write probe above.
-    if let Some(plan) = code_artifact::plan_code_artifact_step(task, messages, tool_names) {
+    if let Some(plan) =
+        code_artifact::plan_code_artifact_step(task, messages, tool_names).or_else(|| {
+            (super::general_planner::semantic_authoring_lead(task)
+                && compose_general_change_plan(task).is_none()
+                && super::general_planner::compose_edit_request(task).is_none())
+            .then(|| {
+                record(
+                    AgenticPlan::Final(super::general_planner::missing_implementation_contract(
+                        task,
+                    )),
+                    FinalDisposition::Gap,
+                    "semantic-authoring-missing-contract",
+                    result,
+                )
+            })
+        })
+    {
         return Some(plan);
     }
     if self_heal::is_self_heal_task(task) {

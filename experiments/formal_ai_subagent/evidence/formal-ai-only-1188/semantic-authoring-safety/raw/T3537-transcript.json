@@ -1,0 +1,39 @@
+{
+  "mode": "full-shared-gap",
+  "modeBefore": "literal_file",
+  "modeAfter": null,
+  "selected": [
+    {
+      "kind": "final",
+      "result": {
+        "text": "Callable discovery MissingContract:\n{\"authored\":false,\"goal\":\"Implement a reusable observed text-asset resolver in contextual_asset_resolver.mjs, with independently meaningful closest tests. Read proposal.json and the observed Rust projection/translation sources first. Support only ReuseExistingAsset initially: an explicit default import with exactly type=text, actual source and asset identities, explicit destination context, permitted root ownership and target-relative existing asset path. Preserve unknown effects, reject context-free imports, missing or drifted source/assets, duplicate/unknown/nontext attributes, escaping or outside-root symlinks and ambiguous bindings before writing target artifacts. Prove moved destinations, aliases, Unicode paths and exact content with actual selected fixtures; no Transport implementation, invented asset or emitted Rust wrapper. This is selected-file scratch only; production sources/seed/ratchets and native compilation are out of scope. Report precise MissingContract gaps if source-backed implementation is unsupported.\",\"missingContracts\":[\"source-bound-implementation-plan\",\"independent-goal-validation\"],\"reason\":\"MissingContract\",\"verified\":false}",
+        "disposition": "gap",
+        "origin": "semantic-authoring-missing-contract",
+        "payloadRole": "finding",
+        "artifact": null,
+        "discovery": {
+          "reason": "MissingContract",
+          "goal": "Implement a reusable observed text-asset resolver in contextual_asset_resolver.mjs, with independently meaningful closest tests. Read proposal.json and the observed Rust projection/translation sources first. Support only ReuseExistingAsset initially: an explicit default import with exactly type=text, actual source and asset identities, explicit destination context, permitted root ownership and target-relative existing asset path. Preserve unknown effects, reject context-free imports, missing or drifted source/assets, duplicate/unknown/nontext attributes, escaping or outside-root symlinks and ambiguous bindings before writing target artifacts. Prove moved destinations, aliases, Unicode paths and exact content with actual selected fixtures; no Transport implementation, invented asset or emitted Rust wrapper. This is selected-file scratch only; production sources/seed/ratchets and native compilation are out of scope. Report precise MissingContract gaps if source-backed implementation is unsupported.",
+          "authored": false,
+          "verified": false,
+          "missingContracts": [
+            "source-bound-implementation-plan",
+            "independent-goal-validation"
+          ]
+        }
+      },
+      "calls": null
+    }
+  ],
+  "transcript": [],
+  "answer": "Callable discovery MissingContract:\n{\"authored\":false,\"goal\":\"Implement a reusable observed text-asset resolver in contextual_asset_resolver.mjs, with independently meaningful closest tests. Read proposal.json and the observed Rust projection/translation sources first. Support only ReuseExistingAsset initially: an explicit default import with exactly type=text, actual source and asset identities, explicit destination context, permitted root ownership and target-relative existing asset path. Preserve unknown effects, reject context-free imports, missing or drifted source/assets, duplicate/unknown/nontext attributes, escaping or outside-root symlinks and ambiguous bindings before writing target artifacts. Prove moved destinations, aliases, Unicode paths and exact content with actual selected fixtures; no Transport implementation, invented asset or emitted Rust wrapper. This is selected-file scratch only; production sources/seed/ratchets and native compilation are out of scope. Report precise MissingContract gaps if source-backed implementation is unsupported.\",\"missingContracts\":[\"source-bound-implementation-plan\",\"independent-goal-validation\"],\"reason\":\"MissingContract\",\"verified\":false}",
+  "stop": "final",
+  "toolsAdvertised": [
+    "bash",
+    "edit",
+    "grep",
+    "list",
+    "read",
+    "write"
+  ]
+}

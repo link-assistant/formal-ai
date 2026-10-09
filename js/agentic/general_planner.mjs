@@ -7,6 +7,9 @@
 // and `terminal_state` is 'executed' | 'planned_not_executed'. A step is
 // `{capability, action, expected_evidence, command}`.
 
+import { describesCodeToAuthor as contentRequiresAuthoring, semanticAuthoringLead } from './crate/literal_authoring_contract.mjs';
+import { endOfStatement } from './crate/literal_content.mjs';
+export { semanticAuthoringLead };
 import { Capability } from './capability.mjs';
 import { agenticMessage } from './messages.mjs';
 import { composedDocumentSpecificationSpan } from './note_composition.mjs';
@@ -69,9 +72,7 @@ const CAPABILITY_SLUGS = Object.freeze({
  * bytes whatever it mentions.
  */
 function describesCodeToAuthor(request, content) {
-  if (content === '' || quotedSegments(request).some((segment) => segment.includes(content))) return false;
-  return (firstContentLeadEnd(request.toLowerCase()) === null && mentionsRole('coding_request_object', normalizePrompt(content)))
-    || asksToAuthorCode(proseAround(request, content));
+  return contentRequiresAuthoring(request, content, proseAround(request, content), firstContentLeadEnd(request.toLowerCase()) !== null);
 }
 
 /**
@@ -90,17 +91,6 @@ function namesAnAddition(request, content, target) {
   const at = content === '' ? -1 : request.indexOf(content);
   return at >= 0 && at < request.indexOf(target)
     && mentionsRole('coding_member_add_action', normalizePrompt(request.slice(start, end)));
-}
-
-/**
- * Mirrors `fn asks_to_author_code`: the request itself asks to write a code
- * construct (`Write a Python function add(a, b) … in add.py and run it with 2
- * and 3`), so whatever clause the write grammar picks as content (`2 and 3.`)
- * is not the file's bytes.
- */
-function asksToAuthorCode(prose) {
-  const normalized = normalizePrompt(prose);
-  return mentionsRole('coding_request_object', normalized) && mentionsRole('coding_request_verb', normalized);
 }
 
 /** Mirrors `fn prose_around`: the request without the content and its file paths. */
@@ -485,26 +475,6 @@ function statementScope(request) {
     scoped = scoped.slice(0, segment.start) + ' '.repeat(segment.end - segment.start) + scoped.slice(segment.end);
   }
   return scoped;
-}
-
-function endOfStatement(request, from, limit) {
-  const sentence = proseSentences(statementScope(request)).find((candidate) => {
-    const span = spanOf(candidate);
-    return from >= span.start && from < span.end;
-  });
-  if (!sentence) return limit;
-  const span = spanOf(sentence);
-  const tail = slice(request, from, span.end);
-  const saysMore = tail !== null && Array.from(tail).some(isAlphanumeric);
-  if (saysMore && !payloadContinuesPastItsFirstLine(request, from, span.end)) return Math.min(literalStatementEnd(request, span.end), limit);
-  return limit;
-}
-
-/** Mirrors fn literal_statement_end: retain adjacent terminal marks in declared bytes. */
-function literalStatementEnd(request, from) {
-  let end = from;
-  while (end < request.length && /[.!?。！？।]/u.test(request[end])) end += 1;
-  return end;
 }
 
 function positionsShareStatement(request, left, right) {
