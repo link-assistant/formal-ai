@@ -6,6 +6,9 @@
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::{ChatMessage, ToolCall};
 
+#[path = "../issue_1066_ladder_capability/tool_workspace.rs"]
+mod tool_workspace;
+
 const TOOLS: [&str; 4] = ["read", "write", "edit", "bash"];
 
 /// Plan until the first write and return the written content.
@@ -60,6 +63,10 @@ fn a_member_the_request_quotes_twice_is_inserted_once() {
 
 /// Plan up to six steps and return what is written to `path`.
 fn write_to(prompt: &str, path: &str, source: &str) -> Option<String> {
+    let mut workspace = tool_workspace::ToolWorkspace::new(prompt);
+    workspace
+        .write_initial(path, source)
+        .expect("initial target bytes");
     let mut messages = vec![ChatMessage::user(prompt)];
     for turn in 0..6 {
         let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &TOOLS) else {
@@ -70,21 +77,29 @@ fn write_to(prompt: &str, path: &str, source: &str) -> Option<String> {
         let named = ["filePath", "file_path", "path"]
             .iter()
             .find_map(|key| arguments[*key].as_str());
-        if call.tool == "write" && named == Some(path) {
-            return arguments["content"].as_str().map(str::to_owned);
-        }
         let id = format!("call_{turn}");
+        let observation = workspace.execute(&id, &call);
+        if call.tool == "write" && named == Some(path) {
+            let content = arguments["content"].as_str()?;
+            assert_eq!(
+                workspace.read(path).expect("physical target"),
+                content,
+                "physical target bytes"
+            );
+            assert!(
+                workspace
+                    .read(".formal-ai/general-change-plan.lino")
+                    .expect("actual appended plan")
+                    .contains(prompt)
+            );
+            return Some(content.to_owned());
+        }
         messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
-            id.clone(),
+            id,
             call.tool.clone(),
             call.arguments.clone(),
         )]));
-        let result = if call.tool == "read" && named == Some(path) {
-            source
-        } else {
-            ""
-        };
-        messages.push(ChatMessage::tool_result(id, &call.tool, result));
+        messages.push(observation);
     }
     None
 }

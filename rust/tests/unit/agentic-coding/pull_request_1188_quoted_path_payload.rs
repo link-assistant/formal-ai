@@ -11,6 +11,9 @@ use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::capability_routing::first_path;
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
+#[path = "../issue_1066_ladder_capability/tool_workspace.rs"]
+mod tool_workspace;
+
 fn edit(request: &str) -> Option<(String, String, String)> {
     compose_edit_request(request)
 }
@@ -69,6 +72,7 @@ fn a_sentence_mark_after_one_quoted_literal_is_not_content() {
     let mut messages = vec![ChatMessage::user(
         "Create a file new.txt containing 'hello'.",
     )];
+    let mut workspace = tool_workspace::ToolWorkspace::new("quoted literal fixture");
     let mut written = None;
     for index in 0..4 {
         let Some(AgenticPlan::ToolCalls(calls)) =
@@ -79,21 +83,28 @@ fn a_sentence_mark_after_one_quoted_literal_is_not_content() {
         let call = calls[0].clone();
         let arguments: serde_json::Value =
             serde_json::from_str(&call.arguments).expect("tool arguments are JSON");
+        let id = format!("call_{index}");
+        let observation = workspace.execute(&id, &call);
         if call.tool == "write" && arguments["filePath"] == "new.txt" {
             written = arguments["content"].as_str().map(str::to_owned);
+            assert_eq!(
+                workspace.read("new.txt").expect("physical target"),
+                written.as_deref().expect("literal bytes")
+            );
+            assert!(
+                workspace
+                    .read(".formal-ai/general-change-plan.lino")
+                    .expect("actual appended plan")
+                    .contains("Create a file new.txt containing 'hello'.")
+            );
             break;
         }
-        let id = format!("call_{index}");
         messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
             id.clone(),
             call.tool.clone(),
             call.arguments.clone(),
         )]));
-        messages.push(ChatMessage::tool_result(
-            id,
-            call.tool.clone(),
-            String::new(),
-        ));
+        messages.push(observation);
     }
     assert_eq!(written.as_deref(), Some("hello"));
 }
