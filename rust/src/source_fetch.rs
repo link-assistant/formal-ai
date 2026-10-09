@@ -180,6 +180,14 @@ pub struct SourceCapture {
 }
 
 impl SourceCapture {
+    /// Decode a registry capture without fetching, verifying its exact bytes and provenance.
+    ///
+    /// An absent URL returns `None`; duplicate entries, invalid timestamps or mismatched
+    /// content digests return the existing cache error.
+    pub fn from_seed_registry(url: &str, raw: &str) -> Result<Option<Self>, FetchError> {
+        seed_captures::read_seed_capture(url, raw)
+    }
+
     #[must_use]
     pub fn source_url(&self) -> &str {
         &self.source_url
@@ -293,7 +301,7 @@ impl<T: SourceTransport> CachedSourceClient<T> {
             }
             Ok(None) => {
                 if let Some(capture) =
-                    seed_captures::read_seed_capture(url, crate::seed::SOURCES_REGISTRY_LINO)?
+                    SourceCapture::from_seed_registry(url, crate::seed::SOURCES_REGISTRY_LINO)?
                 {
                     let age =
                         (self.now)().saturating_sub(capture.fetched_at.parse::<u64>().unwrap_or(0));

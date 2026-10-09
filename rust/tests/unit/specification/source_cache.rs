@@ -176,14 +176,14 @@ fn source_qualified_definition_replays_all_meanings_with_actual_provenance() {
     .expect("the genuine committed API capture is available offline");
     assert_eq!(
         response.answer,
-        r###"associative memory — Wikipedia (disambiguation):
+        r"associative memory — Wikipedia (disambiguation):
   1. Associative memory (psychology), the ability to learn and remember the relationship between unrelated items
   2. Associative storage, or content-addressable memory, a type of computer memory used in certain very high speed searching applications
   3. Autoassociative memory, all computer memories that enable one to retrieve a piece of data from only a tiny sample of itself
   4. Bidirectional associative memory, a type of recurrent neural network
   5. Hopfield network, a form of recurrent artificial neural network
   6. Transderivational search in psychology or cybernetics, a search for a fuzzy match across a broad field
-Source: https://en.wikipedia.org/api/rest_v1/page/summary/associative%20memory (sha256 d8c37a8c6e2e0abcb15cab4ece37127ab3a1d6335319be0fc79be0be66f5fa09; captured-at 1791508773; cached true; CC BY-SA 4.0; https://creativecommons.org/licenses/by-sa/4.0/)"###
+Source: https://en.wikipedia.org/api/rest_v1/page/summary/associative%20memory (sha256 d8c37a8c6e2e0abcb15cab4ece37127ab3a1d6335319be0fc79be0be66f5fa09; captured-at 1791508773; cached true; CC BY-SA 4.0; https://creativecommons.org/licenses/by-sa/4.0/)"
     );
     assert!(
         response

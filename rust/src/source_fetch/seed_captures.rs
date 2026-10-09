@@ -37,7 +37,3 @@ pub(super) fn read_seed_capture(url: &str, raw: &str) -> Result<Option<SourceCap
         bytes,
     }))
 }
-
-#[cfg(test)]
-#[path = "../../tests/fixtures/source-cache-seed-contract.rs"]
-mod tests;
