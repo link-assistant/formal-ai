@@ -1,0 +1,37 @@
+{
+  "cutoff": "T4040",
+  "native": "pending CI",
+  "autonomousCredit": 0,
+  "files": [
+    {
+      "source": "/private/tmp/pr1188-ci-T4039/T4039.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-pattern-89d1/T4039/T4039.log",
+      "bytes": 92,
+      "sha256": "1b28e9adfedefde119dbfa6f5a718f0aebd4b9a7ab5350c9c7480c3889964d31"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4039/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-pattern-89d1/T4039/drive-request.json",
+      "bytes": 135,
+      "sha256": "64dbb0103ad9afc7cb29a12ff1481153ca52925cf9f056b0cfb25c679638bab3"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4039/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-pattern-89d1/T4039/drive.json",
+      "bytes": 853,
+      "sha256": "ed78839ced7a4659391903d53e5a63dc1de440608bb82e162c8ff059c6733342"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4039/repair.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-pattern-89d1/T4039/repair.mjs",
+      "bytes": 844,
+      "sha256": "b8529380c3fdcfaad2fd8ef484139506c8dbb66bf1735ebc612d16535dbb3ca5"
+    },
+    {
+      "source": "/private/tmp/pr1188-ci-T4039/request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-pattern-89d1/T4039/request.json",
+      "bytes": 36579,
+      "sha256": "7036f3c18b3ec6c4bf57c5fb144a1f79ccc068a8f1ff7fbd5252f7c70f6d8920"
+    }
+  ]
+}

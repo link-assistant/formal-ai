@@ -841,7 +841,7 @@ fn legacy_fetch_notice(raw: &str) -> bool {
         .iter()
         .any(|surface| {
             normalized
-                .strip_prefix(&crate::engine::normalize_prompt(surface))
+                .strip_prefix(crate::engine::normalize_prompt(surface).as_str())
                 .is_some_and(|tail| {
                     tail.chars()
                         .next()
