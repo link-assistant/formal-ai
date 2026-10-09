@@ -24,7 +24,8 @@ fn binding_has_write_instruction(
     if action_start.is_some_and(|start| !positions_share_statement(request, start, clause_start)) {
         return false;
     }
-    let from = prose_sentences(request)
+    let scoped = statement_scope(request);
+    let from = prose_sentences(&scoped)
         .into_iter()
         .find(|sentence| sentence.span.contains(&clause_start))
         .map_or(0, |sentence| sentence.span.start);
@@ -126,7 +127,7 @@ fn parse_write_request_bound(
     // asked for was never composed.
     let specification =
         crate::agentic_coding::note_composition::composed_document_specification_span(request);
-    if let Some((_, marker_end)) = first_content_lead_end(&lowered)
+    if let Some((marker_start, marker_end)) = first_content_lead_end(&lowered)
         && !specification.is_some_and(|span| span.contains(&marker_end))
         && positions_share_statement(request, marker_end, clause_start)
     {
@@ -145,14 +146,20 @@ fn parse_write_request_bound(
         let marker_span = request.get(marker_end..payload_end);
         if (!marker_leads || first_action_cue_end(toks).is_some())
             && let Some(content) = marker_span.and_then(clean_content).filter(|content| {
-                is_literal_content(content)
-                    && (!names_deferred_work_product(content)
-                        || first_prefix_lead_end(
-                            &lowered,
-                            seed::ROLE_FILE_WRITE_AUTHORITATIVE_CONTENT_LEAD,
-                        )
-                        .is_some()
-                        || literal_payload(request).is_some())
+                is_literal_content(
+                    content,
+                    marker_span,
+                    seed::mentions_role(
+                        seed::ROLE_FILE_WRITE_CONTENT_QUALIFIER,
+                        &crate::engine::normalize_prompt(&request[marker_start..marker_end]),
+                    ),
+                ) && (!names_deferred_work_product(content)
+                    || first_prefix_lead_end(
+                        &lowered,
+                        seed::ROLE_FILE_WRITE_AUTHORITATIVE_CONTENT_LEAD,
+                    )
+                    .is_some()
+                    || literal_payload(request).is_some())
             })
         {
             return Some((target, content));
@@ -202,11 +209,22 @@ fn parse_write_request_bound(
     // what it says (issue #1066).
     if is_non_referential_content(&content)
         || names_deferred_work_product(&content)
-        || !is_literal_content(&content)
+        || !is_literal_content(&content, content_span, false)
     {
         return None;
     }
     Some((target, content))
+}
+/// Mask literal punctuation without changing UTF-8 byte positions.
+fn statement_scope(request: &str) -> String {
+    let mut scoped = request.to_owned();
+    for segment in crate::normal_markov::quoted_segment_spans(request) {
+        scoped.replace_range(
+            segment.start..segment.end,
+            &" ".repeat(segment.end - segment.start),
+        );
+    }
+    scoped
 }
 /// Where the statement that begins at `from` ends, never past `limit`.
 ///
@@ -236,22 +254,13 @@ fn parse_write_request_bound(
 /// shell routing reads at cut issue #918's minimal-core invariant in half at
 /// its semicolon.
 fn end_of_statement(request: &str, from: usize, limit: usize) -> usize {
-    let Some(sentence) = prose_sentences(request)
+    let scoped = statement_scope(request);
+    let Some(sentence) = prose_sentences(&scoped)
         .into_iter()
         .find(|sentence| sentence.span.contains(&from))
     else {
         return limit;
     };
-    if let Some(literal) = crate::normal_markov::quoted_segment_spans(request)
-        .into_iter()
-        .find(|segment| {
-            segment.start >= from
-                && segment.start < sentence.span.end
-                && segment.end > sentence.span.end
-        })
-    {
-        return literal.end.min(limit);
-    }
     let says_more = request
         .get(from..sentence.span.end)
         .is_some_and(|tail| tail.chars().any(char::is_alphanumeric));
@@ -279,13 +288,30 @@ fn positions_share_statement(request: &str, left: usize, right: usize) -> bool {
     };
     from == limit || end_of_statement(request, from, limit) == limit
 }
-/// Whether a recovered payload says anything at all. A span of nothing but
-/// punctuation is what a mis-parse leaves behind — the `opencode` leg of the
-/// issue-#671 matrix recovered a single `"`, the tail of a quoted prompt after
-/// its trailing content-lead marker — and writing it would replace real file
-/// bytes with a stray delimiter.
-fn is_literal_content(content: &str) -> bool {
-    content.chars().any(char::is_alphanumeric)
+/// Punctuation needs a closed literal operand or a seeded explicit qualifier.
+fn is_literal_content(content: &str, raw: Option<&str>, explicitly_qualified: bool) -> bool {
+    if content.chars().any(char::is_alphanumeric) {
+        return true;
+    }
+    let Some(raw) = raw.filter(|_| !content.is_empty()) else {
+        return false;
+    };
+    let quoted = crate::normal_markov::quoted_segment_spans(raw);
+    if let [only] = quoted.as_slice()
+        && only.text == content
+        && raw[..only.start]
+            .chars()
+            .all(|character| character.is_whitespace() || ":—–-".contains(character))
+        && raw[only.end..]
+            .chars()
+            .all(|character| character.is_whitespace() || ".!?。！？।".contains(character))
+    {
+        return true;
+    }
+    explicitly_qualified
+        && !content
+            .chars()
+            .any(|character| "`\"'«»“”‘’„‚「」『』".contains(character))
 }
 /// Whether a recovered write payload is nothing but a non-referential subject —
 /// a bare pronoun/function word ("it", "this", "that", …) that refers back to

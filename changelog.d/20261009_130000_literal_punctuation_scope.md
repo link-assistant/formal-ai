@@ -1,0 +1,1 @@
+Closed quoted operands and seeded explicit content qualifiers now preserve punctuation-only file payloads. Sentence boundaries ignore closed literal spans while retaining original positions and exact bytes in both runtimes; malformed and empty operands remain unlicensed.

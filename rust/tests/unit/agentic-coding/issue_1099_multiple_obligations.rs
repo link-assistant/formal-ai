@@ -220,3 +220,6 @@ fn explicit_file_receipts_advance_the_declared_leaf_without_hashing_shell_metada
         matches!(node.expectation, ObligationExpectation::FileBytes { ref path, .. } if path == "a.txt")
     );
 }
+
+#[path = "../../fixtures/literal-punctuation-contract.rs"]
+mod literal_punctuation_contract;

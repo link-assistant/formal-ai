@@ -1,0 +1,235 @@
+TAP version 13
+# Subtest: fenced creation preserves source with task labels, command cues and paths
+ok 1 - fenced creation preserves source with task labels, command cues and paths
+  ---
+  duration_ms: 1078.504958
+  ...
+# Subtest: closed quoted whole-content consent replaces an existing source file
+ok 2 - closed quoted whole-content consent replaces an existing source file
+  ---
+  duration_ms: 54.929584
+  ...
+# Subtest: a plain replacement stays an edit even when its new literal names a file write
+ok 3 - a plain replacement stays an edit even when its new literal names a file write
+  ---
+  duration_ms: 33.926042
+  ...
+# Subtest: longer fences preserve payloads containing their own Markdown examples
+ok 4 - longer fences preserve payloads containing their own Markdown examples
+  ---
+  duration_ms: 73.451792
+  ...
+# Subtest: literal verification reads failure narratives and compact JSON as authored data
+ok 5 - literal verification reads failure narratives and compact JSON as authored data
+  ---
+  duration_ms: 71.829209
+  ...
+# Subtest: explicit verification failure still vetoes exact literal output
+ok 6 - explicit verification failure still vetoes exact literal output
+  ---
+  duration_ms: 1.512709
+  ...
+# Subtest: exact-content Set forms consume seed leads while preserving the declared literal bytes
+ok 7 - exact-content Set forms consume seed leads while preserving the declared literal bytes
+  ---
+  duration_ms: 382.102084
+  ...
+# Subtest: seed-like words inside quoted payloads and ordinary leading prose remain content
+ok 8 - seed-like words inside quoted payloads and ordinary leading prose remain content
+  ---
+  duration_ms: 175.115292
+  ...
+# Subtest: G125: quoted edit payloads with skill cues stay data
+ok 9 - G125: quoted edit payloads with skill cues stay data
+  ---
+  duration_ms: 41.647208
+  ...
+# Subtest: G125: genuine unquoted skill teaching keeps its guard
+ok 10 - G125: genuine unquoted skill teaching keeps its guard
+  ---
+  duration_ms: 1.0865
+  ...
+# Subtest: G125: a malformed quoted replacement changes nothing
+ok 11 - G125: a malformed quoted replacement changes nothing
+  ---
+  duration_ms: 1.566042
+  ...
+# Subtest: a successful shell envelope advances the exact file obligation and preserves raw records
+ok 12 - a successful shell envelope advances the exact file obligation and preserves raw records
+  ---
+  duration_ms: 1026.174625
+  ...
+# Subtest: bare successful readback remains supported
+ok 13 - bare successful readback remains supported
+  ---
+  duration_ms: 22.69375
+  ...
+# Subtest: write acknowledgements and auxiliary commands do not certify file contents
+ok 14 - write acknowledgements and auxiliary commands do not certify file contents
+  ---
+  duration_ms: 50.793375
+  ...
+# Subtest: mismatch, nonzero status and a later failed receipt cannot reuse an older success
+ok 15 - mismatch, nonzero status and a later failed receipt cannot reuse an older success
+  ---
+  duration_ms: 33.519458
+  ...
+# Subtest: a different path sharing a filename suffix cannot fulfill the declared file
+ok 16 - a different path sharing a filename suffix cannot fulfill the declared file
+  ---
+  duration_ms: 20.305708
+  ...
+# Subtest: the unchanged issue1099 request persists both artifacts through real shell receipts
+ok 17 - the unchanged issue1099 request persists both artifacts through real shell receipts
+  ---
+  duration_ms: 853.375208
+  ...
+# Subtest: exact compact JSON and UTF8 payload bytes, including terminal newline, discharge only their file
+ok 18 - exact compact JSON and UTF8 payload bytes, including terminal newline, discharge only their file
+  ---
+  duration_ms: 12.393792
+  ...
+# Subtest: a quoted first-line fixture remains the exact authored file content
+ok 19 - a quoted first-line fixture remains the exact authored file content
+  ---
+  duration_ms: 871.283
+  ...
+# Subtest: an actual first-line constraint outside the literal still applies
+ok 20 - an actual first-line constraint outside the literal still applies
+  ---
+  duration_ms: 2.43475
+  ...
+# Subtest: the original repair instruction does not become destructive source contents
+ok 21 - the original repair instruction does not become destructive source contents
+  ---
+  duration_ms: 595.767708
+  ...
+# Subtest: a later write does not license an earlier read with a content-like preposition
+ok 22 - a later write does not license an earlier read with a content-like preposition
+  ---
+  duration_ms: 333.205875
+  ...
+# Subtest: payload write vocabulary cannot turn an explicit read into a whole-file write
+ok 23 - payload write vocabulary cannot turn an explicit read into a whole-file write
+  ---
+  duration_ms: 0.702417
+  ...
+# Subtest: declarative creation and a real write action retain their original bytes
+ok 24 - declarative creation and a real write action retain their original bytes
+  ---
+  duration_ms: 114.976583
+  ...
+# Subtest: a write-only client receives the actual target and a truthful auxiliary gap
+ok 25 - a write-only client receives the actual target and a truthful auxiliary gap
+  ---
+  duration_ms: 17.027417
+  ...
+# Subtest: write-only target transport failure remains an actual failure
+ok 26 - write-only target transport failure remains an actual failure
+  ---
+  duration_ms: 10.781833
+  ...
+# Subtest: closed punctuation operands retain their exact bytes
+ok 27 - closed punctuation operands retain their exact bytes
+  ---
+  duration_ms: 6.408958
+  ...
+# Subtest: seeded explicit content qualifiers license unquoted punctuation
+ok 28 - seeded explicit content qualifiers license unquoted punctuation
+  ---
+  duration_ms: 1.286291
+  ...
+# Subtest: empty or unclosed punctuation operands cannot authorize literal writes
+ok 29 - empty or unclosed punctuation operands cannot authorize literal writes
+  ---
+  duration_ms: 1.700375
+  ...
+# Subtest: a member the request quotes twice is inserted once (T180)
+    # Subtest: the ladder node prompt repeats the member in its result clause
+    ok 1 - the ladder node prompt repeats the member in its result clause
+      ---
+      duration_ms: 1023.110834
+      ...
+    1..1
+ok 30 - a member the request quotes twice is inserted once (T180)
+  ---
+  duration_ms: 1283.005708
+  type: 'suite'
+  ...
+# Subtest: setting a file's contents writes the file (G68, issue \#745)
+    # Subtest: set the contents of note.txt to hello
+    ok 1 - set the contents of note.txt to hello
+      ---
+      duration_ms: 119.616542
+      ...
+    # Subtest: pon el contenido de note.txt en hello
+    ok 2 - pon el contenido de note.txt en hello
+      ---
+      duration_ms: 348.024708
+      ...
+    1..2
+ok 31 - setting a file's contents writes the file (G68, issue \#745)
+  ---
+  duration_ms: 467.767375
+  type: 'suite'
+  ...
+# Subtest: a request that declares the file it writes creates it unread (T310)
+    # Subtest: a file noun before the path and the content after it write first, whatever the verb
+    ok 1 - a file noun before the path and the content after it write first, whatever the verb
+      ---
+      duration_ms: 1248.784583
+      ...
+    # Subtest: a destination ahead of the file noun keeps the read-first guard
+    ok 2 - a destination ahead of the file noun keeps the read-first guard
+      ---
+      duration_ms: 22.199958
+      ...
+    1..2
+ok 32 - a request that declares the file it writes creates it unread (T310)
+  ---
+  duration_ms: 1519.815958
+  type: 'suite'
+  ...
+# Subtest: an explicit grep runs as written; a search request is the workspace search (T311)
+    # Subtest: execute grep TODO note.txt is the command itself
+    ok 1 - execute grep TODO note.txt is the command itself
+      ---
+      duration_ms: 27.232417
+      ...
+    # Subtest: a local search request greps the workspace for the whole word
+    ok 2 - a local search request greps the workspace for the whole word
+      ---
+      duration_ms: 26.970291
+      ...
+    1..2
+ok 33 - an explicit grep runs as written; a search request is the workspace search (T311)
+  ---
+  duration_ms: 54.361458
+  type: 'suite'
+  ...
+# Subtest: an article after a place preposition is no directory (T312)
+    # Subtest: qué hay en la carpeta actual lists the current directory
+    ok 1 - qué hay en la carpeta actual lists the current directory
+      ---
+      duration_ms: 292.221625
+      ...
+    # Subtest: a named directory is still listed
+    ok 2 - a named directory is still listed
+      ---
+      duration_ms: 65.230334
+      ...
+    1..2
+ok 34 - an article after a place preposition is no directory (T312)
+  ---
+  duration_ms: 357.638542
+  type: 'suite'
+  ...
+1..34
+# tests 38
+# suites 5
+# pass 38
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2476.165084

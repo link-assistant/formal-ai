@@ -57,3 +57,22 @@ test('write-only target transport failure remains an actual failure', async () =
   assert.match(final.answer, /Write transport unavailable/);
   assert.doesNotMatch(final.answer, /Completed the general change request/);
 });
+
+
+test('closed punctuation operands retain their exact bytes', () => {
+  for (const payload of ['!?', '…。', '  !  ']) {
+    const plan = composeGeneralChangePlan('Write «' + payload + '» to punctuation.txt');
+    assert.equal(plan?.target, 'punctuation.txt');
+    assert.equal(plan?.content, payload);
+  }
+});
+test('seeded explicit content qualifiers license unquoted punctuation', () => {
+  const plan = composeGeneralChangePlan('Create a file punctuation.txt containing exactly: !!!');
+  assert.equal(plan?.target, 'punctuation.txt');
+  assert.equal(plan?.content, '!!!');
+});
+test('empty or unclosed punctuation operands cannot authorize literal writes', () => {
+  for (const prompt of ['Write «» to punctuation.txt', 'Write «!? to punctuation.txt', 'Create a file punctuation.txt containing exactly: "']) {
+    assert.notEqual(composeGeneralChangePlan(prompt)?.mode, 'literal_file');
+  }
+});

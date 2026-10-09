@@ -399,7 +399,7 @@ function bindingHasWriteInstruction(request, toks, binding) {
   const clauseStart = binding.cue_precedes ? binding.cue_start : toks[binding.index].start;
   const actionStart = firstActionCueStart(toks);
   if (actionStart !== null && !positionsShareStatement(request, actionStart, clauseStart)) return false;
-  const sentence = proseSentences(request).find((item) => {
+  const sentence = proseSentences(statementScope(request)).find((item) => {
     const span = spanOf(item);
     return clauseStart >= span.start && clauseStart < span.end;
   });
@@ -434,7 +434,7 @@ function parseWriteRequestBound(request, toks, binding) {
       const markerSpan = slice(request, markerEnd, payloadEnd);
       if (!markerLeads || firstActionCueEnd(toks) !== null) {
         const content = markerSpan === null ? null : cleanContent(markerSpan);
-        if (content !== null && isLiteralContent(content)
+        if (content !== null && isLiteralContent(content, markerSpan, mentionsRole('file_write_content_qualifier', normalizePrompt(request.slice(lead[0], markerEnd))))
           && (!namesDeferredWorkProduct(content)
             || firstPrefixLeadEnd(lowered, 'file_write_authoritative_content_lead') !== null
             || literalPayload(request) !== null)) {
@@ -467,20 +467,26 @@ function parseWriteRequestBound(request, toks, binding) {
   if (contentSpan === null) return null;
   const content = cleanContent(contentSpan);
   if (content === null) return null;
-  if (isNonReferentialContent(content) || namesDeferredWorkProduct(content) || !isLiteralContent(content)) return null;
+  if (isNonReferentialContent(content) || namesDeferredWorkProduct(content) || !isLiteralContent(content, contentSpan)) return null;
   return [target, content];
 }
 
+/** Mirrors fn statement_scope: preserve UTF-16 positions while masking literal punctuation. */
+function statementScope(request) {
+  let scoped = request;
+  for (const segment of quotedSegmentSpans(request)) {
+    scoped = scoped.slice(0, segment.start) + ' '.repeat(segment.end - segment.start) + scoped.slice(segment.end);
+  }
+  return scoped;
+}
+
 function endOfStatement(request, from, limit) {
-  const sentence = proseSentences(request).find((candidate) => {
+  const sentence = proseSentences(statementScope(request)).find((candidate) => {
     const span = spanOf(candidate);
     return from >= span.start && from < span.end;
   });
   if (!sentence) return limit;
   const span = spanOf(sentence);
-  const literal = quotedSegmentSpans(request).find((segment) => segment.start >= from
-    && segment.start < span.end && segment.end > span.end);
-  if (literal) return Math.min(literal.end, limit);
   const tail = slice(request, from, span.end);
   const saysMore = tail !== null && Array.from(tail).some(isAlphanumeric);
   if (saysMore && !payloadContinuesPastItsFirstLine(request, from, span.end)) return Math.min(span.end, limit);
@@ -492,7 +498,16 @@ function positionsShareStatement(request, left, right) {
   return from === limit || endOfStatement(request, from, limit) === limit;
 }
 
-const isLiteralContent = (content) => Array.from(content).some(isAlphanumeric);
+/** Mirrors fn is_literal_content: punctuation needs a closed operand or explicit qualifier. */
+function isLiteralContent(content, raw, explicitlyQualified = false) {
+  if (Array.from(content).some(isAlphanumeric)) return true;
+  if (content.length === 0 || raw === null) return false;
+  const [only, ...others] = quotedSegmentSpans(raw);
+  if (only && others.length === 0 && only.text === content
+    && /^[\s:—–-]*$/u.test(raw.slice(0, only.start))
+    && /^[\s.!?。！？।]*$/u.test(raw.slice(only.end))) return true;
+  return explicitlyQualified && !/[\x60"'«»“”‘’„‚「」『』]/u.test(content);
+}
 
 function isNonReferentialContent(content) {
   const lowered = content.toLowerCase();
