@@ -57,11 +57,11 @@ fn run_with_sources(
                     let args: serde_json::Value =
                         serde_json::from_str(&call.arguments).expect("arguments");
                     let result = if call.tool == "write" {
-                        fs::write(
-                            run.root.join(args["path"].as_str().expect("target")),
-                            args["content"].as_str().expect("bytes"),
-                        )
-                        .expect("target write");
+                        let target = run.root.join(args["path"].as_str().expect("target"));
+                        fs::create_dir_all(target.parent().expect("target parent"))
+                            .expect("write parent directory");
+                        fs::write(target, args["content"].as_str().expect("bytes"))
+                            .expect("target write");
                         run.writes += 1;
                         String::new()
                     } else if call.tool == "read" {
@@ -367,4 +367,45 @@ fn structured_stdout_cannot_certify_a_pretty_printed_source_representation() {
             .expect("final answer")
             .contains("Verification failed")
     );
+}
+
+#[test]
+fn unchanged_l21_preserves_source_and_both_independent_records() {
+    let task = include_str!("l21-original-task.txt");
+    let source = include_str!("l21-original-source.txt");
+    let target = "rust/src/solver_handler_how_synthesis.rs";
+    let outcome = run_with_sources(
+        task,
+        &["read", "write", "bash"],
+        &[(target, source)],
+        successful_source_receipt,
+    );
+    assert_eq!(
+        fs::read_to_string(outcome.root.join(target)).expect("changed source"),
+        source.replace(
+            "FORMAL_AI_SOURCE_CACHE_DIR",
+            "FORMAL_AI_HOW_SOURCE_CACHE_DIR"
+        )
+    );
+    let effect = fs::read_to_string(
+        outcome
+            .root
+            .join("agent-ladder-effects/node-2.1.2.1.1.lino"),
+    )
+    .expect("independent effect");
+    for field in ["node_path=2.1.2.1.1", "node_depth=5", "node_kind=leaf"] {
+        assert!(effect.lines().any(|line| line == field));
+    }
+    let result = effect
+        .lines()
+        .find_map(|line| line.strip_prefix("result="))
+        .expect("result field");
+    assert!(result.split_whitespace().count() >= 4);
+    assert!(result.contains("FORMAL_AI_HOW_SOURCE_CACHE_DIR"));
+    let proof = fs::read_to_string(outcome.root.join(".agent-ladder/node-2.1.2.1.1-proof.md"))
+        .expect("independent proof");
+    assert_eq!(proof.lines().next(), Some("node_path=2.1.2.1.1"));
+    assert!(proof.contains("FORMAL_AI_HOW_SOURCE_CACHE_DIR"));
+    assert_eq!(outcome.writes, 3);
+    assert!(outcome.answer.is_some());
 }

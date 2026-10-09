@@ -12,7 +12,7 @@ import { plainText } from './content.mjs';
 import { planTestExpectationQuestion } from './function_expectation.mjs';
 import { composeGeneralChangePlan } from './general_planner.mjs';
 import { agenticMessage } from './messages.mjs';
-import { pathsIn, signature } from './module_function.mjs';
+import { namesCallableArtifact } from './evidence_record/artifact_header.mjs';
 import { FinalDisposition, canDeliverFinal, planOne, resolvedFinalAnswer, writeArguments } from './plan.mjs';
 import { instructionEnd } from './positional_edit.mjs';
 import { planChatStepResolved, planSettledRoutes } from './planner.mjs';
@@ -107,19 +107,6 @@ function parseObligation(request) {
   const trimmed = trim(residual);
   if (trimmed === '' || target === null) return null;
   return { target, first_line: firstLine, field_lines: fieldLines, residual: trimmed };
-}
-
-// A declaration request names an authored artifact, not a findings destination.
-function namesCallableArtifact(sentence, target) {
-  const normalized = normalizePrompt(sentence);
-  const operand = normalized.split(' ').find((word) =>
-    mentionsRole('coding-source-artifact-kind', word) || mentionsRole('evidence-report-artifact-kind', word));
-  if (operand && mentionsRole('coding-source-artifact-kind', operand)
-    && ['coding_request_verb', 'coding_member_add_action'].some((role) => mentionsRole(role, normalized))) return true;
-  const stated = signature(sentence);
-  if (stated === null || !pathsIn(sentence.slice(stated.at)).includes(target)) return false;
-  const lead = normalizePrompt(sentence.slice(0, stated.at));
-  return ['coding_request_verb', 'coding_member_add_action'].some((role) => mentionsRole(role, lead));
 }
 
 function exactFieldLines(sentence, target) {

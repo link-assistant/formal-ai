@@ -1,0 +1,10 @@
+{
+  "id": "T3032",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Read js/agentic/evidence_record.mjs and rust/src/agentic_coding/evidence_record.rs.",
+  "tools": [
+    "read",
+    "grep",
+    "list"
+  ]
+}

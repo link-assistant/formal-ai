@@ -1,0 +1,220 @@
+TAP version 13
+# Subtest: artifact delivery header: original-effect
+ok 1 - artifact delivery header: original-effect
+  ---
+  duration_ms: 69.031167
+  ...
+# Subtest: artifact delivery header: report-result-source-value
+ok 2 - artifact delivery header: report-result-source-value
+  ---
+  duration_ms: 1.46875
+  ...
+# Subtest: artifact delivery header: report-result-symbol
+ok 3 - artifact delivery header: report-result-symbol
+  ---
+  duration_ms: 0.631292
+  ...
+# Subtest: artifact delivery header: genuine-source-before
+ok 4 - artifact delivery header: genuine-source-before
+  ---
+  duration_ms: 1.560792
+  ...
+# Subtest: artifact delivery header: genuine-source-after
+ok 5 - artifact delivery header: genuine-source-after
+  ---
+  duration_ms: 2.130708
+  ...
+# Subtest: artifact delivery header: explicit-report-source-body
+ok 6 - artifact delivery header: explicit-report-source-body
+  ---
+  duration_ms: 0.715958
+  ...
+# Subtest: artifact delivery header: source-like-filename
+ok 7 - artifact delivery header: source-like-filename
+  ---
+  duration_ms: 0.4695
+  ...
+# Subtest: artifact delivery header: spanish-postposed-source
+ok 8 - artifact delivery header: spanish-postposed-source
+  ---
+  duration_ms: 0.656833
+  ...
+# Subtest: artifact delivery header: russian-postposed-source
+ok 9 - artifact delivery header: russian-postposed-source
+  ---
+  duration_ms: 0.998375
+  ...
+# Subtest: artifact delivery header: chinese-postposed-source
+ok 10 - artifact delivery header: chinese-postposed-source
+  ---
+  duration_ms: 0.615208
+  ...
+# Subtest: artifact delivery header: hindi-source
+ok 11 - artifact delivery header: hindi-source
+  ---
+  duration_ms: 0.793916
+  ...
+# Subtest: artifact delivery header: hindi-report
+ok 12 - artifact delivery header: hindi-report
+  ---
+  duration_ms: 0.442041
+  ...
+# Subtest: artifact delivery header: spanish-payload
+ok 13 - artifact delivery header: spanish-payload
+  ---
+  duration_ms: 0.426375
+  ...
+# Subtest: artifact delivery header: russian-payload
+ok 14 - artifact delivery header: russian-payload
+  ---
+  duration_ms: 0.503125
+  ...
+# Subtest: artifact delivery header: chinese-payload
+ok 15 - artifact delivery header: chinese-payload
+  ---
+  duration_ms: 0.378584
+  ...
+# Subtest: artifact delivery header: unicode-expanded-report
+ok 16 - artifact delivery header: unicode-expanded-report
+  ---
+  duration_ms: 0.652416
+  ...
+# Subtest: artifact delivery header: unicode-shrunk-report
+ok 17 - artifact delivery header: unicode-shrunk-report
+  ---
+  duration_ms: 0.53625
+  ...
+# Subtest: artifact delivery header: unicode-source
+ok 18 - artifact delivery header: unicode-source
+  ---
+  duration_ms: 0.689334
+  ...
+# Subtest: artifact delivery header: unicode-filename
+ok 19 - artifact delivery header: unicode-filename
+  ---
+  duration_ms: 1.189792
+  ...
+# Subtest: artifact delivery header: quoted-type
+ok 20 - artifact delivery header: quoted-type
+  ---
+  duration_ms: 0.505875
+  ...
+# Subtest: artifact delivery header: quoted-call
+ok 21 - artifact delivery header: quoted-call
+  ---
+  duration_ms: 0.345083
+  ...
+# Subtest: artifact delivery header: explicit-callable
+ok 22 - artifact delivery header: explicit-callable
+  ---
+  duration_ms: 1.146292
+  ...
+# Subtest: artifact delivery header: non-delivery
+ok 23 - artifact delivery header: non-delivery
+  ---
+  duration_ms: 0.295666
+  ...
+# Subtest: unchanged L21 persists both mandatory records in 8 turns
+ok 24 - unchanged L21 persists both mandatory records in 8 turns
+  ---
+  duration_ms: 1315.100375
+  ...
+# Subtest: unchanged L21 persists both mandatory records in 16 turns
+ok 25 - unchanged L21 persists both mandatory records in 16 turns
+  ---
+  duration_ms: 245.524583
+  ...
+# Subtest: a successful shell envelope advances the exact file obligation and preserves raw records
+ok 26 - a successful shell envelope advances the exact file obligation and preserves raw records
+  ---
+  duration_ms: 964.184583
+  ...
+# Subtest: bare successful readback remains supported
+ok 27 - bare successful readback remains supported
+  ---
+  duration_ms: 18.158583
+  ...
+# Subtest: write acknowledgements and auxiliary commands do not certify file contents
+ok 28 - write acknowledgements and auxiliary commands do not certify file contents
+  ---
+  duration_ms: 49.33425
+  ...
+# Subtest: mismatch, nonzero status and a later failed receipt cannot reuse an older success
+ok 29 - mismatch, nonzero status and a later failed receipt cannot reuse an older success
+  ---
+  duration_ms: 36.705708
+  ...
+# Subtest: a different path sharing a filename suffix cannot fulfill the declared file
+ok 30 - a different path sharing a filename suffix cannot fulfill the declared file
+  ---
+  duration_ms: 20.102083
+  ...
+# Subtest: the unchanged issue1099 request persists both artifacts through real shell receipts
+ok 31 - the unchanged issue1099 request persists both artifacts through real shell receipts
+  ---
+  duration_ms: 933.313292
+  ...
+# Subtest: exact compact JSON and UTF8 payload bytes, including terminal newline, discharge only their file
+ok 32 - exact compact JSON and UTF8 payload bytes, including terminal newline, discharge only their file
+  ---
+  duration_ms: 12.365958
+  ...
+# Subtest: unchanged T2379 writes and independently verifies both artifacts
+ok 33 - unchanged T2379 writes and independently verifies both artifacts
+  ---
+  duration_ms: 1263.560084
+  ...
+# Subtest: quoted operation and teaching keywords remain literal in every obligation
+ok 34 - quoted operation and teaching keywords remain literal in every obligation
+  ---
+  duration_ms: 227.0375
+  ...
+# Subtest: a first-file receipt cannot certify a second file or its failed readback
+ok 35 - a first-file receipt cannot certify a second file or its failed readback
+  ---
+  duration_ms: 36.312875
+  ...
+# Subtest: write-only delivery retains first target and reports verification unavailable
+ok 36 - write-only delivery retains first target and reports verification unavailable
+  ---
+  duration_ms: 95.513417
+  ...
+# Subtest: read-only clients cannot mutate either literal target
+ok 37 - read-only clients cannot mutate either literal target
+  ---
+  duration_ms: 449.484584
+  ...
+# Subtest: a successful artifact never hides an underivable mandatory clause
+ok 38 - a successful artifact never hides an underivable mandatory clause
+  ---
+  duration_ms: 89.503875
+  ...
+# Subtest: all seeded enumeration surfaces inside literal operands remain payload
+ok 39 - all seeded enumeration surfaces inside literal operands remain payload
+  ---
+  duration_ms: 8.839208
+  ...
+# Subtest: every seeded outer cue preserves two complete literals and exact UTF8 spans
+ok 40 - every seeded outer cue preserves two complete literals and exact UTF8 spans
+  ---
+  duration_ms: 9.146834
+  ...
+# Subtest: closed twelve-character fence with internal instructions has one exact readback
+ok 41 - closed twelve-character fence with internal instructions has one exact readback
+  ---
+  duration_ms: 48.088458
+  ...
+# Subtest: independent outer artifacts retain nested enumeration bytes and receipts
+ok 42 - independent outer artifacts retain nested enumeration bytes and receipts
+  ---
+  duration_ms: 201.928167
+  ...
+1..42
+# tests 42
+# suites 0
+# pass 42
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2667.13175

@@ -3,6 +3,9 @@
 //! Recursive investigation retains typed provenance; authoring operands are not
 //! evidence destinations, and clarifications, gaps and failures remain chat answers.
 
+mod artifact_header;
+
+use artifact_header::names_callable_artifact;
 use std::cell::RefCell;
 use std::collections::HashMap;
 
@@ -91,34 +94,6 @@ fn masked_multi_word_quotes(text: &str) -> String {
 /// Declines when the residual is empty: a request whose every sentence is about
 /// delivery states no work to do, so there is nothing to record.
 /// A call-shaped authoring request binds its path as a code operand.
-fn names_callable_artifact(sentence: &str, target: &str) -> bool {
-    let normalized = crate::engine::normalize_prompt(sentence);
-    let lexicon = crate::seed::lexicon();
-    let operand = normalized.split_whitespace().find(|word| {
-        lexicon.mentions_role("coding-source-artifact-kind", word)
-            || lexicon.mentions_role("evidence-report-artifact-kind", word)
-    });
-    if operand.is_some_and(|word| lexicon.mentions_role("coding-source-artifact-kind", word))
-        && (lexicon.mentions_role("coding_request_verb", &normalized)
-            || lexicon.mentions_role("coding_member_add_action", &normalized))
-    {
-        return true;
-    }
-    let Some(call) = super::module_function::signature(sentence) else {
-        return false;
-    };
-    if !super::module_function::paths_in(&sentence[call.at..])
-        .iter()
-        .any(|path| path == target)
-    {
-        return false;
-    }
-    let prefix = crate::engine::normalize_prompt(&sentence[..call.at]);
-    let lexicon = crate::seed::lexicon();
-    lexicon.mentions_role("coding_request_verb", &prefix)
-        || lexicon.mentions_role("coding_member_add_action", &prefix)
-}
-
 fn parse_obligation(request: &str) -> Option<DeliveryBinding> {
     let mut target = None;
     let mut first_line = None;

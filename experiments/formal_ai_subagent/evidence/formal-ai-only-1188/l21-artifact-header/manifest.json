@@ -1,0 +1,145 @@
+{
+  "captures": [
+    {
+      "path": "T3031-request.json",
+      "bytes": 1359,
+      "sha256": "8bd200d12c79853f56858d558a9db4431c7824ff903fe843c104f94f1ecef904"
+    },
+    {
+      "path": "T3031-transcript.log",
+      "bytes": 2643,
+      "sha256": "d150a031f30db1a1a57756d77c971169ad700e5d30734c552285367da775b1f6"
+    },
+    {
+      "path": "T3032-request.json",
+      "bytes": 235,
+      "sha256": "584b142e0803c1ee80be361ec69f2e76602a3ddc883dd3166672d5a9dba8fb06"
+    },
+    {
+      "path": "T3032-transcript.log",
+      "bytes": 142106,
+      "sha256": "5de4f78eb02607e6ebee501d88eefeef549e1a68d129d7979fb52bd435555109"
+    },
+    {
+      "path": "T3033-request.json",
+      "bytes": 1222,
+      "sha256": "9d7faa06af4498d0300709b311e9f7a2b26b74bf68455a2018b1a3d172448b97"
+    },
+    {
+      "path": "T3033-transcript.log",
+      "bytes": 234343,
+      "sha256": "39c92873d27c4bab6494f17f3b3f47fb5f754b3885d0d1dc5e3e977fc378c013"
+    },
+    {
+      "path": "T3034-request.json",
+      "bytes": 66879,
+      "sha256": "ab032e7fa29c651cc56ac99c774fc94be05e288de298989bc8ac5dd47bc2ba44"
+    },
+    {
+      "path": "T3034-transcript.log",
+      "bytes": 56568,
+      "sha256": "8c0d0073385e25ccccf31601dccd0e2e967aa6acda23f7d870a92fbd3d2fb78c"
+    },
+    {
+      "path": "T3035-request.json",
+      "bytes": 135186,
+      "sha256": "673ccb8c6e842448dc7a74316baaf1825df5eb1e4e6edbc109fb0c6ff70ba4d5"
+    },
+    {
+      "path": "T3035-transcript.log",
+      "bytes": 2012,
+      "sha256": "bd0884bfeecd913acc2e2b77a184a7556fa87c590bad84d132280a7a5c14e26f"
+    },
+    {
+      "path": "T3036-request.json",
+      "bytes": 15756,
+      "sha256": "8a83849f73f09f02f5699bc5cf75023da193bf2eb66c3bf30b584dffc725c78a"
+    },
+    {
+      "path": "T3036-transcript.log",
+      "bytes": 1948,
+      "sha256": "d4ba4622db6edec11581bb913a3603a07eb807e82b30ad04c33f057603b0ab7d"
+    },
+    {
+      "path": "T3037-request.json",
+      "bytes": 11991,
+      "sha256": "3e1e5d17b288e6e2868a1b560f36b5d217b24057ff6956ad0cf9c6eeb725d6b9"
+    },
+    {
+      "path": "T3037-transcript.log",
+      "bytes": 1548,
+      "sha256": "6827dc188f21e7ec4885c7961105922081f6de63dd2cb6ede43e7319335a877f"
+    },
+    {
+      "path": "T3038-request.json",
+      "bytes": 13478,
+      "sha256": "be6e6ddd7f7b05a3574af73d997bd943be803ba9c6804fe54bf1f6a0941c7034"
+    },
+    {
+      "path": "T3038-transcript.log",
+      "bytes": 2784,
+      "sha256": "09f5b4244a1a55fe0c90d81be5274a580a81494374024339f939841829563bc7"
+    },
+    {
+      "path": "T3039-request.json",
+      "bytes": 1912,
+      "sha256": "6db0c9a3944bc95e6fa1f49068be50dca78f8a21cc663d5d96511af918415be4"
+    },
+    {
+      "path": "T3039-transcript.log",
+      "bytes": 9403,
+      "sha256": "3622b83b543f8256967a76978e0ceb384c3c022fb0777c07d2601978e5068a0d"
+    },
+    {
+      "path": "T3040-request.json",
+      "bytes": 1726,
+      "sha256": "eaa0bf258de4e35ede6da2e3cda24040637a39fa42fa9329db91a91ff9b1c374"
+    },
+    {
+      "path": "T3040-transcript.log",
+      "bytes": 9403,
+      "sha256": "3622b83b543f8256967a76978e0ceb384c3c022fb0777c07d2601978e5068a0d"
+    },
+    {
+      "path": "T3041-request.json",
+      "bytes": 48812,
+      "sha256": "9c566c3792cf77f6413b92694dd839ae72e6086efac618027d0d67a5d1e860c1"
+    },
+    {
+      "path": "T3041-transcript.log",
+      "bytes": 2030,
+      "sha256": "90bfcc97fbae4f410b30f8ba91ee09f89c91169e488202816aa9065cfa30e907"
+    },
+    {
+      "path": "T3039-audit.json",
+      "bytes": 1303,
+      "sha256": "d04a47c4bd5dca68adf04235534bc9b9d84ac160a17d71d6ff3bf252242a5ec9"
+    },
+    {
+      "path": "T3040-audit.json",
+      "bytes": 1302,
+      "sha256": "30b4df7cc90adef2b28123496173f147c9715a1c9ecfd6b0f56a0659db114aed"
+    },
+    {
+      "path": "L21-current-header-span-controls.json",
+      "bytes": 5287,
+      "sha256": "273ea2582954b0bf2823ed4e3b506dc7e332379ca8d22f0b8ae5e1b395c65dc8"
+    },
+    {
+      "path": "L21-focused-checks.log",
+      "bytes": 7258,
+      "sha256": "f6c972dbdea02572aacac5d83f595d9638bc45cc972b9a61139122c145c368cf"
+    },
+    {
+      "path": "L21-planner-twins.log",
+      "bytes": 53,
+      "sha256": "09429d6660a4f6f0e51f09665788ff34e2685455ae3cd42008ff2799324c637b"
+    },
+    {
+      "path": "L21-hardcoded-language.log",
+      "bytes": 1256,
+      "sha256": "fc030a7e91b28903ab8c91a60db2d515377dbf6c7b8e184d3720114de0919595"
+    }
+  ],
+  "note": "Original raw request/transcript captures are immutable. Audit pass=false records absent independent cat receipts even though physical source and both records are correct."
+}
