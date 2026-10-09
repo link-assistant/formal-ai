@@ -29,26 +29,53 @@ const indentation = (line) => line.length - line.trimStart().length;
  */
 export function parseCiDurations(text) {
   const result = { header: {}, workflows: [] };
-  let workflow = null;
-  let job = null;
+  let workflow = null, job = null, cohort = null, layout = [];
   for (const line of text.split('\n')) {
     if (!line.trim() || line.trimStart().startsWith('#')) continue;
-    const entry = pair(line);
-    const depth = indentation(line);
+    const entry = pair(line), depth = indentation(line);
     if (!entry) continue;
     if (depth === 2 && entry.key === 'workflow') {
       workflow = { path: entry.value, jobs: [] };
-      job = null;
       result.workflows.push(workflow);
+      job = null; cohort = null; layout = [];
     } else if (depth === 2) {
       result.header[entry.key] = entry.value;
+    } else if (depth === 4 && entry.key === 'cohort' && workflow) {
+      workflow.cohorts ??= [];
+      workflow.layout = layout;
+      cohort = { name: entry.value, shared: { executionCohort: entry.value }, jobs: [] };
+      layout.push({ cohort: workflow.cohorts.length });
+      workflow.cohorts.push(cohort);
+      job = null;
     } else if (depth === 4 && entry.key === 'job' && workflow) {
+      cohort = null;
       job = { display: entry.value };
+      layout.push({ job: workflow.jobs.length });
       workflow.jobs.push(job);
     } else if (depth === 4 && workflow) {
-      workflow[camel(entry.key)] = numberOr(entry.value);
-    } else if (depth === 6 && job) {
-      job[camel(entry.key)] = numberOr(entry.value);
+      cohort = null; job = null;
+      workflow[camel(entry.key)] = fieldValue(entry);
+    } else if (depth === 6 && cohort && entry.key === 'job') {
+      job = { display: entry.value };
+      cohort.jobs.push(job);
+      workflow.jobs.push(job);
+    } else if (depth === 6 && cohort) {
+      job = null;
+      cohort.shared[camel(entry.key)] = fieldValue(entry);
+    } else if (depth === 6 && job && !cohort) {
+      job[camel(entry.key)] = fieldValue(entry);
+    } else if (depth === 8 && job && cohort) {
+      job[camel(entry.key)] = fieldValue(entry);
+    }
+  }
+  // Resolve only explicitly nested members after all shared fields are known.
+  for (const scope of result.workflows) {
+    for (const group of scope.cohorts ?? []) {
+      for (const member of group.jobs) {
+        for (const [key, value] of Object.entries(group.shared)) {
+          if (!(key in member)) member[key] = value;
+        }
+      }
     }
   }
   return result;
@@ -56,27 +83,49 @@ export function parseCiDurations(text) {
 
 const camel = (key) => key.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase());
 const numberOr = (value) => (/^-?\d+(?:\.\d+)?$/.test(value) ? Number(value) : value);
+const fieldValue = (entry) => entry.key === 'source-head' ? entry.value : numberOr(entry.value);
 const quote = (value) => `"${String(value).replace(/"/g, '\\"')}"`;
 
 /** The text of `data/meta/ci-durations.lino` for measured workflows. */
-export function renderCiDurations({ comment, header, workflows }) {
+const spelling = (key) => key.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`);
+const scalar = (value) => typeof value === 'number' ? value : quote(value);
+
+function renderJob(lines, job, depth, shared = {}) {
+  const pad = ' '.repeat(depth);
+  lines.push(`${pad}job ${quote(job.display)}`);
+  for (const [key, value] of Object.entries(job)) {
+    if (key === 'display' || (Object.hasOwn(shared, key) && shared[key] === value)) continue;
+    lines.push(`${pad}  ${spelling(key)} ${scalar(value)}`);
+  }
+}
+
+/** Preserve cohort scopes, observed provenance and arbitrary job fields. */
+export function renderCiDurations({ comment = [], header, workflows }) {
   const lines = comment.map((line) => (line ? `# ${line}` : '#'));
   lines.push('ci-durations');
-  for (const [key, value] of Object.entries(header)) {
-    lines.push(`  ${key} ${typeof value === 'number' ? value : quote(value)}`);
-  }
+  for (const [key, value] of Object.entries(header)) lines.push(`  ${key} ${scalar(value)}`);
   for (const workflow of workflows) {
     lines.push(`  workflow ${quote(workflow.path)}`);
-    lines.push(`    name ${quote(workflow.name)}`);
-    lines.push(`    runs ${workflow.runs}`);
-    lines.push(`    wall-median ${workflow.wallMedian}`);
-    lines.push(`    wall-maximum ${workflow.wallMaximum}`);
-    for (const job of workflow.jobs) {
-      lines.push(`    job ${quote(job.display)}`);
-      lines.push(`      key ${job.key}`);
-      lines.push(`      median ${job.median}`);
-      lines.push(`      maximum ${job.maximum}`);
-      lines.push(`      samples ${job.samples}`);
+    for (const [key, value] of Object.entries(workflow)) {
+      if (['path', 'jobs', 'cohorts', 'layout'].includes(key)) continue;
+      lines.push(`    ${spelling(key)} ${scalar(value)}`);
+    }
+    const renderCohort = (index) => {
+      const group = workflow.cohorts[index];
+      lines.push(`    cohort ${quote(group.name)}`);
+      for (const [key, value] of Object.entries(group.shared)) {
+        if (key === 'executionCohort' && value === group.name) continue;
+        lines.push(`      ${spelling(key)} ${scalar(value)}`);
+      }
+      for (const job of group.jobs) renderJob(lines, job, 6, group.shared);
+    };
+    if (workflow.layout) {
+      for (const row of workflow.layout) {
+        if (row.cohort !== undefined) renderCohort(row.cohort);
+        else renderJob(lines, workflow.jobs[row.job], 4);
+      }
+    } else {
+      for (const job of workflow.jobs) renderJob(lines, job, 4);
     }
   }
   return `${lines.join('\n')}\n`;

@@ -261,61 +261,82 @@ ci-durations
     runs 10
     wall-median 41
     wall-maximum 54.6
-    job "Build macos-x64"
+    cohort same-run-native-reuse
+      samples 1
+      source-head d7437d4bcfc6d94823ebeba634de016f25561b41
+      run 37914168811
       key build
-      median 23.2
-      maximum 41.3
-      samples 10
-    job "Build windows-arm64"
-      key build
-      median 34.8
-      maximum 37.6
-      samples 10
-    job "Build CLI cli-macos-x64"
-      key cli
-      median 13.8
-      maximum 34.4
-      samples 10
-    job "Build windows-x64"
-      key build
-      median 30.9
-      maximum 33
-      samples 10
-    job "Build CLI cli-windows-x64"
-      key cli
-      median 13.1
-      maximum 15.2
-      samples 10
-    job "Build macos-arm64"
-      key build
-      median 11.4
-      maximum 15.2
-      samples 10
-    job "Build linux-arm64"
-      key build
-      median 12.3
-      maximum 14.9
-      samples 10
-    job "Build linux-x64"
-      key build
-      median 10.2
-      maximum 12.5
-      samples 10
-    job "Build CLI cli-macos-arm64"
-      key cli
-      median 10.3
-      maximum 12
-      samples 10
-    job "Build CLI cli-linux-x64"
-      key cli
-      median 5.9
-      maximum 8
-      samples 10
-    job "Build CLI cli-linux-arm64"
-      key cli
-      median 6
-      maximum 7.8
-      samples 10
+      job "Build macos-x64"
+        median 13.4
+        maximum 13.4
+        job-identifier 113779538906
+        runner-start 2026-10-09T10:33:41Z
+        job-completed 2026-10-09T10:47:04Z
+      job "Build windows-arm64"
+        median 21.1
+        maximum 21.1
+        job-identifier 113779538936
+        runner-start 2026-10-09T10:32:31Z
+        job-completed 2026-10-09T10:53:34Z
+      job "Build CLI cli-macos-x64"
+        key cli
+        median 2.1
+        maximum 2.1
+        job-identifier 113779538786
+        runner-start 2026-10-09T10:35:02Z
+        job-completed 2026-10-09T10:37:04Z
+      job "Build windows-x64"
+        median 15
+        maximum 15
+        job-identifier 113779538881
+        runner-start 2026-10-09T10:42:33Z
+        job-completed 2026-10-09T10:57:29Z
+      job "Build CLI cli-windows-x64"
+        key cli
+        median 1.7
+        maximum 1.7
+        job-identifier 113779538787
+        runner-start 2026-10-09T10:34:46Z
+        job-completed 2026-10-09T10:36:26Z
+      job "Build macos-arm64"
+        median 4.2
+        maximum 4.2
+        job-identifier 113779538867
+        runner-start 2026-10-09T10:43:41Z
+        job-completed 2026-10-09T10:47:52Z
+      job "Build linux-arm64"
+        median 10
+        maximum 10
+        job-identifier 113779538792
+        runner-start 2026-10-09T10:35:04Z
+        job-completed 2026-10-09T10:45:00Z
+      job "Build linux-x64"
+        median 12.2
+        maximum 12.2
+        job-identifier 113779539062
+        runner-start 2026-10-09T11:21:58Z
+        job-completed 2026-10-09T11:34:07Z
+      job "Build CLI cli-macos-arm64"
+        key cli
+        median 1.4
+        maximum 1.4
+        job-identifier 113779538823
+        runner-start 2026-10-09T10:41:11Z
+        job-completed 2026-10-09T10:42:30Z
+      job "Build CLI cli-linux-x64"
+        key cli
+        median 0.9
+        maximum 0.9
+        job-identifier 113779538712
+        runner-start 2026-10-09T10:50:52Z
+        job-completed 2026-10-09T10:51:46Z
+      job "Build CLI cli-linux-arm64"
+        key cli
+        median 1
+        maximum 1
+        job-identifier 113779538853
+        runner-start 2026-10-09T10:40:31Z
+        job-completed 2026-10-09T10:41:29Z
     job "Package VS Code extension (.vsix)"
       key vscode
       median 1.5
