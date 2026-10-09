@@ -20,13 +20,25 @@ on:
         description: Observed per-architecture full-size
         value: ${{ jobs.merge.outputs.full-size }}
   pull_request:
-    branches-ignore:
-    - e2e/**
+    branches-ignore: ['e2e/**']
   release:
     types:
     - published
   workflow_dispatch:
     inputs:
+      mode:
+        description: Run pull-request checks on the dispatched branch
+        type: choice
+        default: checks
+        options: [checks]
+      pull-request:
+        description: Pull request number whose checks are dispatched
+        type: string
+      release_mode:
+        description: Explicit stable publication requires push and independent main/tag authority
+        type: choice
+        default: checks
+        options: [checks, publication]
       push:
         description: Publish only an independently authorized stable release
         type: boolean
@@ -74,6 +86,11 @@ jobs:
         import {appendFileSync} from 'node:fs';
         import {resolvePackageRelease} from './scripts/resolve-package-release.mjs';
         const env=process.env;
+        if(env.EVENT==='workflow_dispatch'&&env.CHECKS_MODE==='checks') {
+         assert.ok(['checks','publication'].includes(env.RELEASE_MODE),'unknown direct dispatch purpose');
+         if(env.RELEASE_MODE==='checks')assert.notEqual(env.PUBLISH,'true','checks dispatch cannot request registry publication');
+         else assert.equal(env.PUBLISH,'true','explicit publication also requires push');
+        }
         const called=env.EVENT==='workflow_call';
         const event=called||env.EVENT==='push'?'workflow_dispatch':env.EVENT;
         if(event==='workflow_run'&&env.RUN_CONCLUSION!=='success') {
@@ -88,6 +105,8 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
         EVENT: ${{ github.event_name }}
+        CHECKS_MODE: ${{ inputs.mode }}
+        RELEASE_MODE: ${{ inputs.release_mode }}
         REPOSITORY: ${{ github.repository }}
         REFERENCE: ${{ github.ref }}
         PUBLISH: ${{ inputs.push }}
@@ -297,6 +316,9 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - uses: actions/download-artifact@v8
+      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
       with:
         name: container-selected-source
         path: container-source
@@ -414,6 +436,9 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - uses: actions/download-artifact@v8
+      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
       with:
         name: container-selected-source
         path: container-source
@@ -558,6 +583,9 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - uses: actions/download-artifact@v8
+      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
       with:
         name: container-selected-source
         path: container-source
@@ -587,6 +615,9 @@ jobs:
       run: |
         bash "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/free-runner-disk.sh"
     - uses: actions/download-artifact@v8
+      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
       with:
         name: ${{ format('container-native-{0}', matrix.arch) }}
         path: native-bin
@@ -696,6 +727,9 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - uses: actions/download-artifact@v8
+      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
       with:
         name: container-selected-source
         path: container-source
@@ -725,6 +759,9 @@ jobs:
       run: |
         bash "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/free-runner-disk.sh"
     - uses: actions/download-artifact@v8
+      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
       with:
         name: ${{ format('container-native-{0}', matrix.arch) }}
         path: native-bin
@@ -819,6 +856,9 @@ jobs:
         persist-credentials: false
         fetch-depth: 0
     - uses: actions/download-artifact@v8
+      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
       with:
         name: container-selected-source
         path: container-source
@@ -845,14 +885,23 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
     - uses: actions/download-artifact@v8
+      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
       with:
         name: container-native-amd64
         path: native/amd64
     - uses: actions/download-artifact@v8
+      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
       with:
         name: container-native-arm64
         path: native/arm64
     - uses: actions/download-artifact@v8
+      # actions/download-artifact/issues/484: scope Buffer deprecation to this adapter.
+      env:
+        NODE_OPTIONS: --disable-warning=DEP0005
       with:
         pattern: container-image-published-*
         merge-multiple: true

@@ -12,10 +12,39 @@ fn repository_file(path: &str) -> String {
 }
 
 fn action_step<'a>(workflow: &'a str, action: &str) -> Vec<&'a str> {
-    workflow
-        .split("\n      - ")
-        .filter(|step| step.contains(&format!("uses: {action}")))
-        .collect()
+    let mut lines = Vec::new();
+    let mut offset = 0;
+    for line in workflow.split_inclusive('\n') {
+        lines.push((offset, line));
+        offset += line.len();
+    }
+    let mut steps = Vec::new();
+    for (index, (start, line)) in lines.iter().enumerate() {
+        let trimmed = line.trim_start();
+        if !trimmed.starts_with("- ") {
+            continue;
+        }
+        let indent = line.len() - trimmed.len();
+        let end = lines[index + 1..]
+            .iter()
+            .find_map(|(at, next)| {
+                let trimmed = next.trim_start();
+                let depth = next.len() - trimmed.len();
+                (!trimmed.is_empty()
+                    && !trimmed.starts_with('#')
+                    && (depth < indent || (depth == indent && trimmed.starts_with("- "))))
+                .then_some(*at)
+            })
+            .unwrap_or(workflow.len());
+        let step = &workflow[*start..end];
+        if step
+            .lines()
+            .any(|line| line.trim_start().trim_start_matches("- ") == format!("uses: {action}"))
+        {
+            steps.push(step);
+        }
+    }
+    steps
 }
 
 #[test]
