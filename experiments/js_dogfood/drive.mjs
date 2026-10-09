@@ -17,7 +17,7 @@
 // `edit` return an empty string, `bash` returns stdout+stderr.
 
 import { execFileSync } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, statSync, symlinkSync, writeFileSync, writeSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync, writeSync } from 'node:fs';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
@@ -29,8 +29,8 @@ import { installNodeHost } from '../../js/agentic/node-host.mjs';
 /** How long one bash call may run before the driver kills it. */
 const BASH_TIMEOUT_MS = Number(process.env.FORMAL_AI_BASH_TIMEOUT_MS ?? 60000);
 
-export const AGENT_CLI_TOOLS = ['bash', 'batch', 'codesearch', 'edit', 'glob', 'grep', 'list', 'read', 'task',
-  'todoread', 'todowrite', 'webfetch', 'websearch', 'write'];
+// Only advertise adapters this in-process driver actually executes.
+export const AGENT_CLI_TOOLS = ['bash', 'edit', 'grep', 'list', 'read', 'write'];
 
 function argsOf(call) {
   try {
@@ -50,7 +50,7 @@ export const PLAN_EVENTS_SANDBOX = join(REPOSITORY_ROOT, 'experiments/formal_ai_
 function within(dir, path) {
   const full = isAbsolute(path) ? path : join(dir, path);
   const resolved = resolve(full);
-  if (!resolved.startsWith(resolve(dir))) throw new Error(`path escapes the sandbox: ${path}`);
+  if (resolved !== resolve(dir) && !resolved.startsWith(resolve(dir) + sep)) throw new Error(`path escapes the sandbox: ${path}`);
   // Run from the repository root, a plan event goes to a git-ignored sandbox,
   // never over the committed `.formal-ai/` plan log (PR #1188 G15).
   if (resolve(dir) === REPOSITORY_ROOT && (resolved === PLAN_EVENTS || resolved.startsWith(`${PLAN_EVENTS}${sep}`))) {
@@ -59,29 +59,37 @@ function within(dir, path) {
   return resolved;
 }
 
-/** Every file under `path` (a file or a directory), skipping VCS and dependency folders. */
-function filesUnder(path) {
-  if (!statSync(path).isDirectory()) return [path];
-  return readdirSync(path).filter((name) => name !== '.git' && name !== 'node_modules').sort()
-    .flatMap((name) => filesUnder(join(path, name)));
-}
-
 /**
  * The Agent CLI's `grep` (ripgrep underneath): "Found N matches" then each
  * file's absolute path and its `  Line N: text` hits, or "No files found".
  */
 function grep(dir, args) {
-  const pattern = new RegExp(args.pattern ?? args.query ?? '');
-  const groups = [];
-  let count = 0;
-  for (const file of filesUnder(within(dir, args.path ?? '.'))) {
-    const lines = readFileSync(file, 'utf8').split('\n');
-    const hits = lines.map((line, index) => [index + 1, line]).filter(([, line]) => pattern.test(line));
-    if (!hits.length) continue;
-    count += hits.length;
-    groups.push([`${file}:`, ...hits.map(([number, line]) => `  Line ${number}: ${line}`)].join('\n'));
+  const argv = ['--json', '--sort', 'path', '--regexp', args.pattern ?? args.query ?? ''];
+  if (args.include) argv.push('--glob', args.include);
+  argv.push('--', within(dir, args.path ?? '.'));
+  let output;
+  try {
+    output = execFileSync('rg', argv, { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
+  } catch (error) {
+    if (error.status === 1) return 'No files found';
+    throw error;
   }
-  return count ? `Found ${count} matches\n${groups.join('\n\n')}` : 'No files found';
+  const groups = new Map();
+  let count = 0;
+  for (const record of output.split('\n').filter(Boolean).map((line) => JSON.parse(line))) {
+    if (record.type !== 'match') continue;
+    const file = record.data.path.text;
+    const line = record.data.lines.text.replace(/\r?\n$/u, '');
+    if (!groups.has(file)) groups.set(file, []);
+    groups.get(file).push('  Line ' + record.data.line_number + ': ' + line);
+    count += 1;
+  }
+  return count ? 'Found ' + count + ' matches\n' + [...groups].map(([file, hits]) => [file + ':', ...hits].join('\n')).join('\n\n') : 'No files found';
+}
+
+/** Adapter failures are transport metadata, distinct from authored file/stdout bytes. */
+function toolFailure(message) {
+  return JSON.stringify({ is_error: true, error: String(message) });
 }
 
 /** Execute one tool call the way the Agent CLI does; returns its result text. */
@@ -111,10 +119,10 @@ export function execute(dir, call) {
           writeFileSync(target, newString);
           return '';
         }
-        if (!text.includes(oldString)) return 'Error: oldString not found in content';
+        if (!text.includes(oldString)) return toolFailure('oldString not found in content');
         // The Agent CLI refuses an ambiguous oldString rather than editing its first match.
         if (!args.replaceAll && text.indexOf(oldString) !== text.lastIndexOf(oldString)) {
-          return 'Error: Found multiple matches for oldString. Provide more surrounding lines in oldString to identify the correct match.';
+          return toolFailure('Found multiple matches for oldString. Provide more surrounding lines in oldString to identify the correct match.');
         }
         const next = args.replaceAll ? text.split(oldString).join(newString) : text.replace(oldString, () => newString);
         writeFileSync(target, next);
@@ -131,7 +139,8 @@ export function execute(dir, call) {
           commandDirectory = eventDirectory;
         }
         try {
-          return execFileSync('/bin/sh', ['-c', args.command], { cwd: commandDirectory, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: BASH_TIMEOUT_MS });
+          const output = execFileSync('/bin/sh', ['-c', args.command], { cwd: commandDirectory, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: BASH_TIMEOUT_MS });
+          return 'Output: ' + output + '\nExit Code: 0';
         } catch (error) {
           // A call killed at the timeout reports the kill, never an exit code:
           // a killed `node --test` exits 1 on SIGTERM, which is not the
@@ -153,10 +162,10 @@ export function execute(dir, call) {
       case 'grep':
         return grep(dir, args);
       default:
-        return `Error: the dogfood driver does not execute ${call.tool}`;
+        return toolFailure(`the dogfood driver does not execute ${call.tool}`);
     }
   } catch (error) {
-    return `Error: ${error.message}`;
+    return toolFailure(error.message);
   }
 }
 
