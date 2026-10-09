@@ -51,7 +51,13 @@ fn every_ladder_leaf_requirement_resolves_to_its_leaf_file() {
     assert_eq!(rows.len(), 32);
     for row in &rows {
         let (leaf, path, requirement) = (&row[0], &row[2], &row[5]);
-        let target = resolve_requirement_target(requirement)
+        let scoped_request = if path.starts_with("rust/") {
+            &row[1]
+        } else {
+            requirement
+        };
+        // Preserve the original explicit file operand instead of guessing an ambiguous declaration.
+        let target = resolve_requirement_target(scoped_request)
             .unwrap_or_else(|| panic!("{leaf}: {requirement:?} must resolve"));
         if path.starts_with("data/seed/") {
             assert_eq!(
@@ -278,5 +284,100 @@ fn canonical_seed_goal_binding_preserves_ambiguity_and_declared_ownership() {
             &[("invalid.txt", source), ("data/seed/alpha.lino", source)]
         ),
         expected
+    );
+}
+
+#[test]
+fn explicit_module_scope_preserves_actual_l17_and_ambiguous_refusal() {
+    use formal_ai::agentic_coding::{RequirementTarget, resolve_in};
+    use formal_ai::self_ast_census::WorkspaceCensus;
+    let census = WorkspaceCensus::compile(&[
+        (
+            "src/目录/alpha-beta.rs",
+            "pub const SHARED: &str = \"same\";",
+        ),
+        ("src/other_alpha.rs", "pub const SHARED: &str = \"same\";"),
+    ]);
+    for path in ["src/目录/alpha-beta.rs", "src/other_alpha.rs"] {
+        for reference in [
+            path.to_owned(),
+            format!("rust/{path}"),
+            format!("./rust/{path}"),
+        ] {
+            let expected = Some(RequirementTarget {
+                module_path: path.to_owned(),
+                symbol: "SHARED".to_owned(),
+                kind: "const".to_owned(),
+            });
+            assert_eq!(
+                resolve_in(&census, &format!("In {reference}, rename SHARED.")),
+                expected
+            );
+            assert_eq!(
+                resolve_in(&census, &format!("In «{reference}», rename SHARED.")),
+                expected
+            );
+        }
+    }
+    for request in [
+        "Rename SHARED.",
+        "In src/missing.rs rename SHARED.",
+        "In src/other_alpha.rs and src/目录/alpha-beta.rs rename SHARED.",
+        "In ../src/other_alpha.rs rename SHARED.",
+        "In prefixsrc/other_alpha.rs rename SHARED.",
+        "In src/other_alpha.rs.backup rename SHARED.",
+        "In src/other_alpha.rs rename MISSING.",
+    ] {
+        assert_eq!(resolve_in(&census, request), None, "{request}");
+    }
+    let row = leaves()
+        .into_iter()
+        .find(|row| row[0] == "L17")
+        .expect("original leaf");
+    assert_eq!(
+        resolve_requirement_target(&row[1]),
+        Some(RequirementTarget {
+            module_path: "src/web_search_fusion_core.rs".to_owned(),
+            symbol: "NEGATION_ROLE".to_owned(),
+            kind: "const".to_owned(),
+        })
+    );
+    assert_eq!(resolve_requirement_target(&row[5]), None);
+}
+
+#[test]
+fn scoped_literal_owner_is_unique_and_requires_complete_scalar_initializer() {
+    use formal_ai::agentic_coding::{RequirementTarget, resolve_in};
+    use formal_ai::self_ast_census::WorkspaceCensus;
+    let request =
+        "In the file rust/src/literal_owner.rs, replace \"azure dawn\" with \"cobalt sun\".";
+    let source = "pub const VALUE: &str = \"azure dawn\";\n";
+    let census = WorkspaceCensus::compile(&[("src/literal_owner.rs", source)]);
+    assert_eq!(census.modules[0].source(), source);
+    assert_eq!(
+        resolve_in(&census, request),
+        Some(RequirementTarget {
+            module_path: "src/literal_owner.rs".to_owned(),
+            symbol: "VALUE".to_owned(),
+            kind: "const".to_owned(),
+        })
+    );
+    for source in [
+        "pub const VALUE: &str = \"other words\";",
+        "pub const VALUE: &str = \"azure dawn\";\npub const SECOND: &str = \"azure dawn\";",
+        "pub const VALUE: &str = /* \"azure dawn\" */ \"other\";",
+        "pub const VALUE: &str = \"azure dawn\".trim();",
+        "pub const VALUE: &[&str] = &[\"azure dawn\"];",
+        "pub const VALUE: &str = \"azure dawn bright\";",
+    ] {
+        let census = WorkspaceCensus::compile(&[("src/literal_owner.rs", source)]);
+        assert_eq!(resolve_in(&census, request), None, "{source}");
+    }
+    assert_eq!(
+        resolve_in(
+            &census,
+            "Inspect rust/src/literal_owner.rs and the words \"azure dawn\"."
+        ),
+        None
     );
 }

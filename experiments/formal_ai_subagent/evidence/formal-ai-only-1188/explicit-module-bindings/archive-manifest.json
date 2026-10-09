@@ -1,0 +1,147 @@
+{
+  "captures": [
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3023-request.json",
+      "sha256": "a9db99308997c34831a5decb16d754ed52885f99d5ebfba72bceacc3a6f62a5d"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3023-transcript.json",
+      "sha256": "2ee7acc10e5d627ac5f03afdc02ce3d5eaf5c8aa1f1ddec4b38776fd3fbfcef2"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3023-transcript.log",
+      "sha256": "2ee7acc10e5d627ac5f03afdc02ce3d5eaf5c8aa1f1ddec4b38776fd3fbfcef2"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3024-request.json",
+      "sha256": "e03a5604b3e39771ab6d3465a9eb15ef105984e7fce4473ac866131b779e012b"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3024-transcript.json",
+      "sha256": "9d63db948e783d55a3ddce6dff946622e1c0851916288bac2be8b3be4b137214"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3024-transcript.log",
+      "sha256": "9d63db948e783d55a3ddce6dff946622e1c0851916288bac2be8b3be4b137214"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3025-request.json",
+      "sha256": "76de3d9fc65419a41a8dc4d4274483cb70fff48b0f75447c4b73e315b88f82f8"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3025-transcript.json",
+      "sha256": "fa34f90f87340fed10994329ae69d5d76deb0d8655ed5e19b777a4c5674859de"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3025-transcript.log",
+      "sha256": "fa34f90f87340fed10994329ae69d5d76deb0d8655ed5e19b777a4c5674859de"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3026-request.json",
+      "sha256": "f5d0eaa25d9f29c8da5ce299b9a46d1773d6e2df038ab61f5c22a2a8a0423a70"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3026-transcript.json",
+      "sha256": "b4df3113cc5b5bb51481a5448948db649f2fdf4f547c821bb42be0859311c3b4"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3026-transcript.log",
+      "sha256": "b4df3113cc5b5bb51481a5448948db649f2fdf4f547c821bb42be0859311c3b4"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3027-request.json",
+      "sha256": "f94c6efdd7f39b11f965ed3f2b24886d9010b3473a8cbc78dc84d7443057d0cd"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3027-transcript.json",
+      "sha256": "a4fb6efee9cf510ba8c6a107676d34271954fd82725d62c16154b6f43738517d"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3027-transcript.log",
+      "sha256": "a4fb6efee9cf510ba8c6a107676d34271954fd82725d62c16154b6f43738517d"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3027-original-retry-audit.json",
+      "sha256": "edae5dbc826195da2db4ef6c6dba92116b64d3213ccc056ecda6992e06714e10"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3027-matrix-audit.json",
+      "sha256": "05523936e122362ee8f6e51a673e6a9a1e46e18871aa59582039f46c65d3090f"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3028-request.json",
+      "sha256": "15b6a6e0157d2af138f5f867d67475a7c2feb784e99aded5613bfc125a31bf23"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3028-transcript.json",
+      "sha256": "1b0d53e10062d93e4c71ed80ae95d7f51ac389a8013951630adf5e9026498a8b"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3028-transcript.log",
+      "sha256": "1b0d53e10062d93e4c71ed80ae95d7f51ac389a8013951630adf5e9026498a8b"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3029-request.json",
+      "sha256": "122c2876c497f73772201c4fdbca988a886b2c2d956a0b4cea564f9e8181dc99"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3029-transcript.json",
+      "sha256": "203b8e50e81d6b8abebef40acef9c05214beb7428fd1d48746adb21ff9b4a62b"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3029-transcript.log",
+      "sha256": "203b8e50e81d6b8abebef40acef9c05214beb7428fd1d48746adb21ff9b4a62b"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3029-no-host-before.json",
+      "sha256": "49dd065f8309c70c245025054c44c18453466ac9f636843e24440c157ff497cf"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3030-final-closest.log",
+      "sha256": "29039af875bade748e104b501cccadc2a172d8c2dadc290f4cbce48c6e493fb6"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/formal-ai-only-1188/explicit-module-bindings/T3030-source-identities.json",
+      "sha256": "04d7310cf4c466757fa70d77372faded9aa8ced8b0998c8139e9e12a3c39265b"
+    }
+  ],
+  "sourceIdentities": [
+    {
+      "path": "js/agentic/requirement_resolution.mjs",
+      "sha256": "6f0aa3c46e336c9e43aef9b67d586ea07d19b3f3f8b2eb2072099c56a661f3f7"
+    },
+    {
+      "path": "rust/src/agentic_coding/requirement_resolution.rs",
+      "sha256": "0ca3eba8f63abb09dcd1c66468ac32352c84e8020c2abed705b845e6b562429f"
+    },
+    {
+      "path": "rust/src/self_ast_census.rs",
+      "sha256": "aa376c1b4fd9efa57cffc2716574e377bfdc9e4ed7273bed70a2a3b4154016aa"
+    },
+    {
+      "path": "rust/tests/web/explicit-module-target-binding.test.mjs",
+      "sha256": "38880003cad532c41feb1170e91f8f05b3e5237316df767aa424958c0a01c2d3"
+    },
+    {
+      "path": "rust/tests/web/requirement-seed-target-binding.test.mjs",
+      "sha256": "e5ed6b531c8d70dbd8ef48009d388d45420332333b5a2a5f1171278ddf70a31d"
+    },
+    {
+      "path": "rust/tests/unit/agentic-coding/issue_1085_requirement_resolution.rs",
+      "sha256": "a75d7e4f5ef8bf1a13686185f1d21941853015c42660e3383adf1702352f650e"
+    }
+  ],
+  "authoredEffects": {
+    "source": 6,
+    "tests": 4,
+    "docs": 3,
+    "total": 13
+  },
+  "neutralEffects": {
+    "copies": 26,
+    "manifests": 2,
+    "total": 28
+  },
+  "manualPhysicalRepairs": 0,
+  "totalRepositoryEffects": 41
+}

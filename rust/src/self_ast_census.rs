@@ -187,6 +187,12 @@ impl ModuleCensus {
         }
     }
 
+    /// The immutable source whose identity and declaration spans this census records.
+    #[must_use]
+    pub fn source(&self) -> &str {
+        &self.source
+    }
+
     /// The abstract-syntax node census, present only at
     /// [`CensusFidelity::FullAst`]. Computed on first use and memoized.
     #[must_use]

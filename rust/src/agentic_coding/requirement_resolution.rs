@@ -35,6 +35,86 @@ pub fn resolve_requirement_target(requirement: &str) -> Option<RequirementTarget
 /// an actual canonical seed surface and its semantic role can bind its declared owner.
 #[must_use]
 pub fn resolve_in(census: &WorkspaceCensus, requirement: &str) -> Option<RequirementTarget> {
+    let modules = explicit_module_scope(census, requirement)?;
+    if modules.is_empty() {
+        resolve_scoped(census, requirement)
+    } else {
+        let scoped = WorkspaceCensus { modules };
+        resolve_scoped(&scoped, requirement)
+            .or_else(|| resolve_scoped_literal(&scoped, requirement))
+    }
+}
+
+/// Resolve an unnamed scalar initializer only within an explicit source scope.
+fn resolve_scoped_literal(
+    census: &WorkspaceCensus,
+    requirement: &str,
+) -> Option<RequirementTarget> {
+    let (_, old, _) = super::write_request::compose_edit_clauses(requirement)?.edit;
+    let module = census.modules.first()?;
+    let candidates: Vec<_> = module
+        .symbols
+        .iter()
+        .filter(|symbol| {
+            if symbol.kind != "const" && symbol.kind != "static" {
+                return false;
+            }
+            let declaration: String = module
+                .source()
+                .split_inclusive('\n')
+                .skip(symbol.start_line.saturating_sub(1))
+                .take(symbol.end_line.saturating_sub(symbol.start_line) + 1)
+                .collect();
+            let Some((_, initializer)) = declaration.split_once('=') else {
+                return false;
+            };
+            let initializer = initializer.trim();
+            let segments = crate::normal_markov::quoted_segment_spans(initializer);
+            let [segment] = segments.as_slice() else {
+                return false;
+            };
+            initializer.starts_with('"')
+                && segment.start == 0
+                && initializer[segment.end..].trim() == ";"
+                && segment.text == old
+        })
+        .collect();
+    if let [symbol] = candidates.as_slice() {
+        Some(target(module, symbol))
+    } else {
+        None
+    }
+}
+
+/// Bind exact observed module paths before declaration ranking.
+fn explicit_module_scope(census: &WorkspaceCensus, requirement: &str) -> Option<Vec<ModuleCensus>> {
+    let references: Vec<_> = requirement
+        .split(|character: char| {
+            !character.is_alphanumeric() && !matches!(character, '_' | '.' | '/' | '-')
+        })
+        .map(|token| token.trim_end_matches('.'))
+        .filter(|token| token.contains('/') && token.ends_with(".rs"))
+        .collect();
+    let mut selected = Vec::new();
+    for reference in references {
+        let relative = reference.strip_prefix("./").unwrap_or(reference);
+        let path = relative.strip_prefix("rust/").unwrap_or(relative);
+        if path.split('/').any(|part| matches!(part, "." | "..")) {
+            return None;
+        }
+        let module = census.module(path)?;
+        if selected
+            .iter()
+            .all(|candidate: &ModuleCensus| candidate.path != module.path)
+        {
+            selected.push(module.clone());
+        }
+    }
+    (selected.len() <= 1).then_some(selected)
+}
+
+/// Rank declarations only within the observed module scope.
+fn resolve_scoped(census: &WorkspaceCensus, requirement: &str) -> Option<RequirementTarget> {
     let tokens = tokens_of(requirement);
     for token in &tokens {
         if !looks_like_declared_name(token) {

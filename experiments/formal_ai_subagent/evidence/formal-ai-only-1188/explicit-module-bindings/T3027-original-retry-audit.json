@@ -1,0 +1,24 @@
+{
+  "originalRequest": "In the file rust/src/web_search_fusion_core.rs, replace \"statement_negation_cue\" with \"statement_negation_marker\". Change only that file and keep it valid Rust.",
+  "unqualifiedRequirement": "Change the value of NEGATION_ROLE from statement_negation_cue to statement_negation_marker.",
+  "beforeSourceSHA256": "6f8fc90833cb044298a65dcc95fb5facf7d581fd22fb6ff942c1772060ca3795",
+  "beforeOriginal": null,
+  "afterOriginal": {
+    "module_path": "src/web_search_fusion_core.rs",
+    "symbol": "NEGATION_ROLE",
+    "kind": "const"
+  },
+  "beforeUnqualified": null,
+  "afterUnqualified": null,
+  "sourceTargets": [
+    {
+      "file": "rust/src/web_search_fusion_core.rs",
+      "sha256": "8ce7747e618250222249354e2e4de9120fe365614d5f48ca05021852b8215a46"
+    },
+    {
+      "file": "rust/src/agentic_coding/shell_command_policy.rs",
+      "sha256": "26cc3ccbfd4db8cf6cf9db3e446019661a26ddaabf285216091d5d5b8f9bde59"
+    }
+  ],
+  "provenance": "Read-only execution of captured original T3023 resolver preimage; relative import URLs adapted solely for scratch module loading; no target changes."
+}

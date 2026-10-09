@@ -16,8 +16,9 @@ const expected = {module_path:'src/a.rs',symbol:'ALPHA_LINO',kind:'const'};
 test('every unchanged ladder leaf resolves to its actual source or embedded seed declaration',()=>{
   const rows=read('experiments/issue_1028_agent_cli_ladder/leaves.tsv').trimEnd().split('\n').map(line=>line.split('\t'));
   assert.equal(rows.length,32);
-  for(const [leaf,,path,,,requirement] of rows){
-    const target=resolveRequirementTarget(requirement);
+  for(const [leaf,originalTask,path,,,requirement] of rows){
+    // Native declarations retain the actual original file scope; seed surfaces retain their semantic requirement.
+    const target=resolveRequirementTarget(path.startsWith('rust/') ? originalTask : requirement);
     assert.ok(target,`${leaf}: ${requirement}`);
     if(path.startsWith('data/seed/')){
       assert.equal(target.module_path,'src/seed/embedded_registry.rs',leaf);
