@@ -6,6 +6,7 @@ import { createHash } from 'node:crypto';
 import { isDeepStrictEqual } from 'node:util';
 import { tokenize } from './rust-specification-cases.mjs';
 import { close, split, expression, evaluate } from './rust-specification-values.mjs';
+import { iterationBindings, bindIteration } from './rust-specification-tuples.mjs';
 import { nativeFunctions, pureHelperBinding, historySourceContract, usesHistoryProducer } from './rust-specification-bindings.mjs';
 
 const hash = value => createHash('sha256').update(value).digest('hex');
@@ -168,20 +169,31 @@ function bodyProgram(tokens, context) {
       continue;
     }
     if (tokens[cursor].text === 'for') {
-      const parameter = tokens[cursor + 1]?.text;
-      if (tokens[cursor + 1]?.kind !== 'word' || tokens[cursor + 2]?.text !== 'in') throw new Error('unsupported native iteration binding');
-      let open = cursor + 3;
+      let inAt = cursor + 1;
+      while (inAt < tokens.length && tokens[inAt].text !== 'in') {
+        if (tokens[inAt].text === '(') inAt = close(tokens, inAt);
+        inAt += 1;
+      }
+      if (inAt === tokens.length) throw new Error('unsupported native iteration binding');
+      const pattern = tokens.slice(cursor + 1, inAt);
+      const parameter = pattern.map(token => token.text).join('');
+      let open = inAt + 1;
       while (open < tokens.length && tokens[open].text !== '{') {
         if (['(', '['].includes(tokens[open].text)) open = close(tokens, open);
         open += 1;
       }
       if (open === tokens.length) throw new Error('native loop body absent');
-      const values = expression(tokens.slice(cursor + 3, open), context);
-      if (!values.type.startsWith('vec:') || values.type === 'vec:empty') throw new Error('native iteration needs known vector element type');
+      const input = tokens.slice(inAt + 1, open);
+      const values = expression(input, context);
+      const vector = values.type.startsWith('vec:');
+      const iterator = values.type.startsWith('iter:');
+      if ((!vector && !iterator) || ['vec:empty', 'iter:empty'].includes(values.type)) throw new Error('native iteration needs known vector element type');
+      const borrowed = input[0]?.text === '&' || iterator;
+      const bindings = iterationBindings(pattern, values.type.slice(vector ? 4 : 5), borrowed);
       const end = close(tokens, open);
       const nested = { ...context, environment: new Map(context.environment), schemas: new Map(context.schemas) };
-      nested.environment.set(parameter, { type: values.type.slice(4) });
-      steps.push({ kind: 'for', parameter, values, body: bodyProgram(tokens.slice(open + 1, end), nested) });
+      for (const binding of bindings) nested.environment.set(binding.name, { type: binding.type });
+      steps.push({ kind: 'for', parameter, pattern, borrowed, bindings, values, body: bodyProgram(tokens.slice(open + 1, end), nested) });
       cursor = end + 1;
       continue;
     }
@@ -253,7 +265,7 @@ export async function executeTypedProgram(host, program) {
         runtime.iterations.push({ parameter: step.parameter, length: entries.length });
         for (const value of entries) {
           const nested = new Map(values);
-          nested.set(step.parameter, value);
+          for (const [name, observed] of bindIteration(step.pattern, value, step.borrowed)) nested.set(name, observed);
           await run(step.body, nested);
         }
       } else if (step.kind === 'assertion') {

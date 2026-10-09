@@ -5,6 +5,7 @@ import { compileNaturalLanguageSkill } from '../../js/agentic/crate/skill_compil
 import { symbolicFromWorker } from '../../js/server/solve.mjs';
 import { parseLino } from '../../js/server/lino.mjs';
 import { installTextHost } from './text-capability-measures.mjs';
+import { tupleParts } from './rust-specification-tuples.mjs';
 
 export function close(tokens, start) {
   const pairs = { '(': ')', '[': ']', '{': '}' };
@@ -93,7 +94,12 @@ export function expression(tokens, context) {
   else if (['true', 'false'].includes(first.text)) value = { kind: 'literal', value: first.text === 'true', type: 'boolean' };
   else if (first.text === '(') {
     cursor = close(tokens, 0) + 1;
-    value = expression(tokens.slice(1, cursor - 1), context);
+    const { parts, comma } = tupleParts(tokens.slice(1, cursor - 1));
+    if (!comma && parts.length === 1) value = expression(parts[0], context);
+    else {
+      const values = parts.map(part => expression(part, context));
+      value = { kind: 'tuple', values, type: 'tuple:' + JSON.stringify(values.map(entry => entry.type)) };
+    }
   } else if (first.text === '[') {
     cursor = close(tokens, 0) + 1;
     const values = split(tokens.slice(1, cursor - 1)).map(part => expression(part, context));
@@ -195,7 +201,7 @@ export async function evaluate(node, environment, runtime) {
     return environment.get(node.name);
   }
   if (node.kind === 'field') return (await evaluate(node.target, environment, runtime))[node.name];
-  if (node.kind === 'array') {
+  if (node.kind === 'array' || node.kind === 'tuple') {
     const values = [];
     for (const value of node.values) values.push(await evaluate(value, environment, runtime));
     return values;
