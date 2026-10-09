@@ -225,3 +225,6 @@ mod literal_punctuation_contract;
 
 #[path = "../../fixtures/literal-obligation-transaction.rs"]
 mod literal_obligation_transaction;
+
+#[path = "../../fixtures/literal-action-ownership.rs"]
+mod literal_action_ownership;

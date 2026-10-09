@@ -75,6 +75,11 @@ fn binding_has_write_instruction(
 /// Seeded matching uses lowercase text; all slicing boundaries map back to
 /// original UTF-8 so expanding and shrinking case mappings retain payload bytes.
 pub(super) fn parse_write_request(request: &str) -> Option<(String, String)> {
+    let contract = parse_write_contract(request)?;
+    Some((contract.target, contract.content))
+}
+
+pub(super) fn parse_write_contract(request: &str) -> Option<LiteralWriteContract> {
     let toks = tokens(request);
     if let Some(literal) = literal_payload(request) {
         // A closed whole-file payload supplies the content. Only target cues
@@ -84,10 +89,13 @@ pub(super) fn parse_write_request(request: &str) -> Option<(String, String)> {
                 && candidate.cue_end <= literal.start
                 && binding_has_write_instruction(request, &toks, candidate)
         }) {
-            return Some((
-                binding.path,
+            return write_contract(
+                request,
+                &toks,
+                &binding,
                 clean_content(&request[literal.start..literal.end]).unwrap_or(literal.text),
-            ));
+                literal.start..literal.end,
+            );
         }
     }
     // A cue between two file-shaped tokens can belong to either of them, and the
@@ -105,14 +113,13 @@ fn parse_write_request_bound(
     request: &str,
     toks: &[Token<'_>],
     binding: &WriteBinding,
-) -> Option<(String, String)> {
+) -> Option<LiteralWriteContract> {
     if !binding_has_write_instruction(request, toks, binding) {
         return None;
     }
     let lowered = request.to_lowercase();
     let dest_cues = bare_surfaces(seed::ROLE_FILE_WRITE_DESTINATION_CUE);
     let file_index = binding.index;
-    let target = binding.path.clone();
     // The clause is the cue and its path together, so it begins at whichever of
     // them the language puts first.
     let clause_start = if binding.cue_precedes {
@@ -176,11 +183,13 @@ fn parse_write_request_bound(
                     || literal_payload(request).is_some())
             })
         {
-            return Some((target, content));
+            return write_contract(request, toks, binding, content, marker_end..payload_end);
         }
     }
+    let payload;
     let content_span = if cue_is_destination && binding.cue_precedes {
         let action_end = first_action_cue_end(toks)?;
+        payload = action_end..clause_start;
         (action_end <= clause_start && positions_share_statement(request, action_end, clause_start))
             .then(|| request.get(action_end..clause_start))?
     } else if cue_is_destination {
@@ -190,6 +199,7 @@ fn parse_write_request_bound(
         // between the two, exactly as the prepositional wording states it
         // between the verb and the preposition.
         let action_start = action_cue_start_after(toks, binding.cue_end)?;
+        payload = binding.cue_end..action_start;
         (binding.cue_end <= action_start
             && positions_share_statement(request, binding.cue_end, action_start))
         .then(|| request.get(binding.cue_end..action_start))?
@@ -203,12 +213,13 @@ fn parse_write_request_bound(
         // introduces its literal value. Requiring a write action before the
         // file keeps an unrelated "contents of FILE" read request out.
         let action_end = first_action_cue_end(toks)?;
+        payload = value_lead.end..request.len();
         (action_end <= clause_start
             && positions_share_statement(request, action_end, clause_start)
             && positions_share_statement(request, clause_start, value_lead.start))
         .then(|| request.get(value_lead.end..))?
     } else {
-        None
+        return None;
     };
     let content = clean_content(content_span?)?;
     // A recovered payload that is *only* a non-referential subject ("save it to
@@ -227,7 +238,7 @@ fn parse_write_request_bound(
     {
         return None;
     }
-    Some((target, content))
+    write_contract(request, toks, binding, content, payload)
 }
 /// Mask literal punctuation without changing UTF-8 byte positions.
 fn statement_scope(request: &str) -> String {
@@ -400,4 +411,61 @@ fn ends_with_head_noun(content: &str, noun: &str) -> bool {
                 .next_back()
                 .is_none_or(|character| !character.is_ascii_alphanumeric())
         })
+}
+
+/// Owned payload and target spans use original UTF-8 byte boundaries.
+#[derive(Debug, Clone)]
+pub(super) struct LiteralWriteContract {
+    pub(super) target: String,
+    pub(super) content: String,
+    pub(super) payload: std::ops::Range<usize>,
+    pub(super) target_span: std::ops::Range<usize>,
+}
+fn write_contract(
+    request: &str,
+    toks: &[Token<'_>],
+    binding: &WriteBinding,
+    content: String,
+    range: std::ops::Range<usize>,
+) -> Option<LiteralWriteContract> {
+    let raw = request.get(range.clone())?;
+    let literal = crate::normal_markov::quoted_segment_spans(raw)
+        .into_iter()
+        .find(|span| {
+            clean_content(&raw[span.start..span.end]).as_deref() == Some(content.as_str())
+                && raw[..span.start]
+                    .chars()
+                    .all(|character| character.is_whitespace() || character == ':')
+                && raw[span.end..].chars().all(|character| {
+                    character.is_whitespace() || ".!?。！？।;；".contains(character)
+                })
+        });
+    let payload = literal.map_or(range.clone(), |span| {
+        range.start + span.start..range.start + span.end
+    });
+    let target = &toks[binding.index];
+    Some(LiteralWriteContract {
+        target: binding.path.clone(),
+        content,
+        payload,
+        target_span: target.start..target.end,
+    })
+}
+pub(super) fn instruction_view(request: &str, contract: &LiteralWriteContract) -> Option<String> {
+    request.get(contract.payload.clone())?;
+    let mut view = request.to_owned();
+    view.replace_range(
+        contract.payload.clone(),
+        &" ".repeat(contract.payload.len()),
+    );
+    Some(view)
+}
+
+/// An instruction operand cannot be owned literal payload.
+pub(super) fn owns_instruction_span(
+    contract: &LiteralWriteContract,
+    span: &std::ops::Range<usize>,
+) -> bool {
+    span.start <= span.end
+        && (span.end <= contract.payload.start || span.start >= contract.payload.end)
 }

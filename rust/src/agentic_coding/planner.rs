@@ -283,10 +283,19 @@ fn plan_chat_step_routes(
     // Ahead of them, quotes that do not pair leave no telling the quoted text
     // from the instruction, so the request is declined before any arm reads its
     // payload as words to act on (PR #1188 G71).
-    if let Some(plan) = super::quote_nesting::request_fault_answer(
+    if let Some(plan) = super::general_planner::plan_owned_goal_step(
         &task,
-        tool_for(tool_names, Capability::MultiEdit).is_some(),
+        messages,
+        tool_names,
+        plan_chat_step_resolved,
+        result,
     )
+    .or_else(|| {
+        super::quote_nesting::request_fault_answer(
+            &task,
+            tool_for(tool_names, Capability::MultiEdit).is_some(),
+        )
+    })
     .or_else(|| crate::computer_use::plan_agentic_step(messages, tool_names))
     {
         return Some(plan);
@@ -367,13 +376,15 @@ pub(super) fn plan_settled_routes(
     tool_names: &[&str],
     result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
+    let instruction = super::general_planner::instruction_view_for_request(task);
+    let owned = instruction.as_str();
     // A request to commit what is already in the tree is one shell step. It
     // is claimed first because its words ("review these changes and commit
     // them", with a `?? Main.scala` listing) read to later routes as a search
     // for the file; the route itself declines any request that also names the
     // work to do (issue #1133).
     if let Some(plan) = steps::explicit_shell_step(task, messages, tool_names, result)
-        .or_else(|| git_commit::plan_commit_step(task, messages, tool_names))
+        .or_else(|| git_commit::plan_commit_step(owned, messages, tool_names))
     {
         return Some(plan);
     }
@@ -385,42 +396,44 @@ pub(super) fn plan_settled_routes(
     // A copy or move followed by edits of the file it makes is planned
     // sentence by sentence (PR #1188 G82).
     if let Some(plan) = super::request_sequence::plan_request_sequence_step(
-        task,
+        owned,
         messages,
         tool_names,
         plan_chat_step_resolved,
         result,
     )
     .or_else(|| {
-        super::workspace_change::plan_workspace_change_step(task, messages, tool_names, result)
+        super::workspace_change::plan_workspace_change_step(owned, messages, tool_names, result)
     })
     .or_else(|| {
-        super::module_function::plan_module_function_step(task, messages, tool_names, result)
+        super::module_function::plan_module_function_step(owned, messages, tool_names, result)
     })
     // A bug report with a stated expectation is checked before anything is
     // rewritten (PR #1188 T93).
     .or_else(|| {
         super::function_expectation::plan_function_expectation_step(
-            task, messages, tool_names, result,
+            owned, messages, tool_names, result,
         )
     })
     // An assertion of a stated call and value is added in the test
     // file's own form, and the file is run (PR #1188 G13).
-    .or_else(|| super::test_assertion::plan_test_assertion_step(task, messages, tool_names, result))
+    .or_else(|| {
+        super::test_assertion::plan_test_assertion_step(owned, messages, tool_names, result)
+    })
     // A test asked for with no expected result is a question (PR #1188
     // G25).
-    .or_else(|| super::function_expectation::test_expectation_question(task, result))
+    .or_else(|| super::function_expectation::test_expectation_question(owned, result))
     {
         return Some(plan);
     }
     // A source-code description is not literal file content. Lower bounded
     // seed-backed source tasks before the broad literal-write parser so coding
     // requests produce executable bytes and verify those exact bytes.
-    if let Some(plan) = code_task::plan_generated_source_step(task, messages, tool_names, result) {
+    if let Some(plan) = code_task::plan_generated_source_step(owned, messages, tool_names, result) {
         return Some(plan);
     }
     if let Some(plan) =
-        structured_edit::plan_structured_edit_step(task, messages, tool_names, result)
+        structured_edit::plan_structured_edit_step(owned, messages, tool_names, result)
     {
         return Some(plan);
     }
@@ -428,7 +441,7 @@ pub(super) fn plan_settled_routes(
     // It must win before the ordinary file reader, which would otherwise read
     // the input correctly and then mistake that intermediate observation for
     // the answer to the whole authored-artifact request.
-    if let Some(plan) = structured_document::plan_step(task, messages, tool_names) {
+    if let Some(plan) = structured_document::plan_step(owned, messages, tool_names) {
         return Some(plan);
     }
     // A repository audit names the artifact its CLI command will produce; that
@@ -515,7 +528,7 @@ pub(super) fn plan_settled_routes(
     // already claimed by the write probe above.
     if let Some(plan) =
         code_artifact::plan_code_artifact_step(task, messages, tool_names).or_else(|| {
-            (super::general_planner::semantic_authoring_lead(task)
+            (super::general_planner::owned_semantic_authoring_lead(task)
                 && compose_general_change_plan(task).is_none()
                 && super::general_planner::compose_edit_request(task).is_none())
             .then(|| {

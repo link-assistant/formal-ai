@@ -169,3 +169,70 @@ pub(in crate::agentic_coding) fn missing_implementation_contract(request: &str) 
         },
     )
 }
+
+/// Recover original UTF-8 spans from seeded operation objects, never lowercase offsets.
+fn operation_role_spans(request: &str, role: &'static str) -> Vec<(usize, usize, &'static str)> {
+    let lowered = request.to_lowercase();
+    let mut found = Vec::new();
+    for form in seed::lexicon().role_word_forms(role) {
+        let text = match form.slot() {
+            seed::Slot::Bare => form.text.as_str(),
+            seed::Slot::Prefix => form.before_slot(),
+            _ => continue,
+        };
+        let needle = text.trim().to_lowercase();
+        if needle.is_empty() {
+            continue;
+        }
+        for (offset, _) in lowered
+            .char_indices()
+            .filter(|(offset, _)| lowered[*offset..].starts_with(&needle))
+        {
+            let Some((start, end)) = super::super::write_request::raw_lowercase_span(
+                request,
+                Some((offset, offset + needle.len())),
+            ) else {
+                continue;
+            };
+            let word = |character: Option<char>| {
+                character
+                    .is_some_and(|value| value.is_alphanumeric() || value == '_' || value == '-')
+            };
+            if crate::coding::contains_cjk(&needle)
+                || !word(request[..start].chars().next_back())
+                    && !word(request[end..].chars().next())
+            {
+                found.push((start, end, role));
+            }
+        }
+    }
+    found
+}
+/// The earliest unquoted seeded operation object owns an ambiguous leading action.
+fn first_operation_owner(request: &str) -> Option<&'static str> {
+    let mut view = request.to_owned();
+    for span in crate::normal_markov::quoted_segment_spans(request) {
+        view.get(span.start..span.end)?;
+        view.replace_range(span.start..span.end, &" ".repeat(span.end - span.start));
+    }
+    let sentence = crate::agentic_coding::shell_command_policy::prose_sentences(&view)
+        .into_iter()
+        .next()?;
+    let mut found: Vec<_> = [
+        "coding_request_object",
+        "software_artifact_kind",
+        "software_artifact",
+        "capability_web_scope",
+    ]
+    .into_iter()
+    .flat_map(|role| operation_role_spans(&view, role))
+    .filter(|(_, end, _)| *end <= sentence.span.end)
+    .collect();
+    found.sort_by_key(|(start, end, _)| (*start, std::cmp::Reverse(*end)));
+    found.first().map(|(_, _, role)| *role)
+}
+/// A known nonsoftware operation object prevents an ambiguous verb claiming authoring.
+pub(in crate::agentic_coding) fn owned_semantic_authoring_lead(request: &str) -> bool {
+    let view = super::owned_goals::instruction_view_for_request(request);
+    semantic_authoring_lead(&view) && first_operation_owner(&view) != Some("capability_web_scope")
+}

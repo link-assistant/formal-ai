@@ -221,10 +221,21 @@ pub(super) fn plan_request_sequence_step(
     result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let parts = request_sequence(task).or_else(|| sequence_steps(task))?;
+    plan_bound_request_steps(&parts, messages, tool_names, plan_for, result)
+}
+
+/// Replay explicitly owned clauses through the same request-local exchange engine.
+pub(super) fn plan_bound_request_steps(
+    parts: &[String],
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    plan_for: fn(&[ChatMessage], &[&str]) -> Option<ResolvedPlan>,
+    result: &mut Option<FinalResult>,
+) -> Option<AgenticPlan> {
     let (base, exchanges) = turn_exchanges(messages);
     let mut taken = 0;
     let mut answers = Vec::new();
-    for part in &parts {
+    for part in parts {
         // A step is planned over the tool calls made for it alone: replayed
         // one exchange at a time until it answers or asks for its next call.
         let mut own: Vec<ChatMessage> = base.to_vec();

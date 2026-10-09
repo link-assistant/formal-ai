@@ -7,6 +7,7 @@ use super::shell_command_policy::{prose_sentences, sentences};
 use crate::seed::{self, Slot};
 pub(super) use lowercase_spans::{
     first_raw_content_lead_end, first_raw_prefix_lead_end, raw_content_lead_close,
+    raw_lowercase_span,
 };
 /// The seeded articles and other function words (`the`, `el`).
 const FUNCTION_WORD_ROLE: &str = "request_function_word";

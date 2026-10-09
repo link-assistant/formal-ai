@@ -1,0 +1,12 @@
+import {containsCjk} from 'file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/crate/coding_catalog.mjs';
+import {roleWordForms} from 'file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/write_lexicon.mjs';
+import {quotedSegmentSpans} from 'file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/crate/normal_markov.mjs';
+import {semanticAuthoringLead} from 'file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/crate/literal_authoring_contract.mjs';
+import {proseSentences} from 'file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/shell_command_policy.mjs';
+import {instructionView} from './write-contract.mjs';
+const word=value=>value!==undefined&&/[\p{L}\p{N}_-]/u.test(value);
+function roleSpans(request,role) { const spans=[]; for(const form of roleWordForms(role)){const text=form.slot==='bare'?form.text:form.slot==='prefix'?form.before:null;if(!text?.trim())continue;const needle=text.trim().toLowerCase();for(let start=0;start<request.length;){let end=start,lowered='';while(end<request.length&&lowered.length<needle.length){const point=String.fromCodePoint(request.codePointAt(end));lowered+=point.toLowerCase();end+=point.length;}if(lowered===needle&&(containsCjk(needle)||!word(Array.from(request.slice(0,start)).at(-1))&&!word(Array.from(request.slice(end))[0])))spans.push({start,end,role});start+=String.fromCodePoint(request.codePointAt(start)).length;}} return spans; }
+export function operationOwner(request,contract=null) {let view=instructionView(request,contract);for(const span of quotedSegmentSpans(view))view=view.slice(0,span.start)+' '.repeat(span.end-span.start)+view.slice(span.end);const sentence=proseSentences(view)[0];if(!sentence)return null;const span=sentence.span,limit=Array.isArray(span)?span[1]:span.end;const coding=['coding_request_object','software_artifact_kind','software_artifact'];return [...coding.flatMap(role=>roleSpans(view,role)),...roleSpans(view,'capability_web_scope')].filter(span=>span.end<=limit).sort((a,b)=>a.start-b.start||b.end-a.end)[0]??null;}
+export function ownedSemanticAuthoringLead(request,contract=null) {if(!semanticAuthoringLead(instructionView(request,contract)))return false;const owner=operationOwner(request,contract);return owner===null||owner.role!=='capability_web_scope';}
+
+export {ownedSemanticAuthoringLead as semanticAuthoringLead};

@@ -1,3 +1,5 @@
+import { planGoalLedger } from './planner/owned_goals.mjs';
+import { ownedSemanticAuthoringLead } from './crate/literal_authoring_contract.mjs';
 // Deterministic agentic planner: the next tool call or final answer from a
 // conversation and its advertised tools, without hidden neural state
 // (rust/src/agentic_coding/planner.rs).
@@ -38,7 +40,7 @@ import { fileReadTaskFor, planFileReadStep } from './file_read.mjs';
 import * as formalizationRecipe from './formalization_recipe.mjs';
 import * as functionExpectation from './function_expectation.mjs';
 import { planGeneralChangeStep } from './general_execution.mjs';
-import { composeEditRequest, composeGeneralChangePlan, hasAuthoritativeLiteralWrite, objectiveText, semanticAuthoringLead } from './general_planner.mjs';
+import { composeEditRequest, composeGeneralChangePlan, hasAuthoritativeLiteralWrite, instructionView, literalWriteOwnership, objectiveText } from './general_planner.mjs';
 import * as gitCommit from './git_commit.mjs';
 import * as googleTrendsCatalog from './google_trends_catalog.mjs';
 import * as googleTrendsLearning from './google_trends_learning.mjs';
@@ -248,6 +250,8 @@ async function planChatStepRoutes(messages, toolNames, received) {
       && looksLikeSkillDescription(positionalEdit.ownText(task)))) {
     return null;
   }
+  const ownedGoals = await planGoalLedger(task, messages, toolNames, planChatStepResolved);
+  if (ownedGoals !== null) return ownedGoals;
   // The computer_use arm. Ahead of it, quotes that do not pair leave no
   // telling the quoted text from the instruction, so the request is declined
   // before any arm reads its payload as words to act on (PR #1188 G71).
@@ -282,7 +286,7 @@ export async function planSettledRoutes(task, messages, toolNames) {
       ?? planShellStep(messages, toolNames, explicit);
   }
   for (const arm of [gitCommit.planCommitStep, planWorkspaceChangeArm, codeTask.planGeneratedSourceStep, structuredEdit.planStructuredEditStep, structuredDocument.planStep]) {
-    const plan = await arm(task, messages, toolNames);
+    const plan = await arm(instructionView(task, literalWriteOwnership(task)), messages, toolNames);
     if (plan !== null) return plan;
   }
   if (statementAudit.isStatementAuditTask(task)) {
@@ -474,7 +478,7 @@ export function planShellStep(messages, toolNames, command) {
 }
 
 function missingSemanticImplementation(task) {
-  if (semanticAuthoringLead(task) && composeGeneralChangePlan(task) === null && composeEditRequest(task) === null) {
+  if (ownedSemanticAuthoringLead(task) && composeGeneralChangePlan(task) === null && composeEditRequest(task) === null) {
     const discovery = { reason: 'MissingContract', goal: task, authored: false, verified: false,
       missingContracts: ['source-bound-implementation-plan', 'independent-goal-validation'] };
     const plan = resolvedFinalAnswer(agenticMessage('callable-discovery-outcome', {
