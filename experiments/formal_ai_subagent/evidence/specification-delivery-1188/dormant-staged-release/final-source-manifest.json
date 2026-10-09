@@ -1,0 +1,17 @@
+[
+  {
+    "target": ".github/workflows/release-staged.yml",
+    "bytes": 73874,
+    "sha256": "c4241f7571d9e32fa7e460616a1179338fdcbd125ac4312e54b620650af2ed5d"
+  },
+  {
+    "target": "scripts/release-stage-transfer.mjs",
+    "bytes": 17495,
+    "sha256": "ec8c781d8293cc4990ac3217e48569a9878ae6556defd9812d0ef91242934bdc"
+  },
+  {
+    "target": "rust/tests/web/release-stage-transfer.test.mjs",
+    "bytes": 19485,
+    "sha256": "169f758848bb2f60c67b52f8d174b5b3e2b7ab940a4ab6ebff224ebaa623ba38"
+  }
+]

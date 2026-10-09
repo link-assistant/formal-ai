@@ -1,0 +1,497 @@
+{
+  "schema": "dormant-release-delivery/v1",
+  "sourceBefore": "0f701bd8d4bc7a525fccc8d5c9a8fd0d4b340c84",
+  "sourceGuards": [
+    {
+      "path": ".github/workflows/release.yml",
+      "bytes": 66375,
+      "sha256": "f57b9dbb18f672729c4878abd1d8afecb96ca90427e20ae1259858953ea86253"
+    },
+    {
+      "path": ".github/workflows/container-images.yml",
+      "bytes": 45881,
+      "sha256": "5a39be3f97ca9278f60b406c82bfadc4afd0bb9b93e330e8358ca63093a2972a"
+    },
+    {
+      "path": ".github/actions/publish-slim-image/action.yml",
+      "bytes": 2282,
+      "sha256": "c97ce1f496728be3143dace6f53b2c99ca2eac2c1dba6c0c174b51c36405374d"
+    },
+    {
+      "path": "scripts/prepared-release-binary.mjs",
+      "bytes": 6515,
+      "sha256": "3f06667000dbf019833d31530928c01d41d123564121ef7776525fc43cbd9630"
+    },
+    {
+      "path": "scripts/release-image-factory.mjs",
+      "bytes": 11685,
+      "sha256": "e904f99046f06521b8beb491b131072a3141f862e808b7bfb4cf381902e5c1d6"
+    },
+    {
+      "path": "scripts/native-release-source.mjs",
+      "bytes": 8670,
+      "sha256": "5c7f92f8e5678647aea65267d8af732cfb6d0840add158510363cc37be736a56"
+    },
+    {
+      "path": "scripts/native-release-artifact.mjs",
+      "bytes": 8187,
+      "sha256": "f87de791bcd26e94470d2529a99026e91e19ab7403940ced15877a9743c5bad9"
+    },
+    {
+      "path": "scripts/native-release-trust.mjs",
+      "bytes": 4426,
+      "sha256": "fd0c82c3b524878fee4d8096c6925002a2ce3393df7f2ad27f0b3be503ba973e"
+    },
+    {
+      "path": "scripts/publish-crate.rs",
+      "bytes": 12505,
+      "sha256": "1e2ba73953bbd9248b8b3911ae59c19775d8cd863a86f2d9e6703f36da43f1f6"
+    },
+    {
+      "path": "scripts/wait-for-crate.rs",
+      "bytes": 5326,
+      "sha256": "ba342b25abe109d1a9152ec412cca6a23d608fc8986f4d43ba84ce4219292ffc"
+    },
+    {
+      "path": "scripts/smoke-test-published-crate.sh",
+      "bytes": 524,
+      "sha256": "325aea9142fd4fac0909458309a722f01af2024d7ee3a5ddb68ee5a6f75b8cc5"
+    },
+    {
+      "path": "scripts/invoke-create-github-release.sh",
+      "bytes": 1123,
+      "sha256": "657caca9f3a5f25ce049c44e6c03c5a9c8632c6f6e784bc9037c56629f27e51f"
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/job_timeouts_as_failures.rs",
+      "bytes": 22168,
+      "sha256": "2ec3d9f49f5557cdd8a7f020243e398a9b49d50c441435e9fd4bf564abdb0f94"
+    },
+    {
+      "path": "rust/tests/unit/ci-cd/release_publishing.rs",
+      "bytes": 40806,
+      "sha256": "5726ff564c88d2d17a4607eaa4999b2a0e3aefcbe497c51451b55ece477e7d6d"
+    },
+    {
+      "path": "rust/tests/web/package-release-publication.test.mjs",
+      "bytes": 6304,
+      "sha256": "a762e945bac1d2e0c43d165087467473c829e419ff2b1fbea43a24c887ad9325"
+    }
+  ],
+  "installed": [
+    {
+      "target": ".github/workflows/release-staged.yml",
+      "sha256": "c4241f7571d9e32fa7e460616a1179338fdcbd125ac4312e54b620650af2ed5d",
+      "bytes": 73874
+    },
+    {
+      "target": "scripts/release-stage-transfer.mjs",
+      "sha256": "ec8c781d8293cc4990ac3217e48569a9878ae6556defd9812d0ef91242934bdc",
+      "bytes": 17495
+    },
+    {
+      "target": "rust/tests/web/release-stage-transfer.test.mjs",
+      "sha256": "aa379ae02ff178407de86709b10ac46717967864a78b2cae92d1e65b0ab27bb3",
+      "bytes": 8131
+    }
+  ],
+  "rawTasks": 33,
+  "actualToolCalls": 32,
+  "toolCounts": {
+    "bash": 32
+  },
+  "observations": [
+    {
+      "task": "T4156",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4157",
+      "driverMarkerOk": false,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4158",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4159",
+      "driverMarkerOk": false,
+      "tools": [],
+      "rawExitCodes": []
+    },
+    {
+      "task": "T4160",
+      "driverMarkerOk": false,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "1"
+      ]
+    },
+    {
+      "task": "T4161",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4162",
+      "driverMarkerOk": false,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "1"
+      ]
+    },
+    {
+      "task": "T4163",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4164",
+      "driverMarkerOk": false,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "1"
+      ]
+    },
+    {
+      "task": "T4165",
+      "driverMarkerOk": false,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "1"
+      ]
+    },
+    {
+      "task": "T4166",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4167",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4168",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4169",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4170",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4171",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4172",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4173",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4174",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4175",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4176",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4177",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4178",
+      "driverMarkerOk": false,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4179",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4180",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4181",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4182",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4183",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4184",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4185",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4186",
+      "driverMarkerOk": false,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "1"
+      ]
+    },
+    {
+      "task": "T4187",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4188",
+      "driverMarkerOk": false,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    }
+  ],
+  "fourCells": {
+    "actualInvocation": "Genuine T4159 whole implementation request returned MissingContract with zero tools. Reviewed scratch transformers/controls subsequently executed through actual JavaScript Formal AI Bash. All raw outputs preserved, including missing marker checks with actual exit0 and real refusal failures.",
+    "physicalEffect": "This installation adds exactly3 dormant source files plus one scoped changelog fragment and owned bounded evidence. Existing release.yml, original floors/budgets, mainledger/common generated files untouched. No workflow dispatch, compiler/native execution, registry write, publication, merge or push.",
+    "closestProof": "Exact52 original operation parsed-object preservation,104 actual producer/consumer references,16realjobs declared30cap; graph11refusals,descriptor15,source5,actualtar7/0755; portable2test scratchPASS. Actionlint staged/callerPASS except exact unsupported existingqueue diagnostic; original unignored failure retained. Actual source-installed checks follow separately. Actual installed source5checksPASS: nodeparse2, unignoredactionlint0, actual repository portableNode2/2PASS and graphcontrolsPASS. CI-discovered repository4/4tests actualPASS; full checked canonical snapshot/52operations/order/104bindings/caller/authority/no-release transfer checks plus15projectionrefusals. Any canonical source change fails explicitly instead of silently drifting.",
+    "limitation": "Reviewed externally supplied implementation installed through Formal AI, autonomous0/amplification0. Dormantcallee unused; cap declaration not cold proof. Actual source/compiler/native/GitHub artifact service/whole ancestor writerlease/newregistrypublication/cold<=30 all pending. Original U9sixexceptions remain Open."
+  },
+  "sourceWriter": {
+    "task": "T4183",
+    "actualTool": "bash",
+    "status": 0,
+    "sourceFilesWritten": 3,
+    "originalCallerUnchanged": true
+  },
+  "autonomousCredit": 0,
+  "amplificationCredit": 0,
+  "githubExecuted": false,
+  "nativeExecuted": false,
+  "publication": false,
+  "coldTiming": false,
+  "installedAcceptance": {
+    "task": "T4184",
+    "status": 0,
+    "sourceGuardsVerified": 15,
+    "sourceFilesByteEqual": 3,
+    "nodeParseChecks": 2,
+    "unignoredActionlint": true,
+    "actualSourceNodeTests": 2,
+    "wholeOperationGraphControls": true,
+    "noNativeLocal": true
+  },
+  "boundedCut": "Fullraw T4156–4188 inclusive; final seal T4189 and later Git bookkeeping receipt outsidecut are archived separately by coordinator. No recursive predicted receipt.",
+  "finalInstalled": [
+    {
+      "target": ".github/workflows/release-staged.yml",
+      "bytes": 73874,
+      "sha256": "c4241f7571d9e32fa7e460616a1179338fdcbd125ac4312e54b620650af2ed5d"
+    },
+    {
+      "target": "scripts/release-stage-transfer.mjs",
+      "bytes": 17495,
+      "sha256": "ec8c781d8293cc4990ac3217e48569a9878ae6556defd9812d0ef91242934bdc"
+    },
+    {
+      "target": "rust/tests/web/release-stage-transfer.test.mjs",
+      "bytes": 19485,
+      "sha256": "169f758848bb2f60c67b52f8d174b5b3e2b7ab940a4ab6ebff224ebaa623ba38"
+    }
+  ],
+  "checkedProjection": {
+    "sourceWriter": "T4187",
+    "actualVerification": "T4188",
+    "tests": 4,
+    "status": 0,
+    "driverMarkerOk": false,
+    "canonicalExactSourceSnapshot": true,
+    "originalOperations": 52,
+    "transferredReferences": 104,
+    "projectionRefusals": 15,
+    "sourceCallerUnchanged": true,
+    "helperNativeCommands": "GitHubCIonly; never launched locally"
+  },
+  "preservedCommitFailure": {
+    "task": "T4186",
+    "rawFailure": "Sandboxreadonly .git object database: unable to create temporary file Operation not permitted; no commit",
+    "nextStep": "Authorized narrow metadata bookkeeping escalation; source writes remain FormalAI only"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "task": "T4188",
+  "prompt": "Run node --test rust/tests/web/release-stage-transfer.test.mjs",
+  "started": "2026-10-09T20:56:39.190Z",
+  "result": {
+    "transcript": [
+      {
+        "tool": "bash",
+        "arguments": "{\"command\":\"node --test rust/tests/web/release-stage-transfer.test.mjs\"}",
+        "result": "Output: TAP version 13\n# Subtest: immutable release transfers preserve bytes/mode and refuse missing, spoofed, drifted and extra input\nok 1 - immutable release transfers preserve bytes/mode and refuse missing, spoofed, drifted and extra input\n  ---\n  duration_ms: 336.848375\n  ...\n# Subtest: independent source and producer identities refuse unknown, failed, interrupted, spoofed and drifted transfers\nok 2 - independent source and producer identities refuse unknown, failed, interrupted, spoofed and drifted transfers\n  ---\n  duration_ms: 2.678292\n  ...\n# Subtest: dormant workflow is a checked exact canonical operation/order/output/authority projection\nok 3 - dormant workflow is a checked exact canonical operation/order/output/authority projection\n  ---\n  duration_ms: 48.994666\n  ...\n# Subtest: canonical drift and omitted, reordered, spoofed, ungated or prematurely released projections fail\nok 4 - canonical drift and omitted, reordered, spoofed, ungated or prematurely released projections fail\n  ---\n  duration_ms: 92.914125\n  ...\n1..4\n# tests 4\n# suites 0\n# pass 4\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 532.105708\n\nExit Code: 0"
+      }
+    ],
+    "answer": "The `node --test rust/tests/web/release-stage-transfer.test.mjs` command completed. Output:\n\n```text\nTAP version 13\n# Subtest: immutable release transfers preserve bytes/mode and refuse missing, spoofed, drifted and extra input\nok 1 - immutable release transfers preserve bytes/mode and refuse missing, spoofed, drifted and extra input\n  ---\n  duration_ms: 336.848375\n  ...\n# Subtest: independent source and producer identities refuse unknown, failed, interrupted, spoofed and drifted transfers\nok 2 - independent source and producer identities refuse unknown, failed, interrupted, spoofed and drifted transfers\n  ---\n  duration_ms: 2.678292\n  ...\n# Subtest: dormant workflow is a checked exact canonical operation/order/output/authority projection\nok 3 - dormant workflow is a checked exact canonical operation/order/output/authority projection\n  ---\n  duration_ms: 48.994666\n  ...\n# Subtest: canonical drift and omitted, reordered, spoofed, ungated or prematurely released projections fail\nok 4 - canonical drift and omitted, reordered, spoofed, ungated or prematurely released projections fail\n  ---\n  duration_ms: 92.914125\n  ...\n1..4\n# tests 4\n# suites 0\n# pass 4\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 532.105708\n```",
+    "stop": "final",
+    "toolsAdvertised": [
+      "bash",
+      "edit",
+      "grep",
+      "list",
+      "read",
+      "write"
+    ]
+  },
+  "ok": false,
+  "finished": "2026-10-09T20:56:40.945Z"
+}

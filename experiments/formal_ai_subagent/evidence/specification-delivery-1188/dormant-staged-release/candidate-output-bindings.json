@@ -1,0 +1,1047 @@
+{
+  "originalSourceSha256": "f57b9dbb18f672729c4878abd1d8afecb96ca90427e20ae1259858953ea86253",
+  "bindings": [
+    {
+      "caller": "auto-release",
+      "consumerStage": "compile-release",
+      "consumerOperation": "Build release",
+      "original": "steps.check.outputs.should_release",
+      "replacement": "needs.auto_prepare-source.outputs.check__should_release",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "check",
+      "output": "should_release"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "compile-release",
+      "consumerOperation": "Build release",
+      "original": "steps.current_version.outputs.version",
+      "replacement": "needs.auto_prepare-source.outputs.current_version__version",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "current_version",
+      "output": "version"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "verify-package",
+      "consumerOperation": "Verify packaged crate archive",
+      "original": "steps.check.outputs.should_release",
+      "replacement": "needs.auto_prepare-source.outputs.check__should_release",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "check",
+      "output": "should_release"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-crate",
+      "consumerOperation": "Publish to Crates.io",
+      "original": "steps.check.outputs.should_release",
+      "replacement": "needs.auto_prepare-source.outputs.check__should_release",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "check",
+      "output": "should_release"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-crate",
+      "consumerOperation": "Publish to Crates.io",
+      "original": "steps.prepared.outputs.crate_published",
+      "replacement": "needs.auto_prepare-source.outputs.prepared__crate_published",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "prepared",
+      "output": "crate_published"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "registry-availability",
+      "consumerOperation": "Wait for Crate availability on Crates.io",
+      "original": "steps.check.outputs.should_release",
+      "replacement": "needs.auto_prepare-source.outputs.check__should_release",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "check",
+      "output": "should_release"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "registry-availability",
+      "consumerOperation": "Wait for Crate availability on Crates.io",
+      "original": "steps.prepared.outputs.crate_published",
+      "replacement": "needs.auto_prepare-source.outputs.prepared__crate_published",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "prepared",
+      "output": "crate_published"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "registry-availability",
+      "consumerOperation": "Wait for Crate availability on Crates.io",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.auto_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "auto_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "registry-availability",
+      "consumerOperation": "Wait for Crate availability on Crates.io",
+      "original": "steps.current_version.outputs.version",
+      "replacement": "needs.auto_prepare-source.outputs.current_version__version",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "current_version",
+      "output": "version"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "published-crate-smoke",
+      "consumerOperation": "Smoke test the published crate",
+      "original": "steps.check.outputs.should_release",
+      "replacement": "needs.auto_prepare-source.outputs.check__should_release",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "check",
+      "output": "should_release"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "published-crate-smoke",
+      "consumerOperation": "Smoke test the published crate",
+      "original": "steps.prepared.outputs.crate_published",
+      "replacement": "needs.auto_prepare-source.outputs.prepared__crate_published",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "prepared",
+      "output": "crate_published"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "published-crate-smoke",
+      "consumerOperation": "Smoke test the published crate",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.auto_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "auto_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "published-crate-smoke",
+      "consumerOperation": "Smoke test the published crate",
+      "original": "steps.current_version.outputs.version",
+      "replacement": "needs.auto_prepare-source.outputs.current_version__version",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "current_version",
+      "output": "version"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Free up runner disk space",
+      "original": "steps.check.outputs.should_release",
+      "replacement": "needs.auto_prepare-source.outputs.check__should_release",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "check",
+      "output": "should_release"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Free up runner disk space",
+      "original": "steps.prepared.outputs.crate_published",
+      "replacement": "needs.auto_prepare-source.outputs.prepared__crate_published",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "prepared",
+      "output": "crate_published"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Free up runner disk space",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.auto_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "auto_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Log in to GitHub Container Registry",
+      "original": "steps.check.outputs.should_release",
+      "replacement": "needs.auto_prepare-source.outputs.check__should_release",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "check",
+      "output": "should_release"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Log in to GitHub Container Registry",
+      "original": "steps.prepared.outputs.crate_published",
+      "replacement": "needs.auto_prepare-source.outputs.prepared__crate_published",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "prepared",
+      "output": "crate_published"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Log in to GitHub Container Registry",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.auto_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "auto_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Set up Docker Buildx",
+      "original": "steps.check.outputs.should_release",
+      "replacement": "needs.auto_prepare-source.outputs.check__should_release",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "check",
+      "output": "should_release"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Set up Docker Buildx",
+      "original": "steps.prepared.outputs.crate_published",
+      "replacement": "needs.auto_prepare-source.outputs.prepared__crate_published",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "prepared",
+      "output": "crate_published"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Set up Docker Buildx",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.auto_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "auto_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Expose actual BuildKit cache runtime",
+      "original": "steps.check.outputs.should_release",
+      "replacement": "needs.auto_prepare-source.outputs.check__should_release",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "check",
+      "output": "should_release"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Expose actual BuildKit cache runtime",
+      "original": "steps.prepared.outputs.crate_published",
+      "replacement": "needs.auto_prepare-source.outputs.prepared__crate_published",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "prepared",
+      "output": "crate_published"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Expose actual BuildKit cache runtime",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.auto_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "auto_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Publish Docker image to GHCR",
+      "original": "steps.check.outputs.should_release",
+      "replacement": "needs.auto_prepare-source.outputs.check__should_release",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "check",
+      "output": "should_release"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Publish Docker image to GHCR",
+      "original": "steps.prepared.outputs.crate_published",
+      "replacement": "needs.auto_prepare-source.outputs.prepared__crate_published",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "prepared",
+      "output": "crate_published"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Publish Docker image to GHCR",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.auto_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "auto_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Publish Docker image to GHCR",
+      "original": "steps.current_version.outputs.version",
+      "replacement": "needs.auto_prepare-source.outputs.current_version__version",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "current_version",
+      "output": "version"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Publish and verify the slim GHCR sidecar",
+      "original": "steps.check.outputs.should_release",
+      "replacement": "needs.auto_prepare-source.outputs.check__should_release",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "check",
+      "output": "should_release"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Publish and verify the slim GHCR sidecar",
+      "original": "steps.prepared.outputs.crate_published",
+      "replacement": "needs.auto_prepare-source.outputs.prepared__crate_published",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "prepared",
+      "output": "crate_published"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Publish and verify the slim GHCR sidecar",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.auto_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "auto_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Publish and verify the slim GHCR sidecar",
+      "original": "steps.current_version.outputs.version",
+      "replacement": "needs.auto_prepare-source.outputs.current_version__version",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "current_version",
+      "output": "version"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Verify the published GHCR image is anonymously pullable",
+      "original": "steps.check.outputs.should_release",
+      "replacement": "needs.auto_prepare-source.outputs.check__should_release",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "check",
+      "output": "should_release"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Verify the published GHCR image is anonymously pullable",
+      "original": "steps.prepared.outputs.crate_published",
+      "replacement": "needs.auto_prepare-source.outputs.prepared__crate_published",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "prepared",
+      "output": "crate_published"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Verify the published GHCR image is anonymously pullable",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.auto_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "auto_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Configure Docker Hub publishing",
+      "original": "steps.check.outputs.should_release",
+      "replacement": "needs.auto_prepare-source.outputs.check__should_release",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "check",
+      "output": "should_release"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Configure Docker Hub publishing",
+      "original": "steps.prepared.outputs.crate_published",
+      "replacement": "needs.auto_prepare-source.outputs.prepared__crate_published",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "prepared",
+      "output": "crate_published"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Configure Docker Hub publishing",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.auto_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "auto_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Publish Docker image to Docker Hub",
+      "original": "steps.current_version.outputs.version",
+      "replacement": "needs.auto_prepare-source.outputs.current_version__version",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "current_version",
+      "output": "version"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Create GitHub Release",
+      "original": "steps.check.outputs.should_release",
+      "replacement": "needs.auto_prepare-source.outputs.check__should_release",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "check",
+      "output": "should_release"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Create GitHub Release",
+      "original": "steps.prepared.outputs.crate_published",
+      "replacement": "needs.auto_prepare-source.outputs.prepared__crate_published",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "prepared",
+      "output": "crate_published"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Create GitHub Release",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.auto_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "auto_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Create GitHub Release",
+      "original": "steps.dockerhub.outputs.docker_hub_url",
+      "replacement": "needs.auto_publish-verify-images.outputs.dockerhub__docker_hub_url",
+      "producerJob": "auto_publish-verify-images",
+      "producerStep": "dockerhub",
+      "output": "docker_hub_url"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Create GitHub Release",
+      "original": "steps.version.outputs.new_version",
+      "replacement": "needs.auto_prepare-source.outputs.version__new_version",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "version",
+      "output": "new_version"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Create GitHub Release",
+      "original": "steps.current_version.outputs.version",
+      "replacement": "needs.auto_prepare-source.outputs.current_version__version",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "current_version",
+      "output": "version"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Attach the verified immutable slim image receipt",
+      "original": "steps.check.outputs.should_release",
+      "replacement": "needs.auto_prepare-source.outputs.check__should_release",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "check",
+      "output": "should_release"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Attach the verified immutable slim image receipt",
+      "original": "steps.prepared.outputs.crate_published",
+      "replacement": "needs.auto_prepare-source.outputs.prepared__crate_published",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "prepared",
+      "output": "crate_published"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Attach the verified immutable slim image receipt",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.auto_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "auto_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Attach the verified immutable slim image receipt",
+      "original": "steps.dockerhub.outputs.enabled",
+      "replacement": "needs.auto_publish-verify-images.outputs.dockerhub__enabled",
+      "producerJob": "auto_publish-verify-images",
+      "producerStep": "dockerhub",
+      "output": "enabled"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Attach the verified immutable slim image receipt",
+      "original": "steps.version.outputs.new_version",
+      "replacement": "needs.auto_prepare-source.outputs.version__new_version",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "version",
+      "output": "new_version"
+    },
+    {
+      "caller": "auto-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Attach the verified immutable slim image receipt",
+      "original": "steps.current_version.outputs.version",
+      "replacement": "needs.auto_prepare-source.outputs.current_version__version",
+      "producerJob": "auto_prepare-source",
+      "producerStep": "current_version",
+      "output": "version"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "compile-release",
+      "consumerOperation": "Build release",
+      "original": "steps.version.outputs.version_committed",
+      "replacement": "needs.manual_prepare-source.outputs.version__version_committed",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "version_committed"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "compile-release",
+      "consumerOperation": "Build release",
+      "original": "steps.version.outputs.already_released",
+      "replacement": "needs.manual_prepare-source.outputs.version__already_released",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "already_released"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "compile-release",
+      "consumerOperation": "Build release",
+      "original": "steps.version.outputs.new_version",
+      "replacement": "needs.manual_prepare-source.outputs.version__new_version",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "new_version"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "verify-package",
+      "consumerOperation": "Verify packaged crate archive",
+      "original": "steps.version.outputs.version_committed",
+      "replacement": "needs.manual_prepare-source.outputs.version__version_committed",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "version_committed"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "verify-package",
+      "consumerOperation": "Verify packaged crate archive",
+      "original": "steps.version.outputs.already_released",
+      "replacement": "needs.manual_prepare-source.outputs.version__already_released",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "already_released"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-crate",
+      "consumerOperation": "Publish to Crates.io",
+      "original": "steps.version.outputs.version_committed",
+      "replacement": "needs.manual_prepare-source.outputs.version__version_committed",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "version_committed"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-crate",
+      "consumerOperation": "Publish to Crates.io",
+      "original": "steps.version.outputs.already_released",
+      "replacement": "needs.manual_prepare-source.outputs.version__already_released",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "already_released"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "registry-availability",
+      "consumerOperation": "Wait for Crate availability on Crates.io",
+      "original": "steps.version.outputs.version_committed",
+      "replacement": "needs.manual_prepare-source.outputs.version__version_committed",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "version_committed"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "registry-availability",
+      "consumerOperation": "Wait for Crate availability on Crates.io",
+      "original": "steps.version.outputs.already_released",
+      "replacement": "needs.manual_prepare-source.outputs.version__already_released",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "already_released"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "registry-availability",
+      "consumerOperation": "Wait for Crate availability on Crates.io",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.manual_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "manual_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "registry-availability",
+      "consumerOperation": "Wait for Crate availability on Crates.io",
+      "original": "steps.version.outputs.new_version",
+      "replacement": "needs.manual_prepare-source.outputs.version__new_version",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "new_version"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "published-crate-smoke",
+      "consumerOperation": "Smoke test the published crate",
+      "original": "steps.version.outputs.version_committed",
+      "replacement": "needs.manual_prepare-source.outputs.version__version_committed",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "version_committed"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "published-crate-smoke",
+      "consumerOperation": "Smoke test the published crate",
+      "original": "steps.version.outputs.already_released",
+      "replacement": "needs.manual_prepare-source.outputs.version__already_released",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "already_released"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "published-crate-smoke",
+      "consumerOperation": "Smoke test the published crate",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.manual_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "manual_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "published-crate-smoke",
+      "consumerOperation": "Smoke test the published crate",
+      "original": "steps.version.outputs.new_version",
+      "replacement": "needs.manual_prepare-source.outputs.version__new_version",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "new_version"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Free up runner disk space",
+      "original": "steps.version.outputs.version_committed",
+      "replacement": "needs.manual_prepare-source.outputs.version__version_committed",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "version_committed"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Free up runner disk space",
+      "original": "steps.version.outputs.already_released",
+      "replacement": "needs.manual_prepare-source.outputs.version__already_released",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "already_released"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Free up runner disk space",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.manual_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "manual_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Log in to GitHub Container Registry",
+      "original": "steps.version.outputs.version_committed",
+      "replacement": "needs.manual_prepare-source.outputs.version__version_committed",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "version_committed"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Log in to GitHub Container Registry",
+      "original": "steps.version.outputs.already_released",
+      "replacement": "needs.manual_prepare-source.outputs.version__already_released",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "already_released"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Log in to GitHub Container Registry",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.manual_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "manual_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Set up Docker Buildx",
+      "original": "steps.version.outputs.version_committed",
+      "replacement": "needs.manual_prepare-source.outputs.version__version_committed",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "version_committed"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Set up Docker Buildx",
+      "original": "steps.version.outputs.already_released",
+      "replacement": "needs.manual_prepare-source.outputs.version__already_released",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "already_released"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Set up Docker Buildx",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.manual_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "manual_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Expose actual BuildKit cache runtime",
+      "original": "steps.version.outputs.version_committed",
+      "replacement": "needs.manual_prepare-source.outputs.version__version_committed",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "version_committed"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Expose actual BuildKit cache runtime",
+      "original": "steps.version.outputs.already_released",
+      "replacement": "needs.manual_prepare-source.outputs.version__already_released",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "already_released"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Expose actual BuildKit cache runtime",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.manual_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "manual_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Publish Docker image to GHCR",
+      "original": "steps.version.outputs.version_committed",
+      "replacement": "needs.manual_prepare-source.outputs.version__version_committed",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "version_committed"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Publish Docker image to GHCR",
+      "original": "steps.version.outputs.already_released",
+      "replacement": "needs.manual_prepare-source.outputs.version__already_released",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "already_released"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Publish Docker image to GHCR",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.manual_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "manual_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Publish Docker image to GHCR",
+      "original": "steps.version.outputs.new_version",
+      "replacement": "needs.manual_prepare-source.outputs.version__new_version",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "new_version"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Publish and verify the slim GHCR sidecar",
+      "original": "steps.version.outputs.version_committed",
+      "replacement": "needs.manual_prepare-source.outputs.version__version_committed",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "version_committed"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Publish and verify the slim GHCR sidecar",
+      "original": "steps.version.outputs.already_released",
+      "replacement": "needs.manual_prepare-source.outputs.version__already_released",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "already_released"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Publish and verify the slim GHCR sidecar",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.manual_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "manual_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Publish and verify the slim GHCR sidecar",
+      "original": "steps.version.outputs.new_version",
+      "replacement": "needs.manual_prepare-source.outputs.version__new_version",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "new_version"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Verify the published GHCR image is anonymously pullable",
+      "original": "steps.version.outputs.version_committed",
+      "replacement": "needs.manual_prepare-source.outputs.version__version_committed",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "version_committed"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Verify the published GHCR image is anonymously pullable",
+      "original": "steps.version.outputs.already_released",
+      "replacement": "needs.manual_prepare-source.outputs.version__already_released",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "already_released"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Verify the published GHCR image is anonymously pullable",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.manual_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "manual_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Configure Docker Hub publishing",
+      "original": "steps.version.outputs.version_committed",
+      "replacement": "needs.manual_prepare-source.outputs.version__version_committed",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "version_committed"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Configure Docker Hub publishing",
+      "original": "steps.version.outputs.already_released",
+      "replacement": "needs.manual_prepare-source.outputs.version__already_released",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "already_released"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Configure Docker Hub publishing",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.manual_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "manual_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "publish-verify-images",
+      "consumerOperation": "Publish Docker image to Docker Hub",
+      "original": "steps.version.outputs.new_version",
+      "replacement": "needs.manual_prepare-source.outputs.version__new_version",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "new_version"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Create GitHub Release",
+      "original": "steps.version.outputs.version_committed",
+      "replacement": "needs.manual_prepare-source.outputs.version__version_committed",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "version_committed"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Create GitHub Release",
+      "original": "steps.version.outputs.already_released",
+      "replacement": "needs.manual_prepare-source.outputs.version__already_released",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "already_released"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Create GitHub Release",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.manual_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "manual_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Create GitHub Release",
+      "original": "steps.dockerhub.outputs.docker_hub_url",
+      "replacement": "needs.manual_publish-verify-images.outputs.dockerhub__docker_hub_url",
+      "producerJob": "manual_publish-verify-images",
+      "producerStep": "dockerhub",
+      "output": "docker_hub_url"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Create GitHub Release",
+      "original": "steps.version.outputs.new_version",
+      "replacement": "needs.manual_prepare-source.outputs.version__new_version",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "new_version"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Attach the verified immutable slim image receipt",
+      "original": "steps.version.outputs.version_committed",
+      "replacement": "needs.manual_prepare-source.outputs.version__version_committed",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "version_committed"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Attach the verified immutable slim image receipt",
+      "original": "steps.version.outputs.already_released",
+      "replacement": "needs.manual_prepare-source.outputs.version__already_released",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "already_released"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Attach the verified immutable slim image receipt",
+      "original": "steps.publish-crate.outputs.publish_result",
+      "replacement": "needs.manual_publish-crate.outputs.publish-crate__publish_result",
+      "producerJob": "manual_publish-crate",
+      "producerStep": "publish-crate",
+      "output": "publish_result"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Attach the verified immutable slim image receipt",
+      "original": "steps.dockerhub.outputs.enabled",
+      "replacement": "needs.manual_publish-verify-images.outputs.dockerhub__enabled",
+      "producerJob": "manual_publish-verify-images",
+      "producerStep": "dockerhub",
+      "output": "enabled"
+    },
+    {
+      "caller": "manual-release",
+      "consumerStage": "create-release",
+      "consumerOperation": "Attach the verified immutable slim image receipt",
+      "original": "steps.version.outputs.new_version",
+      "replacement": "needs.manual_prepare-source.outputs.version__new_version",
+      "producerJob": "manual_prepare-source",
+      "producerStep": "version",
+      "output": "new_version"
+    }
+  ],
+  "originalOperations": 52,
+  "scope": "Executable candidate declaration; no scheduler/native/publication/cold execution proof"
+}
