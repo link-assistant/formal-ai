@@ -17,6 +17,7 @@ debug_stage_sources
     tree "js/worker" ".js"
     tree "js/agentic/crate" ".mjs"
     tree "js/server" ".mjs"
+    entry "js/worker/formal_ai_worker_solver_events.js" recordSolverEventLog
     entry "js/server/solver-log.mjs" nativeSolverLog
   event "action_log"
     step agent_plan

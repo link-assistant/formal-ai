@@ -45,8 +45,11 @@ const RUNTIMES = [
       { path: 'js/agentic/crate', extension: '.mjs' },
       { path: 'js/server', extension: '.mjs' },
     ],
-    // The JavaScript server's native log (js/server/solve.mjs `solveSymbolic`).
-    entries: [{ path: 'js/server/solver-log.mjs', symbol: 'nativeSolverLog' }],
+    // Raw worker events are recorded before the server projects their native order.
+    entries: [
+      { path: 'js/worker/formal_ai_worker_solver_events.js', symbol: 'recordSolverEventLog' },
+      { path: 'js/server/solver-log.mjs', symbol: 'nativeSolverLog' },
+    ],
     sites: [
       /solverEvent\(\s*("[^"\\]*"|'[^'\\]*'|[A-Z][A-Z0-9_]*)\s*,/g,
       /\.push\(\s*\{\s*kind:\s*("[^"\\]*"|'[^'\\]*'|[A-Z][A-Z0-9_]*)\s*,/g,
