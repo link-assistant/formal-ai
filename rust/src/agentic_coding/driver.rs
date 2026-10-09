@@ -257,7 +257,7 @@ fn execute_tool_call(call: &ToolCall, workspace: &mut AgentWorkspace) -> (String
                         super::work_item_steps::fill(
                             "agent-file-read-frame",
                             &[
-                                ("{body}", &body),
+                                (concat!("{", "body", "}"), &body),
                                 ("{lines}", &content.split('\n').count().to_string()),
                             ],
                         ),

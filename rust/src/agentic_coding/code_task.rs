@@ -190,7 +190,7 @@ pub(super) fn rust_source_for_task(task: &str) -> Option<GeneratedSource> {
 
 pub(super) fn render_rust_template(intent: &str, substitutions: &[(&str, &str)]) -> Option<String> {
     Some(render_template(
-        seed::response_for(intent, "rust")?,
+        &seed::response_for(intent, "rust")?,
         substitutions,
     ))
 }
@@ -200,7 +200,7 @@ pub(super) fn render_rust_template(intent: &str, substitutions: &[(&str, &str)])
 pub(super) fn render_seeded_outcome(intent: &str, task: &str, path: &str) -> Option<String> {
     let language = super::tool_result::response_language(task);
     Some(render_template(
-        seed::localized_response(intent, language)?,
+        &seed::localized_response(intent, language)?,
         &[("{path}", path)],
     ))
 }
@@ -228,7 +228,7 @@ pub(super) fn render_seeded_change(
     let mut substitutions = vec![("{path}", path)];
     substitutions.extend_from_slice(slots);
     Some(render_template(
-        seed::localized_response(intent, language)?,
+        &seed::localized_response(intent, language)?,
         &substitutions,
     ))
 }
@@ -298,12 +298,12 @@ fn code_span(value: &str) -> String {
     code_span_item(value)
 }
 
-fn render_template(template: String, substitutions: &[(&str, &str)]) -> String {
+fn render_template(template: &str, substitutions: &[(&str, &str)]) -> String {
     let values: Vec<(&str, String, String)> = substitutions
         .iter()
         .map(|(slot, value)| (*slot, (*value).to_owned(), code_span(value)))
         .collect();
-    render_template_values(&template, &values)
+    render_template_values(template, &values)
 }
 
 /// Substitute only seed-owned slots; inserted literal values are never templates.

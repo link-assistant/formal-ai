@@ -89,8 +89,9 @@ fn planner_walks_the_google_trends_catalog_recipe() {
 
 #[test]
 fn committed_agent_cli_session_matches_a_fresh_google_trends_run() {
-    let committed =
-        include_str!("../../../../docs/case-studies/issue-498/agent-cli-session-google-trends.json");
+    let committed = include_str!(
+        "../../../../docs/case-studies/issue-498/agent-cli-session-google-trends.json"
+    );
     let fresh = run_agentic_task(GOOGLE_TRENDS_CATALOG_TASK).expect("workspace");
     let rendered = format!(
         "{}\n",

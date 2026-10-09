@@ -79,8 +79,9 @@ fn formal_ai_drives_the_dreaming_audit_through_agent_cli() {
 
 #[test]
 fn committed_agent_cli_session_matches_a_fresh_dreaming_audit() {
-    let committed =
-        include_str!("../../../../docs/case-studies/issue-540/agent-cli-session-dreaming-audit.json");
+    let committed = include_str!(
+        "../../../../docs/case-studies/issue-540/agent-cli-session-dreaming-audit.json"
+    );
     let fresh = run_agentic_task(DREAMING_AUDIT_TASK).expect("agent workspace");
     let rendered = format!(
         "{}\n",

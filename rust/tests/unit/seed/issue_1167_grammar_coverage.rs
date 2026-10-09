@@ -15,7 +15,8 @@ use formal_ai::seed::PROGRAM_CST_GRAMMARS_LINO;
 use links_notation::LiNo;
 use links_notation::parse_lino as parse_canonical_lino;
 
-const HELLO_WORLD_LANGUAGES: &str = include_str!("../../../../data/meta/hello-world-languages.lino");
+const HELLO_WORLD_LANGUAGES: &str =
+    include_str!("../../../../data/meta/hello-world-languages.lino");
 
 /// The tracked grammar slugs the resolved meta-language 0.58.2 ships — the
 /// pinned census `scripts/generate-program-cst-grammars.rs` derives live
