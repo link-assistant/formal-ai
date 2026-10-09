@@ -3,7 +3,7 @@ import {mkdirSync,writeFileSync,readFileSync} from 'node:fs';
 import {join} from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {expectedIdentity,NATIVE_TARGETS} from '../../../../scripts/native-release-artifact.mjs';
-import {collectReleaseEvidence,PROTOCOL_HELPERS,sha256} from '../../../../scripts/native-release-evidence.mjs';
+import {bindMacPackageExecutable,MAC_PACKAGE_TARGETS,collectReleaseEvidence,PROTOCOL_HELPERS,sha256} from '../../../../scripts/native-release-evidence.mjs';
 const encode=value=>Buffer.from(JSON.stringify(value,null,2)+'\n');
 export function createEvidenceFixture(options={}) {
  const source={version:1,source_commit:'a'.repeat(40),source_tree:'b'.repeat(40),compiler_commit:'c'.repeat(40),
@@ -28,13 +28,22 @@ export function createEvidenceFixture(options={}) {
   source_selection_sha256:bindings.sourceSha256,source_commit:source.source_commit,package_version:source.package_version,
   producer_run:source.producer_run,mode:'adhoc',package:{name:'formal-ai-desktop-'+label+'-'+source.package_version+'.dmg',bytes:123,sha256:'3'.repeat(64)},
   native_component:{bytes:99,sha256:'4'.repeat(64)},observations:{verify:observation(),display:observation('Signature=adhoc\n'),assess:null,stapler:null}})}));
+ for(const entry of signing) {
+  const record=JSON.parse(entry.bytes),parent=receipts.find(item=>item.target===MAC_PACKAGE_TARGETS[entry.label]);
+  record.package_executable_receipt=bindMacPackageExecutable(parent.bytes,{source,sourceSha256:bindings.sourceSha256,label:entry.label,
+   packageObservation:record.package,executable:record.native_component,
+   startup:{arguments:['--version'],status:0,signal:null,complete:true,stdout:'formal-ai '+source.package_version+'\n',stderr:''},signingObservations:record.observations});
+  record.package_executable_sha256=sha256(Buffer.from(JSON.stringify(record.package_executable_receipt)+'\n'));entry.bytes=encode(record);
+ }
  return {source,protocol,sourceBytes,protocolBytes,helperBytes,bindings,receipts,signing};
 }
 export function materializePublishedFixture(directory,{version,sourceCommit='b'.repeat(40),sourceTree='d'.repeat(40),expectedAssets}) {
  const fixture=createEvidenceFixture({version,sourceCommit,sourceTree});
  for(const entry of fixture.signing) {
   const record=JSON.parse(entry.bytes),bytes=Buffer.from('canned release artifact '+record.package.name+'\n');
-  record.package.bytes=bytes.length;record.package.sha256=sha256(bytes);entry.bytes=encode(record);
+  record.package.bytes=bytes.length;record.package.sha256=sha256(bytes);
+  record.package_executable_receipt.package=record.package;
+  record.package_executable_sha256=sha256(Buffer.from(JSON.stringify(record.package_executable_receipt)+'\n'));entry.bytes=encode(record);
  }
  const result=collectReleaseEvidence(fixture);if(!result.complete)throw new Error('incomplete typed fixture');
  const payloads=new Map(result.assets.map(asset=>[asset.name,asset.bytes]));

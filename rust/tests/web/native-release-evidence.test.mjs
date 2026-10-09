@@ -5,7 +5,7 @@ import {mkdtempSync,readFileSync,rmSync,writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {expectedIdentity,NATIVE_TARGETS} from '../../../scripts/native-release-artifact.mjs';
-import {collectReleaseEvidence,prepareReleaseEvidence,validateSigningEvidence,verifyPublishedEvidence,PROTOCOL_HELPERS,sha256} from '../../../scripts/native-release-evidence.mjs';
+import {bindMacPackageExecutable,MAC_PACKAGE_TARGETS,collectReleaseEvidence,prepareReleaseEvidence,validateSigningEvidence,verifyPublishedEvidence,PROTOCOL_HELPERS,sha256} from '../../../scripts/native-release-evidence.mjs';
 import {materializePublishedFixture} from '../fixtures/native-release-evidence/observations.mjs';
 const encode=value=>Buffer.from(JSON.stringify(value,null,2)+'\n');
 function fixture() {
@@ -30,6 +30,13 @@ function fixture() {
   source_selection_sha256:bindings.sourceSha256,source_commit:source.source_commit,package_version:source.package_version,
   producer_run:source.producer_run,mode:'adhoc',package:{name:'formal-ai-desktop-'+label+'-'+source.package_version+'.dmg',bytes:123,sha256:'3'.repeat(64)},
   native_component:{bytes:99,sha256:'4'.repeat(64)},observations:{verify:observation(),display:observation('Signature=adhoc\n'),assess:null,stapler:null}})}));
+ for(const entry of signing) {
+  const record=JSON.parse(entry.bytes),parent=receipts.find(item=>item.target===MAC_PACKAGE_TARGETS[entry.label]);
+  record.package_executable_receipt=bindMacPackageExecutable(parent.bytes,{source,sourceSha256:bindings.sourceSha256,label:entry.label,
+   packageObservation:record.package,executable:record.native_component,
+   startup:{arguments:['--version'],status:0,signal:null,complete:true,stdout:'formal-ai '+source.package_version+'\n',stderr:''},signingObservations:record.observations});
+  record.package_executable_sha256=sha256(Buffer.from(JSON.stringify(record.package_executable_receipt)+'\n'));entry.bytes=encode(record);
+ }
  return {source,protocol,sourceBytes,protocolBytes,helperBytes,bindings,receipts,signing};
 }
 function changed(entry,change){const value=JSON.parse(entry.bytes);change(value);return {...entry,bytes:encode(value)};}
@@ -96,6 +103,8 @@ test('mixed signed and adhoc modes follow captured public observations independe
  const f=fixture(),entry=changed(f.signing[0],r=>{
   r.mode='signed';r.observations.display.stderr='Authority=Developer ID Application: Example\nTeamIdentifier=ABC123XYZ\n';
   r.observations.assess={status:0,stdout:'',stderr:'accepted\n'};r.observations.stapler={status:0,stdout:'validated\n',stderr:''};
+  r.package_executable_receipt.signing_observations_sha256=sha256(Buffer.from(JSON.stringify(r.observations)+'\n'));
+  r.package_executable_sha256=sha256(Buffer.from(JSON.stringify(r.package_executable_receipt)+'\n'));
  });
  const result=collectReleaseEvidence({...f,signing:[entry,f.signing[1]]});assert.equal(result.complete,true);
  assert.deepEqual(result.signingModes,[{label:'macos-arm64',mode:'signed'},{label:'macos-x64',mode:'adhoc'}]);
@@ -117,6 +126,8 @@ test('signed observations require successful assessment stapling and a public te
  const f=fixture(),record=JSON.parse(f.signing[0].bytes);record.mode='signed';
  record.observations.display.stderr='Authority=Developer ID Application: Example\nTeamIdentifier=ABC123XYZ\n';
  record.observations.assess={status:0};record.observations.stapler={status:0};
+ record.package_executable_receipt.signing_observations_sha256=sha256(Buffer.from(JSON.stringify(record.observations)+'\n'));
+ record.package_executable_sha256=sha256(Buffer.from(JSON.stringify(record.package_executable_receipt)+'\n'));
  assert.equal(validateSigningEvidence(record,f.source,record.label,f.bindings.sourceSha256),'signed');
  for(const key of ['assess','stapler']){const failed=structuredClone(record);failed.observations[key].status=1;
   assert.throws(()=>validateSigningEvidence(failed,f.source,failed.label,f.bindings.sourceSha256));}

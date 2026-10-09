@@ -576,6 +576,7 @@ jobs:
         env:
           NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
           NATIVE_SIGNING_LABEL: ${{ matrix.label }}
+          NATIVE_PARENT_RECEIPT: ${{ github.workspace }}/native-bin/native-executable-receipt.json
           MACOS_BUILD_MODE: ${{ steps.mac_secrets.outputs.mode }}
         run: |
           set -euo pipefail

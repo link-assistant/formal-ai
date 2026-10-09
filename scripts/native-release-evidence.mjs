@@ -45,8 +45,55 @@ export function validateProtocolEvidence(bytes,bindings,helperBytes=null) {
  return protocol;
 }
 
+// Final signed-package bytes are observed separately from the validated build receipt.
+export const MAC_PACKAGE_TARGETS=Object.freeze({'macos-arm64':'aarch64-apple-darwin','macos-x64':'x86_64-apple-darwin'});
+const encodeObservation=value=>Buffer.from(JSON.stringify(value)+'\n');
+export function bindMacPackageExecutable(parentBytes,{source,sourceSha256,label,packageObservation,executable,startup,signingObservations}) {
+ assert.ok(Object.hasOwn(MAC_PACKAGE_TARGETS,label),'unknown Mac package label');
+ const identity=expectedIdentity(source,MAC_PACKAGE_TARGETS[label],sourceSha256,source.producer_run);
+ const parent=validateExecutableReceipt(decode(parentBytes),identity);
+ const receipt={schema:'formal-ai-macos-package-executable/v1',label,identity,
+  parent:{receipt_base64:Buffer.from(parentBytes).toString('base64'),receipt_sha256:sha256(parentBytes),executable:parent.executable},
+  package:packageObservation,executable:{name:'formal-ai',...executable},startup,
+  signing_observations_sha256:sha256(encodeObservation(signingObservations))};
+ validateMacPackageExecutable(receipt,{source,sourceSha256,label,packageObservation,executable,signingObservations,parentBytes});
+ return receipt;
+}
+export function validateMacPackageExecutable(receipt,{source,sourceSha256,label,packageObservation,executable,signingObservations,parentBytes=null}) {
+ assert.ok(Object.hasOwn(MAC_PACKAGE_TARGETS,label),'unknown Mac package label');
+ assert.equal(receipt.schema,'formal-ai-macos-package-executable/v1');assert.equal(receipt.label,label);
+ const identity=expectedIdentity(source,MAC_PACKAGE_TARGETS[label],sourceSha256,source.producer_run);
+ assert.deepEqual(receipt.identity,identity);
+ assert.equal(typeof receipt.parent.receipt_base64,'string');
+ const embedded=Buffer.from(receipt.parent.receipt_base64,'base64');
+ assert.equal(embedded.toString('base64'),receipt.parent.receipt_base64,'invalid embedded parent receipt');
+ assert.equal(sha256(embedded),receipt.parent.receipt_sha256);
+ if(parentBytes!==null)assert.ok(embedded.equals(parentBytes),'package parent differs from independently collected native receipt');
+ const parent=validateExecutableReceipt(decode(embedded),identity);assert.deepEqual(receipt.parent.executable,parent.executable);
+ assert.deepEqual(receipt.package,packageObservation);
+ assert.deepEqual(receipt.executable,{name:'formal-ai',...executable});
+ assert.ok(Number.isSafeInteger(receipt.executable.bytes)&&receipt.executable.bytes>0);digest(receipt.executable.sha256);
+ assert.equal(receipt.signing_observations_sha256,sha256(encodeObservation(signingObservations)));
+ const startup=receipt.startup;assert.deepEqual(startup.arguments,['--version']);
+ assert.equal(startup.status,0);assert.equal(startup.signal,null);assert.equal(startup.complete,true);
+ assert.equal(typeof startup.stdout,'string');assert.equal(typeof startup.stderr,'string');
+ assert.equal(startup.stdout.trim(),'formal-ai '+source.package_version,'packaged sidecar startup version differs');
+ return receipt;
+}
+
+/** Observe exact final-package bytes and an actual completed process; no compiler provenance is inferred. */
+export function observePackagedExecutable(binary,runCommand=spawnSync) {
+ const before=readFileSync(binary);assert.ok(before.length>0);
+ const result=runCommand(binary,['--version'],{encoding:'utf8',timeout:30000,maxBuffer:1024*1024});
+ if(result.error)throw result.error;assert.equal(result.signal,null);assert.equal(result.status,0,result.stderr);
+ assert.equal(typeof result.stdout,'string');assert.equal(typeof result.stderr,'string');
+ assert.ok(readFileSync(binary).equals(before),'packaged executable changed during startup');
+ return {executable:{bytes:before.length,sha256:sha256(before)},
+  startup:{arguments:['--version'],status:result.status,signal:result.signal,complete:true,stdout:result.stdout,stderr:result.stderr}};
+}
+
 /** Signing mode follows captured command observations, never secret presence. */
-export function validateSigningEvidence(record,source,label,sourceSha256) {
+export function validateSigningEvidence(record,source,label,sourceSha256,parentBytes=null) {
  assert.equal(record.version,1);assert.equal(record.label,label);assert.ok(SIGNING_LABELS.includes(label));
  assert.equal(record.source_selection_sha256,sourceSha256);assert.equal(record.package_version,source.package_version);
  assert.equal(record.source_commit,source.source_commit);assert.equal(record.producer_run,source.producer_run);
@@ -64,12 +111,18 @@ export function validateSigningEvidence(record,source,label,sourceSha256) {
  assert.equal(record.package.name,'formal-ai-desktop-'+label+'-'+source.package_version+'.dmg');semver(record.package_version);
  assert.ok(record.package.bytes>0);digest(record.package.sha256);
  assert.ok(record.native_component.bytes>0);digest(record.native_component.sha256);
+ assert.equal(record.package_executable_sha256,sha256(encodeObservation(record.package_executable_receipt)));
+ validateMacPackageExecutable(record.package_executable_receipt,{source,sourceSha256,label,parentBytes,
+  packageObservation:record.package,executable:record.native_component,signingObservations:record.observations});
  return mode;
 }
 
 /** Execute real macOS checks and keep public command output; any failed check refuses a record. */
-export function observeMacSigning(application,packageFile,{source,sourceSha256,label,runCommand=spawnSync}) {
+export function observeMacSigning(application,packageFile,{source,sourceSha256,label,parentBytes,runCommand=spawnSync}) {
  assert.equal(process.platform,'darwin');
+ assert.ok(Object.hasOwn(MAC_PACKAGE_TARGETS,label));
+ assert.equal(process.arch,NATIVE_TARGETS[MAC_PACKAGE_TARGETS[label]].architecture);
+ validateExecutableReceipt(decode(parentBytes),expectedIdentity(source,MAC_PACKAGE_TARGETS[label],sourceSha256,source.producer_run));
  const observed=(command,args)=>{
   const result=runCommand(command,args,{encoding:'utf8',timeout:30000});
   if(result.error)throw result.error;assert.equal(result.signal,null);assert.equal(result.status,0,result.stderr);
@@ -80,12 +133,17 @@ export function observeMacSigning(application,packageFile,{source,sourceSha256,l
  const text=display.stdout+'\n'+display.stderr,mode=/^Signature=adhoc$/mu.test(text)?'adhoc':'signed';
  const assess=mode==='signed'?observed('spctl',['--assess','--type','execute','--verbose=4',application]):null;
  const stapler=mode==='signed'?observed('xcrun',['stapler','validate',application]):null;
- const packageBytes=readFileSync(packageFile),nativeBytes=readFileSync(join(application,'Contents/Resources/bin/formal-ai'));
+ const packageBytes=readFileSync(packageFile);
+ const observedExecutable=observePackagedExecutable(join(application,'Contents/Resources/bin/formal-ai'),runCommand);
  const record={version:1,label,source_selection_sha256:sourceSha256,source_commit:source.source_commit,
   package_version:source.package_version,producer_run:source.producer_run,mode,
   package:{name:basename(packageFile),bytes:packageBytes.length,sha256:sha256(packageBytes)},
-  native_component:{bytes:nativeBytes.length,sha256:sha256(nativeBytes)},observations:{verify,display,assess,stapler}};
- validateSigningEvidence(record,source,label,sourceSha256);return record;
+  native_component:observedExecutable.executable,observations:{verify,display,assess,stapler}};
+ record.package_executable_receipt=bindMacPackageExecutable(parentBytes,{source,sourceSha256,label,
+  packageObservation:record.package,executable:record.native_component,startup:observedExecutable.startup,signingObservations:record.observations});
+ record.package_executable_sha256=sha256(encodeObservation(record.package_executable_receipt));
+ assert.ok(readFileSync(packageFile).equals(packageBytes),'DMG changed during signing/package observation');
+ validateSigningEvidence(record,source,label,sourceSha256,parentBytes);return record;
 }
 
 /** Bind every actual target record; missing/corrupt inputs remain explicit and cannot become defaults. */
@@ -110,7 +168,9 @@ export function collectReleaseEvidence({sourceBytes,protocolBytes,receipts=[],si
   const matches=signing.filter(entry=>entry.label===label);
   try {
    assert.equal(matches.length,1,'missing or duplicate signing observation');
-   const mode=validateSigningEvidence(decode(matches[0].bytes),source,label,bindings.sourceSha256);
+   const parents=receipts.filter(entry=>entry.target===MAC_PACKAGE_TARGETS[label]);
+   assert.equal(parents.length,1,'missing or duplicate independently collected Mac parent receipt');
+   const mode=validateSigningEvidence(decode(matches[0].bytes),source,label,bindings.sourceSha256,parents[0].bytes);
    signingModes.push({label,mode});add('formal-ai-signing-'+label+'-'+source.package_version+'.json',matches[0].bytes);
   } catch(error) {failures.push({kind:'signing',target:label,reason:error.message});}
  }
@@ -192,7 +252,7 @@ if(import.meta.url===pathToFileURL(process.argv[1]??'').href) {
  if(mode==='signing') {
   assert.equal(sha256(sourceBytes),process.env.NATIVE_SELECTION_SHA256);
   assert.equal(source.producer_run,process.env.GITHUB_RUN_ID);
-  const record=observeMacSigning(receiptDirectory,signingDirectory,{source,sourceSha256:sha256(sourceBytes),label:process.env.NATIVE_SIGNING_LABEL});
+  const record=observeMacSigning(receiptDirectory,signingDirectory,{source,sourceSha256:sha256(sourceBytes),label:process.env.NATIVE_SIGNING_LABEL,parentBytes:readFileSync(process.env.NATIVE_PARENT_RECEIPT)});
   writeFileSync(outputDirectory,JSON.stringify(record,null,2)+'\n');
  } else if(mode==='collect') {
   const protocolDirectory=process.env.FORMAL_AI_NATIVE_PROTOCOL_DIR;
