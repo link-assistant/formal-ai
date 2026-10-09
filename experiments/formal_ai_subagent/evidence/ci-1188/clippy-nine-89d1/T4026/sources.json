@@ -1,0 +1,30 @@
+[
+  {
+    "path": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/agentic_coding/general_planner/content_shape.rs",
+    "sha256": "3bd034a270826e38d556a69984a0d98624575e4e37561752ead1819b623f3747"
+  },
+  {
+    "path": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/agentic_coding/general_planner.rs",
+    "sha256": "2f34a6e7fded2762d119048aac943dbde42611f1b15e9c73525ba210cec6e53d"
+  },
+  {
+    "path": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/agentic_coding/shell_command.rs",
+    "sha256": "ec2cbf6e5bc26923abdb2b8891b6c9d34f6d91e8a2d2e1f7b49d8747b81146e6"
+  },
+  {
+    "path": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/agentic_coding/shell_command_policy.rs",
+    "sha256": "422a1f4a7314de65fdd20db5a13a1a478e60199c142fbca7730aac94a1790c01"
+  },
+  {
+    "path": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/agentic_coding/workspace_inspection.rs",
+    "sha256": "d390f06ea929dea25ec7c5e6611971edea9b23932ac090652dc1f0bb7fb7cbd2"
+  },
+  {
+    "path": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/repository_workspace/operation.rs",
+    "sha256": "fbba3192d6728cb53908dcb977b4eca08d615963aa65650123c47205fd131e79"
+  },
+  {
+    "path": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/source_walk.rs",
+    "sha256": "11cfc193c545f536092fea872649319c7173ea4edd3f1847ae114695189f490e"
+  }
+]

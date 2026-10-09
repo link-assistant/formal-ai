@@ -105,7 +105,7 @@ pub fn cargo_manifest(workspace: &RepositoryWorkspace) -> Result<String, Workspa
             detail: serde_json::json!({"reason": "workspace_cargo_manifest_unresolved", "candidates": nearest}).to_string(),
         });
     }
-    Ok(nearest[0].to_owned())
+    Ok(nearest[0].clone())
 }
 
 /// Actual manifest-owned test target paths, checked against the clone.

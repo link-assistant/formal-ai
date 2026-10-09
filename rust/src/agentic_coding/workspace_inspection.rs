@@ -45,7 +45,7 @@ use crate::seed;
 /// One block has to satisfy both halves on its own. Splitting first is what
 /// separates "review the retry helper" from the paragraph after it that grants
 /// web access; joined, the grant reads as though the request had named the web.
-pub(crate) fn asks_about_the_workspace(prompt: &str) -> bool {
+pub fn asks_about_the_workspace(prompt: &str) -> bool {
     super::stated_request::request_blocks(prompt)
         .into_iter()
         .any(|block| {

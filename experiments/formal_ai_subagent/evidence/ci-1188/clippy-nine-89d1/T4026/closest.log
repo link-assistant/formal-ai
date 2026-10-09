@@ -1,0 +1,320 @@
+TAP version 13
+# Subtest: fenced creation preserves source with task labels, command cues and paths
+ok 1 - fenced creation preserves source with task labels, command cues and paths
+  ---
+  duration_ms: 1699.47425
+  ...
+# Subtest: closed quoted whole-content consent replaces an existing source file
+ok 2 - closed quoted whole-content consent replaces an existing source file
+  ---
+  duration_ms: 142.48
+  ...
+# Subtest: a plain replacement stays an edit even when its new literal names a file write
+ok 3 - a plain replacement stays an edit even when its new literal names a file write
+  ---
+  duration_ms: 101.473375
+  ...
+# Subtest: longer fences preserve payloads containing their own Markdown examples
+ok 4 - longer fences preserve payloads containing their own Markdown examples
+  ---
+  duration_ms: 253.89025
+  ...
+# Subtest: literal verification reads failure narratives and compact JSON as authored data
+ok 5 - literal verification reads failure narratives and compact JSON as authored data
+  ---
+  duration_ms: 305.323208
+  ...
+# Subtest: explicit verification failure still vetoes exact literal output
+ok 6 - explicit verification failure still vetoes exact literal output
+  ---
+  duration_ms: 1.791333
+  ...
+# Subtest: exact-content Set forms consume seed leads while preserving the declared literal bytes
+ok 7 - exact-content Set forms consume seed leads while preserving the declared literal bytes
+  ---
+  duration_ms: 898.20675
+  ...
+# Subtest: seed-like words inside quoted payloads and ordinary leading prose remain content
+ok 8 - seed-like words inside quoted payloads and ordinary leading prose remain content
+  ---
+  duration_ms: 320.134917
+  ...
+# Subtest: G125: quoted edit payloads with skill cues stay data
+ok 9 - G125: quoted edit payloads with skill cues stay data
+  ---
+  duration_ms: 94.443625
+  ...
+# Subtest: G125: genuine unquoted skill teaching keeps its guard
+ok 10 - G125: genuine unquoted skill teaching keeps its guard
+  ---
+  duration_ms: 0.994833
+  ...
+# Subtest: G125: a malformed quoted replacement changes nothing
+ok 11 - G125: a malformed quoted replacement changes nothing
+  ---
+  duration_ms: 5.647708
+  ...
+# Subtest: missing parent is created and the entire authorized stdout is captured
+ok 12 - missing parent is created and the entire authorized stdout is captured
+  ---
+  duration_ms: 1203.02275
+  ...
+# Subtest: flat target preserves exact command bytes without creating another parent
+ok 13 - flat target preserves exact command bytes without creating another parent
+  ---
+  duration_ms: 58.219708
+  ...
+# Subtest: a parent file prevents execution and no target success is fabricated
+ok 14 - a parent file prevents execution and no target success is fabricated
+  ---
+  duration_ms: 69.974541
+  ...
+# Subtest: denied directory creation is an actual process failure
+ok 15 - denied directory creation is an actual process failure
+  ---
+  duration_ms: 61.22175
+  ...
+# Subtest: opaque Unicode destination is quoted without altering its bytes
+ok 16 - opaque Unicode destination is quoted without altering its bytes
+  ---
+  duration_ms: 70.106542
+  ...
+# Subtest: injection-shaped destination is refused before a command is planned
+ok 17 - injection-shaped destination is refused before a command is planned
+  ---
+  duration_ms: 1.292542
+  ...
+# Subtest: the original failing request retains its whole goal and real destination
+ok 18 - the original failing request retains its whole goal and real destination
+  ---
+  duration_ms: 1.356375
+  ...
+# Subtest: independent create and real outer edit must both physically deliver: enumerated
+ok 19 - independent create and real outer edit must both physically deliver: enumerated
+  ---
+  duration_ms: 2207.562625
+  ...
+# Subtest: independent create and real outer edit must both physically deliver: unlisted
+ok 20 - independent create and real outer edit must both physically deliver: unlisted
+  ---
+  duration_ms: 587.2915
+  ...
+# Subtest: exact original promotion payload owns its edit lexemes
+ok 21 - exact original promotion payload owns its edit lexemes
+  ---
+  duration_ms: 2064.525792
+  ...
+# Subtest: quoted/fenced exact body «replace "old" with "new"; avoid failed count»
+ok 22 - quoted/fenced exact body «replace "old" with "new"; avoid failed count»
+  ---
+  duration_ms: 4.297625
+  ...
+# Subtest: quoted/fenced exact body "replace old with new"
+ok 23 - quoted/fenced exact body "replace old with new"
+  ---
+  duration_ms: 3.027667
+  ...
+# Subtest: quoted/fenced exact body ````text\\nreplace "old" with "new"\\n````
+ok 24 - quoted/fenced exact body ````text\\nreplace "old" with "new"\\n````
+  ---
+  duration_ms: 2.765667
+  ...
+# Subtest: Unicode duplicate body retains raw boundaries
+ok 25 - Unicode duplicate body retains raw boundaries
+  ---
+  duration_ms: 1.521792
+  ...
+# Subtest: independent outer edit survives payload masking
+ok 26 - independent outer edit survives payload masking
+  ---
+  duration_ms: 5.989417
+  ...
+# Subtest: genuine quoted edit is unchanged
+ok 27 - genuine quoted edit is unchanged
+  ---
+  duration_ms: 7.905208
+  ...
+# Subtest: nonsoftware ownership haz una búsqueda web de rust ownership
+ok 28 - nonsoftware ownership haz una búsqueda web de rust ownership
+  ---
+  duration_ms: 0.573125
+  ...
+# Subtest: nonsoftware ownership Make a web search for Rust ownership
+ok 29 - nonsoftware ownership Make a web search for Rust ownership
+  ---
+  duration_ms: 0.410667
+  ...
+# Subtest: nonsoftware ownership Сделай поиск в интернете о Rust
+ok 30 - nonsoftware ownership Сделай поиск в интернете о Rust
+  ---
+  duration_ms: 0.225917
+  ...
+# Subtest: nonsoftware ownership वेब पर rust ownership खोजें
+ok 31 - nonsoftware ownership वेब पर rust ownership खोजें
+  ---
+  duration_ms: 0.108
+  ...
+# Subtest: nonsoftware ownership 在网络上查找 rust ownership
+ok 32 - nonsoftware ownership 在网络上查找 rust ownership
+  ---
+  duration_ms: 0.122917
+  ...
+# Subtest: coding ownership haz una función que consulta la web
+ok 33 - coding ownership haz una función que consulta la web
+  ---
+  duration_ms: 0.428125
+  ...
+# Subtest: coding ownership Implement a function that searches the web
+ok 34 - coding ownership Implement a function that searches the web
+  ---
+  duration_ms: 0.259209
+  ...
+# Subtest: coding ownership Реализуй функцию для поиска в интернете
+ok 35 - coding ownership Реализуй функцию для поиска в интернете
+  ---
+  duration_ms: 0.425583
+  ...
+# Subtest: coding ownership लागू फ़ंक्शन वेब
+ok 36 - coding ownership लागू फ़ंक्शन वेब
+  ---
+  duration_ms: 0.227375
+  ...
+# Subtest: coding ownership 实现函数查询网络
+ok 37 - coding ownership 实现函数查询网络
+  ---
+  duration_ms: 0.194792
+  ...
+# Subtest: quoted coding topic is not the operation owner
+ok 38 - quoted coding topic is not the operation owner
+  ---
+  duration_ms: 0.385334
+  ...
+# Subtest: unsupported authoring preserves Gap ownership
+ok 39 - unsupported authoring preserves Gap ownership
+  ---
+  duration_ms: 0.246292
+  ...
+# Subtest: owned create payload produces no independent edit
+ok 40 - owned create payload produces no independent edit
+  ---
+  duration_ms: 5.942958
+  ...
+# Subtest: two independent outer edits both survive
+ok 41 - two independent outer edits both survive
+  ---
+  duration_ms: 3.881416
+  ...
+# Subtest: CJK adjacent operation roles preserve raw ownership
+ok 42 - CJK adjacent operation roles preserve raw ownership
+  ---
+  duration_ms: 0.561834
+  ...
+# Subtest: original question selects source reads and the original command selects verified execution
+ok 43 - original question selects source reads and the original command selects verified execution
+  ---
+  duration_ms: 1436.927709
+  ...
+# Subtest: heldout inspection grammar shares the same goal and compound authoring remains a gap
+ok 44 - heldout inspection grammar shares the same goal and compound authoring remains a gap
+  ---
+  duration_ms: 92.309792
+  ...
+# Subtest: manifest discovery follows actual paths and refuses missing or ambiguous siblings
+ok 45 - manifest discovery follows actual paths and refuses missing or ambiguous siblings
+  ---
+  duration_ms: 0.472917
+  ...
+# Subtest: Windows source paths use the same normalized manifest rule
+ok 46 - Windows source paths use the same normalized manifest rule
+  ---
+  duration_ms: 0.206459
+  ...
+# Subtest: actual process status controls completion: 0
+ok 47 - actual process status controls completion: 0
+  ---
+  duration_ms: 162.799125
+  ...
+# Subtest: actual process status controls completion: 7
+ok 48 - actual process status controls completion: 7
+  ---
+  duration_ms: 142.3295
+  ...
+# Subtest: a real child success cannot complete an unbound or changed source head
+ok 49 - a real child success cannot complete an unbound or changed source head
+  ---
+  duration_ms: 295.931125
+  ...
+# Subtest: matching length cannot substitute for an exact output hash
+ok 50 - matching length cannot substitute for an exact output hash
+  ---
+  duration_ms: 149.365375
+  ...
+# Subtest: missing status and timeout can never be completion
+ok 51 - missing status and timeout can never be completion
+  ---
+  duration_ms: 303.685958
+  ...
+# Subtest: wrong argv, root, source identity and status remain unbound
+ok 52 - wrong argv, root, source identity and status remain unbound
+  ---
+  duration_ms: 548.219416
+  ...
+# Subtest: actual Cargo query follows heldout layout 
+ok 53 - actual Cargo query follows heldout layout 
+  ---
+  duration_ms: 458.672375
+  ...
+# Subtest: actual Cargo query follows heldout layout different/
+ok 54 - actual Cargo query follows heldout layout different/
+  ---
+  duration_ms: 444.54325
+  ...
+# Subtest: actual query rejects wrong source head before reporting
+ok 55 - actual query rejects wrong source head before reporting
+  ---
+  duration_ms: 241.480375
+  ...
+# Subtest: actual query refuses a missing declared target rather than naming an invented path
+ok 56 - actual query refuses a missing declared target rather than naming an invented path
+  ---
+  duration_ms: 322.543834
+  ...
+# Subtest: canonical context policy preserves every original refusal and attached prefix operand
+ok 57 - canonical context policy preserves every original refusal and attached prefix operand
+  ---
+  duration_ms: 14.106583
+  ...
+# Subtest: actual offline cache absence never invokes fetch or poisons service health
+ok 58 - actual offline cache absence never invokes fetch or poisons service health
+  ---
+  duration_ms: 1143.416167
+  ...
+# Subtest: actual offline cached body is read byte-exact with no network request
+ok 59 - actual offline cached body is read byte-exact with no network request
+  ---
+  duration_ms: 645.249917
+  ...
+# Subtest: offline missing follow capture retains the prior successful service observation
+ok 60 - offline missing follow capture retains the prior successful service observation
+  ---
+  duration_ms: 444.845458
+  ...
+# Subtest: live transport prose cannot declare offline policy
+ok 61 - live transport prose cannot declare offline policy
+  ---
+  duration_ms: 458.3465
+  ...
+# Subtest: actual live HTTP503 remains a service failure
+ok 62 - actual live HTTP503 remains a service failure
+  ---
+  duration_ms: 463.154209
+  ...
+1..62
+# tests 62
+# suites 0
+# pass 62
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5035.846333

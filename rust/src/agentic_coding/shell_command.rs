@@ -22,7 +22,7 @@ const REPORT_ISSUE_ACTION: &str = "formal-ai:report-issue";
 /// Named commands preserve their flags, paths and subcommands. Directory
 /// listings use the seeded listing intent. Both vocabularies live in seed
 /// data, so new language forms do not require prompt-specific code.
-pub(crate) fn shell_command_for_task(prompt: &str) -> Option<String> {
+pub fn shell_command_for_task(prompt: &str) -> Option<String> {
     let prompt = strip_balanced_outer_quotes(prompt.trim());
     // Caller policy is filtered here, not inside one strategy, because
     // `prefixed_shell_command` below runs first and matches on the whole prompt:

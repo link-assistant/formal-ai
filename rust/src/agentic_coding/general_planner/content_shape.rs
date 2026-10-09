@@ -43,21 +43,20 @@ fn owns_literal_body(request: &str, content: &str) -> bool {
             .iter()
             .any(|span| start >= span.start && start < span.end)
     };
-    if let Some((start, end)) = first_raw_prefix_lead_end(request, "file_write_content_lead") {
-        if outside(start)
-            && quotes.iter().any(|span| {
-                span.start >= end
-                    && request.get(end..span.start).is_some_and(|gap| {
-                        gap.chars()
-                            .all(|character| character.is_whitespace() || character == ':')
-                    })
-                    && super::super::write_request::clean_content(&request[span.start..span.end])
-                        .as_deref()
-                        == Some(content)
-            })
-        {
-            return true;
-        }
+    if let Some((start, end)) = first_raw_prefix_lead_end(request, "file_write_content_lead")
+        && outside(start)
+        && quotes.iter().any(|span| {
+            span.start >= end
+                && request.get(end..span.start).is_some_and(|gap| {
+                    gap.chars()
+                        .all(|character| character.is_whitespace() || character == ':')
+                })
+                && super::super::write_request::clean_content(&request[span.start..span.end])
+                    .as_deref()
+                    == Some(content)
+        })
+    {
+        return true;
     }
     first_raw_prefix_lead_end(request, "file_write_authoritative_content_lead").is_some_and(
         |(start, end)| {

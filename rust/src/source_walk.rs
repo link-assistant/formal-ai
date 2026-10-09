@@ -546,13 +546,7 @@ pub fn observe_failure(
         // Absence of an offline capture at any endpoint is not service health.
         "offline_cache_miss"
     } else if is_entry_endpoint {
-        if !error.speaks_for_the_service() {
-            // The service answered and said it has no such page. That is a fact
-            // about this subject in this language, not about the service: one
-            // absent Russian article must not blank Wikipedia for every
-            // language for the seven-day accessibility TTL.
-            "no_entry"
-        } else {
+        if error.speaks_for_the_service() {
             availability.observe(
                 endpoint_key(record, url),
                 ServiceStatus::Unreachable,
@@ -560,6 +554,12 @@ pub fn observe_failure(
                 now,
             );
             "unreachable"
+        } else {
+            // The service answered and said it has no such page. That is a fact
+            // about this subject in this language, not about the service: one
+            // absent Russian article must not blank Wikipedia for every
+            // language for the seven-day accessibility TTL.
+            "no_entry"
         }
     } else {
         "fallback_failed"

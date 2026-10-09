@@ -203,7 +203,7 @@ pub(super) fn command_span(remainder: &str) -> Option<&str> {
     shell_quotes_paired(text).then_some(text)
 }
 
-pub(crate) fn named_shell_command_in_sentence(
+pub fn named_shell_command_in_sentence(
     prompt: &str,
     vocab: &TerminalCommandVocabulary,
 ) -> Option<String> {
@@ -294,7 +294,7 @@ pub(super) fn normalize_command_word(word: &str) -> String {
 /// Whether a word is natural-language prose rather than a command argument. Used to
 /// stop argument collection at the boundary between a command and the sentence around
 /// it (e.g. `git status` stops before `in the current directory`).
-pub(crate) fn is_prose_word(word: &str) -> bool {
+pub fn is_prose_word(word: &str) -> bool {
     const PROSE_WORDS: &[&str] = &[
         "command",
         "commands",
