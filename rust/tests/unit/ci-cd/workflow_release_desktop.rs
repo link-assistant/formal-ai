@@ -14,6 +14,11 @@ use super::workflow_fixtures::*;
 fn desktop_release_does_not_archive_cargo_dependencies_after_packaging() {
     let workflow = desktop_release_workflow();
     let build = job_block(&workflow, "build");
+    let build = build
+        .lines()
+        .filter(|line| !line.trim_start().starts_with('#'))
+        .collect::<Vec<_>>()
+        .join("\n");
     let native = job_block(&workflow, "native");
     let install_sccache = workflow_step_block(native, "Cache Rust compiler outputs");
     let enable_sccache = workflow_step_block(native, "Enable Rust compiler cache");
@@ -37,7 +42,7 @@ fn desktop_release_does_not_archive_cargo_dependencies_after_packaging() {
         "packaging must consume the verified same-run executable"
     );
     assert!(
-        build.contains("native-release-artifact.mjs\" verify"),
+        build.contains("$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-artifact.mjs\" verify"),
         "packaging must verify the source-bound executable receipt"
     );
     for step in [install_sccache, enable_sccache] {

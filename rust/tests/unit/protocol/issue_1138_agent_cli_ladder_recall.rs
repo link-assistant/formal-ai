@@ -28,6 +28,9 @@ use formal_ai::{
     create_chat_completion_with_solver,
 };
 
+#[path = "../issue_1066_ladder_capability/tool_workspace.rs"]
+mod tool_workspace;
+
 const AGENT_CLI_TOOLS: [&str; 14] = [
     "bash",
     "batch",
@@ -352,6 +355,7 @@ fn continuation_pings_do_not_restart_a_literal_file_plan() {
     let mut messages = vec![ChatMessage::user(task.to_owned())];
     let mut steps: Vec<(String, String)> = Vec::new();
     let mut completed = false;
+    let mut workspace = tool_workspace::ToolWorkspace::new(task);
     for _ in 0..10 {
         let completion = agent_step(&messages);
         if let Some((name, arguments)) = planned_call(&completion) {
@@ -365,11 +369,6 @@ fn continuation_pings_do_not_restart_a_literal_file_plan() {
             );
             steps.push((name.clone(), arguments.clone()));
             let id = format!("c{}", messages.len());
-            let result = if name == "bash" && arguments.contains("cat") {
-                "hello wikiquote\n".to_owned()
-            } else {
-                String::new()
-            };
             messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall {
                 id: id.clone(),
                 kind: "function".to_owned(),
@@ -378,7 +377,13 @@ fn continuation_pings_do_not_restart_a_literal_file_plan() {
                     arguments: arguments.clone(),
                 },
             }]));
-            messages.push(tool_reply(&id, &name, &result));
+            messages.push(workspace.execute(
+                &id,
+                &formal_ai::agentic_coding::PlannedToolCall {
+                    tool: name,
+                    arguments,
+                },
+            ));
         } else {
             let answer = final_text(&completion);
             let lowered = answer.to_lowercase();

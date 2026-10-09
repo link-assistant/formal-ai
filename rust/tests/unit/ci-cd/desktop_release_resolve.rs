@@ -65,7 +65,7 @@ case "$sub" in
   api)
     path="$1"; shift || true
     case "$path" in
-      *"/tags"*)     [ -n "${MOCK_TAGS_JQ_OUTPUT:-}" ] && printf '%s\n' "${MOCK_TAGS_JQ_OUTPUT}" ;;
+      *"/tags?"*|*"/tags") [ -n "${MOCK_TAGS_JQ_OUTPUT:-}" ] && printf '%s\n' "${MOCK_TAGS_JQ_OUTPUT}" ;;
       *"/releases/tags/"*)
         directory="$(mktemp -d)"
         printf '%s\n' "${MOCK_ASSET_NAMES:-}" > "$directory/names.txt"
@@ -311,12 +311,15 @@ fn auto_release_child_commit_triggers_build() {
         "child-commit",
         &[
             ("EVENT", "workflow_run"),
-            ("WORKFLOW_RUN_HEAD_SHA", "0abd3f45parenthead"),
+            (
+                "WORKFLOW_RUN_HEAD_SHA",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            ),
         ],
         &GhMock {
             tags_jq_output: "", // no tag points at the head SHA (the bug condition)
             latest_tag: "v0.201.0",
-            parent_sha: "0abd3f45parenthead", // child release descends from head SHA
+            parent_sha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", // child release descends from head SHA
             release_exists: true,
             asset_names: "",
         },
@@ -353,12 +356,15 @@ fn workflow_run_builds_when_release_is_missing_linux_assets() {
         "partial-linux-missing",
         &[
             ("EVENT", "workflow_run"),
-            ("WORKFLOW_RUN_HEAD_SHA", "0abd3f45parenthead"),
+            (
+                "WORKFLOW_RUN_HEAD_SHA",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            ),
         ],
         &GhMock {
             tags_jq_output: "",
             latest_tag: "v0.204.0",
-            parent_sha: "0abd3f45parenthead",
+            parent_sha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             release_exists: true,
             asset_names: &partial_assets,
         },
@@ -385,12 +391,15 @@ fn workflow_run_skips_when_release_has_all_required_assets() {
         "has-assets",
         &[
             ("EVENT", "workflow_run"),
-            ("WORKFLOW_RUN_HEAD_SHA", "0abd3f45parenthead"),
+            (
+                "WORKFLOW_RUN_HEAD_SHA",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            ),
         ],
         &GhMock {
             tags_jq_output: "",
             latest_tag: "v0.201.0",
-            parent_sha: "0abd3f45parenthead",
+            parent_sha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             release_exists: true,
             asset_names: &complete_assets,
         },
@@ -423,12 +432,15 @@ fn workflow_run_builds_when_release_is_missing_cli_archives() {
         "cli-missing",
         &[
             ("EVENT", "workflow_run"),
-            ("WORKFLOW_RUN_HEAD_SHA", "0abd3f45parenthead"),
+            (
+                "WORKFLOW_RUN_HEAD_SHA",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            ),
         ],
         &GhMock {
             tags_jq_output: "",
             latest_tag: "v0.201.0",
-            parent_sha: "0abd3f45parenthead",
+            parent_sha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             release_exists: true,
             asset_names: &without_cli,
         },
@@ -469,12 +481,15 @@ fn workflow_run_asset_membership_is_stable_under_pipefail() {
         "pipefail-membership",
         &[
             ("EVENT", "workflow_run"),
-            ("WORKFLOW_RUN_HEAD_SHA", "0abd3f45parenthead"),
+            (
+                "WORKFLOW_RUN_HEAD_SHA",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            ),
         ],
         &GhMock {
             tags_jq_output: "",
             latest_tag: "v0.201.0",
-            parent_sha: "0abd3f45parenthead",
+            parent_sha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             release_exists: true,
             asset_names: &assets,
         },
@@ -507,12 +522,15 @@ fn workflow_run_builds_when_release_is_missing_updater_metadata() {
         "missing-updater-metadata",
         &[
             ("EVENT", "workflow_run"),
-            ("WORKFLOW_RUN_HEAD_SHA", "0abd3f45parenthead"),
+            (
+                "WORKFLOW_RUN_HEAD_SHA",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            ),
         ],
         &GhMock {
             tags_jq_output: "",
             latest_tag: "v0.212.0",
-            parent_sha: "0abd3f45parenthead",
+            parent_sha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
             release_exists: true,
             asset_names: &installers_only,
         },
@@ -536,7 +554,10 @@ fn workflow_run_uses_exact_tag_when_one_points_at_head_sha() {
         "exact-sha",
         &[
             ("EVENT", "workflow_run"),
-            ("WORKFLOW_RUN_HEAD_SHA", "deadbeefheadsha"),
+            (
+                "WORKFLOW_RUN_HEAD_SHA",
+                "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+            ),
         ],
         &GhMock {
             tags_jq_output: "v0.201.0", // a tag points directly at the head SHA
@@ -563,7 +584,10 @@ fn workflow_run_skips_when_no_release_exists() {
         "no-release",
         &[
             ("EVENT", "workflow_run"),
-            ("WORKFLOW_RUN_HEAD_SHA", "0abd3f45parenthead"),
+            (
+                "WORKFLOW_RUN_HEAD_SHA",
+                "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            ),
         ],
         &GhMock {
             tags_jq_output: "",

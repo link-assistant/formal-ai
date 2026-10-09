@@ -419,6 +419,7 @@ fn a_terse_source_fact_still_produces_a_non_hollow_result() {
         ),
     ];
     let mut writes = Vec::new();
+    let mut workspace = super::tool_workspace::ToolWorkspace::new(prompt);
 
     for turn in 0..super::LADDER_TURN_CAP {
         let Some(formal_ai::agentic_coding::AgenticPlan::ToolCalls(calls)) =
@@ -442,7 +443,7 @@ fn a_terse_source_fact_still_produces_a_non_hollow_result() {
             messages.push(formal_ai::ChatMessage::assistant_tool_calls(vec![
                 formal_ai::protocol::ToolCall::function(&id, &call.tool, call.arguments.clone()),
             ]));
-            messages.push(formal_ai::ChatMessage::tool_result(id, &call.tool, "ok"));
+            messages.push(workspace.execute(&id, call));
         }
     }
 
