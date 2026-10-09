@@ -29,5 +29,8 @@ test('missing template capture remains explicit rather than synthesizing an obse
 });
 test('capture validation refuses a foreign task or turn-cap outcome',()=>{
  const record=contract.captures.find(record=>record.observed),legacy=JSON.parse(readFileSync(record.legacy,'utf8')),actual=JSON.parse(readFileSync(record.observed,'utf8'));
- for(const changed of [{...actual,task:'foreign task'},{...actual,hit_turn_cap:true},{...actual,tools_advertised:['duplicate','duplicate']}])assert.throws(()=>checkedCapture(Buffer.from(JSON.stringify(changed)),legacy));
+ for(const changed of [{...actual,task:'foreign task'},{...actual,hit_turn_cap:true},{...actual,tools_advertised:['duplicate','duplicate']},
+  {...actual,steps:actual.steps.filter(step=>step.tool!=='write_file')},
+  {...actual,steps:actual.steps.filter(step=>step.tool!=='run_command')},
+  {...actual,steps:actual.steps.map(step=>step.tool==='write_file'?{...step,arguments:{...step.arguments,content:'wrong observed bytes'}}:step)}])assert.throws(()=>checkedCapture(Buffer.from(JSON.stringify(changed)),legacy));
 });

@@ -19,6 +19,12 @@ export function checkedCapture(bytes,legacy){
  assert.ok(Number.isInteger(session.turns)&&session.turns>0);
  assert.equal(session.hit_turn_cap,false);
  assert.equal(typeof session.final_answer,'string');
+ const target=legacy.steps.filter(step=>step.tool==='write_file').at(-1);
+ const verification=legacy.steps.filter(step=>step.tool==='run_command').at(-1);
+ assert.ok(target&&verification,'Original capture must name its target and observed verification');
+ const path=arguments_=>arguments_.path??arguments_.filePath??arguments_.file_path;
+ assert.ok(session.steps.some(step=>step.tool==='write_file'&&path(step.arguments)===path(target.arguments)&&step.arguments.content===target.arguments.content),'Actual native capture must author the original exact target bytes');
+ assert.ok(session.steps.some(step=>step.tool==='run_command'&&step.arguments.command===verification.arguments.command&&step.result===verification.result),'Actual native capture must observe the original target verification');
  return session;
 }
 if(import.meta.url===pathToFileURL(process.argv[1]??'').href){
