@@ -391,6 +391,9 @@ fn the_macos_lane_selects_a_non_empty_set_of_tests() {
 /// silent: run 31993872684 packaged `linux-x64` and `macos-arm64` from `main` =
 /// `1858b3386` and `windows-arm64` from `d1439e557`, and shipped six installers
 /// built from two source trees as one release set with nothing to catch it.
+#[path = "fresh_merge_bindings.rs"]
+mod fresh_merge_bindings;
+
 #[test]
 fn every_base_branch_merge_uses_one_pinned_commit_per_workflow() {
     let script = repository_file("scripts/simulate-fresh-merge.sh");
@@ -405,25 +408,20 @@ fn every_base_branch_merge_uses_one_pinned_commit_per_workflow() {
     );
 
     for (name, body) in workflow_files() {
-        // Count real invocations only: the script is also named in prose, and a
-        // comment that mentions it does not merge anything.
-        let invocations = body
-            .lines()
-            .filter(|line| {
-                let trimmed = line.trim_start();
-                !trimmed.starts_with('#') && trimmed.contains("simulate-fresh-merge.sh")
-            })
-            .count();
-        if invocations == 0 {
+        let observed = fresh_merge_bindings::merge_step_bindings(&body);
+        if observed.is_empty() {
             continue;
         }
-        let pinned = body.matches("BASE_COMMIT:").count();
+        let mut resolvers = std::collections::BTreeSet::new();
+        for step in observed {
+            assert!(step.invocations > 0);
+            let resolver = step.shared_resolver().unwrap_or_else(|| panic!("{name}: every actual merge step must bind exactly one BASE_COMMIT from the shared resolver; observed {:?}", step.pins));
+            resolvers.insert(resolver);
+        }
         assert_eq!(
-            pinned, invocations,
-            "{name} runs the fresh-merge simulation {invocations} time(s) but \
-             pins the base commit {pinned} time(s); an unpinned invocation \
-             resolves the base branch tip at its own start time, so two jobs \
-             minutes apart merge different commits (issue #1017)"
+            resolvers.len(),
+            1,
+            "{name}: actual merge steps must share one base resolver"
         );
 
         // The pinned value has to come from one resolver shared by the whole
