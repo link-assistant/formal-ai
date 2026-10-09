@@ -18,6 +18,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { renderBootstrap, SOURCE as RESPONSE_SEED } from './generate-worker-bootstrap.mjs';
 
 const RATCHET = 'data/meta/prompt-specialization-ratchet.lino';
 const TEST_ROOTS = ['rust/tests/web', 'rust/tests/unit'];
@@ -69,13 +70,17 @@ export function codeLines(source) {
 /**
  * The (source file, prompt) pairs where code holds a test's prompt verbatim.
  * @param {Array<string>} prompts
- * @param {Array<{path: string, code: string}>} sources
+ * @param {Array<{path: string, code: string, source?: string}>} sources
+ * @param {Array<string>} seedProjections Complete canonical data rendered by checked generators.
  * @returns {Array<{path: string, prompt: string}>}
  */
-export function specializations(prompts, sources) {
+export function specializations(prompts, sources, seedProjections = []) {
+  // Only complete byte-equal canonical data is exempt; headers and paths are insufficient.
+  const projectedData = new Set(seedProjections);
   const found = [];
   for (const prompt of [...new Set(prompts)].sort()) {
-    for (const { path, code } of sources) {
+    for (const { path, code, source } of sources) {
+      if (typeof source === "string" && projectedData.has(source)) continue;
       if (code.includes(prompt)) {
         found.push({ path, prompt });
       }
@@ -108,8 +113,12 @@ function main(argv) {
   // suggestion lists answer prompts too.
   const sources = listed(SOURCE_ROOTS, /\.(?:rs|mjs|js|jsx)$/u)
     .filter((path) => !NOT_CODE.test(path))
-    .map((path) => ({ path, code: codeLines(read(path)) }));
-  const found = specializations(prompts, sources);
+    .map((path) => {
+      const source = read(path);
+      return { path, source, code: codeLines(source) };
+    });
+  const seedData = renderBootstrap(read('js/seed_loader.js'), read(RESPONSE_SEED));
+  const found = specializations(prompts, sources, [seedData]);
   const ceiling = ceilingOf(read(RATCHET));
   console.log(`test prompts held verbatim in code: ${found.length} (ceiling ${ceiling})`);
   if (argv.includes('--list')) {
