@@ -409,3 +409,11 @@ contradiction ci-manifest-long-coverage-cap
   document "docs/ci-fixes-manifest.md"
   text "Pins a measured 135-minute coverage cap and a 5400-second budget as the contract."
   action "Code first: the coverage job must be split below 30 minutes (R1188-U9); the manifest records history, so its text is left as is."
+
+source compact-coding-work "docs/case-studies/pull-request-1188/coding-amplification.md"
+
+requirement compact-coding-work
+  group formal-ai-delegation
+  text "Prefer small coding and self-coding inputs yielding larger useful validated net code changes, without padding or a growth floor for mathematics; account for retries, patches, source reads and actual costs honestly."
+  source compact-coding-work "2026-10-09"
+  rows R1188-U31 R1188-U32 R1188-U33 R1188-U34 R1188-U35
