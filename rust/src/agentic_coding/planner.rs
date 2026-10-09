@@ -839,7 +839,7 @@ pub(super) fn plan_settled_routes(
     // else claims the request -- and before the literal-write fallback, which
     // would otherwise write the specification instead of the document
     // (issue #1066).
-    if let Some(plan) = note_composition::plan_note_composition_step(task, messages) {
+    if let Some(plan) = note_composition::plan_note_composition_step(task, messages, result) {
         return Some(plan);
     }
     if let Some(plan) = compose_general_change_plan(task)

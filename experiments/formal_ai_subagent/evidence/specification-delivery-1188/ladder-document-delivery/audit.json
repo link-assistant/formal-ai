@@ -1,0 +1,71 @@
+{
+  "archive": "T3763-T3790.json.gz",
+  "compressedSha256": "da12147b1067c6d69e64fab8ea18677ca68e571d0282a57b96a10e9988e999e1",
+  "decodedSha256": "db25f2153bd6ea1525d9016695789e729db374acacc08aafd46d67b7909eb5bb",
+  "entries": 130,
+  "source": [
+    {
+      "path": "js/agentic/note_composition.mjs",
+      "sha256": "49c3e9e27061aa469d536340328ba39e54d776fe7120811b59e805005ebd3a38",
+      "bytes": 4693
+    },
+    {
+      "path": "rust/src/agentic_coding/note_composition.rs",
+      "sha256": "c08baf3adc189371f258164d240f604c9d3f45dcdf31a247763c4b72a6f6aec5",
+      "bytes": 9055
+    },
+    {
+      "path": "rust/src/agentic_coding/planner.rs",
+      "sha256": "1c4ea8703890ffebb30ded69371b17d0364839dd51267e046a9daba8d284ddcd",
+      "bytes": 47572
+    },
+    {
+      "path": "rust/tests/unit/issue_1066_ladder_capability.rs",
+      "sha256": "7edf72e3c4bd3b30c0cc58df998c262e6ca9b716fd73b040551fd6bc6a7ea411",
+      "bytes": 39563
+    },
+    {
+      "path": "rust/tests/unit/issue_1066_ladder_capability/written_files.rs",
+      "sha256": "337e1a27a8c9dfbd551fa6d9cab4cc75aeee6fa3ef56e07f205745b61df3863a",
+      "bytes": 35963
+    },
+    {
+      "path": "rust/tests/unit/issue_1066_ladder_capability/tool_workspace.rs",
+      "sha256": "284ea7f4255e537311a939cd40051e5cc2b4e4c78416a8caf7cd6d24f51b7586",
+      "bytes": 3145
+    },
+    {
+      "path": "rust/tests/web/ladder-document-delivery.test.mjs",
+      "sha256": "ff5ccbf3713e0cee6aa3c98c51a87a900b0bb621c013941cd90b649776266fae",
+      "bytes": 5678
+    },
+    {
+      "path": "changelog.d/20261010_004500_composed_note_delivery_provenance.md",
+      "sha256": "8f590740ad9d9905c71a52214272356be3c16198120f5eac016c1a833a57631a",
+      "bytes": 515
+    }
+  ],
+  "counts": {
+    "tasks": 27,
+    "physicalCalls": 47,
+    "writeCalls": 11,
+    "bashCalls": 33,
+    "readCalls": 3,
+    "unusedIds": [
+      "T3772"
+    ]
+  },
+  "claims": {
+    "nativeCompilation": false,
+    "nativeExecution": false,
+    "autonomousSynthesis": false,
+    "specificationCountIncrease": false,
+    "promptBytesOnlyProxy": true,
+    "actualCostMeasured": false
+  },
+  "verification": {
+    "closestPassing": 9,
+    "skipped": 0,
+    "targetedRustfmt": true
+  }
+}
