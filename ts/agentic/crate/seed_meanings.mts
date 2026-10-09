@@ -1,12 +1,8 @@
-// The language-independent meaning lexicon: a port of rust/src/seed/meanings.rs
-// (`Lexicon`) and its loader rust/src/seed/meanings/parse.rs.
-//
-// The worker realm parses a differently ordered file set (it skips
-// learned-request-openers.lino and sorts by name), and declaration order is
-// priority for `first_role_match` / `words_for_role`, so this module parses
-// `MEANING_FILES` itself, in the order rust/src/seed/embedded_registry.rs
-// lists them. A meaning is `{slug, defined_by, roles, wikidata, lexemes:
-// [{language, words: [{text, action}]}]}`.
+// Language-independent Lexicon from rust/src/seed/meanings.rs; loader:
+// rust/src/seed/meanings/parse.rs. Declaration order sets first_role_match
+// and words_for_role priority. Parse MEANING_FILES in the order listed by
+// rust/src/seed/embedded_registry.rs: the worker realm sorts files and omits
+// learned-request-openers.lino. Parsed meaning and word shapes appear below.
 
 import { cached, childrenNamed, parseLino, readText } from '../host.mjs';
 

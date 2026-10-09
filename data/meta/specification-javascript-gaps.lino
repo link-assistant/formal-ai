@@ -3,8 +3,6 @@
 # (R1188-U29, R1188-U30): how many are carried to JavaScript and pass, and every
 # carried case the worker fails, with what it answered. `passing` never falls.
 specification-javascript-gaps
-  specification-tests 1169
+  specification-tests 1173
   carried 136
-  passing 135
-  gap "rust/tests/unit/specification/source_cache.rs::external_lookups_record_source_url"
-    failure "evidence has-evidence-prefix 'source:http'; got ['fallback:unknown','language:en','trace:impulse:Cite a definition of associative memory from Wikipedia','trace:formalization:(@USER OP:express ?cite a "
+  passing 136

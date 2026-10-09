@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=3965fcdc370593335989e44e2621dbf7ec7aa7304f6ded943e4d9e99ff8c578d bytes=11001
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=5e1119d443dd83e1ae64114d39c44c4be531cc1fc571edaea266c47e2b381881 bytes=12017
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 
 // meta-language:prelude begin
@@ -92,8 +92,20 @@ pub fn is_ident_byte(b: f64) -> bool {
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
-// formal-ai:blockers JSDoc type {…} | REGEX_CONTEXT_KEYWORDS.includes | arrow callback of .find() | arrow function | assignment of a field or element | call of a sibling function | field access | method call .decode() | method call .encode() | method call .find() | method call .pop() | method call .push() | method call .reverse() | method call .slice() | method call .subarray() | new TextDecoder | new TextEncoder | throw of a non-error value
+// formal-ai:blockers JSDoc type {…} | REGEX_CONTEXT_KEYWORDS.includes | arrow callback of .find() | arrow function | assignment of a field or element | call of a sibling function | field access | method call .decode() | method call .encode() | method call .find() | method call .pop() | method call .push() | method call .reverse() | method call .slice() | method call .subarray() | new TextDecoder | new TextEncoder | object spread | object without a $ tag | throw of a non-error value
 
 // meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal JSDoc type {…}
 // formal-ai:blockers JSDoc type {…} | field access
+
+// meta-language:carried JavaScript export_statement (type)
+// formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers call of a sibling function
+
+// meta-language:carried JavaScript lexical_declaration (unsupported)
+// formal-ai:refusal new expression
+// formal-ai:blockers new Set
+
+// meta-language:carried JavaScript export_statement (type)
+// formal-ai:refusal type: unknown name (a sibling item or an import)
+// formal-ai:blockers method call .has() | sibling value

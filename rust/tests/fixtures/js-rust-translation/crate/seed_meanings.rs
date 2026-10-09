@@ -1,4 +1,4 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=ac00a326a4305ead1b2d42e4ceb864d44b9091063536bccf970595b7bb5f66f7 bytes=12391
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=0ce3b636505c3bb4fe7c2a836087de861e96cbe7eceeb54607b5224e3944f8fe bytes=12355
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
 // formal-ai:workarounds string-methods items=1
 
@@ -377,8 +377,12 @@ pub const SEED_REGISTRY: &str = "data/meta/seed-registry.lino";
 // formal-ai:blockers arrow callback of .filter() | assignment of a field or element | call of a sibling function | field access | method call .filter() | method call .map() | method call .push() | object without a $ tag | sibling value
 
 // meta-language:carried JavaScript export_statement (unsupported)
+// formal-ai:refusal method call .filter()
+// formal-ai:blockers arrow callback of .filter() | call of a sibling function | call of an imported function | field access | method call .filter() | method call .push()
+
+// meta-language:carried JavaScript export_statement (unsupported)
 // formal-ai:refusal arrow function
-// formal-ai:blockers arrow callback of .filter() | arrow function | call of a sibling function | call of an imported function | field access | imported value | method call .filter() | method call .join() | method call .map() | method call .push() | object without a $ tag
+// formal-ai:blockers arrow function | call of a sibling function | call of an imported function | imported value | method call .join() | method call .map()
 
 // formal-ai:workaround string-methods JavaScript export_statement items=3 sha256=cb0c64fa07c158a0f1b789acb897d3483928ff18ae34c1e243c4a1d2fb3e2db5
 // | /** Mirrors `crate::coding::contains_cjk`. @param {string} text */

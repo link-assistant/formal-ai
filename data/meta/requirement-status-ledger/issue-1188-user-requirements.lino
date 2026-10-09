@@ -94,7 +94,7 @@ requirement_status_ledger_shard
   requirement
     id "R1188-U3"
     verdict "partial"
-    automated_test "rust/tests/unit/agentic-coding/issue_558_source_links.rs"
+    automated_test "rust/tests/web/source-network-packets.test.mjs"
   requirement
     id "R1188-U30"
     verdict "partial"
