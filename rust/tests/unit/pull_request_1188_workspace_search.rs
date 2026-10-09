@@ -13,6 +13,9 @@
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
+#[path = "../fixtures/observed-plan-tools.rs"]
+mod observed_plan_tools;
+
 const AGENT_CLI_TOOLS: [&str; 14] = [
     "bash",
     "batch",
@@ -411,55 +414,71 @@ fn run_over(
     prompt: &str,
     files: &mut std::collections::BTreeMap<String, String>,
 ) -> (Vec<String>, Option<String>) {
+    let mut workspace = observed_plan_tools::ToolWorkspace::new(prompt);
+    for (path, source) in files.iter() {
+        workspace
+            .write_initial(path, source)
+            .expect("physical fixture preimage");
+    }
+    let plan = formal_ai::agentic_coding::general_planner::compose_general_change_plan(prompt);
     let mut messages = conversation(prompt, None);
     let mut calls = Vec::new();
+    let mut answer = None;
+    let mut paths = files
+        .keys()
+        .cloned()
+        .collect::<std::collections::BTreeSet<_>>();
     for step in 0..6 {
         let planned = match plan_chat_step(&messages, &REDUCED_TOOLS) {
             Some(AgenticPlan::ToolCalls(planned)) => planned,
-            Some(AgenticPlan::Final(answer)) => return (calls, Some(answer)),
+            Some(AgenticPlan::Final(text)) => {
+                answer = Some(text);
+                break;
+            }
             _ => break,
         };
         let call = planned[0].clone();
         let arguments: serde_json::Value =
-            serde_json::from_str(&call.arguments).expect("tool arguments are JSON");
-        let path = arguments["filePath"]
+            serde_json::from_str(&call.arguments).expect("tool arguments");
+        let path = arguments["path"]
             .as_str()
-            .or_else(|| arguments["path"].as_str())
-            .unwrap_or_default()
-            .to_owned();
-        let result = match call.tool.as_str() {
-            "read" => files
-                .get(&path)
-                .cloned()
-                .unwrap_or_else(|| format!("Error: File not found: {path}")),
-            "write" => {
-                let content = arguments["content"].as_str().unwrap_or_default();
-                files.insert(path.clone(), content.to_owned());
-                String::new()
-            }
-            "bash" => {
-                let command = arguments["command"].as_str().unwrap_or_default();
-                files
-                    .get(command.trim_start_matches("cat "))
-                    .cloned()
-                    .unwrap_or_default()
-            }
-            _ => String::new(),
+            .or_else(|| arguments["filePath"].as_str())
+            .unwrap_or_default();
+        if call.tool == "write" {
+            paths.insert(path.to_owned());
+        }
+        let id = format!("w{step}");
+        let command = arguments["command"].as_str().unwrap_or_default();
+        let auxiliary = call.tool == "bash"
+            && plan
+                .as_ref()
+                .is_some_and(|plan| command != plan.verification_command);
+        let observation = if auxiliary {
+            paths.insert(formal_ai::agentic_coding::general_planner::PLAN_PATH.to_owned());
+            observed_plan_tools::observe_append(&mut workspace, &id, &call, prompt)
+        } else {
+            workspace.execute(&id, &call)
         };
-        calls.push(if call.tool == "bash" {
-            arguments["command"].as_str().unwrap_or_default().to_owned()
+        calls.push(if auxiliary {
+            "append .formal-ai/general-change-plan.lino".to_owned()
+        } else if call.tool == "bash" {
+            command.to_owned()
         } else {
             format!("{} {path}", call.tool)
         });
-        let id = format!("w{step}");
         messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
-            id.clone(),
-            call.tool.clone(),
+            &id,
+            &call.tool,
             call.arguments.clone(),
         )]));
-        messages.push(ChatMessage::tool_result(id, call.tool.clone(), result));
+        messages.push(observation);
     }
-    (calls, None)
+    for path in paths {
+        if let Ok(bytes) = workspace.read(&path) {
+            files.insert(path, bytes);
+        }
+    }
+    (calls, answer)
 }
 
 /// T96 (the backstop behind G13, G17 and T29): unless the first write verb is
@@ -488,7 +507,7 @@ fn a_missing_target_is_created_after_the_read_finds_nothing() {
         calls,
         [
             "read notes.txt",
-            "write .formal-ai/general-change-plan.lino",
+            "append .formal-ai/general-change-plan.lino",
             "write notes.txt",
             "cat notes.txt",
         ]
@@ -509,7 +528,7 @@ fn an_existing_target_is_kept_for_that_verb_and_replaced_for_a_whole_file_write(
     );
     let mut replaced = std::collections::BTreeMap::from([("a.txt".to_owned(), "old".to_owned())]);
     let (calls, _) = run_over("Create a file a.txt containing hello", &mut replaced);
-    assert_eq!(calls[0], "write .formal-ai/general-change-plan.lino");
+    assert_eq!(calls[0], "append .formal-ai/general-change-plan.lino");
     assert_eq!(replaced["a.txt"], "hello");
 }
 

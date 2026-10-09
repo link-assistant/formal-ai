@@ -262,7 +262,14 @@ pub fn compose_general_change_plan(full_request: &str) -> Option<GeneralChangePl
     }
     let response_language = language(request);
     let intent = formalize_intent(request, response_language, None);
-    let verification_command = format!("cat {target}");
+    let verification_command = if command_output.is_some() {
+        super::work_item_steps::fill(
+            "command-capture-readback",
+            &[("{target}", &shell_quote(&target))],
+        )
+    } else {
+        format!("cat {target}")
+    };
     let mut steps = vec![GeneralPlanStep {
         capability: Capability::Write,
         action: crate::seed::render_response(
@@ -275,7 +282,12 @@ pub fn compose_general_change_plan(full_request: &str) -> Option<GeneralChangePl
         command: None,
     }];
     if let Some((_, command)) = &command_output {
-        let generation_command = format!("{command} > {}", shell_quote(&target));
+        let setup = super::work_item_steps::fill(
+            "command-capture-setup",
+            &[("{target}", &shell_quote(&target))],
+        );
+        let end = super::work_item_steps::fill("command-capture-end", &[]);
+        let generation_command = format!("{setup}{command}{end}");
         steps.push(GeneralPlanStep {
             capability: Capability::Run,
             action: command_plan_text(

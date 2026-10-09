@@ -72,7 +72,7 @@ describe('general_planner (rust/tests/unit/agentic-coding/agentic_general_planne
     assert.equal(plan.target, 'reports/learned.txt');
     assert.equal(plan.content, '');
     assert.deepEqual(plan.steps.map((step) => step.capability), ['write', 'run', 'run']);
-    assert.equal(plan.steps[1].command, "printf learned-output > 'reports/learned.txt'");
+    assert.equal(plan.steps[1].command, "formal_ai_capture_target='reports/learned.txt'; formal_ai_capture_parent=${formal_ai_capture_target%/*}; if [ \"$formal_ai_capture_parent\" != \"$formal_ai_capture_target\" ]; then mkdir -p -- \"$formal_ai_capture_parent\" || exit $?; fi; ( printf learned-output ) > \"$formal_ai_capture_target\"");
     assert.ok(PLAN_PATH.length > 0);
   });
 });

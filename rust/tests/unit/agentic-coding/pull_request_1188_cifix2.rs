@@ -3,21 +3,11 @@
 //!
 //! The JavaScript twin is `rust/tests/web/pull-request-1188-cifix2.test.mjs`.
 
-use formal_ai::ChatMessage;
-use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
-
 /// The first planned call: its tool and parsed arguments.
+#[path = "../../fixtures/observed-plan-tools.rs"]
+mod observed_plan_tools;
 fn first_call(prompt: &str, tools: &[&str]) -> (String, serde_json::Value) {
-    match plan_chat_step(&[ChatMessage::user(prompt)], tools) {
-        Some(AgenticPlan::ToolCalls(calls)) => {
-            let call = calls.first().expect("one call");
-            (
-                call.tool.clone(),
-                serde_json::from_str(&call.arguments).expect("valid arguments"),
-            )
-        }
-        other => panic!("expected a tool call for {prompt:?}, got {other:?}"),
-    }
+    observed_plan_tools::first_workspace_call(prompt, tools)
 }
 
 const WRITE_TOOLS: [&str; 3] = ["read_file", "write_file", "exec_command"];
@@ -36,7 +26,12 @@ fn a_request_that_declares_its_file_writes_it_unread() {
         "添加 文件 note.txt 内容为 hello",
         "añade archivo note.txt con el texto hello",
     ] {
-        assert_eq!(first_call(prompt, &WRITE_TOOLS).0, "write_file", "{prompt}");
+        let (tool, arguments) = first_call(prompt, &WRITE_TOOLS);
+        assert_eq!(tool, "write_file", "{prompt}");
+        let plan = formal_ai::agentic_coding::general_planner::compose_general_change_plan(prompt)
+            .expect("original literal plan");
+        assert_eq!(arguments["path"], plan.target, "{prompt}");
+        assert_eq!(arguments["content"], plan.content, "{prompt}");
     }
 }
 

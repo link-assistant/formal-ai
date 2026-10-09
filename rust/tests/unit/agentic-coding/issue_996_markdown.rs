@@ -6,6 +6,8 @@
 use formal_ai::agentic_coding::general_planner::compose_general_change_plan;
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
+#[path = "../../fixtures/observed-plan-tools.rs"]
+mod observed_plan_tools;
 
 /// The content of the first fenced `lino` block in `answer`.
 fn lino_block(answer: &str) -> &str {
@@ -40,14 +42,8 @@ fn completed_answer_fences_the_plan_event() {
     let tools = ["write", "bash"];
     let mut messages = vec![ChatMessage::user(task)];
 
-    for (index, result) in [
-        "wrote the plan",
-        "created reports/learned.txt",
-        "learned-output",
-    ]
-    .into_iter()
-    .enumerate()
-    {
+    let mut workspace = observed_plan_tools::ToolWorkspace::new(task);
+    for index in 0..3 {
         let AgenticPlan::ToolCalls(calls) =
             plan_chat_step(&messages, &tools).expect("next planned tool call")
         else {
@@ -55,14 +51,26 @@ fn completed_answer_fences_the_plan_event() {
         };
         let call = &calls[0];
         let id = format!("command-output-{index}");
+        let observation = if index == 0 {
+            observed_plan_tools::observe_append(&mut workspace, &id, call, task)
+        } else {
+            workspace.execute(&id, call)
+        };
+        assert!(!observation.is_error, "actual command must succeed");
         messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
             &id,
             &call.tool,
             call.arguments.clone(),
         )]));
-        messages.push(ChatMessage::tool_result(id, &call.tool, result));
+        messages.push(observation);
     }
 
+    assert_eq!(
+        workspace
+            .read("reports/learned.txt")
+            .expect("physical stdout target"),
+        "learned-output"
+    );
     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
         panic!("executed plan must end in a final answer");
     };

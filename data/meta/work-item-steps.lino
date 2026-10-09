@@ -47,3 +47,6 @@ work_item_steps
   plan-event-shell-aliases "bash exec_command shell run_shell_command"
   filesystem-collection-setup 'formal_ai_destination={destination}; if test -d "$formal_ai_destination" || [ "${formal_ai_destination%/}" != "$formal_ai_destination" ]; then formal_ai_leaf="${formal_ai_source%/}"; formal_ai_destination="${formal_ai_destination%/}/${formal_ai_leaf##*/}"; fi; formal_ai_parent="${formal_ai_destination%/*}"; if [ "$formal_ai_parent" = "$formal_ai_destination" ]; then formal_ai_parent=.; fi; '
   filesystem-collection-check 'for formal_ai_source in {sources}; do {setup}{check} || exit $?; done'
+  command-capture-setup 'formal_ai_capture_target={target}; formal_ai_capture_parent=${formal_ai_capture_target%/*}; if [ "$formal_ai_capture_parent" != "$formal_ai_capture_target" ]; then mkdir -p -- "$formal_ai_capture_parent" || exit $?; fi; ( '
+  command-capture-end ' ) > "$formal_ai_capture_target"'
+  command-capture-readback "cat {target}"

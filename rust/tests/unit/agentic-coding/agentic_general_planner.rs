@@ -2,6 +2,9 @@ use formal_ai::agentic_coding::general_planner::{PLAN_PATH, compose_general_chan
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step, run_agentic_task};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
+#[path = "../../fixtures/observed-plan-tools.rs"]
+mod observed_plan_tools;
+
 const EN_TASK: &str = "Create file notes/general-demo.txt containing planner fallback works";
 const EN_TASK_ALT: &str = "Write file artifacts/unseen-case.md with text capability composed plan";
 const RU_TASK: &str = "Создай файл output/пример.txt с текстом общий план работает";
@@ -342,7 +345,9 @@ fn command_stdout_requests_run_the_command_instead_of_writing_the_reference_phra
     );
     assert_eq!(
         plan.steps[1].command.as_deref(),
-        Some("printf learned-output > 'reports/learned.txt'")
+        Some(
+            "formal_ai_capture_target='reports/learned.txt'; formal_ai_capture_parent=${formal_ai_capture_target%/*}; if [ \"$formal_ai_capture_parent\" != \"$formal_ai_capture_target\" ]; then mkdir -p -- \"$formal_ai_capture_parent\" || exit $?; fi; ( printf learned-output ) > \"$formal_ai_capture_target\""
+        )
     );
 }
 
@@ -350,10 +355,11 @@ fn command_stdout_requests_run_the_command_instead_of_writing_the_reference_phra
 fn command_stdout_plan_executes_generate_then_verify_through_cli_tools() {
     let task = "Execute the auto-learning task. Run 'printf learned-output' and write its exact \
                 stdout to reports/learned.txt";
+    let plan = compose_general_change_plan(task).expect("original stdout plan");
     let tools = ["read", "write", "run_command"];
     let mut messages = vec![ChatMessage::user(task)];
     let mut commands = Vec::new();
-    let mut files = std::collections::BTreeMap::<String, String>::new();
+    let mut workspace = observed_plan_tools::ToolWorkspace::new(task);
     for index in 0..8 {
         let step = plan_chat_step(&messages, &tools).expect("planned step");
         let AgenticPlan::ToolCalls(calls) = step else {
@@ -362,52 +368,38 @@ fn command_stdout_plan_executes_generate_then_verify_through_cli_tools() {
         let call = &calls[0];
         let arguments: serde_json::Value =
             serde_json::from_str(&call.arguments).expect("tool arguments");
-        let path = arguments["path"].as_str().unwrap_or_default();
-        let output = match call.tool.as_str() {
-            "read" => files
-                .get(path)
-                .cloned()
-                .unwrap_or_else(|| format!("Error: File not found: {path}")),
-            "write" => {
-                files.insert(
-                    path.to_owned(),
-                    arguments["content"]
-                        .as_str()
-                        .expect("write bytes")
-                        .to_owned(),
-                );
-                String::new()
-            }
-            "run_command" => {
-                let command = arguments["command"].as_str().expect("command");
-                commands.push(command.to_owned());
-                if command == "printf learned-output > 'reports/learned.txt'" {
-                    files.insert(
-                        "reports/learned.txt".to_owned(),
-                        "learned-output".to_owned(),
-                    );
-                    String::new()
-                } else {
-                    assert_eq!(command, "cat reports/learned.txt");
-                    files["reports/learned.txt"].clone()
-                }
-            }
-            other => panic!("unexpected tool {other}"),
-        };
         let id = format!("command-output-{index}");
+        let command = arguments["command"].as_str();
+        let auxiliary = call.tool == "run_command"
+            && command != plan.steps[1].command.as_deref()
+            && command != Some(plan.verification_command.as_str());
+        let observation = if auxiliary {
+            observed_plan_tools::observe_append(&mut workspace, &id, call, task)
+        } else {
+            if let Some(command) = command {
+                commands.push(command.to_owned());
+            }
+            workspace.execute(&id, call)
+        };
         messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
             &id,
             &call.tool,
             call.arguments.clone(),
         )]));
-        messages.push(ChatMessage::tool_result(id, &call.tool, output));
+        messages.push(observation);
     }
 
     assert_eq!(
+        workspace
+            .read("reports/learned.txt")
+            .expect("physical stdout target"),
+        "learned-output"
+    );
+    assert_eq!(
         commands,
         [
-            "printf learned-output > 'reports/learned.txt'",
-            "cat reports/learned.txt",
+            "formal_ai_capture_target='reports/learned.txt'; formal_ai_capture_parent=${formal_ai_capture_target%/*}; if [ \"$formal_ai_capture_parent\" != \"$formal_ai_capture_target\" ]; then mkdir -p -- \"$formal_ai_capture_parent\" || exit $?; fi; ( printf learned-output ) > \"$formal_ai_capture_target\"",
+            "cat 'reports/learned.txt'",
         ]
     );
     assert!(matches!(
@@ -428,9 +420,47 @@ fn explicit_issue_named_file_write_is_not_misrouted_to_issue_reporting() {
         .iter()
         .map(|step| step.tool.as_str())
         .collect();
-    assert_eq!(tools, ["write_file", "write_file", "run_command"]);
+    assert_eq!(
+        tools,
+        [
+            "read_file",
+            "write_file",
+            "read_file",
+            "write_file",
+            "run_command"
+        ]
+    );
+    let initial: serde_json::Value =
+        serde_json::from_str(&outcome.steps[0].arguments).expect("initial read");
+    assert_eq!(initial["path"], PLAN_PATH);
+    let event: serde_json::Value =
+        serde_json::from_str(&outcome.steps[1].arguments).expect("stored event");
+    assert_eq!(event["path"], PLAN_PATH);
+    let tree = formal_ai::seed::parse_lino(event["content"].as_str().expect("whole event"));
+    assert_eq!(tree.children[0].find_child_value("goal"), task);
+    let observed: serde_json::Value =
+        serde_json::from_str(&outcome.steps[2].arguments).expect("event readback");
+    assert_eq!(observed["path"], PLAN_PATH);
+    assert!(outcome.steps[2].result.starts_with("<file>\n"));
+    assert!(
+        outcome.steps[2]
+            .result
+            .contains(tree.children[0].find_child_value("id"))
+    );
+    let receipt: serde_json::Value =
+        serde_json::from_str(&outcome.steps[4].result).expect("actual target readback");
+    assert_eq!(receipt["schema"], "command-execution-receipt/v1");
+    assert_eq!(
+        receipt["command"],
+        "cat data/seed/issue-656-agent-learned.lino"
+    );
+    assert_eq!(receipt["exit_code"], 0);
+    assert_eq!(receipt["complete"], true);
+    assert_eq!(receipt["truncated"], false);
+    assert_eq!(receipt["timed_out"], false);
+    assert_eq!(receipt["stdout"], payload);
     let write: serde_json::Value =
-        serde_json::from_str(&outcome.steps[1].arguments).expect("write arguments");
+        serde_json::from_str(&outcome.steps[3].arguments).expect("write arguments");
     assert_eq!(write["path"], "data/seed/issue-656-agent-learned.lino");
     assert_eq!(write["content"], payload);
 }
@@ -540,4 +570,43 @@ fn a_multi_line_payload_survives_a_marker_that_shares_its_line() {
         bounded.content, "planner fallback works",
         "a payload that stays on one line is bounded exactly as before"
     );
+}
+
+#[test]
+fn command_capture_parent_file_is_a_real_failure_without_false_completion() {
+    let prompt = "Run 'printf learned-output' and write its exact stdout to reports/learned.txt";
+    let plan = compose_general_change_plan(prompt).expect("declared output plan");
+    let mut workspace = observed_plan_tools::ToolWorkspace::new(prompt);
+    workspace
+        .write_initial("reports", "existing file")
+        .expect("real obstructing parent");
+    let tools = ["read", "write", "run_command"];
+    let mut messages = vec![ChatMessage::user(prompt)];
+    for turn in 0..8 {
+        match plan_chat_step(&messages, &tools).expect("planned output task") {
+            AgenticPlan::ToolCalls(calls) => {
+                let call = &calls[0];
+                let id = format!("blocked-parent-{turn}");
+                let observation = workspace.execute(&id, call);
+                let failed = observation.is_error;
+                messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+                    &id,
+                    &call.tool,
+                    call.arguments.clone(),
+                )]));
+                messages.push(observation);
+                if failed {
+                    assert!(workspace.read(&plan.target).is_err());
+                    assert!(
+                        matches!(plan_chat_step(&messages, &tools), Some(AgenticPlan::Final(answer)) if !answer.contains("Completed the general change request"))
+                    );
+                    return;
+                }
+            }
+            AgenticPlan::Final(_) => {
+                panic!("the blocked parent must be observed as a failed tool call")
+            }
+        }
+    }
+    panic!("bounded real capture did not observe the parent error");
 }

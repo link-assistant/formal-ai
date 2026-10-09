@@ -21,19 +21,10 @@ fn call(prompt: &str) -> (String, serde_json::Value) {
     call_with_tools(prompt, &tools)
 }
 
+#[path = "../fixtures/observed-plan-tools.rs"]
+mod observed_plan_tools;
 fn call_with_tools(prompt: &str, tools: &[&str]) -> (String, serde_json::Value) {
-    let messages = vec![ChatMessage::user(prompt)];
-    match plan_chat_step(&messages, tools) {
-        Some(AgenticPlan::ToolCalls(calls)) => {
-            assert_eq!(calls.len(), 1, "expected one call for {prompt:?}");
-            let call = &calls[0];
-            (
-                call.tool.clone(),
-                serde_json::from_str(&call.arguments).expect("valid arguments"),
-            )
-        }
-        other => panic!("expected a tool call for {prompt:?}, got {other:?}"),
-    }
+    observed_plan_tools::first_workspace_call(prompt, tools)
 }
 
 #[test]
