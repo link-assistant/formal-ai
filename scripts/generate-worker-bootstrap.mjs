@@ -12,13 +12,22 @@ export function renderBootstrap(loader, seed) {
   vm.runInContext(loader, context);
   const api = context.FormalAiSeed;
   const responses = api.extractMultilingualResponses(api.parse(seed));
+  const renderResponse = (response) => {
+    const fields = Object.entries(response).map(([name, value]) =>
+      JSON.stringify(name)+': '+JSON.stringify(value));
+    const pairs = [];
+    for (let index = 0; index < fields.length; index += 2) {
+      pairs.push(fields.slice(index, index + 2).join(', '));
+    }
+    return '{'+pairs.join(',\n      ')+'}';
+  };
   return '// Generated response data from '+SOURCE+'; do not edit by hand.\n'
     + '// Regenerate with node scripts/generate-worker-bootstrap.mjs --write.\n'
     + 'self.FORMAL_AI_BOOTSTRAP_RESPONSES = Object.freeze('
     + '{\n' + Object.entries(responses).map(([intent, languages]) =>
       '  '+JSON.stringify(intent)+': {\n'
       + Object.entries(languages).map(([language, response]) =>
-        '    '+JSON.stringify(language)+': '+JSON.stringify(response)).join(',\n')
+        '    '+JSON.stringify(language)+': '+renderResponse(response)).join(',\n')
       + '\n  }').join(',\n') + '\n});\n';
 }
 export function main(argv, root = path.resolve(import.meta.dirname, '..')) {

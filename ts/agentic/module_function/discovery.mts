@@ -63,9 +63,9 @@ function readReceipt(messages, path) {
       call = (messages[prior].tool_calls ?? []).findLast((candidate) => candidate.id === result.tool_call_id) ?? null;
     }
     if (call === null || classifyTool(call.function.name) !== Capability.Read) continue;
-    let args;
-    try { args = JSON.parse(call.function.arguments); } catch { continue; }
-    if (!['path', 'filePath', 'file_path'].some((key) => args?.[key] === path)) continue;
+    let toolArguments;
+    try { toolArguments = JSON.parse(call.function.arguments); } catch { continue; }
+    if (!['path', 'filePath', 'file_path'].some((key) => toolArguments?.[key] === path)) continue;
     return { raw: plainText(result.content), failed: result.is_error === true || result.isError === true };
   }
   return null;

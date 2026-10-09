@@ -60,10 +60,10 @@ export function censusDocuments(repository = REPO_ROOT) {
       let source;
       try { source = readFileSync(path.join(repository, 'rust', target), 'utf8'); }
       catch { return []; }
-      const contentId = stableId('source_module', source);
+      const contentIdentifier = stableId('source_module', source);
       const byteLength = Buffer.byteLength(source);
-      if (field('content_id') !== contentId || Number(field('byte_len')) !== byteLength) return [];
-      return [{ path: file, text, sourceIdentity: { path: target, content_id: contentId, byte_len: byteLength } }];
+      if (field('content_id') !== contentIdentifier || Number(field('byte_len')) !== byteLength) return [];
+      return [{ path: file, text, sourceIdentity: { path: target, content_id: contentIdentifier, byte_len: byteLength } }];
     });
   };
   return visit(CENSUS_DIR);
