@@ -70,8 +70,15 @@ def _line_tokens(stripped: str) -> list[str]:
     while i < len(stripped):
         c = stripped[i]
         if c in "\"'`":
-            j = stripped.find(c, i + 1)
-            if j == -1:
+            j = i + 1
+            while j < len(stripped):
+                if stripped[j] == "\\":
+                    j += 2
+                elif stripped[j] == c:
+                    break
+                else:
+                    j += 1
+            if j >= len(stripped):
                 break
             i = j + 1
             buf += " "  # keep head/value boundary intact

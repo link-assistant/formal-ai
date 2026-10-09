@@ -1333,3 +1333,45 @@ meanings
     unit "not applicable"
     example "Briefly: {total} behavior rules ({built_in} built-in, {runtime} dialog-local): {groups}."
     grounding "data/seed/multilingual-responses-behavior-rules.lino"
+
+  source-qualified-definition
+    defined-by concept
+    role action
+    precondition "a definition request binds its topic and a named source to separate typed operands"
+    effect "only registered enabled providers and verified response bytes can supply source-qualified senses"
+    unit "one source-qualified request"
+    example "retrieve a definition of entropy from a named dictionary"
+    grounding "js/worker/formal_ai_worker_source_qualified_definition.js"
+    lexeme en "definition from a named source"
+    lexeme ru "определение из указанного источника"
+    lexeme hi "नामित स्रोत से परिभाषा"
+    lexeme zh "来自指定来源的定义"
+    lexeme es "definición de una fuente indicada"
+
+  source-qualified-definition-answer
+    defined-by answer
+    role localized_response_template
+    precondition "verified source bytes yield one or more definition senses with source identity and retrieval provenance"
+    effect "the response renders those actual senses and their citation without substituting the provider for the topic"
+    unit "one source-qualified request"
+    example "render verified senses with a source URL and content identity"
+    grounding "js/worker/formal_ai_worker_source_qualified_definition.js"
+    lexeme en "verified source definition answer"
+    lexeme ru "ответ с определением из проверенного источника"
+    lexeme hi "सत्यापित स्रोत की परिभाषा का उत्तर"
+    lexeme zh "经验证来源的定义回答"
+    lexeme es "respuesta de definición de fuente verificada"
+
+  source-qualified-definition-unresolved
+    defined-by answer
+    role localized_response_template
+    precondition "a source-qualified definition lacks an enabled provider, verified capture or usable definition senses"
+    effect "the response records the missing source evidence without inventing a definition or retrieval"
+    unit "one source-qualified request"
+    example "report an unavailable verified source capture"
+    grounding "js/worker/formal_ai_worker_source_qualified_definition.js"
+    lexeme en "unresolved source definition"
+    lexeme ru "неполученное определение из источника"
+    lexeme hi "अप्राप्त स्रोत की परिभाषा"
+    lexeme zh "未解决的来源定义"
+    lexeme es "definición de fuente sin resolver"

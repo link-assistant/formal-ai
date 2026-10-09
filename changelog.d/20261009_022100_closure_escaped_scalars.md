@@ -1,0 +1,1 @@
+Fix closure reference scanning for escaped quotes and backslashes inside captured source literals. Preserve exact captured source identities as quoted scalars and ground the three source-qualified response meanings in the shared five-language seed. Three parser regressions preserve real bare-reference discovery; closure stays at the existing1035 ceiling.
