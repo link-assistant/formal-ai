@@ -132,11 +132,11 @@ jobs:
     needs: [plan]
     if: ${{ needs.plan.outputs.already-green != 'true' }}
     runs-on: ubuntu-latest
-    # The previous 63-node serial walk is now at most two leaves or one
-    # requirement per leg. Keep a generous exception while real cold/all-mode
-    # observations establish the 30-minute retirement criterion. With the
-    # artifact-fed composite wave, the static workflow DAG remains 225 minutes.
-    timeout-minutes: 135
+    # Both complete cold all-mode runs (37870805740 and 37870809771)
+    # measured every full job and step below 30 minutes, including setup and
+    # upload. Maximum full jobs: 1110s disabled, 1024s enabled. This retires
+    # the old 135-minute exception; semantic task failures remain visible.
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -183,7 +183,11 @@ jobs:
         id: tree
         env:
           AGENT: agent
-        run: experiments/issue_1028_agent_cli_ladder/run.sh
+          TEST_BUDGET_SECONDS: 1200
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Agent CLI primary verification" \
+            experiments/issue_1028_agent_cli_ladder/run.sh
 
       - name: Show the Agent CLI evidence on failure
         if: failure()

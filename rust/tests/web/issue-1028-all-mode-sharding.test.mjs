@@ -159,16 +159,20 @@ test('the real verdict shell requires all declared waves and allows an all-mode 
   assert.notEqual(verdict('[{}]','success','skipped'),0);
 });
 
-test('the complete artifact DAG stays at225 static minutes without retiring an unmeasured exception',()=>{
+test('measured ladder retirement caps each wave and records the new static DAG',()=>{
   const workflow=readFileSync(join(root,'.github/workflows/issue-1028-agent-ladder.yml'),'utf8');
   const jobs=new Map(workflowJobs(workflow).map(job=>[job.id,job]));
   const longest=id=>Math.max(0,...jobs.get(id).needs.map(longest))+Math.max(...jobs.get(id).timeoutValues);
-  assert.equal(longest('compare'),225);
+  assert.equal(longest('compare'),120);
+  assert.equal(jobs.get('ladder').timeoutValues[0],30);
   assert.equal(jobs.get('composites').timeoutValues[0],30);
+  assert.match(jobs.get('ladder').body,/TEST_BUDGET_SECONDS: 1200/);
+  assert.match(jobs.get('ladder').body,/run-with-budget-warning\.sh/);
   const policy=readFileSync(join(root,'data/meta/ci-speed.lino'),'utf8');
-  assert.match(policy,/over-limit-job ladder\n\s+timeout-minutes 135/);
+  assert.doesNotMatch(policy,/workflow "\.github\/workflows\/issue-1028-agent-ladder\.yml"/);
   const record=readFileSync(join(root,'data/meta/ci-wall-clock.lino'),'utf8');
-  assert.match(record,/measured_minutes 225/);assert.match(record,/ceiling_minutes 225/);
+  assert.match(record,/measured_minutes 120/);assert.match(record,/ceiling_minutes 225/);
+  assert.match(record,/workflow "\.github\/workflows\/issue-1028-agent-ladder\.yml"/);
 });
 
 

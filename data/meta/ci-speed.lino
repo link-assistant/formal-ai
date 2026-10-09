@@ -54,10 +54,6 @@ ci-speed
     over-limit-job upstream-shard
       timeout-minutes 45
       reason "Dispatch with a shard size only: one window of the upstream suites. To meet 30: size the windows from measured durations."
-  workflow ".github/workflows/issue-1028-agent-ladder.yml"
-    over-limit-job ladder
-      timeout-minutes 135
-      reason "The weekly all corpus is now 31 parallel primary legs (16 leaf pairs and 15 requirement nodes), followed by 16 artifact-fed single-composite legs. Existing leaf-pair measurements max 19.0 minutes; cold all-mode requirement timings remain unmeasured. Keep this generous primary backstop until every new leg is actually below 30; plan 30 + primary 135 + leaf join 15 + composites 30 + compare 15 preserves the 225-minute static DAG ceiling."
   workflow ".github/workflows/macos-core-tests.yml"
     over-limit-job build-archive
       timeout-minutes 55
