@@ -11,7 +11,7 @@ use serde_json::json;
 mod target_guard;
 use super::final_result::FinalResult;
 
-use super::code_artifact::latest_result;
+use super::code_artifact::{latest_result, result_for_command};
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
 use crate::normal_markov::unwrap_transport_quotes;
 use crate::protocol::ChatMessage;
@@ -55,8 +55,8 @@ pub(super) fn plan_generated_source_step(
         .rposition(|message| message.role.eq_ignore_ascii_case("user"))?;
     let current_turn = &messages[latest_user + 1..];
 
-    if let Some(observed) = latest_result(current_turn, Capability::Run) {
-        let outcome = if observed == artifact.content {
+    if let Some(observed) = result_for_command(current_turn, &format!("cat {}", artifact.path)) {
+        let outcome = if super::tool_result::observed_bytes_match(&observed, &artifact.content) {
             "coding_workspace_effect_observed"
         } else {
             "coding_workspace_verification_failed"

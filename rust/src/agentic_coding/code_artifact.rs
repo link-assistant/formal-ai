@@ -264,6 +264,29 @@ fn latest_workspace_artifact(messages: &[ChatMessage]) -> Option<WorkspaceArtifa
         })
 }
 
+/// The latest receipt associated with this exact command in the supplied request window.
+pub(super) fn result_for_command(messages: &[ChatMessage], command: &str) -> Option<String> {
+    messages
+        .iter()
+        .enumerate()
+        .rev()
+        .find_map(|(index, message)| {
+            if !message.role.eq_ignore_ascii_case("tool") {
+                return None;
+            }
+            let call_identity = message.tool_call_id.as_deref()?;
+            let call = messages[..index]
+                .iter()
+                .rev()
+                .flat_map(|prior| prior.tool_calls.iter().rev())
+                .find(|call| call.id == call_identity)?;
+            (tool_capability(&call.function.name) == Some(Capability::Run)
+                && super::tool_result::command_argument(&call.function.arguments).as_deref()
+                    == Some(command))
+            .then(|| message.content.plain_text())
+        })
+}
+
 pub(super) fn latest_result(messages: &[ChatMessage], capability: Capability) -> Option<String> {
     messages
         .iter()

@@ -1,0 +1,4 @@
+file-names  abbreviated-file-names 92
+bindings js  abbreviated-bindings 727
+bindings js abbreviated-bindings fell from 729 to 727; lower the ceiling with --write.
+bindings rust/src  abbreviated-bindings 912

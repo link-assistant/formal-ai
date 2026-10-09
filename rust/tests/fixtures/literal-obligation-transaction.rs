@@ -18,12 +18,31 @@ impl Drop for Run {
     }
 }
 fn run(task: &str, tools: &[&str]) -> Run {
+    run_with_sources(task, tools, &[], successful_source_receipt)
+}
+fn successful_source_receipt(stdout: &str) -> String {
+    format!("Output: {stdout}\nExit Code: 0")
+}
+fn json_source_receipt(stdout: &str) -> String {
+    serde_json::json!({"stdout": stdout, "exit_code": 0}).to_string()
+}
+fn run_with_sources(
+    task: &str,
+    tools: &[&str],
+    sources: &[(&str, &str)],
+    receipt: fn(&str) -> String,
+) -> Run {
     let root = std::env::temp_dir().join(format!(
         "formal-ai-obligation-{}-{}",
         std::process::id(),
         SERIAL.fetch_add(1, Ordering::Relaxed)
     ));
     fs::create_dir_all(&root).expect("fixture directory");
+    for (path, bytes) in sources {
+        let target = root.join(path);
+        fs::create_dir_all(target.parent().expect("fixture parent")).expect("parent directory");
+        fs::write(target, bytes).expect("fixture preimage");
+    }
     let mut run = Run {
         root,
         receipts: Vec::new(),
@@ -45,6 +64,17 @@ fn run(task: &str, tools: &[&str]) -> Run {
                         .expect("target write");
                         run.writes += 1;
                         String::new()
+                    } else if call.tool == "read" {
+                        let path = args["path"].as_str().expect("read target");
+                        match fs::read_to_string(run.root.join(path)) {
+                            Ok(bytes) => bytes,
+                            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+                                "Error: ENOENT: no such file or directory".to_owned()
+                            }
+                            Err(error) => {
+                                serde_json::json!({"error": error.to_string()}).to_string()
+                            }
+                        }
                     } else if call.tool == "bash" {
                         let command = args["command"].as_str().expect("command");
                         let output = Command::new("bash")
@@ -53,10 +83,13 @@ fn run(task: &str, tools: &[&str]) -> Run {
                             .output()
                             .expect("bounded fixture shell");
                         let stdout = String::from_utf8(output.stdout).expect("UTF8 stdout");
-                        let result = format!(
+                        let mut result = format!(
                             "Output: {stdout}\nExit Code: {}",
                             output.status.code().unwrap_or(1)
                         );
+                        if command.starts_with("cat ") && output.status.success() {
+                            result = receipt(&stdout);
+                        }
                         if command.starts_with("cat ") {
                             run.receipts.push((command.to_owned(), stdout));
                         }
@@ -181,4 +214,157 @@ fn outer_literal_artifacts_keep_inner_enumeration_payloads() {
         "First, create a.txt with exactly this content «{first}». Second, create b.txt with exactly this content «{second}»."
     );
     exact_pair(&run(&request, &["bash", "write"]), first, second);
+}
+
+#[test]
+fn source_readback_retains_unicode_terminal_newline_and_typed_json_stdout() {
+    let source = "λ🙂 old old\n";
+    for receipt in [
+        successful_source_receipt as fn(&str) -> String,
+        json_source_receipt,
+    ] {
+        let outcome = run_with_sources(
+            "In f.txt replace every «old» with «new».",
+            &["read", "write", "bash"],
+            &[("f.txt", source)],
+            receipt,
+        );
+        assert_eq!(
+            fs::read_to_string(outcome.root.join("f.txt")).expect("target"),
+            "λ🙂 new new\n"
+        );
+        assert_eq!(
+            outcome.receipts,
+            vec![("cat f.txt".to_owned(), "λ🙂 new new\n".to_owned())]
+        );
+        let answer = outcome.answer.as_deref().expect("final answer");
+        assert!(!answer.contains("Verification failed"));
+    }
+}
+#[test]
+fn typed_failed_readback_cannot_certify_correct_physical_source_write() {
+    fn failed_receipt(stdout: &str) -> String {
+        serde_json::json!({"stdout": stdout, "exit_code": 1}).to_string()
+    }
+    fn denied_receipt(stdout: &str) -> String {
+        serde_json::json!({"stdout": stdout, "exit_code": 0, "is_error": true, "error": "denied"})
+            .to_string()
+    }
+    fn bare_receipt(stdout: &str) -> String {
+        stdout.to_owned()
+    }
+    for receipt in [
+        failed_receipt as fn(&str) -> String,
+        denied_receipt,
+        bare_receipt,
+    ] {
+        let outcome = run_with_sources(
+            "In f.txt replace every «old» with «new».",
+            &["read", "write", "bash"],
+            &[("f.txt", "old old\n")],
+            receipt,
+        );
+        assert_eq!(
+            fs::read_to_string(outcome.root.join("f.txt")).expect("target"),
+            "new new\n"
+        );
+        assert!(
+            outcome
+                .answer
+                .as_deref()
+                .expect("final answer")
+                .contains("Verification failed")
+        );
+    }
+}
+#[test]
+fn structured_source_insertion_accepts_actual_exact_receipt() {
+    let source = "const ITEMS: &[&str] = &[\"a\", \"b\"];\n";
+    let outcome = run_with_sources(
+        "In f.rs add «c» to the list ITEMS alongside «a» and «b».",
+        &["read", "write", "bash"],
+        &[("f.rs", source)],
+        json_source_receipt,
+    );
+    let expected = "const ITEMS: &[&str] = &[\"a\", \"b\", \"c\"];\n";
+    assert_eq!(
+        fs::read_to_string(outcome.root.join("f.rs")).expect("target"),
+        expected
+    );
+    assert_eq!(
+        outcome.receipts,
+        vec![("cat f.rs".to_owned(), expected.to_owned())]
+    );
+    assert!(
+        !outcome
+            .answer
+            .as_deref()
+            .expect("final answer")
+            .contains("Verification failed")
+    );
+}
+#[test]
+fn composite_source_and_registration_have_independent_exact_receipts() {
+    let outcome = run_with_sources(
+        "Create f.rs containing a public Rust function named held_out_value returning 29 and register the module in lib.rs.",
+        &["read", "write", "bash"],
+        &[("lib.rs", "pub mod base;\n")],
+        successful_source_receipt,
+    );
+    let source = "pub fn held_out_value() -> i64 {\n    29\n}\n";
+    let registration = "pub mod base;\npub mod f;\n";
+    assert_eq!(
+        fs::read_to_string(outcome.root.join("f.rs")).expect("source"),
+        source
+    );
+    assert_eq!(
+        fs::read_to_string(outcome.root.join("lib.rs")).expect("registration"),
+        registration
+    );
+    assert_eq!(
+        outcome.receipts,
+        vec![
+            ("cat f.rs".to_owned(), source.to_owned()),
+            ("cat lib.rs".to_owned(), registration.to_owned())
+        ]
+    );
+    assert_eq!(outcome.writes, 2);
+    assert!(
+        !outcome
+            .answer
+            .as_deref()
+            .expect("final answer")
+            .contains("Verification failed")
+    );
+}
+
+#[test]
+fn structured_stdout_cannot_certify_a_pretty_printed_source_representation() {
+    fn object_receipt(stdout: &str) -> String {
+        let value: serde_json::Value = serde_json::from_str(stdout).expect("authored JSON");
+        serde_json::json!({"stdout": value, "exit_code": 0}).to_string()
+    }
+    let expected = "{\n  \"a\": 1\n}";
+    let request = format!("In f.json replace «old» with «{expected}».");
+    let outcome = run_with_sources(
+        &request,
+        &["read", "write", "bash"],
+        &[("f.json", "old")],
+        object_receipt,
+    );
+    assert_eq!(
+        fs::read_to_string(outcome.root.join("f.json")).expect("actual authored bytes"),
+        expected
+    );
+    assert_eq!(
+        outcome.receipts,
+        vec![("cat f.json".to_owned(), expected.to_owned())]
+    );
+    assert!(
+        outcome
+            .answer
+            .as_deref()
+            .expect("final answer")
+            .contains("Verification failed")
+    );
 }

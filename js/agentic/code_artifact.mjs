@@ -13,6 +13,7 @@ import {
   executeRewrite, quotedSegments, rewriteProgram, rewriteRule, unwrapTransportQuotes,
 } from './crate/normal_markov.mjs';
 import { isAsciiDigit, lines, trim, trimEnd } from './write_str.mjs';
+import { commandArgument } from './tool_result.mjs';
 
 const MAX_REWRITE_STEPS = 100000;
 const RENDERED_TRACE_EDGE_STEPS = 32;
@@ -181,6 +182,24 @@ function latestWorkspaceArtifact(messages) {
       const content = argumentString(args, ['content']);
       if (path !== null && content !== null) return { path, content };
     }
+  }
+  return null;
+}
+
+/** Mirrors `fn result_for_command`: latest exact command receipt in the supplied request window. */
+export function resultForCommand(messages, command) {
+  for (let index = messages.length - 1; index >= 0; index -= 1) {
+    const message = messages[index];
+    if (!eqIgnoreAsciiCase(message.role, 'tool') || message.tool_call_id == null) continue;
+    let call = null;
+    for (let prior = index - 1; prior >= 0 && call === null; prior -= 1) {
+      const calls = messages[prior].tool_calls || [];
+      for (let at = calls.length - 1; at >= 0; at -= 1) {
+        if (calls[at].id === message.tool_call_id) { call = calls[at]; break; }
+      }
+    }
+    if (call !== null && classifyTool(call.function.name) === Capability.Run
+      && commandArgument(call.function.arguments) === command) return plainText(message.content);
   }
   return null;
 }

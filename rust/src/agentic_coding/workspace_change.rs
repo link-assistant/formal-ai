@@ -324,7 +324,7 @@ fn plan_rewrite_step(
         let tool = tool_for(tool_names, Capability::Run)?;
         return Some(plan_one(tool, json!({"command": command}).to_string()));
     };
-    if observed != updated {
+    if !super::tool_result::observed_bytes_match(&observed, &updated) {
         return Some(AgenticPlan::Final(render_seeded_outcome(
             "coding_workspace_verification_failed",
             task,
@@ -374,7 +374,7 @@ fn plan_composite_step(
             json!({"command": source_command}).to_string(),
         ));
     };
-    if observed_source != change.source {
+    if !super::tool_result::observed_bytes_match(&observed_source, &change.source) {
         return Some(AgenticPlan::Final(render_seeded_outcome(
             "coding_workspace_verification_failed",
             task,
@@ -456,7 +456,7 @@ fn plan_composite_step(
             json!({"command": registration_command}).to_string(),
         ));
     };
-    if observed_registration != updated {
+    if !super::tool_result::observed_bytes_match(&observed_registration, &updated) {
         return Some(AgenticPlan::Final(render_seeded_outcome(
             "coding_workspace_verification_failed",
             task,
@@ -925,10 +925,7 @@ fn workspace_path_matches(expected: &str, observed: &str) -> bool {
 }
 
 pub(super) fn result_for_command(messages: &[ChatMessage], command: &str) -> Option<String> {
-    matching_result(messages, |name, arguments| {
-        tool_capability(name) == Some(Capability::Run)
-            && super::tool_result::command_argument(arguments).as_deref() == Some(command)
-    })
+    super::code_artifact::result_for_command(messages, command)
 }
 
 pub(super) fn plan_digest_verification(

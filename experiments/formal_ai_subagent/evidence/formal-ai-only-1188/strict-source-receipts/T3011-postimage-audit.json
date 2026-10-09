@@ -1,0 +1,56 @@
+{
+  "paths": [
+    {
+      "path": "js/agentic/tool_result.mjs",
+      "changed": false,
+      "sha256": "f661e80fb687f33f818de730bc1d31803e441dda48b7aaf6ee52416e6099d0e4"
+    },
+    {
+      "path": "rust/src/agentic_coding/tool_result.rs",
+      "changed": false,
+      "sha256": "37b5145eee3909c5d3a6ea3412275ca859017989c1f3ddc6e0ba2dc3dddb15be"
+    },
+    {
+      "path": "js/agentic/code_artifact.mjs",
+      "changed": false,
+      "sha256": "947773349db1a878a11dd28fc8762f856e4aeaccc18370f4430898291ebd0e0f"
+    },
+    {
+      "path": "rust/src/agentic_coding/code_artifact.rs",
+      "changed": false,
+      "sha256": "2eb0e144b65e422229ec9ef558175a916d7acb21673cb97e3c879a14b42aa5da"
+    },
+    {
+      "path": "js/agentic/workspace_change.mjs",
+      "changed": false,
+      "sha256": "95c6a5213b0aa512d973a0990d577989d4479dd4d434d9fa8e0320bd3b75c666"
+    },
+    {
+      "path": "rust/src/agentic_coding/workspace_change.rs",
+      "changed": false,
+      "sha256": "93b346a3cd422b58fbc9af302fe85a704541e5f717d80baa4f937c22d4f5146c"
+    },
+    {
+      "path": "js/agentic/code_task.mjs",
+      "changed": false,
+      "sha256": "d6a241f1a5fa99edc2cac103abe27f1773b5c0f131303f08ec1907660de1dbc0"
+    },
+    {
+      "path": "rust/src/agentic_coding/code_task.rs",
+      "changed": false,
+      "sha256": "21d712d88932c47048c04ba3d5e63de33db8424f3b683ff7db441483237e1c64"
+    },
+    {
+      "path": "js/agentic/structured_edit.mjs",
+      "changed": false,
+      "sha256": "c3fecec78e2c71cb11983a156874bfee8cbe8c3891b5f9b511ac27efce2674cd"
+    },
+    {
+      "path": "rust/src/agentic_coding/structured_edit.rs",
+      "changed": false,
+      "sha256": "9da1e7abd5023eeb4789f13e4a89ab59d3c95d4d67f05cb93a547f1a40e01025"
+    }
+  ],
+  "tools": [],
+  "stop": "final"
+}

@@ -7,7 +7,8 @@
 
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
-import { latestResult, sourceFromReadResult } from './code_artifact.mjs';
+import { latestResult, resultForCommand, sourceFromReadResult } from './code_artifact.mjs';
+import { observedBytesMatch } from './tool_result.mjs';
 import { renderSeededChange, renderSeededOutcome } from './code_task.mjs';
 import { insertMembersViaLinks } from './link_edit_rules.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
@@ -63,10 +64,10 @@ export function planStructuredEditStep(rawTask, messages, toolNames) {
     const writeTool = toolFor(toolNames, Capability.Write);
     return writeTool ? planOne(writeTool, writeArguments(edit.target, updated)) : null;
   }
-  const observed = latestResult(currentTurn, Capability.Run);
+  const observed = resultForCommand(currentTurn, `cat ${edit.target}`);
   if (observed !== null) {
     let rendered;
-    if (observed === updated) {
+    if (observedBytesMatch(observed, updated)) {
       const [intent, change] = inserted.length
         ? ['coding_member_inserted', quotedList(inserted)]
         : ['coding_member_already_present', quotedList(edit.values)];

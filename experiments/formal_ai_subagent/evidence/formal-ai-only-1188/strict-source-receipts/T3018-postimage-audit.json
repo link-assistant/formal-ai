@@ -1,0 +1,12 @@
+{
+  "promptIdentical": true,
+  "preimageIdentical": true,
+  "actualBytes": 12078,
+  "sha256": "1888b97785a19da3a6f4aa980cc1fadbe19b92745fe0ba3d8c0db9c05b610a08",
+  "expectedBytes": 12078,
+  "exactBytes": true,
+  "actualCatReceiptCount": 1,
+  "exactCatReceipt": true,
+  "stop": "final",
+  "answer": "Replaced `result.evidence_notation` with `result.links_notation` in `rust/tests/web/compiled-skill-packages.test.mjs` and observed the result."
+}

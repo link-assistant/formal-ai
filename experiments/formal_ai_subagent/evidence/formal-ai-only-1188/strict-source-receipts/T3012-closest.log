@@ -1,0 +1,100 @@
+TAP version 13
+# Subtest: generated source observes its exact target before any write
+ok 1 - generated source observes its exact target before any write
+  ---
+  duration_ms: 1499.264459
+  ...
+# Subtest: existing and unreadable sources remain unchanged without explicit replacement
+ok 2 - existing and unreadable sources remain unchanged without explicit replacement
+  ---
+  duration_ms: 14.261625
+  ...
+# Subtest: actual absence, empty bytes and exact desired preimage authorize source creation
+ok 3 - actual absence, empty bytes and exact desired preimage authorize source creation
+  ---
+  duration_ms: 5.528083
+  ...
+# Subtest: unobserved read capability produces a typed gap without source mutation
+ok 4 - unobserved read capability produces a typed gap without source mutation
+  ---
+  duration_ms: 1.063958
+  ...
+# Subtest: numbers inside identifiers never become requested Rust values
+ok 5 - numbers inside identifiers never become requested Rust values
+  ---
+  duration_ms: 1.246542
+  ...
+# Subtest: unchanged T2379 writes and independently verifies both artifacts
+ok 6 - unchanged T2379 writes and independently verifies both artifacts
+  ---
+  duration_ms: 1042.07425
+  ...
+# Subtest: quoted operation and teaching keywords remain literal in every obligation
+ok 7 - quoted operation and teaching keywords remain literal in every obligation
+  ---
+  duration_ms: 205.968583
+  ...
+# Subtest: a first-file receipt cannot certify a second file or its failed readback
+ok 8 - a first-file receipt cannot certify a second file or its failed readback
+  ---
+  duration_ms: 33.858833
+  ...
+# Subtest: write-only delivery retains first target and reports verification unavailable
+ok 9 - write-only delivery retains first target and reports verification unavailable
+  ---
+  duration_ms: 79.274083
+  ...
+# Subtest: read-only clients cannot mutate either literal target
+ok 10 - read-only clients cannot mutate either literal target
+  ---
+  duration_ms: 401.181959
+  ...
+# Subtest: a successful artifact never hides an underivable mandatory clause
+ok 11 - a successful artifact never hides an underivable mandatory clause
+  ---
+  duration_ms: 83.07075
+  ...
+# Subtest: all seeded enumeration surfaces inside literal operands remain payload
+ok 12 - all seeded enumeration surfaces inside literal operands remain payload
+  ---
+  duration_ms: 7.94625
+  ...
+# Subtest: every seeded outer cue preserves two complete literals and exact UTF8 spans
+ok 13 - every seeded outer cue preserves two complete literals and exact UTF8 spans
+  ---
+  duration_ms: 8.738916
+  ...
+# Subtest: closed twelve-character fence with internal instructions has one exact readback
+ok 14 - closed twelve-character fence with internal instructions has one exact readback
+  ---
+  duration_ms: 45.6275
+  ...
+# Subtest: independent outer artifacts retain nested enumeration bytes and receipts
+ok 15 - independent outer artifacts retain nested enumeration bytes and receipts
+  ---
+  duration_ms: 194.047125
+  ...
+# Subtest: digest normalization preserves Unicode and line-ending byte identities
+ok 16 - digest normalization preserves Unicode and line-ending byte identities
+  ---
+  duration_ms: 629.886333
+  ...
+# Subtest: failed receipts cannot verify even when stdout contains the exact digest
+ok 17 - failed receipts cannot verify even when stdout contains the exact digest
+  ---
+  duration_ms: 0.205125
+  ...
+# Subtest: grounded workspace edit verifies receipt payload, preserving actual failed status
+ok 18 - grounded workspace edit verifies receipt payload, preserving actual failed status
+  ---
+  duration_ms: 214.7485
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 18
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2302.71475

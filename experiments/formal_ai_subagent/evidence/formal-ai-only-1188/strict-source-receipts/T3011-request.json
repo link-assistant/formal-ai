@@ -1,0 +1,6 @@
+{
+  "id": "T3011",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Repair the shared source-file readback verification capability in js/agentic/tool_result.mjs and rust/src/agentic_coding/tool_result.rs, with the source rewrite, composite registration, generated source and structured source edit callers in code_artifact, workspace_change, code_task and structured_edit in both roots. Existing callers compare an entire successful shell receipt directly with expected source bytes and falsely report failure after a correct Write. Observe the actual producer/result parsers first. Require an explicit successful command status, reject typed harness errors and wrong bytes, and compare the exact observed stdout with the expected file content, preserving Unicode, compact JSON and final newlines. Bind every verification to the latest request-local receipt for its exact cat command and target; unrelated commands and older success before a failed matching readback cannot certify it. Preserve existing bare Read and FileBytes compatibility and raw result recording. Add meaningful closest regressions and report actual validation. Do not run cargo, rustc or rust-script.",
+  "steps": 12
+}

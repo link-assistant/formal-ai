@@ -4,10 +4,10 @@
 import { Capability } from './capability.mjs';
 import { guardedSourceStep } from './code_task/target_guard.mjs';
 import { toolFor } from './capability_router.mjs';
-import { latestResult } from './code_artifact.mjs';
+import { latestResult, resultForCommand } from './code_artifact.mjs';
 import { composeEditRequest } from './general_planner.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
-import { responseLanguage } from './tool_result.mjs';
+import { observedBytesMatch, responseLanguage } from './tool_result.mjs';
 import { unwrapTransportQuotes } from './crate/normal_markov.mjs';
 import { localizedResponse, responseFor } from './crate/seed.mjs';
 import { firstRoleMatch, words } from './crate/seed_meanings.mjs';
@@ -37,9 +37,9 @@ export function planGeneratedSourceStep(rawTask, messages, toolNames) {
   }
   if (latestUser < 0) return null;
   const currentTurn = messages.slice(latestUser + 1);
-  const observed = latestResult(currentTurn, Capability.Run);
+  const observed = resultForCommand(currentTurn, `cat ${artifact.path}`);
   if (observed !== null) {
-    const outcome = observed === artifact.content ? 'coding_workspace_effect_observed' : 'coding_workspace_verification_failed';
+    const outcome = observedBytesMatch(observed, artifact.content) ? 'coding_workspace_effect_observed' : 'coding_workspace_verification_failed';
     const rendered = renderSeededOutcome(outcome, task, artifact.path);
     return rendered === null ? null : finalAnswer(rendered);
   }

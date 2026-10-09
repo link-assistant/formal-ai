@@ -45,6 +45,21 @@ export function stepOutcome(raw) {
   return looksLikeError(result.payload) ? StepOutcome.Failed : StepOutcome.Unreported;
 }
 
+/** Mirrors `fn observed_bytes_match`: an explicit successful exact byte receipt. */
+export function observedBytesMatch(raw, expected) {
+  const result = normalize(raw);
+  if (result.exit_code !== 0 || result.error !== null) return false;
+  const exact = /^(?:Command: [^\n]*\n)?Output: ([\s\S]*)\nExit Code: 0$/u.exec(untrustedInner(raw));
+  if (exact !== null) return exact[1] === expected;
+  const value = parseJson(trim(raw));
+  if (!isObject(value)) return false;
+  if (['is_error', 'isError'].some((name) => value[name] === true)
+    || ['ok', 'success'].some((name) => value[name] === false)
+    || ['error', 'stderr', 'failure'].some((name) => nonemptyText(value[name]) !== null)) return false;
+  const key = ['output', 'stdout', 'content', 'result'].find((name) => has(value, name));
+  return key !== undefined && typeof value[key] === 'string' && value[key] === expected;
+}
+
 /** Mirrors `fn observed_digest_matches`. */
 export function observedDigestMatches(raw, expected) {
   return stepOutcome(raw) !== StepOutcome.Failed
@@ -92,7 +107,15 @@ export function observedPayload(raw) {
     return exact === null ? envelope.output : exact[1];
   }
   const result = normalize(raw);
-  return result.error === null ? result.payload : null;
+  if (result.error !== null) return null;
+  if (result.exit_code === 0) {
+    const value = parseJson(trim(raw));
+    if (isObject(value)) {
+      const key = ['output', 'stdout', 'content', 'result'].find((name) => has(value, name));
+      if (key !== undefined && typeof value[key] === 'string') return value[key];
+    }
+  }
+  return result.payload;
 }
 
 /** Mirrors `fn failure_message`. */

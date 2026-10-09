@@ -16,7 +16,7 @@ use std::collections::HashMap;
 
 use serde_json::json;
 
-use super::code_artifact::{latest_result, source_from_read_result};
+use super::code_artifact::{latest_result, result_for_command, source_from_read_result};
 use super::code_task::{render_seeded_change, render_seeded_outcome};
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
 use crate::normal_markov::{quoted_segment_spans, unwrap_transport_quotes};
@@ -88,8 +88,8 @@ pub(super) fn plan_structured_edit_step(
             write_arguments(&edit.target, &updated),
         ));
     }
-    if let Some(observed) = latest_result(current_turn, Capability::Run) {
-        if observed == updated {
+    if let Some(observed) = result_for_command(current_turn, &format!("cat {}", edit.target)) {
+        if super::tool_result::observed_bytes_match(&observed, &updated) {
             // Say what went in, not just that the file was written. The read
             // step is what made this knowable, and a caller that asked for a
             // record of the change -- the issue #1028 ladder does -- has

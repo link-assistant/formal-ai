@@ -1,0 +1,5 @@
+{
+  "taskId": "T2971",
+  "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "In rust/tests/web/compiled-skill-packages.test.mjs replace all occurrences of `result.evidence_notation` with `result.links_notation`."
+}

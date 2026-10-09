@@ -5,7 +5,7 @@ import { scopedDecline } from './edit_scope.mjs';
 import { absentTextAnswer, replaceList, replacedInOrder } from './replace_list.mjs';
 import { Capability } from './capability.mjs';
 import { classifyTool, toolFor } from './capability_router.mjs';
-import { sourceFromAgentReadResult, sourceFromReadResult } from './code_artifact.mjs';
+import { resultForCommand as commandResult, sourceFromAgentReadResult, sourceFromReadResult } from './code_artifact.mjs';
 import { renderRustTemplate, renderSeededChange, renderSeededOutcome, rustSourceForTask } from './code_task.mjs';
 import { plainText } from './content.mjs';
 import { contentsSource, withContents } from './contents_source.mjs';
@@ -20,7 +20,7 @@ import {
   joinedLiteralLines, unescapeProseNewlines, unquotedPathTokens,
 } from './positional_edit.mjs';
 import { bareSurfaces, cleanCueToken, cleanPathToken, looksLikeFilePath, safeRelativePath, tokens } from './write_request.mjs';
-import { commandArgument, failureMessage, observedDigestMatches } from './tool_result.mjs';
+import { failureMessage, observedBytesMatch, observedDigestMatches } from './tool_result.mjs';
 import { quotedSegmentSpans, quotedSegments, quotesWhole, unwrapTransportQuotes } from './crate/normal_markov.mjs';
 import { sha256Hex } from './crate/source_fetch.mjs';
 import { correctedSpelling } from './crate/spelling.mjs';
@@ -145,7 +145,7 @@ function planRewriteStep(task, currentTurn, toolNames, grounded) {
   const command = `cat ${rewrite.target}`;
   const observed = resultForCommand(currentTurn, command);
   if (observed === null) return planWithTool(toolNames, Capability.Run, jsonText({ command }));
-  if (observed !== updated) return failed(task, rewrite.target);
+  if (!observedBytesMatch(observed, updated)) return failed(task, rewrite.target);
   return finalOrNull(renderSeededChange(statedIntent(rewrite), task, rewrite.target, statedSlots(rewrite)),
     FinalDisposition.Finding, statedIntent(rewrite));
 }
@@ -188,7 +188,7 @@ function planCompositeStep(task, currentTurn, toolNames, change) {
   const sourceCommand = `cat ${change.source_path}`;
   const observedSource = resultForCommand(currentTurn, sourceCommand);
   if (observedSource === null) return planWithTool(toolNames, Capability.Run, jsonText({ command: sourceCommand }));
-  if (observedSource !== change.source) return failed(task, change.source_path);
+  if (!observedBytesMatch(observedSource, change.source)) return failed(task, change.source_path);
   const read = resultForPath(currentTurn, Capability.Read, change.registration_path, null);
   if (read === null) return planWithTool(toolNames, Capability.Read, readArguments(change.registration_path));
   const current = sourceFromReadResult(read);
@@ -215,7 +215,7 @@ function planCompositeStep(task, currentTurn, toolNames, change) {
   const registrationCommand = `cat ${change.registration_path}`;
   const observed = resultForCommand(currentTurn, registrationCommand);
   if (observed === null) return planWithTool(toolNames, Capability.Run, jsonText({ command: registrationCommand }));
-  if (observed !== updated) return failed(task, change.registration_path);
+  if (!observedBytesMatch(observed, updated)) return failed(task, change.registration_path);
   return finalOrNull(renderSeededChange('coding_member_inserted', task, change.registration_path, members));
 }
 
@@ -1157,7 +1157,7 @@ function workspacePathMatches(expected, observed) {
 }
 
 export function resultForCommand(messages, command) {
-  return matchingResult(messages, (name, args) => classifyTool(name) === Capability.Run && commandArgument(args) === command);
+  return commandResult(messages, command);
 }
 
 function planDigestVerification(task, currentTurn, toolNames, change) {
