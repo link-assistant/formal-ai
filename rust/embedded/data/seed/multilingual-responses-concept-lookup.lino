@@ -159,3 +159,43 @@ multilingual_responses
     intent word_definition_sense
     language es
     text "  {n}. {pos}{gloss}\n"
+  response source-qualified-definition-answer-en
+    intent source-qualified-definition-answer
+    language en
+    text "{term} — {source} ({kind}):\n{senses}Source: {url} (sha256 {sha256}; captured-at {captured-at}; cached {cached}; {license}; {license-url})"
+  response source-qualified-definition-unresolved-en
+    intent source-qualified-definition-unresolved
+    language en
+    text "No verified definition of {term} from {source}: {status}."
+  response source-qualified-definition-answer-ru
+    intent source-qualified-definition-answer
+    language ru
+    text "{term} — {source} ({kind}):\n{senses}Источник: {url} (sha256 {sha256}; captured-at {captured-at}; cached {cached}; {license}; {license-url})"
+  response source-qualified-definition-unresolved-ru
+    intent source-qualified-definition-unresolved
+    language ru
+    text "Нет проверенного определения {term} из {source}: {status}."
+  response source-qualified-definition-answer-es
+    intent source-qualified-definition-answer
+    language es
+    text "{term} — {source} ({kind}):\n{senses}Fuente: {url} (sha256 {sha256}; captured-at {captured-at}; cached {cached}; {license}; {license-url})"
+  response source-qualified-definition-unresolved-es
+    intent source-qualified-definition-unresolved
+    language es
+    text "No hay definición verificada de {term} de {source}: {status}."
+  response source-qualified-definition-answer-hi
+    intent source-qualified-definition-answer
+    language hi
+    text "{term} — {source} ({kind}):\n{senses}स्रोत: {url} (sha256 {sha256}; captured-at {captured-at}; cached {cached}; {license}; {license-url})"
+  response source-qualified-definition-unresolved-hi
+    intent source-qualified-definition-unresolved
+    language hi
+    text "{source} से {term} की सत्यापित परिभाषा उपलब्ध नहीं: {status}।"
+  response source-qualified-definition-answer-zh
+    intent source-qualified-definition-answer
+    language zh
+    text "{term} — {source}（{kind}）：\n{senses}来源：{url}（sha256 {sha256}; captured-at {captured-at}; cached {cached}; {license}; {license-url}）"
+  response source-qualified-definition-unresolved-zh
+    intent source-qualified-definition-unresolved
+    language zh
+    text "没有{source}对{term}的已验证定义：{status}。"

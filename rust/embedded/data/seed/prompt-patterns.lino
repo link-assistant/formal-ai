@@ -1263,3 +1263,33 @@ prompt_patterns
     language es
     kind inflection_marker
     text "¦"
+  pattern source-qualified-definition-frame-1
+    intent source-qualified-definition
+    language en
+    kind frame
+    text "cite a definition of {term} from {source}"
+  pattern source-qualified-definition-frame-2
+    intent source-qualified-definition
+    language en
+    kind frame
+    text "according to {source}, define {term}"
+  pattern source-qualified-definition-frame-3
+    intent source-qualified-definition
+    language ru
+    kind frame
+    text "приведи определение {term} из {source}"
+  pattern source-qualified-definition-frame-4
+    intent source-qualified-definition
+    language es
+    kind frame
+    text "cita una definición de {term} de {source}"
+  pattern source-qualified-definition-frame-5
+    intent source-qualified-definition
+    language hi
+    kind frame
+    text "{source} से {term} की परिभाषा उद्धृत करें"
+  pattern source-qualified-definition-frame-6
+    intent source-qualified-definition
+    language zh
+    kind frame
+    text "引用{source}对{term}的定义"

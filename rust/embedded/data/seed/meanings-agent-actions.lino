@@ -13,7 +13,7 @@ meanings
     lexeme en report file open submit create
     lexeme ru сообщи сообщить создай создать зарепорти
     lexeme hi रिपोर्ट
-    lexeme zh 报告 提交
+    lexeme zh 报告 提交 上报
     lexeme es reporta reportar notifica notificar
   report_issue_subject
     defined-by inquiry
