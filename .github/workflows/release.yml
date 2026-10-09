@@ -1310,8 +1310,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Kept in step with `data/meta/box-language-projects.lino` by
-        # `tests/unit/ci-cd/box_language_release_legs.rs`.
+        # Kept in step with `data/meta/box-language-projects.lino` by `tests/unit/ci-cd/box_language_release_legs.rs`.
         language: [rust, python, javascript, typescript, go, java, ruby]
     steps:
       - uses: actions/checkout@v7
