@@ -17,6 +17,8 @@ on: # zizmor: ignore[dangerous-triggers]
       - "package.json"
       - "bun.lock"
       - ".github/workflows/publish-engine.yml"
+      - "scripts/release-protocol.mjs"
+      - "rust/tests/web/legacy-release-protocol.test.mjs"
       - "scripts/resolve-package-release.mjs"
       - "scripts/publish-browser-engine.mjs"
       - "scripts/generate-web-distribution.py"

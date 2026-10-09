@@ -11,6 +11,8 @@ on: # zizmor: ignore[dangerous-triggers]
     branches-ignore: ['e2e/**']
     paths:
       - ".github/workflows/publish-source-networks.yml"
+      - "scripts/release-protocol.mjs"
+      - "rust/tests/web/legacy-release-protocol.test.mjs"
       - "scripts/check-source-networks.mjs"
       - "scripts/verify-source-network-distribution.mjs"
       - "scripts/lib/source-network-packets.mjs"
