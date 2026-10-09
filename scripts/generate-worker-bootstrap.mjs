@@ -15,7 +15,11 @@ export function renderBootstrap(loader, seed) {
   return '// Generated response data from '+SOURCE+'; do not edit by hand.\n'
     + '// Regenerate with node scripts/generate-worker-bootstrap.mjs --write.\n'
     + 'self.FORMAL_AI_BOOTSTRAP_RESPONSES = Object.freeze('
-    + JSON.stringify(responses, null, 2) + ');\n';
+    + '{\n' + Object.entries(responses).map(([intent, languages]) =>
+      '  '+JSON.stringify(intent)+': {\n'
+      + Object.entries(languages).map(([language, response]) =>
+        '    '+JSON.stringify(language)+': '+JSON.stringify(response)).join(',\n')
+      + '\n  }').join(',\n') + '\n});\n';
 }
 export function main(argv, root = path.resolve(import.meta.dirname, '..')) {
   const rendered = renderBootstrap(readFileSync(path.join(root,'js/seed_loader.js'),'utf8'), readFileSync(path.join(root,SOURCE),'utf8'));
