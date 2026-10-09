@@ -120,7 +120,15 @@ test('wrong run/group, missing ancestor or unqueued contender never become actua
     }
   };
   assert.equal(validateQueueSnapshot(snapshot, expected), true);
-  for (const mutate of [item => item.status = 403, item => item.body.group_name = 'formal-ai-repository-writes', item => item.body.group_members[0].run_id = 124, item => item.body.group_members[0].status = 'pending', item => item.body.group_members[1].status = 'in_progress', item => item.body.group_members[1].job_name = 'unrelated', item => item.body.group_members[1].job_id = '456', item => item.body.group_members.pop()]) {
+  for (const mutate of [item => item.status = 403,
+     item => item.body.group_name = 'formal-ai-repository-writes',
+     item => item.body.group_members[0].run_id = 124,
+     item => item.body.group_members[0].status = 'pending',
+     item => item.body.group_members[1].status = 'in_progress',
+     item => item.body.group_members[1].job_name = 'unrelated',
+     item => item.body.group_members[1].job_id = '456',
+     item => item.body.group_members.pop()]) {
+
     const changed = structuredClone(snapshot);
     mutate(changed);
     assert.throws(() => validateQueueSnapshot(changed, expected));
@@ -151,7 +159,23 @@ test('credential routing, production group, nested lease and spoofed or ungated 
     child = callee();
   for (const mutate of [(p, c) => p.permissions.contents = 'write', (p, c) => p.jobs['active-fixture'].secrets = 'inherit', (p, c) => p.jobs['active-fixture'].concurrency.group = 'formal-ai-repository-writes', (p, c) => c.jobs['lease-holder'].concurrency = {
     group: p.jobs['active-fixture'].concurrency.group
-  }, (p, c) => p.jobs['fixture-contender'].needs.push('active-fixture'), (p, c) => p.jobs['active-fixture'].with['artifact-id'] = 'arbitrary', (p, c) => p.jobs['inactive-fixture'].with['artifact-id'] = 'arbitrary', (p, c) => c.jobs['artifact-consumer'].if = undefined, (p, c) => c.jobs['artifact-consumer'].steps.find(step => step.uses === 'actions/download-artifact@v8').with['run-id'] = 'other-run', (p, c) => c.on.workflow_call.outputs['fixture-marker'].value = 'guessed', (p, c) => p.jobs['active-fixture'].uses = './.github/workflows/release-staged.yml']) {
+  }
+    ,
+     (p,
+     c) => p.jobs['fixture-contender'].needs.push('active-fixture'),
+     (p,
+     c) => p.jobs['active-fixture'].with['artifact-id'] = 'arbitrary',
+     (p,
+     c) => p.jobs['inactive-fixture'].with['artifact-id'] = 'arbitrary',
+     (p,
+     c) => c.jobs['artifact-consumer'].if = undefined,
+     (p,
+     c) => c.jobs['artifact-consumer'].steps.find(step => step.uses === 'actions/download-artifact@v8').with['run-id'] = 'other-run',
+     (p,
+     c) => c.on.workflow_call.outputs['fixture-marker'].value = 'guessed',
+     (p,
+     c) => p.jobs['active-fixture'].uses = './.github/workflows/release-staged.yml']) {
+
     const p = structuredClone(parent),
       c = structuredClone(child);
     mutate(p, c);

@@ -1,0 +1,20 @@
+[
+  {
+    "path": "rust/tests/web/container-registry-transport.test.mjs",
+    "originalSha256": "541f0a9cefccc4b9cab677a3505574476e5fa8db7ca7afa56d7ab03a54bb8f12",
+    "currentSha256": "aa214b2edb6aba48d050a58ff34260148372f293439164648f8615bedbc257e4",
+    "entireAstAndAllTokensConserved": true
+  },
+  {
+    "path": "rust/tests/web/release-runtime-fixture.test.mjs",
+    "originalSha256": "0a9dc6f8f761b97b384f8372e61e820186d1eb44b8cec0c871d19e3eab769f98",
+    "currentSha256": "57f05035195b106665592ebdfeb08032afea18af5e474f0e14574dc29667e812",
+    "entireAstAndAllTokensConserved": true
+  },
+  {
+    "path": "rust/tests/web/release-stage-transfer.test.mjs",
+    "originalSha256": "169f758848bb2f60c67b52f8d174b5b3e2b7ab940a4ab6ebff224ebaa623ba38",
+    "currentSha256": "309e3f1605f441dbcbcab19c163711c433289d0b33696ad64b3df37d1c3d7243",
+    "entireAstAndAllTokensConserved": true
+  }
+]

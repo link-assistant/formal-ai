@@ -18,7 +18,42 @@ function run(steps,teeFail=false){
  writeFileSync(join(bin,'sleep'),`#!${process.execPath}\nimport fs from 'node:fs';const p=process.env.TRANSPORT_STATE,s=JSON.parse(fs.readFileSync(p));s.waits.push(process.argv[2]);fs.writeFileSync(p,JSON.stringify(s));\n`,{mode:0o755});
  if(teeFail)writeFileSync(join(bin,'tee'),'#!/bin/sh\ncat > "$1"\nexit 7\n',{mode:0o755});
  const state=join(directory,'state.json');writeFileSync(state,JSON.stringify({steps,calls:[],waits:[]}));
- try{const result=spawnSync('bash',['-c',script],{cwd:directory,env:{...process.env,PATH:bin+':'+process.env.PATH,RUNNER_TEMP:directory,TRANSPORT_STATE:state,CONTAINER_ARCH:'arm64',CONTAINER_SOURCE_COMMIT:'source-sha'},encoding:'utf8',timeout:8000});assert.ok(!result.error,result.error?.message);const receipt=JSON.parse(readFileSync(state));for(const args of receipt.calls)assert.deepEqual(args,expected,'every original build operand preserved');return{status:result.status,...receipt};}finally{rmSync(directory,{recursive:true,force:true});}
+ try{
+    const result=spawnSync('bash',
+    ['-c',
+    script],
+    {
+    cwd:directory,
+    env:{
+    ...process.env,
+    PATH:bin+':'+process.env.PATH,
+    RUNNER_TEMP:directory,
+    TRANSPORT_STATE:state,
+    CONTAINER_ARCH:'arm64',
+    CONTAINER_SOURCE_COMMIT:'source-sha'}
+    ,
+    encoding:'utf8',
+    timeout:8000}
+    );
+    assert.ok(!result.error,
+    result.error?.message);
+    const receipt=JSON.parse(readFileSync(state));
+    for(const args of receipt.calls)assert.deepEqual(args,
+    expected,
+    'every original build operand preserved');
+    return{
+    status:result.status,
+    ...receipt}
+    ;
+    }
+    finally{
+    rmSync(directory,
+    {
+    recursive:true,
+    force:true}
+    );
+    }
+
 }
 test('429-only retry preserves original command, finite attempts and existing deadline',()=>{
  assert.match(section,/timeout-minutes: 25/u);

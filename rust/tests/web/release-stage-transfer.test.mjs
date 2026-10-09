@@ -132,7 +132,20 @@ test('independent source and producer identities refuse unknown, failed, interru
   };
   verifyDescriptor(record, expected, bytes);
   let transferRefusals = 0;
-  for (const mutate of [r => delete r.identity.source, r => r.identity.source = '9'.repeat(40), r => r.identity.protocol = '9'.repeat(40), r => r.identity.compilerSha256 = '9'.repeat(64), r => r.identity.run = '124', r => r.identity.attempt = '2', r => r.kind = 'images', r => r.producerJob = 'auto_verify-package', r => r.complete = false, r => r.status = 1, r => r.signal = 'SIGKILL', r => r.bytes++, r => r.sha256 = '9'.repeat(64)]) {
+  for (const mutate of [r => delete r.identity.source,
+     r => r.identity.source = '9'.repeat(40),
+     r => r.identity.protocol = '9'.repeat(40),
+     r => r.identity.compilerSha256 = '9'.repeat(64),
+     r => r.identity.run = '124',
+     r => r.identity.attempt = '2',
+     r => r.kind = 'images',
+     r => r.producerJob = 'auto_verify-package',
+     r => r.complete = false,
+     r => r.status = 1,
+     r => r.signal = 'SIGKILL',
+     r => r.bytes++,
+     r => r.sha256 = '9'.repeat(64)]) {
+
     const changed = structuredClone(record);
     mutate(changed);
     assert.throws(() => verifyDescriptor(changed, expected, bytes));
@@ -311,9 +324,27 @@ test('dormant workflow is a checked exact canonical operation/order/output/autho
 test('canonical drift and omitted, reordered, spoofed, ungated or prematurely released projections fail', () => {
   const projection = readProjection();
   assert.throws(() => validateProjection(projection, originalSnapshot + '\n# canonical changed'));
-  const mutations = [candidate => candidate.jobs['auto_verify-package'].steps.splice(candidate.jobs['auto_verify-package'].steps.findIndex(step => step.name === 'Verify packaged crate archive'), 1), candidate => candidate.jobs['auto_published-crate-smoke'].steps.splice(candidate.jobs['auto_published-crate-smoke'].steps.findIndex(step => step.name === 'Smoke test the published crate'), 1), candidate => candidate.jobs['auto_create-release'].needs.pop(), candidate => candidate.jobs['auto_prepare-source'].if = "${{ inputs.mode == 'auto' }}", candidate => candidate.jobs['auto_prepare-source'].outputs.source_sha = 'invented', candidate => candidate.jobs['auto_publish-crate'].outputs['publish-crate__publish_result'] = 'success', candidate => candidate.jobs['auto_compile-release'].env.EXPECT_SOURCE = 'untrusted', candidate => candidate.jobs['auto_compile-release'].concurrency = {
+  const mutations = [candidate => candidate.jobs['auto_verify-package'].steps.splice(candidate.jobs['auto_verify-package'].steps.findIndex(step => step.name === 'Verify packaged crate archive'),
+     1),
+     candidate => candidate.jobs['auto_published-crate-smoke'].steps.splice(candidate.jobs['auto_published-crate-smoke'].steps.findIndex(step => step.name === 'Smoke test the published crate'),
+     1),
+     candidate => candidate.jobs['auto_create-release'].needs.pop(),
+     candidate => candidate.jobs['auto_prepare-source'].if = "${{ inputs.mode == 'auto' }}",
+     candidate => candidate.jobs['auto_prepare-source'].outputs.source_sha = 'invented',
+     candidate => candidate.jobs['auto_publish-crate'].outputs['publish-crate__publish_result'] = 'success',
+     candidate => candidate.jobs['auto_compile-release'].env.EXPECT_SOURCE = 'untrusted',
+     candidate => candidate.jobs['auto_compile-release'].concurrency = {
+
     group: 'formal-ai-repository-writes'
-  }, candidate => candidate.jobs['auto_compile-release']['timeout-minutes'] = 31, candidate => candidate.jobs['auto_create-release'].outputs['container-tag'] = 'v-fake', candidate => candidate.on.workflow_call.outputs.pages_sha.value = 'fake', candidate => candidate.jobs['auto_create-release'].steps.find(step => step.name === 'Download immutable selected source artifact').if = undefined, candidate => candidate.jobs['auto_prepare-source'].steps.reverse(), candidate => candidate.jobs['auto_publish-verify-images'].steps.reverse()];
+  }
+    ,
+     candidate => candidate.jobs['auto_compile-release']['timeout-minutes'] = 31,
+     candidate => candidate.jobs['auto_create-release'].outputs['container-tag'] = 'v-fake',
+     candidate => candidate.on.workflow_call.outputs.pages_sha.value = 'fake',
+     candidate => candidate.jobs['auto_create-release'].steps.find(step => step.name === 'Download immutable selected source artifact').if = undefined,
+     candidate => candidate.jobs['auto_prepare-source'].steps.reverse(),
+     candidate => candidate.jobs['auto_publish-verify-images'].steps.reverse()];
+
   for (const mutation of mutations) {
     const changed = structuredClone(projection);
     mutation(changed);
