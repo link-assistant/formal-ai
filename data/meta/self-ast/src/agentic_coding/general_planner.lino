@@ -2,51 +2,51 @@ self_ast_census
   target src/agentic_coding/general_planner.rs
   language rust
   fidelity full_ast
-  byte_len 27076
-  line_count 642
-  content_id source_module_f79575d3c774c2cb
+  byte_len 27166
+  line_count 643
+  content_id source_module_fdd936cc15ca5840
   symbol_count 33
   symbols
     const PLAN_PATH 19 19
     const TARGET_PLACEHOLDER 20 20
     module content_shape 22 22
     module literal_request 23 23
-    enum GeneralPlanMode 31 38
-    function slug 43 49
-    enum PlanTerminalState 58 63
-    function slug 65 70
-    struct GeneralPlanStep 74 79
-    struct GeneralChangePlan 82 94
-    function links_notation 98 118
-    function planned_not_executed_answer 122 136
-    const BODY_PLACEHOLDER 123 123
-    function objective_text 142 152
-    function literal_payload 157 197
-    function line_anchored 199 205
-    function compose_general_change_plan 207 339
-    function compose_repository_work_plan 340 379
-    function work_item_step 383 395
-    function repository_work_reference 400 446
-    function parse_command_output_request 454 508
-    function mentions_bare_role 509 536
-    function shell_quote 537 539
-    function command_plan_text 540 544
-    function has_file_write_intent 557 559
-    function has_authoritative_literal_write 566 577
-    function resolve_census_target 596 603
-    function mentions_software_authoring 607 609
-    function capability_slug 610 627
-    function language 628 630
-    function escape 631 636
-    function field 637 639
-    function field_nested 640 642
+    enum GeneralPlanMode 32 39
+    function slug 44 50
+    enum PlanTerminalState 59 64
+    function slug 66 71
+    struct GeneralPlanStep 75 80
+    struct GeneralChangePlan 83 95
+    function links_notation 99 119
+    function planned_not_executed_answer 123 137
+    const BODY_PLACEHOLDER 124 124
+    function objective_text 143 153
+    function literal_payload 158 198
+    function line_anchored 200 206
+    function compose_general_change_plan 208 340
+    function compose_repository_work_plan 341 380
+    function work_item_step 384 396
+    function repository_work_reference 401 447
+    function parse_command_output_request 455 509
+    function mentions_bare_role 510 537
+    function shell_quote 538 540
+    function command_plan_text 541 545
+    function has_file_write_intent 558 560
+    function has_authoritative_literal_write 567 578
+    function resolve_census_target 597 604
+    function mentions_software_authoring 608 610
+    function capability_slug 611 628
+    function language 629 631
+    function escape 632 637
+    function field 638 640
+    function field_nested 641 643
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 16573
-    named_node_count 3300
+    total_link_count 16618
+    named_node_count 3308
     distinct_node_kinds 83
     node_kinds
       arguments 236
@@ -81,7 +81,7 @@ self_ast_census
       function_item 24
       function_modifiers 3
       generic_type 9
-      identifier 758
+      identifier 761
       if_expression 20
       impl_item 3
       index_expression 12
@@ -109,7 +109,7 @@ self_ast_census
       return_expression 11
       scoped_identifier 89
       scoped_type_identifier 1
-      scoped_use_list 5
+      scoped_use_list 6
       self 19
       self_parameter 4
       shorthand_field_initializer 5
@@ -118,7 +118,7 @@ self_ast_census
       string_literal 81
       struct_expression 6
       struct_item 2
-      super 9
+      super 10
       token_tree 42
       try_expression 12
       tuple_expression 2
@@ -129,6 +129,6 @@ self_ast_census
       type_identifier 51
       unary_expression 22
       use_as_clause 1
-      use_declaration 11
-      use_list 5
-      visibility_modifier 31
+      use_declaration 12
+      use_list 6
+      visibility_modifier 32

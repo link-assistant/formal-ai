@@ -2,45 +2,46 @@ self_ast_census
   target src/agentic_coding/structured_edit.rs
   language rust
   fidelity full_ast
-  byte_len 29579
-  line_count 725
-  content_id source_module_bfb4979c6ca3da4d
-  symbol_count 27
+  byte_len 29638
+  line_count 726
+  content_id source_module_d53db034955b62ce
+  symbol_count 28
   symbols
     const MAX_MEMBER_LENGTH 33 33
-    struct MemberInsertion 36 45
-    function plan_structured_edit_step 47 112
-    function member_insertion 114 244
-    struct Region 248 251
-    struct Literal 255 260
-    function insert_members 268 310
-    function insert_quoted_members_into_named_list 321 358
-    function quoted_list 361 367
-    function anchor_by_members 373 391
-    function anchor_by_name 397 423
-    function better 426 436
-    function direct_members 438 443
-    function occurrences 446 466
-    function statement_end 470 485
-    function scan 492 551
-    function closing_delimiter 553 559
-    function string_literal_end 561 573
-    function char_literal_end 577 587
-    function without_spans 589 602
-    function is_member_literal 619 626
-    function looks_like_a_declared_name 631 642
-    function bare_source_paths 647 661
-    function prose_path_tokens 664 683
-    function is_workspace_path 685 713
-    function valid_identifier 715 721
-    function read_arguments 723 725
+    const MEMBERS_SLOT 34 34
+    struct MemberInsertion 37 46
+    function plan_structured_edit_step 48 113
+    function member_insertion 115 245
+    struct Region 249 252
+    struct Literal 256 261
+    function insert_members 269 311
+    function insert_quoted_members_into_named_list 322 359
+    function quoted_list 362 368
+    function anchor_by_members 374 392
+    function anchor_by_name 398 424
+    function better 427 437
+    function direct_members 439 444
+    function occurrences 447 467
+    function statement_end 471 486
+    function scan 493 552
+    function closing_delimiter 554 560
+    function string_literal_end 562 574
+    function char_literal_end 578 588
+    function without_spans 590 603
+    function is_member_literal 620 627
+    function looks_like_a_declared_name 632 643
+    function bare_source_paths 648 662
+    function prose_path_tokens 665 684
+    function is_workspace_path 686 714
+    function valid_identifier 716 722
+    function read_arguments 724 726
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 19413
-    named_node_count 3892
+    total_link_count 19480
+    named_node_count 3903
     distinct_node_kinds 86
     node_kinds
       abstract_type 1
@@ -60,7 +61,7 @@ self_ast_census
       closure_expression 48
       closure_parameters 48
       compound_assignment_expr 9
-      const_item 1
+      const_item 2
       continue_expression 4
       crate 3
       doc_comment 81
@@ -78,7 +79,7 @@ self_ast_census
       function_modifiers 3
       generic_function 6
       generic_type 31
-      identifier 853
+      identifier 857
       if_expression 29
       index_expression 13
       inner_doc_comment_marker 13
@@ -88,7 +89,7 @@ self_ast_census
       let_declaration 71
       lifetime 1
       line_comment 166
-      macro_invocation 5
+      macro_invocation 6
       match_arm 21
       match_block 5
       match_expression 5
@@ -99,22 +100,22 @@ self_ast_census
       parameter 49
       parameters 23
       parenthesized_expression 7
-      primitive_type 68
+      primitive_type 69
       range_expression 17
       reference_expression 53
       reference_pattern 1
-      reference_type 37
+      reference_type 38
       return_expression 18
       scoped_identifier 52
       scoped_use_list 4
       shorthand_field_initializer 6
       source_file 1
-      string_content 16
-      string_literal 16
+      string_content 17
+      string_literal 17
       struct_expression 5
       struct_item 3
       super 9
-      token_tree 10
+      token_tree 11
       try_expression 10
       tuple_expression 17
       tuple_pattern 17
