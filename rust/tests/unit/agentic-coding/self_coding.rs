@@ -30,7 +30,58 @@ fn self_coding_session_replays() {
     assert!(plan.contains("self-coding-result.txt"));
     assert!(plan.contains("capability \"Run\""));
     assert!(diff.contains("+self-coding=passed"));
-    let committed = fs::read_to_string(format!("{dir}/session.json")).expect("session");
+    let legacy =
+        fs::read_to_string(format!("{dir}/session.json")).expect("immutable legacy session");
+    let legacy: serde_json::Value = serde_json::from_str(&legacy).expect("legacy JSON");
+    assert_eq!(legacy["task"], TASK);
+    let committed = fs::read_to_string(format!(
+        "{root}/docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/self-coding.json"
+    )).expect("actual CI native session oracle");
+    let observed: serde_json::Value = serde_json::from_str(&committed).expect("observed JSON");
+    assert_eq!(observed["task"], legacy["task"]);
+    let target = legacy["steps"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .rev()
+        .find(|step| step["tool"] == "write_file")
+        .unwrap();
+    assert!(
+        observed["steps"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|step| step["tool"] == "write_file"
+                && step["arguments"]["path"] == target["arguments"]["path"]
+                && step["arguments"]["content"] == target["arguments"]["content"])
+    );
+    let verification = legacy["steps"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .rev()
+        .find(|step| step["tool"] == "run_command")
+        .unwrap();
+    let actual = observed["steps"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .rev()
+        .find(|step| step["tool"] == "run_command")
+        .unwrap();
+    let receipt: serde_json::Value =
+        serde_json::from_str(actual["result"].as_str().unwrap()).unwrap();
+    assert_eq!(
+        actual["arguments"]["command"],
+        verification["arguments"]["command"]
+    );
+    assert_eq!(receipt["schema"], "command-execution-receipt/v1");
+    assert_eq!(receipt["command"], verification["arguments"]["command"]);
+    assert_eq!(receipt["stdout"], verification["result"]);
+    assert_eq!(receipt["exit_code"], 0);
+    assert_eq!(receipt["complete"], true);
+    assert_eq!(receipt["timed_out"], false);
+    assert_eq!(receipt["truncated"], false);
     let fresh = run_agentic_task(TASK).expect("offline replay");
     assert_eq!(
         committed.trim(),

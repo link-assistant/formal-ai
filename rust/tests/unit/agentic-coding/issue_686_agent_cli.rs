@@ -3,6 +3,7 @@ use formal_ai::agentic_coding::{
     is_associative_learning_task, run_agentic_task, run_agentic_task_with_tools,
 };
 
+include!("../../fixtures/native-protocol-observation.rs");
 #[test]
 fn associative_report_is_derived_from_persisted_usage_not_canned() {
     let baseline = include_str!("../../../../data/meta/associative-learning-case.lino");
@@ -59,7 +60,13 @@ fn formal_ai_executes_associative_learning_through_agent_cli() {
 #[test]
 fn committed_agent_cli_session_is_byte_reproducible() {
     let committed = include_str!(
-        "../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json"
+        "../../../../docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/associative.json"
+    );
+    assert_protocol_transition(
+        include_str!(
+            "../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json"
+        ),
+        committed,
     );
     let recorded: serde_json::Value =
         serde_json::from_str(committed).expect("immutable session JSON");

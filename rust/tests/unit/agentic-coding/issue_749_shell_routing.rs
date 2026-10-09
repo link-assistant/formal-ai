@@ -50,6 +50,7 @@ fn shell_command(prompt: &str) -> Option<String> {
 /// seed declares is six steps.
 const MAX_PLAN_STEPS: usize = 12;
 
+include!("../../fixtures/native-protocol-observation.rs");
 #[test]
 fn explicit_shell_forms_pass_the_complete_command_through() {
     for (prompt, expected) in [
@@ -326,8 +327,13 @@ fn opencode_outer_prompt_quotes_do_not_hide_the_command() {
 #[test]
 fn committed_agent_cli_session_is_byte_reproducible() {
     const TASK: &str = "execute printf 'issue-749-driver=passed\\n'";
-    let committed =
-        include_str!("../../../../docs/case-studies/issue-749/agent-cli-evidence/session.json");
+    let committed = include_str!(
+        "../../../../docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/shell.json"
+    );
+    assert_protocol_transition(
+        include_str!("../../../../docs/case-studies/issue-749/agent-cli-evidence/session.json"),
+        committed,
+    );
     let archived: serde_json::Value = serde_json::from_str(committed).expect("capture JSON");
     let tools = archived["tools_advertised"]
         .as_array()

@@ -9,7 +9,7 @@ import {pathToFileURL} from 'node:url';
 import {buildIdentity,verifyReceipt} from './native-test-artifact.mjs';
 const CONTRACT='docs/case-studies/pull-request-1188/native-protocol-capture-provenance.json';
 export const bytesDigest=bytes=>createHash('sha256').update(bytes).digest('hex');
-export function checkedCapture(bytes,legacy){
+export function checkedCapture(bytes,legacy,{historicalRawComparison=false}={}){
  const session=JSON.parse(bytes.toString('utf8'));
  assert.equal(session.task,legacy.task);
  assert.ok(Array.isArray(session.tools_advertised));
@@ -24,7 +24,16 @@ export function checkedCapture(bytes,legacy){
  assert.ok(target&&verification,'Original capture must name its target and observed verification');
  const path=arguments_=>arguments_.path??arguments_.filePath??arguments_.file_path;
  assert.ok(session.steps.some(step=>step.tool==='write_file'&&path(step.arguments)===path(target.arguments)&&step.arguments.content===target.arguments.content),'Actual native capture must author the original exact target bytes');
- assert.ok(session.steps.some(step=>step.tool==='run_command'&&step.arguments.command===verification.arguments.command&&step.result===verification.result),'Actual native capture must observe the original target verification');
+ const observed=session.steps.filter(step=>step.tool==='run_command'&&step.arguments.command===verification.arguments.command);
+ assert.ok(observed.some(step=>{
+  if(historicalRawComparison)return step.result===verification.result;
+  let receipt;try{receipt=JSON.parse(step.result);}catch{return false;}
+  return receipt?.schema==='command-execution-receipt/v1'
+   &&receipt.command===verification.arguments.command
+   &&receipt.exit_code===0&&receipt.complete===true
+   &&receipt.timed_out===false&&receipt.truncated===false
+   &&typeof receipt.stderr==='string'&&receipt.stdout===verification.result;
+ }),'Actual native capture requires a complete successful command-bound observation of the original exact target bytes');
  return session;
 }
 if(import.meta.url===pathToFileURL(process.argv[1]??'').href){

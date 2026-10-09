@@ -47,6 +47,7 @@ fn seed_potato_block() -> String {
     rest[..end].to_owned()
 }
 
+include!("../../fixtures/native-protocol-observation.rs");
 #[test]
 fn recognises_the_meaning_detail_task() {
     // The canonical task string and its keywords route to the #538 recipe…
@@ -420,8 +421,13 @@ fn committed_diagram_session_matches_a_fresh_run() {
     // the same recipe machinery). Regenerate with:
     //   formal-ai agent --task "<DIAGRAM_TASK>" \
     //       --session-json docs/case-studies/issue-538/agent-cli-session-diagram.json
-    let committed =
-        include_str!("../../../../docs/case-studies/issue-538/agent-cli-session-diagram.json");
+    let committed = include_str!(
+        "../../../../docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/diagram.json"
+    );
+    assert_protocol_transition(
+        include_str!("../../../../docs/case-studies/issue-538/agent-cli-session-diagram.json"),
+        committed,
+    );
     let recorded: serde_json::Value =
         serde_json::from_str(committed).expect("immutable session JSON");
     let tools = recorded["tools_advertised"]
