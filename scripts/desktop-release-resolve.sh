@@ -31,8 +31,8 @@
 #           the release flow ever stops creating a child commit.
 #   Tier 2 (normal):    the latest published release -- the auto-release child
 #           commit whose first parent is the head SHA. A diagnostic check
-#           confirms the parent relationship and records it in the log, but the
-#           build proceeds regardless so the page self-heals.
+#           requires that parent relationship, selecting another matching
+#           published stable release if a newer tag is already latest.
 # An idempotency / self-healing guard then skips the build only when the resolved
 # release already carries every expected desktop asset. A partial release (for
 # example macOS/Windows present but Linux missing) must rebuild so it self-heals.
@@ -85,6 +85,15 @@ emit_outputs() {
       echo "should_build=$should_build"
     } >> "$GITHUB_OUTPUT"
   fi
+}
+
+# Select the same run's published release even when a newer tag is latest.
+release_for_workflow_head() {
+  local resolver
+  resolver="$(cd "$(dirname "$0")" && pwd)/resolve-package-release.mjs"
+  EVENT=workflow_run REPOSITORY="$REPO" RUN_HEAD="$WORKFLOW_RUN_HEAD_SHA" \
+    RUN_BRANCH=main RUN_REPOSITORY="$REPO" RUN_CONCLUSION=success \
+    node "$resolver" | sed -n 's/^tag=//p'
 }
 
 latest_release_tag() {
@@ -183,15 +192,16 @@ case "$EVENT" in
       tag="$(latest_release_tag)"
       log "latest release tag: ${tag:-<none>}"
       if [ -n "$tag" ]; then
-        # Diagnostic only: confirm the latest release descends from this CI run.
+        # Require the latest release to descend from this completed CI run.
         # `gh api .../commits/<tag>` dereferences the annotated tag to its commit.
         parent="$(gh api "repos/$REPO/commits/$tag" --jq '.parents[0].sha' 2>/dev/null || true)"
         if [ -n "$parent" ] && [ "$parent" = "$WORKFLOW_RUN_HEAD_SHA" ]; then
           log "confirmed: ${tag} commit parent is the CI head SHA (auto-release child)."
           resolution="workflow_run-child-of-head"
         else
-          log "note: ${tag} commit parent='${parent:-<none>}' != head SHA; using latest release as self-healing fallback."
-          resolution="workflow_run-latest-fallback"
+          log "latest release does not belong to this run; selecting its matching published stable release."
+          tag="$(release_for_workflow_head)"
+          resolution="workflow_run-matched-published-release"
         fi
       fi
       endgroup

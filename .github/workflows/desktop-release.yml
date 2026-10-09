@@ -163,8 +163,8 @@ jobs:
         # Issue #479: the automated release tags a CHILD "chore: release vX.Y.Z"
         # commit whose first parent is the completed CI head SHA, so matching the
         # tag to the head SHA directly always failed and desktop assets were
-        # never built. desktop-release-resolve.sh resolves the latest release
-        # instead (with a defensive exact-SHA tier and an idempotency guard) and
+        # never built. desktop-release-resolve.sh selects the same commit or its
+        # release child, with a defensive exact-SHA tier and asset guard, and
         # emits verbose ::group:: diagnostics for future debugging.
         run: bash scripts/desktop-release-resolve.sh
 
@@ -318,6 +318,9 @@ jobs:
 
       - name: Prepare desktop resources (web + bundled binary + version sync)
         working-directory: desktop
+        env:
+          FORMAL_AI_DESKTOP_REQUIRE_BINARY: "true"
+          FORMAL_AI_DESKTOP_BINARY: ${{ github.workspace }}/rust/target/release/formal-ai${{ runner.os == 'Windows' && '.exe' || '' }}
         run: node scripts/prepare-resources.mjs
 
       # Issue #1017: electron-builder fetches its 7-Zip toolset -- and, on
