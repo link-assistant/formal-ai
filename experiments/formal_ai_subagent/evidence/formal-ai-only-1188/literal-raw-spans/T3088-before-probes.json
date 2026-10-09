@@ -1,0 +1,18 @@
+[
+  {
+    "prompt": "Note İİ 😀.\nCreate file x.txt containing hello.",
+    "actual": "ello."
+  },
+  {
+    "prompt": "Note İİİ 😀.\nCreate file x.txt containing hello.",
+    "actual": "llo."
+  },
+  {
+    "prompt": "Note İİ 😀.\nCreate file x.txt containing «hello».",
+    "actual": "hello"
+  },
+  {
+    "prompt": "Note İK 😀.\n创建 x.txt 内容为 你好。",
+    "actual": "你好。"
+  }
+]

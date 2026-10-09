@@ -1,0 +1,19 @@
+{
+  "id": "T3089",
+  "tools": [
+    "bash"
+  ],
+  "reviewedRepair": true,
+  "authoredRepositoryEffects": 7,
+  "paths": [
+    "js/agentic/write_request/lowercase_spans.mjs",
+    "rust/src/agentic_coding/write_request/lowercase_spans.rs",
+    "js/agentic/write_request.mjs",
+    "rust/src/agentic_coding/write_request.rs",
+    "js/agentic/general_planner.mjs",
+    "rust/src/agentic_coding/general_planner.rs",
+    "rust/src/agentic_coding/general_planner/literal_request.rs"
+  ],
+  "receipt": "Output: {\"writes\":[\"js/agentic/write_request/lowercase_spans.mjs\",\"rust/src/agentic_coding/write_request/lowercase_spans.rs\",\"js/agentic/write_request.mjs\",\"rust/src/agentic_coding/write_request.rs\",\"js/agentic/general_planner.mjs\",\"rust/src/agentic_coding/general_planner.rs\",\"rust/src/agentic_coding/general_planner/literal_request.rs\"]}\n\nExit Code: 0",
+  "manualRepositoryEffects": 0
+}

@@ -83,13 +83,14 @@ fn run_with_sources(
                             .output()
                             .expect("bounded fixture shell");
                         let stdout = String::from_utf8(output.stdout).expect("UTF8 stdout");
-                        let mut result = format!(
-                            "Output: {stdout}\nExit Code: {}",
-                            output.status.code().unwrap_or(1)
-                        );
-                        if command.starts_with("cat ") && output.status.success() {
-                            result = receipt(&stdout);
-                        }
+                        let result = if command.starts_with("cat ") && output.status.success() {
+                            receipt(&stdout)
+                        } else {
+                            format!(
+                                "Output: {stdout}\nExit Code: {}",
+                                output.status.code().unwrap_or(1)
+                            )
+                        };
                         if command.starts_with("cat ") {
                             run.receipts.push((command.to_owned(), stdout));
                         }
@@ -498,7 +499,7 @@ fn literal_bindings_use_local_actions_with_exact_unicode_content() {
             "नमस्ते",
         ),
         (
-            "Note İK𐐷 😀 café.\nCreate file x.txt containing «hello».",
+            "Note İ\u{212a}𐐷 😀 café.\nCreate file x.txt containing «hello».",
             "hello",
         ),
         (
@@ -550,4 +551,77 @@ fn completed_statement_cue_cannot_authorize_another_target_token() {
         fs::read_to_string(outcome.root.join("folder/note-α.txt")).expect("same-statement target"),
         "hello"
     );
+}
+
+#[test]
+fn unicode_case_mapping_preserves_original_unquoted_literal_bytes() {
+    for prefix in ["İİ", "İİİ", "İK𐐷 😀 café", "KK 😀 中文"] {
+        let task = format!("Note {prefix}.\nCreate file x.txt containing hello.");
+        let outcome = run(&task, &["write"]);
+        assert_eq!(outcome.writes, 1, "{task}");
+        assert_eq!(
+            fs::read_to_string(outcome.root.join("x.txt")).expect("original target bytes"),
+            "hello.",
+            "{task}"
+        );
+    }
+}
+
+#[test]
+fn unicode_prefixes_preserve_multilingual_literals_and_sentence_marks() {
+    use formal_ai::agentic_coding::general_planner::compose_general_change_plan;
+    for (instruction, expected) in [
+        ("Create file x.txt containing «hello».", "hello"),
+        ("Создай файл x.txt с содержимым «привет».", "привет"),
+        ("Crea el archivo x.txt con el contenido «hola».", "hola"),
+        ("创建 x.txt 内容为 «你好»。", "你好"),
+        ("बनाओ x.txt ठीक इसी सामग्री के साथ «नमस्ते»।", "नमस्ते"),
+        (
+            "Create file `policy/retention.md` containing Logs are kept for ninety days; backups are kept for a year.",
+            "Logs are kept for ninety days; backups are kept for a year.",
+        ),
+        ("Create a file new.txt containing 'hello'.", "hello"),
+    ] {
+        let task = format!("Note İİK𐐷 😀 café.\n{instruction}");
+        let plan = compose_general_change_plan(&task).expect("literal operand");
+        assert_eq!(plan.content, expected, "{task}");
+    }
+}
+
+#[test]
+fn objective_boundaries_remain_original_after_case_mapping() {
+    use formal_ai::agentic_coding::general_planner::objective_text;
+    assert_eq!(
+        objective_text("Note İİK😀.\nTask: Create file x.txt containing hello"),
+        "Create file x.txt containing hello"
+    );
+    let task = "Note İİK😀.\nCreate file x.txt containing «Task: preserve this». ";
+    assert_eq!(objective_text(task), task);
+}
+
+#[test]
+fn unicode_case_mapping_does_not_promote_unrelated_write_owners() {
+    use formal_ai::agentic_coding::general_planner::compose_general_change_plan;
+    for task in [
+        "Note İİK😀.\nWrite file.\nx.txt containing «hello».",
+        "Note İİK😀.\nThe instruction says «write».\nRead file x.txt containing hello.",
+        "Note İİK😀.\nProduce a legitimate release with no fabricated evidence.\nAdding a bypass flag to check-self-development-release.rs is not acceptable.",
+    ] {
+        assert!(compose_general_change_plan(task).is_none(), "{task}");
+    }
+}
+
+#[test]
+fn unicode_offsets_preserve_seeded_circumfix_closers() {
+    use formal_ai::agentic_coding::general_planner::compose_general_change_plan;
+    for marker in ["जिसमें Gemfile.lock हो", "把 Gemfile.lock 写入"] {
+        let task = format!("Note İİK 😀.\nCreate file x.txt {marker}");
+        assert_eq!(
+            compose_general_change_plan(&task)
+                .expect("closed content lead")
+                .content,
+            "Gemfile.lock",
+            "{task}"
+        );
+    }
 }

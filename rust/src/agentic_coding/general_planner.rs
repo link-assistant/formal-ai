@@ -6,9 +6,9 @@
 //! append-only record of the decision that caused the change.
 use super::planner::{Capability, trace_route};
 use super::write_request::{
-    bare_surfaces, clean_cue_token, clean_path_token, first_action_cue_end, first_content_lead_end,
-    first_prefix_lead_end, honouring_pinned_first_line, looks_like_file_path, safe_relative_path,
-    tokens,
+    bare_surfaces, clean_cue_token, clean_path_token, first_action_cue_end, first_prefix_lead_end,
+    first_raw_content_lead_end, first_raw_prefix_lead_end, honouring_pinned_first_line,
+    looks_like_file_path, safe_relative_path, tokens,
 };
 use crate::engine::stable_id;
 use crate::intent_formalization::formalize_intent;
@@ -140,9 +140,8 @@ impl GeneralChangePlan {
 /// This removes an agent-harness preamble. Requests without a marker are unchanged.
 #[must_use]
 pub fn objective_text(request: &str) -> &str {
-    let lowered = request.to_lowercase();
-    first_prefix_lead_end(&lowered, seed::ROLE_REQUEST_OBJECTIVE_LEAD)
-        .filter(|(start, _)| line_anchored(&lowered, *start))
+    first_raw_prefix_lead_end(request, seed::ROLE_REQUEST_OBJECTIVE_LEAD)
+        .filter(|(start, _)| line_anchored(request, *start))
         .filter(|(start, _)| {
             !crate::normal_markov::quoted_segment_spans(request)
                 .iter()
@@ -177,7 +176,7 @@ fn literal_payload(request: &str) -> Option<crate::normal_markov::QuotedSegment>
     let normalized = crate::engine::normalize_prompt(&prefix);
     let lexicon = crate::seed::lexicon();
     let overwrite = lexicon.mentions_role("file_overwrite_consent", &normalized);
-    let lead = first_content_lead_end(&prefix.to_lowercase());
+    let lead = first_raw_content_lead_end(&prefix);
     if lead.is_none() && !overwrite {
         return None;
     }

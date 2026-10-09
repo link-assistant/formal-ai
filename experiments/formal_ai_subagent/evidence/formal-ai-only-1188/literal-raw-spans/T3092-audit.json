@@ -1,0 +1,14 @@
+{
+  "id": "T3092",
+  "tools": [
+    "bash"
+  ],
+  "reviewedRepair": true,
+  "authoredRepositoryEffects": 2,
+  "paths": [
+    "rust/tests/web/literal-write-request-scope.test.mjs",
+    "rust/tests/fixtures/literal-obligation-transaction.rs"
+  ],
+  "receipt": "Output: {\"writes\":[\"rust/tests/web/literal-write-request-scope.test.mjs\",\"rust/tests/fixtures/literal-obligation-transaction.rs\"]}\n\nExit Code: 0",
+  "manualRepositoryEffects": 0
+}

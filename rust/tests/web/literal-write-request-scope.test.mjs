@@ -151,3 +151,58 @@ test('a target token cannot borrow a file cue from a completed statement', () =>
   assert.equal(plan?.target, 'folder/note-α.txt');
   assert.equal(plan?.content, 'hello');
 });
+
+
+test('expanding lowercase prefixes preserve unquoted original content', () => {
+  for (const prefix of ['İİ', 'İİİ', 'İK𐐷 😀 café', 'KK 😀 中文']) {
+    const prompt = 'Note ' + prefix + '.\nCreate file x.txt containing hello.';
+    assert.equal(composeGeneralChangePlan(prompt)?.content, 'hello.', prompt);
+  }
+});
+test('raw content spans preserve the original multilingual payload and closer', () => {
+  for (const [instruction, expected] of [
+    ['Create file x.txt containing «hello».', 'hello'],
+    ['Создай файл x.txt с содержимым «привет».', 'привет'],
+    ['Crea el archivo x.txt con el contenido «hola».', 'hola'],
+    ['创建 x.txt 内容为 «你好»。', '你好'],
+    ['बनाओ x.txt ठीक इसी सामग्री के साथ «नमस्ते»।', 'नमस्ते'],
+    ['Create file `policy/retention.md` containing Logs are kept for ninety days; backups are kept for a year.', 'Logs are kept for ninety days; backups are kept for a year.'],
+    ["Create a file new.txt containing 'hello'.", 'hello'],
+  ]) {
+    const prompt = 'Note İİK𐐷 😀 café.\n' + instruction;
+    assert.equal(composeGeneralChangePlan(prompt)?.content, expected, prompt);
+  }
+});
+test('raw-span mapping rejects interior expansions and split surrogate characters', async () => {
+  const { rawLowercaseSpan, rawContentLeadClose } = await import('../../../js/agentic/write_request/lowercase_spans.mjs');
+  assert.deepEqual(rawLowercaseSpan('İK😀x', [2, 5]), [1, 4]);
+  assert.equal(rawLowercaseSpan('İx', [1, 2]), null);
+  assert.equal(rawLowercaseSpan('😀x', [1, 2]), null);
+  assert.equal(rawLowercaseSpan('x', [2, 3]), null);
+  assert.equal(rawLowercaseSpan('x', [1, 0]), null);
+  assert.equal(rawContentLeadClose('😀x', 1), null);
+});
+test('objective labels map back before quoting and line anchoring', async () => {
+  const { objectiveText } = await import('../../../js/agentic/general_planner.mjs');
+  assert.equal(objectiveText('Note İİK😀.\nTask: Create file x.txt containing hello'), 'Create file x.txt containing hello');
+  const quoted = 'Note İİK😀.\nCreate file x.txt containing «Task: preserve this». ';
+  assert.equal(objectiveText(quoted), quoted);
+});
+test('Unicode prefixes cannot promote cross-statement or quoted owner cues', () => {
+  for (const task of [
+    'Note İİK😀.\nWrite file.\nx.txt containing «hello».',
+    'Note İİK😀.\nThe instruction says «write».\nRead file x.txt containing hello.',
+    'Note İİK😀.\nProduce a legitimate release with no fabricated evidence.\nAdding a bypass flag to check-self-development-release.rs is not acceptable.',
+  ]) assert.notEqual(composeGeneralChangePlan(task)?.mode, 'literal_file', task);
+});
+
+test('Unicode offsets preserve real circumfix closers as grammar', () => {
+  for (const marker of ['जिसमें Gemfile.lock हो', '把 Gemfile.lock 写入']) {
+    const task = 'Note İİK 😀.\nCreate file x.txt ' + marker;
+    assert.equal(composeGeneralChangePlan(task)?.content, 'Gemfile.lock', task);
+  }
+});
+test('a pinned line uses original boundaries after expanding lowercase characters', async () => {
+  const { pinnedFirstLine } = await import('../../../js/agentic/write_request.mjs');
+  assert.equal(pinnedFirstLine('İİ The first line must be exactly `header=ready`'), 'header=ready');
+});

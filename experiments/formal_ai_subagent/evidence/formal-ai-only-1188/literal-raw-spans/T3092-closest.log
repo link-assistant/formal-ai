@@ -1,0 +1,230 @@
+TAP version 13
+# Subtest: fenced creation preserves source with task labels, command cues and paths
+ok 1 - fenced creation preserves source with task labels, command cues and paths
+  ---
+  duration_ms: 1060.739583
+  ...
+# Subtest: closed quoted whole-content consent replaces an existing source file
+ok 2 - closed quoted whole-content consent replaces an existing source file
+  ---
+  duration_ms: 54.115792
+  ...
+# Subtest: a plain replacement stays an edit even when its new literal names a file write
+ok 3 - a plain replacement stays an edit even when its new literal names a file write
+  ---
+  duration_ms: 38.876708
+  ...
+# Subtest: longer fences preserve payloads containing their own Markdown examples
+ok 4 - longer fences preserve payloads containing their own Markdown examples
+  ---
+  duration_ms: 83.13775
+  ...
+# Subtest: literal verification reads failure narratives and compact JSON as authored data
+ok 5 - literal verification reads failure narratives and compact JSON as authored data
+  ---
+  duration_ms: 145.405084
+  ...
+# Subtest: explicit verification failure still vetoes exact literal output
+ok 6 - explicit verification failure still vetoes exact literal output
+  ---
+  duration_ms: 1.368625
+  ...
+# Subtest: exact-content Set forms consume seed leads while preserving the declared literal bytes
+ok 7 - exact-content Set forms consume seed leads while preserving the declared literal bytes
+  ---
+  duration_ms: 318.599042
+  ...
+# Subtest: seed-like words inside quoted payloads and ordinary leading prose remain content
+ok 8 - seed-like words inside quoted payloads and ordinary leading prose remain content
+  ---
+  duration_ms: 156.952083
+  ...
+# Subtest: G125: quoted edit payloads with skill cues stay data
+ok 9 - G125: quoted edit payloads with skill cues stay data
+  ---
+  duration_ms: 39.788625
+  ...
+# Subtest: G125: genuine unquoted skill teaching keeps its guard
+ok 10 - G125: genuine unquoted skill teaching keeps its guard
+  ---
+  duration_ms: 0.974583
+  ...
+# Subtest: G125: a malformed quoted replacement changes nothing
+ok 11 - G125: a malformed quoted replacement changes nothing
+  ---
+  duration_ms: 1.551291
+  ...
+# Subtest: unchanged T2379 writes and independently verifies both artifacts
+ok 12 - unchanged T2379 writes and independently verifies both artifacts
+  ---
+  duration_ms: 1249.114583
+  ...
+# Subtest: quoted operation and teaching keywords remain literal in every obligation
+ok 13 - quoted operation and teaching keywords remain literal in every obligation
+  ---
+  duration_ms: 246.170084
+  ...
+# Subtest: a first-file receipt cannot certify a second file or its failed readback
+ok 14 - a first-file receipt cannot certify a second file or its failed readback
+  ---
+  duration_ms: 31.585
+  ...
+# Subtest: write-only delivery retains first target and reports verification unavailable
+ok 15 - write-only delivery retains first target and reports verification unavailable
+  ---
+  duration_ms: 75.440583
+  ...
+# Subtest: read-only clients cannot mutate either literal target
+ok 16 - read-only clients cannot mutate either literal target
+  ---
+  duration_ms: 403.606917
+  ...
+# Subtest: a successful artifact never hides an underivable mandatory clause
+ok 17 - a successful artifact never hides an underivable mandatory clause
+  ---
+  duration_ms: 85.057709
+  ...
+# Subtest: all seeded enumeration surfaces inside literal operands remain payload
+ok 18 - all seeded enumeration surfaces inside literal operands remain payload
+  ---
+  duration_ms: 8.3
+  ...
+# Subtest: every seeded outer cue preserves two complete literals and exact UTF8 spans
+ok 19 - every seeded outer cue preserves two complete literals and exact UTF8 spans
+  ---
+  duration_ms: 8.622792
+  ...
+# Subtest: closed twelve-character fence with internal instructions has one exact readback
+ok 20 - closed twelve-character fence with internal instructions has one exact readback
+  ---
+  duration_ms: 45.384125
+  ...
+# Subtest: independent outer artifacts retain nested enumeration bytes and receipts
+ok 21 - independent outer artifacts retain nested enumeration bytes and receipts
+  ---
+  duration_ms: 197.115667
+  ...
+# Subtest: a quoted first-line fixture remains the exact authored file content
+ok 22 - a quoted first-line fixture remains the exact authored file content
+  ---
+  duration_ms: 697.085125
+  ...
+# Subtest: an actual first-line constraint outside the literal still applies
+ok 23 - an actual first-line constraint outside the literal still applies
+  ---
+  duration_ms: 6.58525
+  ...
+# Subtest: the original repair instruction does not become destructive source contents
+ok 24 - the original repair instruction does not become destructive source contents
+  ---
+  duration_ms: 528.622125
+  ...
+# Subtest: a later write does not license an earlier read with a content-like preposition
+ok 25 - a later write does not license an earlier read with a content-like preposition
+  ---
+  duration_ms: 333.921083
+  ...
+# Subtest: payload write vocabulary cannot turn an explicit read into a whole-file write
+ok 26 - payload write vocabulary cannot turn an explicit read into a whole-file write
+  ---
+  duration_ms: 1.300917
+  ...
+# Subtest: declarative creation and a real write action retain their original bytes
+ok 27 - declarative creation and a real write action retain their original bytes
+  ---
+  duration_ms: 104.124125
+  ...
+# Subtest: a write-only client receives the actual target and a truthful auxiliary gap
+ok 28 - a write-only client receives the actual target and a truthful auxiliary gap
+  ---
+  duration_ms: 15.590458
+  ...
+# Subtest: write-only target transport failure remains an actual failure
+ok 29 - write-only target transport failure remains an actual failure
+  ---
+  duration_ms: 11.108584
+  ...
+# Subtest: closed punctuation operands retain their exact bytes
+ok 30 - closed punctuation operands retain their exact bytes
+  ---
+  duration_ms: 5.046375
+  ...
+# Subtest: seeded explicit content qualifiers license unquoted punctuation
+ok 31 - seeded explicit content qualifiers license unquoted punctuation
+  ---
+  duration_ms: 1.369541
+  ...
+# Subtest: empty or unclosed punctuation operands cannot authorize literal writes
+ok 32 - empty or unclosed punctuation operands cannot authorize literal writes
+  ---
+  duration_ms: 2.457209
+  ...
+# Subtest: the unchanged native panic request is not a literal file operand
+ok 33 - the unchanged native panic request is not a literal file operand
+  ---
+  duration_ms: 7.048167
+  ...
+# Subtest: each target owns only its local action, with original Unicode spans
+ok 34 - each target owns only its local action, with original Unicode spans
+  ---
+  duration_ms: 10.760834
+  ...
+# Subtest: earlier or quoted write cues cannot authorize a local read
+ok 35 - earlier or quoted write cues cannot authorize a local read
+  ---
+  duration_ms: 1.537666
+  ...
+# Subtest: statement punctuation inside a closed payload remains exact data
+ok 36 - statement punctuation inside a closed payload remains exact data
+  ---
+  duration_ms: 1.49975
+  ...
+# Subtest: a target token cannot borrow a file cue from a completed statement
+ok 37 - a target token cannot borrow a file cue from a completed statement
+  ---
+  duration_ms: 5.811292
+  ...
+# Subtest: expanding lowercase prefixes preserve unquoted original content
+ok 38 - expanding lowercase prefixes preserve unquoted original content
+  ---
+  duration_ms: 6.635666
+  ...
+# Subtest: raw content spans preserve the original multilingual payload and closer
+ok 39 - raw content spans preserve the original multilingual payload and closer
+  ---
+  duration_ms: 8.469666
+  ...
+# Subtest: raw-span mapping rejects interior expansions and split surrogate characters
+ok 40 - raw-span mapping rejects interior expansions and split surrogate characters
+  ---
+  duration_ms: 0.828458
+  ...
+# Subtest: objective labels map back before quoting and line anchoring
+ok 41 - objective labels map back before quoting and line anchoring
+  ---
+  duration_ms: 0.26675
+  ...
+# Subtest: Unicode prefixes cannot promote cross-statement or quoted owner cues
+ok 42 - Unicode prefixes cannot promote cross-statement or quoted owner cues
+  ---
+  duration_ms: 1.796917
+  ...
+# Subtest: Unicode offsets preserve real circumfix closers as grammar
+ok 43 - Unicode offsets preserve real circumfix closers as grammar
+  ---
+  duration_ms: 2.74975
+  ...
+# Subtest: a pinned line uses original boundaries after expanding lowercase characters
+ok 44 - a pinned line uses original boundaries after expanding lowercase characters
+  ---
+  duration_ms: 0.334833
+  ...
+1..44
+# tests 44
+# suites 0
+# pass 44
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2606.261541

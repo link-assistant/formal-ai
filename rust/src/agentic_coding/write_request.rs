@@ -1,9 +1,13 @@
 //! Recover write-request targets and literal payloads from seeded prose cues.
 //!
 //! The general planner and request inspection share this parse (issues #654, #1066).
+mod lowercase_spans;
 use super::file_path_shape::{is_dotted_number, peel_sentence_punctuation};
 use super::shell_command_policy::{prose_sentences, sentences};
 use crate::seed::{self, Slot};
+pub(super) use lowercase_spans::{
+    first_raw_content_lead_end, first_raw_prefix_lead_end, raw_content_lead_close,
+};
 /// The seeded articles and other function words (`the`, `el`).
 const FUNCTION_WORD_ROLE: &str = "request_function_word";
 /// One whitespace token together with its byte span in the original request.
@@ -518,15 +522,11 @@ pub(super) fn is_stated_write_target(request: &str, path: &str) -> bool {
     })
 }
 
-/// The opening line a sentence pins, read through
-/// [`seed::ROLE_FILE_LEADING_LINE_CONSTRAINT_LEAD`].
-///
-/// The lowercased copy is byte-length preserving for every supported language,
-/// so the marker's end offset slices the original sentence and the recovered
-/// line keeps its case.
+/// Recover the seeded opening-line constraint through original UTF-8 boundaries.
+/// Lowercase cue matching never changes the bytes of the recovered line.
 pub(super) fn pinned_first_line(sentence: &str) -> Option<String> {
-    let lowered = sentence.to_lowercase();
-    let (_, end) = first_prefix_lead_end(&lowered, seed::ROLE_FILE_LEADING_LINE_CONSTRAINT_LEAD)?;
+    let (_, end) =
+        first_raw_prefix_lead_end(sentence, seed::ROLE_FILE_LEADING_LINE_CONSTRAINT_LEAD)?;
     let raw = sentence
         .get(end..)?
         .trim()

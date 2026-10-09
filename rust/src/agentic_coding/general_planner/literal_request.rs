@@ -3,9 +3,9 @@ use super::literal_payload;
 use crate::agentic_coding::shell_command_policy::prose_sentences;
 use crate::agentic_coding::write_request::{
     CueFamily, Token, WriteBinding, action_cue_start_after, bare_surfaces, clean_content,
-    clean_cue_token, content_lead_close, first_action_cue_end, first_action_cue_start,
-    first_content_lead_end, first_prefix_lead_end, payload_continues_past_its_first_line,
-    ranked_bindings, tokens,
+    clean_cue_token, first_action_cue_end, first_action_cue_start, first_prefix_lead_end,
+    first_raw_content_lead_end, payload_continues_past_its_first_line, ranked_bindings,
+    raw_content_lead_close, tokens,
 };
 use crate::seed::{self, Slot};
 
@@ -72,9 +72,8 @@ fn binding_has_write_instruction(
 ///   accepted for it, so a bare "create app.rs" (no content) still falls through
 ///   to the ordinary solver rather than fabricating an empty file.
 ///
-/// Both byte offsets index the lowercased copy, which is byte-length preserving
-/// for en/ru/hi/zh, so the same offsets slice the original request and the
-/// recovered content keeps its case and punctuation.
+/// Seeded matching uses lowercase text; all slicing boundaries map back to
+/// original UTF-8 so expanding and shrinking case mappings retain payload bytes.
 pub(super) fn parse_write_request(request: &str) -> Option<(String, String)> {
     let toks = tokens(request);
     if let Some(literal) = literal_payload(request) {
@@ -142,7 +141,7 @@ fn parse_write_request_bound(
     // asked for was never composed.
     let specification =
         crate::agentic_coding::note_composition::composed_document_specification_span(request);
-    if let Some((marker_start, marker_end)) = first_content_lead_end(&lowered)
+    if let Some((marker_start, marker_end)) = first_raw_content_lead_end(request)
         && !specification.is_some_and(|span| span.contains(&marker_end))
         && positions_share_statement(request, marker_end, clause_start)
     {
@@ -156,7 +155,7 @@ fn parse_write_request_bound(
         // begins, and the closing literal is grammar rather than bytes: the
         // Hindi "जिसमें Gemfile.lock हो" would otherwise write the verb into the
         // file with the content.
-        let payload_end = content_lead_close(&lowered, marker_end)
+        let payload_end = raw_content_lead_close(request, marker_end)
             .map_or(statement_end, |close| close.min(statement_end));
         let marker_span = request.get(marker_end..payload_end);
         if (!marker_leads || first_action_cue_end(toks).is_some())
