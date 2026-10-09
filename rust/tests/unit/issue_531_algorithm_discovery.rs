@@ -577,9 +577,10 @@ fn formal_ai_agent_cli_discovers_reads_back_and_conformance_checks_the_same_task
     );
     let conformance: serde_json::Value =
         serde_json::from_str(&run.steps[3].result).expect("conformance command receipt");
-    assert_eq!(conformance["exit_code"], 0);
+    assert!(conformance["exit_code"].is_null());
+    assert_eq!(conformance["operation_success"], true);
     assert_eq!(conformance["complete"], true);
-    assert_eq!(conformance["schema"], "command-execution-receipt/v1");
+    assert_eq!(conformance["schema"], "algorithm-command-receipt/v1");
     assert_eq!(conformance["timed_out"], false);
     assert_eq!(conformance["truncated"], false);
     assert_eq!(conformance["stderr"], "");

@@ -315,7 +315,20 @@ fn execute_tool_call(call: &ToolCall, workspace: &mut AgentWorkspace) -> (String
         "run_command" => {
             let command = arg_str(&arguments, "command");
             if let Some(result) = execute_algorithm_command(command, workspace) {
-                return (result, false);
+                let (stdout, error, operation_success) = match result {
+                    Ok(stdout) => (stdout, None, true),
+                    Err(error) => (String::new(), Some(error), false),
+                };
+                return (
+                    json!({
+                        "schema": "algorithm-command-receipt/v1", "command": command,
+                        "operation_success": operation_success, "exit_code": null,
+                        "stdout": stdout, "stderr": "", "error": error,
+                        "complete": true, "truncated": false, "timed_out": false,
+                    })
+                    .to_string(),
+                    !operation_success,
+                );
             }
             if let Some(result) = execute_procedure_conformance(command, workspace) {
                 return (result, false);
@@ -427,7 +440,11 @@ fn translate_without_write(
 
 /// Mirror the public discovery/conformance commands inside the deterministic
 /// in-repo driver. External Agent CLIs invoke the installed binary instead.
-fn execute_algorithm_command(command: &str, workspace: &AgentWorkspace) -> Option<String> {
+/// Result distinguishes actual completed library execution from process status.
+fn execute_algorithm_command(
+    command: &str,
+    workspace: &AgentWorkspace,
+) -> Option<Result<String, String>> {
     let parts = command.split_whitespace().collect::<Vec<_>>();
     if parts.get(..3) == Some(&["formal-ai", "learn", "algorithms"]) {
         let from = option_value(&parts, "--from")?;
@@ -435,25 +452,25 @@ fn execute_algorithm_command(command: &str, workspace: &AgentWorkspace) -> Optio
         if from != super::algorithm_learning::OBSERVATIONS_PATH
             || output != super::algorithm_learning::DISCOVERY_PATH
         {
-            return Some(format!(
+            return Some(Err(format!(
                 "algorithm_learning_paths_unsupported:{from:?}:{output:?}"
-            ));
+            )));
         }
         let document = match std::fs::read_to_string(workspace.root().join(from)) {
             Ok(document) => document,
-            Err(error) => return Some(format!("algorithm_observations_read_failed:{error}")),
+            Err(error) => return Some(Err(format!("algorithm_observations_read_failed:{error}"))),
         };
         let mut memory = MemoryStore::new();
         memory.replace_from_links_notation(&document);
         let run = discover_algorithms(&traces_from_memory_events(memory.events()));
         if let Err(error) = std::fs::write(workspace.root().join(output), run.links_notation()) {
-            return Some(format!("algorithm_artifact_write_failed:{error}"));
+            return Some(Err(format!("algorithm_artifact_write_failed:{error}")));
         }
-        return Some(format!(
+        return Some(Ok(format!(
             "algorithm_learning_complete:candidates={}:validated={}",
             run.candidates.len(),
             run.validated_candidates().len()
-        ));
+        )));
     }
     if parts.get(..3) != Some(&["formal-ai", "algorithm", "conformance"]) {
         return None;
@@ -461,15 +478,19 @@ fn execute_algorithm_command(command: &str, workspace: &AgentWorkspace) -> Optio
     let artifact = option_value(&parts, "--artifact")?;
     let trigger = option_value(&parts, "--trigger")?;
     if artifact != super::algorithm_learning::DISCOVERY_PATH {
-        return Some(format!("algorithm_artifact_unsupported:{artifact:?}"));
+        return Some(Err(format!("algorithm_artifact_unsupported:{artifact:?}")));
     }
     let document = match std::fs::read_to_string(workspace.root().join(artifact)) {
         Ok(document) => document,
-        Err(error) => return Some(format!("algorithm_artifact_read_failed:{artifact}:{error}")),
+        Err(error) => {
+            return Some(Err(format!(
+                "algorithm_artifact_read_failed:{artifact}:{error}"
+            )));
+        }
     };
     let candidate = match AlgorithmCandidate::from_links_notation(&document) {
         Ok(candidate) => candidate,
-        Err(error) => return Some(format!("algorithm_artifact_invalid:{error}")),
+        Err(error) => return Some(Err(format!("algorithm_artifact_invalid:{error}"))),
     };
     let mut bindings = std::collections::BTreeMap::new();
     for (index, part) in parts.iter().enumerate() {
@@ -477,17 +498,17 @@ fn execute_algorithm_command(command: &str, workspace: &AgentWorkspace) -> Optio
             continue;
         }
         let Some(binding) = parts.get(index + 1) else {
-            return Some(String::from("algorithm_binding_missing"));
+            return Some(Err(String::from("algorithm_binding_missing")));
         };
         let Some((name, value)) = binding.split_once('=') else {
-            return Some(format!("algorithm_binding_invalid:{binding:?}"));
+            return Some(Err(format!("algorithm_binding_invalid:{binding:?}")));
         };
         bindings.insert(name.to_owned(), value.to_owned());
     }
     Some(
         candidate
             .conformance_links_notation(trigger, &bindings)
-            .unwrap_or_else(|error| format!("algorithm_conformance_failed:{error}")),
+            .map_err(|error| format!("algorithm_conformance_failed:{error}")),
     )
 }
 
@@ -588,3 +609,7 @@ fn preview(text: &str, max: usize) -> String {
     let truncated: String = collapsed.chars().take(max).collect();
     format!("{truncated}…")
 }
+
+#[cfg(test)]
+#[path = "../../tests/fixtures/algorithm-operation-receipts.rs"]
+mod algorithm_operation_receipts;

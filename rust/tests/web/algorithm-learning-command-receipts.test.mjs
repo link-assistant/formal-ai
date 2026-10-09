@@ -17,7 +17,7 @@ function append(messages, call, content, extra = {}) {
   messages.push({ role: 'assistant', tool_calls: [{ id, type: 'function', function: { name: call.tool, arguments: call.arguments } }] }, { role: 'tool', name: call.tool, tool_call_id: id, content, ...extra });
 }
 function receipt(command, stdout, extra = {}) { return JSON.stringify({ schema: 'command-execution-receipt/v1', command, complete: true, exit_code: 0, stdout, stderr: '', timed_out: false, truncated: false, ...extra }); }
-function replay(transform = value => value, outer = {}) {
+function replay(transform = value => value, outer = {}, operation = false) {
   const messages = [{ role: 'user', content: 'Derive any reusable execution algorithm from these recorded events and verify it.' + String.fromCharCode(10) + task.observations }], calls = [];
   for (let turn = 0; turn < 8; turn += 1) {
     const plan = planStep(messages, ['write', 'bash'], task);
@@ -26,7 +26,9 @@ function replay(transform = value => value, outer = {}) {
       const argumentsValue = JSON.parse(call.arguments); calls.push({ tool: call.tool, argumentsValue }); let raw = '';
       if (call.tool === 'bash') {
         const command = argumentsValue.command, stdout = command.startsWith('cat ') ? candidateLinksNotation(task.candidate) : command.includes('conformance') ? expectedConformance(task.candidate) : '';
-        raw = receipt(command, stdout); if (command.startsWith('cat ')) raw = transform(raw, stdout);
+        raw = operation && !command.startsWith('cat ') ? JSON.stringify({ schema: 'algorithm-command-receipt/v1', command,
+          operation_success: true, exit_code: null, stdout, stderr: '', error: null, complete: true, truncated: false, timed_out: false }) : receipt(command, stdout);
+        if (command.startsWith('cat ')) raw = transform(raw, stdout);
       }
       append(messages, call, raw, argumentsValue.command?.startsWith('cat ') ? outer : {});
     }
@@ -90,4 +92,37 @@ for (const mode of ['nonzero', 'denied', 'bare source']) test('exact original re
   assert.equal(source, 'new new' + String.fromCharCode(10)); assert.equal(finalResult(result).disposition, 'failure');
   const quote = String.fromCharCode(96); assert.equal(result.answer, 'Verification failed for ' + quote + 'f.txt' + quote + ': the observed bytes differ from the planned workspace effect.');
   assert.equal(observedBytesMatch(source, source), false); assert.equal(stepOutcome(source), 'unreported');
+});
+
+test('actual in-process operation receipt has no invented process exit and keeps all four calls', () => {
+  const result = replay(value => value, {}, true); assert.equal(result.calls.length, 4);
+  assert.ok(result.answer.includes('status "conformance_passed"'));
+  for (const message of result.messages.filter(message => message.role === 'tool' && message.content.includes('algorithm-command-receipt/v1'))) {
+    assert.equal(JSON.parse(message.content).exit_code, null); assert.equal(JSON.parse(message.content).operation_success, true);
+  }
+});
+test('operation failure, missing completeness and invented process status cannot certify conformance', () => {
+  const good = replay(value => value, {}, true), messages = good.messages.slice(0, -1), last = good.messages.at(-1), raw = JSON.parse(last.content);
+  for (const extra of [{ operation_success: false, error: 'actual IO failure' }, { complete: false }, { truncated: true }, { exit_code: 0 }, { command: 'foreign operation' }, { timed_out: true }, { is_error: true }, { aborted: true }, { stream_complete: false }, { signal: 'SIGTERM' }]) {
+    const result = planStep([...messages, { ...last, content: JSON.stringify({ ...raw, ...extra }) }], ['write', 'bash'], task);
+    assert.ok(result.answer.includes('status "conformance_failed"'));
+  }
+});
+
+test('pretty-printed JSON source stays byte exact and structured stdout cannot certify its fresh digest', () => {
+  const expected = ['{', '  "a": 1', '}'].join(String.fromCharCode(10));
+  const request = 'In f.json replace «old» with «' + expected + '».', messages = [{ role: 'user', content: request }];
+  let source = 'old', result; const commands = [];
+  for (let turn = 0; turn < 5; turn += 1) {
+    const plan = planWorkspaceChangeStep(request, messages, ['read', 'write', 'bash']); if (plan.kind === 'final') { result = plan; break; }
+    for (const call of plan.calls) {
+      const argumentsValue = JSON.parse(call.arguments); let raw = '';
+      if (call.tool === 'read') raw = source; else if (call.tool === 'write') source = argumentsValue.content;
+      else { commands.push(argumentsValue.command); raw = JSON.stringify({ stdout: { a: 1 }, exit_code: 0 }); }
+      append(messages, call, raw);
+    }
+  }
+  assert.equal(source, expected); assert.deepEqual(commands, ['sha256sum -- f.json']);
+  assert.equal(finalResult(result).disposition, 'failure'); assert.ok(result.answer.startsWith('Verification failed'));
+  assert.equal(observedBytesMatch(JSON.stringify({ stdout: { a: 1 }, exit_code: 0 }), expected), false);
 });

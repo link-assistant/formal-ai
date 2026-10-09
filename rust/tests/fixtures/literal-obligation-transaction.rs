@@ -103,7 +103,9 @@ fn run_with_receipts(
                                 output.status.code().unwrap_or(1)
                             )
                         };
-                        if command.starts_with("cat ") {
+                        if command.starts_with("cat ")
+                            || (inject_digest && command.starts_with("sha256sum -- "))
+                        {
                             run.receipts.push((command.to_owned(), stdout));
                         }
                         result
@@ -355,17 +357,18 @@ fn composite_source_and_registration_have_independent_exact_receipts() {
 
 #[test]
 fn structured_stdout_cannot_certify_a_pretty_printed_source_representation() {
-    fn object_receipt(stdout: &str) -> String {
-        let value: serde_json::Value = serde_json::from_str(stdout).expect("authored JSON");
+    fn object_receipt(_stdout: &str) -> String {
+        let value = serde_json::json!({"a": 1});
         serde_json::json!({"stdout": value, "exit_code": 0}).to_string()
     }
     let expected = "{\n  \"a\": 1\n}";
     let request = format!("In f.json replace «old» with «{expected}».");
-    let outcome = run_with_sources(
+    let outcome = run_with_receipts(
         &request,
         &["read", "write", "bash"],
         &[("f.json", "old")],
         object_receipt,
+        true,
     );
     assert_eq!(
         fs::read_to_string(outcome.root.join("f.json")).expect("actual authored bytes"),
@@ -373,7 +376,10 @@ fn structured_stdout_cannot_certify_a_pretty_printed_source_representation() {
     );
     assert_eq!(
         outcome.receipts,
-        vec![("cat f.json".to_owned(), expected.to_owned())]
+        vec![(
+            "sha256sum -- f.json".to_owned(),
+            format!("{}  f.json\n", formal_ai::sha256_hex(expected.as_bytes())),
+        )]
     );
     assert!(
         outcome

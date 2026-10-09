@@ -140,6 +140,27 @@ fn command_payload(messages: &[ChatMessage], command: &str) -> Option<String> {
         {
             return None;
         }
+        if let Ok(receipt) = serde_json::from_str::<serde_json::Value>(&raw)
+            && receipt["schema"] == "algorithm-command-receipt/v1"
+        {
+            return (receipt["command"].as_str() == Some(command)
+                && receipt["operation_success"].as_bool() == Some(true)
+                && receipt
+                    .get("exit_code")
+                    .is_some_and(serde_json::Value::is_null)
+                && receipt["complete"].as_bool() == Some(true)
+                && receipt["truncated"].as_bool() == Some(false)
+                && receipt["timed_out"].as_bool() == Some(false)
+                && receipt["stderr"].as_str() == Some("")
+                && receipt.get("error").is_some_and(serde_json::Value::is_null)
+                && !["aborted", "is_error", "isError"]
+                    .iter()
+                    .any(|key| receipt[*key].as_bool() == Some(true))
+                && receipt["stream_complete"].as_bool() != Some(false)
+                && receipt.get("signal").is_none_or(serde_json::Value::is_null))
+            .then(|| receipt["stdout"].as_str().map(str::to_owned))
+            .flatten();
+        }
         let payload = observed_payload(&raw)?;
         return observed_bytes_match(&raw, &payload).then_some(payload);
     }

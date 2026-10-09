@@ -86,6 +86,13 @@ function commandPayload(messages, command) {
     const raw = plainText(message.content);
     let receipt; try { receipt = JSON.parse(raw); } catch { receipt = null; }
     if (receipt?.command !== undefined && receipt.command !== command) return null;
+    if (receipt?.schema === 'algorithm-command-receipt/v1') {
+      return receipt.command === command && receipt.operation_success === true && receipt.exit_code === null
+        && receipt.complete === true && receipt.truncated === false && receipt.timed_out === false
+        && receipt.stderr === '' && receipt.error === null && typeof receipt.stdout === 'string'
+        && receipt.aborted !== true && receipt.is_error !== true && receipt.isError !== true
+        && receipt.stream_complete !== false && receipt.signal == null ? receipt.stdout : null;
+    }
     const payload = observedPayload(raw);
     return payload !== null && observedBytesMatch(raw, payload) ? payload : null;
   }
