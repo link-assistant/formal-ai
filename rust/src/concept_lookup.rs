@@ -21,7 +21,7 @@ use crate::service_accessibility::ServiceAccessibilityCache;
 use crate::source_fetch::{CachedSourceClient, SourceCapture, SourceTransport};
 use crate::source_walk::{
     CaptureExtractor, Extracted, LookupBounds, SourceLookup, Walk, WalkOutcome, WalkSourceOutcome,
-    entry_url_in, walk_sources,
+    entry_url_in, fallback_entry_url_in, walk_sources,
 };
 use crate::trace_record;
 
@@ -169,6 +169,9 @@ impl CaptureExtractor for SenseExtractor {
 
     fn entry_url(&self, record: &SourceRecord, subject: &str) -> Option<String> {
         entry_url_in(record, subject, &self.language)
+    }
+    fn fallback_entry_url(&self, record: &SourceRecord) -> Option<String> {
+        fallback_entry_url_in(record, &self.surface, &self.language)
     }
 
     fn read(
@@ -896,7 +899,6 @@ pub fn unknown_surface_spans(text: &str) -> Vec<(String, usize, usize)> {
     }
     out
 }
-
 /// The text of `value` with every quoted span removed, in any of the quotation
 /// marks the five seeded languages use.
 fn outside_quotes(value: &str) -> String {
@@ -924,7 +926,6 @@ fn outside_quotes(value: &str) -> String {
     }
     out
 }
-
 /// Whether `value` carries at least one quoted span.
 ///
 /// [`unknown_surfaces`] skips quoted spans because a quoted example is the
@@ -935,7 +936,6 @@ fn outside_quotes(value: &str) -> String {
 pub fn has_quoted_span(value: &str) -> bool {
     outside_quotes(value) != value
 }
-
 /// Every surface the seed lexicon declares, folded once.
 fn seeded_surfaces() -> &'static BTreeSet<String> {
     static CACHE: OnceLock<BTreeSet<String>> = OnceLock::new();

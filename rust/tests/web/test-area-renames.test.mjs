@@ -5,9 +5,34 @@ import { tmpdir } from 'node:os';
 import { dirname, join, posix, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
+import { tokenize } from '../../../scripts/lib/rust-specification-cases.mjs';
 import { loadRenameMap, resolveRenameChains } from '../../../experiments/formal_ai_subagent/rename-by-rule.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '../../..');
+
+function moduleBindings(source) {
+  const tokens = tokenize(source), bindings = [];
+  for (let index = 0; index < tokens.length; index += 1) {
+    if (tokens[index].text !== 'mod' || tokens[index + 1]?.kind !== 'word' || tokens[index + 2]?.text !== ';') continue;
+    const name = tokens[index + 1].text;
+    let file = name + '.rs', before = index - 1;
+    if (tokens[before]?.text === 'pub') before -= 1;
+    while (tokens[before]?.text === ']') {
+      let start = before, depth = 1;
+      while (--start >= 0 && depth) {
+        if (tokens[start].text === ']') depth += 1;
+        if (tokens[start].text === '[') depth -= 1;
+      }
+      start += 1;
+      if (tokens[start - 1]?.text !== '#') break;
+      const attribute = tokens.slice(start + 1, before);
+      if (attribute[0]?.text === 'path' && attribute[1]?.text === '=' && attribute[2]?.kind === 'string') file = attribute[2].text;
+      before = start - 2;
+    }
+    bindings.push({ name, file });
+  }
+  return bindings;
+}
 
 test('later area moves resolve historical destinations, and cycles refuse', () => {
   const moves = [{ from: 'old.rs', to: 'named.rs', tree: 'names' },
@@ -44,16 +69,15 @@ test('each moved unit test remains registered once in its declared area and keep
   assert.ok(moves.length > 0);
   const rootModules = readFileSync(join(root, 'rust/tests/unit/mod.rs'), 'utf8');
   const areas = new Map();
+  const rootBindings = moduleBindings(rootModules);
   for (const move of moves) {
     assert.equal(existsSync(join(root, move.from)), false, move.from);
     assert.equal(existsSync(join(root, move.to)), true, move.to);
     const area = posix.dirname(move.to);
     areas.set(area, (areas.get(area) ?? 0) + 1);
-    const name = posix.basename(move.to, '.rs');
     const areaModules = readFileSync(join(root, area, 'mod.rs'), 'utf8');
-    assert.equal(areaModules.split(`mod ${name};`).length - 1, 1, move.to);
-    assert.equal(rootModules.split(`mod ${name};`).length - 1,
-      name === posix.basename(area).replaceAll('-', '_') ? 1 : 0, move.from);
+    assert.equal(moduleBindings(areaModules).filter(binding => resolve(root, area, binding.file) === resolve(root, move.to)).length, 1, move.to);
+    assert.equal(rootBindings.filter(binding => resolve(root, 'rust/tests/unit', binding.file) === resolve(root, move.to)).length, 0, move.from);
     const source = readFileSync(join(root, move.to), 'utf8');
     for (const match of source.matchAll(/(?:include_str!|include_bytes!)\s*\(\s*"([^"\n]+)"/gu)) {
       assert.ok(existsSync(resolve(root, area, match[1])), `${move.to}: ${match[1]}`);
@@ -63,5 +87,6 @@ test('each moved unit test remains registered once in its declared area and keep
     assert.ok(count >= 5, area);
     const path = `${posix.basename(area)}/mod.rs`;
     assert.equal(rootModules.split(`#[path = "${path}"]`).length - 1, 1, area);
+    assert.equal(rootBindings.filter(binding => binding.file === path).length, 1, area);
   }
 });

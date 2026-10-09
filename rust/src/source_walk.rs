@@ -1,22 +1,8 @@
-//! The one bounded recursive capture walk, need-kind- and
-//! extractor-parameterised (issue #1138, plan 01 L2).
+//! Shared bounded registry capture walk for concept, procedure and prerequisite needs.
 //!
-//! Issue #991 paid for a bounded, recursive, accessibility-aware,
-//! license-carrying, offline-replayable walk over
-//! `data/seed/sources-registry.lino`, and it lived inside
-//! `src/how_to_guide.rs`, a module about procedures. A second need kind — what
-//! does this word mean — had the choice of copying that walk or doing without
-//! one. Copying it is the parity defect #991 was filed to remove, so the walk
-//! moves here and `how_to_guide` becomes "the `Procedure` kind with a step
-//! extractor" while `concept_lookup` becomes "the `Concept` kind with a sense
-//! extractor".
-//!
-//! This module owns plan 00 §4.2's [`SourceLookup`] contract and its
-//! [`LookupBounds`]; `how_to_guide::GuideBounds` is an alias of the latter, so
-//! there is one bounds vocabulary in the tree. Nothing here knows a host name:
-//! which sources a need kind may consult is read from the registry through
-//! [`select_sources`], and what a captured page means is decided by a
-//! [`CaptureExtractor`] the caller supplies.
+//! Issue #1138 reuses the #991 walk: settings, accessibility, licenses, offline
+//! replay and provenance are enforced once; extractors decide what bytes mean.
+//! Endpoint templates and alternatives belong to the registry, never host branches.
 
 use std::collections::VecDeque;
 
@@ -123,6 +109,10 @@ pub trait CaptureExtractor {
     /// Bind the registry's API template for this subject, or `None` when a
     /// required placeholder cannot be filled from the subject alone.
     fn entry_url(&self, record: &SourceRecord, subject: &str) -> Option<String>;
+    /// A declared alternative; an absent capture never authorizes a guessed URL.
+    fn fallback_entry_url(&self, _record: &SourceRecord) -> Option<String> {
+        None
+    }
 
     /// Read one capture. `produced` is how many items the walk already holds
     /// from this service, so an extractor can decide to recurse only when the
@@ -136,7 +126,6 @@ pub trait CaptureExtractor {
         bounds: &LookupBounds,
     ) -> Extracted<Self::Item>;
 }
-
 /// What one source produced, or why it produced nothing.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct WalkSourceOutcome {
@@ -152,7 +141,6 @@ pub struct WalkSourceOutcome {
     /// How many items it contributed.
     pub items: usize,
 }
-
 impl WalkSourceOutcome {
     /// One outcome row, before the walk charges pages or items against it.
     #[must_use]
@@ -166,7 +154,6 @@ impl WalkSourceOutcome {
         }
     }
 }
-
 /// Everything one walk produced, with a row for every source that could have
 /// contributed.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -180,7 +167,6 @@ pub struct WalkOutcome<I> {
     /// The bounds the walk was charged against.
     pub bounds: LookupBounds,
 }
-
 /// Plan 00 §4.2's contract: resolve a need against the sources registry, in
 /// registry order for the need's kind, honoring settings opt-outs and licenses.
 pub trait SourceLookup {
@@ -191,7 +177,6 @@ pub trait SourceLookup {
         bounds: &LookupBounds,
     ) -> crate::concept_lookup::LookupOutcome;
 }
-
 /// The subject as a wiki page title: `install docker` becomes `Install-Docker`
 /// for wikiHow's hyphenated titles and `Install Docker` elsewhere.
 #[must_use]
@@ -203,7 +188,6 @@ pub fn page_title(subject: &str, hyphenated: bool) -> String {
         .collect();
     words.join(if hyphenated { "-" } else { " " })
 }
-
 /// Where one written word ends, in any script the seed serves.
 ///
 /// Whitespace, and ASCII punctuation. Deliberately *not* `!is_alphanumeric()`:
@@ -216,14 +200,12 @@ pub const fn is_word_boundary(character: char) -> bool {
     character.is_whitespace()
         || (character.is_ascii() && !character.is_ascii_alphanumeric() && character != '_')
 }
-
 fn capitalize(word: &str) -> String {
     let mut characters = word.chars();
     characters.next().map_or_else(String::new, |first| {
         first.to_uppercase().collect::<String>() + characters.as_str()
     })
 }
-
 /// Bind the registry's API template for this subject, or `None` when a required
 /// placeholder cannot be filled from the subject alone (GitHub needs an owner
 /// and a repository, for instance).
@@ -235,16 +217,9 @@ fn capitalize(word: &str) -> String {
 pub fn entry_url(record: &SourceRecord, subject: &str) -> Option<String> {
     entry_url_in(record, subject, "")
 }
-
-/// [`entry_url`], with a language code for the templates that serve one.
-///
-/// An empty `language` means "whichever language this endpoint leads with":
-/// the first code the registry's `api_language` declares. A source that
-/// declares no `api_language` has no language to bind, so a `{language}` slot
-/// stays literal and the template is reported unbound rather than requested in
-/// a language nobody said it serves. A `language` the record does not serve
-/// binds nothing at all — that is the honest `unbound_template` outcome, and it
-/// is what keeps an English gloss from being handed back for a Hindi question.
+/// Bind the endpoint in a declared language, or the primary language when empty.
+/// Unsupported languages and absent required bindings are refused, so a source
+/// cannot supply an English gloss for a need it does not serve.
 #[must_use]
 pub fn entry_url_in(record: &SourceRecord, subject: &str, language: &str) -> Option<String> {
     if !language.is_empty() && !record.serves_language(language) {
@@ -268,7 +243,21 @@ pub fn entry_url_in(record: &SourceRecord, subject: &str, language: &str) -> Opt
     let url = record.api_url_in(language, &bindings);
     (!url.contains('{')).then_some(url)
 }
-
+/// Bind the registry-declared missing-resource alternative in the same language.
+#[must_use]
+pub fn fallback_entry_url_in(
+    record: &SourceRecord,
+    subject: &str,
+    language: &str,
+) -> Option<String> {
+    if record.api_fallback.is_empty() {
+        return None;
+    }
+    let mut alternate = record.clone();
+    alternate.api.clone_from(&record.api_fallback);
+    alternate.language_api.clear();
+    entry_url_in(&alternate, subject, language)
+}
 /// The sources a need kind may consult, in consultation order: declared kind
 /// first, then derived tier descending, then registry order. Total and
 /// reproducible.
@@ -312,7 +301,6 @@ pub fn select_sources(
     selected.truncate(bounds.max_services);
     selected
 }
-
 /// Every registry source that declares it answers `kind`, before settings and
 /// before template binding.
 #[must_use]
@@ -322,7 +310,6 @@ pub fn candidates(kind: NeedKind) -> Vec<SourceRecord> {
         .filter(|record| !record.service_group.is_empty())
         .collect()
 }
-
 /// Sources this need kind could have used and did not: the settings opted them
 /// out, or the subject cannot bind their template.
 ///
@@ -355,7 +342,6 @@ pub fn skipped_sources(
         })
         .collect()
 }
-
 /// Everything a service walk needs besides the service itself.
 pub struct Walk<'a, T: SourceTransport> {
     /// The cache-backed client every byte arrives through.
@@ -365,7 +351,6 @@ pub struct Walk<'a, T: SourceTransport> {
     /// The wall clock the staleness bound is measured against.
     pub now: u64,
 }
-
 /// Walk one service inside the declared bounds, returning its items.
 ///
 /// The queue, the visited set, the page accounting, the accessibility
@@ -387,6 +372,7 @@ pub fn walk_source<T: SourceTransport, E: CaptureExtractor>(
     let mut queue: VecDeque<(String, usize)> = VecDeque::from([(entry_url.to_owned(), 0)]);
     let mut visited: Vec<String> = Vec::new();
     let mut items: Vec<E::Item> = Vec::new();
+    let mut failed_attempts = Vec::new();
     while let Some((url, depth)) = queue.pop_front() {
         if outcome.pages >= bounds.max_pages_per_service || visited.contains(&url) {
             continue;
@@ -395,11 +381,8 @@ pub fn walk_source<T: SourceTransport, E: CaptureExtractor>(
         let capture = match client.fetch(&url) {
             Ok(capture) => capture,
             Err(error) => {
-                // Only the service's *declared* entry endpoint speaks for the
-                // service. wikiHow answers `action=parse` and 500s on
-                // `list=search`; letting the fallback's failure mark the whole
-                // service unreachable would blank its working endpoint for the
-                // seven-day accessibility TTL.
+                // Only the declared endpoint speaks for service accessibility;
+                // a fallback failure must not suppress its working endpoint.
                 observe_failure(
                     record,
                     &url,
@@ -409,10 +392,22 @@ pub fn walk_source<T: SourceTransport, E: CaptureExtractor>(
                     outcome,
                     url == entry_url,
                 );
+                if url == entry_url
+                    && !error.speaks_for_the_service()
+                    && let Some(fallback) = extractor.fallback_entry_url(record)
+                    && !visited.contains(&fallback)
+                {
+                    failed_attempts.push(outcome.detail.clone());
+                    queue.push_front((fallback, depth));
+                    continue;
+                }
                 break;
             }
         };
         outcome.pages += 1;
+        if !failed_attempts.is_empty() {
+            outcome.detail = trace_record::line("fallback_capture", &[("url", url.clone())]);
+        }
         availability.observe(
             endpoint_key(record, &url),
             ServiceStatus::Reachable,
@@ -437,9 +432,17 @@ pub fn walk_source<T: SourceTransport, E: CaptureExtractor>(
             }
         }
     }
+    if !failed_attempts.is_empty() {
+        outcome.detail = trace_record::line(
+            "source_attempts",
+            &[
+                ("failed-attempts", failed_attempts.join("\n")),
+                ("result", outcome.detail.clone()),
+            ],
+        );
+    }
     items
 }
-
 /// Walk every source that the need kind and settings allow.
 ///
 /// The result carries everything the extractor recognized and an outcome row
@@ -506,7 +509,6 @@ pub fn walk_sources<T: SourceTransport, E: CaptureExtractor>(
     }
     walked
 }
-
 /// The accessibility key of one source *endpoint*: the source id and the host
 /// that answered for it.
 ///
@@ -528,7 +530,6 @@ pub fn endpoint_key(record: &SourceRecord, url: &str) -> String {
         format!("{}@{host}", record.id)
     }
 }
-
 /// Classify one fetch failure without letting a fallback endpoint's failure
 /// speak for the whole service.
 pub fn observe_failure(
@@ -566,7 +567,6 @@ pub fn observe_failure(
     outcome.status = String::from(status);
     outcome.detail = trace_record::line(&error.to_string(), &[("url", url.to_owned())]);
 }
-
 /// The registry sources of the `external_trusted` group, in registry order.
 ///
 /// Kept here so a caller that wants the group rather than a need kind does not
