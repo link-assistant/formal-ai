@@ -105,6 +105,7 @@ pub fn observed_callable_request(task: &str) -> Option<ObservedCallableRequest> 
 fn finish(
     request: &ObservedCallableRequest,
     observations: &[Value],
+    messages: &[ChatMessage],
     reason: &str,
     disposition: ObservedCallableDisposition,
     detail: &Value,
@@ -114,7 +115,7 @@ fn finish(
         "observations":observations,"detail":detail,
         "missingContracts":request.inputs.iter().map(|path| json!({"path":path,
             "required":["inputs","result","effects","imports","optional-guard"]})).collect::<Vec<_>>(),
-        "authored":false,"verified":false});
+        "goalLedger":observed_callable_goal_ledger(request,messages),"authored":false,"verified":false});
     let root = crate::seed::parser::parse_lino(include_str!(
         "../../../embedded/data/meta/agentic-messages.lino"
     ));
@@ -160,6 +161,7 @@ pub fn plan_observed_callable_outcome(
                     finish(
                         request,
                         &observations,
+                        messages,
                         "MissingReadTool",
                         ObservedCallableDisposition::Gap,
                         &json!({"path":path,"role":role}),
@@ -187,6 +189,7 @@ pub fn plan_observed_callable_outcome(
             return finish(
                 request,
                 &observations,
+                messages,
                 "ReadFailed",
                 ObservedCallableDisposition::Failure,
                 &json!({"path":path,"role":role,"error":error}),
@@ -209,9 +212,10 @@ pub fn plan_observed_callable_outcome(
     finish(
         request,
         &observations,
+        messages,
         "MissingContract",
         ObservedCallableDisposition::Gap,
-        &json!({"graphs":super::callable_catalog::observed_callable_graphs(&sources),"goal":"unbound"}),
+        &json!({"graphs":super::callable_catalog::observed_callable_graphs(&sources),"conditionalGraphs":super::callable_catalog::observed_conditional_graphs(&sources),"goal":"unbound"}),
     )
 }
 
@@ -236,4 +240,47 @@ pub(super) fn plan_observed_callable_step(
         "observed-callable-discovery",
         result,
     )
+}
+
+/// Mirrors observedCallableGoalLedger; every independent clause retains exact source identity.
+#[must_use]
+pub(super) fn observed_callable_goal_ledger(
+    request: &ObservedCallableRequest,
+    messages: &[ChatMessage],
+) -> Value {
+    let Some(message) = messages.iter().rev().find(|message| message.role == "user") else {
+        return Value::Null;
+    };
+    let source = message.content.user_request_text();
+    let clauses = crate::obligation_ledger::clauses_with_spans(&source)
+        .into_iter()
+        .map(|(clause, (start, end))| {
+            let mut evidence = super::source_contract::source_evidence(&source, start, end);
+            evidence["returnAction"] = json!(
+                crate::seed::lexicon()
+                    .mentions_role("coding_return_action", &clause.to_lowercase())
+            );
+            evidence["status"] = json!("unbound");
+            evidence
+        })
+        .collect::<Vec<_>>();
+    let mut needs =
+        vec![json!({"kind":"read-destination","path":request.destination,"status":"unattempted"})];
+    needs.extend(
+        request
+            .inputs
+            .iter()
+            .map(|path| json!({"kind":"read-source","path":path,"status":"unattempted"})),
+    );
+    needs.extend([
+        json!({"kind":"goal-binding","status":"unbound"}),
+        json!({"kind":"source-effects","status":"unbound"}),
+        json!({"kind":"import-initialization","status":"unbound"}),
+    ]);
+    if let Some(command) = &request.command {
+        needs
+            .push(json!({"kind":"declared-verification","command":command,"status":"unattempted"}));
+    }
+    json!({"sourceIdentity":crate::source_fetch::sha256_hex(source.as_bytes()),"bytes":source.len(),"sourceBinding":"unverified","semantics":"unbound",
+ "declaration":{"name":request.name,"parameters":request.parameters,"destination":request.destination},"clauses":clauses,"needs":needs,"authored":false,"verified":false})
 }

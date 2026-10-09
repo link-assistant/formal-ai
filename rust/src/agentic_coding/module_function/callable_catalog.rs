@@ -1,4 +1,5 @@
 //! Complete token-tree declaration observations and conservative contract graphs.
+use super::conditional_schema::derive_conditional_schema_graph;
 use super::source_contract::{guarded_call_graph, infer_return_contract, source_evidence, text};
 use crate::es_tokenizer::{Delimiter, TemplatePart, TokenKind, Tree};
 use serde_json::{Value, json};
@@ -475,6 +476,71 @@ pub fn observed_callable_graphs(observations: &[Value]) -> Vec<Value> {
         for second in &bindings {
             let graph = observed_guarded_graph(observations, first, second);
             if graph["kind"] == "guarded-call-graph" {
+                graphs.push(graph);
+            }
+        }
+    }
+    graphs
+}
+
+/// Mirrors observedConditionalGraphs; unknown module/init effects never become purity.
+#[must_use]
+pub fn observed_conditional_graphs(observations: &[Value]) -> Vec<Value> {
+    let mut entries = Vec::new();
+    for observation in observations {
+        let catalog = observe_source_callables(
+            observation["content"].as_str().unwrap_or(""),
+            observation["path"].as_str().unwrap_or(""),
+        );
+        if catalog["gaps"]
+            .as_array()
+            .expect("catalog gaps")
+            .iter()
+            .any(|gap| {
+                matches!(
+                    gap["reason"].as_str(),
+                    Some(
+                        "LexicalFailure"
+                            | "DuplicateBinding"
+                            | "DuplicateExport"
+                            | "ExportDeclarationUnobserved"
+                    )
+                )
+            })
+        {
+            continue;
+        }
+        for exported in catalog["exports"].as_array().expect("exports") {
+            let Some(declaration) = catalog["declarations"]
+                .as_array()
+                .expect("declarations")
+                .iter()
+                .find(|entry| entry["name"] == exported["local"])
+            else {
+                continue;
+            };
+            if declaration["contract"]["conditionalIR"]["status"] != "parsed" {
+                continue;
+            }
+            let mut entry = declaration.clone();
+            entry["moduleEffects"] = catalog["moduleEffects"].clone();
+            entry["moduleSyntax"] = catalog["moduleSyntax"].clone();
+            entry["binding"] = json!({"path":catalog["path"],"exported":exported["exposed"]});
+            entries.push(entry);
+        }
+    }
+    let mut graphs = Vec::new();
+    for first in &entries {
+        for second in &entries {
+            if first["identity"]["declarationContentId"]
+                == second["identity"]["declarationContentId"]
+                && first["identity"]["path"] == second["identity"]["path"]
+            {
+                continue;
+            }
+            let mut graph = derive_conditional_schema_graph(first, second);
+            if graph["kind"] == "conditional-schema-graph" {
+                graph["moduleSyntax"] = json!([first["moduleSyntax"], second["moduleSyntax"]]);
                 graphs.push(graph);
             }
         }

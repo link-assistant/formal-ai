@@ -1,4 +1,5 @@
 //! Supported return expressions establish symbolic constraints; unknown stays unknown.
+use super::conditional_ir::parse_conditional_body;
 use serde_json::{Value, json};
 
 pub(super) fn text(tree: &Value) -> &str {
@@ -251,7 +252,8 @@ fn structural_requirements(parameters: &[String], body: &[Value], source: &str) 
 pub(super) fn infer_return_contract(parameters: &[String], body: &[Value], source: &str) -> Value {
     let mut contract = json!({"inputs":parameters.iter().map(|name| json!({"name":name,"type":{"kind":"parameter","name":name}})).collect::<Vec<_>>(),
         "result":null,"callEffects":"unknown","preconditions":[],"status":"unknown","gap":null,
-        "structuralRequirements":structural_requirements(parameters,body,source)});
+        "structuralRequirements":structural_requirements(parameters,body,source),
+        "conditionalIR":parse_conditional_body(parameters,body,source)});
     let checked = (|| -> Result<Value, &'static str> {
         let unique: std::collections::BTreeSet<_> = parameters.iter().collect();
         if unique.len() != parameters.len() {

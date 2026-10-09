@@ -25,6 +25,8 @@
 //! language's IR lowering (`coding/ir_lowering`).
 
 pub mod callable_catalog;
+mod conditional_ir;
+mod conditional_schema;
 mod discovery;
 mod source_contract;
 
