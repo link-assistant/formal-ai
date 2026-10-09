@@ -90,12 +90,18 @@ on: # zizmor: ignore[dangerous-triggers]
       - '.github/workflows/desktop-release.yml'
       - 'scripts/desktop-release-resolve.sh'
       - 'scripts/install-node-dependencies.sh'
+      - 'scripts/native-release-*.mjs'
       # The build job runs `cargo build --manifest-path rust/Cargo.toml --release --bin formal-ai` and bundles
       # the result, so a Rust-only change can break desktop packaging while
       # touching none of the paths above. Without these entries that breakage is
       # a false negative on the pull request and only surfaces post-merge --
       # precisely the failure mode issue #808 was filed for.
       - 'rust/src/**'
+      - 'rust/embedded/**'
+      - 'rust/build.rs'
+      - 'data/seed/api-cache/**'
+      - '.cargo/**'
+      - 'rust/.cargo/**'
       - 'rust/Cargo.toml'
       - 'rust/Cargo.lock'
 
@@ -103,9 +109,11 @@ permissions:
   contents: read
 
 env:
-  GIT_CONFIG_COUNT: '1'
+  GIT_CONFIG_COUNT: '2'
   GIT_CONFIG_KEY_0: init.defaultBranch
   GIT_CONFIG_VALUE_0: main
+  GIT_CONFIG_KEY_1: core.autocrlf
+  GIT_CONFIG_VALUE_1: "false"
   CARGO_NET_RETRY: '10'
   CARGO_HTTP_MULTIPLEXING: 'false'
   RUSTFLAGS: -Dwarnings
@@ -181,9 +189,201 @@ jobs:
     permissions:
       contents: read
 
+  # Compile one exact selected source; package its verified target bytes twice where applicable.
+  native-source:
+    name: Select exact native release source
+    needs: [resolve, base]
+    if: ${{ !cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      commit: ${{ steps.seal.outputs.commit }}
+      tree: ${{ steps.seal.outputs.tree }}
+      selected-head: ${{ steps.seal.outputs.selected-head }}
+      toolchain: ${{ steps.seal.outputs.toolchain }}
+      compiler-commit: ${{ steps.seal.outputs.compiler-commit }}
+      selection-sha256: ${{ steps.seal.outputs.selection-sha256 }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out this workflow's pinned release protocol
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          ref: ${{ github.workflow_sha }}
+          fetch-depth: 1
+      - name: Capture release protocol before selecting binary source
+        env:
+          NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$NATIVE_PROTOCOL_COMMIT"
+          protocol_dir="$RUNNER_TEMP/formal-ai-native-release-protocol"
+          mkdir -p "$protocol_dir"
+          cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs "$protocol_dir/"
+          echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
+          node --input-type=module - "$protocol_dir" <<'NODE'
+          import {readFileSync,writeFileSync} from 'node:fs';
+          import {createHash} from 'node:crypto';
+          import {join} from 'node:path';
+          import {execFileSync} from 'node:child_process';
+          const directory=process.argv[2];
+          const files=['native-release-source.mjs','native-release-artifact.mjs'].map(name=>{
+            const bytes=readFileSync(join(directory,name));
+            return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};
+          });
+          const record={version:1,commit:process.env.NATIVE_PROTOCOL_COMMIT,
+            tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),files};
+          writeFileSync(join(directory,'protocol-selection.json'),JSON.stringify(record,null,2)+'\n');
+          NODE
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || needs.resolve.outputs.tag }}
+          fetch-depth: 0
+      - name: Record selected source prerequisite
+        run: echo "NATIVE_SELECTED_HEAD=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+      - name: Prepare one fresh merge with the pinned base
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          BASE_COMMIT: ${{ needs.base.outputs.commit }}
+        run: bash scripts/simulate-fresh-merge.sh
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Seal exact source and compiler contract
+        id: seal
+        env:
+          NATIVE_BASE_COMMIT: ${{ needs.base.outputs.commit }}
+          NATIVE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+          NATIVE_METADATA_FILE: ${{ runner.temp }}/native-package-metadata.json
+          NATIVE_COMPILER_FILE: ${{ runner.temp }}/native-compiler.txt
+        run: |
+          set -euo pipefail
+          cargo metadata --manifest-path rust/Cargo.toml --no-deps --locked --format-version 1 > "$NATIVE_METADATA_FILE"
+          rustc -vV > "$NATIVE_COMPILER_FILE"
+          mkdir native-source
+          node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" seal native-source
+      - uses: actions/upload-artifact@v7
+        with:
+          name: native-release-source
+          path: native-source/
+          if-no-files-found: error
+          retention-days: 7
+
+  native:
+    name: Produce native ${{ matrix.target }}
+    needs: [native-source]
+    if: ${{ !cancelled() && needs.native-source.result == 'success' }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, target: x86_64-unknown-linux-gnu, binext: "" }
+          - { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-gnu, binext: "" }
+          - { os: ubuntu-latest, target: x86_64-unknown-linux-musl, binext: "" }
+          - { os: ubuntu-24.04-arm, target: aarch64-unknown-linux-musl, binext: "" }
+          - { os: macos-15-intel, target: x86_64-apple-darwin, binext: "" }
+          - { os: macos-14, target: aarch64-apple-darwin, binext: "" }
+          - { os: windows-latest, target: x86_64-pc-windows-msvc, binext: ".exe" }
+          - { os: windows-11-arm, target: aarch64-pc-windows-msvc, binext: ".exe" }
+    defaults:
+      run:
+        shell: bash
+    env:
+      NATIVE_SELECTED_HEAD: ${{ needs.native-source.outputs.selected-head }}
+      NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
+    steps:
+      - name: Check out this workflow's pinned release protocol
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          ref: ${{ github.workflow_sha }}
+          fetch-depth: 1
+      - name: Capture release protocol before selecting binary source
+        env:
+          NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$NATIVE_PROTOCOL_COMMIT"
+          protocol_dir="$RUNNER_TEMP/formal-ai-native-release-protocol"
+          mkdir -p "$protocol_dir"
+          cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs "$protocol_dir/"
+          echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
+          node --input-type=module - "$protocol_dir" <<'NODE'
+          import {readFileSync,writeFileSync} from 'node:fs';
+          import {createHash} from 'node:crypto';
+          import {join} from 'node:path';
+          import {execFileSync} from 'node:child_process';
+          const directory=process.argv[2];
+          const files=['native-release-source.mjs','native-release-artifact.mjs'].map(name=>{
+            const bytes=readFileSync(join(directory,name));
+            return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};
+          });
+          const record={version:1,commit:process.env.NATIVE_PROTOCOL_COMMIT,
+            tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),files};
+          writeFileSync(join(directory,'protocol-selection.json'),JSON.stringify(record,null,2)+'\n');
+          NODE
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          ref: ${{ needs.native-source.outputs.selected-head }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          name: native-release-source
+          path: native-source
+      - name: Import and verify exact source selection
+        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ needs.native-source.outputs.toolchain }}
+          targets: ${{ matrix.target }}
+      - name: Set up the musl cross toolchain
+        if: contains(matrix.target, '-musl')
+        uses: taiki-e/setup-cross-toolchain-action@v1
+        with:
+          target: ${{ matrix.target }}
+      - name: Cache Rust compiler outputs
+        if: runner.os != 'Windows'
+        uses: mozilla-actions/sccache-action@v0.0.11
+        with:
+          version: v0.16.0
+      - name: Enable Rust compiler cache
+        if: runner.os != 'Windows'
+        run: |
+          echo "SCCACHE_GHA_ENABLED=true" >> "$GITHUB_ENV"
+          echo "RUSTC_WRAPPER=sccache" >> "$GITHUB_ENV"
+      - name: Build the pinned default-feature native executable
+        run: cargo build --manifest-path rust/Cargo.toml --target-dir target --release --bin formal-ai --locked --target ${{ matrix.target }}
+      - name: Record exact native executable receipt
+        run: |
+          set -euo pipefail
+          mkdir native-bin
+          cp "target/${{ matrix.target }}/release/formal-ai${{ matrix.binext }}" native-bin/
+          node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-artifact.mjs" write native-bin native-source "${{ matrix.target }}" "native-bin/formal-ai${{ matrix.binext }}"
+      - name: Verify executable bytes and actual startup
+        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-artifact.mjs" verify native-bin native-source "${{ matrix.target }}"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: native-release-${{ matrix.target }}
+          path: native-bin/
+          if-no-files-found: error
+          retention-days: 7
+
   build:
     name: Build ${{ matrix.label }}
-    needs: [resolve, base]
+    needs: [resolve, native-source, native]
     concurrency:
       group: desktop-release-${{ github.event.pull_request.number || needs.resolve.outputs.tag }}-${{ matrix.label }}
       queue: max
@@ -194,12 +394,12 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { os: ubuntu-latest,    ebflag: "--linux", label: "linux-x64",     binext: "",     capmin: 40 }
-          - { os: ubuntu-24.04-arm, ebflag: "--linux", label: "linux-arm64",   binext: "",     capmin: 40 }
-          - { os: macos-15-intel,   ebflag: "--mac",   label: "macos-x64",     binext: "",     capmin: 50 }
-          - { os: macos-14,         ebflag: "--mac",   label: "macos-arm64",   binext: "",     capmin: 40 }
-          - { os: windows-latest,   ebflag: "--win",   label: "windows-x64",   binext: ".exe", capmin: 50 }
-          - { os: windows-11-arm,   ebflag: "--win",   label: "windows-arm64", binext: ".exe", capmin: 50 }
+          - { os: ubuntu-latest,    ebflag: "--linux", label: "linux-x64", target: x86_64-unknown-linux-gnu, binext: "",     capmin: 40 }
+          - { os: ubuntu-24.04-arm, ebflag: "--linux", label: "linux-arm64", target: aarch64-unknown-linux-gnu, binext: "",     capmin: 40 }
+          - { os: macos-15-intel,   ebflag: "--mac",   label: "macos-x64", target: x86_64-apple-darwin, binext: "",     capmin: 50 }
+          - { os: macos-14,         ebflag: "--mac",   label: "macos-arm64", target: aarch64-apple-darwin, binext: "",     capmin: 40 }
+          - { os: windows-latest,   ebflag: "--win",   label: "windows-x64", target: x86_64-pc-windows-msvc, binext: ".exe", capmin: 50 }
+          - { os: windows-11-arm,   ebflag: "--win",   label: "windows-arm64", target: aarch64-pc-windows-msvc, binext: ".exe", capmin: 50 }
     runs-on: ${{ matrix.os }}
     # Windows ARM64 normally takes 25-28 minutes, and runs 30573608801
     # (attempts 1 and 2) were both cancelled at the former 30-minute cap while
@@ -245,67 +445,67 @@ jobs:
           deadline=$(( $(date +%s) + JOB_TIMEOUT_MINUTES * 60 - POST_PACKAGING_RESERVE_SECONDS ))
           echo "FORMAL_AI_JOB_DEADLINE_EPOCH=${deadline}" >> "$GITHUB_ENV"
 
+      - name: Check out this workflow's pinned release protocol
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          ref: ${{ github.workflow_sha }}
+          fetch-depth: 1
+      - name: Capture release protocol before selecting binary source
+        env:
+          NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$NATIVE_PROTOCOL_COMMIT"
+          protocol_dir="$RUNNER_TEMP/formal-ai-native-release-protocol"
+          mkdir -p "$protocol_dir"
+          cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs "$protocol_dir/"
+          echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
+          node --input-type=module - "$protocol_dir" <<'NODE'
+          import {readFileSync,writeFileSync} from 'node:fs';
+          import {createHash} from 'node:crypto';
+          import {join} from 'node:path';
+          import {execFileSync} from 'node:child_process';
+          const directory=process.argv[2];
+          const files=['native-release-source.mjs','native-release-artifact.mjs'].map(name=>{
+            const bytes=readFileSync(join(directory,name));
+            return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};
+          });
+          const record={version:1,commit:process.env.NATIVE_PROTOCOL_COMMIT,
+            tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),files};
+          writeFileSync(join(directory,'protocol-selection.json'),JSON.stringify(record,null,2)+'\n');
+          NODE
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
-          # On pull requests there is no resolved tag: build the PR head, which
-          # is the whole point of the dry run.
-          ref: ${{ github.event_name != 'pull_request' && needs.resolve.outputs.tag || '' }}
-          # Quoted '0'/'1': GitHub's `&&`/`||` treat the number 0 as falsy, so an
-          # unquoted 0 here would silently select the other branch.
-          # 0 is needed by simulate-fresh-merge.sh, which merges origin/<base>.
-          fetch-depth: ${{ github.event_name == 'pull_request' && '0' || '1' }}
-
-      # Issue #812: `release.yml` simulates the fresh merge in `lint` and `test`,
-      # but this workflow -- the only one that packages the desktop app -- did
-      # not, so the packaging dry run validated the PR head against a merge
-      # preview that predates any commit pushed to the base branch since the last
-      # sync. A packaging break introduced by a concurrent main commit stayed
-      # invisible until after the merge, which is how desktop breakages have
-      # reached tags before.
-      - name: Simulate fresh merge with base branch (PR only)
-        if: github.event_name == 'pull_request'
-        env:
-          BASE_REF: ${{ github.base_ref }}
-          # Issue #1017: the commit resolved once by `base`, so all six
-          # packaging legs merge the same one however far apart they start.
-          BASE_COMMIT: ${{ needs.base.outputs.commit }}
-        run: bash scripts/simulate-fresh-merge.sh
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Cache Rust compiler outputs
-        # Cargo can use a response file for web-sys's generated feature-check
-        # arguments on Windows, but sccache respawns rustc with the expanded
-        # command and hits CreateProcess's command-line limit (os error 206).
-        if: runner.os != 'Windows'
-        uses: mozilla-actions/sccache-action@v0.0.11
-        with:
-          # v0.17.0 expands Rust response files before spawning rustc and
-          # exceeds the Windows command-line limit for web-sys.
-          version: v0.16.0
-
-      - name: Enable Rust compiler cache
-        if: runner.os != 'Windows'
-        run: |
-          echo "SCCACHE_GHA_ENABLED=true" >> "$GITHUB_ENV"
-          echo "RUSTC_WRAPPER=sccache" >> "$GITHUB_ENV"
-
-      # Keep Cargo's dependency cache out of this matrix. A cold Windows build
-      # completes inside the job budget, while actions/cache registers a
-      # post-job archive of Cargo home: on run 30398883119 all product work and
-      # uploads passed, then compressing 194 MB consumed the remaining 3m40 and
-      # GitHub cancelled the otherwise-successful job. Unix runners retain
-      # expensive compiler outputs through sccache without that post-packaging
-      # failure mode; Windows uses Cargo's direct rustc response-file path.
-      - name: Build formal-ai binary (release)
-        run: cargo build --manifest-path rust/Cargo.toml --release --bin formal-ai
-
-      - name: Setup Node
-        uses: actions/setup-node@v7
+          ref: ${{ needs.native-source.outputs.selected-head }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
+      - name: Download the exact selected source
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          name: native-release-source
+          path: native-source
+      - name: Import and verify exact source selection
+        env:
+          NATIVE_SELECTED_HEAD: ${{ needs.native-source.outputs.selected-head }}
+          NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
+        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source
+      - name: Download the same-run target executable
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          name: native-release-${{ matrix.target }}
+          path: native-bin
+      - name: Verify native receipt, bytes and startup before packaging
+        env:
+          NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
+        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-artifact.mjs" verify native-bin native-source "${{ matrix.target }}"
 
       - name: Install desktop dependencies
         run: scripts/install-node-dependencies.sh desktop
@@ -320,7 +520,7 @@ jobs:
         working-directory: desktop
         env:
           FORMAL_AI_DESKTOP_REQUIRE_BINARY: "true"
-          FORMAL_AI_DESKTOP_BINARY: ${{ github.workspace }}/rust/target/release/formal-ai${{ runner.os == 'Windows' && '.exe' || '' }}
+          FORMAL_AI_DESKTOP_BINARY: ${{ env.FORMAL_AI_VERIFIED_NATIVE_BINARY }}
         run: node scripts/prepare-resources.mjs
 
       # Issue #1017: electron-builder fetches its 7-Zip toolset -- and, on
@@ -681,7 +881,7 @@ jobs:
   # string embedded everywhere else.
   cli:
     name: Build CLI ${{ matrix.label }}
-    needs: [resolve, base]
+    needs: [resolve, native-source, native]
     concurrency:
       group: desktop-release-${{ github.event.pull_request.number || needs.resolve.outputs.tag }}-cli-${{ matrix.label }}
       queue: max
@@ -710,57 +910,67 @@ jobs:
       run:
         shell: bash
     steps:
+      - name: Check out this workflow's pinned release protocol
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          ref: ${{ github.workflow_sha }}
+          fetch-depth: 1
+      - name: Capture release protocol before selecting binary source
+        env:
+          NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$NATIVE_PROTOCOL_COMMIT"
+          protocol_dir="$RUNNER_TEMP/formal-ai-native-release-protocol"
+          mkdir -p "$protocol_dir"
+          cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs "$protocol_dir/"
+          echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
+          node --input-type=module - "$protocol_dir" <<'NODE'
+          import {readFileSync,writeFileSync} from 'node:fs';
+          import {createHash} from 'node:crypto';
+          import {join} from 'node:path';
+          import {execFileSync} from 'node:child_process';
+          const directory=process.argv[2];
+          const files=['native-release-source.mjs','native-release-artifact.mjs'].map(name=>{
+            const bytes=readFileSync(join(directory,name));
+            return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};
+          });
+          const record={version:1,commit:process.env.NATIVE_PROTOCOL_COMMIT,
+            tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),files};
+          writeFileSync(join(directory,'protocol-selection.json'),JSON.stringify(record,null,2)+'\n');
+          NODE
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
-          # Same ref/fetch-depth reasoning as `build`: PRs build the merge
-          # preview below, releases build the resolved tag.
-          ref: ${{ github.event_name != 'pull_request' && needs.resolve.outputs.tag || '' }}
-          fetch-depth: ${{ github.event_name == 'pull_request' && '0' || '1' }}
-
-      # Same reason as `build`: package the merge result, not a stale preview
-      # (issue #812), and merge the same pinned commit as every other leg
-      # (issue #1017).
-      - name: Simulate fresh merge with base branch (PR only)
-        if: github.event_name == 'pull_request'
+          ref: ${{ needs.native-source.outputs.selected-head }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+      - name: Download the exact selected source
+        uses: actions/download-artifact@v8
         env:
-          BASE_REF: ${{ github.base_ref }}
-          BASE_COMMIT: ${{ needs.base.outputs.commit }}
-        run: bash scripts/simulate-fresh-merge.sh
-
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
-          targets: ${{ matrix.target }}
-
-      # The two Linux legs cross-compile to musl for a static binary with no
-      # glibc dependency. The crate's dependency graph compiles C code
-      # (tree-sitter grammars through meta-language, aws-lc-sys through
-      # webrtc's rustls), so a bare `rustup target add` is not enough: this
-      # action installs the musl GCC and sets CC/CFLAGS/CMAKE_TOOLCHAIN_FILE
-      # for the target. Native legs (macOS both arches, Windows x64) need
-      # nothing beyond the toolchain above.
-      - name: Set up the musl cross toolchain
-        if: runner.os == 'Linux'
-        uses: taiki-e/setup-cross-toolchain-action@v1
+          name: native-release-source
+          path: native-source
+      - name: Import and verify exact source selection
+        env:
+          NATIVE_SELECTED_HEAD: ${{ needs.native-source.outputs.selected-head }}
+          NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
+        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source
+      - name: Download the same-run target executable
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
-          target: ${{ matrix.target }}
-
-      - name: Cache Rust compiler outputs
-        if: runner.os != 'Windows'
-        uses: mozilla-actions/sccache-action@v0.0.11
-        with:
-          # Same response-file constraint as `build` (os error 206 on Windows).
-          version: v0.16.0
-
-      - name: Enable Rust compiler cache
-        if: runner.os != 'Windows'
-        run: |
-          echo "SCCACHE_GHA_ENABLED=true" >> "$GITHUB_ENV"
-          echo "RUSTC_WRAPPER=sccache" >> "$GITHUB_ENV"
-
-      - name: Build formal-ai CLI binary (release, pinned lock)
-        run: cargo build --manifest-path rust/Cargo.toml --target-dir target --release --bin formal-ai --locked --target ${{ matrix.target }}
+          name: native-release-${{ matrix.target }}
+          path: native-bin
+      - name: Verify native receipt, bytes and startup before packaging
+        env:
+          NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
+        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-artifact.mjs" verify native-bin native-source "${{ matrix.target }}"
 
       - name: Package the CLI archive
         run: |
@@ -768,7 +978,7 @@ jobs:
           triple="${{ matrix.target }}"
           staging="formal-ai-cli-${triple}"
           mkdir "$staging"
-          cp "target/${triple}/release/formal-ai${{ matrix.binext }}" "$staging/"
+          cp "$FORMAL_AI_VERIFIED_NATIVE_BINARY" "$staging/"
           cp LICENSE README.md "$staging/"
           case "${{ matrix.archive }}" in
             tar.gz) tar -czf "${staging}.tar.gz" "$staging" ;;
@@ -788,6 +998,8 @@ jobs:
       # compiles but cannot start (bad linker flags, a broken manifest, a
       # packaging mistake) fails here instead of in a user's shell.
       - name: Smoke test CLI archive
+        env:
+          NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
         run: |
           set -euo pipefail
           triple="${{ matrix.target }}"
@@ -803,6 +1015,7 @@ jobs:
           binary="${checkdir}/formal-ai-cli-${triple}/formal-ai${{ matrix.binext }}"
           [ -s "$binary" ] || { echo "::error::the archive did not contain the binary"; exit 1; }
           "$binary" --version
+          node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-artifact.mjs" verify-extracted native-bin native-source "${{ matrix.target }}" "$binary"
           [ -s "${checkdir}/formal-ai-cli-${triple}/LICENSE" ] || { echo "::error::the archive did not contain LICENSE"; exit 1; }
           [ -s "${checkdir}/formal-ai-cli-${triple}/README.md" ] || { echo "::error::the archive did not contain README.md"; exit 1; }
 
@@ -846,7 +1059,7 @@ jobs:
 
   vscode:
     name: Package VS Code extension (.vsix)
-    needs: [resolve, base]
+    needs: [resolve, native-source]
     concurrency:
       group: desktop-release-${{ github.event.pull_request.number || needs.resolve.outputs.tag }}-vscode
       queue: max
@@ -862,30 +1075,56 @@ jobs:
       run:
         shell: bash
     steps:
+      - name: Check out this workflow's pinned release protocol
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          ref: ${{ github.workflow_sha }}
+          fetch-depth: 1
+      - name: Capture release protocol before selecting binary source
+        env:
+          NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$NATIVE_PROTOCOL_COMMIT"
+          protocol_dir="$RUNNER_TEMP/formal-ai-native-release-protocol"
+          mkdir -p "$protocol_dir"
+          cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs "$protocol_dir/"
+          echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
+          node --input-type=module - "$protocol_dir" <<'NODE'
+          import {readFileSync,writeFileSync} from 'node:fs';
+          import {createHash} from 'node:crypto';
+          import {join} from 'node:path';
+          import {execFileSync} from 'node:child_process';
+          const directory=process.argv[2];
+          const files=['native-release-source.mjs','native-release-artifact.mjs'].map(name=>{
+            const bytes=readFileSync(join(directory,name));
+            return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};
+          });
+          const record={version:1,commit:process.env.NATIVE_PROTOCOL_COMMIT,
+            tree:execFileSync('git',['rev-parse','HEAD^{tree}'],{encoding:'utf8'}).trim(),files};
+          writeFileSync(join(directory,'protocol-selection.json'),JSON.stringify(record,null,2)+'\n');
+          NODE
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
-          # On pull requests there is no resolved tag: build the PR head, which
-          # is the whole point of the dry run.
-          ref: ${{ github.event_name != 'pull_request' && needs.resolve.outputs.tag || '' }}
-          # See the note in `build`: quoted so the number 0 is not read as falsy.
-          fetch-depth: ${{ github.event_name == 'pull_request' && '0' || '1' }}
-
-      # Same reason as `build`: package the merge result, not a stale preview.
-      - name: Simulate fresh merge with base branch (PR only)
-        if: github.event_name == 'pull_request'
-        env:
-          BASE_REF: ${{ github.base_ref }}
-          # Issue #1017: same pinned commit the packaging legs merge, so the
-          # .vsix and the installers cannot come from different source trees.
-          BASE_COMMIT: ${{ needs.base.outputs.commit }}
-        run: bash scripts/simulate-fresh-merge.sh
-
-      - name: Setup Node
-        uses: actions/setup-node@v7
+          ref: ${{ needs.native-source.outputs.selected-head }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
-
+      - name: Download the exact selected source
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          name: native-release-source
+          path: native-source
+      - name: Import and verify exact source selection
+        env:
+          NATIVE_SELECTED_HEAD: ${{ needs.native-source.outputs.selected-head }}
+          NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
+        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source
       # Install the committed extension lock through the warning classifier so
       # this package job exercises the exact production and build-tool graph.
       - name: Install extension dependencies
@@ -959,7 +1198,7 @@ jobs:
 
   finalize:
     name: Publish SHA256SUMS.txt + provenance
-    needs: [resolve, build, cli, vscode]
+    needs: [resolve, native-source, build, cli, vscode]
     concurrency:
       group: formal-ai-repository-writes
       queue: max
@@ -997,6 +1236,11 @@ jobs:
           REPO: ${{ github.repository }}
           TAG: ${{ needs.resolve.outputs.tag }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          NATIVE_SOURCE_COMMIT: ${{ needs.native-source.outputs.commit }}
+          NATIVE_SOURCE_TREE: ${{ needs.native-source.outputs.tree }}
+          NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
+          NATIVE_COMPILER_RELEASE: ${{ needs.native-source.outputs.toolchain }}
+          NATIVE_COMPILER_COMMIT: ${{ needs.native-source.outputs.compiler-commit }}
         run: |
           set -euo pipefail
           shopt -s nullglob
@@ -1044,6 +1288,10 @@ jobs:
             echo "Repository : $REPO"
             echo "Release tag: $TAG"
             echo "Commitish  : $commit"
+            echo "Source SHA : $NATIVE_SOURCE_COMMIT"
+            echo "Source tree: $NATIVE_SOURCE_TREE"
+            echo "Source receipt SHA256: $NATIVE_SELECTION_SHA256"
+            echo "Rust compiler: $NATIVE_COMPILER_RELEASE ($NATIVE_COMPILER_COMMIT)"
             echo "Workflow   : Desktop Release"
             echo "Run        : $RUN_URL"
             printf 'Builders   : %s\n' "${built[0]}"
