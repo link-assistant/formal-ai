@@ -297,11 +297,12 @@ fn typed_failed_readback_cannot_certify_correct_physical_source_write() {
 #[test]
 fn structured_source_insertion_accepts_actual_exact_receipt() {
     let source = "const ITEMS: &[&str] = &[\"a\", \"b\"];\n";
-    let outcome = run_with_sources(
+    let outcome = run_with_receipts(
         "In f.rs add «c» to the list ITEMS alongside «a» and «b».",
         &["read", "write", "bash"],
         &[("f.rs", source)],
         json_source_receipt,
+        true,
     );
     let expected = "const ITEMS: &[&str] = &[\"a\", \"b\", \"c\"];\n";
     assert_eq!(
@@ -310,7 +311,10 @@ fn structured_source_insertion_accepts_actual_exact_receipt() {
     );
     assert_eq!(
         outcome.receipts,
-        vec![("cat f.rs".to_owned(), expected.to_owned())]
+        vec![(
+            "sha256sum -- f.rs".to_owned(),
+            format!("{}  f.rs\n", formal_ai::sha256_hex(expected.as_bytes()))
+        )]
     );
     assert!(
         !outcome

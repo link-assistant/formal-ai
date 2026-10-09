@@ -7,6 +7,9 @@ use formal_ai::recursive_execution::{
 };
 use formal_ai::task_decomposition::SplittingExecutor;
 
+#[path = "issue_1066_ladder_capability/tool_workspace.rs"]
+mod observed_tool_workspace;
+
 const ISSUE_URL: &str = "https://github.com/link-assistant/formal-ai/issues/1069";
 
 #[test]
@@ -53,6 +56,7 @@ fn solve_issue_request_reads_the_work_item_before_project_lookup() {
 fn fetched_issue_prose_does_not_pair_content_with_a_later_filename() {
     let task = format!("Solve {ISSUE_URL} in this checkout as one whole task.");
     let tools = ["web_fetch", "write_file", "run_command"];
+    let mut workspace = observed_tool_workspace::ToolWorkspace::new(&task);
     let mut messages = vec![ChatMessage::user(task)];
 
     let Some(AgenticPlan::ToolCalls(fetches)) = plan_chat_step(&messages, &tools) else {
@@ -82,24 +86,46 @@ fn fetched_issue_prose_does_not_pair_content_with_a_later_filename() {
         "the first write must remain the auxiliary plan record: {}",
         record.arguments,
     );
-    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
-        "record-plan",
-        &record.tool,
-        record.arguments.clone(),
-    )]));
-    messages.push(ChatMessage::tool_result(
-        "record-plan",
-        &record.tool,
-        "wrote the plan",
-    ));
-
+    let mut pending = records;
+    let mut final_answer = None;
+    for turn in 0..4 {
+        for (index, call) in pending.iter().enumerate() {
+            let arguments: serde_json::Value = serde_json::from_str(&call.arguments).unwrap();
+            let command = arguments["command"].as_str().expect("auxiliary command");
+            assert_eq!(call.tool, "run_command");
+            assert!(
+                command.starts_with("mkdir -p -- .formal-ai && (lock=")
+                    || command == "cat .formal-ai/general-change-plan.lino"
+            );
+            assert!(command.contains(".formal-ai/general-change-plan.lino"));
+            let id = format!("actual-plan-{turn}-{index}");
+            messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+                &id,
+                &call.tool,
+                call.arguments.clone(),
+            )]));
+            messages.push(workspace.execute(&id, call));
+        }
+        match plan_chat_step(&messages, &tools) {
+            Some(AgenticPlan::ToolCalls(calls)) => pending = calls,
+            Some(AgenticPlan::Final(answer)) => {
+                final_answer = Some(answer);
+                break;
+            }
+            None => panic!("the actual auxiliary observation must retain a bounded outcome"),
+        }
+    }
     assert!(
-        matches!(
-            plan_chat_step(&messages, &tools),
-            Some(AgenticPlan::Final(answer)) if answer.contains("Planned, not executed")
-        ),
+        final_answer.is_some_and(|answer| answer.contains("Planned, not executed")),
         "a content marker and filename in different statements must not form a literal write",
     );
+    assert!(
+        workspace
+            .read(".formal-ai/general-change-plan.lino")
+            .unwrap()
+            .contains(ISSUE_URL)
+    );
+    assert!(workspace.read("check-self-development-release.rs").is_err());
 }
 
 #[test]

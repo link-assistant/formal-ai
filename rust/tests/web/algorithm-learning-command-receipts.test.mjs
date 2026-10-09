@@ -4,6 +4,7 @@ import { before, test } from 'node:test';
 import { readFileSync } from 'node:fs';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
+import { planChatStepResolved } from '../../../js/agentic/planner.mjs';
 import { compileTask, planStep, expectedConformance } from '../../../js/agentic/algorithm_learning.mjs';
 import { candidateLinksNotation } from '../../../js/agentic/crate/algorithm_discovery.mjs';
 import { planWorkspaceChangeStep } from '../../../js/agentic/workspace_change.mjs';
@@ -125,4 +126,23 @@ test('pretty-printed JSON source stays byte exact and structured stdout cannot c
   assert.equal(source, expected); assert.deepEqual(commands, ['sha256sum -- f.json']);
   assert.equal(finalResult(result).disposition, 'failure'); assert.ok(result.answer.startsWith('Verification failed'));
   assert.equal(observedBytesMatch(JSON.stringify({ stdout: { a: 1 }, exit_code: 0 }), expected), false);
+});
+
+test('original structured source insertion retains exact bytes and independently observed fresh digest', async () => {
+  const request = 'In f.rs add «c» to the list ITEMS alongside «a» and «b».', messages = [{ role: 'user', content: request }];
+  let source = 'const ITEMS: &[&str] = &["a", "b"];\n', result; const commands = [];
+  const expected = 'const ITEMS: &[&str] = &["a", "b", "c"];\n';
+  for (let turn = 0; turn < 6; turn += 1) {
+    const plan = await planChatStepResolved(messages, ['read', 'write', 'bash']);
+    if (plan === null) throw new Error('use the full planner for structural list edits');
+    if (plan.kind === 'final') { result = plan; break; }
+    for (const call of plan.calls) {
+      const args = JSON.parse(call.arguments); let raw = '';
+      if (call.tool === 'read') raw = source;
+      else if (call.tool === 'write') source = args.content;
+      else { commands.push(args.command); assert.equal(args.command, 'sha256sum -- f.rs'); raw = receipt(args.command, sha256Hex(source) + '  f.rs\n'); }
+      append(messages, call, raw);
+    }
+  }
+  assert.equal(source, expected); assert.deepEqual(commands, ['sha256sum -- f.rs']); assert.equal(finalResult(result).disposition, 'finding');
 });
