@@ -103,10 +103,16 @@ pub fn before_target(prompt: &str, tools: &[&str]) -> (Vec<ChatMessage>, Planned
             }
             return (messages, call);
         }
+        let mut read_succeeded = false;
+        let mut read_failed = false;
         let result = match call.tool.as_str() {
             "read" | "read_file" => match fs::read_to_string(&path) {
-                Ok(bytes) => bytes,
+                Ok(bytes) => {
+                    read_succeeded = true;
+                    bytes
+                }
                 Err(error) if error.kind() == std::io::ErrorKind::NotFound => {
+                    read_failed = true;
                     serde_json::json!({"is_error":true,"error":format!("File not found: {PLAN_PATH}")}).to_string()
                 }
                 Err(error) => panic!("event read failed: {error}"),
@@ -118,9 +124,17 @@ pub fn before_target(prompt: &str, tools: &[&str]) -> (Vec<ChatMessage>, Planned
                     Err(error) => panic!("prior event read failed: {error}"),
                 };
                 let plan = compose_general_change_plan(prompt).expect("request-derived event");
-                let separator = if !prior.is_empty() && !prior.ends_with('\n') { "\n" } else { "" };
+                let separator = if !prior.is_empty() && !prior.ends_with('\n') {
+                    "\n"
+                } else {
+                    ""
+                };
                 let expected = format!("{prior}{separator}{}", plan.links_notation());
-                assert_eq!(args["content"].as_str(), Some(expected.as_str()), "preserve exact event bytes");
+                assert_eq!(
+                    args["content"].as_str(),
+                    Some(expected.as_str()),
+                    "preserve exact event bytes"
+                );
                 fs::create_dir_all(path.parent().expect("event parent")).expect("event directory");
                 fs::write(&path, expected).expect("actual event write");
                 String::new()
@@ -128,6 +142,14 @@ pub fn before_target(prompt: &str, tools: &[&str]) -> (Vec<ChatMessage>, Planned
             other => panic!("unexpected auxiliary tool {other}: {args}"),
         };
         record(&mut messages, &call, &result);
+        let observed = messages.last_mut().expect("actual provider result");
+        if read_succeeded {
+            observed.source_read = Some(serde_json::json!({
+                "path": PLAN_PATH, "success": true, "complete": true, "format": "raw"
+            }));
+        } else if read_failed {
+            observed.is_error = true;
+        }
     }
     panic!("auxiliary setup exceeded its three-transition bound");
 }

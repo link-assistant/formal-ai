@@ -555,23 +555,21 @@ fn tool_description(name: &str) -> String {
     }
 }
 
-/// Render a command result the way an agentic CLI would surface it: stdout on
-/// success, an annotated error otherwise (so the agent can "understand errors").
+/// Preserve the command producer's observed status and exact captured channels.
+/// Both builtin commands and child processes return fully collected strings;
+/// timed-out output remains incomplete and cannot certify a successful effect.
 fn format_command_result(result: &AgentCommandResult) -> String {
-    if result.timed_out {
-        return format!("command timed out: {}", result.command);
-    }
-    match result.status_code {
-        Some(0) => result.stdout.clone(),
-        Some(code) => format!(
-            "command exited with status {code}\nstdout:\n{}\nstderr:\n{}",
-            result.stdout, result.stderr
-        ),
-        None => format!(
-            "command terminated without an exit status\nstderr:\n{}",
-            result.stderr
-        ),
-    }
+    json!({
+        "schema": "command-execution-receipt/v1",
+        "command": result.command,
+        "exit_code": result.status_code,
+        "stdout": result.stdout,
+        "stderr": result.stderr,
+        "timed_out": result.timed_out,
+        "complete": !result.timed_out,
+        "truncated": false,
+    })
+    .to_string()
 }
 
 fn arg_str<'a>(arguments: &'a Value, key: &str) -> &'a str {

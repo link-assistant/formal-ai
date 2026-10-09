@@ -179,6 +179,9 @@ jobs:
       - name: Install pinned Agent CLI
         run: bun add -g @link-assistant/agent@0.26.0
 
+      - name: Preserve actual Bash execution observations
+        run: node scripts/agent-cli-bash-receipts.mjs "$(command -v agent)"
+
       - name: Run recursive Agent CLI tree
         id: tree
         env:
@@ -295,6 +298,9 @@ jobs:
       - name: Install pinned Agent CLI
         run: bun add -g @link-assistant/agent@0.26.0
 
+      - name: Preserve actual Bash execution observations
+        run: node scripts/agent-cli-bash-receipts.mjs "$(command -v agent)"
+
       - name: Download validated current-run leaves
         uses: actions/download-artifact@v8
         env:
@@ -303,7 +309,7 @@ jobs:
           name: issue-1028-agent-cli-current-leaves
           path: ${{ runner.temp }}/current-leaves
 
-      - name: Run recursive Agent CLI tree
+      - name: Run recursive Agent CLI composite tree
         id: tree
         env:
           AGENT: agent

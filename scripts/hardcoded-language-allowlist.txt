@@ -35,9 +35,6 @@ rust/src/agentic_coding/driver.rs	Fetch the text at a URL. Arguments: {\"url\": 
 rust/src/agentic_coding/driver.rs	Run an allowlisted command in the workspace. Arguments: {\"command\": string}.
 rust/src/agentic_coding/driver.rs	Search the web for sources. Arguments: {\"query\": string}.
 rust/src/agentic_coding/driver.rs	Write a workspace file. Arguments: {\"path\": string, \"content\": string}.
-rust/src/agentic_coding/driver.rs	command exited with status {code}\nstdout:\n{}\nstderr:\n{}
-rust/src/agentic_coding/driver.rs	command terminated without an exit status\nstderr:\n{}
-rust/src/agentic_coding/driver.rs	command timed out: {}
 rust/src/agentic_coding/driver.rs	error: unsupported tool {other}
 rust/src/agentic_coding/driver.rs	run_command produced no result for {command:?}
 rust/src/agentic_coding/driver.rs	wrote {} byte(s) to {path}
