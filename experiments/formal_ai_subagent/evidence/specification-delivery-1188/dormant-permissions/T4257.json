@@ -1,0 +1,20 @@
+{
+  "task": "T4257",
+  "prompt": "Implement a source-bound least-privilege repair for .github/workflows/release-staged.yml through its checked generator. Preserve all 52 canonical release operations and 104 bindings and unchanged source freshness checks. Set top permissions contents read. Only prepare-source jobs need contents write, publish-verify-images jobs contents read and packages write, create-release jobs contents write. Other stages inherit read. Preserve all canonical source SHA, crate tokens, caps and 185-line coverage layout. Produce complete implementation and meaningful independent refusal controls without weakening assertions.",
+  "started": "2026-10-09T23:27:07.293Z",
+  "result": {
+    "transcript": [],
+    "answer": "Callable discovery MissingContract:\n{\"authored\":false,\"goal\":\"Implement a source-bound least-privilege repair for .github/workflows/release-staged.yml through its checked generator. Preserve all 52 canonical release operations and 104 bindings and unchanged source freshness checks. Set top permissions contents read. Only prepare-source jobs need contents write, publish-verify-images jobs contents read and packages write, create-release jobs contents write. Other stages inherit read. Preserve all canonical source SHA, crate tokens, caps and 185-line coverage layout. Produce complete implementation and meaningful independent refusal controls without weakening assertions.\",\"missingContracts\":[\"source-bound-implementation-plan\",\"independent-goal-validation\"],\"reason\":\"MissingContract\",\"verified\":false}",
+    "stop": "final",
+    "toolsAdvertised": [
+      "bash",
+      "edit",
+      "grep",
+      "list",
+      "read",
+      "write"
+    ]
+  },
+  "ok": false,
+  "finished": "2026-10-09T23:27:08.435Z"
+}

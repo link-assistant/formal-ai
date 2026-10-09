@@ -13,8 +13,7 @@ on:
       container-tag:
         value: ${{ jobs.auto_create-release.outputs.container-tag || jobs.manual_create-release.outputs.container-tag }}
 permissions:
-  contents: write
-  packages: write
+  contents: read
 env:
   GIT_CONFIG_COUNT: '1'
   GIT_CONFIG_KEY_0: init.defaultBranch
@@ -36,6 +35,8 @@ env:
 jobs:
   auto_prepare-source:
     name: auto prepare-source
+    permissions:
+      contents: write
     if: ${{ inputs.mode == 'auto' && github.ref == 'refs/heads/main' && github.workflow_ref == format('{0}/.github/workflows/release.yml@refs/heads/main', github.repository) && github.event_name == 'push' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -453,6 +454,9 @@ jobs:
         run: scripts/smoke-test-published-crate.sh "${{ needs.auto_prepare-source.outputs.current_version__version }}"
   auto_publish-verify-images:
     name: auto publish-verify-images
+    permissions:
+      contents: read
+      packages: write
     needs: [auto_prepare-source, auto_compile-release, auto_verify-package, auto_publish-crate, auto_registry-availability, auto_published-crate-smoke]
     if: ${{ needs.auto_prepare-source.outputs.active == 'true' }}
     runs-on: ubuntu-24.04
@@ -631,6 +635,8 @@ jobs:
           retention-days: 7
   auto_create-release:
     name: auto create-release
+    permissions:
+      contents: write
     needs: [auto_prepare-source, auto_compile-release, auto_verify-package, auto_publish-crate, auto_registry-availability, auto_published-crate-smoke, auto_publish-verify-images]
     if: ${{ always() && needs.auto_prepare-source.result == 'success' && (needs.auto_prepare-source.outputs.active != 'true' || (needs.auto_compile-release.result == 'success' && needs.auto_verify-package.result == 'success' && needs.auto_publish-crate.result == 'success' && needs.auto_registry-availability.result == 'success' && needs.auto_published-crate-smoke.result == 'success' && needs.auto_publish-verify-images.result == 'success')) }}
     runs-on: ubuntu-24.04
@@ -745,6 +751,8 @@ jobs:
           rust-script scripts/get-version.rs
   manual_prepare-source:
     name: manual prepare-source
+    permissions:
+      contents: write
     if: ${{ inputs.mode == 'manual' && github.ref == 'refs/heads/main' && github.workflow_ref == format('{0}/.github/workflows/release.yml@refs/heads/main', github.repository) && github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -1132,6 +1140,9 @@ jobs:
         run: scripts/smoke-test-published-crate.sh "${{ needs.manual_prepare-source.outputs.version__new_version }}"
   manual_publish-verify-images:
     name: manual publish-verify-images
+    permissions:
+      contents: read
+      packages: write
     needs: [manual_prepare-source, manual_compile-release, manual_verify-package, manual_publish-crate, manual_registry-availability, manual_published-crate-smoke]
     if: ${{ needs.manual_prepare-source.outputs.active == 'true' }}
     runs-on: ubuntu-24.04
@@ -1302,6 +1313,8 @@ jobs:
           retention-days: 7
   manual_create-release:
     name: manual create-release
+    permissions:
+      contents: write
     needs: [manual_prepare-source, manual_compile-release, manual_verify-package, manual_publish-crate, manual_registry-availability, manual_published-crate-smoke, manual_publish-verify-images]
     if: ${{ always() && needs.manual_prepare-source.result == 'success' && (needs.manual_prepare-source.outputs.active != 'true' || (needs.manual_compile-release.result == 'success' && needs.manual_verify-package.result == 'success' && needs.manual_publish-crate.result == 'success' && needs.manual_registry-availability.result == 'success' && needs.manual_published-crate-smoke.result == 'success' && needs.manual_publish-verify-images.result == 'success')) }}
     runs-on: ubuntu-24.04
