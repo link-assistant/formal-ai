@@ -4,7 +4,7 @@ self_ast_census
   fidelity full_ast
   byte_len 44422
   line_count 988
-  content_id source_module_475e5c8a3c093f59
+  content_id source_module_475e0bc029fb8489
   symbol_count 47
   symbols
     module explicit 17 17
@@ -79,7 +79,7 @@ self_ast_census
       compound_assignment_expr 1
       const_item 2
       continue_expression 3
-      crate 9
+      crate 10
       doc_comment 240
       else_clause 1
       escape_sequence 3
@@ -124,7 +124,7 @@ self_ast_census
       source_file 1
       string_content 27
       string_literal 27
-      super 20
+      super 19
       token_tree 19
       try_expression 15
       tuple_expression 10

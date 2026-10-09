@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/workspace_inspection.rs
   language rust
   fidelity full_ast
-  byte_len 15006
-  line_count 326
-  content_id source_module_deb44b5fd0cae5f3
+  byte_len 15038
+  line_count 328
+  content_id source_module_66b748987ed8cea5
   symbol_count 15
   symbols
     function asks_about_the_workspace 48 56
@@ -14,33 +14,33 @@ self_ast_census
     function workspace_inspection_search 138 175
     function canonical_fact_filename_filter 177 187
     function workspace_inspection_terms_for_task 195 212
-    function inspection_fact_terms 214 238
-    function inspection_subject_and_following 247 255
-    function ascii_case_insensitive_offset 257 265
-    function module_filename_filter 267 273
-    function inspection_filename_filter 279 286
-    function literal_inspection_fact_query 288 295
-    function serialized_relationship_fact_query 303 305
-    function serialized_relationship_term 312 326
+    function inspection_fact_terms 214 240
+    function inspection_subject_and_following 249 257
+    function ascii_case_insensitive_offset 259 267
+    function module_filename_filter 269 275
+    function inspection_filename_filter 281 288
+    function literal_inspection_fact_query 290 297
+    function serialized_relationship_fact_query 305 307
+    function serialized_relationship_term 314 328
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 7433
-    named_node_count 1633
+    total_link_count 7444
+    named_node_count 1634
     distinct_node_kinds 68
     node_kinds
       arguments 144
       array_expression 1
       binary_expression 16
-      block 39
+      block 40
       call_expression 144
       char_literal 4
       closure_expression 25
       closure_parameters 25
       continue_expression 3
-      crate 3
+      crate 4
       doc_comment 103
       else_clause 4
       expression_statement 31
@@ -85,7 +85,7 @@ self_ast_census
       string_literal 9
       struct_expression 3
       struct_item 1
-      super 13
+      super 12
       token_tree 2
       try_expression 2
       tuple_expression 1

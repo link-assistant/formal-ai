@@ -143,7 +143,11 @@ function withRequest(messages, part) {
  */
 export async function planRequestSequenceStep(task, messages, toolNames, planFor) {
   const parts = requestSequence(task) ?? sequenceSteps(task);
-  if (parts === null) return null;
+  return parts === null ? null : planBoundRequestSteps(parts, messages, toolNames, planFor);
+}
+
+/** Mirrors fn plan_bound_request_steps: replay each source-owned request over only its own exchanges. */
+export async function planBoundRequestSteps(parts, messages, toolNames, planFor) {
   const { base, exchanges } = turnExchanges(messages);
   let taken = 0;
   const answers = [];

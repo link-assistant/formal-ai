@@ -8,10 +8,11 @@
 // Shared semantic-versus-literal decision; callers supply their parsed prose view.
 const { roleWordForms, mentionsRole } = crateRequire("write_lexicon.mjs");
 const { normalizePrompt } = crateRequire("crate/engine.mjs");
-const { quotedSegmentSpans, quotedSegments } = crateRequire("crate/normal_markov.mjs");
+const { quotedSegments } = crateRequire("crate/normal_markov.mjs");
 const { containsCjk } = crateRequire("crate/coding_catalog.mjs");
-const { firstRawPrefixLeadEnd } = crateRequire("write_request/lowercase_spans.mjs");
-const { cleanContent } = crateRequire("crate/literal_content.mjs");
+const { literalInstructionView } = crateRequire("crate/literal_instruction_view.mjs");
+const { ownsLiteralBody } = crateRequire("crate/literal_body_ownership.mjs");
+const { operationOwner } = crateRequire("crate/operation_owner.mjs");
 const { isAlphanumeric, trimStart } = crateRequire("write_str.mjs");
 
 /** Mirrors fn semantic_authoring_lead in general_planner/content_shape.rs. */
@@ -26,17 +27,6 @@ function semanticAuthoringLead(request) {
   return action !== undefined && !mentionsRole('file_whole_write_action', normalizePrompt(action));
 }
 
-function ownsLiteralBody(request, content) {
-  const quotes = quotedSegmentSpans(request);
-  const outside = (lead) => lead !== null && !quotes.some((span) => lead[0] >= span.start && lead[0] < span.end);
-  const lead = firstRawPrefixLeadEnd(request, 'file_write_content_lead');
-  if (outside(lead) && quotes.some((span) => span.start >= lead[1]
-    && /^[\s:]*$/u.test(request.slice(lead[1], span.start))
-    && cleanContent(request.slice(span.start, span.end)) === content)) return true;
-  const authoritative = firstRawPrefixLeadEnd(request, 'file_write_authoritative_content_lead');
-  return outside(authoritative) && request.slice(authoritative[1]).replace(/^[\s:]*/u, '').startsWith(content);
-}
-
 /** Mirrors fn describes_code_to_author; parsed prose is lexical context, never a goal certificate. */
 function describesCodeToAuthor(request, content, prose, contentLeadPresent) {
   if (content === '') return false;
@@ -47,8 +37,18 @@ function describesCodeToAuthor(request, content, prose, contentLeadPresent) {
     || mentionsRole('coding_request_object', normalized) && mentionsRole('coding_request_verb', normalized);
 }
 
+/** Mirrors fn owned_semantic_authoring_lead: preserve unknown authoring while disambiguating observed operation objects. */
+function ownedSemanticAuthoringLead(request, contract = null) {
+  const view = literalInstructionView(request, contract?.payload ?? null);
+  if (view === null || !semanticAuthoringLead(view)) return false;
+  const owner = operationOwner(request, contract);
+  return owner === null || owner.role !== 'capability_web_scope';
+}
+
 return Object.freeze({
   semanticAuthoringLead,
   describesCodeToAuthor,
+  ownedSemanticAuthoringLead,
+  operationOwner,
 });
 };

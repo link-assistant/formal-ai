@@ -9,6 +9,7 @@
 
 import { describesCodeToAuthor as contentRequiresAuthoring, semanticAuthoringLead } from './crate/literal_authoring_contract.mjs';
 import { endOfStatement } from './crate/literal_content.mjs';
+import { literalInstructionView } from './crate/literal_instruction_view.mjs';
 export { semanticAuthoringLead };
 import { Capability } from './capability.mjs';
 import { fill as fillWorkStep, template as workStepTemplate } from './work_item_steps.mjs';
@@ -370,6 +371,12 @@ export function hasAuthoritativeLiteralWrite(request) {
 }
 
 function parseWriteRequest(request) {
+  const contract = parseWriteContract(request);
+  return contract === null ? null : [contract.target, contract.content];
+}
+
+/** Mirrors fn parse_write_contract: raw payload and target positions are UTF16 indices. */
+export function parseWriteContract(request) {
   const toks = tokens(request);
   const literal = literalPayload(request);
   if (literal !== null) {
@@ -378,7 +385,7 @@ function parseWriteRequest(request) {
     const binding = rankedBindings(toks).find((candidate) =>
       toks[candidate.index].end <= literal.start && candidate.cue_end <= literal.start
       && bindingHasWriteInstruction(request, toks, candidate));
-    if (binding) return [binding.path, cleanContent(request.slice(literal.start, literal.end)) ?? literal.text];
+    if (binding) return writeContract(request, toks, binding, cleanContent(request.slice(literal.start, literal.end)) ?? literal.text, literal.start, literal.end);
   }
   for (const binding of rankedBindings(toks)) {
     const parsed = parseWriteRequestBound(request, toks, binding);
@@ -438,22 +445,28 @@ function parseWriteRequestBound(request, toks, binding) {
           && (!namesDeferredWorkProduct(content)
             || firstPrefixLeadEnd(lowered, 'file_write_authoritative_content_lead') !== null
             || literalPayload(request) !== null)) {
-          return [target, content];
+          return writeContract(request, toks, binding, content, markerEnd, payloadEnd);
         }
       }
     }
   }
   let contentSpan;
+  let contentStart;
+  let contentEnd;
   if (cueIsDestination && binding.cue_precedes) {
     const actionEnd = firstActionCueEnd(toks);
     if (actionEnd === null) return null;
     if (!(actionEnd <= clauseStart && positionsShareStatement(request, actionEnd, clauseStart))) return null;
-    contentSpan = slice(request, actionEnd, clauseStart);
+    contentStart = actionEnd;
+    contentEnd = clauseStart;
+    contentSpan = slice(request, contentStart, contentEnd);
   } else if (cueIsDestination) {
     const actionStart = actionCueStartAfter(toks, binding.cue_end);
     if (actionStart === null) return null;
     if (!(binding.cue_end <= actionStart && positionsShareStatement(request, binding.cue_end, actionStart))) return null;
-    contentSpan = slice(request, binding.cue_end, actionStart);
+    contentStart = binding.cue_end;
+    contentEnd = actionStart;
+    contentSpan = slice(request, contentStart, contentEnd);
   } else {
     const valueLead = toks.slice(fileIndex + 1).find((token) => destCues.includes(cleanCueToken(token.text)));
     if (!valueLead) return null;
@@ -462,13 +475,15 @@ function parseWriteRequestBound(request, toks, binding) {
     if (!(actionEnd <= clauseStart
       && positionsShareStatement(request, actionEnd, clauseStart)
       && positionsShareStatement(request, clauseStart, valueLead.start))) return null;
-    contentSpan = request.slice(valueLead.end);
+    contentStart = valueLead.end;
+    contentEnd = request.length;
+    contentSpan = request.slice(contentStart);
   }
   if (contentSpan === null) return null;
   const content = cleanContent(contentSpan);
   if (content === null) return null;
   if (isNonReferentialContent(content) || namesDeferredWorkProduct(content) || !isLiteralContent(content, contentSpan)) return null;
-  return [target, content];
+  return writeContract(request, toks, binding, content, contentStart, contentEnd);
 }
 
 /** Mirrors fn statement_scope: preserve UTF-16 positions while masking literal punctuation. */
@@ -541,4 +556,41 @@ function field(name, value) {
 
 function fieldNested(name, value) {
   return `    ${name} "${escape(value)}"\n`;
+}
+
+function writeContract(request, toks, binding, content, start, end) {
+  const target = toks[binding.index];
+  const raw = request.slice(start, end);
+  const literal = quotedSegmentSpans(raw).find((span) =>
+    cleanContent(raw.slice(span.start, span.end)) === content
+    && /^[\s:]*$/u.test(raw.slice(0, span.start))
+    && /^[\s.!?。！？।;；]*$/u.test(raw.slice(span.end)));
+  const payload = literal ? { start: start + literal.start, end: start + literal.end } : { start, end };
+  return { target: binding.path, content, payload, targetSpan: { start: target.start, end: target.end }, unit: 'utf16' };
+}
+
+/** Mirrors fn instruction_view: preserve positions while hiding owned literal bytes. */
+export function instructionView(request, contract) {
+  return literalInstructionView(request, contract?.payload ?? null);
+}
+
+/** Mirrors fn owns_instruction_span. */
+export function ownsInstructionSpan(contract, span) {
+  return contract === null || span !== null
+    && (span[1] <= contract.payload.start || span[0] >= contract.payload.end);
+}
+
+/** Mirrors fn literal_write_ownership: a recovered payload alone does not certify a whole-file action. */
+export function literalWriteOwnership(request) {
+  const contract = parseWriteContract(request);
+  if (contract === null || !ownsInstructionSpan(contract, [contract.targetSpan.start, contract.targetSpan.end])
+    || composeGeneralChangePlan(request)?.mode !== GeneralPlanMode.LiteralFile) return null;
+  const header = instructionView(request, contract);
+  if (header === null) return null;
+  const words = tokens(header);
+  const start = firstActionCueStart(words);
+  const end = firstActionCueEnd(words);
+  if (start === null || end === null) return null;
+  return mentionsRole('file_whole_write_action', normalizePrompt(header.slice(start, end)))
+    || mentionsRole('file_overwrite_consent', normalizePrompt(header)) ? contract : null;
 }

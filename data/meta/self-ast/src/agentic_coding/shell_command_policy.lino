@@ -4,7 +4,7 @@ self_ast_census
   fidelity full_ast
   byte_len 15110
   line_count 393
-  content_id source_module_4866fd610f240efc
+  content_id source_module_f4521480c7b9f1a8
   symbol_count 15
   symbols
     struct Sentence 21 26
@@ -46,7 +46,7 @@ self_ast_census
       closure_parameters 24
       const_item 1
       continue_expression 3
-      crate 1
+      crate 3
       doc_comment 84
       else_clause 4
       expression_statement 36
@@ -93,7 +93,7 @@ self_ast_census
       string_literal 63
       struct_expression 2
       struct_item 1
-      super 13
+      super 11
       token_tree 5
       tuple_pattern 6
       tuple_struct_pattern 2

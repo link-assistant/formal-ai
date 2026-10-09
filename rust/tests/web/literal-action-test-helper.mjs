@@ -1,4 +1,31 @@
-import {literalWriteOwnership,instructionView,ownsInstructionSpan} from "../../../js/agentic/general_planner.mjs";
-import {composeEditClauses,spanOf} from '../../../js/agentic/write_request.mjs';
-import {proseSentences} from '../../../js/agentic/shell_command_policy.mjs';
-export function ownedEditClauses(request) {const contract=literalWriteOwnership(request);if(contract===null){const edit=composeEditClauses(request);return edit===null?[]:[edit];}const view=instructionView(request,contract);const edits=[];for(const statement of proseSentences(view)){const span=spanOf(statement);const edit=composeEditClauses(view.slice(span.start,span.end));if(edit===null)continue;if(edit.spans===null)return null;const adjusted=edit.spans.map(pair=>pair.map(position=>position+span.start));if(adjusted.every(pair=>ownsInstructionSpan(contract,pair)))edits.push({...edit,spans:adjusted});}return edits;}
+import {
+  literalWriteOwnership,
+  instructionView,
+  ownsInstructionSpan,
+} from "../../../js/agentic/general_planner.mjs";
+import {
+  composeEditClauses,
+  spanOf,
+} from "../../../js/agentic/write_request.mjs";
+import { proseSentences } from "../../../js/agentic/shell_command_policy.mjs";
+export function ownedEditClauses(request) {
+  const contract = literalWriteOwnership(request);
+  if (contract === null) {
+    const edit = composeEditClauses(request);
+    return edit === null ? [] : [edit];
+  }
+  const view = instructionView(request, contract);
+  const edits = [];
+  for (const statement of proseSentences(view)) {
+    const span = spanOf(statement);
+    const edit = composeEditClauses(view.slice(span.start, span.end));
+    if (edit === null) continue;
+    if (edit.spans === null) return null;
+    const adjusted = edit.spans.map((pair) =>
+      pair.map((position) => position + span.start),
+    );
+    if (adjusted.every((pair) => ownsInstructionSpan(contract, pair)))
+      edits.push({ ...edit, spans: adjusted });
+  }
+  return edits;
+}

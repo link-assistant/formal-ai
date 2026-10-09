@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/module_function/discovery.rs
   language rust
   fidelity full_ast
-  byte_len 10284
-  line_count 276
-  content_id source_module_7e06ff4b55330ac5
-  symbol_count 9
+  byte_len 9190
+  line_count 239
+  content_id source_module_65d2c9685a1da9b5
+  symbol_count 8
   symbols
     struct ObservedCallableRequest 8 15
     enum ObservedCallableDisposition 19 22
@@ -13,57 +13,53 @@ self_ast_census
     function instruction_clause 30 44
     function observed_callable_request 48 103
     function finish 105 140
-    function plan_observed_callable_outcome 144 220
-    function read_receipt 222 253
-    function plan_observed_callable_step 256 276
+    function plan_observed_callable_outcome 144 216
+    function plan_observed_callable_step 219 239
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 8055
-    named_node_count 1632
-    distinct_node_kinds 76
+    total_link_count 6979
+    named_node_count 1411
+    distinct_node_kinds 72
     node_kinds
-      arguments 116
-      array_expression 1
-      array_type 6
+      arguments 93
+      array_type 5
       assignment_expression 3
       attribute 4
       attribute_item 4
-      binary_expression 21
-      block 31
-      boolean_literal 3
-      call_expression 116
+      binary_expression 18
+      block 21
+      boolean_literal 2
+      call_expression 93
       char_literal 1
-      closure_expression 16
-      closure_parameters 16
-      continue_expression 6
-      crate 11
+      closure_expression 12
+      closure_parameters 12
+      continue_expression 1
+      crate 13
       doc_comment 6
-      else_clause 1
       enum_item 1
       enum_variant 2
       enum_variant_list 1
       escape_sequence 2
-      expression_statement 36
+      expression_statement 26
       field_declaration 9
       field_declaration_list 2
-      field_expression 97
-      field_identifier 115
+      field_expression 76
+      field_identifier 94
       field_initializer 9
       field_initializer_list 3
-      for_expression 3
-      function_item 6
-      generic_function 1
-      generic_type 10
-      identifier 405
-      if_expression 12
-      index_expression 9
+      for_expression 2
+      function_item 5
+      generic_type 9
+      identifier 361
+      if_expression 8
+      index_expression 7
       inner_doc_comment_marker 1
       integer_literal 7
       let_condition 2
-      let_declaration 35
+      let_declaration 30
       line_comment 6
       macro_invocation 10
       match_arm 2
@@ -72,32 +68,31 @@ self_ast_census
       match_pattern 2
       mutable_specifier 6
       outer_doc_comment_marker 5
-      parameter 18
-      parameters 6
-      primitive_type 9
-      range_expression 4
-      reference_expression 32
-      reference_type 18
-      return_expression 8
-      scoped_identifier 58
+      parameter 16
+      parameters 5
+      primitive_type 7
+      range_expression 2
+      reference_expression 26
+      reference_type 16
+      return_expression 7
+      scoped_identifier 50
       scoped_use_list 4
       shorthand_field_initializer 3
       source_file 1
-      string_content 76
-      string_literal 77
+      string_content 77
+      string_literal 78
       struct_expression 3
       struct_item 2
       super 14
-      token_tree 30
+      token_tree 31
       try_expression 4
-      tuple_expression 4
-      tuple_pattern 3
-      tuple_struct_pattern 7
-      tuple_type 1
-      type_arguments 11
-      type_identifier 43
-      unary_expression 7
-      use_declaration 6
+      tuple_expression 3
+      tuple_pattern 1
+      tuple_struct_pattern 4
+      type_arguments 9
+      type_identifier 39
+      unary_expression 6
+      use_declaration 5
       use_list 4
       visibility_modifier 15
       while_expression 1

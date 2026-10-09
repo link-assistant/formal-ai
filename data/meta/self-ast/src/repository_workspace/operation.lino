@@ -1,0 +1,17 @@
+self_ast_census
+  target src/repository_workspace/operation.rs
+  language rust
+  fidelity signature
+  byte_len 12016
+  line_count 322
+  content_id source_module_0b27612c4d8abf16
+  symbol_count 8
+  symbols
+    enum RepositoryOperation 10 19
+    function classify 23 74
+    function selects 78 85
+    function cargo_manifest 91 109
+    function test_targets 115 198
+    function command_context_excluded 203 217
+    function bind_command 223 273
+    function command_report 279 322
