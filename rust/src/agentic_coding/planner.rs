@@ -32,6 +32,7 @@ use super::formalization_recipe;
 use super::general_execution::plan_general_change_step;
 use super::general_planner::{
     compose_general_change_plan, has_authoritative_literal_write, objective_text,
+    plan_owned_goal_step,
 };
 use super::git_commit;
 use super::google_trends_catalog;
@@ -283,20 +284,19 @@ fn plan_chat_step_routes(
     // Ahead of them, quotes that do not pair leave no telling the quoted text
     // from the instruction, so the request is declined before any arm reads its
     // payload as words to act on (PR #1188 G71).
-    if let Some(plan) = super::general_planner::plan_owned_goal_step(
-        &task,
-        messages,
-        tool_names,
-        plan_chat_step_resolved,
-        result,
-    )
-    .or_else(|| {
-        super::quote_nesting::request_fault_answer(
-            &task,
-            tool_for(tool_names, Capability::MultiEdit).is_some(),
-        )
-    })
-    .or_else(|| crate::computer_use::plan_agentic_step(messages, tool_names))
+    let owned_goal = if evidence_record::has_typed_evidence_delivery(&task) {
+        None
+    } else {
+        plan_owned_goal_step(&task, messages, tool_names, plan_chat_step_resolved, result)
+    };
+    if let Some(plan) = owned_goal
+        .or_else(|| {
+            super::quote_nesting::request_fault_answer(
+                &task,
+                tool_for(tool_names, Capability::MultiEdit).is_some(),
+            )
+        })
+        .or_else(|| crate::computer_use::plan_agentic_step(messages, tool_names))
     {
         return Some(plan);
     }

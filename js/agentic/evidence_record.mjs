@@ -10,7 +10,7 @@ import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
 import { plainText } from './content.mjs';
 import { planTestExpectationQuestion } from './function_expectation.mjs';
-import { composeGeneralChangePlan } from './general_planner.mjs';
+import { composeGeneralChangePlan, hasAuthoritativeLiteralWrite } from './general_planner.mjs';
 import { agenticMessage } from './messages.mjs';
 import { namesCallableArtifact } from './evidence_record/artifact_header.mjs';
 import { planRecordReadbackStep } from './evidence_record/record_observation.mjs';
@@ -108,6 +108,13 @@ function parseObligation(request) {
   const trimmed = trim(residual);
   if (trimmed === '' || target === null) return null;
   return { target, first_line: firstLine, field_lines: fieldLines, residual: trimmed };
+}
+
+/** Existing exact field/pinned-line delivery owns its record grammar, outside authoritative literal bytes. */
+export function hasTypedEvidenceDelivery(request) {
+  if (hasAuthoritativeLiteralWrite(request)) return false;
+  const binding = parseObligation(request);
+  return binding !== null && (binding.field_lines.length > 0 || binding.first_line !== null);
 }
 
 function exactFieldLines(sentence, target) {

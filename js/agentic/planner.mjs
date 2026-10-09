@@ -250,7 +250,8 @@ async function planChatStepRoutes(messages, toolNames, received) {
       && looksLikeSkillDescription(positionalEdit.ownText(task)))) {
     return null;
   }
-  const ownedGoals = await planGoalLedger(task, messages, toolNames, planChatStepResolved);
+  const ownedGoals = evidenceRecord.hasTypedEvidenceDelivery(task) ? null
+    : await planGoalLedger(task, messages, toolNames, planChatStepResolved);
   if (ownedGoals !== null) return ownedGoals;
   // The computer_use arm. Ahead of it, quotes that do not pair leave no
   // telling the quoted text from the instruction, so the request is declined

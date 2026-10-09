@@ -1,0 +1,18 @@
+[
+  {
+    "path": "/Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/planner.mjs",
+    "sha256": "4ce48c9c5e4bca3a56077d8948c6454010c1e084ed13e1a59c662d1671b9b6f9"
+  },
+  {
+    "path": "/Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/evidence_record.mjs",
+    "sha256": "c178b30931c34fcb63d0b5fd06ef4fee4a0a5e639a1fe78358946caad257be58"
+  },
+  {
+    "path": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/agentic_coding/planner.rs",
+    "sha256": "8fd3ea8c6ce61a2b6321eb800596026ea2531e477dd16dfae236afff21c9e70a"
+  },
+  {
+    "path": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/src/agentic_coding/evidence_record.rs",
+    "sha256": "f02b8b72e482263f4292a7c069b2a859032f58346e5c502d58a2137764792c67"
+  }
+]

@@ -13,7 +13,7 @@ use std::collections::HashMap;
 
 use super::capability_router::tool_for;
 use super::final_result::{FinalDisposition, FinalPayloadRole, FinalResult, record};
-use super::general_planner::compose_general_change_plan;
+use super::general_planner::{compose_general_change_plan, has_authoritative_literal_write};
 use super::planner::{
     AgenticPlan, Capability, plan_chat_step_resolved, plan_one, plan_settled_routes, trace_route,
     write_arguments,
@@ -93,6 +93,14 @@ fn masked_multi_word_quotes(text: &str) -> String {
 /// [`super::shell_command::carries_authoring_task`], the one requirement 3 of
 /// issue #907 already states in exactly these terms.
 ///
+/// Exact fields or a pinned first line belong to the existing evidence delivery grammar.
+/// Authoritative literal payloads keep their original ownership and never become records.
+pub(super) fn has_typed_evidence_delivery(request: &str) -> bool {
+    !has_authoritative_literal_write(request)
+        && parse_obligation(request)
+            .is_some_and(|binding| !binding.field_lines.is_empty() || binding.first_line.is_some())
+}
+
 /// Declines when the residual is empty: a request whose every sentence is about
 /// delivery states no work to do, so there is nothing to record.
 /// A call-shaped authoring request binds its path as a code operand.

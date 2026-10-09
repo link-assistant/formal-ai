@@ -1,0 +1,135 @@
+TAP version 13
+# Subtest: artifact delivery header: original-effect
+ok 1 - artifact delivery header: original-effect
+  ---
+  duration_ms: 67.607958
+  ...
+# Subtest: artifact delivery header: report-result-source-value
+ok 2 - artifact delivery header: report-result-source-value
+  ---
+  duration_ms: 0.561792
+  ...
+# Subtest: artifact delivery header: report-result-symbol
+ok 3 - artifact delivery header: report-result-symbol
+  ---
+  duration_ms: 0.349291
+  ...
+# Subtest: artifact delivery header: genuine-source-before
+ok 4 - artifact delivery header: genuine-source-before
+  ---
+  duration_ms: 0.613666
+  ...
+# Subtest: artifact delivery header: genuine-source-after
+ok 5 - artifact delivery header: genuine-source-after
+  ---
+  duration_ms: 0.562667
+  ...
+# Subtest: artifact delivery header: explicit-report-source-body
+ok 6 - artifact delivery header: explicit-report-source-body
+  ---
+  duration_ms: 0.488
+  ...
+# Subtest: artifact delivery header: source-like-filename
+ok 7 - artifact delivery header: source-like-filename
+  ---
+  duration_ms: 0.389916
+  ...
+# Subtest: artifact delivery header: spanish-postposed-source
+ok 8 - artifact delivery header: spanish-postposed-source
+  ---
+  duration_ms: 0.57525
+  ...
+# Subtest: artifact delivery header: russian-postposed-source
+ok 9 - artifact delivery header: russian-postposed-source
+  ---
+  duration_ms: 0.805125
+  ...
+# Subtest: artifact delivery header: chinese-postposed-source
+ok 10 - artifact delivery header: chinese-postposed-source
+  ---
+  duration_ms: 0.504708
+  ...
+# Subtest: artifact delivery header: hindi-source
+ok 11 - artifact delivery header: hindi-source
+  ---
+  duration_ms: 0.438
+  ...
+# Subtest: artifact delivery header: hindi-report
+ok 12 - artifact delivery header: hindi-report
+  ---
+  duration_ms: 0.37
+  ...
+# Subtest: artifact delivery header: spanish-payload
+ok 13 - artifact delivery header: spanish-payload
+  ---
+  duration_ms: 0.318583
+  ...
+# Subtest: artifact delivery header: russian-payload
+ok 14 - artifact delivery header: russian-payload
+  ---
+  duration_ms: 0.387458
+  ...
+# Subtest: artifact delivery header: chinese-payload
+ok 15 - artifact delivery header: chinese-payload
+  ---
+  duration_ms: 0.319208
+  ...
+# Subtest: artifact delivery header: unicode-expanded-report
+ok 16 - artifact delivery header: unicode-expanded-report
+  ---
+  duration_ms: 0.542
+  ...
+# Subtest: artifact delivery header: unicode-shrunk-report
+ok 17 - artifact delivery header: unicode-shrunk-report
+  ---
+  duration_ms: 0.46275
+  ...
+# Subtest: artifact delivery header: unicode-source
+ok 18 - artifact delivery header: unicode-source
+  ---
+  duration_ms: 0.589084
+  ...
+# Subtest: artifact delivery header: unicode-filename
+ok 19 - artifact delivery header: unicode-filename
+  ---
+  duration_ms: 0.515334
+  ...
+# Subtest: artifact delivery header: quoted-type
+ok 20 - artifact delivery header: quoted-type
+  ---
+  duration_ms: 0.40575
+  ...
+# Subtest: artifact delivery header: quoted-call
+ok 21 - artifact delivery header: quoted-call
+  ---
+  duration_ms: 0.3065
+  ...
+# Subtest: artifact delivery header: explicit-callable
+ok 22 - artifact delivery header: explicit-callable
+  ---
+  duration_ms: 0.63825
+  ...
+# Subtest: artifact delivery header: non-delivery
+ok 23 - artifact delivery header: non-delivery
+  ---
+  duration_ms: 0.186458
+  ...
+# Subtest: unchanged L21 persists both mandatory records in 8 turns
+ok 24 - unchanged L21 persists both mandatory records in 8 turns
+  ---
+  duration_ms: 1169.256125
+  ...
+# Subtest: unchanged L21 persists both mandatory records in 16 turns
+ok 25 - unchanged L21 persists both mandatory records in 16 turns
+  ---
+  duration_ms: 411.809667
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2150.74025

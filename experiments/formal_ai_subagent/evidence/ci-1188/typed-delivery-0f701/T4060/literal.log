@@ -1,0 +1,43 @@
+natural-language literals (worker): 431 (ceiling 431)
+natural-language literals (meta): 0 (ceiling 0)
+natural-language literals (server): 0 (ceiling 0)
+natural-language literals (agentic): 0 (ceiling 0)
+  formal_ai_worker_agent_workspace.js 7
+  formal_ai_worker_arithmetic_and_numeric_lists.js 3
+  formal_ai_worker_behavior_rules_and_self_facts.js 23
+  formal_ai_worker_browser_runtime.js 1
+  formal_ai_worker_calendar_and_proofs.js 36
+  formal_ai_worker_code_synthesis.js 4
+  formal_ai_worker_code_tasks.js 4
+  formal_ai_worker_coding_idioms_and_text_manipulation.js 2
+  formal_ai_worker_concept_lookup.js 1
+  formal_ai_worker_concept_queries_and_arithmetic.js 18
+  formal_ai_worker_conversation_followups.js 1
+  formal_ai_worker_creative.js 5
+  formal_ai_worker_creative_writing.js 10
+  formal_ai_worker_dispatch.js 5
+  formal_ai_worker_equations_and_word_problems.js 31
+  formal_ai_worker_facts_and_software_phrases.js 7
+  formal_ai_worker_formalization_request.js 5
+  formal_ai_worker_format_conversion.js 9
+  formal_ai_worker_installation_and_software_followups.js 27
+  formal_ai_worker_meaning_lexicon.js 3
+  formal_ai_worker_number_constraints.js 5
+  formal_ai_worker_product_search.js 1
+  formal_ai_worker_program_blueprints.js 50
+  formal_ai_worker_program_plans.js 58
+  formal_ai_worker_reasoning_guards.js 2
+  formal_ai_worker_search_queries_and_how_to.js 2
+  formal_ai_worker_seed_responses_and_language.js 2
+  formal_ai_worker_shell_compose.js 2
+  formal_ai_worker_software_project_plans.js 35
+  formal_ai_worker_solve.js 9
+  formal_ai_worker_source_callable_contracts.js 4
+  formal_ai_worker_statement_verification.js 8
+  formal_ai_worker_statistics.js 2
+  formal_ai_worker_translation_recall_and_compound_interest.js 8
+  formal_ai_worker_units.js 3
+  formal_ai_worker_web_providers_and_wasm_calls.js 6
+  formal_ai_worker_web_search_and_projects.js 8
+  formal_ai_worker_wikipedia_and_shell_commands.js 21
+  formal_ai_worker_write_program_and_research.js 3
