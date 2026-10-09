@@ -237,3 +237,22 @@ meanings
     lexeme hi अवलोकन
     lexeme zh 观察
     lexeme es observaciones
+
+  document
+    role ontology_category
+    defined-by entity
+    defined-by knowledge
+    precondition "information is represented as an identifiable body of recorded content"
+    effect "the body may be inspected, retained, and delivered without treating it as executable source"
+    unit "one recorded content body"
+    example "a findings document"
+    grounding "js/agentic/final_payload.mjs"
+  report
+    role ontology_category
+    defined-by document
+    defined-by observation
+    precondition "a recorded content body presents the results of an observation or investigation"
+    effect "the delivered body communicates findings and the evidence supporting them"
+    unit "one findings document"
+    example "a report of actual source reads and verification results"
+    grounding "js/agentic/final_payload.mjs"
