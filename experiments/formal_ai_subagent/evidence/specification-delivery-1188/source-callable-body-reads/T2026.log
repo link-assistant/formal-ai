@@ -1,0 +1,56 @@
+>> bash {"command":"mkdir -p -- .formal-ai && (lock='.formal-ai/general-change-plan.lino.lock'; tries=0; until mkdir -- \"$lock\" 2>/dev/null; do tries=$((tries + 1)); [ \"$tries\" -lt 40 ] || exit 75; sleep 0.025; done; cleanup(){ rmdir -- \"$lock\"; }; trap cleanup EXIT; if [ -f '.formal-ai/general-change-plan.lino' ]; then grep -Fqx -- '  id \"general_change_plan_2b355079dd09a779\"' '.formal-ai/general-change-plan.lino'; status=$?; [ \"$status\" -le 1 ] || exit \"$status\"; else status=1; fi; if [ \"$status\" -eq 1 ]; then printf \"\n%s\" 'general_change_plan\n  id \"general_change_plan_2b355079dd09a779\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Set the contents of data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino to exactly this content:\\n````````````text\\nworker-module-budget\\n  module \\\"formal_ai_worker_source_callable_contracts.js\\\"\\n  ceiling 128\\n  rationale \\\"Source-owned callable body AST read contracts, explicit/provisional/observed binding, and bound recurrence projection; split from the recurrence cache reader without increasing its existing ceiling.\\\"\\n````````````\"\n  target \"data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_d549c8d3c537f53a\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino\"\n    expected_evidence \"workspace file data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"worker-module-budget\\n  module \\\"formal_ai_worker_source_callable_contracts.js\\\"\\n  ceiling 128\\n  rationale \\\"Source-owned callable body AST read contracts, explicit/provisional/observed binding, and bound recurrence projection; split from the recurrence cache reader without increasing its existing ceiling.\\\"\\n\"\n    command \"cat data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino\"\n  verification_command \"cat data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino\"\n' >> '.formal-ai/general-change-plan.lino' || exit $?; fi; awk -v identity='  id \"general_change_plan_2b355079dd09a779\"' \"\\$0==\\\"general_change_plan\\\" {if(record)exit; header=\\$0; next} \\$0==identity {record=1; print header} record {print}\" '.formal-ai/general-change-plan.lino')"}
+   general_change_plan
+     id "general_change_plan_2b355079dd09a779"
+     execution_mode "literal_file"
+     terminal_state "executed"
+     goal "Set the contents of data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino to exactly this content:\n````````````text\nworker-module-budget\n  module \"formal_ai_worker_source_callable_contracts.js\"\n  ceiling 128\n  rationale \"Source-owned callable body AST read contracts, explicit/provisional/observed binding, and bound recurrence projection; split from the recurrence cache reader without increasing its existing ceiling.\"\n````````````"
+     target "data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino"
+     step 1
+       capability "Write"
+       action "append the composed plan to .formal-ai/general-change-plan.lino"
+       expected_evidence "written plan event impulse_d549c8d3c537f53a"
+     step 2
+       capability "Write"
+       action "write the requested content to data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino"
+       expected_evidence "workspace file data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino"
+     step 3
+       capability "Run"
+       action "run the request-derived verification command"
+       expected_evidence "worker-module-budget\n  module \"formal_ai_worker_source_callable_contracts.js\"\n  ceiling 128\n  rationale \"Source-owned callable body AST read contracts, explicit/provisional/observed binding, and bound recurrence projection; split from the recurrence cache reader without increasing its existing ceiling.\"\n"
+       command "cat data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino"
+     verification_command "cat data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino"
+   
+>> write {"content":"worker-module-budget\n  module \"formal_ai_worker_source_callable_contracts.js\"\n  ceiling 128\n  rationale \"Source-owned callable body AST read contracts, explicit/provisional/observed binding, and bound recurrence projection; split from the recurrence cache reader without increasing its existing ceiling.\"\n","filePath":"data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino","file_path":"data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino","path":"data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino"}
+>> bash {"command":"cat data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino"}
+   worker-module-budget
+     module "formal_ai_worker_source_callable_contracts.js"
+     ceiling 128
+     rationale "Source-owned callable body AST read contracts, explicit/provisional/observed binding, and bound recurrence projection; split from the recurrence cache reader without increasing its existing ceiling."
+   
+== answer ==
+Completed the general change request for data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino and verified it with `cat data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino`.
+
+Plan event (.formal-ai/general-change-plan.lino):
+
+`````````````lino
+general_change_plan
+  id "general_change_plan_2b355079dd09a779"
+  execution_mode "literal_file"
+  terminal_state "executed"
+  goal "Set the contents of data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino to exactly this content:\n````````````text\nworker-module-budget\n  module \"formal_ai_worker_source_callable_contracts.js\"\n  ceiling 128\n  rationale \"Source-owned callable body AST read contracts, explicit/provisional/observed binding, and bound recurrence projection; split from the recurrence cache reader without increasing its existing ceiling.\"\n````````````"
+  target "data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino"
+  step 1
+    capability "Write"
+    action "append the composed plan to .formal-ai/general-change-plan.lino"
+    expected_evidence "written plan event impulse_d549c8d3c537f53a"
+  step 2
+    capability "Write"
+    action "write the requested content to data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino"
+    expected_evidence "workspace file data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino"
+  step 3
+    capability "Run"
+    action "run the request-derived verification command"
+    expected_evidence "worker-module-budget\n  module \"formal_ai_worker_source_callable_contracts.js\"\n  ceiling 128\n  rationale \"Source-owned callable body AST read contracts, explicit/provisional/observed binding, and bound recurrence projection; split from the recurrence cache reader without increasing its existing ceiling.\"\n"
+    command "cat data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino"
+  verification_command "cat data/meta/worker-line-budget/formal_ai_worker_source_callable_contracts.lino"
+`````````````
