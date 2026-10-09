@@ -265,7 +265,7 @@ fn end_of_statement(request: &str, from: usize, limit: usize) -> usize {
         .get(from..sentence.span.end)
         .is_some_and(|tail| tail.chars().any(char::is_alphanumeric));
     if says_more && !payload_continues_past_its_first_line(request, from, sentence.span.end) {
-        sentence.span.end.min(limit)
+        literal_statement_end(request, sentence.span.end).min(limit)
     } else {
         limit
     }
@@ -280,6 +280,16 @@ fn end_of_statement(request: &str, from: usize, limit: usize) -> usize {
 /// [`end_of_statement`] deliberately lets a marker-only line introduce the
 /// block below it. Reusing that boundary here preserves that supported block
 /// shape while rejecting ordinary completed sentences between the two cues.
+fn literal_statement_end(request: &str, from: usize) -> usize {
+    let mut end = from;
+    for character in request.get(from..).unwrap_or_default().chars() {
+        if !matches!(character, '.' | '!' | '?' | '。' | '！' | '？' | '।') {
+            break;
+        }
+        end += character.len_utf8();
+    }
+    end
+}
 fn positions_share_statement(request: &str, left: usize, right: usize) -> bool {
     let (from, limit) = if left <= right {
         (left, right)

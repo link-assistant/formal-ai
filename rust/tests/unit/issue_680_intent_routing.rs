@@ -11,9 +11,13 @@
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
+#[allow(dead_code)]
+#[path = "../fixtures/observed-plan-event.rs"]
+mod observed_plan_event;
+
 /// The single tool call a one-step plan emitted, or a panic with the prompt.
 fn single_call(prompt: &str, tools: &[&str]) -> (String, String) {
-    let messages = vec![ChatMessage::user(prompt)];
+    let (messages, _) = observed_plan_event::before_target(prompt, tools);
     match plan_chat_step(&messages, tools) {
         Some(AgenticPlan::ToolCalls(calls)) => {
             assert_eq!(calls.len(), 1, "expected one tool call for {prompt:?}");
@@ -94,9 +98,19 @@ fn write_intent_routes_to_write_tool_in_any_phrasing() {
         assert_eq!(tool, "write_file", "{prompt}");
         let value: serde_json::Value = serde_json::from_str(&arguments).unwrap();
         let content = value["content"].as_str().unwrap_or_default();
+        let plan = formal_ai::agentic_coding::general_planner::compose_general_change_plan(prompt)
+            .expect("literal request plan");
         assert!(
-            content.contains("general_change_plan") && content.contains(expected_target),
-            "plan for {prompt:?} missing target {expected_target:?}: {content}"
+            plan.links_notation().contains("general_change_plan")
+                && plan.links_notation().contains(expected_target)
+        );
+        assert_eq!(
+            value["path"], expected_target,
+            "actual target for {prompt:?}"
+        );
+        assert_eq!(
+            content, plan.content,
+            "actual requested bytes for {prompt:?}"
         );
     }
 }

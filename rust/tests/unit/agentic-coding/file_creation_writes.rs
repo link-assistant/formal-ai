@@ -12,14 +12,13 @@ use formal_ai::agentic_coding::general_planner::compose_general_change_plan;
 use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step, run_agentic_task};
 use formal_ai::protocol::ChatMessage;
 
+#[allow(dead_code)]
+#[path = "../../fixtures/observed-plan-event.rs"]
+mod observed_plan_event;
+
 fn single_call(messages: &[ChatMessage], tools: &[&str]) -> PlannedToolCall {
-    match plan_chat_step(messages, tools) {
-        Some(AgenticPlan::ToolCalls(mut calls)) => {
-            assert!(!calls.is_empty(), "planner should emit at least one call");
-            calls.remove(0)
-        }
-        other => panic!("expected tool calls, got {other:?}"),
-    }
+    let prompt = messages[0].content.plain_text();
+    observed_plan_event::before_target(&prompt, tools).1
 }
 
 fn arguments(call: &PlannedToolCall) -> serde_json::Value {
@@ -41,14 +40,14 @@ fn file_creation_request_emits_write_not_read() {
         "a file-creation request must route to the write tool, not read"
     );
     let args = arguments(&call);
-    // The first write step records the plan event; the second writes the target.
-    // Either way, the target file and content must reach a write call, never a read.
-    // Drive the loop far enough to observe the target write.
+    // Named auxiliary I/O has completed; this is the requested target write.
     let path_str = &call.arguments;
     assert!(
-        path_str.contains("hello.txt") || path_str.contains(".formal-ai"),
-        "write arguments should reference the plan or the target: {args}"
+        path_str.contains("hello.txt"),
+        "write arguments must reference the target: {args}"
     );
+    assert_eq!(args["path"], "hello.txt");
+    assert_eq!(args["content"], "hello world");
 }
 
 /// The write intent must win even when only a `read` tool is advertised: the planner
@@ -124,11 +123,11 @@ fn diverse_write_phrasings_all_route_to_write() {
 }
 
 /// Whole-task end-to-end: driving the full agentic loop for the issue's exact
-/// request writes the target file with the requested content and never issues a
-/// `read`. This is the behaviour the issue reported as broken ("finishes with
+/// request writes the target file with the requested content and never reads the
+/// absent target. Auxiliary event reads preserve prior history. This is the behaviour the issue reported as broken ("finishes with
 /// `File not found` and writes nothing").
 #[test]
-fn file_creation_end_to_end_writes_the_target_and_never_reads() {
+fn file_creation_end_to_end_writes_the_target_and_never_reads_the_absent_target() {
     let outcome = run_agentic_task("Create a file named hello.txt with the content hello world")
         .expect("workspace");
     assert!(!outcome.hit_turn_cap, "loop should complete: {outcome:?}");
@@ -139,7 +138,12 @@ fn file_creation_end_to_end_writes_the_target_and_never_reads() {
         .map(|step| step.tool.as_str())
         .collect();
     assert!(
-        !tools.contains(&"read"),
+        !outcome.steps.iter().any(|step| {
+            (step.tool == "read" || step.tool == "read_file")
+                && serde_json::from_str::<serde_json::Value>(&step.arguments).is_ok_and(|args| {
+                    args["path"] == "hello.txt" || args["filePath"] == "hello.txt"
+                })
+        }),
         "must never read the file it was asked to create: {tools:?}"
     );
     assert!(
@@ -166,4 +170,28 @@ fn file_creation_end_to_end_writes_the_target_and_never_reads() {
             .any(|step| step.result.contains("hello world")),
         "verification should observe the written content: {outcome:?}"
     );
+}
+
+#[test]
+fn explicit_literal_payloads_preserve_adjacent_terminal_marks() {
+    for (prompt, bytes) in [
+        (
+            "Create file status.txt containing exactly: symbols #!?",
+            "symbols #!?",
+        ),
+        (
+            "Create file status.txt containing exactly: café？",
+            "café？",
+        ),
+        (
+            "Create file status.txt containing exactly: ready।",
+            "ready।",
+        ),
+    ] {
+        let plan = compose_general_change_plan(prompt).expect("literal plan");
+        assert_eq!(plan.content, bytes);
+        let (_, call) =
+            observed_plan_event::before_target(prompt, &["read_file", "write_file", "run_command"]);
+        assert_eq!(arguments(&call)["content"], bytes);
+    }
 }

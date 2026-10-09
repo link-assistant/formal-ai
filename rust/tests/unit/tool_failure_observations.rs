@@ -9,6 +9,14 @@ use std::path::{Path, PathBuf};
 const PROMPT: &str = "Create a file hello.txt containing exactly: Hello World";
 const TOOLS: [&str; 3] = ["read_file", "write_file", "run_command"];
 
+#[allow(dead_code)]
+#[path = "../fixtures/observed-plan-event.rs"]
+mod observed_plan_event;
+
+fn before_target(prompt: &str) -> (Vec<ChatMessage>, PlannedToolCall) {
+    observed_plan_event::before_target(prompt, &TOOLS)
+}
+
 fn next_call(messages: &[ChatMessage]) -> PlannedToolCall {
     match plan_chat_step(messages, &TOOLS) {
         Some(AgenticPlan::ToolCalls(mut calls)) if calls.len() == 1 => calls.remove(0),
@@ -27,12 +35,7 @@ fn record(messages: &mut Vec<ChatMessage>, call: &PlannedToolCall, result: &str)
 }
 
 fn advance_to_verification() -> (Vec<ChatMessage>, PlannedToolCall) {
-    let mut messages = vec![ChatMessage::user(PROMPT)];
-    let plan_write = next_call(&messages);
-    assert_eq!(plan_write.tool, "write_file");
-    record(&mut messages, &plan_write, r#"{"success":true}"#);
-
-    let target_write = next_call(&messages);
+    let (mut messages, target_write) = before_target(PROMPT);
     assert_eq!(target_write.tool, "write_file");
     let arguments: serde_json::Value =
         serde_json::from_str(&target_write.arguments).expect("write arguments");
@@ -47,14 +50,18 @@ fn advance_to_verification() -> (Vec<ChatMessage>, PlannedToolCall) {
 
 #[test]
 fn exact_modifier_is_not_written_as_part_of_the_payload() {
-    let messages = vec![ChatMessage::user(PROMPT)];
-    let call = next_call(&messages);
-    let arguments: serde_json::Value = serde_json::from_str(&call.arguments).expect("arguments");
-    let plan = arguments["content"].as_str().expect("plan content");
+    let plan = formal_ai::agentic_coding::general_planner::compose_general_change_plan(PROMPT)
+        .expect("literal plan")
+        .links_notation();
     assert!(plan.contains("expected_evidence \"Hello World\""), "{plan}");
     assert!(
         !plan.contains("expected_evidence \"exactly: Hello World\""),
         "{plan}"
+    );
+    let (_, call) = before_target(PROMPT);
+    assert_eq!(
+        serde_json::from_str::<serde_json::Value>(&call.arguments).unwrap()["content"],
+        "Hello World"
     );
 }
 
@@ -85,10 +92,14 @@ fn exact_content_parsing_generalizes_across_payloads_and_punctuation() {
     .iter()
     .enumerate()
     {
-        let call = next_call(&[ChatMessage::user(*prompt)]);
+        let (_, call) = before_target(prompt);
         let arguments: serde_json::Value =
             serde_json::from_str(&call.arguments).expect("arguments");
-        let plan = arguments["content"].as_str().expect("plan content");
+        let target_bytes = arguments["content"].as_str().expect("actual target bytes");
+        let plan = formal_ai::agentic_coding::general_planner::compose_general_change_plan(prompt)
+            .expect("literal plan");
+        assert_eq!(target_bytes, plan.content, "case {index} exact target");
+        let plan = plan.links_notation();
         assert!(
             !plan.contains("expected_evidence: exactly"),
             "case {index}: {plan}"
@@ -98,8 +109,7 @@ fn exact_content_parsing_generalizes_across_payloads_and_punctuation() {
 
 #[test]
 fn failed_write_is_followed_by_read_then_one_write_retry() {
-    let mut messages = vec![ChatMessage::user(PROMPT)];
-    let plan_write = next_call(&messages);
+    let (mut messages, plan_write) = before_target(PROMPT);
     record(
         &mut messages,
         &plan_write,
@@ -118,14 +128,13 @@ fn failed_write_is_followed_by_read_then_one_write_retry() {
     assert_eq!(retry.tool, "write_file");
     assert_eq!(
         serde_json::from_str::<serde_json::Value>(&retry.arguments).unwrap()["path"],
-        ".formal-ai/general-change-plan.lino"
+        "hello.txt"
     );
 }
 
 #[test]
 fn a_second_failed_write_for_the_same_path_stops_retrying() {
-    let mut messages = vec![ChatMessage::user(PROMPT)];
-    let first = next_call(&messages);
+    let (mut messages, first) = before_target(PROMPT);
     record(
         &mut messages,
         &first,
@@ -172,7 +181,7 @@ fn a_second_failed_write_for_the_same_path_stops_retrying() {
 #[test]
 fn an_unrecoverable_write_still_asks_the_workspace_before_reporting() {
     let tools = ["write_file", "run_command"];
-    let mut messages = vec![ChatMessage::user(PROMPT)];
+    let (mut messages, _) = observed_plan_event::before_target(PROMPT, &tools);
     let mut guard = 0;
     let answer = loop {
         guard += 1;
@@ -202,27 +211,48 @@ fn an_unrecoverable_write_still_asks_the_workspace_before_reporting() {
 }
 
 #[test]
-fn failed_auxiliary_plan_write_without_read_still_attempts_the_target() {
+fn write_only_target_failure_is_reported_without_overwriting_the_auxiliary_stream() {
     let tools = ["write_file"];
     let mut messages = vec![ChatMessage::user(PROMPT)];
-    let Some(AgenticPlan::ToolCalls(mut calls)) = plan_chat_step(&messages, &tools) else {
-        panic!("expected the auxiliary plan write");
-    };
-    let plan_write = calls.remove(0);
-    record(
-        &mut messages,
-        &plan_write,
-        "<tool_use_error>Error writing file</tool_use_error>",
-    );
-
-    let Some(AgenticPlan::ToolCalls(mut calls)) = plan_chat_step(&messages, &tools) else {
-        panic!("the unavailable auxiliary plan must not swallow the user's write");
-    };
-    let target_write = calls.remove(0);
-    let arguments: serde_json::Value =
-        serde_json::from_str(&target_write.arguments).expect("target write arguments");
+    let call = observed_plan_event::next_call(&messages, &tools);
+    let arguments: serde_json::Value = serde_json::from_str(&call.arguments).expect("target write");
     assert_eq!(arguments["path"], "hello.txt");
     assert_eq!(arguments["content"], "Hello World");
+    record(
+        &mut messages,
+        &call,
+        "<tool_use_error>Error writing file</tool_use_error>",
+    );
+    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
+        panic!("the real target transport failure must terminate honestly");
+    };
+    assert!(answer.contains("Error writing file"), "{answer}");
+    assert!(
+        !answer.contains("Completed the general change request"),
+        "{answer}"
+    );
+}
+
+#[test]
+fn write_only_success_keeps_the_missing_auxiliary_receipt_explicit() {
+    let tools = ["write_file"];
+    let mut messages = vec![ChatMessage::user(PROMPT)];
+    let call = observed_plan_event::next_call(&messages, &tools);
+    let arguments: serde_json::Value = serde_json::from_str(&call.arguments).expect("target write");
+    assert_eq!(arguments["path"], "hello.txt");
+    assert_eq!(arguments["content"], "Hello World");
+    record(&mut messages, &call, r#"{"success":true}"#);
+    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
+        panic!("write-only clients cannot fabricate missing verification");
+    };
+    assert!(
+        answer.contains(".formal-ai/general-change-plan.lino"),
+        "{answer}"
+    );
+    assert!(
+        answer.contains("not marked the change complete"),
+        "{answer}"
+    );
 }
 
 #[test]
@@ -301,10 +331,7 @@ fn matching_observed_evidence_allows_completion() {
 #[test]
 fn requested_failure_vocabulary_is_valid_successful_evidence() {
     let prompt = "Create a file status.txt containing exactly: failed";
-    let mut messages = vec![ChatMessage::user(prompt)];
-    let plan_write = next_call(&messages);
-    record(&mut messages, &plan_write, r#"{"success":true}"#);
-    let target_write = next_call(&messages);
+    let (mut messages, target_write) = before_target(prompt);
     record(&mut messages, &target_write, r#"{"success":true}"#);
     let verification = next_call(&messages);
     record(

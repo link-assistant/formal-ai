@@ -489,8 +489,15 @@ function endOfStatement(request, from, limit) {
   const span = spanOf(sentence);
   const tail = slice(request, from, span.end);
   const saysMore = tail !== null && Array.from(tail).some(isAlphanumeric);
-  if (saysMore && !payloadContinuesPastItsFirstLine(request, from, span.end)) return Math.min(span.end, limit);
+  if (saysMore && !payloadContinuesPastItsFirstLine(request, from, span.end)) return Math.min(literalStatementEnd(request, span.end), limit);
   return limit;
+}
+
+/** Mirrors fn literal_statement_end: retain adjacent terminal marks in declared bytes. */
+function literalStatementEnd(request, from) {
+  let end = from;
+  while (end < request.length && /[.!?。！？।]/u.test(request[end])) end += 1;
+  return end;
 }
 
 function positionsShareStatement(request, left, right) {

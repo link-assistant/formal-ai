@@ -3,9 +3,12 @@
 //! Every row below is copied from the live v0.289.0 report and failed before the fix.
 use formal_ai::agentic_coding::general_planner::compose_general_change_plan;
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
-use formal_ai::protocol::ChatMessage;
+
+#[allow(dead_code)]
+#[path = "fixtures/observed-plan-event.rs"]
+mod observed_plan_event;
 fn single_call(prompt: &str, tools: &[&str]) -> (String, serde_json::Value) {
-    let messages = vec![ChatMessage::user(prompt)];
+    let (messages, _) = observed_plan_event::before_target(prompt, tools);
     match plan_chat_step(&messages, tools) {
         Some(AgenticPlan::ToolCalls(calls)) => {
             assert_eq!(calls.len(), 1, "expected one call for {prompt:?}");

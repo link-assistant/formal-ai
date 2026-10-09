@@ -1,0 +1,1 @@
+Historical file-creation and failure fixtures now observe the named auxiliary plan event before testing the requested target. Target bytes, bounded retry behavior, nonzero verification and wrong-output checks remain enforced. Write-only clients retain an explicit missing-receipt outcome; shell fixtures execute the unchanged append command and read its real bytes.

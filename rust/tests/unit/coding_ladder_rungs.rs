@@ -28,6 +28,10 @@ use formal_ai::protocol::{
 use formal_ai::seed::client_integrations;
 use formal_ai::solver::{SolverConfig, UniversalSolver};
 
+#[allow(dead_code)]
+#[path = "../fixtures/observed-plan-event.rs"]
+mod observed_plan_event;
+
 /// The exact envelope qwen-code handed back in issue #908 for a command that
 /// succeeded silently (`python3 -m py_compile main.py`).
 const SILENT_SUCCESS_ENVELOPE: &str = "Command: python3 -m py_compile main.py\n\
@@ -535,28 +539,26 @@ fn r916_02_a_successful_read_still_answers_with_the_file_contents() {
 fn r916_04_completion_is_not_claimed_when_verification_exits_nonzero() {
     let task = "Create a file hello.txt containing exactly: Hello World";
     let tools = ["write_file", "bash"];
-    let mut messages = vec![ChatMessage::user(task)];
-
-    // Both writes "succeed" as far as the transport is concerned — this is the
-    // `write_stdin failed: Unknown process id 0` run of issue #905, where the
-    // effect never reached the workspace.
-    for (index, result) in ["wrote the plan", "wrote hello.txt", MISSING_FILE_ENVELOPE]
+    let (mut messages, target) = observed_plan_event::before_target(task, &tools);
+    assert_eq!(target.tool, "write_file");
+    let target_args: serde_json::Value =
+        serde_json::from_str(&target.arguments).expect("target arguments");
+    assert_eq!(target_args["path"], "hello.txt");
+    assert_eq!(target_args["content"], "Hello World");
+    // Auxiliary stdout is observed before injecting the original effect/verification outcomes.
+    for (index, result) in ["wrote hello.txt", MISSING_FILE_ENVELOPE]
         .into_iter()
         .enumerate()
     {
-        let AgenticPlan::ToolCalls(calls) =
-            plan_chat_step(&messages, &tools).expect("planned step")
-        else {
-            panic!("step {index} must be a tool call");
-        };
-        let call = &calls[0];
-        let id = format!("call-{index}");
-        messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
-            &id,
-            &call.tool,
-            call.arguments.clone(),
-        )]));
-        messages.push(ChatMessage::tool_result(id, &call.tool, result));
+        let call = observed_plan_event::next_call(&messages, &tools);
+        if index == 1 {
+            assert_eq!(call.tool, "bash");
+            assert_eq!(
+                serde_json::from_str::<serde_json::Value>(&call.arguments).expect("verification")["command"],
+                "cat hello.txt"
+            );
+        }
+        observed_plan_event::record(&mut messages, &call, result);
     }
 
     let answer = final_answer(&messages, &tools);
@@ -578,27 +580,25 @@ fn r916_04_completion_is_not_claimed_when_verification_exits_nonzero() {
 fn r916_04_completion_is_claimed_when_the_effect_is_observed() {
     let task = "Create a file hello.txt containing exactly: Hello World";
     let tools = ["write_file", "bash"];
-    let mut messages = vec![ChatMessage::user(task)];
-
+    let (mut messages, target) = observed_plan_event::before_target(task, &tools);
+    assert_eq!(target.tool, "write_file");
+    let target_args: serde_json::Value =
+        serde_json::from_str(&target.arguments).expect("target arguments");
+    assert_eq!(target_args["path"], "hello.txt");
+    assert_eq!(target_args["content"], "Hello World");
+    // Auxiliary stdout is observed before injecting the original effect/verification outcomes.
     let observed = "Command: cat hello.txt\nDirectory: (root)\nOutput: Hello World\n\
          Error: (none)\nExit Code: 0\nSignal: 0\nProcess Group PGID: 685377";
-    for (index, result) in ["wrote the plan", "wrote hello.txt", observed]
-        .into_iter()
-        .enumerate()
-    {
-        let AgenticPlan::ToolCalls(calls) =
-            plan_chat_step(&messages, &tools).expect("planned step")
-        else {
-            panic!("step {index} must be a tool call");
-        };
-        let call = &calls[0];
-        let id = format!("call-{index}");
-        messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
-            &id,
-            &call.tool,
-            call.arguments.clone(),
-        )]));
-        messages.push(ChatMessage::tool_result(id, &call.tool, result));
+    for (index, result) in ["wrote hello.txt", observed].into_iter().enumerate() {
+        let call = observed_plan_event::next_call(&messages, &tools);
+        if index == 1 {
+            assert_eq!(call.tool, "bash");
+            assert_eq!(
+                serde_json::from_str::<serde_json::Value>(&call.arguments).expect("verification")["command"],
+                "cat hello.txt"
+            );
+        }
+        observed_plan_event::record(&mut messages, &call, result);
     }
 
     let answer = final_answer(&messages, &tools);
