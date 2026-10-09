@@ -1,0 +1,166 @@
+>> read {"filePath":"rust/tests/unit/agentic-coding/pull_request_1188_cifix.rs","file_path":"rust/tests/unit/agentic-coding/pull_request_1188_cifix.rs","path":"rust/tests/unit/agentic-coding/pull_request_1188_cifix.rs"}
+   <file>
+   00001| //! PR #1188 CIFIX: defects found while making the CI run 37738783201 failures
+   00002| //! green (dogfood ledger rows T180-T189).
+   00003| //!
+   00004| //! The JavaScript twin is `rust/tests/web/pull-request-1188-cifix.test.mjs`.
+   00005| 
+   00006| use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
+   00007| use formal_ai::{ChatMessage, ToolCall};
+   00008| 
+   00009| const TOOLS: [&str; 4] = ["read", "write", "edit", "bash"];
+   00010| 
+   00011| /// Plan until the first write and return the written content.
+   00012| fn first_write(prompt: &str, path: &str, source: &str) -> Option<String> {
+   00013|     let mut messages = vec![ChatMessage::user(prompt)];
+   00014|     for turn in 0..4 {
+   00015|         let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &TOOLS) else {
+   00016|             return None;
+   00017|         };
+   00018|         let call = calls.first()?.clone();
+   00019|         let arguments: serde_json::Value = serde_json::from_str(&call.arguments).ok()?;
+   00020|         if call.tool == "write" {
+   00021|             return arguments["content"].as_str().map(str::to_owned);
+   00022|         }
+   00023|         let read_path = ["filePath", "file_path", "path"]
+   00024|             .iter()
+   00025|             .find_map(|key| arguments[*key].as_str());
+   00026|         let id = format!("call_{turn}");
+   00027|         messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+   00028|             id.clone(),
+   00029|             call.tool.clone(),
+   00030|             call.arguments.clone(),
+   00031|         )]));
+   00032|         let result = if call.tool == "read" && read_path == Some(path) {
+   00033|             source
+   00034|         } else {
+   00035|             ""
+   00036|         };
+   00037|         messages.push(ChatMessage::tool_result(id, &call.tool, result));
+   00038|     }
+   00039|     None
+   00040| }
+   00041| 
+   00042| /// T180: a ladder node prompt repeats the member in its `result=` clause; the
+   00043| /// member is still inserted once.
+   00044| #[test]
+   00045| fn a_member_the_request_quotes_twice_is_inserted_once() {
+   00046|     let path = "src/intents.rs";
+   00047|     let source = "const OTHER_INTENTS: &[&str] = &[\n    \"code_debugging\",\n    \"regex_synthesis\",\n];\n";
+   00048|     let prompt = format!(
+   00049|         "Edit the tracked file `{path}`: add \"code_formatting\" to the OTHER_INTENTS list. \
+   00050|          Change only that file and keep it valid Rust. Then write a result line that states the \
+   00051|          change and contains the exact text \"code_formatting\"."
+   00052|     );
+   00053|     let written = first_write(&prompt, path, source).expect("the planner writes the edited list");
+   00054|     assert_eq!(
+   00055|         written.matches("\"code_formatting\"").count(),
+   00056|         1,
+   00057|         "{written}"
+   00058|     );
+   00059| }
+   00060| 
+   00061| /// Plan up to six steps and return what is written to `path`.
+   00062| fn write_to(prompt: &str, path: &str, source: &str) -> Option<String> {
+   00063|     let mut messages = vec![ChatMessage::user(prompt)];
+   00064|     for turn in 0..6 {
+   00065|         let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &TOOLS) else {
+   00066|             return None;
+   00067|         };
+   00068|         let call = calls.first()?.clone();
+   00069|         let arguments: serde_json::Value = serde_json::from_str(&call.arguments).ok()?;
+   00070|         let named = ["filePath", "file_path", "path"]
+   00071|             .iter()
+   00072|             .find_map(|key| arguments[*key].as_str());
+   00073|         if call.tool == "write" && named == Some(path) {
+   00074|             return arguments["content"].as_str().map(str::to_owned);
+   00075|         }
+   00076|         let id = format!("call_{turn}");
+   00077|         messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+   00078|             id.clone(),
+   00079|             call.tool.clone(),
+   00080|             call.arguments.clone(),
+   00081|         )]));
+   00082|         let result = if call.tool == "read" && named == Some(path) {
+   00083|             source
+   00084|         } else {
+   00085|             ""
+   00086|         };
+   00087|         messages.push(ChatMessage::tool_result(id, &call.tool, result));
+   00088|     }
+   00089|     None
+   00090| }
+   00091| 
+   00092| /// G68 (issue #745): the contents of a file are not a setting key, so setting
+   00093| /// them writes the file.
+   00094| #[test]
+   00095| fn setting_a_files_contents_writes_the_file() {
+   00096|     for prompt in [
+   00097|         "set the contents of note.txt to hello",
+   00098|         "pon el contenido de note.txt en hello",
+   00099|     ] {
+   00100|         assert_eq!(
+   00101|             write_to(prompt, "note.txt", "old\n").as_deref(),
+   00102|             Some("hello"),
+   00103|             "{prompt}"
+   00104|         );
+   00105|     }
+   00106| }
+   00107| 
+   00108| #[test]
+   00109| fn literal_write_authorization_does_not_cross_a_statement_or_a_read() {
+   00110|     use formal_ai::agentic_coding::compose_general_change_plan;
+   00111|     for prompt in [
+   00112|         "Inspect the shared literal-file request parser, whole-file guard and general planner in js/agentic/general_planner.mjs, js/agentic/write_request.mjs and js/agentic/literal_write_guard.mjs, with their native counterparts. Repair the general routing regression that sends declarative new files and explicit literal-content creation requests to read or semantic commands instead of write. Preserve read-before-replacement for existing edits, exact payload bytes, same-statement target/content binding, client-owned workspaces, bounded failed-write retries and honest verification status. Reproduce the original requests new file: notes.txt, contents: hello and Create a file named hello.txt with the content hello world using the actual planner before changes. Read the relevant tests and source before authoring; run only closest JavaScript checks, no native compiler. Report any exact missing capability instead of replacing tests or gates.",
+   00113|         "Read file f.txt with instructions to write a new document.",
+   00114|     ] {
+   00115|         assert!(compose_general_change_plan(prompt).is_none(), "{prompt}");
+   00116|     }
+   00117|     let plan =
+   00118|         compose_general_change_plan("Read file f.txt with care. Write report.txt containing done.");
+   00119|     assert!(plan.as_ref().is_none_or(|plan| plan.target != "f.txt"));
+   00120|     let declared = compose_general_change_plan("new file: notes.txt, contents: hello")
+   00121|         .expect("declarative creation");
+   00122|     assert_eq!(declared.target, "notes.txt");
+   00123|     assert_eq!(declared.content, "hello");
+   00124| }
+   00125| 
+   00126| #[test]
+   00127| fn unavailable_auxiliary_append_does_not_block_a_write_only_client_target() {
+   00128|     let prompt = "Create a file named hello.txt with the content hello world";
+   00129|     let mut messages = vec![ChatMessage::user(prompt)];
+   00130|     let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &["write"]) else {
+   00131|         panic!("target write must be delivered");
+   00132|     };
+   00133|     let call = &calls[0];
+   00134|     assert_eq!(call.tool, "write");
+   00135|     let args: serde_json::Value = serde_json::from_str(&call.arguments).expect("write args");
+   00136|     assert_eq!(args["path"], "hello.txt");
+   00137|     assert_eq!(args["content"], "hello world");
+   00138|     messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+   00139|         "target",
+   00140|         &call.tool,
+   00141|         &call.arguments,
+   00142|     )]));
+   00143|     messages.push(ChatMessage::tool_result(
+   00144|         "target",
+   00145|         &call.tool,
+   00146|         r#"{"success":true}"#,
+   00147|     ));
+   00148|     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &["write"]) else {
+   00149|         panic!("unavailable persistence must be reported honestly");
+   00150|     };
+   00151|     assert!(!answer.contains("Completed the general change request"));
+   00152|     assert!(answer.contains(".formal-ai/general-change-plan.lino"));
+   00153| }
+   00154| 
+   
+   (End of file - total 154 lines)
+   </file>
+>> edit {"filePath":"rust/tests/unit/agentic-coding/pull_request_1188_cifix.rs","file_path":"rust/tests/unit/agentic-coding/pull_request_1188_cifix.rs","new":"use formal_ai::agentic_coding::general_planner::compose_general_change_plan;","newString":"use formal_ai::agentic_coding::general_planner::compose_general_change_plan;","new_str":"use formal_ai::agentic_coding::general_planner::compose_general_change_plan;","new_string":"use formal_ai::agentic_coding::general_planner::compose_general_change_plan;","old":"use formal_ai::agentic_coding::compose_general_change_plan;","oldString":"use formal_ai::agentic_coding::compose_general_change_plan;","old_str":"use formal_ai::agentic_coding::compose_general_change_plan;","old_string":"use formal_ai::agentic_coding::compose_general_change_plan;","path":"rust/tests/unit/agentic-coding/pull_request_1188_cifix.rs"}
+>> bash {"command":"sha256sum -- rust/tests/unit/agentic-coding/pull_request_1188_cifix.rs"}
+   Output: 68eff9c7adfcd576af69b712227521fabf9cdab472ad1d628caa32804053484e  rust/tests/unit/agentic-coding/pull_request_1188_cifix.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `use formal_ai::agentic_coding::compose_general_change_plan;` with `use formal_ai::agentic_coding::general_planner::compose_general_change_plan;` in `rust/tests/unit/agentic-coding/pull_request_1188_cifix.rs` and observed the result.

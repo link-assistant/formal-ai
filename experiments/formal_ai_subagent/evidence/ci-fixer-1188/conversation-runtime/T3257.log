@@ -1,0 +1,216 @@
+>> read {"filePath":"data/seed/multilingual-responses-conversation-recall.lino","file_path":"data/seed/multilingual-responses-conversation-recall.lino","path":"data/seed/multilingual-responses-conversation-recall.lino"}
+   <file>
+   00001| multilingual-responses-conversation-recall
+   00002|   response response-conversation-recall-empty-en
+   00003|     intent conversation-recall-empty
+   00004|     language en
+   00005|     text "No mentions of \"{term}\" found in the conversation history."
+   00006|   response response-conversation-recall-empty-ru
+   00007|     intent conversation-recall-empty
+   00008|     language ru
+   00009|     text "Упоминаний \"{term}\" в истории разговора не найдено."
+   00010|   response response-conversation-recall-empty-hi
+   00011|     intent conversation-recall-empty
+   00012|     language hi
+   00013|     text "बातचीत के इतिहास में \"{term}\" नहीं मिला."
+   00014|   response response-conversation-recall-empty-zh
+   00015|     intent conversation-recall-empty
+   00016|     language zh
+   00017|     text "在对话历史中没有找到 \"{term}\"。"
+   00018|   response response-conversation-recall-empty-es
+   00019|     intent conversation-recall-empty
+   00020|     language es
+   00021|     text "No se encontraron menciones de \"{term}\" en el historial de la conversación."
+   00022|   response response-conversation-recall-header-en
+   00023|     intent conversation-recall-header
+   00024|     language en
+   00025|     text "Found {count} mention(s) of \"{term}\" in the conversation history."
+   00026|   response response-conversation-recall-header-ru
+   00027|     intent conversation-recall-header
+   00028|     language ru
+   00029|     text "Найдено упоминаний \"{term}\" в истории разговора: {count}"
+   00030|   response response-conversation-recall-header-hi
+   00031|     intent conversation-recall-header
+   00032|     language hi
+   00033|     text "बातचीत के इतिहास में \"{term}\" के उल्लेख मिले: {count}"
+   00034|   response response-conversation-recall-header-zh
+   00035|     intent conversation-recall-header
+   00036|     language zh
+   00037|     text "在对话历史中找到 \"{term}\" 的记录: {count}"
+   00038|   response response-conversation-recall-header-es
+   00039|     intent conversation-recall-header
+   00040|     language es
+   00041|     text "Se encontraron {count} menciones de \"{term}\" en el historial de la conversación."
+   00042|   response response-conversation-recall-turn-en
+   00043|     intent conversation-recall-turn
+   00044|     language en
+   00045|     text "- turn {turn} {role}: {content}"
+   00046|   response response-conversation-recall-turn-ru
+   00047|     intent conversation-recall-turn
+   00048|     language ru
+   00049|     text "- turn {turn} {role}: {content}"
+   00050|   response response-conversation-recall-turn-hi
+   00051|     intent conversation-recall-turn
+   00052|     language hi
+   00053|     text "- turn {turn} {role}: {content}"
+   00054|   response response-conversation-recall-turn-zh
+   00055|     intent conversation-recall-turn
+   00056|     language zh
+   00057|     text "- turn {turn} {role}: {content}"
+   00058|   response response-conversation-recall-turn-es
+   00059|     intent conversation-recall-turn
+   00060|     language es
+   00061|     text "- turn {turn} {role}: {content}"
+   00062| 
+   
+   (End of file - total 62 lines)
+   </file>
+>> edit {"filePath":"data/seed/multilingual-responses-conversation-recall.lino","file_path":"data/seed/multilingual-responses-conversation-recall.lino","new":"multilingual-responses-conversation-recall\n  response response-conversation-recall-empty-en\n    intent conversation-recall-empty\n    language en\n    text \"No mentions of \\\"{term}\\\" found in the conversation history.\"\n  response response-conversation-recall-empty-ru\n    intent conversation-recall-empty\n    language ru\n    text \"Упоминаний \\\"{term}\\\" в истории разговора не найдено.\"\n  response response-conversation-recall-empty-hi\n    intent conversation-recall-empty\n    language hi\n    text \"बातचीत के इतिहास में \\\"{term}\\\" नहीं मिला.\"\n  response response-conversation-recall-empty-zh\n    intent conversation-recall-empty\n    language zh\n    text \"在对话历史中没有找到 \\\"{term}\\\"。\"\n  response response-conversation-recall-empty-es\n    intent conversation-recall-empty\n    language es\n    text \"No se encontraron menciones de \\\"{term}\\\" en el historial de la conversación.\"\n  response response-conversation-recall-header-en\n    intent conversation-recall-header\n    language en\n    text \"Found {count} mention(s) of \\\"{term}\\\" in the conversation history.\"\n  response response-conversation-recall-header-ru\n    intent conversation-recall-header\n    language ru\n    text \"Найдено упоминаний \\\"{term}\\\" в истории разговора: {count}\"\n  response response-conversation-recall-header-hi\n    intent conversation-recall-header\n    language hi\n    text \"बातचीत के इतिहास में \\\"{term}\\\" के उल्लेख मिले: {count}\"\n  response response-conversation-recall-header-zh\n    intent conversation-recall-header\n    language zh\n    text \"在对话历史中找到 \\\"{term}\\\" 的记录: {count}\"\n  response response-conversation-recall-header-es\n    intent conversation-recall-header\n    language es\n    text \"Se encontraron {count} menciones de \\\"{term}\\\" en el historial de la conversación.\"\n  response response-conversation-recall-turn-en\n    intent conversation-recall-turn\n    language en\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-ru\n    intent conversation-recall-turn\n    language ru\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-hi\n    intent conversation-recall-turn\n    language hi\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-zh\n    intent conversation-recall-turn\n    language zh\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-es\n    intent conversation-recall-turn\n    language es\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-summary-envelope-en\n    intent conversation-summary-envelope\n    language en\n    text \"Conversation summary: {summary}\\n\\nTitle: {title}\\n\\nUser turns:\\n\"\n  response response-conversation-summary-envelope-ru\n    intent conversation-summary-envelope\n    language ru\n    text \"Резюме разговора: {summary}\\n\\nЗаголовок: {title}\\n\\nРеплики пользователя:\\n\"\n  response response-conversation-summary-envelope-zh\n    intent conversation-summary-envelope\n    language zh\n    text \"对话摘要:{summary}\\n\\n标题:{title}\\n\\n用户发言:\\n\"\n  response response-conversation-summary-envelope-hi\n    intent conversation-summary-envelope\n    language hi\n    text \"बातचीत का सारांश: {summary}\\n\\nशीर्षक: {title}\\n\\nउपयोगकर्ता के संदेश:\\n\"\n  response response-conversation-summary-envelope-es\n    intent conversation-summary-envelope\n    language es\n    text \"Resumen de la conversación: {summary}\\n\\nTítulo: {title}\\n\\nTurnos del usuario:\\n\"\n","newString":"multilingual-responses-conversation-recall\n  response response-conversation-recall-empty-en\n    intent conversation-recall-empty\n    language en\n    text \"No mentions of \\\"{term}\\\" found in the conversation history.\"\n  response response-conversation-recall-empty-ru\n    intent conversation-recall-empty\n    language ru\n    text \"Упоминаний \\\"{term}\\\" в истории разговора не найдено.\"\n  response response-conversation-recall-empty-hi\n    intent conversation-recall-empty\n    language hi\n    text \"बातचीत के इतिहास में \\\"{term}\\\" नहीं मिला.\"\n  response response-conversation-recall-empty-zh\n    intent conversation-recall-empty\n    language zh\n    text \"在对话历史中没有找到 \\\"{term}\\\"。\"\n  response response-conversation-recall-empty-es\n    intent conversation-recall-empty\n    language es\n    text \"No se encontraron menciones de \\\"{term}\\\" en el historial de la conversación.\"\n  response response-conversation-recall-header-en\n    intent conversation-recall-header\n    language en\n    text \"Found {count} mention(s) of \\\"{term}\\\" in the conversation history.\"\n  response response-conversation-recall-header-ru\n    intent conversation-recall-header\n    language ru\n    text \"Найдено упоминаний \\\"{term}\\\" в истории разговора: {count}\"\n  response response-conversation-recall-header-hi\n    intent conversation-recall-header\n    language hi\n    text \"बातचीत के इतिहास में \\\"{term}\\\" के उल्लेख मिले: {count}\"\n  response response-conversation-recall-header-zh\n    intent conversation-recall-header\n    language zh\n    text \"在对话历史中找到 \\\"{term}\\\" 的记录: {count}\"\n  response response-conversation-recall-header-es\n    intent conversation-recall-header\n    language es\n    text \"Se encontraron {count} menciones de \\\"{term}\\\" en el historial de la conversación.\"\n  response response-conversation-recall-turn-en\n    intent conversation-recall-turn\n    language en\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-ru\n    intent conversation-recall-turn\n    language ru\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-hi\n    intent conversation-recall-turn\n    language hi\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-zh\n    intent conversation-recall-turn\n    language zh\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-es\n    intent conversation-recall-turn\n    language es\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-summary-envelope-en\n    intent conversation-summary-envelope\n    language en\n    text \"Conversation summary: {summary}\\n\\nTitle: {title}\\n\\nUser turns:\\n\"\n  response response-conversation-summary-envelope-ru\n    intent conversation-summary-envelope\n    language ru\n    text \"Резюме разговора: {summary}\\n\\nЗаголовок: {title}\\n\\nРеплики пользователя:\\n\"\n  response response-conversation-summary-envelope-zh\n    intent conversation-summary-envelope\n    language zh\n    text \"对话摘要:{summary}\\n\\n标题:{title}\\n\\n用户发言:\\n\"\n  response response-conversation-summary-envelope-hi\n    intent conversation-summary-envelope\n    language hi\n    text \"बातचीत का सारांश: {summary}\\n\\nशीर्षक: {title}\\n\\nउपयोगकर्ता के संदेश:\\n\"\n  response response-conversation-summary-envelope-es\n    intent conversation-summary-envelope\n    language es\n    text \"Resumen de la conversación: {summary}\\n\\nTítulo: {title}\\n\\nTurnos del usuario:\\n\"\n","new_str":"multilingual-responses-conversation-recall\n  response response-conversation-recall-empty-en\n    intent conversation-recall-empty\n    language en\n    text \"No mentions of \\\"{term}\\\" found in the conversation history.\"\n  response response-conversation-recall-empty-ru\n    intent conversation-recall-empty\n    language ru\n    text \"Упоминаний \\\"{term}\\\" в истории разговора не найдено.\"\n  response response-conversation-recall-empty-hi\n    intent conversation-recall-empty\n    language hi\n    text \"बातचीत के इतिहास में \\\"{term}\\\" नहीं मिला.\"\n  response response-conversation-recall-empty-zh\n    intent conversation-recall-empty\n    language zh\n    text \"在对话历史中没有找到 \\\"{term}\\\"。\"\n  response response-conversation-recall-empty-es\n    intent conversation-recall-empty\n    language es\n    text \"No se encontraron menciones de \\\"{term}\\\" en el historial de la conversación.\"\n  response response-conversation-recall-header-en\n    intent conversation-recall-header\n    language en\n    text \"Found {count} mention(s) of \\\"{term}\\\" in the conversation history.\"\n  response response-conversation-recall-header-ru\n    intent conversation-recall-header\n    language ru\n    text \"Найдено упоминаний \\\"{term}\\\" в истории разговора: {count}\"\n  response response-conversation-recall-header-hi\n    intent conversation-recall-header\n    language hi\n    text \"बातचीत के इतिहास में \\\"{term}\\\" के उल्लेख मिले: {count}\"\n  response response-conversation-recall-header-zh\n    intent conversation-recall-header\n    language zh\n    text \"在对话历史中找到 \\\"{term}\\\" 的记录: {count}\"\n  response response-conversation-recall-header-es\n    intent conversation-recall-header\n    language es\n    text \"Se encontraron {count} menciones de \\\"{term}\\\" en el historial de la conversación.\"\n  response response-conversation-recall-turn-en\n    intent conversation-recall-turn\n    language en\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-ru\n    intent conversation-recall-turn\n    language ru\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-hi\n    intent conversation-recall-turn\n    language hi\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-zh\n    intent conversation-recall-turn\n    language zh\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-es\n    intent conversation-recall-turn\n    language es\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-summary-envelope-en\n    intent conversation-summary-envelope\n    language en\n    text \"Conversation summary: {summary}\\n\\nTitle: {title}\\n\\nUser turns:\\n\"\n  response response-conversation-summary-envelope-ru\n    intent conversation-summary-envelope\n    language ru\n    text \"Резюме разговора: {summary}\\n\\nЗаголовок: {title}\\n\\nРеплики пользователя:\\n\"\n  response response-conversation-summary-envelope-zh\n    intent conversation-summary-envelope\n    language zh\n    text \"对话摘要:{summary}\\n\\n标题:{title}\\n\\n用户发言:\\n\"\n  response response-conversation-summary-envelope-hi\n    intent conversation-summary-envelope\n    language hi\n    text \"बातचीत का सारांश: {summary}\\n\\nशीर्षक: {title}\\n\\nउपयोगकर्ता के संदेश:\\n\"\n  response response-conversation-summary-envelope-es\n    intent conversation-summary-envelope\n    language es\n    text \"Resumen de la conversación: {summary}\\n\\nTítulo: {title}\\n\\nTurnos del usuario:\\n\"\n","new_string":"multilingual-responses-conversation-recall\n  response response-conversation-recall-empty-en\n    intent conversation-recall-empty\n    language en\n    text \"No mentions of \\\"{term}\\\" found in the conversation history.\"\n  response response-conversation-recall-empty-ru\n    intent conversation-recall-empty\n    language ru\n    text \"Упоминаний \\\"{term}\\\" в истории разговора не найдено.\"\n  response response-conversation-recall-empty-hi\n    intent conversation-recall-empty\n    language hi\n    text \"बातचीत के इतिहास में \\\"{term}\\\" नहीं मिला.\"\n  response response-conversation-recall-empty-zh\n    intent conversation-recall-empty\n    language zh\n    text \"在对话历史中没有找到 \\\"{term}\\\"。\"\n  response response-conversation-recall-empty-es\n    intent conversation-recall-empty\n    language es\n    text \"No se encontraron menciones de \\\"{term}\\\" en el historial de la conversación.\"\n  response response-conversation-recall-header-en\n    intent conversation-recall-header\n    language en\n    text \"Found {count} mention(s) of \\\"{term}\\\" in the conversation history.\"\n  response response-conversation-recall-header-ru\n    intent conversation-recall-header\n    language ru\n    text \"Найдено упоминаний \\\"{term}\\\" в истории разговора: {count}\"\n  response response-conversation-recall-header-hi\n    intent conversation-recall-header\n    language hi\n    text \"बातचीत के इतिहास में \\\"{term}\\\" के उल्लेख मिले: {count}\"\n  response response-conversation-recall-header-zh\n    intent conversation-recall-header\n    language zh\n    text \"在对话历史中找到 \\\"{term}\\\" 的记录: {count}\"\n  response response-conversation-recall-header-es\n    intent conversation-recall-header\n    language es\n    text \"Se encontraron {count} menciones de \\\"{term}\\\" en el historial de la conversación.\"\n  response response-conversation-recall-turn-en\n    intent conversation-recall-turn\n    language en\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-ru\n    intent conversation-recall-turn\n    language ru\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-hi\n    intent conversation-recall-turn\n    language hi\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-zh\n    intent conversation-recall-turn\n    language zh\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-es\n    intent conversation-recall-turn\n    language es\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-summary-envelope-en\n    intent conversation-summary-envelope\n    language en\n    text \"Conversation summary: {summary}\\n\\nTitle: {title}\\n\\nUser turns:\\n\"\n  response response-conversation-summary-envelope-ru\n    intent conversation-summary-envelope\n    language ru\n    text \"Резюме разговора: {summary}\\n\\nЗаголовок: {title}\\n\\nРеплики пользователя:\\n\"\n  response response-conversation-summary-envelope-zh\n    intent conversation-summary-envelope\n    language zh\n    text \"对话摘要:{summary}\\n\\n标题:{title}\\n\\n用户发言:\\n\"\n  response response-conversation-summary-envelope-hi\n    intent conversation-summary-envelope\n    language hi\n    text \"बातचीत का सारांश: {summary}\\n\\nशीर्षक: {title}\\n\\nउपयोगकर्ता के संदेश:\\n\"\n  response response-conversation-summary-envelope-es\n    intent conversation-summary-envelope\n    language es\n    text \"Resumen de la conversación: {summary}\\n\\nTítulo: {title}\\n\\nTurnos del usuario:\\n\"\n","old":"multilingual-responses-conversation-recall\n  response response-conversation-recall-empty-en\n    intent conversation-recall-empty\n    language en\n    text \"No mentions of \\\"{term}\\\" found in the conversation history.\"\n  response response-conversation-recall-empty-ru\n    intent conversation-recall-empty\n    language ru\n    text \"Упоминаний \\\"{term}\\\" в истории разговора не найдено.\"\n  response response-conversation-recall-empty-hi\n    intent conversation-recall-empty\n    language hi\n    text \"बातचीत के इतिहास में \\\"{term}\\\" नहीं मिला.\"\n  response response-conversation-recall-empty-zh\n    intent conversation-recall-empty\n    language zh\n    text \"在对话历史中没有找到 \\\"{term}\\\"。\"\n  response response-conversation-recall-empty-es\n    intent conversation-recall-empty\n    language es\n    text \"No se encontraron menciones de \\\"{term}\\\" en el historial de la conversación.\"\n  response response-conversation-recall-header-en\n    intent conversation-recall-header\n    language en\n    text \"Found {count} mention(s) of \\\"{term}\\\" in the conversation history.\"\n  response response-conversation-recall-header-ru\n    intent conversation-recall-header\n    language ru\n    text \"Найдено упоминаний \\\"{term}\\\" в истории разговора: {count}\"\n  response response-conversation-recall-header-hi\n    intent conversation-recall-header\n    language hi\n    text \"बातचीत के इतिहास में \\\"{term}\\\" के उल्लेख मिले: {count}\"\n  response response-conversation-recall-header-zh\n    intent conversation-recall-header\n    language zh\n    text \"在对话历史中找到 \\\"{term}\\\" 的记录: {count}\"\n  response response-conversation-recall-header-es\n    intent conversation-recall-header\n    language es\n    text \"Se encontraron {count} menciones de \\\"{term}\\\" en el historial de la conversación.\"\n  response response-conversation-recall-turn-en\n    intent conversation-recall-turn\n    language en\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-ru\n    intent conversation-recall-turn\n    language ru\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-hi\n    intent conversation-recall-turn\n    language hi\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-zh\n    intent conversation-recall-turn\n    language zh\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-es\n    intent conversation-recall-turn\n    language es\n    text \"- turn {turn} {role}: {content}\"\n","oldString":"multilingual-responses-conversation-recall\n  response response-conversation-recall-empty-en\n    intent conversation-recall-empty\n    language en\n    text \"No mentions of \\\"{term}\\\" found in the conversation history.\"\n  response response-conversation-recall-empty-ru\n    intent conversation-recall-empty\n    language ru\n    text \"Упоминаний \\\"{term}\\\" в истории разговора не найдено.\"\n  response response-conversation-recall-empty-hi\n    intent conversation-recall-empty\n    language hi\n    text \"बातचीत के इतिहास में \\\"{term}\\\" नहीं मिला.\"\n  response response-conversation-recall-empty-zh\n    intent conversation-recall-empty\n    language zh\n    text \"在对话历史中没有找到 \\\"{term}\\\"。\"\n  response response-conversation-recall-empty-es\n    intent conversation-recall-empty\n    language es\n    text \"No se encontraron menciones de \\\"{term}\\\" en el historial de la conversación.\"\n  response response-conversation-recall-header-en\n    intent conversation-recall-header\n    language en\n    text \"Found {count} mention(s) of \\\"{term}\\\" in the conversation history.\"\n  response response-conversation-recall-header-ru\n    intent conversation-recall-header\n    language ru\n    text \"Найдено упоминаний \\\"{term}\\\" в истории разговора: {count}\"\n  response response-conversation-recall-header-hi\n    intent conversation-recall-header\n    language hi\n    text \"बातचीत के इतिहास में \\\"{term}\\\" के उल्लेख मिले: {count}\"\n  response response-conversation-recall-header-zh\n    intent conversation-recall-header\n    language zh\n    text \"在对话历史中找到 \\\"{term}\\\" 的记录: {count}\"\n  response response-conversation-recall-header-es\n    intent conversation-recall-header\n    language es\n    text \"Se encontraron {count} menciones de \\\"{term}\\\" en el historial de la conversación.\"\n  response response-conversation-recall-turn-en\n    intent conversation-recall-turn\n    language en\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-ru\n    intent conversation-recall-turn\n    language ru\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-hi\n    intent conversation-recall-turn\n    language hi\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-zh\n    intent conversation-recall-turn\n    language zh\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-es\n    intent conversation-recall-turn\n    language es\n    text \"- turn {turn} {role}: {content}\"\n","old_str":"multilingual-responses-conversation-recall\n  response response-conversation-recall-empty-en\n    intent conversation-recall-empty\n    language en\n    text \"No mentions of \\\"{term}\\\" found in the conversation history.\"\n  response response-conversation-recall-empty-ru\n    intent conversation-recall-empty\n    language ru\n    text \"Упоминаний \\\"{term}\\\" в истории разговора не найдено.\"\n  response response-conversation-recall-empty-hi\n    intent conversation-recall-empty\n    language hi\n    text \"बातचीत के इतिहास में \\\"{term}\\\" नहीं मिला.\"\n  response response-conversation-recall-empty-zh\n    intent conversation-recall-empty\n    language zh\n    text \"在对话历史中没有找到 \\\"{term}\\\"。\"\n  response response-conversation-recall-empty-es\n    intent conversation-recall-empty\n    language es\n    text \"No se encontraron menciones de \\\"{term}\\\" en el historial de la conversación.\"\n  response response-conversation-recall-header-en\n    intent conversation-recall-header\n    language en\n    text \"Found {count} mention(s) of \\\"{term}\\\" in the conversation history.\"\n  response response-conversation-recall-header-ru\n    intent conversation-recall-header\n    language ru\n    text \"Найдено упоминаний \\\"{term}\\\" в истории разговора: {count}\"\n  response response-conversation-recall-header-hi\n    intent conversation-recall-header\n    language hi\n    text \"बातचीत के इतिहास में \\\"{term}\\\" के उल्लेख मिले: {count}\"\n  response response-conversation-recall-header-zh\n    intent conversation-recall-header\n    language zh\n    text \"在对话历史中找到 \\\"{term}\\\" 的记录: {count}\"\n  response response-conversation-recall-header-es\n    intent conversation-recall-header\n    language es\n    text \"Se encontraron {count} menciones de \\\"{term}\\\" en el historial de la conversación.\"\n  response response-conversation-recall-turn-en\n    intent conversation-recall-turn\n    language en\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-ru\n    intent conversation-recall-turn\n    language ru\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-hi\n    intent conversation-recall-turn\n    language hi\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-zh\n    intent conversation-recall-turn\n    language zh\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-es\n    intent conversation-recall-turn\n    language es\n    text \"- turn {turn} {role}: {content}\"\n","old_string":"multilingual-responses-conversation-recall\n  response response-conversation-recall-empty-en\n    intent conversation-recall-empty\n    language en\n    text \"No mentions of \\\"{term}\\\" found in the conversation history.\"\n  response response-conversation-recall-empty-ru\n    intent conversation-recall-empty\n    language ru\n    text \"Упоминаний \\\"{term}\\\" в истории разговора не найдено.\"\n  response response-conversation-recall-empty-hi\n    intent conversation-recall-empty\n    language hi\n    text \"बातचीत के इतिहास में \\\"{term}\\\" नहीं मिला.\"\n  response response-conversation-recall-empty-zh\n    intent conversation-recall-empty\n    language zh\n    text \"在对话历史中没有找到 \\\"{term}\\\"。\"\n  response response-conversation-recall-empty-es\n    intent conversation-recall-empty\n    language es\n    text \"No se encontraron menciones de \\\"{term}\\\" en el historial de la conversación.\"\n  response response-conversation-recall-header-en\n    intent conversation-recall-header\n    language en\n    text \"Found {count} mention(s) of \\\"{term}\\\" in the conversation history.\"\n  response response-conversation-recall-header-ru\n    intent conversation-recall-header\n    language ru\n    text \"Найдено упоминаний \\\"{term}\\\" в истории разговора: {count}\"\n  response response-conversation-recall-header-hi\n    intent conversation-recall-header\n    language hi\n    text \"बातचीत के इतिहास में \\\"{term}\\\" के उल्लेख मिले: {count}\"\n  response response-conversation-recall-header-zh\n    intent conversation-recall-header\n    language zh\n    text \"在对话历史中找到 \\\"{term}\\\" 的记录: {count}\"\n  response response-conversation-recall-header-es\n    intent conversation-recall-header\n    language es\n    text \"Se encontraron {count} menciones de \\\"{term}\\\" en el historial de la conversación.\"\n  response response-conversation-recall-turn-en\n    intent conversation-recall-turn\n    language en\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-ru\n    intent conversation-recall-turn\n    language ru\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-hi\n    intent conversation-recall-turn\n    language hi\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-zh\n    intent conversation-recall-turn\n    language zh\n    text \"- turn {turn} {role}: {content}\"\n  response response-conversation-recall-turn-es\n    intent conversation-recall-turn\n    language es\n    text \"- turn {turn} {role}: {content}\"\n","path":"data/seed/multilingual-responses-conversation-recall.lino"}
+>> bash {"command":"sha256sum -- data/seed/multilingual-responses-conversation-recall.lino"}
+   Output: 0e43c74769ace4419fecdc5ddbf33e3fef800112f204fe7581208391702c5cf0  data/seed/multilingual-responses-conversation-recall.lino
+   
+   Exit Code: 0
+== answer ==
+Replaced `multilingual-responses-conversation-recall
+  response response-conversation-recall-empty-en
+    intent conversation-recall-empty
+    language en
+    text "No mentions of \"{term}\" found in the conversation history."
+  response response-conversation-recall-empty-ru
+    intent conversation-recall-empty
+    language ru
+    text "Упоминаний \"{term}\" в истории разговора не найдено."
+  response response-conversation-recall-empty-hi
+    intent conversation-recall-empty
+    language hi
+    text "बातचीत के इतिहास में \"{term}\" नहीं मिला."
+  response response-conversation-recall-empty-zh
+    intent conversation-recall-empty
+    language zh
+    text "在对话历史中没有找到 \"{term}\"。"
+  response response-conversation-recall-empty-es
+    intent conversation-recall-empty
+    language es
+    text "No se encontraron menciones de \"{term}\" en el historial de la conversación."
+  response response-conversation-recall-header-en
+    intent conversation-recall-header
+    language en
+    text "Found {count} mention(s) of \"{term}\" in the conversation history."
+  response response-conversation-recall-header-ru
+    intent conversation-recall-header
+    language ru
+    text "Найдено упоминаний \"{term}\" в истории разговора: {count}"
+  response response-conversation-recall-header-hi
+    intent conversation-recall-header
+    language hi
+    text "बातचीत के इतिहास में \"{term}\" के उल्लेख मिले: {count}"
+  response response-conversation-recall-header-zh
+    intent conversation-recall-header
+    language zh
+    text "在对话历史中找到 \"{term}\" 的记录: {count}"
+  response response-conversation-recall-header-es
+    intent conversation-recall-header
+    language es
+    text "Se encontraron {count} menciones de \"{term}\" en el historial de la conversación."
+  response response-conversation-recall-turn-en
+    intent conversation-recall-turn
+    language en
+    text "- turn {turn} {role}: {content}"
+  response response-conversation-recall-turn-ru
+    intent conversation-recall-turn
+    language ru
+    text "- turn {turn} {role}: {content}"
+  response response-conversation-recall-turn-hi
+    intent conversation-recall-turn
+    language hi
+    text "- turn {turn} {role}: {content}"
+  response response-conversation-recall-turn-zh
+    intent conversation-recall-turn
+    language zh
+    text "- turn {turn} {role}: {content}"
+  response response-conversation-recall-turn-es
+    intent conversation-recall-turn
+    language es
+    text "- turn {turn} {role}: {content}"
+` with `multilingual-responses-conversation-recall
+  response response-conversation-recall-empty-en
+    intent conversation-recall-empty
+    language en
+    text "No mentions of \"{term}\" found in the conversation history."
+  response response-conversation-recall-empty-ru
+    intent conversation-recall-empty
+    language ru
+    text "Упоминаний \"{term}\" в истории разговора не найдено."
+  response response-conversation-recall-empty-hi
+    intent conversation-recall-empty
+    language hi
+    text "बातचीत के इतिहास में \"{term}\" नहीं मिला."
+  response response-conversation-recall-empty-zh
+    intent conversation-recall-empty
+    language zh
+    text "在对话历史中没有找到 \"{term}\"。"
+  response response-conversation-recall-empty-es
+    intent conversation-recall-empty
+    language es
+    text "No se encontraron menciones de \"{term}\" en el historial de la conversación."
+  response response-conversation-recall-header-en
+    intent conversation-recall-header
+    language en
+    text "Found {count} mention(s) of \"{term}\" in the conversation history."
+  response response-conversation-recall-header-ru
+    intent conversation-recall-header
+    language ru
+    text "Найдено упоминаний \"{term}\" в истории разговора: {count}"
+  response response-conversation-recall-header-hi
+    intent conversation-recall-header
+    language hi
+    text "बातचीत के इतिहास में \"{term}\" के उल्लेख मिले: {count}"
+  response response-conversation-recall-header-zh
+    intent conversation-recall-header
+    language zh
+    text "在对话历史中找到 \"{term}\" 的记录: {count}"
+  response response-conversation-recall-header-es
+    intent conversation-recall-header
+    language es
+    text "Se encontraron {count} menciones de \"{term}\" en el historial de la conversación."
+  response response-conversation-recall-turn-en
+    intent conversation-recall-turn
+    language en
+    text "- turn {turn} {role}: {content}"
+  response response-conversation-recall-turn-ru
+    intent conversation-recall-turn
+    language ru
+    text "- turn {turn} {role}: {content}"
+  response response-conversation-recall-turn-hi
+    intent conversation-recall-turn
+    language hi
+    text "- turn {turn} {role}: {content}"
+  response response-conversation-recall-turn-zh
+    intent conversation-recall-turn
+    language zh
+    text "- turn {turn} {role}: {content}"
+  response response-conversation-recall-turn-es
+    intent conversation-recall-turn
+    language es
+    text "- turn {turn} {role}: {content}"
+  response response-conversation-summary-envelope-en
+    intent conversation-summary-envelope
+    language en
+    text "Conversation summary: {summary}\n\nTitle: {title}\n\nUser turns:\n"
+  response response-conversation-summary-envelope-ru
+    intent conversation-summary-envelope
+    language ru
+    text "Резюме разговора: {summary}\n\nЗаголовок: {title}\n\nРеплики пользователя:\n"
+  response response-conversation-summary-envelope-zh
+    intent conversation-summary-envelope
+    language zh
+    text "对话摘要:{summary}\n\n标题:{title}\n\n用户发言:\n"
+  response response-conversation-summary-envelope-hi
+    intent conversation-summary-envelope
+    language hi
+    text "बातचीत का सारांश: {summary}\n\nशीर्षक: {title}\n\nउपयोगकर्ता के संदेश:\n"
+  response response-conversation-summary-envelope-es
+    intent conversation-summary-envelope
+    language es
+    text "Resumen de la conversación: {summary}\n\nTítulo: {title}\n\nTurnos del usuario:\n"
+` in `data/seed/multilingual-responses-conversation-recall.lino` and observed the result.

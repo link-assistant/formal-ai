@@ -1,0 +1,235 @@
+>> read {"filePath":"rust/src/solver_handlers/conversation_memory/conversation_summary.rs","file_path":"rust/src/solver_handlers/conversation_memory/conversation_summary.rs","path":"rust/src/solver_handlers/conversation_memory/conversation_summary.rs"}
+   <file>
+   00001| use std::fmt::Write as _;
+   00002| 
+   00003| use super::super::finalize_simple;
+   00004| use crate::coding::contains_cjk;
+   00005| use crate::engine::{SymbolicAnswer, normalize_prompt};
+   00006| use crate::event_log::EventLog;
+   00007| use crate::language::detect as detect_language;
+   00008| use crate::seed;
+   00009| use crate::summarization::{
+   00010|     DialogTurn, SummarizationConfig, SummarizationMode, generate_chat_title, summarize_dialog,
+   00011|     summarize_dialog_plain,
+   00012| };
+   00013| 
+   00014| const RETURN_RECAP_MAX_WORDS: usize = 39;
+   00015| const RETURN_RECAP_MAX_SENTENCES: usize = 2;
+   00016| 
+   00017| /// Recognise a request to summarize the running conversation by composing
+   00018| /// meaning roles rather than matching raw per-language phrases (issue #386).
+   00019| ///
+   00020| /// The universal algorithm is identical for every language: the prompt either
+   00021| /// (a) carries a complete standalone conversation-summary phrasing, (b) carries
+   00022| /// an objectless courtesy frame asking for a summary, (c) names a summary
+   00023| /// directive *together with* a conversation reference, or (d) leads with a bare
+   00024| /// summary directive (`summarize`, `резюме`, `总结`, …). The prompt is
+   00025| /// re-normalised first so the boundary-aware matcher sees punctuation collapsed
+   00026| /// to spaces. Mirror of `asksForConversationSummary` in the browser worker.
+   00027| fn asks_for_conversation_summary(normalized: &str) -> bool {
+   00028|     let cleaned = normalize_prompt(normalized);
+   00029|     let lexicon = seed::lexicon();
+   00030|     lexicon.mentions_role(seed::ROLE_CONVERSATION_RETURN_RECAP, &cleaned)
+   00031|         || lexicon.mentions_role(seed::ROLE_CONVERSATION_SUMMARY_PHRASE, &cleaned)
+   00032|         || (lexicon.mentions_role(seed::ROLE_CONVERSATION_SUMMARY_COURTESY, &cleaned)
+   00033|             && courtesy_frame_leaves_no_object(&cleaned))
+   00034|         || (lexicon.mentions_role(seed::ROLE_CONVERSATION_SUMMARY_DIRECTIVE, &cleaned)
+   00035|             && lexicon.mentions_role(seed::ROLE_CONVERSATION_REFERENCE, &cleaned))
+   00036|         || summary_directive_leads(&cleaned)
+   00037| }
+   00038| 
+   00039| /// The courtesy frames are frames, not owners: "can you summarize" opens a
+   00040| /// request whose object, when one follows, belongs to whichever handler
+   00041| /// summarizes that object (the topic summarizer sits below this one in the
+   00042| /// dispatch order, so this guard is where the handoff happens — the dispatch
+   00043| /// comment for `conversation_memory` and `conversation_summary_directive`'s
+   00044| /// role contract both leave a "summarize X" to other handlers). Stripping
+   00045| /// every courtesy and directive surface from the prompt must leave nothing:
+   00046| /// "can you summarize" alone summarizes the running conversation, while
+   00047| /// "can you summarize Rust" names a topic. Longest surfaces strip first so a
+   00048| /// frame that prefixes another ("подведи итог" inside "подведи итоги") does
+   00049| /// not leave orphan letters behind.
+   00050| fn courtesy_frame_leaves_no_object(cleaned: &str) -> bool {
+   00051|     let lexicon = seed::lexicon();
+   00052|     let mut surfaces: Vec<String> = lexicon
+   00053|         .words_for_role(seed::ROLE_CONVERSATION_SUMMARY_COURTESY)
+   00054|         .into_iter()
+   00055|         .chain(lexicon.words_for_role(seed::ROLE_CONVERSATION_SUMMARY_DIRECTIVE))
+   00056|         .filter(|surface| !surface.is_empty())
+   00057|         .collect();
+   00058|     surfaces.sort_by_key(|surface| std::cmp::Reverse(surface.chars().count()));
+   00059|     let mut remainder = cleaned.to_owned();
+   00060|     for surface in &surfaces {
+   00061|         remainder = remainder.replace(surface.as_str(), " ");
+   00062|     }
+   00063|     remainder
+   00064|         .chars()
+   00065|         .all(|c| c.is_whitespace() || c.is_ascii_punctuation())
+   00066| }
+   00067| 
+   00068| /// A bare summary directive standing alone is itself a request to summarize the
+   00069| /// running conversation ("summarize", "резюме", "总结", …).
+   00070| ///
+   00071| /// For whitespace-delimited scripts the directive must be the *whole* prompt, so
+   00072| /// "summarize the article" is left for other handlers (a conversation object is
+   00073| /// required via the directive∧reference arm instead). For CJK (no word spaces) a
+   00074| /// leading substring suffices — mirroring the worker's historical `^总结` anchor
+   00075| /// — which also keeps compounds like "工作总结" (a *work* summary) from being
+   00076| /// mis-claimed. Surface words come from the `conversation_summary_directive`
+   00077| /// role in the seed lexicon.
+   00078| fn summary_directive_leads(cleaned: &str) -> bool {
+   00079|     seed::lexicon()
+   00080|         .words_for_role(seed::ROLE_CONVERSATION_SUMMARY_DIRECTIVE)
+   00081|         .iter()
+   00082|         .any(|word| {
+   00083|             if contains_cjk(word) {
+   00084|                 cleaned.starts_with(word.as_str())
+   00085|             } else {
+   00086|                 cleaned == word.as_str()
+   00087|             }
+   00088|         })
+   00089| }
+   00090| 
+   00091| pub(super) fn try_summarize_conversation(
+   00092|     prompt: &str,
+   00093|     normalized: &str,
+   00094|     log: &mut EventLog,
+   00095| ) -> Option<SymbolicAnswer> {
+   00096|     let is_return_recap = seed::lexicon().mentions_role(
+   00097|         seed::ROLE_CONVERSATION_RETURN_RECAP,
+   00098|         &normalize_prompt(normalized),
+   00099|     );
+   00100|     if !is_return_recap && !asks_for_conversation_summary(normalized) {
+   00101|         return None;
+   00102|     }
+   00103|     let mut turns: Vec<DialogTurn> = log
+   00104|         .events()
+   00105|         .iter()
+   00106|         .filter_map(|event| match event.kind {
+   00107|             "prior_turn:user" => Some(DialogTurn::user(event.payload.clone())),
+   00108|             "prior_turn:assistant" => Some(DialogTurn::assistant(event.payload.clone())),
+   00109|             _ => None,
+   00110|         })
+   00111|         .collect();
+   00112|     if turns.is_empty()
+   00113|         && let Some(content) = prompt
+   00114|             .split_once(':')
+   00115|             .map(|(_, content)| content.trim())
+   00116|             .filter(|content| !content.is_empty())
+   00117|     {
+   00118|         turns.push(DialogTurn::user(content));
+   00119|     }
+   00120|     // A summarize request over a conversation that has not started yet is
+   00121|     // still owned here: the request itself is the only turn so far, and an
+   00122|     // honest one-turn summary beats falling through ownerless -- the open-web
+   00123|     // decision table answered the bare phrase with a literal web search and a
+   00124|     // hallucinated fetch loop (agentic CLI matrix, summarize leg).
+   00125|     if turns.is_empty() && !prompt.trim().is_empty() {
+   00126|         log.append(
+   00127|             "conversation_recall:refusal",
+   00128|             "conversation not started".to_owned(),
+   00129|         );
+   00130|         turns.push(DialogTurn::user(prompt.trim().to_owned()));
+   00131|     }
+   00132|     let user_turn_count = turns.iter().filter(|turn| turn.role == "user").count();
+   00133|     if user_turn_count == 0 {
+   00134|         return None;
+   00135|     }
+   00136|     if is_return_recap {
+   00137|         let summary =
+   00138|             summarize_dialog_plain(&turns, RETURN_RECAP_MAX_WORDS, RETURN_RECAP_MAX_SENTENCES);
+   00139|         if summary.is_empty() {
+   00140|             return None;
+   00141|         }
+   00142|         log.append("filter:user", "conversation_return_recap".to_owned());
+   00143|         log.append("summarization:format", "plain".to_owned());
+   00144|         log.append(
+   00145|             "summarization:max_words",
+   00146|             RETURN_RECAP_MAX_WORDS.to_string(),
+   00147|         );
+   00148|         log.append(
+   00149|             "summarization:max_sentences",
+   00150|             RETURN_RECAP_MAX_SENTENCES.to_string(),
+   00151|         );
+   00152|         return Some(finalize_simple(
+   00153|             prompt,
+   00154|             log,
+   00155|             "summarize_conversation",
+   00156|             "response:summarize_conversation",
+   00157|             &summary,
+   00158|             0.9,
+   00159|         ));
+   00160|     }
+   00161|     let language = detect_language(prompt).slug();
+   00162|     let (body, title) = conversation_summary_envelope(&turns, language);
+   00163|     log.append("filter:user", "conversation_summary".to_owned());
+   00164|     log.append("summarization:mode", "standard".to_owned());
+   00165|     log.append("summarization:language", language.to_owned());
+   00166|     log.append("chat_title", title);
+   00167|     Some(finalize_simple(
+   00168|         prompt,
+   00169|         log,
+   00170|         "summarize_conversation",
+   00171|         "response:summarize_conversation",
+   00172|         &body,
+   00173|         0.9,
+   00174|     ))
+   00175| }
+   00176| 
+   00177| /// The summary envelope over `turns` in `language`, with the chat title.
+   00178| ///
+   00179| /// The envelope holds the summary, the title and the numbered user turns,
+   00180| /// trimmed at the end. Mirrored by `conversationSummaryEnvelope` in
+   00181| /// `js/agentic/crate/conversation_summary.mjs`.
+   00182| fn conversation_summary_envelope(turns: &[DialogTurn], language: &str) -> (String, String) {
+   00183|     // Standard mode keeps roughly 50% of the highest-weighted statements; with
+   00184|     // the dialog bias (user +20, assistant -10) the user's questions dominate
+   00185|     // the output while still keeping room for any assistant prose worth
+   00186|     // remembering.
+   00187|     let config = SummarizationConfig::default()
+   00188|         .with_mode(SummarizationMode::Standard)
+   00189|         .with_language(language);
+   00190|     let summary = summarize_dialog(turns, &config);
+   00191|     let title = generate_chat_title(turns, language);
+   00192|     let user_turns: Vec<&str> = turns
+   00193|         .iter()
+   00194|         .filter(|turn| turn.role == "user")
+   00195|         .map(|turn| turn.text.as_str())
+   00196|         .collect();
+   00197|     let mut body = match language {
+   00198|         "ru" => {
+   00199|             format!("Резюме разговора: {summary}\n\nЗаголовок: {title}\n\nРеплики пользователя:\n")
+   00200|         }
+   00201|         "zh" => format!("对话摘要:{summary}\n\n标题:{title}\n\n用户发言:\n"),
+   00202|         _ => format!("Conversation summary: {summary}\n\nTitle: {title}\n\nUser turns:\n"),
+   00203|     };
+   00204|     for (index, turn) in user_turns.iter().enumerate() {
+   00205|         writeln!(body, "  {}. {turn}", index + 1).expect("string write is infallible");
+   00206|     }
+   00207|     (body.trim_end().to_owned(), title)
+   00208| }
+   00209| 
+   
+   (End of file - total 209 lines)
+   </file>
+>> edit {"filePath":"rust/src/solver_handlers/conversation_memory/conversation_summary.rs","file_path":"rust/src/solver_handlers/conversation_memory/conversation_summary.rs","new":"    let envelope_language = match language {\n        \"ru\" | \"zh\" => language,\n        _ => \"en\",\n    };\n    let mut body = seed::render_localized_once(\n        \"conversation-summary-envelope\",\n        envelope_language,\n        &[(\"summary\", &summary), (\"title\", &title)],\n    );","newString":"    let envelope_language = match language {\n        \"ru\" | \"zh\" => language,\n        _ => \"en\",\n    };\n    let mut body = seed::render_localized_once(\n        \"conversation-summary-envelope\",\n        envelope_language,\n        &[(\"summary\", &summary), (\"title\", &title)],\n    );","new_str":"    let envelope_language = match language {\n        \"ru\" | \"zh\" => language,\n        _ => \"en\",\n    };\n    let mut body = seed::render_localized_once(\n        \"conversation-summary-envelope\",\n        envelope_language,\n        &[(\"summary\", &summary), (\"title\", &title)],\n    );","new_string":"    let envelope_language = match language {\n        \"ru\" | \"zh\" => language,\n        _ => \"en\",\n    };\n    let mut body = seed::render_localized_once(\n        \"conversation-summary-envelope\",\n        envelope_language,\n        &[(\"summary\", &summary), (\"title\", &title)],\n    );","old":"    let mut body = match language {\n        \"ru\" => {\n            format!(\"Резюме разговора: {summary}\\n\\nЗаголовок: {title}\\n\\nРеплики пользователя:\\n\")\n        }\n        \"zh\" => format!(\"对话摘要:{summary}\\n\\n标题:{title}\\n\\n用户发言:\\n\"),\n        _ => format!(\"Conversation summary: {summary}\\n\\nTitle: {title}\\n\\nUser turns:\\n\"),\n    };","oldString":"    let mut body = match language {\n        \"ru\" => {\n            format!(\"Резюме разговора: {summary}\\n\\nЗаголовок: {title}\\n\\nРеплики пользователя:\\n\")\n        }\n        \"zh\" => format!(\"对话摘要:{summary}\\n\\n标题:{title}\\n\\n用户发言:\\n\"),\n        _ => format!(\"Conversation summary: {summary}\\n\\nTitle: {title}\\n\\nUser turns:\\n\"),\n    };","old_str":"    let mut body = match language {\n        \"ru\" => {\n            format!(\"Резюме разговора: {summary}\\n\\nЗаголовок: {title}\\n\\nРеплики пользователя:\\n\")\n        }\n        \"zh\" => format!(\"对话摘要:{summary}\\n\\n标题:{title}\\n\\n用户发言:\\n\"),\n        _ => format!(\"Conversation summary: {summary}\\n\\nTitle: {title}\\n\\nUser turns:\\n\"),\n    };","old_string":"    let mut body = match language {\n        \"ru\" => {\n            format!(\"Резюме разговора: {summary}\\n\\nЗаголовок: {title}\\n\\nРеплики пользователя:\\n\")\n        }\n        \"zh\" => format!(\"对话摘要:{summary}\\n\\n标题:{title}\\n\\n用户发言:\\n\"),\n        _ => format!(\"Conversation summary: {summary}\\n\\nTitle: {title}\\n\\nUser turns:\\n\"),\n    };","path":"rust/src/solver_handlers/conversation_memory/conversation_summary.rs"}
+>> bash {"command":"sha256sum -- rust/src/solver_handlers/conversation_memory/conversation_summary.rs"}
+   Output: 867f79f9e34b1f0759f6b0441efa16ce8e7c3e499968103414e48ed2b9172a5c  rust/src/solver_handlers/conversation_memory/conversation_summary.rs
+   
+   Exit Code: 0
+== answer ==
+Replaced `    let mut body = match language {
+        "ru" => {
+            format!("Резюме разговора: {summary}\n\nЗаголовок: {title}\n\nРеплики пользователя:\n")
+        }
+        "zh" => format!("对话摘要:{summary}\n\n标题:{title}\n\n用户发言:\n"),
+        _ => format!("Conversation summary: {summary}\n\nTitle: {title}\n\nUser turns:\n"),
+    };` with `    let envelope_language = match language {
+        "ru" | "zh" => language,
+        _ => "en",
+    };
+    let mut body = seed::render_localized_once(
+        "conversation-summary-envelope",
+        envelope_language,
+        &[("summary", &summary), ("title", &title)],
+    );` in `rust/src/solver_handlers/conversation_memory/conversation_summary.rs` and observed the result.

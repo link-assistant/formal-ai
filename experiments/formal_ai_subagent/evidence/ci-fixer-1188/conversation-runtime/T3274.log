@@ -1,0 +1,358 @@
+>> bash {"command":"node --test rust/tests/web/issue-1175-native-lanes-snapshot.test.mjs rust/tests/web/issue-1175-claim-routing.test.mjs"}
+   Output: TAP version 13
+   # Subtest: the claim rows are read from the capability table
+   ok 1 - the claim rows are read from the capability table
+     ---
+     duration_ms: 420.810791
+     ...
+   # Subtest: every row names browser functions and evidence kinds the worker knows
+   ok 2 - every row names browser functions and evidence kinds the worker knows
+     ---
+     duration_ms: 0.386542
+     ...
+   # Subtest: the native-only rows read the same structure in the worker
+   ok 3 - the native-only rows read the same structure in the worker
+     ---
+     duration_ms: 67.401625
+     ...
+   # Subtest: a surface word alone is not admitted
+   ok 4 - a surface word alone is not admitted
+     ---
+     duration_ms: 21.410958
+     ...
+   # Subtest: the structural evidence admits
+   ok 5 - the structural evidence admits
+     ---
+     duration_ms: 27.251958
+     ...
+   # Subtest: a numeric handler answers only where its row admits
+   ok 6 - a numeric handler answers only where its row admits
+     ---
+     duration_ms: 13.872208
+     ...
+   # Subtest: a handler with no claim row is admitted as before
+   ok 7 - a handler with no claim row is admitted as before
+     ---
+     duration_ms: 0.989375
+     ...
+   # Subtest: R1175-3 refusal lane: a cued request without its operand keeps only its named refusal
+   ok 8 - R1175-3 refusal lane: a cued request without its operand keeps only its named refusal
+     ---
+     duration_ms: 202.577958
+     ...
+   # Subtest: R1175-3: the refusal-group evidence reads the handlers' own operands
+   ok 9 - R1175-3: the refusal-group evidence reads the handlers' own operands
+     ---
+     duration_ms: 0.565042
+     ...
+   # Subtest: R1175-3 class b: the dialogue evidence reads the earlier turns, never the prompt alone
+   ok 10 - R1175-3 class b: the dialogue evidence reads the earlier turns, never the prompt alone
+     ---
+     duration_ms: 1.69225
+     ...
+   # Subtest: R1175-3 class c: a composer without its specification is admitted to its refusal lane only
+   ok 11 - R1175-3 class c: a composer without its specification is admitted to its refusal lane only
+     ---
+     duration_ms: 3.776917
+     ...
+   # Subtest: R1175-3 class e: a lookup or policy admits on the subject or shape its reader extracts
+   ok 12 - R1175-3 class e: a lookup or policy admits on the subject or shape its reader extracts
+     ---
+     duration_ms: 1.905209
+     ...
+   # Subtest: R1173-3: a trailing sentence that only shapes the answer leaves the question to the concept reader
+   ok 13 - R1173-3: a trailing sentence that only shapes the answer leaves the question to the concept reader
+     ---
+     duration_ms: 60.363375
+     ...
+   # Subtest: R1173-3: the legality frame reads an act and the object class of its object phrase
+   ok 14 - R1173-3: the legality frame reads an act and the object class of its object phrase
+     ---
+     duration_ms: 18.600833
+     ...
+   # Subtest: R1175-3: a class handler answers only where its row admits
+   ok 15 - R1175-3: a class handler answers only where its row admits
+     ---
+     duration_ms: 69.225208
+     ...
+   # Subtest: R1175-3 follow-up round: a handler without its input is admitted to its refusal lane only
+   ok 16 - R1175-3 follow-up round: a handler without its input is admitted to its refusal lane only
+     ---
+     duration_ms: 16.859417
+     ...
+   # Subtest: R1175-3 follow-up round: the assistant is the subject unless another is named
+   ok 17 - R1175-3 follow-up round: the assistant is the subject unless another is named
+     ---
+     duration_ms: 1.067916
+     ...
+   # Subtest: R1173-3: a comma after the advice verb still reaches the advice handler
+   ok 18 - R1173-3: a comma after the advice verb still reaches the advice handler
+     ---
+     duration_ms: 31.740875
+     ...
+   # Subtest: R1175-3 last five rows: every precedence handler carries a claim row
+   ok 19 - R1175-3 last five rows: every precedence handler carries a claim row
+     ---
+     duration_ms: 0.170667
+     ...
+   # Subtest: R1175-3 last five rows: the documented method is read from the prompt
+   ok 20 - R1175-3 last five rows: the documented method is read from the prompt
+     ---
+     duration_ms: 49.396666
+     ...
+   # Subtest: R1175-3 last five rows: the idiom claims only as the whole utterance
+   ok 21 - R1175-3 last five rows: the idiom claims only as the whole utterance
+     ---
+     duration_ms: 10.4335
+     ...
+   # Subtest: R1175-3 last five rows: a source conflict names its attributed alternatives
+   ok 22 - R1175-3 last five rows: a source conflict names its attributed alternatives
+     ---
+     duration_ms: 6.202833
+     ...
+   # Subtest: R1175-3 last five rows: a traffic answer names the repository the prompt names
+   ok 23 - R1175-3 last five rows: a traffic answer names the repository the prompt names
+     ---
+     duration_ms: 16.434708
+     ...
+   # Subtest: R1175-3 last five rows: a formalization claims only with a statement
+   ok 24 - R1175-3 last five rows: a formalization claims only with a statement
+     ---
+     duration_ms: 12.948041
+     ...
+   # Subtest: a bare how-it-works question with no prior reply explains how to ask
+   ok 25 - a bare how-it-works question with no prior reply explains how to ask
+     ---
+     duration_ms: 750.138875
+     ...
+   # Subtest: a how-you-work question stays with the meta explanation, as natively
+   ok 26 - a how-you-work question stays with the meta explanation, as natively
+     ---
+     duration_ms: 20.828917
+     ...
+   # Subtest: a bare how-it-works question answers the prior reply's known topic through the concept lookup
+   ok 27 - a bare how-it-works question answers the prior reply's known topic through the concept lookup
+     ---
+     duration_ms: 101.995583
+     ...
+   # Subtest: a bare how-it-works question names an unrecorded prior topic
+   ok 28 - a bare how-it-works question names an unrecorded prior topic
+     ---
+     duration_ms: 50.853417
+     ...
+   # Subtest: the prior-topic scan skips seeded stop words and short tokens
+   ok 29 - the prior-topic scan skips seeded stop words and short tokens
+     ---
+     duration_ms: 0.365875
+     ...
+   # Subtest: an inline subject still gets the mechanism discovery plan
+   ok 30 - an inline subject still gets the mechanism discovery plan
+     ---
+     duration_ms: 79.8285
+     ...
+   # Subtest: "export the network" renders the browser's loaded network snapshot
+   ok 31 - "export the network" renders the browser's loaded network snapshot
+     ---
+     duration_ms: 40.849792
+     ...
+   # Subtest: "show me the current network" renders the browser's loaded network snapshot
+   ok 32 - "show me the current network" renders the browser's loaded network snapshot
+     ---
+     duration_ms: 35.264292
+     ...
+   # Subtest: "show me the network" renders the browser's loaded network snapshot
+   ok 33 - "show me the network" renders the browser's loaded network snapshot
+     ---
+     duration_ms: 915.571292
+     ...
+   1..33
+   # tests 33
+   # suites 0
+   # pass 33
+   # fail 0
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 2150.424958
+   
+   Exit Code: 0
+== answer ==
+The `node --test rust/tests/web/issue-1175-native-lanes-snapshot.test.mjs rust/tests/web/issue-1175-claim-routing.test.mjs` command completed. Output:
+
+```text
+TAP version 13
+# Subtest: the claim rows are read from the capability table
+ok 1 - the claim rows are read from the capability table
+  ---
+  duration_ms: 420.810791
+  ...
+# Subtest: every row names browser functions and evidence kinds the worker knows
+ok 2 - every row names browser functions and evidence kinds the worker knows
+  ---
+  duration_ms: 0.386542
+  ...
+# Subtest: the native-only rows read the same structure in the worker
+ok 3 - the native-only rows read the same structure in the worker
+  ---
+  duration_ms: 67.401625
+  ...
+# Subtest: a surface word alone is not admitted
+ok 4 - a surface word alone is not admitted
+  ---
+  duration_ms: 21.410958
+  ...
+# Subtest: the structural evidence admits
+ok 5 - the structural evidence admits
+  ---
+  duration_ms: 27.251958
+  ...
+# Subtest: a numeric handler answers only where its row admits
+ok 6 - a numeric handler answers only where its row admits
+  ---
+  duration_ms: 13.872208
+  ...
+# Subtest: a handler with no claim row is admitted as before
+ok 7 - a handler with no claim row is admitted as before
+  ---
+  duration_ms: 0.989375
+  ...
+# Subtest: R1175-3 refusal lane: a cued request without its operand keeps only its named refusal
+ok 8 - R1175-3 refusal lane: a cued request without its operand keeps only its named refusal
+  ---
+  duration_ms: 202.577958
+  ...
+# Subtest: R1175-3: the refusal-group evidence reads the handlers' own operands
+ok 9 - R1175-3: the refusal-group evidence reads the handlers' own operands
+  ---
+  duration_ms: 0.565042
+  ...
+# Subtest: R1175-3 class b: the dialogue evidence reads the earlier turns, never the prompt alone
+ok 10 - R1175-3 class b: the dialogue evidence reads the earlier turns, never the prompt alone
+  ---
+  duration_ms: 1.69225
+  ...
+# Subtest: R1175-3 class c: a composer without its specification is admitted to its refusal lane only
+ok 11 - R1175-3 class c: a composer without its specification is admitted to its refusal lane only
+  ---
+  duration_ms: 3.776917
+  ...
+# Subtest: R1175-3 class e: a lookup or policy admits on the subject or shape its reader extracts
+ok 12 - R1175-3 class e: a lookup or policy admits on the subject or shape its reader extracts
+  ---
+  duration_ms: 1.905209
+  ...
+# Subtest: R1173-3: a trailing sentence that only shapes the answer leaves the question to the concept reader
+ok 13 - R1173-3: a trailing sentence that only shapes the answer leaves the question to the concept reader
+  ---
+  duration_ms: 60.363375
+  ...
+# Subtest: R1173-3: the legality frame reads an act and the object class of its object phrase
+ok 14 - R1173-3: the legality frame reads an act and the object class of its object phrase
+  ---
+  duration_ms: 18.600833
+  ...
+# Subtest: R1175-3: a class handler answers only where its row admits
+ok 15 - R1175-3: a class handler answers only where its row admits
+  ---
+  duration_ms: 69.225208
+  ...
+# Subtest: R1175-3 follow-up round: a handler without its input is admitted to its refusal lane only
+ok 16 - R1175-3 follow-up round: a handler without its input is admitted to its refusal lane only
+  ---
+  duration_ms: 16.859417
+  ...
+# Subtest: R1175-3 follow-up round: the assistant is the subject unless another is named
+ok 17 - R1175-3 follow-up round: the assistant is the subject unless another is named
+  ---
+  duration_ms: 1.067916
+  ...
+# Subtest: R1173-3: a comma after the advice verb still reaches the advice handler
+ok 18 - R1173-3: a comma after the advice verb still reaches the advice handler
+  ---
+  duration_ms: 31.740875
+  ...
+# Subtest: R1175-3 last five rows: every precedence handler carries a claim row
+ok 19 - R1175-3 last five rows: every precedence handler carries a claim row
+  ---
+  duration_ms: 0.170667
+  ...
+# Subtest: R1175-3 last five rows: the documented method is read from the prompt
+ok 20 - R1175-3 last five rows: the documented method is read from the prompt
+  ---
+  duration_ms: 49.396666
+  ...
+# Subtest: R1175-3 last five rows: the idiom claims only as the whole utterance
+ok 21 - R1175-3 last five rows: the idiom claims only as the whole utterance
+  ---
+  duration_ms: 10.4335
+  ...
+# Subtest: R1175-3 last five rows: a source conflict names its attributed alternatives
+ok 22 - R1175-3 last five rows: a source conflict names its attributed alternatives
+  ---
+  duration_ms: 6.202833
+  ...
+# Subtest: R1175-3 last five rows: a traffic answer names the repository the prompt names
+ok 23 - R1175-3 last five rows: a traffic answer names the repository the prompt names
+  ---
+  duration_ms: 16.434708
+  ...
+# Subtest: R1175-3 last five rows: a formalization claims only with a statement
+ok 24 - R1175-3 last five rows: a formalization claims only with a statement
+  ---
+  duration_ms: 12.948041
+  ...
+# Subtest: a bare how-it-works question with no prior reply explains how to ask
+ok 25 - a bare how-it-works question with no prior reply explains how to ask
+  ---
+  duration_ms: 750.138875
+  ...
+# Subtest: a how-you-work question stays with the meta explanation, as natively
+ok 26 - a how-you-work question stays with the meta explanation, as natively
+  ---
+  duration_ms: 20.828917
+  ...
+# Subtest: a bare how-it-works question answers the prior reply's known topic through the concept lookup
+ok 27 - a bare how-it-works question answers the prior reply's known topic through the concept lookup
+  ---
+  duration_ms: 101.995583
+  ...
+# Subtest: a bare how-it-works question names an unrecorded prior topic
+ok 28 - a bare how-it-works question names an unrecorded prior topic
+  ---
+  duration_ms: 50.853417
+  ...
+# Subtest: the prior-topic scan skips seeded stop words and short tokens
+ok 29 - the prior-topic scan skips seeded stop words and short tokens
+  ---
+  duration_ms: 0.365875
+  ...
+# Subtest: an inline subject still gets the mechanism discovery plan
+ok 30 - an inline subject still gets the mechanism discovery plan
+  ---
+  duration_ms: 79.8285
+  ...
+# Subtest: "export the network" renders the browser's loaded network snapshot
+ok 31 - "export the network" renders the browser's loaded network snapshot
+  ---
+  duration_ms: 40.849792
+  ...
+# Subtest: "show me the current network" renders the browser's loaded network snapshot
+ok 32 - "show me the current network" renders the browser's loaded network snapshot
+  ---
+  duration_ms: 35.264292
+  ...
+# Subtest: "show me the network" renders the browser's loaded network snapshot
+ok 33 - "show me the network" renders the browser's loaded network snapshot
+  ---
+  duration_ms: 915.571292
+  ...
+1..33
+# tests 33
+# suites 0
+# pass 33
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2150.424958
+```
