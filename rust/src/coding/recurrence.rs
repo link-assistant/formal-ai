@@ -209,7 +209,7 @@ pub fn bind_expression_parameters(
 }
 
 fn render_callable_python(expression: &Expression, function_name: &str, parameter: &str) -> String {
-    let mut out = format!("def {function_name}({}):\n", parameter);
+    let mut out = format!("def {function_name}({parameter}):\n");
     let expression = render_expression(expression, function_name);
     let _ = writeln!(out, "    return {expression}");
     out.trim_end().to_owned()
