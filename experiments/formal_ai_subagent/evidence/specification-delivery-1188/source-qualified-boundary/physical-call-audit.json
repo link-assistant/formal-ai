@@ -1,0 +1,13 @@
+{
+  "first": "T2479",
+  "cutoff": "T2491",
+  "tasks": 13,
+  "physicalCalls": 25,
+  "repositoryWrites": 7,
+  "actualDeleteCalls": 1,
+  "repositoryMutationCalls": 8,
+  "nativeCompilationPerformed": false,
+  "sharedLedgerEdited": false,
+  "historyAppendCallsExcluded": true,
+  "autonomousBroadSynthesis": "open"
+}

@@ -1,0 +1,39 @@
+{
+  "relocatedSourceMatchesExceptImportVisibility": true,
+  "dictionaryMatchesExceptImportAliasWhitespace": true,
+  "oldPathAbsent": true,
+  "genericLines": 281,
+  "dictionaryLines": 346,
+  "fixtureSha256": "8374b742142213d0ce44b7dccaf4ed280a0182b1eff33e31b85f6980aff14539",
+  "nativeCompilationPerformed": false,
+  "commands": [
+    {
+      "command": "rustfmt",
+      "args": [
+        "--edition",
+        "2024",
+        "--config",
+        "skip_children=true",
+        "--check",
+        "rust/src/formalization/source_qualified_definition.rs",
+        "rust/src/formalization/mod.rs",
+        "rust/src/solver_handlers/word_definition.rs",
+        "rust/src/solver_handlers/modules.rs"
+      ],
+      "status": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": "/Users/konard/.nvm/versions/node/v20.19.4/bin/node",
+      "args": [
+        "--test",
+        "rust/tests/web/source-qualified-definition.test.mjs",
+        "rust/tests/web/word-definition.test.mjs"
+      ],
+      "status": 1,
+      "stdout": "",
+      "stderr": "Could not find '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/word-definition.test.mjs'\n"
+    }
+  ]
+}

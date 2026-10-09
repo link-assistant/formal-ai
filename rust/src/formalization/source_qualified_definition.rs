@@ -1,12 +1,12 @@
 //! Source-qualified definitions bind two seeded slots before any lookup.
-use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed::{SourceRecord, localized_response, prompt_patterns, source_registry};
+use crate::solver_handlers::finalize_simple;
 use crate::source_fetch::{CachedSourceClient, SourceTransport};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub(super) struct Request {
+pub(crate) struct Request {
     pub term: String,
     pub source: String,
     pub language: String,
@@ -41,7 +41,7 @@ fn unquote(value: &str) -> String {
 fn literal_pattern(text: &str) -> String {
     regex::escape(text).replace(' ', "\\s+")
 }
-pub(super) fn request(prompt: &str) -> Option<Request> {
+pub(crate) fn request(prompt: &str) -> Option<Request> {
     let input = prompt
         .trim()
         .trim_end_matches(['.', '?', '!', '。', '？', '！'])
@@ -166,7 +166,7 @@ fn unresolved(prompt: &str, log: &mut EventLog, request: &Request, status: &str)
         0.85,
     )
 }
-pub(super) fn try_definition<T: SourceTransport>(
+pub(crate) fn try_definition<T: SourceTransport>(
     prompt: &str,
     log: &mut EventLog,
     client: &CachedSourceClient<T>,

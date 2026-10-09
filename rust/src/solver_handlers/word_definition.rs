@@ -14,16 +14,13 @@
 //! source defines falls through to the next row, which records the consulted
 //! sources. The browser twin is `tryWordDefinition` in
 //! `js/worker/formal_ai_worker_concept_lookup.js`.
-
 use super::finalize_simple;
-use crate::engine::SymbolicAnswer;
 use crate::event_log::EventLog;
 use crate::seed::{PromptPattern, localized_response, prompt_patterns, source_registry};
 use crate::source_fetch::{CachedSourceClient, CurlSourceTransport, SourceTransport};
-
+use crate::{engine::SymbolicAnswer, formalization::source_qualified_definition as qualified};
 const INTENT: &str = "word_definition";
 const MAX_SENSES: usize = 3;
-
 /// The `word_definition` prompt-pattern rows of one kind, optionally of one
 /// language, in seed order.
 fn patterns(kind: &str, language: Option<&str>) -> Vec<PromptPattern> {
@@ -37,7 +34,6 @@ fn patterns(kind: &str, language: Option<&str>) -> Vec<PromptPattern> {
         })
         .collect()
 }
-
 /// The word a definition request asks about and the frame's language, read
 /// from the longest seeded frame that encloses it.
 #[must_use]
@@ -90,12 +86,10 @@ pub fn definition_term(prompt: &str) -> Option<(String, String)> {
     }
     None
 }
-
 /// Collapse every whitespace run to one space.
 fn compact(text: &str) -> String {
     text.split_whitespace().collect::<Vec<_>>().join(" ")
 }
-
 /// Whether `gloss` is only a respelling of the headword (same letters and
 /// digits once marks and punctuation are dropped).
 fn respelling(gloss: &str, term: &str) -> bool {
@@ -109,7 +103,6 @@ fn respelling(gloss: &str, term: &str) -> bool {
     let gloss = letters(gloss);
     !gloss.is_empty() && gloss == letters(term)
 }
-
 /// Whether a trimmed extract line is a `MediaWiki` section heading.
 fn is_heading(line: &str) -> bool {
     line.chars().count() > 1 && line.starts_with('=') && line.ends_with('=')
@@ -253,7 +246,7 @@ pub fn try_word_definition_with_client<T: SourceTransport>(
     log: &mut EventLog,
     client: &CachedSourceClient<T>,
 ) -> Option<SymbolicAnswer> {
-    if let Some(answer) = super::source_qualified_definition::try_definition(prompt, log, client) {
+    if let Some(answer) = qualified::try_definition(prompt, log, client) {
         return Some(answer);
     }
     let (term, language) = definition_term(prompt)?;
@@ -344,9 +337,7 @@ pub fn try_word_definition_with_offline(
     log: &mut EventLog,
     offline: bool,
 ) -> Option<SymbolicAnswer> {
-    if definition_term(prompt).is_none()
-        && super::source_qualified_definition::request(prompt).is_none()
-    {
+    if definition_term(prompt).is_none() && qualified::request(prompt).is_none() {
         return None;
     }
     let cache_root = crate::coding::synthesis_runtime::source_cache_root();

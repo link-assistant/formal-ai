@@ -1,4 +1,4 @@
 worker-module-budget
   module "formal_ai_worker_source_qualified_definition.js"
   ceiling 107
-  rationale "Generic two-slot source-qualified definition observer, registry binding, disambiguation projection and provenance renderer; native solver_handlers/source_qualified_definition.rs twin."
+  rationale "Generic two-slot source-qualified definition observer, registry binding, disambiguation projection and provenance renderer; native formalization/source_qualified_definition.rs twin."

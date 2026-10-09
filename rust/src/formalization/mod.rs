@@ -11,5 +11,6 @@ pub mod needs;
 pub mod page;
 pub mod procedures;
 pub mod segment;
+pub(crate) mod source_qualified_definition;
 pub mod statement_rendering;
 pub mod text_statements;
