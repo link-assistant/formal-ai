@@ -87,12 +87,28 @@ jobs:
     steps:
       # The triggering commit is selected by GitHub; PR checks use its merge
       # preview. Publication selects the validated stable tag in the next step.
-      - name: Check out the triggering workflow source
+      - name: Check out the independent workflow protocol source
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
           persist-credentials: false
+          ref: ${{ github.workflow_sha }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24.x'
+      - name: Capture immutable workflow-owned source-networks protocol
+        id: protocol
+        env:
+          RELEASE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+        run: >-
+          node scripts/release-protocol.mjs capture "$GITHUB_WORKSPACE"
+          "$RUNNER_TEMP/source-network-protocol" "$RELEASE_PROTOCOL_COMMIT" source-networks
+      - name: Restore the triggering source before optional release-tag selection
+        uses: actions/checkout@v7
+        with:
           ref: ${{ github.sha }}
+          fetch-depth: 0
+          persist-credentials: false
       - name: Select the resolved published tag
         if: needs.resolve.outputs.tag != ''
         env:
@@ -120,9 +136,15 @@ jobs:
           PACKET_DIRECTORY: ${{ runner.temp }}/source-networks
           TEST_BUDGET_SECONDS: 600
           TEST_WARN_RATIO_PERCENT: 75
+          RELEASE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+          RELEASE_PROTOCOL_SHA256: ${{ steps.protocol.outputs.protocol-sha256 }}
+          SERIALIZER_COMMIT: ${{ steps.protocol.outputs.upstream-commit }}
         run: |
-          bash scripts/run-with-budget-warning.sh "$TEST_BUDGET_SECONDS" source-networks-release \
-            node scripts/check-source-networks.mjs --meta-language .meta-language \
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/release-protocol.mjs" verify \
+            "$GITHUB_WORKSPACE" "$FORMAL_AI_RELEASE_PROTOCOL_DIR" "$RELEASE_PROTOCOL_COMMIT" "$RELEASE_PROTOCOL_SHA256"
+          bash "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/run-with-budget-warning.sh" "$TEST_BUDGET_SECONDS" source-networks-release \
+            node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/check-source-networks.mjs" \
+            --source-root "$GITHUB_WORKSPACE" --upstream-commit "$SERIALIZER_COMMIT" --meta-language .meta-language \
             --shard-count 8 --shard-index "$SOURCE_SHARD" --write --output "$PACKET_DIRECTORY"
       - name: Bundle the complete shard with its receipts
         env:
@@ -145,6 +167,23 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: ${{ github.workflow_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24.x'
+      - name: Capture immutable workflow-owned source-networks protocol
+        id: protocol
+        env:
+          RELEASE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+        run: >-
+          node scripts/release-protocol.mjs capture "$GITHUB_WORKSPACE"
+          "$RUNNER_TEMP/source-network-join-protocol" "$RELEASE_PROTOCOL_COMMIT" source-networks
+      - name: Restore the triggering source before optional release-tag selection
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: false
       - name: Select the resolved published tag
@@ -169,13 +208,19 @@ jobs:
         env:
           ARCHIVE_DIRECTORY: ${{ runner.temp }}/source-network-archives
           DISTRIBUTION_DIRECTORY: ${{ runner.temp }}/source-network-distribution
+          RELEASE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+          RELEASE_PROTOCOL_SHA256: ${{ steps.protocol.outputs.protocol-sha256 }}
+          SERIALIZER_COMMIT: ${{ steps.protocol.outputs.upstream-commit }}
         run: |
           set -euo pipefail
           for shard in 0 1 2 3 4 5 6 7; do
             mkdir -p "$DISTRIBUTION_DIRECTORY/shard-$shard"
             tar -xzf "$ARCHIVE_DIRECTORY/formal-ai-source-networks-$shard.tar.gz" -C "$DISTRIBUTION_DIRECTORY/shard-$shard"
           done
-          node scripts/verify-source-network-distribution.mjs "$DISTRIBUTION_DIRECTORY"
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/release-protocol.mjs" verify \
+            "$GITHUB_WORKSPACE" "$FORMAL_AI_RELEASE_PROTOCOL_DIR" "$RELEASE_PROTOCOL_COMMIT" "$RELEASE_PROTOCOL_SHA256"
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/verify-source-network-distribution.mjs" "$DISTRIBUTION_DIRECTORY" \
+            --source-root "$GITHUB_WORKSPACE" --upstream-commit "$SERIALIZER_COMMIT"
       - name: Attach all verified packets to the stable release
         env:
           GH_TOKEN: ${{ github.token }}

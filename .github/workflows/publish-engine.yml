@@ -91,6 +91,23 @@ jobs:
     steps:
       - uses: actions/checkout@v7
         with:
+          ref: ${{ github.workflow_sha }}
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24.x'
+      - name: Capture immutable workflow-owned engine protocol
+        id: protocol
+        env:
+          RELEASE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+        run: >-
+          node scripts/release-protocol.mjs capture "$GITHUB_WORKSPACE"
+          "$RUNNER_TEMP/browser-engine-protocol" "$RELEASE_PROTOCOL_COMMIT" engine
+      - name: Restore the triggering source before optional release-tag selection
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
           fetch-depth: 0
           persist-credentials: false
       - name: Select the resolved release tag
@@ -110,10 +127,24 @@ jobs:
         run: |
           curl -fsSL https://bun.sh/install | bash
           echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+      - name: Bind selected package metadata before building
+        id: source
+        run: |
+          set -euo pipefail
+          selected_commit="$(git rev-parse HEAD)"
+          echo "commit=$selected_commit" >> "$GITHUB_OUTPUT"
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/release-protocol.mjs" package \
+            "$GITHUB_WORKSPACE" packages/formal-ai-engine/package.json "$selected_commit"
       - name: Prepare web and engine artifacts
         run: |
           bun install --frozen-lockfile
           bun run build:web
+      - name: Verify only the declared selected-Cargo package version projection
+        env:
+          SELECTED_SOURCE_COMMIT: ${{ steps.source.outputs.commit }}
+        run: >-
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/release-protocol.mjs" package
+          "$GITHUB_WORKSPACE" packages/formal-ai-engine/package.json "$SELECTED_SOURCE_COMMIT" built
       - name: Package the engine
         working-directory: packages/formal-ai-engine
         run: npm pack --ignore-scripts
@@ -134,9 +165,13 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_TRUSTED_PUBLISHING: ${{ vars.FORMAL_AI_NPM_TRUSTED_PUBLISHING }}
+          RELEASE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+          RELEASE_PROTOCOL_SHA256: ${{ steps.protocol.outputs.protocol-sha256 }}
         run: |
           if [ -z "$NODE_AUTH_TOKEN" ] && [ "$NPM_TRUSTED_PUBLISHING" != "true" ]; then
             echo "::notice::npm publication is not configured; the installable tarball is attached to the release"
             exit 0
           fi
-          node ../../scripts/publish-browser-engine.mjs
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/release-protocol.mjs" verify \
+            "$GITHUB_WORKSPACE" "$FORMAL_AI_RELEASE_PROTOCOL_DIR" "$RELEASE_PROTOCOL_COMMIT" "$RELEASE_PROTOCOL_SHA256"
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/publish-browser-engine.mjs"

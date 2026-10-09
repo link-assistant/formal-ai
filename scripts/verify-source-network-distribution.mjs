@@ -7,14 +7,16 @@ import { ownedProductionSources } from './check-source-networks.mjs';
 import { workflowPin } from './translate-js-rust.mjs';
 import { verifySourceDistribution } from './lib/source-network-packets.mjs';
 
-const root = execFileSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' }).trim();
+const args = process.argv.slice(2);
+const value = (name, fallback) => args.includes(name) ? args[args.indexOf(name) + 1] : fallback;
+const root = resolve(value('--source-root', '') || execFileSync('git', ['rev-parse', '--show-toplevel'], { encoding: 'utf8' }).trim());
 const directory = resolve(process.argv[2] ?? '');
 if (!process.argv[2]) throw new Error('an extracted source-network distribution directory is required');
 const dirty = execFileSync('git', ['diff', '--name-only', 'HEAD', '--', 'rust/src', 'js', 'ts'],
   { cwd: root, encoding: 'utf8' }).trim();
 if (dirty) throw new Error('distribution must be checked against a committed source tree');
 const sourceHead = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim();
-const upstreamCommit = workflowPin(readFileSync(join(root, '.github/workflows/layered-ci.yml'), 'utf8'));
+const upstreamCommit = value('--upstream-commit', '') || workflowPin(readFileSync(join(root, '.github/workflows/layered-ci.yml'), 'utf8'));
 const reports = Array.from({ length: 8 }, (_, index) => JSON.parse(
   readFileSync(join(directory, 'shard-' + index, 'source-network-receipts.json'), 'utf8')));
 const result = verifySourceDistribution({
