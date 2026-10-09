@@ -453,3 +453,32 @@ describe("the --debug-session server", () => {
     assert.equal((await pending).status, 200);
   });
 });
+
+
+test("actual browser validation emitter has a nonempty physical source and excerpt", async () => {
+  const { WorkerHost } = await import("../../../js/server/worker-host.mjs");
+  const { symbolicFromWorker } = await import("../../../js/server/solve.mjs");
+  const result = await new WorkerHost().solve("What is 2 + 2?");
+  const validation = result.solverEvents.filter((event) => event.kind === "validation");
+  assert.equal(validation.length, 1);
+  assert.equal(validation[0].payload, "accepted_without_extra_constraints");
+  const steps = symbolicFromWorker(result).thinking_steps;
+  assert.deepEqual(steps.map((stage) => stage.step), TWO_PLUS_TWO.map(([step]) => step));
+  const index = steps.findIndex((stage) => stage.step === "rule_verification");
+  assert.ok(index >= 0);
+  assert.equal(steps[index].source_event, "validation");
+  const provenance = describeTurn(steps).stages[index];
+  for (const [runtime, expected, definition] of [
+    ["js", EVENT_LOG, /function solverEventLog\(/u],
+    ["rust", FINALIZE, /fn finalize_simple\(/u],
+  ]) {
+    const site = provenance[runtime];
+    assert.ok(site, runtime + " has an actual emitter");
+    const source = site.path + ":" + site.symbol;
+    assert.equal(source, expected);
+    assert.ok(site.line > 0);
+    assert.ok(site.excerpt.length > 0);
+    assertExcerpt(source, site.line, site.excerpt, definition);
+  }
+  assert.ok(provenance.js.excerpt.includes("events.push(solverEvent(SOLVER_EVENT_VALIDATION, SOLVER_VALIDATION_ACCEPTED))"));
+});
