@@ -4,7 +4,7 @@ import {readFileSync, writeFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 import vm from 'node:vm';
-export const OUTPUT = 'js/seed/worker-bootstrap-responses.js';
+export const OUTPUT = 'js/worker-bootstrap-responses.js';
 export const SOURCE = 'data/seed/multilingual-responses.lino';
 export function renderBootstrap(loader, seed) {
   const context = vm.createContext({console});
