@@ -536,6 +536,10 @@ jobs:
 
       - name: Provision the real agentic search adapter
         run: bash scripts/install-agentic-search-tools.sh
+      - name: Regenerate canonical seed projection for browser consumers
+        timeout-minutes: 1
+        run: bash scripts/sync-seed.sh
+
       - name: Generate browser coverage
         run: npm run coverage:web
 

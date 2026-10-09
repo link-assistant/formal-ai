@@ -191,6 +191,9 @@ jobs:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+      - name: Regenerate canonical seed projection for JavaScript consumers
+        timeout-minutes: 1
+        run: bash scripts/sync-seed.sh
       # The tier's seconds-long checks run once, on the first shard.
       - name: Syntax-check every committed js file
         if: matrix.shard == 1

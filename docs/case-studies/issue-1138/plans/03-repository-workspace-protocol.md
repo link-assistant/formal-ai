@@ -270,6 +270,7 @@ languages below one code path rather than five.
 
 ```
 src/repository_workspace/mod.rs          (RepositoryWorkspace, WorkspaceProtocol, ProtocolOutcome)
+src/repository_workspace/operation.rs    (R1138 source-bound observation goals, selected Cargo test targets and permitted commands)
 src/repository_workspace/clone.rs        (WorkspaceSpec, clone_at_base)
 src/repository_workspace/locate.rs       (locate_targets, Location, LocationEvidence)
 src/repository_workspace/edit.rs         (apply_change)
