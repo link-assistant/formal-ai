@@ -1,0 +1,2 @@
+Set the contents of output.mjs to «{"z":"failed: recorded attempt","a":"fixture"}
+»

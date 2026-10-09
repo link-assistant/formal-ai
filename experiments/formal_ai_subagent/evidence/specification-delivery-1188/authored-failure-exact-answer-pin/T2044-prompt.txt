@@ -1,3 +1,5 @@
+Set the contents of rust/tests/unit/pull_request_1188_fix_gaps.rs to exactly this content:
+````````````text
 //! PR #1188 FIX-GAPS: the open edit gaps G90, G99, G102, G104, G106 and G107
 //! of `experiments/formal_ai_subagent/gaps.md` (ledger rows T371, T377, T471,
 //! T473, T720, T786, T793 and T794; the fixes are rows T840-T869 of
@@ -402,3 +404,4 @@ fn exact_content_set_forms_consume_seeded_leads() {
         assert_eq!(run.files["output.mjs"], content);
     }
 }
+````````````

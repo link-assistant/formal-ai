@@ -1,0 +1,5 @@
+{
+  "taskId": "T2041",
+  "directory": "/private/tmp/spec-recurrence-1188/literal-answer-0",
+  "prompt": "Set the contents of output.mjs to «Error: this is the diagnostic example.\n»"
+}

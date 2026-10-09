@@ -1,0 +1,9 @@
+>> bash {"command":"node /private/tmp/spec-recurrence-1188/restore-exact-native-pin.mjs"}
+   Restored complete reviewed native pin with both exact observed answers
+   
+== answer ==
+The `node /private/tmp/spec-recurrence-1188/restore-exact-native-pin.mjs` command completed. Output:
+
+```text
+Restored complete reviewed native pin with both exact observed answers
+```
