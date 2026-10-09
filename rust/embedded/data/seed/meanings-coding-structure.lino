@@ -91,6 +91,7 @@ meanings
   quantifier_all
     defined-by quantifier
     role coding_structure
+    role source-projection-scope
     idiom "all({predicate} for {item} in {items})"
     grounding "https://docs.python.org/3.12/library/functions.html#all"
     lexeme en all every each

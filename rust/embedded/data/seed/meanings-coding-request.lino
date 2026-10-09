@@ -287,8 +287,8 @@ meanings
     effect "the source projection router can observe the requested scope"
     unit "not applicable"
     example "whole"
-    lexeme en entire whole all
-    lexeme ru весь все целиком
+    lexeme en entire whole
+    lexeme ru весь целиком
     lexeme hi पूरा समस्त
     lexeme zh 全部 整个
     lexeme es entero todo completo
@@ -304,18 +304,6 @@ meanings
     lexeme hi स्रोत
     lexeme zh 源码
     lexeme es fuente "código fuente"
-  source-projection-format
-    defined-by link
-    role source-projection-format
-    precondition "a positive unquoted instruction owns this source projection cue"
-    effect "the source projection router can observe the requested scope"
-    unit "not applicable"
-    example "links"
-    lexeme en links
-    lexeme ru ссылки
-    lexeme hi लिंक
-    lexeme zh 链接
-    lexeme es enlaces
   source-projection-return
     defined-by action
     role source-projection-return

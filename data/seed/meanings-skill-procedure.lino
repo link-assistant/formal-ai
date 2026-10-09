@@ -75,11 +75,12 @@ meanings
     defined-by concept
     defined-by relation
     role skill_procedure_step_object
-    lexeme en link url address
-    lexeme ru ссылк адрес
+    role source-projection-format
+    lexeme en link url address links
+    lexeme ru ссылк адрес ссылки
     lexeme hi लिंक पता
     lexeme zh 链接 网址
-    lexeme es enlace url dirección
+    lexeme es enlace url dirección enlaces
   skill_procedure_object_title
     defined-by concept
     defined-by knowledge
