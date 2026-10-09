@@ -6,12 +6,10 @@ export const FinalDisposition = Object.freeze({
   Finding: 'finding', Artifact: 'artifact', Clarification: 'clarification',
   Gap: 'gap', Failure: 'failure', Unknown: 'unknown',
 });
-
 /** Mirrors `fn record_with_role` in rust/src/agentic_coding/final_result.rs; JS can also attach an artifact receipt. */
 export function resolvedFinalAnswer(answer, disposition, origin, payloadRole = FinalPayloadRole.Finding, artifact = null) {
   return { kind: 'final', answer, result: { text: answer, disposition, origin, payloadRole, artifact } };
 }
-
 /** Mirrors `ResolvedPlan::new` in rust/src/agentic_coding/final_result.rs: unmatched final metadata remains unknown. */
 export function finalResult(plan) {
   if (plan?.kind !== 'final') return null;
