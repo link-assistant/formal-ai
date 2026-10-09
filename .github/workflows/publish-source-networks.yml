@@ -85,11 +85,20 @@ jobs:
       matrix:
         shard: [0, 1, 2, 3, 4, 5, 6, 7]
     steps:
-      - uses: actions/checkout@v7
+      - name: Check out pull request source for packet checks
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           persist-credentials: false
-          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Check out the publication workflow source
+        if: github.event_name != 'pull_request'
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ github.sha }}
       - name: Select the resolved published tag
         if: needs.resolve.outputs.tag != ''
         env:
@@ -118,7 +127,7 @@ jobs:
           TEST_BUDGET_SECONDS: 600
           TEST_WARN_RATIO_PERCENT: 75
         run: |
-          bash scripts/run-with-budget.sh source-networks-release \
+          bash scripts/run-with-budget-warning.sh "$TEST_BUDGET_SECONDS" source-networks-release \
             node scripts/check-source-networks.mjs --meta-language .meta-language \
             --shard-count 8 --shard-index "$SOURCE_SHARD" --write --output "$PACKET_DIRECTORY"
       - name: Bundle the complete shard with its receipts
