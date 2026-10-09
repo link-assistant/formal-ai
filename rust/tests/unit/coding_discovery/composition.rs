@@ -336,7 +336,8 @@ fn source_recurrence_candidates_are_verified_with_discovered_examples() {
         example(&["4"], "10"),
         example(&["7"], "28"),
     ];
-    let parameter = formal_ai::coding_recurrence::Expression::Parameter("n".to_owned());
+    let source_parameter_expression =
+        formal_ai::coding_recurrence::Expression::Parameter("n".to_owned());
     let contract = formal_ai::coding_recurrence::SourceCallableContract {
         name: "accumulated_total".to_owned(),
         parameter: "n".to_owned(),
@@ -346,7 +347,7 @@ fn source_recurrence_candidates_are_verified_with_discovered_examples() {
                 formal_ai::coding_recurrence::Expression::Apply(
                     formal_ai::coding_recurrence::Operation::Equal,
                     vec![
-                        parameter.clone(),
+                        source_parameter_expression.clone(),
                         formal_ai::coding_recurrence::Expression::Literal(0),
                     ],
                 ),
@@ -354,11 +355,11 @@ fn source_recurrence_candidates_are_verified_with_discovered_examples() {
                 formal_ai::coding_recurrence::Expression::Apply(
                     formal_ai::coding_recurrence::Operation::Add,
                     vec![
-                        parameter.clone(),
+                        source_parameter_expression.clone(),
                         formal_ai::coding_recurrence::Expression::Recur(Box::new(
                             formal_ai::coding_recurrence::Expression::Apply(
                                 formal_ai::coding_recurrence::Operation::SubtractOne,
-                                vec![parameter],
+                                vec![source_parameter_expression],
                             ),
                         )),
                     ],
