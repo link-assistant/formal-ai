@@ -426,6 +426,15 @@ jobs:
       # Measured worst on main is 128s against a 121s median (n=7), so 300s
       # leaves room for a slow replay without letting a hang run for 45m, and
       # the 8m backstop only outlasts the deadline it guards.
+      - name: Download the current native self-coding test executable
+        if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
+        timeout-minutes: 3
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          name: formal-ai-test-executables
+          path: dist/tests
       - name: "Replay Hive Mind self-coding inner loop (issue #655)"
         if: ${{ matrix.part == 'scenarios' && (inputs.full-replay) && steps.ledger.outputs.already-green != 'true' }}
         timeout-minutes: 8
@@ -435,7 +444,7 @@ jobs:
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Hive Mind self-coding replay" \
-            bash -c 'rust/examples/self-coding/run.sh && cargo test --manifest-path rust/Cargo.toml self_coding_session_replays'
+            bash -c 'rust/examples/self-coding/run.sh && node scripts/native-test-artifact.mjs run dist/tests release all agentic_coding::self_coding::self_coding_session_replays'
       # Issue #1079: a failed harness prints nothing into the job log -- it
       # redirects the CLI's streams to files, and `set -e` ends it before
       # `scripts/classify-agent-cli-stderr.sh` can read them. Reading the same

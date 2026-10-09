@@ -1270,6 +1270,8 @@ jobs:
         run: cargo test --manifest-path rust/Cargo.toml --release --no-run --bins --tests --all-features
       - name: Collect the build artifacts
         run: bash scripts/collect-build-artifacts.sh
+      - name: Bind native test artifacts to their actual build inputs
+        run: node scripts/native-test-artifact.mjs write dist/tests release all
       - name: Upload formal-ai binaries
         uses: actions/upload-artifact@v7
         with:

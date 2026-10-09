@@ -309,7 +309,16 @@ fn committed_potato_session_matches_a_fresh_run() {
     //       --session-json docs/case-studies/issue-538/agent-cli-session-potato.json
     let committed =
         include_str!("../../../../docs/case-studies/issue-538/agent-cli-session-potato.json");
-    let fresh = run_agentic_task(meaning_detail::POTATO_DETAIL_TASK).expect("workspace");
+    let recorded: serde_json::Value =
+        serde_json::from_str(committed).expect("immutable session JSON");
+    let tools = recorded["tools_advertised"]
+        .as_array()
+        .expect("archived advertised tool schema")
+        .iter()
+        .map(|tool| tool.as_str().expect("advertised tool name"))
+        .collect::<Vec<_>>();
+    let fresh =
+        run_agentic_task_with_tools(meaning_detail::POTATO_DETAIL_TASK, &tools).expect("workspace");
     let rendered = format!(
         "{}\n",
         serde_json::to_string_pretty(&fresh.session_json()).unwrap()
@@ -443,7 +452,16 @@ fn committed_agent_cli_session_matches_a_fresh_run() {
     //   formal-ai agent --task "<MEANING_DETAIL_TASK>" \
     //       --session-json docs/case-studies/issue-538/agent-cli-session.json
     let committed = include_str!("../../../../docs/case-studies/issue-538/agent-cli-session.json");
-    let fresh = run_agentic_task(meaning_detail::MEANING_DETAIL_TASK).expect("workspace");
+    let recorded: serde_json::Value =
+        serde_json::from_str(committed).expect("immutable session JSON");
+    let tools = recorded["tools_advertised"]
+        .as_array()
+        .expect("archived advertised tool schema")
+        .iter()
+        .map(|tool| tool.as_str().expect("advertised tool name"))
+        .collect::<Vec<_>>();
+    let fresh = run_agentic_task_with_tools(meaning_detail::MEANING_DETAIL_TASK, &tools)
+        .expect("workspace");
     let rendered = format!(
         "{}\n",
         serde_json::to_string_pretty(&fresh.session_json()).unwrap()
@@ -638,7 +656,15 @@ fn committed_self_ast_session_matches_a_fresh_run() {
     //       --session-json docs/case-studies/issue-538/agent-cli-session-self-ast.json
     let committed =
         include_str!("../../../../docs/case-studies/issue-538/agent-cli-session-self-ast.json");
-    let fresh = run_agentic_task(self_ast::AST_TASK).expect("workspace");
+    let recorded: serde_json::Value =
+        serde_json::from_str(committed).expect("immutable session JSON");
+    let tools = recorded["tools_advertised"]
+        .as_array()
+        .expect("archived advertised tool schema")
+        .iter()
+        .map(|tool| tool.as_str().expect("advertised tool name"))
+        .collect::<Vec<_>>();
+    let fresh = run_agentic_task_with_tools(self_ast::AST_TASK, &tools).expect("workspace");
     let rendered = format!(
         "{}\n",
         serde_json::to_string_pretty(&fresh.session_json()).unwrap()
