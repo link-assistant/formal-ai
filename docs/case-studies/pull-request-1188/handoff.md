@@ -148,7 +148,7 @@ Rules:
 
 ## 3. State at the handoff
 
-The table below preserves the earlier round20 snapshot; its local-gate and CI results are observations of that source state. Current integration adds later source and evidence commits, so all checks must run again on its exact final remote head. The checked specification record is125/136 with11 gaps; the held-out300-case family audit still reports0/300 in JavaScript because its dispatcher lacks the native family interpreter. Broad G112 source-feature synthesis remains open. Follow the generated tally and requirement records for current counts, and [release-verification.md](release-verification.md) for actual artifact/publication evidence. No current mergeable or all-requirements-complete claim is made by this historical table.
+The table below preserves the earlier round20 snapshot; its local-gate and CI results are observations of that source state. Current integration adds later source and evidence commits, so all checks must run again on its exact final remote head. The checked specification record is135/136 with1 gap; the held-out300-case family audit still reports0/300 in JavaScript because its dispatcher lacks the native family interpreter. Broad G112 source-feature synthesis remains open. Follow the generated tally and requirement records for current counts, and [release-verification.md](release-verification.md) for actual artifact/publication evidence. No current mergeable or all-requirements-complete claim is made by this historical table.
 
 | Measure | Value |
 | --- | --- |

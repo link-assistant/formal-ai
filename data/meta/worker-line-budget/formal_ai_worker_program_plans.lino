@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_program_plans.js"
-  ceiling 1031
+  ceiling 1030
   rationale "Substitution rules that lower program plans, write-program parameters and recovery, coding guidance, program explanations and the blueprint capability table. Issue #658 cut this module out of one oversized worker file by line count; R1188-U5 named it after what it holds. Its ceiling falls as its logic moves into js/wasm-worker. Ceiling moved 1263 to 1266 for issue #1021 R1021-31: writeProgramParameters reads a request that names code and nothing else as a write_program request with no parameters (namesCodeAndNothingElse, mirroring names_code_and_nothing_else), so every asking verb reaches the honest dead end instead of a web search. Lowered from 1266 to 1031 (R1188-U5): the Rust blueprint source moved to formal_ai_worker_program_blueprints.js, which reads it while it loads."

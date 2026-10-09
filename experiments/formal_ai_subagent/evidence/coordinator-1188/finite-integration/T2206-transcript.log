@@ -1,0 +1,49 @@
+>> read {"filePath":"experiments/issue_1028_agent_cli_ladder/import-children.py","file_path":"experiments/issue_1028_agent_cli_ladder/import-children.py","path":"experiments/issue_1028_agent_cli_ladder/import-children.py"}
+   <file>
+   00001| substitution_rules
+   00002|   id learned_program_plan_rules
+   00003| 
+   
+   (End of file - total 3 lines)
+   </file>
+>> edit {"filePath":"experiments/issue_1028_agent_cli_ladder/import-children.py","file_path":"experiments/issue_1028_agent_cli_ladder/import-children.py","new":"#!/usr/bin/env python3\n\"\"\"Import only verified current-run leaf artifacts for composite node legs.\"\"\"\nimport shutil\nimport sys\nfrom pathlib import Path\nfrom evidence import IDENTITY, digest, fail, validate\n\n\ndef main():\n    source, target = map(Path, sys.argv[1:3])\n    commit, tree, rules = sys.argv[3:6]\n    values, rows, chosen, verdicts = validate(source)\n    expected = dict(zip(IDENTITY, (rules, commit, tree, digest(target / \"tree.tsv\"), digest(target / \"leaves.tsv\"))))\n    if any(values[key] != expected[key] for key in IDENTITY) or values[\"requested_depth\"] != \"5\":\n        fail(\"child evidence belongs to another source tree, corpus, rule mode or depth\")\n    for node in sorted(chosen):\n        if rows[node][0] != 5 or verdicts[node] != \"PASS\":\n            continue\n        effect = source / node / \"effect.lino\"\n        diff = source / node / \"change.diff\"\n        fields = effect.read_text().splitlines()\n        if f\"node_path={node}\" not in fields or \"node_kind=leaf\" not in fields or not diff.is_file() or not diff.stat().st_size:\n            fail(f\"verified leaf {node} has no matching effect and diff\")\n        shutil.copytree(source / node, target / node, dirs_exist_ok=False)\n        print(f\"{node}\\t{target / node / 'effect.lino'}\")\n\n\nif __name__ == \"__main__\":\n    try:\n        main()\n    except (ValueError, OSError) as error:\n        print(f\"::error title=Invalid current-run child evidence::{error}\", file=sys.stderr)\n        raise SystemExit(1)\n","newString":"#!/usr/bin/env python3\n\"\"\"Import only verified current-run leaf artifacts for composite node legs.\"\"\"\nimport shutil\nimport sys\nfrom pathlib import Path\nfrom evidence import IDENTITY, digest, fail, validate\n\n\ndef main():\n    source, target = map(Path, sys.argv[1:3])\n    commit, tree, rules = sys.argv[3:6]\n    values, rows, chosen, verdicts = validate(source)\n    expected = dict(zip(IDENTITY, (rules, commit, tree, digest(target / \"tree.tsv\"), digest(target / \"leaves.tsv\"))))\n    if any(values[key] != expected[key] for key in IDENTITY) or values[\"requested_depth\"] != \"5\":\n        fail(\"child evidence belongs to another source tree, corpus, rule mode or depth\")\n    for node in sorted(chosen):\n        if rows[node][0] != 5 or verdicts[node] != \"PASS\":\n            continue\n        effect = source / node / \"effect.lino\"\n        diff = source / node / \"change.diff\"\n        fields = effect.read_text().splitlines()\n        if f\"node_path={node}\" not in fields or \"node_kind=leaf\" not in fields or not diff.is_file() or not diff.stat().st_size:\n            fail(f\"verified leaf {node} has no matching effect and diff\")\n        shutil.copytree(source / node, target / node, dirs_exist_ok=False)\n        print(f\"{node}\\t{target / node / 'effect.lino'}\")\n\n\nif __name__ == \"__main__\":\n    try:\n        main()\n    except (ValueError, OSError) as error:\n        print(f\"::error title=Invalid current-run child evidence::{error}\", file=sys.stderr)\n        raise SystemExit(1)\n","new_str":"#!/usr/bin/env python3\n\"\"\"Import only verified current-run leaf artifacts for composite node legs.\"\"\"\nimport shutil\nimport sys\nfrom pathlib import Path\nfrom evidence import IDENTITY, digest, fail, validate\n\n\ndef main():\n    source, target = map(Path, sys.argv[1:3])\n    commit, tree, rules = sys.argv[3:6]\n    values, rows, chosen, verdicts = validate(source)\n    expected = dict(zip(IDENTITY, (rules, commit, tree, digest(target / \"tree.tsv\"), digest(target / \"leaves.tsv\"))))\n    if any(values[key] != expected[key] for key in IDENTITY) or values[\"requested_depth\"] != \"5\":\n        fail(\"child evidence belongs to another source tree, corpus, rule mode or depth\")\n    for node in sorted(chosen):\n        if rows[node][0] != 5 or verdicts[node] != \"PASS\":\n            continue\n        effect = source / node / \"effect.lino\"\n        diff = source / node / \"change.diff\"\n        fields = effect.read_text().splitlines()\n        if f\"node_path={node}\" not in fields or \"node_kind=leaf\" not in fields or not diff.is_file() or not diff.stat().st_size:\n            fail(f\"verified leaf {node} has no matching effect and diff\")\n        shutil.copytree(source / node, target / node, dirs_exist_ok=False)\n        print(f\"{node}\\t{target / node / 'effect.lino'}\")\n\n\nif __name__ == \"__main__\":\n    try:\n        main()\n    except (ValueError, OSError) as error:\n        print(f\"::error title=Invalid current-run child evidence::{error}\", file=sys.stderr)\n        raise SystemExit(1)\n","new_string":"#!/usr/bin/env python3\n\"\"\"Import only verified current-run leaf artifacts for composite node legs.\"\"\"\nimport shutil\nimport sys\nfrom pathlib import Path\nfrom evidence import IDENTITY, digest, fail, validate\n\n\ndef main():\n    source, target = map(Path, sys.argv[1:3])\n    commit, tree, rules = sys.argv[3:6]\n    values, rows, chosen, verdicts = validate(source)\n    expected = dict(zip(IDENTITY, (rules, commit, tree, digest(target / \"tree.tsv\"), digest(target / \"leaves.tsv\"))))\n    if any(values[key] != expected[key] for key in IDENTITY) or values[\"requested_depth\"] != \"5\":\n        fail(\"child evidence belongs to another source tree, corpus, rule mode or depth\")\n    for node in sorted(chosen):\n        if rows[node][0] != 5 or verdicts[node] != \"PASS\":\n            continue\n        effect = source / node / \"effect.lino\"\n        diff = source / node / \"change.diff\"\n        fields = effect.read_text().splitlines()\n        if f\"node_path={node}\" not in fields or \"node_kind=leaf\" not in fields or not diff.is_file() or not diff.stat().st_size:\n            fail(f\"verified leaf {node} has no matching effect and diff\")\n        shutil.copytree(source / node, target / node, dirs_exist_ok=False)\n        print(f\"{node}\\t{target / node / 'effect.lino'}\")\n\n\nif __name__ == \"__main__\":\n    try:\n        main()\n    except (ValueError, OSError) as error:\n        print(f\"::error title=Invalid current-run child evidence::{error}\", file=sys.stderr)\n        raise SystemExit(1)\n","old":"substitution_rules\n  id learned_program_plan_rules\n","oldString":"substitution_rules\n  id learned_program_plan_rules\n","old_str":"substitution_rules\n  id learned_program_plan_rules\n","old_string":"substitution_rules\n  id learned_program_plan_rules\n","path":"experiments/issue_1028_agent_cli_ladder/import-children.py"}
+>> bash {"command":"sha256sum -- experiments/issue_1028_agent_cli_ladder/import-children.py"}
+   4915544c0a5d132034ab79e9cf7fb0e30deb9ddfad627866b3563859ea48882f  experiments/issue_1028_agent_cli_ladder/import-children.py
+   
+== answer ==
+Replaced `substitution_rules
+  id learned_program_plan_rules
+` with `#!/usr/bin/env python3
+"""Import only verified current-run leaf artifacts for composite node legs."""
+import shutil
+import sys
+from pathlib import Path
+from evidence import IDENTITY, digest, fail, validate
+
+
+def main():
+    source, target = map(Path, sys.argv[1:3])
+    commit, tree, rules = sys.argv[3:6]
+    values, rows, chosen, verdicts = validate(source)
+    expected = dict(zip(IDENTITY, (rules, commit, tree, digest(target / "tree.tsv"), digest(target / "leaves.tsv"))))
+    if any(values[key] != expected[key] for key in IDENTITY) or values["requested_depth"] != "5":
+        fail("child evidence belongs to another source tree, corpus, rule mode or depth")
+    for node in sorted(chosen):
+        if rows[node][0] != 5 or verdicts[node] != "PASS":
+            continue
+        effect = source / node / "effect.lino"
+        diff = source / node / "change.diff"
+        fields = effect.read_text().splitlines()
+        if f"node_path={node}" not in fields or "node_kind=leaf" not in fields or not diff.is_file() or not diff.stat().st_size:
+            fail(f"verified leaf {node} has no matching effect and diff")
+        shutil.copytree(source / node, target / node, dirs_exist_ok=False)
+        print(f"{node}\t{target / node / 'effect.lino'}")
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (ValueError, OSError) as error:
+        print(f"::error title=Invalid current-run child evidence::{error}", file=sys.stderr)
+        raise SystemExit(1)
+` in `experiments/issue_1028_agent_cli_ladder/import-children.py` and observed the result.

@@ -1,0 +1,98 @@
+>> read {"filePath":"experiments/issue_1028_agent_cli_ladder/combine-shards.py","file_path":"experiments/issue_1028_agent_cli_ladder/combine-shards.py","path":"experiments/issue_1028_agent_cli_ladder/combine-shards.py"}
+   <file>
+   00001| #!/usr/bin/env python3
+   00002| """Join exact planned node evidence, preserving the complete ladder corpus."""
+   00003| import json
+   00004| import shutil
+   00005| import sys
+   00006| from pathlib import Path
+   00007| from evidence import FIELDS, IDENTITY, counts, fail, selected, validate
+   00008| 
+   00009| 
+   00010| def main():
+   00011|     if len(sys.argv) not in (4, 5):
+   00012|         fail("usage: combine-shards.py <shards-dir> <out-dir> <expected-count> [plan.json]")
+   00013|     shards_dir, out_dir, expected = Path(sys.argv[1]), Path(sys.argv[2]), int(sys.argv[3])
+   00014|     shards = sorted(path.parent for path in shards_dir.glob("*/ladder-result.lino"))
+   00015|     if expected < 1 or len(shards) != expected:
+   00016|         fail(f"the plan has {expected} shard(s), {len(shards)} wrote a result")
+   00017|     measurements = [validate(shard) for shard in shards]
+   00018|     identity = measurements[0][0]
+   00019|     if any(any(values[key] != identity[key] for key in IDENTITY) for values, *_ in measurements):
+   00020|         fail("shards disagree on source tree, corpus or authored-rules identity")
+   00021|     tree = measurements[0][1]
+   00022|     tuples = [(values["requested_depth"], values["node_filter"]) for values, *_ in measurements]
+   00023|     if len(tuples) != len(set(tuples)):
+   00024|         fail("two shards measured the same depth/subtree")
+   00025|     if len(sys.argv) == 5:
+   00026|         plan = json.loads(Path(sys.argv[4]).read_text())
+   00027|         legs = plan["legs"] + plan["composites"]
+   00028|         declared = {(str(leg["depth"]), leg["filter"]): set(leg["nodes"]) for leg in legs}
+   00029|         if len(declared) != len(legs) or set(tuples) != set(declared):
+   00030|             fail("evidence legs differ from the exact planned depth/subtree set")
+   00031|         for values, _, chosen, _ in measurements:
+   00032|             if chosen != declared[(values["requested_depth"], values["node_filter"])]:
+   00033|                 fail("a leg selected a different node set than planned")
+   00034|         mode, prefix = plan["requested_depth"], plan["node_filter"]
+   00035|         expected_nodes = selected(tree, mode, prefix)
+   00036|         if set(plan["expected_nodes"]) != expected_nodes or len(plan["expected_nodes"]) != len(expected_nodes):
+   00037|             fail("the plan itself loses or repeats corpus nodes")
+   00038|     else:
+   00039|         depths = {values["requested_depth"] for values, *_ in measurements}
+   00040|         if len(depths) != 1:
+   00041|             fail("mixed-depth evidence requires an exact plan")
+   00042|         mode = depths.pop()
+   00043|         prefix = tuples[0][1] if len(tuples) == 1 else "none"
+   00044|         expected_nodes = selected(tree, mode, prefix)
+   00045|     seen, verdicts, selected_rows, run_rows, duration_rows = set(), {}, [], [], []
+   00046|     for shard, (_, _, chosen, observed) in zip(shards, measurements):
+   00047|         if seen & chosen:
+   00048|             fail(f"overlapping measured nodes: {sorted(seen & chosen)}")
+   00049|         seen |= chosen
+   00050|         verdicts.update(observed)
+   00051|         selected_rows.extend((shard / "selected.tsv").read_text().splitlines())
+   00052|         run_rows.extend((shard / "run.log").read_text().splitlines())
+   00053|     if seen != expected_nodes:
+   00054|         fail(f"missing nodes {sorted(expected_nodes - seen)}; extra nodes {sorted(seen - expected_nodes)}")
+   00055|     # Validate everything before copying any evidence into the joined output.
+   00056|     out_dir.mkdir(parents=True, exist_ok=True)
+   00057|     for shard, (_, _, chosen, _) in zip(shards, measurements):
+   00058|         for node in sorted(chosen):
+   00059|             if (shard / node).is_dir():
+   00060|                 shutil.copytree(shard / node, out_dir / node, dirs_exist_ok=False)
+   00061|     for shared in ("tree.tsv", "leaves.tsv"):
+   00062|         shutil.copyfile(shards[0] / shared, out_dir / shared)
+   00063|     selected_rows.sort(key=lambda row: (-tree[row.split("\t", 1)[0]][0], row.split("\t", 1)[0]))
+   00064|     (out_dir / "selected.tsv").write_text("".join(f"{row}\n" for row in selected_rows))
+   00065|     (out_dir / "run.log").write_text("".join(f"{row}\n" for row in run_rows))
+   00066|     combined = {key: identity[key] for key in IDENTITY}
+   00067|     combined.update(requested_depth=mode, node_filter=prefix)
+   00068|     combined.update(counts(tree, seen, verdicts, identity["authored_rules_enabled"]))
+   00069|     lines = ["ladder_result"] + [f'  {key} "{combined[key]}"' for key in FIELDS if key in combined]
+   00070|     (out_dir / "ladder-result.lino").write_text("\n".join(lines) + "\n")
+   00071|     table = "\n".join("| " + " | ".join(row.split("\t", 2)) + " |" for row in run_rows if row.count("\t") == 2)
+   00072|     (out_dir / "README.md").write_text(
+   00073|         "# Agent CLI binary-tree ladder run\n\n"
+   00074|         f"Joined from {len(shards)} exact planned leg(s).\n\n"
+   00075|         + "".join(f"- {key.replace('_', ' ')}: {combined[key]}\n" for key in FIELDS if key in combined)
+   00076|         + "\n| node | verdict | detail |\n| --- | --- | --- |\n" + table + "\n")
+   00077|     print((out_dir / "ladder-result.lino").read_text(), end="")
+   00078| 
+   00079| 
+   00080| if __name__ == "__main__":
+   00081|     try:
+   00082|         main()
+   00083|     except (ValueError, OSError, KeyError) as error:
+   00084|         print(f"::error title=Agent CLI ladder evidence does not form one run::{error}", file=sys.stderr)
+   00085|         raise SystemExit(1)
+   00086| 
+   
+   (End of file - total 86 lines)
+   </file>
+>> edit {"filePath":"experiments/issue_1028_agent_cli_ladder/combine-shards.py","file_path":"experiments/issue_1028_agent_cli_ladder/combine-shards.py","new":"        run_rows.extend((shard / \"run.log\").read_text().splitlines())\n        duration_rows.extend((shard / \"durations.tsv\").read_text().splitlines())","newString":"        run_rows.extend((shard / \"run.log\").read_text().splitlines())\n        duration_rows.extend((shard / \"durations.tsv\").read_text().splitlines())","new_str":"        run_rows.extend((shard / \"run.log\").read_text().splitlines())\n        duration_rows.extend((shard / \"durations.tsv\").read_text().splitlines())","new_string":"        run_rows.extend((shard / \"run.log\").read_text().splitlines())\n        duration_rows.extend((shard / \"durations.tsv\").read_text().splitlines())","old":"        run_rows.extend((shard / \"run.log\").read_text().splitlines())","oldString":"        run_rows.extend((shard / \"run.log\").read_text().splitlines())","old_str":"        run_rows.extend((shard / \"run.log\").read_text().splitlines())","old_string":"        run_rows.extend((shard / \"run.log\").read_text().splitlines())","path":"experiments/issue_1028_agent_cli_ladder/combine-shards.py"}
+>> bash {"command":"sha256sum -- experiments/issue_1028_agent_cli_ladder/combine-shards.py"}
+   c26648c9626931c0ade43a2d6a3acee44ecd5b6bbc2e65d7a5a3463d1557edd8  experiments/issue_1028_agent_cli_ladder/combine-shards.py
+   
+== answer ==
+Replaced `        run_rows.extend((shard / "run.log").read_text().splitlines())` with `        run_rows.extend((shard / "run.log").read_text().splitlines())
+        duration_rows.extend((shard / "durations.tsv").read_text().splitlines())` in `experiments/issue_1028_agent_cli_ladder/combine-shards.py` and observed the result.

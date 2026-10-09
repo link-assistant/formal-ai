@@ -374,8 +374,18 @@ async function runWebSearchQuery(query, language, queryKind, preferences = {}) {
   const statementFusion = fuseBrowserSearchStatements(
     top, query, language, texts, evidence, rrfK,
   );
-  const lines = statementFusion.lines;
+  let lines = statementFusion.lines;
   diagnostics.statements = statementFusion.statements;
+  if (statementFusion.statements.length === 0) {
+    // Captured, ranked snippets remain source data when statement
+    // formalization is unavailable; do not describe them as formalized claims.
+    const results = top.map((entry) =>
+      `- [${entry.title || entry.url}](${entry.url})${entry.excerpt ? ` — ${entry.excerpt}` : ""}`).join("\n");
+    lines = handlerRulesFillOnce(answerFor("web_search_live_results", language || "en"), {
+      query, count: top.length, results,
+    }).split("\n");
+    evidence.push("web_search:rendering:retrieved_source_snippets");
+  }
 
   // Resolve the formalization tuple now that we know the top-ranked entity.
   // Prefer a real Wikidata Q-id; fall back to the WP virtual id, then to the
@@ -456,21 +466,6 @@ function projectStatementsFor(project, language) {
     return localized.statements;
   }
   return Array.isArray(project && project.statements) ? project.statements : [];
-}
-
-function describeProjectRecord(project, language) {
-  const statements = projectStatementsFor(project, language)
-    .filter((statement) => {
-      const kind = statement && statement.kind;
-      return statement && statement.text && kind !== "install" && kind !== "example";
-    })
-    .slice()
-    .sort((a, b) => Number(b.weight || 0) - Number(a.weight || 0))
-    .slice(0, 3)
-    .map((statement) => String(statement.text).trim())
-    .filter(Boolean);
-  if (statements.length > 0) return statements.join(" ");
-  return project.description || projectDisplayName(project, language);
 }
 
 function projectMatchesAlias(project, normalizedTerm) {
@@ -893,66 +888,36 @@ function genericProjectLookupAnswer(prompt, language, repo, promotionEnabled) {
 
 async function renderPromotedProjectLookup(prompt, language, project) {
   const displayName = projectDisplayName(project, language);
-  const repo = projectRepoSlug(project);
-  const url = project.url || `https://github.com/${repo}`;
-  const description = describeProjectRecord(project, language);
-  const orgs = PROMOTED_PROJECT_ORGS.join(", ");
-  let preferredLine;
-  if (language === "ru") {
-    preferredLine = `В контексте репозиториев ${orgs} под \`${displayName}\` я прежде всего имею в виду [${repo}](${url}) — ${description}`;
-  } else if (language === "hi") {
-    preferredLine = `${orgs} repository context में \`${displayName}\` से मेरा पहला मतलब [${repo}](${url}) है — ${description}`;
-  } else if (language === "zh") {
-    preferredLine = `在 ${orgs} 仓库上下文中，\`${displayName}\` 首先指 [${repo}](${url}) — ${description}`;
-  } else {
-    preferredLine = `In the ${orgs} repository context, \`${displayName}\` should first mean [${repo}](${url}) — ${description}`;
-  }
-
+  const repository = projectRepoSlug(project);
+  const url = project.url || `https://github.com/${repository}`;
+  const description = describeProjectRecord(project, language, "short");
+  const providers = WEB_SEARCH_PROVIDERS.map((provider) => provider.id);
+  const fusionConstant = webSearchRrfK();
+  const body = projectSummaryResponse("project-lookup-promoted", language, {
+    "promoted-orgs": PROMOTED_PROJECT_ORGS.join(", "),
+    "display-name": displayName,
+    "repo-slug": repository,
+    "project-url": url,
+    description,
+    "provider-summary": providers.join(", "),
+    "reciprocal-rank-constant": fusionConstant,
+  });
   const search = await runWebSearchQuery(displayName, language);
   const evidence = [
-    `project:promoted:${repo}`,
-    `source:${url}`,
-    "summarization:mode:short",
-    `summarization:language:${language}`,
+    `project:promoted:${repository}`, `source:${url}`,
+    "summarization:mode:short", `summarization:language:${language}`,
+    `web_search:request:${displayName}`,
+    ...providers.map((provider) => `web_search:provider_planned:${provider}`),
+    `web_search:fusion_planned:rrf:k=${fusionConstant}`,
+    ...(search && Array.isArray(search.evidence) ? search.evidence : []),
   ];
-  if (search && Array.isArray(search.evidence)) {
-    evidence.push(...search.evidence);
-  } else {
-    evidence.push("web_search:no_results");
-  }
-
-  const lines = [preferredLine];
-  if (search && search.content) {
-    lines.push("");
-    lines.push(
-      language === "ru"
-        ? "Другие найденные в интернете репозитории и сущности:"
-        : language === "hi"
-          ? "Internet पर मिले दूसरे repositories और entities:"
-          : language === "zh"
-            ? "互联网上找到的其他仓库和实体："
-            : "Other repositories and entities found online:",
-    );
-    lines.push("");
-    lines.push(search.content);
-  } else {
-    lines.push("");
-    lines.push(
-      language === "ru"
-        ? "Интернет-поиск по другим совпадениям не вернул результатов через доступные CORS-провайдеры."
-        : language === "hi"
-          ? "दूसरे matches के लिए web search उपलब्ध CORS providers से results नहीं लौटा."
-          : language === "zh"
-            ? "通过可用的 CORS providers 搜索其他匹配项没有返回结果。"
-            : "Web search for other matches returned no results through the available CORS providers.",
-    );
-  }
-
+  const grounded = search && search.diagnostics &&
+    Array.isArray(search.diagnostics.fused) && search.diagnostics.fused.length > 0;
   return {
     intent: "project_lookup",
-    content: lines.join("\n"),
-    confidence: 0.9,
-    evidence,
+    content: grounded ? `${body}\n\n${search.content}` : body,
+    confidence: 0.9, evidence,
+    ...(search && search.diagnostics ? { diagnostics: search.diagnostics } : {}),
   };
 }
 

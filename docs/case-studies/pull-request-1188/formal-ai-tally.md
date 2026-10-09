@@ -9,17 +9,17 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 
 | Who | Tasks | Passed | Failed | Partial | Fixed | Open | Not reproduced | Unresolved |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **All** | 1391 | 1030 | 247 | 23 | 212 | 49 | 5 | 4 |
+| **All** | 1558 | 1168 | 268 | 31 | 234 | 59 | 6 | 0 |
 | CHAT-ROUTES | 13 | 10 | 3 | 0 | 3 | 0 | 0 | 0 |
 | CI-SPEED | 6 | 6 | 0 | 0 | 0 | 0 | 0 | 0 |
 | CIFIX | 203 | 198 | 5 | 0 | 5 | 0 | 0 | 0 |
 | CIFIX2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
-| coordinator | 353 | 132 | 128 | 4 | 124 | 7 | 1 | 0 |
+| coordinator | 436 | 212 | 131 | 4 | 127 | 7 | 1 | 0 |
 | DEBUG2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
 | DEBUG3 | 2 | 1 | 1 | 0 | 1 | 0 | 0 | 0 |
 | DISCOVER | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | FIX-GAPS | 15 | 15 | 0 | 0 | 0 | 0 | 0 | 0 |
-| FORMAL-AI-ONLY | 45 | 30 | 12 | 3 | 3 | 12 | 0 | 0 |
+| FORMAL-AI-ONLY | 64 | 42 | 17 | 5 | 5 | 17 | 0 | 0 |
 | GENERALIZE | 16 | 16 | 0 | 0 | 0 | 0 | 0 | 0 |
 | LEAD | 18 | 16 | 0 | 1 | 1 | 0 | 0 | 0 |
 | LEXEMES | 4 | 3 | 1 | 0 | 1 | 0 | 0 | 0 |
@@ -32,13 +32,13 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 | REPO-RUNNERS | 89 | 78 | 5 | 6 | 11 | 0 | 0 | 0 |
 | REQ-AUDIT | 9 | 9 | 0 | 0 | 0 | 0 | 0 | 0 |
 | REQ-ROUTE | 12 | 7 | 5 | 0 | 4 | 0 | 1 | 0 |
-| ROOT | 201 | 182 | 17 | 2 | 12 | 5 | 0 | 2 |
+| ROOT | 230 | 200 | 25 | 5 | 21 | 8 | 1 | 0 |
 | ROUTE2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
 | ROUTE3 | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | SCRIPTS-A | 5 | 4 | 1 | 0 | 1 | 0 | 0 | 0 |
 | SCRIPTS-B | 5 | 5 | 0 | 0 | 0 | 0 | 0 | 0 |
 | SPANISH | 3 | 2 | 1 | 0 | 1 | 0 | 0 | 0 |
-| SPEC-DELIVERY | 227 | 192 | 31 | 4 | 12 | 21 | 0 | 2 |
+| SPEC-DELIVERY | 263 | 220 | 36 | 7 | 20 | 23 | 0 | 0 |
 | SPEC-PARITY | 15 | 11 | 2 | 2 | 0 | 4 | 0 | 0 |
 | TEACH-C | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | TEACH-F | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
@@ -48,7 +48,7 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 | UPSTREAM-TR | 2 | 0 | 2 | 0 | 2 | 0 | 0 | 0 |
 
 Fixed failures whose row names no regression test, pin, gap or carrying row: 0.
-Failures with no resolution: 4 (T2005, T2044, T1933, T1936).
+Failures with no resolution: 0.
 
 ## Formal AI edits beside edits by hand
 

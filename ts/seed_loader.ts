@@ -651,12 +651,20 @@
     return facts;
   }
 
+  // Mirrors ProjectStatement::parse: a complete decimal u8, including zero.
+  function projectStatementWeight(value) {
+    var text = String(value ?? "").replace(/^\p{White_Space}+|\p{White_Space}+$/gu, "");
+    if (!/^\+?[0-9]+$/.test(text)) return 50;
+    var weight = Number(text);
+    return Number.isInteger(weight) && weight >= 0 && weight <= 255 ? weight : 50;
+  }
+
   function extractProjectStatement(node) {
     if (!node || node.name !== "statement" || !node.id) return null;
     return {
       text: String(node.id || "").trim(),
       kind: findChildValue(node, "kind"),
-      weight: parseInt(findChildValue(node, "weight"), 10) || 50,
+      weight: projectStatementWeight(findChildValue(node, "weight")),
     };
   }
 

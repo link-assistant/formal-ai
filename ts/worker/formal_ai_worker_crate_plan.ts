@@ -18,7 +18,7 @@ function finalAnswer(answer) {
   return { kind: 'final', answer };
 }
 
-const { FinalDisposition, resolvedFinalAnswer, finalResult, canDeliverFinal, projectPlan } = crateRequire("final_result.mjs");
+const { FinalDisposition, FinalPayloadRole, resolvedFinalAnswer, finalResult, canDeliverFinal, projectPlan } = crateRequire("final_result.mjs");
 
 /** Mirrors `struct PlannedToolCall` in rust/src/agentic_coding/planner.rs. @param {string} tool @param {string} args */
 function plannedCall(tool, args) {
@@ -89,6 +89,7 @@ return Object.freeze({
   writeArguments,
   fetchArguments,
   FinalDisposition,
+  FinalPayloadRole,
   resolvedFinalAnswer,
   finalResult,
   canDeliverFinal,

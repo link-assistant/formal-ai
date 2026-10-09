@@ -1,0 +1,17 @@
+>> bash {"command":"node /private/tmp/spec-recurrence-1188/repair-two-ledger-after-cells.mjs"}
+   Output: {"path":"docs/case-studies/pull-request-1188/formal-ai-dogfood.md","rows":["T2005","T2044"],"onlyTwoRowsChanged":true}
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/spec-recurrence-1188/repair-two-ledger-after-cells.mjs` command completed. Output:
+
+```json
+{
+  "onlyTwoRowsChanged": true,
+  "path": "docs/case-studies/pull-request-1188/formal-ai-dogfood.md",
+  "rows": [
+    "T2005",
+    "T2044"
+  ]
+}
+```

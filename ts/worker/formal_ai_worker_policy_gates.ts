@@ -14,9 +14,8 @@
 // its evidence carries `policy:*`, `agent_mode:*` and `response:policy:*` as
 // the native answer does.
 //
-// The browser has no isolated workspace, so the last gate answers an agent
-// request with the opt-in confirmation where the native CLI surface would
-// first run `try_agent_workspace_task`, as the native HTTP surface does.
+// Bounded agent actions use a fresh in-memory workspace before the opt-in
+// confirmation; unavailable host processes fail visibly.
 
 const POLICY_GATE_CONFIDENCE = 0.5;
 const POLICY_GATE_FALLBACK_LANGUAGE = "en";
@@ -93,6 +92,7 @@ function tryPolicyGates(prompt, language) {
   const source = String(prompt || "");
   const gate = POLICY_GATES.find((row) => policyGateHolds(row, source.toLowerCase()));
   if (!gate) return null;
+  if (gate.slug === "agent_action") { const workspace = tryBrowserAgentWorkspace(prompt); if (workspace) return workspace; }
   const response = gate.slug.replaceAll("_", "-");
   const content = handlerRulesResponseFor(response, language)
     ?? handlerRulesResponseFor(response, POLICY_GATE_FALLBACK_LANGUAGE);

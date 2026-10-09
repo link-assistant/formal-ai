@@ -1,0 +1,359 @@
+>> bash {"command":"node --test rust/tests/web/authored-literal-planning.test.mjs rust/tests/web/general-plan-event-append.test.mjs"}
+   Output: TAP version 13
+   # Subtest: fenced creation preserves source with task labels, command cues and paths
+   ok 1 - fenced creation preserves source with task labels, command cues and paths
+     ---
+     duration_ms: 734.902166
+     ...
+   # Subtest: closed quoted whole-content consent replaces an existing source file
+   ok 2 - closed quoted whole-content consent replaces an existing source file
+     ---
+     duration_ms: 43.617667
+     ...
+   # Subtest: a plain replacement stays an edit even when its new literal names a file write
+   ok 3 - a plain replacement stays an edit even when its new literal names a file write
+     ---
+     duration_ms: 34.694042
+     ...
+   # Subtest: longer fences preserve payloads containing their own Markdown examples
+   ok 4 - longer fences preserve payloads containing their own Markdown examples
+     ---
+     duration_ms: 65.227292
+     ...
+   # Subtest: literal verification reads failure narratives and compact JSON as authored data
+   ok 5 - literal verification reads failure narratives and compact JSON as authored data
+     ---
+     duration_ms: 93.906125
+     ...
+   # Subtest: explicit verification failure still vetoes exact literal output
+   ok 6 - explicit verification failure still vetoes exact literal output
+     ---
+     duration_ms: 1.148834
+     ...
+   # Subtest: exact-content Set forms consume seed leads while preserving the declared literal bytes
+   ok 7 - exact-content Set forms consume seed leads while preserving the declared literal bytes
+     ---
+     duration_ms: 284.407166
+     ...
+   # Subtest: seed-like words inside quoted payloads and ordinary leading prose remain content
+   ok 8 - seed-like words inside quoted payloads and ordinary leading prose remain content
+     ---
+     duration_ms: 142.227583
+     ...
+   # Subtest: G125: quoted edit payloads with skill cues stay data
+   ok 9 - G125: quoted edit payloads with skill cues stay data
+     ---
+     duration_ms: 36.678833
+     ...
+   # Subtest: G125: genuine unquoted skill teaching keeps its guard
+   ok 10 - G125: genuine unquoted skill teaching keeps its guard
+     ---
+     duration_ms: 1.232667
+     ...
+   # Subtest: G125: a malformed quoted replacement changes nothing
+   ok 11 - G125: a malformed quoted replacement changes nothing
+     ---
+     duration_ms: 1.321417
+     ...
+   # Subtest: read clients preserve earlier bytes, verify the stream and deduplicate a replay
+   ok 12 - read clients preserve earlier bytes, verify the stream and deduplicate a replay
+     ---
+     duration_ms: 723.884667
+     ...
+   # Subtest: an absent log is created, while a permission failure never overwrites it
+   ok 13 - an absent log is created, while a permission failure never overwrites it
+     ---
+     duration_ms: 13.005459
+     ...
+   # Subtest: read-back that loses earlier events cannot authorize the requested write
+   ok 14 - read-back that loses earlier events cannot authorize the requested write
+     ---
+     duration_ms: 2.61275
+     ...
+   # Subtest: run-only clients execute a quoted append and preserve history on retries
+   ok 15 - run-only clients execute a quoted append and preserve history on retries
+     ---
+     duration_ms: 28.981167
+     ...
+   # Subtest: write-only clients cannot overwrite an unobserved event stream
+   ok 16 - write-only clients cannot overwrite an unobserved event stream
+     ---
+     duration_ms: 1.608792
+     ...
+   # Subtest: simultaneous retries take the bounded lock and retain exactly one event
+   ok 17 - simultaneous retries take the bounded lock and retain exactly one event
+     ---
+     duration_ms: 1436.70875
+     ...
+   # Subtest: repository-root shell events use the same sandbox as file tools
+   not ok 18 - repository-root shell events use the same sandbox as file tools
+     ---
+     duration_ms: 50.706833
+     location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/general-plan-event-append.test.mjs:128:1'
+     failureType: 'testCodeFailure'
+     error: |-
+       Expected values to be strictly equal:
+       + actual - expected ... Lines skipped
+       
+       + 'Output: general_change_plan\n' +
+       - 'general_change_plan\n' +
+           '  id "general_change_plan_5d3f05f47cfbf8e6"\n' +
+           '  execution_mode "literal_file"\n' +
+       ...
+           '    expected_evidence "sandboxed plan event"\n' +
+           '    command "cat mapper-proof.txt"\n' +
+       +   '  verification_command "cat mapper-proof.txt"\n' +
+       +   '\n' +
+       +   'Exit Code: 0'
+       -   '  verification_command "cat mapper-proof.txt"\n'
+     code: 'ERR_ASSERTION'
+     name: 'AssertionError'
+     expected: |-
+       general_change_plan
+         id "general_change_plan_5d3f05f47cfbf8e6"
+         execution_mode "literal_file"
+         terminal_state "executed"
+         goal "Set the contents of mapper-proof.txt to «sandboxed plan event»"
+         target "mapper-proof.txt"
+         step 1
+           capability "Write"
+           action "append the composed plan to .formal-ai/general-change-plan.lino"
+           expected_evidence "written plan event impulse_3aec64351da0d2d8"
+         step 2
+           capability "Write"
+           action "write the requested content to mapper-proof.txt"
+           expected_evidence "workspace file mapper-proof.txt"
+         step 3
+           capability "Run"
+           action "run the request-derived verification command"
+           expected_evidence "sandboxed plan event"
+           command "cat mapper-proof.txt"
+         verification_command "cat mapper-proof.txt"
+       
+     actual: |-
+       Output: general_change_plan
+         id "general_change_plan_5d3f05f47cfbf8e6"
+         execution_mode "literal_file"
+         terminal_state "executed"
+         goal "Set the contents of mapper-proof.txt to «sandboxed plan event»"
+         target "mapper-proof.txt"
+         step 1
+           capability "Write"
+           action "append the composed plan to .formal-ai/general-change-plan.lino"
+           expected_evidence "written plan event impulse_3aec64351da0d2d8"
+         step 2
+           capability "Write"
+           action "write the requested content to mapper-proof.txt"
+           expected_evidence "workspace file mapper-proof.txt"
+         step 3
+           capability "Run"
+           action "run the request-derived verification command"
+           expected_evidence "sandboxed plan event"
+           command "cat mapper-proof.txt"
+         verification_command "cat mapper-proof.txt"
+       
+       Exit Code: 0
+     operator: 'strictEqual'
+     stack: |-
+       TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/general-plan-event-append.test.mjs:135:10)
+       async Test.run (node:internal/test_runner/test:797:9)
+       async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+     ...
+   # Subtest: cached event readback excludes the separator before a later canonical record
+   ok 19 - cached event readback excludes the separator before a later canonical record
+     ---
+     duration_ms: 14.6115
+     ...
+   1..19
+   # tests 19
+   # suites 0
+   # pass 18
+   # fail 1
+   # cancelled 0
+   # skipped 0
+   # todo 0
+   # duration_ms 2401.453583
+   
+   Error: 
+   Exit Code: 1
+== answer ==
+The command failed: `node --test rust/tests/web/authored-literal-planning.test.mjs rust/tests/web/general-plan-event-append.test.mjs` exited with code 1.
+
+```text
+TAP version 13
+# Subtest: fenced creation preserves source with task labels, command cues and paths
+ok 1 - fenced creation preserves source with task labels, command cues and paths
+  ---
+  duration_ms: 734.902166
+  ...
+# Subtest: closed quoted whole-content consent replaces an existing source file
+ok 2 - closed quoted whole-content consent replaces an existing source file
+  ---
+  duration_ms: 43.617667
+  ...
+# Subtest: a plain replacement stays an edit even when its new literal names a file write
+ok 3 - a plain replacement stays an edit even when its new literal names a file write
+  ---
+  duration_ms: 34.694042
+  ...
+# Subtest: longer fences preserve payloads containing their own Markdown examples
+ok 4 - longer fences preserve payloads containing their own Markdown examples
+  ---
+  duration_ms: 65.227292
+  ...
+# Subtest: literal verification reads failure narratives and compact JSON as authored data
+ok 5 - literal verification reads failure narratives and compact JSON as authored data
+  ---
+  duration_ms: 93.906125
+  ...
+# Subtest: explicit verification failure still vetoes exact literal output
+ok 6 - explicit verification failure still vetoes exact literal output
+  ---
+  duration_ms: 1.148834
+  ...
+# Subtest: exact-content Set forms consume seed leads while preserving the declared literal bytes
+ok 7 - exact-content Set forms consume seed leads while preserving the declared literal bytes
+  ---
+  duration_ms: 284.407166
+  ...
+# Subtest: seed-like words inside quoted payloads and ordinary leading prose remain content
+ok 8 - seed-like words inside quoted payloads and ordinary leading prose remain content
+  ---
+  duration_ms: 142.227583
+  ...
+# Subtest: G125: quoted edit payloads with skill cues stay data
+ok 9 - G125: quoted edit payloads with skill cues stay data
+  ---
+  duration_ms: 36.678833
+  ...
+# Subtest: G125: genuine unquoted skill teaching keeps its guard
+ok 10 - G125: genuine unquoted skill teaching keeps its guard
+  ---
+  duration_ms: 1.232667
+  ...
+# Subtest: G125: a malformed quoted replacement changes nothing
+ok 11 - G125: a malformed quoted replacement changes nothing
+  ---
+  duration_ms: 1.321417
+  ...
+# Subtest: read clients preserve earlier bytes, verify the stream and deduplicate a replay
+ok 12 - read clients preserve earlier bytes, verify the stream and deduplicate a replay
+  ---
+  duration_ms: 723.884667
+  ...
+# Subtest: an absent log is created, while a permission failure never overwrites it
+ok 13 - an absent log is created, while a permission failure never overwrites it
+  ---
+  duration_ms: 13.005459
+  ...
+# Subtest: read-back that loses earlier events cannot authorize the requested write
+ok 14 - read-back that loses earlier events cannot authorize the requested write
+  ---
+  duration_ms: 2.61275
+  ...
+# Subtest: run-only clients execute a quoted append and preserve history on retries
+ok 15 - run-only clients execute a quoted append and preserve history on retries
+  ---
+  duration_ms: 28.981167
+  ...
+# Subtest: write-only clients cannot overwrite an unobserved event stream
+ok 16 - write-only clients cannot overwrite an unobserved event stream
+  ---
+  duration_ms: 1.608792
+  ...
+# Subtest: simultaneous retries take the bounded lock and retain exactly one event
+ok 17 - simultaneous retries take the bounded lock and retain exactly one event
+  ---
+  duration_ms: 1436.70875
+  ...
+# Subtest: repository-root shell events use the same sandbox as file tools
+not ok 18 - repository-root shell events use the same sandbox as file tools
+  ---
+  duration_ms: 50.706833
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/general-plan-event-append.test.mjs:128:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected ... Lines skipped
+    
+    + 'Output: general_change_plan\n' +
+    - 'general_change_plan\n' +
+        '  id "general_change_plan_5d3f05f47cfbf8e6"\n' +
+        '  execution_mode "literal_file"\n' +
+    ...
+        '    expected_evidence "sandboxed plan event"\n' +
+        '    command "cat mapper-proof.txt"\n' +
+    +   '  verification_command "cat mapper-proof.txt"\n' +
+    +   '\n' +
+    +   'Exit Code: 0'
+    -   '  verification_command "cat mapper-proof.txt"\n'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: |-
+    general_change_plan
+      id "general_change_plan_5d3f05f47cfbf8e6"
+      execution_mode "literal_file"
+      terminal_state "executed"
+      goal "Set the contents of mapper-proof.txt to «sandboxed plan event»"
+      target "mapper-proof.txt"
+      step 1
+        capability "Write"
+        action "append the composed plan to .formal-ai/general-change-plan.lino"
+        expected_evidence "written plan event impulse_3aec64351da0d2d8"
+      step 2
+        capability "Write"
+        action "write the requested content to mapper-proof.txt"
+        expected_evidence "workspace file mapper-proof.txt"
+      step 3
+        capability "Run"
+        action "run the request-derived verification command"
+        expected_evidence "sandboxed plan event"
+        command "cat mapper-proof.txt"
+      verification_command "cat mapper-proof.txt"
+    
+  actual: |-
+    Output: general_change_plan
+      id "general_change_plan_5d3f05f47cfbf8e6"
+      execution_mode "literal_file"
+      terminal_state "executed"
+      goal "Set the contents of mapper-proof.txt to «sandboxed plan event»"
+      target "mapper-proof.txt"
+      step 1
+        capability "Write"
+        action "append the composed plan to .formal-ai/general-change-plan.lino"
+        expected_evidence "written plan event impulse_3aec64351da0d2d8"
+      step 2
+        capability "Write"
+        action "write the requested content to mapper-proof.txt"
+        expected_evidence "workspace file mapper-proof.txt"
+      step 3
+        capability "Run"
+        action "run the request-derived verification command"
+        expected_evidence "sandboxed plan event"
+        command "cat mapper-proof.txt"
+      verification_command "cat mapper-proof.txt"
+    
+    Exit Code: 0
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/general-plan-event-append.test.mjs:135:10)
+    async Test.run (node:internal/test_runner/test:797:9)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: cached event readback excludes the separator before a later canonical record
+ok 19 - cached event readback excludes the separator before a later canonical record
+  ---
+  duration_ms: 14.6115
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 18
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2401.453583
+```
+
+I detected a failure while working on this request. Would you like me to prepare an issue report with the diagnostic context? Reply `Report issue`.

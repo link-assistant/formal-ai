@@ -69,7 +69,7 @@ function dispatchedMethod(result) {
 }
 
 /**
- * Mirrors the order rust/src/solver.rs logs a turn in: the worker's events
+ * Mirrors `fn solve_with_history_probability_store_and_intent_cache` in rust/src/solver.rs: native-order worker events
  * (`result.solverEvents`) with the formalization, intent-formalization and
  * optional meta-core records spliced in after the prelude. The server supplies
  * recordCore; the browser shares formalization and evidence selection without

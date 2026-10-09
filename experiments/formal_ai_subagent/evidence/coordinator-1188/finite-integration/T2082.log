@@ -1,0 +1,100 @@
+>> bash {"command":"node /private/tmp/spec-recurrence-1188/probe-citation.mjs"}
+   Output: {
+     "prompt": "Cite a definition of associative memory from Wikipedia",
+     "intent": "unknown",
+     "evidence": [
+       "fallback:unknown",
+       "language:en",
+       "trace:impulse:Cite a definition of associative memory from Wikipedia",
+       "trace:formalization:(@USER OP:express ?cite a definition of associative memory from wikipedia)",
+       "trace:language:en",
+       "trace:meta:understand:open",
+       "trace:fallback:unknown",
+       "trace:deformalize:(@USER OP:express ?cite a definition of associative memory from wikipedia):unknown",
+       "prompt:prompt_5acba2ab87e04c86",
+       "impulse:impulse_5870a457ba915147",
+       "candidate:candidate_7537785773b89178",
+       "statement_weight:formalization:0 weight=1.000000 empty",
+       "policy:temperature_selection:policy:temperature_selection_ca0d529473261fbc",
+       "intent_formalization_cache:miss:impulse_d2f7f4a2e8212646",
+       "intent_formalization:intent_formalization_0e93cc1843863e39",
+       "intent_formalization:kind:unknown",
+       "search:local:search:local_3ed66cd469a42557",
+       "selected_rule:selected_rule_c462a8ecb2667aef",
+       "search:external:search:external_714e2334b1b2e6a6",
+       "intent:unknown",
+       "validation:validation_f966c2dd5778368f",
+       "response:unknown",
+       "trace:simplification:trace:simplification_8cb3b8fe796017dc",
+       "trace:trace_e02bd1c9e6fe9d76"
+     ],
+     "frames": {
+       "original": null,
+       "bare": {
+         "term": "associative memory",
+         "context": null,
+         "termOriginal": "associative memory",
+         "contextOriginal": null
+       },
+       "requestTerm": null,
+       "bareTerm": {
+         "term": "associative memory",
+         "language": "en"
+       }
+     },
+     "parsedSummary": null,
+     "rendered": null
+   }
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/spec-recurrence-1188/probe-citation.mjs` command completed. Output:
+
+```json
+{
+  "evidence": [
+    "fallback:unknown",
+    "language:en",
+    "trace:impulse:Cite a definition of associative memory from Wikipedia",
+    "trace:formalization:(@USER OP:express ?cite a definition of associative memory from wikipedia)",
+    "trace:language:en",
+    "trace:meta:understand:open",
+    "trace:fallback:unknown",
+    "trace:deformalize:(@USER OP:express ?cite a definition of associative memory from wikipedia):unknown",
+    "prompt:prompt_5acba2ab87e04c86",
+    "impulse:impulse_5870a457ba915147",
+    "candidate:candidate_7537785773b89178",
+    "statement_weight:formalization:0 weight=1.000000 empty",
+    "policy:temperature_selection:policy:temperature_selection_ca0d529473261fbc",
+    "intent_formalization_cache:miss:impulse_d2f7f4a2e8212646",
+    "intent_formalization:intent_formalization_0e93cc1843863e39",
+    "intent_formalization:kind:unknown",
+    "search:local:search:local_3ed66cd469a42557",
+    "selected_rule:selected_rule_c462a8ecb2667aef",
+    "search:external:search:external_714e2334b1b2e6a6",
+    "intent:unknown",
+    "validation:validation_f966c2dd5778368f",
+    "response:unknown",
+    "trace:simplification:trace:simplification_8cb3b8fe796017dc",
+    "trace:trace_e02bd1c9e6fe9d76"
+  ],
+  "frames": {
+    "bare": {
+      "context": null,
+      "contextOriginal": null,
+      "term": "associative memory",
+      "termOriginal": "associative memory"
+    },
+    "bareTerm": {
+      "language": "en",
+      "term": "associative memory"
+    },
+    "original": null,
+    "requestTerm": null
+  },
+  "intent": "unknown",
+  "parsedSummary": null,
+  "prompt": "Cite a definition of associative memory from Wikipedia",
+  "rendered": null
+}
+```

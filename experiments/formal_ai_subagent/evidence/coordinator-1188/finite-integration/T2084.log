@@ -1,0 +1,17 @@
+>> bash {"command":"node /private/tmp/spec-recurrence-1188/restore-coordinator-ledger-rows.mjs"}
+   Output: {"path":"docs/case-studies/pull-request-1188/formal-ai-dogfood.md","restoredCoordinatorRows":["T2005","T2044"],"allOtherBytesPreserved":true}
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/spec-recurrence-1188/restore-coordinator-ledger-rows.mjs` command completed. Output:
+
+```json
+{
+  "allOtherBytesPreserved": true,
+  "path": "docs/case-studies/pull-request-1188/formal-ai-dogfood.md",
+  "restoredCoordinatorRows": [
+    "T2005",
+    "T2044"
+  ]
+}
+```

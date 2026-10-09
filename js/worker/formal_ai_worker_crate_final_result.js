@@ -5,34 +5,33 @@
 // formal_ai_worker_crate_modules.js runs on first use.
 
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["final_result.mjs"] = (crateRequire) => {
-// Internal final-result dispositions and the public protocol projection.
+// Internal final-result provenance and public projection.
+const { FinalPayloadRole, payloadCanDeliver } = crateRequire("final_payload.mjs");
 
-/** Internal outcome semantics; public final answers project to their text. */
 const FinalDisposition = Object.freeze({
   Finding: 'finding', Artifact: 'artifact', Clarification: 'clarification',
   Gap: 'gap', Failure: 'failure', Unknown: 'unknown',
 });
-
-/** Construct a final result at the route that knows its disposition and origin. */
-function resolvedFinalAnswer(answer, disposition, origin) {
-  return { kind: 'final', answer, result: { text: answer, disposition, origin } };
+/** Mirrors `fn record_with_role` in rust/src/agentic_coding/final_result.rs; JS can also attach an artifact receipt. */
+function resolvedFinalAnswer(answer, disposition, origin, payloadRole = FinalPayloadRole.Finding, artifact = null) {
+  return { kind: 'final', answer, result: { text: answer, disposition, origin, payloadRole, artifact } };
 }
-
-/** Legacy routes have no evidence certificate and remain unknown. */
+/** Mirrors `ResolvedPlan::new` in rust/src/agentic_coding/final_result.rs: unmatched final metadata remains unknown. */
 function finalResult(plan) {
   if (plan?.kind !== 'final') return null;
   return plan.result?.text === plan.answer ? plan.result
     : { text: plan.answer, disposition: FinalDisposition.Unknown, origin: null };
 }
 
-/** Only a route-certified finding can become an investigation's file content. */
-function canDeliverFinal(plan) {
+/** Mirrors `ResolvedPlan::can_deliver_as` in rust/src/agentic_coding/final_result.rs. */
+function canDeliverFinal(plan, requiredRole = FinalPayloadRole.Finding) {
   const result = finalResult(plan);
   return result?.disposition === FinalDisposition.Finding
-    && typeof result.origin === 'string' && result.origin.length > 0;
+    && typeof result.origin === 'string' && result.origin.length > 0
+    && payloadCanDeliver(result, requiredRole);
 }
 
-/** Preserve the existing public tool-call/final-answer protocol. */
+/** Mirrors `ResolvedPlan::into_plan` in rust/src/agentic_coding/final_result.rs; native also records the result sink. */
 function projectPlan(plan) {
   return plan?.kind === 'final' ? { kind: 'final', answer: plan.answer } : plan;
 }
@@ -43,5 +42,6 @@ return Object.freeze({
   finalResult,
   canDeliverFinal,
   projectPlan,
+  FinalPayloadRole,
 });
 };

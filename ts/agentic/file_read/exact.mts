@@ -5,7 +5,7 @@ import { detect } from '../crate/language.mjs';
 import { toAsciiLowercase, trim } from '../crate/rust_str.mjs';
 import { localizedResponse } from '../crate/seed.mjs';
 import { agenticMessage } from '../messages.mjs';
-import { finalAnswer, jsonText, plannedCall, toolCalls } from '../plan.mjs';
+import { FinalDisposition, FinalPayloadRole, resolvedFinalAnswer, finalAnswer, jsonText, plannedCall, toolCalls } from '../plan.mjs';
 import { sentences } from '../shell_command_policy.mjs';
 import { stripTransportEnvelope } from '../tool_result.mjs';
 import { sourceFromReadResult } from '../code_artifact.mjs';
@@ -30,7 +30,8 @@ export function planDirectFileReads(paths, mode, readTool, runTool, grepTool, re
       if (failure !== null) return finalAnswer(failure);
       contents.push([path, raw]);
     }
-    if (contents.length === paths.length) return finalAnswer(fileReadFinalAnswer(mode, contents, request));
+    if (contents.length === paths.length) return resolvedFinalAnswer(fileReadFinalAnswer(mode, contents, request),
+      FinalDisposition.Finding, 'file_read_observed', FinalPayloadRole.AuditReport);
     return toolCalls(paths
       .filter((path) => grepResultForPath(records, path, pattern) === null)
       .map((path) => plannedCall(grepTool, grepArguments(path, pattern))));

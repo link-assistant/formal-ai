@@ -1,0 +1,48 @@
+>> bash {"command":"node /private/tmp/spec-recurrence-1188/package-project-evidence.mjs"}
+   Output: {"destination":"experiments/formal_ai_subagent/evidence/specification-delivery-1188/curated-project-summary-parity","audit":{"cutoff":"T2079","invocations":31,"observedToolCalls":69,"repositoryWriteCalls":20,"planHistoryAppendBashExcluded":20,"sourceCapabilityMutations":20,"evidenceCopyBashMutations":1,"totalCapabilityMutations":21,"requestUtf8Bytes":459144,"transcriptUtf8Bytes":3985718,"actualModelTokens":null,"actualCost":null,"operatorDraftDefect":["T2055"],"broadSynthesisOpen":["T2049","T2066"],"testFailureFixed":["T2060","T2061","T2062"],"falseFailureFinalOpen":[],"falseFailureFinalFixed":["T2063","T2077"],"outsideOwnedNotationBlock":["T2075","T2078"]},"packagedFiles":155}
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/spec-recurrence-1188/package-project-evidence.mjs` command completed. Output:
+
+```json
+{
+  "audit": {
+    "actualCost": null,
+    "actualModelTokens": null,
+    "broadSynthesisOpen": [
+      "T2049",
+      "T2066"
+    ],
+    "cutoff": "T2079",
+    "evidenceCopyBashMutations": 1,
+    "falseFailureFinalFixed": [
+      "T2063",
+      "T2077"
+    ],
+    "falseFailureFinalOpen": [],
+    "invocations": 31,
+    "observedToolCalls": 69,
+    "operatorDraftDefect": [
+      "T2055"
+    ],
+    "outsideOwnedNotationBlock": [
+      "T2075",
+      "T2078"
+    ],
+    "planHistoryAppendBashExcluded": 20,
+    "repositoryWriteCalls": 20,
+    "requestUtf8Bytes": 459144,
+    "sourceCapabilityMutations": 20,
+    "testFailureFixed": [
+      "T2060",
+      "T2061",
+      "T2062"
+    ],
+    "totalCapabilityMutations": 21,
+    "transcriptUtf8Bytes": 3985718
+  },
+  "destination": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/curated-project-summary-parity",
+  "packagedFiles": 155
+}
+```

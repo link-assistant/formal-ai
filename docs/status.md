@@ -57,4 +57,4 @@ This document is a deterministic projection of committed ledgers.
 | `data/meta/ladder-ratchet.lino` | 21 |
 | `data/meta/requirement-status-ledger.lino` | 157 |
 | `data/seed/languages.lino` | 113 |
-| `data/meta/worker-line-budget/*.lino` | 121 files |
+| `data/meta/worker-line-budget/*.lino` | 127 files |

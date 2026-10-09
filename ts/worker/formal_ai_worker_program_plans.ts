@@ -510,11 +510,8 @@ function writeProgramExpectedOutput(task, languageInfo, taskInfo) {
 
 function writeProgramExecutionLines(language, task, code, output, strings, responseLanguage) {
   const i18n = strings || WRITE_PROGRAM_I18N.en;
-  // Issue #312: the list-files snippet reads the real filesystem through Node's
-  // `fs`/`require`, which the browser Web Worker sandbox does not provide, and
-  // its output depends on the directory contents. Never claim it "ran" here -
-  // detect the Node API use and report the documented sample-directory output
-  // instead, so the demo stays honest.
+  // Node filesystem/import snippets cannot run in the browser: report the documented sample output.
+  // Only an actual sandbox run may claim execution; documentation decomposition names its source page.
   const needsNodeApis = /\brequire\s*\(|\bimport\b/.test(code);
   if (language === "javascript" && !needsNodeApis) {
     const logs = [];
@@ -540,7 +537,9 @@ function writeProgramExecutionLines(language, task, code, output, strings, respo
     : runtimeProbe.status === "available_to_download" || runtimeProbe.status === "ready"
       ? browserRuntimeMessage(responseLanguage || "en")
       : i18n.noToolchain(language);
-  const lines = [i18n.notRun(language, reason), "", i18n.copyInstruction(language), ""];
+  const page = documentationRediscoveredPage(task, language);
+  const status = page ? nlToolText("program_execution_rediscovered", responseLanguage || "en", { page }) : i18n.notRun(language, reason);
+  const lines = [status, "", i18n.copyInstruction(language), ""];
   if (listFilesTaskDirection(task)) {
     lines.push(i18n.sampleDirectory(listFilesSampleFiles(WRITE_PROGRAM_LANGUAGES[language])));
   } else {

@@ -1,0 +1,532 @@
+>> bash {"command":"node --test --test-name-pattern='twin citations name a Rust definition|G132' rust/tests/web/self-translation.test.mjs rust/tests/web/pull-request-1188-fix-gaps.test.mjs"}
+   Output: TAP version 13
+   # Subtest: an advertised multi_edit capability receives every explicitly named path
+   ok 1 - an advertised multi_edit capability receives every explicitly named path # SKIP test name does not match pattern
+     ---
+     duration_ms: 356.976542
+     ...
+   # Subtest: G104: an edit naming files listed with `and` or commas is declined, naming every file
+       # Subtest: `In a.mjs and b.mjs, …` names both files and changes neither
+       ok 1 - `In a.mjs and b.mjs, …` names both files and changes neither # SKIP test name does not match pattern
+         ---
+         duration_ms: 0.056375
+         ...
+       # Subtest: a comma list of three files names all three
+       ok 2 - a comma list of three files names all three # SKIP test name does not match pattern
+         ---
+         duration_ms: 0.029375
+         ...
+       # Subtest: a path in a later sentence (the ladder leaf asking for evidence) is no edit target
+       ok 3 - a path in a later sentence (the ladder leaf asking for evidence) is no edit target # SKIP test name does not match pattern
+         ---
+         duration_ms: 0.031416
+         ...
+       # Subtest: one file followed by a comma and the edit is still one edit
+       ok 4 - one file followed by a comma and the edit is still one edit # SKIP test name does not match pattern
+         ---
+         duration_ms: 0.024667
+         ...
+       1..4
+   ok 2 - G104: an edit naming files listed with `and` or commas is declined, naming every file
+     ---
+     duration_ms: 0.252584
+     type: 'suite'
+     ...
+   # Subtest: G99: edits joined by a sequence cue are planned step by step
+       # Subtest: `…, then delete …` inserts and then deletes, each over the file the step before left
+       ok 1 - `…, then delete …` inserts and then deletes, each over the file the step before left # SKIP test name does not match pattern
+         ---
+         duration_ms: 0.049
+         ...
+       # Subtest: a step that names no file takes the file the other names
+       ok 2 - a step that names no file takes the file the other names # SKIP test name does not match pattern
+         ---
+         duration_ms: 0.070542
+         ...
+       # Subtest: the Russian cue `затем` is a step too, answered in Russian
+       ok 3 - the Russian cue `затем` is a step too, answered in Russian # SKIP test name does not match pattern
+         ---
+         duration_ms: 0.024958
+         ...
+       # Subtest: a cue that opens no clause, or a step without a quoted text, is no sequence
+       ok 4 - a cue that opens no clause, or a step without a quoted text, is no sequence # SKIP test name does not match pattern
+         ---
+         duration_ms: 0.027208
+         ...
+       1..4
+   ok 3 - G99: edits joined by a sequence cue are planned step by step
+     ---
+     duration_ms: 0.381459
+     type: 'suite'
+     ...
+   # Subtest: G106: several Replaces apply all or decline, never drop one
+       # Subtest: `and then replace` applies both
+       ok 1 - `and then replace` applies both # SKIP test name does not match pattern
+         ---
+         duration_ms: 0.079417
+         ...
+       # Subtest: a second clause that is no quoted replacement is named, and nothing changes
+       ok 2 - a second clause that is no quoted replacement is named, and nothing changes # SKIP test name does not match pattern
+         ---
+         duration_ms: 0.026375
+         ...
+       1..2
+   ok 4 - G106: several Replaces apply all or decline, never drop one
+     ---
+     duration_ms: 0.150875
+     type: 'suite'
+     ...
+   # Subtest: G90: a quoted text holding its own quote mark is declined, naming the quote
+       # Subtest: single-quoted texts holding single quotes (T471)
+       ok 1 - single-quoted texts holding single quotes (T471) # SKIP test name does not match pattern
+         ---
+         duration_ms: 0.035791
+         ...
+       # Subtest: double-quoted texts ending in a double quote of their own (T377)
+       ok 2 - double-quoted texts ending in a double quote of their own (T377) # SKIP test name does not match pattern
+         ---
+         duration_ms: 0.023208
+         ...
+       # Subtest: the same texts in «» are edited
+       ok 3 - the same texts in «» are edited # SKIP test name does not match pattern
+         ---
+         duration_ms: 0.019583
+         ...
+       1..3
+   ok 5 - G90: a quoted text holding its own quote mark is declined, naming the quote
+     ---
+     duration_ms: 0.172
+     type: 'suite'
+     ...
+   # Subtest: G107: a backticked payload whose inner spans pair runs to its own close
+       # Subtest: a sentence end inside the payload keeps the whole replacement
+       ok 1 - a sentence end inside the payload keeps the whole replacement # SKIP test name does not match pattern
+         ---
+         duration_ms: 0.042208
+         ...
+       # Subtest: the T794 shape: paths, a semicolon and a sentence end inside the payload
+       ok 2 - the T794 shape: paths, a semicolon and a sentence end inside the payload # SKIP test name does not match pattern
+         ---
+         duration_ms: 0.016042
+         ...
+       # Subtest: the payload ends where its own mark closes, before a later sentence
+       ok 3 - the payload ends where its own mark closes, before a later sentence # SKIP test name does not match pattern
+         ---
+         duration_ms: 0.119
+         ...
+       1..3
+   ok 6 - G107: a backticked payload whose inner spans pair runs to its own close
+     ---
+     duration_ms: 0.260708
+     type: 'suite'
+     ...
+   # Subtest: G102: a file described rather than given is never written from a failed or refused step
+       # Subtest: a create request whose names and values are «» fragments writes nothing
+       ok 1 - a create request whose names and values are «» fragments writes nothing # SKIP test name does not match pattern
+         ---
+         duration_ms: 0.025958
+         ...
+       1..1
+   ok 7 - G102: a file described rather than given is never written from a failed or refused step
+     ---
+     duration_ms: 0.047334
+     type: 'suite'
+     ...
+   # Subtest: G109: copy then comma-joined replacements preserves the source
+   ok 8 - G109: copy then comma-joined replacements preserves the source # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.022375
+     ...
+   # Subtest: G109: move then a quoted edit runs in order
+   ok 9 - G109: move then a quoted edit runs in order # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.078458
+     ...
+   # Subtest: G108: scalar payload code spans keep comma-separated backticks whole
+   ok 10 - G108: scalar payload code spans keep comma-separated backticks whole # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.02
+     ...
+   # Subtest: G110: payload file paths and cues cannot become the creation target
+   ok 11 - G110: payload file paths and cues cannot become the creation target # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.015542
+     ...
+   # Subtest: G113: exact quoted content retains indentation and terminal newline
+   ok 12 - G113: exact quoted content retains indentation and terminal newline # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.014291
+     ...
+   # Subtest: G114: an objective label in quoted source is data
+   ok 13 - G114: an objective label in quoted source is data # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.013958
+     ...
+   # Subtest: G115: replacement preserves a new-only source newline escape
+   ok 14 - G115: replacement preserves a new-only source newline escape # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.062917
+     ...
+   # Subtest: formal rewrite queries validate escaped literals before the prose quote guard
+   ok 15 - formal rewrite queries validate escaped literals before the prose quote guard # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.015208
+     ...
+   # Subtest: G132: an underspecified test stays a clarification and creates no evidence
+   ok 16 - G132: an underspecified test stays a clarification and creates no evidence
+     ---
+     duration_ms: 323.543708
+     ...
+   # Subtest: G132: an observed file finding can still be delivered
+   ok 17 - G132: an observed file finding can still be delivered
+     ---
+     duration_ms: 412.797208
+     ...
+   # Subtest: G132: another sentence acceptance command is no test-authoring question
+   ok 18 - G132: another sentence acceptance command is no test-authoring question
+     ---
+     duration_ms: 0.683833
+     ...
+   # Subtest: G132: unknown finals and observed failures cannot be delivery findings
+   ok 19 - G132: unknown finals and observed failures cannot be delivery findings
+     ---
+     duration_ms: 10.430875
+     ...
+   # Subtest: G132: a certificate belongs only to its selected final bytes
+   ok 20 - G132: a certificate belongs only to its selected final bytes
+     ---
+     duration_ms: 0.094125
+     ...
+   # Subtest: the committed corpus is what the translator produces (the --check gate)
+   ok 21 - the committed corpus is what the translator produces (the --check gate) # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.513417
+     ...
+   # Subtest: a pure function translates to the exact Rust and back to the exact source
+   ok 22 - a pure function translates to the exact Rust and back to the exact source # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.043458
+     ...
+   # Subtest: an item outside the fragment is carried with the construct map reason, never dropped
+   ok 23 - an item outside the fragment is carried with the construct map reason, never dropped # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.048166
+     ...
+   # Subtest: round trips restore both corpus sources byte for byte
+   ok 24 - round trips restore both corpus sources byte for byte # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.038958
+     ...
+   # Subtest: an edited block is translated again and every other block is restored
+   ok 25 - an edited block is translated again and every other block is restored # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.038708
+     ...
+   # Subtest: the meta language is the pivot: both languages reimport to the same links
+   ok 26 - the meta language is the pivot: both languages reimport to the same links # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.030791
+     ...
+   # Subtest: every corpus call returns the committed result on the JavaScript side
+   ok 27 - every corpus call returns the committed result on the JavaScript side # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.034875
+     ...
+   # Subtest: every Rust function the corpus compiles has a call, so both runtimes observe it
+   ok 28 - every Rust function the corpus compiles has a call, so both runtimes observe it # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.093667
+     ...
+   # Subtest: every construct map row has evidence in the corpus, and every refusal names a row
+   ok 29 - every construct map row has evidence in the corpus, and every refusal names a row # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.083125
+     ...
+   # Subtest: the report measures the twins against their cited Rust modules
+   ok 30 - the report measures the twins against their cited Rust modules # SKIP test name does not match pattern
+     ---
+     duration_ms: 0.106625
+     ...
+   # Subtest: twin citations name a Rust definition that still exists
+   ok 31 - twin citations name a Rust definition that still exists
+     ---
+     duration_ms: 175.571667
+     ...
+   1..31
+   # tests 42
+   # suites 6
+   # pass 6
+   # fail 0
+   # cancelled 0
+   # skipped 36
+   # todo 0
+   # duration_ms 1236.940625
+   
+   Exit Code: 0
+== answer ==
+The `node --test --test-name-pattern='twin citations name a Rust definition|G132' rust/tests/web/self-translation.test.mjs rust/tests/web/pull-request-1188-fix-gaps.test.mjs` command completed. Output:
+
+```text
+TAP version 13
+# Subtest: an advertised multi_edit capability receives every explicitly named path
+ok 1 - an advertised multi_edit capability receives every explicitly named path # SKIP test name does not match pattern
+  ---
+  duration_ms: 356.976542
+  ...
+# Subtest: G104: an edit naming files listed with `and` or commas is declined, naming every file
+    # Subtest: `In a.mjs and b.mjs, …` names both files and changes neither
+    ok 1 - `In a.mjs and b.mjs, …` names both files and changes neither # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.056375
+      ...
+    # Subtest: a comma list of three files names all three
+    ok 2 - a comma list of three files names all three # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.029375
+      ...
+    # Subtest: a path in a later sentence (the ladder leaf asking for evidence) is no edit target
+    ok 3 - a path in a later sentence (the ladder leaf asking for evidence) is no edit target # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.031416
+      ...
+    # Subtest: one file followed by a comma and the edit is still one edit
+    ok 4 - one file followed by a comma and the edit is still one edit # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.024667
+      ...
+    1..4
+ok 2 - G104: an edit naming files listed with `and` or commas is declined, naming every file
+  ---
+  duration_ms: 0.252584
+  type: 'suite'
+  ...
+# Subtest: G99: edits joined by a sequence cue are planned step by step
+    # Subtest: `…, then delete …` inserts and then deletes, each over the file the step before left
+    ok 1 - `…, then delete …` inserts and then deletes, each over the file the step before left # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.049
+      ...
+    # Subtest: a step that names no file takes the file the other names
+    ok 2 - a step that names no file takes the file the other names # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.070542
+      ...
+    # Subtest: the Russian cue `затем` is a step too, answered in Russian
+    ok 3 - the Russian cue `затем` is a step too, answered in Russian # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.024958
+      ...
+    # Subtest: a cue that opens no clause, or a step without a quoted text, is no sequence
+    ok 4 - a cue that opens no clause, or a step without a quoted text, is no sequence # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.027208
+      ...
+    1..4
+ok 3 - G99: edits joined by a sequence cue are planned step by step
+  ---
+  duration_ms: 0.381459
+  type: 'suite'
+  ...
+# Subtest: G106: several Replaces apply all or decline, never drop one
+    # Subtest: `and then replace` applies both
+    ok 1 - `and then replace` applies both # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.079417
+      ...
+    # Subtest: a second clause that is no quoted replacement is named, and nothing changes
+    ok 2 - a second clause that is no quoted replacement is named, and nothing changes # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.026375
+      ...
+    1..2
+ok 4 - G106: several Replaces apply all or decline, never drop one
+  ---
+  duration_ms: 0.150875
+  type: 'suite'
+  ...
+# Subtest: G90: a quoted text holding its own quote mark is declined, naming the quote
+    # Subtest: single-quoted texts holding single quotes (T471)
+    ok 1 - single-quoted texts holding single quotes (T471) # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.035791
+      ...
+    # Subtest: double-quoted texts ending in a double quote of their own (T377)
+    ok 2 - double-quoted texts ending in a double quote of their own (T377) # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.023208
+      ...
+    # Subtest: the same texts in «» are edited
+    ok 3 - the same texts in «» are edited # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.019583
+      ...
+    1..3
+ok 5 - G90: a quoted text holding its own quote mark is declined, naming the quote
+  ---
+  duration_ms: 0.172
+  type: 'suite'
+  ...
+# Subtest: G107: a backticked payload whose inner spans pair runs to its own close
+    # Subtest: a sentence end inside the payload keeps the whole replacement
+    ok 1 - a sentence end inside the payload keeps the whole replacement # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.042208
+      ...
+    # Subtest: the T794 shape: paths, a semicolon and a sentence end inside the payload
+    ok 2 - the T794 shape: paths, a semicolon and a sentence end inside the payload # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.016042
+      ...
+    # Subtest: the payload ends where its own mark closes, before a later sentence
+    ok 3 - the payload ends where its own mark closes, before a later sentence # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.119
+      ...
+    1..3
+ok 6 - G107: a backticked payload whose inner spans pair runs to its own close
+  ---
+  duration_ms: 0.260708
+  type: 'suite'
+  ...
+# Subtest: G102: a file described rather than given is never written from a failed or refused step
+    # Subtest: a create request whose names and values are «» fragments writes nothing
+    ok 1 - a create request whose names and values are «» fragments writes nothing # SKIP test name does not match pattern
+      ---
+      duration_ms: 0.025958
+      ...
+    1..1
+ok 7 - G102: a file described rather than given is never written from a failed or refused step
+  ---
+  duration_ms: 0.047334
+  type: 'suite'
+  ...
+# Subtest: G109: copy then comma-joined replacements preserves the source
+ok 8 - G109: copy then comma-joined replacements preserves the source # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.022375
+  ...
+# Subtest: G109: move then a quoted edit runs in order
+ok 9 - G109: move then a quoted edit runs in order # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.078458
+  ...
+# Subtest: G108: scalar payload code spans keep comma-separated backticks whole
+ok 10 - G108: scalar payload code spans keep comma-separated backticks whole # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.02
+  ...
+# Subtest: G110: payload file paths and cues cannot become the creation target
+ok 11 - G110: payload file paths and cues cannot become the creation target # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.015542
+  ...
+# Subtest: G113: exact quoted content retains indentation and terminal newline
+ok 12 - G113: exact quoted content retains indentation and terminal newline # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.014291
+  ...
+# Subtest: G114: an objective label in quoted source is data
+ok 13 - G114: an objective label in quoted source is data # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.013958
+  ...
+# Subtest: G115: replacement preserves a new-only source newline escape
+ok 14 - G115: replacement preserves a new-only source newline escape # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.062917
+  ...
+# Subtest: formal rewrite queries validate escaped literals before the prose quote guard
+ok 15 - formal rewrite queries validate escaped literals before the prose quote guard # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.015208
+  ...
+# Subtest: G132: an underspecified test stays a clarification and creates no evidence
+ok 16 - G132: an underspecified test stays a clarification and creates no evidence
+  ---
+  duration_ms: 323.543708
+  ...
+# Subtest: G132: an observed file finding can still be delivered
+ok 17 - G132: an observed file finding can still be delivered
+  ---
+  duration_ms: 412.797208
+  ...
+# Subtest: G132: another sentence acceptance command is no test-authoring question
+ok 18 - G132: another sentence acceptance command is no test-authoring question
+  ---
+  duration_ms: 0.683833
+  ...
+# Subtest: G132: unknown finals and observed failures cannot be delivery findings
+ok 19 - G132: unknown finals and observed failures cannot be delivery findings
+  ---
+  duration_ms: 10.430875
+  ...
+# Subtest: G132: a certificate belongs only to its selected final bytes
+ok 20 - G132: a certificate belongs only to its selected final bytes
+  ---
+  duration_ms: 0.094125
+  ...
+# Subtest: the committed corpus is what the translator produces (the --check gate)
+ok 21 - the committed corpus is what the translator produces (the --check gate) # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.513417
+  ...
+# Subtest: a pure function translates to the exact Rust and back to the exact source
+ok 22 - a pure function translates to the exact Rust and back to the exact source # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.043458
+  ...
+# Subtest: an item outside the fragment is carried with the construct map reason, never dropped
+ok 23 - an item outside the fragment is carried with the construct map reason, never dropped # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.048166
+  ...
+# Subtest: round trips restore both corpus sources byte for byte
+ok 24 - round trips restore both corpus sources byte for byte # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.038958
+  ...
+# Subtest: an edited block is translated again and every other block is restored
+ok 25 - an edited block is translated again and every other block is restored # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.038708
+  ...
+# Subtest: the meta language is the pivot: both languages reimport to the same links
+ok 26 - the meta language is the pivot: both languages reimport to the same links # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.030791
+  ...
+# Subtest: every corpus call returns the committed result on the JavaScript side
+ok 27 - every corpus call returns the committed result on the JavaScript side # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.034875
+  ...
+# Subtest: every Rust function the corpus compiles has a call, so both runtimes observe it
+ok 28 - every Rust function the corpus compiles has a call, so both runtimes observe it # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.093667
+  ...
+# Subtest: every construct map row has evidence in the corpus, and every refusal names a row
+ok 29 - every construct map row has evidence in the corpus, and every refusal names a row # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.083125
+  ...
+# Subtest: the report measures the twins against their cited Rust modules
+ok 30 - the report measures the twins against their cited Rust modules # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.106625
+  ...
+# Subtest: twin citations name a Rust definition that still exists
+ok 31 - twin citations name a Rust definition that still exists
+  ---
+  duration_ms: 175.571667
+  ...
+1..31
+# tests 42
+# suites 6
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 36
+# todo 0
+# duration_ms 1236.940625
+```

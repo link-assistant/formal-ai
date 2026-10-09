@@ -1,15 +1,5 @@
-// Browser twin of the `nl_tool` prelude row
-// (rust/src/solver_handlers/natural_language_tools.rs, issue #918).
-//
-// An explicit natural-language tool call -- a seeded tool name with a seeded
-// invocation cue, or a seeded local-shell request -- is recognized through the
-// same lexicon roles the native row reads, and every sentence is a seeded
-// `nl_tool_*` response of data/seed/multilingual-responses-synthesis.lino.
-// Outside agent mode the call is refused exactly as natively. In agent mode the
-// browser runs the calculator it has; for a tool it has no executor for (the
-// web-search tool call and the local shell) it says, in the prompt's language,
-// that the call cannot run here, instead of falling through to an unknown
-// answer. JavaScript execution keeps the worker's own sandboxed handler.
+// Native nl_tool prelude: seeded calculator, search, shell and JavaScript permission gates.
+// The browser runs its actual available executors and reports unavailable tools honestly.
 
 const NL_TOOL_INVOCATION_CUE = "tool_invocation_cue";
 const NL_TOOL_ARGUMENT_MARKER = "tool_argument_marker";
@@ -96,6 +86,8 @@ function nlToolAllowed(tool, argument, language) {
  * local-shell tool calls, or null when the prompt names none.
  */
 function tryNaturalLanguageToolRequest(prompt, preferences) {
+  const javascript = tryJavaScriptToolRequest(prompt, preferences);
+  if (javascript) return javascript;
   const lowered = nativeLaneLowercase(prompt);
   const language = detectLanguage(prompt);
   const agentMode = Boolean(preferences && preferences.agentMode);

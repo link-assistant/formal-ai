@@ -176,6 +176,7 @@ debug_stage_sources
     rust "rust/src/solver_handlers/mod.rs" finalize_simple
     rust "rust/src/solver_helpers/mod.rs" record_validation
     rust "rust/src/solver_synthesis.rs" finalize_composed_candidate
+    js "js/worker/formal_ai_worker_candidate_validation.js" solverPrimeIntervalValidation
     js "js/worker/formal_ai_worker_solver_events.js" solverEventLog
   event "web_search:request"
     step http_chat
