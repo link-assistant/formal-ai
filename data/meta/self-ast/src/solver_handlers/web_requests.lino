@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/web_requests.rs
   language rust
   fidelity signature
-  byte_len 35708
+  byte_len 35690
   line_count 885
-  content_id source_module_4e41e757319242aa
+  content_id source_module_20316eec66e431ce
   symbol_count 42
   symbols
     module live_search 15 15
@@ -13,22 +13,22 @@ self_ast_census
     function try_http_fetch_with_offline 47 55
     function try_routed_http_fetch_with_offline 63 70
     function answer_http_fetch_url 72 122
-    function try_page_formalization_with_client 129 138
-    function answer_page_formalization 145 207
-    function url_navigation_claims 215 217
-    function http_fetch_claims 224 226
-    function try_url_navigate 233 257
-    const WEB_SEARCH_RRF_K 264 264
-    const WEB_SEARCH_PROVIDERS 270 270
-    function try_web_search 281 296
-    function detect_web_search_query 305 308
-    function answer_web_search_query 326 338
-    const PROMOTED_PROJECT_ORGS 340 340
-    enum RepositoryPlatform 343 347
-    function label 350 356
-    function host 358 364
-    struct RepositoryReference 368 373
-    function slug 376 378
+    function try_page_formalization_with_client 130 139
+    function answer_page_formalization 146 208
+    function url_navigation_claims 216 218
+    function http_fetch_claims 225 227
+    function try_url_navigate 234 258
+    const WEB_SEARCH_RRF_K 265 265
+    const WEB_SEARCH_PROVIDERS 271 271
+    function try_web_search 282 297
+    function detect_web_search_query 306 309
+    function answer_web_search_query 327 339
+    const PROMOTED_PROJECT_ORGS 341 341
+    enum RepositoryPlatform 344 348
+    function label 351 357
+    function host 359 365
+    struct RepositoryReference 369 374
+    function slug 377 379
     function try_project_lookup 388 403
     function try_explicit_repository_lookup 405 430
     function try_project_lookup_with_response_language 432 448

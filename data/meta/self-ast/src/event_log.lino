@@ -2,9 +2,9 @@ self_ast_census
   target src/event_log.rs
   language rust
   fidelity signature
-  byte_len 37754
-  line_count 826
-  content_id source_module_e15988fb72240165
+  byte_len 38012
+  line_count 832
+  content_id source_module_5ac0ccd02deedecb
   symbol_count 28
   symbols
     struct Event 17 21
@@ -32,6 +32,6 @@ self_ast_census
     function drain_into 315 352
     function collapse_thinking_whitespace 357 359
     function curate_thinking_event 370 431
-    function build_evidence_links 438 801
-    function event_log_evidence_links 812 819
-    function sanitize_payload 821 826
+    function build_evidence_links 438 806
+    function event_log_evidence_links 818 825
+    function sanitize_payload 827 832

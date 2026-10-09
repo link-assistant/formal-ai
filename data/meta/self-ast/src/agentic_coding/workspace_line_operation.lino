@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/workspace_line_operation.rs
   language rust
   fidelity full_ast
-  byte_len 33168
-  line_count 948
-  content_id source_module_01590fd3ba0b7eb1
-  symbol_count 50
+  byte_len 33467
+  line_count 957
+  content_id source_module_ae4db99e8bb1052f
+  symbol_count 51
   symbols
     const LINES_SLOT 26 26
     const OLD_SLOT 27 27
@@ -51,67 +51,68 @@ self_ast_census
     function swapped_lines 618 627
     function compute 631 654
     function bounded 658 660
-    function reported 664 706
-    function resolved_lines 712 727
-    function either_of 731 735
-    function grounded_line_operation 738 879
-    function moved 883 938
-    function drops_most_of_file 945 948
+    function reported 664 696
+    function reported_values 699 715
+    function resolved_lines 721 736
+    function either_of 740 744
+    function grounded_line_operation 747 888
+    function moved 892 947
+    function drops_most_of_file 954 957
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 26199
-    named_node_count 5048
+    total_link_count 26403
+    named_node_count 5091
     distinct_node_kinds 94
     node_kinds
-      arguments 361
+      arguments 365
       array_expression 6
       array_type 10
       assignment_expression 5
       attribute 6
       attribute_item 6
       binary_expression 99
-      block 144
+      block 145
       boolean_literal 22
-      call_expression 361
+      call_expression 365
       char_literal 30
-      closure_expression 31
-      closure_parameters 31
+      closure_expression 32
+      closure_parameters 32
       compound_assignment_expr 3
       const_item 9
       continue_expression 9
       crate 5
       declaration_list 2
-      doc_comment 93
+      doc_comment 94
       else_clause 24
       enum_item 4
       enum_variant 17
       enum_variant_list 4
-      escape_sequence 2
+      escape_sequence 3
       expression_statement 110
       field_declaration 26
       field_declaration_list 8
-      field_expression 239
-      field_identifier 292
+      field_expression 243
+      field_identifier 296
       field_initializer 28
       field_initializer_list 12
       field_pattern 22
       for_expression 10
-      function_item 33
+      function_item 34
       function_modifiers 4
-      generic_type 46
-      identifier 1217
+      generic_type 48
+      identifier 1221
       if_expression 55
       impl_item 2
-      index_expression 16
+      index_expression 15
       inner_doc_comment_marker 14
       integer_literal 55
       let_condition 4
       let_declaration 116
       lifetime 4
-      line_comment 97
+      line_comment 98
       macro_invocation 21
       match_arm 44
       match_block 16
@@ -121,42 +122,42 @@ self_ast_census
       mutable_specifier 23
       or_pattern 2
       ordered_field_declaration_list 2
-      outer_doc_comment_marker 79
-      parameter 67
-      parameters 33
+      outer_doc_comment_marker 80
+      parameter 68
+      parameters 34
       parenthesized_expression 11
-      primitive_type 120
+      primitive_type 121
       range_expression 15
       reference_expression 60
-      reference_type 67
+      reference_type 68
       remaining_field_pattern 6
       return_expression 26
       scoped_identifier 52
       scoped_type_identifier 18
       scoped_use_list 1
-      self 13
-      self_parameter 4
+      self 15
+      self_parameter 5
       shorthand_field_identifier 20
       shorthand_field_initializer 10
       slice_pattern 16
       source_file 1
-      string_content 57
+      string_content 56
       string_literal 59
       struct_expression 12
       struct_item 3
       struct_pattern 11
-      super 24
+      super 25
       token_tree 57
-      try_expression 21
+      try_expression 22
       tuple_expression 25
       tuple_pattern 34
       tuple_struct_pattern 9
       tuple_type 11
-      type_arguments 46
-      type_identifier 122
+      type_arguments 48
+      type_identifier 125
       type_item 1
       unary_expression 45
       use_declaration 6
       use_list 1
-      visibility_modifier 20
+      visibility_modifier 21
       while_expression 2

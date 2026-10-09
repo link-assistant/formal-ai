@@ -2,33 +2,34 @@ self_ast_census
   target src/agentic_coding/line_range_move.rs
   language rust
   fidelity full_ast
-  byte_len 8785
-  line_count 243
-  content_id source_module_1f3567a607986767
+  byte_len 8905
+  line_count 247
+  content_id source_module_8f4f2f349ede3a0d
   symbol_count 10
   symbols
-    const LINES_SLOT 29 29
-    const SOURCE_SLOT 30 30
-    const COUNT_SLOT 31 31
-    const CUE_ROLES 34 34
-    struct LineRangeMove 42 48
-    function is_path 50 52
-    function line_range_move 56 127
-    function range_text 130 138
-    function moved_intent 141 148
-    function plan_line_range_move_step 153 243
+    const LINES_SLOT 30 30
+    const SOURCE_SLOT 31 31
+    const COUNT_SLOT 32 32
+    const CUE_ROLES 35 35
+    struct LineRangeMove 43 49
+    function is_path 51 53
+    function line_range_move 57 128
+    function range_text 131 139
+    function moved_intent 142 149
+    function plan_line_range_move_step 154 247
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 7120
-    named_node_count 1395
-    distinct_node_kinds 73
+    total_link_count 7222
+    named_node_count 1416
+    distinct_node_kinds 74
     node_kinds
       arguments 111
       array_expression 4
       array_type 3
+      assignment_expression 1
       attribute 1
       attribute_item 1
       binary_expression 19
@@ -43,7 +44,7 @@ self_ast_census
       doc_comment 19
       else_clause 2
       escape_sequence 1
-      expression_statement 16
+      expression_statement 17
       field_declaration 5
       field_declaration_list 1
       field_expression 108
@@ -52,8 +53,8 @@ self_ast_census
       field_initializer_list 5
       function_item 5
       function_modifiers 1
-      generic_type 9
-      identifier 334
+      generic_type 10
+      identifier 341
       if_expression 7
       index_expression 2
       inner_doc_comment_marker 10
@@ -66,17 +67,17 @@ self_ast_census
       match_block 1
       match_expression 1
       match_pattern 4
-      mutable_specifier 1
+      mutable_specifier 2
       outer_doc_comment_marker 9
-      parameter 11
+      parameter 12
       parameters 5
       parenthesized_expression 2
       primitive_type 22
       range_expression 2
       reference_expression 18
-      reference_type 15
+      reference_type 16
       return_expression 8
-      scoped_identifier 23
+      scoped_identifier 25
       scoped_type_identifier 2
       scoped_use_list 6
       shorthand_field_initializer 6
@@ -86,16 +87,16 @@ self_ast_census
       string_literal 24
       struct_expression 5
       struct_item 1
-      super 12
+      super 13
       token_tree 25
       try_expression 4
       tuple_expression 7
       tuple_pattern 16
       tuple_struct_pattern 2
       tuple_type 1
-      type_arguments 9
-      type_identifier 25
-      unary_expression 11
-      use_declaration 11
+      type_arguments 10
+      type_identifier 27
+      unary_expression 12
+      use_declaration 12
       use_list 6
       visibility_modifier 4

@@ -1,0 +1,68 @@
+self_ast_census
+  target src/agentic_coding/planner/steps.rs
+  language rust
+  fidelity full_ast
+  byte_len 3463
+  line_count 82
+  content_id source_module_4ee236fc034eb212
+  symbol_count 4
+  symbols
+    function stop_repeated_call 17 38
+    function stop_repeated_failure 48 69
+    const REPEATED_FAILURES_THAT_STOP 49 49
+    function explicit_shell_step 71 82
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 2119
+    named_node_count 421
+    distinct_node_kinds 46
+    node_kinds
+      arguments 26
+      array_expression 1
+      array_type 4
+      binary_expression 1
+      block 8
+      call_expression 26
+      closure_expression 5
+      closure_parameters 5
+      const_item 1
+      crate 5
+      doc_comment 18
+      expression_statement 6
+      field_expression 18
+      field_identifier 18
+      function_item 3
+      generic_type 2
+      identifier 118
+      inner_doc_comment_marker 1
+      integer_literal 1
+      let_declaration 9
+      line_comment 18
+      macro_invocation 1
+      mutable_specifier 1
+      outer_doc_comment_marker 17
+      parameter 8
+      parameters 3
+      primitive_type 3
+      reference_expression 11
+      reference_type 7
+      return_expression 5
+      scoped_identifier 22
+      scoped_use_list 2
+      source_file 1
+      string_content 4
+      string_literal 4
+      super 4
+      token_tree 1
+      try_expression 2
+      tuple_expression 3
+      tuple_pattern 1
+      tuple_struct_pattern 5
+      type_arguments 2
+      type_identifier 11
+      use_declaration 4
+      use_list 2
+      visibility_modifier 3

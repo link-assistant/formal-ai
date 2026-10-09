@@ -2,27 +2,37 @@ self_ast_census
   target src/coding/recurrence.rs
   language rust
   fidelity signature
-  byte_len 15765
-  line_count 445
-  content_id source_module_59e18af1618f5ebc
-  symbol_count 19
+  byte_len 21433
+  line_count 608
+  content_id source_module_1f1c03cea06076d8
+  symbol_count 29
   symbols
     module cache 8 8
     enum Operation 19 27
     enum Expression 30 35
     struct Recurrence 38 50
-    function suggested_identifier 55 57
-    function render_python 60 65
-    function to_links_notation 68 108
-    function identifier_from_source_label 112 129
-    function formalize 133 193
-    function resolve_expression 195 256
-    function operation_for_descriptor 258 293
-    function validate_boundary 295 308
-    function contains_recur 310 316
-    function collect_offsets 318 336
-    function predecessor_offset 338 355
-    function render_expression 357 388
-    function binary 390 396
-    function serialize_expression 398 423
-    function python_assertions 426 445
+    struct SourceCallableContract 54 58
+    function read_positions 62 64
+    function render_python 67 69
+    function bound_to 72 106
+    function expression_calls_self 109 115
+    function plain_declared_signature 117 133
+    function read_formal_parameter_positions 137 149
+    function collect_reads 151 172
+    function bind_expression_parameters 176 209
+    function render_callable_python 211 216
+    function suggested_identifier 221 223
+    function render_python 226 228
+    function to_links_notation 231 271
+    function identifier_from_source_label 275 292
+    function formalize 296 356
+    function resolve_expression 358 419
+    function operation_for_descriptor 421 456
+    function validate_boundary 458 471
+    function contains_recur 473 479
+    function collect_offsets 481 499
+    function predecessor_offset 501 518
+    function render_expression 520 551
+    function binary 553 559
+    function serialize_expression 561 586
+    function python_assertions 589 608

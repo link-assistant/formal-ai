@@ -2,32 +2,33 @@ self_ast_census
   target src/coding/task_spec.rs
   language rust
   fidelity signature
-  byte_len 22717
-  line_count 610
-  content_id source_module_d62d383304b54b73
-  symbol_count 24
+  byte_len 23535
+  line_count 631
+  content_id source_module_4fb8ad40f8580f52
+  symbol_count 25
   symbols
     enum ArtifactShape 16 21
     function slug 24 29
     struct Parameter 34 37
     struct Example 41 44
-    struct CodingTaskSpec 48 62
-    function from 65 104
-    function signature_identity 110 122
-    function to_links_notation 126 164
-    const PROVISIONAL_FUNCTION_NAME 169 169
-    function recognise 173 313
-    function outside_markdown_fences 315 328
-    function extract_expected_stdout 342 389
-    function python_definition_signature 391 397
-    function backtick_signature 399 410
-    function inline_function_signature 412 426
-    function parse_signature 428 445
-    function parse_parameter 447 462
-    function is_identifier 464 470
-    function docstring_contract 472 505
-    function docstring_content 507 521
-    function assertion_contract 523 546
-    function split_top_level_equality 548 564
-    function parse_call 566 580
-    function split_sentences 582 610
+    enum CallableBindingOrigin 48 52
+    struct CodingTaskSpec 56 71
+    function from 74 114
+    function signature_identity 120 132
+    function to_links_notation 136 174
+    const PROVISIONAL_FUNCTION_NAME 179 179
+    function recognise 183 334
+    function outside_markdown_fences 336 349
+    function extract_expected_stdout 363 410
+    function python_definition_signature 412 418
+    function backtick_signature 420 431
+    function inline_function_signature 433 447
+    function parse_signature 449 466
+    function parse_parameter 468 483
+    function is_identifier 485 491
+    function docstring_contract 493 526
+    function docstring_content 528 542
+    function assertion_contract 544 567
+    function split_top_level_equality 569 585
+    function parse_call 587 601
+    function split_sentences 603 631

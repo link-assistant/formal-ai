@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/code_artifact.rs
   language rust
   fidelity full_ast
-  byte_len 14212
+  byte_len 14223
   line_count 364
-  content_id source_module_7d26a300dcdc6b17
+  content_id source_module_d6fbd9d3d5debf9e
   symbol_count 18
   symbols
     const MAX_REWRITE_STEPS 24 24
@@ -30,8 +30,8 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 10027
-    named_node_count 2041
+    total_link_count 10039
+    named_node_count 2043
     distinct_node_kinds 82
     node_kinds
       arguments 174
@@ -101,7 +101,7 @@ self_ast_census
       string_literal 41
       struct_expression 4
       struct_item 2
-      super 6
+      super 7
       token_tree 26
       try_expression 18
       tuple_expression 1
@@ -114,5 +114,5 @@ self_ast_census
       use_as_clause 1
       use_declaration 8
       use_list 5
-      visibility_modifier 5
+      visibility_modifier 6
       while_expression 1

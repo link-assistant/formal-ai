@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/git_commit.rs
   language rust
   fidelity full_ast
-  byte_len 9589
-  line_count 250
-  content_id source_module_1df3c75613565132
+  byte_len 10751
+  line_count 281
+  content_id source_module_6471345f4d33d431
   symbol_count 14
   symbols
     struct CommitTarget 22 28
@@ -17,56 +17,56 @@ self_ast_census
     function shell_quote 110 112
     function recipe_commit_command 120 140
     function recipe_subject 144 146
-    function plan_commit_step 153 187
-    function stated_subject 193 207
-    function subject_for_listing 211 239
-    function porcelain_entry 242 250
+    function plan_commit_step 153 218
+    function stated_subject 224 238
+    function subject_for_listing 242 270
+    function porcelain_entry 273 281
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 7133
-    named_node_count 1435
-    distinct_node_kinds 75
+    total_link_count 8011
+    named_node_count 1614
+    distinct_node_kinds 76
     node_kinds
-      arguments 116
+      arguments 138
       array_expression 9
       array_type 2
       attribute 5
       attribute_item 5
-      binary_expression 17
-      block 28
-      call_expression 116
-      char_literal 16
-      closure_expression 15
-      closure_parameters 15
+      binary_expression 22
+      block 33
+      call_expression 138
+      char_literal 17
+      closure_expression 21
+      closure_parameters 21
       continue_expression 1
       crate 6
       declaration_list 1
       doc_comment 34
-      else_clause 1
+      else_clause 2
       escape_sequence 1
-      expression_statement 15
+      expression_statement 16
       field_declaration 2
       field_declaration_list 1
-      field_expression 84
-      field_identifier 87
+      field_expression 105
+      field_identifier 108
       field_initializer 1
       field_initializer_list 1
       for_expression 1
       function_item 13
       generic_function 1
-      generic_type 9
-      identifier 299
-      if_expression 5
+      generic_type 10
+      identifier 338
+      if_expression 6
       impl_item 1
-      index_expression 2
+      index_expression 4
       inner_doc_comment_marker 10
       integer_literal 4
       let_condition 1
-      let_declaration 28
-      line_comment 40
+      let_declaration 33
+      line_comment 42
       macro_invocation 6
       match_arm 4
       match_block 1
@@ -76,12 +76,13 @@ self_ast_census
       outer_doc_comment_marker 24
       parameter 19
       parameters 13
-      parenthesized_expression 3
+      parenthesized_expression 4
       primitive_type 20
-      reference_expression 26
+      range_expression 2
+      reference_expression 27
       reference_type 22
       return_expression 4
-      scoped_identifier 49
+      scoped_identifier 51
       scoped_use_list 2
       self 2
       self_parameter 1
@@ -95,13 +96,13 @@ self_ast_census
       super 25
       token_tree 13
       try_expression 4
-      tuple_expression 17
-      tuple_pattern 6
+      tuple_expression 18
+      tuple_pattern 9
       tuple_struct_pattern 2
       tuple_type 1
-      type_arguments 10
-      type_identifier 29
-      unary_expression 9
+      type_arguments 11
+      type_identifier 32
+      unary_expression 13
       use_declaration 7
       use_list 2
       visibility_modifier 12

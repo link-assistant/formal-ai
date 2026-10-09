@@ -2,27 +2,27 @@ self_ast_census
   target src/agentic_coding/file_read/exact.rs
   language rust
   fidelity full_ast
-  byte_len 6560
-  line_count 163
-  content_id source_module_89364ba50a51a301
+  byte_len 6939
+  line_count 175
+  content_id source_module_81ff4f90dba16995
   symbol_count 2
   symbols
-    function plan_direct_file_reads 18 134
-    function exact_line_key 140 163
+    function plan_direct_file_reads 19 146
+    function exact_line_key 152 175
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 4786
-    named_node_count 978
+    total_link_count 4978
+    named_node_count 1015
     distinct_node_kinds 56
     node_kinds
-      arguments 106
+      arguments 108
       array_type 2
       binary_expression 12
       block 20
-      call_expression 106
+      call_expression 108
       char_literal 3
       closure_expression 14
       closure_parameters 14
@@ -36,8 +36,8 @@ self_ast_census
       field_initializer_list 4
       for_expression 2
       function_item 2
-      generic_type 4
-      identifier 255
+      generic_type 5
+      identifier 268
       if_expression 14
       inner_doc_comment_marker 1
       integer_literal 2
@@ -46,31 +46,31 @@ self_ast_census
       let_declaration 13
       line_comment 15
       macro_invocation 2
-      mutable_specifier 2
+      mutable_specifier 3
       outer_doc_comment_marker 10
-      parameter 8
+      parameter 9
       parameters 2
       parenthesized_expression 1
       primitive_type 5
       reference_expression 12
-      reference_type 8
+      reference_type 9
       return_expression 10
-      scoped_identifier 29
-      scoped_use_list 1
+      scoped_identifier 33
+      scoped_use_list 2
       source_file 1
-      string_content 7
-      string_literal 7
+      string_content 9
+      string_literal 9
       struct_expression 4
-      super 10
+      super 12
       token_tree 6
       try_expression 2
       tuple_expression 4
       tuple_pattern 2
       tuple_struct_pattern 12
-      type_arguments 4
-      type_identifier 13
+      type_arguments 5
+      type_identifier 15
       unary_expression 3
       unit_expression 1
-      use_declaration 3
-      use_list 1
+      use_declaration 4
+      use_list 2
       visibility_modifier 2

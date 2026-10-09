@@ -2,80 +2,80 @@ self_ast_census
   target src/agentic_coding/progress.rs
   language rust
   fidelity full_ast
-  byte_len 35743
-  line_count 828
-  content_id source_module_fb73ab55d7b11aeb
+  byte_len 35895
+  line_count 830
+  content_id source_module_0483d54e1980f9e0
   symbol_count 50
   symbols
     struct ToolAttempt 15 22
     function is_work_item_read 29 36
     struct Progress 40 72
-    function scan 75 189
-    function attempted_fetch_of 198 209
-    function attempted_work_item_read_of 212 216
-    function failed_work_item_read_of 221 227
-    function work_item_read_attempts 233 317
-    function has_run 320 322
-    function repeated_call 344 375
-    function same_attempt 379 385
-    function same_run_operand 389 403
-    function latest_failure_of_tool 406 411
-    function identical_failures_of 415 432
-    function done 435 437
-    function count 439 444
-    function latest_successful_output 447 453
-    function latest_successful_arguments 457 463
-    function latest_success_unstalled 470 481
-    function run_count_for 484 489
-    function successful_run_count_for 492 497
-    function latest_successful_run_output_for 500 505
-    function latest_run_output_for 508 513
-    function successful_read_output_for 520 530
-    function attempted_write_for 532 540
-    function successful_write_for 542 551
-    function successful_write_content_for 558 566
-    function latest_successful_write_index 571 580
-    function last 588 590
-    function latest_failure 594 596
-    function previous_attempt 598 600
-    function failed_write_count_for 604 616
-    function search_result 618 620
-    function argument_path 623 629
-    function argument_content 631 637
-    function write_matches 641 647
-    function argument_targets 649 655
-    function result_capability 660 668
-    function result_tool_call 670 677
-    function fetch_call_url 679 681
-    function argument_url 683 690
-    function run_attempt_matches 692 699
-    function is_issue_view_command 701 706
-    function is_work_item_read_command 710 714
-    function work_item_read_url 721 723
-    function issue_view_command_url 726 737
-    function rest_read_url 740 765
-    function exit_sentinel 774 779
-    function without_exit_sentinel 783 788
-    function work_item_read_failure_reason 799 828
+    function scan 75 191
+    function attempted_fetch_of 200 211
+    function attempted_work_item_read_of 214 218
+    function failed_work_item_read_of 223 229
+    function work_item_read_attempts 235 319
+    function has_run 322 324
+    function repeated_call 346 377
+    function same_attempt 381 387
+    function same_run_operand 391 405
+    function latest_failure_of_tool 408 413
+    function identical_failures_of 417 434
+    function done 437 439
+    function count 441 446
+    function latest_successful_output 449 455
+    function latest_successful_arguments 459 465
+    function latest_success_unstalled 472 483
+    function run_count_for 486 491
+    function successful_run_count_for 494 499
+    function latest_successful_run_output_for 502 507
+    function latest_run_output_for 510 515
+    function successful_read_output_for 522 532
+    function attempted_write_for 534 542
+    function successful_write_for 544 553
+    function successful_write_content_for 560 568
+    function latest_successful_write_index 573 582
+    function last 590 592
+    function latest_failure 596 598
+    function previous_attempt 600 602
+    function failed_write_count_for 606 618
+    function search_result 620 622
+    function argument_path 625 631
+    function argument_content 633 639
+    function write_matches 643 649
+    function argument_targets 651 657
+    function result_capability 662 670
+    function result_tool_call 672 679
+    function fetch_call_url 681 683
+    function argument_url 685 692
+    function run_attempt_matches 694 701
+    function is_issue_view_command 703 708
+    function is_work_item_read_command 712 716
+    function work_item_read_url 723 725
+    function issue_view_command_url 728 739
+    function rest_read_url 742 767
+    function exit_sentinel 776 781
+    function without_exit_sentinel 785 790
+    function work_item_read_failure_reason 801 830
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 21999
-    named_node_count 4586
+    total_link_count 22099
+    named_node_count 4608
     distinct_node_kinds 77
     node_kinds
-      arguments 383
+      arguments 385
       array_expression 6
       array_type 3
       assignment_expression 4
       attribute 1
       attribute_item 1
-      binary_expression 94
+      binary_expression 97
       block 106
       boolean_literal 3
-      call_expression 383
+      call_expression 385
       char_literal 2
       closure_expression 76
       closure_parameters 76
@@ -88,15 +88,15 @@ self_ast_census
       expression_statement 54
       field_declaration 16
       field_declaration_list 2
-      field_expression 425
-      field_identifier 443
+      field_expression 426
+      field_identifier 444
       field_initializer 2
       field_initializer_list 2
       for_expression 2
       function_item 48
       generic_function 1
       generic_type 41
-      identifier 809
+      identifier 815
       if_expression 27
       impl_item 2
       index_expression 7
@@ -115,13 +115,13 @@ self_ast_census
       outer_doc_comment_marker 138
       parameter 53
       parameters 48
-      parenthesized_expression 9
+      parenthesized_expression 10
       primitive_type 67
       range_expression 5
-      reference_expression 29
+      reference_expression 30
       reference_type 58
       return_expression 11
-      scoped_identifier 94
+      scoped_identifier 97
       scoped_type_identifier 7
       self 65
       self_parameter 28
@@ -131,7 +131,7 @@ self_ast_census
       string_literal 59
       struct_expression 2
       struct_item 2
-      super 65
+      super 66
       token_tree 15
       try_expression 12
       tuple_expression 13
@@ -140,6 +140,6 @@ self_ast_census
       tuple_type 3
       type_arguments 42
       type_identifier 105
-      unary_expression 25
+      unary_expression 26
       use_declaration 3
       visibility_modifier 44

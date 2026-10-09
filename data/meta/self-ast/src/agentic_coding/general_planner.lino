@@ -2,10 +2,10 @@ self_ast_census
   target src/agentic_coding/general_planner.rs
   language rust
   fidelity full_ast
-  byte_len 39495
-  line_count 849
-  content_id source_module_4efc77faf5e69027
-  symbol_count 39
+  byte_len 43254
+  line_count 954
+  content_id source_module_b7a096d0ebae3b1e
+  symbol_count 40
   symbols
     const PLAN_PATH 22 22
     const TARGET_PLACEHOLDER 23 23
@@ -19,123 +19,125 @@ self_ast_census
     function links_notation 99 119
     function planned_not_executed_answer 123 137
     const BODY_PLACEHOLDER 124 124
-    function objective_text 143 149
-    function line_anchored 153 159
-    function compose_general_change_plan 161 280
-    function compose_repository_work_plan 281 320
-    function work_item_step 324 336
-    function repository_work_reference 341 365
-    function parse_command_output_request 373 427
-    function mentions_bare_role 428 455
-    function shell_quote 456 458
-    function command_plan_text 459 463
-    function has_file_write_intent 476 478
-    function has_authoritative_literal_write 485 494
-    function parse_write_request 519 529
-    function parse_write_request_bound 532 651
-    function end_of_statement 679 694
-    function positions_share_statement 705 712
-    function is_literal_content 718 720
-    function is_non_referential_content 727 733
-    function names_deferred_work_product 753 767
-    function ends_with_head_noun 776 784
-    function resolve_census_target 803 810
-    function mentions_software_authoring 814 816
-    function capability_slug 817 834
-    function language 835 837
-    function escape 838 843
-    function field 844 846
-    function field_nested 847 849
+    function objective_text 143 154
+    function literal_payload 159 199
+    function line_anchored 201 207
+    function compose_general_change_plan 209 341
+    function compose_repository_work_plan 342 381
+    function work_item_step 385 397
+    function repository_work_reference 402 448
+    function parse_command_output_request 456 510
+    function mentions_bare_role 511 538
+    function shell_quote 539 541
+    function command_plan_text 542 546
+    function has_file_write_intent 559 561
+    function has_authoritative_literal_write 568 579
+    function parse_write_request 604 626
+    function parse_write_request_bound 629 746
+    function end_of_statement 774 799
+    function positions_share_statement 810 817
+    function is_literal_content 823 825
+    function is_non_referential_content 832 838
+    function names_deferred_work_product 858 872
+    function ends_with_head_noun 881 889
+    function resolve_census_target 908 915
+    function mentions_software_authoring 919 921
+    function capability_slug 922 939
+    function language 940 942
+    function escape 943 948
+    function field 949 951
+    function field_nested 952 954
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 20436
-    named_node_count 4120
-    distinct_node_kinds 85
+    total_link_count 23340
+    named_node_count 4720
+    distinct_node_kinds 86
     node_kinds
-      arguments 286
+      arguments 341
       array_expression 2
       array_type 1
       attribute 12
       attribute_item 12
-      binary_expression 57
-      block 80
+      binary_expression 79
+      block 95
       boolean_literal 3
-      call_expression 286
-      char_literal 45
-      closure_expression 36
-      closure_parameters 36
+      call_expression 341
+      char_literal 54
+      closure_expression 48
+      closure_parameters 48
       const_item 3
       continue_expression 5
-      crate 12
+      crate 20
       declaration_list 3
-      doc_comment 185
-      else_clause 11
+      doc_comment 186
+      else_clause 12
       enum_item 2
       enum_variant 5
       enum_variant_list 2
       escape_sequence 11
-      expression_statement 54
+      expression_statement 65
       field_declaration 12
       field_declaration_list 2
-      field_expression 228
-      field_identifier 267
+      field_expression 293
+      field_identifier 332
       field_initializer 27
       field_initializer_list 6
-      for_expression 2
-      function_item 31
+      for_expression 3
+      function_item 32
       function_modifiers 3
-      generic_type 11
-      identifier 919
-      if_expression 27
+      generic_type 12
+      identifier 1064
+      if_expression 33
       impl_item 3
-      index_expression 8
+      index_expression 15
       inner_doc_comment_marker 6
       integer_literal 9
       let_chain 2
-      let_condition 6
-      let_declaration 78
+      let_condition 9
+      let_declaration 92
       lifetime 5
-      line_comment 263
-      macro_invocation 17
+      line_comment 266
+      macro_invocation 19
       match_arm 22
       match_block 4
       match_expression 4
       match_pattern 22
       mod_item 1
-      mutable_specifier 14
+      mutable_specifier 15
       or_pattern 1
-      outer_doc_comment_marker 179
-      parameter 46
-      parameters 31
-      parenthesized_expression 10
-      primitive_type 60
-      range_expression 14
-      reference_expression 58
-      reference_type 47
-      return_expression 12
-      scoped_identifier 93
+      outer_doc_comment_marker 180
+      parameter 47
+      parameters 32
+      parenthesized_expression 12
+      primitive_type 61
+      range_expression 21
+      reference_expression 70
+      reference_type 48
+      return_expression 16
+      scoped_identifier 108
+      scoped_type_identifier 1
       scoped_use_list 5
       self 19
       self_parameter 4
       shorthand_field_initializer 5
       source_file 1
-      string_content 75
-      string_literal 75
+      string_content 81
+      string_literal 81
       struct_expression 6
       struct_item 2
-      super 10
-      token_tree 35
-      try_expression 17
-      tuple_expression 6
-      tuple_pattern 9
-      tuple_struct_pattern 10
+      super 11
+      token_tree 42
+      try_expression 20
+      tuple_expression 7
+      tuple_pattern 11
+      tuple_struct_pattern 13
       tuple_type 3
-      type_arguments 11
-      type_identifier 57
-      unary_expression 23
+      type_arguments 12
+      type_identifier 59
+      unary_expression 30
       use_as_clause 1
       use_declaration 11
       use_list 5
