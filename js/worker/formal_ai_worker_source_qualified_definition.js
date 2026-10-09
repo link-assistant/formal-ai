@@ -86,7 +86,7 @@ async function trySourceQualifiedDefinition(prompt, preferences = {}) {
   const evidence = ["source-qualified-definition:term:" + request.term,
     "source-qualified-definition:status:" + outcome.status];
   if (outcome.status !== "captured") {
-    return { intent: "concept_lookup", confidence: 0.85, evidence,
+    return { intent: "concept_lookup", confidence: 0.85, evidence, ...sourceQualifiedEventProjection(outcome),
       content: wordDefinitionRender("source-qualified-definition-unresolved", request.language,
         { term: request.term, source: request.source, status: outcome.status }) };
   }
@@ -98,7 +98,7 @@ async function trySourceQualifiedDefinition(prompt, preferences = {}) {
       + " sha256=" + provenance.sha256 + " cached=" + String(provenance.cached),
     "source-qualified-definition:kind:" + outcome.projection.kind);
   if (provenance.cached) evidence.push("cache_hit:" + provenance.sourceUrl);
-  return { intent: "concept_lookup", confidence: 0.85, evidence,
+  return { intent: "concept_lookup", confidence: 0.85, evidence, ...sourceQualifiedEventProjection(outcome),
     content: wordDefinitionRender("source-qualified-definition-answer", request.language, {
       term: request.term, source: request.source, kind: outcome.projection.kind, senses,
       url: provenance.sourceUrl, sha256: provenance.sha256, "captured-at": provenance.fetchedAt,

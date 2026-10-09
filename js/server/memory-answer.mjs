@@ -17,6 +17,7 @@ import { EventLog, buildEvidenceLinks } from './evidence-links.mjs';
 import { stableId } from './ids.mjs';
 import { serverMessage } from './messages.mjs';
 import { thinkingStepsFromEvents } from './solver-trace.mjs';
+import { answerLinksNotation } from './answer-links.mjs';
 
 const REQUEST_HISTORY_CONVERSATION_ID = 'request_history';
 const LEGACY_CONVERSATION = 'legacy';
@@ -46,14 +47,14 @@ export function finalizeSimple(prompt, log, intent, responseLink, body, confiden
   if (!log.firstOf('validation')) log.append('validation', 'accepted_without_extra_constraints');
   log.append('response', responseLink);
   if (!log.firstOf('trace:simplification')) log.append('trace:simplification', 'smallest_sufficient');
-  log.append('trace', intent);
+  const traceId = log.append('trace', intent);
   return {
     intent,
     answer: body,
     confidence,
     evidence_links: buildEvidenceLinks(prompt, log, responseLink),
     thinking_steps: thinkingStepsFromEvents(log.events, body),
-    links_notation: '',
+    links_notation: answerLinksNotation(prompt, intent, body, log.events, traceId),
   };
 }
 

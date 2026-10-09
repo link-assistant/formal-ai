@@ -92,7 +92,7 @@ export async function installNodeHost(worker) {
     readText: readRepoFile,
     parseLino,
     realm: context,
-    solve: async (prompt, history) => symbolicFromWorker(await worker.solve(prompt, history)),
+    solve: async (prompt, history) => symbolicFromWorker(await worker.solve(prompt, history), history),
     isDirectory: (path) => Boolean(stat(path)?.isDirectory()),
     isFile: (path) => Boolean(stat(path)?.isFile()),
     currentDirectory: () => process.cwd(),

@@ -16,6 +16,7 @@ import { nativeProgramAnswer } from './program-report.mjs';
 import { answerFromMemoryIfRequested } from './memory-answer.mjs';
 import { nativeSolverLog } from './solver-log.mjs';
 import { thinkingStepsFromEvents } from './solver-trace.mjs';
+import { answerLinksFromLog, solverLogFromWorker } from './answer-links.mjs';
 import { applyRetainedAmendments, solveWithStandingRequirements } from './standing-requirements.mjs';
 import { thinkingStep, thinkingStepsFromWorker } from './thinking.mjs';
 
@@ -82,6 +83,7 @@ export function solverEvidenceLinks(result, history = []) {
 export function symbolicFromWorker(result, history = [], seedReport = undefined) {
   const answer = nativeProgramAnswer(String(result?.content ?? ''), result?.programExecution, seedReport);
   noteLearned(result?.memoryOperation);
+  const log = solverLogFromWorker(result, history);
   return {
     intent: String(result?.intent ?? 'unknown'),
     answer,
@@ -93,11 +95,11 @@ export function symbolicFromWorker(result, history = [], seedReport = undefined)
     thinking_steps: Array.isArray(result?.solverEvents)
       ? thinkingStepsFromEvents(result.solverEvents, answer)
       : thinkingStepsFromWorker(result?.steps || []),
-    links_notation: String(result?.derivation ?? ''),
+    links_notation: answerLinksFromLog(log, String(result?.intent ?? 'unknown'), answer),
     // Off the wire: the raw traces `learning_trace_from_symbolic_answer`
     // (js/server/self-improvement.mjs) rebuilds the solver log from.
     worker_steps: Array.isArray(result?.steps) ? result.steps : [],
-    solver_events: Array.isArray(result?.solverEvents) ? result.solverEvents : undefined,
+    solver_events: log?.events,
     // Off the wire: a function the browser synthesized, which the agentic
     // reroute turns into an execution recipe (`attachExecutionRecipe`).
     synthesized_program: result?.synthesizedProgram ?? undefined,

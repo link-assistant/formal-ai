@@ -6,7 +6,8 @@ use crate::solver_handlers::finalize_simple;
 use crate::source_fetch::{CachedSourceClient, SourceTransport};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub(crate) struct Request {
+/// Subject, provider and language bound by a canonical source-definition frame.
+pub struct Request {
     pub term: String,
     pub source: String,
     pub language: String,
@@ -41,7 +42,8 @@ fn unquote(value: &str) -> String {
 fn literal_pattern(text: &str) -> String {
     regex::escape(text).replace(' ', "\\s+")
 }
-pub(crate) fn request(prompt: &str) -> Option<Request> {
+/// Bind the seeded subject/provider slots without performing a lookup.
+pub fn request(prompt: &str) -> Option<Request> {
     let input = prompt
         .trim()
         .trim_end_matches(['.', '?', '!', '。', '？', '！'])
@@ -275,7 +277,3 @@ pub(crate) fn try_definition<T: SourceTransport>(
         0.85,
     ))
 }
-
-#[cfg(test)]
-#[path = "../../tests/fixtures/source-qualified-definition-slots.rs"]
-mod tests;

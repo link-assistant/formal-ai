@@ -67,8 +67,9 @@ export function finalizeAnswer(symbolic, events, root, io = nodeDerivationIo) {
  */
 export async function finalizeServerAnswer(ctx, symbolic, result) {
   if (!hasHost()) await installNodeHost(ctx.worker);
-  const events = Array.isArray(result?.solverEvents)
-    ? result.solverEvents.map((event) => ({ kind: String(event.kind), payload: String(event.payload ?? '') }))
+  const observedEvents = symbolic?.solver_events ?? result?.solverEvents;
+  const events = Array.isArray(observedEvents)
+    ? observedEvents.map((event) => ({ kind: String(event.kind), payload: String(event.payload ?? '') }))
     : [];
   return finalizeAnswer(symbolic, events, ctx.derivationRoot ?? process.cwd());
 }
