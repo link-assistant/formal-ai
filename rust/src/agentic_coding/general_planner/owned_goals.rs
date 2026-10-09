@@ -8,7 +8,8 @@ use crate::agentic_coding::planner::AgenticPlan;
 use crate::agentic_coding::request_sequence::plan_bound_request_steps;
 use crate::agentic_coding::shell_command_policy::sentences;
 use crate::agentic_coding::write_request::{
-    compose_edit_clauses, first_action_cue_end, first_action_cue_start, preferred_binding, tokens,
+    bare_surfaces, compose_edit_clauses, first_action_cue_end, first_action_cue_start,
+    preferred_binding, tokens,
 };
 use crate::normal_markov::{quote_fault, quoted_segment_spans};
 use crate::obligation_ledger::{ObligationExpectation, ObligationNode};
@@ -55,6 +56,26 @@ fn literal_tail(request: &str, contract: &LiteralWriteContract) -> bool {
     let Some(target) = words.get(binding.index) else {
         return false;
     };
+    let suffix_owned = preferred_binding(&words[binding.index..]).is_some_and(|suffix| {
+        !suffix.cue_precedes
+            && suffix.path == contract.target
+            && suffix.cue_start >= target.end
+            && request
+                .get(target.end..suffix.cue_start)
+                .is_some_and(grammar_tail)
+            && request
+                .get(suffix.cue_start..suffix.cue_end)
+                .is_some_and(|text| {
+                    bare_surfaces("file_declared_noun").contains(
+                        &text
+                            .trim_end_matches(|character: char| {
+                                character.is_whitespace() || ".!?。！？।;；".contains(character)
+                            })
+                            .to_lowercase(),
+                    )
+                })
+            && request.get(suffix.cue_end..).is_some_and(grammar_tail)
+    });
     binding.path == contract.target
         && binding.cue_precedes
         && target.start == contract.target_span.start
@@ -67,7 +88,7 @@ fn literal_tail(request: &str, contract: &LiteralWriteContract) -> bool {
         && request
             .get(binding.cue_end..target.start)
             .is_some_and(grammar_tail)
-        && request.get(target.end..).is_some_and(grammar_tail)
+        && (request.get(target.end..).is_some_and(grammar_tail) || suffix_owned)
 }
 fn literal_write_ownership(request: &str) -> Option<LiteralWriteContract> {
     let contract = parse_write_contract(request)?;

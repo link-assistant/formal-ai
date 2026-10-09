@@ -1,5 +1,5 @@
 // Source-owned mixed actions share the existing obligation nodes and request replay.
-import { composeEditClauses, preferredBinding, tokens, firstActionCueStart } from '../write_request.mjs';
+import { composeEditClauses, preferredBinding, tokens, firstActionCueStart, bareSurfaces } from '../write_request.mjs';
 import { literalWriteOwnership, instructionView } from '../general_planner.mjs';
 import { sentences } from '../shell_command_policy.mjs';
 import { quotedSegmentSpans, quoteFault } from '../crate/normal_markov.mjs';
@@ -24,13 +24,19 @@ function literalTail(request, contract) {
   const words = tokens(request);
   const binding = preferredBinding(words);
   const target = binding === null ? null : words[binding.index];
+  const suffix = target === undefined || target === null ? null : preferredBinding(words.slice(binding.index));
+  const suffixOwned = suffix !== null && !suffix.cue_precedes && suffix.path === contract.target
+    && suffix.cue_start >= target.end
+    && grammarTail(request.slice(target.end, suffix.cue_start))
+    && bareSurfaces('file_declared_noun').includes(request.slice(suffix.cue_start, suffix.cue_end).toLowerCase().replace(/[\s.!?。！？।;；]+$/u, ''))
+    && grammarTail(request.slice(suffix.cue_end));
   return binding !== null && target !== undefined && target !== null
     && binding.path === contract.target && binding.cue_precedes
     && target.start === contract.targetSpan.start && target.end === contract.targetSpan.end
     && binding.cue_start >= end && binding.cue_end <= target.start
     && grammarTail(request.slice(end, binding.cue_start))
     && grammarTail(request.slice(binding.cue_end, target.start))
-    && grammarTail(request.slice(target.end));
+    && (grammarTail(request.slice(target.end)) || suffixOwned);
 }
 
 /** Mirrors fn goal_ledger: preserve raw UTF16 positions and the existing node's UTF8 source span. */
