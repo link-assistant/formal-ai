@@ -73,6 +73,32 @@ const guarded = (text) => text.split("||")
     (alternative.includes("release_mode == 'instant'") || alternative.includes("release_mode == 'changelog-pr'"))
     && alternative.includes("github.ref == 'refs/heads/main'"));
 
+// Prove a derived publication job can succeed only through a guarded dependency.
+function declaredNeeds(job) {
+  const match = /^    needs:\s*(\[[\s\S]*?\]|[^\n]*)/m.exec(job);
+  if (!match) return [];
+  const value = match[1].trim();
+  if (value.startsWith('[')) return value.slice(1, -1).split(',').map(part => part.trim()).filter(Boolean);
+  if (value) return [value];
+  const following = job.slice(match.index + match[0].length);
+  return Array.from(following.matchAll(/^      - ([\w-]+)\s*$/gm), match => match[1]);
+}
+function guardedDependency(name, jobs, visiting = new Set()) {
+  if (visiting.has(name) || !jobs.has(name)) return false;
+  const job = jobs.get(name), condition = jobCondition(job);
+  if (condition.includes('workflow_dispatch')) return guarded(condition);
+  if (/github\.event_name == '(push|pull_request)'/.test(condition)) return true;
+  const dependencies = declaredNeeds(job);
+  const active = new Set([...visiting, name]);
+  return condition !== '' && condition.split('||').every(alternative => {
+    const predicates = alternative.replace(/!cancelled\(\)/g, '');
+    if (predicates.includes('!(') || /!\s*needs\./.test(predicates)) return false;
+    const successful = Array.from(predicates.matchAll(/needs\.([\w-]+)\.result == 'success'/g), match => match[1]);
+    return successful.some(dependency => dependencies.includes(dependency)
+      && guardedDependency(dependency, jobs, active));
+  });
+}
+
 test("R1187-3: release.yml dispatch defaults to checks", () => {
   const triggers = triggerBlock(read(".github/workflows/release.yml"));
   const releaseMode = triggers.slice(triggers.indexOf("release_mode:"), triggers.indexOf("bump_type:"));
@@ -83,7 +109,8 @@ test("R1187-3: release.yml dispatch defaults to checks", () => {
 
 test("R1187-3 / R1187-7: every writing job needs an explicit mode and main on a dispatch", () => {
   const writers = [];
-  for (const [name, job] of workflowJobs(read(".github/workflows/release.yml"))) {
+  const jobs = new Map(workflowJobs(read(".github/workflows/release.yml")));
+  for (const [name, job] of jobs) {
     const writes = job.split("\n").some((line) => !line.trim().startsWith("#") && /: write\s*$/.test(line));
     if (!writes) continue;
     writers.push(name);
@@ -93,7 +120,7 @@ test("R1187-3 / R1187-7: every writing job needs an explicit mode and main on a 
     } else if (condition.includes("workflow_dispatch")) {
       assert.ok(guarded(condition), `${name} runs on a dispatch without an explicit mode and main: ${condition}`);
     } else {
-      assert.ok(/github\.event_name == '(push|pull_request)'/.test(condition), `${name} does not exclude a dispatch: ${condition}`);
+      assert.ok(guardedDependency(name, jobs), `${name} has no guarded dispatch authority: ${condition}`);
     }
   }
   for (const expected of ["release-preflight", "auto-release", "manual-release", "changelog-pr", "deploy-pages"]) {
@@ -173,7 +200,7 @@ test("R1187-8 mechanism: the self-authored workflow dispatches checks at layer d
   assert.match(outputs, /\n {2}authored:/);
 });
 
-test("R1187-8 mechanism: the dispatcher starts every pull_request workflow in checks mode", () => {
+test("R1187-8 mechanism: the dispatcher starts every pull_request workflow declaring checks mode", () => {
   const dir = scratch();
   try {
     const calls = path.join(dir, "calls");
@@ -219,11 +246,31 @@ esac
       .filter((name) => /\n {2}pull_request:/.test(triggerBlock(read(`.github/workflows/${name}`)).replace(/^/, "\n")));
     assert.ok(pullRequestWorkflows.length > 5, "the repository has pull_request workflows");
     for (const name of pullRequestWorkflows) {
-      assert.equal(dispatched.has(name), !excluded.has(name), `${name} dispatched: ${dispatched.has(name)}`);
+      const trigger = triggerBlock(read(`.github/workflows/${name}`));
+      const declaresChecks = /workflow_dispatch:/.test(trigger) && /options: \[checks\]/.test(trigger);
+      assert.equal(dispatched.has(name), !excluded.has(name) && declaresChecks, `${name} dispatched: ${dispatched.has(name)}`);
     }
     assert.ok(dispatched.has("release.yml"), "release.yml is dispatched in checks mode");
     assert.match(readFileSync(output, "utf8"), /dispatched<<EOF\n[\s\S]*release\.yml/);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
+});
+
+test('derived publication requires a declared successful guarded ancestor on every alternative', () => {
+  const manual = "    if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && github.ref == 'refs/heads/main'\n";
+  const automatic = "    if: github.event_name == 'push' && github.ref == 'refs/heads/main'\n";
+  const jobs = new Map([['manual', manual], ['automatic', automatic],
+    ['publish', "    needs: [manual, automatic]\n    if: !cancelled() && ((needs.manual.result == 'success') || (needs.automatic.result == 'success'))\n"]]);
+  assert.equal(guardedDependency('publish', jobs), true);
+  for (const condition of ["needs.manual.result == 'success' || true", "needs.manual.result == 'failure'",
+    "!(needs.manual.result == 'success')", "needs.unknown.result == 'success'"]) {
+    jobs.set('publish', '    needs: [manual]\n    if: ' + condition + '\n');
+    assert.equal(guardedDependency('publish', jobs), false, condition);
+  }
+  jobs.set('manual', "    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'\n");
+  jobs.set('publish', "    needs: [manual]\n    if: needs.manual.result == 'success'\n");
+  assert.equal(guardedDependency('publish', jobs), false);
+  jobs.set('manual', "    needs: [publish]\n    if: needs.publish.result == 'success'\n");
+  assert.equal(guardedDependency('publish', jobs), false);
 });

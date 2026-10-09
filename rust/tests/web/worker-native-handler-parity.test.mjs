@@ -9,7 +9,7 @@ const root = new URL('../../../', import.meta.url).pathname;
 const originals = [
   ['rust/tests/unit/specification/code_generation/follow_up.rs', 'english_follow_up_modification_emits_substitution_plan_trace', 4, 4],
   ['rust/tests/unit/specification/natural_language_access.rs', 'natural_language_code_execution_gate_is_stable_across_supported_language_contexts', 3, 12],
-  ['rust/tests/unit/specification/pronoun_topic_follow_up.rs', 'pronoun_followup_resolves_prior_rust_topic_for_creator_question', 6, 6],
+  ['rust/tests/unit/specification/pronoun_topic_follow_up.rs', 'pronoun_followup_resolves_prior_rust_topic_for_creator_question', 7, 7],
 ];
 for (const [file, name, macros, executions] of originals) {
   test('whole original native assertion program: ' + name, async () => {
