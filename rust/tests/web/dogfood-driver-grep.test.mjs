@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
-import { join } from 'node:path';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import test from 'node:test';
 import { execute } from '../../../experiments/js_dogfood/drive.mjs';
@@ -74,4 +75,33 @@ test('actual successful Bash keeps JSON error fields as output with explicit zer
   assert.equal(harnessReportedFailure(result), false);
   assert.ok(result.includes('Output: {"error":"authored value"}\nExit Code: 0'));
   assert.equal(observedPayload(result), JSON.stringify({ error: "authored value" }));
+});
+
+test('large matching line retains complete raw bytes and count without a pipe overflow', (context) => {
+  const { root } = fixture(context);
+  const text = 'TODO ' + 'λ'.repeat(9 * 1024 * 1024) + '\nTODO short\n';
+  writeFileSync(join(root, 'large.txt'), text);
+  const result = search(root, { path: 'large.txt', pattern: 'TODO' });
+  assert.match(result, /^Found 2 matches\n/u);
+  assert.match(result, /Line 2: TODO short/u);
+  assert.match(result, /Results truncated: 1 of 2 matching lines rendered; 1 oversized JSON records omitted/u);
+  const file = result.match(/^Complete ripgrep JSON: (.+)$/mu)?.[1];
+  assert.ok(file);
+  context.after(() => rmSync(dirname(file), { recursive: true, force: true }));
+  const raw = readFileSync(file);
+  assert.equal(result.match(/^SHA256: ([a-f0-9]{64})$/mu)?.[1], createHash('sha256').update(raw).digest('hex'));
+  const records = raw.toString('utf8').trimEnd().split('\n').map(JSON.parse);
+  assert.equal(records.find((record) => record.type === 'match').data.lines.text, text.split('\n')[0] + '\n');
+});
+
+test('many matching Unicode lines keep their real count in a bounded preview', (context) => {
+  const { root } = fixture(context);
+  writeFileSync(join(root, 'many.txt'), Array.from({ length: 200 }, (_, index) => 'TODO λ🙂 ' + index).join('\n'));
+  const result = search(root, { path: 'many.txt', pattern: 'TODO' });
+  assert.match(result, /^Found 200 matches\n/u);
+  assert.match(result, /Line 1: TODO λ🙂 0/u);
+  assert.match(result, /Results truncated: 80 of 200 matching lines rendered/u);
+  const file = result.match(/^Complete ripgrep JSON: (.+)$/mu)?.[1];
+  context.after(() => rmSync(dirname(file), { recursive: true, force: true }));
+  assert.ok(result.length < 10000);
 });

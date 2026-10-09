@@ -17,6 +17,7 @@
 // `edit` return an empty string, `bash` returns stdout+stderr.
 
 import { execFileSync } from 'node:child_process';
+import { grepCapture } from './grep-capture.mjs';
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync, writeSync } from 'node:fs';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -67,24 +68,7 @@ function grep(dir, args) {
   const argv = ['--json', '--sort', 'path', '--regexp', args.pattern ?? args.query ?? ''];
   if (args.include) argv.push('--glob', args.include);
   argv.push('--', within(dir, args.path ?? '.'));
-  let output;
-  try {
-    output = execFileSync('rg', argv, { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
-  } catch (error) {
-    if (error.status === 1) return 'No files found';
-    throw error;
-  }
-  const groups = new Map();
-  let count = 0;
-  for (const record of output.split('\n').filter(Boolean).map((line) => JSON.parse(line))) {
-    if (record.type !== 'match') continue;
-    const file = record.data.path.text;
-    const line = record.data.lines.text.replace(/\r?\n$/u, '');
-    if (!groups.has(file)) groups.set(file, []);
-    groups.get(file).push('  Line ' + record.data.line_number + ': ' + line);
-    count += 1;
-  }
-  return count ? 'Found ' + count + ' matches\n' + [...groups].map(([file, hits]) => [file + ':', ...hits].join('\n')).join('\n\n') : 'No files found';
+  return grepCapture(argv);
 }
 
 /** Adapter failures are transport metadata, distinct from authored file/stdout bytes. */
