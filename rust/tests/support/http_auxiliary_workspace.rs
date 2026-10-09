@@ -67,9 +67,15 @@ pub(super) fn observed_target_write(
             _ => panic!("unexpected auxiliary tool: {tool}: {arguments}"),
         };
         messages.push(json!({"role": "assistant", "tool_calls": calls}));
-        messages.push(
-            json!({"role": "tool", "tool_call_id": call["id"], "name": tool, "content": result}),
-        );
+        let read_observation = (tool == "read_file").then(|| {
+            let success = files.contains_key(path);
+            json!({"path": path, "format": "raw", "success": success, "complete": success})
+        });
+        messages.push(json!({
+            "role": "tool", "tool_call_id": call["id"], "name": tool,
+            "content": result, "source_read": read_observation,
+            "is_error": tool == "read_file" && !files.contains_key(path)
+        }));
     }
     panic!("no target write after the bounded observed auxiliary setup");
 }
