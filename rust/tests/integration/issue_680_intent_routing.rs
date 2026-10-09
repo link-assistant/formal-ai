@@ -15,8 +15,7 @@ use crate::http_server::{
     http_post_json, reserve_loopback_port, spawn_formal_ai_server_agent_mode,
 };
 
-#[path = "../support/http_auxiliary_workspace.rs"]
-mod auxiliary_workspace;
+use crate::auxiliary_workspace;
 
 const TOKEN: Option<&str> = Some("sk-local-agentic-tools");
 

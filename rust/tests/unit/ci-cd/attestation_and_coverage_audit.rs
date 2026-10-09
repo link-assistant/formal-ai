@@ -100,7 +100,18 @@ fn agent_cli_stderr_policy_accepts_only_reviewed_upstream_warnings() {
 fn workflows_suppress_git_default_branch_hints_at_the_source() {
     for name in ["release.yml", "desktop-release.yml"] {
         let contents = workflow(name);
-        assert!(contents.contains("GIT_CONFIG_COUNT: '1'"), "{name}");
+        let count = if name == "desktop-release.yml" { 2 } else { 1 };
+        assert!(
+            contents.contains(&format!("GIT_CONFIG_COUNT: '{count}'")),
+            "{name}"
+        );
+        if count == 2 {
+            assert!(
+                contents.contains("GIT_CONFIG_KEY_1: core.autocrlf"),
+                "{name}"
+            );
+            assert!(contents.contains("GIT_CONFIG_VALUE_1: \"false\""), "{name}");
+        }
         assert!(
             contents.contains("GIT_CONFIG_KEY_0: init.defaultBranch"),
             "{name}"

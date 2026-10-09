@@ -18,7 +18,7 @@ const cleanup = (record) => rmSync(dirname(record.stdout_capture.path), {recursi
 
 test('abrupt failing child preserves every diagnostic byte through the actual driver', () => {
   const expected = 'BEGIN_DIAGNOSTIC\n' + 'x'.repeat(131072) + '\nEND_DIAGNOSTIC\n';
-  const result = execute(process.cwd(), {tool:'bash', arguments:JSON.stringify({command:node('process.stderr.write('+JSON.stringify(expected)+');process.exit(7);')})});
+  const result = execute(process.cwd(), {tool:'bash', arguments:JSON.stringify({command:node("process.stderr.write('BEGIN_DIAGNOSTIC\\n'+'x'.repeat(131072)+'\\nEND_DIAGNOSTIC\\n');process.exit(7);")})});
   assert.equal(result, 'Output: \nError: '+expected+'\nExit Code: 7');
   assert.equal(reportedExitCode(result),7);
   assert.equal(stepOutcome(result),StepOutcome.Failed);

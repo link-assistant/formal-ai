@@ -5,8 +5,7 @@ use crate::http_server::{
 };
 use std::sync::{Mutex, MutexGuard};
 
-#[path = "../support/http_auxiliary_workspace.rs"]
-mod auxiliary_workspace;
+use crate::auxiliary_workspace;
 
 const TOKEN: Option<&str> = Some("sk-local-agentic-tools");
 static SERVER_TEST_LOCK: Mutex<()> = Mutex::new(());

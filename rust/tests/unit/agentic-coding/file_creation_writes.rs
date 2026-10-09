@@ -12,9 +12,7 @@ use formal_ai::agentic_coding::general_planner::compose_general_change_plan;
 use formal_ai::agentic_coding::{AgenticPlan, PlannedToolCall, plan_chat_step, run_agentic_task};
 use formal_ai::protocol::ChatMessage;
 
-#[allow(dead_code)]
-#[path = "../../fixtures/observed-plan-event.rs"]
-mod observed_plan_event;
+use crate::observed_plan_event;
 
 fn single_call(messages: &[ChatMessage], tools: &[&str]) -> PlannedToolCall {
     let prompt = messages[0].content.plain_text();

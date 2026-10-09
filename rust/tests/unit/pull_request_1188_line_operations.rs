@@ -310,10 +310,12 @@ fn two_lines_are_swapped() {
 
 #[test]
 fn a_computed_change_never_leaves_a_fragment_of_the_file() {
-    let mostly: String = (0..9)
-        .map(|index| format!("x {index}\n"))
-        .collect::<String>()
-        + "keep\n";
+    let mut mostly = String::new();
+    for index in 0..9 {
+        use std::fmt::Write as _;
+        writeln!(&mut mostly, "x {index}").expect("write to String");
+    }
+    mostly.push_str("keep\n");
     let run = drive(
         "Delete the lines containing 'x' from f.txt.",
         &mostly,

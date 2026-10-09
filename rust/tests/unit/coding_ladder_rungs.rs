@@ -28,9 +28,7 @@ use formal_ai::protocol::{
 use formal_ai::seed::client_integrations;
 use formal_ai::solver::{SolverConfig, UniversalSolver};
 
-#[allow(dead_code)]
-#[path = "../fixtures/observed-plan-event.rs"]
-mod observed_plan_event;
+use crate::observed_plan_event;
 
 /// The exact envelope qwen-code handed back in issue #908 for a command that
 /// succeeded silently (`python3 -m py_compile main.py`).

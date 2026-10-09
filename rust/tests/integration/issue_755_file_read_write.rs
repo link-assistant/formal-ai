@@ -261,15 +261,15 @@ fn a_multi_turn_lifecycle_reads_back_the_current_content_each_time() {
                     "Read" => {
                         let path = args["file_path"].as_str().unwrap_or_default();
                         let content = workspace.borrow().get(path).cloned();
-                        if let Some(content) = content {
-                            if path == "1.txt" {
-                                last_read = content.clone();
-                            }
-                            content
-                        } else {
-                            json!({"is_error": true, "error": format!("File not found: {path}")})
-                                .to_string()
-                        }
+                        content.map_or_else(
+                            || json!({"is_error": true, "error": format!("File not found: {path}")}).to_string(),
+                            |content| {
+                                if path == "1.txt" {
+                                    last_read = content.clone();
+                                }
+                                content
+                            },
+                        )
                     }
                     _ => String::new(),
                 };

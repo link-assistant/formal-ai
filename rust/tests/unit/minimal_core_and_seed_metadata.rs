@@ -510,7 +510,10 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // schema did not follow, so the floor read 77. Their new file is a
     // complete source too: 33 (catalog) + 10 (config) + 34 (tasks) + 38
     // (decomposition ladder, two records added since the move) = 115.
-    assert_eq!(coding_records, 115, "coding-path regression floor");
+    // Commit c1832e130 then grounded `returning` as a complete authored meaning
+    // with all five metadata fields and all five languages: tasks now has 35
+    // records, so 33 + 10 + 35 + 38 = 116; the gap contract remains unchanged.
+    assert_eq!(coding_records, 116, "coding-path regression floor");
     assert_eq!(committed_gaps(root), expected_gaps);
     // The floor moves with the closure, not with the handlers: every gap added
     // under issue #1021 is a `closure-generated-*.lino` record for a token the
@@ -690,5 +693,8 @@ fn metadata_records_ignore_leading_and_nested_comments() {
         meaning_records("seed.lino", plain),
         meaning_records("seed.lino", &documented)
     );
-    assert!(meaning_records("seed.lino", "# empty\n\n").is_empty());
+    assert_eq!(
+        meaning_records("seed.lino", "# empty\n\n"),
+        Vec::<(String, String, BTreeSet<String>)>::new()
+    );
 }

@@ -1,3 +1,6 @@
+#[path = "../support/http_auxiliary_workspace.rs"]
+mod auxiliary_workspace;
+
 mod formal_ai_cli;
 mod http_client;
 mod http_server;

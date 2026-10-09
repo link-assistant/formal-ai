@@ -11,9 +11,7 @@
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
-#[allow(dead_code)]
-#[path = "../fixtures/observed-plan-event.rs"]
-mod observed_plan_event;
+use crate::observed_plan_event;
 
 /// The single tool call a one-step plan emitted, or a panic with the prompt.
 fn single_call(prompt: &str, tools: &[&str]) -> (String, String) {

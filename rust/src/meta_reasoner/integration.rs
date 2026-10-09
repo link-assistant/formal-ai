@@ -116,6 +116,7 @@ pub fn try_meta_answer(
     if meta.status != "solved"
         || (meta.program.is_none() && meta.subgoals.is_none())
         || (meta.imperative && follows_turns)
+        || crate::solver_handlers::resolves_coreference_request(prompt, log)
     {
         return None;
     }

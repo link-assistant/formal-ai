@@ -9,9 +9,7 @@ use std::path::{Path, PathBuf};
 const PROMPT: &str = "Create a file hello.txt containing exactly: Hello World";
 const TOOLS: [&str; 3] = ["read_file", "write_file", "run_command"];
 
-#[allow(dead_code)]
-#[path = "../fixtures/observed-plan-event.rs"]
-mod observed_plan_event;
+use crate::observed_plan_event;
 
 fn before_target(prompt: &str) -> (Vec<ChatMessage>, PlannedToolCall) {
     observed_plan_event::before_target(prompt, &TOOLS)
