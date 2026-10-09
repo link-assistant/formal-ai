@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/web_requests.rs
   language rust
   fidelity signature
-  byte_len 35690
-  line_count 885
-  content_id source_module_20316eec66e431ce
+  byte_len 33373
+  line_count 858
+  content_id source_module_4471bb91d70867e0
   symbol_count 42
   symbols
     module live_search 15 15
@@ -33,19 +33,19 @@ self_ast_census
     function try_explicit_repository_lookup 405 430
     function try_project_lookup_with_response_language 432 448
     function try_project_lookup_internal 450 507
-    function render_project_lookup 509 593
-    function render_generic_repository_lookup 595 699
-    function append_repository_evidence 701 708
-    function matched_project 712 726
-    function promoted_project_by_repo 728 735
-    function is_promoted_project 737 741
-    function repository_from_prompt 743 747
-    function repository_from_concept_term 749 756
-    function repository_from_slug 758 778
-    function repository_from_url 780 808
-    function repository_slug_candidates 816 848
-    function clean_repository_segment 850 862
-    function is_text_url_extraction_prompt 864 868
-    function normalize_concept_term 870 876
-    function registry_static 881 885
-    static REGISTRY 883 883
+    function render_project_lookup 509 566
+    function render_generic_repository_lookup 568 672
+    function append_repository_evidence 674 681
+    function matched_project 685 699
+    function promoted_project_by_repo 701 708
+    function is_promoted_project 710 714
+    function repository_from_prompt 716 720
+    function repository_from_concept_term 722 729
+    function repository_from_slug 731 751
+    function repository_from_url 753 781
+    function repository_slug_candidates 789 821
+    function clean_repository_segment 823 835
+    function is_text_url_extraction_prompt 837 841
+    function normalize_concept_term 843 849
+    function registry_static 854 858
+    static REGISTRY 856 856
