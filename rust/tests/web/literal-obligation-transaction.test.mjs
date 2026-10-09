@@ -11,6 +11,8 @@ import { drive } from '../../../experiments/js_dogfood/drive.mjs';
 import { observedPayload } from '../../../js/agentic/tool_result.mjs';
 import { finalResult, FinalDisposition, canDeliverFinal } from '../../../js/agentic/final_result.mjs';
 import { obligations, successfullyDischarged } from '../../../js/agentic/task_obligations.mjs';
+import { clausesWithSpans } from '../../../js/agentic/crate/obligation_ledger.mjs';
+import { wordsForRole } from '../../../js/agentic/write_lexicon.mjs';
 import { planObligationsStep } from '../../../js/agentic/planner/obligations.mjs';
 before(async () => { await installNodeHost(new WorkerHost()); });
 const original = 'First, create file a.txt with exactly this content «alpha». Second, create file b.txt with exactly this content «beta».';
@@ -80,4 +82,46 @@ test('a successful artifact never hides an underivable mandatory clause', async 
   assert.equal(out.stop, 'final');
   assert.match(out.answer, /no_artifact_in_clause/);
   assert.doesNotMatch(out.answer, /Completed the general change request/);
+});
+
+test('all seeded enumeration surfaces inside literal operands remain payload', () => {
+  const quote = String.fromCharCode(96);
+  const wrappers = [['«', '»'], [quote, quote], [quote.repeat(4) + 'text' + String.fromCharCode(10), String.fromCharCode(10) + quote.repeat(4)], [quote.repeat(12) + 'text' + String.fromCharCode(10), String.fromCharCode(10) + quote.repeat(12)]];
+  const surfaces = wordsForRole('enumeration_cue');
+  assert.equal(surfaces.length, 34);
+  for (const surface of surfaces) {
+    for (const [opening, closing] of wrappers) {
+      const literal = opening + 'λ🙂 Alpha. ' + surface + ' beta.' + closing;
+      const request = 'Create a.txt with exactly this content ' + literal;
+      const clauses = clausesWithSpans(request);
+      assert.equal(clauses.length, 1, surface + ' stays in literal');
+      assert.equal(clauses[0][0], request);
+      assert.deepEqual(clauses[0][1], [0, Buffer.byteLength(request)]);
+    }
+  }
+});
+test('every seeded outer cue preserves two complete literals and exact UTF8 spans', () => {
+  for (const surface of wordsForRole('enumeration_cue')) {
+    const request = 'First, create a.txt with exactly this content «λ🙂 Alpha. Next beta.». ' + surface + ', create b.txt with exactly this content «Gamma. Then delta.».';
+    const clauses = clausesWithSpans(request);
+    assert.equal(clauses.length, 2, surface + ' starts a genuine outer obligation');
+    for (const [clause, [start, end]] of clauses) assert.equal(Buffer.from(request).subarray(start, end).toString('utf8'), clause);
+    assert.ok(clauses[0][0].includes('«λ🙂 Alpha. Next beta.»'));
+    assert.ok(clauses[1][0].includes('«Gamma. Then delta.»'));
+  }
+});
+test('closed twelve-character fence with internal instructions has one exact readback', async () => {
+  const quote = String.fromCharCode(96);
+  const body = ['λ🙂 Alpha.', 'Next beta.', 'When ' + quote + 'input' + quote + ' then ' + quote + 'output' + quote + '.', 'Also list behavior rules.', ''].join(String.fromCharCode(10));
+  const request = 'Set the contents of a.txt to exactly this content:' + String.fromCharCode(10) + quote.repeat(12) + 'text' + String.fromCharCode(10) + body + quote.repeat(12);
+  const result = await fixture(request, { 'a.txt': body });
+  exactReceipts(result, { 'a.txt': body });
+  assert.equal(result.transcript.filter((entry) => entry.tool === 'write').length, 1);
+  assert.doesNotMatch(result.answer, /Behavior rule compiled|Understood\. I'll avoid/);
+});
+test('independent outer artifacts retain nested enumeration bytes and receipts', async () => {
+  const first = 'λ🙂 Alpha. Next beta.';
+  const second = 'Gamma. Then delta.';
+  const request = 'First, create a.txt with exactly this content «' + first + '». Second, create b.txt with exactly this content «' + second + '».';
+  exactReceipts(await fixture(request, { 'a.txt': first, 'b.txt': second }), { 'a.txt': first, 'b.txt': second });
 });

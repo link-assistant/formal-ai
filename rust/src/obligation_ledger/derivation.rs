@@ -30,8 +30,14 @@ pub fn clauses_with_spans(request: &str) -> Vec<(String, (usize, usize))> {
         return vec![(request.trim().to_owned(), (0, request.len()))];
     }
     let mut boundaries = vec![0_usize];
+    let quoted = crate::normal_markov::quoted_segment_spans(request);
     for (index, _) in request.char_indices() {
-        if index == 0 || !opens_a_clause(request, index) {
+        if index == 0
+            || quoted
+                .iter()
+                .any(|segment| index >= segment.start && index < segment.end)
+            || !opens_a_clause(request, index)
+        {
             continue;
         }
         let rest = request[index..].to_lowercase();

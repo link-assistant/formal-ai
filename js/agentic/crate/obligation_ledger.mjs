@@ -21,6 +21,7 @@ import { isAlphanumeric, isWhitespace, lines, trim, trimEnd, trimEndMatches, utf
 import { debugOption, stableId } from './engine_stable_identifier.mjs';
 import { evidenceNames, reportsSuccess } from './execution_evidence.mjs';
 import { detect } from './language.mjs';
+import { quotedSegmentSpans } from './normal_markov.mjs';
 import { sha256Hex } from './source_fetch.mjs';
 import { isCheckable, splitOnceCheckable } from './task_decomposition.mjs';
 
@@ -36,8 +37,10 @@ export function clausesWithSpans(request) {
   const cues = wordsForRole('enumeration_cue');
   if (!cues.length) return [[trim(request), [0, utf8Len(request)]]];
   const boundaries = [0];
+  const quoted = quotedSegmentSpans(request);
   for (let index = 0; index < request.length; index += request.codePointAt(index) > 0xffff ? 2 : 1) {
-    if (index === 0 || !opensAClause(request, index)) continue;
+    if (index === 0 || quoted.some((segment) => index >= segment.start && index < segment.end)
+      || !opensAClause(request, index)) continue;
     const rest = request.slice(index).toLowerCase();
     if (cues.some((cue) => startsWithCue(rest, cue))) boundaries.push(index);
   }

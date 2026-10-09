@@ -154,3 +154,31 @@ fn mandatory_unknown_clause_is_a_gap_after_first_verified_artifact() {
     assert!(answer.contains("no_artifact_in_clause"));
     assert!(!answer.contains("Completed the general change request"));
 }
+
+#[test]
+fn closed_fence_enumeration_payload_has_one_real_exact_receipt() {
+    let quote = char::from(96).to_string().repeat(12);
+    let body = "λ🙂 Alpha.\nNext beta.\nWhen «input» then «output».\nAlso list behavior rules.\n";
+    let request =
+        format!("Set the contents of a.txt to exactly this content:\n{quote}text\n{body}{quote}");
+    let outcome = run(&request, &["bash", "write"]);
+    assert_eq!(
+        fs::read_to_string(outcome.root.join("a.txt")).expect("literal bytes"),
+        body
+    );
+    assert_eq!(outcome.writes, 1);
+    assert_eq!(
+        outcome.receipts,
+        vec![("cat a.txt".to_owned(), body.to_owned())]
+    );
+    assert!(outcome.answer.is_some());
+}
+#[test]
+fn outer_literal_artifacts_keep_inner_enumeration_payloads() {
+    let first = "λ🙂 Alpha. Next beta.";
+    let second = "Gamma. Then delta.";
+    let request = format!(
+        "First, create a.txt with exactly this content «{first}». Second, create b.txt with exactly this content «{second}»."
+    );
+    exact_pair(&run(&request, &["bash", "write"]), first, second);
+}

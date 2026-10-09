@@ -1,0 +1,56 @@
+{
+  "originalRequest": "/private/tmp/spec-recurrence-1188/T2937-request.json",
+  "requestSha256": "010af17477dfc27e37a4b924bd19d7607efccd434dccc0e6613cdae1b70ead73",
+  "instructionCharacters": 8784,
+  "quotedSpans": [
+    {
+      "start": 146,
+      "end": 8784,
+      "payloadCharacters": 8614
+    }
+  ],
+  "objectiveUnchanged": true,
+  "authoritative": true,
+  "fullPlan": {
+    "mode": "literal_file",
+    "target": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/release-readonly-audit/README.md",
+    "contentBytes": 8611,
+    "id": "general_change_plan_751d296dbe0b6151"
+  },
+  "enumerationSplits": [
+    {
+      "span": [
+        0,
+        1684
+      ],
+      "characters": 1684,
+      "head": "Set the contents of experiments/formal_ai_subagent/evidence/specificat",
+      "tail": " no five CLI archives. No unconditional missing-upload path was found in the committed five-leg job;"
+    },
+    {
+      "span": [
+        1685,
+        8786
+      ],
+      "characters": 7099,
+      "head": "next stable-tag publication is pending observation. |\n| Desktop six ta",
+      "tail": "green runs and configured future upload steps cannot substitute for those observations.\n````````````"
+    }
+  ],
+  "leafCount": 31,
+  "next": {
+    "kind": "observe",
+    "clauseCharacters": 1684,
+    "span": [
+      0,
+      1684
+    ],
+    "tail": ".352.1 currently has no five CLI archives. No unconditional missing-upload path was found in the committed five-leg job;"
+  },
+  "cause": "Enumeration boundaries inside a closed authored literal truncate the first leaf before recursive quote-aware decomposition can protect it.",
+  "proposal": "Ignore seeded enumeration boundaries inside original quote spans; retain exact source byte spans and independent unquoted obligations.",
+  "limits": [
+    "Read-only function probes; no repository mutation or original retry.",
+    "No native compiler or full-suite execution."
+  ]
+}
