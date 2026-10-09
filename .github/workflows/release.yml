@@ -4,15 +4,10 @@ on:
     branches:
       - main
   pull_request:
-    # Issue #1187 R4: an isolated e2e/<purpose>/<run>/<name> pull request
-    # never triggers this repository's own pipeline.
     branches-ignore: ['e2e/**']
     types: [opened, synchronize, reopened]
   workflow_dispatch:
     inputs:
-      # Issue #1187 R3: a dispatch runs the checks only unless a release mode
-      # is chosen explicitly, and every release, publish and tag job also
-      # requires the main ref.
       mode:
         description: 'checks: run the pull-request checks on the dispatched branch'
         required: false
@@ -54,22 +49,12 @@ env:
   CARGO_NET_RETRY: '10'
   CARGO_HTTP_MULTIPLEXING: 'false'
   CARGO_TERM_COLOR: always
-  # Set this repository variable to true only while investigating sccache
-  # backend failures. The shared setup action otherwise leaves logging off.
   FORMAL_AI_CI_VERBOSE: ${{ vars.FORMAL_AI_CI_VERBOSE || 'false' }}
-  # TEMPORARY (issue #1111): non-Linux CI is skipped, not deleted; set this to
-  # `run` to restore it. docs/case-studies/linux-only-ci/PLAN.md
   FORMAL_AI_NON_LINUX_CI: ${{ vars.FORMAL_AI_NON_LINUX_CI || 'skip' }}
   RUSTFLAGS: -Dwarnings
   CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN || secrets.CARGO_TOKEN }}
   CARGO_TOKEN: ${{ secrets.CARGO_TOKEN }}
   GHCR_IMAGE: ghcr.io/${{ github.repository }}
-  # Issue #1131: these were read from repository configuration that was never
-  # set, so `configure-dockerhub-publishing.sh` disabled Docker Hub on every
-  # release and the release still reported success. hive-mind names its image
-  # in the workflow the same way (`IMAGE_NAME: konard/hive-mind`). A fork still
-  # overrides either through `vars`, and a fork without DOCKERHUB_TOKEN skips
-  # Docker Hub entirely -- the token, not the image, is what opts in.
   DOCKERHUB_IMAGE: ${{ vars.DOCKERHUB_IMAGE || 'konard/formal-ai' }}
 jobs:
   detect-changes:
@@ -85,9 +70,6 @@ jobs:
       toml-changed: ${{ steps.changes.outputs.toml-changed }}
       docs-changed: ${{ steps.changes.outputs.docs-changed }}
       workflow-changed: ${{ steps.changes.outputs.workflow-changed }}
-      # Only the files a pipeline job executes (its definition, a composite action
-      # it calls, or a script those run): `workflow-changed` fires for any workflow
-      # file, which made a scheduled benchmark's edit pay for the whole pipeline (#1107).
       pipeline-changed: ${{ steps.changes.outputs.pipeline-changed }}
       agentic-routing-changed: ${{ steps.changes.outputs.agentic-routing-changed }}
       any-code-changed: ${{ steps.changes.outputs.any-code-changed }}
@@ -259,15 +241,6 @@ jobs:
           GITHUB_HEAD_REF: ${{ github.head_ref }}
           GITHUB_BASE_REF: ${{ github.base_ref }}
         run: rust-script scripts/check-version-modification.rs
-  # Issue #1081: principle 16 of docs/CI-CD-BEST-PRACTICES.md -- "prove you can
-  # publish before you build". Every release credential used to be exercised
-  # only by the step that needed it, near the end of a 90-minute release job, so
-  # a revoked crates.io token or an expired Docker Hub access token cost a full
-  # build before anyone learned the release could not happen. This job asks the
-  # same registries the same question in seconds, and the release jobs below
-  # need it. On anything that is not a release it reports instead of failing: a
-  # fork's pull request has no secrets to probe, and the code can still be
-  # tested.
   release-preflight:
     name: Release Preflight
     runs-on: ubuntu-latest
@@ -277,8 +250,6 @@ jobs:
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     permissions:
       contents: read
-      # The GHCR probe opens and cancels a blob upload session, which is the
-      # only question ghcr.io answers differently for "may push" and "may pull".
       packages: write
     steps:
       - uses: actions/checkout@v7
@@ -297,7 +268,6 @@ jobs:
           DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME || 'konard' }}
           DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
         run: bash scripts/preflight-credentials.sh
-  # Issue #1017 (D19): one commit for every base-branch merge in this run.
   base:
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-base
@@ -308,11 +278,6 @@ jobs:
   lint:
     name: Lint and Format Check (lane ${{ matrix.lane }})
     runs-on: ubuntu-latest
-    # Issue #1076 (D5) raised the one serial job's cap 15 -> 25 -> 45 minutes
-    # (run 35806556194 was killed mid-gate at 25). PR #1188 runs the gates as
-    # parallel lanes instead (`lane` in data/meta/ci-gates/, CI_GATE_LANE
-    # below; run-ci-gates.rs --check fails a gate no lane runs); lane 1 also
-    # runs the wasm and web stages. 30 holds the slowest lane (~15 min).
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -368,10 +333,6 @@ jobs:
       - name: Build Rust→WASM worker
         if: matrix.lane == 1
         run: sh js/wasm-worker/build.sh
-      # The rebuilt worker is published so a stale checked-in binary can be
-      # replaced with CI's exact bytes (the toolchain is CI's stable, which a
-      # contributor's machine may not match); check_wasm_worker_current below
-      # still fails until it is committed.
       - name: Upload rebuilt WASM worker
         if: matrix.lane == 1
         uses: actions/upload-artifact@v7
@@ -409,13 +370,6 @@ jobs:
   test:
     name: Test (${{ matrix.os }} / ${{ matrix.test-suite }})${{ matrix.shard && format(' shard {0}/{1}', matrix.shard, matrix.shards) || '' }}
     runs-on: ${{ matrix.os }}
-    # Issue #1017: the cap is the backstop, the step budget the deadline (run
-    # 31937348472 used 1415s of a 1500s cap). PR #1188 (R1188-U9): no job runs
-    # over 30 minutes. Nothing compiles here any more -- both suites run the
-    # test executables `build-artifacts` built once -- and each budgeted group
-    # (the full lane's 1080s gates or 1080s tests, the specification shard's
-    # 1080s) stays at 60% of the cap, inside the 70% share
-    # `tests/unit/ci-cd/job_budget_fit.rs` holds.
     timeout-minutes: 30
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-test-${{ matrix.os }}-${{ matrix.test-suite }}-${{ matrix.shard || 1 }}
@@ -436,7 +390,7 @@ jobs:
           # Five parallel shards of the full lane, planned longest-first from
           # data/meta/test-durations.lino (run 37802763478: 296-743s of tests
           # at four). The entry without `shard` is shard 1 (data + census
-          # gates); shard 2 runs doc tests.
+          # gates); default-feature doc tests run in their own prepared job.
           - { os: ubuntu-latest, test-suite: full, shards: 5 }
           - { os: ubuntu-latest, test-suite: full, shard: 2, shards: 5 }
           - { os: ubuntu-latest, test-suite: full, shard: 3, shards: 5 }
@@ -465,7 +419,6 @@ jobs:
           BASE_REF: ${{ github.base_ref }}
           BASE_COMMIT: ${{ needs.base.outputs.commit }}  # issue #1017: see `base`
         run: bash scripts/simulate-fresh-merge.sh
-      # Issue #1111: a reported skip, never a silent one.
       - name: Skip non-Linux while non-Linux CI is switched off
         id: non_linux
         if: ${{ !startsWith(matrix.os, 'ubuntu') && vars.FORMAL_AI_NON_LINUX_CI != 'run' }}
@@ -499,10 +452,6 @@ jobs:
         if: ${{ steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         with:
           restore-only: 'true'
-      # Issue #1081: this is the ubuntu leg's first compiling step, worst
-      # measured 484s over 39 runs, and it had no deadline of its own -- only
-      # the job cap, whose expiry reports `cancelled` rather than `failure`
-      # (issue #977).
       - name: Check LiNo data integrity
         if: ${{ (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' && !matrix.shard }}
         env:
@@ -525,10 +474,6 @@ jobs:
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "self-AST census" \
             cargo test --manifest-path rust/Cargo.toml --test unit self_ast_census -- --nocapture
-      # Issue #1055: built once above; this only runs them. The binary comes
-      # too, because `CARGO_BIN_EXE_formal-ai` bakes `rust/target/release/formal-ai`
-      # into each executable at compile time -- 109 call sites across 36 test
-      # files spawn it -- so the path has to exist here as well.
       - name: Download test executables
         if: ${{ !cancelled() && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         uses: actions/download-artifact@v8
@@ -551,8 +496,8 @@ jobs:
           SHARD_INDEX: ${{ matrix.shard || 1 }}
           SHARD_TOTAL: ${{ matrix.shards }}
           # PR #1188: seconds a shard spends in other steps (shard 1 the LiNo and
-          # census gates, shard 2 the doc tests; run 37802763478), planned around.
-          SHARD_RESERVED_SECONDS: 1=330,2=110
+          # census gates; run 37802763478), planned around.
+          SHARD_RESERVED_SECONDS: 1=330
           RECORD_TEST_TIMES: ${{ vars.FORMAL_AI_RECORD_TEST_TIMES == 'true' }}
           TEST_WARN_RATIO_PERCENT: 70
         run: |
@@ -560,10 +505,6 @@ jobs:
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Test suite" \
             bash scripts/run-prebuilt-tests.sh
-      # PR #1188 (R1188-U9): the specification shards run the unit executable
-      # `build-artifacts` compiled once (release, all features) instead of each
-      # compiling its own, which took 220-362s per shard on run 37802763478 and
-      # 1201s cold on run 34095902681.
       - name: Run specification tests from the prebuilt executable
         if: ${{ !cancelled() && (matrix.test-suite == 'specification') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' }}
         env:
@@ -580,11 +521,61 @@ jobs:
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Specification test shard" \
             bash scripts/run-prebuilt-tests.sh
-      - name: Run doc tests
-        if: ${{ !cancelled() && (matrix.test-suite == 'full') && steps.ledger.outputs.already-green != 'true' && steps.non_linux.outputs.skip != 'true' && matrix.shard == 2 }}
+  doc-tests:
+    name: Default-feature documentation tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    needs: [detect-changes, base]
+    if: |
+      !cancelled() && (
+        github.event_name == 'workflow_dispatch' ||
+        needs.detect-changes.outputs.any-code-changed == 'true' ||
+        needs.detect-changes.outputs.rs-changed == 'true' ||
+        needs.detect-changes.outputs.toml-changed == 'true' ||
+        needs.detect-changes.outputs.pipeline-changed == 'true'
+      )
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-doc-tests
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    steps:
+      - name: Check out the actual pull request source
+        if: github.event_name == 'pull_request'
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Check out the triggering commit
+        if: github.event_name != 'pull_request'
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - name: Simulate fresh merge with base branch (PR only)
+        if: github.event_name == 'pull_request'
         env:
-          # Issue #1081: 28s worst measured; budgeted because an unbudgeted
-          # step is one the audit cannot see.
+          BASE_REF: ${{ github.base_ref }}
+          BASE_COMMIT: ${{ needs.base.outputs.commit }}
+        run: bash scripts/simulate-fresh-merge.sh
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/setup-sccache
+      - uses: ./.github/actions/cache-cargo-registry
+        with:
+          prefix: doc-tests-
+      - name: Prepare default-feature documentation dependencies
+        env:
+          TEST_BUDGET_SECONDS: 1080
+          TEST_WARN_RATIO_PERCENT: 70
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "Documentation dependency preparation" \
+            cargo build --manifest-path rust/Cargo.toml --profile test --lib
+      - name: Run doc tests
+        env:
           TEST_BUDGET_SECONDS: 120
           TEST_WARN_RATIO_PERCENT: 70
         run: |
@@ -594,9 +585,6 @@ jobs:
   macos-core-tests:
     name: macOS Core Tests
     needs: [detect-changes, base]
-    # Issue #1017: the heaviest lane here (one archive build plus sixteen Intel
-    # macOS slices at 10x the Linux rate) had no concurrency group, so a second
-    # push doubled it. `main` never cancels, keeping issue #977's rule intact.
     concurrency:
       group: check-${{ github.workflow }}-${{ github.ref }}-macos-core-tests
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -609,7 +597,6 @@ jobs:
         needs.detect-changes.outputs.pipeline-changed == 'true'
       )
     uses: ./.github/workflows/macos-core-tests.yml
-    # Issue #1017: archive and slices must merge the same base commit.
     with:
       base-commit: ${{ needs.base.outputs.commit }}
     permissions:
@@ -617,14 +604,11 @@ jobs:
   build:
     name: Build Package
     runs-on: ubuntu-latest
-    # Issue #1076 (D5): 11.6 min worst case (the run that missed its cargo
-    # cache) was 77.0% of 15; 20 puts it at 57.8%, inside the 70% share.
     timeout-minutes: 20
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-build
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     needs: [lint, test, macos-core-tests, build-artifacts]
-    # Issue #1111: `skipped` is off, not broken; `failure` still blocks.
     if: ${{ !cancelled() && needs.lint.result == 'success' && needs.test.result == 'success' && (needs.macos-core-tests.result == 'success' || needs.macos-core-tests.result == 'skipped') }}
     steps:
       - uses: actions/checkout@v7
@@ -638,7 +622,6 @@ jobs:
       - uses: ./.github/actions/cache-cargo-registry
         with:
           prefix: build-
-      # Issue #1055: the binary exists; packaging needs no rebuild.
       - uses: ./.github/actions/download-formal-ai-binary
       - name: Check package
         run: cargo package --manifest-path rust/Cargo.toml --locked -p formal-ai
@@ -647,9 +630,6 @@ jobs:
   server-parity:
     name: Server parity (JavaScript vs Rust)
     runs-on: ubuntu-latest
-    # R1015: the JavaScript server must answer the parity corpus exactly as the
-    # release binary does before that binary ships; it reuses the binary
-    # build-artifacts already built (issue #1055), so no extra compile.
     timeout-minutes: 15
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-server-parity
@@ -694,8 +674,6 @@ jobs:
       (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped') &&
       (needs.server-parity.result == 'success' || needs.server-parity.result == 'skipped')
     runs-on: ubuntu-latest
-    # Issue #1076 (D5): 50.6 min worst case was 84.4% of the old 60m cap, and
-    # the 45m GHCR budget below must fire before the cap. 90m puts it at 56.2%.
     timeout-minutes: 90
     outputs:
       pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
@@ -707,16 +685,6 @@ jobs:
       contents: write
       packages: write
     steps:
-      # This job and `manual-release` are two of the four checkouts in this
-      # repository that keep their credential (issue #1079); every other one
-      # sets `persist-credentials: false`. `scripts/version-and-commit.rs`
-      # below runs `git push` and `git push --tags` to publish the version
-      # bump, and `scripts/git-config.rs` sets only `user.name`/`user.email`,
-      # so that push authenticates with exactly the credential
-      # `persist-credentials: false` removes. This job requires
-      # `github.event_name == 'push' && github.ref == 'refs/heads/main'` and
-      # `manual-release` requires `workflow_dispatch`, so neither ever
-      # persists the credential on a pull request.
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
@@ -736,11 +704,6 @@ jobs:
           HAS_FRAGMENTS: ${{ steps.bump_type.outputs.has_fragments }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: rust-script scripts/check-release-needed.rs
-      # Issue #1085 (D3.5): the self-development floor no longer gates the
-      # release. It is measured and reported red-until-true by
-      # `.github/workflows/self-development-status.yml` on every push to
-      # `main`; a release is cut on CI correctness alone, and the ledger row
-      # it records says honestly what the model authored in it.
       - name: Collect changelog and bump version
         id: version
         if: steps.check.outputs.should_release == 'true' && steps.check.outputs.skip_bump != 'true'
@@ -758,9 +721,6 @@ jobs:
         id: current_version
         if: steps.check.outputs.should_release == 'true'
         run: rust-script scripts/get-version.rs
-      # Re-read publication state after the version command has synchronized
-      # with main. A rerun may have resumed a version prepared by the first
-      # attempt, so the pre-sync `check` output can describe the wrong version.
       - name: Recheck prepared release state
         id: prepared
         if: steps.check.outputs.should_release == 'true'
@@ -829,6 +789,7 @@ jobs:
         id: ghcr-meta
         uses: docker/metadata-action@v6
         with:
+          context: git
           images: ${{ env.GHCR_IMAGE }}
           tags: |
             type=raw,value=latest
@@ -891,6 +852,7 @@ jobs:
         id: docker-meta
         uses: docker/metadata-action@v6
         with:
+          context: git
           images: ${{ env.DOCKERHUB_IMAGE }}
           tags: |
             type=raw,value=latest
@@ -958,8 +920,6 @@ jobs:
       (needs.test-agent-cli-e2e.result == 'success' || needs.test-agent-cli-e2e.result == 'skipped') &&
       (needs.server-parity.result == 'success' || needs.server-parity.result == 'skipped')
     runs-on: ubuntu-latest
-    # Issue #1076 (D5): same shape as `auto-release` -- publishes the same
-    # image with the same 45m budget, so the same 90m backstop applies.
     timeout-minutes: 90
     outputs:
       pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
@@ -971,10 +931,6 @@ jobs:
       contents: write
       packages: write
     steps:
-      # No `persist-credentials: false` here, for the same reason as in
-      # `auto-release` above (issue #1079): `scripts/version-and-commit.rs`
-      # pushes the version bump and its tag, and nothing else in this job
-      # supplies auth for that push.
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
@@ -1046,6 +1002,7 @@ jobs:
         id: ghcr-meta
         uses: docker/metadata-action@v6
         with:
+          context: git
           images: ${{ env.GHCR_IMAGE }}
           tags: |
             type=raw,value=latest
@@ -1104,6 +1061,7 @@ jobs:
         id: docker-meta
         uses: docker/metadata-action@v6
         with:
+          context: git
           images: ${{ env.DOCKERHUB_IMAGE }}
           tags: |
             type=raw,value=latest
@@ -1154,12 +1112,6 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      # The last of this repository's four checkouts that keep their
-      # credential (issue #1079); every other one sets
-      # `persist-credentials: false`. `peter-evans/create-pull-request` below
-      # commits the generated fragment and pushes a new branch, and this job
-      # only runs on `workflow_dispatch`, so the credential exists solely for a
-      # manually triggered release and never on a pull request.
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
@@ -1199,10 +1151,6 @@ jobs:
         github.event_name == 'workflow_dispatch' ||
         needs.detect-changes.outputs.any-code-changed == 'true'
       )
-    # Issue #1138 moved the 83 lines of steps behind this call into
-    # `.github/workflows/e2e-local.yml`, returning this file to the 1500-line
-    # warning band; the reasoning is in that file's header. The cap moved with
-    # them, because a caller job declares none.
     uses: ./.github/workflows/e2e-local.yml
     permissions:
       contents: read
@@ -1220,23 +1168,11 @@ jobs:
         needs.detect-changes.outputs.toml-changed == 'true' ||
         needs.detect-changes.outputs.pipeline-changed == 'true'
       )
-    # Issue #1081 moved the 51 steps behind this call into their own file; the
-    # reasoning is in its header. The cap moved with them, because a caller job
-    # declares none.
     uses: ./.github/workflows/agent-cli-e2e.yml
-    # Issue #1107 (item 4): the full replay is 25 of the pipeline's minutes. On
-    # `main`, on a schedule and on manual dispatch it runs in full. Issue #1137
-    # also requires it before merge whenever the PR changes the agentic routing
-    # subsystem, because agent, OpenCode, Claude, and Codex expose different
-    # tools. Other feature branches keep the held-out generalization gates.
     with:
       full-replay: ${{ github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule' || (github.event_name == 'pull_request' && needs.detect-changes.outputs.agentic-routing-changed == 'true') }}
     permissions:
       contents: read
-  # Build the host binary once for the seven Box image legs. The audited run
-  # compiled the same Linux binary seven times and reported 1,131 cache write
-  # errors across those legs; the available logs do not include backend error
-  # details, so opt-in diagnostics live in the shared sccache setup action.
   build-artifacts:
     name: Build binaries and tests
     concurrency:
@@ -1265,7 +1201,6 @@ jobs:
       - uses: ./.github/actions/cache-cargo-registry
         with:
           prefix: artifacts-
-      # Issue #1055: one compile per platform; consumers download the results.
       - name: Build binaries and test executables
         run: cargo test --manifest-path rust/Cargo.toml --release --no-run --bins --tests --all-features
       - name: Collect the build artifacts
@@ -1294,10 +1229,6 @@ jobs:
           name: formal-ai-test-executables
           path: dist/tests
           retention-days: 1
-  # Issue #932 (follow-up of PR #119): a generated project for a language is
-  # built and run inside the link-foundation/box image that matches that
-  # language, using the language's own init commands. The matrix keeps each
-  # image on its own runner, so one leg only pulls the toolchain it needs.
   box-language-projects:
     name: Box Image Projects (${{ matrix.language }})
     concurrency:
@@ -1332,7 +1263,6 @@ jobs:
           paths: >-
             rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock experiments/box_language_projects scripts .github/workflows/release.yml .github/actions
           enabled: ${{ github.ref != 'refs/heads/main' }}
-      # A box unpacks to 4-8 GB, more than a stock runner has spare after setup.
       - name: Free up runner disk space
         if: ${{ steps.ledger.outputs.already-green != 'true' }}
         run: bash scripts/free-runner-disk.sh
@@ -1367,7 +1297,6 @@ jobs:
         (github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.auto-release.result == 'success') ||
         (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && github.ref == 'refs/heads/main' && needs.manual-release.result == 'success')
       )
-    # The bundle and cargo doc build under their own 30-minute cap (R1188-U9).
     uses: ./.github/workflows/pages-artifact.yml
     with:
       sha: ${{ needs.auto-release.outputs.pages_sha || needs.manual-release.outputs.pages_sha || github.sha }}
@@ -1382,7 +1311,6 @@ jobs:
     outputs:
       page_url: ${{ steps.deployment.outputs.page_url }}
       pages_sha: ${{ needs.build-pages.outputs.pages_sha }}
-    # A writing job states its own dispatch guard (R1187-3).
     if: |
       !cancelled() &&
       needs.build-pages.result == 'success' && (
@@ -1390,7 +1318,6 @@ jobs:
         (github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' && github.ref == 'refs/heads/main')
       )
     runs-on: ubuntu-latest
-    # Covers the Pages deployment queue, whose wait the action caps at 10 minutes.
     timeout-minutes: 15
     permissions:
       contents: read
