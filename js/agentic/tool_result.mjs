@@ -45,6 +45,12 @@ export function stepOutcome(raw) {
   return looksLikeError(result.payload) ? StepOutcome.Failed : StepOutcome.Unreported;
 }
 
+/** Mirrors `fn observed_digest_matches`. */
+export function observedDigestMatches(raw, expected) {
+  return stepOutcome(raw) !== StepOutcome.Failed
+    && splitWhitespace(observedPayload(raw) ?? '')[0] === expected;
+}
+
 /** Mirrors `fn failed_verification`. */
 export function failedVerification(runOutputs, verificationCommand, prompt) {
   const output = runOutputs[runOutputs.length - 1];

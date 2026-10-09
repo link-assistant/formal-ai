@@ -28,6 +28,10 @@ struct Run {
 /// Run `prompt` over one file `name` holding `source`; the tools act on it the
 /// way the Agent CLI's do.
 fn drive(prompt: &str, source: &str, name: &str) -> Run {
+    drive_receipt(prompt, source, name, str::to_owned)
+}
+
+fn drive_receipt(prompt: &str, source: &str, name: &str, receipt: fn(&str) -> String) -> Run {
     let mut file = source.to_owned();
     let mut messages = vec![ChatMessage::user(prompt)];
     let mut tools = Vec::new();
@@ -59,7 +63,7 @@ fn drive(prompt: &str, source: &str, name: &str) -> Run {
                     .clone_into(&mut file);
                 String::new()
             }
-            "bash" => format!("{}  {name}\n", sha256_hex(file.as_bytes())),
+            "bash" => receipt(&format!("{}  {name}\n", sha256_hex(file.as_bytes()))),
             _ => String::new(),
         };
         tools.push(call.tool.clone());
@@ -327,4 +331,28 @@ fn a_computed_change_never_leaves_a_fragment_of_the_file() {
         drive("Delete lines 1-9 from f.txt.", &mostly, "f.txt").file,
         "keep\n"
     );
+}
+
+#[test]
+fn workspace_digest_receipts_preserve_unicode_bytes_and_veto_failed_status() {
+    let receipts: [fn(&str) -> String; 4] = [
+        str::to_owned,
+        |output| serde_json::json!({"stdout": output, "exit_code": 0}).to_string(),
+        |output| format!("Output: {output}\nExit Code: 0"),
+        |output| serde_json::json!({"stdout": output, "exit_code": 1}).to_string(),
+    ];
+    for (index, receipt) in receipts.into_iter().enumerate() {
+        let run = drive_receipt(
+            "In f.txt replace «old» with «new»",
+            "header\n报告 old\nfooter\n",
+            "f.txt",
+            receipt,
+        );
+        assert_eq!(run.file, "header\n报告 new\nfooter\n");
+        assert_eq!(run.tools, ["read", "edit", "bash"]);
+        assert_eq!(
+            run.answer.unwrap().contains("Verification failed"),
+            index == 3
+        );
+    }
 }

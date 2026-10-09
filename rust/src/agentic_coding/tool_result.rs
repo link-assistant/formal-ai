@@ -59,6 +59,14 @@ pub fn step_outcome(raw: &str) -> StepOutcome {
     }
 }
 
+pub(super) fn observed_digest_matches(raw: &str, expected: &str) -> bool {
+    step_outcome(raw) != StepOutcome::Failed
+        && observed_payload(raw)
+            .as_deref()
+            .and_then(|payload| payload.split_whitespace().next())
+            == Some(expected)
+}
+
 /// The workspace's veto over a completion claim (issue #905).
 ///
 /// "Completed … and verified it" is a claim about the workspace, so the

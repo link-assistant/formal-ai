@@ -982,7 +982,7 @@ pub(super) fn plan_insert_sequence_step(
             return Some(plan_one(tool, json!({"command": command}).to_string()));
         };
         let digest = crate::source_fetch::sha256_hex(content.as_bytes());
-        if observed.split_whitespace().next() != Some(digest.as_str()) {
+        if !super::tool_result::observed_digest_matches(&observed, &digest) {
             return Some(AgenticPlan::Final(render_seeded_outcome(
                 "coding_workspace_verification_failed",
                 task,

@@ -944,7 +944,7 @@ pub(super) fn plan_digest_verification(
         return Some(plan_one(tool, json!({"command": command}).to_string()));
     };
     let digest = crate::source_fetch::sha256_hex(change.expected.as_bytes());
-    if observed.split_whitespace().next() != Some(digest.as_str()) {
+    if !super::tool_result::observed_digest_matches(&observed, &digest) {
         return Some(AgenticPlan::Final(render_seeded_outcome(
             "coding_workspace_verification_failed",
             task,
