@@ -11,7 +11,7 @@ import {executeBatches} from './lib/coverage-execution.mjs';
 import {readTestDurations} from './lib/ci-speed-durations.mjs';
 import {DEFAULT_SECONDS} from './lib/ci-speed-shards.mjs';
 import {planNativeResponseCaptures} from './lib/native-response-scheduling.mjs';
-import {collectNativeResponseRecords} from './lib/native-response-capture.mjs';
+import {collectNativeResponseRecords,createRawResponseStreams} from './lib/native-response-capture.mjs';
 import {readNativeTestModuleGraph,bindOriginalSourceCase} from './lib/native-test-module-graph.mjs';
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 /** Run unchanged, uniquely listed original programs. Observed answers never update expected test answers. */
@@ -37,14 +37,14 @@ export async function captureOriginalTests({cwd,directory,binary,outputDirectory
  const observations=[],launchOrder=[];
  for(let index=0;index<ordered.length;index++){
   const c=ordered[index],folder=join(outputDirectory,String(index).padStart(3,'0'));mkdirSync(folder);
-  const stdout=[],stderr=[];
+  const streams=createRawResponseStreams(folder);
   const execution=await executeBatches([c.batch],executables,{
    cwd,threads:1,concurrency:1,nocapture:true,
    env:{...process.env,FORMAL_AI_NATIVE_RESPONSE_CAPTURE_DIR:folder},
    onStart:batch=>launchOrder.push({dispatchIndex:index,id:c.id,target:batch.target,
     caller:batch.names[0],weight:batch.weight}),
-   onStdout:b=>stdout.push(b),onStderr:b=>stderr.push(b)});
-  const stdoutBytes=Buffer.concat(stdout),stderrBytes=Buffer.concat(stderr);writeFileSync(join(folder,'stdout.bin'),stdoutBytes);writeFileSync(join(folder,'stderr.bin'),stderrBytes);
+   onStdout:streams.onStdout,onStderr:streams.onStderr});
+  const {stdout:stdoutBytes,stderr:stderrBytes}=streams.read();
   const actual=execution.batches[0],file=join(folder,'native-'+actual.processId+'.jsonl');let captured=null,error=null;
   try{assert.doesNotMatch(stderrBytes.toString('utf8'),/^\[native-response-observation\] failed to retain actual response:/mu,'actual observer reported a persistence error');captured=collectNativeResponseRecords(readFileSync(file),{caller:c.caller,processId:actual.processId,execution:actual,identity:receipt.identity,expectedIdentity});}
   catch(failure){error=failure.message;}

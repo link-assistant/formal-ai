@@ -1,0 +1,3 @@
+Native whole-answer capture now appends each observed stdout and stderr byte chunk to its isolated case files before waiting for process completion. Interrupted capture controllers retain already-observed bytes; the unchanged completion, qualified caller and independent source/build checks still govern whole-answer certification.
+
+The unchanged 34 portable capture/scheduling controls and two new binary-stream/interrupted-controller controls pass. No native compilation or original native tests ran locally; actual native capture remains a CI acceptance step. Formal AI applied reviewed source; the broad implementation request still has no independently verified autonomous implementation.

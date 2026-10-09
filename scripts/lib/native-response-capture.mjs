@@ -1,5 +1,15 @@
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
+import {appendFileSync,readFileSync,writeFileSync} from 'node:fs';
+import {join} from 'node:path';
+/** Retain observed bytes immediately; stream persistence alone never certifies completion. */
+export function createRawResponseStreams(directory) {
+ const stdoutPath=join(directory,'stdout.bin'),stderrPath=join(directory,'stderr.bin');
+ writeFileSync(stdoutPath,Buffer.alloc(0));writeFileSync(stderrPath,Buffer.alloc(0));
+ const append=(path,bytes)=>{assert.ok(Buffer.isBuffer(bytes)||bytes instanceof Uint8Array,'raw byte chunk required');appendFileSync(path,bytes);};
+ return {stdoutPath,stderrPath,onStdout:bytes=>append(stdoutPath,bytes),onStderr:bytes=>append(stderrPath,bytes),
+  read:()=>({stdout:readFileSync(stdoutPath),stderr:readFileSync(stderrPath)})};
+}
 const BOUNDARIES=new Set(['UniversalSolver::solve_with_history_probability_store_and_intent_cache','FormalAiEngine::answer_with_memory']);
 export function collectNativeResponseRecords(bytes,{caller,processId,execution,identity,expectedIdentity}) {
  assert.ok(Buffer.isBuffer(bytes));assert.ok(bytes.length>0,'missing native observations');
