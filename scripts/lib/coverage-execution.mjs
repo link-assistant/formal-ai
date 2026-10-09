@@ -90,22 +90,23 @@ export async function executeBatches(batches, executables, options = {}) {
       const outcome = await new Promise((resolve) => {
         let pending = '';
         const decoder = new StringDecoder('utf8');
-        const child = spawn(executable, ['--exact', '--color', 'never', '--test-threads', String(threads), ...batch.names], {
+        const child = spawn(executable, ['--exact', '--color', 'never', '--test-threads', String(threads), ...(options.nocapture ? ['--nocapture'] : []), ...batch.names], {
           cwd: options.cwd, env: options.env ?? process.env, stdio: ['ignore', 'pipe', 'pipe'],
         });
         child.stdout.on('data', (chunk) => {
           options.onOutput?.(chunk);
+          options.onStdout?.(chunk);
           pending += decoder.write(chunk);
           const lines = pending.split('\n');
           pending = lines.pop();
           for (const line of lines) collector.line(line.replace(/\r$/, ''));
         });
-        child.stderr.on('data', (chunk) => options.onOutput?.(chunk));
-        child.on('error', (error) => resolve({ exitCode: null, signal: null, error: error.message }));
+        child.stderr.on('data', (chunk) => { options.onOutput?.(chunk); options.onStderr?.(chunk); });
+        child.on('error', (error) => resolve({ processId: child.pid ?? null, exitCode: null, signal: null, error: error.message }));
         child.on('close', (exitCode, signal) => {
           pending += decoder.end();
           if (pending) collector.line(pending.replace(/\r$/, ''));
-          resolve({ exitCode, signal });
+          resolve({ processId: child.pid ?? null, exitCode, signal });
         });
       });
       const observed = collector.finish();

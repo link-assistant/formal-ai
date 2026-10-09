@@ -74,12 +74,22 @@ impl FormalAiEngine {
         prompt: &str,
         memory_events: &[crate::memory::MemoryEvent],
     ) -> SymbolicAnswer {
-        crate::dreaming_application::solve_with_standing_requirements(
-            &crate::solver::UniversalSolver::default(),
+        let solver = crate::solver::UniversalSolver::default();
+        let answer = crate::dreaming_application::solve_with_standing_requirements(
+            &solver,
             prompt,
             &[],
             memory_events,
-        )
+        );
+        crate::dialog_log::record_native_response_if_enabled(
+            "FormalAiEngine::answer_with_memory",
+            prompt,
+            &[],
+            &solver.config,
+            || serde_json::json!({"memory-links": crate::memory::export_links_notation(memory_events)}),
+            &answer,
+        );
+        answer
     }
 }
 

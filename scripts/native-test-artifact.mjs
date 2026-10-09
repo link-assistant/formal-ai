@@ -6,12 +6,13 @@ import {readFileSync,writeFileSync,chmodSync} from 'node:fs';
 import {execFileSync,spawnSync} from 'node:child_process';
 import {resolve,join} from 'node:path';
 import {pathToFileURL} from 'node:url';
+import {augmentNativeTestIdentity} from './lib/native-response-identity.mjs';
 const RECEIPT='native-build-receipt.json';
 const TARGETS=['unit','integration','source'];
 const hash=path=>createHash('sha256').update(readFileSync(path)).digest('hex');
 export function buildIdentity(cwd,profile,features){
  const git=args=>execFileSync('git',args,{cwd,encoding:'utf8'}).trim();
- return {'source-commit':git(['rev-parse','HEAD']),'source-tree':git(['rev-parse','HEAD^{tree}']),'cargo-lock-sha256':hash(join(cwd,'rust/Cargo.lock')),platform:process.platform,architecture:process.arch,'rust-flags':process.env.RUSTFLAGS??'',compiler:execFileSync('rustc',['-vV'],{cwd,encoding:'utf8'}).trim(),profile,features};
+ return augmentNativeTestIdentity(cwd,{'source-commit':git(['rev-parse','HEAD']),'source-tree':git(['rev-parse','HEAD^{tree}']),'cargo-lock-sha256':hash(join(cwd,'rust/Cargo.lock')),platform:process.platform,architecture:process.arch,'rust-flags':process.env.RUSTFLAGS??'',compiler:execFileSync('rustc',['-vV'],{cwd,encoding:'utf8'}).trim(),profile,features});
 }
 export function writeReceipt(directory,identity,binary=resolve(directory,'../formal-ai')){
  const files=Object.fromEntries(TARGETS.map(target=>[target,hash(join(directory,target))]));

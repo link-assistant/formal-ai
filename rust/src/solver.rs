@@ -856,6 +856,19 @@ impl UniversalSolver {
         // general loop (`metaResolveImpasse`, js/worker/formal_ai_worker_solve.js).
         crate::meta_reasoner::resolve_impasse(prompt, &mut answer, &mut log);
         crate::derivation::finalize_answer(&mut answer, &mut log);
+        crate::dialog_log::record_native_response_if_enabled(
+            "UniversalSolver::solve_with_history_probability_store_and_intent_cache",
+            prompt,
+            history,
+            &self.config,
+            || {
+                serde_json::json!({
+                    "probability-store": probability_store.to_links_notation(),
+                    "intent-cache-debug": format!("{intent_cache:?}")
+                })
+            },
+            &answer,
+        );
         answer
     }
 }

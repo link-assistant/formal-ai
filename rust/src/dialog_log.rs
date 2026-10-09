@@ -113,6 +113,55 @@ pub(crate) fn trace_request_if_enabled(method: &str, path: &str, body: &str) {
     }
 }
 
+/// Retain actual native library responses only under an explicit capture opt-in.
+/// Observation is passive: logging failure never changes the returned answer.
+pub(crate) fn record_native_response_if_enabled(
+    entrypoint: &str,
+    prompt: &str,
+    history: &[crate::solver::ConversationTurn],
+    config: &crate::solver::SolverConfig,
+    context: impl FnOnce() -> Value,
+    answer: &crate::engine::SymbolicAnswer,
+) {
+    static RESPONSE_SEQUENCE: AtomicU64 = AtomicU64::new(1);
+    let Some(directory) = std::env::var_os("FORMAL_AI_NATIVE_RESPONSE_CAPTURE_DIR")
+        .filter(|value| !value.is_empty())
+        .map(PathBuf::from)
+    else {
+        return;
+    };
+    let thread = std::thread::current();
+    let record = serde_json::json!({
+        "schema": "native-response-observation/v1",
+        "entrypoint": entrypoint,
+        "process-id": std::process::id(),
+        "sequence": RESPONSE_SEQUENCE.fetch_add(1, Ordering::Relaxed),
+        "caller-thread": thread.name(),
+        "prompt": prompt,
+        "history": history.iter().map(|turn| serde_json::json!({
+            "role": turn.role.slug(), "content": turn.content
+        })).collect::<Vec<_>>(),
+        "config-debug": format!("{config:?}"),
+        "context": context(),
+        "response": answer,
+    });
+    let path = directory.join(format!("native-{}.jsonl", std::process::id()));
+    let write = || -> io::Result<()> {
+        fs::create_dir_all(&directory)?;
+        let _guard = LOG_WRITE_LOCK
+            .get_or_init(|| Mutex::new(()))
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        let mut file = OpenOptions::new().create(true).append(true).open(&path)?;
+        serde_json::to_writer(&mut file, &record).map_err(io::Error::other)?;
+        file.write_all(b"\n")?;
+        file.flush()
+    };
+    if let Err(error) = write() {
+        eprintln!("[native-response-observation] failed to retain actual response: {error}");
+    }
+}
+
 /// One complete server exchange, stored as one JSONL record.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct DialogExchangeLog {
