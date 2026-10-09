@@ -44,12 +44,16 @@ async function finalAnswer(messages, tools) {
 }
 
 /**
- * Drive a source-creation request until it writes `path`, reading nothing
- * along the way, and return the written bytes and the observing command.
+ * Drive a source-creation request until it writes `path`, reading no unrelated file
+ * beyond its absent target preimage, and return the written bytes and observing command.
  */
 async function generatedSource(task, path) {
   const tools = ['read_file', 'write_file', 'run_command'];
   const messages = [user(task)];
+  const read = onlyCall(await planner.planChatStep(messages, tools));
+  assert.equal(read.tool, 'read_file', task);
+  assert.equal(JSON.parse(read.arguments).path, path, task);
+  pushResult(messages, 'preimage', read, 'Error: ENOENT: no such file or directory');
   const write = onlyCall(await planner.planChatStep(messages, tools));
   assert.equal(write.tool, 'write_file', task);
   const written = JSON.parse(write.arguments);

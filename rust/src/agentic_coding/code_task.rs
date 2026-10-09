@@ -8,6 +8,8 @@
 //! command.
 
 use serde_json::json;
+mod target_guard;
+use super::final_result::FinalResult;
 
 use super::code_artifact::latest_result;
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
@@ -32,6 +34,7 @@ pub(super) fn plan_generated_source_step(
     task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let task = unwrap_transport_quotes(task);
     // Issue #1096: "In the file src/x.rs, replace "A" with "B" ... keep it valid
@@ -77,10 +80,14 @@ pub(super) fn plan_generated_source_step(
             )?),
         });
     }
-    Some(plan_one(
-        write_tool,
-        write_arguments(&artifact.path, &artifact.content),
-    ))
+    target_guard::guarded_source_step(task, &artifact, current_turn, tool_names, result).or_else(
+        || {
+            Some(plan_one(
+                write_tool,
+                write_arguments(&artifact.path, &artifact.content),
+            ))
+        },
+    )
 }
 
 // These are seed-template placeholders, not Rust formatting arguments.
@@ -433,9 +440,9 @@ fn numeric_literals(text: &str) -> Vec<String> {
     while index < chars.len() {
         let (start, character) = chars[index];
         if !character.is_ascii_digit()
-            || index
-                .checked_sub(1)
-                .is_some_and(|prior| chars[prior].1.is_ascii_alphabetic())
+            || index.checked_sub(1).is_some_and(|prior| {
+                chars[prior].1.is_ascii_alphanumeric() || chars[prior].1 == '_'
+            })
         {
             index += 1;
             continue;
@@ -446,7 +453,9 @@ fn numeric_literals(text: &str) -> Vec<String> {
         {
             end_index += 1;
         }
-        if end_index < chars.len() && chars[end_index].1.is_ascii_alphabetic() {
+        if end_index < chars.len()
+            && (chars[end_index].1.is_ascii_alphanumeric() || chars[end_index].1 == '_')
+        {
             index = end_index + 1;
             continue;
         }

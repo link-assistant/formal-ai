@@ -43,7 +43,7 @@ meanings
     effect "the requested operation is bound to return"
     unit "not applicable"
     example "return"
-    lexeme en return returns
+    lexeme en return returns returning
     lexeme ru возвращает вернуть
     lexeme hi लौटाता लौटाए
     lexeme zh 返回

@@ -147,7 +147,11 @@ export function explicitPassthroughCommand(task) {
   const command = prefixedShellCommand(prompt, vocab);
   if (command === null) return null;
   const first = normalizeCommandWord(firstWord(command) ?? '');
-  if (intentShellCommand(prompt, shellIntentVocabulary()) !== null && !vocab.shell_tokens.includes(first)) return null;
+  const semantic = asksForDirectoryListing(prompt) ? 'ls' : intentShellCommand(prompt, shellIntentVocabulary());
+  if ((semantic !== null || webSearchQueryFor(prompt) !== null) && !vocab.shell_tokens.includes(first)) return null;
+  if (semantic !== null && normalizeCommandWord(firstWord(semantic) ?? '') === first
+    && !SHELL_QUOTING_AND_METACHARACTERS.some((character) => command.includes(character))
+    && splitWhitespace(command).slice(1).some(isProseWord)) return semantic;
   return shellQuotesPaired(command) ? command : null;
 }
 

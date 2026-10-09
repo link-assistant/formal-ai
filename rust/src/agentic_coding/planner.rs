@@ -410,7 +410,7 @@ pub(super) fn plan_settled_routes(
     // A source-code description is not literal file content. Lower bounded
     // seed-backed source tasks before the broad literal-write parser so coding
     // requests produce executable bytes and verify those exact bytes.
-    if let Some(plan) = code_task::plan_generated_source_step(task, messages, tool_names) {
+    if let Some(plan) = code_task::plan_generated_source_step(task, messages, tool_names, result) {
         return Some(plan);
     }
     if let Some(plan) = structured_edit::plan_structured_edit_step(task, messages, tool_names) {

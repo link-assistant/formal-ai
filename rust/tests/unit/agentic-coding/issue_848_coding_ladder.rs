@@ -784,3 +784,34 @@ fn push_result(
         result.to_owned(),
     ));
 }
+
+#[test]
+fn generated_source_reads_existing_target_before_replacement() {
+    let task = "Create rust/src/held_out.rs containing a public Rust function named held_out_value returning 29.";
+    let mut messages = vec![ChatMessage::user(task)];
+    let Some(AgenticPlan::ToolCalls(calls)) =
+        plan_chat_step(&messages, &["read_file", "write_file"])
+    else {
+        panic!("preimage must be observed");
+    };
+    assert_eq!(calls.len(), 1);
+    assert_eq!(calls[0].tool, "read_file");
+    let arguments: serde_json::Value =
+        serde_json::from_str(&calls[0].arguments).expect("read arguments");
+    assert_eq!(arguments["path"], "rust/src/held_out.rs");
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        "preimage",
+        &calls[0].tool,
+        &calls[0].arguments,
+    )]));
+    messages.push(ChatMessage::tool_result(
+        "preimage",
+        "read_file",
+        "pub fn existing() {}\n",
+    ));
+    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &["read_file", "write_file"])
+    else {
+        panic!("existing source must stay unchanged");
+    };
+    assert!(answer.contains("unchanged"));
+}

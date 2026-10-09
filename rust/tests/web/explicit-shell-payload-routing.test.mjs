@@ -44,3 +44,19 @@ test('unpaired shell quotes retain the request fault decline', async () => {
   assert.equal(plan.kind, 'final');
   assert.match(plan.answer, /quote|quoted|unpaired/iu);
 });
+
+test('a backtick inside a quoted JavaScript string is literal shell data', async () => {
+  const output='odd '+String.fromCharCode(96)+' literal';
+  const code='process.stdout.write('+JSON.stringify(output)+')';
+  const command="node -e '"+code+"'";
+  const plan=await planChatStep([{role:'user',content:'Run '+command}],['bash']);
+  assert.equal(plan.calls[0].tool,'bash');assert.equal(JSON.parse(plan.calls[0].arguments).command,command);
+  const {execFileSync}=await import('node:child_process');assert.equal(execFileSync('/bin/sh',['-c',command],{encoding:'utf8'}),output);
+});
+test('semantic explanatory listing suffix and web search use their actual capability', () => {
+  assert.equal(explicitPassthroughCommand('Run ls to list files here'),'ls');
+  assert.equal(explicitPassthroughCommand('выполни веб поиск rust ownership'),null);
+  const code='console.log('+JSON.stringify('выполни веб поиск rust ownership')+')';
+  const opaque="node -e '"+code+"'";
+  assert.equal(explicitPassthroughCommand('Run '+opaque),opaque);
+});
