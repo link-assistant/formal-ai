@@ -94,7 +94,9 @@ test('missing input is a failed read, never an empty source or a writing fallbac
 });
 
 test('permission errors on the destination retain typed failure rather than absence', async () => {
-  const messages = [{ role: 'user', content: prompt }, ...receipt('nested/output.mjs', JSON.stringify({ is_error: true, error: 'EACCES denied' }))];
+  const denied = receipt('nested/output.mjs', JSON.stringify({ is_error: true, error: 'EACCES denied' }));
+  denied[1].is_error = true; // The modeled provider denied this read; the JSON body cannot declare it.
+  const messages = [{ role: 'user', content: prompt }, ...denied];
   const plan = await planModuleFunctionStep(prompt, messages, ['read', 'write']);
   assert.equal(plan.result.disposition, FinalDisposition.Failure);
   assert.equal(plan.result.discovery.reason, 'ReadFailed');

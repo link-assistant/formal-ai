@@ -2,6 +2,12 @@
 
 mod audit;
 mod exact;
+mod records;
+mod source;
+use records::{
+    ToolResultRecord, grep_result_for_path, read_result_for_path, run_record_for_command,
+    tool_result_records,
+};
 mod supplied;
 
 use audit::file_read_final_answer;
@@ -13,9 +19,10 @@ use serde_json::json;
 use super::file_path_shape::{is_dotted_number, peel_sentence_punctuation};
 use super::general_planner::has_file_write_intent;
 use super::planner::{AgenticPlan, Capability, PlannedToolCall, tool_capability};
+use super::progress::Progress;
 use super::shell_command_policy::sentences;
 use super::write_request;
-use crate::protocol::{ChatMessage, ToolCall};
+use crate::protocol::ChatMessage;
 use crate::seed;
 
 const AUDIT_READ_LINE_LIMIT: usize = 160;
@@ -74,12 +81,7 @@ struct FileReadTools<'a> {
     read: Option<&'a str>,
     run: Option<&'a str>,
     grep: Option<&'a str>,
-}
-
-struct ToolResultRecord {
-    capability: Option<Capability>,
-    arguments: serde_json::Value,
-    content: String,
+    progress: &'a Progress,
 }
 
 /// The issue-#627 file-reading recipe: direct filename requests use an advertised
@@ -94,10 +96,12 @@ pub(super) fn plan_file_read_step(
     let read_tool = tool_for(tool_names, Capability::Read);
     let run_tool = tool_for(tool_names, Capability::Run);
     let grep_tool = tool_for(tool_names, Capability::Grep);
+    let progress = Progress::scan(messages);
     let tools = FileReadTools {
         read: read_tool,
         run: run_tool,
         grep: grep_tool,
+        progress: &progress,
     };
     let records = tool_result_records(messages);
     let request = crate::protocol::latest_user_request(messages).unwrap_or_default();
@@ -160,36 +164,29 @@ fn plan_direct_file_read(
     }
     let read_command = read_command_for(path, mode);
     let exact_run = exact::exact_line_key(request).is_some() && run_tool.is_some();
-    let recorded = if exact_run {
-        run_record_for_command(records, &read_command).map(|raw| {
-            (
-                read_command.as_str(),
-                raw,
-                super::tool_result::strip_transport_envelope(raw),
-            )
-        })
-    } else {
-        read_result_for_path(records, path)
-            .map(|raw| (path, raw, raw.to_owned()))
-            .or_else(|| {
-                run_record_for_command(records, &read_command).map(|raw| {
-                    (
-                        read_command.as_str(),
-                        raw,
-                        super::tool_result::strip_transport_envelope(raw),
-                    )
-                })
-            })
-    };
+    if !exact_run
+        && let Some(answer) = source::source_read_answer(
+            &[path.to_owned()],
+            mode,
+            records,
+            tools.progress,
+            request,
+            result,
+        )
+    {
+        return answer;
+    }
+    let recorded = run_record_for_command(records, &read_command).map(|raw| {
+        (
+            read_command.as_str(),
+            raw,
+            super::tool_result::strip_transport_envelope(raw),
+        )
+    });
     if let Some((label, raw, content)) = recorded {
         if let Some(failure) = failed_step_answer(label, raw, request) {
             return AgenticPlan::Final(failure);
         }
-        let content = if label == path {
-            super::code_artifact::source_from_read_result(&content)
-        } else {
-            content
-        };
         return record(
             AgenticPlan::Final(file_read_final_answer(
                 mode,
@@ -260,19 +257,10 @@ fn plan_list_then_read(
         return AgenticPlan::Final(format!("No files were listed in `{directory}`."));
     }
 
-    if let Some(contents) = read_results_for_paths(records, &paths) {
-        if let Some(failure) = contents
-            .iter()
-            .find_map(|(path, raw)| failed_step_answer(path, raw, request))
-        {
-            return AgenticPlan::Final(failure);
-        }
-        return record(
-            AgenticPlan::Final(file_read_final_answer(mode, &contents, request)),
-            FinalDisposition::Finding,
-            "file_read_observed",
-            result,
-        );
+    if let Some(answer) =
+        source::source_read_answer(&paths, mode, records, tools.progress, request, result)
+    {
+        return answer;
     }
 
     if selection == FileSelection::All {
@@ -622,131 +610,6 @@ fn directory_for_list_read(prompt: &str) -> Option<String> {
         }
     }
     None
-}
-
-fn tool_result_records(messages: &[ChatMessage]) -> Vec<ToolResultRecord> {
-    // Only results produced *within the current user turn* ground a read. A
-    // client loops tool calls without a new user message, so the current turn is
-    // everything after the last user message; a `cat 1.txt` result from an
-    // earlier turn must never be replayed as the answer to a later `read 1.txt`
-    // (issue #755 — read/list determinism). Without this bound the recipe short
-    // -circuits on a stale, unrelated result and skips the fresh read entirely.
-    let turn_start = messages
-        .iter()
-        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
-        .map_or(0, |index| index + 1);
-    let mut records = Vec::new();
-    for (index, message) in messages.iter().enumerate().skip(turn_start) {
-        if !message.role.eq_ignore_ascii_case("tool") {
-            continue;
-        }
-        let (capability, arguments) =
-            tool_result_call(messages, index).map_or((None, serde_json::Value::Null), |call| {
-                (
-                    tool_capability(&call.function.name),
-                    serde_json::from_str(&call.function.arguments)
-                        .unwrap_or(serde_json::Value::Null),
-                )
-            });
-        records.push(ToolResultRecord {
-            capability,
-            arguments,
-            content: message.content.plain_text(),
-        });
-    }
-    records
-}
-
-fn tool_result_call(messages: &[ChatMessage], index: usize) -> Option<&ToolCall> {
-    let call_id = messages[index].tool_call_id.as_ref()?;
-    messages[..index]
-        .iter()
-        .flat_map(|prior| prior.tool_calls.iter())
-        .find(|call| &call.id == call_id)
-}
-
-fn read_result_for_path<'a>(records: &'a [ToolResultRecord], path: &str) -> Option<&'a str> {
-    records
-        .iter()
-        .find(|record| {
-            record.capability == Some(Capability::Read)
-                && path_argument(&record.arguments)
-                    .is_some_and(|recorded| same_path(&recorded, path))
-        })
-        .map(|record| record.content.as_str())
-}
-
-fn grep_result_for_path<'a>(
-    records: &'a [ToolResultRecord],
-    path: &str,
-    pattern: &str,
-) -> Option<&'a str> {
-    records
-        .iter()
-        .find(|record| {
-            record.capability == Some(Capability::Grep)
-                && path_argument(&record.arguments)
-                    .is_some_and(|recorded| same_path(&recorded, path))
-                && record
-                    .arguments
-                    .get("pattern")
-                    .and_then(serde_json::Value::as_str)
-                    == Some(pattern)
-        })
-        .map(|record| record.content.as_str())
-}
-
-/// Whether a recorded path argument denotes the path the planner asked for.
-///
-/// The transcript holds the argument the *client's* schema accepted, not the one
-/// the planner planned with: [`crate::protocol_responses`] rewrites `path` to
-/// Gemini's `absolute_path` and absolutises it, so a recorded
-/// `/work/alpha.txt` has to answer a planned `alpha.txt`.
-fn same_path(recorded: &str, planned: &str) -> bool {
-    if recorded == planned {
-        return true;
-    }
-    let planned = planned.trim_start_matches("./");
-    recorded
-        .trim_start_matches("./")
-        .strip_suffix(planned)
-        .is_some_and(|prefix| prefix.is_empty() || prefix.ends_with('/'))
-}
-
-fn read_results_for_paths(
-    records: &[ToolResultRecord],
-    paths: &[String],
-) -> Option<Vec<(String, String)>> {
-    let mut out = Vec::with_capacity(paths.len());
-    for path in paths {
-        let content = read_result_for_path(records, path)?;
-        out.push((path.clone(), content.to_owned()));
-    }
-    Some(out)
-}
-
-/// The recorded run result for `command`, exactly as the harness reported it.
-///
-/// Callers that only want the command's own text strip the transport envelope
-/// themselves; callers that have to judge whether the step *succeeded* need the
-/// envelope intact, because the `Exit Code:` field is what it carries (rung
-/// `R916-01`).
-fn run_record_for_command<'a>(records: &'a [ToolResultRecord], command: &str) -> Option<&'a str> {
-    records
-        .iter()
-        .find(|record| {
-            record.capability == Some(Capability::Run)
-                && super::tool_result::command_argument(&record.arguments.to_string()).as_deref()
-                    == Some(command)
-        })
-        .map(|record| record.content.as_str())
-}
-
-fn path_argument(arguments: &serde_json::Value) -> Option<String> {
-    ["filePath", "path", "file_path", "absolute_path"]
-        .iter()
-        .find_map(|key| arguments.get(*key).and_then(serde_json::Value::as_str))
-        .map(ToOwned::to_owned)
 }
 
 fn read_arguments(path: &str, mode: &FileReadMode) -> String {

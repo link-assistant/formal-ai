@@ -77,3 +77,32 @@ fn optional_read_metadata_keeps_source_content_and_protocol_defaults() {
     let alias: ChatMessage = serde_json::from_value(camel).unwrap();
     assert!(alias.source_read.is_some());
 }
+
+#[test]
+fn full_source_reader_preserves_authored_json_and_real_provider_failure() {
+    use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
+    let source = json!({"success":false,"complete":false,"error":"failed","is_error":true,"exit_code":9,"signal":"SIGTERM","content":"authored source α"}).to_string();
+    let metadata = json!({"path":"data.json","success":true,"complete":true,"format":"raw"});
+    let values = json!([
+        {"role":"user","content":"Read data.json."},
+        {"role":"assistant","content":"","tool_calls":[{"id":"read-now","type":"function","function":{"name":"read","arguments":"{\"path\":\"data.json\"}"}}]},
+        {"role":"tool","name":"read","tool_call_id":"read-now","content":source,"source_read":metadata}
+    ]);
+    let messages: Vec<ChatMessage> = serde_json::from_value(values).expect("valid history");
+    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &["read"]) else {
+        panic!("exact source answer");
+    };
+    assert_eq!(
+        answer,
+        format!("Contents of `data.json`:\n\n```text\n{source}\n```")
+    );
+    assert!(answer.contains(&source));
+    assert!(!answer.contains("The command failed"));
+    let mut failed = messages;
+    failed.last_mut().unwrap().is_error = true;
+    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&failed, &["read"]) else {
+        panic!("actual provider failure");
+    };
+    assert!(answer.contains("failed"));
+    assert!(!answer.starts_with("Contents of"));
+}

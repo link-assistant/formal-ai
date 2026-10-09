@@ -1,0 +1,22 @@
+{
+  "id": "T3568",
+  "dir": "/private/tmp/formal-ai-only-1188/source-read-consumer-provenance",
+  "executionDir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Run node -e 'const fs=require('\\''fs'\\'');const crypto=require('\\''crypto'\\'');const r=JSON.parse(fs.readFileSync('\\''/private/tmp/formal-ai-only-1188/T3568-request.json'\\'','\\''utf8'\\''));if(fs.existsSync(r.dir))throw Error('\\''fixture exists'\\'');if(crypto.createHash('\\''sha256'\\'').update(fs.readFileSync(r.copy.source)).digest('\\''hex'\\'')!==r.copy.sha256)throw Error('\\''copy drift'\\'');fs.mkdirSync(r.dir);for(const o of r.outputs)fs.writeFileSync(o.path,o.expected);fs.copyFileSync(r.copy.source,r.copy.target);console.log('\\''2 authored JSON data fixtures and 1 exact neutral source copy, zero repository changes'\\'');'",
+  "outputs": [
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-read-consumer-provenance/error-keys.json",
+      "expected": "{\n  \"success\": false,\n  \"complete\": false,\n  \"error\": \"failed\",\n  \"is_error\": true,\n  \"exit_code\": 9,\n  \"signal\": \"SIGTERM\",\n  \"content\": \"actual source\"\n}\n"
+    },
+    {
+      "path": "/private/tmp/formal-ai-only-1188/source-read-consumer-provenance/payload-keys.json",
+      "expected": "{\n  \"success\": true,\n  \"complete\": true,\n  \"content\": \"not the complete file\",\n  \"exit_code\": 0\n}\n"
+    }
+  ],
+  "copy": {
+    "source": "/private/tmp/formal-ai-only-1188/repository-read-run-obligations/rust/src/cli_solve.rs",
+    "target": "/private/tmp/formal-ai-only-1188/source-read-consumer-provenance/native.rs",
+    "sha256": "ed7399c8e83d81376c0498af473b007cf5d54781fcbbcbbf2b556eeb670a144e"
+  },
+  "provenance": "Reviewed scratch actual-fs JSON source controls, not a requirement implementation"
+}

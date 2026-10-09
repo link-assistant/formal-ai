@@ -146,17 +146,15 @@ pub fn plan_observed_callable_outcome(
     messages: &[ChatMessage],
     tool_names: &[&str],
 ) -> ObservedCallableOutcome {
-    use crate::agentic_coding::{
-        capability_router, code_artifact, planner, tool_result, workspace_change,
-    };
-    let current = &messages[planner::evidence_window_start(messages)..];
+    use crate::agentic_coding::{capability_router, planner, progress::Progress, workspace_change};
+    let progress = Progress::scan(messages);
     let mut observations = Vec::new();
     let mut sources = Vec::new();
     let operands = std::iter::once((&request.destination, "destination"))
         .chain(request.inputs.iter().map(|path| (path, "source")))
         .chain(request.acceptance.iter().map(|path| (path, "acceptance")));
     for (path, role) in operands {
-        let Some((receipt, explicitly_failed)) = read_receipt(current, path) else {
+        let Some(read) = progress.source_read_for(path) else {
             return capability_router::tool_for(tool_names, Capability::Read).map_or_else(
                 || {
                     finish(
@@ -174,12 +172,7 @@ pub fn plan_observed_callable_outcome(
                 },
             );
         };
-        let agent_source = code_artifact::source_from_agent_read_result(&receipt);
-        let failure = if explicitly_failed || agent_source.is_none() {
-            tool_result::failure_message(&receipt, explicitly_failed, false)
-        } else {
-            None
-        };
+        let failure = read.error.as_deref();
         if let Some(error) = failure {
             if role == "destination"
                 && error
@@ -199,11 +192,14 @@ pub fn plan_observed_callable_outcome(
                 &json!({"path":path,"role":role,"error":error}),
             );
         }
-        let content =
-            agent_source.unwrap_or_else(|| code_artifact::source_from_read_result(&receipt));
+        let content = read.source.clone().unwrap_or_default();
         let mut observation = json!({"path":path,"role":role,"state":"observed",
-            "contentId":crate::source_fetch::sha256_hex(content.as_bytes()),"bytes":content.len()});
-        if role == "source" {
+        "contentId":crate::source_fetch::sha256_hex(content.as_bytes()),"bytes":content.len(),"complete":read.complete,"providerStatus":match read.status {
+            crate::agentic_coding::tool_result::SourceReadStatus::ReportedSuccess => "reported-success",
+            crate::agentic_coding::tool_result::SourceReadStatus::ReportedFailure => "reported-failure",
+            crate::agentic_coding::tool_result::SourceReadStatus::Unknown => "unknown",
+        }});
+        if role == "source" && read.complete {
             observation["catalog"] =
                 super::callable_catalog::observe_source_callables(&content, path);
             sources.push(json!({"path":path,"content":content}));
@@ -217,39 +213,6 @@ pub fn plan_observed_callable_outcome(
         ObservedCallableDisposition::Gap,
         &json!({"graphs":super::callable_catalog::observed_callable_graphs(&sources),"goal":"unbound"}),
     )
-}
-
-fn read_receipt(messages: &[ChatMessage], path: &str) -> Option<(String, bool)> {
-    use crate::agentic_coding::capability_router::classify_tool;
-    for (index, message) in messages.iter().enumerate().rev() {
-        if !message.role.eq_ignore_ascii_case("tool") {
-            continue;
-        }
-        let Some(id) = message.tool_call_id.as_deref() else {
-            continue;
-        };
-        let call = messages[..index]
-            .iter()
-            .rev()
-            .flat_map(|prior| prior.tool_calls.iter().rev())
-            .find(|call| call.id == id);
-        let Some(call) = call else {
-            continue;
-        };
-        if classify_tool(&call.function.name) != Some(Capability::Read) {
-            continue;
-        }
-        let Ok(args) = serde_json::from_str::<Value>(&call.function.arguments) else {
-            continue;
-        };
-        if ["path", "filePath", "file_path"]
-            .iter()
-            .any(|key| args.get(key).and_then(Value::as_str) == Some(path))
-        {
-            return Some((message.content.plain_text(), message.is_error));
-        }
-    }
-    None
 }
 
 /// Project the real discovery outcome while keeping final provenance internal.

@@ -94,3 +94,42 @@ fn explicit_client_read_failure_never_becomes_an_empty_source() {
     assert!(answer.starts_with("Callable discovery ReadFailed:\n"));
     assert_eq!(metadata.expect("failure result"), FinalDisposition::Failure);
 }
+
+#[test]
+fn complete_json_source_keys_do_not_own_discovery_transport_status() {
+    let request = observed_callable_request(PROMPT).expect("declared callable");
+    let source = json!({"error":"failed","is_error":true,"exit_code":9,"signal":"SIGTERM","content":"authored bytes"}).to_string();
+    let mut messages = messages(&[
+        ("out.mjs", "// destination", false),
+        ("first.mjs", source.as_str(), false),
+        ("second.mjs", "// source", false),
+        ("gate.mjs", "// acceptance", false),
+    ]);
+    for message in &mut messages {
+        if message.role == "tool" {
+            message.source_read = Some(
+                json!({"path":message.tool_call_id,"success":true,"complete":true,"format":"raw"}),
+            );
+        }
+    }
+    let outcome = plan_observed_callable_outcome(&request, &messages, &["read", "write"]);
+    assert_eq!(outcome.disposition, Some(FinalDisposition::Gap));
+    let witness = outcome.witness.expect("typed gap");
+    assert_eq!(witness["reason"], "MissingContract");
+    assert_eq!(
+        witness["observations"][1]["contentId"],
+        formal_ai::source_fetch::sha256_hex(source.as_bytes())
+    );
+    assert_eq!(witness["observations"][1]["complete"], true);
+    assert_eq!(
+        witness["observations"][1]["providerStatus"],
+        "reported-success"
+    );
+    messages[4].source_read.as_mut().unwrap()["complete"] = json!(false);
+    let partial = plan_observed_callable_outcome(&request, &messages, &["read"]);
+    let witness = partial.witness.expect("partial gap");
+    assert_eq!(partial.disposition, Some(FinalDisposition::Gap));
+    assert_eq!(witness["observations"][1]["complete"], false);
+    assert!(witness["observations"][1].get("catalog").is_none());
+    assert_eq!(witness["detail"]["graphs"], json!([]));
+}

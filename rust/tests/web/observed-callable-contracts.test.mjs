@@ -122,7 +122,8 @@ test('production discovery records supported graphs but cannot certify an unboun
     ['consumer.mjs', secondSource], ['gate.mjs', '// immutable acceptance']]) {
     messages.push({ role: 'assistant', content: '', tool_calls: [{ id: path, type: 'function',
       function: { name: 'read', arguments: JSON.stringify({ path }) } }] });
-    messages.push({ role: 'tool', tool_call_id: path, content });
+    messages.push({ role: 'tool', tool_call_id: path, content,
+      source_read: { path, success: true, complete: true, format: 'raw' } });
   }
   const plan = await planModuleFunctionStep(prompt, messages, ['read', 'write', 'bash']);
   assert.equal(plan.result.disposition, 'gap');

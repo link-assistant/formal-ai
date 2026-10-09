@@ -1,0 +1,14 @@
+{
+  "id": "T3575",
+  "dir": "/private/tmp/formal-ai-only-1188/source-read-consumer-provenance",
+  "prompt": "Read error-keys.json.",
+  "before": {
+    "path": "error-keys.json",
+    "sha256": "941e090158ff8a826985b32da93599fb50bf30f278c93ac43d0d46971a9f6a7c"
+  },
+  "taskUtf8Bytes": 21,
+  "provenance": "Actual fs source has JSON keys resembling transport metadata; original complete plain Read heldout",
+  "readOnly": true,
+  "unchangedOriginal": "T3569",
+  "instrumentation": "Observe resolved metadata before public projection; T3574 public Unknown is intentional"
+}

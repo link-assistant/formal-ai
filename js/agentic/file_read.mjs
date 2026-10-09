@@ -10,6 +10,10 @@
 
 import { classifyTool } from './capability_router.mjs';
 import { Capability } from './capability.mjs';
+import { Progress } from './progress.mjs';
+import { sourceReadAnswer } from './file_read/source.mjs';
+import { toolResultRecords, readResultForPath, grepResultForPath, runRecordForCommand } from './file_read/records.mjs';
+export { toolResultRecords, readResultForPath, grepResultForPath, runRecordForCommand, samePath } from './file_read/records.mjs';
 import { latestUserRequest, plainText, rustLines } from './content.mjs';
 import { isDottedNumber, peelSentencePunctuation } from './file_path_shape.mjs';
 import { hasFileWriteIntent } from './general_planner.mjs';
@@ -22,7 +26,6 @@ import { explicitPassthroughCommand } from './shell_command.mjs';
 const SHELL_OPERATORS = ['&&', '||', ';', '|', '>'];
 import { commandArgument, harnessReportedFailure, render, stripTransportEnvelope } from './tool_result.mjs';
 import { isStatedWriteTarget } from './write_request.mjs';
-import { sourceFromReadResult } from './code_artifact.mjs';
 import { byteOrder, eqIgnoreAsciiCase, replaceAllLiteral, rsplitOnce, splitWhitespace, toAsciiLowercase,
   trim, trimMatches } from './crate/rust_str.mjs';
 import { mentionsRole, wordsForRole } from './crate/seed_meanings.mjs';
@@ -90,14 +93,15 @@ export function planFileReadStep(task, messages, toolNames) {
   const runTool = toolFor(toolNames, Capability.Run);
   const grepTool = toolFor(toolNames, Capability.Grep);
   const records = toolResultRecords(messages);
+  const progress = Progress.scan(messages);
   const request = latestUserRequest(messages) ?? '';
   switch (task.kind) {
     case 'direct':
-      return planDirectFileRead(task.path, task.mode, task.prefer_run, readTool, runTool, grepTool, records, request);
+      return planDirectFileRead(task.path, task.mode, task.prefer_run, readTool, runTool, grepTool, records, request, progress);
     case 'direct_many':
-      return planDirectFileReads(task.paths, task.mode, readTool, runTool, grepTool, records, request);
+      return planDirectFileReads(task.paths, task.mode, readTool, runTool, grepTool, records, request, progress);
     default:
-      return planListThenRead(task.directory, task.selection, task.mode, readTool, runTool, records, request);
+      return planListThenRead(task.directory, task.selection, task.mode, readTool, runTool, records, request, progress);
   }
 }
 
@@ -107,9 +111,9 @@ export function failedStepAnswer(label, raw, request) {
 }
 
 /** Mirrors `fn plan_direct_file_read`. */
-function planDirectFileRead(path, mode, preferRun, readTool, runTool, grepTool, records, request) {
+function planDirectFileRead(path, mode, preferRun, readTool, runTool, grepTool, records, request, progress) {
   if (isAudit(mode)) {
-    return planDirectFileReads([path], mode, readTool, runTool, grepTool, records, request);
+    return planDirectFileReads([path], mode, readTool, runTool, grepTool, records, request, progress);
   }
   const readCommand = readCommandFor(path, mode);
   const exactRun = exactLineKey(request) !== null && runTool !== null;
@@ -117,18 +121,16 @@ function planDirectFileRead(path, mode, preferRun, readTool, runTool, grepTool, 
     const raw = runRecordForCommand(records, readCommand);
     return raw === null ? null : [readCommand, raw, stripTransportEnvelope(raw)];
   };
-  let recorded;
-  if (exactRun) {
-    recorded = fromRun();
-  } else {
-    const raw = readResultForPath(records, path);
-    recorded = raw !== null ? [path, raw, raw] : fromRun();
+  if (!exactRun) {
+    const answer = sourceReadAnswer([path], mode, records, progress, request);
+    if (answer !== null) return answer;
   }
+  const recorded = fromRun();
   if (recorded !== null) {
     const [label, raw, observed] = recorded;
     const failure = failedStepAnswer(label, raw, request);
     if (failure !== null) return finalAnswer(failure);
-    const content = label === path ? sourceFromReadResult(observed) : observed;
+    const content = observed;
     return resolvedFinalAnswer(fileReadFinalAnswer(mode, [[path, content]], request), FinalDisposition.Finding, 'file_read_observed');
   }
   if ((preferRun || exactRun) && runTool !== null) {
@@ -140,7 +142,7 @@ function planDirectFileRead(path, mode, preferRun, readTool, runTool, grepTool, 
 }
 
 /** Mirrors `fn plan_list_then_read`. */
-function planListThenRead(directory, selection, mode, readTool, runTool, records, request) {
+function planListThenRead(directory, selection, mode, readTool, runTool, records, request, progress) {
   const listCommand = listFilesCommand(directory);
   const rawListing = runRecordForCommand(records, listCommand);
   if (rawListing === null) {
@@ -153,14 +155,8 @@ function planListThenRead(directory, selection, mode, readTool, runTool, records
   const paths = selectedPathsFromListing(directory, listing, selection);
   if (!paths.length) return finalAnswer(agenticMessage('file_read_listing_empty', { directory }));
 
-  const contents = readResultsForPaths(records, paths);
-  if (contents !== null) {
-    for (const [path, raw] of contents) {
-      const failure = failedStepAnswer(path, raw, request);
-      if (failure !== null) return finalAnswer(failure);
-    }
-    return resolvedFinalAnswer(fileReadFinalAnswer(mode, contents, request), FinalDisposition.Finding, 'file_read_observed');
-  }
+  const sourceAnswer = sourceReadAnswer(paths, mode, records, progress, request);
+  if (sourceAnswer !== null) return sourceAnswer;
 
   if (selection === 'all') {
     if (readTool !== null) {
@@ -349,112 +345,6 @@ function directoryForListRead(prompt) {
   return null;
 }
 
-/** Mirrors `fn tool_result_records`: `{capability, arguments, content}` per current-turn result. */
-export function toolResultRecords(messages) {
-  let turnStart = 0;
-  for (let index = messages.length - 1; index >= 0; index -= 1) {
-    if (messages[index].role.toLowerCase() === 'user') {
-      turnStart = index + 1;
-      break;
-    }
-  }
-  const records = [];
-  for (let index = turnStart; index < messages.length; index += 1) {
-    const message = messages[index];
-    if (message.role.toLowerCase() !== 'tool') continue;
-    const call = toolResultCall(messages, index);
-    let capability = null;
-    let args = null;
-    if (call) {
-      capability = classifyTool(call.function.name);
-      try {
-        args = JSON.parse(call.function.arguments);
-      } catch {
-        args = null;
-      }
-    }
-    records.push({ capability, arguments: args, content: plainText(message.content) });
-  }
-  return records;
-}
-
-/** Mirrors `fn tool_result_call`: the first prior call whose id matches. */
-function toolResultCall(messages, index) {
-  const callId = messages[index].tool_call_id;
-  if (callId === null || callId === undefined) return null;
-  for (const prior of messages.slice(0, index)) {
-    for (const call of prior.tool_calls || []) if (call.id === callId) return call;
-  }
-  return null;
-}
-
-const stringField = (value, key) =>
-  (value && typeof value === 'object' && !Array.isArray(value) && typeof value[key] === 'string' ? value[key] : null);
-
-/** Mirrors `fn read_result_for_path`. */
-export function readResultForPath(records, path) {
-  const found = records.find((record) => record.capability === Capability.Read
-    && (() => {
-      const recorded = pathArgument(record.arguments);
-      return recorded !== null && samePath(recorded, path);
-    })());
-  return found ? found.content : null;
-}
-
-/** Mirrors `fn grep_result_for_path`. */
-export function grepResultForPath(records, path, pattern) {
-  const found = records.find((record) => {
-    if (record.capability !== Capability.Grep) return false;
-    const recorded = pathArgument(record.arguments);
-    return recorded !== null && samePath(recorded, path) && stringField(record.arguments, 'pattern') === pattern;
-  });
-  return found ? found.content : null;
-}
-
-/** Mirrors `fn same_path`. */
-export function samePath(recorded, planned) {
-  if (recorded === planned) return true;
-  const wanted = trimStartMatchesStr(planned, './');
-  const actual = trimStartMatchesStr(recorded, './');
-  if (!actual.endsWith(wanted)) return false;
-  const prefix = actual.slice(0, actual.length - wanted.length);
-  return prefix === '' || prefix.endsWith('/');
-}
-
-/** `str::trim_start_matches(&str)`. */
-function trimStartMatchesStr(text, prefix) {
-  let rest = text;
-  while (prefix && rest.startsWith(prefix)) rest = rest.slice(prefix.length);
-  return rest;
-}
-
-/** Mirrors `fn read_results_for_paths`. */
-function readResultsForPaths(records, paths) {
-  const out = [];
-  for (const path of paths) {
-    const content = readResultForPath(records, path);
-    if (content === null) return null;
-    out.push([path, content]);
-  }
-  return out;
-}
-
-/** Mirrors `fn run_record_for_command`. */
-export function runRecordForCommand(records, command) {
-  const found = records.find((record) => record.capability === Capability.Run
-    && commandArgument(jsonText(record.arguments)) === command);
-  return found ? found.content : null;
-}
-
-/** Mirrors `fn path_argument`. */
-function pathArgument(args) {
-  for (const key of ['filePath', 'path', 'file_path', 'absolute_path']) {
-    const value = stringField(args, key);
-    if (value !== null) return value;
-  }
-  return null;
-}
-
 /** Mirrors `fn read_arguments`. */
 export function readArguments(path, mode) {
   const args = { filePath: path, path, file_path: path };
@@ -531,7 +421,7 @@ function selectedPathsFromListing(directory, listing, selection) {
   const entries = rustLines(listing)
     .map(trim)
     .filter((line) => line !== '')
-    .map((line) => trimStartMatchesStr(line, './'));
+    .map((line) => line.replace(/^(?:\.\/)+/u, ''));
   entries.sort(byteOrder);
   const unique = entries.filter((entry, index) => index === 0 || entries[index - 1] !== entry);
   let selected;

@@ -8,7 +8,7 @@ import { agenticMessage } from '../messages.mjs';
 import { FinalDisposition, FinalPayloadRole, resolvedFinalAnswer, finalAnswer, jsonText, plannedCall, toolCalls } from '../plan.mjs';
 import { sentences } from '../shell_command_policy.mjs';
 import { stripTransportEnvelope } from '../tool_result.mjs';
-import { sourceFromReadResult } from '../code_artifact.mjs';
+import { sourceReadAnswer, readObservation } from './source.mjs';
 import {
   failedStepAnswer, fileAnalysisPattern, grepArguments, grepResultForPath, readArguments, readCommandFor,
   readResultForPath, runRecordForCommand,
@@ -19,7 +19,7 @@ import { fileReadFinalAnswer } from './audit.mjs';
  * Mirrors `fn plan_direct_file_reads` in rust/src/agentic_coding/file_read/exact.rs:
  * read every named input before composing the observation.
  */
-export function planDirectFileReads(paths, mode, readTool, runTool, grepTool, records, request) {
+export function planDirectFileReads(paths, mode, readTool, runTool, grepTool, records, request, progress) {
   if (mode.kind === 'audit' && grepTool !== null) {
     const pattern = fileAnalysisPattern();
     const contents = [];
@@ -38,6 +38,11 @@ export function planDirectFileReads(paths, mode, readTool, runTool, grepTool, re
   }
 
   const exactRun = exactLineKey(request) !== null && runTool !== null;
+  if (!exactRun) {
+    const answer = sourceReadAnswer(paths, mode, records, progress, request);
+    if (answer !== null) return answer;
+  }
+  let complete = true;
   const contents = [];
   for (const path of paths) {
     const command = readCommandFor(path, mode);
@@ -51,11 +56,10 @@ export function planDirectFileReads(paths, mode, readTool, runTool, grepTool, re
       }
     }
     if (!exactRun) {
-      const raw = readResultForPath(records, path);
-      if (raw !== null) {
-        const failure = failedStepAnswer(path, raw, request);
-        if (failure !== null) return finalAnswer(failure);
-        contents.push([path, sourceFromReadResult(raw)]);
+      const read = readObservation(records, progress, path);
+      if (read !== null) {
+        contents.push([path, read.source ?? '']);
+        complete &&= read.complete;
         continue;
       }
       const ran = runRecordForCommand(records, command);
@@ -66,7 +70,8 @@ export function planDirectFileReads(paths, mode, readTool, runTool, grepTool, re
       }
     }
   }
-  if (contents.length === paths.length) return finalAnswer(fileReadFinalAnswer(mode, contents, request));
+  if (contents.length === paths.length) return resolvedFinalAnswer(fileReadFinalAnswer(mode, contents, request),
+    complete ? FinalDisposition.Finding : FinalDisposition.Unknown, 'file_read_observed');
 
   const runCalls = (tool) => toolCalls(paths
     .filter((path) => runRecordForCommand(records, readCommandFor(path, mode)) === null)

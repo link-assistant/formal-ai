@@ -31,6 +31,7 @@ pub(super) fn plan_direct_file_reads(
         read: read_tool,
         run: run_tool,
         grep: grep_tool,
+        progress,
     } = tools;
     if mode == &FileReadMode::Audit
         && let Some(tool) = grep_tool
@@ -70,6 +71,13 @@ pub(super) fn plan_direct_file_reads(
     // line cannot accept that rendered view as file contents, so use the
     // shell's byte-preserving field extractor whenever the client provides one.
     let exact_run = exact_line_key(request).is_some() && run_tool.is_some();
+    if !exact_run
+        && let Some(answer) =
+            super::source::source_read_answer(paths, mode, records, progress, request, result)
+    {
+        return answer;
+    }
+    let mut complete = true;
     let mut contents = Vec::with_capacity(paths.len());
     for path in paths {
         let command = read_command_for(path, mode);
@@ -83,14 +91,9 @@ pub(super) fn plan_direct_file_reads(
             ));
             continue;
         }
-        if !exact_run && let Some(raw) = read_result_for_path(records, path) {
-            if let Some(failure) = failed_step_answer(path, raw, request) {
-                return AgenticPlan::Final(failure);
-            }
-            contents.push((
-                path.clone(),
-                super::super::code_artifact::source_from_read_result(raw),
-            ));
+        if !exact_run && let Some(read) = super::source::read_observation(records, progress, path) {
+            complete &= read.complete;
+            contents.push((path.clone(), read.source.unwrap_or_default()));
             continue;
         }
         if !exact_run && let Some(raw) = run_record_for_command(records, &command) {
@@ -106,7 +109,11 @@ pub(super) fn plan_direct_file_reads(
     if contents.len() == paths.len() {
         return record(
             AgenticPlan::Final(file_read_final_answer(mode, &contents, request)),
-            FinalDisposition::Finding,
+            if complete {
+                FinalDisposition::Finding
+            } else {
+                FinalDisposition::Unknown
+            },
             "file_read_observed",
             result,
         );
