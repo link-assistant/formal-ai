@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_seed_reports.js"
+  ceiling 59
+  rationale "Canonical conversation summary dependency projection includes shared seeded templates and the actual summary/title/language record; this new factory is measured at its final finite-phase source, not a duplicate implementation."

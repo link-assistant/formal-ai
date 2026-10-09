@@ -1,4 +1,4 @@
 worker_module_budget
   module "formal_ai_worker_search_queries_and_how_to.js"
-  ceiling 1221
+  ceiling 1208
   rationale "Web-search query extraction, procedural how-to answers from wikiHow and the frame-policy checks. Issue #658 cut this module out of one oversized worker file by line count; R1188-U5 named it after what it holds. Its ceiling falls as its logic moves into js/wasm-worker. Lowered to 1329 for issue #918 (2026-10-08): tryProceduralHowTo renders its heading, install gate, source path and stage lines from seeded procedural_how_to_* responses and its search queries from the policy procedural_how_to block. Lowered to 1219 for issue #1175 R3 (last five rows, 2026-10-08): tryDocsMethodExplanation runs the docs_method_explanation rule of data/seed/handler-rules.lino, whose claim row reads the documented method (claimOperandDocumentedMethod), instead of an inline pandas recognizer and a four-language answer text. Ceiling moved 1219 to 1221 (R1188-U5): the first comment lines say what the module holds."

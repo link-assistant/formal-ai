@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_conversation_followups.js"
+  ceiling 60
+  rationale "Existing native how-it-works history resolution moved from native lanes, preserving actual topic and followup events; native lanes ceiling will drop by the extracted code."

@@ -299,6 +299,8 @@ pub const MULTILINGUAL_RESPONSES_CODE_TASKS_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-code-tasks.lino");
 pub const MULTILINGUAL_RESPONSES_CONCEPT_LOOKUP_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-concept-lookup.lino");
+pub const MULTILINGUAL_RESPONSES_CONVERSATION_RECALL_LINO: &str =
+    include_str!("../../embedded/data/seed/multilingual-responses-conversation-recall.lino");
 pub const MULTILINGUAL_RESPONSES_CREATIVE_TASKS_LINO: &str =
     include_str!("../../embedded/data/seed/multilingual-responses-creative-tasks.lino");
 pub const MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO: &str =
@@ -792,6 +794,7 @@ pub const RESPONSE_FILES: &[&str] = &[
     MULTILINGUAL_RESPONSES_CLIENT_CONFIG_LINO,
     MULTILINGUAL_RESPONSES_CODE_TASKS_LINO,
     MULTILINGUAL_RESPONSES_CONCEPT_LOOKUP_LINO,
+    MULTILINGUAL_RESPONSES_CONVERSATION_RECALL_LINO,
     MULTILINGUAL_RESPONSES_CREATIVE_TASKS_LINO,
     MULTILINGUAL_RESPONSES_DECOMPOSITION_LINO,
     MULTILINGUAL_RESPONSES_DOCUMENTS_LINO,

@@ -194,13 +194,10 @@ fn conversation_summary_envelope(turns: &[DialogTurn], language: &str) -> (Strin
         .filter(|turn| turn.role == "user")
         .map(|turn| turn.text.as_str())
         .collect();
-    let envelope_language = match language {
-        "ru" | "zh" => language,
-        _ => "en",
-    };
+    let envelope_language = ["ru", "zh"].contains(&language).then_some(language);
     let mut body = seed::render_localized_once(
         "conversation-summary-envelope",
-        envelope_language,
+        envelope_language.unwrap_or("en"),
         &[("summary", &summary), ("title", &title)],
     );
     for (index, turn) in user_turns.iter().enumerate() {

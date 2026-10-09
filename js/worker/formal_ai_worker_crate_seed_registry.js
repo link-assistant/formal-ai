@@ -104,6 +104,7 @@ self.FORMAL_AI_CRATE_RESPONSE_SEEDS = Object.freeze([
   "multilingual-responses-client-config",
   "multilingual-responses-code-tasks",
   "multilingual-responses-concept-lookup",
+  "multilingual-responses-conversation-recall",
   "multilingual-responses-creative-tasks",
   "multilingual-responses-decomposition",
   "multilingual-responses-documents",

@@ -566,6 +566,9 @@ seed_registry
     bundle true
     lexicon response
     web true
+  seed multilingual-responses-conversation-recall
+    lexicon response
+    web true
   seed multilingual-responses-creative-tasks
     bundle true
     lexicon response

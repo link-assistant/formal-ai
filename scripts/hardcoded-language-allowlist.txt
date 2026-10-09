@@ -493,9 +493,6 @@ rust/src/solver_handlers/calculator_rate.rs	При расчетах валюты
 rust/src/solver_handlers/calculator_rate.rs	Я распознал вопрос о курсе USD/RUB для расчетов, но link-calculator не смог его вычислить: {error}.
 rust/src/solver_handlers/calculator_rate.rs	मुद्रा गणनाओं के लिए मैं link-calculator का उपयोग करता हूं। USD/RUB के लिए वह लौटाता है: {calculation_body}.
 rust/src/solver_handlers/calculator_rate.rs	货币计算时我使用 link-calculator。USD/RUB 返回: {calculation_body}.
-rust/src/solver_handlers/conversation_memory/conversation_summary.rs	Conversation summary: {summary}\n\nTitle: {title}\n\nUser turns:\n
-rust/src/solver_handlers/conversation_memory/conversation_summary.rs	Резюме разговора: {summary}\n\nЗаголовок: {title}\n\nРеплики пользователя:\n
-rust/src/solver_handlers/conversation_memory/conversation_summary.rs	对话摘要:{summary}\n\n标题:{title}\n\n用户发言:\n
 rust/src/solver_handlers/conversation_memory/link_query.rs	This query would {attempted} links, which memory cannot apply: the doublet view is a one-way projection of memory events, so an edited link has no way back to the event it came from. Reads are supported here -- ((($i: $s $t)) (($i: $s $t))) matches every link. To change memory, write to it in natural language, which appends an event the projection is then derived from.
 rust/src/solver_handlers/conversation_memory/link_query.rs	matched {} of {total} links
 rust/src/solver_handlers/conversation_memory/memory_write.rs	Recorded memory: {statement}
@@ -508,9 +505,7 @@ rust/src/solver_handlers/conversation_memory/memory_write.rs	स्मृति 
 rust/src/solver_handlers/conversation_memory/memory_write.rs	स्मृति में सहेजा गया: {statement}
 rust/src/solver_handlers/conversation_memory/memory_write.rs	已在记忆中将\"{old_value}\"替换为\"{new_value}\"(更新 {applied} 处)。
 rust/src/solver_handlers/conversation_memory/mod.rs	Found {} mention(s) of \"{}\" across {} conversation(s) in memory.\n
-rust/src/solver_handlers/conversation_memory/mod.rs	Found {} mention(s) of \"{}\" in the conversation history.\n
 rust/src/solver_handlers/conversation_memory/mod.rs	No mentions of \"{}\" found in memory.
-rust/src/solver_handlers/conversation_memory/mod.rs	No mentions of \"{}\" found in the conversation history.
 rust/src/solver_handlers/conversation_memory/mod.rs	The previous message ({role_label}) was: \"{content}\"
 rust/src/solver_handlers/conversation_memory/mod.rs	There is no previous message yet.
 rust/src/solver_handlers/conversation_memory/mod.rs	Your name is {name}.
@@ -521,19 +516,14 @@ rust/src/solver_handlers/conversation_memory/mod.rs	previous_message role={role}
 rust/src/solver_handlers/conversation_memory/mod.rs	turn={} role={} content={}
 rust/src/solver_handlers/conversation_memory/mod.rs	В прошлом сообщении ({role_label}) было написано: \"{content}\"
 rust/src/solver_handlers/conversation_memory/mod.rs	Вы спрашивали: \"{content}\"
-rust/src/solver_handlers/conversation_memory/mod.rs	Найдено упоминаний \"{}\" в истории разговора: {}\n
 rust/src/solver_handlers/conversation_memory/mod.rs	Найдено упоминаний \"{}\" в памяти: {} (бесед: {}).\n
 rust/src/solver_handlers/conversation_memory/mod.rs	Прошлого сообщения пока нет.
-rust/src/solver_handlers/conversation_memory/mod.rs	Упоминаний \"{}\" в истории разговора не найдено.
 rust/src/solver_handlers/conversation_memory/mod.rs	Упоминаний \"{}\" в памяти не найдено.
 rust/src/solver_handlers/conversation_memory/mod.rs	अभी तक कोई पिछला संदेश नहीं है.
 rust/src/solver_handlers/conversation_memory/mod.rs	आपने पूछा था: \"{content}\"
 rust/src/solver_handlers/conversation_memory/mod.rs	पिछले संदेश ({role_label}) में लिखा था: \"{content}\"
-rust/src/solver_handlers/conversation_memory/mod.rs	बातचीत के इतिहास में \"{}\" के उल्लेख मिले: {}\n
-rust/src/solver_handlers/conversation_memory/mod.rs	बातचीत के इतिहास में \"{}\" नहीं मिला.
 rust/src/solver_handlers/conversation_memory/mod.rs	स्मृति में \"{}\" के उल्लेख मिले: {} (बातचीत: {}).\n
 rust/src/solver_handlers/conversation_memory/mod.rs	स्मृति में \"{}\" नहीं मिला.
-rust/src/solver_handlers/conversation_memory/mod.rs	在对话历史中找到 \"{}\" 的记录: {}\n
 rust/src/solver_handlers/conversation_memory/mod.rs	在记忆中找到 \"{}\" 的记录: {} (对话: {})。\n
 rust/src/solver_handlers/document_originality.rs	asset={} period={} source={} min={:.2} min_date={} max={:.2} max_date={}
 rust/src/solver_handlers/mod.rs	I do not embed a JavaScript runtime in this build, so I cannot execute the program for you. The deterministic solver only runs code that has been verified offline; running arbitrary JavaScript would violate that contract. Here is the program you asked me to run, copy-paste reviewable:\n\n```js\n{program}\n```\n\nTo execute it yourself, save the snippet as `program.js` and run `node program.js` (or `deno run program.js`).

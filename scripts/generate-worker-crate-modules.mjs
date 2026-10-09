@@ -35,6 +35,7 @@ import { REPO_ROOT } from '../js/server/lino.mjs';
 
 /** The modules the chat routes call; their import closure is generated. */
 export const ENTRY_MODULES = Object.freeze([
+  'crate/conversation_summary.mjs',
   'crate/dependency_summarization.mjs',
   'crate/event_log.mjs',
   'crate/page_formalization.mjs',

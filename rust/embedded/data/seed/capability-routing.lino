@@ -765,6 +765,7 @@ capability_routing
     browser_handler tryHistorical
     admits_on dialogue_turn
     admits_on name_assignment
+    admits_on recall_query_term
     refusal_event "conversation_recall:refusal"
     because "issue 1175 R3: a recap or recall claims with the earlier turns it reads, a naming with the name it assigns; a recall with no earlier message is admitted to the refusal lane"
   claim
