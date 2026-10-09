@@ -17,6 +17,7 @@ mod result_kind;
 mod source_observation;
 pub use command_keys::{command_argument_key, project_declared_command_keys};
 use result_kind::{is_listing, is_search};
+pub use source_observation::{SourceReadObservation, SourceReadStatus, source_read_observation};
 /// The actual process exit code observed by the client harness.
 pub(crate) fn reported_exit_code(raw: &str) -> Option<i64> {
     source_observation::reported_exit_code(raw)
@@ -31,18 +32,10 @@ struct NormalizedResult {
     error: Option<String>,
     format: &'static str,
     /// The process exit status the harness reported, when it reported one.
-    /// This is the *primary* success signal (issues #905 and #908); the failure
-    /// lexicon below is only consulted when no harness reported a status.
     exit_code: Option<i64>,
 }
 
 /// What a finished tool step actually did, read from the harness's own report.
-///
-/// Issues #905 and #908 are the two directions of one defect: the verdict was
-/// keyed on whether the result *text* looked like a failure, so `cat: …: No such
-/// file or directory` with `Exit Code: 1` was read as success and `Exit Code: 0`
-/// with `Output: (empty)` / `Error: (none)` was read as failure. Every harness in
-/// the #902–#909 corpus reports the status explicitly, so it is read, not inferred.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum StepOutcome {
     /// The harness reported a zero exit status.
@@ -69,12 +62,6 @@ pub fn step_outcome(raw: &str) -> StepOutcome {
 }
 
 /// The workspace's veto over a completion claim (issue #905).
-///
-/// "Completed … and verified it" is a claim about the workspace, so the
-/// workspace gets the last word: issue #905 watched that sentence go out after
-/// `cat hello.txt` had exited 1 because the file was never created. The
-/// verification the plan itself named had already disproved the claim. When the
-/// last observed step failed, the report of that failure replaces the claim.
 pub(super) fn failed_verification(
     run_outputs: &[String],
     verification_command: &str,
@@ -92,9 +79,7 @@ pub(super) struct ShellStep {
     pub(super) text: String,
 }
 
-/// Return the client-owned failure detail when a result failed, whether the
-/// signal arrived as protocol metadata, a structured transport envelope, or a
-/// raw adapter message.
+/// Return the client-owned failure detail when a result failed, whether the signal arrived as protocol metadata, a structured transport envelope, or a raw adapter message.
 pub(super) fn failure_message(
     raw: &str,
     explicitly_failed: bool,
@@ -104,7 +89,9 @@ pub(super) fn failure_message(
     if let Some(error) = result.error {
         return Some(error);
     }
-    if explicitly_failed || (infer_from_prose && looks_like_error(&result.payload)) {
+    if explicitly_failed
+        || (infer_from_prose && result.exit_code != Some(0) && looks_like_error(&result.payload))
+    {
         return Some(if result.payload.trim().is_empty() {
             raw.trim().to_owned()
         } else {
@@ -114,10 +101,7 @@ pub(super) fn failure_message(
     None
 }
 
-/// Status-less adapters sometimes return only a provider's denial or error
-/// notice. Inspect the leading diagnostic region for that fallback: successful
-/// pages and documents can legitimately contain error vocabulary or HTTP codes
-/// later in their contents.
+/// Status-less adapters sometimes return only a provider's denial or error notice.
 const PROSE_FAILURE_PREFIX_CHARS: usize = 512;
 
 fn looks_like_error(text: &str) -> bool {
@@ -130,33 +114,9 @@ fn looks_like_error(text: &str) -> bool {
 }
 
 /// How many cited lines it takes before a result counts as quoting.
-///
-/// One is not enough. `HTTP/1.1 404: Not Found` cites a place by the letter of
-/// [`citation_offset`] -- `404` stands as its own token before a colon -- and it
-/// is a diagnosis, not a quotation. A body of quotations comes in a list.
 const CITED_LINES_THAT_MAKE_A_QUOTATION: usize = 2;
 
 /// The part of a result the result is saying itself, before it starts quoting.
-///
-/// A search answers with other files' text, and every line it hands back says
-/// where it was found -- `./scripts/install.sh:260:    log "the 'code' CLI was
-/// not found on PATH."` from one harness, `  Line 65: - Failure-driven
-/// splitting: ...` under a file heading from another. The failure vocabulary in
-/// those lines belongs to `install.sh` and to the changelog, not to the search.
-/// The diagnostic prefix cannot tell them apart by wording, so issue #1066
-/// watched a `grep` that had matched a hundred lines report itself as the
-/// command that failed, and the node whose only evidence was that search
-/// recorded the failure as its proof.
-///
-/// The distinguishing property is not vocabulary and not the tool's name --
-/// naming the tool would fix one caller and nothing else. It is that a quotation
-/// says where it came from, so the result's own voice is what it says *before*
-/// the first citation: a count, a heading, or nothing at all. The cut is made at
-/// the citation itself rather than at the start of its line, because a step that
-/// does fail often says so and then points at the place -- `Error: cannot read
-/// src/lib.rs:12: No such file` keeps `Error: cannot read`, and is still read as
-/// the failure it is. A harness announcing its own refusal cites no place at
-/// all, so `grep: /etc/shadow: Permission denied` keeps the old reading in full.
 fn own_words(text: &str) -> &str {
     let mut consumed = 0usize;
     let mut first_citation = None;
@@ -175,13 +135,6 @@ fn own_words(text: &str) -> &str {
 }
 
 /// Where in `line` the result stops speaking and starts naming what it quotes.
-///
-/// Both quoting shapes above put a decimal number immediately before the colon
-/// that introduces the quoted text, and in both the number stands as a token of
-/// its own -- after the path's colon in `install.sh:260:`, after a space in
-/// `Line 65:`. Neither the word before it nor the punctuation around it is
-/// English, which is why this asks about the number's position rather than about
-/// any phrasing. The citation begins where the word carrying it begins.
 fn citation_offset(line: &str) -> Option<usize> {
     line.match_indices(':').find_map(|(colon, _)| {
         let before = &line[..colon];
@@ -240,18 +193,14 @@ pub(super) fn render(label: &str, raw: &str, prompt: &str) -> String {
     )
 }
 
-/// Report a step the planner itself observed to have failed, naming the tool or
-/// path it failed on. The plan's own execution state machine uses this when a
-/// client-owned attempt came back marked as an error (issue #905).
+/// Report a step the planner itself observed to have failed, naming the tool or path it failed on.
 pub(super) fn render_failure(label: &str, detail: &str, prompt: &str) -> String {
     let result = normalize(detail);
     let error = result.error.unwrap_or(result.payload);
     failure_report(label, &error, result.exit_code, response_language(prompt))
 }
 
-/// Report a failed step. When the harness reported the status, the status is
-/// named: attributing the failure to the harness hid which command failed and
-/// why (issue #908, suggested fix 3).
+/// Report a failed step.
 #[allow(clippy::literal_string_with_formatting_args)]
 fn failure_report(label: &str, error: &str, exit_code: Option<i64>, language: &str) -> String {
     let code = exit_code.map(|code| code.to_string());
@@ -300,8 +249,6 @@ pub(super) fn latest_turn_answer(
 }
 
 /// Whether the latest tool result of this turn succeeded with no output.
-///
-/// An edit tool's empty reply is its success (PR #1188 T181).
 pub(super) fn latest_turn_quiet_success(messages: &[ChatMessage]) -> bool {
     let Some(start) = messages
         .iter()
@@ -426,6 +373,12 @@ fn normalize(raw: &str) -> NormalizedResult {
         .iter()
         .filter_map(|key| object.get(*key))
         .any(|value| value.as_bool() == Some(true));
+    let stopped = object.get("timed_out").and_then(Value::as_bool) == Some(true)
+        || object.get("aborted").and_then(Value::as_bool) == Some(true)
+        || object
+            .get("signal")
+            .and_then(Value::as_str)
+            .is_some_and(|signal| !signal.is_empty());
     let explicit_error = ["error", "stderr", "failure"]
         .iter()
         .filter_map(|key| object.get(*key))
@@ -434,13 +387,14 @@ fn normalize(raw: &str) -> NormalizedResult {
         .iter()
         .filter_map(|key| object.get(*key))
         .find_map(|value| value.as_i64().or_else(|| value.as_str()?.parse().ok()));
-    if !expected_stop
-        && (nonzero_exit
-            || failed_http
-            || failed_status
-            || explicitly_unsuccessful
-            || explicitly_failed
-            || explicit_error.is_some())
+    if stopped
+        || (!expected_stop
+            && (nonzero_exit
+                || failed_http
+                || failed_status
+                || explicitly_unsuccessful
+                || explicitly_failed
+                || explicit_error.is_some()))
     {
         let error = explicit_error
             .or_else(|| object.get("output").and_then(nonempty_text))
@@ -454,6 +408,9 @@ fn normalize(raw: &str) -> NormalizedResult {
                     "status",
                     "state",
                     "outcome",
+                    "timed_out",
+                    "aborted",
+                    "signal",
                 ]
                 .iter()
                 .find_map(|key| object.get(*key).map(|value| format!("{key}={value}")))
@@ -490,12 +447,7 @@ fn normalize(raw: &str) -> NormalizedResult {
     }
 }
 
-/// The fixed report every agent-CLI shell adapter wraps a command result in:
-/// `Command:` / `Directory:` / `Output:` / `Error:` / `Exit Code:` / `Signal:` /
-/// `Process Group PGID:`. The exit code is the harness's own verdict, so reading
-/// it is what keeps `Error: (none)` from being read as an error (issue #908) and
-/// `No such file or directory` with `Exit Code: 1` from being read as output
-/// (issue #905).
+/// The fixed report every agent-CLI shell adapter wraps a command result in: `Command:` / `Directory:` / `Output:` / `Error:` / `Exit Code:` / `Signal:` / `Process Group PGID:`.
 struct ShellEnvelope {
     output: String,
     error: String,
@@ -705,9 +657,7 @@ fn mcp_text_content(value: &Value) -> Option<String> {
     })
 }
 
-/// The text a connector's `structuredContent` stands for: a record with a
-/// `title` and a `body` is a work item and reads as both, anything else as
-/// itself.
+/// The text a connector's `structuredContent` stands for: a record with a `title` and a `body` is a work item and reads as both, anything else as itself.
 fn structured_content_text(structured: &Value) -> String {
     let inner = structured
         .as_object()
@@ -829,22 +779,7 @@ fn pretty_json(value: &Value) -> String {
     serde_json::to_string_pretty(value).unwrap_or_else(|_| value.to_string())
 }
 
-/// The shell command a run-tool call carried, under whichever argument key its
-/// client declares (issue #1154).
-///
-/// Every agentic CLI names the command argument differently: Claude Code's
-/// `Bash` sends `command`, Codex's `exec_command` sends `cmd`, and `shell`-style
-/// adapters send either `script` or an array of argv words. Seven modules once
-/// kept seven local readings of this, and the two that read only `command`
-/// (`progress.rs`, `workspace_change.rs`) went blind on Codex: the work-item
-/// read URL never resolved, the read was never recorded as attempted, and the
-/// planner re-planned the identical `gh issue view` 78 times in a row. One
-/// reading now serves the whole module, so a new client spelling is fixed once.
-///
-/// The key preference is plain: `command`, then `cmd`, then `script`. A client
-/// whose schema names the command property differently can be recognized before
-/// any of those match through [`command_argument_key`], which resolves the
-/// property whose own schema says it carries the shell command.
+/// The shell command a run-tool call carried, under whichever argument key its client declares (issue #1154).
 pub(super) fn command_argument(arguments: &str) -> Option<String> {
     let value: Value = serde_json::from_str(arguments).ok()?;
     ["command", "cmd", "script"]

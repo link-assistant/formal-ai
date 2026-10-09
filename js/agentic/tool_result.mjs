@@ -2,6 +2,7 @@
 // a port of rust/src/agentic_coding/tool_result.rs.
 
 import { plainText, rustLines } from './content.mjs';
+import { sourceFromAgentReadResult } from './code_artifact.mjs';
 import { agenticMessage } from './messages.mjs';
 import { classifyTool, isWorkspaceCreationTool } from './capability_router.mjs';
 import { Capability } from './capability.mjs';
@@ -48,7 +49,7 @@ export function stepOutcome(raw) {
 /** Mirrors `fn observed_bytes_match`: an explicit successful exact byte receipt. */
 export function observedBytesMatch(raw, expected) {
   const result = normalize(raw);
-  if (result.exit_code !== 0 || result.error !== null) return false;
+  if (result.exit_code !== 0 || result.error !== null || incompleteReceipt(raw)) return false;
   const exact = /^(?:Command: [^\n]*\n)?Output: ([\s\S]*)\nExit Code: 0$/u.exec(untrustedInner(raw));
   if (exact !== null) return exact[1] === expected;
   const value = parseJson(trim(raw));
@@ -62,7 +63,7 @@ export function observedBytesMatch(raw, expected) {
 
 /** Mirrors `fn observed_digest_matches`. */
 export function observedDigestMatches(raw, expected) {
-  return stepOutcome(raw) !== StepOutcome.Failed
+  return !incompleteReceipt(raw) && stepOutcome(raw) !== StepOutcome.Failed
     && splitWhitespace(observedPayload(raw) ?? '')[0] === expected;
 }
 
@@ -122,10 +123,43 @@ export function observedPayload(raw) {
 export function failureMessage(raw, explicitlyFailed, inferFromProse) {
   const result = normalize(raw);
   if (result.error !== null) return result.error;
-  if (explicitlyFailed || (inferFromProse && looksLikeError(result.payload))) {
+  if (explicitlyFailed || (inferFromProse && result.exit_code !== 0 && looksLikeError(result.payload))) {
     return trim(result.payload) ? result.payload : trim(raw);
   }
   return null;
+}
+
+
+/** Mirrors fn incomplete_receipt: declared partial observations cannot certify bytes. */
+export function incompleteReceipt(raw) {
+  const value = parseJson(trim(raw));
+  return isObject(value) && (value.complete === false || value.stream_complete === false
+    || value.truncated === true || value.timed_out === true || value.aborted === true
+    || (typeof value.signal === 'string' && value.signal.length > 0));
+}
+
+/** Mirrors SourceReadStatus: source observation status is distinct from process success. */
+export const SourceReadStatus = Object.freeze({ Success: 'reported-success', Failure: 'reported-failure', Unknown: 'unknown' });
+
+/** Mirrors fn source_read_observation: caller must bind the current Read and exact path. */
+export function sourceReadObservation(raw, explicitlyFailed, metadata = null, expectedPath = null) {
+  // The file body never establishes its own provider status or metadata.
+  const bound = isObject(metadata) && typeof expectedPath === 'string' && metadata.path === expectedPath;
+  const receipt = bound ? JSON.stringify(metadata) : null;
+  const exit = receipt === null ? null : reportedExitCode(receipt);
+  const error = explicitlyFailed ? raw : receipt === null ? null
+    : failureMessage(receipt, false, false) ?? (exit !== null && exit !== 0 ? receipt : null);
+  const status = error !== null ? SourceReadStatus.Failure
+    : bound && metadata.success === true ? SourceReadStatus.Success : SourceReadStatus.Unknown;
+  const framed = metadata === null ? sourceFromAgentReadResult(raw) : null;
+  const boundary = raw.lastIndexOf('\n\n(');
+  const numbered = boundary < 0 ? [] : raw.slice('<file>\n'.length, boundary).split('\n');
+  const count = boundary < 0 ? NaN : Number(raw.slice(boundary + 3).split(/\s+/u)[5]);
+  const wholeFrame = framed !== null && count === numbered.length
+    && numbered.every((line, index) => Number(line.slice(0, line.indexOf('| '))) === index + 1);
+  const complete = error === null && (wholeFrame || (bound && status === SourceReadStatus.Success
+    && metadata.format === 'raw' && metadata.complete === true && !incompleteReceipt(receipt)));
+  return { status, complete, source: error === null ? framed ?? raw : null, error };
 }
 
 const PROSE_FAILURE_PREFIX_CHARS = 512;
@@ -320,6 +354,8 @@ function normalize(raw) {
   const failed = status !== undefined && failedStatus(status);
   const explicitlyUnsuccessful = present(['ok', 'success']).some((entry) => entry === false);
   const explicitlyFailed = present(['is_error', 'isError']).some((entry) => entry === true);
+  const stopped = object.timed_out === true || object.aborted === true
+    || (typeof object.signal === 'string' && object.signal.length > 0);
   let explicitError = null;
   for (const entry of present(['error', 'stderr', 'failure'])) {
     explicitError = nonemptyText(entry);
@@ -330,15 +366,15 @@ function normalize(raw) {
     reportedExit = asI64(entry) ?? (typeof entry === 'string' ? parseI64(entry) : null);
     if (reportedExit !== null) break;
   }
-  if (!expectedStop && (nonzeroExit || failedHttp || failed || explicitlyUnsuccessful || explicitlyFailed
-    || explicitError !== null)) {
+  if (stopped || (!expectedStop && (nonzeroExit || failedHttp || failed || explicitlyUnsuccessful || explicitlyFailed
+    || explicitError !== null))) {
     let error = explicitError;
     for (const key of ['output', 'content', 'result']) {
       if (error !== null) break;
       if (has(object, key)) error = nonemptyText(object[key]);
     }
     if (error === null) {
-      const key = ['exit_code', 'exitCode', 'status_code', 'status', 'state', 'outcome'].find((name) => has(object, name));
+      const key = ['exit_code', 'exitCode', 'status_code', 'status', 'state', 'outcome', 'timed_out', 'aborted', 'signal'].find((name) => has(object, name));
       error = key === undefined ? '' : `${key}=${compactJson(object[key])}`;
     }
     return { ...fromPayload('', error), exit_code: reportedExit !== null && reportedExit !== 0 ? reportedExit : null };

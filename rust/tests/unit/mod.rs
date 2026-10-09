@@ -1,3 +1,7 @@
+#[allow(dead_code)]
+#[path = "../fixtures/observed-plan-event.rs"]
+mod observed_plan_event;
+
 mod agent_cli_entry_point;
 mod architect_notes;
 mod architecture_docs;
@@ -169,6 +173,8 @@ mod server_route_manifest;
 mod shared_dialog;
 mod shared_memory_isolation;
 mod software_project;
+#[path = "../fixtures/source-cache-seed-contract.rs"]
+mod source_cache_seed_contract;
 mod source_module_contracts;
 mod source_provenance;
 mod specification;
@@ -291,3 +297,6 @@ mod solver;
 
 #[path = "web-engine-core/mod.rs"]
 mod web_engine_core;
+
+#[path = "../fixtures/source-read-provenance.rs"]
+mod source_read_provenance;

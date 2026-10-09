@@ -14,6 +14,7 @@ use crate::protocol::ChatMessage;
 #[derive(Debug)]
 pub(super) struct ToolAttempt {
     pub(super) capability: Capability,
+    source_read: Option<super::tool_result::SourceReadObservation>,
     pub(super) succeeded: bool,
     pub(super) detail: String,
     pub(super) arguments: Option<String>,
@@ -22,10 +23,7 @@ pub(super) struct ToolAttempt {
 }
 
 impl ToolAttempt {
-    /// Whether this attempt read a work item through the shell (`gh issue
-    /// view …`, or one of the REST fallbacks of issue #1155). Its successful
-    /// payload is page evidence, while its retry budget remains independent
-    /// from the fetch capability.
+    /// Whether this attempt read a work item through the shell (`gh issue view …`, or one of the REST fallbacks of issue #1155).
     pub(super) fn is_work_item_read(&self) -> bool {
         self.capability == Capability::Run
             && self
@@ -46,27 +44,13 @@ pub struct Progress {
     pub(super) fetched_pages: Vec<(String, String)>,
     pub(super) attempted_fetches: Vec<String>,
     /// Work-item URLs already read through a shell read call.
-    ///
-    /// This is deliberately separate from `attempted_fetches`: an empty or
-    /// failed CLI read should fall back to the fetch capability, not make that
-    /// independent retrieval route appear exhausted.
     attempted_work_item_reads: Vec<String>,
     /// Work-item URLs whose shell read failed, with the reason (issue #1155).
-    ///
-    /// A read that a client echoed without its status — or whose output was a
-    /// banner rather than an issue — is a failed read, and the honest close of
-    /// such a run lists every read tried and its result instead of planning
-    /// against text that was never the issue.
     failed_work_item_reads: Vec<(String, String)>,
     pub(super) search_output: Option<String>,
     /// Every shell result of this turn, in arrival order.
-    ///
-    /// A report runs one command per destination (#839), so keeping only the
-    /// last one would drop the export results the moment the issue was filed.
     pub(super) run_outputs: Vec<String>,
     /// Shell observations keyed by the exact command supplied to the client.
-    /// General plans use this to keep an auxiliary `gh` read from being
-    /// mistaken for their verification command.
     run_observations: Vec<(String, String)>,
     pub(super) search_result: Option<String>,
 }
@@ -97,13 +81,36 @@ impl Progress {
                 continue;
             };
             let raw = message.content.plain_text();
-            let failure = super::tool_result::failure_message(
-                &raw,
-                message.is_error,
-                capability != Capability::Run
-                    && !(capability == Capability::Read
-                        && super::code_artifact::source_from_agent_read_result(&raw).is_some()),
-            );
+            let call = result_tool_call(messages, index);
+            let source_read = call
+                .filter(|call| {
+                    capability == Capability::Read
+                        && classify_tool(&call.function.name) == Some(Capability::Read)
+                        && source_read_path(&call.function.arguments).is_some()
+                        && message
+                            .name
+                            .as_ref()
+                            .is_none_or(|name| name.eq_ignore_ascii_case(&call.function.name))
+                })
+                .map(|call| {
+                    super::tool_result::source_read_observation(
+                        &raw,
+                        message.is_error,
+                        message.source_read.as_ref(),
+                        &source_read_path(&call.function.arguments).unwrap_or_default(),
+                    )
+                });
+            let failure = if let Some(observation) = source_read.as_ref() {
+                observation.error.clone()
+            } else if capability == Capability::Read {
+                message.is_error.then(|| raw.clone())
+            } else {
+                super::tool_result::failure_message(
+                    &raw,
+                    message.is_error,
+                    capability != Capability::Run,
+                )
+            };
             let arguments =
                 result_tool_call(messages, index).map(|call| call.function.arguments.clone());
             let tool = message.name.clone().or_else(|| {
@@ -111,6 +118,7 @@ impl Progress {
             });
             attempts.push(ToolAttempt {
                 capability,
+                source_read,
                 succeeded: failure.is_none(),
                 detail: failure.clone().unwrap_or_else(|| raw.clone()),
                 arguments,
@@ -191,12 +199,6 @@ impl Progress {
     }
 
     /// Whether this turn already tried to fetch `url`.
-    ///
-    /// A fetch the harness echoed back without its `url` -- the argument was
-    /// projected away onto a schema that has no such property -- still counts:
-    /// the planner asked for exactly one page this turn, so a fetch attempt
-    /// that names no URL was the attempt on that page. Reading only the echoed
-    /// URL is what let issue #1133's Kotlin run plan the same call 547 times.
     pub(super) fn attempted_fetch_of(&self, url: &str) -> bool {
         self.attempted_fetches
             .iter()
@@ -217,9 +219,7 @@ impl Progress {
             .any(|attempted| attempted == url)
     }
 
-    /// Why the work item at `url` could not be read, when no read of it
-    /// succeeded (issue #1155). The reason is the latest failure recorded for
-    /// that URL — the last word the retrieval got.
+    /// Why the work item at `url` could not be read, when no read of it succeeded (issue #1155).
     pub(super) fn failed_work_item_read_of(&self, url: &str) -> Option<&str> {
         self.failed_work_item_reads
             .iter()
@@ -228,10 +228,7 @@ impl Progress {
             .map(|(_, reason)| reason.as_str())
     }
 
-    /// Every read attempted for `url` this turn, as report lines — the command
-    /// (or fetch) tried, what it answered, and why it was not page evidence.
-    /// An honest close lists these rather than declaring the issue unread
-    /// without evidence.
+    /// Every read attempted for `url` this turn, as report lines — the command (or fetch) tried, what it answered, and why it was not page evidence.
     pub(super) fn work_item_read_attempts(&self, url: &str) -> Vec<String> {
         // The shell reads' reasons were recorded in scan order alongside the
         // attempts they belong to; only the failed shell reads consumed one,
@@ -324,25 +321,6 @@ impl Progress {
     }
 
     /// The prior attempt one planned call would repeat, if any (issue #1154).
-    ///
-    /// The planner is stateless: it re-derives the next step from the
-    /// transcript, so a step that asks for a call this turn already *completed*
-    /// is the signature of a loop, not a plan -- the earlier result is in the
-    /// transcript, and a planner that still derives the same call ignored it
-    /// (Codex planned the identical `gh issue view` 78 times, every one of them
-    /// successful). A *failed* call is not matched here: re-planning it once is
-    /// the existing bounded retry, and the second identical failure is already
-    /// stopped by [`Progress::identical_failures_of`]. The match is
-    /// byte-identical arguments or the same canonical operand, because the
-    /// protocol layer may project the planner's `command` key onto the
-    /// client's `cmd` before the transcript echoes the call back.
-    ///
-    /// A completed call is a loop only when the transcript made no progress
-    /// since it: every attempt after the latest matching one must itself
-    /// repeat an earlier attempt. A recipe that re-checks a precondition after
-    /// a state-changing step (`test -e a.txt` again once `cp a.txt b.txt` ran,
-    /// confirming the copy kept its source) asks the same question of a
-    /// changed workspace, which is a plan, not a loop.
     pub(super) fn repeated_call(
         &self,
         call: &super::planner::PlannedToolCall,
@@ -464,11 +442,7 @@ impl Progress {
             .and_then(|attempt| attempt.arguments.as_deref())
     }
 
-    /// Whether the recipe the latest successful `capability` attempt opened
-    /// is still progressing: nothing attempted after it has failed. A later
-    /// failure retires the record -- kept armed, it would re-plan the step
-    /// that just failed round after round (the opencode greeting loop, where
-    /// one `hi` search kept re-authorizing dictionary fetches that 403'd).
+    /// Whether the recipe the latest successful `capability` attempt opened is still progressing: nothing attempted after it has failed.
     pub(super) fn latest_success_unstalled(&self, capability: Capability) -> bool {
         let Some(index) = self
             .attempts
@@ -515,10 +489,6 @@ impl Progress {
     }
 
     /// Successful read payload for one concrete workspace path.
-    ///
-    /// Multi-step transformations read both their source and their written
-    /// destination. Keying by call arguments keeps a later read-back from
-    /// being mistaken for the source observation (or vice versa).
     pub(super) fn successful_read_output_for(&self, path: &str) -> Option<&str> {
         self.attempts.iter().rev().find_map(|attempt| {
             (attempt.capability == Capability::Read
@@ -529,6 +499,26 @@ impl Progress {
                     .is_some_and(|arguments| argument_targets(arguments, path)))
             .then_some(attempt.detail.as_str())
         })
+    }
+
+    /// Latest exact current-window source observation, without inventing completion.
+    pub(super) fn source_read_for(
+        &self,
+        path: &str,
+    ) -> Option<&super::tool_result::SourceReadObservation> {
+        self.attempts
+            .iter()
+            .rev()
+            .find(|attempt| {
+                attempt.capability == Capability::Read
+                    && attempt
+                        .arguments
+                        .as_deref()
+                        .and_then(source_read_path)
+                        .as_deref()
+                        == Some(path)
+            })
+            .and_then(|attempt| attempt.source_read.as_ref())
     }
 
     pub(super) fn attempted_write_for(&self, path: &str) -> bool {
@@ -559,10 +549,6 @@ impl Progress {
     }
 
     /// Content supplied to the latest successful write of `path`.
-    ///
-    /// A composed request can deliver one observation to more than one file.
-    /// The later delivery must recover the observation from the earlier write,
-    /// not use the earlier writer's human-facing completion status as data.
     pub(super) fn successful_write_content_for(&self, path: &str) -> Option<String> {
         self.attempts.iter().rev().find_map(|attempt| {
             (attempt.capability == Capability::Write && attempt.succeeded)
@@ -573,9 +559,7 @@ impl Progress {
         })
     }
 
-    /// The arrival index of the latest successful write of `path`, so a
-    /// caller can tell which of two files was written last (issue #1185 R3:
-    /// a fix already rendered into the artifact is not rendered twice).
+    /// The arrival index of the latest successful write of `path`, so a caller can tell which of two files was written last (issue #1185 R3: a fix already rendered into the artifact is not rendered twice).
     pub(super) fn latest_successful_write_index(&self, path: &str) -> Option<usize> {
         self.attempts.iter().rposition(|attempt| {
             attempt.capability == Capability::Write
@@ -588,11 +572,6 @@ impl Progress {
     }
 
     /// The capability of the most recent tool result in this turn.
-    ///
-    /// `completed` is in arrival order, so this distinguishes *which phase* a
-    /// multi-round loop is in — a search that has not been read yet, versus a
-    /// completed read — which [`Progress::done`] alone cannot, since it stays
-    /// true for every later round.
     pub(super) fn last(&self) -> Option<Capability> {
         self.completed.last().copied()
     }
@@ -626,6 +605,19 @@ impl Progress {
     pub(super) fn search_result(&self) -> Option<&str> {
         self.search_result.as_deref()
     }
+}
+
+/// Conflicting naming fields cannot bind an observation.
+fn source_read_path(arguments: &str) -> Option<String> {
+    let value: serde_json::Value = serde_json::from_str(arguments).ok()?;
+    let object = value.as_object()?;
+    let fields = ["path", "filePath", "file_path"]
+        .iter()
+        .filter_map(|key| object.get(*key))
+        .collect::<Vec<_>>();
+    let first = fields.first()?.as_str()?;
+    (!first.trim().is_empty() && fields.iter().all(|field| field.as_str() == Some(first)))
+        .then(|| first.to_owned())
 }
 
 fn argument_path(arguments: &str) -> Option<String> {
@@ -662,9 +654,7 @@ fn argument_targets(arguments: &str, path: &str) -> bool {
     })
 }
 
-/// Resolve which capability the tool result at `index` answers. Prefer the
-/// result's own `name`; otherwise map its `tool_call_id` back to the tool name in
-/// a prior assistant `tool_calls` turn.
+/// Resolve which capability the tool result at `index` answers.
 pub(super) fn result_capability(messages: &[ChatMessage], index: usize) -> Option<Capability> {
     let message = &messages[index];
     if let Some(name) = &message.name
@@ -677,7 +667,9 @@ pub(super) fn result_capability(messages: &[ChatMessage], index: usize) -> Optio
 
 fn result_tool_call(messages: &[ChatMessage], index: usize) -> Option<&crate::protocol::ToolCall> {
     let call_id = messages[index].tool_call_id.as_ref()?;
-    messages[..index]
+    let start = super::planner::evidence_window_start(messages);
+    messages
+        .get(start..index)?
         .iter()
         .rev()
         .flat_map(|prior| prior.tool_calls.iter())
@@ -721,11 +713,7 @@ fn is_work_item_read_command(command: &str) -> bool {
             && rest_read_url(command).is_some()
 }
 
-/// The GitHub work-item URL a shell read command targets, normalized to its
-/// `github.com` form. `gh issue view <url> …` hands its URL over directly;
-/// the REST fallbacks name the API path, which folds back onto the same
-/// `https://github.com/{owner}/{repo}/{kind}/{number}` the plan targets —
-/// REST `pulls/{n}` becomes `pull/{n}`, the way GitHub itself prints it.
+/// The GitHub work-item URL a shell read command targets, normalized to its `github.com` form.
 fn work_item_read_url(command: &str) -> Option<String> {
     issue_view_command_url(command).or_else(|| rest_read_url(command))
 }
@@ -773,12 +761,6 @@ fn rest_read_url(command: &str) -> Option<String> {
 }
 
 /// The exit status a read command printed about itself, when it printed one.
-///
-/// Since issue #1155 every read the planner plans ends with
-/// `printf '__formal_ai_exit=%s' $?`, because clients echo tool output with
-/// the status field dropped — a failed read then looks successful, and its
-/// banner was accepted as an issue body. The last sentinel wins, as the shell
-/// itself does for `$?`.
 fn exit_sentinel(raw: &str) -> Option<i32> {
     raw.lines()
         .filter_map(|line| line.trim().strip_prefix("__formal_ai_exit="))
@@ -796,14 +778,6 @@ fn without_exit_sentinel(text: &str) -> String {
 }
 
 /// Why a work-item read's output is not page evidence, when it is not.
-///
-/// Three gates, in order of authority: the client's own error echo, the exit
-/// status the command printed (which outranks a status-less success echo),
-/// and the shape of the output. The `gh` reads print a title line, a blank
-/// separator, then the body, so output without the separator is a banner, not
-/// an issue; the raw-body `curl` read prints the body alone, so it is held to
-/// non-empty text that does not begin like the JSON error blob the API
-/// returns instead.
 fn work_item_read_failure_reason(
     command: &str,
     raw: &str,

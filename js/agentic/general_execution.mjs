@@ -5,7 +5,6 @@ import { Capability } from './capability.mjs';
 import { isHostedResearchTool, shellCommandTool, toolFor } from './capability_router.mjs';
 import { attach, requestedIn } from './ci_workflow.mjs';
 import { executionRecipeFinalAnswer, planSymbolicCommandReroute } from './command_reroute.mjs';
-import { sourceFromReadResult } from './code_artifact.mjs';
 import { mentionsRoleRaw } from './write_lexicon.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import { plainText } from './content.mjs';
@@ -163,8 +162,9 @@ function planEventStep(plan, progress, toolNames) {
   const leaf = run === null ? null : run.split('__').pop().split(/[./:]/u).pop().toLowerCase();
   const atomicShell = leaf !== null && splitWhitespace(fill('plan-event-shell-aliases', [])).includes(leaf);
   if (read && write && !atomicShell) {
-    const output = progress.successfulReadOutputFor(PLAN_PATH);
-    const prior = output === null ? null : sourceFromReadResult(output);
+    const observation = progress.sourceReadFor(PLAN_PATH);
+    if (observation !== null && observation.error === null && !observation.complete) return { kind: 'unavailable' };
+    const prior = observation !== null && observation.complete ? observation.source : null;
     const expected = progress.successfulWriteContentFor(PLAN_PATH);
     if (expected !== null) {
       if (prior !== null && prior.startsWith(expected)) return { kind: 'observed' };

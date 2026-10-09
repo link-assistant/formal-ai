@@ -5,14 +5,13 @@
 // its methods are camelCase. A `ToolAttempt` is `{capability, succeeded,
 // detail, arguments, tool}` with `arguments` / `tool` null when unknown.
 
-import { sourceFromAgentReadResult } from './code_artifact.mjs';
 import { plainText, rustLines } from './content.mjs';
 import { agenticMessage } from './messages.mjs';
 import { Capability } from './capability.mjs';
 import { writeArguments } from './plan.mjs';
 import { fill } from './work_item_steps.mjs';
 import { classifyTool } from './capability_router.mjs';
-import { commandArgument, failureMessage, normalizedPayload } from './tool_result.mjs';
+import { commandArgument, failureMessage, normalizedPayload, sourceReadObservation } from './tool_result.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import { applyPatchInput } from './crate/protocol_responses_apply_patch.mjs';
 import {
@@ -52,11 +51,19 @@ export class Progress {
       const capability = resultCapability(messages, index);
       if (capability === null) continue;
       const raw = plainText(message.content);
-      const framedFileRead = capability === Capability.Read && sourceFromAgentReadResult(raw) !== null;
-      const failure = failureMessage(raw, Boolean(message.is_error), capability !== Capability.Run && !framedFileRead);
-      const call = resultToolCall(messages, index);
+      const call = resultToolCall(messages, index, currentTurn);
+      const path = call === null ? null : sourceReadPath(call.function.arguments);
+      const boundRead = capability === Capability.Read && call !== null && path !== null
+        && classifyTool(call.function.name) === Capability.Read
+        && (!message.name || eqIgnoreAsciiCase(message.name, call.function.name));
+      const observation = boundRead ? sourceReadObservation(raw, Boolean(message.is_error || message.isError),
+        message.source_read ?? message.sourceRead ?? null, path) : null;
+      const failure = observation !== null ? observation.error : capability === Capability.Read
+        ? (message.is_error || message.isError ? raw : null)
+        : failureMessage(raw, Boolean(message.is_error || message.isError), capability !== Capability.Run);
       progress.attempts.push({
         capability,
+        source_read: observation,
         succeeded: failure === null,
         detail: failure ?? raw,
         arguments: call ? call.function.arguments : null,
@@ -256,6 +263,16 @@ export class Progress {
     return null;
   }
 
+  /** Mirrors Progress::source_read_for: the latest exact current-window source observation. */
+  sourceReadFor(path) {
+    for (let index = this.attempts.length - 1; index >= 0; index -= 1) {
+      const attempt = this.attempts[index];
+      if (attempt.capability === Capability.Read && attempt.arguments !== null
+        && sourceReadPath(attempt.arguments) === path) return attempt.source_read ?? null;
+    }
+    return null;
+  }
+
   /** Mirrors `Progress::successful_read_output_for`. */
   successfulReadOutputFor(path) {
     for (let index = this.attempts.length - 1; index >= 0; index -= 1) {
@@ -359,6 +376,14 @@ function firstStringField(argumentsText, keys) {
 }
 
 /** Mirrors `fn argument_path`. */
+/** Mirrors fn source_read_path: conflicting naming fields do not bind source bytes. */
+function sourceReadPath(argumentsText) {
+  const value = parseJson(argumentsText);
+  if (!isObject(value)) return null;
+  const fields = ['path', 'filePath', 'file_path'].filter((key) => Object.hasOwn(value, key)).map((key) => value[key]);
+  return fields.length > 0 && fields.every((field) => typeof field === 'string' && trim(field) !== '' && field === fields[0]) ? fields[0] : null;
+}
+
 function argumentPath(argumentsText) {
   return firstStringField(argumentsText, ['path', 'filePath', 'file_path']);
 }
@@ -413,10 +438,10 @@ export function resultCapability(messages, index) {
 }
 
 /** Mirrors `fn result_tool_call`. */
-function resultToolCall(messages, index) {
+function resultToolCall(messages, index, start = evidenceWindowStart(messages)) {
   const id = messages[index].tool_call_id;
   if (id === null || id === undefined) return null;
-  for (let at = index - 1; at >= 0; at -= 1) {
+  for (let at = index - 1; at >= start; at -= 1) {
     const call = (messages[at].tool_calls || []).find((candidate) => candidate.id === id);
     if (call) return call;
   }

@@ -26,11 +26,7 @@ pub(super) fn plan_general_change_step(
     general_change_step(messages, tool_names, plan, false, result)
 }
 
-/// The same state machine entered from a resolved work item. Every step is
-/// identical; only the completion differs — the harness voice instead of the
-/// conversational one — because a user who hands over an issue reference
-/// commissioned an artifact, while a user who types the task asked for a
-/// conversation about a change (issue #1133, the literal-file run).
+/// The same state machine entered from a resolved work item.
 pub(super) fn plan_work_item_change_step(
     messages: &[ChatMessage],
     tool_names: &[&str],
@@ -313,9 +309,15 @@ fn plan_event_step(
         tool_for(tool_names, Capability::Write),
     ) && !atomic_shell
     {
-        let prior = progress
-            .successful_read_output_for(PLAN_PATH)
-            .map(super::code_artifact::source_from_read_result);
+        let observation = progress.source_read_for(PLAN_PATH);
+        if observation
+            .is_some_and(|observation| observation.error.is_none() && !observation.complete)
+        {
+            return PlanEventOutcome::Unavailable;
+        }
+        let prior = observation
+            .filter(|observation| observation.complete)
+            .and_then(|observation| observation.source.clone());
         if let Some(expected) = progress.successful_write_content_for(PLAN_PATH) {
             if prior
                 .as_deref()
@@ -382,19 +384,6 @@ fn plan_event_step(
 }
 
 /// Plan the next step from what the fetched work item actually asks for.
-///
-/// The real corpus decides the shape here. The issues Hive Mind dispatches say
-/// *"implement a Hello World program in Scala"* — a described artifact in a
-/// named language, not literal bytes — so the same coding catalog that answers
-/// that request when a user types it directly answers it here, through the
-/// execution recipe its [`SymbolicAnswer`](crate::solver::SymbolicAnswer)
-/// carries. The literal-file composer follows, for a work item that does spell
-/// out a path and its contents.
-///
-/// Returning [`None`] means the work item named nothing this sandbox can
-/// produce — an unsupported language, or prose with no artifact in it at all —
-/// which keeps `planned_not_executed` truthful rather than inventing an
-/// artifact the issue never asked for.
 fn plan_work_item_execution(
     objective: &str,
     messages: &[ChatMessage],
@@ -429,18 +418,6 @@ fn plan_work_item_execution(
 }
 
 /// The step that reads the work item, through whichever client tool reaches it.
-///
-/// GitHub's structured CLI read comes first when the client can run it. Unlike
-/// model-backed `WebFetch` tools, it returns source bytes rather than asking a
-/// nested model to interpret the whole solve request. This keeps the read in
-/// the checkout's credential and prevents a fetched issue from being solved
-/// once inside the fetch tool and then misread as issue text by the outer plan.
-///
-/// A client with no run capability falls back to its fetch tool. That call
-/// carries a data-declared extraction instruction rather than the user's solve
-/// request, so required `prompt` fields cannot recursively execute the task.
-/// A protocol-hosted fetch tool runs server-side, so the fetch itself is the
-/// read and `gh` is never planned ahead of it (issue #904).
 fn plan_work_item_read(
     messages: &[ChatMessage],
     tool_names: &[&str],
@@ -497,10 +474,7 @@ fn plan_work_item_read(
     None
 }
 
-/// The pull-request URL the prompt names beside the work item ("Your prepared
-/// Pull Request: …"), when it names one. It is the last resort of the read
-/// fallbacks (issue #1155): the PR's title and body restate the issue it
-/// resolves.
+/// The pull-request URL the prompt names beside the work item ("Your prepared Pull Request: …"), when it names one.
 fn prepared_pull_reference(messages: &[ChatMessage]) -> Option<String> {
     let prompt = messages
         .iter()
@@ -539,10 +513,7 @@ pub(super) fn issue_view_command(target: &str) -> String {
     )
 }
 
-/// The REST segments of a GitHub work-item URL — `{owner}`, `{repo}`, the REST
-/// spelling of the kind (`issues` / `pulls`), and the number. `None` for a
-/// URL that is not one, in which case the REST fallbacks are simply not
-/// planned for it.
+/// The REST segments of a GitHub work-item URL — `{owner}`, `{repo}`, the REST spelling of the kind (`issues` / `pulls`), and the number.
 fn rest_segments(target: &str) -> Option<(String, String, &'static str, String)> {
     let mut segments = target.trim_end_matches('/').rsplit('/');
     let number = segments.next()?.to_owned();
@@ -557,10 +528,7 @@ fn rest_segments(target: &str) -> Option<(String, String, &'static str, String)>
         .then_some((owner, repo, kind, number))
 }
 
-/// The work-item read that needs no `gh` and no credential: GitHub's REST API
-/// returns the raw body to `curl` for a public repository (issue #1155). It
-/// is the route that serves the very case an unauthenticated `gh` used to end
-/// a session for.
+/// The work-item read that needs no `gh` and no credential: GitHub's REST API returns the raw body to `curl` for a public repository (issue #1155).
 fn issue_rest_read_command(target: &str) -> Option<String> {
     let (owner, repo, kind, number) = rest_segments(target)?;
     Some(super::work_item_steps::fill(
@@ -574,9 +542,7 @@ fn issue_rest_read_command(target: &str) -> Option<String> {
     ))
 }
 
-/// The authenticated REST read, for a checkout whose `gh` answers `api` but
-/// could not render the view (issue #1155). Same two-call shape as the view
-/// read, so its output carries the title-and-body form the reader validates.
+/// The authenticated REST read, for a checkout whose `gh` answers `api` but could not render the view (issue #1155).
 fn issue_api_read_command(target: &str) -> Option<String> {
     let (owner, repo, kind, number) = rest_segments(target)?;
     Some(super::work_item_steps::fill(
@@ -591,11 +557,6 @@ fn issue_api_read_command(target: &str) -> Option<String> {
 }
 
 /// The honest close of a work item no read could deliver (issue #1155).
-///
-/// `None` while any read route is still untried — [`plan_work_item_read`]
-/// owns that order — so the report exists only once the retrieval is
-/// genuinely exhausted, and then lists every read attempted for the target
-/// with the result each one answered with.
 fn work_item_read_failure_report(plan: &GeneralChangePlan, progress: &Progress) -> Option<String> {
     progress.failed_work_item_read_of(&plan.target)?;
     let attempts = progress.work_item_read_attempts(&plan.target);
@@ -611,10 +572,6 @@ fn work_item_read_failure_report(plan: &GeneralChangePlan, progress: &Progress) 
 }
 
 /// The text of the issue this work item names, once the client has fetched it.
-///
-/// Only the page fetched from the plan's own target counts. A repository work
-/// item carries one URL, and answering it with whatever page happened to be
-/// fetched for some other reason this turn would plan against the wrong issue.
 fn repository_work_item_objective(plan: &GeneralChangePlan, progress: &Progress) -> Option<String> {
     progress
         .fetched_pages
@@ -695,14 +652,7 @@ fn finish_general_change(
     )
 }
 
-/// The completion a resolved work item earns: the harness voice the execution
-/// recipe already uses — the artifact created, the command that verified it,
-/// the output that command produced. A literal file the work item spelled out
-/// is an artifact whose side effects belong to the requesting client, so it is
-/// reported through the same recipe shape a composed program is (issue #1133,
-/// the literal-file run). A task the user typed into the conversation keeps
-/// the seeded conversational claim; its words are pinned by issues #905
-/// and #916.
+/// The completion a resolved work item earns: the harness voice the execution recipe already uses — the artifact created, the command that verified it, the output that command produced.
 fn work_item_completion(plan: &GeneralChangePlan, progress: &Progress) -> String {
     let recipe = crate::engine::ExecutionRecipe {
         language: "text".to_owned(),

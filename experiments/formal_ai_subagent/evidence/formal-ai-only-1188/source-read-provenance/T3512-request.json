@@ -1,0 +1,16 @@
+{
+  "id": "T3512",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Repair the general typed source-read observation capability in js/agentic/progress.mjs, js/agentic/tool_result.mjs and js/agentic/general_execution.mjs and their native Rust counterparts. Read the existing implementation and actual receipt contracts first. Bare source Read content containing authored failure vocabulary is not an explicit tool error. Preserve unknown status and completeness, exact current request-window call ID and path identity, explicit outer error and nonzero status, truncation and timeout refusal. A successful transport status must not reclassify its payload as failure prose. Unknown auxiliary source-read persistence must not authorize destructive rewriting or falsely certify completion; safely deliver the independently authorized target with truthful auxiliary gap instead. Add meaningful unchanged-prompt and source/error/stale/path controls. Do not modify requirements, compile Rust, synthesize target implementation wrappers, or claim source success from prose. Report precise unsupported implementation capability honestly.",
+  "unchangedOriginal": "T3501",
+  "before": {
+    "js/agentic/progress.mjs": "f7951df64249a4951e6416b2bc512c32f3f953f5f7510096f3f660e1481339d5",
+    "js/agentic/tool_result.mjs": "454ab8644aee27d76811eaed15241d1d3397c77d93161dabe2209a43c28c1ebf",
+    "js/agentic/general_execution.mjs": "1564b76b0a87101d5858d7fc883fe22726505c12e3cac6e3dffb568f9f0ba697",
+    "rust/src/protocol.rs": "1306ee6db80f800347da9a31c50b10a3448fc1c8bfb477f308af12f6425de970",
+    "rust/src/agentic_coding/progress.rs": "53f6347beb942f3a81c7dbfc9362b6b2bcfecbcd2630c6a549f58cea6122f8fd",
+    "rust/src/agentic_coding/tool_result.rs": "2c654d822b00b5c277bf4e9fc9e1e899aeb44e807cf716bea6b9fd274e52a96b",
+    "rust/src/agentic_coding/tool_result/source_observation.rs": "f468bcd944040bcf67c42329233ec04d309b1bdea8d88b2d92663c422abd5e47",
+    "rust/src/agentic_coding/general_execution.rs": "acf89f074a2cd567511d349425f8fae29c80472e1583a717261cc45c1c1f5c59"
+  }
+}

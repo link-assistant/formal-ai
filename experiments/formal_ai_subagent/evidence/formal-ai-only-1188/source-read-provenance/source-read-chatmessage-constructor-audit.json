@@ -1,0 +1,20 @@
+{
+  "method": "Read-only conservative 1800-character default-initializer candidate screen; inspect actual full candidates before native field integration",
+  "candidates": [
+    {
+      "path": "rust/tests/source/anthropic.rs",
+      "line": 98,
+      "preview": "\n                    role: String::from(\"system\"),\n                    content: MessageContent::Text(text),\n                    thinking_steps: Vec::new(),\n                });\n            }\n        }\n        for message "
+    },
+    {
+      "path": "rust/tests/source/anthropic.rs",
+      "line": 106,
+      "preview": "\n                role: message.role.clone(),\n                content: MessageContent::Text(anthropic_content_to_text(&message.content)),\n                thinking_steps: Vec::new(),\n            });\n        }\n        ChatC"
+    },
+    {
+      "path": "rust/tests/source/protocol.rs",
+      "line": 254,
+      "preview": "\n                role: String::from(\"assistant\"),\n                content: MessageContent::Text(symbolic_answer.answer),\n                thinking_steps,\n            },\n            finish_reason: String::from(\"stop\"),\n   "
+    }
+  ]
+}

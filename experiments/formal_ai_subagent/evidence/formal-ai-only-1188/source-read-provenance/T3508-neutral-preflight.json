@@ -1,0 +1,1 @@
+{"failedBeforeFormalAI":true,"reason":"native fixture anchor assumed rustfmt expanded compact for-array; actual source is compact","effects":0,"corrected":"exact observed anchor [SOURCE.to_owned(),"}

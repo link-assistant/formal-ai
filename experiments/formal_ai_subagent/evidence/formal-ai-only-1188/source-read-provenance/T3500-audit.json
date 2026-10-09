@@ -1,0 +1,26 @@
+{
+  "id": "T3500",
+  "tools": [
+    "read",
+    "read",
+    "read"
+  ],
+  "stop": "final",
+  "answer": "Bounded audit evidence from 3 file(s):\n- `js/agentic/progress.mjs`\n  - this.completed = [];\n  - this.attempts = [];\n  - this.fetched_pages = [];\n  - this.attempted_fetches = [];\n- `rust/src/agentic_coding/progress.rs`\n  No explicit gap marker was observed in the bounded evidence.\n- `rust/tests/fixtures/observed-plan-event.rs`\n  No explicit gap marker was observed in the bounded evidence.\nAbsence of an explicit marker in this bounded evidence does not prove completion.",
+  "before": {
+    "js/agentic/progress.mjs": "631dc456728b72c44ad0882ef2e3cf8145efc531638dc6850ea2f7575b30d473",
+    "rust/src/agentic_coding/progress.rs": "6287d4089aeb8704fdd308f9fdf510f6272049909784a94cc9e0b9f7052e8c5b",
+    "js/agentic/tool_result.mjs": "8cf6c622950bef310994735fec172e2a7b9509621dae1f8c89ae88107a823875",
+    "rust/tests/fixtures/observed-plan-event.rs": "5e06d0a8d3aaff880c34f849ae96ceb09bdaf7a0110bde250418c7be65056dac"
+  },
+  "after": {
+    "js/agentic/progress.mjs": "631dc456728b72c44ad0882ef2e3cf8145efc531638dc6850ea2f7575b30d473",
+    "rust/src/agentic_coding/progress.rs": "6287d4089aeb8704fdd308f9fdf510f6272049909784a94cc9e0b9f7052e8c5b",
+    "js/agentic/tool_result.mjs": "8cf6c622950bef310994735fec172e2a7b9509621dae1f8c89ae88107a823875",
+    "rust/tests/fixtures/observed-plan-event.rs": "5e06d0a8d3aaff880c34f849ae96ceb09bdaf7a0110bde250418c7be65056dac"
+  },
+  "sourceUnchanged": true,
+  "taskBytes": 685,
+  "observationBytes": 73974,
+  "physicalSourceEffects": 0
+}

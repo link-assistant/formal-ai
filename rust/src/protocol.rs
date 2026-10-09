@@ -170,6 +170,9 @@ pub struct ChatMessage {
     /// infer failure from provider-specific prose.
     #[serde(default, alias = "isError", skip_serializing_if = "is_false")]
     pub is_error: bool,
+    /// Provider-owned Read metadata; content remains exact source bytes.
+    #[serde(default, alias = "sourceRead", skip_serializing_if = "Option::is_none")]
+    pub source_read: Option<Value>,
     /// Ordered solver-thinking projection attached to assistant answers.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub thinking_steps: Vec<ThinkingStep>,

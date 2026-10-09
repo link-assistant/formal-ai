@@ -1,0 +1,98 @@
+{
+  "prompt": "Create a file status.txt containing exactly: failed",
+  "source": "general_change_plan\n  id \"general_change_plan_1ab0c125e67679a7\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Create a file status.txt containing exactly: failed\"\n  target \"status.txt\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_7bd0595539da95b3\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to status.txt\"\n    expected_evidence \"workspace file status.txt\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"failed\"\n    command \"cat status.txt\"\n  verification_command \"cat status.txt\"\n",
+  "neutralProbeCorrection": "First read-only probe called nonexistent object linksNotation; corrected to exported planLinksNotation. No production effects.",
+  "results": [
+    {
+      "name": "bare source",
+      "attempt": {
+        "capability": "read",
+        "succeeded": false,
+        "detail": "general_change_plan\n  id \"general_change_plan_1ab0c125e67679a7\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Create a file status.txt containing exactly: failed\"\n  target \"status.txt\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_7bd0595539da95b3\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to status.txt\"\n    expected_evidence \"workspace file status.txt\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"failed\"\n    command \"cat status.txt\"\n  verification_command \"cat status.txt\"",
+        "arguments": "{\"path\":\".formal-ai/general-change-plan.lino\"}",
+        "tool": "read"
+      },
+      "stepOutcome": "failed",
+      "explicitOnlyFailure": null,
+      "certifiedBytes": false
+    },
+    {
+      "name": "framed source",
+      "attempt": {
+        "capability": "read",
+        "succeeded": true,
+        "detail": "<file>\n00001| general_change_plan\n00002|   id \"general_change_plan_1ab0c125e67679a7\"\n00003|   execution_mode \"literal_file\"\n00004|   terminal_state \"executed\"\n00005|   goal \"Create a file status.txt containing exactly: failed\"\n00006|   target \"status.txt\"\n00007|   step 1\n00008|     capability \"Write\"\n00009|     action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n00010|     expected_evidence \"written plan event impulse_7bd0595539da95b3\"\n00011|   step 2\n00012|     capability \"Write\"\n00013|     action \"write the requested content to status.txt\"\n00014|     expected_evidence \"workspace file status.txt\"\n00015|   step 3\n00016|     capability \"Run\"\n00017|     action \"run the request-derived verification command\"\n00018|     expected_evidence \"failed\"\n00019|     command \"cat status.txt\"\n00020|   verification_command \"cat status.txt\"\n00021| \n\n(End of file - total 21 lines)\n</file>",
+        "arguments": "{\"path\":\".formal-ai/general-change-plan.lino\"}",
+        "tool": "read"
+      },
+      "stepOutcome": "failed",
+      "explicitOnlyFailure": null,
+      "certifiedBytes": false
+    },
+    {
+      "name": "typed successful source",
+      "attempt": {
+        "capability": "read",
+        "succeeded": false,
+        "detail": "general_change_plan\n  id \"general_change_plan_1ab0c125e67679a7\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Create a file status.txt containing exactly: failed\"\n  target \"status.txt\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_7bd0595539da95b3\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to status.txt\"\n    expected_evidence \"workspace file status.txt\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"failed\"\n    command \"cat status.txt\"\n  verification_command \"cat status.txt\"",
+        "arguments": "{\"path\":\".formal-ai/general-change-plan.lino\"}",
+        "tool": "read"
+      },
+      "stepOutcome": "succeeded",
+      "explicitOnlyFailure": null,
+      "certifiedBytes": true
+    },
+    {
+      "name": "outer message error",
+      "attempt": {
+        "capability": "read",
+        "succeeded": false,
+        "detail": "general_change_plan\n  id \"general_change_plan_1ab0c125e67679a7\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Create a file status.txt containing exactly: failed\"\n  target \"status.txt\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_7bd0595539da95b3\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to status.txt\"\n    expected_evidence \"workspace file status.txt\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"failed\"\n    command \"cat status.txt\"\n  verification_command \"cat status.txt\"",
+        "arguments": "{\"path\":\".formal-ai/general-change-plan.lino\"}",
+        "tool": "read"
+      },
+      "stepOutcome": "failed",
+      "explicitOnlyFailure": "general_change_plan\n  id \"general_change_plan_1ab0c125e67679a7\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Create a file status.txt containing exactly: failed\"\n  target \"status.txt\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_7bd0595539da95b3\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to status.txt\"\n    expected_evidence \"workspace file status.txt\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"failed\"\n    command \"cat status.txt\"\n  verification_command \"cat status.txt\"",
+      "certifiedBytes": false
+    },
+    {
+      "name": "explicit error",
+      "attempt": {
+        "capability": "read",
+        "succeeded": false,
+        "detail": "permission denied",
+        "arguments": "{\"path\":\".formal-ai/general-change-plan.lino\"}",
+        "tool": "read"
+      },
+      "stepOutcome": "failed",
+      "explicitOnlyFailure": "permission denied",
+      "certifiedBytes": false
+    },
+    {
+      "name": "nonzero",
+      "attempt": {
+        "capability": "read",
+        "succeeded": false,
+        "detail": "general_change_plan\n  id \"general_change_plan_1ab0c125e67679a7\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Create a file status.txt containing exactly: failed\"\n  target \"status.txt\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_7bd0595539da95b3\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to status.txt\"\n    expected_evidence \"workspace file status.txt\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"failed\"\n    command \"cat status.txt\"\n  verification_command \"cat status.txt\"",
+        "arguments": "{\"path\":\".formal-ai/general-change-plan.lino\"}",
+        "tool": "read"
+      },
+      "stepOutcome": "failed",
+      "explicitOnlyFailure": "general_change_plan\n  id \"general_change_plan_1ab0c125e67679a7\"\n  execution_mode \"literal_file\"\n  terminal_state \"executed\"\n  goal \"Create a file status.txt containing exactly: failed\"\n  target \"status.txt\"\n  step 1\n    capability \"Write\"\n    action \"append the composed plan to .formal-ai/general-change-plan.lino\"\n    expected_evidence \"written plan event impulse_7bd0595539da95b3\"\n  step 2\n    capability \"Write\"\n    action \"write the requested content to status.txt\"\n    expected_evidence \"workspace file status.txt\"\n  step 3\n    capability \"Run\"\n    action \"run the request-derived verification command\"\n    expected_evidence \"failed\"\n    command \"cat status.txt\"\n  verification_command \"cat status.txt\"",
+      "certifiedBytes": false
+    },
+    {
+      "name": "unframed provider diagnostic",
+      "attempt": {
+        "capability": "read",
+        "succeeded": true,
+        "detail": "Permission denied",
+        "arguments": "{\"path\":\".formal-ai/general-change-plan.lino\"}",
+        "tool": "read"
+      },
+      "stepOutcome": "unreported",
+      "explicitOnlyFailure": null,
+      "certifiedBytes": false
+    }
+  ]
+}

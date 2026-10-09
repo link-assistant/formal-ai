@@ -1,0 +1,18 @@
+{
+  "id": "T3504",
+  "tools": [
+    "bash"
+  ],
+  "stop": "final",
+  "exact": true,
+  "writes": [
+    "js/agentic/progress.mjs",
+    "js/agentic/general_execution.mjs",
+    "rust/src/agentic_coding/tool_result.rs",
+    "rust/src/agentic_coding/tool_result/source_observation.rs",
+    "rust/src/agentic_coding/progress.rs",
+    "rust/src/agentic_coding/general_execution.rs",
+    "docs/case-studies/pull-request-1188/source-read-observations.md"
+  ],
+  "nativeLineDelta": -65
+}
