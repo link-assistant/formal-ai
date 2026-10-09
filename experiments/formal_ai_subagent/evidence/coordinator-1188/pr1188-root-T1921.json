@@ -1,0 +1,17 @@
+{
+  "identifier": "T1921",
+  "purpose": "Closest checked measurement for carried native formalization-evidence cases; passing ratchet never lowered.",
+  "prompt": "Run node scripts/check-specification-in-javascript.mjs --write",
+  "result": {
+    "transcript": [
+      {
+        "tool": "bash",
+        "arguments": "{\"command\":\"node scripts/check-specification-in-javascript.mjs --write\"}",
+        "result": "specification in JavaScript: 1169 tests, 136 carried, 125 pass in the worker\nwrote data/meta/specification-javascript-gaps.lino\n"
+      }
+    ],
+    "answer": "The `node scripts/check-specification-in-javascript.mjs --write` command completed. Output:\n\n```text\nspecification in JavaScript: 1169 tests, 136 carried, 125 pass in the worker\nwrote data/meta/specification-javascript-gaps.lino\n```",
+    "stop": "final"
+  },
+  "ok": true
+}

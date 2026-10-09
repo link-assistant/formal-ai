@@ -1,0 +1,98 @@
+[
+  {
+    "from": "/private/tmp/pr1188-root-T1932-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1932-request.json",
+    "sha256": "3787e7b9ca5be334b4a39bf51e5e7194969209023d3f6bf5361462f2529df15e",
+    "bytes": 5269
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T1932.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1932.json",
+    "sha256": "95e142c41689ab5e3c939ad4333167eb86e259c648733c441528ecf683800dd8",
+    "bytes": 11348
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T1933-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1933-request.json",
+    "sha256": "6afa2242aa53b5b3b7133e2c5bbe66d06297a337287f807ad9188efb22257de4",
+    "bytes": 3195
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T1933.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1933.json",
+    "sha256": "96332299f4661ae48cad3d823a1c81775554075416a12ae3bd8fb4a8b666e8a5",
+    "bytes": 35491
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T1934-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1934-request.json",
+    "sha256": "c06473b69a3d17c2d52e8dc25a7315ff418e9016348594f3a118fe10972577f0",
+    "bytes": 1140
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T1934.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1934.json",
+    "sha256": "33b03dd38057e08b6a6c3c1e21976ce8234a4de8fc8bb3d12f9139ece8d1429c",
+    "bytes": 3617
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T1935-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1935-request.json",
+    "sha256": "55e4366bcdbf7239e41f7de37809497503706e85c639888ae3668af55ba8eda8",
+    "bytes": 958
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T1935.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1935.json",
+    "sha256": "54137adfae43f1b0b8027400da3be28a1b7492e6fbcc763082c96479d7973044",
+    "bytes": 3059
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T1936-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1936-request.json",
+    "sha256": "f99eb35a1888a5e0b54a4916597d993ce4eec239c2b1fea155236bac5843c404",
+    "bytes": 3195
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T1936.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1936.json",
+    "sha256": "bb5c6344476c92e67daa76dde8a3b3e541428d16d6e61ce03994b9a4fa7710c4",
+    "bytes": 36789
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T1937-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1937-request.json",
+    "sha256": "9a5db0b425334d2de104ef0fcd0d0a7039b5e1b84c60f26fff9274ca24561be7",
+    "bytes": 1692
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T1937.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1937.json",
+    "sha256": "43b8d5cf7cb2d1bc1684f68e13183d30d9ee23a678b55c81fbee6a6cca10c3af",
+    "bytes": 5288
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T1938-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1938-request.json",
+    "sha256": "a5540b77b5b984c8fd42125ae879b6179b8bff6cdfcf0c2e441cd73fcfa05b40",
+    "bytes": 3195
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T1938.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1938.json",
+    "sha256": "53625a6b0a8eb1e50614c6848b1712567dae84208460c2fe3790f9cf60a8f841",
+    "bytes": 121472
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T1939-request.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1939-request.json",
+    "sha256": "668d31dceff2806eb993ca86d8a27cdfeb50716765673ab6dd4d4ba6b3871de8",
+    "bytes": 439
+  },
+  {
+    "from": "/private/tmp/pr1188-root-T1939.json",
+    "to": "experiments/formal_ai_subagent/evidence/coordinator-1188/pr1188-root-T1939.json",
+    "sha256": "b40bda225ded102a616ce0b7bc9cf452aef92d244234c39dc7a2677f24dd55f1",
+    "bytes": 1741
+  }
+]
