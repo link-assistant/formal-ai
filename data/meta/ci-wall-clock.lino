@@ -7,15 +7,15 @@
 #
 # Discovery result (2026-10-08):
 #   issue-1028-agent-ladder.yml: 225 min
-#     plan(30m) -> ladder(180m) -> compare(15m)
+#     plan(30m) -> ladder(135m) -> leaf-evidence(15m) -> composites(30m) -> compare(15m)
 #   release.yml: 140 min
 #     detect-changes(5m) -> build-artifacts(20m) -> test(90m)
 #       -> build(20m) -> pipeline-status(5m)
 #
-# The ladder job ceiling (180 min static) covers the one-leg all-mode
-# (schedule/dispatch); on pull_request the plan generates 16 parallel
-# legs of cap=45 each so the actual PR ceiling is plan(30)+leg(45)+compare(15)=90 min.
-# The static 180-min timeout is the measurable worst-case for the gate.
+# The ladder's all-mode corpus is split into 31 independent primary legs and
+# 16 single-composite legs consuming validated current-run leaf artifacts.
+# Its static backstops sum to 225 minutes; cold all-mode timings still have to
+# establish whether every primary leg can retire its recorded exception.
 #
 # Push-only jobs (auto-release, manual-release, build-pages, deploy-pages,
 # changelog-pr) and workflow_dispatch-only jobs (manual-release, changelog-pr)
@@ -25,6 +25,6 @@ ci_wall_clock pull_request_pipeline
   measured_date "2026-10-08"
   ceiling_minutes 225
   workflow ".github/workflows/issue-1028-agent-ladder.yml"
-  chain "plan(30m)->ladder(180m)->compare(15m)"
-  note "Ladder worst-case ceiling: the plan generates either 16 parallel legs of cap=45 (depth-5 PR mode, effective PR wall=90m) or a single leg of cap=180 (all-mode). Static timeout-minutes=180 is the measurable worst-case. Next longest PR workflow: release.yml at 140m via detect-changes(5m)->build-artifacts(20m)->test(90m)->build(20m)->pipeline-status(5m)."
+  chain "plan(30m)->ladder(135m)->leaf-evidence(15m)->composites(30m)->compare(15m)"
+  note "The all-mode ladder preserves all 63 nodes across 31 primary legs and 16 artifact-fed composites. Its static DAG remains 225 minutes: plan 30 + primary 135 + validated leaf join15 + composite30 + compare 15. This ceiling is a backstop, not an observed runtime; actual cold all-mode measurements are required before retiring the primary exception. PR depth-five uses 16 independent leaf-pair legs and skips the composite wave."
   requirement "R1085-16"

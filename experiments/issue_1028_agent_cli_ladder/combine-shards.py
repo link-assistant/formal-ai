@@ -1,140 +1,92 @@
 #!/usr/bin/env python3
-"""Join the evidence of a sharded Agent CLI ladder run into one run.
-
-PR #1188: the depth-five ladder ran its 32 leaves one after another in a single
-job (72-82 minutes on runs 37652295748 and later). Leaves are independent --
-each starts from a reset worktree, and only a depth-4 composite reads its
-children's effects -- so `.github/workflows/issue-1028-agent-ladder.yml` runs
-them as sixteen `NODE_FILTER` subtrees of two leaves each. Every shard writes
-the same evidence layout `run.sh` always wrote; this script joins them back
-into exactly that layout, so the ratchet comparison and the uploaded artifact
-read one run as before.
-
-The join refuses, with a non-zero exit, anything that is not one whole run:
-a shard count that differs from the plan, a shard without its result, shards
-that disagree about the depth or the authored-rules mode, or two shards that
-claim the same node. A ladder that silently lost a shard would select fewer
-than 32 leaves, and the comparison only judges a full-width run -- so a lost
-shard would otherwise turn the ratchet off instead of failing it.
-
-Usage: combine-shards.py <shards-dir> <out-dir> <expected-shard-count>
-  shards-dir  one sub-directory per shard, each a shard's `$OUT`
-  out-dir     where the joined evidence is written
-"""
-
+"""Join exact planned node evidence, preserving the complete ladder corpus."""
+import json
+import os
 import shutil
 import sys
 from pathlib import Path
-
-FIELDS = (
-    "requested_depth",
-    "node_filter",
-    "authored_rules_enabled",
-    "selected_nodes",
-    "failures",
-    "deepest_passing_level",
-    "leaf_nodes_selected",
-    "leaf_nodes_passing",
-    "leaf_nodes_passing_without_authored_rules",
-)
-SUMMED = (
-    "selected_nodes",
-    "failures",
-    "leaf_nodes_selected",
-    "leaf_nodes_passing",
-    "leaf_nodes_passing_without_authored_rules",
-)
+from evidence import FIELDS, IDENTITY, counts, fail, selected, validate
 
 
-def read_result(path: Path) -> dict:
-    result = {}
-    for line in path.read_text().splitlines():
-        parts = line.strip().split(" ", 1)
-        if len(parts) == 2 and parts[0] in FIELDS:
-            result[parts[0]] = parts[1].strip().strip('"')
-    return result
-
-
-def fail(message: str) -> None:
-    print(f"::error title=Agent CLI ladder shards do not form one run::{message}")
-    raise SystemExit(1)
-
-
-def main() -> None:
-    if len(sys.argv) != 4:
-        fail("usage: combine-shards.py <shards-dir> <out-dir> <expected-shard-count>")
+def main():
+    if len(sys.argv) not in (4, 5):
+        fail("usage: combine-shards.py <shards-dir> <out-dir> <expected-count> [plan.json]")
     shards_dir, out_dir, expected = Path(sys.argv[1]), Path(sys.argv[2]), int(sys.argv[3])
     shards = sorted(path.parent for path in shards_dir.glob("*/ladder-result.lino"))
-    if len(shards) != expected:
-        fail(f"the plan has {expected} shard(s), {len(shards)} wrote a ladder-result.lino")
-
-    results = [read_result(shard / "ladder-result.lino") for shard in shards]
-    for key in ("requested_depth", "authored_rules_enabled"):
-        values = {result.get(key) for result in results}
-        if len(values) != 1:
-            fail(f"shards disagree on {key}: {sorted(map(str, values))}")
-    filters = [result.get("node_filter", "none") for result in results]
-    if len(set(filters)) != len(filters):
-        fail(f"two shards measured the same subtree: {filters}")
-
+    if expected < 1 or len(shards) != expected:
+        fail(f"the plan has {expected} shard(s), {len(shards)} wrote a result")
+    measurements = [validate(shard) for shard in shards]
+    identity = measurements[0][0]
+    if any(any(values[key] != identity[key] for key in IDENTITY) for values, *_ in measurements):
+        fail("shards disagree on source tree, corpus or authored-rules identity")
+    for key in ("source_commit", "source_tree"):
+        expected_identity = os.environ.get("LADDER_" + key.upper())
+        if not expected_identity or identity[key] != expected_identity:
+            fail(f"evidence {key} does not match the actual joining checkout")
+    tree = measurements[0][1]
+    tuples = [(values["requested_depth"], values["node_filter"]) for values, *_ in measurements]
+    if len(tuples) != len(set(tuples)):
+        fail("two shards measured the same depth/subtree")
+    if len(sys.argv) == 5:
+        plan = json.loads(Path(sys.argv[4]).read_text())
+        legs = plan["legs"] + plan["composites"]
+        declared = {(str(leg["depth"]), leg["filter"]): set(leg["nodes"]) for leg in legs}
+        if len(declared) != len(legs) or set(tuples) != set(declared):
+            fail("evidence legs differ from the exact planned depth/subtree set")
+        for values, _, chosen, _ in measurements:
+            if chosen != declared[(values["requested_depth"], values["node_filter"])]:
+                fail("a leg selected a different node set than planned")
+        mode, prefix = plan["requested_depth"], plan["node_filter"]
+        expected_nodes = selected(tree, mode, prefix)
+        if set(plan["expected_nodes"]) != expected_nodes or len(plan["expected_nodes"]) != len(expected_nodes):
+            fail("the plan itself loses or repeats corpus nodes")
+    else:
+        depths = {values["requested_depth"] for values, *_ in measurements}
+        if len(depths) != 1:
+            fail("mixed-depth evidence requires an exact plan")
+        mode = depths.pop()
+        prefix = tuples[0][1] if len(tuples) == 1 else "none"
+        expected_nodes = selected(tree, mode, prefix)
+    seen, verdicts, selected_rows, run_rows, duration_rows = set(), {}, [], [], []
+    for shard, (_, _, chosen, observed) in zip(shards, measurements):
+        if seen & chosen:
+            fail(f"overlapping measured nodes: {sorted(seen & chosen)}")
+        seen |= chosen
+        verdicts.update(observed)
+        selected_rows.extend((shard / "selected.tsv").read_text().splitlines())
+        run_rows.extend((shard / "run.log").read_text().splitlines())
+        duration_rows.extend((shard / "durations.tsv").read_text().splitlines())
+    if seen != expected_nodes:
+        fail(f"missing nodes {sorted(expected_nodes - seen)}; extra nodes {sorted(seen - expected_nodes)}")
+    # Validate everything before copying any evidence into the joined output.
     out_dir.mkdir(parents=True, exist_ok=True)
-    seen_nodes: dict[str, Path] = {}
-    selected_rows: list[str] = []
-    run_rows: list[str] = []
-    for shard in shards:
-        rows = (shard / "selected.tsv").read_text().splitlines()
-        for row in rows:
-            node = row.split("\t", 1)[0]
-            if node in seen_nodes:
-                fail(f"node {node} was measured by {seen_nodes[node].name} and {shard.name}")
-            seen_nodes[node] = shard
+    for shard, (_, _, chosen, _) in zip(shards, measurements):
+        for node in sorted(chosen):
             if (shard / node).is_dir():
                 shutil.copytree(shard / node, out_dir / node, dirs_exist_ok=False)
-        selected_rows.extend(rows)
-        run_rows.extend((shard / "run.log").read_text().splitlines())
     for shared in ("tree.tsv", "leaves.tsv"):
-        source = shards[0] / shared
-        if source.is_file():
-            shutil.copyfile(source, out_dir / shared)
+        shutil.copyfile(shards[0] / shared, out_dir / shared)
+    selected_rows.sort(key=lambda row: (-tree[row.split("\t", 1)[0]][0], row.split("\t", 1)[0]))
     (out_dir / "selected.tsv").write_text("".join(f"{row}\n" for row in selected_rows))
     (out_dir / "run.log").write_text("".join(f"{row}\n" for row in run_rows))
-
-    combined = {
-        "requested_depth": results[0]["requested_depth"],
-        # One shard is the run as dispatched; many shards split the whole tree.
-        "node_filter": filters[0] if len(results) == 1 else "none",
-        "authored_rules_enabled": results[0]["authored_rules_enabled"],
-    }
-    for key in SUMMED:
-        present = [result[key] for result in results if key in result]
-        if present:
-            if len(present) != len(results):
-                fail(f"only some shards report {key}")
-            combined[key] = str(sum(int(value) for value in present))
-    # A level passed only when it passed in every shard; in a fixed-depth run
-    # each shard reports that depth or none.
-    levels = {result.get("deepest_passing_level", "none") for result in results}
-    combined["deepest_passing_level"] = levels.pop() if len(levels) == 1 else "none"
-
-    lines = ["ladder_result"]
-    lines.extend(f'  {key} "{combined[key]}"' for key in FIELDS if key in combined)
+    (out_dir / "durations.tsv").write_text("".join(f"{row}\n" for row in duration_rows))
+    combined = {key: identity[key] for key in IDENTITY}
+    combined.update(requested_depth=mode, node_filter=prefix)
+    combined.update(counts(tree, seen, verdicts, identity["authored_rules_enabled"]))
+    lines = ["ladder_result"] + [f'  {key} "{combined[key]}"' for key in FIELDS if key in combined]
     (out_dir / "ladder-result.lino").write_text("\n".join(lines) + "\n")
-
-    table = "\n".join(
-        "| " + " | ".join(row.split("\t", 2)) + " |"
-        for row in run_rows
-        if row.count("\t") == 2
-    )
+    table = "\n".join("| " + " | ".join(row.split("\t", 2)) + " |" for row in run_rows if row.count("\t") == 2)
     (out_dir / "README.md").write_text(
         "# Agent CLI binary-tree ladder run\n\n"
-        f"Joined from {len(shards)} shard(s) (`combine-shards.py`, PR #1188).\n\n"
+        f"Joined from {len(shards)} exact planned leg(s).\n\n"
         + "".join(f"- {key.replace('_', ' ')}: {combined[key]}\n" for key in FIELDS if key in combined)
-        + "\n| node | verdict | detail |\n| --- | --- | --- |\n"
-        + (table or "| - | - | no node ran |")
-        + "\n"
-    )
+        + "\n| node | verdict | detail |\n| --- | --- | --- |\n" + table + "\n")
     print((out_dir / "ladder-result.lino").read_text(), end="")
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except (ValueError, OSError, KeyError) as error:
+        print(f"::error title=Agent CLI ladder evidence does not form one run::{error}", file=sys.stderr)
+        raise SystemExit(1)

@@ -141,6 +141,7 @@ NODES="$OUT/tree.tsv"
 RUN_LOG="$OUT/run.log"
 : > "$NODES"
 : > "$RUN_LOG"
+: > "$OUT/durations.tsv"
 declare -A VERIFIED_EFFECTS=()
 
 # Issue #1085 (D2.3, D4): the leaf table is committed beside this script so
@@ -275,6 +276,18 @@ else
 fi
 [[ "$selected_count" -eq "$expected" ]] || { echo "expected $expected selected nodes, got $selected_count" >&2; exit 1; }
 
+# Composite legs consume only validated evidence from this same source tree.
+if [[ -n "${LADDER_CHILD_EVIDENCE:-}" ]]; then
+  python3 "$ROOT/experiments/issue_1028_agent_cli_ladder/import-children.py" \
+    "$LADDER_CHILD_EVIDENCE" "$OUT" "$BASE_SHA" \
+    "$(git -C "$ROOT" rev-parse 'HEAD^{tree}')" \
+    "$([[ "$AUTHORED_RULES" == enabled ]] && echo true || echo false)" \
+    > "$OUT/imported-children.tsv"
+  while IFS=$'\t' read -r child_id child_effect; do
+    VERIFIED_EFFECTS["$child_id"]="$child_effect"
+  done < "$OUT/imported-children.tsv"
+fi
+
 run_one() {
   local id depth prompt criterion left right criterion_path criterion_marker criterion_guard row work session_dir server_pid port status proof effect config node_number full_prompt effect_contract verifier_status verifier_verdict
   # Tab is whitespace to Bash, so IFS would collapse the two empty child fields
@@ -321,6 +334,7 @@ PY
     fi
     # One line per node in the job log, so a ninety-minute step is readable
     # while it runs rather than blank until it ends (plan 01 step 4).
+    printf '%s\t%s\t%s\n' "$id" "$depth" "$((SECONDS - started))" >> "$OUT/durations.tsv"
     echo "node $id done in $((SECONDS - started))s"
     return 0
   }
@@ -513,11 +527,18 @@ for level in 5 4 3 2 1 0; do
     break
   fi
 done
+evidence_digest() {
+  python3 -c 'import hashlib,sys; print(hashlib.sha256(open(sys.argv[1], "rb").read()).hexdigest())' "$1"
+}
 cat > "$OUT/ladder-result.lino" <<EOF
 ladder_result
   requested_depth "$TREE_DEPTH"
   node_filter "${NODE_FILTER:-none}"
   authored_rules_enabled "$([[ "$AUTHORED_RULES" == enabled ]] && echo true || echo false)"
+  source_commit "$BASE_SHA"
+  source_tree "$(git -C "$ROOT" rev-parse 'HEAD^{tree}')"
+  tree_sha256 "$(evidence_digest "$OUT/tree.tsv")"
+  leaves_sha256 "$(evidence_digest "$OUT/leaves.tsv")"
   selected_nodes "$selected_count"
   failures "$failed"
   deepest_passing_level "$deepest"
