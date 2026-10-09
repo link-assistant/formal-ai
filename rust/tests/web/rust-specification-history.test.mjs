@@ -40,9 +40,9 @@ test('real free-history native functions retain every original assertion or reje
       macros += count;
     }
   }
-  assert.equal(supported, 18);
-  assert.equal(macros, 51);
-  assert.equal(unsupported, 1);
+  assert.equal(supported, 19);
+  assert.equal(macros, 59);
+  assert.equal(unsupported, 0);
 });
 
 for (const name of ['solve_with_history_recalls_name_across_turns', 'solve_with_history_recalls_last_question',

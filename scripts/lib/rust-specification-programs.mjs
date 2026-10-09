@@ -56,7 +56,7 @@ function contextOf(source, file, root) {
   const environment = new Map();
   const schemas = new Map();
   const fixtures = [file ? { file, sha256: hash(source) } : { source, sha256: hash(source) }];
-  const context = { calls, environment, schemas };
+  const context = { calls, environment, schemas, schemaWitnesses: [] };
   // Local functions shadow imported names even when their body is unsupported.
   const functions = nativeFunctions(tokens);
   for (const fn of functions) calls.delete(fn.name);
@@ -105,16 +105,50 @@ function contextOf(source, file, root) {
   return { ...context, fixtures };
 }
 
-function recordSchema(tokens) {
+function recordHeader(tokens, cursor) {
+  const name = tokens[cursor + 1];
+  if (name?.kind !== 'word') throw new Error('unsupported native record declaration');
+  let open = cursor + 2;
+  const lifetimes = [];
+  if (tokens[open]?.text === '<') {
+    const start = ++open;
+    while (open < tokens.length && tokens[open].text !== '>') open += 1;
+    if (open === tokens.length) throw new Error('unclosed native lifetime declaration');
+    const declaration = tokens.slice(start, open);
+    if (declaration[0]?.text === ',' || declaration.some((token, index) => token.text === ',' && declaration[index - 1]?.text === ',')) throw new Error('empty native lifetime parameter');
+    const parameters = split(declaration);
+    if (!parameters.length) throw new Error('empty native lifetime declaration');
+    for (const parameter of parameters) {
+      if (parameter.length !== 2 || parameter[0].text !== "'" || parameter[1].kind !== 'word'
+        || ['static', '_'].includes(parameter[1].text)) throw new Error('unsupported native lifetime parameter');
+      if (lifetimes.includes(parameter[1].text)) throw new Error('duplicate native lifetime parameter');
+      lifetimes.push(parameter[1].text);
+    }
+    open += 1;
+  }
+  if (tokens[open]?.text !== '{') throw new Error('unsupported native record declaration');
+  return { name: name.text, open, lifetimes };
+}
+
+function recordSchema(tokens, lifetimes) {
   const schema = {};
+  const fields = [];
   for (const field of split(tokens)) {
     if (field[0]?.kind !== 'word' || field[1]?.text !== ':') throw new Error('unsupported native record declaration');
-    const type = field.slice(2).map(token => token.text).join('');
-    if (!['&str', "&'staticstr", 'String'].includes(type)) throw new Error('unsupported native record field type ' + type);
+    const type = field.slice(2);
+    let lifetime = null;
+    const borrowed = type[0]?.text === '&';
+    if (borrowed && type[1]?.text === "'" && type.length === 4 && type[2].kind === 'word' && type[3].text === 'str') {
+      lifetime = type[2].text;
+      if (lifetime !== 'static' && !lifetimes.includes(lifetime)) throw new Error('undeclared native field lifetime ' + lifetime);
+    } else if (!(type.length === 2 && borrowed && type[1].text === 'str')
+      && !(type.length === 1 && type[0].text === 'String')) throw new Error('unsupported native record field type ' + type.map(token => token.text).join(''));
     if (Object.hasOwn(schema, field[0].text)) throw new Error('duplicate native record field');
     schema[field[0].text] = 'string';
+    fields.push({ name: field[0].text, type: 'string', borrowed, lifetime });
   }
-  return schema;
+  for (const lifetime of lifetimes) if (!fields.some(field => field.lifetime === lifetime)) throw new Error('unused native lifetime parameter ' + lifetime);
+  return { schema, fields };
 }
 
 const diagnosticOnly = value => ['literal', 'reference'].includes(value.kind)
@@ -124,10 +158,11 @@ function bodyProgram(tokens, context) {
   const steps = [];
   for (let cursor = 0; cursor < tokens.length;) {
     if (tokens[cursor].text === 'struct') {
-      const name = tokens[cursor + 1]?.text;
-      if (tokens[cursor + 2]?.text !== '{') throw new Error('unsupported native record declaration');
-      const end = close(tokens, cursor + 2);
-      context.schemas.set(name, recordSchema(tokens.slice(cursor + 3, end)));
+      const header = recordHeader(tokens, cursor);
+      const end = close(tokens, header.open);
+      const record = recordSchema(tokens.slice(header.open + 1, end), header.lifetimes);
+      context.schemas.set(header.name, record.schema);
+      context.schemaWitnesses.push({ name: header.name, declaredLifetimes: header.lifetimes, fields: record.fields });
       cursor = end + 1;
       if (tokens[cursor]?.text === ';') cursor += 1;
       continue;
@@ -201,7 +236,7 @@ export function typedProgramOf(body, { source, file = '', root = '' }) {
     if (usesHistoryProducer(steps)) context.fixtures.push(...historySourceContract(root));
     const nativeAssertions = body.filter((token, index) => assertionNames.has(token.text) && body[index + 1]?.text === '!').length;
     if (!nativeAssertions || assertionCount(steps) !== nativeAssertions) throw new Error('native assertion conservation failure');
-    return { program: { steps, initial, fixtures: context.fixtures, nativeAssertions } };
+    return { program: { steps, initial, fixtures: context.fixtures, schemaWitnesses: context.schemaWitnesses, nativeAssertions } };
   } catch (error) { return { reason: error.message }; }
 }
 
