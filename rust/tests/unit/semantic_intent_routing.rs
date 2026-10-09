@@ -7,7 +7,7 @@
 //! object type to 20. Every assertion that was here before stays exactly as it
 //! was — the widening strictly adds (plan 00 section 6.7).
 use formal_ai::FormalAiEngine;
-use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
+use formal_ai::agentic_coding::plan_chat_step;
 use formal_ai::protocol::ChatMessage;
 
 fn call(prompt: &str) -> (String, serde_json::Value) {
@@ -21,10 +21,12 @@ fn call(prompt: &str) -> (String, serde_json::Value) {
     call_with_tools(prompt, &tools)
 }
 
+#[path = "../fixtures/first-workspace-call.rs"]
+mod first_workspace_call;
 #[path = "../fixtures/observed-plan-tools.rs"]
 mod observed_plan_tools;
 fn call_with_tools(prompt: &str, tools: &[&str]) -> (String, serde_json::Value) {
-    observed_plan_tools::first_workspace_call(prompt, tools)
+    first_workspace_call::first_workspace_call(prompt, tools)
 }
 
 #[test]
