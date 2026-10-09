@@ -117,3 +117,59 @@ fn rust_creator_fact_is_available_across_supported_languages() {
         );
     }
 }
+
+#[test]
+fn seeded_coreference_contexts_normalize_terminal_multilingual_surfaces() {
+    let solver = UniversalSolver::default();
+    let original = "Write me a Rust program that lists the files in the current directory";
+    let first = solver.solve(original);
+    assert_eq!(first.intent, "write_program");
+    let history = [
+        ConversationTurn::user(original),
+        ConversationTurn::assistant(first.answer),
+    ];
+    let prompts = [
+        "Explain the program?",
+        "Объясни результаты?",
+        "Объясни программу.",
+        "इन परिणामों?",
+        "यह प्रोग्राम?",
+        "解释结果。",
+        "解释程序？",
+    ];
+    for prompt in prompts {
+        let reply = solver.solve_with_history(prompt, &history);
+        assert_eq!(reply.intent, "coreference_program_artifact", "{}", prompt);
+        assert!(
+            reply.links_notation.contains("coreference:resolved"),
+            "{}",
+            prompt
+        );
+    }
+}
+
+#[test]
+fn seeded_coreference_contexts_reject_embedded_word_surfaces() {
+    let solver = UniversalSolver::default();
+    let original = "Write me a Rust program that lists the files in the current directory";
+    let first = solver.solve(original);
+    assert_eq!(first.intent, "write_program");
+    let history = [
+        ConversationTurn::user(original),
+        ConversationTurn::assistant(first.answer),
+    ];
+    for prompt in [
+        "Who created with?",
+        "Explain programming?",
+        "xрезультатыx",
+        "xपरिणामोंx",
+        "itself",
+    ] {
+        let reply = solver.solve_with_history(prompt, &history);
+        assert!(
+            !reply.links_notation.contains("coreference:resolved"),
+            "{}",
+            prompt
+        );
+    }
+}

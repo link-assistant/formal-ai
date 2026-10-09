@@ -6,9 +6,9 @@ function tryJavaScriptToolRequest(prompt, preferences) {
   if (preferences && preferences.agentMode) return tryJavaScriptExecution(prompt);
   const capability = "tool:javascript_execution";
   const denial = nlToolText("nl_tool_agent_mode_required", detectLanguage(prompt), { capability });
-  return nlToolRefusal(nlToolText("nl_tool_requested_source", "en", { denial, program }), [
+  return Object.assign(nlToolRefusal(nlToolText("nl_tool_requested_source", "en", { denial, program }), [
     "policy:agent_mode_required_for_tools:" + capability,
     "execution_status:javascript:refused",
     "execution_environment:agent-permission-gate",
-  ]);
+  ]), { solverEvents: [{ kind: "policy:agent_mode_required_for_tools", payload: capability }] });
 }

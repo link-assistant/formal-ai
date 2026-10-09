@@ -442,14 +442,13 @@ fn matching_coreference_pronoun<'a>(
     normalized: &str,
 ) -> Option<&'a Pronoun> {
     seeds.pronouns.iter().find(|pronoun| {
-        pronoun
-            .contexts
-            .iter()
-            .any(|context| !context.is_empty() && normalized.contains(context.as_str()))
-            || pronoun
-                .starts_with
-                .iter()
-                .any(|prefix| !prefix.is_empty() && normalized.starts_with(prefix.as_str()))
+        pronoun.contexts.iter().any(|context| {
+            let surface = crate::engine::normalize_prompt(context);
+            crate::seed::surface_present(normalized, &surface)
+        }) || pronoun.starts_with.iter().any(|prefix| {
+            let surface = crate::engine::normalize_prompt(prefix);
+            normalized.starts_with(&surface) && crate::seed::surface_present(normalized, &surface)
+        })
     })
 }
 

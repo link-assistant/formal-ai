@@ -318,14 +318,14 @@ function tryWriteProgram(prompt, history, responseLanguage, composition) {
         ? `legacy_intent:hello_world_${language}`
         : `legacy_intent:write_program_${task}_${language}`,
       `execution_status:${language}:${ranInSandbox ? "ran" : "unavailable"}`,
-      // Issue #324 R4/R6: surface the substitution plan when a follow-up
-      // modification rewrote the task (mirrors the Rust `write_program_plan`
-      // event in `src/solver.rs`).
+      // Issue #324 R4/R6: actual substitution plan for follow-up task edits,
+      // as the native `write_program_plan` event in `src/solver.rs`.
       ...(plan ? [`write_program_plan:${task}`] : []),
       ...(coreference
         ? [`write_program_coreference_rewrite:${task || "missing"}:${language || "missing"}`]
         : []),
     ],
+    solverEvents: plan ? [{ kind: "write_program_plan", payload: plan }] : [],
     steps: diagnostics.steps,
     trace: diagnostics.trace.length ? diagnostics.trace : undefined,
   };
