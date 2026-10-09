@@ -42,14 +42,14 @@ let PAGE_RULES_CACHE = null;
 
 /**
  * The records of a seed file: the children of its one top-level wrapper, or
- * the top level itself when the file carries no wrapper.
- * @param {string} text
+ * the top level itself when the file carries no wrapper. An explicit namespace
+ * selects that section, excluding siblings. @param {string} text
  * @returns {Array<object>}
  */
-function pageSeedRecords(text) {
+function pageSeedRecords(text, namespace) {
   const top = parseLinoTree(text || "").children;
-  if (top.length === 1 && top[0].children.length > 0) return top[0].children;
-  return top;
+  if (namespace) return top.filter((node) => node.name === namespace).flatMap((node) => node.children);
+  return top.length === 1 && top[0].children.length > 0 ? top[0].children : top;
 }
 
 /**
@@ -899,7 +899,7 @@ function pageOfficialWebsites(entityText) {
  */
 function pageRegistryPrimacy(domain) {
   if (!domain) return null;
-  for (const record of pageSeedRecords(seedRawText(SEED_RAW, "sources-registry.lino"))) {
+  for (const record of pageSeedRecords(seedRawText(SEED_RAW, "sources-registry.lino"), "sources_registry")) {
     if (record.name !== "source") continue;
     const api = childValue(record, "api");
     const primacy = childValue(record, "primacy");

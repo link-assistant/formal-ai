@@ -124,3 +124,28 @@ test("R3: an authorship answer reads through the relation's own seeded phrasing"
     assert.ok(answer.evidence.includes("wikidata:Q7243"), answer.evidence.join("\n"));
   }
 });
+
+test("explicit seed namespaces exclude sibling captures and preserve registry order", async () => {
+  const seed = [
+    "captures", "  source impostor", '    api "https://impostor.invalid/{id}"',
+    "registry", "  source first", '    api "https://first.invalid/{id}"',
+    "registry", "  source second", '    api "https://second.invalid/{id}"',
+  ].join("\n");
+  assert.deepEqual(await call("pageSeedRecords(" + literal(seed) + ', "registry").map(row => [row.name, row.value, childValue(row, "api")])'), [
+    ["source", "first", "https://first.invalid/{id}"],
+    ["source", "second", "https://second.invalid/{id}"],
+  ]);
+  assert.deepEqual(await call("pageSeedRecords(" + literal(seed) + ', "missing")'), []);
+});
+
+test("the real multi-namespace registry supplies endpoints and page primacy", async () => {
+  const registry = await call('pageSeedRecords(seedRawText(SEED_RAW, "sources-registry.lino"), "sources_registry").filter(row => row.name === "source").map(row => [row.value, childValue(row, "api")])');
+  assert.equal(registry.find(([id]) => id === "wikidata")[1], "https://www.wikidata.org/wiki/Special:EntityData/{id}.json");
+  assert.equal(await call('pageRegistryPrimacy("wikidata.org")'), "editorial_synthesis");
+  assert.equal(await call('pageRegistryPrimacy("unregistered.invalid")'), null);
+});
+
+test("unnamed seed records retain wrapper and bare-record behavior", async () => {
+  assert.deepEqual(await call('pageSeedRecords("wrapper\\n  record first\\n  record second").map(row => row.value)'), ["first", "second"]);
+  assert.deepEqual(await call('pageSeedRecords("record first\\nrecord second").map(row => row.value)'), ["first", "second"]);
+});

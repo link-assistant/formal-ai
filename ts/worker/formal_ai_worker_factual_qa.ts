@@ -669,7 +669,7 @@ function factClaimReference(claim, property) {
  * @returns {{summary: string, source: string}}
  */
 function factLiveSummary(query, subjectQid, subjectLabel, claim, valueLabel) {
-  const row = pageSeedRecords(seedRawText(SEED_RAW, "sources-registry.lino"))
+  const row = pageSeedRecords(seedRawText(SEED_RAW, "sources-registry.lino"), "sources_registry")
     .find((record) => record.name === "source" && record.value === "wikidata") || { children: [] };
   const source = factClaimReference(claim, childValue(row, "reference_url_property")) ||
     childValue(row, "api").split("{id}").join(subjectQid);
