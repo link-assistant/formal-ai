@@ -1,9 +1,9 @@
 //! Answers that hand back a file the request already supplied in the
 //! conversation, instead of re-reading it from disk.
 
+use super::records::same_path;
 use super::{
-    ChatMessage, FileReadMode, FileReadTask, file_read_final_answer, file_read_task_for, same_path,
-    seed,
+    ChatMessage, FileReadMode, FileReadTask, file_read_final_answer, file_read_task_for, seed,
 };
 
 pub(super) fn extract_jsonish_value(content: &str, key: &str) -> Option<String> {

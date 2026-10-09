@@ -115,7 +115,7 @@ pub(super) fn grep_result_for_path<'a>(
 /// the planner planned with: [`crate::protocol_responses`] rewrites `path` to
 /// Gemini's `absolute_path` and absolutises it, so a recorded
 /// `/work/alpha.txt` has to answer a planned `alpha.txt`.
-fn same_path(recorded: &str, planned: &str) -> bool {
+pub(super) fn same_path(recorded: &str, planned: &str) -> bool {
     if recorded == planned {
         return true;
     }
