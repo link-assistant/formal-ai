@@ -328,6 +328,8 @@ fn solver_configuration_keeps_every_registered_response_language() {
     }
 }
 
+include!("../../fixtures/native-protocol-observation.rs");
+
 #[test]
 fn formal_ai_and_real_agent_cli_authored_two_of_nine_requirement_leaves() {
     const FORMAL_AI_AUTHORED_LEAVES: usize = 2;
@@ -370,7 +372,22 @@ fn formal_ai_and_real_agent_cli_authored_two_of_nine_requirement_leaves() {
             "{}\n",
             serde_json::to_string_pretty(&fresh.session_json()).expect("render session JSON")
         );
-        assert_eq!(repository_file(&format!("{base}/session.json")), rendered);
+        let capture = match evidence_dir {
+            "diagnostic-audit" => "ci-diagnostic",
+            "template-comparison" => "ci-template",
+            _ => unreachable!("declared evidence case"),
+        };
+        let observed = repository_file(&format!(
+            "docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/{capture}.json"
+        ));
+        assert_literal_capture_transition(
+            &repository_file(&format!("{base}/session.json")),
+            &observed,
+        );
+        assert_eq!(
+            observed, rendered,
+            "the complete actual native session must replay byte-for-byte"
+        );
 
         let written_leaf = fresh
             .steps

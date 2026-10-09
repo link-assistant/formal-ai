@@ -87,6 +87,8 @@ fn planner_walks_the_google_trends_catalog_recipe() {
     }
 }
 
+include!("../../fixtures/native-protocol-observation.rs");
+
 #[test]
 fn committed_agent_cli_session_matches_a_fresh_google_trends_run() {
     let committed = include_str!(
@@ -107,9 +109,13 @@ fn committed_agent_cli_session_matches_a_fresh_google_trends_run() {
         "{}\n",
         serde_json::to_string_pretty(&fresh.session_json()).unwrap()
     );
+    let observed = include_str!(
+        "../../../../docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/google-trends.json"
+    );
+    assert_protocol_transition(committed, observed);
     assert_eq!(
-        committed, rendered,
-        "the committed Google Trends Agent CLI session is stale",
+        observed, rendered,
+        "the complete actual native session must replay byte-for-byte"
     );
 }
 

@@ -222,6 +222,8 @@ fn planner_walks_the_question_catalog_recipe() {
     }
 }
 
+include!("../../fixtures/native-protocol-observation.rs");
+
 #[test]
 fn committed_agent_cli_session_matches_a_fresh_run() {
     // The committed Agent CLI session (docs/case-studies/issue-527) is byte-for-byte what
@@ -244,11 +246,13 @@ fn committed_agent_cli_session_matches_a_fresh_run() {
         "{}\n",
         serde_json::to_string_pretty(&fresh.session_json()).unwrap()
     );
+    let observed = include_str!(
+        "../../../../docs/case-studies/pull-request-1188/native-protocol-captures/8abb066db/question-catalog.json"
+    );
+    assert_protocol_transition(committed, observed);
     assert_eq!(
-        committed, rendered,
-        "the committed question-catalog Agent CLI session is stale — regenerate it with \
-         `formal-ai agent --task \"<QUESTION_CATALOG_TASK>\" --session-json \
-         docs/case-studies/issue-527/agent-cli-session-question-catalog.json`",
+        observed, rendered,
+        "the complete actual native session must replay byte-for-byte"
     );
 }
 

@@ -237,6 +237,9 @@ jobs:
 
   native:
     name: Produce native ${{ matrix.target }}
+    concurrency:
+      group: ${{ github.workflow }}-native-${{ github.event.pull_request.number || github.ref }}-${{ matrix.target }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     needs: [native-source]
     if: ${{ !cancelled() && needs.native-source.result == 'success' }}
     runs-on: ${{ matrix.os }}
