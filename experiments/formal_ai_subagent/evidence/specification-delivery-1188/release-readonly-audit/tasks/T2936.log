@@ -1,0 +1,54 @@
+>> bash {"command":"node /private/tmp/spec-recurrence-1188/release-readonly-audit.mjs"}
+   Output: {"packet":"/private/tmp/spec-recurrence-1188/release-readonly-audit-retry","sourceCommit":"c8b5e63e136f064216a74dfd2dcc77c826b67392","api":{"latest":{"status":"retrieved"},"stableCommit":{"status":"retrieved"},"desktopJobs":{"status":"retrieved"},"desktopArtifacts":{"status":"retrieved"},"engineArtifacts":{"status":"retrieved"},"engineJobs":{"status":"retrieved"},"vscodeJobs":{"status":"retrieved"},"sourceWorkflow":{"status":"unavailable","message":"Command failed: gh api repos/link-assistant/formal-ai/actions/workflows/publish-source-networks.yml/runs?per_page=5\ngh: Not Found (HTTP 404)\n"},"currentRuns":{"status":"retrieved"},"slimLog":{"status":"retrieved"}},"artifactStatus":"inspected","artifactMemberCount":439,"packagedWasmProbe":{"input":"audit\nquartz 631","expected":"audit_d425c2eaadb2b84c","observed":"audit_d425c2eaadb2b84c"},"repositoryMutations":0}
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/spec-recurrence-1188/release-readonly-audit.mjs` command completed. Output:
+
+```json
+{
+  "api": {
+    "currentRuns": {
+      "status": "retrieved"
+    },
+    "desktopArtifacts": {
+      "status": "retrieved"
+    },
+    "desktopJobs": {
+      "status": "retrieved"
+    },
+    "engineArtifacts": {
+      "status": "retrieved"
+    },
+    "engineJobs": {
+      "status": "retrieved"
+    },
+    "latest": {
+      "status": "retrieved"
+    },
+    "slimLog": {
+      "status": "retrieved"
+    },
+    "sourceWorkflow": {
+      "message": "Command failed: gh api repos/link-assistant/formal-ai/actions/workflows/publish-source-networks.yml/runs?per_page=5\ngh: Not Found (HTTP 404)\n",
+      "status": "unavailable"
+    },
+    "stableCommit": {
+      "status": "retrieved"
+    },
+    "vscodeJobs": {
+      "status": "retrieved"
+    }
+  },
+  "artifactMemberCount": 439,
+  "artifactStatus": "inspected",
+  "packagedWasmProbe": {
+    "expected": "audit_d425c2eaadb2b84c",
+    "input": "audit\nquartz 631",
+    "observed": "audit_d425c2eaadb2b84c"
+  },
+  "packet": "/private/tmp/spec-recurrence-1188/release-readonly-audit-retry",
+  "repositoryMutations": 0,
+  "sourceCommit": "c8b5e63e136f064216a74dfd2dcc77c826b67392"
+}
+```
