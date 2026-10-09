@@ -50,7 +50,7 @@ try {
   // that `seed_loader.js` fetches, kept in its own file so two branches that
   // each add a seed file never edit the same lines. See issue #991 and
   // `data/meta/seed-registry.lino`; shipped responses also boot offline.
-  importScripts(withAssetVersion("seed/worker-bootstrap-responses.js"));
+  importScripts(withAssetVersion("worker-bootstrap-responses.js"));
   importScripts(withAssetVersion("seed-files.js"));
   importScripts(withAssetVersion("seed_loader.js"));
 } catch (_error) {

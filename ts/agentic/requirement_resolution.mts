@@ -3,8 +3,11 @@
 // `crate/self_ast_census.mjs` `workspace()`.
 
 import { moduleSymbol, modulesDeclaring, workspace } from './crate/self_ast_census.mjs';
-import { isAlphanumeric } from './write_str.mjs';
-import { hasHost, readText } from './host.mjs';
+import { isAlphanumeric, utf8Len } from './write_str.mjs';
+import { hasHost, host, readText } from './host.mjs';
+import { composeEditClauses } from './write_request.mjs';
+import { quotedSegmentSpans } from './crate/normal_markov.mjs';
+import { stableId } from './crate/engine_stable_identifier.mjs';
 import { meaningFiles, parseLexiconText, words as meaningWords } from './crate/seed_meanings.mjs';
 
 /** Mirrors `fn resolve_requirement_target`: `{module_path, symbol, kind}` or null. */
@@ -14,6 +17,56 @@ export function resolveRequirementTarget(requirement) {
 
 /** Mirrors `fn resolve_in`. */
 export function resolveIn(census, requirement) {
+  const scoped = explicitModuleScope(census, requirement);
+  if (scoped === null) return null;
+  const resolved = resolveScoped(scoped, requirement);
+  return resolved !== null || scoped === census ? resolved : resolveScopedLiteral(scoped, requirement);
+}
+
+/** Mirrors `fn resolve_scoped_literal`: unique scalar initializer from identity-checked source. */
+function resolveScopedLiteral(census, requirement) {
+  if (!hasHost() || typeof host().censusDocuments !== 'function') return null;
+  const edit = composeEditClauses(requirement);
+  const module = census.modules[0];
+  if (!edit) return null;
+  const document = host().censusDocuments().find((item) => item.sourceIdentity?.path === module.path);
+  if (!document) return null;
+  const source = readText('rust/' + module.path);
+  if (stableId('source_module', source) !== document.sourceIdentity.content_id
+    || utf8Len(source) !== document.sourceIdentity.byte_len) return null;
+  const candidates = module.symbols.filter((symbol) => {
+    if (symbol.kind !== 'const' && symbol.kind !== 'static') return false;
+    const declaration = source.split('\n').slice(symbol.start_line - 1, symbol.end_line).join('\n');
+    const separator = declaration.indexOf('=');
+    if (separator < 0) return false;
+    const initializer = declaration.slice(separator + 1).trim();
+    const segments = quotedSegmentSpans(initializer);
+    return initializer.startsWith('"') && segments.length === 1 && segments[0].start === 0
+      && initializer.slice(segments[0].end).trim() === ';' && segments[0].text === edit.edit[1];
+  });
+  return candidates.length === 1 ? target(module, candidates[0]) : null;
+}
+
+/** Mirrors `fn explicit_module_scope`: bind exact observed paths before declaration ranking. */
+function explicitModuleScope(census, requirement) {
+  const references = requirement.split(/[^\p{Alphabetic}\p{N}_./-]+/u)
+    .map((token) => token.replace(/\.+$/u, ''))
+    .filter((token) => token.includes('/') && token.endsWith('.rs'));
+  if (!references.length) return census;
+  const selected = new Map();
+  for (const reference of references) {
+    const relative = reference.startsWith('./') ? reference.slice(2) : reference;
+    const path = relative.startsWith('rust/') ? relative.slice(5) : relative;
+    if (path.split('/').some((part) => part === '.' || part === '..')) return null;
+    const module = census.modules.find((candidate) => candidate.path === path);
+    if (!module) return null;
+    selected.set(path, module);
+  }
+  return selected.size === 1 ? { modules: [...selected.values()] } : null;
+}
+
+/** Mirrors `fn resolve_scoped`: rank only declarations within the observed scope. */
+function resolveScoped(census, requirement) {
   const tokens = tokensOf(requirement);
   for (const token of tokens) {
     if (!looksLikeDeclaredName(token)) continue;

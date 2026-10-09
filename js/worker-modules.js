@@ -118,6 +118,7 @@ self.FORMAL_AI_WORKER_MODULES = Object.freeze([
   "worker/formal_ai_worker_solve.js",
   "worker/formal_ai_worker_solver_events.js",
   "worker/formal_ai_worker_source_callable_contracts.js",
+  "worker/formal_ai_worker_source_endpoints.js",
   "worker/formal_ai_worker_source_qualified_definition.js",
   "worker/formal_ai_worker_source_qualified_events.js",
   "worker/formal_ai_worker_source_walk.js",

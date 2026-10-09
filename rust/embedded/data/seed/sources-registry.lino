@@ -71,6 +71,7 @@ sources_registry
       upstream "the published sources each article cites"
       basis "Wikipedia:No original research, the project's own policy, requires article content to come from published sources, so an article stands one hop from the sources it cites."
     api "https://{language}.wikipedia.org/api/rest_v1/page/summary/{lemma}"
+    api-fallback "https://{language}.wikipedia.org/api/rest_v1/page/summary/{title}"
     api_language en ru hi zh es
     license_name "CC BY-SA 4.0"
     license_url "https://creativecommons.org/licenses/by-sa/4.0/"

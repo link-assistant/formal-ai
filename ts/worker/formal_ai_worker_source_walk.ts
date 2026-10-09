@@ -56,6 +56,7 @@ function sourceWalkRegistry() {
       extractor: value("extractor"),
       howToRole: value("how_to_role") || "none",
       api: value("api"),
+      apiFallback: value("api-fallback"),
       languageApi: value("language_api"),
       apiLanguages: sourceWalkList(value("api_language")),
       licenseName: value("license_name"),
@@ -82,35 +83,6 @@ function sourceWalkTierWeight(tier) {
   return SOURCE_WALK_TIER_WEIGHTS[tier] ?? 0;
 }
 
-function sourceWalkPageTitle(subject, hyphenated = false) {
-  return String(subject || "").trim()
-    .split(/[\s\x00-\x2f\x3a-\x40\x5b-\x60\x7b-\x7f]+/u)
-    .filter(Boolean)
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(hyphenated ? "-" : " ");
-}
-
-function sourceWalkEntryUrl(record, subject, language = "") {
-  if (language && record.apiLanguages.length > 0 && !record.apiLanguages.includes(language)) {
-    return null;
-  }
-  const primary = record.apiLanguages[0] || "";
-  const template = record.languageApi && language && language !== primary
-    ? record.languageApi
-    : record.api;
-  const host = String(template || "").split("://")[1]?.split("/")[0] || "";
-  const bindings = {
-    title: sourceWalkPageTitle(subject, host.includes("wikihow")),
-    query: subject,
-    lemma: subject,
-    language: language || primary,
-  };
-  let url = String(template || "");
-  for (const [name, value] of Object.entries(bindings)) {
-    if (value) url = url.split(`{${name}}`).join(sourceWalkPercentEncode(value));
-  }
-  return url && !url.includes("{") ? url : null;
-}
 
 function sourceWalkServiceAllowed(preferences, record) {
   const setting = preferences ? preferences[record.settingsKey] : undefined;
@@ -274,6 +246,7 @@ async function sourceWalkSources(kind, subject, language, preferences, bounds, e
     const queue = [{ url: firstUrl, depth: 0 }];
     const visited = [];
     const sourceItems = [];
+    const failedAttempts = [];
     while (queue.length > 0) {
       const { url, depth } = queue.shift();
       if (outcome.pages >= bounds.maxPagesPerService || visited.includes(url)) continue;
@@ -289,9 +262,17 @@ async function sourceWalkSources(kind, subject, language, preferences, bounds, e
         if (url === firstUrl && !missing) {
           sourceWalkObserveService(record.id, "unreachable", capture.error, now);
         }
+        const fallback = missing && url === firstUrl
+          ? sourceWalkFallbackEntryUrl(record, subject, language) : null;
+        if (fallback && !visited.includes(fallback)) {
+          failedAttempts.push(outcome.detail);
+          queue.unshift({ url: fallback, depth });
+          continue;
+        }
         break;
       }
       outcome.pages += 1;
+      if (failedAttempts.length) outcome.detail = `fallback_capture url=${url}`;
       sourceWalkObserveService(record.id, "reachable", `captured ${url}`, now);
       const age = now - Number.parseInt(capture.fetchedAt, 10);
       if (Number.isFinite(age) && age > bounds.maxCaptureAgeSeconds) {
@@ -306,6 +287,7 @@ async function sourceWalkSources(kind, subject, language, preferences, bounds, e
       if (extractor.stopAtMaxItems
         && walked.items.length + sourceItems.length >= bounds.maxItems) break;
     }
+    if (failedAttempts.length) outcome.detail = `source_attempts failed-attempts=${JSON.stringify(failedAttempts)} result=${JSON.stringify(outcome.detail)}`;
     if (sourceItems.length > 0) outcome.status = "contributed";
     outcome.items = sourceItems.length;
     walked.items.push(...sourceItems);
