@@ -472,9 +472,22 @@ jobs:
       run: |
         set -euo pipefail
         test ! -e rust/target/release/formal-ai
-        docker buildx build --load --provenance=false --platform "linux/$CONTAINER_ARCH" \
-         --file Dockerfile --build-arg BINARY_SOURCE=compile --tag formal-ai:independent-full \
-         --label "org.opencontainers.image.revision=$CONTAINER_SOURCE_COMMIT" --metadata-file standalone-build.json .
+        build_log=$(mktemp "$RUNNER_TEMP/formal-ai-independent-build.XXXXXX")
+        trap 'rm -f "$build_log"' EXIT
+        for build_attempt in 1 2 3; do
+          set +e
+          docker buildx build --load --provenance=false --platform "linux/$CONTAINER_ARCH" \
+           --file Dockerfile --build-arg BINARY_SOURCE=compile --tag formal-ai:independent-full \
+           --label "org.opencontainers.image.revision=$CONTAINER_SOURCE_COMMIT" --metadata-file standalone-build.json . 2>&1 | tee "$build_log"
+          build_status=("${PIPESTATUS[@]}")
+          set -e
+          if [ "${build_status[1]}" -ne 0 ]; then exit "${build_status[1]}"; fi
+          if [ "${build_status[0]}" -eq 0 ]; then break; fi
+          if [ "$build_attempt" -eq 3 ] || ! grep -Eq '^ERROR: failed to build: failed to solve:.*unexpected status from HEAD request to https://registry-1\.docker\.io/v2/[^ ]+/manifests/[^ ]+: 429 Too Many Requests$' "$build_log"; then
+            exit "${build_status[0]}"
+          fi
+          sleep "$((30 * build_attempt))"
+        done
         version=$(docker run --rm --entrypoint /usr/local/bin/formal-ai formal-ai:independent-full --version)
         test "$version" = "formal-ai $CONTAINER_VERSION"
         docker run --rm --privileged formal-ai:independent-full verify-formal-ai-dind | tee standalone-runtime.log
