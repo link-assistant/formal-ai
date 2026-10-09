@@ -22,6 +22,7 @@ const MATRIX = [
   {
     name: 'Scala',
     language: 'scala',
+    source: 'https://docs.scala-lang.org/scala3/book/taste-hello-world.html',
     program: 'object hello {\n  def main(args: Array[String]) = {\n    println("Hello, world!")\n  }\n}',
     check: 'scalac hello.scala',
     run: 'scala hello',
@@ -29,28 +30,30 @@ const MATRIX = [
   {
     name: 'Kotlin',
     language: 'kotlin',
+    source: 'https://kotlinlang.org/docs/command-line.html',
     program: 'fun main() {\n    println("Hello, world!")\n}',
     check: 'kotlinc Main.kt -include-runtime -d Main.jar',
     run: 'java -jar Main.jar',
   },
 ];
 
-const notRun = (language) => `Execution status: not run - the browser sandbox cannot invoke a ${language} toolchain.\n\nCopy the snippet into a ${language} environment to verify.\n\nExpected output after verification:\n\`\`\`text\nHello, world!\n\`\`\``;
+const notRun = (language, source) => `Execution status: not run; this program was rediscovered from ${source} and its output contract was checked by decomposition, not by executing it.\n\nCopy the snippet into a ${language} environment to verify.\n\nExpected output after verification:\n\`\`\`text\nHello, world!\n\`\`\``;
 
 test('R921-8: the matrix languages are answered with the program and an honest not-run status', async () => {
-  for (const { name, language, program, check, run } of MATRIX) {
+  for (const { name, language, program, check, run, source } of MATRIX) {
     const result = await host.solve(`Write a hello world program in ${name}`, []);
     assert.equal(result.intent, 'write_program', name);
     assert.deepEqual(
       [result.programExecution.language, result.programExecution.checkCommand, result.programExecution.runCommand],
       [language, check, run],
     );
-    assert.equal(result.programExecution.block, notRun(language));
+    assert.equal(result.programExecution.block, notRun(language, source));
     assert.ok(result.content.includes(`\`\`\`${language}\n${program}\n\`\`\``), result.content);
-    assert.ok(result.content.includes(notRun(language)), result.content);
+    assert.ok(result.content.includes(notRun(language, source)), result.content);
     assert.equal(result.content.includes('compiled and ran'), false, result.content);
     const verification = result.solverEvents.filter((event) => event.kind === 'program_verification');
     assert.equal(verification.length, 1, name);
+    assert.ok(verification[0].payload.endsWith(` source=${source}`), verification[0].payload);
     assert.match(verification[0].payload, new RegExp(`^language=${language} task=hello_world content_id=0x[0-9a-f]{16} verification=decomposition source=https://`));
   }
 });

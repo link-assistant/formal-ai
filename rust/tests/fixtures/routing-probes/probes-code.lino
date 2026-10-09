@@ -304,30 +304,40 @@ routing_probes
     intent javascript_execution
     prompt "Evaluate this JS: [1,2,3].map(x => x * 2)"
     rust_intent tool_call_refused
+    javascript-agent-mode true
+    native-agent-mode false
   probe p171
     lane javascript_execution
     language en
     intent javascript_execution
     prompt "Execute this JavaScript:\n```js\nconsole.log([1, 2, 3].length);\n```"
     rust_intent tool_call_refused
+    javascript-agent-mode true
+    native-agent-mode false
   probe p172
     lane javascript_execution
     language en
     intent javascript_execution
     prompt "Please execute this javascript:\n```js\nconsole.log(2 * 21);\n```"
     rust_intent tool_call_refused
+    javascript-agent-mode true
+    native-agent-mode false
   probe p173
     lane javascript_execution
     language en
     intent javascript_execution
     prompt "Run this javascript:\n```js\nconsole.log('hi');\n```"
     rust_intent tool_call_refused
+    javascript-agent-mode true
+    native-agent-mode false
   probe p174
     lane javascript_execution
     language en
     intent javascript_execution
     prompt "Run this JavaScript: console.log(1 + 2)"
     rust_intent tool_call_refused
+    javascript-agent-mode true
+    native-agent-mode false
   probe p223
     lane program_synthesis
     language en

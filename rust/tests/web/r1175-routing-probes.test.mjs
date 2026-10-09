@@ -120,7 +120,8 @@ function answers() {
     await evaluate(worker, "loadSeed()");
     const intents = new Map();
     for (const probe of probes) {
-      const answer = plain(await worker.solve(probe.prompt, [], {}, {}, [], {}));
+      const options = { agentMode: probe["javascript-agent-mode"] === "true" };
+      const answer = plain(await worker.solve(probe.prompt, [], {}, {}, [], options));
       intents.set(probe.id, String(answer.intent));
     }
     return intents;
@@ -136,6 +137,9 @@ test("R1175-4: the corpus is well formed and large enough", () => {
   for (const probe of probes) {
     for (const field of ["lane", "language", "intent", "prompt"]) {
       assert.ok(probe[field], `${probe.id} lacks ${field}`);
+    }
+    for (const field of ["javascript-agent-mode", "native-agent-mode"]) {
+      assert.ok(probe[field] === undefined || ["true", "false"].includes(probe[field]), `${probe.id}: invalid ${field}`);
     }
     assert.ok(LANGUAGES.has(probe.language), `${probe.id}: language ${probe.language}`);
     assert.ok(lanes.has(probe.lane) || budget.extraLanes.has(probe.lane), `${probe.id}: unknown lane ${probe.lane}`);

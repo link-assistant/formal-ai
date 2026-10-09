@@ -227,6 +227,13 @@ fn the_corpus_is_well_formed_and_large_enough() {
         for field in ["lane", "language", "intent", "prompt"] {
             assert!(!probe.field(field).is_empty(), "{} lacks {field}", probe.id);
         }
+        for field in ["javascript-agent-mode", "native-agent-mode"] {
+            assert!(
+                !probe.has(field) || matches!(probe.field(field), "true" | "false"),
+                "{}: invalid {field}",
+                probe.id
+            );
+        }
         assert!(
             LANGUAGES.contains(&probe.field("language")),
             "{}: language {}",
@@ -314,12 +321,16 @@ fn every_lane_meets_the_coverage_budget_or_is_exempt_with_a_reason() {
 
 #[test]
 fn the_native_solver_answers_every_probe_as_measured() {
-    let solver = UniversalSolver::new(SolverConfig {
-        offline: true,
-        ..SolverConfig::default()
+    let solvers = [false, true].map(|agent_mode| {
+        UniversalSolver::new(SolverConfig {
+            offline: true,
+            agent_mode,
+            ..SolverConfig::default()
+        })
     });
     let mut moved = Vec::new();
     for probe in load_probes() {
+        let solver = &solvers[usize::from(probe.field("native-agent-mode") == "true")];
         let answer = solver.solve(probe.field("prompt"));
         let pinned = if probe.has("rust_misroute") {
             probe.field("rust_misroute")
