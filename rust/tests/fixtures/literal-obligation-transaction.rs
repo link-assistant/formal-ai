@@ -625,3 +625,15 @@ fn unicode_offsets_preserve_seeded_circumfix_closers() {
         );
     }
 }
+
+#[test]
+fn full_planner_fallback_never_flattens_completed_file_cues() {
+    for task in [
+        "Write file. folder/note.txt containing «hello».",
+        "Note İİK😀.\nWrite file.\nx.txt containing «hello».",
+        "The instruction says «Write file x.txt containing hello».\nRead x.txt with care.",
+    ] {
+        let outcome = run(task, &["write"]);
+        assert_eq!(outcome.writes, 0, "{task}");
+    }
+}

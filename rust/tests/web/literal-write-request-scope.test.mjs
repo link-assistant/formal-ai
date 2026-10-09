@@ -206,3 +206,36 @@ test('a pinned line uses original boundaries after expanding lowercase character
   const { pinnedFirstLine } = await import('../../../js/agentic/write_request.mjs');
   assert.equal(pinnedFirstLine('İİ The first line must be exactly `header=ready`'), 'header=ready');
 });
+
+test('the full planner cannot flatten completed statement cues into write operands', async () => {
+  const { planChatStep } = await import('../../../js/agentic/planner.mjs');
+  for (const task of [
+    'Write file.\nx.txt containing «hello».',
+    'Write a file.\nfolder/note-α.txt containing «hello».',
+    'Создай файл.\nзаметка.txt с содержимым «привет».',
+    'Crea el archivo.\nnota.txt con el contenido «hola».',
+    'Write file. folder/note.txt containing «hello».',
+    'Note İİK😀.\nWrite file.\nx.txt containing «hello».',
+    'The instruction says «Write file x.txt containing hello».\nRead x.txt with care.',
+  ]) {
+    const plan = await planChatStep([{role:'user',content:task}],['write']);
+    assert.notEqual(plan?.kind, 'tool_calls', task);
+  }
+});
+test('full planner literal positives retain exact original target bytes', async () => {
+  const { planChatStep } = await import('../../../js/agentic/planner.mjs');
+  for (const [task, path, content] of [
+    ['Write file folder/note-α.txt containing «hello».','folder/note-α.txt','hello'],
+    ['Create file x.txt containing hello.','x.txt','hello.'],
+    ['Note İİK😀.\nCreate file x.txt containing «hello».','x.txt','hello'],
+    ['Создай файл заметка.txt с содержимым «привет».','заметка.txt','привет'],
+    ['Crea el archivo nota.txt con el contenido «hola».','nota.txt','hola'],
+  ]) {
+    const plan = await planChatStep([{role:'user',content:task}],['write']);
+    assert.equal(plan?.kind, 'tool_calls', task);
+    assert.equal(plan.calls.length, 1, task);
+    assert.equal(plan.calls[0].tool, 'write', task);
+    const args = JSON.parse(plan.calls[0].arguments);
+    assert.equal(args.path, path, task); assert.equal(args.content, content, task);
+  }
+});

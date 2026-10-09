@@ -1,0 +1,194 @@
+[
+  {
+    "name": "T3095-request.json",
+    "from": "/private/tmp/formal-ai-only-1188/T3095-request.json",
+    "bytes": 59616,
+    "sha256": "2c588324f880f6ffd7f5475d1d4eac5490d34cdace562f38853119621b671d03"
+  },
+  {
+    "name": "T3095-transcript.json",
+    "from": "/private/tmp/formal-ai-only-1188/T3095-transcript.json",
+    "bytes": 40029,
+    "sha256": "29ffece68ed4486f0c046b3dfed4b2716f6b04c0550cde5bf21368e0bac35a1b"
+  },
+  {
+    "name": "T3095-transcript.log",
+    "from": "/private/tmp/formal-ai-only-1188/T3095-transcript.log",
+    "bytes": 40029,
+    "sha256": "29ffece68ed4486f0c046b3dfed4b2716f6b04c0550cde5bf21368e0bac35a1b"
+  },
+  {
+    "name": "T3095-audit.json",
+    "from": "/private/tmp/formal-ai-only-1188/T3095-audit.json",
+    "bytes": 19022,
+    "sha256": "8b2797c7e7a41fb9b24e81d80b9a55877c3bf73e4c49ebbb4a063166c4e0d597"
+  },
+  {
+    "name": "T3096-request.json",
+    "from": "/private/tmp/formal-ai-only-1188/T3096-request.json",
+    "bytes": 193886,
+    "sha256": "3a5fa37704965952bed8a527b17f67d342b47ea4b5c77bc74ec53d4da7d0d2d0"
+  },
+  {
+    "name": "T3096-transcript.json",
+    "from": "/private/tmp/formal-ai-only-1188/T3096-transcript.json",
+    "bytes": 1960,
+    "sha256": "04c74bbbe4591b7604666144277791da4182b064998aa737a928c019dd689668"
+  },
+  {
+    "name": "T3096-transcript.log",
+    "from": "/private/tmp/formal-ai-only-1188/T3096-transcript.log",
+    "bytes": 1960,
+    "sha256": "04c74bbbe4591b7604666144277791da4182b064998aa737a928c019dd689668"
+  },
+  {
+    "name": "T3096-audit.json",
+    "from": "/private/tmp/formal-ai-only-1188/T3096-audit.json",
+    "bytes": 616,
+    "sha256": "8ebf0e016f95f84096bfc09bc08b3ed101dea33b921822b8de0fa7988a9ab3de"
+  },
+  {
+    "name": "T3097-request.json",
+    "from": "/private/tmp/formal-ai-only-1188/T3097-request.json",
+    "bytes": 438,
+    "sha256": "f24f3dfac84330ac8e6490809b74a82187f7168868b6e3bcfcf5793b6fda6206"
+  },
+  {
+    "name": "T3097-transcript.json",
+    "from": "/private/tmp/formal-ai-only-1188/T3097-transcript.json",
+    "bytes": 101,
+    "sha256": "d2bc75027c8d0a790d99a474c5388cad97619f5d902268df9f50869ac500b52c"
+  },
+  {
+    "name": "T3097-transcript.log",
+    "from": "/private/tmp/formal-ai-only-1188/T3097-transcript.log",
+    "bytes": 101,
+    "sha256": "d2bc75027c8d0a790d99a474c5388cad97619f5d902268df9f50869ac500b52c"
+  },
+  {
+    "name": "T3097-audit.json",
+    "from": "/private/tmp/formal-ai-only-1188/T3097-audit.json",
+    "bytes": 4790,
+    "sha256": "b73c5e501040a6777add6a9d4d7aad5d5d0a331cc6086fd6c48b14ab2528ff57"
+  },
+  {
+    "name": "T3098-request.json",
+    "from": "/private/tmp/formal-ai-only-1188/T3098-request.json",
+    "bytes": 60120,
+    "sha256": "f8fc21518fda33ef59766e013a2d2efe0144c1e3f3f8cc07243fa126903a82a6"
+  },
+  {
+    "name": "T3098-transcript.json",
+    "from": "/private/tmp/formal-ai-only-1188/T3098-transcript.json",
+    "bytes": 40458,
+    "sha256": "d5c64333b098c7dd975b8e074c220d03ab08af7ba4acee34881678f400fe5bbf"
+  },
+  {
+    "name": "T3098-transcript.log",
+    "from": "/private/tmp/formal-ai-only-1188/T3098-transcript.log",
+    "bytes": 40458,
+    "sha256": "d5c64333b098c7dd975b8e074c220d03ab08af7ba4acee34881678f400fe5bbf"
+  },
+  {
+    "name": "T3098-audit.json",
+    "from": "/private/tmp/formal-ai-only-1188/T3098-audit.json",
+    "bytes": 19233,
+    "sha256": "f12c131bb776a07ad980076b893fbdd8d76ea5e1fa2033229ab4f1c5fa16b752"
+  },
+  {
+    "name": "raw-span-negative-current-probe.json",
+    "from": "/private/tmp/formal-ai-only-1188/raw-span-negative-current-probe.json",
+    "bytes": 3859,
+    "sha256": "c10750d2e2e2d874ae42dd333b58012302ae6751244075fa2631963109b9fe49"
+  },
+  {
+    "name": "T3097-provenance-correction.json",
+    "from": "/private/tmp/formal-ai-only-1188/T3097-provenance-correction.json",
+    "bytes": 546,
+    "sha256": "0ec9700eb3397957b48e16d4c96cebfea8f0daba08891e12bec908ddf4cef662"
+  },
+  {
+    "name": "T3096-closest.log",
+    "from": "/private/tmp/formal-ai-only-1188/T3096-closest.log",
+    "bytes": 10312,
+    "sha256": "ef56e2089933b647102359ce69b0673f63f2add576af592241ad9b76593afe27"
+  },
+  {
+    "name": "T3098-formatter.log",
+    "from": "/private/tmp/formal-ai-only-1188/T3098-formatter.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "name": "T3098-twins.log",
+    "from": "/private/tmp/formal-ai-only-1188/T3098-twins.log",
+    "bytes": 53,
+    "sha256": "09429d6660a4f6f0e51f09665788ff34e2685455ae3cd42008ff2799324c637b"
+  },
+  {
+    "name": "T3098-debt.log",
+    "from": "/private/tmp/formal-ai-only-1188/T3098-debt.log",
+    "bytes": 660,
+    "sha256": "c6ddd69e2493d52db7786cc07bf19acf5c602e2f4407b1bd8cc496d8c7ad7819"
+  },
+  {
+    "name": "T3098-abbreviations.log",
+    "from": "/private/tmp/formal-ai-only-1188/T3098-abbreviations.log",
+    "bytes": 120,
+    "sha256": "6c1b9795216157052b0a6e9c3ff9328878b0e0d18cbd83ed8faa99c48f025630"
+  },
+  {
+    "name": "T3098-core.log",
+    "from": "/private/tmp/formal-ai-only-1188/T3098-core.log",
+    "bytes": 68,
+    "sha256": "cb7cad9441a19b402c6f3ba99ac375e1645276c954fee8b8daffbd1b3352eb05"
+  },
+  {
+    "name": "literal-routing-ownership-measurement.json",
+    "from": "/private/tmp/formal-ai-only-1188/literal-routing-ownership-measurement.json",
+    "bytes": 1263,
+    "sha256": "6296f50146d1e0968bdf26d2674035da572f0c61020b95b033f9f9a28d6c105b"
+  },
+  {
+    "name": "literal-routing-ownership-source-identities.json",
+    "from": "/private/tmp/formal-ai-only-1188/literal-routing-ownership-source-identities.json",
+    "bytes": 638,
+    "sha256": "bbf3309e45af662e309cc6e347e60ebd861cba822ba727401c73bb6ce03f53bf"
+  },
+  {
+    "name": "literal-routing-ownership-native-original.log",
+    "from": "/private/tmp/formal-ai-only-1188/literal-routing-ownership-native-original.log",
+    "bytes": 848,
+    "sha256": "196631ca1c38b52953bc58b6ce656a455bb0f0163a19bf20b36b2c38c4c5d2e6"
+  },
+  {
+    "name": "literal-routing-ownership-native-provenance.json",
+    "from": "/private/tmp/formal-ai-only-1188/literal-routing-ownership-native-provenance.json",
+    "bytes": 412,
+    "sha256": "12b5e5c063f0ad3ef554dc868b7f838b6256b17bf7fc64fc2b4f89a010bdf087"
+  },
+  {
+    "name": "T3094-request.json",
+    "from": "/private/tmp/formal-ai-only-1188/T3094-request.json",
+    "bytes": 16535,
+    "sha256": "842214037c48e1bbf878eef2d8f0da3c7cd5cfda8b8a8a9d3fff7455a7a367d6"
+  },
+  {
+    "name": "T3094-transcript.json",
+    "from": "/private/tmp/formal-ai-only-1188/T3094-transcript.json",
+    "bytes": 2687,
+    "sha256": "5b7d82eac4e2928d8b938c94732384e60ec8642e3c71ecffead2e71136537dbd"
+  },
+  {
+    "name": "T3094-transcript.log",
+    "from": "/private/tmp/formal-ai-only-1188/T3094-transcript.log",
+    "bytes": 2687,
+    "sha256": "5b7d82eac4e2928d8b938c94732384e60ec8642e3c71ecffead2e71136537dbd"
+  },
+  {
+    "name": "T3094-audit.json",
+    "from": "/private/tmp/formal-ai-only-1188/T3094-audit.json",
+    "bytes": 99,
+    "sha256": "fdae44b9d09b62cee0ae8e9e9c6899b1a680e3079b6c3a1bb198a100c0b7ce17"
+  }
+]

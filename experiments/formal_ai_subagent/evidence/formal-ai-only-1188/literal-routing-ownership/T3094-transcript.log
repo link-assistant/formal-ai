@@ -1,0 +1,19 @@
+{
+  "transcript": [
+    {
+      "tool": "bash",
+      "arguments": "{\"command\":\"node -e 'const fs=require('\\\\''fs'\\\\'');const path=require('\\\\''path'\\\\'');const crypto=require('\\\\''crypto'\\\\'');const request=JSON.parse(fs.readFileSync('\\\\''/private/tmp/formal-ai-only-1188/T3094-request.json'\\\\'','\\\\''utf8'\\\\''));for(const file of request.files){const current=fs.existsSync(file.path)?fs.readFileSync(file.path,'\\\\''utf8'\\\\''):null;if(current!==file.before)throw Error('\\\\''preimage changed '\\\\''+file.path);}for(const capture of request.manifest){const bytes=fs.readFileSync(capture.from);if(bytes.length!==capture.bytes||crypto.createHash('\\\\''sha256'\\\\'').update(bytes).digest('\\\\''hex'\\\\'')!==capture.sha256)throw Error('\\\\''capture drift '\\\\''+capture.name);}for(const file of request.files){fs.mkdirSync(path.dirname(file.path),{recursive:true});fs.writeFileSync(file.path,file.expected);}for(const capture of request.manifest)fs.copyFileSync(capture.from,request.packet+'\\\\''/'\\\\''+capture.name);fs.writeFileSync(request.packet+'\\\\''/manifest.json'\\\\'',JSON.stringify(request.manifest,null,2));console.log(JSON.stringify({authored:request.files.length,neutral:request.manifest.length+1}));'\"}",
+      "result": "Output: {\"authored\":2,\"neutral\":43}\n\nExit Code: 0"
+    }
+  ],
+  "answer": "The `node -e 'const fs=require('\\''fs'\\'');const path=require('\\''path'\\'');const crypto=require('\\''crypto'\\'');const request=JSON.parse(fs.readFileSync('\\''/private/tmp/formal-ai-only-1188/T3094-request.json'\\'','\\''utf8'\\''));for(const file of request.files){const current=fs.existsSync(file.path)?fs.readFileSync(file.path,'\\''utf8'\\''):null;if(current!==file.before)throw Error('\\''preimage changed '\\''+file.path);}for(const capture of request.manifest){const bytes=fs.readFileSync(capture.from);if(bytes.length!==capture.bytes||crypto.createHash('\\''sha256'\\'').update(bytes).digest('\\''hex'\\'')!==capture.sha256)throw Error('\\''capture drift '\\''+capture.name);}for(const file of request.files){fs.mkdirSync(path.dirname(file.path),{recursive:true});fs.writeFileSync(file.path,file.expected);}for(const capture of request.manifest)fs.copyFileSync(capture.from,request.packet+'\\''/'\\''+capture.name);fs.writeFileSync(request.packet+'\\''/manifest.json'\\'',JSON.stringify(request.manifest,null,2));console.log(JSON.stringify({authored:request.files.length,neutral:request.manifest.length+1}));'` command completed. Output:\n\n```json\n{\n  \"authored\": 2,\n  \"neutral\": 43\n}\n```",
+  "stop": "final",
+  "toolsAdvertised": [
+    "bash",
+    "edit",
+    "grep",
+    "list",
+    "read",
+    "write"
+  ]
+}

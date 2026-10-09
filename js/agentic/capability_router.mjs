@@ -2,6 +2,7 @@
 // rust/src/agentic_coding/capability_router.rs.
 
 import { Capability, registryId } from './capability.mjs';
+import { composeGeneralChangePlan, GeneralPlanMode } from './general_planner.mjs';
 import { fetchArguments, finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { requestBlocks } from './stated_request.mjs';
 import {
@@ -19,7 +20,7 @@ import { workspaceInspectionSearchForTask } from './workspace_inspection.mjs';
 import { listedDirectory } from './directory_listing.mjs';
 import { writesWholeFile } from './literal_write_guard.mjs';
 import {
-  Act, Locus, ObjectType, acts, evidencesRetrieveAct, explicitContent, firstPath, firstUrl, locus, namesOpenWeb,
+  Act, Locus, ObjectType, acts, evidencesRetrieveAct, firstPath, firstUrl, locus, namesOpenWeb,
   isDialogueUtterance, objectType, route, tableRoutingEnabled,
 } from './crate/capability_routing.mjs';
 import { extractConceptQuery } from './crate/concepts_lookup.mjs';
@@ -260,7 +261,9 @@ function planRoutedCapabilityStepIn(task, messages, toolNames, stage, only) {
   }
   const tool = toolFor(toolNames, capability);
   if (tool === null) return null;
-  const args = routedArguments(capability, loweredFrom, routedTask);
+  // Classification may omit policy; writable operands retain original statement spans.
+  const operandTask = capability === Capability.Write ? firstBlock : routedTask;
+  const args = routedArguments(capability, loweredFrom, operandTask);
   return args === null ? null : planOne(tool, args);
 }
 
@@ -302,10 +305,8 @@ function routedArguments(capability, loweredFrom, task) {
       const outside = normalizePrompt(textOutsideQuotedSegments(task));
       if (mentionsRole('coding_text_remove_action', outside)) return null;
       if (mentionsRole('file_edit_action_cue', outside) && !writesWholeFile(task)) return null;
-      const path = firstPath(task);
-      if (path === null) return null;
-      const content = explicitContent(task);
-      return content === null ? null : writeArguments(path, content);
+      const bound = composeGeneralChangePlan(task);
+      return bound?.mode === GeneralPlanMode.LiteralFile ? writeArguments(bound.target, bound.content) : null;
     }
     case Capability.MultiEdit: {
       const edit = composeEditRequest(task);

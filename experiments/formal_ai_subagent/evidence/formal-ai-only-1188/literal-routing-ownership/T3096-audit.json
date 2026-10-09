@@ -1,0 +1,16 @@
+{
+  "id": "T3096",
+  "tools": [
+    "bash"
+  ],
+  "reviewedGeneralRepair": true,
+  "authoredRepositoryEffects": 4,
+  "paths": [
+    "js/agentic/capability_router.mjs",
+    "rust/src/agentic_coding/capability_router.rs",
+    "rust/tests/web/literal-write-request-scope.test.mjs",
+    "rust/tests/fixtures/literal-obligation-transaction.rs"
+  ],
+  "receipt": "Output: {\"writes\":[\"js/agentic/capability_router.mjs\",\"rust/src/agentic_coding/capability_router.rs\",\"rust/tests/web/literal-write-request-scope.test.mjs\",\"rust/tests/fixtures/literal-obligation-transaction.rs\"]}\n\nExit Code: 0",
+  "exact": true
+}

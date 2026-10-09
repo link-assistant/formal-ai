@@ -448,6 +448,7 @@ fn plan_routed_capability_step_in(
         .into_iter()
         .next()
         .unwrap_or(task);
+    let first_block = routed_task;
     // A sentence that merely governs commands is the caller's framing, not
     // the work: the task sentence after it states the request, and a policy
     // sentence's own nouns ("files", "workspace") must not name a capability
@@ -627,7 +628,13 @@ fn plan_routed_capability_step_in(
         return None;
     }
     let tool = tool_for(tool_names, capability)?;
-    let arguments = routed_arguments(capability, lowered_from.as_deref(), routed_task)?;
+    // Classification may omit policy; writable operands retain original statement spans.
+    let operand_task = if capability == Capability::Write {
+        first_block
+    } else {
+        routed_task
+    };
+    let arguments = routed_arguments(capability, lowered_from.as_deref(), operand_task)?;
     Some(plan_one(tool, arguments))
 }
 
@@ -710,9 +717,9 @@ fn routed_arguments(
             {
                 return None;
             }
-            let path = crate::capability_routing::first_path(task)?;
-            let content = crate::capability_routing::explicit_content(task)?;
-            Some(super::planner::write_arguments(&path, &content))
+            let bound = super::general_planner::compose_general_change_plan(task)?;
+            (bound.mode == super::general_planner::GeneralPlanMode::LiteralFile)
+                .then(|| super::planner::write_arguments(&bound.target, &bound.content))
         }
         Capability::MultiEdit => {
             // The table routes a set of files transformed in place here; the
