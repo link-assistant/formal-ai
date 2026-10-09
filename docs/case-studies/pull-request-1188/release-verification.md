@@ -15,7 +15,7 @@ The [observed release audit](../../../experiments/formal_ai_subagent/evidence/sp
 
 The packaged WASM observation exercises27exports/zeroimports plus one arbitrary UTF-8 stable-ID call. It proves that interface in the actual4a package; it does not stand in for the full final-head native, browser or server tests. Release mechanism checks passed35tests with one local PowerShell skip. No local Rust compilation was used.
 
-The package/source release resolver accepts only a published stable tag related to the completed trusted main run: the same commit or its first parent. That fallback covers GitHub-token-suppressed release events and rejects unrelated releases. Desktop's separately logged latest-release healing fallback can select an older release; that fallback alone cannot certify the current main source head.
+The package/source release resolver accepts only a published stable tag related to the completed trusted main run: the same commit or its first parent. That fallback covers GitHub-token-suppressed release events and rejects unrelated releases. Desktop release healing now uses the same source relationship and refuses unrelated latest releases. Six real resolver scenarios pass locally. Packaging additionally requires the built engine path, verifies copied resource bytes and runs startup/version checks;23 closest checks pass with one local PowerShell skip. These mechanisms await actual final-head native and package jobs.
 
 Native protocol consumers verify producer source commit/tree, Cargo.lock, platform/architecture, compiler, profile/features and executable hashes. Archive checksums and SLSA attestations have their own byte provenance. BUILD-PROVENANCE.txt can name main as targetCommitish and is not an exact source-SHA receipt.
 
