@@ -2,43 +2,43 @@ multilingual-responses-conversation-recall
   response response-conversation-recall-empty-en
     intent conversation-recall-empty
     language en
-    text "No mentions of \"{term}\" found in the conversation history."
+    text 'No mentions of "{term}" found in the conversation history.'
   response response-conversation-recall-empty-ru
     intent conversation-recall-empty
     language ru
-    text "Упоминаний \"{term}\" в истории разговора не найдено."
+    text 'Упоминаний "{term}" в истории разговора не найдено.'
   response response-conversation-recall-empty-hi
     intent conversation-recall-empty
     language hi
-    text "बातचीत के इतिहास में \"{term}\" नहीं मिला."
+    text 'बातचीत के इतिहास में "{term}" नहीं मिला.'
   response response-conversation-recall-empty-zh
     intent conversation-recall-empty
     language zh
-    text "在对话历史中没有找到 \"{term}\"。"
+    text '在对话历史中没有找到 "{term}"。'
   response response-conversation-recall-empty-es
     intent conversation-recall-empty
     language es
-    text "No se encontraron menciones de \"{term}\" en el historial de la conversación."
+    text 'No se encontraron menciones de "{term}" en el historial de la conversación.'
   response response-conversation-recall-header-en
     intent conversation-recall-header
     language en
-    text "Found {count} mention(s) of \"{term}\" in the conversation history."
+    text 'Found {count} mention(s) of "{term}" in the conversation history.'
   response response-conversation-recall-header-ru
     intent conversation-recall-header
     language ru
-    text "Найдено упоминаний \"{term}\" в истории разговора: {count}"
+    text 'Найдено упоминаний "{term}" в истории разговора: {count}'
   response response-conversation-recall-header-hi
     intent conversation-recall-header
     language hi
-    text "बातचीत के इतिहास में \"{term}\" के उल्लेख मिले: {count}"
+    text 'बातचीत के इतिहास में "{term}" के उल्लेख मिले: {count}'
   response response-conversation-recall-header-zh
     intent conversation-recall-header
     language zh
-    text "在对话历史中找到 \"{term}\" 的记录: {count}"
+    text '在对话历史中找到 "{term}" 的记录: {count}'
   response response-conversation-recall-header-es
     intent conversation-recall-header
     language es
-    text "Se encontraron {count} menciones de \"{term}\" en el historial de la conversación."
+    text 'Se encontraron {count} menciones de "{term}" en el historial de la conversación.'
   response response-conversation-recall-turn-en
     intent conversation-recall-turn
     language en
