@@ -743,6 +743,9 @@ fn source_body_contract_must_match_the_callable_and_evaluated_program() {
             [],
         );
         assert!(outcome.selected.is_none());
-        assert!(outcome.attempts.is_empty());
+        assert_eq!(
+            outcome.attempts,
+            [] as [formal_ai::composition::DraftAttempt; 0]
+        );
     }
 }

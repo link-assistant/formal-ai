@@ -277,7 +277,7 @@ fn g132_clarification_is_never_written_as_evidence() {
     );
     assert!(!run.files.contains_key("missing.test.mjs"));
     assert!(!run.files.contains_key("report.md"));
-    assert!(run.tools.is_empty());
+    assert_eq!(run.tools, [] as [String; 0]);
     assert_eq!(
         run.answer.as_deref(),
         Some(

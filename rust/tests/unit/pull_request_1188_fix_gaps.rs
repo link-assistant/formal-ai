@@ -314,7 +314,7 @@ fn authored_failure_text_is_verification_data() {
     for (content, expected_answer) in [
         (
             "Error: this is the diagnostic example.\n",
-            r###"Completed the general change request for output.mjs and verified it with `cat output.mjs`.
+            r#"Completed the general change request for output.mjs and verified it with `cat output.mjs`.
 
 Plan event (.formal-ai/general-change-plan.lino):
 
@@ -339,11 +339,11 @@ general_change_plan
     expected_evidence "Error: this is the diagnostic example.\n"
     command "cat output.mjs"
   verification_command "cat output.mjs"
-```"###,
+```"#,
         ),
         (
             "{\"z\":\"failed: recorded attempt\",\"a\":\"fixture\"}\n",
-            r###"Completed the general change request for output.mjs and verified it with `cat output.mjs`.
+            r#"Completed the general change request for output.mjs and verified it with `cat output.mjs`.
 
 Plan event (.formal-ai/general-change-plan.lino):
 
@@ -368,7 +368,7 @@ general_change_plan
     expected_evidence "{\"z\":\"failed: recorded attempt\",\"a\":\"fixture\"}\n"
     command "cat output.mjs"
   verification_command "cat output.mjs"
-```"###,
+```"#,
         ),
     ] {
         let request = format!("Set the contents of output.mjs to «{content}»");

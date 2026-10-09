@@ -3,7 +3,7 @@
 #[path = "agentic_backend_actions.rs"]
 mod agentic_backend_actions;
 #[path = "agentic_coding.rs"]
-mod agentic_coding;
+mod planning_routes;
 #[path = "agentic_general_planner.rs"]
 mod agentic_general_planner;
 #[path = "agentic_surfaces.rs"]

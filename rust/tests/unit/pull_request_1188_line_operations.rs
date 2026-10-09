@@ -308,8 +308,7 @@ fn two_lines_are_swapped() {
 fn a_computed_change_never_leaves_a_fragment_of_the_file() {
     let mostly: String = (0..9)
         .map(|index| format!("x {index}\n"))
-        .collect::<Vec<_>>()
-        .join("")
+        .collect::<String>()
         + "keep\n";
     let run = drive(
         "Delete the lines containing 'x' from f.txt.",
