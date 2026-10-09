@@ -217,14 +217,16 @@ function matchPunctuator(bytes, pos) {
  * @param {string} source
  * @returns {Array<object>}
  */
-export function tokenize(source) {
+export function tokenize(source, includeSpans = false) {
   const bytes = new TextEncoder().encode(source);
-  const decoder = new TextDecoder();
+  const decoder = new TextDecoder('utf-8', { ignoreBOM: includeSpans });
   const slice = (start, end) => decoder.decode(bytes.subarray(start, end));
   const root = [];
   const stack = [];
   const parentTrees = () => (stack.length === 0 ? root : stack[stack.length - 1].trees);
-  const emit = (text, kind) => parentTrees().push({ $: 'leaf', text, kind });
+  const span = (start, end) => includeSpans ? { span: { start, end } } : {};
+  const emit = (text, kind) => parentTrees().push({ $: 'leaf', text, kind,
+    ...span(pos, pos + new TextEncoder().encode(text).length) });
   let pos = 0;
   let regexAllowed = true;
   if (bytes[0] === 0x23 && bytes[1] === 0x21) {
@@ -235,12 +237,12 @@ export function tokenize(source) {
     if (top && top.$ === 'template') {
       const scanned = scanTemplateChunk(bytes, pos, top.start);
       if (scanned.end > top.chunkStart) {
-        top.parts.push({ $: 'chunk', text: slice(top.chunkStart, scanned.end) });
+        top.parts.push({ $: 'chunk', text: slice(top.chunkStart, scanned.end), ...span(top.chunkStart, scanned.end) });
       }
       pos = scanned.end;
       if (scanned.next === 'backtick') {
         stack.pop();
-        parentTrees().push({ $: 'template', parts: top.parts });
+        parentTrees().push({ $: 'template', parts: top.parts, ...span(top.start, pos + 1) });
         regexAllowed = false;
         pos += 1;
       } else {
@@ -297,12 +299,12 @@ export function tokenize(source) {
       const frame = stack[stack.length - 1];
       if (frame && frame.$ === 'group' && frame.delim === found) {
         stack.pop();
-        parentTrees().push({ $: 'group', delim: found, trees: frame.trees });
+        parentTrees().push({ $: 'group', delim: found, trees: frame.trees, ...span(frame.start, pos + 1) });
         regexAllowed = found === 'brace';
       } else if (frame && frame.$ === 'interp' && found === 'brace') {
         stack.pop();
         const template = stack[stack.length - 1];
-        template.parts.push({ $: 'interp', trees: frame.trees });
+        template.parts.push({ $: 'interp', trees: frame.trees, ...span(frame.start, pos + 1) });
         template.chunkStart = pos + 1;
       } else {
         throw tokenizeError('unexpected_closing', pos);
@@ -360,3 +362,10 @@ export function countTokens(trees) {
   }
   return total;
 }
+
+/** Mirrors `fn tokenize` in rust/src/es_tokenizer.rs: an observation retains the native UTF-8 byte spans. */
+export function tokenizeWithSpans(source) { return tokenize(source, true); }
+
+const KEYWORDS = new Set(["await","break","case","catch","class","const","continue","debugger","default","delete","do","else","enum","export","extends","false","finally","for","function","if","import","in","instanceof","let","new","null","return","static","super","switch","this","throw","true","try","typeof","var","void","while"]);
+/** Mirrors `fn is_keyword` in rust/src/es_tokenizer.rs: the native ECMAScript reserved vocabulary. */
+export function isKeyword(word) { return KEYWORDS.has(word); }

@@ -92,20 +92,23 @@ function parseMeaning(node) {
   return meaning;
 }
 
+/** Mirrors `fn parse_lexicon_text`: parse an explicit source without changing the cached lexicon. */
+export function parseLexiconText(source) {
+  const root = parseLino(source);
+  const containers = (root.children || []).filter((child) => child.name === 'meanings');
+  const sources = containers.length ? containers : [root];
+  const meanings = [];
+  for (const container of sources) {
+    for (const node of container.children || []) {
+      if (node.name === 'meaning' || node.name !== 'meanings') meanings.push(parseMeaning(node));
+    }
+  }
+  return meanings;
+}
+
 /** Mirrors `fn lexicon` / `fn parse_lexicon`: every meaning in declaration order. */
 export function lexicon() {
-  return cached('meaning-lexicon', () => {
-    const root = parseLino(meaningFiles().map(readText).join('\n'));
-    const containers = (root.children || []).filter((child) => child.name === 'meanings');
-    const sources = containers.length ? containers : [root];
-    const meanings = [];
-    for (const container of sources) {
-      for (const node of container.children || []) {
-        if (node.name === 'meaning' || node.name !== 'meanings') meanings.push(parseMeaning(node));
-      }
-    }
-    return meanings;
-  });
+  return cached('meaning-lexicon', () => parseLexiconText(meaningFiles().map(readText).join('\n')));
 }
 
 /** Mirrors `crate::coding::contains_cjk`. @param {string} text */

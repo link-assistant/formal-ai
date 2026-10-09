@@ -17,6 +17,7 @@
 // which synthesizes natively by searching the seeded binary operations
 // instead of calling the browser composer.
 
+import { planObservedCallableStep } from './module_function/discovery.mjs';
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
 import { sourceFromAgentReadResult, sourceFromReadResult } from './code_artifact.mjs';
@@ -133,6 +134,11 @@ function statedCommand(request) {
   };
   const after = commandFrom(words.slice(verb + 1));
   if (after !== null) return after;
+  const tail = words.slice(verb + 1);
+  for (let index = 0; index < tail.length; index += 1) {
+    if (heads.includes(tail[index])) return commandFrom(tail.slice(index));
+    if (/[.!?\uff01\uff1f\u3002\u0964]$/u.test(tail[index])) break;
+  }
   const head = words.slice(0, verb).findLastIndex((word) => heads.includes(word));
   return head < 0 ? null : commandFrom(words.slice(head, verb));
 }
@@ -179,6 +185,44 @@ export function moduleFunctionRequest(task) {
   const relative = at >= 0 && !returnsIn(parts[at]) && at + 1 < parts.length && returnsIn(parts[at + 1]);
   const clause = at < 0 ? outside : relative ? `${parts[at]} ${parts[at + 1]}` : parts[at];
   return { ...stated, module, test: others[0] ?? null, language, clause, command: statedCommand(outside) };
+}
+
+
+/** Mirrors `fn instruction_clause`: action cues outside operand text. */
+function instructionClause(part) {
+  let instruction = part;
+  for (const path of pathsIn(part)) instruction = instruction.split(path).join(' ');
+  for (let stated = signature(instruction); stated !== null; stated = signature(instruction)) {
+    const end = instruction.indexOf(')', stated.at) + 1;
+    instruction = instruction.slice(0, stated.at) + ' ' + instruction.slice(end);
+  }
+  return instruction;
+}
+
+/** Mirrors `fn observed_callable_request`: operands cannot supply action cues. */
+export function observedCallableRequest(task) {
+  const outside = outsideQuotes(task), parts = clauses(outside), stated = signature(outside);
+  if (stated === null) return null;
+  const at = parts.findIndex((part) => signature(part)?.name === stated.name);
+  if (at < 0) return null;
+  const authoring = (part) => {
+    const normalized = normalizePrompt(instructionClause(part)).toLowerCase();
+    return mentionsRole('coding_request_verb', normalized) || mentionsRole('coding_member_add_action', normalized);
+  };
+  let declaration = parts[at];
+  if (!authoring(declaration)) {
+    const previous = parts[at - 1];
+    if (previous === undefined || !authoring(previous)
+      || !mentionsRole('coding-source-artifact-kind', normalizePrompt(instructionClause(previous)).toLowerCase())) return null;
+    declaration = previous;
+  }
+  const own = pathsIn(declaration);
+  if (own.length !== 1 || extensionLanguage(own[0]) === null) return null;
+  const command = statedCommand(outside), acceptance = command === null ? [] : pathsIn(command);
+  if (acceptance.includes(own[0])) return null;
+  const inputs = pathsIn(outside).filter((path) => path !== own[0] && !acceptance.includes(path));
+  if (inputs.length === 0 || !mentionsRole('file_read_action_cue', normalizePrompt(instructionClause(outside)).toLowerCase())) return null;
+  return { name: stated.name, parameters: stated.parameters, destination: own[0], inputs, acceptance, command };
 }
 
 /**
@@ -380,6 +424,8 @@ export function readSource(currentTurn, path) {
  * test module, then hand the computed recipe to the execution-recipe reroute.
  */
 export async function planModuleFunctionStep(task, messages, toolNames) {
+  const observed = observedCallableRequest(task);
+  if (observed !== null) return planObservedCallableStep(observed, messages, toolNames);
   const request = moduleFunctionRequest(task);
   if (!request) return null;
   const currentTurn = messages.slice(evidenceWindowStart(messages));

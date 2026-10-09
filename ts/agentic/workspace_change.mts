@@ -20,7 +20,7 @@ import {
   joinedLiteralLines, unescapeProseNewlines, unquotedPathTokens,
 } from './positional_edit.mjs';
 import { bareSurfaces, cleanCueToken, cleanPathToken, looksLikeFilePath, safeRelativePath, tokens } from './write_request.mjs';
-import { commandArgument, failureMessage } from './tool_result.mjs';
+import { commandArgument, failureMessage, observedDigestMatches } from './tool_result.mjs';
 import { quotedSegmentSpans, quotedSegments, quotesWhole, unwrapTransportQuotes } from './crate/normal_markov.mjs';
 import { sha256Hex } from './crate/source_fetch.mjs';
 import { correctedSpelling } from './crate/spelling.mjs';
@@ -495,7 +495,7 @@ function planInsertSequenceStep(task, currentTurn, toolNames, inserts) {
     const command = `sha256sum -- ${target}`;
     const observed = resultForCommand(currentTurn, command);
     if (observed === null) return planWithTool(toolNames, Capability.Run, jsonText({ command }));
-    if (splitWhitespace(observed)[0] !== sha256Hex(content)) return failed(task, target);
+    if (!observedDigestMatches(observed, sha256Hex(content))) return failed(task, target);
   }
   return stated.includes(null) ? null : resolvedFinalAnswer(stated.join('\n'), FinalDisposition.Finding, 'workspace_insertions_verified');
 }
@@ -1164,7 +1164,7 @@ function planDigestVerification(task, currentTurn, toolNames, change) {
   const command = `sha256sum -- ${change.target}`;
   const observed = resultForCommand(currentTurn, command);
   if (observed === null) return planWithTool(toolNames, Capability.Run, jsonText({ command }));
-  if (splitWhitespace(observed)[0] !== sha256Hex(change.expected)) return failed(task, change.target);
+  if (!observedDigestMatches(observed, sha256Hex(change.expected))) return failed(task, change.target);
   return finalOrNull(renderSeededChange(change.intent, task, change.target, change.slots),
     FinalDisposition.Finding, change.intent);
 }

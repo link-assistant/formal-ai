@@ -8,7 +8,8 @@
 
 import { Capability } from './capability.mjs';
 import { classifyTool } from './capability_router.mjs';
-import { composeGeneralChangePlan } from './general_planner.mjs';
+import { composeGeneralChangePlan, GeneralPlanMode } from './general_planner.mjs';
+import { observedPayload, reportedExitCode } from './tool_result.mjs';
 import { Progress } from './progress.mjs';
 import { records } from './transcript_evidence.mjs';
 import { stableId } from './crate/engine_stable_identifier.mjs';
@@ -113,7 +114,8 @@ export function observedFileOutcome(request, path, messages) {
 
 function observedLedger(request, messages) {
   const ledger = { frame_id: stableId('obligation_ledger', request), root: agenticRoot(request) };
-  for (const record of records(messages)) observe(ledger, record);
+  for (const record of records(messages)) observeNonFileRecord(ledger.root, record);
+  reconcileFileObservations(ledger.root, Progress.scan(messages));
   return ledger;
 }
 
@@ -133,4 +135,33 @@ function alignFileExpectations(node) {
     }
   }
   for (const child of node.children) alignFileExpectations(child);
+}
+
+/** Mirrors `fn reconcile_file_observations`: exact verification receipts judge only their declared file leaf. */
+function reconcileFileObservations(node, progress) {
+  for (const child of node.children) reconcileFileObservations(child, progress);
+  if (node.children.length || node.expectation.kind !== 'file_bytes') return;
+  const plan = composeGeneralChangePlan(node.clause);
+  if (plan?.mode !== GeneralPlanMode.LiteralFile || plan.target !== node.expectation.path) return;
+  const raw = progress.latestRunOutputFor(plan.verification_command);
+  if (raw === null || raw !== progress.latestSuccessfulRunOutputFor(plan.verification_command)) return;
+  const payload = observedPayload(raw);
+  if (payload === null) return;
+  const record = observedEvidence(plan.verification_command, [plan.target], reportedExitCode(raw),
+    encoder.encode(payload), ObservationKind.FileBytes, EvidenceSource.Harness);
+  const isolated = { frame_id: stableId('file_observation', node.node_id), root: { ...node } };
+  observe(isolated, record);
+  node.outcome = isolated.root.outcome;
+}
+
+/** Mirrors `fn observe_non_file_record`: raw acknowledgements are not file-byte receipts. */
+function observeNonFileRecord(root, record) {
+  for (const node of collectLeaves(root)) {
+    if (node.expectation.kind === 'file_bytes') continue;
+    const isolated = { frame_id: stableId('non_file_observation', node.node_id), root: { ...node } };
+    if (observe(isolated, record) !== null) {
+      node.outcome = isolated.root.outcome;
+      return;
+    }
+  }
 }

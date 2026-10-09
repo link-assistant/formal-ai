@@ -110,8 +110,8 @@ function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
     const report = workItemReadFailureReport(plan, progress);
     if (report !== null) return finalAnswer(report);
   }
-  const eventStep = planEventStep(plan, progress, toolNames);
-  if (eventStep !== null) return eventStep;
+  const event = planEventStep(plan, progress, toolNames);
+  if (event.kind === 'pending') return event.plan;
   const writeTool = toolFor(toolNames, Capability.Write);
   if (writeTool && plan.mode === GeneralPlanMode.LiteralFile && !progress.successfulWriteFor(plan.target)) {
     return planOne(writeTool, writeArguments(plan.target, plan.content));
@@ -129,6 +129,10 @@ function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
     } else if (plan.mode === GeneralPlanMode.LiteralFile && progress.successfulRunCountFor(plan.verification_command) === 0) {
       return planOne(runTool, command(plan.verification_command));
     }
+  }
+  if (event.kind === 'unavailable' && plan.mode !== GeneralPlanMode.RepositoryWorkItem) {
+    return resolvedFinalAnswer(generalPlanUnverified({ ...plan, target: PLAN_PATH, verification_command: 'cat ' + PLAN_PATH }),
+      FinalDisposition.Gap, 'auxiliary_event_unavailable');
   }
   return finishGeneralChange(plan, progress, resolvedFromWorkItem);
 }
@@ -163,26 +167,27 @@ function planEventStep(plan, progress, toolNames) {
     const prior = output === null ? null : sourceFromReadResult(output);
     const expected = progress.successfulWriteContentFor(PLAN_PATH);
     if (expected !== null) {
-      if (prior !== null && prior.startsWith(expected)) return null;
+      if (prior !== null && prior.startsWith(expected)) return { kind: 'observed' };
       if (progress.last() === Capability.Read
-        && toolArgumentPath(progress.latestSuccessfulArguments(Capability.Read)) === PLAN_PATH) return unverifiedPlanEvent(plan);
-      return planOne(read, readArguments(PLAN_PATH));
+        && toolArgumentPath(progress.latestSuccessfulArguments(Capability.Read)) === PLAN_PATH) return { kind: 'pending', plan: unverifiedPlanEvent(plan) };
+      return { kind: 'pending', plan: planOne(read, readArguments(PLAN_PATH)) };
     }
-    if (prior !== null && prior.split('\n').includes(identity)) return prior.includes(event) ? null : unverifiedPlanEvent(plan);
+    if (prior !== null && prior.split('\n').includes(identity)) return prior.includes(event) ? { kind: 'observed' } : { kind: 'pending', plan: unverifiedPlanEvent(plan) };
     const failure = progress.latestFailure();
     const missing = failure !== null && failure.capability === Capability.Read
       && toolArgumentPath(failure.arguments) === PLAN_PATH && absentPlanEvent(failure.detail);
-    if (prior === null && !missing) return planOne(read, readArguments(PLAN_PATH));
+    if (prior === null && !missing) return { kind: 'pending', plan: planOne(read, readArguments(PLAN_PATH)) };
     const before = prior ?? '';
     const separator = before !== '' && !before.endsWith('\n') ? '\n' : '';
-    return planOne(write, writeArguments(PLAN_PATH, before + separator + event));
+    return { kind: 'pending', plan: planOne(write, writeArguments(PLAN_PATH, before + separator + event)) };
   }
-  if (!run) return finalAnswer(plannedNotExecutedAnswer(plan));
+  if (!run) return { kind: 'unavailable' };
   const append = planEventAppendCommand(plan);
-  if (progress.successfulRunCountFor(append) === 0) return planOne(run, command(append));
+  if (progress.successfulRunCountFor(append) === 0) return { kind: 'pending', plan: planOne(run, command(append)) };
   const raw = progress.latestSuccessfulRunOutputFor(append);
   const observed = raw === null ? null : observedPayload(raw);
-  return observed !== null && observed.includes(trim(event)) ? null : unverifiedPlanEvent(plan);
+  return observed !== null && observed.includes(trim(event))
+    ? { kind: 'observed' } : { kind: 'pending', plan: unverifiedPlanEvent(plan) };
 }
 
 /**

@@ -2,6 +2,7 @@
 // (rust/src/agentic_coding/code_task.rs).
 
 import { Capability } from './capability.mjs';
+import { guardedSourceStep } from './code_task/target_guard.mjs';
 import { toolFor } from './capability_router.mjs';
 import { latestResult } from './code_artifact.mjs';
 import { composeEditRequest } from './general_planner.mjs';
@@ -16,7 +17,6 @@ import { isAsciiAlphanumeric, isAsciiDigit, trim, trimEndMatches } from './write
 const RustItemKind = Object.freeze({ Function: 'function', Constant: 'constant', Test: 'test' });
 
 const eqIgnoreAsciiCase = (left, right) => left.replace(/[A-Z]/g, (c) => c.toLowerCase()) === right.replace(/[A-Z]/g, (c) => c.toLowerCase());
-const isAsciiAlphabetic = (character) => /^[A-Za-z]$/.test(character);
 
 /**
  * Mirrors `fn plan_generated_source_step`.
@@ -49,7 +49,8 @@ export function planGeneratedSourceStep(rawTask, messages, toolNames) {
     const rendered = renderSeededOutcome('coding_workspace_written_unverified', task, artifact.path);
     return rendered === null ? null : finalAnswer(rendered);
   }
-  return planOne(writeTool, writeArguments(artifact.path, artifact.content));
+  return guardedSourceStep(task, artifact, currentTurn, toolNames)
+    ?? planOne(writeTool, writeArguments(artifact.path, artifact.content));
 }
 
 /** Mirrors `fn rust_source_for_task`: `{path, content}` or null. */
@@ -223,13 +224,13 @@ function numericLiterals(text) {
   let index = 0;
   while (index < chars.length) {
     const character = chars[index];
-    if (!isAsciiDigit(character) || (index > 0 && isAsciiAlphabetic(chars[index - 1]))) {
+    if (!isAsciiDigit(character) || (index > 0 && (isAsciiAlphanumeric(chars[index - 1]) || chars[index - 1] === "_"))) {
       index += 1;
       continue;
     }
     let endIndex = index + 1;
     while (endIndex < chars.length && (isAsciiDigit(chars[endIndex]) || chars[endIndex] === '.')) endIndex += 1;
-    if (endIndex < chars.length && isAsciiAlphabetic(chars[endIndex])) {
+    if (endIndex < chars.length && (isAsciiAlphanumeric(chars[endIndex]) || chars[endIndex] === "_")) {
       index = endIndex + 1;
       continue;
     }

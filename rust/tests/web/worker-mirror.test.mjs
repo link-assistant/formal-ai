@@ -189,8 +189,9 @@ test("prompt normalization collapses whitespace and case", () => {
   assert.equal(context.normalizePrompt(""), "");
 });
 
-test("language detection recognises each supported script", () => {
-  const context = loadWorkerMirror();
+test("language detection recognises each supported script", async () => {
+  const context = createWorkerContext();
+  await evaluate(context, "loadSeed()");
   assert.equal(context.detectLanguage("привет как дела"), "ru");
   assert.equal(context.detectLanguage("hello how are you"), "en");
   assert.equal(context.detectLanguage("你好吗"), "zh");

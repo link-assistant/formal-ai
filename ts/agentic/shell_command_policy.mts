@@ -92,7 +92,7 @@ export function commandSpan(remainder) {
     const inner = close < 0 ? '' : trim(text.slice(fence.length, close));
     if (inner !== '' && !inner.includes('`')) return inner;
   }
-  return (text.split('`').length - 1) % 2 === 1 ? null : text;
+  return shellQuotesPaired(text) ? text : null;
 }
 
 /** Mirrors `fn named_shell_command_in_sentence`. */

@@ -19,7 +19,7 @@ const ARGUMENTS = ['path', 'name_lead', 'one_path', 'two_paths', 'remainder', 's
 function parseIntent(node) {
   const argument = findChildValue(node, 'argument');
   const effectNode = (node.children || []).find((child) => child.name === 'effect');
-  const templates = (name) => (effectNode ? childrenNamed(effectNode, name).map((child) => child.value) : []);
+  const templates = (name) => (effectNode ? childrenNamed(effectNode, name).map((child) => child.value || findChildValue(child, 'code')) : []);
   return {
     command: findChildValue(node, 'command'),
     argument: ARGUMENTS.includes(argument) ? argument : 'none',
