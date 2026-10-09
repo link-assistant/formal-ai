@@ -8,6 +8,7 @@ import test from 'node:test';
 import { fileURLToPath } from 'node:url';
 
 const script = fileURLToPath(new URL('../../../scripts/desktop-release-resolve.sh', import.meta.url));
+const creator = new URL('../fixtures/native-release-evidence/observations.mjs', import.meta.url).href;
 const HEAD = 'a'.repeat(40);
 const release = (tag_name) => ({ tag_name, draft: false, prerelease: false });
 const child = { sha: 'b'.repeat(40), parents: [{ sha: HEAD }] };
@@ -19,7 +20,11 @@ function resolve(context, scenario, extra = {}) {
   const bin = join(root, 'bin');
   mkdirSync(bin);
   const mock = '#!/usr/bin/env node\nconst scenario=' + JSON.stringify(scenario) + ';\n'
-    + String.raw`const args = process.argv.slice(2);
+    + String.raw`(async()=>{
+const creator = CREATOR_PLACEHOLDER;
+const {materializePublishedFixture}=await import(creator);
+const fs=require('node:fs');const os=require('node:os');const path=require('node:path');
+const args = process.argv.slice(2);
 const write = (value) => process.stdout.write(String(value ?? '') + '\n');
 if (args[0] === 'api') {
   const endpoint = args[1];
@@ -27,9 +32,14 @@ if (args[0] === 'api') {
   else if (endpoint.includes('/releases?')) {
     if (scenario.releaseFailure) { console.error('HTTP 401'); process.exit(1); }
     write(JSON.stringify(scenario.releases ?? []));
+  } else if (endpoint.includes('/releases/tags/')) {
+    const directory=fs.mkdtempSync(path.join(os.tmpdir(),'release-metadata-fixture-'));
+    const tag=endpoint.split('/').at(-1);
+    const result=materializePublishedFixture(directory,{version:tag.replace(/^v/,''),sourceCommit:scenario.commits?.[tag]?.sha??'b'.repeat(40),sourceTree:'d'.repeat(40),expectedAssets:scenario.assets??[]});
+    write(JSON.stringify(result.metadata));fs.rmSync(directory,{recursive:true,force:true});
   } else if (endpoint.includes('/commits/')) {
     const commit = scenario.commits?.[endpoint.split('/').at(-1)] ?? { sha: '', parents: [] };
-    if (args.includes('--jq')) write(args.at(-1) === '.parents[0].sha' ? commit.parents[0]?.sha : commit.sha);
+    if (args.includes('--jq')) write(args.at(-1) === '.parents[0].sha' ? commit.parents[0]?.sha : args.at(-1)==='.commit.tree.sha'?'d'.repeat(40):commit.sha);
     else write(JSON.stringify(commit));
   } else process.exit(2);
 } else if (args[0] === 'release' && args[1] === 'view') {
@@ -37,8 +47,16 @@ if (args[0] === 'api') {
   if (!tag) write(scenario.latest ?? '');
   else if (args.includes('assets')) write((scenario.assets ?? []).join('\n'));
   else write(JSON.stringify({ tagName: tag }));
+} else if (args[0]==='release'&&args[1]==='download') {
+  const directory=args[args.indexOf('--dir')+1],tag=args[2];
+  materializePublishedFixture(directory,{version:tag.replace(/^v/,''),sourceCommit:scenario.commits?.[tag]?.sha??'b'.repeat(40),sourceTree:'d'.repeat(40),expectedAssets:scenario.assets??[]});
+  if(scenario.evidenceFault==='corrupt')fs.writeFileSync(path.join(directory,'formal-ai-native-source-'+tag.replace(/^v/,'')+'.json'),'{}');
+  if(scenario.evidenceFault==='manifest')fs.writeFileSync(path.join(directory,'SHA256SUMS.txt'),'');
+} else if(args[0]==='attestation'&&args[1]==='verify') {
+  if(scenario.evidenceFault==='attestation')process.exit(1);
 } else process.exit(2);
-`;
+})().catch(error=>{console.error(error);process.exit(1)});
+`.replace('CREATOR_PLACEHOLDER',JSON.stringify(creator));
   const executable = join(bin, 'gh');
   writeFileSync(executable, mock);
   chmodSync(executable, 0o755);
@@ -117,7 +135,13 @@ function completeAssets(version) {
   const cli = [...workflow.matchAll(/target: *([A-Za-z0-9_.-]+), *label: *cli-[^,]+,.*archive: *([a-z.]+),/gu)]
     .map((match) => `formal-ai-cli-${match[1]}.${match[2]}`);
   assert.equal(cli.length, 5);
-  return [...desktop, ...cli, `formal-ai-vscode-${version}.vsix`, 'SHA256SUMS.txt', 'BUILD-PROVENANCE.txt'];
+  const native=workflow.slice(workflow.indexOf('\n  native:'),workflow.indexOf('\n  build:'));
+  const targets=[...native.matchAll(/target: *([A-Za-z0-9_.-]+), *binext:/gu)].map(match=>match[1]);
+  assert.equal(targets.length,8);
+  const evidence=[`formal-ai-native-source-${version}.json`,`formal-ai-native-protocol-${version}.json`,
+    ...targets.map(target=>`formal-ai-native-${target}-${version}.json`),
+    ...['macos-arm64','macos-x64'].map(label=>`formal-ai-signing-${label}-${version}.json`)];
+  return [...desktop, ...cli, ...evidence, `formal-ai-vscode-${version}.vsix`, 'SHA256SUMS.txt', 'BUILD-PROVENANCE.txt'];
 }
 
 for (const omitted of ['formal-ai-vscode-1.2.3.vsix', 'SHA256SUMS.txt', 'BUILD-PROVENANCE.txt']) {
@@ -154,3 +178,11 @@ test('an explicit manual rebuild retains the complete-assets override', (context
   assert.equal(result.outputs.tag, 'v1.2.3');
   assert.equal(result.outputs.should_build, 'true');
 });
+
+for(const fault of ['corrupt','manifest','attestation']) {
+  test('complete names still heal invalid durable evidence: '+fault,context=>{
+    const result=resolve(context,{latest:'v1.2.3',commits:{'v1.2.3':child},assets:completeAssets('1.2.3'),evidenceFault:fault});
+    assert.equal(result.status,0,result.stderr);assert.equal(result.outputs.tag,'v1.2.3');assert.equal(result.outputs.should_build,'true');
+    assert.match(result.stdout,/Durable release evidence did not verify/);
+  });
+}

@@ -1,7 +1,5 @@
-//! Release-workflow structure + issue #479 Pages deploy / landing-page
-//! assertions. The desktop-gating half lives in `workflow_release_desktop`,
-//! split out when this file crossed the 1000-line cap. Shared helpers live in
-//! `workflow_fixtures`.
+//! Release structure and issue #479 Pages/landing assertions; desktop gating
+//! lives in `workflow_release_desktop` (1000-line split), shared helpers in `workflow_fixtures`.
 
 use std::fs;
 
@@ -852,6 +850,7 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("test", 30),
         // Issue #1014 compiles one nextest archive and fans it out to five
         // macOS runners. The reusable workflow owns both internal timeouts.
+        ("doc-tests", 30),
         ("macos-core-tests", 0),
         // Issue #896: raised from 10; the published web-search/web-capture
         // graphs moved the job from ~4-5 to 7.2 minutes, and a cold release
@@ -905,6 +904,7 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("test-e2e-pages", 15),
         // Issue #977: the terminal gate that turns a silently-`cancelled` run
         // (the shape a `timeout-minutes` kill takes) into a red failure.
+        ("native-container-images", 0),
         ("pipeline-status", 5),
     ];
 

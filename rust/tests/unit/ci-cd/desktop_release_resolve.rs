@@ -66,7 +66,20 @@ case "$sub" in
     path="$1"; shift || true
     case "$path" in
       *"/tags"*)     [ -n "${MOCK_TAGS_JQ_OUTPUT:-}" ] && printf '%s\n' "${MOCK_TAGS_JQ_OUTPUT}" ;;
-      *"/commits/"*) printf '%s\n' "${MOCK_PARENT_SHA:-}" ;;
+      *"/releases/tags/"*)
+        directory="$(mktemp -d)"
+        printf '%s\n' "${MOCK_ASSET_NAMES:-}" > "$directory/names.txt"
+        tag="${path##*/}"
+        node "$MOCK_EVIDENCE_CREATOR" "$directory" "${tag#v}" "$directory/names.txt" metadata
+        status=$?
+        rm -rf "$directory"
+        exit "$status" ;;
+      *"/commits/"*)
+        case "$*" in
+          *".commit.tree.sha"*) printf '%s\n' "dddddddddddddddddddddddddddddddddddddddd" ;;
+          *"--jq .sha"*) printf '%s\n' "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" ;;
+          *) printf '%s\n' "${MOCK_PARENT_SHA:-}" ;;
+        esac ;;
     esac ;;
   release)
     action="$1"; shift || true
@@ -87,7 +100,17 @@ case "$sub" in
         # no positional tag -> latest release tagName
         [ -n "${MOCK_LATEST_TAG:-}" ] && { printf '%s\n' "$MOCK_LATEST_TAG"; exit 0; } || exit 1
       fi
+    elif [ "$action" = "download" ]; then
+      tag="$1"; shift
+      directory=""
+      while [ "$#" -gt 0 ]; do
+        if [ "$1" = "--dir" ]; then directory="$2"; shift 2; else shift; fi
+      done
+      printf '%s\n' "${MOCK_ASSET_NAMES:-}" > "$directory/names.txt"
+      node "$MOCK_EVIDENCE_CREATOR" "$directory" "${tag#v}" "$directory/names.txt"
+      exit "$?"
     fi ;;
+  attestation) [ "$1" = "verify" ] || exit 2 ;;
 esac
 exit 0
 "#;
@@ -153,7 +176,12 @@ fn run_resolve(label: &str, env: &[(&str, &str)], mock: &GhMock<'_>) -> ResolveO
             "MOCK_RELEASE_EXISTS",
             if mock.release_exists { "1" } else { "0" },
         )
-        .env("MOCK_ASSET_NAMES", mock.asset_names);
+        .env("MOCK_ASSET_NAMES", mock.asset_names)
+        .env(
+            "MOCK_EVIDENCE_CREATOR",
+            Path::new(env!("CARGO_MANIFEST_DIR"))
+                .join("tests/fixtures/native-release-evidence/observations.mjs"),
+        );
     for (key, value) in env {
         cmd.env(key, value);
     }
@@ -211,6 +239,34 @@ fn expected_asset_names(version: &str) -> String {
     .join("\n")
         + "\n"
         + &cli_archive_names()
+        + "\n"
+        + &native_evidence_names(version)
+}
+
+// The fixture records cover exactly the actual eight producer targets.
+fn native_evidence_names(version: &str) -> String {
+    let mut names = vec![
+        format!("formal-ai-native-source-{version}.json"),
+        format!("formal-ai-native-protocol-{version}.json"),
+    ];
+    names.extend(
+        [
+            "x86_64-unknown-linux-gnu",
+            "aarch64-unknown-linux-gnu",
+            "x86_64-unknown-linux-musl",
+            "aarch64-unknown-linux-musl",
+            "x86_64-apple-darwin",
+            "aarch64-apple-darwin",
+            "x86_64-pc-windows-msvc",
+            "aarch64-pc-windows-msvc",
+        ]
+        .map(|target| format!("formal-ai-native-{target}-{version}.json")),
+    );
+    names.extend([
+        format!("formal-ai-signing-macos-arm64-{version}.json"),
+        format!("formal-ai-signing-macos-x64-{version}.json"),
+    ]);
+    names.join("\n")
 }
 
 /// Issue #1181: the five archives the `cli` job of desktop-release.yml uploads

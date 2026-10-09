@@ -5,6 +5,7 @@ import {execFileSync} from 'node:child_process';
 import {existsSync,readdirSync,readFileSync,writeFileSync} from 'node:fs';
 import {join,resolve} from 'node:path';
 import {pathToFileURL} from 'node:url';
+import {authorizePublishedStableSource,validateSelectedSourceAuthority} from './native-release-trust.mjs';
 
 export const SOURCE_FILE='source-selection.json';
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
@@ -111,6 +112,10 @@ if(import.meta.url===pathToFileURL(process.argv[1]??'').href) {
    base:process.env.NATIVE_BASE_COMMIT||null,tag:process.env.NATIVE_RELEASE_TAG||null,run:process.env.GITHUB_RUN_ID,
    metadata:JSON.parse(readFileSync(process.env.NATIVE_METADATA_FILE,'utf8')),
    compiler:readFileSync(process.env.NATIVE_COMPILER_FILE,'utf8')});
+  validateSelectedSourceAuthority(cwd,result.record,{event:process.env.NATIVE_RELEASE_EVENT,purpose:process.env.NATIVE_RELEASE_PURPOSE,
+   authority:process.env.NATIVE_RELEASE_EVENT==='pull_request'||process.env.NATIVE_RELEASE_PURPOSE==='validation'?null:{
+    tag:process.env.NATIVE_RELEASE_TAG,releaseCommit:process.env.NATIVE_AUTHORIZED_RELEASE_COMMIT,
+    defaultCommit:process.env.NATIVE_AUTHORIZED_DEFAULT_COMMIT}});
   if(process.env.GITHUB_OUTPUT) {
    writeFileSync(process.env.GITHUB_OUTPUT,
     'commit='+result.record.source_commit+'\ntree='+result.record.source_tree
@@ -119,7 +124,11 @@ if(import.meta.url===pathToFileURL(process.argv[1]??'').href) {
   }
   console.log(JSON.stringify(result));
  } else if(mode==='import') {
-  console.log(JSON.stringify(importSource(cwd,directory,{head:process.env.NATIVE_SELECTED_HEAD,
-   run:process.env.GITHUB_RUN_ID,selectionSha:process.env.NATIVE_SELECTION_SHA256})));
+  const record=importSource(cwd,directory,{head:process.env.NATIVE_SELECTED_HEAD,
+   run:process.env.GITHUB_RUN_ID,selectionSha:process.env.NATIVE_SELECTION_SHA256});
+  const authority=process.env.NATIVE_RELEASE_EVENT==='pull_request'||process.env.NATIVE_RELEASE_PURPOSE==='validation'?null:
+   authorizePublishedStableSource(cwd,{tag:record.release_tag,repository:process.env.NATIVE_REPOSITORY});
+  console.log(JSON.stringify(validateSelectedSourceAuthority(cwd,record,{
+   event:process.env.NATIVE_RELEASE_EVENT,purpose:process.env.NATIVE_RELEASE_PURPOSE,authority})));
  } else assert.fail('unknown source-selection mode');
 }

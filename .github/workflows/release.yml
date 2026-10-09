@@ -573,7 +573,7 @@ jobs:
         run: |
           scripts/run-with-budget-warning.sh \
             "$TEST_BUDGET_SECONDS" "Documentation dependency preparation" \
-            cargo build --manifest-path rust/Cargo.toml --profile test --lib
+            cargo test --manifest-path rust/Cargo.toml --doc --verbose -- --list
       - name: Run doc tests
         env:
           TEST_BUDGET_SECONDS: 120
@@ -678,6 +678,7 @@ jobs:
     outputs:
       pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
       pages_version: ${{ steps.release_pages_ref.outputs.version }}
+      container-tag: ${{ steps.create-release.outcome == 'success' && format('v{0}', steps.version.outputs.new_version || steps.current_version.outputs.version) || '' }}
     env:
       DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME || 'konard' }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -685,6 +686,7 @@ jobs:
       contents: write
       packages: write
     steps:
+      # Version-and-commit pushes the version/tag on main, so issue #1079 retains persist-credentials only in this guarded publishing job.
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
@@ -797,6 +799,7 @@ jobs:
           labels: |
             org.opencontainers.image.version=${{ steps.current_version.outputs.version }}
       - name: Publish Docker image to GHCR
+        id: ghcr-publish
         if: |
           steps.check.outputs.should_release == 'true' && (
             steps.prepared.outputs.crate_published == 'true' ||
@@ -833,6 +836,12 @@ jobs:
             steps.publish-crate.outputs.publish_result == 'success'
           )
         run: bash scripts/verify-ghcr-visibility.sh
+      - name: Verify anonymous access to the immutable published manifest
+        if: steps.ghcr-publish.outputs.digest != ''
+        timeout-minutes: 2
+        env:
+          IMAGE_REFERENCE: ${{ env.GHCR_IMAGE }}@${{ steps.ghcr-publish.outputs.digest }}
+        run: node scripts/verify-anonymous-image-manifest.mjs "$IMAGE_REFERENCE"
       - name: Configure Docker Hub publishing
         if: |
           steps.check.outputs.should_release == 'true' && (
@@ -874,6 +883,7 @@ jobs:
           # Issue #1057: the GHCR leg above already exported these layers.
           cache-to: type=inline
       - name: Create GitHub Release
+        id: create-release
         if: |
           steps.check.outputs.should_release == 'true' && (
             steps.prepared.outputs.crate_published == 'true' ||
@@ -885,6 +895,21 @@ jobs:
           DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}
           RELEASE_VERSION: ${{ steps.version.outputs.new_version || steps.current_version.outputs.version }}
         run: bash scripts/invoke-create-github-release.sh
+      - name: Attach the verified immutable slim image receipt
+        if: |
+          steps.check.outputs.should_release == 'true' && (
+            steps.prepared.outputs.crate_published == 'true' ||
+            steps.publish-crate.outputs.publish_result == 'success'
+          )
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RELEASE_VERSION: ${{ steps.version.outputs.new_version || steps.current_version.outputs.version }}
+        run: |
+          set -euo pipefail
+          test -s slim-image-release-receipt.json
+          test -s slim-image-release-receipt.json.sha256
+          gh release upload "v$RELEASE_VERSION" slim-image-release-receipt.json slim-image-release-receipt.json.sha256 --repo "$REPO" --clobber
       - name: Resolve Pages deploy ref
         id: release_pages_ref
         if: always()
@@ -924,6 +949,7 @@ jobs:
     outputs:
       pages_sha: ${{ steps.release_pages_ref.outputs.sha }}
       pages_version: ${{ steps.release_pages_ref.outputs.version }}
+      container-tag: ${{ steps.create-release.outcome == 'success' && format('v{0}', steps.version.outputs.new_version) || '' }}
     env:
       DOCKERHUB_USERNAME: ${{ vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME || 'konard' }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -931,6 +957,7 @@ jobs:
       contents: write
       packages: write
     steps:
+      # Version-and-commit pushes the version/tag after workflow_dispatch, so issue #1079 retains persist-credentials in this publishing job.
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
@@ -1010,6 +1037,7 @@ jobs:
           labels: |
             org.opencontainers.image.version=${{ steps.version.outputs.new_version }}
       - name: Publish Docker image to GHCR
+        id: ghcr-publish
         if: |
           (steps.version.outputs.version_committed == 'true' ||
             steps.version.outputs.already_released == 'true') &&
@@ -1043,6 +1071,12 @@ jobs:
             steps.version.outputs.already_released == 'true') &&
           steps.publish-crate.outputs.publish_result == 'success'
         run: bash scripts/verify-ghcr-visibility.sh
+      - name: Verify anonymous access to the immutable published manifest
+        if: steps.ghcr-publish.outputs.digest != ''
+        timeout-minutes: 2
+        env:
+          IMAGE_REFERENCE: ${{ env.GHCR_IMAGE }}@${{ steps.ghcr-publish.outputs.digest }}
+        run: node scripts/verify-anonymous-image-manifest.mjs "$IMAGE_REFERENCE"
       - name: Configure Docker Hub publishing
         if: |
           (steps.version.outputs.version_committed == 'true' ||
@@ -1083,6 +1117,7 @@ jobs:
           # Issue #1057: the GHCR leg above already exported these layers.
           cache-to: type=inline
       - name: Create GitHub Release
+        id: create-release
         if: |
           (steps.version.outputs.version_committed == 'true' ||
             steps.version.outputs.already_released == 'true') &&
@@ -1093,6 +1128,20 @@ jobs:
           DOCKER_HUB_URL: ${{ steps.dockerhub.outputs.docker_hub_url }}
           RELEASE_VERSION: ${{ steps.version.outputs.new_version }}
         run: bash scripts/invoke-create-github-release.sh
+      - name: Attach the verified immutable slim image receipt
+        if: |
+          (steps.version.outputs.version_committed == 'true' ||
+            steps.version.outputs.already_released == 'true') &&
+          steps.publish-crate.outputs.publish_result == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          RELEASE_VERSION: ${{ steps.version.outputs.new_version }}
+        run: |
+          set -euo pipefail
+          test -s slim-image-release-receipt.json
+          test -s slim-image-release-receipt.json.sha256
+          gh release upload "v$RELEASE_VERSION" slim-image-release-receipt.json slim-image-release-receipt.json.sha256 --repo "$REPO" --clobber
       - name: Resolve Pages deploy ref
         id: release_pages_ref
         if: always()
@@ -1112,6 +1161,7 @@ jobs:
       contents: write
       pull-requests: write
     steps:
+      # Create-pull-request pushes the generated release branch after workflow_dispatch, so issue #1079 retains persist-credentials for that action.
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
@@ -1396,14 +1446,32 @@ jobs:
           name: playwright-report-pages
           path: rust/tests/e2e/playwright-report/
           retention-days: 7
+  native-container-images:
+    name: Native full and slim container publication
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-native-container-images
+      cancel-in-progress: false
+    needs: [auto-release, manual-release]
+    if: |
+      !cancelled() && (
+        (needs.auto-release.result == 'success' && needs.auto-release.outputs.container-tag != '') ||
+        (needs.manual-release.result == 'success' && needs.manual-release.outputs.container-tag != '')
+      )
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/container-images.yml
+    with:
+      push: true
+      tag: ${{ needs.auto-release.outputs.container-tag || needs.manual-release.outputs.container-tag }}
   pipeline-status:
     name: Pipeline Status
     runs-on: ubuntu-latest
     timeout-minutes: 5
     if: always()
     needs: [detect-changes, changelog, docker-build, docker-slim, secrets-scan,
-            version-check, release-preflight, base, lint, test, macos-core-tests, build,
-            auto-release, manual-release,
+            version-check, release-preflight, base, lint, test, doc-tests, macos-core-tests, build,
+            auto-release, manual-release, native-container-images,
             changelog-pr, test-e2e-local, test-agent-cli-e2e,
             build-artifacts, box-language-projects, build-pages, deploy-pages,
             test-e2e-pages, server-parity]

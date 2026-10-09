@@ -4,13 +4,16 @@ import {readFileSync} from 'node:fs';
 const workflow=readFileSync(new URL('../../../.github/workflows/release.yml',import.meta.url),'utf8');
 const cargo=readFileSync(new URL('../../Cargo.toml',import.meta.url),'utf8');
 function job(name){const start=workflow.indexOf('\n  '+name+':\n');assert.ok(start>=0,name);const rest=workflow.slice(start+1);const end=rest.slice(1).search(/\n  [a-z][a-z-]*:\n/u);return end<0?rest:rest.slice(0,end+1);}
-test('doctests prepare the same default-feature test-profile library before the unchanged command',()=>{
+test('doctests prepare the exact Cargo doc graph by listing before unchanged execution',()=>{
  const body=job('doc-tests');
- const prepare='cargo build --manifest-path rust/Cargo.toml --profile test --lib';
+ const prepare='cargo test --manifest-path rust/Cargo.toml --doc --verbose -- --list';
  const execute='cargo test --manifest-path rust/Cargo.toml --doc --verbose';
- assert.equal(body.split(prepare).length,2);assert.equal(body.split(execute).length,2);
- assert.ok(body.indexOf(prepare)<body.indexOf(execute));
- assert.doesNotMatch(body,/--release|--all-features|--no-default-features/u);
+ const commands=body.split('\n').map(line=>line.trim());
+ assert.equal(commands.filter(line=>line===prepare).length,1);
+ assert.equal(commands.filter(line=>line===execute).length,1);
+ assert.ok(commands.indexOf(prepare)<commands.indexOf(execute));
+ assert.doesNotMatch(body,/cargo build|--release|--all-features|--no-default-features/u);
+ assert.doesNotMatch(body.slice(body.indexOf('- name: Run doc tests')),/--list|--ignored|--skip/u);
  assert.match(cargo,/\[profile\.test\][\s\S]*?opt-level = 2/u);
  assert.match(cargo,/\[profile\.test\][\s\S]*?debug-assertions = true[\s\S]*?overflow-checks = true/u);
  assert.match(body,/setup-sccache/u);assert.match(body,/cache-cargo-registry/u);
@@ -33,7 +36,7 @@ test('documentation source is the actual PRhead freshly merged with the pinned b
  assert.match(body,/if: github\.event_name != 'pull_request'[\s\S]*?ref: \$\{\{ github\.sha \}\}/u);
  assert.match(body,/BASE_COMMIT: \$\{\{ needs\.base\.outputs\.commit \}\}/u);
  assert.equal((body.match(/simulate-fresh-merge\.sh/gu)??[]).length,1);
- assert.ok(body.indexOf('simulate-fresh-merge.sh')<body.indexOf('cargo build'));
+ assert.ok(body.indexOf('simulate-fresh-merge.sh')<body.indexOf('cargo test'));
 });
 test('five full native shards retain all their tests without compiling documentation again',()=>{
  const body=job('test');

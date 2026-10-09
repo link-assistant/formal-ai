@@ -132,6 +132,9 @@ expected_desktop_assets() {
     "SHA256SUMS.txt" \
     "BUILD-PROVENANCE.txt"
   expected_cli_assets
+  printf '%s\n' "formal-ai-native-source-${version}.json" "formal-ai-native-protocol-${version}.json"
+  expected_native_targets | while IFS= read -r target; do printf '%s\n' "formal-ai-native-${target}-${version}.json"; done
+  printf '%s\n' "formal-ai-signing-macos-arm64-${version}.json" "formal-ai-signing-macos-x64-${version}.json"
 }
 
 # Issue #1181: the `cli` job's archives belong to the same release, so a release
@@ -149,6 +152,28 @@ expected_cli_assets() {
   fi
   sed -n 's/.*target: *\([A-Za-z0-9_.-]*\), *label: *cli-[^,]*,.*archive: *\([a-z.]*\),.*/formal-ai-cli-\1.\2/p' \
     "$DESKTOP_RELEASE_WORKFLOW"
+}
+
+# Derive native target evidence from the same checked producer matrix.
+expected_native_targets() {
+  if [ ! -f "$DESKTOP_RELEASE_WORKFLOW" ]; then echo '<matrix unknown>'; return; fi
+  sed -n '/^  native:/,/^  build:/p' "$DESKTOP_RELEASE_WORKFLOW" | sed -n 's/.*target: *\([A-Za-z0-9_.-]*\), *binext:.*/\1/p'
+}
+
+verify_durable_release() {
+  local directory source_commit source_tree status
+  directory="$(mktemp -d)"
+  status=1
+  if gh release download "$tag" --repo "$REPO" --dir "$directory" \
+      --pattern 'formal-ai-native-*.json' --pattern 'formal-ai-signing-*.json' --pattern 'SHA256SUMS.txt' \
+      && gh api "repos/$REPO/releases/tags/$tag" > "$directory/release-assets.json" \
+      && source_commit="$(gh api "repos/$REPO/commits/$tag" --jq .sha)" \
+      && source_tree="$(gh api "repos/$REPO/commits/$tag" --jq .commit.tree.sha)"; then
+    expected_desktop_assets "$release_version" > "$directory/expected-assets.txt"
+    if REPO="$REPO" node "$(dirname "$0")/native-release-evidence.mjs" published "$directory" "$release_version" "$source_commit" "$source_tree"; then status=0; fi
+  fi
+  rm -rf "$directory"
+  return "$status"
 }
 
 group "desktop-release resolve inputs"
@@ -264,7 +289,7 @@ else
   # naming in the log. Either way the fail-safe direction is the same (build),
   # so the status only drives diagnostics, never the decision.
   if existing_names="$(gh release view "$tag" --repo "$REPO" --json assets \
-    --jq '.assets[].name | select(startswith("formal-ai-desktop-") or startswith("formal-ai-cli-") or startswith("formal-ai-vscode-") or . == "latest.yml" or . == "latest-mac.yml" or . == "latest-linux.yml" or . == "SHA256SUMS.txt" or . == "BUILD-PROVENANCE.txt")' 2>/dev/null)"; then
+    --jq '.assets[].name | select(startswith("formal-ai-desktop-") or startswith("formal-ai-cli-") or startswith("formal-ai-vscode-") or startswith("formal-ai-native-") or startswith("formal-ai-signing-") or . == "latest.yml" or . == "latest-mac.yml" or . == "latest-linux.yml" or . == "SHA256SUMS.txt" or . == "BUILD-PROVENANCE.txt")' 2>/dev/null)"; then
     :
   else
     log "warning: could not list assets for ${tag} (gh exited non-zero); treating them as absent and building."
@@ -282,7 +307,7 @@ else
 
   log "release version: ${release_version}"
   log "existing desktop assets: ${existing_count}"
-  log "required release assets: 17 desktop and updater files, one versioned VSIX, two consolidated manifests plus $(expected_cli_assets | wc -l | tr -d ' ') CLI archives"
+  log "required release assets: desktop/updater, versioned VSIX, manifests, CLI archives and source/protocol/native/signing observations"
   if [ ${#missing[@]} -eq 0 ]; then
     log "all required desktop assets are present."
   else
@@ -292,9 +317,13 @@ else
 fi
 endgroup
 if [ "$EVENT" = "workflow_run" ] && [ -n "${release_version:-}" ] && [ ${#missing[@]} -eq 0 ]; then
-  should_build=false
-  resolution="${resolution}+already-has-all-assets"
-  log "Release ${tag} already has the complete desktop asset set; skipping automatic build."
+  if verify_durable_release; then
+    should_build=false
+    resolution="${resolution}+already-has-all-assets"
+    log "Release ${tag} has complete byte-consistent workflow-authenticated evidence; skipping automatic build."
+  else
+    log "Durable release evidence did not verify; rebuilding rather than accepting asset names alone."
+  fi
 fi
 
 emit_outputs

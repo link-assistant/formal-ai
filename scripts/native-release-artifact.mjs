@@ -47,21 +47,30 @@ export function writeExecutableReceipt(directory,identity,binary,{compiler,envir
  writeFileSync(join(directory,RECEIPT_FILE),JSON.stringify(receipt,null,2)+'\n');return receipt;
 }
 
-/** Recompute executable and independent source contract before execution or packaging. */
-export function verifyExecutableReceipt(directory,identity) {
- const receipt=JSON.parse(readFileSync(join(directory,RECEIPT_FILE),'utf8'));
+/** Validate the original producer contract independently of a filesystem or execution claim. */
+export function validateExecutableReceipt(receipt,identity) {
  assert.equal(receipt.version,1);assert.deepEqual(receipt.identity,identity);
  const name=identity.platform==='win32'?'formal-ai.exe':'formal-ai';
  assert.equal(receipt.executable.name,name);
- assert.deepEqual(readdirSync(directory).sort(),[name,RECEIPT_FILE].sort());
- const binary=join(directory,name),bytes=readFileSync(binary);
- assert.ok(bytes.length>0);assert.equal(bytes.length,receipt.executable.bytes);assert.equal(hash(bytes),receipt.executable.sha256);
+ assert.ok(Number.isSafeInteger(receipt.executable.bytes)&&receipt.executable.bytes>0);
+ assert.match(receipt.executable.sha256,/^[a-f0-9]{64}$/u);
+ assert.match(receipt.producer.job,/^[A-Za-z_][A-Za-z0-9_-]*$/u);assert.match(receipt.producer.attempt,/^[1-9][0-9]*$/u);
  const compiler=compilerContract(receipt.producer.compiler);
  assert.equal(compiler.release,identity.compiler_release);assert.equal(compiler.commit,identity.compiler_commit);
  assert.equal(/^host: (\S+)$/mu.exec(receipt.producer.compiler)?.[1],identity.host);
  assert.equal(receipt.producer.environment.RUSTFLAGS,identity.rust_flags);
  assert.ok(!receipt.producer.environment.CARGO_ENCODED_RUSTFLAGS);
  assert.equal(Object.keys(receipt.producer.environment).filter(k=>k.startsWith('CARGO_PROFILE_')).length,0);
+ return receipt;
+}
+
+/** Recompute executable and independent source contract before execution or packaging. */
+export function verifyExecutableReceipt(directory,identity) {
+ const receipt=validateExecutableReceipt(JSON.parse(readFileSync(join(directory,RECEIPT_FILE),'utf8')),identity);
+ const name=receipt.executable.name;
+ assert.deepEqual(readdirSync(directory).sort(),[name,RECEIPT_FILE].sort());
+ const binary=join(directory,name),bytes=readFileSync(binary);
+ assert.ok(bytes.length>0);assert.equal(bytes.length,receipt.executable.bytes);assert.equal(hash(bytes),receipt.executable.sha256);
  chmodSync(binary,0o755);return {receipt,binary:resolve(binary)};
 }
 

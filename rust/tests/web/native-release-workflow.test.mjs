@@ -49,8 +49,9 @@ test('each packaging job captures the pinned workflow protocol before checking o
   assert.match(body,/ref: \$\{\{ github\.workflow_sha \}\}/u);
   assert.match(body,/NATIVE_PROTOCOL_COMMIT: \$\{\{ github\.workflow_sha \}\}/u);
   assert.match(body,/cp scripts\/native-release-source\.mjs scripts\/native-release-artifact\.mjs/u);
-  assert.ok(body.indexOf('Capture release protocol')<body.indexOf('ref: ${{ needs.native-source.outputs.selected-head }}')
-   ||name==='native-source');
+  const capture=body.indexOf('Capture release protocol');
+  const checkout=body.indexOf('ref: ${{ github.sha }}',capture);
+  assert.ok(capture>=0&&checkout>capture,'captured protocol must precede event-pinned source checkout');
   assert.ok(body.includes('FORMAL_AI_NATIVE_PROTOCOL_DIR'));
  }
 });

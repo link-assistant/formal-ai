@@ -14,8 +14,9 @@ use super::workflow_fixtures::*;
 fn desktop_release_does_not_archive_cargo_dependencies_after_packaging() {
     let workflow = desktop_release_workflow();
     let build = job_block(&workflow, "build");
-    let install_sccache = workflow_step_block(build, "Cache Rust compiler outputs");
-    let enable_sccache = workflow_step_block(build, "Enable Rust compiler cache");
+    let native = job_block(&workflow, "native");
+    let install_sccache = workflow_step_block(native, "Cache Rust compiler outputs");
+    let enable_sccache = workflow_step_block(native, "Enable Rust compiler cache");
 
     assert!(
         !build.contains("uses: actions/cache@"),
@@ -24,8 +25,20 @@ fn desktop_release_does_not_archive_cargo_dependencies_after_packaging() {
          then timed out compressing this redundant cache"
     );
     assert!(
-        build.contains("mozilla-actions/sccache-action@"),
-        "desktop builds should retain the compiler-output cache"
+        native.contains("mozilla-actions/sccache-action@"),
+        "the native producer should retain the compiler-output cache"
+    );
+    assert!(
+        !native.contains("uses: actions/cache@"),
+        "native producer must not archive Cargo dependencies after compilation"
+    );
+    assert!(
+        !build.contains("cargo build"),
+        "packaging must consume the verified same-run executable"
+    );
+    assert!(
+        build.contains("native-release-artifact.mjs\" verify"),
+        "packaging must verify the source-bound executable receipt"
     );
     for step in [install_sccache, enable_sccache] {
         assert!(
