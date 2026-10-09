@@ -78,3 +78,18 @@ describe('setting a file\'s contents writes the file (G68, issue #745)', () => {
     });
   }
 });
+
+describe('seeded Spanish assignment retains same-statement write authority', () => {
+  for (const [prompt, source] of [['pon el contenido de heldout.txt en «λ🙂 42»', 'prior bytes\n'], ['coloca el contenido de heldout.txt en «λ🙂 42»', '']]) {
+    test(prompt, async () => {
+      assert.equal(await writeTo(prompt, 'heldout.txt', source), 'λ🙂 42');
+    });
+  }
+  for (const prompt of ['lee el contenido de heldout.txt', 'muestra el contenido de heldout.txt',
+    'el contenido de heldout.txt en hello', 'pon el contenido. de heldout.txt en hello',
+    'coloca el contenido de heldout.txt en «λ🙂 42»']) {
+    test('refuses a write for ' + prompt, async () => {
+      assert.equal(await writeTo(prompt, 'heldout.txt', 'prior bytes\n'), null);
+    });
+  }
+});

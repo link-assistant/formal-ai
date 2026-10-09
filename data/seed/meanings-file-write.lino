@@ -28,7 +28,7 @@ meanings
       words выведите
     lexeme hi बनाओ बनाएँ लिखो सहेजो जोड़ो दर्ज छोड़ो रखो संग्रह तैयार निकालो
     lexeme zh 创建 写 保存 生成 添加 记录 留下 放置 存储 产出 输出 写入
-    lexeme es crea crear escribe escribir guarda guardar genera generar añade agrega registra deja coloca almacena
+    lexeme es crea crear escribe escribir guarda guardar genera generar añade agrega registra deja coloca almacena pon
   file_write_content
     defined-by relation
     role file_write_content_lead
@@ -84,7 +84,7 @@ meanings
     lexeme ru файл файле названный
     lexeme hi फ़ाइल नामक
     lexeme zh 文件
-    lexeme es archivo fichero llamado llamada nombrado
+    lexeme es archivo fichero llamado llamada nombrado de
   file_write_destination
     defined-by relation
     role file_write_destination_cue
