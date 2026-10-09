@@ -771,7 +771,8 @@ shell_intents
         value-option "--mode"
         reuse-option "-p"
         reuse-option "--parents"
-        before-reuse "test ! -e {path} || test -d {path}"
+        before-reuse
+          code "test ! -e {path} || test -d {path}"
         before "test ! -e {path}"
         after "test -d {path}"
       language en

@@ -349,7 +349,13 @@ fn parse_intent_effect(node: &LinoNode) -> ShellIntentEffect {
         node.children
             .iter()
             .filter(|child| child.name == name)
-            .map(|child| child.id.clone())
+            .map(|child| {
+                if child.id.is_empty() {
+                    child.find_child_value("code").to_owned()
+                } else {
+                    child.id.clone()
+                }
+            })
             .collect()
     };
     ShellIntentEffect {
