@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/workspace_inspection.rs
   language rust
   fidelity full_ast
-  byte_len 15038
+  byte_len 15031
   line_count 328
-  content_id source_module_66b748987ed8cea5
+  content_id source_module_4e548a905a278c8f
   symbol_count 15
   symbols
     function asks_about_the_workspace 48 56
@@ -27,8 +27,8 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 7444
-    named_node_count 1634
+    total_link_count 7438
+    named_node_count 1633
     distinct_node_kinds 68
     node_kinds
       arguments 144
@@ -40,7 +40,7 @@ self_ast_census
       closure_expression 25
       closure_parameters 25
       continue_expression 3
-      crate 4
+      crate 3
       doc_comment 103
       else_clause 4
       expression_statement 31

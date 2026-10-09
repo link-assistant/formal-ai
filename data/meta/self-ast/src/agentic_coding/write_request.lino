@@ -2,66 +2,66 @@ self_ast_census
   target src/agentic_coding/write_request.rs
   language rust
   fidelity full_ast
-  byte_len 45709
-  line_count 999
-  content_id source_module_43e97122df52d0fe
+  byte_len 45733
+  line_count 1000
+  content_id source_module_64aef01d40ed13e7
   symbol_count 48
   symbols
     module lowercase_spans 4 4
-    const FUNCTION_WORD_ROLE 12 12
-    struct Token 14 19
-    function tokens 22 50
-    function is_ideographic_punctuation 54 66
-    function bare_surfaces 68 75
-    function clean_path_token 81 87
-    function looks_like_file_path 98 104
-    function clean_cue_token 111 119
-    function first_content_lead_end 123 125
-    function content_lead_close 133 153
-    function first_prefix_lead_end 154 204
-    enum CueFamily 208 215
-    struct WriteBinding 219 232
-    function cued_write_target 249 251
-    function ranked_bindings 262 266
-    function preferred_binding 269 271
-    function binding_rank 275 281
-    function cued_write_targets 286 292
-    function write_bindings 303 365
-    function trailing_cue 372 381
-    function leading_cue 384 393
-    function is_unspaced_surface 397 399
-    function quoted_as_value 409 412
-    function stated_write_target 421 423
-    function typed_write_target 427 437
-    function states_write_action 443 445
-    function delivered_write_target 495 502
-    function is_stated_write_target 518 523
-    function pinned_first_line 527 540
-    function delimited_first_line 547 555
-    function unquoted_machine_first_line 563 576
-    function pinned_first_line_of_request 583 587
-    function honouring_pinned_first_line 612 623
-    function without_pinning_sentences 626 634
-    function first_action_cue 636 640
-    function first_action_cue_end 642 644
-    function action_cue_start_after 651 657
-    function first_action_cue_start 667 669
-    function clean_content 671 701
-    function strip_clause_lead 703 733
-    function strip_leading_qualifier 734 745
-    function safe_relative_path 746 753
-    function compose_edit_request 760 762
-    struct EditClauses 765 772
-    function compose_edit_clauses 777 953
-    function describes_lines 957 964
-    function payload_continues_past_its_first_line 983 999
+    const FUNCTION_WORD_ROLE 13 13
+    struct Token 15 20
+    function tokens 23 51
+    function is_ideographic_punctuation 55 67
+    function bare_surfaces 69 76
+    function clean_path_token 82 88
+    function looks_like_file_path 99 105
+    function clean_cue_token 112 120
+    function first_content_lead_end 124 126
+    function content_lead_close 134 154
+    function first_prefix_lead_end 155 205
+    enum CueFamily 209 216
+    struct WriteBinding 220 233
+    function cued_write_target 250 252
+    function ranked_bindings 263 267
+    function preferred_binding 270 272
+    function binding_rank 276 282
+    function cued_write_targets 287 293
+    function write_bindings 304 366
+    function trailing_cue 373 382
+    function leading_cue 385 394
+    function is_unspaced_surface 398 400
+    function quoted_as_value 410 413
+    function stated_write_target 422 424
+    function typed_write_target 428 438
+    function states_write_action 444 446
+    function delivered_write_target 496 503
+    function is_stated_write_target 519 524
+    function pinned_first_line 528 541
+    function delimited_first_line 548 556
+    function unquoted_machine_first_line 564 577
+    function pinned_first_line_of_request 584 588
+    function honouring_pinned_first_line 613 624
+    function without_pinning_sentences 627 635
+    function first_action_cue 637 641
+    function first_action_cue_end 643 645
+    function action_cue_start_after 652 658
+    function first_action_cue_start 668 670
+    function clean_content 672 702
+    function strip_clause_lead 704 734
+    function strip_leading_qualifier 735 746
+    function safe_relative_path 747 754
+    function compose_edit_request 761 763
+    struct EditClauses 766 773
+    function compose_edit_clauses 778 954
+    function describes_lines 958 965
+    function payload_continues_past_its_first_line 984 1000
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 26820
-    named_node_count 5685
+    total_link_count 26827
+    named_node_count 5686
     distinct_node_kinds 90
     node_kinds
       arguments 458
@@ -99,7 +99,7 @@ self_ast_census
       function_modifiers 2
       generic_function 1
       generic_type 48
-      identifier 1125
+      identifier 1126
       if_expression 27
       index_expression 26
       inner_doc_comment_marker 3

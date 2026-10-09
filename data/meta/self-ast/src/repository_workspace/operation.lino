@@ -2,9 +2,9 @@ self_ast_census
   target src/repository_workspace/operation.rs
   language rust
   fidelity signature
-  byte_len 12016
+  byte_len 12013
   line_count 322
-  content_id source_module_0b27612c4d8abf16
+  content_id source_module_12b122f283323f5c
   symbol_count 8
   symbols
     enum RepositoryOperation 10 19

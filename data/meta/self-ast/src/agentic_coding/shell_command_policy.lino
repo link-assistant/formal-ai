@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/shell_command_policy.rs
   language rust
   fidelity full_ast
-  byte_len 15110
+  byte_len 15096
   line_count 393
-  content_id source_module_f4521480c7b9f1a8
+  content_id source_module_f6f3e60920392c0e
   symbol_count 15
   symbols
     struct Sentence 21 26
@@ -27,8 +27,8 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 8735
-    named_node_count 1757
+    total_link_count 8723
+    named_node_count 1755
     distinct_node_kinds 73
     node_kinds
       abstract_type 1
@@ -46,7 +46,7 @@ self_ast_census
       closure_parameters 24
       const_item 1
       continue_expression 3
-      crate 3
+      crate 1
       doc_comment 84
       else_clause 4
       expression_statement 36
