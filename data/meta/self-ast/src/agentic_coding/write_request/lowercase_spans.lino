@@ -1,0 +1,66 @@
+self_ast_census
+  target src/agentic_coding/write_request/lowercase_spans.rs
+  language rust
+  fidelity full_ast
+  byte_len 1977
+  line_count 59
+  content_id source_module_1a225fa264e710fe
+  symbol_count 5
+  symbols
+    function raw_lowercase_boundary 5 17
+    function raw_lowercase_span 20 32
+    function first_raw_prefix_lead_end 35 43
+    function first_raw_content_lead_end 45 49
+    function raw_content_lead_close 52 59
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 1512
+    named_node_count 283
+    distinct_node_kinds 43
+    node_kinds
+      arguments 20
+      binary_expression 4
+      block 9
+      call_expression 20
+      compound_assignment_expr 1
+      crate 5
+      doc_comment 5
+      expression_statement 8
+      field_expression 11
+      field_identifier 11
+      for_expression 1
+      function_item 5
+      generic_function 1
+      generic_type 6
+      identifier 70
+      if_expression 3
+      inner_doc_comment_marker 1
+      integer_literal 1
+      let_declaration 4
+      line_comment 5
+      mutable_specifier 1
+      outer_doc_comment_marker 4
+      parameter 9
+      parameters 5
+      parenthesized_expression 1
+      primitive_type 19
+      range_expression 1
+      reference_expression 2
+      reference_type 6
+      return_expression 3
+      scoped_identifier 7
+      scoped_use_list 1
+      source_file 1
+      super 1
+      try_expression 5
+      tuple_expression 1
+      tuple_pattern 2
+      tuple_type 4
+      type_arguments 7
+      type_identifier 6
+      use_declaration 1
+      use_list 1
+      visibility_modifier 4

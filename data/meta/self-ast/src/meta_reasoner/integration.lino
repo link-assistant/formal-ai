@@ -2,15 +2,15 @@ self_ast_census
   target src/meta_reasoner/integration.rs
   language rust
   fidelity signature
-  byte_len 7671
-  line_count 201
-  content_id source_module_32ab3e3d6ae6fe24
+  byte_len 7748
+  line_count 202
+  content_id source_module_615b51944aaf0f28
   symbol_count 7
   symbols
     const RESPONSE_LINK 23 23
     function meta_is_impasse_intent 29 31
     function meta_reason_turn 39 66
     function project 70 87
-    function try_meta_answer 103 129
-    function try_meta_discovery 139 159
-    function resolve_impasse 169 201
+    function try_meta_answer 103 130
+    function try_meta_discovery 140 160
+    function resolve_impasse 170 202

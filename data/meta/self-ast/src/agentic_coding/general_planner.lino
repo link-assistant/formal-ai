@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/general_planner.rs
   language rust
   fidelity full_ast
-  byte_len 27096
-  line_count 643
-  content_id source_module_4dc5ec66785624ef
+  byte_len 27076
+  line_count 642
+  content_id source_module_f79575d3c774c2cb
   symbol_count 33
   symbols
     const PLAN_PATH 19 19
@@ -20,43 +20,43 @@ self_ast_census
     function links_notation 98 118
     function planned_not_executed_answer 122 136
     const BODY_PLACEHOLDER 123 123
-    function objective_text 142 153
-    function literal_payload 158 198
-    function line_anchored 200 206
-    function compose_general_change_plan 208 340
-    function compose_repository_work_plan 341 380
-    function work_item_step 384 396
-    function repository_work_reference 401 447
-    function parse_command_output_request 455 509
-    function mentions_bare_role 510 537
-    function shell_quote 538 540
-    function command_plan_text 541 545
-    function has_file_write_intent 558 560
-    function has_authoritative_literal_write 567 578
-    function resolve_census_target 597 604
-    function mentions_software_authoring 608 610
-    function capability_slug 611 628
-    function language 629 631
-    function escape 632 637
-    function field 638 640
-    function field_nested 641 643
+    function objective_text 142 152
+    function literal_payload 157 197
+    function line_anchored 199 205
+    function compose_general_change_plan 207 339
+    function compose_repository_work_plan 340 379
+    function work_item_step 383 395
+    function repository_work_reference 400 446
+    function parse_command_output_request 454 508
+    function mentions_bare_role 509 536
+    function shell_quote 537 539
+    function command_plan_text 540 544
+    function has_file_write_intent 557 559
+    function has_authoritative_literal_write 566 577
+    function resolve_census_target 596 603
+    function mentions_software_authoring 607 609
+    function capability_slug 610 627
+    function language 628 630
+    function escape 631 636
+    function field 637 639
+    function field_nested 640 642
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 16629
-    named_node_count 3312
+    total_link_count 16573
+    named_node_count 3300
     distinct_node_kinds 83
     node_kinds
-      arguments 238
+      arguments 236
       array_expression 1
       attribute 12
       attribute_item 12
       binary_expression 44
       block 64
       boolean_literal 2
-      call_expression 238
+      call_expression 236
       char_literal 48
       closure_expression 32
       closure_parameters 32
@@ -73,22 +73,22 @@ self_ast_census
       expression_statement 53
       field_declaration 12
       field_declaration_list 2
-      field_expression 190
-      field_identifier 229
+      field_expression 188
+      field_identifier 227
       field_initializer 27
       field_initializer_list 6
       for_expression 3
       function_item 24
       function_modifiers 3
       generic_type 9
-      identifier 759
+      identifier 758
       if_expression 20
       impl_item 3
       index_expression 12
       inner_doc_comment_marker 6
       integer_literal 8
       let_condition 3
-      let_declaration 70
+      let_declaration 69
       lifetime 4
       line_comment 116
       macro_invocation 19
@@ -104,7 +104,7 @@ self_ast_census
       parenthesized_expression 8
       primitive_type 42
       range_expression 15
-      reference_expression 55
+      reference_expression 53
       reference_type 37
       return_expression 11
       scoped_identifier 89

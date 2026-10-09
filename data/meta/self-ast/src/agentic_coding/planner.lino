@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/planner.rs
   language rust
   fidelity full_ast
-  byte_len 46937
-  line_count 967
-  content_id source_module_98bd8ad9e10a9edf
+  byte_len 46957
+  line_count 969
+  content_id source_module_5eb4f87059bc8134
   symbol_count 21
   symbols
     module continuation 5 5
@@ -21,20 +21,20 @@ self_ast_census
     function plan_chat_step_resolved 179 186
     function plan_chat_step_inner 188 229
     function plan_chat_step_routes 231 348
-    function plan_settled_routes 364 851
-    function plan_shell_command_arm 860 880
-    function plan_shell_step 883 918
-    function plan_one 920 925
-    function write_arguments 933 941
-    function fetch_arguments 950 956
-    function unquoted_addition_question 961 967
+    function plan_settled_routes 364 853
+    function plan_shell_command_arm 862 882
+    function plan_shell_step 885 920
+    function plan_one 922 927
+    function write_arguments 935 943
+    function fetch_arguments 952 958
+    function unquoted_addition_question 963 969
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 19868
-    named_node_count 3854
+    total_link_count 19875
+    named_node_count 3855
     distinct_node_kinds 73
     node_kinds
       arguments 281
@@ -64,7 +64,7 @@ self_ast_census
       function_item 14
       function_modifiers 2
       generic_type 14
-      identifier 1183
+      identifier 1184
       if_expression 73
       impl_item 1
       index_expression 1

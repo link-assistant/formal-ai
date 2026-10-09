@@ -2,39 +2,40 @@ self_ast_census
   target src/agentic_coding/write_request.rs
   language rust
   fidelity full_ast
-  byte_len 45735
+  byte_len 45709
   line_count 999
-  content_id source_module_af019da3340aa513
-  symbol_count 47
+  content_id source_module_43e97122df52d0fe
+  symbol_count 48
   symbols
-    const FUNCTION_WORD_ROLE 8 8
-    struct Token 10 15
-    function tokens 18 46
-    function is_ideographic_punctuation 50 62
-    function bare_surfaces 64 71
-    function clean_path_token 77 83
-    function looks_like_file_path 94 100
-    function clean_cue_token 107 115
-    function first_content_lead_end 119 121
-    function content_lead_close 129 149
-    function first_prefix_lead_end 150 200
-    enum CueFamily 204 211
-    struct WriteBinding 215 228
-    function cued_write_target 245 247
-    function ranked_bindings 258 262
-    function preferred_binding 265 267
-    function binding_rank 271 277
-    function cued_write_targets 282 288
-    function write_bindings 299 361
-    function trailing_cue 368 377
-    function leading_cue 380 389
-    function is_unspaced_surface 393 395
-    function quoted_as_value 405 408
-    function stated_write_target 417 419
-    function typed_write_target 423 433
-    function states_write_action 439 441
-    function delivered_write_target 491 498
-    function is_stated_write_target 514 519
+    module lowercase_spans 4 4
+    const FUNCTION_WORD_ROLE 12 12
+    struct Token 14 19
+    function tokens 22 50
+    function is_ideographic_punctuation 54 66
+    function bare_surfaces 68 75
+    function clean_path_token 81 87
+    function looks_like_file_path 98 104
+    function clean_cue_token 111 119
+    function first_content_lead_end 123 125
+    function content_lead_close 133 153
+    function first_prefix_lead_end 154 204
+    enum CueFamily 208 215
+    struct WriteBinding 219 232
+    function cued_write_target 249 251
+    function ranked_bindings 262 266
+    function preferred_binding 269 271
+    function binding_rank 275 281
+    function cued_write_targets 286 292
+    function write_bindings 303 365
+    function trailing_cue 372 381
+    function leading_cue 384 393
+    function is_unspaced_surface 397 399
+    function quoted_as_value 409 412
+    function stated_write_target 421 423
+    function typed_write_target 427 437
+    function states_write_action 443 445
+    function delivered_write_target 495 502
+    function is_stated_write_target 518 523
     function pinned_first_line 527 540
     function delimited_first_line 547 555
     function unquoted_machine_first_line 563 576
@@ -59,11 +60,11 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 26830
-    named_node_count 5694
-    distinct_node_kinds 89
+    total_link_count 26820
+    named_node_count 5685
+    distinct_node_kinds 90
     node_kinds
-      arguments 459
+      arguments 458
       array_expression 11
       array_type 14
       assignment_expression 5
@@ -73,14 +74,14 @@ self_ast_census
       block 110
       boolean_literal 14
       break_expression 1
-      call_expression 459
+      call_expression 458
       char_literal 80
       closure_expression 97
       closure_parameters 97
       const_item 1
       continue_expression 1
       crate 11
-      doc_comment 284
+      doc_comment 280
       else_clause 5
       enum_item 1
       enum_variant 3
@@ -89,8 +90,8 @@ self_ast_census
       expression_statement 60
       field_declaration 12
       field_declaration_list 3
-      field_expression 417
-      field_identifier 438
+      field_expression 416
+      field_identifier 437
       field_initializer 13
       field_initializer_list 7
       for_expression 5
@@ -98,37 +99,38 @@ self_ast_census
       function_modifiers 2
       generic_function 1
       generic_type 48
-      identifier 1122
+      identifier 1125
       if_expression 27
       index_expression 26
       inner_doc_comment_marker 3
       integer_literal 29
       let_chain 3
       let_condition 9
-      let_declaration 101
+      let_declaration 100
       lifetime 21
       lifetime_parameter 2
-      line_comment 324
+      line_comment 320
       loop_expression 1
       macro_invocation 10
       match_arm 3
       match_block 1
       match_expression 1
       match_pattern 3
+      mod_item 1
       mutable_specifier 8
       or_pattern 1
-      outer_doc_comment_marker 281
+      outer_doc_comment_marker 277
       parameter 66
       parameters 42
       parenthesized_expression 21
       primitive_type 93
       range_expression 24
-      reference_expression 39
+      reference_expression 38
       reference_pattern 1
       reference_type 61
       return_expression 17
       scoped_identifier 83
-      scoped_use_list 3
+      scoped_use_list 4
       self 1
       shorthand_field_initializer 13
       slice_pattern 1
@@ -137,7 +139,7 @@ self_ast_census
       string_literal 10
       struct_expression 7
       struct_item 3
-      super 54
+      super 55
       token_tree 14
       try_expression 21
       tuple_expression 19
@@ -148,7 +150,7 @@ self_ast_census
       type_identifier 91
       type_parameters 2
       unary_expression 39
-      use_declaration 3
-      use_list 3
-      visibility_modifier 44
+      use_declaration 4
+      use_list 4
+      visibility_modifier 45
       while_expression 1

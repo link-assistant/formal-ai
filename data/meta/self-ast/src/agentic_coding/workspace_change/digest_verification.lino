@@ -1,0 +1,77 @@
+self_ast_census
+  target src/agentic_coding/workspace_change/digest_verification.rs
+  language rust
+  fidelity full_ast
+  byte_len 4338
+  line_count 124
+  content_id source_module_ccd32e4d512a963c
+  symbol_count 5
+  symbols
+    function plan_digest_verification 12 40
+    function receipt_call 42 53
+    function write_window 55 83
+    function failed 85 96
+    function plan_write_digest_verification 98 124
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 3693
+    named_node_count 740
+    distinct_node_kinds 54
+    node_kinds
+      arguments 53
+      array_expression 2
+      array_type 7
+      binary_expression 10
+      block 19
+      break_expression 1
+      call_expression 53
+      closure_expression 2
+      closure_parameters 2
+      continue_expression 6
+      crate 9
+      doc_comment 1
+      expression_statement 23
+      field_expression 48
+      field_identifier 48
+      for_expression 2
+      function_item 5
+      generic_function 1
+      generic_type 10
+      identifier 205
+      if_expression 7
+      index_expression 5
+      inner_doc_comment_marker 1
+      integer_literal 3
+      let_declaration 12
+      lifetime 5
+      lifetime_parameter 1
+      line_comment 1
+      macro_invocation 1
+      mutable_specifier 3
+      parameter 18
+      parameters 5
+      parenthesized_expression 2
+      primitive_type 9
+      range_expression 4
+      reference_expression 12
+      reference_type 21
+      return_expression 7
+      scoped_identifier 26
+      scoped_use_list 7
+      source_file 1
+      string_content 8
+      string_literal 8
+      super 1
+      token_tree 2
+      try_expression 4
+      tuple_struct_pattern 5
+      type_arguments 11
+      type_identifier 23
+      type_parameters 1
+      unary_expression 3
+      use_declaration 7
+      use_list 7
+      visibility_modifier 2

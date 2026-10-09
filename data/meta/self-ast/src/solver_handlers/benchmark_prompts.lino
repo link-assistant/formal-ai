@@ -2,9 +2,9 @@ self_ast_census
   target src/solver_handlers/benchmark_prompts.rs
   language rust
   fidelity signature
-  byte_len 20299
-  line_count 547
-  content_id source_module_99dde9399967f33b
+  byte_len 20136
+  line_count 541
+  content_id source_module_34329b43b424e16d
   symbol_count 28
   symbols
     function summary_topic_seed_data 19 22
@@ -24,14 +24,14 @@ self_ast_census
     function render_release_timeline 315 335
     function coreference_seed_data 337 340
     static CELL 338 338
-    function try_coreference_request 342 376
-    function resolve_coreference_antecedent 385 430
-    const REFERENCE 389 389
-    function names_coreference_antecedent 436 438
-    function matching_coreference_pronoun 440 453
-    function rewrite_coreference_prompt 455 467
-    function replace_token 469 499
-    function token_boundary 501 503
-    function persona_seed_data 505 508
-    static CELL 506 506
-    function try_roleplay_request 510 547
+    function try_coreference_request 342 378
+    function resolve_coreference_antecedent 387 432
+    const REFERENCE 391 391
+    function names_coreference_antecedent 438 440
+    function resolves_coreference_request 444 447
+    function rewrite_coreference_prompt 449 461
+    function replace_token 463 493
+    function token_boundary 495 497
+    function persona_seed_data 499 502
+    static CELL 500 500
+    function try_roleplay_request 504 541
