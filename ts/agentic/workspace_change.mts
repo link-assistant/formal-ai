@@ -13,7 +13,7 @@ import { insertedInSection, sectionScope } from './markdown_section.mjs';
 import { lineRangeMove, planLineRangeMoveStep } from './line_range_move.mjs';
 import { composeEditRequest } from './general_planner.mjs';
 import { editArguments } from './intent_router.mjs';
-import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
+import { FinalDisposition, finalAnswer, jsonText, planOne, resolvedFinalAnswer, writeArguments } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import {
   anchorContext, composePositionalInsert, indentsLinesAt, introducedBlock, leadingIndentation, positionalInserts, rebasedBlock,
@@ -34,7 +34,8 @@ import { isAsciiAlphanumeric, lines, matchIndices, splitWhitespace, trim, trimEn
 import { dropsMostOfFile, groundedLineOperation, namedTargetAndPayloads, withoutPathWords } from './workspace_line_operation.mjs';
 
 const eqIgnoreAsciiCase = (left, right) => left.replace(/[A-Z]/g, (c) => c.toLowerCase()) === right.replace(/[A-Z]/g, (c) => c.toLowerCase());
-const finalOrNull = (text) => (text === null ? null : finalAnswer(text));
+const finalOrNull = (text, disposition = FinalDisposition.Unknown, origin = null) =>
+  (text === null ? null : resolvedFinalAnswer(text, disposition, origin));
 
 const statedIntent = (rewrite) => rewrite.intent ?? (rewrite.renaming ? 'coding_identifier_renamed' : 'coding_text_replaced');
 const statedSlots = (rewrite) => rewrite.slots ?? [['{old}', rewrite.pattern], ['{new}', rewrite.replacement]];
@@ -102,7 +103,8 @@ export function isVerificationFailureAnswer(rawTask, answer) {
 }
 
 function failed(task, target) {
-  return finalOrNull(renderSeededOutcome('coding_workspace_verification_failed', task, target));
+  return finalOrNull(renderSeededOutcome('coding_workspace_verification_failed', task, target),
+    FinalDisposition.Failure, 'coding_workspace_verification_failed');
 }
 
 function planWithTool(toolNames, capability, args) {
@@ -155,7 +157,8 @@ function planRewriteStep(task, currentTurn, toolNames, grounded) {
   const observed = resultForCommand(currentTurn, command);
   if (observed === null) return planWithTool(toolNames, Capability.Run, jsonText({ command }));
   if (observed !== updated) return failed(task, rewrite.target);
-  return finalOrNull(renderSeededChange(statedIntent(rewrite), task, rewrite.target, statedSlots(rewrite)));
+  return finalOrNull(renderSeededChange(statedIntent(rewrite), task, rewrite.target, statedSlots(rewrite)),
+    FinalDisposition.Finding, statedIntent(rewrite));
 }
 
 /**
@@ -505,7 +508,7 @@ function planInsertSequenceStep(task, currentTurn, toolNames, inserts) {
     if (observed === null) return planWithTool(toolNames, Capability.Run, jsonText({ command }));
     if (splitWhitespace(observed)[0] !== sha256Hex(content)) return failed(task, target);
   }
-  return stated.includes(null) ? null : finalAnswer(stated.join('\n'));
+  return stated.includes(null) ? null : resolvedFinalAnswer(stated.join('\n'), FinalDisposition.Finding, 'workspace_insertions_verified');
 }
 
 function groundedRewrite(task) {
@@ -1173,7 +1176,8 @@ function planDigestVerification(task, currentTurn, toolNames, change) {
   const observed = resultForCommand(currentTurn, command);
   if (observed === null) return planWithTool(toolNames, Capability.Run, jsonText({ command }));
   if (splitWhitespace(observed)[0] !== sha256Hex(change.expected)) return failed(task, change.target);
-  return finalOrNull(renderSeededChange(change.intent, task, change.target, change.slots));
+  return finalOrNull(renderSeededChange(change.intent, task, change.target, change.slots),
+    FinalDisposition.Finding, change.intent);
 }
 
 function matchingResult(messages, matches) {

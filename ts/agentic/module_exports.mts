@@ -15,7 +15,7 @@ import { splitWhitespace } from './crate/rust_str.mjs';
 import { renderResponse } from './crate/seed.mjs';
 import { mentionsRole, wordsForRole } from './crate/seed_meanings.mjs';
 import { pathsIn, readSource } from './module_function.mjs';
-import { finalAnswer, planOne } from './plan.mjs';
+import { FinalDisposition, planOne, resolvedFinalAnswer } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import { readArguments } from './workspace_change.mjs';
 
@@ -79,5 +79,6 @@ export function planModuleExportsStep(task, messages, toolNames) {
   const values = [['path', path], ['count', String(names.length)],
     ['names', names.map((name) => `\`${name}\``).join(', ')]];
   const intent = names.length ? 'module_exports_listed' : 'module_exports_none';
-  return finalAnswer(renderResponse(intent, language, values) ?? renderResponse(intent, 'en', values));
+  return resolvedFinalAnswer(renderResponse(intent, language, values) ?? renderResponse(intent, 'en', values),
+    FinalDisposition.Finding, intent);
 }

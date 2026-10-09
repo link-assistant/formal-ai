@@ -1,5 +1,6 @@
 // Shared JavaScript execution of the repository protocol's declared stages.
 // File and process operations belong to the injected workspace.io port.
+import { agenticMessage } from '../messages.mjs';
 import { stableId } from './engine_stable_identifier.mjs';
 import { observedEvidence, ObservationKind, EvidenceSource } from './execution_evidence.mjs';
 import { EDITOR_STRUCTURAL, loadProtocol, newProtocolTrace, recordStage, renderProtocolTrace,
@@ -61,7 +62,7 @@ export async function executeWorkspaceProtocol(workspace, task, {
               ['expected', task.clone.base_commit], ['observed', head],
             ]) ?? 'workspace_base_commit_mismatch');
           }
-          observed(outcome, step, 'git rev-parse HEAD', ['HEAD'], 0, head, ObservationKind.CommandExit);
+          observed(outcome, step, ['git', 'rev-parse', 'HEAD'].join(' '), ['HEAD'], 0, head, ObservationKind.CommandExit);
           break;
         }
         case 'locate': {
@@ -70,7 +71,7 @@ export async function executeWorkspaceProtocol(workspace, task, {
           outcome.located = locateRepositoryTargets(files, task.requirement, census, task.language ?? '');
           if (!outcome.located.length) {
             const candidates = locateRepositoryAmbiguity(files, task.requirement, census, task.language ?? '');
-            throw new Error(candidates.length ? 'ambiguous repository declarations: '
+            throw new Error(candidates.length ? agenticMessage('repository-declarations-ambiguous')
               + candidates.map((candidate) => candidate.relative_path + ':' + candidate.symbol).join(', ') : task.requirement);
           }
           observed(outcome, step, 'repository locate', [], null,
@@ -91,11 +92,11 @@ export async function executeWorkspaceProtocol(workspace, task, {
         case 'edit': {
           const changes = [...new Map(outcome.located.map((location) => [location.relative_path, location])).values()]
             .map((location) => deriveRepositoryChange(location, source.get(location.relative_path), task.requirement)).filter(Boolean);
-          if (!changes.length) throw new Error('no registry-grounded structural edit was derivable');
+          if (!changes.length) throw new Error(agenticMessage('repository-structural-edit-unavailable'));
           for (const change of changes) {
             await workspace.io.write(workspace.root, change.relative_path, change.contents);
             const contents = await workspace.io.read(workspace.root, change.relative_path);
-            if (contents !== change.contents) throw new Error(`write was not observed: ${change.relative_path}`);
+            if (contents !== change.contents) throw new Error(agenticMessage('repository-write-unobserved', { path: change.relative_path }));
             outcome.edited.push(change.relative_path);
             observed(outcome, step, `write ${change.relative_path}`, [change.relative_path], null, contents, ObservationKind.FileBytes);
           }
@@ -110,14 +111,14 @@ export async function executeWorkspaceProtocol(workspace, task, {
           evidence.produced_by = 'repository_workspace_named_tests';
           evidence.detail = { kind: 'tests', passed: result.exit_code === 0 ? task.tests.names : [],
             failed: result.exit_code === 0 ? [] : task.tests.names, timed_out: false };
-          if (result.exit_code !== 0) throw new Error('named tests did not pass');
+          if (result.exit_code !== 0) throw new Error(agenticMessage('repository-named-tests-failed'));
           break;
         }
         case 'diff': {
           const intent = await runRepositoryCommand(workspace, 'git', ['add', '--intent-to-add', '--all']);
-          if (intent.exit_code !== 0) throw new Error(intent.stderr ?? 'git add failed');
+          if (intent.exit_code !== 0) throw new Error(intent.stderr ?? agenticMessage('repository-stage-failed'));
           const result = await runRepositoryCommand(workspace, 'git', ['diff']);
-          if (result.exit_code !== 0) throw new Error(result.stderr ?? 'git diff failed');
+          if (result.exit_code !== 0) throw new Error(result.stderr ?? agenticMessage('repository-diff-failed'));
           outcome.diff = result.stdout ?? '';
           observed(outcome, step, 'git diff', [], 0, outcome.diff, ObservationKind.CommandExit);
           break;

@@ -161,7 +161,11 @@ function literalPayload(request) {
   }
   const normalized = normalizePrompt(prefix);
   const overwrite = mentionsRole('file_overwrite_consent', normalized);
-  if (firstContentLeadEnd(prefix.toLowerCase()) === null && !overwrite) return null;
+  const lead = firstContentLeadEnd(prefix.toLowerCase());
+  if (lead === null && !overwrite) return null;
+  // An embedded quoted field is not the entire marker-led payload.
+  if (lead !== null && !/^[\s:]*$/u.test(prefix.slice(lead[1]))
+    && !(overwrite && !prefix.slice(lead[1]).trimEnd().includes('\n'))) return null;
   const words = tokens(prefix);
   const actionStart = firstActionCueStart(words);
   const actionEnd = firstActionCueEnd(words);

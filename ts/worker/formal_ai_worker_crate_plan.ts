@@ -5,13 +5,8 @@
 // formal_ai_worker_crate_modules.js runs on first use.
 
 (self.FORMAL_AI_CRATE_FACTORIES ||= {})["plan.mjs"] = (crateRequire) => {
-// The planner's result types and the argument builders every route shares
-// (rust/src/agentic_coding/planner.rs `AgenticPlan`, `PlannedToolCall`,
-// `plan_one`, `write_arguments`, `fetch_arguments`).
-//
-// An `AgenticPlan` is `{kind: 'tool_calls', calls: [{tool, arguments}]}` or
-// `{kind: 'final', answer}`; `arguments` is the JSON text Rust's
-// `serde_json::Value::to_string` prints (see `jsonText`).
+// Shared AgenticPlan/PlannedToolCall argument builders mirror rust/src/agentic_coding/planner.rs.
+// Plans are {kind:'tool_calls',calls:[{tool,arguments}]} or {kind:'final',answer}; jsonText mirrors serde_json.
 
 /** Mirrors `enum AgenticPlan` in rust/src/agentic_coding/planner.rs (`ToolCalls`). @param {Array<{tool: string, arguments: string}>} calls */
 function toolCalls(calls) {
@@ -22,6 +17,8 @@ function toolCalls(calls) {
 function finalAnswer(answer) {
   return { kind: 'final', answer };
 }
+
+const { FinalDisposition, resolvedFinalAnswer, finalResult, canDeliverFinal, projectPlan } = crateRequire("final_result.mjs");
 
 /** Mirrors `struct PlannedToolCall` in rust/src/agentic_coding/planner.rs. @param {string} tool @param {string} args */
 function plannedCall(tool, args) {
@@ -38,11 +35,8 @@ function isFinal(plan) {
   return plan?.kind === 'final';
 }
 
-/**
- * `serde_json::Value::to_string` of a JSON object built with `json!`.
- *
- * serde_json without `preserve_order` stores objects in a `BTreeMap`, so its
- * text lists keys sorted by byte order at every depth; this prints the same.
+/** serde_json without preserve_order uses BTreeMap byte order at every object depth.
+ * Mirrors Value::to_string for json! objects.
  * @param {unknown} value
  * @returns {string}
  */
@@ -94,5 +88,10 @@ return Object.freeze({
   planOne,
   writeArguments,
   fetchArguments,
+  FinalDisposition,
+  resolvedFinalAnswer,
+  finalResult,
+  canDeliverFinal,
+  projectPlan,
 });
 };

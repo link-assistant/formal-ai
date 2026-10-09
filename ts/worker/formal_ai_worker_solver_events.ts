@@ -23,6 +23,7 @@
 const SOLVER_EVENT_VALIDATION = "validation";
 const SOLVER_EVENT_CANDIDATE = "candidate";
 const SOLVER_EVENT_LOG_MODULE = "crate/event_log.mjs";
+const SOLVER_EVENT_PROJECTION_MODULE = "crate/solver_event_projection.mjs";
 const SOLVER_VALIDATION_ACCEPTED = "accepted_without_extra_constraints";
 const SOLVER_EVENT_SIMPLIFICATION = "trace:simplification";
 const SOLVER_SIMPLIFICATION_SMALLEST = "smallest_sufficient";
@@ -295,11 +296,8 @@ function solverMetaProjection(answer) {
   return answer;
 }
 
-// The whole log for a finished answer: the solver prelude, the route, the
-// handler's own events, then `finalize_simple` (or the meta reasoner's
-// `project`, which records no validation). Not recorded here: the formalization,
-// intent-formalization and meta-core records (js/server/solver-log.mjs splices
-// them in; its formalization `candidate` then stands for the one below).
+// Preserve the observed dispatch log before the shared native projection
+// adds shared formalization records; it remains the projection input.
 function solverEventLog(prompt, answer) {
   const events = [solverEvent("impulse", prompt), solverEvent("language", detectLanguage(prompt))];
   const route = solverIntentRoute(prompt);
@@ -334,7 +332,8 @@ function solverEventLog(prompt, answer) {
 // first, so the native block opens with the prompt link and holds only the
 // links the answer does not carry yet.
 function recordSolverEventLog(result, prompt, answer) {
-  result.solverEvents = solverEventLog(prompt, answer);
+  result.rawSolverEvents = solverEventLog(prompt, answer);
+  result.solverEvents = crateModule(SOLVER_EVENT_PROJECTION_MODULE).nativeSolverLog(result);
   const links = crateModule(SOLVER_EVENT_LOG_MODULE).eventLogEvidenceLinks(result.solverEvents, answer.intent);
   if (!links) return;
   const present = new Set(result.evidence);

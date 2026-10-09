@@ -7,7 +7,7 @@
 
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
-import { finalAnswer, jsonText, planOne } from './plan.mjs';
+import { FinalDisposition, jsonText, planOne, resolvedFinalAnswer } from './plan.mjs';
 import { Progress } from './progress.mjs';
 import { fill as fillSeededStep } from './work_item_steps.mjs';
 import { StepOutcome, render, reportedExitCode, responseLanguage, stepOutcome } from './tool_result.mjs';
@@ -161,11 +161,12 @@ export function planStep(command, messages, toolNames, prompt) {
     const index = taken - 1;
     const observed = progress.run_outputs[index];
     if (stepOutcome(observed) === StepOutcome.Failed) {
-      return finalAnswer(blockedReport(recipe, recipe.steps[index] ?? command, observed, prompt, index >= recipe.action));
+      return resolvedFinalAnswer(blockedReport(recipe, recipe.steps[index] ?? command, observed, prompt, index >= recipe.action),
+        FinalDisposition.Failure, 'mutating_action_blocked');
     }
   }
   if (taken < recipe.steps.length) return planOne(tool, jsonText({ command: recipe.steps[taken] }));
-  return finalAnswer(completedReport(recipe, prompt));
+  return resolvedFinalAnswer(completedReport(recipe, prompt), FinalDisposition.Finding, 'mutating_action_verified');
 }
 
 function blockedReport(recipe, check, observed, prompt, attempted) {

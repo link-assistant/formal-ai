@@ -13,7 +13,7 @@ import {
   GeneralPlanMode, PLAN_PATH, composeGeneralChangePlan, planLinksNotation, plannedNotExecutedAnswer,
   repositoryWorkReference, shellQuote,
 } from './general_planner.mjs';
-import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
+import { FinalDisposition, finalAnswer, jsonText, planOne, resolvedFinalAnswer, writeArguments } from './plan.mjs';
 import { guardedStep, isGuardRead } from './literal_write_guard.mjs';
 import { Progress, isWorkItemRead } from './progress.mjs';
 import { failedVerification, harnessReportedFailure, observedPayload, reportedExitCode, renderFailure } from './tool_result.mjs';
@@ -314,9 +314,9 @@ function finishGeneralChange(plan, progress, resolvedFromWorkItem) {
     }
   }
   if (resolvedFromWorkItem && plan.mode === GeneralPlanMode.LiteralFile) {
-    return finalAnswer(workItemCompletion(plan, progress));
+    return resolvedFinalAnswer(workItemCompletion(plan, progress), FinalDisposition.Finding, 'work_item_verified');
   }
-  return finalAnswer(generalPlanCompleted(plan));
+  return resolvedFinalAnswer(generalPlanCompleted(plan), FinalDisposition.Finding, 'general_change_verified');
 }
 
 function workItemCompletion(plan, progress) {

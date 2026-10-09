@@ -22,7 +22,8 @@ import { mentionsRole, wordsForRole } from './crate/seed_meanings.mjs';
 import { contract, extensionLanguage, pathsIn, readSource, signature, statedValue } from './module_function.mjs';
 import { renderSeededChange } from './code_task.mjs';
 import { quotedSegmentSpans } from './crate/normal_markov.mjs';
-import { finalAnswer, jsonText, planOne } from './plan.mjs';
+import { FinalDisposition, jsonText, planOne, resolvedFinalAnswer } from './plan.mjs';
+import { sentences } from './shell_command_policy.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import { resultCapability } from './progress.mjs';
 import { normalizedPayload, render } from './tool_result.mjs';
@@ -159,11 +160,12 @@ export function planFunctionExpectationStep(task, messages, toolNames) {
     return shell === null ? null : planOne(shell, jsonText({ command: checked.command }));
   }
   const payload = normalizedPayload(raw);
-  if (payload === null || payload === undefined) return finalAnswer(render(checked.command, raw, task));
+  if (payload === null || payload === undefined) return resolvedFinalAnswer(render(checked.command, raw, task), FinalDisposition.Failure, 'function_probe_failed');
   const observed = payload.trim();
   const intent = observed === checked.expected ? 'function_expectation_holds' : 'function_expectation_fails';
   const values = [['call', checked.call], ['path', request.module], ['observed', observed], ['expected', checked.expected]];
-  return finalAnswer(renderResponse(intent, detect(task), values) ?? renderResponse(intent, 'en', values));
+  return resolvedFinalAnswer(renderResponse(intent, detect(task), values) ?? renderResponse(intent, 'en', values),
+    FinalDisposition.Finding, intent);
 }
 
 /**
@@ -176,11 +178,18 @@ export function planFunctionExpectationStep(task, messages, toolNames) {
  */
 export function planTestExpectationQuestion(task) {
   if (quotedSegmentSpans(task).length > 0) return null;
-  const [path] = pathsIn(task);
-  if (path === undefined) return null;
-  const prose = normalizePrompt(pathsIn(task).reduce((text, named) => text.split(named).join(' '), task));
-  if (/[0-9]/u.test(prose) || !mentionsRole('coding_request_verb', prose)
-    || !mentionsRole('coding_test_artifact_kind', prose) || mentionsRole(ROLE_EXPECTATION, prose)) return null;
-  const question = renderSeededChange('test_expectation_missing', task, path, []);
-  return question === null ? null : finalAnswer(question);
+  // A creation cue and its test artifact must belong to the same instruction.
+  // A supplied acceptance command in another sentence is not a request to author it.
+  for (const sentence of sentences(task)) {
+    const paths = pathsIn(sentence.text);
+    const [path] = paths;
+    if (path === undefined) continue;
+    const prose = normalizePrompt(paths.reduce((text, named) => text.split(named).join(' '), sentence.text));
+    if (/[0-9]/u.test(prose) || !mentionsRole('coding_request_verb', prose)
+      || !mentionsRole('coding_test_artifact_kind', prose) || mentionsRole(ROLE_EXPECTATION, prose)) continue;
+    const question = renderSeededChange('test_expectation_missing', task, path, []);
+    return question === null ? null : resolvedFinalAnswer(question,
+      FinalDisposition.Clarification, 'test_expectation_missing');
+  }
+  return null;
 }

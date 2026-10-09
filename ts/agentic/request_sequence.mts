@@ -11,7 +11,7 @@
 // file as the step before left it. The JavaScript twin of
 // rust/src/agentic_coding/request_sequence.rs.
 
-import { finalAnswer } from './plan.mjs';
+import { FinalDisposition, canDeliverFinal, resolvedFinalAnswer } from './plan.mjs';
 import { pathsIn } from './module_function.mjs';
 import { replaceList } from './replace_list.mjs';
 import { semanticShellCommandForTask } from './shell_command.mjs';
@@ -155,6 +155,7 @@ export async function planRequestSequenceStep(task, messages, toolNames, planFor
       const plan = await planFor(withRequest([...base, ...own], part), toolNames);
       if (plan === null) return null;
       if (plan.kind === 'final') {
+        if (!canDeliverFinal(plan)) return plan;
         answers.push(plan.answer);
         break;
       }
@@ -163,7 +164,7 @@ export async function planRequestSequenceStep(task, messages, toolNames, planFor
       taken += 1;
     }
   }
-  return finalAnswer(answers.join('\n\n'));
+  return resolvedFinalAnswer(answers.join('\n\n'), FinalDisposition.Finding, 'request_sequence_verified');
 }
 
 /**

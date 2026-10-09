@@ -1,5 +1,6 @@
 // Repository workspace process, location and edit stages through an injected host.
 // Mirrors rust/src/repository_workspace/{locate,edit,verify}.rs.
+import { agenticMessage } from '../messages.mjs';
 import { readText } from '../host.mjs';
 import { findChildValue, parseLinoRoot } from '../write_lino.mjs';
 import { resolveIn } from '../requirement_resolution.mjs';
@@ -64,11 +65,11 @@ export async function runRepositoryCommand(workspace, program, argumentsList, { 
     if (prerequisite.missing || prerequisite.exit_code === 127) throw new Error(`missing prerequisite ${program}: ${prerequisite.stderr ?? ''}`);
   }
   const row = commandRow(program, argumentsList, document);
-  if (!row) throw new Error(`repository command is not allowed: ${program}`);
+  if (!row) throw new Error(agenticMessage('repository-command-disallowed', { program }));
   const deadline = Number(findChildValue(row, 'deadline_seconds')) || 300;
   const result = await workspace.io.run(workspace.root, program, argumentsList, { deadline_seconds: deadline, network: 'denied' });
   if (result.missing) throw new Error(`missing prerequisite ${program}: ${result.stderr ?? ''}`);
-  if (result.timed_out) throw new Error(`repository command timed out after ${result.elapsed_seconds}s (deadline ${deadline}s)`);
+  if (result.timed_out) throw new Error(agenticMessage('repository-command-timeout', { elapsed: result.elapsed_seconds, deadline }));
   return result;
 }
 

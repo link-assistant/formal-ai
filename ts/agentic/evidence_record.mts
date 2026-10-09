@@ -9,18 +9,19 @@
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
 import { plainText } from './content.mjs';
+import { planTestExpectationQuestion } from './function_expectation.mjs';
 import { composeGeneralChangePlan } from './general_planner.mjs';
 import { agenticMessage } from './messages.mjs';
-import { planOne, writeArguments } from './plan.mjs';
+import { pathsIn, signature } from './module_function.mjs';
+import { FinalDisposition, canDeliverFinal, planOne, resolvedFinalAnswer, writeArguments } from './plan.mjs';
 import { instructionEnd } from './positional_edit.mjs';
-import { planChatStep, planSettledRoutes } from './planner.mjs';
+import { planChatStepResolved, planSettledRoutes } from './planner.mjs';
 import { isContinuationCue, traceRoute } from './planner/continuation.mjs';
 import { Progress } from './progress.mjs';
 import { carriesAuthoringTask } from './shell_command.mjs';
 import { sentences } from './shell_command_policy.mjs';
 import { observedFileOutcome } from './task_obligations.mjs';
 import { commandArgument } from './tool_result.mjs';
-import { isVerificationFailureAnswer } from './workspace_change.mjs';
 import {
   serializedRelationshipTerm, workspaceInspectionSearchForTask, workspaceInspectionTermsForTask,
 } from './workspace_inspection.mjs';
@@ -90,7 +91,8 @@ function parseObligation(request) {
       continue;
     }
     const delivered = carriesAuthoringTask(normalizePrompt(sentence.text)) ? null : deliveredWriteTarget(sentence.text);
-    if (delivered !== null && delivered !== undefined) {
+    if (delivered !== null && delivered !== undefined && !namesCallableArtifact(sentence.text, delivered)
+      && planTestExpectationQuestion(sentence.text) === null) {
       if (target === null) {
         fieldLines = exactFieldLines(text, delivered);
         target = delivered;
@@ -105,6 +107,14 @@ function parseObligation(request) {
   const trimmed = trim(residual);
   if (trimmed === '' || target === null) return null;
   return { target, first_line: firstLine, field_lines: fieldLines, residual: trimmed };
+}
+
+// A declaration request names an authored artifact, not a findings destination.
+function namesCallableArtifact(sentence, target) {
+  const stated = signature(sentence);
+  if (stated === null || !pathsIn(sentence.slice(stated.at)).includes(target)) return false;
+  const lead = normalizePrompt(sentence.slice(0, stated.at));
+  return ['coding_request_verb', 'coding_member_add_action'].some((role) => mentionsRole(role, lead));
 }
 
 function exactFieldLines(sentence, target) {
@@ -162,11 +172,13 @@ export async function planEvidenceRecordStep(task, messages, toolNames) {
     traceRoute('evidence_record', 'already_written');
     const content = progress.successfulWriteContentFor(obligation.target);
     const written = content === null || content === undefined ? '' : writtenObservation(obligation, content);
-    return { kind: 'final', answer: written !== '' ? written : agenticMessage('evidence_record_recorded', { target: obligation.target }) };
+    return resolvedFinalAnswer(written !== '' ? written : agenticMessage('evidence_record_recorded', { target: obligation.target }),
+      FinalDisposition.Finding, 'evidence_record_observed');
   }
   if (outcome.kind === 'refuted' || outcome.kind === 'unsatisfiable') {
     traceRoute('evidence_record', 'write_not_observed');
-    return { kind: 'final', answer: agenticMessage('evidence_record_write_failed', { target: obligation.target }) };
+    return resolvedFinalAnswer(agenticMessage('evidence_record_write_failed', { target: obligation.target }),
+      FinalDisposition.Failure, 'evidence_record_write_failed');
   }
   let observed = null;
   if (parseObligation(obligation.residual) === null && workspaceInspectionSearchForTask(obligation.residual) !== null) {
@@ -178,27 +190,27 @@ export async function planEvidenceRecordStep(task, messages, toolNames) {
   const isWorkspaceObservation = observed !== null;
   let answer = observed;
   if (answer === null) {
-    const plan = await planChatStep(residualMessages, toolNames);
+    const plan = await planChatStepResolved(residualMessages, toolNames);
     if (plan && plan.kind === 'tool_calls') {
       traceRoute('evidence_record', 'investigating');
       return plan;
     }
     if (plan && plan.kind === 'final') {
-      if (isVerificationFailureAnswer(obligation.residual, plan.answer)) {
-        traceRoute('evidence_record', 'residual_reported_failure');
+      if (!canDeliverFinal(plan)) {
+        traceRoute('evidence_record', 'residual_not_a_finding');
         return plan;
       }
-      // A failed step's output is never a file's content: the answer that
-      // reports it is the answer, and nothing is written (PR #1188 G102).
       if (progress.latestFailure() !== null) {
         traceRoute('evidence_record', 'residual_step_failed');
-        return plan;
+        return resolvedFinalAnswer(plan.answer, FinalDisposition.Failure, 'residual_step_failed');
       }
       answer = plan.answer;
     } else {
       traceRoute('evidence_record', 'symbolic_residual');
-      answer = await symbolicAnswer(obligation.residual);
-      if (answer === null) return null;
+      const symbolic = await symbolicAnswer(obligation.residual);
+      if (symbolic === null) return null;
+      if (!canDeliverFinal(symbolic)) return symbolic;
+      answer = symbolic.answer;
     }
   }
   traceRoute('evidence_record', obligation.target);
@@ -454,10 +466,13 @@ const GAP_INTENT_SUFFIX = '_gap';
 
 async function symbolicAnswer(residual) {
   const answer = await solve(residual);
-  if (!answer || answer.intent.endsWith(GAP_INTENT_SUFFIX) || isInconclusive(answer) || defersToTheOpenWeb(answer)
-    || announcesAListItDoesNotMake(answer)) return null;
+  if (!answer) return null;
   const text = trim(answer.answer ?? '');
-  return text === '' ? null : text;
+  if (text === '') return null;
+  // Preserve symbolic decline behavior; only a conclusive answer certifies a finding.
+  if (answer.intent.endsWith(GAP_INTENT_SUFFIX) || isInconclusive(answer)
+    || defersToTheOpenWeb(answer) || announcesAListItDoesNotMake(answer)) return null;
+  return resolvedFinalAnswer(text, FinalDisposition.Finding, answer.intent);
 }
 
 function withResidualRequest(messages, residual) {

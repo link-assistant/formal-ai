@@ -53,7 +53,7 @@ import * as moduleFunction from './module_function.mjs';
 import * as mutatingAction from './mutating_action.mjs';
 import * as noteComposition from './note_composition.mjs';
 import { agenticMessage } from './messages.mjs';
-import { finalAnswer, isToolCalls, jsonText, planOne } from './plan.mjs';
+import { FinalDisposition, finalAnswer, isToolCalls, jsonText, planOne, projectPlan, resolvedFinalAnswer } from './plan.mjs';
 import { continuedAgentTask, isContinuationCue, traceRoute } from './planner/continuation.mjs';
 import * as positionalEdit from './positional_edit.mjs';
 import * as procedure from './procedure.mjs';
@@ -131,7 +131,7 @@ export function checkedRoutePrecedence() {
 async function planWorkspaceChangeArm(task, messages, toolNames) {
   // A copy or move followed by edits of the file it makes is planned sentence
   // by sentence (PR #1188 G82).
-  return (await requestSequence.planRequestSequenceStep(task, messages, toolNames, planChatStep))
+  return (await requestSequence.planRequestSequenceStep(task, messages, toolNames, planChatStepResolved))
     ?? (await workspaceChange.planWorkspaceChangeStep(task, messages, toolNames))
     ?? (await moduleFunction.planModuleFunctionStep(task, messages, toolNames))
     // A bug report with a stated expectation is checked before anything is
@@ -188,10 +188,15 @@ export function toolCapability(name) {
  * @returns {Promise<object|null>} an `AgenticPlan` or null
  */
 export async function planChatStep(messages, toolNames) {
+  return projectPlan(await planChatStepResolved(messages, toolNames));
+}
+
+/** Internal planner result; recursion retains disposition and origin. */
+export async function planChatStepResolved(messages, toolNames) {
   const received = latestUserRequest(messages);
   if (received === null) return null;
   const summary = harnessEnvelope.summarizeRequest(received);
-  if (summary !== null) return finalAnswer(summary);
+  if (summary !== null) return resolvedFinalAnswer(summary, FinalDisposition.Finding, 'harness_summary');
   const effective = continuedAgentTask(messages, received);
   const restart = await restartFeedback.planRestart(effective ?? received, messages, toolNames);
   const plan = restart ?? await planChatStepRoutes(messages, toolNames, received);
@@ -295,7 +300,8 @@ export async function planSettledRoutes(task, messages, toolNames) {
       return general === null ? null : await planGeneralChangeStep(messages, toolNames, general);
     }
     if (next && next.kind === 'report_gap') {
-      return finalAnswer(taskObligations.gapAnswer(next.node_id, next.clause, next.span, next.reason));
+      return resolvedFinalAnswer(taskObligations.gapAnswer(next.node_id, next.clause, next.span, next.reason),
+        FinalDisposition.Gap, 'task_obligation_gap');
     }
     if (taskObligations.successfullyDischarged(task, messages)) {
       for (const obligation of [...obligations].reverse()) {
@@ -358,10 +364,10 @@ async function planLaterRoutes(task, messages, toolNames) {
   const followUp = toolResult.followUpAnswer(messages, task);
   if (followUp !== null) return finalAnswer(followUp);
   const clarification = webResearch.contextualReferenceClarification(task);
-  if (clarification !== null) return finalAnswer(clarification);
+  if (clarification !== null) return resolvedFinalAnswer(clarification, FinalDisposition.Clarification, 'contextual_reference_clarification');
   if (webResearch.isDefinitionFollowup(task)) {
     const query = await webResearch.definitionFollowupTopic(messages, task);
-    if (query === null) return finalAnswer(webResearch.definitionFollowupClarification(task));
+    if (query === null) return resolvedFinalAnswer(webResearch.definitionFollowupClarification(task), FinalDisposition.Clarification, 'definition_followup_clarification');
     const plan = await webResearch.planWebResearchStep(messages, toolNames, query, true);
     if (plan !== null) return plan;
   }
@@ -384,7 +390,7 @@ async function planLaterRoutes(task, messages, toolNames) {
   const refused = shellCommand.refusedDestructiveEdit(task);
   if (refused !== null) {
     const decline = codeTask.renderSeededChange('file_text_unit', task, refused, []);
-    if (decline !== null) return finalAnswer(decline);
+    if (decline !== null) return resolvedFinalAnswer(decline, FinalDisposition.Gap, 'destructive_edit_declined');
   }
   const command = shellCommand.shellCommandForTask(task);
   if (command !== null) {
@@ -426,7 +432,7 @@ async function planOpenRoutes(task, messages, toolNames) {
   const unquoted = positionalEdit.unquotedAdditionPath(task);
   if (unquoted !== null || positionalEdit.namesLocalEdit(task)) {
     const question = unquoted === null ? null : codeTask.renderSeededChange('file_addition_unquoted', task, unquoted, []);
-    return question === null ? null : finalAnswer(question);
+    return question === null ? null : resolvedFinalAnswer(question, FinalDisposition.Clarification, 'file_addition_unquoted');
   }
   const researchQuery = await webResearch.webResearchQueryFor(messages);
   if (researchQuery !== null) {
@@ -469,8 +475,10 @@ export function planShellStep(messages, toolNames, command) {
   const progress = Progress.scan(messages);
   if (progress.done(Capability.Run)) {
     const outputs = progress.run_outputs;
-    return finalAnswer(toolResult.render(command, outputs.length ? outputs[outputs.length - 1] : '',
-      latestUserRequest(messages) ?? ''));
+    const raw = outputs.length ? outputs[outputs.length - 1] : '';
+    return resolvedFinalAnswer(toolResult.render(command, raw, latestUserRequest(messages) ?? ''),
+      toolResult.stepOutcome(raw) === toolResult.StepOutcome.Failed
+        ? FinalDisposition.Failure : FinalDisposition.Finding, 'shell_result_observed');
   }
   const tool = toolFor(toolNames, Capability.Run);
   if (tool !== null) return planOne(tool, jsonText({ command }));

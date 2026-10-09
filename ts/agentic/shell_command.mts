@@ -143,8 +143,12 @@ function readsAsProse(remainder, vocab) {
 export function explicitPassthroughCommand(task) {
   const prompt = stripBalancedOuterQuotes(trim(task));
   if (governsCommandsRatherThanRequestingOne(prompt)) return null;
-  const command = prefixedShellCommand(prompt, terminalCommandVocabulary());
-  return command !== null && shellQuotesPaired(command) ? command : null;
+  const vocab = terminalCommandVocabulary();
+  const command = prefixedShellCommand(prompt, vocab);
+  if (command === null) return null;
+  const first = normalizeCommandWord(firstWord(command) ?? '');
+  if (intentShellCommand(prompt, shellIntentVocabulary()) !== null && !vocab.shell_tokens.includes(first)) return null;
+  return shellQuotesPaired(command) ? command : null;
 }
 
 /** Mirrors `fn bare_shell_command`. */
