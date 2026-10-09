@@ -533,6 +533,8 @@ jobs:
       - name: Install rust-script
         run: bash scripts/install-rust-script.sh
 
+      - name: Provision the real agentic search adapter
+        run: bash scripts/install-agentic-search-tools.sh
       - name: Generate browser coverage
         run: npm run coverage:web
 

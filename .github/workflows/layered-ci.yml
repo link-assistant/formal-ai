@@ -113,6 +113,55 @@ jobs:
           GITHUB_EVENT_BEFORE: ${{ github.event.before }}
         run: rust-script scripts/detect-code-changes.rs
 
+
+  source-networks:
+    name: Full source network serialization (${{ matrix.shard }}/8)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    concurrency:
+      group: check-${{ github.workflow }}-${{ github.ref }}-source-networks-${{ matrix.shard }}
+      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22
+      - name: Check out the shared pinned meta-language serializer
+        uses: actions/checkout@v7
+        with:
+          repository: link-foundation/meta-language
+          ref: eb0574d5528babd3b4aadece81590d8e2230b99b
+          path: .meta-language
+          persist-credentials: false
+      - name: Install serializer runtime dependencies
+        run: npm ci --prefix .meta-language/js --omit=dev --ignore-scripts --no-audit --no-fund
+      - name: Serialize and reconstruct every source in this shard
+        env:
+          SOURCE_SHARD: ${{ matrix.shard }}
+          SOURCE_NETWORK_OUTPUT: ${{ runner.temp }}/source-networks
+          TEST_BUDGET_SECONDS: 600
+          TEST_WARN_RATIO_PERCENT: 75
+        run: |
+          scripts/run-with-budget-warning.sh \
+            "$TEST_BUDGET_SECONDS" "complete source network serialization" \
+            node scripts/check-source-networks.mjs --write \
+              --meta-language .meta-language --shard-count 8 \
+              --shard-index "$SOURCE_SHARD" --output "$SOURCE_NETWORK_OUTPUT"
+      - name: Upload complete serialized source packets and receipts
+        uses: actions/upload-artifact@v7
+        with:
+          name: source-networks-${{ matrix.shard }}
+          path: ${{ runner.temp }}/source-networks
+          if-no-files-found: error
+          retention-days: 7
+
   js:
     name: js tier (node --check over js, suites ${{ matrix.shard }}/4)
     needs: [changes]
@@ -196,6 +245,8 @@ jobs:
       # Renamed with the split: the step-budget audit joins measurements to
       # budgets by step name, and the unsharded history (whole suite, 378s)
       # would read as an overrun of this shard's budget until it aged out.
+      - name: Provision the real agentic search adapter
+        run: bash scripts/install-agentic-search-tools.sh
       - name: Run this shard of the JavaScript suites
         env:
           SHARD: ${{ matrix.shard }}

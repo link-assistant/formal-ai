@@ -392,8 +392,8 @@ export function regressions(before, after) {
  * @returns {string|null}
  */
 export function workflowPin(workflow) {
-  const match = /repository: link-foundation\/meta-language\n\s+ref: ([0-9a-f]{40})/u.exec(workflow);
-  return match?.[1] ?? null;
+  const commits = [...workflow.matchAll(/repository: link-foundation\/meta-language\n\s+ref: ([0-9a-f]{40})/gu)].map((match) => match[1]);
+  return new Set(commits).size === 1 ? commits[0] : null;
 }
 
 // ---------------------------------------------------------------- verify (no upstream)
@@ -485,7 +485,7 @@ function readProjectionParts(repo, path) {
  * @param {string} commit
  * @returns {string}
  */
-function upstreamDirectory(argv, commit) {
+export function upstreamDirectory(argv, commit) {
   const named = argv.includes('--meta-language') ? argv[argv.indexOf('--meta-language') + 1] : process.env.FORMAL_AI_META_LANGUAGE;
   const dir = argv.includes('--fetch') ? fetchUpstream(commit) : named;
   if (!dir) throw new Error('name the meta-language checkout with --meta-language DIR (or FORMAL_AI_META_LANGUAGE), or pass --fetch');

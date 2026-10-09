@@ -331,3 +331,84 @@ fn exhaustive_whole_repo_round_trip_is_lossless() {
     );
     assert_eq!(graph.coverage_permille(), 1000);
 }
+
+/// Every default-feature shard proves the serialized network, not only the in-memory parse.
+#[cfg(feature = "meta-language")]
+fn assert_serialized_owned_source_shard(shard: usize) {
+    use formal_ai::agentic_coding::self_ast::{network_lino, render_network_source};
+    const SHARDS: usize = 8;
+    assert!(shard < SHARDS);
+    let files = owned_source_files();
+    let mut checked = 0_usize;
+    for (index, (path, source)) in files.iter().enumerate() {
+        if index % SHARDS != shard {
+            continue;
+        }
+        let document = network_lino(source);
+        let restored = render_network_source(&document)
+            .unwrap_or_else(|error| panic!("network decode failed for {path}: {error}"));
+        assert_eq!(
+            restored.as_bytes(),
+            source.as_bytes(),
+            "serialized source differs: {path}"
+        );
+        checked += 1;
+    }
+    assert_eq!(checked, files.len().saturating_sub(shard).div_ceil(SHARDS));
+    assert!(checked > 0, "each production source shard must be nonempty");
+}
+
+#[cfg(not(feature = "meta-language"))]
+#[test]
+fn missing_engine_refuses_network_serialization_evidence() {
+    use formal_ai::agentic_coding::self_ast::render_network_source;
+    assert!(render_network_source("not a certified source network").is_err());
+}
+
+#[cfg(feature = "meta-language")]
+#[test]
+fn serialized_owned_source_shard_0() {
+    assert_serialized_owned_source_shard(0);
+}
+
+#[cfg(feature = "meta-language")]
+#[test]
+fn serialized_owned_source_shard_1() {
+    assert_serialized_owned_source_shard(1);
+}
+
+#[cfg(feature = "meta-language")]
+#[test]
+fn serialized_owned_source_shard_2() {
+    assert_serialized_owned_source_shard(2);
+}
+
+#[cfg(feature = "meta-language")]
+#[test]
+fn serialized_owned_source_shard_3() {
+    assert_serialized_owned_source_shard(3);
+}
+
+#[cfg(feature = "meta-language")]
+#[test]
+fn serialized_owned_source_shard_4() {
+    assert_serialized_owned_source_shard(4);
+}
+
+#[cfg(feature = "meta-language")]
+#[test]
+fn serialized_owned_source_shard_5() {
+    assert_serialized_owned_source_shard(5);
+}
+
+#[cfg(feature = "meta-language")]
+#[test]
+fn serialized_owned_source_shard_6() {
+    assert_serialized_owned_source_shard(6);
+}
+
+#[cfg(feature = "meta-language")]
+#[test]
+fn serialized_owned_source_shard_7() {
+    assert_serialized_owned_source_shard(7);
+}

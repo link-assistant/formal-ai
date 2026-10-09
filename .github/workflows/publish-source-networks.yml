@@ -1,0 +1,179 @@
+name: Publish source networks
+# A GITHUB_TOKEN-created release suppresses release events; the main CI completion also resolves its published tag.
+on: # zizmor: ignore[dangerous-triggers]
+  release:
+    types: [published]
+  workflow_run:
+    workflows: ["CI/CD Pipeline"]
+    types: [completed]
+    branches: [main]
+  pull_request:
+    branches-ignore: ['e2e/**']
+    paths:
+      - ".github/workflows/publish-source-networks.yml"
+      - "scripts/check-source-networks.mjs"
+      - "scripts/verify-source-network-distribution.mjs"
+      - "scripts/lib/source-network-packets.mjs"
+      - "rust/tests/web/source-network-packets.test.mjs"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Run packet checks without publication
+        type: choice
+        options: [checks]
+        default: checks
+      pull-request:
+        description: Pull request whose checks were dispatched
+        type: string
+        default: ''
+      publish:
+        description: Attach verified source packets to a published stable release (main only)
+        type: boolean
+        default: false
+      tag:
+        description: Published stable release tag (empty selects the latest)
+        type: string
+        default: ''
+permissions:
+  contents: read
+concurrency:
+  group: source-network-package-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: >-
+      github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.head_branch == 'main' &&
+       github.event.workflow_run.head_repository.full_name == github.repository &&
+       github.event.workflow_run.conclusion != 'cancelled' &&
+       github.event.workflow_run.conclusion != 'skipped')
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
+      publish: ${{ steps.release.outputs.publish }}
+      build: ${{ steps.release.outputs.build }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24.x'
+      - name: Resolve the published stable tag
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          REPOSITORY: ${{ github.repository }}
+          REFERENCE: ${{ github.ref }}
+          PUBLISH: ${{ inputs.publish }}
+          INPUT_TAG: ${{ inputs.tag }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RUN_HEAD: ${{ github.event.workflow_run.head_sha }}
+          RUN_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          RUN_REPOSITORY: ${{ github.event.workflow_run.head_repository.full_name }}
+          RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        run: node scripts/resolve-package-release.mjs
+  packets:
+    needs: resolve
+    if: ${{ !cancelled() && needs.resolve.outputs.build == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7]
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Select the resolved published tag
+        if: needs.resolve.outputs.tag != ''
+        env:
+          PACKAGE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+        run: |
+          set -euo pipefail
+          [[ "$PACKAGE_RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit 1
+          git fetch origin "refs/tags/$PACKAGE_RELEASE_TAG:refs/tags/$PACKAGE_RELEASE_TAG"
+          git checkout --detach "refs/tags/$PACKAGE_RELEASE_TAG"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24.x'
+      - name: Check out the shared pinned serializer
+        uses: actions/checkout@v7
+        with:
+          repository: link-foundation/meta-language
+          ref: eb0574d5528babd3b4aadece81590d8e2230b99b
+          path: .meta-language
+          persist-credentials: false
+      - name: Install serializer runtime dependencies
+        run: npm ci --prefix .meta-language/js --omit=dev --ignore-scripts --no-audit --no-fund
+      - name: Produce complete lossless packets from the selected source commit
+        env:
+          SOURCE_SHARD: ${{ matrix.shard }}
+          PACKET_DIRECTORY: ${{ runner.temp }}/source-networks
+          TEST_BUDGET_SECONDS: 600
+          TEST_WARN_RATIO_PERCENT: 75
+        run: |
+          bash scripts/run-with-budget.sh source-networks-release \
+            node scripts/check-source-networks.mjs --meta-language .meta-language \
+            --shard-count 8 --shard-index "$SOURCE_SHARD" --write --output "$PACKET_DIRECTORY"
+      - name: Bundle the complete shard with its receipts
+        env:
+          SOURCE_SHARD: ${{ matrix.shard }}
+          PACKET_DIRECTORY: ${{ runner.temp }}/source-networks
+          ARCHIVE_DIRECTORY: ${{ runner.temp }}
+        run: tar -czf "$ARCHIVE_DIRECTORY/formal-ai-source-networks-$SOURCE_SHARD.tar.gz" -C "$PACKET_DIRECTORY" .
+      - uses: actions/upload-artifact@v7
+        with:
+          name: formal-ai-source-networks-${{ matrix.shard }}
+          path: ${{ runner.temp }}/formal-ai-source-networks-${{ matrix.shard }}.tar.gz
+          if-no-files-found: error
+  attach:
+    needs: [resolve, packets]
+    if: ${{ !cancelled() && needs.resolve.outputs.publish == 'true' && needs.packets.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Select the resolved published tag
+        env:
+          PACKAGE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+        run: |
+          set -euo pipefail
+          [[ "$PACKAGE_RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit 1
+          git fetch origin "refs/tags/$PACKAGE_RELEASE_TAG:refs/tags/$PACKAGE_RELEASE_TAG"
+          git checkout --detach "refs/tags/$PACKAGE_RELEASE_TAG"
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24.x'
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: formal-ai-source-networks-*
+          path: ${{ runner.temp }}/source-network-archives
+          merge-multiple: true
+      - name: Verify every shard against the published source commit
+        env:
+          ARCHIVE_DIRECTORY: ${{ runner.temp }}/source-network-archives
+          DISTRIBUTION_DIRECTORY: ${{ runner.temp }}/source-network-distribution
+        run: |
+          set -euo pipefail
+          for shard in 0 1 2 3 4 5 6 7; do
+            mkdir -p "$DISTRIBUTION_DIRECTORY/shard-$shard"
+            tar -xzf "$ARCHIVE_DIRECTORY/formal-ai-source-networks-$shard.tar.gz" -C "$DISTRIBUTION_DIRECTORY/shard-$shard"
+          done
+          node scripts/verify-source-network-distribution.mjs "$DISTRIBUTION_DIRECTORY"
+      - name: Attach all verified packets to the stable release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PACKAGE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
+          ARCHIVE_DIRECTORY: ${{ runner.temp }}/source-network-archives
+        run: gh release upload "$PACKAGE_RELEASE_TAG" "$ARCHIVE_DIRECTORY"/formal-ai-source-networks-*.tar.gz --clobber
