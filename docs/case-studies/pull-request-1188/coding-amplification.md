@@ -72,6 +72,8 @@ planner: two reads, no writes, and failure on the absent target module. The
 reviewed instrumentation integration does not close that autonomous task.
 No representative amplification baseline or monetary saving is claimed.
 
+A separate predeclared twenty-task JavaScript calculation cohort retains all original prompts, source identities, full replies and independent verifier failures in [the finite followup packet](../../../experiments/formal_ai_subagent/evidence/coordinator-1188/ci-020be4-finite-followup/README.md). All twenty raw replies are shorter than their requests, yet none follows the requested numeric-only response format: strict acceptance is0/20. No reply was trimmed or replaced. This limited worker-surface observation establishes neither representative task performance nor coding amplification; source-declaration identity, supplied harness costs and unknown model usage are retained separately. Size relation cannot replace task acceptance.
+
 ## Expected relation by task category
 
 Classify the task before executing it and save the original task/category declaration
