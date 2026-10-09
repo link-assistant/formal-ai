@@ -616,6 +616,8 @@ fn plan_routed_capability_step_in(
     if capability == Capability::Read
         && super::write_request::states_write_action(routed_task)
         && super::write_request::stated_write_target(routed_task).is_some()
+        && (super::general_planner::has_file_write_intent(routed_task)
+            || !retrieval_owns_write_cue(routed_task))
     {
         return None;
     }
@@ -879,4 +881,20 @@ fn shell_fallback(capability: Capability, task: &str) -> Option<String> {
 
 fn shell_quote(value: &str) -> String {
     format!("'{}'", value.replace('\'', "'\\''"))
+}
+
+/// A seeded retrieval phrase may own the very token also used as a write cue.
+fn retrieval_owns_write_cue(task: &str) -> bool {
+    let tokens = super::write_request::tokens(task);
+    let Some(start) = super::write_request::first_action_cue_start(&tokens) else {
+        return false;
+    };
+    let action = crate::engine::normalize_prompt(&task[start..]);
+    seed::lexicon()
+        .words_for_role(seed::ROLE_CAPABILITY_ACT_RETRIEVE)
+        .iter()
+        .any(|surface| {
+            let cue = crate::engine::normalize_prompt(surface);
+            !cue.is_empty() && action.starts_with(&cue)
+        })
 }

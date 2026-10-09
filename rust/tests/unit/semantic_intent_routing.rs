@@ -754,3 +754,27 @@ fn a_listing_word_inside_a_longer_non_latin_word_does_not_panic_the_boundary_sca
         let _ = plan_chat_step(&messages, &["read_file", "write_file", "exec_command"]);
     }
 }
+
+#[test]
+fn an_owned_retrieval_phrase_does_not_turn_into_a_file_write() {
+    for (prompt, target) in [
+        ("escribe el contenido de sample.txt", "sample.txt"),
+        ("Escribe el contenido de notas-α.txt", "notas-α.txt"),
+        ("Hola, escribe el contenido de registro.txt", "registro.txt"),
+        ("输出内容 sample.txt", "sample.txt"),
+    ] {
+        let (tool, arguments) = call(prompt);
+        assert_eq!(tool, "read_file", "{prompt}");
+        assert_eq!(arguments["path"], target, "{prompt}");
+    }
+    for prompt in ["Create sample.txt", "Write sample.txt"] {
+        let plan = plan_chat_step(
+            &[ChatMessage::user(prompt)],
+            &["read_file", "write_file", "exec_command"],
+        );
+        assert!(
+            plan.is_none(),
+            "content-free write acquired a read: {prompt}"
+        );
+    }
+}
