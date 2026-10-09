@@ -1,0 +1,32 @@
+Create callable-body-reads.mjs with exactly this content:
+````````````javascript
+export function readFormalParameterPositions(expression, formalParameters) {
+  if (!Array.isArray(formalParameters) || formalParameters.some((name) => typeof name !== 'string' || !name) || new Set(formalParameters).size !== formalParameters.length) return null;
+  const positions = new Map(formalParameters.map((name, position) => [name, position]));
+  const reads = new Set();
+  const visit = (node) => {
+    if (!node || typeof node.name !== 'string' || !Array.isArray(node.children)) return false;
+    if (node.name === 'parameter') {
+      if (node.children.length !== 0 || !positions.has(node.value)) return false;
+      reads.add(positions.get(node.value));
+      return true;
+    }
+    if (node.name === 'literal') return node.children.length === 0;
+    return node.children.every(visit);
+  };
+  return visit(expression) ? [...reads].sort((left, right) => left - right) : null;
+}
+
+export function bindCallableReadCoverage(contract, taskSignature) {
+  if (!contract || !taskSignature || !['provisional', 'declared'].includes(taskSignature.origin)) return null;
+  const readPositions = readFormalParameterPositions(contract.expression, contract.parameters);
+  if (readPositions === null || typeof contract.name !== 'string' || !contract.name) return null;
+  const declared = taskSignature.origin === 'declared';
+  const parameters = declared ? taskSignature.parameters : contract.parameters;
+  const name = declared ? taskSignature.name : contract.name;
+  if (!Array.isArray(parameters) || parameters.length !== contract.parameters.length || parameters.some((parameter) => typeof parameter !== 'string' || !parameter) || new Set(parameters).size !== parameters.length || typeof name !== 'string' || !name) return null;
+  const names = new Map(contract.parameters.map((parameter, position) => [parameter, parameters[position]]));
+  const bind = (node) => ({ ...node, value: node.name === 'parameter' ? names.get(node.value) : node.value, children: node.children.map(bind) });
+  return { name, parameters: [...parameters], expression: bind(contract.expression), readParameterPositions: readPositions, referencedParameters: readPositions.length };
+}
+````````````

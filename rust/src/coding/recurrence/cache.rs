@@ -18,7 +18,7 @@ use std::sync::OnceLock;
 use unicode_general_category::{GeneralCategory, get_general_category};
 
 use crate::coding::concept_discovery::CandidatePart;
-use crate::coding::recurrence::{Expression, Operation, Recurrence};
+use crate::coding::recurrence::{Expression, Operation, Recurrence, SourceCallableContract};
 use crate::coding::task_spec::{ArtifactShape, CodingTaskSpec, Example};
 use crate::seed::parser::{LinoNode, parse_lino};
 
@@ -388,6 +388,11 @@ pub fn source_recurrence_candidate(spec: &CodingTaskSpec) -> Option<CandidatePar
         language: Some(spec.language.clone()),
         code: Some(code),
         callable_name: Some(record.identifier.clone()),
+        callable_contract: Some(SourceCallableContract {
+            name: record.identifier.clone(),
+            parameter: recurrence.parameter.clone(),
+            expression: recurrence.expression.clone(),
+        }),
         source_tests: record.source_tests.clone(),
         license: recurrence.license.clone(),
         source_url: recurrence.source_url.clone(),

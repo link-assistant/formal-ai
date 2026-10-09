@@ -25,6 +25,9 @@ fn spec(name: &str, parameters: Vec<Parameter>, examples: Vec<Example>) -> Codin
     CodingTaskSpec {
         language: "python".to_owned(),
         artifact_shape: ArtifactShape::Function,
+        callable_binding_origin: formal_ai::coding_task_spec::CallableBindingOrigin::Declared {
+            signature: String::new(),
+        },
         name: name.to_owned(),
         parameters,
         return_annotation: None,
@@ -40,6 +43,9 @@ fn program(requirement: &str, expected_stdout: Option<&str>) -> CodingTaskSpec {
     CodingTaskSpec {
         language: "python".to_owned(),
         artifact_shape: ArtifactShape::Program,
+        callable_binding_origin: formal_ai::coding_task_spec::CallableBindingOrigin::Declared {
+            signature: String::new(),
+        },
         name: "main".to_owned(),
         parameters: Vec::new(),
         return_annotation: None,
@@ -59,6 +65,7 @@ fn candidate(id: &str, kind: &str, code: Option<&str>) -> CandidatePart {
         language: Some("python".to_owned()),
         code: code.map(str::to_owned),
         callable_name: None,
+        callable_contract: None,
         source_tests: Vec::new(),
         license: if kind == "stdlib" {
             "PSF-2.0"
@@ -329,7 +336,39 @@ fn source_recurrence_candidates_are_verified_with_discovered_examples() {
         example(&["4"], "10"),
         example(&["7"], "28"),
     ];
-    source_candidate.callable_name = Some("accumulated_total".to_owned());
+    let parameter = formal_ai::coding_recurrence::Expression::Parameter("n".to_owned());
+    let contract = formal_ai::coding_recurrence::SourceCallableContract {
+        name: "accumulated_total".to_owned(),
+        parameter: "n".to_owned(),
+        expression: formal_ai::coding_recurrence::Expression::Apply(
+            formal_ai::coding_recurrence::Operation::Conditional,
+            vec![
+                formal_ai::coding_recurrence::Expression::Apply(
+                    formal_ai::coding_recurrence::Operation::Equal,
+                    vec![
+                        parameter.clone(),
+                        formal_ai::coding_recurrence::Expression::Literal(0),
+                    ],
+                ),
+                formal_ai::coding_recurrence::Expression::Literal(0),
+                formal_ai::coding_recurrence::Expression::Apply(
+                    formal_ai::coding_recurrence::Operation::Add,
+                    vec![
+                        parameter.clone(),
+                        formal_ai::coding_recurrence::Expression::Recur(Box::new(
+                            formal_ai::coding_recurrence::Expression::Apply(
+                                formal_ai::coding_recurrence::Operation::SubtractOne,
+                                vec![parameter],
+                            ),
+                        )),
+                    ],
+                ),
+            ],
+        ),
+    };
+    source_candidate.code = Some(contract.render_python());
+    source_candidate.callable_name = Some(contract.name.clone());
+    source_candidate.callable_contract = Some(contract);
     let outcome = compose(
         &spec(
             "accumulated_total",
@@ -460,4 +499,249 @@ fn held_out_grid_examples_select_the_supported_predecessor_relation() {
                 == "https://competitive-programming.cs.princeton.edu/files/lec_f22_w4.pdf")
     );
     assert!(selected.composition.starts_with("typed_search("));
+}
+
+fn competing_product_program(task: &CodingTaskSpec, catalog: &FragmentCatalog) -> ProgramIr {
+    let fragments = vec!["reduce_product".to_owned(), "range_inclusive".to_owned()];
+    ProgramIr {
+        name: task.name.clone(),
+        parameters: vec![(task.parameters[0].name.clone(), IrType::Unknown(0))],
+        result: IrType::Integer,
+        body: IrNode::Apply {
+            fragment: "reduce_product".to_owned(),
+            arguments: vec![IrNode::Apply {
+                fragment: "range_inclusive".to_owned(),
+                arguments: vec![IrNode::Parameter {
+                    name: task.parameters[0].name.clone(),
+                    ty: IrType::Unknown(0),
+                }],
+            }],
+        },
+        source_urls: fragments
+            .iter()
+            .map(|identifier| catalog.get(identifier).unwrap().grounding.clone())
+            .collect(),
+        source_licenses: fragments
+            .iter()
+            .map(|identifier| catalog.get(identifier).unwrap().license.clone())
+            .collect(),
+        fragments,
+        reuse: ReuseMode::ShapeOnly,
+    }
+}
+
+#[test]
+fn source_owned_body_reads_compete_with_actual_typed_ir_under_a_provisional_signature() {
+    let task = formal_ai::coding_task_spec::recognise(
+        "Write a Python function that returns the factorial of n",
+    )
+    .unwrap();
+    assert_eq!(
+        task.callable_binding_origin,
+        formal_ai::coding_task_spec::CallableBindingOrigin::Provisional
+    );
+    assert_eq!(task.parameters[0].name, "input");
+    let source_candidate =
+        formal_ai::coding_recurrence::cache::source_recurrence_candidate(&task).unwrap();
+    let contract = source_candidate.callable_contract.as_ref().unwrap();
+    assert_eq!(contract.parameter, "n");
+    assert_eq!(contract.read_positions(), Some(vec![0]));
+    let source = source_candidate.code.clone().unwrap();
+    let selected_identifier = format!("recurrence:{}", source_candidate.id);
+    let source_url = source_candidate.source_url.clone();
+    let catalog = FragmentCatalog::bootstrap();
+    let competing = competing_product_program(&task, &catalog);
+    assert_eq!(competing.action_cost(), 3);
+    let competing_identifier = competing.content_id();
+    let outcome = compose_with_ir(
+        &task,
+        &map(&[], vec![source_candidate]),
+        &catalog,
+        [competing],
+    );
+    assert!(
+        outcome
+            .attempts
+            .iter()
+            .any(|attempt| attempt.id == competing_identifier && attempt.passed)
+    );
+    assert!(
+        outcome
+            .attempts
+            .iter()
+            .any(|attempt| attempt.id == selected_identifier && attempt.passed)
+    );
+    let selected = outcome.selected.unwrap();
+    assert_eq!(selected.id, selected_identifier);
+    assert_eq!(selected.source, source);
+    assert_eq!(selected.source_urls, vec![source_url]);
+    assert_eq!(selected.assertion_count, 4);
+}
+
+#[test]
+fn declaration_only_source_names_cannot_outrank_an_input_reading_program() {
+    let mut task = spec(
+        "discovered_function",
+        vec![parameter("input", None)],
+        Vec::new(),
+    );
+    task.callable_binding_origin = formal_ai::coding_task_spec::CallableBindingOrigin::Provisional;
+    let contract = formal_ai::coding_recurrence::SourceCallableContract {
+        name: "constant".to_owned(),
+        parameter: "n".to_owned(),
+        expression: formal_ai::coding_recurrence::Expression::Literal(1),
+    };
+    assert_eq!(contract.read_positions(), Some(Vec::new()));
+    let mut source_candidate = candidate("source-constant", "wikifunctions_recurrence", None);
+    source_candidate.code = Some(contract.render_python());
+    source_candidate.callable_name = Some(contract.name.clone());
+    source_candidate.callable_contract = Some(contract);
+    source_candidate.source_tests = vec![example(&["0"], "1"), example(&["1"], "1")];
+    let catalog = FragmentCatalog::bootstrap();
+    let competing = competing_product_program(&task, &catalog);
+    let identifier = competing.content_id();
+    let outcome = compose_with_ir(
+        &task,
+        &map(&[], vec![source_candidate]),
+        &catalog,
+        [competing],
+    );
+    assert!(
+        outcome
+            .attempts
+            .iter()
+            .any(|attempt| attempt.id == "recurrence:source-constant" && attempt.passed)
+    );
+    let selected = outcome.selected.unwrap();
+    assert_eq!(selected.id, identifier);
+    assert_eq!(
+        selected.source,
+        "import math\n\ndef discovered_function(input):\n    return math.prod(range(1, input + 1))"
+    );
+    assert_eq!(selected.assertion_count, 2);
+    assert!(selected.composition.starts_with("typed_search("));
+    assert!(
+        !selected
+            .source_urls
+            .iter()
+            .any(|url| url == "https://source.invalid/source-constant")
+    );
+}
+
+#[test]
+fn source_ast_binding_keeps_explicit_signature_and_self_recursion() {
+    let task = formal_ai::coding_task_spec::recognise("def discovered_function(input: int) -> int:\n    \"\"\"Return the factorial of input.\"\"\"").unwrap();
+    assert!(matches!(
+        &task.callable_binding_origin,
+        formal_ai::coding_task_spec::CallableBindingOrigin::Declared { .. }
+    ));
+    let candidate =
+        formal_ai::coding_recurrence::cache::source_recurrence_candidate(&task).unwrap();
+    let outcome = compose_with_ir(
+        &task,
+        &map(&[], vec![candidate]),
+        &FragmentCatalog::bootstrap(),
+        [],
+    );
+    let selected = outcome.selected.unwrap();
+    assert_eq!(
+        selected.source,
+        "def discovered_function(input: int) -> int:\n    return 1 if (input == 0) else (input * discovered_function(input - 1))"
+    );
+    assert_eq!(selected.assertion_count, 4);
+    assert!(selected.composition.starts_with("source_recurrence("));
+}
+
+#[test]
+fn unsupported_explicit_source_bindings_are_rejected_before_execution() {
+    for signature in [
+        "chosen(x, y)",
+        "chosen(*x)",
+        "chosen(x=3)",
+        "chosen(x, /)",
+        "chosen(chosen)",
+    ] {
+        let task = formal_ai::coding_task_spec::recognise(&format!(
+            "def {signature}:\n    \"\"\"Return the factorial of x.\"\"\""
+        ))
+        .unwrap();
+        let candidate =
+            formal_ai::coding_recurrence::cache::source_recurrence_candidate(&task).unwrap();
+        assert!(
+            candidate
+                .callable_contract
+                .as_ref()
+                .unwrap()
+                .bound_to(&task)
+                .is_none(),
+            "{signature}"
+        );
+        let outcome = compose_with_ir(
+            &task,
+            &map(&[], vec![candidate]),
+            &FragmentCatalog::bootstrap(),
+            [],
+        );
+        assert!(outcome.selected.is_none(), "{signature}");
+        assert!(outcome.attempts.is_empty(), "{signature}");
+    }
+}
+
+#[test]
+fn observed_calls_bind_identity_without_using_literal_arguments_as_formal_names() {
+    let task =
+        formal_ai::coding_task_spec::recognise("Return the factorial.\nassert chosen(3) == 6")
+            .unwrap();
+    assert_eq!(
+        task.callable_binding_origin,
+        formal_ai::coding_task_spec::CallableBindingOrigin::Observed
+    );
+    assert_eq!(task.parameters[0].name, "arg1");
+    let candidate =
+        formal_ai::coding_recurrence::cache::source_recurrence_candidate(&task).unwrap();
+    let bound = candidate
+        .callable_contract
+        .as_ref()
+        .unwrap()
+        .bound_to(&task)
+        .unwrap();
+    assert_eq!(bound.name, "chosen");
+    assert_eq!(bound.parameter, "n");
+    assert_eq!(bound.read_positions(), Some(vec![0]));
+    let source = bound.render_python();
+    let outcome = compose_with_ir(
+        &task,
+        &map(&[], vec![candidate]),
+        &FragmentCatalog::bootstrap(),
+        [],
+    );
+    let selected = outcome.selected.unwrap();
+    assert_eq!(selected.source, source);
+    assert_eq!(selected.assertion_count, 1);
+}
+
+#[test]
+fn source_body_contract_must_match_the_callable_and_evaluated_program() {
+    let task = formal_ai::coding_task_spec::recognise(
+        "Write a Python function that returns the factorial of n",
+    )
+    .unwrap();
+    let original = formal_ai::coding_recurrence::cache::source_recurrence_candidate(&task).unwrap();
+    let mut missing = original.clone();
+    missing.callable_contract = None;
+    let mut changed_body = original.clone();
+    changed_body.callable_contract.as_mut().unwrap().expression =
+        formal_ai::coding_recurrence::Expression::Literal(1);
+    let mut changed_identity = original;
+    changed_identity.callable_name = Some("different_callable".to_owned());
+    for candidate in [missing, changed_body, changed_identity] {
+        let outcome = compose_with_ir(
+            &task,
+            &map(&[], vec![candidate]),
+            &FragmentCatalog::bootstrap(),
+            [],
+        );
+        assert!(outcome.selected.is_none());
+        assert!(outcome.attempts.is_empty());
+    }
 }

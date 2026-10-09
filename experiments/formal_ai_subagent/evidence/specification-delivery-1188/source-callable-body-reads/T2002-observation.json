@@ -1,0 +1,10 @@
+{
+  "taskId": "T2002",
+  "byteEqual": true,
+  "toolCalls": [
+    "bash",
+    "write",
+    "bash"
+  ],
+  "scope": "scratch capability draft only; not integrated repository delivery"
+}

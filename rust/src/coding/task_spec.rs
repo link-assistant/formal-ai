@@ -43,11 +43,20 @@ pub struct Example {
     pub expected: String,
 }
 
+/// Whether a callable signature belongs to the request or its discovered source.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum CallableBindingOrigin {
+    Provisional,
+    Declared { signature: String },
+    Observed,
+}
+
 /// The language-independent shape consumed by coding discovery.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct CodingTaskSpec {
     pub language: String,
     pub artifact_shape: ArtifactShape,
+    pub callable_binding_origin: CallableBindingOrigin,
     pub name: String,
     pub parameters: Vec<Parameter>,
     pub return_annotation: Option<String>,
@@ -92,6 +101,7 @@ impl From<&crate::verifiable_task::VerifiableTask> for CodingTaskSpec {
         Self {
             language: String::from("python"),
             artifact_shape,
+            callable_binding_origin: CallableBindingOrigin::Observed,
             name,
             parameters: Vec::new(),
             return_annotation: None,
@@ -183,6 +193,9 @@ pub fn recognise(prompt: &str) -> Option<CodingTaskSpec> {
         return Some(CodingTaskSpec {
             language: "python".to_owned(),
             artifact_shape: ArtifactShape::Function,
+            callable_binding_origin: CallableBindingOrigin::Declared {
+                signature: signature.to_owned(),
+            },
             name,
             parameters,
             return_annotation,
@@ -216,6 +229,7 @@ pub fn recognise(prompt: &str) -> Option<CodingTaskSpec> {
         return Some(CodingTaskSpec {
             language: "python".to_owned(),
             artifact_shape: ArtifactShape::Function,
+            callable_binding_origin: CallableBindingOrigin::Observed,
             name,
             parameters,
             return_annotation: None,
@@ -296,9 +310,16 @@ pub fn recognise(prompt: &str) -> Option<CodingTaskSpec> {
             &language_priority,
         )
         .map_or(detected_prose_language, str::to_owned);
+    let callable_binding_origin =
+        signature.map_or(CallableBindingOrigin::Provisional, |signature| {
+            CallableBindingOrigin::Declared {
+                signature: signature.to_owned(),
+            }
+        });
     Some(CodingTaskSpec {
         language: target_language.slug.to_owned(),
         artifact_shape,
+        callable_binding_origin,
         name,
         parameters,
         return_annotation,

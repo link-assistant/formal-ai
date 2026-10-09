@@ -201,6 +201,7 @@ pub fn extend_with_sequence_programs(
                 language: Some("python".to_owned()),
                 code: Some(program.source),
                 callable_name: Some(program.callable_name),
+                callable_contract: None,
                 source_tests: Vec::new(),
                 license: program.license,
                 source_url: program.source_url,

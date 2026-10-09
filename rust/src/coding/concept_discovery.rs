@@ -4,7 +4,7 @@ use std::collections::BTreeSet;
 
 use crate::coding::function_catalog::python_docs::{StdlibIndex, StdlibPart};
 use crate::coding::function_catalog::wikifunctions::{FunctionMatch, FunctionPart, Implementation};
-use crate::coding::recurrence::Recurrence;
+use crate::coding::recurrence::{Recurrence, SourceCallableContract};
 use crate::coding::task_spec::{CodingTaskSpec, Example};
 use crate::concept_lookup::LookupOutcome;
 use crate::links_format::push_lino_node;
@@ -98,6 +98,7 @@ pub struct CandidatePart {
     pub language: Option<String>,
     pub code: Option<String>,
     pub callable_name: Option<String>,
+    pub callable_contract: Option<SourceCallableContract>,
     pub source_tests: Vec<Example>,
     pub license: String,
     pub source_url: String,
@@ -592,6 +593,7 @@ fn candidates_for(
                 language: None,
                 code: None,
                 callable_name: None,
+                callable_contract: None,
                 source_tests: Vec::new(),
                 license: "CC0-1.0".to_owned(),
                 source_url: matched.source_url.clone(),
@@ -625,6 +627,7 @@ fn candidates_for(
                     language: Some(implementation.language.clone()),
                     code: Some(implementation.code.clone()),
                     callable_name: None,
+                    callable_contract: None,
                     source_tests: Vec::new(),
                     license: implementation.license.clone(),
                     source_url: implementation.source_url.clone(),
@@ -650,6 +653,11 @@ fn candidates_for(
                 label: recurrence.source_label.clone(),
                 language: Some("python".to_owned()),
                 code: Some(recurrence.render_python(&callable_name)),
+                callable_contract: Some(SourceCallableContract {
+                    name: callable_name.clone(),
+                    parameter: recurrence.parameter.clone(),
+                    expression: recurrence.expression.clone(),
+                }),
                 callable_name: Some(callable_name),
                 source_tests: function.source_tests.clone(),
                 license: recurrence.license.clone(),
@@ -691,6 +699,7 @@ fn stdlib_candidate(part: &StdlibPart, score: f64) -> CandidatePart {
         language: Some("python".to_owned()),
         code: None,
         callable_name: None,
+        callable_contract: None,
         source_tests: Vec::new(),
         license: part.license.clone(),
         source_url: part.source_url.clone(),
@@ -786,6 +795,7 @@ pub fn concept_candidate(evidence: &ConceptEvidence) -> CandidatePart {
         // A gloss is evidence, never a program.
         code: None,
         callable_name: None,
+        callable_contract: None,
         source_tests: Vec::new(),
         license,
         source_url: evidence.source_url.clone(),

@@ -1,0 +1,6 @@
+{
+  "taskId": "T2001",
+  "modifiedFrom": "T2000",
+  "scratch": "/private/tmp/spec-recurrence-1188",
+  "prompt": "Create callable-body-reads.mjs implementing a reusable JavaScript AST analysis. Export readFormalParameterPositions(expression, formalParameters). Each expression node has name, value and children. A node named parameter reads the formal parameter with that value; a literal node reads none; all other nodes recurse through their children. Return distinct positional indexes in declaration order. Export bindCallableReadCoverage(contract, taskSignature) to preserve source identity for provisional signatures, map formal read positions onto task input positions, and reject incompatible explicit arity. Compute reads from the body tree; declaration-only names must not count. Write the implementation and run Node assertions for a renamed anonymous task input, a literal-only body and incompatible arity."
+}

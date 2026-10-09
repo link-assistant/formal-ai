@@ -1,0 +1,5 @@
+{
+  "taskId": "T2032",
+  "target": "rust/tests/web/source-callable-read-contracts.test.mjs",
+  "byteEqual": true
+}

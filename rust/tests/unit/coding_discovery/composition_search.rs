@@ -145,6 +145,9 @@ fn recursive_reduction_is_discovered_and_lowered_from_typed_fragments() {
     let spec = CodingTaskSpec {
         language: "python".to_owned(),
         artifact_shape: ArtifactShape::Function,
+        callable_binding_origin: formal_ai::coding_task_spec::CallableBindingOrigin::Declared {
+            signature: String::new(),
+        },
         name: "least_weight_to_coordinate".to_owned(),
         parameters: vec![
             Parameter {

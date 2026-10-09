@@ -38,6 +38,9 @@ def sum_product(numbers: List[int]) -> Tuple[int, int]:
         CodingTaskSpec {
             language: "python".to_owned(),
             artifact_shape: ArtifactShape::Function,
+            callable_binding_origin: formal_ai::coding_task_spec::CallableBindingOrigin::Declared {
+                signature: "sum_product(numbers: List[int]) -> Tuple[int, int]".to_owned()
+            },
             name: "sum_product".to_owned(),
             parameters: vec![parameter("numbers", Some("List[int]"))],
             return_annotation: Some("Tuple[int, int]".to_owned()),
