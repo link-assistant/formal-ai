@@ -6,12 +6,14 @@ import { createHash } from 'node:crypto';
 import { isDeepStrictEqual } from 'node:util';
 import { tokenize } from './rust-specification-cases.mjs';
 import { close, split, expression, evaluate } from './rust-specification-values.mjs';
+import { nativeFunctions, pureHelperBinding, historySourceContract, usesHistoryProducer } from './rust-specification-bindings.mjs';
 
 const hash = value => createHash('sha256').update(value).digest('hex');
 const assertionNames = new Set(['assert', 'assert_eq', 'assert_ne']);
 const canonicalCalls = new Map([
   ['formal_ai::compile_natural_language_skill', { kind: 'compiler' }],
   ['formal_ai::UniversalSolver::default', { kind: 'solver' }],
+  ['formal_ai::solve_with_history', { kind: 'historySolver', signature: ['string', 'vec:turn'] }],
   ['formal_ai::ConversationTurn::user', { kind: 'user' }],
   ['formal_ai::ConversationTurn::assistant', { kind: 'assistant' }],
   ['lino_objects_codec::format::parse_indented', { kind: 'codec' }],
@@ -47,23 +49,6 @@ function importedCalls(tokens) {
   return calls;
 }
 
-function nativeFunctions(tokens) {
-  const functions = [];
-  for (let index = 0; index < tokens.length; index += 1) {
-    if (tokens[index].text !== 'fn') continue;
-    const name = tokens[index + 1]?.text;
-    if (tokens[index + 2]?.text !== '(') continue;
-    const paramsEnd = close(tokens, index + 2);
-    let open = paramsEnd + 1;
-    while (open < tokens.length && tokens[open].text !== '{') open += 1;
-    if (open === tokens.length) break;
-    const end = close(tokens, open);
-    functions.push({ name, parameters: tokens.slice(index + 3, paramsEnd),
-      returns: tokens.slice(paramsEnd + 1, open), body: tokens.slice(open + 1, end) });
-    index = end;
-  }
-  return functions;
-}
 
 function contextOf(source, file, root) {
   const tokens = tokenize(source);
@@ -76,6 +61,9 @@ function contextOf(source, file, root) {
   const functions = nativeFunctions(tokens);
   for (const fn of functions) calls.delete(fn.name);
   for (const fn of functions) {
+    if (functions.filter(value => value.name === fn.name).length !== 1) continue;
+    try { calls.set(fn.name, pureHelperBinding(fn, context)); continue; }
+    catch { /* Effectful and unknown helper bodies remain unbound. */ }
     if (fn.parameters.length !== 4 || fn.parameters[1].text !== ':' || fn.parameters[2].text !== '&'
       || fn.parameters[3].text !== 'str' || fn.returns.map(token => token.text).join('') !== '->SymbolicAnswer') continue;
     const argument = fn.parameters[0].text;
@@ -210,6 +198,7 @@ export function typedProgramOf(body, { source, file = '', root = '' }) {
     const context = contextOf(source, file, root);
     const initial = [...context.environment];
     const steps = bodyProgram(body, context);
+    if (usesHistoryProducer(steps)) context.fixtures.push(...historySourceContract(root));
     const nativeAssertions = body.filter((token, index) => assertionNames.has(token.text) && body[index + 1]?.text === '!').length;
     if (!nativeAssertions || assertionCount(steps) !== nativeAssertions) throw new Error('native assertion conservation failure');
     return { program: { steps, initial, fixtures: context.fixtures, nativeAssertions } };

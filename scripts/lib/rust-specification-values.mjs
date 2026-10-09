@@ -42,7 +42,7 @@ const fields = {
   replay: Object.fromEntries(['package_id', 'rule_id', 'handler_id', 'answer', 'cache_hit'].map(name => [name, 'string'])),
   linkRecord: Object.fromEntries(['stable_id', 'schema_version', 'record_type', 'source_id'].map(name => [name, 'string'])),
 };
-const callTypes = { compiler: 'result:package', solver: 'solver', user: 'turn', assistant: 'turn', codec: 'result:lino' };
+const callTypes = { compiler: 'result:package', solver: 'solver', user: 'turn', assistant: 'turn', codec: 'result:lino', historySolver: 'response' };
 const methodTypes = {
   string: { contains: ['boolean', 'string'], starts_with: ['boolean', 'string'], to_lowercase: ['string'] },
   solver: { solve: ['response', 'string'], solve_with_history: ['response', 'string', 'vec:turn'] },
@@ -110,11 +110,11 @@ export function expression(tokens, context) {
       const binding = context.calls.get(name);
       if (!binding) throw new Error('unsupported native call ' + name);
       const args = split(tokens.slice(cursor + 1, end)).map(part => expression(part, context));
-      const expected = binding.kind === 'solver' ? [] : ['string'];
+      const expected = binding.signature ?? (binding.kind === 'solver' ? [] : ['string']);
       if (args.length !== expected.length) throw new Error('native call arity ' + name);
       args.forEach((arg, index) => requireType(arg.type, expected[index]));
       if (binding.kind === 'codec' && args[0].origin !== 'compiled-package-notation') throw new Error('unsupported native codec input origin');
-      value = { kind: 'call', binding, args, type: binding.kind === 'helper' ? 'response' : callTypes[binding.kind] };
+      value = { kind: 'call', binding, args, type: binding.returnType ?? (binding.kind === 'helper' ? 'response' : callTypes[binding.kind]) };
       cursor = end + 1;
     } else if (tokens[cursor]?.text === '{') {
       const schema = context.schemas.get(name);
@@ -181,6 +181,12 @@ export function expression(tokens, context) {
   return value;
 }
 
+async function argumentsOf(nodes, environment, runtime) {
+  const values = [];
+  for (const node of nodes) values.push(await evaluate(node, environment, runtime));
+  return values;
+}
+
 /** Evaluate only registered typed operations over actually observed values. */
 export async function evaluate(node, environment, runtime) {
   if (node.kind === 'literal') return node.value;
@@ -210,9 +216,14 @@ export async function evaluate(node, environment, runtime) {
     return node.sign === '==' ? equal : !equal;
   }
   if (node.kind === 'call') {
-    const args = await Promise.all(node.args.map(arg => evaluate(arg, environment, runtime)));
+    const args = await argumentsOf(node.args, environment, runtime);
     const kind = node.binding.kind;
     if (kind === 'solver') return runtime.host;
+    if (kind === 'historySolver') return solve(runtime.host, args[0], args[1], runtime);
+    if (kind === 'pureHelper') {
+      const values = new Map(node.binding.parameters.map((parameter, index) => [parameter.name, args[index]]));
+      return evaluate(node.binding.body, values, runtime);
+    }
     if (kind === 'user' || kind === 'assistant') return { role: kind, content: args[0] };
     if (kind === 'compiler') {
       installTextHost();
@@ -237,7 +248,7 @@ export async function evaluate(node, environment, runtime) {
       }
       return false;
     }
-    const args = await Promise.all(node.args.map(arg => evaluate(arg, environment, runtime)));
+    const args = await argumentsOf(node.args, environment, runtime);
     if (node.name === 'expect') {
       if (!target.ok) throw new Error(`native expectation failed: ${args[0]} (${target.error ?? 'None'})`);
       return target.value;

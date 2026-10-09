@@ -1,0 +1,576 @@
+{
+  "sourceHeadAtSeal": "8a28419aa24af814791a07adb6427f918fe8c4be",
+  "scope": "lossless raw requests, results, actual native bodies and committed reader preimages; runtime observations retain their original failures",
+  "artifacts": [
+    {
+      "artifact": "raw/T3124-actual-one-sentence-draft.md.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3124-actual-one-sentence-draft.md",
+      "bytes": 115,
+      "sha256": "08200701eb93a819804416b0d5a0c3833d9f371ce584d67e3948496380ede2b9"
+    },
+    {
+      "artifact": "raw/T3124-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3124-observation.json",
+      "bytes": 78,
+      "sha256": "af535316b184ad3777700ad0cf5807f068dc7f8d8fa3d045a6a9ebfed0784fe9"
+    },
+    {
+      "artifact": "raw/T3124-prompt.txt.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3124-prompt.txt",
+      "bytes": 551,
+      "sha256": "1af8ddd1a4ba19e1a6da89326eee5e11f4882fc7fe612c0bc6f37d3f1a8bc6c5"
+    },
+    {
+      "artifact": "raw/T3124-request.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3124-request.json",
+      "bytes": 667,
+      "sha256": "c69ed56344f9443a10c63a694572898fc7b41b8821c152321d618274fa52c9c6"
+    },
+    {
+      "artifact": "raw/T3124.log.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3124.log",
+      "bytes": 5852,
+      "sha256": "c732513658452851a7c429ca621698886653e2593b077909ecd03b6b608a805d"
+    },
+    {
+      "artifact": "raw/T3125-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3125-observation.json",
+      "bytes": 53,
+      "sha256": "25d2d13b2fe0b80cb15d67fc4aa12ec4fbef55651c2768d5e0c0557db1b2eebe"
+    },
+    {
+      "artifact": "raw/T3125-prompt.txt.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3125-prompt.txt",
+      "bytes": 68,
+      "sha256": "eb5137c56cc356d1a0eea748edd32afd0d22a20245b2dcbe7c56091daf5e11a6"
+    },
+    {
+      "artifact": "raw/T3125-request.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3125-request.json",
+      "bytes": 184,
+      "sha256": "47f3f381eec70a7d01295ec676d964c4cccb267193e5600e07db38a0f6e0a89e"
+    },
+    {
+      "artifact": "raw/T3125.log.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3125.log",
+      "bytes": 1933,
+      "sha256": "04471532b58fde8aedc090b28244786c5ab41a5f15f4c97fc8c8b1a4863078f9"
+    },
+    {
+      "artifact": "raw/T3126-byte-check.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3126-byte-check.json",
+      "bytes": 88,
+      "sha256": "17c17182abbad06f74618969c97b40c76787f282006cb68f97ba2c1af78a7c27"
+    },
+    {
+      "artifact": "raw/T3126-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3126-observation.json",
+      "bytes": 78,
+      "sha256": "52d358d2ce8b82adf731eec233170406ddf31c2ae0035408fe023b455c3435a9"
+    },
+    {
+      "artifact": "raw/T3126-prompt.txt.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3126-prompt.txt",
+      "bytes": 7539,
+      "sha256": "44fa029a937e7778c825ca3101ea325ac142fc741bb80dbe36f813e93cb0c899"
+    },
+    {
+      "artifact": "raw/T3126-request.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3126-request.json",
+      "bytes": 7706,
+      "sha256": "74fb9c44998c1fcbd58022f0b648ee56481fbf9cc77856f7a9e95f9a8f0e8b0e"
+    },
+    {
+      "artifact": "raw/T3126.log.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3126.log",
+      "bytes": 64037,
+      "sha256": "e74c8b4ccd529422c7c382602fd408f4f606bb2e5ff955b50982f3f6d694efb7"
+    },
+    {
+      "artifact": "raw/T3127-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3127-observation.json",
+      "bytes": 53,
+      "sha256": "2921ea8a9753d0bfa16bbb59366eba24377fb40766f18da3a020b832b6034513"
+    },
+    {
+      "artifact": "raw/T3127-prompt.txt.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3127-prompt.txt",
+      "bytes": 73,
+      "sha256": "5947d64a2e9d6e788fd6266e73898c88f6a54d5a8c86a2de63159b1fc0365f55"
+    },
+    {
+      "artifact": "raw/T3127-request.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3127-request.json",
+      "bytes": 189,
+      "sha256": "8164f3933956060aa412b886629a0aeb3a28d88bd51ee029c8dbfba8ed8ada28"
+    },
+    {
+      "artifact": "raw/T3127.log.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3127.log",
+      "bytes": 4082,
+      "sha256": "d1b6d9852208274976aa372c3ed0f6fc127f41300b555d10cdb82909e244f56d"
+    },
+    {
+      "artifact": "raw/T3128-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3128-observation.json",
+      "bytes": 53,
+      "sha256": "a79f17fb4053291285aff92b5e462db99ef8698231fe9960a3b859987aefdbf0"
+    },
+    {
+      "artifact": "raw/T3128-prompt.txt.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3128-prompt.txt",
+      "bytes": 80,
+      "sha256": "303661e3870b3e41c2c8b2a1db70d61e5f8cc6e9e8cba19d6853d58a023fa4a2"
+    },
+    {
+      "artifact": "raw/T3128-request.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3128-request.json",
+      "bytes": 196,
+      "sha256": "eeb3a0be4559fe3e1c2e31d0c74f0594af3ec80bb0ac722477f95e9309528bf6"
+    },
+    {
+      "artifact": "raw/T3128.log.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3128.log",
+      "bytes": 418,
+      "sha256": "7ec34727998f2957abe17e2c99298ed15e9b1dde9b86e00ec2a551c1447a5f50"
+    },
+    {
+      "artifact": "raw/T3129-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3129-observation.json",
+      "bytes": 53,
+      "sha256": "0b8f87c0efa6bbe55cf6c6b39fa53dd692bf823cfa7a42356487965b893847f2"
+    },
+    {
+      "artifact": "raw/T3129-prompt.txt.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3129-prompt.txt",
+      "bytes": 683,
+      "sha256": "a536be7e27b3a496bfdb32774eae0e76fe89038ec582476020686721fef3997d"
+    },
+    {
+      "artifact": "raw/T3129-request.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3129-request.json",
+      "bytes": 792,
+      "sha256": "1afab507e6e572a126496da507a807928d8dcbb7b4b5096bd9703e5ca277df01"
+    },
+    {
+      "artifact": "raw/T3129.log.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3129.log",
+      "bytes": 1312,
+      "sha256": "93eba1dec3e29057c453ba31347cb50402e794a393e78d35a57eceada5cd8514"
+    },
+    {
+      "artifact": "raw/T3130-byte-check.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3130-byte-check.json",
+      "bytes": 104,
+      "sha256": "73925c00c15e395b5bb56d055db5425a8028002d6a0a1a921d2120f921c32b4a"
+    },
+    {
+      "artifact": "raw/T3130-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3130-observation.json",
+      "bytes": 78,
+      "sha256": "59a2fc7403e849425fd9d40babeb00ab2671eb8b11335e4c83dd8efba8d53f2a"
+    },
+    {
+      "artifact": "raw/T3130-prompt.txt.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3130-prompt.txt",
+      "bytes": 6563,
+      "sha256": "d1e7c978ea0811b95d02a6375fa89b1268ad9648473b05dd61a9448d8c2264ad"
+    },
+    {
+      "artifact": "raw/T3130-request.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3130-request.json",
+      "bytes": 6798,
+      "sha256": "d96c63ea75fb6de8533ccf312d8c72d88e67eecef29df9e2f10a1475f8444f04"
+    },
+    {
+      "artifact": "raw/T3130.log.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3130.log",
+      "bytes": 58793,
+      "sha256": "fae4463b01be7652c0c6a25176fe5434f3006707b30356cea4748b051a3699f5"
+    },
+    {
+      "artifact": "raw/T3131-byte-check.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3131-byte-check.json",
+      "bytes": 102,
+      "sha256": "5ca3aadc6e608a37f7c2c50de40a29c761c289f9570e739fb7b307d5f8b690ce"
+    },
+    {
+      "artifact": "raw/T3131-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3131-observation.json",
+      "bytes": 78,
+      "sha256": "b888f00d2db66f9992055bd10b02d1cead8e569ec18064658b0d2069e122b275"
+    },
+    {
+      "artifact": "raw/T3131-prompt.txt.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3131-prompt.txt",
+      "bytes": 14272,
+      "sha256": "08d6d9f7a9c5260ed96bd3cf65abe10d63b33c96dad7ca39b3f5b71a4fb4b27e"
+    },
+    {
+      "artifact": "raw/T3131-request.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3131-request.json",
+      "bytes": 14663,
+      "sha256": "89852923f2347b76deb1ce40382986e358f4cc05ff738fb65c5f02baf8cbc37d"
+    },
+    {
+      "artifact": "raw/T3131.log.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3131.log",
+      "bytes": 124272,
+      "sha256": "3150b56f208de5047307bfec57cb3793d8be779f0a16c9e5cd67d6cc081bb6eb"
+    },
+    {
+      "artifact": "raw/T3132-byte-check.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3132-byte-check.json",
+      "bytes": 104,
+      "sha256": "9a99e36d472d65701cbf283d267403517593d5b87d94e065c8743b41ec30b8c7"
+    },
+    {
+      "artifact": "raw/T3132-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3132-observation.json",
+      "bytes": 78,
+      "sha256": "605f9ef2b964634821a0f098760905096a287c4de06bc2292261e97a6b3ccdbf"
+    },
+    {
+      "artifact": "raw/T3132-prompt.txt.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3132-prompt.txt",
+      "bytes": 13293,
+      "sha256": "43f22ff145244e35abc8370e4686cd775160acbfcc05a7fa81c7e2efe06cd4ed"
+    },
+    {
+      "artifact": "raw/T3132-request.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3132-request.json",
+      "bytes": 13651,
+      "sha256": "522be3e3855e5cd4267fb273fa0eea67a20c22a6ef47fa002bff0acb84b24856"
+    },
+    {
+      "artifact": "raw/T3132.log.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3132.log",
+      "bytes": 114851,
+      "sha256": "805c40e3db49d9108ff1cb4578b15300250aa20fac54066d34b11c970668c509"
+    },
+    {
+      "artifact": "raw/T3133-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3133-observation.json",
+      "bytes": 53,
+      "sha256": "e95556401797fd0cc950392b121d204459bd15ef5ef9c4cc81a11cad67977d5a"
+    },
+    {
+      "artifact": "raw/T3133-prompt.txt.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3133-prompt.txt",
+      "bytes": 73,
+      "sha256": "ba5dbe3e66e1880f0b82435a621938cb26eb93ce2c88e2a7a64deb76c232d6d5"
+    },
+    {
+      "artifact": "raw/T3133-request.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3133-request.json",
+      "bytes": 182,
+      "sha256": "6c502d3dee466dbb22f99839ff313a6fb37d7ee9f45de0d0357cb1fde4f920d0"
+    },
+    {
+      "artifact": "raw/T3133.log.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3133.log",
+      "bytes": 7631,
+      "sha256": "d6667ca4997724ae3bee5d718e69ef66bec1a955036837cad239f984995a38b9"
+    },
+    {
+      "artifact": "raw/T3134-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3134-observation.json",
+      "bytes": 53,
+      "sha256": "a5b485b9b6f51de4df273139e53288a95af95eb8d8c521a65dc370818753ae7f"
+    },
+    {
+      "artifact": "raw/T3134-prompt.txt.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3134-prompt.txt",
+      "bytes": 80,
+      "sha256": "df2feae7564001573d0a1ccf9607b9a3b3873eea5281640c08d03a50fa9d4849"
+    },
+    {
+      "artifact": "raw/T3134-request.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3134-request.json",
+      "bytes": 189,
+      "sha256": "8befc9fd85e4f82a02ec3ea8d66ac24e5b76983a3aab94c23276707e9e82325d"
+    },
+    {
+      "artifact": "raw/T3134.log.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3134.log",
+      "bytes": 8236,
+      "sha256": "08ffc89a5b1c82017ca7307231e2841bf4e72ce687b0679a14255c1156050b41"
+    },
+    {
+      "artifact": "raw/T3135-byte-check.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3135-byte-check.json",
+      "bytes": 111,
+      "sha256": "3068fc68668f7c7dc1bd240b514904095061dc71f30f9ac36481ae7fb1bdd49c"
+    },
+    {
+      "artifact": "raw/T3135-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3135-observation.json",
+      "bytes": 78,
+      "sha256": "306695d0d630d6fa64a243005c05407f4343f13cb92090788dcaddf6108b95b1"
+    },
+    {
+      "artifact": "raw/T3135-prompt.txt.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3135-prompt.txt",
+      "bytes": 9371,
+      "sha256": "6f7a0418eb81ef3220ab04787ec7305f4bf8fa6c67ecda9a74249e550f65a850"
+    },
+    {
+      "artifact": "raw/T3135-request.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3135-request.json",
+      "bytes": 9705,
+      "sha256": "aab3c634ff9df89b749b051bf759345405dd9a09047fd3cc08dec47b9fa50e57"
+    },
+    {
+      "artifact": "raw/T3135.log.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3135.log",
+      "bytes": 82237,
+      "sha256": "b1b2614e2c77bf72b1667f02cf6ff6ca49f6d3f31613f0d6e70f1296781bbcbf"
+    },
+    {
+      "artifact": "raw/T3136-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3136-observation.json",
+      "bytes": 53,
+      "sha256": "6c7d20f579e94db894b6f37059ba959634c1d06aa9df51fe2412fc7003ab210a"
+    },
+    {
+      "artifact": "raw/T3136-prompt.txt.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3136-prompt.txt",
+      "bytes": 119,
+      "sha256": "d7fbee498506aa19589ce01a954ac2d4b8bd76c0ecf8bd70902a26f75259fdbe"
+    },
+    {
+      "artifact": "raw/T3136-request.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3136-request.json",
+      "bytes": 228,
+      "sha256": "5bc5c8ff4fedc7889f5629c51fecb599989b5a5db4b59e2277740d1e07aaf9ee"
+    },
+    {
+      "artifact": "raw/T3136.log.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3136.log",
+      "bytes": 12400,
+      "sha256": "4eff25c9f9471149297b76eaafcb96a55c8532d1bc222fdb94e2df52401efe36"
+    },
+    {
+      "artifact": "raw/T3137-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3137-observation.json",
+      "bytes": 53,
+      "sha256": "ccdcda6096478e7da40cb8445f4401fdd1f5e8a456aa435bb9693f0cfffc677a"
+    },
+    {
+      "artifact": "raw/T3137-prompt.txt.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3137-prompt.txt",
+      "bytes": 80,
+      "sha256": "bee4f4a76d459077b931dfa15d710d1b534755224bd02a3345e5fd6a5b39c780"
+    },
+    {
+      "artifact": "raw/T3137-request.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3137-request.json",
+      "bytes": 189,
+      "sha256": "6073dc6a208d4f33366b0d206ea952e531268b5a4884caf264e35ff14982229f"
+    },
+    {
+      "artifact": "raw/T3137.log.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3137.log",
+      "bytes": 3080,
+      "sha256": "a6f699bf4890d86c46a6d528b27aaf6dff57330774ed042bb8e5582c76910cf2"
+    },
+    {
+      "artifact": "raw/T3138-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3138-observation.json",
+      "bytes": 53,
+      "sha256": "a73240374674fa2483de1d4faa17e5352dfce8ad36a277cb1e3e0567f6c4c58f"
+    },
+    {
+      "artifact": "raw/T3138-prompt.txt.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3138-prompt.txt",
+      "bytes": 683,
+      "sha256": "a536be7e27b3a496bfdb32774eae0e76fe89038ec582476020686721fef3997d"
+    },
+    {
+      "artifact": "raw/T3138-request.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3138-request.json",
+      "bytes": 792,
+      "sha256": "bbbe1ad6c7db6ba9eaa2efa6e4493d2c096cc348c5850662accc05b592f9feae"
+    },
+    {
+      "artifact": "raw/T3138.log.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3138.log",
+      "bytes": 1237,
+      "sha256": "e584f4c084d3eb458f5b7496d9c28f21afa9af33d4872026bcfcec3eaf26b72e"
+    },
+    {
+      "artifact": "raw/history-reader-readonly-audit.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/history-reader-readonly-audit.json",
+      "bytes": 12059,
+      "sha256": "023502fbbee65f776ff7abf81db2a94e973278f515d110990eaf7fbc6493f55d"
+    },
+    {
+      "artifact": "raw/history-reader-next-finite-draft-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/history-reader-next-finite-draft-observation.json",
+      "bytes": 784,
+      "sha256": "56e8526915e50a8ad4cb62b3e06abbabec1fa65f1042104b8331c4290c5dec19"
+    },
+    {
+      "artifact": "raw/pure-history-helper-scratch-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/pure-history-helper-scratch-observation.json",
+      "bytes": 16941,
+      "sha256": "58f855b47b89801eb4151cf45113f241ea9fe6f1422a1c02b33d464d553eca1f"
+    },
+    {
+      "artifact": "raw/new-history-cases-actual-report.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/new-history-cases-actual-report.json",
+      "bytes": 296181,
+      "sha256": "5127320a5f9183be8b7ca1f3b80206fd269d0f4817b64b14152b677a421b4227"
+    },
+    {
+      "artifact": "raw/history-reader-inventory-initial.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/history-reader-inventory-initial.json",
+      "bytes": 244372,
+      "sha256": "1836a5cc25e43d41d4f6f3cb9c42cbb616e05af8bb8af0ae1cab3985f0d50a0b"
+    },
+    {
+      "artifact": "raw/additional-history-cases-actual-report.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/additional-history-cases-actual-report.json",
+      "bytes": 79786,
+      "sha256": "a68543ac5d587f813dc45abaf2868627ecb5adcada0c282cea24cf5ea8e9b2f2"
+    },
+    {
+      "artifact": "raw/history-bindings.draft.mjs.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/history-bindings.draft.mjs",
+      "bytes": 6444,
+      "sha256": "36faffd362a418faea659ede25c728c8868413a723a46ec7c76cf0df991953d8"
+    },
+    {
+      "artifact": "raw/history-programs.draft.mjs.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/history-programs.draft.mjs",
+      "bytes": 13174,
+      "sha256": "8c037b35842a10b443423b083878edc0d77ade56c4adc496bbc0b9c969aa20b0"
+    },
+    {
+      "artifact": "raw/history-values.draft.mjs.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/history-values.draft.mjs",
+      "bytes": 14155,
+      "sha256": "e10c2c49939b92dc0dcb4d81bde9b7943aba8fa00df8be9b86b28323c3bae7e4"
+    },
+    {
+      "artifact": "raw/history-tests.draft.mjs.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/history-tests.draft.mjs",
+      "bytes": 9245,
+      "sha256": "587c60d76c9d29211cf9920773cf8d0a594f6324c7131a38ef461e3ae4f33be1"
+    },
+    {
+      "artifact": "raw/archive-history-reader-production.mjs.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/archive-history-reader-production.mjs",
+      "bytes": 9095,
+      "sha256": "9fef0acaee0f5030b8d52743036b761256481b38c22bd0baef99f84fbf15bff4"
+    },
+    {
+      "artifact": "raw/audit-history-reader.mjs.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/audit-history-reader.mjs",
+      "bytes": 2010,
+      "sha256": "adb890064c3a1d93b0b324e42f16234c2e8f159a5d68b590925112c7d117863c"
+    },
+    {
+      "artifact": "raw/probe-pure-history-helper.mjs.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/probe-pure-history-helper.mjs",
+      "bytes": 3023,
+      "sha256": "626f5e465901b0f20de8ecee69b98aad8a53e6f68f843deea82a69dea1a10046"
+    },
+    {
+      "artifact": "raw/observe-new-history-cases.mjs.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/observe-new-history-cases.mjs",
+      "bytes": 1778,
+      "sha256": "4edbe52162b7a670db8642bffb2dbff185a05c9fb3ad30e5fcebe587400e0de8"
+    },
+    {
+      "artifact": "raw/observe-history-reader-inventory.mjs.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/observe-history-reader-inventory.mjs",
+      "bytes": 939,
+      "sha256": "077234efa9eca396bbebc3d2baa6520722898824acf462ecc77caad1d2079a8a"
+    },
+    {
+      "artifact": "raw/observe-additional-history-cases.mjs.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/observe-additional-history-cases.mjs",
+      "bytes": 1338,
+      "sha256": "d0e1775ae78568f1d6dd2c662212707761d1340a7a35473e2f30486290b4ec3d"
+    },
+    {
+      "artifact": "raw/seal-history-reader-scratch-plan.mjs.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/seal-history-reader-scratch-plan.mjs",
+      "bytes": 2687,
+      "sha256": "50a6bc72529cf8cfaf1b7868df137abe3da9a84c8b9686da2b673769ba9004c0"
+    },
+    {
+      "artifact": "raw/next-history-reader-plan.md.gz",
+      "origin": "FA scratch draft T3126 + T3128",
+      "bytes": 8305,
+      "sha256": "9df36f765597aed6f7b1171f1ed1641e3cdb5172f7ab0ac251fc7e119cc09bc3"
+    },
+    {
+      "artifact": "raw/preimage-rust-specification-programs.mjs.gz",
+      "origin": "8a28419aa24af814791a07adb6427f918fe8c4be:scripts/lib/rust-specification-programs.mjs",
+      "bytes": 13315,
+      "sha256": "60f7fdf8263f74c642210921f95766ad4e80422a65f3dd8e3e7a4297ef6a1925"
+    },
+    {
+      "artifact": "raw/preimage-rust-specification-values.mjs.gz",
+      "origin": "8a28419aa24af814791a07adb6427f918fe8c4be:scripts/lib/rust-specification-values.mjs",
+      "bytes": 13650,
+      "sha256": "ad966f5c1a91fb14c9856d6ca959a92439a907407e41c824bc8adf916d5c9878"
+    },
+    {
+      "artifact": "raw/native-rust-src-lib.rs.gz",
+      "origin": "rust/src/lib.rs",
+      "bytes": 27189,
+      "sha256": "a347856b9542ecb1583fcb9ababf453217afd2267234f380b42092c348f9b224"
+    },
+    {
+      "artifact": "raw/native-rust-src-solver.rs.gz",
+      "origin": "rust/src/solver.rs",
+      "bytes": 42196,
+      "sha256": "52f790f01ab21959e397fcffc78bc26cdb42335118f0728393e98ef9ba72f67b"
+    },
+    {
+      "artifact": "raw/native-rust-tests-unit-specification-conversation_history.rs.gz",
+      "origin": "rust/tests/unit/specification/conversation_history.rs",
+      "bytes": 16653,
+      "sha256": "6f096176589fb1b2304047ae392df8906154727a89205690ab5ee235028857b5"
+    },
+    {
+      "artifact": "raw/native-rust-tests-unit-specification-reasoning_paths.rs.gz",
+      "origin": "rust/tests/unit/specification/reasoning_paths.rs",
+      "bytes": 30883,
+      "sha256": "a43cd504d78034884ecdf152cc074d7bb9846ee38c3f32463cd7a6af65cc23f3"
+    },
+    {
+      "artifact": "raw/native-rust-tests-unit-specification-reasoning_paths_procedures.rs.gz",
+      "origin": "rust/tests/unit/specification/reasoning_paths_procedures.rs",
+      "bytes": 40278,
+      "sha256": "a57f3186cd1a163913de5f028f125219258e80a8aa22af095431425137fc1b0e"
+    },
+    {
+      "artifact": "raw/T3139-request.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3139-request.json",
+      "bytes": 190,
+      "sha256": "8b162f50358aa9d0f85f46bce1dae0a61f5a8cb884b91ea2e1582a4e96b95f02"
+    },
+    {
+      "artifact": "raw/T3139.log.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3139.log",
+      "bytes": 960,
+      "sha256": "0af436e2152f7e7cc8610a39bd9591ce49bd39e81547da119ac205e8a2e43678"
+    },
+    {
+      "artifact": "raw/T3139-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3139-observation.json",
+      "bytes": 53,
+      "sha256": "dd9bf21c4792eb7b878cf72af5d183a4ec030895099f3adcb5315638edabe588"
+    },
+    {
+      "artifact": "raw/seal-history-reader-production.mjs.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/seal-history-reader-production.mjs",
+      "bytes": 2122,
+      "sha256": "f562ebf57c233bb109c3d6a30c44896e598f7ff0baa9365fb00098b845d29c45"
+    }
+  ]
+}
