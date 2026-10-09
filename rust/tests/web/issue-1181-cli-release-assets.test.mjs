@@ -8,8 +8,8 @@
 //   R1181-2  the job's own "Package the CLI archive" and "Smoke test CLI
 //            archive" step scripts, executed with a stand-in binary, produce
 //            `formal-ai-cli-<triple>.tar.gz` holding `formal-ai`, LICENSE and
-//            README.md under `formal-ai-cli-<triple>/`, built by the pinned
-//            `--locked` command.
+//            README.md under `formal-ai-cli-<triple>/`, bound to shared producer receipts from the pinned
+//            `--locked` command; the fixture makes no native compile claim.
 //   R1181-3  `finalize` waits for `cli`, and its manifest step, executed on the
 //            fragments, puts the CLI archive in SHA256SUMS.txt and reports the
 //            legs that produced nothing as INCOMPLETE.
@@ -29,6 +29,10 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
+import { cliArchiveFixture } from "../fixtures/native-release-evidence/cli-archive.mjs";
+import { createEvidenceFixture, materializePublishedFixture } from "../fixtures/native-release-evidence/observations.mjs";
+import { collectReleaseEvidence, prepareReleaseEvidence } from "../../../scripts/native-release-evidence.mjs";
+import { verifyArchivedExecutable } from "../../../scripts/native-release-artifact.mjs";
 
 const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
 const read = (relative) => readFileSync(path.join(REPO_ROOT, relative), "utf8");
@@ -84,7 +88,10 @@ test("R1181-1: the cli job builds the five requested targets and uploads to the 
     assert.ok(leg.label.startsWith("cli-"), `${leg.target} label is cli-prefixed`);
   }
   const cli = job("cli");
-  assert.match(cli, /needs: \[resolve, base\]/);
+  assert.match(cli, /needs: \[resolve, native-source, native\]/);
+  const producer = job("native");
+  for (const target of REQUESTED_TARGETS) assert.ok(producer.includes(`target: ${target},`), `${target} has a shared producer`);
+  assert.match(cli, /native-release-artifact\.mjs" verify native-bin native-source/u);
   assert.match(cli, /gh release upload "\$TAG" "formal-ai-cli-\$\{\{ matrix\.target \}\}\.\$\{\{ matrix\.archive \}\}"/);
   assert.match(cli, /TAG: \$\{\{ needs\.resolve\.outputs\.tag \}\}/);
   assert.match(cli, /contents: write/);
@@ -92,24 +99,26 @@ test("R1181-1: the cli job builds the five requested targets and uploads to the 
 
 test("R1181-2: the package and smoke-test steps build the archive layout from the pinned command", () => {
   const cli = job("cli");
-  assert.match(cli, /cargo build --manifest-path rust\/Cargo\.toml --target-dir target --release --bin formal-ai --locked --target \$\{\{ matrix\.target \}\}/);
+  assert.match(job("native"), /cargo build --manifest-path rust\/Cargo\.toml --target-dir target --release --bin formal-ai --locked --target \$\{\{ matrix\.target \}\}/);
+  assert.doesNotMatch(cli, /run: cargo build/u);
+  assert.match(cli, /cp "\$FORMAL_AI_VERIFIED_NATIVE_BINARY"/u);
   const leg = cliLegs().find((entry) => entry.archive === "tar.gz");
   const dir = scratch();
   try {
-    const binary = path.join(dir, "target", leg.target, "release", "formal-ai");
-    mkdirSync(path.dirname(binary), { recursive: true });
-    writeFileSync(binary, "#!/bin/sh\necho 'formal-ai 9.9.9'\n");
-    chmodSync(binary, 0o755);
-    writeFileSync(path.join(dir, "LICENSE"), "license text\n");
-    writeFileSync(path.join(dir, "README.md"), "# formal-ai\n");
-    bash(stepScript(cli, "Package the CLI archive", leg), { cwd: dir });
+    const fixture = cliArchiveFixture(dir, leg.target);
+    bash(stepScript(cli, "Package the CLI archive", leg), { cwd: dir, env: fixture.environment });
     const archive = `formal-ai-cli-${leg.target}.tar.gz`;
     const listing = bash(`tar -tzf ${archive}`, { cwd: dir }).split("\n").filter(Boolean).map((entry) => entry.replace(/\/$/, ""));
     for (const entry of ["formal-ai", "LICENSE", "README.md"]) {
       assert.ok(listing.includes(`formal-ai-cli-${leg.target}/${entry}`), `${archive} holds ${entry}: ${listing}`);
     }
-    const smoke = bash(stepScript(cli, "Smoke test CLI archive", leg), { cwd: dir });
+    const smoke = bash(stepScript(cli, "Smoke test CLI archive", leg), { cwd: dir, env: fixture.environment });
     assert.match(smoke, /formal-ai 9\.9\.9/);
+    const extracted = path.join(dir, `smoke-${leg.target}`, `formal-ai-cli-${leg.target}`, "formal-ai");
+    assert.deepEqual(readFileSync(extracted), readFileSync(fixture.binary), "archive preserves every verified executable byte");
+    assert.equal(verifyArchivedExecutable(extracted, fixture.receipt), extracted);
+    writeFileSync(extracted, "different executable bytes\n");
+    assert.throws(() => verifyArchivedExecutable(extracted, fixture.receipt), "substituted extracted bytes must fail");
     bash(stepScript(cli, "Collect CLI checksum fragment", leg), { cwd: dir });
     assert.match(readFileSync(path.join(dir, `SHA256SUMS-${leg.label}.partial`), "utf8"), new RegExp(`^[0-9a-f]{64}  ${archive}\\n$`));
   } finally {
@@ -135,11 +144,19 @@ test("R1181-3: finalize consolidates the CLI fragments and reports missing legs 
     writeFileSync(path.join(dir, "bin", "gh"), "#!/bin/sh\necho 0123abcd\n");
     chmodSync(path.join(dir, "bin", "gh"), 0o755);
     writeFileSync(path.join(dir, "output"), "");
+    const evidenceFixture = createEvidenceFixture({version: "9.9.9"});
+    const evidence = prepareReleaseEvidence(path.join(dir, "release-evidence"), collectReleaseEvidence(evidenceFixture));
+    assert.equal(evidence.complete, true, "canonical typed fixture is complete");
     bash(script, {
       cwd: dir,
-      env: { PATH: `${path.join(dir, "bin")}:${process.env.PATH}`, GH_TOKEN: "x", REPO: "o/r", TAG: "v9.9.9", RUN_URL: "u", GITHUB_OUTPUT: path.join(dir, "output") },
+      env: { ...process.env, PATH: `${path.join(dir, "bin")}:${process.env.PATH}`, GH_TOKEN: "x", REPO: "o/r", TAG: "v9.9.9", RUN_URL: "u", GITHUB_OUTPUT: path.join(dir, "output"),
+        NATIVE_SOURCE_COMMIT: evidenceFixture.source.source_commit, NATIVE_SOURCE_TREE: evidenceFixture.source.source_tree,
+        NATIVE_SELECTION_SHA256: evidenceFixture.bindings.sourceSha256, NATIVE_COMPILER_RELEASE: evidenceFixture.source.compiler_release,
+        NATIVE_COMPILER_COMMIT: evidenceFixture.source.compiler_commit, EVIDENCE_INCOMPLETE: "" },
     });
-    assert.equal(readFileSync(path.join(dir, "SHA256SUMS.txt"), "utf8"), line);
+    const evidenceLines = readFileSync(path.join(dir, "release-evidence", "SHA256SUMS-evidence.partial"), "utf8").trim().split("\n");
+    const expectedLines = [line.trim(), ...evidenceLines].sort((left, right) => left.split("  ")[1].localeCompare(right.split("  ")[1], "en"));
+    assert.equal(readFileSync(path.join(dir, "SHA256SUMS.txt"), "utf8"), expectedLines.join("\n") + "\n");
     const provenance = readFileSync(path.join(dir, "BUILD-PROVENANCE.txt"), "utf8");
     assert.match(provenance, new RegExp(`${leg.os} \\(${leg.label}\\)`));
     assert.match(provenance, /INCOMPLETE : no artifacts from: .*cli-/);
@@ -153,41 +170,47 @@ test("R1181-1: the release resolver builds a release that lacks the CLI archives
   const dir = scratch();
   try {
     mkdirSync(path.join(dir, "bin"));
-    writeFileSync(path.join(dir, "bin", "gh"), `#!/usr/bin/env bash
-case "$1 $2" in
-  "api "*) case "$2" in *"/commits/"*) echo parenthead ;; esac ;;
-  "release view")
-    case "$*" in
-      *"--json assets"*) printf '%s\\n' "$MOCK_ASSET_NAMES" | sed '/^$/d' ;;
-      *"--json tagName"*) [ -n "$3" ] && [ "\${3#--}" = "$3" ] && echo '{}' && exit 0; echo v0.9.0 ;;
-      *) echo v0.9.0 ;;
-    esac ;;
-esac
-exit 0
-`);
-    chmodSync(path.join(dir, "bin", "gh"), 0o755);
-    const desktop = bash(`source <(sed -n '/^expected_desktop_assets() {/,/^}/p' scripts/desktop-release-resolve.sh); expected_cli_assets() { :; }; expected_desktop_assets 0.9.0`, { cwd: REPO_ROOT }).trim();
-    const cli = cliLegs().map((leg) => `formal-ai-cli-${leg.target}.${leg.archive}`).join("\n");
+    const published = path.join(dir, "published");
+    const head = "a".repeat(40), commit = "b".repeat(40), tree = "d".repeat(40);
+    const mock = "#!/usr/bin/env node\n" + "const fixture=" + JSON.stringify({published,head,commit,tree}) + ";\n" + String.raw`
+const fs=require('node:fs'),path=require('node:path');
+const args=process.argv.slice(2), endpoint=args[1]??'';
+const write=value=>process.stdout.write(String(value)+'\n');
+if(args[0]==='api') {
+ if(endpoint.includes('/tags?'))write('');
+ else if(endpoint.includes('/commits/'))write(args.at(-1)==='.parents[0].sha'?fixture.head:args.at(-1)==='.commit.tree.sha'?fixture.tree:fixture.commit);
+ else if(endpoint.includes('/releases/tags/'))write(fs.readFileSync(path.join(fixture.published,'release-assets.json'),'utf8'));
+ else process.exit(2);
+} else if(args[0]==='release'&&args[1]==='view') {
+ if(args.includes('assets'))write(process.env.MOCK_ASSET_NAMES??'');
+ else write(args[2]?.startsWith('--')?'v0.9.0':'{}');
+} else if(args[0]==='release'&&args[1]==='download') {
+ const destination=args[args.indexOf('--dir')+1];fs.mkdirSync(destination,{recursive:true});
+ for(const name of fs.readdirSync(fixture.published))fs.copyFileSync(path.join(fixture.published,name),path.join(destination,name));
+} else if(args[0]==='attestation'&&args[1]==='verify') {
+ // Explicit fixture attestation response, not an actual GitHub signing claim.
+} else process.exit(2);
+`;
+    writeFileSync(path.join(dir, "bin", "gh"), mock);chmodSync(path.join(dir, "bin", "gh"), 0o755);
+    const names = bash(`source <(sed -n '/^expected_.*() {/,/^}/p' scripts/desktop-release-resolve.sh); DESKTOP_RELEASE_WORKFLOW=.github/workflows/desktop-release.yml; expected_desktop_assets 0.9.0`, {cwd: REPO_ROOT}).trim().split("\n");
+    const cli = new Set(cliLegs().map((leg) => `formal-ai-cli-${leg.target}.${leg.archive}`));
     const resolve = (assets) => {
-      const output = path.join(dir, "output");
-      writeFileSync(output, "");
-      spawnSync("bash", [path.join(REPO_ROOT, "scripts", "desktop-release-resolve.sh")], {
-        env: {
-          PATH: `${path.join(dir, "bin")}:${process.env.PATH}`,
-          EVENT: "workflow_run", WORKFLOW_RUN_HEAD_SHA: "parenthead", REPO: "o/r", GH_TOKEN: "x",
-          GITHUB_OUTPUT: output, MOCK_ASSET_NAMES: assets,
-        },
-        encoding: "utf8",
+      rmSync(published, {recursive: true, force: true});
+      materializePublishedFixture(published, {version: "0.9.0", sourceCommit: commit, sourceTree: tree, expectedAssets: assets});
+      const output = path.join(dir, "output");writeFileSync(output, "");
+      const result = spawnSync("bash", [path.join(REPO_ROOT, "scripts", "desktop-release-resolve.sh")], {
+        env: {...process.env, PATH: `${path.join(dir, "bin")}:${process.env.PATH}`, EVENT: "workflow_run", WORKFLOW_RUN_HEAD_SHA: head,
+          REPO: "o/r", GH_TOKEN: "x", GITHUB_OUTPUT: output, MOCK_ASSET_NAMES: assets.join("\n")}, encoding: "utf8",
       });
+      assert.equal(result.status, 0, result.stderr);
       return readFileSync(output, "utf8").match(/^should_build=(.*)$/m)?.[1];
     };
-    assert.equal(resolve(`${desktop}\n${cli}`), "false", "a complete release is not rebuilt");
-    assert.equal(resolve(desktop), "true", "a release without the CLI archives is rebuilt");
+    assert.equal(resolve(names), "false", "a complete release with verified durable observations is not rebuilt");
+    assert.equal(resolve(names.filter((name) => !cli.has(name))), "true", "a release without the CLI archives is rebuilt");
   } finally {
-    rmSync(dir, { recursive: true, force: true });
+    rmSync(dir, {recursive: true, force: true});
   }
 });
-
 test("R1181-4: cargo binstall resolves the archive and path the workflow produces", () => {
   const cargo = read("rust/Cargo.toml");
   const section = (header) => {
@@ -265,13 +288,8 @@ function releaseJson(names) {
 function packagedArchive(dir) {
   const leg = cliLegs().find((entry) => entry.target === "x86_64-unknown-linux-musl");
   const work = path.join(dir, "work");
-  const binary = path.join(work, "target", leg.target, "release", "formal-ai");
-  mkdirSync(path.dirname(binary), { recursive: true });
-  writeFileSync(binary, "#!/bin/sh\necho 'formal-ai 9.9.9'\n");
-  chmodSync(binary, 0o755);
-  writeFileSync(path.join(work, "LICENSE"), "license\n");
-  writeFileSync(path.join(work, "README.md"), "readme\n");
-  bash(stepScript(job("cli"), "Package the CLI archive", leg), { cwd: work });
+  const fixture = cliArchiveFixture(work, leg.target);
+  bash(stepScript(job("cli"), "Package the CLI archive", leg), { cwd: work, env: fixture.environment });
   bash(stepScript(job("cli"), "Collect CLI checksum fragment", leg), { cwd: work });
   return {
     archive: path.join(work, `formal-ai-cli-${leg.target}.tar.gz`),
