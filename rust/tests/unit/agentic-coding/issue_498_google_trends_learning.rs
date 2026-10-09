@@ -184,7 +184,17 @@ fn committed_agent_cli_session_matches_a_fresh_google_trends_learning_run() {
     let committed = include_str!(
         "../../../../docs/case-studies/issue-498/agent-cli-session-google-trends-learning.json"
     );
-    let fresh = run_agentic_task(GOOGLE_TRENDS_LEARNING_TASK).expect("workspace");
+    let captured: serde_json::Value =
+        serde_json::from_str(committed).expect("captured session JSON");
+    let tools: Vec<&str> = captured["tools_advertised"]
+        .as_array()
+        .expect("captured tool schema")
+        .iter()
+        .map(|tool| tool.as_str().expect("captured tool name"))
+        .collect();
+    let fresh =
+        formal_ai::agentic_coding::run_agentic_task_with_tools(GOOGLE_TRENDS_LEARNING_TASK, &tools)
+            .expect("workspace under the captured tool schema");
     let rendered = format!(
         "{}\n",
         serde_json::to_string_pretty(&fresh.session_json()).unwrap()
