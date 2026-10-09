@@ -1,0 +1,754 @@
+{
+  "cutoff": "T4078",
+  "officialSource": "0f701bd8d4bc7a525fccc8d5c9a8fd0d4b340c84",
+  "oldPacketBytesPreserved": true,
+  "autonomousCredit": 0,
+  "nativeExecution": false,
+  "sourceHashes": [
+    {
+      "path": "/Users/konard/Code/Archive/link-assistant/formal-ai/.github/workflows/native-response-observations.yml",
+      "sha256": "847be00eeec4e70953272a6c6d53f82628aafcedfcf3eb2356ab8099a6cc589c"
+    },
+    {
+      "path": "/Users/konard/Code/Archive/link-assistant/formal-ai/.github/workflows/release.yml",
+      "sha256": "3859efb48e6aacca841450ab8686ac00a1f0c4dff488a394e9047e970429f8a8"
+    },
+    {
+      "path": "/Users/konard/Code/Archive/link-assistant/formal-ai/scripts/release-image-factory.mjs",
+      "sha256": "3518b33ca657e710fe5f6c34b64dc7e725412eddc24c5d3724128ba2367f66f9"
+    },
+    {
+      "path": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/native-workflow-cache-bindings.test.mjs",
+      "sha256": "fe993a3ca09b446e71ad16103dd9be6166e1c657a052e9e97981ef728aa800a0"
+    },
+    {
+      "path": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/unit/specification/debug_session.rs",
+      "sha256": "9640adb9f4067f2be3f0ce82ffca53eac400769fa997bb435cac95174bbcea97"
+    },
+    {
+      "path": "/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/server-debug-session.test.mjs",
+      "sha256": "f2a44ab580db147e85047347bf45eec7b432ef3ba7e20654dd2458f14d8710e6"
+    }
+  ],
+  "audit": [
+    {
+      "packet": "docker-429-0f701",
+      "selectionPath": "experiments/formal_ai_subagent/evidence/ci-1188/docker-429-0f701/evidence-selection.json",
+      "selectionSHA256": "b3e7f9d4861605ef9fe3e72f0f0e0754e90df5a1f080f367256f0b7f10403dee",
+      "expectedTaskIdentities": [
+        4041,
+        4042,
+        4043,
+        4044
+      ],
+      "actualSelectedTaskIdentities": [
+        4041,
+        4042,
+        4043,
+        4044
+      ],
+      "missing": [],
+      "oldBytesPreserved": true,
+      "completeness": "PASS"
+    },
+    {
+      "packet": "offline-wording-0f701",
+      "selectionPath": "experiments/formal_ai_subagent/evidence/ci-1188/offline-wording-0f701/evidence-selection.json",
+      "selectionSHA256": "bbe46747c8d7231b10f2b1c2b10d54e70744994264389f4e52949a32840b00f7",
+      "expectedTaskIdentities": [
+        4046,
+        4047,
+        4048,
+        4049,
+        4050
+      ],
+      "actualSelectedTaskIdentities": [
+        4046,
+        4047,
+        4048,
+        4049,
+        4050
+      ],
+      "missing": [],
+      "oldBytesPreserved": true,
+      "completeness": "PASS"
+    },
+    {
+      "packet": "typed-delivery-0f701",
+      "selectionPath": "experiments/formal_ai_subagent/evidence/ci-1188/typed-delivery-0f701/evidence-selection.json",
+      "selectionSHA256": "ad5f2e3befbe1fc19d999b322a4d5ed2119b81b9db17531ffeff021382701dd0",
+      "expectedTaskIdentities": [
+        4052,
+        4053,
+        4054,
+        4055,
+        4056,
+        4057,
+        4059,
+        4060
+      ],
+      "actualSelectedTaskIdentities": [
+        4052,
+        4053,
+        4054,
+        4055,
+        4056,
+        4057,
+        4059,
+        4060
+      ],
+      "missing": [],
+      "oldBytesPreserved": true,
+      "completeness": "PASS"
+    },
+    {
+      "packet": "native-literal-clippy-0f701",
+      "selectionPath": "experiments/formal_ai_subagent/evidence/ci-1188/native-literal-clippy-0f701/evidence-selection.json",
+      "selectionSHA256": "ab23986b95077344384a7fd7acd27a7e1c3cb2692dbad3865adc00aa825680f3",
+      "expectedTaskIdentities": [
+        4062,
+        4063,
+        4064,
+        4065
+      ],
+      "actualSelectedTaskIdentities": [
+        4062,
+        4063,
+        4064,
+        4065
+      ],
+      "missing": [],
+      "oldBytesPreserved": true,
+      "completeness": "PASS"
+    },
+    {
+      "packet": "clippy-nine-89d1",
+      "selectionPath": "experiments/formal_ai_subagent/evidence/ci-1188/clippy-nine-89d1/evidence-selection.json",
+      "selectionSHA256": "b903ca80a940e607490f7209080e0b07c3e17c267997f3ec7c0f8f300abba9ab",
+      "expectedTaskIdentities": [
+        4023,
+        4024,
+        4025,
+        4026
+      ],
+      "actualSelectedTaskIdentities": [
+        4023,
+        4024,
+        4025,
+        4026
+      ],
+      "missing": [],
+      "oldBytesPreserved": true,
+      "completeness": "PASS"
+    },
+    {
+      "packet": "fetch-notice-89d1",
+      "selectionPath": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-notice-89d1/evidence-selection.json",
+      "selectionSHA256": "15f36e54b0386d69b4ab748170efae4d3c5189c4ef69ed5d7ca3004c3c20c49d",
+      "expectedTaskIdentities": [
+        4031,
+        4032,
+        4033,
+        4034,
+        4035,
+        4036,
+        4037
+      ],
+      "actualSelectedTaskIdentities": [
+        4031,
+        4032,
+        4033,
+        4034,
+        4035,
+        4036,
+        4037
+      ],
+      "missing": [],
+      "oldBytesPreserved": true,
+      "completeness": "PASS"
+    },
+    {
+      "packet": "fetch-pattern-89d1",
+      "selectionPath": "experiments/formal_ai_subagent/evidence/ci-1188/fetch-pattern-89d1/evidence-selection.json",
+      "selectionSHA256": "34c4900cc4909278ac68062c2d58a980135ca204dfc8ba8747311e140e303414",
+      "expectedTaskIdentities": [
+        4039
+      ],
+      "actualSelectedTaskIdentities": [
+        4039
+      ],
+      "missing": [],
+      "oldBytesPreserved": true,
+      "completeness": "PASS"
+    },
+    {
+      "packet": "container-condition-89d1",
+      "selectionPath": "experiments/formal_ai_subagent/evidence/ci-1188/container-condition-89d1/evidence-selection.json",
+      "selectionSHA256": "be188e218df23bcbdcea9360332705ba442b62f7718215e4b47dc6c924320344",
+      "expectedTaskIdentities": [
+        4028,
+        4029
+      ],
+      "actualSelectedTaskIdentities": [
+        4028,
+        4029
+      ],
+      "missing": [],
+      "oldBytesPreserved": true,
+      "completeness": "PASS"
+    },
+    {
+      "packet": "native-workflow-bindings-0f701",
+      "selectionPath": "experiments/formal_ai_subagent/evidence/ci-1188/native-workflow-bindings-0f701/evidence-selection.json",
+      "selectionSHA256": "71c38794167a59d6aa520694684a7ad8aece161d595f1a2fd28a445c5d6b7eec",
+      "expectedTaskIdentities": [
+        4067,
+        4068,
+        4069,
+        4070
+      ],
+      "actualSelectedTaskIdentities": [
+        4062,
+        4063,
+        4064,
+        4065
+      ],
+      "missing": [
+        4067,
+        4068,
+        4069,
+        4070
+      ],
+      "oldBytesPreserved": true,
+      "completeness": "FAILED"
+    },
+    {
+      "packet": "debug-provenance-fixture-0f701",
+      "selectionPath": "experiments/formal_ai_subagent/evidence/ci-1188/debug-provenance-fixture-0f701/evidence-selection.json",
+      "selectionSHA256": "b08d2e80a8c15e7e659a61616f1ebaff93e2e4714430c9f8e1ed30677bacbc3a",
+      "expectedTaskIdentities": [
+        4072,
+        4073,
+        4074
+      ],
+      "actualSelectedTaskIdentities": [
+        4062,
+        4063,
+        4064,
+        4065
+      ],
+      "missing": [
+        4072,
+        4073,
+        4074
+      ],
+      "oldBytesPreserved": true,
+      "completeness": "FAILED"
+    }
+  ],
+  "outcomes": [
+    {
+      "task": 4067,
+      "ok": false,
+      "tools": [
+        "bash"
+      ],
+      "autonomousFailure": true,
+      "archiveToolOutcomePreserved": "not_archive"
+    },
+    {
+      "task": 4068,
+      "ok": true,
+      "tools": [
+        "bash"
+      ],
+      "autonomousFailure": false,
+      "archiveToolOutcomePreserved": "not_archive"
+    },
+    {
+      "task": 4069,
+      "ok": true,
+      "tools": [
+        "bash"
+      ],
+      "autonomousFailure": false,
+      "archiveToolOutcomePreserved": "not_archive"
+    },
+    {
+      "task": 4070,
+      "ok": true,
+      "tools": [
+        "bash"
+      ],
+      "autonomousFailure": false,
+      "archiveToolOutcomePreserved": "not_archive"
+    },
+    {
+      "task": 4071,
+      "ok": true,
+      "tools": [
+        "bash"
+      ],
+      "autonomousFailure": false,
+      "archiveToolOutcomePreserved": "PASS"
+    },
+    {
+      "task": 4072,
+      "ok": false,
+      "tools": [
+        "read"
+      ],
+      "autonomousFailure": true,
+      "archiveToolOutcomePreserved": "not_archive"
+    },
+    {
+      "task": 4073,
+      "ok": true,
+      "tools": [
+        "bash"
+      ],
+      "autonomousFailure": false,
+      "archiveToolOutcomePreserved": "not_archive"
+    },
+    {
+      "task": 4074,
+      "ok": true,
+      "tools": [
+        "bash"
+      ],
+      "autonomousFailure": false,
+      "archiveToolOutcomePreserved": "not_archive"
+    },
+    {
+      "task": 4075,
+      "ok": true,
+      "tools": [
+        "bash"
+      ],
+      "autonomousFailure": false,
+      "archiveToolOutcomePreserved": "PASS"
+    }
+  ],
+  "files": [
+    {
+      "task": 4067,
+      "source": "/private/tmp/pr1188-ci-T4067/T4067.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4067/T4067.log",
+      "bytes": 93,
+      "sha256": "50f907bbf16b8786342613eff5016c6b2bd29d1b77009c1d2de979e7ccf25689"
+    },
+    {
+      "task": 4067,
+      "source": "/private/tmp/pr1188-ci-T4067/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4067/drive-request.json",
+      "bytes": 1093,
+      "sha256": "b4429fd00eaafa197590682d5d7ea2f4b2cf413a7323d86cf1a87a885e0b4c87"
+    },
+    {
+      "task": 4067,
+      "source": "/private/tmp/pr1188-ci-T4067/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4067/drive.json",
+      "bytes": 25771,
+      "sha256": "29152fd282feccc1f618628ee1f0768ed4ec6b30588d21a1f005f40dab34421c"
+    },
+    {
+      "task": 4068,
+      "source": "/private/tmp/pr1188-ci-T4068/.github_workflows_native-response-observations.yml.before.txt",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4068/.github_workflows_native-response-observations.yml.before.txt",
+      "bytes": 2012,
+      "sha256": "6de05906904c8d8ed6de1e2fd81db6eca95b76e2d24320e590b8be3b3de8fe07"
+    },
+    {
+      "task": 4068,
+      "source": "/private/tmp/pr1188-ci-T4068/.github_workflows_release.yml.before.txt",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4068/.github_workflows_release.yml.before.txt",
+      "bytes": 66375,
+      "sha256": "f57b9dbb18f672729c4878abd1d8afecb96ca90427e20ae1259858953ea86253"
+    },
+    {
+      "task": 4068,
+      "source": "/private/tmp/pr1188-ci-T4068/T4068.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4068/T4068.log",
+      "bytes": 92,
+      "sha256": "c63a2249aa04907d711d87574d683718e16593e3e11f3eb5ff30272c89f3794c"
+    },
+    {
+      "task": 4068,
+      "source": "/private/tmp/pr1188-ci-T4068/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4068/drive-request.json",
+      "bytes": 143,
+      "sha256": "2e753fdd6a2c22c80b7b5aaba91ba2677e5c7cfbe65e17931dca0dfeb02d4f91"
+    },
+    {
+      "task": 4068,
+      "source": "/private/tmp/pr1188-ci-T4068/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4068/drive.json",
+      "bytes": 899,
+      "sha256": "ed376a707d3fa68993a43b1d0ca1ebf1ffd2fe91a2ed313f891a2b9eab4d5967"
+    },
+    {
+      "task": 4068,
+      "source": "/private/tmp/pr1188-ci-T4068/repair.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4068/repair.mjs",
+      "bytes": 852,
+      "sha256": "caba0cf76f7b819dba6333601a8496c16ca4036144afc99e7ef0614555794386"
+    },
+    {
+      "task": 4068,
+      "source": "/private/tmp/pr1188-ci-T4068/request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4068/request.json",
+      "bytes": 84328,
+      "sha256": "17844348e7b3e2f8dd7e88bfee5ccdf53ec2d440ea00362120be647e82731400"
+    },
+    {
+      "task": 4068,
+      "source": "/private/tmp/pr1188-ci-T4068/scripts_release-image-factory.mjs.before.txt",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4068/scripts_release-image-factory.mjs.before.txt",
+      "bytes": 11685,
+      "sha256": "e904f99046f06521b8beb491b131072a3141f862e808b7bfb4cf381902e5c1d6"
+    },
+    {
+      "task": 4069,
+      "source": "/private/tmp/pr1188-ci-T4069/T4069.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4069/T4069.log",
+      "bytes": 92,
+      "sha256": "0ae62469c0910743af59dbd39d3d358560f0c5cd943aa09bea448155a8cc00ea"
+    },
+    {
+      "task": 4069,
+      "source": "/private/tmp/pr1188-ci-T4069/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4069/drive-request.json",
+      "bytes": 140,
+      "sha256": "038100bd45edd4e7cbeb7e99a9d7557fe1429ff54b4efb03fd4a62481159cd12"
+    },
+    {
+      "task": 4069,
+      "source": "/private/tmp/pr1188-ci-T4069/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4069/drive.json",
+      "bytes": 805,
+      "sha256": "dd2d77208d962360da59f1998d8b069f63b1a8052bf43e40f4c58baf7f1c7678"
+    },
+    {
+      "task": 4069,
+      "source": "/private/tmp/pr1188-ci-T4069/first-controls.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4069/first-controls.log",
+      "bytes": 2519,
+      "sha256": "689339d4e0a439401fa593ecf8f2c13138334479c3b4b1381adb5ea9dac2e23b"
+    },
+    {
+      "task": 4069,
+      "source": "/private/tmp/pr1188-ci-T4069/repair.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4069/repair.mjs",
+      "bytes": 849,
+      "sha256": "d7729e1f13e20a203f66ceedb0ee50185876913155bccb7b06e82d57fd1ef3ac"
+    },
+    {
+      "task": 4069,
+      "source": "/private/tmp/pr1188-ci-T4069/request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4069/request.json",
+      "bytes": 13561,
+      "sha256": "ec83eb27e10baa3d7438eed224e812395b7d116beeae35b89fbc18ccaa7ce9e7"
+    },
+    {
+      "task": 4070,
+      "source": "/private/tmp/pr1188-ci-T4070/T4070.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4070/T4070.log",
+      "bytes": 92,
+      "sha256": "513adef61e3ee7f3877d5515d23ee4f573deb2d984fe13f20e8afd793e34195a"
+    },
+    {
+      "task": 4070,
+      "source": "/private/tmp/pr1188-ci-T4070/closest.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4070/closest.log",
+      "bytes": 6716,
+      "sha256": "a607e4a967b90356fb54d510cb4a4d81ea8f3e203d9209d03af16ab7da460688"
+    },
+    {
+      "task": 4070,
+      "source": "/private/tmp/pr1188-ci-T4070/debt.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4070/debt.log",
+      "bytes": 660,
+      "sha256": "cbf0bd58a03272ed0f36f9dc6751866c983c4839e2348eba2f5766414c3c769d"
+    },
+    {
+      "task": 4070,
+      "source": "/private/tmp/pr1188-ci-T4070/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4070/drive-request.json",
+      "bytes": 143,
+      "sha256": "b65dc109bfa6c1b2df884ed1140baee1461a7429a269fd643e8aa63ebfbe7dbb"
+    },
+    {
+      "task": 4070,
+      "source": "/private/tmp/pr1188-ci-T4070/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4070/drive.json",
+      "bytes": 727,
+      "sha256": "5816081c3fc27348cacd28feda87dbe356f8ac0df9b4123ec1318a22a9ca40c3"
+    },
+    {
+      "task": 4070,
+      "source": "/private/tmp/pr1188-ci-T4070/literal.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4070/literal.log",
+      "bytes": 1970,
+      "sha256": "96a1716838a30a09914a5511756277670c822e4a5892220bed589d189e879034"
+    },
+    {
+      "task": 4070,
+      "source": "/private/tmp/pr1188-ci-T4070/verify.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4070/verify.mjs",
+      "bytes": 2887,
+      "sha256": "34670d92e46217a26504173787251a46ae81ec8e5f787e769578b8491867cd51"
+    },
+    {
+      "task": 4070,
+      "source": "/private/tmp/pr1188-ci-T4070/whitespace.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4070/whitespace.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "task": 4070,
+      "source": "/private/tmp/pr1188-ci-T4070/workflow.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4070/workflow.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "task": 4071,
+      "source": "/private/tmp/pr1188-ci-T4071/T4071.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4071/T4071.log",
+      "bytes": 92,
+      "sha256": "5cd289392c08d39f3690e9dfe39a719b367139b001e44f6d558764f67fedbef0"
+    },
+    {
+      "task": 4071,
+      "source": "/private/tmp/pr1188-ci-T4071/archive.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4071/archive.mjs",
+      "bytes": 2506,
+      "sha256": "906fc7c0c1388583b5db5f3add918e5ec5a0733eb9649fee89f203a301de2b0e"
+    },
+    {
+      "task": 4071,
+      "source": "/private/tmp/pr1188-ci-T4071/commit-sha.txt",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4071/commit-sha.txt",
+      "bytes": 41,
+      "sha256": "b870bc6bab22deec3f7e0b999c5377157efb32a7293d3d5b6341ce8d3854ead8"
+    },
+    {
+      "task": 4071,
+      "source": "/private/tmp/pr1188-ci-T4071/commit.py",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4071/commit.py",
+      "bytes": 1442,
+      "sha256": "3dde86447a2b724c843e8a00048f8797301ecf7119c86d6da871d8206a6293bd"
+    },
+    {
+      "task": 4071,
+      "source": "/private/tmp/pr1188-ci-T4071/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4071/drive-request.json",
+      "bytes": 144,
+      "sha256": "c5c31784253528435e3edbfcc09075054c813bda8b00e0d4be1431e44e001620"
+    },
+    {
+      "task": 4071,
+      "source": "/private/tmp/pr1188-ci-T4071/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4071/drive.json",
+      "bytes": 730,
+      "sha256": "372df12d445a172f9ac0839a5804b6e3e16cb19311a03af6ed81070c533b1c84"
+    },
+    {
+      "task": 4071,
+      "source": "/private/tmp/pr1188-ci-T4071/evidence-selection.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4071/evidence-selection.json",
+      "bytes": 7717,
+      "sha256": "e79df026f08e3b59348da2bf43d4403cf4ec07203184fc0d8766d59ac4231807"
+    },
+    {
+      "task": 4071,
+      "source": "/private/tmp/pr1188-ci-T4071/source-hashes.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4071/source-hashes.json",
+      "bytes": 801,
+      "sha256": "60fc9777dae77dd3e4f81ccd7757ec2070b6a6c998b94ca5d7aa7c3ac765ae3f"
+    },
+    {
+      "task": 4072,
+      "source": "/private/tmp/pr1188-ci-T4072/T4072.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4072/T4072.log",
+      "bytes": 93,
+      "sha256": "ba7d7cf55c44a3bfe036f02caef83f28e840d3e6fcdd070d3064b230ceb02a81"
+    },
+    {
+      "task": 4072,
+      "source": "/private/tmp/pr1188-ci-T4072/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4072/drive-request.json",
+      "bytes": 892,
+      "sha256": "8f54eb5326d1b2c26256c8d924097f2590cfa3f65af8234296aa3055755db042"
+    },
+    {
+      "task": 4072,
+      "source": "/private/tmp/pr1188-ci-T4072/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4072/drive.json",
+      "bytes": 33460,
+      "sha256": "92f89f982305f9f7b5b722325f96dd1c3ab10996a8ee2328e8c5256ee70c1f22"
+    },
+    {
+      "task": 4073,
+      "source": "/private/tmp/pr1188-ci-T4073/T4073.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4073/T4073.log",
+      "bytes": 92,
+      "sha256": "798b5dc576be3b51ce3677e5a688ea8590f2d19a0a0703c02b6770799a4dba58"
+    },
+    {
+      "task": 4073,
+      "source": "/private/tmp/pr1188-ci-T4073/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4073/drive-request.json",
+      "bytes": 143,
+      "sha256": "f4f97b1d81ced0bece5989ec8c1252ab160d09b812d5ffece9313eb19462f6af"
+    },
+    {
+      "task": 4073,
+      "source": "/private/tmp/pr1188-ci-T4073/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4073/drive.json",
+      "bytes": 869,
+      "sha256": "dc2cfa7446a0601366e35ba8c82beeecd3a9eaff72c5416844ef641f402009bb"
+    },
+    {
+      "task": 4073,
+      "source": "/private/tmp/pr1188-ci-T4073/repair.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4073/repair.mjs",
+      "bytes": 852,
+      "sha256": "aa067cd214effd038927dde1e72337714ef089af7523d1740cb0d8d9708331dd"
+    },
+    {
+      "task": 4073,
+      "source": "/private/tmp/pr1188-ci-T4073/request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4073/request.json",
+      "bytes": 57872,
+      "sha256": "c73294b35dd2a495d57d9d3648e6f9ead05f8ee76119de6432b5abf6a4c57a95"
+    },
+    {
+      "task": 4073,
+      "source": "/private/tmp/pr1188-ci-T4073/rust_tests_unit_specification_debug_session.rs.before.txt",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4073/rust_tests_unit_specification_debug_session.rs.before.txt",
+      "bytes": 30030,
+      "sha256": "38d3862c824b13e6f6c28039e171cc3534f0df1a758136cb7eb2d52a99435c74"
+    },
+    {
+      "task": 4073,
+      "source": "/private/tmp/pr1188-ci-T4073/rust_tests_web_server-debug-session.test.mjs.before.txt",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4073/rust_tests_web_server-debug-session.test.mjs.before.txt",
+      "bytes": 22929,
+      "sha256": "8791842d960ff58b4ff54781ced00d4f0ecbd6ed2456b9cff4dcd7ff07bcb93e"
+    },
+    {
+      "task": 4074,
+      "source": "/private/tmp/pr1188-ci-T4074/T4074.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4074/T4074.log",
+      "bytes": 92,
+      "sha256": "9e1e52ba1d0370cb1c94eb42f3ee16a0022488b2b54b085508471daee3a376a3"
+    },
+    {
+      "task": 4074,
+      "source": "/private/tmp/pr1188-ci-T4074/closest.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4074/closest.log",
+      "bytes": 9128,
+      "sha256": "1f58d48feb50fd0982c58ad8616717d66aa19895fceb8e4046a5fed310a28740"
+    },
+    {
+      "task": 4074,
+      "source": "/private/tmp/pr1188-ci-T4074/debt.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4074/debt.log",
+      "bytes": 660,
+      "sha256": "cbf0bd58a03272ed0f36f9dc6751866c983c4839e2348eba2f5766414c3c769d"
+    },
+    {
+      "task": 4074,
+      "source": "/private/tmp/pr1188-ci-T4074/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4074/drive-request.json",
+      "bytes": 135,
+      "sha256": "fff376054d2dd890dff6fbfe04b4e315694b58c156cc33e0118a9636ebff6eae"
+    },
+    {
+      "task": 4074,
+      "source": "/private/tmp/pr1188-ci-T4074/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4074/drive.json",
+      "bytes": 711,
+      "sha256": "ccb163c6868713c65dd7b7bee1d99fc9af6964c7cb5129acb0176ee2a8b0b648"
+    },
+    {
+      "task": 4074,
+      "source": "/private/tmp/pr1188-ci-T4074/format.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4074/format.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "task": 4074,
+      "source": "/private/tmp/pr1188-ci-T4074/source-hashes.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4074/source-hashes.json",
+      "bytes": 409,
+      "sha256": "127f1bfb851ce40d617ccd17efce3ea65db3e71b03c349b7d5c45ac53b333f42"
+    },
+    {
+      "task": 4074,
+      "source": "/private/tmp/pr1188-ci-T4074/verify.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4074/verify.mjs",
+      "bytes": 1927,
+      "sha256": "a14724530e12e5e3d95c4904464f6228d1473e4bc83498d54e56ae416f585dd0"
+    },
+    {
+      "task": 4074,
+      "source": "/private/tmp/pr1188-ci-T4074/whitespace.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4074/whitespace.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "task": 4075,
+      "source": "/private/tmp/pr1188-ci-T4075/T4075.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4075/T4075.log",
+      "bytes": 92,
+      "sha256": "d2b2cc93c2b2d70b7379c39f0e59f91b5a29c7a95b2c3600ebb95587878c9bb8"
+    },
+    {
+      "task": 4075,
+      "source": "/private/tmp/pr1188-ci-T4075/archive.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4075/archive.mjs",
+      "bytes": 2228,
+      "sha256": "aabd54a7e2ce05d7d5581da2d5fa5ffbbca9643b569f9fa69f6ac58407d039d2"
+    },
+    {
+      "task": 4075,
+      "source": "/private/tmp/pr1188-ci-T4075/commit-sha.txt",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4075/commit-sha.txt",
+      "bytes": 41,
+      "sha256": "c9dea22cddd53ba5f37381820afb8b0e8c5429e200d2a8976c67f444fbdeabc2"
+    },
+    {
+      "task": 4075,
+      "source": "/private/tmp/pr1188-ci-T4075/commit.py",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4075/commit.py",
+      "bytes": 1364,
+      "sha256": "536535759bdce59517eae3587d12f46fd280a4bb15e061f6f73ac22153221779"
+    },
+    {
+      "task": 4075,
+      "source": "/private/tmp/pr1188-ci-T4075/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4075/drive-request.json",
+      "bytes": 136,
+      "sha256": "70e08f06751671b3420f0316911ddcf593c8c514d4812846601da581e4394e23"
+    },
+    {
+      "task": 4075,
+      "source": "/private/tmp/pr1188-ci-T4075/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4075/drive.json",
+      "bytes": 714,
+      "sha256": "dc529f82ec6c959cd9af66bf71ec23affef469cbd28fba2ae04b1c87cf8bf737"
+    },
+    {
+      "task": 4075,
+      "source": "/private/tmp/pr1188-ci-T4075/evidence-selection.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/T4075/evidence-selection.json",
+      "bytes": 7704,
+      "sha256": "86d7d8c58bfa21831fd013dafb750faf5f2725faee3ef210dbba9c199618ba4a"
+    }
+  ]
+}
