@@ -1272,6 +1272,16 @@ jobs:
         run: bash scripts/collect-build-artifacts.sh
       - name: Bind native test artifacts to their actual build inputs
         run: node scripts/native-test-artifact.mjs write dist/tests release all
+      - name: Capture complete current native agentic protocols
+        timeout-minutes: 5
+        run: node scripts/capture-native-agentic-protocol.mjs "$RUNNER_TEMP/native-agentic-protocol-captures" dist/formal-ai
+      - name: Upload actual native agentic protocol captures
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: native-agentic-protocol-captures
+          path: ${{ runner.temp }}/native-agentic-protocol-captures
+          retention-days: 3
       - name: Upload formal-ai binaries
         uses: actions/upload-artifact@v7
         with:
