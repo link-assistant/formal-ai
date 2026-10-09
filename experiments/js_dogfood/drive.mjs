@@ -16,7 +16,7 @@
 // server's dialog log: `read` returns the numbered `<file>` block, `write` and
 // `edit` return an empty string, `bash` returns stdout+stderr.
 
-import { execFileSync } from 'node:child_process';
+import { shellCapture } from './shell-capture.mjs';
 import { grepCapture } from './grep-capture.mjs';
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync, writeSync } from 'node:fs';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
@@ -123,20 +123,7 @@ export function execute(dir, call) {
           commandDirectory = eventDirectory;
         }
         try {
-          const output = execFileSync('/bin/sh', ['-c', args.command], { cwd: commandDirectory, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: BASH_TIMEOUT_MS });
-          return 'Output: ' + output + '\nExit Code: 0';
-        } catch (error) {
-          // A call killed at the timeout reports the kill, never an exit code:
-          // a killed `node --test` exits 1 on SIGTERM, which is not the
-          // command's own failure (PR #1188 G77).
-          if (error.code === 'ETIMEDOUT' || (error.signal && typeof error.status !== 'number')) {
-            const timeout = error.code === 'ETIMEDOUT' ? `\nTimeout: ${BASH_TIMEOUT_MS} ms` : '';
-            return `Output: ${error.stdout ?? ''}\nError: ${error.stderr ?? ''}\nSignal: ${error.signal ?? 'SIGTERM'}${timeout}`;
-          }
-          // A failing command reports its exit code the way the Agent CLI's
-          // shell envelope does, so a recipe's failed precondition blocks it.
-          if (typeof error.status !== 'number') return `${error.stdout ?? ''}${error.stderr ?? ''}`;
-          return `Output: ${error.stdout ?? ''}\nError: ${error.stderr ?? ''}\nExit Code: ${error.status}`;
+          return shellCapture(args.command, {cwd:commandDirectory, timeoutMs:BASH_TIMEOUT_MS});
         } finally {
           if (eventDirectory !== null) rmSync(eventDirectory, { recursive: true, force: true });
         }
