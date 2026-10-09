@@ -1,0 +1,20 @@
+(node:97476) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("/private/tmp/pr1188-policy-boot-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker_tool_execution_policy.js:13
+  ]);
+   ^
+
+SyntaxError: missing ) after argument list
+    at new Script (node:vm:117:7)
+    at loadBrowserScript (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:161:3)
+    at context.importScripts (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:221:7)
+    at importScripts (/Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker.js:41:32)
+    at /Users/konard/Code/Archive/link-assistant/formal-ai/js/worker/formal_ai_worker.js:87:3
+    at Script.runInContext (node:vm:149:12)
+    at loadBrowserScript (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:161:49)
+    at createWorkerContext (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:227:3)
+    at WorkerHost.boot (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/server/worker-host.mjs:268:22)
+    at installNodeHost (file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/node-host.mjs:121:32)
+
+Node.js v20.19.4

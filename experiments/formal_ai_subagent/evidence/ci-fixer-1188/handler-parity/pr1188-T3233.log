@@ -1,0 +1,116 @@
+>> bash {"command":"node /private/tmp/spec-recurrence-1188/observe-production-reader.mjs"}
+   Output: {
+     "summary": {
+       "nativeTotal": 1178,
+       "legacyCases": 136,
+       "legacyPassed": 136,
+       "typedCases": 44,
+       "typedPassed": 44,
+       "carried": 180,
+       "passed": 180,
+       "unsupported": 998,
+       "typedStaticAssertions": 169,
+       "typedExecutedAssertions": 245,
+       "priorNineUnknownRuntime": [
+         {
+           "id": "rust/tests/unit/specification/chat_surface.rs::links_notation_trace_is_present_for_every_answer",
+           "carried": false
+         },
+         {
+           "id": "rust/tests/unit/specification/code_generation_blueprint.rs::rust_http_json_statistics_request_returns_blueprint_program",
+           "carried": false
+         },
+         {
+           "id": "rust/tests/unit/specification/links_network.rs::trace_record_lists_ordered_reasoning_steps",
+           "carried": false
+         },
+         {
+           "id": "rust/tests/unit/specification/network_visualization.rs::answers_already_carry_links_notation_for_visualization",
+           "carried": false
+         },
+         {
+           "id": "rust/tests/unit/specification/reasoning_loop.rs::step_8_full_trace_is_stored_and_linked",
+           "carried": false
+         },
+         {
+           "id": "rust/tests/unit/specification/reasoning_paths.rs::selected_registry_method_is_recorded_as_a_meta_method",
+           "carried": false
+         },
+         {
+           "id": "rust/tests/unit/specification/translation_via_links.rs::every_answer_publishes_a_links_notation_trace",
+           "carried": false
+         },
+         {
+           "id": "rust/tests/unit/specification/translation_via_links.rs::translation_trace_includes_intermediate_meaning",
+           "carried": false
+         },
+         {
+           "id": "rust/tests/unit/specification/transparent_state.rs::links_notation_trace_is_always_present",
+           "carried": false
+         }
+       ],
+       "productionRecordWritten": false
+     },
+     "typedFailures": []
+   }
+   
+   Exit Code: 0
+== answer ==
+The `node /private/tmp/spec-recurrence-1188/observe-production-reader.mjs` command completed. Output:
+
+```json
+{
+  "summary": {
+    "carried": 180,
+    "legacyCases": 136,
+    "legacyPassed": 136,
+    "nativeTotal": 1178,
+    "passed": 180,
+    "priorNineUnknownRuntime": [
+      {
+        "carried": false,
+        "id": "rust/tests/unit/specification/chat_surface.rs::links_notation_trace_is_present_for_every_answer"
+      },
+      {
+        "carried": false,
+        "id": "rust/tests/unit/specification/code_generation_blueprint.rs::rust_http_json_statistics_request_returns_blueprint_program"
+      },
+      {
+        "carried": false,
+        "id": "rust/tests/unit/specification/links_network.rs::trace_record_lists_ordered_reasoning_steps"
+      },
+      {
+        "carried": false,
+        "id": "rust/tests/unit/specification/network_visualization.rs::answers_already_carry_links_notation_for_visualization"
+      },
+      {
+        "carried": false,
+        "id": "rust/tests/unit/specification/reasoning_loop.rs::step_8_full_trace_is_stored_and_linked"
+      },
+      {
+        "carried": false,
+        "id": "rust/tests/unit/specification/reasoning_paths.rs::selected_registry_method_is_recorded_as_a_meta_method"
+      },
+      {
+        "carried": false,
+        "id": "rust/tests/unit/specification/translation_via_links.rs::every_answer_publishes_a_links_notation_trace"
+      },
+      {
+        "carried": false,
+        "id": "rust/tests/unit/specification/translation_via_links.rs::translation_trace_includes_intermediate_meaning"
+      },
+      {
+        "carried": false,
+        "id": "rust/tests/unit/specification/transparent_state.rs::links_notation_trace_is_always_present"
+      }
+    ],
+    "productionRecordWritten": false,
+    "typedCases": 44,
+    "typedExecutedAssertions": 245,
+    "typedPassed": 44,
+    "typedStaticAssertions": 169,
+    "unsupported": 998
+  },
+  "typedFailures": []
+}
+```

@@ -1,0 +1,17 @@
+>> read {"filePath":"data/meta/worker-line-budget/formal_ai_worker_coreference.lino","file_path":"data/meta/worker-line-budget/formal_ai_worker_coreference.lino","path":"data/meta/worker-line-budget/formal_ai_worker_coreference.lino"}
+   <file>
+   00001| worker_module_budget
+   00002|   module "formal_ai_worker_coreference.js"
+   00003|   ceiling 119
+   00004|   rationale "Generic seeded conversation references extracted from translation and recall; normalized Unicode surfaces use the existing bounded matcher, and actual resolution carries native typed events. Original worker ceiling only decreases."
+   00005| 
+   
+   (End of file - total 5 lines)
+   </file>
+>> edit {"filePath":"data/meta/worker-line-budget/formal_ai_worker_coreference.lino","file_path":"data/meta/worker-line-budget/formal_ai_worker_coreference.lino","new":"  ceiling 118","newString":"  ceiling 118","new_str":"  ceiling 118","new_string":"  ceiling 118","old":"  ceiling 119","oldString":"  ceiling 119","old_str":"  ceiling 119","old_string":"  ceiling 119","path":"data/meta/worker-line-budget/formal_ai_worker_coreference.lino"}
+>> bash {"command":"sha256sum -- data/meta/worker-line-budget/formal_ai_worker_coreference.lino"}
+   Output: 6e45277bd67b406a4e824088d5fe5d75d7d9bbb3576dde5b109a3d02be23044e  data/meta/worker-line-budget/formal_ai_worker_coreference.lino
+   
+   Exit Code: 0
+== answer ==
+Replaced `  ceiling 119` with `  ceiling 118` in `data/meta/worker-line-budget/formal_ai_worker_coreference.lino` and observed the result.

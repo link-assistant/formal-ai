@@ -1,0 +1,1464 @@
+>> read {"filePath":"js/worker/formal_ai_worker_translation_recall_and_compound_interest.js","file_path":"js/worker/formal_ai_worker_translation_recall_and_compound_interest.js","path":"js/worker/formal_ai_worker_translation_recall_and_compound_interest.js"}
+   <file>
+   00001| // Compositional and Wiktionary translation, brainstorming, fact and
+   00002| // coreference lookup, name and message recall, memory writes and the
+   00003| // compound-interest answers.
+   00004| // Loaded by ../formal_ai_worker.js.
+   00005| function matchSourceFormatting(target, source) {
+   00006|   const targetTrimmed = String(target || "").trim();
+   00007|   if (!targetTrimmed) return "";
+   00008|   const sourceTrimmed = String(source || "").trim();
+   00009| 
+   00010|   let sourceTerminal = null;
+   00011|   if (sourceTrimmed.length > 0) {
+   00012|     const lastChar = Array.from(sourceTrimmed).pop();
+   00013|     if (TRANSLATION_TERMINAL_PUNCTUATION.includes(lastChar)) sourceTerminal = lastChar;
+   00014|   }
+   00015|   let targetNoTerminal = targetTrimmed;
+   00016|   while (
+   00017|     targetNoTerminal.length > 0 &&
+   00018|     TRANSLATION_TERMINAL_PUNCTUATION.includes(Array.from(targetNoTerminal).pop())
+   00019|   ) {
+   00020|     const lastChar = Array.from(targetNoTerminal).pop();
+   00021|     targetNoTerminal = targetNoTerminal.slice(0, targetNoTerminal.length - lastChar.length);
+   00022|   }
+   00023|   const withTerminal = sourceTerminal ? targetNoTerminal + sourceTerminal : targetNoTerminal;
+   00024| 
+   00025|   const sourceFirstLetter = Array.from(sourceTrimmed).find((character) =>
+   00026|     /\p{L}/u.test(character),
+   00027|   );
+   00028|   if (!sourceFirstLetter) return withTerminal;
+   00029|   const targetChars = Array.from(withTerminal);
+   00030|   const targetFirstIdx = targetChars.findIndex((character) => /\p{L}/u.test(character));
+   00031|   if (targetFirstIdx === -1) return withTerminal;
+   00032|   const targetFirstLetter = targetChars[targetFirstIdx];
+   00033|   const sourceLower = sourceFirstLetter.toLowerCase() === sourceFirstLetter
+   00034|     && sourceFirstLetter.toUpperCase() !== sourceFirstLetter;
+   00035|   const sourceUpper = sourceFirstLetter.toUpperCase() === sourceFirstLetter
+   00036|     && sourceFirstLetter.toLowerCase() !== sourceFirstLetter;
+   00037|   const targetLower = targetFirstLetter.toLowerCase() === targetFirstLetter
+   00038|     && targetFirstLetter.toUpperCase() !== targetFirstLetter;
+   00039|   const targetUpper = targetFirstLetter.toUpperCase() === targetFirstLetter
+   00040|     && targetFirstLetter.toLowerCase() !== targetFirstLetter;
+   00041|   if (sourceLower && targetUpper) {
+   00042|     targetChars[targetFirstIdx] = targetFirstLetter.toLowerCase();
+   00043|     return targetChars.join("");
+   00044|   }
+   00045|   if (sourceUpper && targetLower) {
+   00046|     targetChars[targetFirstIdx] = targetFirstLetter.toUpperCase();
+   00047|     return targetChars.join("");
+   00048|   }
+   00049|   return withTerminal;
+   00050| }
+   00051| 
+   00052| function normalizeComposableSurface(surface) {
+   00053|   return String(surface || "")
+   00054|     .trim()
+   00055|     .replace(/[?!.。？！．]+$/u, "")
+   00056|     .toLowerCase()
+   00057|     .split(/\s+/u)
+   00058|     .filter(Boolean)
+   00059|     .join(" ");
+   00060| }
+   00061| 
+   00062| // Issue #386 compositional-translation roles — mirror ROLE_COMPOSITIONAL_LEMMA,
+   00063| // ROLE_COMPOSITIONAL_PHRASE and ROLE_COMPOSITIONAL_GENITIVE_HEAD in
+   00064| // src/seed/roles.rs. The per-word lemma fallbacks, fixed phrases, genitive-
+   00065| // governing heads and the single genitive-tagged complement that used to be
+   00066| // hardcoded here all live in the loaded MEANINGS_LINO
+   00067| // (data/seed/meanings-translation.lino); the functions below name only the
+   00068| // semantic roles and the ru→en language pair, never the surface words. The
+   00069| // query helpers (roleSurfaceTranslation, roleListsSurface,
+   00070| // roleActionSurfaceTranslation, wordIn) are defined alongside meaningLexicon.
+   00071| const ROLE_COMPOSITIONAL_LEMMA = "compositional_lemma";
+   00072| const ROLE_COMPOSITIONAL_PHRASE = "compositional_phrase";
+   00073| const ROLE_COMPOSITIONAL_GENITIVE_HEAD = "compositional_genitive_head";
+   00074| 
+   00075| function capitalizeAsciiFirst(surface) {
+   00076|   const text = String(surface || "");
+   00077|   if (!text) return "";
+   00078|   return text[0].toUpperCase() + text.slice(1);
+   00079| }
+   00080| 
+   00081| function translateRussianWordSequence(words) {
+   00082|   const translated = [];
+   00083|   for (let index = 0; index < words.length; index += 1) {
+   00084|     const word = words[index];
+   00085|     const next = words[index + 1];
+   00086|     if (
+   00087|       next &&
+   00088|       roleListsSurface(ROLE_COMPOSITIONAL_GENITIVE_HEAD, "ru", word) &&
+   00089|       roleActionSurfaceTranslation(ROLE_COMPOSITIONAL_LEMMA, "genitive", "ru", "en", next)
+   00090|     ) {
+   00091|       translated.push(
+   00092|         roleSurfaceTranslation(ROLE_COMPOSITIONAL_LEMMA, "ru", "en", word),
+   00093|         "of",
+   00094|         roleActionSurfaceTranslation(ROLE_COMPOSITIONAL_LEMMA, "genitive", "ru", "en", next),
+   00095|       );
+   00096|       index += 1;
+   00097|       continue;
+   00098|     }
+   00099|     const surface = roleSurfaceTranslation(ROLE_COMPOSITIONAL_LEMMA, "ru", "en", word);
+   00100|     if (!surface) return null;
+   00101|     translated.push(surface);
+   00102|   }
+   00103|   return capitalizeAsciiFirst(translated.join(" "));
+   00104| }
+   00105| 
+   00106| function translateCompositionalSurface(surface, source, target) {
+   00107|   const normalized = normalizeComposableSurface(surface);
+   00108|   if (!normalized) return null;
+   00109| 
+   00110|   const direct =
+   00111|     roleSurfaceTranslation(ROLE_COMPOSITIONAL_PHRASE, source, target, normalized) ||
+   00112|     roleSurfaceTranslation(ROLE_COMPOSITIONAL_LEMMA, source, target, normalized);
+   00113|   if (direct) return direct;
+   00114| 
+   00115|   if (source !== "ru" || target !== "en") return null;
+   00116| 
+   00117|   const phrase = roleSurfaceTranslation(ROLE_COMPOSITIONAL_PHRASE, "ru", "en", normalized);
+   00118|   if (phrase) return phrase;
+   00119| 
+   00120|   const words = normalized.split(/\s+/u).filter(Boolean);
+   00121|   if (words.length < 2 || words.length > 8) return null;
+   00122|   return translateRussianWordSequence(words);
+   00123| }
+   00124| 
+   00125| const QUESTION_LANGUAGE_MARKERS = {
+   00126|   ru: [
+   00127|     "\u0447\u0442\u043e",
+   00128|     "\u043a\u0430\u043a",
+   00129|     "\u043a\u0442\u043e",
+   00130|     "\u0433\u0434\u0435",
+   00131|     "\u043a\u043e\u0433\u0434\u0430",
+   00132|     "\u043f\u043e\u0447\u0435\u043c\u0443",
+   00133|   ],
+   00134|   hi: [
+   00135|     "\u0915\u094d\u092f\u093e",
+   00136|     "\u0915\u094c\u0928",
+   00137|     "\u0915\u0939\u093e\u0901",
+   00138|     "\u0915\u092c",
+   00139|     "\u0915\u0948\u0938\u0947",
+   00140|     "\u0915\u094d\u092f\u094b\u0902",
+   00141|   ],
+   00142|   zh: [
+   00143|     "\u4ec0\u4e48",
+   00144|     "\u5417",
+   00145|     "\u600e\u4e48",
+   00146|     "\u8c01",
+   00147|     "\u54ea",
+   00148|   ],
+   00149| };
+   00150| 
+   00151| function detectQuestionMarkerLanguage(text, counts) {
+   00152|   const normalized = String(text || "").toLocaleLowerCase();
+   00153|   let best = null;
+   00154|   for (const candidate of [
+   00155|     { slug: "ru", count: counts.cyrillic },
+   00156|     { slug: "hi", count: counts.devanagari },
+   00157|     { slug: "zh", count: counts.cjk },
+   00158|   ]) {
+   00159|     if (candidate.count <= 0) continue;
+   00160|     const markers = QUESTION_LANGUAGE_MARKERS[candidate.slug] || [];
+   00161|     if (!markers.some((marker) => normalized.includes(marker))) continue;
+   00162|     if (!best || candidate.count > best.count) best = candidate;
+   00163|   }
+   00164|   return best ? best.slug : null;
+   00165| }
+   00166| 
+   00167| function detectLanguageSlug(text) {
+   00168|   let latin = 0;
+   00169|   let cyrillic = 0;
+   00170|   let devanagari = 0;
+   00171|   let cjk = 0;
+   00172|   let other = 0;
+   00173|   let firstScript = null;
+   00174|   for (const character of String(text || "")) {
+   00175|     const code = character.codePointAt(0);
+   00176|     if (/[a-z]/i.test(character)) {
+   00177|       latin += 1;
+   00178|       if (!firstScript) firstScript = "latin";
+   00179|     } else if (code >= 0x0400 && code <= 0x04ff) {
+   00180|       cyrillic += 1;
+   00181|       if (!firstScript) firstScript = "cyrillic";
+   00182|     } else if (code >= 0x0900 && code <= 0x097f) {
+   00183|       devanagari += 1;
+   00184|       if (!firstScript) firstScript = "devanagari";
+   00185|     } else if (code >= 0x4e00 && code <= 0x9fff) {
+   00186|       cjk += 1;
+   00187|       if (!firstScript) firstScript = "cjk";
+   00188|     } else if (/\p{L}/u.test(character)) {
+   00189|       other += 1;
+   00190|       if (!firstScript) firstScript = "other";
+   00191|     }
+   00192|   }
+   00193|   const total = latin + cyrillic + devanagari + cjk + other;
+   00194|   if (total === 0) return "en";
+   00195|   if (other > latin && other >= cyrillic && other >= devanagari && other >= cjk) {
+   00196|     return "unknown";
+   00197|   }
+   00198|   if (latin > 0) {
+   00199|     const markerLanguage = detectQuestionMarkerLanguage(text, { cyrillic, devanagari, cjk });
+   00200|     if (markerLanguage) return markerLanguage;
+   00201|     if (firstScript === "cyrillic" && cyrillic >= Math.max(devanagari, cjk)) return "ru";
+   00202|     if (firstScript === "devanagari" && devanagari >= Math.max(cyrillic, cjk)) return "hi";
+   00203|     if (firstScript === "cjk" && cjk >= Math.max(cyrillic, devanagari)) return "zh";
+   00204|   }
+   00205|   if (cyrillic >= Math.max(latin, devanagari, cjk) && cyrillic > 0) return "ru";
+   00206|   if (devanagari >= Math.max(latin, cyrillic, cjk) && devanagari > 0) return "hi";
+   00207|   if (cjk >= Math.max(latin, cyrillic, devanagari) && cjk > 0) return "zh";
+   00208|   return "en";
+   00209| }
+   00210| 
+   00211| function inferTranslationSource(prompt) {
+   00212|   const lower = String(prompt || "").toLowerCase();
+   00213|   const surface = extractQuotedPhrase(prompt) || extractUnquotedTranslationSurface(prompt);
+   00214|   if (surface) {
+   00215|     const detected = detectLanguageSlug(surface);
+   00216|     if (detected !== "unknown") return detected;
+   00217|   }
+   00218|   // Issue #386: the source language of an un-annotated request is the language
+   00219|   // the user issued the *translation command* in. Ask the lexicon which
+   00220|   // language's command verb the prompt carries — the stems live once in the
+   00221|   // embedded translate meaning; this code knows only the concept and the
+   00222|   // language-code bridge. English is the default when no command verb is present.
+   00223|   return (
+   00224|     firstRoleLanguage(ROLE_TRANSLATION_ACTION, lower, ["ru", "hi", "zh"]) || "en"
+   00225|   );
+   00226| }
+   00227| 
+   00228| // Live Wiktionary fallback (issue #221). When the offline meaning
+   00229| // registry above does not cover `surface`, fetch the Wiktionary page
+   00230| // for `source` and pull the first `{{tt+|<target>|...}}` (or `{{t+}}` /
+   00231| // `{{t}}`) entry. Mirrors the Rust pipeline's Stage 1a in
+   00232| // `src/translation/pipeline.rs`: if the main page delegates noun
+   00233| // translations via `{{see translation subpage|...}}`, fetch the
+   00234| // subpage and search it first. Keeps the worker mobile-friendly: no
+   00235| // offline dictionary bundled, just a single CORS-safe HTTP call.
+   00236| async function fetchWiktionaryWikitext(pageTitle, language) {
+   00237|   if (typeof fetch !== "function" || !pageTitle) return null;
+   00238|   const host = WIKTIONARY_SEARCH_HOSTS[language] || WIKTIONARY_SEARCH_HOSTS.en;
+   00239|   const url = `${host}?action=parse&page=${encodeURIComponent(
+   00240|     pageTitle,
+   00241|   )}&prop=wikitext&format=json&origin=*`;
+   00242|   try {
+   00243|     const response = await fetch(url, {
+   00244|       headers: {
+   00245|         accept: "application/json",
+   00246|         "api-user-agent":
+   00247|           "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
+   00248|       },
+   00249|     });
+   00250|     if (!response || !response.ok) return null;
+   00251|     const data = await response.json();
+   00252|     return (data && data.parse && data.parse.wikitext && data.parse.wikitext["*"]) || null;
+   00253|   } catch (_error) {
+   00254|     return null;
+   00255|   }
+   00256| }
+   00257| 
+   00258| function stripCombiningMarks(value) {
+   00259|   // Russian Wiktionary entries are stored with combining stress marks
+   00260|   // (U+0301) so readers can see where the accent falls. The surface
+   00261|   // form must drop them so the result matches the lemma (помидо́р →
+   00262|   // помидор) and downstream substring assertions still hit.
+   00263|   return typeof value === "string" && value.normalize
+   00264|     ? value.normalize("NFD").replace(/[̀-ͯ]/g, "").normalize("NFC")
+   00265|     : value;
+   00266| }
+   00267| 
+   00268| // Every target surface the wikitext offers, in page order (the Rust
+   00269| // pipeline's Wiktionary candidates); the chat route picks among them by the
+   00270| // round trip (roundTripSurface, R1188-U19).
+   00271| function extractWiktionaryCandidates(wikitext, targetLang) {
+   00272|   if (!wikitext || !targetLang) return [];
+   00273|   // English-edition templates: {{t|<lang>|...}}, {{t+|<lang>|...}},
+   00274|   // {{tt|<lang>|...}}, {{tt+|<lang>|...}}.
+   00275|   const enPattern = new RegExp(
+   00276|     `\\{\\{tt?\\+?\\|${targetLang}\\|([^|}\\n]+)`,
+   00277|     "gi",
+   00278|   );
+   00279|   const candidates = [];
+   00280|   for (const enMatch of wikitext.matchAll(enPattern)) {
+   00281|     const surface = stripCombiningMarks(String(enMatch[1] || "").trim());
+   00282|     if (surface && !candidates.includes(surface)) candidates.push(surface);
+   00283|   }
+   00284|   if (candidates.length > 0) return candidates;
+   00285|   // Russian-edition translation blocks: `{{перев-блок|...|<lang>=[[surface]]\n|...}}`.
+   00286|   // The language code may appear at the very start (no leading newline)
+   00287|   // or after `\n|`; the surface can be inside `[[...]]`, optionally
+   00288|   // followed by transliteration in parentheses we drop.
+   00289|   const ruPattern = new RegExp(
+   00290|     `[|\\n]${targetLang}\\s*=\\s*(?:\\[\\[([^\\]|]+)(?:\\|[^\\]]+)?\\]\\]|([^\\n|}]+))`,
+   00291|     "i",
+   00292|   );
+   00293|   const ruMatch = ruPattern.exec(wikitext);
+   00294|   if (ruMatch) {
+   00295|     const raw = (ruMatch[1] || ruMatch[2] || "").trim();
+   00296|     const surface = stripCombiningMarks(raw.replace(/\s*\([^)]*\)\s*$/, "").trim());
+   00297|     if (surface) return [surface];
+   00298|   }
+   00299|   return [];
+   00300| }
+   00301| 
+   00302| async function resolveWiktionaryLemma(surface, language) {
+   00303|   // Inflected forms (e.g. Russian plural `помидоры`) are not always stored
+   00304|   // as separate pages on the source-language Wiktionary. OpenSearch returns
+   00305|   // the closest matching titles; the first hit is the dictionary lemma
+   00306|   // (`помидор`) we want to look up next.
+   00307|   if (typeof fetch !== "function" || !surface) return null;
+   00308|   const host = WIKTIONARY_SEARCH_HOSTS[language] || WIKTIONARY_SEARCH_HOSTS.en;
+   00309|   const url = `${host}?action=opensearch&search=${encodeURIComponent(
+   00310|     surface,
+   00311|   )}&limit=1&format=json&origin=*`;
+   00312|   try {
+   00313|     const response = await fetch(url, {
+   00314|       headers: {
+   00315|         accept: "application/json",
+   00316|         "api-user-agent":
+   00317|           "formal-ai-demo (https://github.com/link-assistant/formal-ai)",
+   00318|       },
+   00319|     });
+   00320|     if (!response || !response.ok) return null;
+   00321|     const data = await response.json();
+   00322|     const titles = Array.isArray(data) && Array.isArray(data[1]) ? data[1] : [];
+   00323|     const lemma = titles[0];
+   00324|     if (typeof lemma !== "string" || !lemma || lemma === surface) return null;
+   00325|     return lemma;
+   00326|   } catch (_error) {
+   00327|     return null;
+   00328|   }
+   00329| }
+   00330| 
+   00331| async function liveWiktionaryTranslate(surface, source, target) {
+   00332|   // Run the direct page fetch and the OpenSearch lemma resolution in
+   00333|   // parallel. For inflected forms (e.g. `помидоры`) the direct fetch
+   00334|   // 404s, and chaining the lemma lookup sequentially after it added a
+   00335|   // third sequential round-trip that pushed CI past the 5s expect cap.
+   00336|   const [direct, lemma] = await Promise.all([
+   00337|     fetchWiktionaryWikitext(surface, source),
+   00338|     resolveWiktionaryLemma(surface, source),
+   00339|   ]);
+   00340|   let main = direct;
+   00341|   if (!main && lemma) {
+   00342|     main = await fetchWiktionaryWikitext(lemma, source);
+   00343|   }
+   00344|   if (!main) return null;
+   00345|   let wikitext = main;
+   00346|   if (/\{\{see translation subpage\|/i.test(main)) {
+   00347|     const subpage = await fetchWiktionaryWikitext(`${surface}/translations`, source);
+   00348|     if (subpage) wikitext = `${subpage}\n${main}`;
+   00349|   }
+   00350|   return roundTripSurface(surface, source, target, extractWiktionaryCandidates(wikitext, target));
+   00351| }
+   00352| 
+   00353| async function translateSurface(surface, source, target) {
+   00354|   if (source === target) {
+   00355|     return { surface: String(surface || ""), gap: false };
+   00356|   }
+   00357|   const token = formalizeSurface(surface, source);
+   00358|   if (token) {
+   00359|     const primary = deformalizeMeaning(token, target, surface, source);
+   00360|     if (primary) return { surface: primary, gap: false };
+   00361|   }
+   00362|   const compositional = translateCompositionalSurface(surface, source, target);
+   00363|   if (compositional) return { surface: compositional, gap: false };
+   00364|   if (surface) {
+   00365|     const live = await liveWiktionaryTranslate(surface, source, target);
+   00366|     if (live) return { surface: live, gap: false };
+   00367|   }
+   00368|   return { surface: null, gap: true };
+   00369| }
+   00370| 
+   00371| function renderTranslationGap(surface, source, target) { // the seeded translation_gap_* answer (Rust render_translation_gap, #918)
+   00372|   const trimmed = String(surface || "").trim();
+   00373|   const intent = trimmed ? "translation_gap_surface" : "translation_gap_no_source";
+   00374|   return handlerRulesFillOnce(answerFor(intent, "en"), { surface: trimmed, source, target });
+   00375| }
+   00376| 
+   00377| async function tryTranslation(prompt, normalized) {
+   00378|   const targetHint = detectTranslationTargetLanguage(normalized);
+   00379|   const proofMatch = /`([^`\r\n]+)`/u.exec(String(prompt || ""));
+   00380|   const programTarget = programLanguageFromPrompt(proofMatch ? normalized.replace(normalizePrompt(proofMatch[1]), "") : normalized);
+   00381|   const proofTranslation = proofMatch && programTarget && wasmJsonCall(
+   00382|     "engine_translate_formal_proof", [proofMatch[1], programTarget, seedRawText(SEED_RAW, "proof-program-templates.lino")].map(encodeURIComponent).join("\n"));
+   00383|   const formalStatementTranslation = proofMatch && wasmJsonCall("engine_translate_formal_statement",
+   00384|     [proofMatch[1], normalized, detectTranslationSourceLanguage(normalized) || inferTranslationSource(prompt), targetHint || "", seedRawText(SEED_RAW, "formal-language-projections.lino"), seedRawText(SEED_RAW, "meanings-wikidata.lino")].map(encodeURIComponent).join("\n"));
+   00385|   const unquotedSurface = extractUnquotedTranslationSurface(prompt);
+   00386|   // Issue #386: recognise a translation command through the seeded meaning.
+   00387|   // Initial English/Russian commands are prefixes; Hindi/Chinese are head-final and gated
+   00388|   // by a target marker to avoid firing on an incidental verb noun.
+   00389|   const headInitialCommand = wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ["en", "ru"])
+   00390|     .some((stem) => normalized.startsWith(stem));
+   00391|   const headFinalCommand =
+   00392|     Boolean(targetHint || programTarget || formalStatementTranslation) &&
+   00393|     wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ["hi", "zh"]).some((stem) => normalized.includes(stem));
+   00394|   const sourceFirstCommand = Boolean(targetHint || programTarget || formalStatementTranslation) && Boolean(unquotedSurface) &&
+   00395|     wordsForRoleInLanguages(ROLE_TRANSLATION_ACTION, ["en", "ru", "hi", "zh"])
+   00396|       .some((stem) => normalized.includes(stem));
+   00397|   const isTranslationRequest = headInitialCommand || headFinalCommand || sourceFirstCommand;
+   00398|   if (!isTranslationRequest || (!targetHint && tryUnitConversion(prompt, normalized, "en"))) return null; // a quantity between two units is a conversion (#1175 p324)
+   00399|   if (formalStatementTranslation) return formalStatementTranslation;
+   00400|   if (proofTranslation) return proofTranslation;
+   00401|   // Issue #216: fall back to an unquoted surface (`translate apple to
+   00402|   // russian`) when no quoted fragment is present so the offline registry
+   00403|   // can still resolve a meaning token.
+   00404|   const surface = extractQuotedPhrase(prompt) || unquotedSurface || "";
+   00405|   const surfaceMeaning = surface || prompt;
+   00406|   const source = detectTranslationSourceLanguage(normalized) || inferTranslationSource(prompt);
+   00407|   const target = targetHint || "en";
+   00408|   const meaningId = stableBehaviorRuleId("meaning", normalizeMeaningText(surfaceMeaning));
+   00409|   const translation = await translateSurface(surface, source, target);
+   00410|   let content;
+   00411|   if (translation.gap) {
+   00412|     content = renderTranslationGap(surface, source, target);
+   00413|   } else {
+   00414|     const translatedSurface = matchSourceFormatting(translation.surface || "", surface);
+   00415|     content = surface ? `"${translatedSurface}"` : translatedSurface;
+   00416|   }
+   00417|   const evidence = [
+   00418|     "handler:translation",
+   00419|     `language_from:${source}`,
+   00420|     `language_to:${target}`,
+   00421|     `meaning:${meaningId}`,
+   00422|   ];
+   00423|   if (translation.gap && surface) evidence.push(`translation_gap:${surface}`);
+   00424|   if (!surface) evidence.push("translation:refusal:no source phrase"); // #1175 R3 refusal lane
+   00425|   return {
+   00426|     intent: `translate_${source}_to_${target}`,
+   00427|     content,
+   00428|     confidence: 1.0,
+   00429|     evidence,
+   00430|   };
+   00431| }
+   00432| 
+   00433| // Read the integer value of a cardinal-number meaning from its own data. Each
+   00434| // cardinal carries a numeral word form (e.g. "10") — the script-independent
+   00435| // surface that spells the value — so the count is derived from the seed rather
+   00436| // than restated as a literal. Mirrors cardinal_value in
+   00437| // src/solver_handlers/benchmark_prompts.rs (issue #386).
+   00438| function cardinalValue(meaning) {
+   00439|   if (!meaning || !Array.isArray(meaning.words)) return null;
+   00440|   const numeral = meaning.words.find((word) => /^[0-9]+$/.test(word));
+   00441|   if (numeral === undefined) return null;
+   00442|   const value = Number.parseInt(numeral, 10);
+   00443|   return Number.isNaN(value) ? null : value;
+   00444| }
+   00445| 
+   00446| // The number of items the user asked for: the value of the seed's
+   00447| // count_cardinal meaning when the prompt evidences it (in any supported
+   00448| // language), else the seed's default_count — both data/seed/brainstorm-seeds.lino
+   00449| // (issue #918). Mirrors requested_brainstorm_count in
+   00450| // src/solver_handlers/benchmark_prompts.rs.
+   00451| function requestedBrainstormCount(seeds, normalized) {
+   00452|   const cardinal = findMeaning(seeds.countCardinal || "");
+   00453|   if (cardinal && meaningEvidencedIn(cardinal, normalized)) {
+   00454|     const value = cardinalValue(cardinal);
+   00455|     if (value !== null) return value;
+   00456|   }
+   00457|   return Number(seeds.defaultCount) || 0;
+   00458| }
+   00459| 
+   00460| function numbered(items, count) {
+   00461|   return items
+   00462|     .slice(0, count)
+   00463|     .map((item, index) => `${index + 1}. ${item}`)
+   00464|     .join("\n");
+   00465| }
+   00466| 
+   00467| function tryBrainstormingRequest(prompt, normalized) {
+   00468|   const seeds = BRAINSTORM_SEEDS || {};
+   00469|   if (!containsAny(normalized, seeds.triggers)) return null;
+   00470|   const categories = Array.isArray(seeds.categories) ? seeds.categories : [];
+   00471|   const keyworded = categories.find((entry) => containsAny(normalized, entry.detectionKeywords));
+   00472|   const category = keyworded ||
+   00473|     categories.find((entry) => !entry.detectionKeywords || entry.detectionKeywords.length === 0);
+   00474|   if (!category || !Array.isArray(category.items) || category.items.length === 0) {
+   00475|     return null;
+   00476|   }
+   00477|   const count = requestedBrainstormCount(seeds, normalized);
+   00478|   return {
+   00479|     intent: category.intent || "brainstorm_project_ideas",
+   00480|     content: numbered(category.items, count),
+   00481|     confidence: 0.8,
+   00482|     evidence: [`brainstorm:category:${category.slug || "project_ideas"}`]
+   00483|       .concat(keyworded ? [] : ["brainstorming:refusal:no category keyword"]), // #1175 R3 refusal lane
+   00484|   };
+   00485| }
+   00486| 
+   00487| function localizedFactFor(record, language) {
+   00488|   const localized = Array.isArray(record.localized) ? record.localized : [];
+   00489|   return (
+   00490|     localized.find((entry) => entry && entry.language === language) ||
+   00491|     localized.find((entry) => entry && entry.language === "en") ||
+   00492|     null
+   00493|   );
+   00494| }
+   00495| 
+   00496| // Issue #1172: a record answers only through the subject gate (gatedFactRecord, formal_ai_worker_factual_qa.js): its subject Q-id must equal the formalized question's; word-boundary alias matching is the last-resort hint for Q-id-less records.
+   00497| function tryFactLookup(prompt, normalized) {
+   00498|   const gated = gatedFactRecord(normalized, prompt);
+   00499|   if (!gated) return null;
+   00500|   const record = gated.record;
+   00501|   const language = detectLanguage(prompt);
+   00502|   const localized = localizedFactFor(record, language);
+   00503|   // A record backed by a release timeline has no frozen answer: the snapshot
+   00504|   // is rendered against today (Rust `render_release_timeline`, issue #892).
+   00505|   const timeline = record.releaseTimeline
+   00506|     ? renderReleaseTimeline(record.releaseTimeline, language, new Date().toISOString().slice(0, 10))
+   00507|     : null;
+   00508|   const summary = (timeline && timeline.text) || (localized && localized.summary) || record.summary;
+   00509|   const source = (localized && localized.source) || record.source;
+   00510|   const evidence = [
+   00511|     `fact_lookup:hit:${record.slug}`,
+   00512|     `fact_lookup:subject_gate:${gated.gate}`,
+   00513|     `language:${language}`,
+   00514|     ...((record.wikidata || []).map((qid) => `wikidata:${qid}`)),
+   00515|   ];
+   00516|   if (source) evidence.push(`source:${humanizeUrl(source)}`);
+   00517|   if (timeline) evidence.push(`release_timeline:${record.releaseTimeline}`);
+   00518|   return {
+   00519|     intent: "fact_lookup",
+   00520|     content: summary,
+   00521|     confidence: 0.9,
+   00522|     evidence,
+   00523|   };
+   00524| }
+   00525| 
+   00526| // Mirrors `try_coreference_request` in
+   00527| // `src/solver_handlers/benchmark_prompts.rs` for fact-style follow-ups.
+   00528| function replaceBoundedToken(text, token, replacement) {
+   00529|   if (!text || !token || !replacement) return null;
+   00530|   const pattern = new RegExp(
+   00531|     `(^|[^\\p{L}\\p{N}_])${escapeRegExp(token)}(?=$|[^\\p{L}\\p{N}_])`,
+   00532|     "gu",
+   00533|   );
+   00534|   let changed = false;
+   00535|   const rewritten = String(text).replace(pattern, (match, prefix) => {
+   00536|     changed = true;
+   00537|     return `${prefix}${replacement}`;
+   00538|   });
+   00539|   return changed ? rewritten : null;
+   00540| }
+   00541| 
+   00542| function matchingCoreferencePronoun(normalized) {
+   00543|   const pronouns = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.pronouns)
+   00544|     ? COREFERENCE_SEEDS.pronouns
+   00545|     : [];
+   00546|   return pronouns.find((pronoun) => {
+   00547|     const contexts = Array.isArray(pronoun && pronoun.contexts)
+   00548|       ? pronoun.contexts
+   00549|       : [];
+   00550|     const startsWith = Array.isArray(pronoun && pronoun.startsWith)
+   00551|       ? pronoun.startsWith
+   00552|       : [];
+   00553|     return contexts.some((context) => surfacePresent(normalized, normalizePrompt(context))) ||
+   00554|       startsWith.some((prefix) => {
+   00555|         const surface = normalizePrompt(prefix);
+   00556|         return normalized.startsWith(surface) && surfacePresent(normalized, surface);
+   00557|       });
+   00558|   }) || null;
+   00559| }
+   00560| 
+   00561| function matchingCoreferenceAntecedent(previous) {
+   00562|   const antecedents = Array.isArray(COREFERENCE_SEEDS && COREFERENCE_SEEDS.antecedents)
+   00563|     ? COREFERENCE_SEEDS.antecedents
+   00564|     : [];
+   00565|   return antecedents.find((antecedent) => {
+   00566|     const aliases = Array.isArray(antecedent && antecedent.aliases)
+   00567|       ? antecedent.aliases
+   00568|       : [];
+   00569|     return aliases.some((alias) => alias && previous.includes(alias));
+   00570|   }) || null;
+   00571| }
+   00572| 
+   00573| function matchingAntecedentFactAlias(record, antecedent, previous) {
+   00574|   const factAliases = (record && record.subjectAliases) || [];
+   00575|   const antecedentAliases = (antecedent && antecedent.aliases) || [];
+   00576|   // Issue #1172: word-boundary match (see tryFactLookup) so the alias "us"
+   00577|   // counts only when the previous turn literally mentions it.
+   00578|   return factAliases.find((alias) =>
+   00579|     alias &&
+   00580|     surfacePresent(previous, normalizePrompt(alias)) &&
+   00581|     antecedentAliases.includes(String(alias).toLowerCase()),
+   00582|   ) || "";
+   00583| }
+   00584| 
+   00585| // Rust `resolve_coreference_antecedent`: the nearest earlier user turn naming an antecedent of the seed
+   00586| // (assistant turns name none, and a later unrelated user turn leaves an earlier antecedent visible).
+   00587| function nearestCoreferenceAntecedent(history) {
+   00588|   const turns = Array.isArray(history) ? history : [];
+   00589|   for (let index = turns.length - 1; index >= 0; index -= 1) {
+   00590|     const turn = turns[index];
+   00591|     if (!turn || turn.role !== "user") continue;
+   00592|     const antecedent = matchingCoreferenceAntecedent(String(turn.content || "").toLowerCase());
+   00593|     if (antecedent) return { antecedent, previous: normalizePrompt(String(turn.content || "")) };
+   00594|   }
+   00595|   return null;
+   00596| }
+   00597| 
+   00598| function tryCoreferenceFactLookup(prompt, normalized, history) {
+   00599|   const pronoun = matchingCoreferencePronoun(normalized);
+   00600|   if (!pronoun || !pronoun.token) return null;
+   00601| 
+   00602|   const resolved = nearestCoreferenceAntecedent(history);
+   00603|   if (!resolved) return null;
+   00604|   const { antecedent, previous } = resolved;
+   00605| 
+   00606|   for (const record of FACTS) {
+   00607|     // Issue #1172: word-boundary keyword prefilter (see tryFactLookup).
+   00608|     if (!record || !(record.questionKeywords || []).some((keyword) => surfacePresent(normalized, normalizePrompt(keyword)))) continue;
+   00609| 
+   00610|     const alias = matchingAntecedentFactAlias(record, antecedent, previous);
+   00611|     if (!alias) continue;
+   00612| 
+   00613|     const rewritten = replaceBoundedToken(normalized, pronoun.token, alias);
+   00614|     if (!rewritten) continue;
+   00615| 
+   00616|     const hit = tryFactLookup(prompt, rewritten);
+   00617|     if (!hit) continue;
+   00618| 
+   00619|     const subject = antecedent.displayName || record.subjectLabel || alias;
+   00620|     return Object.assign({}, hit, {
+   00621|       solverEvents: [
+   00622|         { kind: "coreference:resolved", payload: `${pronoun.token}=${subject}` },
+   00623|         { kind: "coreference:rewrite", payload: rewritten },
+   00624|         ...(Array.isArray(hit.solverEvents) ? hit.solverEvents : []),
+   00625|       ],
+   00626|       evidence: [
+   00627|         `coreference:resolved:${pronoun.token}=${subject}`,
+   00628|         `coreference:rewrite:${rewritten}`,
+   00629|         ...(Array.isArray(hit.evidence) ? hit.evidence : []),
+   00630|       ],
+   00631|     });
+   00632|   }
+   00633| 
+   00634|   // Rust `try_coreference_request`: no fact answers the rewritten question, so the antecedent's seeded body does.
+   00635|   if (!antecedent.body) return null;
+   00636|   const evidence = [`coreference:resolved:${pronoun.token}=${antecedent.displayName}`];
+   00637|   if (antecedent.wikidata) evidence.push(`wikidata:${antecedent.wikidata}`);
+   00638|   const solverEvents = [{ kind: "coreference:resolved", payload: `${pronoun.token}=${antecedent.displayName}` }];
+   00639|   if (antecedent.wikidata) solverEvents.push({ kind: "wikidata", payload: antecedent.wikidata });
+   00640|   return { intent: antecedent.intent, content: antecedent.body, confidence: 0.85, solverEvents, evidence: [...evidence, "response:coreference"] };
+   00641| }
+   00642| 
+   00643| function renderRoleplayBody(persona, body) {
+   00644|   const template = String((PERSONA_SEEDS && PERSONA_SEEDS.bodyTemplate) || "");
+   00645|   return template.replace(/<persona>/g, persona).replace(/<body>/g, body);
+   00646| }
+   00647| 
+   00648| function tryRoleplayRequest(prompt, normalized) {
+   00649|   const seeds = PERSONA_SEEDS || {};
+   00650|   if (!containsAny(normalized, seeds.triggers)) return null;
+   00651|   const personas = Array.isArray(seeds.personas) ? seeds.personas : [];
+   00652|   const persona = personas.find((entry) => containsAny(normalized, entry.aliases));
+   00653|   const topics = Array.isArray(seeds.topics) ? seeds.topics : [];
+   00654|   const topic = topics.find((entry) => containsAny(normalized, entry.detectionKeywords));
+   00655|   const displayName = (persona && persona.displayName) || seeds.defaultPersona || "";
+   00656|   const body = (topic && topic.body) || seeds.fallbackBody || "";
+   00657|   const evidence = [`roleplay:persona:${displayName}`];
+   00658|   if (persona && persona.wikidata) evidence.push(`wikidata:${persona.wikidata}`);
+   00659|   if (topic && topic.slug) evidence.push(`roleplay:topic:${topic.slug}`);
+   00660|   if (!persona && !topic) evidence.push("roleplay:refusal:no persona or topic"); // #1175 R3 refusal lane
+   00661|   return {
+   00662|     intent: "roleplay_explanation",
+   00663|     content: renderRoleplayBody(displayName, body),
+   00664|     confidence: 0.8,
+   00665|     evidence,
+   00666|   };
+   00667| }
+   00668| 
+   00669| function tryKupiSlona(prompt, normalized) {
+   00670|   // The `kupi_slona` rule of data/seed/handler-rules.lino: the idiom surfaces
+   00671|   // are the circular_joke_phrase role, the explanation is the seeded response
+   00672|   // in the prompt's language with the Russian one as the fallback, exactly as
+   00673|   // the native rule interpreter answers it.
+   00674|   return runHandlerRuleSet("kupi_slona", prompt, normalized, []);
+   00675| }
+   00676| 
+   00677| function extractName(text) {
+   00678|   const patterns = [
+   00679|     /\bmy name is\s+([A-Z][a-zA-Z'-]+(?:\s+[A-Z][a-zA-Z'-]+)*)/,
+   00680|     /\bi am\s+([A-Z][a-zA-Z'-]+(?:\s+[A-Z][a-zA-Z'-]+)*)/,
+   00681|     /\bi'm\s+([A-Z][a-zA-Z'-]+(?:\s+[A-Z][a-zA-Z'-]+)*)/,
+   00682|     /\bcall me\s+([A-Z][a-zA-Z'-]+(?:\s+[A-Z][a-zA-Z'-]+)*)/,
+   00683|   ];
+   00684|   for (const pattern of patterns) {
+   00685|     const match = pattern.exec(text);
+   00686|     if (match) return match[1];
+   00687|   }
+   00688|   return null;
+   00689| }
+   00690| 
+   00691| function tryRecallName(history) {
+   00692|   if (!Array.isArray(history) || history.length === 0) return null;
+   00693|   for (let i = history.length - 1; i >= 0; i -= 1) {
+   00694|     const turn = history[i];
+   00695|     if (turn && turn.role === "user") {
+   00696|       const name = extractName(String(turn.content || ""));
+   00697|       if (name) {
+   00698|         return {
+   00699|           intent: "recall_name",
+   00700|           content: `Your name is ${name}.`,
+   00701|           confidence: 0.95,
+   00702|           evidence: [`recall_name:${name}`, "prior_turn:user"],
+   00703|         };
+   00704|       }
+   00705|     }
+   00706|   }
+   00707|   return null;
+   00708| }
+   00709| 
+   00710| function extractAssistantName(text) { return FormalAiSeed.assistantNameAfterCue(text, wordsForRole(ROLE_ASSISTANT_NAME_ASSIGNMENT)); }
+   00711| 
+   00712| function recallAssistantName(history) {
+   00713|   if (!Array.isArray(history)) return null;
+   00714|   for (let i = history.length - 1; i >= 0; i -= 1) {
+   00715|     const turn = history[i];
+   00716|     if (turn && turn.role === "user") {
+   00717|       const name = extractAssistantName(String(turn.content || ""));
+   00718|       if (name) return name;
+   00719|     }
+   00720|   }
+   00721|   return null;
+   00722| }
+   00723| 
+   00724| // Set or recall the *assistant's* name from dialog-local memory (issue #676),
+   00725| // mirroring try_assistant_name in src/solver_handlers/conversation_memory/mod.rs.
+   00726| function tryAssistantName(prompt, normalized, history) {
+   00727|   const language = detectLanguage(prompt);
+   00728|   const setName = extractAssistantName(prompt);
+   00729|   if (setName) {
+   00730|     return {
+   00731|       intent: "set_assistant_name",
+   00732|       content: answerFor("set_assistant_name", language).replaceAll("{name}", setName),
+   00733|       confidence: 0.9,
+   00734|       evidence: [`set_assistant_name:${setName}`],
+   00735|     };
+   00736|   }
+   00737|   const asksName = isAssistantNamePrompt(normalized, prompt);
+   00738|   if (!asksName) return null;
+   00739|   const recalled = recallAssistantName(history);
+   00740|   if (!recalled) return null;
+   00741|   return {
+   00742|     intent: "assistant_name",
+   00743|     content: answerFor("assistant_name_recall", language).replaceAll("{name}", recalled),
+   00744|     confidence: 0.9,
+   00745|     evidence: [`assistant_name:${recalled}`, "prior_turn:user"],
+   00746|   };
+   00747| }
+   00748| 
+   00749| function isRecallMetaPrompt(prompt) {
+   00750|   const normalized = normalizePrompt(prompt);
+   00751|   return (
+   00752|     lexiconMentionsRole(ROLE_CONVERSATION_RECALL_PREVIOUS_USER_MESSAGE, normalized) ||
+   00753|     lexiconMentionsRole(ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE, normalized) ||
+   00754|     lexiconMentionsRole(ROLE_CONVERSATION_RECALL_QUERY, normalized) ||
+   00755|     lexiconMentionsRole(ROLE_CONVERSATION_RECALL_OTHER_QUERY, normalized)
+   00756|   );
+   00757| }
+   00758| 
+   00759| function renderPreviousUserMessage(content, language) {
+   00760|   if (language === "ru") return `Вы спрашивали: "${content}"`;
+   00761|   if (language === "zh") return `你之前问的是:"${content}"`;
+   00762|   if (language === "hi") return `आपने पूछा था: "${content}"`;
+   00763|   return `Your previous question was: ${content}`;
+   00764| }
+   00765| 
+   00766| function tryRecallLastQuestion(prompt, history) {
+   00767|   if (!Array.isArray(history) || history.length === 0) return null;
+   00768|   const language = detectLanguage(prompt);
+   00769|   let latestUser = "";
+   00770|   for (let i = history.length - 1; i >= 0; i -= 1) {
+   00771|     const turn = history[i];
+   00772|     if (turn && turn.role === "user") {
+   00773|       const content = String(turn.content || "").trim();
+   00774|       if (content) {
+   00775|         if (!latestUser) latestUser = content;
+   00776|         if (!isRecallMetaPrompt(content)) {
+   00777|           return {
+   00778|             intent: "recall_last_question",
+   00779|             content: renderPreviousUserMessage(content, language),
+   00780|             confidence: 0.9,
+   00781|             evidence: ["recall_last_question", "prior_turn:user"],
+   00782|           };
+   00783|         }
+   00784|       }
+   00785|     }
+   00786|   }
+   00787|   if (latestUser) {
+   00788|     return {
+   00789|       intent: "recall_last_question",
+   00790|       content: renderPreviousUserMessage(latestUser, language),
+   00791|       confidence: 0.9,
+   00792|       evidence: ["recall_last_question", "prior_turn:user"],
+   00793|     };
+   00794|   }
+   00795|   return null;
+   00796| }
+   00797| 
+   00798| // Issue #529: recall the content of the immediately preceding message. The
+   00799| // recogniser composes the conversation_recall_previous_message seed role across
+   00800| // every supported language (see ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE), so a
+   00801| // Russian "что было написано в прошлом сообщении?" no longer falls through to the
+   00802| // unknown intent. Unlike tryRecallLastQuestion (the user's own last question),
+   00803| // this replays the last prior turn regardless of role — for the issue scenario,
+   00804| // the assistant's previous reply. Mirror of try_recall_previous_message in
+   00805| // src/solver_handlers/conversation_memory.rs.
+   00806| function localizedTurnRole(role, language) {
+   00807|   if (role === "assistant") {
+   00808|     if (language === "ru") return "ассистент";
+   00809|     if (language === "hi") return "सहायक";
+   00810|     if (language === "zh") return "助手";
+   00811|     return "assistant";
+   00812|   }
+   00813|   if (language === "ru") return "пользователь";
+   00814|   if (language === "hi") return "उपयोगकर्ता";
+   00815|   if (language === "zh") return "用户";
+   00816|   return "user";
+   00817| }
+   00818| 
+   00819| function renderPreviousMessage(role, content, language) {
+   00820|   const label = localizedTurnRole(role, language);
+   00821|   if (language === "ru") return `В прошлом сообщении (${label}) было написано: "${content}"`;
+   00822|   if (language === "zh") return `上一条消息（${label}）写道:"${content}"`;
+   00823|   if (language === "hi") return `पिछले संदेश (${label}) में लिखा था: "${content}"`;
+   00824|   return `The previous message (${label}) was: "${content}"`;
+   00825| }
+   00826| 
+   00827| function renderNoPreviousMessage(language) {
+   00828|   if (language === "ru") return "Прошлого сообщения пока нет.";
+   00829|   if (language === "zh") return "还没有上一条消息。";
+   00830|   if (language === "hi") return "अभी तक कोई पिछला संदेश नहीं है.";
+   00831|   return "There is no previous message yet.";
+   00832| }
+   00833| 
+   00834| function tryRecallPreviousMessage(prompt, history) {
+   00835|   const normalized = normalizePrompt(prompt);
+   00836|   if (!lexiconMentionsRole(ROLE_CONVERSATION_RECALL_PREVIOUS_MESSAGE, normalized)) {
+   00837|     return null;
+   00838|   }
+   00839|   const language = detectLanguage(prompt);
+   00840|   let previous = null;
+   00841|   if (Array.isArray(history)) {
+   00842|     for (let i = history.length - 1; i >= 0; i -= 1) {
+   00843|       const turn = history[i];
+   00844|       const content = turn && String(turn.content || "").trim();
+   00845|       if (content) {
+   00846|         previous = { role: turn.role === "assistant" ? "assistant" : "user", content };
+   00847|         break;
+   00848|       }
+   00849|     }
+   00850|   }
+   00851|   const content = previous
+   00852|     ? renderPreviousMessage(previous.role, previous.content, language)
+   00853|     : renderNoPreviousMessage(language);
+   00854|   return {
+   00855|     intent: "recall_previous_message",
+   00856|     content,
+   00857|     confidence: 0.9,
+   00858|     evidence: [
+   00859|       "recall_previous_message",
+   00860|       previous ? `prior_turn:${previous.role}` : "prior_turn:none",
+   00861|     ].concat(previous ? [] : ["conversation_recall:refusal:no previous message"]),
+   00862|   };
+   00863| }
+   00864| 
+   00865| // Issue #529: natural-language *writes* to the entire associative memory. This
+   00866| // is the browser mirror of src/solver_handlers/conversation_memory/memory_write.rs
+   00867| // — the write half of the Turing-complete memory primitive (a recall reads, an
+   00868| // append extends, a substitution rewrites). Both recognisers are driven by the
+   00869| // seed lexicon (ROLE_MEMORY_*), so they extend to every supported language
+   00870| // automatically. The actual persistence happens in the app (main.jsx applies the
+   00871| // returned memoryOperation to IndexedDB); the worker stays pure by computing the
+   00872| // substitution count over a memory snapshot the app passes in.
+   00873| 
+   00874| // Recognise a "remember …" append directive in any language. The surfaces are
+   00875| // Slot::Prefix forms (trailing …), so each form's literal-before-the-slot is the
+   00876| // matchable prefix. Matching runs on a lowercased copy of the raw prompt and
+   00877| // longer prefixes win first, so "remember that X" beats "remember X". Mirrors
+   00878| // recognize_memory_append.
+   00879| function recognizeMemoryAppend(prompt) {
+   00880|   const trimmed = String(prompt || "").replace(/^\s+/, "");
+   00881|   const lowered = trimmed.toLowerCase();
+   00882|   const prefixes = roleWordForms(ROLE_MEMORY_APPEND_DIRECTIVE)
+   00883|     .filter((form) => form.slot === "prefix")
+   00884|     .map((form) => form.before)
+   00885|     .filter((prefix) => prefix.length > 0);
+   00886|   prefixes.sort((a, b) => b.length - a.length);
+   00887|   for (const prefix of prefixes) {
+   00888|     if (lowered.startsWith(prefix)) {
+   00889|       const statement = cleanMemoryWriteText(trimmed.slice(prefix.length));
+   00890|       if (statement) return statement;
+   00891|     }
+   00892|   }
+   00893|   return null;
+   00894| }
+   00895| 
+   00896| // Recognise a memory substitution (a read+write transform) in any language. A
+   00897| // bare "replace X with Y" is an ordinary coding request, so a memory *scope*
+   00898| // phrase must be present to claim the prompt. We then strip the scope and the
+   00899| // substitution directive (position-independent: SVO languages lead, Hindi
+   00900| // trails) and split the operand span on the connector to recover (old, new).
+   00901| // Mirrors recognize_memory_substitution.
+   00902| function recognizeMemorySubstitution(normalized) {
+   00903|   if (!lexiconMentionsRole(ROLE_MEMORY_SCOPE, normalized)) return null;
+   00904|   const withoutScope = stripFirstMemorySurface(normalized, ROLE_MEMORY_SCOPE);
+   00905|   if (withoutScope === null) return null;
+   00906|   const operands = stripFirstMemorySurface(
+   00907|     withoutScope,
+   00908|     ROLE_MEMORY_SUBSTITUTION_DIRECTIVE,
+   00909|   );
+   00910|   if (operands === null) return null;
+   00911|   const split = splitOnceMemorySurface(
+   00912|     operands,
+   00913|     ROLE_MEMORY_SUBSTITUTION_CONNECTOR,
+   00914|   );
+   00915|   if (!split) return null;
+   00916|   const oldValue = cleanMemoryWriteText(split[0]);
+   00917|   const newValue = cleanMemoryWriteText(split[1]);
+   00918|   if (!oldValue || !newValue) return null;
+   00919|   return { oldValue, newValue };
+   00920| }
+   00921| 
+   00922| // Total substring occurrences of `old` across every searchable value in the
+   00923| // memory snapshot. Mirrors MemoryStore::apply_substitution's count, which sums
+   00924| // replace_counting over each event's content/inputs/outputs/title/label and
+   00925| // every evidence entry. The app builds the snapshot from those same fields, so
+   00926| // the worker's reported count matches the rewrite the app applies to IndexedDB.
+   00927| function countMemoryOccurrences(memory, old) {
+   00928|   if (!old) return 0;
+   00929|   const values = Array.isArray(memory) ? memory : [];
+   00930|   let count = 0;
+   00931|   for (const value of values) {
+   00932|     const text = String(value || "");
+   00933|     if (!text.includes(old)) continue;
+   00934|     count += text.split(old).length - 1;
+   00935|   }
+   00936|   return count;
+   00937| }
+   00938| 
+   00939| function renderMemoryAppendAnswer(statement, language) {
+   00940|   if (language === "ru") return `Запомнил: ${statement}`;
+   00941|   if (language === "zh") return `已记住:${statement}`;
+   00942|   if (language === "hi") return `स्मृति में सहेजा गया: ${statement}`;
+   00943|   return `Recorded memory: ${statement}`;
+   00944| }
+   00945| 
+   00946| function renderMemorySubstitutionAnswer(oldValue, newValue, applied, language) {
+   00947|   if (language === "ru") {
+   00948|     return `Заменил "${oldValue}" на "${newValue}" в памяти (обновлено вхождений: ${applied}).`;
+   00949|   }
+   00950|   if (language === "zh") {
+   00951|     return `已在记忆中将"${oldValue}"替换为"${newValue}"(更新 ${applied} 处)。`;
+   00952|   }
+   00953|   if (language === "hi") {
+   00954|     return `स्मृति में "${oldValue}" को "${newValue}" से बदला (${applied})।`;
+   00955|   }
+   00956|   return `Replaced "${oldValue}" with "${newValue}" in memory (${applied} occurrence(s) updated).`;
+   00957| }
+   00958| 
+   00959| // Recognise a natural-language memory write and return an answer carrying a
+   00960| // structured `memoryOperation` for the app to persist. Substitution is tried
+   00961| // before append because a substitution prompt also begins with a directive verb.
+   00962| // Mirrors try_memory_write + recognize_memory_write.
+   00963| function tryMemoryWrite(prompt, normalized, memory) {
+   00964|   const substitution = recognizeMemorySubstitution(normalized);
+   00965|   if (substitution) {
+   00966|     const language = detectLanguage(prompt);
+   00967|     const applied = countMemoryOccurrences(memory, substitution.oldValue);
+   00968|     return {
+   00969|       intent: "memory_substitution",
+   00970|       content: renderMemorySubstitutionAnswer(
+   00971|         substitution.oldValue,
+   00972|         substitution.newValue,
+   00973|         applied,
+   00974|         language,
+   00975|       ),
+   00976|       confidence: 0.9,
+   00977|       evidence: [
+   00978|         "memory_substitution",
+   00979|         "substitution_event:update",
+   00980|         `substitution:applied=${applied}`,
+   00981|         "response:memory_substitution",
+   00982|       ],
+   00983|       memoryOperation: {
+   00984|         action: "substitute",
+   00985|         oldValue: substitution.oldValue,
+   00986|         newValue: substitution.newValue,
+   00987|         applied,
+   00988|       },
+   00989|     };
+   00990|   }
+   00991|   const statement = recognizeMemoryAppend(prompt);
+   00992|   if (statement) {
+   00993|     const language = detectLanguage(prompt);
+   00994|     return {
+   00995|       intent: "memory_write",
+   00996|       content: renderMemoryAppendAnswer(statement, language),
+   00997|       confidence: 0.9,
+   00998|       evidence: [
+   00999|         "memory_write",
+   01000|         "memory_write:natural_language",
+   01001|         "response:memory_write",
+   01002|       ],
+   01003|       memoryOperation: { action: "append", statement },
+   01004|     };
+   01005|   }
+   01006|   return null;
+   01007| }
+   01008| 
+   01009| // Issue #27: deterministic, logical summarisation — no neural net. We
+   01010| // project the conversation onto a small set of features (turn counts, intents,
+   01011| // concepts, languages, unanswered questions) and render them as a structured
+   01012| // Markdown report. Every value is derived directly from the append-only event
+   01013| // log so reruns on the same input produce byte-identical output.
+   01014| function trySummarizeConversation(history) {
+   01015|   if (!Array.isArray(history) || history.length === 0) return null;
+   01016|   const turns = history.filter((turn) => turn && turn.content);
+   01017|   if (turns.length === 0) return null;
+   01018| 
+   01019|   let userCount = 0;
+   01020|   let assistantCount = 0;
+   01021|   const intentCounts = new Map();
+   01022|   const languages = new Map();
+   01023|   const concepts = new Set();
+   01024|   const calculations = [];
+   01025|   const programTemplates = new Set();
+   01026|   const unanswered = [];
+   01027|   let lastUser = null;
+   01028| 
+   01029|   for (const turn of turns) {
+   01030|     const role = turn.role || "assistant";
+   01031|     const language = detectLanguage(turn.content);
+   01032|     languages.set(language, (languages.get(language) || 0) + 1);
+   01033|     if (role === "user") {
+   01034|       userCount += 1;
+   01035|       lastUser = turn.content;
+   01036|     } else {
+   01037|       assistantCount += 1;
+   01038|       if (lastUser) {
+   01039|         lastUser = null;
+   01040|       }
+   01041|       const intent = String(turn.intent || "unknown");
+   01042|       intentCounts.set(intent, (intentCounts.get(intent) || 0) + 1);
+   01043|       if (intent === "calculation" && typeof turn.content === "string") {
+   01044|         const match = turn.content.match(/^([^=]+=\s*[^\n]+)/);
+   01045|         if (match) calculations.push(match[1].trim());
+   01046|       }
+   01047|       if (intent === "write_program") {
+   01048|         const evidence = Array.isArray(turn.evidence) ? turn.evidence : [];
+   01049|         const languageEvidence = evidence.find((item) =>
+   01050|           String(item || "").startsWith("program_parameter:language:"),
+   01051|         );
+   01052|         const taskEvidence = evidence.find((item) =>
+   01053|           String(item || "").startsWith("program_parameter:task:"),
+   01054|         );
+   01055|         const generatedLanguage = languageEvidence
+   01056|           ? String(languageEvidence).slice("program_parameter:language:".length)
+   01057|           : "unknown";
+   01058|         const generatedTask = taskEvidence
+   01059|           ? String(taskEvidence).slice("program_parameter:task:".length)
+   01060|           : "program";
+   01061|         programTemplates.add(`${generatedTask}/${generatedLanguage}`);
+   01062|       }
+   01063|       if (intent.startsWith("hello_world_")) {
+   01064|         programTemplates.add(`hello_world/${intent.slice("hello_world_".length)}`);
+   01065|       }
+   01066|       if (intent.startsWith("concept_lookup")) {
+   01067|         const evidence = Array.isArray(turn.evidence) ? turn.evidence : [];
+   01068|         for (const item of evidence) {
+   01069|           if (typeof item !== "string") continue;
+   01070|           const conceptMatch = item.match(/^concept_lookup:request:(.+)$/);
+   01071|           if (conceptMatch) concepts.add(conceptMatch[1]);
+   01072|         }
+   01073|       }
+   01074|     }
+   01075|   }
+   01076|   if (lastUser) {
+   01077|     unanswered.push(lastUser);
+   01078|   }
+   01079| 
+   01080|   const lines = [];
+   01081|   lines.push("## Conversation summary");
+   01082|   lines.push("");
+   01083|   lines.push(
+   01084|     `- ${turns.length} turn(s): ${userCount} user, ${assistantCount} assistant`,
+   01085|   );
+   01086|   if (languages.size > 0) {
+   01087|     const list = Array.from(languages.entries())
+   01088|       .sort((a, b) => b[1] - a[1])
+   01089|       .map(([lang, count]) => `${lang} (${count})`)
+   01090|       .join(", ");
+   01091|     lines.push(`- Languages: ${list}`);
+   01092|   }
+   01093|   if (intentCounts.size > 0) {
+   01094|     const list = Array.from(intentCounts.entries())
+   01095|       .sort((a, b) => b[1] - a[1])
+   01096|       .map(([intent, count]) => `${intent} (${count})`)
+   01097|       .join(", ");
+   01098|     lines.push(`- Intents: ${list}`);
+   01099|   }
+   01100|   if (concepts.size > 0) {
+   01101|     lines.push(`- Concepts looked up: ${Array.from(concepts).join(", ")}`);
+   01102|   }
+   01103|   if (calculations.length > 0) {
+   01104|     lines.push(`- Calculations: ${calculations.join("; ")}`);
+   01105|   }
+   01106|   if (programTemplates.size > 0) {
+   01107|     lines.push(
+   01108|       `- Program templates generated: ${Array.from(programTemplates).join(", ")}`,
+   01109|     );
+   01110|   }
+   01111|   if (unanswered.length > 0) {
+   01112|     lines.push(`- Unanswered: ${unanswered.join(" | ")}`);
+   01113|   }
+   01114| 
+   01115|   const evidence = [
+   01116|     "summarize_conversation",
+   01117|     `turns:${turns.length}`,
+   01118|     `users:${userCount}`,
+   01119|     `assistants:${assistantCount}`,
+   01120|   ];
+   01121|   if (intentCounts.size > 0) {
+   01122|     evidence.push(`intents:${Array.from(intentCounts.keys()).join("|")}`);
+   01123|   }
+   01124|   return {
+   01125|     intent: "summarize_conversation",
+   01126|     content: lines.join("\n"),
+   01127|     confidence: 0.9,
+   01128|     evidence,
+   01129|   };
+   01130| }
+   01131| 
+   01132| // Issue #918: the compound-interest row holds no vocabulary, prose or rate.
+   01133| // The cue words are the finance and currency meanings of the seed lexicon; the
+   01134| // wording is the seeded compound_interest_* responses; the periods per
+   01135| // compounding meaning, the frequency labels, the default exchange rates and
+   01136| // the final-amount marker are the `policy compound_interest` block of
+   01137| // data/seed/handler-rules.lino. Mirrors src/solver_handlers/compound_interest.rs.
+   01138| // A function, not a const array, so the ROLE_* consts stay out of the TDZ.
+   01139| function compoundCurrencies() {
+   01140|   return [
+   01141|     [ROLE_CURRENCY_EUR_REFERENCE, "EUR"],
+   01142|     [ROLE_CURRENCY_USD_REFERENCE, "USD"],
+   01143|     [ROLE_CURRENCY_RUB_REFERENCE, "RUB"],
+   01144|   ];
+   01145| }
+   01146| const COMPOUND_PRINCIPAL_CURRENCY = "USD";
+   01147| 
+   01148| function compoundPolicy(key) {
+   01149|   return handlerRulesPolicy("compound_interest", key) || "";
+   01150| }
+   01151| 
+   01152| function compoundResponse(intent, values = {}) {
+   01153|   let text = answerFor(intent, "en");
+   01154|   for (const [name, value] of Object.entries(values)) text = text.split(`{${name}}`).join(String(value));
+   01155|   return text;
+   01156| }
+   01157| 
+   01158| function tryCompoundInterest(prompt, normalized, history) {
+   01159|   const request = parseCompoundInterestRequest(prompt, normalized);
+   01160|   if (request) return answerCompoundInterest(request);
+   01161| 
+   01162|   const conversion = parseFinalAmountConversionRequest(normalized, history);
+   01163|   if (conversion) return answerFinalAmountConversion(conversion);
+   01164| 
+   01165|   return null;
+   01166| }
+   01167| 
+   01168| function answerCompoundInterest(request) {
+   01169|   const annualRate = request.annualRatePercent / 100;
+   01170|   const periodsPerYear = request.compoundsPerYear;
+   01171|   const periodicRate = annualRate / periodsPerYear;
+   01172|   const periods = periodsPerYear * request.years;
+   01173|   const finalAmount =
+   01174|     request.principal * Math.pow(1 + periodicRate, periods);
+   01175| 
+   01176|   const evidence = [
+   01177|     `calculation:compound_interest:P=${formatCompoundNumber(request.principal)};r=${formatCompoundRate(annualRate)};n=${periodsPerYear};t=${formatCompoundNumber(request.years)}`,
+   01178|     "calculation:formula:A=P(1+r/n)^(n*t)",
+   01179|   ];
+   01180|   let content = compoundResponse("compound_interest_report", {
+   01181|     principal: formatCompoundNumber(request.principal),
+   01182|     rate: formatCompoundRate(annualRate),
+   01183|     percent: formatCompoundNumber(request.annualRatePercent),
+   01184|     periods_per_year: periodsPerYear,
+   01185|     frequency: compoundPolicy(`label-${periodsPerYear}`) || compoundPolicy("label-other"),
+   01186|     years: formatCompoundNumber(request.years),
+   01187|     periodic_rate: formatCompoundRate(periodicRate),
+   01188|     periods: formatCompoundNumber(periods),
+   01189|     final_amount: formatCompoundMoney(finalAmount),
+   01190|   });
+   01191| 
+   01192|   if (request.targetCurrency) {
+   01193|     content += compoundConversion(
+   01194|       evidence,
+   01195|       finalAmount,
+   01196|       COMPOUND_PRINCIPAL_CURRENCY,
+   01197|       request.targetCurrency,
+   01198|       request.asksForWebRate,
+   01199|     );
+   01200|   }
+   01201| 
+   01202|   return {
+   01203|     intent: "calculation",
+   01204|     content,
+   01205|     confidence: 1.0,
+   01206|     evidence,
+   01207|   };
+   01208| }
+   01209| 
+   01210| function answerFinalAmountConversion(conversion) {
+   01211|   const evidence = ["calculation:final_amount_conversion"];
+   01212|   const content =
+   01213|     compoundResponse("compound_interest_final_amount_conversion", {
+   01214|       amount: formatCompoundMoney(conversion.amount),
+   01215|       source: conversion.sourceCurrency,
+   01216|     }) +
+   01217|     compoundConversion(
+   01218|       evidence,
+   01219|       conversion.amount,
+   01220|       conversion.sourceCurrency,
+   01221|       conversion.targetCurrency,
+   01222|       conversion.asksForWebRate,
+   01223|     );
+   01224|   return {
+   01225|     intent: "calculation",
+   01226|     content,
+   01227|     confidence: 1.0,
+   01228|     evidence,
+   01229|   };
+   01230| }
+   01231| 
+   01232| // The conversion paragraph appended to a report: the seeded default rate,
+   01233| // the converted amount, and the rate detail; or the honest no-rate sentence.
+   01234| function compoundConversion(evidence, amount, source, target, asksForWebRate) {
+   01235|   const rate = compoundDefaultRate(source, target);
+   01236|   if (rate === null) {
+   01237|     evidence.push(`calculation:currency_conversion:error:${source}->${target}`);
+   01238|     return `\n\n${compoundResponse("compound_interest_rate_unavailable", { source, target })}`;
+   01239|   }
+   01240|   const displayedAmount = roundCompoundMoney(amount);
+   01241|   const converted = displayedAmount * rate;
+   01242|   evidence.push(
+   01243|     `calculation:currency_conversion:${formatCompoundMoney(displayedAmount)} ${source} to ${target} at ${formatCompoundRate(rate)}`,
+   01244|   );
+   01245|   const expression = compoundPolicy("rate-expression").split("{source}").join(source).split("{target}").join(target);
+   01246|   let text = `\n\n${compoundResponse("compound_interest_conversion", {
+   01247|     source,
+   01248|     target,
+   01249|     expression,
+   01250|     rate: formatCompoundRate(rate),
+   01251|     amount: formatCompoundMoney(displayedAmount),
+   01252|     converted: formatCompoundMoney(converted),
+   01253|   })}`;
+   01254|   text += `\n${compoundResponse("compound_interest_rate_detail", { source, target, rate: formatCompoundRate(rate) })}`;
+   01255|   if (asksForWebRate) text += `\n${compoundResponse("compound_interest_live_rate_note")}`;
+   01256|   return text;
+   01257| }
+   01258| 
+   01259| // The seeded default rate from `source` to `target`: the direct pair, or the
+   01260| // inverse of the reverse pair.
+   01261| function compoundDefaultRate(source, target) {
+   01262|   const direct = compoundRateNumber(compoundPolicy(`rate_${source}_${target}`));
+   01263|   if (direct !== null) return direct;
+   01264|   const reverse = compoundRateNumber(compoundPolicy(`rate_${target}_${source}`));
+   01265|   return reverse === null || reverse === 0 ? null : 1 / reverse;
+   01266| }
+   01267| 
+   01268| function compoundRateNumber(text) {
+   01269|   return /^\d+(?:\.\d+)?$/.test(text) ? Number(text) : null;
+   01270| }
+   01271| 
+   01272| function parseCompoundInterestRequest(prompt, normalized) {
+   01273|   // The investment / interest / compounding cues are language-independent
+   01274|   // meanings carried by the finance lexicon, matched as raw substrings of the
+   01275|   // normalized prompt. Mirrors parse_compound_interest_request.
+   01276|   if (
+   01277|     !lexiconMentionsRoleSubstring(ROLE_INVESTMENT_CUE, normalized) ||
+   01278|     !lexiconMentionsRoleSubstring(ROLE_INTEREST_CUE, normalized) ||
+   01279|     !lexiconMentionsRoleSubstring(ROLE_COMPOUNDING_ACTION_CUE, normalized)
+   01280|   ) {
+   01281|     return null;
+   01282|   }
+   01283|   const principal = parseCompoundCurrencyAmount(prompt);
+   01284|   const annualRatePercent = parseCompoundPercentBeforeSymbol(prompt);
+   01285|   const compoundsPerYear = parseCompoundsPerYear(normalized);
+   01286|   const years = parseCompoundYears(normalized);
+   01287|   if (
+   01288|     principal === null ||
+   01289|     annualRatePercent === null ||
+   01290|     compoundsPerYear === null ||
+   01291|     years === null
+   01292|   ) {
+   01293|     return null;
+   01294|   }
+   01295|   return {
+   01296|     principal,
+   01297|     annualRatePercent,
+   01298|     compoundsPerYear,
+   01299|     years,
+   01300|     targetCurrency: targetCurrencyFromText(normalized, COMPOUND_PRINCIPAL_CURRENCY),
+   01301|     asksForWebRate: asksForWebRate(normalized),
+   01302|   };
+   01303| }
+   01304| 
+   01305| function parseFinalAmountConversionRequest(normalized, history) {
+   01306|   // "convert" and "final amount" are themselves meanings: a conversion action
+   01307|   // applied to the final-amount reference produced by a prior turn. Mirrors
+   01308|   // parse_final_amount_conversion_request.
+   01309|   if (
+   01310|     !lexiconMentionsRoleSubstring(ROLE_CONVERSION_ACTION_CUE, normalized) ||
+   01311|     !lexiconMentionsRoleSubstring(ROLE_FINAL_AMOUNT_REFERENCE, normalized)
+   01312|   ) {
+   01313|     return null;
+   01314|   }
+   01315|   const prior = priorFinalAmount(history);
+   01316|   if (!prior) return null;
+   01317|   const targetCurrency = targetCurrencyFromText(normalized, prior.currency);
+   01318|   if (!targetCurrency) return null;
+   01319|   return {
+   01320|     amount: prior.amount,
+   01321|     sourceCurrency: prior.currency,
+   01322|     targetCurrency,
+   01323|     asksForWebRate: asksForWebRate(normalized),
+   01324|   };
+   01325| }
+   01326| 
+   01327| function priorFinalAmount(history) {
+   01328|   if (!Array.isArray(history)) return null;
+   01329|   for (let index = history.length - 1; index >= 0; index -= 1) {
+   01330|     const turn = history[index];
+   01331|     if (!turn || turn.role !== "assistant") continue;
+   01332|     const parsed = parseFinalAmountFromText(String(turn.content || ""));
+   01333|     if (parsed) return parsed;
+   01334|   }
+   01335|   return null;
+   01336| }
+   01337| 
+   01338| // The amount and currency an earlier report states after the seeded
+   01339| // final-amount marker. Mirrors parse_final_amount_from_text.
+   01340| function parseFinalAmountFromText(text) {
+   01341|   const marker = compoundPolicy("final-amount-marker");
+   01342|   const lower = String(text || "").toLowerCase();
+   01343|   const at = marker ? lower.indexOf(marker) : -1;
+   01344|   if (at < 0) return null;
+   01345|   const match = /^[ \t\n\f\r]*([\d.,]*)[ \t\n\f\r]*(\p{L}*)/u.exec(lower.slice(at + marker.length));
+   01346|   const amount = parseCompoundNumberText(match[1]);
+   01347|   const entry = compoundCurrencies().find(([role]) => wordsForRole(role).includes(match[2]));
+   01348|   return amount === null || !entry ? null : { amount, currency: entry[1] };
+   01349| }
+   01350| 
+   01351| function parseCompoundCurrencyAmount(prompt) {
+   01352|   const text = String(prompt || "");
+   01353|   const dollarIndex = text.indexOf("$");
+   01354|   if (dollarIndex >= 0) return parseCompoundNumberRight(text, dollarIndex + 1);
+   01355|   // The spelled-out US-dollar markers are the English surfaces of
+   01356|   // currency_usd_reference, scanned as space-prefixed tokens with the amount
+   01357|   // to their left. Mirrors parse_currency_amount.
+   01358|   const lower = text.toLowerCase();
+   01359|   for (const word of wordsForRoleInLanguages(ROLE_CURRENCY_USD_REFERENCE, ["en"])) {
+   01360|     const index = lower.indexOf(` ${word}`);
+   01361|     if (index < 0) continue;
+   01362|     const amount = parseCompoundNumberLeft(lower, index);
+   01363|     if (amount !== null) return amount;
+   01364|   }
+   01365|   return null;
+   01366| }
+   01367| 
+   01368| function parseCompoundPercentBeforeSymbol(prompt) {
+   01369|   const text = String(prompt || "");
+   01370|   const percentIndex = text.indexOf("%");
+   01371|   return percentIndex >= 0 ? parseCompoundNumberLeft(text, percentIndex) : null;
+   01372| }
+   01373| 
+   01374| function parseCompoundYears(normalized) {
+   01375|   // The duration unit is a meaning (year_unit_cue); read the number to the
+   01376|   // left of the earliest of its surface forms that has one, so the "year" in
+   01377|   // "compounded yearly" is skipped. Mirrors years_in_prompt.
+   01378|   const text = String(normalized || "");
+   01379|   const positions = [];
+   01380|   for (const word of wordsForRole(ROLE_YEAR_UNIT_CUE)) {
+   01381|     if (!word) continue;
+   01382|     for (let index = text.indexOf(word); index >= 0; index = text.indexOf(word, index + 1)) positions.push(index);
+   01383|   }
+   01384|   positions.sort((left, right) => left - right);
+   01385|   for (const index of positions) {
+   01386|     const years = parseCompoundNumberLeft(text, index);
+   01387|     if (years !== null) return years;
+   01388|   }
+   01389|   return null;
+   01390| }
+   01391| 
+   01392| function parseCompoundsPerYear(normalized) {
+   01393|   // The compounding frequency is a cluster of meanings listed in priority
+   01394|   // order in the finance lexicon; the first whose surface appears in the
+   01395|   // prompt names its periods per year in the seeded policy. Mirrors
+   01396|   // parse_compounds_per_year.
+   01397|   const meaning = meaningsWithRole(ROLE_COMPOUNDING_FREQUENCY_CUE).find((candidate) =>
+   01398|     candidate.words.some((word) => normalized.includes(word)),
+   01399|   );
+   01400|   const periods = meaning ? compoundPolicy(`periods_${meaning.slug}`) : "";
+   01401|   return /^\d+$/.test(periods) ? Number(periods) : null;
+   01402| }
+   01403| 
+   01404| // The currency a conversion request names, skipping `source`: the first
+   01405| // currency meaning the prompt mentions as a whole token, in the priority of
+   01406| // compoundCurrencies(); the € glyph is a typographic symbol for the euro.
+   01407| // Mirrors target_currency.
+   01408| function targetCurrencyFromText(normalized, source) {
+   01409|   const entry = compoundCurrencies().find(([role, code]) => code !== source && (
+   01410|     lexiconMentionsRole(role, normalized) || (code === "EUR" && normalized.includes("€"))));
+   01411|   return entry ? entry[1] : "";
+   01412| }
+   01413| 
+   01414| function asksForWebRate(normalized) {
+   01415|   // "fetch the live/current rate from the web" is the live_rate_freshness_cue
+   01416|   // meaning, matched as raw substrings. Mirrors asks_for_web_rate.
+   01417|   return lexiconMentionsRoleSubstring(ROLE_LIVE_RATE_FRESHNESS_CUE, normalized);
+   01418| }
+   01419| 
+   01420| // Number readers mirroring parse_number_left / parse_number_right: skip ASCII
+   01421| // whitespace, then take the run of digits, dots and commas.
+   01422| function parseCompoundNumberLeft(text, end) {
+   01423|   const match = /([\d.,]*)[ \t\n\f\r]*$/.exec(String(text || "").slice(0, end));
+   01424|   return parseCompoundNumberText(match[1]);
+   01425| }
+   01426| 
+   01427| function parseCompoundNumberRight(text, start) {
+   01428|   const match = /^[ \t\n\f\r]*([\d.,]*)/.exec(String(text || "").slice(start));
+   01429|   return parseCompoundNumberText(match[1]);
+   01430| }
+   01431| 
+   01432| // A lone comma followed by at most two digits is a decimal comma (8,5); any
+   01433| // other comma groups thousands. Mirrors parse_number_slice.
+   01434| function parseCompoundNumberText(value) {
+   01435|   let cleaned = String(value || "").trim();
+   01436|   if (!/\d/.test(cleaned)) return null;
+   01437|   if (cleaned.includes(",") && !cleaned.includes(".")) {
+   01438|     const parts = cleaned.split(",");
+   01439|     cleaned =
+   01440|       parts.length === 2 && parts[1].length <= 2
+   01441|         ? `${parts[0]}.${parts[1]}`
+   01442|         : parts.join("");
+   01443|   } else {
+   01444|     cleaned = cleaned.replace(/,/g, "");
+   01445|   }
+   01446|   const parsed = Number(cleaned);
+   01447|   return Number.isFinite(parsed) ? parsed : null;
+   01448| }
+   01449| 
+   
+   (End of file - total 1449 lines)
+   </file>
+>> edit {"filePath":"js/worker/formal_ai_worker_translation_recall_and_compound_interest.js","file_path":"js/worker/formal_ai_worker_translation_recall_and_compound_interest.js","new":"        { kind: \"coreference:resolved\", payload: `${pronoun.token}=${subject}` },\n        ...(antecedent.wikidata ? [{ kind: \"wikidata\", payload: antecedent.wikidata }] : []),\n        { kind: \"coreference:rewrite\", payload: rewritten },","newString":"        { kind: \"coreference:resolved\", payload: `${pronoun.token}=${subject}` },\n        ...(antecedent.wikidata ? [{ kind: \"wikidata\", payload: antecedent.wikidata }] : []),\n        { kind: \"coreference:rewrite\", payload: rewritten },","new_str":"        { kind: \"coreference:resolved\", payload: `${pronoun.token}=${subject}` },\n        ...(antecedent.wikidata ? [{ kind: \"wikidata\", payload: antecedent.wikidata }] : []),\n        { kind: \"coreference:rewrite\", payload: rewritten },","new_string":"        { kind: \"coreference:resolved\", payload: `${pronoun.token}=${subject}` },\n        ...(antecedent.wikidata ? [{ kind: \"wikidata\", payload: antecedent.wikidata }] : []),\n        { kind: \"coreference:rewrite\", payload: rewritten },","old":"        { kind: \"coreference:resolved\", payload: `${pronoun.token}=${subject}` },\n        { kind: \"coreference:rewrite\", payload: rewritten },","oldString":"        { kind: \"coreference:resolved\", payload: `${pronoun.token}=${subject}` },\n        { kind: \"coreference:rewrite\", payload: rewritten },","old_str":"        { kind: \"coreference:resolved\", payload: `${pronoun.token}=${subject}` },\n        { kind: \"coreference:rewrite\", payload: rewritten },","old_string":"        { kind: \"coreference:resolved\", payload: `${pronoun.token}=${subject}` },\n        { kind: \"coreference:rewrite\", payload: rewritten },","path":"js/worker/formal_ai_worker_translation_recall_and_compound_interest.js"}
+>> bash {"command":"sha256sum -- js/worker/formal_ai_worker_translation_recall_and_compound_interest.js"}
+   Output: 73cf9d62045287a98af245b61d8938db2736bdc484a6752a63e2ad71ef9fdbc5  js/worker/formal_ai_worker_translation_recall_and_compound_interest.js
+   
+   Exit Code: 0
+== answer ==
+Replaced ``        { kind: "coreference:resolved", payload: `${pronoun.token}=${subject}` },
+        { kind: "coreference:rewrite", payload: rewritten },`` with ``        { kind: "coreference:resolved", payload: `${pronoun.token}=${subject}` },
+        ...(antecedent.wikidata ? [{ kind: "wikidata", payload: antecedent.wikidata }] : []),
+        { kind: "coreference:rewrite", payload: rewritten },`` in `js/worker/formal_ai_worker_translation_recall_and_compound_interest.js` and observed the result.

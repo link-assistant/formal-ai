@@ -1,0 +1,46 @@
+>> bash {"command":"node --input-type=module -e 'await import(\"data:text/javascript;base64,aW1wb3J0IGZzIGZyb20gJ25vZGU6ZnMnOyBjb25zdCBwYXRoPSdqcy93b3JrZXItbW9kdWxlcy5qcyc7IGNvbnN0IHNvdXJjZT1mcy5yZWFkRmlsZVN5bmMocGF0aCwndXRmOCcpOyBjb25zdCBtYXJrZXI9J3NlbGYuRk9STUFMX0FJX1dPUktFUl9NT0RVTEVTID0gT2JqZWN0LmZyZWV6ZShbJzsgY29uc3Qgc3RhcnQ9c291cmNlLmluZGV4T2YobWFya2VyKTsgaWYoc3RhcnQ8MCl0aHJvdyBFcnJvcignaW52ZW50b3J5IG1hcmtlciBhYnNlbnQnKTsgY29uc3QgbW9kdWxlcz1mcy5yZWFkZGlyU3luYygnanMvd29ya2VyJyx7d2l0aEZpbGVUeXBlczp0cnVlfSkuZmlsdGVyKGVudHJ5PT5lbnRyeS5pc0ZpbGUoKSYmZW50cnkubmFtZS5lbmRzV2l0aCgnLmpzJykmJmVudHJ5Lm5hbWUhPT0nZm9ybWFsX2FpX3dvcmtlci5qcycpLm1hcChlbnRyeT0+ZW50cnkubmFtZSkuc29ydCgpOyBmcy53cml0ZUZpbGVTeW5jKHBhdGgsc291cmNlLnNsaWNlKDAsc3RhcnQpK21hcmtlcisnXG4nK21vZHVsZXMubWFwKG5hbWU9PicgICJ3b3JrZXIvJytuYW1lKyciLFxuJykuam9pbignJykrJ10pO1xuJyk7IGNvbnN0IGhvc3Q9bmV3IChhd2FpdCBpbXBvcnQoJy4vanMvc2VydmVyL3dvcmtlci1ob3N0Lm1qcycpKS5Xb3JrZXJIb3N0KCk7IGNvbnN0IHJlYWxtPWF3YWl0IGhvc3QuYm9vdCgpOyBpZih0eXBlb2YgcmVhbG0udHJ5Q29yZWZlcmVuY2VGYWN0TG9va3VwIT09J2Z1bmN0aW9uJyl0aHJvdyBFcnJvcignYWN0dWFsIGhlbHBlciBub3QgbG9hZGVkJyk7IGNvbnNvbGUubG9nKCdBQ1RVQUxfRlJFU0hfQ09SRUZFUkVOQ0VfSEVMUEVSX0xPQURFRCcpOw==\");'"}
+   Output: 
+   Error: (node:99151) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+   --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("/private/tmp/pr1188-coreference-boot-loader.mjs", pathToFileURL("./"));'
+   (Use `node --trace-warnings ...` to show where the warning was created)
+   
+   node:internal/modules/run_main:123
+       triggerUncaughtException(
+       ^
+   TypeError [ERR_UNSUPPORTED_RESOLVE_REQUEST]: Failed to resolve module specifier "./js/server/worker-host.mjs" from "data:text/javascript;base64,aW1wb3J0IGZzIGZyb20gJ25vZGU6ZnMnOyBjb25zdCBwYXRoPSdqcy93b3JrZXItbW9kdWxlcy5qcyc7IGNvbnN0IHNvdXJjZT1mcy5yZWFkRmlsZVN5bmMocGF0aCwndXRmOCcpOyBjb25zdCBtYXJrZXI9J3NlbGYuRk9STUFMX0FJX1dPUktFUl9NT0RVTEVTID0gT2JqZWN0LmZyZWV6ZShbJzsgY29uc3Qgc3RhcnQ9c291cmNlLmluZGV4T2YobWFya2VyKTsgaWYoc3RhcnQ8MCl0aHJvdyBFcnJvcignaW52ZW50b3J5IG1hcmtlciBhYnNlbnQnKTsgY29uc3QgbW9kdWxlcz1mcy5yZWFkZGlyU3luYygnanMvd29ya2VyJyx7d2l0aEZpbGVUeXBlczp0cnVlfSkuZmlsdGVyKGVudHJ5PT5lbnRyeS5pc0ZpbGUoKSYmZW50cnkubmFtZS5lbmRzV2l0aCgnLmpzJykmJmVudHJ5Lm5hbWUhPT0nZm9ybWFsX2FpX3dvcmtlci5qcycpLm1hcChlbnRyeT0+ZW50cnkubmFtZSkuc29ydCgpOyBmcy53cml0ZUZpbGVTeW5jKHBhdGgsc291cmNlLnNsaWNlKDAsc3RhcnQpK21hcmtlcisnXG4nK21vZHVsZXMubWFwKG5hbWU9PicgICJ3b3JrZXIvJytuYW1lKyciLFxuJykuam9pbignJykrJ10pO1xuJyk7IGNvbnN0IGhvc3Q9bmV3IChhd2FpdCBpbXBvcnQoJy4vanMvc2VydmVyL3dvcmtlci1ob3N0Lm1qcycpKS5Xb3JrZXJIb3N0KCk7IGNvbnN0IHJlYWxtPWF3YWl0IGhvc3QuYm9vdCgpOyBpZih0eXBlb2YgcmVhbG0udHJ5Q29yZWZlcmVuY2VGYWN0TG9va3VwIT09J2Z1bmN0aW9uJyl0aHJvdyBFcnJvcignYWN0dWFsIGhlbHBlciBub3QgbG9hZGVkJyk7IGNvbnNvbGUubG9nKCdBQ1RVQUxfRlJFU0hfQ09SRUZFUkVOQ0VfSEVMUEVSX0xPQURFRCcpOw==": Invalid relative URL or base scheme is not hierarchical.
+       at moduleResolve (node:internal/modules/esm/resolve:931:21)
+       at defaultResolve (node:internal/modules/esm/resolve:1188:11)
+       ... 4 lines matching cause stack trace ...
+       at MessagePort.<anonymous> (node:internal/per_context/messageport:23:28) {
+     code: 'ERR_UNSUPPORTED_RESOLVE_REQUEST',
+     cause: TypeError [Error]: Invalid URL
+         at new URL (node:internal/url:806:29)
+         at moduleResolve (node:internal/modules/esm/resolve:929:18)
+         at defaultResolve (node:internal/modules/esm/resolve:1188:11)
+         at nextResolve (node:internal/modules/esm/hooks:864:28)
+         at Hooks.resolve (node:internal/modules/esm/hooks:306:30)
+         at MessagePort.handleMessage (node:internal/modules/esm/worker:196:24)
+         at [nodejs.internal.kHybridDispatch] (node:internal/event_target:831:20)
+         at MessagePort.<anonymous> (node:internal/per_context/messageport:23:28) {
+       code: 'ERR_INVALID_URL',
+       input: './js/server/worker-host.mjs',
+       base: 'data:text/javascript;base64,aW1wb3J0IGZzIGZyb20gJ25vZGU6ZnMnOyBjb25zdCBwYXRoPSdqcy93b3JrZXItbW9kdWxlcy5qcyc7IGNvbnN0IHNvdXJjZT1mcy5yZWFkRmlsZVN5bmMocGF0aCwndXRmOCcpOyBjb25zdCBtYXJrZXI9J3NlbGYuRk9STUFMX0FJX1dPUktFUl9NT0RVTEVTID0gT2JqZWN0LmZyZWV6ZShbJzsgY29uc3Qgc3RhcnQ9c291cmNlLmluZGV4T2YobWFya2VyKTsgaWYoc3RhcnQ8MCl0aHJvdyBFcnJvcignaW52ZW50b3J5IG1hcmtlciBhYnNlbnQnKTsgY29uc3QgbW9kdWxlcz1mcy5yZWFkZGlyU3luYygnanMvd29ya2VyJyx7d2l0aEZpbGVUeXBlczp0cnVlfSkuZmlsdGVyKGVudHJ5PT5lbnRyeS5pc0ZpbGUoKSYmZW50cnkubmFtZS5lbmRzV2l0aCgnLmpzJykmJmVudHJ5Lm5hbWUhPT0nZm9ybWFsX2FpX3dvcmtlci5qcycpLm1hcChlbnRyeT0+ZW50cnkubmFtZSkuc29ydCgpOyBmcy53cml0ZUZpbGVTeW5jKHBhdGgsc291cmNlLnNsaWNlKDAsc3RhcnQpK21hcmtlcisnXG4nK21vZHVsZXMubWFwKG5hbWU9PicgICJ3b3JrZXIvJytuYW1lKyciLFxuJykuam9pbignJykrJ10pO1xuJyk7IGNvbnN0IGhvc3Q9bmV3IChhd2FpdCBpbXBvcnQoJy4vanMvc2VydmVyL3dvcmtlci1ob3N0Lm1qcycpKS5Xb3JrZXJIb3N0KCk7IGNvbnN0IHJlYWxtPWF3YWl0IGhvc3QuYm9vdCgpOyBpZih0eXBlb2YgcmVhbG0udHJ5Q29yZWZlcmVuY2VGYWN0TG9va3VwIT09J2Z1bmN0aW9uJyl0aHJvdyBFcnJvcignYWN0dWFsIGhlbHBlciBub3QgbG9hZGVkJyk7IGNvbnNvbGUubG9nKCdBQ1RVQUxfRlJFU0hfQ09SRUZFUkVOQ0VfSEVMUEVSX0xPQURFRCcpOw=='
+     }
+   }
+   
+   Node.js v20.19.4
+   
+   Exit Code: 1
+== answer ==
+The command failed: `node --input-type=module -e 'await import("data:text/javascript;base64,aW1wb3J0IGZzIGZyb20gJ25vZGU6ZnMnOyBjb25zdCBwYXRoPSdqcy93b3JrZXItbW9kdWxlcy5qcyc7IGNvbnN0IHNvdXJjZT1mcy5yZWFkRmlsZVN5bmMocGF0aCwndXRmOCcpOyBjb25zdCBtYXJrZXI9J3NlbGYuRk9STUFMX0FJX1dPUktFUl9NT0RVTEVTID0gT2JqZWN0LmZyZWV6ZShbJzsgY29uc3Qgc3RhcnQ9c291cmNlLmluZGV4T2YobWFya2VyKTsgaWYoc3RhcnQ8MCl0aHJvdyBFcnJvcignaW52ZW50b3J5IG1hcmtlciBhYnNlbnQnKTsgY29uc3QgbW9kdWxlcz1mcy5yZWFkZGlyU3luYygnanMvd29ya2VyJyx7d2l0aEZpbGVUeXBlczp0cnVlfSkuZmlsdGVyKGVudHJ5PT5lbnRyeS5pc0ZpbGUoKSYmZW50cnkubmFtZS5lbmRzV2l0aCgnLmpzJykmJmVudHJ5Lm5hbWUhPT0nZm9ybWFsX2FpX3dvcmtlci5qcycpLm1hcChlbnRyeT0+ZW50cnkubmFtZSkuc29ydCgpOyBmcy53cml0ZUZpbGVTeW5jKHBhdGgsc291cmNlLnNsaWNlKDAsc3RhcnQpK21hcmtlcisnXG4nK21vZHVsZXMubWFwKG5hbWU9PicgICJ3b3JrZXIvJytuYW1lKyciLFxuJykuam9pbignJykrJ10pO1xuJyk7IGNvbnN0IGhvc3Q9bmV3IChhd2FpdCBpbXBvcnQoJy4vanMvc2VydmVyL3dvcmtlci1ob3N0Lm1qcycpKS5Xb3JrZXJIb3N0KCk7IGNvbnN0IHJlYWxtPWF3YWl0IGhvc3QuYm9vdCgpOyBpZih0eXBlb2YgcmVhbG0udHJ5Q29yZWZlcmVuY2VGYWN0TG9va3VwIT09J2Z1bmN0aW9uJyl0aHJvdyBFcnJvcignYWN0dWFsIGhlbHBlciBub3QgbG9hZGVkJyk7IGNvbnNvbGUubG9nKCdBQ1RVQUxfRlJFU0hfQ09SRUZFUkVOQ0VfSEVMUEVSX0xPQURFRCcpOw==");'` exited with code 1.
+
+```text
+(node:99151) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("/private/tmp/pr1188-coreference-boot-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+TypeError [ERR_UNSUPPORTED_RESOLVE_REQUEST]: Failed to resolve module specifier "./js/server/worker-host.mjs" from "data:text/javascript;base64,aW1wb3J0IGZzIGZyb20gJ25vZGU6ZnMnOyBjb25zdCBwYXRoPSdqcy93b3JrZXItbW9kdWxlcy5qcyc7IGNvbnN0IHNvdXJjZT1mcy5yZWFkRmlsZVN5bmMocGF0aCwndXRmOCcpOyBjb25zdCBtYXJrZXI9J3NlbGYuRk9STUFMX0FJX1dPUktFUl9NT0RVTEVTID0gT2JqZWN0LmZyZWV6ZShbJzsgY29uc3Qgc3RhcnQ9c291cmNlLmluZGV4T2YobWFya2VyKTsgaWYoc3RhcnQ8MCl0aHJvdyBFcnJvcignaW52ZW50b3J5IG1hcmtlciBhYnNlbnQnKTsgY29uc3QgbW9kdWxlcz1mcy5yZWFkZGlyU3luYygnanMvd29ya2VyJyx7d2l0aEZpbGVUeXBlczp0cnVlfSkuZmlsdGVyKGVudHJ5PT5lbnRyeS5pc0ZpbGUoKSYmZW50cnkubmFtZS5lbmRzV2l0aCgnLmpzJykmJmVudHJ5Lm5hbWUhPT0nZm9ybWFsX2FpX3dvcmtlci5qcycpLm1hcChlbnRyeT0+ZW50cnkubmFtZSkuc29ydCgpOyBmcy53cml0ZUZpbGVTeW5jKHBhdGgsc291cmNlLnNsaWNlKDAsc3RhcnQpK21hcmtlcisnXG4nK21vZHVsZXMubWFwKG5hbWU9PicgICJ3b3JrZXIvJytuYW1lKyciLFxuJykuam9pbignJykrJ10pO1xuJyk7IGNvbnN0IGhvc3Q9bmV3IChhd2FpdCBpbXBvcnQoJy4vanMvc2VydmVyL3dvcmtlci1ob3N0Lm1qcycpKS5Xb3JrZXJIb3N0KCk7IGNvbnN0IHJlYWxtPWF3YWl0IGhvc3QuYm9vdCgpOyBpZih0eXBlb2YgcmVhbG0udHJ5Q29yZWZlcmVuY2VGYWN0TG9va3VwIT09J2Z1bmN0aW9uJyl0aHJvdyBFcnJvcignYWN0dWFsIGhlbHBlciBub3QgbG9hZGVkJyk7IGNvbnNvbGUubG9nKCdBQ1RVQUxfRlJFU0hfQ09SRUZFUkVOQ0VfSEVMUEVSX0xPQURFRCcpOw==": Invalid relative URL or base scheme is not hierarchical.
+    at moduleResolve (node:interna

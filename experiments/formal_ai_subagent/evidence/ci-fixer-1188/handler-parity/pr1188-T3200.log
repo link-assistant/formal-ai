@@ -1,0 +1,1307 @@
+>> read {"filePath":"js/worker/formal_ai_worker_write_program_and_research.js","file_path":"js/worker/formal_ai_worker_write_program_and_research.js","path":"js/worker/formal_ai_worker_write_program_and_research.js"}
+   <file>
+   00001| // The write-program handler with its verification trace, conversation recap,
+   00002| // research comparison tables, summarize prompts and the web-search literal
+   00003| // markers.
+   00004| // Loaded by ../formal_ai_worker.js.
+   00005| function writeProgramDecompositionParts(modifier) {
+   00006|   if (modifier === "reverse_sort") {
+   00007|     return {
+   00008|       operation: "sort",
+   00009|       operationModifier: "descending",
+   00010|       target: "program:last.output_order",
+   00011|       targetKind: "program_output",
+   00012|     };
+   00013|   }
+   00014|   if (modifier === "cancel_reverse_sort") {
+   00015|     // Issue #386: the inverse of reverse_sort — cancel the descending order
+   00016|     // over the same program-output target.
+   00017|     return {
+   00018|       operation: "cancel",
+   00019|       operationModifier: "reverse_sort",
+   00020|       target: "program:last.output_order",
+   00021|       targetKind: "program_output",
+   00022|     };
+   00023|   }
+   00024|   if (modifier === "path_argument") {
+   00025|     return {
+   00026|       operation: "accept",
+   00027|       operationModifier: "path_argument",
+   00028|       target: "program:last.input",
+   00029|       targetKind: "program_input",
+   00030|     };
+   00031|   }
+   00032|   return {
+   00033|     operation: "modify",
+   00034|     operationModifier: null,
+   00035|     target: "program:last",
+   00036|     targetKind: "program_artifact",
+   00037|   };
+   00038| }
+   00039| 
+   00040| function writeProgramPrimaryModifier(modifiers) {
+   00041|   if (!Array.isArray(modifiers) || modifiers.length === 0) return null;
+   00042|   return modifiers.includes("reverse_sort") ? "reverse_sort" : modifiers[0];
+   00043| }
+   00044| 
+   00045| function writeProgramCandidateRuleId(plan, modifier) {
+   00046|   if (!plan || !modifier) return "";
+   00047|   const traces = Array.isArray(plan.traces) ? plan.traces : [];
+   00048|   for (let index = traces.length - 1; index >= 0; index -= 1) {
+   00049|     const ruleId = String(traces[index].ruleId || "");
+   00050|     if (ruleId.includes(modifier)) return ruleId;
+   00051|   }
+   00052|   return `${modifier}_${plan.baseTask || "program"}`;
+   00053| }
+   00054| 
+   00055| function writeProgramSynthesisRequest(context, prompt, modifier) {
+   00056|   const parts = writeProgramDecompositionParts(modifier);
+   00057|   const lines = ["rule_synthesis_request"];
+   00058|   lines.push("  issue #359");
+   00059|   lines.push("  impulse current_turn");
+   00060|   lines.push("  artifact program:last");
+   00061|   lines.push(`  artifact_language ${context.language || "missing"}`);
+   00062|   lines.push(`  base_task ${context.task || "missing"}`);
+   00063|   lines.push("  bare_imperative true");
+   00064|   lines.push(`  operation ${parts.operation}`);
+   00065|   if (parts.operationModifier) {
+   00066|     lines.push(`  operation_modifier ${parts.operationModifier}`);
+   00067|   }
+   00068|   lines.push(`  target ${parts.target}`);
+   00069|   lines.push(`  target_kind ${parts.targetKind}`);
+   00070|   lines.push(`  source_text ${prompt}`);
+   00071|   return lines.join("\n");
+   00072| }
+   00073| 
+   00074| function writeProgramSynthesisCandidate(candidateId, context, plan, modifier) {
+   00075|   const parts = writeProgramDecompositionParts(modifier);
+   00076|   const lines = ["rule_synthesis_candidate"];
+   00077|   lines.push(`  id ${candidateId}`);
+   00078|   lines.push("  source constructed_from_operation_vocabulary");
+   00079|   lines.push(`  base_task ${context.task || "missing"}`);
+   00080|   lines.push(`  modifier ${modifier}`);
+   00081|   lines.push(`  operation ${parts.operation}`);
+   00082|   if (parts.operationModifier) {
+   00083|     lines.push(`  operation_modifier ${parts.operationModifier}`);
+   00084|   }
+   00085|   lines.push(`  target ${parts.target}`);
+   00086|   lines.push(`  resolved_task ${(plan && plan.resolvedTask) || "missing"}`);
+   00087|   return lines.join("\n");
+   00088| }
+   00089| function templateHasDescendingOrder(code) {
+   00090|   const compact = String(code || "").toLowerCase().split(/\s+/).join("");
+   00091|   return [
+   00092|     "sort_by(|a,b|b.cmp(a))",
+   00093|     "reverse=true",
+   00094|     ".sort().reverse()",
+   00095|     "sort.sort(sort.reverse",
+   00096|     "compare_desc",
+   00097|     "rbegin(),names.rend()",
+   00098|     "comparator.reverseorder()",
+   00099|     "orderbydescending",
+   00100|     "sort.reverse",
+   00101|   ].some((marker) => compact.includes(marker));
+   00102| }
+   00103| function writeProgramVerificationTrace(candidateId, plan, template, modifiers) {
+   00104|   if (!plan || !Array.isArray(modifiers) || modifiers.length === 0) return null;
+   00105|   const planCheck = programPlanWasModified(plan) && Array.isArray(plan.traces) && plan.traces.length > 0;
+   00106|   // Issue #386: verify the rendered program actually matches the operation. A
+   00107|   // reverse_sort must leave the output descending; its inverse,
+   00108|   // cancel_reverse_sort, must leave NO descending order — otherwise the cancel
+   00109|   // silently failed to remove the sort. Modifiers that touch no ordering pass.
+   00110|   const cancelsSort = modifiers.includes("cancel_reverse_sort");
+   00111|   const reversesSort = modifiers.includes("reverse_sort");
+   00112|   const descending = templateHasDescendingOrder(template);
+   00113|   const renderCheck = cancelsSort ? !descending : reversesSort ? descending : true;
+   00114|   const passed = planCheck && renderCheck;
+   00115|   const expectedOrder = reversesSort && !cancelsSort ? "c.txt,b.txt,a.txt" : "a.txt,b.txt,c.txt";
+   00116|   return [
+   00117|     "rule_verification",
+   00118|     `  candidate ${candidateId}`,
+   00119|     "  fixture list_files_output_order",
+   00120|     "  input a.txt,b.txt,c.txt",
+   00121|     `  expected_order ${expectedOrder}`,
+   00122|     `  lowering_check ${planCheck ? "passed" : "failed"}`,
+   00123|     `  render_check ${renderCheck ? "passed" : "failed"}`,
+   00124|     `  status ${passed ? "passed" : "failed"}`,
+   00125|   ].join("\n");
+   00126| }
+   00127| function writeProgramDiagnosticBundle({
+   00128|   prompt,
+   00129|   initiallyDetected,
+   00130|   coreference,
+   00131|   detected,
+   00132|   modifiers,
+   00133|   lowered,
+   00134|   plan,
+   00135|   template,
+   00136| }) {
+   00137|   const steps = [];
+   00138|   const trace = [];
+   00139|   const coreferenceTrace = coreference && coreference.trace;
+   00140|   if (!initiallyDetected && coreferenceTrace) {
+   00141|     const detail = "selected_rule initial unknown reason no_seed_route next try_rule_synthesis";
+   00142|     steps.push({ step: "route_attempt", detail });
+   00143|     trace.push(`selected_rule:${detail}`);
+   00144|   } else {
+   00145|     const detail = "selected_rule write_program reason seed_route";
+   00146|     steps.push({ step: "route_attempt", detail });
+   00147|     trace.push(`selected_rule:${detail}`);
+   00148|   }
+   00149| 
+   00150|   if (coreferenceTrace) {
+   00151|     const detail = `write_program_coreference_rewrite\n  ${coreferenceTrace}`;
+   00152|     steps.push({ step: "coreference_binding", detail });
+   00153|     trace.push(`write_program_coreference_rewrite:${coreferenceTrace}`);
+   00154|   }
+   00155| 
+   00156|   const safeModifiers = Array.isArray(modifiers) ? modifiers : [];
+   00157|   if (safeModifiers.length > 0) {
+   00158|     const operationHits = safeModifiers.join(",");
+   00159|     const detail = `rule_synthesis_operation_vocabulary\n  ${operationHits}`;
+   00160|     steps.push({ step: "modifier_detection", detail });
+   00161|     trace.push(`rule_synthesis_operation_vocabulary:${operationHits}`);
+   00162|   }
+   00163| 
+   00164|   const primaryModifier = writeProgramPrimaryModifier(safeModifiers);
+   00165|   if (primaryModifier && lowered && programPlanWasModified(lowered)) {
+   00166|     const context = {
+   00167|       task: (detected && detected.task) || lowered.baseTask || "missing",
+   00168|       language: (detected && detected.language) || "missing",
+   00169|     };
+   00170|     const candidateId = writeProgramCandidateRuleId(lowered, primaryModifier);
+   00171|     const request = writeProgramSynthesisRequest(context, prompt, primaryModifier);
+   00172|     const candidate = writeProgramSynthesisCandidate(
+   00173|       candidateId,
+   00174|       context,
+   00175|       lowered,
+   00176|       primaryModifier,
+   00177|     );
+   00178|     const construction = `${request}\n${candidate}`;
+   00179|     steps.push({ step: "rule_construction", detail: construction });
+   00180|     trace.push(`rule_synthesis_request:${request}`);
+   00181|     trace.push(`rule_synthesis_candidate:${candidate}`);
+   00182| 
+   00183|     const verification = writeProgramVerificationTrace(
+   00184|       candidateId,
+   00185|       lowered,
+   00186|       template,
+   00187|       safeModifiers,
+   00188|     );
+   00189|     if (verification) {
+   00190|       steps.push({ step: "rule_verification", detail: verification });
+   00191|       trace.push(`rule_verification:${verification}`);
+   00192|     }
+   00193|   }
+   00194| 
+   00195|   if (plan) {
+   00196|     const detail = `write_program_plan\n${plan}`;
+   00197|     steps.push({ step: "program_plan", detail });
+   00198|     trace.push(`write_program_plan:${plan}`);
+   00199|   }
+   00200| 
+   00201|   return { steps, trace };
+   00202| }
+   00203| 
+   00204| function tryWriteProgram(prompt, history, responseLanguage, composition) {
+   00205|   let detected = requestedWriteProgramParameters(prompt); // R1173-3: text to print names the operand task
+   00206|   const initiallyDetected = detected;
+   00207|   const coreference = detected ? null : rewriteBareProgramCoreference(prompt, history);
+   00208|   if (!detected && !coreference) return null;
+   00209|   if (coreference) detected = coreference.parameters;
+   00210|   // Issue #324: recover task/language from the conversation when a follow-up
+   00211|   // modification names neither (and apply any path-argument modifier).
+   00212|   const { language, task, plan, modifiers, lowered } = recoverWriteProgramParameters(
+   00213|     detected,
+   00214|     prompt,
+   00215|     history,
+   00216|   );
+   00217|   // Issue #324: answer in the language of the request (falls back to en).
+   00218|   const i18n = writeProgramStrings(responseLanguage);
+   00219|   const operand = WRITE_PROGRAM_TASKS[task]?.procedure ? programTaskOperand(prompt) : null; // R1173-3
+   00220|   const operandResult = operandProgram(task, language, operand);
+   00221|   const template = operand === null ? writeProgramTemplate(task, language) : operandResult && operandResult.recipe.entry; // #1165: documentation first, else stored
+   00222|   const diagnostics = writeProgramDiagnosticBundle({
+   00223|     prompt,
+   00224|     initiallyDetected,
+   00225|     coreference,
+   00226|     detected,
+   00227|     modifiers,
+   00228|     lowered,
+   00229|     plan,
+   00230|     template,
+   00231|   });
+   00232|   if (!template) {
+   00233|     // Issue #340 (R7): before the unsupported dead end, try a composite
+   00234|     // blueprint. When the request decomposes into a recognized recipe for a
+   00235|     // language we ship a curated program for, return that program with its plan
+   00236|     // and an honest "not run" report (mirrors `try_program_blueprint` in
+   00237|     // `src/solver_handlers/program_blueprint.rs`).
+   00238|     const normalizedForBlueprint = normalizeProgramPrompt(prompt);
+   00239|     const blueprintLanguage =
+   00240|       language || programLanguageFromPrompt(normalizedForBlueprint);
+   00241|     const blueprint = blueprintLanguage
+   00242|       ? selectBlueprint(normalizedForBlueprint, blueprintLanguage)
+   00243|       : null;
+   00244|     if (blueprint) {
+   00245|       return blueprintWriteProgramAnswer(
+   00246|         blueprint,
+   00247|         blueprintLanguage,
+   00248|         responseLanguage,
+   00249|         composition,
+   00250|       );
+   00251|     }
+   00252|     // Issue #412 (R6): before the unsupported dead end, try the coding oracle —
+   00253|     // the cached external knowledge bases (Hello World Collection, Rosetta Code,
+   00254|     // …) answer for languages the verified catalog does not template (Kotlin,
+   00255|     // Swift, PHP, …). Mirrors `try_write_program_from_oracle` in
+   00256|     // `src/solver_handler_oracle.rs`.
+   00257|     const oracleTask = task || programTaskFromPrompt(normalizeProgramPrompt(prompt));
+   00258|     const oracleAnswer = language ? codingOracleAnswer(oracleTask, language) : null;
+   00259|     if (oracleAnswer) return oracleAnswer;
+   00260|     if (tryFactLookup(prompt, normalizePrompt(prompt))) return null; // native: an unsupported request reaches meta dispatch, whose fact_lookup row (issue #1175 p112) answers a seeded fact first
+   00261|     // Issue #906: an unfilled parameter is not a skill gap — the dead end the
+   00262|     // request reached decides the intent, the event and the response link.
+   00263|     const deadEnd = programDeadEnd(task, language);
+   00264|     return {
+   00265|       intent: deadEnd.intent,
+   00266|       content: programSkillGapAnswer(task, language, responseLanguage),
+   00267|       confidence: 0.4,
+   00268|       evidence: [
+   00269|         deadEnd.link,
+   00270|         `${deadEnd.event}:${programSkillGapName(task, language, "en")}`,
+   00271|         `program_parameter:language:${language || "missing"}`,
+   00272|         `program_parameter:task:${task || "missing"}`,
+   00273|       ],
+   00274|       steps: diagnostics.steps,
+   00275|       trace: diagnostics.trace,
+   00276|     };
+   00277|   }
+   00278|   const languageInfo = writeProgramLanguageInfo(task, language, operandResult); // #1165 R1165-6: the documented run contract
+   00279|   const taskInfo = WRITE_PROGRAM_TASKS[task];
+   00280|   const expectedOutput = operand === null ? writeProgramExpectedOutput(task, languageInfo, taskInfo) : operand;
+   00281|   // The sandbox can only execute self-contained JavaScript; a snippet that pulls
+   00282|   // in Node APIs (e.g. the list-files `require("fs")`) cannot run here (#312).
+   00283|   const ranInSandbox =
+   00284|     language === "javascript" && !/\brequire\s*\(|\bimport\b/.test(template);
+   00285|   const lines = [];
+   00286|   lines.push(i18n.intro(languageInfo.name, taskInfo.label));
+   00287|   lines.push("");
+   00288|   lines.push("```" + languageInfo.fence);
+   00289|   lines.push(template);
+   00290|   lines.push("```");
+   00291|   lines.push("");
+   00292|   const executionLines = writeProgramExecutionLines(language, task, template, expectedOutput, i18n, responseLanguage);
+   00293|   lines.push(...executionLines);
+   00294|   // Issue #330 (R9): teach a novice — append a plain-language explanation of how
+   00295|   // the code works, then step-by-step instructions for testing it. Follow-up
+   00296|   // edits (when the dialog already showed code) drop the verbose setup steps.
+   00297|   const priorCode = historyHasPriorCode(history);
+   00298|   lines.push("");
+   00299|   lines.push(programExplanationSection(task, responseLanguage));
+   00300|   lines.push("");
+   00301|   lines.push(programTestInstructions(languageInfo, responseLanguage, priorCode, task));
+   00302|   const content = applyInlineHelloWorldOutputReplacement(prompt, task, lines.join("\n"));
+   00303|   return {
+   00304|     intent: "write_program",
+   00305|     content,
+   00306|     // R1013: the sandbox block and the facts a native host reports instead (js/server/program-report.mjs).
+   00307|     programExecution: { language, task, responseLanguage, checkCommand: languageInfo.checkCommand || null,
+   00308|       rediscoveredFrom: operandResult ? operandResult.recipe.rediscovery_source : documentationRediscoveredPage(task, language), // #1165
+   00309|       runCommand: programRunCommandLine(task, languageInfo.runCommand), output: applyInlineHelloWorldOutputReplacement(prompt, task, expectedOutput),
+   00310|       block: applyInlineHelloWorldOutputReplacement(prompt, task, executionLines.join("\n")) },
+   00311|     confidence: 0.9,
+   00312|     evidence: [
+   00313|       `response:write_program:${task}:${language}`, ...metaAlgorithmConstructionEvidence(activeMetaAlgorithmSurface(diagnostics.trace)),
+   00314|       `program_parameter:language:${language}`,
+   00315|       `program_parameter:task:${task}`,
+   00316|       `program_parameters:write_program(language=${language}:task=${task})`,
+   00317|       task === "hello_world"
+   00318|         ? `legacy_intent:hello_world_${language}`
+   00319|         : `legacy_intent:write_program_${task}_${language}`,
+   00320|       `execution_status:${language}:${ranInSandbox ? "ran" : "unavailable"}`,
+   00321|       // Issue #324 R4/R6: surface the substitution plan when a follow-up
+   00322|       // modification rewrote the task (mirrors the Rust `write_program_plan`
+   00323|       // event in `src/solver.rs`).
+   00324|       ...(plan ? [`write_program_plan:${task}`] : []),
+   00325|       ...(coreference
+   00326|         ? [`write_program_coreference_rewrite:${task || "missing"}:${language || "missing"}`]
+   00327|         : []),
+   00328|     ],
+   00329|     steps: diagnostics.steps,
+   00330|     trace: diagnostics.trace.length ? diagnostics.trace : undefined,
+   00331|   };
+   00332| }
+   00333| 
+   00334| function recapPlainSentence(text) {
+   00335|   let plain = String(text || "")
+   00336|     .replace(/```[\s\S]*?```|~~~[\s\S]*?~~~/gu, " ")
+   00337|     .replace(/^\s*(?:#{1,6}|[-+>*])\s*/gmu, " ")
+   00338|     .replace(/[#`*]/gu, "")
+   00339|     .replace(/\s+/gu, " ")
+   00340|     .trim()
+   00341|     .split(/\s+[—–]\s+/u)[0];
+   00342|   const sentence = plain.match(/^.*?(?:[.!?](?=\s|$)|[。！？])/u);
+   00343|   if (sentence) plain = sentence[0];
+   00344|   if (plain && !/[.!?。！？]$/u.test(plain)) plain += ".";
+   00345|   return plain;
+   00346| }
+   00347| 
+   00348| function tryRecapConversation(history) {
+   00349|   if (!Array.isArray(history)) return null;
+   00350|   let userIndex = -1;
+   00351|   for (let index = history.length - 1; index >= 0; index -= 1) {
+   00352|     if (history[index]?.role === "user" && history[index]?.content) {
+   00353|       userIndex = index;
+   00354|       break;
+   00355|     }
+   00356|   }
+   00357|   if (userIndex < 0) return null;
+   00358|   const sentences = [recapPlainSentence(history[userIndex].content)].filter(Boolean);
+   00359|   for (let index = history.length - 1; index > userIndex; index -= 1) {
+   00360|     if (history[index]?.role !== "assistant" || !history[index]?.content) continue;
+   00361|     const status = recapPlainSentence(history[index].content);
+   00362|     if (status && status.toLowerCase() !== sentences[0]?.toLowerCase())
+   00363|       sentences.push(status);
+   00364|     break;
+   00365|   }
+   00366|   const words = sentences.slice(0, 2).join(" ").split(/\s+/u).filter(Boolean);
+   00367|   let content = words.slice(0, 39).join(" ");
+   00368|   if (words.length > 39) content = `${content.replace(/[.,;:!?。！？]+$/u, "")}.`;
+   00369|   if (!content) return null;
+   00370|   return {
+   00371|     intent: "summarize_conversation",
+   00372|     content,
+   00373|     confidence: 0.9,
+   00374|     evidence: [
+   00375|       "summarize_conversation",
+   00376|       "summarization:format:plain",
+   00377|       "max_words:39",
+   00378|       "max_sentences:2",
+   00379|     ],
+   00380|   };
+   00381| }
+   00382| 
+   00383| function tryHistorical(prompt, history) {
+   00384|   const normalized = normalizePrompt(prompt);
+   00385|   // Issue #386: a conversation-summary request is recognised by composing
+   00386|   // meaning roles (see isSummarizePrompt) across every supported language, so
+   00387|   // we test it before the empty-normalized bail-out below. Issue #858 selects
+   00388|   // the returning-user recap's bounded plain format before the detailed report.
+   00389|   if (isReturnRecapPrompt(normalized)) {
+   00390|     return tryRecapConversation(history);
+   00391|   }
+   00392|   if (isSummarizePrompt(normalized)) {
+   00393|     return trySummarizeConversation(history);
+   00394|   }
+   00395|   if (!normalized) return null;
+   00396|   // Issue #676: set/recall the assistant's own name from dialog-local history so
+   00397|   // "Now your name is Ineffa" is acknowledged and later recalled, instead of
+   00398|   // falling through to the unknown opener. Mirrors try_assistant_name in the
+   00399|   // Rust conversation-memory handler and runs before the user-name recall below.
+   00400|   const assistantName = tryAssistantName(prompt, normalized, history);
+   00401|   if (assistantName) return assistantName;
+   00402|   if (normalized === "what is my name" || normalized === "what s my name") {
+   00403|     const hit = tryRecallName(history);
+   00404|     if (hit) return hit;
+   00405|   }
+   00406|   if (lexiconMentionsRole(ROLE_CONVERSATION_RECALL_PREVIOUS_USER_MESSAGE, normalized)) {
+   00407|     return tryRecallLastQuestion(prompt, history);
+   00408|   }
+   00409|   // Issue #529: recognise "what was written in the previous message?" across
+   00410|   // every supported language via the conversation_recall_previous_message seed
+   00411|   // role after the user-message recall above, so "what did I ask in the
+   00412|   // previous message" targets the user's prior turn rather than the assistant's.
+   00413|   const previousMessage = tryRecallPreviousMessage(prompt, history);
+   00414|   if (previousMessage) return previousMessage;
+   00415|   return null;
+   00416| }
+   00417| 
+   00418| // Issue #386 research comparison-table roles — mirror the ROLE_COMPARISON_*
+   00419| // and ROLE_RESEARCH_* consts in src/seed/roles.rs. The strong trigger, the weak
+   00420| // table-noun/difference-cue pair, the research-prompt signals (bare markers plus
+   00421| // prefix surfaces), and the per-column criterion words all live in
+   00422| // data/seed/meanings-research-table.lino (loaded into MEANINGS_LINO), so
+   00423| // the handler references the concepts, not raw words in one language.
+   00424| const ROLE_COMPARISON_TABLE_TRIGGER = "comparison_table_trigger";
+   00425| const ROLE_COMPARISON_TABLE_NOUN = "comparison_table_noun";
+   00426| const ROLE_COMPARISON_DIFFERENCE_CUE = "comparison_difference_cue";
+   00427| const ROLE_RESEARCH_PROMPT_SIGNAL = "research_prompt_signal";
+   00428| const ROLE_RESEARCH_CRITERION = "research_criterion";
+   00429| 
+   00430| // True when the prompt asks for a comparison drawn as a table: a strong
+   00431| // comparison_table_trigger, or the weak pair of a comparison_table_noun and a
+   00432| // comparison_difference_cue — each token-bounded across every supported
+   00433| // language. Mirrors is_comparison_table_request in
+   00434| // src/solver_handlers/research_table.rs.
+   00435| function isComparisonTableRequest(normalized) {
+   00436|   return (
+   00437|     lexiconMentionsRole(ROLE_COMPARISON_TABLE_TRIGGER, normalized) ||
+   00438|     (lexiconMentionsRole(ROLE_COMPARISON_TABLE_NOUN, normalized) &&
+   00439|       lexiconMentionsRole(ROLE_COMPARISON_DIFFERENCE_CUE, normalized))
+   00440|   );
+   00441| }
+   00442| 
+   00443| // True when `prompt` was itself a research request — the prior turn a
+   00444| // comparison-table follow-up reuses for its topics. research_prompt_signal
+   00445| // carries bare markers (matched token-bounded anywhere) and prefix surfaces
+   00446| // (matched when the prompt opens with the literal before the … slot); both live
+   00447| // in the seed data. Mirrors looks_like_research_prompt in
+   00448| // src/solver_handlers/research_table.rs.
+   00449| function looksLikeResearchPrompt(prompt) {
+   00450|   const normalized = normalizePrompt(prompt);
+   00451|   if (lexiconMentionsRole(ROLE_RESEARCH_PROMPT_SIGNAL, normalized)) return true;
+   00452|   return roleWordForms(ROLE_RESEARCH_PROMPT_SIGNAL)
+   00453|     .filter((form) => form.slot === "prefix")
+   00454|     .some((form) => normalized.startsWith(form.before));
+   00455| }
+   00456| 
+   00457| function stripResearchListMarker(line) {
+   00458|   const value = String(line || "").trim();
+   00459|   if (!value) return "";
+   00460|   if (/^[-*+]\s+/u.test(value)) {
+   00461|     return value.replace(/^[-*+]\s+/u, "").trim();
+   00462|   }
+   00463|   if (/^\d+[.):]\s*/u.test(value)) {
+   00464|     return value.replace(/^\d+[.):]\s*/u, "").trim();
+   00465|   }
+   00466|   return "";
+   00467| }
+   00468| 
+   00469| function cleanResearchText(value) {
+   00470|   return String(value || "")
+   00471|     .trim()
+   00472|     .replace(/^[`"':;,.?!\s]+/u, "")
+   00473|     .replace(/[`"':;,.?!\s]+$/u, "")
+   00474|     .replace(/\s+/g, " ")
+   00475|     .trim();
+   00476| }
+   00477| 
+   00478| function extractResearchTopics(prompt) {
+   00479|   const topics = [];
+   00480|   for (const line of String(prompt || "").split(/\r?\n/u)) {
+   00481|     const item = cleanResearchText(stripResearchListMarker(line));
+   00482|     if (!item || looksLikeResearchPrompt(item)) continue;
+   00483|     if (!topics.some((topic) => topic.toLowerCase() === item.toLowerCase())) {
+   00484|       topics.push(item);
+   00485|     }
+   00486|     if (topics.length >= 8) break;
+   00487|   }
+   00488|   if (topics.length === 0 && String(prompt || "").includes(":")) {
+   00489|     const item = cleanResearchText(String(prompt).split(":").slice(1).join(":"));
+   00490|     if (item) topics.push(item);
+   00491|   }
+   00492|   return topics;
+   00493| }
+   00494| 
+   00495| let cachedResearchTableProcedure = null;
+   00496| 
+   00497| /**
+   00498|  * The research comparison procedure of data/seed/research-table-procedure.lino:
+   00499|  * the prior-answer statuses and their markers (a status without markers is the
+   00500|  * fallback), the localized table text, the criterion columns with their labels
+   00501|  * and cell instructions, and the whole-prompt result follow-ups. Mirrors
+   00502|  * parse_research_table_procedure in rust/src/solver_handlers/research_table.rs.
+   00503|  * @returns {object}
+   00504|  */
+   00505| function researchTableProcedure() {
+   00506|   if (cachedResearchTableProcedure) return cachedResearchTableProcedure;
+   00507|   const text = seedRawText(SEED_RAW, "research-table-procedure.lino");
+   00508|   const root = text
+   00509|     ? parseLinoTree(text).children.find((node) => node.name === "research_table_procedure")
+   00510|     : null;
+   00511|   const records = root ? root.children : [];
+   00512|   const localized = (node, name) => linoChildValues(node, name).map((raw) => {
+   00513|     const value = String(raw || "");
+   00514|     const space = value.search(/\s/u);
+   00515|     if (space < 0) return null;
+   00516|     const text = value.slice(space).trim().replace(/^"+|"+$/gu, "").split('""').join('"');
+   00517|     return { language: value.slice(0, space), text };
+   00518|   }).filter(Boolean);
+   00519|   const named = (name) => records.filter((node) => node.name === name);
+   00520|   const procedure = {
+   00521|     statuses: named("status").map((node) => ({
+   00522|       slug: node.value,
+   00523|       markers: linoChildValues(node, "marker").map((marker) => String(marker).toLowerCase()),
+   00524|     })),
+   00525|     tableTexts: named("table_text").map((node) => ({
+   00526|       language: node.value,
+   00527|       intro: childValue(node, "intro"),
+   00528|       topicLabel: childValue(node, "topic_label"),
+   00529|     })),
+   00530|     criteria: named("criterion").map((node) => ({
+   00531|       slug: node.value,
+   00532|       labels: localized(node, "label"),
+   00533|       instructions: localized(node, "instruction"),
+   00534|     })),
+   00535|     followupRequests: named("followup_request").map((node) => String(node.value).toLowerCase()),
+   00536|   };
+   00537|   if (text) cachedResearchTableProcedure = procedure;
+   00538|   return procedure;
+   00539| }
+   00540| 
+   00541| function researchTableColumn(slug) {
+   00542|   return researchTableProcedure().criteria.find((column) => column.slug === slug) || null;
+   00543| }
+   00544| 
+   00545| function researchLocalizedValue(values, language) {
+   00546|   const hit = values.find((value) => value.language === language) ||
+   00547|     values.find((value) => value.language === "en");
+   00548|   return hit ? hit.text : null;
+   00549| }
+   00550| 
+   00551| function pushUniqueCriterion(criteria, criterion) {
+   00552|   if (!criteria.includes(criterion)) criteria.push(criterion);
+   00553| }
+   00554| 
+   00555| // Add every comparison column the text names. Walks the research_criterion
+   00556| // meanings in declaration order (which fixes the column order) and adds a
+   00557| // criterion when any of its surface words occurs as a raw substring and the
+   00558| // procedure declares its column — the same substring contract the legacy code
+   00559| // used, so space-guarded stems like 'pro ' and ' con ' still avoid matching
+   00560| // inside 'process'/'control'. Mirrors append_criteria_from_text in
+   00561| // src/solver_handlers/research_table.rs.
+   00562| function appendResearchCriteriaFromText(text, criteria) {
+   00563|   const normalized = normalizePrompt(text);
+   00564|   for (const meaning of meaningsWithRole(ROLE_RESEARCH_CRITERION)) {
+   00565|     if (researchTableColumn(meaning.slug) && meaning.words.some((word) => normalized.includes(word))) {
+   00566|       pushUniqueCriterion(criteria, meaning.slug);
+   00567|     }
+   00568|   }
+   00569| }
+   00570| 
+   00571| function extractResearchCriteria(prompt) {
+   00572|   const criteria = [];
+   00573|   for (const line of String(prompt || "").split(/\r?\n/u)) {
+   00574|     const item = stripResearchListMarker(line);
+   00575|     if (item) appendResearchCriteriaFromText(item, criteria);
+   00576|   }
+   00577|   if (criteria.length === 0) appendResearchCriteriaFromText(prompt, criteria);
+   00578|   return criteria.length > 0 ? criteria : researchTableProcedure().criteria.map((column) => column.slug);
+   00579| }
+   00580| 
+   00581| function escapeResearchTableCell(value) {
+   00582|   return String(value || "").replace(/\|/g, "\\|").replace(/\n/g, " ");
+   00583| }
+   00584| 
+   00585| // The draft table: the seeded intro, a topic column and one column per
+   00586| // criterion with the seeded, source-dependent cell instruction in the request's
+   00587| // language. Mirrors render_comparison_table in
+   00588| // src/solver_handlers/research_table.rs; no topic fact is ever written here.
+   00589| function renderResearchComparisonTable(topics, criteria, language) {
+   00590|   const procedure = researchTableProcedure();
+   00591|   const tableText = procedure.tableTexts.find((entry) => entry.language === language) ||
+   00592|     procedure.tableTexts.find((entry) => entry.language === "en") || null;
+   00593|   const columnText = (criterion, field) => {
+   00594|     const column = researchTableColumn(criterion);
+   00595|     return (column && researchLocalizedValue(column[field], language)) || criterion;
+   00596|   };
+   00597|   let body = `${tableText ? tableText.intro : ""}\n\n| ${tableText ? tableText.topicLabel : ""} |`;
+   00598|   for (const criterion of criteria) body += ` ${columnText(criterion, "labels")} |`;
+   00599|   body += `\n| --- |${criteria.map(() => " --- |").join("")}\n`;
+   00600|   for (const topic of topics) {
+   00601|     body += `| ${escapeResearchTableCell(topic)} |`;
+   00602|     for (const criterion of criteria) {
+   00603|       body += ` ${escapeResearchTableCell(columnText(criterion, "instructions"))} |`;
+   00604|     }
+   00605|     body += "\n";
+   00606|   }
+   00607|   return body.trimEnd();
+   00608| }
+   00609| 
+   00610| function compactResearchLogValue(value) {
+   00611|   return String(value || "").split(/\s+/u).filter(Boolean).join(" ");
+   00612| }
+   00613| 
+   00614| function tryResearchComparisonTable(prompt, normalized, history = []) {
+   00615|   if (!isComparisonTableRequest(normalized)) return null;
+   00616|   const priorSearch = lastHistoryTurn(history, "user");
+   00617|   if (!priorSearch || !looksLikeResearchPrompt(priorSearch)) return null;
+   00618|   const topics = extractResearchTopics(priorSearch);
+   00619|   if (topics.length < 2) return null;
+   00620|   const criteria = extractResearchCriteria(prompt);
+   00621|   if (criteria.length === 0) return null;
+   00622|   return {
+   00623|     intent: "research_comparison_table",
+   00624|     content: renderResearchComparisonTable(topics, criteria, detectLanguage(prompt)),
+   00625|     confidence: 0.78,
+   00626|     evidence: [
+   00627|       `research_table:prior_search:${compactResearchLogValue(priorSearch)}`,
+   00628|       ...topics.map((topic) => `research_table:topic:${topic}`),
+   00629|       ...criteria.map((criterion) => `research_table:criterion:${criterion}`),
+   00630|     ],
+   00631|   };
+   00632| }
+   00633| 
+   00634| // The whole prompt is one of the procedure's followup_request phrasings.
+   00635| // Mirrors is_research_result_followup.
+   00636| function isResearchResultFollowup(normalized) {
+   00637|   return researchTableProcedure().followupRequests.includes(normalizePrompt(normalized));
+   00638| }
+   00639| 
+   00640| // The first status whose marker the prior answer carries, else the status
+   00641| // that declares no marker. Mirrors classify_prior_research_answer.
+   00642| function classifyPriorResearchAnswer(answer) {
+   00643|   const statuses = researchTableProcedure().statuses;
+   00644|   const fallback = (statuses.find((status) => status.markers.length === 0) || { slug: "" }).slug;
+   00645|   if (!answer) return fallback;
+   00646|   const normalized = normalizePrompt(answer);
+   00647|   const hit = statuses.find((status) => status.markers.some((marker) => normalized.includes(marker)));
+   00648|   return hit ? hit.slug : fallback;
+   00649| }
+   00650| 
+   00651| function researchPromptPreview(value) {
+   00652|   const compact = compactResearchLogValue(value);
+   00653|   const chars = Array.from(compact);
+   00654|   return chars.length <= 240 ? compact : `${chars.slice(0, 237).join("")}...`;
+   00655| }
+   00656| 
+   00657| // The seeded research_result_followup_<status> response with the prior task's
+   00658| // preview in its slot. Mirrors render_research_result_followup.
+   00659| function renderResearchResultFollowup(priorSearch, status, language) {
+   00660|   return nativeLaneRender(answerFor(`research_result_followup_${status}`, language),
+   00661|     { preview: researchPromptPreview(priorSearch) });
+   00662| }
+   00663| 
+   00664| function tryResearchResultFollowup(prompt, normalized, history = []) {
+   00665|   if (!isResearchResultFollowup(normalized)) return null;
+   00666|   const priorSearch = lastHistoryTurn(history, "user");
+   00667|   if (!priorSearch || !looksLikeResearchPrompt(priorSearch)) return null;
+   00668|   const status = classifyPriorResearchAnswer(lastHistoryTurn(history, "assistant"));
+   00669|   return {
+   00670|     intent: "research_result_followup",
+   00671|     content: renderResearchResultFollowup(priorSearch, status, detectLanguage(prompt)),
+   00672|     confidence: 0.76,
+   00673|     evidence: [
+   00674|       `research_result_followup:prior_search:${compactResearchLogValue(priorSearch)}`,
+   00675|       `research_result_followup:status:${status}`,
+   00676|     ],
+   00677|   };
+   00678| }
+   00679| 
+   00680| // Issue #386: a conversation-summary request is recognised by composing
+   00681| // meaning roles, not by matching raw words per language. The universal
+   00682| // algorithm is identical for every language: the prompt either carries a
+   00683| // complete standalone conversation-summary phrasing, an objectless courtesy
+   00684| // frame ("can you summarize", "подведи итог"), a summary directive together
+   00685| // with an explicit conversation reference, or it is itself a bare summary
+   00686| // directive. The prompt is re-normalised first so the boundary-aware matcher
+   00687| // sees punctuation collapsed to spaces (idempotent here, since `normalized`
+   00688| // is already normalised). Mirror of asks_for_conversation_summary in
+   00689| // src/solver_handlers/mod.rs.
+   00690| function isSummarizePrompt(normalized) {
+   00691|   const cleaned = normalizePrompt(normalized);
+   00692|   return (
+   00693|     isReturnRecapPrompt(cleaned) ||
+   00694|     lexiconMentionsRole(ROLE_CONVERSATION_SUMMARY_PHRASE, cleaned) ||
+   00695|     (lexiconMentionsRole(ROLE_CONVERSATION_SUMMARY_COURTESY, cleaned) &&
+   00696|       courtesyFrameLeavesNoObject(cleaned)) ||
+   00697|     (lexiconMentionsRole(ROLE_CONVERSATION_SUMMARY_DIRECTIVE, cleaned) &&
+   00698|       lexiconMentionsRole(ROLE_CONVERSATION_REFERENCE, cleaned)) ||
+   00699|     summaryDirectiveLeads(cleaned)
+   00700|   );
+   00701| }
+   00702| 
+   00703| // The courtesy frames are frames, not owners: "can you summarize" opens a
+   00704| // request whose object, when one follows, belongs to whichever handler
+   00705| // summarizes that object. Stripping every courtesy and directive surface
+   00706| // from the prompt must leave nothing — "can you summarize" alone summarizes
+   00707| // the running conversation, "can you summarize Rust" names a topic. Longest
+   00708| // surfaces strip first so a frame that prefixes another ("подведи итог"
+   00709| // inside "подведи итоги") leaves no orphan letters. Mirror of
+   00710| // courtesy_frame_leaves_no_object in
+   00711| // src/solver_handlers/conversation_memory/conversation_summary.rs.
+   00712| function courtesyFrameLeavesNoObject(cleaned) {
+   00713|   const surfaces = [
+   00714|     ...wordsForRole(ROLE_CONVERSATION_SUMMARY_COURTESY),
+   00715|     ...wordsForRole(ROLE_CONVERSATION_SUMMARY_DIRECTIVE),
+   00716|   ]
+   00717|     .filter(Boolean)
+   00718|     .sort((a, b) => b.length - a.length);
+   00719|   let remainder = cleaned;
+   00720|   for (const surface of surfaces) {
+   00721|     remainder = remainder.split(surface).join(" ");
+   00722|   }
+   00723|   // Whitespace and ASCII punctuation are the only leftovers an objectless
+   00724|   // frame may show ("can you summarize?", "summarize!").
+   00725|   return !remainder.replace(
+   00726|     /[\s\x21-\x2f\x3a-\x40\x5b-\x60\x7b-\x7e]/gu,
+   00727|     "",
+   00728|   );
+   00729| }
+   00730| 
+   00731| function isReturnRecapPrompt(normalized) {
+   00732|   return lexiconMentionsRole(
+   00733|     ROLE_CONVERSATION_RETURN_RECAP,
+   00734|     normalizePrompt(normalized),
+   00735|   );
+   00736| }
+   00737| 
+   00738| // A bare summary directive standing alone is itself a request to summarize the
+   00739| // running conversation ("summarize", "резюме", "总结", ...). For whitespace-
+   00740| // delimited scripts the directive must be the whole prompt; for CJK (no word
+   00741| // spaces) a leading directive suffices, mirroring the historical `^总结`
+   00742| // anchor and keeping compounds like "工作总结" (a work summary) out. Mirror of
+   00743| // summary_directive_leads in src/solver_handlers/mod.rs.
+   00744| function summaryDirectiveLeads(cleaned) {
+   00745|   return wordsForRole(ROLE_CONVERSATION_SUMMARY_DIRECTIVE).some((word) =>
+   00746|     containsCjk(word) ? cleaned.startsWith(word) : cleaned === word,
+   00747|   );
+   00748| }
+   00749| 
+   00750| function trimUrlToken(token) {
+   00751|   return String(token || "")
+   00752|     .replace(/^[<>()\[\]{}"'`«»]+/u, "")
+   00753|     .replace(/[<>()\[\]{}"'`«»]+$/u, "")
+   00754|     .replace(/[.,!?;:…]+$/u, "");
+   00755| }
+   00756| 
+   00757| function looksLikeHostname(value) {
+   00758|   const host = String(value || "").trim();
+   00759|   if (!host.includes(".") || host.startsWith(".") || host.endsWith(".")) {
+   00760|     return false;
+   00761|   }
+   00762|   const labels = host.split(".");
+   00763|   if (labels.some((label) => !label)) return false;
+   00764|   const tld = labels[labels.length - 1] || "";
+   00765|   if (tld.length < 2) return false;
+   00766|   return labels.every(
+   00767|     (label) =>
+   00768|       /^[a-z0-9-]+$/i.test(label) &&
+   00769|       !label.startsWith("-") &&
+   00770|       !label.endsWith("-"),
+   00771|   );
+   00772| }
+   00773| 
+   00774| // Mirror probable_local_file_name in src/solver_handlers/web_search_intent.rs.
+   00775| // A schemeless attachment/path such as report.txt is a local object, not an
+   00776| // HTTPS host. Explicit http(s) URLs still take the authoritative branch below.
+   00777| function probableLocalFileName(candidate) {
+   00778|   const extension = String(candidate || "").split(".").pop().toLowerCase();
+   00779|   return [
+   00780|     "txt", "md", "json", "yaml", "yml", "toml", "rs", "py", "js", "ts",
+   00781|     "tsx", "jsx", "css", "html", "xml", "csv", "lino", "log", "sh",
+   00782|   ].includes(extension);
+   00783| }
+   00784| 
+   00785| function normalizeUrlCandidate(candidate) {
+   00786|   const text = String(candidate || "").trim();
+   00787|   if (!text || /\s/.test(text) || text.includes("@")) return null;
+   00788|   const lower = text.toLowerCase();
+   00789|   let url = "";
+   00790|   if (lower.startsWith("http://") || lower.startsWith("https://")) {
+   00791|     url = text;
+   00792|   } else {
+   00793|     const hostCandidate = text.split(/[/?#]/, 1)[0] || "";
+   00794|     if (
+   00795|       !probableLocalFileName(hostCandidate) &&
+   00796|       (lower.startsWith("www.") || looksLikeHostname(hostCandidate))
+   00797|     ) {
+   00798|       url = `https://${text}`;
+   00799|     }
+   00800|   }
+   00801|   if (!url) return null;
+   00802|   let parsed;
+   00803|   try {
+   00804|     parsed = new URL(url);
+   00805|   } catch (_error) {
+   00806|     return null;
+   00807|   }
+   00808|   if (!looksLikeHostname(parsed.hostname)) return null;
+   00809|   return parsed.href.replace(/\/$/, "");
+   00810| }
+   00811| 
+   00812| function firstUrlCandidate(prompt) {
+   00813|   const tokens = String(prompt || "").split(/\s+/);
+   00814|   for (const token of tokens) {
+   00815|     const trimmed = trimUrlToken(token);
+   00816|     const url = normalizeUrlCandidate(trimmed);
+   00817|     if (url) return { raw: trimmed, url };
+   00818|   }
+   00819|   return null;
+   00820| }
+   00821| 
+   00822| // Issue #386: the web intents are recognised by *meaning*, not a hardcoded
+   00823| // per-language phrase list. The surface words live once in
+   00824| // data/seed/meanings-web-navigation.lino as the `http_fetch` and `url_navigate`
+   00825| // meanings (loaded into MEANINGS_LINO); mirror the ROLE_HTTP_FETCH /
+   00826| // ROLE_URL_NAVIGATE consts in src/seed/meanings.rs.
+   00827| const ROLE_HTTP_FETCH = "http_fetch";
+   00828| const ROLE_URL_NAVIGATE = "url_navigate";
+   00829| 
+   00830| function startsWithAny(haystack, prefixes) {
+   00831|   return prefixes.some((prefix) => haystack.startsWith(prefix));
+   00832| }
+   00833| 
+   00834| // Does a meaning carrying `role` evidence one of the prompt's lowercased forms?
+   00835| // Buckets every surface form of the role by its derived slot exactly as
+   00836| // role_evidences_web_intent does in src/solver_handlers/web_requests.rs:
+   00837| //   - "prefix": form.before must *begin* one of the prompt forms ("fetch …" →
+   00838| //     "fetch google.com"); form.before keeps the trailing space.
+   00839| //   - "bare": form.text must appear *anywhere* in one of the prompt forms
+   00840| //     ("запрос к" → "сделать запрос к google.com").
+   00841| // `forms` are the lowercased prompt views matched against (the normalized
+   00842| // prompt and the raw lowercased prompt). The result is a pure OR over every
+   00843| // (form, surface) pair, so bucket order only affects short-circuiting — the
+   00844| // surface words are never named here (issue #386).
+   00845| function roleEvidencesWebIntent(role, forms) {
+   00846|   const wordForms = roleWordForms(role);
+   00847|   const matchesPrefix = wordForms
+   00848|     .filter((form) => form.slot === "prefix")
+   00849|     .some((form) => forms.some((text) => text.startsWith(form.before)));
+   00850|   if (matchesPrefix) return true;
+   00851|   return wordForms
+   00852|     .filter((form) => form.slot === "bare")
+   00853|     .some((form) => forms.some((text) => text.includes(form.text)));
+   00854| }
+   00855| 
+   00856| function isHttpFetchPrompt(prompt, normalized) {
+   00857|   const raw = String(prompt || "").trimStart().toLowerCase();
+   00858|   return roleEvidencesWebIntent(ROLE_HTTP_FETCH, [normalized, raw]);
+   00859| }
+   00860| 
+   00861| function isUrlNavigatePrompt(prompt, normalized, rawCandidate) {
+   00862|   const raw = String(prompt || "").trimStart().toLowerCase();
+   00863|   if (raw.startsWith(String(rawCandidate || "").toLowerCase())) {
+   00864|     // Bare URL — treat as navigation, not a request to fetch.
+   00865|     return true;
+   00866|   }
+   00867|   return roleEvidencesWebIntent(ROLE_URL_NAVIGATE, [normalized, raw]);
+   00868| }
+   00869| 
+   00870| function extractHttpFetchUrl(prompt, normalized) {
+   00871|   const candidate = firstUrlCandidate(prompt);
+   00872|   if (!candidate || !isHttpFetchPrompt(prompt, normalized)) {
+   00873|     return null;
+   00874|   }
+   00875|   return candidate.url;
+   00876| }
+   00877| 
+   00878| function extractUrlNavigateUrl(prompt, normalized) {
+   00879|   const candidate = firstUrlCandidate(prompt);
+   00880|   if (!candidate || !isUrlNavigatePrompt(prompt, normalized, candidate.raw)) {
+   00881|     return null;
+   00882|   }
+   00883|   return candidate.url;
+   00884| }
+   00885| 
+   00886| function cleanSearchQuery(value) {
+   00887|   return String(value || "")
+   00888|     .trim()
+   00889|     .replace(/^[<>()\[\]{}"'`«»]+/u, "")
+   00890|     .replace(/[<>()\[\]{}"'`«»]+$/u, "")
+   00891|     .replace(/[.,!?;:…]+$/u, "")
+   00892|     .replace(/\s+/g, " ")
+   00893|     .trim();
+   00894| }
+   00895| 
+   00896| function stripSearchPrefix(prompt, prefix) {
+   00897|   const text = String(prompt || "").trim();
+   00898|   if (text.toLowerCase().startsWith(prefix)) {
+   00899|     return validSearchQuery(text.slice(prefix.length));
+   00900|   }
+   00901|   return "";
+   00902| }
+   00903| 
+   00904| function stripSearchSuffix(prompt, suffix) {
+   00905|   const text = cleanSearchQuery(prompt);
+   00906|   if (text.toLowerCase().endsWith(suffix)) {
+   00907|     return validSearchQuery(text.slice(0, text.length - suffix.length));
+   00908|   }
+   00909|   return "";
+   00910| }
+   00911| 
+   00912| function stripSearchCircumfix(prompt, prefix, suffix) {
+   00913|   const text = cleanSearchQuery(prompt);
+   00914|   const lower = text.toLowerCase();
+   00915|   if (lower.startsWith(prefix) && lower.endsWith(suffix)) {
+   00916|     return validSearchQuery(
+   00917|       text.slice(prefix.length, text.length - suffix.length),
+   00918|     );
+   00919|   }
+   00920|   return "";
+   00921| }
+   00922| 
+   00923| // Issue #386: every surface cue the web-search recogniser reasons about — the
+   00924| // explicit command prefixes, the action/source/signal vocabulary, the topic
+   00925| // connectives, the query noise, the follow-up instruction verbs and clause
+   00926| // boundaries, and the research/enumeration vocabulary — is sourced from the
+   00927| // language-independent meaning lexicon (data/seed/meanings-web-search*.lino,
+   00928| // meanings-web-research.lino, meanings-web-followup.lino, embedded in
+   00929| // MEANINGS_LINO). The code references those meanings by their semantic
+   00930| // *role* and by the *slot* each word form occupies (prefix / suffix / bare),
+   00931| // never by raw words baked into a per-language list — adding a language or a
+   00932| // synonym is a pure data edit. Mirrors WebSearchMarkers / markers() in
+   00933| // src/solver_handlers/web_search_intent.rs.
+   00934| const ROLE_WEB_SEARCH_EXPLICIT_PREFIX = "web_search_explicit_prefix";
+   00935| const ROLE_WEB_SEARCH_ACTION = "web_search_action";
+   00936| const ROLE_WEB_SEARCH_STRONG_ACTION = "web_search_strong_action";
+   00937| const ROLE_WEB_SEARCH_SIGNAL = "web_search_signal";
+   00938| const ROLE_WEB_SEARCH_TOPIC_MARKER = "web_search_topic_marker";
+   00939| const ROLE_WEB_SEARCH_IMPERATIVE_LEAD = "web_search_imperative_lead";
+   00940| const ROLE_WEB_SEARCH_QUERY_LEADING_NOISE = "web_search_query_leading_noise";
+   00941| const ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE = "web_search_query_trailing_noise";
+   00942| const ROLE_WEB_SEARCH_SOURCE_ONLY = "web_search_source_only";
+   00943| const ROLE_WEB_SEARCH_NEWS_SUBJECT = "web_search_news_subject";
+   00944| const ROLE_WEB_SEARCH_NEWS_RECENCY = "web_search_news_recency";
+   00945| const ROLE_WEB_SEARCH_RECORDS_SUBJECT = "web_search_records_subject";
+   00946| const ROLE_WEB_SEARCH_PUBLIC_EVENT_SUBJECT = "web_search_public_event_subject";
+   00947| const ROLE_DOCUMENT_ORIGINALITY_CHECK_ACTION = "document_originality_check_action";
+   00948| const ROLE_DOCUMENT_ORIGINALITY_SUBJECT = "document_originality_subject";
+   00949| const ROLE_DOCUMENT_ORIGINALITY_DOCUMENT = "document_originality_document";
+   00950| // Mention of web search inside a *prior* conversation turn (raw lowercased
+   00951| // substring of the turn text, not the normalised prompt). Mirrors
+   00952| // ROLE_WEB_SEARCH_HISTORY_SIGNAL in src/seed/roles.rs.
+   00953| const ROLE_WEB_SEARCH_HISTORY_SIGNAL = "web_search_history_signal";
+   00954| const ROLE_FOLLOWUP_INSTRUCTION_VERB = "followup_instruction_verb";
+   00955| const ROLE_CLAUSE_CONTINUATION_MARKER = "clause_continuation_marker";
+   00956| const ROLE_RESEARCH_QUESTION_OPENER = "research_question_opener";
+   00957| const ROLE_TERM_INFORMATION_REQUEST_OPENER = "term_information_request_opener";
+   00958| const ROLE_RESEARCH_SUPERLATIVE_MODIFIER = "research_superlative_modifier";
+   00959| const ROLE_RESEARCH_EVIDENCE_DOMAIN = "research_evidence_domain";
+   00960| const ROLE_RESEARCH_EVALUATION_DOMAIN = "research_evaluation_domain";
+   00961| const ROLE_ENUMERATION_REQUEST_OPENER = "enumeration_request_opener";
+   00962| const ROLE_ENUMERATION_CONSTRAINT = "enumeration_constraint";
+   00963| 
+   00964| // Issue #386 proof + who-is roles — mirror ROLE_PROOF_* / ROLE_WHO_QUESTION_*
+   00965| // in src/seed/roles.rs. Surfaces live in data/seed/meanings-proof.lino and the
+   00966| // who_is_question meaning in data/seed/meanings-intent.lino. The proof_directive
+   00967| // bare verbs and proof_claim_scaffold prefixes share the `prove` meaning,
+   00968| // separated by slot. (The worker's proof engine does not branch on the
+   00969| // Goedel/determinism concepts, so those roles are referenced only by Rust.)
+   00970| const ROLE_PROOF_DIRECTIVE = "proof_directive";
+   00971| const ROLE_PROOF_REQUEST_LEAD = "proof_request_lead";
+   00972| const ROLE_PROOF_MARKER = "proof_marker";
+   00973| const ROLE_PROOF_CLAIM_SCAFFOLD = "proof_claim_scaffold";
+   00974| const ROLE_WHO_QUESTION_LEAD = "who_question_lead";
+   00975| const ROLE_WHO_QUESTION_TAIL = "who_question_tail";
+   00976| 
+   00977| // Issue #386 policy role — mirrors ROLE_CIRCULAR_JOKE_PHRASE in
+   00978| // src/seed/roles.rs. Surfaces (the «купи слона» idiom and its buy-an-elephant
+   00979| // calque in every supported language) live in data/seed/meanings-policy.lino,
+   00980| // read here by tryKupiSlona as raw substrings. (The physical_action_trigger
+   00981| // role in that file is read only by the Rust solver, which screens content
+   00982| // policy first; the worker has no such handler, so it is not mirrored.)
+   00983| const ROLE_CIRCULAR_JOKE_PHRASE = "circular_joke_phrase";
+   00984| 
+   00985| // Issue #386 calculator-rate roles — mirror ROLE_EXCHANGE_RATE_REFERENCE,
+   00986| // ROLE_CURRENCY_USD_REFERENCE and ROLE_CALCULATION_BASIS_REFERENCE in
+   00987| // src/seed/roles.rs. Surfaces (exchange-rate, US-dollar and calculation-basis
+   00988| // forms in every supported language) live in
+   00989| // data/seed/meanings-calculator.lino, read here by tryCalculatorRateBasis as
+   00990| // raw substrings — the JS mirror of asks_for_usd_rate_basis.
+   00991| const ROLE_EXCHANGE_RATE_REFERENCE = "exchange_rate_reference";
+   00992| const ROLE_CURRENCY_USD_REFERENCE = "currency_usd_reference";
+   00993| const ROLE_CALCULATION_BASIS_REFERENCE = "calculation_basis_reference";
+   00994| 
+   00995| // Issue #386 compound-interest / currency-conversion roles — mirror the
+   00996| // ROLE_INVESTMENT_CUE, ROLE_INTEREST_CUE, ROLE_COMPOUNDING_ACTION_CUE,
+   00997| // ROLE_COMPOUNDING_FREQUENCY_CUE, ROLE_LIVE_RATE_FRESHNESS_CUE,
+   00998| // ROLE_YEAR_UNIT_CUE, ROLE_CONVERSION_ACTION_CUE, ROLE_FINAL_AMOUNT_REFERENCE,
+   00999| // ROLE_CURRENCY_EUR_REFERENCE and ROLE_CURRENCY_RUB_REFERENCE consts in
+   01000| // src/seed/roles.rs. Surfaces live in data/seed/meanings-finance.lino (the
+   01001| // investment / interest / compounding / frequency / live-rate / year /
+   01002| // conversion / final-amount forms) and data/seed/meanings-calculator.lino (the
+   01003| // euro and ruble currency references), read by parseCompoundInterestRequest,
+   01004| // parseCompoundsPerYear, parseCompoundYears, targetCurrencyFromText,
+   01005| // asksForWebRate, parseFinalAmountConversionRequest and currencyCodeFromWord —
+   01006| // the JS mirror of the compound_interest.rs recognizers.
+   01007| const ROLE_INVESTMENT_CUE = "investment_cue";
+   01008| const ROLE_INTEREST_CUE = "interest_cue";
+   01009| const ROLE_COMPOUNDING_ACTION_CUE = "compounding_action_cue";
+   01010| const ROLE_COMPOUNDING_FREQUENCY_CUE = "compounding_frequency_cue";
+   01011| const ROLE_LIVE_RATE_FRESHNESS_CUE = "live_rate_freshness_cue";
+   01012| const ROLE_YEAR_UNIT_CUE = "year_unit_cue";
+   01013| const ROLE_CONVERSION_ACTION_CUE = "conversion_action_cue";
+   01014| const ROLE_FINAL_AMOUNT_REFERENCE = "final_amount_reference";
+   01015| const ROLE_CURRENCY_EUR_REFERENCE = "currency_eur_reference";
+   01016| const ROLE_CURRENCY_RUB_REFERENCE = "currency_rub_reference";
+   01017| 
+   01018| // Issue #386 definition-merge roles — mirror the ROLE_DEFINITION_MERGE_ACTION,
+   01019| // ROLE_DEFINITION_ARTIFACT_REQUEST, ROLE_DEFINITION_MERGE_MARKER and
+   01020| // ROLE_DEFINITION_MERGE_TAIL_BOUNDARY consts in src/seed/roles.rs. Surfaces
+   01021| // live in data/seed/meanings-definition-merge.lino, read by
+   01022| // extractDefinitionMergeTerm and trimDefinitionMergeTail — the JS mirror of the
+   01023| // definition_merge.rs recognizers.
+   01024| const ROLE_DEFINITION_MERGE_ACTION = "definition_merge_action";
+   01025| const ROLE_DEFINITION_ARTIFACT_REQUEST = "definition_artifact_request";
+   01026| const ROLE_DEFINITION_MERGE_MARKER = "definition_merge_marker";
+   01027| const ROLE_DEFINITION_MERGE_TAIL_BOUNDARY = "definition_merge_tail_boundary";
+   01028| 
+   01029| // Issue #386 meta-explanation roles — mirror ROLE_ASSISTANT_SELF_REFERENCE and
+   01030| // ROLE_ARCHITECTURE_CONCEPT in src/seed/roles.rs. Surfaces (the assistant's
+   01031| // self-reference pronouns and the architecture concepts — language model,
+   01032| // neural network, the project's local rules — in every supported language) live
+   01033| // in data/seed/meanings-meta.lino, read here by isArchitectureQuestion as raw
+   01034| // substrings, the JS mirror of is_architecture_question. (The why/how-you-work
+   01035| // recognizers live only in the Rust solver_handler; the worker has no
+   01036| // tryMetaExplanation, so the answer_rationale_lead, causal_interrogative,
+   01037| // prior_answer_reference, assistant_mechanism_inquiry and operating_principle
+   01038| // roles in that file are not mirrored here.)
+   01039| const ROLE_ASSISTANT_SELF_REFERENCE = "assistant_self_reference";
+   01040| const ROLE_ARCHITECTURE_CONCEPT = "architecture_concept";
+   01041| 
+   01042| // Issue #386 documentation-handler roles — mirror ROLE_EXPLANATION_REQUEST_LEAD,
+   01043| // ROLE_WEB_MEDIUM and ROLE_CODE_METHOD_NOUN in src/seed/roles.rs. Their surfaces
+   01044| // live in data/seed/meanings-docs.lino (explanation leads, the method noun) and
+   01045| // data/seed/meanings-web-search.lino (the web_medium surfaces on
+   01046| // reference_internet). isExplanationRequest, isExplicitWebSearchPrompt and the
+   01047| // method-noun branch of claimOperandDocumentedMethod read them instead of naming
+   01048| // any interrogative, medium or per-language method word in code here.
+   01049| const ROLE_EXPLANATION_REQUEST_LEAD = "explanation_request_lead";
+   01050| const ROLE_WEB_MEDIUM = "web_medium";
+   01051| const ROLE_CODE_METHOD_NOUN = "code_method_noun";
+   01052| 
+   01053| // The literal lead-in (form.before, the text before the … slot) of every
+   01054| // prefix-slot form of a role, in lexicon declaration order. A meaning's roles
+   01055| // apply to all its forms, so keep only the slot we asked for. Mirrors
+   01056| // prefix_literals.
+   01057| function prefixLiterals(role) {
+   01058|   return roleWordForms(role)
+   01059|     .filter((form) => form.slot === "prefix")
+   01060|     .map((form) => form.before);
+   01061| }
+   01062| // The literal tail (form.after) of every suffix-slot form of a role. Mirrors
+   01063| // suffix_literals.
+   01064| function suffixLiterals(role) {
+   01065|   return roleWordForms(role)
+   01066|     .filter((form) => form.slot === "suffix")
+   01067|     .map((form) => form.after);
+   01068| }
+   01069| // The literal pair around every circumfix-slot form of a role. Mirrors
+   01070| // circumfix_literals.
+   01071| function circumfixLiterals(role) {
+   01072|   return roleWordForms(role)
+   01073|     .filter((form) => form.slot === "circumfix")
+   01074|     .map((form) => ({ before: form.before, after: form.after }));
+   01075| }
+   01076| // The surface text of every bare-slot form of a role (drop any prefix/suffix
+   01077| // surfaces the same meaning also owns). Mirrors bare_literals.
+   01078| function bareLiterals(role) {
+   01079|   return roleWordForms(role)
+   01080|     .filter((form) => form.slot === "bare")
+   01081|     .map((form) => form.text);
+   01082| }
+   01083| // The distinct surface words of a role, trimmed + lowercased for equality
+   01084| // comparison against a cleaned query. Mirrors source_literals (words_for_role).
+   01085| function sourceLiterals(role) {
+   01086|   const seen = new Set();
+   01087|   const out = [];
+   01088|   for (const form of roleWordForms(role)) {
+   01089|     const key = form.text.trim().toLowerCase();
+   01090|     if (!seen.has(key)) {
+   01091|       seen.add(key);
+   01092|       out.push(key);
+   01093|     }
+   01094|   }
+   01095|   return out;
+   01096| }
+   01097| 
+   01098| // Build (once) the marker projection from the meaning lexicon, then cache it —
+   01099| // roleWordForms walks the whole lexicon, so memoize like the Rust OnceLock.
+   01100| let WEB_SEARCH_MARKERS_CACHE = null;
+   01101| function webSearchMarkers() {
+   01102|   if (WEB_SEARCH_MARKERS_CACHE) return WEB_SEARCH_MARKERS_CACHE;
+   01103|   WEB_SEARCH_MARKERS_CACHE = {
+   01104|     explicitPrefixes: prefixLiterals(ROLE_WEB_SEARCH_EXPLICIT_PREFIX),
+   01105|     explicitSuffixes: suffixLiterals(ROLE_WEB_SEARCH_EXPLICIT_PREFIX),
+   01106|     explicitCircumfixes: circumfixLiterals(ROLE_WEB_SEARCH_EXPLICIT_PREFIX),
+   01107|     actionMarkers: bareLiterals(ROLE_WEB_SEARCH_ACTION),
+   01108|     strongActionMarkers: bareLiterals(ROLE_WEB_SEARCH_STRONG_ACTION),
+   01109|     strongImperativeLeadMarkers: prefixLiterals(ROLE_WEB_SEARCH_STRONG_ACTION),
+   01110|     signalMarkers: bareLiterals(ROLE_WEB_SEARCH_SIGNAL),
+   01111|     topicAfterMarkers: prefixLiterals(ROLE_WEB_SEARCH_TOPIC_MARKER),
+   01112|     topicBeforeMarkers: suffixLiterals(ROLE_WEB_SEARCH_TOPIC_MARKER),
+   01113|     imperativeLeadMarkers: prefixLiterals(ROLE_WEB_SEARCH_IMPERATIVE_LEAD),
+   01114|     leadingNoise: prefixLiterals(ROLE_WEB_SEARCH_QUERY_LEADING_NOISE),
+   01115|     trailingNoise: suffixLiterals(ROLE_WEB_SEARCH_QUERY_TRAILING_NOISE),
+   01116|     sourceOnly: sourceLiterals(ROLE_WEB_SEARCH_SOURCE_ONLY),
+   01117|     sourceMarkers: bareLiterals(ROLE_WEB_SEARCH_SOURCE_ONLY),
+   01118|     sourceMediumMarkers: bareLiterals(ROLE_WEB_MEDIUM),
+   01119|     informationMarkers: bareLiterals(ROLE_WEB_SEARCH_SIGNAL).filter(
+   01120|       (marker) =>
+   01121|         !bareLiterals(ROLE_WEB_SEARCH_SOURCE_ONLY).some(
+   01122|           (source) => source.trim() === marker.trim(),
+   01123|         ),
+   01124|     ),
+   01125|     newsSubjectMarkers: bareLiterals(ROLE_WEB_SEARCH_NEWS_SUBJECT),
+   01126|     newsRecencyMarkers: bareLiterals(ROLE_WEB_SEARCH_NEWS_RECENCY),
+   01127|     recordsSubjectMarkers: bareLiterals(ROLE_WEB_SEARCH_RECORDS_SUBJECT),
+   01128|     publicEventSubjectMarkers: bareLiterals(ROLE_WEB_SEARCH_PUBLIC_EVENT_SUBJECT),
+   01129|     followupVerbs: bareLiterals(ROLE_FOLLOWUP_INSTRUCTION_VERB),
+   01130|     continuationMarkers: bareLiterals(ROLE_CLAUSE_CONTINUATION_MARKER),
+   01131|     termInformationPrefixes: prefixLiterals(ROLE_TERM_INFORMATION_REQUEST_OPENER),
+   01132|     termInformationSuffixes: suffixLiterals(ROLE_TERM_INFORMATION_REQUEST_OPENER),
+   01133|     termInformationCircumfixes: circumfixLiterals(ROLE_TERM_INFORMATION_REQUEST_OPENER),
+   01134|     researchQuestionPrefixes: prefixLiterals(ROLE_RESEARCH_QUESTION_OPENER),
+   01135|     researchModifiers: bareLiterals(ROLE_RESEARCH_SUPERLATIVE_MODIFIER),
+   01136|     researchEvidenceDomains: bareLiterals(ROLE_RESEARCH_EVIDENCE_DOMAIN),
+   01137|     researchEvaluationDomains: bareLiterals(ROLE_RESEARCH_EVALUATION_DOMAIN),
+   01138|     enumerationPrefixes: prefixLiterals(ROLE_ENUMERATION_REQUEST_OPENER),
+   01139|     enumerationConstraintMarkers: bareLiterals(ROLE_ENUMERATION_CONSTRAINT),
+   01140|   };
+   01141|   return WEB_SEARCH_MARKERS_CACHE;
+   01142| }
+   01143| 
+   01144| // A request to filter the user's OWN contributed facts ("facts I contributed",
+   01145| // "my facts") is conversation search, not a web search. Mirrors
+   01146| // is_personal_fact_filter_request in src/solver_handlers/web_search_intent.rs;
+   01147| // the cue family lives in the personal_facts_listing_request seed role
+   01148| // (data/seed/meanings-intent.lino), read through the boundary-aware
+   01149| // lexiconMentionsRole like the local-path roles above.
+   01150| const ROLE_PERSONAL_FACTS_LISTING_REQUEST = "personal_facts_listing_request";
+   01151| function isPersonalFactFilterRequest(normalized) {
+   01152|   return lexiconMentionsRole(ROLE_PERSONAL_FACTS_LISTING_REQUEST, normalized);
+   01153| }
+   01154| 
+   01155| function containsSearchMarker(normalized, marker) {
+   01156|   const text = String(normalized || "");
+   01157|   if (marker.startsWith(" ") || marker.endsWith(" ")) {
+   01158|     return ` ${text} `.includes(marker);
+   01159|   }
+   01160|   return text.includes(marker);
+   01161| }
+   01162| 
+   01163| function containsAnySearchMarker(normalized, markers) {
+   01164|   return markers.some((marker) => containsSearchMarker(normalized, marker));
+   01165| }
+   01166| 
+   01167| function stripSearchNoisePrefix(value, prefix) {
+   01168|   const text = cleanSearchQuery(value);
+   01169|   return text.toLowerCase().startsWith(prefix)
+   01170|     ? cleanSearchQuery(text.slice(prefix.length))
+   01171|     : text;
+   01172| }
+   01173| 
+   01174| function stripSearchNoiseSuffix(value, suffix) {
+   01175|   const text = cleanSearchQuery(value);
+   01176|   return text.toLowerCase().endsWith(suffix)
+   01177|     ? cleanSearchQuery(text.slice(0, text.length - suffix.length))
+   01178|     : text;
+   01179| }
+   01180| 
+   01181| // Sentence-ending punctuation that can introduce a follow-up instruction
+   01182| // clause — ASCII plus the fullwidth/ideographic forms a CJK prompt uses.
+   01183| // Mirrors is_sentence_boundary.
+   01184| const SEARCH_SENTENCE_BOUNDARY = new Set([
+   01185|   ".",
+   01186|   "?",
+   01187|   "!",
+   01188|   ";",
+   01189|   ":",
+   01190|   "\u3002",
+   01191|   "\uff1f",
+   01192|   "\uff01",
+   01193|   "\uff1b",
+   01194|   "\uff1a",
+   01195| ]);
+   01196| 
+   01197| // ASCII-only lowercase: folds A–Z and nothing else, so the result keeps the same
+   01198| // length (in UTF-16 code units) as the input and computed offsets stay aligned.
+   01199| // Mirrors Rust str::to_ascii_lowercase (a full toLowerCase could change length,
+   01200| // e.g. 'İ' -> 'i̇', and misalign the cut offsets).
+   01201| function asciiLowercase(value) {
+   01202|   return String(value || "").replace(/[A-Z]/g, (character) =>
+   01203|     String.fromCharCode(character.charCodeAt(0) + 32),
+   01204|   );
+   01205| }
+   01206| 
+   01207| // Is the single Unicode code point `code` a letter or number? Mirrors Rust
+   01208| // char::is_alphanumeric closely enough for token-boundary detection.
+   01209| function isSearchAlnum(code) {
+   01210|   return /[\p{L}\p{N}]/u.test(String.fromCodePoint(code));
+   01211| }
+   01212| 
+   01213| // Does `index` begin a token in `text` (the preceding code point is non-
+   01214| // alphanumeric, or there is none)? Surrogate-pair aware. Mirrors is_token_start.
+   01215| function isSearchTokenStart(text, index) {
+   01216|   if (index <= 0) return true;
+   01217|   const i = index - 1;
+   01218|   let code = text.charCodeAt(i);
+   01219|   if (code >= 0xdc00 && code <= 0xdfff && i > 0) {
+   01220|     const high = text.charCodeAt(i - 1);
+   01221|     if (high >= 0xd800 && high <= 0xdbff) {
+   01222|       code = (high - 0xd800) * 0x400 + (code - 0xdc00) + 0x10000;
+   01223|     }
+   01224|   }
+   01225|   return !isSearchAlnum(code);
+   01226| }
+   01227| 
+   01228| // Does `index` end a token in `text` (the following code point is non-
+   01229| // alphanumeric, or there is none)? Mirrors is_token_end.
+   01230| function isSearchTokenEnd(text, index) {
+   01231|   if (index >= text.length) return true;
+   01232|   return !isSearchAlnum(text.codePointAt(index));
+   01233| }
+   01234| 
+   01235| // Whether `haystack` ends with `marker` as a whole token. CJK markers match as
+   01236| // bare substrings; space-delimited markers need a preceding whitespace (or for
+   01237| // the whole string to be exactly the marker). Mirrors ends_with_token.
+   01238| function searchEndsWithToken(haystack, marker) {
+   01239|   if (containsCjk(marker)) return haystack.endsWith(marker);
+   01240|   if (haystack === marker) return true;
+   01241|   if (!haystack.endsWith(marker)) return false;
+   01242|   const head = haystack.slice(0, haystack.length - marker.length);
+   01243|   return /\s$/u.test(head);
+   01244| }
+   01245| 
+   01246| // If the text immediately before `verbStart` is a follow-up boundary, return the
+   01247| // code-unit offset at which to cut (the start of the boundary run); otherwise
+   01248| // null. Mirrors boundary_before.
+   01249| function searchBoundaryBefore(text, verbStart, markers) {
+   01250|   const head = text.slice(0, verbStart).trimEnd();
+   01251|   if (head.length === 0) return null;
+   01252|   if (SEARCH_SENTENCE_BOUNDARY.has(head[head.length - 1])) return head.length;
+   01253|   // Walk back over a run of clause-continuation markers ("and", "then",
+   01254|   // "and then"); the cut falls at the start of the run.
+   01255|   let cursor = head;
+   01256|   let matched = false;
+   01257|   for (;;) {
+   01258|     const trimmed = cursor.trimEnd();
+   01259|     let rest = null;
+   01260|     for (const marker of markers.continuationMarkers) {
+   01261|       if (searchEndsWithToken(trimmed, marker)) {
+   01262|         rest = trimmed.slice(0, trimmed.length - marker.length);
+   01263|         break;
+   01264|       }
+   01265|     }
+   01266|     if (rest === null) break;
+   01267|     cursor = rest;
+   01268|     matched = true;
+   01269|   }
+   01270|   return matched ? cursor.trimEnd().length : null;
+   01271| }
+   01272| 
+   01273| // Drop a trailing follow-up instruction clause ("… and summarize who won",
+   01274| // "… . Compare their patents") from a query. A universal boundary algorithm, not
+   01275| // a list of memorised fragments: a follow-up clause is one of the lexicon's
+   01276| // followup_instruction_verb surfaces sitting immediately after a *boundary* —
+   01277| // sentence punctuation or a run of clause_continuation_marker words — and the
+   01278| // query is cut at the start of the earliest such boundary. A bare verb with no
+   01279| // boundary before it is part of the topic and left untouched. Mirrors
+   01280| // truncate_search_instruction_tail in src/solver_handlers/web_search_intent.rs.
+   01281| // Issue #1175 R3, numeric group: claim evidence joined into claimEvidence() (formal_ai_worker_dispatch.js), each the operand reader its handler already runs, twin of rust/src/capability_routing/claims.rs.
+   01282| const NUMERIC_CLAIM_EVIDENCE = Object.freeze({
+   01283|   stated_number: (prompt) => parseNumericListNumbers(String(prompt).toLowerCase()).length > 0,
+   01284|   calculation_expression: (prompt) => Boolean(extractArithmeticExpression(prompt)),
+   01285|   currency_rate_basis: (prompt) => mentionsUsdRate(normalizePrompt(prompt)) && mentionsRateCalculationBasis(normalizePrompt(prompt)),
+   01286|   investment_terms: (prompt, normalized) => parseCompoundInterestRequest(prompt, normalized) !== null,
+   01287|   conversion_target_currency: (prompt, normalized) => Boolean(targetCurrencyFromText(normalized)),
+   01288|   interval_bounds: (prompt, normalized) => numberConstraintIntervalBounds(normalizePrompt(normalized), String(prompt).toLowerCase()) !== null,
+   01289|   measured_quantity: (prompt) => parseNumericListNumbers(String(prompt).toLowerCase()).length > 0 && unitMentions(String(prompt).toLowerCase()).length === 2,
+   01290|   calendar_anchor: (prompt, normalized) => Boolean(detectWeekday(normalized) || detectCalendarMonth(normalized) || calendarStatedDate(prompt, normalized) || mentionsCurrentDayQuestion(normalized)),
+   01291| });
+   01292| 
+   
+   (End of file - total 1292 lines)
+   </file>
+>> edit {"filePath":"js/worker/formal_ai_worker_write_program_and_research.js","file_path":"js/worker/formal_ai_worker_write_program_and_research.js","new":"    solverEvents: plan ? [{ kind: \"write_program_plan\", payload: plan }] : [],\n    steps: diagnostics.steps,\n    trace: diagnostics.trace.length ? diagnostics.trace : undefined,","newString":"    solverEvents: plan ? [{ kind: \"write_program_plan\", payload: plan }] : [],\n    steps: diagnostics.steps,\n    trace: diagnostics.trace.length ? diagnostics.trace : undefined,","new_str":"    solverEvents: plan ? [{ kind: \"write_program_plan\", payload: plan }] : [],\n    steps: diagnostics.steps,\n    trace: diagnostics.trace.length ? diagnostics.trace : undefined,","new_string":"    solverEvents: plan ? [{ kind: \"write_program_plan\", payload: plan }] : [],\n    steps: diagnostics.steps,\n    trace: diagnostics.trace.length ? diagnostics.trace : undefined,","old":"    steps: diagnostics.steps,\n    trace: diagnostics.trace.length ? diagnostics.trace : undefined,","oldString":"    steps: diagnostics.steps,\n    trace: diagnostics.trace.length ? diagnostics.trace : undefined,","old_str":"    steps: diagnostics.steps,\n    trace: diagnostics.trace.length ? diagnostics.trace : undefined,","old_string":"    steps: diagnostics.steps,\n    trace: diagnostics.trace.length ? diagnostics.trace : undefined,","path":"js/worker/formal_ai_worker_write_program_and_research.js"}
+>> bash {"command":"sha256sum -- js/worker/formal_ai_worker_write_program_and_research.js"}
+   Output: 42932c7716d681d64c59e42f79b1881afa14f0191ac0b0cf655800671021ebac  js/worker/formal_ai_worker_write_program_and_research.js
+   
+   Exit Code: 0
+== answer ==
+Replaced `    steps: diagnostics.steps,
+    trace: diagnostics.trace.length ? diagnostics.trace : undefined,` with `    solverEvents: plan ? [{ kind: "write_program_plan", payload: plan }] : [],
+    steps: diagnostics.steps,
+    trace: diagnostics.trace.length ? diagnostics.trace : undefined,` in `js/worker/formal_ai_worker_write_program_and_research.js` and observed the result.
