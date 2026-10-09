@@ -772,6 +772,8 @@ fn both_release_jobs_budget_the_docker_publish_above_its_measured_worst_case() {
              60-minute cap, and a 45-minute step budget cannot fire underneath one"
         );
 
+        assert!(job.contains("name: Verify anonymous access to the immutable published manifest"));
+        assert!(job.contains("run: node scripts/verify-anonymous-image-manifest.mjs"));
         let step_caps: Vec<u64> = job
             .lines()
             .filter_map(|line| {
@@ -781,10 +783,11 @@ fn both_release_jobs_budget_the_docker_publish_above_its_measured_worst_case() {
             .collect();
         assert_eq!(
             step_caps,
-            vec![45, 15, 20],
+            vec![45, 15, 2, 20],
             "{job_name} must budget the GHCR publish at 45 minutes -- 1.4x the worst \
              measured build (32.5 min, run 33955786226) -- the prebuilt slim sidecar \
-             at 15 and the Docker Hub publish that reuses its layers at 20"
+             at 15, the independent anonymous immutable-manifest receipt at 2, and the \
+             Docker Hub publish that reuses its layers at 20"
         );
     }
 }
