@@ -1,0 +1,1 @@
+Decode real ordered answer fields with the same links-notation parser used by the production formatter. Preserve all six positions, whole answers, event order and trace contents without requiring a particular legal scalar quote delimiter. Native execution remains pending CI.

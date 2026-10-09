@@ -193,9 +193,19 @@ fn answer_record_keeps_six_ordered_fields_and_response_link_thinking() {
     assert_eq!(lines[2], "  intent \"greeting\"");
     assert_eq!(lines[3], "  answer \"Hi, how may I help you?\"");
     assert!(lines[4].starts_with("  trace \"trace_"));
-    assert!(lines[5].starts_with("  steps \"step_0 impulse Hi;"));
-    assert!(lines[6].starts_with("  thinking_steps \"step_0 impulse high impulse Hi;"));
-    assert!(lines[6].ends_with("deformalize high response response:greeting\""));
+    assert!(lines[5].starts_with("  steps "));
+    assert!(lines[6].starts_with("  thinking_steps "));
+    let (_, fields) = parse_indented(&response.links_notation).expect("actual answer record");
+    assert_eq!(fields.len(), 6);
+    assert!(
+        fields
+            .get("steps")
+            .expect("steps field")
+            .starts_with("step_0 impulse Hi;")
+    );
+    let thinking = fields.get("thinking_steps").expect("thinking steps field");
+    assert!(thinking.starts_with("step_0 impulse high impulse Hi;"));
+    assert!(thinking.ends_with("deformalize high response response:greeting"));
     assert_eq!(
         response.thinking_steps.last().unwrap().detail,
         response.answer
@@ -213,11 +223,9 @@ fn answer_record_retains_actual_prior_turns_before_the_current_impulse() {
     ];
     let response = solve_with_history("What is 2 + 2?", &history);
     assert_eq!(response.answer, "2 + 2 = 4");
-    let steps = response
-        .links_notation
-        .lines()
-        .find(|line| line.starts_with("  steps "))
-        .unwrap();
-    assert!(steps.starts_with("  steps \"step_0 prior_turn:user Hi; step_1 prior_turn:assistant Hi, how may I help you?; step_2 impulse What is 2 + 2?;"));
+    let (_, fields) =
+        parse_indented(&response.links_notation).expect("actual history answer record");
+    let steps = fields.get("steps").expect("steps field");
+    assert!(steps.starts_with("step_0 prior_turn:user Hi; step_1 prior_turn:assistant Hi, how may I help you?; step_2 impulse What is 2 + 2?;"));
     assert!(steps.contains("calculation:engine link-calculator;"));
 }

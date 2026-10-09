@@ -25,6 +25,10 @@ fn pronoun_followup_resolves_prior_rust_topic_for_creator_question() {
     let response = solver.solve_with_history("Who created it?", &history);
 
     assert_eq!(response.intent, "fact_lookup");
+    assert_eq!(
+        response.answer,
+        "Rust was originally created by Graydon Hoare at Mozilla Research, and Mozilla sponsored the project."
+    );
     assert!(
         response.answer.contains("Graydon Hoare"),
         "creator answer should name Graydon Hoare, got: {}",
@@ -139,7 +143,7 @@ fn seeded_coreference_contexts_normalize_terminal_multilingual_surfaces() {
     ];
     for prompt in prompts {
         let reply = solver.solve_with_history(prompt, &history);
-        assert_eq!(reply.intent, "coreference_program_artifact", "{}", prompt);
+        assert_eq!(reply.intent, "coreference_program_artifact", "{prompt}");
         assert!(
             reply.links_notation.contains("coreference:resolved"),
             "{}",
@@ -171,5 +175,91 @@ fn seeded_coreference_contexts_reject_embedded_word_surfaces() {
             "{}",
             prompt
         );
+    }
+}
+
+#[test]
+fn seeded_antecedents_reject_embedded_alias_words() {
+    let seeds = formal_ai::seed::coreference_seeds();
+    for previous in [
+        "Rustic furniture is handmade.",
+        "A programming textbook.",
+        "xпрограммаx",
+    ] {
+        assert!(
+            seeds.pick_antecedent(&previous.to_lowercase()).is_none(),
+            "{previous}"
+        );
+    }
+    for previous in [
+        "What is Rust?",
+        "Объясни программу.",
+        "यह प्रोग्राम?",
+        "解释程序？",
+    ] {
+        assert!(
+            seeds.pick_antecedent(&previous.to_lowercase()).is_some(),
+            "{previous}"
+        );
+    }
+}
+
+#[test]
+fn coreference_requires_real_user_antecedents_and_command_head_references() {
+    let solver = UniversalSolver::default();
+    let original = "Write me a Rust program that lists the files in the current directory";
+    let first = solver.solve(original);
+    assert_eq!(first.intent, "write_program");
+    let history = [
+        ConversationTurn::user(original),
+        ConversationTurn::assistant(first.answer),
+    ];
+    for turns in [
+        Vec::new(),
+        vec![ConversationTurn::user("I enjoy fresh apples.")],
+    ] {
+        let reply = solver.solve_with_history("Explain the program?", &turns);
+        assert!(!reply.links_notation.contains("coreference:resolved"));
+    }
+    for prompt in [
+        "Explain programming?",
+        "itself",
+        "xрезультатыx",
+        "xपरिणामोंx",
+        "Summarize: Explain the program? It has three steps.",
+        "Rewrite \"Explain the program? It has three steps.\"",
+    ] {
+        let reply = solver.solve_with_history(prompt, &history);
+        assert!(
+            !reply.links_notation.contains("coreference:resolved"),
+            "{prompt}"
+        );
+    }
+}
+
+#[test]
+fn seed_claim_and_handler_share_normalized_bounded_pronoun_contexts() {
+    let seeds = formal_ai::seed::coreference_seeds();
+    for prompt in [
+        "Who created it?",
+        "Explain the program?",
+        "Объясни результаты?",
+        "यह प्रोग्राम?",
+        "解释程序？",
+    ] {
+        let normalized = formal_ai::engine::normalize_prompt(prompt);
+        assert!(seeds.matches_pronoun(&normalized), "{prompt}");
+        assert!(seeds.matching_pronoun(&normalized).is_some(), "{prompt}");
+    }
+    for prompt in [
+        "Who created with?",
+        "Explain programming?",
+        "itself",
+        "xрезультатыx",
+        "xपरिणामोंx",
+    ] {
+        let normalized = formal_ai::engine::normalize_prompt(prompt);
+        assert!(!seeds.matches_pronoun(&normalized), "{prompt}");
+        assert!(seeds.matching_pronoun(&normalized).is_none(), "{prompt}");
     }
 }
