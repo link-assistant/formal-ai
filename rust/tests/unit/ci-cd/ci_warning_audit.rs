@@ -328,7 +328,7 @@ fn solver_configuration_keeps_every_registered_response_language() {
     }
 }
 
-include!("../../fixtures/native-protocol-observation.rs");
+include!("../../fixtures/literal-protocol-observation.rs");
 
 #[test]
 fn formal_ai_and_real_agent_cli_authored_two_of_nine_requirement_leaves() {
