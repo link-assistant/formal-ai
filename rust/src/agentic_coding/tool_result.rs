@@ -128,6 +128,18 @@ pub(super) fn normalized_payload(raw: &str) -> Option<String> {
 /// output vocabulary: verification targets are allowed to contain words such
 /// as `error` or `failed` when those are the requested bytes.
 pub(super) fn observed_payload(raw: &str) -> Option<String> {
+    if let Some(envelope) = parse_shell_envelope(raw)
+        && envelope.exit_code == Some(0)
+    {
+        let inner = raw
+            .split_once("<untrusted_context>")
+            .and_then(|(_, rest)| rest.split_once("</untrusted_context>"))
+            .map_or(raw, |(inside, _)| inside);
+        let exact = inner
+            .strip_prefix("Output: ")
+            .and_then(|output| output.strip_suffix("\nExit Code: 0"));
+        return Some(exact.map_or(envelope.output, str::to_owned));
+    }
     let result = normalize(raw);
     result.error.is_none().then_some(result.payload)
 }

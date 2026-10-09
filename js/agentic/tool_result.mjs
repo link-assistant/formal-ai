@@ -79,6 +79,12 @@ export function normalizedPayload(raw) {
 
 /** Mirrors `fn observed_payload`. */
 export function observedPayload(raw) {
+  const envelope = parseShellEnvelope(raw);
+  if (envelope?.exit_code === 0) {
+    // The explicit stdout-only receipt keeps authored whitespace and JSON bytes.
+    const exact = /^Output: ([\s\S]*)\nExit Code: 0$/u.exec(untrustedInner(raw));
+    return exact === null ? envelope.output : exact[1];
+  }
   const result = normalize(raw);
   return result.error === null ? result.payload : null;
 }

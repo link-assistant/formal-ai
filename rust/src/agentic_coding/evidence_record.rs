@@ -7,7 +7,7 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 
 use super::capability_router::tool_for;
-use super::final_result::{FinalDisposition, FinalResult, record};
+use super::final_result::{FinalDisposition, FinalPayloadRole, FinalResult, record};
 use super::general_planner::compose_general_change_plan;
 use super::planner::{
     AgenticPlan, Capability, plan_chat_step_resolved, plan_one, plan_settled_routes, trace_route,
@@ -92,6 +92,18 @@ fn masked_multi_word_quotes(text: &str) -> String {
 /// delivery states no work to do, so there is nothing to record.
 /// A call-shaped authoring request binds its path as a code operand.
 fn names_callable_artifact(sentence: &str, target: &str) -> bool {
+    let normalized = crate::engine::normalize_prompt(sentence);
+    let lexicon = crate::seed::lexicon();
+    let operand = normalized.split_whitespace().find(|word| {
+        lexicon.mentions_role("coding-source-artifact-kind", word)
+            || lexicon.mentions_role("evidence-report-artifact-kind", word)
+    });
+    if operand.is_some_and(|word| lexicon.mentions_role("coding-source-artifact-kind", word))
+        && (lexicon.mentions_role("coding_request_verb", &normalized)
+            || lexicon.mentions_role("coding_member_add_action", &normalized))
+    {
+        return true;
+    }
     let Some(call) = super::module_function::signature(sentence) else {
         return false;
     };
@@ -922,6 +934,8 @@ fn symbolic_answer(residual: &str) -> Option<FinalResult> {
         text,
         disposition: FinalDisposition::Finding,
         origin: answer.intent,
+        payload_role: FinalPayloadRole::Finding,
+        artifact: None,
     })
 }
 

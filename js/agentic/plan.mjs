@@ -11,7 +11,7 @@ export function finalAnswer(answer) {
   return { kind: 'final', answer };
 }
 
-export { FinalDisposition, resolvedFinalAnswer, finalResult, canDeliverFinal, projectPlan } from './final_result.mjs';
+export { FinalDisposition, FinalPayloadRole, resolvedFinalAnswer, finalResult, canDeliverFinal, projectPlan } from './final_result.mjs';
 
 /** Mirrors `struct PlannedToolCall` in rust/src/agentic_coding/planner.rs. @param {string} tool @param {string} args */
 export function plannedCall(tool, args) {

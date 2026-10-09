@@ -67,6 +67,7 @@ meanings
     defined-by function
     defined-by code
     role coding_request_object
+    role coding-source-artifact-kind
     precondition "a request verb governs this artifact noun"
     effect "the requested artifact is a callable function"
     unit "not applicable"
@@ -80,6 +81,7 @@ meanings
     defined-by function
     defined-by code
     role coding_request_object
+    role coding-source-artifact-kind
     precondition "a request verb governs this artifact noun"
     effect "the requested artifact is a method"
     unit "not applicable"
@@ -92,6 +94,7 @@ meanings
   coding_request_program
     defined-by code
     role coding_request_object
+    role coding-source-artifact-kind
     precondition "a request verb governs this artifact noun"
     effect "the requested artifact is a program"
     unit "not applicable"
@@ -149,3 +152,27 @@ meanings
     unit "not applicable"
     example "entry_point main"
     grounding "data/seed/code-node-decomposition.lino"
+  coding-source-artifact-module
+    defined-by code
+    role coding-source-artifact-kind
+    precondition "an authoring action governs this source artifact noun"
+    effect "the output operand requires complete checked source rather than an audit report"
+    unit "not applicable"
+    example "source module"
+    lexeme en module source code
+    lexeme ru модуль модуля исходник код
+    lexeme hi मॉड्यूल स्रोत कोड
+    lexeme zh 模块 源码 代码
+    lexeme es módulo fuente código
+  evidence-report-artifact
+    defined-by document
+    role evidence-report-artifact-kind
+    precondition "a delivery action governs this findings artifact noun"
+    effect "the output operand accepts observed findings rather than requiring executable source"
+    unit "not applicable"
+    example report
+    lexeme en report reports notes findings observations summary
+    lexeme ru отчёт отчет заметки результаты наблюдения
+    lexeme hi रिपोर्ट टिप्पणियां निष्कर्ष अवलोकन
+    lexeme zh 报告 笔记 发现 观察
+    lexeme es informe informes notas hallazgos observaciones resumen

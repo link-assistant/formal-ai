@@ -1,0 +1,11 @@
+{
+  "transcript": [
+    {
+      "tool": "bash",
+      "arguments": "{\"command\":\"node -e \\\"const fs=require('fs'); const record=JSON.parse(fs.readFileSync('/private/tmp/formal-ai-only-1188/T1895-request.json','utf8')); for(const c of record.changes)if(fs.readFileSync(c.path,'utf8')!==c.before)throw new Error('source preimage mismatch'); for(const c of record.changes)fs.writeFileSync(c.path,c.expected);\\\"\"}",
+      "result": ""
+    }
+  ],
+  "answer": "The command completed successfully without output.",
+  "stop": "final"
+}

@@ -1,6 +1,8 @@
 //! Exact-field and multi-file branches of the local file-read recipe.
 
-use super::super::final_result::{FinalDisposition, FinalResult, record};
+use super::super::final_result::{
+    FinalDisposition, FinalPayloadRole, FinalResult, record, record_with_role,
+};
 use serde_json::json;
 
 use super::{
@@ -40,10 +42,11 @@ pub(super) fn plan_direct_file_reads(
             }
         }
         if contents.len() == paths.len() {
-            return record(
+            return record_with_role(
                 AgenticPlan::Final(file_read_final_answer(mode, &contents, request)),
                 FinalDisposition::Finding,
                 "file_read_observed",
+                FinalPayloadRole::AuditReport,
                 result,
             );
         }

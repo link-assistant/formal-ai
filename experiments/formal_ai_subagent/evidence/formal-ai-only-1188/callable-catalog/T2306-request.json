@@ -1,0 +1,7 @@
+{
+  "id": "T2306",
+  "dir": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+  "prompt": "Extend Formal AI with a reusable observed-source callable catalog and bounded composition planner. Reuse the existing source lexer, fragment catalog, typed IR and repository execution evidence. Discover real module exports from read source, retain complete declaration spans and content identities, bind actual import/export aliases, and preserve grounded input/result types and call/module effects. Support an optional-producing callable feeding a nonoptional consumer through a justified null guard, with source identity checked before lowering or output writes. Keep unknown contracts explicit gaps. The mechanism must operate on observed declarations and requested behavior, independent of destination paths, wrapper/export/parameter names or specific callable names; do not introduce caller-supplied edit closures or a complete requirement-wrapper literal. Establish meaningful closest probes for export lookalikes, changed source digests, alias shadowing, incompatible/unknown types and mutating/unobserved effects. Then retry the unchanged saved T1804 request against its original selected-file fixture and report actual node --test results. If a required primitive is unavailable, identify that precise capability and stop before authoring.",
+  "steps": 24,
+  "original": "T1892"
+}
