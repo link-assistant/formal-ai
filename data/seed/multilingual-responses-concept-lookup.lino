@@ -199,3 +199,7 @@ multilingual_responses
     intent source-qualified-definition-unresolved
     language zh
     text "没有{source}对{term}的已验证定义：{status}。"
+  response response_source_capture_offline_cache_miss_en
+    intent source_capture_offline_cache_miss
+    language en
+    text "no cached capture for {url}"

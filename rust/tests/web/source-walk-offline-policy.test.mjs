@@ -49,3 +49,13 @@ test('actual live HTTP503 remains a service failure',async()=>{
  const c=await boot();const r=await walk(c,{online:true});assert.equal(r.outcomes.at(-1).status,'unreachable');
  assert.deepEqual(c.__network,[start]);assert.equal(evaluate(c,'sourceWalkAccessibility.size'),1);
 });
+
+test('offline capture diagnostic is seeded and preserves every URL byte',async()=>{
+ for(const url of ['https://example.test/raw',"https://example.test/$&/$`/$'/α😀?value={url}"]){
+  const c=await boot();c.__url=url;
+  const receipt=plain(await evaluate(c,'sourceWalkFetchCapture(__url,{online:false})'));
+  assert.equal(receipt.ok,false);assert.equal(receipt.failureKind,'offline_cache_miss');
+  assert.equal(receipt.url,url);assert.equal(receipt.error,'no cached capture for '+url);
+  assert.deepEqual(c.__network,[]);assert.equal(evaluate(c,'sourceWalkAccessibility.size'),0);
+ }
+});

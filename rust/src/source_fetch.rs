@@ -157,7 +157,12 @@ impl Display for FetchError {
     fn fmt(&self, formatter: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::InvalidUrl(url) => write!(formatter, "unsupported source URL: {url}"),
-            Self::OfflineCacheMiss(url) => write!(formatter, "no cached capture for {url}"),
+            Self::OfflineCacheMiss(url) => {
+                let template =
+                    crate::seed::localized_response("source_capture_offline_cache_miss", "en")
+                        .ok_or(std::fmt::Error)?;
+                formatter.write_str(&template.replace(concat!("{", "url", "}"), url))
+            }
             Self::Transport(message) => write!(formatter, "source transport error: {message}"),
             Self::Cache(message) => write!(formatter, "source cache error: {message}"),
             Self::HttpStatus { url, status } => {

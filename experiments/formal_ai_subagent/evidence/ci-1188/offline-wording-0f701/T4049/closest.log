@@ -1,0 +1,145 @@
+TAP version 13
+# Subtest: failed Fetch preserves requested URL and failure without making the body a goal
+ok 1 - failed Fetch preserves requested URL and failure without making the body a goal
+  ---
+  duration_ms: 781.02575
+  ...
+# Subtest: successful Fetch keeps its source text and only the call URL establishes identity
+ok 2 - successful Fetch keeps its source text and only the call URL establishes identity
+  ---
+  duration_ms: 1.678375
+  ...
+# Subtest: source JSON cannot override the outer failed provider or its requested URL
+ok 3 - source JSON cannot override the outer failed provider or its requested URL
+  ---
+  duration_ms: 0.516917
+  ...
+# Subtest: mixed Fetch and shell read failures retain their own ordered reasons
+ok 4 - mixed Fetch and shell read failures retain their own ordered reasons
+  ---
+  duration_ms: 4.438708
+  ...
+# Subtest: a real successful retry supersedes a prior failed retrieval of that URL
+ok 5 - a real successful retry supersedes a prior failed retrieval of that URL
+  ---
+  duration_ms: 1.218
+  ...
+# Subtest: the unchanged original missing issue with failed provider performs no writes or false completion
+ok 6 - the unchanged original missing issue with failed provider performs no writes or false completion
+  ---
+  duration_ms: 840.002958
+  ...
+# Subtest: the original no-artifact fetched source verifies only auxiliary history and stays exactly Planned
+ok 7 - the original no-artifact fetched source verifies only auxiliary history and stays exactly Planned
+  ---
+  duration_ms: 175.582667
+  ...
+# Subtest: the unchanged client without Read or Run cannot claim a persisted auxiliary write
+ok 8 - the unchanged client without Read or Run cannot claim a persisted auxiliary write
+  ---
+  duration_ms: 37.545584
+  ...
+# Subtest: successful Fetch JSON error and status keys are document bytes, never provider status
+ok 9 - successful Fetch JSON error and status keys are document bytes, never provider status
+  ---
+  duration_ms: 0.5415
+  ...
+# Subtest: explicit failed Fetch retains the exact JSON body as failure and never uses it as source
+ok 10 - explicit failed Fetch retains the exact JSON body as failure and never uses it as source
+  ---
+  duration_ms: 0.303125
+  ...
+# Subtest: legacy Fetch diagnostic uses failure evidence while successful JSON remains source bytes
+ok 11 - legacy Fetch diagnostic uses failure evidence while successful JSON remains source bytes
+  ---
+  duration_ms: 1.699042
+  ...
+# Subtest: bounded pool preserves complete input order across actual asynchronous workers
+ok 12 - bounded pool preserves complete input order across actual asynchronous workers
+  ---
+  duration_ms: 98.6845
+  ...
+# Subtest: worker errors, early exits and mismatched receipt identity never produce complete reports
+ok 13 - worker errors, early exits and mismatched receipt identity never produce complete reports
+  ---
+  duration_ms: 63.766959
+  ...
+# Subtest: unchanged native original pin and all six real meanings
+ok 14 - unchanged native original pin and all six real meanings
+  ---
+  duration_ms: 1502.551541
+  ...
+# Subtest: genuine held-out English and Russian entries keep actual subjects and capture times
+ok 15 - genuine held-out English and Russian entries keep actual subjects and capture times
+  ---
+  duration_ms: 41.321792
+  ...
+# Subtest: explicit source controls, cache misses and unrelated prompts never invent citations
+ok 16 - explicit source controls, cache misses and unrelated prompts never invent citations
+  ---
+  duration_ms: 2.236417
+  ...
+# Subtest: five language frames, reversed order and delimiter words bind distinct slots
+ok 17 - five language frames, reversed order and delimiter words bind distinct slots
+  ---
+  duration_ms: 1.382
+  ...
+# Subtest: arbitrary providers and subjects use actual captured extractor bytes
+ok 18 - arbitrary providers and subjects use actual captured extractor bytes
+  ---
+  duration_ms: 1.390334
+  ...
+# Subtest: cache replay refuses corruption, invalid times and duplicate records
+ok 19 - cache replay refuses corruption, invalid times and duplicate records
+  ---
+  duration_ms: 1.572667
+  ...
+# Subtest: observer validates capture URL and hash before advertising provenance
+ok 20 - observer validates capture URL and hash before advertising provenance
+  ---
+  duration_ms: 1.046458
+  ...
+# Subtest: all disambiguation list entries survive the source projection
+ok 21 - all disambiguation list entries survive the source projection
+  ---
+  duration_ms: 0.425459
+  ...
+# Subtest: actual offline cache absence never invokes fetch or poisons service health
+ok 22 - actual offline cache absence never invokes fetch or poisons service health
+  ---
+  duration_ms: 527.246458
+  ...
+# Subtest: actual offline cached body is read byte-exact with no network request
+ok 23 - actual offline cached body is read byte-exact with no network request
+  ---
+  duration_ms: 470.473166
+  ...
+# Subtest: offline missing follow capture retains the prior successful service observation
+ok 24 - offline missing follow capture retains the prior successful service observation
+  ---
+  duration_ms: 425.217833
+  ...
+# Subtest: live transport prose cannot declare offline policy
+ok 25 - live transport prose cannot declare offline policy
+  ---
+  duration_ms: 422.084292
+  ...
+# Subtest: actual live HTTP503 remains a service failure
+ok 26 - actual live HTTP503 remains a service failure
+  ---
+  duration_ms: 405.341583
+  ...
+# Subtest: offline capture diagnostic is seeded and preserves every URL byte
+ok 27 - offline capture diagnostic is seeded and preserves every URL byte
+  ---
+  duration_ms: 843.396375
+  ...
+1..27
+# tests 27
+# suites 0
+# pass 27
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3203.933917
