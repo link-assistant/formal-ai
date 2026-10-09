@@ -101,7 +101,7 @@ jobs:
         id: ledger
         uses: ./.github/actions/green-ledger
         with:
-          check: agent-ladder-1028-depth-${{ inputs.depth || (github.event_name == 'schedule' && 'all') || '5' }}-rules-${{ inputs.authored_rules || (github.event_name == 'schedule' && 'disabled') || 'enabled' }}
+          check: agent-ladder-1028-depth-${{ inputs.depth || (github.event_name == 'schedule' && 'all') || '5' }}-rules-${{ inputs.authored_rules || (github.event_name == 'schedule' && 'disabled') || 'enabled' }}-node-${{ inputs.node_filter || 'none' }}
           paths: >-
             rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock experiments/issue_1028_agent_cli_ladder scripts .github/workflows/issue-1028-agent-ladder.yml .github/actions
           enabled: ${{ github.ref != 'refs/heads/main' }}
@@ -345,7 +345,7 @@ jobs:
       - name: Record the verdict for these inputs
         uses: ./.github/actions/green-ledger
         with:
-          check: agent-ladder-1028-depth-${{ inputs.depth || (github.event_name == 'schedule' && 'all') || '5' }}-rules-${{ inputs.authored_rules || (github.event_name == 'schedule' && 'disabled') || 'enabled' }}
+          check: agent-ladder-1028-depth-${{ inputs.depth || (github.event_name == 'schedule' && 'all') || '5' }}-rules-${{ inputs.authored_rules || (github.event_name == 'schedule' && 'disabled') || 'enabled' }}-node-${{ inputs.node_filter || 'none' }}
           paths: >-
             rust/src data rust/build.rs rust/Cargo.toml rust/Cargo.lock experiments/issue_1028_agent_cli_ladder scripts .github/workflows/issue-1028-agent-ladder.yml .github/actions
           enabled: 'false'

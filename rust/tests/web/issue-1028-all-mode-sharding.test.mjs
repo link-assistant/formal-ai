@@ -170,3 +170,64 @@ test('the complete artifact DAG stays at225 static minutes without retiring an u
   const record=readFileSync(join(root,'data/meta/ci-wall-clock.lino'),'utf8');
   assert.match(record,/measured_minutes 225/);assert.match(record,/ceiling_minutes 225/);
 });
+
+
+function expressionValue(template, context) {
+  return template.replace(/\$\{\{([\s\S]*?)\}\}/g, (_, expression) =>
+    Function('inputs', 'github', 'runner', 'steps', `return (${expression});`)(context.inputs, context.github, context.runner, context.steps));
+}
+function ladderCheck(job, inputs) {
+  const workflow = readFileSync(join(root, '.github/workflows/issue-1028-agent-ladder.yml'), 'utf8');
+  const body = workflowJobs(workflow).find(candidate => candidate.id === job).body;
+  const check = body.match(/^\s+check: (.+)$/m)?.[1];
+  assert.ok(check, `${job} declares its real green-ledger check`);
+  return expressionValue(check, { inputs, github: { event_name: 'workflow_dispatch' } });
+}
+function cacheIdentity(check, digest) {
+  const action = readFileSync(join(root, '.github/actions/green-ledger/action.yml'), 'utf8');
+  const keys = [...action.matchAll(/^\s+key: (.+)$/gm)].map(match => match[1]);
+  assert.equal(new Set(keys).size, 1, 'lookup-only and recording cache actions use the same identity');
+  return expressionValue(keys[0], { inputs: { check }, runner: { os: 'Linux' }, steps: { key: { outputs: { digest } } } });
+}
+function actualLedgerDecision(check, hit) {
+  const folder = mkdtempSync(join(tmpdir(), 'formal-ai-ladder-cache-'));
+  try {
+    const action = readFileSync(join(root, '.github/actions/green-ledger/action.yml'), 'utf8');
+    const shell = action.split('    - name: Decide, and say so\n')[1].split('      run: |\n')[1]
+      .split('\n').map(line => line.replace(/^        /, '')).join('\n');
+    const output = join(folder, 'outputs');
+    const proc = spawnSync('bash', ['-c', shell], { cwd: folder, encoding: 'utf8', env: {
+      ...process.env, CHECK: check, ENABLED: 'true', HIT: String(hit), RECORD: 'false', DIGEST: 'same-source',
+      GITHUB_OUTPUT: output, GITHUB_STEP_SUMMARY: join(folder, 'summary'),
+    } });
+    assert.equal(proc.status, 0, proc.stderr);
+    return readFileSync(output, 'utf8').includes('already-green=true');
+  } finally { rmSync(folder, { recursive: true, force: true }); }
+}
+
+test('a filtered all-mode green cannot skip the complete63-node measurement', () => {
+  const inputs = { depth: 'all', authored_rules: 'enabled', node_filter: '1.2' };
+  const filtered = ladderCheck('compare', inputs);
+  assert.equal(ladderCheck('plan', inputs), filtered);
+  const cache = new Set([cacheIdentity(filtered, 'same-source')]);
+  const accepts = candidate => {
+    const check = ladderCheck('plan', candidate);
+    return actualLedgerDecision(check, cache.has(cacheIdentity(check, 'same-source')));
+  };
+  assert.equal(accepts(inputs), true, 'identical measured inputs retain their valid skip');
+  assert.equal(accepts({ ...inputs, node_filter: '' }), false, 'the complete corpus must actually run');
+  assert.equal(accepts({ ...inputs, node_filter: '1.1' }), false);
+  assert.equal(accepts({ ...inputs, authored_rules: 'disabled' }), false);
+  assert.equal(accepts({ ...inputs, depth: '5' }), false);
+});
+
+test('full-corpus cache preserves exact source and never proves a differently filtered run', () => {
+  const inputs = { depth: 'all', authored_rules: 'disabled', node_filter: '' };
+  const check = ladderCheck('compare', inputs);
+  assert.equal(ladderCheck('plan', inputs), check);
+  const cache = new Set([cacheIdentity(check, 'measured-source')]);
+  assert.equal(actualLedgerDecision(check, cache.has(cacheIdentity(check, 'measured-source'))), true);
+  const filtered = ladderCheck('plan', { ...inputs, node_filter: '2.2' });
+  assert.equal(actualLedgerDecision(filtered, cache.has(cacheIdentity(filtered, 'measured-source'))), false);
+  assert.equal(actualLedgerDecision(check, cache.has(cacheIdentity(check, 'changed-source'))), false);
+});
