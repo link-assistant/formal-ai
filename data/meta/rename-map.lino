@@ -1412,3 +1412,10 @@ rename-map
       review "Reviewed on 2026-10-08: the full-word spelling scripts/measure-abbreviations.mjs --propose writes by the abbreviation rule (R1188-U4), kept as proposed."
   include "data/meta/rename-map/unit-tests-by-area.lino"
   include "data/meta/rename-map/javascript-full-word-file-names.lino"
+
+  tree shared-application-constants
+    rename
+      from "js/app/application-constants.jsx"
+      to "js/app/application-constants.js"
+      reason "Version, asset URL and prompt metadata have no JSX; share their pure JavaScript module outside the JSX rendering layer."
+      review "The complete module was inspected; it declares no JSX elements or React component."

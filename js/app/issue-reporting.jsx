@@ -7,7 +7,7 @@ import { answerHasDetectedFailure } from "./detected-failure.js";
 // `./issue-report.js` mirrors it for the browser (the wasm worker cannot link
 // the Rust core), so this file only assembles the facts and the labels.
 import { renderReportBody } from "./issue-report.js";
-import { APP_VERSION, ISSUE_LABELS, ISSUE_REPOSITORY } from "./application-constants.jsx";
+import { APP_VERSION, ISSUE_LABELS, ISSUE_REPOSITORY } from "./application-constants.js";
 import { formatDiagnosticPayload, summarizeToolCall } from "./thinking-steps.jsx";
 import { userContextFields } from "./user-context.jsx";
 

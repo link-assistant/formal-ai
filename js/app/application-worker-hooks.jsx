@@ -3,7 +3,7 @@
 
 import React from "react";
 import { enhanceWithDesktopReadOnlyTool } from "./desktop-read-only-tools.js";
-import { withAssetVersion } from "./application-constants.jsx";
+import { withAssetVersion } from "./application-constants.js";
 import {
   chatAnswerFromAgentProviderResult, desktopBridge, desktopMessages,
   requestDesktopAgentProvider, requestDesktopAnswer, requestDesktopToolCall,

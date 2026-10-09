@@ -2,7 +2,7 @@
 // installer labels, data-migration notice and desktop agent/tool requests.
 
 import React from "react";
-import { APP_VERSION } from "./application-constants.jsx";
+import { APP_VERSION } from "./application-constants.js";
 import { desktopToolRouterGrants, normalizeSliderPreference } from "./preferences.jsx";
 
 const { createElement: h } = React;

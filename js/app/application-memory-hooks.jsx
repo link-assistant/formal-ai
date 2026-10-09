@@ -1,7 +1,7 @@
 // App hooks for user-initiated memory management and memory writes.
 
 import React from "react";
-import { APP_VERSION } from "./application-constants.jsx";
+import { APP_VERSION } from "./application-constants.js";
 import { groupConversations } from "./conversations.jsx";
 import { desktopBridge, syncDesktopMemory } from "./desktop-bridge.jsx";
 import {

@@ -11,32 +11,32 @@
       "expandAgentResearchStep",
       "decomposeAgentTask"
     ],
-    "js/app/app-constants.jsx": [
+    "js/app/application-constants.js": [
       "withAssetVersion"
     ],
-    "js/app/app-conversation-hooks.jsx": [
+    "js/app/application-conversation-hooks.jsx": [
       "useConversationMessages",
       "useInterfaceCommands"
     ],
-    "js/app/app-desktop-hooks.jsx": [
+    "js/app/application-desktop-hooks.jsx": [
       "useDesktopIntegration",
       "useDesktopCommands"
     ],
-    "js/app/app-layout-hooks.jsx": [
+    "js/app/application-layout-hooks.jsx": [
       "useDocumentEnvironment",
       "useContextPanelResize"
     ],
-    "js/app/app-memory-hooks.jsx": [
+    "js/app/application-memory-hooks.jsx": [
       "useMemoryActions",
       "useMemoryOperation"
     ],
-    "js/app/app-worker-hooks.jsx": [
+    "js/app/application-worker-hooks.jsx": [
       "browserRuntimeStatusKey",
       "useFormalAiWorker",
       "useLatestValueRefs",
       "useAnswerRequest"
     ],
-    "js/app/app.jsx": [],
+    "js/app/application.jsx": [],
     "js/app/attachments.jsx": [
       "isImageAttachment",
       "isTextAttachment",

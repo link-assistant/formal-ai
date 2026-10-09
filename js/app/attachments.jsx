@@ -2,7 +2,7 @@
 // attachment content is folded into the prompt and the memory log.
 
 import React from "react";
-import { withAssetVersion } from "./application-constants.jsx";
+import { withAssetVersion } from "./application-constants.js";
 
 const { useCallback } = React;
 

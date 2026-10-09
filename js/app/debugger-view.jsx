@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { debugSessionCall, loadMermaid, pausedEventIndex, pollDebugger, renderMermaid, stagePanes } from "../debugger-client.js";
-import { withAssetVersion } from "./application-constants.jsx";
+import { withAssetVersion } from "./application-constants.js";
 
 const { createElement: h, Fragment } = React;
 

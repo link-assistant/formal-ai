@@ -147,7 +147,7 @@ mod world_state_benchmarks;
 /// this list in step with the directory.
 pub const WEB_APP_SOURCES: &str = concat!(
     include_str!("../../../../js/app/agent-plan.jsx"),
-    include_str!("../../../../js/app/application-constants.jsx"),
+    include_str!("../../../../js/app/application-constants.js"),
     include_str!("../../../../js/app/application-conversation-hooks.jsx"),
     include_str!("../../../../js/app/application-desktop-hooks.jsx"),
     include_str!("../../../../js/app/application-layout-hooks.jsx"),

@@ -15,7 +15,7 @@ import {
   historySuggestions, recallInputValues, rememberInputValue,
 } from "./autocomplete.js";
 import { decomposeAgentTask } from "./agent-plan.jsx";
-import { EXAMPLE_PROMPTS, SOURCE_CODE_URL } from "./application-constants.jsx";
+import { EXAMPLE_PROMPTS, SOURCE_CODE_URL } from "./application-constants.js";
 import { useConversationMessages, useInterfaceCommands } from "./application-conversation-hooks.jsx";
 import { useDesktopCommands, useDesktopIntegration } from "./application-desktop-hooks.jsx";
 import { useContextPanelResize, useDocumentEnvironment } from "./application-layout-hooks.jsx";
