@@ -465,3 +465,67 @@ fn failed_record_observation_blocks_the_other_independent_delivery() {
         );
     }
 }
+
+#[test]
+fn native_original_memory_request_does_not_panic_or_author_literal_bytes() {
+    let task = include_str!("qwen-memory-original-task.txt");
+    let outcome = run(task, &["write"]);
+    assert_eq!(outcome.writes, 0);
+}
+
+#[test]
+fn literal_bindings_use_local_actions_with_exact_unicode_content() {
+    for (task, expected) in [
+        (
+            "Choose where to write records.\nCreate file x.txt containing «hello».",
+            "hello",
+        ),
+        (
+            "Escribe otra cosa.\nCrea el archivo x.txt con el contenido «hola».",
+            "hola",
+        ),
+        (
+            "Напиши что-нибудь.\nСоздай файл x.txt с содержимым «привет».",
+            "привет",
+        ),
+        (
+            "Choose where to write records.\n创建 x.txt 内容为 «你好»。",
+            "你好",
+        ),
+        ("नोट लिखो।\nबनाओ x.txt ठीक इसी सामग्री के साथ «नमस्ते»।", "नमस्ते"),
+        (
+            "Choose where to write records.\nx.txt में «नमस्ते» लिखो",
+            "नमस्ते",
+        ),
+        (
+            "Note İK𐐷 😀 café.\nCreate file x.txt containing «hello».",
+            "hello",
+        ),
+        (
+            "Read policy.md.\nNew file: x.txt, contents: «hello»",
+            "hello",
+        ),
+    ] {
+        let outcome = run(task, &["write"]);
+        assert_eq!(outcome.writes, 1, "{task}");
+        assert_eq!(
+            fs::read_to_string(outcome.root.join("x.txt")).expect("observed target"),
+            expected,
+            "{task}"
+        );
+    }
+}
+
+#[test]
+fn unrelated_write_actions_never_license_read_targets() {
+    for task in [
+        "Choose where to write records.\nRead file x.txt with care.",
+        "Write a report elsewhere.\nRead file x.txt containing hello.",
+        "Read file x.txt then write it containing hello",
+        "The instruction says «write».\nRead file x.txt with care.",
+    ] {
+        let outcome = run(task, &["write"]);
+        assert_eq!(outcome.writes, 0, "{task}");
+        assert!(!outcome.root.join("x.txt").exists(), "{task}");
+    }
+}

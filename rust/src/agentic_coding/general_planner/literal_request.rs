@@ -20,16 +20,23 @@ fn binding_has_write_instruction(
     } else {
         toks[binding.index].start
     };
-    let action_start = first_action_cue_start(toks);
-    if action_start.is_some_and(|start| !positions_share_statement(request, start, clause_start)) {
-        return false;
-    }
     let scoped = statement_scope(request);
-    let from = prose_sentences(&scoped)
+    let Some(sentence) = prose_sentences(&scoped)
         .into_iter()
         .find(|sentence| sentence.span.contains(&clause_start))
-        .map_or(0, |sentence| sentence.span.start);
-    let before = &request[from..action_start.unwrap_or(toks[binding.index].start)];
+    else {
+        return false;
+    };
+    let Some(statement) = scoped.get(sentence.span.clone()) else {
+        return false;
+    };
+    let action_start =
+        first_action_cue_start(&tokens(statement)).map(|start| sentence.span.start + start);
+    let Some(before) =
+        request.get(sentence.span.start..action_start.unwrap_or(toks[binding.index].start))
+    else {
+        return false;
+    };
     !seed::lexicon().mentions_role(
         "file_read_action_cue",
         &crate::engine::normalize_prompt(before),

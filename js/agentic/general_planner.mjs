@@ -397,15 +397,19 @@ function parseWriteRequest(request) {
 /** Mirrors `fn binding_has_write_instruction`: a write cue cannot authorize another statement. */
 function bindingHasWriteInstruction(request, toks, binding) {
   const clauseStart = binding.cue_precedes ? binding.cue_start : toks[binding.index].start;
-  const actionStart = firstActionCueStart(toks);
-  if (actionStart !== null && !positionsShareStatement(request, actionStart, clauseStart)) return false;
-  const sentence = proseSentences(statementScope(request)).find((item) => {
+  const scoped = statementScope(request);
+  const sentence = proseSentences(scoped).find((item) => {
     const span = spanOf(item);
     return clauseStart >= span.start && clauseStart < span.end;
   });
-  const from = sentence === undefined ? 0 : spanOf(sentence).start;
-  const before = request.slice(from, actionStart ?? toks[binding.index].start);
-  return !mentionsRole('file_read_action_cue', normalizePrompt(before));
+  if (sentence === undefined) return false;
+  const span = spanOf(sentence);
+  const statement = slice(scoped, span.start, span.end);
+  if (statement === null) return false;
+  const localAction = firstActionCueStart(tokens(statement));
+  const actionStart = localAction === null ? null : span.start + localAction;
+  const before = slice(request, span.start, actionStart ?? toks[binding.index].start);
+  return before !== null && !mentionsRole('file_read_action_cue', normalizePrompt(before));
 }
 
 const slice = (text, start, end) => (start <= end && end <= text.length ? text.slice(start, end) : null);

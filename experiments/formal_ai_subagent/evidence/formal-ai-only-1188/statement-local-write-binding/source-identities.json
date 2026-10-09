@@ -1,0 +1,30 @@
+{
+  "sources": [
+    {
+      "path": "js/agentic/general_planner.mjs",
+      "bytes": 26384,
+      "sha256": "32070bf62067fcaf41aaed5a57ca72ed489eab6d07f0b1dec6ba7fd76bb10636"
+    },
+    {
+      "path": "rust/src/agentic_coding/general_planner/literal_request.rs",
+      "bytes": 19104,
+      "sha256": "b0e429ed59a0b7b28dfa953ca3c4561739f02a2cf5b8b9f0370b17ed9aa2d9d5"
+    },
+    {
+      "path": "rust/tests/web/literal-write-request-scope.test.mjs",
+      "bytes": 7816,
+      "sha256": "d7e13c2af605ec884bcdfe4ec9c0f1d3f3c7b32cb65401c35a008a1fa3740fb9"
+    },
+    {
+      "path": "rust/tests/fixtures/literal-obligation-transaction.rs",
+      "bytes": 19086,
+      "sha256": "3c41f396918167ce2ab0fe8a1a05b201260d83421524358beeefb75f95afebaf"
+    },
+    {
+      "path": "rust/tests/fixtures/qwen-memory-original-task.txt",
+      "bytes": 2730,
+      "sha256": "8126966c318bc091ce331e47dbd6a6a1f3005f0cc6ea6d9c0045cdfb0c46982f"
+    }
+  ],
+  "nativeExecuted": false
+}

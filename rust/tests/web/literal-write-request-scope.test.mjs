@@ -1,5 +1,6 @@
 // Literal file operands must be authorized in their own statement.
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { before, test } from 'node:test';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
@@ -75,4 +76,65 @@ test('empty or unclosed punctuation operands cannot authorize literal writes', (
   for (const prompt of ['Write «» to punctuation.txt', 'Write «!? to punctuation.txt', 'Create a file punctuation.txt containing exactly: "']) {
     assert.notEqual(composeGeneralChangePlan(prompt)?.mode, 'literal_file');
   }
+});
+
+
+test('the unchanged native panic request is not a literal file operand', () => {
+  const task = readFileSync(new URL('../fixtures/qwen-memory-original-task.txt', import.meta.url), 'utf8');
+  assert.equal(composeGeneralChangePlan(task), null);
+});
+test('each target owns only its local action, with original Unicode spans', () => {
+  const cases = [
+  [
+    "Choose where to write records.\nCreate file x.txt containing «hello».",
+    "hello"
+  ],
+  [
+    "Escribe otra cosa.\nCrea el archivo x.txt con el contenido «hola».",
+    "hola"
+  ],
+  [
+    "Напиши что-нибудь.\nСоздай файл x.txt с содержимым «привет».",
+    "привет"
+  ],
+  [
+    "Choose where to write records.\n创建 x.txt 内容为 «你好»。",
+    "你好"
+  ],
+  [
+    "नोट लिखो।\nबनाओ x.txt ठीक इसी सामग्री के साथ «नमस्ते»।",
+    "नमस्ते"
+  ],
+  [
+    "Choose where to write records.\nx.txt में «नमस्ते» लिखो",
+    "नमस्ते"
+  ],
+  [
+    "Note İK𐐷 😀 café.\nCreate file x.txt containing «hello».",
+    "hello"
+  ],
+  [
+    "Read policy.md.\nNew file: x.txt, contents: «hello»",
+    "hello"
+  ]
+];
+  for (const [task, expected] of cases) {
+    const plan = composeGeneralChangePlan(task);
+    assert.equal(plan?.target, 'x.txt', task);
+    assert.equal(plan?.content, expected, task);
+  }
+});
+test('earlier or quoted write cues cannot authorize a local read', () => {
+  for (const task of [
+  "Choose where to write records.\nRead file x.txt with care.",
+  "Write a report elsewhere.\nRead file x.txt containing hello.",
+  "Read file x.txt then write it containing hello",
+  "The instruction says «write».\nRead file x.txt with care."
+]) assert.equal(composeGeneralChangePlan(task), null, task);
+});
+test('statement punctuation inside a closed payload remains exact data', () => {
+  const payload = 'Choose where to write records.\nRead file other.txt with care.';
+  const plan = composeGeneralChangePlan('Create file x.txt containing «' + payload + '».');
+  assert.equal(plan?.target, 'x.txt');
+  assert.equal(plan?.content, payload);
 });
