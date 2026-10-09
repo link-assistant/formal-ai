@@ -1,0 +1,168 @@
+{
+  "cutoff": "T4082",
+  "files": [
+    {
+      "task": 4078,
+      "source": "/private/tmp/pr1188-ci-T4078/T4078.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4078/T4078.log",
+      "bytes": 92,
+      "sha256": "16f37c7f63ea461cfe1fb40a6ddfc00795b207dc2989f5a6bc09c2a0e4b1b49d"
+    },
+    {
+      "task": 4078,
+      "source": "/private/tmp/pr1188-ci-T4078/commit-sha.txt",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4078/commit-sha.txt",
+      "bytes": 41,
+      "sha256": "c117e688bb6a0c7aa17c1fd757f57e7ed804f49da797374fe47cebf8818a8b61"
+    },
+    {
+      "task": 4078,
+      "source": "/private/tmp/pr1188-ci-T4078/commit.py",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4078/commit.py",
+      "bytes": 1258,
+      "sha256": "41803aa66ed6345148a6d573954b3f26f667d30ef7bedf493f461fa3b3f07fc1"
+    },
+    {
+      "task": 4078,
+      "source": "/private/tmp/pr1188-ci-T4078/correct-archive.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4078/correct-archive.mjs",
+      "bytes": 4398,
+      "sha256": "a3139e1d91076ee5391a33a49b9b8516ed52328327a6967037015bedcf34526a"
+    },
+    {
+      "task": 4078,
+      "source": "/private/tmp/pr1188-ci-T4078/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4078/drive-request.json",
+      "bytes": 146,
+      "sha256": "0bb461cc1e5791e7eeaa29d6c337d311f8c5656da8730d451bf800c747600bd1"
+    },
+    {
+      "task": 4078,
+      "source": "/private/tmp/pr1188-ci-T4078/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4078/drive.json",
+      "bytes": 1132,
+      "sha256": "28cfdc21224e5be4cb650da778c174823fc9d7ef9dc44a182cbcbca864cfe1b7"
+    },
+    {
+      "task": 4078,
+      "source": "/private/tmp/pr1188-ci-T4078/evidence-selection.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4078/evidence-selection.json",
+      "bytes": 28346,
+      "sha256": "de172748427de65362afe07afe6f9d41e4941bdadc6506641c63d699a1ac3848"
+    },
+    {
+      "task": 4078,
+      "source": "/private/tmp/pr1188-ci-T4078/ledger-draft.md",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4078/ledger-draft.md",
+      "bytes": 1445,
+      "sha256": "cfa52d82c1f3ed0e202fcfa24fe00e300a19f32e44a77e0704018007cdb37b5c"
+    },
+    {
+      "task": 4078,
+      "source": "/private/tmp/pr1188-ci-T4078/ledger-rows.md",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4078/ledger-rows.md",
+      "bytes": 1445,
+      "sha256": "cfa52d82c1f3ed0e202fcfa24fe00e300a19f32e44a77e0704018007cdb37b5c"
+    },
+    {
+      "task": 4080,
+      "source": "/private/tmp/pr1188-ci-T4080/T4080.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4080/T4080.log",
+      "bytes": 92,
+      "sha256": "29873998bb8955aa5957246381486c11d963fa219ee7227a7ceb8972d1cec9ee"
+    },
+    {
+      "task": 4080,
+      "source": "/private/tmp/pr1188-ci-T4080/archive.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4080/archive.mjs",
+      "bytes": 2365,
+      "sha256": "8275fb34253d24383e66203c5d8bd28aba556456ed3d727a6922db507b28c52b"
+    },
+    {
+      "task": 4080,
+      "source": "/private/tmp/pr1188-ci-T4080/commit-sha.txt",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4080/commit-sha.txt",
+      "bytes": 41,
+      "sha256": "556b4ff4785f2c3be78ae4fa7e5fa6eb4d862c2a65d5ae95581b8ddd888e6e03"
+    },
+    {
+      "task": 4080,
+      "source": "/private/tmp/pr1188-ci-T4080/commit.py",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4080/commit.py",
+      "bytes": 1373,
+      "sha256": "1387af30fad1df6d281db79bb8f5ca6e463b83436bf03ce9581bcb7fdcb8dba7"
+    },
+    {
+      "task": 4080,
+      "source": "/private/tmp/pr1188-ci-T4080/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4080/drive-request.json",
+      "bytes": 146,
+      "sha256": "8c9a81e9bab3753961a52049d77b1e3f24f729da7f79b916c2e9b8c772a136e6"
+    },
+    {
+      "task": 4080,
+      "source": "/private/tmp/pr1188-ci-T4080/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4080/drive.json",
+      "bytes": 734,
+      "sha256": "f70029b26e0441bb303d3532b343312104c3c3183654473e9a1348f6944655cb"
+    },
+    {
+      "task": 4080,
+      "source": "/private/tmp/pr1188-ci-T4080/evidence-selection.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4080/evidence-selection.json",
+      "bytes": 8838,
+      "sha256": "3973f0256d23be8c70c710a749992df41464874c2a6f8d33efec391e88b27e5a"
+    },
+    {
+      "task": 4080,
+      "source": "/private/tmp/pr1188-ci-T4080/ledger-draft.md",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4080/ledger-draft.md",
+      "bytes": 1797,
+      "sha256": "7209c02e7c022efa93b3163599c3e0dfb15ac0f6aa531788dca598e1348d9c81"
+    },
+    {
+      "task": 4080,
+      "source": "/private/tmp/pr1188-ci-T4080/ledger-rows.md",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4080/ledger-rows.md",
+      "bytes": 1797,
+      "sha256": "7209c02e7c022efa93b3163599c3e0dfb15ac0f6aa531788dca598e1348d9c81"
+    },
+    {
+      "task": 4081,
+      "source": "/private/tmp/pr1188-ci-T4081/T4081.log",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4081/T4081.log",
+      "bytes": 92,
+      "sha256": "d495c9c6d54626f067330d3215a4cd66cb61cca2e749291bf6e52e420abf8178"
+    },
+    {
+      "task": 4081,
+      "source": "/private/tmp/pr1188-ci-T4081/audit.mjs",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4081/audit.mjs",
+      "bytes": 2744,
+      "sha256": "d9eaf414eb941b96a256f73650e0d2bd4d1022660003c371f8a127a81a05f98b"
+    },
+    {
+      "task": 4081,
+      "source": "/private/tmp/pr1188-ci-T4081/drive-request.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4081/drive-request.json",
+      "bytes": 139,
+      "sha256": "36aebd979f9c78abcdd607b676acce87bad23e72966210c84367d30f95b63b5f"
+    },
+    {
+      "task": 4081,
+      "source": "/private/tmp/pr1188-ci-T4081/drive.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4081/drive.json",
+      "bytes": 892,
+      "sha256": "19c54892854753e63a0388cd5f8d48e04ba8c47aeaad4c360c6d1aa748f59d5a"
+    },
+    {
+      "task": 4081,
+      "source": "/private/tmp/pr1188-ci-T4081/task-identity-audit.json",
+      "target": "experiments/formal_ai_subagent/evidence/ci-1188/archive-selection-correction-0f701/closing-traces-T4082/T4081/task-identity-audit.json",
+      "bytes": 47030,
+      "sha256": "f97c2d7cf2a69ed3369490aadeda8664beb9e1600d99d450cec7cd287a6ad930"
+    }
+  ],
+  "productionSourceEffects": [],
+  "oldPacketBytesPreserved": true
+}
