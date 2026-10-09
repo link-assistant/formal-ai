@@ -1,0 +1,1 @@
+The issue1099 two-file fixture now executes real bounded workspace tools for auxiliary append and source readback. It preserves the original request and eight-turn limit, both target paths and complete artifact bytes, and the assertion that a final answer cannot precede the second write.

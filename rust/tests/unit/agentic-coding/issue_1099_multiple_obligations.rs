@@ -13,6 +13,9 @@ use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::obligation_ledger::ObligationExpectation;
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
+#[path = "../issue_1066_ladder_capability/tool_workspace.rs"]
+mod observed_tool_workspace;
+
 const TOOLS: [&str; 4] = ["read", "grep", "write", "bash"];
 
 /// Issue #1099's shape -- two artifacts in one prompt, introduced by
@@ -30,63 +33,51 @@ const TWO_FILES: &str = "Two files. First, create file notes/attribution.md cont
     Gemfile.lock. Second, create file changelog/fragment.md containing bump patch.";
 
 /// Drive the loop, answering each planned call, and collect what was written.
-fn written_paths(task: &str, turns: usize) -> (Vec<String>, Option<String>) {
+fn written_paths(
+    task: &str,
+    turns: usize,
+) -> (Vec<String>, HashMap<String, String>, Option<String>) {
     let mut messages = vec![ChatMessage::user(task)];
     let mut written = Vec::new();
-    let mut workspace = HashMap::<String, String>::new();
+    let mut observed = HashMap::new();
+    let mut workspace = observed_tool_workspace::ToolWorkspace::new(task);
     for turn in 0..turns {
         match plan_chat_step(&messages, &TOOLS) {
             Some(AgenticPlan::ToolCalls(calls)) => {
                 let call = &calls[0];
-                // A write acknowledgement carries no file bytes. Only the
-                // later `cat` observation may discharge a file expectation.
-                let mut result = String::new();
-                if call.tool == "write"
-                    && let Ok(arguments) =
-                        serde_json::from_str::<serde_json::Value>(&call.arguments)
-                {
-                    for key in ["path", "filePath", "file_path"] {
-                        if let Some(path) = arguments.get(key).and_then(|v| v.as_str()) {
-                            written.push(path.to_owned());
-                            if let Some(content) = ["content", "contents", "text"]
-                                .iter()
-                                .find_map(|key| arguments.get(*key).and_then(|v| v.as_str()))
-                            {
-                                workspace.insert(path.to_owned(), content.to_owned());
-                            }
-                            break;
-                        }
-                    }
-                } else if call.tool == "bash"
-                    && let Ok(arguments) =
-                        serde_json::from_str::<serde_json::Value>(&call.arguments)
-                    && let Some(command) = arguments
-                        .get("command")
-                        .or_else(|| arguments.get("cmd"))
-                        .and_then(|value| value.as_str())
-                    && let Some(path) = command.strip_prefix("cat ")
-                    && let Some(content) = workspace.get(path.trim())
-                {
-                    // Return the bytes a real read-back would show. A bare
-                    // success token is not evidence of the file's contents.
-                    result.clone_from(content);
+                let id = format!("step-{turn}");
+                let result = workspace.execute(&id, call);
+                if call.tool == "write" {
+                    let arguments: serde_json::Value =
+                        serde_json::from_str(&call.arguments).expect("planned Write arguments");
+                    let path = ["path", "filePath", "file_path"]
+                        .iter()
+                        .find_map(|key| arguments.get(*key).and_then(serde_json::Value::as_str))
+                        .expect("planned Write target");
+                    let content = ["content", "contents", "text"]
+                        .iter()
+                        .find_map(|key| arguments.get(*key).and_then(serde_json::Value::as_str))
+                        .expect("planned Write content");
+                    let actual = workspace.read(path).expect("physically written target");
+                    assert_eq!(
+                        actual, content,
+                        "the actual artifact must match all planned bytes"
+                    );
+                    written.push(path.to_owned());
+                    observed.insert(path.to_owned(), actual);
                 }
                 messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
-                    format!("step-{turn}"),
+                    &id,
                     &call.tool,
                     call.arguments.clone(),
                 )]));
-                messages.push(ChatMessage::tool_result(
-                    format!("step-{turn}"),
-                    &call.tool,
-                    result,
-                ));
+                messages.push(result);
             }
-            Some(AgenticPlan::Final(answer)) => return (written, Some(answer)),
-            None => return (written, None),
+            Some(AgenticPlan::Final(answer)) => return (written, observed, Some(answer)),
+            None => return (written, observed, None),
         }
     }
-    (written, None)
+    (written, observed, None)
 }
 
 #[test]
@@ -119,7 +110,15 @@ fn a_cue_inside_a_clause_does_not_open_another_obligation() {
 
 #[test]
 fn the_session_does_not_finish_before_the_second_file_is_written() {
-    let (written, answer) = written_paths(TWO_FILES, 8);
+    let (written, observed, answer) = written_paths(TWO_FILES, 8);
+    assert_eq!(
+        observed.get("notes/attribution.md").map(String::as_str),
+        Some("Gemfile.lock.")
+    );
+    assert_eq!(
+        observed.get("changelog/fragment.md").map(String::as_str),
+        Some("bump patch.")
+    );
     assert!(
         written.iter().any(|path| path.contains("fragment.md")),
         "the second named artifact was never written; wrote {written:?}, answered {answer:?}"
