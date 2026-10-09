@@ -18,6 +18,7 @@
 use formal_ai::agentic_coding::{
     AgenticPlan, DRIVER_TOOLS, PlannedToolCall, QUESTION_CATALOG_PATH, QUESTION_CATALOG_TASK,
     is_question_catalog_task, plan_chat_step, question_catalog as recipe, run_agentic_task,
+    run_agentic_task_with_tools,
 };
 use formal_ai::{ChatMessage, ToolCall};
 use lino_objects_codec::format::parse_indented;
@@ -230,7 +231,15 @@ fn committed_agent_cli_session_matches_a_fresh_run() {
     let committed = include_str!(
         "../../../../docs/case-studies/issue-527/agent-cli-session-question-catalog.json"
     );
-    let fresh = run_agentic_task(QUESTION_CATALOG_TASK).expect("workspace");
+    let recorded: serde_json::Value =
+        serde_json::from_str(committed).expect("immutable session JSON");
+    let tools = recorded["tools_advertised"]
+        .as_array()
+        .expect("archived advertised tool schema")
+        .iter()
+        .map(|tool| tool.as_str().expect("advertised tool name"))
+        .collect::<Vec<_>>();
+    let fresh = run_agentic_task_with_tools(QUESTION_CATALOG_TASK, &tools).expect("workspace");
     let rendered = format!(
         "{}\n",
         serde_json::to_string_pretty(&fresh.session_json()).unwrap()

@@ -176,6 +176,10 @@ export function execute(dir, call) {
  * ran out mid-task, PR #1188 G84).
  */
 export async function drive(planChatStep, dir, prompt, { tools = AGENT_CLI_TOOLS, steps = 12, fallthrough = null } = {}) {
+  if (!Array.isArray(tools) || new Set(tools).size !== tools.length || tools.some((tool) => !AGENT_CLI_TOOLS.includes(tool))) {
+    return { transcript: [], answer: null, stop: 'invalid-tools', toolsAdvertised: [] };
+  }
+  tools = Object.freeze([...tools]);
   const messages = [
     { role: 'system', content: `<env>\n  Working directory: ${dir}\n  Is directory a git repo: yes\n</env>` },
     { role: 'user', content: prompt },
@@ -186,8 +190,11 @@ export async function drive(planChatStep, dir, prompt, { tools = AGENT_CLI_TOOLS
     // the symbolic command reroute may still turn that answer into tool calls
     // (js/server/agentic.mjs commandReroutePlan).
     const plan = (await planChatStep(messages, tools)) ?? (fallthrough ? await fallthrough(messages, tools) : null);
-    if (!plan) return { transcript, answer: null, stop: 'no-plan' };
-    if (plan.kind === 'final') return { transcript, answer: plan.answer, stop: 'final' };
+    if (!plan) return { transcript, answer: null, stop: 'no-plan', toolsAdvertised: tools };
+    if (plan.kind === 'final') return { transcript, answer: plan.answer, stop: 'final', toolsAdvertised: tools };
+    if (plan.calls.some((call) => !tools.includes(call.tool))) {
+      return { transcript, answer: null, stop: 'undeclared-tool', toolsAdvertised: tools };
+    }
     const toolCalls = plan.calls.map((call, index) => ({
       id: `c${step}_${index}`, type: 'function', function: { name: call.tool, arguments: call.arguments },
     }));
@@ -198,7 +205,7 @@ export async function drive(planChatStep, dir, prompt, { tools = AGENT_CLI_TOOLS
       messages.push({ role: 'tool', tool_call_id: toolCalls[index].id, name: call.tool, content: result });
     });
   }
-  return { transcript, answer: null, stop: 'steps' };
+  return { transcript, answer: null, stop: 'steps', toolsAdvertised: tools };
 }
 
 /** What the driver prints when a session ends with no answer: never a bare `null`. */

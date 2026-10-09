@@ -1,6 +1,6 @@
 use formal_ai::agentic_coding::{
     DREAMING_AUDIT_PATH, DREAMING_AUDIT_TASK, dreaming_audit, is_dreaming_audit_task,
-    run_agentic_task,
+    run_agentic_task, run_agentic_task_with_tools,
 };
 
 #[test]
@@ -82,7 +82,15 @@ fn committed_agent_cli_session_matches_a_fresh_dreaming_audit() {
     let committed = include_str!(
         "../../../../docs/case-studies/issue-540/agent-cli-session-dreaming-audit.json"
     );
-    let fresh = run_agentic_task(DREAMING_AUDIT_TASK).expect("agent workspace");
+    let recorded: serde_json::Value =
+        serde_json::from_str(committed).expect("immutable session JSON");
+    let tools = recorded["tools_advertised"]
+        .as_array()
+        .expect("archived advertised tool schema")
+        .iter()
+        .map(|tool| tool.as_str().expect("advertised tool name"))
+        .collect::<Vec<_>>();
+    let fresh = run_agentic_task_with_tools(DREAMING_AUDIT_TASK, &tools).expect("agent workspace");
     let rendered = format!(
         "{}\n",
         serde_json::to_string_pretty(&fresh.session_json()).expect("session JSON")

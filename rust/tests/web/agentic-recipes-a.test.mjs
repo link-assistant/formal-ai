@@ -380,6 +380,7 @@ describe('diagram (rust/tests/unit/agentic-coding/issue_538_agentic.rs)', () => 
     for (const step of session.steps) {
       const call = single(await importDocumentRecipe.planDiagramStep(messages, session.tools_advertised));
       assert.equal(call.tool, step.tool);
+      assert.ok(session.tools_advertised.includes(call.tool));
       assert.deepEqual(JSON.parse(call.arguments), step.arguments);
       answerCall(messages, call, step.result);
     }

@@ -75,6 +75,9 @@ pub struct DriverToolStep {
 pub struct DriverOutcome {
     /// The task the driver was asked to solve.
     pub task: String,
+    /// The exact tool names advertised for this particular execution.
+    #[serde(default)]
+    pub tools_advertised: Vec<String>,
     /// Every tool call the driver executed, in order.
     pub steps: Vec<DriverToolStep>,
     /// The server's final assistant text (the knowledge base inline).
@@ -119,7 +122,7 @@ impl DriverOutcome {
             "task": self.task,
             "driver": "formal-ai in-repo agentic CLI",
             "server": "formal-ai OpenAI-compatible chat completions",
-            "tools_advertised": DRIVER_TOOLS,
+            "tools_advertised": self.tools_advertised,
             "turns": self.turns,
             "hit_turn_cap": self.hit_turn_cap,
             "steps": self.steps.iter().map(|step| json!({
@@ -142,6 +145,17 @@ pub fn run_agentic_task(task: &str) -> Result<DriverOutcome, AgentError> {
     run_agentic_task_in(task, &AgentWorkspaceConfig::default())
 }
 
+/// Execute with exactly the caller's advertised tool names, including archived sessions.
+///
+/// # Errors
+/// Returns an error for unsupported or repeated tools, or an unavailable workspace.
+pub fn run_agentic_task_with_tools(
+    task: &str,
+    tool_names: &[&str],
+) -> Result<DriverOutcome, AgentError> {
+    run_agentic_task_in_with_tools(task, &AgentWorkspaceConfig::default(), tool_names)
+}
+
 /// Drive the agentic loop for `task` using the given workspace `config`.
 ///
 /// # Errors
@@ -151,6 +165,25 @@ pub fn run_agentic_task_in(
     task: &str,
     config: &AgentWorkspaceConfig,
 ) -> Result<DriverOutcome, AgentError> {
+    run_agentic_task_in_with_tools(task, config, &DRIVER_TOOLS)
+}
+
+fn run_agentic_task_in_with_tools(
+    task: &str,
+    config: &AgentWorkspaceConfig,
+    tool_names: &[&str],
+) -> Result<DriverOutcome, AgentError> {
+    if tool_names
+        .iter()
+        .enumerate()
+        .any(|(index, name)| !DRIVER_TOOLS.contains(name) || tool_names[..index].contains(name))
+    {
+        return Err(std::io::Error::from(std::io::ErrorKind::InvalidInput).into());
+    }
+    let advertised_tools = tool_names
+        .iter()
+        .map(|name| (*name).to_owned())
+        .collect::<Vec<_>>();
     // Agent mode is the explicit opt-in the server's tool gate requires; without
     // it the server refuses every tool. The driver is that isolated execution
     // environment, so it opts in.
@@ -158,7 +191,7 @@ pub fn run_agentic_task_in(
         agent_mode: true,
         ..SolverConfig::default()
     });
-    let tools = tool_definitions(&DRIVER_TOOLS);
+    let tools = tool_definitions(tool_names);
     let mut workspace = AgentWorkspace::for_prompt(task, config)?;
     let mut messages = vec![ChatMessage::user(task)];
     let mut steps = Vec::new();
@@ -170,6 +203,7 @@ pub fn run_agentic_task_in(
                 task: task.to_owned(),
                 steps,
                 final_answer: String::new(),
+                tools_advertised: advertised_tools.clone(),
                 turns,
                 hit_turn_cap: true,
             });
@@ -193,6 +227,7 @@ pub fn run_agentic_task_in(
                 task: task.to_owned(),
                 steps,
                 final_answer: String::new(),
+                tools_advertised: advertised_tools.clone(),
                 turns,
                 hit_turn_cap: false,
             });
@@ -205,6 +240,7 @@ pub fn run_agentic_task_in(
                 task: task.to_owned(),
                 steps,
                 final_answer: choice.message.content.plain_text(),
+                tools_advertised: advertised_tools.clone(),
                 turns,
                 hit_turn_cap: false,
             });
@@ -216,6 +252,9 @@ pub fn run_agentic_task_in(
         let assistant = choice.message;
         let mut results = Vec::with_capacity(assistant.tool_calls.len());
         for call in &assistant.tool_calls {
+            if !tool_names.contains(&call.function.name.as_str()) {
+                return Err(std::io::Error::from(std::io::ErrorKind::InvalidInput).into());
+            }
             let (result, failed) = execute_tool_call(call, &mut workspace);
             steps.push(DriverToolStep {
                 tool: call.function.name.clone(),

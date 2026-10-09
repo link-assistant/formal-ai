@@ -1,6 +1,6 @@
 use formal_ai::agentic_coding::{
     ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK, associative_learning,
-    is_associative_learning_task, run_agentic_task,
+    is_associative_learning_task, run_agentic_task, run_agentic_task_with_tools,
 };
 
 #[test]
@@ -58,11 +58,32 @@ fn formal_ai_executes_associative_learning_through_agent_cli() {
 
 #[test]
 fn committed_agent_cli_session_is_byte_reproducible() {
-    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect("agent workspace");
-    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect("session JSON");
     let committed = include_str!(
         "../../../../docs/case-studies/issue-686/agent-cli-session-associative-learning.json"
     );
+    let recorded: serde_json::Value =
+        serde_json::from_str(committed).expect("immutable session JSON");
+    let tools = recorded["tools_advertised"]
+        .as_array()
+        .expect("archived advertised tool schema")
+        .iter()
+        .map(|tool| tool.as_str().expect("advertised tool name"))
+        .collect::<Vec<_>>();
+    let outcome =
+        run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).expect("agent workspace");
+    let fresh = serde_json::to_string_pretty(&outcome.session_json()).expect("session JSON");
 
     assert_eq!(format!("{fresh}\n"), committed);
+}
+
+#[test]
+fn replay_driver_rejects_unavailable_or_repeated_adapters_before_execution() {
+    for tools in [vec!["unsupported"], vec!["write_file", "write_file"]] {
+        assert!(run_agentic_task_with_tools(ASSOCIATIVE_LEARNING_TASK, &tools).is_err());
+    }
+    let outcome = run_agentic_task(ASSOCIATIVE_LEARNING_TASK).expect("default execution");
+    assert_eq!(
+        outcome.tools_advertised,
+        formal_ai::agentic_coding::DRIVER_TOOLS
+    );
 }

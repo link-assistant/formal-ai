@@ -273,9 +273,17 @@ test('the associative report and answer match the committed Agent CLI session', 
   const document = associativeLearning.renderDocument();
   assert.equal(document, recorded.steps[0].arguments.content);
   assert.equal(associativeLearning.finalAnswer(document), recorded.final_answer);
-  const plan = learningReport.planReportStep(associativeLearning.REPORT, [user(recorded.task)], recorded.tools_advertised);
-  assert.equal(plan.calls[0].tool, recorded.steps[0].tool);
-  assert.deepEqual(JSON.parse(plan.calls[0].arguments), recorded.steps[0].arguments);
+  const messages = [user(recorded.task)];
+  for (const step of recorded.steps) {
+    const plan = learningReport.planReportStep(associativeLearning.REPORT, messages, recorded.tools_advertised);
+    assert.equal(plan.calls[0].tool, step.tool);
+    assert.ok(recorded.tools_advertised.includes(plan.calls[0].tool));
+    assert.deepEqual(JSON.parse(plan.calls[0].arguments), step.arguments);
+    answerToolCall(messages, plan.calls[0], step.result);
+  }
+  const final = learningReport.planReportStep(associativeLearning.REPORT, messages, recorded.tools_advertised);
+  assert.equal(final.kind, 'final');
+  assert.equal(final.answer, recorded.final_answer);
 });
 
 test('the associative report is derived from persisted usage, not canned', () => {

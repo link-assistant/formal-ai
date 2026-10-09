@@ -491,7 +491,13 @@ fn public_cli_mines_and_conformance_checks_a_portable_memory_file() {
     )
     .expect("write portable observations");
 
-    let learned = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+    // Nextest archives relocate executables; compile-time paths name the producer.
+    // https://nexte.st/docs/ci-features/archiving/
+    let executable = std::env::var_os("NEXTEST_BIN_EXE_formal_ai")
+        .or_else(|| std::env::var_os("NEXTEST_BIN_EXE_formal-ai"))
+        .or_else(|| std::env::var_os("CARGO_BIN_EXE_formal-ai"))
+        .unwrap_or_else(|| env!("CARGO_BIN_EXE_formal-ai").into());
+    let learned = Command::new(&executable)
         .args([
             "learn",
             "algorithms",
@@ -507,7 +513,7 @@ fn public_cli_mines_and_conformance_checks_a_portable_memory_file() {
     let document = fs::read_to_string(&artifact).expect("read learned artifact");
     assert!(document.contains("algorithm_candidate"));
 
-    let conformance = Command::new(env!("CARGO_BIN_EXE_formal-ai"))
+    let conformance = Command::new(&executable)
         .args([
             "algorithm",
             "conformance",

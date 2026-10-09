@@ -12,7 +12,7 @@
 
 use formal_ai::agentic_coding::{
     AgenticPlan, CORE_RECIPE_TOOLS, PlannedToolCall, corpus, diagram, is_meaning_detail_task,
-    meaning_detail, plan_chat_step, run_agentic_task, self_ast,
+    meaning_detail, plan_chat_step, run_agentic_task, run_agentic_task_with_tools, self_ast,
 };
 use formal_ai::{ChatMessage, ToolCall};
 
@@ -413,7 +413,15 @@ fn committed_diagram_session_matches_a_fresh_run() {
     //       --session-json docs/case-studies/issue-538/agent-cli-session-diagram.json
     let committed =
         include_str!("../../../../docs/case-studies/issue-538/agent-cli-session-diagram.json");
-    let fresh = run_agentic_task(diagram::DIAGRAM_TASK).expect("workspace");
+    let recorded: serde_json::Value =
+        serde_json::from_str(committed).expect("immutable session JSON");
+    let tools = recorded["tools_advertised"]
+        .as_array()
+        .expect("archived advertised tool schema")
+        .iter()
+        .map(|tool| tool.as_str().expect("advertised tool name"))
+        .collect::<Vec<_>>();
+    let fresh = run_agentic_task_with_tools(diagram::DIAGRAM_TASK, &tools).expect("workspace");
     let rendered = format!(
         "{}\n",
         serde_json::to_string_pretty(&fresh.session_json()).unwrap()

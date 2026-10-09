@@ -617,7 +617,7 @@ fn declaration_only_source_names_cannot_outrank_an_input_reading_program() {
     assert_eq!(selected.id, identifier);
     assert_eq!(
         selected.source,
-        "import math\n\ndef discovered_function(input):\n    return math.prod(range(1, input + 1))"
+        "import math\n\ndef discovered_function(input):\n    return math.prod(range(1, input + 1))\n"
     );
     assert_eq!(selected.assertion_count, 2);
     assert!(selected.composition.starts_with("typed_search("));
