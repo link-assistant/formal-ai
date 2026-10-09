@@ -184,6 +184,11 @@ export function planTestExpectationQuestion(task) {
     const paths = pathsIn(sentence.text);
     const [path] = paths;
     if (path === undefined) continue;
+    // A test noun after the named artifact describes a separate acceptance goal.
+    // Only an artifact-kind prefix can bind this supported target grammar.
+    const targetAt = sentence.text.indexOf(path);
+    if (targetAt < 0 || !mentionsRole('coding_test_artifact_kind',
+      normalizePrompt(sentence.text.slice(0, targetAt)))) continue;
     const prose = normalizePrompt(paths.reduce((text, named) => text.split(named).join(' '), sentence.text));
     if (/[0-9]/u.test(prose) || !mentionsRole('coding_request_verb', prose)
       || !mentionsRole('coding_test_artifact_kind', prose) || mentionsRole(ROLE_EXPECTATION, prose)) continue;

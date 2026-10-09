@@ -78,7 +78,14 @@ async function drive(prompt, workspace, maxSteps = 12) {
     const id = `call_${step}`;
     calls.push(call.tool);
     messages.push({ role: 'assistant', content: '', tool_calls: [{ id, type: 'function', function: { name: call.tool, arguments: call.arguments } }] });
-    messages.push({ role: 'tool', tool_call_id: id, content: execute(files, call.tool, args) });
+    const result = execute(files, call.tool, args);
+    const observation = { role: 'tool', tool_call_id: id, content: result };
+    if (call.tool === 'read') {
+      const path = pathOf(args), success = files.has(path);
+      observation.is_error = !success;
+      observation.source_read = { path, format: 'raw', success, complete: success };
+    }
+    messages.push(observation);
   }
   return { calls, files, answer: null };
 }

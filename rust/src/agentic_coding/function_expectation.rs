@@ -264,6 +264,14 @@ pub(super) fn test_expectation_question(
     for sentence in super::shell_command_policy::sentences(task) {
         let paths = paths_in(sentence.text);
         let Some(path) = paths.first() else { continue };
+        // Trailing acceptance goals do not own the already named source artifact.
+        let Some(target_at) = sentence.text.find(path.as_str()) else {
+            continue;
+        };
+        let prefix = crate::engine::normalize_prompt(&sentence.text[..target_at]);
+        if !seed::lexicon().mentions_role("coding_test_artifact_kind", &prefix) {
+            continue;
+        }
         let prose = crate::engine::normalize_prompt(
             &paths.iter().fold(sentence.text.to_owned(), |text, named| {
                 text.replace(named.as_str(), " ")
@@ -289,3 +297,7 @@ pub(super) fn test_expectation_question(
     }
     None
 }
+
+#[cfg(test)]
+#[path = "../../tests/fixtures/test-target-ownership.rs"]
+mod target_ownership_tests;
