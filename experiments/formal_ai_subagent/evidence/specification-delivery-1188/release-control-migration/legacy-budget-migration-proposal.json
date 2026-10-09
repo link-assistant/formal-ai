@@ -1,0 +1,38 @@
+{
+  "kind": "ScratchOnlyLegacyBudgetAssertionMigrationProposal",
+  "approvedForSourceWrite": false,
+  "sourceGuards": {
+    "rust/tests/unit/ci-cd/workflow_coverage.rs": "a2645cf6f357de46b142d9162dc68898b9614d214081574fd5b229604620363e",
+    "rust/tests/unit/issue_896_component_boundaries.rs": "5e687b6667f7d53a91b404bf31f3a608d7773be3db5d5cf69df8002e29d5fe0e",
+    ".github/workflows/coverage.yml": "7de32a8ee398a8d2e5b565785dbb69119f79065ff74f5fa9b1f8ef4964bd4027",
+    ".github/workflows/desktop-release.yml": "857bf14380e4e5da98a79fb76b646b8feef723e91f640b9844d10fae922f5018"
+  },
+  "originalOperandsRetained": {
+    "coverageBuildCapLiteral": 40,
+    "desktopHeavyLabels": [
+      "macos-x64",
+      "windows-x64",
+      "windows-arm64"
+    ],
+    "desktopHeavyStrictlyGreaterThanLight": true,
+    "publishedUnconditionalGraphColdCompilationRequired": true,
+    "buildPackageFloorMinutes": 15
+  },
+  "coverageDesign": [
+    "Retain all originalchangegating/checkout/toolchain/instrumentation/nativeexecutableinventory/coverage-shard/reducer/browser obligations.",
+    "Require each actualjob cap <=30, original per-step budget warning/failure protocol, summed budgets <=70 percent cap.",
+    "Coveragebuild current1260s budget exactly70percent30m; validate actualfull original nativeexecutable inventory, upload/download digests and source/toolchain identities, not only changedliteral.",
+    "Retain actual1393s wholeproducer/670s instrumented compile fromrun37957603076 as oneobservedcohort; no futureupperbound guarantee."
+  ],
+  "desktopDesign": [
+    "Retain all6packagingtargets and8nativeproducer targets, originalcoldpublishedgraph obligation, each actualmatrixcap <=30 and actualnativeproducer before consumers.",
+    "Replace relativeheavy>light packagingjobcap operand only after proving heavycompile operation relocated to genuine per-target immutableproducer with full matching source/compiler/default-feature/executable receipts consumed by packages.",
+    "Bind package launch/version/hash/defaultfeatures to exactproducer executable and forbid rebuild/source-drift/tag relabeling; retained signs/provenance/archive/upload/update metadata all execute.",
+    "Observed89d1 nativejobs366\u20131629s are real, but Windows/macOS registry/toolchain-cold unknown. Next actualCI coldtarget producers must disabletarget/sccache reuse and retainfulltrace, with originalqualitygates and >30 failure reported honestly.",
+    "Do not lower BuildPackage15minute floor or any currentnative stagefloor; no longer cap requested."
+  ],
+  "status": "OpenPendingRootReviewAndRequiredActualColdProof",
+  "nativeExecutedLocally": false,
+  "capRaises": false,
+  "sourceWrites": false
+}

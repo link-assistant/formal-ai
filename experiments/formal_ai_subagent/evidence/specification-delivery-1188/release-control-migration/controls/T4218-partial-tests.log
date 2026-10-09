@@ -1,0 +1,77 @@
+TAP version 13
+# Subtest: an unrelated latest release cannot stand in for the completed run
+ok 1 - an unrelated latest release cannot stand in for the completed run
+  ---
+  duration_ms: 909.866625
+  ...
+# Subtest: a delayed run selects its matching older published child
+ok 2 - a delayed run selects its matching older published child
+  ---
+  duration_ms: 1100.123375
+  ...
+# Subtest: the issue479 child-release path still heals missing assets
+ok 3 - the issue479 child-release path still heals missing assets
+  ---
+  duration_ms: 937.634917
+  ...
+# Subtest: an exact-head release retains the defensive resolution tier
+ok 4 - an exact-head release retains the defensive resolution tier
+  ---
+  duration_ms: 740.345042
+  ...
+# Subtest: an explicit manual rebuild may still select an older release
+ok 5 - an explicit manual rebuild may still select an older release
+  ---
+  duration_ms: 671.299083
+  ...
+# Subtest: a GitHub transport failure cannot authorize an unrelated release
+ok 6 - a GitHub transport failure cannot authorize an unrelated release
+  ---
+  duration_ms: 686.337333
+  ...
+# Subtest: the matching release heals a missing formal-ai-vscode-1.2.3.vsix after desktop and CLI success
+ok 7 - the matching release heals a missing formal-ai-vscode-1.2.3.vsix after desktop and CLI success
+  ---
+  duration_ms: 841.329
+  ...
+# Subtest: the matching release heals a missing SHA256SUMS.txt after desktop and CLI success
+ok 8 - the matching release heals a missing SHA256SUMS.txt after desktop and CLI success
+  ---
+  duration_ms: 941.169041
+  ...
+# Subtest: the matching release heals a missing BUILD-PROVENANCE.txt after desktop and CLI success
+ok 9 - the matching release heals a missing BUILD-PROVENANCE.txt after desktop and CLI success
+  ---
+  duration_ms: 909.375291
+  ...
+# Subtest: only a release with the complete package and manifest set skips an automatic build
+ok 10 - only a release with the complete package and manifest set skips an automatic build
+  ---
+  duration_ms: 1712.600292
+  ...
+# Subtest: a VSIX from another version cannot complete the matching release
+ok 11 - a VSIX from another version cannot complete the matching release
+  ---
+  duration_ms: 753.691041
+  ...
+# Subtest: an explicit manual rebuild retains the complete-assets override
+ok 12 - an explicit manual rebuild retains the complete-assets override
+  ---
+  duration_ms: 657.912
+  ...
+# Subtest: complete names still heal invalid durable evidence: corrupt
+ok 13 - complete names still heal invalid durable evidence: corrupt
+  ---
+  duration_ms: 1356.469291
+  ...
+# Subtest: complete names still heal invalid durable evidence: manifest
+ok 14 - complete names still heal invalid durable evidence: manifest
+  ---
+  duration_ms: 1398.790709
+  ...
+# Subtest: complete names still heal invalid durable evidence: attestation
+ok 15 - complete names still heal invalid durable evidence: attestation
+  ---
+  duration_ms: 1178.220375
+  ...
+

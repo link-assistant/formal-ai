@@ -1,0 +1,7 @@
+{
+  "task": "T4219",
+  "file": "rust/tests/web/prepared-release-factory.test.mjs",
+  "status": 7,
+  "signal": null,
+  "error": "spawnSync node ETIMEDOUT"
+}

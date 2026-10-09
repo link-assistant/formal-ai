@@ -1,0 +1,51 @@
+TAP version 13
+# fatal: ambiguous argument 'refs/tags/v1.2.4^{commit}': unknown revision or path not in the working tree.
+# Use '--' to separate paths from revisions, like this:
+# 'git <command> [<revision>...] -- [<file>...]'
+# Subtest: actual Node producer binds the single existing build and source under push
+ok 1 - actual Node producer binds the single existing build and source under push
+  ---
+  duration_ms: 1956.109083
+  ...
+# Subtest: actual Node producer binds the single existing build and source under workflow_dispatch
+ok 2 - actual Node producer binds the single existing build and source under workflow_dispatch
+  ---
+  duration_ms: 1725.034792
+  ...
+# Subtest: actual controlled build-failed cannot produce a completed build receipt
+ok 3 - actual controlled build-failed cannot produce a completed build receipt
+  ---
+  duration_ms: 887.465917
+  ...
+# Subtest: actual controlled source-mutated cannot produce a completed build receipt
+ok 4 - actual controlled source-mutated cannot produce a completed build receipt
+  ---
+  duration_ms: 1267.152166
+  ...
+# Subtest: untrusted event/branch, version, tag and build overrides refuse before controlled build
+ok 5 - untrusted event/branch, version, tag and build overrides refuse before controlled build
+  ---
+  duration_ms: 521.833084
+  ...
+# Subtest: actual Node Docker stand-in builds prebuilt once, preserves immutable full observations and mirrors without compilation
+ok 6 - actual Node Docker stand-in builds prebuilt once, preserves immutable full observations and mirrors without compilation
+  ---
+  duration_ms: 3504.549708
+  ...
+# Subtest: actual docker-failed observation cannot certify an image publication
+ok 7 - actual docker-failed observation cannot certify an image publication
+  ---
+  duration_ms: 1551.858
+  ...
+# Subtest: actual wrong-version observation cannot certify an image publication
+ok 8 - actual wrong-version observation cannot certify an image publication
+  ---
+  duration_ms: 1733.933667
+  ...
+# Subtest: actual wrong-binary observation cannot certify an image publication
+ok 9 - actual wrong-binary observation cannot certify an image publication
+  ---
+  duration_ms: 1790.952625
+  ...
+# Subtest: actual runtime-failed observation cannot certify an image publication
+

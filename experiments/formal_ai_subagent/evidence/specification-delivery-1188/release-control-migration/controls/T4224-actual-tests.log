@@ -1,0 +1,101 @@
+TAP version 13
+# Subtest: actual Node producer binds the single existing build and source under push
+ok 1 - actual Node producer binds the single existing build and source under push # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.544084
+  ...
+# Subtest: actual Node producer binds the single existing build and source under workflow_dispatch
+ok 2 - actual Node producer binds the single existing build and source under workflow_dispatch # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.043166
+  ...
+# Subtest: actual controlled build-failed cannot produce a completed build receipt
+ok 3 - actual controlled build-failed cannot produce a completed build receipt # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.0355
+  ...
+# Subtest: actual controlled source-mutated cannot produce a completed build receipt
+ok 4 - actual controlled source-mutated cannot produce a completed build receipt # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.034541
+  ...
+# Subtest: untrusted event/branch, version, tag and build overrides refuse before controlled build
+ok 5 - untrusted event/branch, version, tag and build overrides refuse before controlled build # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.037167
+  ...
+# Subtest: actual Node Docker stand-in builds prebuilt once, preserves immutable full observations and mirrors without compilation
+ok 6 - actual Node Docker stand-in builds prebuilt once, preserves immutable full observations and mirrors without compilation # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.03825
+  ...
+# Subtest: actual docker-failed observation cannot certify an image publication
+ok 7 - actual docker-failed observation cannot certify an image publication # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.030542
+  ...
+# Subtest: actual wrong-version observation cannot certify an image publication
+ok 8 - actual wrong-version observation cannot certify an image publication # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.076417
+  ...
+# Subtest: actual wrong-binary observation cannot certify an image publication
+ok 9 - actual wrong-binary observation cannot certify an image publication # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.082334
+  ...
+# Subtest: actual runtime-failed observation cannot certify an image publication
+ok 10 - actual runtime-failed observation cannot certify an image publication # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.101041
+  ...
+# Subtest: altered producer bytes, source fields and status veto before any Docker process
+ok 11 - altered producer bytes, source fields and status veto before any Docker process # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.045083
+  ...
+# Subtest: anonymous transport failure and altered manifest bytes refuse image receipts
+ok 12 - anonymous transport failure and altered manifest bytes refuse image receipts # SKIP test name does not match pattern
+  ---
+  duration_ms: 0.034709
+  ...
+# Subtest: optional mirror cannot target another registry or disagree with configured opt-in target
+ok 13 - optional mirror cannot target another registry or disagree with configured opt-in target
+  ---
+  duration_ms: 1040.089167
+  ...
+# Subtest: Docker Hub canonical digest spelling accepts configured docker.io alias without another build
+ok 14 - Docker Hub canonical digest spelling accepts configured docker.io alias without another build
+  ---
+  duration_ms: 3404.346625
+  ...
+# Subtest: missing actual GHA cache environment refuses before any image process
+ok 15 - missing actual GHA cache environment refuses before any image process
+  ---
+  duration_ms: 2941.530458
+  ...
+# Subtest: altered actual destination config refuses mirror receipt
+ok 16 - altered actual destination config refuses mirror receipt
+  ---
+  duration_ms: 2955.805542
+  ...
+# Subtest: both guarded publication jobs bind the same producer, full factory, optional mirror and original slim order
+ok 17 - both guarded publication jobs bind the same producer, full factory, optional mirror and original slim order
+  ---
+  duration_ms: 0.433541
+  ...
+# Subtest: a mirror cannot substitute the source repository or independent source selection in its full-image receipt
+ok 18 - a mirror cannot substitute the source repository or independent source selection in its full-image receipt
+  ---
+  duration_ms: 7870.46
+  ...
+1..18
+# tests 18
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 12
+# todo 0
+# duration_ms 18259.240125
+

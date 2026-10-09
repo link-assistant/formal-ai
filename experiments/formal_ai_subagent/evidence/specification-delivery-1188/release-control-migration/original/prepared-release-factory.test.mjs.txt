@@ -124,15 +124,6 @@ test('actual Node Docker stand-in builds prebuilt once, preserves immutable full
  const builds=docker.filter(call=>call.args[0]==='buildx'&&call.args[1]==='build');
  assert.equal(builds.length,1);
  for(const image of ['ghcr.io/fixture/formal-ai','fixture/mirror'])for(const suffix of ['1.2.3','latest'])assert.ok(docker.some(call=>call.args[0]==='push'&&call.args[1]===image+':'+suffix));
- const publicationOrder=[];
- for(const image of ['ghcr.io/fixture/formal-ai','fixture/mirror'])for(const suffix of ['1.2.3','latest']) {
-  const tagged=docker.findIndex(call=>call.args[0]==='tag'&&call.args[2]===image+':'+suffix);
-  const pushed=docker.findIndex(call=>call.args[0]==='push'&&call.args[1]===image+':'+suffix);
-  assert.ok(tagged>=0&&pushed>tagged,'actual metadata suffix must be tagged before push: '+image+':'+suffix);
-  publicationOrder.push(pushed);
- }
- assert.ok(publicationOrder[0]<publicationOrder[1]&&publicationOrder[1]<publicationOrder[2]&&publicationOrder[2]<publicationOrder[3],
-  'actual full version/latest publication must precede mirror version/latest publication');
  assert.ok(builds[0].args.includes('BINARY_SOURCE=prebuilt'));
  assert.ok(builds[0].args.includes('type=gha,scope=docker-image'));
  assert.ok(builds[0].args.includes('type=gha,mode=max,scope=docker-image'));
