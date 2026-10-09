@@ -526,3 +526,19 @@ agentic_messages
     text "A method exists but the need's chain did not connect end to end; recorded as a gap to close."
   message skill_curriculum_unsatisfied
     text "The need resolved to a method but was not satisfied; recorded as a gap to close."
+  message repository-declarations-ambiguous
+    text "ambiguous repository declarations: "
+  message repository-structural-edit-unavailable
+    text "no registry-grounded structural edit was derivable"
+  message repository-named-tests-failed
+    text "named tests did not pass"
+  message repository-stage-failed
+    text "git add failed"
+  message repository-diff-failed
+    text "git diff failed"
+  message repository-write-unobserved
+    text "write was not observed: {path}"
+  message repository-command-disallowed
+    text "repository command is not allowed: {program}"
+  message repository-command-timeout
+    text "repository command timed out after {elapsed}s (deadline {deadline}s)"

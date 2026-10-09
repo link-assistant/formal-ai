@@ -1,0 +1,3 @@
+Share browser/server formalization evidence selection and preserve raw events for idempotent projection. The browser now carries 125 of 136 selected native specification cases successfully, with 11 gaps and the remaining native cases still explicit debt; full browser meta-core parity remains pending.
+
+Handle local named export clauses and validate generated worker factory syntax before writing files. Preserve exact append-record readback while excluding inter-record separators. Move repository diagnostics into canonical message data and preserve immutable evidence names in the established abbreviation policy. Closest checks: 7 shared-projection/export cases, 8 append cases, 6 abbreviation cases and 20 repository caller cases passed; native behavior is verified in CI.

@@ -39,6 +39,8 @@ abbreviation-rules
       reason "projections of js/agentic, named for the source modules"
     excluded experiments/formal_ai_subagent/archive
       reason "the coordination archive keeps its names as written"
+    excluded experiments/formal_ai_subagent/evidence
+      reason "immutable captured requests and results retain the original tool and run file names"
     excluded data/meta/requirement-status-ledger
       reason "generated, one file per requirement document and named for it"
     excluded js/worker/formal_ai_worker_crate_*

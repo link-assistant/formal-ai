@@ -1,5 +1,6 @@
 // Node's repository boundary: bounded processes and confined file access.
 // A caller supplies an existing isolated checkout at the task's exact base.
+import { serverMessage } from './messages.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
@@ -8,14 +9,14 @@ import { runRepositoryCommand } from '../agentic/crate/repository_workspace_stag
 import { moduleFromDocument } from '../agentic/crate/self_ast_census.mjs';
 
 function confined(root, relative) {
-  if (typeof relative !== 'string' || !relative || path.isAbsolute(relative)) throw new Error('a relative workspace path is required');
+  if (typeof relative !== 'string' || !relative || path.isAbsolute(relative)) throw new Error(serverMessage('repository-relative-path-required'));
   const base = fs.realpathSync(root);
   const target = path.resolve(base, relative);
-  if (!target.startsWith(base + path.sep)) throw new Error('path escapes repository workspace: ' + relative);
+  if (!target.startsWith(base + path.sep)) throw new Error(serverMessage('repository-path-outside-workspace') + relative);
   let existing = target;
   for (;;) {
     try {
-      if (fs.lstatSync(existing).isSymbolicLink()) throw new Error('symlink workspace path is refused: ' + relative);
+      if (fs.lstatSync(existing).isSymbolicLink()) throw new Error(serverMessage('repository-symlink-path-refused') + relative);
       break;
     } catch (error) {
       if (error.code !== 'ENOENT') throw error;
@@ -23,14 +24,14 @@ function confined(root, relative) {
     }
   }
   const physical = fs.realpathSync(existing);
-  if (physical !== base && !physical.startsWith(base + path.sep)) throw new Error('symlink escapes repository workspace: ' + relative);
+  if (physical !== base && !physical.startsWith(base + path.sep)) throw new Error(serverMessage('repository-symlink-outside-workspace') + relative);
   return target;
 }
 
 function boundedProcess(root, program, argumentsList, policy) {
   const limit = policy.output_limit_bytes ?? 16 * 1024 * 1024;
   const deadline = policy.deadline_seconds ?? 300;
-  if (!(deadline > 0) || !(limit > 0)) throw new Error('positive process limits are required');
+  if (!(deadline > 0) || !(limit > 0)) throw new Error(serverMessage('repository-process-limits-required'));
   return new Promise((resolve) => {
     const started = Date.now();
     const stdout = []; const stderr = [];
@@ -57,7 +58,7 @@ function boundedProcess(root, program, argumentsList, policy) {
     });
     child.once('close', (code, signal) => {
       clearTimeout(timer);
-      resolve({ exit_code: overflow ? null : code, stdout: text(stdout), stderr: text(stderr) + (overflow ? '\nprocess output limit exceeded' : ''),
+      resolve({ exit_code: overflow ? null : code, stdout: text(stdout), stderr: text(stderr) + (overflow ? serverMessage('repository-process-output-limit') : ''),
         timed_out: timedOut, output_limit_exceeded: overflow, signal, elapsed_seconds: (Date.now() - started) / 1000 });
     });
   });
@@ -104,30 +105,30 @@ export function nodeRepositoryIo({ run = boundedProcess } = {}) {
 
 /** Materialize exactly the named base commit through the same allowlisted injected process port. */
 export async function cloneRepositoryWorkspace(spec, root, { io = nodeRepositoryIo(), allowRemoteClone = false } = {}) {
-  if (!/^[a-fA-F0-9]{40}$/u.test(spec?.base_commit ?? '')) throw new Error('repository base must be a full forty-character commit');
-  if (!spec.origin) throw new Error('repository clone origin is required');
-  if (fs.existsSync(root)) throw new Error('repository clone destination already exists');
+  if (!/^[a-fA-F0-9]{40}$/u.test(spec?.base_commit ?? '')) throw new Error(serverMessage('repository-full-base-required'));
+  if (!spec.origin) throw new Error(serverMessage('repository-origin-required'));
+  if (fs.existsSync(root)) throw new Error(serverMessage('repository-destination-exists'));
   let origin = spec.origin;
   const local = fs.existsSync(origin);
   if (local) origin = fs.realpathSync(origin);
-  else if (!allowRemoteClone) throw new Error('remote clone requires an explicit host network grant');
+  else if (!allowRemoteClone) throw new Error(serverMessage('repository-network-grant-required'));
   else if (!origin.includes('://')) origin = 'https://github.com/' + origin + '.git';
   const destination = path.resolve(root);
   fs.mkdirSync(path.dirname(destination), { recursive: true });
   const cloned = await runRepositoryCommand({ root: path.dirname(destination), io }, 'git',
     ['clone', '--no-checkout', origin, destination]);
-  if (cloned.exit_code !== 0) throw new Error(cloned.stderr ?? 'repository clone failed');
+  if (cloned.exit_code !== 0) throw new Error(cloned.stderr ?? serverMessage('repository-clone-failed'));
   const workspace = { root: destination, io };
   const checked = await runRepositoryCommand(workspace, 'git', ['checkout', '--detach', spec.base_commit]);
-  if (checked.exit_code !== 0) throw new Error(checked.stderr ?? 'repository checkout failed');
+  if (checked.exit_code !== 0) throw new Error(checked.stderr ?? serverMessage('repository-checkout-failed'));
   const observed = await runRepositoryCommand(workspace, 'git', ['rev-parse', 'HEAD']);
-  if (observed.exit_code !== 0 || observed.stdout.trim() !== spec.base_commit) throw new Error('repository base commit was not observed');
+  if (observed.exit_code !== 0 || observed.stdout.trim() !== spec.base_commit) throw new Error(serverMessage('repository-base-unobserved'));
   return destination;
 }
 
 /** Live SWE-bench and solve/ladder surface over an explicitly owned isolated checkout. */
 export async function runRepositoryCase(root, task, { caller = 'solve', io = nodeRepositoryIo(), ...options } = {}) {
-  if (!['solve', 'swe_bench', 'coding_ladder'].includes(caller)) throw new Error('unknown repository caller: ' + caller);
+  if (!['solve', 'swe_bench', 'coding_ladder'].includes(caller)) throw new Error(serverMessage('repository-caller-unknown') + caller);
   const workspaceRoot = fs.existsSync(root) ? fs.realpathSync(root)
     : await cloneRepositoryWorkspace(task.clone, root, { io, allowRemoteClone: options.allowRemoteClone === true });
   return executeWorkspaceProtocol({ root: workspaceRoot, io }, task, { caller, ...options });

@@ -4,6 +4,7 @@
 // node js/server/repository-workspace-command-line.mjs authoring --task FILE
 // Authoring JSON declares repository, scratch workspace, task, produced files and evidence;
 // its optional commit field is false unless explicitly true.
+import { serverMessage } from './messages.mjs';
 import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { WorkerHost } from './worker-host.mjs';
@@ -14,13 +15,13 @@ import { runNodeAuthoring } from './repository-authoring.mjs';
 export async function runRepositoryCommandLine(argumentsList, { install = async () => installNodeHost(new WorkerHost()) } = {}) {
   const [action, ...flags] = argumentsList;
   const caller = { solve: 'solve', 'swe-bench': 'swe_bench', 'coding-ladder': 'coding_ladder' }[action];
-  if (!caller && action !== 'authoring') throw new Error('expected solve, swe-bench, coding-ladder or authoring');
+  if (!caller && action !== 'authoring') throw new Error(serverMessage('repository-caller-required'));
   const options = {};
   for (let position = 0; position < flags.length; position += 2) {
-    if (!['--workspace', '--task'].includes(flags[position]) || !flags[position + 1]) throw new Error('invalid repository caller option');
+    if (!['--workspace', '--task'].includes(flags[position]) || !flags[position + 1]) throw new Error(serverMessage('repository-caller-option-invalid'));
     options[flags[position].slice(2)] = flags[position + 1];
   }
-  if (!options.task || (caller && !options.workspace)) throw new Error('--task and structural --workspace are required');
+  if (!options.task || (caller && !options.workspace)) throw new Error(serverMessage('repository-task-workspace-required'));
   const task = JSON.parse(fs.readFileSync(options.task, 'utf8'));
   await install();
   const outcome = caller ? await runRepositoryCase(options.workspace, task, { caller }) : await runNodeAuthoring(task);

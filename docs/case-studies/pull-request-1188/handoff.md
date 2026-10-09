@@ -148,14 +148,14 @@ Rules:
 
 ## 3. State at the handoff
 
-The table below preserves the earlier round20 snapshot; its local-gate and CI results are observations of that source state. Current integration adds later source and evidence commits, so all checks must run again on its exact final remote head. The checked specification record is124/136 with12 gaps; the held-out300-case family audit still reports0/300 in JavaScript because its dispatcher lacks the native family interpreter. Broad G112 source-feature synthesis remains open. Follow the generated tally and requirement records for current counts, and [release-verification.md](release-verification.md) for actual artifact/publication evidence. No current mergeable or all-requirements-complete claim is made by this historical table.
+The table below preserves the earlier round20 snapshot; its local-gate and CI results are observations of that source state. Current integration adds later source and evidence commits, so all checks must run again on its exact final remote head. The checked specification record is125/136 with11 gaps; the held-out300-case family audit still reports0/300 in JavaScript because its dispatcher lacks the native family interpreter. Broad G112 source-feature synthesis remains open. Follow the generated tally and requirement records for current counts, and [release-verification.md](release-verification.md) for actual artifact/publication evidence. No current mergeable or all-requirements-complete claim is made by this historical table.
 
 | Measure | Value |
 | --- | --- |
 | Requirements assembled | 1369. Progressive plan: 1 recorded, 2 measured, 46 partial; 921 pinned only by a Rust test ([progressive-plan.md](../../progressive-plan.md)) |
 | Local gates | 124 of 124 pass (`node experiments/formal_ai_subagent/local-gates.mjs`) |
 | JS web suite | 2326 tests: 2321 pass, 4 skipped, 1 todo, 0 fail (after the self-AST census from CI run 37830767346 was committed) |
-| Rust specification suite carried to the browser worker | 136 of1169 tests carried; **124 pass** in the current checked record;12 gaps listed in `data/meta/specification-javascript-gaps.lino`. Native runtime remains checked by CI. |
+| Rust specification suite carried to the browser worker | 136 of1169 tests carried; **125 pass** in the current checked record;11 gaps listed in `data/meta/specification-javascript-gaps.lino`. Native runtime remains checked by CI. |
 | js → rust translation | 284 items by meta-language plus 31 by recorded workarounds; 2214 carried; 94 of 135 modules translate ([data/meta/js-rust-translation.lino](../../../data/meta/js-rust-translation.lino)) |
 | Formal AI dogfooding | 427 tasks, 243 passed, 165 failed, of which 160 fixed, 5 open and 5 not reproduced ([formal-ai-tally.md](formal-ai-tally.md)) |
 | Requirement extraction | recall 0.419, precision 0.407 on 138 issues |

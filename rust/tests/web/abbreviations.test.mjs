@@ -50,6 +50,9 @@ test('the rules file states a reason for every exclusion and reads its list from
   const rules = readAbbreviationRules(text);
   assert.equal(rules.abbreviationsFrom, 'data/meta/notation-rules.lino');
   assert.ok(rules.fileNames.excluded.includes('docs/case-studies'));
+  assert.ok(rules.fileNames.excluded.includes('experiments/formal_ai_subagent/evidence'));
+  assert.ok(!rules.fileNames.excluded.includes('js'));
+  assert.ok(!rules.fileNames.excluded.includes('rust/tests'));
   assert.deepEqual(
     rules.bindings.map((entry) => entry.scope),
     ['js', 'rust/src'],

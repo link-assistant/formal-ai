@@ -1,4 +1,5 @@
 // Node authoring adapter: declared artifact bytes, local session and explicit landing.
+import { serverMessage } from './messages.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
@@ -10,18 +11,18 @@ import { nodeRepositoryIo } from './repository-workspace.mjs';
 const REPOSITORY = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
 function validate(args) {
-  if (args.model && !args.model.startsWith('formal-ai/')) throw new Error('authoring requires the Formal AI model');
-  if (!args.task || !args.message) throw new Error('authoring task and message are required');
+  if (args.model && !args.model.startsWith('formal-ai/')) throw new Error(serverMessage('authoring-model-required'));
+  if (!args.task || !args.message) throw new Error(serverMessage('authoring-task-message-required'));
   if (!/^https:\/\/github\.com\/[^/]+\/[^/]+\/pull\/[1-9][0-9]*$/u.test(args.pull_request ?? '')) {
-    throw new Error('a canonical GitHub pull-request URL is required');
+    throw new Error(serverMessage('authoring-pull-request-required'));
   }
-  if (!args.produces?.length || (args.into?.length ?? 0) > args.produces.length) throw new Error('declared produced artifacts and matching destinations are required');
+  if (!args.produces?.length || (args.into?.length ?? 0) > args.produces.length) throw new Error(serverMessage('authoring-artifacts-required'));
   for (const relative of [...args.produces, ...(args.into ?? []), ...(args.context ?? []), args.evidence ?? 'authoring-evidence']) {
-    if (!relative || path.isAbsolute(relative) || relative.split(/[\\/]/u).includes('..')) throw new Error('artifact paths must stay relative: ' + relative);
+    if (!relative || path.isAbsolute(relative) || relative.split(/[\\/]/u).includes('..')) throw new Error(serverMessage('authoring-relative-artifact-required') + relative);
   }
   const repository = path.resolve(args.repository);
   const workspace = path.resolve(args.workspace);
-  if (repository === workspace || workspace.startsWith(repository + path.sep)) throw new Error('authoring workspace must be outside the destination repository');
+  if (repository === workspace || workspace.startsWith(repository + path.sep)) throw new Error(serverMessage('authoring-isolated-workspace-required'));
   return { repository, workspace };
 }
 
@@ -42,7 +43,7 @@ export async function runNodeAuthoring(args, {
   const writeEvidence = (relative, contents) => io.write(roots.repository, evidence + '/' + relative, contents);
   const observedCommand = async (root, program, argumentsList, policy = {}) => {
     const result = await io.run(root, program, argumentsList, { deadline_seconds: 300, network: 'denied', ...policy });
-    if (result.missing || result.timed_out || result.exit_code !== 0) throw new Error(program + ' did not complete: ' + (result.stderr ?? result.exit_code));
+    if (result.missing || result.timed_out || result.exit_code !== 0) throw new Error(program + serverMessage('authoring-command-incomplete') + (result.stderr ?? result.exit_code));
     return result;
   };
   const stages = {
@@ -71,11 +72,11 @@ export async function runNodeAuthoring(args, {
     serve: async () => {
       server = await startServer({ host: '127.0.0.1', port: args.port ?? 0, agentMode: true,
         env: { ...process.env, FORMAL_AI_MEMORY_PATH: path.join(state, 'memory.lino'), FORMAL_AI_DREAMING: '0' } });
-      if (!server?.url) throw new Error('local authoring server readiness was not observed');
+      if (!server?.url) throw new Error(serverMessage('authoring-server-unobserved'));
       return 'observed';
     },
     edit: async () => {
-      if (!server?.url) throw new Error('authoring session requires an observed local server');
+      if (!server?.url) throw new Error(serverMessage('authoring-session-server-required'));
       const configuration = { provider: { formalai: { name: 'Formal AI', npm: '@ai-sdk/openai-compatible',
         options: { baseURL: server.url + '/api/openai/v1', apiKey: 'local' }, models: { 'formal-ai': { name: 'Formal AI' } } } },
         model: 'formalai/formal-ai' };
@@ -85,10 +86,10 @@ export async function runNodeAuthoring(args, {
           '--output-format', 'stream-json', '--compact-json', '--disable-stdin', '--prompt', args.task,
         ], { deadline_seconds: args.deadline_seconds ?? 300,
           env: { FORMAL_AI_API_KEY: 'local', LINK_ASSISTANT_AGENT_CONFIG_CONTENT: JSON.stringify(configuration) } });
-      if (result.exit_code !== 0 || result.timed_out || result.missing) throw new Error('authoring session did not complete');
+      if (result.exit_code !== 0 || result.timed_out || result.missing) throw new Error(serverMessage('authoring-session-incomplete'));
       await writeEvidence('agent-stderr.log', result.stderr ?? '');
       if (classifyStderr) {
-        if (!await classifyStderr(result.stderr ?? '')) throw new Error('authoring session stderr classification failed');
+        if (!await classifyStderr(result.stderr ?? '')) throw new Error(serverMessage('authoring-stderr-rejected'));
       } else {
         await observedCommand(roots.repository, 'bash', [path.join(REPOSITORY, 'scripts/classify-agent-cli-stderr.sh'),
           path.join(roots.repository, evidence, 'agent-stderr.log')]);
@@ -104,24 +105,24 @@ export async function runNodeAuthoring(args, {
         for (const child of Object.values(value)) find(child);
       };
       for (const line of stream.split('\n').filter(Boolean)) find(JSON.parse(line));
-      if (!session) throw new Error('authoring stream reported no resumable session');
-      await writeEvidence('session-id.txt', 'formal-ai session ' + session + '\nformal-ai model ' + model + '\n');
+      if (!session) throw new Error(serverMessage('authoring-session-unobserved'));
+      await writeEvidence('session-id.txt', serverMessage('authoring-session-label') + session + serverMessage('authoring-model-label') + model + '\n');
       return 'observed';
     },
     verify: async () => {
       const contents = await Promise.all(args.produces.map((produced) => readArtifact(roots.workspace, produced)));
       for (const expected of args.contains ?? []) if (!contents.some((source) => source.includes(Buffer.from(expected)))) {
-        throw new Error('no artifact contains: ' + expected);
+        throw new Error(serverMessage('authoring-artifact-content-unobserved') + expected);
       }
       return 'observed';
     },
     diff: async () => {
       const contents = await Promise.all(args.produces.map((produced) => readArtifact(roots.workspace, produced)));
       if (!contents.some((source, index) => !sameBytes(source, baseline[index].destination)
-        && (!args.seed || !sameBytes(source, baseline[index].seed)))) throw new Error('no artifact differs from both seed and destination');
+        && (!args.seed || !sameBytes(source, baseline[index].seed)))) throw new Error(serverMessage('authoring-artifacts-unchanged'));
       for (let index = 0; index < contents.length; index += 1) {
         await io.write(roots.repository, into[index], contents[index]);
-        if (!sameBytes(await readArtifact(roots.repository, into[index]), contents[index])) throw new Error('landed artifact bytes were not observed');
+        if (!sameBytes(await readArtifact(roots.repository, into[index]), contents[index])) throw new Error(serverMessage('authoring-landed-bytes-unobserved'));
       }
       destinations = [...into];
       return 'observed';
@@ -131,7 +132,7 @@ export async function runNodeAuthoring(args, {
         + '\nFormal-AI-Evidence: ' + evidence + '\nFormal-AI-Pull-Request: ' + args.pull_request + '\n';
       await observedCommand(roots.repository, 'git', ['add', '--', ...destinations, evidence]);
       const diff = await observedCommand(roots.repository, 'git', ['diff', '--cached']);
-      if (!diff.stdout) throw new Error('authoring reproduced committed bytes');
+      if (!diff.stdout) throw new Error(serverMessage('authoring-committed-bytes-unchanged'));
       commitMessage = args.message + '\n\n' + trailers;
       await observedCommand(roots.repository, 'git', ['commit', '-m', commitMessage]);
       return 'requested';
