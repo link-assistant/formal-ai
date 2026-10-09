@@ -49,7 +49,10 @@ function main() {
   const shardCount = Number(option('--of'));
   const durationsPath = option('--durations', join(ROOT, 'data/meta/test-durations.lino'));
   const items = readFileSync(0, 'utf8').split('\n').map((line) => line.trimEnd()).filter(Boolean);
-  const secondsOf = durationLookup(readTestDurations(durationsPath), defaultSeconds(durationsPath));
+  const selectedSeconds = durationLookup(readTestDurations(durationsPath), defaultSeconds(durationsPath));
+  const nativeSeconds = durationLookup(readTestDurations(join(ROOT, 'data/meta/test-durations.lino')), defaultSeconds(durationsPath));
+  const secondsOf = argv.includes('--native-floor')
+    ? (item) => Math.max(selectedSeconds(item), nativeSeconds(item)) : selectedSeconds;
   const reserved = parseReserved(option('--reserve', ''), shardCount);
   const { shards, load } = planShards(items, shardCount, secondsOf, reserved);
 

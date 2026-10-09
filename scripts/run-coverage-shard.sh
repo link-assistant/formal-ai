@@ -71,23 +71,12 @@ if [ "$listed_total" -eq 0 ]; then
   echo "::error::no executable listed a single test; the shard measured nothing" >&2
   exit 1
 fi
-node scripts/plan-test-shards.mjs --of "$SHARD_TOTAL" --check < "$listing"
-node scripts/plan-test-shards.mjs --shard "$SHARD_INDEX" --of "$SHARD_TOTAL" < "$listing" > "$plan"
+node scripts/plan-test-shards.mjs --of "$SHARD_TOTAL" --durations data/meta/coverage-test-weights.lino --native-floor --check < "$listing"
+node scripts/plan-test-shards.mjs --shard "$SHARD_INDEX" --of "$SHARD_TOTAL" --durations data/meta/coverage-test-weights.lino --native-floor < "$listing" > "$plan"
 
-selected_total=0
-while IFS=$'\t' read -r name path; do
-  [ -n "$name" ] || continue
-  executable="$root/$path"
-  [ -x "$executable" ] || continue
-  mapfile -t names < <(awk -F '\t' -v name="$name" '$1 == name { print $2 }' "$plan")
-  if [ "${#names[@]}" -eq 0 ]; then
-    continue
-  fi
-  of_target="$(awk -F '\t' -v name="$name" '$1 == name' "$listing" | wc -l | tr -d ' ')"
-  selected_total=$((selected_total + ${#names[@]}))
-  echo "coverage shard ${SHARD_INDEX}/${SHARD_TOTAL}: ${#names[@]} of ${of_target} ${name} test(s)"
-  (cd rust && "$executable" --exact "${names[@]}") || status=1
-done < "$manifest"
-
-echo "coverage shard ${SHARD_INDEX}/${SHARD_TOTAL}: ran ${selected_total} of ${listed_total} test(s)"
+# A libtest harness orders its own cases, regardless of filter argument order.
+# The bounded queue dispatches equal-weight target batches in actual priority
+# order, records wall timing and requires every selected case to complete.
+node scripts/run-coverage-plan.mjs "$manifest" "$listing" "$plan" \
+  "${COVERAGE_EXECUTION_RESULT:-coverage-execution-result.json}" || status=1
 exit "$status"
