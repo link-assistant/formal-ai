@@ -85,15 +85,9 @@ jobs:
       matrix:
         shard: [0, 1, 2, 3, 4, 5, 6, 7]
     steps:
-      - name: Check out pull request source for packet checks
-        if: github.event_name == 'pull_request'
-        uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-          persist-credentials: false
-          ref: ${{ github.event.pull_request.head.sha }}
-      - name: Check out the publication workflow source
-        if: github.event_name != 'pull_request'
+      # The triggering commit is selected by GitHub; PR checks use its merge
+      # preview. Publication selects the validated stable tag in the next step.
+      - name: Check out the triggering workflow source
         uses: actions/checkout@v7
         with:
           fetch-depth: 0
