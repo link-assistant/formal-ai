@@ -160,8 +160,6 @@ function extractTopicSubject(normalized) {
 }
 
 // Semantic frame shared with the Rust handler: interrogative + named external
-// source + topic connective. It covers unseen source-grounded wording without a
-// sentence template.
 function extractSourceGroundedQuestion(prompt, normalized) {
   const markers = webSearchMarkers();
   if (
@@ -217,11 +215,6 @@ function extractLatestNewsSearchRequest(normalized) {
 }
 
 // A verbless "records about a subject" request — "financial records for boeing",
-// "записи о boeing", "关于波音的财务记录". Fires only when the prompt names a
-// retrievable record subject (ROLE_WEB_SEARCH_RECORDS_SUBJECT) tied to a subject
-// by a topic connective (ROLE_WEB_SEARCH_TOPIC_MARKER). Mirrors
-// extract_records_information_request in
-// src/solver_handlers/web_search_intent.rs.
 function extractRecordsInformationRequest(normalized) {
   const markers = webSearchMarkers();
   const text = String(normalized || "");
@@ -238,9 +231,6 @@ function extractRecordsInformationRequest(normalized) {
 }
 
 // A question asking which public events are currently active, such as
-// "Какие хакатоны сейчас проходят?". Mirrors
-// extract_current_public_event_question in
-// src/solver_handlers/web_search_intent.rs.
 function extractCurrentPublicEventQuestion(normalized) {
   const markers = webSearchMarkers();
   const text = String(normalized || "");
@@ -283,8 +273,6 @@ function extractTermInformationRequest(prompt, normalized) {
   const text = String(normalized || "");
   const markers = webSearchMarkers();
   // Word order belongs to the language, not to the intent: prefix openers
-  // ("tell me about …"), verb-final closers ("… के बारे में बताओ") and wrapping
-  // frames ("给出 … 背景") all name the same request (issue #701).
   const candidates = [
     ...markers.termInformationPrefixes.map((p) => (text.startsWith(p) ? text.slice(p.length) : "")),
     ...markers.termInformationSuffixes.map((s) =>
@@ -449,13 +437,6 @@ function cleanProceduralFragment(value) {
     .replace(/\s+/g, " ")
     .trim();
   // The trailing "step by step" / politeness modifiers are the slot-marked
-  // surface forms of the procedural_task_modifier meaning
-  // (data/seed/meanings-how.lino, loaded into MEANINGS_LINO): every form
-  // is a suffix whose text after the … marker (form.after) is the tail to
-  // strip, scanned in declaration order so the longer Russian "напиши по шагам"
-  // still precedes its "по шагам" tail. No per-language modifier list lives
-  // here — only the concept. Mirrors clean_procedural_fragment in
-  // src/solver_handler_how.rs (issue #386).
   for (const form of roleWordForms(ROLE_PROCEDURAL_TASK_MODIFIER)) {
     if (clean.endsWith(form.after)) {
       clean = clean.slice(0, clean.length - form.after.length).trim();
@@ -467,11 +448,6 @@ function cleanProceduralFragment(value) {
 
 function correctCommonProceduralTypos(task) {
   // The misspelling -> correction pairs are the common_typo meaning's bare
-  // surface forms (data/seed/meanings-how.lino, loaded into MEANINGS_LINO
-  // above): each form's text is the misspelled token and its action field names
-  // the correct spelling. No per-language typo table lives here — only the
-  // concept. Mirrors correct_common_procedural_typos in
-  // src/solver_handler_how.rs (issue #386).
   const typos = roleWordForms(ROLE_COMMON_TYPO);
   const corrections = [];
   const corrected = String(task || "")
@@ -527,12 +503,6 @@ function splitKnownProceduralActionObject(task) {
 
 function extractElidedProceduralHowToTask(clean) {
   // Issue #481: telegraphic English prompts can omit the connector in
-  // "how to order X" and arrive as "how order X". The lead and the approved
-  // action surfaces are both seed roles; the worker names only those concepts.
-  // This keeps weak "how …" / "как …" / "कैसे …" / "如何…" prefixes from
-  // claiming arbitrary "how <word>" prompts while still supporting all seeded
-  // languages. Mirrors extract_elided_procedural_how_to_task in
-  // src/solver_handler_how.rs.
   for (const form of roleWordForms(ROLE_PROCEDURAL_REQUEST_ELIDED_LEAD)) {
     if (!clean.startsWith(form.before)) continue;
     const correction = correctCommonProceduralTypos(
@@ -553,14 +523,6 @@ function extractElidedProceduralHowToTask(clean) {
 
 function extractProceduralHowToTask(normalized) {
   // The prefixes are the slot-marked surface forms of the procedural_request
-  // meaning (data/seed/meanings-how.lino, loaded into MEANINGS_LINO): every
-  // form is a prefix whose literal before the … marker (form.before) is the
-  // matchable prefix, scanned in declaration order so "how to do " still
-  // precedes "how to ". A form may name the canonical operation in its action
-  // field (do / perform / implement / create / write); an empty action means
-  // the operation is taken from the task's first word. No per-language prefix
-  // list lives here — only the concept. Mirrors extract_procedural_how_to_task
-  // in src/solver_handler_how.rs (issue #386).
   const clean = cleanProceduralFragment(normalized);
   for (const form of roleWordForms(ROLE_PROCEDURAL_REQUEST)) {
     if (!clean.startsWith(form.before)) continue;
@@ -604,8 +566,8 @@ function wikiHowPageTitle(task) {
     .join("-");
 }
 
-function wikiHowParseApiUrl(pageTitle) {
-  const encodedPage = encodeURIComponent(pageTitle).replace(/%2D/gi, "-");
+function wikiHowParseApiUrl(pageTitle, encodePage = true) {
+  const encodedPage = encodePage ? encodeURIComponent(pageTitle).replace(/%2D/gi, "-") : pageTitle;
   return `https://www.wikihow.com/api.php?action=parse&page=${encodedPage}&prop=text%7Csections%7Cdisplaytitle&format=json&origin=*`;
 }
 
@@ -703,10 +665,6 @@ function appendUniqueEvidence(target, source) {
 }
 
 // The docs_method_explanation rule of data/seed/handler-rules.lino: its claim
-// row admits only when the prompt names the project and the method of the
-// seeded documentation page (claimOperandDocumentedMethod), and the answer is
-// the seeded response for that page in the prompt's language, exactly as the
-// native rule interpreter answers it (#1175 R3).
 function tryDocsMethodExplanation(prompt) {
   const hit = runHandlerRuleSet("docs_method_explanation", prompt, String(prompt || "").toLowerCase(), []);
   if (!hit) return null;
@@ -715,20 +673,11 @@ function tryDocsMethodExplanation(prompt) {
 }
 
 // Issue #444: external *trusted* services are opt-out. A preference value of
-// exactly `false` disables the service; a missing/undefined value keeps it
-// enabled, so the assistant's default behavior is unchanged unless the user opts
-// out in settings. The `key` arguments mirror the `settings_key` recorded in
-// data/seed/sources-registry.lino and the EXTERNAL_TRUSTED_SERVICES catalog in
-// js/app.js, keeping the registry the single source of truth.
 function externalServiceEnabled(preferences, key) {
   return !(preferences && preferences[key] === false);
 }
 
 // Issue #918: the search-query frames and every line of the procedural plan
-// are seed data — the `policy procedural_how_to` block of
-// data/seed/handler-rules.lino and the seeded procedural_how_to_* responses —
-// filled in one pass so a task text with braces is never re-filled. Mirrors
-// how_policy / how_response in rust/src/solver_handler_how.rs.
 function howFillOnce(template, values) {
   return String(template || "").replace(/\{([^{}]*)\}/gu, (whole, name) =>
     Object.prototype.hasOwnProperty.call(values, name) ? String(values[name]) : whole);
@@ -753,6 +702,35 @@ function proceduralSearchQuery(task) {
   return howPolicy("procedural_how_to", "install-query", { target: target || task.task }).trim();
 }
 
+// Native discovery plan over the actual parsed task and declared source route.
+function proceduralDiscoveryPlan(task, language, pageTitle, apiUrl, searchQuery, fallbackQuery, providers) {
+  const installGate = task.action === "install" ? howResponse("procedural_how_to_install_gate", language,
+    { search_query: searchQuery, fallback_query: fallbackQuery }) : "";
+  return howResponse("procedural_how_to_plan", language, {
+    task: task.task, action: task.action, object: task.object, install_gate: installGate,
+    candidate: pageTitle, api_url: wikiHowParseApiUrl(pageTitle, false), search_query: searchQuery, providers, k: webSearchRrfK(),
+  });
+}
+
+// The native plan's typed request/stage records; capture diagnostics stay separate.
+function proceduralDiscoveryEvents(task, pageTitle, apiUrl, searchQuery, fallbackQuery, wikihowEnabled) {
+  const request = task.action === "do" && task.object ? task.object : task.task;
+  const pairs = [["procedural_how_to:request", request], ["procedural_how_to:action", task.action]];
+  if (task.object) pairs.push(["procedural_how_to:object", task.object]);
+  if (task.action === "install") pairs.push(["procedural_how_to:stage", "official_documentation"],
+    ["procedural_how_to:source_gate", "official_documentation_first"]);
+  pairs.push(["procedural_how_to:stage", "wikipedia"], ["procedural_how_to:stage", "wikidata"]);
+  if (wikihowEnabled) pairs.push(["procedural_how_to:stage", "wikihow_api"],
+    ["procedural_how_to:wikihow_candidate", pageTitle], ["http_fetch:request", apiUrl]);
+  if (!wikihowEnabled) pairs.push(["procedural_how_to:service_disabled", "wikihow"]);
+  pairs.push(["procedural_how_to:stage", "web_search"], ["web_search:request", searchQuery]);
+  if (task.action === "install" && searchQuery !== fallbackQuery) pairs.push(["web_search:request", fallbackQuery]);
+  for (const provider of WEB_SEARCH_PROVIDERS) pairs.push(["web_search:provider_planned", provider.id]);
+  pairs.push(["web_search:fusion_planned", `rrf:k=${webSearchRrfK()}`],
+    ["procedural_how_to:stage", "recursive_fetch_check"], ["procedural_how_to:source_gate", "explicit_steps_only"]);
+  return pairs.map(([kind, payload]) => ({ kind, payload: String(payload) }));
+}
+
 async function tryProceduralHowTo(prompt, language, preferences = {}) {
   const normalized = normalizePrompt(prompt);
   const task = extractProceduralHowToTask(normalized);
@@ -760,11 +738,6 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
 
   const query = proceduralFallbackQuery(task.task);
   // Issue #991: the browser and the Rust solver run the same bounded
-  // multi-source synthesis (worker module 24, mirroring `src/how_to_guide.rs`).
-  // When it captures enough corroborated steps the answer *is* the synthesised
-  // guide, with the provenance of every step. When it does not — no service
-  // reachable, no relevant page, fewer steps than the minimum — the existing
-  // plan below still runs, so this is a strict superset of prior behavior.
   const synthesized = await trySynthesizedHowToGuide(task, preferences);
   if (synthesized) return synthesized;
   const searchQuery = proceduralSearchQuery(task);
@@ -773,8 +746,6 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
   const providerSummary = WEB_SEARCH_PROVIDERS.map((provider) => provider.id).join(", ");
   const isInstallProcedure = task.action === "install";
   // Honor the wikiHow opt-out: when disabled we skip the wikiHow API stage and
-  // its live fetch entirely, emit a service_disabled marker, and route straight
-  // to the web-search fallback.
   const wikihowEnabled = externalServiceEnabled(preferences, "externalServiceWikihow");
   const evidence = [
     `procedural_how_to:request:${task.task}`,
@@ -821,6 +792,7 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
   let diagnostics = null;
   let formalizedObject = "";
   let officialSearchUsable = false;
+  let sourceContentObserved = false;
 
   if (isInstallProcedure) {
     evidence.push("procedural_how_to:stage:web_search");
@@ -835,6 +807,7 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
       formalizedObject = officialSearch.formalizedObject || formalizedObject;
       officialSearchUsable = officialSearch.confidence >= 0.8;
       if (officialSearchUsable) {
+        sourceContentObserved = true;
         confidence = Math.max(confidence, 0.82);
         lines.push(howResponse("procedural_how_to_official_search", "en", { query: searchQuery }));
         lines.push("");
@@ -864,6 +837,7 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
       : { ok: false, error: "service_disabled" };
 
     if (wikiHow.ok) {
+      sourceContentObserved = true;
       evidence.push(`procedural_how_to:wikihow_steps:${wikiHow.steps.length}`);
       evidence.push(`source:${wikiHow.sourceUrl}`);
       formalizedObject = `WH:${pageTitle}`;
@@ -890,6 +864,7 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
         isInstallProcedure ? "general_how_to_fallback" : "",
       );
       if (webSearch) {
+        sourceContentObserved = Array.isArray(webSearch.diagnostics?.fused) && webSearch.diagnostics.fused.length > 0;
         appendUniqueEvidence(evidence, webSearch.evidence);
         diagnostics = webSearch.diagnostics || diagnostics;
         formalizedObject = webSearch.formalizedObject || formalizedObject;
@@ -924,9 +899,14 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
   evidence.push("procedural_how_to:stage:recursive_fetch_check");
   evidence.push("procedural_how_to:source_gate:explicit_steps_only");
 
+  const servicesEnabled = Object.entries(preferences).every(([key, value]) =>
+    !key.startsWith("externalService") || value !== false);
+  const discoveryOnly = !sourceContentObserved && servicesEnabled;
   return {
     intent: "procedural_how_to",
-    content: lines.join("\n"),
+    content: discoveryOnly ? proceduralDiscoveryPlan(task, language, pageTitle, apiUrl, searchQuery, query, providerSummary)
+      : lines.join("\n"),
+    solverEvents: proceduralDiscoveryEvents(task, pageTitle, apiUrl, searchQuery, query, wikihowEnabled),
     confidence,
     evidence,
     diagnostics,
@@ -987,9 +967,24 @@ async function tryGreetingProceduralCompound(prompt, language, preferences = {})
     ...(procedure.evidence || []),
   ];
 
+  const greeting = answerFor("greeting", greetingLanguage, { randomize });
+  const childEvents = [];
+  const formalization = crateModule("crate/intent_formalization.mjs");
+  formalization.recordIntentFormalization(childEvents,
+    formalization.formalizeIntentRecord(parts.remainder, procedureLanguage));
+  const registry = crateModule("crate/method_registry.mjs");
+  const method = registry.methodForRoute(registry.recordMethodRegistry(childEvents), procedure.intent);
+  if (method) childEvents.push({ kind: "method", payload: method.name });
   return {
     intent: "compound_response",
-    content: `${answerFor("greeting", greetingLanguage, { randomize })}\n\n${procedure.content}`,
+    content: `${greeting}\n\n${procedure.content}`,
+    solverEvents: [
+      { kind: "sub_impulse", payload: parts.greeting }, { kind: "sub_impulse", payload: parts.remainder },
+      { kind: "sub_result", payload: `independent=true intent=greeting answer=${greeting}` },
+      ...childEvents, ...(procedure.solverEvents || []),
+      { kind: "sub_result", payload: `independent=true intent=${procedure.intent} answer=${procedure.content}` },
+      { kind: "composition:compound_response", payload: "parts=2" },
+    ],
     confidence: Math.min(0.9, procedure.confidence || 0.78),
     evidence,
     diagnostics: procedure.diagnostics || null,
@@ -1007,19 +1002,11 @@ async function tryGreetingProceduralCompound(prompt, language, preferences = {})
 }
 
 // Recognise a request for the concrete steps of an active procedure by
-// *meaning*, not a hardcoded per-language phrase table (issue #386 convention).
-// Each surface of the procedural_elaboration meaning lives in
-// data/seed/meanings-how.lino (loaded into MEANINGS_LINO); this code knows
-// only the concept. Mirrors is_procedural_elaboration_request in
-// src/solver_handler_how.rs.
 function isProceduralElaborationRequest(normalized) {
   return lexiconMentionsRole(ROLE_PROCEDURAL_ELABORATION, normalized);
 }
 
 // The prior exchange must have been a how-to procedure: the previous user turn
-// re-parses as a procedural request and the assistant answered it. Mirrors the
-// last_assistant_turn + last_user_turn re-parse gate in
-// try_procedural_how_to_followup (src/solver_handler_how.rs).
 function priorProceduralHowToDialogue(history) {
   const assistant = lastHistoryTurn(history, "assistant");
   if (!assistant) return null;
@@ -1030,11 +1017,6 @@ function priorProceduralHowToDialogue(history) {
 }
 
 // Issue #444: a bare follow-up such as "Can you give me specific instructions?"
-// carries no "how to" lead-in of its own and would otherwise dead-end at the
-// unknown opener. When the current prompt evidences the procedural_elaboration
-// meaning and the prior turn was an answered how-to request, re-run the original
-// discovery so the elaboration rebinds to the recovered task. Mirrors
-// try_procedural_how_to_followup in src/solver_handler_how.rs (mirror parity).
 async function tryProceduralHowToFollowup(prompt, language, history = [], preferences = {}) {
   const canonical = normalizePrompt(prompt);
   if (!isProceduralElaborationRequest(canonical)) return null;
@@ -1044,6 +1026,11 @@ async function tryProceduralHowToFollowup(prompt, language, history = [], prefer
   if (!procedure) return null;
   // Front-load the follow-up evidence so the rebind is visible in the trace,
   // matching the log.append order on the Rust side.
+  procedure.solverEvents = [
+    { kind: "procedural_how_to:followup", payload: canonical },
+    { kind: "procedural_how_to:followup_task", payload: dialogue.task.task },
+    ...(procedure.solverEvents || []),
+  ];
   procedure.evidence = [
     `procedural_how_to:followup:${canonical}`,
     `procedural_how_to:followup_task:${dialogue.task.task}`,

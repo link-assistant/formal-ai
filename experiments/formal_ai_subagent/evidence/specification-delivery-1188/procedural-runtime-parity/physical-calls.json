@@ -1,0 +1,149 @@
+{
+  "cutoff": "T3158",
+  "total": 34,
+  "counts": {
+    "bash": 19,
+    "write": 3,
+    "read": 6,
+    "edit": 6
+  },
+  "calls": [
+    {
+      "task": "T3142",
+      "call": "bash"
+    },
+    {
+      "task": "T3142",
+      "call": "write"
+    },
+    {
+      "task": "T3142",
+      "call": "bash"
+    },
+    {
+      "task": "T3143",
+      "call": "bash"
+    },
+    {
+      "task": "T3144",
+      "call": "read"
+    },
+    {
+      "task": "T3144",
+      "call": "edit"
+    },
+    {
+      "task": "T3144",
+      "call": "bash"
+    },
+    {
+      "task": "T3145",
+      "call": "bash"
+    },
+    {
+      "task": "T3146",
+      "call": "read"
+    },
+    {
+      "task": "T3146",
+      "call": "edit"
+    },
+    {
+      "task": "T3146",
+      "call": "bash"
+    },
+    {
+      "task": "T3147",
+      "call": "read"
+    },
+    {
+      "task": "T3147",
+      "call": "edit"
+    },
+    {
+      "task": "T3147",
+      "call": "bash"
+    },
+    {
+      "task": "T3148",
+      "call": "bash"
+    },
+    {
+      "task": "T3149",
+      "call": "bash"
+    },
+    {
+      "task": "T3150",
+      "call": "read"
+    },
+    {
+      "task": "T3150",
+      "call": "edit"
+    },
+    {
+      "task": "T3150",
+      "call": "bash"
+    },
+    {
+      "task": "T3151",
+      "call": "bash"
+    },
+    {
+      "task": "T3151",
+      "call": "write"
+    },
+    {
+      "task": "T3151",
+      "call": "bash"
+    },
+    {
+      "task": "T3152",
+      "call": "bash"
+    },
+    {
+      "task": "T3152",
+      "call": "write"
+    },
+    {
+      "task": "T3152",
+      "call": "bash"
+    },
+    {
+      "task": "T3153",
+      "call": "bash"
+    },
+    {
+      "task": "T3154",
+      "call": "read"
+    },
+    {
+      "task": "T3154",
+      "call": "edit"
+    },
+    {
+      "task": "T3154",
+      "call": "bash"
+    },
+    {
+      "task": "T3155",
+      "call": "read"
+    },
+    {
+      "task": "T3155",
+      "call": "edit"
+    },
+    {
+      "task": "T3155",
+      "call": "bash"
+    },
+    {
+      "task": "T3156",
+      "call": "bash"
+    },
+    {
+      "task": "T3158",
+      "call": "bash"
+    }
+  ],
+  "scope": "Physical delegated calls, not measured token or financial cost; T3159 sealing call retained externally."
+}
