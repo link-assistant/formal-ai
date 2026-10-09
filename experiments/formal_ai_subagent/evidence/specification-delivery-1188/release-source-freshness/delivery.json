@@ -1,0 +1,141 @@
+{
+  "schema": "guarded-release-source-freshness/v1",
+  "sourceGuards": [
+    {
+      "path": "scripts/version-and-commit.rs",
+      "sha256": "335fa92f6ddf437346bb49ce0f341eeb74ea9f8a059bcd87ff3e45ad5e9ae8e9"
+    },
+    {
+      "path": "scripts/resolve-package-release.mjs",
+      "sha256": "ca6cc146c3b11feca5f3fe260fe179b46d507cfacde2b3d6471cc6c51962ab00"
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "sha256": "f57b9dbb18f672729c4878abd1d8afecb96ca90427e20ae1259858953ea86253"
+    },
+    {
+      "path": "rust/tests/web/release-stage-transfer.test.mjs",
+      "sha256": "169f758848bb2f60c67b52f8d174b5b3e2b7ab940a4ab6ebff224ebaa623ba38"
+    }
+  ],
+  "sourceFiles": [
+    {
+      "path": "scripts/release-source-freshness.mjs",
+      "bytes": 7298,
+      "sha256": "5f3f28d257ee1ec7b0647cc635f454fc61a2c2d780da32376014180bbae1c38f"
+    },
+    {
+      "path": "scripts/version-and-commit.rs",
+      "bytes": 33781,
+      "sha256": "2119902b5f768cf3218e595eed1cf4913fc5d99fa7536a6ef0c9721be9153572"
+    },
+    {
+      "path": "rust/tests/web/release-source-freshness.test.mjs",
+      "bytes": 8495,
+      "sha256": "2455bc5da69f67952626d080640beedf4b3e33fe4c78e15e3a4b4775d67add98"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/release-source-freshness/raw/T4199.json",
+      "bytes": 2734,
+      "sha256": "b5cfd4471e8c2302a77ab98cf6b2e43a36cb5cb601a420ddf444ee1f387b63a8"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/release-source-freshness/raw/T4200.json",
+      "bytes": 789,
+      "sha256": "b6a59604fa01b5b14d4f95c80f6304a57148805de971a588033bd125bfce5766"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/release-source-freshness/raw/T4201.json",
+      "bytes": 1446,
+      "sha256": "01f13d02d8e030abdf4f1b52704d77705c2a8877d160adf111c820f39c9068e4"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/release-source-freshness/raw/T4202.json",
+      "bytes": 1446,
+      "sha256": "7a1355bcf1e3948caa3a1f5f766d7a2257a98feb9a164bf2573c450e9da256fe"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/release-source-freshness/original-version-and-commit.rs.txt",
+      "bytes": 32442,
+      "sha256": "335fa92f6ddf437346bb49ce0f341eeb74ea9f8a059bcd87ff3e45ad5e9ae8e9"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/release-source-freshness/sourceguards.json",
+      "bytes": 565,
+      "sha256": "ec8f6ac270b8baa6a0c8d149a149abffb3913548f44dc35c3d7eab1c3e4fe4c8"
+    },
+    {
+      "path": "experiments/formal_ai_subagent/evidence/specification-delivery-1188/release-source-freshness/controls.json",
+      "bytes": 6025,
+      "sha256": "584b95ed7d8ca626e1a6e70a08997044281aa2b425cb369e400410e196d50e06"
+    }
+  ],
+  "rawTasks": 4,
+  "actualFACalls": 3,
+  "tools": {
+    "bash": 3
+  },
+  "fourCells": {
+    "invocation": "T4199 genuinely requested complete implementation: MissingContract, zero tools. T4200 reviewed source implementation installed through actualFA Bash; T4201/4202 amendments and validation actualFA Bash.",
+    "physicalEffect": "Adds read-only Git source guard and independent Node tests; guarded production version CLI checks before source mutation, before commit, before initial/retried push and before tag. Original source caller, resolver authority, dormant checked52operations/104bindings, events and floors unchanged. Non-CI general CLI keeps prior rebase behavior. No push/publication/native/compiler.",
+    "closestProof": "ActualT4202 source21/21Node tests: physical realGit original rebase resolver refusal, exact main→recorded index→own version child, unchanged/previously completed push retries, stale main at three phases, spoofed caller/event/job/run/repository/record, arbitrary changed child/tree, staged executable/dependency drift refusals. StandaloneRustfmt syntax/format and Nodeparse PASS; original11resolver/package +4projection controls unchanged.",
+    "limitation": "Reviewed external implementation viaFA autonomous0/amplification0. Stops stale main release rather than broadening ancestry or manufacturing trigger receipt. Older historical rebased releases require explicit existing-main dispatch/tag healing. GitHub/native/fullrelease/publication/currentcredentials/newcoldtiming not observed; U9 remains Open."
+  },
+  "sourceAudit": {
+    "binaryAfterRebase": "Original build occurs after version commit; prepared selection independently requires HEAD==remote main==peeledtag before and after cargo build. There was no reuse of pre-rebase CI binary in this production route.",
+    "triggerDefect": "Original producer rebases to newer main; downstream exact-or-immediate-child resolver correctly returns no tag for such release. GITHUB_TOKEN-created release suppresses release event; controlled actualGit reproduction retained in source test, no claim actual production occurrence.",
+    "remainingRequirements": {
+      "docker": "Actual newhead full/slim cold execution and anonymous immutable manifests/source/executable/config joins at GHCR and enabled DockerHub; actualcurrent429 belongs independent CI worker.",
+      "crates": "Current credentials remain unknown; actualcargo package verification/publish/wait/coldcargo install and --help required. Historical0.352.1 success does not prove current source/credentials.",
+      "npm": "NPM_TOKEN or configured trusted publisher required for actualregistry publication; currentworkflow intentionally succeeds with attachedtarball only when unconfigured. Require exactselectedsource/version +publishedimmutableintegrity and coldinstall evidence.",
+      "archivesDesktop": "All8newsource native producers and archive extraction/binary hashes, desktop installers and checksummed authenticated finalassets required. Macad-hoc mode is explicit; signing/notarization requires actualconfiguredApplecredentials. Oldhead89d1producer success does not certify finalhead.",
+      "sourceNetworks": "All8selectedsource shard producers then independent fullcoverage/lossless distribution verify +attachedstabletag packetbytes required; priorheadpacket success is not finaltag publication."
+    }
+  },
+  "observations": [
+    {
+      "task": "T4199",
+      "driverMarkerOk": false,
+      "tools": [],
+      "rawExitCodes": []
+    },
+    {
+      "task": "T4200",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4201",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    },
+    {
+      "task": "T4202",
+      "driverMarkerOk": true,
+      "tools": [
+        "bash"
+      ],
+      "rawExitCodes": [
+        "0"
+      ]
+    }
+  ],
+  "actualNodeTests": 21,
+  "localNative": false,
+  "localCompiler": false,
+  "publication": false,
+  "push": false,
+  "autonomousCredit": 0,
+  "amplificationCredit": 0,
+  "boundedCut": "FullrawT4199–4202; outersealT4203 and metadata commit separate coordinator archives."
+}

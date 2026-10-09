@@ -168,15 +168,6 @@ fn sync_with_remote(repo: &Path, branch: &str) -> Result<(), String> {
     Ok(())
 }
 
-/// CI source must remain the exact tested main head and its recorded version child.
-fn guard_ci_release_source(phase: &str) -> Result<bool, String> {
-    if env::var("GITHUB_ACTIONS").as_deref() != Ok("true") {
-        return Ok(false);
-    }
-    exec("node", &["scripts/release-source-freshness.mjs", phase])?;
-    Ok(true)
-}
-
 struct Version {
     major: u32,
     minor: u32,
@@ -684,14 +675,7 @@ fn main() {
                 .filter(|name| name != "HEAD")
         })
         .unwrap_or_else(|| "main".to_string());
-    let guarded_release = match guard_ci_release_source("before-sync") {
-        Ok(guarded) => guarded,
-        Err(e) => {
-            eprintln!("Release source freshness failed: {}", e);
-            exit(1);
-        }
-    };
-    if !guarded_release && let Err(e) = sync_with_remote(Path::new("."), &current_branch) {
+    if let Err(e) = sync_with_remote(Path::new("."), &current_branch) {
         eprintln!("{}", e);
         exit(1);
     }
@@ -896,21 +880,13 @@ fn main() {
         ),
     };
 
-    if let Err(e) = guard_ci_release_source("before-commit") {
-        eprintln!("Release source freshness failed: {}", e);
-        exit(1);
-    }
     if let Err(e) = exec("git", &["commit", "-m", &commit_msg]) {
         eprintln!("Error committing: {}", e);
         exit(1);
     }
     println!("Committed version {}", new_version);
 
-    if let Err(e) = guard_ci_release_source("before-push") {
-        eprintln!("Release source freshness failed: {}", e);
-        exit(1);
-    }
-    // Guarded CI retries the identical child; only the general CLI may rebase.
+    // Push changes with retry (handles concurrent pushes in multi-workflow repos)
     let max_push_attempts = 3;
     for attempt in 1..=max_push_attempts {
         match exec("git", &["push"]) {
@@ -921,13 +897,6 @@ fn main() {
                         "Push failed (attempt {}/{}): {}",
                         attempt, max_push_attempts, e
                     );
-                    if guarded_release {
-                        if let Err(error) = guard_ci_release_source("push-retry") {
-                            eprintln!("Release source freshness failed: {}", error);
-                            exit(1);
-                        }
-                        continue;
-                    }
                     eprintln!("Pulling with rebase and retrying...");
                     if let Err(rebase_err) =
                         exec("git", &["pull", "--rebase", "origin", &current_branch])
@@ -944,10 +913,6 @@ fn main() {
         }
     }
 
-    if let Err(e) = guard_ci_release_source("push-retry") {
-        eprintln!("Release source freshness failed: {}", e);
-        exit(1);
-    }
     // Tag only once the release commit is on the remote, so a `pull --rebase`
     // retry above can never leave the tag on an orphaned pre-rebase commit.
     let tag_name = format!("{}{}", tag_prefix, new_version);
