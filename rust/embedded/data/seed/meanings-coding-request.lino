@@ -316,3 +316,51 @@ meanings
     lexeme hi वापस
     lexeme zh 返回
     lexeme es vuelta regreso
+  back
+    defined-by concept
+    role source-projection-return
+    precondition "a source projection request asks to return code from an already bound graph"
+    effect "selects the return direction of the requested source projection without authorizing another task"
+    unit "not applicable"
+    example "source code back"
+    grounding "js/agentic/file_read/source.mjs; data/seed/meanings-coding-request.lino"
+  entire
+    defined-by concept
+    role source-projection-scope
+    precondition "a source projection request quantifies its owned source operand"
+    effect "selects all of that source operand while preserving its declared identity and scope"
+    unit "not applicable"
+    example "the entire source module"
+    grounding "js/agentic/file_read/source.mjs; data/seed/meanings-coding-structure.lino"
+  links
+    defined-by concept
+    role source-projection-format
+    precondition "a bound source projection asks for the graph format recognized by the existing links cue"
+    effect "names the Links Notation representation of the requested source graph; it does not declare provider status"
+    unit "not applicable"
+    example "project the source into links"
+    grounding "js/agentic/file_read/source.mjs; data/seed/meanings-skill-procedure.lino"
+  recompile
+    defined-by concept
+    role source-recompilation-action
+    precondition "a source projection request names a supported code reconstruction action"
+    effect "selects reconstruction from bound source graph bytes; any execution remains separately required and observed"
+    unit "not applicable"
+    example "recompile the source graph"
+    grounding "js/agentic/file_read/source.mjs; rust/src/repository_workspace/operation.rs"
+  regressions
+    defined-by concept
+    role coding_artifact_kind
+    precondition "a request owns the existing regression test artifact kind in plural"
+    effect "selects regression test artifacts for the owned target; a trailing acceptance clause alone does not bind a different target kind"
+    unit "not applicable"
+    example "create regressions for the named source"
+    grounding "js/agentic/general_planner.mjs; data/seed/meanings-coding-tasks.lino"
+  source-links
+    defined-by concept
+    role source-links-report-cue
+    precondition "an instruction requests the graph representation of an identified source"
+    effect "names source graph reporting with the original source identity and bytes retained"
+    unit "not applicable"
+    example "report source-links for the bound function"
+    grounding "js/agentic/file_read/source.mjs; data/seed/meanings-coding-request.lino"
