@@ -92,7 +92,7 @@ test("the claim rows are read from the capability table", async () => {
     { handler: "agentic_continuation", browserHandler: "tryAgenticContinuation", admitsOn: ["prior_reply"], refusalEvents: ["agentic_continuation:refusal"] },
     { handler: "clarification", browserHandler: "tryClarification", admitsOn: ["prior_reply"], refusalEvents: ["clarification:refusal"] },
     { handler: "current_dialogue_fact_checking", browserHandler: "tryCurrentDialogueFactChecking", admitsOn: ["prior_user_request"], refusalEvents: ["current_dialogue_fact_checking:refusal"] },
-    { handler: "historical", browserHandler: "tryHistorical", admitsOn: ["dialogue_turn","name_assignment"], refusalEvents: ["conversation_recall:refusal"] },
+    { handler: "historical", browserHandler: "tryHistorical", admitsOn: ["dialogue_turn","name_assignment","recall_query_term"], refusalEvents: ["conversation_recall:refusal"] },
     { handler: "conversation_memory", browserHandler: "", admitsOn: ["dialogue_turn","name_assignment","recall_query_term","supplied_payload"], refusalEvents: ["conversation_recall:refusal"] },
     { handler: "summarization", browserHandler: "", admitsOn: ["summary_topic"], refusalEvents: ["summarization:refusal"] },
     { handler: "brainstorming", browserHandler: "tryBrainstormingRequest", admitsOn: ["brainstorm_category"], refusalEvents: ["brainstorming:refusal"] },

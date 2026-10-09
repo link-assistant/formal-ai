@@ -6,7 +6,8 @@
 // planner's `compactedAgentTask` recovers the task from its `User turns:`
 // list, so a compacted session keeps its task (PR #1188 dogfooding).
 
-import { agenticMessage } from '../messages.mjs';
+import { localizedResponse } from './seed.mjs';
+import { fillSlots } from './seed_reports.mjs';
 import { detect } from './language.mjs';
 import { SummarizationMode, defaultConfig, withLanguage, withMode } from './summarization.mjs';
 import { assistantTurn, generateChatTitle, summarizeDialog, userTurn } from './summarization_dialog.mjs';
@@ -20,7 +21,7 @@ const ENVELOPE_LANGUAGES = new Set(['ru', 'zh']);
  * @param {string} prompt
  * @param {Array<{role: string, content: unknown}>} history
  */
-export function conversationSummaryEnvelope(prompt, history) {
+export function conversationSummaryRecord(prompt, history) {
   const turns = (history || [])
     .filter((turn) => (turn?.role === 'user' || turn?.role === 'assistant') && typeof turn.content === 'string' && turn.content.trim() !== '')
     .map((turn) => (turn.role === 'user' ? userTurn(turn.content) : assistantTurn(turn.content)));
@@ -36,9 +37,17 @@ export function conversationSummaryEnvelope(prompt, history) {
   const config = withLanguage(withMode(defaultConfig(), SummarizationMode.Standard), language);
   const summary = summarizeDialog(turns, config);
   const title = generateChatTitle(turns, language);
-  let body = agenticMessage(`conversation_summary_envelope_${ENVELOPE_LANGUAGES.has(language) ? language : 'en'}`, { summary, title });
+  let body = fillSlots(
+    localizedResponse('conversation-summary-envelope', ENVELOPE_LANGUAGES.has(language) ? language : 'en') ?? '',
+    [['summary', summary], ['title', title]],
+  );
   users.forEach((turn, index) => {
     body += `  ${index + 1}. ${turn.text}\n`;
   });
-  return body.trimEnd();
+  return { content: body.trimEnd(), title, language };
+}
+
+/** Mirrors the body of `fn conversation_summary_envelope` for existing server callers. */
+export function conversationSummaryEnvelope(prompt, history) {
+  return conversationSummaryRecord(prompt, history)?.content ?? null;
 }

@@ -194,13 +194,15 @@ fn conversation_summary_envelope(turns: &[DialogTurn], language: &str) -> (Strin
         .filter(|turn| turn.role == "user")
         .map(|turn| turn.text.as_str())
         .collect();
-    let mut body = match language {
-        "ru" => {
-            format!("Резюме разговора: {summary}\n\nЗаголовок: {title}\n\nРеплики пользователя:\n")
-        }
-        "zh" => format!("对话摘要:{summary}\n\n标题:{title}\n\n用户发言:\n"),
-        _ => format!("Conversation summary: {summary}\n\nTitle: {title}\n\nUser turns:\n"),
+    let envelope_language = match language {
+        "ru" | "zh" => language,
+        _ => "en",
     };
+    let mut body = seed::render_localized_once(
+        "conversation-summary-envelope",
+        envelope_language,
+        &[("summary", &summary), ("title", &title)],
+    );
     for (index, turn) in user_turns.iter().enumerate() {
         writeln!(body, "  {}. {turn}", index + 1).expect("string write is infallible");
     }

@@ -390,7 +390,7 @@ function tryHistorical(prompt, history) {
     return tryRecapConversation(history);
   }
   if (isSummarizePrompt(normalized)) {
-    return trySummarizeConversation(history);
+    return trySummarizeConversation(prompt, history);
   }
   if (!normalized) return null;
   // Issue #676: set/recall the assistant's own name from dialog-local history so
@@ -412,7 +412,7 @@ function tryHistorical(prompt, history) {
   // previous message" targets the user's prior turn rather than the assistant's.
   const previousMessage = tryRecallPreviousMessage(prompt, history);
   if (previousMessage) return previousMessage;
-  return null;
+  return tryConversationRecall(prompt, normalized, history);
 }
 
 // Issue #386 research comparison-table roles — mirror the ROLE_COMPARISON_*

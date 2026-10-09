@@ -324,7 +324,7 @@ fn the_claim_rows_are_read_from_the_capability_table() {
             (
                 "historical",
                 "tryHistorical",
-                vec!["dialogue_turn", "name_assignment"]
+                vec!["dialogue_turn", "name_assignment", "recall_query_term"]
             ),
             (
                 "conversation_memory",
