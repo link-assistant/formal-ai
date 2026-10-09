@@ -1,0 +1,5 @@
+{
+  "taskId": "T2935",
+  "target": "release-readonly-audit.mjs",
+  "byteEqual": true
+}

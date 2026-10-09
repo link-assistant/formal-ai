@@ -1,0 +1,192 @@
+{
+  "endpoint": "repos/link-assistant/formal-ai/commits/v0.352.1",
+  "observedAt": "2026-10-09T05:03:32.720Z",
+  "status": "retrieved",
+  "rawUtf8": "{\"sha\":\"130f14baa036830a5776aa3c140ecb7fad3bc85b\",\"node_id\":\"C_kwDOSbOoU9oAKDEzMGYxNGJhYTAzNjgzMGE1Nzc2YWEzYzE0MGVjYjdmYWQzYmM4NWI\",\"commit\":{\"author\":{\"name\":\"github-actions[bot]\",\"email\":\"github-actions[bot]@users.noreply.github.com\",\"date\":\"2026-09-27T02:41:47Z\"},\"committer\":{\"name\":\"github-actions[bot]\",\"email\":\"github-actions[bot]@users.noreply.github.com\",\"date\":\"2026-09-27T02:41:47Z\"},\"message\":\"chore: release v0.352.1\",\"tree\":{\"sha\":\"b4cc9d641c2e5b45c4015c203f9b30bbde3d82ad\",\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/git/trees/b4cc9d641c2e5b45c4015c203f9b30bbde3d82ad\"},\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/git/commits/130f14baa036830a5776aa3c140ecb7fad3bc85b\",\"comment_count\":0,\"verification\":{\"verified\":false,\"reason\":\"unsigned\",\"signature\":null,\"payload\":null,\"verified_at\":null}},\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/commits/130f14baa036830a5776aa3c140ecb7fad3bc85b\",\"html_url\":\"https://github.com/link-assistant/formal-ai/commit/130f14baa036830a5776aa3c140ecb7fad3bc85b\",\"comments_url\":\"https://api.github.com/repos/link-assistant/formal-ai/commits/130f14baa036830a5776aa3c140ecb7fad3bc85b/comments\",\"author\":{\"login\":\"github-actions[bot]\",\"id\":41898282,\"node_id\":\"MDM6Qm90NDE4OTgyODI=\",\"avatar_url\":\"https://avatars.githubusercontent.com/in/15368?v=4\",\"gravatar_id\":\"\",\"url\":\"https://api.github.com/users/github-actions%5Bbot%5D\",\"html_url\":\"https://github.com/apps/github-actions\",\"followers_url\":\"https://api.github.com/users/github-actions%5Bbot%5D/followers\",\"following_url\":\"https://api.github.com/users/github-actions%5Bbot%5D/following{/other_user}\",\"gists_url\":\"https://api.github.com/users/github-actions%5Bbot%5D/gists{/gist_id}\",\"starred_url\":\"https://api.github.com/users/github-actions%5Bbot%5D/starred{/owner}{/repo}\",\"subscriptions_url\":\"https://api.github.com/users/github-actions%5Bbot%5D/subscriptions\",\"organizations_url\":\"https://api.github.com/users/github-actions%5Bbot%5D/orgs\",\"repos_url\":\"https://api.github.com/users/github-actions%5Bbot%5D/repos\",\"events_url\":\"https://api.github.com/users/github-actions%5Bbot%5D/events{/privacy}\",\"received_events_url\":\"https://api.github.com/users/github-actions%5Bbot%5D/received_events\",\"type\":\"Bot\",\"user_view_type\":\"public\",\"site_admin\":false},\"committer\":{\"login\":\"github-actions[bot]\",\"id\":41898282,\"node_id\":\"MDM6Qm90NDE4OTgyODI=\",\"avatar_url\":\"https://avatars.githubusercontent.com/in/15368?v=4\",\"gravatar_id\":\"\",\"url\":\"https://api.github.com/users/github-actions%5Bbot%5D\",\"html_url\":\"https://github.com/apps/github-actions\",\"followers_url\":\"https://api.github.com/users/github-actions%5Bbot%5D/followers\",\"following_url\":\"https://api.github.com/users/github-actions%5Bbot%5D/following{/other_user}\",\"gists_url\":\"https://api.github.com/users/github-actions%5Bbot%5D/gists{/gist_id}\",\"starred_url\":\"https://api.github.com/users/github-actions%5Bbot%5D/starred{/owner}{/repo}\",\"subscriptions_url\":\"https://api.github.com/users/github-actions%5Bbot%5D/subscriptions\",\"organizations_url\":\"https://api.github.com/users/github-actions%5Bbot%5D/orgs\",\"repos_url\":\"https://api.github.com/users/github-actions%5Bbot%5D/repos\",\"events_url\":\"https://api.github.com/users/github-actions%5Bbot%5D/events{/privacy}\",\"received_events_url\":\"https://api.github.com/users/github-actions%5Bbot%5D/received_events\",\"type\":\"Bot\",\"user_view_type\":\"public\",\"site_admin\":false},\"parents\":[{\"sha\":\"154ad4c275f07d76d028d9224556dfed273b8fcc\",\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/commits/154ad4c275f07d76d028d9224556dfed273b8fcc\",\"html_url\":\"https://github.com/link-assistant/formal-ai/commit/154ad4c275f07d76d028d9224556dfed273b8fcc\"}],\"stats\":{\"total\":73,\"additions\":44,\"deletions\":29},\"files\":[{\"sha\":\"9bf0beea893cebdcb7577b5efac7db7b0261f1ba\",\"filename\":\"CHANGELOG.md\",\"status\":\"modified\",\"additions\":22,\"deletions\":0,\"changes\":22,\"blob_url\":\"https://github.com/link-assistant/formal-ai/blob/130f14baa036830a5776aa3c140ecb7fad3bc85b/CHANGELOG.md\",\"raw_url\":\"https://github.com/link-assistant/formal-ai/raw/130f14baa036830a5776aa3c140ecb7fad3bc85b/CHANGELOG.md\",\"contents_url\":\"https://api.github.com/repos/link-assistant/formal-ai/contents/CHANGELOG.md?ref=130f14baa036830a5776aa3c140ecb7fad3bc85b\",\"patch\":\"@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0\\n \\n <!-- changelog-insert-here -->\\n \\n+## [0.352.1] - 2026-09-27\\n+\\n+### Fixed\\n+\\n+- The Auto Release job can publish the Docker image again: the final stage\\n+  copies the binary from `/app/target/release/formal-ai`, a contract the\\n+  prebuilt stage already satisfied but the compile stage never did after the\\n+  Plan 16 L1 move put cargo's output in `rust/target/release` — run\\n+  36278582429 (v0.352.0) failed at the GHCR push with\\n+  `\\\"/app/target/release/formal-ai\\\": not found`, after the crate itself had\\n+  already published to crates.io and passed its smoke test. The compile stage\\n+  now stages its binary at the contract path, the contract is stated where\\n+  both stages can see it, and no pull request could have caught this: the\\n+  docker-build check pins `BINARY_SOURCE=prebuilt` and never runs on main\\n+  (issue #1151). The same PR un-broke the next release in a second way the\\n+  v0.352.0 run revealed: the release commit bumps the crate version and\\n+  appends the self-hosting ledger row but never re-rendered the status\\n+  surfaces that project them (README.md, docs/status.md), and because the\\n+  bot's push triggers no workflow, nothing noticed until the next tree ran\\n+  the `check_status_render` gate — the release script now regenerates and\\n+  stages those surfaces as part of the release commit.\\n+\\n ## [0.352.0] - 2026-09-26\\n \\n ### Added\"},{\"sha\":\"db7928fe050c4595f453501c103e07b1a1ff6014\",\"filename\":\"README.md\",\"status\":\"modified\",\"additions\":1,\"deletions\":1,\"changes\":2,\"blob_url\":\"https://github.com/link-assistant/formal-ai/blob/130f14baa036830a5776aa3c140ecb7fad3bc85b/README.md\",\"raw_url\":\"https://github.com/link-assistant/formal-ai/raw/130f14baa036830a5776aa3c140ecb7fad3bc85b/README.md\",\"contents_url\":\"https://api.github.com/repos/link-assistant/formal-ai/contents/README.md?ref=130f14baa036830a5776aa3c140ecb7fad3bc85b\",\"patch\":\"@@ -1195,5 +1195,5 @@ rust-script scripts/decode-github-issue-url.rs --url 'https://github.com/link-as\\n See [REQUIREMENTS.md](REQUIREMENTS.md) for the cumulative requirement matrix and [docs/case-studies/issue-1/README.md](docs/case-studies/issue-1/README.md) for the collected research and implementation plan.\\n \\n <!-- status:begin self-hosting -->\\n-Latest ledger row: `v0.352.0`; release share `0` basis points, trailing share `1` basis points, target `389` basis points.\\n+Latest ledger row: `v0.352.1`; release share `0` basis points, trailing share `0` basis points, target `389` basis points.\\n <!-- status:end self-hosting -->\"},{\"sha\":\"9c490de9c1d92a28f8928c0439a69427252b710a\",\"filename\":\"changelog.d/20260927_004500_issue-1151-docker-compile-path.md\",\"status\":\"removed\",\"additions\":0,\"deletions\":23,\"changes\":23,\"blob_url\":\"https://github.com/link-assistant/formal-ai/blob/154ad4c275f07d76d028d9224556dfed273b8fcc/changelog.d%2F20260927_004500_issue-1151-docker-compile-path.md\",\"raw_url\":\"https://github.com/link-assistant/formal-ai/raw/154ad4c275f07d76d028d9224556dfed273b8fcc/changelog.d%2F20260927_004500_issue-1151-docker-compile-path.md\",\"contents_url\":\"https://api.github.com/repos/link-assistant/formal-ai/contents/changelog.d%2F20260927_004500_issue-1151-docker-compile-path.md?ref=154ad4c275f07d76d028d9224556dfed273b8fcc\",\"patch\":\"@@ -1,23 +0,0 @@\\n----\\n-bump: patch\\n----\\n-\\n-### Fixed\\n-\\n-- The Auto Release job can publish the Docker image again: the final stage\\n-  copies the binary from `/app/target/release/formal-ai`, a contract the\\n-  prebuilt stage already satisfied but the compile stage never did after the\\n-  Plan 16 L1 move put cargo's output in `rust/target/release` — run\\n-  36278582429 (v0.352.0) failed at the GHCR push with\\n-  `\\\"/app/target/release/formal-ai\\\": not found`, after the crate itself had\\n-  already published to crates.io and passed its smoke test. The compile stage\\n-  now stages its binary at the contract path, the contract is stated where\\n-  both stages can see it, and no pull request could have caught this: the\\n-  docker-build check pins `BINARY_SOURCE=prebuilt` and never runs on main\\n-  (issue #1151). The same PR un-broke the next release in a second way the\\n-  v0.352.0 run revealed: the release commit bumps the crate version and\\n-  appends the self-hosting ledger row but never re-rendered the status\\n-  surfaces that project them (README.md, docs/status.md), and because the\\n-  bot's push triggers no workflow, nothing noticed until the next tree ran\\n-  the `check_status_render` gate — the release script now regenerates and\\n-  stages those surfaces as part of the release commit.\"},{\"sha\":\"d318ce3b99194fd8c7ba7738f1af5e7ef7f9772e\",\"filename\":\"data/meta/self-hosting-ledger.lino\",\"status\":\"modified\",\"additions\":15,\"deletions\":0,\"changes\":15,\"blob_url\":\"https://github.com/link-assistant/formal-ai/blob/130f14baa036830a5776aa3c140ecb7fad3bc85b/data%2Fmeta%2Fself-hosting-ledger.lino\",\"raw_url\":\"https://github.com/link-assistant/formal-ai/raw/130f14baa036830a5776aa3c140ecb7fad3bc85b/data%2Fmeta%2Fself-hosting-ledger.lino\",\"contents_url\":\"https://api.github.com/repos/link-assistant/formal-ai/contents/data%2Fmeta%2Fself-hosting-ledger.lino?ref=130f14baa036830a5776aa3c140ecb7fad3bc85b\",\"patch\":\"@@ -1266,3 +1266,18 @@ self_hosting_ledger\\n     self_authored_pull_request_author \\\"https://github.com/link-assistant/formal-ai/pull/1144 konard\\\"\\n     self_authored_pull_request_author \\\"https://github.com/link-assistant/formal-ai/pull/1146 konard\\\"\\n     self_authored_pull_request_author \\\"https://github.com/link-assistant/formal-ai/pull/1148 konard\\\"\\n+  release\\n+    metric_version \\\"3\\\"\\n+    tag \\\"v0.352.1\\\"\\n+    since \\\"v0.352.0\\\"\\n+    until \\\"154ad4c275f07d76d028d9224556dfed273b8fcc\\\"\\n+    self_authored_lines \\\"0\\\"\\n+    changed_lines \\\"45\\\"\\n+    self_authored_commits \\\"1\\\"\\n+    commits \\\"4\\\"\\n+    percentage_basis_points \\\"0\\\"\\n+    trailing_window \\\"3\\\"\\n+    trailing_percentage_basis_points \\\"0\\\"\\n+    target_percentage_basis_points \\\"389\\\"\\n+    self_authored_pull_request \\\"https://github.com/link-assistant/formal-ai/pull/1152\\\"\\n+    self_authored_pull_request_author \\\"https://github.com/link-assistant/formal-ai/pull/1152 konard\\\"\"},{\"sha\":\"13b7baa021c4cab8cd4198ca62abe9ce016f0861\",\"filename\":\"docs/case-studies/issue-711/fragment-release-map.tsv\",\"status\":\"modified\",\"additions\":1,\"deletions\":0,\"changes\":1,\"blob_url\":\"https://github.com/link-assistant/formal-ai/blob/130f14baa036830a5776aa3c140ecb7fad3bc85b/docs%2Fcase-studies%2Fissue-711%2Ffragment-release-map.tsv\",\"raw_url\":\"https://github.com/link-assistant/formal-ai/raw/130f14baa036830a5776aa3c140ecb7fad3bc85b/docs%2Fcase-studies%2Fissue-711%2Ffragment-release-map.tsv\",\"contents_url\":\"https://api.github.com/repos/link-assistant/formal-ai/contents/docs%2Fcase-studies%2Fissue-711%2Ffragment-release-map.tsv?ref=130f14baa036830a5776aa3c140ecb7fad3bc85b\",\"patch\":\"@@ -671,6 +671,7 @@ changelog.d/20260924_090000_issue-1138-quoted-example-record.md\\t0.352.0\\n changelog.d/20260924_091000_issue-1138-translate-via-meta-pivot.md\\t0.352.0\\n changelog.d/20260924_091500_issue-1138-three-roots-parity-doctrine.md\\t0.352.0\\n changelog.d/20260926_160000_issue-1142-release-version-reads.md\\t0.352.0\\n+changelog.d/20260927_004500_issue-1151-docker-compile-path.md\\t0.352.1\\n changelog.d/20260927_023000_issue-1145-rebuild-ratio-sampling.md\\t0.352.0\\n changelog.d/20260927_041906_issue-1147-release-script-compilation.md\\t0.352.0\\n changelog.d/20260927_130000_issue-1143-release-layout-readers.md\\t0.352.0\"},{\"sha\":\"8c766813bd683a47ca36ae276be33cd76194f755\",\"filename\":\"docs/status.md\",\"status\":\"modified\",\"additions\":3,\"deletions\":3,\"changes\":6,\"blob_url\":\"https://github.com/link-assistant/formal-ai/blob/130f14baa036830a5776aa3c140ecb7fad3bc85b/docs%2Fstatus.md\",\"raw_url\":\"https://github.com/link-assistant/formal-ai/raw/130f14baa036830a5776aa3c140ecb7fad3bc85b/docs%2Fstatus.md\",\"contents_url\":\"https://api.github.com/repos/link-assistant/formal-ai/contents/docs%2Fstatus.md?ref=130f14baa036830a5776aa3c140ecb7fad3bc85b\",\"patch\":\"@@ -40,17 +40,17 @@ This document is a deterministic projection of committed ledgers.\\n \\n ## Latest self-hosting release\\n \\n-- `tag`: `v0.352.0`\\n+- `tag`: `v0.352.1`\\n - `percentage_basis_points`: `0`\\n-- `trailing_percentage_basis_points`: `1`\\n+- `trailing_percentage_basis_points`: `0`\\n - `target_percentage_basis_points`: `389`\\n \\n ## Ledger inventory\\n \\n | Input | Lines |\\n | --- | ---: |\\n | `data/benchmarks/external-results.lino` | 946 |\\n-| `data/meta/self-hosting-ledger.lino` | 1268 |\\n+| `data/meta/self-hosting-ledger.lino` | 1283 |\\n | `data/meta/debt-ratchet.lino` | 64 |\\n | `data/meta/core-boundary-ledger.lino` | 277 |\\n | `data/meta/handler-migration-ledger.lino` | 239 |\"},{\"sha\":\"02bff6f8bab5760a14195c6fae2a9556bad9d24f\",\"filename\":\"rust/Cargo.lock\",\"status\":\"modified\",\"additions\":1,\"deletions\":1,\"changes\":2,\"blob_url\":\"https://github.com/link-assistant/formal-ai/blob/130f14baa036830a5776aa3c140ecb7fad3bc85b/rust%2FCargo.lock\",\"raw_url\":\"https://github.com/link-assistant/formal-ai/raw/130f14baa036830a5776aa3c140ecb7fad3bc85b/rust%2FCargo.lock\",\"contents_url\":\"https://api.github.com/repos/link-assistant/formal-ai/contents/rust%2FCargo.lock?ref=130f14baa036830a5776aa3c140ecb7fad3bc85b\",\"patch\":\"@@ -1446,7 +1446,7 @@ dependencies = [\\n \\n [[package]]\\n name = \\\"formal-ai\\\"\\n-version = \\\"0.352.0\\\"\\n+version = \\\"0.352.1\\\"\\n dependencies = [\\n  \\\"async-trait\\\",\\n  \\\"base64 0.23.1\\\",\"},{\"sha\":\"92cd9a40befdce9bc59211a133fbebcfde21ca6c\",\"filename\":\"rust/Cargo.toml\",\"status\":\"modified\",\"additions\":1,\"deletions\":1,\"changes\":2,\"blob_url\":\"https://github.com/link-assistant/formal-ai/blob/130f14baa036830a5776aa3c140ecb7fad3bc85b/rust%2FCargo.toml\",\"raw_url\":\"https://github.com/link-assistant/formal-ai/raw/130f14baa036830a5776aa3c140ecb7fad3bc85b/rust%2FCargo.toml\",\"contents_url\":\"https://api.github.com/repos/link-assistant/formal-ai/contents/rust%2FCargo.toml?ref=130f14baa036830a5776aa3c140ecb7fad3bc85b\",\"patch\":\"@@ -1,6 +1,6 @@\\n [package]\\n name = \\\"formal-ai\\\"\\n-version = \\\"0.352.0\\\"\\n+version = \\\"0.352.1\\\"\\n edition = \\\"2024\\\"\\n description = \\\"Formal symbolic AI implementation with OpenAI-compatible APIs\\\"\\n readme = \\\"../README.md\\\"\"}]}",
+  "sha256": "ae79fc35f7c00ca755ed428a6acb971d0d1472254d3216741aaef1f4a9ecd8aa",
+  "json": {
+    "sha": "130f14baa036830a5776aa3c140ecb7fad3bc85b",
+    "node_id": "C_kwDOSbOoU9oAKDEzMGYxNGJhYTAzNjgzMGE1Nzc2YWEzYzE0MGVjYjdmYWQzYmM4NWI",
+    "commit": {
+      "author": {
+        "name": "github-actions[bot]",
+        "email": "github-actions[bot]@users.noreply.github.com",
+        "date": "2026-09-27T02:41:47Z"
+      },
+      "committer": {
+        "name": "github-actions[bot]",
+        "email": "github-actions[bot]@users.noreply.github.com",
+        "date": "2026-09-27T02:41:47Z"
+      },
+      "message": "chore: release v0.352.1",
+      "tree": {
+        "sha": "b4cc9d641c2e5b45c4015c203f9b30bbde3d82ad",
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/git/trees/b4cc9d641c2e5b45c4015c203f9b30bbde3d82ad"
+      },
+      "url": "https://api.github.com/repos/link-assistant/formal-ai/git/commits/130f14baa036830a5776aa3c140ecb7fad3bc85b",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null,
+        "verified_at": null
+      }
+    },
+    "url": "https://api.github.com/repos/link-assistant/formal-ai/commits/130f14baa036830a5776aa3c140ecb7fad3bc85b",
+    "html_url": "https://github.com/link-assistant/formal-ai/commit/130f14baa036830a5776aa3c140ecb7fad3bc85b",
+    "comments_url": "https://api.github.com/repos/link-assistant/formal-ai/commits/130f14baa036830a5776aa3c140ecb7fad3bc85b/comments",
+    "author": {
+      "login": "github-actions[bot]",
+      "id": 41898282,
+      "node_id": "MDM6Qm90NDE4OTgyODI=",
+      "avatar_url": "https://avatars.githubusercontent.com/in/15368?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/github-actions%5Bbot%5D",
+      "html_url": "https://github.com/apps/github-actions",
+      "followers_url": "https://api.github.com/users/github-actions%5Bbot%5D/followers",
+      "following_url": "https://api.github.com/users/github-actions%5Bbot%5D/following{/other_user}",
+      "gists_url": "https://api.github.com/users/github-actions%5Bbot%5D/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/github-actions%5Bbot%5D/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/github-actions%5Bbot%5D/subscriptions",
+      "organizations_url": "https://api.github.com/users/github-actions%5Bbot%5D/orgs",
+      "repos_url": "https://api.github.com/users/github-actions%5Bbot%5D/repos",
+      "events_url": "https://api.github.com/users/github-actions%5Bbot%5D/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/github-actions%5Bbot%5D/received_events",
+      "type": "Bot",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "github-actions[bot]",
+      "id": 41898282,
+      "node_id": "MDM6Qm90NDE4OTgyODI=",
+      "avatar_url": "https://avatars.githubusercontent.com/in/15368?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/github-actions%5Bbot%5D",
+      "html_url": "https://github.com/apps/github-actions",
+      "followers_url": "https://api.github.com/users/github-actions%5Bbot%5D/followers",
+      "following_url": "https://api.github.com/users/github-actions%5Bbot%5D/following{/other_user}",
+      "gists_url": "https://api.github.com/users/github-actions%5Bbot%5D/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/github-actions%5Bbot%5D/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/github-actions%5Bbot%5D/subscriptions",
+      "organizations_url": "https://api.github.com/users/github-actions%5Bbot%5D/orgs",
+      "repos_url": "https://api.github.com/users/github-actions%5Bbot%5D/repos",
+      "events_url": "https://api.github.com/users/github-actions%5Bbot%5D/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/github-actions%5Bbot%5D/received_events",
+      "type": "Bot",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "154ad4c275f07d76d028d9224556dfed273b8fcc",
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/commits/154ad4c275f07d76d028d9224556dfed273b8fcc",
+        "html_url": "https://github.com/link-assistant/formal-ai/commit/154ad4c275f07d76d028d9224556dfed273b8fcc"
+      }
+    ],
+    "stats": {
+      "total": 73,
+      "additions": 44,
+      "deletions": 29
+    },
+    "files": [
+      {
+        "sha": "9bf0beea893cebdcb7577b5efac7db7b0261f1ba",
+        "filename": "CHANGELOG.md",
+        "status": "modified",
+        "additions": 22,
+        "deletions": 0,
+        "changes": 22,
+        "blob_url": "https://github.com/link-assistant/formal-ai/blob/130f14baa036830a5776aa3c140ecb7fad3bc85b/CHANGELOG.md",
+        "raw_url": "https://github.com/link-assistant/formal-ai/raw/130f14baa036830a5776aa3c140ecb7fad3bc85b/CHANGELOG.md",
+        "contents_url": "https://api.github.com/repos/link-assistant/formal-ai/contents/CHANGELOG.md?ref=130f14baa036830a5776aa3c140ecb7fad3bc85b",
+        "patch": "@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0\n \n <!-- changelog-insert-here -->\n \n+## [0.352.1] - 2026-09-27\n+\n+### Fixed\n+\n+- The Auto Release job can publish the Docker image again: the final stage\n+  copies the binary from `/app/target/release/formal-ai`, a contract the\n+  prebuilt stage already satisfied but the compile stage never did after the\n+  Plan 16 L1 move put cargo's output in `rust/target/release` — run\n+  36278582429 (v0.352.0) failed at the GHCR push with\n+  `\"/app/target/release/formal-ai\": not found`, after the crate itself had\n+  already published to crates.io and passed its smoke test. The compile stage\n+  now stages its binary at the contract path, the contract is stated where\n+  both stages can see it, and no pull request could have caught this: the\n+  docker-build check pins `BINARY_SOURCE=prebuilt` and never runs on main\n+  (issue #1151). The same PR un-broke the next release in a second way the\n+  v0.352.0 run revealed: the release commit bumps the crate version and\n+  appends the self-hosting ledger row but never re-rendered the status\n+  surfaces that project them (README.md, docs/status.md), and because the\n+  bot's push triggers no workflow, nothing noticed until the next tree ran\n+  the `check_status_render` gate — the release script now regenerates and\n+  stages those surfaces as part of the release commit.\n+\n ## [0.352.0] - 2026-09-26\n \n ### Added"
+      },
+      {
+        "sha": "db7928fe050c4595f453501c103e07b1a1ff6014",
+        "filename": "README.md",
+        "status": "modified",
+        "additions": 1,
+        "deletions": 1,
+        "changes": 2,
+        "blob_url": "https://github.com/link-assistant/formal-ai/blob/130f14baa036830a5776aa3c140ecb7fad3bc85b/README.md",
+        "raw_url": "https://github.com/link-assistant/formal-ai/raw/130f14baa036830a5776aa3c140ecb7fad3bc85b/README.md",
+        "contents_url": "https://api.github.com/repos/link-assistant/formal-ai/contents/README.md?ref=130f14baa036830a5776aa3c140ecb7fad3bc85b",
+        "patch": "@@ -1195,5 +1195,5 @@ rust-script scripts/decode-github-issue-url.rs --url 'https://github.com/link-as\n See [REQUIREMENTS.md](REQUIREMENTS.md) for the cumulative requirement matrix and [docs/case-studies/issue-1/README.md](docs/case-studies/issue-1/README.md) for the collected research and implementation plan.\n \n <!-- status:begin self-hosting -->\n-Latest ledger row: `v0.352.0`; release share `0` basis points, trailing share `1` basis points, target `389` basis points.\n+Latest ledger row: `v0.352.1`; release share `0` basis points, trailing share `0` basis points, target `389` basis points.\n <!-- status:end self-hosting -->"
+      },
+      {
+        "sha": "9c490de9c1d92a28f8928c0439a69427252b710a",
+        "filename": "changelog.d/20260927_004500_issue-1151-docker-compile-path.md",
+        "status": "removed",
+        "additions": 0,
+        "deletions": 23,
+        "changes": 23,
+        "blob_url": "https://github.com/link-assistant/formal-ai/blob/154ad4c275f07d76d028d9224556dfed273b8fcc/changelog.d%2F20260927_004500_issue-1151-docker-compile-path.md",
+        "raw_url": "https://github.com/link-assistant/formal-ai/raw/154ad4c275f07d76d028d9224556dfed273b8fcc/changelog.d%2F20260927_004500_issue-1151-docker-compile-path.md",
+        "contents_url": "https://api.github.com/repos/link-assistant/formal-ai/contents/changelog.d%2F20260927_004500_issue-1151-docker-compile-path.md?ref=154ad4c275f07d76d028d9224556dfed273b8fcc",
+        "patch": "@@ -1,23 +0,0 @@\n----\n-bump: patch\n----\n-\n-### Fixed\n-\n-- The Auto Release job can publish the Docker image again: the final stage\n-  copies the binary from `/app/target/release/formal-ai`, a contract the\n-  prebuilt stage already satisfied but the compile stage never did after the\n-  Plan 16 L1 move put cargo's output in `rust/target/release` — run\n-  36278582429 (v0.352.0) failed at the GHCR push with\n-  `\"/app/target/release/formal-ai\": not found`, after the crate itself had\n-  already published to crates.io and passed its smoke test. The compile stage\n-  now stages its binary at the contract path, the contract is stated where\n-  both stages can see it, and no pull request could have caught this: the\n-  docker-build check pins `BINARY_SOURCE=prebuilt` and never runs on main\n-  (issue #1151). The same PR un-broke the next release in a second way the\n-  v0.352.0 run revealed: the release commit bumps the crate version and\n-  appends the self-hosting ledger row but never re-rendered the status\n-  surfaces that project them (README.md, docs/status.md), and because the\n-  bot's push triggers no workflow, nothing noticed until the next tree ran\n-  the `check_status_render` gate — the release script now regenerates and\n-  stages those surfaces as part of the release commit."
+      },
+      {
+        "sha": "d318ce3b99194fd8c7ba7738f1af5e7ef7f9772e",
+        "filename": "data/meta/self-hosting-ledger.lino",
+        "status": "modified",
+        "additions": 15,
+        "deletions": 0,
+        "changes": 15,
+        "blob_url": "https://github.com/link-assistant/formal-ai/blob/130f14baa036830a5776aa3c140ecb7fad3bc85b/data%2Fmeta%2Fself-hosting-ledger.lino",
+        "raw_url": "https://github.com/link-assistant/formal-ai/raw/130f14baa036830a5776aa3c140ecb7fad3bc85b/data%2Fmeta%2Fself-hosting-ledger.lino",
+        "contents_url": "https://api.github.com/repos/link-assistant/formal-ai/contents/data%2Fmeta%2Fself-hosting-ledger.lino?ref=130f14baa036830a5776aa3c140ecb7fad3bc85b",
+        "patch": "@@ -1266,3 +1266,18 @@ self_hosting_ledger\n     self_authored_pull_request_author \"https://github.com/link-assistant/formal-ai/pull/1144 konard\"\n     self_authored_pull_request_author \"https://github.com/link-assistant/formal-ai/pull/1146 konard\"\n     self_authored_pull_request_author \"https://github.com/link-assistant/formal-ai/pull/1148 konard\"\n+  release\n+    metric_version \"3\"\n+    tag \"v0.352.1\"\n+    since \"v0.352.0\"\n+    until \"154ad4c275f07d76d028d9224556dfed273b8fcc\"\n+    self_authored_lines \"0\"\n+    changed_lines \"45\"\n+    self_authored_commits \"1\"\n+    commits \"4\"\n+    percentage_basis_points \"0\"\n+    trailing_window \"3\"\n+    trailing_percentage_basis_points \"0\"\n+    target_percentage_basis_points \"389\"\n+    self_authored_pull_request \"https://github.com/link-assistant/formal-ai/pull/1152\"\n+    self_authored_pull_request_author \"https://github.com/link-assistant/formal-ai/pull/1152 konard\""
+      },
+      {
+        "sha": "13b7baa021c4cab8cd4198ca62abe9ce016f0861",
+        "filename": "docs/case-studies/issue-711/fragment-release-map.tsv",
+        "status": "modified",
+        "additions": 1,
+        "deletions": 0,
+        "changes": 1,
+        "blob_url": "https://github.com/link-assistant/formal-ai/blob/130f14baa036830a5776aa3c140ecb7fad3bc85b/docs%2Fcase-studies%2Fissue-711%2Ffragment-release-map.tsv",
+        "raw_url": "https://github.com/link-assistant/formal-ai/raw/130f14baa036830a5776aa3c140ecb7fad3bc85b/docs%2Fcase-studies%2Fissue-711%2Ffragment-release-map.tsv",
+        "contents_url": "https://api.github.com/repos/link-assistant/formal-ai/contents/docs%2Fcase-studies%2Fissue-711%2Ffragment-release-map.tsv?ref=130f14baa036830a5776aa3c140ecb7fad3bc85b",
+        "patch": "@@ -671,6 +671,7 @@ changelog.d/20260924_090000_issue-1138-quoted-example-record.md\t0.352.0\n changelog.d/20260924_091000_issue-1138-translate-via-meta-pivot.md\t0.352.0\n changelog.d/20260924_091500_issue-1138-three-roots-parity-doctrine.md\t0.352.0\n changelog.d/20260926_160000_issue-1142-release-version-reads.md\t0.352.0\n+changelog.d/20260927_004500_issue-1151-docker-compile-path.md\t0.352.1\n changelog.d/20260927_023000_issue-1145-rebuild-ratio-sampling.md\t0.352.0\n changelog.d/20260927_041906_issue-1147-release-script-compilation.md\t0.352.0\n changelog.d/20260927_130000_issue-1143-release-layout-readers.md\t0.352.0"
+      },
+      {
+        "sha": "8c766813bd683a47ca36ae276be33cd76194f755",
+        "filename": "docs/status.md",
+        "status": "modified",
+        "additions": 3,
+        "deletions": 3,
+        "changes": 6,
+        "blob_url": "https://github.com/link-assistant/formal-ai/blob/130f14baa036830a5776aa3c140ecb7fad3bc85b/docs%2Fstatus.md",
+        "raw_url": "https://github.com/link-assistant/formal-ai/raw/130f14baa036830a5776aa3c140ecb7fad3bc85b/docs%2Fstatus.md",
+        "contents_url": "https://api.github.com/repos/link-assistant/formal-ai/contents/docs%2Fstatus.md?ref=130f14baa036830a5776aa3c140ecb7fad3bc85b",
+        "patch": "@@ -40,17 +40,17 @@ This document is a deterministic projection of committed ledgers.\n \n ## Latest self-hosting release\n \n-- `tag`: `v0.352.0`\n+- `tag`: `v0.352.1`\n - `percentage_basis_points`: `0`\n-- `trailing_percentage_basis_points`: `1`\n+- `trailing_percentage_basis_points`: `0`\n - `target_percentage_basis_points`: `389`\n \n ## Ledger inventory\n \n | Input | Lines |\n | --- | ---: |\n | `data/benchmarks/external-results.lino` | 946 |\n-| `data/meta/self-hosting-ledger.lino` | 1268 |\n+| `data/meta/self-hosting-ledger.lino` | 1283 |\n | `data/meta/debt-ratchet.lino` | 64 |\n | `data/meta/core-boundary-ledger.lino` | 277 |\n | `data/meta/handler-migration-ledger.lino` | 239 |"
+      },
+      {
+        "sha": "02bff6f8bab5760a14195c6fae2a9556bad9d24f",
+        "filename": "rust/Cargo.lock",
+        "status": "modified",
+        "additions": 1,
+        "deletions": 1,
+        "changes": 2,
+        "blob_url": "https://github.com/link-assistant/formal-ai/blob/130f14baa036830a5776aa3c140ecb7fad3bc85b/rust%2FCargo.lock",
+        "raw_url": "https://github.com/link-assistant/formal-ai/raw/130f14baa036830a5776aa3c140ecb7fad3bc85b/rust%2FCargo.lock",
+        "contents_url": "https://api.github.com/repos/link-assistant/formal-ai/contents/rust%2FCargo.lock?ref=130f14baa036830a5776aa3c140ecb7fad3bc85b",
+        "patch": "@@ -1446,7 +1446,7 @@ dependencies = [\n \n [[package]]\n name = \"formal-ai\"\n-version = \"0.352.0\"\n+version = \"0.352.1\"\n dependencies = [\n  \"async-trait\",\n  \"base64 0.23.1\","
+      },
+      {
+        "sha": "92cd9a40befdce9bc59211a133fbebcfde21ca6c",
+        "filename": "rust/Cargo.toml",
+        "status": "modified",
+        "additions": 1,
+        "deletions": 1,
+        "changes": 2,
+        "blob_url": "https://github.com/link-assistant/formal-ai/blob/130f14baa036830a5776aa3c140ecb7fad3bc85b/rust%2FCargo.toml",
+        "raw_url": "https://github.com/link-assistant/formal-ai/raw/130f14baa036830a5776aa3c140ecb7fad3bc85b/rust%2FCargo.toml",
+        "contents_url": "https://api.github.com/repos/link-assistant/formal-ai/contents/rust%2FCargo.toml?ref=130f14baa036830a5776aa3c140ecb7fad3bc85b",
+        "patch": "@@ -1,6 +1,6 @@\n [package]\n name = \"formal-ai\"\n-version = \"0.352.0\"\n+version = \"0.352.1\"\n edition = \"2024\"\n description = \"Formal symbolic AI implementation with OpenAI-compatible APIs\"\n readme = \"../README.md\""
+      }
+    ]
+  }
+}

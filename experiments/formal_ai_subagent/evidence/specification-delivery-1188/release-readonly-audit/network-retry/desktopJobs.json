@@ -1,0 +1,2582 @@
+{
+  "endpoint": "repos/link-assistant/formal-ai/actions/runs/37870721641/jobs?per_page=100",
+  "observedAt": "2026-10-09T05:03:32.721Z",
+  "status": "retrieved",
+  "rawUtf8": "{\"total_count\":15,\"jobs\":[{\"id\":113627942173,\"run_id\":37870721641,\"workflow_name\":\"Desktop Release\",\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641\",\"run_attempt\":1,\"node_id\":\"CR_kwDOSbOoU88AAAAadMDNHQ\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\",\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113627942173\",\"html_url\":\"https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113627942173\",\"status\":\"completed\",\"conclusion\":\"success\",\"created_at\":\"2026-10-09T01:38:05Z\",\"started_at\":\"2026-10-09T01:46:30Z\",\"completed_at\":\"2026-10-09T01:46:57Z\",\"name\":\"base / Pin base commit\",\"steps\":[{\"name\":\"Set up job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":1,\"started_at\":\"2026-10-09T01:46:32Z\",\"completed_at\":\"2026-10-09T01:46:33Z\"},{\"name\":\"Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":2,\"started_at\":\"2026-10-09T01:46:33Z\",\"completed_at\":\"2026-10-09T01:46:52Z\"},{\"name\":\"Run bash scripts/pin-base-commit.sh\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":3,\"started_at\":\"2026-10-09T01:46:52Z\",\"completed_at\":\"2026-10-09T01:46:55Z\"},{\"name\":\"Post Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":6,\"started_at\":\"2026-10-09T01:46:55Z\",\"completed_at\":\"2026-10-09T01:46:55Z\"},{\"name\":\"Complete job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":7,\"started_at\":\"2026-10-09T01:46:55Z\",\"completed_at\":\"2026-10-09T01:46:55Z\"}],\"check_run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/check-runs/113627942173\",\"labels\":[\"ubuntu-latest\"],\"runner_id\":1000155946,\"runner_name\":\"GitHub Actions 1000155946\",\"runner_group_id\":0,\"runner_group_name\":\"GitHub Actions\"},{\"id\":113627943398,\"run_id\":37870721641,\"workflow_name\":\"Desktop Release\",\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641\",\"run_attempt\":1,\"node_id\":\"CR_kwDOSbOoU88AAAAadMDR5g\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\",\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113627943398\",\"html_url\":\"https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113627943398\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"created_at\":\"2026-10-09T01:38:05Z\",\"started_at\":\"2026-10-09T01:38:05Z\",\"completed_at\":\"2026-10-09T01:38:05Z\",\"name\":\"Resolve target release\",\"steps\":[],\"check_run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/check-runs/113627943398\",\"labels\":[\"ubuntu-latest\"],\"runner_id\":null,\"runner_name\":null,\"runner_group_id\":null,\"runner_group_name\":null},{\"id\":113630187642,\"run_id\":37870721641,\"workflow_name\":\"Desktop Release\",\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641\",\"run_attempt\":1,\"node_id\":\"CR_kwDOSbOoU88AAAAadOMQeg\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\",\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187642\",\"html_url\":\"https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187642\",\"status\":\"completed\",\"conclusion\":\"success\",\"created_at\":\"2026-10-09T01:46:57Z\",\"started_at\":\"2026-10-09T01:48:17Z\",\"completed_at\":\"2026-10-09T01:49:39Z\",\"name\":\"Package VS Code extension (.vsix)\",\"steps\":[{\"name\":\"Set up job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":1,\"started_at\":\"2026-10-09T01:48:18Z\",\"completed_at\":\"2026-10-09T01:48:21Z\"},{\"name\":\"Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":2,\"started_at\":\"2026-10-09T01:48:21Z\",\"completed_at\":\"2026-10-09T01:48:45Z\"},{\"name\":\"Simulate fresh merge with base branch (PR only)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":3,\"started_at\":\"2026-10-09T01:48:45Z\",\"completed_at\":\"2026-10-09T01:48:45Z\"},{\"name\":\"Setup Node\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":4,\"started_at\":\"2026-10-09T01:48:45Z\",\"completed_at\":\"2026-10-09T01:48:46Z\"},{\"name\":\"Install extension dependencies\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":5,\"started_at\":\"2026-10-09T01:48:46Z\",\"completed_at\":\"2026-10-09T01:49:06Z\"},{\"name\":\"Test extension production bundle\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":6,\"started_at\":\"2026-10-09T01:49:06Z\",\"completed_at\":\"2026-10-09T01:49:07Z\"},{\"name\":\"Package the .vsix\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":7,\"started_at\":\"2026-10-09T01:49:07Z\",\"completed_at\":\"2026-10-09T01:49:35Z\"},{\"name\":\"Collect .vsix checksum fragment\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":8,\"started_at\":\"2026-10-09T01:49:35Z\",\"completed_at\":\"2026-10-09T01:49:35Z\"},{\"name\":\"Attest build provenance\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":9,\"started_at\":\"2026-10-09T01:49:35Z\",\"completed_at\":\"2026-10-09T01:49:35Z\"},{\"name\":\"Upload .vsix to release\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":10,\"started_at\":\"2026-10-09T01:49:35Z\",\"completed_at\":\"2026-10-09T01:49:35Z\"},{\"name\":\"Upload checksum fragment\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":11,\"started_at\":\"2026-10-09T01:49:35Z\",\"completed_at\":\"2026-10-09T01:49:37Z\"},{\"name\":\"Post Setup Node\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":21,\"started_at\":\"2026-10-09T01:49:37Z\",\"completed_at\":\"2026-10-09T01:49:37Z\"},{\"name\":\"Post Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":22,\"started_at\":\"2026-10-09T01:49:37Z\",\"completed_at\":\"2026-10-09T01:49:37Z\"},{\"name\":\"Complete job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":23,\"started_at\":\"2026-10-09T01:49:37Z\",\"completed_at\":\"2026-10-09T01:49:37Z\"}],\"check_run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187642\",\"labels\":[\"ubuntu-latest\"],\"runner_id\":1000155957,\"runner_name\":\"GitHub Actions 1000155957\",\"runner_group_id\":0,\"runner_group_name\":\"GitHub Actions\"},{\"id\":113630187776,\"run_id\":37870721641,\"workflow_name\":\"Desktop Release\",\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641\",\"run_attempt\":1,\"node_id\":\"CR_kwDOSbOoU88AAAAadOMRAA\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\",\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187776\",\"html_url\":\"https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187776\",\"status\":\"completed\",\"conclusion\":\"success\",\"created_at\":\"2026-10-09T01:46:58Z\",\"started_at\":\"2026-10-09T02:08:02Z\",\"completed_at\":\"2026-10-09T02:18:25Z\",\"name\":\"Build CLI cli-macos-arm64\",\"steps\":[{\"name\":\"Set up job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":1,\"started_at\":\"2026-10-09T02:08:02Z\",\"completed_at\":\"2026-10-09T02:08:06Z\"},{\"name\":\"Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":2,\"started_at\":\"2026-10-09T02:08:06Z\",\"completed_at\":\"2026-10-09T02:08:46Z\"},{\"name\":\"Simulate fresh merge with base branch (PR only)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":3,\"started_at\":\"2026-10-09T02:08:46Z\",\"completed_at\":\"2026-10-09T02:08:47Z\"},{\"name\":\"Install Rust toolchain\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":4,\"started_at\":\"2026-10-09T02:08:47Z\",\"completed_at\":\"2026-10-09T02:08:56Z\"},{\"name\":\"Set up the musl cross toolchain\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":5,\"started_at\":\"2026-10-09T02:08:56Z\",\"completed_at\":\"2026-10-09T02:08:56Z\"},{\"name\":\"Cache Rust compiler outputs\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":6,\"started_at\":\"2026-10-09T02:08:56Z\",\"completed_at\":\"2026-10-09T02:08:57Z\"},{\"name\":\"Enable Rust compiler cache\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":7,\"started_at\":\"2026-10-09T02:08:57Z\",\"completed_at\":\"2026-10-09T02:08:57Z\"},{\"name\":\"Build formal-ai CLI binary (release, pinned lock)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":8,\"started_at\":\"2026-10-09T02:08:57Z\",\"completed_at\":\"2026-10-09T02:18:13Z\"},{\"name\":\"Package the CLI archive\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":9,\"started_at\":\"2026-10-09T02:18:13Z\",\"completed_at\":\"2026-10-09T02:18:21Z\"},{\"name\":\"Smoke test CLI archive\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":10,\"started_at\":\"2026-10-09T02:18:21Z\",\"completed_at\":\"2026-10-09T02:18:21Z\"},{\"name\":\"Collect CLI checksum fragment\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":11,\"started_at\":\"2026-10-09T02:18:21Z\",\"completed_at\":\"2026-10-09T02:18:22Z\"},{\"name\":\"Attest build provenance\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":12,\"started_at\":\"2026-10-09T02:18:22Z\",\"completed_at\":\"2026-10-09T02:18:22Z\"},{\"name\":\"Upload CLI archive to release\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":13,\"started_at\":\"2026-10-09T02:18:22Z\",\"completed_at\":\"2026-10-09T02:18:22Z\"},{\"name\":\"Upload checksum fragment\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":14,\"started_at\":\"2026-10-09T02:18:22Z\",\"completed_at\":\"2026-10-09T02:18:22Z\"},{\"name\":\"Post Cache Rust compiler outputs\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":27,\"started_at\":\"2026-10-09T02:18:22Z\",\"completed_at\":\"2026-10-09T02:18:23Z\"},{\"name\":\"Post Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":28,\"started_at\":\"2026-10-09T02:18:23Z\",\"completed_at\":\"2026-10-09T02:18:23Z\"},{\"name\":\"Complete job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":29,\"started_at\":\"2026-10-09T02:18:23Z\",\"completed_at\":\"2026-10-09T02:18:24Z\"}],\"check_run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187776\",\"labels\":[\"macos-14\"],\"runner_id\":1000156013,\"runner_name\":\"GitHub Actions 1000156013\",\"runner_group_id\":0,\"runner_group_name\":\"GitHub Actions\"},{\"id\":113630187777,\"run_id\":37870721641,\"workflow_name\":\"Desktop Release\",\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641\",\"run_attempt\":1,\"node_id\":\"CR_kwDOSbOoU88AAAAadOMRAQ\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\",\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187777\",\"html_url\":\"https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187777\",\"status\":\"completed\",\"conclusion\":\"success\",\"created_at\":\"2026-10-09T01:46:58Z\",\"started_at\":\"2026-10-09T01:53:30Z\",\"completed_at\":\"2026-10-09T02:17:39Z\",\"name\":\"Build CLI cli-macos-x64\",\"steps\":[{\"name\":\"Set up job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":1,\"started_at\":\"2026-10-09T01:53:31Z\",\"completed_at\":\"2026-10-09T01:53:35Z\"},{\"name\":\"Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":2,\"started_at\":\"2026-10-09T01:53:35Z\",\"completed_at\":\"2026-10-09T01:54:19Z\"},{\"name\":\"Simulate fresh merge with base branch (PR only)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":3,\"started_at\":\"2026-10-09T01:54:19Z\",\"completed_at\":\"2026-10-09T01:54:20Z\"},{\"name\":\"Install Rust toolchain\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":4,\"started_at\":\"2026-10-09T01:54:20Z\",\"completed_at\":\"2026-10-09T01:54:42Z\"},{\"name\":\"Set up the musl cross toolchain\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":5,\"started_at\":\"2026-10-09T01:54:42Z\",\"completed_at\":\"2026-10-09T01:54:42Z\"},{\"name\":\"Cache Rust compiler outputs\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":6,\"started_at\":\"2026-10-09T01:54:42Z\",\"completed_at\":\"2026-10-09T01:54:43Z\"},{\"name\":\"Enable Rust compiler cache\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":7,\"started_at\":\"2026-10-09T01:54:43Z\",\"completed_at\":\"2026-10-09T01:54:43Z\"},{\"name\":\"Build formal-ai CLI binary (release, pinned lock)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":8,\"started_at\":\"2026-10-09T01:54:43Z\",\"completed_at\":\"2026-10-09T02:17:21Z\"},{\"name\":\"Package the CLI archive\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":9,\"started_at\":\"2026-10-09T02:17:21Z\",\"completed_at\":\"2026-10-09T02:17:31Z\"},{\"name\":\"Smoke test CLI archive\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":10,\"started_at\":\"2026-10-09T02:17:31Z\",\"completed_at\":\"2026-10-09T02:17:32Z\"},{\"name\":\"Collect CLI checksum fragment\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":11,\"started_at\":\"2026-10-09T02:17:32Z\",\"completed_at\":\"2026-10-09T02:17:32Z\"},{\"name\":\"Attest build provenance\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":12,\"started_at\":\"2026-10-09T02:17:32Z\",\"completed_at\":\"2026-10-09T02:17:32Z\"},{\"name\":\"Upload CLI archive to release\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":13,\"started_at\":\"2026-10-09T02:17:32Z\",\"completed_at\":\"2026-10-09T02:17:32Z\"},{\"name\":\"Upload checksum fragment\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":14,\"started_at\":\"2026-10-09T02:17:32Z\",\"completed_at\":\"2026-10-09T02:17:34Z\"},{\"name\":\"Post Cache Rust compiler outputs\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":27,\"started_at\":\"2026-10-09T02:17:34Z\",\"completed_at\":\"2026-10-09T02:17:34Z\"},{\"name\":\"Post Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":28,\"started_at\":\"2026-10-09T02:17:34Z\",\"completed_at\":\"2026-10-09T02:17:35Z\"},{\"name\":\"Complete job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":29,\"started_at\":\"2026-10-09T02:17:35Z\",\"completed_at\":\"2026-10-09T02:17:36Z\"}],\"check_run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187777\",\"labels\":[\"macos-15-intel\"],\"runner_id\":1000155972,\"runner_name\":\"GitHub Actions 1000155972\",\"runner_group_id\":0,\"runner_group_name\":\"GitHub Actions\"},{\"id\":113630187784,\"run_id\":37870721641,\"workflow_name\":\"Desktop Release\",\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641\",\"run_attempt\":1,\"node_id\":\"CR_kwDOSbOoU88AAAAadOMRCA\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\",\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187784\",\"html_url\":\"https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187784\",\"status\":\"completed\",\"conclusion\":\"success\",\"created_at\":\"2026-10-09T01:46:58Z\",\"started_at\":\"2026-10-09T01:53:13Z\",\"completed_at\":\"2026-10-09T02:16:41Z\",\"name\":\"Build macos-x64\",\"steps\":[{\"name\":\"Set up job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":1,\"started_at\":\"2026-10-09T01:53:15Z\",\"completed_at\":\"2026-10-09T01:53:18Z\"},{\"name\":\"Record the job deadline\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":2,\"started_at\":\"2026-10-09T01:53:18Z\",\"completed_at\":\"2026-10-09T01:53:18Z\"},{\"name\":\"Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":3,\"started_at\":\"2026-10-09T01:53:18Z\",\"completed_at\":\"2026-10-09T01:54:15Z\"},{\"name\":\"Simulate fresh merge with base branch (PR only)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":4,\"started_at\":\"2026-10-09T01:54:15Z\",\"completed_at\":\"2026-10-09T01:54:17Z\"},{\"name\":\"Install Rust toolchain\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":5,\"started_at\":\"2026-10-09T01:54:17Z\",\"completed_at\":\"2026-10-09T01:54:33Z\"},{\"name\":\"Cache Rust compiler outputs\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":6,\"started_at\":\"2026-10-09T01:54:33Z\",\"completed_at\":\"2026-10-09T01:54:34Z\"},{\"name\":\"Enable Rust compiler cache\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":7,\"started_at\":\"2026-10-09T01:54:34Z\",\"completed_at\":\"2026-10-09T01:54:34Z\"},{\"name\":\"Build formal-ai binary (release)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":8,\"started_at\":\"2026-10-09T01:54:34Z\",\"completed_at\":\"2026-10-09T02:11:13Z\"},{\"name\":\"Setup Node\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":9,\"started_at\":\"2026-10-09T02:11:13Z\",\"completed_at\":\"2026-10-09T02:11:15Z\"},{\"name\":\"Install desktop dependencies\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":10,\"started_at\":\"2026-10-09T02:11:15Z\",\"completed_at\":\"2026-10-09T02:11:46Z\"},{\"name\":\"Test command-stream production adapter\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":11,\"started_at\":\"2026-10-09T02:11:46Z\",\"completed_at\":\"2026-10-09T02:11:46Z\"},{\"name\":\"Prepare desktop resources (web + bundled binary + version sync)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":12,\"started_at\":\"2026-10-09T02:11:46Z\",\"completed_at\":\"2026-10-09T02:12:04Z\"},{\"name\":\"Prefetch electron-builder toolsets\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":13,\"started_at\":\"2026-10-09T02:12:04Z\",\"completed_at\":\"2026-10-09T02:12:05Z\"},{\"name\":\"Check macOS signing secrets\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":14,\"started_at\":\"2026-10-09T02:12:05Z\",\"completed_at\":\"2026-10-09T02:12:05Z\"},{\"name\":\"Package desktop app (Linux/Windows)\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":15,\"started_at\":\"2026-10-09T02:12:05Z\",\"completed_at\":\"2026-10-09T02:12:05Z\"},{\"name\":\"Package desktop app (macOS signed)\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":16,\"started_at\":\"2026-10-09T02:12:05Z\",\"completed_at\":\"2026-10-09T02:12:05Z\"},{\"name\":\"Package desktop app (macOS ad-hoc)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":17,\"started_at\":\"2026-10-09T02:12:05Z\",\"completed_at\":\"2026-10-09T02:16:01Z\"},{\"name\":\"Normalize desktop artifact names\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":18,\"started_at\":\"2026-10-09T02:16:01Z\",\"completed_at\":\"2026-10-09T02:16:02Z\"},{\"name\":\"Smoke test macOS release artifacts\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":19,\"started_at\":\"2026-10-09T02:16:02Z\",\"completed_at\":\"2026-10-09T02:16:32Z\"},{\"name\":\"Smoke test Linux/Windows release artifacts\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":20,\"started_at\":\"2026-10-09T02:16:33Z\",\"completed_at\":\"2026-10-09T02:16:33Z\"},{\"name\":\"Collect artifacts and checksums\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":21,\"started_at\":\"2026-10-09T02:16:33Z\",\"completed_at\":\"2026-10-09T02:16:35Z\"},{\"name\":\"Attest build provenance\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":22,\"started_at\":\"2026-10-09T02:16:35Z\",\"completed_at\":\"2026-10-09T02:16:35Z\"},{\"name\":\"Upload assets to release\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":23,\"started_at\":\"2026-10-09T02:16:35Z\",\"completed_at\":\"2026-10-09T02:16:35Z\"},{\"name\":\"Upload checksum fragment\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":24,\"started_at\":\"2026-10-09T02:16:35Z\",\"completed_at\":\"2026-10-09T02:16:36Z\"},{\"name\":\"Post Setup Node\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":46,\"started_at\":\"2026-10-09T02:16:36Z\",\"completed_at\":\"2026-10-09T02:16:36Z\"},{\"name\":\"Post Cache Rust compiler outputs\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":47,\"started_at\":\"2026-10-09T02:16:36Z\",\"completed_at\":\"2026-10-09T02:16:36Z\"},{\"name\":\"Post Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":48,\"started_at\":\"2026-10-09T02:16:36Z\",\"completed_at\":\"2026-10-09T02:16:37Z\"},{\"name\":\"Complete job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":49,\"started_at\":\"2026-10-09T02:16:37Z\",\"completed_at\":\"2026-10-09T02:16:37Z\"}],\"check_run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187784\",\"labels\":[\"macos-15-intel\"],\"runner_id\":1000155971,\"runner_name\":\"GitHub Actions 1000155971\",\"runner_group_id\":0,\"runner_group_name\":\"GitHub Actions\"},{\"id\":113630187785,\"run_id\":37870721641,\"workflow_name\":\"Desktop Release\",\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641\",\"run_attempt\":1,\"node_id\":\"CR_kwDOSbOoU88AAAAadOMRCQ\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\",\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187785\",\"html_url\":\"https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187785\",\"status\":\"completed\",\"conclusion\":\"success\",\"created_at\":\"2026-10-09T01:46:58Z\",\"started_at\":\"2026-10-09T01:51:29Z\",\"completed_at\":\"2026-10-09T02:02:49Z\",\"name\":\"Build CLI cli-windows-x64\",\"steps\":[{\"name\":\"Set up job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":1,\"started_at\":\"2026-10-09T01:51:30Z\",\"completed_at\":\"2026-10-09T01:51:33Z\"},{\"name\":\"Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":2,\"started_at\":\"2026-10-09T01:51:33Z\",\"completed_at\":\"2026-10-09T01:52:07Z\"},{\"name\":\"Simulate fresh merge with base branch (PR only)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":3,\"started_at\":\"2026-10-09T01:52:07Z\",\"completed_at\":\"2026-10-09T01:52:09Z\"},{\"name\":\"Install Rust toolchain\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":4,\"started_at\":\"2026-10-09T01:52:09Z\",\"completed_at\":\"2026-10-09T01:52:32Z\"},{\"name\":\"Set up the musl cross toolchain\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":5,\"started_at\":\"2026-10-09T01:52:32Z\",\"completed_at\":\"2026-10-09T01:52:32Z\"},{\"name\":\"Cache Rust compiler outputs\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":6,\"started_at\":\"2026-10-09T01:52:32Z\",\"completed_at\":\"2026-10-09T01:52:32Z\"},{\"name\":\"Enable Rust compiler cache\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":7,\"started_at\":\"2026-10-09T01:52:32Z\",\"completed_at\":\"2026-10-09T01:52:32Z\"},{\"name\":\"Build formal-ai CLI binary (release, pinned lock)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":8,\"started_at\":\"2026-10-09T01:52:32Z\",\"completed_at\":\"2026-10-09T02:02:30Z\"},{\"name\":\"Package the CLI archive\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":9,\"started_at\":\"2026-10-09T02:02:30Z\",\"completed_at\":\"2026-10-09T02:02:42Z\"},{\"name\":\"Smoke test CLI archive\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":10,\"started_at\":\"2026-10-09T02:02:42Z\",\"completed_at\":\"2026-10-09T02:02:44Z\"},{\"name\":\"Collect CLI checksum fragment\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":11,\"started_at\":\"2026-10-09T02:02:44Z\",\"completed_at\":\"2026-10-09T02:02:45Z\"},{\"name\":\"Attest build provenance\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":12,\"started_at\":\"2026-10-09T02:02:45Z\",\"completed_at\":\"2026-10-09T02:02:45Z\"},{\"name\":\"Upload CLI archive to release\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":13,\"started_at\":\"2026-10-09T02:02:45Z\",\"completed_at\":\"2026-10-09T02:02:45Z\"},{\"name\":\"Upload checksum fragment\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":14,\"started_at\":\"2026-10-09T02:02:45Z\",\"completed_at\":\"2026-10-09T02:02:46Z\"},{\"name\":\"Post Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":28,\"started_at\":\"2026-10-09T02:02:46Z\",\"completed_at\":\"2026-10-09T02:02:48Z\"},{\"name\":\"Complete job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":29,\"started_at\":\"2026-10-09T02:02:48Z\",\"completed_at\":\"2026-10-09T02:02:48Z\"}],\"check_run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187785\",\"labels\":[\"windows-latest\"],\"runner_id\":1000155963,\"runner_name\":\"GitHub Actions 1000155963\",\"runner_group_id\":0,\"runner_group_name\":\"GitHub Actions\"},{\"id\":113630187807,\"run_id\":37870721641,\"workflow_name\":\"Desktop Release\",\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641\",\"run_attempt\":1,\"node_id\":\"CR_kwDOSbOoU88AAAAadOMRHw\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\",\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187807\",\"html_url\":\"https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187807\",\"status\":\"completed\",\"conclusion\":\"success\",\"created_at\":\"2026-10-09T01:46:58Z\",\"started_at\":\"2026-10-09T02:15:51Z\",\"completed_at\":\"2026-10-09T02:24:14Z\",\"name\":\"Build CLI cli-linux-x64\",\"steps\":[{\"name\":\"Set up job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":1,\"started_at\":\"2026-10-09T02:15:52Z\",\"completed_at\":\"2026-10-09T02:15:53Z\"},{\"name\":\"Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":2,\"started_at\":\"2026-10-09T02:15:53Z\",\"completed_at\":\"2026-10-09T02:16:17Z\"},{\"name\":\"Simulate fresh merge with base branch (PR only)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":3,\"started_at\":\"2026-10-09T02:16:17Z\",\"completed_at\":\"2026-10-09T02:16:17Z\"},{\"name\":\"Install Rust toolchain\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":4,\"started_at\":\"2026-10-09T02:16:17Z\",\"completed_at\":\"2026-10-09T02:16:21Z\"},{\"name\":\"Set up the musl cross toolchain\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":5,\"started_at\":\"2026-10-09T02:16:21Z\",\"completed_at\":\"2026-10-09T02:16:29Z\"},{\"name\":\"Cache Rust compiler outputs\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":6,\"started_at\":\"2026-10-09T02:16:29Z\",\"completed_at\":\"2026-10-09T02:16:30Z\"},{\"name\":\"Enable Rust compiler cache\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":7,\"started_at\":\"2026-10-09T02:16:30Z\",\"completed_at\":\"2026-10-09T02:16:30Z\"},{\"name\":\"Build formal-ai CLI binary (release, pinned lock)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":8,\"started_at\":\"2026-10-09T02:16:30Z\",\"completed_at\":\"2026-10-09T02:24:01Z\"},{\"name\":\"Package the CLI archive\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":9,\"started_at\":\"2026-10-09T02:24:01Z\",\"completed_at\":\"2026-10-09T02:24:10Z\"},{\"name\":\"Smoke test CLI archive\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":10,\"started_at\":\"2026-10-09T02:24:10Z\",\"completed_at\":\"2026-10-09T02:24:11Z\"},{\"name\":\"Collect CLI checksum fragment\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":11,\"started_at\":\"2026-10-09T02:24:11Z\",\"completed_at\":\"2026-10-09T02:24:11Z\"},{\"name\":\"Attest build provenance\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":12,\"started_at\":\"2026-10-09T02:24:11Z\",\"completed_at\":\"2026-10-09T02:24:11Z\"},{\"name\":\"Upload CLI archive to release\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":13,\"started_at\":\"2026-10-09T02:24:11Z\",\"completed_at\":\"2026-10-09T02:24:11Z\"},{\"name\":\"Upload checksum fragment\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":14,\"started_at\":\"2026-10-09T02:24:11Z\",\"completed_at\":\"2026-10-09T02:24:12Z\"},{\"name\":\"Post Cache Rust compiler outputs\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":27,\"started_at\":\"2026-10-09T02:24:12Z\",\"completed_at\":\"2026-10-09T02:24:12Z\"},{\"name\":\"Post Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":28,\"started_at\":\"2026-10-09T02:24:12Z\",\"completed_at\":\"2026-10-09T02:24:12Z\"},{\"name\":\"Complete job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":29,\"started_at\":\"2026-10-09T02:24:12Z\",\"completed_at\":\"2026-10-09T02:24:12Z\"}],\"check_run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187807\",\"labels\":[\"ubuntu-latest\"],\"runner_id\":1000156028,\"runner_name\":\"GitHub Actions 1000156028\",\"runner_group_id\":0,\"runner_group_name\":\"GitHub Actions\"},{\"id\":113630187853,\"run_id\":37870721641,\"workflow_name\":\"Desktop Release\",\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641\",\"run_attempt\":1,\"node_id\":\"CR_kwDOSbOoU88AAAAadOMRTQ\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\",\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187853\",\"html_url\":\"https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187853\",\"status\":\"completed\",\"conclusion\":\"success\",\"created_at\":\"2026-10-09T01:46:58Z\",\"started_at\":\"2026-10-09T01:52:13Z\",\"completed_at\":\"2026-10-09T02:04:24Z\",\"name\":\"Build linux-x64\",\"steps\":[{\"name\":\"Set up job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":1,\"started_at\":\"2026-10-09T01:52:14Z\",\"completed_at\":\"2026-10-09T01:52:17Z\"},{\"name\":\"Record the job deadline\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":2,\"started_at\":\"2026-10-09T01:52:17Z\",\"completed_at\":\"2026-10-09T01:52:17Z\"},{\"name\":\"Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":3,\"started_at\":\"2026-10-09T01:52:17Z\",\"completed_at\":\"2026-10-09T01:52:46Z\"},{\"name\":\"Simulate fresh merge with base branch (PR only)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":4,\"started_at\":\"2026-10-09T01:52:46Z\",\"completed_at\":\"2026-10-09T01:52:46Z\"},{\"name\":\"Install Rust toolchain\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":5,\"started_at\":\"2026-10-09T01:52:46Z\",\"completed_at\":\"2026-10-09T01:52:47Z\"},{\"name\":\"Cache Rust compiler outputs\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":6,\"started_at\":\"2026-10-09T01:52:47Z\",\"completed_at\":\"2026-10-09T01:52:48Z\"},{\"name\":\"Enable Rust compiler cache\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":7,\"started_at\":\"2026-10-09T01:52:48Z\",\"completed_at\":\"2026-10-09T01:52:48Z\"},{\"name\":\"Build formal-ai binary (release)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":8,\"started_at\":\"2026-10-09T01:52:48Z\",\"completed_at\":\"2026-10-09T01:55:17Z\"},{\"name\":\"Setup Node\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":9,\"started_at\":\"2026-10-09T01:55:17Z\",\"completed_at\":\"2026-10-09T01:55:17Z\"},{\"name\":\"Install desktop dependencies\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":10,\"started_at\":\"2026-10-09T01:55:17Z\",\"completed_at\":\"2026-10-09T01:55:34Z\"},{\"name\":\"Test command-stream production adapter\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":11,\"started_at\":\"2026-10-09T01:55:34Z\",\"completed_at\":\"2026-10-09T01:55:34Z\"},{\"name\":\"Prepare desktop resources (web + bundled binary + version sync)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":12,\"started_at\":\"2026-10-09T01:55:34Z\",\"completed_at\":\"2026-10-09T01:55:44Z\"},{\"name\":\"Prefetch electron-builder toolsets\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":13,\"started_at\":\"2026-10-09T01:55:44Z\",\"completed_at\":\"2026-10-09T01:55:44Z\"},{\"name\":\"Check macOS signing secrets\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":14,\"started_at\":\"2026-10-09T01:55:44Z\",\"completed_at\":\"2026-10-09T01:55:44Z\"},{\"name\":\"Package desktop app (Linux/Windows)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":15,\"started_at\":\"2026-10-09T01:55:44Z\",\"completed_at\":\"2026-10-09T02:04:17Z\"},{\"name\":\"Package desktop app (macOS signed)\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":16,\"started_at\":\"2026-10-09T02:04:17Z\",\"completed_at\":\"2026-10-09T02:04:17Z\"},{\"name\":\"Package desktop app (macOS ad-hoc)\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":17,\"started_at\":\"2026-10-09T02:04:17Z\",\"completed_at\":\"2026-10-09T02:04:17Z\"},{\"name\":\"Normalize desktop artifact names\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":18,\"started_at\":\"2026-10-09T02:04:17Z\",\"completed_at\":\"2026-10-09T02:04:17Z\"},{\"name\":\"Smoke test macOS release artifacts\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":19,\"started_at\":\"2026-10-09T02:04:17Z\",\"completed_at\":\"2026-10-09T02:04:17Z\"},{\"name\":\"Smoke test Linux/Windows release artifacts\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":20,\"started_at\":\"2026-10-09T02:04:17Z\",\"completed_at\":\"2026-10-09T02:04:17Z\"},{\"name\":\"Collect artifacts and checksums\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":21,\"started_at\":\"2026-10-09T02:04:17Z\",\"completed_at\":\"2026-10-09T02:04:19Z\"},{\"name\":\"Attest build provenance\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":22,\"started_at\":\"2026-10-09T02:04:19Z\",\"completed_at\":\"2026-10-09T02:04:19Z\"},{\"name\":\"Upload assets to release\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":23,\"started_at\":\"2026-10-09T02:04:19Z\",\"completed_at\":\"2026-10-09T02:04:19Z\"},{\"name\":\"Upload checksum fragment\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":24,\"started_at\":\"2026-10-09T02:04:19Z\",\"completed_at\":\"2026-10-09T02:04:20Z\"},{\"name\":\"Post Setup Node\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":46,\"started_at\":\"2026-10-09T02:04:20Z\",\"completed_at\":\"2026-10-09T02:04:20Z\"},{\"name\":\"Post Cache Rust compiler outputs\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":47,\"started_at\":\"2026-10-09T02:04:20Z\",\"completed_at\":\"2026-10-09T02:04:20Z\"},{\"name\":\"Post Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":48,\"started_at\":\"2026-10-09T02:04:20Z\",\"completed_at\":\"2026-10-09T02:04:20Z\"},{\"name\":\"Complete job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":49,\"started_at\":\"2026-10-09T02:04:20Z\",\"completed_at\":\"2026-10-09T02:04:20Z\"}],\"check_run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187853\",\"labels\":[\"ubuntu-latest\"],\"runner_id\":1000155966,\"runner_name\":\"GitHub Actions 1000155966\",\"runner_group_id\":0,\"runner_group_name\":\"GitHub Actions\"},{\"id\":113630187859,\"run_id\":37870721641,\"workflow_name\":\"Desktop Release\",\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641\",\"run_attempt\":1,\"node_id\":\"CR_kwDOSbOoU88AAAAadOMRUw\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\",\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187859\",\"html_url\":\"https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187859\",\"status\":\"completed\",\"conclusion\":\"success\",\"created_at\":\"2026-10-09T01:46:58Z\",\"started_at\":\"2026-10-09T01:55:59Z\",\"completed_at\":\"2026-10-09T02:29:00Z\",\"name\":\"Build windows-x64\",\"steps\":[{\"name\":\"Set up job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":1,\"started_at\":\"2026-10-09T01:56:01Z\",\"completed_at\":\"2026-10-09T01:56:03Z\"},{\"name\":\"Record the job deadline\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":2,\"started_at\":\"2026-10-09T01:56:03Z\",\"completed_at\":\"2026-10-09T01:56:04Z\"},{\"name\":\"Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":3,\"started_at\":\"2026-10-09T01:56:04Z\",\"completed_at\":\"2026-10-09T01:57:00Z\"},{\"name\":\"Simulate fresh merge with base branch (PR only)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":4,\"started_at\":\"2026-10-09T01:57:00Z\",\"completed_at\":\"2026-10-09T01:57:01Z\"},{\"name\":\"Install Rust toolchain\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":5,\"started_at\":\"2026-10-09T01:57:01Z\",\"completed_at\":\"2026-10-09T01:57:21Z\"},{\"name\":\"Cache Rust compiler outputs\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":6,\"started_at\":\"2026-10-09T01:57:21Z\",\"completed_at\":\"2026-10-09T01:57:21Z\"},{\"name\":\"Enable Rust compiler cache\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":7,\"started_at\":\"2026-10-09T01:57:21Z\",\"completed_at\":\"2026-10-09T01:57:21Z\"},{\"name\":\"Build formal-ai binary (release)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":8,\"started_at\":\"2026-10-09T01:57:21Z\",\"completed_at\":\"2026-10-09T02:10:23Z\"},{\"name\":\"Setup Node\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":9,\"started_at\":\"2026-10-09T02:10:23Z\",\"completed_at\":\"2026-10-09T02:10:28Z\"},{\"name\":\"Install desktop dependencies\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":10,\"started_at\":\"2026-10-09T02:10:28Z\",\"completed_at\":\"2026-10-09T02:11:57Z\"},{\"name\":\"Test command-stream production adapter\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":11,\"started_at\":\"2026-10-09T02:11:57Z\",\"completed_at\":\"2026-10-09T02:11:57Z\"},{\"name\":\"Prepare desktop resources (web + bundled binary + version sync)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":12,\"started_at\":\"2026-10-09T02:11:57Z\",\"completed_at\":\"2026-10-09T02:12:14Z\"},{\"name\":\"Prefetch electron-builder toolsets\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":13,\"started_at\":\"2026-10-09T02:12:14Z\",\"completed_at\":\"2026-10-09T02:12:14Z\"},{\"name\":\"Check macOS signing secrets\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":14,\"started_at\":\"2026-10-09T02:12:14Z\",\"completed_at\":\"2026-10-09T02:12:14Z\"},{\"name\":\"Package desktop app (Linux/Windows)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":15,\"started_at\":\"2026-10-09T02:12:14Z\",\"completed_at\":\"2026-10-09T02:28:50Z\"},{\"name\":\"Package desktop app (macOS signed)\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":16,\"started_at\":\"2026-10-09T02:28:50Z\",\"completed_at\":\"2026-10-09T02:28:50Z\"},{\"name\":\"Package desktop app (macOS ad-hoc)\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":17,\"started_at\":\"2026-10-09T02:28:50Z\",\"completed_at\":\"2026-10-09T02:28:50Z\"},{\"name\":\"Normalize desktop artifact names\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":18,\"started_at\":\"2026-10-09T02:28:50Z\",\"completed_at\":\"2026-10-09T02:28:50Z\"},{\"name\":\"Smoke test macOS release artifacts\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":19,\"started_at\":\"2026-10-09T02:28:50Z\",\"completed_at\":\"2026-10-09T02:28:50Z\"},{\"name\":\"Smoke test Linux/Windows release artifacts\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":20,\"started_at\":\"2026-10-09T02:28:50Z\",\"completed_at\":\"2026-10-09T02:28:51Z\"},{\"name\":\"Collect artifacts and checksums\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":21,\"started_at\":\"2026-10-09T02:28:51Z\",\"completed_at\":\"2026-10-09T02:28:54Z\"},{\"name\":\"Attest build provenance\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":22,\"started_at\":\"2026-10-09T02:28:54Z\",\"completed_at\":\"2026-10-09T02:28:54Z\"},{\"name\":\"Upload assets to release\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":23,\"started_at\":\"2026-10-09T02:28:54Z\",\"completed_at\":\"2026-10-09T02:28:54Z\"},{\"name\":\"Upload checksum fragment\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":24,\"started_at\":\"2026-10-09T02:28:54Z\",\"completed_at\":\"2026-10-09T02:28:56Z\"},{\"name\":\"Post Setup Node\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":47,\"started_at\":\"2026-10-09T02:28:56Z\",\"completed_at\":\"2026-10-09T02:28:56Z\"},{\"name\":\"Post Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":48,\"started_at\":\"2026-10-09T02:28:56Z\",\"completed_at\":\"2026-10-09T02:28:58Z\"},{\"name\":\"Complete job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":49,\"started_at\":\"2026-10-09T02:28:58Z\",\"completed_at\":\"2026-10-09T02:28:58Z\"}],\"check_run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187859\",\"labels\":[\"windows-latest\"],\"runner_id\":1000155977,\"runner_name\":\"GitHub Actions 1000155977\",\"runner_group_id\":0,\"runner_group_name\":\"GitHub Actions\"},{\"id\":113630187884,\"run_id\":37870721641,\"workflow_name\":\"Desktop Release\",\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641\",\"run_attempt\":1,\"node_id\":\"CR_kwDOSbOoU88AAAAadOMRbA\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\",\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187884\",\"html_url\":\"https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187884\",\"status\":\"completed\",\"conclusion\":\"success\",\"created_at\":\"2026-10-09T01:46:58Z\",\"started_at\":\"2026-10-09T01:47:44Z\",\"completed_at\":\"2026-10-09T02:25:50Z\",\"name\":\"Build windows-arm64\",\"steps\":[{\"name\":\"Set up job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":1,\"started_at\":\"2026-10-09T01:47:45Z\",\"completed_at\":\"2026-10-09T01:47:48Z\"},{\"name\":\"Record the job deadline\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":2,\"started_at\":\"2026-10-09T01:47:48Z\",\"completed_at\":\"2026-10-09T01:47:49Z\"},{\"name\":\"Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":3,\"started_at\":\"2026-10-09T01:47:49Z\",\"completed_at\":\"2026-10-09T01:48:58Z\"},{\"name\":\"Simulate fresh merge with base branch (PR only)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":4,\"started_at\":\"2026-10-09T01:48:58Z\",\"completed_at\":\"2026-10-09T01:48:59Z\"},{\"name\":\"Install Rust toolchain\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":5,\"started_at\":\"2026-10-09T01:48:59Z\",\"completed_at\":\"2026-10-09T01:49:10Z\"},{\"name\":\"Cache Rust compiler outputs\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":6,\"started_at\":\"2026-10-09T01:49:10Z\",\"completed_at\":\"2026-10-09T01:49:10Z\"},{\"name\":\"Enable Rust compiler cache\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":7,\"started_at\":\"2026-10-09T01:49:10Z\",\"completed_at\":\"2026-10-09T01:49:10Z\"},{\"name\":\"Build formal-ai binary (release)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":8,\"started_at\":\"2026-10-09T01:49:10Z\",\"completed_at\":\"2026-10-09T01:59:21Z\"},{\"name\":\"Setup Node\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":9,\"started_at\":\"2026-10-09T01:59:21Z\",\"completed_at\":\"2026-10-09T01:59:26Z\"},{\"name\":\"Install desktop dependencies\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":10,\"started_at\":\"2026-10-09T01:59:26Z\",\"completed_at\":\"2026-10-09T02:04:12Z\"},{\"name\":\"Test command-stream production adapter\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":11,\"started_at\":\"2026-10-09T02:04:12Z\",\"completed_at\":\"2026-10-09T02:04:13Z\"},{\"name\":\"Prepare desktop resources (web + bundled binary + version sync)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":12,\"started_at\":\"2026-10-09T02:04:13Z\",\"completed_at\":\"2026-10-09T02:04:35Z\"},{\"name\":\"Prefetch electron-builder toolsets\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":13,\"started_at\":\"2026-10-09T02:04:35Z\",\"completed_at\":\"2026-10-09T02:04:37Z\"},{\"name\":\"Check macOS signing secrets\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":14,\"started_at\":\"2026-10-09T02:04:37Z\",\"completed_at\":\"2026-10-09T02:04:37Z\"},{\"name\":\"Package desktop app (Linux/Windows)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":15,\"started_at\":\"2026-10-09T02:04:37Z\",\"completed_at\":\"2026-10-09T02:25:30Z\"},{\"name\":\"Package desktop app (macOS signed)\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":16,\"started_at\":\"2026-10-09T02:25:30Z\",\"completed_at\":\"2026-10-09T02:25:30Z\"},{\"name\":\"Package desktop app (macOS ad-hoc)\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":17,\"started_at\":\"2026-10-09T02:25:30Z\",\"completed_at\":\"2026-10-09T02:25:30Z\"},{\"name\":\"Normalize desktop artifact names\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":18,\"started_at\":\"2026-10-09T02:25:30Z\",\"completed_at\":\"2026-10-09T02:25:30Z\"},{\"name\":\"Smoke test macOS release artifacts\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":19,\"started_at\":\"2026-10-09T02:25:30Z\",\"completed_at\":\"2026-10-09T02:25:30Z\"},{\"name\":\"Smoke test Linux/Windows release artifacts\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":20,\"started_at\":\"2026-10-09T02:25:30Z\",\"completed_at\":\"2026-10-09T02:25:31Z\"},{\"name\":\"Collect artifacts and checksums\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":21,\"started_at\":\"2026-10-09T02:25:31Z\",\"completed_at\":\"2026-10-09T02:25:42Z\"},{\"name\":\"Attest build provenance\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":22,\"started_at\":\"2026-10-09T02:25:42Z\",\"completed_at\":\"2026-10-09T02:25:42Z\"},{\"name\":\"Upload assets to release\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":23,\"started_at\":\"2026-10-09T02:25:42Z\",\"completed_at\":\"2026-10-09T02:25:42Z\"},{\"name\":\"Upload checksum fragment\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":24,\"started_at\":\"2026-10-09T02:25:42Z\",\"completed_at\":\"2026-10-09T02:25:43Z\"},{\"name\":\"Post Setup Node\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":47,\"started_at\":\"2026-10-09T02:25:43Z\",\"completed_at\":\"2026-10-09T02:25:43Z\"},{\"name\":\"Post Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":48,\"started_at\":\"2026-10-09T02:25:43Z\",\"completed_at\":\"2026-10-09T02:25:48Z\"},{\"name\":\"Complete job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":49,\"started_at\":\"2026-10-09T02:25:48Z\",\"completed_at\":\"2026-10-09T02:25:48Z\"}],\"check_run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187884\",\"labels\":[\"windows-11-arm\"],\"runner_id\":1000155955,\"runner_name\":\"GitHub Actions 1000155955\",\"runner_group_id\":0,\"runner_group_name\":\"GitHub Actions\"},{\"id\":113630187887,\"run_id\":37870721641,\"workflow_name\":\"Desktop Release\",\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641\",\"run_attempt\":1,\"node_id\":\"CR_kwDOSbOoU88AAAAadOMRbw\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\",\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187887\",\"html_url\":\"https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187887\",\"status\":\"completed\",\"conclusion\":\"success\",\"created_at\":\"2026-10-09T01:46:58Z\",\"started_at\":\"2026-10-09T01:47:39Z\",\"completed_at\":\"2026-10-09T01:53:36Z\",\"name\":\"Build CLI cli-linux-arm64\",\"steps\":[{\"name\":\"Set up job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":1,\"started_at\":\"2026-10-09T01:47:40Z\",\"completed_at\":\"2026-10-09T01:47:43Z\"},{\"name\":\"Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":2,\"started_at\":\"2026-10-09T01:47:43Z\",\"completed_at\":\"2026-10-09T01:48:05Z\"},{\"name\":\"Simulate fresh merge with base branch (PR only)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":3,\"started_at\":\"2026-10-09T01:48:05Z\",\"completed_at\":\"2026-10-09T01:48:05Z\"},{\"name\":\"Install Rust toolchain\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":4,\"started_at\":\"2026-10-09T01:48:05Z\",\"completed_at\":\"2026-10-09T01:48:08Z\"},{\"name\":\"Set up the musl cross toolchain\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":5,\"started_at\":\"2026-10-09T01:48:08Z\",\"completed_at\":\"2026-10-09T01:48:19Z\"},{\"name\":\"Cache Rust compiler outputs\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":6,\"started_at\":\"2026-10-09T01:48:19Z\",\"completed_at\":\"2026-10-09T01:48:20Z\"},{\"name\":\"Enable Rust compiler cache\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":7,\"started_at\":\"2026-10-09T01:48:20Z\",\"completed_at\":\"2026-10-09T01:48:20Z\"},{\"name\":\"Build formal-ai CLI binary (release, pinned lock)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":8,\"started_at\":\"2026-10-09T01:48:20Z\",\"completed_at\":\"2026-10-09T01:53:25Z\"},{\"name\":\"Package the CLI archive\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":9,\"started_at\":\"2026-10-09T01:53:25Z\",\"completed_at\":\"2026-10-09T01:53:31Z\"},{\"name\":\"Smoke test CLI archive\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":10,\"started_at\":\"2026-10-09T01:53:31Z\",\"completed_at\":\"2026-10-09T01:53:32Z\"},{\"name\":\"Collect CLI checksum fragment\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":11,\"started_at\":\"2026-10-09T01:53:32Z\",\"completed_at\":\"2026-10-09T01:53:32Z\"},{\"name\":\"Attest build provenance\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":12,\"started_at\":\"2026-10-09T01:53:32Z\",\"completed_at\":\"2026-10-09T01:53:32Z\"},{\"name\":\"Upload CLI archive to release\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":13,\"started_at\":\"2026-10-09T01:53:32Z\",\"completed_at\":\"2026-10-09T01:53:32Z\"},{\"name\":\"Upload checksum fragment\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":14,\"started_at\":\"2026-10-09T01:53:32Z\",\"completed_at\":\"2026-10-09T01:53:33Z\"},{\"name\":\"Post Cache Rust compiler outputs\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":27,\"started_at\":\"2026-10-09T01:53:33Z\",\"completed_at\":\"2026-10-09T01:53:33Z\"},{\"name\":\"Post Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":28,\"started_at\":\"2026-10-09T01:53:33Z\",\"completed_at\":\"2026-10-09T01:53:34Z\"},{\"name\":\"Complete job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":29,\"started_at\":\"2026-10-09T01:53:34Z\",\"completed_at\":\"2026-10-09T01:53:34Z\"}],\"check_run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187887\",\"labels\":[\"ubuntu-24.04-arm\"],\"runner_id\":1000155953,\"runner_name\":\"GitHub Actions 1000155953\",\"runner_group_id\":0,\"runner_group_name\":\"GitHub Actions\"},{\"id\":113630187898,\"run_id\":37870721641,\"workflow_name\":\"Desktop Release\",\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641\",\"run_attempt\":1,\"node_id\":\"CR_kwDOSbOoU88AAAAadOMReg\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\",\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187898\",\"html_url\":\"https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187898\",\"status\":\"completed\",\"conclusion\":\"success\",\"created_at\":\"2026-10-09T01:46:58Z\",\"started_at\":\"2026-10-09T02:08:45Z\",\"completed_at\":\"2026-10-09T02:28:38Z\",\"name\":\"Build macos-arm64\",\"steps\":[{\"name\":\"Set up job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":1,\"started_at\":\"2026-10-09T02:08:46Z\",\"completed_at\":\"2026-10-09T02:08:49Z\"},{\"name\":\"Record the job deadline\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":2,\"started_at\":\"2026-10-09T02:08:49Z\",\"completed_at\":\"2026-10-09T02:08:49Z\"},{\"name\":\"Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":3,\"started_at\":\"2026-10-09T02:08:49Z\",\"completed_at\":\"2026-10-09T02:09:17Z\"},{\"name\":\"Simulate fresh merge with base branch (PR only)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":4,\"started_at\":\"2026-10-09T02:09:17Z\",\"completed_at\":\"2026-10-09T02:09:18Z\"},{\"name\":\"Install Rust toolchain\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":5,\"started_at\":\"2026-10-09T02:09:18Z\",\"completed_at\":\"2026-10-09T02:09:26Z\"},{\"name\":\"Cache Rust compiler outputs\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":6,\"started_at\":\"2026-10-09T02:09:26Z\",\"completed_at\":\"2026-10-09T02:09:26Z\"},{\"name\":\"Enable Rust compiler cache\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":7,\"started_at\":\"2026-10-09T02:09:26Z\",\"completed_at\":\"2026-10-09T02:09:26Z\"},{\"name\":\"Build formal-ai binary (release)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":8,\"started_at\":\"2026-10-09T02:09:26Z\",\"completed_at\":\"2026-10-09T02:19:49Z\"},{\"name\":\"Setup Node\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":9,\"started_at\":\"2026-10-09T02:19:49Z\",\"completed_at\":\"2026-10-09T02:19:51Z\"},{\"name\":\"Install desktop dependencies\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":10,\"started_at\":\"2026-10-09T02:19:51Z\",\"completed_at\":\"2026-10-09T02:20:15Z\"},{\"name\":\"Test command-stream production adapter\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":11,\"started_at\":\"2026-10-09T02:20:15Z\",\"completed_at\":\"2026-10-09T02:20:15Z\"},{\"name\":\"Prepare desktop resources (web + bundled binary + version sync)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":12,\"started_at\":\"2026-10-09T02:20:15Z\",\"completed_at\":\"2026-10-09T02:20:28Z\"},{\"name\":\"Prefetch electron-builder toolsets\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":13,\"started_at\":\"2026-10-09T02:20:28Z\",\"completed_at\":\"2026-10-09T02:20:29Z\"},{\"name\":\"Check macOS signing secrets\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":14,\"started_at\":\"2026-10-09T02:20:29Z\",\"completed_at\":\"2026-10-09T02:20:29Z\"},{\"name\":\"Package desktop app (Linux/Windows)\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":15,\"started_at\":\"2026-10-09T02:20:29Z\",\"completed_at\":\"2026-10-09T02:20:29Z\"},{\"name\":\"Package desktop app (macOS signed)\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":16,\"started_at\":\"2026-10-09T02:20:29Z\",\"completed_at\":\"2026-10-09T02:20:29Z\"},{\"name\":\"Package desktop app (macOS ad-hoc)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":17,\"started_at\":\"2026-10-09T02:20:29Z\",\"completed_at\":\"2026-10-09T02:28:19Z\"},{\"name\":\"Normalize desktop artifact names\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":18,\"started_at\":\"2026-10-09T02:28:19Z\",\"completed_at\":\"2026-10-09T02:28:19Z\"},{\"name\":\"Smoke test macOS release artifacts\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":19,\"started_at\":\"2026-10-09T02:28:19Z\",\"completed_at\":\"2026-10-09T02:28:30Z\"},{\"name\":\"Smoke test Linux/Windows release artifacts\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":20,\"started_at\":\"2026-10-09T02:28:30Z\",\"completed_at\":\"2026-10-09T02:28:30Z\"},{\"name\":\"Collect artifacts and checksums\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":21,\"started_at\":\"2026-10-09T02:28:30Z\",\"completed_at\":\"2026-10-09T02:28:31Z\"},{\"name\":\"Attest build provenance\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":22,\"started_at\":\"2026-10-09T02:28:31Z\",\"completed_at\":\"2026-10-09T02:28:31Z\"},{\"name\":\"Upload assets to release\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":23,\"started_at\":\"2026-10-09T02:28:31Z\",\"completed_at\":\"2026-10-09T02:28:31Z\"},{\"name\":\"Upload checksum fragment\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":24,\"started_at\":\"2026-10-09T02:28:31Z\",\"completed_at\":\"2026-10-09T02:28:32Z\"},{\"name\":\"Post Setup Node\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":46,\"started_at\":\"2026-10-09T02:28:32Z\",\"completed_at\":\"2026-10-09T02:28:32Z\"},{\"name\":\"Post Cache Rust compiler outputs\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":47,\"started_at\":\"2026-10-09T02:28:32Z\",\"completed_at\":\"2026-10-09T02:28:33Z\"},{\"name\":\"Post Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":48,\"started_at\":\"2026-10-09T02:28:33Z\",\"completed_at\":\"2026-10-09T02:28:33Z\"},{\"name\":\"Complete job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":49,\"started_at\":\"2026-10-09T02:28:33Z\",\"completed_at\":\"2026-10-09T02:28:36Z\"}],\"check_run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187898\",\"labels\":[\"macos-14\"],\"runner_id\":1000156018,\"runner_name\":\"GitHub Actions 1000156018\",\"runner_group_id\":0,\"runner_group_name\":\"GitHub Actions\"},{\"id\":113630188157,\"run_id\":37870721641,\"workflow_name\":\"Desktop Release\",\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641\",\"run_attempt\":1,\"node_id\":\"CR_kwDOSbOoU88AAAAadOMSfQ\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\",\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630188157\",\"html_url\":\"https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630188157\",\"status\":\"completed\",\"conclusion\":\"success\",\"created_at\":\"2026-10-09T01:46:58Z\",\"started_at\":\"2026-10-09T01:49:43Z\",\"completed_at\":\"2026-10-09T02:03:06Z\",\"name\":\"Build linux-arm64\",\"steps\":[{\"name\":\"Set up job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":1,\"started_at\":\"2026-10-09T01:49:44Z\",\"completed_at\":\"2026-10-09T01:49:45Z\"},{\"name\":\"Record the job deadline\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":2,\"started_at\":\"2026-10-09T01:49:45Z\",\"completed_at\":\"2026-10-09T01:49:45Z\"},{\"name\":\"Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":3,\"started_at\":\"2026-10-09T01:49:45Z\",\"completed_at\":\"2026-10-09T01:50:05Z\"},{\"name\":\"Simulate fresh merge with base branch (PR only)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":4,\"started_at\":\"2026-10-09T01:50:05Z\",\"completed_at\":\"2026-10-09T01:50:05Z\"},{\"name\":\"Install Rust toolchain\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":5,\"started_at\":\"2026-10-09T01:50:05Z\",\"completed_at\":\"2026-10-09T01:50:06Z\"},{\"name\":\"Cache Rust compiler outputs\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":6,\"started_at\":\"2026-10-09T01:50:06Z\",\"completed_at\":\"2026-10-09T01:50:06Z\"},{\"name\":\"Enable Rust compiler cache\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":7,\"started_at\":\"2026-10-09T01:50:06Z\",\"completed_at\":\"2026-10-09T01:50:06Z\"},{\"name\":\"Build formal-ai binary (release)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":8,\"started_at\":\"2026-10-09T01:50:06Z\",\"completed_at\":\"2026-10-09T01:55:46Z\"},{\"name\":\"Setup Node\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":9,\"started_at\":\"2026-10-09T01:55:46Z\",\"completed_at\":\"2026-10-09T01:55:46Z\"},{\"name\":\"Install desktop dependencies\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":10,\"started_at\":\"2026-10-09T01:55:46Z\",\"completed_at\":\"2026-10-09T01:56:00Z\"},{\"name\":\"Test command-stream production adapter\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":11,\"started_at\":\"2026-10-09T01:56:00Z\",\"completed_at\":\"2026-10-09T01:56:01Z\"},{\"name\":\"Prepare desktop resources (web + bundled binary + version sync)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":12,\"started_at\":\"2026-10-09T01:56:01Z\",\"completed_at\":\"2026-10-09T01:56:08Z\"},{\"name\":\"Prefetch electron-builder toolsets\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":13,\"started_at\":\"2026-10-09T01:56:08Z\",\"completed_at\":\"2026-10-09T01:56:08Z\"},{\"name\":\"Check macOS signing secrets\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":14,\"started_at\":\"2026-10-09T01:56:08Z\",\"completed_at\":\"2026-10-09T01:56:08Z\"},{\"name\":\"Package desktop app (Linux/Windows)\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":15,\"started_at\":\"2026-10-09T01:56:08Z\",\"completed_at\":\"2026-10-09T02:03:02Z\"},{\"name\":\"Package desktop app (macOS signed)\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":16,\"started_at\":\"2026-10-09T02:03:02Z\",\"completed_at\":\"2026-10-09T02:03:02Z\"},{\"name\":\"Package desktop app (macOS ad-hoc)\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":17,\"started_at\":\"2026-10-09T02:03:02Z\",\"completed_at\":\"2026-10-09T02:03:02Z\"},{\"name\":\"Normalize desktop artifact names\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":18,\"started_at\":\"2026-10-09T02:03:02Z\",\"completed_at\":\"2026-10-09T02:03:03Z\"},{\"name\":\"Smoke test macOS release artifacts\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":19,\"started_at\":\"2026-10-09T02:03:03Z\",\"completed_at\":\"2026-10-09T02:03:03Z\"},{\"name\":\"Smoke test Linux/Windows release artifacts\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":20,\"started_at\":\"2026-10-09T02:03:03Z\",\"completed_at\":\"2026-10-09T02:03:03Z\"},{\"name\":\"Collect artifacts and checksums\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":21,\"started_at\":\"2026-10-09T02:03:03Z\",\"completed_at\":\"2026-10-09T02:03:03Z\"},{\"name\":\"Attest build provenance\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":22,\"started_at\":\"2026-10-09T02:03:03Z\",\"completed_at\":\"2026-10-09T02:03:03Z\"},{\"name\":\"Upload assets to release\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"number\":23,\"started_at\":\"2026-10-09T02:03:03Z\",\"completed_at\":\"2026-10-09T02:03:03Z\"},{\"name\":\"Upload checksum fragment\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":24,\"started_at\":\"2026-10-09T02:03:03Z\",\"completed_at\":\"2026-10-09T02:03:04Z\"},{\"name\":\"Post Setup Node\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":46,\"started_at\":\"2026-10-09T02:03:04Z\",\"completed_at\":\"2026-10-09T02:03:04Z\"},{\"name\":\"Post Cache Rust compiler outputs\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":47,\"started_at\":\"2026-10-09T02:03:04Z\",\"completed_at\":\"2026-10-09T02:03:04Z\"},{\"name\":\"Post Run actions/checkout@v7\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":48,\"started_at\":\"2026-10-09T02:03:04Z\",\"completed_at\":\"2026-10-09T02:03:04Z\"},{\"name\":\"Complete job\",\"status\":\"completed\",\"conclusion\":\"success\",\"number\":49,\"started_at\":\"2026-10-09T02:03:04Z\",\"completed_at\":\"2026-10-09T02:03:05Z\"}],\"check_run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630188157\",\"labels\":[\"ubuntu-24.04-arm\"],\"runner_id\":1000155959,\"runner_name\":\"GitHub Actions 1000155959\",\"runner_group_id\":0,\"runner_group_name\":\"GitHub Actions\"},{\"id\":113640745487,\"run_id\":37870721641,\"workflow_name\":\"Desktop Release\",\"head_branch\":\"qa-reasoning-coding-bulk-fixes\",\"run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641\",\"run_attempt\":1,\"node_id\":\"CR_kwDOSbOoU88AAAAadYQqDw\",\"head_sha\":\"4a560cdb5a47dd3d175ca16adf6d521619437a4e\",\"url\":\"https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113640745487\",\"html_url\":\"https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113640745487\",\"status\":\"completed\",\"conclusion\":\"skipped\",\"created_at\":\"2026-10-09T02:29:01Z\",\"started_at\":\"2026-10-09T02:29:01Z\",\"completed_at\":\"2026-10-09T02:29:01Z\",\"name\":\"Publish SHA256SUMS.txt + provenance\",\"steps\":[],\"check_run_url\":\"https://api.github.com/repos/link-assistant/formal-ai/check-runs/113640745487\",\"labels\":[\"ubuntu-latest\"],\"runner_id\":null,\"runner_name\":null,\"runner_group_id\":null,\"runner_group_name\":null}]}",
+  "sha256": "ef0de1cbc96526bcd80bd7c2c96eeee6c7dc9f2bd1256118e6a0747981572e60",
+  "json": {
+    "total_count": 15,
+    "jobs": [
+      {
+        "id": 113627942173,
+        "run_id": 37870721641,
+        "workflow_name": "Desktop Release",
+        "head_branch": "qa-reasoning-coding-bulk-fixes",
+        "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOSbOoU88AAAAadMDNHQ",
+        "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113627942173",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113627942173",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-09T01:38:05Z",
+        "started_at": "2026-10-09T01:46:30Z",
+        "completed_at": "2026-10-09T01:46:57Z",
+        "name": "base / Pin base commit",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-09T01:46:32Z",
+            "completed_at": "2026-10-09T01:46:33Z"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-09T01:46:33Z",
+            "completed_at": "2026-10-09T01:46:52Z"
+          },
+          {
+            "name": "Run bash scripts/pin-base-commit.sh",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-10-09T01:46:52Z",
+            "completed_at": "2026-10-09T01:46:55Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-10-09T01:46:55Z",
+            "completed_at": "2026-10-09T01:46:55Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-10-09T01:46:55Z",
+            "completed_at": "2026-10-09T01:46:55Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/link-assistant/formal-ai/check-runs/113627942173",
+        "labels": [
+          "ubuntu-latest"
+        ],
+        "runner_id": 1000155946,
+        "runner_name": "GitHub Actions 1000155946",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 113627943398,
+        "run_id": 37870721641,
+        "workflow_name": "Desktop Release",
+        "head_branch": "qa-reasoning-coding-bulk-fixes",
+        "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOSbOoU88AAAAadMDR5g",
+        "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113627943398",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113627943398",
+        "status": "completed",
+        "conclusion": "skipped",
+        "created_at": "2026-10-09T01:38:05Z",
+        "started_at": "2026-10-09T01:38:05Z",
+        "completed_at": "2026-10-09T01:38:05Z",
+        "name": "Resolve target release",
+        "steps": [],
+        "check_run_url": "https://api.github.com/repos/link-assistant/formal-ai/check-runs/113627943398",
+        "labels": [
+          "ubuntu-latest"
+        ],
+        "runner_id": null,
+        "runner_name": null,
+        "runner_group_id": null,
+        "runner_group_name": null
+      },
+      {
+        "id": 113630187642,
+        "run_id": 37870721641,
+        "workflow_name": "Desktop Release",
+        "head_branch": "qa-reasoning-coding-bulk-fixes",
+        "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOSbOoU88AAAAadOMQeg",
+        "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187642",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187642",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-09T01:46:57Z",
+        "started_at": "2026-10-09T01:48:17Z",
+        "completed_at": "2026-10-09T01:49:39Z",
+        "name": "Package VS Code extension (.vsix)",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-09T01:48:18Z",
+            "completed_at": "2026-10-09T01:48:21Z"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-09T01:48:21Z",
+            "completed_at": "2026-10-09T01:48:45Z"
+          },
+          {
+            "name": "Simulate fresh merge with base branch (PR only)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-10-09T01:48:45Z",
+            "completed_at": "2026-10-09T01:48:45Z"
+          },
+          {
+            "name": "Setup Node",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-10-09T01:48:45Z",
+            "completed_at": "2026-10-09T01:48:46Z"
+          },
+          {
+            "name": "Install extension dependencies",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-10-09T01:48:46Z",
+            "completed_at": "2026-10-09T01:49:06Z"
+          },
+          {
+            "name": "Test extension production bundle",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-10-09T01:49:06Z",
+            "completed_at": "2026-10-09T01:49:07Z"
+          },
+          {
+            "name": "Package the .vsix",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-10-09T01:49:07Z",
+            "completed_at": "2026-10-09T01:49:35Z"
+          },
+          {
+            "name": "Collect .vsix checksum fragment",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-10-09T01:49:35Z",
+            "completed_at": "2026-10-09T01:49:35Z"
+          },
+          {
+            "name": "Attest build provenance",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 9,
+            "started_at": "2026-10-09T01:49:35Z",
+            "completed_at": "2026-10-09T01:49:35Z"
+          },
+          {
+            "name": "Upload .vsix to release",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 10,
+            "started_at": "2026-10-09T01:49:35Z",
+            "completed_at": "2026-10-09T01:49:35Z"
+          },
+          {
+            "name": "Upload checksum fragment",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11,
+            "started_at": "2026-10-09T01:49:35Z",
+            "completed_at": "2026-10-09T01:49:37Z"
+          },
+          {
+            "name": "Post Setup Node",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 21,
+            "started_at": "2026-10-09T01:49:37Z",
+            "completed_at": "2026-10-09T01:49:37Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 22,
+            "started_at": "2026-10-09T01:49:37Z",
+            "completed_at": "2026-10-09T01:49:37Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 23,
+            "started_at": "2026-10-09T01:49:37Z",
+            "completed_at": "2026-10-09T01:49:37Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187642",
+        "labels": [
+          "ubuntu-latest"
+        ],
+        "runner_id": 1000155957,
+        "runner_name": "GitHub Actions 1000155957",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 113630187776,
+        "run_id": 37870721641,
+        "workflow_name": "Desktop Release",
+        "head_branch": "qa-reasoning-coding-bulk-fixes",
+        "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOSbOoU88AAAAadOMRAA",
+        "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187776",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187776",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-09T01:46:58Z",
+        "started_at": "2026-10-09T02:08:02Z",
+        "completed_at": "2026-10-09T02:18:25Z",
+        "name": "Build CLI cli-macos-arm64",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-09T02:08:02Z",
+            "completed_at": "2026-10-09T02:08:06Z"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-09T02:08:06Z",
+            "completed_at": "2026-10-09T02:08:46Z"
+          },
+          {
+            "name": "Simulate fresh merge with base branch (PR only)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-10-09T02:08:46Z",
+            "completed_at": "2026-10-09T02:08:47Z"
+          },
+          {
+            "name": "Install Rust toolchain",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-10-09T02:08:47Z",
+            "completed_at": "2026-10-09T02:08:56Z"
+          },
+          {
+            "name": "Set up the musl cross toolchain",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 5,
+            "started_at": "2026-10-09T02:08:56Z",
+            "completed_at": "2026-10-09T02:08:56Z"
+          },
+          {
+            "name": "Cache Rust compiler outputs",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-10-09T02:08:56Z",
+            "completed_at": "2026-10-09T02:08:57Z"
+          },
+          {
+            "name": "Enable Rust compiler cache",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-10-09T02:08:57Z",
+            "completed_at": "2026-10-09T02:08:57Z"
+          },
+          {
+            "name": "Build formal-ai CLI binary (release, pinned lock)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-10-09T02:08:57Z",
+            "completed_at": "2026-10-09T02:18:13Z"
+          },
+          {
+            "name": "Package the CLI archive",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-10-09T02:18:13Z",
+            "completed_at": "2026-10-09T02:18:21Z"
+          },
+          {
+            "name": "Smoke test CLI archive",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-10-09T02:18:21Z",
+            "completed_at": "2026-10-09T02:18:21Z"
+          },
+          {
+            "name": "Collect CLI checksum fragment",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11,
+            "started_at": "2026-10-09T02:18:21Z",
+            "completed_at": "2026-10-09T02:18:22Z"
+          },
+          {
+            "name": "Attest build provenance",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 12,
+            "started_at": "2026-10-09T02:18:22Z",
+            "completed_at": "2026-10-09T02:18:22Z"
+          },
+          {
+            "name": "Upload CLI archive to release",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 13,
+            "started_at": "2026-10-09T02:18:22Z",
+            "completed_at": "2026-10-09T02:18:22Z"
+          },
+          {
+            "name": "Upload checksum fragment",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14,
+            "started_at": "2026-10-09T02:18:22Z",
+            "completed_at": "2026-10-09T02:18:22Z"
+          },
+          {
+            "name": "Post Cache Rust compiler outputs",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 27,
+            "started_at": "2026-10-09T02:18:22Z",
+            "completed_at": "2026-10-09T02:18:23Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 28,
+            "started_at": "2026-10-09T02:18:23Z",
+            "completed_at": "2026-10-09T02:18:23Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 29,
+            "started_at": "2026-10-09T02:18:23Z",
+            "completed_at": "2026-10-09T02:18:24Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187776",
+        "labels": [
+          "macos-14"
+        ],
+        "runner_id": 1000156013,
+        "runner_name": "GitHub Actions 1000156013",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 113630187777,
+        "run_id": 37870721641,
+        "workflow_name": "Desktop Release",
+        "head_branch": "qa-reasoning-coding-bulk-fixes",
+        "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOSbOoU88AAAAadOMRAQ",
+        "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187777",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187777",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-09T01:46:58Z",
+        "started_at": "2026-10-09T01:53:30Z",
+        "completed_at": "2026-10-09T02:17:39Z",
+        "name": "Build CLI cli-macos-x64",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-09T01:53:31Z",
+            "completed_at": "2026-10-09T01:53:35Z"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-09T01:53:35Z",
+            "completed_at": "2026-10-09T01:54:19Z"
+          },
+          {
+            "name": "Simulate fresh merge with base branch (PR only)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-10-09T01:54:19Z",
+            "completed_at": "2026-10-09T01:54:20Z"
+          },
+          {
+            "name": "Install Rust toolchain",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-10-09T01:54:20Z",
+            "completed_at": "2026-10-09T01:54:42Z"
+          },
+          {
+            "name": "Set up the musl cross toolchain",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 5,
+            "started_at": "2026-10-09T01:54:42Z",
+            "completed_at": "2026-10-09T01:54:42Z"
+          },
+          {
+            "name": "Cache Rust compiler outputs",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-10-09T01:54:42Z",
+            "completed_at": "2026-10-09T01:54:43Z"
+          },
+          {
+            "name": "Enable Rust compiler cache",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-10-09T01:54:43Z",
+            "completed_at": "2026-10-09T01:54:43Z"
+          },
+          {
+            "name": "Build formal-ai CLI binary (release, pinned lock)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-10-09T01:54:43Z",
+            "completed_at": "2026-10-09T02:17:21Z"
+          },
+          {
+            "name": "Package the CLI archive",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-10-09T02:17:21Z",
+            "completed_at": "2026-10-09T02:17:31Z"
+          },
+          {
+            "name": "Smoke test CLI archive",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-10-09T02:17:31Z",
+            "completed_at": "2026-10-09T02:17:32Z"
+          },
+          {
+            "name": "Collect CLI checksum fragment",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11,
+            "started_at": "2026-10-09T02:17:32Z",
+            "completed_at": "2026-10-09T02:17:32Z"
+          },
+          {
+            "name": "Attest build provenance",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 12,
+            "started_at": "2026-10-09T02:17:32Z",
+            "completed_at": "2026-10-09T02:17:32Z"
+          },
+          {
+            "name": "Upload CLI archive to release",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 13,
+            "started_at": "2026-10-09T02:17:32Z",
+            "completed_at": "2026-10-09T02:17:32Z"
+          },
+          {
+            "name": "Upload checksum fragment",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14,
+            "started_at": "2026-10-09T02:17:32Z",
+            "completed_at": "2026-10-09T02:17:34Z"
+          },
+          {
+            "name": "Post Cache Rust compiler outputs",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 27,
+            "started_at": "2026-10-09T02:17:34Z",
+            "completed_at": "2026-10-09T02:17:34Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 28,
+            "started_at": "2026-10-09T02:17:34Z",
+            "completed_at": "2026-10-09T02:17:35Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 29,
+            "started_at": "2026-10-09T02:17:35Z",
+            "completed_at": "2026-10-09T02:17:36Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187777",
+        "labels": [
+          "macos-15-intel"
+        ],
+        "runner_id": 1000155972,
+        "runner_name": "GitHub Actions 1000155972",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 113630187784,
+        "run_id": 37870721641,
+        "workflow_name": "Desktop Release",
+        "head_branch": "qa-reasoning-coding-bulk-fixes",
+        "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOSbOoU88AAAAadOMRCA",
+        "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187784",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187784",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-09T01:46:58Z",
+        "started_at": "2026-10-09T01:53:13Z",
+        "completed_at": "2026-10-09T02:16:41Z",
+        "name": "Build macos-x64",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-09T01:53:15Z",
+            "completed_at": "2026-10-09T01:53:18Z"
+          },
+          {
+            "name": "Record the job deadline",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-09T01:53:18Z",
+            "completed_at": "2026-10-09T01:53:18Z"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-10-09T01:53:18Z",
+            "completed_at": "2026-10-09T01:54:15Z"
+          },
+          {
+            "name": "Simulate fresh merge with base branch (PR only)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-10-09T01:54:15Z",
+            "completed_at": "2026-10-09T01:54:17Z"
+          },
+          {
+            "name": "Install Rust toolchain",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-10-09T01:54:17Z",
+            "completed_at": "2026-10-09T01:54:33Z"
+          },
+          {
+            "name": "Cache Rust compiler outputs",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-10-09T01:54:33Z",
+            "completed_at": "2026-10-09T01:54:34Z"
+          },
+          {
+            "name": "Enable Rust compiler cache",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-10-09T01:54:34Z",
+            "completed_at": "2026-10-09T01:54:34Z"
+          },
+          {
+            "name": "Build formal-ai binary (release)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-10-09T01:54:34Z",
+            "completed_at": "2026-10-09T02:11:13Z"
+          },
+          {
+            "name": "Setup Node",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-10-09T02:11:13Z",
+            "completed_at": "2026-10-09T02:11:15Z"
+          },
+          {
+            "name": "Install desktop dependencies",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-10-09T02:11:15Z",
+            "completed_at": "2026-10-09T02:11:46Z"
+          },
+          {
+            "name": "Test command-stream production adapter",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11,
+            "started_at": "2026-10-09T02:11:46Z",
+            "completed_at": "2026-10-09T02:11:46Z"
+          },
+          {
+            "name": "Prepare desktop resources (web + bundled binary + version sync)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12,
+            "started_at": "2026-10-09T02:11:46Z",
+            "completed_at": "2026-10-09T02:12:04Z"
+          },
+          {
+            "name": "Prefetch electron-builder toolsets",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13,
+            "started_at": "2026-10-09T02:12:04Z",
+            "completed_at": "2026-10-09T02:12:05Z"
+          },
+          {
+            "name": "Check macOS signing secrets",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14,
+            "started_at": "2026-10-09T02:12:05Z",
+            "completed_at": "2026-10-09T02:12:05Z"
+          },
+          {
+            "name": "Package desktop app (Linux/Windows)",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 15,
+            "started_at": "2026-10-09T02:12:05Z",
+            "completed_at": "2026-10-09T02:12:05Z"
+          },
+          {
+            "name": "Package desktop app (macOS signed)",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 16,
+            "started_at": "2026-10-09T02:12:05Z",
+            "completed_at": "2026-10-09T02:12:05Z"
+          },
+          {
+            "name": "Package desktop app (macOS ad-hoc)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 17,
+            "started_at": "2026-10-09T02:12:05Z",
+            "completed_at": "2026-10-09T02:16:01Z"
+          },
+          {
+            "name": "Normalize desktop artifact names",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 18,
+            "started_at": "2026-10-09T02:16:01Z",
+            "completed_at": "2026-10-09T02:16:02Z"
+          },
+          {
+            "name": "Smoke test macOS release artifacts",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 19,
+            "started_at": "2026-10-09T02:16:02Z",
+            "completed_at": "2026-10-09T02:16:32Z"
+          },
+          {
+            "name": "Smoke test Linux/Windows release artifacts",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 20,
+            "started_at": "2026-10-09T02:16:33Z",
+            "completed_at": "2026-10-09T02:16:33Z"
+          },
+          {
+            "name": "Collect artifacts and checksums",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 21,
+            "started_at": "2026-10-09T02:16:33Z",
+            "completed_at": "2026-10-09T02:16:35Z"
+          },
+          {
+            "name": "Attest build provenance",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 22,
+            "started_at": "2026-10-09T02:16:35Z",
+            "completed_at": "2026-10-09T02:16:35Z"
+          },
+          {
+            "name": "Upload assets to release",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 23,
+            "started_at": "2026-10-09T02:16:35Z",
+            "completed_at": "2026-10-09T02:16:35Z"
+          },
+          {
+            "name": "Upload checksum fragment",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 24,
+            "started_at": "2026-10-09T02:16:35Z",
+            "completed_at": "2026-10-09T02:16:36Z"
+          },
+          {
+            "name": "Post Setup Node",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 46,
+            "started_at": "2026-10-09T02:16:36Z",
+            "completed_at": "2026-10-09T02:16:36Z"
+          },
+          {
+            "name": "Post Cache Rust compiler outputs",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 47,
+            "started_at": "2026-10-09T02:16:36Z",
+            "completed_at": "2026-10-09T02:16:36Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 48,
+            "started_at": "2026-10-09T02:16:36Z",
+            "completed_at": "2026-10-09T02:16:37Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 49,
+            "started_at": "2026-10-09T02:16:37Z",
+            "completed_at": "2026-10-09T02:16:37Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187784",
+        "labels": [
+          "macos-15-intel"
+        ],
+        "runner_id": 1000155971,
+        "runner_name": "GitHub Actions 1000155971",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 113630187785,
+        "run_id": 37870721641,
+        "workflow_name": "Desktop Release",
+        "head_branch": "qa-reasoning-coding-bulk-fixes",
+        "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOSbOoU88AAAAadOMRCQ",
+        "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187785",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187785",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-09T01:46:58Z",
+        "started_at": "2026-10-09T01:51:29Z",
+        "completed_at": "2026-10-09T02:02:49Z",
+        "name": "Build CLI cli-windows-x64",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-09T01:51:30Z",
+            "completed_at": "2026-10-09T01:51:33Z"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-09T01:51:33Z",
+            "completed_at": "2026-10-09T01:52:07Z"
+          },
+          {
+            "name": "Simulate fresh merge with base branch (PR only)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-10-09T01:52:07Z",
+            "completed_at": "2026-10-09T01:52:09Z"
+          },
+          {
+            "name": "Install Rust toolchain",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-10-09T01:52:09Z",
+            "completed_at": "2026-10-09T01:52:32Z"
+          },
+          {
+            "name": "Set up the musl cross toolchain",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 5,
+            "started_at": "2026-10-09T01:52:32Z",
+            "completed_at": "2026-10-09T01:52:32Z"
+          },
+          {
+            "name": "Cache Rust compiler outputs",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 6,
+            "started_at": "2026-10-09T01:52:32Z",
+            "completed_at": "2026-10-09T01:52:32Z"
+          },
+          {
+            "name": "Enable Rust compiler cache",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 7,
+            "started_at": "2026-10-09T01:52:32Z",
+            "completed_at": "2026-10-09T01:52:32Z"
+          },
+          {
+            "name": "Build formal-ai CLI binary (release, pinned lock)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-10-09T01:52:32Z",
+            "completed_at": "2026-10-09T02:02:30Z"
+          },
+          {
+            "name": "Package the CLI archive",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-10-09T02:02:30Z",
+            "completed_at": "2026-10-09T02:02:42Z"
+          },
+          {
+            "name": "Smoke test CLI archive",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-10-09T02:02:42Z",
+            "completed_at": "2026-10-09T02:02:44Z"
+          },
+          {
+            "name": "Collect CLI checksum fragment",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11,
+            "started_at": "2026-10-09T02:02:44Z",
+            "completed_at": "2026-10-09T02:02:45Z"
+          },
+          {
+            "name": "Attest build provenance",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 12,
+            "started_at": "2026-10-09T02:02:45Z",
+            "completed_at": "2026-10-09T02:02:45Z"
+          },
+          {
+            "name": "Upload CLI archive to release",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 13,
+            "started_at": "2026-10-09T02:02:45Z",
+            "completed_at": "2026-10-09T02:02:45Z"
+          },
+          {
+            "name": "Upload checksum fragment",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14,
+            "started_at": "2026-10-09T02:02:45Z",
+            "completed_at": "2026-10-09T02:02:46Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 28,
+            "started_at": "2026-10-09T02:02:46Z",
+            "completed_at": "2026-10-09T02:02:48Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 29,
+            "started_at": "2026-10-09T02:02:48Z",
+            "completed_at": "2026-10-09T02:02:48Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187785",
+        "labels": [
+          "windows-latest"
+        ],
+        "runner_id": 1000155963,
+        "runner_name": "GitHub Actions 1000155963",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 113630187807,
+        "run_id": 37870721641,
+        "workflow_name": "Desktop Release",
+        "head_branch": "qa-reasoning-coding-bulk-fixes",
+        "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOSbOoU88AAAAadOMRHw",
+        "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187807",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187807",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-09T01:46:58Z",
+        "started_at": "2026-10-09T02:15:51Z",
+        "completed_at": "2026-10-09T02:24:14Z",
+        "name": "Build CLI cli-linux-x64",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-09T02:15:52Z",
+            "completed_at": "2026-10-09T02:15:53Z"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-09T02:15:53Z",
+            "completed_at": "2026-10-09T02:16:17Z"
+          },
+          {
+            "name": "Simulate fresh merge with base branch (PR only)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-10-09T02:16:17Z",
+            "completed_at": "2026-10-09T02:16:17Z"
+          },
+          {
+            "name": "Install Rust toolchain",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-10-09T02:16:17Z",
+            "completed_at": "2026-10-09T02:16:21Z"
+          },
+          {
+            "name": "Set up the musl cross toolchain",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-10-09T02:16:21Z",
+            "completed_at": "2026-10-09T02:16:29Z"
+          },
+          {
+            "name": "Cache Rust compiler outputs",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-10-09T02:16:29Z",
+            "completed_at": "2026-10-09T02:16:30Z"
+          },
+          {
+            "name": "Enable Rust compiler cache",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-10-09T02:16:30Z",
+            "completed_at": "2026-10-09T02:16:30Z"
+          },
+          {
+            "name": "Build formal-ai CLI binary (release, pinned lock)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-10-09T02:16:30Z",
+            "completed_at": "2026-10-09T02:24:01Z"
+          },
+          {
+            "name": "Package the CLI archive",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-10-09T02:24:01Z",
+            "completed_at": "2026-10-09T02:24:10Z"
+          },
+          {
+            "name": "Smoke test CLI archive",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-10-09T02:24:10Z",
+            "completed_at": "2026-10-09T02:24:11Z"
+          },
+          {
+            "name": "Collect CLI checksum fragment",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11,
+            "started_at": "2026-10-09T02:24:11Z",
+            "completed_at": "2026-10-09T02:24:11Z"
+          },
+          {
+            "name": "Attest build provenance",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 12,
+            "started_at": "2026-10-09T02:24:11Z",
+            "completed_at": "2026-10-09T02:24:11Z"
+          },
+          {
+            "name": "Upload CLI archive to release",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 13,
+            "started_at": "2026-10-09T02:24:11Z",
+            "completed_at": "2026-10-09T02:24:11Z"
+          },
+          {
+            "name": "Upload checksum fragment",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14,
+            "started_at": "2026-10-09T02:24:11Z",
+            "completed_at": "2026-10-09T02:24:12Z"
+          },
+          {
+            "name": "Post Cache Rust compiler outputs",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 27,
+            "started_at": "2026-10-09T02:24:12Z",
+            "completed_at": "2026-10-09T02:24:12Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 28,
+            "started_at": "2026-10-09T02:24:12Z",
+            "completed_at": "2026-10-09T02:24:12Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 29,
+            "started_at": "2026-10-09T02:24:12Z",
+            "completed_at": "2026-10-09T02:24:12Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187807",
+        "labels": [
+          "ubuntu-latest"
+        ],
+        "runner_id": 1000156028,
+        "runner_name": "GitHub Actions 1000156028",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 113630187853,
+        "run_id": 37870721641,
+        "workflow_name": "Desktop Release",
+        "head_branch": "qa-reasoning-coding-bulk-fixes",
+        "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOSbOoU88AAAAadOMRTQ",
+        "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187853",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187853",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-09T01:46:58Z",
+        "started_at": "2026-10-09T01:52:13Z",
+        "completed_at": "2026-10-09T02:04:24Z",
+        "name": "Build linux-x64",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-09T01:52:14Z",
+            "completed_at": "2026-10-09T01:52:17Z"
+          },
+          {
+            "name": "Record the job deadline",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-09T01:52:17Z",
+            "completed_at": "2026-10-09T01:52:17Z"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-10-09T01:52:17Z",
+            "completed_at": "2026-10-09T01:52:46Z"
+          },
+          {
+            "name": "Simulate fresh merge with base branch (PR only)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-10-09T01:52:46Z",
+            "completed_at": "2026-10-09T01:52:46Z"
+          },
+          {
+            "name": "Install Rust toolchain",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-10-09T01:52:46Z",
+            "completed_at": "2026-10-09T01:52:47Z"
+          },
+          {
+            "name": "Cache Rust compiler outputs",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-10-09T01:52:47Z",
+            "completed_at": "2026-10-09T01:52:48Z"
+          },
+          {
+            "name": "Enable Rust compiler cache",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-10-09T01:52:48Z",
+            "completed_at": "2026-10-09T01:52:48Z"
+          },
+          {
+            "name": "Build formal-ai binary (release)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-10-09T01:52:48Z",
+            "completed_at": "2026-10-09T01:55:17Z"
+          },
+          {
+            "name": "Setup Node",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-10-09T01:55:17Z",
+            "completed_at": "2026-10-09T01:55:17Z"
+          },
+          {
+            "name": "Install desktop dependencies",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-10-09T01:55:17Z",
+            "completed_at": "2026-10-09T01:55:34Z"
+          },
+          {
+            "name": "Test command-stream production adapter",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11,
+            "started_at": "2026-10-09T01:55:34Z",
+            "completed_at": "2026-10-09T01:55:34Z"
+          },
+          {
+            "name": "Prepare desktop resources (web + bundled binary + version sync)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12,
+            "started_at": "2026-10-09T01:55:34Z",
+            "completed_at": "2026-10-09T01:55:44Z"
+          },
+          {
+            "name": "Prefetch electron-builder toolsets",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13,
+            "started_at": "2026-10-09T01:55:44Z",
+            "completed_at": "2026-10-09T01:55:44Z"
+          },
+          {
+            "name": "Check macOS signing secrets",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 14,
+            "started_at": "2026-10-09T01:55:44Z",
+            "completed_at": "2026-10-09T01:55:44Z"
+          },
+          {
+            "name": "Package desktop app (Linux/Windows)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 15,
+            "started_at": "2026-10-09T01:55:44Z",
+            "completed_at": "2026-10-09T02:04:17Z"
+          },
+          {
+            "name": "Package desktop app (macOS signed)",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 16,
+            "started_at": "2026-10-09T02:04:17Z",
+            "completed_at": "2026-10-09T02:04:17Z"
+          },
+          {
+            "name": "Package desktop app (macOS ad-hoc)",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 17,
+            "started_at": "2026-10-09T02:04:17Z",
+            "completed_at": "2026-10-09T02:04:17Z"
+          },
+          {
+            "name": "Normalize desktop artifact names",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 18,
+            "started_at": "2026-10-09T02:04:17Z",
+            "completed_at": "2026-10-09T02:04:17Z"
+          },
+          {
+            "name": "Smoke test macOS release artifacts",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 19,
+            "started_at": "2026-10-09T02:04:17Z",
+            "completed_at": "2026-10-09T02:04:17Z"
+          },
+          {
+            "name": "Smoke test Linux/Windows release artifacts",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 20,
+            "started_at": "2026-10-09T02:04:17Z",
+            "completed_at": "2026-10-09T02:04:17Z"
+          },
+          {
+            "name": "Collect artifacts and checksums",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 21,
+            "started_at": "2026-10-09T02:04:17Z",
+            "completed_at": "2026-10-09T02:04:19Z"
+          },
+          {
+            "name": "Attest build provenance",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 22,
+            "started_at": "2026-10-09T02:04:19Z",
+            "completed_at": "2026-10-09T02:04:19Z"
+          },
+          {
+            "name": "Upload assets to release",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 23,
+            "started_at": "2026-10-09T02:04:19Z",
+            "completed_at": "2026-10-09T02:04:19Z"
+          },
+          {
+            "name": "Upload checksum fragment",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 24,
+            "started_at": "2026-10-09T02:04:19Z",
+            "completed_at": "2026-10-09T02:04:20Z"
+          },
+          {
+            "name": "Post Setup Node",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 46,
+            "started_at": "2026-10-09T02:04:20Z",
+            "completed_at": "2026-10-09T02:04:20Z"
+          },
+          {
+            "name": "Post Cache Rust compiler outputs",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 47,
+            "started_at": "2026-10-09T02:04:20Z",
+            "completed_at": "2026-10-09T02:04:20Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 48,
+            "started_at": "2026-10-09T02:04:20Z",
+            "completed_at": "2026-10-09T02:04:20Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 49,
+            "started_at": "2026-10-09T02:04:20Z",
+            "completed_at": "2026-10-09T02:04:20Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187853",
+        "labels": [
+          "ubuntu-latest"
+        ],
+        "runner_id": 1000155966,
+        "runner_name": "GitHub Actions 1000155966",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 113630187859,
+        "run_id": 37870721641,
+        "workflow_name": "Desktop Release",
+        "head_branch": "qa-reasoning-coding-bulk-fixes",
+        "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOSbOoU88AAAAadOMRUw",
+        "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187859",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187859",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-09T01:46:58Z",
+        "started_at": "2026-10-09T01:55:59Z",
+        "completed_at": "2026-10-09T02:29:00Z",
+        "name": "Build windows-x64",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-09T01:56:01Z",
+            "completed_at": "2026-10-09T01:56:03Z"
+          },
+          {
+            "name": "Record the job deadline",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-09T01:56:03Z",
+            "completed_at": "2026-10-09T01:56:04Z"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-10-09T01:56:04Z",
+            "completed_at": "2026-10-09T01:57:00Z"
+          },
+          {
+            "name": "Simulate fresh merge with base branch (PR only)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-10-09T01:57:00Z",
+            "completed_at": "2026-10-09T01:57:01Z"
+          },
+          {
+            "name": "Install Rust toolchain",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-10-09T01:57:01Z",
+            "completed_at": "2026-10-09T01:57:21Z"
+          },
+          {
+            "name": "Cache Rust compiler outputs",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 6,
+            "started_at": "2026-10-09T01:57:21Z",
+            "completed_at": "2026-10-09T01:57:21Z"
+          },
+          {
+            "name": "Enable Rust compiler cache",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 7,
+            "started_at": "2026-10-09T01:57:21Z",
+            "completed_at": "2026-10-09T01:57:21Z"
+          },
+          {
+            "name": "Build formal-ai binary (release)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-10-09T01:57:21Z",
+            "completed_at": "2026-10-09T02:10:23Z"
+          },
+          {
+            "name": "Setup Node",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-10-09T02:10:23Z",
+            "completed_at": "2026-10-09T02:10:28Z"
+          },
+          {
+            "name": "Install desktop dependencies",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-10-09T02:10:28Z",
+            "completed_at": "2026-10-09T02:11:57Z"
+          },
+          {
+            "name": "Test command-stream production adapter",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11,
+            "started_at": "2026-10-09T02:11:57Z",
+            "completed_at": "2026-10-09T02:11:57Z"
+          },
+          {
+            "name": "Prepare desktop resources (web + bundled binary + version sync)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12,
+            "started_at": "2026-10-09T02:11:57Z",
+            "completed_at": "2026-10-09T02:12:14Z"
+          },
+          {
+            "name": "Prefetch electron-builder toolsets",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13,
+            "started_at": "2026-10-09T02:12:14Z",
+            "completed_at": "2026-10-09T02:12:14Z"
+          },
+          {
+            "name": "Check macOS signing secrets",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 14,
+            "started_at": "2026-10-09T02:12:14Z",
+            "completed_at": "2026-10-09T02:12:14Z"
+          },
+          {
+            "name": "Package desktop app (Linux/Windows)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 15,
+            "started_at": "2026-10-09T02:12:14Z",
+            "completed_at": "2026-10-09T02:28:50Z"
+          },
+          {
+            "name": "Package desktop app (macOS signed)",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 16,
+            "started_at": "2026-10-09T02:28:50Z",
+            "completed_at": "2026-10-09T02:28:50Z"
+          },
+          {
+            "name": "Package desktop app (macOS ad-hoc)",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 17,
+            "started_at": "2026-10-09T02:28:50Z",
+            "completed_at": "2026-10-09T02:28:50Z"
+          },
+          {
+            "name": "Normalize desktop artifact names",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 18,
+            "started_at": "2026-10-09T02:28:50Z",
+            "completed_at": "2026-10-09T02:28:50Z"
+          },
+          {
+            "name": "Smoke test macOS release artifacts",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 19,
+            "started_at": "2026-10-09T02:28:50Z",
+            "completed_at": "2026-10-09T02:28:50Z"
+          },
+          {
+            "name": "Smoke test Linux/Windows release artifacts",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 20,
+            "started_at": "2026-10-09T02:28:50Z",
+            "completed_at": "2026-10-09T02:28:51Z"
+          },
+          {
+            "name": "Collect artifacts and checksums",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 21,
+            "started_at": "2026-10-09T02:28:51Z",
+            "completed_at": "2026-10-09T02:28:54Z"
+          },
+          {
+            "name": "Attest build provenance",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 22,
+            "started_at": "2026-10-09T02:28:54Z",
+            "completed_at": "2026-10-09T02:28:54Z"
+          },
+          {
+            "name": "Upload assets to release",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 23,
+            "started_at": "2026-10-09T02:28:54Z",
+            "completed_at": "2026-10-09T02:28:54Z"
+          },
+          {
+            "name": "Upload checksum fragment",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 24,
+            "started_at": "2026-10-09T02:28:54Z",
+            "completed_at": "2026-10-09T02:28:56Z"
+          },
+          {
+            "name": "Post Setup Node",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 47,
+            "started_at": "2026-10-09T02:28:56Z",
+            "completed_at": "2026-10-09T02:28:56Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 48,
+            "started_at": "2026-10-09T02:28:56Z",
+            "completed_at": "2026-10-09T02:28:58Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 49,
+            "started_at": "2026-10-09T02:28:58Z",
+            "completed_at": "2026-10-09T02:28:58Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187859",
+        "labels": [
+          "windows-latest"
+        ],
+        "runner_id": 1000155977,
+        "runner_name": "GitHub Actions 1000155977",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 113630187884,
+        "run_id": 37870721641,
+        "workflow_name": "Desktop Release",
+        "head_branch": "qa-reasoning-coding-bulk-fixes",
+        "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOSbOoU88AAAAadOMRbA",
+        "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187884",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187884",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-09T01:46:58Z",
+        "started_at": "2026-10-09T01:47:44Z",
+        "completed_at": "2026-10-09T02:25:50Z",
+        "name": "Build windows-arm64",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-09T01:47:45Z",
+            "completed_at": "2026-10-09T01:47:48Z"
+          },
+          {
+            "name": "Record the job deadline",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-09T01:47:48Z",
+            "completed_at": "2026-10-09T01:47:49Z"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-10-09T01:47:49Z",
+            "completed_at": "2026-10-09T01:48:58Z"
+          },
+          {
+            "name": "Simulate fresh merge with base branch (PR only)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-10-09T01:48:58Z",
+            "completed_at": "2026-10-09T01:48:59Z"
+          },
+          {
+            "name": "Install Rust toolchain",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-10-09T01:48:59Z",
+            "completed_at": "2026-10-09T01:49:10Z"
+          },
+          {
+            "name": "Cache Rust compiler outputs",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 6,
+            "started_at": "2026-10-09T01:49:10Z",
+            "completed_at": "2026-10-09T01:49:10Z"
+          },
+          {
+            "name": "Enable Rust compiler cache",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 7,
+            "started_at": "2026-10-09T01:49:10Z",
+            "completed_at": "2026-10-09T01:49:10Z"
+          },
+          {
+            "name": "Build formal-ai binary (release)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-10-09T01:49:10Z",
+            "completed_at": "2026-10-09T01:59:21Z"
+          },
+          {
+            "name": "Setup Node",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-10-09T01:59:21Z",
+            "completed_at": "2026-10-09T01:59:26Z"
+          },
+          {
+            "name": "Install desktop dependencies",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-10-09T01:59:26Z",
+            "completed_at": "2026-10-09T02:04:12Z"
+          },
+          {
+            "name": "Test command-stream production adapter",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11,
+            "started_at": "2026-10-09T02:04:12Z",
+            "completed_at": "2026-10-09T02:04:13Z"
+          },
+          {
+            "name": "Prepare desktop resources (web + bundled binary + version sync)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12,
+            "started_at": "2026-10-09T02:04:13Z",
+            "completed_at": "2026-10-09T02:04:35Z"
+          },
+          {
+            "name": "Prefetch electron-builder toolsets",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13,
+            "started_at": "2026-10-09T02:04:35Z",
+            "completed_at": "2026-10-09T02:04:37Z"
+          },
+          {
+            "name": "Check macOS signing secrets",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 14,
+            "started_at": "2026-10-09T02:04:37Z",
+            "completed_at": "2026-10-09T02:04:37Z"
+          },
+          {
+            "name": "Package desktop app (Linux/Windows)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 15,
+            "started_at": "2026-10-09T02:04:37Z",
+            "completed_at": "2026-10-09T02:25:30Z"
+          },
+          {
+            "name": "Package desktop app (macOS signed)",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 16,
+            "started_at": "2026-10-09T02:25:30Z",
+            "completed_at": "2026-10-09T02:25:30Z"
+          },
+          {
+            "name": "Package desktop app (macOS ad-hoc)",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 17,
+            "started_at": "2026-10-09T02:25:30Z",
+            "completed_at": "2026-10-09T02:25:30Z"
+          },
+          {
+            "name": "Normalize desktop artifact names",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 18,
+            "started_at": "2026-10-09T02:25:30Z",
+            "completed_at": "2026-10-09T02:25:30Z"
+          },
+          {
+            "name": "Smoke test macOS release artifacts",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 19,
+            "started_at": "2026-10-09T02:25:30Z",
+            "completed_at": "2026-10-09T02:25:30Z"
+          },
+          {
+            "name": "Smoke test Linux/Windows release artifacts",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 20,
+            "started_at": "2026-10-09T02:25:30Z",
+            "completed_at": "2026-10-09T02:25:31Z"
+          },
+          {
+            "name": "Collect artifacts and checksums",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 21,
+            "started_at": "2026-10-09T02:25:31Z",
+            "completed_at": "2026-10-09T02:25:42Z"
+          },
+          {
+            "name": "Attest build provenance",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 22,
+            "started_at": "2026-10-09T02:25:42Z",
+            "completed_at": "2026-10-09T02:25:42Z"
+          },
+          {
+            "name": "Upload assets to release",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 23,
+            "started_at": "2026-10-09T02:25:42Z",
+            "completed_at": "2026-10-09T02:25:42Z"
+          },
+          {
+            "name": "Upload checksum fragment",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 24,
+            "started_at": "2026-10-09T02:25:42Z",
+            "completed_at": "2026-10-09T02:25:43Z"
+          },
+          {
+            "name": "Post Setup Node",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 47,
+            "started_at": "2026-10-09T02:25:43Z",
+            "completed_at": "2026-10-09T02:25:43Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 48,
+            "started_at": "2026-10-09T02:25:43Z",
+            "completed_at": "2026-10-09T02:25:48Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 49,
+            "started_at": "2026-10-09T02:25:48Z",
+            "completed_at": "2026-10-09T02:25:48Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187884",
+        "labels": [
+          "windows-11-arm"
+        ],
+        "runner_id": 1000155955,
+        "runner_name": "GitHub Actions 1000155955",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 113630187887,
+        "run_id": 37870721641,
+        "workflow_name": "Desktop Release",
+        "head_branch": "qa-reasoning-coding-bulk-fixes",
+        "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOSbOoU88AAAAadOMRbw",
+        "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187887",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187887",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-09T01:46:58Z",
+        "started_at": "2026-10-09T01:47:39Z",
+        "completed_at": "2026-10-09T01:53:36Z",
+        "name": "Build CLI cli-linux-arm64",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-09T01:47:40Z",
+            "completed_at": "2026-10-09T01:47:43Z"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-09T01:47:43Z",
+            "completed_at": "2026-10-09T01:48:05Z"
+          },
+          {
+            "name": "Simulate fresh merge with base branch (PR only)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-10-09T01:48:05Z",
+            "completed_at": "2026-10-09T01:48:05Z"
+          },
+          {
+            "name": "Install Rust toolchain",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-10-09T01:48:05Z",
+            "completed_at": "2026-10-09T01:48:08Z"
+          },
+          {
+            "name": "Set up the musl cross toolchain",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-10-09T01:48:08Z",
+            "completed_at": "2026-10-09T01:48:19Z"
+          },
+          {
+            "name": "Cache Rust compiler outputs",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-10-09T01:48:19Z",
+            "completed_at": "2026-10-09T01:48:20Z"
+          },
+          {
+            "name": "Enable Rust compiler cache",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-10-09T01:48:20Z",
+            "completed_at": "2026-10-09T01:48:20Z"
+          },
+          {
+            "name": "Build formal-ai CLI binary (release, pinned lock)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-10-09T01:48:20Z",
+            "completed_at": "2026-10-09T01:53:25Z"
+          },
+          {
+            "name": "Package the CLI archive",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-10-09T01:53:25Z",
+            "completed_at": "2026-10-09T01:53:31Z"
+          },
+          {
+            "name": "Smoke test CLI archive",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-10-09T01:53:31Z",
+            "completed_at": "2026-10-09T01:53:32Z"
+          },
+          {
+            "name": "Collect CLI checksum fragment",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11,
+            "started_at": "2026-10-09T01:53:32Z",
+            "completed_at": "2026-10-09T01:53:32Z"
+          },
+          {
+            "name": "Attest build provenance",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 12,
+            "started_at": "2026-10-09T01:53:32Z",
+            "completed_at": "2026-10-09T01:53:32Z"
+          },
+          {
+            "name": "Upload CLI archive to release",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 13,
+            "started_at": "2026-10-09T01:53:32Z",
+            "completed_at": "2026-10-09T01:53:32Z"
+          },
+          {
+            "name": "Upload checksum fragment",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14,
+            "started_at": "2026-10-09T01:53:32Z",
+            "completed_at": "2026-10-09T01:53:33Z"
+          },
+          {
+            "name": "Post Cache Rust compiler outputs",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 27,
+            "started_at": "2026-10-09T01:53:33Z",
+            "completed_at": "2026-10-09T01:53:33Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 28,
+            "started_at": "2026-10-09T01:53:33Z",
+            "completed_at": "2026-10-09T01:53:34Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 29,
+            "started_at": "2026-10-09T01:53:34Z",
+            "completed_at": "2026-10-09T01:53:34Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187887",
+        "labels": [
+          "ubuntu-24.04-arm"
+        ],
+        "runner_id": 1000155953,
+        "runner_name": "GitHub Actions 1000155953",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 113630187898,
+        "run_id": 37870721641,
+        "workflow_name": "Desktop Release",
+        "head_branch": "qa-reasoning-coding-bulk-fixes",
+        "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOSbOoU88AAAAadOMReg",
+        "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630187898",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630187898",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-09T01:46:58Z",
+        "started_at": "2026-10-09T02:08:45Z",
+        "completed_at": "2026-10-09T02:28:38Z",
+        "name": "Build macos-arm64",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-09T02:08:46Z",
+            "completed_at": "2026-10-09T02:08:49Z"
+          },
+          {
+            "name": "Record the job deadline",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-09T02:08:49Z",
+            "completed_at": "2026-10-09T02:08:49Z"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-10-09T02:08:49Z",
+            "completed_at": "2026-10-09T02:09:17Z"
+          },
+          {
+            "name": "Simulate fresh merge with base branch (PR only)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-10-09T02:09:17Z",
+            "completed_at": "2026-10-09T02:09:18Z"
+          },
+          {
+            "name": "Install Rust toolchain",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-10-09T02:09:18Z",
+            "completed_at": "2026-10-09T02:09:26Z"
+          },
+          {
+            "name": "Cache Rust compiler outputs",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-10-09T02:09:26Z",
+            "completed_at": "2026-10-09T02:09:26Z"
+          },
+          {
+            "name": "Enable Rust compiler cache",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-10-09T02:09:26Z",
+            "completed_at": "2026-10-09T02:09:26Z"
+          },
+          {
+            "name": "Build formal-ai binary (release)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-10-09T02:09:26Z",
+            "completed_at": "2026-10-09T02:19:49Z"
+          },
+          {
+            "name": "Setup Node",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-10-09T02:19:49Z",
+            "completed_at": "2026-10-09T02:19:51Z"
+          },
+          {
+            "name": "Install desktop dependencies",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-10-09T02:19:51Z",
+            "completed_at": "2026-10-09T02:20:15Z"
+          },
+          {
+            "name": "Test command-stream production adapter",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11,
+            "started_at": "2026-10-09T02:20:15Z",
+            "completed_at": "2026-10-09T02:20:15Z"
+          },
+          {
+            "name": "Prepare desktop resources (web + bundled binary + version sync)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12,
+            "started_at": "2026-10-09T02:20:15Z",
+            "completed_at": "2026-10-09T02:20:28Z"
+          },
+          {
+            "name": "Prefetch electron-builder toolsets",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13,
+            "started_at": "2026-10-09T02:20:28Z",
+            "completed_at": "2026-10-09T02:20:29Z"
+          },
+          {
+            "name": "Check macOS signing secrets",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14,
+            "started_at": "2026-10-09T02:20:29Z",
+            "completed_at": "2026-10-09T02:20:29Z"
+          },
+          {
+            "name": "Package desktop app (Linux/Windows)",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 15,
+            "started_at": "2026-10-09T02:20:29Z",
+            "completed_at": "2026-10-09T02:20:29Z"
+          },
+          {
+            "name": "Package desktop app (macOS signed)",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 16,
+            "started_at": "2026-10-09T02:20:29Z",
+            "completed_at": "2026-10-09T02:20:29Z"
+          },
+          {
+            "name": "Package desktop app (macOS ad-hoc)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 17,
+            "started_at": "2026-10-09T02:20:29Z",
+            "completed_at": "2026-10-09T02:28:19Z"
+          },
+          {
+            "name": "Normalize desktop artifact names",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 18,
+            "started_at": "2026-10-09T02:28:19Z",
+            "completed_at": "2026-10-09T02:28:19Z"
+          },
+          {
+            "name": "Smoke test macOS release artifacts",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 19,
+            "started_at": "2026-10-09T02:28:19Z",
+            "completed_at": "2026-10-09T02:28:30Z"
+          },
+          {
+            "name": "Smoke test Linux/Windows release artifacts",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 20,
+            "started_at": "2026-10-09T02:28:30Z",
+            "completed_at": "2026-10-09T02:28:30Z"
+          },
+          {
+            "name": "Collect artifacts and checksums",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 21,
+            "started_at": "2026-10-09T02:28:30Z",
+            "completed_at": "2026-10-09T02:28:31Z"
+          },
+          {
+            "name": "Attest build provenance",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 22,
+            "started_at": "2026-10-09T02:28:31Z",
+            "completed_at": "2026-10-09T02:28:31Z"
+          },
+          {
+            "name": "Upload assets to release",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 23,
+            "started_at": "2026-10-09T02:28:31Z",
+            "completed_at": "2026-10-09T02:28:31Z"
+          },
+          {
+            "name": "Upload checksum fragment",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 24,
+            "started_at": "2026-10-09T02:28:31Z",
+            "completed_at": "2026-10-09T02:28:32Z"
+          },
+          {
+            "name": "Post Setup Node",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 46,
+            "started_at": "2026-10-09T02:28:32Z",
+            "completed_at": "2026-10-09T02:28:32Z"
+          },
+          {
+            "name": "Post Cache Rust compiler outputs",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 47,
+            "started_at": "2026-10-09T02:28:32Z",
+            "completed_at": "2026-10-09T02:28:33Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 48,
+            "started_at": "2026-10-09T02:28:33Z",
+            "completed_at": "2026-10-09T02:28:33Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 49,
+            "started_at": "2026-10-09T02:28:33Z",
+            "completed_at": "2026-10-09T02:28:36Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630187898",
+        "labels": [
+          "macos-14"
+        ],
+        "runner_id": 1000156018,
+        "runner_name": "GitHub Actions 1000156018",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 113630188157,
+        "run_id": 37870721641,
+        "workflow_name": "Desktop Release",
+        "head_branch": "qa-reasoning-coding-bulk-fixes",
+        "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOSbOoU88AAAAadOMSfQ",
+        "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113630188157",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113630188157",
+        "status": "completed",
+        "conclusion": "success",
+        "created_at": "2026-10-09T01:46:58Z",
+        "started_at": "2026-10-09T01:49:43Z",
+        "completed_at": "2026-10-09T02:03:06Z",
+        "name": "Build linux-arm64",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1,
+            "started_at": "2026-10-09T01:49:44Z",
+            "completed_at": "2026-10-09T01:49:45Z"
+          },
+          {
+            "name": "Record the job deadline",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2,
+            "started_at": "2026-10-09T01:49:45Z",
+            "completed_at": "2026-10-09T01:49:45Z"
+          },
+          {
+            "name": "Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3,
+            "started_at": "2026-10-09T01:49:45Z",
+            "completed_at": "2026-10-09T01:50:05Z"
+          },
+          {
+            "name": "Simulate fresh merge with base branch (PR only)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4,
+            "started_at": "2026-10-09T01:50:05Z",
+            "completed_at": "2026-10-09T01:50:05Z"
+          },
+          {
+            "name": "Install Rust toolchain",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5,
+            "started_at": "2026-10-09T01:50:05Z",
+            "completed_at": "2026-10-09T01:50:06Z"
+          },
+          {
+            "name": "Cache Rust compiler outputs",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6,
+            "started_at": "2026-10-09T01:50:06Z",
+            "completed_at": "2026-10-09T01:50:06Z"
+          },
+          {
+            "name": "Enable Rust compiler cache",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7,
+            "started_at": "2026-10-09T01:50:06Z",
+            "completed_at": "2026-10-09T01:50:06Z"
+          },
+          {
+            "name": "Build formal-ai binary (release)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8,
+            "started_at": "2026-10-09T01:50:06Z",
+            "completed_at": "2026-10-09T01:55:46Z"
+          },
+          {
+            "name": "Setup Node",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9,
+            "started_at": "2026-10-09T01:55:46Z",
+            "completed_at": "2026-10-09T01:55:46Z"
+          },
+          {
+            "name": "Install desktop dependencies",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10,
+            "started_at": "2026-10-09T01:55:46Z",
+            "completed_at": "2026-10-09T01:56:00Z"
+          },
+          {
+            "name": "Test command-stream production adapter",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11,
+            "started_at": "2026-10-09T01:56:00Z",
+            "completed_at": "2026-10-09T01:56:01Z"
+          },
+          {
+            "name": "Prepare desktop resources (web + bundled binary + version sync)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12,
+            "started_at": "2026-10-09T01:56:01Z",
+            "completed_at": "2026-10-09T01:56:08Z"
+          },
+          {
+            "name": "Prefetch electron-builder toolsets",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13,
+            "started_at": "2026-10-09T01:56:08Z",
+            "completed_at": "2026-10-09T01:56:08Z"
+          },
+          {
+            "name": "Check macOS signing secrets",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 14,
+            "started_at": "2026-10-09T01:56:08Z",
+            "completed_at": "2026-10-09T01:56:08Z"
+          },
+          {
+            "name": "Package desktop app (Linux/Windows)",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 15,
+            "started_at": "2026-10-09T01:56:08Z",
+            "completed_at": "2026-10-09T02:03:02Z"
+          },
+          {
+            "name": "Package desktop app (macOS signed)",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 16,
+            "started_at": "2026-10-09T02:03:02Z",
+            "completed_at": "2026-10-09T02:03:02Z"
+          },
+          {
+            "name": "Package desktop app (macOS ad-hoc)",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 17,
+            "started_at": "2026-10-09T02:03:02Z",
+            "completed_at": "2026-10-09T02:03:02Z"
+          },
+          {
+            "name": "Normalize desktop artifact names",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 18,
+            "started_at": "2026-10-09T02:03:02Z",
+            "completed_at": "2026-10-09T02:03:03Z"
+          },
+          {
+            "name": "Smoke test macOS release artifacts",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 19,
+            "started_at": "2026-10-09T02:03:03Z",
+            "completed_at": "2026-10-09T02:03:03Z"
+          },
+          {
+            "name": "Smoke test Linux/Windows release artifacts",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 20,
+            "started_at": "2026-10-09T02:03:03Z",
+            "completed_at": "2026-10-09T02:03:03Z"
+          },
+          {
+            "name": "Collect artifacts and checksums",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 21,
+            "started_at": "2026-10-09T02:03:03Z",
+            "completed_at": "2026-10-09T02:03:03Z"
+          },
+          {
+            "name": "Attest build provenance",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 22,
+            "started_at": "2026-10-09T02:03:03Z",
+            "completed_at": "2026-10-09T02:03:03Z"
+          },
+          {
+            "name": "Upload assets to release",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 23,
+            "started_at": "2026-10-09T02:03:03Z",
+            "completed_at": "2026-10-09T02:03:03Z"
+          },
+          {
+            "name": "Upload checksum fragment",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 24,
+            "started_at": "2026-10-09T02:03:03Z",
+            "completed_at": "2026-10-09T02:03:04Z"
+          },
+          {
+            "name": "Post Setup Node",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 46,
+            "started_at": "2026-10-09T02:03:04Z",
+            "completed_at": "2026-10-09T02:03:04Z"
+          },
+          {
+            "name": "Post Cache Rust compiler outputs",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 47,
+            "started_at": "2026-10-09T02:03:04Z",
+            "completed_at": "2026-10-09T02:03:04Z"
+          },
+          {
+            "name": "Post Run actions/checkout@v7",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 48,
+            "started_at": "2026-10-09T02:03:04Z",
+            "completed_at": "2026-10-09T02:03:04Z"
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 49,
+            "started_at": "2026-10-09T02:03:04Z",
+            "completed_at": "2026-10-09T02:03:05Z"
+          }
+        ],
+        "check_run_url": "https://api.github.com/repos/link-assistant/formal-ai/check-runs/113630188157",
+        "labels": [
+          "ubuntu-24.04-arm"
+        ],
+        "runner_id": 1000155959,
+        "runner_name": "GitHub Actions 1000155959",
+        "runner_group_id": 0,
+        "runner_group_name": "GitHub Actions"
+      },
+      {
+        "id": 113640745487,
+        "run_id": 37870721641,
+        "workflow_name": "Desktop Release",
+        "head_branch": "qa-reasoning-coding-bulk-fixes",
+        "run_url": "https://api.github.com/repos/link-assistant/formal-ai/actions/runs/37870721641",
+        "run_attempt": 1,
+        "node_id": "CR_kwDOSbOoU88AAAAadYQqDw",
+        "head_sha": "4a560cdb5a47dd3d175ca16adf6d521619437a4e",
+        "url": "https://api.github.com/repos/link-assistant/formal-ai/actions/jobs/113640745487",
+        "html_url": "https://github.com/link-assistant/formal-ai/actions/runs/37870721641/job/113640745487",
+        "status": "completed",
+        "conclusion": "skipped",
+        "created_at": "2026-10-09T02:29:01Z",
+        "started_at": "2026-10-09T02:29:01Z",
+        "completed_at": "2026-10-09T02:29:01Z",
+        "name": "Publish SHA256SUMS.txt + provenance",
+        "steps": [],
+        "check_run_url": "https://api.github.com/repos/link-assistant/formal-ai/check-runs/113640745487",
+        "labels": [
+          "ubuntu-latest"
+        ],
+        "runner_id": null,
+        "runner_name": null,
+        "runner_group_id": null,
+        "runner_group_name": null
+      }
+    ]
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "tasks": 8,
+  "toolCalls": 14,
+  "bash": 11,
+  "write": 3,
+  "edit": 0,
+  "explicitWriteTasks": [
+    "T2935 (scratch producer)",
+    "T2937 (failed exact report)",
+    "T2938 (metric correction)"
+  ],
+  "repositoryArchivalBashTasks": [
+    "T2939",
+    "T2940"
+  ],
+  "scope": "Physical driver tool calls, not tokens, monetary costs, files changed or production coverage. Observational producer Bash tasks also write selected scratch raw evidence.",
+  "observed": [
+    {
+      "taskId": "T2933",
+      "calls": [
+        "bash"
+      ]
+    },
+    {
+      "taskId": "T2934",
+      "calls": [
+        "bash"
+      ]
+    },
+    {
+      "taskId": "T2935",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ]
+    },
+    {
+      "taskId": "T2936",
+      "calls": [
+        "bash"
+      ]
+    },
+    {
+      "taskId": "T2937",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ]
+    },
+    {
+      "taskId": "T2938",
+      "calls": [
+        "bash",
+        "write",
+        "bash"
+      ]
+    },
+    {
+      "taskId": "T2939",
+      "calls": [
+        "bash"
+      ]
+    },
+    {
+      "taskId": "T2940",
+      "calls": [
+        "bash"
+      ],
+      "provenance": "this archival command invocation; full external transcript finalized after process return"
+    }
+  ]
+}
