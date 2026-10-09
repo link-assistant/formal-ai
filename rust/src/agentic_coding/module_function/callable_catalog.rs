@@ -132,11 +132,11 @@ fn span_end(tree: &Value) -> usize {
 /// Mirrors observeSourceCallables: full source-derived declarations, including exact UTF-8 spans.
 #[must_use]
 pub fn observe_source_callables(source: &str, path: &str) -> Value {
-    let content_id = crate::source_fetch::sha256_hex(source.as_bytes());
+    let content_identifier = crate::source_fetch::sha256_hex(source.as_bytes());
     let raw = match crate::es_tokenizer::tokenize(source) {
         Ok(trees) => trees,
         Err(error) => {
-            return json!({"path":path,"contentId":content_id,"bytes":source.len(),"declarations":[],"exports":[],"imports":[],
+            return json!({"path":path,"contentId":content_identifier,"bytes":source.len(),"declarations":[],"exports":[],"imports":[],
             "gaps":[{"reason":"LexicalFailure","start":error.span.start}],"moduleEffects":"unknown"});
         }
     };
@@ -207,7 +207,7 @@ pub fn observe_source_callables(source: &str, path: &str) -> Value {
                 module_effects = "unknown";
             }
             declarations.push(json!({"name":name,"parameters":parameters,"source":body,"span":span,"contract":contract,
-                "identity":{"path":path,"moduleContentId":content_id,"declarationContentId":crate::source_fetch::sha256_hex(body.as_bytes()),"span":span}}));
+                "identity":{"path":path,"moduleContentId":content_identifier,"declarationContentId":crate::source_fetch::sha256_hex(body.as_bytes()),"span":span}}));
             if exported {
                 exports.push(
                     json!({"local":name,"exposed":if default_export {"default"} else {name}}),
@@ -310,7 +310,7 @@ pub fn observe_source_callables(source: &str, path: &str) -> Value {
     if !gaps.is_empty() {
         module_effects = "unknown";
     }
-    json!({"path":path,"contentId":content_id,"bytes":source.len(),"declarations":declarations,"exports":exports,"imports":imports,"gaps":gaps,"moduleEffects":module_effects})
+    json!({"path":path,"contentId":content_identifier,"bytes":source.len(),"declarations":declarations,"exports":exports,"imports":imports,"gaps":gaps,"moduleEffects":module_effects})
 }
 fn resolve_entry(
     catalogs: &[Value],
