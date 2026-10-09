@@ -1,0 +1,66 @@
+{
+  "nativeSource": "rust/src/seed/projects.rs::ProjectStatement::parse",
+  "cases": [
+    {
+      "name": "zero",
+      "input": "0",
+      "expected": 0,
+      "actual": 50
+    },
+    {
+      "name": "upper",
+      "input": "255",
+      "expected": 255,
+      "actual": 255
+    },
+    {
+      "name": "plus",
+      "input": " +7 ",
+      "expected": 7,
+      "actual": 7
+    },
+    {
+      "name": "partial",
+      "input": "7x",
+      "expected": 50,
+      "actual": 7
+    },
+    {
+      "name": "negative",
+      "input": "-1",
+      "expected": 50,
+      "actual": -1
+    },
+    {
+      "name": "overflow",
+      "input": "256",
+      "expected": 50,
+      "actual": 256
+    },
+    {
+      "name": "missing",
+      "input": null,
+      "expected": 50,
+      "actual": 50
+    },
+    {
+      "name": "empty",
+      "input": "",
+      "expected": 50,
+      "actual": 50
+    },
+    {
+      "name": "leading-zero",
+      "input": "007",
+      "expected": 7,
+      "actual": 7
+    },
+    {
+      "name": "scientific",
+      "input": "1e2",
+      "expected": 50,
+      "actual": 1
+    }
+  ],
+  "source": "project_arbitrary\n  org example-org\n  name arbitrary\n  statement \"zero\"\n    kind feature\n    weight \"0\"\n  statement \"upper\"\n    kind feature\n    weight \"255\"\n  statement \"plus\"\n    kind feature\n    weight \" +7 \"\n  statement \"partial\"\n    kind feature\n    weight \"7x\"\n  statement \"negative\"\n    kind feature\n    weight \"-1\"\n  statement \"overflow\"\n    kind feature\n    weight \"256\"\n  statement \"missing\"\n    kind feature\n  statement \"empty\"\n    kind feature\n    weight \"\"\n  statement \"leading-zero\"\n    kind feature\n    weight \"007\"\n  statement \"scientific\"\n    kind feature\n    weight \"1e2\"\n"
+}

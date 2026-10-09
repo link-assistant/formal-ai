@@ -1,3 +1,5 @@
+Set the contents of rust/src/solver_handlers/web_requests.rs to exactly this content:
+````````````text
 //! URL fetch, URL navigation, and browser-search handlers.
 
 use crate::concepts::extract_concept_query;
@@ -542,19 +544,15 @@ fn render_project_lookup(
 
     let provider_summary = WEB_SEARCH_PROVIDERS.join(", ");
     let promoted_orgs = PROMOTED_PROJECT_ORGS.join(", ");
-    let fusion_constant = WEB_SEARCH_RRF_K.to_string();
-    let body = seed::fill_template_once(
-        &seed::localized_response("project-lookup-promoted", language).unwrap_or_default(),
-        &[
-            ("promoted-orgs", &promoted_orgs),
-            ("display-name", display_name),
-            ("repo-slug", &repo_slug),
-            ("project-url", &project_url),
-            ("description", &description),
-            ("provider-summary", &provider_summary),
-            ("reciprocal-rank-constant", &fusion_constant),
-        ],
-    );
+    let body = seed::localized_response("project-lookup-promoted", language)
+        .unwrap_or_default()
+        .replace("{promoted-orgs}", &promoted_orgs)
+        .replace("{display-name}", display_name)
+        .replace("{repo-slug}", &repo_slug)
+        .replace("{project-url}", &project_url)
+        .replace("{description}", &description)
+        .replace("{provider-summary}", &provider_summary)
+        .replace("{reciprocal-rank-constant}", &WEB_SEARCH_RRF_K.to_string());
     finalize_simple(
         prompt,
         log,
@@ -856,3 +854,4 @@ pub(super) fn registry_static() -> &'static crate::seed::ProjectsRegistry {
     static REGISTRY: OnceLock<crate::seed::ProjectsRegistry> = OnceLock::new();
     REGISTRY.get_or_init(projects_registry)
 }
+````````````

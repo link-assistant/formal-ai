@@ -1,0 +1,5 @@
+{
+  "taskId": "T2054",
+  "target": "data/seed/multilingual-responses-parity.lino",
+  "byteEqual": true
+}

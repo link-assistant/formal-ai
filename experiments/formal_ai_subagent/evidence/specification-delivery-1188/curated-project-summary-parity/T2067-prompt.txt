@@ -1,3 +1,5 @@
+Set the contents of rust/src/solver_handlers/web_requests.rs to exactly this content:
+````````````text
 //! URL fetch, URL navigation, and browser-search handlers.
 
 use crate::concepts::extract_concept_query;
@@ -856,3 +858,4 @@ pub(super) fn registry_static() -> &'static crate::seed::ProjectsRegistry {
     static REGISTRY: OnceLock<crate::seed::ProjectsRegistry> = OnceLock::new();
     REGISTRY.get_or_init(projects_registry)
 }
+````````````

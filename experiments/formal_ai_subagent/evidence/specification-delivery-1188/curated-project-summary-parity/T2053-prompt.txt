@@ -1,3 +1,5 @@
+Set the contents of js/seed_loader.js to exactly this content:
+````````````text
 // Shared Links Notation seed loader for the demo.
 //
 // The browser demo loads its multilingual response phrases, concept summaries,
@@ -653,7 +655,7 @@
 
   // Mirrors ProjectStatement::parse: a complete decimal u8, including zero.
   function projectStatementWeight(value) {
-    var text = String(value ?? "").replace(/^\p{White_Space}+|\p{White_Space}+$/gu, "");
+    var text = String(value || "").trim();
     if (!/^\+?[0-9]+$/.test(text)) return 50;
     var weight = Number(text);
     return Number.isInteger(weight) && weight >= 0 && weight <= 255 ? weight : 50;
@@ -1373,3 +1375,4 @@
     isWorker: isWorker(),
   };
 })(typeof self !== "undefined" ? self : globalThis);
+````````````

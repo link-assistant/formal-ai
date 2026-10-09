@@ -1,3 +1,5 @@
+Set the contents of data/seed/multilingual-responses-parity.lino to exactly this content:
+````````````text
 # Five-language parity completions split from multilingual-responses.lino.
 # This shard is loaded through the shared seed registry on every surface.
 multilingual_responses
@@ -557,3 +559,4 @@ multilingual_responses
     intent project-lookup-promoted
     language es
     text "In the {promoted-orgs} repository context, `{display-name}` should first mean [{repo-slug}]({project-url}) — {description}\n\nOther repositories and entities found online are shown by the browser demo through a web search for `{display-name}`. Providers: {provider-summary}. Combined ranking: reciprocal rank fusion (k = {reciprocal-rank-constant}). Associative repository promotion can be switched off; then the answer follows the generic GitHub, GitLab, and Bitbucket project lookup path."
+````````````

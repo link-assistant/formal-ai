@@ -1,3 +1,5 @@
+Set the contents of js/seed_loader.js to exactly this content:
+````````````text
 // Shared Links Notation seed loader for the demo.
 //
 // The browser demo loads its multilingual response phrases, concept summaries,
@@ -1373,3 +1375,4 @@
     isWorker: isWorker(),
   };
 })(typeof self !== "undefined" ? self : globalThis);
+````````````

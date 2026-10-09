@@ -1,0 +1,69 @@
+Set the contents of rust/tests/web/project-summary-parity.test.mjs to exactly this content:
+````````````text
+// R1188-U29: all assertions of the five native project-summary cases run
+// against the actual production worker; the native expectations stay intact.
+import assert from 'node:assert/strict';
+import { before, test } from 'node:test';
+import { REPO_ROOT, WorkerHost } from '../../../js/server/worker-host.mjs';
+import { checkFailure, specificationCases } from '../../../scripts/lib/rust-specification-cases.mjs';
+
+const NATIVE_CASE_NAMES = [
+  'russian_hive_mind_prompt_prefers_link_assistant_project',
+  'curated_project_concept_prompt_routes_to_project_lookup',
+  'linksplatform_repository_is_promoted_by_default',
+  'explicit_formal_ai_repository_url_still_routes_to_project_lookup',
+  'http_fetch_of_curated_github_url_describes_project_via_summarization',
+];
+const carried = specificationCases(REPO_ROOT).cases;
+let host;
+before(async () => { host = new WorkerHost(); await host.boot(); });
+
+for (const name of NATIVE_CASE_NAMES) {
+  test(`all native assertions: ${name}`, async () => {
+    const selected = carried.filter(item => item.id.endsWith(`::${name}`));
+    assert.equal(selected.length, 1, 'the original native test is carried exactly once');
+    const item = selected[0];
+    const responses = new Map();
+    for (const ask of item.asks) responses.set(ask.binding, await host.solve(ask.prompt));
+    assert.ok(item.checks.length >= 4, 'exact content and provenance are carried');
+    for (const check of item.checks) assert.equal(checkFailure(check, responses), null, `${item.id}: ${JSON.stringify(check)}`);
+  });
+}
+
+test('arbitrary records use the shared modes, stable weights and empty-summary behavior', async () => {
+  const project = {
+    displayName: 'Arbitrary project', description: 'Fallback description.', localized: [],
+    statements: [
+      { text: 'Install instructions.', kind: 'install', weight: 255 },
+      { text: 'Highest statement.', kind: 'purpose', weight: 90 },
+      { text: 'First tied statement.', kind: 'feature', weight: 70 },
+      { text: 'Second tied statement.', kind: 'feature', weight: 70 },
+      { text: 'Middle statement.', kind: 'feature', weight: 50 },
+      { text: 'Low statement.', kind: 'misc', weight: 20 },
+      { text: 'Zero statement.', kind: 'misc', weight: 0 },
+    ],
+  };
+  for (const [mode, expected] of [
+    ['short', 'Highest statement.'],
+    ['standard', 'Highest statement. First tied statement. Second tied statement.'],
+    ['full', 'Highest statement. First tied statement. Second tied statement. Middle statement. Low statement. Zero statement.'],
+  ]) {
+    assert.equal(await host.run('describeProjectRecord(__fixture, "en", __mode)', { __fixture: project, __mode: mode }), expected);
+  }
+  assert.equal(await host.run('describeProjectRecord(__fixture, "en", "short")', { __fixture: { ...project, statements: [] } }), '');
+});
+
+test('project statement weights follow the native complete unsigned-byte parse', async () => {
+  const cases = [
+    ['zero', '0', 0], ['upper', '255', 255], ['plus', ' +7 ', 7],
+    ['partial', '7x', 50], ['negative', '-1', 50], ['overflow', '256', 50],
+    ['missing', null, 50], ['empty', '', 50], ['leading-zero', '007', 7],
+    ['scientific', '1e2', 50],
+  ];
+  const fixture = 'project_fixture\n  org example-org\n  name arbitrary\n' + cases.map(([name, weight]) =>
+    `  statement "${name}"\n    kind feature\n${weight === null ? '' : `    weight "${weight}"\n`}`).join('');
+  const records = await host.run('self.FormalAiSeed.extractProjects(self.FormalAiSeed.parse(__fixture))', { __fixture: fixture });
+  assert.equal(records.length, 1);
+  assert.deepEqual(records[0].statements.map(item => [item.text, item.weight]), cases.map(([name, , expected]) => [name, expected]));
+});
+````````````

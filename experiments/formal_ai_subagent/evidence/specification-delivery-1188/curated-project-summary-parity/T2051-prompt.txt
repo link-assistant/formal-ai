@@ -1,3 +1,5 @@
+Set the contents of js/worker/formal_ai_worker_web_search_and_projects.js to exactly this content:
+````````````text
 // Reciprocal rank fusion and the web-search handler, promoted projects and
 // GitHub repository lookups, response-language follow-ups and formalization
 // matching.
@@ -374,18 +376,8 @@ async function runWebSearchQuery(query, language, queryKind, preferences = {}) {
   const statementFusion = fuseBrowserSearchStatements(
     top, query, language, texts, evidence, rrfK,
   );
-  let lines = statementFusion.lines;
+  const lines = statementFusion.lines;
   diagnostics.statements = statementFusion.statements;
-  if (statementFusion.statements.length === 0) {
-    // Captured, ranked snippets remain source data when statement
-    // formalization is unavailable; do not describe them as formalized claims.
-    const results = top.map((entry) =>
-      `- [${entry.title || entry.url}](${entry.url})${entry.excerpt ? ` — ${entry.excerpt}` : ""}`).join("\n");
-    lines = handlerRulesFillOnce(answerFor("web_search_live_results", language || "en"), {
-      query, count: top.length, results,
-    }).split("\n");
-    evidence.push("web_search:rendering:retrieved_source_snippets");
-  }
 
   // Resolve the formalization tuple now that we know the top-ranked entity.
   // Prefer a real Wikidata Q-id; fall back to the WP virtual id, then to the
@@ -1248,3 +1240,4 @@ function fuzzyFormalizationMatch(prompt) {
 function detectFormalizationMatch(prompt, normalized) {
   return exactFormalizationMatch(prompt, normalized) || fuzzyFormalizationMatch(prompt);
 }
+````````````

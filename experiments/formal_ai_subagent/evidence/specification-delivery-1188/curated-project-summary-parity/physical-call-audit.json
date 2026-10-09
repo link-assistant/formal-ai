@@ -1,0 +1,35 @@
+{
+  "cutoff": "T2079",
+  "invocations": 31,
+  "observedToolCalls": 69,
+  "repositoryWriteCalls": 20,
+  "planHistoryAppendBashExcluded": 20,
+  "sourceCapabilityMutations": 20,
+  "evidenceCopyBashMutations": 1,
+  "totalCapabilityMutations": 21,
+  "requestUtf8Bytes": 459144,
+  "transcriptUtf8Bytes": 3985718,
+  "actualModelTokens": null,
+  "actualCost": null,
+  "operatorDraftDefect": [
+    "T2055"
+  ],
+  "broadSynthesisOpen": [
+    "T2049",
+    "T2066"
+  ],
+  "testFailureFixed": [
+    "T2060",
+    "T2061",
+    "T2062"
+  ],
+  "falseFailureFinalOpen": [],
+  "falseFailureFinalFixed": [
+    "T2063",
+    "T2077"
+  ],
+  "outsideOwnedNotationBlock": [
+    "T2075",
+    "T2078"
+  ]
+}
