@@ -1,0 +1,14 @@
+[
+  {
+    "path": "rust/tests/unit/ci-cd/source_test_placement.rs",
+    "sha256": "f9a9a0af76ff6b911116c303adc302c5c4127093d3b30837d0f8b77d823db60f"
+  },
+  {
+    "path": "rust/tests/fixtures/test-target-ownership.rs",
+    "sha256": "9561a5158f1b10f9886e75952a46b824d532f60b28dff6c8d1880efba1a85e3e"
+  },
+  {
+    "path": "rust/tests/fixtures/algorithm-operation-receipts.rs",
+    "sha256": "4fa60abd50027752649a48f27202867017d3ea09f5904b20478bbe0ccc8ad716"
+  }
+]
