@@ -138,3 +138,16 @@ test('statement punctuation inside a closed payload remains exact data', () => {
   assert.equal(plan?.target, 'x.txt');
   assert.equal(plan?.content, payload);
 });
+
+
+test('a target token cannot borrow a file cue from a completed statement', () => {
+  for (const task of [
+  "Write file.\nx.txt containing «hello».",
+  "Write a file.\nfolder/note-α.txt containing «hello».",
+  "Создай файл.\nзаметка.txt с содержимым «привет».",
+  "Crea el archivo.\nnota.txt con el contenido «hola»."
+]) assert.equal(composeGeneralChangePlan(task), null, task);
+  const plan = composeGeneralChangePlan('Write file folder/note-α.txt containing «hello».');
+  assert.equal(plan?.target, 'folder/note-α.txt');
+  assert.equal(plan?.content, 'hello');
+});

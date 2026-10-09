@@ -404,6 +404,9 @@ function bindingHasWriteInstruction(request, toks, binding) {
   });
   if (sentence === undefined) return false;
   const span = spanOf(sentence);
+  const target = toks[binding.index];
+  if (target.start < span.start || target.end > span.end
+    || binding.cue_start < span.start || binding.cue_end > span.end) return false;
   const statement = slice(scoped, span.start, span.end);
   if (statement === null) return false;
   const localAction = firstActionCueStart(tokens(statement));

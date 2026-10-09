@@ -1,0 +1,49 @@
+{
+  "captures": [
+    {
+      "path": "T3062-request.json",
+      "bytes": 152374,
+      "sha256": "43d98e788d946d25222d500c61154359ecfdd743e00ed2d38ce075a2ee85124d"
+    },
+    {
+      "path": "T3062-transcript.log",
+      "bytes": 1662,
+      "sha256": "57edbbf2f3b5bcdbce165c7c42f4a784490168a37bb9ba275bc6081a8b889005"
+    },
+    {
+      "path": "T3063-request.json",
+      "bytes": 44611,
+      "sha256": "e57e5a5a25539ce5de6b71a69d6f051df82fe24538f4ff852f351101b441f12f"
+    },
+    {
+      "path": "T3063-transcript.log",
+      "bytes": 36,
+      "sha256": "8788eebdfb6e65f2c882931889c9e597c2e036474f9a2a446cfbff036465ce69"
+    },
+    {
+      "path": "T3063-audit.json",
+      "bytes": 399,
+      "sha256": "bc4a449202470cda27c8aa47879f9de0a4eef3f74ad3170b911d543e107a145e"
+    },
+    {
+      "path": "followup-60-checks.log",
+      "bytes": 10591,
+      "sha256": "246fa53cd87771ef11adf251f1bc81e5ea9f95299b44474256b43c1784f8fe35"
+    },
+    {
+      "path": "followup-native-fmt.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "followup-planner-twins.log",
+      "bytes": 53,
+      "sha256": "09429d6660a4f6f0e51f09665788ff34e2685455ae3cd42008ff2799324c637b"
+    },
+    {
+      "path": "followup-source-identities.json",
+      "bytes": 784,
+      "sha256": "8f10b63ffdeccae66a1e9ee457dc76c1217d0c6ac22e225dc72f81a5b7c01147"
+    }
+  ]
+}

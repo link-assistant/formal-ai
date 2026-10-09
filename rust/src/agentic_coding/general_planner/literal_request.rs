@@ -27,6 +27,14 @@ fn binding_has_write_instruction(
     else {
         return false;
     };
+    let target = &toks[binding.index];
+    if target.start < sentence.span.start
+        || target.end > sentence.span.end
+        || binding.cue_start < sentence.span.start
+        || binding.cue_end > sentence.span.end
+    {
+        return false;
+    }
     let Some(statement) = scoped.get(sentence.span.clone()) else {
         return false;
     };

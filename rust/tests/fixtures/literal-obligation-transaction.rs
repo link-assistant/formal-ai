@@ -529,3 +529,25 @@ fn unrelated_write_actions_never_license_read_targets() {
         assert!(!outcome.root.join("x.txt").exists(), "{task}");
     }
 }
+
+#[test]
+fn completed_statement_cue_cannot_authorize_another_target_token() {
+    for task in [
+        "Write file.\nx.txt containing «hello».",
+        "Write a file.\nfolder/note-α.txt containing «hello».",
+        "Создай файл.\nзаметка.txt с содержимым «привет».",
+        "Crea el archivo.\nnota.txt con el contenido «hola».",
+    ] {
+        let outcome = run(task, &["write"]);
+        assert_eq!(outcome.writes, 0, "{task}");
+    }
+    let outcome = run(
+        "Write file folder/note-α.txt containing «hello».",
+        &["write"],
+    );
+    assert_eq!(outcome.writes, 1);
+    assert_eq!(
+        fs::read_to_string(outcome.root.join("folder/note-α.txt")).expect("same-statement target"),
+        "hello"
+    );
+}
