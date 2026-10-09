@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_lowercase_spans.js"
+  ceiling 55
+  rationale "Exact classic-worker projection of js/agentic/write_request/lowercase_spans.mjs; no headroom beyond current faithful generated source."

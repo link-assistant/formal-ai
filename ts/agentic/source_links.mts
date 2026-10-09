@@ -1,3 +1,8 @@
+import { quotedSegmentSpans } from './crate/normal_markov.mjs';
+import { normalizePrompt } from './crate/engine.mjs';
+import { containsCjk } from './crate/coding_catalog.mjs';
+import { sentences } from './shell_command_policy.mjs';
+import { mentionsRole, wordsForRole } from './write_lexicon.mjs';
 // The issue-#558 source-links recipe (rust/src/agentic_coding/source_links.rs).
 //
 // The task predicate, the slice choice and the `entire_source` header (file
@@ -25,18 +30,41 @@ export const SOURCE_LINKS_PATH = 'self-source-links.lino';
 /** Mirrors `const SLICE_SIZE`. */
 const SLICE_SIZE = 6;
 
-const SOURCE_LINKS_KEYWORDS = ['source links', 'source graph', 'source-links', 'recompile'];
-
-/**
- * Mirrors `fn is_source_links_task` in rust/src/agentic_coding/source_links.rs.
- * @param {string} prompt
- */
+// Cue evidence comes from loaded meanings and positive statement ownership.
+function unquotedInstruction(prompt) {
+  let outside = prompt;
+  for (const span of quotedSegmentSpans(prompt)) outside = outside.slice(0, span.start) + ' '.repeat(span.end - span.start) + outside.slice(span.end);
+  return outside.replace(/\S+/gu, (token) => {
+    const candidate = token.replace(/^[([{]+|[.,;!?)}\]]+$/gu, '');
+    return /[\\/]/u.test(candidate) || /^[^.].*\.[^.]+$/u.test(candidate) ? ' '.repeat(token.length) : token;
+  });
+}
+function positiveCues(normalized, role) {
+  const positions = [];
+  for (const surface of wordsForRole(role).map(normalizePrompt).filter(Boolean)) {
+    let from = 0;
+    for (;;) {
+      const start = normalized.indexOf(surface, from);
+      if (start < 0) break;
+      const end = start + surface.length;
+      const before = Array.from(normalized.slice(0, start)).pop(), after = Array.from(normalized.slice(end))[0];
+      if ((containsCjk(surface) || (!before || !/[\p{L}\p{N}_-]/u.test(before)) && (!after || !/[\p{L}\p{N}_-]/u.test(after)))
+        && !mentionsRole('statement_negation_cue', normalized.slice(0, start))) positions.push([start, end]);
+      from = end;
+    }
+  }
+  return positions;
+}
+/** Mirrors fn is_source_links_task: lexical evidence must belong to an instruction. */
 export function isSourceLinksTask(prompt) {
-  const lower = prompt.toLowerCase();
-  if (SOURCE_LINKS_KEYWORDS.some((keyword) => lower.includes(keyword))) return true;
-  const wholeSource = (lower.includes('entire') || lower.includes('whole') || lower.includes('all')) && lower.includes('source');
-  const toLinksAndBack = lower.includes('links') && lower.includes('back');
-  return wholeSource && toLinksAndBack;
+  return sentences(unquotedInstruction(prompt)).some((clause) => {
+    const normalized = normalizePrompt(clause.text);
+    const ownsAction = (prefix) => mentionsRole('translation_action', prefix) || mentionsRole('file_whole_write_action', prefix);
+    if (positiveCues(normalized, 'source-recompilation-action').some(([start]) => start === 0 || ownsAction(normalized.slice(0, start)))) return true;
+    if (positiveCues(normalized, 'source-links-report-cue').some(([start, end]) => (start === 0 && end === normalized.length) || ownsAction(normalized.slice(0, start)))) return true;
+    const groups = ['source-projection-scope', 'source-projection-origin', 'source-projection-format', 'source-projection-return'].map((role) => positiveCues(normalized, role)[0]);
+    return groups.every(Boolean) && mentionsRole('translation_action', normalized.slice(0, Math.max(...groups.map((span) => span[1]))));
+  });
 }
 
 /**

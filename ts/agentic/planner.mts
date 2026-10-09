@@ -38,7 +38,7 @@ import { fileReadTaskFor, planFileReadStep } from './file_read.mjs';
 import * as formalizationRecipe from './formalization_recipe.mjs';
 import * as functionExpectation from './function_expectation.mjs';
 import { planGeneralChangeStep } from './general_execution.mjs';
-import { composeEditRequest, composeGeneralChangePlan, hasAuthoritativeLiteralWrite, objectiveText } from './general_planner.mjs';
+import { composeEditRequest, composeGeneralChangePlan, hasAuthoritativeLiteralWrite, objectiveText, semanticAuthoringLead } from './general_planner.mjs';
 import * as gitCommit from './git_commit.mjs';
 import * as googleTrendsCatalog from './google_trends_catalog.mjs';
 import * as googleTrendsLearning from './google_trends_learning.mjs';
@@ -309,7 +309,8 @@ export async function planSettledRoutes(task, messages, toolNames) {
   if (compiled !== null) return procedure.planStep(messages, toolNames, compiled);
   const report = learningReport.route(task);
   if (report !== null) return learningReport.planReportStep(report, messages, toolNames);
-  const artifact = await codeArtifact.planCodeArtifactStep(task, messages, toolNames);
+  const artifact = await codeArtifact.planCodeArtifactStep(task, messages, toolNames)
+    ?? missingSemanticImplementation(task);
   if (artifact !== null) return artifact;
   for (const [predicate, step] of [
     [selfHeal.isSelfHealTask, documentRecipe.planSelfHealStep],
@@ -470,4 +471,17 @@ export function planShellStep(messages, toolNames, command) {
   const tool = toolFor(toolNames, Capability.Run);
   if (tool !== null) return planOne(tool, jsonText({ command }));
   return finalAnswer(agenticMessage('shell_tool_missing', { command }));
+}
+
+function missingSemanticImplementation(task) {
+  if (semanticAuthoringLead(task) && composeGeneralChangePlan(task) === null && composeEditRequest(task) === null) {
+    const discovery = { reason: 'MissingContract', goal: task, authored: false, verified: false,
+      missingContracts: ['source-bound-implementation-plan', 'independent-goal-validation'] };
+    const plan = resolvedFinalAnswer(agenticMessage('callable-discovery-outcome', {
+      reason: discovery.reason, discovery: jsonText(discovery),
+    }), FinalDisposition.Gap, 'semantic-authoring-missing-contract');
+    plan.result.discovery = discovery;
+    return plan;
+  }
+  return null;
 }

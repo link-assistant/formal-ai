@@ -38,6 +38,8 @@ export const ENTRY_MODULES = Object.freeze([
   'crate/conversation_summary.mjs',
   'crate/dependency_summarization.mjs',
   'crate/event_log.mjs',
+  'crate/literal_authoring_contract.mjs',
+  'crate/literal_content.mjs',
   'crate/page_formalization.mjs',
   'crate/skill_compiler.mjs',
   'crate/skill_procedure.mjs',

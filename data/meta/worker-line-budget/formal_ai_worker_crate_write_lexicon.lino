@@ -1,0 +1,4 @@
+worker_module_budget
+  module "formal_ai_worker_crate_write_lexicon.js"
+  ceiling 80
+  rationale "Exact classic-worker projection of js/agentic/write_lexicon.mjs; no headroom beyond current faithful generated source."
