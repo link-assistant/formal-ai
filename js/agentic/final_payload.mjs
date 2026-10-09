@@ -3,7 +3,7 @@ export const FinalPayloadRole = Object.freeze({
   Finding: 'finding', AuditReport: 'audit-report', SourceModule: 'source-module',
 });
 
-/** A source operand needs a receipt for the whole payload, beyond a report finding. */
+/** Mirrors `ResolvedPlan::can_deliver_as` in rust/src/agentic_coding/final_result.rs: its whole-source receipt predicate. */
 export function payloadCanDeliver(result, requiredRole) {
   if (requiredRole !== FinalPayloadRole.SourceModule) return true;
   const artifact = result.artifact;

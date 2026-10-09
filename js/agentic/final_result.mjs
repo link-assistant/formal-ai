@@ -7,17 +7,19 @@ export const FinalDisposition = Object.freeze({
   Gap: 'gap', Failure: 'failure', Unknown: 'unknown',
 });
 
+/** Mirrors `fn record_with_role` in rust/src/agentic_coding/final_result.rs; JS can also attach an artifact receipt. */
 export function resolvedFinalAnswer(answer, disposition, origin, payloadRole = FinalPayloadRole.Finding, artifact = null) {
   return { kind: 'final', answer, result: { text: answer, disposition, origin, payloadRole, artifact } };
 }
 
-/** Legacy routes have no evidence certificate and remain unknown. */
+/** Mirrors `ResolvedPlan::new` in rust/src/agentic_coding/final_result.rs: unmatched final metadata remains unknown. */
 export function finalResult(plan) {
   if (plan?.kind !== 'final') return null;
   return plan.result?.text === plan.answer ? plan.result
     : { text: plan.answer, disposition: FinalDisposition.Unknown, origin: null };
 }
 
+/** Mirrors `ResolvedPlan::can_deliver_as` in rust/src/agentic_coding/final_result.rs. */
 export function canDeliverFinal(plan, requiredRole = FinalPayloadRole.Finding) {
   const result = finalResult(plan);
   return result?.disposition === FinalDisposition.Finding
@@ -25,6 +27,7 @@ export function canDeliverFinal(plan, requiredRole = FinalPayloadRole.Finding) {
     && payloadCanDeliver(result, requiredRole);
 }
 
+/** Mirrors `ResolvedPlan::into_plan` in rust/src/agentic_coding/final_result.rs; native also records the result sink. */
 export function projectPlan(plan) {
   return plan?.kind === 'final' ? { kind: 'final', answer: plan.answer } : plan;
 }
