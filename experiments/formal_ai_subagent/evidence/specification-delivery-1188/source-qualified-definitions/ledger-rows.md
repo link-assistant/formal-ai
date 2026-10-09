@@ -50,3 +50,7 @@
 | T2447 | Fail; other owner | bash | Metadata notation2072/2071 remains concurrent named owner issue; seed9420 unchanged. |
 | T2448 | Pass | bash | Observed exact command result retained; native compilation never invoked. |
 | T2449 | Pass | bash → write → bash | Reviewed content transported byte-equal through Formal AI; no autonomous synthesis claimed. |
+| T2450 | Pass | bash | One FA evidence-copy command retained immutable request/results/captures; no requirement source edits. |
+| T2451 | Pass | bash | Exact historical preimage encoded losslessly with SHA/base64 after whitespace preflight; T2450 fullraw retained. |
+| T2452 | Pass | bash | Finite raw-evidence completion retains T2451 provenance and finalized rows; immutable raw transcripts retained; final lossless JSON archives completedT2453. |
+| T2453 | Pass | bash | Exact raw UTF-8 logs throughT2452 archived in SHA-verified JSON envelopes; every decoded payload byte-equal, without stripping historical whitespace or changing source. |

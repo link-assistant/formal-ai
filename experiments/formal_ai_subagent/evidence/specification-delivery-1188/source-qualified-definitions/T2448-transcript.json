@@ -1,0 +1,7 @@
+{
+  "taskId": "T2448",
+  "encoding": "utf8",
+  "sha256": "ea4eba2ad4f7872df8287f01eaa79c9358948e8d9104e858fa3bf7c160e5dca6",
+  "byteLength": 215,
+  "rawUtf8": ">> bash {\"command\":\"rustfmt --edition 2024 --config skip_children=true rust/tests/fixtures/source-cache-seed-contract.rs\"}\n   Output: \n   Exit Code: 0\n== answer ==\nThe command completed successfully without output.\n"
+}

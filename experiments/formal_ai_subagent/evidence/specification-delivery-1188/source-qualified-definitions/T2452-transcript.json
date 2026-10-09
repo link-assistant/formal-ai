@@ -1,0 +1,7 @@
+{
+  "taskId": "T2452",
+  "encoding": "utf8",
+  "sha256": "79b3f105a584235449fc755d9ac2fd5c5a54f4e50330cbd5ecacc303b264e870",
+  "byteLength": 1303,
+  "rawUtf8": ">> bash {\"command\":\"node /private/tmp/spec-recurrence-1188/finalize-citation-evidence.mjs\"}\n   Output: {\"cutoff\":\"T2452\",\"invocations\":53,\"observedToolCalls\":115,\"repositoryWriteToolCalls\":32,\"repositoryFormatBashCalls\":5,\"sharedRecordGeneratorBashCalls\":1,\"evidenceCopyEncodingBashCalls\":3,\"repositoryMutationToolCalls\":41,\"excludedHistoryAppendBashCalls\":32,\"actualModelTokensMeasured\":false,\"moneyMeasured\":false,\"sourceCommit\":\"7de1ef3545af1079163ac219ed9e0dfd382a80f6\",\"rawTranscriptGitNote\":\"All existing owned .log artifacts are explicitly force-added because generic gitignore excludes logs.\"}\n   \n   Exit Code: 0\n== answer ==\nThe `node /private/tmp/spec-recurrence-1188/finalize-citation-evidence.mjs` command completed. Output:\n\n```json\n{\n  \"actualModelTokensMeasured\": false,\n  \"cutoff\": \"T2452\",\n  \"evidenceCopyEncodingBashCalls\": 3,\n  \"excludedHistoryAppendBashCalls\": 32,\n  \"invocations\": 53,\n  \"moneyMeasured\": false,\n  \"observedToolCalls\": 115,\n  \"rawTranscriptGitNote\": \"All existing owned .log artifacts are explicitly force-added because generic gitignore excludes logs.\",\n  \"repositoryFormatBashCalls\": 5,\n  \"repositoryMutationToolCalls\": 41,\n  \"repositoryWriteToolCalls\": 32,\n  \"sharedRecordGeneratorBashCalls\": 1,\n  \"sourceCommit\": \"7de1ef3545af1079163ac219ed9e0dfd382a80f6\"\n}\n```\n"
+}
