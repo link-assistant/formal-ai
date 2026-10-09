@@ -2,15 +2,7 @@
 // detail answers, and the self-fact and self-introduction answers.
 // Loaded by ../formal_ai_worker.js.
 function stableBehaviorRuleId(prefix, value) {
-  const fromWasm = wasmStableId(prefix, value);
-  if (fromWasm) return fromWasm;
-  let hash = 0xcbf29ce484222325n;
-  const sourceBytes = new TextEncoder().encode(String(value || ""));
-  for (const byte of sourceBytes) {
-    hash ^= BigInt(byte);
-    hash = BigInt.asUintN(64, hash * 0x100000001b3n);
-  }
-  return `${prefix}_${hash.toString(16).padStart(16, "0")}`;
+  return crateModule("crate/engine_stable_identifier.mjs").stableId(prefix, String(value || ""));
 }
 
 function extractQuotedPhrase(text) {
@@ -311,7 +303,7 @@ function renderBehaviorRuleCount(runtimeRules, language = "en") {
     `  total_rules "${total}"`,
     '  algorithm "behavior_rule_records + collect_runtime_rules(prior_turn:user)"',
     "```",
-  ].join("\n");
+  ].join("\n") + "\n";
 }
 
 function renderBehaviorRulesBrief(runtimeRules, language = "en") {
@@ -332,7 +324,7 @@ function localizedRuleWhenThen(rule, language) {
 }
 
 function runtimeRuleWhenThen(rule, language) {
-  return behaviorRuleText("runtime_when_then", language, { trigger: rule.trigger, response: rule.answer });
+  return behaviorRuleText("runtime_when_then", language, { trigger: rule.trigger, response: rule.response });
 }
 
 function renderBehaviorRuleList(runtimeRules, language = "en") {
@@ -349,7 +341,7 @@ function renderBehaviorRuleList(runtimeRules, language = "en") {
   if (Array.isArray(runtimeRules) && runtimeRules.length > 0) {
     lines.push("", `### ${behaviorRuleText("runtime_heading", language)}`);
     for (const rule of runtimeRules) {
-      lines.push(`- \`${rule.id}\` -> ${runtimeRuleWhenThen(rule, language)}`);
+      lines.push(`- \`${rule.id}\` (\`${rule.legacy_behavior_rule_id}\`) -> ${runtimeRuleWhenThen(rule, language)}`);
     }
   }
   lines.push("", ...["read", "teach", "forms", "append"].map((part) => behaviorRuleText(`list_footer_${part}`, language)));
@@ -565,6 +557,7 @@ function renderKnownFacts(language, preferences) {
 }
 
 function renderRuntimeRuleUpdate(rule, language = "en") {
+  const formatValue = crateModule("crate/links_format.mjs").formatLinoValue;
   const whenThenText = runtimeRuleWhenThen(rule, language);
   const title = behaviorRuleText("update_title", language);
   const sendHint = behaviorRuleText("update_send_hint", language, { trigger: rule.trigger });
@@ -575,10 +568,13 @@ function renderRuntimeRuleUpdate(rule, language = "en") {
     "",
     "```links",
     rule.id,
-    '  type "behavior_rule_runtime"',
-    `  match_prompt "${escapeBehaviorRuleValue(rule.trigger)}"`,
-    `  answer "${escapeBehaviorRuleValue(rule.answer)}"`,
-    `  when_then "${escapeBehaviorRuleValue(whenThenText)}"`,
+    '  type "compiled_skill_package"',
+    `  legacy_behavior_rule_id ${formatValue(rule.legacy_behavior_rule_id)}`,
+    `  match_prompt ${formatValue(rule.trigger)}`,
+    `  answer ${formatValue(rule.response)}`,
+    `  when_then ${formatValue(whenThenText)}`,
+    `  compiled_handler ${formatValue(rule.handler_id)}`,
+    '  replay_mode "exact_normalized_prompt"',
     '  source "user_message"',
     "```",
     "",

@@ -2,15 +2,7 @@
 // detail answers, and the self-fact and self-introduction answers.
 // Loaded by ../formal_ai_worker.js.
 function stableBehaviorRuleId(prefix, value) {
-  const fromWasm = wasmStableId(prefix, value);
-  if (fromWasm) return fromWasm;
-  let hash = 0xcbf29ce484222325n;
-  const sourceBytes = new TextEncoder().encode(String(value || ""));
-  for (const byte of sourceBytes) {
-    hash ^= BigInt(byte);
-    hash = BigInt.asUintN(64, hash * 0x100000001b3n);
-  }
-  return `${prefix}_${hash.toString(16).padStart(16, "0")}`;
+  return crateModule("crate/engine_stable_identifier.mjs").stableId(prefix, String(value || ""));
 }
 
 function extractQuotedPhrase(text) {
