@@ -151,3 +151,27 @@ fn arithmetic_word_tables_match_seed() {
              `cargo run -p formal-ai --example issue_386_gen_arith_table`"
     );
 }
+
+#[test]
+fn source_seed_registry_retains_every_canonical_cardinal_value() {
+    let files = crate::seed::seed_files();
+    let number_words = files
+        .iter()
+        .find(|(path, _)| *path == "data/seed/meanings-number-words.lino")
+        .unwrap();
+    assert_eq!(
+        number_words.1,
+        include_str!("../../../../../data/seed/meanings-number-words.lino")
+    );
+    let lexicon = crate::seed::lexicon();
+    for value in 0..=10 {
+        let numeral = value.to_string();
+        assert_eq!(
+            lexicon
+                .meanings_with_role(crate::seed::ROLE_CARDINAL_NUMBER_WORD)
+                .filter(|meaning| meaning.words().any(|word| word == numeral))
+                .count(),
+            1
+        );
+    }
+}

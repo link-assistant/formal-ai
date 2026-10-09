@@ -938,7 +938,7 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
 
 function splitLeadingGreetingCompoundPrompt(prompt) {
   const source = String(prompt || "").trim();
-  const match = source.match(/^([\s\S]+?)(?:[,;；，、\n]|[.!?。！？]\s+)([\s\S]+)$/u);
+  const match = source.match(/^([\s\S]+?)(?:[,;；，、\n。！？]|[.!?]\s+)([\s\S]+)$/u);
   if (!match) return null;
   const greeting = String(match[1] || "").trim();
   const remainder = stripLeadingCompoundCoordinator(match[2] || "");

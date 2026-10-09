@@ -59,6 +59,8 @@ pub const CODING_IDIOMS_LINO: &str = include_str!("../../../../data/seed/coding-
 pub const PROGRAM_CST_GRAMMARS_LINO: &str =
     include_str!("../../../../data/seed/program-cst-grammars.lino");
 pub const MEANINGS_LINO: &str = include_str!("../../../../data/seed/meanings.lino");
+pub const MEANINGS_NUMBER_WORDS_LINO: &str =
+    include_str!("../../../../data/seed/meanings-number-words.lino");
 pub const MEANINGS_UNITS_LINO: &str = include_str!("../../../../data/seed/meanings-units.lino");
 pub const MEANINGS_CALENDAR_LINO: &str =
     include_str!("../../../../data/seed/meanings-calendar.lino");
@@ -190,6 +192,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ),
         ("data/seed/meanings.lino", MEANINGS_LINO),
         ("data/seed/meanings-units.lino", MEANINGS_UNITS_LINO),
+        (
+            "data/seed/meanings-number-words.lino",
+            MEANINGS_NUMBER_WORDS_LINO,
+        ),
         ("data/seed/meanings-calendar.lino", MEANINGS_CALENDAR_LINO),
         (
             "data/seed/meanings-calculator.lino",
@@ -315,6 +321,7 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
 pub const MEANING_FILES: &[&str] = &[
     MEANINGS_LINO,
     MEANINGS_UNITS_LINO,
+    MEANINGS_NUMBER_WORDS_LINO,
     MEANINGS_CALENDAR_LINO,
     MEANINGS_CALCULATOR_LINO,
     MEANINGS_FACTS_LINO,

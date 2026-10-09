@@ -46,7 +46,6 @@ function extractProofClaim(normalized) {
   }
   return trimmed;
 }
-
 function matchesEuclidPrimeClaim(claim) {
   const lower = String(claim || "").toLowerCase();
   return (
@@ -73,7 +72,6 @@ function matchesEuclidPrimeClaim(claim) {
     lower.includes("欧几里得")
   );
 }
-
 function euclidPrimeProofBody(language) {
   if (language === "ru") {
     return [
@@ -201,6 +199,8 @@ function genericProofPlanBody(prompt, language) {
 }
 
 function tryProofRequest(prompt, normalized, language) {
+  const lead = splitLeadingGreetingCompoundPrompt(prompt);
+  if (lead && isGreetingPrompt(normalizePrompt(lead.greeting), lead.greeting)) normalized = normalizePrompt(lead.remainder);
   if (!hasProofRequestShape(normalized)) return null;
   const claim = extractProofClaim(normalized);
   if (matchesEuclidPrimeClaim(claim)) {

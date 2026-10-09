@@ -113,13 +113,40 @@ pub fn record_decomposition(
         return Vec::new();
     }
 
+    // Multiple explicit questions are independently actionable even when the
+    // whole prompt happens to match the first one. Previously that whole-prompt
+    // match (for example, `capabilities`) suppressed decomposition and silently
+    // discarded every following question. Mixed sentences keep their existing
+    // whole-prompt semantics: "Hello. Prove ..." is one proof request, and a
+    // greeting followed by an identity question remains an identity request.
+    let independent_parts = independent_actionable_segments(prompt);
+    if independent_parts.len() > 1
+        && independent_parts.iter().all(|part| {
+            part.trim_end()
+                .chars()
+                .next_back()
+                .is_some_and(|ch| matches!(ch, '?' | '？'))
+        })
+    {
+        return record_sub_impulses(log, independent_parts, true);
+    }
+    // A question asking the assistant's opinion is one utterance: the clause
+    // after its lead ("Как ты думаешь, …") is what the opinion is about, not a
+    // second request (the browser worker splits only at sentence ends).
+    if crate::rule_interpreter::handler_matches("opinion_question", prompt) {
+        return Vec::new();
+    }
+
+    if courtesy_context_for_single_directive(&independent_parts) {
+        return Vec::new();
+    }
+
     let language = detect_language(prompt);
     let whole_intent = formalize_intent(prompt, language.slug(), None);
-    if whole_intent.route.is_none() || whole_intent.kind == IntentKind::Courtesy {
-        let independent_parts = independent_actionable_segments(prompt);
-        if independent_parts.len() > 1 {
-            return record_sub_impulses(log, independent_parts, true);
-        }
+    if (whole_intent.route.is_none() || whole_intent.kind == IntentKind::Courtesy)
+        && independent_parts.len() > 1
+    {
+        return record_sub_impulses(log, independent_parts, true);
     }
 
     let lower = prompt.to_lowercase();
@@ -154,6 +181,47 @@ fn record_sub_impulses(
         });
     }
     sub_impulses
+}
+
+/// The substantive clause after an actually bound leading courtesy.
+/// Keep the full original utterance in the log; this is only a parser view.
+pub fn request_after_leading_courtesy(prompt: &str) -> Option<&str> {
+    let (at, delimiter) = prompt.char_indices().find(|&(at, character)| {
+        matches!(
+            character,
+            ',' | ';' | '；' | '，' | '、' | '\n' | '。' | '！' | '？'
+        ) || (matches!(character, '.' | '!' | '?')
+            && prompt[at + character.len_utf8()..]
+                .chars()
+                .next()
+                .is_some_and(char::is_whitespace))
+    })?;
+    let lead = prompt[..at].trim();
+    let language = detect_language(lead);
+    if formalize_intent(lead, language.slug(), None).kind != IntentKind::Courtesy {
+        return None;
+    }
+    let tail = strip_leading_coordinator(prompt[at + delimiter.len_utf8()..].trim());
+    (!tail.is_empty()).then_some(tail)
+}
+
+// Courtesy is context for one directed operation, not an extra operation.
+// Explicit question lists and procedure questions retain their composition.
+fn courtesy_context_for_single_directive(parts: &[String]) -> bool {
+    let mut courtesies = 0;
+    let mut directives = 0;
+    for part in parts {
+        let language = detect_language(part);
+        let binding = formalize_intent(part, language.slug(), None);
+        if binding.kind == IntentKind::Courtesy {
+            courtesies += 1;
+        } else if binding.route.is_some() && binding.kind != IntentKind::Question {
+            directives += 1;
+        } else {
+            return false;
+        }
+    }
+    courtesies > 0 && directives == 1
 }
 
 fn independent_actionable_segments(prompt: &str) -> Vec<String> {

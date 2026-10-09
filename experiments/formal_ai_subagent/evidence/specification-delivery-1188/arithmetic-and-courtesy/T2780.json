@@ -1,0 +1,17 @@
+{
+  "taskId": "T2780",
+  "description": "Unchanged original courtesy implementation ask replay",
+  "request": {
+    "taskId": "T2780",
+    "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+    "prompt": "Repair generic courtesy coordination in rust/src/solver_helpers/mod.rs so a greeting before one substantive request remains that request; the original Hello proof and multilingual Euclid proof assertions must stay unchanged. Preserve independently actionable questions and explicit greeting plus procedure composition. Use semantic intent bindings rather than memorized prompts and mirror meaningful real-worker probes."
+  },
+  "observation": {
+    "taskId": "T2780",
+    "calls": []
+  },
+  "byteCheck": null,
+  "outcome": "Open: unchanged broad ask still unparseable",
+  "rawSha256": "6bf4c377c7d2125a38a0dd364b777035daa2c0cbbab9d322518aabb90566d174",
+  "rawUtf8": "== answer ==\nI could not evaluate `Repair generic courtesy coordination in rust/src/solver_helpers/mod.rs so a greeting before one substantive request remains that request; the original Hello proof and multilingual Euclid proof assertions must stay unchanged. Preserve independently actionable questions and explicit greeting plus procedure composition. Use semantic intent bindings rather than memorized prompts and mirror meaningful real-worker probes`: unparseable.\n"
+}

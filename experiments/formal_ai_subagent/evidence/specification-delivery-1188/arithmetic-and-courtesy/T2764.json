@@ -1,0 +1,17 @@
+{
+  "taskId": "T2764",
+  "description": "Unchanged proof checks while unrelated driver boot was broken",
+  "request": {
+    "taskId": "T2764",
+    "directory": "/Users/konard/Code/Archive/link-assistant/formal-ai",
+    "prompt": "Run node --test rust/tests/web/proof-courtesy-coordination.test.mjs"
+  },
+  "observation": {
+    "taskId": "T2764",
+    "calls": []
+  },
+  "byteCheck": null,
+  "outcome": "Fail: zero tools, unrelated general_planner syntax boot error; strict T2344 restores exact HEAD, unchanged T2765 passes",
+  "rawSha256": "d95992c45005db0c910d8492a9542ea962e03e1123b02783e4f94a05644ca14b",
+  "rawUtf8": "file:///Users/konard/Code/Archive/link-assistant/formal-ai/js/agentic/general_planner.mjs:1\ntheir native counterparts.\n      ^^^^^^\n\nSyntaxError: Unexpected identifier 'native'\n    at compileSourceTextModule (node:internal/modules/esm/utils:346:16)\n    at ModuleLoader.moduleStrategy (node:internal/modules/esm/translators:146:18)\n    at #translate (node:internal/modules/esm/loader:431:12)\n    at ModuleLoader.loadAndTranslate (node:internal/modules/esm/loader:478:27)\n\nNode.js v20.19.4\n\nprocess_status=1\n"
+}
