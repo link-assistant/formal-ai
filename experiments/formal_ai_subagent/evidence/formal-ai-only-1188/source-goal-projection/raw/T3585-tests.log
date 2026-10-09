@@ -1,0 +1,215 @@
+TAP version 13
+# Subtest: complete inputs yield bounded typed Gap, not source-plan success
+ok 1 - complete inputs yield bounded typed Gap, not source-plan success
+  ---
+  duration_ms: 273.931417
+  ...
+# Subtest: plain Read delegates unchanged and quoted goal text cannot open a goal
+ok 2 - plain Read delegates unchanged and quoted goal text cannot open a goal
+  ---
+  duration_ms: 2.082125
+  ...
+# Subtest: real complete plain Read retains exact underlying planner answer
+ok 3 - real complete plain Read retains exact underlying planner answer
+  ---
+  duration_ms: 341.495334
+  ...
+# Subtest: raw JSON failure keys are source data under actual provider metadata
+ok 4 - raw JSON failure keys are source data under actual provider metadata
+  ---
+  duration_ms: 8.911583
+  ...
+# Subtest: bare source cannot certify complete dependency
+ok 5 - bare source cannot certify complete dependency
+  ---
+  duration_ms: 9.029041
+  ...
+# Subtest: partial source cannot certify complete dependency
+ok 6 - partial source cannot certify complete dependency
+  ---
+  duration_ms: 8.261375
+  ...
+# Subtest: wrong metadata path cannot certify complete dependency
+ok 7 - wrong metadata path cannot certify complete dependency
+  ---
+  duration_ms: 8.448333
+  ...
+# Subtest: wrong call ID must require a fresh Read
+ok 8 - wrong call ID must require a fresh Read
+  ---
+  duration_ms: 8.528584
+  ...
+# Subtest: wrong tool name must require a fresh Read
+ok 9 - wrong tool name must require a fresh Read
+  ---
+  duration_ms: 8.464042
+  ...
+# Subtest: previous user window must require a fresh Read
+ok 10 - previous user window must require a fresh Read
+  ---
+  duration_ms: 8.354375
+  ...
+# Subtest: explicit provider error stays Failure
+ok 11 - explicit provider error stays Failure
+  ---
+  duration_ms: 8.376541
+  ...
+# Subtest: no read provider yields typed Gap without claiming observation
+ok 12 - no read provider yields typed Gap without claiming observation
+  ---
+  duration_ms: 8.1475
+  ...
+# Subtest: verified Run holds command exit expectation without execution or success claim
+ok 13 - verified Run holds command exit expectation without execution or success claim
+  ---
+  duration_ms: 4.735333
+  ...
+# Subtest: multilingual owned read and Unicode UTF8 goal spans are retained
+ok 14 - multilingual owned read and Unicode UTF8 goal spans are retained
+  ---
+  duration_ms: 16.984708
+  ...
+# Subtest: exact declaration retains independent UTF8/UTF16 spans and hashes without module authoring
+ok 15 - exact declaration retains independent UTF8/UTF16 spans and hashes without module authoring
+  ---
+  duration_ms: 62.432834
+  ...
+# Subtest: export alias resolves actual local declaration
+ok 16 - export alias resolves actual local declaration
+  ---
+  duration_ms: 0.840291
+  ...
+# Subtest: local declaration is available without fabricated export
+ok 17 - local declaration is available without fabricated export
+  ---
+  duration_ms: 0.527041
+  ...
+# Subtest: bare cannot certify a projection
+ok 18 - bare cannot certify a projection
+  ---
+  duration_ms: 0.260625
+  ...
+# Subtest: partial cannot certify a projection
+ok 19 - partial cannot certify a projection
+  ---
+  duration_ms: 0.317666
+  ...
+# Subtest: wrong provider path cannot certify a projection
+ok 20 - wrong provider path cannot certify a projection
+  ---
+  duration_ms: 0.205792
+  ...
+# Subtest: outer actual failure owns Failure
+ok 21 - outer actual failure owns Failure
+  ---
+  duration_ms: 0.254833
+  ...
+# Subtest: wrong call requires fresh Read
+ok 22 - wrong call requires fresh Read
+  ---
+  duration_ms: 0.649792
+  ...
+# Subtest: wrong tool requires fresh Read
+ok 23 - wrong tool requires fresh Read
+  ---
+  duration_ms: 0.559209
+  ...
+# Subtest: new window requires fresh Read
+ok 24 - new window requires fresh Read
+  ---
+  duration_ms: 0.271583
+  ...
+# Subtest: conflicting paths requires fresh Read
+ok 25 - conflicting paths requires fresh Read
+  ---
+  duration_ms: 0.170167
+  ...
+# Subtest: source and request drift refuse stale query
+ok 26 - source and request drift refuse stale query
+  ---
+  duration_ms: 0.294083
+  ...
+# Subtest: arbitrary JSON remains data in both source-query Gap and complete plain Read
+ok 27 - arbitrary JSON remains data in both source-query Gap and complete plain Read
+  ---
+  duration_ms: 1.197834
+  ...
+# Subtest: member/index access never receives getter or proxy purity inference
+ok 28 - member/index access never receives getter or proxy purity inference
+  ---
+  duration_ms: 0.654
+  ...
+# Subtest: import alias never manufactures unobserved dependency declaration
+ok 29 - import alias never manufactures unobserved dependency declaration
+  ---
+  duration_ms: 0.505875
+  ...
+# Subtest: invalid or duplicate source refuses projection 35
+ok 30 - invalid or duplicate source refuses projection 35
+  ---
+  duration_ms: 0.520083
+  ...
+# Subtest: invalid or duplicate source refuses projection 55
+ok 31 - invalid or duplicate source refuses projection 55
+  ---
+  duration_ms: 0.425542
+  ...
+# Subtest: invalid or duplicate source refuses projection 59
+ok 32 - invalid or duplicate source refuses projection 59
+  ---
+  duration_ms: 0.426083
+  ...
+# Subtest: unsupported design/composition/Run cannot masquerade as source declaration
+ok 33 - unsupported design/composition/Run cannot masquerade as source declaration
+  ---
+  duration_ms: 0.068625
+  ...
+# Subtest: independent complete full Read still delegates exactly
+ok 34 - independent complete full Read still delegates exactly
+  ---
+  duration_ms: 209.689208
+  ...
+# Subtest: actual source selectedCandidate projects whole declaration with unknown effects
+ok 35 - actual source selectedCandidate projects whole declaration with unknown effects
+  ---
+  duration_ms: 5.6815
+  ...
+# Subtest: actual source candidateCompactSummary projects whole declaration with unknown effects
+ok 36 - actual source candidateCompactSummary projects whole declaration with unknown effects
+  ---
+  duration_ms: 5.854125
+  ...
+# Subtest: observed declaration is never a certified complete source module
+ok 37 - observed declaration is never a certified complete source module
+  ---
+  duration_ms: 0.330042
+  ...
+# Subtest: source containing getters remains unevaluated with unknown access effects
+ok 38 - source containing getters remains unevaluated with unknown access effects
+  ---
+  duration_ms: 0.257542
+  ...
+# Subtest: source-only projection cannot certify requested syntax or purity constraints
+ok 39 - source-only projection cannot certify requested syntax or purity constraints
+  ---
+  duration_ms: 0.06575
+  ...
+# Subtest: latest true provider error revokes an earlier complete declaration receipt
+ok 40 - latest true provider error revokes an earlier complete declaration receipt
+  ---
+  duration_ms: 0.197666
+  ...
+# Subtest: unknown absence cannot become an empty declaration success
+ok 41 - unknown absence cannot become an empty declaration success
+  ---
+  duration_ms: 0.120375
+  ...
+1..41
+# tests 41
+# suites 0
+# pass 41
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1239.889042
