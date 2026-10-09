@@ -43,6 +43,7 @@ function fixture(mode = "success") {
     ["rust/tests/unit/original.rs", originalSource],
     [".gitignore", "rust/src/ignored.rs\n"],
     ["fixture-data.txt", "whole tracked input\n"],
+    ["data/meta/test-durations.lino", "test_durations\n  default-seconds 0.092\n"],
   ]) {
     const full = join(cwd, path);
     mkdirSync(join(full, ".."), { recursive: true });
