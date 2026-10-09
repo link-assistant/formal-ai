@@ -1,0 +1,6 @@
+{
+  "task": "T4084",
+  "prompt": "Repair the actual native compiler E0277 at rust/tests/unit/ci-cd/source_test_placement.rs lines235/236/353: sha2 Sha256::digest returns an Array lacking LowerHex. Independently inspect this one source and replace incompatible digest formatting with generic explicit per-byte two-digit lowercase hexadecimal conversion. Preserve all three original digest inputs, whole-file reread integrity, exact original expected SHA256 bytes, every existing operation/assertion/refusal/control. Only this one test source may change; no native src, no other repo source/docs/generated files, no local compilation or native execution, no suppression. Use Formal AI tools to implement the finite repair. Full original CI log is /private/tmp/pr1188-020be4-official/job-114066682808.log.",
+  "marker": "T4084_COMPLETE",
+  "steps": 16
+}

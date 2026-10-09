@@ -232,8 +232,8 @@ fn external_test_file(
         return None;
     }
     let content = fs::read(&target).ok()?;
-    let digest = formal_ai::source_fetch::hex_lower(&Sha256::digest(&content));
-    if formal_ai::source_fetch::hex_lower(&Sha256::digest(fs::read(&target).ok()?)) != digest {
+    let digest = format!("{:x}", Sha256::digest(&content));
+    if format!("{:x}", Sha256::digest(fs::read(&target).ok()?)) != digest {
         return None;
     }
     Some((target, digest))
@@ -350,7 +350,7 @@ fn external_registration_proofs_preserve_the_original_physical_fixtures() {
         let registrations = external_test_registrations(root, &source_path, &content);
         let fixture_path = root.join(fixture).canonicalize().expect("physical fixture");
         let bytes = fs::read(&fixture_path).expect("complete fixture bytes");
-        let expected = formal_ai::source_fetch::hex_lower(&Sha256::digest(bytes));
+        let expected = format!("{:x}", Sha256::digest(bytes));
         assert_eq!(registrations.len(), 1, "one complete external declaration");
         assert_eq!(registrations[0].2, fixture_path);
         assert_eq!(registrations[0].3, expected, "whole fixture byte binding");

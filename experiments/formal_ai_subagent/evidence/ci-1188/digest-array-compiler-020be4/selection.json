@@ -1,0 +1,127 @@
+{
+  "actualHead": "020be4ac016b14d293a2b22e7f4db69479919c96",
+  "source": {
+    "path": "rust/tests/unit/ci-cd/source_test_placement.rs",
+    "sha256": "f7fd80955f7cc88fd31af856dabc2a93f38f90c0505f35295cff58f972723ac0"
+  },
+  "nativeCompiled": false,
+  "productionSourceEffects": [],
+  "globalTestWorkspaceChanged": true,
+  "wholeWorkspaceHistoricalReuseRefused": true,
+  "files": [
+    {
+      "original": "/private/tmp/pr1188-ci-T4084/T4084-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/ci-1188/digest-array-compiler-020be4/T4084/T4084-request.json",
+      "bytes": 851,
+      "sha256": "fa002b388205c735ab5810c2b1ec13109dfb54d850491345b88ad14c1efbdd6b"
+    },
+    {
+      "original": "/private/tmp/pr1188-ci-T4084/T4084.json",
+      "path": "experiments/formal_ai_subagent/evidence/ci-1188/digest-array-compiler-020be4/T4084/T4084.json",
+      "bytes": 2577,
+      "sha256": "acf93846b52fde6352ab87fb7784ebdc6d3d67b9a4df9ce402af092435022103"
+    },
+    {
+      "original": "/private/tmp/pr1188-ci-T4084/T4084.log",
+      "path": "experiments/formal_ai_subagent/evidence/ci-1188/digest-array-compiler-020be4/T4084/T4084.log",
+      "bytes": 96,
+      "sha256": "45a3d92fa03288db99c9a8fe21aa4210f1a690b5f873abd666b1340fb4b2b7ea"
+    },
+    {
+      "original": "/private/tmp/pr1188-ci-T4084/source.before.rs",
+      "path": "experiments/formal_ai_subagent/evidence/ci-1188/digest-array-compiler-020be4/T4084/source.before.rs",
+      "bytes": 16330,
+      "sha256": "f9a9a0af76ff6b911116c303adc302c5c4127093d3b30837d0f8b77d823db60f"
+    },
+    {
+      "original": "/private/tmp/pr1188-ci-T4085/T4085-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/ci-1188/digest-array-compiler-020be4/T4085/T4085-request.json",
+      "bytes": 153,
+      "sha256": "5b1f2501c5873f62278138b9a3c921b00e58abac211abb52e7ce46ec71a9f9b7"
+    },
+    {
+      "original": "/private/tmp/pr1188-ci-T4085/T4085.json",
+      "path": "experiments/formal_ai_subagent/evidence/ci-1188/digest-array-compiler-020be4/T4085/T4085.json",
+      "bytes": 721,
+      "sha256": "311e35cbe901994e4c22c285d7dbaa47e9fb0d308b540445e0864aa42a9171fe"
+    },
+    {
+      "original": "/private/tmp/pr1188-ci-T4085/T4085.log",
+      "path": "experiments/formal_ai_subagent/evidence/ci-1188/digest-array-compiler-020be4/T4085/T4085.log",
+      "bytes": 95,
+      "sha256": "39140122c28e5f15c2b093e7f94181641cdcd12a9c44b6d14354603a7e09c588"
+    },
+    {
+      "original": "/private/tmp/pr1188-ci-T4085/apply.mjs",
+      "path": "experiments/formal_ai_subagent/evidence/ci-1188/digest-array-compiler-020be4/T4085/apply.mjs",
+      "bytes": 499,
+      "sha256": "9aa99beeeba20380665baf14dacea68e2ad2dd4aaa9aa70459380a0cdb3f7a80"
+    },
+    {
+      "original": "/private/tmp/pr1188-ci-T4085/draft.rs",
+      "path": "experiments/formal_ai_subagent/evidence/ci-1188/digest-array-compiler-020be4/T4085/draft.rs",
+      "bytes": 16390,
+      "sha256": "f7fd80955f7cc88fd31af856dabc2a93f38f90c0505f35295cff58f972723ac0"
+    },
+    {
+      "original": "/private/tmp/pr1188-ci-T4086/T4086-request.json",
+      "path": "experiments/formal_ai_subagent/evidence/ci-1188/digest-array-compiler-020be4/T4086/T4086-request.json",
+      "bytes": 154,
+      "sha256": "68bad6002a33a2de06b48f4be3a1d276b7bf3180e9214680a9cb067e8c844f83"
+    },
+    {
+      "original": "/private/tmp/pr1188-ci-T4086/T4086.json",
+      "path": "experiments/formal_ai_subagent/evidence/ci-1188/digest-array-compiler-020be4/T4086/T4086.json",
+      "bytes": 724,
+      "sha256": "cff1489e8b3c779f7cfde68bbe9cbee2a624264066f36882f5f21d240e4aecf5"
+    },
+    {
+      "original": "/private/tmp/pr1188-ci-T4086/T4086.log",
+      "path": "experiments/formal_ai_subagent/evidence/ci-1188/digest-array-compiler-020be4/T4086/T4086.log",
+      "bytes": 95,
+      "sha256": "8a9adf43bae7ba545d7e07e9241ccb1f5d12d62faf41468760cb593e634d945d"
+    },
+    {
+      "original": "/private/tmp/pr1188-ci-T4086/format.log",
+      "path": "experiments/formal_ai_subagent/evidence/ci-1188/digest-array-compiler-020be4/T4086/format.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original": "/private/tmp/pr1188-ci-T4086/report.json",
+      "path": "experiments/formal_ai_subagent/evidence/ci-1188/digest-array-compiler-020be4/T4086/report.json",
+      "bytes": 754,
+      "sha256": "ea6e9622c5e77c16147f09b3e29414ab3da04dff4787384121a1b734a6bb59bf"
+    },
+    {
+      "original": "/private/tmp/pr1188-ci-T4086/structural.log",
+      "path": "experiments/formal_ai_subagent/evidence/ci-1188/digest-array-compiler-020be4/T4086/structural.log",
+      "bytes": 499,
+      "sha256": "5c75bbfa73c50185ad0401bced577e8c6993aceb31aa443594499fdb359f2425"
+    },
+    {
+      "original": "/private/tmp/pr1188-ci-T4086/verify.mjs",
+      "path": "experiments/formal_ai_subagent/evidence/ci-1188/digest-array-compiler-020be4/T4086/verify.mjs",
+      "bytes": 3092,
+      "sha256": "c41abfaa2274b81717f10d3042c333bcac74fd30803a120b1ded01265e74d814"
+    },
+    {
+      "original": "/private/tmp/pr1188-ci-T4086/whitespace.log",
+      "path": "experiments/formal_ai_subagent/evidence/ci-1188/digest-array-compiler-020be4/T4086/whitespace.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "original": "/private/tmp/pr1188-020be4-official/job-114066682808.log",
+      "path": "experiments/formal_ai_subagent/evidence/ci-1188/digest-array-compiler-020be4/original-job-114066682808.log",
+      "bytes": 239634,
+      "sha256": "91fb20df5c9d6af5e3d95a648972aa7c20f47d7bff9cf339301a357a4038d73f"
+    },
+    {
+      "original": "/private/tmp/pr1188-ci-T4087/ledger-rows.md",
+      "path": "experiments/formal_ai_subagent/evidence/ci-1188/digest-array-compiler-020be4/ledger-rows.md",
+      "bytes": 1060,
+      "sha256": "b0d6b76e9467728876fdcdb0521003eb54323590d64ad835fcb4a3ca67bfc0aa"
+    }
+  ]
+}
