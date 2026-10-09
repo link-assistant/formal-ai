@@ -14,16 +14,12 @@ use crate::summarization::{
 const RETURN_RECAP_MAX_WORDS: usize = 39;
 const RETURN_RECAP_MAX_SENTENCES: usize = 2;
 
-/// Recognise a request to summarize the running conversation by composing
-/// meaning roles rather than matching raw per-language phrases (issue #386).
-///
-/// The universal algorithm is identical for every language: the prompt either
-/// (a) carries a complete standalone conversation-summary phrasing, (b) carries
-/// an objectless courtesy frame asking for a summary, (c) names a summary
-/// directive *together with* a conversation reference, or (d) leads with a bare
-/// summary directive (`summarize`, `резюме`, `总结`, …). The prompt is
-/// re-normalised first so the boundary-aware matcher sees punctuation collapsed
-/// to spaces. Mirror of `asksForConversationSummary` in the browser worker.
+/// Recognise historical summary requests through loaded meaning roles.
+/// Standalone phrases, objectless courtesy, directive with conversation role,
+/// and bare directives share the same language-independent classifier.
+/// Normalized matching keeps literal supplied text with its declared owner.
+/// Mirrors isSummarizePrompt in the browser worker.
+/// Full rationale: docs/case-studies/pull-request-1188/conversation-summary-source-notes.md.
 fn asks_for_conversation_summary(normalized: &str) -> bool {
     let cleaned = normalize_prompt(normalized);
     let lexicon = seed::lexicon();
@@ -97,7 +93,11 @@ pub(super) fn try_summarize_conversation(
         seed::ROLE_CONVERSATION_RETURN_RECAP,
         &normalize_prompt(normalized),
     );
-    if !is_return_recap && !asks_for_conversation_summary(normalized) {
+    let head = normalize_prompt(super::super::text_rewrite::command_head(prompt));
+    let explicit_text = super::super::text_rewrite::free_text_payload(prompt).is_some()
+        && !seed::lexicon().mentions_role(seed::ROLE_CONVERSATION_REFERENCE, &head)
+        && !seed::lexicon().mentions_role(seed::ROLE_CONVERSATION_SUMMARY_PHRASE, &head);
+    if !is_return_recap && (explicit_text || !asks_for_conversation_summary(normalized)) {
         return None;
     }
     let mut turns: Vec<DialogTurn> = log

@@ -53,3 +53,35 @@ meanings
     lexeme hi "उपयोगकर्ता वापस आ रहा है" "मैं विराम के बाद वापस आया हूँ"
     lexeme zh 用户离开后回来了 我离开后回来了
     lexeme es "el usuario se alejó y está regresando" "he vuelto después de ausentarme"
+  conversation-recall-empty
+    defined-by conversation_reference
+    defined-by answer
+    lexeme en "empty conversation recall"
+    lexeme ru "пустое воспоминание о разговоре"
+    lexeme hi "खाली बातचीत स्मरण"
+    lexeme zh 空的对话回忆
+    lexeme es "recuerdo de conversación vacío"
+  conversation-recall-header
+    defined-by conversation_reference
+    defined-by answer
+    lexeme en "conversation recall header"
+    lexeme ru "заголовок воспоминания о разговоре"
+    lexeme hi "बातचीत स्मरण शीर्षक"
+    lexeme zh 对话回忆标题
+    lexeme es "encabezado del recuerdo de conversación"
+  conversation-recall-turn
+    defined-by conversation_reference
+    defined-by answer
+    lexeme en "recalled conversation turn"
+    lexeme ru "вспомненная реплика разговора"
+    lexeme hi "याद किया गया बातचीत संदेश"
+    lexeme zh 回忆的对话轮次
+    lexeme es "turno de conversación recordado"
+  conversation-summary-envelope
+    defined-by conversation_reference
+    defined-by conversation_summary_directive
+    lexeme en "conversation summary envelope"
+    lexeme ru "оболочка резюме разговора"
+    lexeme hi "बातचीत सारांश आवरण"
+    lexeme zh 对话摘要封装
+    lexeme es "envoltura del resumen de conversación"
