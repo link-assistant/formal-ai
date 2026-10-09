@@ -1,5 +1,7 @@
 //! Tests grouped by protocol module evidence.
 
+#[path = "agent_command_streams.rs"]
+mod agent_command_streams;
 #[path = "issue_1110_portable_rewrite.rs"]
 mod issue_1110_portable_rewrite;
 #[path = "issue_1138_agent_cli_ladder_recall.rs"]

@@ -372,6 +372,18 @@ impl AgentWorkspace {
         }
         let mut child = command.spawn()?;
         let started = Instant::now();
+        let stdout_reader = read_command_output(
+            child
+                .stdout
+                .take()
+                .ok_or_else(|| io::Error::from(io::ErrorKind::BrokenPipe))?,
+        );
+        let stderr_reader = read_command_output(
+            child
+                .stderr
+                .take()
+                .ok_or_else(|| io::Error::from(io::ErrorKind::BrokenPipe))?,
+        );
         let deadline_reached = loop {
             if child.try_wait()?.is_some() {
                 break false;
@@ -382,19 +394,21 @@ impl AgentWorkspace {
             }
             thread::sleep(Duration::from_millis(10));
         };
-        let output = child.wait_with_output()?;
+        let status = child.wait()?;
+        let stdout = finish_command_output(stdout_reader)?;
+        let stderr = finish_command_output(stderr_reader)?;
         // The child can exit after `try_wait` observes it running but before
         // `kill` reaches the kernel. On macOS, killing that unreaped process
         // can still return success even though its eventual status is exit 0.
         // The reaped status is authoritative: a successful child was not
         // terminated by our deadline.
-        let timed_out = command_timed_out(deadline_reached, output.status.success());
+        let timed_out = command_timed_out(deadline_reached, status.success());
         trace_command(&program_path, command_budget, started.elapsed(), timed_out);
         Ok(AgentCommandResult {
             command: command_line.to_owned(),
-            status_code: output.status.code(),
-            stdout: String::from_utf8_lossy(&output.stdout).to_string(),
-            stderr: String::from_utf8_lossy(&output.stderr).to_string(),
+            status_code: status.code(),
+            stdout: String::from_utf8_lossy(&stdout).to_string(),
+            stderr: String::from_utf8_lossy(&stderr).to_string(),
             timed_out,
         })
     }
@@ -756,6 +770,24 @@ fn trace_command(program_path: &Path, budget: Duration, elapsed: Duration, timed
             budget.as_millis()
         );
     }
+}
+
+// Drain both pipes while the child runs: waiting first can block a writer
+// against a full pipe and turn a working command into a deadline failure.
+fn read_command_output(
+    mut stream: impl io::Read + Send + 'static,
+) -> thread::JoinHandle<io::Result<Vec<u8>>> {
+    thread::spawn(move || {
+        let mut bytes = Vec::new();
+        stream.read_to_end(&mut bytes)?;
+        Ok(bytes)
+    })
+}
+
+fn finish_command_output(reader: thread::JoinHandle<io::Result<Vec<u8>>>) -> io::Result<Vec<u8>> {
+    reader
+        .join()
+        .map_err(|_| io::Error::from(io::ErrorKind::Other))?
 }
 
 const fn command_timed_out(deadline_reached: bool, status_success: bool) -> bool {
