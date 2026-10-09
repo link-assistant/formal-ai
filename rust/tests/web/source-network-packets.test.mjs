@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { gzipSync } from 'node:zlib';
 import { workflowPin } from '../../../scripts/translate-js-rust.mjs';
-import { partitionSourcePaths, serializeSourceNetwork, sourceDigest, verifySourcePacket, verifySourceDistribution } from '../../../scripts/lib/source-network-packets.mjs';
+import { partitionSourcePaths, serializeSourceNetwork, createSourcePacket, sourceDigest, verifySourcePacket, verifySourceDistribution } from '../../../scripts/lib/source-network-packets.mjs';
 
 test('every source has exactly one stable shard, including non-ASCII paths', () => {
   const paths = ['rust/src/α.rs', 'js/a.mjs', 'ts/a.mts', 'rust/src/z.rs', 'js/😀.js'];
@@ -124,4 +124,24 @@ test('production source producer imports without launching serialization and enu
   assert.equal(paths.length, new Set(paths).size);
   assert.ok(paths.every((path) => !path.startsWith('rust/tests/') && !path.startsWith('js/vendor/')
     && !path.startsWith('js/seed/') && !path.endsWith('.bundle.js')));
+});
+
+
+test('compressed producer reconstructs its actual network once and preserves all source bytes', () => {
+  const source = '\uFEFF// 😀\r\nconst value = "α";';
+  let parses = 0, decodes = 0;
+  const LinkNetwork = {
+    parse: (text) => { parses += 1; return { toLino: () => '(1: (meta: (def: ' + encodeURIComponent(text) + ')))\n' }; },
+    fromLino: (document) => { decodes += 1; return { reconstructText: () =>
+      decodeURIComponent(document.match(/\(def: ([^)]*)\)/u)[1]) }; },
+  };
+  const result = createSourcePacket({ path: 'js/arbitrary.mjs', language: 'JavaScript', source }, LinkNetwork);
+  assert.equal(parses, 1);
+  assert.equal(decodes, 1);
+  assert.equal(result.receipt.sourceSha256, sourceDigest(Buffer.from(source)));
+  assert.equal(verifySourcePacket(result.receipt, result.compressed, LinkNetwork), source);
+  assert.equal(decodes, 2);
+  assert.throws(() => createSourcePacket({ path: 'js/arbitrary.mjs', language: 'JavaScript', source }, {
+    ...LinkNetwork, fromLino: () => ({ reconstructText: () => source.trimEnd() + '\n' }),
+  }), /reconstructed source identity/u);
 });

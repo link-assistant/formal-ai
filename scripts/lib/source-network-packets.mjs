@@ -1,6 +1,6 @@
 // Lossless network packets for owned source: full serialized bytes and verified reconstruction.
 import { createHash } from 'node:crypto';
-import { gunzipSync } from 'node:zlib';
+import { gzipSync, gunzipSync } from 'node:zlib';
 
 export const sourceDigest = (bytes) => createHash('sha256').update(bytes).digest('hex');
 
@@ -15,15 +15,10 @@ export function partitionSourcePaths(paths, shardIndex, shardCount) {
     .filter((_, index) => index % shardCount === shardIndex);
 }
 
-/** The upstream serializer must preserve the actual source through its decoder, not its digest alone. */
-export function serializeSourceNetwork({ path, language, source }, LinkNetwork) {
+/** Encode the complete pinned parser network without discarding its AST or metadata. */
+function sourceNetworkDocument({ path, language, source }, LinkNetwork) {
   const sourceBytes = Buffer.from(source, 'utf8');
-  const network = LinkNetwork.parse(source, language);
-  const document = network.toLino();
-  const restored = LinkNetwork.fromLino(document).reconstructText();
-  if (typeof restored !== 'string' || !Buffer.from(restored, 'utf8').equals(sourceBytes)) {
-    throw new Error('source network round trip differs: ' + path);
-  }
+  const document = LinkNetwork.parse(source, language).toLino();
   const serializedBytes = Buffer.from(document, 'utf8');
   return {
     document,
@@ -33,6 +28,28 @@ export function serializeSourceNetwork({ path, language, source }, LinkNetwork) 
       fidelity: 'lossless-network-serialization',
     },
   };
+}
+
+/** The upstream decoder must preserve actual source bytes, not its digest alone. */
+export function serializeSourceNetwork(options, LinkNetwork) {
+  const result = sourceNetworkDocument(options, LinkNetwork);
+  const restored = LinkNetwork.fromLino(result.document).reconstructText();
+  if (typeof restored !== 'string' || !Buffer.from(restored, 'utf8').equals(Buffer.from(options.source, 'utf8'))) {
+    throw new Error('source network round trip differs: ' + options.path);
+  }
+  return result;
+}
+
+/** Decode the actual compressed packet exactly once after its network and gzip identities are bound. */
+export function createSourcePacket(options, LinkNetwork) {
+  const { document, receipt } = sourceNetworkDocument(options, LinkNetwork);
+  const compressed = gzipSync(Buffer.from(document, 'utf8'));
+  const packetReceipt = { ...receipt, packet: options.path + '.lino.gz',
+    compressedBytes: compressed.length, compressedSha256: sourceDigest(compressed) };
+  if (verifySourcePacket(packetReceipt, compressed, LinkNetwork) !== options.source) {
+    throw new Error('packet reconstruction differs: ' + options.path);
+  }
+  return { compressed, receipt: packetReceipt };
 }
 
 /** Validate a downloaded packet's compressed/network identities and reconstruct the recorded source bytes. */
