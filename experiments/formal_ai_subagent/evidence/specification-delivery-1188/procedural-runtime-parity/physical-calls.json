@@ -1,9 +1,9 @@
 {
-  "cutoff": "T3158",
-  "total": 34,
+  "cutoff": "T3162",
+  "total": 42,
   "counts": {
-    "bash": 19,
-    "write": 3,
+    "bash": 25,
+    "write": 5,
     "read": 6,
     "edit": 6
   },
@@ -143,7 +143,39 @@
     {
       "task": "T3158",
       "call": "bash"
+    },
+    {
+      "task": "T3159",
+      "call": "bash"
+    },
+    {
+      "task": "T3160",
+      "call": "bash"
+    },
+    {
+      "task": "T3160",
+      "call": "write"
+    },
+    {
+      "task": "T3160",
+      "call": "bash"
+    },
+    {
+      "task": "T3161",
+      "call": "bash"
+    },
+    {
+      "task": "T3161",
+      "call": "write"
+    },
+    {
+      "task": "T3161",
+      "call": "bash"
+    },
+    {
+      "task": "T3162",
+      "call": "bash"
     }
   ],
-  "scope": "Physical delegated calls, not measured token or financial cost; T3159 sealing call retained externally."
+  "scope": "Physical calls, not measured token or financial costs. T3163 one sealing Bash retained externally."
 }

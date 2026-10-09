@@ -498,6 +498,132 @@
       "origin": "/private/tmp/spec-recurrence-1188/seal-procedural-runtime.mjs",
       "bytes": 8276,
       "sha256": "5ec7c9e2a572fb68094cebd627c7bcba512db4feb04382b0f4acc1ac56a034d1"
+    },
+    {
+      "artifact": "raw/T3159-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3159-observation.json",
+      "bytes": 53,
+      "sha256": "a74f517ca6ee53ab9fa3b94103b98e67306e22ddf08d115701d12a5d1d0e5065"
+    },
+    {
+      "artifact": "raw/T3159-prompt.txt.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3159-prompt.txt",
+      "bytes": 71,
+      "sha256": "872aa28f1cbaf81df842c829afcc7d1f149be5495a3a391275983d6e74b2eb5c"
+    },
+    {
+      "artifact": "raw/T3159-request.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3159-request.json",
+      "bytes": 180,
+      "sha256": "cf7578df2669fe10833b10d9cdadd55a814cea3329af8bd2835ebbdb7776985d"
+    },
+    {
+      "artifact": "raw/T3159.log.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3159.log",
+      "bytes": 1431,
+      "sha256": "e7183aaf980e43f9e6f14c7cbbbfdfa943c9a43f080143c13cbe1d9a80d4771b"
+    },
+    {
+      "artifact": "raw/T3160-byte-check.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3160-byte-check.json",
+      "bytes": 116,
+      "sha256": "138856a0c79d567360e55ec600e64dfcb848168c2782b83ea8201d457da37907"
+    },
+    {
+      "artifact": "raw/T3160-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3160-observation.json",
+      "bytes": 78,
+      "sha256": "885601438c93e0b974a017b186e0009582aa9b86367d1343e84b5b63b7382d55"
+    },
+    {
+      "artifact": "raw/T3160-prompt.txt.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3160-prompt.txt",
+      "bytes": 44897,
+      "sha256": "28444100ab4ff5cb67a402a8baf2834e0e020e2107afe9f1ef598eebdc004d62"
+    },
+    {
+      "artifact": "raw/T3160-request.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3160-request.json",
+      "bytes": 46854,
+      "sha256": "f5eea20df22ceadd5b03bb498754f06b6279ef24a2ef7b277345d81afa742432"
+    },
+    {
+      "artifact": "raw/T3160.log.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3160.log",
+      "bytes": 384390,
+      "sha256": "54b6ad670cb5e0637e015b19792865fb7467d527f3c9dd28d2f4f081bfcd5586"
+    },
+    {
+      "artifact": "raw/T3161-byte-check.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3161-byte-check.json",
+      "bytes": 110,
+      "sha256": "f8ddb1fefebeb39ff85813e465b08b9fa62604a2cec1feaa3e588c022be3f55a"
+    },
+    {
+      "artifact": "raw/T3161-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3161-observation.json",
+      "bytes": 78,
+      "sha256": "7cbad5ab1665abb33f0cb3ebdf9d1ef7019152062e7d400aa6b2a35547e92043"
+    },
+    {
+      "artifact": "raw/T3161-prompt.txt.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3161-prompt.txt",
+      "bytes": 7685,
+      "sha256": "97ac6265ed01902b9ca867d8ea8af8088d73487afc7e1e0853a2c021a3db57f1"
+    },
+    {
+      "artifact": "raw/T3161-request.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3161-request.json",
+      "bytes": 8105,
+      "sha256": "c39562ed871cb13969a32b22c7c34384a304258e23842c6a64e76d80aa8e72dc"
+    },
+    {
+      "artifact": "raw/T3161.log.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3161.log",
+      "bytes": 68765,
+      "sha256": "4fdb065e367af05fa21db188d24c97f8417915db159b6e476547bc24b45e51bc"
+    },
+    {
+      "artifact": "raw/T3162-observation.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3162-observation.json",
+      "bytes": 53,
+      "sha256": "2689752511a6e9fd977f5dd2156c668e83fff41a83551af93e1755c5fb12d0cf"
+    },
+    {
+      "artifact": "raw/T3162-prompt.txt.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3162-prompt.txt",
+      "bytes": 117,
+      "sha256": "eeb91691475fa7e2e79c5559f1424d60bd5d5acf79a1c2c9006f0a3fe37ceddf"
+    },
+    {
+      "artifact": "raw/T3162-request.json.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3162-request.json",
+      "bytes": 226,
+      "sha256": "81c761fdd76bc097dd25bdb50397fce6dcd6ebc77f349f46fb7565f2e08f7722"
+    },
+    {
+      "artifact": "raw/T3162.log.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/T3162.log",
+      "bytes": 7297,
+      "sha256": "3c6e1dc9e4ed689245a92237bf8460967a9f92548de4fa6b6ec8b28b9bfab87b"
+    },
+    {
+      "artifact": "raw/procedural-attempted.draft.js.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/procedural-attempted.draft.js",
+      "bytes": 44766,
+      "sha256": "56611cfa32b73c81d6c6a950ba797e855d7ed584e2fd6e1d33e28c26bcb7c0e5"
+    },
+    {
+      "artifact": "raw/procedural-shortcircuit-test.draft.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/procedural-shortcircuit-test.draft",
+      "bytes": 7560,
+      "sha256": "94e2b34324794ed0c016d87f9dfe42cb6c87bea9934a2d9f3272974bcce919c2"
+    },
+    {
+      "artifact": "raw/seal-procedural-followup.mjs.gz",
+      "origin": "/private/tmp/spec-recurrence-1188/seal-procedural-followup.mjs",
+      "bytes": 3830,
+      "sha256": "545963f7af8d6c4489f26c616b6a05e62194f2fb78d62079e27cad8dedeab0bb"
     }
   ],
   "source": [
@@ -512,6 +638,20 @@
       "bytes": 6210,
       "sha256": "e29478b95a3cb8bfe19b6dee08d59bf5f21d9d1fce984c0a153523aa90e62c8c",
       "lines": 125
+    }
+  ],
+  "finalSource": [
+    {
+      "file": "js/worker/formal_ai_worker_search_queries_and_how_to.js",
+      "bytes": 44766,
+      "sha256": "56611cfa32b73c81d6c6a950ba797e855d7ed584e2fd6e1d33e28c26bcb7c0e5",
+      "lines": 1208
+    },
+    {
+      "file": "rust/tests/web/procedural-runtime-parity.test.mjs",
+      "bytes": 7560,
+      "sha256": "94e2b34324794ed0c016d87f9dfe42cb6c87bea9934a2d9f3272974bcce919c2",
+      "lines": 143
     }
   ]
 }

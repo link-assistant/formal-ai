@@ -123,3 +123,21 @@ test("genuine captured source steps survive discovery-plan rendering", async () 
     assert.ok(requested.includes(step.sourceUrl));
   }
 });
+
+test("typed discovery stages distinguish skipped, attempted and disabled wikiHow", async () => {
+  const context = await bootWorker(new Map());
+  const input = '{action:"install",task:"install cedar",object:"cedar"}';
+  const args = input + ', "Install-Cedar", "https://www.wikihow.com/api.php?page=Install-Cedar", "cedar installation official documentation", "how to install cedar"';
+  const skipped = plain(evaluate(context, 'proceduralDiscoveryEvents(' + args + ', true, false)'));
+  assert.ok(!skipped.some(event => event.kind === "http_fetch:request"));
+  assert.ok(!skipped.some(event => event.kind === "procedural_how_to:service_disabled"));
+  assert.ok(skipped.some(event => event.kind === "procedural_how_to:source_gate"
+    && event.payload === "official_documentation_first"));
+  const attempted = plain(evaluate(context, 'proceduralDiscoveryEvents(' + args + ', true, true)'));
+  assert.ok(attempted.some(event => event.kind === "http_fetch:request"
+    && event.payload === "https://www.wikihow.com/api.php?page=Install-Cedar"));
+  const disabled = plain(evaluate(context, 'proceduralDiscoveryEvents(' + args + ', false, false)'));
+  assert.ok(!disabled.some(event => event.kind === "http_fetch:request"));
+  assert.ok(disabled.some(event => event.kind === "procedural_how_to:service_disabled"
+    && event.payload === "wikihow"));
+});

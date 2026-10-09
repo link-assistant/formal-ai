@@ -703,7 +703,7 @@ function proceduralSearchQuery(task) {
 }
 
 // Native discovery plan over the actual parsed task and declared source route.
-function proceduralDiscoveryPlan(task, language, pageTitle, apiUrl, searchQuery, fallbackQuery, providers) {
+function proceduralDiscoveryPlan(task, language, pageTitle, searchQuery, fallbackQuery, providers) {
   const installGate = task.action === "install" ? howResponse("procedural_how_to_install_gate", language,
     { search_query: searchQuery, fallback_query: fallbackQuery }) : "";
   return howResponse("procedural_how_to_plan", language, {
@@ -713,14 +713,14 @@ function proceduralDiscoveryPlan(task, language, pageTitle, apiUrl, searchQuery,
 }
 
 // The native plan's typed request/stage records; capture diagnostics stay separate.
-function proceduralDiscoveryEvents(task, pageTitle, apiUrl, searchQuery, fallbackQuery, wikihowEnabled) {
+function proceduralDiscoveryEvents(task, pageTitle, apiUrl, searchQuery, fallbackQuery, wikihowEnabled, wikihowAttempted) {
   const request = task.action === "do" && task.object ? task.object : task.task;
   const pairs = [["procedural_how_to:request", request], ["procedural_how_to:action", task.action]];
   if (task.object) pairs.push(["procedural_how_to:object", task.object]);
   if (task.action === "install") pairs.push(["procedural_how_to:stage", "official_documentation"],
     ["procedural_how_to:source_gate", "official_documentation_first"]);
   pairs.push(["procedural_how_to:stage", "wikipedia"], ["procedural_how_to:stage", "wikidata"]);
-  if (wikihowEnabled) pairs.push(["procedural_how_to:stage", "wikihow_api"],
+  if (wikihowAttempted) pairs.push(["procedural_how_to:stage", "wikihow_api"],
     ["procedural_how_to:wikihow_candidate", pageTitle], ["http_fetch:request", apiUrl]);
   if (!wikihowEnabled) pairs.push(["procedural_how_to:service_disabled", "wikihow"]);
   pairs.push(["procedural_how_to:stage", "web_search"], ["web_search:request", searchQuery]);
@@ -904,9 +904,9 @@ async function tryProceduralHowTo(prompt, language, preferences = {}) {
   const discoveryOnly = !sourceContentObserved && servicesEnabled;
   return {
     intent: "procedural_how_to",
-    content: discoveryOnly ? proceduralDiscoveryPlan(task, language, pageTitle, apiUrl, searchQuery, query, providerSummary)
+    content: discoveryOnly ? proceduralDiscoveryPlan(task, language, pageTitle, searchQuery, query, providerSummary)
       : lines.join("\n"),
-    solverEvents: proceduralDiscoveryEvents(task, pageTitle, apiUrl, searchQuery, query, wikihowEnabled),
+    solverEvents: proceduralDiscoveryEvents(task, pageTitle, apiUrl, searchQuery, query, wikihowEnabled, !officialSearchUsable && wikihowEnabled),
     confidence,
     evidence,
     diagnostics,
