@@ -86,7 +86,19 @@ RUN apt-get update && \
 COPY --from=oven/bun:1.4.2 /usr/local/bin/bun /usr/local/bin/bun
 RUN chmod 0755 /usr/local/bin/bun
 
-RUN useradd --create-home --uid 1000 box
+RUN set -eu; \
+    current_user="$(getent passwd 1000 | cut -d: -f1)"; \
+    if [ -n "$current_user" ]; then \
+      current_group="$(id -gn "$current_user")"; \
+      if [ "$current_user" != box ]; then \
+        usermod --login box --home /home/box --move-home "$current_user"; \
+      fi; \
+      if [ "$current_group" != box ]; then groupmod --new-name box "$current_group"; fi; \
+    else \
+      useradd --create-home --uid 1000 box; \
+    fi; \
+    test "$(id -u box)" = 1000; \
+    test "$(getent passwd box | cut -d: -f6)" = /home/box
 USER box
 WORKDIR /home/box
 RUN bun install -g start-command @link-assistant/agent agent-commander && \
