@@ -36,7 +36,11 @@ test('physical stale main refuses before mutation, before commit and before retr
  const other=join(f.directory,'other');f.run(f.directory,['clone',f.remote,other]);f.run(other,['checkout','main']);f.run(other,['config','user.name','Fixture']);f.run(other,['config','user.email','fixture@example.invalid']);writeFileSync(join(other,'source.txt'),'different main source\n');f.run(other,['commit','-am','advanced main']);f.run(other,['push','origin','main']);
  if(phase==='before-commit'){writeFileSync(join(f.cwd,'version.txt'),'1.2.3\n');f.run(f.cwd,['add','version.txt']);}assert.throws(()=>f.check(phase),/main advanced|main changed/);
  }finally{f.close();}}
- for(const mutation of ['tree','child','unrecorded']){const f=fixture();try{f.check('before-sync');f.child();if(mutation!=='unrecorded')f.check('before-push');if(mutation==='tree'){writeFileSync(join(f.cwd,'source.txt'),'spoof executable source\n');f.run(f.cwd,['commit','-am','changed source']);}else if(mutation==='child')f.run(f.cwd,['commit','--amend','-m','arbitrary replacement child']);assert.throws(()=>f.check('push-retry'),/tree|child|recorded/);}finally{f.close();}}
+ for(const mutation of ['tree','child','unrecorded']){const f=fixture();try{f.check('before-sync');f.child();
+ if(mutation!=='unrecorded')f.check('before-push');
+ if(mutation==='tree'){writeFileSync(join(f.cwd,'source.txt'),'spoof executable source\n');f.run(f.cwd,['commit','-am','changed source']);}
+ else if(mutation==='child')f.run(f.cwd,['commit','--amend','-m','arbitrary replacement child']);
+ assert.throws(()=>f.check('push-retry'),/tree|child|recorded/);}finally{f.close();}}
 });
 test('spoofed caller, identity, event, origin and recorded source fail closed',()=>{
  const f=fixture();try{
