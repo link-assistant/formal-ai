@@ -8,7 +8,7 @@ use crate::agentic_coding::planner::AgenticPlan;
 use crate::agentic_coding::request_sequence::plan_bound_request_steps;
 use crate::agentic_coding::shell_command_policy::sentences;
 use crate::agentic_coding::write_request::{
-    compose_edit_clauses, first_action_cue_end, first_action_cue_start, tokens,
+    compose_edit_clauses, first_action_cue_end, first_action_cue_start, preferred_binding, tokens,
 };
 use crate::normal_markov::{quote_fault, quoted_segment_spans};
 use crate::obligation_ledger::{ObligationExpectation, ObligationNode};
@@ -42,6 +42,32 @@ fn closed_payload(request: &str, contract: &LiteralWriteContract) -> Option<Rang
                     })
         })
         .map(|span| span.start..span.end)
+}
+fn literal_tail(request: &str, contract: &LiteralWriteContract) -> bool {
+    let end = closed_payload(request, contract).map_or(contract.payload.end, |span| span.end);
+    if request.get(end..).is_some_and(grammar_tail) {
+        return true;
+    }
+    let words = tokens(request);
+    let Some(binding) = preferred_binding(&words) else {
+        return false;
+    };
+    let Some(target) = words.get(binding.index) else {
+        return false;
+    };
+    binding.path == contract.target
+        && binding.cue_precedes
+        && target.start == contract.target_span.start
+        && target.end == contract.target_span.end
+        && binding.cue_start >= end
+        && binding.cue_end <= target.start
+        && request
+            .get(end..binding.cue_start)
+            .is_some_and(grammar_tail)
+        && request
+            .get(binding.cue_end..target.start)
+            .is_some_and(grammar_tail)
+        && request.get(target.end..).is_some_and(grammar_tail)
 }
 fn literal_write_ownership(request: &str) -> Option<LiteralWriteContract> {
     let contract = parse_write_contract(request)?;
@@ -90,16 +116,12 @@ fn goal_ledger(request: &str) -> Option<Vec<Goal>> {
         let clause = raw.trim();
         let start = sentence.span.start + raw.find(clause)?;
         let literal = literal_write_ownership(clause);
-        let edit = if literal.is_none() {
-            compose_edit_clauses(clause)
-        } else {
-            None
-        };
-        let complete_literal = literal.as_ref().is_some_and(|contract| {
-            let end =
-                closed_payload(clause, contract).map_or(contract.payload.end, |span| span.end);
-            clause.get(end..).is_some_and(grammar_tail)
-        });
+        let edit = literal
+            .as_ref()
+            .map_or_else(|| compose_edit_clauses(clause), |_| None);
+        let complete_literal = literal
+            .as_ref()
+            .is_some_and(|contract| literal_tail(clause, contract));
         let kind = if complete_literal {
             GoalKind::LiteralFile
         } else if edit.as_ref().is_some_and(|edit| edit.spans.is_some()) {
@@ -130,10 +152,13 @@ fn goal_ledger(request: &str) -> Option<Vec<Goal>> {
     if goals.is_empty() || goals.len() == 1 && goals[0].kind != GoalKind::Unsupported {
         return None;
     }
-    goals
-        .iter()
-        .any(|goal| literal_write_ownership(&goal.node.clause).is_some())
-        .then_some(goals)
+    (contract
+        .as_ref()
+        .is_some_and(|contract| contract.target_span.start >= contract.payload.end)
+        || goals
+            .iter()
+            .any(|goal| literal_write_ownership(&goal.node.clause).is_some()))
+    .then_some(goals)
 }
 fn goal_gap(goal: &Goal, result: &mut Option<FinalResult>) -> AgenticPlan {
     record(
@@ -171,7 +196,12 @@ pub(in crate::agentic_coding) fn plan_owned_goal_step(
             return Some(goal_gap(missing, result));
         }
         if index == 0 {
-            return None;
+            return literal_write_ownership(request)
+                .filter(|contract| {
+                    contract.target_span.start >= contract.payload.end
+                        && first_action_cue_start(&tokens(&goals[index].node.clause)).is_some()
+                })
+                .map(|_| goal_gap(&goals[index], result));
         }
         let parts: Vec<_> = goals[..index]
             .iter()
