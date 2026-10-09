@@ -142,31 +142,32 @@ reciprocal-rank fusion. JavaScript keeps the browser-only responsibilities: UI
 state, seed-file fetch/parsing, network/CORS orchestration, DOM integration,
 and compatibility fallbacks when WASM cannot be instantiated.
 
-**The browser boundary is not yet narrow, and this is the honest current
-state.** The WASM worker crate (`js/wasm-worker/src/`) is 2,156 lines,
-while `js/worker/` still carries the mirrored solver logic in 35
-JavaScript modules, every one under a shrink-only ceiling recorded in
-`data/meta/worker-line-budget/` (the 35 ceilings sum to 30,179 lines as of
-this writing) and enforced by `scripts/check-worker-line-budget.rs` toward a
-3,000-line end-state target — the cross-runtime parity (E34) and
-issue #349/#408 handlers were mirrored into JavaScript rather than absorbed
-into WASM. Pillar 18 ("Rust-to-WebAssembly parity with JavaScript reserved for
-UI/glue") therefore describes the target, not today's split. The
-WASM-absorption epic [#658](https://github.com/link-assistant/formal-ai/issues/658)
-closed on 2026-07-18 (PR #691); what carries the absorption now is the
-shrink-only ratchet toward that end-state target, which in turn unblocks the
-npm-published engine in issue
-[#665](https://github.com/link-assistant/formal-ai/issues/665).
+**The browser root is a full implementation target with measured parity gaps.**
+The [three-root doctrine](../requirements/doctrine-standing-doctrine-three-roots-full-parity-through-the-meta-language-2026-09-24.md)
+(R992–R996) supersedes the 2026-08-04 interfacing-only JavaScript rule
+(R536). JavaScript and TypeScript are intended to implement client, server
+and reasoning behavior, with equivalence through the meta language.
+The [source-root status](../source-roots.md) states which parts are delivered;
+the complete four-root translation cycle remains open.
 
-**Standing principle (2026-08-04, R536).** JavaScript is interfacing glue
-and JSX (React) UI only. All logic is compiled Rust: native in the CLI,
-server, and desktop-managed processes; Rust→WASM in the web app. The same
-WASM web engine is reused — not reimplemented — by the desktop shell and
-the VS Code hosts. The remaining `js/worker/*.js` solver logic is a
-transitional mirror under the shrink-only ratchet
-`scripts/check-worker-line-budget.rs`; it may only move into Rust→WASM,
-never grow, and the checker's 3,000-line `TARGET_TOTAL_LINES` is the end
-state.
+The WASM worker remains available to surfaces that use it. Desktop and
+VS Code can reuse the same browser engine rather than maintain a separate
+answerer. The closed WASM-absorption epic #658/PR #691 does not establish
+full three-root parity or reinstate the superseded UI/glue-only boundary.
+
+**Worker budgets remain enforced.** R995 retains the per-module ratchet in
+`data/meta/worker-line-budget/` while mirrored logic is replaced by the
+parity migration. Its historical 3,000-line UI/glue end-state dissolves
+after that migration rather than becoming a mandatory target for the
+JavaScript implementation root. The
+[JavaScript-first amendment](../requirements/doctrine-standing-doctrine-javascript-first-full-parity-then-translate-2026-10-06.md)
+(R999) permits a module ceiling to rise for a JavaScript twin of a native
+handler only when the shard's rationale names the handler keys.
+`scripts/check-worker-line-budget.mjs` and its Rust counterpart enforce
+the budgets; `rust/tests/web/r999-worker-budget-rationale.test.mjs`
+requires a rationale for every module, compliance with each ceiling and
+the named handler or defined function behind amended growth. This does
+not permit unexplained growth or claim complete runtime parity.
 
 Each surface assembles the same `Context` shape so the pipeline answers
 identically. The desktop app intentionally stays a wrapper: it sends prompts

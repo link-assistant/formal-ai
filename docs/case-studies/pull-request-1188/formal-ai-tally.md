@@ -9,19 +9,19 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 
 | Who | Tasks | Passed | Failed | Partial | Fixed | Open | Not reproduced | Unresolved |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **All** | 2775 | 1927 | 535 | 57 | 417 | 166 | 9 | 0 |
+| **All** | 2890 | 1979 | 550 | 57 | 428 | 170 | 9 | 0 |
 | CHAT-ROUTES | 13 | 10 | 3 | 0 | 3 | 0 | 0 | 0 |
 | CI-FIXER | 41 | 38 | 3 | 0 | 3 | 0 | 0 | 0 |
 | CI-SPEED | 6 | 6 | 0 | 0 | 0 | 0 | 0 | 0 |
 | CIFIX | 314 | 309 | 5 | 0 | 5 | 0 | 0 | 0 |
 | CIFIX2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
-| coordinator | 658 | 341 | 187 | 4 | 176 | 14 | 1 | 0 |
+| coordinator | 682 | 341 | 187 | 4 | 176 | 14 | 1 | 0 |
 | DEBUG2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
 | DEBUG3 | 2 | 1 | 1 | 0 | 1 | 0 | 0 | 0 |
 | DISCOVER | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | FINITE-GATE | 15 | 13 | 2 | 0 | 1 | 1 | 0 | 0 |
 | FIX-GAPS | 15 | 15 | 0 | 0 | 0 | 0 | 0 | 0 |
-| FORMAL-AI-ONLY | 254 | 113 | 64 | 15 | 32 | 47 | 0 | 0 |
+| FORMAL-AI-ONLY | 275 | 113 | 71 | 15 | 38 | 48 | 0 | 0 |
 | GENERALIZE | 16 | 16 | 0 | 0 | 0 | 0 | 0 | 0 |
 | LEAD | 18 | 16 | 0 | 1 | 1 | 0 | 0 | 0 |
 | LEXEMES | 4 | 3 | 1 | 0 | 1 | 0 | 0 | 0 |
@@ -41,7 +41,7 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 | SCRIPTS-B | 5 | 5 | 0 | 0 | 0 | 0 | 0 | 0 |
 | SPANISH | 3 | 2 | 1 | 0 | 1 | 0 | 0 | 0 |
 | SPEC-DELIVERY | 535 | 386 | 78 | 7 | 44 | 40 | 1 | 0 |
-| SPEC-PARITY | 212 | 158 | 50 | 2 | 24 | 28 | 0 | 0 |
+| SPEC-PARITY | 282 | 210 | 58 | 2 | 29 | 31 | 0 | 0 |
 | TEACH-C | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | TEACH-F | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | TEXT-CAPABILITY | 9 | 9 | 0 | 0 | 0 | 0 | 0 | 0 |
