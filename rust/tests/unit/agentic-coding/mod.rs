@@ -2,8 +2,6 @@
 
 #[path = "agentic_backend_actions.rs"]
 mod agentic_backend_actions;
-#[path = "agentic_coding.rs"]
-mod planning_routes;
 #[path = "agentic_general_planner.rs"]
 mod agentic_general_planner;
 #[path = "agentic_surfaces.rs"]
@@ -102,6 +100,8 @@ mod issue_870_routing;
 mod issue_996_markdown;
 #[path = "location_and_edit_routing.rs"]
 mod location_and_edit_routing;
+#[path = "agentic_coding.rs"]
+mod planning_routes;
 #[path = "proactive_failure_reports.rs"]
 mod proactive_failure_reports;
 #[path = "pull_request_1188_addition_guard.rs"]
@@ -130,3 +130,6 @@ mod self_coding;
 mod system_diagrams;
 #[path = "work_item_planning.rs"]
 mod work_item_planning;
+
+#[path = "final_result_contracts.rs"]
+mod final_result_contracts;
