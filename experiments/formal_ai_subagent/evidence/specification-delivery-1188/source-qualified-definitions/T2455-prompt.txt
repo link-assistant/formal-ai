@@ -1,3 +1,5 @@
+Set the contents of rust/src/solver_handlers/source_qualified_definition.rs to exactly this content:
+````````````text
 //! Source-qualified definitions bind two seeded slots before any lookup.
 use super::finalize_simple;
 use crate::engine::SymbolicAnswer;
@@ -279,3 +281,4 @@ pub(super) fn try_definition<T: SourceTransport>(
 #[cfg(test)]
 #[path = "../../tests/fixtures/source-qualified-definition-slots.rs"]
 mod tests;
+````````````

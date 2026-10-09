@@ -1,15 +1,15 @@
 {
-  "cutoff": "T2453",
-  "invocations": 54,
-  "observedToolCalls": 116,
-  "repositoryWriteToolCalls": 32,
+  "cutoff": "T2458",
+  "invocations": 59,
+  "observedToolCalls": 125,
+  "repositoryWriteToolCalls": 34,
   "repositoryFormatBashCalls": 5,
   "sharedRecordGeneratorBashCalls": 1,
-  "evidenceCopyEncodingBashCalls": 4,
-  "repositoryMutationToolCalls": 42,
-  "excludedHistoryAppendBashCalls": 32,
+  "evidenceCopyEncodingBashCalls": 5,
+  "repositoryMutationToolCalls": 45,
+  "excludedHistoryAppendBashCalls": 34,
   "actualModelTokensMeasured": false,
   "moneyMeasured": false,
   "sourceCommit": "7de1ef3545af1079163ac219ed9e0dfd382a80f6",
-  "rawTranscriptGitNote": "All raw task transcripts throughT2452 are SHA-verified UTF-8 JSON envelopes, decoded byte-equal; original .log files remain in scratch/ignored worktree. Final packagerT2453 raw remains in scratch for coordinator observation."
+  "rawTranscriptGitNote": "All transcripts throughT2457 archived losslessly; finalpackagerT2458 raw remains scratch for coordinator."
 }

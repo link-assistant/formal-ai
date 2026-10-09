@@ -1,0 +1,26 @@
+use super::*;
+#[test]
+fn seeded_slots_keep_provider_distinct_from_subject() {
+    assert_eq!(
+        request("Cite a definition of associative memory from Wikipedia"),
+        Some(Request {
+            term: String::from("associative memory"),
+            source: String::from("Wikipedia"),
+            language: String::from("en")
+        })
+    );
+    assert_eq!(
+        request("Cita una definición de red de nodos de Wikipedia")
+            .unwrap()
+            .term,
+        "red de nodos"
+    );
+    assert_eq!(
+        request("According to Wikipedia, define entropy")
+            .unwrap()
+            .term,
+        "entropy"
+    );
+    assert!(request("Hi").is_none());
+    assert!(request("Cite a definition of \"\" from Wikipedia").is_none());
+}

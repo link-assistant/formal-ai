@@ -54,3 +54,8 @@
 | T2451 | Pass | bash | Exact historical preimage encoded losslessly with SHA/base64 after whitespace preflight; T2450 fullraw retained. |
 | T2452 | Pass | bash | Finite raw-evidence completion retains T2451 provenance and finalized rows; immutable raw transcripts retained; final lossless JSON archives completedT2453. |
 | T2453 | Pass | bash | Exact raw UTF-8 logs throughT2452 archived in SHA-verified JSON envelopes; every decoded payload byte-equal, without stripping historical whitespace or changing source. |
+| T2454 | Pass | bash → write → bash | Unchanged native slot assertions transported to external cfg(test) fixture after observed rootT1981 specialization failure; no production prompt pins. |
+| T2455 | Pass | bash → write → bash | Native module includes unchanged fixture under cfg(test); production functions byte-identical before test section. |
+| T2456 | Pass | bash | Exact specialization gate reports0verbatim test prompts, unchanged ceiling0; no exclusions/allowances added. |
+| T2457 | Pass | bash | Targeted standalone rustfmt --check passes; no native compiler/execution. |
+| T2458 | Pass | bash | Finite evidence retention throughT2457 and final rows; one evidence-copy mutation, no source behavior changes. |

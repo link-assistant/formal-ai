@@ -1,0 +1,7 @@
+{
+  "taskId": "T2457",
+  "encoding": "utf8",
+  "sha256": "53cc77f24fe22dddc6d4c32644f116183109f90d7667a536d8b87d03ef2f0721",
+  "byteLength": 286,
+  "rawUtf8": ">> bash {\"command\":\"rustfmt --edition 2024 --config skip_children=true --check rust/src/solver_handlers/source_qualified_definition.rs rust/tests/fixtures/source-qualified-definition-slots.rs\"}\n   Output: \n   Exit Code: 0\n== answer ==\nThe command completed successfully without output.\n"
+}
