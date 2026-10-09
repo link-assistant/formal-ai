@@ -11,11 +11,12 @@ use serde_json::json;
 
 use super::capability_router::tool_for;
 use super::driver::DriverOutcome;
-use super::planner::{plan_one, write_arguments, AgenticPlan, Capability};
+use super::planner::{AgenticPlan, Capability, plan_one, tool_capability, write_arguments};
 use super::progress::Progress;
+use super::tool_result::{command_argument, observed_bytes_match, observed_payload};
 use crate::algorithm_discovery::{
-    discover_algorithms, traces_from_memory_events, AlgorithmCandidate, AlgorithmDiscoveryRun,
-    ArgumentPattern, ExecutionTrace, TraceStep,
+    AlgorithmCandidate, AlgorithmDiscoveryRun, ArgumentPattern, ExecutionTrace, TraceStep,
+    discover_algorithms, traces_from_memory_events,
 };
 use crate::links_format::push_lino_node;
 use crate::memory::MemoryStore;
@@ -69,41 +70,80 @@ pub(super) fn plan_step(
     let Some(run_tool) = run_tool else {
         return AgenticPlan::Final(result_document(task, "shell_unavailable", ""));
     };
-    match progress.run_outputs.len() {
-        0 => plan_one(
-            run_tool,
-            json!({ "command": discovery_command() }).to_string(),
-        ),
-        1 => plan_one(
-            run_tool,
-            json!({ "command": readback_command() }).to_string(),
-        ),
-        2 => {
-            let verified = progress
-                .run_outputs
-                .get(1)
-                .and_then(|output| AlgorithmCandidate::from_links_notation(output).ok());
-            if verified.as_ref() != Some(&task.candidate) {
-                return AgenticPlan::Final(result_document(
-                    task,
-                    "artifact_verification_failed",
-                    "",
-                ));
-            }
-            plan_one(
-                run_tool,
-                json!({ "command": conformance_command(&task.candidate) }).to_string(),
-            )
-        }
-        _ => {
-            let expected = expected_conformance(&task.candidate);
-            let observed = progress.run_outputs.get(2).map(|output| output.trim());
-            if observed != Some(expected.trim()) {
-                return AgenticPlan::Final(result_document(task, "conformance_failed", ""));
-            }
-            AgenticPlan::Final(result_document(task, "conformance_passed", &expected))
-        }
+    let discovery = discovery_command();
+    let readback = readback_command();
+    if !progress.has_run(&discovery) {
+        return plan_one(run_tool, json!({ "command": discovery }).to_string());
     }
+    if command_payload(messages, &discovery).is_none() {
+        return AgenticPlan::Final(result_document(task, "artifact_verification_failed", ""));
+    }
+    if !progress.has_run(&readback) {
+        return plan_one(run_tool, json!({ "command": readback }).to_string());
+    }
+    let verified = command_payload(messages, &readback)
+        .and_then(|output| AlgorithmCandidate::from_links_notation(&output).ok());
+    if verified.as_ref() != Some(&task.candidate) {
+        return AgenticPlan::Final(result_document(task, "artifact_verification_failed", ""));
+    }
+    let command = conformance_command(&task.candidate);
+    if !progress.has_run(&command) {
+        return plan_one(run_tool, json!({ "command": command }).to_string());
+    }
+    let expected = expected_conformance(&task.candidate);
+    if command_payload(messages, &command).as_deref() != Some(expected.as_str()) {
+        return AgenticPlan::Final(result_document(task, "conformance_failed", ""));
+    }
+    AgenticPlan::Final(result_document(task, "conformance_passed", &expected))
+}
+
+/// Decode only a successful complete receipt bound to its current request call.
+fn command_payload(messages: &[ChatMessage], command: &str) -> Option<String> {
+    let start = messages
+        .iter()
+        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
+        .unwrap_or(0);
+    let current = &messages[start..];
+    for (index, message) in current.iter().enumerate().rev() {
+        if !message.role.eq_ignore_ascii_case("tool") {
+            continue;
+        }
+        let Some(identity) = message.tool_call_id.as_deref() else {
+            continue;
+        };
+        let Some(call) = current[..index]
+            .iter()
+            .rev()
+            .flat_map(|prior| prior.tool_calls.iter().rev())
+            .find(|call| call.id == identity)
+        else {
+            continue;
+        };
+        if tool_capability(&call.function.name) != Some(Capability::Run)
+            || command_argument(&call.function.arguments).as_deref() != Some(command)
+        {
+            continue;
+        }
+        if message.is_error
+            || message
+                .name
+                .as_deref()
+                .is_some_and(|name| name != call.function.name)
+        {
+            return None;
+        }
+        let raw = message.content.plain_text();
+        if let Ok(receipt) = serde_json::from_str::<serde_json::Value>(&raw)
+            && receipt
+                .get("command")
+                .is_some_and(|value| value.as_str() != Some(command))
+        {
+            return None;
+        }
+        let payload = observed_payload(&raw)?;
+        return observed_bytes_match(&raw, &payload).then_some(payload);
+    }
+    None
 }
 
 fn discovery_command() -> String {

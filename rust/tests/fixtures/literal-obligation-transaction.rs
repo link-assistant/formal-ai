@@ -32,6 +32,15 @@ fn run_with_sources(
     sources: &[(&str, &str)],
     receipt: fn(&str) -> String,
 ) -> Run {
+    run_with_receipts(task, tools, sources, receipt, false)
+}
+fn run_with_receipts(
+    task: &str,
+    tools: &[&str],
+    sources: &[(&str, &str)],
+    receipt: fn(&str) -> String,
+    inject_digest: bool,
+) -> Run {
     let root = std::env::temp_dir().join(format!(
         "formal-ai-obligation-{}-{}",
         std::process::id(),
@@ -83,7 +92,10 @@ fn run_with_sources(
                             .output()
                             .expect("bounded fixture shell");
                         let stdout = String::from_utf8(output.stdout).expect("UTF8 stdout");
-                        let result = if command.starts_with("cat ") && output.status.success() {
+                        let result = if (command.starts_with("cat ")
+                            || (inject_digest && command.starts_with("sha256sum -- ")))
+                            && output.status.success()
+                        {
                             receipt(&stdout)
                         } else {
                             format!(
@@ -251,19 +263,21 @@ fn typed_failed_readback_cannot_certify_correct_physical_source_write() {
         serde_json::json!({"stdout": stdout, "exit_code": 0, "is_error": true, "error": "denied"})
             .to_string()
     }
-    fn bare_receipt(stdout: &str) -> String {
-        stdout.to_owned()
+    fn bare_receipt(_stdout: &str) -> String {
+        // Bare source bytes remain neither a successful byte receipt nor a digest.
+        "new new\n".to_owned()
     }
     for receipt in [
         failed_receipt as fn(&str) -> String,
         denied_receipt,
         bare_receipt,
     ] {
-        let outcome = run_with_sources(
+        let outcome = run_with_receipts(
             "In f.txt replace every «old» with «new».",
             &["read", "write", "bash"],
             &[("f.txt", "old old\n")],
             receipt,
+            true,
         );
         assert_eq!(
             fs::read_to_string(outcome.root.join("f.txt")).expect("target"),
