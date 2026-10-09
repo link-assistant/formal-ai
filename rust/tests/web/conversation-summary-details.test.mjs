@@ -4,9 +4,26 @@ import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {createI18n} from 'lino-i18n';
 import {fileURLToPath} from 'node:url';
+import {createRequire} from 'node:module';
+import {readFileSync} from 'node:fs';
 import {ConversationSummaryDetails} from '../../../js/app/conversation-summary-details.js';
 import {conversationSummaryRows} from '../../../js/conversation-summary-history.js';
 import {WorkerHost} from '../../../js/server/worker-host.mjs';
+
+test('UI renderer uses the actual root-declared locked React packages',()=>{
+ const manifestUrl=new URL('../../../package.json',import.meta.url);
+ const manifest=JSON.parse(readFileSync(manifestUrl,'utf8'));
+ const locked=readFileSync(new URL('../../../bun.lock',import.meta.url),'utf8');
+ const require=createRequire(manifestUrl);
+ assert.equal(require('react'),React);
+ assert.equal(require('react-dom/server').renderToStaticMarkup,renderToStaticMarkup);
+ for(const name of ['react','react-dom','lino-i18n']) {
+  const installedUrl=new URL('../../../node_modules/'+name+'/package.json',import.meta.url);
+  const version=JSON.parse(readFileSync(installedUrl,'utf8')).version;
+  assert.equal(version,manifest.dependencies[name],name);
+  assert.ok(locked.includes('"'+name+'@'+version+'"'),name+' locked package');
+ }
+});
 
 const i18n=createI18n({locale:'en'});await i18n.loadLocaleFile(fileURLToPath(new URL('../../../js/i18n-catalog-messages.lino',import.meta.url)));
 const host=new WorkerHost();
