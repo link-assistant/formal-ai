@@ -32,7 +32,7 @@
 //! it had just been handed.
 
 use super::shell_command::{
-    code_shaped_query, code_search_query_for_task, search_tokens, valid_search_identifier,
+    code_search_query_for_task, code_shaped_query, search_tokens, valid_search_identifier,
 };
 use super::shell_command_policy::{is_prose_word, sentence_spans};
 use crate::seed;
@@ -45,7 +45,7 @@ use crate::seed;
 /// One block has to satisfy both halves on its own. Splitting first is what
 /// separates "review the retry helper" from the paragraph after it that grants
 /// web access; joined, the grant reads as though the request had named the web.
-pub(super) fn asks_about_the_workspace(prompt: &str) -> bool {
+pub(crate) fn asks_about_the_workspace(prompt: &str) -> bool {
     super::stated_request::request_blocks(prompt)
         .into_iter()
         .any(|block| {
@@ -219,7 +219,9 @@ fn inspection_fact_terms(text: &str, query: &str) -> Vec<String> {
         let normalized = token.replace('-', "_").to_lowercase();
         if normalized.len() < 3
             || normalized == normalized_query
-            || normalized.chars().all(|character| character.is_ascii_digit())
+            || normalized
+                .chars()
+                .all(|character| character.is_ascii_digit())
             || is_prose_word(&normalized)
             || seed::lexicon().mentions_role(seed::ROLE_WORKSPACE_INSPECTION_ACTION, &normalized)
             || seed::lexicon().mentions_role(seed::ROLE_CODING_SEARCH_SUBJECT_KIND, &normalized)
@@ -266,9 +268,9 @@ fn ascii_case_insensitive_offset(text: &str, needle: &str) -> Option<usize> {
 
 fn module_filename_filter(query: &str) -> Option<String> {
     (query.contains('_')
-        && query
-            .chars()
-            .all(|character| character.is_ascii_lowercase() || character.is_ascii_digit() || character == '_'))
+        && query.chars().all(|character| {
+            character.is_ascii_lowercase() || character.is_ascii_digit() || character == '_'
+        }))
     .then(|| format!("*{query}*"))
 }
 

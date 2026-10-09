@@ -738,6 +738,9 @@ fn main() -> Result<(), Box<dyn Error>> {
                 agent_executable: None,
             })?;
             print!("{}", outcome.diff);
+            if !outcome.report.is_empty() {
+                eprintln!("{}", outcome.report);
+            }
             for open in outcome.open {
                 eprintln!("open: {open}");
             }

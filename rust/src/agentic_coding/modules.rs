@@ -107,78 +107,87 @@ mod workspace_setting;
 mod write_request;
 
 pub use associative_learning::{
-    is_associative_learning_task, ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK,
+    ASSOCIATIVE_LEARNING_PATH, ASSOCIATIVE_LEARNING_TASK, is_associative_learning_task,
 };
-pub use change_request::{is_change_request_task, CHANGE_PATH, CHANGE_TASK};
+pub use change_request::{CHANGE_PATH, CHANGE_TASK, is_change_request_task};
 pub use ci_workflow::render_with as render_ci_workflow;
 pub use code_rewrite_learning::{
-    is_code_rewrite_learning_task, CODE_REWRITE_LEARNING_PATH, CODE_REWRITE_LEARNING_TASK,
+    CODE_REWRITE_LEARNING_PATH, CODE_REWRITE_LEARNING_TASK, is_code_rewrite_learning_task,
 };
 pub use command_reroute::plan_symbolic_command_reroute;
-pub use diagram::{is_diagram_task, DIAGRAM_PATH, DIAGRAM_TASK};
-pub use dreaming_audit::{is_dreaming_audit_task, DREAMING_AUDIT_PATH, DREAMING_AUDIT_TASK};
+pub use diagram::{DIAGRAM_PATH, DIAGRAM_TASK, is_diagram_task};
+pub use dreaming_audit::{DREAMING_AUDIT_PATH, DREAMING_AUDIT_TASK, is_dreaming_audit_task};
 pub use driver::{
-    run_agentic_task, run_agentic_task_in, run_agentic_task_with_tools, DriverOutcome,
-    DriverToolStep, CORE_RECIPE_TOOLS, DRIVER_TOOLS,
+    CORE_RECIPE_TOOLS, DRIVER_TOOLS, DriverOutcome, DriverToolStep, run_agentic_task,
+    run_agentic_task_in, run_agentic_task_with_tools,
 };
 pub use execution_learning::{
-    is_execution_learning_task, EXECUTION_LEARNING_PATH, EXECUTION_LEARNING_TASK,
+    EXECUTION_LEARNING_PATH, EXECUTION_LEARNING_TASK, is_execution_learning_task,
 };
-pub use explain::{is_explain_task, EXPLAIN_PATH, EXPLAIN_TASK};
+pub use explain::{EXPLAIN_PATH, EXPLAIN_TASK, is_explain_task};
 pub use external_benchmark_learning::EXTERNAL_BENCHMARK_LEARNING_PATH;
 pub(crate) use file_read::supplied_file_answer;
 pub use formalize::{
-    coverage_line, formalize_text_to_links, FormalizationSummary, FormalizedKnowledgeBase,
-    CANONICAL_FISHERMAN_SYNOPSIS, FISHERMAN_DOC_ID, PRIMITIVE_KINDS,
+    CANONICAL_FISHERMAN_SYNOPSIS, FISHERMAN_DOC_ID, FormalizationSummary, FormalizedKnowledgeBase,
+    PRIMITIVE_KINDS, coverage_line, formalize_text_to_links,
 };
 pub use google_trends_catalog::{
-    is_google_trends_catalog_task, GOOGLE_TRENDS_CATALOG_PATH, GOOGLE_TRENDS_CATALOG_TASK,
+    GOOGLE_TRENDS_CATALOG_PATH, GOOGLE_TRENDS_CATALOG_TASK, is_google_trends_catalog_task,
 };
 pub use google_trends_learning::{
-    is_google_trends_learning_task, GOOGLE_TRENDS_LEARNING_PATH, GOOGLE_TRENDS_LEARNING_TASK,
+    GOOGLE_TRENDS_LEARNING_PATH, GOOGLE_TRENDS_LEARNING_TASK, is_google_trends_learning_task,
 };
 pub use learning_report::context_hierarchy_learning::{
-    is_context_hierarchy_learning_task, CONTEXT_HIERARCHY_LEARNING_PATH,
-    CONTEXT_HIERARCHY_LEARNING_TASK,
+    CONTEXT_HIERARCHY_LEARNING_PATH, CONTEXT_HIERARCHY_LEARNING_TASK,
+    is_context_hierarchy_learning_task,
 };
 pub use learning_report::handler_precedence_learning::{
-    is_handler_precedence_learning_task, HANDLER_PRECEDENCE_LEARNING_PATH,
-    HANDLER_PRECEDENCE_LEARNING_TASK,
+    HANDLER_PRECEDENCE_LEARNING_PATH, HANDLER_PRECEDENCE_LEARNING_TASK,
+    is_handler_precedence_learning_task,
 };
 pub use learning_report::hardcoded_language_learning::{
-    is_hardcoded_language_learning_task, HARDCODED_LANGUAGE_LEARNING_PATH,
-    HARDCODED_LANGUAGE_LEARNING_TASK,
+    HARDCODED_LANGUAGE_LEARNING_PATH, HARDCODED_LANGUAGE_LEARNING_TASK,
+    is_hardcoded_language_learning_task,
 };
 pub use learning_report::lexeme_import_learning::{
-    is_lexeme_import_learning_task, LEXEME_IMPORT_LEARNING_PATH, LEXEME_IMPORT_LEARNING_TASK,
+    LEXEME_IMPORT_LEARNING_PATH, LEXEME_IMPORT_LEARNING_TASK, is_lexeme_import_learning_task,
 };
 pub use learning_report::search_fusion_learning::{
-    is_search_fusion_learning_task, SEARCH_FUSION_LEARNING_PATH, SEARCH_FUSION_LEARNING_TASK,
+    SEARCH_FUSION_LEARNING_PATH, SEARCH_FUSION_LEARNING_TASK, is_search_fusion_learning_task,
 };
 pub use learning_report::self_hosting_learning::{
-    is_self_hosting_learning_task, SELF_HOSTING_LEARNING_PATH, SELF_HOSTING_LEARNING_TASK,
+    SELF_HOSTING_LEARNING_PATH, SELF_HOSTING_LEARNING_TASK, is_self_hosting_learning_task,
 };
 pub use learning_report::{LearningReport, REPORTS};
-pub use ledger::{is_ledger_task, LEDGER_PATH, LEDGER_TASK};
-pub use link_edit_rules::{apply_link_edit, insert_members_via_links, parse_rule_document, rule_shapes, LinkEditError, LinkEditReport, LinkEditRule, RuleDocument, RuleShape};
+pub use ledger::{LEDGER_PATH, LEDGER_TASK, is_ledger_task};
+pub use link_edit_rules::{
+    LinkEditError, LinkEditReport, LinkEditRule, RuleDocument, RuleShape, apply_link_edit,
+    insert_members_via_links, parse_rule_document, rule_shapes,
+};
 pub use meaning_detail::{
-    concept_for_task, enrich_block, is_meaning_detail_task, MEANING_DETAIL_TASK, POTATO_DETAIL_TASK,
+    MEANING_DETAIL_TASK, POTATO_DETAIL_TASK, concept_for_task, enrich_block, is_meaning_detail_task,
 };
 pub use planner::{
-    plan_chat_step, AgenticPlan, PlannedToolCall, CANONICAL_SOURCE_URL, KB_PATH, SEARCH_QUERY,
+    AgenticPlan, CANONICAL_SOURCE_URL, KB_PATH, PlannedToolCall, SEARCH_QUERY, plan_chat_step,
 };
-pub use procedure::{compile_task as compile_procedure_task, COMPILED_PROCEDURE_PATH};
+pub use procedure::{COMPILED_PROCEDURE_PATH, compile_task as compile_procedure_task};
 pub use question_catalog::{
-    is_question_catalog_task, QUESTION_CATALOG_PATH, QUESTION_CATALOG_TASK,
+    QUESTION_CATALOG_PATH, QUESTION_CATALOG_TASK, is_question_catalog_task,
 };
-pub use rebuild_plan::{is_rebuild_task, REBUILD_PATH, REBUILD_TASK};
-pub use repair_strategy::{is_repair_strategy_task, REPAIR_STRATEGY_PATH, REPAIR_STRATEGY_TASK};
+pub use rebuild_plan::{REBUILD_PATH, REBUILD_TASK, is_rebuild_task};
+pub use repair_strategy::{REPAIR_STRATEGY_PATH, REPAIR_STRATEGY_TASK, is_repair_strategy_task};
 pub use requirement_resolution::{RequirementTarget, resolve_in, resolve_requirement_target};
 pub use routing_learning::{
-    is_routing_learning_task, ROUTING_LEARNING_PATH, ROUTING_LEARNING_TASK,
+    ROUTING_LEARNING_PATH, ROUTING_LEARNING_TASK, is_routing_learning_task,
 };
-pub use self_ast::{ast_census, is_self_ast_task, render_ast_document, AST_PATH, AST_TASK};
-pub use self_heal::{is_self_heal_task, SELF_HEAL_PATH, SELF_HEAL_TASK};
+pub use self_ast::{AST_PATH, AST_TASK, ast_census, is_self_ast_task, render_ast_document};
+pub use self_heal::{SELF_HEAL_PATH, SELF_HEAL_TASK, is_self_heal_task};
 pub(crate) use shell_command::semantic_shell_command_for_task;
-pub use source_links::{is_source_links_task, SOURCE_LINKS_PATH, SOURCE_LINKS_TASK};
-pub use statement_audit::{is_statement_audit_task, STATEMENT_AUDIT_COMMAND, STATEMENT_AUDIT_PATH};
+pub(crate) use shell_command::shell_command_for_task as repository_shell_command;
+pub(crate) use shell_command_policy::{
+    is_prose_word as repository_prose_word,
+    named_shell_command_in_sentence as repository_named_command,
+};
+pub use source_links::{SOURCE_LINKS_PATH, SOURCE_LINKS_TASK, is_source_links_task};
+pub use statement_audit::{STATEMENT_AUDIT_COMMAND, STATEMENT_AUDIT_PATH, is_statement_audit_task};
+pub(crate) use workspace_inspection::asks_about_the_workspace as repository_inspection;

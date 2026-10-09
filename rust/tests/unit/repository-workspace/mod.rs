@@ -10,3 +10,6 @@ mod issue_1138_named_tests;
 mod issue_1138_repository_workspace;
 #[path = "issue_1138_repository_world_model.rs"]
 mod issue_1138_repository_world_model;
+
+#[path = "observation_goals.rs"]
+mod observation_goals;

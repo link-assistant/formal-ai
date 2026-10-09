@@ -13,6 +13,7 @@ pub mod clone;
 pub mod diff;
 pub mod edit;
 pub mod locate;
+pub mod operation;
 pub mod outcome;
 pub mod trace;
 pub mod verify;
@@ -311,6 +312,8 @@ pub struct ProtocolOutcome {
     pub observations: Vec<Evidence>,
     /// The unified diff, whatever it is.
     pub diff: String,
+    /// Source- or command-bound observation report, separate from patch transport.
+    pub report: String,
     /// The first step whose postcondition was not observed, if any.
     pub stopped_at: Option<ProtocolStep>,
     /// Requirements the protocol could not satisfy, stated plainly.
@@ -410,10 +413,14 @@ impl WorkspaceProtocol {
         // Steps another editor owns (spawning the server an Agent CLI session
         // talks to, harvesting its session id) are data for that caller and
         // are neither planned nor run here.
+        let operation = operation::classify(&task.requirement);
         let steps: Vec<ProtocolStep> = self
             .steps
             .iter()
-            .filter(|step| step.applies_to(trace::EDITOR_STRUCTURAL))
+            .filter(|step| {
+                step.applies_to(trace::EDITOR_STRUCTURAL)
+                    && operation::selects(&operation, &step.id)
+            })
             .cloned()
             .collect();
         let mut outcome = ProtocolOutcome {
@@ -421,6 +428,7 @@ impl WorkspaceProtocol {
             edited: Vec::new(),
             observations: Vec::new(),
             diff: String::new(),
+            report: String::new(),
             stopped_at: None,
             open: Vec::new(),
             need_ledger: protocol_ledger(&steps, task),
@@ -462,7 +470,12 @@ impl WorkspaceProtocol {
                         "",
                         "repository_workspace_protocol",
                     );
-                    match locate::locate_targets(workspace, &need) {
+                    let located = if operation == operation::RepositoryOperation::TestTargets {
+                        operation::test_targets(workspace)
+                    } else {
+                        locate::locate_targets(workspace, &need)
+                    };
+                    match located {
                         Ok(found) if found.is_empty() => {
                             // Nothing resolved. The protocol stops here and says
                             // so, rather than editing a file it guessed at.
@@ -539,6 +552,29 @@ impl WorkspaceProtocol {
                             )
                         })
                         .collect();
+                    if operation == operation::RepositoryOperation::TestTargets {
+                        if clone::observed_head(workspace.root()).as_deref()
+                            != Some(task.clone.base_commit.as_str())
+                        {
+                            outcome.stopped_at = Some(step.clone());
+                            outcome
+                                .open
+                                .push(String::from("source context changed during query"));
+                            return outcome;
+                        }
+                        outcome.report = serde_json::json!({
+                            "schema": "repository-query/v1",
+                            "query": "cargo-test-targets",
+                            "root": workspace.root(),
+                            "base_commit": task.clone.base_commit,
+                            "sources": observed.iter().map(|(path, source)| serde_json::json!({
+                                "path": path,
+                                "sha256": crate::source_fetch::sha256_hex(source.as_bytes()),
+                                "byte_length": source.len(),
+                            })).collect::<Vec<_>>(),
+                        })
+                        .to_string();
+                    }
                     record_step_observation(&mut outcome, step, evidence);
                 }
                 "edit" => {
@@ -582,17 +618,38 @@ impl WorkspaceProtocol {
                     }
                 }
                 "verify" => {
-                    if let Some(tests) = task.tests.as_ref() {
+                    if let operation::RepositoryOperation::Run(command) = &operation {
+                        match operation::command_report(workspace, command, &task.clone.base_commit)
+                        {
+                            Ok((observed, report, complete)) => {
+                                outcome.report = report;
+                                record_step_observation(&mut outcome, step, observed.evidence);
+                                if !complete {
+                                    outcome.stopped_at = Some(step.clone());
+                                    outcome.open.push(String::from(
+                                        "observed repository command did not complete",
+                                    ));
+                                    return outcome;
+                                }
+                            }
+                            Err(error) => {
+                                outcome.stopped_at = Some(step.clone());
+                                outcome.open.push(error.to_string());
+                                return outcome;
+                            }
+                        }
+                    } else if let Some(tests) = task.tests.as_ref() {
                         match verify::run_named_tests(
                             workspace,
                             tests,
                             &crate::execution_box::ExecutionBackend::HostSandbox,
                         ) {
                             Ok(evidence) => {
-                                let failed = matches!(
-                                    &evidence.detail,
-                                    EvidenceDetail::Tests { failed, .. } if !failed.is_empty()
-                                );
+                                let failed = evidence.exit_code != Some(0)
+                                    || matches!(
+                                        &evidence.detail,
+                                        EvidenceDetail::Tests { failed, .. } if !failed.is_empty()
+                                    );
                                 record_step_observation(&mut outcome, step, evidence);
                                 if failed {
                                     outcome.stopped_at = Some(step.clone());
@@ -629,6 +686,11 @@ impl WorkspaceProtocol {
                 },
                 _ => {}
             }
+        }
+        if operation == operation::RepositoryOperation::Unsupported {
+            outcome.open.push(String::from(
+                "repository observation goal is unsupported or compound",
+            ));
         }
         outcome
     }
@@ -718,6 +780,10 @@ fn record_step_observation(
     evidence.for_need.clone_from(&need_id);
     if evidence.produced_by.is_empty() {
         evidence.produced_by = format!("repository_protocol_{}", step.id);
+    }
+    if evidence.kind == ObservationKind::CommandExit && evidence.exit_code != Some(0) {
+        outcome.observations.push(evidence);
+        return;
     }
     let obligations = ObligationLedger {
         frame_id: outcome.need_ledger.frame_id.clone(),

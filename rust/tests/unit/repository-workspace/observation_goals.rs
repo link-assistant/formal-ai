@@ -1,0 +1,196 @@
+//! Real repository observations preserve patch and attribution boundaries (PR #1188).
+use formal_ai::meta_frame::NeedStatus;
+use formal_ai::repository_workspace::operation::{RepositoryOperation, classify};
+use formal_ai::repository_workspace::{RepositoryTask, RepositoryWorkspace, WorkspaceProtocol};
+use std::path::PathBuf;
+use std::process::Command;
+use std::sync::atomic::{AtomicU64, Ordering};
+static NEXT: AtomicU64 = AtomicU64::new(0);
+struct Fixture {
+    root: PathBuf,
+}
+impl Fixture {
+    fn new(broken: bool) -> Self {
+        let root = std::env::temp_dir().join(format!(
+            "formal-ai-observation-{}-{}",
+            std::process::id(),
+            NEXT.fetch_add(1, Ordering::Relaxed)
+        ));
+        std::fs::create_dir_all(root.join("checks")).unwrap();
+        std::fs::create_dir_all(root.join("src")).unwrap();
+        std::fs::write(root.join("Cargo.toml"),
+            "[package]\nname=\"observation-heldout\"\nversion=\"0.0.0\"\nedition=\"2024\"\n[[test]]\nname=\"boundary\"\npath=\"checks/observed.rs\"\n").unwrap();
+        std::fs::write(
+            root.join("src/lib.rs"),
+            if broken {
+                "pub fn invalid( {"
+            } else {
+                "pub fn identity(value: u64) -> u64 { value }\n"
+            },
+        )
+        .unwrap();
+        std::fs::write(
+            root.join("checks/observed.rs"),
+            "#[test]\nfn heldout() { assert_eq!(2 + 3, 5); }\n",
+        )
+        .unwrap();
+        for argv in [
+            vec!["init"],
+            vec!["add", "."],
+            vec![
+                "-c",
+                "user.name=Fixture",
+                "-c",
+                "user.email=fixture@example.invalid",
+                "commit",
+                "-m",
+                "Observed",
+            ],
+        ] {
+            let output = Command::new("git")
+                .args(argv)
+                .current_dir(&root)
+                .output()
+                .unwrap();
+            assert!(
+                output.status.success(),
+                "{}",
+                String::from_utf8_lossy(&output.stderr)
+            );
+        }
+        Self { root }
+    }
+    fn status(&self) -> Vec<u8> {
+        Command::new("git")
+            .args(["status", "--porcelain"])
+            .current_dir(&self.root)
+            .output()
+            .unwrap()
+            .stdout
+    }
+    fn run(&self, request: &str) -> formal_ai::repository_workspace::ProtocolOutcome {
+        let mut workspace = RepositoryWorkspace::adopt(&self.root).unwrap();
+        let task = RepositoryTask {
+            requirement: request.to_owned(),
+            clone: workspace.spec().clone(),
+            tests: None,
+        };
+        WorkspaceProtocol::load().execute(&mut workspace, &task)
+    }
+}
+impl Drop for Fixture {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_dir_all(&self.root);
+    }
+}
+#[test]
+fn original_question_reports_actual_heldout_manifest_target_without_mutation() {
+    let fixture = Fixture::new(false);
+    let before = fixture.status();
+    let outcome = fixture.run("Where do unit tests live in this repository?");
+    assert!(outcome.open.is_empty(), "{:?}", outcome.open);
+    assert!(outcome.diff.is_empty() && outcome.edited.is_empty());
+    let report: serde_json::Value = serde_json::from_str(&outcome.report).unwrap();
+    assert_eq!(report["schema"], "repository-query/v1");
+    let sources = report["sources"].as_array().unwrap();
+    assert!(
+        sources
+            .iter()
+            .any(|source| source["path"] == "checks/observed.rs")
+    );
+    for source in sources {
+        let path = source["path"].as_str().unwrap();
+        let bytes = std::fs::read(fixture.root.join(path)).unwrap();
+        assert_eq!(
+            source["sha256"],
+            formal_ai::source_fetch::sha256_hex(&bytes)
+        );
+    }
+    assert_eq!(before, fixture.status());
+    assert!(
+        outcome
+            .need_ledger
+            .rows
+            .iter()
+            .all(|row| matches!(row.route.as_deref(), Some("clone" | "locate" | "read")))
+    );
+}
+#[test]
+fn original_cargo_check_reports_real_exit_and_complete_output() {
+    let fixture = Fixture::new(false);
+    let outcome =
+        fixture.run("Run cargo check on this repository and tell me whether it succeeds.");
+    assert!(outcome.open.is_empty(), "{:?}", outcome.open);
+    let report: serde_json::Value = serde_json::from_str(&outcome.report).unwrap();
+    assert_eq!(report["schema"], "repository-command/v1");
+    assert_eq!(report["exit_code"], 0);
+    assert_eq!(report["complete"], true);
+    assert!(
+        report["command"]
+            .as_str()
+            .unwrap()
+            .contains("--manifest-path")
+    );
+    let output = report["combined_output"].as_str().unwrap();
+    assert_eq!(
+        report["observed_output_sha256"],
+        formal_ai::source_fetch::sha256_hex(output.as_bytes())
+    );
+    assert!(!output.is_empty());
+    assert!(outcome.edited.is_empty() && outcome.diff.is_empty());
+    assert_eq!(
+        Command::new("git")
+            .args(["diff", "--name-only"])
+            .current_dir(&fixture.root)
+            .output()
+            .unwrap()
+            .stdout,
+        b""
+    );
+}
+#[test]
+fn failed_command_keeps_actual_diagnostics_and_cannot_satisfy_run_need() {
+    let fixture = Fixture::new(true);
+    let outcome = fixture.run("Run cargo check.");
+    let report: serde_json::Value = serde_json::from_str(&outcome.report).unwrap();
+    assert_ne!(report["exit_code"], 0);
+    assert_eq!(report["complete"], false);
+    assert!(!report["combined_output"].as_str().unwrap().is_empty());
+    assert!(!outcome.open.is_empty());
+    assert!(
+        outcome.need_ledger.rows.iter().any(
+            |row| row.route.as_deref() == Some("verify") && row.status != NeedStatus::Satisfied
+        )
+    );
+    assert!(outcome.edited.is_empty() && outcome.diff.is_empty());
+}
+#[test]
+fn compound_goals_do_not_silently_finish_one_clause() {
+    assert_eq!(
+        classify("Inspect tests and implement a new function."),
+        RepositoryOperation::Unsupported
+    );
+    let fixture = Fixture::new(false);
+    let before = fixture.status();
+    let outcome = fixture.run("Run cargo check and write a new function.");
+    assert!(!outcome.open.is_empty());
+    assert!(outcome.report.is_empty() && outcome.edited.is_empty() && outcome.diff.is_empty());
+    assert_eq!(fixture.status(), before);
+}
+#[test]
+fn wrong_source_head_refuses_before_observation_or_edit() {
+    let fixture = Fixture::new(false);
+    let mut workspace = RepositoryWorkspace::adopt(&fixture.root).unwrap();
+    let mut spec = workspace.spec().clone();
+    spec.base_commit = "0".repeat(40);
+    let outcome = WorkspaceProtocol::load().execute(
+        &mut workspace,
+        &RepositoryTask {
+            requirement: "Where are tests?".to_owned(),
+            clone: spec,
+            tests: None,
+        },
+    );
+    assert!(outcome.report.is_empty() && !outcome.open.is_empty());
+    assert!(outcome.observations.is_empty());
+}

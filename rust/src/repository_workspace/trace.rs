@@ -130,6 +130,15 @@ impl ProtocolTrace {
                 reached = false;
                 continue;
             }
+            if !outcome
+                .need_ledger
+                .rows
+                .iter()
+                .any(|row| row.route.as_deref() == Some(stage.id.as_str()))
+            {
+                stage.status = StageStatus::NotApplicable;
+                continue;
+            }
             let satisfied = outcome.need_ledger.rows.iter().any(|row| {
                 row.route.as_deref() == Some(stage.id.as_str())
                     && row.status == NeedStatus::Satisfied

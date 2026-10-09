@@ -19,7 +19,7 @@ meanings
     effect "the artifact-kind slot is bound to test"
     unit "not applicable"
     example "test"
-    lexeme en test regression
+    lexeme en test tests regression regressions
     lexeme ru тест теста
     lexeme hi परीक्षण
     lexeme zh 测试
@@ -438,7 +438,7 @@ meanings
     effect "the request is read as locating something inside the workspace"
     unit "not applicable"
     example "identify"
-    lexeme en identify locate "find where" "where does" "where the"
+    lexeme en identify locate "find where" "where does" "where do" "where are" "where is" "where the"
     lexeme ru определи "найди где" "где находится"
     lexeme hi "पहचानें" "पता लगाएँ" "कहाँ है"
     lexeme zh 确定 找出 在哪里

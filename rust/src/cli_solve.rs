@@ -91,6 +91,8 @@ impl Default for SolveArgs {
 pub struct SolveOutcome {
     /// The unified diff, whatever it is.
     pub diff: String,
+    /// Observed repository answer, separate from the unified diff.
+    pub report: String,
     /// Whether a commit was actually made.
     pub committed: bool,
     /// The commit message, including its trailers, when one was written.
@@ -135,6 +137,7 @@ pub fn run_solve(args: &SolveArgs) -> Result<SolveOutcome, Box<dyn Error>> {
         let outcome = crate::authoring_loop::run_authoring(args)?;
         return Ok(SolveOutcome {
             diff: String::new(),
+            report: String::new(),
             committed: outcome.committed,
             commit_message: outcome.commit_message,
             evidence_files: vec![args.evidence.clone()],
@@ -230,6 +233,12 @@ pub fn run_solve(args: &SolveArgs) -> Result<SolveOutcome, Box<dyn Error>> {
             .into_bytes(),
         ));
     }
+    if !protocol_outcome.report.is_empty() {
+        evidence_documents.push((
+            String::from("repository-report.json"),
+            protocol_outcome.report.as_bytes().to_vec(),
+        ));
+    }
     let mut evidence_files = Vec::new();
     for (name, bytes) in &evidence_documents {
         let path = args.evidence.join(name);
@@ -277,6 +286,7 @@ pub fn run_solve(args: &SolveArgs) -> Result<SolveOutcome, Box<dyn Error>> {
 
     Ok(SolveOutcome {
         diff: protocol_outcome.diff,
+        report: protocol_outcome.report,
         committed,
         commit_message,
         evidence_files,
