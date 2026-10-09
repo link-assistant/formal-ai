@@ -889,6 +889,7 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         // Issue #1012: the shared release binary is built once before the seven
         // Box image legs, avoiding seven identical cache restores and builds.
         ("build-artifacts", 20),
+        ("native-response-observations", 0),
         // Issue #932: per-language matrix leg that pulls one link-foundation/box
         // image, generates the project from solver answers and runs the
         // language's traditional init commands inside it. The budget covers a
@@ -907,7 +908,6 @@ fn release_workflow_jobs_have_explicit_timeouts() {
         ("native-container-images", 0),
         ("pipeline-status", 5),
     ];
-
     let actual_jobs = workflow_job_names(&workflow);
     let expected_jobs = expected_timeouts
         .iter()

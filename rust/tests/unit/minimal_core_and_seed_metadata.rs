@@ -678,11 +678,11 @@ fn coding_path_has_complete_metadata_and_every_other_gap_is_data() {
     // and three factual-question cues of #1172 (`fact_comparison_request`,
     // `fact_comparison_joiner`, `prompt_text_question_cue`) -- each a role whose four
     // other reviewed fields are pending data.
-    // Recounted 2026-10-08 the files hold 765: the seed changes committed with
-    // the concise lexemes and the language-parity lexemes moved and grounded
-    // records (the number words among them), and the audit now writes one
-    // file per seed source (R1188-U5).
-    assert_eq!(expected_gaps.len(), 765);
+    // The checked audit now captures 1073 genuine current per-record gaps.
+    // Source projection roles and canonical vocabulary are included; the full
+    // source-derived expected map above must equal every committed shard.
+    // This is measured metadata debt, with all original completeness guards.
+    assert_eq!(expected_gaps.len(), 1073);
 }
 
 #[test]

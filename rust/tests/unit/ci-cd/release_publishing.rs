@@ -34,13 +34,18 @@ fn read_worker_source(manifest_dir: &str) -> String {
     source
 }
 
-/// The web front-end is authored as JSX modules under `js/app/` (bundled by bun
-/// into the served `js/app.js`), so source-level assertions read every module.
+/// The bundled front-end imports JSX and JavaScript modules under `js/app/`;
+/// source assertions include the constants module that owns version metadata.
 fn read_web_app_source(manifest_dir: &str) -> String {
     let mut modules: Vec<PathBuf> = fs::read_dir(format!("{manifest_dir}/js/app"))
         .unwrap()
         .map(|entry| entry.unwrap().path())
-        .filter(|path| path.extension().and_then(|ext| ext.to_str()) == Some("jsx"))
+        .filter(|path| {
+            matches!(
+                path.extension().and_then(|ext| ext.to_str()),
+                Some("jsx" | "js" | "mjs")
+            )
+        })
         .collect();
     modules.sort();
 
