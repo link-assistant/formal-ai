@@ -15,13 +15,13 @@ js_rust_translation
   upstream link-foundation/meta-language
   commit eb0574d5528babd3b4aadece81590d8e2230b99b
   modules 139
-  translated_items 291
+  translated_items 293
   workaround_items 33
   inferred_signatures 2
-  carried_items 2251
-  translated_modules 97
+  carried_items 2259
+  translated_modules 98
   fully_translated_modules 1
-  refused_modules 42
+  refused_modules 41
 workaround array-push items 2
 workaround callback-loops items 1
 workaround import-pruning items 8
@@ -81,7 +81,7 @@ module js/agentic/crate/meta_translate.mjs translated 0 workaround 1 inferred 0 
 module js/agentic/crate/method_registry.mjs translated 9 workaround 0 inferred 0 carried 21
 module js/agentic/crate/needs.mjs translated 1 workaround 1 inferred 0 carried 7
 module js/agentic/crate/normal_markov.mjs translated 5 workaround 0 inferred 0 carried 18
-module js/agentic/crate/obligation_ledger.mjs translated 0 workaround 1 inferred 0 carried 35
+module js/agentic/crate/obligation_ledger.mjs translated 0 workaround 1 inferred 0 carried 36
 module js/agentic/crate/orchestration_analysis.mjs translated 2 workaround 1 inferred 0 carried 24
 module js/agentic/crate/orchestration_attribution.mjs translated 5 workaround 0 inferred 0 carried 13
 module js/agentic/crate/orchestration_dispatch.mjs translated 0 workaround 0 inferred 0 carried 25
@@ -128,7 +128,7 @@ module js/agentic/crate/self_ast_census.mjs translated 3 workaround 0 inferred 0
 module js/agentic/crate/self_explanation.mjs translated 0 workaround 0 inferred 0 carried 8
 module js/agentic/crate/self_source_links.mjs translated 3 workaround 1 inferred 0 carried 16
 module js/agentic/crate/sequences.mjs translated 1 workaround 0 inferred 0 carried 8
-module js/agentic/crate/skill_compiler.mjs translated 0 workaround 0 inferred 0 carried 4
+module js/agentic/crate/skill_compiler.mjs translated 2 workaround 0 inferred 0 carried 11
 module js/agentic/crate/skill_procedure.mjs translated 10 workaround 0 inferred 0 carried 35
 module js/agentic/crate/skill_procedure_artifact.mjs translated 1 workaround 1 inferred 0 carried 17
 module js/agentic/crate/solver_event_projection.mjs translated 7 workaround 0 inferred 0 carried 8
@@ -165,18 +165,18 @@ module js/agentic/crate/workspace_change_learning.mjs translated 2 workaround 0 
 module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 inferred 0 carried 6
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 25
-refusal "import of names its module does not translate" 291
+refusal "import of names its module does not translate" 295
 refusal "JSDoc type {…}" 212
 refusal "null" 182
 refusal "import from '…'" 146
 refusal "type: unknown name (a sibling item or an import)" 117
-refusal "arrow function" 111
+refusal "arrow function" 112
 refusal "function value …" 101
 refusal "new expression" 90
 refusal "object without a $ tag" 85
 refusal "regular expression" 61
 refusal "method call .find()" 59
-refusal "method call .split()" 54
+refusal "method call .split()" 55
 refusal "method call .map()" 52
 refusal "method call .filter()" 47
 refusal "method call .some()" 44
@@ -206,10 +206,10 @@ refusal "destructured parameter" 9
 refusal "method call .codePointAt()" 9
 refusal "object spread" 9
 refusal "Array.isArray" 7
+refusal "syntax: unterminated string literal" 6
 refusal "array destructuring" 5
 refusal "method call .has()" 5
 refusal "method call .sort()" 5
-refusal "syntax: unterminated string literal" 5
 refusal "throw new …" 5
 refusal "Object.keys" 4
 refusal "syntax: unsupported template escape" 4
@@ -222,6 +222,7 @@ refusal "method call .forEach()" 3
 refusal "method call .lastIndexOf()" 3
 refusal "method call .repeat()" 3
 refusal "method call .toFixed()" 3
+refusal "syntax: unterminated template literal" 3
 refusal "type: one value is used as a string and as an array; declare the types of the function with JSDoc" 3
 refusal "type: one value is used as an array and as a string; declare the types of the function with JSDoc" 3
 refusal "bitwise &" 2
@@ -234,7 +235,6 @@ refusal "method call .match()" 2
 refusal "method call .subarray()" 2
 refusal "rest parameter" 2
 refusal "shift <<" 2
-refusal "syntax: unterminated template literal" 2
 refusal "throw of a non-error value" 2
 refusal "BigInt" 1
 refusal "Math.fround" 1
