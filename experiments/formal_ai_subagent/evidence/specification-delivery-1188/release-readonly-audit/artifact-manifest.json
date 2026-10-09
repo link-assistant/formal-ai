@@ -1,12 +1,15 @@
 {
-  "archivalTask": "T2940",
+  "archivalTask": "T2948",
   "sourceScope": "T2934 network-failed and T2936 real retrieved observation",
   "originalLiteralFailure": "T2937 remains open",
+  "losslessArchives": [
+    "network-retry/desktopJobs.json.gz"
+  ],
   "files": [
     {
       "path": "README.md",
-      "bytes": 9094,
-      "sha256": "8e2121ac7ae6a02a7258bf0892b66c887e5d14982402b92c4732d2c19a27187a"
+      "bytes": 9419,
+      "sha256": "5f64bf4836d60c90ff92c506537ef027141e3b7a69941cfacc7a04024537605a"
     },
     {
       "path": "archival-producer.mjs",
@@ -19,6 +22,16 @@
       "sha256": "f9afeef6fa4e7e33a322f54dd2d5cf839f972b41c11b7311be15e50c906034f2"
     },
     {
+      "path": "compression-evidence-producer.mjs",
+      "bytes": 2313,
+      "sha256": "5bc29511b40012803d2ccd5ef164c555593f01b6bbfe75419e0f6895004fb471"
+    },
+    {
+      "path": "compression-producer.mjs",
+      "bytes": 2885,
+      "sha256": "ca08a11a432558af16a4fc2791f9011069774b94bc4c1805b20ed64c335648d2"
+    },
+    {
       "path": "failed-authored-report/T2937-actual-malformed.md",
       "bytes": 1538,
       "sha256": "322acc944a139898ea3599730dc9337c8f25069f87e04ea421a2b63fd675c21c"
@@ -27,6 +40,11 @@
       "path": "ledger-T2933-T2940.md",
       "bytes": 1888,
       "sha256": "063f709af6b585ae72485a4bfe58619d03b54eed32fef00ae3ef42e6887e0047"
+    },
+    {
+      "path": "ledger-T2946-T2948.md",
+      "bytes": 795,
+      "sha256": "551cfd21cf8c916082180dd4f1483e54d421317c8f9d4e9880bd05d889cbf7f2"
     },
     {
       "path": "ledger-archival-producer.mjs",
@@ -249,9 +267,14 @@
       "sha256": "1e05c817f7cc978282f4f3e8a8b4bd6b80f879906aa908dc476f482c52224c15"
     },
     {
-      "path": "network-retry/desktopJobs.json",
-      "bytes": 159515,
-      "sha256": "0242f6fc9cb3b69356c66eab3d315740a88ec61271ac41cea3b66a8171a3b57d"
+      "path": "network-retry/desktopJobs.archive.json",
+      "bytes": 598,
+      "sha256": "07aa2a8abe16a9189f54e5199a7396d86268ebdadb45cf1c5b8b1e9f9f79dd75"
+    },
+    {
+      "path": "network-retry/desktopJobs.json.gz",
+      "bytes": 8018,
+      "sha256": "8ba12cf18a0f2e09795635052346fa53c2386a6424f813ca1ccae16aba6c73cc"
     },
     {
       "path": "network-retry/engineArtifacts.json",
@@ -502,6 +525,46 @@
       "path": "tasks/T2939.log",
       "bytes": 671,
       "sha256": "aa79750a3546d96ae87574b5fd85a8d3f9871d1f6533ad7a9ac415952fdd77e0"
+    },
+    {
+      "path": "tasks/T2946-observation.json",
+      "bytes": 53,
+      "sha256": "af58f2d05a6c8e43e36ee52e8b0159b351a21af3de39e8366c599364c2ecc73b"
+    },
+    {
+      "path": "tasks/T2946-prompt.txt",
+      "bytes": 77,
+      "sha256": "31a22c8b2c41d04dbc1e9cd25011a4e7a0179ac3b0ef29c091f11fc511ecd5bf"
+    },
+    {
+      "path": "tasks/T2946-request.json",
+      "bytes": 186,
+      "sha256": "72bc0cfa9304db2709a4ee1ec251a7c1c3a6a1c8031eec7ae93ba933c9dd5f22"
+    },
+    {
+      "path": "tasks/T2946.log",
+      "bytes": 715,
+      "sha256": "39126fe09c47f00ac389c29336a9889a12c9aab34e4e0fbf2ec274cce4514c7c"
+    },
+    {
+      "path": "tasks/T2947-observation.json",
+      "bytes": 53,
+      "sha256": "b49fb5adaaf7f12b065b5dc51e79a6c1a1007bae0ffcd9f4430dc6f811606302"
+    },
+    {
+      "path": "tasks/T2947-prompt.txt",
+      "bytes": 37,
+      "sha256": "9a5ed365c143b1adf294ab162b1545b3fd208e22468743df841f3f4a30c3f2f2"
+    },
+    {
+      "path": "tasks/T2947-request.json",
+      "bytes": 146,
+      "sha256": "e4107cc08a701938f0bb32df6c5dbed5c1448886c1e685632902cfd2c7cd2b67"
+    },
+    {
+      "path": "tasks/T2947.log",
+      "bytes": 79324,
+      "sha256": "5e0fe43795679016cbb643d7540c212aef89ec4dcaf5ec4792f697adfb847d4e"
     }
   ]
 }
