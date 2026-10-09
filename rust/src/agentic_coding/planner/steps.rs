@@ -25,7 +25,7 @@ pub(super) fn stop_repeated_call(plan: AgenticPlan, messages: &[ChatMessage]) ->
     else {
         return plan;
     };
-    AgenticPlan::Final(super::work_item_steps::fill(
+    AgenticPlan::Final(crate::agentic_coding::work_item_steps::fill(
         "stuck_step_report",
         &[
             (
