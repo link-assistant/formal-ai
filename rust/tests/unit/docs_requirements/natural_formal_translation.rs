@@ -60,7 +60,7 @@ fn issue_917_case_study_and_release_metadata_are_traceable() {
             "## 4. Implemented Design",
             "## 5. Verification",
             "SemanticStatement",
-            "tests/e2e/tests/issue-917.spec.js",
+            "tests/e2e/tests/formal-language-projections.spec.js",
         ],
     );
     assert_contains_all(

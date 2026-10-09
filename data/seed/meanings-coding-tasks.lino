@@ -46,8 +46,20 @@ meanings
     lexeme en return returns returning
     lexeme ru возвращает вернуть
     lexeme hi लौटाता लौटाए
-    lexeme zh 返回
+    lexeme zh 返回 返回结果
     lexeme es devuelve devolver retorna
+  returning
+    defined-by coding_return
+    role coding_return_action
+    precondition "a coding operation has an available result"
+    effect "the operation yields its result to its caller"
+    unit "not applicable"
+    example "returning a computed value"
+    lexeme en returning
+    lexeme ru возвращая
+    lexeme hi "लौटाते हुए"
+    lexeme zh 正在返回
+    lexeme es devolviendo
   coding_division
     defined-by action
     role coding_division_action

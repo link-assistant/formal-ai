@@ -1,6 +1,9 @@
 // Exact CI semantic failures and the general boundaries their repairs retain.
 import assert from 'node:assert/strict';
 import { before, test } from 'node:test';
+import { meaning, wordIn } from '../../../js/agentic/crate/seed_meanings.mjs';
+import { resolveSurface } from '../../../js/agentic/crate/text_formalization.mjs';
+import { roundTrip } from '../../../js/agentic/crate/round_trip_translation.mjs';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { planChatStep } from '../../../js/agentic/planner.mjs';
@@ -55,4 +58,19 @@ test('proof promotion belongs to leading proof directives, not embedded test wor
   assert.ok(!realm().solverPromotedHandlers(prompt).includes('proof_request'));
   assert.deepEqual(routePlaced(prompt, []), { kind: 'honest_gap', needed: 'grep', missing: 'shell' });
   assert.ok(objectType(prompt).includes('bare_term'));
+});
+
+test('authored returning concept loads all five languages and distinguishes return from equality', () => {
+  const loaded = meaning('returning');
+  assert.deepEqual(loaded.defined_by, ['coding_return']);
+  assert.deepEqual(loaded.roles, ['coding_return_action']);
+  for (const [language, surface] of [['en', 'returning'], ['ru', 'возвращая'], ['hi', 'लौटाते हुए'], ['zh', '正在返回'], ['es', 'devolviendo']]) {
+    assert.equal(wordIn(loaded, language), surface);
+    assert.equal(resolveSurface(surface, language), 'returning');
+  }
+  assert.equal(resolveSurface('返回结果', 'zh'), 'coding_return');
+  assert.equal(resolveSurface('等于', 'zh'), 'coding_assertion_equality');
+  for (const surface of ['return', 'returning', 'equals']) {
+    assert.ok(roundTrip(surface, 'en', 'zh').survives, surface);
+  }
 });
