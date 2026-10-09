@@ -384,6 +384,26 @@ impl Lexicon {
             .collect()
     }
 
+    /// Literal prefixes of the role's open-subject forms, in seed order.
+    #[must_use]
+    pub fn prefix_literals_for_role(&self, role: &str) -> Vec<&str> {
+        self.role_word_forms(role)
+            .into_iter()
+            .filter(|form| form.slot() == Slot::Prefix)
+            .map(WordForm::before_slot)
+            .collect()
+    }
+
+    /// Exact surfaces of the role's fixed forms, in seed order.
+    #[must_use]
+    pub fn bare_literals_for_role(&self, role: &str) -> Vec<&str> {
+        self.role_word_forms(role)
+            .into_iter()
+            .filter(|form| form.slot() == Slot::Bare)
+            .map(|form| form.text.as_str())
+            .collect()
+    }
+
     /// Translate `surface` from `source` to `target` through the meaning carrying
     /// `role` that lexicalises it.
     ///
