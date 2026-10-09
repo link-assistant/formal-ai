@@ -9,13 +9,13 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 
 | Who | Tasks | Passed | Failed | Partial | Fixed | Open | Not reproduced | Unresolved |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **All** | 3425 | 2043 | 651 | 77 | 493 | 226 | 9 | 0 |
+| **All** | 3435 | 2046 | 658 | 77 | 497 | 229 | 9 | 0 |
 | CHAT-ROUTES | 13 | 10 | 3 | 0 | 3 | 0 | 0 | 0 |
 | CI-FIXER | 41 | 38 | 3 | 0 | 3 | 0 | 0 | 0 |
 | CI-SPEED | 6 | 6 | 0 | 0 | 0 | 0 | 0 | 0 |
 | CIFIX | 314 | 309 | 5 | 0 | 5 | 0 | 0 | 0 |
 | CIFIX2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
-| coordinator | 990 | 405 | 263 | 20 | 222 | 60 | 1 | 0 |
+| coordinator | 1000 | 408 | 270 | 20 | 226 | 63 | 1 | 0 |
 | DEBUG2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
 | DEBUG3 | 2 | 1 | 1 | 0 | 1 | 0 | 0 | 0 |
 | DISCOVER | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
