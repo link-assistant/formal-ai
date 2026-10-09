@@ -117,7 +117,8 @@ pub(super) fn plan_record_readback_step(
             "record_readback_failed",
         ),
         RecordObservation::Mismatch => (
-            render_seeded_outcome("coding_workspace_verification_failed", task, target)?,
+            render_seeded_outcome("coding_workspace_verification_failed", task, target)
+                .unwrap_or_default(),
             FinalDisposition::Failure,
             "record_readback_mismatch",
         ),
@@ -134,7 +135,8 @@ pub(super) fn plan_record_readback_step(
                 }
             }
             (
-                render_seeded_outcome("coding_workspace_written_unverified", task, target)?,
+                render_seeded_outcome("coding_workspace_written_unverified", task, target)
+                    .unwrap_or_default(),
                 FinalDisposition::Gap,
                 "record_readback_unavailable",
             )
