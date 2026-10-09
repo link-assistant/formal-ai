@@ -1,0 +1,140 @@
+TAP version 13
+# Subtest: both actual GHCR workflow settings preserve the original cache contract
+ok 1 - both actual GHCR workflow settings preserve the original cache contract
+  ---
+  duration_ms: 1.032167
+  ...
+# Subtest: actual Node cacheenv 0 retains every full-image Docker CLI operand
+ok 2 - actual Node cacheenv 0 retains every full-image Docker CLI operand
+  ---
+  duration_ms: 3881.0735
+  ...
+# Subtest: actual Node cacheenv 1 retains every full-image Docker CLI operand
+ok 3 - actual Node cacheenv 1 retains every full-image Docker CLI operand
+  ---
+  duration_ms: 3693.398917
+  ...
+# Subtest: actual invalid empty cacheenv refuses before any Dockerprocess
+ok 4 - actual invalid empty cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 2489.514625
+  ...
+# Subtest: actual invalid missing export cacheenv refuses before any Dockerprocess
+ok 5 - actual invalid missing export cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 2410.126459
+  ...
+# Subtest: actual invalid duplicate key cacheenv refuses before any Dockerprocess
+ok 6 - actual invalid duplicate key cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 2503.394083
+  ...
+# Subtest: actual invalid unknown key cacheenv refuses before any Dockerprocess
+ok 7 - actual invalid unknown key cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 2463.416209
+  ...
+# Subtest: actual invalid different writer scope cacheenv refuses before any Dockerprocess
+ok 8 - actual invalid different writer scope cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 2476.513584
+  ...
+# Subtest: actual invalid different export mode cacheenv refuses before any Dockerprocess
+ok 9 - actual invalid different export mode cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 2451.355625
+  ...
+# Subtest: actual invalid registry substitution cacheenv refuses before any Dockerprocess
+ok 10 - actual invalid registry substitution cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 2213.633334
+  ...
+# Subtest: actual invalid extra flag cacheenv refuses before any Dockerprocess
+ok 11 - actual invalid extra flag cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 1416.30475
+  ...
+# Subtest: actual invalid third writer cacheenv refuses before any Dockerprocess
+ok 12 - actual invalid third writer cacheenv refuses before any Dockerprocess
+  ---
+  duration_ms: 1448.1585
+  ...
+# Subtest: runtime fixture uses read-only same-run IDs, actual outputs, inactive skipping and private caller-only leases
+ok 13 - runtime fixture uses read-only same-run IDs, actual outputs, inactive skipping and private caller-only leases
+  ---
+  duration_ms: 7.856792
+  ...
+# Subtest: wrong run/group, missing ancestor or unqueued contender never become actual lease proof
+ok 14 - wrong run/group, missing ancestor or unqueued contender never become actual lease proof
+  ---
+  duration_ms: 1.335625
+  ...
+# Subtest: real active/inactive output contract rejects skipped success, wrong source and early marker
+ok 15 - real active/inactive output contract rejects skipped success, wrong source and early marker
+  ---
+  duration_ms: 0.332875
+  ...
+# Subtest: credential routing, production group, nested lease and spoofed or ungated artifact graphs are refused
+ok 16 - credential routing, production group, nested lease and spoofed or ungated artifact graphs are refused
+  ---
+  duration_ms: 4.365208
+  ...
+# Subtest: the full original resolver rejects a release rebased onto newer main; no ancestor fallback
+ok 17 - the full original resolver rejects a release rebased onto newer main; no ancestor fallback
+  ---
+  duration_ms: 1507.78175
+  ...
+# Subtest: physical exact main and recorded own version child survive a harmless retry or already completed push
+ok 18 - physical exact main and recorded own version child survive a harmless retry or already completed push
+  ---
+  duration_ms: 3107.942209
+  ...
+# Subtest: physical stale main refuses before mutation, before commit and before retry; changed child/tree refuse
+ok 19 - physical stale main refuses before mutation, before commit and before retry; changed child/tree refuse
+  ---
+  duration_ms: 14789.233833
+  ...
+# Subtest: spoofed caller, identity, event, origin and recorded source fail closed
+ok 20 - spoofed caller, identity, event, origin and recorded source fail closed
+  ---
+  duration_ms: 1276.575041
+  ...
+# Subtest: original Rust producer invokes guards before mutations and keeps rebase confined to non-CI CLI
+ok 21 - original Rust producer invokes guards before mutations and keeps rebase confined to non-CI CLI
+  ---
+  duration_ms: 0.444584
+  ...
+# Subtest: staged executable source or Cargo dependency drift cannot be recorded as the own version child
+ok 22 - staged executable source or Cargo dependency drift cannot be recorded as the own version child
+  ---
+  duration_ms: 3399.714209
+  ...
+# Subtest: immutable release transfers preserve bytes/mode and refuse missing, spoofed, drifted and extra input
+ok 23 - immutable release transfers preserve bytes/mode and refuse missing, spoofed, drifted and extra input
+  ---
+  duration_ms: 502.265125
+  ...
+# Subtest: independent source and producer identities refuse unknown, failed, interrupted, spoofed and drifted transfers
+ok 24 - independent source and producer identities refuse unknown, failed, interrupted, spoofed and drifted transfers
+  ---
+  duration_ms: 1.236167
+  ...
+# Subtest: dormant workflow is a checked exact canonical operation/order/output/authority projection
+ok 25 - dormant workflow is a checked exact canonical operation/order/output/authority projection
+  ---
+  duration_ms: 39.903625
+  ...
+# Subtest: canonical drift and omitted, reordered, spoofed, ungated or prematurely released projections fail
+ok 26 - canonical drift and omitted, reordered, spoofed, ungated or prematurely released projections fail
+  ---
+  duration_ms: 102.261209
+  ...
+1..26
+# tests 26
+# suites 0
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 27502.387875

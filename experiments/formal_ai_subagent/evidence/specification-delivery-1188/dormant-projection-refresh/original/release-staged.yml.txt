@@ -565,9 +565,6 @@ jobs:
         env:
           RELEASE_VERSION: ${{ needs.auto_prepare-source.outputs.current_version__version }}
           RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
-          BUILD_CACHE_SETTINGS: |
-            cache-from: type=gha,scope=docker-image
-            cache-to: type=gha,mode=max,scope=docker-image
         run: node _protocol/scripts/release-image-factory.mjs publish prepared-release "$RELEASE_VERSION" "$GHCR_IMAGE"
       - name: Publish and verify the slim GHCR sidecar
         if: |
@@ -1239,9 +1236,6 @@ jobs:
         env:
           RELEASE_VERSION: ${{ needs.manual_prepare-source.outputs.version__new_version }}
           RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
-          BUILD_CACHE_SETTINGS: |
-            cache-from: type=gha,scope=docker-image
-            cache-to: type=gha,mode=max,scope=docker-image
         run: node _protocol/scripts/release-image-factory.mjs publish prepared-release "$RELEASE_VERSION" "$GHCR_IMAGE"
       - name: Publish and verify the slim GHCR sidecar
         if: |

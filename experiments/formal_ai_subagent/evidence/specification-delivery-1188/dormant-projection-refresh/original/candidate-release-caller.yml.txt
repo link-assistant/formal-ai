@@ -851,9 +851,6 @@ jobs:
           path: dist/tests
           retention-days: 1
   native-response-observations:
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-native-response-observations
-      cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
     needs: [build-artifacts]
     if: ${{ !cancelled() && needs.build-artifacts.result == 'success' }}
     uses: ./.github/workflows/native-response-observations.yml
