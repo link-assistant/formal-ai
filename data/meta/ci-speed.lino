@@ -28,10 +28,6 @@ ci-speed
   sharded-suite ".github/workflows/release.yml"
   sharded-suite ".github/workflows/layered-ci.yml"
   sharded-suite ".github/workflows/e2e-local.yml"
-  workflow ".github/workflows/coverage.yml"
-    over-limit-job coverage-build
-      timeout-minutes 40
-      reason "One instrumented build of every test target, measured 20.5 minutes at most (median 18.1); its 1500s budget needs the 40-minute cap under the 70% share rule (issue #1081). To meet 30: build the unit, integration and source harnesses in parallel jobs."
   workflow ".github/workflows/dependencies-latest.yml"
     over-limit-job update
       timeout-minutes 90

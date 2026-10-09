@@ -118,10 +118,11 @@ jobs:
   coverage-build:
     name: Build instrumented test executables
     runs-on: ubuntu-latest
-    # 1500s of budget under a 40-minute cap is 62.5%, inside the 70% share
-    # issue #1017 enforces. The instrumented compile measured 6m21s (run
-    # 37652295937); collecting and uploading the executables follows it.
-    timeout-minutes: 40
+    # Run 37957603076 on source 8abb066db: the complete producer took 1393s,
+    # including a 670s instrumented compile and all executable uploads.
+    # A 1260s compile deadline is 70% of this 30-minute cap; compilation
+    # and the unchanged artifact protocol retain their independent checks.
+    timeout-minutes: 30
     needs: [detect-changes]
     if: |
       !cancelled() && (
@@ -160,7 +161,7 @@ jobs:
       # and every path the report filters is unchanged.
       - name: Build the instrumented test executables
         env:
-          TEST_BUDGET_SECONDS: 1500
+          TEST_BUDGET_SECONDS: 1260
           TEST_WARN_RATIO_PERCENT: 70
         run: |
           set -euo pipefail
