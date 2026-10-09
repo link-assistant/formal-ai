@@ -238,11 +238,12 @@ fn source_readback_retains_unicode_terminal_newline_and_typed_json_stdout() {
         successful_source_receipt as fn(&str) -> String,
         json_source_receipt,
     ] {
-        let outcome = run_with_sources(
+        let outcome = run_with_receipts(
             "In f.txt replace every «old» with «new».",
             &["read", "write", "bash"],
             &[("f.txt", source)],
             receipt,
+            true,
         );
         assert_eq!(
             fs::read_to_string(outcome.root.join("f.txt")).expect("target"),
@@ -250,7 +251,13 @@ fn source_readback_retains_unicode_terminal_newline_and_typed_json_stdout() {
         );
         assert_eq!(
             outcome.receipts,
-            vec![("cat f.txt".to_owned(), "λ🙂 new new\n".to_owned())]
+            vec![(
+                "sha256sum -- f.txt".to_owned(),
+                format!(
+                    "{}  f.txt\n",
+                    formal_ai::sha256_hex("λ🙂 new new\n".as_bytes())
+                )
+            )]
         );
         let answer = outcome.answer.as_deref().expect("final answer");
         assert!(!answer.contains("Verification failed"));

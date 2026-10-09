@@ -181,6 +181,14 @@ mod engine {
         claims: &'a HashMap<LinkId, Claim>,
     }
 
+    fn grammar_key(kind: &str) -> String {
+        if kind.chars().any(char::is_alphabetic) {
+            kind.replace('_', "-")
+        } else {
+            kind.to_owned()
+        }
+    }
+
     impl GrammarProjection {
         /// How many rules the seed carries.
         #[must_use]
@@ -199,7 +207,7 @@ mod engine {
         #[must_use]
         pub fn is_ruled(&self, kind: &str, target: &str) -> bool {
             self.ruled_kinds
-                .get(kind)
+                .get(&grammar_key(kind))
                 .is_some_and(|targets| targets.iter().any(|ruled| ruled == target))
         }
 
@@ -207,22 +215,26 @@ mod engine {
         /// target).
         #[must_use]
         pub fn is_refused(&self, kind: &str, target: &str) -> bool {
-            self.refused_kinds.get(kind).is_some_and(|targets| {
-                targets
-                    .iter()
-                    .any(|refused| refused == target || refused == ANY_TARGET)
-            })
+            self.refused_kinds
+                .get(&grammar_key(kind))
+                .is_some_and(|targets| {
+                    targets
+                        .iter()
+                        .any(|refused| refused == target || refused == ANY_TARGET)
+                })
         }
 
         /// Whether `kind` is declared to have no form in `target` (or in
         /// every target).
         #[must_use]
         pub fn is_noform(&self, kind: &str, target: &str) -> bool {
-            self.noform_kinds.get(kind).is_some_and(|targets| {
-                targets
-                    .iter()
-                    .any(|noform| noform == target || noform == ANY_TARGET)
-            })
+            self.noform_kinds
+                .get(&grammar_key(kind))
+                .is_some_and(|targets| {
+                    targets
+                        .iter()
+                        .any(|noform| noform == target || noform == ANY_TARGET)
+                })
         }
 
         /// How many no-form rows the seed carries (one row per kind and
@@ -681,10 +693,36 @@ mod engine {
             };
             for target in rule.templates().keys() {
                 ruled_kinds
-                    .entry(kind.clone())
+                    .entry(grammar_key(kind))
                     .or_default()
                     .push(target.clone());
             }
+        }
+
+        // Seed spellings normalize only lookup keys, never parsed source identities.
+        let mut dispositions: BTreeMap<String, (String, BTreeSet<String>)> = BTreeMap::new();
+        for link in network.links().filter(|link| {
+            link.references().first().copied() == Some(root.id())
+                && matches!(
+                    link.metadata().language(),
+                    Some(REFUSAL_LANGUAGE | REFUSAL_NOFORM_LANGUAGE)
+                )
+        }) {
+            let (Some(kind), Some(target)) = (link.metadata().term(), link.metadata().definition())
+            else {
+                continue;
+            };
+            let (spelling, targets) = dispositions
+                .entry(grammar_key(kind))
+                .or_insert_with(|| (kind.to_owned(), BTreeSet::new()));
+            if spelling.as_str() != kind
+                || targets.contains(target)
+                || targets.contains(ANY_TARGET)
+                || (target == ANY_TARGET && !targets.is_empty())
+            {
+                return Err(format!("{kind}:{target}"));
+            }
+            targets.insert(target.to_owned());
         }
 
         for link in network.links().filter(|link| {
@@ -695,7 +733,7 @@ mod engine {
                 (link.metadata().term(), link.metadata().definition())
             {
                 refused_kinds
-                    .entry(kind.to_owned())
+                    .entry(grammar_key(kind))
                     .or_default()
                     .push(target.to_owned());
             }
@@ -709,7 +747,7 @@ mod engine {
                 (link.metadata().term(), link.metadata().definition())
             {
                 noform_kinds
-                    .entry(kind.to_owned())
+                    .entry(grammar_key(kind))
                     .or_default()
                     .push(target.to_owned());
             }

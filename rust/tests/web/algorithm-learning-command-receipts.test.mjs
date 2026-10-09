@@ -146,3 +146,21 @@ test('original structured source insertion retains exact bytes and independently
   }
   assert.equal(source, expected); assert.deepEqual(commands, ['sha256sum -- f.rs']); assert.equal(finalResult(result).disposition, 'finding');
 });
+
+test('original Unicode source and terminal newline survive both explicit receipt formats with fresh digest', () => {
+  for (const encode of [stdout => 'Output: ' + stdout + '\nExit Code: 0', stdout => JSON.stringify({ stdout, exit_code: 0 })]) {
+    const request = 'In f.txt replace every «old» with «new».', messages = [{ role: 'user', content: request }];
+    let source = 'λ🙂 old old\n', result; const commands = [];
+    for (let turn = 0; turn < 5; turn += 1) {
+      const plan = planWorkspaceChangeStep(request, messages, ['read', 'write', 'bash']);
+      if (plan.kind === 'final') { result = plan; break; }
+      for (const call of plan.calls) {
+        const args = JSON.parse(call.arguments); let raw = '';
+        if (call.tool === 'read') raw = source; else if (call.tool === 'write') source = args.content;
+        else { assert.equal(args.command, 'sha256sum -- f.txt'); commands.push(args.command); raw = encode(sha256Hex(source) + '  f.txt\n'); }
+        append(messages, call, raw);
+      }
+    }
+    assert.equal(source, 'λ🙂 new new\n'); assert.deepEqual(commands, ['sha256sum -- f.txt']); assert.equal(finalResult(result).disposition, 'finding');
+  }
+});
