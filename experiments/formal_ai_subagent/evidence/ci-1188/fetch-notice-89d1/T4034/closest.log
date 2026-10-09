@@ -1,0 +1,904 @@
+TAP version 13
+# Subtest: formalize (rust/tests/unit/agentic-coding/agentic_coding.rs)
+    # Subtest: canonical_synopsis_covers_all_nine_primitives
+    ok 1 - canonical_synopsis_covers_all_nine_primitives
+      ---
+      duration_ms: 9.135666
+      ...
+    # Subtest: every_output_record_is_links_notation / grounded_svo_extraction_is_faithful
+    ok 2 - every_output_record_is_links_notation / grounded_svo_extraction_is_faithful
+      ---
+      duration_ms: 1.408583
+      ...
+    # Subtest: formalization_is_deterministic
+    ok 3 - formalization_is_deterministic
+      ---
+      duration_ms: 3.707083
+      ...
+    # Subtest: arbitrary_text_still_produces_a_valid_knowledge_base
+    ok 4 - arbitrary_text_still_produces_a_valid_knowledge_base
+      ---
+      duration_ms: 269.210666
+      ...
+    # Subtest: explicit_doc_id_overrides_the_default
+    ok 5 - explicit_doc_id_overrides_the_default
+      ---
+      duration_ms: 0.924917
+      ...
+    # Subtest: lexicon resolves titles by identity and aliases
+    ok 6 - lexicon resolves titles by identity and aliases
+      ---
+      duration_ms: 0.127084
+      ...
+    1..6
+ok 1 - formalize (rust/tests/unit/agentic-coding/agentic_coding.rs)
+  ---
+  duration_ms: 449.6835
+  type: 'suite'
+  ...
+# Subtest: formalization segmentation and needs (rust/src/formalization)
+    # Subtest: segments with exact byte spans and the decimal-point rule
+    ok 1 - segments with exact byte spans and the decimal-point rule
+      ---
+      duration_ms: 0.210083
+      ...
+    # Subtest: unknown surfaces skip quoted spans and seeded words
+    ok 2 - unknown surfaces skip quoted spans and seeded words
+      ---
+      duration_ms: 0.205459
+      ...
+    # Subtest: an offline deep pass reports every need unsatisfiable with the empty-structure identity
+    ok 3 - an offline deep pass reports every need unsatisfiable with the empty-structure identity
+      ---
+      duration_ms: 0.603375
+      ...
+    1..3
+ok 2 - formalization segmentation and needs (rust/src/formalization)
+  ---
+  duration_ms: 1.227333
+  type: 'suite'
+  ...
+# Subtest: formalization recipe (agentic_coding.rs, agentic_surfaces.rs, custom_formalization_subject.rs)
+    # Subtest: recognises formalization tasks in every language
+    ok 1 - recognises formalization tasks in every language
+      ---
+      duration_ms: 1.90825
+      ...
+    # Subtest: the acceptance walk: search query, then the canonical fetch, then the final report
+    ok 2 - the acceptance walk: search query, then the canonical fetch, then the final report
+      ---
+      duration_ms: 160.518042
+      ...
+    # Subtest: planner_walks_the_full_search_fetch_write_run_recipe
+    ok 3 - planner_walks_the_full_search_fetch_write_run_recipe
+      ---
+      duration_ms: 6.226583
+      ...
+    # Subtest: planner_skips_capabilities_no_advertised_tool_provides / completes without tools
+    ok 4 - planner_skips_capabilities_no_advertised_tool_provides / completes without tools
+      ---
+      duration_ms: 4.01875
+      ...
+    # Subtest: planner_formalizes_the_fetched_text_when_fetch_succeeds
+    ok 5 - planner_formalizes_the_fetched_text_when_fetch_succeeds
+      ---
+      duration_ms: 1.173958
+      ...
+    # Subtest: planner_falls_back_to_the_synopsis_when_fetch_errors
+    not ok 6 - planner_falls_back_to_the_synopsis_when_fetch_errors
+      ---
+      duration_ms: 2.120375
+      location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/agentic-recipes-a.test.mjs:266:3'
+      failureType: 'testCodeFailure'
+      error: |-
+        Expected values to be strictly equal:
+        + actual - expected ... Lines skipped
+        
+          'knowledge_base\n' +
+        +   '  id "doc:input"\n' +
+        +   '  source "doc:input"\n' +
+        -   '  id "tale:fisherman-and-fish"\n' +
+        -   '  source "Сказка о рыбаке и рыбке"\n' +
+            '  primitive_scheme "concept entity predicate assertion procedure context temporal modal annotation"\n' +
+            '  generator "formal-ai/agentic-coding/formalize@links-v1"\n' +
+        +   '  concepts "0"\n' +
+        +   '  entities "0"\n' +
+        +   '  predicates "0"\n' +
+        +   '  assertions "0"\n' +
+        +   '  procedures "0"\n' +
+        +   '  contexts "0"\n' +
+        +   '  temporals "0"\n' +
+        +   '  modals "0"\n' +
+        +   '  annotations "1"\n' +
+        +   '  preserved_spans "1"\n' +
+        -   '  concepts "3"\n' +
+        -   '  entities "4"\n' +
+        -   '  predicates "6"\n' +
+        -   '  assertions "7"\n' +
+        -   '  procedures "1"\n' +
+        -   '  contexts "2"\n' +
+        -   '  temporals "3"\n' +
+        -   '  modals "3"\n' +
+        -   '  annotations "7"\n' +
+        -   '  preserved_spans "0"\n' +
+            '\n' +
+        +   'annotation\n' +
+        +   '  id "ann:0"\n' +
+        +   '  doc "doc:input"\n' +
+        +   '  span "0:20"\n' +
+        +   '  text "Error: 404 Not Found"\n' +
+        +   '  language "en"\n' +
+        +   '\n' +
+        +   'preserved_span\n' +
+        +   '  id "preserved:0"\n' +
+        +   '  doc "doc:input"\n' +
+        +   '  span "0:20"\n' +
+        +   '  text "Error: 404 Not Found"\n' +
+        ...
+        -   'concept\n' +
+        -   '  id "concept:greed"\n' +
+        -   '  label "жадность"\n' +
+        -   '  type "trait"\n' +
+        -   '  source "lexicon:tale:fisherman-and-fish"\n' +
+        -   '\n' +
+        -   'concept\n' +
+        -   '  id "concept:ransom"\n' +
+        -   '  label "выкуп"\n' +
+        -   '  type "extracted"\n' +
+        -   '  source "tale:fisherman-and-fish"\n' +
+        -   '\n' +
+        ...
+      code: 'ERR_ASSERTION'
+      name: 'AssertionError'
+      expected: |-
+        knowledge_base
+          id "tale:fisherman-and-fish"
+          source "Сказка о рыбаке и рыбке"
+          primitive_scheme "concept entity predicate assertion procedure context temporal modal annotation"
+          generator "formal-ai/agentic-coding/formalize@links-v1"
+          concepts "3"
+          entities "4"
+          predicates "6"
+          assertions "7"
+          procedures "1"
+          contexts "2"
+          temporals "3"
+          modals "3"
+          annotations "7"
+          preserved_spans "0"
+        
+        concept
+          id "concept:greed"
+          label "жадность"
+          type "trait"
+          source "lexicon:tale:fisherman-and-fish"
+        
+        concept
+          id "concept:ransom"
+          label "выкуп"
+          type "extracted"
+          source "tale:fisherman-and-fish"
+        
+        concept
+          id "concept:wish"
+          label "желание"
+          type "extracted"
+          source "tale:fisherman-and-fish"
+        
+        entity
+          id "ent:golden_fish"
+          label "золотая рыбка"
+          source "tale:fisherman-and-fish"
+        
+        entity
+          id "ent:old_man"
+          label "старик"
+          source "tale:fisherman-and-fish"
+        
+        entity
+          id "ent:old_woman"
+          label "старуха"
+          source "tale:fisherman-and-fish"
+        
+        entity
+          id "ent:trough"
+          label "корыто"
+          source "tale:fisherman-and-fish"
+        
+        predicate
+          id "pred:catch"
+          label "поймал"
+          source "tale:fisherman-and-fish"
+        
+        predicate
+          id "pred:demand"
+          label "потребовала"
+          source "tale:fisherman-and-fish"
+        
+        predicate
+          id "pred:grant"
+          label "исполнила"
+          source "tale:fisherman-and-fish"
+        
+        predicate
+          id "pred:promise"
+          label "обещала"
+          source "tale:fisherman-and-fish"
+        
+        predicate
+          id "pred:release"
+          label "отпустил"
+          source "tale:fisherman-and-fish"
+        
+        predicate
+          id "pred:remain"
+          label "осталась"
+          source "tale:fisherman-and-fish"
+        
+        procedure
+          id "proc:escalate"
+          signature "escalate(wish) -> larger_wish"
+          description "после исполнения желания следующее требование возрастает"
+          trigger "pred:grant"
+          source "lexicon:tale:fisherman-and-fish"
+        
+        context
+          id "ctx:seaside"
+          label "У синего моря"
+          description "место действия сказки"
+        
+        context
+          id "ctx:final"
+          label "Финал"
+          description "возврат к исходному состоянию"
+        
+        temporal
+          id "temporal:в-начале-сказки"
+          expression "в начале сказки"
+          kind "relative"
+        
+        temporal
+          id "temporal:в-финале"
+          expression "в финале"
+          kind "relative"
+        
+        temporal
+          id "temporal:после-того-как-поймал"
+          expression "после того как поймал"
+          kind "relative"
+        
+        modal
+          id "modal:assertion"
+          kind "assertion"
+          degree "0.9"
+        
+        modal
+          id "modal:commitment"
+          kind "commitment"
+          degree "0.95"
+        
+        modal
+          id "modal:desire"
+          kind "desire"
+          degree "0.9"
+        
+        annotation
+          id "ann:0"
+          doc "tale:fisherman-and-fish"
+          span "0:28"
+          text "Старик поймал золотую рыбку."
+          language "ru"
+        
+        annotation
+          id "ann:1"
+          doc "tale:fisherman-and-fish"
+          span "29:49"
+          text "Рыбка обещала выкуп."
+          language "ru"
+        
+        annotation
+          id "ann:2"
+          doc "tale:fisherman-and-fish"
+          span "50:72"
+          text "Старик отпустил рыбку."
+          language "ru"
+        
+        annotation
+          id "ann:3"
+          doc "tale:fisherman-and-fish"
+          span "73:106"
+          text "Старуха потребовала новое корыто."
+          language "ru"
+        
+        annotation
+          id "ann:4"
+          doc "tale:fisherman-and-fish"
+          span "107:131"
+          text "Рыбка исполнила желание."
+          language "ru"
+        
+        annotation
+          id "ann:5"
+          doc "tale:fisherman-and-fish"
+          span "132:177"
+          text "Старуха потребовала стать владычицей морской."
+          language "ru"
+        
+        annotation
+          id "ann:6"
+          doc "tale:fisherman-and-fish"
+          span "178:214"
+          text "Старуха осталась у разбитого корыта."
+          language "ru"
+        
+        assertion
+          id "a:0"
+          subject "ent:old_man"
+          subject_kind "entity"
+          predicate "pred:catch"
+          object "ent:golden_fish"
+          object_kind "entity"
+          time "temporal:в-начале-сказки"
+          context "ctx:seaside"
+          annotation "ann:0"
+          provenance "tale:fisherman-and-fish@0:28"
+        
+        assertion
+          id "a:1"
+          subject "ent:golden_fish"
+          subject_kind "entity"
+          predicate "pred:promise"
+          object "concept:ransom"
+          object_kind "concept"
+          modal "modal:commitment"
+          context "ctx:seaside"
+          annotation "ann:1"
+          provenance "tale:fisherman-and-fish@29:49"
+        
+        assertion
+          id "a:2"
+          subject "ent:old_man"
+          subject_kind "entity"
+          predicate "pred:release"
+          object "ent:golden_fish"
+          object_kind "entity"
+          time "temporal:после-того-как-поймал"
+          context "ctx:seaside"
+          annotation "ann:2"
+          provenance "tale:fisherman-and-fish@50:72"
+        
+        assertion
+          id "a:3"
+          subject "ent:old_woman"
+          subject_kind "entity"
+          predicate "pred:demand"
+          object "ent:trough"
+          object_kind "entity"
+          modal "modal:desire"
+          context "ctx:seaside"
+          annotation "ann:3"
+          provenance "tale:fisherman-and-fish@73:106"
+        
+        assertion
+          id "a:4"
+          subject "ent:golden_fish"
+          subject_kind "entity"
+          predicate "pred:grant"
+          object "concept:wish"
+          object_kind "concept"
+          modal "modal:assertion"
+          context "ctx:seaside"
+          annotation "ann:4"
+          provenance "tale:fisherman-and-fish@107:131"
+        
+        assertion
+          id "a:5"
+          subject "ent:old_woman"
+          subject_kind "entity"
+          predicate "pred:demand"
+          object "стать владычицей морской"
+          object_kind "literal"
+          modal "modal:desire"
+          context "ctx:seaside"
+          annotation "ann:5"
+          provenance "tale:fisherman-and-fish@132:177"
+        
+        assertion
+          id "a:6"
+          subject "ent:old_woman"
+          subject_kind "entity"
+          predicate "pred:remain"
+          object "ent:trough"
+          object_kind "entity"
+          time "temporal:в-финале"
+          context "ctx:final"
+          annotation "ann:6"
+          provenance "tale:fisherman-and-fish@178:214"
+        
+      actual: |-
+        knowledge_base
+          id "doc:input"
+          source "doc:input"
+          primitive_scheme "concept entity predicate assertion procedure context temporal modal annotation"
+          generator "formal-ai/agentic-coding/formalize@links-v1"
+          concepts "0"
+          entities "0"
+          predicates "0"
+          assertions "0"
+          procedures "0"
+          contexts "0"
+          temporals "0"
+          modals "0"
+          annotations "1"
+          preserved_spans "1"
+        
+        annotation
+          id "ann:0"
+          doc "doc:input"
+          span "0:20"
+          text "Error: 404 Not Found"
+          language "en"
+        
+        preserved_span
+          id "preserved:0"
+          doc "doc:input"
+          span "0:20"
+          text "Error: 404 Not Found"
+          language "en"
+          annotation "ann:0"
+        
+      operator: 'strictEqual'
+      stack: |-
+        TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/agentic-recipes-a.test.mjs:271:12)
+        Test.runInAsyncScope (node:async_hooks:206:9)
+        Test.run (node:internal/test_runner/test:796:25)
+        Suite.processPendingSubtests (node:internal/test_runner/test:526:18)
+        Test.postRun (node:internal/test_runner/test:889:19)
+        Test.run (node:internal/test_runner/test:835:12)
+        async Suite.processPendingSubtests (node:internal/test_runner/test:526:7)
+      ...
+    # Subtest: issue 956: a quoted custom source is formalized itself
+    ok 7 - issue 956: a quoted custom source is formalized itself
+      ---
+      duration_ms: 4.447875
+      ...
+    1..7
+not ok 3 - formalization recipe (agentic_coding.rs, agentic_surfaces.rs, custom_formalization_subject.rs)
+  ---
+  duration_ms: 180.659667
+  type: 'suite'
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/agentic-recipes-a.test.mjs:189:1'
+  failureType: 'subtestsFailed'
+  error: '1 subtest failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: meaning detail (rust/tests/unit/agentic-coding/issue_538_agentic.rs)
+    # Subtest: recognises_the_meaning_detail_task / routes concepts
+    ok 1 - recognises_the_meaning_detail_task / routes concepts
+      ---
+      duration_ms: 0.295583
+      ...
+    # Subtest: enriched blocks match the seed byte for byte, fetched or not
+    ok 2 - enriched blocks match the seed byte for byte, fetched or not
+      ---
+      duration_ms: 3.52775
+      ...
+    # Subtest: replays the committed agent-cli-session.json step for step
+    ok 3 - replays the committed agent-cli-session.json step for step
+      ---
+      duration_ms: 14.234834
+      ...
+    # Subtest: replays the committed agent-cli-session-potato.json step for step
+    ok 4 - replays the committed agent-cli-session-potato.json step for step
+      ---
+      duration_ms: 2.807125
+      ...
+    1..4
+ok 4 - meaning detail (rust/tests/unit/agentic-coding/issue_538_agentic.rs)
+  ---
+  duration_ms: 21.007084
+  type: 'suite'
+  ...
+# Subtest: diagram (rust/tests/unit/agentic-coding/issue_538_agentic.rs)
+    # Subtest: recognises_the_diagram_task
+    ok 1 - recognises_the_diagram_task
+      ---
+      duration_ms: 0.231459
+      ...
+    # Subtest: committed_diagram_is_generated (docs/diagrams/agentic-recipes.md)
+    ok 2 - committed_diagram_is_generated (docs/diagrams/agentic-recipes.md)
+      ---
+      duration_ms: 0.291667
+      ...
+    # Subtest: replays the committed diagram Agent CLI session
+    ok 3 - replays the committed diagram Agent CLI session
+      ---
+      duration_ms: 1.215042
+      ...
+    1..3
+ok 5 - diagram (rust/tests/unit/agentic-coding/issue_538_agentic.rs)
+  ---
+  duration_ms: 1.805667
+  type: 'suite'
+  ...
+# Subtest: issue-558 self-referential recipes (rust/tests/unit/issue_558_*.rs)
+    # Subtest: task predicates route each canonical task to exactly its recipe
+    ok 1 - task predicates route each canonical task to exactly its recipe
+      ---
+      duration_ms: 2.999292
+      ...
+    # Subtest: committed documents render byte for byte with their final answers
+    ok 2 - committed documents render byte for byte with their final answers
+      ---
+      duration_ms: 1.561084
+      ...
+    # Subtest: the change request and rebuild plan are derived from the canonical request
+    ok 3 - the change request and rebuild plan are derived from the canonical request
+      ---
+      duration_ms: 6.09775
+      ...
+    # Subtest: document recipes walk write -> verify -> final
+    ok 4 - document recipes walk write -> verify -> final
+      ---
+      duration_ms: 1.346625
+      ...
+    1..4
+ok 6 - issue-558 self-referential recipes (rust/tests/unit/issue_558_*.rs)
+  ---
+  duration_ms: 12.13175
+  type: 'suite'
+  ...
+# Subtest: issue \#558 owned manifest, self-explanation and source links (rust/tests/unit/issue_558_*.rs)
+    # Subtest: owned_manifest_content_addresses_every_source_file
+    ok 1 - owned_manifest_content_addresses_every_source_file
+      ---
+      duration_ms: 123.105667
+      ...
+    # Subtest: content ids equal the Rust-generated self-AST census for every undrifted module
+    ok 2 - content ids equal the Rust-generated self-AST census for every undrifted module
+      ---
+      duration_ms: 16.0715
+      ...
+    # Subtest: the fast FNV-1a equals crate::engine::stable_id
+    ok 3 - the fast FNV-1a equals crate::engine::stable_id
+      ---
+      duration_ms: 0.69
+      ...
+    # Subtest: owned_manifest_renders_valid_links_notation
+    ok 4 - owned_manifest_renders_valid_links_notation
+      ---
+      duration_ms: 0.106375
+      ...
+    # Subtest: coverage_is_integer_permille_and_flags_unfaithful_modules
+    ok 5 - coverage_is_integer_permille_and_flags_unfaithful_modules
+      ---
+      duration_ms: 0.117125
+      ...
+    # Subtest: every source citation is grounded and a fabricated one cannot be constructed
+    ok 6 - every source citation is grounded and a fabricated one cannot be constructed
+      ---
+      duration_ms: 0.508667
+      ...
+    # Subtest: the explanation document matches the committed Agent CLI evidence modulo the live ids
+    ok 7 - the explanation document matches the committed Agent CLI evidence modulo the live ids
+      ---
+      duration_ms: 3.711625
+      ...
+    # Subtest: the source-links document reports the whole repo over the representative slice
+    ok 8 - the source-links document reports the whole repo over the representative slice
+      ---
+      duration_ms: 1.318458
+      ...
+    # Subtest: the explain and source-links recipes walk write -> verify -> final
+    ok 9 - the explain and source-links recipes walk write -> verify -> final
+      ---
+      duration_ms: 2.361458
+      ...
+    1..9
+ok 7 - issue \#558 owned manifest, self-explanation and source links (rust/tests/unit/issue_558_*.rs)
+  ---
+  duration_ms: 148.276042
+  type: 'suite'
+  ...
+# Subtest: failed Fetch preserves requested URL and failure without making the body a goal
+ok 8 - failed Fetch preserves requested URL and failure without making the body a goal
+  ---
+  duration_ms: 515.471208
+  ...
+# Subtest: successful Fetch keeps its source text and only the call URL establishes identity
+ok 9 - successful Fetch keeps its source text and only the call URL establishes identity
+  ---
+  duration_ms: 0.865833
+  ...
+# Subtest: source JSON cannot override the outer failed provider or its requested URL
+ok 10 - source JSON cannot override the outer failed provider or its requested URL
+  ---
+  duration_ms: 1.761625
+  ...
+# Subtest: mixed Fetch and shell read failures retain their own ordered reasons
+ok 11 - mixed Fetch and shell read failures retain their own ordered reasons
+  ---
+  duration_ms: 6.77175
+  ...
+# Subtest: a real successful retry supersedes a prior failed retrieval of that URL
+ok 12 - a real successful retry supersedes a prior failed retrieval of that URL
+  ---
+  duration_ms: 0.6785
+  ...
+# Subtest: the unchanged original missing issue with failed provider performs no writes or false completion
+ok 13 - the unchanged original missing issue with failed provider performs no writes or false completion
+  ---
+  duration_ms: 811.1155
+  ...
+# Subtest: the original no-artifact fetched source verifies only auxiliary history and stays exactly Planned
+ok 14 - the original no-artifact fetched source verifies only auxiliary history and stays exactly Planned
+  ---
+  duration_ms: 129.751417
+  ...
+# Subtest: the unchanged client without Read or Run cannot claim a persisted auxiliary write
+ok 15 - the unchanged client without Read or Run cannot claim a persisted auxiliary write
+  ---
+  duration_ms: 24.249666
+  ...
+# Subtest: successful Fetch JSON error and status keys are document bytes, never provider status
+ok 16 - successful Fetch JSON error and status keys are document bytes, never provider status
+  ---
+  duration_ms: 0.356541
+  ...
+# Subtest: explicit failed Fetch retains the exact JSON body as failure and never uses it as source
+ok 17 - explicit failed Fetch retains the exact JSON body as failure and never uses it as source
+  ---
+  duration_ms: 0.211041
+  ...
+# Subtest: legacy Fetch diagnostic uses failure evidence while successful JSON remains source bytes
+not ok 18 - legacy Fetch diagnostic uses failure evidence while successful JSON remains source bytes
+  ---
+  duration_ms: 0.897834
+  location: '/Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/fetch-work-item-observations.test.mjs:108:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + 'Error: 404 Not Found'
+    - null
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ~
+  actual: 'Error: 404 Not Found'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///Users/konard/Code/Archive/link-assistant/formal-ai/rust/tests/web/fetch-work-item-observations.test.mjs:111:46)
+    Test.runInAsyncScope (node:async_hooks:206:9)
+    Test.run (node:internal/test_runner/test:796:25)
+    async Test.processPendingSubtests (node:internal/test_runner/test:526:7)
+  ...
+# Subtest: a quoted first-line fixture remains the exact authored file content
+ok 19 - a quoted first-line fixture remains the exact authored file content
+  ---
+  duration_ms: 629.880417
+  ...
+# Subtest: an actual first-line constraint outside the literal still applies
+ok 20 - an actual first-line constraint outside the literal still applies
+  ---
+  duration_ms: 3.161125
+  ...
+# Subtest: explicit successful receipts preserve exact JSON, Unicode, whitespace and authored error narratives
+ok 21 - explicit successful receipts preserve exact JSON, Unicode, whitespace and authored error narratives
+  ---
+  duration_ms: 431.725125
+  ...
+# Subtest: matching bytes cannot erase missing status, failure status or typed harness errors
+ok 22 - matching bytes cannot erase missing status, failure status or typed harness errors
+  ---
+  duration_ms: 0.251291
+  ...
+# Subtest: lookup binds exact command, nearest call identity and latest matching result
+ok 23 - lookup binds exact command, nearest call identity and latest matching result
+  ---
+  duration_ms: 1.538
+  ...
+# Subtest: whole rewrite without Edit accepts actual exact shell and typed JSON observations
+ok 24 - whole rewrite without Edit accepts actual exact shell and typed JSON observations
+  ---
+  duration_ms: 441.964541
+  ...
+# Subtest: whole rewrite without Edit rejects failed matching observation even after correct physical write
+ok 25 - whole rewrite without Edit rejects failed matching observation even after correct physical write
+  ---
+  duration_ms: 49.896334
+  ...
+# Subtest: whole rewrite without Edit ignores unrelated commands and obeys newest failed target receipt
+ok 26 - whole rewrite without Edit ignores unrelated commands and obeys newest failed target receipt
+  ---
+  duration_ms: 22.009041
+  ...
+# Subtest: whole rewrite without Edit rejects a successful wrong hash while physical source bytes remain exact
+ok 27 - whole rewrite without Edit rejects a successful wrong hash while physical source bytes remain exact
+  ---
+  duration_ms: 17.620292
+  ...
+# Subtest: structured list insertion accepts actual exact shell and typed JSON observations
+ok 28 - structured list insertion accepts actual exact shell and typed JSON observations
+  ---
+  duration_ms: 17.393125
+  ...
+# Subtest: structured list insertion rejects failed matching observation even after correct physical write
+ok 29 - structured list insertion rejects failed matching observation even after correct physical write
+  ---
+  duration_ms: 21.738625
+  ...
+# Subtest: structured list insertion ignores unrelated commands and obeys newest failed target receipt
+ok 30 - structured list insertion ignores unrelated commands and obeys newest failed target receipt
+  ---
+  duration_ms: 7.724541
+  ...
+# Subtest: structured list insertion rejects a successful wrong hash while physical source bytes remain exact
+ok 31 - structured list insertion rejects a successful wrong hash while physical source bytes remain exact
+  ---
+  duration_ms: 8.193666
+  ...
+# Subtest: generated source accepts actual exact shell and typed JSON observations
+ok 32 - generated source accepts actual exact shell and typed JSON observations
+  ---
+  duration_ms: 19.934375
+  ...
+# Subtest: generated source rejects failed matching observation even after correct physical write
+ok 33 - generated source rejects failed matching observation even after correct physical write
+  ---
+  duration_ms: 27.37
+  ...
+# Subtest: generated source ignores unrelated commands and obeys newest failed target receipt
+ok 34 - generated source ignores unrelated commands and obeys newest failed target receipt
+  ---
+  duration_ms: 9.932791
+  ...
+# Subtest: presentation or ambiguous transport cannot certify unobserved byte strings
+ok 35 - presentation or ambiguous transport cannot certify unobserved byte strings
+  ---
+  duration_ms: 0.416125
+  ...
+# Subtest: composite source and whole registration require independent exact actual receipts
+ok 36 - composite source and whole registration require independent exact actual receipts
+  ---
+  duration_ms: 30.410417
+  ...
+# Subtest: either failed composite receipt blocks completion while preserving actual file assertions
+ok 37 - either failed composite receipt blocks completion while preserving actual file assertions
+  ---
+  duration_ms: 22.161084
+  ...
+# Subtest: complete provider Read retains every JSON source byte 169
+ok 38 - complete provider Read retains every JSON source byte 169
+  ---
+  duration_ms: 81.756833
+  ...
+# Subtest: bare same JSON stays available Unknown and cannot own transport role 169
+ok 39 - bare same JSON stays available Unknown and cannot own transport role 169
+  ---
+  duration_ms: 0.745959
+  ...
+# Subtest: complete provider Read retains every JSON source byte 127
+ok 40 - complete provider Read retains every JSON source byte 127
+  ---
+  duration_ms: 0.3315
+  ...
+# Subtest: bare same JSON stays available Unknown and cannot own transport role 127
+ok 41 - bare same JSON stays available Unknown and cannot own transport role 127
+  ---
+  duration_ms: 0.288958
+  ...
+# Subtest: actual ordinary full planner and filesystem provider preserve exact JSON bytes
+ok 42 - actual ordinary full planner and filesystem provider preserve exact JSON bytes
+  ---
+  duration_ms: 617.586542
+  ...
+# Subtest: explicit provider failure wins over successful Read metadata
+ok 43 - explicit provider failure wins over successful Read metadata
+  ---
+  duration_ms: 70.866417
+  ...
+# Subtest: partial source does not gain complete Finding metadata
+ok 44 - partial source does not gain complete Finding metadata
+  ---
+  duration_ms: 0.391042
+  ...
+# Subtest: truncated source does not gain complete Finding metadata
+ok 45 - truncated source does not gain complete Finding metadata
+  ---
+  duration_ms: 0.251334
+  ...
+# Subtest: wrong metadata path source does not gain complete Finding metadata
+ok 46 - wrong metadata path source does not gain complete Finding metadata
+  ---
+  duration_ms: 0.250541
+  ...
+# Subtest: timed out actual provider metadata remains Failure
+ok 47 - timed out actual provider metadata remains Failure
+  ---
+  duration_ms: 0.376375
+  ...
+# Subtest: aborted actual provider metadata remains Failure
+ok 48 - aborted actual provider metadata remains Failure
+  ---
+  duration_ms: 0.223625
+  ...
+# Subtest: signalled actual provider metadata remains Failure
+ok 49 - signalled actual provider metadata remains Failure
+  ---
+  duration_ms: 0.329041
+  ...
+# Subtest: wrong call cannot bind the original file
+ok 50 - wrong call cannot bind the original file
+  ---
+  duration_ms: 0.198958
+  ...
+# Subtest: wrong tool cannot bind the original file
+ok 51 - wrong tool cannot bind the original file
+  ---
+  duration_ms: 0.330458
+  ...
+# Subtest: new user window cannot bind the original file
+ok 52 - new user window cannot bind the original file
+  ---
+  duration_ms: 0.112833
+  ...
+# Subtest: conflicting paths cannot bind the original file
+ok 53 - conflicting paths cannot bind the original file
+  ---
+  duration_ms: 0.194542
+  ...
+# Subtest: latest source observation supersedes older bytes and provider refusal
+ok 54 - latest source observation supersedes older bytes and provider refusal
+  ---
+  duration_ms: 0.604958
+  ...
+# Subtest: every multi-read source uses typed provider observations
+ok 55 - every multi-read source uses typed provider observations
+  ---
+  duration_ms: 0.524792
+  ...
+# Subtest: partial multi-read JSON input does not become an error before the remaining Read
+ok 56 - partial multi-read JSON input does not become an error before the remaining Read
+  ---
+  duration_ms: 0.251
+  ...
+# Subtest: list then read preserves JSON source and real shell listing receipt
+ok 57 - list then read preserves JSON source and real shell listing receipt
+  ---
+  duration_ms: 0.703875
+  ...
+# Subtest: discovery hashes exact JSON source without treating its keys as a failed Read
+ok 58 - discovery hashes exact JSON source without treating its keys as a failed Read
+  ---
+  duration_ms: 2.075375
+  ...
+# Subtest: discovery bare input cannot certify a source contract
+ok 59 - discovery bare input cannot certify a source contract
+  ---
+  duration_ms: 0.327375
+  ...
+# Subtest: discovery partial input cannot certify a source contract
+ok 60 - discovery partial input cannot certify a source contract
+  ---
+  duration_ms: 0.294416
+  ...
+# Subtest: discovery wrong metadata path input cannot certify a source contract
+ok 61 - discovery wrong metadata path input cannot certify a source contract
+  ---
+  duration_ms: 0.75425
+  ...
+# Subtest: discovery genuine outer failure is Failure; authored ENOENT data is not absence
+ok 62 - discovery genuine outer failure is Failure; authored ENOENT data is not absence
+  ---
+  duration_ms: 0.841167
+  ...
+1..62
+# tests 91
+# suites 7
+# pass 89
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1689.153125

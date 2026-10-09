@@ -6,6 +6,8 @@
 // detail, arguments, tool}` with `arguments` / `tool` null when unknown.
 
 import { plainText, rustLines } from './content.mjs';
+import { normalizePrompt } from './crate/engine.mjs';
+import { wordsForRole } from './crate/seed_meanings.mjs';
 import { agenticMessage } from './messages.mjs';
 import { Capability } from './capability.mjs';
 import { writeArguments } from './plan.mjs';
@@ -59,7 +61,7 @@ export class Progress {
       const observation = boundRead ? sourceReadObservation(raw, Boolean(message.is_error || message.isError),
         message.source_read ?? message.sourceRead ?? null, path) : null;
       const failure = observation !== null ? observation.error
-        : capability === Capability.Read || capability === Capability.Fetch
+        : capability === Capability.Read || (capability === Capability.Fetch && (parseJson(raw) !== undefined || !legacyFetchNotice(raw)))
           ? (message.is_error || message.isError ? raw : null)
           : failureMessage(raw, Boolean(message.is_error || message.isError), capability !== Capability.Run);
       progress.attempts.push({
@@ -555,4 +557,15 @@ function workItemReadFailureReason(command, raw, echoedFailure) {
   const shaped = curl ? Boolean(trim(text)) && !trim(text).startsWith('{') : text.includes('\n\n');
   if (shaped) return null;
   return agenticMessage(curl ? 'progress_rest_answer_not_issue_text' : 'progress_output_not_work_item_shape');
+}
+
+/** Mirrors fn legacy_fetch_notice: source prose is not provider failure merely for mentioning one. */
+function legacyFetchNotice(raw) {
+  const normalized = normalizePrompt(raw);
+  return wordsForRole('tool_result_failure_signal').some((surface) => {
+    const prefix = normalizePrompt(surface);
+    if (!normalized.startsWith(prefix)) return false;
+    const next = Array.from(normalized.slice(prefix.length))[0];
+    return next === undefined || !/[\p{Alphabetic}\p{N}]/u.test(next);
+  });
 }

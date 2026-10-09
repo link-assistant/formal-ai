@@ -102,7 +102,11 @@ impl Progress {
                 });
             let failure = source_read.as_ref().map_or_else(
                 || {
-                    if matches!(capability, Capability::Read | Capability::Fetch) {
+                    if capability == Capability::Read
+                        || (capability == Capability::Fetch
+                            && (serde_json::from_str::<serde_json::Value>(&raw).is_ok()
+                                || !legacy_fetch_notice(&raw)))
+                    {
                         message.is_error.then(|| raw.clone())
                     } else {
                         super::tool_result::failure_message(
@@ -826,4 +830,22 @@ fn work_item_read_failure_reason(
             "the output did not have the title-and-body shape of a work item".to_owned()
         }
     })
+}
+
+// Only a leading seeded provider notice supplies legacy status-less Fetch failure evidence.
+// JSON and source text mentioning failure later in its body retain their source bytes.
+fn legacy_fetch_notice(raw: &str) -> bool {
+    let normalized = crate::engine::normalize_prompt(raw);
+    crate::seed::lexicon()
+        .bare_literals_for_role("tool_result_failure_signal")
+        .iter()
+        .any(|surface| {
+            normalized
+                .strip_prefix(&crate::engine::normalize_prompt(surface))
+                .is_some_and(|tail| {
+                    tail.chars()
+                        .next()
+                        .is_none_or(|character| !character.is_alphanumeric())
+                })
+        })
 }
