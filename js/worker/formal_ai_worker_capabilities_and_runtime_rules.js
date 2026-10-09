@@ -58,103 +58,21 @@ function findBehaviorRule(query) {
   );
 }
 
-function codeSpans(text) {
-  return String(text || "")
-    .split("`")
-    .map((part, index) => (index % 2 === 1 ? part.trim() : ""))
-    .filter(Boolean);
-}
-
-// Issue #144 / #386: recognize behavior-rule updates expressed as `When X then
-// Y` (and translations) in addition to the explicit `When I say … answer …`
-// grammar. No keyword is named here any more — every surface lives in the
-// embedded meaning lexicon (data/seed/meanings-skill-compiler.lino) and is read
-// by semantic role, mirroring explicit_teaching_form + looks_like_skill_description
-// in src/skill_compiler.rs:
-//   * a teaching trigger lead that co-occurs with a teaching response verb, or a
-//     standalone behaviour-rule edit directive (the explicit teaching form); and
-//   * a when-then frame whose circumfix surface brackets the trigger and answer —
-//     the literal before the … (U+2026) is the head, the literal after it is the
-//     link; both must appear in order, with a backtick on each side.
-const ROLE_SKILL_TEACHING_TRIGGER_LEAD = "skill_teaching_trigger_lead";
-const ROLE_SKILL_TEACHING_RESPONSE_VERB = "skill_teaching_response_verb";
-const ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE = "behavior_rule_edit_directive";
-const ROLE_SKILL_WHEN_THEN_PAIR = "skill_when_then_pair";
-
 const directRoleSurfacePresent = (role, lower) => roleWordForms(role).some((form) => form.text && lower.includes(form.text));
-function looksLikeRuntimeRuleUpdate(text) {
-  const raw = String(text || "");
-  const lower = raw.toLowerCase();
-  if (
-    (directRoleSurfacePresent(ROLE_SKILL_TEACHING_TRIGGER_LEAD, lower) &&
-      directRoleSurfacePresent(ROLE_SKILL_TEACHING_RESPONSE_VERB, lower)) ||
-    directRoleSurfacePresent(ROLE_BEHAVIOR_RULE_EDIT_DIRECTIVE, lower)
-  ) {
-    return true;
-  }
-  for (const form of roleWordForms(ROLE_SKILL_WHEN_THEN_PAIR)) {
-    if (form.slot !== "circumfix") continue;
-    const head = form.before;
-    const link = form.after;
-    const headPos = lower.indexOf(head);
-    if (headPos === -1) continue;
-    const tail = lower.slice(headPos + head.length);
-    const linkPos = tail.indexOf(link);
-    if (linkPos === -1) continue;
-    const absoluteLinkPos = headPos + head.length + linkPos;
-    const beforeLink = raw.slice(headPos, absoluteLinkPos);
-    const afterLink = raw.slice(absoluteLinkPos + link.length);
-    if (beforeLink.includes("`") && afterLink.includes("`")) return true;
-  }
-  return false;
-}
 
+// All teaching, catalog and history replay consumers use the same package.
 function runtimeRuleFromText(text) {
-  if (!looksLikeRuntimeRuleUpdate(text)) return null;
-  const spans = codeSpans(text);
-  let trigger = spans.length >= 2 ? spans[0].trim() : "";
-  let answer = spans.length >= 2 ? spans[1].trim() : "";
-  if (spans.length < 2) {
-    const raw = String(text || "");
-    const lower = raw.toLowerCase();
-    for (const lead of roleWordForms(ROLE_SKILL_TEACHING_TRIGGER_LEAD)) {
-      const leadText = String(lead.text || "");
-      const leadPos = lower.indexOf(leadText);
-      if (leadPos === -1) continue;
-      const triggerStart = leadPos + leadText.length;
-      const responseVerbs = roleWordForms(ROLE_SKILL_TEACHING_RESPONSE_VERB)
-        .sort((left, right) => String(right.text || "").length - String(left.text || "").length);
-      for (const responseVerb of responseVerbs) {
-        const verb = String(responseVerb.text || "");
-        const relativeVerbPos = lower.slice(triggerStart).indexOf(verb);
-        if (relativeVerbPos === -1) continue;
-        const verbPos = triggerStart + relativeVerbPos;
-        trigger = raw.slice(triggerStart, verbPos).trim().replace(/^[`"':,\s]+|[`"':,\s]+$/gu, "");
-        answer = raw
-          .slice(verbPos + verb.length)
-          .trim()
-          .replace(/^[`"':,\s]+|[`"':,.!?\s]+$/gu, "");
-        if (trigger && answer) break;
-      }
-      if (trigger && answer) break;
-    }
-  }
-  if (!trigger || !answer) return null;
-  return {
-    id: stableBehaviorRuleId("behavior_rule_runtime", `${trigger}\n${answer}`),
-    trigger,
-    answer,
-  };
+  const result = crateModule("crate/skill_compiler.mjs").compileNaturalLanguageSkill(String(text || ""));
+  return result.status === "compiled" ? result : null;
 }
 
 function runtimeRuleForPrompt(prompt, history) {
-  const normalizedPrompt = normalizePrompt(prompt);
   const turns = Array.isArray(history) ? history : [];
   for (let index = turns.length - 1; index >= 0; index -= 1) {
     const turn = turns[index] || {};
     if (String(turn.role || "").toLowerCase() !== "user") continue;
     const rule = runtimeRuleFromText(turn.content);
-    if (rule && normalizePrompt(rule.trigger) === normalizedPrompt) {
+    if (rule && rule.replay(prompt)) {
       return rule;
     }
   }
@@ -209,7 +127,9 @@ function tryBehaviorRules(prompt, normalized, history, preferences) {
       intent: "behavior_rule_update",
       content: renderRuntimeRuleUpdate(updateRule, language),
       confidence: 1.0,
-      evidence: ["behavior_rule:update", updateRule.id],
+      evidence: [],
+      solverEvents: [solverEvent("skill_compile:package", updateRule.id),
+        solverEvent("behavior_rule:update", updateRule.legacy_behavior_rule_id)],
     };
   }
 
@@ -222,6 +142,11 @@ function tryBehaviorRules(prompt, normalized, history, preferences) {
     return {
       intent: "behavior_rules_count",
       content: renderBehaviorRuleCount(runtimeRules, language),
+      solverEvents: [solverEvent("behavior_rules:count", String(counts.total)),
+        solverEvent("behavior_rules:built_in_count", String(counts.builtIn)),
+        solverEvent("behavior_rules:runtime_count", String(counts.runtime)),
+        solverEvent("reasoning:operation", "count_behavior_rules_catalog_plus_dialog_local_rules"),
+        solverEvent("reasoning:result", `built_in=${counts.builtIn};runtime=${counts.runtime};total=${counts.total}`)],
       confidence: 1.0,
       evidence: [
         "behavior_rules:count",
@@ -326,9 +251,13 @@ function tryBehaviorRules(prompt, normalized, history, preferences) {
   if (runtimeRule) {
     return {
       intent: "behavior_rule_custom",
-      content: runtimeRule.answer,
+      content: runtimeRule.response,
       confidence: 1.0,
-      evidence: ["behavior_rule:match", runtimeRule.id],
+      responseLink: `response:${runtimeRule.id}`,
+      evidence: [],
+      solverEvents: [solverEvent("compiled_skill:package", runtimeRule.linksNotation()),
+        solverEvent("compiled_skill:replay", runtimeRule.rule_id),
+        solverEvent("cache_hit", runtimeRule.id)],
     };
   }
 
