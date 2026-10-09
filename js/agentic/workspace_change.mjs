@@ -91,17 +91,6 @@ function sourcedRequest(task, currentTurn) {
   return { task: withContents(task, source, sourceFromReadResult(read)) };
 }
 
-/** Mirrors `fn is_verification_failure_answer`. */
-export function isVerificationFailureAnswer(rawTask, answer) {
-  const task = unwrapTransportQuotes(rawTask);
-  const edit = composeEditRequest(task);
-  const targets = [...(edit ? [edit[0]] : []), ...rustPaths(task)];
-  const named = namedTargetAndPayloads(task);
-  if (named && !targets.includes(named.target)) targets.push(named.target);
-  return targets.some((target) => ['coding_workspace_verification_failed', 'coding_workspace_fragment_refused']
-    .some((intent) => renderSeededOutcome(intent, task, target) === answer));
-}
-
 function failed(task, target) {
   return finalOrNull(renderSeededOutcome('coding_workspace_verification_failed', task, target),
     FinalDisposition.Failure, 'coding_workspace_verification_failed');

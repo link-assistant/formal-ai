@@ -204,7 +204,7 @@ export async function planChatStepResolved(messages, toolNames) {
   return stopRepeatedFailure(stopRepeatedCall(plan, messages), messages);
 }
 
-/** Mirrors `fn stop_repeated_call` in rust/src/agentic_coding/planner.rs. */
+/** Mirrors `fn stop_repeated_call` in rust/src/agentic_coding/planner/steps.rs. */
 function stopRepeatedCall(plan, messages) {
   if (!isToolCalls(plan)) return plan;
   const progress = Progress.scan(messages);
@@ -220,7 +220,7 @@ function stopRepeatedCall(plan, messages) {
   return plan;
 }
 
-/** Mirrors `fn stop_repeated_failure` in rust/src/agentic_coding/planner.rs. */
+/** Mirrors `fn stop_repeated_failure` in rust/src/agentic_coding/planner/steps.rs. */
 function stopRepeatedFailure(plan, messages) {
   const REPEATED_FAILURES_THAT_STOP = 2;
   if (!isToolCalls(plan)) return plan;
