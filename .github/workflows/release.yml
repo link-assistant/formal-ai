@@ -1225,6 +1225,7 @@ jobs:
       contents: read
   build-artifacts:
     name: Build binaries and tests
+    outputs: {source-commit: "${{ steps.source.outputs.commit }}"}
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-build-artifacts
       cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
@@ -1251,6 +1252,9 @@ jobs:
       - uses: ./.github/actions/cache-cargo-registry
         with:
           prefix: artifacts-
+      - name: Pin actual native test producer source commit
+        id: source
+        run: printf 'commit=%s\n' "$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
       - name: Build binaries and test executables
         run: cargo test --manifest-path rust/Cargo.toml --release --no-run --bins --tests --all-features
       - name: Collect the build artifacts
@@ -1279,6 +1283,14 @@ jobs:
           name: formal-ai-test-executables
           path: dist/tests
           retention-days: 1
+  native-response-observations:
+    needs: [build-artifacts]
+    if: ${{ !cancelled() && needs.build-artifacts.result == 'success' }}
+    uses: ./.github/workflows/native-response-observations.yml
+    with:
+      source-commit: ${{ needs.build-artifacts.outputs.source-commit }}
+    permissions:
+      contents: read
   box-language-projects:
     name: Box Image Projects (${{ matrix.language }})
     concurrency:
@@ -1473,7 +1485,7 @@ jobs:
             version-check, release-preflight, base, lint, test, doc-tests, macos-core-tests, build,
             auto-release, manual-release, native-container-images,
             changelog-pr, test-e2e-local, test-agent-cli-e2e,
-            build-artifacts, box-language-projects, build-pages, deploy-pages,
+            build-artifacts, native-response-observations, box-language-projects, build-pages, deploy-pages,
             test-e2e-pages, server-parity]
     steps:
       - uses: actions/checkout@v7
