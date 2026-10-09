@@ -262,9 +262,18 @@ fn collection_edit_reads_transforms_writes_and_observes_workspace_bytes() {
     assert_eq!(verify.tool, "run_command");
     assert_eq!(
         json_arguments(&verify.arguments)["command"],
-        "cat scripts/detect-code-changes.rs"
+        "sha256sum -- scripts/detect-code-changes.rs"
     );
-    push_result(&mut messages, "run_1", &verify, AFTER);
+    push_result(
+        &mut messages,
+        "run_1",
+        &verify,
+        &format!(
+            "{}  scripts/detect-code-changes.rs
+",
+            formal_ai::source_fetch::sha256_hex(AFTER.as_bytes())
+        ),
+    );
 
     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
         panic!("an observed edit must finish");
@@ -305,9 +314,18 @@ fn identifier_refactor_is_a_grounded_verified_rewrite_not_a_file_move() {
     assert_eq!(verify.tool, "run_command");
     assert_eq!(
         json_arguments(&verify.arguments)["command"],
-        "cat rust/src/web_search_core.rs"
+        "sha256sum -- rust/src/web_search_core.rs"
     );
-    push_result(&mut messages, "verify_rename", &verify, AFTER);
+    push_result(
+        &mut messages,
+        "verify_rename",
+        &verify,
+        &format!(
+            "{}  rust/src/web_search_core.rs
+",
+            formal_ai::source_fetch::sha256_hex(AFTER.as_bytes())
+        ),
+    );
 
     let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
         panic!("an observed refactor must finish");

@@ -1,0 +1,46 @@
+{
+  "js/agentic/workspace_change.mjs": {
+    "bytes": 61019,
+    "sha256": "6e5d06ce519fc12e11f4850d2f8985897bc6f0a5435228ec28fd842bd9302b58"
+  },
+  "js/agentic/workspace_change/digest_verification.mjs": {
+    "bytes": 4490,
+    "sha256": "31228991de354675f94ad55048bc3895dc110d8ad51ef7fbf1da30776ccc2be1"
+  },
+  "js/agentic/structured_edit.mjs": {
+    "bytes": 15879,
+    "sha256": "2ddde23fbf5de36acf693db835a9f34eaa70d67f7b6b07d649cbabc8986645de"
+  },
+  "rust/src/agentic_coding/workspace_change.rs": {
+    "bytes": 35649,
+    "sha256": "2c46f1e62fdfc7cc288e2544b56b91f18bcf02a53d8343f47f30acd995f3ebe9"
+  },
+  "rust/src/agentic_coding/workspace_change/digest_verification.rs": {
+    "bytes": 4338,
+    "sha256": "cb56c8bdafa2ae31330e504290b399eae5901bdb2e9f9694089045d74efae725"
+  },
+  "rust/src/agentic_coding/structured_edit.rs": {
+    "bytes": 29579,
+    "sha256": "a456ba2e1e04d0bb6f1f447b9b515143af19c359640c0da2a091e9ced28c5e2b"
+  },
+  "rust/src/agentic_coding/planner.rs": {
+    "bytes": 46957,
+    "sha256": "a9373b1a49ff6d7aac1dd62edb338748bb84a87c838b203821b1f193c7945d22"
+  },
+  "rust/tests/web/whole-write-digest-freshness.test.mjs": {
+    "bytes": 8493,
+    "sha256": "f427cb593d496b1f961f0fd5eea79a29a849134119dcee2ffe723a9f144c3fb4"
+  },
+  "rust/tests/web/issue-0848-coding-ladder.test.mjs": {
+    "bytes": 15016,
+    "sha256": "0c1918582a2d07f7291b49d982e289bd60f89fdcdd7e286db5108e512b62b608"
+  },
+  "rust/tests/unit/pull_request_1188_line_operations.rs": {
+    "bytes": 15537,
+    "sha256": "79e840d4dbb616af2a3511fc2fd3c2ce207a9570ebd1b3ab5667ff91c9ef7a55"
+  },
+  "rust/tests/unit/agentic-coding/issue_848_coding_ladder.rs": {
+    "bytes": 32126,
+    "sha256": "0b78345764b74c5610685759ae700981cd363c67595f16fd6b8eeaa235c5e433"
+  }
+}

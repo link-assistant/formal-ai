@@ -16,9 +16,11 @@ use std::collections::HashMap;
 
 use serde_json::json;
 
-use super::code_artifact::{latest_result, result_for_command, source_from_read_result};
-use super::code_task::{render_seeded_change, render_seeded_outcome};
+use super::code_artifact::{latest_result, source_from_read_result};
+use super::code_task::render_seeded_change;
+use super::final_result::FinalResult;
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for, write_arguments};
+use super::workspace_change::{VerifiedChange, plan_write_digest_verification};
 use crate::normal_markov::{quoted_segment_spans, unwrap_transport_quotes};
 use crate::protocol::ChatMessage;
 use crate::seed;
@@ -46,6 +48,7 @@ pub(super) fn plan_structured_edit_step(
     task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
+    result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
     let task = unwrap_transport_quotes(task);
     let edit = member_insertion(task)?;
@@ -88,35 +91,24 @@ pub(super) fn plan_structured_edit_step(
             write_arguments(&edit.target, &updated),
         ));
     }
-    if let Some(observed) = result_for_command(current_turn, &format!("cat {}", edit.target)) {
-        if super::tool_result::observed_bytes_match(&observed, &updated) {
-            // Say what went in, not just that the file was written. The read
-            // step is what made this knowable, and a caller that asked for a
-            // record of the change -- the issue #1028 ladder does -- has
-            // nothing to record when the answer is a status line.
-            let (intent, change) = if inserted.is_empty() {
-                ("coding_member_already_present", quoted_list(&edit.values))
-            } else {
-                ("coding_member_inserted", quoted_list(&inserted))
-            };
-            return Some(AgenticPlan::Final(render_seeded_change(
-                intent,
-                task,
-                &edit.target,
-                &[("{members}", &change)],
-            )?));
-        }
-        return Some(AgenticPlan::Final(render_seeded_outcome(
-            "coding_workspace_verification_failed",
-            task,
-            &edit.target,
-        )?));
-    }
-    let run_tool = tool_for(tool_names, Capability::Run)?;
-    Some(plan_one(
-        run_tool,
-        json!({"command": format!("cat {}", edit.target)}).to_string(),
-    ))
+    let (intent, members) = if inserted.is_empty() {
+        ("coding_member_already_present", quoted_list(&edit.values))
+    } else {
+        ("coding_member_inserted", quoted_list(&inserted))
+    };
+    plan_write_digest_verification(
+        task,
+        current_turn,
+        tool_names,
+        &VerifiedChange {
+            target: &edit.target,
+            expected: &updated,
+            intent,
+            slots: &[("{members}", members.as_str())],
+            list_slots: &[],
+        },
+        result,
+    )
 }
 
 fn member_insertion(task: &str) -> Option<MemberInsertion> {

@@ -419,7 +419,9 @@ pub(super) fn plan_settled_routes(
     if let Some(plan) = code_task::plan_generated_source_step(task, messages, tool_names, result) {
         return Some(plan);
     }
-    if let Some(plan) = structured_edit::plan_structured_edit_step(task, messages, tool_names) {
+    if let Some(plan) =
+        structured_edit::plan_structured_edit_step(task, messages, tool_names, result)
+    {
         return Some(plan);
     }
     // A source-backed structured document is a read/derive/write transaction.

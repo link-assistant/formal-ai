@@ -7,13 +7,15 @@
 //! source creation with a second module-registration edit, so a multi-file
 //! request cannot stop after its first observable effect.
 
+mod digest_verification;
+pub(super) use digest_verification::{plan_digest_verification, plan_write_digest_verification};
+
 use serde_json::{Value, json};
 use std::path::Path;
 
 use super::code_artifact::source_from_read_result;
 use super::code_task::{
-    render_rust_template, render_seeded_change, render_seeded_change_with_lists,
-    render_seeded_outcome, rust_source_for_task,
+    render_rust_template, render_seeded_change, render_seeded_outcome, rust_source_for_task,
 };
 use super::final_result::{FinalDisposition, FinalResult, record};
 use super::general_planner::compose_edit_request;
@@ -319,29 +321,19 @@ fn plan_rewrite_step(
         let tool = tool_for(tool_names, Capability::Write)?;
         return Some(plan_one(tool, write_arguments(&rewrite.target, &updated)));
     }
-    let command = format!("cat {}", rewrite.target);
-    let Some(observed) = result_for_command(current_turn, &command) else {
-        let tool = tool_for(tool_names, Capability::Run)?;
-        return Some(plan_one(tool, json!({"command": command}).to_string()));
-    };
-    if !super::tool_result::observed_bytes_match(&observed, &updated) {
-        return Some(AgenticPlan::Final(render_seeded_outcome(
-            "coding_workspace_verification_failed",
-            task,
-            &rewrite.target,
-        )?));
-    }
-    Some(record(
-        AgenticPlan::Final(render_seeded_change(
-            rewrite.stated_intent(),
-            task,
-            &rewrite.target,
-            &rewrite.stated_slots(),
-        )?),
-        FinalDisposition::Finding,
-        "workspace_change_observed",
+    plan_write_digest_verification(
+        task,
+        current_turn,
+        tool_names,
+        &VerifiedChange {
+            target: &rewrite.target,
+            expected: &updated,
+            intent: rewrite.stated_intent(),
+            slots: &rewrite.stated_slots(),
+            list_slots: &[],
+        },
         result,
-    ))
+    )
 }
 
 fn plan_composite_step(
@@ -926,40 +918,6 @@ fn workspace_path_matches(expected: &str, observed: &str) -> bool {
 
 pub(super) fn result_for_command(messages: &[ChatMessage], command: &str) -> Option<String> {
     super::code_artifact::result_for_command(messages, command)
-}
-
-pub(super) fn plan_digest_verification(
-    task: &str,
-    current_turn: &[ChatMessage],
-    tool_names: &[&str],
-    change: &VerifiedChange<'_>,
-    result: &mut Option<FinalResult>,
-) -> Option<AgenticPlan> {
-    let command = ["sha256sum -- ", change.target].concat();
-    let Some(observed) = result_for_command(current_turn, &command) else {
-        let tool = tool_for(tool_names, Capability::Run)?;
-        return Some(plan_one(tool, json!({"command": command}).to_string()));
-    };
-    let digest = crate::source_fetch::sha256_hex(change.expected.as_bytes());
-    if !super::tool_result::observed_digest_matches(&observed, &digest) {
-        return Some(AgenticPlan::Final(render_seeded_outcome(
-            "coding_workspace_verification_failed",
-            task,
-            change.target,
-        )?));
-    }
-    Some(record(
-        AgenticPlan::Final(render_seeded_change_with_lists(
-            change.intent,
-            task,
-            change.target,
-            change.slots,
-            change.list_slots,
-        )?),
-        FinalDisposition::Finding,
-        "workspace_change_observed",
-        result,
-    ))
 }
 
 fn matching_result(

@@ -356,3 +356,128 @@ fn workspace_digest_receipts_preserve_unicode_bytes_and_veto_failed_status() {
         );
     }
 }
+
+// Whole-file writes require a fresh, target-associated digest; acknowledgement alone is insufficient.
+fn whole_write_messages() -> Vec<ChatMessage> {
+    let mut messages = vec![ChatMessage::user("In f.txt replace «old» with «new»")];
+    append_whole_receipt(
+        &mut messages,
+        "read",
+        serde_json::json!({"path": "f.txt"}),
+        "old",
+        false,
+    );
+    append_whole_receipt(
+        &mut messages,
+        "write",
+        serde_json::json!({"path": "f.txt", "content": "new"}),
+        "",
+        false,
+    );
+    messages
+}
+fn append_whole_receipt(
+    messages: &mut Vec<ChatMessage>,
+    tool: &str,
+    arguments: serde_json::Value,
+    raw: &str,
+    failed: bool,
+) {
+    let identity = format!("whole-{}", messages.len());
+    messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+        &identity,
+        tool,
+        arguments.to_string(),
+    )]));
+    let mut result = ChatMessage::tool_result(identity, tool, raw);
+    result.is_error = failed;
+    messages.push(result);
+}
+fn whole_write_plan(messages: &[ChatMessage]) -> AgenticPlan {
+    plan_chat_step(messages, &["read", "write", "bash"]).expect("a whole-write verification step")
+}
+#[test]
+fn whole_write_uses_fresh_bare_digest_and_preserves_explicit_failure() {
+    let digest = format!("{}  f.txt\n", sha256_hex(b"new"));
+    let mut messages = whole_write_messages();
+    let AgenticPlan::ToolCalls(calls) = whole_write_plan(&messages) else {
+        panic!("fresh digest required");
+    };
+    assert_eq!(calls[0].tool, "bash");
+    assert_eq!(
+        serde_json::from_str::<serde_json::Value>(&calls[0].arguments).unwrap()["command"],
+        "sha256sum -- f.txt"
+    );
+    append_whole_receipt(
+        &mut messages,
+        "bash",
+        serde_json::json!({"command": "sha256sum -- f.txt"}),
+        &digest,
+        false,
+    );
+    assert_eq!(
+        whole_write_plan(&messages),
+        AgenticPlan::Final(
+            "Replaced `old` with `new` in `f.txt` and observed the result.".to_owned()
+        )
+    );
+    for (raw, outer) in [
+        (digest.clone(), true),
+        (
+            serde_json::json!({"stdout": digest, "exit_code": 1}).to_string(),
+            false,
+        ),
+        (format!("{}  f.txt\n", sha256_hex(b"wrong")), false),
+    ] {
+        let mut messages = whole_write_messages();
+        append_whole_receipt(
+            &mut messages,
+            "bash",
+            serde_json::json!({"command": "sha256sum -- f.txt"}),
+            &raw,
+            outer,
+        );
+        assert_eq!(whole_write_plan(&messages), AgenticPlan::Final("Verification failed for `f.txt`: the observed bytes differ from the planned workspace effect.".to_owned()));
+    }
+}
+#[test]
+fn whole_write_rejects_stale_digest_and_later_failed_write() {
+    let digest = format!("{}  f.txt\n", sha256_hex(b"new"));
+    let mut stale = vec![ChatMessage::user("In f.txt replace «old» with «new»")];
+    append_whole_receipt(
+        &mut stale,
+        "read",
+        serde_json::json!({"path": "f.txt"}),
+        "old",
+        false,
+    );
+    append_whole_receipt(
+        &mut stale,
+        "bash",
+        serde_json::json!({"command": "sha256sum -- f.txt"}),
+        &digest,
+        false,
+    );
+    append_whole_receipt(
+        &mut stale,
+        "write",
+        serde_json::json!({"path": "f.txt", "content": "new"}),
+        "",
+        false,
+    );
+    let AgenticPlan::ToolCalls(calls) = whole_write_plan(&stale) else {
+        panic!("stale digest cannot verify");
+    };
+    assert_eq!(
+        serde_json::from_str::<serde_json::Value>(&calls[0].arguments).unwrap()["command"],
+        "sha256sum -- f.txt"
+    );
+    append_whole_receipt(
+        &mut stale,
+        "write",
+        serde_json::json!({"path": "f.txt", "content": "new"}),
+        "",
+        true,
+    );
+    assert_eq!(whole_write_plan(&stale), AgenticPlan::Final("Verification failed for `f.txt`: the observed bytes differ from the planned workspace effect.".to_owned()));
+}

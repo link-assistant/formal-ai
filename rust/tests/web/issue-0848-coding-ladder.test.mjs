@@ -124,8 +124,9 @@ describe('R848-6: a structured collection edit transforms the workspace bytes', 
       ['write_file', 'scripts/detect-code-changes.rs', after]);
     pushResult(messages, 'write_1', write, 'updated');
     const verify = onlyCall(await planner.planChatStep(messages, tools));
-    assert.equal(JSON.parse(verify.arguments).command, 'cat scripts/detect-code-changes.rs');
-    pushResult(messages, 'run_1', verify, after);
+    assert.equal(JSON.parse(verify.arguments).command, 'sha256sum -- scripts/detect-code-changes.rs');
+    pushResult(messages, 'run_1', verify, `${sha256(after)}  scripts/detect-code-changes.rs
+`);
     assert.ok((await finalAnswer(messages, tools)).includes('observed'));
   });
 });
@@ -145,8 +146,9 @@ describe('R848-10: symbol refactors and composite module requests terminate veri
     assert.equal(JSON.parse(write.arguments).content, AFTER);
     pushResult(messages, 'write_rename', write, 'updated');
     const verify = onlyCall(await planner.planChatStep(messages, tools));
-    assert.equal(JSON.parse(verify.arguments).command, 'cat rust/src/web_search_core.rs');
-    pushResult(messages, 'verify_rename', verify, AFTER);
+    assert.equal(JSON.parse(verify.arguments).command, 'sha256sum -- rust/src/web_search_core.rs');
+    pushResult(messages, 'verify_rename', verify, `${sha256(AFTER)}  rust/src/web_search_core.rs
+`);
     assert.ok((await finalAnswer(messages, tools)).includes('observed'));
   });
 
