@@ -178,6 +178,7 @@ export function workerMirrorFiles() {
  */
 export function loadWorkerMirror(overrides = {}) {
   const context = createBrowserContext(overrides);
+  loadBrowserScript(context, "js/seed/worker-bootstrap-responses.js");
   for (const file of workerMirrorFiles()) {
     loadBrowserScript(context, file);
   }

@@ -5,110 +5,9 @@
 let wasm;
 let mode = "wasm worker";
 
-// Hard-coded fallbacks. These are only used if `seed/*.lino` fails to load,
-// e.g. when the worker runs from a `file://` URL. The shipped GitHub Pages
-// build always fetches the seed successfully.
-const FALLBACK_IDENTITY_ANSWER =
-  "I am formal-ai, a deterministic symbolic AI implementation that answers from local Links Notation rules and OpenAI-compatible API shapes. I do not perform neural inference in this demo.";
-
-const FALLBACK_ASSISTANT_NAME_ANSWER =
-  "I'm formal AI, and currently I don't have a name. But you can name me as you like.";
-
-const FALLBACK_GREETING_ANSWER = "Hi, how may I help you?";
-const FALLBACK_WELLBEING_ANSWER =
-  "I'm doing great, thanks for asking! I'm ready to help — what would you like to do?";
-
-const FALLBACK_TEST_STATUS_ANSWER = "Test passed. I'm here.";
-const FALLBACK_COURTESY_RESPONSE_ANSWER =
-  "Glad to hear it. What would you like to do next?";
-const FALLBACK_ASSISTANT_FREE_TIME_ANSWER =
-  "I do not have free time the way a person does. Between prompts I am idle; when the dialog is active, I help with tasks, rules, and explanations.";
-const FALLBACK_COURTESY_ACKNOWLEDGEMENTS = [
-  "Glad to hear it.",
-  "You're welcome.",
-];
-const FALLBACK_COURTESY_FOLLOW_UPS = [
-  "What would you like to do next?",
-  "Do you want to discuss something else?",
-];
-
-const FALLBACK_CLARIFICATION_ANSWER =
-  "I'm sorry for the confusion. I am formal-ai, a deterministic symbolic AI. I can answer greetings, identity questions, concept lookups (what is X?), arithmetic, and parameterized program templates. If you'd like to ask about something specific, try one of those or add a fact in Links Notation.";
-
-// Mutable runtime tables — populated from seed at init(). Each entry is
-// `{ text, variants }` so the worker can return either the canonical phrase
-// (for deterministic tests and tool calls) or a random variant (for greeting
-// randomisation introduced in issue #27). Courtesy responses can also carry
-// separated acknowledgement and follow-up fragments for issue #160.
-let MULTILINGUAL_ANSWERS = {
-  greeting: {
-    en: { text: FALLBACK_GREETING_ANSWER, variants: [FALLBACK_GREETING_ANSWER] },
-  },
-  wellbeing: {
-    en: { text: FALLBACK_WELLBEING_ANSWER, variants: [FALLBACK_WELLBEING_ANSWER] },
-  },
-  farewell: {
-    en: { text: "Goodbye! Feel free to return any time.", variants: ["Goodbye! Feel free to return any time."] },
-  },
-  test_status: {
-    en: { text: FALLBACK_TEST_STATUS_ANSWER, variants: [FALLBACK_TEST_STATUS_ANSWER] },
-  },
-  courtesy_response: {
-    en: {
-      text: FALLBACK_COURTESY_RESPONSE_ANSWER,
-      variants: [FALLBACK_COURTESY_RESPONSE_ANSWER],
-      acknowledgements: FALLBACK_COURTESY_ACKNOWLEDGEMENTS,
-      followUps: FALLBACK_COURTESY_FOLLOW_UPS,
-    },
-  },
-  assistant_free_time: {
-    en: {
-      text: FALLBACK_ASSISTANT_FREE_TIME_ANSWER,
-      variants: [FALLBACK_ASSISTANT_FREE_TIME_ANSWER],
-    },
-  },
-  identity: {
-    en: { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] },
-  },
-  assistant_name: {
-    en: {
-      text: FALLBACK_ASSISTANT_NAME_ANSWER,
-      variants: [FALLBACK_ASSISTANT_NAME_ANSWER],
-    },
-  },
-  clarification: {
-    en: {
-      text: FALLBACK_CLARIFICATION_ANSWER,
-      variants: [FALLBACK_CLARIFICATION_ANSWER],
-    },
-  },
-  github_repository_traffic: {
-    en: {
-      text: "Partly. For a GitHub repository such as {repository}, GitHub can show aggregate traffic to people with push or write access: views, unique visitors, clones, referring sites, and popular content for the recent traffic window. It does not show the identity of an individual visitor. Check GitHub Insights > Traffic or the REST traffic endpoints: {traffic-ui-docs}; {traffic-api-docs}.",
-      variants: [
-        "Partly. For a GitHub repository such as {repository}, GitHub can show aggregate traffic to people with push or write access: views, unique visitors, clones, referring sites, and popular content for the recent traffic window. It does not show the identity of an individual visitor. Check GitHub Insights > Traffic or the REST traffic endpoints: {traffic-ui-docs}; {traffic-api-docs}.",
-      ],
-    },
-    ru: {
-      text: "Частично. Для репозитория GitHub, например {repository}, GitHub показывает агрегированный трафик пользователям с доступом push/write: просмотры, уникальных посетителей, клоны, источники переходов и популярные страницы за недавний период. Он не показывает личность отдельного посетителя. Проверять нужно через Insights > Traffic или REST traffic endpoints: {traffic-ui-docs}; {traffic-api-docs}.",
-      variants: [
-        "Частично. Для репозитория GitHub, например {repository}, GitHub показывает агрегированный трафик пользователям с доступом push/write: просмотры, уникальных посетителей, клоны, источники переходов и популярные страницы за недавний период. Он не показывает личность отдельного посетителя. Проверять нужно через Insights > Traffic или REST traffic endpoints: {traffic-ui-docs}; {traffic-api-docs}.",
-      ],
-    },
-    hi: {
-      text: "आंशिक रूप से। {repository} जैसे GitHub repository के लिए GitHub push या write access वाले लोगों को aggregate traffic दिखा सकता है: views, unique visitors, clones, referring sites, और popular content for the recent traffic window. यह किसी individual visitor की identity नहीं दिखाता। GitHub Insights > Traffic या REST traffic endpoints देखें: {traffic-ui-docs}; {traffic-api-docs}.",
-      variants: [
-        "आंशिक रूप से। {repository} जैसे GitHub repository के लिए GitHub push या write access वाले लोगों को aggregate traffic दिखा सकता है: views, unique visitors, clones, referring sites, और popular content for the recent traffic window. यह किसी individual visitor की identity नहीं दिखाता। GitHub Insights > Traffic या REST traffic endpoints देखें: {traffic-ui-docs}; {traffic-api-docs}.",
-      ],
-    },
-    zh: {
-      text: "部分可以。对于 {repository} 这样的 GitHub 仓库，GitHub 可以向有 push 或 write 权限的人显示聚合流量：views、unique visitors、clones、referring sites 以及近期流量窗口内的 popular content。它不会显示单个访问者的身份。可查看 GitHub Insights > Traffic 或 REST traffic endpoints: {traffic-ui-docs}; {traffic-api-docs}.",
-      variants: [
-        "部分可以。对于 {repository} 这样的 GitHub 仓库，GitHub 可以向有 push 或 write 权限的人显示聚合流量：views、unique visitors、clones、referring sites 以及近期流量窗口内的 popular content。它不会显示单个访问者的身份。可查看 GitHub Insights > Traffic 或 REST traffic endpoints: {traffic-ui-docs}; {traffic-api-docs}.",
-      ],
-    },
-  },
-};
+// Offline responses are shipped seed data generated from the canonical Links
+// Notation corpus, then replaced by the live seed at initialization.
+let MULTILINGUAL_ANSWERS = JSON.parse(JSON.stringify(self.FORMAL_AI_BOOTSTRAP_RESPONSES || {}));
 let CONCEPTS = [];
 let CONCEPT_CONTEXTS = [];
 let FACTS = [];
@@ -214,44 +113,8 @@ let INTENT_ROUTING = {
 };
 
 function fallbackEntry(intent) {
-  if (intent === "greeting") {
-    return { text: FALLBACK_GREETING_ANSWER, variants: [FALLBACK_GREETING_ANSWER] };
-  }
-  if (intent === "wellbeing") {
-    return { text: FALLBACK_WELLBEING_ANSWER, variants: [FALLBACK_WELLBEING_ANSWER] };
-  }
-  if (intent === "courtesy_response") {
-    return {
-      text: FALLBACK_COURTESY_RESPONSE_ANSWER,
-      variants: [FALLBACK_COURTESY_RESPONSE_ANSWER],
-      acknowledgements: FALLBACK_COURTESY_ACKNOWLEDGEMENTS,
-      followUps: FALLBACK_COURTESY_FOLLOW_UPS,
-    };
-  }
-  if (intent === "assistant_free_time") {
-    return {
-      text: FALLBACK_ASSISTANT_FREE_TIME_ANSWER,
-      variants: [FALLBACK_ASSISTANT_FREE_TIME_ANSWER],
-    };
-  }
-  if (intent === "identity") {
-    return { text: FALLBACK_IDENTITY_ANSWER, variants: [FALLBACK_IDENTITY_ANSWER] };
-  }
-  if (intent === "assistant_name") {
-    return {
-      text: FALLBACK_ASSISTANT_NAME_ANSWER,
-      variants: [FALLBACK_ASSISTANT_NAME_ANSWER],
-    };
-  }
-  if (intent === "test_status") {
-    return { text: FALLBACK_TEST_STATUS_ANSWER, variants: [FALLBACK_TEST_STATUS_ANSWER] };
-  }
-  if (intent === "clarification") {
-    return {
-      text: FALLBACK_CLARIFICATION_ANSWER,
-      variants: [FALLBACK_CLARIFICATION_ANSWER],
-    };
-  }
+  const seeded = (self.FORMAL_AI_BOOTSTRAP_RESPONSES || {})[intent];
+  if (seeded && seeded.en) return normalizeEntry(seeded.en, intent);
   // R1188-U1: an intent with no seeded text answers with the seeded unknown
   // response; before the seed is hydrated it degrades to the intent slug (a
   // meaning, never a bootstrap copy of seed prose), as cached_response does in
