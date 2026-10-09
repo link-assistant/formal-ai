@@ -2,54 +2,56 @@ self_ast_census
   target src/agentic_coding/module_function.rs
   language rust
   fidelity full_ast
-  byte_len 30176
-  line_count 815
-  content_id source_module_4c109f92a83983c7
-  symbol_count 36
+  byte_len 30220
+  line_count 817
+  content_id source_module_3df57cc96861731f
+  symbol_count 38
   symbols
     module callable_catalog 27 27
-    module discovery 28 28
-    module source_contract 29 29
-    const CONTRACTS 44 44
-    const EXTENSIONS 45 45
-    const COMMAND_ENDS 49 49
-    const SCRIPT_CLAUSE_MARKS 54 54
-    struct ModuleFunctionRequest 62 71
-    struct Signature 74 78
-    const NAMES_SLOT 81 81
-    function fill 84 90
-    function bare 93 96
-    function contract 99 107
-    function extension_language 111 123
-    function outside_quotes 126 139
-    function clauses 143 169
-    function is_identifier 172 180
-    function signature 184 233
-    function stated_command 238 295
-    function paths_in 298 310
-    function returns_in 313 317
-    function module_function_request 326 387
-    struct RelationOperation 391 395
-    function is_binary_idiom 398 403
-    function relation_operations 409 441
-    function relation_expression 446 469
-    function evaluated 472 476
-    function specified_value 483 501
-    function stated_value 509 535
-    function synthesized_source 542 598
-    function with_import 602 628
-    function specifier_from 632 652
-    function with_final_newline 655 661
-    function module_function_recipe 665 757
-    function read_source 761 771
-    function plan_module_function_step 776 815
+    module conditional_ir 28 28
+    module conditional_schema 29 29
+    module discovery 30 30
+    module source_contract 31 31
+    const CONTRACTS 46 46
+    const EXTENSIONS 47 47
+    const COMMAND_ENDS 51 51
+    const SCRIPT_CLAUSE_MARKS 56 56
+    struct ModuleFunctionRequest 64 73
+    struct Signature 76 80
+    const NAMES_SLOT 83 83
+    function fill 86 92
+    function bare 95 98
+    function contract 101 109
+    function extension_language 113 125
+    function outside_quotes 128 141
+    function clauses 145 171
+    function is_identifier 174 182
+    function signature 186 235
+    function stated_command 240 297
+    function paths_in 300 312
+    function returns_in 315 319
+    function module_function_request 328 389
+    struct RelationOperation 393 397
+    function is_binary_idiom 400 405
+    function relation_operations 411 443
+    function relation_expression 448 471
+    function evaluated 474 478
+    function specified_value 485 503
+    function stated_value 511 537
+    function synthesized_source 544 600
+    function with_import 604 630
+    function specifier_from 634 654
+    function with_final_newline 657 663
+    function module_function_recipe 667 759
+    function read_source 763 773
+    function plan_module_function_step 778 817
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 23606
-    named_node_count 4901
+    total_link_count 23634
+    named_node_count 4905
     distinct_node_kinds 82
     node_kinds
       arguments 457
@@ -85,7 +87,7 @@ self_ast_census
       function_item 25
       generic_function 3
       generic_type 47
-      identifier 995
+      identifier 997
       if_expression 31
       index_expression 36
       inner_doc_comment_marker 25
@@ -98,7 +100,7 @@ self_ast_census
       match_block 2
       match_expression 2
       match_pattern 5
-      mod_item 3
+      mod_item 5
       mutable_specifier 16
       outer_doc_comment_marker 69
       parameter 46

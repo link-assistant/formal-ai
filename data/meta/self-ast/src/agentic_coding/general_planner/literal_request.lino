@@ -2,35 +2,35 @@ self_ast_census
   target src/agentic_coding/general_planner/literal_request.rs
   language rust
   fidelity full_ast
-  byte_len 21802
-  line_count 471
-  content_id source_module_05a4943d69f6e50a
+  byte_len 21798
+  line_count 470
+  content_id source_module_814c5e1a95657f7d
   symbol_count 16
   symbols
     function binding_has_write_instruction 13 52
     function parse_write_request 77 80
     function parse_write_contract 82 109
-    function parse_write_request_bound 112 242
-    function statement_scope 244 253
-    function end_of_statement 281 297
-    function literal_statement_end 308 317
-    function positions_share_statement 318 325
-    function is_literal_content 327 350
-    function is_non_referential_content 357 363
-    function names_deferred_work_product 383 397
-    function ends_with_head_noun 406 414
-    struct LiteralWriteContract 418 423
-    function write_contract 424 453
-    function instruction_view 454 462
-    function owns_instruction_span 465 471
+    function parse_write_request_bound 112 240
+    function statement_scope 242 251
+    function end_of_statement 279 295
+    function literal_statement_end 306 315
+    function positions_share_statement 316 323
+    function is_literal_content 325 348
+    function is_non_referential_content 355 361
+    function names_deferred_work_product 381 395
+    function ends_with_head_noun 404 412
+    struct LiteralWriteContract 416 421
+    function write_contract 422 452
+    function instruction_view 453 461
+    function owns_instruction_span 464 470
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 11583
-    named_node_count 2399
-    distinct_node_kinds 79
+    total_link_count 11554
+    named_node_count 2394
+    distinct_node_kinds 80
     node_kinds
       arguments 174
       array_expression 1
@@ -39,19 +39,19 @@ self_ast_census
       attribute 1
       attribute_item 1
       binary_expression 57
-      block 52
+      block 50
       boolean_literal 9
       break_expression 1
       call_expression 174
       char_literal 14
-      closure_expression 25
-      closure_parameters 25
+      closure_expression 26
+      closure_parameters 26
       compound_assignment_expr 1
       crate 9
       doc_comment 100
-      else_clause 8
+      else_clause 7
       escape_sequence 1
-      expression_statement 34
+      expression_statement 33
       field_declaration 4
       field_declaration_list 1
       field_expression 205
@@ -60,15 +60,16 @@ self_ast_census
       field_initializer_list 1
       for_expression 2
       function_item 15
+      function_modifiers 1
       generic_type 13
-      identifier 550
-      if_expression 18
+      identifier 548
+      if_expression 17
       index_expression 13
       inner_doc_comment_marker 1
       integer_literal 1
       let_chain 3
-      let_condition 6
-      let_declaration 40
+      let_condition 5
+      let_declaration 41
       lifetime 3
       line_comment 150
       macro_invocation 1
@@ -86,7 +87,7 @@ self_ast_census
       range_expression 22
       reference_expression 28
       reference_type 25
-      return_expression 13
+      return_expression 12
       scoped_identifier 41
       scoped_type_identifier 4
       scoped_use_list 2
@@ -100,10 +101,10 @@ self_ast_census
       struct_item 1
       super 10
       token_tree 2
-      try_expression 11
+      try_expression 12
       tuple_expression 3
       tuple_pattern 2
-      tuple_struct_pattern 10
+      tuple_struct_pattern 9
       tuple_type 1
       type_arguments 13
       type_identifier 30

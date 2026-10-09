@@ -2,104 +2,105 @@ self_ast_census
   target src/agentic_coding/module_function/callable_catalog.rs
   language rust
   fidelity full_ast
-  byte_len 18895
-  line_count 483
-  content_id source_module_9ba9d9e5b16e0d09
-  symbol_count 14
+  byte_len 21363
+  line_count 549
+  content_id source_module_ab0811a3f5329d17
+  symbol_count 15
   symbols
-    function tree_value 6 37
-    function group 38 40
-    function identifier 41 56
-    function safe_binding 57 63
-    function names 64 77
-    function aliases 78 104
-    function dependency 105 121
-    function unknown 122 124
-    function span_start 125 127
-    function span_end 128 130
-    function observe_source_callables 134 343
-    function resolve_entry 344 413
-    function observed_guarded_graph 417 436
-    function observed_callable_graphs 440 483
+    function tree_value 7 38
+    function group 39 41
+    function identifier 42 57
+    function safe_binding 58 64
+    function names 65 78
+    function aliases 79 105
+    function dependency 106 122
+    function unknown 123 125
+    function span_start 126 128
+    function span_end 129 131
+    function observe_source_callables 135 344
+    function resolve_entry 345 414
+    function observed_guarded_graph 418 437
+    function observed_callable_graphs 441 484
+    function observed_conditional_graphs 488 549
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 17467
-    named_node_count 3583
+    total_link_count 19253
+    named_node_count 3945
     distinct_node_kinds 73
     node_kinds
-      arguments 256
-      array_type 5
-      assignment_expression 22
-      attribute 3
-      attribute_item 3
-      binary_expression 88
-      block 83
+      arguments 279
+      array_type 6
+      assignment_expression 26
+      attribute 4
+      attribute_item 4
+      binary_expression 94
+      block 94
       boolean_literal 1
-      call_expression 256
+      call_expression 279
       char_literal 9
-      closure_expression 30
-      closure_parameters 30
+      closure_expression 32
+      closure_parameters 32
       compound_assignment_expr 12
-      continue_expression 6
+      continue_expression 10
       crate 5
-      doc_comment 4
+      doc_comment 5
       else_clause 4
-      expression_statement 133
-      field_expression 181
-      field_identifier 181
+      expression_statement 151
+      field_expression 200
+      field_identifier 200
       field_pattern 5
-      for_expression 9
-      function_item 14
-      generic_type 18
-      identifier 792
-      if_expression 42
-      index_expression 90
+      for_expression 13
+      function_item 15
+      generic_type 19
+      identifier 856
+      if_expression 46
+      index_expression 115
       inner_doc_comment_marker 1
       integer_literal 42
       let_chain 2
       let_condition 7
-      let_declaration 62
+      let_declaration 68
       lifetime 1
-      line_comment 5
-      macro_invocation 41
+      line_comment 6
+      macro_invocation 44
       match_arm 19
       match_block 6
       match_expression 6
       match_pattern 19
-      mutable_specifier 28
+      mutable_specifier 32
       or_pattern 1
-      outer_doc_comment_marker 3
-      parameter 21
-      parameters 14
+      outer_doc_comment_marker 4
+      parameter 22
+      parameters 15
       parenthesized_expression 3
       primitive_type 12
       range_expression 4
-      reference_expression 34
-      reference_type 21
+      reference_expression 36
+      reference_type 22
       remaining_field_pattern 2
       return_expression 18
-      scoped_identifier 43
+      scoped_identifier 47
       scoped_type_identifier 7
       scoped_use_list 3
       shorthand_field_identifier 5
       slice_pattern 2
       source_file 1
-      string_content 313
-      string_literal 314
+      string_content 354
+      string_literal 357
       struct_pattern 3
-      super 1
-      token_tree 124
+      super 2
+      token_tree 136
       try_expression 1
       tuple_expression 1
       tuple_pattern 1
-      tuple_struct_pattern 12
-      type_arguments 18
-      type_identifier 53
+      tuple_struct_pattern 13
+      type_arguments 19
+      type_identifier 56
       unary_expression 14
-      use_declaration 3
+      use_declaration 4
       use_list 3
-      visibility_modifier 3
+      visibility_modifier 4
       while_expression 4

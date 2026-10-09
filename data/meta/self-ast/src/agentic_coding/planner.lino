@@ -2,25 +2,25 @@ self_ast_census
   target src/agentic_coding/planner.rs
   language rust
   fidelity full_ast
-  byte_len 47923
+  byte_len 48036
   line_count 998
-  content_id source_module_96a23b9b0c96d0ed
+  content_id source_module_9ae92ed3ce7e1797
   symbol_count 21
   symbols
     module continuation 5 5
     module obligations 6 6
     module precedence 7 7
     module steps 8 8
-    enum AgenticPlan 76 81
-    struct PlannedToolCall 85 90
-    enum Capability 100 115
-    function permission_key 123 140
-    function registry_id 142 159
-    function tool_capability 168 170
-    function plan_chat_step 175 177
-    function plan_chat_step_resolved 179 186
-    function plan_chat_step_inner 188 229
-    function plan_chat_step_routes 231 357
+    enum AgenticPlan 77 82
+    struct PlannedToolCall 86 91
+    enum Capability 101 116
+    function permission_key 124 141
+    function registry_id 143 160
+    function tool_capability 169 171
+    function plan_chat_step 176 178
+    function plan_chat_step_resolved 180 187
+    function plan_chat_step_inner 189 230
+    function plan_chat_step_routes 232 357
     function plan_settled_routes 373 882
     function plan_shell_command_arm 891 911
     function plan_shell_step 914 949
@@ -33,26 +33,26 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 20390
-    named_node_count 3961
+    total_link_count 20468
+    named_node_count 3973
     distinct_node_kinds 73
     node_kinds
-      arguments 295
+      arguments 296
       array_expression 1
       array_type 14
       assignment_expression 1
       attribute 6
       attribute_item 6
       binary_expression 12
-      block 101
+      block 103
       boolean_literal 4
-      call_expression 295
+      call_expression 296
       closure_expression 20
       closure_parameters 20
       crate 10
       declaration_list 1
       doc_comment 64
-      else_clause 3
+      else_clause 4
       enum_item 2
       enum_variant 16
       enum_variant_list 2
@@ -64,14 +64,14 @@ self_ast_census
       function_item 14
       function_modifiers 2
       generic_type 14
-      identifier 1215
-      if_expression 73
+      identifier 1221
+      if_expression 74
       impl_item 1
       index_expression 1
       inner_doc_comment_marker 2
       let_chain 9
       let_condition 54
-      let_declaration 18
+      let_declaration 19
       lifetime 2
       line_comment 334
       macro_invocation 9
@@ -89,10 +89,10 @@ self_ast_census
       parameters 14
       parenthesized_expression 2
       primitive_type 18
-      reference_expression 44
+      reference_expression 45
       reference_type 37
       return_expression 68
-      scoped_identifier 277
+      scoped_identifier 276
       scoped_use_list 9
       self 4
       self_parameter 2
@@ -100,7 +100,7 @@ self_ast_census
       string_content 50
       string_literal 51
       struct_item 1
-      super 85
+      super 84
       token_tree 21
       try_expression 4
       tuple_struct_pattern 56

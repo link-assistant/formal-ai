@@ -2,30 +2,30 @@ self_ast_census
   target src/agentic_coding/module_function/source_contract.rs
   language rust
   fidelity full_ast
-  byte_len 12397
-  line_count 330
-  content_id source_module_99dcc218a451942c
+  byte_len 12520
+  line_count 332
+  content_id source_module_bce739f1cf3642ee
   symbol_count 12
   symbols
-    function text 4 10
-    function optional 11 17
-    function merge 18 28
-    function decimal_number 29 57
-    function expression 58 141
-    function source_evidence 144 148
-    function unsafe_access_scope 149 180
-    function structural_requirements 181 248
-    function visit 182 242
-    function infer_return_contract 251 293
-    function instantiate 294 302
-    function guarded_call_graph 305 330
+    function text 5 11
+    function optional 12 18
+    function merge 19 29
+    function decimal_number 30 58
+    function expression 59 142
+    function source_evidence 145 149
+    function unsafe_access_scope 150 181
+    function structural_requirements 182 249
+    function visit 183 243
+    function infer_return_contract 252 295
+    function instantiate 296 304
+    function guarded_call_graph 307 332
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 12086
-    named_node_count 2434
+    total_link_count 12145
+    named_node_count 2447
     distinct_node_kinds 67
     node_kinds
       arguments 167
@@ -51,7 +51,7 @@ self_ast_census
       for_expression 2
       function_item 12
       generic_type 6
-      identifier 483
+      identifier 489
       if_expression 46
       index_expression 82
       inner_doc_comment_marker 1
@@ -76,22 +76,22 @@ self_ast_census
       reference_expression 18
       reference_type 26
       return_expression 24
-      scoped_identifier 8
+      scoped_identifier 10
       scoped_type_identifier 1
       scoped_use_list 1
       slice_pattern 1
       source_file 1
-      string_content 235
-      string_literal 241
-      super 4
-      token_tree 86
+      string_content 236
+      string_literal 242
+      super 5
+      token_tree 87
       try_expression 8
       tuple_pattern 1
       tuple_struct_pattern 7
       type_arguments 6
       type_identifier 35
       unary_expression 6
-      use_declaration 1
+      use_declaration 2
       use_list 1
       visibility_modifier 4
       while_expression 2

@@ -2,9 +2,9 @@ self_ast_census
   target src/source_fetch.rs
   language rust
   fidelity signature
-  byte_len 20177
-  line_count 581
-  content_id source_module_8addded9ecdd3915
+  byte_len 20405
+  line_count 586
+  content_id source_module_f4214dd550d21dba
   symbol_count 46
   symbols
     module seed_captures 18 18
@@ -21,35 +21,35 @@ self_ast_census
     function get 64 112
     enum FetchError 117 136
     function speaks_for_the_service 145 153
-    function fmt 157 167
-    struct SourceCapture 174 180
-    function from_seed_registry 187 189
-    function source_url 192 194
-    function fetched_at 197 199
-    function sha256 202 204
-    function cached 207 209
-    function bytes 212 214
-    function trace_payload 217 228
-    function replayed 234 239
-    function record 242 247
-    struct CachedSourceClient 252 258
-    function new 262 270
-    function with_online 273 276
-    function with_clock 279 282
-    function with_ttl_seconds 285 288
-    function fetch 290 329
-    function fetch_with_reconstruction 347 398
-    function paths 400 405
-    function validate_url 408 422
-    function read_capture 424 477
-    function field 479 492
-    function write_capture 494 519
-    function content_path 521 523
-    function is_sha256_hex 525 530
-    function unique_temp_path 532 539
-    function cache_error 541 543
-    function cache_diagnostic 545 547
-    function sha256_hex 550 552
-    function hex_lower 564 570
-    function unix_now 572 576
-    function format_timestamp 578 581
+    function fmt 157 172
+    struct SourceCapture 179 185
+    function from_seed_registry 192 194
+    function source_url 197 199
+    function fetched_at 202 204
+    function sha256 207 209
+    function cached 212 214
+    function bytes 217 219
+    function trace_payload 222 233
+    function replayed 239 244
+    function record 247 252
+    struct CachedSourceClient 257 263
+    function new 267 275
+    function with_online 278 281
+    function with_clock 284 287
+    function with_ttl_seconds 290 293
+    function fetch 295 334
+    function fetch_with_reconstruction 352 403
+    function paths 405 410
+    function validate_url 413 427
+    function read_capture 429 482
+    function field 484 497
+    function write_capture 499 524
+    function content_path 526 528
+    function is_sha256_hex 530 535
+    function unique_temp_path 537 544
+    function cache_error 546 548
+    function cache_diagnostic 550 552
+    function sha256_hex 555 557
+    function hex_lower 569 575
+    function unix_now 577 581
+    function format_timestamp 583 586

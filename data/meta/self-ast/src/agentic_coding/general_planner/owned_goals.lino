@@ -2,93 +2,95 @@ self_ast_census
   target src/agentic_coding/general_planner/owned_goals.rs
   language rust
   fidelity full_ast
-  byte_len 7356
-  line_count 196
-  content_id source_module_82b59eb35f67c245
-  symbol_count 9
+  byte_len 9588
+  line_count 247
+  content_id source_module_1bc0ecc265c7e425
+  symbol_count 10
   symbols
-    enum GoalKind 18 22
-    struct Goal 23 26
-    function grammar_tail 27 30
-    function closed_payload 31 45
-    function literal_write_ownership 46 66
-    function instruction_view_for_request 67 71
-    function goal_ledger 72 137
-    function goal_gap 138 150
-    function plan_owned_goal_step 152 196
+    enum GoalKind 19 23
+    struct Goal 24 27
+    function grammar_tail 28 31
+    function closed_payload 32 46
+    function literal_tail 47 92
+    function literal_write_ownership 93 113
+    function instruction_view_for_request 114 118
+    function goal_ledger 119 183
+    function goal_gap 184 196
+    function plan_owned_goal_step 198 247
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 6074
-    named_node_count 1241
-    distinct_node_kinds 67
+    total_link_count 7806
+    named_node_count 1615
+    distinct_node_kinds 68
     node_kinds
-      arguments 107
+      arguments 141
       array_type 4
       assignment_expression 2
       attribute 1
       attribute_item 1
-      binary_expression 22
-      block 32
-      call_expression 107
+      binary_expression 48
+      block 37
+      boolean_literal 3
+      call_expression 141
       char_literal 1
-      closure_expression 17
-      closure_parameters 17
+      closure_expression 25
+      closure_parameters 25
       crate 15
       doc_comment 2
-      else_clause 7
+      else_clause 6
       enum_item 1
       enum_variant 3
       enum_variant_list 1
-      expression_statement 21
+      expression_statement 25
       field_declaration 2
       field_declaration_list 1
-      field_expression 112
-      field_identifier 117
+      field_expression 175
+      field_identifier 180
       field_initializer 3
       field_initializer_list 3
       for_expression 2
-      function_item 7
+      function_item 8
       function_type 1
       generic_type 11
-      identifier 322
+      identifier 406
       if_expression 14
-      index_expression 3
+      index_expression 6
       inner_doc_comment_marker 1
       integer_literal 4
       let_condition 2
-      let_declaration 23
+      let_declaration 27
       line_comment 2
       macro_invocation 1
       mutable_specifier 5
       outer_doc_comment_marker 1
-      parameter 13
-      parameters 8
-      parenthesized_expression 1
-      primitive_type 10
-      range_expression 7
-      reference_expression 19
-      reference_type 16
-      return_expression 7
+      parameter 16
+      parameters 9
+      parenthesized_expression 3
+      primitive_type 13
+      range_expression 14
+      reference_expression 25
+      reference_type 18
+      return_expression 10
       scoped_identifier 48
       scoped_type_identifier 2
       scoped_use_list 6
       shorthand_field_initializer 2
       source_file 1
-      string_content 8
-      string_literal 8
+      string_content 10
+      string_literal 10
       struct_expression 3
       struct_item 1
       super 2
       token_tree 3
       try_expression 11
       tuple_expression 1
-      tuple_struct_pattern 2
+      tuple_struct_pattern 4
       type_arguments 11
-      type_identifier 32
-      unary_expression 2
+      type_identifier 33
+      unary_expression 3
       use_declaration 11
       use_list 6
       visibility_modifier 2
