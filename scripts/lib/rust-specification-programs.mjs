@@ -1,0 +1,256 @@
+// A conservative typed program reader for native constructor and dialog tests.
+// Unsupported syntax rejects the complete case; every parsed assertion runs.
+import { readFileSync, realpathSync } from 'node:fs';
+import { dirname, relative, resolve } from 'node:path';
+import { createHash } from 'node:crypto';
+import { isDeepStrictEqual } from 'node:util';
+import { tokenize } from './rust-specification-cases.mjs';
+import { close, split, expression, evaluate } from './rust-specification-values.mjs';
+
+const hash = value => createHash('sha256').update(value).digest('hex');
+const assertionNames = new Set(['assert', 'assert_eq', 'assert_ne']);
+const canonicalCalls = new Map([
+  ['formal_ai::compile_natural_language_skill', { kind: 'compiler' }],
+  ['formal_ai::UniversalSolver::default', { kind: 'solver' }],
+  ['formal_ai::ConversationTurn::user', { kind: 'user' }],
+  ['formal_ai::ConversationTurn::assistant', { kind: 'assistant' }],
+  ['lino_objects_codec::format::parse_indented', { kind: 'codec' }],
+]);
+
+function registerImport(tokens, prefix, calls) {
+  const group = tokens.findIndex(token => token.text === '{');
+  if (group >= 0) {
+    const base = prefix + tokens.slice(0, group).map(token => token.text).join('');
+    for (const part of split(tokens.slice(group + 1, close(tokens, group)))) registerImport(part, base, calls);
+    return;
+  }
+  const aliasAt = tokens.findIndex(token => token.text === 'as');
+  const pathTokens = aliasAt < 0 ? tokens : tokens.slice(0, aliasAt);
+  const path = prefix + pathTokens.map(token => token.text).join('');
+  const alias = aliasAt < 0 ? path.split('::').at(-1) : tokens[aliasAt + 1]?.text;
+  for (const [canonical, binding] of canonicalCalls) {
+    if (path === canonical) calls.set(alias, binding);
+    if (canonical.startsWith(path + '::')) calls.set(alias + canonical.slice(path.length), binding);
+  }
+}
+
+function importedCalls(tokens) {
+  const calls = new Map(canonicalCalls);
+  for (let index = 0; index < tokens.length; index += 1) {
+    if (tokens[index].text === '{') { index = close(tokens, index); continue; }
+    if (tokens[index].text !== 'use') continue;
+    let end = index + 1;
+    while (end < tokens.length && tokens[end].text !== ';') end += 1;
+    registerImport(tokens.slice(index + 1, end), '', calls);
+    index = end;
+  }
+  return calls;
+}
+
+function nativeFunctions(tokens) {
+  const functions = [];
+  for (let index = 0; index < tokens.length; index += 1) {
+    if (tokens[index].text !== 'fn') continue;
+    const name = tokens[index + 1]?.text;
+    if (tokens[index + 2]?.text !== '(') continue;
+    const paramsEnd = close(tokens, index + 2);
+    let open = paramsEnd + 1;
+    while (open < tokens.length && tokens[open].text !== '{') open += 1;
+    if (open === tokens.length) break;
+    const end = close(tokens, open);
+    functions.push({ name, parameters: tokens.slice(index + 3, paramsEnd),
+      returns: tokens.slice(paramsEnd + 1, open), body: tokens.slice(open + 1, end) });
+    index = end;
+  }
+  return functions;
+}
+
+function contextOf(source, file, root) {
+  const tokens = tokenize(source);
+  const calls = importedCalls(tokens);
+  const environment = new Map();
+  const schemas = new Map();
+  const fixtures = [file ? { file, sha256: hash(source) } : { source, sha256: hash(source) }];
+  const context = { calls, environment, schemas };
+  // Local functions shadow imported names even when their body is unsupported.
+  const functions = nativeFunctions(tokens);
+  for (const fn of functions) calls.delete(fn.name);
+  for (const fn of functions) {
+    if (fn.parameters.length !== 4 || fn.parameters[1].text !== ':' || fn.parameters[2].text !== '&'
+      || fn.parameters[3].text !== 'str' || fn.returns.map(token => token.text).join('') !== '->SymbolicAnswer') continue;
+    const argument = fn.parameters[0].text;
+    let body = fn.body;
+    if (body[0]?.text === 'return') body = body.slice(1);
+    if (body.at(-1)?.text === ';') body = body.slice(0, -1);
+    const nested = { ...context, environment: new Map([[argument, { type: 'string' }]]) };
+    try {
+      const value = expression(body, nested);
+      if (value.kind === 'method' && value.name === 'solve' && value.target.kind === 'call'
+        && value.target.binding.kind === 'solver' && value.args[0].kind === 'reference'
+        && value.args[0].name === argument) {
+        calls.set(fn.name, { kind: 'helper', sourceIdentity: hash(source), parameter: argument, profile: 'default' });
+      }
+    } catch { /* Unknown engine/configuration/effect stays unregistered. */ }
+  }
+  for (let index = 0; index < tokens.length; index += 1) {
+    if (tokens[index].text === '{') { index = close(tokens, index); continue; }
+    if (tokens[index].text !== 'const') continue;
+    let end = index;
+    while (end < tokens.length && tokens[end].text !== ';') end += 1;
+    const definition = tokens.slice(index, end);
+    const equals = definition.findIndex(token => token.text === '=');
+    const name = definition[1]?.text;
+    const rhs = definition.slice(equals + 1);
+    try {
+      let value;
+      if (rhs[0]?.text === 'include_str' && rhs[1]?.text === '!' && rhs[2]?.text === '(' && rhs[3]?.kind === 'string' && rhs[4]?.text === ')' && rhs.length === 5) {
+        const target = realpathSync(resolve(dirname(file), rhs[3].text));
+        if (relative(root, target).startsWith('..')) throw new Error('fixture outside source root');
+        const content = readFileSync(target, 'utf8');
+        fixtures.push({ file: target, sha256: hash(content) });
+        value = { kind: 'literal', type: 'string', value: content };
+      } else value = expression(rhs, context);
+      if (value.kind === 'literal') environment.set(name, value);
+    } catch { /* A used unknown constant remains an unbound value. */ }
+    index = end;
+  }
+  return { ...context, fixtures };
+}
+
+function recordSchema(tokens) {
+  const schema = {};
+  for (const field of split(tokens)) {
+    if (field[0]?.kind !== 'word' || field[1]?.text !== ':') throw new Error('unsupported native record declaration');
+    const type = field.slice(2).map(token => token.text).join('');
+    if (!['&str', "&'staticstr", 'String'].includes(type)) throw new Error('unsupported native record field type ' + type);
+    if (Object.hasOwn(schema, field[0].text)) throw new Error('duplicate native record field');
+    schema[field[0].text] = 'string';
+  }
+  return schema;
+}
+
+const diagnosticOnly = value => ['literal', 'reference'].includes(value.kind)
+  || (value.kind === 'field' && diagnosticOnly(value.target));
+
+function bodyProgram(tokens, context) {
+  const steps = [];
+  for (let cursor = 0; cursor < tokens.length;) {
+    if (tokens[cursor].text === 'struct') {
+      const name = tokens[cursor + 1]?.text;
+      if (tokens[cursor + 2]?.text !== '{') throw new Error('unsupported native record declaration');
+      const end = close(tokens, cursor + 2);
+      context.schemas.set(name, recordSchema(tokens.slice(cursor + 3, end)));
+      cursor = end + 1;
+      if (tokens[cursor]?.text === ';') cursor += 1;
+      continue;
+    }
+    if (tokens[cursor].text === 'for') {
+      const parameter = tokens[cursor + 1]?.text;
+      if (tokens[cursor + 1]?.kind !== 'word' || tokens[cursor + 2]?.text !== 'in') throw new Error('unsupported native iteration binding');
+      let open = cursor + 3;
+      while (open < tokens.length && tokens[open].text !== '{') {
+        if (['(', '['].includes(tokens[open].text)) open = close(tokens, open);
+        open += 1;
+      }
+      if (open === tokens.length) throw new Error('native loop body absent');
+      const values = expression(tokens.slice(cursor + 3, open), context);
+      if (!values.type.startsWith('vec:') || values.type === 'vec:empty') throw new Error('native iteration needs known vector element type');
+      const end = close(tokens, open);
+      const nested = { ...context, environment: new Map(context.environment), schemas: new Map(context.schemas) };
+      nested.environment.set(parameter, { type: values.type.slice(4) });
+      steps.push({ kind: 'for', parameter, values, body: bodyProgram(tokens.slice(open + 1, end), nested) });
+      cursor = end + 1;
+      continue;
+    }
+    let end = cursor;
+    while (end < tokens.length && tokens[end].text !== ';') {
+      if (['(', '[', '{'].includes(tokens[end].text)) end = close(tokens, end);
+      end += 1;
+    }
+    const statement = tokens.slice(cursor, end);
+    cursor = end + 1;
+    if (!statement.length) continue;
+    if (statement[0].text === 'let') {
+      if (statement[1]?.kind !== 'word' || statement[2]?.text !== '=') throw new Error('unsupported native let binding');
+      const value = expression(statement.slice(3), context);
+      const name = statement[1].text;
+      context.environment.set(name, { type: value.type, origin: value.origin });
+      steps.push({ kind: 'let', name, value });
+      continue;
+    }
+    if (assertionNames.has(statement[0].text) && statement[1]?.text === '!' && statement[2]?.text === '(' && close(statement, 2) === statement.length - 1) {
+      const args = split(statement.slice(3, -1));
+      const binary = statement[0].text !== 'assert';
+      if (args.length < (binary ? 2 : 1)) throw new Error('native assertion arguments absent');
+      const left = expression(args[0], context);
+      const right = binary ? expression(args[1], context) : null;
+      if (binary && left.type !== right.type) throw new Error('native assertion type mismatch');
+      if (!binary && left.type !== 'boolean') throw new Error('native assertion needs boolean');
+      // Diagnostic formatting values may read data, but may not add effects.
+      for (const diagnostic of args.slice(binary ? 2 : 1)) {
+        const value = expression(diagnostic, context);
+        if (!diagnosticOnly(value)) throw new Error('unsupported diagnostic side effect');
+      }
+      steps.push({ kind: 'assertion', name: statement[0].text, left, right });
+      continue;
+    }
+    const value = expression(statement, context);
+    if (value.kind !== 'method' || value.name !== 'expect') throw new Error('unsupported native statement effect');
+    steps.push({ kind: 'evaluate', value });
+  }
+  return steps;
+}
+
+const assertionCount = steps => steps.reduce((count, step) => count + (step.kind === 'assertion' ? 1 : step.kind === 'for' ? assertionCount(step.body) : 0), 0);
+
+/** Read all assertions, or return one complete-case rejection. */
+export function typedProgramOf(body, { source, file = '', root = '' }) {
+  try {
+    if (file && readFileSync(file, 'utf8') !== source) throw new Error('native source identity mismatch');
+    const context = contextOf(source, file, root);
+    const initial = [...context.environment];
+    const steps = bodyProgram(body, context);
+    const nativeAssertions = body.filter((token, index) => assertionNames.has(token.text) && body[index + 1]?.text === '!').length;
+    if (!nativeAssertions || assertionCount(steps) !== nativeAssertions) throw new Error('native assertion conservation failure');
+    return { program: { steps, initial, fixtures: context.fixtures, nativeAssertions } };
+  } catch (error) { return { reason: error.message }; }
+}
+
+/** Execute original ordered operations; a failure is reported, never skipped. */
+export async function executeTypedProgram(host, program) {
+  const runtime = { host, observations: [], assertions: 0, iterations: [] };
+  const environment = new Map(program.initial.map(([name, value]) => [name, value.value]));
+  async function run(steps, values) {
+    for (const step of steps) {
+      if (step.kind === 'let') values.set(step.name, await evaluate(step.value, values, runtime));
+      else if (step.kind === 'evaluate') await evaluate(step.value, values, runtime);
+      else if (step.kind === 'for') {
+        const entries = await evaluate(step.values, values, runtime);
+        runtime.iterations.push({ parameter: step.parameter, length: entries.length });
+        for (const value of entries) {
+          const nested = new Map(values);
+          nested.set(step.parameter, value);
+          await run(step.body, nested);
+        }
+      } else if (step.kind === 'assertion') {
+        const left = await evaluate(step.left, values, runtime);
+        const right = step.right ? await evaluate(step.right, values, runtime) : true;
+        const equal = step.name === 'assert' ? left === true : isDeepStrictEqual(left, right);
+        runtime.assertions += 1;
+        if ((step.name === 'assert_ne' ? !equal : equal) !== true) throw new Error(`native ${step.name} failed: ${JSON.stringify(left).slice(0, 180)} expected ${JSON.stringify(right).slice(0, 180)}`);
+      }
+    }
+  }
+  try {
+    for (const fixture of program.fixtures) {
+      const observed = fixture.file ? readFileSync(fixture.file, 'utf8') : fixture.source;
+      if (hash(observed) !== fixture.sha256) throw new Error('stale native fixture identity');
+    }
+    await run(program.steps, environment);
+    return { status: 'passed', nativeAssertions: program.nativeAssertions, assertions: runtime.assertions,
+      observations: runtime.observations, iterations: runtime.iterations };
+  } catch (error) {
+    return { status: 'failed', failure: error.message, nativeAssertions: program.nativeAssertions,
+      assertions: runtime.assertions, observations: runtime.observations, iterations: runtime.iterations };
+  }
+}

@@ -15,6 +15,7 @@
 
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { executeTypedProgram, typedProgramOf } from './rust-specification-programs.mjs';
 
 /**
  * The tokens of a Rust source, comments dropped.
@@ -488,6 +489,7 @@ export function specificationCases(root = '.') {
     .filter((name) => name.endsWith('.rs'))
     .sort();
   const cases = [];
+  const unsupported = [];
   let total = 0;
   for (const name of files) {
     const source = readFileSync(join(root, SPECIFICATION, name), 'utf8');
@@ -495,12 +497,17 @@ export function specificationCases(root = '.') {
     for (const test of testFunctions(tokenize(source))) {
       total += 1;
       const result = caseOf(test.body, helper);
+      const id = `${SPECIFICATION}/${name}::${test.name}`;
       if (result.case) {
-        cases.push({ id: `${SPECIFICATION}/${name}::${test.name}`, ...result.case });
+        cases.push({ id, ...result.case });
+      } else {
+        const typed = typedProgramOf(test.body, { source, file: join(root, SPECIFICATION, name), root });
+        if (typed.program) cases.push({ id, program: typed.program });
+        else unsupported.push({ id, reason: typed.reason, legacyReason: result.reason });
       }
     }
   }
-  return { total, cases };
+  return { total, cases, unsupported };
 }
 
 const HOLDS = {
@@ -553,6 +560,11 @@ export function checkFailure(check, responses) {
 export async function failingCases(host, cases) {
   const failing = new Map();
   for (const item of cases) {
+    if (item.program) {
+      const actual = await executeTypedProgram(host, item.program);
+      if (actual.status !== 'passed') failing.set(item.id, actual.failure);
+      continue;
+    }
     const responses = new Map();
     for (const ask of item.asks) {
       responses.set(ask.binding, await host.solve(ask.prompt));
