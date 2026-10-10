@@ -49,7 +49,8 @@ test('actual absent/directory/escaping reads own outer failure', context => {
   for (const path of ['missing.txt', 'directory', '../outside']) {
     const call = readCall(path), receipt = executeResult(directory, call);
     assert.equal(receipt.is_error, true);
-    assert.equal(receipt.source_read, undefined);
+    assert.deepEqual(receipt.source_read, { path, success: false, complete: false, format: 'raw',
+      error_code: path === 'missing.txt' ? 'ENOENT' : path === 'directory' ? 'EISDIR' : undefined });
     assert.equal(execute(directory, call), receipt.content);
     assert.equal(Progress.scan(history(call, receipt)).sourceReadFor(path).status, SourceReadStatus.Failure);
   }
@@ -61,7 +62,8 @@ test('actual permission denial is provider-owned', { skip: process.platform === 
   try {
     const receipt = executeResult(directory, readCall(path));
     assert.equal(receipt.is_error, true);
-    assert.equal(receipt.source_read, undefined);
+    assert.deepEqual(receipt.source_read, { path, success: false, complete: false, format: 'raw',
+      error_code: 'EACCES' });
     assert.match(receipt.content, /EACCES|EPERM|permission denied/iu);
   } finally { chmodSync(join(directory, path), 0o600); }
 });
@@ -87,7 +89,8 @@ test('driver keeps real failure and successful authored JSON roles separate', as
   }, directory, 'Observe the selected provider boundary', { tools: ['read'], steps: 3 });
   assert.equal(result.stop, 'final');
   assert.equal(receipts[0].is_error, true);
-  assert.equal(receipts[0].source_read, undefined);
+  assert.deepEqual(receipts[0].source_read, { path: 'missing.json', success: false,
+    complete: false, format: 'raw', error_code: 'ENOENT' });
   assert.equal(receipts[1].content, content);
   assert.equal(receipts[1].is_error, undefined);
   assert.equal(receipts[1].source_read.complete, true);
