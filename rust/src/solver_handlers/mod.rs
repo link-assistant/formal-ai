@@ -381,50 +381,69 @@ pub fn try_translation(
         let seed_body = |intent: &str, values: &[(&str, &str)]| -> String {
             crate::seed::render_response(intent, "en", values).unwrap_or_else(|| intent.to_string())
         };
-        if let Ok(source) = std::fs::read_to_string(&request.path) {
-            let outcome =
-                crate::meta_translate::translate(request.from, request.to, &request.path, &source);
-            let (body, confidence) = match outcome {
-                crate::meta_translate::TranslationOutcome::Rendered { target, .. } => (target, 1.0),
-                crate::meta_translate::TranslationOutcome::Refused { refusals } => {
-                    let items = refusals
-                        .iter()
-                        .map(|refusal| refusal.construct.as_str())
-                        .collect::<Vec<_>>()
-                        .join(", ");
-                    (
-                        seed_body("translate_write_refused", &[("items", &items)]),
+        match std::fs::read_to_string(&request.path) {
+            Ok(source) => {
+                let outcome = crate::meta_translate::translate(
+                    request.from,
+                    request.to,
+                    &request.path,
+                    &source,
+                );
+                let (body, confidence) = match outcome {
+                    crate::meta_translate::TranslationOutcome::Rendered { target, .. } => {
+                        (target, 1.0)
+                    }
+                    crate::meta_translate::TranslationOutcome::Refused { refusals } => {
+                        let items = refusals
+                            .iter()
+                            .map(|refusal| refusal.construct.as_str())
+                            .collect::<Vec<_>>()
+                            .join(", ");
+                        (
+                            seed_body("translate_write_refused", &[("items", &items)]),
+                            0.4,
+                        )
+                    }
+                    crate::meta_translate::TranslationOutcome::Invalid { reason } => (
+                        seed_body(
+                            "translate_source_invalid",
+                            &[("path", &request.path), ("reason", &reason)],
+                        ),
                         0.4,
-                    )
+                    ),
+                    crate::meta_translate::TranslationOutcome::Pending { .. } => {
+                        (String::new(), 0.0)
+                    }
+                };
+                if !body.is_empty() {
+                    return Some(finalize_simple(
+                        prompt,
+                        log,
+                        "translate_source_tree",
+                        "response:translate_code",
+                        &body,
+                        confidence,
+                    ));
                 }
-                crate::meta_translate::TranslationOutcome::Invalid { reason } => (
+            }
+            Err(error) => {
+                let body = if error.kind() == std::io::ErrorKind::NotFound {
+                    seed_body("translate_source_missing", &[("path", &request.path)])
+                } else {
                     seed_body(
                         "translate_source_invalid",
-                        &[("path", &request.path), ("reason", &reason)],
-                    ),
-                    0.4,
-                ),
-                crate::meta_translate::TranslationOutcome::Pending { .. } => (String::new(), 0.0),
-            };
-            if !body.is_empty() {
+                        &[("path", &request.path), ("reason", &error.to_string())],
+                    )
+                };
                 return Some(finalize_simple(
                     prompt,
                     log,
                     "translate_source_tree",
                     "response:translate_code",
                     &body,
-                    confidence,
+                    0.4,
                 ));
             }
-        } else {
-            return Some(finalize_simple(
-                prompt,
-                log,
-                "translate_source_tree",
-                "response:translate_code",
-                &seed_body("translate_source_missing", &[("path", &request.path)]),
-                0.4,
-            ));
         }
     }
 

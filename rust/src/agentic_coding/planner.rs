@@ -32,7 +32,6 @@ use super::formalization_recipe;
 use super::general_execution::plan_general_change_step;
 use super::general_planner::{
     compose_general_change_plan, has_authoritative_literal_write, objective_text,
-    plan_owned_goal_step,
 };
 use super::git_commit;
 use super::google_trends_catalog;
@@ -286,24 +285,7 @@ fn plan_chat_step_routes(
     // Ahead of them, quotes that do not pair leave no telling the quoted text
     // from the instruction, so the request is declined before any arm reads its
     // payload as words to act on (PR #1188 G71).
-    let source = code_task::verified_source_description(&task)
-        .map(|_| steps::plan_verified_source_step(&task, messages, tool_names, result));
-    if let Some(plan) = source.or_else(|| {
-        let owned_goal = if evidence_record::has_typed_evidence_delivery(&task) {
-            None
-        } else {
-            plan_owned_goal_step(&task, messages, tool_names, plan_chat_step_resolved, result)
-        };
-        owned_goal
-            .or_else(|| {
-                super::quote_nesting::request_fault_answer(
-                    &task,
-                    tool_for(tool_names, Capability::MultiEdit).is_some(),
-                )
-            })
-            .or_else(|| crate::computer_use::plan_agentic_step(messages, tool_names))
-            .map(Some)
-    }) {
+    if let Some(plan) = steps::plan_source_or_owned_goal_step(&task, messages, tool_names, result) {
         return plan;
     }
     // An explicit exact-content marker makes the following bytes authoritative.
@@ -311,6 +293,7 @@ fn plan_chat_step_routes(
     // literal bytes may themselves say "rename X to Y" (issue #708). Broader
     // file-write requests remain below the semantic coding routes.
     if has_authoritative_literal_write(&task)
+        && !super::general_planner::owns_complete_edit_request(&task)
         && capability_router::workspace_creation_tool(tool_names).is_some()
     {
         if let Some(nodes) = task_obligations::obligations(&task) {
@@ -477,7 +460,7 @@ pub(super) fn plan_settled_routes(
     // the target's canonical spelling) is cheap; the family itself is decided
     // by the shared solver, whose bridge lowers it to one `translate` tool
     // call — or answers with the rendered gap on a client without the tool.
-    if crate::meta_translate::source_tree_request(task).is_some() {
+    if crate::meta_translate::owned_source_tree_request(task).is_some() {
         match super::conversation_recall::plan_shared_solver_step(messages, tool_names) {
             super::conversation_recall::SharedSolverStep::Ready(plan) => return Some(plan),
             super::conversation_recall::SharedSolverStep::NotOurs
@@ -499,6 +482,7 @@ pub(super) fn plan_settled_routes(
         && compose_general_change_plan(task).is_none();
     if capability_router::workspace_creation_tool(tool_names).is_some()
         && !shell_owned
+        && !super::general_planner::owns_complete_edit_request(task)
         && let Some(obligations) = task_obligations::obligations(task)
     {
         return obligations::plan_obligations_step(
@@ -510,6 +494,7 @@ pub(super) fn plan_settled_routes(
         );
     }
     if let Some(plan) = capability_router::workspace_creation_tool(tool_names)
+        .filter(|_| !super::general_planner::owns_complete_edit_request(task))
         .and_then(|_| compose_general_change_plan(task))
         .map(|plan| plan_general_change_step(messages, tool_names, &plan, result))
     {

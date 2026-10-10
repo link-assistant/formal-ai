@@ -462,14 +462,15 @@ pub fn source_tree_request(prompt: &str) -> Option<SourceTreeRequest> {
     // itself, not by another literal here.
     let es_roots = [SourceRoot::JavaScript, SourceRoot::TypeScript];
     let mut path_token = None;
-    for token in folded.split_whitespace() {
+    for token in prompt.split_whitespace() {
+        let folded_token = token.to_ascii_lowercase();
         for root in es_roots {
             let prefix = format!("{}/", root.directory());
             let suffix = format!(
                 ".{}",
                 root.owned_extension().expect("an ES root owns files")
             );
-            if token.starts_with(&prefix) && token.ends_with(&suffix) {
+            if folded_token.starts_with(&prefix) && folded_token.ends_with(&suffix) {
                 path_token = Some((root, token));
                 break;
             }
@@ -630,4 +631,110 @@ fn try_render_cst_source_impl(
     Err(CstRenderGap::EngineDisabled {
         language_slug: language_slug.to_owned(),
     })
+}
+
+/// A completely consumed seeded request owns its path and write policy.
+pub struct OwnedSourceTreeRequest {
+    pub source_unit: &'static str,
+    pub source_span: [usize; 2],
+    pub request_span: [usize; 2],
+    pub request: SourceTreeRequest,
+    pub write: bool,
+}
+
+/// Bind the complete source operation before any tool or source effect.
+#[must_use]
+pub fn owned_source_tree_request(prompt: &str) -> Option<OwnedSourceTreeRequest> {
+    if prompt.chars().any(|character| {
+        (character.is_whitespace() || character == '\u{feff}') && !character.is_ascii_whitespace()
+    }) {
+        return None;
+    }
+    let parsed = crate::seed::parser::parse_lino(include_str!(
+        "../embedded/data/seed/meanings-translate-cycle.lino"
+    ));
+    let root = parsed.children.first()?;
+    let contract = root
+        .children
+        .iter()
+        .find(|node| node.name == "source-tree-translation-contract")?;
+    let placeholders = regex::Regex::new(r"\{([a-z]+(?:-[a-z]+)*)\}").ok()?;
+    for form in contract.children.iter().filter(|node| node.name == "form") {
+        let field = |name: &str| {
+            form.children
+                .iter()
+                .find(|node| node.name == name)
+                .map(|node| node.id.as_str())
+        };
+        let (Some(pattern), Some(writes)) = (field("pattern"), field("writes")) else {
+            continue;
+        };
+        if !["true", "false"].contains(&writes) {
+            continue;
+        }
+        let mut missing = false;
+        let pattern = placeholders.replace_all(pattern, |captures: &regex::Captures<'_>| {
+            let role = &captures[1];
+            if ["source", "target"].contains(&role) {
+                return format!(r"(?P<{role}>[^ \t\n\r\v\f]+)");
+            }
+            let surfaces = crate::seed::lexicon().words_for_role(&role.replace('-', "_"));
+            if surfaces.is_empty() {
+                missing = true;
+            }
+            format!(
+                "(?:{})",
+                surfaces
+                    .iter()
+                    .map(|surface| regex::escape(surface))
+                    .collect::<Vec<_>>()
+                    .join("|")
+            )
+        });
+        if missing {
+            continue;
+        }
+        let Ok(expression) = regex::RegexBuilder::new(&pattern)
+            .case_insensitive(true)
+            .build()
+        else {
+            continue;
+        };
+        let Some(captures) = expression.captures(prompt) else {
+            continue;
+        };
+        if captures.get(0)?.as_str().len() != prompt.len() {
+            continue;
+        }
+        let source_match = captures.name("source")?;
+        let path = source_match.as_str();
+        let from = [SourceRoot::JavaScript, SourceRoot::TypeScript]
+            .into_iter()
+            .find(|root| {
+                path.starts_with(&format!("{}/", root.directory()))
+                    && path.ends_with(&format!(".{}", root.owned_extension().unwrap_or_default()))
+            })?;
+        let to = SourceRoot::parse(captures.name("target")?.as_str())?;
+        if ![SourceRoot::JavaScript, SourceRoot::TypeScript].contains(&to)
+            || from == to
+            || escapes_root(path)
+            || path
+                .chars()
+                .any(|character| character <= ' ' || ['\"', '\'', '`', '\\'].contains(&character))
+        {
+            continue;
+        }
+        return Some(OwnedSourceTreeRequest {
+            source_unit: "utf8",
+            source_span: [source_match.start(), source_match.end()],
+            request_span: [0, prompt.len()],
+            request: SourceTreeRequest {
+                from,
+                to,
+                path: path.to_owned(),
+            },
+            write: writes == "true",
+        });
+    }
+    None
 }

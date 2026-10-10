@@ -112,3 +112,39 @@ pub(super) fn plan_verified_source_step(
         )
     })
 }
+
+/// Preserve verified source priority and owned-goal refusal before later routes.
+pub(super) fn plan_source_or_owned_goal_step(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    result: &mut Option<FinalResult>,
+) -> Option<Option<AgenticPlan>> {
+    let source = crate::agentic_coding::code_task::verified_source_description(task)
+        .map(|_| plan_verified_source_step(task, messages, tool_names, result));
+    source.or_else(|| {
+        let owned_goal =
+            if crate::agentic_coding::evidence_record::has_typed_evidence_delivery(task)
+                || crate::meta_translate::owned_source_tree_request(task).is_some()
+            {
+                None
+            } else {
+                crate::agentic_coding::general_planner::plan_owned_goal_step(
+                    task,
+                    messages,
+                    tool_names,
+                    super::plan_chat_step_resolved,
+                    result,
+                )
+            };
+        owned_goal
+            .or_else(|| {
+                crate::agentic_coding::quote_nesting::request_fault_answer(
+                    task,
+                    tool_for(tool_names, Capability::MultiEdit).is_some(),
+                )
+            })
+            .or_else(|| crate::computer_use::plan_agentic_step(messages, tool_names))
+            .map(Some)
+    })
+}

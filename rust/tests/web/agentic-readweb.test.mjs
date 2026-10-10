@@ -581,3 +581,84 @@ describe('source tree translation (rust/tests/unit/issue_1138_translation_tool.r
     assert.equal(call.arguments, '{"from":"js","to":"ts","path":"js/no_such_probe_file.js","write":true}');
   });
 });
+
+import { planChatStep } from '../../../js/agentic/planner.mjs';
+import { ownedSourceTreeRequest } from '../../../js/agentic/crate/meta_translate.mjs';
+
+describe('source-qualified translation ownership bridge', () => {
+  const request = 'Translate js/no_such_probe_file.js to TypeScript and write it';
+  it('preserves the original advertised source-tree tool operation', async () => {
+    const plan = await planChatStep([user(request)], ['translate','write_file']);
+    assert.equal(plan.kind,'tool_calls');
+    assert.equal(plan.calls.length,1);
+    assert.equal(plan.calls[0].tool,'translate');
+    assert.equal(plan.calls[0].arguments,
+      '{"from":"js","to":"ts","path":"js/no_such_probe_file.js","write":true}');
+  });
+  it('reports the original missing-source gap without output authoring', async () => {
+    const plan = await planChatStep([user(request)], ['write_file']);
+    assert.equal(plan.kind,'final');
+    assert.ok(plan.answer.includes('js/no_such_probe_file.js'));
+    assert.ok(plan.answer.includes('no source file to translate at that path'));
+  });
+  it('retains original path case, Unicode source bytes and consumed spans', async () => {
+    const text = 'Translate js/Δelta.js to TypeScript and write it';
+    const owned = ownedSourceTreeRequest(text);
+    const bytes = new TextEncoder().encode(text);
+    assert.equal(owned.request.path,'js/Δelta.js');
+    assert.equal(owned.source_unit,'utf8');
+    assert.deepEqual(owned.request_span,[0,bytes.length]);
+    assert.equal(new TextDecoder().decode(bytes.slice(...owned.source_span)),owned.request.path);
+    const plan = await planChatStep([user(text)], ['translate','write_file']);
+    assert.equal(JSON.parse(plan.calls[0].arguments).path,'js/Δelta.js');
+  });
+  it('observational translation does not invent a write request', async () => {
+    const text = 'Translate ts/Report.ts to JavaScript';
+    const plan = await planChatStep([user(text)], ['translate']);
+    assert.equal(JSON.parse(plan.calls[0].arguments).write,false);
+  });
+  for (const tail of [
+    '. Deploy the release.', '. Read settings.json first.',
+    '. Do not write files.', '. After signature verification.',
+    '. Rotate the keys.',
+  ]) it('refuses unconsumed independent requirements before effects '+tail, async () => {
+    const text = request+tail;
+    assert.equal(ownedSourceTreeRequest(text),null);
+    assert.equal((await planChatStep([user(text)],['translate','write_file']))?.calls?.length ?? 0,0);
+    assert.equal((await planSharedSolverStep([user(text)],['translate','write_file'])).kind,'not_ours');
+  });
+  it('does not claim completion after the translation provider refuses', async () => {
+    const first = await planChatStep([user(request)],['translate','write_file']);
+    const messages = [user(request), callMessage('translation',first.calls[0].tool,first.calls[0].arguments),
+      {role:'tool',name:'translate',tool_call_id:'translation',content:'ENOENT: source unavailable',is_error:true}];
+    const retry = await planChatStep(messages,['translate','write_file']);
+    assert.equal(retry.kind,'tool_calls');
+    assert.equal(retry.calls.length,1);
+    assert.equal(retry.calls[0].tool,'translate');
+    assert.equal(retry.calls[0].arguments,first.calls[0].arguments);
+    messages.push(callMessage('translation-retry',retry.calls[0].tool,retry.calls[0].arguments),
+      {role:'tool',name:'translate',tool_call_id:'translation-retry',content:'ENOENT: source unavailable',is_error:true});
+    const plan = await planChatStep(messages,['translate','write_file']);
+    assert.equal(plan.kind,'final');
+    assert.ok(plan.answer.includes('ENOENT'));
+    assert.equal(plan.calls,undefined);
+  });
+});
+
+
+describe('translation source operand fidelity', () => {
+  it('preserves the original case in legacy and owned source operands', () => {
+    const prompt = 'Translate js/WeatherSource.js to TypeScript and write it';
+    assert.equal(sourceTreeRequest(prompt).path, 'js/WeatherSource.js');
+    assert.equal(ownedSourceTreeRequest(prompt).request.path, 'js/WeatherSource.js');
+  });
+  it('refuses non-scalar source text while retaining valid Unicode source spans', () => {
+    for (const code of ['\ud800', '\udc00']) {
+      const character = String.fromCharCode(Number.parseInt(code.slice(2), 16));
+      assert.equal(ownedSourceTreeRequest('Translate js/'+character+'.js to TypeScript and write it'), null);
+    }
+    const prompt = 'Translate js/😀.js to TypeScript and write it';
+    const owned = ownedSourceTreeRequest(prompt);
+    assert.equal(new TextDecoder().decode(new TextEncoder().encode(prompt).slice(...owned.source_span)), owned.request.path);
+  });
+});

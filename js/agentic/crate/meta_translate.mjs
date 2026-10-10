@@ -42,9 +42,10 @@ export function sourceTreeRequest(prompt) {
   const folded = asciiLower(prompt);
   const esRoots = [SourceRoot.JavaScript, SourceRoot.TypeScript];
   let pathToken = null;
-  for (const token of splitWhitespace(folded)) {
+  for (const token of splitWhitespace(prompt)) {
+    const foldedToken = asciiLower(token);
     for (const root of esRoots) {
-      if (token.startsWith(`${root.directory}/`) && token.endsWith(`.${root.owned_extension}`)) {
+      if (foldedToken.startsWith(`${root.directory}/`) && foldedToken.endsWith(`.${root.owned_extension}`)) {
         pathToken = [root, token];
         break;
       }
@@ -68,4 +69,43 @@ export function sourceTreeRequest(prompt) {
   const to = parseSourceRoot(toAlias);
   if (from === to) return null;
   return { from, to, path };
+}
+
+import { childrenNamed, parseLino, readText } from '../host.mjs';
+import { wordsForRole } from './seed_meanings.mjs';
+
+/** Mirrors `fn owned_source_tree_request` in rust/src/meta_translate.rs. */
+export function ownedSourceTreeRequest(prompt) {
+  if (/[\uD800-\uDFFF]/u.test(prompt)) return null;
+  if (Array.from(prompt).some(character => /[\p{White_Space}\uFEFF]/u.test(character) && !/[ \t\n\r\v\f]/u.test(character))) return null;
+  const root = parseLino(readText('data/seed/meanings-translate-cycle.lino'));
+  const contract = childrenNamed(root, 'source-tree-translation-contract')[0];
+  if (!contract) return null;
+  for (const form of childrenNamed(contract, 'form')) {
+    const pattern = childrenNamed(form, 'pattern')[0]?.value;
+    const writes = childrenNamed(form, 'writes')[0]?.value;
+    if (!pattern || !['true', 'false'].includes(writes)) continue;
+    let missing = false;
+    const expression = pattern.replace(/\{([a-z]+(?:-[a-z]+)*)\}/gu, (_, role) => {
+      if (role === 'source' || role === 'target') return `(?<${role}>[^ \t\n\r\v\f]+)`;
+      const surfaces = wordsForRole(role.replaceAll('-', '_'));
+      if (surfaces.length === 0) { missing = true; return ''; }
+      return '(?:'+surfaces.map(surface => surface.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|')+')';
+    });
+    if (missing) continue;
+    const match = new RegExp(expression, 'diu').exec(prompt);
+    if (!match || match[0].length !== prompt.length) continue;
+    const path = match.groups.source;
+    const from = [SourceRoot.JavaScript, SourceRoot.TypeScript].find(root =>
+      path.startsWith(root.directory+'/') && path.endsWith('.'+root.owned_extension));
+    const to = parseSourceRoot(match.groups.target);
+    if (!from || ![SourceRoot.JavaScript,SourceRoot.TypeScript].includes(to) || from === to
+      || escapesRoot(path) || /["'`\\\x00-\x20]/u.test(path)) continue;
+    const bytes = new TextEncoder();
+    const [start,end] = match.indices.groups.source;
+    return { request:{from,to,path}, write:writes === 'true', source_unit:'utf8',
+      source_span:[bytes.encode(prompt.slice(0,start)).length,bytes.encode(prompt.slice(0,end)).length],
+      request_span:[0,bytes.encode(prompt).length] };
+  }
+  return null;
 }

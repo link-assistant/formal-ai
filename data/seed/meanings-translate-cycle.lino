@@ -242,3 +242,52 @@ meanings
     lexeme hi "अनुवाद उपकरण स्कीमा"
     lexeme zh "翻译工具模式"
     lexeme es "esquema de la herramienta de traducción"
+
+  source-tree-translation-contract
+    defined-by action
+    role source-tree-translation-contract
+    precondition "valid Unicode scalar source is required for lossless UTF8 spans; the seeded complete request form consumes every byte; an unquoted original-case ES source path owns a distinct ES target root and an explicit write policy; no additional Need or independent Goal is deferred"
+    effect "authorizes only the declared translation operation; source existence and translation behavior remain separate provider or native-engine obligations"
+    unit "source bytes and structural language roots"
+    grounding "js/agentic/crate/meta_translate.mjs sha256 071a9f31caaf116dc2103622e6923bc3bdd8e557e60b1de1647e20663e8056d7; rust/src/meta_translate.rs sha256 2a5bec0b517cc0e904e0d2595f8921f7d339a5b2f307cc15f9001cca23004f9b; js/agentic/conversation_recall.mjs sha256 00ca49216b0704d34225de1b55bede430c3fdc8c3ba0fde32cc2c8dbbe49cdd1; rust/src/agentic_coding/conversation_recall.rs sha256 c05aba158a4fc15be994132717c8728d19afdbfe68e5f472be9d398f86c1caa0; rust/src/solver_handlers/mod.rs sha256 1372518473629197e5b6c306ff36604dc7f74aa795073d3ae279f1631ddf0052"
+    example "Translate js/report.js to TypeScript and write it"
+    receipt-condition "failed translation receipts require matching call identifier, operation and complete arguments; one failure permits one retry, two identical distinct failures report the actual error; no translated or written result is certified by this contract"
+    lexeme en "source-tree translation ownership"
+    lexeme ru "владение переводом дерева исходников"
+    lexeme hi "स्रोत वृक्ष अनुवाद स्वामित्व"
+    lexeme zh "源代码树翻译所有权"
+    lexeme es "propiedad de traducción del árbol fuente"
+    form writable
+      pattern "^[ \\t\\n\\r\\v\\f]*{translation-action}[ \\t\\n\\r\\v\\f]+{source}[ \\t\\n\\r\\v\\f]+{translation-target-direction}[ \\t\\n\\r\\v\\f]+{target}[ \\t\\n\\r\\v\\f]+and[ \\t\\n\\r\\v\\f]+{file-write-action-cue}[ \\t\\n\\r\\v\\f]+it[ \\t\\n\\r\\v\\f]*$"
+      writes true
+    form observational
+      pattern "^[ \\t\\n\\r\\v\\f]*{translation-action}[ \\t\\n\\r\\v\\f]+{source}[ \\t\\n\\r\\v\\f]+{translation-target-direction}[ \\t\\n\\r\\v\\f]+{target}[ \\t\\n\\r\\v\\f]*$"
+      writes false
+
+  writable
+    defined-by action
+    role source-tree-translation-contract
+    precondition "the existing writable source-tree translation form consumes the complete valid Unicode request; its unquoted original-case source stays within the declared JavaScript or TypeScript root and names a distinct supported target root; its seeded writes field is true; independent request content is not consumed by this form"
+    effect "classifies only the complete explicitly writable translation request with write policy true; this meaning does not establish source existence, translated source bytes, provider success or a completed physical write"
+    unit "boolean write policy on a complete translation request"
+    grounding "js/agentic/crate/meta_translate.mjs sha256 071a9f31caaf116dc2103622e6923bc3bdd8e557e60b1de1647e20663e8056d7; rust/src/meta_translate.rs sha256 2a5bec0b517cc0e904e0d2595f8921f7d339a5b2f307cc15f9001cca23004f9b; js/agentic/conversation_recall.mjs sha256 00ca49216b0704d34225de1b55bede430c3fdc8c3ba0fde32cc2c8dbbe49cdd1; rust/src/agentic_coding/conversation_recall.rs sha256 c05aba158a4fc15be994132717c8728d19afdbfe68e5f472be9d398f86c1caa0; rust/src/solver_handlers/mod.rs sha256 1372518473629197e5b6c306ff36604dc7f74aa795073d3ae279f1631ddf0052"
+    example "Translate js/report.js to TypeScript and write it"
+    lexeme en "writable"
+    lexeme ru "запрос перевода с разрешенной записью"
+    lexeme hi "लेखन की अनुमति वाला अनुवाद अनुरोध"
+    lexeme zh "允许写入的翻译请求"
+    lexeme es "solicitud de traducción con escritura"
+
+  observational
+    defined-by action
+    role source-tree-translation-contract
+    precondition "the existing observational source-tree translation form consumes the complete valid Unicode request; its unquoted original-case source stays within the declared JavaScript or TypeScript root and names a distinct supported target root; its seeded writes field is false; independent request content is not consumed by this form"
+    effect "classifies only the complete observational translation request with write policy false; this meaning does not establish source existence, translated source bytes, provider success or a completed physical write"
+    unit "boolean write policy on a complete translation request"
+    grounding "js/agentic/crate/meta_translate.mjs sha256 071a9f31caaf116dc2103622e6923bc3bdd8e557e60b1de1647e20663e8056d7; rust/src/meta_translate.rs sha256 2a5bec0b517cc0e904e0d2595f8921f7d339a5b2f307cc15f9001cca23004f9b; js/agentic/conversation_recall.mjs sha256 00ca49216b0704d34225de1b55bede430c3fdc8c3ba0fde32cc2c8dbbe49cdd1; rust/src/agentic_coding/conversation_recall.rs sha256 c05aba158a4fc15be994132717c8728d19afdbfe68e5f472be9d398f86c1caa0; rust/src/solver_handlers/mod.rs sha256 1372518473629197e5b6c306ff36604dc7f74aa795073d3ae279f1631ddf0052"
+    example "Translate js/report.js to TypeScript"
+    lexeme en "observational"
+    lexeme ru "запрос перевода без записи"
+    lexeme hi "बिना लेखन का अनुवाद अनुरोध"
+    lexeme zh "不写入的翻译请求"
+    lexeme es "solicitud de traducción sin escritura"

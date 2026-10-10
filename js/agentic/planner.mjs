@@ -1,4 +1,4 @@
-import { planGoalLedger } from './planner/owned_goals.mjs';
+import { planGoalLedger, ownsCompleteEditRequest, instructionViewForRequest } from './planner/owned_goals.mjs';
 import { ownedSemanticAuthoringLead } from './crate/literal_authoring_contract.mjs';
 // Deterministic agentic planner: the next tool call or final answer from a
 // conversation and its advertised tools, without hidden neural state
@@ -18,7 +18,7 @@ import * as codeTask from './code_task.mjs';
 import * as commandReroute from './command_reroute.mjs';
 import * as comparison from './comparison.mjs';
 import { programContractAnswer } from './crate/coding_program_contract.mjs';
-import { sourceTreeRequest as metaSourceTreeRequest } from './crate/meta_translate.mjs';
+import { ownedSourceTreeRequest as metaSourceTreeRequest } from './crate/meta_translate.mjs';
 import { handlerMatches } from './crate/rule_interpreter.mjs';
 import { quoteFault } from './crate/normal_markov.mjs';
 import * as testAssertion from './test_assertion.mjs';
@@ -40,7 +40,7 @@ import { fileReadTaskFor, planFileReadStep, readPolicyBlocksPlan } from './file_
 import * as formalizationRecipe from './formalization_recipe.mjs';
 import * as functionExpectation from './function_expectation.mjs';
 import { planGeneralChangeStep } from './general_execution.mjs';
-import { composeEditRequest, composeGeneralChangePlan, hasAuthoritativeLiteralWrite, instructionView, literalWriteOwnership, objectiveText } from './general_planner.mjs';
+import { composeEditRequest, composeGeneralChangePlan, hasAuthoritativeLiteralWrite, objectiveText } from './general_planner.mjs';
 import * as gitCommit from './git_commit.mjs';
 import * as googleTrendsCatalog from './google_trends_catalog.mjs';
 import * as googleTrendsLearning from './google_trends_learning.mjs';
@@ -253,7 +253,7 @@ async function planChatStepRoutes(messages, toolNames, received) {
   if (codeTask.verifiedSourceDescription(task) !== null) {
     return planVerifiedSourceStep(task, messages, toolNames);
   }
-  const ownedGoals = evidenceRecord.hasTypedEvidenceDelivery(task) ? null
+  const ownedGoals = evidenceRecord.hasTypedEvidenceDelivery(task) || metaSourceTreeRequest(task) !== null ? null
     : await planGoalLedger(task, messages, toolNames, planChatStepResolved);
   if (ownedGoals !== null) return ownedGoals;
   // The computer_use arm. Ahead of it, quotes that do not pair leave no
@@ -261,7 +261,7 @@ async function planChatStepRoutes(messages, toolNames, received) {
   // before any arm reads its payload as words to act on (PR #1188 G71).
   const computerUse = requestFaultAnswer(task, toolFor(toolNames, Capability.MultiEdit) !== null) ?? computerUsePlanAgenticStep(messages, toolNames);
   if (computerUse !== null) return computerUse;
-  if (hasAuthoritativeLiteralWrite(task) && capabilityRouter.workspaceCreationTool(toolNames) !== null) {
+  if (hasAuthoritativeLiteralWrite(task) && !ownsCompleteEditRequest(task) && capabilityRouter.workspaceCreationTool(toolNames) !== null) {
     const obligations = taskObligations.obligations(task);
     if (obligations !== null) return await planObligationsStep(task, messages, toolNames, obligations);
     const general = composeGeneralChangePlan(task);
@@ -292,7 +292,7 @@ export async function planSettledRoutes(task, messages, toolNames) {
   const verifiedSource = codeTask.planVerifiedGeneratedSourceStep(task, messages, toolNames);
   if (verifiedSource !== null) return verifiedSource;
   for (const arm of [gitCommit.planCommitStep, planWorkspaceChangeArm, codeTask.planGeneratedSourceStep, structuredEdit.planStructuredEditStep, structuredDocument.planStep]) {
-    const plan = await arm(instructionView(task, literalWriteOwnership(task)), messages, toolNames);
+    const plan = await arm(instructionViewForRequest(task), messages, toolNames);
     if (plan !== null) return plan;
   }
   if (statementAudit.isStatementAuditTask(task)) {
@@ -303,13 +303,13 @@ export async function planSettledRoutes(task, messages, toolNames) {
     if (step.kind === 'ready') return step.plan;
   }
   const shellOwned = shellCommand.semanticShellCommandForTask(task) !== null && composeGeneralChangePlan(task) === null;
-  const obligations = capabilityRouter.workspaceCreationTool(toolNames) !== null && !shellOwned
+  const obligations = capabilityRouter.workspaceCreationTool(toolNames) !== null && !shellOwned && !ownsCompleteEditRequest(task)
     ? taskObligations.obligations(task)
     : null;
   if (obligations !== null) {
     return await planObligationsStep(task, messages, toolNames, obligations);
   }
-  if (capabilityRouter.workspaceCreationTool(toolNames) !== null) {
+  if (capabilityRouter.workspaceCreationTool(toolNames) !== null && !ownsCompleteEditRequest(task)) {
     const general = composeGeneralChangePlan(task);
     if (general !== null) return await planGeneralChangeStep(messages, toolNames, general);
   }
