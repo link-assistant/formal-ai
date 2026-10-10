@@ -71,6 +71,30 @@ seed-metadata-gaps
   gap seed-metadata-gap-7c664a0d0ea6adeb
     record "first-line"
     missing "role,unit,example"
+  gap seed-metadata-gap-d6ba9b4ec8f93973
+    record "full-en"
+    missing "role,example"
+  gap seed-metadata-gap-d6bab64ec8f96754
+    record "full-es"
+    missing "role,example"
+  gap seed-metadata-gap-d6c4944ec9018213
+    record "full-hi"
+    missing "role,example"
+  gap seed-metadata-gap-d679a44ec8c1b1c9
+    record "full-ru"
+    missing "role,example"
+  gap seed-metadata-gap-d694bf4ec8d8a762
+    record "full-zh"
+    missing "role,example"
+  gap seed-metadata-gap-b28a4b4cd5c13ac3
+    record "line-slice-count"
+    missing "role,example"
+  gap seed-metadata-gap-9e627b295ad0b5e9
+    record "line-slice-ordinal"
+    missing "role,example"
+  gap seed-metadata-gap-8b66922076a48881
+    record "line-slice-range"
+    missing "role,example"
   gap seed-metadata-gap-5a4d7233fb1a6263
     record "observed-callable-authoring"
     missing "role,unit,example"

@@ -226,6 +226,12 @@ meanings
         precondition "technical captures retain their exact declared case-sensitive byte domain independently from natural-language cue folding"
     form first-line
       pattern "^[ \\t]*(?:{file-read-action-cue})[ \\t]+(?:the[ \\t]+)?first[ \\t]+line[ \\t]+of[ \\t]+{source}[ \\t]*[?.]?$"
+    form line-slice-count
+      pattern "^[ \\t]*{file-read-action-cue}[ \\t]+(?:the[ \\t]+)?(?:{line-slice-head-cue}|{line-slice-tail-cue})[ \\t]+(?:[1-9][0-9]{0,8}|0[1-9][0-9]{0,7}|00[1-9][0-9]{0,6}|000[1-9][0-9]{0,5}|0000[1-9][0-9]{0,4}|00000[1-9][0-9]{0,3}|000000[1-9][0-9]{0,2}|0000000[1-9][0-9]{0,1}|00000000[1-9][0-9]{0,0})[ \\t]+{numbered-line-noun}[ \\t]+of[ \\t]+{source}[ \\t]*[?.]?$"
+    form line-slice-range
+      pattern "^[ \\t]*{file-read-action-cue}[ \\t]+(?:the[ \\t]+)?{numbered-line-noun}[ \\t]+(?:[1-9][0-9]{0,8}|0[1-9][0-9]{0,7}|00[1-9][0-9]{0,6}|000[1-9][0-9]{0,5}|0000[1-9][0-9]{0,4}|00000[1-9][0-9]{0,3}|000000[1-9][0-9]{0,2}|0000000[1-9][0-9]{0,1}|00000000[1-9][0-9]{0,0})[ \\t]*(?:-|{line-range-connector})[ \\t]*(?:[1-9][0-9]{0,8}|0[1-9][0-9]{0,7}|00[1-9][0-9]{0,6}|000[1-9][0-9]{0,5}|0000[1-9][0-9]{0,4}|00000[1-9][0-9]{0,3}|000000[1-9][0-9]{0,2}|0000000[1-9][0-9]{0,1}|00000000[1-9][0-9]{0,0})[ \\t]+of[ \\t]+{source}[ \\t]*[?.]?$"
+    form line-slice-ordinal
+      pattern "^[ \\t]*{file-read-action-cue}[ \\t]+(?:the[ \\t]+)?(?:{line-ordinal}|{line-ordinal-last})[ \\t]+{numbered-line-noun}[ \\t]+of[ \\t]+{source}[ \\t]*[?.]?$"
     form audit-en
       pattern "^[ \\t]*{workspace-inspection-action}[ \\t]+(?:{file-read-mode-joiner}[ \\t]+)?{file-read-action-cue}[ \\t]+{sources}(?:[ \\t]*(?:;|,)?[ \\t]*(?:report[ \\t]+concrete[ \\t]+remaining[ \\t]+gaps|for[ \\t]+remaining[ \\t]+work))?[ \\t]*[.]?$"
     form audit-ru
@@ -236,6 +242,113 @@ meanings
       pattern "^{workspace-inspection-action}并{file-read-action-cue}{sources}中的剩余工作。?$"
     form audit-es
       pattern "^[ \\t]*{workspace-inspection-action}[ \\t]+{file-read-mode-joiner}[ \\t]+{file-read-action-cue}[ \\t]+{sources}[ \\t]+para[ \\t]+encontrar[ \\t]+trabajo[ \\t]+pendiente[.]?$"
+
+  full-en
+    defined-by relation
+    definition "The complete-content Read form written in English, under file-read-mode-contract."
+    precondition "The corresponding full-en form consumes the complete instruction, binds one locally owned source, and satisfies the shared immutable Read requirements."
+    effect "Selects the existing full-content producer; actual complete transport and exact returned content require their own receipt. This identity grants no Write or independent operation."
+    unit "one source-bound Read form"
+    grounding "Authored full-en pattern in meanings-file-write.lino; modePathsForClause in js/agentic/file_read/ownership.mjs; mode_paths_for_clause in rust/src/agentic_coding/file_read/ownership.rs; existing FileReadMode full producer."
+    lexeme en "English complete file-content Read form"
+    lexeme ru "форма чтения полного содержимого файла для английского языка"
+    lexeme hi "अंग्रेज़ी में पूरी फ़ाइल सामग्री पढ़ने का रूप"
+    lexeme zh "英语完整文件内容读取形式"
+    lexeme es "forma de lectura del contenido completo de archivo en inglés"
+
+  full-ru
+    defined-by relation
+    definition "The complete-content Read form written in Russian, under file-read-mode-contract."
+    precondition "The corresponding full-ru form consumes the complete instruction, binds one locally owned source, and satisfies the shared immutable Read requirements."
+    effect "Selects the existing full-content producer; actual complete transport and exact returned content require their own receipt. This identity grants no Write or independent operation."
+    unit "one source-bound Read form"
+    grounding "Authored full-ru pattern in meanings-file-write.lino; modePathsForClause in js/agentic/file_read/ownership.mjs; mode_paths_for_clause in rust/src/agentic_coding/file_read/ownership.rs; existing FileReadMode full producer."
+    lexeme en "Russian complete file-content Read form"
+    lexeme ru "форма чтения полного содержимого файла для русского языка"
+    lexeme hi "रूसी में पूरी फ़ाइल सामग्री पढ़ने का रूप"
+    lexeme zh "俄语完整文件内容读取形式"
+    lexeme es "forma de lectura del contenido completo de archivo en ruso"
+
+  full-hi
+    defined-by relation
+    definition "The complete-content Read form written in Hindi, under file-read-mode-contract."
+    precondition "The corresponding full-hi form consumes the complete instruction, binds one locally owned source, and satisfies the shared immutable Read requirements."
+    effect "Selects the existing full-content producer; actual complete transport and exact returned content require their own receipt. This identity grants no Write or independent operation."
+    unit "one source-bound Read form"
+    grounding "Authored full-hi pattern in meanings-file-write.lino; modePathsForClause in js/agentic/file_read/ownership.mjs; mode_paths_for_clause in rust/src/agentic_coding/file_read/ownership.rs; existing FileReadMode full producer."
+    lexeme en "Hindi complete file-content Read form"
+    lexeme ru "форма чтения полного содержимого файла для хинди языка"
+    lexeme hi "हिंदी में पूरी फ़ाइल सामग्री पढ़ने का रूप"
+    lexeme zh "印地语完整文件内容读取形式"
+    lexeme es "forma de lectura del contenido completo de archivo en hindi"
+
+  full-zh
+    defined-by relation
+    definition "The complete-content Read form written in Chinese, under file-read-mode-contract."
+    precondition "The corresponding full-zh form consumes the complete instruction, binds one locally owned source, and satisfies the shared immutable Read requirements."
+    effect "Selects the existing full-content producer; actual complete transport and exact returned content require their own receipt. This identity grants no Write or independent operation."
+    unit "one source-bound Read form"
+    grounding "Authored full-zh pattern in meanings-file-write.lino; modePathsForClause in js/agentic/file_read/ownership.mjs; mode_paths_for_clause in rust/src/agentic_coding/file_read/ownership.rs; existing FileReadMode full producer."
+    lexeme en "Chinese complete file-content Read form"
+    lexeme ru "форма чтения полного содержимого файла для китайского языка"
+    lexeme hi "चीनी में पूरी फ़ाइल सामग्री पढ़ने का रूप"
+    lexeme zh "中文完整文件内容读取形式"
+    lexeme es "forma de lectura del contenido completo de archivo en chino"
+
+  full-es
+    defined-by relation
+    definition "The complete-content Read form written in Spanish, under file-read-mode-contract."
+    precondition "The corresponding full-es form consumes the complete instruction, binds one locally owned source, and satisfies the shared immutable Read requirements."
+    effect "Selects the existing full-content producer; actual complete transport and exact returned content require their own receipt. This identity grants no Write or independent operation."
+    unit "one source-bound Read form"
+    grounding "Authored full-es pattern in meanings-file-write.lino; modePathsForClause in js/agentic/file_read/ownership.mjs; mode_paths_for_clause in rust/src/agentic_coding/file_read/ownership.rs; existing FileReadMode full producer."
+    lexeme en "Spanish complete file-content Read form"
+    lexeme ru "форма чтения полного содержимого файла для испанского языка"
+    lexeme hi "स्पेनिश में पूरी फ़ाइल सामग्री पढ़ने का रूप"
+    lexeme zh "西班牙语完整文件内容读取形式"
+    lexeme es "forma de lectura del contenido completo de archivo en español"
+
+  line-slice-count
+    defined-by relation
+    definition "The complete Read form for a positive count of first or last logical lines."
+    precondition "The form consumes the complete source-owned instruction; count has one to nine decimal digits and is positive; leading zeros preserve the existing producer domain."
+    effect "Selects the first or last requested logical lines through the existing lineSlice producer; it does not grant complete-content fallback, prove transport, or authorize independent effects."
+    limitation "The existing renderer currently falls back to complete content for some invalid or out-of-file intervals; that defect remains Open, and this definition does not certify refusal."
+    unit "logical lines from one source"
+    grounding "Authored line-slice-count pattern under file-read-mode-contract; existing lineSlice in js/agentic/workspace_line_operation.mjs and line_slice in rust/src/agentic_coding/workspace_line_operation.rs; FileReadMode line-slice producer."
+    lexeme en "positive count of first or last logical lines Read form"
+    lexeme ru "форма чтения первых или последних строк по количеству"
+    lexeme hi "गिनती से पहली या आखिरी पंक्तियाँ पढ़ने का रूप"
+    lexeme zh "按数量读取最前或最后若干行的形式"
+    lexeme es "forma de lectura de primeras o últimas líneas por cantidad"
+
+  line-slice-range
+    defined-by relation
+    definition "The complete Read form for a inclusive numeric logical-line interval."
+    precondition "The form consumes the complete source-owned instruction; both bounds preserve the existing positive one-to-nine-digit domain; ordering and content bounds require separate producer validation."
+    effect "Selects the requested inclusive logical-line interval through the existing lineSlice producer; it does not grant complete-content fallback, prove transport, or authorize independent effects."
+    limitation "The existing renderer currently falls back to complete content for some invalid or out-of-file intervals; that defect remains Open, and this definition does not certify refusal."
+    unit "logical lines from one source"
+    grounding "Authored line-slice-range pattern under file-read-mode-contract; existing lineSlice in js/agentic/workspace_line_operation.mjs and line_slice in rust/src/agentic_coding/workspace_line_operation.rs; FileReadMode line-slice producer."
+    lexeme en "inclusive numeric logical-line interval Read form"
+    lexeme ru "форма чтения включительного диапазона строк"
+    lexeme hi "समावेशी पंक्ति अंतराल पढ़ने का रूप"
+    lexeme zh "读取包含两端的行区间的形式"
+    lexeme es "forma de lectura de intervalo inclusivo de líneas"
+
+  line-slice-ordinal
+    defined-by relation
+    definition "The complete Read form for a named first through fifth or last logical line."
+    precondition "The form consumes the complete source-owned instruction; an existing seeded ordinal or last-line role binds the selected line."
+    effect "Selects the named logical line through the existing lineSlice producer; it does not grant complete-content fallback, prove transport, or authorize independent effects."
+    limitation "The existing renderer currently falls back to complete content for some invalid or out-of-file intervals; that defect remains Open, and this definition does not certify refusal."
+    unit "logical lines from one source"
+    grounding "Authored line-slice-ordinal pattern under file-read-mode-contract; existing lineSlice in js/agentic/workspace_line_operation.mjs and line_slice in rust/src/agentic_coding/workspace_line_operation.rs; FileReadMode line-slice producer."
+    lexeme en "named first through fifth or last logical line Read form"
+    lexeme ru "форма чтения строки по порядковому имени"
+    lexeme hi "नामित क्रम से पंक्ति पढ़ने का रूप"
+    lexeme zh "按序数名称读取一行的形式"
+    lexeme es "forma de lectura de línea por ordinal indicado"
 
   file-read-mode-joiner
     defined-by relation
