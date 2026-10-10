@@ -12,7 +12,9 @@ import { meaningFiles, parseLexiconText, words as meaningWords } from './crate/s
 
 /** Mirrors `fn resolve_requirement_target`: `{module_path, symbol, kind}` or null. */
 export function resolveRequirementTarget(requirement) {
-  return resolveIn(workspace(), requirement);
+  const census = workspace();
+  const resolved = resolveIn(census, requirement);
+  return resolved !== null ? resolved : resolveGeneratedSeedTarget(census, requirement);
 }
 
 /** Mirrors `fn resolve_in`. */
@@ -97,6 +99,13 @@ function resolveScoped(census, requirement) {
  * The constant spelling follows the seed registry generator; no seed or prompt is privileged.
  * Equal evidence for different targets is unresolved. */
 export function resolveSeedTarget(census, requirement, sources) {
+  return resolveSeedTargetWithOwners(requirement, sources, (_path, name) =>
+    modulesDeclaring(census, name).map(module => [module, moduleSymbol(module, name)])
+      .filter(([, symbol]) => symbol.kind === 'const' || symbol.kind === 'static')
+      .map(([module, symbol]) => target(module, symbol)));
+}
+
+function resolveSeedTargetWithOwners(requirement, sources, declaredOwners) {
   const tokens = tokensOf(requirement).map((token) => token.toLowerCase());
   const roleWords = tokens.map(singular);
   let bestLength = 0;
@@ -105,8 +114,7 @@ export function resolveSeedTarget(census, requirement, sources) {
     const stem = path.split('/').at(-1)?.replace(/\.lino$/u, '');
     if (!path.endsWith('.lino') || !/^[A-Za-z0-9_-]+$/u.test(stem)) continue;
     const name = stem.toUpperCase().replaceAll('-', '_') + '_LINO';
-    const candidates = modulesDeclaring(census, name).map((module) => [module, moduleSymbol(module, name)])
-      .filter(([, symbol]) => symbol.kind === 'const' || symbol.kind === 'static');
+    const candidates = declaredOwners(path, name);
     if (!candidates.length) continue;
     for (const meaning of parseLexiconText(source)) {
       for (const surface of meaningWords(meaning)) {
@@ -118,11 +126,51 @@ export function resolveSeedTarget(census, requirement, sources) {
           meaning.roles.some((role) => role.split(/[_-]/u).some((part) =>
             roleWords.some((word, index) => (index < at || index >= at + parts.length) && word === singular(part.toLowerCase())))))) continue;
         if (parts.length > bestLength) { bestLength = parts.length; best.clear(); }
-        if (parts.length === bestLength) for (const [module, symbol] of candidates) best.set(module.path + ':' + symbol.name, target(module, symbol));
+        if (parts.length === bestLength) for (const candidate of candidates) best.set(candidate.module_path + ':' + candidate.symbol, candidate);
       }
     }
   }
   return best.size === 1 ? best.values().next().value : null;
+}
+
+/** A current generated declaration lookup stays separate from the committed census. */
+function resolveGeneratedSeedTarget(census, requirement) {
+  if (!hasHost() || typeof host().generatedSeedOwnerDeclarations !== 'function'
+    || explicitModuleScope(census, requirement) !== census) return null;
+  const tokens = tokensOf(requirement);
+  const words = tokens.map(token => singular(token.toLowerCase()));
+  // An unresolved existing declaration is ambiguity, not permission to guess another owner.
+  if (tokens.some(token => looksLikeDeclaredName(token) && modulesDeclaring(census, token).length)) return null;
+  if (census.modules.some(module => module.symbols.some(symbol => {
+    if (symbol.kind !== 'const' && symbol.kind !== 'static') return false;
+    const parts = symbol.name.split('_').filter(Boolean).map(part => singular(part.toLowerCase()));
+    return parts.length >= 2 && parts.every(part => words.includes(part));
+  }))) return null;
+  const owners = host().generatedSeedOwnerDeclarations();
+  const declarationTarget = owner => ({module_path: owner.module_path, symbol: owner.symbol, kind: owner.kind});
+  const uniqueOwners = candidates => {
+    const targets = [...new Map(candidates.map(owner => [owner.module_path + ':' + owner.symbol, declarationTarget(owner)])).values()];
+    if (targets.length === 1) return targets[0];
+    const scores = targets.map(candidate => [pathWords(candidate.module_path).filter(word => words.includes(word)).length, candidate]);
+    const best = Math.max(...scores.map(([score]) => score));
+    const winners = scores.filter(([score]) => score === best);
+    return winners.length === 1 ? winners[0][1] : null;
+  };
+  for (const token of tokens) {
+    if (!looksLikeDeclaredName(token)) continue;
+    const candidates = owners.filter(owner => owner.symbol === token);
+    if (candidates.length) return uniqueOwners(candidates);
+  }
+  let bestLength = 0, best = [];
+  for (const owner of owners) {
+    const parts = owner.symbol.split('_').filter(Boolean).map(part => singular(part.toLowerCase()));
+    if (parts.length < 2 || !parts.every(part => words.includes(part))) continue;
+    if (parts.length > bestLength) {bestLength = parts.length; best = [owner];}
+    else if (parts.length === bestLength) best.push(owner);
+  }
+  if (best.length) return uniqueOwners(best);
+  return resolveSeedTargetWithOwners(requirement, meaningFiles().map(path => [path, readText(path)]),
+    (path, name) => owners.filter(owner => owner.seed_path === path && owner.symbol === name).map(declarationTarget));
 }
 
 function unique(candidates, tokens) {

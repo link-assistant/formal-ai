@@ -9,7 +9,8 @@
 // Usage:
 //   node scripts/generate-seed-registry.mjs           # verify
 //   node scripts/generate-seed-registry.mjs --write   # regenerate
-import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, lstatSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 
 const REGISTRY = 'data/meta/seed-registry.lino';
@@ -211,6 +212,33 @@ function seedNamesOnDisk(root) {
   const directory = join(root, SEED_DIR);
   if (!existsSync(directory)) return [];
   return readdirSync(directory).filter((name) => name.endsWith('.lino')).map((name) => name.slice(0, -'.lino'.length)).sort(byteOrder);
+}
+
+/** Current generator-owned declarations, qualified against the complete generated source.
+ * This is source provenance for seed lookup, not a native census or execution receipt. */
+export function sourceQualifiedSeedOwners(root) {
+  const regularBytes = relative => {
+    const file = join(root, relative);
+    const stat = lstatSync(file);
+    if (!stat.isFile() || stat.isSymbolicLink() || stat.size > 1024 * 1024) throw new Error('regular bounded generated source required');
+    return readFileSync(file);
+  };
+  const registryBytes = regularBytes(REGISTRY);
+  const registry = canonicalize(parseRegistry(registryBytes.toString('utf8')));
+  if (problems(registry, seedNamesOnDisk(root)).length) throw new Error('seed registry inventory refuses');
+  const sourcePath = 'rust/' + RUST_TARGET;
+  const sourceBytes = regularBytes(sourcePath);
+  if (!sourceBytes.equals(Buffer.from(renderRust(registry)))) throw new Error('generated declaration source drift');
+  const declarations = registry.seeds.filter(embedded).map(seed => {
+    const symbol = constant(seed);
+    if (!/^[A-Za-z0-9_-]+$/u.test(seed.name) || !/^[A-Z_][A-Z0-9_]*$/u.test(symbol)) throw new Error('unsupported generated declaration name');
+    return {seed_path: seedPath(seed), module_path: RUST_TARGET, symbol, kind: 'const'};
+  });
+  if (new Set(declarations.map(row => row.symbol)).size !== declarations.length) throw new Error('ambiguous generated declaration owners');
+  if (!regularBytes(REGISTRY).equals(registryBytes) || !regularBytes(sourcePath).equals(sourceBytes)) throw new Error('generated declaration inputs changed');
+  const digest = bytes => createHash('sha256').update(bytes).digest('hex');
+  return {registryPath: REGISTRY, registrySha256: digest(registryBytes), sourcePath,
+    sourceSha256: digest(sourceBytes), declarations};
 }
 
 function main() {
