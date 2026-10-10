@@ -100,3 +100,104 @@ test('missing original attempts and unsupported source languages are rejected',a
   await assert.rejects(measureCodingRun(run([], {attemptInputs:['replacement instructions']}),verified),/retain the original/);
   await assert.rejects(measureCodingRun(run([{...change('fn value() {}'),language:'rust'}]),verified),/supports JavaScript only/);
 });
+
+
+import { normalizeUsageReceipts } from '../../../experiments/formal_ai_subagent/coding-amplification.mjs';
+import { mkdtempSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+function usageFixture(overrides = {}) {
+  const directory = mkdtempSync(join(tmpdir(), 'usage-instrumentation-'));
+  const producerPath = join(directory, 'producer.mjs');
+  writeFileSync(producerPath, '// Instrumentation fixture, not an actual provider capture.\n');
+  const record = {schemaVersion:1,kind:'normalized-provider-usage',receiptId:'receipt-a',runId:'usage-run',
+    attemptId:'attempt-a',provider:'instrumentation-only',model:'control',requestId:'request-a',
+    usage:{inputTokens:100,outputTokens:40,cachedInputTokens:20,reasoningTokens:10},
+    counterSemantics:{cachedInput:'included-in-input',reasoning:'included-in-output'},...overrides};
+  const path = join(directory, 'capture.json'); writeFileSync(path, JSON.stringify(record));
+  const binding = file => ({path:file,sha256:sourceDigest(readFileSync(file))});
+  const receipt = Object.fromEntries(['receiptId','runId','attemptId','provider','model','requestId'].map(name=>[name,record[name]]));
+  receipt.capture=binding(path);receipt.producer=binding(producerPath);
+  const input = run([], {runId:'usage-run',attemptIds:['attempt-a'],usageReceipts:[receipt]});
+  return {record,receipt,input,path,producerPath,cleanup:()=>rmSync(directory,{recursive:true,force:true})};
+}
+test('source-bound usage counts token subsets once and never guesses prices or savings',async()=>{
+ const f=usageFixture();try {
+  const result=await measureCodingRun(f.input,verified);
+  assert.deepEqual(result.modelTokens,{inputTokens:100,outputTokens:40,cachedInputTokens:20,reasoningTokens:10,totalTokens:140,scope:'captured-provider-receipts-only'});
+  assert.equal(result.actualCost,null);assert.equal(result.monetarySavings,null);assert.equal(result.usageProvenanceRequiresReview,true);
+  assert.equal(result.totalObservedInputBytes,Buffer.byteLength(f.input.task),'unobserved capture bytes are not charged as solver context');
+ }finally{f.cleanup();}
+});
+test('absent and partial actual usage stay Unknown rather than zero or byte-derived',()=>{
+ assert.equal(normalizeUsageReceipts(run([])).modelTokens,null);
+ const f=usageFixture({usage:{inputTokens:100}});try {
+  const result=normalizeUsageReceipts(f.input);assert.equal(result.modelTokens,null);assert.equal(result.usageStatus,'Unknown');
+  assert.equal(result.usageReceipts[0].counters.inputTokens,100);assert.equal(result.usageReceipts[0].counters.outputTokens,null);
+ }finally{f.cleanup();}
+});
+test('negative fractional unsafe and unsupported token fields are refused',()=>{
+ for(const usage of [{inputTokens:-1,outputTokens:1},{inputTokens:1.5,outputTokens:1},{inputTokens:Number.MAX_SAFE_INTEGER+1,outputTokens:1},{inputTokens:1,outputTokens:1,inventedTokens:3}]) {
+  const f=usageFixture({usage});try{assert.throws(()=>normalizeUsageReceipts(f.input),/token|fields/);}finally{f.cleanup();}
+ }
+});
+test('cached and reasoning counters require explicit included subset semantics',()=>{
+ for(const extra of [{usage:{inputTokens:10,outputTokens:5,cachedInputTokens:11}},{usage:{inputTokens:10,outputTokens:5,reasoningTokens:6}},{counterSemantics:{}}]) {
+  const f=usageFixture(extra);try{assert.throws(()=>normalizeUsageReceipts(f.input),/subset/);}finally{f.cleanup();}
+ }
+});
+test('capture digest drift and producer drift cannot enter token totals',()=>{
+ const f=usageFixture();try {
+  writeFileSync(f.path,'{}');assert.throws(()=>normalizeUsageReceipts(f.input),/drift/);
+ }finally{f.cleanup();}
+ const g=usageFixture();try {
+  writeFileSync(g.producerPath,'drift');assert.throws(()=>normalizeUsageReceipts(g.input),/drift/);
+ }finally{g.cleanup();}
+});
+test('cross-run cross-attempt model and request mismatches are refused',()=>{
+ for(const mutate of [f=>{f.input.runId='another';},f=>{f.input.attemptIds=['another'];},f=>{f.receipt.model='another';},f=>{f.receipt.requestId='another';}]) {
+  const f=usageFixture();try{mutate(f);assert.throws(()=>normalizeUsageReceipts(f.input),/identity|another/);}finally{f.cleanup();}
+ }
+});
+test('duplicate captures and missing attempt identities cannot cheapen accounting',()=>{
+ const f=usageFixture();try {
+  assert.throws(()=>normalizeUsageReceipts({...f.input,usageReceipts:[f.receipt,f.receipt]}),/duplicate/);
+  assert.throws(()=>normalizeUsageReceipts({...f.input,attemptIds:[]}),/attempt/);
+ }finally{f.cleanup();}
+});
+test('malformed and unsupported captured schemas refuse normalization',()=>{
+ const f=usageFixture();try {
+  writeFileSync(f.path,'{');f.receipt.capture.sha256=sourceDigest(readFileSync(f.path));assert.throws(()=>normalizeUsageReceipts(f.input),/complete JSON/);
+ }finally{f.cleanup();}
+ const g=usageFixture({schemaVersion:2});try{assert.throws(()=>normalizeUsageReceipts(g.input),/schema/);}finally{g.cleanup();}
+});
+test('ordinary coding summary is separated while existing combined and selfcoding fields remain',async()=>{
+ const ordinary=await measureCodingRun(run([change('export const answer = 42;')]),verified);
+ const self=await measureCodingRun(run([],{taskKind:'self-coding'}),verified);
+ const summary=summarizeCodingRuns([ordinary,self],[ordinary.runId,self.runId]);
+ assert.equal(summary.coding.attempted,2);assert.equal(summary.ordinaryCoding.attempted,1);assert.equal(summary.selfCoding.attempted,1);
+ assert.equal(summary.monetarySavings,null);
+});
+test('same provider request cannot be counted twice across cohort records',async()=>{
+ const f=usageFixture();try {
+  const first=await measureCodingRun(f.input,verified);
+  const second={...first,runId:'distinct-task'};
+  assert.throws(()=>summarizeCodingRuns([first,second],[first.runId,second.runId]),/duplicate usage/);
+ }finally{f.cleanup();}
+});
+
+
+test('failed acceptance still retains actual captured resource counters',async()=>{
+ const f=usageFixture();try {
+  const result=await measureCodingRun(f.input,async()=>({passed:false,bindings:[],checks:[{name:'independent failure',exitCode:1}]}));
+  assert.equal(result.accepted,false);assert.equal(result.autonomousNetCodeBytes,0);assert.equal(result.modelTokens.totalTokens,140);
+ }finally{f.cleanup();}
+});
+test('distinct receipt IDs cannot duplicate a provider request across distinct runs',async()=>{
+ const f=usageFixture(),g=usageFixture({receiptId:'receipt-b',runId:'second-run'});g.input.runId='second-run';
+ try {
+  const first=await measureCodingRun(f.input,verified),second=await measureCodingRun(g.input,verified);
+  assert.notEqual(first.usageReceipts[0].receiptId,second.usageReceipts[0].receiptId);
+  assert.throws(()=>summarizeCodingRuns([first,second],[first.runId,second.runId]),/duplicate usage/);
+ }finally{f.cleanup();g.cleanup();}
+});

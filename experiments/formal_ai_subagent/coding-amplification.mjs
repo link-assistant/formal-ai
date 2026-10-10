@@ -1,5 +1,6 @@
 // R1188-U31..U34: byte accounting is a proxy, never a proof of usefulness or cost.
 import { createHash } from 'node:crypto';
+import { readFileSync, statSync } from 'node:fs';
 import { tokenize } from '../../scripts/lib/translation-blockers.mjs';
 
 export const sourceDigest = source => createHash('sha256').update(source).digest('hex');
@@ -22,6 +23,86 @@ function codeWeight(source) {
   return tokenize(source).filter(token => token.kind !== 'comment').reduce((sum, token) =>
     sum + byteLength(['string', 'template', 'regex', 'number'].includes(token.kind)
       ? '<' + token.kind + '>' : token.value), 0);
+}
+
+
+// Only retained captures with declared source identities enter token accounting.
+// This verifies provenance integrity, not provider authenticity or completeness.
+function capturedSource(binding) {
+  if (!binding || typeof binding.path !== 'string' || !binding.path
+      || typeof binding.sha256 !== 'string' || !/^[a-f0-9]{64}$/u.test(binding.sha256)) {
+    throw new TypeError('usage capture requires exact source identity');
+  }
+  const information = statSync(binding.path);
+  if (!information.isFile() || information.size > 1048576) throw new TypeError('usage capture source bound');
+  const bytes = readFileSync(binding.path);
+  if (bytes.length > 1048576 || sourceDigest(bytes) !== binding.sha256) throw new TypeError('usage capture source drift or bound');
+  return bytes;
+}
+const usageCounters = ['inputTokens', 'outputTokens', 'cachedInputTokens', 'reasoningTokens'];
+function addUsage(values) {
+  const total = {};
+  for (const name of usageCounters) {
+    if (values.some(value => value[name] === null)) total[name] = null;
+    else {
+      total[name] = values.reduce((sum, value) => sum + value[name], 0);
+      if (!Number.isSafeInteger(total[name])) throw new TypeError('usage total exceeds safe integer');
+    }
+  }
+  total.totalTokens = total.inputTokens + total.outputTokens;
+  if (!Number.isSafeInteger(total.totalTokens)) throw new TypeError('usage total exceeds safe integer');
+  return { ...total, scope: 'captured-provider-receipts-only' };
+}
+export function normalizeUsageReceipts(run) {
+  const receipts = run.usageReceipts;
+  if (receipts === undefined || (Array.isArray(receipts) && receipts.length === 0)) {
+    return { modelTokens: null, usageStatus: 'Unknown', usageReceipts: [], actualCost: null,
+      usageProvenanceRequiresReview: true, usageCoverage: 'not observed' };
+  }
+  if (!Array.isArray(receipts) || receipts.length > 1000) throw new TypeError('bounded usage receipt array required');
+  if (!Array.isArray(run.attemptIds) || run.attemptIds.length !== run.attemptInputs.length
+      || run.attemptIds.some(id => typeof id !== 'string' || !id)
+      || new Set(run.attemptIds).size !== run.attemptIds.length) throw new TypeError('usage requires original attempt identities');
+  const receiptIds = new Set();
+  const requestIds = new Set();
+  const normalized = receipts.map(receipt => {
+    const bytes = capturedSource(receipt?.capture);
+    capturedSource(receipt?.producer);
+    let record;
+    try { record = JSON.parse(bytes.toString('utf8')); } catch { throw new TypeError('usage capture must be complete JSON'); }
+    if (record?.schemaVersion !== 1 || record?.kind !== 'normalized-provider-usage') throw new TypeError('unsupported usage capture schema');
+    for (const name of ['receiptId', 'runId', 'attemptId', 'provider', 'model', 'requestId']) {
+      if (typeof record[name] !== 'string' || !record[name] || receipt[name] !== record[name]) throw new TypeError('usage capture identity mismatch');
+    }
+    if (record.runId !== run.runId || !run.attemptIds.includes(record.attemptId)) throw new TypeError('usage belongs to another run or attempt');
+    const requestIdentity = JSON.stringify([record.provider, record.requestId]);
+    if (receiptIds.has(record.receiptId) || requestIds.has(requestIdentity)) throw new TypeError('duplicate usage receipt or provider request');
+    receiptIds.add(record.receiptId); requestIds.add(requestIdentity);
+    const usage = record.usage;
+    if (!usage || typeof usage !== 'object' || Array.isArray(usage)
+        || Object.keys(usage).some(name => !usageCounters.includes(name))) throw new TypeError('invalid normalized token fields');
+    const counters = Object.fromEntries(usageCounters.map(name => {
+      const value = usage[name];
+      if (value === undefined || value === null) return [name, null];
+      if (!Number.isSafeInteger(value) || value < 0) throw new TypeError('token counts must be nonnegative safe integers');
+      return [name, value];
+    }));
+    if (counters.cachedInputTokens !== null && (counters.inputTokens === null
+        || counters.cachedInputTokens > counters.inputTokens || record.counterSemantics?.cachedInput !== 'included-in-input')) {
+      throw new TypeError('cached token subset semantics required');
+    }
+    if (counters.reasoningTokens !== null && (counters.outputTokens === null
+        || counters.reasoningTokens > counters.outputTokens || record.counterSemantics?.reasoning !== 'included-in-output')) {
+      throw new TypeError('reasoning token subset semantics required');
+    }
+    return { receiptId: record.receiptId, runId: record.runId, attemptId: record.attemptId,
+      provider: record.provider, model: record.model, requestId: record.requestId,
+      capture: receipt.capture, producer: receipt.producer, counters };
+  });
+  const completeCounters = normalized.every(receipt => receipt.counters.inputTokens !== null && receipt.counters.outputTokens !== null);
+  return { modelTokens: completeCounters ? addUsage(normalized.map(receipt => receipt.counters)) : null,
+    usageStatus: completeCounters ? 'Captured' : 'Unknown', usageReceipts: normalized, actualCost: null,
+    usageProvenanceRequiresReview: true, usageCoverage: 'captured receipts only; full model usage unproved' };
 }
 
 /** A verifier executes fresh, independent checks and binds their actual source bytes. */
@@ -76,6 +157,7 @@ export async function measureCodingRun(run, verify) {
   const autonomous = run.origin === 'autonomous' && reviewedPatchBytes === 0;
   const autonomousNetCodeBytes = autonomous ? validatedNetCodeBytes : 0;
   const totalObservedInputBytes = instructionBytes + repositoryContextBytes + reviewedPatchBytes + toolReceiptBytes;
+  const usage = normalizeUsageReceipts(run);
   return {
     runId: run.runId, taskKind: run.taskKind, origin: run.origin, accepted, sourceBound, checksPassed, verifierFailure,
     taskInputBytes, instructionBytes, repositoryContextBytes, reviewedPatchBytes, toolReceiptBytes,
@@ -84,7 +166,7 @@ export async function measureCodingRun(run, verify) {
     validatedNetCodeBytes, autonomousNetCodeBytes,
     taskAmplification: eligible ? autonomousNetCodeBytes / taskInputBytes : null,
     observedInputAmplification: eligible ? autonomousNetCodeBytes / totalObservedInputBytes : null,
-    qualityRequiresReview: true, monetarySavings: null, modelTokens: null,
+    qualityRequiresReview: true, monetarySavings: null, ...usage,
     bindings, checks: proof?.checks ?? [],
   };
 }
@@ -100,11 +182,19 @@ export function summarizeCodingRuns(measurements, declaredRunIds) {
   }
   const coding = measurements.filter(item => item.taskKind === 'coding' || item.taskKind === 'self-coding');
   const selfCoding = coding.filter(item => item.taskKind === 'self-coding');
+  const ordinaryCoding = coding.filter(item => item.taskKind === 'coding');
+  const receiptIds = new Set();
+  const requestIds = new Set();
+  for (const measurement of coding) for (const receipt of measurement.usageReceipts ?? []) {
+    const requestIdentity = JSON.stringify([receipt.provider, receipt.requestId]);
+    if (receiptIds.has(receipt.receiptId) || requestIds.has(requestIdentity)) throw new TypeError('duplicate usage across cohort');
+    receiptIds.add(receipt.receiptId); requestIds.add(requestIdentity);
+  }
   const summary = items => ({
     attempted: items.length,
     accepted: items.filter(item => item.accepted).length,
     amplified: items.filter(item => item.accepted && item.taskAmplification > 1).length,
     usuallyAmplifies: items.length > 0 && items.filter(item => item.accepted && item.taskAmplification > 1).length > items.length / 2,
   });
-  return { coding: summary(coding), selfCoding: summary(selfCoding), monetarySavings: null };
+  return { coding: summary(coding), ordinaryCoding: summary(ordinaryCoding), selfCoding: summary(selfCoding), monetarySavings: null };
 }
