@@ -173,11 +173,10 @@ impl Arena {
             "union" => Ok(
                 json!({"kind":"union","options":node.options.iter().map(|value| self.schema(*value,&next)).collect::<Checked<Vec<_>>>()?}),
             ),
-            _ => Ok(if let Some(value) = &node.value {
-                json!({"kind":node.kind,"value":value})
-            } else {
-                json!({"kind":node.kind})
-            }),
+            _ => Ok(node.value.as_ref().map_or_else(
+                || json!({"kind":node.kind}),
+                |value| json!({"kind":node.kind,"value":value}),
+            )),
         }
     }
     fn expression(&mut self, node: &Value, environment: &Environment) -> Checked<Operand> {

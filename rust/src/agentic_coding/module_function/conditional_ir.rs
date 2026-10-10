@@ -30,7 +30,10 @@ fn binding(name: &str) -> bool {
         )
 }
 fn literal(value: Value) -> Value {
-    json!({"op":"literal","value":value})
+    let mut record = serde_json::Map::new();
+    record.insert("op".to_owned(), json!("literal"));
+    record.insert("value".to_owned(), value);
+    Value::Object(record)
 }
 fn expression(trees: &[Value]) -> Checked {
     if trees.is_empty() {
