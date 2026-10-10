@@ -173,6 +173,10 @@ pub struct ChatMessage {
     /// Provider-owned Read metadata; content remains exact source bytes.
     #[serde(default, alias = "sourceRead", skip_serializing_if = "Option::is_none")]
     pub source_read: Option<Value>,
+    #[serde(default, skip_deserializing, skip_serializing_if = "Option::is_none")]
+    pub append_contract: Option<Value>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub append_receipt: Option<Value>,
     /// Ordered solver-thinking projection attached to assistant answers.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub thinking_steps: Vec<ThinkingStep>,
@@ -576,6 +580,8 @@ fn agentic_outcome(request: &ChatCompletionRequest, agent_mode: bool) -> Agentic
         &request.messages,
         &request.tools,
     );
+    let messages =
+        crate::agentic_coding::append_contract::project_append_contracts(&messages, &request.tools);
     let outcome = plan_chat_step(&messages, &tool_names)
         .map_or(AgenticOutcome::Fallthrough, AgenticOutcome::Planned);
     if trace {

@@ -16,6 +16,8 @@
 // drive attaches actual raw Read bytes and provider status in separate fields;
 // Write/Edit text receipts and actual Bash process observations keep their APIs.
 
+import { appendDefinition, projectAppendContracts } from '../../js/agentic/append_contract.mjs';
+import { atomicRecordAppend } from './atomic-record-append.mjs';
 import { shellCapture } from './shell-capture.mjs';
 import { grepCapture } from './grep-capture.mjs';
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync, writeSync } from 'node:fs';
@@ -78,6 +80,11 @@ function toolFailure(message) {
 
 /** Read provider metadata is attached outside the actual file bytes. */
 export function executeResult(dir, call) {
+  const appendArgs = argsOf(call);
+  if (call.tool === 'write' && appendArgs.append_mode === 'atomic_record_append') {
+    try { return atomicRecordAppend(dir, appendArgs); }
+    catch (error) { return { content: toolFailure(error.message), is_error: true }; }
+  }
   if (call.tool !== 'read') return { content: execute(dir, call) };
   const args = argsOf(call);
   const path = args.filePath ?? args.file_path ?? args.path;
@@ -104,6 +111,7 @@ export function execute(dir, call) {
         return `<file>\n${body}\n\n(End of file - total ${lines.length} lines)\n</file>`;
       }
       case 'write': {
+        if (args.append_mode !== undefined) return toolFailure('append requires the explicit receipt adapter');
         const target = within(dir, path);
         mkdirSync(dirname(target), { recursive: true });
         writeFileSync(target, args.content ?? '');
@@ -163,9 +171,13 @@ export function execute(dir, call) {
  */
 export async function drive(planChatStep, dir, prompt, {
   tools = AGENT_CLI_TOOLS, steps = 12, fallthrough = null, allowedCommands = undefined,
+  atomicRecordAppend = false,
 } = {}) {
   if (!Array.isArray(tools) || new Set(tools).size !== tools.length || tools.some((tool) => !AGENT_CLI_TOOLS.includes(tool))) {
     return { transcript: [], answer: null, stop: 'invalid-tools', toolsAdvertised: [] };
+  }
+  if (typeof atomicRecordAppend !== 'boolean') {
+    return { transcript: [], answer: null, stop: 'invalid-append-policy', toolsAdvertised: tools };
   }
   tools = Object.freeze([...tools]);
   if (allowedCommands !== undefined) {
@@ -185,11 +197,17 @@ export async function drive(planChatStep, dir, prompt, {
     // The server's fall-through: no planned step means the solver answers and
     // the symbolic command reroute may still turn that answer into tool calls
     // (js/server/agentic.mjs commandReroutePlan).
-    const plan = (await planChatStep(messages, tools)) ?? (fallthrough ? await fallthrough(messages, tools) : null);
+    const contracts = atomicRecordAppend && tools.includes('write') ? [appendDefinition('write')] : [];
+    const scoped = projectAppendContracts(messages, contracts);
+    const plan = (await planChatStep(scoped, tools)) ?? (fallthrough ? await fallthrough(messages, tools) : null);
     if (!plan) return { transcript, answer: null, stop: 'no-plan', toolsAdvertised: tools };
     if (plan.kind === 'final') return { transcript, answer: plan.answer, stop: 'final', toolsAdvertised: tools };
     // Snapshot the complete batch before validation; getters cannot change executed arguments.
     const calls = plan.calls.map(call => Object.freeze({ tool: call.tool, arguments: call.arguments }));
+    if (!atomicRecordAppend && calls.some(call => call.tool === 'write'
+      && argsOf(call).append_mode !== undefined)) {
+      return { transcript, answer: null, stop: 'undeclared-append-contract', toolsAdvertised: tools };
+    }
     if (calls.some((call) => !tools.includes(call.tool))) {
       return { transcript, answer: null, stop: 'undeclared-tool', toolsAdvertised: tools };
     }

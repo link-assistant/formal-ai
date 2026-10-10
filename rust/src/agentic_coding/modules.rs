@@ -8,6 +8,7 @@
 // `rust-script scripts/normalize-ordered-lists.rs --write`.
 
 pub mod algorithm_learning;
+pub mod append_contract;
 pub mod associative_learning;
 mod capability_router;
 pub mod change_request;

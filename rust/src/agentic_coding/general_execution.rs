@@ -188,7 +188,7 @@ fn general_change_step(
     {
         return AgenticPlan::Final(report);
     }
-    let event_unavailable = match plan_event_step(plan, &progress, tool_names) {
+    let event_unavailable = match plan_event_step(plan, &progress, tool_names, messages) {
         PlanEventOutcome::Pending(step) => return step,
         PlanEventOutcome::Observed => false,
         PlanEventOutcome::Unavailable => true,
@@ -287,6 +287,7 @@ fn plan_event_step(
     plan: &GeneralChangePlan,
     progress: &Progress,
     tool_names: &[&str],
+    messages: &[ChatMessage],
 ) -> PlanEventOutcome {
     let event = plan.links_notation();
     let identity = event.lines().nth(1).unwrap_or_default();
@@ -367,7 +368,15 @@ fn plan_event_step(
         return PlanEventOutcome::Pending(plan_one(write, write_arguments(PLAN_PATH, &stream)));
     }
     let Some(run) = run else {
-        return PlanEventOutcome::Unavailable;
+        use super::append_contract::{AppendRecordStep, append_record_step};
+        return match append_record_step(messages, tool_names, PLAN_PATH, &event, identity) {
+            Some(AppendRecordStep::Pending(step)) => PlanEventOutcome::Pending(step),
+            Some(AppendRecordStep::Observed) => PlanEventOutcome::Observed,
+            Some(AppendRecordStep::Refused) => {
+                PlanEventOutcome::Pending(unverified_plan_event(plan))
+            }
+            None => PlanEventOutcome::Unavailable,
+        };
     };
     let append = plan_event_append_command(plan);
     if progress.successful_run_count_for(&append) == 0 {

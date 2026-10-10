@@ -2,6 +2,7 @@
 // (rust/src/agentic_coding/general_execution.rs).
 
 import { Capability } from './capability.mjs';
+import { appendRecordStep } from './append_contract.mjs';
 import { isHostedResearchTool, shellCommandTool, toolFor } from './capability_router.mjs';
 import { attach, requestedIn } from './ci_workflow.mjs';
 import { executionRecipeFinalAnswer, planSymbolicCommandReroute } from './command_reroute.mjs';
@@ -109,7 +110,7 @@ function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
     const report = workItemReadFailureReport(plan, progress);
     if (report !== null) return finalAnswer(report);
   }
-  const event = planEventStep(plan, progress, toolNames);
+  const event = planEventStep(plan, progress, toolNames, messages);
   if (event.kind === 'pending') return event.plan;
   const writeTool = toolFor(toolNames, Capability.Write);
   if (writeTool && plan.mode === GeneralPlanMode.LiteralFile && !progress.successfulWriteFor(plan.target)) {
@@ -153,7 +154,7 @@ function unverifiedPlanEvent(plan) {
   return finalAnswer(generalPlanUnverified({ ...plan, target: PLAN_PATH, verification_command: 'cat ' + PLAN_PATH }));
 }
 
-function planEventStep(plan, progress, toolNames) {
+function planEventStep(plan, progress, toolNames, messages) {
   const event = planLinksNotation(plan);
   const identity = event.split('\n')[1];
   const read = toolFor(toolNames, Capability.Read);
@@ -181,7 +182,11 @@ function planEventStep(plan, progress, toolNames) {
     const separator = before !== '' && !before.endsWith('\n') ? '\n' : '';
     return { kind: 'pending', plan: planOne(write, writeArguments(PLAN_PATH, before + separator + event)) };
   }
-  if (!run) return { kind: 'unavailable' };
+  if (!run) {
+    const appended = appendRecordStep(messages, toolNames, PLAN_PATH, event, identity);
+    if (appended?.kind === 'refused') return { kind: 'pending', plan: unverifiedPlanEvent(plan) };
+    return appended ?? { kind: 'unavailable' };
+  }
   const append = planEventAppendCommand(plan);
   if (progress.successfulRunCountFor(append) === 0) return { kind: 'pending', plan: planOne(run, command(append)) };
   const raw = progress.latestSuccessfulRunOutputFor(append);

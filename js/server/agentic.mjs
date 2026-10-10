@@ -32,6 +32,7 @@ import {
   isCustomResponseTool,
   responseArgumentsForTool,
 } from '../agentic/crate/protocol_responses.mjs';
+import { projectAppendContracts } from '../agentic/append_contract.mjs';
 import { ungroundedIdentityArguments } from '../agentic/crate/tool_scope.mjs';
 
 /** Install the planner host over `ctx.worker` once (shared with js/server/solve.mjs). */
@@ -96,7 +97,8 @@ export async function agenticOutcome(ctx, request, refusal) {
   // R1154-1: a shell tool whose schema names its command property something
   // else than `command`/`cmd`/`script` is read through that declared key.
   const messages = projectDeclaredCommandKeys(request.messages, request.tools);
-  const plan = await planChatStep(messages, groundableToolNames(request, owned));
+  const scoped = projectAppendContracts(messages, request.tools);
+  const plan = await planChatStep(scoped, groundableToolNames(request, owned));
   return plan === null ? { kind: 'fallthrough' } : { kind: 'planned', plan };
 }
 
