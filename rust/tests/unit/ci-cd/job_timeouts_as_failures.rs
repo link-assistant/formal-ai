@@ -199,6 +199,13 @@ fn every_docker_build_push_step_uses_the_gha_layer_cache() {
         publishing_routes >= 4,
         "both guarded jobs retain GHCR and optional Docker Hub routes"
     );
+    for job in ["auto-release", "manual-release"] {
+        let route = job_block(&workflow, job);
+        assert!(route.contains("BUILD_CACHE_SETTINGS: |"));
+        assert!(route.contains("cache-from: type=gha,scope=docker-image"));
+        assert!(route.contains("cache-to: type=gha,mode=max,scope=docker-image"));
+    }
+    assert!(factory.contains("const cache=releaseImageCacheSettings(environment)"));
     assert_eq!(
         build_steps.len(),
         1,
@@ -206,8 +213,9 @@ fn every_docker_build_push_step_uses_the_gha_layer_cache() {
     );
     for required in [
         "BINARY_SOURCE=prebuilt",
-        "'--cache-from','type=gha,scope=docker-image'",
-        "'--cache-to','type=gha,mode=max,scope=docker-image'",
+        "'cache-from':'type=gha,scope=docker-image'",
+        "'cache-to':'type=gha,mode=max,scope=docker-image'",
+        "'--cache-from',cache['cache-from'],'--cache-to',cache['cache-to']",
         "record.selection.head",
         "record.executable.sha256",
         "['tag',source.image,image+':'+suffix]",

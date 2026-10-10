@@ -249,8 +249,16 @@ function validateProjection(projection, canonicalBytes = readFileSync(new URL('.
         transferredReferences++;
         return 'needs.' + producerJob + '.outputs.' + outputName;
       });
-      rewritten = rewritten.replace(/(^        timeout-minutes:) (\d+)/gm, (_, prefix, value) => prefix + ' ' + Math.min(Number(value), 30));
+      rewritten = rewritten.replace(/(^        timeout-minutes:) (\d+)/gm, (_, prefix, value) => prefix + ' ' + Math.min(Number(value), 21));
       rewritten = rewritten.replace(/node scripts\/(prepared-release-binary|release-image-factory)\.mjs/g, 'node _protocol/scripts/$1.mjs');
+      if (operation.name === 'Publish Docker image to GHCR') {
+        const prefix = "env TEST_BUDGET_ENFORCE=true TEST_BUDGET_GRACE_SECONDS=5 " +
+          "TEST_BUDGET_POLL_SECONDS=1 TEST_WARN_RATIO_PERCENT=70 RUSTC_WRAPPER='' " +
+          'bash _protocol/scripts/run-with-budget-warning.sh 1250 "Publish prepared release image" ';
+        rewritten = rewritten.replace('run: node _protocol/', 'run: ' + prefix + 'node _protocol/');
+        assert.equal(stage['timeout-minutes'], 30);
+        assert.ok(1250 + 5 + 1 <= 21 * 60);
+      }
       const expected = YAML.parse('steps:\n' + rewritten).steps[0];
       const matches = stage.steps.map((step, index) => ({
         step,
@@ -349,5 +357,22 @@ test('canonical drift and omitted, reordered, spoofed, ungated or prematurely re
     const changed = structuredClone(projection);
     mutation(changed);
     assert.throws(() => validateProjection(changed));
+  }
+});
+
+test('copied image operation deadline cannot inherit extension or exceed job share', () => {
+  for (const mode of ['auto', 'manual']) {
+    for (const mutate of [
+      s => s['timeout-minutes'] = 22,
+      s => s.run = s.run.replace('TEST_BUDGET_ENFORCE=true', 'TEST_BUDGET_ENFORCE=false'),
+      s => s.run = s.run.replace('TEST_BUDGET_GRACE_SECONDS=5', 'TEST_BUDGET_GRACE_SECONDS=500'),
+      s => s.run = s.run.replace(' 1250 ', ' 1800 '),
+      s => s.run = s.run.replace('_protocol/scripts/run-with-budget-warning.sh', 'scripts/run-with-budget-warning.sh'),
+      s => s.run = s.run.replace('publish prepared-release', 'mirror prepared-release')
+    ]) {
+      const p = readProjection();
+      mutate(p.jobs[mode + '_publish-verify-images'].steps.find(s => s.name === 'Publish Docker image to GHCR'));
+      assert.throws(() => validateProjection(p));
+    }
   }
 });

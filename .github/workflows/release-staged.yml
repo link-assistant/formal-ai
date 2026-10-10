@@ -58,6 +58,7 @@ jobs:
       artifact_id: ${{ steps.upload.outputs.artifact-id }}
       artifact_digest: ${{ steps.upload.outputs.artifact-digest }}
     steps:
+      # #1079: persist-credentials is retained for the root version/tag git push.
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
@@ -152,6 +153,7 @@ jobs:
         with:
           ref: ${{ needs.auto_prepare-source.outputs.source_sha }}
           fetch-depth: 0
+          persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install exact selected Rust compiler
         uses: dtolnay/rust-toolchain@stable
@@ -217,6 +219,7 @@ jobs:
         with:
           ref: ${{ needs.auto_prepare-source.outputs.source_sha }}
           fetch-depth: 0
+          persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install exact selected Rust compiler
         uses: dtolnay/rust-toolchain@stable
@@ -288,6 +291,7 @@ jobs:
         with:
           ref: ${{ needs.auto_prepare-source.outputs.source_sha }}
           fetch-depth: 0
+          persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install exact selected Rust compiler
         uses: dtolnay/rust-toolchain@stable
@@ -361,6 +365,7 @@ jobs:
         with:
           ref: ${{ needs.auto_prepare-source.outputs.source_sha }}
           fetch-depth: 0
+          persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install exact selected Rust compiler
         uses: dtolnay/rust-toolchain@stable
@@ -424,6 +429,7 @@ jobs:
         with:
           ref: ${{ needs.auto_prepare-source.outputs.source_sha }}
           fetch-depth: 0
+          persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install exact selected Rust compiler
         uses: dtolnay/rust-toolchain@stable
@@ -484,6 +490,7 @@ jobs:
         with:
           ref: ${{ needs.auto_prepare-source.outputs.source_sha }}
           fetch-depth: 0
+          persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install exact selected Rust compiler
         uses: dtolnay/rust-toolchain@stable
@@ -565,14 +572,14 @@ jobs:
             needs.auto_prepare-source.outputs.prepared__crate_published == 'true' ||
             needs.auto_publish-crate.outputs.publish-crate__publish_result == 'success'
           )
-        timeout-minutes: 30
+        timeout-minutes: 21
         env:
           RELEASE_VERSION: ${{ needs.auto_prepare-source.outputs.current_version__version }}
           RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
           BUILD_CACHE_SETTINGS: |
             cache-from: type=gha,scope=docker-image
             cache-to: type=gha,mode=max,scope=docker-image
-        run: node _protocol/scripts/release-image-factory.mjs publish prepared-release "$RELEASE_VERSION" "$GHCR_IMAGE"
+        run: env TEST_BUDGET_ENFORCE=true TEST_BUDGET_GRACE_SECONDS=5 TEST_BUDGET_POLL_SECONDS=1 TEST_WARN_RATIO_PERCENT=70 RUSTC_WRAPPER='' bash _protocol/scripts/run-with-budget-warning.sh 1250 "Publish prepared release image" node _protocol/scripts/release-image-factory.mjs publish prepared-release "$RELEASE_VERSION" "$GHCR_IMAGE"
       - name: Publish and verify the slim GHCR sidecar
         if: |
           needs.auto_prepare-source.outputs.check__should_release == 'true' && (
@@ -662,6 +669,7 @@ jobs:
         with:
           ref: ${{ needs.auto_prepare-source.outputs.source_sha }}
           fetch-depth: 0
+          persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install exact selected Rust compiler
         uses: dtolnay/rust-toolchain@stable
@@ -773,6 +781,7 @@ jobs:
       artifact_id: ${{ steps.upload.outputs.artifact-id }}
       artifact_digest: ${{ steps.upload.outputs.artifact-digest }}
     steps:
+      # #1079: persist-credentials is retained for the root version/tag git push.
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
@@ -840,6 +849,7 @@ jobs:
         with:
           ref: ${{ needs.manual_prepare-source.outputs.source_sha }}
           fetch-depth: 0
+          persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install exact selected Rust compiler
         uses: dtolnay/rust-toolchain@stable
@@ -905,6 +915,7 @@ jobs:
         with:
           ref: ${{ needs.manual_prepare-source.outputs.source_sha }}
           fetch-depth: 0
+          persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install exact selected Rust compiler
         uses: dtolnay/rust-toolchain@stable
@@ -976,6 +987,7 @@ jobs:
         with:
           ref: ${{ needs.manual_prepare-source.outputs.source_sha }}
           fetch-depth: 0
+          persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install exact selected Rust compiler
         uses: dtolnay/rust-toolchain@stable
@@ -1049,6 +1061,7 @@ jobs:
         with:
           ref: ${{ needs.manual_prepare-source.outputs.source_sha }}
           fetch-depth: 0
+          persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install exact selected Rust compiler
         uses: dtolnay/rust-toolchain@stable
@@ -1111,6 +1124,7 @@ jobs:
         with:
           ref: ${{ needs.manual_prepare-source.outputs.source_sha }}
           fetch-depth: 0
+          persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install exact selected Rust compiler
         uses: dtolnay/rust-toolchain@stable
@@ -1170,6 +1184,7 @@ jobs:
         with:
           ref: ${{ needs.manual_prepare-source.outputs.source_sha }}
           fetch-depth: 0
+          persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install exact selected Rust compiler
         uses: dtolnay/rust-toolchain@stable
@@ -1246,14 +1261,14 @@ jobs:
           (needs.manual_prepare-source.outputs.version__version_committed == 'true' ||
             needs.manual_prepare-source.outputs.version__already_released == 'true') &&
           needs.manual_publish-crate.outputs.publish-crate__publish_result == 'success'
-        timeout-minutes: 30
+        timeout-minutes: 21
         env:
           RELEASE_VERSION: ${{ needs.manual_prepare-source.outputs.version__new_version }}
           RELEASE_MODE: ${{ github.event.inputs.release_mode || '' }}
           BUILD_CACHE_SETTINGS: |
             cache-from: type=gha,scope=docker-image
             cache-to: type=gha,mode=max,scope=docker-image
-        run: node _protocol/scripts/release-image-factory.mjs publish prepared-release "$RELEASE_VERSION" "$GHCR_IMAGE"
+        run: env TEST_BUDGET_ENFORCE=true TEST_BUDGET_GRACE_SECONDS=5 TEST_BUDGET_POLL_SECONDS=1 TEST_WARN_RATIO_PERCENT=70 RUSTC_WRAPPER='' bash _protocol/scripts/run-with-budget-warning.sh 1250 "Publish prepared release image" node _protocol/scripts/release-image-factory.mjs publish prepared-release "$RELEASE_VERSION" "$GHCR_IMAGE"
       - name: Publish and verify the slim GHCR sidecar
         if: |
           (needs.manual_prepare-source.outputs.version__version_committed == 'true' ||
@@ -1340,6 +1355,7 @@ jobs:
         with:
           ref: ${{ needs.manual_prepare-source.outputs.source_sha }}
           fetch-depth: 0
+          persist-credentials: false
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install exact selected Rust compiler
         uses: dtolnay/rust-toolchain@stable

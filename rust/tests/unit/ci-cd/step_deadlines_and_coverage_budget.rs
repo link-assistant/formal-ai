@@ -335,6 +335,10 @@ fn container_build_caches_are_bounded_and_scoped() {
             if !spec.contains("type=gha") {
                 continue;
             }
+            if name == "release-staged.yml" {
+                assert_eq!(spec, "type=gha,mode=max,scope=docker-image");
+                continue;
+            }
             checked += 1;
 
             assert!(
@@ -347,6 +351,30 @@ fn container_build_caches_are_bounded_and_scoped() {
         }
     }
 
+    let staged = repository_file(".github/workflows/release-staged.yml");
+    assert_eq!(staged.matches("cache-to: type=gha").count(), 2);
+    for (canonical, derivative) in [
+        ("auto-release", "auto_publish-verify-images"),
+        ("manual-release", "manual_publish-verify-images"),
+    ] {
+        let original = repository_file(".github/workflows/release.yml");
+        let source = job_block(&original, canonical);
+        let projected = job_block(&staged, derivative);
+        for operand in [
+            "BUILD_CACHE_SETTINGS: |",
+            "cache-from: type=gha,scope=docker-image",
+            "cache-to: type=gha,mode=max,scope=docker-image",
+        ] {
+            assert_eq!(source.matches(operand).count(), 1);
+            assert_eq!(projected.matches(operand).count(), 1);
+        }
+        assert_eq!(
+            projected
+                .matches("scripts/release-image-factory.mjs publish prepared-release")
+                .count(),
+            1
+        );
+    }
     assert!(
         checked >= 1,
         "expected at least one `cache-to: type=gha` site, found {checked}"

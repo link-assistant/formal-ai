@@ -640,8 +640,22 @@ fn every_checkout_drops_its_credential_unless_it_pushes() {
     // work added: `dependencies-latest` (create-pull-request pushes its
     // branch) and `e2e-isolation` (its orphan branch is pushed through the
     // retrying helper). Each carries its #1079 reason above the checkout.
+    let dormant_retained = exceptions
+        .iter()
+        .filter(|entry| entry.starts_with(".github/workflows/release-staged.yml:"))
+        .count();
+    assert_eq!(
+        dormant_retained, 2,
+        "exactly the two checked dormant root writers retain credentials"
+    );
+    let staged = repository_file(".github/workflows/release-staged.yml");
+    for role in ["auto_prepare-source", "manual_prepare-source"] {
+        let body = super::workflow_fixtures::job_block(&staged, role);
+        let lines: Vec<&str> = body.lines().collect();
+        assert!(root_push_credential_is_retained(&lines));
+    }
     assert!(
-        exceptions.len() <= 7,
+        exceptions.len() - dormant_retained <= 7,
         "only the seven pushing jobs may keep their checkout credential, found \
          {}: {exceptions:?}",
         exceptions.len()
@@ -671,6 +685,80 @@ const REMOTE_GIT_WRITES: [&str; 4] = [
 /// does must keep its checkout credential, because nothing else in this
 /// repository supplies one: `scripts/git-config.rs` sets `user.name` and
 /// `user.email` and no credential helper, and no workflow configures one.
+fn root_push_credential_is_retained(job: &[&str]) -> bool {
+    let mut starts: Vec<usize> = job
+        .iter()
+        .enumerate()
+        .filter_map(|(index, line)| (line.starts_with("      - ")).then_some(index))
+        .collect();
+    if job[..starts.first().copied().unwrap_or(job.len())]
+        .iter()
+        .any(|line| line.trim().starts_with("working-directory:"))
+    {
+        return false;
+    }
+    starts.push(job.len());
+    let mut root_credential = false;
+    let mut observed_push = false;
+    for window in starts.windows(2) {
+        let step = &job[window[0]..window[1]];
+        let active: Vec<&str> = step
+            .iter()
+            .copied()
+            .filter(|line| !line.trim_start().starts_with('#'))
+            .collect();
+        if active.iter().any(|line| line.contains("actions/checkout@")) {
+            let path = active
+                .iter()
+                .find_map(|line| line.trim().strip_prefix("path:"))
+                .map(str::trim)
+                .unwrap_or(".");
+            if path.contains("${{") || path.contains("..") || path.starts_with('/') {
+                return false;
+            }
+            if path == "." || path.is_empty() {
+                let persistence = active
+                    .iter()
+                    .find_map(|line| line.trim().strip_prefix("persist-credentials:"))
+                    .map(str::trim);
+                if !matches!(persistence, None | Some("true")) {
+                    root_credential = false;
+                    continue;
+                }
+                let token = active
+                    .iter()
+                    .find_map(|line| line.trim().strip_prefix("token:"))
+                    .map(str::trim);
+                root_credential = matches!(
+                    token,
+                    None | Some("${{ github.token }}") | Some("${{ secrets.GITHUB_TOKEN }}")
+                );
+            }
+        }
+        if active
+            .iter()
+            .any(|line| REMOTE_GIT_WRITES.iter().any(|write| line.contains(write)))
+        {
+            if !root_credential
+                || active.iter().any(|line| {
+                    line.trim().starts_with("working-directory:")
+                        || line
+                            .trim()
+                            .strip_prefix("run:")
+                            .unwrap_or(line.trim())
+                            .split([';', '&', '|'])
+                            .any(|part| part.trim().starts_with("cd "))
+                        || line.contains("git -C ")
+                })
+            {
+                return false;
+            }
+            observed_push = true;
+        }
+    }
+    observed_push
+}
+
 #[test]
 fn every_job_that_pushes_still_has_a_credential_to_push_with() {
     let mut pushing_jobs = Vec::new();
@@ -730,9 +818,7 @@ fn every_job_that_pushes_still_has_a_credential_to_push_with() {
 
             pushing_jobs.push(format!("{name}:{job_name}"));
             assert!(
-                !job.iter()
-                    .any(|line| line.contains("persist-credentials: false")
-                        && !line.trim_start().starts_with('#')),
+                root_push_credential_is_retained(job),
                 "{name}: job `{job_name}` writes to the remote over git but its \
                  checkout sets `persist-credentials: false`, which removes the \
                  only credential the push has. Nothing else supplies one -- \
@@ -744,7 +830,7 @@ fn every_job_that_pushes_still_has_a_credential_to_push_with() {
 
     assert_eq!(
         pushing_jobs.len(),
-        6,
+        8,
         "expected the six jobs that write to the remote over git (the three \
          release writers, the benchmark ledger writer, the daily dependency \
          pull request of issue #1169 and the orphan-branch isolation run of \
@@ -752,6 +838,26 @@ fn every_job_that_pushes_still_has_a_credential_to_push_with() {
          {pushing_jobs:?}. A new one must keep its checkout credential; one \
          that stopped pushing should drop it"
     );
+
+    for role in [
+        "dependencies-latest.yml:update",
+        "e2e-isolation.yml:isolate",
+        "external-benchmarks.yml:external-benchmarks",
+        "release.yml:auto-release",
+        "release.yml:manual-release",
+        "release.yml:changelog-pr",
+        "release-staged.yml:auto_prepare-source",
+        "release-staged.yml:manual_prepare-source",
+    ] {
+        assert_eq!(
+            pushing_jobs
+                .iter()
+                .filter(|actual| actual.ends_with(role))
+                .count(),
+            1,
+            "original or checked dormant writer missing: {role}"
+        );
+    }
 
     // The fifth writer is the self-authored author job, and its pushes moved
     // into `.github/actions/author-with-formal-ai` when the loop became an
@@ -780,4 +886,52 @@ fn every_job_that_pushes_still_has_a_credential_to_push_with() {
         action.contains("push-to-shared-branch.sh"),
         "the action pushes through the retrying helper like every other writer"
     );
+}
+
+#[test]
+fn root_git_credential_proof_rejects_missing_scope_and_late_credentials() {
+    let valid = [
+        "      - uses: actions/checkout@v7",
+        "        with:",
+        "          token: ${{ secrets.GITHUB_TOKEN }}",
+        "      - run: git push origin HEAD:main",
+        "      - uses: actions/checkout@v7",
+        "        with:",
+        "          path: _protocol",
+        "          persist-credentials: false",
+    ];
+    assert!(root_push_credential_is_retained(&valid));
+    for invalid in [
+        vec![
+            "      - run: git push origin HEAD:main",
+            "      - uses: actions/checkout@v7",
+        ],
+        vec![
+            "      - uses: actions/checkout@v7",
+            "          persist-credentials: false",
+            "      - run: git push",
+        ],
+        vec![
+            "      - uses: actions/checkout@v7",
+            "          path: _protocol",
+            "      - run: git push",
+        ],
+        vec![
+            "      - uses: actions/checkout@v7",
+            "          token: ${{ inputs.token }}",
+            "      - run: git push",
+        ],
+        vec![
+            "      - uses: actions/checkout@v7",
+            "      - run: cd _protocol",
+            "          git push",
+        ],
+        vec![
+            "      - uses: actions/checkout@v7",
+            "      - run: git push",
+            "        working-directory: _protocol",
+        ],
+    ] {
+        assert!(!root_push_credential_is_retained(&invalid));
+    }
 }
