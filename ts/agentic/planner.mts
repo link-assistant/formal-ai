@@ -36,7 +36,7 @@ import * as dreamingAudit from './dreaming_audit.mjs';
 import * as evidenceRecord from './evidence_record.mjs';
 import * as fileSummary from './file_summary.mjs';
 import * as explain from './explain.mjs';
-import { fileReadTaskFor, planFileReadStep } from './file_read.mjs';
+import { fileReadTaskFor, planFileReadStep, readPolicyBlocksPlan } from './file_read.mjs';
 import * as formalizationRecipe from './formalization_recipe.mjs';
 import * as functionExpectation from './function_expectation.mjs';
 import { planGeneralChangeStep } from './general_execution.mjs';
@@ -203,7 +203,7 @@ export async function planChatStepResolved(messages, toolNames) {
   const effective = continuedAgentTask(messages, received);
   const restart = await restartFeedback.planRestart(effective ?? received, messages, toolNames);
   const plan = restart ?? await planChatStepRoutes(messages, toolNames, received);
-  if (plan === null) return null;
+  if (plan === null || readPolicyBlocksPlan(received, plan)) return null;
   return stopRepeatedFailure(stopRepeatedCall(plan, messages), messages);
 }
 
@@ -484,7 +484,8 @@ export function planShellStep(messages, toolNames, command) {
 }
 
 function missingSemanticImplementation(task) {
-  if (ownedSemanticAuthoringLead(task) && composeGeneralChangePlan(task) === null && composeEditRequest(task) === null) {
+  if (ownedSemanticAuthoringLead(task) && shellCommand.semanticShellCommandForTask(task) === null
+    && composeGeneralChangePlan(task) === null && composeEditRequest(task) === null) {
     const discovery = { reason: 'MissingContract', goal: task, authored: false, verified: false,
       missingContracts: ['source-bound-implementation-plan', 'independent-goal-validation'] };
     const plan = resolvedFinalAnswer(agenticMessage('callable-discovery-outcome', {

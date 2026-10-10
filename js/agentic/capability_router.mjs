@@ -1,3 +1,4 @@
+import { fileReadTaskFor } from './file_read.mjs';
 // Capability -> advertised tool routing: the JavaScript twin of
 // rust/src/agentic_coding/capability_router.rs.
 
@@ -20,7 +21,7 @@ import { workspaceInspectionSearchForTask } from './workspace_inspection.mjs';
 import { listedDirectory } from './directory_listing.mjs';
 import { writesWholeFile } from './literal_write_guard.mjs';
 import {
-  Act, Locus, ObjectType, acts, evidencesRetrieveAct, firstPath, firstUrl, locus, namesOpenWeb,
+  Act, Locus, ObjectType, acts, evidencesRetrieveAct, firstUrl, locus, namesOpenWeb,
   isDialogueUtterance, objectType, route, tableRoutingEnabled,
 } from './crate/capability_routing.mjs';
 import { extractConceptQuery } from './crate/concepts_lookup.mjs';
@@ -263,7 +264,7 @@ function planRoutedCapabilityStepIn(task, messages, toolNames, stage, only) {
   const tool = toolFor(toolNames, capability);
   if (tool === null) return null;
   // Classification may omit policy; writable operands retain original statement spans.
-  const operandTask = capability === Capability.Write ? firstBlock : routedTask;
+  const operandTask = capability === Capability.Write || capability === Capability.Read ? firstBlock : routedTask;
   const args = routedArguments(capability, loweredFrom, operandTask);
   return args === null ? null : planOne(tool, args);
 }
@@ -294,8 +295,10 @@ function routedArguments(capability, loweredFrom, task) {
       return jsonText({ query: query ?? cleanSearchQuery(task) });
     }
     case Capability.Read: {
-      const path = firstPath(task);
-      return path === null ? null : jsonText({ path, filePath: path, file_path: path });
+      const bound = fileReadTaskFor(task);
+      if (bound?.kind !== 'direct') return null;
+      const path = bound.path;
+      return jsonText({ path, filePath: path, file_path: path });
     }
     case Capability.Write: {
       // A removal never writes new content over the file (PR #1188 T29: a

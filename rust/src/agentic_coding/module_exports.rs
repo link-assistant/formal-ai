@@ -9,7 +9,7 @@
 //! that function. Twin of `js/agentic/module_exports.mjs`.
 
 use super::final_result::{FinalDisposition, FinalResult, record};
-use super::module_function::{paths_in, read_source};
+use super::module_function::read_source;
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
 use crate::protocol::ChatMessage;
 use crate::seed;
@@ -39,7 +39,9 @@ fn export_question(task: &str) -> Option<String> {
     {
         return None;
     }
-    paths_in(task).into_iter().next()
+    super::file_read::owned_read_paths(task, "module_export_question")
+        .into_iter()
+        .next()
 }
 
 /// The names of the functions `source` declares behind a seeded export

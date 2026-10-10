@@ -212,7 +212,9 @@ fn plan_chat_step_inner(
         messages,
         tool_names,
     );
-    let plan = restart.or_else(|| plan_chat_step_routes(messages, tool_names, received, result))?;
+    let plan = restart
+        .or_else(|| plan_chat_step_routes(messages, tool_names, received.clone(), result))
+        .filter(|plan| !super::file_read::read_policy_blocks_plan(&received, plan))?;
     let was_tool_calls = matches!(plan, AgenticPlan::ToolCalls(_));
     let stopped = stop_repeated_failure(stop_repeated_call(plan, messages), messages);
     Some(
@@ -536,6 +538,7 @@ pub(super) fn plan_settled_routes(
     if let Some(plan) =
         code_artifact::plan_code_artifact_step(task, messages, tool_names).or_else(|| {
             (super::general_planner::owned_semantic_authoring_lead(task)
+                && shell_command::semantic_shell_command_for_task(task).is_none()
                 && compose_general_change_plan(task).is_none()
                 && super::general_planner::compose_edit_request(task).is_none())
             .then(|| {

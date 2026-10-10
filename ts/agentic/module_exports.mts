@@ -1,3 +1,4 @@
+import { ownedReadPaths } from './file_read/ownership.mjs';
 // Which functions a module exports (PR #1188 T99, gap G26): "Which functions
 // does src/m.mjs export?" read the module and dumped it. A question that
 // names a module, the seeded export relation (`module_export_question`) and
@@ -14,7 +15,7 @@ import { detect } from './crate/language.mjs';
 import { splitWhitespace } from './crate/rust_str.mjs';
 import { renderResponse } from './crate/seed.mjs';
 import { mentionsRole, wordsForRole } from './crate/seed_meanings.mjs';
-import { pathsIn, readSource } from './module_function.mjs';
+import { readSource } from './module_function.mjs';
 import { FinalDisposition, planOne, resolvedFinalAnswer } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import { readArguments } from './workspace_change.mjs';
@@ -35,7 +36,7 @@ export function exportQuestion(task) {
     || CHANGE_ROLES.some((role) => mentionsRole(role, normalized))) {
     return null;
   }
-  return pathsIn(task)[0] ?? null;
+  return ownedReadPaths(task, 'module_export_question')[0] ?? null;
 }
 
 /**

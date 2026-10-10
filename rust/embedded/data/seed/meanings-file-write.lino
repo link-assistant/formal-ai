@@ -12,9 +12,9 @@ meanings
     lexeme hi
       words पढ़ें "फ़ाइल पढ़ें" "सामग्री दिखाएँ" खोलें "प्रिंट करें" दिखाएँ "सामग्री प्राप्त करें" "प्रदर्शित करें"
       words "फ़ाइल देखें" "लोड करें" "में क्या है" "सामग्री बताएँ" देखें "फ़ाइल जाँचें" "पूर्वावलोकन करें"
-    lexeme zh 读取 读取文件 显示内容 打开 打印 显示 获取内容 展示 查看文件 加载 里面有什么 告诉我内容 查看 检查文件 预览
+    lexeme zh 输出内容 读取 读取文件 显示内容 打开 打印 显示 获取内容 展示 查看文件 加载 里面有什么 告诉我内容 查看 检查文件 预览
     lexeme es
-      words lee leer "lee el archivo" "muestra el contenido de" abre imprime muestra visualiza carga inspecciona
+      words "escribe el contenido de" lee leer "lee el archivo" "muestra el contenido de" abre imprime muestra visualiza carga inspecciona
       words "vista previa"
   file_write_action
     defined-by action
@@ -159,3 +159,106 @@ meanings
     lexeme hi "पूरी फ़ाइल बदलें" अधिलेखित
     lexeme zh 覆盖 替换整个文件
     lexeme es sobrescribe "reemplaza todo el archivo" "reemplaza el contenido" "pon el contenido de"
+
+  file-read-object-noun
+    defined-by concept
+    role file-read-object-noun
+    precondition "an unquoted file noun immediately follows a source-owned read operation, separated only by seeded function words"
+    effect "types the operation object as a file; a negative policy remains mandatory before tool effects and does not grant permission"
+    unit "source text spans, UTF-16 in JavaScript and UTF-8 in Rust"
+    grounding "js/agentic/file_read/ownership.mjs sha256 d8b838d3c40cb102227de793dfe65f398d445ee9b4f859cb0d0f8bc2ded9ef58; rust/src/agentic_coding/file_read/ownership.rs sha256 878c4088afb13af3ec36260917722f8a6dd8295a00f579c5c988f00007c94adb"
+    lexeme en file files
+    lexeme ru файл файла файлы файлов файле
+    lexeme hi फ़ाइल फ़ाइलें फाइल फाइलें
+    lexeme zh 文件
+    lexeme es archivo archivos fichero ficheros
+  file-read-negative-operation
+    defined-by action
+    role file-read-negative-operation
+    precondition "complete unquoted negative read-operation surface owns an adjacent typed file noun or path; only seeded function words may intervene"
+    effect "records an immutable no-read scope; never grants a tool permission"
+    unit "source spans"
+    grounding "js/agentic/file_read/ownership.mjs sha256 d8b838d3c40cb102227de793dfe65f398d445ee9b4f859cb0d0f8bc2ded9ef58; rust/src/agentic_coding/file_read/ownership.rs sha256 878c4088afb13af3ec36260917722f8a6dd8295a00f579c5c988f00007c94adb"
+    lexeme en "do not read" "never read" "do not open" "never open" "don't read" "don't open"
+    lexeme ru "не читай" "не прочитай" "никогда не прочитай" "никогда не читай" "не открывай"
+    lexeme hi "मत पढ़ो" "मत पढ़ें" "मत खोलो" "मत खोलें"
+    lexeme zh 不要读取 不要打开 从不读取 从不打开
+    lexeme es "no leas" "no abras" "nunca leas" "nunca abras"
+  file-read-independent-effect-operation
+    defined-by action
+    role file-read-independent-effect-operation
+    precondition "an unquoted independent external effect operation is declared alongside a file-read plan and has no bound execution or receipt contract"
+    effect "refuses premature file-read effects; it does not execute or certify the independent operation"
+    unit "source spans"
+    grounding "js/agentic/file_read/ownership.mjs sha256 d8b838d3c40cb102227de793dfe65f398d445ee9b4f859cb0d0f8bc2ded9ef58; rust/src/agentic_coding/file_read/ownership.rs sha256 878c4088afb13af3ec36260917722f8a6dd8295a00f579c5c988f00007c94adb"
+    lexeme en deploy publish
+    lexeme ru разверни опубликуй
+    lexeme hi तैनात प्रकाशित
+    lexeme zh 部署 发布
+    lexeme es despliega publica
+
+  file-read-mode-contract
+    defined-by action
+    role file-read-mode-contract
+    precondition "a complete seeded form consumes the existing selector or bounded audit operation and its typed source list; every source token is locally owned and unmatched prerequisites or independent goals are refused"
+    effect "binds source operands for the existing value, first-line or bounded audit producer; it does not certify transport completion or source contents"
+    unit "source spans and producer modes"
+    grounding "file_read ownership mode grammar and existing FileReadMode producers in JavaScript and Rust"
+    lexeme en "source-owned read mode"
+    lexeme ru "режим чтения с владельцем исходника"
+    lexeme hi "स्रोत स्वामित्व पठन मोड"
+    lexeme zh "源所有权读取模式"
+    lexeme es "modo de lectura con propiedad fuente"
+    form value
+      pattern "^[ \\t]*(?:what[ \\t]+is[ \\t]+the[ \\t]+)?value[ \\t]+of[ \\t]+(?<key>[A-Za-z_][A-Za-z0-9_.-]*)[ \\t]+in[ \\t]+{source}[ \\t]*[?.]?$"
+      capture-domain key
+        pattern "^[A-Za-z_][A-Za-z0-9_.-]*$"
+        precondition "technical captures retain their exact declared case-sensitive byte domain independently from natural-language cue folding"
+    form first-line
+      pattern "^[ \\t]*(?:{file-read-action-cue})[ \\t]+(?:the[ \\t]+)?first[ \\t]+line[ \\t]+of[ \\t]+{source}[ \\t]*[?.]?$"
+    form audit-en
+      pattern "^[ \\t]*{workspace-inspection-action}[ \\t]+(?:{file-read-mode-joiner}[ \\t]+)?{file-read-action-cue}[ \\t]+{sources}(?:[ \\t]*(?:;|,)?[ \\t]*(?:report[ \\t]+concrete[ \\t]+remaining[ \\t]+gaps|for[ \\t]+remaining[ \\t]+work))?[ \\t]*[.]?$"
+    form audit-ru
+      pattern "^[ \\t]*{workspace-inspection-action}[ \\t]+{file-read-mode-joiner}[ \\t]+{file-read-action-cue}[ \\t]+{sources},[ \\t]*найди[ \\t]+оставшуюся[ \\t]+работу[.]?$"
+    form audit-hi
+      pattern "^[ \\t]*{workspace-inspection-action}[ \\t]+{file-read-mode-joiner}[ \\t]+{sources}[ \\t]+फ़ाइलें[ \\t]+{file-read-action-cue}।?$"
+    form audit-zh
+      pattern "^{workspace-inspection-action}并{file-read-action-cue}{sources}中的剩余工作。?$"
+    form audit-es
+      pattern "^[ \\t]*{workspace-inspection-action}[ \\t]+{file-read-mode-joiner}[ \\t]+{file-read-action-cue}[ \\t]+{sources}[ \\t]+para[ \\t]+encontrar[ \\t]+trabajo[ \\t]+pendiente[.]?$"
+
+  file-read-mode-joiner
+    defined-by relation
+    role file-read-mode-joiner
+    precondition "a completely consumed read-mode form joins only its inspection/read operators or its typed source operands"
+    effect "binds conjunction spans inside that read operation; never authorizes an unrelated subsequent operation"
+    unit "source spans"
+    grounding "file_read ownership mode source-list grammar in JavaScript and Rust"
+    lexeme en and
+    lexeme ru и
+    lexeme hi और तथा
+    lexeme zh 和 并
+    lexeme es y
+
+  file-read-order-contract
+    defined-by relation
+    role file-read-order-contract
+    requires-goal observed-callable-authoring
+    precondition "the existing observed callable request classifier binds an actual declared source authoring operation and destination; a full seeded suffix requires these Reads before that authoring, not a condition before Read"
+    effect "permits only the prerequisite Read disposition; authoring remains deferred to its own source and Goal contract, with every no-read and independent-action refusal retained"
+    grounding "source-owned observedCallableRequest and observed_callable_request plus complete consumed order suffix"
+    lexeme en "Read before owned authoring"
+    lexeme ru "Чтение до заявленного создания кода"
+    lexeme hi "घोषित कोड लेखन से पहले पढ़ना"
+    lexeme zh "在已声明的代码编写之前读取"
+    lexeme es "Leer antes de escribir código declarado"
+    form en
+      pattern "^[ \\t]*before[ \\t]+authoring[ \\t]*[.]?$"
+    form ru
+      pattern "^[ \\t]*до[ \\t]+создания[ \\t]+кода[ \\t]*[.]?$"
+    form hi
+      pattern "^[ \\t]*कोड[ \\t]+लिखने[ \\t]+से[ \\t]+पहले[ \\t]*[।.]?$"
+    form zh
+      pattern "^[ \\t]*在编写代码之前[ \\t]*[。.]?$"
+    form es
+      pattern "^[ \\t]*antes[ \\t]+de[ \\t]+escribir[ \\t]+código[ \\t]*[.]?$"

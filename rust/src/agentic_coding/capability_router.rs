@@ -631,7 +631,7 @@ fn plan_routed_capability_step_in(
     }
     let tool = tool_for(tool_names, capability)?;
     // Classification may omit policy; writable operands retain original statement spans.
-    let operand_task = if capability == Capability::Write {
+    let operand_task = if matches!(capability, Capability::Write | Capability::Read) {
         first_block
     } else {
         routed_task
@@ -698,7 +698,11 @@ fn routed_arguments(
             Some(json!({ "query": query }).to_string())
         }
         Capability::Read => {
-            let path = crate::capability_routing::first_path(task)?;
+            let super::file_read::FileReadTask::Direct { path, .. } =
+                super::file_read::file_read_task_for(task)?
+            else {
+                return None;
+            };
             Some(json!({"path": path, "filePath": path, "file_path": path}).to_string())
         }
         Capability::Write => {

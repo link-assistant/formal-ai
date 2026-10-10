@@ -1,3 +1,4 @@
+import { ownedReadPaths } from './file_read/ownership.mjs';
 // Summarizing a named file (PR #1188 T100, gap G27): "Summarize README.md in
 // one sentence." answered "Read 1 file(s): README.md: # Demo". A request with
 // the seeded summarization action (`text_summarization_action`, every
@@ -11,7 +12,7 @@ import { normalizePrompt } from './crate/engine.mjs';
 import { splitWhitespace } from './crate/rust_str.mjs';
 import { mentionsRole } from './crate/seed_meanings.mjs';
 import { solve } from './host.mjs';
-import { pathsIn, readSource } from './module_function.mjs';
+import { readSource } from './module_function.mjs';
 import { FinalDisposition, planOne, resolvedFinalAnswer } from './plan.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import { readArguments } from './workspace_change.mjs';
@@ -27,7 +28,7 @@ const CLAUSE_END = /[.!?。！？।]+$/u;
  */
 export function summarizedFile(task) {
   if (!mentionsRole(SUMMARY_ROLE, normalizePrompt(task))) return null;
-  const paths = pathsIn(task);
+  const paths = ownedReadPaths(task, SUMMARY_ROLE);
   return paths.length === 1 ? paths[0] : null;
 }
 

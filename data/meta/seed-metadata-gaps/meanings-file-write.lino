@@ -3,6 +3,24 @@ seed-metadata-gaps
   source "data/seed/meanings-file-write.lino"
   audit-scope "problem-solving concept records under data/seed meanings roots"
   missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-2cbb62267ce36198
+    record "file-read-independent-effect-operation"
+    missing "example"
+  gap seed-metadata-gap-519ee38e59ea2fd4
+    record "file-read-mode-contract"
+    missing "example"
+  gap seed-metadata-gap-5d66a0549bd99bd5
+    record "file-read-mode-joiner"
+    missing "example"
+  gap seed-metadata-gap-2e2352b5d64ea1e7
+    record "file-read-negative-operation"
+    missing "example"
+  gap seed-metadata-gap-f83f01e70dac9496
+    record "file-read-object-noun"
+    missing "example"
+  gap seed-metadata-gap-7463eb043a5aa865
+    record "file-read-order-contract"
+    missing "unit,example"
   gap seed-metadata-gap-0779ae03b5192858
     record "file_leading_line_constraint"
   gap seed-metadata-gap-fee3058c4c2b0662

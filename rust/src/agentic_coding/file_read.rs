@@ -1,6 +1,8 @@
 //! File-reading agentic recipe for local workspace prompts (issue #627).
 
 mod audit;
+mod ownership;
+pub(super) use ownership::{owned_read_paths, read_policy_blocks_plan};
 mod exact;
 mod records;
 mod source;
@@ -391,29 +393,6 @@ pub(super) fn file_read_task_for(prompt: &str) -> Option<FileReadTask> {
         });
     }
 
-    // Issue #1066: "write intent beats read intent" is decided above over the
-    // whole prompt, which settles a request that is only a write. It does not
-    // settle a request that is both -- "find X out, and leave the answer in
-    // FILE" -- because there the read cue and the path belong to different
-    // sentences and different obligations. "Leave observable evidence in
-    // `.agent-ladder/node-1.2-proof.md`. The first line must be exactly
-    // `node_path=1.2`" carries the read cue *first line* in the sentence that
-    // constrains the file's opening, and the only path in the prompt is the one
-    // the caller asked to have written. Opening it reads a file that does not
-    // exist yet, and the run ends by recording the resulting error as its
-    // evidence. Where cue and path were never in one sentence, a path the
-    // request states as a write destination is therefore not a read target.
-    if has_file_read_intent(&lower)
-        && let Some(path) = first_local_file_path(prompt)
-        && !write_request::is_stated_write_target(prompt, &path)
-    {
-        return Some(FileReadTask::Direct {
-            path,
-            mode: mode_for_prompt(prompt),
-            prefer_run: false,
-        });
-    }
-
     None
 }
 
@@ -424,18 +403,33 @@ pub(super) fn file_read_task_for(prompt: &str) -> Option<FileReadTask> {
 /// [`super::evidence_record`] uses to split a delivery obligation from the work
 /// it delivers, and [`super::shell_command`] uses to tell a named command from an
 /// ordered one (issue #907).
-fn read_paths_named_beside_their_cue(prompt: &str) -> Vec<String> {
-    sentences(prompt)
+/// Preserve lexical path punctuation during splitting, then recover original source bytes.
+pub(super) fn read_sentence_texts(prompt: &str) -> Vec<String> {
+    let mut protected_bytes = prompt.as_bytes().to_vec();
+    for token in write_request::tokens(prompt) {
+        let path = clean_file_token(token.text);
+        if !looks_like_local_file_path(&path) {
+            continue;
+        }
+        let Some(relative_start) = token.text.find(&path) else {
+            continue;
+        };
+        let start = token.start + relative_start;
+        for index in start..start + path.len() {
+            if protected_bytes[index] == b'.' {
+                protected_bytes[index] = b'_';
+            }
+        }
+    }
+    let protected = String::from_utf8(protected_bytes).unwrap_or_else(|_| prompt.to_owned());
+    sentences(&protected)
         .into_iter()
-        .find_map(|sentence| {
-            has_file_read_intent(&sentence.text.to_lowercase())
-                .then(|| local_file_paths(sentence.text))
-        })
-        .unwrap_or_default()
+        .map(|sentence| prompt[sentence.span].trim().to_owned())
+        .collect()
 }
 
-fn has_file_read_intent(lower: &str) -> bool {
-    seed::lexicon().mentions_role(seed::ROLE_FILE_READ_ACTION_CUE, lower)
+fn read_paths_named_beside_their_cue(prompt: &str) -> Vec<String> {
+    owned_read_paths(prompt, seed::ROLE_FILE_READ_ACTION_CUE)
 }
 
 fn asks_to_read_every_file(lower: &str) -> bool {
@@ -517,10 +511,6 @@ fn leading_cat_path(prompt: &str) -> Option<String> {
         .filter(|path| !path.is_empty())
 }
 
-fn first_local_file_path(prompt: &str) -> Option<String> {
-    local_file_paths(prompt).into_iter().next()
-}
-
 fn local_file_paths(prompt: &str) -> Vec<String> {
     let mut paths = prompt
         .split_whitespace()
@@ -538,7 +528,7 @@ fn local_file_paths(prompt: &str) -> Vec<String> {
 /// [`trim_trailing_sentence_dot`](super::file_path_shape::trim_trailing_sentence_dot)
 /// so the read route, the write-request parser and the shell route all draw the
 /// same boundary between a path and the sentence carrying it.
-fn clean_file_token(token: &str) -> String {
+pub(super) fn clean_file_token(token: &str) -> String {
     peel_sentence_punctuation(token, |token| {
         token
             .trim_matches('`')
@@ -554,7 +544,7 @@ fn clean_file_token(token: &str) -> String {
     .to_owned()
 }
 
-fn looks_like_local_file_path(token: &str) -> bool {
+pub(super) fn looks_like_local_file_path(token: &str) -> bool {
     if token.is_empty()
         || token.contains("://")
         || token.starts_with("http:")

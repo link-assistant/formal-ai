@@ -1,3 +1,6 @@
+import { ownedReadPaths } from './file_read/ownership.mjs';
+export { ownedReadPaths, readPolicyBlocksPlan } from './file_read/ownership.mjs';
+import { tokens } from './write_request.mjs';
 // File-reading agentic recipe for local workspace prompts (issue #627):
 // rust/src/agentic_coding/file_read.rs.
 //
@@ -25,7 +28,6 @@ import { explicitPassthroughCommand } from './shell_command.mjs';
 /** Mirrors `SHELL_OPERATORS`: shell syntax that chains, pipes or redirects commands. */
 const SHELL_OPERATORS = ['&&', '||', ';', '|', '>'];
 import { commandArgument, harnessReportedFailure, render, stripTransportEnvelope } from './tool_result.mjs';
-import { isStatedWriteTarget } from './write_request.mjs';
 import { byteOrder, eqIgnoreAsciiCase, replaceAllLiteral, rsplitOnce, splitWhitespace, toAsciiLowercase,
   trim, trimMatches } from './crate/rust_str.mjs';
 import { mentionsRole, wordsForRole } from './crate/seed_meanings.mjs';
@@ -204,26 +206,29 @@ export function fileReadTaskFor(prompt) {
   const readPaths = readPathsNamedBesideTheirCue(prompt);
   if (readPaths.length > 1) return directManyTask(readPaths, modeForPrompt(prompt));
   if (readPaths.length === 1) return directTask(readPaths[0], modeForPrompt(prompt), false);
-  if (hasFileReadIntent(lower)) {
-    const path = firstLocalFilePath(prompt);
-    if (path !== null && !isStatedWriteTarget(prompt, path)) {
-      return directTask(path, modeForPrompt(prompt), false);
+  return null;
+}
+
+/** Preserve source clause punctuation owned by lexical path spans. */
+export function readSentenceTexts(prompt) {
+  const protectedCharacters = prompt.split('');
+  for (const token of tokens(prompt)) {
+    const path = cleanFileToken(token.text);
+    if (!looksLikeLocalFilePath(path)) continue;
+    const relativeStart = token.text.indexOf(path);
+    if (relativeStart < 0) continue;
+    const start = token.start + relativeStart;
+    for (let index = start; index < start + path.length; index += 1) {
+      if (prompt[index] === '.') protectedCharacters[index] = '_';
     }
   }
-  return null;
+  return sentences(protectedCharacters.join('')).map(sentence =>
+    trim(prompt.slice(sentence.span.start, sentence.span.end)));
 }
 
 /** Mirrors `fn read_paths_named_beside_their_cue`. */
 function readPathsNamedBesideTheirCue(prompt) {
-  for (const sentence of sentences(prompt)) {
-    if (hasFileReadIntent(sentence.text.toLowerCase())) return localFilePaths(sentence.text);
-  }
-  return [];
-}
-
-/** Mirrors `fn has_file_read_intent`. */
-function hasFileReadIntent(lower) {
-  return mentionsRole(ROLE_FILE_READ_ACTION_CUE, lower);
+  return ownedReadPaths(prompt, ROLE_FILE_READ_ACTION_CUE);
 }
 
 /** Mirrors `fn asks_to_read_every_file`. */
@@ -282,11 +287,6 @@ function leadingCatPath(prompt) {
   return path ? path : null;
 }
 
-/** Mirrors `fn first_local_file_path`. */
-function firstLocalFilePath(prompt) {
-  return localFilePaths(prompt)[0] ?? null;
-}
-
 /** Mirrors `fn local_file_paths` (consecutive duplicates removed). */
 function localFilePaths(prompt) {
   const out = [];
@@ -310,7 +310,7 @@ export function cleanFileToken(token) {
 }
 
 /** Mirrors `fn looks_like_local_file_path`. */
-function looksLikeLocalFilePath(token) {
+export function looksLikeLocalFilePath(token) {
   if (!token || token.includes('://') || token.startsWith('http:') || token.startsWith('https:')
     || isDottedNumber(token)) return false;
   const allPathChars = Array.from(token).every(isFilePathChar);

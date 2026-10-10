@@ -8,7 +8,7 @@
 //! `js/agentic/file_summary.mjs`.
 
 use super::final_result::{FinalDisposition, FinalResult, record};
-use super::module_function::{paths_in, read_source};
+use super::module_function::read_source;
 use super::planner::{AgenticPlan, Capability, plan_one, tool_for};
 use crate::protocol::ChatMessage;
 use crate::seed;
@@ -22,7 +22,7 @@ fn summarized_file(task: &str) -> Option<String> {
     if !seed::lexicon().mentions_role(SUMMARY_ROLE, &crate::engine::normalize_prompt(task)) {
         return None;
     }
-    let paths = paths_in(task);
+    let paths = super::file_read::owned_read_paths(task, SUMMARY_ROLE);
     match paths.as_slice() {
         [only] => Some(only.clone()),
         _ => None,

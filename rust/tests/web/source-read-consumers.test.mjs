@@ -123,3 +123,57 @@ test('discovery genuine outer failure is Failure; authored ENOENT data is not ab
  const data=planObservedCallableOutcome(request,messages,['read']);
  assert.equal(data.witness.observations[0].state,'observed');assert.equal(data.witness.observations[0].complete,true);
 });
+
+import { fileReadTaskFor } from '../../../js/agentic/file_read.mjs';
+import { planFileSummaryStep } from '../../../js/agentic/file_summary.mjs';
+import { planModuleExportsStep } from '../../../js/agentic/module_exports.mjs';
+import { readPolicyBlocksPlan } from '../../../js/agentic/file_read/ownership.mjs';
+
+test('shared source consumers preserve unverified read prerequisites', async () => {
+ const task = 'Read alpha.mjs after the signature is verified.';
+ assert.equal(fileReadTaskFor(task), null);
+ const summary = 'Summarize alpha.mjs after the signature is verified.';
+ assert.equal(await planFileSummaryStep(summary, [{role:'user',content:summary}], ['read']), null);
+ const exports = 'Which functions does alpha.mjs export? If the release is not verified, never read files.';
+ assert.equal(await planModuleExportsStep(exports, [{role:'user',content:exports}], ['read']), null);
+});
+
+test('shared no-read policy refuses malformed and conflicting serialized operands', () => {
+ const prompt = 'Never read alpha.mjs. Read beta.mjs.';
+ for (const value of [null, [], {path:9}, {path:'beta.mjs',filePath:'alpha.mjs'}, {path:'alpha.mjs'}]) {
+  const plan = {kind:'tool_calls',calls:[{tool:'read',arguments:JSON.stringify(value)}]};
+  assert.equal(readPolicyBlocksPlan(prompt, plan), true);
+ }
+ const allowed = {kind:'tool_calls',calls:[{tool:'read',arguments:JSON.stringify({path:'beta.mjs'})}]};
+ assert.equal(readPolicyBlocksPlan(prompt, allowed), false);
+});
+
+for (const prompt of [
+ 'Never read files. Read alpha.mjs.',
+ 'Read alpha.mjs after the backup is complete.',
+ 'Read alpha.mjs. Then rotate the keys.',
+ 'Read alpha.mjs. Deploy the release.',
+]) test('public planner preserves immutable Read Needs: '+prompt, async () => {
+ const plan = await planChatStepResolved([{role:'user',content:prompt}], ['read']);
+ assert.equal((plan?.calls ?? []).length, 0);
+});
+
+test('actual Read delivery retains scoped context, lexical paths and exact bytes', async () => {
+ const directory = fs.mkdtempSync(path.join(os.tmpdir(),'owned-read-'));
+ const bytes = 'Deploy is authored source data. λ 中文\n';
+ try {
+  fs.mkdirSync(path.join(directory,'source'));
+  fs.writeFileSync(path.join(directory,'source','argv'),bytes);
+  const prompt = 'Do not change files. Read ./source/argv.';
+  const result = await drive(async (messages, tools) => {
+   const plan = await planChatStepResolved(messages, tools);
+   return plan === null ? null : projectPlan(plan);
+  }, directory, prompt, {tools:['read'],steps:6});
+  assert.equal(result.transcript.length,1);
+  assert.equal(result.transcript[0].result,bytes);
+  assert.equal(result.transcript[0].source_read.complete,true);
+  assert.equal(result.transcript[0].source_read.format,'raw');
+  assert.ok(result.answer.includes(bytes));
+  assert.equal(fs.readFileSync(path.join(directory,'source','argv'),'utf8'),bytes);
+ } finally { fs.rmSync(directory,{recursive:true,force:true}); }
+});

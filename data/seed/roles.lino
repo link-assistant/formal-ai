@@ -373,6 +373,18 @@ roles
     kind meaning
   file-edit-sequence-cue
     kind predicate
+  file-read-independent-effect-operation
+    kind meaning
+  file-read-mode-contract
+    kind meaning
+  file-read-mode-joiner
+    kind meaning
+  file-read-negative-operation
+    kind meaning
+  file-read-object-noun
+    kind meaning
+  file-read-order-contract
+    kind meaning
   file_analysis_gap_marker
     kind meaning
   file_contents_source_cue
