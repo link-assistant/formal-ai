@@ -102,3 +102,41 @@ test('each release path publishes and verifies slim before creating its GitHub r
   assert.match(action, /verify-formal-ai-slim/);
   assert.match(action, /2147483648/);
 });
+
+
+// Publishing runs retain their pending ancestor slots, up to GitHub's bounded queue.
+function consumerPublicationQueue(source, expectedGroup) {
+  const sections = [...source.matchAll(/^concurrency:\n((?:  [^\n]*\n)+)/gmu)];
+  assert.equal(sections.length, 1, 'one workflow ancestor concurrency declaration');
+  const fields = new Map();
+  for (const line of sections[0][1].trimEnd().split('\n')) {
+    const entry = /^  (group|cancel-in-progress|queue): (.+)$/u.exec(line);
+    assert.ok(entry, 'unknown concurrency field');
+    assert.ok(!fields.has(entry[1]), 'duplicate concurrency field');
+    fields.set(entry[1], entry[2]);
+  }
+  assert.equal(fields.size, 3);
+  assert.equal(fields.get('group'), expectedGroup);
+  assert.equal(fields.get('cancel-in-progress'), 'false');
+  assert.equal(fields.get('queue'), 'max');
+}
+
+test('all published release consumers preserve their shared ancestor pending queue', () => {
+  const consumers = [
+    ['publish-engine', 'package'], ['publish-vscode', 'publish'],
+    ['publish-source-networks', 'source-network-package'],
+  ];
+  for (const [name, prefix] of consumers) {
+    const source = readFileSync(new URL('../../../.github/workflows/' + name + '.yml', import.meta.url), 'utf8');
+    const group = prefix + '-\u0024{{ github.event.pull_request.number || github.ref }}';
+    consumerPublicationQueue(source, group);
+    for (const mutation of [
+      source.replace('  queue: max\n', ''),
+      source.replace('  queue: max', '  queue: min'),
+      source.replace('  cancel-in-progress: false', '  cancel-in-progress: true'),
+      source.replace(group, prefix + '-\u0024{{ github.run_id }}'),
+      source.replace('  queue: max', '  queue: max\n  queue: max'),
+      source.replace('  queue: max', '  queue: max\n  unknown: true'),
+    ]) assert.throws(() => consumerPublicationQueue(mutation, group));
+  }
+});
