@@ -571,6 +571,10 @@ fn plan_routed_capability_step_in(
     {
         return None;
     }
+    // ReadMany requires structural Read operands from the full original request.
+    if decided == "read_many" && routed_read_many_paths(task).is_empty() {
+        return None;
+    }
     if super::tool_result::has_latest_turn_result(messages) {
         return super::tool_result::latest_turn_answer(messages, tool_names, task)
             .map(AgenticPlan::Final);
@@ -631,13 +635,19 @@ fn plan_routed_capability_step_in(
     }
     let tool = tool_for(tool_names, capability)?;
     // Classification may omit policy; writable operands retain original statement spans.
-    let operand_task = if matches!(capability, Capability::Write | Capability::Read) {
+    let operand_task = if decided == "read_many" {
+        task
+    } else if matches!(capability, Capability::Write | Capability::Read) {
         first_block
     } else {
         routed_task
     };
     let arguments = routed_arguments(capability, lowered_from.as_deref(), operand_task)?;
-    Some(plan_one(tool, arguments))
+    let plan = plan_one(tool, arguments);
+    if decided == "read_many" && super::file_read::read_policy_blocks_plan(task, &plan) {
+        return None;
+    }
+    Some(plan)
 }
 
 /// The command a `grep` lowered to the shell runs when the shell vocabulary
@@ -810,7 +820,7 @@ fn arguments_for(capability: Capability, task: &str) -> String {
         .to_string(),
         Capability::AskUser => String::new(),
         Capability::ReadMany => {
-            let paths = file_tokens(task);
+            let paths = routed_read_many_paths(task);
             json!({"paths": paths, "file_paths": paths}).to_string()
         }
         _ => json!({"prompt": task}).to_string(),
@@ -844,6 +854,15 @@ fn file_tokens(task: &str) -> Vec<&str> {
 /// read (PR #1188 G102; mirrors `FRAGMENT_MARKS`).
 const FRAGMENT_MARKS: &str = "«»“”‘’()[]{}<>`\"'";
 
+/// Structural Read operands, without filename-token inference.
+fn routed_read_many_paths(task: &str) -> Vec<String> {
+    match super::file_read::file_read_task_for(task) {
+        Some(super::file_read::FileReadTask::DirectMany { paths, .. }) => paths,
+        Some(super::file_read::FileReadTask::Direct { path, .. }) => vec![path],
+        _ => Vec::new(),
+    }
+}
+
 fn shell_fallback(capability: Capability, task: &str) -> Option<String> {
     match capability {
         Capability::Grep => super::shell_command::shell_command_for_task(task),
@@ -866,11 +885,11 @@ fn shell_fallback(capability: Capability, task: &str) -> Option<String> {
             })
         }
         Capability::ReadMany => {
-            let paths = file_tokens(task);
+            let paths = routed_read_many_paths(task);
             (!paths.is_empty()).then(|| {
                 let paths = paths
                     .into_iter()
-                    .map(shell_quote)
+                    .map(|path| shell_quote(&path))
                     .collect::<Vec<_>>()
                     .join(" ");
                 let mut command = String::from("cat");

@@ -1,4 +1,4 @@
-import { fileReadTaskFor } from './file_read.mjs';
+import { fileReadTaskFor, readPolicyBlocksPlan } from './file_read.mjs';
 // Capability -> advertised tool routing: the JavaScript twin of
 // rust/src/agentic_coding/capability_router.rs.
 
@@ -240,6 +240,8 @@ function planRoutedCapabilityStepIn(task, messages, toolNames, stage, only) {
     && namesMutatingShellIntent(routedTask)) {
     return null;
   }
+  // ReadMany owns only immutable structural Read operands of the whole request.
+  if (decided === 'read_many' && routedReadManyPaths(task).length === 0) return null;
   if (hasLatestTurnResult(messages)) {
     const answer = latestTurnAnswer(messages, toolNames, task);
     return answer === null ? null : finalAnswer(answer);
@@ -264,9 +266,12 @@ function planRoutedCapabilityStepIn(task, messages, toolNames, stage, only) {
   const tool = toolFor(toolNames, capability);
   if (tool === null) return null;
   // Classification may omit policy; writable operands retain original statement spans.
-  const operandTask = capability === Capability.Write || capability === Capability.Read ? firstBlock : routedTask;
+  const operandTask = decided === 'read_many' ? task
+    : capability === Capability.Write || capability === Capability.Read ? firstBlock : routedTask;
   const args = routedArguments(capability, loweredFrom, operandTask);
-  return args === null ? null : planOne(tool, args);
+  if (args === null) return null;
+  const plan = planOne(tool, args);
+  return decided === 'read_many' && readPolicyBlocksPlan(task, plan) ? null : plan;
 }
 
 function loweredSearchCommand(preferred, task) {
@@ -351,7 +356,7 @@ function argumentsFor(capability, task) {
     case Capability.AskUser:
       return '';
     case Capability.ReadMany: {
-      const paths = fileTokens(task);
+      const paths = routedReadManyPaths(task);
       return jsonText({ paths, file_paths: paths });
     }
     default:
@@ -382,6 +387,13 @@ function fileTokens(task) {
     .filter((token) => !Array.from(token).some((character) => FRAGMENT_MARKS.includes(character)));
 }
 
+/** Read operands come from the maintained whole-clause classifier, never filename tokens. */
+function routedReadManyPaths(task) {
+  const owned = fileReadTaskFor(task);
+  if (owned?.kind === 'direct_many') return owned.paths;
+  return owned?.kind === 'direct' ? [owned.path] : [];
+}
+
 function shellFallback(capability, task) {
   switch (capability) {
     case Capability.Grep:
@@ -395,7 +407,7 @@ function shellFallback(capability, task) {
       return directory === '.' ? 'ls' : `ls ${shellQuote(directory)}`;
     }
     case Capability.ReadMany: {
-      const paths = fileTokens(task);
+      const paths = routedReadManyPaths(task);
       return paths.length ? `cat ${paths.map(shellQuote).join(' ')}` : null;
     }
     default:
