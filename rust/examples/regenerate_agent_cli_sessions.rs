@@ -18,7 +18,7 @@
 use formal_ai::agentic_coding::{
     ASSOCIATIVE_LEARNING_TASK, AST_TASK, DIAGRAM_TASK, DREAMING_AUDIT_TASK,
     GOOGLE_TRENDS_CATALOG_TASK, GOOGLE_TRENDS_LEARNING_TASK, MEANING_DETAIL_TASK,
-    POTATO_DETAIL_TASK, QUESTION_CATALOG_TASK, run_agentic_task,
+    POTATO_DETAIL_TASK, QUESTION_CATALOG_TASK, run_agentic_task_with_tools,
 };
 
 fn main() {
@@ -83,12 +83,34 @@ fn main() {
         ),
     ];
 
+    let output =
+        std::env::var_os("FORMAL_AI_SESSION_PROJECTION_OUTPUT").map(std::path::PathBuf::from);
     for (task, path) in sessions {
-        let outcome = run_agentic_task(task)
+        let captured: serde_json::Value =
+            serde_json::from_slice(&std::fs::read(path).expect("read pinned session input"))
+                .expect("parse pinned session input");
+        assert_eq!(
+            captured["task"].as_str(),
+            Some(task),
+            "pinned canonical task changed: {path}"
+        );
+        let tools = captured["tools_advertised"]
+            .as_array()
+            .expect("pinned advertised tool vector")
+            .iter()
+            .map(|name| name.as_str().expect("tool name"))
+            .collect::<Vec<_>>();
+        let outcome = run_agentic_task_with_tools(task, &tools)
             .unwrap_or_else(|error| panic!("the {path} session task should complete: {error:?}"));
+        assert!(!outcome.hit_turn_cap, "producer reached turn cap: {path}");
         let rendered =
             serde_json::to_string_pretty(&outcome.session_json()).expect("serialize session JSON");
-        std::fs::write(path, format!("{rendered}\n")).expect("write session fixture");
+        let target = output
+            .as_ref()
+            .map_or_else(|| std::path::PathBuf::from(path), |root| root.join(path));
+        std::fs::create_dir_all(target.parent().expect("fixture parent"))
+            .expect("create generated fixture parent");
+        std::fs::write(target, format!("{rendered}\n")).expect("write session fixture");
         println!("wrote {path}");
     }
 }

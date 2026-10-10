@@ -1,0 +1,52 @@
+name: Regenerate native session projections
+on:
+  pull_request:
+    branches-ignore: ['e2e/**']
+    paths:
+      - 'rust/**'
+      - 'data/**'
+      - 'docs/case-studies/**'
+      - 'scripts/generate-native-session-projections.mjs'
+      - 'scripts/lib/native-session-projections.mjs'
+      - 'scripts/lib/native-response-identity.mjs'
+      - '.github/workflows/regenerate-native-session-projections.yml'
+  workflow_dispatch:
+    inputs:
+      mode:
+        required: false
+        default: checks
+        type: choice
+        options: [checks]
+      pull-request:
+        required: false
+        default: ''
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: native-session-projections-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: ./.github/actions/setup-sccache
+      - uses: ./.github/actions/cache-cargo-registry
+        with:
+          restore-only: 'true'
+      - name: Generate actual compiled driver projections
+        run: node scripts/generate-native-session-projections.mjs "$RUNNER_TEMP/native-session-projections"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: native-session-projections
+          path: ${{ runner.temp }}/native-session-projections
+          retention-days: 7
+          if-no-files-found: error
