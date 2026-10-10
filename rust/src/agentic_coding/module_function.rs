@@ -25,10 +25,38 @@
 //! language's IR lowering (`coding/ir_lowering`).
 
 pub mod callable_catalog;
+mod complete_source_preflight;
 mod conditional_ir;
 mod conditional_schema;
 mod discovery;
+mod seeded_composition_hook;
+mod seeded_source_plan;
+mod source_candidate_consumer;
+mod source_composition_effects;
 mod source_contract;
+mod source_module_identity_port;
+mod source_need_preflight;
+mod source_operation_transaction;
+
+pub use complete_source_preflight::{
+    bind_complete_source_needs, derive_complete_source_request, source_goal_scope,
+};
+pub use seeded_composition_hook::{bind_accepted_import, qualify_seeded_composition};
+pub use seeded_source_plan::derive_seeded_source_plan;
+pub use source_candidate_consumer::{
+    PreparedSourceCandidate, SourceCandidateContext, SourceCompositionHost, abort_source_candidate,
+    authorize_source_candidate_write, execute_source_candidate, finish_source_candidate,
+    prepare_source_candidate, record_prepared_source_write,
+};
+pub use source_composition_effects::{checked_composition_source, source_null_absence};
+pub use source_module_identity_port::{SourceModuleIdentityHost, source_operation_module_url};
+pub use source_need_preflight::source_need_preflight;
+pub use source_operation_transaction::{
+    CandidateFile, CandidateIo, CandidateTransaction, ProcessDisposition,
+    SourceCandidateOperationHost, SourceFinalizedCandidateOperationHost, SourceOperationHost,
+    accepted_operation_candidate_status, accepted_operation_source_bytes,
+    create_candidate_transaction,
+};
 
 pub use discovery::{
     ObservedCallableDisposition, ObservedCallableOutcome, ObservedCallableRequest,
@@ -815,3 +843,6 @@ pub(super) fn plan_module_function_step(
         },
     )
 }
+
+mod source_contract_diagnostics;
+pub use source_contract_diagnostics::source_contract_diagnostic;

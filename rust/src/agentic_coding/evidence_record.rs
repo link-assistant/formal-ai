@@ -4,6 +4,7 @@
 //! evidence destinations, and clarifications, gaps and failures remain chat answers.
 
 mod artifact_header;
+mod discovery_delivery;
 mod record_observation;
 
 use artifact_header::names_callable_artifact;
@@ -294,6 +295,16 @@ pub(super) fn plan_evidence_record_step(
             ) {
                 return Some(plan);
             }
+            if let Some(plan) = discovery_delivery::recorded_discovery_gap(
+                &obligation,
+                &content,
+                &progress,
+                tool_names,
+                task,
+                result,
+            ) {
+                return Some(plan);
+            }
             trace_route("evidence_record", "already_written");
             return Some(record(
                 AgenticPlan::Final(
@@ -330,6 +341,16 @@ pub(super) fn plan_evidence_record_step(
     // written. Preserve recursive delivery ordering, though: when the residual
     // names another output, let that inner obligation consume the observation
     // first so one result still reaches every requested artifact.
+    if let Some(plan) = discovery_delivery::plan_discovery_delivery(
+        &obligation,
+        &progress,
+        tool_names,
+        task,
+        write_tool,
+        result,
+    ) {
+        return Some(plan);
+    }
     let observed = parse_obligation(&obligation.residual)
         .is_none()
         .then(|| {

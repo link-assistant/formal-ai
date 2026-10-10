@@ -4,7 +4,7 @@ use super::source_contract::{guarded_call_graph, infer_return_contract, source_e
 use crate::es_tokenizer::{Delimiter, TemplatePart, TokenKind, Tree};
 use serde_json::{Value, json};
 
-fn tree_value(tree: &Tree<'_>) -> Value {
+pub(super) fn tree_value(tree: &Tree<'_>) -> Value {
     let span = tree.span();
     let range = json!({"start":span.start,"end":span.end});
     match tree {

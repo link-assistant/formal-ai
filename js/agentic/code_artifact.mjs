@@ -250,7 +250,7 @@ export function sourceFromAgentReadResult(result) {
   if (at < 0) return null;
   if (!afterOpen.slice(at + marker.length).endsWith('</file>')) return null;
   const out = [];
-  for (const line of lines(afterOpen.slice(0, at))) {
+  for (const line of afterOpen.slice(0, at).split('\n')) {
     const split = line.indexOf('| ');
     if (split < 0 || !Array.from(line.slice(0, split)).every(isAsciiDigit)) return null;
     out.push(line.slice(split + 2));

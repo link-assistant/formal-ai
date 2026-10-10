@@ -40,6 +40,7 @@ pub struct Progress {
     /// to their fallback or rendering phase after a client-owned attempt.
     completed: Vec<Capability>,
     attempts: Vec<ToolAttempt>,
+    qualified_attempts: Vec<super::qualified_tool_observation::QualifiedToolAttempt>,
     pub(super) fetched_text: Option<String>,
     pub(super) fetched_pages: Vec<(String, String)>,
     pub(super) attempted_fetches: Vec<String>,
@@ -200,6 +201,7 @@ impl Progress {
         Self {
             completed,
             attempts,
+            qualified_attempts: super::qualified_tool_observation::scan(messages, current_turn),
             fetched_text,
             fetched_pages,
             attempted_fetches,
@@ -338,6 +340,15 @@ impl Progress {
             }
         }
         lines
+    }
+
+    /// Latest declaration owns state, including a missing/failed/contradicted receipt.
+    pub(super) fn latest_attempt_for(
+        &self,
+        capability: Capability,
+        arguments: &serde_json::Value,
+    ) -> Option<&super::qualified_tool_observation::QualifiedToolAttempt> {
+        super::qualified_tool_observation::latest(&self.qualified_attempts, capability, arguments)
     }
 
     /// Whether this turn already ran `command` exactly as given.
@@ -532,6 +543,27 @@ impl Progress {
         path: &str,
     ) -> Option<&super::tool_result::SourceReadObservation> {
         self.attempts
+            .iter()
+            .rev()
+            .find(|attempt| {
+                attempt.capability == Capability::Read
+                    && attempt
+                        .arguments
+                        .as_deref()
+                        .and_then(source_read_path)
+                        .as_deref()
+                        == Some(path)
+            })
+            .and_then(|attempt| attempt.source_read.as_ref())
+    }
+
+    /// Mirrors sourceReadBeforeLatestWriteFor: retain the preimage before the actual write.
+    pub(super) fn source_read_before_latest_write_for(
+        &self,
+        path: &str,
+    ) -> Option<&super::tool_result::SourceReadObservation> {
+        let write = self.latest_successful_write_index(path)?;
+        self.attempts[..write]
             .iter()
             .rev()
             .find(|attempt| {

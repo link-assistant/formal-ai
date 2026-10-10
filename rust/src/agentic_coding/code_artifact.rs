@@ -344,7 +344,7 @@ pub(super) fn source_from_agent_read_result(result: &str) -> Option<String> {
         return None;
     }
     numbered
-        .lines()
+        .split('\n')
         .map(|line| {
             let (number, source) = line.split_once("| ")?;
             number

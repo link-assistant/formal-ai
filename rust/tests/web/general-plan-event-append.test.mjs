@@ -39,6 +39,9 @@ function readWriteSession(files, options = {}) {
       } else {
         output = `Error: File not found: ${path}`;
         metadata.is_error = true;
+        metadata.source_read = {
+          path, success: false, complete: false, format: 'raw', error_code: 'ENOENT'
+        };
       }
       if (path === PLAN_PATH && options.denied) {
         output = 'Error: Permission denied';
@@ -188,4 +191,38 @@ test('cached event readback excludes the separator before a later canonical reco
     assert.equal(output, planLinksNotation(first));
     assert.equal(readFileSync(join(directory, PLAN_PATH), 'utf8'), before);
   } finally { rmSync(directory, { recursive: true, force: true }); }
+});
+
+import {sourceReadObservation} from '../../../js/agentic/tool_result.mjs';
+
+test('missing-file authority requires a current exact provider receipt, never error body prose', () => {
+  const current = PLAN_PATH;
+  const missing = {path: current, success: false, complete: false, format: 'raw', error_code: 'ENOENT'};
+  assert.equal(sourceReadObservation('provider failure', true, missing, current).absent, true);
+  const refused = [
+    ['Error: File not found: ' + current, null],
+    [JSON.stringify({source_read: missing, is_error: true}), null],
+    ['provider failure', {...missing, path: 'foreign.txt'}],
+    ['permission denied', {...missing, error_code: 'EACCES'}],
+    ['provider failure', {...missing, truncated: true}],
+    ['provider failure', {...missing, timed_out: true}],
+    ['provider failure', {...missing, signal: 'SIGTERM'}]
+  ];
+  for (const [body, metadata] of refused) {
+    assert.equal(sourceReadObservation(body, true, metadata, current).absent, false);
+  }
+});
+
+import {Progress} from '../../../js/agentic/progress.mjs';
+
+test('absence binds to the current Read identity and current user window', () => {
+  const missing = {path: PLAN_PATH, success: false, complete: false, format: 'raw', error_code: 'ENOENT'};
+  const current = [{role: 'user', content: request}];
+  const call = {id: 'current-read', type: 'function', function: {name: 'read', arguments: JSON.stringify({path: PLAN_PATH})}};
+  current.push({role: 'assistant', content: '', tool_calls: [call]});
+  const failure = {role: 'tool', name: 'read', tool_call_id: call.id, content: 'provider failure', is_error: true, source_read: missing};
+  assert.equal(Progress.scan([...current, failure]).sourceReadFor(PLAN_PATH).absent, true);
+  assert.equal(Progress.scan([...current, {...failure, tool_call_id: 'unassociated'}]).sourceReadFor(PLAN_PATH), null);
+  assert.equal(Progress.scan([...current, {...failure, name: 'write'}]).sourceReadFor(PLAN_PATH), null);
+  assert.equal(Progress.scan([...current, failure, {role: 'user', content: request}]).sourceReadFor(PLAN_PATH), null);
 });

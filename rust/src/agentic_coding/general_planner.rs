@@ -34,6 +34,7 @@ pub(super) use owned_goals::{
 
 pub use super::write_request::compose_edit_request;
 pub(crate) use super::write_request::typed_write_target;
+pub use owned_goals::{owned_additive_literal, owned_additive_literal_frame};
 /// What the bounded general planner can truthfully execute.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum GeneralPlanMode {

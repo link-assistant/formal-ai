@@ -16,6 +16,7 @@ import { classifyTool } from './capability_router.mjs';
 import { commandArgument, failureMessage, normalizedPayload, sourceReadObservation } from './tool_result.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import { applyPatchInput } from './crate/protocol_responses_apply_patch.mjs';
+import { argumentValuesEqual, qualifiedTranscriptFrames } from './qualified_tool_observation.mjs';
 import {
   eqIgnoreAsciiCase, isObject, parseJson, splitWhitespace, trim, trimMatches,
 } from './crate/rust_str.mjs';
@@ -25,6 +26,16 @@ export function isWorkItemRead(attempt) {
   if (attempt.capability !== Capability.Run || attempt.arguments === null) return false;
   const command = commandArgument(attempt.arguments);
   return command !== null && isWorkItemReadCommand(command);
+}
+
+// A scanner-created frame proves transcript binding only, never execution authority.
+const qualifiedProgressFrames=new WeakMap();
+/** Mirrors `latest_attempt_for` in rust/src/agentic_coding/progress.rs. */
+export function qualifiedToolAttempt(progress,capability,argumentsValue) {
+  const frames=qualifiedProgressFrames.get(progress);
+  if(!frames)return null;
+  return [...frames].reverse().find(frame=>frame.capability===capability
+    && argumentValuesEqual(frame.argumentsValue,argumentsValue))??null;
 }
 
 /** Mirrors `struct Progress` in rust/src/agentic_coding/progress.rs. */
@@ -108,6 +119,7 @@ export class Progress {
       }
       progress.completed.push(capability);
     }
+    qualifiedProgressFrames.set(progress,qualifiedTranscriptFrames(messages,currentTurn));
     return progress;
   }
 
@@ -296,7 +308,19 @@ export class Progress {
       && attempt.arguments !== null && argumentTargets(attempt.arguments, path));
   }
 
-  /** Mirrors `Progress::successful_write_for`. */
+  /** Mirrors source_read_before_latest_write_for: retained preimage, not verification bytes. */
+  sourceReadBeforeLatestWriteFor(path) {
+    const write = this.latestSuccessfulWriteIndex(path);
+    if (write === null) return null;
+    for (let index = write - 1; index >= 0; index--) {
+      const attempt = this.attempts[index];
+      if (attempt.capability === Capability.Read && attempt.arguments !== null
+        && sourceReadPath(attempt.arguments) === path) return attempt.source_read ?? null;
+    }
+    return null;
+  }
+
+  /** Mirrors Progress::successful_write_for. */
   successfulWriteFor(path) {
     return this.attempts.some((attempt) => attempt.capability === Capability.Write && attempt.succeeded
       && attempt.arguments !== null && argumentTargets(attempt.arguments, path));

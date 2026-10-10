@@ -28,7 +28,8 @@ import { tmpdir } from 'node:os';
 import { template } from '../../js/agentic/work_item_steps.mjs';
 
 import { WorkerHost } from '../../js/server/worker-host.mjs';
-import { installNodeHost } from '../../js/agentic/node-host.mjs';
+import { hasHost, host } from '../../js/agentic/host.mjs';
+import { installDefaultNodeSourceHost } from '../../js/server/default-node-source-bootstrap.mjs';
 
 /** How long one bash call may run before the driver kills it. */
 const BASH_TIMEOUT_MS = Number(process.env.FORMAL_AI_BASH_TIMEOUT_MS ?? 60000);
@@ -90,10 +91,14 @@ export function executeResult(dir, call) {
   const args = argsOf(call);
   const path = args.filePath ?? args.file_path ?? args.path;
   try {
-    const content = readFileSync(within(dir, path), 'utf8');
+    const content = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true })
+      .decode(readFileSync(within(dir, path)));
     return { content, source_read: { path, success: true, complete: true, format: 'raw' } };
   } catch (error) {
-    return { content: toolFailure(error.message), is_error: true };
+    return {
+      content: toolFailure(error.message), is_error: true,
+      source_read: { path, success: false, complete: false, format: 'raw', error_code: error.code },
+    };
   }
 }
 
@@ -220,6 +225,13 @@ export async function drive(planChatStep, dir, prompt, {
     }
     allowedCommands = Object.freeze([...allowedCommands]);
   }
+  const sourceSession = hasHost() ? host().sourceSession : null;
+  if (sourceSession && !sourceSession.active()) {
+    return sourceSession.run({ request: prompt, workspace: dir, tools }, () =>
+      drive(planChatStep, dir, prompt, {
+        tools, steps, fallthrough, allowedCommands, atomicRecordAppend,
+      }));
+  }
   const messages = [
     { role: 'system', content: `<env>\n  Working directory: ${dir}\n  Is directory a git repo: yes\n</env>` },
     { role: 'user', content: prompt },
@@ -267,7 +279,9 @@ export async function drive(planChatStep, dir, prompt, {
     calls.forEach((call, index) => {
       const observationSources = qualifiesObservation(call, allowedCommands)
         ? observedSourceBytes() : null;
-      const receipt = executeResult(dir, call);
+      const receipt = sourceSession
+        ? sourceSession.executeResult(call, messages, () => executeResult(dir, call))
+        : executeResult(dir, call);
       const operationObservation = observationSources === null ? null
         : issueObservation(prompt, dir, call, receipt, observationSources);
       const { content: result, ...metadata } = receipt;
@@ -294,7 +308,7 @@ async function main(argv) {
     else rest.push(argv[index]);
   }
   if (!dir || rest.length === 0) throw new Error('usage: drive.mjs --dir <sandbox> [--steps N] <prompt>');
-  await installNodeHost(new WorkerHost());
+  await installDefaultNodeSourceHost(new WorkerHost());
   const { planChatStep } = await import('../../js/agentic/planner.mjs');
   const { solve } = await import('../../js/agentic/host.mjs');
   const { planSymbolicCommandReroute } = await import('../../js/agentic/command_reroute.mjs');

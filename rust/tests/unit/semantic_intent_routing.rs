@@ -4,8 +4,9 @@
 //!
 //! Issue #1138 B10, plan 10 leaf 11 widens this suite: Spanish joins the four
 //! existing locales, and the `assert_routes` floor rises from 15 variations per
-//! object type to 20. Every assertion that was here before stays exactly as it
-//! was — the widening strictly adds (plan 00 section 6.7).
+//! object type to 20. All rows remain. Existing-file append explicitly observes
+//! Read/Write/Read; unspecified addition refuses rather than overwriting content.
+//! Other routing expectations stay unchanged (plan 00 section 6.7).
 use formal_ai::FormalAiEngine;
 use formal_ai::agentic_coding::plan_chat_step;
 use formal_ai::protocol::ChatMessage;
@@ -300,6 +301,137 @@ fn local_path_object_routes_read_variations_without_web_misroutes() {
     }
 }
 
+/// Existing-file addition observes every physical call; the first tool is Read.
+fn assert_additive_read_write(prompt: &str, language: &str) {
+    use formal_ai::agentic_coding::AgenticPlan;
+    use formal_ai::agentic_coding::general_planner::owned_additive_literal;
+    use formal_ai::agentic_coding::planner::{Capability, tool_capability};
+    use formal_ai::protocol::ToolCall;
+    assert_eq!(
+        call(prompt).0,
+        "read_file",
+        "the original generic helper exposes the prerequisite"
+    );
+    let (path, content, at_end) = owned_additive_literal(prompt).expect("owned additive contract");
+    assert_eq!(
+        (path.as_str(), content.as_str(), at_end),
+        ("note.txt", "hello", true),
+        "the original matrix fixes destination, payload and append semantics independently"
+    );
+    assert!(
+        at_end,
+        "these retained matrix variants request addition at the end"
+    );
+    let prior = "prior bytes α\n";
+    let expected = format!("{prior}{content}\n");
+    let tools = [
+        "web_fetch",
+        "web_search",
+        "read_file",
+        "write_file",
+        "exec_command",
+    ];
+    let mut workspace = observed_plan_tools::ToolWorkspace::new(prompt);
+    workspace
+        .write_initial(&path, prior)
+        .expect("physical prior content");
+    let mut messages = vec![ChatMessage::user(prompt)];
+    let sequence = [Capability::Read, Capability::Write, Capability::Read];
+    for (turn, expected_capability) in sequence.iter().enumerate() {
+        let Some(AgenticPlan::ToolCalls(calls)) = plan_chat_step(&messages, &tools) else {
+            panic!("expected physical additive step {turn} for {prompt:?}");
+        };
+        assert_eq!(calls.len(), 1, "one physical operation at a time");
+        let call = &calls[0];
+        assert_eq!(tool_capability(&call.tool), Some(*expected_capability));
+        let arguments: serde_json::Value =
+            serde_json::from_str(&call.arguments).expect("arguments");
+        let target = arguments["path"]
+            .as_str()
+            .or_else(|| arguments["file_path"].as_str());
+        assert_eq!(target, Some(path.as_str()), "actual requested file");
+        if *expected_capability == Capability::Write {
+            assert_eq!(
+                arguments["content"], expected,
+                "full prior source plus literal addition"
+            );
+            assert_eq!(
+                arguments,
+                serde_json::json!({
+                    "path": path, "filePath": path, "file_path": path, "content": expected,
+                }),
+                "ordinary bare-tool path aliases and full content; no append primitive"
+            );
+        }
+        let id = format!("observed-additive-{turn}");
+        let observation = workspace.execute(&id, call);
+        assert!(!observation.is_error, "physical additive operation failed");
+        if *expected_capability == Capability::Read {
+            let wanted = if turn == 0 { prior } else { expected.as_str() };
+            assert_eq!(
+                observation.content.plain_text(),
+                wanted,
+                "actual complete source bytes"
+            );
+        }
+        messages.push(ChatMessage::assistant_tool_calls(vec![ToolCall::function(
+            &id,
+            &call.tool,
+            call.arguments.clone(),
+        )]));
+        messages.push(observation);
+    }
+    assert_eq!(
+        workspace.read(&path).expect("physical final content"),
+        expected
+    );
+    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
+        panic!("completion requires the independent final physical Read");
+    };
+    let observed = formal_ai::seed::render_response(
+        "file_edit_position_end",
+        language,
+        &[("path", "note.txt"), ("new", "hello")],
+    )
+    .expect("source-defined completion");
+    assert_eq!(
+        answer, observed,
+        "verified completion cannot be a final refusal"
+    );
+}
+
+/// An unknown insertion position cannot authorize an overwrite or any tool effect.
+fn assert_unspecified_addition_refuses(prompt: &str, language: &str) {
+    use formal_ai::agentic_coding::AgenticPlan;
+    let tools = [
+        "web_fetch",
+        "web_search",
+        "read_file",
+        "write_file",
+        "exec_command",
+    ];
+    let workspace = observed_plan_tools::ToolWorkspace::new(prompt);
+    let prior = "prior bytes α\n";
+    workspace
+        .write_initial("note.txt", prior)
+        .expect("physical prior content");
+    let messages = vec![ChatMessage::user(prompt)];
+    let Some(AgenticPlan::Final(answer)) = plan_chat_step(&messages, &tools) else {
+        panic!("unspecified addition position must refuse without a physical operation: {prompt}");
+    };
+    let refused = formal_ai::seed::render_response(
+        "file-addition-position-unknown",
+        language,
+        &[("path", "note.txt")],
+    )
+    .expect("source-defined refusal");
+    assert_eq!(answer, refused, "refusal cannot be a false completed claim");
+    assert_eq!(
+        workspace.read("note.txt").expect("unchanged physical file"),
+        prior
+    );
+}
+
 #[test]
 fn explicit_content_and_file_object_route_write_variations() {
     const ACTION_SLOT: &str = "{action}";
@@ -431,13 +563,33 @@ fn explicit_content_and_file_object_route_write_variations() {
             "{action} archivo note.txt con el texto hello",
         ),
     ];
-    for (actions, template) in matrices {
-        let prompts: Vec<String> = actions
-            .iter()
-            .map(|action| template.replace(ACTION_SLOT, action))
-            .collect();
-        let borrowed: Vec<&str> = prompts.iter().map(String::as_str).collect();
-        assert_routes(&borrowed, "write_file");
+    // These expectations state the request semantics independently of parser recognition.
+    let appended: [&[&str]; 5] = [&["append"], &[], &[], &["追加"], &[]];
+    let unspecified: [&[&str]; 5] = [
+        &["add"],
+        &["добавь"],
+        &["जोड़ो"],
+        &["添加"],
+        &["añade", "agrega"],
+    ];
+    for (locale, (actions, template)) in matrices.into_iter().enumerate() {
+        assert!(
+            actions.len() >= VARIATION_FLOOR,
+            "retain every locale variation floor"
+        );
+        for action in actions {
+            let prompt = template.replace(ACTION_SLOT, action);
+            if appended[locale].contains(action) {
+                assert_additive_read_write(&prompt, ["en", "ru", "hi", "zh", "es"][locale]);
+            } else if unspecified[locale].contains(action) {
+                assert_unspecified_addition_refuses(
+                    &prompt,
+                    ["en", "ru", "hi", "zh", "es"][locale],
+                );
+            } else {
+                assert_eq!(call(&prompt).0, "write_file", "{prompt}");
+            }
+        }
     }
 }
 
