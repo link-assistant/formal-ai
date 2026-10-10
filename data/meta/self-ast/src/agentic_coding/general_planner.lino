@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/general_planner.rs
   language rust
   fidelity full_ast
-  byte_len 27739
-  line_count 659
-  content_id source_module_d582d0183c75f618
+  byte_len 27858
+  line_count 662
+  content_id source_module_d2e1ce532397c360
   symbol_count 34
   symbols
     const PLAN_PATH 19 19
@@ -12,52 +12,52 @@ self_ast_census
     module content_shape 22 22
     module literal_request 23 23
     module owned_goals 24 24
-    enum GeneralPlanMode 36 43
-    function slug 48 54
-    enum PlanTerminalState 63 68
-    function slug 70 75
-    struct GeneralPlanStep 79 84
-    struct GeneralChangePlan 87 99
-    function links_notation 103 123
-    function planned_not_executed_answer 127 141
-    const BODY_PLACEHOLDER 128 128
-    function objective_text 147 157
-    function literal_payload 162 202
-    function line_anchored 204 210
-    function compose_general_change_plan 212 356
-    function compose_repository_work_plan 357 396
-    function work_item_step 400 412
-    function repository_work_reference 417 463
-    function parse_command_output_request 471 525
-    function mentions_bare_role 526 553
-    function shell_quote 554 556
-    function command_plan_text 557 561
-    function has_file_write_intent 574 576
-    function has_authoritative_literal_write 583 594
-    function resolve_census_target 613 620
-    function mentions_software_authoring 624 626
-    function capability_slug 627 644
-    function language 645 647
-    function escape 648 653
-    function field 654 656
-    function field_nested 657 659
+    enum GeneralPlanMode 38 45
+    function slug 50 56
+    enum PlanTerminalState 65 70
+    function slug 72 77
+    struct GeneralPlanStep 81 86
+    struct GeneralChangePlan 89 101
+    function links_notation 105 126
+    function planned_not_executed_answer 130 144
+    const BODY_PLACEHOLDER 131 131
+    function objective_text 150 160
+    function literal_payload 165 205
+    function line_anchored 207 213
+    function compose_general_change_plan 215 359
+    function compose_repository_work_plan 360 399
+    function work_item_step 403 415
+    function repository_work_reference 420 466
+    function parse_command_output_request 474 528
+    function mentions_bare_role 529 556
+    function shell_quote 557 559
+    function command_plan_text 560 564
+    function has_file_write_intent 577 579
+    function has_authoritative_literal_write 586 597
+    function resolve_census_target 616 623
+    function mentions_software_authoring 627 629
+    function capability_slug 630 647
+    function language 648 650
+    function escape 651 656
+    function field 657 659
+    function field_nested 660 662
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 17077
-    named_node_count 3394
+    total_link_count 17115
+    named_node_count 3400
     distinct_node_kinds 83
     node_kinds
-      arguments 242
+      arguments 243
       array_expression 4
       attribute 12
       attribute_item 12
       binary_expression 44
       block 66
       boolean_literal 2
-      call_expression 242
+      call_expression 243
       char_literal 48
       closure_expression 32
       closure_parameters 32
@@ -70,19 +70,19 @@ self_ast_census
       enum_item 2
       enum_variant 5
       enum_variant_list 2
-      escape_sequence 11
+      escape_sequence 10
       expression_statement 53
       field_declaration 12
       field_declaration_list 2
-      field_expression 189
-      field_identifier 228
+      field_expression 190
+      field_identifier 229
       field_initializer 27
       field_initializer_list 6
       for_expression 3
       function_item 24
       function_modifiers 3
       generic_type 9
-      identifier 779
+      identifier 780
       if_expression 21
       impl_item 3
       index_expression 12
@@ -108,7 +108,7 @@ self_ast_census
       reference_expression 60
       reference_type 37
       return_expression 11
-      scoped_identifier 95
+      scoped_identifier 96
       scoped_type_identifier 1
       scoped_use_list 7
       self 19
@@ -119,7 +119,7 @@ self_ast_census
       string_literal 90
       struct_expression 6
       struct_item 2
-      super 14
+      super 15
       token_tree 43
       try_expression 12
       tuple_expression 4

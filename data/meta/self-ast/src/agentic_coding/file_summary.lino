@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/file_summary.rs
   language rust
   fidelity full_ast
-  byte_len 2647
+  byte_len 2675
   line_count 71
-  content_id source_module_67e164682fa44ae3
+  content_id source_module_a8cb66ae1f258c7d
   symbol_count 6
   symbols
     const SUMMARY_ROLE 16 16
@@ -18,8 +18,8 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 2044
-    named_node_count 408
+    total_link_count 2053
+    named_node_count 411
     distinct_node_kinds 54
     node_kinds
       arguments 29
@@ -39,7 +39,7 @@ self_ast_census
       field_identifier 18
       function_item 3
       generic_type 4
-      identifier 102
+      identifier 103
       if_expression 2
       index_expression 1
       inner_doc_comment_marker 8
@@ -60,13 +60,13 @@ self_ast_census
       reference_expression 9
       reference_type 13
       return_expression 3
-      scoped_identifier 19
-      scoped_use_list 3
+      scoped_identifier 22
+      scoped_use_list 2
       slice_pattern 1
       source_file 1
       string_content 4
       string_literal 4
-      super 6
+      super 7
       token_tree 3
       try_expression 2
       tuple_struct_pattern 1
@@ -74,5 +74,5 @@ self_ast_census
       type_identifier 9
       unary_expression 3
       use_declaration 5
-      use_list 3
+      use_list 2
       visibility_modifier 1

@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/code_task/source_contract/registration_contract.rs
   language rust
   fidelity full_ast
-  byte_len 4057
+  byte_len 4069
   line_count 106
-  content_id source_module_1a98203d06a0b02b
+  content_id source_module_6841c3144d4b995d
   symbol_count 1
   symbols
     function source_registration_contract 3 106
@@ -13,25 +13,25 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 3465
-    named_node_count 688
+    total_link_count 3477
+    named_node_count 691
     distinct_node_kinds 51
     node_kinds
-      arguments 53
+      arguments 54
       array_expression 1
       assignment_expression 2
       binary_expression 14
       block 16
       boolean_literal 4
-      call_expression 53
+      call_expression 54
       char_literal 3
       closure_expression 8
       closure_parameters 8
       continue_expression 10
       crate 4
       expression_statement 22
-      field_expression 49
-      field_identifier 49
+      field_expression 50
+      field_identifier 50
       for_expression 1
       function_item 1
       function_type 1
@@ -65,6 +65,6 @@ self_ast_census
       tuple_struct_pattern 7
       type_arguments 3
       type_identifier 5
-      unary_expression 6
+      unary_expression 5
       use_declaration 1
       visibility_modifier 1

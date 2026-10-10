@@ -2,10 +2,10 @@ self_ast_census
   target src/meta_translate.rs
   language rust
   fidelity signature
-  byte_len 25078
-  line_count 633
-  content_id source_module_843f412f79ad8b85
-  symbol_count 30
+  byte_len 28936
+  line_count 740
+  content_id source_module_50c69ac229a3eeeb
+  symbol_count 32
   symbols
     enum SourceRoot 36 41
     function parse 47 55
@@ -29,11 +29,13 @@ self_ast_census
     function write_target 403 433
     struct SourceTreeRequest 438 442
     function escapes_root 446 448
-    function source_tree_request 458 500
-    function describe_leg 505 524
-    enum CstRenderGap 531 547
-    function describe 552 573
-    function render_cst_source 588 590
-    function try_render_cst_source 593 598
-    function try_render_cst_source_impl 601 621
-    function try_render_cst_source_impl 626 633
+    function source_tree_request 458 501
+    function describe_leg 506 525
+    enum CstRenderGap 532 548
+    function describe 553 574
+    function render_cst_source 589 591
+    function try_render_cst_source 594 599
+    function try_render_cst_source_impl 602 622
+    function try_render_cst_source_impl 627 634
+    struct OwnedSourceTreeRequest 637 643
+    function owned_source_tree_request 647 740

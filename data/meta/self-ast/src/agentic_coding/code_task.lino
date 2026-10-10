@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/code_task.rs
   language rust
   fidelity full_ast
-  byte_len 22666
-  line_count 598
-  content_id source_module_f75ac25f6e4e7573
+  byte_len 22431
+  line_count 595
+  content_id source_module_8337a1ae0f762ef3
   symbol_count 25
   symbols
     module identifier_domain 11 11
@@ -30,15 +30,15 @@ self_ast_census
     function identifier_tokens 439 442
     function valid_identifier 444 446
     function numeric_literals 448 495
-    function plan_verified_generated_source_step 497 575
-    function verified_source_description 577 598
+    function plan_verified_generated_source_step 497 572
+    function verified_source_description 574 595
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 16777
-    named_node_count 3360
+    total_link_count 16701
+    named_node_count 3347
     distinct_node_kinds 84
     node_kinds
       abstract_type 1
@@ -49,7 +49,7 @@ self_ast_census
       attribute 6
       attribute_item 6
       binary_expression 57
-      block 91
+      block 89
       boolean_literal 2
       call_expression 284
       char_literal 24
@@ -63,7 +63,7 @@ self_ast_census
       enum_item 1
       enum_variant 3
       enum_variant_list 1
-      expression_statement 70
+      expression_statement 68
       field_declaration 2
       field_declaration_list 1
       field_expression 206
@@ -74,20 +74,20 @@ self_ast_census
       function_modifiers 1
       generic_function 3
       generic_type 21
-      identifier 834
-      if_expression 39
+      identifier 831
+      if_expression 37
       index_expression 17
       inner_doc_comment_marker 8
       integer_literal 33
-      let_chain 1
+      let_chain 3
       let_condition 8
       let_declaration 69
       line_comment 36
       macro_invocation 10
-      match_arm 11
-      match_block 4
-      match_expression 4
-      match_pattern 11
+      match_arm 9
+      match_block 3
+      match_expression 3
+      match_pattern 9
       mod_item 3
       mutable_specifier 11
       outer_doc_comment_marker 16

@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/general_execution.rs
   language rust
   fidelity full_ast
-  byte_len 30678
-  line_count 748
-  content_id source_module_9a9eb767866ce7c9
+  byte_len 31199
+  line_count 757
+  content_id source_module_5c0cdd47bbd39804
   symbol_count 31
   symbols
     const EXPECTED_PLACEHOLDER 15 15
@@ -18,45 +18,45 @@ self_ast_census
     function absent_plan_event 252 257
     function plan_event_append_command 259 277
     function unverified_plan_event 279 284
-    function plan_event_step 286 384
-    function plan_work_item_execution 387 418
-    function plan_work_item_read 421 475
-    function prepared_pull_reference 478 489
-    function work_item_fetch_arguments 491 498
-    function issue_view_command 502 514
-    function rest_segments 517 529
-    function issue_rest_read_command 532 543
-    function issue_api_read_command 546 557
-    function work_item_read_failure_report 560 572
-    function repository_work_item_objective 575 582
-    function literal_verification_matches 586 591
-    function finish_general_change 593 653
-    function work_item_completion 656 669
-    function general_plan_completed 675 689
-    function tool_argument_path 691 697
-    function read_arguments 699 706
-    function capability_label 708 725
-    function general_plan_mismatch 727 740
-    function general_plan_unverified 742 748
+    function plan_event_step 286 393
+    function plan_work_item_execution 396 427
+    function plan_work_item_read 430 484
+    function prepared_pull_reference 487 498
+    function work_item_fetch_arguments 500 507
+    function issue_view_command 511 523
+    function rest_segments 526 538
+    function issue_rest_read_command 541 552
+    function issue_api_read_command 555 566
+    function work_item_read_failure_report 569 581
+    function repository_work_item_objective 584 591
+    function literal_verification_matches 595 600
+    function finish_general_change 602 662
+    function work_item_completion 665 678
+    function general_plan_completed 684 698
+    function tool_argument_path 700 706
+    function read_arguments 708 715
+    function capability_label 717 734
+    function general_plan_mismatch 736 749
+    function general_plan_unverified 751 757
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 20405
-    named_node_count 4137
+    total_link_count 20737
+    named_node_count 4207
     distinct_node_kinds 75
     node_kinds
-      arguments 359
+      arguments 363
       array_expression 9
-      array_type 12
+      array_type 13
       assignment_expression 7
       attribute 1
       attribute_item 1
       binary_expression 70
-      block 90
+      block 91
       boolean_literal 4
-      call_expression 359
+      call_expression 363
       char_literal 10
       closure_expression 35
       closure_parameters 35
@@ -77,7 +77,7 @@ self_ast_census
       function_item 26
       function_modifiers 1
       generic_type 12
-      identifier 1055
+      identifier 1086
       if_expression 46
       inner_doc_comment_marker 1
       integer_literal 14
@@ -87,38 +87,38 @@ self_ast_census
       lifetime 2
       line_comment 73
       macro_invocation 30
-      match_arm 25
-      match_block 5
-      match_expression 5
-      match_pattern 25
+      match_arm 29
+      match_block 6
+      match_expression 6
+      match_pattern 29
       mutable_specifier 12
       or_pattern 3
       ordered_field_declaration_list 1
       outer_doc_comment_marker 16
-      parameter 50
+      parameter 51
       parameters 26
       parenthesized_expression 3
       primitive_type 28
-      reference_expression 81
-      reference_type 59
+      reference_expression 82
+      reference_type 60
       return_expression 38
-      scoped_identifier 170
+      scoped_identifier 177
       scoped_type_identifier 2
-      scoped_use_list 3
+      scoped_use_list 4
       source_file 1
       string_content 112
       string_literal 113
       struct_expression 1
-      super 28
+      super 29
       token_tree 45
       try_expression 11
       tuple_expression 20
       tuple_pattern 7
-      tuple_struct_pattern 31
+      tuple_struct_pattern 35
       tuple_type 1
       type_arguments 12
-      type_identifier 71
+      type_identifier 72
       unary_expression 25
-      use_declaration 8
-      use_list 3
+      use_declaration 9
+      use_list 4
       visibility_modifier 3

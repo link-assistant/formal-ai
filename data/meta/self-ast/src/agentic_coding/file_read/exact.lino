@@ -2,20 +2,20 @@ self_ast_census
   target src/agentic_coding/file_read/exact.rs
   language rust
   fidelity full_ast
-  byte_len 7292
-  line_count 189
-  content_id source_module_adf05023729b14e7
+  byte_len 7423
+  line_count 191
+  content_id source_module_7439295832257d07
   symbol_count 2
   symbols
     function plan_direct_file_reads 22 160
-    function exact_line_key 166 189
+    function exact_line_key 166 191
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 5206
-    named_node_count 1047
+    total_link_count 5226
+    named_node_count 1051
     distinct_node_kinds 63
     node_kinds
       arguments 107
@@ -41,7 +41,7 @@ self_ast_census
       for_expression 2
       function_item 2
       generic_type 3
-      identifier 285
+      identifier 286
       if_expression 15
       inner_doc_comment_marker 1
       integer_literal 2
@@ -60,7 +60,7 @@ self_ast_census
       reference_expression 12
       reference_type 6
       return_expression 10
-      scoped_identifier 35
+      scoped_identifier 37
       scoped_use_list 2
       shorthand_field_identifier 1
       source_file 1
@@ -68,7 +68,7 @@ self_ast_census
       string_literal 9
       struct_expression 4
       struct_pattern 1
-      super 12
+      super 13
       token_tree 6
       try_expression 2
       tuple_expression 4

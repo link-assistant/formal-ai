@@ -2,24 +2,24 @@ self_ast_census
   target src/agentic_coding/module_exports.rs
   language rust
   fidelity full_ast
-  byte_len 4403
-  line_count 123
-  content_id source_module_f255ee5cad6b979e
+  byte_len 4461
+  line_count 125
+  content_id source_module_2948856ebad48f7f
   symbol_count 6
   symbols
     const MARKER_REACH 17 17
     const CHANGE_ROLES 18 18
     function is_identifier_char 24 26
-    function export_question 29 43
-    function exported_functions 47 77
-    function plan_module_exports_step 80 123
+    function export_question 29 45
+    function exported_functions 49 79
+    function plan_module_exports_step 82 125
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 3471
-    named_node_count 678
+    total_link_count 3491
+    named_node_count 682
     distinct_node_kinds 56
     node_kinds
       arguments 60
@@ -61,12 +61,12 @@ self_ast_census
       reference_expression 10
       reference_type 9
       return_expression 2
-      scoped_identifier 22
-      scoped_use_list 3
+      scoped_identifier 25
+      scoped_use_list 2
       source_file 1
-      string_content 15
-      string_literal 15
-      super 6
+      string_content 16
+      string_literal 16
+      super 7
       token_tree 1
       try_expression 2
       tuple_expression 3
@@ -76,5 +76,5 @@ self_ast_census
       type_identifier 15
       unary_expression 6
       use_declaration 5
-      use_list 3
+      use_list 2
       visibility_modifier 1

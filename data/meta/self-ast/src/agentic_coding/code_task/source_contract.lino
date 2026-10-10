@@ -2,25 +2,26 @@ self_ast_census
   target src/agentic_coding/code_task/source_contract.rs
   language rust
   fidelity full_ast
-  byte_len 4992
-  line_count 146
-  content_id source_module_239c02a0c7a3f679
-  symbol_count 7
+  byte_len 5009
+  line_count 147
+  content_id source_module_f468ea52de1d9942
+  symbol_count 8
   symbols
-    module matcher 1 1
-    module registration_contract 2 2
-    function alternatives 6 19
-    function role_alternatives 20 38
-    function meaning_alternatives 39 48
-    function source_whitespace_supported 49 57
-    function source_description_contract 59 146
+    module declaration 1 1
+    module matcher 2 2
+    module registration_contract 3 3
+    function alternatives 7 20
+    function role_alternatives 21 39
+    function meaning_alternatives 40 49
+    function source_whitespace_supported 50 58
+    function source_description_contract 60 147
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 4136
-    named_node_count 855
+    total_link_count 4150
+    named_node_count 857
     distinct_node_kinds 52
     node_kinds
       arguments 75
@@ -40,14 +41,14 @@ self_ast_census
       function_item 5
       generic_function 2
       generic_type 6
-      identifier 192
+      identifier 193
       if_expression 7
       index_expression 4
       integer_literal 24
       let_condition 1
       let_declaration 8
       macro_invocation 6
-      mod_item 2
+      mod_item 3
       mutable_specifier 1
       parameter 8
       parameters 5
