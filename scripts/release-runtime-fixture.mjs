@@ -113,12 +113,32 @@ export function validateFixtureOutputs(active, inactive, source) {
   assert.equal(inactive.artifact, 'SkippedInactive');
   assert.equal(inactive.marker, '');
 }
+export async function observeActiveAncestor({ get, context, name, label, snapshots, diagnose }) {
+  const base = '/repos/' + context.repository + '/actions';
+  const jobs = await get(base + '/runs/' + context.run + '/jobs?filter=latest&per_page=100');
+  snapshots.push(jobs);
+  assert.equal(jobs.status, 200);
+  const matches = jobs.body.jobs.filter(job => job.name.endsWith(label) && job.status === 'in_progress');
+  assert.equal(matches.length, 1, 'unique actual executing descendant job absent');
+  const child = matches[0];
+  assert.ok(Number.isSafeInteger(child.id) && child.id > 0);
+  assert.equal(String(child.run_id), context.run, 'descendant run differs');
+  const ancestor = await get(base + '/concurrency_groups/' + encodeURIComponent(name) + '?ahead_of_job=' + child.id);
+  snapshots.push(ancestor);
+  if (diagnose) await diagnose(child);
+  validateQueueSnapshot(ancestor, { group: name, run: context.run }, { requireContender: false });
+  const target = ancestor.body.group_members.at(-1);
+  assert.equal(String(target.run_id), context.run, 'matched ancestor run differs');
+  assert.equal(target.status, 'in_progress', 'matched ancestor is not active');
+  return { observation: 'VerifiedPrivateFixtureAncestorCheckpoint', descendantJobId: child.id };
+}
 async function queueObservation(final = false) {
   const context = identity();
   const name = group(process.env.FIXTURE_GROUP);
   const base = '/repos/' + context.repository + '/actions';
   const snapshots = [];
   let ancestorDiagnostic = null;
+  let ancestorCheckpoint = null;
   const deadline = Date.now() + (final ? 90000 : 180000);
   while (Date.now() < deadline) {
     const state = await api(base + '/concurrency_groups/' + encodeURIComponent(name));
@@ -129,33 +149,29 @@ async function queueObservation(final = false) {
       snapshots
     };
     try {
-      validateQueueSnapshot(state, {
-        group: name,
-        run: context.run
-      });
-      const jobs = await api(base + '/runs/' + context.run + '/jobs?filter=latest&per_page=100');
-      snapshots.push(jobs);
-      assert.equal(jobs.status, 200);
+      validateQueueSnapshot(state, { group: name, run: context.run }, { requireContender: false });
       const label = final ? 'Fixture final active' : 'Fixture lease holder active';
-      const child = jobs.body.jobs.find(job => job.name.endsWith(label) && job.status === 'in_progress');
-      assert.ok(child, 'actual executing descendant job absent');
-      const ancestor = await api(base + '/concurrency_groups/' + encodeURIComponent(name) + '?ahead_of_job=' + child.id);
-      snapshots.push(ancestor);
-      if (ancestorDiagnostic === null) ancestorDiagnostic = await collectLeaseDiagnostics({
-        context, child, group: name, runnerName: process.env.RUNNER_NAME,
-        get: api, deadline
-      });
-      validateQueueSnapshot(ancestor, {
-        group: name,
-        run: context.run
-      }, {
-        requireContender: false
-      });
+      try {
+        ancestorCheckpoint = await observeActiveAncestor({ get: api, context, name, label, snapshots,
+          diagnose: async child => {
+            if (ancestorDiagnostic === null) ancestorDiagnostic = await collectLeaseDiagnostics({
+              context, child, group: name, runnerName: process.env.RUNNER_NAME,
+              get: api, deadline
+            });
+          }
+        });
+      } catch (error) {
+        ancestorCheckpoint = { observation: 'Unknown', reason: error.message };
+      }
+      // Queue and independent ancestor obligations remain separate and both are required.
+      validateQueueSnapshot(state, { group: name, run: context.run });
+      assert.equal(ancestorCheckpoint.observation, 'VerifiedPrivateFixtureAncestorCheckpoint');
       return {
         observation: 'VerifiedPrivateFixtureLease',
         group: name,
-        descendantJobId: child.id,
+        descendantJobId: ancestorCheckpoint.descendantJobId,
         ancestorDiagnostic,
+        ancestorCheckpoint,
         snapshots
       };
     } catch {/* Pending scheduling or propagation remains an observation, never guessed success. */}
@@ -165,6 +181,7 @@ async function queueObservation(final = false) {
     observation: 'Unknown',
     reason: 'NoCompleteActualQueuedAncestorObservation',
     ancestorDiagnostic,
+    ancestorCheckpoint,
     snapshots
   };
 }
