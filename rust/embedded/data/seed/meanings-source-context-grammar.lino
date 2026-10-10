@@ -7,9 +7,9 @@ meanings
     source "data/seed/source-context-grammar.lino::language en::patterns 1 and 2"
     source-sha256 "f1ecd911cc6f5f38c76d9cca9bc663e665d632c98420e75f47d3616c58afd3ec"
     source "js/agentic/planner/owned_goals.mjs::source context grammar matcher"
-    source-sha256 "911f794c1e7d43f720b985753fae66a0bf6aca3f87fd2e25c066c49a464302bd"
+    source-sha256 "1a6dbb652676de39674bd99fecb526508c0ce65a2fe5e1eb5cb4d23653301ec2"
     source "rust/src/agentic_coding/general_planner/owned_goals.rs::source context grammar matcher"
-    source-sha256 "6a64cb3a896769e20b2734e31e3fbf30b0cca0a023e2ccf858892f1f3329bcf0"
+    source-sha256 "5a26cea2aa0779aefd8d17323e6c26f34de2f8fc85b390296f7bd777b7e7cf49"
     effect "Only a fully consumed descriptive atom may be classified as context by sourceContextDeclaration/source_context_declaration. Other declared Goals and immutable Needs remain independently required; no physical read, write, deployment, imported-module initialization, runtime effect or universal safety certificate follows."
     unit "not applicable"
   source-context-prologue
@@ -93,9 +93,9 @@ meanings
     source "data/seed/source-context-grammar.lino"
     source-sha256 "da78a8366d856315375030d764eb14a413600deab12db7d342bbfe9c083a7036"
     source "js/agentic/planner/owned_goals.mjs"
-    source-sha256 "0b03436f35198e7a29383bff79b9ee516985119451d19d4b9693dac2fee874f1"
+    source-sha256 "1a6dbb652676de39674bd99fecb526508c0ce65a2fe5e1eb5cb4d23653301ec2"
     source "rust/src/agentic_coding/general_planner/owned_goals.rs"
-    source-sha256 "cf0c481450526ef42a3e177fc473d8f7a3667ba4187517c6eb5d9018ca56b58f"
+    source-sha256 "5a26cea2aa0779aefd8d17323e6c26f34de2f8fc85b390296f7bd777b7e7cf49"
   source-context-issue-prologue
     role source-context-issue-prologue
     defined-by issue-reference
@@ -107,9 +107,9 @@ meanings
     source "data/seed/source-context-grammar.lino"
     source-sha256 "da78a8366d856315375030d764eb14a413600deab12db7d342bbfe9c083a7036"
     source "js/agentic/planner/owned_goals.mjs"
-    source-sha256 "0b03436f35198e7a29383bff79b9ee516985119451d19d4b9693dac2fee874f1"
+    source-sha256 "1a6dbb652676de39674bd99fecb526508c0ce65a2fe5e1eb5cb4d23653301ec2"
     source "rust/src/agentic_coding/general_planner/owned_goals.rs"
-    source-sha256 "cf0c481450526ef42a3e177fc473d8f7a3667ba4187517c6eb5d9018ca56b58f"
+    source-sha256 "5a26cea2aa0779aefd8d17323e6c26f34de2f8fc85b390296f7bd777b7e7cf49"
 
   source-context-opaque-label-contract
     role source-context-opaque-label-contract
