@@ -9,6 +9,10 @@ import { deriveCompleteSourceRequest } from "../agentic/module_function/complete
 import { prepareSourceCandidate, authorizeSourceCandidateWrite, recordPreparedSourceWrite, finishSourceCandidate, abortSourceCandidate } from "../agentic/module_function/source-candidate-consumer.mjs";
 import { Capability } from "../agentic/capability.mjs";
 import { classifyTool } from "../agentic/capability_router.mjs";
+import { userRequestText } from "../agentic/content.mjs";
+import { readPolicyBlocksPlan } from "../agentic/file_read/ownership.mjs";
+import { planOne } from "../agentic/plan.mjs";
+import { readArguments } from "../agentic/workspace_change.mjs";
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
 /** Request-scoped trusted platform boundary; wire messages cannot install it. */
 export function createNodeSourceSessionHost(readText) {
@@ -16,11 +20,91 @@ export function createNodeSourceSessionHost(readText) {
   const storage = new AsyncLocalStorage();
   const current = () => {
     const context = storage.getStore();
-    if (!context || context.passthrough || installedHost().sourceOperation !== operation
+    if (!context || context.passthrough || !context.active || installedHost().sourceOperation !== operation
         || installedHost().sourceSession !== api) throw Error('MissingSourceOperationContext');
     return context;
   };
+
+  const targetReads = new WeakMap();
+  const hostFile = fs.realpathSync(new URL(import.meta.url));
+  const hostIdentity = hash(fs.readFileSync(hostFile));
+  function physicalTarget(context, operand) {
+    if (!context.frame.request.inputs.includes(operand)
+        && !context.frame.request.acceptance.includes(operand)) throw Error('UnownedPhysicalReadOperand');
+    if (path.isAbsolute(operand) || operand.split(/[\\/]/u).includes('..')) throw Error('UnownedPhysicalReadPath');
+    const file = path.resolve(context.workspace, operand);
+    if (!file.startsWith(context.workspace + path.sep)) throw Error('OutsidePhysicalReadWorkspace');
+    if (hash(fs.readFileSync(hostFile)) !== hostIdentity) throw Error('PhysicalReadIssuerSourceDrift');
+    let cursor = path.parse(file).root;
+    const identities = [];
+    for (const part of file.slice(cursor.length).split(path.sep)) {
+      cursor = path.join(cursor, part);
+      const fileStatus = fs.lstatSync(cursor, {bigint: true});
+      if (fileStatus.isSymbolicLink()) throw Error('PhysicalReadSymlink');
+      if (cursor === file ? !fileStatus.isFile() : !fileStatus.isDirectory()) throw Error('PhysicalReadNotRegular');
+      const identity = [cursor, fileStatus.dev, fileStatus.ino, fileStatus.birthtimeNs];
+      if (cursor === file) identity.push(fileStatus.ctimeNs);
+      identities.push(identity.join(':'));
+    }
+    const before = fs.statSync(file, {bigint: true});
+    if (before.size > 1048576n) throw Error('PhysicalReadSizeBound');
+    const bytes = fs.readFileSync(file);
+    const after = fs.statSync(file, {bigint: true});
+    if (before.ino !== after.ino || before.ctimeNs !== after.ctimeNs
+        || before.size !== BigInt(bytes.length)) throw Error('PhysicalReadChangedDuringCapture');
+    const content = new TextDecoder('utf-8', {fatal: true, ignoreBOM: true}).decode(bytes);
+    return {path: file, operand, content, bytesBase64: bytes.toString('base64'),
+      bytes: bytes.length, sha256: hash(bytes), identities};
+  }
+  function declaredRead(call, messages) {
+    const declaration = [...messages].reverse().find(message => message.role === 'assistant' && message.tool_calls);
+    const matches = declaration?.tool_calls.filter(value => value.function?.name === call.tool
+      && value.function.arguments === call.arguments) ?? [];
+    if (matches.length !== 1 || typeof matches[0].id !== 'string' || !matches[0].id) throw Error('UnboundPhysicalReadCall');
+    return Object.freeze({id: matches[0].id, name: call.tool, arguments: call.arguments});
+  }
+  function permittedRead(context, call, messages, argumentsValue) {
+    if (!context.tools.includes(call.tool)) throw Error('UnregisteredPhysicalReadTool');
+    const operand = argumentsValue.file_path;
+    if (Object.keys(argumentsValue).length !== 1 || typeof operand !== 'string') throw Error('UnknownPhysicalReadArguments');
+    if (readPolicyBlocksPlan(context.request, planOne(call.tool, readArguments(operand)))) throw Error('PhysicalReadPolicyRefused');
+    const user = [...messages].reverse().find(message => message.role === 'user');
+    if (!user || userRequestText(user.content) !== context.request) throw Error('DifferentPhysicalReadRequest');
+    const declaration = declaredRead(call, messages);
+    return {operand, declaration};
+  }
+  function observePhysicalRead(context, call, messages, argumentsValue) {
+    const {operand, declaration} = permittedRead(context, call, messages, argumentsValue);
+    const attempt = Object.freeze({});
+    context.readAttempts.set(operand, attempt);
+    const snapshot = physicalTarget(context, operand);
+    const token = Object.freeze({});
+    targetReads.set(token, {context, attempt, declaration, snapshot});
+    return {content: snapshot.content, owned_source_read: token,
+      source_read: {path: operand, success: true, complete: true, format: 'raw'}};
+  }
+
   const operation = Object.freeze({
+    physicalReadObservation(token, request, workspace, declaration) {
+      const context = current();
+      const proof = targetReads.get(token);
+      if (!proof || proof.context !== context || request !== context.request
+          || workspace !== context.workspace) throw Error('UnissuedPhysicalReadObservation');
+      if (!declaration || Object.keys(declaration).sort().join(',') !== 'arguments,id,name'
+          || Object.keys(proof.declaration).some(key => declaration[key] !== proof.declaration[key])) throw Error('DifferentPhysicalReadCall');
+      if (context.readAttempts.get(proof.snapshot.operand) !== proof.attempt) throw Error('StalePhysicalReadAttempt');
+      const currentBytes = physicalTarget(context, proof.snapshot.operand);
+      if (currentBytes.sha256 !== proof.snapshot.sha256
+          || JSON.stringify(currentBytes.identities) !== JSON.stringify(proof.snapshot.identities)) throw Error('PhysicalReadSourceDrift');
+      return Object.freeze({kind: 'OnlyPhysicalRead', requestIdentity: hash(request), workspace,
+        declaration: proof.declaration, path: currentBytes.path, operand: currentBytes.operand,
+        content: currentBytes.content, bytesBase64: currentBytes.bytesBase64,
+        bytes: currentBytes.bytes, sha256: currentBytes.sha256, sourceComplete: true,
+        pathNamespaceAuthority: 'Unknown', readRaceProof: false,
+        syntax: 'Unknown', moduleInitializationEffects: 'Unknown', callEffects: 'Unknown',
+        acceptedRun: 'Unknown', publicationAuthority: 'Unknown'});
+    },
+
     hasContext: () => Boolean(storage.getStore()?.provider),
     requestSeed: () => requestSeed,
     compositionSeed: () => requestSeed,
@@ -100,14 +184,18 @@ export function createNodeSourceSessionHost(readText) {
         before: null,
         prepared: null,
         io: null,
-        completed: null
+        completed: null,
+        active: true,
+        readAttempts: new Map()
       };
       return storage.run(owned, async () => {
         try {
           return await executeSession();
         } finally {
-          if (owned.prepared !== null && owned.completed === null) owned.completed = abortSourceCandidate(owned.prepared);
-          owned.io?.release();
+          try {
+            if (owned.prepared !== null && owned.completed === null) owned.completed = abortSourceCandidate(owned.prepared);
+            owned.io?.release();
+          } finally { owned.active = false; }
         }
       });
     },
@@ -116,6 +204,24 @@ export function createNodeSourceSessionHost(readText) {
       if (!context || context.passthrough) return fallback();
       const argumentsValue = JSON.parse(call.arguments);
       const capability = classifyTool(call.tool);
+      if (capability === Capability.Read) {
+        try {
+          const ownedContext = current();
+          if (argumentsValue.file_path === ownedContext.frame.request.destination) {
+            permittedRead(ownedContext, call, messages, argumentsValue);
+            const result = fallback();
+            if (result && Object.hasOwn(result, 'owned_source_read')) {
+              throw Error('UnexpectedDestinationReadAuthority');
+            }
+            return result;
+          }
+          return observePhysicalRead(ownedContext, call, messages, argumentsValue);
+        }
+        catch (error) {
+          if (typeof argumentsValue.file_path === 'string') context.readAttempts.set(argumentsValue.file_path, Object.freeze({}));
+          return {content: error.message, is_error: true};
+        }
+      }
       if (capability === Capability.Write) {
         if (context.before === null || context.prepared !== null) throw Error('UnownedSourceWriteOperation');
         context.io = context.provider.createCandidateIO();
