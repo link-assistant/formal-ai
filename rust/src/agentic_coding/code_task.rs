@@ -524,26 +524,30 @@ pub(super) fn plan_verified_generated_source_step(
                         .first_role_match("program_kind", &body)
                         .is_some_and(|meaning| meaning.slug == "function")
             });
-            return semantic.then(|| {
-                super::final_result::record(
-                    AgenticPlan::Final(
-                        "Missing source authoring contract: complete request remains unbound."
-                            .to_owned(),
-                    ),
-                    super::final_result::FinalDisposition::Gap,
-                    "source-description-goal-coverage-unbound",
-                    result,
-                )
-            });
+            if !semantic {
+                return None;
+            }
+            return Some(super::final_result::record(
+                AgenticPlan::Final(render_seeded_outcome(
+                    "coding_source_authoring_contract_missing",
+                    task,
+                    "",
+                )?),
+                super::final_result::FinalDisposition::Gap,
+                "source-description-goal-coverage-unbound",
+                result,
+            ));
         }
     };
     if !source_contract::source_whitespace_supported(raw_task)
         || source_contract::source_description_contract(task, &artifact).is_none()
     {
         return Some(super::final_result::record(
-            AgenticPlan::Final(
-                "Missing source authoring contract: complete request remains unbound.".to_owned(),
-            ),
+            AgenticPlan::Final(render_seeded_outcome(
+                "coding_source_authoring_contract_missing",
+                task,
+                "",
+            )?),
             super::final_result::FinalDisposition::Gap,
             "source-description-goal-coverage-unbound",
             result,

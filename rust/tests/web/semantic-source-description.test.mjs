@@ -103,3 +103,20 @@ test('natural language case and an uppercase destination do not change type auth
   assert.equal(contract.captures.find(capture => capture.role === 'parameter-type').text, 'f64');
   assert.equal(verifiedSourceDescription(request.replace('an f64', 'an F64')), null);
 });
+
+test('missing source contracts retain grounded multilingual Gap provenance', async () => {
+  const { renderSeededOutcome, planVerifiedGeneratedSourceStep } = await import('../../../js/agentic/code_task.mjs');
+  const { canDeliverFinal } = await import('../../../js/agentic/final_result.mjs');
+  for (const request of requests) {
+    const text = renderSeededOutcome('coding_source_authoring_contract_missing', request, '');
+    assert.equal(typeof text, 'string');
+    assert(text.length > 0);
+    const plan = planVerifiedGeneratedSourceStep(request + ' Then deploy it.', [], tools);
+    assert.equal(plan.kind, 'final');
+    assert.equal(plan.answer, text);
+    assert.equal(plan.result.disposition, 'gap');
+    assert.equal(plan.result.origin, 'source-description-goal-coverage-unbound');
+    assert.equal(canDeliverFinal(plan), false);
+  }
+  assert.equal(renderSeededOutcome('unregistered_source_contract', requests[0], ''), null);
+});
