@@ -1,3 +1,6 @@
+import {generateBorrowedConstants,borrowedConstantTestImportContract} from './native-constant-registry.mjs';
+import {generateOptions,optionTestImportContract} from './native-option-registry.mjs';
+import {generateRecords,recordTestImportContract} from './native-record-registry.mjs';
 import {isDeepStrictEqual} from 'node:util';
 import {generateScalars,scalarTestImportContract} from './native-scalar-registry.mjs';
 import {
@@ -463,7 +466,7 @@ item.end)).filter(raw=>testFunctions(tokenize(raw)).some(fn=>JSON.stringify(fn.b
       if(value.binding?.nativeSourceQualified) {
         const lexical=lex(matched[0],'Rust').filter(t=>t.type!=='comment'),functionAt=lexical.findIndex(t=>t.text==='fn');
         if(lexical.slice(0,functionAt).map(t=>t.text).join('')!=='#[test]'||lexical[functionAt+2]?.text!=='('||lexical[functionAt+3]?.text!==')')throw new Error('unknown scalar test scope or parameters');
-        for(const witness of scalarTestImportContract(source,root,value.binding)){
+        for(const witness of (value.binding.nativeBorrowedConstantQualified?borrowedConstantTestImportContract:value.binding.nativeOptionQualified?optionTestImportContract:value.binding.nativeRecordQualified?recordTestImportContract:scalarTestImportContract)(source,root,value.binding,body)){
           const file=resolve(root,witness.path);if(hash(readFileSync(file))!==witness.sha256)throw Error('unqualified scalar import witness');
           witnesses.set(file,{file,sha256:witness.sha256});
         }
@@ -519,8 +522,14 @@ export function verifyScalarBindings(program) {
       if(!Array.isArray(expected)||expected.length!==2)throw Error('unknown scalar source witness schema');
       const fixtures=expected.map(witness=>program.fixtures.find(fixture=>fixture.file?.endsWith('/'+witness.path)&&fixture.sha256===witness.sha256));
       if(fixtures.some(fixture=>!fixture))throw Error('scalar source fixture absent');
-      const key=fixtures.map(fixture=>fixture.file+':'+fixture.sha256).join('|');
-      if(!cache.has(key))cache.set(key,generateScalars(readFileSync(fixtures[0].file,'utf8'),expected[0].path,binding.path.split('::')[1],readFileSync(fixtures[1].file,'utf8')).programs);
+      const key=(binding.nativeBorrowedConstantQualified?'constant':binding.nativeOptionQualified?'option':binding.nativeRecordQualified?'record':'scalar')+'|'+fixtures.map(fixture=>fixture.file+':'+fixture.sha256).join('|');
+      if(!cache.has(key))cache.set(key,
+        (binding.nativeBorrowedConstantQualified?generateBorrowedConstants:binding.nativeOptionQualified?generateOptions:binding.nativeRecordQualified?generateRecords:generateScalars)(readFileSync(fixtures[0].file,
+        'utf8'),
+        expected[0].path,
+        (binding.canonicalPath??binding.path).split('::')[1],
+        readFileSync(fixtures[1].file,
+        'utf8')).programs);
       const actual=cache.get(key).find(candidate=>candidate.path===binding.path);
       if(!actual||!isDeepStrictEqual(actual,binding))throw Error('scalar program no longer matches source AST');
     }

@@ -6,7 +6,7 @@ import { dirname, relative, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import { isDeepStrictEqual } from 'node:util';
 import { tokenize } from './rust-specification-cases.mjs';
-import { close, split, expression, evaluate } from './rust-specification-values.mjs';
+import { close, split, expression, evaluate, contextualOptions, nativeEquality } from './rust-specification-values.mjs';
 import { iterationBindings, bindIteration } from './rust-specification-tuples.mjs';
 import { nativeFunctions, pureHelperBinding, historySourceContract, usesHistoryProducer, generatedSourceContract, verifyScalarBindings } from './rust-specification-bindings.mjs';
 
@@ -83,7 +83,7 @@ function contextOf(source, file, root) {
     }
   }
   const environment = new Map();
-  const schemas = new Map();
+  const schemas = new Map([...calls].filter(([,binding])=>binding.kind==='nativeRecordConstructor').map(([name,binding])=>[name,binding.fields]));
   const fixtures = [file ? { file, sha256: hash(source) } : { source, sha256: hash(source) }];
   const context = { calls, environment, schemas, schemaWitnesses: [] };
   // Local functions shadow imported names even when their body is unsupported.
@@ -220,7 +220,7 @@ function bodyProgram(tokens, context) {
       const bindings = iterationBindings(pattern, values.type.slice(vector ? 4 : 5), borrowed);
       const end = close(tokens, open);
       const nested = { ...context, environment: new Map(context.environment), schemas: new Map(context.schemas) };
-      for (const binding of bindings) nested.environment.set(binding.name, { type: binding.type });
+      for (const binding of bindings) nested.environment.set(binding.name, { type: binding.type, ...(borrowed?{nativeBorrowed:true}:{}) });
       steps.push({ kind: 'for', parameter, pattern, borrowed, bindings, values, body: bodyProgram(tokens.slice(open + 1, end), nested) });
       cursor = end + 1;
       continue;
@@ -236,6 +236,7 @@ function bodyProgram(tokens, context) {
     if (statement[0].text === 'let') {
       if (statement[1]?.kind !== 'word' || statement[2]?.text !== '=') throw new Error('unsupported native let binding');
       const value = expression(statement.slice(3), context);
+      if(value.kind==='reference'&&value.type.startsWith('record:formal_ai::'))throw Error('untracked native record move');
       const name = statement[1].text;
       context.environment.set(name, { type: value.type, origin: value.origin });
       steps.push({ kind: 'let', name, value });
@@ -247,6 +248,8 @@ function bodyProgram(tokens, context) {
       if (args.length < (binary ? 2 : 1)) throw new Error('native assertion arguments absent');
       const left = expression(args[0], context);
       const right = binary ? expression(args[1], context) : null;
+      if(binary)contextualOptions(left,right,context);
+      if(binary&&left.type.startsWith('record:formal_ai::'))throw Error('unknown record equality capability');
       if (binary && left.type !== right.type) throw new Error('native assertion type mismatch');
       if (!binary && left.type !== 'boolean') throw new Error('native assertion needs boolean');
       // Diagnostic formatting values may read data, but may not add effects.
@@ -300,7 +303,7 @@ export async function executeTypedProgram(host, program) {
       } else if (step.kind === 'assertion') {
         const left = await evaluate(step.left, values, runtime);
         const right = step.right ? await evaluate(step.right, values, runtime) : true;
-        const equal = step.name === 'assert' ? left === true : isDeepStrictEqual(left, right);
+        const equal = step.name === 'assert' ? left === true : nativeEquality(left,right,step.left.type);
         runtime.assertions += 1;
         if ((step.name === 'assert_ne' ? !equal : equal) !== true) throw new Error(`native ${step.name} failed: ${JSON.stringify(left).slice(0, 180)} expected ${JSON.stringify(right).slice(0, 180)}`);
       }

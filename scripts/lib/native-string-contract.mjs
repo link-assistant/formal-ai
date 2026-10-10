@@ -27,6 +27,7 @@ if(['r',
 'br'].includes(tokens[prefix]?.text)&&tokens[prefix]?.end===tokens[prefix+1]?.start)throw Error('unknown native prefixed string');
 
     const text=token.text;
+    if(text[0]!=='"'||text.at(-1)!=='"'||text.length<2)throw Error('truncated native string');
 
     for(let i=1;
 
@@ -43,6 +44,12 @@ if(code>0xffff)i++;
       if(text[i]!=='\\')continue;
 
       const escape=text[++i];
+      if(escape==='\n'){
+        let end=i+1;
+        while(end<text.length-1&&[' ','\t','\n'].includes(text[end]))end++;
+        if(end===i+1||end>=text.length-1||text[end].codePointAt(0)>0x7f||text[end]==='\r'||/\s/u.test(text[end]))throw Error('unknown native continuation whitespace');
+        i=end-1;continue;
+      }
 
 if(['n',
 

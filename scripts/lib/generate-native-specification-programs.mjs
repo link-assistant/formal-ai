@@ -1,3 +1,7 @@
+import {generateNativeBorrowedConstants} from './native-constant-registry.mjs';
+import {isDeepStrictEqual} from 'node:util';
+import {generateNativeOptions} from './native-option-registry.mjs';
+import {generateNativeRecords} from './native-record-registry.mjs';
 import {resolve} from 'node:path';
 import {generateScalars,generateEnumPredicates} from './native-scalar-registry.mjs';
 import {
@@ -368,16 +372,24 @@ refusals}
 
 }
 
-function rendering(programs){
-
-return '// Generated source-qualified substitution programs. Unknown algorithms remain refused.\nexport const GENERATED_NATIVE_PROGRAMS = '+JSON.stringify(programs,
-
-null,
-
-2)+';\n';
-
+export function rendering(programs){
+  const encoded=JSON.stringify(programs),lines=[];let line='export const GENERATED_NATIVE_PROGRAMS = ',cursor=0;
+  while(cursor<encoded.length){
+    let end=cursor+1;
+    if(encoded[cursor]==='"'){
+      while(end<encoded.length){if(encoded[end]==='\\'){end+=2;continue;}if(encoded[end++]==='"')break;}
+    }else if(!'{}[],:'.includes(encoded[cursor]))while(end<encoded.length&&!('{}[],:"'.includes(encoded[end])))end++;
+    const token=encoded.slice(cursor,end);let pieces=[token];
+    if(token.length>240){
+      if(token[0]!=='\"')throw Error('generated non-string token exceeds readable line domain');
+      const value=JSON.parse(token),chunks=[];
+      for(let offset=0;offset<value.length;offset+=32)chunks.push(JSON.stringify(value.slice(offset,offset+32)));
+      pieces=['(',...chunks.flatMap((chunk,index)=>index?[ '+',chunk]:[chunk]),')'];
+    }
+    for(const piece of pieces){if(line.length+piece.length>120){lines.push(line);line='';}line+=piece;}cursor=end;
+  }
+  lines.push(line+';');return '// Generated source-qualified native AST programs. Unknown algorithms remain refused.\n'+lines.join('\n')+'\n';
 }
-
 if(process.argv[1]===new URL(import.meta.url).pathname){
 
   const path='rust/src/summarization/mod.rs',
@@ -389,7 +401,12 @@ source=fs.readFileSync(root+'/'+path,
 const generated=generate(source);
 const scalars=generateScalars(source);
 const predicates=generateEnumPredicates(root);
-const combinedPrograms=[...generated.programs,...scalars.programs,...predicates.programs];
+const combinedPrograms=[...generated.programs,...scalars.programs,...predicates.programs,...generateNativeRecords(root).programs];
+for(const binding of [...generateNativeOptions(root).programs,...generateNativeBorrowedConstants(root).programs]){
+ const previous=combinedPrograms.find(program=>program.path===binding.path);
+ if(previous&&!isDeepStrictEqual(previous,binding))throw Error('ambiguous generated native path');
+ if(!previous)combinedPrograms.push(binding);
+}
 
 const output=directory+'/generated-native-programs.mjs';
 

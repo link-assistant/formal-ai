@@ -1,7 +1,35 @@
+import {isDeepStrictEqual as exactRecordEquality} from 'node:util';
+const sourceOwnedRecordValues=new WeakMap();
 // Typed expressions for the supported native specification subset. Each
 // operation calls its actual JavaScript twin; unknown types stay unsupported.
 import { isDeepStrictEqual } from 'node:util';
 const sourceOwnedEnumValues=new WeakMap();
+const sourceOwnedOptionValues=new WeakMap();
+function ascii(value){if(typeof value!=='string'||/[^\x00-\x7f]/u.test(value))throw Error('unknown non-ASCII native string input');return value;}
+function option(value,binding){
+ const result=Object.freeze(Object.create(null));
+ sourceOwnedOptionValues.set(result,{value,enumPath:binding.enumPath,sourceWitnesses:binding.sourceWitnesses});return result;
+}
+function optionBinding(context,enumPath){
+ const matching=[...context.calls.values()].filter(binding=>binding.nativeOptionQualified&&binding.kind==='nativeOptionStringParse'&&binding.enumPath===enumPath);
+ if(!matching.length)throw Error('unknown Option payload source');return matching[0];
+}
+export function contextualOptions(left,right,context){
+ for(const [value,other] of [[left,right],[right,left]])if(value.type==='option:empty'){
+  if(!other.type.startsWith('option:enum:'))throw Error('unknown native None payload type');
+  value.binding=optionBinding(context,other.type.slice('option:enum:'.length));value.type=other.type;
+ }
+}
+export function nativeEquality(left,right,type){
+ if(type?.includes('option:')&&!type.startsWith('option:enum:'))throw Error('unknown native Option collection equality');
+ if(!type?.startsWith('option:enum:'))return isDeepStrictEqual(left,right);
+ const first=sourceOwnedOptionValues.get(left),second=sourceOwnedOptionValues.get(right),enumPath=type.slice('option:enum:'.length);
+ if(!first||!second||first.enumPath!==enumPath||second.enumPath!==enumPath||!isDeepStrictEqual(first.sourceWitnesses,second.sourceWitnesses))throw Error('unowned/foreign native Option equality');
+ if(first.value===null||second.value===null)return first.value===second.value;
+ const firstEnum=sourceOwnedEnumValues.get(first.value),secondEnum=sourceOwnedEnumValues.get(second.value);
+ if(!firstEnum||!secondEnum||firstEnum.enumPath!==enumPath||secondEnum.enumPath!==enumPath)throw Error('unowned native Option payload');
+ return firstEnum.variant===secondEnum.variant;
+}
 import { compileNaturalLanguageSkill } from '../../js/agentic/crate/skill_compiler.mjs';
 import { symbolicFromWorker } from '../../js/server/solve.mjs';
 import { parseLino } from '../../js/server/lino.mjs';
@@ -69,15 +97,66 @@ function operator(tokens, sign) {
 }
 
 /** A typed expression, never a guessed prompt or synthesized expected value. */
+function qualifyRecordInitializer(type, value, owner) {
+  if (type.kind === 'integer') {
+    const literal = value.kind === 'literal' && value.type === 'number';
+    const constant = value.kind === 'nativeValue' && value.binding.kind === 'nativeConstant'
+      && value.binding.nativeSourceQualified && value.binding.nativeType === type.native;
+    const integer = literal ? value.value : constant ? value.binding.value : undefined;
+    if (!Number.isSafeInteger(integer) || Object.is(integer, -0) || integer < 0
+      || integer > (type.native === 'u8' ? 255 : 65535)) throw Error('unknown native integer field provenance or bounds');
+    return;
+  }
+  if (type.kind === 'boolean') {
+    if (value.kind === 'literal' && value.type === 'boolean' && typeof value.value === 'boolean') return;
+    if (value.kind === 'nativeValue' && value.binding.kind === 'nativeConstant'
+      && value.binding.nativeSourceQualified && value.binding.nativeType === 'bool') return;
+    throw Error('unknown native boolean field provenance');
+  }
+  if (type.kind === 'string') {
+    if (value.kind !== 'method' || !['to_owned', 'to_string'].includes(value.name)
+      || value.args.length || value.target.kind !== 'literal' || value.target.type !== 'string') {
+      throw Error('unknown owned String initializer or native move');
+    }
+    return;
+  }
+  if (type.kind === 'tuple') {
+    if (value.kind !== 'tuple' || value.values.length !== type.elements.length) throw Error('unknown native tuple initializer');
+    value.values.forEach((element, index) => qualifyRecordInitializer(type.elements[index], element, owner));
+    return;
+  }
+  if (type.kind === 'record') {
+    const fresh = value.kind === 'record' || (value.kind === 'call' && value.binding.kind === 'nativeRecordDefault');
+    if (!fresh || !value.binding?.nativeRecordQualified || value.type !== type.type
+      || !isDeepStrictEqual(value.binding.sourceWitnesses, owner.sourceWitnesses)) throw Error('unknown nested record initializer ownership');
+    return;
+  }
+  throw Error('unknown native field initializer type');
+}
+
 export function expression(tokens, context) {
   if (!tokens.length) throw new Error('empty native expression');
   if (tokens[0].text === '&') return expression(tokens.slice(1), context);
+  if(tokens[0].kind==='word'&&tokens[0].text==='None'){
+    if(tokens.length!==1||context.environment.has('None'))throw Error('unknown/shadowed None');
+    return {kind:'nativeOptionNone',type:'option:empty'};
+  }
+  if(tokens[0].kind==='word'&&tokens[0].text==='Some'){
+    if(context.environment.has('Some')||tokens[1]?.text!=='('||close(tokens,1)!==tokens.length-1)throw Error('unknown/shadowed Some');
+    const parts=split(tokens.slice(2,-1));if(parts.length!==1)throw Error('unknown Some arity');
+    if(parts[0][0]?.text==='&')throw Error('unknown borrowed Option payload');
+    const value=expression(parts[0],context);if(!value.type.startsWith('enum:')||value.nativeBorrowed)throw Error('unknown Option payload ownership');
+    const binding=optionBinding(context,value.type.slice(5));
+    return {kind:'nativeOptionSome',value,binding,type:'option:'+value.type};
+  }
   for (const sign of ['||', '&&', '==', '!=', '<=', '>=']) {
     const at = operator(tokens, sign);
     if (at >= 0) {
       const left = expression(tokens.slice(0, at), context);
       const right = expression(tokens.slice(at + 2), context);
+      contextualOptions(left,right,context);
       requireType(right.type, left.type);
+      if(left.type.startsWith('record:formal_ai::'))throw Error('unknown native record equality');
       if (sign === '||' || sign === '&&') requireType(left.type, 'boolean');
       if (sign === '<=' || sign === '>=') requireType(left.type, 'number');
       return { kind: 'binary', sign, left, right, type: 'boolean' };
@@ -104,11 +183,15 @@ export function expression(tokens, context) {
     if (!comma && parts.length === 1) value = expression(parts[0], context);
     else {
       const values = parts.map(part => expression(part, context));
+      if(values.some(entry=>entry.type.includes('option:')))throw Error('unknown native Option collection ownership');
+      if(values.some(entry=>entry.type.includes('record:formal_ai::')))throw Error('untracked native record collection ownership');
       value = { kind: 'tuple', values, type: 'tuple:' + JSON.stringify(values.map(entry => entry.type)) };
     }
   } else if (first.text === '[') {
     cursor = close(tokens, 0) + 1;
     const values = split(tokens.slice(1, cursor - 1)).map(part => expression(part, context));
+    if(values.some(entry=>entry.type.includes('option:')))throw Error('unknown native Option collection ownership');
+      if(values.some(entry=>entry.type.includes('record:formal_ai::')))throw Error('untracked native record collection ownership');
     for (const entry of values) requireType(entry.type, values[0].type);
     value = { kind: 'array', values, type: 'vec:' + (values[0]?.type ?? 'empty') };
   } else if (first.kind === 'word') {
@@ -123,8 +206,12 @@ export function expression(tokens, context) {
       const binding = context.calls.get(name);
       if (!binding) throw new Error('unsupported native call ' + name);
       if(binding.nativeSourceQualified&&context.environment.has(first.text))throw Error('native scalar path head is shadowed');
-      if(['nativeConstant','nativeEnumVariant'].includes(binding.kind))throw new Error('native scalar value is not callable');
+      if(['nativeConstant','nativeEnumVariant','nativeRecordConstructor'].includes(binding.kind))throw new Error('native scalar value is not callable');
       const args = split(tokens.slice(cursor + 1, end)).map(part => expression(part, context));
+      if(binding.kind==='nativeOptionStringParse'){
+        if(args.length!==1||!(args[0].kind==='literal'&&args[0].type==='string'||args[0].kind==='call'&&args[0].binding.kind==='nativeEnumStringMatch'))throw Error('unknown borrowed native string argument ownership');
+        if(args[0].kind==='literal')ascii(args[0].value);
+      }
       const expected = binding.signature ?? (binding.kind === 'solver' ? [] : ['string']);
       if (args.length !== expected.length) throw new Error('native call arity ' + name);
       args.forEach((arg, index) => requireType(arg.type, expected[index]));
@@ -135,15 +222,20 @@ export function expression(tokens, context) {
       const schema = context.schemas.get(name);
       if (!schema) throw new Error('unknown native record ' + name);
       const end = close(tokens, cursor);
+      const recordBinding = context.calls.get(name);
       const entries = split(tokens.slice(cursor + 1, end)).map(part => {
         if (part[0]?.kind !== 'word' || part[1]?.text !== ':') throw new Error('unsupported record field');
         const entry = expression(part.slice(2), context);
-        requireType(entry.type, schema[part[0].text]);
+        if(!Object.hasOwn(schema,part[0].text))throw Error('undeclared native record field'); requireType(entry.type, schema[part[0].text]);
+        if (recordBinding?.nativeRecordQualified) qualifyRecordInitializer(recordBinding.nativeFields[part[0].text], entry, recordBinding);
         return [part[0].text, entry];
       });
       if (new Set(entries.map(([key]) => key)).size !== entries.length
         || entries.length !== Object.keys(schema).length) throw new Error('incomplete native record');
-      value = { kind: 'record', entries, type: 'record:' + name };
+      const binding=context.calls.get(name);
+      if(binding?.nativeRecordQualified&&context.environment.has(first.text))throw Error('shadowed native record owner');
+      if(binding?.nativeRecordQualified&&entries.some(([,entry])=>entry.kind==='reference'&&entry.type.startsWith('record:')))throw Error('unknown native record field move');
+      value = { kind: 'record', entries, ...(binding?.nativeRecordQualified?{binding}:{}), type: binding?.returnType??'record:' + name };
       cursor = end + 1;
     } else {
       const generated=context.calls.get(name);
@@ -153,7 +245,7 @@ export function expression(tokens, context) {
       } else {
         const binding = context.environment.get(name);
         if (!binding) throw new Error('unbound native value ' + name);
-        value = { kind: 'reference', name, type: binding.type, origin: binding.origin };
+        value = { kind: 'reference', name, type: binding.type, origin: binding.origin, ...(binding.nativeBorrowed?{nativeBorrowed:true}:{}) };
       }
     }
   } else throw new Error('unsupported native expression ' + first.text);
@@ -162,18 +254,25 @@ export function expression(tokens, context) {
     const name = tokens[cursor + 1].text;
     cursor += 2;
     if (tokens[cursor]?.text !== '(') {
-      const schema = value.type.startsWith('record:') ? context.schemas.get(value.type.slice(7)) : fields[value.type];
-      const type = schema?.[name];
+      const schema = value.type.startsWith('record:') ? (context.schemas.get(value.type.slice(7))??context.calls.get(value.type.slice(7))?.fields) : fields[value.type];
+      const type = schema&&Object.hasOwn(schema,name)?schema[name]:undefined;
       if (!type) throw new Error(`unsupported native field ${value.type}.${name}`);
+      if(value.type.startsWith('record:formal_ai::')&&!['number','boolean'].includes(type))throw Error('unknown native record field move');
       value = { kind: 'field', target: value, name, type };
       continue;
     }
     const end = close(tokens, cursor);
-    if(value.type.startsWith('enum:')) {
-      const binding=context.calls.get(value.type.slice(5)+'::'+name);
-      if(binding?.kind!=='nativeEnumScalarMatch'||end!==cursor+1)throw new Error('unknown native enum scalar method');
+    if(value.type.startsWith('record:formal_ai::')){
+      const binding=context.calls.get(value.type.slice(7)+'::'+name);
+      if(!['nativeRecordBorrow','nativeRecordCopyRead'].includes(binding?.kind)||end!==cursor+1)throw Error('unknown native record borrowed method');
       value={kind:'call',binding,args:[value],type:binding.returnType};cursor=end+1;continue;
     }
+    if(value.type.startsWith('enum:')) {
+      const binding=context.calls.get(value.type.slice(5)+'::'+name);
+      if(!['nativeEnumScalarMatch','nativeEnumStringMatch'].includes(binding?.kind)||end!==cursor+1)throw new Error('unknown native enum scalar method');
+      value={kind:'call',binding,args:[value],type:binding.returnType};cursor=end+1;continue;
+    }
+    if(value.type.startsWith('option:enum:'))throw Error('unknown native Option method contract');
     const parts = split(tokens.slice(cursor + 1, end));
     let args;
     let type;
@@ -232,6 +331,7 @@ export async function evaluate(node, environment, runtime) {
   if (node.kind === 'record') {
     const result = {};
     for (const [key, value] of node.entries) result[key] = await evaluate(value, environment, runtime);
+    if(node.binding) return ownedRecord(node.binding,result);
     return result;
   }
   if (node.kind === 'not') return !(await evaluate(node.value, environment, runtime));
@@ -243,8 +343,14 @@ export async function evaluate(node, environment, runtime) {
     if (node.sign === '||' || node.sign === '&&') return right;
     if (node.sign === '<=') return left <= right;
     if (node.sign === '>=') return left >= right;
-    const equal = isDeepStrictEqual(left, right);
+    const equal = nativeEquality(left,right,node.left.type);
     return node.sign === '==' ? equal : !equal;
+  }
+  if(node.kind==='nativeOptionNone')return option(null,node.binding);
+  if(node.kind==='nativeOptionSome'){
+    const value=await evaluate(node.value,environment,runtime),owned=sourceOwnedEnumValues.get(value);
+    if(!owned||owned.enumPath!==node.binding.enumPath||!isDeepStrictEqual(owned.sourceWitnesses,node.binding.sourceWitnesses))throw Error('unowned/foreign Some payload');
+    return option(value,node.binding);
   }
   if(node.kind==='nativeValue') {
     const binding=node.binding;
@@ -259,13 +365,24 @@ export async function evaluate(node, environment, runtime) {
   if (node.kind === 'call') {
     const args = await argumentsOf(node.args, environment, runtime);
     const kind = node.binding.kind;
+    if(kind==='nativeRecordDefault'){
+      if(args.length)throw Error('unknown native default arity');
+      const result=ownedRecord(node.binding,{...node.binding.defaults});runtime.observations.push({operation:node.binding.path,result});return result;
+    }
+    if(kind==='nativeRecordBorrow'||kind==='nativeRecordCopyRead'){
+      if(args.length!==1)throw Error('unknown native record borrow arity');
+      const owner=sourceOwnedRecordValues.get(args[0]);
+      if(!owner||owner.recordPath!==node.binding.recordPath||!exactRecordEquality(owner.sourceWitnesses,node.binding.sourceWitnesses))throw Error('unowned native record borrow');
+      if(kind==='nativeRecordCopyRead'&&(node.binding.copy!==true||owner.copy!==true))throw Error('unqualified native by-value record Copy capability');
+      const result=borrowedPrimitive(node.binding.body,args[0]);runtime.observations.push({operation:node.binding.path,result});return result;
+    }
     if(kind==='nativeEnumDefault'){
       if(args.length!==0)throw Error('unknown derived enum default arity');
       const value=Object.freeze({nativeEnum:node.binding.enumPath,variant:node.binding.variant});
       sourceOwnedEnumValues.set(value,{enumPath:node.binding.enumPath,variant:node.binding.variant,sourceWitnesses:node.binding.sourceWitnesses});
       runtime.observations.push({operation:node.binding.path,result:value});return value;
     }
-    if(kind==='nativeEnumScalarMatch') {
+    if(kind==='nativeEnumScalarMatch'||kind==='nativeEnumStringMatch') {
       if(args.length!==1)throw new Error('unknown native enum arity');
       const owned=sourceOwnedEnumValues.get(args[0]);
       if(!owned||Object.keys(args[0]).length!==2||args[0].nativeEnum!==owned.enumPath||args[0].variant!==owned.variant||owned.enumPath!==node.binding.enumPath||!isDeepStrictEqual(owned.sourceWitnesses,
@@ -274,6 +391,13 @@ node.binding.sourceWitnesses))throw new Error('unowned or foreign native enum va
       const match=node.binding.cases.find(entry=>entry.variant===owned.variant);
       if(!match)throw new Error('unknown source enum variant');
       runtime.observations.push({operation:node.binding.path,arguments:args,result:match.value});return match.value;
+    }
+    if(kind==='nativeOptionStringParse'){
+      if(args.length!==1)throw Error('unknown native string parse arity');let input=ascii(args[0]);
+      if(node.binding.normalized)input=input.replace(/^[\x09-\x0d\x20]+|[\x09-\x0d\x20]+$/gu,'').replace(/[A-Z]/gu,character=>String.fromCharCode(character.charCodeAt(0)+32));
+      const selected=node.binding.cases.find(entry=>entry.input===input);let value=null;
+      if(selected){value=Object.freeze({nativeEnum:node.binding.enumPath,variant:selected.variant});sourceOwnedEnumValues.set(value,{enumPath:node.binding.enumPath,variant:selected.variant,sourceWitnesses:node.binding.sourceWitnesses});}
+      const result=option(value,node.binding);runtime.observations.push({operation:node.binding.path,arguments:args,result});return result;
     }
     if (kind === 'substitutionProgram') {
       if (args.length !== 2 || args.some(value => typeof value !== 'string')) throw new Error('invalid observed string arguments');
@@ -356,4 +480,34 @@ async function solve(host, prompt, history, runtime) {
   const answer = symbolicFromWorker(observed, history);
   runtime.observations.push({ operation: 'solve', prompt, history, answer });
   return answer;
+}
+
+function ownedRecord(binding,value){
+  if(Object.keys(value).length!==Object.keys(binding.nativeFields).length)throw Error('unknown native record schema');
+  for(const [field,type]of Object.entries(binding.nativeFields))validateRecordField(type,value[field],binding.sourceWitnesses);
+  Object.freeze(value);sourceOwnedRecordValues.set(value,{recordPath:binding.recordPath,sourceWitnesses:binding.sourceWitnesses,copy:binding.copy===true});return value;
+}
+function validateRecordField(type,value,witnesses){
+  if(type.kind==='integer'){if(!Number.isInteger(value)||Object.is(value,-0)||value<0||value>(type.native==='u8'?255:65535))throw Error('unknown native integer field range');return;}
+  if(type.kind==='boolean'){if(typeof value!=='boolean')throw Error('unknown native bool field');return;}
+  if(type.kind==='string'){
+    if(typeof value!=='string')throw Error('unknown native String field');
+    for(const character of value){const point=character.codePointAt(0);if(point>=0xd800&&point<=0xdfff)throw Error('malformed native String field');}return;
+  }
+  if(type.kind==='tuple'){if(!Array.isArray(value)||value.length!==type.elements.length)throw Error('unknown native tuple field');type.elements.forEach((element,index)=>validateRecordField(element,value[index],witnesses));Object.freeze(value);return;}
+  if(type.kind==='record'){
+    const owner=sourceOwnedRecordValues.get(value);if(!owner||'record:'+owner.recordPath!==type.type||!exactRecordEquality(owner.sourceWitnesses,witnesses)||!type.copy)throw Error('unknown native nested record ownership');return;
+  }
+  throw Error('unknown native record field capability');
+}
+function borrowedPrimitive(node,owner){
+  if(node.kind==='literal')return node.value;
+  if(node.kind==='projection')return node.path.reduce((value,key)=>value[key],owner);
+  const left=borrowedPrimitive(node.left,owner);
+  if(node.operator==='&&'&&!left)return false;if(node.operator==='||'&&left)return true;
+  const right=borrowedPrimitive(node.right,owner);
+  if(node.operator==='&&'||node.operator==='||')return right;
+  if(node.operator==='>')return left>right;if(node.operator==='<')return left<right;
+  if(node.operator==='==')return left===right;if(node.operator==='!=')return left!==right;
+  throw Error('unknown borrowed primitive operation');
 }
