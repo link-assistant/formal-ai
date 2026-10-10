@@ -87,11 +87,13 @@ jobs:
           ref: ${{ github.sha }}
           persist-credentials: false
       - name: Download single immutable caller artifact by actual ID
-        uses: actions/download-artifact@v8
-        with:
-          artifact-ids: ${{ inputs.artifact-id }}
-          path: .release-fixture/consumer/.release-transfer/binary
-          digest-mismatch: error
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ inputs.artifact-id }}
+          ARTIFACT_NAME: release-fixture-text-${{ github.run_id }}-${{ github.run_attempt }}
+          ARTIFACT_DESTINATION: .release-fixture/consumer/.release-transfer/binary
+          DIGEST_MISMATCH: error
+        run: node scripts/release-runtime-fixture.mjs download
       - name: Import controlled text tar and verify exact independent fixture identity
         id: consume
         env:
@@ -109,8 +111,11 @@ jobs:
           retention-days: 3
   fixture-final:
     name: Fixture final ${{ inputs.active && 'active' || 'inactive' }}
-    needs: [lease-holder, artifact-consumer]
-    if: ${{ always() && (!inputs.active || (needs.lease-holder.result == 'success' && needs.artifact-consumer.result == 'success')) }}
+    needs:
+      - lease-holder
+      - artifact-consumer
+    if: ${{ always() && (!inputs.active || (needs.lease-holder.result == 'success'
+      && needs.artifact-consumer.result == 'success')) }}
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     outputs:
@@ -133,7 +138,8 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: release-fixture-final-${{ inputs.active && 'active' || 'inactive' }}-${{ github.run_id }}-${{ github.run_attempt }}
+          name: release-fixture-final-${{ inputs.active && 'active' || 'inactive' }}-${{
+            github.run_id }}-${{ github.run_attempt }}
           path: .release-fixture/final-${{ inputs.active && 'active' || 'inactive' }}.json
           if-no-files-found: error
           retention-days: 3

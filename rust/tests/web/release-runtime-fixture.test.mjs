@@ -7,6 +7,15 @@ const root = new URL('../../../', import.meta.url);
 const caller = () => YAML.parse(readFileSync(new URL('.github/workflows/release-runtime-fixture.yml', root), 'utf8'));
 const callee = () => YAML.parse(readFileSync(new URL('.github/workflows/release-runtime-fixture-callee.yml', root), 'utf8'));
 const helper = () => readFileSync(new URL('scripts/release-runtime-fixture.mjs', root), 'utf8');
+function downloadInputs(step) {
+  assert.equal(step.run, 'node scripts/release-runtime-fixture.mjs download');
+  assert.equal(step.uses, undefined);
+  assert.deepEqual(Object.keys(step.env).sort(), ['ARTIFACT_DESTINATION', 'ARTIFACT_ID', 'ARTIFACT_NAME', 'DIGEST_MISMATCH', 'GH_TOKEN']);
+  assert.equal(step.env.GH_TOKEN, '${{ github.token }}');
+  assert.equal(step.env.DIGEST_MISMATCH, 'error');
+  return { 'artifact-ids': step.env.ARTIFACT_ID, path: step.env.ARTIFACT_DESTINATION,
+    'digest-mismatch': step.env.DIGEST_MISMATCH };
+}
 function validateGraph(parent, child) {
   assert.deepEqual(parent.permissions, {
     contents: 'read',
@@ -47,15 +56,25 @@ function validateGraph(parent, child) {
   assert.equal(parent.jobs['fixture-contender'].concurrency.group, privateGroup);
   assert.equal(parent.jobs['fixture-contender'].concurrency.queue, 'max');
   assert.equal(parent.jobs.observer.needs, 'auto_compile-release');
-  assert.equal(parent.jobs.observer.concurrency, undefined);
+  assert.deepEqual(parent.on.pull_request['branches-ignore'], ['e2e/**']);
+  const ordinaryGroups = new Set();
+  for (const role of ['auto_compile-release', 'observer', 'collect']) {
+    const expected = 'formal-ai-release-fixture-check-' + role + '-${{ github.workflow }}-${{ github.ref }}';
+    assert.deepEqual(parent.jobs[role].concurrency, {group: expected, 'cancel-in-progress': true});
+    assert.notEqual(expected, privateGroup, 'ordinary checks cannot own the private caller lease');
+    ordinaryGroups.add(expected);
+  }
+  assert.equal(ordinaryGroups.size, 3);
   const witness = parent.jobs.observer.steps.find(step => step.name === 'Download actual running callee witness by ID');
-  assert.equal(witness.with['artifact-ids'], '${{ steps.observe.outputs.witness_id }}');
-  assert.equal(witness.with.path, '.release-fixture/observer-start');
+  assert.equal(downloadInputs(witness)['artifact-ids'], '${{ steps.observe.outputs.witness_id }}');
+  assert.equal(downloadInputs(witness).path, '.release-fixture/observer-start');
+  assert.equal(witness.env.ARTIFACT_NAME, 'release-fixture-lease-start-${{ github.run_id }}-${{ github.run_attempt }}');
   assert.equal(child.jobs['lease-holder'].if, 'inputs.active');
   assert.equal(child.jobs['artifact-consumer'].if, 'inputs.active');
   assert.equal(child.jobs['artifact-consumer'].needs, 'lease-holder');
   const download = child.jobs['artifact-consumer'].steps.find(step => step.name === 'Download single immutable caller artifact by actual ID');
-  assert.deepEqual(download.with, {
+  assert.equal(download.env.ARTIFACT_NAME, 'release-fixture-text-${{ github.run_id }}-${{ github.run_attempt }}');
+  assert.deepEqual(downloadInputs(download), {
     'artifact-ids': '${{ inputs.artifact-id }}',
     path: '.release-fixture/consumer/.release-transfer/binary',
     'digest-mismatch': 'error'
@@ -83,7 +102,7 @@ function validateGraph(parent, child) {
             ref: '${{ github.sha }}',
             'persist-credentials': false
           });
-          assert.ok(!step.run || /^node scripts\/release-runtime-fixture\.mjs (?:produce|consume|lease-start|wait-queue|observe-start|verify-start|finalize|contender|collect)$/.test(step.run));
+          assert.ok(!step.run || /^node scripts\/release-runtime-fixture\.mjs (?:download|produce|consume|lease-start|wait-queue|observe-start|verify-start|finalize|contender|collect)$/.test(step.run));
           if (step.uses === 'actions/download-artifact@v8') for (const forbidden of ['github-token', 'repository', 'run-id', 'pattern', 'name']) assert.equal(step.with[forbidden], undefined);
         }
       }
@@ -170,7 +189,7 @@ test('credential routing, production group, nested lease and spoofed or ungated 
      (p,
      c) => c.jobs['artifact-consumer'].if = undefined,
      (p,
-     c) => c.jobs['artifact-consumer'].steps.find(step => step.uses === 'actions/download-artifact@v8').with['run-id'] = 'other-run',
+     c) => c.jobs['artifact-consumer'].steps.find(step => step.run === 'node scripts/release-runtime-fixture.mjs download').env.ARTIFACT_RUN = 'other-run',
      (p,
      c) => c.on.workflow_call.outputs['fixture-marker'].value = 'guessed',
      (p,
@@ -180,5 +199,22 @@ test('credential routing, production group, nested lease and spoofed or ungated 
       c = structuredClone(child);
     mutate(p, c);
     assert.throws(() => validateGraph(p, c));
+  }
+});
+
+test('ordinary check groups preserve private lease isolation and e2e filtering', () => {
+  for (const role of ['auto_compile-release', 'observer', 'collect']) {
+    for (const change of [
+      p => delete p.jobs[role].concurrency,
+      p => p.jobs[role].concurrency.group = p.jobs['active-fixture'].concurrency.group,
+      p => p.jobs[role].concurrency['cancel-in-progress'] = false,
+      p => p.jobs[role].concurrency.group = 'formal-ai-repository-writes'
+    ]) {
+      const p = caller(); change(p); assert.throws(() => validateGraph(p, callee()));
+    }
+  }
+  for (const value of [undefined, [], ['other/**']]) {
+    const p = caller(); p.on.pull_request['branches-ignore'] = value;
+    assert.throws(() => validateGraph(p, callee()));
   }
 });

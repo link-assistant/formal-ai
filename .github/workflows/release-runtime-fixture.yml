@@ -1,12 +1,31 @@
 name: Harmless reusable release runtime fixture
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types:
+      - opened
+      - synchronize
+      - reopened
     paths:
-      - '.github/workflows/release-runtime-fixture*.yml'
-      - 'scripts/release-runtime-fixture.mjs'
-      - 'scripts/release-stage-transfer.mjs'
-      - 'rust/tests/web/release-runtime-fixture.test.mjs'
+      - .github/workflows/release-runtime-fixture*.yml
+      - scripts/release-runtime-fixture.mjs
+      - scripts/release-stage-transfer.mjs
+      - rust/tests/web/release-runtime-fixture.test.mjs
+      - scripts/github-artifact-by-id.mjs
+      - rust/tests/web/github-artifact-by-id.test.mjs
+    branches-ignore:
+      - e2e/**
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: Run the harmless read-only fixture checks
+        type: choice
+        options:
+          - checks
+        default: checks
+      pull-request:
+        description: Pull request whose harmless checks were dispatched
+        type: string
+        default: ""
 permissions:
   contents: read
   actions: read
@@ -49,6 +68,10 @@ jobs:
           path: .release-fixture/producer.json
           if-no-files-found: error
           retention-days: 3
+    concurrency:
+      group: formal-ai-release-fixture-check-auto_compile-release-${{ github.workflow
+        }}-${{ github.ref }}
+      cancel-in-progress: true
   active-fixture:
     name: Active reusable fixture
     needs: auto_compile-release
@@ -74,7 +97,8 @@ jobs:
       contents: read
       actions: read
     concurrency:
-      group: formal-ai-release-fixture-inactive-${{ github.run_id }}-${{ github.run_attempt }}
+      group: formal-ai-release-fixture-inactive-${{ github.run_id }}-${{
+        github.run_attempt }}
       queue: max
     uses: ./.github/workflows/release-runtime-fixture-callee.yml
     with:
@@ -82,9 +106,9 @@ jobs:
       source: ${{ needs.auto_compile-release.outputs.source }}
       tree: ${{ needs.auto_compile-release.outputs.tree }}
       compiler-marker-sha: ${{ needs.auto_compile-release.outputs.compiler_marker_sha }}
-      artifact-id: ''
-      bundle-sha: ''
-      descriptor-sha: ''
+      artifact-id: ""
+      bundle-sha: ""
+      descriptor-sha: ""
   observer:
     name: Observe active callee before queueing contender
     needs: auto_compile-release
@@ -101,11 +125,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: node scripts/release-runtime-fixture.mjs observe-start
       - name: Download actual running callee witness by ID
-        uses: actions/download-artifact@v8
-        with:
-          artifact-ids: ${{ steps.observe.outputs.witness_id }}
-          path: .release-fixture/observer-start
-          digest-mismatch: error
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ARTIFACT_ID: ${{ steps.observe.outputs.witness_id }}
+          ARTIFACT_NAME: release-fixture-lease-start-${{ github.run_id }}-${{
+            github.run_attempt }}
+          ARTIFACT_DESTINATION: .release-fixture/observer-start
+          DIGEST_MISMATCH: error
+        run: node scripts/release-runtime-fixture.mjs download
       - name: Verify actual live callee witness identity
         run: node scripts/release-runtime-fixture.mjs verify-start
       - name: Upload independent observer receipt
@@ -116,9 +143,15 @@ jobs:
           path: .release-fixture/observer.json
           if-no-files-found: error
           retention-days: 3
+    concurrency:
+      group: formal-ai-release-fixture-check-observer-${{ github.workflow }}-${{
+        github.ref }}
+      cancel-in-progress: true
   fixture-contender:
     name: Fixture private queued contender
-    needs: [auto_compile-release, observer]
+    needs:
+      - auto_compile-release
+      - observer
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     concurrency:
@@ -140,7 +173,11 @@ jobs:
           retention-days: 3
   collect:
     name: Verify actual fixture service outputs and job order
-    needs: [auto_compile-release, active-fixture, inactive-fixture, fixture-contender]
+    needs:
+      - auto_compile-release
+      - active-fixture
+      - inactive-fixture
+      - fixture-contender
     if: always()
     runs-on: ubuntu-24.04
     timeout-minutes: 5
@@ -169,3 +206,7 @@ jobs:
           path: .release-fixture/collected.json
           if-no-files-found: error
           retention-days: 3
+    concurrency:
+      group: formal-ai-release-fixture-check-collect-${{ github.workflow }}-${{
+        github.ref }}
+      cancel-in-progress: true

@@ -6,6 +6,7 @@ import { resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
+import { downloadArtifact } from './github-artifact-by-id.mjs';
 import { seal, importBundle } from './release-stage-transfer.mjs';
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const marker = 'fixture-no-native-compiler';
@@ -342,8 +343,23 @@ async function collect() {
     compilerInvoked: false
   }));
 }
+function downloadFixtureArtifact() {
+  const context = identity();
+  const routes = {
+    observer: ['release-fixture-lease-start-', '.release-fixture/observer-start'],
+    'artifact-consumer': ['release-fixture-text-', '.release-fixture/consumer/.release-transfer/binary']
+  };
+  const route = routes[process.env.GITHUB_JOB];
+  assert.ok(route, 'only fixture observer and text consumer may download');
+  assert.equal(process.env.ARTIFACT_NAME, route[0] + context.run + '-' + context.attempt);
+  assert.equal(process.env.ARTIFACT_DESTINATION, route[1]);
+  assert.equal(process.env.DIGEST_MISMATCH, 'error');
+  return downloadArtifact({ repository: context.repository, id: process.env.ARTIFACT_ID,
+    run: context.run, head: context.eventHead, name: process.env.ARTIFACT_NAME }, route[1]);
+}
 async function main(mode) {
-  assert.ok(['produce', 'consume', 'lease-start', 'wait-queue', 'observe-start', 'verify-start', 'finalize', 'contender', 'collect'].includes(mode), 'fixed fixture modes only');
+  assert.ok(['download', 'produce', 'consume', 'lease-start', 'wait-queue', 'observe-start', 'verify-start', 'finalize', 'contender', 'collect'].includes(mode), 'fixed fixture modes only');
+  if (mode === 'download') return downloadFixtureArtifact();
   if (mode === 'produce') return produce();
   if (mode === 'consume') return consume();
   if (mode === 'observe-start') return observeStart();
