@@ -57,11 +57,30 @@ function importedCalls(tokens) {
 }
 
 
+function declarationNames(tokens) {
+  const names = [];
+  for (let index = 0; index < tokens.length; index += 1) {
+    const token = tokens[index];
+    if (token.kind === 'punct' && ['{', '[', '('].includes(token.text)) {
+      index = close(tokens, index);
+      continue;
+    }
+    const name = tokens[index + 1];
+    if (token.kind === 'word' && name?.kind === 'word'
+      && ['enum', 'struct', 'type', 'mod', 'fn', 'const', 'static'].includes(token.text)) names.push(name.text);
+  }
+  return names;
+}
+
 function contextOf(source, file, root) {
   const tokens = tokenize(source);
   const calls = importedCalls(tokens);
-  for(const [index,token] of tokens.entries())if(['enum','struct','type','mod','fn','const','static'].includes(token.text)&&(calls.importedAliases?.has(tokens[index+1]?.text)||tokens[index+1]?.text==='formal_ai')) {
-    const alias=tokens[index+1].text;for(const [name,binding] of [...calls])if(name===alias||name.startsWith(alias+'::')||(alias==='formal_ai'&&binding.nativeSourceQualified))calls.delete(name);
+  for (const alias of declarationNames(tokens)) {
+    if (!calls.importedAliases?.has(alias) && alias !== 'formal_ai') continue;
+    for (const [name, binding] of [...calls]) {
+      if (name === alias || name.startsWith(alias + '::')
+        || (alias === 'formal_ai' && binding.nativeSourceQualified)) calls.delete(name);
+    }
   }
   const environment = new Map();
   const schemas = new Map();

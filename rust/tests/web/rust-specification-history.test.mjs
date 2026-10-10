@@ -173,3 +173,36 @@ test('changed producer identity stops before any worker operation', async () => 
   assert.deepEqual(result.observations, []);
   assert.equal(result.failure, 'stale native fixture identity');
 });
+
+
+test('only declarations in the imported callable scope shadow free history bindings', () => {
+  const call = '#[test] fn probe(){let reply=route("Hi",&[]);assert_eq!(reply.intent,"greeting");}';
+  const prefix = 'use formal_ai::solve_with_history as route; ';
+  for (const owner of [
+    'impl Unrelated {fn route(value:&str)->SymbolicAnswer{unknown(value)}}',
+    'trait Unrelated {fn route(value:&str)->SymbolicAnswer;}',
+    'mod unrelated {pub fn route(value:&str)->SymbolicAnswer{unknown(value)}}',
+    'fn unrelated(){fn route(value:&str)->SymbolicAnswer{unknown(value)}}',
+  ]) {const parsed=inline(prefix+owner+call);assert.ok(parsed.program,parsed.reason);}
+  for (const owner of [
+    'fn route(value:&str)->SymbolicAnswer{unknown(value)}',
+    'pub fn route(value:&str)->SymbolicAnswer{unknown(value)}',
+    '#[must_use] fn route(value:&str)->SymbolicAnswer{unknown(value)}',
+    'pub const fn route(value:&str)->SymbolicAnswer{unknown(value)}',
+    'struct route;', 'enum route{Only}', 'type route=usize;', 'mod route{}',
+    'const route:usize=0;', 'static route:usize=0;',
+  ]) assert.equal(inline(prefix+owner+call).program,undefined);
+});
+
+
+test('declaration source identity changes invalidate only the pure scope proof', () => {
+  const prefix='use formal_ai::solve_with_history as route; ';
+  const call='#[test] fn probe(){let reply=route("Hi",&[]);assert_eq!(reply.intent,"greeting");}';
+  const valid=prefix+'impl Unrelated{fn route(){unknown()}}'+call;
+  assert.ok(inline(valid).program);
+  for(const declaration of ['pub(crate) fn route(){unknown()}', 'const fn route(){unknown()}',
+    '#[cfg(unknown)] fn route(){unknown()}']) assert.equal(inline(prefix+declaration+call).program,undefined);
+  assert.ok(inline(valid).program);
+  const rooted='#[test] fn probe(){let reply=formal_ai::solve_with_history("Hi",&[]);assert_eq!(reply.intent,"greeting");}';
+  assert.equal(inline('mod formal_ai{} '+rooted).program,undefined);
+});
