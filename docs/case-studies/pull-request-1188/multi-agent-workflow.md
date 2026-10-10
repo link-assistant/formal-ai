@@ -25,6 +25,14 @@ All requirement, code, test and documentation changes go through Formal AI or th
 
 Check JavaScript syntax after changing a module the driver imports, before other agents start a fresh driver. Helper modules must guard executable entry points so importing them cannot apply a draft twice. If an unfinished repair prevents boot, temporarily supply only that module from a known-good committed source through an in-memory Node loader, ask Formal AI to restore the reviewed source, and verify syntax plus an unmasked fresh-process retry. The loader is bootstrap infrastructure; all repository mutations still go through Formal AI. Keep the failed requests and actual tool effects.
 
+## Enforce execution authority before planning effects
+
+Give every independent whole ask an explicit scratch directory and only the adapters it needs. Use `drive(..., {tools, allowedCommands: []})` when Bash is unnecessary. For a reviewed execution step, supply an exact allowlist containing only the inspected command. The maintained JavaScript driver copies the policy before planning, snapshots call arguments, and refuses the complete batch before any effect when a Bash command is unauthorized. The same guard applies to fallthrough plans; retain denied calls and original failures.
+
+Do not rely on prompt instructions or an outer success marker as an execution boundary. Actual T4326 overwrote the version helper, wrote an unauthorized test, invoked local rustc and ran its produced binary despite scratch-only instructions. Treat that original ask as a failure. T2817 restored the exact original source and removed only the independently frozen unauthorized files through Formal AI; full source, binary bytes and tool trace are retained. No autonomous coding credit applies. The later T2827 independent guard-authoring ask also failed; the separately supplied generic driver repair passed22 original and8 new physical controls.
+
+An exact command allowlist authorizes that command; it is not an operating-system sandbox. Review the allowed program and its child commands, and verify actual repository scope, process status and source identities. Never run cargo, rustc, rust-script or generated native binaries locally. Leave native compilation and execution to CI.
+
 ## Commits and push barriers
 
 Create many small, coherent commits as completed pieces become reviewable. Serialize commits with the shared atomic directory lock `/private/tmp/formal-ai-pr1188-commit.lock`: acquire it before reading HEAD or creating the private index, stage only owned files, confirm HEAD still equals the captured base, commit, refresh the default index and release the lock. A private index based on an older HEAD can otherwise revert another agent's committed work. Do not push each individual change.
