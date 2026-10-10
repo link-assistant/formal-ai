@@ -1,0 +1,5 @@
+# Full completed repair originals
+
+This bounded fourth part retains full request, result, process, source and inverse bytes from the completed provider, declaration, source-context, parity, oracle and captured-usage repairs, including all failed attempts. Existing exact compressed objects from earlier parts are reused by their encoded digest. Each logical alias is recorded and every encoded and decoded byte length and SHA-256 is verified.
+
+The incorrect verification filename, incomplete test inventory, readability failure and the genuine NoRead fallback leak remain preserved as failures. Final installed source qualification passes158 provider/fixture controls,18 context controls and45 usage controls; these overlapping runs are not additive unique counts or complete requirement acceptance. This part includes the completed selector and formatter qualifications, while its own running result is excluded until a followup closure. Supplied automation and archive bytes receive zero autonomy, amplification or cost credit. Hosted native compilation, full requirements, NoRead policy repair and production publication remain Pending or Unknown.
