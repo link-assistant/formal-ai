@@ -18,6 +18,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { codeMask } from './check-readable-code.mjs';
 
 const RULES = 'data/meta/dependency-direction.lino';
 
@@ -103,12 +104,17 @@ export function portBypasses(sources, adapters) {
     if (adapters.includes(path)) {
       continue;
     }
-    text.split('\n').forEach((line, index) => {
-      const match = /(?:\bfrom\s+|\bimport\s*\(\s*|\brequire\s*\(\s*)['"]((?:node:[^'"]+)|(?:(?:\.\.\/)+server\/[^'"]+))['"]/u.exec(line);
-      if (match) {
-        found.push({ path, line: index + 1, specifier: match[1] });
-      }
-    });
+    const mask = codeMask(text, 'script');
+    const imports = /(?:\bfrom\s+|\bimport\s*(?:\(\s*|\s+)|\brequire\s*\(\s*)['"]((?:node:[^'"]+)|(?:(?:\.\.\/)+server\/[^'"]+))['"]/gu;
+    for (const match of text.matchAll(imports)) {
+      // The dependency operator must be executable code, never authored data.
+      if (mask[match.index] !== 1) continue;
+      found.push({
+        path,
+        line: text.slice(0, match.index).split('\n').length,
+        specifier: match[1],
+      });
+    }
   }
   return found;
 }
