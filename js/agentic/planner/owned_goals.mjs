@@ -84,6 +84,19 @@ function completeEditFrame(request, spans) {
   return grammar(request.slice(end));
 }
 
+/** Mirrors owns_complete_edit_request: a fully consumed Edit retains source bytes. */
+export function ownsCompleteEditRequest(request) {
+  const literal = literalWriteOwnership(request);
+  if (literal !== null && literalTail(request, literal) && !attributedActionPrefix(request)
+    && contractActionPrologue(request, literal)) return false;
+  const edit = composeEditClauses(request);
+  return edit !== null && edit.spans !== null && completeEditFrame(request, edit.spans);
+}
+
+export function instructionViewForRequest(request) {
+  return ownsCompleteEditRequest(request) ? request : instructionView(request, literalWriteOwnership(request));
+}
+
 /** Mirrors fn goal_ledger: preserve raw UTF16 positions and the existing node's UTF8 source span. */
 export function goalLedger(request) {
   const contract = literalWriteOwnership(request);

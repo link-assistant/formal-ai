@@ -186,6 +186,9 @@ fn literal_write_ownership(request: &str) -> Option<LiteralWriteContract> {
     .then_some(contract)
 }
 pub(in crate::agentic_coding) fn instruction_view_for_request(request: &str) -> String {
+    if owns_complete_edit_request(request) {
+        return request.to_owned();
+    }
     literal_write_ownership(request)
         .and_then(|contract| instruction_view(request, &contract))
         .unwrap_or_else(|| request.to_owned())
@@ -209,6 +212,19 @@ fn complete_edit_frame(request: &str, spans: [(usize, usize); 2]) -> bool {
         end = end.max(next);
     }
     request.get(end..).is_some_and(grammar)
+}
+
+pub(in crate::agentic_coding) fn owns_complete_edit_request(request: &str) -> bool {
+    let literal = literal_write_ownership(request);
+    if literal.as_ref().is_some_and(|contract| {
+        literal_tail(request, contract) && contract_action_prologue(request, contract)
+    }) && !attributed_action_prefix(request)
+    {
+        return false;
+    }
+    compose_edit_clauses(request)
+        .and_then(|edit| edit.spans)
+        .is_some_and(|spans| complete_edit_frame(request, spans))
 }
 
 fn goal_ledger(request: &str) -> Option<Vec<Goal>> {
