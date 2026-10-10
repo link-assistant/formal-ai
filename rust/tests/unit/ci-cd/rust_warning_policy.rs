@@ -2,8 +2,8 @@
 
 use std::fs;
 
-use super::staged_release_operations::release_operation_workflow;
 use super::workflow_fixtures::{ci_surface, desktop_release_workflow};
+use crate::ci_gates::staged_release_operations::release_operation_workflow;
 
 fn read(path: &str) -> String {
     fs::read_to_string(format!("{}/../{}", env!("CARGO_MANIFEST_DIR"), path))

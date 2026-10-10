@@ -39,7 +39,21 @@ function packet() {
   const identity={driverSourceSha256:digest(driverBytes),producerSha256:digest(producerBytes),commit:'a'.repeat(40),tree:'b'.repeat(40),executableSha256:'c'.repeat(64),physicalInputs:{sha256:'d'.repeat(64)},producer:'rust/examples/regenerate_agent_cli_sessions.rs',run:'1',attempt:'1',profile:'release',features:'Cargo default'};
   const profile=projectionDataProfile(producerBytes,[input],identity,driverBytes);
   const empty=Buffer.alloc(0),process={budgetMs:1200000,exitCode:0,signal:null,error:null,stdoutSha256:digest(empty),stderrSha256:digest(empty)};
-  const receipt={schema:'native-session-projection-producer/v1',authority:'not-granted',semanticPassCredit:false,originalAssertionsModifiedByProducer:false,expectedOutputFieldsUsedForGeneration:false,identity,inputs:[input],sessionSchemaSha256:digest(Buffer.from(JSON.stringify(schema))),registrySha256:digest(Buffer.from(path+'\n')),build:process,producerExecution:process,members:[{path,bytes:bytes.length,sha256:digest(bytes)}]};
+  const receipt={schema:'native-session-projection-producer/v1',
+    authority:'not-granted',
+    semanticPassCredit:false,
+    originalAssertionsModifiedByProducer:false,
+    expectedOutputFieldsUsedForGeneration:false,
+    identity,
+    inputs:[input],
+    sessionSchemaSha256:digest(Buffer.from(JSON.stringify(schema))),
+    registrySha256:digest(Buffer.from(path+'\n')),
+    build:process,
+    producerExecution:process,
+    members:[{path,
+    bytes:bytes.length,
+    sha256:digest(bytes)}]};
+
   const entries=[{name:'generated/'+path,bytes,directory:false},{name:'producer-receipt.json',bytes:Buffer.from(JSON.stringify(receipt)),directory:false},...['build.stdout.bin','build.stderr.bin','producer.stdout.bin','producer.stderr.bin'].map(name=>({name,bytes:empty,directory:false}))];
   return {profile,entries,receipt};
 }
@@ -48,7 +62,17 @@ test('profile refuses caller-forged copied profile',()=>{const p=packet();assert
 for(const [name,change] of [
  ['source-identity',r=>r.identity.commit='f'.repeat(40)],['failed-producer',r=>r.producerExecution.exitCode=1],['semantic-credit',r=>r.semanticPassCredit=true],['generated-hash',r=>r.members[0].sha256='e'.repeat(64)],['pinned-input',r=>r.inputs[0].task='foreign'],
 ]) test('archive refuses '+name,()=>{const p=packet();change(p.receipt);p.entries.find(e=>e.name==='producer-receipt.json').bytes=Buffer.from(JSON.stringify(p.receipt));assert.throws(()=>verifyProjectionDataEntries(p.profile,p.entries));});
-test('archive refuses missing duplicate and foreign members',()=>{for(const mutate of [entries=>entries.pop(),entries=>entries.push(entries[0]),entries=>entries.push({name:'../foreign',bytes:Buffer.alloc(0),directory:false})]){const p=packet();mutate(p.entries);assert.throws(()=>verifyProjectionDataEntries(p.profile,p.entries));}});
+test('archive refuses missing duplicate and foreign members',
+  ()=>{for(const mutate of [entries=>entries.pop(),
+  entries=>entries.push(entries[0]),
+  entries=>entries.push({name:'../foreign',
+  bytes:Buffer.alloc(0),
+  directory:false})]){const p=packet();
+  mutate(p.entries);
+  assert.throws(()=>verifyProjectionDataEntries(p.profile,
+  p.entries));
+  }});
+
 test('CI producer refuses local invocation before any cargo or rustc execution',()=>{
  const cwd=fileURLToPath(new URL('../../../',import.meta.url));
  const result=spawnSync(process.execPath,['scripts/generate-native-session-projections.mjs','/tmp/unused-native-data'],{cwd,env:{...process.env,GITHUB_ACTIONS:'false'},encoding:'utf8'});
@@ -57,7 +81,27 @@ test('CI producer refuses local invocation before any cargo or rustc execution',
 
 test('source-derived complete shape refuses missing driver server turns and malformed steps',()=>scratch(directory=>{
  for(const field of ['driver','server','turns']) {const changed={...value};delete changed[field];writeFileSync(join(directory,path),JSON.stringify(changed)+'\n');assert.throws(()=>verifyProjectionDirectory(directory,[input],schema));}
- for(const changed of [{...value,driver:'foreign'},{...value,server:'foreign'},{...value,turns:'1'},{...value,turns:-1},{...value,steps:[{tool:'read_file',arguments:{path:'x'}}]},{...value,steps:[{tool:'read_file',arguments:{path:'x'},result:42}]}]) {writeFileSync(join(directory,path),JSON.stringify(changed)+'\n');assert.throws(()=>verifyProjectionDirectory(directory,[input],schema));}
+ for(const changed of [{...value,
+   driver:'foreign'},
+   {...value,
+   server:'foreign'},
+   {...value,
+   turns:'1'},
+   {...value,
+   turns:-1},
+   {...value,
+   steps:[{tool:'read_file',
+   arguments:{path:'x'}}]},
+   {...value,
+   steps:[{tool:'read_file',
+   arguments:{path:'x'},
+   result:42}]}]) {writeFileSync(join(directory,
+   path),
+   JSON.stringify(changed)+'\n');
+   assert.throws(()=>verifyProjectionDirectory(directory,
+   [input],
+   schema));
+   }
 }));
 test('schema derives types and literal values from source and refuses unsupported source',()=>{
  const changed=sessionSchema(driverBytes.toString().replace('formal-ai in-repo agentic CLI','source-owned alternate driver'));
@@ -68,5 +112,13 @@ test('producer identity refuses zero run and attempt IDs',()=>{
  const p=packet();for(const field of ['run','attempt']) {const identity={...p.receipt.identity,[field]:'0'};assert.throws(()=>projectionDataProfile(Buffer.from(source),[input],identity,driverBytes));}
 });
 test('archive refuses missing or excessive process budgets',()=>{
- for(const budgetMs of [undefined,0,1200001]) {const p=packet();p.receipt.producerExecution={...p.receipt.producerExecution,budgetMs};p.entries.find(e=>e.name==='producer-receipt.json').bytes=Buffer.from(JSON.stringify(p.receipt));assert.throws(()=>verifyProjectionDataEntries(p.profile,p.entries));}
+ for(const budgetMs of [undefined,
+   0,
+   1200001]) {const p=packet();
+   p.receipt.producerExecution={...p.receipt.producerExecution,
+   budgetMs};
+   p.entries.find(e=>e.name==='producer-receipt.json').bytes=Buffer.from(JSON.stringify(p.receipt));
+   assert.throws(()=>verifyProjectionDataEntries(p.profile,
+   p.entries));
+   }
 });

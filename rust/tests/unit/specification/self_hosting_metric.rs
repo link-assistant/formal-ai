@@ -891,8 +891,7 @@ fn release_pipeline_and_ledger_remain_pinned_to_the_metric() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
         .parent()
         .expect("the repository root sits one level above the crate");
-    let workflow = fs::read_to_string(root.join(".github/workflows/release.yml"))
-        .expect("release workflow must be readable");
+    let workflow = crate::ci_gates::staged_release_operations::release_operation_workflow();
     let version_script = fs::read_to_string(root.join("scripts/version-and-commit.rs"))
         .expect("version script must be readable");
     let release_script = fs::read_to_string(root.join("scripts/create-github-release.rs"))

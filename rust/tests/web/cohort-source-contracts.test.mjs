@@ -42,7 +42,21 @@ test('insufficient dynamic and ambiguous numeric oracles are refused',()=>{
 test('heldout declaration boundary rejects escapes unknown identifiers and alias collisions',()=>{
  const entry={id:'held',destination:'nested/module.mjs',exportName:'caption',parameterName:'choice',sourceBindings:{selector:'pick',summary:'describe'},fixtureNames:['case']};
  assert.equal(validateHeldOutContract([entry])[0],entry);
- for(const invalid of [{...entry,destination:'../escape.mjs'},{...entry,destination:'C:/escape.mjs'},{...entry,destination:'..\\escape.mjs'},{...entry,exportName:undefined},{...entry,sourceBindings:{}},{...entry,sourceBindings:{selector:'same',summary:'same'}}])assert.throws(()=>validateHeldOutContract([invalid]),/heldout/);
+ for(const invalid of [{...entry,
+   destination:'../escape.mjs'},
+   {...entry,
+   destination:'C:/escape.mjs'},
+   {...entry,
+   destination:'..\\escape.mjs'},
+   {...entry,
+   exportName:undefined},
+   {...entry,
+   sourceBindings:{}},
+   {...entry,
+   sourceBindings:{selector:'same',
+   summary:'same'}}])assert.throws(()=>validateHeldOutContract([invalid]),
+   /heldout/);
+
 });
 test('maintained archive exposes two heldouts and original request remains955 bytes, not seven tasks',()=>{
  const root=resolve(fileURLToPath(new URL('../../../',import.meta.url)));
@@ -63,7 +77,19 @@ test('source-owned catalog generation is deterministic and does not invent broad
 test('catalog check refuses task reclassification dropped cases and source tampering',()=>{
  const root=resolve(fileURLToPath(new URL('../../../',import.meta.url))),catalog=discoverSourceContracts(root);
  const dir=mkdtempSync(join(tmpdir(),'catalog-check-controls-')),path=join(dir,'manifest.json');
- const cases=[{runId:'g132-original',taskKind:'self-coding',task:catalog.original.task},...catalog.heldOut.value.map(item=>({runId:'g132-'+item.id,taskKind:'self-coding',task:compositionVariantTask(item)})),{runId:'ordinary-arithmetic',taskKind:'coding',task:`Add ${catalog.arithmetic.exportName}(first,second) in result.mjs.`}].map(item=>({...item,category:'feature-implementation',expectedRelation:'output-larger',taskSHA256:digest(item.task)}));
+ const cases=[{runId:'g132-original',
+   taskKind:'self-coding',
+   task:catalog.original.task},
+   ...catalog.heldOut.value.map(item=>({runId:'g132-'+item.id,
+   taskKind:'self-coding',
+   task:compositionVariantTask(item)})),
+   {runId:'ordinary-arithmetic',
+   taskKind:'coding',
+   task:`Add ${catalog.arithmetic.exportName}(first,second) in result.mjs.`}].map(item=>({...item,
+   category:'feature-implementation',
+   expectedRelation:'output-larger',
+   taskSHA256:digest(item.task)}));
+
  const manifest={catalogSHA256:digest(JSON.stringify(catalog)),cases,bindings:[catalog.original.source,catalog.heldOut.source,catalog.arithmetic.source]};
  try {
   writeFileSync(path,JSON.stringify(manifest));assert.equal(checkSourceEvaluation(root,path).attemptedTasks,4);
