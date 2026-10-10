@@ -18,7 +18,7 @@ js_rust_translation
   translated_items 293
   workaround_items 33
   inferred_signatures 2
-  carried_items 2301
+  carried_items 2304
   translated_modules 98
   fully_translated_modules 1
   refused_modules 46
@@ -81,7 +81,7 @@ module js/agentic/crate/literal_instruction_view.mjs translated 0 workaround 0 i
 module js/agentic/crate/memory.mjs translated 5 workaround 0 inferred 0 carried 18
 module js/agentic/crate/meta_core.mjs translated 2 workaround 0 inferred 0 carried 31
 module js/agentic/crate/meta_frame.mjs translated 6 workaround 0 inferred 0 carried 46
-module js/agentic/crate/meta_translate.mjs translated 0 workaround 1 inferred 0 carried 5
+module js/agentic/crate/meta_translate.mjs translated 0 workaround 1 inferred 0 carried 8
 module js/agentic/crate/method_registry.mjs translated 9 workaround 0 inferred 0 carried 21
 module js/agentic/crate/needs.mjs translated 1 workaround 1 inferred 0 carried 7
 module js/agentic/crate/normal_markov.mjs translated 5 workaround 0 inferred 0 carried 18
@@ -170,10 +170,10 @@ module js/agentic/crate/workspace_change_learning.mjs translated 2 workaround 0 
 module js/worker/formal_ai_worker_meta_composite.js translated 0 workaround 0 inferred 0 carried 6
 module js/worker/formal_ai_worker_meta_reasoner.js translated 1 workaround 0 inferred 0 carried 42
 module js/worker/formal_ai_worker_meta_synthesis.js translated 0 workaround 0 inferred 0 carried 25
-refusal "import of names its module does not translate" 309
+refusal "import of names its module does not translate" 310
 refusal "JSDoc type {…}" 215
 refusal "null" 186
-refusal "import from '…'" 155
+refusal "import from '…'" 156
 refusal "type: unknown name (a sibling item or an import)" 117
 refusal "arrow function" 113
 refusal "function value …" 101
@@ -270,6 +270,7 @@ refusal "syntax: unsupported string escape \]" 1
 refusal "syntax: unsupported string escape \b" 1
 refusal "syntax: unsupported string escape \p" 1
 refusal "syntax: unsupported string escape \s" 1
+refusal "syntax: unsupported template escape \r" 1
 refusal "syntax: unsupported template escape \u" 1
 refusal "type: function value ASSUMED_TRUE_PRIOR: functions and namespaces are only portable when a function is called" 1
 refusal "type: function value CANONICAL_TARGET_MODULE: functions and namespaces are only portable when a function is called" 1

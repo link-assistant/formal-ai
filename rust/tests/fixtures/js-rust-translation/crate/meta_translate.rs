@@ -1,9 +1,12 @@
-// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=3a8463a28eef850bcba41def69dda9f036bc4f04d4246438a73092c37360e710 bytes=3017
+// meta-language:self-translation:v1 source=JavaScript target=Rust sha256=071a9f31caaf116dc2103622e6923bc3bdd8e557e60b1de1647e20663e8056d7 bytes=5303
 // formal-ai:projection translated blocks verbatim; carried items keep their marker and refused construct (scripts/translate-js-rust.mjs)
-// formal-ai:workarounds callback-loops items=1; string-methods items=1
+// formal-ai:workarounds callback-loops items=1; import-pruning items=0 carried=1; string-methods items=1
+
+// meta-language:prelude begin
+#![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
+// meta-language:prelude end
 
 // formal-ai:workaround-prelude begin
-#![allow(unused, unreachable_patterns, non_snake_case, non_camel_case_types, invalid_nan_comparisons)]
 /// Unbounded integers for the portable core's naturals and integers.
 pub mod ml {
     use std::cmp::Ordering;
@@ -400,3 +403,15 @@ pub fn ml_escapes_root_loop2(mut wa_result1: bool, mut ml_values1: Vec<String>, 
 // meta-language:carried JavaScript export_statement (syntax)
 // formal-ai:refusal syntax: malformed number
 // formal-ai:blockers Array.from | arrow callback of .find() | arrow callback of .some() | arrow function | assignment of a field or element | call of a sibling function | destructuring | field access | method call .find() | method call .join() | method call .slice() | method call .some() | method call .test() | null | object without a $ tag | regular expression | sibling value | undefined
+
+// meta-language:carried JavaScript import_statement (unsupported)
+// formal-ai:refusal import from '…'
+// formal-ai:blockers import from outside the module directory
+
+// formal-ai:workaround import-pruning carried JavaScript import_statement
+// formal-ai:refusal import of names its module does not translate
+// formal-ai:blockers import of names its module carries
+
+// meta-language:carried JavaScript export_statement (syntax)
+// formal-ai:refusal syntax: unsupported template escape \r
+// formal-ai:blockers Array.from | arrow callback of .find() | arrow callback of .map() | arrow callback of .replace() | arrow callback of .some() | assignment of a field or element | call of a sibling function | call of an imported function | destructuring | field access | method call .encode() | method call .exec() | method call .find() | method call .join() | method call .map() | method call .replace() | method call .replaceAll() | method call .slice() | method call .some() | method call .test() | new RegExp | new TextEncoder | null | object without a $ tag | optional chaining | regular expression | sibling value
