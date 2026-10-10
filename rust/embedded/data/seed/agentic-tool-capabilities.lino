@@ -1,4 +1,6 @@
 agentic_tool_capabilities
+  record-schema "general-change-plan"
+    header "general_change_plan"
   capability "web_search"
     aliases ("web_search" "websearch" "google_web_search" "search_web" "WebSearch")
   capability "web_fetch"

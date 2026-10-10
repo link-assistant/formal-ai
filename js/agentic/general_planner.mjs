@@ -1,4 +1,5 @@
 import { rawLowercaseSpan } from './write_request/lowercase_spans.mjs';
+import { generalChangePlanRecordHeader } from './append_contract.mjs';
 // Deterministic fallback planner for repository change requests
 // (rust/src/agentic_coding/general_planner.rs, issue #654).
 //
@@ -105,7 +106,8 @@ function proseAround(request, content) {
 
 /** Mirrors `GeneralChangePlan::links_notation`. */
 export function planLinksNotation(plan) {
-  let out = 'general_change_plan\n';
+  let out = generalChangePlanRecordHeader();
+  if (out === null) throw new Error('general_plan_record_schema_unavailable');
   out += field('id', plan.id);
   out += field('execution_mode', plan.mode);
   out += field('terminal_state', plan.terminal_state);

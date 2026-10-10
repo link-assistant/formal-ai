@@ -27,7 +27,9 @@ pub(super) use content_shape::{
     missing_implementation_contract, owned_semantic_authoring_lead, owns_literal_body,
 };
 use literal_request::parse_write_request;
-pub(super) use owned_goals::{instruction_view_for_request, plan_owned_goal_step};
+pub(super) use owned_goals::{
+    instruction_view_for_request, owns_complete_edit_request, plan_owned_goal_step,
+};
 
 pub use super::write_request::compose_edit_request;
 pub(crate) use super::write_request::typed_write_target;
@@ -101,7 +103,8 @@ impl GeneralChangePlan {
     /// Render the plan shape consumed by the driver and documented by the meta fixture.
     #[must_use]
     pub fn links_notation(&self) -> String {
-        let mut out = String::from("general_change_plan\n");
+        let mut out = super::append_contract::general_change_plan_record_header()
+            .expect("general plan record schema unavailable");
         field(&mut out, "id", &self.id);
         field(&mut out, "execution_mode", self.mode.slug());
         field(&mut out, "terminal_state", self.terminal_state.slug());

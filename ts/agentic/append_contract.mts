@@ -2,9 +2,33 @@
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import { jsonText, planOne } from './plan.mjs';
 import { utf8Len } from './crate/rust_str.mjs';
+import { readText } from './host.mjs';
+import { parseRoot } from './crate/seed_parser.mjs';
 
 export const APPEND_CONTRACT = 'atomic-record-append/v1';
 export const APPEND_MODE = 'atomic_record_append';
+
+/** Mirrors general_change_plan_record_header_from: exact single-line seed schema. */
+export function generalChangePlanRecordHeaderFrom(text) {
+  if (typeof text !== 'string') return null;
+  const parsed = parseRoot(text);
+  const root = parsed.children[0];
+  if (parsed.children.length !== 1 || root?.name !== 'agentic_tool_capabilities') return null;
+  const records = (root?.children ?? []).filter(node => node.name === 'record-schema'
+    && node.value === 'general-change-plan');
+  if (records.length !== 1) return null;
+  const headers = (records[0].children ?? []).filter(node => node.name === 'header');
+  if (headers.length !== 1 || !/^[a-z][a-z0-9_]*$/u.test(headers[0].value)) return null;
+  return headers[0].value + '\n';
+}
+
+export function generalChangePlanRecordHeader() {
+  try {
+    return generalChangePlanRecordHeaderFrom(readText('data/seed/agentic-tool-capabilities.lino'));
+  } catch {
+    return null;
+  }
+}
 
 export function declaredAppendTool(definition) {
   if (!definition || typeof definition !== 'object') return null;
@@ -51,10 +75,10 @@ export function appendDefinition(name = 'write') {
   } };
 }
 
-export function appendReceiptValid(receipt, args) {
+export function appendReceiptValid(receipt, appendArguments) {
   if (!receipt || receipt.schema !== APPEND_CONTRACT || receipt.complete !== true
-    || receipt.success !== true || receipt.path !== args.path
-    || receipt.append_request_id !== args.append_request_id || receipt.record_id !== args.record_id || receipt.content !== args.content
+    || receipt.success !== true || receipt.path !== appendArguments.path
+    || receipt.append_request_id !== appendArguments.append_request_id || receipt.record_id !== appendArguments.record_id || receipt.content !== appendArguments.content
     || typeof receipt.before !== 'string' || typeof receipt.after !== 'string') return false;
   if ([receipt.before, receipt.after].some(text => [...text].some(character => {
     const point = character.codePointAt(0);
@@ -63,14 +87,17 @@ export function appendReceiptValid(receipt, args) {
   if (receipt.before_bytes !== utf8Len(receipt.before) || receipt.after_bytes !== utf8Len(receipt.after)) return false;
   const separator = receipt.before !== '' && !receipt.before.endsWith('\n') ? '\n' : '';
   if (receipt.operation === 'appended') {
-    return !receipt.before.split('\n').includes(args.record_id)
-      && receipt.after === receipt.before + separator + args.content;
+    return !receipt.before.split('\n').includes(appendArguments.record_id)
+      && receipt.after === receipt.before + separator + appendArguments.content;
   }
   if (receipt.operation !== 'already_present' || receipt.after !== receipt.before
-    || receipt.before.split('\n').filter(line => line === args.record_id).length !== 1) return false;
-  const start = receipt.before.indexOf(args.content);
+    || receipt.before.split('\n').filter(line => line === appendArguments.record_id).length !== 1) return false;
+  const header = generalChangePlanRecordHeader();
+  if (header === null) return false;
+  const start = receipt.before.indexOf(appendArguments.content);
   return start >= 0 && (start === 0 || receipt.before[start - 1] === '\n')
-    && receipt.before.slice(start + args.content.length).match(/^(?:general_change_plan\n|$)/u) !== null;
+    && (receipt.before.length === start + appendArguments.content.length
+      || receipt.before.slice(start + appendArguments.content.length).startsWith(header));
 }
 
 export function appendRecordStep(messages, toolNames, path, content, recordId) {
@@ -83,9 +110,9 @@ export function appendRecordStep(messages, toolNames, path, content, recordId) {
   if (names.length !== 1) return null;
   const tool = names[0];
   const base = { path, content, record_id: recordId, append_mode: APPEND_MODE };
-  const args = { ...base, append_request_id: recordId + '/' + messages.length };
+  const appendArguments = { ...base, append_request_id: recordId + '/' + messages.length };
   let matched = null;
-  let matchedArgs = args;
+  let matchedArguments = appendArguments;
   for (let index = 0; index < current.length; index++) {
     const message = current[index];
     if (message.role !== 'assistant') continue;
@@ -93,16 +120,16 @@ export function appendRecordStep(messages, toolNames, path, content, recordId) {
       if (call.function?.name !== tool) continue;
       let supplied;
       try { supplied = JSON.parse(call.function.arguments); } catch { continue; }
-      if (!supplied || Object.keys(supplied).length !== Object.keys(args).length
+      if (!supplied || Object.keys(supplied).length !== Object.keys(appendArguments).length
         || !Object.keys(base).every(key => supplied[key] === base[key])
         || supplied.append_request_id !== recordId + '/' + (start + index)) continue;
       const results = current.slice(index + 1).filter(result => result.role === 'tool'
         && result.tool_call_id === call.id && result.name === tool);
-      matchedArgs = supplied;
+      matchedArguments = supplied;
       matched = results.length === 1 ? results[0] : false;
     }
   }
-  if (matched === null) return { kind: 'pending', plan: planOne(tool, jsonText(args)) };
-  return matched && !matched.is_error && !matched.isError && appendReceiptValid(matched.append_receipt, matchedArgs)
+  if (matched === null) return { kind: 'pending', plan: planOne(tool, jsonText(appendArguments)) };
+  return matched && !matched.is_error && !matched.isError && appendReceiptValid(matched.append_receipt, matchedArguments)
     ? { kind: 'observed' } : { kind: 'refused' };
 }

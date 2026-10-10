@@ -7,6 +7,43 @@ pub const APPEND_CONTRACT: &str = "atomic-record-append/v1";
 pub const APPEND_MODE: &str = "atomic_record_append";
 
 #[must_use]
+pub fn general_change_plan_record_header_from(text: &str) -> Option<String> {
+    let parsed = crate::seed::parser::parse_lino(text);
+    let root = parsed.children.first()?;
+    if parsed.children.len() != 1 || root.name != "agentic_tool_capabilities" {
+        return None;
+    }
+    let records = root
+        .children
+        .iter()
+        .filter(|node| node.name == "record-schema" && node.id == "general-change-plan")
+        .collect::<Vec<_>>();
+    if records.len() != 1 {
+        return None;
+    }
+    let headers = records[0]
+        .children
+        .iter()
+        .filter(|node| node.name == "header")
+        .collect::<Vec<_>>();
+    let header = headers.first()?.id.as_str();
+    if headers.len() != 1
+        || !header.as_bytes().first()?.is_ascii_lowercase()
+        || !header
+            .bytes()
+            .all(|byte| byte.is_ascii_lowercase() || byte.is_ascii_digit() || byte == b'_')
+    {
+        return None;
+    }
+    Some(format!("{header}\n"))
+}
+
+#[must_use]
+pub fn general_change_plan_record_header() -> Option<String> {
+    general_change_plan_record_header_from(crate::seed::AGENTIC_TOOL_CAPABILITIES_LINO)
+}
+
+#[must_use]
 pub fn declared_append_tool(definition: &Value) -> Option<&str> {
     let tool = definition.get("function").unwrap_or(definition);
     let parameters = tool.get("parameters")?;
@@ -97,17 +134,17 @@ pub fn append_definition(name: &str) -> Value {
 }
 
 #[must_use]
-pub fn append_receipt_valid(receipt: &Value, args: &Value) -> bool {
+pub fn append_receipt_valid(receipt: &Value, append_arguments: &Value) -> bool {
     let Some(before) = receipt.get("before").and_then(Value::as_str) else {
         return false;
     };
     let Some(after) = receipt.get("after").and_then(Value::as_str) else {
         return false;
     };
-    let Some(content) = args.get("content").and_then(Value::as_str) else {
+    let Some(content) = append_arguments.get("content").and_then(Value::as_str) else {
         return false;
     };
-    let Some(identity) = args.get("record_id").and_then(Value::as_str) else {
+    let Some(identity) = append_arguments.get("record_id").and_then(Value::as_str) else {
         return false;
     };
     if receipt.get("schema").and_then(Value::as_str) != Some(APPEND_CONTRACT)
@@ -115,7 +152,7 @@ pub fn append_receipt_valid(receipt: &Value, args: &Value) -> bool {
         || receipt.get("success").and_then(Value::as_bool) != Some(true)
         || ["path", "record_id", "content", "append_request_id"]
             .into_iter()
-            .any(|key| receipt.get(key) != args.get(key))
+            .any(|key| receipt.get(key) != append_arguments.get(key))
         || receipt.get("before_bytes") != Some(&Value::from(before.len()))
         || receipt.get("after_bytes") != Some(&Value::from(after.len()))
     {
@@ -135,10 +172,13 @@ pub fn append_receipt_valid(receipt: &Value, args: &Value) -> bool {
             if after != before || before.split('\n').filter(|line| *line == identity).count() != 1 {
                 return false;
             }
+            let Some(header) = general_change_plan_record_header() else {
+                return false;
+            };
             before.match_indices(content).any(|(start, _)| {
                 let following = &before[start + content.len()..];
                 (start == 0 || before.as_bytes().get(start - 1) == Some(&b'\n'))
-                    && (following.is_empty() || following.starts_with("general_change_plan\n"))
+                    && (following.is_empty() || following.starts_with(header.as_str()))
             })
         }
         _ => false,
@@ -174,7 +214,7 @@ pub fn append_record_step(
         return None;
     }
     let tool = names[0];
-    let mut args = json!({"path":path,"content":content,"record_id":identity,"append_mode":APPEND_MODE,
+    let mut append_arguments = json!({"path":path,"content":content,"record_id":identity,"append_mode":APPEND_MODE,
         "append_request_id":format!("{identity}/{}", messages.len())});
     let mut matched = None;
     for (index, message) in current.iter().enumerate() {
@@ -182,7 +222,7 @@ pub fn append_record_step(
             continue;
         }
         for call in &message.tool_calls {
-            let mut expected = args.clone();
+            let mut expected = append_arguments.clone();
             expected["append_request_id"] = Value::String(format!(
                 "{identity}/{}",
                 evidence_window_start(messages) + index
@@ -203,7 +243,7 @@ pub fn append_record_step(
                         && result.name.as_deref() == Some(tool)
                 })
                 .collect();
-            args = expected;
+            append_arguments = expected;
             matched = Some(if results.len() == 1 {
                 Some(results[0])
             } else {
@@ -212,7 +252,10 @@ pub fn append_record_step(
         }
     }
     let Some(result) = matched else {
-        return Some(AppendRecordStep::Pending(plan_one(tool, args.to_string())));
+        return Some(AppendRecordStep::Pending(plan_one(
+            tool,
+            append_arguments.to_string(),
+        )));
     };
     Some(
         if result.is_some_and(|message| {
@@ -220,7 +263,7 @@ pub fn append_record_step(
                 && message
                     .append_receipt
                     .as_ref()
-                    .is_some_and(|receipt| append_receipt_valid(receipt, &args))
+                    .is_some_and(|receipt| append_receipt_valid(receipt, &append_arguments))
         }) {
             AppendRecordStep::Observed
         } else {
