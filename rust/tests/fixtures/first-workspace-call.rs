@@ -6,7 +6,7 @@ use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 use serde_json::Value;
 
-pub(crate) fn first_workspace_call(prompt: &str, tools: &[&str]) -> (String, Value) {
+pub fn first_workspace_call(prompt: &str, tools: &[&str]) -> (String, Value) {
     let general = compose_general_change_plan(prompt)
         .filter(|plan| plan.mode == GeneralPlanMode::LiteralFile);
     let mut messages = vec![ChatMessage::user(prompt)];

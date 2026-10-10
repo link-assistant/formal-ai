@@ -3,11 +3,10 @@
 //! where unfenced space-indented Links Notation collapses into flowing prose
 //! and the plan/knowledge-base dump becomes unreadable.
 
+use crate::observed_plan_tools;
 use formal_ai::agentic_coding::general_planner::compose_general_change_plan;
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
-#[path = "../../fixtures/observed-plan-tools.rs"]
-mod observed_plan_tools;
 
 /// The content of the first fenced `lino` block in `answer`.
 fn lino_block(answer: &str) -> &str {

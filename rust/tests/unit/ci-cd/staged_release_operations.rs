@@ -118,7 +118,13 @@ pub fn assert_image_delivery_budget(job_name: &str) {
         .find(|step| step["name"] == "Publish Docker image to GHCR")
         .expect("same original publishing operation");
     assert_eq!(publish["timeout-minutes"], 21);
-    assert!(21 * 100 <= 30 * 70);
+    assert!(
+        publish["timeout-minutes"]
+            .as_u64()
+            .expect("actual step cap")
+            * 100
+            <= job["timeout-minutes"].as_u64().expect("actual job cap") * 70
+    );
     let command = publish["run"].as_str().expect("bounded original command");
     for operand in [
         "TEST_BUDGET_ENFORCE=true",

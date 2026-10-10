@@ -21,7 +21,7 @@ use formal_ai::protocol::ToolCall;
 
 mod canonical_facts;
 mod tool_results;
-mod tool_workspace;
+use crate::tool_workspace;
 mod written_files;
 
 /// The fourteen tool names `@link-assistant/agent` advertises, in the order the

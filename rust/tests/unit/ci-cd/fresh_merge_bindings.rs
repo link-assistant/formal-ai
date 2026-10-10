@@ -25,7 +25,7 @@ fn merge_invocation(line: &str) -> bool {
     let command = line
         .trim()
         .strip_prefix("run:")
-        .unwrap_or(line.trim())
+        .unwrap_or_else(|| line.trim())
         .trim();
     let words: Vec<_> = command.split_whitespace().collect();
     matches!(
@@ -105,10 +105,11 @@ fn every_merge_pin_is_bound_to_its_actual_invoking_step() {
         observed[0].shared_resolver(),
         Some("needs.base.outputs.commit")
     );
-    assert!(
+    assert_eq!(
         merge_step_bindings(
             "      - name: metadata\n        run: echo scripts/simulate-fresh-merge.sh"
         )
-        .is_empty()
+        .len(),
+        0
     );
 }

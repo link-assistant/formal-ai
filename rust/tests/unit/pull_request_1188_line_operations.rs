@@ -365,14 +365,14 @@ fn whole_write_messages() -> Vec<ChatMessage> {
     append_whole_receipt(
         &mut messages,
         "read",
-        serde_json::json!({"path": "f.txt"}),
+        &serde_json::json!({"path": "f.txt"}),
         "old",
         false,
     );
     append_whole_receipt(
         &mut messages,
         "write",
-        serde_json::json!({"path": "f.txt", "content": "new"}),
+        &serde_json::json!({"path": "f.txt", "content": "new"}),
         "",
         false,
     );
@@ -381,7 +381,7 @@ fn whole_write_messages() -> Vec<ChatMessage> {
 fn append_whole_receipt(
     messages: &mut Vec<ChatMessage>,
     tool: &str,
-    arguments: serde_json::Value,
+    arguments: &serde_json::Value,
     raw: &str,
     failed: bool,
 ) {
@@ -413,7 +413,7 @@ fn whole_write_uses_fresh_bare_digest_and_preserves_explicit_failure() {
     append_whole_receipt(
         &mut messages,
         "bash",
-        serde_json::json!({"command": "sha256sum -- f.txt"}),
+        &serde_json::json!({"command": "sha256sum -- f.txt"}),
         &digest,
         false,
     );
@@ -435,7 +435,7 @@ fn whole_write_uses_fresh_bare_digest_and_preserves_explicit_failure() {
         append_whole_receipt(
             &mut messages,
             "bash",
-            serde_json::json!({"command": "sha256sum -- f.txt"}),
+            &serde_json::json!({"command": "sha256sum -- f.txt"}),
             &raw,
             outer,
         );
@@ -449,21 +449,21 @@ fn whole_write_rejects_stale_digest_and_later_failed_write() {
     append_whole_receipt(
         &mut stale,
         "read",
-        serde_json::json!({"path": "f.txt"}),
+        &serde_json::json!({"path": "f.txt"}),
         "old",
         false,
     );
     append_whole_receipt(
         &mut stale,
         "bash",
-        serde_json::json!({"command": "sha256sum -- f.txt"}),
+        &serde_json::json!({"command": "sha256sum -- f.txt"}),
         &digest,
         false,
     );
     append_whole_receipt(
         &mut stale,
         "write",
-        serde_json::json!({"path": "f.txt", "content": "new"}),
+        &serde_json::json!({"path": "f.txt", "content": "new"}),
         "",
         false,
     );
@@ -477,7 +477,7 @@ fn whole_write_rejects_stale_digest_and_later_failed_write() {
     append_whole_receipt(
         &mut stale,
         "write",
-        serde_json::json!({"path": "f.txt", "content": "new"}),
+        &serde_json::json!({"path": "f.txt", "content": "new"}),
         "",
         true,
     );

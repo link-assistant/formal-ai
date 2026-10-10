@@ -714,8 +714,7 @@ fn root_push_credential_is_retained(job: &[&str]) -> bool {
             let path = active
                 .iter()
                 .find_map(|line| line.trim().strip_prefix("path:"))
-                .map(str::trim)
-                .unwrap_or(".");
+                .map_or(".", str::trim);
             if path.contains("${{") || path.contains("..") || path.starts_with('/') {
                 return false;
             }
@@ -734,7 +733,7 @@ fn root_push_credential_is_retained(job: &[&str]) -> bool {
                     .map(str::trim);
                 root_credential = matches!(
                     token,
-                    None | Some("${{ github.token }}") | Some("${{ secrets.GITHUB_TOKEN }}")
+                    None | Some("${{ github.token }}" | "${{ secrets.GITHUB_TOKEN }}")
                 );
             }
         }

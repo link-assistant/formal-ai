@@ -147,7 +147,7 @@ fn initialization_regions_keep_exact_unicode_byte_witnesses_and_unknown_effects(
     assert_eq!(record["source"], &source[start..end]);
     assert_eq!(
         record["contentId"],
-        formal_ai::source_fetch::sha256_hex(source[start..end].as_bytes())
+        formal_ai::source_fetch::sha256_hex(&source.as_bytes()[start..end])
     );
     assert_eq!(catalog["moduleEffects"], "unknown");
     let imported = observe_source_callables(

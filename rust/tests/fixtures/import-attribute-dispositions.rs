@@ -17,7 +17,7 @@ fn json_import_attributes_have_explicit_noform_dispositions_without_erasure() {
             assert!(!projection.is_ruled(kind, "rust"));
             assert!(!projection.is_refused(kind, "rust"));
         }
-        assert!(projection.coverage_kinds(&kinds, "rust").is_empty());
+        assert_eq!(projection.coverage_kinds(&kinds, "rust").len(), 0);
         match project(label, "rust", source) {
             ProjectionOutcome::Refused { refusals } => {
                 assert!(
@@ -26,7 +26,9 @@ fn json_import_attributes_have_explicit_noform_dispositions_without_erasure() {
                         .any(|refusal| refusal.construct == "import_statement")
                 );
             }
-            other => panic!("attributes cannot disappear into rendered Rust: {other:?}"),
+            other @ ProjectionOutcome::Rendered { .. } => {
+                panic!("attributes cannot disappear into rendered Rust: {other:?}")
+            }
         }
         assert_eq!(network.reconstruct_text(), source);
     }

@@ -586,7 +586,12 @@ fn completed_statement_cue_cannot_authorize_another_target_token() {
 
 #[test]
 fn unicode_case_mapping_preserves_original_unquoted_literal_bytes() {
-    for prefix in ["İİ", "İİİ", "İK𐐷 😀 café", "KK 😀 中文"] {
+    for prefix in [
+        "İİ",
+        "İİİ",
+        "\u{130}\u{212a}\u{10437} \u{1f600} caf\u{e9}",
+        "\u{212a}\u{212a} \u{1f600} \u{4e2d}\u{6587}",
+    ] {
         let task = format!("Note {prefix}.\nCreate file x.txt containing hello.");
         let outcome = run(&task, &["write"]);
         assert_eq!(outcome.writes, 1, "{task}");
@@ -613,7 +618,8 @@ fn unicode_prefixes_preserve_multilingual_literals_and_sentence_marks() {
         ),
         ("Create a file new.txt containing 'hello'.", "hello"),
     ] {
-        let task = format!("Note İİK𐐷 😀 café.\n{instruction}");
+        let task =
+            format!("Note \u{130}\u{130}\u{212a}\u{10437} \u{1f600} caf\u{e9}.\n{instruction}");
         let plan = compose_general_change_plan(&task).expect("literal operand");
         assert_eq!(plan.content, expected, "{task}");
     }
@@ -623,10 +629,12 @@ fn unicode_prefixes_preserve_multilingual_literals_and_sentence_marks() {
 fn objective_boundaries_remain_original_after_case_mapping() {
     use formal_ai::agentic_coding::general_planner::objective_text;
     assert_eq!(
-        objective_text("Note İİK😀.\nTask: Create file x.txt containing hello"),
+        objective_text(
+            "Note \u{130}\u{130}\u{212a}\u{1f600}.\nTask: Create file x.txt containing hello"
+        ),
         "Create file x.txt containing hello"
     );
-    let task = "Note İİK😀.\nCreate file x.txt containing «Task: preserve this». ";
+    let task = "Note \u{130}\u{130}\u{212a}\u{1f600}.\nCreate file x.txt containing \u{ab}Task: preserve this\u{bb}. ";
     assert_eq!(objective_text(task), task);
 }
 
@@ -634,9 +642,9 @@ fn objective_boundaries_remain_original_after_case_mapping() {
 fn unicode_case_mapping_does_not_promote_unrelated_write_owners() {
     use formal_ai::agentic_coding::general_planner::compose_general_change_plan;
     for task in [
-        "Note İİK😀.\nWrite file.\nx.txt containing «hello».",
-        "Note İİK😀.\nThe instruction says «write».\nRead file x.txt containing hello.",
-        "Note İİK😀.\nProduce a legitimate release with no fabricated evidence.\nAdding a bypass flag to check-self-development-release.rs is not acceptable.",
+        "Note \u{130}\u{130}\u{212a}\u{1f600}.\nWrite file.\nx.txt containing \u{ab}hello\u{bb}.",
+        "Note \u{130}\u{130}\u{212a}\u{1f600}.\nThe instruction says \u{ab}write\u{bb}.\nRead file x.txt containing hello.",
+        "Note \u{130}\u{130}\u{212a}\u{1f600}.\nProduce a legitimate release with no fabricated evidence.\nAdding a bypass flag to check-self-development-release.rs is not acceptable.",
     ] {
         assert!(compose_general_change_plan(task).is_none(), "{task}");
     }
@@ -646,7 +654,7 @@ fn unicode_case_mapping_does_not_promote_unrelated_write_owners() {
 fn unicode_offsets_preserve_seeded_circumfix_closers() {
     use formal_ai::agentic_coding::general_planner::compose_general_change_plan;
     for marker in ["जिसमें Gemfile.lock हो", "把 Gemfile.lock 写入"] {
-        let task = format!("Note İİK 😀.\nCreate file x.txt {marker}");
+        let task = format!("Note \u{130}\u{130}\u{212a} \u{1f600}.\nCreate file x.txt {marker}");
         assert_eq!(
             compose_general_change_plan(&task)
                 .expect("closed content lead")
@@ -661,7 +669,7 @@ fn unicode_offsets_preserve_seeded_circumfix_closers() {
 fn full_planner_fallback_never_flattens_completed_file_cues() {
     for task in [
         "Write file. folder/note.txt containing «hello».",
-        "Note İİK😀.\nWrite file.\nx.txt containing «hello».",
+        "Note \u{130}\u{130}\u{212a}\u{1f600}.\nWrite file.\nx.txt containing \u{ab}hello\u{bb}.",
         "The instruction says «Write file x.txt containing hello».\nRead x.txt with care.",
     ] {
         let outcome = run(task, &["write"]);

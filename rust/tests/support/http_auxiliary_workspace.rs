@@ -3,7 +3,7 @@ use formal_ai::agentic_coding::general_planner::{PLAN_PATH, compose_general_chan
 use serde_json::{Value, json};
 use std::collections::HashMap;
 
-pub(super) fn observed_target_write(
+pub fn observed_target_write(
     prompt: &str,
     target: &str,
     prior: &str,

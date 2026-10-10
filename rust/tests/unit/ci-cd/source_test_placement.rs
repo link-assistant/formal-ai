@@ -378,7 +378,10 @@ fn external_registration_is_structural_and_refuses_unproven_paths_or_bodies() {
         let registrations = external_test_registrations(&root, &source_path, &declaration);
         assert_eq!(registrations.len(), 1, "renamed physical registration");
         assert_eq!(fs::read_to_string(&registrations[0].2).unwrap(), fixture);
-        assert!(inline_test_violations(&root, &source_path, &declaration).is_empty());
+        assert_eq!(
+            inline_test_violations(&root, &source_path, &declaration).len(),
+            0
+        );
         let contextual = format!(
             "const TEXT: &str = r###\"{{ #[cfg(test)] }}\"###;\n/* {{ nested /* }} */ }} */\n{declaration}"
         );
@@ -425,9 +428,13 @@ fn external_registration_refuses_a_symlink_fixture() {
     fs::write(root.join("tests/actual.rs"), "#[test] fn physical() {}\n").unwrap();
     std::os::unix::fs::symlink(root.join("tests/actual.rs"), root.join("tests/alias.rs")).unwrap();
     let source = "#[cfg(test)]\n#[path = \"../../tests/alias.rs\"]\nmod alias;";
-    assert!(
-        external_test_registrations(&root, &root.join("src/nested/module.rs"), source).is_empty()
+    assert_eq!(
+        external_test_registrations(&root, &root.join("src/nested/module.rs"), source).len(),
+        0
     );
-    assert!(!inline_test_violations(&root, &root.join("src/nested/module.rs"), source).is_empty());
+    assert_ne!(
+        inline_test_violations(&root, &root.join("src/nested/module.rs"), source).len(),
+        0
+    );
     fs::remove_dir_all(root).unwrap();
 }

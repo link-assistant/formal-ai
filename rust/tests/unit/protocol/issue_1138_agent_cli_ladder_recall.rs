@@ -28,8 +28,7 @@ use formal_ai::{
     create_chat_completion_with_solver,
 };
 
-#[path = "../issue_1066_ladder_capability/tool_workspace.rs"]
-mod tool_workspace;
+use crate::tool_workspace;
 
 const AGENT_CLI_TOOLS: [&str; 14] = [
     "bash",

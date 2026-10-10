@@ -13,8 +13,7 @@
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
-#[path = "../fixtures/observed-plan-tools.rs"]
-mod observed_plan_tools;
+use crate::observed_plan_tools;
 
 const AGENT_CLI_TOOLS: [&str; 14] = [
     "bash",

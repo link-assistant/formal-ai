@@ -7,7 +7,7 @@ use serde_json::{Value, json};
 use std::process::{Command, Stdio};
 use std::time::{Duration, Instant};
 
-pub(crate) struct ToolWorkspace {
+pub struct ToolWorkspace {
     workspace: AgentWorkspace,
     next_run: u64,
 }
@@ -19,7 +19,7 @@ fn argument(args: &Value, names: &[&str]) -> Option<String> {
 }
 
 impl ToolWorkspace {
-    pub(crate) fn new(prompt: &str) -> Self {
+    pub fn new(prompt: &str) -> Self {
         let config = AgentWorkspaceConfig {
             time_budget: Duration::from_secs(2),
             ..AgentWorkspaceConfig::default()
@@ -30,7 +30,7 @@ impl ToolWorkspace {
         }
     }
 
-    pub(crate) fn write_initial(&mut self, path: &str, content: &str) -> Result<(), AgentError> {
+    pub fn write_initial(&self, path: &str, content: &str) -> Result<(), AgentError> {
         self.write(path, content)?;
         if self.read(path)? != content {
             return Err(std::io::Error::other("physical write bytes differ").into());
@@ -54,7 +54,7 @@ impl ToolWorkspace {
         Ok(())
     }
 
-    pub(crate) fn read(&self, path: &str) -> Result<String, AgentError> {
+    pub fn read(&self, path: &str) -> Result<String, AgentError> {
         self.workspace.read_file(path)
     }
 
@@ -124,7 +124,7 @@ impl ToolWorkspace {
         }
     }
 
-    pub(crate) fn execute(&mut self, id: &str, call: &PlannedToolCall) -> ChatMessage {
+    pub fn execute(&mut self, id: &str, call: &PlannedToolCall) -> ChatMessage {
         let args: Value = serde_json::from_str(&call.arguments).expect("tool arguments");
         let path = argument(&args, &["path", "filePath", "file_path", "absolute_path"]);
         let capability = tool_capability(&call.tool);

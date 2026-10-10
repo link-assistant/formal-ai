@@ -3,11 +3,9 @@
 //!
 //! The JavaScript twin is `rust/tests/web/pull-request-1188-cifix2.test.mjs`.
 
-#[path = "../../fixtures/first-workspace-call.rs"]
-mod first_workspace_call;
+use crate::first_workspace_call;
 /// The first planned call: its tool and parsed arguments.
-#[path = "../../fixtures/observed-plan-tools.rs"]
-mod observed_plan_tools;
+use crate::observed_plan_tools;
 fn first_call(prompt: &str, tools: &[&str]) -> (String, serde_json::Value) {
     first_workspace_call::first_workspace_call(prompt, tools)
 }

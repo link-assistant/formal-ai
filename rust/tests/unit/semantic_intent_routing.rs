@@ -21,10 +21,8 @@ fn call(prompt: &str) -> (String, serde_json::Value) {
     call_with_tools(prompt, &tools)
 }
 
-#[path = "../fixtures/first-workspace-call.rs"]
-mod first_workspace_call;
-#[path = "../fixtures/observed-plan-tools.rs"]
-mod observed_plan_tools;
+use crate::first_workspace_call;
+use crate::observed_plan_tools;
 fn call_with_tools(prompt: &str, tools: &[&str]) -> (String, serde_json::Value) {
     first_workspace_call::first_workspace_call(prompt, tools)
 }

@@ -7,8 +7,7 @@ use formal_ai::recursive_execution::{
 };
 use formal_ai::task_decomposition::SplittingExecutor;
 
-#[path = "issue_1066_ladder_capability/tool_workspace.rs"]
-mod observed_tool_workspace;
+use crate::tool_workspace as observed_tool_workspace;
 
 const ISSUE_URL: &str = "https://github.com/link-assistant/formal-ai/issues/1069";
 

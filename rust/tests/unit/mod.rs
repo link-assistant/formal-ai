@@ -1,3 +1,12 @@
+#[path = "../fixtures/first-workspace-call.rs"]
+mod first_workspace_call;
+
+#[path = "../fixtures/observed-plan-tools.rs"]
+mod observed_plan_tools;
+
+#[path = "issue_1066_ladder_capability/tool_workspace.rs"]
+mod tool_workspace;
+
 #[allow(dead_code)]
 #[path = "../fixtures/observed-plan-event.rs"]
 mod observed_plan_event;

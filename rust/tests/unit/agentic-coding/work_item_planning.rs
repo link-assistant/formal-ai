@@ -22,8 +22,7 @@ use formal_ai::agentic_coding::general_planner::{
 use formal_ai::agentic_coding::{AgenticPlan, run_agentic_task};
 use formal_ai::protocol::ChatMessage;
 
-#[path = "../issue_1066_ladder_capability/tool_workspace.rs"]
-mod tool_workspace;
+use crate::tool_workspace;
 
 /// The prompt shape from the issue: a harness system-prompt preamble, then the
 /// caller's objective introduced by an explicit lead.
@@ -468,7 +467,7 @@ fn a_genuinely_fetched_non_artifact_work_item_preserves_verified_history_and_sta
     assert!(history.starts_with(&previous));
     assert!(history.ends_with(&plan.links_notation()));
     assert!(workspace.read("greeting.txt").is_err());
-    assert!(plan.verification_command.is_empty());
+    assert_eq!(plan.verification_command.len(), 0);
 }
 
 #[test]

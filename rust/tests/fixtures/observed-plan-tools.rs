@@ -1,13 +1,12 @@
 //! Observe complete real plan-event execution before inspecting the requested target call.
+use crate::tool_workspace;
 use formal_ai::agentic_coding::PlannedToolCall;
 use formal_ai::agentic_coding::general_planner::PLAN_PATH;
 use formal_ai::protocol::ChatMessage;
 use serde_json::Value;
-#[path = "../unit/issue_1066_ladder_capability/tool_workspace.rs"]
-mod tool_workspace;
-pub(crate) use tool_workspace::ToolWorkspace;
+pub use tool_workspace::ToolWorkspace;
 
-pub(crate) fn observe_append(
+pub fn observe_append(
     workspace: &mut ToolWorkspace,
     id: &str,
     call: &PlannedToolCall,

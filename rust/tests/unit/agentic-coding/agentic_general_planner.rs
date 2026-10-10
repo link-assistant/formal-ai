@@ -2,8 +2,7 @@ use formal_ai::agentic_coding::general_planner::{PLAN_PATH, compose_general_chan
 use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step, run_agentic_task};
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
-#[path = "../../fixtures/observed-plan-tools.rs"]
-mod observed_plan_tools;
+use crate::observed_plan_tools;
 
 const EN_TASK: &str = "Create file notes/general-demo.txt containing planner fallback works";
 const EN_TASK_ALT: &str = "Write file artifacts/unseen-case.md with text capability composed plan";

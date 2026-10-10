@@ -13,8 +13,7 @@ use formal_ai::agentic_coding::{AgenticPlan, plan_chat_step};
 use formal_ai::obligation_ledger::ObligationExpectation;
 use formal_ai::protocol::{ChatMessage, ToolCall};
 
-#[path = "../issue_1066_ladder_capability/tool_workspace.rs"]
-mod observed_tool_workspace;
+use crate::tool_workspace as observed_tool_workspace;
 
 const TOOLS: [&str; 4] = ["read", "grep", "write", "bash"];
 
