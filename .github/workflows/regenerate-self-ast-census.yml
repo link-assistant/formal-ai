@@ -18,6 +18,33 @@ on:
       - 'rust/src/**/*.rs'
       - 'rust/examples/regenerate_self_ast_census.rs'
       - '.github/workflows/regenerate-self-ast-census.yml'
+      - ".cargo"
+      - ".cargo/**"
+      - "data/seed/api-cache"
+      - "data/seed/api-cache/**"
+      - "rust/.cargo"
+      - "rust/.cargo/**"
+      - "rust/Cargo.lock"
+      - "rust/Cargo.lock/**"
+      - "rust/Cargo.toml"
+      - "rust/Cargo.toml/**"
+      - "rust/build.rs"
+      - "rust/build.rs/**"
+      - "rust/embedded"
+      - "rust/embedded/**"
+      - "rust/src"
+      - "rust/src/**"
+      - "rust/tests/web/census-source-selectors.test.mjs"
+      - "scripts/collect-qualified-native-data-artifacts.mjs"
+      - "scripts/generate-census-source-selectors.mjs"
+      - "scripts/github-artifact-by-identifier.mjs"
+      - "scripts/lib/native-response-capture.mjs"
+      - "scripts/lib/native-session-projections.mjs"
+      - "scripts/lib/native-test-module-graph.mjs"
+      - "scripts/lib/qualified-native-data-collector.mjs"
+      - "scripts/lib/rust-specification-cases.mjs"
+      - "scripts/lib/rust-specification-values.mjs"
+      - "scripts/qualified-data-artifact-profiles.mjs"
   # Issue #1187 R2: a bot pull request's checks start through dispatch
   # (.github/actions/dispatch-checks); mode and pull-request are its inputs.
   workflow_dispatch:
