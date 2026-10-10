@@ -18,6 +18,7 @@
 // instead of calling the browser composer.
 
 import { planObservedCallableStep } from './module_function/discovery.mjs';
+import { boundReadPaths } from './file_read/ownership.mjs';
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
 import { sourceFromAgentReadResult, sourceFromReadResult } from './code_artifact.mjs';
@@ -220,7 +221,8 @@ export function observedCallableRequest(task) {
   if (own.length !== 1 || extensionLanguage(own[0]) === null) return null;
   const command = statedCommand(outside), acceptance = command === null ? [] : pathsIn(command);
   if (acceptance.includes(own[0])) return null;
-  const inputs = pathsIn(outside).filter((path) => path !== own[0] && !acceptance.includes(path));
+  const inputs = [...new Set([...boundReadPaths(task, 'file_read_action_cue'), ...pathsIn(outside)])]
+    .filter((path) => safeRelativePath(path) && path !== own[0] && !acceptance.includes(path));
   if (inputs.length === 0 || !mentionsRole('file_read_action_cue', normalizePrompt(instructionClause(outside)).toLowerCase())) return null;
   return { name: stated.name, parameters: stated.parameters, destination: own[0], inputs, acceptance, command };
 }

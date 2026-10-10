@@ -270,7 +270,8 @@ fn conflicts(scopes: &[Option<String>], paths: &[String]) -> bool {
         })
     })
 }
-fn bound_read_paths(prompt: &str, role: &str) -> Vec<String> {
+/// Structural operands only; callers still preflight every immutable request constraint.
+pub(in crate::agentic_coding) fn bound_read_paths(prompt: &str, role: &str) -> Vec<String> {
     if role == READ_ROLE
         && let Some(paths) = mode_paths_for_clause(prompt)
     {

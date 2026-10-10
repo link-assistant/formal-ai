@@ -80,9 +80,22 @@ pub fn observed_callable_request(task: &str) -> Option<ObservedCallableRequest> 
     if acceptance.contains(&own[0]) {
         return None;
     }
-    let inputs: Vec<String> = super::paths_in(&outside)
+    let mut input_paths = crate::agentic_coding::file_read::bound_read_paths(
+        task,
+        crate::seed::ROLE_FILE_READ_ACTION_CUE,
+    );
+    for path in super::paths_in(&outside) {
+        if !input_paths.contains(&path) {
+            input_paths.push(path);
+        }
+    }
+    let inputs: Vec<String> = input_paths
         .into_iter()
-        .filter(|path| path != &own[0] && !acceptance.contains(path))
+        .filter(|path| {
+            crate::agentic_coding::write_request::safe_relative_path(path)
+                && path != &own[0]
+                && !acceptance.contains(path)
+        })
         .collect();
     if inputs.is_empty()
         || !lexicon.mentions_role(

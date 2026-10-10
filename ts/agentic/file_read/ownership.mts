@@ -122,8 +122,8 @@ function unboundEffectOperation(prompt) {
 function conflicts(scopes,paths) {
   return scopes.some(scope => scope===null || paths.some(path=>samePath(path,scope)||samePath(scope,path)));
 }
-/** Source-bound local operands for the specified operation role. */
-function boundReadPaths(prompt,role) {
+/** Mirrors `fn bound_read_paths`: structural operands; callers still preflight every immutable Need. */
+export function boundReadPaths(prompt,role) {
   if (role === READ_ROLE) {
     const modePaths = modePathsForClause(prompt);
     if (modePaths !== null) return conflicts(negativeReadObjects(prompt),modePaths) ? [] : modePaths;

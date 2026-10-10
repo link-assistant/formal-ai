@@ -177,3 +177,39 @@ test('a planned read has no final disposition or stale discovery witness', async
   assert.equal(outcome.disposition, null);
   assert.equal(outcome.witness, null);
 });
+
+
+test('quoted Read operands retain object ownership without exposing quoted instructions', () => {
+  const original = 'Add exported view(value) to lib/result.mjs. Read "data.mjs" before authoring.';
+  assert.deepEqual(observedCallableRequest(original), { name: 'view', parameters: ['value'], destination: 'lib/result.mjs',
+    inputs: ['data.mjs'], acceptance: [], command: null });
+  for (const body of ['Never read files. Read data.mjs.', 'data.mjs before authoring. Deploy the release.']) {
+    assert.equal(observedCallableRequest('Add exported view(value) to lib/result.mjs. Read '+JSON.stringify(body)+' before authoring.'), null);
+  }
+});
+
+
+test('the original quoted prerequisite is physically read while authoring remains unbound', async () => {
+  const directory = fs.mkdtempSync(path.join(os.tmpdir(), 'quoted-source-prerequisite-'));
+  const entries = { 'lib/result.mjs': 'export {};\n', 'data.mjs': 'export {};\n' };
+  try {
+    for (const [name, content] of Object.entries(entries)) {
+      fs.mkdirSync(path.dirname(path.join(directory, name)), { recursive: true });
+      fs.writeFileSync(path.join(directory, name), content);
+    }
+    const original = 'Add exported view(value) to lib/result.mjs. Read "data.mjs" before authoring.';
+    const result = await drive(planChatStep, directory, original, { steps: 6 });
+    assert.deepEqual(result.transcript.map(call => [call.tool, JSON.parse(call.arguments).path]),
+      [['read', 'lib/result.mjs'], ['read', 'data.mjs']]);
+    const evidence = JSON.parse(result.answer.slice(result.answer.indexOf('\n') + 1));
+    assert.equal(evidence.reason, 'MissingContract');
+    assert.equal(evidence.authored, false);
+    assert.equal(evidence.verified, false);
+    for (const observation of evidence.observations) {
+      assert.equal(observation.contentId, sha(entries[observation.path]));
+    }
+    for (const [name, content] of Object.entries(entries)) {
+      assert.equal(fs.readFileSync(path.join(directory, name), 'utf8'), content);
+    }
+  } finally { fs.rmSync(directory, { recursive: true, force: true }); }
+});
