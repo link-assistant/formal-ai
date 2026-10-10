@@ -55,7 +55,7 @@ function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
     latestFailure.arguments === null || latestFailure.arguments === undefined ? null : toolArgumentPath(latestFailure.arguments),
     latestFailure.capability);
   const eventMissing = latestFailure !== null && latestFailure.capability === Capability.Read
-    && toolArgumentPath(latestFailure.arguments) === PLAN_PATH && absentPlanEvent(latestFailure.detail);
+    && toolArgumentPath(latestFailure.arguments) === PLAN_PATH && progress.sourceReadFor(PLAN_PATH)?.absent === true;
   const failure = workItemUnreadable || targetMissing || eventMissing ? null : latestFailure;
   if (failure) {
     if (failure.capability === Capability.Write) {
@@ -144,10 +144,6 @@ function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
 
 // The event stream is an observed artifact: generic Write replaces bytes, so
 // read its previous contents before composing an append and verify afterwards.
-function absentPlanEvent(detail) {
-  return mentionsRoleRaw('filesystem-absent-result', normalizePrompt(detail));
-}
-
 function planEventAppendCommand(plan) {
   const event = planLinksNotation(plan);
   const identity = event.split('\n')[1];
@@ -181,7 +177,7 @@ function planEventStep(plan, progress, toolNames, messages) {
     if (prior !== null && prior.split('\n').includes(identity)) return prior.includes(event) ? { kind: 'observed' } : { kind: 'pending', plan: unverifiedPlanEvent(plan) };
     const failure = progress.latestFailure();
     const missing = failure !== null && failure.capability === Capability.Read
-      && toolArgumentPath(failure.arguments) === PLAN_PATH && absentPlanEvent(failure.detail);
+      && toolArgumentPath(failure.arguments) === PLAN_PATH && progress.sourceReadFor(PLAN_PATH)?.absent === true;
     if (prior === null && !missing) return { kind: 'pending', plan: planOne(read, readArguments(PLAN_PATH)) };
     const before = prior ?? '';
     const separator = before !== '' && !before.endsWith('\n') ? '\n' : '';

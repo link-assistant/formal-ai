@@ -195,3 +195,6 @@ export function serializedRelationshipTerm(text) {
   }
   return null;
 }
+
+// Discovery remains distinct from a qualified workspace inspection finding.
+export { workspaceDiscoveryContract, workspaceDiscoveryStep } from './workspace_discovery.mjs';

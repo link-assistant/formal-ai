@@ -14,6 +14,7 @@ import { composeGeneralChangePlan, hasAuthoritativeLiteralWrite } from './genera
 import { agenticMessage } from './messages.mjs';
 import { namesCallableArtifact } from './evidence_record/artifact_header.mjs';
 import { planRecordReadbackStep } from './evidence_record/record_observation.mjs';
+import { workspaceDiscoveryStep } from './workspace_discovery.mjs';
 import { FinalDisposition, canDeliverFinal, planOne, resolvedFinalAnswer, writeArguments } from './plan.mjs';
 import { instructionEnd } from './positional_edit.mjs';
 import { planChatStepResolved, planSettledRoutes } from './planner.mjs';
@@ -174,6 +175,8 @@ export async function planEvidenceRecordStep(task, messages, toolNames) {
     if (verification !== null) return verification;
     traceRoute('evidence_record', 'already_written');
     const written = content === null || content === undefined ? '' : writtenObservation(obligation, content);
+    const discovery = workspaceInspectionSearchForTask(obligation.residual) === null ? workspaceDiscoveryStep(obligation.residual, progress, toolNames, task) : null;
+    if (discovery?.kind === 'observation') return resolvedFinalAnswer(written, FinalDisposition.Gap, 'workspace_discovery_observed_gap');
     return resolvedFinalAnswer(written !== '' ? written : agenticMessage('evidence_record_recorded', { target: obligation.target }),
       FinalDisposition.Finding, 'evidence_record_observed');
   }
@@ -181,6 +184,14 @@ export async function planEvidenceRecordStep(task, messages, toolNames) {
     traceRoute('evidence_record', 'write_not_observed');
     return resolvedFinalAnswer(agenticMessage('evidence_record_write_failed', { target: obligation.target }),
       FinalDisposition.Failure, 'evidence_record_write_failed');
+  }
+  const discovery = workspaceInspectionSearchForTask(obligation.residual) === null ? workspaceDiscoveryStep(obligation.residual, progress, toolNames, task) : null;
+  if (discovery?.kind === 'tool_calls') return discovery;
+  if (discovery?.kind === 'observation') {
+    if (!['no_candidate', 'ambiguous', 'candidate_read'].includes(discovery.observationKind)) {
+      return resolvedFinalAnswer(discovery.answer, FinalDisposition.Gap, 'workspace_discovery_unqualified');
+    }
+    return planOne(writeTool, writeArguments(obligation.target, renderObligation(obligation, discovery.answer)));
   }
   let observed = null;
   if (parseObligation(obligation.residual) === null && workspaceInspectionSearchForTask(obligation.residual) !== null) {

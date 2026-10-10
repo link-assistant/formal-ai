@@ -15,6 +15,7 @@ import { cachedSourceFetch } from './crate/source_cache.mjs';
 import { CENSUS_DIR } from './crate/self_ast_census.mjs';
 import { stableId } from './crate/engine_stable_identifier.mjs';
 import { installHost } from './host.mjs';
+import { sourceQualifiedSeedOwners } from '../../scripts/generate-seed-registry.mjs';
 
 function stat(path) {
   try {
@@ -38,6 +39,12 @@ function listRepoDirectory(relative) {
     return [];
   }
   return names.map((name) => ({ name, isDirectory: Boolean(stat(path.join(directory, name))?.isDirectory()) }));
+}
+
+/** Separate generator provenance: failed or stale source never supplies seed owners. */
+export function generatedSeedOwnerDeclarations(repository = REPO_ROOT) {
+  try { return sourceQualifiedSeedOwners(repository).declarations; }
+  catch { return []; }
 }
 
 /** Read committed census documents only when their actual source identity still agrees. */
@@ -129,6 +136,7 @@ export async function installNodeHost(worker) {
     currentDirectory: () => process.cwd(),
     listDirectory: listRepoDirectory,
     censusDocuments,
+    generatedSeedOwnerDeclarations,
     sourceFetch: nodeSourceFetch,
   });
   return context;

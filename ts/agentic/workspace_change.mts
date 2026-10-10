@@ -4,6 +4,7 @@
 import { scopedDecline } from './edit_scope.mjs';
 import { planDigestVerification, planWriteDigestVerification } from './workspace_change/digest_verification.mjs';
 import { absentTextAnswer, replaceList, replacedInOrder } from './replace_list.mjs';
+import { planLiteralAdditionStep } from './literal_addition.mjs';
 import { Capability } from './capability.mjs';
 import { classifyTool, toolFor } from './capability_router.mjs';
 import { resultForCommand as commandResult, sourceFromAgentReadResult, sourceFromReadResult } from './code_artifact.mjs';
@@ -49,6 +50,8 @@ const statedSlots = (rewrite) => rewrite.slots ?? [['{old}', rewrite.pattern], [
  */
 export function planWorkspaceChangeStep(rawTask, messages, toolNames) {
   const currentTurn = messages.slice(evidenceWindowStart(messages));
+  const addition = planLiteralAdditionStep(rawTask, currentTurn, toolNames);
+  if (addition !== null) return addition;
   // `Append the contents of a.txt to b.txt`: the source is read, and the
   // request is restated with its lines as the block placed (PR #1188 G50).
   const sourced = sourcedRequest(unwrapTransportQuotes(rawTask), currentTurn);
