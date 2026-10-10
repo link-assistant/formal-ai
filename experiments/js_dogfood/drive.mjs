@@ -161,11 +161,21 @@ export function execute(dir, call) {
  * planner and its fall-through planned nothing) or `steps` (the step budget
  * ran out mid-task, PR #1188 G84).
  */
-export async function drive(planChatStep, dir, prompt, { tools = AGENT_CLI_TOOLS, steps = 12, fallthrough = null } = {}) {
+export async function drive(planChatStep, dir, prompt, {
+  tools = AGENT_CLI_TOOLS, steps = 12, fallthrough = null, allowedCommands = undefined,
+} = {}) {
   if (!Array.isArray(tools) || new Set(tools).size !== tools.length || tools.some((tool) => !AGENT_CLI_TOOLS.includes(tool))) {
     return { transcript: [], answer: null, stop: 'invalid-tools', toolsAdvertised: [] };
   }
   tools = Object.freeze([...tools]);
+  if (allowedCommands !== undefined) {
+    if (!Array.isArray(allowedCommands)
+        || allowedCommands.some(command => typeof command !== 'string')
+        || new Set(allowedCommands).size !== allowedCommands.length) {
+      return { transcript: [], answer: null, stop: 'invalid-command-policy', toolsAdvertised: tools };
+    }
+    allowedCommands = Object.freeze([...allowedCommands]);
+  }
   const messages = [
     { role: 'system', content: `<env>\n  Working directory: ${dir}\n  Is directory a git repo: yes\n</env>` },
     { role: 'user', content: prompt },
@@ -178,14 +188,33 @@ export async function drive(planChatStep, dir, prompt, { tools = AGENT_CLI_TOOLS
     const plan = (await planChatStep(messages, tools)) ?? (fallthrough ? await fallthrough(messages, tools) : null);
     if (!plan) return { transcript, answer: null, stop: 'no-plan', toolsAdvertised: tools };
     if (plan.kind === 'final') return { transcript, answer: plan.answer, stop: 'final', toolsAdvertised: tools };
-    if (plan.calls.some((call) => !tools.includes(call.tool))) {
+    // Snapshot the complete batch before validation; getters cannot change executed arguments.
+    const calls = plan.calls.map(call => Object.freeze({ tool: call.tool, arguments: call.arguments }));
+    if (calls.some((call) => !tools.includes(call.tool))) {
       return { transcript, answer: null, stop: 'undeclared-tool', toolsAdvertised: tools };
     }
-    const toolCalls = plan.calls.map((call, index) => ({
+    if (allowedCommands !== undefined) {
+      const deniedCalls = calls.filter(call => {
+        if (call.tool !== 'bash') return false;
+        try {
+          if (typeof call.arguments !== 'string') return true;
+          const arguments_ = JSON.parse(call.arguments);
+          return !arguments_ || typeof arguments_.command !== 'string'
+            || !allowedCommands.includes(arguments_.command);
+        } catch {
+          return true;
+        }
+      });
+      if (deniedCalls.length) {
+        return { transcript, answer: null, stop: 'command-policy-denied',
+          toolsAdvertised: tools, deniedCalls };
+      }
+    }
+    const toolCalls = calls.map((call, index) => ({
       id: `c${step}_${index}`, type: 'function', function: { name: call.tool, arguments: call.arguments },
     }));
     messages.push({ role: 'assistant', content: '', tool_calls: toolCalls });
-    plan.calls.forEach((call, index) => {
+    calls.forEach((call, index) => {
       const receipt = executeResult(dir, call);
       const { content: result, ...metadata } = receipt;
       transcript.push({ tool: call.tool, arguments: call.arguments, result, ...metadata });
