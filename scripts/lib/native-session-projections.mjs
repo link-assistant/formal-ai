@@ -3,6 +3,13 @@ import {createHash} from 'node:crypto';
 import {readFileSync,lstatSync,readdirSync} from 'node:fs';
 import {join} from 'node:path';
 export const digest = bytes => createHash('sha256').update(bytes).digest('hex');
+/** A dispatch selector is not a source selection without authenticated head/base/merge binding. */
+export function validateProjectionSelector(environment) {
+  const requested = environment.NATIVE_SESSION_REQUESTED_PULL_REQUEST ?? '';
+  assert.equal(typeof requested, 'string', 'native session PR selector must be a string');
+  assert.equal(requested, '', 'requested pull-request projection source is unsupported without authenticated merge selection');
+  return Object.freeze({requestedPullRequest: null, selection: 'exact workflow checkout only'});
+}
 export function projectionRegistry(source) {
   assert.equal(typeof source, 'string');
   const count = /let sessions: \[\(&str, &str\); (\d+)\]/u.exec(source);

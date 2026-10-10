@@ -30,6 +30,8 @@ jobs:
   regenerate:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      NATIVE_SESSION_REQUESTED_PULL_REQUEST: ${{ github.event.inputs['pull-request'] || '' }}
     steps:
       - uses: actions/checkout@v7
         with:

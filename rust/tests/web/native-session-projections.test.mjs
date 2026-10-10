@@ -5,7 +5,7 @@ import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
-import {projectionRegistry,projectionInputs,verifyProjectionDirectory,projectionDataProfile,verifyProjectionDataEntries,digest,sessionSchema} from '../../../scripts/lib/native-session-projections.mjs';
+import {projectionRegistry,projectionInputs,verifyProjectionDirectory,projectionDataProfile,verifyProjectionDataEntries,digest,sessionSchema,validateProjectionSelector} from '../../../scripts/lib/native-session-projections.mjs';
 const source='let sessions: [(&str, &str); 1] = [(TASK, "docs/case-studies/issue-42/session.json")];';
 const path=projectionRegistry(source)[0];
 const driverBytes=readFileSync(new URL('../../../rust/src/agentic_coding/driver.rs',import.meta.url));
@@ -121,4 +121,29 @@ test('archive refuses missing or excessive process budgets',()=>{
    assert.throws(()=>verifyProjectionDataEntries(p.profile,
    p.entries));
    }
+});
+
+
+test('unsupported dispatch PR selectors refuse instead of compiling the dispatch branch',()=>{
+ for(const selector of ['1188',' 1188 ','0','../foreign','',undefined]) {
+  const environment={GITHUB_EVENT_NAME:'workflow_dispatch',NATIVE_SESSION_REQUESTED_PULL_REQUEST:selector};
+  if(selector==='' || selector===undefined)assert.equal(validateProjectionSelector(environment).selection,'exact workflow checkout only');
+  else assert.throws(()=>validateProjectionSelector(environment),/unsupported without authenticated merge selection/u);
+ }
+ assert.throws(()=>validateProjectionSelector({NATIVE_SESSION_REQUESTED_PULL_REQUEST:1188}),/must be a string/u);
+ assert.equal(validateProjectionSelector({GITHUB_EVENT_NAME:'pull_request'}).requestedPullRequest,null);
+});
+
+test('selector refusal precedes output creation and every native producer command',()=>{
+ const cwd=fileURLToPath(new URL('../../../',import.meta.url));
+ const directory=mkdtempSync(join(tmpdir(),'projection-selector-refusal-'));
+ const output=join(directory,'must-not-exist');
+ try {
+  const result=spawnSync(process.execPath,['scripts/generate-native-session-projections.mjs',output],{
+   cwd,env:{...process.env,GITHUB_ACTIONS:'true',GITHUB_EVENT_NAME:'workflow_dispatch',NATIVE_SESSION_REQUESTED_PULL_REQUEST:'1188'},encoding:'utf8',timeout:1000});
+  assert.notEqual(result.status,0);assert.match(result.stderr,/unsupported without authenticated merge selection/u);
+  assert.equal(result.signal,null);
+  assert.equal(readFileSync(new URL('../../../.github/workflows/regenerate-native-session-projections.yml',import.meta.url),'utf8').includes("NATIVE_SESSION_REQUESTED_PULL_REQUEST: ${{ github.event.inputs['pull-request'] || '' }}"),true);
+  assert.throws(()=>readFileSync(output),/ENOENT/u);
+ } finally {rmSync(directory,{recursive:true,force:true});}
 });
