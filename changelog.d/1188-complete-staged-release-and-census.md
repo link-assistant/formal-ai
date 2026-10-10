@@ -1,0 +1,3 @@
+Activated complete staged release workflows while preserving all original operations, transfers, credential checks, compiler and publication dependencies. Native workflow fixtures now inspect checked operation views and retain physical permission scans and all eight writer roles. Isolated source mutation controls prevent concurrent tests from changing shared workflows. Removed obsolete inline deadline exceptions and selected deployed source inventory in the configured fixture.
+
+Imported the genuine native census only after exact source, Git blob, ZIP and producer identity checks.43source guards,20repository checks and105portable release controls pass, with one existing optional skip. Fresh native CI and actual production release authority remain required.
