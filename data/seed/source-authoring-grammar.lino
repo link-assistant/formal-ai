@@ -60,3 +60,49 @@ source-authoring-grammar
     pattern "^{source-clause}，?并{registration-action}到[ \\t\\n\\r\\x0b\\x0c]+{registration-path}[ \\t\\n\\r\\x0b\\x0c。！？]*$"
   composition es
     pattern "^{source-clause}[ \\t\\n\\r\\x0b\\x0c]*,?[ \\t\\n\\r\\x0b\\x0c]+y[ \\t\\n\\r\\x0b\\x0c]+{registration-action}[ \\t\\n\\r\\x0b\\x0c]+en[ \\t\\n\\r\\x0b\\x0c]+{registration-path}[ \\t\\n\\r\\x0b\\x0c.!?]*$"
+source-request-preflight
+  source-joiner " and "
+  form declaration
+    pattern "^(?:In this selected-file scratch workspace, )?add exported (?<signature>[^.]+) to (?<destination>.+)$"
+    meaning "Bind the signature and destination through the maintained observed callable classifier; only a scoped reversible candidate is requested."
+  form goal
+    pattern "^Return (?<goal>.+)$"
+    meaning "Defer the full return clause to the existing source-qualified composition goal matcher; no name-derived semantics."
+  form source-discovery
+    pattern "^Discover and compose existing exports from the observed (?<sources>.+) source modules$"
+    meaning "Read and observe the classifier-bound source inputs; actual export and argument/result relations must come from their bytes."
+  form reuse-imports
+    pattern "^reuse their semantics through imports rather than copying their implementations$"
+    meaning "Require the checked imported composition effect plan, without copying source function implementations."
+  form read-prerequisites
+    pattern "^Read the source modules and destination before authoring$"
+    meaning "Every request-derived source and destination Read must be complete or a destination absence receipt before Write."
+  form repair-plan
+    pattern "^Produce a bounded repair plan identifying actual declaration spans/content identities, arguments/results, import bindings/dependencies, the optional-value guard and effects$"
+    meaning "Report the observed conditional graph, spans, hashes, imports, null guard and inherited effects before delivery."
+  form verification
+    pattern "^Run the supplied (?<acceptance>.+) acceptance command, (?<command>.+), and report the real result$"
+    meaning "Bind exact technical operands and the classifier command, execute only this Node operation and retain its actual status."
+  form protect-inputs
+    pattern "^do not modify source modules or tests, commit, or push$"
+    meaning "Only the destination candidate may be written; source/test byte identities remain fixed and other commands are forbidden."
+  form gap-before-write
+    pattern "^If safe composition cannot be established, record the exact missing capability before any output write$"
+    meaning "Unresolved source goals or Needs refuse candidate Write; unknown initializer effects remain inherited approved-operation effects, never pure."
+
+source-callable-composition
+  goal optional-source-text
+    producer-result optional-record
+    consumer-result text
+    absent-result null
+    lexeme en "canonical summary" "compact summary"
+    lexeme ru "каноническое описание"
+    lexeme hi "प्रामाणिक सारांश"
+    lexeme zh "规范摘要"
+    lexeme es "resumen canónico"
+    style compact
+      surface "compact "
+    form english-source-preserving-optional-text
+      pattern "^return the {style}{goal} of the {consumer-parameter} chosen by the {wrapper-parameter}, or null when no {consumer-parameter} is selected[.]?$"
+    template javascript-imported-optional-text
+      text "import { {producer-export} as {producer-local} } from {producer-url};\nimport { {consumer-export} as {consumer-local} } from {consumer-url};\nexport function {name}({parameter}) {\n  const {value-local} = {producer-local}({parameter});\n  return {value-local} === null ? null : {consumer-local}({value-local});\n}\n"

@@ -13,7 +13,7 @@ pub(super) fn match_source_description(
     let parsed = crate::seed::parser::parse_lino(include_str!(
         "../../../../embedded/data/seed/source-authoring-grammar.lino"
     ));
-    let root = parsed.children.first()?;
+    let root = source_grammar_root(&parsed)?;
     let placeholders = regex::Regex::new(r"\{([a-z]+(?:-[a-z]+)*)\}").ok()?;
     for form in root.children.iter().filter(|node| node.name == "form") {
         let field = |name: &str| {
@@ -83,4 +83,22 @@ pub(super) fn match_source_description(
         );
     }
     None
+}
+
+/// Select exactly one named grammar container without first-child assumptions.
+pub(super) fn source_grammar_root(
+    document: &crate::seed::parser::LinoNode,
+) -> Option<&crate::seed::parser::LinoNode> {
+    if document.name == "source-authoring-grammar" {
+        return Some(document);
+    }
+    let mut grammar_roots = document
+        .children
+        .iter()
+        .filter(|node| node.name == "source-authoring-grammar");
+    let root = grammar_roots.next()?;
+    if grammar_roots.next().is_some() {
+        return None;
+    }
+    Some(root)
 }

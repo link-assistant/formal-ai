@@ -1,3 +1,4 @@
+import { sourceGrammarRoot } from './matcher.mjs';
 import { childrenNamed, parseLino, readText } from '../../host.mjs';
 import { roleWordForms } from '../../write_lexicon.mjs';
 import { safeRelativePath } from '../../write_request.mjs';
@@ -14,7 +15,8 @@ export function sourceRegistrationContract(task, sourceFor) {
     'registration-action': '(?:' + forms.map(escaped).join('|') + ')',
     'registration-path': '[^ \\t\\n\\r\\v\\f,;:]+\\.rs'
   };
-  const root = parseLino(readText('data/seed/source-authoring-grammar.lino') ?? '');
+  const root = sourceGrammarRoot(parseLino(readText('data/seed/source-authoring-grammar.lino') ?? ''));
+  if (root === null) return null;
   for (const form of childrenNamed(root, 'composition')) {
     const template = childrenNamed(form, 'pattern')[0]?.id;
     if (typeof template !== 'string' || !template.startsWith('^') || !template.endsWith('$')) continue;

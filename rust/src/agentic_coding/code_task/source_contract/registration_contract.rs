@@ -14,7 +14,7 @@ pub(in crate::agentic_coding) fn source_registration_contract(
     let parsed = crate::seed::parser::parse_lino(include_str!(
         "../../../../embedded/data/seed/source-authoring-grammar.lino"
     ));
-    let root = parsed.children.first()?;
+    let root = super::matcher::source_grammar_root(&parsed)?;
     let placeholders = regex::Regex::new(r"\{([a-z]+(?:-[a-z]+)*)\}").ok()?;
     for form in root
         .children

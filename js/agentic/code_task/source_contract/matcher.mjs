@@ -2,7 +2,8 @@ import { sourceDeclarationSlots } from './declaration.mjs';
 import { sourceWhitespaceSupported } from '../source_contract.mjs';
 import { childrenNamed, parseLino, readText } from '../../host.mjs';
 export function matchSourceDescription(task, artifact) {
-  const root = parseLino(readText('data/seed/source-authoring-grammar.lino') ?? '');
+  const root = sourceGrammarRoot(parseLino(readText('data/seed/source-authoring-grammar.lino') ?? ''));
+  if (root === null) return null;
   const forms = childrenNamed(root, 'form').map(form => Object.fromEntries(['language', 'kind', 'pattern'].map(name => [name, childrenNamed(form, name)[0]?.id ?? childrenNamed(root, name)[0]?.id])));
   if (!sourceWhitespaceSupported(task)) return null;
   const declaration = sourceDeclarationSlots(artifact.content);
@@ -52,4 +53,11 @@ export function matchSourceDescription(task, artifact) {
     };
   }
   return null;
+}
+
+/** Select exactly one named grammar container; unrelated document order is inert. */
+export function sourceGrammarRoot(document) {
+  const roots = document?.name === 'source-authoring-grammar'
+    ? [document] : childrenNamed(document, 'source-authoring-grammar');
+  return roots.length === 1 ? roots[0] : null;
 }

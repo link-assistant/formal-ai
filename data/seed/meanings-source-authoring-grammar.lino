@@ -11,9 +11,9 @@ meanings
     example "A renamed public zero-argument i64 function or a named f64 division function can match a whole source-authoring form."
     source "js/agentic/code_task/source_contract/declaration.mjs sha256=0be2df9d06b98942750879a3b6c143e6f1e317f18a2772c9581d9f48dc7f5475"
     source "rust/src/agentic_coding/code_task/source_contract/declaration.rs sha256=237d9e4361f69f10e0d6f2daa5f04abca0eb3c062a739d78d0c064ffd057700d"
-    source "js/agentic/code_task/source_contract/matcher.mjs sha256=629841bc4ffad1520e42b1fb6a07fd0daf9727c13308b32f31990753cf1a3c1e"
-    source "rust/src/agentic_coding/code_task/source_contract/matcher.rs sha256=56966a7b9d44fc9a752ea7d7a1eb366c2ced735f1db2fc1c0a185fd478df826a"
-    source "data/seed/source-authoring-grammar.lino sha256=4aa5f2e25eee49be10117b96ddae4e90c16bfb21a71774107a0d240b1c48ac78"
+    source "js/agentic/code_task/source_contract/matcher.mjs sha256=c350a1e6d9e11b0dd3ca5b433ef1792f1a3cc327831333d034d1c9e504a4c45c"
+    source "rust/src/agentic_coding/code_task/source_contract/matcher.rs sha256=f267a43cdf12bb170b61548cef34f7ea2edc4893cd3833b71b9d601271456142"
+    source "data/seed/source-authoring-grammar.lino sha256=1bafa9fdbf5c4f747f50d581837afcd43698cebd0df5f064c64db166ae195a94"
     lexeme en
       words "source authoring grammar"
     lexeme ru
@@ -50,9 +50,9 @@ meanings
     effect "Returns a conditional two-operation span graph. A recognized prefix retains its unconsumed remainder and blocks writes. A complete graph may use the existing observed source-write, source-readback, registration-preimage, registration-write and registration-readback transaction; import initialization, tool effects and compilation remain separate unknowns."
     unit "JavaScript UTF16 spans and Rust UTF8 spans reference the complete original request; composition whitespace is ASCII."
     example "A renamed integer declaration or finite nonzero f64 division can be registered through a compatible seeded connective; a deployment or unknown future-work tail is retained and refuses premature delivery."
-    source "js/agentic/code_task/source_contract/registration_contract.mjs sha256=f6d32c67a6825a5dd043d00c4565f41b5600e7b5bcb97a36a508aad973495e63"
-    source "rust/src/agentic_coding/code_task/source_contract/registration_contract.rs sha256=3de194f1a65543cd4193bdef60a355e5b7b091b72f7a8d2732ed8c4328942880"
-    source "data/seed/source-authoring-grammar.lino sha256=4aa5f2e25eee49be10117b96ddae4e90c16bfb21a71774107a0d240b1c48ac78"
+    source "js/agentic/code_task/source_contract/registration_contract.mjs sha256=91ef0d48587e50ef20e5627e348e122cce2bbde0660da93f2cc6af82f719364e"
+    source "rust/src/agentic_coding/code_task/source_contract/registration_contract.rs sha256=d6d944ed9e779847eb9f215daf92f9ef930ff599d5a65bc3f15e1bfe7e6b78f5"
+    source "data/seed/source-authoring-grammar.lino sha256=1bafa9fdbf5c4f747f50d581837afcd43698cebd0df5f064c64db166ae195a94"
     lexeme en
       words "source and module registration composition"
     lexeme ru
@@ -97,9 +97,9 @@ meanings
     definition "A public Rust string constant declaration with an exact identifier, &str type and identifier-shaped literal value."
     precondition "The complete supported declaration and complete request bind the same constant name, type, value and destination."
     effect "Returns declaration slots for a conditional authoring plan; it does not execute a write or certify compilation."
-    source "data/seed/source-authoring-grammar.lino sha256=4aa5f2e25eee49be10117b96ddae4e90c16bfb21a71774107a0d240b1c48ac78"
+    source "data/seed/source-authoring-grammar.lino sha256=1bafa9fdbf5c4f747f50d581837afcd43698cebd0df5f064c64db166ae195a94"
     source "js/agentic/code_task/source_contract/declaration.mjs sha256=0be2df9d06b98942750879a3b6c143e6f1e317f18a2772c9581d9f48dc7f5475"
-    source "js/agentic/code_task/source_contract/matcher.mjs sha256=629841bc4ffad1520e42b1fb6a07fd0daf9727c13308b32f31990753cf1a3c1e"
+    source "js/agentic/code_task/source_contract/matcher.mjs sha256=c350a1e6d9e11b0dd3ca5b433ef1792f1a3cc327831333d034d1c9e504a4c45c"
     source "rust/src/agentic_coding/code_task/source_contract/declaration.rs sha256=237d9e4361f69f10e0d6f2daa5f04abca0eb3c062a739d78d0c064ffd057700d"
     lexeme en
       words "string constant"
@@ -119,9 +119,9 @@ meanings
     definition "A Rust test declaration containing one equality assertion between two signed integer literal operands."
     precondition "The test identifier is valid, each operand is within signed32-bit bounds and the full source/request forms match exactly."
     effect "Binds both operands and the test name; whether the assertion passes remains a separate execution obligation."
-    source "data/seed/source-authoring-grammar.lino sha256=4aa5f2e25eee49be10117b96ddae4e90c16bfb21a71774107a0d240b1c48ac78"
+    source "data/seed/source-authoring-grammar.lino sha256=1bafa9fdbf5c4f747f50d581837afcd43698cebd0df5f064c64db166ae195a94"
     source "js/agentic/code_task/source_contract/declaration.mjs sha256=0be2df9d06b98942750879a3b6c143e6f1e317f18a2772c9581d9f48dc7f5475"
-    source "js/agentic/code_task/source_contract/matcher.mjs sha256=629841bc4ffad1520e42b1fb6a07fd0daf9727c13308b32f31990753cf1a3c1e"
+    source "js/agentic/code_task/source_contract/matcher.mjs sha256=c350a1e6d9e11b0dd3ca5b433ef1792f1a3cc327831333d034d1c9e504a4c45c"
     source "rust/src/agentic_coding/code_task/source_contract/declaration.rs sha256=237d9e4361f69f10e0d6f2daa5f04abca0eb3c062a739d78d0c064ffd057700d"
     lexeme en
       words "equality test"
@@ -141,9 +141,9 @@ meanings
     definition "A Rust test declaration containing one equality assertion between a sum of two integer literals and an expected integer literal."
     precondition "The test identifier is valid, all three literals fit signed32-bit bounds and every source/request operand matches."
     effect "Binds left, right and expected operands without asserting their arithmetic equality or runtime success."
-    source "data/seed/source-authoring-grammar.lino sha256=4aa5f2e25eee49be10117b96ddae4e90c16bfb21a71774107a0d240b1c48ac78"
+    source "data/seed/source-authoring-grammar.lino sha256=1bafa9fdbf5c4f747f50d581837afcd43698cebd0df5f064c64db166ae195a94"
     source "js/agentic/code_task/source_contract/declaration.mjs sha256=0be2df9d06b98942750879a3b6c143e6f1e317f18a2772c9581d9f48dc7f5475"
-    source "js/agentic/code_task/source_contract/matcher.mjs sha256=629841bc4ffad1520e42b1fb6a07fd0daf9727c13308b32f31990753cf1a3c1e"
+    source "js/agentic/code_task/source_contract/matcher.mjs sha256=c350a1e6d9e11b0dd3ca5b433ef1792f1a3cc327831333d034d1c9e504a4c45c"
     source "rust/src/agentic_coding/code_task/source_contract/declaration.rs sha256=237d9e4361f69f10e0d6f2daa5f04abca0eb3c062a739d78d0c064ffd057700d"
     lexeme en
       words "addition test"
@@ -155,3 +155,867 @@ meanings
       words "加法测试"
     lexeme es
       words "prueba de suma"
+  source-request-declaration
+    role source-request-declaration
+    defined-by relation
+    definition "Bind the signature and destination through the maintained observed callable classifier; only a scoped reversible candidate is requested."
+    precondition source-request-preflight
+    effect "Bind the signature and destination through the maintained observed callable classifier; only a scoped reversible candidate is requested."
+    unit "not applicable"
+    example "A complete declaration clause binds its recorded source span; any missing contract retains a refusal."
+    lexeme en
+      words "source declaration"
+    lexeme ru
+      words "объявление исходного кода"
+    lexeme hi
+      words "स्रोत घोषणा"
+    lexeme zh
+      words "源码声明"
+    lexeme es
+      words "declaración de código"
+  source-request-goal
+    role source-request-goal
+    defined-by relation
+    definition "Defer the full return clause to the existing source-qualified composition goal matcher; no name-derived semantics."
+    precondition source-request-preflight
+    effect "Defer the full return clause to the existing source-qualified composition goal matcher; no name-derived semantics."
+    unit "not applicable"
+    example "A complete goal clause binds its recorded source span; any missing contract retains a refusal."
+    lexeme en
+      words "source result goal"
+    lexeme ru
+      words "цель результата исходного кода"
+    lexeme hi
+      words "स्रोत परिणाम लक्ष्य"
+    lexeme zh
+      words "源码结果目标"
+    lexeme es
+      words "objetivo del resultado"
+  source-request-source-discovery
+    role source-request-source-discovery
+    defined-by relation
+    definition "Read and observe the classifier-bound source inputs; actual export and argument/result relations must come from their bytes."
+    precondition source-request-preflight
+    effect "Read and observe the classifier-bound source inputs; actual export and argument/result relations must come from their bytes."
+    unit "not applicable"
+    example "A complete source-discovery clause binds its recorded source span; any missing contract retains a refusal."
+    lexeme en
+      words "source export discovery"
+    lexeme ru
+      words "обнаружение экспортов"
+    lexeme hi
+      words "स्रोत निर्यात खोज"
+    lexeme zh
+      words "源码导出发现"
+    lexeme es
+      words "descubrimiento de exportaciones"
+  source-request-reuse-imports
+    role source-request-reuse-imports
+    defined-by relation
+    definition "Require the checked imported composition effect plan, without copying source function implementations."
+    precondition source-request-preflight
+    effect "Require the checked imported composition effect plan, without copying source function implementations."
+    unit "not applicable"
+    example "A complete reuse-imports clause binds its recorded source span; any missing contract retains a refusal."
+    lexeme en
+      words "imported source reuse"
+    lexeme ru
+      words "повторное использование импортов"
+    lexeme hi
+      words "आयातित स्रोत पुनःप्रयोग"
+    lexeme zh
+      words "导入源码复用"
+    lexeme es
+      words "reutilización de importaciones"
+  source-request-read-prerequisites
+    role source-request-read-prerequisites
+    defined-by relation
+    definition "Every request-derived source and destination Read must be complete or a destination absence receipt before Write."
+    precondition source-request-preflight
+    effect "Every request-derived source and destination Read must be complete or a destination absence receipt before Write."
+    unit "not applicable"
+    example "A complete read-prerequisites clause binds its recorded source span; any missing contract retains a refusal."
+    lexeme en
+      words "source read prerequisites"
+    lexeme ru
+      words "предварительное чтение исходного кода"
+    lexeme hi
+      words "स्रोत पठन पूर्वशर्तें"
+    lexeme zh
+      words "源码读取前提"
+    lexeme es
+      words "lecturas previas del código"
+  source-request-repair-plan
+    role source-request-repair-plan
+    defined-by relation
+    definition "Report the observed conditional graph, spans, hashes, imports, null guard and inherited effects before delivery."
+    precondition source-request-preflight
+    effect "Report the observed conditional graph, spans, hashes, imports, null guard and inherited effects before delivery."
+    unit "not applicable"
+    example "A complete repair-plan clause binds its recorded source span; any missing contract retains a refusal."
+    lexeme en
+      words "source repair plan"
+    lexeme ru
+      words "план исправления исходного кода"
+    lexeme hi
+      words "स्रोत सुधार योजना"
+    lexeme zh
+      words "源码修复计划"
+    lexeme es
+      words "plan de reparación del código"
+  source-request-verification
+    role source-request-verification
+    defined-by relation
+    definition "Bind exact technical operands and the classifier command, execute only this Node operation and retain its actual status."
+    precondition source-request-preflight
+    effect "Bind exact technical operands and the classifier command, execute only this Node operation and retain its actual status."
+    unit "not applicable"
+    example "A complete verification clause binds its recorded source span; any missing contract retains a refusal."
+    lexeme en
+      words "source acceptance verification"
+    lexeme ru
+      words "проверка приемки исходного кода"
+    lexeme hi
+      words "स्रोत स्वीकृति सत्यापन"
+    lexeme zh
+      words "源码验收验证"
+    lexeme es
+      words "verificación de aceptación"
+  source-request-protect-inputs
+    role source-request-protect-inputs
+    defined-by relation
+    definition "Only the destination candidate may be written; source/test byte identities remain fixed and other commands are forbidden."
+    precondition source-request-preflight
+    effect "Only the destination candidate may be written; source/test byte identities remain fixed and other commands are forbidden."
+    unit "not applicable"
+    example "A complete protect-inputs clause binds its recorded source span; any missing contract retains a refusal."
+    lexeme en
+      words "source input protection"
+    lexeme ru
+      words "защита входных исходников"
+    lexeme hi
+      words "स्रोत इनपुट संरक्षण"
+    lexeme zh
+      words "源码输入保护"
+    lexeme es
+      words "protección de entradas"
+  source-request-gap-before-write
+    role source-request-gap-before-write
+    defined-by relation
+    definition "Unresolved source goals or Needs refuse candidate Write; unknown initializer effects remain inherited approved-operation effects, never pure."
+    precondition source-request-preflight
+    effect "Unresolved source goals or Needs refuse candidate Write; unknown initializer effects remain inherited approved-operation effects, never pure."
+    unit "not applicable"
+    example "A complete gap-before-write clause binds its recorded source span; any missing contract retains a refusal."
+    lexeme en
+      words "unresolved source refusal"
+    lexeme ru
+      words "отказ при неразрешенном контракте"
+    lexeme hi
+      words "अनसुलझे स्रोत का निषेध"
+    lexeme zh
+      words "未解决源码契约的拒绝"
+    lexeme es
+      words "rechazo de contratos sin resolver"
+  source-request-preflight
+    role source-request-preflight
+    defined-by relation
+    definition "One occurrence of every registered request role binds the entire unquoted request to maintained declaration, goal, Read history, import graph, protected-byte and accepted-operation contracts."
+    precondition "The complete request has paired quotes, exact technical operands, no unknown independent clauses, complete prerequisite Reads, an absent owned destination and byte-exact private host source receipts."
+    effect "Authorizes only a leased reversible candidate. Delivery additionally requires the actual candidate digest before and after the accepted operation, unchanged protected inputs and an owned zero exit status. Unknown imported initialization and caller effects remain conditional; absence of proof refuses or rolls back only unchanged owned bytes."
+    unit "not applicable"
+    example "An observed optional-record producer and text consumer compose through imports under a null guard; an outside deployment demand prevents the candidate write."
+    lexeme en
+      words "complete source request contract"
+    lexeme ru
+      words "полный контракт запроса исходного кода"
+    lexeme hi
+      words "पूर्ण स्रोत अनुरोध अनुबंध"
+    lexeme zh
+      words "完整源码请求契约"
+    lexeme es
+      words "contrato completo de solicitud de código"
+  source-callable-composition
+    role source-callable-composition
+    defined-by relation
+    definition "A complete observed source graph binds compatible exported operations, argument/result relations and import URLs within one approved operation."
+    precondition source-request-preflight
+    effect "A complete observed source graph binds compatible exported operations, argument/result relations and import URLs within one approved operation."
+    unit "not applicable"
+    example "An observed optional-record operation feeds an observed text operation; absent selection returns the producer contract null, while ambiguous exports or unknown extra goals refuse."
+    lexeme en
+      words "source callable composition"
+    lexeme ru
+      words "композиция исходных функций"
+    lexeme hi
+      words "स्रोत फ़ंक्शन संयोजन"
+    lexeme zh
+      words "源码函数组合"
+    lexeme es
+      words "composición de funciones fuente"
+  optional-source-text
+    role optional-source-text
+    defined-by relation
+    definition "A source-proven optional-record producer and text consumer compose with an actual null absence result, preserving the imported semantics and their conditional effects."
+    precondition source-request-preflight
+    effect "A source-proven optional-record producer and text consumer compose with an actual null absence result, preserving the imported semantics and their conditional effects."
+    unit "not applicable"
+    example "An observed optional-record operation feeds an observed text operation; absent selection returns the producer contract null, while ambiguous exports or unknown extra goals refuse."
+    lexeme en
+      words "optional source text"
+    lexeme ru
+      words "необязательный текст исходного кода"
+    lexeme hi
+      words "वैकल्पिक स्रोत पाठ"
+    lexeme zh
+      words "可选源码文本"
+    lexeme es
+      words "texto fuente opcional"
+  english-source-preserving-optional-text
+    role english-source-preserving-optional-text
+    defined-by relation
+    definition "A complete seeded return clause binds the exact producer selection parameter and consumer parameter; technical identifiers retain case and unknown independent clauses refuse."
+    precondition source-request-preflight
+    effect "A complete seeded return clause binds the exact producer selection parameter and consumer parameter; technical identifiers retain case and unknown independent clauses refuse."
+    unit "not applicable"
+    example "An observed optional-record operation feeds an observed text operation; absent selection returns the producer contract null, while ambiguous exports or unknown extra goals refuse."
+    lexeme en
+      words "source preserving optional text form"
+    lexeme ru
+      words "форма необязательного текста с сохранением исходников"
+    lexeme hi
+      words "स्रोत संरक्षित वैकल्पिक पाठ रूप"
+    lexeme zh
+      words "保留源码的可选文本形式"
+    lexeme es
+      words "forma de texto opcional que conserva fuentes"
+  javascript-imported-optional-text
+    role javascript-imported-optional-text
+    defined-by relation
+    definition "A declaration template imports the observed producer and consumer through their proved module URLs, uses fresh local names and applies the source-proven null guard."
+    precondition source-request-preflight
+    effect "A declaration template imports the observed producer and consumer through their proved module URLs, uses fresh local names and applies the source-proven null guard."
+    unit "not applicable"
+    example "An observed optional-record operation feeds an observed text operation; absent selection returns the producer contract null, while ambiguous exports or unknown extra goals refuse."
+    lexeme en
+      words "imported optional text declaration"
+    lexeme ru
+      words "объявление необязательного текста через импорты"
+    lexeme hi
+      words "आयातित वैकल्पिक पाठ घोषणा"
+    lexeme zh
+      words "导入可选文本声明"
+    lexeme es
+      words "declaración de texto opcional importado"
+  declaration
+    role source-request-declaration
+    defined-by source-request-declaration
+    definition "The registered declaration request form inherits the source-qualified role contract; its actual full clause, captured operands and source span must satisfy that contract."
+    precondition source-request-preflight
+    effect source-request-declaration
+    unit "not applicable"
+    example "A complete declaration clause contributes one immutable role obligation; a missing or repeated clause cannot authorize the candidate."
+    lexeme en
+      words "source declaration"
+    lexeme ru
+      words "объявление исходного кода"
+    lexeme hi
+      words "स्रोत घोषणा"
+    lexeme zh
+      words "源码声明"
+    lexeme es
+      words "declaración de código"
+  gap-before-write
+    role source-request-gap-before-write
+    defined-by source-request-gap-before-write
+    definition "The registered gap-before-write request form inherits the source-qualified role contract; its actual full clause, captured operands and source span must satisfy that contract."
+    precondition source-request-preflight
+    effect source-request-gap-before-write
+    unit "not applicable"
+    example "A complete gap-before-write clause contributes one immutable role obligation; a missing or repeated clause cannot authorize the candidate."
+    lexeme en
+      words "unresolved source refusal"
+    lexeme ru
+      words "отказ при неразрешенном контракте"
+    lexeme hi
+      words "अनसुलझे स्रोत का निषेध"
+    lexeme zh
+      words "未解决源码契约的拒绝"
+    lexeme es
+      words "rechazo de contratos sin resolver"
+  goal
+    role source-request-goal
+    defined-by source-request-goal
+    definition "The registered goal request form inherits the source-qualified role contract; its actual full clause, captured operands and source span must satisfy that contract."
+    precondition source-request-preflight
+    effect source-request-goal
+    unit "not applicable"
+    example "A complete goal clause contributes one immutable role obligation; a missing or repeated clause cannot authorize the candidate."
+    lexeme en
+      words "source result goal"
+    lexeme ru
+      words "цель результата исходного кода"
+    lexeme hi
+      words "स्रोत परिणाम लक्ष्य"
+    lexeme zh
+      words "源码结果目标"
+    lexeme es
+      words "objetivo del resultado"
+  protect-inputs
+    role source-request-protect-inputs
+    defined-by source-request-protect-inputs
+    definition "The registered protect-inputs request form inherits the source-qualified role contract; its actual full clause, captured operands and source span must satisfy that contract."
+    precondition source-request-preflight
+    effect source-request-protect-inputs
+    unit "not applicable"
+    example "A complete protect-inputs clause contributes one immutable role obligation; a missing or repeated clause cannot authorize the candidate."
+    lexeme en
+      words "source input protection"
+    lexeme ru
+      words "защита входных исходников"
+    lexeme hi
+      words "स्रोत इनपुट संरक्षण"
+    lexeme zh
+      words "源码输入保护"
+    lexeme es
+      words "protección de entradas"
+  read-prerequisites
+    role source-request-read-prerequisites
+    defined-by source-request-read-prerequisites
+    definition "The registered read-prerequisites request form inherits the source-qualified role contract; its actual full clause, captured operands and source span must satisfy that contract."
+    precondition source-request-preflight
+    effect source-request-read-prerequisites
+    unit "not applicable"
+    example "A complete read-prerequisites clause contributes one immutable role obligation; a missing or repeated clause cannot authorize the candidate."
+    lexeme en
+      words "source read prerequisites"
+    lexeme ru
+      words "предварительное чтение исходного кода"
+    lexeme hi
+      words "स्रोत पठन पूर्वशर्तें"
+    lexeme zh
+      words "源码读取前提"
+    lexeme es
+      words "lecturas previas del código"
+  repair-plan
+    role source-request-repair-plan
+    defined-by source-request-repair-plan
+    definition "The registered repair-plan request form inherits the source-qualified role contract; its actual full clause, captured operands and source span must satisfy that contract."
+    precondition source-request-preflight
+    effect source-request-repair-plan
+    unit "not applicable"
+    example "A complete repair-plan clause contributes one immutable role obligation; a missing or repeated clause cannot authorize the candidate."
+    lexeme en
+      words "source repair plan"
+    lexeme ru
+      words "план исправления исходного кода"
+    lexeme hi
+      words "स्रोत सुधार योजना"
+    lexeme zh
+      words "源码修复计划"
+    lexeme es
+      words "plan de reparación del código"
+  reuse-imports
+    role source-request-reuse-imports
+    defined-by source-request-reuse-imports
+    definition "The registered reuse-imports request form inherits the source-qualified role contract; its actual full clause, captured operands and source span must satisfy that contract."
+    precondition source-request-preflight
+    effect source-request-reuse-imports
+    unit "not applicable"
+    example "A complete reuse-imports clause contributes one immutable role obligation; a missing or repeated clause cannot authorize the candidate."
+    lexeme en
+      words "imported source reuse"
+    lexeme ru
+      words "повторное использование импортов"
+    lexeme hi
+      words "आयातित स्रोत पुनःप्रयोग"
+    lexeme zh
+      words "导入源码复用"
+    lexeme es
+      words "reutilización de importaciones"
+  source-discovery
+    role source-request-source-discovery
+    defined-by source-request-source-discovery
+    definition "The registered source-discovery request form inherits the source-qualified role contract; its actual full clause, captured operands and source span must satisfy that contract."
+    precondition source-request-preflight
+    effect source-request-source-discovery
+    unit "not applicable"
+    example "A complete source-discovery clause contributes one immutable role obligation; a missing or repeated clause cannot authorize the candidate."
+    lexeme en
+      words "source export discovery"
+    lexeme ru
+      words "обнаружение экспортов"
+    lexeme hi
+      words "स्रोत निर्यात खोज"
+    lexeme zh
+      words "源码导出发现"
+    lexeme es
+      words "descubrimiento de exportaciones"
+  null
+    role null
+    defined-by relation
+    definition "The JavaScript null primitive is the exact absence value established by a source IR literal or guard. It is distinct from undefined, false and an empty record."
+    precondition "The observed producer conditional IR proves null absence; the emitter and checker use that same primitive."
+    effect "Preserves the proved absent branch; no imported initializer or arbitrary caller effect is certified."
+    unit "not applicable"
+    example "A source-qualified optional result is absent as null or is rendered by the observed consumer; unknown structure refuses."
+    lexeme en
+      words "null absence"
+    lexeme ru
+      words "отсутствие null"
+    lexeme hi
+      words "null अनुपस्थिति"
+    lexeme zh
+      words "null 缺失值"
+    lexeme es
+      words "ausencia null"
+  optional-record
+    role optional-record
+    defined-by relation
+    definition "A conditional schema that admits one source-qualified record or the explicit null absence value, with source-derived fields and preconditions."
+    precondition "Actual source contracts bind the record fields and absent branch; unknown getters, Proxy objects and unproved structural inputs retain refusal."
+    effect "Binds compatible producer result and consumer input under the verified schema conditions, without universal runtime purity."
+    unit "not applicable"
+    example "A source-qualified optional result is absent as null or is rendered by the observed consumer; unknown structure refuses."
+    lexeme en
+      words "optional source record"
+    lexeme ru
+      words "необязательная исходная запись"
+    lexeme hi
+      words "वैकल्पिक स्रोत रिकॉर्ड"
+    lexeme zh
+      words "可选源码记录"
+    lexeme es
+      words "registro fuente opcional"
+  compact
+    role compact
+    defined-by relation
+    definition "The declared style selects the compatible source text rendering operation through its observed source contract; it does not invent a new shortened algorithm."
+    precondition "The goal style, unique callable graph and actual imported consumer semantics bind the complete return form."
+    effect "Uses that imported rendering operation under inherited conditional effects and the same accepted verification operation."
+    unit "not applicable"
+    example "A source-qualified optional result is absent as null or is rendered by the observed consumer; unknown structure refuses."
+    lexeme en
+      words "compact source rendering"
+    lexeme ru
+      words "компактное исходное представление"
+    lexeme hi
+      words "संक्षिप्त स्रोत प्रस्तुति"
+    lexeme zh
+      words "紧凑源码呈现"
+    lexeme es
+      words "representación fuente compacta"
+  source-contract-diagnostic
+    role source-contract-diagnostic
+    defined-by relation
+    definition "Authored diagnostic surfaces report the exact unsatisfied source-contract condition in the selected language."
+    precondition "A unique source-bound diagnostic code and one declared language select exactly one nonempty surface; a missing or ambiguous record refuses rendering."
+    effect "Returns seed text only. Rendering does not consume a Goal or Need, authorize Read or Write, prove purity, accept a receipt, or certify execution."
+    unit "diagnostic text"
+    example "A source URL mismatch reports the corresponding condition while its import ownership remains refused."
+    lexeme en
+      words "source contract diagnostics"
+    lexeme ru
+      words "диагностика контрактов исходного кода"
+    lexeme hi
+      words "स्रोत अनुबंध निदान"
+    lexeme zh
+      words "源码契约诊断"
+    lexeme es
+      words "diagnósticos de contratos de código"
+  source-module-url-mismatch
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: foreign source URL."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The source-module-url-mismatch condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "foreign source URL"
+    lexeme ru
+      words "чужой URL исходного модуля"
+    lexeme hi
+      words "असंबंधित स्रोत मॉड्यूल URL"
+    lexeme zh
+      words "外部源码模块 URL"
+    lexeme es
+      words "URL de módulo fuente ajeno"
+  unaccepted-module-import
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: not already accepted import."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The unaccepted-module-import condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "not already accepted import"
+    lexeme ru
+      words "импорт ещё не разрешён"
+    lexeme hi
+      words "आयात पहले से स्वीकृत नहीं है"
+    lexeme zh
+      words "尚未获准的导入"
+    lexeme es
+      words "importación aún no autorizada"
+  unbound-request-contracts
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: unbound request contracts."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The unbound-request-contracts condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "unbound request contracts"
+    lexeme ru
+      words "контракты запроса не связаны"
+    lexeme hi
+      words "अनुरोध अनुबंध असंबद्ध हैं"
+    lexeme zh
+      words "请求契约未绑定"
+    lexeme es
+      words "contratos de solicitud sin vincular"
+  unsolved-read-prerequisite
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: unsolved immutable Read prerequisite."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The unsolved-read-prerequisite condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "unsolved immutable Read prerequisite"
+    lexeme ru
+      words "не выполнено обязательное предварительное чтение"
+    lexeme hi
+      words "अपरिवर्तनीय पठन पूर्वशर्त अनसुलझी है"
+    lexeme zh
+      words "不可变读取前置条件未满足"
+    lexeme es
+      words "prerrequisito inmutable de lectura sin resolver"
+  unbound-source-goal
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: unbound source goal."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The unbound-source-goal condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "unbound source goal"
+    lexeme ru
+      words "цель исходного кода не связана"
+    lexeme hi
+      words "स्रोत लक्ष्य असंबद्ध है"
+    lexeme zh
+      words "源码目标未绑定"
+    lexeme es
+      words "objetivo de código sin vincular"
+  unbound-canonical-source-receipt
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: unbound canonical source receipt."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The unbound-canonical-source-receipt condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "unbound canonical source receipt"
+    lexeme ru
+      words "каноническое свидетельство исходного кода не связано"
+    lexeme hi
+      words "प्रामाणिक स्रोत रसीद असंबद्ध है"
+    lexeme zh
+      words "规范源码凭据未绑定"
+    lexeme es
+      words "recibo canónico de código sin vincular"
+  unbound-imported-implementation
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: unbound imported implementation ownership."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The unbound-imported-implementation condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "unbound imported implementation ownership"
+    lexeme ru
+      words "владение импортированной реализацией не связано"
+    lexeme hi
+      words "आयातित कार्यान्वयन का अधिकार असंबद्ध है"
+    lexeme zh
+      words "导入实现的所有权未绑定"
+    lexeme es
+      words "propiedad de implementación importada sin vincular"
+  unbound-host-message-boundary
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: requires actual maintained host message boundary."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The unbound-host-message-boundary condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "requires actual maintained host message boundary"
+    lexeme ru
+      words "требуется действующая граница сообщений хоста"
+    lexeme hi
+      words "वास्तविक अनुरक्षित होस्ट संदेश सीमा आवश्यक है"
+    lexeme zh
+      words "需要实际维护的宿主消息边界"
+    lexeme es
+      words "requiere el límite real mantenido de mensajes del anfitrión"
+  missing-composition-contract
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: missing seeded composition contract."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The missing-composition-contract condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "missing seeded composition contract"
+    lexeme ru
+      words "нет контракта композиции в данных"
+    lexeme hi
+      words "बीज में संयोजन अनुबंध अनुपस्थित है"
+    lexeme zh
+      words "种子组合契约缺失"
+    lexeme es
+      words "falta el contrato de composición de los datos"
+  unproved-request-scope
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: unproved quotation/scalar scope."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The unproved-request-scope condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "unproved quotation/scalar scope"
+    lexeme ru
+      words "область кавычек и скалярных значений не доказана"
+    lexeme hi
+      words "उद्धरण और स्केलर दायरा अप्रमाणित है"
+    lexeme zh
+      words "引号与标量范围未经证明"
+    lexeme es
+      words "ámbito de citas y valores escalares sin demostrar"
+  ambiguous-composition-goal
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: unbound or ambiguous seeded goal."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The ambiguous-composition-goal condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "unbound or ambiguous seeded goal"
+    lexeme ru
+      words "цель из данных не связана или неоднозначна"
+    lexeme hi
+      words "बीज लक्ष्य असंबद्ध या अस्पष्ट है"
+    lexeme zh
+      words "种子目标未绑定或有歧义"
+    lexeme es
+      words "objetivo de datos sin vincular o ambiguo"
+  ambiguous-source-composition
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: unproved or ambiguous source composition."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The ambiguous-source-composition condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "unproved or ambiguous source composition"
+    lexeme ru
+      words "композиция исходного кода не доказана или неоднозначна"
+    lexeme hi
+      words "स्रोत संयोजन अप्रमाणित या अस्पष्ट है"
+    lexeme zh
+      words "源码组合未经证明或有歧义"
+    lexeme es
+      words "composición de código sin demostrar o ambigua"
+  unknown-template-slot
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: unknown template slot."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The unknown-template-slot condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "unknown template slot"
+    lexeme ru
+      words "неизвестное поле шаблона"
+    lexeme hi
+      words "अज्ञात टेम्पलेट स्थान"
+    lexeme zh
+      words "未知模板槽位"
+    lexeme es
+      words "campo de plantilla desconocido"
+  unknown-consumer-source
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: unknown consumer source."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The unknown-consumer-source condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "unknown consumer source"
+    lexeme ru
+      words "неизвестный исходный код потребителя"
+    lexeme hi
+      words "उपभोक्ता स्रोत अज्ञात है"
+    lexeme zh
+      words "消费者源码未知"
+    lexeme es
+      words "código del consumidor desconocido"
+  unknown-consumer-arity
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: unknown consumer arity."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The unknown-consumer-arity condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "unknown consumer arity"
+    lexeme ru
+      words "неизвестное число аргументов потребителя"
+    lexeme hi
+      words "उपभोक्ता के तर्कों की संख्या अज्ञात है"
+    lexeme zh
+      words "消费者参数数量未知"
+    lexeme es
+      words "número de argumentos del consumidor desconocido"
+  unproved-return-form
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: unproved complete return form."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The unproved-return-form condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "unproved complete return form"
+    lexeme ru
+      words "полная форма возврата не доказана"
+    lexeme hi
+      words "पूर्ण वापसी रूप अप्रमाणित है"
+    lexeme zh
+      words "完整返回形式未经证明"
+    lexeme es
+      words "forma completa de retorno sin demostrar"
+  unsupported-absence-value
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: undefined absence is not source null."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The unsupported-absence-value condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "undefined absence is not source null"
+    lexeme ru
+      words "отсутствие undefined не является null исходного кода"
+    lexeme hi
+      words "undefined अनुपस्थिति स्रोत null नहीं है"
+    lexeme zh
+      words "undefined 缺失值并非源码 null"
+    lexeme es
+      words "la ausencia undefined no es el null del código"
+  unsupported-import-binding
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: unsupported import binding."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The unsupported-import-binding condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "unsupported import binding"
+    lexeme ru
+      words "неподдерживаемая привязка импорта"
+    lexeme hi
+      words "आयात बंधन असमर्थित है"
+    lexeme zh
+      words "不支持的导入绑定"
+    lexeme es
+      words "vinculación de importación no admitida"
+  unexpected-source-operation
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: unexpected source operation."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The unexpected-source-operation condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "unexpected source operation"
+    lexeme ru
+      words "неожиданная операция исходного кода"
+    lexeme hi
+      words "अप्रत्याशित स्रोत संचालन"
+    lexeme zh
+      words "意外源码操作"
+    lexeme es
+      words "operación de código inesperada"
+  extra-module-operation
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: extra module operation."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The extra-module-operation condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "extra module operation"
+    lexeme ru
+      words "дополнительная операция модуля"
+    lexeme hi
+      words "अतिरिक्त मॉड्यूल संचालन"
+    lexeme zh
+      words "额外模块操作"
+    lexeme es
+      words "operación adicional del módulo"
+  extra-function-operation
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: extra function operation."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The extra-function-operation condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "extra function operation"
+    lexeme ru
+      words "дополнительная операция функции"
+    lexeme hi
+      words "अतिरिक्त फ़ंक्शन संचालन"
+    lexeme zh
+      words "额外函数操作"
+    lexeme es
+      words "operación adicional de la función"
+  different-acceptance-operation
+    role source-contract-diagnostic
+    defined-by source-contract-diagnostic
+    definition "The actual guard reports: same declared Node acceptance operation."
+    precondition source-contract-diagnostic
+    effect source-contract-diagnostic
+    unit "diagnostic text"
+    example "The different-acceptance-operation condition remains unsolved after its diagnostic is rendered."
+    lexeme en
+      words "same declared Node acceptance operation"
+    lexeme ru
+      words "та же объявленная проверочная операция Node"
+    lexeme hi
+      words "वही घोषित Node स्वीकृति संचालन"
+    lexeme zh
+      words "同一个已声明的 Node 验收操作"
+    lexeme es
+      words "la misma operación de aceptación Node declarada"
