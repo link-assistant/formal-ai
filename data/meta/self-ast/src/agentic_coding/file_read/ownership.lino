@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/file_read/ownership.rs
   language rust
   fidelity full_ast
-  byte_len 23751
+  byte_len 23781
   line_count 640
-  content_id source_module_33c287e9a8d0dc57
+  content_id source_module_d01d6500a436533b
   symbol_count 21
   symbols
     const FUNCTION_ROLES 6 6
@@ -33,8 +33,8 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 19437
-    named_node_count 3981
+    total_link_count 19461
+    named_node_count 3985
     distinct_node_kinds 74
     node_kinds
       arguments 373
@@ -53,7 +53,7 @@ self_ast_census
       closure_parameters 57
       const_item 3
       continue_expression 29
-      crate 13
+      crate 14
       doc_comment 4
       else_clause 10
       escape_sequence 1
@@ -68,7 +68,7 @@ self_ast_census
       function_item 15
       generic_function 5
       generic_type 16
-      identifier 887
+      identifier 888
       if_expression 55
       index_expression 26
       inner_doc_comment_marker 1
@@ -90,7 +90,7 @@ self_ast_census
       reference_expression 91
       reference_type 31
       return_expression 27
-      scoped_identifier 81
+      scoped_identifier 82
       scoped_type_identifier 2
       scoped_use_list 2
       shorthand_field_initializer 5
@@ -110,4 +110,4 @@ self_ast_census
       unary_expression 29
       use_declaration 4
       use_list 2
-      visibility_modifier 3
+      visibility_modifier 4

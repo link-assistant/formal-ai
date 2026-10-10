@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/write_request.rs
   language rust
   fidelity full_ast
-  byte_len 45733
-  line_count 1000
-  content_id source_module_64aef01d40ed13e7
+  byte_len 45231
+  line_count 994
+  content_id source_module_ed35606bd73b6a67
   symbol_count 48
   symbols
     module lowercase_spans 4 4
@@ -52,46 +52,46 @@ self_ast_census
     function safe_relative_path 747 754
     function compose_edit_request 761 763
     struct EditClauses 766 773
-    function compose_edit_clauses 778 954
-    function describes_lines 958 965
-    function payload_continues_past_its_first_line 984 1000
+    function compose_edit_clauses 778 959
+    function describes_lines 963 970
+    function payload_continues_past_its_first_line 978 994
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 26827
-    named_node_count 5686
+    total_link_count 26851
+    named_node_count 5685
     distinct_node_kinds 90
     node_kinds
-      arguments 458
+      arguments 462
       array_expression 11
       array_type 14
       assignment_expression 5
       attribute 3
       attribute_item 3
-      binary_expression 124
-      block 110
+      binary_expression 125
+      block 111
       boolean_literal 14
       break_expression 1
-      call_expression 458
+      call_expression 462
       char_literal 80
       closure_expression 97
       closure_parameters 97
       const_item 1
       continue_expression 1
-      crate 11
-      doc_comment 280
+      crate 12
+      doc_comment 269
       else_clause 5
       enum_item 1
       enum_variant 3
       enum_variant_list 1
       escape_sequence 4
-      expression_statement 60
+      expression_statement 62
       field_declaration 12
       field_declaration_list 3
-      field_expression 416
-      field_identifier 437
+      field_expression 418
+      field_identifier 439
       field_initializer 13
       field_initializer_list 7
       for_expression 5
@@ -99,8 +99,8 @@ self_ast_census
       function_modifiers 2
       generic_function 1
       generic_type 48
-      identifier 1126
-      if_expression 27
+      identifier 1133
+      if_expression 28
       index_expression 26
       inner_doc_comment_marker 3
       integer_literal 29
@@ -109,7 +109,7 @@ self_ast_census
       let_declaration 100
       lifetime 21
       lifetime_parameter 2
-      line_comment 320
+      line_comment 309
       loop_expression 1
       macro_invocation 10
       match_arm 3
@@ -119,7 +119,7 @@ self_ast_census
       mod_item 1
       mutable_specifier 8
       or_pattern 1
-      outer_doc_comment_marker 277
+      outer_doc_comment_marker 266
       parameter 66
       parameters 42
       parenthesized_expression 21
@@ -128,8 +128,8 @@ self_ast_census
       reference_expression 38
       reference_pattern 1
       reference_type 61
-      return_expression 17
-      scoped_identifier 83
+      return_expression 18
+      scoped_identifier 87
       scoped_use_list 4
       self 1
       shorthand_field_initializer 13
@@ -139,7 +139,7 @@ self_ast_census
       string_literal 10
       struct_expression 7
       struct_item 3
-      super 55
+      super 56
       token_tree 14
       try_expression 21
       tuple_expression 19
@@ -149,7 +149,7 @@ self_ast_census
       type_arguments 49
       type_identifier 91
       type_parameters 2
-      unary_expression 39
+      unary_expression 40
       use_declaration 4
       use_list 4
       visibility_modifier 45

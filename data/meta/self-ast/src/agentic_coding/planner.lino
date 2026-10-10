@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/planner.rs
   language rust
   fidelity full_ast
-  byte_len 47693
-  line_count 982
-  content_id source_module_1dbed57fe349c4d1
+  byte_len 47868
+  line_count 991
+  content_id source_module_9a9d0ed618f3c726
   symbol_count 20
   symbols
     module continuation 5 5
@@ -20,31 +20,31 @@ self_ast_census
     function plan_chat_step 175 177
     function plan_chat_step_resolved 179 186
     function plan_chat_step_inner 188 231
-    function plan_chat_step_routes 233 346
-    function plan_settled_routes 362 877
-    function plan_shell_command_arm 886 906
-    function plan_shell_step 909 944
-    function plan_one 946 951
-    function write_arguments 959 967
-    function fetch_arguments 976 982
+    function plan_chat_step_routes 233 355
+    function plan_settled_routes 371 886
+    function plan_shell_command_arm 895 915
+    function plan_shell_step 918 953
+    function plan_one 955 960
+    function write_arguments 968 976
+    function fetch_arguments 985 991
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 20289
-    named_node_count 3944
+    total_link_count 20433
+    named_node_count 3975
     distinct_node_kinds 72
     node_kinds
-      arguments 295
+      arguments 297
       array_type 14
       assignment_expression 1
       attribute 6
       attribute_item 6
-      binary_expression 15
-      block 99
+      binary_expression 14
+      block 101
       boolean_literal 4
-      call_expression 295
+      call_expression 297
       closure_expression 20
       closure_parameters 20
       crate 9
@@ -54,7 +54,7 @@ self_ast_census
       enum_item 2
       enum_variant 16
       enum_variant_list 2
-      expression_statement 145
+      expression_statement 149
       field_declaration 2
       field_declaration_list 1
       field_expression 55
@@ -62,13 +62,13 @@ self_ast_census
       function_item 13
       function_modifiers 2
       generic_type 13
-      identifier 1214
-      if_expression 73
+      identifier 1225
+      if_expression 75
       impl_item 1
       index_expression 1
       inner_doc_comment_marker 2
       let_chain 9
-      let_condition 54
+      let_condition 55
       let_declaration 18
       lifetime 2
       line_comment 331
@@ -85,12 +85,12 @@ self_ast_census
       outer_doc_comment_marker 59
       parameter 29
       parameters 13
-      parenthesized_expression 2
+      parenthesized_expression 1
       primitive_type 17
-      reference_expression 43
+      reference_expression 44
       reference_type 36
-      return_expression 68
-      scoped_identifier 278
+      return_expression 70
+      scoped_identifier 282
       scoped_use_list 9
       self 4
       self_parameter 2
@@ -98,10 +98,10 @@ self_ast_census
       string_content 49
       string_literal 50
       struct_item 1
-      super 86
+      super 87
       token_tree 21
       try_expression 4
-      tuple_struct_pattern 56
+      tuple_struct_pattern 57
       type_arguments 13
       type_identifier 46
       unary_expression 9
