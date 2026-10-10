@@ -81,7 +81,7 @@ pub(in crate::agentic_coding) fn source_registration_contract(
             continue;
         };
         if declaration.start() != 0
-            || !registration.as_str().ends_with(".rs")
+            || registration.as_str().strip_suffix(".rs").is_none()
             || !crate::agentic_coding::write_request::safe_relative_path(registration.as_str())
             || registration.as_str() == artifact.path
         {

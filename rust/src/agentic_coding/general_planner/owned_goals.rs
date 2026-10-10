@@ -431,15 +431,14 @@ fn context_grammar_patterns() -> &'static Vec<(regex::Regex, regex::Regex)> {
                                     .join("|")
                             )
                         });
-                    match regex::RegexBuilder::new(&expanded)
+                    if let Ok(expression) = regex::RegexBuilder::new(&expanded)
                         .case_insensitive(true)
                         .build()
                     {
-                        Ok(expression) => expressions.push(expression),
-                        Err(_) => {
-                            missing = true;
-                            break;
-                        }
+                        expressions.push(expression);
+                    } else {
+                        missing = true;
+                        break;
                     }
                 }
                 if !missing && expressions.len() == 2 {
@@ -469,14 +468,14 @@ fn source_context_atom(clause: &str) -> bool {
     }
     let paths = unquoted_path_tokens(clause)
         .into_iter()
-        .filter(|token| looks_like_file_path(&clean_path_token(token.text)))
+        .filter(|token| looks_like_file_path(clean_path_token(token.text)))
         .collect::<Vec<_>>();
     if paths.len() != 1 {
         return false;
     }
     let token = &paths[0];
     let path = clean_path_token(token.text);
-    if !token.text.starts_with(&path) {
+    if !token.text.starts_with(path) {
         return false;
     }
     let prefix = &clause[..token.start];
