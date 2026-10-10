@@ -230,7 +230,7 @@ fn the_probe_stays_anonymous() {
 
 #[test]
 fn both_release_paths_verify_the_image_they_just_pushed() {
-    let workflow = release_workflow();
+    let workflow = crate::ci_gates::staged_release_operations::release_operation_workflow();
 
     for job_name in ["auto-release", "manual-release"] {
         let job = job_block(&workflow, job_name);

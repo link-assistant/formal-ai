@@ -4,7 +4,7 @@ use super::*;
 
 #[test]
 fn prepares_one_version_verifies_its_archive_and_can_resume_it() {
-    let workflow = release_workflow();
+    let workflow = crate::ci_gates::staged_release_operations::release_operation_workflow();
     let auto_release = job_block(&workflow, "auto-release");
 
     let auto_version = workflow_step_block(auto_release, "Collect changelog and bump version");

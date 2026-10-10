@@ -160,7 +160,7 @@ fn playwright_aborts_before_the_job_clock_does() {
 /// GHA layer cache all along, the release builds never did.
 #[test]
 fn every_docker_build_push_step_uses_the_gha_layer_cache() {
-    let workflow = release_workflow();
+    let workflow = crate::ci_gates::staged_release_operations::release_operation_workflow();
 
     let build_steps: Vec<&str> = workflow
         .split("docker/build-push-action@")
@@ -270,16 +270,8 @@ fn every_docker_build_push_step_uses_the_gha_layer_cache() {
 /// jobs need budget for build + publish + smoke test + one or two image builds.
 #[test]
 fn release_jobs_have_budget_to_reach_the_github_release_step() {
-    let workflow = release_workflow();
-
     for job_name in ["auto-release", "manual-release"] {
-        let minutes = job_timeout_minutes(&workflow, job_name);
-        assert!(
-            minutes >= 60,
-            "{job_name} has timeout-minutes: {minutes}; at 30 the job was killed \
-             mid-Docker-build and never reached `Create GitHub Release`, which \
-             is how 0.326.2 .. 0.333.0 shipped without one (issue #977)"
-        );
+        crate::ci_gates::staged_release_operations::assert_release_delivery_budget(job_name);
     }
 }
 
@@ -450,7 +442,7 @@ fn no_workflow_pins_an_action_on_the_deprecated_node_20_runtime() {
 /// let the two release paths drift apart.
 #[test]
 fn shared_release_logic_lives_in_scripts_not_duplicated_inline() {
-    let workflow = release_workflow();
+    let workflow = crate::ci_gates::staged_release_operations::release_operation_workflow();
     // Reusable workflow steps and registered gates both execute their shared
     // scripts; moving a step must not remove it from this contract.
     let surface = crate::ci_gates::pipeline_workflows();

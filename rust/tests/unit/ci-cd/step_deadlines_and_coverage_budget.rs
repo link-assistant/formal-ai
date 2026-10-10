@@ -326,6 +326,11 @@ fn container_build_caches_are_bounded_and_scoped() {
     let mut checked = 0_usize;
 
     for (name, body) in workflow_files() {
+        let body = if name == "release.yml" {
+            crate::ci_gates::staged_release_operations::release_operation_workflow()
+        } else {
+            body
+        };
         for line in body.lines() {
             let trimmed = line.trim();
             let Some(spec) = trimmed.strip_prefix("cache-to:") else {
@@ -357,7 +362,7 @@ fn container_build_caches_are_bounded_and_scoped() {
         ("auto-release", "auto_publish-verify-images"),
         ("manual-release", "manual_publish-verify-images"),
     ] {
-        let original = repository_file(".github/workflows/release.yml");
+        let original = crate::ci_gates::staged_release_operations::release_operation_workflow();
         let source = job_block(&original, canonical);
         let projected = job_block(&staged, derivative);
         for operand in [
@@ -789,33 +794,7 @@ fn every_step_level_timeout_can_fire_before_its_job_cap() {
 /// image -- so a fix applied to one of them is not a fix.
 #[test]
 fn both_release_jobs_budget_the_docker_publish_above_its_measured_worst_case() {
-    let release = repository_file(".github/workflows/release.yml");
-
     for job_name in ["auto-release", "manual-release"] {
-        let job = job_block(&release, job_name);
-        assert_eq!(
-            job_timeout(job),
-            Some("90"),
-            "{job_name}: 50.6 minutes measured over 400 `main` runs is 84.4% of a \
-             60-minute cap, and a 45-minute step budget cannot fire underneath one"
-        );
-
-        assert!(job.contains("name: Verify anonymous access to the immutable published manifest"));
-        assert!(job.contains("run: node scripts/verify-anonymous-image-manifest.mjs"));
-        let step_caps: Vec<u64> = job
-            .lines()
-            .filter_map(|line| {
-                line.strip_prefix("        timeout-minutes:")
-                    .and_then(|value| value.trim().parse::<u64>().ok())
-            })
-            .collect();
-        assert_eq!(
-            step_caps,
-            vec![45, 15, 2, 20],
-            "{job_name} must budget the GHCR publish at 45 minutes -- 1.4x the worst \
-             measured build (32.5 min, run 33955786226) -- the prebuilt slim sidecar \
-             at 15, the independent anonymous immutable-manifest receipt at 2, and the \
-             Docker Hub publish that reuses its layers at 20"
-        );
+        crate::ci_gates::staged_release_operations::assert_image_delivery_budget(job_name);
     }
 }

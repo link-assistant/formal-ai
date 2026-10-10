@@ -78,7 +78,7 @@ fn every_named_baseline_and_initial_pull_request_run_has_preserved_evidence() {
 /// grow a bypass: the floor is honest exactly because nothing needs to escape it.
 #[test]
 fn an_ineligible_cycle_is_reported_red_without_gating_the_release() {
-    let workflow = release_workflow();
+    let workflow = crate::ci_gates::staged_release_operations::release_operation_workflow();
     let automatic = job_block(&workflow, "auto-release");
     let manual = job_block(&workflow, "manual-release");
     let policy = repository_file("scripts/self-development-loop.rs");

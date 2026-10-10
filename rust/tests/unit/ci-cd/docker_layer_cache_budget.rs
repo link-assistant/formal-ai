@@ -53,7 +53,7 @@ fn the_prebuilt_image_check_does_not_export_layers() {
 /// One cache writer per release path, not two.
 #[test]
 fn the_docker_hub_steps_reuse_what_ghcr_exported() {
-    let workflow = release_workflow();
+    let workflow = crate::ci_gates::staged_release_operations::release_operation_workflow();
 
     for step in workflow.split("\n      - name: ") {
         let name = step.lines().next().unwrap_or_default();
@@ -74,7 +74,7 @@ fn the_docker_hub_steps_reuse_what_ghcr_exported() {
 /// rebuild every layer from nothing.
 #[test]
 fn a_from_source_publish_still_exports_layers() {
-    let workflow = release_workflow();
+    let workflow = crate::ci_gates::staged_release_operations::release_operation_workflow();
 
     assert!(
         workflow.contains("cache-to: type=gha,mode=max"),

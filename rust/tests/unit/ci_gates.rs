@@ -16,6 +16,9 @@
 use std::fs;
 use std::path::Path;
 
+#[path = "ci-cd/staged_release_operations.rs"]
+pub mod staged_release_operations;
+
 /// The gate runner itself, compiled into the suite.
 ///
 /// The registry is read with the same parser CI runs, so a shard the runner

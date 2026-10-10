@@ -96,7 +96,7 @@ fn the_pull_request_image_reuses_the_prebuilt_binary() {
 /// jobs must never pass the override.
 #[test]
 fn published_images_are_still_built_from_source() {
-    let workflow = release_workflow();
+    let workflow = crate::ci_gates::staged_release_operations::release_operation_workflow();
 
     for step in workflow.split("\n      - name: ") {
         let name = step.lines().next().unwrap_or_default();
