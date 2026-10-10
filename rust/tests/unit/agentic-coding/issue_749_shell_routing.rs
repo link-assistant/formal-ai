@@ -407,3 +407,37 @@ fn explicit_shell_quoted_apostrophe_remains_command_data() {
     assert_eq!(shell_command(&prompt).as_deref(), Some(command));
     assert!(shell_command("Run node -e 'unclosed").is_none());
 }
+
+#[test]
+fn source_members_do_not_authorize_whole_file_shell_mutations() {
+    for prompt in [
+        "Move the function parse from source.rs to destination.rs",
+        "перемести функцию parse из source.rs в destination.rs",
+        "स्थानांतरित करो फ़ंक्शन parse source.rs में destination.rs",
+        "移动函数 parse source.rs 到 destination.rs",
+        "mueve la función parse de source.rs a destination.rs",
+        "Move tests from source.rs to destination.rs",
+        "перемести тест из source.rs в destination.rs",
+        "स्थानांतरित करो परीक्षण source.rs में destination.rs",
+        "移动测试 source.rs 到 destination.rs",
+        "mueve la prueba de source.rs a destination.rs",
+        "Copy methods from source.rs to destination.rs",
+        "Copy regression from source.rs to destination.rs",
+        "Move the two existing seed-byte roundtrip tests from rust/src/memory/bundle.rs into rust/tests/fixtures/renamed.rs",
+    ] {
+        if let Some(command) = shell_command(prompt) {
+            let executable = command.split_whitespace().next().unwrap_or_default();
+            assert!(
+                !["mv", "cp", "rm"].contains(&executable),
+                "{prompt}: {command}"
+            );
+        }
+    }
+    for word in ["test", "tests", "function", "methods", "regression"] {
+        for (verb, executable) in [("Copy", "cp"), ("Move", "mv")] {
+            let prompt = format!("{verb} {word}-source.rs to {word}-destination.rs");
+            let expected = format!("{executable} {word}-source.rs {word}-destination.rs");
+            assert_eq!(shell_command(&prompt).as_deref(), Some(expected.as_str()));
+        }
+    }
+}

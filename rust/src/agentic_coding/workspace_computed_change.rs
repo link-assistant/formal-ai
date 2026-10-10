@@ -183,6 +183,8 @@ pub(super) fn edits_inside_a_file(prompt: &str) -> bool {
         .meaning("line")
         .is_some_and(|meaning| meaning.evidenced_in(&outside))
         || seed::lexicon().mentions_role("file_text_unit", &outside)
+        || seed::lexicon().mentions_role("coding_declaration_noun", &outside)
+        || seed::lexicon().mentions_role("coding_test_artifact_kind", &outside)
 }
 
 /// Whether the request names a line outside its quotes: the seeded `line`

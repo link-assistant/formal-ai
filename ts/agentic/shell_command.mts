@@ -464,7 +464,10 @@ export function editsInsideAFile(prompt) {
   if (quoted.some((text) => !looksLikeAPath(text))) return true;
   const outside = normalizePrompt(outsideQuotedSegments(withoutPathWords(prompt))).toLowerCase();
   const line = meaning('line');
-  return (line !== null && line !== undefined && evidencedIn(line, outside)) || mentionsRole('file_text_unit', outside);
+  return (line !== null && line !== undefined && evidencedIn(line, outside))
+    || mentionsRole('file_text_unit', outside)
+    || mentionsRole('coding_declaration_noun', outside)
+    || mentionsRole('coding_test_artifact_kind', outside);
 }
 
 /**
