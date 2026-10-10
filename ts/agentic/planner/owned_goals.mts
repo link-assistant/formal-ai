@@ -169,14 +169,7 @@ export async function planGoalLedger(request, messages, toolNames, planFor) {
     if (hasContext) return goalGap(missing);
     if (literalWriteOwnership(missing.clause) !== null) return goalGap(missing);
     if (missingIndex === 0) {
-      if (hasContext) return goalGap(missing);
-      const contract = literalWriteOwnership(request);
-      return contract !== null && contract.targetSpan.start >= contract.payload.end
-        && (firstActionCueStart(tokens(missing.clause)) !== null
-          || contract.payload.start >= missing.span.end && !sourceContextDeclaration(missing.clause) && unquotedPathTokens(missing.clause).some((token) => {
-            const path = cleanPathToken(token.text);
-            return looksLikeFilePath(path);
-          })) ? goalGap(missing) : null;
+      return goals.some(goal => ['literal_file', 'source_edit'].includes(goal.kind)) ? goalGap(missing) : null;
     }
     const plan = await planBoundRequestSteps(goals.slice(0, missingIndex).map((goal) => goal.clause), messages, toolNames, planFor);
     return plan?.kind === 'final' && canDeliverFinal(plan) ? goalGap(missing) : plan;
@@ -185,14 +178,14 @@ export async function planGoalLedger(request, messages, toolNames, planFor) {
   return planBoundRequestSteps(goals.map((goal) => goal.clause), messages, toolNames, planFor);
 }
 
-function contextGrammarPatterns() {
-  return cached('source-context-grammar-patterns', () => {
+function contextGrammarPatterns(kind = 'pattern') {
+  return cached('source-context-grammar-patterns:' + kind, () => {
     const root = parseLino(readText('data/seed/source-context-grammar.lino') ?? '');
     const escaped = (form) => form.replace(/[.*+?^\x24{}()|[\]\\]/g, '\\$&');
     return childrenNamed(root, 'language').flatMap((language) => {
       const roles = new Map(childrenNamed(language, 'role').map((role) => [role.id,
         childrenNamed(role, 'form').map((form) => form.id)]));
-      return childrenNamed(language, 'pattern').flatMap((pattern) => {
+      return childrenNamed(language, kind).flatMap((pattern) => {
         let missing = false;
         const expressions = ['prefix', 'suffix'].map((side) => {
           const template = childrenNamed(pattern, side)[0]?.id;
@@ -259,5 +252,7 @@ function contractActionPrologue(clause, contract) {
   if (binding !== null && target !== null && target !== undefined && binding.path === contract.target
     && target.start === contract.targetSpan.start && target.end === contract.targetSpan.end) start = Math.min(start, binding.cue_start);
   const prologue = normalizePrompt(view.slice(0, start));
-  return prologue === '' || ['politeness_cue', 'enumeration_cue', 'file-edit-sequence-cue'].some((role) => bareSurfaces(role).some((surface) => normalizePrompt(surface) === prologue));
+  return prologue === '' || sourceContextWhitespaceSupported(view.slice(0, start))
+    && contextGrammarPatterns('action-prologue').some(([prefix, suffix]) => prefix.test(view.slice(0, start)) && suffix.test(''))
+    || ['politeness_cue', 'enumeration_cue', 'file-edit-sequence-cue'].some((role) => bareSurfaces(role).some((surface) => normalizePrompt(surface) === prologue));
 }

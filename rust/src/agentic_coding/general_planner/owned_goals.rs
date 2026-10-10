@@ -395,23 +395,10 @@ pub(in crate::agentic_coding) fn plan_owned_goal_step(
             return Some(goal_gap(missing, result));
         }
         if index == 0 {
-            if has_context {
-                return Some(goal_gap(missing, result));
-            }
-            return literal_write_ownership(request)
-                .filter(|contract| {
-                    contract.target_span.start >= contract.payload.end
-                        && (first_action_cue_start(&tokens(&goals[index].node.clause)).is_some()
-                            || contract.payload.start >= goals[index].node.span.1
-                                && !source_context_declaration(&goals[index].node.clause)
-                                && unquoted_path_tokens(&goals[index].node.clause).iter().any(
-                                    |token| {
-                                        let path = clean_path_token(token.text);
-                                        looks_like_file_path(path)
-                                    },
-                                ))
-                })
-                .map(|_| goal_gap(&goals[index], result));
+            return goals
+                .iter()
+                .any(|goal| goal.kind == GoalKind::LiteralFile || goal.kind == GoalKind::SourceEdit)
+                .then(|| goal_gap(missing, result));
         }
         let parts: Vec<_> = goals[..index]
             .iter()
@@ -435,10 +422,17 @@ pub(in crate::agentic_coding) fn plan_owned_goal_step(
     plan_bound_request_steps(&parts, messages, tool_names, plan_for, result)
 }
 
-fn context_grammar_patterns() -> &'static Vec<(regex::Regex, regex::Regex)> {
+fn context_grammar_patterns(kind: &'static str) -> &'static Vec<(regex::Regex, regex::Regex)> {
     static PATTERNS: std::sync::OnceLock<Vec<(regex::Regex, regex::Regex)>> =
         std::sync::OnceLock::new();
-    PATTERNS.get_or_init(|| {
+    static PROLOGUES: std::sync::OnceLock<Vec<(regex::Regex, regex::Regex)>> =
+        std::sync::OnceLock::new();
+    let selected = if kind == "action-prologue" {
+        &PROLOGUES
+    } else {
+        &PATTERNS
+    };
+    selected.get_or_init(|| {
         let parsed = crate::seed::parser::parse_lino(include_str!(
             "../../../embedded/data/seed/source-context-grammar.lino"
         ));
@@ -464,11 +458,7 @@ fn context_grammar_patterns() -> &'static Vec<(regex::Regex, regex::Regex)> {
                     )
                 })
                 .collect::<std::collections::BTreeMap<_, _>>();
-            for pattern in language
-                .children
-                .iter()
-                .filter(|node| node.name == "pattern")
-            {
+            for pattern in language.children.iter().filter(|node| node.name == kind) {
                 let mut expressions = Vec::new();
                 let mut missing = false;
                 for side in ["prefix", "suffix"] {
@@ -548,7 +538,7 @@ fn source_context_atom(clause: &str) -> bool {
     }
     let prefix = &clause[..token.start];
     let suffix = &clause[token.start + path.len()..];
-    context_grammar_patterns()
+    context_grammar_patterns("pattern")
         .iter()
         .any(|(prefix_pattern, suffix_pattern)| {
             prefix_pattern.is_match(prefix) && suffix_pattern.is_match(suffix)
@@ -618,6 +608,10 @@ fn contract_action_prologue(clause: &str, contract: &LiteralWriteContract) -> bo
     }
     let prologue = crate::engine::normalize_prompt(&view[..start]);
     prologue.is_empty()
+        || source_context_whitespace_supported(&view[..start])
+            && context_grammar_patterns("action-prologue")
+                .iter()
+                .any(|(prefix, suffix)| prefix.is_match(&view[..start]) && suffix.is_match(""))
         || [
             "politeness_cue",
             "enumeration_cue",

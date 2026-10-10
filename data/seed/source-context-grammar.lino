@@ -3,6 +3,11 @@ source-context-grammar
     role source-context-prologue
       form "for context,"
       form "background:"
+    role source-context-issue-prologue
+      form "for existing issue"
+    action-prologue issue-reference
+      prefix "^[ \\t]*{source-context-issue-prologue}(?:-[0-9]+|[ \\t]+#[0-9]+),[ \\t]*$"
+      suffix "^$"
     role source-context-containment
       form "contains"
       form "holds"
