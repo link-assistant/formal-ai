@@ -925,6 +925,8 @@ roles
     kind meaning
   source-recompilation-action
     kind meaning
+  source-tree-translation-contract
+    kind meaning
   source_attribution_marker
     kind meaning
   source_conflict_cue

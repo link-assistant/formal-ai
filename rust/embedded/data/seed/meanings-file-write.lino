@@ -166,7 +166,7 @@ meanings
     precondition "an unquoted file noun immediately follows a source-owned read operation, separated only by seeded function words"
     effect "types the operation object as a file; a negative policy remains mandatory before tool effects and does not grant permission"
     unit "source text spans, UTF-16 in JavaScript and UTF-8 in Rust"
-    grounding "js/agentic/file_read/ownership.mjs sha256 d8b838d3c40cb102227de793dfe65f398d445ee9b4f859cb0d0f8bc2ded9ef58; rust/src/agentic_coding/file_read/ownership.rs sha256 878c4088afb13af3ec36260917722f8a6dd8295a00f579c5c988f00007c94adb"
+    grounding "js/agentic/file_read/ownership.mjs sha256 d8b838d3c40cb102227de793dfe65f398d445ee9b4f859cb0d0f8bc2ded9ef58; rust/src/agentic_coding/file_read/ownership.rs sha256 dad64d5e83f1d8c3da5a4f46ca6fdc0212e005522b4f75bd21764b4591e96087"
     lexeme en file files
     lexeme ru файл файла файлы файлов файле
     lexeme hi फ़ाइल फ़ाइलें फाइल फाइलें
@@ -178,7 +178,7 @@ meanings
     precondition "complete unquoted negative read-operation surface owns an adjacent typed file noun or path; only seeded function words may intervene"
     effect "records an immutable no-read scope; never grants a tool permission"
     unit "source spans"
-    grounding "js/agentic/file_read/ownership.mjs sha256 d8b838d3c40cb102227de793dfe65f398d445ee9b4f859cb0d0f8bc2ded9ef58; rust/src/agentic_coding/file_read/ownership.rs sha256 878c4088afb13af3ec36260917722f8a6dd8295a00f579c5c988f00007c94adb"
+    grounding "js/agentic/file_read/ownership.mjs sha256 d8b838d3c40cb102227de793dfe65f398d445ee9b4f859cb0d0f8bc2ded9ef58; rust/src/agentic_coding/file_read/ownership.rs sha256 dad64d5e83f1d8c3da5a4f46ca6fdc0212e005522b4f75bd21764b4591e96087"
     lexeme en "do not read" "never read" "do not open" "never open" "don't read" "don't open"
     lexeme ru "не читай" "не прочитай" "никогда не прочитай" "никогда не читай" "не открывай"
     lexeme hi "मत पढ़ो" "मत पढ़ें" "मत खोलो" "मत खोलें"
@@ -190,7 +190,7 @@ meanings
     precondition "an unquoted independent external effect operation is declared alongside a file-read plan and has no bound execution or receipt contract"
     effect "refuses premature file-read effects; it does not execute or certify the independent operation"
     unit "source spans"
-    grounding "js/agentic/file_read/ownership.mjs sha256 d8b838d3c40cb102227de793dfe65f398d445ee9b4f859cb0d0f8bc2ded9ef58; rust/src/agentic_coding/file_read/ownership.rs sha256 878c4088afb13af3ec36260917722f8a6dd8295a00f579c5c988f00007c94adb"
+    grounding "js/agentic/file_read/ownership.mjs sha256 d8b838d3c40cb102227de793dfe65f398d445ee9b4f859cb0d0f8bc2ded9ef58; rust/src/agentic_coding/file_read/ownership.rs sha256 dad64d5e83f1d8c3da5a4f46ca6fdc0212e005522b4f75bd21764b4591e96087"
     lexeme en deploy publish
     lexeme ru разверни опубликуй
     lexeme hi तैनात प्रकाशित
@@ -262,3 +262,193 @@ meanings
       pattern "^[ \\t]*在编写代码之前[ \\t]*[。.]?$"
     form es
       pattern "^[ \\t]*antes[ \\t]+de[ \\t]+escribir[ \\t]+código[ \\t]*[.]?$"
+
+  first-line
+    defined-by relation
+    definition "The read result selector for the first logical line of one selected file."
+    precondition "The full seeded first-line form binds one owned local source; actual read transport and content must be observed separately."
+    effect "Selects the first Rust-compatible logical line or empty text for empty content; it grants no writing or independent operation."
+    source "js/agentic/file_read/ownership.mjs sha256=d8b838d3c40cb102227de793dfe65f398d445ee9b4f859cb0d0f8bc2ded9ef58"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=dad64d5e83f1d8c3da5a4f46ca6fdc0212e005522b4f75bd21764b4591e96087"
+    source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
+    source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
+    source "rust/src/agentic_coding/file_read.rs sha256=12df3083825f6847d072d6d198e090b78e5ceeb101edf3d383b163651e575470"
+    source "js/agentic/module_function.mjs sha256=f995b70e70bc8951aabf0cec8bac822c727b4e549bb8bdfdc03de4be564d8128"
+    lexeme en
+      words "first line"
+    lexeme ru
+      words "первая строка"
+    lexeme hi
+      words "पहली पंक्ति"
+    lexeme zh
+      words "第一行"
+    lexeme es
+      words "primera línea"
+  observed-callable-authoring
+    defined-by relation
+    definition "A deferred source authoring goal recognized by the existing observed callable request classifier."
+    precondition "The actual classifier binds a declared callable request and destination; a complete order suffix requires Read before that authoring."
+    effect "Allows prerequisite Read disposition only; authoring, source identity, effects and verification remain separately owned and unresolved until proved."
+    source "js/agentic/file_read/ownership.mjs sha256=d8b838d3c40cb102227de793dfe65f398d445ee9b4f859cb0d0f8bc2ded9ef58"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=dad64d5e83f1d8c3da5a4f46ca6fdc0212e005522b4f75bd21764b4591e96087"
+    source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
+    source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
+    source "rust/src/agentic_coding/file_read.rs sha256=12df3083825f6847d072d6d198e090b78e5ceeb101edf3d383b163651e575470"
+    source "js/agentic/module_function.mjs sha256=f995b70e70bc8951aabf0cec8bac822c727b4e549bb8bdfdc03de4be564d8128"
+    lexeme en
+      words "observed callable authoring"
+    lexeme ru
+      words "создание наблюдаемой вызываемой функции"
+    lexeme hi
+      words "अवलोकित कॉल योग्य स्रोत लेखन"
+    lexeme zh
+      words "已观察可调用对象编写"
+    lexeme es
+      words "autoría de invocable observado"
+  deploy
+    defined-by relation
+    definition "An independent operation that places a program or service into an execution environment."
+    precondition "An unquoted deployment operation alongside a file-read request has no bound deployment execution or receipt contract."
+    effect "The Read ownership policy refuses premature effects; this meaning neither runs deployment nor grants credentials."
+    source "js/agentic/file_read/ownership.mjs sha256=d8b838d3c40cb102227de793dfe65f398d445ee9b4f859cb0d0f8bc2ded9ef58"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=dad64d5e83f1d8c3da5a4f46ca6fdc0212e005522b4f75bd21764b4591e96087"
+    source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
+    source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
+    source "rust/src/agentic_coding/file_read.rs sha256=12df3083825f6847d072d6d198e090b78e5ceeb101edf3d383b163651e575470"
+    source "js/agentic/module_function.mjs sha256=f995b70e70bc8951aabf0cec8bac822c727b4e549bb8bdfdc03de4be564d8128"
+    lexeme en
+      words "deploy"
+    lexeme ru
+      words "развернуть"
+    lexeme hi
+      words "तैनात करना"
+    lexeme zh
+      words "部署"
+    lexeme es
+      words "desplegar"
+  publish
+    defined-by relation
+    definition "An independent operation that makes an artifact available through an external publication destination."
+    precondition "An unquoted publication operation alongside a file-read request has no bound publication execution or receipt contract."
+    effect "The Read ownership policy refuses premature effects; this meaning neither publishes artifacts nor certifies remote availability."
+    source "js/agentic/file_read/ownership.mjs sha256=d8b838d3c40cb102227de793dfe65f398d445ee9b4f859cb0d0f8bc2ded9ef58"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=dad64d5e83f1d8c3da5a4f46ca6fdc0212e005522b4f75bd21764b4591e96087"
+    source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
+    source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
+    source "rust/src/agentic_coding/file_read.rs sha256=12df3083825f6847d072d6d198e090b78e5ceeb101edf3d383b163651e575470"
+    source "js/agentic/module_function.mjs sha256=f995b70e70bc8951aabf0cec8bac822c727b4e549bb8bdfdc03de4be564d8128"
+    lexeme en
+      words "publish"
+    lexeme ru
+      words "опубликовать"
+    lexeme hi
+      words "प्रकाशित करना"
+    lexeme zh
+      words "发布"
+    lexeme es
+      words "publicar"
+  audit-en
+    defined-by relation
+    definition "The en full-form binding of workspace inspection and file reading to a bounded remaining-work audit."
+    precondition "The existing language-specific seeded pattern consumes the entire clause, resolves owned source operands and rejects unbound prerequisites or independent goals."
+    effect "Selects only the existing bounded audit producer; observed file contents and localized audit results remain actual transport/result obligations."
+    source "js/agentic/file_read/ownership.mjs sha256=d8b838d3c40cb102227de793dfe65f398d445ee9b4f859cb0d0f8bc2ded9ef58"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=dad64d5e83f1d8c3da5a4f46ca6fdc0212e005522b4f75bd21764b4591e96087"
+    source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
+    source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
+    source "rust/src/agentic_coding/file_read.rs sha256=12df3083825f6847d072d6d198e090b78e5ceeb101edf3d383b163651e575470"
+    source "js/agentic/module_function.mjs sha256=f995b70e70bc8951aabf0cec8bac822c727b4e549bb8bdfdc03de4be564d8128"
+    lexeme en
+      words "English bounded file audit"
+    lexeme ru
+      words "ограниченный аудит файлов на английском"
+    lexeme hi
+      words "अंग्रेज़ी सीमित फ़ाइल लेखा"
+    lexeme zh
+      words "英语有界文件审计"
+    lexeme es
+      words "auditoría limitada de archivos en inglés"
+  audit-ru
+    defined-by relation
+    definition "The ru full-form binding of workspace inspection and file reading to a bounded remaining-work audit."
+    precondition "The existing language-specific seeded pattern consumes the entire clause, resolves owned source operands and rejects unbound prerequisites or independent goals."
+    effect "Selects only the existing bounded audit producer; observed file contents and localized audit results remain actual transport/result obligations."
+    source "js/agentic/file_read/ownership.mjs sha256=d8b838d3c40cb102227de793dfe65f398d445ee9b4f859cb0d0f8bc2ded9ef58"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=dad64d5e83f1d8c3da5a4f46ca6fdc0212e005522b4f75bd21764b4591e96087"
+    source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
+    source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
+    source "rust/src/agentic_coding/file_read.rs sha256=12df3083825f6847d072d6d198e090b78e5ceeb101edf3d383b163651e575470"
+    source "js/agentic/module_function.mjs sha256=f995b70e70bc8951aabf0cec8bac822c727b4e549bb8bdfdc03de4be564d8128"
+    lexeme en
+      words "Russian bounded file audit"
+    lexeme ru
+      words "ограниченный аудит файлов на русском"
+    lexeme hi
+      words "रूसी सीमित फ़ाइल लेखा"
+    lexeme zh
+      words "俄语有界文件审计"
+    lexeme es
+      words "auditoría limitada de archivos en ruso"
+  audit-hi
+    defined-by relation
+    definition "The hi full-form binding of workspace inspection and file reading to a bounded remaining-work audit."
+    precondition "The existing language-specific seeded pattern consumes the entire clause, resolves owned source operands and rejects unbound prerequisites or independent goals."
+    effect "Selects only the existing bounded audit producer; observed file contents and localized audit results remain actual transport/result obligations."
+    source "js/agentic/file_read/ownership.mjs sha256=d8b838d3c40cb102227de793dfe65f398d445ee9b4f859cb0d0f8bc2ded9ef58"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=dad64d5e83f1d8c3da5a4f46ca6fdc0212e005522b4f75bd21764b4591e96087"
+    source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
+    source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
+    source "rust/src/agentic_coding/file_read.rs sha256=12df3083825f6847d072d6d198e090b78e5ceeb101edf3d383b163651e575470"
+    source "js/agentic/module_function.mjs sha256=f995b70e70bc8951aabf0cec8bac822c727b4e549bb8bdfdc03de4be564d8128"
+    lexeme en
+      words "Hindi bounded file audit"
+    lexeme ru
+      words "ограниченный аудит файлов на хинди"
+    lexeme hi
+      words "हिन्दी सीमित फ़ाइल लेखा"
+    lexeme zh
+      words "印地语有界文件审计"
+    lexeme es
+      words "auditoría limitada de archivos en hindi"
+  audit-zh
+    defined-by relation
+    definition "The zh full-form binding of workspace inspection and file reading to a bounded remaining-work audit."
+    precondition "The existing language-specific seeded pattern consumes the entire clause, resolves owned source operands and rejects unbound prerequisites or independent goals."
+    effect "Selects only the existing bounded audit producer; observed file contents and localized audit results remain actual transport/result obligations."
+    source "js/agentic/file_read/ownership.mjs sha256=d8b838d3c40cb102227de793dfe65f398d445ee9b4f859cb0d0f8bc2ded9ef58"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=dad64d5e83f1d8c3da5a4f46ca6fdc0212e005522b4f75bd21764b4591e96087"
+    source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
+    source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
+    source "rust/src/agentic_coding/file_read.rs sha256=12df3083825f6847d072d6d198e090b78e5ceeb101edf3d383b163651e575470"
+    source "js/agentic/module_function.mjs sha256=f995b70e70bc8951aabf0cec8bac822c727b4e549bb8bdfdc03de4be564d8128"
+    lexeme en
+      words "Chinese bounded file audit"
+    lexeme ru
+      words "ограниченный аудит файлов на китайском"
+    lexeme hi
+      words "चीनी सीमित फ़ाइल लेखा"
+    lexeme zh
+      words "中文有界文件审计"
+    lexeme es
+      words "auditoría limitada de archivos en chino"
+  audit-es
+    defined-by relation
+    definition "The es full-form binding of workspace inspection and file reading to a bounded remaining-work audit."
+    precondition "The existing language-specific seeded pattern consumes the entire clause, resolves owned source operands and rejects unbound prerequisites or independent goals."
+    effect "Selects only the existing bounded audit producer; observed file contents and localized audit results remain actual transport/result obligations."
+    source "js/agentic/file_read/ownership.mjs sha256=d8b838d3c40cb102227de793dfe65f398d445ee9b4f859cb0d0f8bc2ded9ef58"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=dad64d5e83f1d8c3da5a4f46ca6fdc0212e005522b4f75bd21764b4591e96087"
+    source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
+    source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
+    source "rust/src/agentic_coding/file_read.rs sha256=12df3083825f6847d072d6d198e090b78e5ceeb101edf3d383b163651e575470"
+    source "js/agentic/module_function.mjs sha256=f995b70e70bc8951aabf0cec8bac822c727b4e549bb8bdfdc03de4be564d8128"
+    lexeme en
+      words "Spanish bounded file audit"
+    lexeme ru
+      words "ограниченный аудит файлов на испанском"
+    lexeme hi
+      words "स्पेनी सीमित फ़ाइल लेखा"
+    lexeme zh
+      words "西班牙语有界文件审计"
+    lexeme es
+      words "auditoría limitada de archivos en español"

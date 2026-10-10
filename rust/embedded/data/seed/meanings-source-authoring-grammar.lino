@@ -85,3 +85,61 @@ meanings
       words "缺失的源代码编写契约"
     lexeme es
       words "contrato de creación de código fuente ausente"
+
+  string-constant
+    defined-by relation
+    definition "A public Rust string constant declaration with an exact identifier, &str type and identifier-shaped literal value."
+    precondition "The complete supported declaration and complete request bind the same constant name, type, value and destination."
+    effect "Returns declaration slots for a conditional authoring plan; it does not execute a write or certify compilation."
+    source "data/seed/source-authoring-grammar.lino sha256=4aa5f2e25eee49be10117b96ddae4e90c16bfb21a71774107a0d240b1c48ac78"
+    source "js/agentic/code_task/source_contract/declaration.mjs sha256=0be2df9d06b98942750879a3b6c143e6f1e317f18a2772c9581d9f48dc7f5475"
+    source "js/agentic/code_task/source_contract/matcher.mjs sha256=629841bc4ffad1520e42b1fb6a07fd0daf9727c13308b32f31990753cf1a3c1e"
+    source "rust/src/agentic_coding/code_task/source_contract/declaration.rs sha256=237d9e4361f69f10e0d6f2daa5f04abca0eb3c062a739d78d0c064ffd057700d"
+    lexeme en
+      words "string constant"
+    lexeme ru
+      words "строковая константа"
+    lexeme hi
+      words "स्ट्रिंग स्थिरांक"
+    lexeme zh
+      words "字符串常量"
+    lexeme es
+      words "constante de cadena"
+  equality-test
+    defined-by relation
+    definition "A Rust test declaration containing one equality assertion between two signed integer literal operands."
+    precondition "The test identifier is valid, each operand is within signed32-bit bounds and the full source/request forms match exactly."
+    effect "Binds both operands and the test name; whether the assertion passes remains a separate execution obligation."
+    source "data/seed/source-authoring-grammar.lino sha256=4aa5f2e25eee49be10117b96ddae4e90c16bfb21a71774107a0d240b1c48ac78"
+    source "js/agentic/code_task/source_contract/declaration.mjs sha256=0be2df9d06b98942750879a3b6c143e6f1e317f18a2772c9581d9f48dc7f5475"
+    source "js/agentic/code_task/source_contract/matcher.mjs sha256=629841bc4ffad1520e42b1fb6a07fd0daf9727c13308b32f31990753cf1a3c1e"
+    source "rust/src/agentic_coding/code_task/source_contract/declaration.rs sha256=237d9e4361f69f10e0d6f2daa5f04abca0eb3c062a739d78d0c064ffd057700d"
+    lexeme en
+      words "equality test"
+    lexeme ru
+      words "тест равенства"
+    lexeme hi
+      words "समानता परीक्षण"
+    lexeme zh
+      words "相等测试"
+    lexeme es
+      words "prueba de igualdad"
+  addition-test
+    defined-by relation
+    definition "A Rust test declaration containing one equality assertion between a sum of two integer literals and an expected integer literal."
+    precondition "The test identifier is valid, all three literals fit signed32-bit bounds and every source/request operand matches."
+    effect "Binds left, right and expected operands without asserting their arithmetic equality or runtime success."
+    source "data/seed/source-authoring-grammar.lino sha256=4aa5f2e25eee49be10117b96ddae4e90c16bfb21a71774107a0d240b1c48ac78"
+    source "js/agentic/code_task/source_contract/declaration.mjs sha256=0be2df9d06b98942750879a3b6c143e6f1e317f18a2772c9581d9f48dc7f5475"
+    source "js/agentic/code_task/source_contract/matcher.mjs sha256=629841bc4ffad1520e42b1fb6a07fd0daf9727c13308b32f31990753cf1a3c1e"
+    source "rust/src/agentic_coding/code_task/source_contract/declaration.rs sha256=237d9e4361f69f10e0d6f2daa5f04abca0eb3c062a739d78d0c064ffd057700d"
+    lexeme en
+      words "addition test"
+    lexeme ru
+      words "тест сложения"
+    lexeme hi
+      words "जोड़ परीक्षण"
+    lexeme zh
+      words "加法测试"
+    lexeme es
+      words "prueba de suma"

@@ -2,7 +2,24 @@ seed-metadata-gaps
   issue 918
   source "data/seed/meanings-file-write.lino"
   audit-scope "problem-solving concept records under data/seed meanings roots"
-  missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-bfb38ea8e09aaa6d
+    record "audit-en"
+    missing "role,unit,example"
+  gap seed-metadata-gap-bfb371a8e09a7926
+    record "audit-es"
+    missing "role,unit,example"
+  gap seed-metadata-gap-bfa28ba8e08c3221
+    record "audit-hi"
+    missing "role,unit,example"
+  gap seed-metadata-gap-bfed73a8e0cbf4d3
+    record "audit-ru"
+    missing "role,unit,example"
+  gap seed-metadata-gap-bfd18ea8e0b3a7fc
+    record "audit-zh"
+    missing "role,unit,example"
+  gap seed-metadata-gap-62966da140c8708b
+    record "deploy"
+    missing "role,unit,example"
   gap seed-metadata-gap-2cbb62267ce36198
     record "file-read-independent-effect-operation"
     missing "example"
@@ -23,21 +40,40 @@ seed-metadata-gaps
     missing "unit,example"
   gap seed-metadata-gap-0779ae03b5192858
     record "file_leading_line_constraint"
+    missing "precondition,effect,unit,example"
   gap seed-metadata-gap-fee3058c4c2b0662
     record "file_read_action"
+    missing "precondition,effect,unit,example"
   gap seed-metadata-gap-bd4e0e6c37de77e9
     record "file_write_action"
+    missing "precondition,effect,unit,example"
   gap seed-metadata-gap-1c336abb94cc4a90
     record "file_write_authoritative_content"
+    missing "precondition,effect,unit,example"
   gap seed-metadata-gap-e18943a37cedb274
     record "file_write_command_output"
+    missing "precondition,effect,unit,example"
   gap seed-metadata-gap-517a51260ab2024c
     record "file_write_content"
+    missing "precondition,effect,unit,example"
   gap seed-metadata-gap-5124c39c4bbfd726
     record "file_write_deferred_content"
+    missing "precondition,effect,unit,example"
   gap seed-metadata-gap-39dfa327c31c7821
     record "file_write_destination"
+    missing "precondition,effect,unit,example"
   gap seed-metadata-gap-d33101f5ae95f755
     record "file_write_literal_qualifier"
+    missing "precondition,effect,unit,example"
   gap seed-metadata-gap-a732d54caa6f126e
     record "file_write_target"
+    missing "precondition,effect,unit,example"
+  gap seed-metadata-gap-7c664a0d0ea6adeb
+    record "first-line"
+    missing "role,unit,example"
+  gap seed-metadata-gap-5a4d7233fb1a6263
+    record "observed-callable-authoring"
+    missing "role,unit,example"
+  gap seed-metadata-gap-a134bdc03602c363
+    record "publish"
+    missing "role,unit,example"

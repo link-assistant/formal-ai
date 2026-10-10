@@ -30,13 +30,13 @@
 notation-ratchet
   scope data/meta
     underscore-names 2067
-    abbreviated-names 200
+    abbreviated-names 198
     duplicated-blocks 9
     repeated-fields 80
-    characters 1893392
+    characters 1897864
   scope data/seed
     underscore-names 9420
     abbreviated-names 245
     duplicated-blocks 27
-    repeated-fields 184
-    characters 3216141
+    repeated-fields 183
+    characters 3266533

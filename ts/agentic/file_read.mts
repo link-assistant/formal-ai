@@ -1,6 +1,5 @@
 import { ownedReadPaths } from './file_read/ownership.mjs';
 export { ownedReadPaths, readPolicyBlocksPlan } from './file_read/ownership.mjs';
-import { tokens } from './write_request.mjs';
 // File-reading agentic recipe for local workspace prompts (issue #627):
 // rust/src/agentic_coding/file_read.rs.
 //
@@ -22,7 +21,6 @@ import { isDottedNumber, peelSentencePunctuation } from './file_path_shape.mjs';
 import { hasFileWriteIntent } from './general_planner.mjs';
 import { agenticMessage } from './messages.mjs';
 import { FinalDisposition, finalAnswer, jsonText, plannedCall, resolvedFinalAnswer, toolCalls } from './plan.mjs';
-import { sentences } from './shell_command_policy.mjs';
 import { explicitPassthroughCommand } from './shell_command.mjs';
 
 /** Mirrors `SHELL_OPERATORS`: shell syntax that chains, pipes or redirects commands. */
@@ -209,23 +207,6 @@ export function fileReadTaskFor(prompt) {
   return null;
 }
 
-/** Preserve source clause punctuation owned by lexical path spans. */
-export function readSentenceTexts(prompt) {
-  const protectedCharacters = prompt.split('');
-  for (const token of tokens(prompt)) {
-    const path = cleanFileToken(token.text);
-    if (!looksLikeLocalFilePath(path)) continue;
-    const relativeStart = token.text.indexOf(path);
-    if (relativeStart < 0) continue;
-    const start = token.start + relativeStart;
-    for (let index = start; index < start + path.length; index += 1) {
-      if (prompt[index] === '.') protectedCharacters[index] = '_';
-    }
-  }
-  return sentences(protectedCharacters.join('')).map(sentence =>
-    trim(prompt.slice(sentence.span.start, sentence.span.end)));
-}
-
 /** Mirrors `fn read_paths_named_beside_their_cue`. */
 function readPathsNamedBesideTheirCue(prompt) {
   return ownedReadPaths(prompt, ROLE_FILE_READ_ACTION_CUE);
@@ -285,16 +266,6 @@ function leadingCatPath(prompt) {
   if (!parts.length || !eqIgnoreAsciiCase(parts[0], 'cat') || parts.length < 2) return null;
   const path = cleanFileToken(parts[1]);
   return path ? path : null;
-}
-
-/** Mirrors `fn local_file_paths` (consecutive duplicates removed). */
-function localFilePaths(prompt) {
-  const out = [];
-  for (const token of splitWhitespace(prompt).map(cleanFileToken)) {
-    if (!looksLikeLocalFilePath(token)) continue;
-    if (out[out.length - 1] !== token) out.push(token);
-  }
-  return out;
 }
 
 const SENTENCE_MARKS = new Set([',', ';', ':', '!', '?', ')', '(', '[', ']', '{', '}']);
