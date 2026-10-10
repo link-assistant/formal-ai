@@ -60,6 +60,11 @@ function generalChangeStep(messages, toolNames, plan, resolvedFromWorkItem) {
   if (failure) {
     if (failure.capability === Capability.Write) {
       const path = failure.arguments === null || failure.arguments === undefined ? null : toolArgumentPath(failure.arguments);
+      if (path === PLAN_PATH) {
+        const event = planLinksNotation(plan);
+        const append = appendRecordStep(messages, toolNames, PLAN_PATH, event, event.split('\n')[1]);
+        if (append?.kind === 'refused') return unverifiedPlanEvent(plan);
+      }
       const readTool = toolFor(toolNames, Capability.Read);
       if (path !== null && readTool && progress.failedWriteCountFor(path) === 1) {
         return planOne(readTool, readArguments(path));
@@ -182,11 +187,11 @@ function planEventStep(plan, progress, toolNames, messages) {
     const separator = before !== '' && !before.endsWith('\n') ? '\n' : '';
     return { kind: 'pending', plan: planOne(write, writeArguments(PLAN_PATH, before + separator + event)) };
   }
-  if (!run) {
-    const appended = appendRecordStep(messages, toolNames, PLAN_PATH, event, identity);
-    if (appended?.kind === 'refused') return { kind: 'pending', plan: unverifiedPlanEvent(plan) };
-    return appended ?? { kind: 'unavailable' };
-  }
+  // A declared append provider has its own exact receipt contract even when a shell is available.
+  const appended = appendRecordStep(messages, toolNames, PLAN_PATH, event, identity);
+  if (appended?.kind === 'refused') return { kind: 'pending', plan: unverifiedPlanEvent(plan) };
+  if (appended !== null) return appended;
+  if (!run) return { kind: 'unavailable' };
   const append = planEventAppendCommand(plan);
   if (progress.successfulRunCountFor(append) === 0) return { kind: 'pending', plan: planOne(run, command(append)) };
   const raw = progress.latestSuccessfulRunOutputFor(append);

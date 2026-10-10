@@ -85,6 +85,18 @@ fn general_change_step(
     {
         if failure.capability == Capability::Write {
             let path = failure.arguments.as_deref().and_then(tool_argument_path);
+            if path.as_deref() == Some(PLAN_PATH) {
+                let event = plan_links_notation(plan);
+                let identity = event.lines().nth(1).unwrap_or("");
+                if matches!(
+                    super::append_contract::append_record_step(
+                        messages, tool_names, PLAN_PATH, &event, identity
+                    ),
+                    Some(super::append_contract::AppendRecordStep::Refused)
+                ) {
+                    return unverified_plan_event(plan);
+                }
+            }
             if let (Some(path), Some(read_tool)) =
                 (path.as_deref(), tool_for(tool_names, Capability::Read))
                 && progress.failed_write_count_for(path) == 1
@@ -367,16 +379,17 @@ fn plan_event_step(
         stream.push_str(&event);
         return PlanEventOutcome::Pending(plan_one(write, write_arguments(PLAN_PATH, &stream)));
     }
-    let Some(run) = run else {
-        use super::append_contract::{AppendRecordStep, append_record_step};
-        return match append_record_step(messages, tool_names, PLAN_PATH, &event, identity) {
-            Some(AppendRecordStep::Pending(step)) => PlanEventOutcome::Pending(step),
-            Some(AppendRecordStep::Observed) => PlanEventOutcome::Observed,
-            Some(AppendRecordStep::Refused) => {
-                PlanEventOutcome::Pending(unverified_plan_event(plan))
-            }
-            None => PlanEventOutcome::Unavailable,
+    // A declared append provider retains its exact receipt contract with a shell present.
+    use super::append_contract::{AppendRecordStep, append_record_step};
+    if let Some(appended) = append_record_step(messages, tool_names, PLAN_PATH, &event, identity) {
+        return match appended {
+            AppendRecordStep::Pending(step) => PlanEventOutcome::Pending(step),
+            AppendRecordStep::Observed => PlanEventOutcome::Observed,
+            AppendRecordStep::Refused => PlanEventOutcome::Pending(unverified_plan_event(plan)),
         };
+    }
+    let Some(run) = run else {
+        return PlanEventOutcome::Unavailable;
     };
     let append = plan_event_append_command(plan);
     if progress.successful_run_count_for(&append) == 0 {
