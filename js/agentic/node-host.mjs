@@ -15,6 +15,7 @@ import { cachedSourceFetch } from './crate/source_cache.mjs';
 import { CENSUS_DIR } from './crate/self_ast_census.mjs';
 import { stableId } from './crate/engine_stable_identifier.mjs';
 import { installHost } from './host.mjs';
+import { createNodeSourceSessionHost } from '../server/node-source-session-host.mjs';
 import { sourceQualifiedSeedOwners } from '../../scripts/generate-seed-registry.mjs';
 
 function stat(path) {
@@ -126,7 +127,7 @@ function nodeSourceFetch() {
  */
 export async function installNodeHost(worker) {
   const context = await worker.boot();
-  installHost({
+  const baseHost = {
     readText: readRepoFile,
     parseLino,
     realm: context,
@@ -138,7 +139,9 @@ export async function installNodeHost(worker) {
     censusDocuments,
     generatedSeedOwnerDeclarations,
     sourceFetch: nodeSourceFetch,
-  });
+  };
+  const session = createNodeSourceSessionHost(baseHost.readText);
+  installHost({ ...baseHost, sourceSession: session, sourceOperation: session.sourceOperation });
   return context;
 }
 

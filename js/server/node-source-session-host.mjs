@@ -14,6 +14,18 @@ import { readPolicyBlocksPlan } from "../agentic/file_read/ownership.mjs";
 import { planOne } from "../agentic/plan.mjs";
 import { readArguments } from "../agentic/workspace_change.mjs";
 const hash = bytes => createHash('sha256').update(bytes).digest('hex');
+function declaredPhysicalReadOperand(call, argumentsValue) {
+    if (argumentsValue === null || typeof argumentsValue !== 'object' || Array.isArray(argumentsValue)
+        || !Object.hasOwn(argumentsValue, 'file_path')) throw Error('UnknownPhysicalReadArguments');
+    const operand = argumentsValue.file_path;
+    if (typeof operand !== 'string') throw Error('UnknownPhysicalReadArguments');
+    const keys = Object.keys(argumentsValue).sort().join(',');
+    const sole = keys === 'file_path' && call.arguments === JSON.stringify({file_path: operand});
+    const canonical = keys === 'filePath,file_path,path' && argumentsValue.filePath === operand
+      && argumentsValue.path === operand && call.arguments === readArguments(operand);
+    if (!sole && !canonical) throw Error('UnknownPhysicalReadArguments');
+    return operand;
+}
 /** Request-scoped trusted platform boundary; wire messages cannot install it. */
 export function createNodeSourceSessionHost(readText) {
   const requestSeed = readText('data/seed/source-authoring-grammar.lino');
@@ -65,8 +77,7 @@ export function createNodeSourceSessionHost(readText) {
   }
   function permittedRead(context, call, messages, argumentsValue) {
     if (!context.tools.includes(call.tool)) throw Error('UnregisteredPhysicalReadTool');
-    const operand = argumentsValue.file_path;
-    if (Object.keys(argumentsValue).length !== 1 || typeof operand !== 'string') throw Error('UnknownPhysicalReadArguments');
+    const operand = declaredPhysicalReadOperand(call, argumentsValue);
     if (readPolicyBlocksPlan(context.request, planOne(call.tool, readArguments(operand)))) throw Error('PhysicalReadPolicyRefused');
     const user = [...messages].reverse().find(message => message.role === 'user');
     if (!user || userRequestText(user.content) !== context.request) throw Error('DifferentPhysicalReadRequest');
@@ -207,7 +218,8 @@ export function createNodeSourceSessionHost(readText) {
       if (capability === Capability.Read) {
         try {
           const ownedContext = current();
-          if (argumentsValue.file_path === ownedContext.frame.request.destination) {
+          if (argumentsValue !== null && typeof argumentsValue === 'object'
+              && argumentsValue.file_path === ownedContext.frame.request.destination) {
             permittedRead(ownedContext, call, messages, argumentsValue);
             const result = fallback();
             if (result && Object.hasOwn(result, 'owned_source_read')) {
@@ -218,7 +230,8 @@ export function createNodeSourceSessionHost(readText) {
           return observePhysicalRead(ownedContext, call, messages, argumentsValue);
         }
         catch (error) {
-          if (typeof argumentsValue.file_path === 'string') context.readAttempts.set(argumentsValue.file_path, Object.freeze({}));
+          if (argumentsValue !== null && typeof argumentsValue === 'object'
+              && typeof argumentsValue.file_path === 'string') context.readAttempts.set(argumentsValue.file_path, Object.freeze({}));
           return {content: error.message, is_error: true};
         }
       }
