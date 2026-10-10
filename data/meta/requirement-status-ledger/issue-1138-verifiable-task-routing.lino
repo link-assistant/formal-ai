@@ -3,6 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-1138-verifiable-task-routing.md"
   issue "1138"
   delivered "none recorded"
+  automated_test "rust/tests/unit/verifiable_task/recognition.rs"
   manual "not yet confirmed"
   requirement
     id "R1138-B8-1"
@@ -11,7 +12,6 @@ requirement_status_ledger_shard
   requirement
     id "R1138-B8-2"
     verdict "implemented"
-    automated_test "rust/tests/unit/verifiable_task/recognition.rs"
   requirement
     id "R1138-B8-3"
     verdict "implemented"
@@ -31,7 +31,6 @@ requirement_status_ledger_shard
   requirement
     id "R1138-B8-7"
     verdict "implemented"
-    automated_test "rust/tests/unit/verifiable_task/recognition.rs"
   requirement
     id "R1138-B8-8"
     verdict "implemented"

@@ -2,17 +2,16 @@
 requirement_status_ledger_shard
   shard "docs/requirements/issue-1177-code-tasks-formal-answers.md"
   issue "1177"
+  automated_test "rust/tests/web/issue-1177-code-tasks-parity.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R1177-1"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); loop bounds past the end of an indexed collection and assignments inside an if/while condition from seeded tables (2026-10-07); other defect classes honestly declined"
-    automated_test "rust/tests/web/issue-1177-code-tasks-parity.test.mjs"
   requirement
     id "R1177-10"
     verdict "implemented"
     delivered "2026-10-07 (this pull request; all three roots, dispatch wired)"
-    automated_test "rust/tests/web/issue-1177-code-tasks-parity.test.mjs"
   requirement
     id "R1177-11"
     verdict "implemented"
@@ -47,7 +46,6 @@ requirement_status_ledger_shard
     id "R1177-6"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); no linter run"
-    automated_test "rust/tests/web/issue-1177-code-tasks-parity.test.mjs"
   requirement
     id "R1177-7"
     verdict "implemented"
@@ -57,7 +55,6 @@ requirement_status_ledger_shard
     id "R1177-8"
     verdict "implemented"
     delivered "implemented — 2026-10-07 (this pull request); other refactoring targets refused by name"
-    automated_test "rust/tests/web/issue-1177-code-tasks-parity.test.mjs"
   requirement
     id "R1177-9"
     verdict "implemented"

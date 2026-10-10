@@ -2,12 +2,12 @@
 requirement_status_ledger_shard
   shard "docs/requirements/issue-1186-formalization-as-a-user-facing-task.md"
   issue "1186"
+  automated_test "rust/tests/web/issue-1186-formalization-parity.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R1186-1"
     verdict "implemented"
     delivered "PR #1188 (dc3671dc7 handler, fca05d36d dispatch wiring), 2026-09-30"
-    automated_test "rust/tests/web/issue-1186-formalization-parity.test.mjs"
   requirement
     id "R1186-10"
     verdict "implemented"
@@ -27,7 +27,6 @@ requirement_status_ledger_shard
     id "R1186-4"
     verdict "partial"
     delivered "partial — 2026-10-08 (this pull request); lean and coqc now run on a self-contained compile unit when present on PATH, with five-language prover status from seed data; the in-process export sits behind the ClauseExporter seam and still uses the seed templates because relative-meta-logic is unpublished (link-foundation/relative-meta-logic#185)"
-    automated_test "rust/tests/web/issue-1186-formalization-parity.test.mjs"
   requirement
     id "R1186-5"
     verdict "implemented"
@@ -42,7 +41,6 @@ requirement_status_ledger_shard
     id "R1186-7"
     verdict "implemented"
     delivered "2026-10-07 (this pull request); parity case `e1186_formalization_first_order` (exact answer skipped: prover lookup sentence is host-dependent)"
-    automated_test "rust/tests/web/issue-1186-formalization-parity.test.mjs"
   requirement
     id "R1186-8"
     verdict "implemented"

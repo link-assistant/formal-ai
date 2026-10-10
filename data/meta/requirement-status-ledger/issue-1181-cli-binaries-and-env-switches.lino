@@ -2,20 +2,18 @@
 requirement_status_ledger_shard
   shard "docs/requirements/issue-1181-cli-binaries-and-env-switches.md"
   issue "1181"
+  delivered "implemented — 2026-10-07 (this pull request); observable on the next tagged release"
   automated_test "rust/tests/web/issue-1181-cli-release-assets.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R1181-1"
     verdict "implemented"
-    delivered "implemented — 2026-10-07 (this pull request); observable on the next tagged release"
   requirement
     id "R1181-2"
     verdict "implemented"
-    delivered "implemented — 2026-10-07 (this pull request); observable on the next tagged release"
   requirement
     id "R1181-3"
     verdict "implemented"
-    delivered "implemented — 2026-10-07 (this pull request); observable on the next tagged release"
   requirement
     id "R1181-4"
     verdict "implemented"

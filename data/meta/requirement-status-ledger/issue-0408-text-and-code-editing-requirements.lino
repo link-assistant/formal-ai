@@ -3,6 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0408-text-and-code-editing-requirements.md"
   issue "0408"
   delivered "PR #416 (issue #408)"
+  automated_test "rust/tests/unit/specification/text_manipulation_benchmarks.rs"
   manual "not yet confirmed"
   requirement
     id "R293"
@@ -15,7 +16,6 @@ requirement_status_ledger_shard
   requirement
     id "R295"
     verdict "implemented"
-    automated_test "rust/tests/unit/specification/text_manipulation_benchmarks.rs"
   requirement
     id "R296"
     verdict "implemented"
@@ -23,4 +23,3 @@ requirement_status_ledger_shard
   requirement
     id "R297"
     verdict "implemented"
-    automated_test "rust/tests/unit/specification/text_manipulation_benchmarks.rs"

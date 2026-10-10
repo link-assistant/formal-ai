@@ -3,15 +3,14 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0802-hypothesis-search.md"
   issue "0802"
   delivered "none recorded"
+  automated_test "rust/tests/unit/specification/refutation_search.rs"
   manual "not yet confirmed"
   requirement
     id "R802-1"
     verdict "implemented"
-    automated_test "rust/tests/unit/specification/refutation_search.rs"
   requirement
     id "R802-2"
     verdict "implemented"
-    automated_test "rust/tests/unit/specification/refutation_search.rs"
   requirement
     id "R802-3"
     verdict "implemented"

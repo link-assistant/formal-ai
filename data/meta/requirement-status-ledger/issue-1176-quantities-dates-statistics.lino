@@ -2,6 +2,7 @@
 requirement_status_ledger_shard
   shard "docs/requirements/issue-1176-quantities-dates-statistics.md"
   issue "1176"
+  automated_test "rust/tests/web/issue-1176-unit-conversion-parity.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R1176-1"
@@ -27,9 +28,7 @@ requirement_status_ledger_shard
     id "R1176-5"
     verdict "implemented"
     delivered "2026-10-07 (this pull request; all three roots)"
-    automated_test "rust/tests/web/issue-1176-unit-conversion-parity.test.mjs"
   requirement
     id "R1176-6"
     verdict "implemented"
     delivered "2026-10-07 (this pull request; browser worker and TS twins)"
-    automated_test "rust/tests/web/issue-1176-unit-conversion-parity.test.mjs"

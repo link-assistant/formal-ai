@@ -3,10 +3,12 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-1085-the-links-network-is-not-the-system-that-reasons.md"
   issue "1085"
   delivered "issue-1085 branch, 2026-09-08"
+  automated_test "rust/tests/unit/specification/self_hosting_metric.rs"
   manual "not yet confirmed"
   requirement
     id "R1085-1"
     verdict "superseded"
+    automated_test ""
     manual "withdrawn"
   requirement
     id "R1085-10"
@@ -60,15 +62,12 @@ requirement_status_ledger_shard
   requirement
     id "R1085-4"
     verdict "implemented"
-    automated_test "rust/tests/unit/specification/self_hosting_metric.rs"
   requirement
     id "R1085-5"
     verdict "implemented"
-    automated_test "rust/tests/unit/specification/self_hosting_metric.rs"
   requirement
     id "R1085-6"
     verdict "implemented"
-    automated_test "rust/tests/unit/specification/self_hosting_metric.rs"
   requirement
     id "R1085-7"
     verdict "implemented"

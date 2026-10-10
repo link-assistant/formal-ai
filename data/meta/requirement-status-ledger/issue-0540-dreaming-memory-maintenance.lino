@@ -3,6 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0540-dreaming-memory-maintenance.md"
   issue "0540"
   delivered "PR #645 (issue #540)"
+  automated_test "rust/tests/web/server-dreaming-learning.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R408"
@@ -11,7 +12,6 @@ requirement_status_ledger_shard
   requirement
     id "R409"
     verdict "implemented"
-    automated_test "rust/tests/web/server-dreaming-learning.test.mjs"
   requirement
     id "R410"
     verdict "implemented"
@@ -31,15 +31,12 @@ requirement_status_ledger_shard
   requirement
     id "R414"
     verdict "implemented"
-    automated_test "rust/tests/web/server-dreaming-learning.test.mjs"
   requirement
     id "R415"
     verdict "implemented"
-    automated_test "rust/tests/web/server-dreaming-learning.test.mjs"
   requirement
     id "R416"
     verdict "implemented"
-    automated_test "rust/tests/web/server-dreaming-learning.test.mjs"
   requirement
     id "R417"
     verdict "implemented"
@@ -71,7 +68,6 @@ requirement_status_ledger_shard
   requirement
     id "R424"
     verdict "implemented"
-    automated_test "rust/tests/web/server-dreaming-learning.test.mjs"
   requirement
     id "R425"
     verdict "implemented"
@@ -79,7 +75,6 @@ requirement_status_ledger_shard
   requirement
     id "R426"
     verdict "implemented"
-    automated_test "rust/tests/web/server-dreaming-learning.test.mjs"
   requirement
     id "R427"
     verdict "implemented"
@@ -95,7 +90,6 @@ requirement_status_ledger_shard
   requirement
     id "R539"
     verdict "implemented"
-    automated_test "rust/tests/web/server-dreaming-learning.test.mjs"
   requirement
     id "R540"
     verdict "implemented"
@@ -107,7 +101,6 @@ requirement_status_ledger_shard
   requirement
     id "R542"
     verdict "implemented"
-    automated_test "rust/tests/web/server-dreaming-learning.test.mjs"
   requirement
     id "R543"
     verdict "implemented"

@@ -2,6 +2,7 @@
 requirement_status_ledger_shard
   shard "docs/requirements/issue-1185-error-driven-repair-loop.md"
   issue "1185"
+  automated_test "rust/tests/web/issue-1185-stop-note.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R1185-1"
@@ -22,17 +23,14 @@ requirement_status_ledger_shard
     id "R1185-4"
     verdict "implemented"
     delivered "2026-10-07 (this pull request) — bounded ladder; the executor appends the ladder-exhausted note to the failure report"
-    automated_test "rust/tests/web/issue-1185-stop-note.test.mjs"
   requirement
     id "R1185-5"
     verdict "implemented"
     delivered "2026-10-07 (this pull request) — the repair_attempts evidence record follows the stop note in the answer"
-    automated_test "rust/tests/web/issue-1185-stop-note.test.mjs"
   requirement
     id "R1185-6"
     verdict "implemented"
     delivered "2026-10-07 (this pull request) — unmatched diagnostic stops with the unresolved-need note in the answer"
-    automated_test "rust/tests/web/issue-1185-stop-note.test.mjs"
   requirement
     id "R1185-7"
     verdict "implemented"

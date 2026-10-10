@@ -3,11 +3,11 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0492-release-badge-stability.md"
   issue "0492"
   delivered "PR #583 (issue #492)"
+  automated_test "rust/tests/unit/ci-cd/release_publishing.rs"
   manual "not yet confirmed"
   requirement
     id "R360"
     verdict "implemented"
-    automated_test "rust/tests/unit/ci-cd/release_publishing.rs"
   requirement
     id "R361"
     verdict "implemented"
@@ -15,11 +15,9 @@ requirement_status_ledger_shard
   requirement
     id "R362"
     verdict "implemented"
-    automated_test "rust/tests/unit/ci-cd/release_publishing.rs"
   requirement
     id "R363"
     verdict "implemented"
-    automated_test "rust/tests/unit/ci-cd/release_publishing.rs"
   requirement
     id "R364"
     verdict "implemented"
@@ -39,7 +37,6 @@ requirement_status_ledger_shard
   requirement
     id "R368"
     verdict "implemented"
-    automated_test "rust/tests/unit/ci-cd/release_publishing.rs"
   requirement
     id "R369"
     verdict "implemented"

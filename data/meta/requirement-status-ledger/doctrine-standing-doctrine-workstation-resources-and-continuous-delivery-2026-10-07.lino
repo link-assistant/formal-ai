@@ -2,6 +2,7 @@
 requirement_status_ledger_shard
   shard "docs/requirements/doctrine-standing-doctrine-workstation-resources-and-continuous-delivery-2026-10-07.md"
   issue ""
+  delivered "2026-10-07 (this pull request; CONTRIBUTING)"
   automated_test "rust/tests/unit/docs_requirements/doctrine_2026_10_07.rs"
   manual "not yet confirmed"
   requirement
@@ -11,7 +12,6 @@ requirement_status_ledger_shard
   requirement
     id "R1019"
     verdict "implemented"
-    delivered "2026-10-07 (this pull request; CONTRIBUTING)"
   requirement
     id "R1020"
     verdict "implemented"
@@ -23,11 +23,9 @@ requirement_status_ledger_shard
   requirement
     id "R1022"
     verdict "implemented"
-    delivered "2026-10-07 (this pull request; CONTRIBUTING)"
   requirement
     id "R1023"
     verdict "implemented"
-    delivered "2026-10-07 (this pull request; CONTRIBUTING)"
   requirement
     id "R1024"
     verdict "implemented"

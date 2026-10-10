@@ -2,6 +2,7 @@
 requirement_status_ledger_shard
   shard "docs/requirements/issue-1188-user-requirements.md"
   issue "1188"
+  automated_test "rust/tests/web/pull-request-1188-working-rules.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R1188-U1"
@@ -30,7 +31,6 @@ requirement_status_ledger_shard
   requirement
     id "R1188-U15"
     verdict "implemented"
-    automated_test "rust/tests/web/pull-request-1188-working-rules.test.mjs"
   requirement
     id "R1188-U16"
     verdict "implemented"
@@ -62,7 +62,6 @@ requirement_status_ledger_shard
   requirement
     id "R1188-U22"
     verdict "implemented"
-    automated_test "rust/tests/web/pull-request-1188-working-rules.test.mjs"
   requirement
     id "R1188-U23"
     verdict "partial"
@@ -70,15 +69,12 @@ requirement_status_ledger_shard
   requirement
     id "R1188-U24"
     verdict "implemented"
-    automated_test "rust/tests/web/pull-request-1188-working-rules.test.mjs"
   requirement
     id "R1188-U25"
     verdict "implemented"
-    automated_test "rust/tests/web/pull-request-1188-working-rules.test.mjs"
   requirement
     id "R1188-U26"
     verdict "implemented"
-    automated_test "rust/tests/web/pull-request-1188-working-rules.test.mjs"
   requirement
     id "R1188-U27"
     verdict "partial"

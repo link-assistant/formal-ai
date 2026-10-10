@@ -2,17 +2,15 @@
 requirement_status_ledger_shard
   shard "docs/requirements/issue-1175-routing-by-formalization.md"
   issue "1175"
+  delivered "2026-09-30 (this pull request)"
+  automated_test "rust/tests/unit/issue_1175_routing.rs"
   manual "not yet confirmed"
   requirement
     id "R1175-1"
     verdict "implemented"
-    delivered "2026-09-30 (this pull request)"
-    automated_test "rust/tests/unit/issue_1175_routing.rs"
   requirement
     id "R1175-2"
     verdict "implemented"
-    delivered "2026-09-30 (this pull request)"
-    automated_test "rust/tests/unit/issue_1175_routing.rs"
   requirement
     id "R1175-3"
     verdict "implemented"

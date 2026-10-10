@@ -3,6 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0703-external-agent-orchestration.md"
   issue "0703"
   delivered "PR #876 (issue #703)"
+  automated_test "rust/tests/web/issue-0703-orchestration-analysis.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R703-1"
@@ -11,11 +12,9 @@ requirement_status_ledger_shard
   requirement
     id "R703-10"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0703-orchestration-analysis.test.mjs"
   requirement
     id "R703-11"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0703-orchestration-analysis.test.mjs"
   requirement
     id "R703-12"
     verdict "implemented"
@@ -47,8 +46,6 @@ requirement_status_ledger_shard
   requirement
     id "R703-8"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0703-orchestration-analysis.test.mjs"
   requirement
     id "R703-9"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0703-orchestration-analysis.test.mjs"

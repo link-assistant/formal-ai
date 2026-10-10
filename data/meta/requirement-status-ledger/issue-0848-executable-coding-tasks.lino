@@ -3,6 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0848-executable-coding-tasks.md"
   issue "0848"
   delivered "PR #897 (issue #848)"
+  automated_test "rust/tests/web/issue-0848-coding-ladder.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R848-1"
@@ -11,11 +12,9 @@ requirement_status_ledger_shard
   requirement
     id "R848-10"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0848-coding-ladder.test.mjs"
   requirement
     id "R848-2"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0848-coding-ladder.test.mjs"
   requirement
     id "R848-3"
     verdict "implemented"
@@ -27,15 +26,12 @@ requirement_status_ledger_shard
   requirement
     id "R848-5"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0848-coding-ladder.test.mjs"
   requirement
     id "R848-6"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0848-coding-ladder.test.mjs"
   requirement
     id "R848-7"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0848-coding-ladder.test.mjs"
   requirement
     id "R848-8"
     verdict "implemented"

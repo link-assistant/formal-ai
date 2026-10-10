@@ -3,6 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0982-persisted-memory-compatibility-contract.md"
   issue "0982"
   delivered "none recorded"
+  automated_test "rust/tests/web/server-memory-schema.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R982-1"
@@ -19,15 +20,12 @@ requirement_status_ledger_shard
   requirement
     id "R982-2"
     verdict "implemented"
-    automated_test "rust/tests/web/server-memory-schema.test.mjs"
   requirement
     id "R982-3"
     verdict "implemented"
-    automated_test "rust/tests/web/server-memory-schema.test.mjs"
   requirement
     id "R982-4"
     verdict "implemented"
-    automated_test "rust/tests/web/server-memory-schema.test.mjs"
   requirement
     id "R982-5"
     verdict "implemented"
@@ -39,7 +37,6 @@ requirement_status_ledger_shard
   requirement
     id "R982-7"
     verdict "implemented"
-    automated_test "rust/tests/web/server-memory-schema.test.mjs"
   requirement
     id "R982-8"
     verdict "implemented"
@@ -47,4 +44,3 @@ requirement_status_ledger_shard
   requirement
     id "R982-9"
     verdict "implemented"
-    automated_test "rust/tests/web/server-memory-schema.test.mjs"

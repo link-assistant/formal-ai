@@ -3,6 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0531-pattern-inference-research.md"
   issue "0531"
   delivered "PR #642 (issue #531)"
+  automated_test "rust/tests/web/issue-0531-pattern-inference.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R396"
@@ -15,15 +16,12 @@ requirement_status_ledger_shard
   requirement
     id "R398"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0531-pattern-inference.test.mjs"
   requirement
     id "R399"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0531-pattern-inference.test.mjs"
   requirement
     id "R400"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0531-pattern-inference.test.mjs"
   requirement
     id "R401"
     verdict "implemented"
@@ -31,11 +29,9 @@ requirement_status_ledger_shard
   requirement
     id "R402"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0531-pattern-inference.test.mjs"
   requirement
     id "R403"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0531-pattern-inference.test.mjs"
   requirement
     id "R404"
     verdict "implemented"
@@ -43,11 +39,9 @@ requirement_status_ledger_shard
   requirement
     id "R405"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0531-pattern-inference.test.mjs"
   requirement
     id "R406"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0531-pattern-inference.test.mjs"
   requirement
     id "R407"
     verdict "implemented"
@@ -64,7 +58,6 @@ requirement_status_ledger_shard
   requirement
     id "R531-19"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0531-pattern-inference.test.mjs"
   requirement
     id "R531-20"
     verdict "implemented"
@@ -72,7 +65,6 @@ requirement_status_ledger_shard
   requirement
     id "R531-21"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0531-pattern-inference.test.mjs"
   requirement
     id "R531-22"
     verdict "implemented"
@@ -88,4 +80,3 @@ requirement_status_ledger_shard
   requirement
     id "R531-25"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0531-pattern-inference.test.mjs"

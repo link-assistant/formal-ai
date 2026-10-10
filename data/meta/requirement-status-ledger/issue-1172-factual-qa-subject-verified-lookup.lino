@@ -2,11 +2,12 @@
 requirement_status_ledger_shard
   shard "docs/requirements/issue-1172-factual-qa-subject-verified-lookup.md"
   issue "1172"
+  delivered "2026-09-30 (this pull request)"
+  automated_test "rust/tests/web/issue-1172-factual-qa-subject-gate.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R1172-1"
     verdict "implemented"
-    delivered "2026-09-30 (this pull request)"
     automated_test "rust/tests/unit/web-engine-core/issue_1172_factual_qa_subject_match.rs"
   requirement
     id "R1172-10"
@@ -22,12 +23,10 @@ requirement_status_ledger_shard
     id "R1172-12"
     verdict "implemented"
     delivered "2026-10-07 (this pull request; parity case e1172_seeded_capital_subject_gate)"
-    automated_test "rust/tests/web/issue-1172-factual-qa-subject-gate.test.mjs"
   requirement
     id "R1172-2"
     verdict "implemented"
     delivered "2026-10-07 (this pull request; JS verified locally, Rust twin awaiting CI)"
-    automated_test "rust/tests/web/issue-1172-factual-qa-subject-gate.test.mjs"
   requirement
     id "R1172-3"
     verdict "implemented"
@@ -36,7 +35,6 @@ requirement_status_ledger_shard
   requirement
     id "R1172-4"
     verdict "implemented"
-    delivered "2026-09-30 (this pull request)"
     automated_test "rust/tests/unit/web-engine-core/issue_1172_factual_qa_subject_match.rs"
   requirement
     id "R1172-5"
@@ -47,12 +45,10 @@ requirement_status_ledger_shard
     id "R1172-6"
     verdict "implemented"
     delivered "2026-10-07 (this pull request; seeded subjects only, live Wikidata tables still open)"
-    automated_test "rust/tests/web/issue-1172-factual-qa-subject-gate.test.mjs"
   requirement
     id "R1172-7"
     verdict "implemented"
     delivered "2026-10-07 (this pull request; the covering sentence is quoted and projected into subject/predicate/object/time/place slots from seed prepositions and temporal surfaces in en/ru/es, the asked slots stated first; hi/zh keep the quote alone; JavaScript verified locally, Rust awaiting CI)"
-    automated_test "rust/tests/web/issue-1172-factual-qa-subject-gate.test.mjs"
   requirement
     id "R1172-8"
     verdict "implemented"

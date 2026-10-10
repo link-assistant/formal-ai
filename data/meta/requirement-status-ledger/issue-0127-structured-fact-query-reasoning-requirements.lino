@@ -3,6 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0127-structured-fact-query-reasoning-requirements.md"
   issue "0127"
   delivered "pre-2026-07 (undated); issue #127"
+  automated_test "rust/tests/web/issue-0127-fact-query-cache.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R173"
@@ -15,11 +16,9 @@ requirement_status_ledger_shard
   requirement
     id "R175"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0127-fact-query-cache.test.mjs"
   requirement
     id "R176"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0127-fact-query-cache.test.mjs"
   requirement
     id "R177"
     verdict "implemented"
@@ -27,7 +26,6 @@ requirement_status_ledger_shard
   requirement
     id "R178"
     verdict "implemented"
-    automated_test "rust/tests/web/issue-0127-fact-query-cache.test.mjs"
   requirement
     id "R179"
     verdict "implemented"

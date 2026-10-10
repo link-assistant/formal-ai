@@ -2,6 +2,7 @@
 requirement_status_ledger_shard
   shard "docs/requirements/issue-0710-dropped-requirements-re-verification.md"
   issue "0710"
+  automated_test "rust/tests/unit/specification/multilingual.rs"
   manual "not yet confirmed"
   requirement
     id "R710-01"
@@ -12,7 +13,6 @@ requirement_status_ledger_shard
     id "R710-02"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 2 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/unit/specification/multilingual.rs"
   requirement
     id "R710-03"
     verdict "implemented"
@@ -22,7 +22,6 @@ requirement_status_ledger_shard
     id "R710-04"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 4 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/unit/specification/multilingual.rs"
   requirement
     id "R710-05"
     verdict "implemented"
@@ -32,11 +31,11 @@ requirement_status_ledger_shard
     id "R710-06"
     verdict "implemented"
     delivered "implemented — works-now, re-verified 2026-09-15 against PR #888 (issue #710 dropped-requirements audit); evidence matrix row 6 of docs/case-studies/issue-710/README.md"
-    automated_test "rust/tests/unit/specification/multilingual.rs"
   requirement
     id "R710-07"
     verdict "superseded"
     delivered "none recorded"
+    automated_test ""
   requirement
     id "R710-08"
     verdict "implemented"

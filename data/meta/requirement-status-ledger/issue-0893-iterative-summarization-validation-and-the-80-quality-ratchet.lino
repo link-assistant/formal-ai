@@ -4,14 +4,13 @@ requirement_status_ledger_shard
   issue "0893"
   delivered "PR #970 (issue #893)"
   automated_test "rust/tests/unit/specification/issue_893_summarization_validation.rs"
+  manual "measured 2026-08-05 with `cargo run --release --example issue_893_measure`; raw run kept in docs/case-studies/issue-893/raw-data/"
   requirement
     id "R893-1"
     verdict "implemented"
-    manual "measured 2026-08-05 with `cargo run --release --example issue_893_measure`; raw run kept in docs/case-studies/issue-893/raw-data/"
   requirement
     id "R893-2"
     verdict "implemented"
-    manual "measured 2026-08-05 with `cargo run --release --example issue_893_measure`; raw run kept in docs/case-studies/issue-893/raw-data/"
   requirement
     id "R893-3"
     verdict "implemented"

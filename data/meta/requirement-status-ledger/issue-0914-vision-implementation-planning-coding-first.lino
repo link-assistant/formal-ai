@@ -3,11 +3,11 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0914-vision-implementation-planning-coding-first.md"
   issue "0914"
   delivered "pre-2026-07 (undated); issue #914"
+  automated_test "rust/tests/unit/docs_requirements/coding_first_planning.rs"
   manual "not yet confirmed"
   requirement
     id "R914-1"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/coding_first_planning.rs"
   requirement
     id "R914-10"
     verdict "implemented"
@@ -33,15 +33,12 @@ requirement_status_ledger_shard
   requirement
     id "R914-15"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/coding_first_planning.rs"
   requirement
     id "R914-2"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/coding_first_planning.rs"
   requirement
     id "R914-3"
     verdict "implemented"
-    automated_test "rust/tests/unit/docs_requirements/coding_first_planning.rs"
   requirement
     id "R914-4"
     verdict "implemented"
@@ -50,7 +47,6 @@ requirement_status_ledger_shard
     id "R914-5"
     verdict "partial"
     delivered "partial: E70 delivered general natural-formal translation for the seeded FOL statement slice (PR #984, issue #917); E75 delivered method learning (PR #1005, issue #922); broader coverage remains incremental seed growth"
-    automated_test "rust/tests/unit/docs_requirements/coding_first_planning.rs"
   requirement
     id "R914-6"
     verdict "partial"

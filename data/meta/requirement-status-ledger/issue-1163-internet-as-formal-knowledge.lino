@@ -2,6 +2,7 @@
 requirement_status_ledger_shard
   shard "docs/requirements/issue-1163-internet-as-formal-knowledge.md"
   issue "1163"
+  automated_test "rust/tests/web/issue-1163-formal-knowledge-paths.test.mjs"
   manual "not yet confirmed"
   requirement
     id "R1163-1"
@@ -12,7 +13,6 @@ requirement_status_ledger_shard
     id "R1163-10"
     verdict "implemented"
     delivered "2026-10-07 (this pull request): worker route page_query_text and parity case e1163_supplied_page_command_query; native half awaiting CI"
-    automated_test "rust/tests/web/issue-1163-formal-knowledge-paths.test.mjs"
   requirement
     id "R1163-11"
     verdict "implemented"
@@ -27,7 +27,6 @@ requirement_status_ledger_shard
     id "R1163-13"
     verdict "implemented"
     delivered "2026-10-07 (this pull request): formalize_document_source for HTML and Markdown; Rust awaiting CI"
-    automated_test "rust/tests/web/issue-1163-formal-knowledge-paths.test.mjs"
   requirement
     id "R1163-14"
     verdict "implemented"
@@ -52,12 +51,10 @@ requirement_status_ledger_shard
     id "R1163-3"
     verdict "implemented"
     delivered "2026-10-07 (this pull request): all six extractors on per-extractor fixtures; Rust awaiting CI"
-    automated_test "rust/tests/web/issue-1163-formal-knowledge-paths.test.mjs"
   requirement
     id "R1163-4"
     verdict "implemented"
     delivered "2026-10-07 (this pull request): RegistrySourceLookup researches unmatched needs for the satisfaction loop; Rust awaiting CI"
-    automated_test "rust/tests/web/issue-1163-formal-knowledge-paths.test.mjs"
   requirement
     id "R1163-5"
     verdict "implemented"
@@ -67,12 +64,10 @@ requirement_status_ledger_shard
     id "R1163-6"
     verdict "implemented"
     delivered "2026-10-07 (this pull request): research consults working memory before fetching; memory per thread; Rust awaiting CI"
-    automated_test "rust/tests/web/issue-1163-formal-knowledge-paths.test.mjs"
   requirement
     id "R1163-7"
     verdict "implemented"
     delivered "2026-10-07 (this pull request): features computed (P856 from an entity payload, registry primacy, license markers, agreement); search path lacks a P856 record; Rust awaiting CI"
-    automated_test "rust/tests/web/issue-1163-formal-knowledge-paths.test.mjs"
   requirement
     id "R1163-8"
     verdict "implemented"

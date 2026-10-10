@@ -2,12 +2,12 @@
 requirement_status_ledger_shard
   shard "docs/requirements/issue-1164-code-node-decomposition.md"
   issue "1164"
+  delivered "2026-09-30 (this pull request)"
+  automated_test "rust/tests/unit/issue_1164_code_example_knowledge.rs"
   manual "not yet confirmed"
   requirement
     id "R1164-1"
     verdict "implemented"
-    delivered "2026-09-30 (this pull request)"
-    automated_test "rust/tests/unit/issue_1164_code_example_knowledge.rs"
   requirement
     id "R1164-10"
     verdict "implemented"
@@ -42,22 +42,15 @@ requirement_status_ledger_shard
     id "R1164-2"
     verdict "implemented"
     delivered "2026-10-07 (this pull request): all fifteen registered languages checked for output and literal; r vocabulary row added"
-    automated_test "rust/tests/unit/issue_1164_code_example_knowledge.rs"
   requirement
     id "R1164-3"
     verdict "implemented"
-    delivered "2026-09-30 (this pull request)"
-    automated_test "rust/tests/unit/issue_1164_code_example_knowledge.rs"
   requirement
     id "R1164-4"
     verdict "implemented"
-    delivered "2026-09-30 (this pull request)"
-    automated_test "rust/tests/unit/issue_1164_code_example_knowledge.rs"
   requirement
     id "R1164-5"
     verdict "implemented"
-    delivered "2026-09-30 (this pull request)"
-    automated_test "rust/tests/unit/issue_1164_code_example_knowledge.rs"
   requirement
     id "R1164-6"
     verdict "implemented"
@@ -67,7 +60,6 @@ requirement_status_ledger_shard
     id "R1164-7"
     verdict "implemented"
     delivered "2026-10-07 (this pull request): adopt_decomposed_procedure through the adopt_extracted_procedure gate"
-    automated_test "rust/tests/unit/issue_1164_code_example_knowledge.rs"
   requirement
     id "R1164-8"
     verdict "implemented"

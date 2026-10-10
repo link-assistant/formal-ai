@@ -3,6 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0710-dynamic-coding-discovery.md"
   issue "0710"
   delivered "delivered 2026-09-15; PR #888 (issue #710)"
+  automated_test "rust/tests/unit/specification/external_benchmarks.rs"
   manual "not yet confirmed"
   requirement
     id "R710-D1"
@@ -27,7 +28,6 @@ requirement_status_ledger_shard
   requirement
     id "R710-D14"
     verdict "implemented"
-    automated_test "rust/tests/unit/specification/external_benchmarks.rs"
   requirement
     id "R710-D15"
     verdict "implemented"
@@ -45,13 +45,11 @@ requirement_status_ledger_shard
     id "R710-D2"
     verdict "implemented"
     delivered "delivered 2026-09-15; PR #888 (issue #710); full-suite measurement 2026-09-17 (PR #1139)"
-    automated_test "rust/tests/unit/specification/external_benchmarks.rs"
     manual "measured 2026-09-17 with `benchmark run --suite humaneval --slice 164`, cold-offline and with `--online`; rows recorded in data/benchmarks/external-results.lino"
   requirement
     id "R710-D3"
     verdict "implemented"
     delivered "delivered 2026-09-15; PR #888 (issue #710); full-suite measurement 2026-09-18 (PR #1139)"
-    automated_test "rust/tests/unit/specification/external_benchmarks.rs"
     manual "measured 2026-09-18 with `benchmark run --suite mbpp --slice 500`, cold-offline and with `--online`; rows recorded in data/benchmarks/external-results.lino"
   requirement
     id "R710-D4"
@@ -60,7 +58,6 @@ requirement_status_ledger_shard
   requirement
     id "R710-D5"
     verdict "implemented"
-    automated_test "rust/tests/unit/specification/external_benchmarks.rs"
   requirement
     id "R710-D6"
     verdict "implemented"

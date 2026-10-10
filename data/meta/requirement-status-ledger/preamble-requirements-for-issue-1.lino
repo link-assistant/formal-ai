@@ -3,6 +3,7 @@ requirement_status_ledger_shard
   shard "docs/requirements/preamble-requirements-for-issue-1.md"
   issue ""
   delivered "pre-2026-07 (undated)"
+  automated_test "rust/tests/e2e/tests/demo.spec.js"
   manual "not yet confirmed"
   requirement
     id "R1"
@@ -11,7 +12,6 @@ requirement_status_ledger_shard
   requirement
     id "R10"
     verdict "implemented"
-    automated_test "rust/tests/e2e/tests/demo.spec.js"
     manual 'manually confirmed 2026-08-04 (audit): README `chat --prompt "Write me hello world program in Rust"` run, JSON chat format checked'
   requirement
     id "R11"
@@ -33,7 +33,6 @@ requirement_status_ledger_shard
   requirement
     id "R15"
     verdict "implemented"
-    automated_test "rust/tests/e2e/tests/demo.spec.js"
   requirement
     id "R16"
     verdict "implemented"
@@ -58,7 +57,6 @@ requirement_status_ledger_shard
   requirement
     id "R20"
     verdict "implemented"
-    automated_test "rust/tests/e2e/tests/demo.spec.js"
   requirement
     id "R21"
     verdict "implemented"
@@ -66,12 +64,10 @@ requirement_status_ledger_shard
   requirement
     id "R22"
     verdict "implemented"
-    automated_test "rust/tests/e2e/tests/demo.spec.js"
     manual "manually confirmed 2026-08-04 (audit): README greetings run in en/ru/hi/zh (Hello/Привет/नमस्ते/你好)"
   requirement
     id "R23"
     verdict "implemented"
-    automated_test "rust/tests/e2e/tests/demo.spec.js"
   requirement
     id "R24"
     verdict "implemented"
@@ -107,5 +103,4 @@ requirement_status_ledger_shard
   requirement
     id "R9"
     verdict "implemented"
-    automated_test "rust/tests/e2e/tests/demo.spec.js"
     manual 'manually confirmed 2026-08-04 (audit): README `chat --prompt "Hi"` en greeting run via built binary'

@@ -2,6 +2,7 @@
 requirement_status_ledger_shard
   shard "docs/requirements/issue-1180-repository-history-formalization.md"
   issue "1180"
+  delivered "PR #1188 (d81d549e0), 2026-09-30"
   automated_test "rust/tests/unit/memory/issue_1180_history_context.rs"
   manual "not yet confirmed"
   requirement
@@ -30,11 +31,9 @@ requirement_status_ledger_shard
   requirement
     id "R1180-4"
     verdict "implemented"
-    delivered "PR #1188 (d81d549e0), 2026-09-30"
   requirement
     id "R1180-5"
     verdict "implemented"
-    delivered "PR #1188 (d81d549e0), 2026-09-30"
   requirement
     id "R1180-6"
     verdict "implemented"
@@ -42,7 +41,6 @@ requirement_status_ledger_shard
   requirement
     id "R1180-7"
     verdict "implemented"
-    delivered "PR #1188 (d81d549e0), 2026-09-30"
   requirement
     id "R1180-8"
     verdict "implemented"

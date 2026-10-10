@@ -3,11 +3,11 @@ requirement_status_ledger_shard
   shard "docs/requirements/issue-0327-cross-runtime-synthesis-parity.md"
   issue "0327"
   delivered "pre-2026-07 (undated); issue #327"
+  automated_test "rust/tests/unit/specification/synthesis.rs"
   manual "not yet confirmed"
   requirement
     id "R246"
     verdict "implemented"
-    automated_test "rust/tests/unit/specification/synthesis.rs"
   requirement
     id "R247"
     verdict "implemented"
@@ -15,7 +15,6 @@ requirement_status_ledger_shard
   requirement
     id "R248"
     verdict "implemented"
-    automated_test "rust/tests/unit/specification/synthesis.rs"
   requirement
     id "R249"
     verdict "implemented"
