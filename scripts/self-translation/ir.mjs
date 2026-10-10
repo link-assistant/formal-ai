@@ -384,3 +384,27 @@ function exprOf(link) {
       throw new Error(`unknown meta expression ${kind}`);
   }
 }
+
+// Explicit temporary source interpreter; portable-pure-v1 routes remain unchanged.
+export const TEMPORARY_INTERPRETER_PROFILES=Object.freeze(['owned-string-array-v1']);
+export async function evaluateTemporaryInterpreter(source,
+profileId){
+ if(profileId!=='owned-string-array-v1')return {state:'Unsupported',
+reason:'UnsupportedTemporaryProfile',
+evaluated:false};
+ const {readFile}=await import('node:fs/promises');
+ const {createHash}=await import('node:crypto');
+ const file=new URL('./owned-string-array.mjs',
+import.meta.url),
+expected='3e365bcfa5133e66d29787692dfae0fc8a70d582f21503a6d5c107f07b275cf8';
+ const before=await readFile(file);
+ if(createHash('sha256').update(before).digest('hex')!==expected)return {state:'Unsupported',
+reason:'TemporaryModuleSourceDrift',
+evaluated:false};
+ const module=await import('./owned-string-array.mjs');
+ const after=await readFile(file);
+ if(!before.equals(after))return {state:'Unsupported',
+reason:'TemporaryModuleChangedDuringImport',
+evaluated:false};
+ return module.interpretOwnedStringArray(source);
+}
