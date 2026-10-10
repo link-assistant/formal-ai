@@ -292,7 +292,9 @@ fn plan_chat_step_routes(
     // Ahead of them, quotes that do not pair leave no telling the quoted text
     // from the instruction, so the request is declined before any arm reads its
     // payload as words to act on (PR #1188 G71).
-    if let Some(plan) = steps::plan_source_or_owned_goal_step(&task, messages, tool_names, result) {
+    if let steps::SourceOrOwnedGoalStep::Claimed(plan) =
+        steps::plan_source_or_owned_goal_step(&task, messages, tool_names, result)
+    {
         return plan;
     }
     // An explicit exact-content marker makes the following bytes authoritative.

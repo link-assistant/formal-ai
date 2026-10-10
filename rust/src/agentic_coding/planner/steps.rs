@@ -113,16 +113,24 @@ pub(super) fn plan_verified_source_step(
     })
 }
 
+pub(super) enum SourceOrOwnedGoalStep {
+    Unclaimed,
+    Claimed(Option<AgenticPlan>),
+}
+
 /// Preserve verified source priority and owned-goal refusal before later routes.
 pub(super) fn plan_source_or_owned_goal_step(
     task: &str,
     messages: &[ChatMessage],
     tool_names: &[&str],
     result: &mut Option<FinalResult>,
-) -> Option<Option<AgenticPlan>> {
-    let source = crate::agentic_coding::code_task::verified_source_description(task)
-        .map(|_| plan_verified_source_step(task, messages, tool_names, result));
-    source.or_else(|| {
+) -> SourceOrOwnedGoalStep {
+    if crate::agentic_coding::code_task::verified_source_description(task).is_some() {
+        return SourceOrOwnedGoalStep::Claimed(plan_verified_source_step(
+            task, messages, tool_names, result,
+        ));
+    }
+    {
         let owned_goal =
             if crate::agentic_coding::evidence_record::has_typed_evidence_delivery(task)
                 || crate::meta_translate::owned_source_tree_request(task).is_some()
@@ -145,6 +153,7 @@ pub(super) fn plan_source_or_owned_goal_step(
                 )
             })
             .or_else(|| crate::computer_use::plan_agentic_step(messages, tool_names))
-            .map(Some)
-    })
+            .map(SourceOrOwnedGoalStep::Claimed)
+            .unwrap_or(SourceOrOwnedGoalStep::Unclaimed)
+    }
 }
