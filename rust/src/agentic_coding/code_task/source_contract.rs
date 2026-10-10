@@ -1,3 +1,4 @@
+mod matcher;
 use super::GeneratedSource;
 use crate::seed::{self, Slot};
 fn alternatives(mut values: Vec<String>) -> Option<String> {
@@ -57,6 +58,9 @@ pub(super) fn source_description_contract(
     task: &str,
     artifact: &GeneratedSource,
 ) -> Option<serde_json::Value> {
+    if let Some(contract) = matcher::match_source_description(task, artifact) {
+        return Some(contract);
+    }
     if !source_whitespace_supported(task) {
         return None;
     }

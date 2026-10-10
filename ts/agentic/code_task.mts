@@ -174,10 +174,19 @@ function rustPath(task) {
 }
 
 function requestedIdentifier(task, path, kind) {
-  const normalized = task.toLowerCase();
+  const normalized = task.replace(path, () => ' ').toLowerCase();
   if (kind !== RustItemKind.Constant) {
     const name = slotIdentifier(normalized, 'coding_name_slot');
     if (name !== null && validIdentifier(name)) return name;
+  }
+  if (kind === RustItemKind.Function) {
+    const meaning = firstRoleMatch('program_kind', normalized);
+    for (const surface of meaning === null ? [] : words(meaning)) {
+      const escaped = surface.replace(/[.*+?^\x24{}()|[\]\\]/g, '\\$&');
+      const expression = new RegExp('(?:^|[^A-Za-z_0-9])' + escaped + '[ \u0009-\u000D]+([A-Za-z_][A-Za-z_0-9]*)', 'iu');
+      const captured = expression.exec(task);
+      if (captured !== null && validIdentifier(captured[1])) return captured[1];
+    }
   }
   let candidates = identifierTokens(task.replace(path, () => '')).filter(validIdentifier);
   if (kind === RustItemKind.Constant) {
@@ -263,4 +272,15 @@ export function planVerifiedGeneratedSourceStep(rawTask, messages, toolNames) {
     'Missing source authoring contract: complete request remains unbound.',
     FinalDisposition.Gap, 'source-description-goal-coverage-unbound');
   return planGeneratedSourceStep(task, messages, toolNames);
+}
+
+/** Mirrors verified_source_description: whole-request evidence before semantic dispatch. */
+export function verifiedSourceDescription(rawTask) {
+  if (!sourceWhitespaceSupported(rawTask)) return null;
+  const task = unwrapTransportQuotes(rawTask);
+  if (composeEditRequest(task) !== null) return null;
+  const literal = composeGeneralChangePlan(task);
+  if (literal?.mode === 'literal_file' && ownsLiteralBody(task, literal.content)) return null;
+  const artifact = rustSourceForTask(task);
+  return artifact === null ? null : sourceDescriptionContract(task, artifact);
 }

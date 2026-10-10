@@ -238,6 +238,8 @@ pub const MEANINGS_SOFTWARE_PROJECT_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-software-project.lino");
 pub const MEANINGS_SOFTWARE_REQUIREMENTS_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-software-requirements.lino");
+pub const MEANINGS_SOURCE_AUTHORING_GRAMMAR_LINO: &str =
+    include_str!("../../embedded/data/seed/meanings-source-authoring-grammar.lino");
 pub const MEANINGS_SOURCE_CAPTURE_LINO: &str =
     include_str!("../../embedded/data/seed/meanings-source-capture.lino");
 pub const MEANINGS_SOURCE_CONTEXT_GRAMMAR_LINO: &str =
@@ -596,6 +598,10 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/meanings-skill-procedure.lino", MEANINGS_SKILL_PROCEDURE_LINO),
         ("data/seed/meanings-software-project.lino", MEANINGS_SOFTWARE_PROJECT_LINO),
         ("data/seed/meanings-software-requirements.lino", MEANINGS_SOFTWARE_REQUIREMENTS_LINO),
+        (
+            "data/seed/meanings-source-authoring-grammar.lino",
+            MEANINGS_SOURCE_AUTHORING_GRAMMAR_LINO,
+        ),
         ("data/seed/meanings-source-capture.lino", MEANINGS_SOURCE_CAPTURE_LINO),
         ("data/seed/meanings-source-context-grammar.lino", MEANINGS_SOURCE_CONTEXT_GRAMMAR_LINO),
         ("data/seed/meanings-statement-merge.lino", MEANINGS_STATEMENT_MERGE_LINO),
@@ -912,6 +918,7 @@ pub const MEANING_FILES: &[&str] = &[
     MEANINGS_SKILL_PROCEDURE_LINO,
     MEANINGS_SOFTWARE_PROJECT_LINO,
     MEANINGS_SOFTWARE_REQUIREMENTS_LINO,
+    MEANINGS_SOURCE_AUTHORING_GRAMMAR_LINO,
     MEANINGS_SOURCE_CAPTURE_LINO,
     MEANINGS_SOURCE_CONTEXT_GRAMMAR_LINO,
     MEANINGS_STATEMENT_MERGE_LINO,

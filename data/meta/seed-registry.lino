@@ -446,6 +446,10 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-source-authoring-grammar
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-source-capture
     bundle true
     lexicon meaning
@@ -779,6 +783,8 @@ seed_registry
   seed software-project-phrases
     bundle true
     lexicon meaning
+    web true
+  seed source-authoring-grammar
     web true
   seed source-context-grammar
     web true

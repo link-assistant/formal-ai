@@ -250,6 +250,9 @@ async function planChatStepRoutes(messages, toolNames, received) {
       && looksLikeSkillDescription(positionalEdit.ownText(task)))) {
     return null;
   }
+  if (codeTask.verifiedSourceDescription(task) !== null) {
+    return codeTask.planVerifiedGeneratedSourceStep(task, messages, toolNames);
+  }
   const ownedGoals = evidenceRecord.hasTypedEvidenceDelivery(task) ? null
     : await planGoalLedger(task, messages, toolNames, planChatStepResolved);
   if (ownedGoals !== null) return ownedGoals;

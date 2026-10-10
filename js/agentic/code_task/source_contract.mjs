@@ -1,3 +1,4 @@
+import { matchSourceDescription } from './source_contract/matcher.mjs';
 import { rustIdentifierIsValid } from './identifier_domain.mjs';
 import { cached, childrenNamed, parseLino, readText } from '../host.mjs';
 import { roleWordForms } from '../write_lexicon.mjs';
@@ -13,6 +14,8 @@ export function sourceWhitespaceSupported(text) {
 }
 
 export function sourceDescriptionContract(task, artifact) {
+  const seeded = matchSourceDescription(task, artifact);
+  if (seeded !== null) return seeded;
   if (!sourceWhitespaceSupported(task)) return null;
   const declaration = /^(pub )?fn ([A-Za-z_][A-Za-z_0-9]*)\(\) -> i64 \{\n    (-?\d+)\n\}\n$/.exec(artifact.content);
   if (declaration === null || !rustIdentifierIsValid(declaration[2])) return null;

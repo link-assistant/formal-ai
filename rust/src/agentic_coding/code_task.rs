@@ -360,12 +360,31 @@ const fn is_path_character(character: char) -> bool {
 }
 
 fn requested_identifier(task: &str, path: &str, kind: RustItemKind) -> Option<String> {
-    let normalized = task.to_lowercase();
+    let normalized = task.replacen(path, " ", 1).to_lowercase();
     if kind != RustItemKind::Constant
         && let Some(name) = slot_identifier(&normalized, seed::ROLE_CODING_NAME_SLOT)
         && valid_identifier(&name)
     {
         return Some(name);
+    }
+    if kind == RustItemKind::Function {
+        if let Some(meaning) = seed::lexicon().first_role_match("program_kind", &normalized) {
+            for surface in meaning.words() {
+                let pattern = format!(
+                    r"(?:^|[^A-Za-z_0-9]){}[ \u0009-\u000D]+([A-Za-z_][A-Za-z_0-9]*)",
+                    regex::escape(surface)
+                );
+                let expression = regex::RegexBuilder::new(&pattern)
+                    .case_insensitive(true)
+                    .build()
+                    .ok()?;
+                if let Some(captured) = expression.captures(task) {
+                    if valid_identifier(&captured[1]) {
+                        return Some(captured[1].to_owned());
+                    }
+                }
+            }
+        }
     }
     let without_path = task.replacen(path, "", 1);
     let mut candidates = identifier_tokens(&without_path)
@@ -531,4 +550,22 @@ pub(super) fn plan_verified_generated_source_step(
         ));
     }
     plan_generated_source_step(task, messages, tool_names, result)
+}
+
+pub(super) fn verified_source_description(raw_task: &str) -> Option<serde_json::Value> {
+    if !source_contract::source_whitespace_supported(raw_task) {
+        return None;
+    }
+    let task = unwrap_transport_quotes(raw_task);
+    if super::write_request::compose_edit_request(task).is_some() {
+        return None;
+    }
+    if super::general_planner::compose_general_change_plan(task).is_some_and(|plan| {
+        plan.mode == super::general_planner::GeneralPlanMode::LiteralFile
+            && super::general_planner::owns_literal_body(task, &plan.content)
+    }) {
+        return None;
+    }
+    let artifact = rust_source_for_task(task)?;
+    source_contract::source_description_contract(task, &artifact)
 }
