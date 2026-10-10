@@ -762,6 +762,20 @@ fn root_push_credential_is_retained(job: &[&str]) -> bool {
 #[test]
 fn every_job_that_pushes_still_has_a_credential_to_push_with() {
     let mut pushing_jobs = Vec::new();
+    // Logical original writer obligations retain their checked physical staged producer.
+    let physical_release = repository_file(".github/workflows/release.yml");
+    if physical_release.contains("uses: ./.github/workflows/release-staged.yml") {
+        let staged = repository_file(".github/workflows/release-staged.yml");
+        for (caller, producer) in [
+            ("auto-release", "auto_prepare-source"),
+            ("manual-release", "manual_prepare-source"),
+        ] {
+            crate::ci_gates::staged_release_operations::assert_release_delivery_budget(caller);
+            let producer_body = super::workflow_fixtures::job_block(&staged, producer);
+            let producer_lines: Vec<&str> = producer_body.lines().collect();
+            assert!(root_push_credential_is_retained(&producer_lines));
+        }
+    }
 
     for path in github_yaml_files() {
         let name = path
@@ -769,7 +783,11 @@ fn every_job_that_pushes_still_has_a_credential_to_push_with() {
             .unwrap_or(&path)
             .to_string_lossy()
             .into_owned();
-        let body = fs::read_to_string(&path).expect("readable workflow");
+        let body = if path == repository_root().join(".github/workflows/release.yml") {
+            crate::ci_gates::staged_release_operations::release_operation_workflow()
+        } else {
+            fs::read_to_string(&path).expect("readable workflow")
+        };
         let body = body.replace("\r\n", "\n");
         let lines: Vec<&str> = body.lines().collect();
 
