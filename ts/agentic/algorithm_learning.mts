@@ -18,7 +18,7 @@ import { byteOrder } from './crate/rust_str.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { Progress } from './progress.mjs';
 import { plainText } from './content.mjs';
-import { commandArgument, observedBytesMatch, observedPayload } from './tool_result.mjs';
+import { commandArgument, observedBytesMatch, observedPayload, stepOutcome } from './tool_result.mjs';
 
 /** Mirrors `OBSERVATIONS_PATH` in rust/src/agentic_coding/algorithm_learning.rs. */
 export const OBSERVATIONS_PATH = 'algorithm-observations.lino';
@@ -60,14 +60,22 @@ export function planStep(messages, toolNames, task) {
   if (writeTool === null) return finalAnswer(resultDocument(task, 'observation_write_unavailable', ''));
   const runTool = toolFor(toolNames, Capability.Run);
   if (runTool === null) return finalAnswer(resultDocument(task, 'shell_unavailable', ''));
-  const discovery = discoveryCommand(), readback = readbackCommand();
+  const discovery = discoveryCommand();
   if (!progress.hasRun(discovery)) return planOne(runTool, jsonText({ command: discovery }));
-  if (commandPayload(messages, discovery, 'algorithm-command-receipt/v1') === null) return finalAnswer(resultDocument(task, 'artifact_verification_failed', ''));
+  let captureSelected = false;
+  if (commandPayload(messages, discovery, 'algorithm-command-receipt/v1') === null) {
+    if (!bareCurrentOperation(messages, discovery)) return finalAnswer(resultDocument(task, 'artifact_verification_failed', ''));
+    const capturedDiscovery = captureCommand(discovery);
+    if (!progress.hasRun(capturedDiscovery)) return planOne(runTool, jsonText({ command: capturedDiscovery }));
+    if (commandPayload(messages, capturedDiscovery, null) === null) return finalAnswer(resultDocument(task, 'artifact_verification_failed', ''));
+    captureSelected = true;
+  }
+  const readback = captureSelected ? captureCommand(readbackCommand()) : readbackCommand();
   if (!progress.hasRun(readback)) return planOne(runTool, jsonText({ command: readback }));
   const output = commandPayload(messages, readback, 'algorithm-command-receipt/v1');
   const verified = output === null ? null : candidateFromLinksNotation(output);
   if (!candidatesEqual(verified, task.candidate)) return finalAnswer(resultDocument(task, 'artifact_verification_failed', ''));
-  const command = conformanceCommand(task.candidate);
+  const command = captureSelected ? captureCommand(conformanceCommand(task.candidate)) : conformanceCommand(task.candidate);
   if (!progress.hasRun(command)) return planOne(runTool, jsonText({ command }));
   const expected = expectedConformance(task.candidate);
   if (commandPayload(messages, command, 'algorithm-command-receipt/v1') !== expected) return finalAnswer(resultDocument(task, 'conformance_failed', ''));
@@ -176,4 +184,74 @@ function resultDocument(task, status, conformance) {
     task.discovery.associative_compression_lossless ? 'true' : 'false');
   if (conformance !== '') output = pushLinoNode(output, 2, 'conformance', conformance);
   return output;
+}
+
+/** Source counterpart: shell_quote. Input is a JavaScript string. */
+export function shellQuote(value) {
+  return "'" + value.replaceAll("'", "'\\''") + "'";
+}
+
+/** Mirrors CaptureOptions and capture_program; malformed UTF-8 is refused. */
+export function captureProgram(command, { timeout = 60000, maxBuffer = 8388608 } = {}) {
+  if (typeof command !== 'string' || command.length === 0
+    || !Number.isInteger(timeout) || timeout < 1 || timeout > 60000
+    || !Number.isInteger(maxBuffer) || maxBuffer < 1 || maxBuffer > 8388608
+    || Array.from(command).some(character => character.length === 1
+      && character.charCodeAt(0) >= 0xd800 && character.charCodeAt(0) <= 0xdfff)) {
+    throw Error('invalid_capture_policy');
+  }
+  const characters = Array.from(command);
+  const lines = ["  const { spawnSync } = require('node:child_process');", '  const command = ['];
+  for (let index = 0; index < characters.length; index += 64) {
+    lines.push('    ' + JSON.stringify(characters.slice(index, index + 64).join('')) + ',');
+  }
+  lines.push(...[
+  "  ].join('');",
+  "  const result = spawnSync('/bin/sh', ['-c', command], {",
+  "    timeout: TIMEOUT, maxBuffer: MAX_BUFFER,",
+  "  });",
+  "  const decoder = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true });",
+  "  let stdout = '', stderr = '', decodingError = null;",
+  "  try { stdout = decoder.decode(result.stdout ?? Buffer.alloc(0)); }",
+  "  catch { decodingError = 'InvalidUTF8Stdout'; }",
+  "  try { stderr = decoder.decode(result.stderr ?? Buffer.alloc(0)); }",
+  "  catch { decodingError ??= 'InvalidUTF8Stderr'; }",
+  "  if (decodingError !== null) { stdout = ''; stderr = ''; }",
+  "  const receipt = {",
+  "    schema: 'command-execution-receipt/v1', stdout, stderr,",
+  "    exit_code: result.status, signal: result.signal ?? null,",
+  "    complete: !result.error && decodingError === null",
+  "      && result.status !== null && result.signal === null,",
+  "    truncated: result.error?.code === 'ENOBUFS',",
+  "    timed_out: result.error?.code === 'ETIMEDOUT', aborted: false,",
+  "    error: decodingError ?? result.error?.message ?? null,",
+  "  };",
+  "  process.stdout.write(JSON.stringify(receipt));",
+  "  process.exitCode = decodingError !== null ? 1",
+  "    : Number.isInteger(result.status) ? result.status : 1;"
+]
+    .map(line => line.replace('TIMEOUT', String(timeout)).replace('MAX_BUFFER', String(maxBuffer))));
+  return lines.join('\n');
+}
+
+/** Source counterpart: capture_command. Exact process receipt, no encoded stdout. */
+export function captureCommand(command, options = {}) {
+  return 'node -e ' + shellQuote(captureProgram(command, options));
+}
+
+function bareCurrentOperation(messages, command) {
+  const current = messages.slice(Math.max(0, messages.findLastIndex(message => message.role.toLowerCase() === 'user')));
+  for (let index = current.length - 1; index >= 0; index -= 1) {
+    const message = current[index];
+    if (message.role.toLowerCase() !== 'tool' || message.tool_call_id == null) continue;
+    const call = current.slice(0, index).flatMap(prior => prior.tool_calls ?? []).findLast(item => item.id === message.tool_call_id);
+    if (!call || classifyTool(call.function.name) !== Capability.Run || commandArgument(call.function.arguments) !== command) continue;
+    if (message.is_error === true || message.isError === true || (message.name && message.name !== call.function.name)
+      || message.complete === false || message.stream_complete === false || message.truncated === true || message.timed_out === true
+      || message.aborted === true || message.signal != null || message.error != null) return false;
+    const raw = plainText(message.content);
+    if (raw.trim() === '' || stepOutcome(raw) !== 'unreported') return false;
+    try { JSON.parse(raw); return false; } catch { return true; }
+  }
+  return false;
 }

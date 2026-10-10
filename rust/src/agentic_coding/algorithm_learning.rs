@@ -13,7 +13,9 @@ use super::capability_router::tool_for;
 use super::driver::DriverOutcome;
 use super::planner::{AgenticPlan, Capability, plan_one, tool_capability, write_arguments};
 use super::progress::Progress;
-use super::tool_result::{command_argument, observed_bytes_match, observed_payload};
+use super::tool_result::{
+    StepOutcome, command_argument, observed_bytes_match, observed_payload, step_outcome,
+};
 use crate::algorithm_discovery::{
     AlgorithmCandidate, AlgorithmDiscoveryRun, ArgumentPattern, ExecutionTrace, TraceStep,
     discover_algorithms, traces_from_memory_events,
@@ -71,13 +73,33 @@ pub(super) fn plan_step(
         return AgenticPlan::Final(result_document(task, "shell_unavailable", ""));
     };
     let discovery = discovery_command();
-    let readback = readback_command();
     if !progress.has_run(&discovery) {
         return plan_one(run_tool, json!({ "command": discovery }).to_string());
     }
+    let mut capture_selected = false;
     if command_payload(messages, &discovery, Some("algorithm-command-receipt/v1")).is_none() {
-        return AgenticPlan::Final(result_document(task, "artifact_verification_failed", ""));
+        if !bare_current_operation(messages, &discovery) {
+            return AgenticPlan::Final(result_document(task, "artifact_verification_failed", ""));
+        }
+        let captured_discovery = capture_command(&discovery, &CaptureOptions::default())
+            .expect("compiled algorithm command satisfies capture policy");
+        if !progress.has_run(&captured_discovery) {
+            return plan_one(
+                run_tool,
+                json!({ "command": captured_discovery }).to_string(),
+            );
+        }
+        if command_payload(messages, &captured_discovery, None).is_none() {
+            return AgenticPlan::Final(result_document(task, "artifact_verification_failed", ""));
+        }
+        capture_selected = true;
     }
+    let readback = if capture_selected {
+        capture_command(&readback_command(), &CaptureOptions::default())
+            .expect("compiled algorithm command satisfies capture policy")
+    } else {
+        readback_command()
+    };
     if !progress.has_run(&readback) {
         return plan_one(run_tool, json!({ "command": readback }).to_string());
     }
@@ -86,7 +108,15 @@ pub(super) fn plan_step(
     if verified.as_ref() != Some(&task.candidate) {
         return AgenticPlan::Final(result_document(task, "artifact_verification_failed", ""));
     }
-    let command = conformance_command(&task.candidate);
+    let command = if capture_selected {
+        capture_command(
+            &conformance_command(&task.candidate),
+            &CaptureOptions::default(),
+        )
+        .expect("compiled algorithm command satisfies capture policy")
+    } else {
+        conformance_command(&task.candidate)
+    };
     if !progress.has_run(&command) {
         return plan_one(run_tool, json!({ "command": command }).to_string());
     }
@@ -299,4 +329,134 @@ fn result_document(task: &AlgorithmLearningTask, status: &str, conformance: &str
         push_lino_node(&mut output, 2, "conformance", Some(conformance));
     }
     output
+}
+
+/// Bounded capture policy corresponding to captureProgram's JavaScript options.
+#[derive(Clone, Copy)]
+pub(super) struct CaptureOptions {
+    pub timeout: u64,
+    pub max_buffer: usize,
+}
+
+impl Default for CaptureOptions {
+    fn default() -> Self {
+        Self {
+            timeout: 60_000,
+            max_buffer: 8_388_608,
+        }
+    }
+}
+
+/// Exact single-quoted shell operand, corresponding to shellQuote.
+pub(super) fn shell_quote(value: &str) -> String {
+    format!("'{}'", value.replace('\'', "'\\''"))
+}
+
+/// Readable Node receipt producer corresponding to captureProgram.
+/// Valid UTF-8 strings correspond to the JavaScript Unicode-scalar input domain.
+pub(super) fn capture_program(
+    command: &str,
+    options: &CaptureOptions,
+) -> Result<String, &'static str> {
+    if command.is_empty()
+        || options.timeout == 0
+        || options.timeout > 60_000
+        || options.max_buffer == 0
+        || options.max_buffer > 8_388_608
+    {
+        return Err("invalid_capture_policy");
+    }
+    let characters: Vec<char> = command.chars().collect();
+    let mut lines = vec![
+        "  const { spawnSync } = require('node:child_process');".to_owned(),
+        "  const command = [".to_owned(),
+    ];
+    for chunk in characters.chunks(64) {
+        let text: String = chunk.iter().collect();
+        let literal = serde_json::to_string(&text).map_err(|_| "invalid_capture_policy")?;
+        lines.push(format!("    {literal},"));
+    }
+    let suffix = [
+        "  ].join('');",
+        "  const result = spawnSync('/bin/sh', ['-c', command], {",
+        "    timeout: TIMEOUT, maxBuffer: MAX_BUFFER,",
+        "  });",
+        "  const decoder = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true });",
+        "  let stdout = '', stderr = '', decodingError = null;",
+        "  try { stdout = decoder.decode(result.stdout ?? Buffer.alloc(0)); }",
+        "  catch { decodingError = 'InvalidUTF8Stdout'; }",
+        "  try { stderr = decoder.decode(result.stderr ?? Buffer.alloc(0)); }",
+        "  catch { decodingError ??= 'InvalidUTF8Stderr'; }",
+        "  if (decodingError !== null) { stdout = ''; stderr = ''; }",
+        "  const receipt = {",
+        "    schema: 'command-execution-receipt/v1', stdout, stderr,",
+        "    exit_code: result.status, signal: result.signal ?? null,",
+        "    complete: !result.error && decodingError === null",
+        "      && result.status !== null && result.signal === null,",
+        "    truncated: result.error?.code === 'ENOBUFS',",
+        "    timed_out: result.error?.code === 'ETIMEDOUT', aborted: false,",
+        "    error: decodingError ?? result.error?.message ?? null,",
+        "  };",
+        "  process.stdout.write(JSON.stringify(receipt));",
+        "  process.exitCode = decodingError !== null ? 1",
+        "    : Number.isInteger(result.status) ? result.status : 1;",
+    ];
+    lines.extend(suffix.iter().map(|line| {
+        line.replace("TIMEOUT", &options.timeout.to_string())
+            .replace("MAX_BUFFER", &options.max_buffer.to_string())
+    }));
+    Ok(lines.join("\n"))
+}
+
+/// Shell request corresponding to captureCommand with the same bounded options.
+pub(super) fn capture_command(
+    command: &str,
+    options: &CaptureOptions,
+) -> Result<String, &'static str> {
+    Ok(format!(
+        "node -e {}",
+        shell_quote(&capture_program(command, options)?)
+    ))
+}
+
+fn bare_current_operation(messages: &[ChatMessage], command: &str) -> bool {
+    let start = messages
+        .iter()
+        .rposition(|message| message.role.eq_ignore_ascii_case("user"))
+        .unwrap_or(0);
+    let current = &messages[start..];
+    for (index, message) in current.iter().enumerate().rev() {
+        if !message.role.eq_ignore_ascii_case("tool") {
+            continue;
+        }
+        let Some(identity) = message.tool_call_id.as_deref() else {
+            continue;
+        };
+        let Some(call) = current[..index]
+            .iter()
+            .rev()
+            .flat_map(|prior| prior.tool_calls.iter().rev())
+            .find(|call| call.id == identity)
+        else {
+            continue;
+        };
+        if tool_capability(&call.function.name) != Some(Capability::Run)
+            || command_argument(&call.function.arguments).as_deref() != Some(command)
+        {
+            continue;
+        }
+        if message.is_error
+            || message
+                .name
+                .as_deref()
+                .is_some_and(|name| name != call.function.name)
+        {
+            return false;
+        }
+        let raw = message.content.plain_text();
+        return !raw.trim().is_empty()
+            && step_outcome(&raw) == StepOutcome::Unreported
+            && serde_json::from_str::<serde_json::Value>(&raw).is_err();
+    }
+    false
 }
