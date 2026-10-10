@@ -1,3 +1,4 @@
+import { collectLeaseDiagnostics } from './release-fixture-lease-diagnostics.mjs';
 // Harmless GitHub runtime fixture: text tar only, scoped GET requests and private fixture lease.
 // It deliberately never invokes the production transfer CLI, compiler, package or release authority.
 import assert from 'node:assert/strict';
@@ -65,7 +66,7 @@ function group(value) {
   assert.equal(value, 'formal-ai-release-fixture-' + process.env.GITHUB_RUN_ID + '-' + process.env.GITHUB_RUN_ATTEMPT, 'only private per-run fixture group');
   return value;
 }
-async function api(route) {
+async function api(route, timeoutMilliseconds = 15000) {
   const context = identity();
   assert.ok(route.startsWith('/repos/' + context.repository + '/actions/'), 'scoped Actions GET only');
   const headers = {
@@ -77,7 +78,7 @@ async function api(route) {
     method: 'GET',
     headers,
     redirect: 'error',
-    signal: AbortSignal.timeout(15000)
+    signal: AbortSignal.timeout(Math.min(15000, timeoutMilliseconds))
   });
   const bytes = Buffer.from(await response.arrayBuffer());
   assert.ok(bytes.length <= 4 * 1024 * 1024);
@@ -117,6 +118,7 @@ async function queueObservation(final = false) {
   const name = group(process.env.FIXTURE_GROUP);
   const base = '/repos/' + context.repository + '/actions';
   const snapshots = [];
+  let ancestorDiagnostic = null;
   const deadline = Date.now() + (final ? 90000 : 180000);
   while (Date.now() < deadline) {
     const state = await api(base + '/concurrency_groups/' + encodeURIComponent(name));
@@ -139,6 +141,10 @@ async function queueObservation(final = false) {
       assert.ok(child, 'actual executing descendant job absent');
       const ancestor = await api(base + '/concurrency_groups/' + encodeURIComponent(name) + '?ahead_of_job=' + child.id);
       snapshots.push(ancestor);
+      if (ancestorDiagnostic === null) ancestorDiagnostic = await collectLeaseDiagnostics({
+        context, child, group: name, runnerName: process.env.RUNNER_NAME,
+        get: api, deadline
+      });
       validateQueueSnapshot(ancestor, {
         group: name,
         run: context.run
@@ -149,6 +155,7 @@ async function queueObservation(final = false) {
         observation: 'VerifiedPrivateFixtureLease',
         group: name,
         descendantJobId: child.id,
+        ancestorDiagnostic,
         snapshots
       };
     } catch {/* Pending scheduling or propagation remains an observation, never guessed success. */}
@@ -157,6 +164,7 @@ async function queueObservation(final = false) {
   return {
     observation: 'Unknown',
     reason: 'NoCompleteActualQueuedAncestorObservation',
+    ancestorDiagnostic,
     snapshots
   };
 }
