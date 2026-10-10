@@ -490,6 +490,8 @@ jobs:
 
       - name: Download the same-run selected-source worker
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: native-release-wasm
           path: selected-wasm
@@ -1103,6 +1105,8 @@ jobs:
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source
       - name: Download the same-run selected-source worker
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: native-release-wasm
           path: selected-wasm
@@ -1258,6 +1262,8 @@ jobs:
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source
       - name: Download the same-run selected-source worker
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           name: native-release-wasm
           path: selected-wasm
