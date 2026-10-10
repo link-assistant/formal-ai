@@ -46,7 +46,17 @@ exec "$(dirname "$0")/gh-original" "$@"
   const output=join(directory,'output');writeFileSync(output,'');
   const result=spawnSync('/bin/bash',[join(root,'scripts/desktop-release-resolve.sh')],{encoding:'utf8',timeout:30000,
    env:{...process.env,PATH:bin+':'+process.env.PATH,GITHUB_OUTPUT:output,REPO:'link-assistant/formal-ai',GH_TOKEN:'declared-fixture-token',
-    EVENT:'workflow_run',WORKFLOW_RUN_HEAD_SHA:'a'.repeat(40),MOCK_TAGS_JQ_OUTPUT:'v0.201.0',MOCK_LATEST_TAG:'v0.201.0',
+    EVENT:'workflow_run',
+      WORKFLOW_RUN_HEAD_SHA:'a'.repeat(40),
+      WORKFLOW_RUN_ID: '42',
+       WORKFLOW_RUN_ATTEMPT: '1',
+       WORKFLOW_RUN_WORKFLOW_ID: '7',
+       WORKFLOW_RUN_BRANCH: 'main',
+       WORKFLOW_RUN_HEAD_REPOSITORY: 'link-assistant/formal-ai',
+       WORKFLOW_RUN_CONCLUSION: 'success',
+      MOCK_TAGS_JQ_OUTPUT:'v0.201.0',
+      MOCK_LATEST_TAG:'v0.201.0',
+
     MOCK_PARENT_SHA:'a'.repeat(40),MOCK_RELEASE_EXISTS:'1',MOCK_ASSET_NAMES:names.join('\n'),
     MOCK_EVIDENCE_CREATOR:join(root,'rust/tests/fixtures/native-release-evidence/observations.mjs'),
     UNKNOWN_ASSETS:String(unknownAssets),UNKNOWN_EVIDENCE:String(unknownEvidence)}});

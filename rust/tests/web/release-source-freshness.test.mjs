@@ -23,8 +23,30 @@ function fixture() {
 }
 test('the full original resolver rejects a release rebased onto newer main; no ancestor fallback',()=>{
  const f=fixture();try {f.run(f.cwd,['checkout','-b','other']);writeFileSync(join(f.cwd,'source.txt'),'new source not tested by original run\n');f.run(f.cwd,['commit','-am','new source']);const newer=f.run(f.cwd,['rev-parse','HEAD']);writeFileSync(join(f.cwd,'version.txt'),'1.2.3\n');f.run(f.cwd,['add','version.txt']);f.run(f.cwd,['commit','-m','rebased version child']);const released=f.run(f.cwd,['rev-parse','HEAD']);
- const environment={EVENT:'workflow_run',REPOSITORY:'owner/repo',RUN_HEAD:f.head,RUN_BRANCH:'main',RUN_REPOSITORY:'owner/repo',RUN_CONCLUSION:'success'};
- const result=resolvePackageRelease(environment,path=>path.includes('/releases?')?[{tag_name:'v1.2.3',draft:false,prerelease:false}]:{sha:released,parents:[{sha:newer}]});assert.deepEqual(result,{tag:'',publish:false,build:false});
+ const environment={EVENT:'workflow_run',
+   REPOSITORY:'owner/repo',
+   RUN_HEAD:f.head,
+   RUN_BRANCH:'main',
+   RUN_REPOSITORY:'owner/repo',
+   RUN_CONCLUSION:'success',
+   RUN_ID:'42',
+   RUN_ATTEMPT:'1',
+   RUN_WORKFLOW_ID:'7'};
+ const result=resolvePackageRelease(environment,
+   path=>path.includes('/actions/runs/')?{id:42,
+   run_attempt:1,
+   workflow_id:7,
+   path:'.github/workflows/release.yml',
+   status:'completed',
+   conclusion:'success',
+   head_sha:f.head,
+   head_branch:'main',
+   repository:{full_name:'owner/repo'},
+   head_repository:{full_name:'owner/repo'}}:path.includes('/actions/workflows/')?{id:7,
+   path:'.github/workflows/release.yml'}:path.includes('/releases?')?[{tag_name:'v1.2.3',
+   draft:false,
+   prerelease:false}]:{sha:released,
+   parents:[{sha:newer}]});assert.deepEqual(result,{tag:'',publish:false,build:false});
  }finally{f.close();}
 });
 test('physical exact main and recorded own version child survive a harmless retry or already completed push',()=>{

@@ -31,7 +31,18 @@ function replay(context,assets){
  const output=join(root,'output');writeFileSync(output,'');
  const result=spawnSync('/bin/bash',[join(repository,'scripts/desktop-release-resolve.sh')],{encoding:'utf8',timeout:30000,
   env:{...process.env,PATH:bin+':'+process.env.PATH,GITHUB_OUTPUT:output,REPO:'link-assistant/formal-ai',GH_TOKEN:'fixture-token',EVENT:'workflow_run',
-   WORKFLOW_RUN_HEAD_SHA:'a'.repeat(40),MOCK_PARENT_SHA:'a'.repeat(40),MOCK_TAGS_JQ_OUTPUT:'',MOCK_LATEST_TAG:'v0.201.0',MOCK_RELEASE_EXISTS:'1',
+   WORKFLOW_RUN_HEAD_SHA:'a'.repeat(40),
+     WORKFLOW_RUN_ID: '42',
+      WORKFLOW_RUN_ATTEMPT: '1',
+      WORKFLOW_RUN_WORKFLOW_ID: '7',
+      WORKFLOW_RUN_BRANCH: 'main',
+      WORKFLOW_RUN_HEAD_REPOSITORY: 'link-assistant/formal-ai',
+      WORKFLOW_RUN_CONCLUSION: 'success',
+     MOCK_PARENT_SHA:'a'.repeat(40),
+     MOCK_TAGS_JQ_OUTPUT:'',
+     MOCK_LATEST_TAG:'v0.201.0',
+     MOCK_RELEASE_EXISTS:'1',
+
    MOCK_ASSET_NAMES:assets.join('\n'),MOCK_EVIDENCE_CREATOR:join(repository,'rust/tests/fixtures/native-release-evidence/observations.mjs')}});
  return {...result,outputs:Object.fromEntries(readFileSync(output,'utf8').trim().split('\n').filter(Boolean).map(line=>line.split('=')))};
 }

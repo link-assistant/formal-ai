@@ -65,6 +65,25 @@ case "$sub" in
   api)
     path="$1"; shift || true
     case "$path" in
+      *"/actions/runs/"*)
+        node <<'RUN_METADATA'
+process.stdout.write(JSON.stringify(({id:42,
+  run_attempt:1,
+  workflow_id:7,
+  path:'.github/workflows/release.yml',
+  status:'completed',
+  conclusion:process.env.WORKFLOW_RUN_CONCLUSION,
+  head_sha:process.env.WORKFLOW_RUN_HEAD_SHA,
+  head_branch:'main',
+  repository:{full_name:process.env.REPO},
+  head_repository:{full_name:process.env.REPO}})))
+RUN_METADATA
+        ;;
+      *"/actions/workflows/"*)
+        node <<'WORKFLOW_METADATA'
+process.stdout.write(JSON.stringify(({id:7,path:'.github/workflows/release.yml'})))
+WORKFLOW_METADATA
+        ;;
       *"/tags?"*|*"/tags") [ -n "${MOCK_TAGS_JQ_OUTPUT:-}" ] && printf '%s\n' "${MOCK_TAGS_JQ_OUTPUT}" ;;
       *"/releases/tags/"*)
         directory="$(mktemp -d)"
@@ -169,6 +188,12 @@ fn run_resolve(label: &str, env: &[(&str, &str)], mock: &GhMock<'_>) -> ResolveO
         .env("GITHUB_OUTPUT", &output_file)
         .env("REPO", "link-assistant/formal-ai")
         .env("GH_TOKEN", "test-token")
+        .env("WORKFLOW_RUN_ID", "42")
+        .env("WORKFLOW_RUN_ATTEMPT", "1")
+        .env("WORKFLOW_RUN_WORKFLOW_ID", "7")
+        .env("WORKFLOW_RUN_BRANCH", "main")
+        .env("WORKFLOW_RUN_HEAD_REPOSITORY", "link-assistant/formal-ai")
+        .env("WORKFLOW_RUN_CONCLUSION", "success")
         .env("MOCK_TAGS_JQ_OUTPUT", mock.tags_jq_output)
         .env("MOCK_LATEST_TAG", mock.latest_tag)
         .env("MOCK_PARENT_SHA", mock.parent_sha)

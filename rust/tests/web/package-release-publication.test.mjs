@@ -11,16 +11,25 @@ const RELEASE = { tag_name: 'v1.2.3', draft: false, prerelease: false };
 const ENVIRONMENT = {
   EVENT: 'workflow_run', REPOSITORY: 'owner/repository', RUN_BRANCH: 'main',
   RUN_REPOSITORY: 'owner/repository', RUN_HEAD: HEAD, RUN_CONCLUSION: 'success',
+  RUN_ID: '42', RUN_ATTEMPT: '1', RUN_WORKFLOW_ID: '7',
 };
-const readGithub = (commit, releases = [RELEASE]) => (endpoint) =>
-  endpoint.includes('/commits/') ? commit : endpoint.includes('/tags/') ? RELEASE : releases;
+const readGithub = (commit, releases = [RELEASE], conclusion = 'success') => (endpoint) => {
+  if (endpoint.includes('/actions/runs/')) return {id:42,run_attempt:1,workflow_id:7,
+    path:'.github/workflows/release.yml',status:'completed',conclusion,head_sha:HEAD,
+    head_branch:'main',repository:{full_name:'owner/repository'},head_repository:{full_name:'owner/repository'}};
+  if (endpoint.includes('/actions/workflows/')) return {id:7,path:'.github/workflows/release.yml'};
+  return endpoint.includes('/commits/') ? commit : endpoint.includes('/tags/') ? RELEASE : releases;
+};
 
 test('the release child commit of a completed main run resolves for publication', () => {
   assert.deepEqual(resolvePackageRelease(ENVIRONMENT, readGithub({ sha: CHILD, parents: [{ sha: HEAD }] })),
     { tag: RELEASE.tag_name, publish: true, build: true });
 });
 
+const failedRunProvider = (commit) => readGithub(commit, [RELEASE], 'failure');
+
 test('an exact-head release resolves too, including when a later pipeline job failed', () => {
+  const readGithub = failedRunProvider;
   assert.equal(resolvePackageRelease({ ...ENVIRONMENT, RUN_CONCLUSION: 'failure' },
     readGithub({ sha: HEAD, parents: [] })).publish, true);
 });

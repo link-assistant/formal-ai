@@ -82,6 +82,9 @@ jobs:
           RUN_BRANCH: ${{ github.event.workflow_run.head_branch }}
           RUN_REPOSITORY: ${{ github.event.workflow_run.head_repository.full_name }}
           RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
+          RUN_WORKFLOW_ID: ${{ github.event.workflow_run.workflow_id }}
         run: node scripts/resolve-package-release.mjs
   package:
     needs: resolve

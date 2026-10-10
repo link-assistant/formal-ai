@@ -28,7 +28,18 @@ const args = process.argv.slice(2);
 const write = (value) => process.stdout.write(String(value ?? '') + '\n');
 if (args[0] === 'api') {
   const endpoint = args[1];
-  if (endpoint.includes('/tags?')) write(scenario.exact ?? '');
+  if (endpoint.includes('/actions/runs/')) write(JSON.stringify(scenario.actualRun ?? ({id:42,
+    run_attempt:1,
+    workflow_id:7,
+    path:'.github/workflows/release.yml',
+    status:'completed',
+    conclusion:process.env.WORKFLOW_RUN_CONCLUSION,
+    head_sha:process.env.WORKFLOW_RUN_HEAD_SHA,
+    head_branch:'main',
+    repository:{full_name:process.env.REPO},
+    head_repository:{full_name:process.env.REPO}})));
+  else if (endpoint.includes('/actions/workflows/')) write(JSON.stringify(scenario.actualWorkflow ?? ({id:7,path:'.github/workflows/release.yml'})));
+  else if (endpoint.includes('/tags?')) write(scenario.exact ?? '');
   else if (endpoint.includes('/releases?')) {
     if (scenario.releaseFailure) { console.error('HTTP 401'); process.exit(1); }
     write(JSON.stringify(scenario.releases ?? []));
@@ -66,6 +77,13 @@ if (args[0] === 'api') {
     encoding: 'utf8',
     env: { ...process.env, PATH: bin + ':' + process.env.PATH, REPO: 'owner/repository',
       EVENT: 'workflow_run', WORKFLOW_RUN_HEAD_SHA: HEAD, INPUT_TAG: '', RELEASE_TAG: '',
+      WORKFLOW_RUN_ID: '42',
+         WORKFLOW_RUN_ATTEMPT: '1',
+         WORKFLOW_RUN_WORKFLOW_ID: '7',
+         WORKFLOW_RUN_BRANCH: 'main',
+         WORKFLOW_RUN_HEAD_REPOSITORY: 'owner/repository',
+         WORKFLOW_RUN_CONCLUSION: 'success',
+
       GITHUB_OUTPUT: outputFile, ...extra },
   });
   return { ...result, outputs: Object.fromEntries(readFileSync(outputFile, 'utf8').trim().split('\n')
@@ -258,4 +276,90 @@ test('producer group loss cancellation changes and unknown expression bindings r
   const altered=structuredClone(workflow);change(altered.jobs[id].concurrency);assert.throws(()=>verifyDesktopProducerGroups(altered));
  }
  for(const source of ['unknown.field',"process.exit(1)","format('-{2}',github.run_id)","github.run_id trailing"])assert.throws(()=>concurrencyExpression(source,producerContext('release',11,'amd64')));
+});
+// Real process/fixture transport: provider identities remain independent of the event fields.
+for (const [field,
+   value] of [['id',
+   43],
+   ['run_attempt',
+   2],
+   ['status',
+   'in_progress'],
+   ['conclusion',
+   'cancelled'],
+   ['conclusion',
+   'neutral'],
+   ['head_sha',
+   'c'.repeat(40)],
+   ['head_branch',
+   'feature'],
+   ['repository',
+   {
+  full_name: 'foreign/repository'
+}], ['head_repository', {
+  full_name: 'fork/repository'
+}], ['workflow_id', 8], ['path', '.github/workflows/foreign.yml']]) test('an exact published tag refuses mismatched authenticated run ' + field, context => {
+  const actualRun = {
+    id: 42,
+    run_attempt: 1,
+    workflow_id: 7,
+    status: 'completed',
+    conclusion: 'success',
+    head_sha: HEAD,
+    head_branch: 'main',
+    repository: {
+      full_name: 'owner/repository'
+    },
+    head_repository: {
+      full_name: 'owner/repository'
+    },
+    path: '.github/workflows/release.yml',
+    [field]: value
+  };
+  const result = resolve(context, {
+    exact: 'v1.2.3',
+    actualRun,
+    commits: {
+      'v1.2.3': {
+        sha: HEAD,
+        parents: []
+      }
+    }
+  });
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.outputs.tag, '');
+  assert.equal(result.outputs.should_build, 'false');
+});
+test('an exact published tag remains available after an authenticated later job failure', context => {
+  const actualRun = {
+    id: 42,
+    run_attempt: 1,
+    workflow_id: 7,
+    status: 'completed',
+    conclusion: 'failure',
+    head_sha: HEAD,
+    head_branch: 'main',
+    repository: {
+      full_name: 'owner/repository'
+    },
+    head_repository: {
+      full_name: 'owner/repository'
+    },
+    path: '.github/workflows/release.yml'
+  };
+  const result = resolve(context, {
+    exact: 'v1.2.3',
+    actualRun,
+    commits: {
+      'v1.2.3': {
+        sha: HEAD,
+        parents: []
+      }
+    }
+  }, {
+    WORKFLOW_RUN_CONCLUSION: 'failure'
+  });
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(result.outputs.tag, 'v1.2.3');
+  assert.equal(result.outputs.should_build, 'true');
 });

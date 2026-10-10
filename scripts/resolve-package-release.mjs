@@ -36,6 +36,7 @@ export function resolvePackageRelease(environment, readGithub = githubJson) {
     || ['cancelled', 'skipped'].includes(environment.RUN_CONCLUSION))) {
     return { tag: '', publish: false, build: false };
   }
+  if (!qualifiesCompletedRun(environment, readGithub)) return { tag: '', publish: false, build: false };
   const requested = event === 'release' ? environment.RELEASE_TAG : environment.INPUT_TAG;
   let releases;
   if (event !== 'workflow_run' && requested) {
@@ -70,3 +71,39 @@ export function main(environment = process.env) {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main();
+
+/** Bind a completed workflow event to authenticated run and workflow metadata. */
+export function qualifiesCompletedRun(environment, readGithub = githubJson) {
+  if (environment.EVENT !== 'workflow_run') return true;
+  const repository = environment.REPOSITORY;
+  if (typeof repository !== 'string' || !/^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(repository)
+    || environment.RUN_BRANCH !== 'main' || environment.RUN_REPOSITORY !== repository
+    || ['cancelled', 'skipped'].includes(environment.RUN_CONCLUSION)) return false;
+  const head = environment.RUN_HEAD ?? '';
+  if (!COMMIT_IDENTIFIER.test(head)) throw new Error('CI completion must identify a full commit');
+  const identifiers = ['RUN_ID', 'RUN_ATTEMPT', 'RUN_WORKFLOW_ID'];
+  for (const name of identifiers) {
+    const value = environment[name];
+    if (typeof value !== 'string' || !/^[1-9][0-9]*$/.test(value)
+      || !Number.isSafeInteger(Number(value))) return false;
+  }
+  const run = readGithub('repos/' + repository + '/actions/runs/' + environment.RUN_ID);
+  const workflow = readGithub('repos/' + repository + '/actions/workflows/release.yml');
+  const conclusions = new Set(['success', 'failure', 'neutral', 'timed_out', 'action_required', 'stale']);
+  return run?.id === Number(environment.RUN_ID)
+    && run.run_attempt === Number(environment.RUN_ATTEMPT)
+    && run.status === 'completed'
+    && conclusions.has(run.conclusion)
+    && run.conclusion === environment.RUN_CONCLUSION
+    && run.head_sha === head
+    && run.head_branch === 'main'
+    && environment.RUN_BRANCH === 'main'
+    && run.repository?.full_name === repository
+    && run.head_repository?.full_name === repository
+    && environment.RUN_REPOSITORY === repository
+    && Number.isSafeInteger(workflow?.id)
+    && workflow.id === Number(environment.RUN_WORKFLOW_ID)
+    && run.workflow_id === workflow.id
+    && workflow.path === '.github/workflows/release.yml'
+    && run.path?.split('@')[0] === workflow.path;
+}

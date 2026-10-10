@@ -177,7 +177,18 @@ const fs=require('node:fs'),path=require('node:path');
 const args=process.argv.slice(2), endpoint=args[1]??'';
 const write=value=>process.stdout.write(String(value)+'\n');
 if(args[0]==='api') {
- if(endpoint.includes('/tags?'))write('');
+ if(endpoint.includes('/actions/runs/'))write(JSON.stringify(({id:42,
+   run_attempt:1,
+   workflow_id:7,
+   path:'.github/workflows/release.yml',
+   status:'completed',
+   conclusion:process.env.WORKFLOW_RUN_CONCLUSION,
+   head_sha:process.env.WORKFLOW_RUN_HEAD_SHA,
+   head_branch:'main',
+   repository:{full_name:process.env.REPO},
+   head_repository:{full_name:process.env.REPO}})));
+ else if(endpoint.includes('/actions/workflows/'))write(JSON.stringify(({id:7,path:'.github/workflows/release.yml'})));
+ else if(endpoint.includes('/tags?'))write('');
  else if(endpoint.includes('/commits/'))write(args.at(-1)==='.parents[0].sha'?fixture.head:args.at(-1)==='.commit.tree.sha'?fixture.tree:fixture.commit);
  else if(endpoint.includes('/releases/tags/'))write(fs.readFileSync(path.join(fixture.published,'release-assets.json'),'utf8'));
  else process.exit(2);
@@ -199,7 +210,17 @@ if(args[0]==='api') {
       materializePublishedFixture(published, {version: "0.9.0", sourceCommit: commit, sourceTree: tree, expectedAssets: assets});
       const output = path.join(dir, "output");writeFileSync(output, "");
       const result = spawnSync("bash", [path.join(REPO_ROOT, "scripts", "desktop-release-resolve.sh")], {
-        env: {...process.env, PATH: `${path.join(dir, "bin")}:${process.env.PATH}`, EVENT: "workflow_run", WORKFLOW_RUN_HEAD_SHA: head,
+        env: {...process.env,
+           PATH: `${path.join(dir, "bin")}:${process.env.PATH}`,
+           EVENT: "workflow_run",
+           WORKFLOW_RUN_HEAD_SHA: head,
+          WORKFLOW_RUN_ID: '42',
+           WORKFLOW_RUN_ATTEMPT: '1',
+           WORKFLOW_RUN_WORKFLOW_ID: '7',
+           WORKFLOW_RUN_BRANCH: 'main',
+           WORKFLOW_RUN_HEAD_REPOSITORY: 'o/r',
+           WORKFLOW_RUN_CONCLUSION: 'success',
+
           REPO: "o/r", GH_TOKEN: "x", GITHUB_OUTPUT: output, MOCK_ASSET_NAMES: assets.join("\n")}, encoding: "utf8",
       });
       assert.equal(result.status, 0, result.stderr);

@@ -92,7 +92,10 @@ release_for_workflow_head() {
   local resolver
   resolver="$(cd "$(dirname "$0")" && pwd)/resolve-package-release.mjs"
   EVENT=workflow_run REPOSITORY="$REPO" RUN_HEAD="$WORKFLOW_RUN_HEAD_SHA" \
-    RUN_BRANCH=main RUN_REPOSITORY="$REPO" RUN_CONCLUSION=success \
+    RUN_ID="${WORKFLOW_RUN_ID:-}" RUN_ATTEMPT="${WORKFLOW_RUN_ATTEMPT:-}" \
+    RUN_WORKFLOW_ID="${WORKFLOW_RUN_WORKFLOW_ID:-}" \
+    RUN_BRANCH="${WORKFLOW_RUN_BRANCH:-}" RUN_REPOSITORY="${WORKFLOW_RUN_HEAD_REPOSITORY:-}" \
+    RUN_CONCLUSION="${WORKFLOW_RUN_CONCLUSION:-}" \
     node "$resolver" | sed -n 's/^tag=//p'
 }
 
@@ -198,6 +201,26 @@ case "$EVENT" in
       should_build=false
       resolution="workflow_run-missing-head-sha"
       log "workflow_run payload carried no head SHA; skipping desktop build."
+      emit_outputs
+      exit 0
+    fi
+
+    # Authenticate the completed source before either published-tag tier.
+    if ! EVENT=workflow_run REPOSITORY="$REPO" RUN_HEAD="$WORKFLOW_RUN_HEAD_SHA" \
+      RUN_ID="${WORKFLOW_RUN_ID:-}" RUN_ATTEMPT="${WORKFLOW_RUN_ATTEMPT:-}" \
+      RUN_WORKFLOW_ID="${WORKFLOW_RUN_WORKFLOW_ID:-}" \
+      RUN_BRANCH="${WORKFLOW_RUN_BRANCH:-}" \
+      RUN_REPOSITORY="${WORKFLOW_RUN_HEAD_REPOSITORY:-}" \
+      RUN_CONCLUSION="${WORKFLOW_RUN_CONCLUSION:-}" \
+      node --input-type=module - "$(dirname "$0")/resolve-package-release.mjs" <<'NODE'
+import { pathToFileURL } from 'node:url';
+const { qualifiesCompletedRun } = await import(pathToFileURL(process.argv[2]));
+if (!qualifiesCompletedRun(process.env)) process.exit(1);
+NODE
+    then
+      should_build=false
+      resolution="workflow_run-unqualified-source"
+      log "Completed workflow source could not be authenticated; skipping desktop build."
       emit_outputs
       exit 0
     fi
