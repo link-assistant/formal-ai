@@ -17,7 +17,7 @@ use std::os::unix::fs::PermissionsExt;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Output};
 
-use super::workflow_fixtures::{job_block, release_workflow};
+use super::workflow_fixtures::job_block;
 
 fn script() -> String {
     format!(
