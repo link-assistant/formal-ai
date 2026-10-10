@@ -3,8 +3,8 @@ import { mentionsRole } from '../write_lexicon.mjs';
 import { normalizePrompt } from '../crate/engine.mjs';
 import { unquotedPathTokens } from '../positional_edit.mjs';
 // Source-owned mixed actions share the existing obligation nodes and request replay.
-import { composeEditClauses, preferredBinding, tokens, firstActionCueStart, bareSurfaces, cleanPathToken, looksLikeFilePath } from '../write_request.mjs';
-import { literalWriteOwnership, instructionView } from '../general_planner.mjs';
+import { firstRawPrefixLeadEnd, pinnedFirstLine, composeEditClauses, preferredBinding, tokens, firstActionCueStart, bareSurfaces, cleanPathToken, looksLikeFilePath } from '../write_request.mjs';
+import { literalWriteOwnership, instructionView, composeGeneralChangePlan } from '../general_planner.mjs';
 import { sentences } from '../shell_command_policy.mjs';
 import { quotedSegmentSpans, quoteFault } from '../crate/normal_markov.mjs';
 import { nestedQuoteFault } from '../quote_nesting.mjs';
@@ -16,6 +16,34 @@ import { FinalDisposition, canDeliverFinal, resolvedFinalAnswer } from '../plan.
 const encoder = new TextEncoder();
 const grammarTail = (text) => /^[\s.!?。！？।;；]*$/u.test(text);
 
+/** Mirrors pinned_line_need: a consumed modifier is a conditional source Need. */
+export function pinnedLineNeed(request, content, payloadEnd) {
+  const need = sourcePinnedLineNeed(request, payloadEnd, false);
+  return need !== null && content.split('\n')[0] === need.expected ? need : null;
+}
+
+function sourcePinnedLineNeed(request, payloadEnd, allowTrailing) {
+  if (!Number.isInteger(payloadEnd) || payloadEnd < 0 || payloadEnd > request.length) return null;
+  const tail = request.slice(payloadEnd);
+  const lead = firstRawPrefixLeadEnd(tail, 'file_leading_line_constraint_lead');
+  const grammar = text => /^[ \t\n\r\v\f.!?。！？।;；]*$/u.test(text);
+  if (lead === null || !grammar(tail.slice(0, lead[0]))) return null;
+  const remainder = tail.slice(lead[1]);
+  const raw = remainder.replace(/^[ \t\n\r\v\f:\-—–]*/u, '');
+  const delimiter = raw[0];
+  if (!['`', '"', "'"].includes(delimiter)) return null;
+  const close = raw.indexOf(delimiter, 1);
+  if (close < 0 || !allowTrailing && !grammar(raw.slice(close + 1))) return null;
+  const line = raw.slice(1, close);
+  if (line.length === 0 || /[\n\r]/u.test(line) || pinnedFirstLine(tail) !== line) return null;
+  const start = payloadEnd + lead[1] + remainder.length - raw.length + 1;
+  const suffix = raw.slice(close + 1);
+  const trailing = /^[ \t\n\r\v\f.!?。！？।;；]*/u.exec(suffix)[0].length;
+  const end = start + line.length + 1 + trailing;
+  return { kind: 'file_first_line', unit: 'utf16', span: [payloadEnd, end],
+    literalSpan: [start, start + line.length], expected: line, condition: 'composed-first-line-equals' };
+}
+
 function closedPayload(request, contract) {
   return contract === null ? null : quotedSegmentSpans(request).find((span) =>
     span.start >= contract.payload.start && /^[\s:]*$/u.test(request.slice(contract.payload.start, span.start))) ?? null;
@@ -25,6 +53,7 @@ function closedPayload(request, contract) {
 function literalTail(request, contract) {
   const end = closedPayload(request, contract)?.end ?? contract.payload.end;
   if (grammarTail(request.slice(end))) return true;
+  if (pinnedLineNeed(request, composeGeneralChangePlan(request)?.content ?? '', end) !== null) return true;
   const words = tokens(request);
   const binding = preferredBinding(words);
   const target = binding === null ? null : words[binding.index];
@@ -46,6 +75,19 @@ function literalTail(request, contract) {
 /** Mirrors fn goal_ledger: preserve raw UTF16 positions and the existing node's UTF8 source span. */
 export function goalLedger(request) {
   const contract = literalWriteOwnership(request);
+  const closed = closedPayload(request, contract);
+  const need = closed === null ? null : sourcePinnedLineNeed(request, closed.end, true);
+  if (need !== null) {
+    if (contract.content.split('\n')[0] !== need.expected) {
+      const byteSpan = [0, encoder.encode(request).length];
+      return [{ clause: request, span: { start: 0, end: request.length }, byteSpan,
+        sourceUnit: 'utf16', kind: 'unsupported', target: contract.target, expected: contract.content,
+        needs: [need], node: leafNode(null, request, byteSpan, 0,
+          { kind: 'underivable', reason: 'first-line-conflicts-authoritative-payload' }) }];
+    }
+    if (need.span[1] === request.length && !attributedActionPrefix(request)
+      && contractActionPrologue(request, contract)) return null;
+  }
   let view = closedPayload(request, contract) === null ? instructionView(request, contract) : request;
   if (view === null) return null;
   for (const span of quotedSegmentSpans(request)) view = view.slice(0, span.start) + ' '.repeat(span.end - span.start) + view.slice(span.end);

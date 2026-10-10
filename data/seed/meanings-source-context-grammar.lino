@@ -5,9 +5,9 @@ meanings
     source "data/seed/source-context-grammar.lino::language en::patterns 1 and 2"
     source-sha256 "f1ecd911cc6f5f38c76d9cca9bc663e665d632c98420e75f47d3616c58afd3ec"
     source "js/agentic/planner/owned_goals.mjs::source context grammar matcher"
-    source-sha256 "61a01b4da8482e8a348d21af4e73e7207f3829f15b41bc35aacd114f0b3fe8d0"
+    source-sha256 "911f794c1e7d43f720b985753fae66a0bf6aca3f87fd2e25c066c49a464302bd"
     source "rust/src/agentic_coding/general_planner/owned_goals.rs::source context grammar matcher"
-    source-sha256 "0dd0dfade66d4276604686c3636a1e4349015f4879e149d967fc0005cb48da1d"
+    source-sha256 "6a64cb3a896769e20b2734e31e3fbf30b0cca0a023e2ccf858892f1f3329bcf0"
     effect "Only a fully consumed descriptive atom may be classified as context by sourceContextDeclaration/source_context_declaration. Other declared Goals and immutable Needs remain independently required; no physical read, write, deployment, imported-module initialization, runtime effect or universal safety certificate follows."
     unit "not applicable"
   source-context-prologue

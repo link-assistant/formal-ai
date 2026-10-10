@@ -10,7 +10,8 @@ use crate::agentic_coding::request_sequence::plan_bound_request_steps;
 use crate::agentic_coding::shell_command_policy::sentences;
 use crate::agentic_coding::write_request::{
     bare_surfaces, clean_path_token, compose_edit_clauses, first_action_cue_end,
-    first_action_cue_start, looks_like_file_path, preferred_binding, tokens,
+    first_action_cue_start, first_raw_prefix_lead_end, looks_like_file_path, pinned_first_line,
+    preferred_binding, tokens,
 };
 use crate::normal_markov::{quote_fault, quoted_segment_spans};
 use crate::obligation_ledger::{ObligationExpectation, ObligationNode};
@@ -30,6 +31,73 @@ fn grammar_tail(text: &str) -> bool {
     text.chars()
         .all(|character| character.is_whitespace() || ".!?。！？।;；".contains(character))
 }
+pub(in crate::agentic_coding) fn pinned_line_need(
+    request: &str,
+    content: &str,
+    payload_end: usize,
+) -> Option<serde_json::Value> {
+    let need = source_pinned_line_need(request, payload_end, false)?;
+    (content.split('\n').next() == need["expected"].as_str()).then_some(need)
+}
+fn source_pinned_line_need(
+    request: &str,
+    payload_end: usize,
+    allow_trailing: bool,
+) -> Option<serde_json::Value> {
+    let tail = request.get(payload_end..)?;
+    let (lead_start, lead_end) =
+        first_raw_prefix_lead_end(tail, "file_leading_line_constraint_lead")?;
+    let grammar = |text: &str| {
+        text.chars().all(|character| {
+            matches!(
+                character,
+                ' ' | '\t' | '\n' | '\r' | '\u{000b}' | '\u{000c}'
+            ) || ".!?。！？।;；".contains(character)
+        })
+    };
+    if !grammar(tail.get(..lead_start)?) {
+        return None;
+    }
+    let remainder = tail.get(lead_end..)?;
+    let raw = remainder.trim_start_matches(|character: char| {
+        matches!(
+            character,
+            ' ' | '\t' | '\n' | '\r' | '\u{000b}' | '\u{000c}' | ':' | '-' | '—' | '–'
+        )
+    });
+    let delimiter = raw.chars().next()?;
+    if !matches!(delimiter, '`' | '"' | '\'') {
+        return None;
+    }
+    let close = raw.get(1..)?.find(delimiter)? + 1;
+    if !allow_trailing && !grammar(raw.get(close + 1..)?) {
+        return None;
+    }
+    let line = raw.get(1..close)?;
+    if line.is_empty()
+        || line.contains(['\n', '\r'])
+        || pinned_first_line(tail).as_deref() != Some(line)
+    {
+        return None;
+    }
+    let start = payload_end + lead_end + remainder.len() - raw.len() + 1;
+    let trailing = raw
+        .get(close + 1..)?
+        .chars()
+        .take_while(|character| {
+            matches!(
+                character,
+                ' ' | '\t' | '\n' | '\r' | '\u{000b}' | '\u{000c}'
+            ) || ".!?。！？।;；".contains(*character)
+        })
+        .map(char::len_utf8)
+        .sum::<usize>();
+    let end = start + line.len() + 1 + trailing;
+    Some(
+        serde_json::json!({"kind":"file_first_line","unit":"utf8", "span":[payload_end,end],
+        "literalSpan":[start,start+line.len()],"expected":line,"condition":"composed-first-line-equals"}),
+    )
+}
 fn closed_payload(request: &str, contract: &LiteralWriteContract) -> Option<Range<usize>> {
     quoted_segment_spans(request)
         .into_iter()
@@ -48,6 +116,11 @@ fn closed_payload(request: &str, contract: &LiteralWriteContract) -> Option<Rang
 fn literal_tail(request: &str, contract: &LiteralWriteContract) -> bool {
     let end = closed_payload(request, contract).map_or(contract.payload.end, |span| span.end);
     if request.get(end..).is_some_and(grammar_tail) {
+        return true;
+    }
+    if compose_general_change_plan(request)
+        .is_some_and(|plan| pinned_line_need(request, &plan.content, end).is_some())
+    {
         return true;
     }
     let words = tokens(request);
@@ -119,6 +192,28 @@ pub(in crate::agentic_coding) fn instruction_view_for_request(request: &str) -> 
 }
 fn goal_ledger(request: &str) -> Option<Vec<Goal>> {
     let contract = literal_write_ownership(request);
+    if let Some(owner) = contract.as_ref()
+        && let Some(closed) = closed_payload(request, owner)
+        && let Some(need) = source_pinned_line_need(request, closed.end, true)
+    {
+        if owner.content.split('\n').next() != need["expected"].as_str() {
+            let mut node = ObligationNode::build(request, 0);
+            node.span = (0, request.len());
+            node.expectation = ObligationExpectation::Underivable {
+                reason: "first-line-conflicts-authoritative-payload".to_owned(),
+            };
+            return Some(vec![Goal {
+                node,
+                kind: GoalKind::Unsupported,
+            }]);
+        }
+        if need["span"][1].as_u64() == Some(request.len() as u64)
+            && !attributed_action_prefix(request)
+            && contract_action_prologue(request, owner)
+        {
+            return None;
+        }
+    }
     let mut view = if contract
         .as_ref()
         .and_then(|contract| closed_payload(request, contract))
