@@ -1,5 +1,6 @@
 // A conservative typed program reader for native constructor and dialog tests.
 // Unsupported syntax rejects the complete case; every parsed assertion runs.
+import { GENERATED_NATIVE_PROGRAMS } from './generated-native-programs.mjs';
 import { readFileSync, realpathSync } from 'node:fs';
 import { dirname, relative, resolve } from 'node:path';
 import { createHash } from 'node:crypto';
@@ -7,11 +8,12 @@ import { isDeepStrictEqual } from 'node:util';
 import { tokenize } from './rust-specification-cases.mjs';
 import { close, split, expression, evaluate } from './rust-specification-values.mjs';
 import { iterationBindings, bindIteration } from './rust-specification-tuples.mjs';
-import { nativeFunctions, pureHelperBinding, historySourceContract, usesHistoryProducer } from './rust-specification-bindings.mjs';
+import { nativeFunctions, pureHelperBinding, historySourceContract, usesHistoryProducer, generatedSourceContract, verifyScalarBindings } from './rust-specification-bindings.mjs';
 
 const hash = value => createHash('sha256').update(value).digest('hex');
 const assertionNames = new Set(['assert', 'assert_eq', 'assert_ne']);
 const canonicalCalls = new Map([
+  ...GENERATED_NATIVE_PROGRAMS.map(binding => [binding.path, binding]),
   ['formal_ai::compile_natural_language_skill', { kind: 'compiler' }],
   ['formal_ai::UniversalSolver::default', { kind: 'solver' }],
   ['formal_ai::solve_with_history', { kind: 'historySolver', signature: ['string', 'vec:turn'] }],
@@ -31,6 +33,10 @@ function registerImport(tokens, prefix, calls) {
   const pathTokens = aliasAt < 0 ? tokens : tokens.slice(0, aliasAt);
   const path = prefix + pathTokens.map(token => token.text).join('');
   const alias = aliasAt < 0 ? path.split('::').at(-1) : tokens[aliasAt + 1]?.text;
+  if (!calls.importedAliases) calls.importedAliases = new Set();
+  if (calls.importedAliases.has(alias)) throw new Error('ambiguous native import alias');
+  calls.importedAliases.add(alias);
+  for (const name of [...calls.keys()]) if (name === alias || name.startsWith(alias + '::')) calls.delete(name);
   for (const [canonical, binding] of canonicalCalls) {
     if (path === canonical) calls.set(alias, binding);
     if (canonical.startsWith(path + '::')) calls.set(alias + canonical.slice(path.length), binding);
@@ -54,6 +60,9 @@ function importedCalls(tokens) {
 function contextOf(source, file, root) {
   const tokens = tokenize(source);
   const calls = importedCalls(tokens);
+  for(const [index,token] of tokens.entries())if(['enum','struct','type','mod','fn','const','static'].includes(token.text)&&(calls.importedAliases?.has(tokens[index+1]?.text)||tokens[index+1]?.text==='formal_ai')) {
+    const alias=tokens[index+1].text;for(const [name,binding] of [...calls])if(name===alias||name.startsWith(alias+'::')||(alias==='formal_ai'&&binding.nativeSourceQualified))calls.delete(name);
+  }
   const environment = new Map();
   const schemas = new Map();
   const fixtures = [file ? { file, sha256: hash(source) } : { source, sha256: hash(source) }];
@@ -245,6 +254,7 @@ export function typedProgramOf(body, { source, file = '', root = '' }) {
     const context = contextOf(source, file, root);
     const initial = [...context.environment];
     const steps = bodyProgram(body, context);
+    context.fixtures.push(...generatedSourceContract(root, steps, source, body));
     if (usesHistoryProducer(steps)) context.fixtures.push(...historySourceContract(root));
     const nativeAssertions = body.filter((token, index) => assertionNames.has(token.text) && body[index + 1]?.text === '!').length;
     if (!nativeAssertions || assertionCount(steps) !== nativeAssertions) throw new Error('native assertion conservation failure');
@@ -282,6 +292,7 @@ export async function executeTypedProgram(host, program) {
       const observed = fixture.file ? readFileSync(fixture.file, 'utf8') : fixture.source;
       if (hash(observed) !== fixture.sha256) throw new Error('stale native fixture identity');
     }
+    verifyScalarBindings(program);
     await run(program.steps, environment);
     return { status: 'passed', nativeAssertions: program.nativeAssertions, assertions: runtime.assertions,
       observations: runtime.observations, iterations: runtime.iterations };

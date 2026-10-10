@@ -1,6 +1,7 @@
 // Typed expressions for the supported native specification subset. Each
 // operation calls its actual JavaScript twin; unknown types stay unsupported.
 import { isDeepStrictEqual } from 'node:util';
+const sourceOwnedEnumValues=new WeakMap();
 import { compileNaturalLanguageSkill } from '../../js/agentic/crate/skill_compiler.mjs';
 import { symbolicFromWorker } from '../../js/server/solve.mjs';
 import { parseLino } from '../../js/server/lino.mjs';
@@ -71,13 +72,14 @@ function operator(tokens, sign) {
 export function expression(tokens, context) {
   if (!tokens.length) throw new Error('empty native expression');
   if (tokens[0].text === '&') return expression(tokens.slice(1), context);
-  for (const sign of ['||', '&&', '==', '!=']) {
+  for (const sign of ['||', '&&', '==', '!=', '<=', '>=']) {
     const at = operator(tokens, sign);
     if (at >= 0) {
       const left = expression(tokens.slice(0, at), context);
       const right = expression(tokens.slice(at + 2), context);
       requireType(right.type, left.type);
       if (sign === '||' || sign === '&&') requireType(left.type, 'boolean');
+      if (sign === '<=' || sign === '>=') requireType(left.type, 'number');
       return { kind: 'binary', sign, left, right, type: 'boolean' };
     }
   }
@@ -117,8 +119,11 @@ export function expression(tokens, context) {
     }
     if (tokens[cursor]?.text === '(') {
       const end = close(tokens, cursor);
+      if (context.environment.has(name)) throw new Error('native call is shadowed by a value');
       const binding = context.calls.get(name);
       if (!binding) throw new Error('unsupported native call ' + name);
+      if(binding.nativeSourceQualified&&context.environment.has(first.text))throw Error('native scalar path head is shadowed');
+      if(['nativeConstant','nativeEnumVariant'].includes(binding.kind))throw new Error('native scalar value is not callable');
       const args = split(tokens.slice(cursor + 1, end)).map(part => expression(part, context));
       const expected = binding.signature ?? (binding.kind === 'solver' ? [] : ['string']);
       if (args.length !== expected.length) throw new Error('native call arity ' + name);
@@ -141,9 +146,15 @@ export function expression(tokens, context) {
       value = { kind: 'record', entries, type: 'record:' + name };
       cursor = end + 1;
     } else {
-      const binding = context.environment.get(name);
-      if (!binding) throw new Error('unbound native value ' + name);
-      value = { kind: 'reference', name, type: binding.type, origin: binding.origin };
+      const generated=context.calls.get(name);
+      if(['nativeConstant','nativeEnumVariant'].includes(generated?.kind)) {
+        if(context.environment.has(first.text))throw new Error('native scalar binding is shadowed');
+        value={kind:'nativeValue',binding:generated,type:generated.returnType};
+      } else {
+        const binding = context.environment.get(name);
+        if (!binding) throw new Error('unbound native value ' + name);
+        value = { kind: 'reference', name, type: binding.type, origin: binding.origin };
+      }
     }
   } else throw new Error('unsupported native expression ' + first.text);
   while (cursor < tokens.length) {
@@ -158,6 +169,11 @@ export function expression(tokens, context) {
       continue;
     }
     const end = close(tokens, cursor);
+    if(value.type.startsWith('enum:')) {
+      const binding=context.calls.get(value.type.slice(5)+'::'+name);
+      if(binding?.kind!=='nativeEnumScalarMatch'||end!==cursor+1)throw new Error('unknown native enum scalar method');
+      value={kind:'call',binding,args:[value],type:binding.returnType};cursor=end+1;continue;
+    }
     const parts = split(tokens.slice(cursor + 1, end));
     let args;
     let type;
@@ -175,6 +191,8 @@ export function expression(tokens, context) {
       let signature = methodTypes[value.type]?.[name];
       if (name === 'expect' && /^(result|option):/u.test(value.type)) signature = [value.type.split(':')[1], 'string'];
       if (name === 'iter' && value.type.startsWith('vec:')) signature = ['iter:' + value.type.slice(4)];
+      if (name === 'split_whitespace' && value.type === 'string') signature = ['iter:string'];
+      if (name === 'count' && value.type === 'iter:string') signature = ['number'];
       if (name === 'contains' && value.type === 'vec:string') signature = ['boolean', 'string'];
       if (name === 'len' && value.type.startsWith('vec:')) signature = ['number'];
       if (name === 'is_empty' && value.type.startsWith('vec:')) signature = ['boolean'];
@@ -223,12 +241,58 @@ export async function evaluate(node, environment, runtime) {
     if (node.sign === '&&' && !left) return false;
     const right = await evaluate(node.right, environment, runtime);
     if (node.sign === '||' || node.sign === '&&') return right;
+    if (node.sign === '<=') return left <= right;
+    if (node.sign === '>=') return left >= right;
     const equal = isDeepStrictEqual(left, right);
     return node.sign === '==' ? equal : !equal;
+  }
+  if(node.kind==='nativeValue') {
+    const binding=node.binding;
+    if(binding.kind==='nativeConstant') {
+      runtime.observations.push({operation:binding.path,result:binding.value});return binding.value;
+    }
+    if(binding.kind!=='nativeEnumVariant')throw new Error('unknown native scalar value');
+    const value=Object.freeze({nativeEnum:binding.enumPath,variant:binding.variant});
+    sourceOwnedEnumValues.set(value,{enumPath:binding.enumPath,variant:binding.variant,sourceWitnesses:binding.sourceWitnesses});
+    return value;
   }
   if (node.kind === 'call') {
     const args = await argumentsOf(node.args, environment, runtime);
     const kind = node.binding.kind;
+    if(kind==='nativeEnumDefault'){
+      if(args.length!==0)throw Error('unknown derived enum default arity');
+      const value=Object.freeze({nativeEnum:node.binding.enumPath,variant:node.binding.variant});
+      sourceOwnedEnumValues.set(value,{enumPath:node.binding.enumPath,variant:node.binding.variant,sourceWitnesses:node.binding.sourceWitnesses});
+      runtime.observations.push({operation:node.binding.path,result:value});return value;
+    }
+    if(kind==='nativeEnumScalarMatch') {
+      if(args.length!==1)throw new Error('unknown native enum arity');
+      const owned=sourceOwnedEnumValues.get(args[0]);
+      if(!owned||Object.keys(args[0]).length!==2||args[0].nativeEnum!==owned.enumPath||args[0].variant!==owned.variant||owned.enumPath!==node.binding.enumPath||!isDeepStrictEqual(owned.sourceWitnesses,
+node.binding.sourceWitnesses))throw new Error('unowned or foreign native enum value');
+
+      const match=node.binding.cases.find(entry=>entry.variant===owned.variant);
+      if(!match)throw new Error('unknown source enum variant');
+      runtime.observations.push({operation:node.binding.path,arguments:args,result:match.value});return match.value;
+    }
+    if (kind === 'substitutionProgram') {
+      if (args.length !== 2 || args.some(value => typeof value !== 'string')) throw new Error('invalid observed string arguments');
+      for (const value of args) for (const character of value) {
+        const point = character.codePointAt(0);
+        if (point >= 0xd800 && point <= 0xdfff) throw new Error('unqualified native malformed Unicode string');
+      }
+      const program = node.binding.program;
+      const selected = program.alternatives.find(value => !value.fallback && value.selector === args[program.selectorArgument])
+        ?? program.alternatives.find(value => value.fallback);
+      if (!selected) throw new Error('substitution fallback absent');
+      let result = args[program.inputArgument];
+      for (const [from, to] of selected.pairs) {
+        if (from === '') throw new Error('unknown empty-pattern Unicode replacement');
+        result = result.split(from).join(to);
+      }
+      runtime.observations.push({ operation: node.binding.path, arguments: args, result });
+      return result;
+    }
     if (kind === 'solver') return runtime.host;
     if (kind === 'historySolver') return solve(runtime.host, args[0], args[1], runtime);
     if (kind === 'pureHelper') {
@@ -273,6 +337,11 @@ export async function evaluate(node, environment, runtime) {
     if (node.name === 'links_notation') return target.linksNotation();
     if (node.name === 'link_records') return target.linkRecords();
     if (['clone', 'to_owned', 'to_string', 'iter'].includes(node.name)) return target;
+    if (node.name === 'split_whitespace') {
+      if (/[^\x00-\x7f]/u.test(target)) throw new Error('unsupported non-ASCII native whitespace profile');
+      return target.split(/[\t\n\v\f\r ]+/u).filter(value => value !== '');
+    }
+    if (node.name === 'count') return target.length;
     if (node.name === 'len') return target.length;
     if (node.name === 'is_empty') return target.length === 0;
     if (node.name === 'contains') return target.includes(args[0]);
