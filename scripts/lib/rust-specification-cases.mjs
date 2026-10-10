@@ -62,9 +62,10 @@ export function tokenize(source) {
       index += char[0].length;
       continue;
     }
-    const word = /^[A-Za-z_][A-Za-z0-9_]*/u.exec(rest);
-    if (word) {
-      tokens.push({ kind: 'word', text: word[0] });
+    const word = /^(?:r#)?([\p{XID_Start}_](?:(?![\u200c\u200d])\p{XID_Continue})*)/u.exec(rest);
+    const reservedRaw = word && word[0].startsWith('r#') && ['_', 'crate', 'self', 'Self', 'super'].includes(word[1]);
+    if (word && !reservedRaw) {
+      tokens.push({ kind: 'word', text: (word[0].startsWith('r#') ? 'r#' : '') + word[1].normalize('NFC') });
       index += word[0].length;
       continue;
     }
@@ -133,7 +134,10 @@ export function testFunctions(tokens) {
     if (tokens[cursor]?.text !== 'fn') {
       continue;
     }
-    const name = tokens[cursor + 1].text;
+    if (tokens[cursor + 1]?.kind !== 'word' || tokens[cursor + 2]?.text !== '(') {
+      throw new Error('unsupported native test identifier/header');
+    }
+    const name = tokens[cursor + 1].text.replace(/^r#/u, '');
     let open = cursor;
     while (tokens[open].text !== '{') {
       open += 1;
