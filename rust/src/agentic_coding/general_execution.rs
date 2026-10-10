@@ -86,7 +86,7 @@ fn general_change_step(
         if failure.capability == Capability::Write {
             let path = failure.arguments.as_deref().and_then(tool_argument_path);
             if path.as_deref() == Some(PLAN_PATH) {
-                let event = plan_links_notation(plan);
+                let event = plan.links_notation();
                 let identity = event.lines().nth(1).unwrap_or("");
                 if matches!(
                     super::append_contract::append_record_step(
