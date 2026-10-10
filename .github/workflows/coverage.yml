@@ -532,6 +532,13 @@ jobs:
         with:
           node-version: 22
 
+      - name: Setup the pinned web dependency installer
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: .bun-version
+      - name: Install actual locked UI test dependencies
+        run: bun install --frozen-lockfile --ignore-scripts
+
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
