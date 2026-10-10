@@ -1,3 +1,4 @@
+import { rawLowercaseSpan } from './write_request/lowercase_spans.mjs';
 // Deterministic fallback planner for repository change requests
 // (rust/src/agentic_coding/general_planner.rs, issue #654).
 //
@@ -457,7 +458,7 @@ function parseWriteRequestBound(request, toks, binding) {
     const actionEnd = firstActionCueEnd(toks);
     if (actionEnd === null) return null;
     if (!(actionEnd <= clauseStart && positionsShareStatement(request, actionEnd, clauseStart))) return null;
-    contentStart = actionEnd;
+    contentStart = actionQualifiedPayloadStart(request, actionEnd, clauseStart);
     contentEnd = clauseStart;
     contentSpan = slice(request, contentStart, contentEnd);
   } else if (cueIsDestination) {
@@ -593,4 +594,17 @@ export function literalWriteOwnership(request) {
   if (start === null || end === null) return null;
   return mentionsRole('file_whole_write_action', normalizePrompt(header.slice(start, end)))
     || mentionsRole('file_overwrite_consent', normalizePrompt(header)) ? contract : null;
+}
+
+function actionQualifiedPayloadStart(request, start, end) {
+  const raw = request.slice(start, end), trimmed = trimStart(raw), padding = raw.length - trimmed.length;
+  const lowered = trimmed.toLowerCase();
+  const candidates = bareSurfaces('file_write_content_qualifier').map((surface) => {
+    if (!lowered.startsWith(surface)) return null;
+    const span = rawLowercaseSpan(trimmed, [0, surface.length]);
+    if (span === null || !isWhitespace(Array.from(trimmed.slice(span[1]))[0])) return null;
+    const suffix = trimmed.slice(span[1]), content = trimStart(suffix);
+    return content.length === 0 ? null : start + padding + span[1] + suffix.length - content.length;
+  }).filter((candidate) => candidate !== null);
+  return candidates.length === 0 ? start : Math.max(...candidates);
 }

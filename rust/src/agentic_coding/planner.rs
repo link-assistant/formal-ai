@@ -383,9 +383,7 @@ pub(super) fn plan_settled_routes(
     // them", with a `?? Main.scala` listing) read to later routes as a search
     // for the file; the route itself declines any request that also names the
     // work to do (issue #1133).
-    if let Some(plan) = steps::explicit_shell_step(task, messages, tool_names, result)
-        .or_else(|| git_commit::plan_commit_step(owned, messages, tool_names))
-    {
+    if let Some(plan) = steps::explicit_shell_step(task, messages, tool_names, result) {
         return Some(plan);
     }
     // A learned workspace-change procedure owns grounded repository rewrites
@@ -395,6 +393,14 @@ pub(super) fn plan_settled_routes(
     // modules, write both, run the stated command.
     // A copy or move followed by edits of the file it makes is planned
     // sentence by sentence (PR #1188 G82).
+    if let Some(plan) =
+        code_task::plan_verified_generated_source_step(task, messages, tool_names, result)
+    {
+        return Some(plan);
+    }
+    if let Some(plan) = git_commit::plan_commit_step(owned, messages, tool_names) {
+        return Some(plan);
+    }
     if let Some(plan) = super::request_sequence::plan_request_sequence_step(
         owned,
         messages,
@@ -810,7 +816,7 @@ pub(super) fn plan_settled_routes(
     if super::positional_edit::unquoted_addition_path(task).is_some()
         || super::positional_edit::names_local_edit(task)
     {
-        return unquoted_addition_question(task);
+        return steps::unquoted_addition_question(task);
     }
     if let Some(query) = web_research::web_research_query_for(messages)
         && let Some(plan) =
@@ -984,15 +990,4 @@ pub(super) fn fetch_arguments(url: &str) -> String {
         "format": "text",
     })
     .to_string()
-}
-
-/// The seeded question for an addition that quotes no text (PR #1188 G69).
-///
-/// `None` for any other unplanned local edit, which is declined.
-fn unquoted_addition_question(task: &str) -> Option<AgenticPlan> {
-    super::positional_edit::unquoted_addition_path(task)
-        .and_then(|path| {
-            code_task::render_seeded_change("file_addition_unquoted", task, &path, &[])
-        })
-        .map(AgenticPlan::Final)
 }

@@ -1,0 +1,9 @@
+meanings
+  source_capture_offline_cache_miss
+    defined-by relation
+    precondition "The source fetcher is offline, and neither its cache nor the indexed seed registry supplies a capture for the requested URL."
+    effect "Return the typed OfflineCacheMiss refusal for that URL before invoking transport.get; report no cached capture and supply no invented source bytes."
+    source "rust/src/source_fetch.rs::CachedSourceClient::fetch and FetchError::OfflineCacheMiss"
+    source-sha256 "f70af5bc6aee79bcd521a6d76bac0fbe7c8b92fed3fa8888e6b9f22122833c9d"
+    response "data/seed/multilingual-responses-concept-lookup.lino::response_source_capture_offline_cache_miss_en"
+    response-sha256 "5d9df9f0c477c2429fdb121b4e8a4cb0f04228b954deb60f9227812ac8471d69"

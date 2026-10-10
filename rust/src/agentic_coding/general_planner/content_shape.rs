@@ -36,7 +36,7 @@ pub(super) fn describes_code_to_author(request: &str, content: &str) -> bool {
         || asks_to_author_code(&prose_around(request, content))
 }
 
-fn owns_literal_body(request: &str, content: &str) -> bool {
+pub(in crate::agentic_coding) fn owns_literal_body(request: &str, content: &str) -> bool {
     let quotes = crate::normal_markov::quoted_segment_spans(request);
     let outside = |start| {
         !quotes

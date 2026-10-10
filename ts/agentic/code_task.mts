@@ -1,3 +1,8 @@
+import { rustIdentifierIsValid } from './code_task/identifier_domain.mjs';
+import { firstRoleMatch as sourceRoleMatch } from './crate/seed_meanings.mjs';
+import { sourceDescriptionContract, sourceWhitespaceSupported } from './code_task/source_contract.mjs';
+import { ownsLiteralBody } from './crate/literal_body_ownership.mjs';
+import { FinalDisposition, resolvedFinalAnswer } from './plan.mjs';
 // Small Rust source items generated from a coding request
 // (rust/src/agentic_coding/code_task.rs).
 
@@ -5,7 +10,7 @@ import { Capability } from './capability.mjs';
 import { guardedSourceStep } from './code_task/target_guard.mjs';
 import { toolFor } from './capability_router.mjs';
 import { latestResult, resultForCommand } from './code_artifact.mjs';
-import { composeEditRequest } from './general_planner.mjs';
+import { composeEditRequest, composeGeneralChangePlan } from './general_planner.mjs';
 import { finalAnswer, jsonText, planOne, writeArguments } from './plan.mjs';
 import { observedBytesMatch, responseLanguage } from './tool_result.mjs';
 import { unwrapTransportQuotes } from './crate/normal_markov.mjs';
@@ -213,10 +218,7 @@ function identifierTokens(text) {
   return text.split(/[^A-Za-z0-9_]/u).filter((token) => token !== '');
 }
 
-function validIdentifier(identifier) {
-  if (!/^[A-Za-z_][A-Za-z0-9_]*$/.test(identifier)) return false;
-  return !wordsForRole('identifier_reserved_word').includes(identifier);
-}
+function validIdentifier(identifier) { return rustIdentifierIsValid(identifier); }
 
 function numericLiterals(text) {
   const chars = Array.from(text);
@@ -234,9 +236,31 @@ function numericLiterals(text) {
       index = endIndex + 1;
       continue;
     }
-    const value = trimEndMatches(chars.slice(index, endIndex).join(''), (c) => c === '.');
+    const signedStart = index > 0 && chars[index - 1] === '-' && (index < 2 || /[ \u0009-\u000D]/u.test(chars[index - 2])) ? index - 1 : index;
+    const value = trimEndMatches(chars.slice(signedStart, endIndex).join(''), (c) => c === '.');
     if (value !== '') values.push(value);
     index = endIndex;
   }
   return values;
+}
+
+/** Mirrors plan_verified_generated_source_step: pre-mask dispatch requires full source contract and preserves byte ownership. */
+export function planVerifiedGeneratedSourceStep(rawTask, messages, toolNames) {
+  const task = unwrapTransportQuotes(rawTask);
+  if (composeEditRequest(task) !== null) return null;
+  const literal = composeGeneralChangePlan(task);
+  if (literal?.mode === 'literal_file' && ownsLiteralBody(task, literal.content)) return null;
+  const artifact = rustSourceForTask(task);
+  if (artifact === null) {
+    const body = literal?.mode === 'literal_file' ? literal.content.toLowerCase() : '';
+    if (sourceRoleMatch('program_language_alias', body)?.slug === 'program_language_rust'
+      && sourceRoleMatch('program_kind', body)?.slug === 'function') return resolvedFinalAnswer(
+        'Missing source authoring contract: complete request remains unbound.',
+        FinalDisposition.Gap, 'source-description-goal-coverage-unbound');
+    return null;
+  }
+  if (!sourceWhitespaceSupported(rawTask) || sourceDescriptionContract(task, artifact) === null) return resolvedFinalAnswer(
+    'Missing source authoring contract: complete request remains unbound.',
+    FinalDisposition.Gap, 'source-description-goal-coverage-unbound');
+  return planGeneratedSourceStep(task, messages, toolNames);
 }

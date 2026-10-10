@@ -5,11 +5,12 @@ use super::literal_request::{
 use super::{GeneralPlanMode, compose_general_change_plan};
 use crate::agentic_coding::final_result::{FinalDisposition, FinalResult, ResolvedPlan, record};
 use crate::agentic_coding::planner::AgenticPlan;
+use crate::agentic_coding::positional_edit::unquoted_path_tokens;
 use crate::agentic_coding::request_sequence::plan_bound_request_steps;
 use crate::agentic_coding::shell_command_policy::sentences;
 use crate::agentic_coding::write_request::{
-    bare_surfaces, compose_edit_clauses, first_action_cue_end, first_action_cue_start,
-    preferred_binding, tokens,
+    bare_surfaces, clean_path_token, compose_edit_clauses, first_action_cue_end,
+    first_action_cue_start, looks_like_file_path, preferred_binding, tokens,
 };
 use crate::normal_markov::{quote_fault, quoted_segment_spans};
 use crate::obligation_ledger::{ObligationExpectation, ObligationNode};
@@ -140,9 +141,9 @@ fn goal_ledger(request: &str) -> Option<Vec<Goal>> {
         let edit = literal
             .as_ref()
             .map_or_else(|| compose_edit_clauses(clause), |_| None);
-        let complete_literal = literal
-            .as_ref()
-            .is_some_and(|contract| literal_tail(clause, contract));
+        let complete_literal = literal.as_ref().is_some_and(|contract| {
+            literal_tail(clause, contract) && contract_action_prologue(clause, contract)
+        }) && !attributed_action_prefix(clause);
         let kind = if complete_literal {
             GoalKind::LiteralFile
         } else if edit.as_ref().is_some_and(|edit| edit.spans.is_some()) {
@@ -152,22 +153,23 @@ fn goal_ledger(request: &str) -> Option<Vec<Goal>> {
         };
         let mut node = ObligationNode::build(clause, 0);
         node.span = (start, start + clause.len());
-        node.expectation =
-            if let Some(contract) = literal.as_ref().filter(|_| kind == GoalKind::LiteralFile) {
-                ObligationExpectation::FileBytes {
-                    path: contract.target.clone(),
-                    sha256: None,
-                }
-            } else {
-                ObligationExpectation::Underivable {
+        node.expectation = literal
+            .as_ref()
+            .filter(|_| kind == GoalKind::LiteralFile)
+            .map_or_else(
+                || ObligationExpectation::Underivable {
                     reason: if kind == GoalKind::SourceEdit {
                         "source-edit-preimage-required"
                     } else {
                         "no_artifact_in_clause"
                     }
                     .to_owned(),
-                }
-            };
+                },
+                |contract| ObligationExpectation::FileBytes {
+                    path: contract.target.clone(),
+                    sha256: None,
+                },
+            );
         goals.push(Goal { node, kind });
     }
     if goals.is_empty() || goals.len() == 1 && goals[0].kind != GoalKind::Unsupported {
@@ -202,7 +204,17 @@ pub(in crate::agentic_coding) fn plan_owned_goal_step(
     plan_for: fn(&[ChatMessage], &[&str]) -> Option<ResolvedPlan>,
     result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
-    let goals = goal_ledger(request)?;
+    let declared_goals = goal_ledger(request)?;
+    let has_context = declared_goals
+        .iter()
+        .any(|goal| source_context_declaration(&goal.node.clause));
+    let goals = declared_goals
+        .into_iter()
+        .filter(|goal| !source_context_declaration(&goal.node.clause))
+        .collect::<Vec<_>>();
+    if goals.is_empty() {
+        return None;
+    }
     if quote_fault(request).is_some()
         || crate::agentic_coding::quote_nesting::nested_quote_fault(request).is_some()
     {
@@ -213,14 +225,28 @@ pub(in crate::agentic_coding) fn plan_owned_goal_step(
         .position(|goal| goal.kind == GoalKind::Unsupported)
     {
         let missing = &goals[index];
+        if has_context {
+            return Some(goal_gap(missing, result));
+        }
         if literal_write_ownership(&missing.node.clause).is_some() {
             return Some(goal_gap(missing, result));
         }
         if index == 0 {
+            if has_context {
+                return Some(goal_gap(missing, result));
+            }
             return literal_write_ownership(request)
                 .filter(|contract| {
                     contract.target_span.start >= contract.payload.end
-                        && first_action_cue_start(&tokens(&goals[index].node.clause)).is_some()
+                        && (first_action_cue_start(&tokens(&goals[index].node.clause)).is_some()
+                            || contract.payload.start >= goals[index].node.span.1
+                                && !source_context_declaration(&goals[index].node.clause)
+                                && unquoted_path_tokens(&goals[index].node.clause).iter().any(
+                                    |token| {
+                                        let path = clean_path_token(token.text);
+                                        looks_like_file_path(path)
+                                    },
+                                ))
                 })
                 .map(|_| goal_gap(&goals[index], result));
         }
@@ -244,4 +270,201 @@ pub(in crate::agentic_coding) fn plan_owned_goal_step(
     }
     let parts: Vec<_> = goals.iter().map(|goal| goal.node.clause.clone()).collect();
     plan_bound_request_steps(&parts, messages, tool_names, plan_for, result)
+}
+
+fn context_grammar_patterns() -> &'static Vec<(regex::Regex, regex::Regex)> {
+    static PATTERNS: std::sync::OnceLock<Vec<(regex::Regex, regex::Regex)>> =
+        std::sync::OnceLock::new();
+    PATTERNS.get_or_init(|| {
+        let parsed = crate::seed::parser::parse_lino(include_str!(
+            "../../../embedded/data/seed/source-context-grammar.lino"
+        ));
+        let Some(root) = parsed.children.first() else {
+            return Vec::new();
+        };
+        let placeholders = regex::Regex::new(r"\{([a-z]+(?:-[a-z]+)*)\}")
+            .expect("literal role placeholder grammar");
+        let mut patterns = Vec::new();
+        for language in root.children.iter().filter(|node| node.name == "language") {
+            let roles = language
+                .children
+                .iter()
+                .filter(|node| node.name == "role")
+                .map(|role| {
+                    (
+                        role.id.as_str(),
+                        role.children
+                            .iter()
+                            .filter(|node| node.name == "form")
+                            .map(|form| form.id.as_str())
+                            .collect::<Vec<_>>(),
+                    )
+                })
+                .collect::<std::collections::BTreeMap<_, _>>();
+            for pattern in language
+                .children
+                .iter()
+                .filter(|node| node.name == "pattern")
+            {
+                let mut expressions = Vec::new();
+                let mut missing = false;
+                for side in ["prefix", "suffix"] {
+                    let Some(template) = pattern
+                        .children
+                        .iter()
+                        .find(|node| node.name == side)
+                        .map(|node| node.id.as_str())
+                    else {
+                        missing = true;
+                        break;
+                    };
+                    let expanded =
+                        placeholders.replace_all(template, |captures: &regex::Captures<'_>| {
+                            let Some(forms) = roles
+                                .get(captures.get(1).expect("role name captured").as_str())
+                                .filter(|forms| !forms.is_empty())
+                            else {
+                                missing = true;
+                                return "(?!)".to_owned();
+                            };
+                            format!(
+                                "(?:{})",
+                                forms
+                                    .iter()
+                                    .map(|form| regex::escape(form))
+                                    .collect::<Vec<_>>()
+                                    .join("|")
+                            )
+                        });
+                    match regex::RegexBuilder::new(&expanded)
+                        .case_insensitive(true)
+                        .build()
+                    {
+                        Ok(expression) => expressions.push(expression),
+                        Err(_) => {
+                            missing = true;
+                            break;
+                        }
+                    }
+                }
+                if !missing && expressions.len() == 2 {
+                    let suffix = expressions.pop().expect("suffix exists");
+                    let prefix = expressions.pop().expect("prefix exists");
+                    patterns.push((prefix, suffix));
+                }
+            }
+        }
+        patterns
+    })
+}
+
+fn source_context_whitespace_supported(text: &str) -> bool {
+    text.chars().all(|character| {
+        !(character.is_whitespace() || character == '\u{feff}')
+            || matches!(
+                character,
+                ' ' | '\t' | '\n' | '\r' | '\u{000b}' | '\u{000c}'
+            )
+    })
+}
+
+fn source_context_atom(clause: &str) -> bool {
+    if !source_context_whitespace_supported(clause) {
+        return false;
+    }
+    let paths = unquoted_path_tokens(clause)
+        .into_iter()
+        .filter(|token| looks_like_file_path(&clean_path_token(token.text)))
+        .collect::<Vec<_>>();
+    if paths.len() != 1 {
+        return false;
+    }
+    let token = &paths[0];
+    let path = clean_path_token(token.text);
+    if !token.text.starts_with(&path) {
+        return false;
+    }
+    let prefix = &clause[..token.start];
+    let suffix = &clause[token.start + path.len()..];
+    context_grammar_patterns()
+        .iter()
+        .any(|(prefix_pattern, suffix_pattern)| {
+            prefix_pattern.is_match(prefix) && suffix_pattern.is_match(suffix)
+        })
+}
+
+fn source_context_declaration(clause: &str) -> bool {
+    if source_context_atom(clause) {
+        return true;
+    }
+    let joiners = bare_surfaces("file_edit_joiner_cue");
+    let boundaries = tokens(clause)
+        .into_iter()
+        .filter(|token| joiners.contains(&token.text.to_lowercase()))
+        .collect::<Vec<_>>();
+    if boundaries.is_empty() {
+        return false;
+    }
+    let mut start = 0;
+    for boundary in boundaries {
+        if !source_context_atom(&clause[start..boundary.start]) {
+            return false;
+        }
+        start = boundary.end;
+    }
+    source_context_atom(&clause[start..])
+}
+
+fn attributed_action_prefix(clause: &str) -> bool {
+    let mut view = clause.to_owned();
+    for span in quoted_segment_spans(clause) {
+        if view.get(span.start..span.end).is_none() {
+            return true;
+        }
+        view.replace_range(span.start..span.end, &" ".repeat(span.end - span.start));
+    }
+    first_action_cue_start(&tokens(&view)).is_some_and(|action| {
+        crate::seed::lexicon().mentions_role(
+            "source_attribution_marker",
+            &crate::engine::normalize_prompt(&view[..action]),
+        )
+    })
+}
+
+fn contract_action_prologue(clause: &str, contract: &LiteralWriteContract) -> bool {
+    let mut view = clause.to_owned();
+    for span in quoted_segment_spans(clause) {
+        if view.get(span.start..span.end).is_none() {
+            return false;
+        }
+        view.replace_range(span.start..span.end, &" ".repeat(span.end - span.start));
+    }
+    let Some(action) = first_action_cue_start(&tokens(&view)) else {
+        return false;
+    };
+    let mut start = action
+        .min(contract.payload.start)
+        .min(contract.target_span.start);
+    let words = tokens(clause);
+    if let Some(binding) = preferred_binding(&words)
+        && let Some(target) = words.get(binding.index)
+        && binding.path == contract.target
+        && target.start == contract.target_span.start
+        && target.end == contract.target_span.end
+    {
+        start = start.min(binding.cue_start);
+    }
+    let prologue = crate::engine::normalize_prompt(&view[..start]);
+    prologue.is_empty()
+        || [
+            "politeness_cue",
+            "enumeration_cue",
+            "file-edit-sequence-cue",
+        ]
+        .iter()
+        .any(|role| {
+            bare_surfaces(role)
+                .iter()
+                .any(|surface| crate::engine::normalize_prompt(surface) == prologue)
+        })
 }

@@ -23,7 +23,9 @@ mod content_shape;
 mod literal_request;
 mod owned_goals;
 use content_shape::{describes_code_to_author, names_an_addition};
-pub(super) use content_shape::{missing_implementation_contract, owned_semantic_authoring_lead};
+pub(super) use content_shape::{
+    missing_implementation_contract, owned_semantic_authoring_lead, owns_literal_body,
+};
 use literal_request::parse_write_request;
 pub(super) use owned_goals::{instruction_view_for_request, plan_owned_goal_step};
 

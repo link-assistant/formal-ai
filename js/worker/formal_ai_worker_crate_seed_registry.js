@@ -74,6 +74,8 @@ self.FORMAL_AI_CRATE_MEANING_SEEDS = Object.freeze([
   "meanings-skill-procedure",
   "meanings-software-project",
   "meanings-software-requirements",
+  "meanings-source-capture",
+  "meanings-source-context-grammar",
   "meanings-statement-merge",
   "meanings-statistics",
   "meanings-substitution-compiler",

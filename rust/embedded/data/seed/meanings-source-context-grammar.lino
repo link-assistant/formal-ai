@@ -1,0 +1,69 @@
+meanings
+  source-context-declaration-contract
+    defined-by relation
+    precondition "The actually loaded source-context grammar declares this role with nonempty literal forms; every substituted form is regex escaped. A supported ASCII-whitespace clause has exactly one owned unquoted file path and both complete prefix and suffix match one declared pattern. Missing forms, malformed patterns, unsupported languages, extra operations and unconsumed clauses provide no context proof."
+    source "data/seed/source-context-grammar.lino::language en::patterns 1 and 2"
+    source-sha256 "f1ecd911cc6f5f38c76d9cca9bc663e665d632c98420e75f47d3616c58afd3ec"
+    source "js/agentic/planner/owned_goals.mjs::source context grammar matcher"
+    source-sha256 "61a01b4da8482e8a348d21af4e73e7207f3829f15b41bc35aacd114f0b3fe8d0"
+    source "rust/src/agentic_coding/general_planner/owned_goals.rs::source context grammar matcher"
+    source-sha256 "0dd0dfade66d4276604686c3636a1e4349015f4879e149d967fc0005cb48da1d"
+    effect "Only a fully consumed descriptive atom may be classified as context by sourceContextDeclaration/source_context_declaration. Other declared Goals and immutable Needs remain independently required; no physical read, write, deployment, imported-module initialization, runtime effect or universal safety certificate follows."
+    unit "not applicable"
+  source-context-prologue
+    defined-by source-context-declaration-contract
+    effect "An optional prefix introduces a descriptive source-context atom before its unquoted path in pattern 1. Its literal forms do not request an operation."
+    unit "not applicable"
+    example "for context,"
+    example "background:"
+    example "For context, src/previous.rs contains the old implementation."
+    example "The current code is in src/current.rs."
+  source-context-containment
+    defined-by source-context-declaration-contract
+    effect "A relation after the owned unquoted path connects that path to its source subject in pattern 1; it describes source context rather than requesting a write."
+    unit "not applicable"
+    example "contains"
+    example "holds"
+    example "For context, src/previous.rs contains the old implementation."
+    example "The current code is in src/current.rs."
+  source-context-article
+    defined-by source-context-declaration-contract
+    effect "A determiner precedes the source subject: optional in pattern 1 and required before the optional qualifier in pattern 2. It does not identify another destination."
+    unit "not applicable"
+    example "the"
+    example "For context, src/previous.rs contains the old implementation."
+    example "The current code is in src/current.rs."
+  source-context-qualifier
+    defined-by source-context-declaration-contract
+    effect "An optional modifier describes the source subject in either pattern. A temporal or existence modifier does not prove file freshness, contents or existence."
+    unit "not applicable"
+    example "old"
+    example "previous"
+    example "prior"
+    example "current"
+    example "existing"
+    example "For context, src/previous.rs contains the old implementation."
+    example "The current code is in src/current.rs."
+  source-context-subject
+    defined-by source-context-declaration-contract
+    effect "The source object noun is required by both patterns and describes implementation, source or code associated with the owned unquoted path. It grants no source execution authority."
+    unit "not applicable"
+    example "implementation"
+    example "source"
+    example "code"
+    example "For context, src/previous.rs contains the old implementation."
+    example "The current code is in src/current.rs."
+  source-context-location-verb
+    defined-by source-context-declaration-contract
+    effect "The relation verb is required after the source subject and before the location preposition in pattern 2. It describes location and is not an imperative."
+    unit "not applicable"
+    example "is"
+    example "For context, src/previous.rs contains the old implementation."
+    example "The current code is in src/current.rs."
+  source-context-location-preposition
+    defined-by source-context-declaration-contract
+    effect "The location relation joins the descriptive source subject to the owned unquoted path in pattern 2; it supplies no read or write authorization."
+    unit "not applicable"
+    example "in"
+    example "For context, src/previous.rs contains the old implementation."
+    example "The current code is in src/current.rs."

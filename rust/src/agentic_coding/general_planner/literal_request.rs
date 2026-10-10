@@ -5,7 +5,7 @@ use crate::agentic_coding::write_request::{
     CueFamily, Token, WriteBinding, action_cue_start_after, bare_surfaces, clean_content,
     clean_cue_token, first_action_cue_end, first_action_cue_start, first_prefix_lead_end,
     first_raw_content_lead_end, payload_continues_past_its_first_line, ranked_bindings,
-    raw_content_lead_close, tokens,
+    raw_content_lead_close, raw_lowercase_span, tokens,
 };
 use crate::seed::{self, Slot};
 
@@ -189,9 +189,10 @@ fn parse_write_request_bound(
     let payload;
     let content_span = if cue_is_destination && binding.cue_precedes {
         let action_end = first_action_cue_end(toks)?;
-        payload = action_end..clause_start;
+        let content_start = action_qualified_payload_start(request, action_end, clause_start);
+        payload = content_start..clause_start;
         (action_end <= clause_start && positions_share_statement(request, action_end, clause_start))
-            .then(|| request.get(action_end..clause_start))?
+            .then(|| request.get(content_start..clause_start))?
     } else if cue_is_destination {
         // The same shape read from the other side. A language that marks its
         // destination with a postposition and closes the clause with the verb —
@@ -467,4 +468,29 @@ pub(super) const fn owns_instruction_span(
 ) -> bool {
     span.start <= span.end
         && (span.end <= contract.payload.start || span.start >= contract.payload.end)
+}
+
+fn action_qualified_payload_start(request: &str, start: usize, end: usize) -> usize {
+    let Some(raw) = request.get(start..end) else {
+        return start;
+    };
+    let trimmed = raw.trim_start();
+    let padding = raw.len() - trimmed.len();
+    let lowered = trimmed.to_lowercase();
+    bare_surfaces(seed::ROLE_FILE_WRITE_CONTENT_QUALIFIER)
+        .iter()
+        .filter_map(|surface| {
+            if !lowered.starts_with(surface) {
+                return None;
+            }
+            let span = raw_lowercase_span(trimmed, Some((0, surface.len())))?;
+            let suffix = trimmed.get(span.1..)?;
+            if !suffix.chars().next().is_some_and(char::is_whitespace) {
+                return None;
+            }
+            let content = suffix.trim_start();
+            (!content.is_empty()).then_some(start + padding + span.1 + suffix.len() - content.len())
+        })
+        .max()
+        .unwrap_or(start)
 }

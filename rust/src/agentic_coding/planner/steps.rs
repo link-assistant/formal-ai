@@ -80,3 +80,19 @@ pub(super) fn explicit_shell_step(
         .or_else(|| mutating_action::plan_step(&command, messages, tool_names, task, result))
         .or_else(|| Some(plan_shell_step(messages, tool_names, &command, result)))
 }
+
+/// The seeded question for an addition that quotes no text (PR #1188 G69).
+///
+/// `None` for any other unplanned local edit, which is declined.
+pub(super) fn unquoted_addition_question(task: &str) -> Option<AgenticPlan> {
+    crate::agentic_coding::positional_edit::unquoted_addition_path(task)
+        .and_then(|path| {
+            crate::agentic_coding::code_task::render_seeded_change(
+                "file_addition_unquoted",
+                task,
+                &path,
+                &[],
+            )
+        })
+        .map(AgenticPlan::Final)
+}

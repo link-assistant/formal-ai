@@ -446,6 +446,14 @@ seed_registry
     bundle true
     lexicon meaning
     web true
+  seed meanings-source-capture
+    bundle true
+    lexicon meaning
+    web true
+  seed meanings-source-context-grammar
+    bundle true
+    lexicon meaning
+    web true
   seed meanings-statement-merge
     bundle true
     lexicon meaning
@@ -771,6 +779,8 @@ seed_registry
   seed software-project-phrases
     bundle true
     lexicon meaning
+    web true
+  seed source-context-grammar
     web true
   seed source-trust-weights
     bundle true

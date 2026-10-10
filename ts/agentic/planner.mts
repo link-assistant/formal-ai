@@ -286,6 +286,8 @@ export async function planSettledRoutes(task, messages, toolNames) {
       ?? await mutatingAction.planStep(explicit, messages, toolNames, task)
       ?? planShellStep(messages, toolNames, explicit);
   }
+  const verifiedSource = codeTask.planVerifiedGeneratedSourceStep(task, messages, toolNames);
+  if (verifiedSource !== null) return verifiedSource;
   for (const arm of [gitCommit.planCommitStep, planWorkspaceChangeArm, codeTask.planGeneratedSourceStep, structuredEdit.planStructuredEditStep, structuredDocument.planStep]) {
     const plan = await arm(instructionView(task, literalWriteOwnership(task)), messages, toolNames);
     if (plan !== null) return plan;

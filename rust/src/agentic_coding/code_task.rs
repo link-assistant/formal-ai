@@ -8,6 +8,8 @@
 //! command.
 
 use serde_json::json;
+mod identifier_domain;
+mod source_contract;
 mod target_guard;
 use super::final_result::FinalResult;
 
@@ -421,16 +423,7 @@ fn identifier_tokens(text: &str) -> impl Iterator<Item = &str> {
 }
 
 fn valid_identifier(identifier: &str) -> bool {
-    let mut characters = identifier.chars();
-    let Some(first) = characters.next() else {
-        return false;
-    };
-    (first.is_ascii_alphabetic() || first == '_')
-        && characters.all(|character| character.is_ascii_alphanumeric() || character == '_')
-        && !seed::lexicon()
-            .words_for_role(seed::ROLE_IDENTIFIER_RESERVED_WORD)
-            .iter()
-            .any(|reserved| reserved == identifier)
+    identifier_domain::rust_identifier_is_valid(identifier)
 }
 
 fn numeric_literals(text: &str) -> Vec<String> {
@@ -462,11 +455,80 @@ fn numeric_literals(text: &str) -> Vec<String> {
         let end = chars
             .get(end_index)
             .map_or(text.len(), |(offset, _)| *offset);
-        let value = text[start..end].trim_end_matches('.');
+        let signed_start = if index > 0
+            && chars[index - 1].1 == '-'
+            && (index < 2
+                || matches!(
+                    chars[index - 2].1,
+                    ' ' | '\t' | '\n' | '\r' | '\u{000b}' | '\u{000c}'
+                )) {
+            chars[index - 1].0
+        } else {
+            start
+        };
+        let value = text[signed_start..end].trim_end_matches('.');
         if !value.is_empty() {
             values.push(value.to_owned());
         }
         index = end_index;
     }
     values
+}
+
+pub(super) fn plan_verified_generated_source_step(
+    raw_task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    result: &mut Option<FinalResult>,
+) -> Option<AgenticPlan> {
+    let task = unwrap_transport_quotes(raw_task);
+    if super::write_request::compose_edit_request(task).is_some() {
+        return None;
+    }
+    if super::general_planner::compose_general_change_plan(task).is_some_and(|plan| {
+        plan.mode == super::general_planner::GeneralPlanMode::LiteralFile
+            && super::general_planner::owns_literal_body(task, &plan.content)
+    }) {
+        return None;
+    }
+    let artifact = match rust_source_for_task(task) {
+        Some(artifact) => artifact,
+        None => {
+            let literal = super::general_planner::compose_general_change_plan(task);
+            let semantic = literal.as_ref().is_some_and(|plan| {
+                let body = plan.content.to_lowercase();
+                plan.mode == super::general_planner::GeneralPlanMode::LiteralFile
+                    && crate::seed::lexicon()
+                        .first_role_match("program_language_alias", &body)
+                        .is_some_and(|meaning| meaning.slug == "program_language_rust")
+                    && crate::seed::lexicon()
+                        .first_role_match("program_kind", &body)
+                        .is_some_and(|meaning| meaning.slug == "function")
+            });
+            return semantic.then(|| {
+                super::final_result::record(
+                    AgenticPlan::Final(
+                        "Missing source authoring contract: complete request remains unbound."
+                            .to_owned(),
+                    ),
+                    super::final_result::FinalDisposition::Gap,
+                    "source-description-goal-coverage-unbound",
+                    result,
+                )
+            });
+        }
+    };
+    if !source_contract::source_whitespace_supported(raw_task)
+        || source_contract::source_description_contract(task, &artifact).is_none()
+    {
+        return Some(super::final_result::record(
+            AgenticPlan::Final(
+                "Missing source authoring contract: complete request remains unbound.".to_owned(),
+            ),
+            super::final_result::FinalDisposition::Gap,
+            "source-description-goal-coverage-unbound",
+            result,
+        ));
+    }
+    plan_generated_source_step(task, messages, tool_names, result)
 }
