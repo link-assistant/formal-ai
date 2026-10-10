@@ -32,7 +32,7 @@ meanings
       words создайте напишите запишите сохраните сделайте добавьте зафиксируйте оставьте поместите храните подготовьте
       words выведите
     lexeme hi बनाओ बनाएँ लिखो सहेजो जोड़ो दर्ज छोड़ो रखो संग्रह तैयार निकालो
-    lexeme zh 创建 写 保存 生成 添加 记录 留下 放置 存储 产出 输出 写入
+    lexeme zh 创建 写 保存 生成 添加 追加 记录 留下 放置 存储 产出 输出 写入
     lexeme es crea crear escribe escribir guarda guardar genera generar añade agrega registra deja coloca almacena pon
   file_write_content
     defined-by relation
@@ -172,7 +172,7 @@ meanings
     precondition "an unquoted file noun immediately follows a source-owned read operation, separated only by seeded function words"
     effect "types the operation object as a file; a negative policy remains mandatory before tool effects and does not grant permission"
     unit "source text spans, UTF-16 in JavaScript and UTF-8 in Rust"
-    grounding "js/agentic/file_read/ownership.mjs sha256 389f06a28610e3e4d1fe7639e3a5cbf90d24efd90824759585589d0f5ecbac28; rust/src/agentic_coding/file_read/ownership.rs sha256 55968e7f6074c26de5ed553aea1c7deea42a4bce21d3313b1dac4a61b5d33669"
+    grounding "js/agentic/file_read/ownership.mjs sha256 f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d; rust/src/agentic_coding/file_read/ownership.rs sha256 e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
     lexeme en file files
     lexeme ru файл файла файлы файлов файле
     lexeme hi फ़ाइल फ़ाइलें फाइल फाइलें
@@ -185,7 +185,7 @@ meanings
     precondition "complete unquoted negative read-operation surface owns an adjacent typed file noun or path; only seeded function words may intervene"
     effect "records an immutable no-read scope; never grants a tool permission"
     unit "source spans"
-    grounding "js/agentic/file_read/ownership.mjs sha256 389f06a28610e3e4d1fe7639e3a5cbf90d24efd90824759585589d0f5ecbac28; rust/src/agentic_coding/file_read/ownership.rs sha256 55968e7f6074c26de5ed553aea1c7deea42a4bce21d3313b1dac4a61b5d33669"
+    grounding "js/agentic/file_read/ownership.mjs sha256 f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d; rust/src/agentic_coding/file_read/ownership.rs sha256 e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
     lexeme en "do not read" "never read" "do not open" "never open" "don't read" "don't open"
     lexeme ru "не читай" "не прочитай" "никогда не прочитай" "никогда не читай" "не открывай"
     lexeme hi "मत पढ़ो" "मत पढ़ें" "मत खोलो" "मत खोलें"
@@ -198,7 +198,7 @@ meanings
     precondition "an unquoted independent external effect operation is declared alongside a file-read plan and has no bound execution or receipt contract"
     effect "refuses premature file-read effects; it does not execute or certify the independent operation"
     unit "source spans"
-    grounding "js/agentic/file_read/ownership.mjs sha256 389f06a28610e3e4d1fe7639e3a5cbf90d24efd90824759585589d0f5ecbac28; rust/src/agentic_coding/file_read/ownership.rs sha256 55968e7f6074c26de5ed553aea1c7deea42a4bce21d3313b1dac4a61b5d33669"
+    grounding "js/agentic/file_read/ownership.mjs sha256 f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d; rust/src/agentic_coding/file_read/ownership.rs sha256 e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
     lexeme en deploy publish
     lexeme ru разверни опубликуй
     lexeme hi तैनात प्रकाशित
@@ -221,7 +221,7 @@ meanings
     form display-inside
       pattern "^[ \\t]*{file-read-action-cue}[ \\t]+(?:me[ \\t]+)?what[ \\t]+is[ \\t]+inside[ \\t]+{source}(?:[ \\t]+at[ \\t]+(?:the[ \\t]+)?top)?[ \\t]*[?.]?$"
     form full-en
-      pattern "^[ \\t]*{file-read-action-cue}[ \\t]+(?:me[ \\t]+)?(?:the[ \\t]+)?(?:(?:exact|precise|complete|full|verbatim|literal)[ \\t]+)?(?:text|contents?|bytes)[ \\t]+(?:stored[ \\t]+)?(?:in|of|from)[ \\t]+{source}[ \\t]*[?.]?$"
+      pattern "^[ \\t]*{file-read-action-cue}[ \\t]+(?:me[ \\t]+)?(?:the[ \\t]+)?(?:(?:exact|precise|complete|full|verbatim|literal)[ \\t]+)?(?:(?:(?:text|contents?|bytes)[ \\t]+(?:stored[ \\t]+)?(?:in|of|from)|{file-read-object-noun})[ \\t]+)?{source}(?:[ \\t]+{file-read-mode-joiner}[ \\t]+{file-read-action-cue}[ \\t]+(?:its|the)[ \\t]+contents?)?[ \\t]*[?.]?$"
     form full-ru
       pattern "^[ \\t]*{file-read-action-cue}[ \\t]+(?:(?:мне|точный|полный|дословный)[ \\t]+)*(?:текст|содержимое|байты)[ \\t]+(?:из|в|файла)[ \\t]+{source}[ \\t]*[?.]?$"
     form full-hi
@@ -450,11 +450,11 @@ meanings
     definition "The read result selector for the first logical line of one selected file."
     precondition "The full seeded first-line form binds one owned local source; actual read transport and content must be observed separately."
     effect "Selects the first Rust-compatible logical line or empty text for empty content; it grants no writing or independent operation."
-    source "js/agentic/file_read/ownership.mjs sha256=389f06a28610e3e4d1fe7639e3a5cbf90d24efd90824759585589d0f5ecbac28"
-    source "rust/src/agentic_coding/file_read/ownership.rs sha256=55968e7f6074c26de5ed553aea1c7deea42a4bce21d3313b1dac4a61b5d33669"
+    source "js/agentic/file_read/ownership.mjs sha256=f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
     source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
     source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
-    source "rust/src/agentic_coding/file_read.rs sha256=1cd663563723e1f3f79ba3b32cb654aed75e068e93595b11f418b3a56e757bb6"
+    source "rust/src/agentic_coding/file_read.rs sha256=8d9d5ba9753e842c4f6a5326caf6264fcdc45ec0b12ba5868e94bcc2639bd18e"
     source "js/agentic/module_function.mjs sha256=cb663c91cdde86c2cee9750b0412483edc976cbd49bd3fa8d6bc1c5f15e4ec41"
     lexeme en
       words "first line"
@@ -474,11 +474,11 @@ meanings
     definition "A deferred source authoring goal recognized by the existing observed callable request classifier."
     precondition "The actual classifier binds a declared callable request and destination; a complete order suffix requires Read before that authoring."
     effect "Allows prerequisite Read disposition only; authoring, source identity, effects and verification remain separately owned and unresolved until proved."
-    source "js/agentic/file_read/ownership.mjs sha256=389f06a28610e3e4d1fe7639e3a5cbf90d24efd90824759585589d0f5ecbac28"
-    source "rust/src/agentic_coding/file_read/ownership.rs sha256=55968e7f6074c26de5ed553aea1c7deea42a4bce21d3313b1dac4a61b5d33669"
+    source "js/agentic/file_read/ownership.mjs sha256=f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
     source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
     source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
-    source "rust/src/agentic_coding/file_read.rs sha256=1cd663563723e1f3f79ba3b32cb654aed75e068e93595b11f418b3a56e757bb6"
+    source "rust/src/agentic_coding/file_read.rs sha256=8d9d5ba9753e842c4f6a5326caf6264fcdc45ec0b12ba5868e94bcc2639bd18e"
     source "js/agentic/module_function.mjs sha256=cb663c91cdde86c2cee9750b0412483edc976cbd49bd3fa8d6bc1c5f15e4ec41"
     lexeme en
       words "observed callable authoring"
@@ -498,11 +498,11 @@ meanings
     definition "An independent operation that places a program or service into an execution environment."
     precondition "An unquoted deployment operation alongside a file-read request has no bound deployment execution or receipt contract."
     effect "The Read ownership policy refuses premature effects; this meaning neither runs deployment nor grants credentials."
-    source "js/agentic/file_read/ownership.mjs sha256=389f06a28610e3e4d1fe7639e3a5cbf90d24efd90824759585589d0f5ecbac28"
-    source "rust/src/agentic_coding/file_read/ownership.rs sha256=55968e7f6074c26de5ed553aea1c7deea42a4bce21d3313b1dac4a61b5d33669"
+    source "js/agentic/file_read/ownership.mjs sha256=f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
     source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
     source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
-    source "rust/src/agentic_coding/file_read.rs sha256=1cd663563723e1f3f79ba3b32cb654aed75e068e93595b11f418b3a56e757bb6"
+    source "rust/src/agentic_coding/file_read.rs sha256=8d9d5ba9753e842c4f6a5326caf6264fcdc45ec0b12ba5868e94bcc2639bd18e"
     source "js/agentic/module_function.mjs sha256=cb663c91cdde86c2cee9750b0412483edc976cbd49bd3fa8d6bc1c5f15e4ec41"
     lexeme en
       words "deploy"
@@ -522,11 +522,11 @@ meanings
     definition "An independent operation that makes an artifact available through an external publication destination."
     precondition "An unquoted publication operation alongside a file-read request has no bound publication execution or receipt contract."
     effect "The Read ownership policy refuses premature effects; this meaning neither publishes artifacts nor certifies remote availability."
-    source "js/agentic/file_read/ownership.mjs sha256=389f06a28610e3e4d1fe7639e3a5cbf90d24efd90824759585589d0f5ecbac28"
-    source "rust/src/agentic_coding/file_read/ownership.rs sha256=55968e7f6074c26de5ed553aea1c7deea42a4bce21d3313b1dac4a61b5d33669"
+    source "js/agentic/file_read/ownership.mjs sha256=f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
     source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
     source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
-    source "rust/src/agentic_coding/file_read.rs sha256=1cd663563723e1f3f79ba3b32cb654aed75e068e93595b11f418b3a56e757bb6"
+    source "rust/src/agentic_coding/file_read.rs sha256=8d9d5ba9753e842c4f6a5326caf6264fcdc45ec0b12ba5868e94bcc2639bd18e"
     source "js/agentic/module_function.mjs sha256=cb663c91cdde86c2cee9750b0412483edc976cbd49bd3fa8d6bc1c5f15e4ec41"
     lexeme en
       words "publish"
@@ -546,11 +546,11 @@ meanings
     definition "The en full-form binding of workspace inspection and file reading to a bounded remaining-work audit."
     precondition "The existing language-specific seeded pattern consumes the entire clause, resolves owned source operands and rejects unbound prerequisites or independent goals."
     effect "Selects only the existing bounded audit producer; observed file contents and localized audit results remain actual transport/result obligations."
-    source "js/agentic/file_read/ownership.mjs sha256=389f06a28610e3e4d1fe7639e3a5cbf90d24efd90824759585589d0f5ecbac28"
-    source "rust/src/agentic_coding/file_read/ownership.rs sha256=55968e7f6074c26de5ed553aea1c7deea42a4bce21d3313b1dac4a61b5d33669"
+    source "js/agentic/file_read/ownership.mjs sha256=f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
     source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
     source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
-    source "rust/src/agentic_coding/file_read.rs sha256=1cd663563723e1f3f79ba3b32cb654aed75e068e93595b11f418b3a56e757bb6"
+    source "rust/src/agentic_coding/file_read.rs sha256=8d9d5ba9753e842c4f6a5326caf6264fcdc45ec0b12ba5868e94bcc2639bd18e"
     source "js/agentic/module_function.mjs sha256=cb663c91cdde86c2cee9750b0412483edc976cbd49bd3fa8d6bc1c5f15e4ec41"
     lexeme en
       words "English bounded file audit"
@@ -570,11 +570,11 @@ meanings
     definition "The ru full-form binding of workspace inspection and file reading to a bounded remaining-work audit."
     precondition "The existing language-specific seeded pattern consumes the entire clause, resolves owned source operands and rejects unbound prerequisites or independent goals."
     effect "Selects only the existing bounded audit producer; observed file contents and localized audit results remain actual transport/result obligations."
-    source "js/agentic/file_read/ownership.mjs sha256=389f06a28610e3e4d1fe7639e3a5cbf90d24efd90824759585589d0f5ecbac28"
-    source "rust/src/agentic_coding/file_read/ownership.rs sha256=55968e7f6074c26de5ed553aea1c7deea42a4bce21d3313b1dac4a61b5d33669"
+    source "js/agentic/file_read/ownership.mjs sha256=f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
     source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
     source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
-    source "rust/src/agentic_coding/file_read.rs sha256=1cd663563723e1f3f79ba3b32cb654aed75e068e93595b11f418b3a56e757bb6"
+    source "rust/src/agentic_coding/file_read.rs sha256=8d9d5ba9753e842c4f6a5326caf6264fcdc45ec0b12ba5868e94bcc2639bd18e"
     source "js/agentic/module_function.mjs sha256=cb663c91cdde86c2cee9750b0412483edc976cbd49bd3fa8d6bc1c5f15e4ec41"
     lexeme en
       words "Russian bounded file audit"
@@ -594,11 +594,11 @@ meanings
     definition "The hi full-form binding of workspace inspection and file reading to a bounded remaining-work audit."
     precondition "The existing language-specific seeded pattern consumes the entire clause, resolves owned source operands and rejects unbound prerequisites or independent goals."
     effect "Selects only the existing bounded audit producer; observed file contents and localized audit results remain actual transport/result obligations."
-    source "js/agentic/file_read/ownership.mjs sha256=389f06a28610e3e4d1fe7639e3a5cbf90d24efd90824759585589d0f5ecbac28"
-    source "rust/src/agentic_coding/file_read/ownership.rs sha256=55968e7f6074c26de5ed553aea1c7deea42a4bce21d3313b1dac4a61b5d33669"
+    source "js/agentic/file_read/ownership.mjs sha256=f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
     source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
     source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
-    source "rust/src/agentic_coding/file_read.rs sha256=1cd663563723e1f3f79ba3b32cb654aed75e068e93595b11f418b3a56e757bb6"
+    source "rust/src/agentic_coding/file_read.rs sha256=8d9d5ba9753e842c4f6a5326caf6264fcdc45ec0b12ba5868e94bcc2639bd18e"
     source "js/agentic/module_function.mjs sha256=cb663c91cdde86c2cee9750b0412483edc976cbd49bd3fa8d6bc1c5f15e4ec41"
     lexeme en
       words "Hindi bounded file audit"
@@ -618,11 +618,11 @@ meanings
     definition "The zh full-form binding of workspace inspection and file reading to a bounded remaining-work audit."
     precondition "The existing language-specific seeded pattern consumes the entire clause, resolves owned source operands and rejects unbound prerequisites or independent goals."
     effect "Selects only the existing bounded audit producer; observed file contents and localized audit results remain actual transport/result obligations."
-    source "js/agentic/file_read/ownership.mjs sha256=389f06a28610e3e4d1fe7639e3a5cbf90d24efd90824759585589d0f5ecbac28"
-    source "rust/src/agentic_coding/file_read/ownership.rs sha256=55968e7f6074c26de5ed553aea1c7deea42a4bce21d3313b1dac4a61b5d33669"
+    source "js/agentic/file_read/ownership.mjs sha256=f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
     source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
     source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
-    source "rust/src/agentic_coding/file_read.rs sha256=1cd663563723e1f3f79ba3b32cb654aed75e068e93595b11f418b3a56e757bb6"
+    source "rust/src/agentic_coding/file_read.rs sha256=8d9d5ba9753e842c4f6a5326caf6264fcdc45ec0b12ba5868e94bcc2639bd18e"
     source "js/agentic/module_function.mjs sha256=cb663c91cdde86c2cee9750b0412483edc976cbd49bd3fa8d6bc1c5f15e4ec41"
     lexeme en
       words "Chinese bounded file audit"
@@ -642,11 +642,11 @@ meanings
     definition "The es full-form binding of workspace inspection and file reading to a bounded remaining-work audit."
     precondition "The existing language-specific seeded pattern consumes the entire clause, resolves owned source operands and rejects unbound prerequisites or independent goals."
     effect "Selects only the existing bounded audit producer; observed file contents and localized audit results remain actual transport/result obligations."
-    source "js/agentic/file_read/ownership.mjs sha256=389f06a28610e3e4d1fe7639e3a5cbf90d24efd90824759585589d0f5ecbac28"
-    source "rust/src/agentic_coding/file_read/ownership.rs sha256=55968e7f6074c26de5ed553aea1c7deea42a4bce21d3313b1dac4a61b5d33669"
+    source "js/agentic/file_read/ownership.mjs sha256=f94522cf652b805c691e13cdcf761b7c68d1dfb1023d2c2d7f1e25bdfe8d976d"
+    source "rust/src/agentic_coding/file_read/ownership.rs sha256=e68bb37ba19b5873d5d4065f1a53b327acaf9a499b2ffed543613c410e938e25"
     source "js/agentic/file_read.mjs sha256=9bade06f033c82fad8269d047f0228e6689f9ff85ffc117459663ebf1539f2c0"
     source "js/agentic/file_read/audit.mjs sha256=641f17f34f990685303658fae89fc0b2320569c9f5b0fa6ae77753fd3ea8f9d5"
-    source "rust/src/agentic_coding/file_read.rs sha256=1cd663563723e1f3f79ba3b32cb654aed75e068e93595b11f418b3a56e757bb6"
+    source "rust/src/agentic_coding/file_read.rs sha256=8d9d5ba9753e842c4f6a5326caf6264fcdc45ec0b12ba5868e94bcc2639bd18e"
     source "js/agentic/module_function.mjs sha256=cb663c91cdde86c2cee9750b0412483edc976cbd49bd3fa8d6bc1c5f15e4ec41"
     lexeme en
       words "Spanish bounded file audit"

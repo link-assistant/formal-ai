@@ -404,3 +404,77 @@ server_messages
     text "repository base commit was not observed"
   message repository-caller-unknown
     text "unknown repository caller: "
+  message source-operation-non-file-source
+    text "non-file source"
+  message source-operation-source-changed-during-read
+    text "source changed during read"
+  message source-operation-nested-node-test-operation-unknown
+    text "nested Node test operation unknown"
+  message source-operation-extra-node-options
+    text "extra Node options"
+  message source-operation-foreign-module-path
+    text "foreign module path"
+  message source-operation-missing-command-executable
+    text "missing command executable"
+  message source-operation-different-accepted-node-executable
+    text "different accepted Node executable"
+  message source-operation-unknown-module-url-byte-profile
+    text "unknown module URL byte profile"
+  message source-operation-unsupported-acceptance-location
+    text "unsupported acceptance location"
+  message source-operation-operation-not-accepted
+    text "operation not accepted"
+  message source-operation-command-not-in-original-request
+    text "command not in original request"
+  message source-operation-unsupported-candidate-directory
+    text "unsupported candidate directory"
+  message source-operation-unowned-candidate-file
+    text "unowned candidate file"
+  message source-operation-unobserved-source-copy
+    text "unobserved source copy"
+  message source-operation-no-canonical-imports
+    text "no canonical imports"
+  message source-operation-ambiguous-import-url-profile
+    text "ambiguous import URL profile"
+  message source-operation-unknown-import-type
+    text "unknown import type"
+  message source-operation-canonical-symlink-normalization-mismatch
+    text "canonical symlink/normalization mismatch"
+  message source-operation-canonical-bytes-not-one-observed-source
+    text "canonical bytes not one observed source"
+  message source-operation-side-effect-import-has-no-source-call-authority
+    text "side-effect import has no source call authority"
+  message source-operation-unknown-source-export
+    text "unknown source export"
+  message source-operation-unobserved-export-declaration
+    text "unobserved export declaration"
+  message source-operation-unbounded-import-closure
+    text "unbounded import closure"
+  message source-operation-unknown-closure-module
+    text "unknown closure module"
+  message source-operation-unknown-dynamic-module-code-authority
+    text "unknown dynamic module/code authority"
+  message source-operation-unparsed-import-closure
+    text "unparsed import closure"
+  message source-operation-unknown-dependency-authority
+    text "unknown dependency authority"
+  message source-operation-ambiguous-dependency-url-profile
+    text "ambiguous dependency URL profile"
+  message source-operation-distinct-dependency-url
+    text "distinct dependency URL"
+  message source-operation-failed-process-transport
+    text "failed process transport"
+  message source-operation-missing-process-status
+    text "missing process status"
+  message source-operation-operation-predates-candidate
+    text "operation predates candidate"
+  message source-operation-candidate-changed-during-operation
+    text "candidate changed during operation"
+  message source-operation-candidate-drift-after-operation
+    text "candidate drift after operation"
+  message source-operation-caller-metadata-is-not-provider-receipt
+    text "caller metadata is not provider receipt"
+  message source-operation-foreign-provider-receipt
+    text "foreign provider receipt"
+  message source-operation-not-provider-issued
+    text "not provider-issued"

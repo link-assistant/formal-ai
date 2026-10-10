@@ -699,3 +699,43 @@ multilingual_responses
     intent request_several_edit_targets
     language es
     text "Esta edición nombra varios archivos (`{files}`), y una solicitud de edición cambia un solo archivo, así que no se cambió nada. Pide la edición una vez para cada archivo."
+  response response-file-addition-position-unknown-en
+    intent file-addition-position-unknown
+    language en
+    text "Specify exactly one insertion position for `{path}` (start or end) before adding text."
+  response response-file-addition-position-unknown-ru
+    intent file-addition-position-unknown
+    language ru
+    text "Укажите ровно одно место вставки для `{path}` (начало или конец), прежде чем добавлять текст."
+  response response-file-addition-position-unknown-hi
+    intent file-addition-position-unknown
+    language hi
+    text "`{path}` में पाठ जोड़ने से पहले ठीक एक स्थान बताएँ (शुरुआत या अंत)।"
+  response response-file-addition-position-unknown-zh
+    intent file-addition-position-unknown
+    language zh
+    text "向 `{path}` 添加文本前，请明确一个插入位置（开头或末尾）。"
+  response response-file-addition-position-unknown-es
+    intent file-addition-position-unknown
+    language es
+    text "Indica una única posición de inserción en `{path}` (inicio o final) antes de añadir texto."
+  response response-file-addition-unverified-en
+    intent file-addition-unverified
+    language en
+    text "I cannot verify the requested addition to `{path}` from the available complete source reads and declared tools."
+  response response-file-addition-unverified-ru
+    intent file-addition-unverified
+    language ru
+    text "Не могу проверить запрошенное добавление в `{path}` по доступным полным чтениям исходного файла и объявленным инструментам."
+  response response-file-addition-unverified-hi
+    intent file-addition-unverified
+    language hi
+    text "उपलब्ध पूर्ण स्रोत पठन और घोषित उपकरणों से `{path}` में अनुरोधित जोड़ सत्यापित नहीं कर सकता।"
+  response response-file-addition-unverified-zh
+    intent file-addition-unverified
+    language zh
+    text "无法根据可用的完整源文件读取和已声明工具验证向 `{path}` 请求的添加操作。"
+  response response-file-addition-unverified-es
+    intent file-addition-unverified
+    language es
+    text "No puedo verificar la adición solicitada en `{path}` con las lecturas completas disponibles y las herramientas declaradas."

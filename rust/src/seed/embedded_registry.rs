@@ -446,6 +446,10 @@ pub const TRIZ_PRINCIPLES_LINO: &str =
     include_str!("../../embedded/data/seed/triz-principles.lino");
 pub const WIKIDATA_CONVERSION_TO_SI_LINO: &str =
     include_str!("../../embedded/data/seed/wikidata-conversion-to-si.lino");
+pub const WORKSPACE_DISCOVERY_CONTRACTS_LINO: &str =
+    include_str!("../../embedded/data/seed/workspace-discovery-contracts.lino");
+pub const WORKSPACE_DISCOVERY_GRAMMAR_LINO: &str =
+    include_str!("../../embedded/data/seed/workspace-discovery-grammar.lino");
 pub const WRITING_GENRE_STYLEGUIDES_LINO: &str =
     include_str!("../../embedded/data/seed/writing-genre-styleguides.lino");
 
@@ -792,6 +796,8 @@ pub fn seed_files() -> Vec<(&'static str, &'static str)> {
         ("data/seed/tools.lino", TOOLS_LINO),
         ("data/seed/triz-principles.lino", TRIZ_PRINCIPLES_LINO),
         ("data/seed/wikidata-conversion-to-si.lino", WIKIDATA_CONVERSION_TO_SI_LINO),
+        ("data/seed/workspace-discovery-contracts.lino", WORKSPACE_DISCOVERY_CONTRACTS_LINO),
+        ("data/seed/workspace-discovery-grammar.lino", WORKSPACE_DISCOVERY_GRAMMAR_LINO),
         ("data/seed/writing-genre-styleguides.lino", WRITING_GENRE_STYLEGUIDES_LINO),
     ]
 }

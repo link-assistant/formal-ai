@@ -85,7 +85,7 @@ meanings
     lexeme ru добавь добавить вставь вставить
     lexeme hi जोड़ें जोड़ो
     lexeme zh 添加 插入
-    lexeme es añade añadir inserta insertar
+    lexeme es añade añadir agrega agregar inserta insertar
   coding_module_registration
     defined-by action
     role coding_module_registration_action

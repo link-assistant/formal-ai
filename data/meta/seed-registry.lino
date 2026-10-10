@@ -828,6 +828,12 @@ seed_registry
   seed wikidata-conversion-to-si
     bundle true
     web true
+  seed workspace-discovery-contracts
+    bundle true
+    web true
+  seed workspace-discovery-grammar
+    bundle true
+    web true
   seed writing-genre-styleguides
     bundle true
     web true

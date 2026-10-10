@@ -247,6 +247,8 @@ roles
     kind predicate
   common_typo
     kind meaning
+  compact
+    kind meaning
   comparison_difference_cue
     kind predicate
   comparison_infix
@@ -352,6 +354,8 @@ roles
   document_originality_document
     kind meaning
   document_originality_subject
+    kind meaning
+  english-source-preserving-optional-text
     kind meaning
   enumeration_constraint
     kind meaning
@@ -535,6 +539,8 @@ roles
     kind predicate
   issue-reference
     kind meaning
+  javascript-imported-optional-text
+    kind meaning
   knowledge_inventory_interrogative
     kind predicate
   knowledge_inventory_noun
@@ -663,6 +669,8 @@ roles
     kind meaning
   nondeterministic_marker
     kind predicate
+  null
+    kind meaning
   number_constraint_entity
     kind meaning
   number_constraint_hidden
@@ -700,6 +708,10 @@ roles
   ontology_type
     kind predicate
   operating_principle
+    kind meaning
+  optional-record
+    kind meaning
+  optional-source-text
     kind meaning
   ordering_relation
     kind predicate
@@ -957,6 +969,8 @@ roles
     kind meaning
   source-authoring-grammar
     kind meaning
+  source-callable-composition
+    kind meaning
   source-capture-offline-cache-miss
     kind meaning
   source-context-article
@@ -967,15 +981,21 @@ roles
     kind meaning
   source-context-issue-prologue
     kind meaning
+  source-context-label-introducer
+    kind meaning
   source-context-location-preposition
     kind meaning
   source-context-location-verb
+    kind meaning
+  source-context-opaque-label-contract
     kind meaning
   source-context-prologue
     kind meaning
   source-context-qualifier
     kind meaning
   source-context-subject
+    kind meaning
+  source-contract-diagnostic
     kind meaning
   source-links-report-cue
     kind meaning
@@ -992,6 +1012,26 @@ roles
   source-recompilation-action
     kind meaning
   source-registration-composition
+    kind meaning
+  source-request-declaration
+    kind meaning
+  source-request-gap-before-write
+    kind meaning
+  source-request-goal
+    kind meaning
+  source-request-preflight
+    kind meaning
+  source-request-protect-inputs
+    kind meaning
+  source-request-read-prerequisites
+    kind meaning
+  source-request-repair-plan
+    kind meaning
+  source-request-reuse-imports
+    kind meaning
+  source-request-source-discovery
+    kind meaning
+  source-request-verification
     kind meaning
   source-tree-translation-contract
     kind meaning

@@ -1375,3 +1375,33 @@ meanings
     lexeme hi "अप्राप्त स्रोत की परिभाषा"
     lexeme zh "未解决的来源定义"
     lexeme es "definición de fuente sin resolver"
+  file-addition-position-unknown
+    defined-by answer
+    role localized_response_template
+    precondition "A source-owned additive literal names a target and exact payload but no single insertion position is owned, or start and end positions conflict."
+    effect "No tool or file effect occurs. The localized response asks for exactly one insertion position while retaining the target and payload obligation."
+    unit "not applicable"
+    example "Add file note.txt containing hello asks for the insertion position without changing existing bytes."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino::intent file-addition-position-unknown"
+    source "js/agentic/literal_addition.mjs::planLiteralAdditionStep"
+    source "rust/src/agentic_coding/literal_addition.rs::plan_literal_addition_step"
+  file-addition-unverified
+    defined-by answer
+    role localized_response_template
+    precondition "An additive literal has an owned target, payload and position, but declared Read and replacement Write capabilities or complete bound source observations do not establish the requested addition."
+    effect "The localized response states that the addition cannot be verified from available complete source reads and declared tools. It claims no observation or successful change that did not occur."
+    unit "not applicable"
+    example "An opaque or foreign-path prior Read does not authorize treating unknown existing source as empty."
+    grounding "data/seed/multilingual-responses-agentic-tools.lino::intent file-addition-unverified"
+    source "js/agentic/literal_addition.mjs::planLiteralAdditionStep"
+    source "rust/src/agentic_coding/literal_addition.rs::plan_literal_addition_step"
+  opaque-label
+    defined-by source-context-opaque-label-contract
+    role source-context-opaque-label-contract
+    precondition "The loaded source-context grammar completely owns the informational introducer, one Unicode label and terminal punctuation. Paths, quotes, operation cues, attribution, conjunctions and unconsumed prose refuse this classification."
+    effect "Only the label is informational context. It grants no operation, source, safety or publication authority, and all following action and immutable Need spans remain independent."
+    unit "not applicable"
+    example "Note Saffron61. is informational context; a quoted or operation-bearing sentence is not an opaque label."
+    grounding "data/seed/source-context-grammar.lino::annotation opaque-label"
+    source "js/agentic/planner/owned_goals.mjs::sourceContextLabel"
+    source "rust/src/agentic_coding/general_planner/owned_goals.rs::source_context_label"
