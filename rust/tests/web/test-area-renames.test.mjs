@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, posix, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { test } from 'node:test';
+import { testAreaInventory, checkTestAreaInventory } from '../../../experiments/formal_ai_subagent/propose-test-areas.mjs';
 import { tokenize } from '../../../scripts/lib/rust-specification-cases.mjs';
 import { loadRenameMap, resolveRenameChains } from '../../../experiments/formal_ai_subagent/rename-by-rule.mjs';
 
@@ -89,4 +90,55 @@ test('each moved unit test remains registered once in its declared area and keep
     assert.equal(rootModules.split(`#[path = "${path}"]`).length - 1, 1, area);
     assert.equal(rootBindings.filter(binding => binding.file === path).length, 1, area);
   }
+});
+
+
+function inventoryFixture() {
+ const directory=mkdtempSync(join(tmpdir(),'test-area-inventory-'));
+ for(const area of ['rust/src','rust/tests/unit','data/meta'])mkdirSync(join(directory,area),{recursive:true});
+ writeFileSync(join(directory,'rust/src/lib.rs'),'pub mod engine;\npub mod solver;\n');
+ for(const module of ['engine','solver'])writeFileSync(join(directory,'rust/src',module+'.rs'),'');
+ writeFileSync(join(directory,'data/meta/notation-rules.lino'),'notation-rules\n  abbreviations\n    cli command-line-interface\n');
+ for(const name of ['alpha','bravo','charlie','delta','echo'])writeFileSync(join(directory,'rust/tests/unit',name+'.rs'),'use formal_ai::engine;\n#[test] fn retains_behavior() { assert!(true); }\n');
+ writeFileSync(join(directory,'rust/tests/unit/mod.rs'),'mod alpha;\n');
+ return {directory,cleanup:()=>rmSync(directory,{recursive:true,force:true})};
+}
+
+test('source-derived area inventory is complete, deterministic and checks actual source drift',()=>{
+ const f=inventoryFixture();try {
+  const first=testAreaInventory(f.directory),second=testAreaInventory(f.directory);
+  assert.deepEqual(first,second);assert.equal(first.records.length,6);assert.equal(first.moves.length,5);
+  assert.equal(first.records.filter(item=>item.status==='Proposed').length,5);
+  assert.equal(first.records.find(item=>item.path.endsWith('/mod.rs')).reason,'excluded-module');
+  assert.deepEqual(checkTestAreaInventory(first,f.directory),first);
+  writeFileSync(join(f.directory,'rust/tests/unit/alpha.rs'),'use formal_ai::engine; // changed source\n');
+  assert.throws(()=>checkTestAreaInventory(first,f.directory),/stale or counterfeit/u);
+ }finally{f.cleanup();}
+});
+
+test('area inventory conserves sibling, minimum-size and existing-area migration refusals',()=>{
+ const f=inventoryFixture();try {
+  writeFileSync(join(f.directory,'rust/tests/unit/alpha.rs'),'use formal_ai::engine; use super::bravo;\n');
+  const shared=testAreaInventory(f.directory);assert.equal(shared.moves.length,0);
+  assert.equal(shared.records.filter(item=>item.reason==='shared-sibling-contract').length,2);
+  assert.equal(shared.records.filter(item=>item.reason==='area-below-minimum-five').length,3);
+  writeFileSync(join(f.directory,'rust/tests/unit/alpha.rs'),'use formal_ai::engine;\n');
+  mkdirSync(join(f.directory,'rust/tests/unit/engine'));
+  const existing=testAreaInventory(f.directory);assert.equal(existing.moves.length,0);
+  assert.equal(existing.records.filter(item=>item.reason==='existing-or-protected-area').length,5);
+  assert.throws(()=>checkTestAreaInventory(shared,f.directory),/stale or counterfeit/u);
+ }finally{f.cleanup();}
+});
+
+test('tied evidence and forged inventory classifications cannot authorize migration',()=>{
+ const f=inventoryFixture();try {
+  writeFileSync(join(f.directory,'rust/tests/unit/alpha.rs'),'use formal_ai::engine; use formal_ai::solver;\n');
+  const current=testAreaInventory(f.directory);
+  assert.equal(current.records.find(item=>item.path.endsWith('/alpha.rs')).reason,'tied-area-evidence');
+  const forged=structuredClone(current);forged.records[0].status='Proposed';
+  assert.throws(()=>checkTestAreaInventory(forged,f.directory),/stale or counterfeit/u);
+  const excluded=testAreaInventory(f.directory,['alpha']);
+  assert.equal(excluded.records.find(item=>item.path.endsWith('/alpha.rs')).reason,'excluded-module');
+  assert.throws(()=>checkTestAreaInventory(excluded,f.directory),/stale or counterfeit/u);
+ }finally{f.cleanup();}
 });
