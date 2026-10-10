@@ -169,6 +169,8 @@ jobs:
           persist-credentials: false
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.auto_prepare-source.outputs.artifact_id }}
           path: .release-transfer/source
@@ -235,6 +237,8 @@ jobs:
           persist-credentials: false
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.auto_prepare-source.outputs.artifact_id }}
           path: .release-transfer/source
@@ -243,6 +247,8 @@ jobs:
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Download immutable binary artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.auto_compile-release.outputs.artifact_id }}
           path: .release-transfer/binary
@@ -307,6 +313,8 @@ jobs:
           persist-credentials: false
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.auto_prepare-source.outputs.artifact_id }}
           path: .release-transfer/source
@@ -315,6 +323,8 @@ jobs:
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Download immutable binary artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.auto_compile-release.outputs.artifact_id }}
           path: .release-transfer/binary
@@ -327,6 +337,8 @@ jobs:
         run: node _protocol/scripts/release-stage-transfer.mjs import binary
       - name: Download immutable package artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.auto_verify-package.outputs.artifact_id }}
           path: .release-transfer/package
@@ -381,6 +393,8 @@ jobs:
           persist-credentials: false
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.auto_prepare-source.outputs.artifact_id }}
           path: .release-transfer/source
@@ -389,6 +403,8 @@ jobs:
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Download immutable package artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.auto_verify-package.outputs.artifact_id }}
           path: .release-transfer/package
@@ -445,6 +461,8 @@ jobs:
           persist-credentials: false
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.auto_prepare-source.outputs.artifact_id }}
           path: .release-transfer/source
@@ -506,6 +524,8 @@ jobs:
           persist-credentials: false
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.auto_prepare-source.outputs.artifact_id }}
           path: .release-transfer/source
@@ -514,6 +534,8 @@ jobs:
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Download immutable binary artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.auto_compile-release.outputs.artifact_id }}
           path: .release-transfer/binary
@@ -686,6 +708,8 @@ jobs:
       - name: Download immutable selected source artifact
         if: ${{ needs.auto_prepare-source.outputs.active == 'true' }}
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.auto_prepare-source.outputs.artifact_id }}
           path: .release-transfer/source
@@ -696,6 +720,8 @@ jobs:
       - name: Download immutable images artifact
         if: ${{ needs.auto_prepare-source.outputs.active == 'true' }}
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.auto_publish-verify-images.outputs.artifact_id }}
           path: .release-transfer/images
@@ -865,6 +891,8 @@ jobs:
           persist-credentials: false
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.manual_prepare-source.outputs.artifact_id }}
           path: .release-transfer/source
@@ -931,6 +959,8 @@ jobs:
           persist-credentials: false
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.manual_prepare-source.outputs.artifact_id }}
           path: .release-transfer/source
@@ -939,6 +969,8 @@ jobs:
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Download immutable binary artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.manual_compile-release.outputs.artifact_id }}
           path: .release-transfer/binary
@@ -1003,6 +1035,8 @@ jobs:
           persist-credentials: false
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.manual_prepare-source.outputs.artifact_id }}
           path: .release-transfer/source
@@ -1011,6 +1045,8 @@ jobs:
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Download immutable binary artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.manual_compile-release.outputs.artifact_id }}
           path: .release-transfer/binary
@@ -1023,6 +1059,8 @@ jobs:
         run: node _protocol/scripts/release-stage-transfer.mjs import binary
       - name: Download immutable package artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.manual_verify-package.outputs.artifact_id }}
           path: .release-transfer/package
@@ -1077,6 +1115,8 @@ jobs:
           persist-credentials: false
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.manual_prepare-source.outputs.artifact_id }}
           path: .release-transfer/source
@@ -1085,6 +1125,8 @@ jobs:
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Download immutable package artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.manual_verify-package.outputs.artifact_id }}
           path: .release-transfer/package
@@ -1140,6 +1182,8 @@ jobs:
           persist-credentials: false
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.manual_prepare-source.outputs.artifact_id }}
           path: .release-transfer/source
@@ -1200,6 +1244,8 @@ jobs:
           persist-credentials: false
       - name: Download immutable selected source artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.manual_prepare-source.outputs.artifact_id }}
           path: .release-transfer/source
@@ -1208,6 +1254,8 @@ jobs:
         run: node _protocol/scripts/release-stage-transfer.mjs verify-source
       - name: Download immutable binary artifact
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.manual_compile-release.outputs.artifact_id }}
           path: .release-transfer/binary
@@ -1372,6 +1420,8 @@ jobs:
       - name: Download immutable selected source artifact
         if: ${{ needs.manual_prepare-source.outputs.active == 'true' }}
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.manual_prepare-source.outputs.artifact_id }}
           path: .release-transfer/source
@@ -1382,6 +1432,8 @@ jobs:
       - name: Download immutable images artifact
         if: ${{ needs.manual_prepare-source.outputs.active == 'true' }}
         uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
         with:
           artifact-ids: ${{ needs.manual_publish-verify-images.outputs.artifact_id }}
           path: .release-transfer/images

@@ -331,14 +331,17 @@ jobs:
           CI_GATE_LANE: ${{ matrix.lane }}
         run: rust-script scripts/run-ci-gates.rs --stage rust
       - name: Build Rust→WASM worker
+        id: selected_wasm
         if: matrix.lane == 1
-        run: sh js/wasm-worker/build.sh
+        run: node scripts/build-selected-wasm.mjs build
       - name: Upload rebuilt WASM worker
         if: matrix.lane == 1
         uses: actions/upload-artifact@v7
         with:
           name: formal-ai-worker-wasm
-          path: js/formal_ai_worker.wasm
+          path: |
+            js/formal_ai_worker.wasm
+            js/formal_ai_worker.receipt.json
           retention-days: 3
       - name: Run registered gates (stage wasm)
         if: matrix.lane == 1
