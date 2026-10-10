@@ -190,3 +190,79 @@ test('actual distribution generator separates offline receipts from repeatable n
   assert.match(readFileSync(join(f.root,'js/precache-manifest.js'),'utf8'),/formal_ai_worker\.receipt\.json/u);
   console.log(JSON.stringify({scope:'actual Python generator plus inert npm pack; no compiler/browser/publication proof',first,second}));
 });
+
+// Parse only the original static compiler command and its script-directory paths.
+// Unknown shell effects or expansion grammars refuse the complete contract.
+function originalCompilerArguments(source,scriptPath) {
+  const statements=source.replace(/\\\r?\n/gu,' ').split(/\r?\n/u).map(line=>line.trim()).filter(Boolean);
+  assert.equal(statements[0],'#!/usr/bin/env sh');
+  assert.equal(statements[1],'set -eu');
+  assert.equal(statements.length,3,'unknown shell operation');
+  let command=statements[2],words=[];
+  const prefix='"$(dirname "$0")/';
+  while(command.trim()) {
+    command=command.trimStart();
+    if(command.startsWith(prefix)) {
+      const end=command.indexOf('"',prefix.length);assert.ok(end>prefix.length);
+      const suffix=command.slice(prefix.length,end);
+      assert.match(suffix,/^[A-Za-z0-9_./-]+$/u);
+      words.push(join(dirname(scriptPath),suffix).split(String.fromCharCode(92)).join('/'));
+      command=command.slice(end+1);
+    } else {
+      const word=/^[A-Za-z0-9_./=,:+-]+(?=\s|$)/u.exec(command);
+      assert.ok(word,'unknown shell word or effect');words.push(word[0]);command=command.slice(word[0].length);
+    }
+  }
+  assert.equal(words.shift(),'rustc');return words;
+}
+function requireOriginalCompilerOperands(source,arguments_) {
+  const expected=originalCompilerArguments(source,'js/wasm-worker/build.sh');
+  const dependency='--emit=link,dep-info=js/formal_ai_worker.d';
+  assert.equal(arguments_.filter(value=>value===dependency).length,1,'exact added compiler dependency receipt');
+  assert.deepEqual(arguments_.filter(value=>value!==dependency),expected);
+}
+test('actual compiler tool boundary conserves all original shell operands and receipt authority',t=>{
+  const source=readFileSync(new URL('../../../js/wasm-worker/build.sh',import.meta.url),'utf8');
+  const f=fixture(t),run=f.run;let compilations=0;
+  f.run=(command,arguments_)=>{
+    if(arguments_.includes('--crate-type')) {
+      assert.equal(command,'rustc');requireOriginalCompilerOperands(source,arguments_);compilations++;
+    }
+    return run(command,arguments_);
+  };
+  const result=buildSelectedWasm(f.root,f);assert.equal(compilations,1);
+  assert.equal(result.record.nativeCompilationEvidence,false);
+  assert.equal(result.record.arguments.includes('--emit=link,dep-info=js/formal_ai_worker.d'),true);
+  assert.match(result.record.protocolSha256,/^[a-f0-9]{64}$/u);
+  for(const input of result.record.inputs)assert.match(input.gitBlob,/^[a-f0-9]{40}$/u);
+  assert.throws(()=>verifySelectedWasm(f.root,join(f.root,'js'),result.receiptSha256),/fixture compiler/);
+});
+test('every omitted or altered original compiler operand and unknown shell effect refuses',()=>{
+  const source=readFileSync(new URL('../../../js/wasm-worker/build.sh',import.meta.url),'utf8');
+  const original=originalCompilerArguments(source,'js/wasm-worker/build.sh');
+  const arguments_=wasmCompilerArguments('js/formal_ai_worker.d');
+  requireOriginalCompilerOperands(source,arguments_);
+  for(let index=0;index<arguments_.length;index++) {
+    assert.throws(()=>requireOriginalCompilerOperands(source,arguments_.filter((_,position)=>position!==index)));
+    const changed=[...arguments_];changed[index]='unknown';assert.throws(()=>requireOriginalCompilerOperands(source,changed));
+  }
+  assert.ok(original.length>20);
+  for(const mutation of [source+'echo unsafe'+String.fromCharCode(10),source.replace('rustc '+String.fromCharCode(92),'EVIL=x rustc '+String.fromCharCode(92)),source.replace('-D warnings','-D "$FLAGS"')]) {
+    assert.throws(()=>originalCompilerArguments(mutation,'js/wasm-worker/build.sh'));
+  }
+});
+test('lint runs exactly the selected source compiler before the WASM budget gate',async()=>{
+  const {default:YAML}=await import('yaml');
+  const workflow=YAML.parse(readFileSync(new URL('../../../.github/workflows/release.yml',import.meta.url),'utf8'));
+  const validate=steps=>{
+    const builds=steps.map((step,index)=>({step,index})).filter(({step})=>step.run==='node scripts/build-selected-wasm.mjs build');
+    assert.equal(builds.length,1);const build=builds[0];assert.equal(build.step.if,'matrix.lane == 1');
+    const wasmGate=steps.findIndex(step=>step.run==='rust-script scripts/run-ci-gates.rs --stage wasm');
+    assert.ok(build.index<wasmGate);assert.equal(steps[wasmGate].if,'matrix.lane == 1');
+    assert.equal(steps.some(step=>step.run==='sh js/wasm-worker/build.sh'),false,'no duplicate compiler invocation');
+  };
+  validate(workflow.jobs.lint.steps);
+  const omitted=structuredClone(workflow.jobs.lint.steps);omitted.splice(omitted.findIndex(step=>step.run==='node scripts/build-selected-wasm.mjs build'),1);assert.throws(()=>validate(omitted));
+  const duplicate=structuredClone(workflow.jobs.lint.steps);duplicate.push({...duplicate.find(step=>step.run==='node scripts/build-selected-wasm.mjs build')});assert.throws(()=>validate(duplicate));
+  const reordered=structuredClone(workflow.jobs.lint.steps);const build=reordered.splice(reordered.findIndex(step=>step.run==='node scripts/build-selected-wasm.mjs build'),1)[0];reordered.push(build);assert.throws(()=>validate(reordered));
+});

@@ -11,6 +11,9 @@ use super::workflow_fixtures::*;
 #[path = "release_recovery.rs"]
 mod release_recovery;
 
+#[path = "selected_wasm_build_contract.rs"]
+mod selected_wasm_build_contract;
+
 fn read_worker_source(manifest_dir: &str) -> String {
     let mut source =
         fs::read_to_string(format!("{manifest_dir}/js/worker/formal_ai_worker.js")).unwrap();
@@ -408,6 +411,7 @@ fn build_job_verifies_the_publishable_archive_before_checking_its_size() {
 
 #[test]
 fn lint_job_guards_the_wasm_worker_migration() {
+    selected_wasm_build_contract::require_compiler_contract();
     // Issue #658 (E39 / R380): the JavaScript worker logic is being absorbed
     // into the Rust→WASM worker. Three guards keep that migration honest and
     // must run in the lint job: the worker JS line-budget ratchet, a rebuild of
@@ -428,7 +432,7 @@ fn lint_job_guards_the_wasm_worker_migration() {
         .find("rust-script scripts/check-worker-line-budget.rs")
         .expect("lint job should ratchet the worker JS line budget");
     let build_wasm = lint
-        .find("sh js/wasm-worker/build.sh")
+        .find("node scripts/build-selected-wasm.mjs build")
         .expect("lint job should rebuild the Rust→WASM worker from source");
     let wasm_size = lint
         .find("rust-script scripts/check-wasm-worker-size.rs")
