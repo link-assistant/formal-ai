@@ -694,8 +694,7 @@
   function indentBlock(text, indent) {
     var prefix = indent || "  ";
     return String(text || "")
-      .split(/\r?\n/)
-      .filter(function (line) { return line.length > 0; })
+      .split("\n")
       .map(function (line) { return prefix + line; })
       .join("\n");
   }
@@ -728,6 +727,7 @@
     var preferences = settings.preferences || null;
     var lines = ["formal_ai_bundle"];
     lines.push('  exported_at "' + escapeValue(new Date().toISOString()) + '"');
+    lines.push('  seed_body_encoding "literal-lf-v1"');
     var preferredInfoFields = [
       "version",
       "url",
@@ -781,7 +781,7 @@
     }
     lines.push("  " + ROOT_HEADER);
     events.forEach(function (event) {
-      lines.push("  " + formatEvent(event));
+      lines.push(indentBlock(formatEvent(event), "  "));
     });
     return lines.join("\n") + "\n";
   }
@@ -828,7 +828,8 @@
   // files). The parser is forgiving: unknown sub-sections are skipped, and a
   // truncated document still yields whatever events were recoverable.
   function parseBundleDocument(text) {
-    var lines = text.split(/\r?\n/);
+    var preserveSeedBytes = /^  seed_body_encoding "literal-lf-v1"$/m.test(text);
+    var lines = preserveSeedBytes ? text.split("\n") : text.split(/\r?\n/);
     var info = {};
     var seedFiles = {};
     var preferences = null;
@@ -836,6 +837,7 @@
     var memoryLines = [];
     var section = null; // null | "seed_files" | "preferences" | "memory"
     var currentSeedFile = null;
+    var currentSeedLineCount = 0;
     var index = 0;
     while (index < lines.length) {
       var line = lines[index];
@@ -878,15 +880,17 @@
           if (fileMatch) {
             currentSeedFile = unescapeValue(fileMatch[1]);
             seedFiles[currentSeedFile] = "";
+            currentSeedLineCount = 0;
           }
           continue;
         }
         if (currentSeedFile && indent >= 6) {
           // Body lines for the current seed file. Strip the 6-space prefix.
           var body = line.length >= 6 ? line.slice(6) : "";
-          if (seedFiles[currentSeedFile].length > 0) {
+          if (currentSeedLineCount > 0) {
             seedFiles[currentSeedFile] += "\n";
           }
+          currentSeedLineCount += 1;
           seedFiles[currentSeedFile] += body;
         }
         continue;

@@ -136,6 +136,7 @@ test('inert package field fixture preserves exact receipt and refuses source, by
   for(const name of ['src/index.js','assets/memory.js','assets/worker/formal_ai_worker.js','assets/worker-modules.js','assets/seed-files.js']){
     put(name,'// Inert schema fixture. This is never executed as a worker or native build proof.');
   }
+  put('assets/seed-files.js','self.FORMAL_AI_SEED_FILES = Object.freeze(["seed/test.lino"]);\n');
   put('assets/formal_ai_worker.wasm',wasm);put('assets/seed/test.lino','meanings\n');
   assert.equal(inspectInstalled(directory,version,record).length,1);assert.equal(specification(version),'@link-assistant/formal-ai-engine@'+version);
   for(const bad of ['latest','0.352.1-beta','0.352.1;true','file:///tmp','1'])assert.throws(()=>specification(bad));

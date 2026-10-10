@@ -28,6 +28,17 @@ function filesWithin(directory){
       totalBytes+=fileStatus.size;assert(totalBytes<=128*1024*1024);files.push(file);assert(files.length<=10000);}}}
   visit(directory);return files;
 }
+export function declaredWebSeedFiles(source) {
+  // This generated inventory is data; never evaluate package JavaScript in the host.
+  const declaration = source.replace(/\/\/[^\n]*/gu, '');
+  const match = /^\s*self\.FORMAL_AI_SEED_FILES\s*=\s*Object\.freeze\(\s*(\[[\s\S]*\])\s*\)\s*;\s*$/u.exec(declaration);
+  assert(match, 'one complete declarative web seed inventory required');
+  const names = JSON.parse(match[1].replace(/,\s*\]$/u, ']'));
+  assert(Array.isArray(names) && names.length > 0);
+  for (const name of names) assert(typeof name === 'string' && /^seed\/[\w.-]+\.lino$/u.test(name));
+  assert.equal(new Set(names).size, names.length, 'duplicate loaded seed');
+  return names;
+}
 export function inspectInstalled(directory,version,record){
   const manifest=JSON.parse(readFileSync(join(directory,'package.json'),'utf8'));
   assert.equal(manifest.name,packageName);assert.equal(manifest.version,version);
@@ -40,7 +51,11 @@ export function inspectInstalled(directory,version,record){
   for(const file of ['src/index.js','assets/memory.js','assets/worker/formal_ai_worker.js','assets/worker-modules.js','assets/seed-files.js'])assert(files.includes(join(directory,file)),file);
   const seeds=files.filter(file=>relative(directory,file).startsWith('assets'+sep+'seed'+sep)&&file.endsWith('.lino'));
   assert(seeds.length>0);
-  return seeds.map(file=>({name:relative(join(directory,'assets'),file).split(sep).join('/'),sha256:sha256(readFileSync(file))}));
+  const loaded = new Set(declaredWebSeedFiles(readFileSync(join(directory,'assets/seed-files.js'),'utf8')));
+  const shipped = new Set(seeds.map(file=>relative(join(directory,'assets'),file).split(sep).join('/')));
+  for(const name of loaded) assert(shipped.has(name),'declared loaded seed is not shipped: '+name);
+  return seeds.map(file=>({name:relative(join(directory,'assets'),file).split(sep).join('/'),sha256:sha256(readFileSync(file)),
+    loaded:loaded.has(relative(join(directory,'assets'),file).split(sep).join('/'))}));
 }
 export function safeAsset(directory,pathname){
   let decoded;try{decoded=decodeURIComponent(pathname);}catch{return null;}
@@ -90,15 +105,24 @@ export async function realWorkerSmoke(directory,seeds,playwright,remaining){
         const answer=await engine.solve('2 + 2', {preferences:{demoMode:false}});
         if(answer.kind!=='message'||answer.engine!=='wasm'||answer.error||!answer.requestId||!answer.content)throw Error('solve protocol');
         const bundle=await engine.memory.exportBundle();const parsed=await engine.memory.importBundle(bundle);
-        if(parsed.kind!=='bundle'||Object.keys(parsed.seedFiles).length!==expected.length)throw Error('seed dump inventory');
-        for(const item of expected){const text=parsed.seedFiles[item.name];if(typeof text!=='string')throw Error('missing seed '+item.name);
-          const hash=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text));
-          const hex=Array.from(new Uint8Array(hash),value=>value.toString(16).padStart(2,'0')).join('');if(hex!==item.sha256)throw Error('seed bytes '+item.name);}
+        const loaded = expected.filter(item=>item.loaded);
+        if(parsed.kind!=='bundle'||Object.keys(parsed.seedFiles).length!==loaded.length
+          ||Object.keys(parsed.seedFiles).some(name=>!loaded.some(item=>item.name===name)))throw Error('seed dump inventory');
+        const digest = async bytes=>{
+          const hash=await crypto.subtle.digest('SHA-256',bytes);
+          return Array.from(new Uint8Array(hash),value=>value.toString(16).padStart(2,'0')).join('');
+        };
+        for(const item of expected){
+          const response=await fetch('/assets/'+item.name);if(!response.ok)throw Error('missing shipped seed '+item.name);
+          if(await digest(await response.arrayBuffer())!==item.sha256)throw Error('shipped seed bytes '+item.name);
+          if(item.loaded){const text=parsed.seedFiles[item.name];if(typeof text!=='string')throw Error('missing seed '+item.name);
+            if(await digest(new TextEncoder().encode(text))!==item.sha256)throw Error('seed bytes '+item.name);}
+        }
         const replies=globalThis.smokeWorkerMessages.filter(item=>item.kind!=='ready');
         if(replies.length!==2||new Set(replies.map(item=>item.requestId)).size!==2
           ||replies.some(item=>!/^engine-[1-9][0-9]*$/.test(item.requestId)))throw Error('request correlation');
         engine.dispose();let refused=false;try{await engine.solve('2 + 2');}catch{refused=true;}if(!refused)throw Error('disposed engine');
-        return {ready:ready[0],engine:answer.engine,intent:answer.intent,requestId:answer.requestId,seedCount:expected.length,memoryRoundtrip:true,disposeRefused:true};
+        return {ready:ready[0],engine:answer.engine,intent:answer.intent,requestId:answer.requestId,seedCount:loaded.length,shippedSeedCount:expected.length,memoryRoundtrip:true,disposeRefused:true};
       }finally{engine.dispose();}
     },seeds),new Promise((_,reject)=>timeout=setTimeout(()=>reject(Error('total browser deadline')),remaining()))]);
     clearTimeout(timeout);assert.deepEqual(failures,[]);return result;
@@ -143,6 +167,8 @@ export async function coldPackageSmoke({root,archive,version,receipt,receiptDige
       if(mode==='registry')validateLock(lock,version,integrity);
       const installed=join(directory,'node_modules',packageName);
       assert.deepEqual(verifySelectedWasm(root,join(installed,'assets'),receiptDigest,{bindings,receiptPath:receipt}),record);
+      assert.equal(readFileSync(join(installed,'assets/seed-files.js'),'utf8'),readFileSync(join(root,'js/seed-files.js'),'utf8'),
+        'installed loaded inventory differs from independently selected source');
       const seeds=inspectInstalled(installed,version,record);
       const result=await realWorkerSmoke(installed,seeds,playwright,remaining);
       if(mode==='registry'){evidence.registryInstalled=true;evidence.registry=result;}else evidence.localTarball=result;

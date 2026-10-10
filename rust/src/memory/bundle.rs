@@ -26,16 +26,14 @@ pub fn export_bundle(seed_files: &[(&str, &str)], events: &[MemoryEvent]) -> Str
     out.push_str("  exported_at \"");
     out.push_str(&escape_value(&isoformat_now()));
     out.push_str("\"\n");
+    out.push_str("  seed_body_encoding \"literal-lf-v1\"\n");
     if !seed_files.is_empty() {
         out.push_str("  seed_files\n");
         for (name, contents) in seed_files {
             out.push_str("    file \"");
             out.push_str(&escape_value(name));
             out.push_str("\"\n");
-            for line in contents.lines() {
-                if line.is_empty() {
-                    continue;
-                }
+            for line in contents.split('\n') {
                 out.push_str("      ");
                 out.push_str(line);
                 out.push('\n');
@@ -183,6 +181,7 @@ pub fn export_full_memory(
     out.push_str("  exported_at \"");
     out.push_str(&escape_value(&exported_at));
     out.push_str("\"\n");
+    out.push_str("  seed_body_encoding \"literal-lf-v1\"\n");
     push_optional_info(&mut out, "version", info.version.as_deref());
     push_optional_info(&mut out, "url", info.url.as_deref());
     push_optional_info(&mut out, "user_agent", info.user_agent.as_deref());
@@ -194,10 +193,7 @@ pub fn export_full_memory(
             out.push_str("    file \"");
             out.push_str(&escape_value(name));
             out.push_str("\"\n");
-            for line in contents.lines() {
-                if line.is_empty() {
-                    continue;
-                }
+            for line in contents.split('\n') {
                 out.push_str("      ");
                 out.push_str(line);
                 out.push('\n');
@@ -271,11 +267,28 @@ fn parse_bundle_document(text: &str) -> ParsedBundle {
     let mut section: Option<&'static str> = None;
     let mut current_seed_file: Option<String> = None;
     let mut current_seed_body = String::new();
+    let mut current_seed_lines = 0_usize;
     let mut memory_lines: Vec<String> = Vec::new();
-    for line in text.lines() {
+    let preserve_seed_bytes = text.split('\n').any(|line| {
+        let indent = line.bytes().take_while(|byte| *byte == b' ').count();
+        indent == 2
+            && split_first_token(&line[indent..]).is_some_and(|(key, value)| {
+                key == "seed_body_encoding"
+                    && parse_quoted(value).as_deref() == Some("literal-lf-v1")
+            })
+    });
+    for line in text.split('\n').map(|line| {
+        if preserve_seed_bytes {
+            line
+        } else {
+            line.strip_suffix('\r').unwrap_or(line)
+        }
+    }) {
         if line.is_empty() {
-            if section == Some("seed_files") && current_seed_file.is_some() {
+            if !preserve_seed_bytes && section == Some("seed_files") && current_seed_file.is_some()
+            {
                 current_seed_body.push('\n');
+                current_seed_lines += 1;
             }
             continue;
         }
@@ -340,12 +353,14 @@ fn parse_bundle_document(text: &str) -> ParsedBundle {
                     {
                         current_seed_file = Some(value);
                         current_seed_body = String::new();
+                        current_seed_lines = 0;
                     }
                 } else if current_seed_file.is_some() && indent >= 6 {
                     let body = if line.len() >= 6 { &line[6..] } else { "" };
-                    if !current_seed_body.is_empty() {
+                    if current_seed_lines > 0 {
                         current_seed_body.push('\n');
                     }
+                    current_seed_lines += 1;
                     current_seed_body.push_str(body);
                 }
             }
@@ -452,4 +467,42 @@ pub fn suggest_migrations(
         ));
     }
     out
+}
+
+#[cfg(test)]
+mod seed_byte_roundtrip_tests {
+    use super::{BundleInfo, export_bundle, export_full_memory, import_full_memory};
+
+    #[test]
+    fn seed_bytes_survive_empty_lines_final_newlines_and_unicode() {
+        let cases = [
+            "",
+            "\n",
+            "\n\n",
+            "first\n\nλ🙂\r\nlast\n\n",
+            "literal \\n and \"quote\"\r\t",
+        ];
+        for contents in cases {
+            let files = [("seed/renamed.lino", contents)];
+            let full = export_full_memory(&files, &[], &[], &BundleInfo::default());
+            for document in [export_bundle(&files, &[]), full] {
+                assert_eq!(
+                    import_full_memory(&document).seed_files,
+                    vec![(String::from("seed/renamed.lino"), String::from(contents))]
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn legacy_crlf_bundle_stays_readable_without_the_new_encoding_marker() {
+        let document = "formal_ai_bundle\r\n  seed_files\r\n    file \"seed/legacy.lino\"\r\n      legacy\r\n        value \"ok\"\r\n  demo_memory\r\n";
+        assert_eq!(
+            import_full_memory(document).seed_files,
+            vec![(
+                String::from("seed/legacy.lino"),
+                String::from("legacy\n  value \"ok\"")
+            )]
+        );
+    }
 }
