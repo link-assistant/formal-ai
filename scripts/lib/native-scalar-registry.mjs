@@ -14,7 +14,7 @@ const ranges=new Map([['u8',255],['u16',65535],['u32',4294967295],['usize',65535
 const derives=new Set(['Debug','Clone','Copy','PartialEq','Eq','Default']);
 function scalar(tokens,nativeType) {
   if(tokens.length!==1)throw Error('unknown scalar expression');
-  if(nativeType==='bool'&&['true','false'].includes(tokens[0].text))return {value:tokens[0].text==='true',type:'boolean'};
+  if(nativeType==='bool'&&tokens[0].kind==='word'&&['true','false'].includes(tokens[0].text))return {value:tokens[0].text==='true',type:'boolean'};
   if(!ranges.has(nativeType)||tokens[0].kind!=='number'||!/^\d+$/u.test(tokens[0].text))throw Error('unknown native scalar type or literal');
   const value=Number(tokens[0].text);
   if(!Number.isSafeInteger(value)||value<0||value>ranges.get(nativeType))throw Error('native scalar exceeds qualified exact range');
@@ -24,11 +24,11 @@ function attributes(tokens,variant=false) {
   let cursor=0;const seenAttributes=new Set();
   while(tokens[cursor]?.text==='#'&&tokens[cursor+1]?.text==='[') {
     const end=close(tokens,cursor+1),body=tokens.slice(cursor+2,end);
-    if(variant) {if(seenAttributes.has('default'))throw Error('duplicate default attribute');seenAttributes.add('default');if(body.map(t=>t.text).join('')!=='default')throw Error('unknown enum variant attribute');}
-    else if(body[0]?.text==='derive'&&body[1]?.text==='('&&close(body,1)===body.length-1) {
+    if(variant) {if(seenAttributes.has('default'))throw Error('duplicate default attribute');seenAttributes.add('default');if(body.length!==1||body[0].kind!=='word'||body[0].text!=='default')throw Error('unknown enum variant attribute');}
+    else if(body[0]?.kind==='word'&&body[0]?.text==='derive'&&body[1]?.text==='('&&close(body,1)===body.length-1) {
       const names=split(body.slice(2,-1));
       for(const part of names){const name=part.map(token=>token.text).join('');if(seenAttributes.has(name))throw Error('duplicate derive');seenAttributes.add(name);}
-      if(names.some(part=>part.length!==1||!derives.has(part[0].text)))throw Error('unknown enum derive');
+      if(names.some(part=>part.length!==1||part[0].kind!=='word'||!derives.has(part[0].text)))throw Error('unknown enum derive');
     } else throw Error('unknown native item attribute');
     cursor=end+1;
   }

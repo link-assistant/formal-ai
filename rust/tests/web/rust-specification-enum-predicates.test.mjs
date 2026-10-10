@@ -105,3 +105,20 @@ test('non-Copy enum reuse and shadowed ownership derives remain refused',()=>{
  }
  for(const name of ['Clone','Copy','PartialEq','Eq','Debug','Default'])assert.throws(()=>compile('use custom::'+name+'; '+source));
 });
+
+
+test('native derive names and boolean literals require identifier tokens',()=>{
+ const source=sourceFor();
+ for(const name of ['Debug','Clone','Copy','PartialEq','Eq','Default']){
+  const generated=compile(source.replace(name,JSON.stringify(name)));
+  assert.equal(generated.programs.length,0);
+ }
+ for(const literal of ['"true"','"false"','r#true','r#false','NaN','-0','9007199254740993']){
+  assert.equal(compile('pub const FLAG:bool='+literal+';').programs.length,0);
+ }
+ for(const literal of ['"1"','NaN','-0','9007199254740993'])
+  assert.equal(compile('pub const COUNT:usize='+literal+';').programs.length,0);
+ assert.equal(compile('pub const FLAG:bool=true;').programs[0].value,true);
+ assert.equal(compile('pub const FLAG:bool=false;').programs[0].value,false);
+ assert.ok(compile(source).programs.length>0);
+});
