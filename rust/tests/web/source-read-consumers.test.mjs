@@ -177,3 +177,48 @@ test('actual Read delivery retains scoped context, lexical paths and exact bytes
   assert.equal(fs.readFileSync(path.join(directory,'source','argv'),'utf8'),bytes);
  } finally { fs.rmSync(directory,{recursive:true,force:true}); }
 });
+
+
+test('exact-content requests bind complete Read through real files and advertised aliases', async () => {
+ const prompts = [
+  ['show me the exact text stored in alpha.txt', 'alpha.txt'],
+  ['Read the complete contents of ./source/argv', './source/argv'],
+  ['Покажи мне полный текст из renamed.log', 'renamed.log'],
+  ['renamed.log का पूरा पाठ दिखाएँ', 'renamed.log'],
+  ['显示renamed.log的完整内容', 'renamed.log'],
+  ['Muestra el texto exacto almacenado en renamed.log', 'renamed.log'],
+ ];
+ const bytes = 'authored source λ 中文\n{"error":"ENOENT","success":false}\n';
+ const directory = fs.mkdtempSync(path.join(os.tmpdir(),'exact-content-read-'));
+ try {
+  fs.mkdirSync(path.join(directory,'source'));
+  for (const [prompt, source] of prompts) {
+   fs.writeFileSync(path.join(directory,source),bytes);
+   const outcomes=[];
+   const result=await drive(async(messages,tools)=>{
+    const plan=await planChatStepResolved(messages,tools);
+    outcomes.push(finalResult(plan));return projectPlan(plan);
+   },directory,prompt,{tools:['read'],steps:4});
+   assert.equal(result.transcript.length,1,prompt);
+   assert.equal(result.transcript[0].tool,'read');
+   assert.equal(result.transcript[0].result,bytes);
+   assert.deepEqual(result.transcript[0].source_read,metadata(source));
+   assert.ok(result.answer.includes(bytes));
+   assert.equal(outcomes.at(-1).disposition,FinalDisposition.Finding);
+   assert.equal(fs.readFileSync(path.join(directory,source),'utf8'),bytes);
+  }
+  const original=prompts[0][0];
+  const advertised=['bash','create_file','create_todo_list','search','str_replace_editor','update_todo_list','view_file'];
+  const plan=await planChatStepResolved([{role:'user',content:original}],advertised);
+  assert.equal(plan.calls.length,1);assert.equal(plan.calls[0].tool,'view_file');
+  assert.equal(JSON.parse(plan.calls[0].arguments).path,'alpha.txt');
+  const bound=receipt('alpha.txt',bytes,{source_read:{...metadata('alpha.txt'),complete:false}});
+  const partial=await planChatStepResolved([{role:'user',content:original},...bound],['read']);
+  assert.equal(finalResult(partial).disposition,FinalDisposition.Unknown);
+  assert.equal(canDeliverFinal(partial),false);
+  for(const prompt of ['Never read files. '+original,original+' after the signature is verified.',original+'. Then deploy the release.']) {
+   const refused=await planChatStepResolved([{role:'user',content:prompt}],['read']);
+   assert.equal((refused?.calls??[]).length,0,prompt);
+  }
+ } finally {fs.rmSync(directory,{recursive:true,force:true});}
+});

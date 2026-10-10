@@ -200,8 +200,8 @@ meanings
   file-read-mode-contract
     defined-by action
     role file-read-mode-contract
-    precondition "a complete seeded form consumes the existing selector or bounded audit operation and its typed source list; every source token is locally owned and unmatched prerequisites or independent goals are refused"
-    effect "binds source operands for the existing value, first-line or bounded audit producer; it does not certify transport completion or source contents"
+    precondition "a complete seeded form consumes the existing full-content, selector or bounded audit operation and its typed source list; every source token is locally owned and unmatched prerequisites or independent goals are refused"
+    effect "binds source operands for the existing full-content, value, first-line or bounded audit producer; it does not certify transport completion or source contents"
     unit "source spans and producer modes"
     grounding "file_read ownership mode grammar and existing FileReadMode producers in JavaScript and Rust"
     lexeme en "source-owned read mode"
@@ -209,6 +209,16 @@ meanings
     lexeme hi "स्रोत स्वामित्व पठन मोड"
     lexeme zh "源所有权读取模式"
     lexeme es "modo de lectura con propiedad fuente"
+    form full-en
+      pattern "^[ \\t]*{file-read-action-cue}[ \\t]+(?:me[ \\t]+)?(?:the[ \\t]+)?(?:(?:exact|precise|complete|full|verbatim|literal)[ \\t]+)?(?:text|contents?|bytes)[ \\t]+(?:stored[ \\t]+)?(?:in|of|from)[ \\t]+{source}[ \\t]*[?.]?$"
+    form full-ru
+      pattern "^[ \\t]*{file-read-action-cue}[ \\t]+(?:(?:мне|точный|полный|дословный)[ \\t]+)*(?:текст|содержимое|байты)[ \\t]+(?:из|в|файла)[ \\t]+{source}[ \\t]*[?.]?$"
+    form full-hi
+      pattern "^[ \\t]*{source}[ \\t]+(?:में|का)[ \\t]+(?:(?:ठीक|पूरा|सटीक)[ \\t]+)?(?:पाठ|सामग्री)[ \\t]+{file-read-action-cue}[ \\t]*[।.]?$"
+    form full-zh
+      pattern "^{file-read-action-cue}{source}(?:中|的)(?:完整|准确|原始)?(?:文本|内容|字节)[。]?$"
+    form full-es
+      pattern "^[ \\t]*{file-read-action-cue}[ \\t]+(?:el[ \\t]+)?(?:texto|contenido|bytes)[ \\t]+(?:(?:exacto|completo|literal)[ \\t]+)?(?:almacenado[ \\t]+)?(?:en|de)[ \\t]+{source}[ \\t]*[?.]?$"
     form value
       pattern "^[ \\t]*(?:what[ \\t]+is[ \\t]+the[ \\t]+)?value[ \\t]+of[ \\t]+(?<key>[A-Za-z_][A-Za-z0-9_.-]*)[ \\t]+in[ \\t]+{source}[ \\t]*[?.]?$"
       capture-domain key
