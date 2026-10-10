@@ -1,0 +1,53 @@
+self_ast_census
+  target src/agentic_coding/code_task/identifier_domain.rs
+  language rust
+  fidelity full_ast
+  byte_len 980
+  line_count 17
+  content_id source_module_b1e27ddadcaf90fa
+  symbol_count 2
+  symbols
+    const NON_IDENTIFIERS 2 8
+    function rust_identifier_is_valid 9 17
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 1116
+    named_node_count 185
+    distinct_node_kinds 33
+    node_kinds
+      arguments 6
+      array_expression 1
+      array_type 1
+      binary_expression 6
+      block 2
+      boolean_literal 1
+      call_expression 6
+      char_literal 2
+      closure_expression 1
+      closure_parameters 1
+      const_item 1
+      expression_statement 1
+      field_expression 6
+      field_identifier 6
+      function_item 1
+      identifier 16
+      let_declaration 2
+      line_comment 1
+      mutable_specifier 1
+      parameter 1
+      parameters 1
+      parenthesized_expression 1
+      primitive_type 3
+      reference_expression 2
+      reference_type 3
+      return_expression 1
+      source_file 1
+      string_content 53
+      string_literal 53
+      super 1
+      tuple_struct_pattern 1
+      unary_expression 1
+      visibility_modifier 1

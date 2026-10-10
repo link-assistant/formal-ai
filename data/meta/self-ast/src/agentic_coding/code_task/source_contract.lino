@@ -1,0 +1,77 @@
+self_ast_census
+  target src/agentic_coding/code_task/source_contract.rs
+  language rust
+  fidelity full_ast
+  byte_len 4992
+  line_count 146
+  content_id source_module_239c02a0c7a3f679
+  symbol_count 7
+  symbols
+    module matcher 1 1
+    module registration_contract 2 2
+    function alternatives 6 19
+    function role_alternatives 20 38
+    function meaning_alternatives 39 48
+    function source_whitespace_supported 49 57
+    function source_description_contract 59 146
+  ast
+    engine meta_language
+    projection abstract_syntax
+    text_preserved true
+    clean true
+    total_link_count 4136
+    named_node_count 855
+    distinct_node_kinds 52
+    node_kinds
+      arguments 75
+      array_expression 2
+      binary_expression 11
+      block 16
+      boolean_literal 2
+      call_expression 75
+      char_literal 8
+      closure_expression 9
+      closure_parameters 9
+      crate 1
+      else_clause 2
+      expression_statement 12
+      field_expression 56
+      field_identifier 56
+      function_item 5
+      generic_function 2
+      generic_type 6
+      identifier 192
+      if_expression 7
+      index_expression 4
+      integer_literal 24
+      let_condition 1
+      let_declaration 8
+      macro_invocation 6
+      mod_item 2
+      mutable_specifier 1
+      parameter 8
+      parameters 5
+      parenthesized_expression 1
+      primitive_type 7
+      raw_string_literal 3
+      reference_expression 5
+      reference_type 6
+      return_expression 5
+      scoped_identifier 25
+      scoped_type_identifier 1
+      scoped_use_list 1
+      self 1
+      source_file 1
+      string_content 49
+      string_literal 46
+      super 5
+      token_tree 40
+      try_expression 18
+      tuple_pattern 1
+      tuple_struct_pattern 1
+      type_arguments 8
+      type_identifier 14
+      unary_expression 5
+      use_declaration 3
+      use_list 1
+      visibility_modifier 3

@@ -2,30 +2,30 @@ self_ast_census
   target src/agentic_coding/module_function/conditional_ir.rs
   language rust
   fidelity full_ast
-  byte_len 9366
-  line_count 239
-  content_id source_module_15aff326686eefb6
+  byte_len 9495
+  line_count 242
+  content_id source_module_5edb4059f18aec75
   symbol_count 9
   symbols
     type Checked 4 4
     function group 5 7
     function children 8 10
     function binding 11 31
-    function literal 32 34
-    function expression 35 156
-    function statement_terms 157 167
-    function statements 168 223
-    function parse_conditional_body 226 239
+    function literal 32 37
+    function expression 38 159
+    function statement_terms 160 170
+    function statements 171 226
+    function parse_conditional_body 229 242
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 9097
-    named_node_count 1824
+    total_link_count 9243
+    named_node_count 1859
     distinct_node_kinds 69
     node_kinds
-      arguments 136
+      arguments 142
       array_expression 4
       array_type 7
       assignment_expression 5
@@ -35,7 +35,7 @@ self_ast_census
       block 57
       boolean_literal 1
       break_expression 1
-      call_expression 136
+      call_expression 142
       char_literal 13
       closure_expression 12
       closure_parameters 12
@@ -43,20 +43,20 @@ self_ast_census
       crate 1
       doc_comment 2
       else_clause 14
-      expression_statement 71
-      field_expression 70
-      field_identifier 70
+      expression_statement 73
+      field_expression 74
+      field_identifier 74
       for_expression 3
       function_item 8
       generic_function 1
       generic_type 1
-      identifier 392
+      identifier 401
       if_expression 32
       index_expression 31
       inner_doc_comment_marker 1
       integer_literal 42
       let_condition 3
-      let_declaration 25
+      let_declaration 26
       lifetime 4
       lifetime_parameter 1
       line_comment 2
@@ -65,7 +65,7 @@ self_ast_census
       match_block 2
       match_expression 2
       match_pattern 6
-      mutable_specifier 12
+      mutable_specifier 13
       outer_doc_comment_marker 1
       parameter 13
       parameters 8
@@ -75,13 +75,13 @@ self_ast_census
       reference_expression 16
       reference_type 15
       return_expression 18
-      scoped_identifier 10
+      scoped_identifier 13
       scoped_use_list 1
       source_file 1
       string_content 152
       string_literal 154
       super 2
-      token_tree 76
+      token_tree 75
       try_expression 12
       tuple_pattern 1
       tuple_struct_pattern 6

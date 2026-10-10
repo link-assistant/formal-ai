@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/general_planner/content_shape.rs
   language rust
   fidelity full_ast
-  byte_len 9689
+  byte_len 9719
   line_count 237
-  content_id source_module_1cd1e2914a55e21a
+  content_id source_module_2b48f89d094dd126
   symbol_count 10
   symbols
     function describes_code_to_author 18 37
@@ -22,8 +22,8 @@ self_ast_census
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 7187
-    named_node_count 1512
+    total_link_count 7211
+    named_node_count 1516
     distinct_node_kinds 62
     node_kinds
       arguments 145
@@ -36,7 +36,7 @@ self_ast_census
       closure_expression 28
       closure_parameters 28
       continue_expression 3
-      crate 15
+      crate 16
       doc_comment 28
       escape_sequence 2
       expression_statement 22
@@ -46,7 +46,7 @@ self_ast_census
       function_item 10
       generic_function 1
       generic_type 5
-      identifier 332
+      identifier 333
       if_expression 7
       index_expression 5
       inner_doc_comment_marker 5
@@ -70,7 +70,7 @@ self_ast_census
       reference_expression 22
       reference_type 18
       return_expression 6
-      scoped_identifier 57
+      scoped_identifier 58
       scoped_use_list 1
       source_file 1
       string_content 33
@@ -87,4 +87,4 @@ self_ast_census
       unary_expression 12
       use_declaration 2
       use_list 1
-      visibility_modifier 5
+      visibility_modifier 6

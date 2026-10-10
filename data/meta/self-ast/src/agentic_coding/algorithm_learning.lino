@@ -2,104 +2,116 @@ self_ast_census
   target src/agentic_coding/algorithm_learning.rs
   language rust
   fidelity full_ast
-  byte_len 11015
-  line_count 302
-  content_id source_module_fcd431b3191ea1e3
-  symbol_count 14
+  byte_len 16975
+  line_count 462
+  content_id source_module_35ecc56f53f3e505
+  symbol_count 20
   symbols
-    const OBSERVATIONS_PATH 25 25
-    const DISCOVERY_PATH 26 26
-    const CONFORMANCE_TRIGGER 27 27
-    struct AlgorithmLearningTask 30 34
-    function compile_task 40 53
-    function plan_step 55 100
-    function command_payload 103 174
-    function discovery_command 176 187
-    function readback_command 189 191
-    function conformance_bindings 194 207
-    function expected_conformance 210 214
-    function conformance_command 217 232
-    function trace_from_driver_outcome 240 262
-    function result_document 264 302
+    const OBSERVATIONS_PATH 27 27
+    const DISCOVERY_PATH 28 28
+    const CONFORMANCE_TRIGGER 29 29
+    struct AlgorithmLearningTask 32 36
+    function compile_task 42 55
+    function plan_step 57 130
+    function command_payload 133 204
+    function discovery_command 206 217
+    function readback_command 219 221
+    function conformance_bindings 224 237
+    function expected_conformance 240 244
+    function conformance_command 247 262
+    function trace_from_driver_outcome 270 292
+    function result_document 294 332
+    struct CaptureOptions 336 339
+    function default 342 347
+    function shell_quote 351 353
+    function capture_program 357 409
+    function capture_command 412 420
+    function bare_current_operation 422 462
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 8627
-    named_node_count 1796
-    distinct_node_kinds 73
+    total_link_count 12510
+    named_node_count 2569
+    distinct_node_kinds 79
     node_kinds
       abstract_type 1
-      arguments 181
-      array_expression 3
-      array_type 3
-      attribute 6
-      attribute_item 6
-      binary_expression 28
-      block 34
-      boolean_literal 6
-      call_expression 181
-      closure_expression 17
-      closure_parameters 17
+      arguments 248
+      array_expression 4
+      array_type 4
+      assignment_expression 1
+      attribute 7
+      attribute_item 7
+      binary_expression 45
+      block 55
+      boolean_literal 10
+      call_expression 248
+      char_literal 1
+      closure_expression 23
+      closure_parameters 23
       const_item 3
-      continue_expression 4
+      continue_expression 8
       crate 4
-      doc_comment 15
-      else_clause 1
-      expression_statement 47
-      field_declaration 3
-      field_declaration_list 1
-      field_expression 129
-      field_identifier 133
-      field_initializer 1
-      field_initializer_list 1
-      for_expression 2
-      function_item 10
-      generic_function 4
-      generic_type 6
-      identifier 413
-      if_expression 16
-      index_expression 12
+      declaration_list 1
+      doc_comment 20
+      else_clause 3
+      escape_sequence 2
+      expression_statement 68
+      field_declaration 5
+      field_declaration_list 2
+      field_expression 194
+      field_identifier 202
+      field_initializer 3
+      field_initializer_list 2
+      for_expression 4
+      function_item 15
+      generic_function 5
+      generic_type 9
+      identifier 555
+      if_expression 25
+      impl_item 1
+      index_expression 14
       inner_doc_comment_marker 6
-      integer_literal 10
+      integer_literal 18
       let_chain 2
       let_condition 3
-      let_declaration 22
-      line_comment 15
-      macro_invocation 5
+      let_declaration 34
+      lifetime 2
+      line_comment 20
+      macro_invocation 10
       match_arm 2
       match_block 1
       match_expression 1
       match_pattern 2
-      mutable_specifier 12
-      outer_doc_comment_marker 9
-      parameter 15
-      parameters 10
+      mutable_specifier 14
+      outer_doc_comment_marker 14
+      parameter 22
+      parameters 15
       parenthesized_expression 1
-      primitive_type 9
-      range_expression 2
-      reference_expression 35
-      reference_type 18
-      return_expression 14
-      scoped_identifier 48
-      scoped_type_identifier 3
+      primitive_type 19
+      range_expression 4
+      reference_expression 53
+      reference_type 27
+      return_expression 19
+      scoped_identifier 56
+      scoped_type_identifier 4
       scoped_use_list 4
       shorthand_field_initializer 2
       source_file 1
-      string_content 64
-      string_literal 70
-      struct_expression 1
-      struct_item 1
-      super 7
-      token_tree 16
-      try_expression 2
+      string_content 105
+      string_literal 112
+      struct_expression 2
+      struct_item 2
+      super 11
+      token_tree 28
+      try_expression 3
       tuple_expression 2
-      tuple_pattern 3
-      tuple_struct_pattern 8
-      type_arguments 10
-      type_identifier 35
-      unary_expression 8
+      tuple_pattern 4
+      tuple_struct_pattern 10
+      type_arguments 14
+      type_identifier 51
+      unary_expression 12
       use_declaration 11
       use_list 4
-      visibility_modifier 14
+      visibility_modifier 20
