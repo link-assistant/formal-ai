@@ -49,8 +49,8 @@ pub(super) fn contract_text(key: &str, arguments: &[&str]) -> String {
     output
 }
 
-const MAX_FILES: usize = 128;
-const MAX_BYTES: usize = 65536;
+const MAXIMUM_FILES: usize = 128;
+const MAXIMUM_BYTES: usize = 65536;
 
 pub(super) struct DiscoveryContract {
     pub(super) source: String,
@@ -225,7 +225,7 @@ pub(super) fn workspace_discovery_step(
             contract_text("source-template-9", &[]),
         ));
     };
-    if payload.len() > MAX_BYTES {
+    if payload.len() > MAXIMUM_BYTES {
         return Some(observation(
             "unqualified",
             contract_text("source-template-10", &[]),
@@ -245,7 +245,7 @@ pub(super) fn workspace_discovery_step(
         ));
     }
     let lines = &lines[1..lines.len() - 1];
-    if lines.len() > MAX_FILES
+    if lines.len() > MAXIMUM_FILES
         || lines
             .iter()
             .any(|path| !path.strip_prefix("./").is_some_and(safe_path))
@@ -319,7 +319,7 @@ pub(super) fn workspace_discovery_step(
             contract_text("source-template-6", &[&(path).to_string()]),
         ));
     };
-    if source.len() > MAX_BYTES {
+    if source.len() > MAXIMUM_BYTES {
         return Some(observation(
             "unqualified_read",
             contract_text("source-template-13", &[]),

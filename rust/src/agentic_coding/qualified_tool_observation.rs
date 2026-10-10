@@ -148,7 +148,7 @@ mod argument_domain_tests {
 
 pub(super) fn scan(messages: &[ChatMessage], start: usize) -> Vec<QualifiedToolAttempt> {
     let mut frames: Vec<QualifiedToolAttempt> = Vec::new();
-    let mut declared_ids = std::collections::HashSet::new();
+    let mut declared_identifiers = std::collections::HashSet::new();
     for message in messages.iter().skip(start) {
         if message.role.eq_ignore_ascii_case("assistant") {
             for call in &message.tool_calls {
@@ -158,7 +158,7 @@ pub(super) fn scan(messages: &[ChatMessage], start: usize) -> Vec<QualifiedToolA
                 let Some(capability) = classify_tool(&call.function.name) else {
                     continue;
                 };
-                let prior_declaration = !declared_ids.insert(call.id.clone());
+                let prior_declaration = !declared_identifiers.insert(call.id.clone());
                 if prior_declaration {
                     for frame in frames.iter_mut().filter(|frame| frame.call_id == call.id) {
                         frame.binding = Binding::Contradicted;

@@ -28,8 +28,8 @@ export function contractText(key, argumentsList = []) {
 const GRAMMAR = 'data/seed/workspace-discovery-grammar.lino';
 const START = 'workspace-discovery-v1';
 const END = 'workspace-discovery-end';
-const MAX_FILES = 128;
-const MAX_BYTES = 65536;
+const MAXIMUM_FILES = 128;
+const MAXIMUM_BYTES = 65536;
 const escape = text => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 function incompleteObservation(raw) {
@@ -112,12 +112,12 @@ export function workspaceDiscoveryStep(task, progress, tools, originalNeed = tas
     return observation('failed',contract,contractText("source-template-9"));
   }
   const payload = observedPayload(run.detail);
-  if (typeof payload !== 'string' || !observedBytesMatch(run.detail,payload) || new TextEncoder().encode(payload).length > MAX_BYTES) {
+  if (typeof payload !== 'string' || !observedBytesMatch(run.detail,payload) || new TextEncoder().encode(payload).length > MAXIMUM_BYTES) {
     return observation('unqualified',contract,contractText("source-template-10"));
   }
   const lines = payload.split('\n');
   if (lines.at(-1) === '') lines.pop();
-  if (lines.shift() !== START || lines.pop() !== END || lines.length > MAX_FILES
+  if (lines.shift() !== START || lines.pop() !== END || lines.length > MAXIMUM_FILES
     || lines.some(path => !/^\.\/[A-Za-z0-9_.\/-]+$/u.test(path)
       || path.slice(2).split('/').some(part => part === '.' || part === '..' || part === ''))) {
     return observation('unqualified',contract,contractText("source-template-11"));
@@ -147,6 +147,6 @@ export function workspaceDiscoveryStep(task, progress, tools, originalNeed = tas
   }
   const source=sourcePayload.slice('workspace-source-v1\n'.length,-'\nworkspace-source-end\n'.length);
   const bytes = new TextEncoder().encode(source).length;
-  if (bytes > MAX_BYTES) return observation('unqualified_read',contract,contractText("source-template-13"));
+  if (bytes > MAXIMUM_BYTES) return observation('unqualified_read',contract,contractText("source-template-13"));
   return observation('candidate_read',contract,contractText("source-template-7",[path,String(bytes),stableId('observed_candidate',source)]));
 }

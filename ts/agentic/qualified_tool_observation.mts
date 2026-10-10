@@ -66,7 +66,7 @@ export function argumentValuesEqual(left, right) {
  * Copies declarations before inspecting receipts; no caller metadata creates execution authority. */
 export function qualifiedTranscriptFrames(messages,start) {
   const frames=[];
-  const declaredIds = new Set();
+  const declaredIdentifiers = new Set();
   for(let index=start;index<messages.length;index++) {
     const message=messages[index];
     if(typeof message.role!=='string')continue;
@@ -76,8 +76,8 @@ export function qualifiedTranscriptFrames(messages,start) {
           || typeof call.function.arguments!=='string')continue;
         const capability=classifyTool(call.function.name);
         if(capability===null)continue;
-        const priorDeclaration = declaredIds.has(call.id);
-        declaredIds.add(call.id);
+        const priorDeclaration = declaredIdentifiers.has(call.id);
+        declaredIdentifiers.add(call.id);
         if (priorDeclaration) for (const frame of frames) if (frame.callId === call.id) {
           frame.binding = "contradicted"; frame.succeeded = false; frame.duplicate = true;
         }
