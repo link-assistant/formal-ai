@@ -119,3 +119,74 @@ test('independent producer identity refuses foreign repository and run while ret
   for(const bindings of [{repository:'foreign/source',run:'123'},{repository:'fixture/source',run:'124'}])
     assert.throws(()=>verifySelectedWasm(f.root,directory,result.receiptSha256,{requireNative:false,bindings}),/producer identity differs/);
 });
+
+
+test('private receipt binds packaged bytes without publishing producer identity',t=>{
+  const f=fixture(t),result=buildSelectedWasm(f.root,f);
+  const packaged=join(f.root,'package/assets');mkdirSync(packaged,{recursive:true});
+  cpSync(join(f.root,'js/formal_ai_worker.wasm'),join(packaged,'formal_ai_worker.wasm'));
+  const receiptPath=join(f.root,'js/formal_ai_worker.receipt.json');
+  const options={requireNative:false,receiptPath,bindings:{run:'123'}};
+  assert.deepEqual(verifySelectedWasm(f.root,packaged,result.receiptSha256,options),result.record);
+  assert.throws(()=>verifySelectedWasm(f.root,packaged,result.receiptSha256,{requireNative:false}));
+  assert.throws(()=>verifySelectedWasm(f.root,packaged,result.receiptSha256,{...options,bindings:{run:'456'}}));
+  const linked=join(f.root,'linked-receipt.json');symlinkSync(receiptPath,linked);
+  assert.throws(()=>verifySelectedWasm(f.root,packaged,result.receiptSha256,{...options,receiptPath:linked}),/symlink/);
+  assert.throws(()=>verifySelectedWasm(f.root,packaged,result.receiptSha256,{...options,receiptPath:packaged}));
+  writeFileSync(receiptPath,JSON.stringify({...result.record,identity:{...result.record.identity,run:'456'}}));
+  assert.throws(()=>verifySelectedWasm(f.root,packaged,result.receiptSha256,options),/digest differs/);
+});
+
+test('actual npm archive stays identical across private run receipts while embedded receipts differ',t=>{
+  const f=fixture(t),result=buildSelectedWasm(f.root,f),packageRoot=join(f.root,'npm-package');
+  mkdirSync(join(packageRoot,'assets'),{recursive:true});
+  put(packageRoot,'package.json',JSON.stringify({name:'formal-ai-inert-repeatability-fixture',version:'1.2.3',files:['assets']}));
+  cpSync(join(f.root,'js/formal_ai_worker.wasm'),join(packageRoot,'assets/formal_ai_worker.wasm'));
+  const receiptPath=join(f.root,'js/formal_ai_worker.receipt.json');
+  const pack=()=>{
+    const output=execFileSync('npm',['pack','--ignore-scripts','--json','--cache',join(f.root,'isolated-npm-cache')],{cwd:packageRoot,encoding:'utf8',stdio:['ignore','pipe','pipe']});
+    const record=JSON.parse(output)[0];
+    return {integrity:record.integrity,sha256:digest(readFileSync(join(packageRoot,record.filename))),files:record.files.map(file=>file.path)};
+  };
+  const first=pack();
+  writeFileSync(receiptPath,JSON.stringify({...result.record,identity:{...result.record.identity,run:'456',attempt:'2'}}));
+  const second=pack();assert.deepEqual(second,first);
+  assert.equal(first.files.some(path=>path.includes('receipt')),false);
+  cpSync(receiptPath,join(packageRoot,'assets/formal_ai_worker.receipt.json'));
+  const embeddedSecond=pack();
+  writeFileSync(join(packageRoot,'assets/formal_ai_worker.receipt.json'),JSON.stringify(result.record));
+  const embeddedFirst=pack();assert.notEqual(embeddedFirst.integrity,embeddedSecond.integrity);
+  assert.notEqual(embeddedFirst.sha256,embeddedSecond.sha256);
+  console.log(JSON.stringify({scope:'inert npm pack only; no native or publication proof',private:first,embeddedFirst,embeddedSecond}));
+});
+
+
+test('actual distribution generator separates offline receipts from repeatable npm publication',t=>{
+  const f=fixture(t),result=buildSelectedWasm(f.root,f),packageRoot=join(f.root,'packages/formal-ai-engine');
+  for(const name of ['app.js','vendor.bundle.js','seed-files.js'])put(f.root,'js/'+name,'// Inert built asset fixture, never executed.');
+  put(f.root,'js/app/index.html','<!doctype html><title>Inert packaging fixture</title>');
+  put(f.root,'js/distribution/service-worker.js','// Inert service worker fixture.');
+  put(f.root,'data/seed/fixture.lino','fixture\n');put(f.root,'LICENSE','Fixture only');
+  put(packageRoot,'package.json',JSON.stringify({name:'formal-ai-inert-generator-fixture',version:'1.2.3',files:['assets','LICENSE']}));
+  const script=join(f.root,'scripts/generate-web-distribution.py');
+  mkdirSync(dirname(script),{recursive:true});cpSync(new URL('../../../scripts/generate-web-distribution.py',import.meta.url),script);
+  const project=()=>{
+    execFileSync('python3',[script],{cwd:f.root,stdio:['ignore','pipe','pipe']});
+    const files=JSON.parse(execFileSync('npm',['pack','--ignore-scripts','--json','--cache',join(f.root,'isolated-generator-cache')],
+      {cwd:packageRoot,encoding:'utf8',stdio:['ignore','pipe','pipe']}))[0];
+    const archive=readFileSync(join(packageRoot,files.filename));
+    return {integrity:files.integrity,sha256:digest(archive),files:files.files.map(file=>file.path)};
+  };
+  const first=project();
+  assert.equal(first.files.some(path=>path.includes('receipt')),false);
+  assert.match(readFileSync(join(f.root,'js/precache-manifest.js'),'utf8'),/formal_ai_worker\.receipt\.json/u);
+  assert.deepEqual(JSON.parse(readFileSync(join(f.root,'js/formal_ai_worker.receipt.json'),'utf8')),result.record);
+  put(packageRoot,'assets/stale-file.js','stale');put(packageRoot,'assets/formal_ai_worker.receipt.json','stale receipt');
+  const changed={...result.record,identity:{...result.record.identity,run:'456',attempt:'2'}};
+  put(f.root,'js/formal_ai_worker.receipt.json',JSON.stringify(changed));
+  const second=project();assert.deepEqual(second,first);
+  assert.deepEqual(JSON.parse(readFileSync(join(f.root,'js/formal_ai_worker.receipt.json'),'utf8')),changed);
+  assert.equal(second.files.some(path=>path.includes('stale')||path.includes('receipt')),false);
+  assert.match(readFileSync(join(f.root,'js/precache-manifest.js'),'utf8'),/formal_ai_worker\.receipt\.json/u);
+  console.log(JSON.stringify({scope:'actual Python generator plus inert npm pack; no compiler/browser/publication proof',first,second}));
+});

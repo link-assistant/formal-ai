@@ -7,7 +7,8 @@ import {existsSync,mkdirSync,readFileSync,writeFileSync,lstatSync,realpathSync,c
 import {dirname,join,relative,resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 export const RELEASE_PROTOCOL_FILES=Object.freeze({
- engine:Object.freeze(['scripts/release-protocol.mjs','scripts/publish-browser-engine.mjs']),
+ engine:Object.freeze(['scripts/release-protocol.mjs','scripts/publish-browser-engine.mjs',
+    'scripts/build-selected-wasm.mjs','scripts/browser-engine-deadline.mjs','scripts/browser-engine-cold-install.mjs']),
  'source-networks':Object.freeze(['scripts/release-protocol.mjs','scripts/check-source-networks.mjs','scripts/verify-source-network-distribution.mjs','scripts/translate-js-rust.mjs','scripts/lib/source-network-packets.mjs','scripts/lib/source-network-workers.mjs','scripts/lib/source-network-worker.mjs','scripts/lib/translation-blockers.mjs','scripts/lib/translation-lowering.mjs','scripts/lib/translation-workarounds.mjs','scripts/run-with-budget-warning.sh','scripts/check-sccache-write-health.sh','.github/workflows/layered-ci.yml']),
 });
 const digest=bytes=>createHash('sha256').update(bytes).digest('hex');

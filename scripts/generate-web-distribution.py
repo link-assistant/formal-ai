@@ -38,7 +38,9 @@ shutil.copyfile(WEB / 'distribution/service-worker.js', WEB / 'service-worker.js
 output = PACKAGE / 'assets'
 if output.exists():
     shutil.rmtree(output)
-for name, path in assets.items():
+# Producer receipts remain in offline assets; public npm bytes are independent of run identity.
+package_assets = {name: path for name, path in assets.items() if name != receipt.name}
+for name, path in package_assets.items():
     destination = output / name
     destination.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(path, destination)

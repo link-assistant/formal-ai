@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import {existsSync,lstatSync,mkdirSync,readFileSync,readdirSync,realpathSync,writeFileSync} from 'node:fs';
-import {dirname,join,relative,resolve,sep} from 'node:path';
+import {basename,dirname,join,relative,resolve,sep} from 'node:path';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 
 export const WASM_TARGET='wasm32-unknown-unknown';
@@ -112,9 +112,13 @@ export function buildSelectedWasm(root,{run=execute,environment=process.env}={})
 }
 
 /** Bind any packaged copy to an independently recorded build receipt. */
-export function verifySelectedWasm(root,directory,expectedDigest,{requireNative=true,bindings=null}={}) {
+export function verifySelectedWasm(root,directory,expectedDigest,{requireNative=true,bindings=null,receiptPath=null}={}) {
   root=realpathSync(root);directory=realpathSync(directory);assert.match(expectedDigest,/^[a-f0-9]{64}$/u);
-  const bytes=readFileSync(join(directory,receiptName));assert.equal(digest(bytes),expectedDigest,'WASM receipt digest differs');
+  const selectedReceipt=receiptPath===null?join(directory,receiptName):join(realpathSync(dirname(resolve(receiptPath))),basename(receiptPath));
+  assert.equal(lstatSync(selectedReceipt).isSymbolicLink(),false,'symlink receipt path');
+  assert.equal(lstatSync(selectedReceipt).isFile(),true,'receipt must be an ordinary file');
+  assert.equal(realpathSync(selectedReceipt),selectedReceipt,'symlink receipt path');
+  const bytes=readFileSync(selectedReceipt);assert.equal(digest(bytes),expectedDigest,'WASM receipt digest differs');
   const record=JSON.parse(bytes);assert.equal(record.schema,'selected-source-wasm/v1');
   if(requireNative)assert.equal(record.nativeCompilationEvidence,true,'a fixture compiler is not native proof');
   assert.equal(record.sourceCommit,git(root,['rev-parse','HEAD']));assert.equal(record.sourceTree,git(root,['rev-parse','HEAD^{tree}']));
@@ -136,8 +140,8 @@ export function verifySelectedWasm(root,directory,expectedDigest,{requireNative=
 }
 
 if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href) {
-  const [mode,root=process.cwd(),directory=join(root,'js'),receipt]=process.argv.slice(2);
-  const result=mode==='build'?buildSelectedWasm(root):mode==='verify'?verifySelectedWasm(root,directory,receipt,{bindings:process.env.GITHUB_ACTIONS==='true'?{repository:process.env.GITHUB_REPOSITORY,run:process.env.GITHUB_RUN_ID}:null}):assert.fail('build or verify required');
+  const [mode,root=process.cwd(),directory=join(root,'js'),receipt,receiptPath]=process.argv.slice(2);
+  const result=mode==='build'?buildSelectedWasm(root):mode==='verify'?verifySelectedWasm(root,directory,receipt,{receiptPath:receiptPath??null,bindings:process.env.GITHUB_ACTIONS==='true'?{repository:process.env.GITHUB_REPOSITORY,run:process.env.GITHUB_RUN_ID}:null}):assert.fail('build or verify required');
   if(mode==='build'&&process.env.GITHUB_OUTPUT)writeFileSync(process.env.GITHUB_OUTPUT,'receipt-sha256='+result.receiptSha256+'\nwasm-sha256='+result.record.output.sha256+'\n',{flag:'a'});
   console.log(JSON.stringify(result));
 }

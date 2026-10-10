@@ -1,7 +1,7 @@
 // Publish a built browser-engine tarball once; unknown registry errors fail.
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { readFileSync, readdirSync } from 'node:fs';
+import { readFileSync, readdirSync, appendFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
 
@@ -44,4 +44,13 @@ export function publishBrowserEngine(directory = process.cwd(), run = runNpm) {
   return decision;
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) publishBrowserEngine();
+export function publicationStatus(decision) {
+  if (decision?.publish === true) return "published";
+  if (decision?.publish === false) return "already-matching";
+  throw new Error("Unknown source-owned publication result");
+}
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  const decision=publishBrowserEngine();
+  if (process.env.GITHUB_OUTPUT) appendFileSync(process.env.GITHUB_OUTPUT,"status="+publicationStatus(decision)+"\n");
+}

@@ -21,6 +21,12 @@ on: # zizmor: ignore[dangerous-triggers]
       - "rust/tests/web/legacy-release-protocol.test.mjs"
       - "scripts/resolve-package-release.mjs"
       - "scripts/publish-browser-engine.mjs"
+      - "scripts/build-selected-wasm.mjs"
+      - "scripts/browser-engine-*.mjs"
+      - "vscode/package.json"
+      - "vscode/package-lock.json"
+      - "rust/**"
+      - "rust/tests/web/browser-engine-release-integration.test.mjs"
       - "scripts/generate-web-distribution.py"
   workflow_dispatch:
     inputs:
@@ -95,6 +101,19 @@ jobs:
       contents: write
       id-token: write
     steps:
+      - name: Start the absolute package job clock
+        id: clock
+        run: |
+          node --input-type=module - <<'NODE'
+          import {writeFileSync} from "node:fs";
+          import {createHash} from "node:crypto";
+          import {join} from "node:path";
+          const record={schema:"browser-engine-job-clock/v1",started:Date.now()};
+          for(const field of ["GITHUB_RUN_ID","GITHUB_RUN_ATTEMPT","GITHUB_WORKFLOW_SHA"])record[field]=process.env[field];
+          const bytes=JSON.stringify(record)+"\n";
+          writeFileSync(join(process.env.RUNNER_TEMP,"browser-engine-job-clock.json"),bytes,{flag:"wx"});
+          writeFileSync(process.env.GITHUB_OUTPUT,"sha256="+createHash("sha256").update(bytes).digest("hex")+"\n",{flag:"a"});
+          NODE
       - uses: actions/checkout@v7
         with:
           ref: ${{ github.workflow_sha }}
@@ -141,24 +160,69 @@ jobs:
           echo "commit=$selected_commit" >> "$GITHUB_OUTPUT"
           node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/release-protocol.mjs" package \
             "$GITHUB_WORKSPACE" packages/formal-ai-engine/package.json "$selected_commit"
-      - name: Prepare web and engine artifacts
+      - name: Install the pinned selected-source WASM compiler
+        timeout-minutes: 5
+        env:
+          ENGINE_CLOCK_SHA256: ${{ steps.clock.outputs.sha256 }}
         run: |
-          bun install --frozen-lockfile
-          bun run build:web
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" setup rustup toolchain install 1.99.0 --profile minimal --target wasm32-unknown-unknown
+      - name: Compile the selected source to WASM and record its complete inputs
+        id: wasm
+        timeout-minutes: 5
+        env:
+          ENGINE_CLOCK_SHA256: ${{ steps.clock.outputs.sha256 }}
+          RUSTUP_TOOLCHAIN: 1.99.0
+        run: |
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" build node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/build-selected-wasm.mjs" build "$GITHUB_WORKSPACE"
+      - name: Prepare locked browser smoke dependencies
+        timeout-minutes: 5
+        env:
+          ENGINE_CLOCK_SHA256: ${{ steps.clock.outputs.sha256 }}
+        run: |
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" setup npm ci --prefix vscode --ignore-scripts
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" setup node vscode/node_modules/playwright/cli.js install chromium --with-deps
+      - name: Prepare web and engine artifacts
+        env:
+          ENGINE_CLOCK_SHA256: ${{ steps.clock.outputs.sha256 }}
+        run: |
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" prepare bun install --frozen-lockfile
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" prepare bun run build:web
       - name: Verify only the declared selected-Cargo package version projection
         env:
           SELECTED_SOURCE_COMMIT: ${{ steps.source.outputs.commit }}
         run: >-
           node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/release-protocol.mjs" package
           "$GITHUB_WORKSPACE" packages/formal-ai-engine/package.json "$SELECTED_SOURCE_COMMIT" built
+      - name: Verify the fresh WASM and packaged bytes with a private receipt
+        env:
+          WASM_RECEIPT_SHA256: ${{ steps.wasm.outputs.receipt-sha256 }}
+        run: |
+          set -euo pipefail
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/build-selected-wasm.mjs" verify "$GITHUB_WORKSPACE" "$GITHUB_WORKSPACE/js" "$WASM_RECEIPT_SHA256"
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/build-selected-wasm.mjs" verify "$GITHUB_WORKSPACE" "$GITHUB_WORKSPACE/packages/formal-ai-engine/assets" "$WASM_RECEIPT_SHA256" "$GITHUB_WORKSPACE/js/formal_ai_worker.receipt.json"
       - name: Package the engine
         working-directory: packages/formal-ai-engine
-        run: npm pack --ignore-scripts
+        env:
+          ENGINE_CLOCK_SHA256: ${{ steps.clock.outputs.sha256 }}
+        run: node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" pack npm pack --ignore-scripts
       - uses: actions/upload-artifact@v7
         with:
           name: formal-ai-engine
           path: packages/formal-ai-engine/*.tgz
           if-no-files-found: error
+      - name: Cold install the packed engine before public publication
+        timeout-minutes: 8
+        env:
+          ENGINE_CLOCK_SHA256: ${{ steps.clock.outputs.sha256 }}
+          WASM_RECEIPT_SHA256: ${{ steps.wasm.outputs.receipt-sha256 }}
+        run: |
+          set -euo pipefail
+          version="$(node -p 'JSON.parse(require("node:fs").readFileSync("packages/formal-ai-engine/package.json")).version')"
+          archives=(packages/formal-ai-engine/*.tgz)
+          [ "${#archives[@]}" = 1 ] || exit 1
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" cold node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-cold-install.mjs" \
+            "$GITHUB_WORKSPACE" "${archives[0]}" "$version" "$GITHUB_WORKSPACE/js/formal_ai_worker.receipt.json" \
+            "$WASM_RECEIPT_SHA256" checks-only
       - name: Attach installable engine package to the release
         if: needs.resolve.outputs.publish == 'true'
         env:
@@ -166,9 +230,11 @@ jobs:
           PACKAGE_RELEASE_TAG: ${{ needs.resolve.outputs.tag }}
         run: gh release upload "$PACKAGE_RELEASE_TAG" packages/formal-ai-engine/*.tgz --clobber
       - name: Publish with provenance
+        id: publication
         if: needs.resolve.outputs.publish == 'true'
         working-directory: packages/formal-ai-engine
         env:
+          ENGINE_CLOCK_SHA256: ${{ steps.clock.outputs.sha256 }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_TRUSTED_PUBLISHING: ${{ vars.FORMAL_AI_NPM_TRUSTED_PUBLISHING }}
           RELEASE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
@@ -176,8 +242,28 @@ jobs:
         run: |
           if [ -z "$NODE_AUTH_TOKEN" ] && [ "$NPM_TRUSTED_PUBLISHING" != "true" ]; then
             echo "::notice::npm publication is not configured; the installable tarball is attached to the release"
+            echo "status=skipped-unconfigured" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/release-protocol.mjs" verify \
             "$GITHUB_WORKSPACE" "$FORMAL_AI_RELEASE_PROTOCOL_DIR" "$RELEASE_PROTOCOL_COMMIT" "$RELEASE_PROTOCOL_SHA256"
-          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/publish-browser-engine.mjs"
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" publish node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/publish-browser-engine.mjs"
+      - name: Cold install and verify the genuine browser worker
+        timeout-minutes: 8
+        env:
+          ENGINE_CLOCK_SHA256: ${{ steps.clock.outputs.sha256 }}
+          WASM_RECEIPT_SHA256: ${{ steps.wasm.outputs.receipt-sha256 }}
+          PUBLICATION_STATUS: ${{ steps.publication.outputs.status }}
+          PUBLICATION_REQUESTED: ${{ needs.resolve.outputs.publish }}
+        run: |
+          set -euo pipefail
+          if [ "$PUBLICATION_REQUESTED" = "false" ]; then
+            [ -z "$PUBLICATION_STATUS" ] || exit 1
+            PUBLICATION_STATUS=checks-only
+          fi
+          version="$(node -p 'JSON.parse(require("node:fs").readFileSync("packages/formal-ai-engine/package.json")).version')"
+          archives=(packages/formal-ai-engine/*.tgz)
+          [ "${#archives[@]}" = 1 ] || exit 1
+          node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-deadline.mjs" cold node "$FORMAL_AI_RELEASE_PROTOCOL_DIR/scripts/browser-engine-cold-install.mjs" \
+            "$GITHUB_WORKSPACE" "${archives[0]}" "$version" "$GITHUB_WORKSPACE/js/formal_ai_worker.receipt.json" \
+            "$WASM_RECEIPT_SHA256" "$PUBLICATION_STATUS"
