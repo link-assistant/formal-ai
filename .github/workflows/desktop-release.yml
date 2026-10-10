@@ -651,13 +651,30 @@ jobs:
               exit 1
             fi
 
-            codesign --verify --deep --strict --verbose=2 "$installed_app"
+            export NATIVE_SIGNING_PROCESS_DIRECTORY="$(mktemp -d "$RUNNER_TEMP/formal-ai-signing-process.XXXXXX")"
+            node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-evidence.mjs" \
+              signing-process \
+              ../native-source "$installed_app" "$dmg" \
+              "$NATIVE_SIGNING_PROCESS_DIRECTORY/verify.json" verify codesign --verify --deep --strict --verbose=2 "$installed_app"
 
             if [ "$MACOS_BUILD_MODE" = "signed" ]; then
-              spctl --assess --type execute --verbose=4 "$installed_app"
-              xcrun stapler validate "$installed_app"
+              node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-evidence.mjs" \
+                signing-process \
+                ../native-source "$installed_app" "$dmg" \
+                "$NATIVE_SIGNING_PROCESS_DIRECTORY/assess.json" assess spctl --assess --type execute --verbose=4 "$installed_app"
+              node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-evidence.mjs" \
+                signing-process \
+                ../native-source "$installed_app" "$dmg" \
+                "$NATIVE_SIGNING_PROCESS_DIRECTORY/stapler.json" stapler xcrun stapler validate "$installed_app"
+              node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-evidence.mjs" \
+                signing-process \
+                ../native-source "$installed_app" "$dmg" \
+                "$NATIVE_SIGNING_PROCESS_DIRECTORY/display.json" display codesign --display --verbose=2 "$installed_app"
             else
-              codesign --display --verbose=2 "$installed_app" 2>&1 | tee "$RUNNER_TEMP/formal-ai-macos-codesign.txt"
+              node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-evidence.mjs" \
+                signing-process \
+                ../native-source "$installed_app" "$dmg" \
+                "$NATIVE_SIGNING_PROCESS_DIRECTORY/display.json" display codesign --display --verbose=2 "$installed_app" 2>&1 | tee "$RUNNER_TEMP/formal-ai-macos-codesign.txt"
               if ! grep -Fq 'Signature=adhoc' "$RUNNER_TEMP/formal-ai-macos-codesign.txt"; then
                 echo "::error file=$dmg::Expected ad-hoc macOS signature for no-Apple-account build."
                 exit 1
