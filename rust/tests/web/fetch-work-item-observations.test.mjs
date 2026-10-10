@@ -121,3 +121,93 @@ test('legacy Fetch diagnostic uses failure evidence while successful JSON remain
  const recovered=Progress.scan(retry);assert.equal(recovered.failedWorkItemReadOf(url),null);
  assert.equal(recovered.fetched_text,'The requested source answered successfully.');
 });
+
+// Protocol errors retain raw failure bytes; quoted and multiline documents stay source bytes.
+test('whole HTTP error status lines refuse source authority across Fetch aliases', () => {
+  const failures = [
+    "HTTP/1.1 404: Not Found",
+    "HTTP/2 429 Too Many Requests",
+    "HTTP/3 503 Service Unavailable",
+    "HTTP/1.0 400",
+    " HTTP/1.1\t500\tInternal Server Error\r\n",
+    "HTTP/1.1 599 Unknown",
+    "HTTP/1.1 404 Не найдено",
+    "HTTP/2 503 服务不可用",
+    "HTTP/3 404 Introuvable 😀",
+    "\r\n\t HTTP/1.1 404 Not Found \t\r\n",
+    "HTTP/1.1 404 \tReason",
+  ];
+  const documents = [
+    "HTTP/1.1 200 OK",
+    "HTTP/1.1 304 Not Modified",
+    "HTTP/1.1 600 Invalid",
+    "HTTP/1.1 40 Nope",
+    "HTTP/1.1 4040 Nope",
+    "HTTP/1.1 404:Not Found",
+    "HTTP/ 404 Not Found",
+    "HTTP/1. 404 Not Found",
+    "HTTP/.1 404 Not Found",
+    "HTTP/1.1.1 404 Not Found",
+    "http/1.1 404 Not Found",
+    "Quoted HTTP/1.1 404: Not Found",
+    "\"HTTP/1.1 404: Not Found\"",
+    "`HTTP/1.1 404: Not Found`",
+    "HTTP/1.1 404: Not Found\nThis article explains status lines.",
+    "This article\nHTTP/1.1 404: Not Found",
+    "{\"status\":404,\"body\":\"HTTP/1.1 404: Not Found\"}",
+    "Create a file status.txt containing exactly: HTTP/1.1 404: Not Found",
+    "Found 2 matches\na.rs:10: HTTP/1.1 404: Not Found\nb.rs:12: no failure",
+    "HTTP/1.1 404 Not Found",
+    "HTTP/1.1 404 Not Found",
+    "HTTP/1.1 404 Not Found",
+    "﻿HTTP/1.1 404 Not Found",
+    "HTTP/1.1 404 Not Found﻿",
+    "HTTP/1.1 404 ﻿Not Found",
+    " HTTP/1.1 404 Not Found",
+    "HTTP/1.1 404 Not Found ",
+    "HTTP/1.1 404  Not Found",
+    " HTTP/1.1 404 Not Found",
+    "HTTP/1.1 404 Not Found ",
+    "HTTP/1.1 404  Not Found",
+    "\u0000HTTP/1.1 404 Not Found",
+    "HTTP/1.1 404 Not Found\u0000",
+    "HTTP/1.1 404 \u0000Not Found",
+    "\u000bHTTP/1.1 404 Not Found",
+    "HTTP/1.1 404 Not Found\u000b",
+    "HTTP/1.1 404 \u000bNot Found",
+    "\fHTTP/1.1 404 Not Found",
+    "HTTP/1.1 404 Not Found\f",
+    "HTTP/1.1 404 \fNot Found",
+    " HTTP/1.1 404 Not Found",
+  ];
+  for (const tool of ['fetch_url', 'webfetch']) {
+    for (const body of failures) {
+      const messages = [{role: 'user', content: request}];
+      observe(messages, tool, {url}, body);
+      const progress = Progress.scan(messages);
+      assert.deepEqual(progress.fetched_pages, []);
+      assert.equal(progress.fetched_text, null);
+      assert.equal(progress.latestFailure().detail, body);
+      assert.equal(progress.failedWorkItemReadOf(url), body);
+    }
+    for (const body of documents) {
+      const messages = [{role: 'user', content: request}];
+      observe(messages, tool, {url}, body);
+      const progress = Progress.scan(messages);
+      assert.equal(progress.latestFailure(), null);
+      assert.deepEqual(progress.fetched_pages, [[url, body]]);
+      assert.equal(progress.fetched_text, body);
+    }
+  }
+});
+
+test('a bare HTTP404 Fetch failure answers with the original failure before research continues', async () => {
+  const messages = [{role: 'user', content: 'Look up the published reorder point for the winter restock and report it.'}];
+  observe(messages, 'webfetch', {url: 'https://example.invalid/winter-restock'}, 'HTTP/1.1 404: Not Found');
+  const tools = ['bash', 'batch', 'codesearch', 'edit', 'glob', 'grep', 'list', 'read', 'task',
+    'todoread', 'todowrite', 'webfetch', 'websearch', 'write'];
+  const answer = await planChatStep(messages, tools);
+  assert.equal(answer.kind, 'final');
+  assert.ok(answer.answer.startsWith('The command failed:'));
+  assert.ok(answer.answer.includes('HTTP/1.1 404: Not Found'));
+});

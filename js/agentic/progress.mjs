@@ -61,7 +61,8 @@ export class Progress {
       const observation = boundRead ? sourceReadObservation(raw, Boolean(message.is_error || message.isError),
         message.source_read ?? message.sourceRead ?? null, path) : null;
       const failure = observation !== null ? observation.error
-        : capability === Capability.Read || (capability === Capability.Fetch && (parseJson(raw) !== undefined || !legacyFetchNotice(raw)))
+        : capability === Capability.Fetch && standaloneHttpFailure(raw) ? raw
+          : capability === Capability.Read || (capability === Capability.Fetch && (parseJson(raw) !== undefined || !legacyFetchNotice(raw)))
           ? (message.is_error || message.isError ? raw : null)
           : failureMessage(raw, Boolean(message.is_error || message.isError), capability !== Capability.Run);
       progress.attempts.push({
@@ -568,4 +569,9 @@ function legacyFetchNotice(raw) {
     const next = Array.from(normalized.slice(prefix.length))[0];
     return next === undefined || !/[\p{Alphabetic}\p{N}]/u.test(next);
   });
+}
+
+/** A whole single-line protocol failure is transport status, not an article quotation. */
+function standaloneHttpFailure(raw) {
+  return /^HTTP\/[0-9]+(?:\.[0-9]+)?[ \t]+[45][0-9]{2}:?(?:[ \t]+[^\x00-\x08\x0a-\x1f\x7f\u0085\u2028\u2029\ufeff]*)?$/u.test(raw.replace(/^[ \t\r\n]+|[ \t\r\n]+$/gu, ''));
 }
