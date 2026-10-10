@@ -164,26 +164,28 @@ pub(super) fn plan_direct_file_reads(
 /// This recognizes the contract rather than a particular field name: callers
 /// may ask for `status=`, `digest=`, or any other machine-readable value.
 pub(super) fn exact_line_key(prompt: &str) -> Option<String> {
-    super::sentences(prompt).into_iter().find_map(|sentence| {
-        let lower = sentence.text.to_ascii_lowercase();
-        let identifies_line = lower.contains("line beginning exactly")
-            || lower.contains("line that begins exactly")
-            || lower.contains("line starting exactly")
-            || lower.contains("line that starts exactly");
-        identifies_line.then_some(())?;
-        sentence
-            .text
-            .split('`')
-            .enumerate()
-            .filter(|(index, _)| index % 2 == 1)
-            .map(|(_, quoted)| quoted.trim())
-            .find_map(|quoted| {
-                let key = quoted.strip_suffix('=')?;
-                (!key.is_empty()
-                    && key
-                        .chars()
-                        .all(|character| character.is_ascii_alphanumeric() || character == '_'))
-                .then(|| key.to_owned())
-            })
-    })
+    super::super::shell_command_policy::sentences(prompt)
+        .into_iter()
+        .find_map(|sentence| {
+            let lower = sentence.text.to_ascii_lowercase();
+            let identifies_line = lower.contains("line beginning exactly")
+                || lower.contains("line that begins exactly")
+                || lower.contains("line starting exactly")
+                || lower.contains("line that starts exactly");
+            identifies_line.then_some(())?;
+            sentence
+                .text
+                .split('`')
+                .enumerate()
+                .filter(|(index, _)| index % 2 == 1)
+                .map(|(_, quoted)| quoted.trim())
+                .find_map(|quoted| {
+                    let key = quoted.strip_suffix('=')?;
+                    (!key.is_empty()
+                        && key
+                            .chars()
+                            .all(|character| character.is_ascii_alphanumeric() || character == '_'))
+                    .then(|| key.to_owned())
+                })
+        })
 }
