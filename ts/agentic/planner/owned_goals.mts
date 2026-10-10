@@ -1,5 +1,6 @@
 import { cached, childrenNamed, parseLino, readText } from '../host.mjs';
 import { mentionsRole } from '../write_lexicon.mjs';
+import { closedArithmeticDeclaration } from '../module_function.mjs';
 import { boundReadPaths, pendingReadCondition } from '../file_read/ownership.mjs';
 import { normalizePrompt } from '../crate/engine.mjs';
 import { unquotedPathTokens } from '../positional_edit.mjs';
@@ -13,6 +14,7 @@ import { leafNode } from '../crate/obligation_ledger.mjs';
 import { gapAnswer } from '../task_obligations.mjs';
 import { planBoundRequestSteps } from '../request_sequence.mjs';
 import { FinalDisposition, canDeliverFinal, resolvedFinalAnswer } from '../plan.mjs';
+import { collectionSummaryOwns } from './collection_summary.mjs';
 
 const encoder = new TextEncoder();
 const grammarTail = (text) => /^[\s.!?。！？।;；]*$/u.test(text);
@@ -176,6 +178,10 @@ export async function planGoalLedger(request, messages, toolNames, planFor) {
     if (hasContext) return goalGap(missing);
     if (literalWriteOwnership(missing.clause) !== null) return goalGap(missing);
     if (missingIndex === 0) {
+      if (collectionSummaryOwns(goals)) {
+        const plan = await planBoundRequestSteps(goals.slice(1).map(goal => goal.clause), messages, toolNames, planFor);
+        return plan?.kind === 'final' && canDeliverFinal(plan) ? goalGap(missing) : plan;
+      }
       return literalWriteOwnership(request) !== null
         || goals.some(goal => ['literal_file', 'source_edit'].includes(goal.kind))
         ? goalGap(missing) : null;
@@ -278,6 +284,7 @@ function contractActionPrologue(clause, contract) {
 
 /** Full owned literal addition frame; null position refuses ambiguous addition. */
 export function ownedAdditiveLiteralFrame(request) {
+  if (closedArithmeticDeclaration(request)) return null;
   const contract = parseWriteContract(request);
   if (contract === null || quoteFault(request) !== null || nestedQuoteFault(request) !== null
     || !literalTail(request, contract) || attributedActionPrefix(request)

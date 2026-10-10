@@ -24,17 +24,19 @@ import { toolFor } from './capability_router.mjs';
 import { sourceFromAgentReadResult, sourceFromReadResult } from './code_artifact.mjs';
 import { planSymbolicCommandReroute } from './command_reroute.mjs';
 import { cached, readText, realm, solve } from './host.mjs';
-import { planOne } from './plan.mjs';
+import { planOne, resolvedFinalAnswer, FinalDisposition } from './plan.mjs';
+import { renderSeededOutcome } from './code_task.mjs';
 import { evidenceWindowStart } from './planner/continuation.mjs';
 import { normalizeCommandWord } from './shell_command_policy.mjs';
 import { failureMessage } from './tool_result.mjs';
 import { readArguments, resultForPath } from './workspace_change.mjs';
 import { meaningEvidencedIn, mentionsRole, wordsForRole } from './write_lexicon.mjs';
 import { findChildValue, parseLinoRoot } from './write_lino.mjs';
-import { cleanPathToken, looksLikeFilePath, safeRelativePath, tokens } from './write_request.mjs';
+import { bareSurfaces, firstActionCueStart, firstActionCueEnd, cleanPathToken, looksLikeFilePath, safeRelativePath, tokens } from './write_request.mjs';
+import { unquotedPathTokens } from './positional_edit.mjs';
 import { programLanguageBySlug } from './crate/coding_catalog.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
-import { quotedSegmentSpans } from './crate/normal_markov.mjs';
+import { quotedSegmentSpans, quoteFault } from './crate/normal_markov.mjs';
 import { terminalCommandVocabulary } from './crate/seed_terminal_commands.mjs';
 
 const fill = (template, slots) => slots.reduce((text, [slot, value]) => text.split(`{${slot}}`).join(value), template);
@@ -148,6 +150,44 @@ function statedCommand(request) {
 export function pathsIn(text) {
   return [...new Set(tokens(text).map((token) => cleanPathToken(token.text))
     .filter((path) => looksLikeFilePath(path) && safeRelativePath(path)))];
+}
+
+/** A finite declaration frame consumes its source operands before literal routing. */
+export function closedArithmeticDeclaration(request) {
+  if (/[^\x00-\x7f]/u.test(request) || quoteFault(request) !== null) return false;
+  const declaration = moduleFunctionRequest(request);
+  if (declaration === null || declaration.test !== null || declaration.command !== null
+    || declaration.parameters.length !== 2
+    || declaration.parameters[0] === declaration.parameters[1]) return false;
+  const pathTokens = unquotedPathTokens(request).filter(token => looksLikeFilePath(cleanPathToken(token.text)));
+  if (pathTokens.length !== 1 || cleanPathToken(pathTokens[0].text) !== declaration.module) return false;
+  const pathStart = request.indexOf(declaration.module, pathTokens[0].start);
+  if (pathStart < 0 || !/^[\s.!?;]*$/u.test(request.slice(pathStart + declaration.module.length))) return false;
+  const opening = request.indexOf('(', declaration.at);
+  const closing = request.indexOf(')', opening);
+  if (opening < 0 || closing < 0 || closing >= pathStart) return false;
+  const prefix = request.slice(0, declaration.at), prefixTokens = tokens(prefix);
+  const actionStart = firstActionCueStart(prefixTokens), actionEnd = firstActionCueEnd(prefixTokens);
+  if (actionStart !== 0 || actionEnd === null) return false;
+  const action = normalizePrompt(prefix.slice(actionStart, actionEnd));
+  if (!['coding_request_verb', 'coding_member_add_action'].some(role =>
+    bareSurfaces(role).some(surface => normalizePrompt(surface) === action))) return false;
+  const coveredWords = (text, roles) => {
+    const allowed = new Set(roles.flatMap(role => bareSurfaces(role)
+      .flatMap(surface => normalizePrompt(surface).split(/\s+/u))));
+    return tokens(text).every(token => allowed.has(normalizePrompt(token.text)));
+  };
+  if (!mentionsRole('coding_request_object', prefix)
+    || !coveredWords(prefix.slice(actionEnd), ['request_function_word', 'coding_request_object'])) return false;
+  const suffix = request.slice(closing + 1, pathStart), suffixTokens = tokens(suffix);
+  const returned = suffixTokens.find(token => bareSurfaces('coding_return_action')
+    .some(surface => normalizePrompt(surface) === normalizePrompt(token.text)));
+  if (returned === undefined || !coveredWords(suffix.slice(0, returned.start), ['request_function_word'])) return false;
+  const expression = suffix.slice(returned.end).match(/^\s*([A-Za-z_$][\w$]*)\s*([+*/%-])\s*([A-Za-z_$][\w$]*)\s+(.+?)\s*$/u);
+  if (expression === null || !declaration.parameters.includes(expression[1])
+    || !declaration.parameters.includes(expression[3])) return false;
+  return ['file_edit_target_cue', 'file_write_destination_cue'].flatMap(role => bareSurfaces(role)).some(surface =>
+    normalizePrompt(surface) === normalizePrompt(expression[4]));
 }
 
 /**
@@ -430,6 +470,9 @@ export async function planModuleFunctionStep(task, messages, toolNames) {
   if (observed !== null) return planObservedCallableStep(observed, messages, toolNames);
   const request = moduleFunctionRequest(task);
   if (!request) return null;
+  if (request.test === null && !closedArithmeticDeclaration(task)) return resolvedFinalAnswer(
+    renderSeededOutcome('coding-source-authoring-contract-missing', task, '') ?? '',
+    FinalDisposition.Gap, 'module-function-request-unconsumed');
   const currentTurn = messages.slice(evidenceWindowStart(messages));
   const readTool = toolFor(toolNames, Capability.Read);
   const sources = [];

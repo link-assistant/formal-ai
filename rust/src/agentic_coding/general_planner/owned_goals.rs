@@ -364,6 +364,83 @@ pub(in crate::agentic_coding) fn pending_read_gap(
 }
 
 /// Literal-only scheduling stays authoritative; supported mixed actions retain all goals.
+// A count summary schedules only a complete collection; its own Gap remains.
+fn collection_summary_owns(goals: &[Goal]) -> bool {
+    use unicode_normalization::UnicodeNormalization;
+    if goals.len() < 2 || goals[0].kind != GoalKind::Unsupported {
+        return false;
+    }
+    let mut targets = std::collections::BTreeSet::new();
+    for goal in &goals[1..] {
+        if goal.kind != GoalKind::LiteralFile {
+            return false;
+        }
+        let ObligationExpectation::FileBytes { path, .. } = &goal.node.expectation else {
+            return false;
+        };
+        if !crate::agentic_coding::write_request::safe_relative_path(path) {
+            return false;
+        }
+        let canonical = path
+            .split('/')
+            .filter(|part| *part != ".")
+            .collect::<Vec<_>>()
+            .join("/");
+        let canonical = canonical.nfc().collect::<String>().to_lowercase();
+        if canonical.is_empty() || !targets.insert(canonical) {
+            return false;
+        }
+    }
+    let clause = goals[0]
+        .node
+        .clause
+        .trim_end_matches(|character: char| {
+            character.is_whitespace() || ".!?。！？।;；".contains(character)
+        })
+        .trim()
+        .nfc()
+        .collect::<String>()
+        .to_lowercase();
+    let lexicon = crate::seed::meanings::lexicon();
+    for cardinal in lexicon.meanings_with_role("cardinal_number_word") {
+        let values = cardinal
+            .lexemes
+            .iter()
+            .flat_map(|lexeme| &lexeme.words)
+            .filter(|word| {
+                !word.text.is_empty()
+                    && word.text.len() <= 9
+                    && word.text.bytes().all(|byte| byte.is_ascii_digit())
+            })
+            .filter_map(|word| word.text.parse::<usize>().ok())
+            .collect::<std::collections::BTreeSet<_>>();
+        if values.len() != 1 || !values.contains(&targets.len()) {
+            continue;
+        }
+        for lexeme in &cardinal.lexemes {
+            for noun_meaning in lexicon.meanings_with_role("file-read-object-noun") {
+                for noun_lexeme in &noun_meaning.lexemes {
+                    if noun_lexeme.language != lexeme.language {
+                        continue;
+                    }
+                    for word in &lexeme.words {
+                        for noun in &noun_lexeme.words {
+                            let number = word.text.nfc().collect::<String>().to_lowercase();
+                            let object = noun.text.nfc().collect::<String>().to_lowercase();
+                            if clause == format!("{number} {object}")
+                                || lexeme.language == "zh" && clause == format!("{number}{object}")
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    false
+}
+
 pub(in crate::agentic_coding) fn plan_owned_goal_step(
     request: &str,
     messages: &[ChatMessage],
@@ -402,6 +479,23 @@ pub(in crate::agentic_coding) fn plan_owned_goal_step(
             return Some(goal_gap(missing, result));
         }
         if index == 0 {
+            if collection_summary_owns(&goals) {
+                let parts = goals[1..]
+                    .iter()
+                    .map(|goal| goal.node.clause.clone())
+                    .collect::<Vec<_>>();
+                let plan =
+                    plan_bound_request_steps(&parts, messages, tool_names, plan_for, result)?;
+                return Some(
+                    if matches!(&plan, AgenticPlan::Final(_))
+                        && ResolvedPlan::new(plan.clone(), result.clone()).can_deliver()
+                    {
+                        goal_gap(missing, result)
+                    } else {
+                        plan
+                    },
+                );
+            }
             return (literal_write_ownership(request).is_some()
                 || goals.iter().any(|goal| {
                     goal.kind == GoalKind::LiteralFile || goal.kind == GoalKind::SourceEdit
@@ -668,6 +762,9 @@ fn contract_action_prologue(clause: &str, contract: &LiteralWriteContract) -> bo
 
 /// Full owned literal addition frame; absent position refuses ambiguous addition.
 pub fn owned_additive_literal_frame(request: &str) -> Option<(String, String, Option<bool>)> {
+    if crate::agentic_coding::module_function::closed_arithmetic_declaration(request) {
+        return None;
+    }
     let contract = parse_write_contract(request)?;
     if quote_fault(request).is_some()
         || crate::agentic_coding::quote_nesting::nested_quote_fault(request).is_some()
