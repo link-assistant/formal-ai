@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, realpathSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -10,15 +10,17 @@ export function runStagedReleaseGenerator(arguments_) {
   const evidence = 'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/';
   const directoryPosition = arguments_.indexOf('--directory');
   const outputDirectory = directoryPosition < 0 ? null : resolve(arguments_[directoryPosition + 1]);
-  assert.ok(arguments_.every((argument, index) => argument === '--check' || argument === '--write' || argument === '--directory' || directoryPosition >= 0 && index === directoryPosition + 1));
-  assert.notEqual(arguments_.includes('--write'), arguments_.includes('--check'), 'choose exactly write or check');
+  assert.ok(arguments_.every((argument, index) => argument === '--check' || argument === '--check-deployed' || argument === '--write' || argument === '--directory' || directoryPosition >= 0 && index === directoryPosition + 1));
+  assert.equal(arguments_.filter(value => ['--check','--check-deployed','--write'].includes(value)).length, 1, 'choose exactly one check or write mode');
   if (arguments_.includes('--write')) assert.ok(outputDirectory, 'write requires an explicit scratch/repository destination');
   const packet = JSON.parse(readFileSync(join(root, evidence, 'stage-source-coverage.json'), 'utf8'));
-  const source = readFileSync(join(root, '.github/workflows/release.yml'), 'utf8');
+  const deployed = arguments_.includes('--check-deployed');
+  const source = readFileSync(join(root, deployed ? evidence + 'original-release-workflow.yml' : '.github/workflows/release.yml'), 'utf8');
   const sha = value => createHash('sha256').update(value).digest('hex');
   assert.equal(sha(source), packet.workflowSha256, 'canonical source drift requires explicit original operation refresh');
   assert.equal(readFileSync(join(root, evidence, 'original-release-workflow.yml'), 'utf8'), source);
   const {operations,binding,outputs}=buildStagedReleaseProjection(source,packet);
+  if (deployed) assert.equal(readFileSync(join(root,'.github/workflows/release.yml'),'utf8'),outputs.get(evidence+'candidate-release-caller.yml'),'deployed caller differs from checked original projection');
   for (const [path, bytes] of outputs) {
     const destination = outputDirectory ? join(outputDirectory, path.split('/').at(-1)) : join(root, path);
     if (arguments_.includes('--write')) {
@@ -94,7 +96,7 @@ export function buildStagedReleaseProjection(source, packet) {
     for (const stage of stages) {
       const needs = stageNeeds[stage];
       yaml += '  ' + id(stage) + ':\n    name: ' + mode + ' ' + stage + '\n';
-      if (stage === 'prepare-source' || stage === 'create-release') yaml += '    permissions:\n      contents: write\n';else if (stage === 'publish-verify-images') yaml += '    permissions:\n      contents: read\n      packages: write\n';
+      if (stage === 'prepare-source') yaml += '    permissions:\n      contents: write\n      actions: read\n';else if (stage === 'create-release') yaml += '    permissions:\n      contents: write\n';else if (stage === 'publish-verify-images') yaml += '    permissions:\n      contents: read\n      packages: write\n';
       if (needs.length) yaml += '    needs: [' + needs.map(id).join(', ') + ']\n';
       if (stage === 'prepare-source') yaml += '    if: ' + expression("inputs.mode == '" + mode + "' && github.ref == 'refs/heads/main' && github.workflow_ref == format('{0}/.github/workflows/release.yml@refs/heads/main', github.repository) && " + (mode === 'auto' ? "github.event_name == 'push'" : "github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant'")) + '\n';else if (stage === 'create-release') yaml += '    if: ' + expression("always() && needs." + prep + ".result == 'success' && (needs." + prep + ".outputs.active != 'true' || (" + needs.filter(s => s !== 'prepare-source').map(s => 'needs.' + id(s) + ".result == 'success'").join(' && ') + '))') + '\n';else yaml += '    if: ' + expression('needs.' + prep + ".outputs.active == 'true'") + '\n';
       yaml += '    runs-on: ubuntu-24.04\n    timeout-minutes: 30\n    env:\n';
@@ -216,7 +218,7 @@ export function buildStagedReleaseProjection(source, packet) {
   for (const caller of packet.callers) {
     const original = workflowJobs(source).find(j => j.id === caller.caller);
     const prefix = original.body.slice(0, original.body.indexOf('    runs-on:'));
-    const replacement = prefix + '    permissions:\n      contents: write\n      packages: write\n    uses: ./.github/workflows/release-staged.yml\n    with:\n      mode: ' + caller.caller.replace('-release', '') + '\n    secrets: inherit\n';
+    const replacement = prefix + '    permissions:\n      contents: write\n      packages: write\n      actions: read\n    uses: ./.github/workflows/release-staged.yml\n    with:\n      mode: ' + caller.caller.replace('-release', '') + '\n    secrets: inherit\n';
     assert.equal(callerSource.split(original.body).length, 2);
     callerSource = callerSource.replace(original.body, replacement);
   }
@@ -248,4 +250,4 @@ export function buildStagedReleaseProjection(source, packet) {
   }, null, 2) + '\n'], [evidence + 'original-release-workflow.yml', source], [evidence + 'stage-source-coverage.json', format(packet) + '\n']]);
   return { operations, binding, outputs };
 }
-if (process.argv[1] === fileURLToPath(import.meta.url)) runStagedReleaseGenerator(process.argv.slice(2));
+if (process.argv[1] && realpathSync(process.argv[1]) === fileURLToPath(import.meta.url)) runStagedReleaseGenerator(process.argv.slice(2));

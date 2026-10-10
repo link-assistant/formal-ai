@@ -1,3 +1,4 @@
+import {readCheckedReleaseOperationView} from '../../../scripts/checked-release-operation-view.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -19,6 +20,8 @@ function layout() {
   }
   fs.copyFileSync(path.join(root, 'package.json'), path.join(directory, 'package.json'));
   fs.symlinkSync(path.join(root, 'node_modules'), path.join(directory, 'node_modules'));
+  // Ordinary fixtures retain their original input; actual current deployment is checked first.
+  fs.writeFileSync(path.join(directory,'.github/workflows/release.yml'),readCheckedReleaseOperationView().originalSource);
   return directory;
 }
 test('maintained source compiler conserves full release and rejects receipt and protocol drift', async () => {

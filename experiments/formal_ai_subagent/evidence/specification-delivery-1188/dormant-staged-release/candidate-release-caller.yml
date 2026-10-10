@@ -679,6 +679,7 @@ jobs:
     permissions:
       contents: write
       packages: write
+      actions: read
     uses: ./.github/workflows/release-staged.yml
     with:
       mode: auto
@@ -714,6 +715,7 @@ jobs:
     permissions:
       contents: write
       packages: write
+      actions: read
     uses: ./.github/workflows/release-staged.yml
     with:
       mode: manual

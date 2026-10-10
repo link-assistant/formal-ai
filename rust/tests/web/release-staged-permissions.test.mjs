@@ -9,7 +9,7 @@ function validate(doc){
   for(const [id,job] of Object.entries(doc.jobs)){
     const stage=id.replace(/^(auto|manual)_/,'');
     assert.match(id,/^(auto|manual)_/);
-    const required=stage==='prepare-source'||stage==='create-release'?{contents:'write'}:stage==='publish-verify-images'?{contents:'read',packages:'write'}:undefined;
+    const required=stage==='prepare-source'?{contents:'write',actions:'read'}:stage==='create-release'?{contents:'write'}:stage==='publish-verify-images'?{contents:'read',packages:'write'}:undefined;
     assert.deepEqual(job.permissions,required,id);
     assert.equal(job.concurrency,undefined,'caller holds writer lease');
     const commands=job.steps.map(x=>x.run??'').join('\n');
@@ -24,3 +24,5 @@ for(const mode of ['auto','manual'])for(const stage of ['prepare-source','compil
 test('top-level write authority refuses',()=>{const doc=read();doc.permissions.contents='write';assert.throws(()=>validate(doc));});
 
 for(const mode of ['auto','manual'])for(const stage of ['prepare-source','publish-verify-images','create-release'])test(`${mode} ${stage} missing necessary authority refuses`,()=>{const doc=read();delete doc.jobs[mode+'_'+stage].permissions;assert.throws(()=>validate(doc));});
+
+for(const mode of ['auto','manual'])test(`${mode} prepare source missing Actions read refuses`,()=>{const doc=read();delete doc.jobs[mode+'_prepare-source'].permissions.actions;assert.throws(()=>validate(doc));});

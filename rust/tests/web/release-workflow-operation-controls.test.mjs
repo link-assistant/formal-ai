@@ -1,3 +1,4 @@
+import {readCheckedReleaseOperationView} from '../../../scripts/checked-release-operation-view.mjs';
 // Read-only release controls. Canned gh/native evidence is fixture data, never CI/publication proof.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -105,7 +106,7 @@ function gate(expression,values){
 test('all seven original release operations retain publication gates and actual metadata binding',async()=>{
  const {createRequire}=await import('node:module');
  const {parse}=createRequire(join(root,'package.json'))('yaml');
- const workflow=parse(readFileSync(join(root,'.github/workflows/release.yml'),'utf8'));
+ const workflow=parse(readCheckedReleaseOperationView().originalSource);
  for(const name of ['auto-release','manual-release']){
   const job=workflow.jobs[name];
   for(const label of logicalOperations){

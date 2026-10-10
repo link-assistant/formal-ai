@@ -1,3 +1,4 @@
+import {readCheckedReleaseOperationView} from '../../../scripts/checked-release-operation-view.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, copyFileSync, statSync, chmodSync, symlinkSync } from 'node:fs';
@@ -198,7 +199,7 @@ const readProjection = () => YAML.parse(readFileSync(new URL('.github/workflows/
 
 // This is a checked derivative of the retained canonical source. Any canonical byte change
 // requires an explicit refreshed projection and source review; it never silently drifts.
-function validateProjection(projection, canonicalBytes = readFileSync(new URL('.github/workflows/release.yml', repository), 'utf8')) {
+function validateProjection(projection, canonicalBytes = readCheckedReleaseOperationView().originalSource) {
   assert.equal(canonicalBytes, originalSnapshot, 'canonical release changed: regenerate/review dormant projection and source snapshot');
   assert.equal(sha(canonicalBytes), coverage.workflowSha256, 'canonical source SHA differs');
   const canonical = YAML.parse(canonicalBytes);
@@ -220,6 +221,7 @@ function validateProjection(projection, canonicalBytes = readFileSync(new URL('.
     assert.equal(sourceJob.steps.length, original.steps.length);
     const byStep = new Map(original.steps.filter(step => step.stepId).map(step => [step.stepId, step.stage]));
     const prepare = projection.jobs[mode + '_prepare-source'];
+    assert.deepEqual(prepare.permissions,{contents:'write',actions:'read'},'source/run/job/concurrency GET authority is explicit');
     const expectedGuard = '${{ inputs.mode == \'' + mode + '\' && github.ref == \'refs/heads/main\' && github.workflow_ref == format(\'{0}/.github/workflows/release.yml@refs/heads/main\', github.repository) && ' + (mode === 'auto' ? "github.event_name == 'push'" : "github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant'") + ' }}';
     assert.equal(prepare.if, expectedGuard, 'guard must precede any version/source mutation');
     const checkoutIndex = prepare.steps.findIndex(step => step.uses === 'actions/checkout@v7' && !step.with?.path);

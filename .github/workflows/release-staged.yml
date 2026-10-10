@@ -37,6 +37,7 @@ jobs:
     name: auto prepare-source
     permissions:
       contents: write
+      actions: read
     if: ${{ inputs.mode == 'auto' && github.ref == 'refs/heads/main' && github.workflow_ref == format('{0}/.github/workflows/release.yml@refs/heads/main', github.repository) && github.event_name == 'push' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
@@ -771,6 +772,7 @@ jobs:
     name: manual prepare-source
     permissions:
       contents: write
+      actions: read
     if: ${{ inputs.mode == 'manual' && github.ref == 'refs/heads/main' && github.workflow_ref == format('{0}/.github/workflows/release.yml@refs/heads/main', github.repository) && github.event_name == 'workflow_dispatch' && github.event.inputs.release_mode == 'instant' }}
     runs-on: ubuntu-24.04
     timeout-minutes: 30
