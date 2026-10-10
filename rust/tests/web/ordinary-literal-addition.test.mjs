@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import { WorkerHost } from '../../../js/server/worker-host.mjs';
 import { installNodeHost } from '../../../js/agentic/node-host.mjs';
 import { planChatStep } from '../../../js/agentic/planner.mjs';
-import { ownedAdditiveLiteral } from '../../../js/agentic/planner/owned_goals.mjs';
+import { ownedAdditiveLiteral, ownedDeclaredCreateFrame } from '../../../js/agentic/planner/owned_goals.mjs';
 import { planLiteralAdditionStep } from '../../../js/agentic/literal_addition.mjs';
 import { drive } from '../../../experiments/js_dogfood/drive.mjs';
 
@@ -126,27 +126,59 @@ const unspecifiedAdditions = [
   'añade archivo note.txt con el texto hello',
   'agrega archivo note.txt con el texto hello',
 ];
+// These unchanged noun-before-path requests declare creation by file_declared_noun.
+// Existing entries still refuse exclusive creation; destination-before-noun cases below
+// retain the unspecified insertion Gap without granting replacement permission.
 for (const task of unspecifiedAdditions) {
-  test('unspecified locale addition refuses every operation and preserves existing bytes: ' + task, async () => {
+  test('declared locale creation writes exact bytes only into an absent destination: ' + task, async () => {
+    const frame = ownedDeclaredCreateFrame(task);
+    assert.equal(frame?.target, 'note.txt');
+    assert.equal(frame.content, 'hello');
+    assert.equal(planLiteralAdditionStep(task, [{ role: 'user', content: task }], ['read', 'write']), null);
+    const directory = mkdtempSync(join(tmpdir(), 'formal-declared-create-'));
+    try {
+      const result = await drive(planChatStep, directory, task, { steps: 8 });
+      assert.equal(readFileSync(join(directory, 'note.txt'), 'utf8'), 'hello');
+      assert.equal(result.stop, 'final');
+      const creation = result.transcript.find(call => call.tool === 'write');
+      assert.equal(creation?.source_creation?.success, true);
+      assert.equal(creation.source_creation.exclusive, true);
+      assert.equal(result.transcript.every((call, index) => call.tool !== 'read' || index > result.transcript.indexOf(creation)), true);
+      assert.equal(result.transcript.some(call => call.tool === 'bash' && JSON.parse(call.arguments).command === 'cat note.txt'), true);
+      const prior = 'prior bytes α\n';
+      writeFileSync(join(directory, 'note.txt'), prior);
+      const existing = await drive(planChatStep, directory, task, { steps: 8 });
+      assert.equal(readFileSync(join(directory, 'note.txt'), 'utf8'), prior);
+      const rejected = existing.transcript.find(call => call.tool === 'write');
+      assert.equal(rejected?.is_error, true);
+      assert.equal(rejected?.source_creation?.error_code, 'EEXIST');
+      assert.equal(existing.transcript.some(call => call.tool === 'read'), false);
+      assert.doesNotMatch(existing.answer ?? '', /Completed the general change/);
+    } finally { rmSync(directory, { recursive: true, force: true }); }
+  });
+}
+for (const task of [
+  'add to file note.txt containing hello',
+  'add to the file note.txt containing hello',
+]) {
+  test('destination-before-noun insertion requires a position and preserves existing bytes: ' + task, async () => {
+    assert.equal(ownedDeclaredCreateFrame(task), null);
     const directory = mkdtempSync(join(tmpdir(), 'formal-add-position-'));
     try {
       const prior = 'prior bytes α\n';
       writeFileSync(join(directory, 'note.txt'), prior);
-      const result = await drive(planChatStep, directory, task, {
-        tools: ['read', 'write', 'bash'], steps: 6,
-      });
+      const result = await drive(planChatStep, directory, task, { tools: ['read', 'write', 'bash'], steps: 6 });
       assert.equal(result.stop, 'final');
-      assert.deepEqual(result.transcript, []);
-      const refused = planLiteralAdditionStep(task, [{ role: 'user', content: task }],
-        ['web_fetch', 'web_search', 'read_file', 'write_file', 'exec_command']);
+      assert.deepEqual(result.transcript.map(call => call.tool), ['read']);
+      assert.equal(readFileSync(join(directory, 'note.txt'), 'utf8'), prior);
+      const history = [{ role: 'user', content: task }];
+      const observed = result.transcript[0];
+      history.push({ role: 'assistant', tool_calls: [{ id: 'position-read', type: 'function', function: { name: observed.tool, arguments: observed.arguments } }] });
+      history.push({ role: 'tool', tool_call_id: 'position-read', name: observed.tool, content: observed.result, source_read: observed.source_read, is_error: observed.is_error });
+      const refused = planLiteralAdditionStep(task, history, ['read', 'write', 'bash']);
       assert.equal(refused.result.disposition, 'gap');
       assert.equal(refused.result.origin, 'literal-addition-position-unknown');
       assert.equal(result.answer, refused.answer);
-      const nativeVector = await planChatStep([{ role: 'user', content: task }],
-        ['web_fetch', 'web_search', 'read_file', 'write_file', 'exec_command']);
-      assert.equal(nativeVector.kind, 'final');
-      assert.equal(nativeVector.answer, refused.answer);
-      assert.equal(readFileSync(join(directory, 'note.txt'), 'utf8'), prior);
     } finally { rmSync(directory, { recursive: true, force: true }); }
   });
 }
