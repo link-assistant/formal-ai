@@ -16,6 +16,7 @@
 // drive attaches actual raw Read bytes and provider status in separate fields;
 // Write/Edit text receipts and actual Bash process observations keep their APIs.
 
+import {createHash} from 'node:crypto';
 import { appendDefinition, projectAppendContracts } from '../../js/agentic/append_contract.mjs';
 import { atomicRecordAppend } from './atomic-record-append.mjs';
 import { shellCapture } from './shell-capture.mjs';
@@ -169,6 +170,37 @@ export function execute(dir, call) {
  * planner and its fall-through planned nothing) or `steps` (the step budget
  * ran out mid-task, PR #1188 G84).
  */
+
+const operationObservations = new WeakMap();
+const observationSourcePaths = [fileURLToPath(import.meta.url), fileURLToPath(new URL('./shell-capture.mjs', import.meta.url))];
+function observedSourceBytes() {
+  return Object.freeze(observationSourcePaths.map(path => Object.freeze({path,
+    sha256: createHash('sha256').update(readFileSync(path)).digest('hex')})));
+}
+function qualifiesObservation(call, commands) {
+  if (call.tool !== 'bash' || !Array.isArray(commands) || typeof call.arguments !== 'string') return false;
+  try { const value = JSON.parse(call.arguments); return value && Object.keys(value).length === 1
+    && typeof value.command === 'string' && commands.includes(value.command); } catch { return false; }
+}
+function issueObservation(prompt, directory, call, receipt, before) {
+  const after = observedSourceBytes();
+  if (JSON.stringify(before) !== JSON.stringify(after)) return null;
+  const token = Object.freeze(Object.create(null));
+  const observation = Object.freeze({need: Object.freeze({original: prompt}),
+    command: JSON.parse(call.arguments).command, directory: resolve(directory),
+    sources: before, receipt: Object.freeze({...receipt}),
+    sourceClosure: 'Unknown', effects: 'Unknown', approval: 'Unknown',
+    kind: 'observed-operation-only'});
+  operationObservations.set(token, observation);
+  return token;
+}
+export function observedOperation(token, originalNeed, directory) {
+  const record = operationObservations.get(token);
+  if (!record || record.need.original !== originalNeed || typeof directory !== 'string' || record.directory !== resolve(directory)) return null;
+  if (JSON.stringify(record.sources) !== JSON.stringify(observedSourceBytes())) return null;
+  return record;
+}
+
 export async function drive(planChatStep, dir, prompt, {
   tools = AGENT_CLI_TOOLS, steps = 12, fallthrough = null, allowedCommands = undefined,
   atomicRecordAppend = false,
@@ -233,9 +265,13 @@ export async function drive(planChatStep, dir, prompt, {
     }));
     messages.push({ role: 'assistant', content: '', tool_calls: toolCalls });
     calls.forEach((call, index) => {
+      const observationSources = qualifiesObservation(call, allowedCommands)
+        ? observedSourceBytes() : null;
       const receipt = executeResult(dir, call);
+      const operationObservation = observationSources === null ? null
+        : issueObservation(prompt, dir, call, receipt, observationSources);
       const { content: result, ...metadata } = receipt;
-      transcript.push({ tool: call.tool, arguments: call.arguments, result, ...metadata });
+      transcript.push({ tool: call.tool, arguments: call.arguments, result, ...metadata, ...(operationObservation === null ? {} : {operationObservation}) });
       messages.push({ role: 'tool', tool_call_id: toolCalls[index].id, name: call.tool, ...receipt });
     });
   }
