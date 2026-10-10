@@ -1,5 +1,6 @@
 import { cached, childrenNamed, parseLino, readText } from '../host.mjs';
 import { mentionsRole } from '../write_lexicon.mjs';
+import { writesWholeFile } from '../literal_write_guard.mjs';
 import { closedArithmeticDeclaration } from '../module_function.mjs';
 import { boundReadPaths, pendingReadCondition } from '../file_read/ownership.mjs';
 import { normalizePrompt } from '../crate/engine.mjs';
@@ -280,6 +281,20 @@ function contractActionPrologue(clause, contract) {
   return prologue === '' || sourceContextLabel(view.slice(0, start).trim()) || sourceContextWhitespaceSupported(view.slice(0, start))
     && contextGrammarPatterns('action-prologue').some(([prefix, suffix]) => prefix.test(view.slice(0, start)) && suffix.test(''))
     || ['politeness_cue', 'enumeration_cue', 'file-edit-sequence-cue'].some((role) => bareSurfaces(role).some((surface) => normalizePrompt(surface) === prologue));
+}
+
+/** Mirrors owned_declared_create_frame; classification does not grant filesystem authority. */
+export function ownedDeclaredCreateFrame(request) {
+  const contract = parseWriteContract(request);
+  if (contract === null || quoteFault(request) !== null || nestedQuoteFault(request) !== null
+    || !literalTail(request, contract) || attributedActionPrefix(request)
+    || !contractActionPrologue(request, contract)) return null;
+  const view = instructionView(request, contract);
+  if (view === null) return null;
+  const normalized = normalizePrompt(view);
+  if (['file_edit_position_end', 'file_edit_position_start', 'file_overwrite_consent']
+    .some(role => mentionsRole(role, normalized)) || !writesWholeFile(view)) return null;
+  return { target: contract.target, content: contract.content };
 }
 
 /** Full owned literal addition frame; null position refuses ambiguous addition. */

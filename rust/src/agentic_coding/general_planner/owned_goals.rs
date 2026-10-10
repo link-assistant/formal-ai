@@ -760,6 +760,34 @@ fn contract_action_prologue(clause: &str, contract: &LiteralWriteContract) -> bo
         })
 }
 
+/// Mirrors `ownedDeclaredCreateFrame`; classification does not grant filesystem authority.
+pub fn owned_declared_create_frame(request: &str) -> Option<(String, String)> {
+    let contract = parse_write_contract(request)?;
+    if quote_fault(request).is_some()
+        || crate::agentic_coding::quote_nesting::nested_quote_fault(request).is_some()
+        || !literal_tail(request, &contract)
+        || attributed_action_prefix(request)
+        || !contract_action_prologue(request, &contract)
+    {
+        return None;
+    }
+    let view = instruction_view(request, &contract)?;
+    let normalized = crate::engine::normalize_prompt(&view);
+    let lexicon = crate::seed::lexicon();
+    if [
+        "file_edit_position_end",
+        "file_edit_position_start",
+        "file_overwrite_consent",
+    ]
+    .iter()
+    .any(|role| lexicon.mentions_role(role, &normalized))
+        || !crate::agentic_coding::literal_write_guard::writes_whole_file(&view)
+    {
+        return None;
+    }
+    Some((contract.target, contract.content))
+}
+
 /// Full owned literal addition frame; absent position refuses ambiguous addition.
 pub fn owned_additive_literal_frame(request: &str) -> Option<(String, String, Option<bool>)> {
     if crate::agentic_coding::module_function::closed_arithmetic_declaration(request) {
