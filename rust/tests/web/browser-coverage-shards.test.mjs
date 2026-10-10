@@ -42,6 +42,20 @@ test('the complete browser inventory partitions exactly once without test exclus
   assert.equal(new Set(selected).size, observed.length);
 });
 
+test('measured browser work is balanced and begins longest first while retaining every file', () => {
+  const measured = new Map(inventory.map((item, index) => [item.path, index + 1]));
+  const weighted = browserPlan(inventory, 6, { seconds: measured, digest: 'measured-one' });
+  assert.deepEqual(weighted.shards.flat().sort(), inventory.map((item) => item.path).sort());
+  assert(weighted.shards.every((shard) => shard.every((item, index) => index === 0 || measured.get(shard[index - 1]) >= measured.get(item))));
+  assert.deepEqual(weighted.shards.map((shard) => shard.reduce((total, item) => total + measured.get(item), 0)), [13, 13, 13, 13, 13, 13]);
+  const sameAssignmentNewSource = browserPlan(inventory, 6, { seconds: measured, digest: 'measured-two' });
+  assert.deepEqual(weighted.shards, sameAssignmentNewSource.shards);
+  assert.notEqual(weighted.digest, sameAssignmentNewSource.digest);
+  const selected = packets();
+  selected[0].receipt.planDigest = weighted.digest;
+  assert.throws(() => collectBrowserShards(plan, identity, selected));
+});
+
 test('empty or duplicate test inventories cannot produce a coverage plan', () => {
   assert.throws(() => browserPlan([]));
   assert.throws(() => browserPlan([inventory[0], inventory[0]]));

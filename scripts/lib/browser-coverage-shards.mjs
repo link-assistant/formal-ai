@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
+import { readTestDurations } from './ci-speed-durations.mjs';
+import { durationLookup } from './ci-speed-shards.mjs';
 import { planShards, partitionProblems } from './ci-speed-shards.mjs';
 
 export const contentDigest = (bytes) => crypto.createHash('sha256').update(bytes).digest('hex');
@@ -37,15 +39,21 @@ export function browserSourceInventory(root) {
   return records;
 }
 
-export function browserPlan(inventory, count = browserShardCount) {
+export function browserDurationModel(root) {
+  const location = path.join(root, 'data/meta/javascript-test-durations.lino');
+  const bytes = fs.readFileSync(location);
+  return { seconds: readTestDurations(location), digest: contentDigest(bytes) };
+}
+
+export function browserPlan(inventory, count = browserShardCount, model = { seconds: new Map(), digest: null }) {
   if (!Array.isArray(inventory) || inventory.length === 0) throw new Error('browser test inventory is empty');
   const names = inventory.map((item) => item.path);
   if (new Set(names).size !== names.length) throw new Error('duplicate browser test path');
-  const { shards } = planShards(names, count, () => 1);
+  const { shards } = planShards(names, count, durationLookup(model.seconds, 1));
   const problems = partitionProblems(names, shards);
   if (Object.values(problems).some((items) => items.length)) throw new Error('browser test partition is incomplete');
   if (shards.some((items) => items.length === 0)) throw new Error('empty browser test shard');
-  return { inventory, shards, digest: contentDigest(JSON.stringify({ inventory, shards })) };
+  return { inventory, shards, digest: contentDigest(JSON.stringify({ inventory, shards, durationDigest: model.digest })) };
 }
 
 export function completedTestSummary(output) {

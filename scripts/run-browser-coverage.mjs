@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import {
-  browserInventory, browserSourceInventory, browserPlan, browserShardCount, collectBrowserShards,
+  browserInventory, browserSourceInventory, browserPlan, browserDurationModel, browserShardCount, collectBrowserShards,
   completedTestSummary, completeCoverageRecords, contentDigest,
 } from './lib/browser-coverage-shards.mjs';
 
@@ -36,7 +36,8 @@ if (actualSource.status !== 0 || actualSource.stdout.trim() !== identity.source)
 const sourceInventory = browserSourceInventory(root);
 identity.sourceDigest = contentDigest(JSON.stringify(sourceInventory));
 const inventory = browserInventory(root);
-const plan = browserPlan(inventory);
+const durationModel = browserDurationModel(root);
+const plan = browserPlan(inventory, browserShardCount, durationModel);
 
 if (mode === 'run') {
   const index = Number(indexText);
@@ -68,7 +69,8 @@ if (mode === 'run') {
   const stdout = fs.readFileSync(stdoutPath);
   const stderr = fs.readFileSync(stderrPath);
   const sourceUnchanged = JSON.stringify(browserInventory(root)) === JSON.stringify(inventory)
-    && JSON.stringify(browserSourceInventory(root)) === JSON.stringify(sourceInventory);
+    && JSON.stringify(browserSourceInventory(root)) === JSON.stringify(sourceInventory)
+    && browserDurationModel(root).digest === durationModel.digest;
   let summary = null;
   let coverage = null;
   let validationError = null;
