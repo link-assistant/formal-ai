@@ -72,6 +72,7 @@ export function buildStagedReleaseProjection(source, packet) {
   };
   const envSource = source.slice(source.indexOf('\nenv:\n') + 1, source.indexOf('\njobs:\n')).replace(/\n$/, '');
   let yaml = 'name: Staged release candidate\non:\n  workflow_call:\n    inputs:\n      mode:\n        type: string\n        required: true\n    outputs:\n';
+  yaml = yaml.replace('    outputs:\n', '    secrets:\n' + ['CARGO_REGISTRY_TOKEN', 'CARGO_TOKEN', 'DOCKERHUB_USERNAME', 'DOCKERHUB_TOKEN'].map(name => '      ' + name + ': {required: false}\n').join('') + '    outputs:\n');
   for (const name of ['pages_sha', 'pages_version', 'container-tag']) yaml += '      ' + name + ':\n        value: ' + expression('jobs.auto_create-release.outputs.' + name + ' || jobs.manual_create-release.outputs.' + name) + '\n';
   yaml += 'permissions:\n  contents: read\n' + envSource + '\n  DOCKERHUB_USERNAME: ' + expression("vars.DOCKERHUB_USERNAME || secrets.DOCKERHUB_USERNAME || 'konard'") + '\n  DOCKERHUB_TOKEN: ' + expression('secrets.DOCKERHUB_TOKEN') + '\n  RELEASE_MODE: ' + expression("github.event.inputs.release_mode || ''") + '\n  STAGED_RELEASE_MODE: ' + expression('inputs.mode') + '\njobs:\n';
   const binding = [];
@@ -218,7 +219,7 @@ export function buildStagedReleaseProjection(source, packet) {
   for (const caller of packet.callers) {
     const original = workflowJobs(source).find(j => j.id === caller.caller);
     const prefix = original.body.slice(0, original.body.indexOf('    runs-on:'));
-    const replacement = prefix + '    permissions:\n      contents: write\n      packages: write\n      actions: read\n    uses: ./.github/workflows/release-staged.yml\n    with:\n      mode: ' + caller.caller.replace('-release', '') + '\n    secrets: inherit\n';
+    const replacement = prefix + '    permissions:\n      contents: write\n      packages: write\n      actions: read\n    uses: ./.github/workflows/release-staged.yml\n    with:\n      mode: ' + caller.caller.replace('-release', '') + '\n    secrets:\n' + ['CARGO_REGISTRY_TOKEN', 'CARGO_TOKEN', 'DOCKERHUB_USERNAME', 'DOCKERHUB_TOKEN'].map(name => '      ' + name + ': ' + expression('secrets.' + name) + '\n').join('');
     assert.equal(callerSource.split(original.body).length, 2);
     callerSource = callerSource.replace(original.body, replacement);
   }

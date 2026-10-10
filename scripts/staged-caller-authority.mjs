@@ -127,7 +127,9 @@ export function compileContract({
     assert.equal(replacement.uses, './.github/workflows/release-staged.yml');
     assert.deepEqual(replacement.concurrency, original.concurrency);
     groups.add(original.concurrency.group);
-    assert.equal(replacement.secrets, 'inherit');
+    const secrets = ['CARGO_REGISTRY_TOKEN', 'CARGO_TOKEN', 'DOCKERHUB_USERNAME', 'DOCKERHUB_TOKEN'];
+    assert.deepEqual(replacement.secrets, Object.fromEntries(secrets.map(name => [name, '$' + '{{ secrets.' + name + ' }}'])));
+    assert.deepEqual(callee.on.workflow_call.secrets, Object.fromEntries(secrets.map(name => [name, { required: false }])));
     const mode = declaration.caller.replace('-release', '');
     for (const operation of declaration.steps) {
       assert.equal(sha(operation.raw), operation.sha256);

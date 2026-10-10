@@ -5,6 +5,11 @@ on:
       mode:
         type: string
         required: true
+    secrets:
+      CARGO_REGISTRY_TOKEN: {required: false}
+      CARGO_TOKEN: {required: false}
+      DOCKERHUB_USERNAME: {required: false}
+      DOCKERHUB_TOKEN: {required: false}
     outputs:
       pages_sha:
         value: ${{ jobs.auto_create-release.outputs.pages_sha || jobs.manual_create-release.outputs.pages_sha }}
