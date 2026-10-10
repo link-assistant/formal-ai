@@ -96,3 +96,19 @@ pub(super) fn unquoted_addition_question(task: &str) -> Option<AgenticPlan> {
         })
         .map(AgenticPlan::Final)
 }
+
+pub(super) fn plan_verified_source_step(
+    task: &str,
+    messages: &[ChatMessage],
+    tool_names: &[&str],
+    result: &mut Option<FinalResult>,
+) -> Option<AgenticPlan> {
+    crate::agentic_coding::code_task::plan_verified_generated_source_step(
+        task, messages, tool_names, result,
+    )
+    .or_else(|| {
+        crate::agentic_coding::workspace_change::plan_workspace_change_step(
+            task, messages, tool_names, result,
+        )
+    })
+}

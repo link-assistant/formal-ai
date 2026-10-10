@@ -7,7 +7,7 @@ import { absentTextAnswer, replaceList, replacedInOrder } from './replace_list.m
 import { Capability } from './capability.mjs';
 import { classifyTool, toolFor } from './capability_router.mjs';
 import { resultForCommand as commandResult, sourceFromAgentReadResult, sourceFromReadResult } from './code_artifact.mjs';
-import { renderRustTemplate, renderSeededChange, renderSeededOutcome, rustSourceForTask } from './code_task.mjs';
+import { renderRustTemplate, renderSeededChange, renderSeededOutcome, verifiedSourceDescription } from './code_task.mjs';
 import { plainText } from './content.mjs';
 import { contentsSource, withContents } from './contents_source.mjs';
 import { insertedInSection, sectionScope } from './markdown_section.mjs';
@@ -31,7 +31,7 @@ import {
 import { meaningEvidencedIn, mentionsRole, wordsForRole } from './write_lexicon.mjs';
 import { assignedSetting, replacedLines, statedOldValue } from './workspace_setting.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
-import { isAsciiAlphanumeric, lines, matchIndices, splitWhitespace, trim, trimEndMatches } from './write_str.mjs';
+import { lines, matchIndices, splitWhitespace, trim, trimEndMatches } from './write_str.mjs';
 import { dropsMostOfFile, groundedLineOperation, namedTargetAndPayloads, withoutPathWords } from './workspace_line_operation.mjs';
 
 const eqIgnoreAsciiCase = (left, right) => left.replace(/[A-Z]/g, (c) => c.toLowerCase()) === right.replace(/[A-Z]/g, (c) => c.toLowerCase());
@@ -1035,15 +1035,11 @@ export function planComputedChangeStep(task, currentTurn, toolNames, change) {
 }
 
 function compositeModuleChange(task) {
-  if (!mentionsRole('coding_module_registration_action', task.toLowerCase())) return null;
-  const generated = rustSourceForTask(task);
-  if (!generated) return null;
-  const registrationPath = rustPaths(task).find((path) => path !== generated.path);
-  if (registrationPath === undefined) return null;
-  const file = generated.path.split('/').pop();
-  if (!file.endsWith('.rs')) return null;
-  const module = file.slice(0, -3);
-  if (!validIdentifier(module)) return null;
+  const contract = verifiedSourceDescription(task);
+  if (contract?.registration === undefined || !contract.wholeRequestConsumed) return null;
+  const generated = contract.declaration.output;
+  const registrationPath = contract.registration.target.text;
+  const module = contract.registration.module;
   const registration = renderRustTemplate('coding_source_module_registration', [['{module}', module]]);
   if (registration === null) return null;
   return { source_path: generated.path, source: generated.content, registration_path: registrationPath, registration };
@@ -1087,21 +1083,6 @@ function validIdentifier(identifier) {
   return /^[A-Za-z_][A-Za-z0-9_]*$/.test(identifier) && !wordsForRole('identifier_reserved_word').includes(identifier);
 }
 
-const isPathCharacter = (character) => isAsciiAlphanumeric(character) || '_-./'.includes(character);
-
-function rustPaths(task) {
-  const paths = [];
-  for (const suffix of matchIndices(task, '.rs')) {
-    const end = suffix + 3;
-    let start = end;
-    while (start > 0 && isPathCharacter(task[start - 1])) start -= 1;
-    const path = task.slice(start, end);
-    if (path !== '' && !path.startsWith('/') && !path.split('/').some((component) => component === '..') && !paths.includes(path)) {
-      paths.push(path);
-    }
-  }
-  return paths;
-}
 
 function parseObject(text) {
   try {

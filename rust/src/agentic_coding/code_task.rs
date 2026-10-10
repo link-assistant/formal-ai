@@ -510,6 +510,24 @@ pub(super) fn plan_verified_generated_source_step(
     }) {
         return None;
     }
+    if let Some(compound) =
+        source_contract::source_registration_contract(task, rust_source_for_task)
+    {
+        return if compound["wholeRequestConsumed"].as_bool() == Some(true) {
+            None
+        } else {
+            Some(super::final_result::record(
+                AgenticPlan::Final(render_seeded_outcome(
+                    "coding_source_authoring_contract_missing",
+                    task,
+                    "",
+                )?),
+                super::final_result::FinalDisposition::Gap,
+                "source-registration-goal-coverage-unbound",
+                result,
+            ))
+        };
+    }
     let artifact = match rust_source_for_task(task) {
         Some(artifact) => artifact,
         None => {
@@ -557,9 +575,6 @@ pub(super) fn plan_verified_generated_source_step(
 }
 
 pub(super) fn verified_source_description(raw_task: &str) -> Option<serde_json::Value> {
-    if !source_contract::source_whitespace_supported(raw_task) {
-        return None;
-    }
     let task = unwrap_transport_quotes(raw_task);
     if super::write_request::compose_edit_request(task).is_some() {
         return None;
@@ -568,6 +583,14 @@ pub(super) fn verified_source_description(raw_task: &str) -> Option<serde_json::
         plan.mode == super::general_planner::GeneralPlanMode::LiteralFile
             && super::general_planner::owns_literal_body(task, &plan.content)
     }) {
+        return None;
+    }
+    if let Some(compound) =
+        source_contract::source_registration_contract(task, rust_source_for_task)
+    {
+        return Some(compound);
+    }
+    if !source_contract::source_whitespace_supported(raw_task) {
         return None;
     }
     let artifact = rust_source_for_task(task)?;

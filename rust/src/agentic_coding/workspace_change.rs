@@ -15,7 +15,7 @@ use std::path::Path;
 
 use super::code_artifact::source_from_read_result;
 use super::code_task::{
-    render_rust_template, render_seeded_change, render_seeded_outcome, rust_source_for_task,
+    render_rust_template, render_seeded_change, render_seeded_outcome, verified_source_description,
 };
 use super::final_result::{FinalDisposition, FinalResult, record};
 use super::general_planner::compose_edit_request;
@@ -709,24 +709,20 @@ fn grounded_rewrite(task: &str) -> Option<GroundedRewrite> {
 // This is a seed-template placeholder, not a Rust formatting argument.
 #[allow(clippy::literal_string_with_formatting_args)]
 fn composite_module_change(task: &str) -> Option<CompositeModuleChange> {
-    let lowered = task.to_lowercase();
-    if !seed::lexicon().mentions_role(seed::ROLE_CODING_MODULE_REGISTRATION_ACTION, &lowered) {
+    let contract = verified_source_description(task)?;
+    if contract["wholeRequestConsumed"].as_bool() != Some(true) {
         return None;
     }
-    let generated = rust_source_for_task(task)?;
-    let registration_path = rust_paths(task)
-        .into_iter()
-        .find(|path| path != &generated.path)?;
-    let module = generated.path.rsplit('/').next()?.strip_suffix(".rs")?;
-    if !valid_identifier(module) {
-        return None;
-    }
+    let generated = &contract["declaration"]["output"];
+    let module = contract["registration"]["module"].as_str()?;
     let registration =
         render_rust_template("coding_source_module_registration", &[("{module}", module)])?;
     Some(CompositeModuleChange {
-        source_path: generated.path,
-        source: generated.content,
-        registration_path,
+        source_path: generated["path"].as_str()?.to_owned(),
+        source: generated["content"].as_str()?.to_owned(),
+        registration_path: contract["registration"]["target"]["text"]
+            .as_str()?
+            .to_owned(),
         registration,
     })
 }
@@ -822,30 +818,6 @@ fn valid_identifier(identifier: &str) -> bool {
             .words_for_role(seed::ROLE_IDENTIFIER_RESERVED_WORD)
             .iter()
             .any(|reserved| reserved == identifier)
-}
-
-fn rust_paths(task: &str) -> Vec<String> {
-    let mut paths = Vec::new();
-    for (suffix, _) in task.match_indices(".rs") {
-        let end = suffix + 3;
-        let start = task[..end]
-            .char_indices()
-            .rev()
-            .take_while(|(_, character)| {
-                character.is_ascii_alphanumeric() || matches!(character, '_' | '-' | '.' | '/')
-            })
-            .last()
-            .map_or(0, |(index, _)| index);
-        let path = &task[start..end];
-        if !path.is_empty()
-            && !path.starts_with('/')
-            && !path.split('/').any(|component| component == "..")
-            && !paths.iter().any(|existing| existing == path)
-        {
-            paths.push(path.to_owned());
-        }
-    }
-    paths
 }
 
 pub(super) fn result_for_path(

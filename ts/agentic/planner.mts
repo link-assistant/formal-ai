@@ -251,7 +251,7 @@ async function planChatStepRoutes(messages, toolNames, received) {
     return null;
   }
   if (codeTask.verifiedSourceDescription(task) !== null) {
-    return codeTask.planVerifiedGeneratedSourceStep(task, messages, toolNames);
+    return planVerifiedSourceStep(task, messages, toolNames);
   }
   const ownedGoals = evidenceRecord.hasTypedEvidenceDelivery(task) ? null
     : await planGoalLedger(task, messages, toolNames, planChatStepResolved);
@@ -494,4 +494,10 @@ function missingSemanticImplementation(task) {
     return plan;
   }
   return null;
+}
+
+/** Mirrors plan_verified_source_step: a full source proof gates the existing transaction. */
+function planVerifiedSourceStep(task, messages, toolNames) {
+  return codeTask.planVerifiedGeneratedSourceStep(task, messages, toolNames)
+    ?? workspaceChange.planWorkspaceChangeStep(task, messages, toolNames);
 }

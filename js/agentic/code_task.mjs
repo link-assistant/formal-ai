@@ -1,6 +1,6 @@
 import { rustIdentifierIsValid } from './code_task/identifier_domain.mjs';
 import { firstRoleMatch as sourceRoleMatch } from './crate/seed_meanings.mjs';
-import { sourceDescriptionContract, sourceWhitespaceSupported } from './code_task/source_contract.mjs';
+import { sourceDescriptionContract, sourceWhitespaceSupported, sourceRegistrationContract } from './code_task/source_contract.mjs';
 import { ownsLiteralBody } from './crate/literal_body_ownership.mjs';
 import { FinalDisposition, resolvedFinalAnswer } from './plan.mjs';
 // Small Rust source items generated from a coding request
@@ -259,6 +259,10 @@ export function planVerifiedGeneratedSourceStep(rawTask, messages, toolNames) {
   if (composeEditRequest(task) !== null) return null;
   const literal = composeGeneralChangePlan(task);
   if (literal?.mode === 'literal_file' && ownsLiteralBody(task, literal.content)) return null;
+  const compound = sourceRegistrationContract(task, rustSourceForTask);
+  if (compound !== null) return compound.wholeRequestConsumed ? null : resolvedFinalAnswer(
+    renderSeededOutcome('coding_source_authoring_contract_missing', task, ''),
+    FinalDisposition.Gap, 'source-registration-goal-coverage-unbound');
   const artifact = rustSourceForTask(task);
   if (artifact === null) {
     const body = literal?.mode === 'literal_file' ? literal.content.toLowerCase() : '';
@@ -276,11 +280,13 @@ export function planVerifiedGeneratedSourceStep(rawTask, messages, toolNames) {
 
 /** Mirrors verified_source_description: whole-request evidence before semantic dispatch. */
 export function verifiedSourceDescription(rawTask) {
-  if (!sourceWhitespaceSupported(rawTask)) return null;
   const task = unwrapTransportQuotes(rawTask);
   if (composeEditRequest(task) !== null) return null;
   const literal = composeGeneralChangePlan(task);
   if (literal?.mode === 'literal_file' && ownsLiteralBody(task, literal.content)) return null;
+  const compound = sourceRegistrationContract(task, rustSourceForTask);
+  if (compound !== null) return compound;
+  if (!sourceWhitespaceSupported(rawTask)) return null;
   const artifact = rustSourceForTask(task);
   return artifact === null ? null : sourceDescriptionContract(task, artifact);
 }

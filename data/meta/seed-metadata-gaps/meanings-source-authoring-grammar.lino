@@ -7,3 +7,5 @@ seed-metadata-gaps
     record "float-division"
   gap seed-metadata-gap-7408912bbf3c474c
     record "source-authoring-grammar"
+  gap seed-metadata-gap-224e4b7dba97826d
+    record "source-registration-composition"

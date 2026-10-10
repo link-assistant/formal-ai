@@ -285,7 +285,7 @@ fn plan_chat_step_routes(
     // from the instruction, so the request is declined before any arm reads its
     // payload as words to act on (PR #1188 G71).
     if code_task::verified_source_description(&task).is_some() {
-        return code_task::plan_verified_generated_source_step(&task, messages, tool_names, result);
+        return steps::plan_verified_source_step(&task, messages, tool_names, result);
     }
     let owned_goal = if evidence_record::has_typed_evidence_delivery(&task) {
         None

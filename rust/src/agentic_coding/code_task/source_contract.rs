@@ -1,6 +1,8 @@
 mod matcher;
+mod registration_contract;
 use super::GeneratedSource;
 use crate::seed::{self, Slot};
+pub(super) use registration_contract::source_registration_contract;
 fn alternatives(mut values: Vec<String>) -> Option<String> {
     if values.is_empty() {
         return None;

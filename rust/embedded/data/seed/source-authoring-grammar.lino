@@ -39,3 +39,17 @@ source-authoring-grammar
     language es
     kind float-division
     pattern "^\\s*Crea\\s+(?:un\\s+)?archivo\\s+{path}\\s+que contiene una función pública Rust llamada\\s+{identifier}\\s+que toma un {parameter-type} y lo devuelve dividido por\\s+{value}[\\s.!?]*$"
+  form 11
+    language en
+    kind float-division
+    pattern "^\\s*(?:Create|Write)\\s+{path}\\s+with\\s+a\\s+public\\s+function\\s+{identifier}\\s+dividing\\s+an\\s+{parameter-type}\\s+by\\s+{value}[\\s.!?]*$"
+  composition en
+    pattern "^{source-clause}[ \\t\\n\\r\\x0b\\x0c]*,?[ \\t\\n\\r\\x0b\\x0c]+and[ \\t\\n\\r\\x0b\\x0c]+{registration-action}[ \\t\\n\\r\\x0b\\x0c]+in[ \\t\\n\\r\\x0b\\x0c]+{registration-path}(?:[ \\t\\n\\r\\x0b\\x0c]+so it is part of the crate)?[ \\t\\n\\r\\x0b\\x0c.!?]*$"
+  composition ru
+    pattern "^{source-clause}[ \\t\\n\\r\\x0b\\x0c]*,?[ \\t\\n\\r\\x0b\\x0c]+и[ \\t\\n\\r\\x0b\\x0c]+{registration-action}[ \\t\\n\\r\\x0b\\x0c]+в[ \\t\\n\\r\\x0b\\x0c]+{registration-path}[ \\t\\n\\r\\x0b\\x0c.!?]*$"
+  composition hi
+    pattern "^{source-clause}[ \\t\\n\\r\\x0b\\x0c]+और[ \\t\\n\\r\\x0b\\x0c]+{registration-path}[ \\t\\n\\r\\x0b\\x0c]+में[ \\t\\n\\r\\x0b\\x0c]+{registration-action}[ \\t\\n\\r\\x0b\\x0c।!?]*$"
+  composition zh
+    pattern "^{source-clause}，?并{registration-action}到[ \\t\\n\\r\\x0b\\x0c]+{registration-path}[ \\t\\n\\r\\x0b\\x0c。！？]*$"
+  composition es
+    pattern "^{source-clause}[ \\t\\n\\r\\x0b\\x0c]*,?[ \\t\\n\\r\\x0b\\x0c]+y[ \\t\\n\\r\\x0b\\x0c]+{registration-action}[ \\t\\n\\r\\x0b\\x0c]+en[ \\t\\n\\r\\x0b\\x0c]+{registration-path}[ \\t\\n\\r\\x0b\\x0c.!?]*$"

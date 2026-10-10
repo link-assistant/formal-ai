@@ -48,3 +48,5 @@ export function sourceDescriptionContract(task, artifact) {
     output: { path: artifact.path, identifier: declaration[2], value: declaration[3], content: artifact.content },
     unknownEffects: ['module_initialization', 'tool_execution'], compilation: 'pending', wholeRequestConsumed: true, whitespaceProfile: 'ASCII'  };
 }
+
+export { sourceRegistrationContract } from './source_contract/registration_contract.mjs';
