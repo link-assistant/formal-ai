@@ -930,6 +930,11 @@ pub(super) fn compose_edit_clauses(raw: &str) -> Option<EditClauses> {
         super::quote_nesting::whole_payload_end(request, new_lead.end, sentence_end)
     };
     let new_span = request.get(new_lead.end..new_end)?;
+    if !crate::normal_markov::wrapped_in_quote_pair(old_span.trim())
+        && super::workspace_search::content_search_for(old_span).is_some()
+    {
+        return None;
+    }
     let old = super::positional_edit::literal_text(old_span)?;
     let new = super::positional_edit::literal_text(new_span)?;
     // `Rename the file m.py to math_utils.py`: an unquoted new name that is a
@@ -964,23 +969,12 @@ fn describes_lines(head: &str, text: &str) -> bool {
         })
 }
 
-/// Whether the payload starting at `from` is a block that outlives its first line.
-///
-/// A marker alone on its line already introduces the whole block below it, and
-/// that is the shape this route was built for. The same request written with the
-/// payload starting on the marker's own line -- "with exactly this content: #
-/// Title\n\nbody..." -- means exactly the same thing, but the sentence bound cut
-/// it at the first line and delivered a 58-byte file for a 1478-byte document.
-///
-/// That is not a bound the author of the request can see. It made every
-/// multi-line literal write silently lossy: `alpha\nbeta\ngamma` was written as
-/// `alpha`, and the self-authoring loop produced a one-line stub of the document
-/// it was handed, which is how it looked broken while reporting success.
-///
-/// A payload whose first line ends but whose block continues is therefore read
-/// to `limit`, exactly as the marker-only spelling always was. The sentence bound
-/// still governs a payload that stays on one line, so "write the following: hello
-/// to `x.txt`" is unaffected -- there is no continuation to find.
+/// Whether the payload starting at `from` continues beyond its first line.
+/// A marker on its own line and a marker followed by content introduce the
+/// same literal block. Use the block limit when a real continuation follows;
+/// cutting at the first sentence would silently discard later authored bytes.
+/// Keep the sentence bound for a one-line payload such as
+/// `write the following: hello to x.txt`, whose tail has no continuation.
 pub(super) fn payload_continues_past_its_first_line(
     request: &str,
     from: usize,

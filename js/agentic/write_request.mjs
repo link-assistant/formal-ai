@@ -16,6 +16,7 @@ import { resolveCensusTarget } from './general_planner.mjs';
 import { containsCjk } from './crate/coding_catalog.mjs';
 import { quotedSegmentSpans, wrappedInQuotePair } from './crate/normal_markov.mjs';
 import { wholePayloadEnd } from './quote_nesting.mjs';
+import { contentSearchFor } from './workspace_search.mjs';
 import { meaningEvidencedIn, mentionsRole, roleWordForms, wordsForRole } from './write_lexicon.mjs';
 import { normalizePrompt } from './crate/engine.mjs';
 import {
@@ -460,6 +461,7 @@ export function composeEditClauses(raw) {
     : wholePayloadEnd(request, newLead.end, sentenceEnd);
   if (newEnd < newLead.end) return null;
   const newSpan = request.slice(newLead.end, newEnd);
+  if (!wrappedInQuotePair(oldSpan.trim()) && contentSearchFor(oldSpan) !== null) return null;
   const oldText = literalText(oldSpan);
   if (oldText === null) return null;
   const newText = literalText(newSpan);
