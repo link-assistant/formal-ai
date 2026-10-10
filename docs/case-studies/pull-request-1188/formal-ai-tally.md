@@ -9,13 +9,13 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 
 | Who | Tasks | Passed | Failed | Partial | Fixed | Open | Not reproduced | Unresolved |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **All** | 4596 | 2794 | 998 | 148 | 499 | 638 | 9 | 0 |
+| **All** | 4856 | 2981 | 1070 | 149 | 499 | 711 | 9 | 0 |
 | CHAT-ROUTES | 13 | 10 | 3 | 0 | 3 | 0 | 0 | 0 |
 | CI-FIXER | 116 | 91 | 19 | 6 | 3 | 22 | 0 | 0 |
 | CI-SPEED | 6 | 6 | 0 | 0 | 0 | 0 | 0 | 0 |
 | CIFIX | 314 | 309 | 5 | 0 | 5 | 0 | 0 | 0 |
 | CIFIX2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
-| coordinator | 1687 | 841 | 463 | 79 | 228 | 313 | 1 | 0 |
+| coordinator | 1931 | 1018 | 529 | 80 | 228 | 380 | 1 | 0 |
 | DEBUG2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
 | DEBUG3 | 2 | 1 | 1 | 0 | 1 | 0 | 0 | 0 |
 | DISCOVER | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
@@ -34,7 +34,7 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 | REPO-RUNNERS | 89 | 78 | 5 | 6 | 11 | 0 | 0 | 0 |
 | REQ-AUDIT | 9 | 9 | 0 | 0 | 0 | 0 | 0 | 0 |
 | REQ-ROUTE | 12 | 7 | 5 | 0 | 4 | 0 | 1 | 0 |
-| ROOT | 531 | 374 | 136 | 21 | 76 | 78 | 3 | 0 |
+| ROOT | 547 | 384 | 142 | 21 | 76 | 84 | 3 | 0 |
 | ROUTE2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
 | ROUTE3 | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | SCRIPTS-A | 5 | 4 | 1 | 0 | 1 | 0 | 0 | 0 |

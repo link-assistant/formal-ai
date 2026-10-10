@@ -4,7 +4,27 @@ Pull request [#1188](https://github.com/link-assistant/formal-ai/pull/1188), "Bu
 
 This document is for the next agent. It covers the owner's requirements, the working method, observed branch results and remaining work. The current arrangement distinguishes committed work from finite local changes awaiting the coordinated integration push.
 
-## Current arrangement (2026-10-10)
+## Current resumed arrangement (2026-10-10)
+
+The owner asked to continue autonomously with up to twelve GPT-6.1-sol subagents and to use more automation for every change. The current environment exposes thirteen concurrent slots including the coordinator. Reuse completed agents; do not create extra agents or stop unfinished work to replace an agent. One agent continuously watches exact-head CI, one asks maintained JavaScript Formal AI to deliver whole requirements and repairs its general capabilities after failures, and other agents develop finite source-qualified batches. The coordinator works throughout and is the sole repository writer and integrator. Every repository content effect is executed through maintained JavaScript Formal AI with full preimage guards. Supplied programs have zero autonomous or amplification credit.
+
+Use source-derived generators, transformations and substitution rules with deterministic `--check` contracts. JavaScript remains the development source and TypeScript is its maintained projection. Rust/meta-language/JavaScript translation must distinguish actual pinned upstream execution, repository adapter diagnostics and temporary source-qualified compilers; unsupported behavior stays explicit. Preserve original requests, assertions, failures, inverse source bytes and qualification boundaries. Never make a prompt-specific workaround or change a scanner, threshold, deadline, raw denominator or permission to manufacture success. The recommended current arrangement and finite commit/push barrier are in [multi-agent-workflow.md](multi-agent-workflow.md). An incomplete next batch cannot indefinitely delay a completed, qualified and fully committed batch.
+
+The initial completed source cohort is `395c4339748b1671c015474f06e27401243016d8`. The final qualified source cohort is `70a32d6590d881a108ad9e6594072ee511c8b581`, after conservative scalar token-kind repairs and native release fixture binding corrections. Its source qualification and full finite original evidence are preserved in [the resumed evidence archive](../../../experiments/formal_ai_subagent/evidence/coordinator-1188/733-resumed-automation/README.md). Ordinary installed JavaScript qualification passed331 closest tests, with no failures, skips or TODOs. The subsequent affected-source qualification passed64 tests with no failures, skips or TODOs, all required repository gates, six changed workflow lint checks, maintained generation checks and the canonical214/1182 specification run. The pure-source compiler expands registered substitution programs, constants, builtin Copy-qualified unit enums and predicates; this is about18.1% of the1182 cases, with968 unsupported. It is not complete Rust/JavaScript configuration, solver or profile equivalence. The final installed balanced-path and enum-ownership run passed168 tests with zero failures/skips and one inherited translation-intent TODO; the EOF-normalization replay passed35 tests with no failures/skips/TODOs. Both preserve the complete214 original carried cases and all required gates. These are overlapping source-bound runs, not additive unique test counts.
+
+The final tracked-source qualification passed all required gates, generated metadata and diff validation. The final scalar qualification passed38 closest tests without failures, skips or TODOs, preserved all214 complete case objects, and passed the unchanged ordinary214/1182 worker run. General lexical ownership refuses quoted native syntax rather than interpreting decoded string content as a type, trait, keyword or boolean. Release fixture binding repairs preserve80 original assertions and use the actual public module and checked generated operation view. Full failures, source inverses, physical metadata bindings and completion receipts are retained in the finite archive. Hosted native compilation and fresh-head CI remain required.
+
+Completed changes include authentic current733 census import, guarded release operation readers, test-only lint repairs preserving657 original assertions, locked browser/native fixture installs, measured browser duration receipts, independent source/data artifact profiles, lossless350-record response-family splitting and generated roles590, complete quoted Read ownership, leading unsupported-policy refusal, declared append-provider priority, default-compatible private driver observation, durable failed-attempt evidence, optional captured-usage accounting, a source-derived coding evaluation and stale-proof test-area inventories. The separate hosted native session producer binds thirteen existing task/tool identities and the maintained serializer schema; it has not yet produced changed-head native fixtures. No local Rust compilation or executable downloads/runs occurred.
+
+All120 known requirement definitions retain valid mappings:123 implemented,29 partial and one not-delivered among153 active rows, plus one superseded row. This is about80% recorded coverage, not percent effort completed. All thirty unfinished rows have protocols, but those are not complete implementation/test drafts or delivered acceptance. The original G112/G132 feature composition remains0/7, Open. The fixed source-derived coding evaluation genuinely accepted0/4 tasks (three self-coding and one ordinary task); no useful source effects were produced. Captured usage, complete model cost and savings remain Unknown. Do not count mirrored/generated/evidence bytes or supplied patches as useful autonomous output.
+
+The previous pushed source `733f9d0be8500f99fd5fd3061a5147c103f939f5` finished with233 registered checks:165 success,40 failure,one cancellation and27 skips, with no running/queued checks. Full authenticated API/log originals are retained, including the cancelled macOS x64 producer and downstream cascades. The repairs require a fresh pushed-head CI cycle. Fresh733 capture independently qualified28 original executions,247 records and114 members; its source tree and producer receipts are bound to733. Genuine census artifact11672288728 qualified804 modules/808 members. The changed current source matches798/804 historical native modules, so whole-census reuse is refused. Collect and qualify the fresh hosted producers, then import exact changed data through Formal AI. Never substitute fabricated expected snapshots or compile Rust locally.
+
+Historical733 Docker full/slim AMD64/ARM64 runtime validation passed unpublished; browser packaging and seven of eight native targets succeeded. macOS x64 hit the cache-daemon idle shutdown and its downstream CLI/Desktop consumers lacked that artifact. The source repair keeps the existing30-minute cap; changed-head runtime improvement remains unproved. Main publication authority, the executing writer lease, credentials and end-to-end production publication remain Unknown. PR validation with `published:false` cannot certify a future main release. Preserve all52 release operations,104 bindings, five generated outputs, explicit secret maps, permissions, concurrency/DAG and event-trigger fallbacks. No merge or production publication is authorized by this handoff.
+
+Continue with fresh-head CI repair and authentic changed-source census/session/answer imports; owned full-read/missing/UTF8 provider semantics and additive requests; remaining filename-mode ownership; complete coding-host ordinary/native bootstrap and durable lifecycle; scoped notation deduplication; general automated parity; governed progressive dispatch and affected-root scheduling; and measured coding quality/usage. Root must commit every completed finite source repair, preserve all evidence and generated metadata, and push the fully committed finite batch together. Continue working while agents and CI run; do not ask owner questions.
+
+## Historical restart handoff before this resumed session (2026-10-10)
 
 The owner requested that all current agents finish, that completed work and drafts be preserved, and that this handoff be updated, committed and pushed before restarting. The source cohort is `12bde0b966bb37d2679c342762940c3d28158c2f`; the following evidence and generated-metadata commit belongs to the same coordinated push. This is not complete requirement delivery or green CI.
 
@@ -70,10 +90,10 @@ All of these are still in force.
 - Make the JavaScript requirements pass first (U29).
 
 **Agents (when the owner allows them)**
-- At most three subagents at once, and never stop one early (U22).
+- Current owner authorization permits up to twelve GPT-6.1-sol subagents within thirteen slots including the coordinator. Reuse slots and never stop unfinished work merely to replace an agent (U22; owner update2026-10-10).
 - One agent always monitors CI/CD and immediately drafts failure fixes in scratch. The coordinator integrates completed finite source cohorts through Formal AI, commits each repair and pushes the fully committed bulk together; this follows the owner's latest coordination instruction.
 - Don't wait idle: work yourself while agents and CI run. "You don't pause, you do everything until is done."
-- At this handoff the owner asked that **no new subagents are started**.
+- The earlier restart-only request to start no agents is historical; the resumed owner instruction permits up to twelve. Keep exact-head CI monitoring and whole-ask Formal AI delivery active.
 
 **Permissions the owner gave**
 - "I EXPLICTLY ALLOW EVERYTHING."
@@ -106,7 +126,7 @@ All of these are still in force.
 ### 2.2 Formal AI on its own development (dogfooding)
 
 - **Running it.** `node experiments/js_dogfood/drive.mjs --dir <sandbox> '<request>'` runs the JavaScript planner on a sandbox directory.
-  - Copy the file into a sandbox, ask, check the diff, and copy it back only if the diff is exactly the expected lines. Other agents may have edited the same file in the meantime.
+  - Prepare finite source-only scratch inputs, ask, qualify the exact source effects and refusals, then have maintained JavaScript Formal AI apply a guarded program against full current preimages. The coordinator alone integrates; do not copy patches into the repository manually.
   - Requests that work well:
     - `In f replace «A» with «B»`
     - `In f insert the contents of rows.md after the line that starts with «| Tn |»`
@@ -206,7 +226,7 @@ The order follows the progressive method: make CI green first (R1188-U27), then 
 
 ### 4.1 CI: make the head green (R1188-U27)
 
-1. **Self-AST census: done.** The hand-edited Rust files changed their census documents. The census regenerated by CI run 37830767346 (artifact `self-ast-census`) is committed. Next time: `gh run download <run> -n self-ast-census` from the "Regenerate self-AST census" workflow, then copy it over the repository with `rsync -a`.
+1. **Self-AST census: historically imported; current source qualification remains required.** Retrieve the exact successful hosted producer through authenticated APIs, verify its source tree, module bytes, manifest, ZIP digest and every import preimage, and have maintained JavaScript Formal AI apply the guarded data-only import. Refuse mismatched sources or unqualified artifacts. The old run37830767346 import is historical; current733 evidence and the changed-source mismatch are recorded above. Never copy raw artifact trees directly into the repository.
 2. **The first CI compile of this round's hand-written Rust.** These were never compiled locally:
    - `rust/src/event_log.rs` (`event_log_evidence_links`);
    - `rust/src/solver_handlers/policy_gates.rs`, `rust/src/solver_helpers/mod.rs`, `rust/src/seed/roles/reasoning.rs`;
