@@ -6,16 +6,21 @@ meanings
       words "read" "read the file" "show me the contents of" "open" "print" "show" "get the contents of" "display"
       words "view the file" "load" "what is in" "tell me what" "cat" "inspect" "preview" "contents" "inside" "what does"
       words "say" "first line" "value of" "summarize"
+      words "pull up" "dump" "list the contents of" "echo the contents of" "walk me through"
     lexeme ru
       words прочитай "прочитай файл" "покажи содержимое" открой выведи покажи "получи содержимое" отобрази
       words "просмотри файл" загрузи "что в" "расскажи содержимое" посмотри "проверь файл" предпросмотр
+      words "подтяни" "выгрузи" "перечисли содержимое" "выведи содержимое" "проведи меня по"
     lexeme hi
       words पढ़ें "फ़ाइल पढ़ें" "सामग्री दिखाएँ" खोलें "प्रिंट करें" दिखाएँ "सामग्री प्राप्त करें" "प्रदर्शित करें"
       words "फ़ाइल देखें" "लोड करें" "में क्या है" "सामग्री बताएँ" देखें "फ़ाइल जाँचें" "पूर्वावलोकन करें"
+      words "सामने लाएँ" "उतार दें" "सामग्री सूचीबद्ध करें" "सामग्री छापें" "मुझे समझाएँ"
     lexeme zh 输出内容 读取 读取文件 显示内容 打开 打印 显示 获取内容 展示 查看文件 加载 里面有什么 告诉我内容 查看 检查文件 预览
+      words "调出" "导出" "列出内容" "带我过一遍"
     lexeme es
       words "escribe el contenido de" lee leer "lee el archivo" "muestra el contenido de" abre imprime muestra visualiza carga inspecciona
       words "vista previa"
+      words "muéstrame el contenido de" "obtén el contenido de" "despliega" "mira el archivo" "qué hay en" "cuéntame el contenido de" "revisa" "comprueba el archivo" "previsualiza" "saca" "vuelca" "enumera el contenido de" "guíame por"
   file_write_action
     defined-by action
     role file_write_action_cue
