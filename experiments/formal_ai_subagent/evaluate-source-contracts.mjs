@@ -4,6 +4,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { digest, admitManifest, executeAdmittedCase } from './cohort-runner.mjs';
 import { readBoundSource, extractExportedLiteral, extractArithmeticAssertions, validateHeldOutContract } from './cohort-source-contracts.mjs';
 import { measureCodingRun, sourceDigest, summarizeCodingRuns } from './coding-amplification.mjs';
+import { writeJournalUsageReport } from './cohort-usage-report.mjs';
 
 export function discoverSourceContracts(root) {
   root=resolve(root);
@@ -81,7 +82,11 @@ export async function evaluateSourceContracts(root, output) {
     'js/agentic/crate/solver_formalization.mjs','js/agentic/crate/translation_formalization.mjs'];
   const dependencyPaths=[...runtimePaths.map(path=>join(root,path)),archive,originalPath,arithmeticPath,
     fileURLToPath(import.meta.url),join(dirname(fileURLToPath(import.meta.url)),'cohort-source-contracts.mjs'),
-    join(dirname(fileURLToPath(import.meta.url)),'cohort-runner.mjs'),join(dirname(fileURLToPath(import.meta.url)),'coding-amplification.mjs'),sumOracle];
+    join(dirname(fileURLToPath(import.meta.url)),'cohort-runner.mjs'),
+    join(dirname(fileURLToPath(import.meta.url)),'coding-amplification.mjs'),
+    join(dirname(fileURLToPath(import.meta.url)),'cohort-usage-report.mjs'),
+    join(dirname(fileURLToPath(import.meta.url)),'journal-provider-usage.mjs'),
+    join(dirname(fileURLToPath(import.meta.url)),'task-relations.mjs'),sumOracle];
   for(const item of cases.filter(item=>item.taskKind==='self-coding'))for(const name of [...sources,'selected-summary.test.mjs'])dependencyPaths.push(join(item.workspace,name));
   const manifest={schemaVersion:1,cohortId:'source-derived-bounded-two-family-evaluation',catalogSHA256:digest(JSON.stringify(catalog)),heldOutQualification:catalog.heldOutQualification,bindings:[...new Set(dependencyPaths)].map(binding),cases,
     representativeBaseline:false,independentFamilies:2,originalBehavioralObligations:7,usagePolicy:'Unknown absent actual provider capture; no token or price fabrication',
@@ -106,13 +111,14 @@ export async function evaluateSourceContracts(root, output) {
     const changes=sourceEffects.map(effect=>({path:effect.path,role:effect.path.includes('/.formal-ai/')?'evidence':'production',language:'javascript',before:effect.before?.content??'',after:effect.after?.content??''}));
     const repositoryContext=(result.transcript??[]).filter(entry=>entry.tool==='read').map(entry=>entry.result);
     const toolReceipts=(result.transcript??[]).map(entry=>JSON.stringify(entry.tool==='read'?{...entry,result:undefined}:entry));
-    const run={runId:item.runId,taskKind:item.taskKind,origin:'autonomous',task:item.task,attemptInputs:[item.task],repositoryContext,reviewedPatches:[],toolReceipts,changes};
+    const run={runId:item.runId,taskKind:item.taskKind,origin:'autonomous',task:item.task,attemptInputs:[item.task],attemptIds:['first-unchanged'],repositoryContext,reviewedPatches:[],toolReceipts,changes};
     const measurement=await measureCodingRun(run,async actual=>({passed:result.accepted,bindings:actual.map(change=>({path:change.path,before:sourceDigest(change.before),after:sourceDigest(change.after)})),checks:[{name:'source-bound independent oracle',exitCode:result.check?.exitCode??null}]}));
     measurements.push({...measurement,observedInputCompleteness:manifest.observedInputCompleteness});
   }
+  const providerUsage=writeJournalUsageReport(binding(join(output,'journal.jsonl')),join(output,'usage-receipts-index.json'));
   const report={cohortId:manifest.cohortId,manifestSHA256:admission.manifestSHA256,attemptedTasks:cases.length,independentFamilies:2,
     originalTaskBytes:Buffer.byteLength(original.prompt),originalBehavioralObligations:7,heldOutTasks:heldOut.length,representativeBaseline:false,
-    summary:summarizeCodingRuns(measurements,cases.map(item=>item.runId)),measurements};
+    summary:summarizeCodingRuns(measurements,cases.map(item=>item.runId)),measurements,providerUsage};
   writeFileSync(join(output,'report.json'),JSON.stringify(report,null,2)+'\n');return report;
 }
 if(import.meta.url===pathToFileURL(resolve(process.argv[1]??'.')).href) {
