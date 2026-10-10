@@ -129,7 +129,7 @@ fn repair_loop_applies_the_recorded_fix_before_the_retry() {
     let page = format!(
         "The error E0308 mismatched types: convert the integer before adding it.\n```rust\n{FIX}\n```\n"
     );
-    let fetched = serde_json::json!({ "content": page, "exit_code": 0 }).to_string();
+    let fetched = page;
     let artifact = serde_json::json!({ "path": "src/main.rs", "content": SOURCE }).to_string();
     let base = vec![
         ChatMessage::new("user", "run the generated program and verify it"),

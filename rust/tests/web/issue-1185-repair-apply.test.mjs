@@ -67,7 +67,7 @@ function transcriptThroughTheRecord(failure) {
     call('c1', 'web_search', '{ "query": "rust E0308 mismatched types" }'),
     result('c1', 'web_search', 'https://example.org/e0308'),
     call('c2', 'web_fetch', '{ "url": "https://example.org/e0308" }'),
-    result('c2', 'web_fetch', JSON.stringify({ content: page, exit_code: 0 })),
+    result('c2', 'web_fetch', page),
   ];
   const recorded = repairStep(base, TOOLS, failure, 0, MAX_REPAIR_RUNGS);
   assert.equal(recorded.kind, 'record_fix');
@@ -99,4 +99,16 @@ test('without a CST engine the loop goes on to the retry and leaves the artifact
   const unvalidated = failure(null);
   const messages = transcriptThroughTheRecord(unvalidated);
   assert.equal(repairStep(messages, TOOLS, unvalidated, 0, MAX_REPAIR_RUNGS).kind, 'retry');
+});
+
+// Real LF separates Markdown fences; literal backslash bytes inside code remain payload.
+test('fenced repair code retains literal backslash sequences byte for byte', () => {
+  const literalFix = String.raw`let path = "C:\new\target";`;
+  const validated = failure(() => true);
+  const messages = transcriptThroughTheRecord(validated).slice(0, -2);
+  messages[messages.length - 1] = result('c2', 'web_fetch', 'E0308 mismatched types\n' + '\`\`\`rust\n' + literalFix + '\n\`\`\`\n');
+  const recorded = repairStep(messages, TOOLS, validated, 0, MAX_REPAIR_RUNGS);
+  assert.equal(recorded.kind, 'record_fix');
+  const document = JSON.parse(recorded.plan.calls[0].arguments).content;
+  assert.equal(parseRepairEdit(document).retained, literalFix);
 });
