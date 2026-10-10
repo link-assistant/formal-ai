@@ -153,7 +153,7 @@ pub(super) fn plan_source_or_owned_goal_step(
                 )
             })
             .or_else(|| crate::computer_use::plan_agentic_step(messages, tool_names))
-            .map(SourceOrOwnedGoalStep::Claimed)
+            .map(|plan| SourceOrOwnedGoalStep::Claimed(Some(plan)))
             .unwrap_or(SourceOrOwnedGoalStep::Unclaimed)
     }
 }

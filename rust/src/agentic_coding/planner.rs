@@ -280,9 +280,9 @@ fn plan_chat_step_routes(
     if
     // An edit request's block is its payload: a `when … then` inside it is
     // text being written, not a skill being taught (PR #1188 T57).
-    (!has_authoritative_literal_write(&task)
+    !has_authoritative_literal_write(&task)
         && super::general_planner::compose_edit_request(&task).is_none()
-        && looks_like_skill_description(super::positional_edit::own_text(&task)))
+        && looks_like_skill_description(super::positional_edit::own_text(&task))
     {
         return None;
     }
