@@ -196,6 +196,7 @@ fn every_named_input_is_read_before_a_structured_result_is_written() {
         )
     };
     let mut messages = vec![formal_ai::ChatMessage::user(prompt)];
+    let mut workspace = super::tool_workspace::ToolWorkspace::new(prompt);
     let mut observed_paths = Vec::new();
     let mut writes = Vec::new();
 
@@ -263,7 +264,10 @@ fn every_named_input_is_read_before_a_structured_result_is_written() {
                 (Some(path), _) if call.tool == "read" && path.ends_with("inputs/west.lino") => {
                     decorated("west", &west)
                 }
-                _ => "ok".to_owned(),
+                _ => {
+                    messages.push(workspace.execute(&id, call));
+                    continue;
+                }
             };
             messages.push(formal_ai::ChatMessage::tool_result(id, &call.tool, result));
         }
