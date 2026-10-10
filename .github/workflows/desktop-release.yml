@@ -54,7 +54,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-resolve
+      group: ${{ github.workflow }}-${{ github.ref }}-resolve${{ github.event_name != 'pull_request' && format('-{0}', github.run_id) || '' }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     permissions:
       contents: read
@@ -91,7 +91,7 @@ jobs:
 
   base:
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-base
+      group: ${{ github.workflow }}-${{ github.ref }}-base${{ github.event_name != 'pull_request' && format('-{0}', github.run_id) || '' }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     uses: ./.github/workflows/pin-base-commit.yml
     permissions:
@@ -100,7 +100,7 @@ jobs:
   native-source:
     name: Select exact native release source
     concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}-native-source
+      group: ${{ github.workflow }}-${{ github.ref }}-native-source${{ github.event_name != 'pull_request' && format('-{0}', github.run_id) || '' }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     needs: [resolve, base]
     if: ${{ !cancelled() && (github.event_name == 'pull_request' || needs.resolve.outputs.should_build == 'true') }}
@@ -238,7 +238,7 @@ jobs:
   native:
     name: Produce native ${{ matrix.target }}
     concurrency:
-      group: ${{ github.workflow }}-native-${{ github.event.pull_request.number || github.ref }}-${{ matrix.target }}
+      group: ${{ github.workflow }}-native-${{ github.event.pull_request.number || github.ref }}-${{ matrix.target }}${{ github.event_name != 'pull_request' && format('-{0}', github.run_id) || '' }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     needs: [native-source]
     if: ${{ !cancelled() && needs.native-source.result == 'success' }}

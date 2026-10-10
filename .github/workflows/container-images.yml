@@ -57,6 +57,7 @@ concurrency:
   group: ${{ format('container-images-{0}-{1}', github.repository, github.event_name == 'pull_request' && github.ref || 'stable-publication')
     }}
   cancel-in-progress: false
+  queue: max
 defaults:
   run:
     shell: bash
@@ -795,6 +796,9 @@ jobs:
         if-no-files-found: error
         retention-days: 7
   merge:
+    concurrency:
+      group: formal-ai-repository-writes
+      queue: max
     needs:
     - resolve
     - source

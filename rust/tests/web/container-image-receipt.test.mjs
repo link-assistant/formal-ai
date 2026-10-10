@@ -122,3 +122,70 @@ test('both exact native platform descriptors are asserted after genuine anonymou
  const missing=structuredClone(index);missing.manifests.pop();await assert.rejects(()=>verify(missing));
  const wrong=structuredClone(index);wrong.manifests[1].platform.architecture='amd64';await assert.rejects(()=>verify(wrong));
 });
+
+// Source operation ownership controls; actual registry timing remains independently observed.
+import {readFileSync as readWorkflowSource} from 'node:fs';
+import YAML from 'yaml';
+const workflows=()=>({release:YAML.parse(readWorkflowSource(new URL('../../../.github/workflows/release.yml',import.meta.url),'utf8')),
+ images:YAML.parse(readWorkflowSource(new URL('../../../.github/workflows/container-images.yml',import.meta.url),'utf8'))});
+function mutablePublicationLease(release,images) {
+ const common='formal-ai-repository-writes',lease={group:common,queue:'max'};
+ const factoryWriters=Object.entries(release.jobs).filter(([,job])=>job.steps?.some(step=>/node scripts\/release-image-factory\.mjs (?:publish|mirror) /u.test(step.run??'')));
+ assert.equal(factoryWriters.length,2,'both canonical mutable publication writers required');
+ for(const [,job]of factoryWriters){
+  assert.deepEqual(job.concurrency,lease);
+  assert.ok(job.steps.some(step=>step.run==='node scripts/release-image-factory.mjs publish prepared-release "$RELEASE_VERSION" "$GHCR_IMAGE"'));
+  assert.ok(job.steps.some(step=>step.run==='node scripts/release-image-factory.mjs mirror prepared-release "$RELEASE_VERSION" "$DOCKERHUB_IMAGE"'));
+ }
+ const callers=Object.entries(release.jobs).filter(([,job])=>job.uses==='./.github/workflows/container-images.yml');assert.equal(callers.length,1);
+ const caller=callers[0][1];for(const [id]of factoryWriters)assert.ok(caller.needs.includes(id),'caller must follow completed canonical writer');
+ assert.ok(caller.concurrency.group.endsWith('-native-container-images'),'caller lease has independently distinct suffix');
+ assert.equal(caller.concurrency['cancel-in-progress'],false);assert.equal(caller.concurrency.queue,'max');
+ assert.ok(images.concurrency.group.includes("format('container-images-"),'callee workflow lease has independently distinct prefix');
+ assert.equal(images.concurrency['cancel-in-progress'],false);assert.equal(images.concurrency.queue,'max');
+ const promotions=Object.entries(images.jobs).filter(([,job])=>job.steps?.some(step=>step.run?.includes('container-image-receipt.mjs" merge')));assert.equal(promotions.length,1);
+ const [promotionId,promotion]=promotions[0];assert.deepEqual(promotion.concurrency,lease);
+ const operation=promotion.steps.find(step=>step.run?.includes('container-image-receipt.mjs" merge'));
+ assert.equal(operation.run.trim(),'set -euo pipefail\nnode "$FORMAL_AI_CONTAINER_PROTOCOL_DIR/container-image-receipt.mjs" merge container-source native image-receipts "$CONTAINER_REPOSITORY"');
+ for(const [key,value]of Object.entries({CONTAINER_SOURCE_COMMIT:'${{ needs.source.outputs.commit }}',CONTAINER_SOURCE_TREE:'${{ needs.source.outputs.tree }}',CONTAINER_VERSION:'${{ needs.source.outputs.version }}',CONTAINER_PROTOCOL_SHA256:'${{ needs.source.outputs.protocol-sha256 }}',NATIVE_SELECTION_SHA256:'${{ needs.source.outputs.selection-sha256 }}',CONTAINER_REPOSITORY:'${{ needs.resolve.outputs.image }}'}))assert.equal(promotion.env[key],value);
+ for(const [id,job]of Object.entries(images.jobs))if(id!==promotionId)assert.equal(job.concurrency,undefined,'additional descendant lease requires independent review');
+ return {factoryWriters:factoryWriters.map(([id])=>id),promotionId};
+}
+test('canonical and native mutable publication share one writer lease with distinct reusable ancestors',()=>{
+ const {release,images}=workflows();assert.deepEqual(mutablePublicationLease(release,images),{factoryWriters:['auto-release','manual-release'],promotionId:'merge'});
+});
+test('publication ownership follows consistently renamed operation roles',()=>{
+ const {release,images}=workflows();images.jobs.merge.concurrency={group:'formal-ai-repository-writes',queue:'max'};images.concurrency.queue='max';release.jobs['native-container-images'].concurrency.queue='max';
+ release.jobs.renamedAuto=release.jobs['auto-release'];delete release.jobs['auto-release'];release.jobs.renamedManual=release.jobs['manual-release'];delete release.jobs['manual-release'];
+ release.jobs['native-container-images'].needs=['renamedAuto','renamedManual'];images.jobs.renamedPromotion=images.jobs.merge;delete images.jobs.merge;
+ assert.deepEqual(mutablePublicationLease(release,images),{factoryWriters:['renamedAuto','renamedManual'],promotionId:'renamedPromotion'});
+});
+test('missing foreign cancelling duplicate ancestor or altered promotion authority refuses',()=>{
+ const baseline=workflows();baseline.images.jobs.merge.concurrency={group:'formal-ai-repository-writes',queue:'max'};baseline.images.concurrency.queue='max';baseline.release.jobs['native-container-images'].concurrency.queue='max';
+ mutablePublicationLease(baseline.release,baseline.images);
+ const mutations=[
+ (r,i)=>delete r.jobs['native-container-images'].concurrency.queue,
+ (r,i)=>delete i.concurrency.queue,
+ (r,i)=>r.jobs['native-container-images'].concurrency.queue='single',
+ (r,i)=>i.concurrency.queue='single',
+ (r,i)=>delete r.jobs['auto-release'].concurrency,
+ (r,i)=>r.jobs['manual-release'].concurrency.group='foreign',
+ (r,i)=>r.jobs['auto-release'].concurrency['cancel-in-progress']=true,
+ (r,i)=>delete i.jobs.merge.concurrency,
+ (r,i)=>i.jobs.merge.concurrency.group='foreign',
+ (r,i)=>i.jobs.merge.concurrency.queue='single',
+ (r,i)=>i.jobs.merge.concurrency['cancel-in-progress']=true,
+ (r,i)=>r.jobs['native-container-images'].concurrency.group='formal-ai-repository-writes',
+ (r,i)=>i.concurrency.group='formal-ai-repository-writes',
+ (r,i)=>i.jobs.source.concurrency={group:'formal-ai-repository-writes',queue:'max'},
+ (r,i)=>r.jobs['native-container-images'].needs=[],
+ (r,i)=>i.jobs.merge.env.CONTAINER_SOURCE_COMMIT='spoof',
+ (r,i)=>i.jobs.merge.env.CONTAINER_SOURCE_TREE='spoof',
+ (r,i)=>i.jobs.merge.env.CONTAINER_PROTOCOL_SHA256='spoof',
+ (r,i)=>i.jobs.merge.env.NATIVE_SELECTION_SHA256='spoof',
+ (r,i)=>i.jobs.merge.env.CONTAINER_REPOSITORY='spoof',
+ (r,i)=>{i.jobs.merge.steps.find(s=>s.run?.includes('container-image-receipt.mjs" merge')).run+=' --unverified';},
+ (r,i)=>{r.jobs['manual-release'].steps.find(s=>s.run==='node scripts/release-image-factory.mjs publish prepared-release "$RELEASE_VERSION" "$GHCR_IMAGE"').run='node scripts/release-image-factory.mjs publish spoof';},
+ ];
+ for(const mutate of mutations){const {release,images}=structuredClone(baseline);mutate(release,images);assert.throws(()=>mutablePublicationLease(release,images));}
+});

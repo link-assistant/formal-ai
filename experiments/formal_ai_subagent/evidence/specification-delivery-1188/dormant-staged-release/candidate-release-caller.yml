@@ -1032,6 +1032,7 @@ jobs:
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}-native-container-images
       cancel-in-progress: false
+      queue: max
     needs: [auto-release, manual-release]
     if: |
       !cancelled() && (

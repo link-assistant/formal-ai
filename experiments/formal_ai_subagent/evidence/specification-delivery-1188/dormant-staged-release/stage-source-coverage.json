@@ -1,6 +1,6 @@
 {
   "schema": "release-original-stage-coverage/v1",
-  "workflowSha256": "3859efb48e6aacca841450ab8686ac00a1f0c4dff488a394e9047e970429f8a8",
+  "workflowSha256": "3638d7eadf7259245797fd8b87fae1840d4a7efff7fb337e191d7d3ac5165a39",
   "callers": [
     {
       "caller": "auto-release",
