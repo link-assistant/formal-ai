@@ -10,11 +10,11 @@ export function runStagedReleaseGenerator(arguments_) {
   const evidence = 'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/';
   const directoryPosition = arguments_.indexOf('--directory');
   const outputDirectory = directoryPosition < 0 ? null : resolve(arguments_[directoryPosition + 1]);
-  assert.ok(arguments_.every((argument, index) => argument === '--check' || argument === '--check-deployed' || argument === '--write' || argument === '--directory' || directoryPosition >= 0 && index === directoryPosition + 1));
+  assert.ok(arguments_.every((argument, index) => argument === '--check' || argument === '--check-deployed' || argument === '--deployed' || argument === '--write' || argument === '--directory' || directoryPosition >= 0 && index === directoryPosition + 1));
   assert.equal(arguments_.filter(value => ['--check','--check-deployed','--write'].includes(value)).length, 1, 'choose exactly one check or write mode');
   if (arguments_.includes('--write')) assert.ok(outputDirectory, 'write requires an explicit scratch/repository destination');
   const packet = JSON.parse(readFileSync(join(root, evidence, 'stage-source-coverage.json'), 'utf8'));
-  const deployed = arguments_.includes('--check-deployed');
+  const deployed = arguments_.includes('--check-deployed') || arguments_.includes('--deployed');
   const source = readFileSync(join(root, deployed ? evidence + 'original-release-workflow.yml' : '.github/workflows/release.yml'), 'utf8');
   const sha = value => createHash('sha256').update(value).digest('hex');
   assert.equal(sha(source), packet.workflowSha256, 'canonical source drift requires explicit original operation refresh');

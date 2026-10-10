@@ -1,3 +1,4 @@
+import {readCheckedReleaseOperationView} from '../../../scripts/checked-release-operation-view.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,rmSync,existsSync} from 'node:fs';
@@ -74,7 +75,7 @@ function declaredGnuFactory(f) {
  return {...f.options,image:'ghcr.io/fixture/formal-ai',fetcher,requests};
 }
 
-const release=readFileSync(new URL('../../../.github/workflows/release.yml',import.meta.url),'utf8');
+const release=readCheckedReleaseOperationView().originalSource;
 const settings=[...release.matchAll(/          BUILD_CACHE_SETTINGS: \|\n((?:            [^\n]*\n)+)/gu)].map(m=>m[1].split('\n').filter(Boolean).map(line=>line.slice(12)).join('\n'));
 test('both actual GHCR workflow settings preserve the original cache contract',()=>{
  assert.equal(settings.length,2);for(const text of settings)assert.deepEqual(releaseImageCacheSettings({BUILD_CACHE_SETTINGS:text}),{'cache-from':'type=gha,scope=docker-image','cache-to':'type=gha,mode=max,scope=docker-image'});

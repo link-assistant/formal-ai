@@ -1,3 +1,4 @@
+import {readCheckedReleaseOperationView} from '../../../scripts/checked-release-operation-view.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtempSync,mkdirSync,writeFileSync,readFileSync,rmSync,existsSync} from 'node:fs';
@@ -216,7 +217,7 @@ test('altered actual destination config refuses mirror receipt',async()=>{
 });
 
 test('both guarded publication jobs bind the same producer, full factory, optional mirror and original slim order',()=>{
- const workflow=readFileSync(new URL('../../../.github/workflows/release.yml',import.meta.url),'utf8');
+ const workflow=readCheckedReleaseOperationView().originalSource;
  for(const [name,version] of [['auto-release','steps.current_version.outputs.version'],['manual-release','steps.version.outputs.new_version']]){
   const start=workflow.indexOf('  '+name+':\n'),rest=workflow.slice(start),end=rest.search(/\n  [a-z][a-z-]*:/u);
  const body=end<0?rest:rest.slice(0,end);

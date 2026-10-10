@@ -1,3 +1,4 @@
+import {readCheckedReleaseOperationView} from '../../../scripts/checked-release-operation-view.mjs';
 // Workflow contracts are static checks; runtime and cold-build acceptance require actual CI.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -12,7 +13,7 @@ test('release creation calls trusted container delivery without a completion tri
  const events=workflow.slice(0,workflow.indexOf('\npermissions:'));
  assert.match(events,/^  workflow_call:/mu);assert.match(events,/^  release:/mu);
  assert.doesNotMatch(events,/^  workflow_run:/mu);
- const release=readFileSync(new URL('../../../.github/workflows/release.yml',import.meta.url),'utf8');
+ const release=readCheckedReleaseOperationView().originalSource;
  const publication=release.slice(release.indexOf('  native-container-images:'),release.indexOf('  pipeline-status:'));
  assert.match(publication,/needs: \[auto-release, manual-release\]/u);
  assert.match(publication,/needs\.auto-release\.result == 'success' && needs\.auto-release\.outputs\.container-tag != ''/u);
@@ -52,7 +53,7 @@ test('full source compilation has an independent path and every job keeps the re
 });
 
 test('the release pipeline waits for native publication only after actual successful release creation',()=>{
- const release=readFileSync(new URL('../../../.github/workflows/release.yml',import.meta.url),'utf8');
+ const release=readCheckedReleaseOperationView().originalSource;
  assert.equal((release.match(/id: create-release/gu)??[]).length,2);
  assert.equal((release.match(/container-tag:.*steps\.create-release\.outcome == 'success'/gu)??[]).length,2);
  assert.match(release,/native-container-images:\n[\s\S]*needs: \[auto-release, manual-release\]/u);

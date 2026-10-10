@@ -1,3 +1,4 @@
+import {readCheckedReleaseOperationView} from '../../../scripts/checked-release-operation-view.mjs';
 import {runStagedReleaseGenerator} from '../../../scripts/generate-staged-release.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -37,7 +38,16 @@ test('all original writers and checked dormant source stages retain only scoped 
   ['release.yml', 'manual-release'], ['release.yml', 'changelog-pr'],
   ['release-staged.yml', 'auto_prepare-source'], ['release-staged.yml', 'manual_prepare-source']];
  for (const [file, role] of roles) {
-  const workflow = YAML.parse(fs.readFileSync(join(root, '.github/workflows', file), 'utf8'));
+  const view = file === 'release.yml' ? readCheckedReleaseOperationView() : null;
+  const workflow = YAML.parse(view ? view.originalSource : fs.readFileSync(join(root, '.github/workflows', file), 'utf8'));
+  if (view?.mode === 'deployed' && ['auto-release', 'manual-release'].includes(role)) {
+   const caller = view.physicalCaller.jobs[role];
+   const mode = role.replace('-release', '');
+   assert.equal(caller.uses, './.github/workflows/release-staged.yml');
+   assert.equal(caller.with.mode, mode);
+   assert.deepEqual(caller.permissions, {contents: 'write', packages: 'write', actions: 'read'});
+   assert.ok(proveGitWriterCredential(view.physicalStages.jobs[mode + '_prepare-source']) > 0);
+  }
   assert.ok(proveGitWriterCredential(workflow.jobs[role]) > 0);
  }
  const retained = {uses: 'actions/checkout@v7', with: {token: '${{ secrets.GITHUB_TOKEN }}'}};
@@ -77,14 +87,14 @@ test('budget wrapper preserves stdout/status and terminates the complete harmles
 test('maintained generator checks all five exact source-bound derivative outputs', () => {
  const directory = fs.mkdtempSync(join(fs.realpathSync(tmpdir()), 'staged-generator-controls-'));
  try {
-  runStagedReleaseGenerator(['--check']);
-  runStagedReleaseGenerator(['--write', '--directory', directory]);
-  runStagedReleaseGenerator(['--check', '--directory', directory]);
+  runStagedReleaseGenerator(['--check-deployed']);
+  runStagedReleaseGenerator(['--write', '--deployed', '--directory', directory]);
+  runStagedReleaseGenerator(['--check-deployed', '--directory', directory]);
   for (const name of ['release-staged.yml', 'candidate-release-caller.yml', 'candidate-output-bindings.json',
    'original-release-workflow.yml', 'stage-source-coverage.json']) {
    const path = join(directory, name), original = fs.readFileSync(path);
    fs.writeFileSync(path, Buffer.concat([original, Buffer.from('\nspoof')]));
-   assert.throws(() => runStagedReleaseGenerator(['--check', '--directory', directory]));
+   assert.throws(() => runStagedReleaseGenerator(['--check-deployed', '--directory', directory]));
    fs.writeFileSync(path, original);
   }
   assert.throws(() => runStagedReleaseGenerator(['--write']));

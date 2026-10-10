@@ -1,3 +1,4 @@
+import {readCheckedReleaseOperationView} from '../../../scripts/checked-release-operation-view.mjs';
 import {createRequire} from 'node:module';
 const YAML=createRequire(import.meta.url)('yaml');
 // PR #1188: package releases follow automated GitHub releases and remain dry on PRs.
@@ -129,7 +130,7 @@ test('both package workflows admit automated releases, check PRs, and deliver au
 });
 
 test('each release path publishes and verifies slim before creating its GitHub release', () => {
-  const workflow = readFileSync(new URL('../../../.github/workflows/release.yml', import.meta.url), 'utf8');
+  const workflow = readCheckedReleaseOperationView().originalSource;
   for (const section of ['auto-release', 'manual-release']) {
     const body = workflow.slice(workflow.indexOf('  ' + section + ':'));
     const end = body.slice(1).search(/\n  [a-z][a-z-]*:/);
