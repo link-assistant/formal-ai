@@ -197,8 +197,8 @@ function option(name) {
 const gates = allGates();
 if (process.argv.includes('--list')) {
   for (const gate of gates) console.log(`${gate.skipped ? "skip" : "run "}  ${gate.name.padEnd(44)} ${gate.run}${gate.skipped ? `  [${gate.skipped}]` : ""}`);
-  process.exit(0);
-}
+  process.exitCode = 0;
+} else {
 const only = option('--only')?.split(',').filter(Boolean);
 const match = option('--match');
 const chosen = gates.filter((gate) =>
@@ -220,4 +220,5 @@ for (const gate of chosen) {
   if (!passed) failed.push(gate.name);
 }
 console.log(`\n${chosen.length - failed.length}/${chosen.length} passed or skipped; failed: ${failed.join(', ') || 'none'}`);
-process.exit(failed.length ? 1 : 0);
+process.exitCode = failed.length ? 1 : 0;
+}
