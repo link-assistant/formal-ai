@@ -284,24 +284,25 @@ fn plan_chat_step_routes(
     // Ahead of them, quotes that do not pair leave no telling the quoted text
     // from the instruction, so the request is declined before any arm reads its
     // payload as words to act on (PR #1188 G71).
-    if code_task::verified_source_description(&task).is_some() {
-        return steps::plan_verified_source_step(&task, messages, tool_names, result);
-    }
-    let owned_goal = if evidence_record::has_typed_evidence_delivery(&task) {
-        None
-    } else {
-        plan_owned_goal_step(&task, messages, tool_names, plan_chat_step_resolved, result)
-    };
-    if let Some(plan) = owned_goal
-        .or_else(|| {
-            super::quote_nesting::request_fault_answer(
-                &task,
-                tool_for(tool_names, Capability::MultiEdit).is_some(),
-            )
-        })
-        .or_else(|| crate::computer_use::plan_agentic_step(messages, tool_names))
-    {
-        return Some(plan);
+    let source = code_task::verified_source_description(&task)
+        .map(|_| steps::plan_verified_source_step(&task, messages, tool_names, result));
+    if let Some(plan) = source.or_else(|| {
+        let owned_goal = if evidence_record::has_typed_evidence_delivery(&task) {
+            None
+        } else {
+            plan_owned_goal_step(&task, messages, tool_names, plan_chat_step_resolved, result)
+        };
+        owned_goal
+            .or_else(|| {
+                super::quote_nesting::request_fault_answer(
+                    &task,
+                    tool_for(tool_names, Capability::MultiEdit).is_some(),
+                )
+            })
+            .or_else(|| crate::computer_use::plan_agentic_step(messages, tool_names))
+            .map(Some)
+    }) {
+        return plan;
     }
     // An explicit exact-content marker makes the following bytes authoritative.
     // Claim this narrow shape before edit/source semantics inspect the payload:
@@ -386,7 +387,12 @@ pub(super) fn plan_settled_routes(
     // them", with a `?? Main.scala` listing) read to later routes as a search
     // for the file; the route itself declines any request that also names the
     // work to do (issue #1133).
-    if let Some(plan) = steps::explicit_shell_step(task, messages, tool_names, result) {
+    if let Some(plan) = steps::explicit_shell_step(task, messages, tool_names, result)
+        .or_else(|| {
+            code_task::plan_verified_generated_source_step(task, messages, tool_names, result)
+        })
+        .or_else(|| git_commit::plan_commit_step(owned, messages, tool_names))
+    {
         return Some(plan);
     }
     // A learned workspace-change procedure owns grounded repository rewrites
@@ -396,14 +402,6 @@ pub(super) fn plan_settled_routes(
     // modules, write both, run the stated command.
     // A copy or move followed by edits of the file it makes is planned
     // sentence by sentence (PR #1188 G82).
-    if let Some(plan) =
-        code_task::plan_verified_generated_source_step(task, messages, tool_names, result)
-    {
-        return Some(plan);
-    }
-    if let Some(plan) = git_commit::plan_commit_step(owned, messages, tool_names) {
-        return Some(plan);
-    }
     if let Some(plan) = super::request_sequence::plan_request_sequence_step(
         owned,
         messages,
