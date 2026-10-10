@@ -391,7 +391,7 @@ meanings
     lexeme zh "绑定源路径的读取形式"
     lexeme es "forma de lectura vinculada a una fuente"
   file-read-line-slice-unavailable
-    defined-by response
+    defined-by answer
     role file-read-mode-contract
     example "An unavailable range on a three-line file yields a no-selected-lines response and no file content."
     precondition "the existing LineSlice producer has observed source bytes but its requested selection contains no available lines"
