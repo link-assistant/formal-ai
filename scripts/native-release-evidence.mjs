@@ -8,7 +8,7 @@ import { pathToFileURL } from 'node:url';
 import { expectedIdentity, validateExecutableReceipt, NATIVE_TARGETS, RECEIPT_FILE } from './native-release-artifact.mjs';
 import { SOURCE_FILE } from './native-release-source.mjs';
 export const PROTOCOL_FILE = 'protocol-selection.json';
-export const PROTOCOL_HELPERS = ['native-release-artifact.mjs', 'native-release-evidence.mjs', 'native-release-source.mjs', 'native-release-trust.mjs'];
+export const PROTOCOL_HELPERS = ['build-selected-wasm.mjs', 'native-release-artifact.mjs', 'native-release-evidence.mjs', 'native-release-source.mjs', 'native-release-trust.mjs'];
 export const SIGNING_LABELS = ['macos-arm64', 'macos-x64'];
 export const sha256 = bytes => createHash('sha256').update(bytes).digest('hex');
 const decode = bytes => JSON.parse(Buffer.from(bytes).toString('utf8'));

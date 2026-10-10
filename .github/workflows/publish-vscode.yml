@@ -24,6 +24,11 @@ on: # zizmor: ignore[dangerous-triggers]
       - bun.lock
       - .github/workflows/publish-vscode.yml
       - scripts/resolve-package-release.mjs
+      - scripts/build-selected-wasm.mjs
+      - scripts/generate-web-distribution.py
+      - rust/src/**
+      - rust/embedded/**
+      - rust/tests/web/selected-source-wasm.test.mjs
       - scripts/release-extension-*.mjs
       - scripts/github-artifact-by-identifier.mjs
       - rust/tests/web/release-extension-transfer.test.mjs
@@ -110,6 +115,16 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+          ref: ${{ github.workflow_sha }}
+      - name: Capture the workflow-owned selected-worker builder
+        env:
+          WASM_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "$WASM_PROTOCOL_COMMIT"
+          protocol_path="$RUNNER_TEMP/formal-ai-extension-wasm.mjs"
+          cp scripts/build-selected-wasm.mjs "$protocol_path"
+          echo "FORMAL_AI_WASM_PROTOCOL=$protocol_path" >> "$GITHUB_ENV"
       - name: Select the resolved release tag
         if: needs.resolve.outputs.tag != ''
         env:
@@ -129,6 +144,13 @@ jobs:
         run: |
           curl -fsSL https://bun.sh/install | bash
           echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+      - name: Build worker from the selected extension source
+        id: selected_wasm
+        run: node "$FORMAL_AI_WASM_PROTOCOL" build
+        timeout-minutes: 5
       - name: Build web resources and extension
         run: |
           curl -fsSL https://bun.sh/install | bash
@@ -137,6 +159,10 @@ jobs:
           bun run build:web
           npm ci --prefix vscode --no-audit --no-fund
           npm --prefix vscode run package
+      - name: Verify the worker copied into extension resources
+        env:
+          WASM_RECEIPT_SHA256: ${{ steps.selected_wasm.outputs.receipt-sha256 }}
+        run: node "$FORMAL_AI_WASM_PROTOCOL" verify "$GITHUB_WORKSPACE" vscode/dist-web "$WASM_RECEIPT_SHA256"
       - name: Compare the packaged extension version with the preceding release
         id: version
         run: >

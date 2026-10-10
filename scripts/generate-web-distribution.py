@@ -19,6 +19,10 @@ for path in sorted(WEB.rglob('*')):
         # #1180 R11); no page loads them, so they are not precached.
         if path.name not in EXCLUDED and not name.startswith(('app/', 'distribution/', 'seed/', 'vendor/')):
             assets[name] = path
+# A selected CI build supplies a source-bound receipt; local source-only builds stay compiler-free.
+receipt = WEB / 'formal_ai_worker.receipt.json'
+if receipt.is_file():
+    assets[receipt.name] = receipt
 assets['app/index.html'] = WEB / 'app/index.html'
 for path in sorted(SEED.rglob('*.lino')):
     assets['seed/' + path.relative_to(SEED).as_posix()] = path

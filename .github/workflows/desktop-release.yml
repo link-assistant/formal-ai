@@ -23,6 +23,10 @@ on: # zizmor: ignore[dangerous-triggers]
       - 'scripts/desktop-release-resolve.sh'
       - 'scripts/install-node-dependencies.sh'
       - 'scripts/native-release-*.mjs'
+      - 'scripts/build-selected-wasm.mjs'
+      - 'rust/tests/web/selected-source-wasm.test.mjs'
+      - 'js/**'
+      - 'data/seed/**'
       - 'rust/src/**'
       - 'rust/embedded/**'
       - 'rust/build.rs'
@@ -121,6 +125,7 @@ jobs:
       selection-sha256: ${{ steps.seal.outputs.selection-sha256 }}
       protocol-sha256: ${{ steps.seal.outputs.protocol-sha256 }}
       package-version: ${{ steps.seal.outputs.package-version }}
+      wasm-receipt-sha256: ${{ steps.selected_wasm.outputs.receipt-sha256 }}
     defaults:
       run:
         shell: bash
@@ -140,7 +145,7 @@ jobs:
           protocol_dir="$RUNNER_TEMP/formal-ai-native-release-protocol"
           mkdir -p "$protocol_dir"
           cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs "$protocol_dir/"
-          cp scripts/native-release-evidence.mjs "$protocol_dir/"
+          cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs "$protocol_dir/"
           echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
           node --input-type=module - "$protocol_dir" <<'NODE'
           import {readFileSync,writeFileSync} from 'node:fs';
@@ -148,7 +153,7 @@ jobs:
           import {join} from 'node:path';
           import {execFileSync} from 'node:child_process';
           const directory=process.argv[2];
-          const files=['native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs'].map(name=>{
+          const files=['build-selected-wasm.mjs','native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs'].map(name=>{
             const bytes=readFileSync(join(directory,name));
             return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};
           });
@@ -204,6 +209,8 @@ jobs:
         with:
           node-version: 22
       - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
       - name: Seal exact source and compiler contract
         id: seal
         env:
@@ -234,6 +241,18 @@ jobs:
           const protocol=readFileSync('native-source/protocol-selection.json');
           appendFileSync(process.env.GITHUB_OUTPUT,'package-version='+source.package_version+'\nprotocol-sha256='+createHash('sha256').update(protocol).digest('hex')+'\n');
           NODE
+      - name: Build worker from the exact selected Desktop source
+        id: selected_wasm
+        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/build-selected-wasm.mjs" build
+        timeout-minutes: 5
+      - uses: actions/upload-artifact@v7
+        with:
+          name: native-release-wasm
+          path: |
+            js/formal_ai_worker.wasm
+            js/formal_ai_worker.receipt.json
+          if-no-files-found: error
+          retention-days: 7
       - uses: actions/upload-artifact@v7
         with:
           name: native-release-source
@@ -288,7 +307,7 @@ jobs:
           protocol_dir="$RUNNER_TEMP/formal-ai-native-release-protocol"
           mkdir -p "$protocol_dir"
           cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs "$protocol_dir/"
-          cp scripts/native-release-evidence.mjs "$protocol_dir/"
+          cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs "$protocol_dir/"
           echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
           node --input-type=module - "$protocol_dir" <<'NODE'
           import {readFileSync,writeFileSync} from 'node:fs';
@@ -296,7 +315,7 @@ jobs:
           import {join} from 'node:path';
           import {execFileSync} from 'node:child_process';
           const directory=process.argv[2];
-          const files=['native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs'].map(name=>{
+          const files=['build-selected-wasm.mjs','native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs'].map(name=>{
             const bytes=readFileSync(join(directory,name));
             return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};
           });
@@ -421,7 +440,7 @@ jobs:
           protocol_dir="$RUNNER_TEMP/formal-ai-native-release-protocol"
           mkdir -p "$protocol_dir"
           cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs "$protocol_dir/"
-          cp scripts/native-release-evidence.mjs "$protocol_dir/"
+          cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs "$protocol_dir/"
           echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
           node --input-type=module - "$protocol_dir" <<'NODE'
           import {readFileSync,writeFileSync} from 'node:fs';
@@ -429,7 +448,7 @@ jobs:
           import {join} from 'node:path';
           import {execFileSync} from 'node:child_process';
           const directory=process.argv[2];
-          const files=['native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs'].map(name=>{
+          const files=['build-selected-wasm.mjs','native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs'].map(name=>{
             const bytes=readFileSync(join(directory,name));
             return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};
           });
@@ -469,6 +488,17 @@ jobs:
           NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-artifact.mjs" verify native-bin native-source "${{ matrix.target }}"
 
+      - name: Download the same-run selected-source worker
+        uses: actions/download-artifact@v8
+        with:
+          name: native-release-wasm
+          path: selected-wasm
+      - name: Verify and import the exact worker before resource preparation
+        env:
+          WASM_RECEIPT_SHA256: ${{ needs.native-source.outputs.wasm-receipt-sha256 }}
+        run: |
+          node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/build-selected-wasm.mjs" verify "$GITHUB_WORKSPACE" selected-wasm "$WASM_RECEIPT_SHA256"
+          cp selected-wasm/formal_ai_worker.wasm selected-wasm/formal_ai_worker.receipt.json js/
       - name: Install desktop dependencies
         run: scripts/install-node-dependencies.sh desktop
 
@@ -483,6 +513,10 @@ jobs:
           FORMAL_AI_DESKTOP_BINARY: ${{ env.FORMAL_AI_VERIFIED_NATIVE_BINARY }}
         run: node scripts/prepare-resources.mjs
 
+      - name: Verify worker resources before Desktop packaging
+        env:
+          WASM_RECEIPT_SHA256: ${{ needs.native-source.outputs.wasm-receipt-sha256 }}
+        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/build-selected-wasm.mjs" verify "$GITHUB_WORKSPACE" desktop/dist-web "$WASM_RECEIPT_SHA256"
       - name: Prefetch electron-builder toolsets
         working-directory: desktop
         run: node scripts/prefetch-builder-toolsets.mjs
@@ -869,7 +903,7 @@ jobs:
           protocol_dir="$RUNNER_TEMP/formal-ai-native-release-protocol"
           mkdir -p "$protocol_dir"
           cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs "$protocol_dir/"
-          cp scripts/native-release-evidence.mjs "$protocol_dir/"
+          cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs "$protocol_dir/"
           echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
           node --input-type=module - "$protocol_dir" <<'NODE'
           import {readFileSync,writeFileSync} from 'node:fs';
@@ -877,7 +911,7 @@ jobs:
           import {join} from 'node:path';
           import {execFileSync} from 'node:child_process';
           const directory=process.argv[2];
-          const files=['native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs'].map(name=>{
+          const files=['build-selected-wasm.mjs','native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs'].map(name=>{
             const bytes=readFileSync(join(directory,name));
             return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};
           });
@@ -1031,7 +1065,7 @@ jobs:
           protocol_dir="$RUNNER_TEMP/formal-ai-native-release-protocol"
           mkdir -p "$protocol_dir"
           cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs "$protocol_dir/"
-          cp scripts/native-release-evidence.mjs "$protocol_dir/"
+          cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs "$protocol_dir/"
           echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
           node --input-type=module - "$protocol_dir" <<'NODE'
           import {readFileSync,writeFileSync} from 'node:fs';
@@ -1039,7 +1073,7 @@ jobs:
           import {join} from 'node:path';
           import {execFileSync} from 'node:child_process';
           const directory=process.argv[2];
-          const files=['native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs'].map(name=>{
+          const files=['build-selected-wasm.mjs','native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs'].map(name=>{
             const bytes=readFileSync(join(directory,name));
             return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};
           });
@@ -1067,6 +1101,17 @@ jobs:
           NATIVE_SELECTED_HEAD: ${{ needs.native-source.outputs.selected-head }}
           NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
         run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source
+      - name: Download the same-run selected-source worker
+        uses: actions/download-artifact@v8
+        with:
+          name: native-release-wasm
+          path: selected-wasm
+      - name: Verify and import the exact worker before resource preparation
+        env:
+          WASM_RECEIPT_SHA256: ${{ needs.native-source.outputs.wasm-receipt-sha256 }}
+        run: |
+          node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/build-selected-wasm.mjs" verify "$GITHUB_WORKSPACE" selected-wasm "$WASM_RECEIPT_SHA256"
+          cp selected-wasm/formal_ai_worker.wasm selected-wasm/formal_ai_worker.receipt.json js/
       # Install the committed extension lock through the warning classifier so
       # this package job exercises the exact production and build-tool graph.
       - name: Install extension dependencies
@@ -1099,6 +1144,10 @@ jobs:
           echo "vsix=$vsix" >> "$GITHUB_OUTPUT"
           echo "Packaged: $vsix"
 
+      - name: Verify worker resources before extension attestation
+        env:
+          WASM_RECEIPT_SHA256: ${{ needs.native-source.outputs.wasm-receipt-sha256 }}
+        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/build-selected-wasm.mjs" verify "$GITHUB_WORKSPACE" vscode/dist-web "$WASM_RECEIPT_SHA256"
       - name: Collect .vsix checksum fragment
         working-directory: vscode
         run: |
@@ -1166,7 +1215,7 @@ jobs:
         with:
           persist-credentials: false
           ref: ${{ github.workflow_sha }}
-          fetch-depth: 1
+          fetch-depth: 0
       - name: Capture release protocol before selecting binary source
         env:
           NATIVE_PROTOCOL_COMMIT: ${{ github.workflow_sha }}
@@ -1176,7 +1225,7 @@ jobs:
           protocol_dir="$RUNNER_TEMP/formal-ai-native-release-protocol"
           mkdir -p "$protocol_dir"
           cp scripts/native-release-source.mjs scripts/native-release-artifact.mjs scripts/native-release-trust.mjs "$protocol_dir/"
-          cp scripts/native-release-evidence.mjs "$protocol_dir/"
+          cp scripts/native-release-evidence.mjs scripts/build-selected-wasm.mjs "$protocol_dir/"
           echo "FORMAL_AI_NATIVE_PROTOCOL_DIR=$protocol_dir" >> "$GITHUB_ENV"
           node --input-type=module - "$protocol_dir" <<'NODE'
           import {readFileSync,writeFileSync} from 'node:fs';
@@ -1184,7 +1233,7 @@ jobs:
           import {join} from 'node:path';
           import {execFileSync} from 'node:child_process';
           const directory=process.argv[2];
-          const files=['native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs'].map(name=>{
+          const files=['build-selected-wasm.mjs','native-release-source.mjs','native-release-artifact.mjs','native-release-evidence.mjs','native-release-trust.mjs'].map(name=>{
             const bytes=readFileSync(join(directory,name));
             return {name,bytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};
           });
@@ -1202,6 +1251,22 @@ jobs:
         with:
           name: native-release-source
           path: native-source
+      - name: Import selected source for durable worker verification
+        env:
+          NATIVE_SELECTED_HEAD: ${{ needs.native-source.outputs.selected-head }}
+          NATIVE_SELECTION_SHA256: ${{ needs.native-source.outputs.selection-sha256 }}
+        run: node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/native-release-source.mjs" import native-source
+      - name: Download the same-run selected-source worker
+        uses: actions/download-artifact@v8
+        with:
+          name: native-release-wasm
+          path: selected-wasm
+      - name: Verify and import the exact worker before resource preparation
+        env:
+          WASM_RECEIPT_SHA256: ${{ needs.native-source.outputs.wasm-receipt-sha256 }}
+        run: |
+          node "$FORMAL_AI_NATIVE_PROTOCOL_DIR/build-selected-wasm.mjs" verify "$GITHUB_WORKSPACE" selected-wasm "$WASM_RECEIPT_SHA256"
+          cp selected-wasm/formal_ai_worker.wasm selected-wasm/formal_ai_worker.receipt.json js/
       - name: Download receipt-only target observations
         uses: actions/download-artifact@v8
         env:
@@ -1236,6 +1301,13 @@ jobs:
           const result=JSON.parse(readFileSync('release-evidence/collection-result.json'));
           appendFileSync(process.env.GITHUB_OUTPUT,'incomplete='+result.failures.map(failure=>failure.kind+':'+failure.target).join(',')+'\n');
           NODE
+      - name: Preserve the verified worker and receipt as durable release assets
+        env:
+          PACKAGE_VERSION: ${{ needs.native-source.outputs.package-version }}
+        run: |
+          cp selected-wasm/formal_ai_worker.wasm "release-evidence/formal-ai-worker-$PACKAGE_VERSION.wasm"
+          cp selected-wasm/formal_ai_worker.receipt.json "release-evidence/formal-ai-wasm-$PACKAGE_VERSION.json"
+          (cd release-evidence && sha256sum "formal-ai-worker-$PACKAGE_VERSION.wasm" "formal-ai-wasm-$PACKAGE_VERSION.json") >> release-evidence/SHA256SUMS-evidence.partial
       - name: Attest durable JSON observations before publication
         uses: actions/attest@v4
         with:
@@ -1357,7 +1429,7 @@ jobs:
           TAG: ${{ needs.resolve.outputs.tag }}
         run: |
           set -euo pipefail
-          gh release upload "$TAG" SHA256SUMS.txt BUILD-PROVENANCE.txt release-evidence/formal-ai-*.json --repo "$REPO" --clobber
+          gh release upload "$TAG" SHA256SUMS.txt BUILD-PROVENANCE.txt release-evidence/formal-ai-*.json release-evidence/formal-ai-*.wasm --repo "$REPO" --clobber
 
       # Runs after the upload so the partial manifest is still published for
       # debugging, but the run ends red.
