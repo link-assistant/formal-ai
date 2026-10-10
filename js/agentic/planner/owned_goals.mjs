@@ -6,7 +6,7 @@ import { boundReadPaths, pendingReadCondition } from '../file_read/ownership.mjs
 import { normalizePrompt } from '../crate/engine.mjs';
 import { unquotedPathTokens } from '../positional_edit.mjs';
 // Source-owned mixed actions share the existing obligation nodes and request replay.
-import { firstRawPrefixLeadEnd, pinnedFirstLine, composeEditClauses, preferredBinding, tokens, firstActionCueStart, firstActionCueEnd, bareSurfaces, cleanPathToken, looksLikeFilePath } from '../write_request.mjs';
+import { firstContentLeadEnd, firstRawPrefixLeadEnd, pinnedFirstLine, composeEditClauses, preferredBinding, tokens, firstActionCueStart, firstActionCueEnd, bareSurfaces, cleanPathToken, looksLikeFilePath } from '../write_request.mjs';
 import { literalWriteOwnership, instructionView, composeGeneralChangePlan, parseWriteContract } from '../general_planner.mjs';
 import { sentences } from '../shell_command_policy.mjs';
 import { quotedSegmentSpans, quoteFault } from '../crate/normal_markov.mjs';
@@ -295,6 +295,28 @@ export function ownedDeclaredCreateFrame(request) {
   if (['file_edit_position_end', 'file_edit_position_start', 'file_overwrite_consent']
     .some(role => mentionsRole(role, normalized)) || !writesWholeFile(view)) return null;
   return { target: contract.target, content: contract.content };
+}
+
+/** Mirrors declared_addition_contract; only explicit content following the destination owns this protocol. */
+export function declaredAdditionContract(request) {
+  const contract = parseWriteContract(request);
+  if (contract === null || contract.targetSpan.end > contract.payload.start
+    || firstContentLeadEnd(request.slice(contract.targetSpan.end).toLowerCase()) === null) return null;
+  return { target: contract.target, content: contract.content };
+}
+
+/** Mirrors has_additive_position; owned payload words are not operation cues. */
+export function hasAdditivePosition(request) {
+  const contract = parseWriteContract(request);
+  const complete = contract !== null && literalTail(request, contract)
+    && !attributedActionPrefix(request) && contractActionPrologue(request, contract);
+  let view = complete ? instructionView(request, contract) : request;
+  if (view === null) return false;
+  if (!complete) for (const span of quotedSegmentSpans(request)) {
+    view = view.slice(0, span.start) + ' '.repeat(span.end - span.start) + view.slice(span.end);
+  }
+  const normalized = normalizePrompt(view);
+  return mentionsRole('file_edit_position_end', normalized) || mentionsRole('file_edit_position_start', normalized);
 }
 
 /** Full owned literal addition frame; null position refuses ambiguous addition. */

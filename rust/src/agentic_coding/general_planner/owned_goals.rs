@@ -788,6 +788,44 @@ pub fn owned_declared_create_frame(request: &str) -> Option<(String, String)> {
     Some((contract.target, contract.content))
 }
 
+/// Mirrors `declaredAdditionContract`: explicit content follows the owned destination.
+pub fn declared_addition_contract(request: &str) -> Option<(String, String)> {
+    let contract = parse_write_contract(request)?;
+    if contract.target_span.end > contract.payload.start
+        || crate::agentic_coding::write_request::first_content_lead_end(
+            &request[contract.target_span.end..].to_lowercase(),
+        )
+        .is_none()
+    {
+        return None;
+    }
+    Some((contract.target, contract.content))
+}
+
+/// Mirrors `hasAdditivePosition`; owned payload words are not operation cues.
+pub fn has_additive_position(request: &str) -> bool {
+    let complete = parse_write_contract(request).filter(|contract| {
+        literal_tail(request, contract)
+            && !attributed_action_prefix(request)
+            && contract_action_prologue(request, contract)
+    });
+    let view = if let Some(contract) = complete {
+        instruction_view(request, &contract)
+    } else {
+        let mut bytes = request.as_bytes().to_vec();
+        for span in quoted_segment_spans(request) {
+            bytes[span.start..span.end].fill(b' ');
+        }
+        String::from_utf8(bytes).ok()
+    };
+    view.is_some_and(|source| {
+        let normalized = crate::engine::normalize_prompt(&source);
+        let lexicon = crate::seed::lexicon();
+        lexicon.mentions_role("file_edit_position_end", &normalized)
+            || lexicon.mentions_role("file_edit_position_start", &normalized)
+    })
+}
+
 /// Full owned literal addition frame; absent position refuses ambiguous addition.
 pub fn owned_additive_literal_frame(request: &str) -> Option<(String, String, Option<bool>)> {
     if crate::agentic_coding::module_function::closed_arithmetic_declaration(request) {

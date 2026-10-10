@@ -33,7 +33,11 @@ pub(super) fn plan_literal_addition_step(
     tool_names: &[&str],
     result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
+    let contract = super::general_planner::declared_addition_contract(task)?;
     let (target, content, position) = owned_additive_literal_frame(task)?;
+    if contract != (target.clone(), content.clone()) {
+        return None;
+    }
     let Some(at_end) = position else {
         return Some(record(
             AgenticPlan::Final(

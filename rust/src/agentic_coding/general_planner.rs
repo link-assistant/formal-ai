@@ -19,6 +19,8 @@ use std::fmt::Write as _;
 pub const PLAN_PATH: &str = ".formal-ai/general-change-plan.lino";
 const TARGET_PLACEHOLDER: &str = "{target}";
 
+mod additive_scope;
+pub(super) use additive_scope::owns_additive_scope;
 mod content_shape;
 mod literal_request;
 mod owned_goals;
@@ -35,7 +37,8 @@ pub(super) use owned_goals::{
 pub use super::write_request::compose_edit_request;
 pub(crate) use super::write_request::typed_write_target;
 pub use owned_goals::{
-    owned_additive_literal, owned_additive_literal_frame, owned_declared_create_frame,
+    declared_addition_contract, has_additive_position, owned_additive_literal,
+    owned_additive_literal_frame, owned_declared_create_frame,
 };
 /// What the bounded general planner can truthfully execute.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

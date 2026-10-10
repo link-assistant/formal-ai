@@ -1,5 +1,5 @@
 // Additive authoring over declared ordinary Read and replacement Write capabilities.
-import { ownedAdditiveLiteralFrame } from './planner/owned_goals.mjs';
+import { declaredAdditionContract, ownedAdditiveLiteralFrame } from './planner/owned_goals.mjs';
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
 import { Progress } from './progress.mjs';
@@ -14,6 +14,7 @@ const refused = (task, target, disposition = FinalDisposition.Gap) => resolvedFi
 
 /** Mirrors plan_literal_addition_step; caller metadata cannot manufacture an append primitive. */
 export function planLiteralAdditionStep(task, messages, toolNames) {
+  if (declaredAdditionContract(task) === null) return null;
   const contract = ownedAdditiveLiteralFrame(task);
   if (contract === null) return null;
   const { target, content, atEnd } = contract;

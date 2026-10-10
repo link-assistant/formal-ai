@@ -1,3 +1,5 @@
+import { declaredAdditionContract, hasAdditivePosition } from './planner/owned_goals.mjs';
+import { ownsAdditiveScope } from './workspace_change/additive_scope.mjs';
 // Grounded workspace rewrites and composite module changes
 // (rust/src/agentic_coding/workspace_change.rs).
 
@@ -49,6 +51,14 @@ const statedSlots = (rewrite) => rewrite.slots ?? [['{old}', rewrite.pattern], [
  * @param {Array<string>} toolNames
  */
 export function planWorkspaceChangeStep(rawTask, messages, toolNames) {
+  if (hasAdditivePosition(rawTask)
+    && (groundedEndInsertion(rawTask) !== null || contentsSource(rawTask) !== null
+      || declaredAdditionContract(rawTask) !== null)) {
+    if (!ownsAdditiveScope(rawTask)) return resolvedFinalAnswer(
+      renderSeededOutcome('file-addition-unverified', rawTask, '') ?? rawTask,
+      FinalDisposition.Gap, 'literal-addition-unowned-request'
+    );
+  }
   const currentTurn = messages.slice(evidenceWindowStart(messages));
   const addition = planLiteralAdditionStep(rawTask, currentTurn, toolNames);
   if (addition !== null) return addition;

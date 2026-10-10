@@ -118,6 +118,22 @@ pub(super) fn plan_workspace_change_step(
     // so the read and write evidence gathered for it must survive the ping
     // (issue #1138): slicing at the last user message -- the cue itself --
     // restarted the read--write pair on every ping.
+    if super::general_planner::has_additive_position(task)
+        && (super::workspace_computed_change::grounded_end_insertion(task).is_some()
+            || super::contents_source::contents_source(task).is_some()
+            || super::general_planner::declared_addition_contract(task).is_some())
+        && !super::general_planner::owns_additive_scope(task)
+    {
+        return Some(record(
+            AgenticPlan::Final(
+                super::code_task::render_seeded_outcome("file-addition-unverified", task, "")
+                    .unwrap_or_else(|| task.to_owned()),
+            ),
+            FinalDisposition::Gap,
+            "literal-addition-unowned-request",
+            result,
+        ));
+    }
     let current_turn = &messages[super::planner::evidence_window_start(messages)..];
     if let Some(addition) =
         super::literal_addition::plan_literal_addition_step(task, current_turn, tool_names, result)
