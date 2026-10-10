@@ -43,10 +43,3 @@ ci-speed
     over-limit-job build-archive
       timeout-minutes 55
       reason "Switched off while non-Linux CI is off (issue #1111): a cold build of the macOS test archive. To meet 30: build the archive from a shared compiler cache on the Linux build job's schedule."
-  workflow ".github/workflows/release.yml"
-    over-limit-job auto-release
-      timeout-minutes 90
-      reason "Push to main only: builds and publishes the Docker images and the GitHub release in one job; issue #977 requires at least 60 minutes, because at 30 the job was killed mid-build before the release step."
-    over-limit-job manual-release
-      timeout-minutes 90
-      reason "Dispatch only: the auto-release job's work on demand, under the same issue #977 floor of 60 minutes."
