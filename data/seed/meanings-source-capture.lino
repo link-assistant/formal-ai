@@ -13,12 +13,12 @@ meanings
     unit "not applicable"
     example "offline request for a URL absent from cache and the indexed seed registry"
     lexeme en
-      word "offline source capture cache miss"
+      words "offline source capture cache miss"
     lexeme ru
-      word "отсутствие копии источника в офлайн-кэше"
+      words "отсутствие копии источника в офлайн-кэше"
     lexeme hi
-      word "ऑफ़लाइन स्रोत की कैश प्रति अनुपलब्ध"
+      words "ऑफ़लाइन स्रोत की कैश प्रति अनुपलब्ध"
     lexeme zh
-      word "离线来源缓存缺失"
+      words "离线来源缓存缺失"
     lexeme es
-      word "captura de fuente sin copia en caché sin conexión"
+      words "captura de fuente sin copia en caché sin conexión"
