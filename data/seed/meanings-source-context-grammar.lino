@@ -9,7 +9,7 @@ meanings
     source "js/agentic/planner/owned_goals.mjs::source context grammar matcher"
     source-sha256 "1a6dbb652676de39674bd99fecb526508c0ce65a2fe5e1eb5cb4d23653301ec2"
     source "rust/src/agentic_coding/general_planner/owned_goals.rs::source context grammar matcher"
-    source-sha256 "5a26cea2aa0779aefd8d17323e6c26f34de2f8fc85b390296f7bd777b7e7cf49"
+    source-sha256 "1bab689b76b690c11e93812b65cefc7ba35c3b1e87bc266a7b60bf84902f2c90"
     effect "Only a fully consumed descriptive atom may be classified as context by sourceContextDeclaration/source_context_declaration. Other declared Goals and immutable Needs remain independently required; no physical read, write, deployment, imported-module initialization, runtime effect or universal safety certificate follows."
     unit "not applicable"
   source-context-prologue
@@ -95,7 +95,7 @@ meanings
     source "js/agentic/planner/owned_goals.mjs"
     source-sha256 "1a6dbb652676de39674bd99fecb526508c0ce65a2fe5e1eb5cb4d23653301ec2"
     source "rust/src/agentic_coding/general_planner/owned_goals.rs"
-    source-sha256 "5a26cea2aa0779aefd8d17323e6c26f34de2f8fc85b390296f7bd777b7e7cf49"
+    source-sha256 "1bab689b76b690c11e93812b65cefc7ba35c3b1e87bc266a7b60bf84902f2c90"
   source-context-issue-prologue
     role source-context-issue-prologue
     defined-by issue-reference
@@ -109,7 +109,7 @@ meanings
     source "js/agentic/planner/owned_goals.mjs"
     source-sha256 "1a6dbb652676de39674bd99fecb526508c0ce65a2fe5e1eb5cb4d23653301ec2"
     source "rust/src/agentic_coding/general_planner/owned_goals.rs"
-    source-sha256 "5a26cea2aa0779aefd8d17323e6c26f34de2f8fc85b390296f7bd777b7e7cf49"
+    source-sha256 "1bab689b76b690c11e93812b65cefc7ba35c3b1e87bc266a7b60bf84902f2c90"
 
   source-context-opaque-label-contract
     role source-context-opaque-label-contract

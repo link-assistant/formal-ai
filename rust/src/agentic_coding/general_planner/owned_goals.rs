@@ -401,7 +401,7 @@ fn collection_summary_owns(goals: &[Goal]) -> bool {
         .nfc()
         .collect::<String>()
         .to_lowercase();
-    let lexicon = crate::seed::meanings::lexicon();
+    let lexicon = crate::seed::lexicon();
     for cardinal in lexicon.meanings_with_role("cardinal_number_word") {
         let values = cardinal
             .lexemes
