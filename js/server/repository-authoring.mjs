@@ -1,5 +1,6 @@
 // Node authoring adapter: declared artifact bytes, local session and explicit landing.
 import { serverMessage } from './messages.mjs';
+import { prepareOwnedNodeSourceAuthoring } from './owned-node-source-authoring.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
@@ -31,6 +32,8 @@ export async function runNodeAuthoring(args, {
   io = nodeRepositoryIo(), startServer = startLocalServer, runSession = null, classifyStderr = null, steps,
 } = {}) {
   const roots = validate(args);
+  const ownedSourceSession = runSession === null
+    ? await prepareOwnedNodeSourceAuthoring(args) : null;
   const evidence = args.evidence ?? 'authoring-evidence';
   const into = args.produces.map((produced, index) => args.into?.[index] ?? produced);
   const state = fs.mkdtempSync(path.join(os.tmpdir(), 'formal-ai-authoring-state-'));
@@ -70,17 +73,21 @@ export async function runNodeAuthoring(args, {
       return 'observed';
     },
     serve: async () => {
+      if (ownedSourceSession !== null) return 'not_applicable';
       server = await startServer({ host: '127.0.0.1', port: args.port ?? 0, agentMode: true,
         env: { ...process.env, FORMAL_AI_MEMORY_PATH: path.join(state, 'memory.lino'), FORMAL_AI_DREAMING: '0' } });
       if (!server?.url) throw new Error(serverMessage('authoring-server-unobserved'));
       return 'observed';
     },
     edit: async () => {
-      if (!server?.url) throw new Error(serverMessage('authoring-session-server-required'));
+      if (!server?.url && ownedSourceSession === null) {
+        throw new Error(serverMessage('authoring-session-server-required'));
+      }
       const configuration = { provider: { formalai: { name: 'Formal AI', npm: '@ai-sdk/openai-compatible',
-        options: { baseURL: server.url + '/api/openai/v1', apiKey: 'local' }, models: { 'formal-ai': { name: 'Formal AI' } } } },
+        options: { baseURL: (server?.url ?? '') + '/api/openai/v1', apiKey: 'local' }, models: { 'formal-ai': { name: 'Formal AI' } } } },
         model: 'formalai/formal-ai' };
-      const result = runSession ? await runSession({ root: roots.workspace, task: args.task, url: server.url, configuration })
+      const result = ownedSourceSession !== null ? await ownedSourceSession.execute()
+        : runSession ? await runSession({ root: roots.workspace, task: args.task, url: server.url, configuration })
         : await observedCommand(roots.workspace, args.agent_executable ?? 'agent', [
           '--model', 'formalai/formal-ai', '--permission-mode', 'auto', '--no-summarize-session', '--no-generate-title',
           '--output-format', 'stream-json', '--compact-json', '--disable-stdin', '--prompt', args.task,
@@ -90,7 +97,7 @@ export async function runNodeAuthoring(args, {
       await writeEvidence('agent-stderr.log', result.stderr ?? '');
       if (classifyStderr) {
         if (!await classifyStderr(result.stderr ?? '')) throw new Error(serverMessage('authoring-stderr-rejected'));
-      } else {
+      } else if (ownedSourceSession === null) {
         await observedCommand(roots.repository, 'bash', [path.join(REPOSITORY, 'scripts/classify-agent-cli-stderr.sh'),
           path.join(roots.repository, evidence, 'agent-stderr.log')]);
       }
@@ -110,6 +117,7 @@ export async function runNodeAuthoring(args, {
       return 'observed';
     },
     verify: async () => {
+      if (ownedSourceSession !== null) ownedSourceSession.verify();
       const contents = await Promise.all(args.produces.map((produced) => readArtifact(roots.workspace, produced)));
       for (const expected of args.contains ?? []) if (!contents.some((source) => source.includes(Buffer.from(expected)))) {
         throw new Error(serverMessage('authoring-artifact-content-unobserved') + expected);
@@ -117,6 +125,7 @@ export async function runNodeAuthoring(args, {
       return 'observed';
     },
     diff: async () => {
+      if (ownedSourceSession !== null) ownedSourceSession.verify();
       const contents = await Promise.all(args.produces.map((produced) => readArtifact(roots.workspace, produced)));
       if (!contents.some((source, index) => !sameBytes(source, baseline[index].destination)
         && (!args.seed || !sameBytes(source, baseline[index].seed)))) throw new Error(serverMessage('authoring-artifacts-unchanged'));
