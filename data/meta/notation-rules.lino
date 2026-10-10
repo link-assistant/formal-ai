@@ -152,3 +152,10 @@ notation-rules
     utf8 "an encoding name"
     wasm "WebAssembly, a format name"
     yaml "a file format name"
+  shared-lexeme-fields-schema data/meta/shared-lexeme-fields-schema.lino
+  family shared-lexical-fields
+    rule shared-lexeme-fields
+    files data/seed/meanings-lexicon-import-war-to-wood.lino
+  family source-owned-contracts
+    files data/seed/multilingual-responses-agentic-tools.lino
+    files data/seed/workspace-discovery-grammar.lino

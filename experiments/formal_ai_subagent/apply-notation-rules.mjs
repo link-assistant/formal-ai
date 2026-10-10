@@ -42,6 +42,8 @@ import { fileURLToPath } from 'node:url';
 
 import { RULES_FILE, namesOfLine, parseTree, readRules } from '../../scripts/lib/links-notation-names.mjs';
 import { conciseLexemes } from '../../scripts/lib/notation-concise-lexemes.mjs';
+import { factorSharedLexemeFields } from '../../scripts/lib/notation-shared-lexeme-fields.mjs';
+const lexicalRules = new Map([['concise-lexemes', conciseLexemes], ['shared-lexeme-fields', factorSharedLexemeFields]]);
 import { parseLino } from '../../js/server/lino.mjs';
 import {
   identifiersIn,
@@ -265,13 +267,13 @@ function shape(node) {
  * Returns `{changed, converted, refused}`.
  * @param {Array<string>} files
  */
-export function applyConciseLexemes(files) {
+export function applyConciseLexemes(files, transform = conciseLexemes) {
   const changed = [];
   const refused = [];
   let converted = 0;
   for (const path of files) {
     const before = read(path);
-    const result = conciseLexemes(before);
+    const result = transform(before);
     if (result.converted === 0) {
       continue;
     }
@@ -357,9 +359,9 @@ export function checkApplied(rules) {
       });
     }
   }
-  for (const family of rules.families.filter((entry) => entry.rule === 'concise-lexemes')) {
+  for (const family of rules.families.filter((entry) => lexicalRules.has(entry.rule))) {
     for (const path of familyFiles(family)) {
-      const left = conciseLexemes(read(path)).converted;
+      const left = lexicalRules.get(family.rule)(read(path)).converted;
       if (left > 0) {
         problems.push(`family ${family.name}: ${path} holds ${left} long lexeme(s) with a concise form; run --family ${family.name} --write`);
       }
@@ -393,10 +395,10 @@ function main(argv) {
     console.error(`name a family of ${RULES_FILE} with --family: ${rules.families.map((entry) => entry.name).join(', ')}`);
     return 2;
   }
-  if (family.rule === 'concise-lexemes') {
+  if (lexicalRules.has(family.rule)) {
     dryRun = !argv.includes('--write');
     showLines = argv.includes('--lines');
-    const result = applyConciseLexemes(familyFiles(family));
+    const result = applyConciseLexemes(familyFiles(family), lexicalRules.get(family.rule));
     console.log(`family ${family.name}: ${result.converted} lexemes to the concise form in ${result.changed.length} files` +
       `${dryRun ? ' (dry run; --write applies)' : ''}`);
     result.refused.forEach((path) => console.error(`  refused ${path}: its concise form parses to a different tree`));

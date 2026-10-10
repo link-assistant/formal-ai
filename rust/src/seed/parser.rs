@@ -37,7 +37,7 @@ impl LinoNode {
 }
 
 #[must_use]
-pub fn parse_lino(text: &str) -> LinoNode {
+fn parse_lino_unlowered(text: &str) -> LinoNode {
     let mut root = LinoNode::default();
     let mut stack: Vec<(Option<usize>, Vec<usize>)> = vec![(None, Vec::new())];
     for line in expand_concise_lexemes(text).lines() {
@@ -613,4 +613,261 @@ fn child_blocks<'text>(lines: &[&'text str]) -> Vec<ChildBlock<'text>> {
         }
     }
     children
+}
+
+/// Lower owned shared lexical facets before typed seed consumers read surfaces.
+/// Unknown syntax refuses the whole document; legacy trees stay unchanged.
+pub fn lower_shared_lexeme_fields(root: &mut LinoNode) -> Result<(), &'static str> {
+    fn stable_identity(value: &str) -> bool {
+        let mut bytes = value.bytes();
+        bytes.next().is_some_and(|first| first.is_ascii_lowercase())
+            && bytes.all(|byte| {
+                byte.is_ascii_lowercase() || byte.is_ascii_digit() || matches!(byte, b'-' | b'_')
+            })
+    }
+    fn marker(node: &LinoNode) -> bool {
+        node.name == "shared-lexeme-fields" || node.name == "use-lexeme-fields"
+    }
+    fn contains_marker(node: &LinoNode) -> bool {
+        marker(node) || node.children.iter().any(contains_marker)
+    }
+    if !contains_marker(root) {
+        return Ok(());
+    }
+    // Rust parse_lino keeps a synthetic document root, unlike the JS API.
+    for container in &mut root.children {
+        if !contains_marker(container) {
+            continue;
+        }
+        if container.name != "meanings" {
+            return Err("shared fields require meanings root");
+        }
+        for meaning in &mut container.children {
+            let owner = if meaning.name == "meaning" {
+                &meaning.id
+            } else {
+                &meaning.name
+            };
+            if contains_marker(meaning)
+                && (!stable_identity(owner)
+                    || matches!(
+                        meaning.name.as_str(),
+                        "meanings"
+                            | "lexeme"
+                            | "surface"
+                            | "shared-lexeme-fields"
+                            | "use-lexeme-fields"
+                            | "part_of_speech"
+                            | "grammatical_number"
+                    ))
+            {
+                return Err("reserved or invalid shared field owner");
+            }
+            let declarations: Vec<usize> = meaning
+                .children
+                .iter()
+                .enumerate()
+                .filter(|(_, node)| node.name == "shared-lexeme-fields")
+                .map(|(index, _)| index)
+                .collect();
+            if declarations.is_empty() {
+                if contains_marker(meaning) {
+                    return Err("unresolved shared fields");
+                }
+                continue;
+            }
+            if declarations.len() != 1 {
+                return Err("duplicate shared declaration");
+            }
+            let declaration_index = declarations[0];
+            let declaration = meaning.children[declaration_index].clone();
+            if !stable_identity(&declaration.id) {
+                return Err("shared declaration requires identity");
+            }
+            let fields = &declaration.children;
+            if fields.is_empty() {
+                return Err("empty shared fields");
+            }
+            for (index, field) in fields.iter().enumerate() {
+                if !matches!(field.name.as_str(), "part_of_speech" | "grammatical_number")
+                    || !stable_identity(&field.id)
+                    || !field.children.is_empty()
+                {
+                    return Err("unknown, nested or effect-bearing shared field");
+                }
+                if fields[..index].iter().any(|other| other.name == field.name) {
+                    return Err("duplicate shared fields");
+                }
+            }
+            let languages: Vec<&str> = meaning
+                .children
+                .iter()
+                .filter(|node| node.name == "lexeme")
+                .map(|node| node.id.as_str())
+                .collect();
+            if languages.len() < 2 {
+                return Err("shared fields require multiple languages");
+            }
+            for (index, language) in languages.iter().enumerate() {
+                if !stable_identity(language) || languages[..index].contains(language) {
+                    return Err("duplicate language");
+                }
+            }
+            for (index, node) in meaning.children.iter_mut().enumerate() {
+                if index == declaration_index {
+                    continue;
+                }
+                if node.name != "lexeme" {
+                    if contains_marker(node) {
+                        return Err("invalid shared declaration scope");
+                    }
+                    continue;
+                }
+                if node.children.is_empty() {
+                    return Err("shared lexeme has no surfaces");
+                }
+                for surface in &mut node.children {
+                    if surface.name != "surface" {
+                        return Err("shared reference requires surface");
+                    }
+                    let references: Vec<usize> = surface
+                        .children
+                        .iter()
+                        .enumerate()
+                        .filter(|(_, field)| field.name == "use-lexeme-fields")
+                        .map(|(index, _)| index)
+                        .collect();
+                    if references.len() != 1 {
+                        return Err("unknown or duplicate reference");
+                    }
+                    let reference_index = references[0];
+                    let reference = &surface.children[reference_index];
+                    if reference.id != declaration.id || !reference.children.is_empty() {
+                        return Err("unknown or recursive reference");
+                    }
+                    for (index, field) in surface.children.iter().enumerate() {
+                        if index != reference_index
+                            && (contains_marker(field)
+                                || fields.iter().any(|shared| shared.name == field.name))
+                        {
+                            return Err("shared field conflict or nested reference");
+                        }
+                    }
+                    // Clone each occurrence: fields never share mutable ownership.
+                    surface
+                        .children
+                        .splice(reference_index..=reference_index, fields.iter().cloned());
+                }
+            }
+            meaning.children.remove(declaration_index);
+        }
+    }
+    Ok(())
+}
+
+/// Checked owned notation entrypoint with explicit shared-field diagnostics.
+pub fn parse_lino_checked(text: &str) -> Result<LinoNode, &'static str> {
+    validate_shared_lexeme_source(text)?;
+    let mut root = parse_lino_unlowered(text);
+    lower_shared_lexeme_fields(&mut root)?;
+    Ok(root)
+}
+
+/// Legacy callers refuse the entire malformed shared document, never a partial tree.
+#[must_use]
+pub fn parse_lino(text: &str) -> LinoNode {
+    parse_lino_checked(text).expect("invalid owned shared lexical field declaration")
+}
+
+fn validate_shared_lexeme_source(text: &str) -> Result<(), &'static str> {
+    let has_shared = text.lines().any(|line| {
+        matches!(
+            strip_comment(line).split_whitespace().next(),
+            Some("shared-lexeme-fields" | "use-lexeme-fields")
+        )
+    });
+    if !has_shared {
+        return Ok(());
+    }
+    let mut stack: Vec<(usize, &str)> = Vec::new();
+    for line in text.lines() {
+        let content = strip_comment(line);
+        let tokens: Vec<&str> = content.split_whitespace().collect();
+        let Some(head) = tokens.first().copied() else {
+            continue;
+        };
+        let indent = line
+            .chars()
+            .take_while(|character| character.is_whitespace())
+            .count();
+        if line.chars().take(indent).any(|character| character != ' ') {
+            return Err("shared source indentation requires spaces");
+        }
+        while stack.last().is_some_and(|(depth, _)| *depth >= indent) {
+            stack.pop();
+        }
+        let parent = stack.last().map_or("", |(_, name)| *name);
+        let identity_valid = tokens.len() == 2
+            && tokens[1]
+                .bytes()
+                .next()
+                .is_some_and(|byte| byte.is_ascii_lowercase())
+            && tokens[1].bytes().all(|byte| {
+                byte.is_ascii_lowercase() || byte.is_ascii_digit() || matches!(byte, b'-' | b'_')
+            });
+        if matches!(head, "shared-lexeme-fields" | "use-lexeme-fields") {
+            if !identity_valid {
+                return Err("invalid shared source identity");
+            }
+            if head == "use-lexeme-fields"
+                && (stack.len() < 4
+                    || parent != "surface"
+                    || stack[stack.len() - 2].1 != "lexeme"
+                    || stack[stack.len() - 4].1 != "meanings")
+            {
+                return Err("shared references require explicit surface source scope");
+            }
+        }
+        if parent == "shared-lexeme-fields"
+            && (!matches!(head, "part_of_speech" | "grammatical_number") || !identity_valid)
+        {
+            return Err("shared fields require bare semantic facet references");
+        }
+        stack.push((indent, head));
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod shared_lexeme_fields_tests {
+    use super::{parse_lino, parse_lino_checked};
+
+    const SHARED: &str = "meanings\n  example\n    shared-lexeme-fields lexical\n      part_of_speech noun\n    lexeme en\n      surface\n        text first\n        use-lexeme-fields lexical\n    lexeme es\n      surface\n        text second\n        use-lexeme-fields lexical\n";
+    const LEGACY: &str = "meanings\n  example\n    lexeme en\n      surface\n        text first\n        part_of_speech noun\n    lexeme es\n      surface\n        text second\n        part_of_speech noun\n";
+
+    #[test]
+    fn shared_fields_preserve_complete_legacy_tree_and_combined_roots() {
+        let actual = parse_lino_checked(SHARED).expect("valid shared fields");
+        let expected = parse_lino_checked(LEGACY).expect("valid legacy tree");
+        assert_eq!(alloc::format!("{actual:?}"), alloc::format!("{expected:?}"));
+        let combined = alloc::format!("{LEGACY}{SHARED}");
+        let original = alloc::format!("{LEGACY}{LEGACY}");
+        assert_eq!(
+            alloc::format!("{:?}", parse_lino_checked(&combined)),
+            alloc::format!("{:?}", parse_lino_checked(&original))
+        );
+    }
+
+    #[test]
+    fn malformed_shared_fields_refuse_whole_documents() {
+        for invalid in [
+            SHARED.replace("use-lexeme-fields lexical", "use-lexeme-fields missing"),
+            SHARED.replace("part_of_speech noun", "effect mutation"),
+            SHARED.replace("lexeme es", "lexeme en"),
+            SHARED.replace("meanings\n", "other-root\n"),
+        ] {
+            assert!(parse_lino_checked(&invalid).is_err());
+            assert!(std::panic::catch_unwind(|| parse_lino(&invalid)).is_err());
+        }
+    }
 }

@@ -190,11 +190,172 @@ def grounded_ids(root: str) -> set[str]:
     }
 
 
+def facet_label_projection(source: str) -> dict[str, str]:
+    """Project exact source-owned facet identifiers without losing their spelling."""
+    matches = re.findall(r"const FACET_KINDS: &\[&str\] = &\[(.*?)\];", source, re.S)
+    if len(matches) != 1:
+        raise RuntimeError("facet source declaration is missing or ambiguous")
+    body = re.sub(r"//[^\n]*", "", matches[0])
+    names = re.findall(r'"([a-z][a-z0-9]*(?:[-_][a-z0-9]+)*)"', body)
+    remainder = re.sub(r'"[a-z][a-z0-9]*(?:[-_][a-z0-9]+)*"', "", body)
+    if not names or re.sub(r"[\s,]", "", remainder):
+        raise RuntimeError("unrecognized facet source initializer")
+    projected: dict[str, str] = {}
+    for name in names:
+        if "-" in name and "_" in name:
+            raise RuntimeError("mixed facet identifier spelling")
+        label = name.replace("_", "-")
+        if label in projected:
+            raise RuntimeError("duplicate or colliding facet projection")
+        projected[label] = name
+    for label, name in projected.items():
+        if name.replace("_", "-") != label or projected[label] != name:
+            raise RuntimeError("facet projection failed exact source roundtrip")
+    return projected
+
+
+def scoped_shared_references(root: str) -> tuple[set[str], set[tuple[str, int]], dict[tuple[str, int], str]]:
+    """Resolve only validated meaning-local shared lexical field references.
+
+    Identity keys remain qualified by source, root and owner. They never enter
+    the global meaning/role/cache namespace, and field values remain audited.
+    """
+    schema_path = os.path.join(root, CLOSURE_SCHEMA)
+    with open(schema_path, encoding="utf-8") as handle:
+        schema_lines = handle.read().splitlines()
+    directive = "  scoped-shared-lexeme-schema data/meta/shared-lexeme-fields-schema.lino"
+    if directive not in schema_lines:
+        return set(), set(), {}
+    technical_schema = os.path.join(root, "data/meta/shared-lexeme-fields-schema.lino")
+    with open(technical_schema, encoding="utf-8") as handle:
+        contract = handle.read().splitlines()
+    required = {
+        "shared-lexeme-fields-schema",
+        "  declaration shared-lexeme-fields",
+        "  reference use-lexeme-fields",
+        "  field part-of-speech",
+        "  field grammatical-number",
+    }
+    if not required.issubset(contract):
+        raise RuntimeError("unknown shared lexical schema")
+    labels = [line[8:] for line in contract if line.startswith("  field ")]
+    import hashlib
+    facet_rows = [line[15:].split(" ", 1) for line in contract if line.startswith("  facet-source ")]
+    facet_path = "rust/src/seed/meanings/parse.rs"
+    if len(facet_rows) != 1 or len(facet_rows[0]) != 2 or facet_rows[0][0] != facet_path:
+        raise RuntimeError("facet source authority missing")
+    with open(os.path.join(root, facet_path), "rb") as handle:
+        facet_bytes = handle.read()
+    if hashlib.sha256(facet_bytes).hexdigest() != facet_rows[0][1]:
+        raise RuntimeError("facet source authority drift")
+    field_names = facet_label_projection(facet_bytes.decode("utf-8"))
+    if labels != ["part-of-speech", "grammatical-number"] or any(label not in field_names for label in labels):
+        raise RuntimeError("shared lexical schema drift")
+    fields = [field_names[label] for label in labels]
+    import hashlib
+    source_rows = [line[17:].split(" ", 1) for line in contract if line.startswith("  runtime-source ")]
+    expected_sources = {"js/seed_loader.js", "rust/src/seed/parser.rs", "ts/seed_loader.ts"}
+    if {row[0] for row in source_rows} != expected_sources or len(source_rows) != 3:
+        raise RuntimeError("shared lexical runtime source authority missing")
+    for source, digest in source_rows:
+        with open(os.path.join(root, source), "rb") as handle:
+            if hashlib.sha256(handle.read()).hexdigest() != digest:
+                raise RuntimeError("shared lexical runtime source drift")
+    bound: set[str] = set()
+    identities: set[tuple[str, int]] = set()
+    references: dict[tuple[str, int], str] = {}
+    reserved = {"meanings", "lexeme", "surface", "shared-lexeme-fields", "use-lexeme-fields", *fields}
+    for path in sorted(glob.glob(os.path.join(root, "data/seed/*.lino"))):
+        with open(path, encoding="utf-8") as handle:
+            lines = handle.read().splitlines()
+        document = {"name": "", "raw": "", "index": -1, "children": []}
+        stack = [(-1, document)]
+        for index, raw in enumerate(lines):
+            stripped = raw.strip()
+            if not stripped or stripped.startswith("#"):
+                continue
+            tokens = _line_tokens(stripped)
+            if not tokens:
+                continue
+            indent = _indent(raw)
+            while len(stack) > 1 and stack[-1][0] >= indent:
+                stack.pop()
+            node = {"name": tokens[0], "raw": stripped, "index": index, "children": []}
+            stack[-1][1]["children"].append(node)
+            stack.append((indent, node))
+        def marker(node: dict) -> bool:
+            return node["name"] in {"shared-lexeme-fields", "use-lexeme-fields"}
+        def contains(node: dict) -> bool:
+            return marker(node) or any(contains(child) for child in node["children"])
+        def nodes(node: dict):
+            yield node
+            for child in node["children"]:
+                yield from nodes(child)
+        document_valid = not any(re.match(r"^[ \t]*\t", line) for line in lines if line.strip() and not line.lstrip().startswith("#"))
+        all_markers = [node for node in nodes(document) if marker(node)]
+        for node in all_markers:
+            if node["name"] == "use-lexeme-fields":
+                references[(path, node["index"])] = "scoped-invalid:" + path + ":" + str(node["index"])
+        for container in document["children"]:
+            if container["name"] != "meanings":
+                continue
+            for owner in container["children"]:
+                declarations = [node for node in owner["children"] if node["name"] == "shared-lexeme-fields"]
+                if not declarations:
+                    continue
+                prefix = "scoped:" + path + ":" + str(container["index"]) + ":" + str(owner["index"]) + ":"
+                valid = document_valid and len(declarations) == 1
+                valid = valid and owner["name"] not in reserved
+                owner_identity = owner["raw"][8:].strip().strip("\"'") if owner["name"] == "meaning" else owner["name"]
+                valid = valid and bool(SLUG.fullmatch(owner_identity))
+                declaration = declarations[0]
+                match = re.fullmatch(r"shared-lexeme-fields +([a-z][a-z0-9_-]*)(?: +#.*)?", declaration["raw"])
+                identity = match[1] if match else ""
+                valid = valid and bool(identity)
+                declaration_fields = declaration["children"]
+                names = [node["name"] for node in declaration_fields]
+                valid = valid and bool(names) and len(names) == len(set(names))
+                for field in declaration_fields:
+                    valid = valid and field["name"] in fields and not field["children"]
+                    valid = valid and bool(re.fullmatch(r"[a-z][a-z0-9_-]* +[a-z][a-z0-9_-]*(?: +#.*)?", field["raw"]))
+                lexemes = [node for node in owner["children"] if node["name"] == "lexeme"]
+                languages = [node["raw"][7:].strip().strip("\"'") for node in lexemes]
+                valid = valid and len(lexemes) >= 2 and len(languages) == len(set(languages))
+                valid = valid and all(SLUG.fullmatch(language) for language in languages)
+                used = []
+                for node in owner["children"]:
+                    if node is not declaration and node["name"] != "lexeme" and contains(node):
+                        valid = False
+                for lexeme in lexemes:
+                    valid = valid and bool(lexeme["children"])
+                    for surface in lexeme["children"]:
+                        valid = valid and surface["name"] == "surface"
+                        refs = [node for node in surface["children"] if node["name"] == "use-lexeme-fields"]
+                        valid = valid and len(refs) == 1
+                        for ref in refs:
+                            ref_match = re.fullmatch(r"use-lexeme-fields +([a-z][a-z0-9_-]*)(?: +#.*)?", ref["raw"])
+                            value = ref_match[1] if ref_match else "invalid"
+                            key = prefix + value
+                            references[(path, ref["index"])] = key
+                            used.append(key)
+                            valid = valid and value == identity and not ref["children"]
+                        for field in surface["children"]:
+                            if field not in refs and (contains(field) or field["name"] in names):
+                                valid = False
+                recognized = {declaration["index"], *[ref["index"] for lexeme in lexemes for surface in lexeme["children"] for ref in surface["children"] if ref["name"] == "use-lexeme-fields"]}
+                valid = valid and all(node["index"] in recognized for node in nodes(owner) if marker(node))
+                if valid:
+                    identities.add((path, declaration["index"]))
+                    bound.update(used)
+    return bound, identities, references
+
+
 class Resolver:
     """Resolution oracle for a single repository root."""
 
     def __init__(self, root: str, *, include_generated: bool = True) -> None:
         self.root = root
+        self.scoped_bindings, _, _ = scoped_shared_references(root)
         self.defined = defined_meaning_slugs(root, include_generated=include_generated)
         self.roles = declared_roles(root)
         self.wiktionary = cached_lemmas(root, "wiktionary")
@@ -202,6 +363,8 @@ class Resolver:
         self.ids = grounded_ids(root)
 
     def resolves(self, token: str) -> bool:
+        if token.startswith("scoped:") or token.startswith("scoped-invalid:"):
+            return token in self.scoped_bindings
         if token in LANG_CODES:
             return True
         if QID.match(token):
@@ -236,13 +399,14 @@ def semantic_reference_inventory(
     literals: Counter[str] = Counter()
     ignored_full_line_comments = 0
     declaration_heads, literal_heads = closure_schema(root)
+    scoped_bindings, scoped_identities, scoped_references = scoped_shared_references(root)
     for path in sorted(glob.glob(os.path.join(root, "data/seed/*.lino"))):
         if not include_generated and os.path.basename(path).startswith(GENERATED_PREFIX):
             continue
         with open(path, encoding="utf-8") as handle:
             lines = handle.read().split("\n")
         significant: list[tuple[int, list[str]]] = []
-        for raw in lines:
+        for source_index, raw in enumerate(lines):
             stripped = raw.strip()
             if not stripped:
                 continue
@@ -251,11 +415,18 @@ def semantic_reference_inventory(
                 continue
             toks = _line_tokens(stripped)
             if toks:
-                significant.append((_indent(raw), toks))
+                significant.append((source_index, _indent(raw), toks))
 
         lex_lang: str | None = None
-        for index, (indent, toks) in enumerate(significant):
+        for index, (source_index, indent, toks) in enumerate(significant):
             head, values = toks[0], toks[1:]
+            scoped_key = scoped_references.get((path, source_index))
+            if scoped_key is not None:
+                counts[scoped_key] += 1
+                heads.setdefault(scoped_key, Counter())[head] += 1
+                continue
+            if (path, source_index) in scoped_identities:
+                values = values[1:]
             # The concise lexeme form (R1188-U7, docs/links-notation-style.md):
             # the words after the language, and the words of a `words` line,
             # are the lexeme's surfaces, read as the `text` values they expand to.
@@ -266,7 +437,7 @@ def semantic_reference_inventory(
             elif head == "words":
                 values, surfaces = [], values
             has_children = (
-                index + 1 < len(significant) and significant[index + 1][0] > indent
+                index + 1 < len(significant) and significant[index + 1][1] > indent
             )
             if has_children and head in declaration_heads and values:
                 declarations.update(_expand_slug_values(values[:1]))
@@ -285,6 +456,8 @@ def semantic_reference_inventory(
                 heads.setdefault(value, Counter())[value_head] += 1
     diagnostics: dict[str, object] = {
         "ignored_full_line_comments": ignored_full_line_comments,
+        "resolved_scoped_reference_bindings": len(scoped_bindings),
+        "source_bound_scoped_identity_declarations": len(scoped_identities),
         "excluded_declaration_identities": len(declarations),
         "excluded_declaration_identity_occurrences": sum(declarations.values()),
         "excluded_literal_operands": len(literals),

@@ -62,3 +62,4 @@ total_closure_schema
   literal_operand_head signature
   literal_operand_head substring
   literal_operand_head word
+  scoped-shared-lexeme-schema data/meta/shared-lexeme-fields-schema.lino

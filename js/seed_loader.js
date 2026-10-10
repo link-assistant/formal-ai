@@ -14,10 +14,8 @@
 // The loader is intentionally minimal: indentation-based, untyped, and shared
 // between the main thread (`window.FormalAiSeed`) and the worker
 // (`self.FormalAiSeed`) without any bundler step.
-
 (function (global) {
   "use strict";
-
   // The seed inventory lives in `seed-files.js`, generated from
   // `data/meta/seed-registry.lino` by
   // `rust-script scripts/generate-seed-registry.rs --write`. Issue #991: this
@@ -32,14 +30,12 @@
     var files = global.FORMAL_AI_SEED_FILES;
     return Array.isArray(files) ? files.slice() : [];
   }
-
   function isWorker() {
     return (
       typeof global.WorkerGlobalScope !== "undefined" &&
       global instanceof global.WorkerGlobalScope
     );
   }
-
   function assetVersion() {
     if (typeof global.FORMAL_AI_ASSET_VERSION === "string") {
       return global.FORMAL_AI_ASSET_VERSION;
@@ -52,7 +48,6 @@
       return "";
     }
   }
-
   function withAssetVersion(url) {
     var version = assetVersion();
     if (!version) return url;
@@ -70,7 +65,6 @@
       encodeURIComponent(version)
     );
   }
-
   // Single left-to-right pass so escape sequences never re-trigger each other
   // (e.g. `\\n`, an escaped backslash followed by `n`, must stay `\n`, not a
   // newline). Mirrors `rust/src/seed/parser.rs::unescape_value` and serves every
@@ -116,15 +110,12 @@
     }
     return out;
   }
-
   function unescapeValue(value) {
     return unescapeQuoted(value);
   }
-
   function unescapeSingleValue(value) {
     return unescapeQuoted(value);
   }
-
   function decodeRawReference(value) {
     var raw = String(value || "");
     if (raw === "unformalized-raw" || raw === "codepoints") return "";
@@ -148,7 +139,6 @@
       })
       .join("");
   }
-
   function stripComment(line) {
     var quote = null;
     var escaped = false;
@@ -175,7 +165,6 @@
     }
     return line;
   }
-
   // The concise lexeme form (PR #1188, R1188-U7; docs/links-notation-style.md):
   //
   //   lexeme en "read" "read the file"      lexeme en
@@ -192,19 +181,15 @@
   // The expansion is textual, so every reader of the parsed tree sees the long
   // form. Mirrors `expand_concise_lexemes` in rust/src/seed/parser.rs.
   var CONCISE_LEXEME_HINT = /^[ \t]*(?:lexeme[ \t]+[^\s#]+[ \t]+[^\s#]|words[ \t]+[^\s#])/m;
-
   function leadingSpaces(line) {
     return /^ */.exec(line)[0].length;
   }
-
   function spaces(count) {
     return new Array(count + 1).join(" ");
   }
-
   function isBlankLine(line) {
     return /^\s*$/.test(stripComment(line));
   }
-
   // The word tokens of a comment-free line tail: quoted words keep their
   // quotes (so `text <word>` reads them exactly as written), bare words end
   // at whitespace.
@@ -239,7 +224,6 @@
     }
     return tokens;
   }
-
   // The direct children of the block `lines[start..end)` whose first child
   // line sets the child indentation: `{content, depth, lines}` each.
   function childBlocks(lines, start, end) {
@@ -257,14 +241,12 @@
     }
     return children;
   }
-
   function reindented(block, depth) {
     return block.lines.map(function (line) {
       var own = leadingSpaces(line);
       return spaces(own - block.depth + depth) + line.slice(own);
     });
   }
-
   function expandConciseLexemes(text) {
     var source = String(text || "");
     if (!CONCISE_LEXEME_HINT.test(source)) return source;
@@ -317,7 +299,6 @@
     }
     return out.join("\n");
   }
-
   // Parse an indented Links Notation document into a nested structure:
   //
   //   root_node
@@ -326,7 +307,61 @@
   //
   // -> { name: "root_node", children: [ { name: "child", id: "name",
   //          children: [ { name: "key", id: "value", children: [] } ] } ] }
+  function lowerSharedLexemeFields(root) { var declarationName = "shared-lexeme-fields"; var referenceName = "use-lexeme-fields"; var marker = function (node) {
+      return node.name === declarationName || node.name === referenceName; }; var containsMarker = function (node) { return marker(node) || node.children.some(containsMarker); };
+    if (!containsMarker(root)) return root; if (!root.name) { root.children.forEach(lowerSharedLexemeFields); return root; }
+    if (root.name !== "meanings") throw new Error("shared fields require meanings root"); var copy = function (node) {
+      return Object.assign({}, node, { children: node.children.map(copy) }); }; root.children.forEach(function (meaning) {
+      var owner = meaning.name === "meaning" ? meaning.id : meaning.name; if (containsMarker(meaning) && (!/^[a-z][a-z0-9_-]*$/.test(owner)
+        || ["meanings", "lexeme", "surface", declarationName, referenceName, "part_of_speech", "grammatical_number"].indexOf(meaning.name) >= 0)) {
+        throw new Error("reserved or invalid shared field owner"); } var declarations = meaning.children.filter(function (node) { return node.name === declarationName; });
+      if (declarations.length === 0) { if (containsMarker(meaning)) throw new Error("unresolved shared fields"); return; }
+      if (declarations.length !== 1) throw new Error("duplicate shared declaration"); var declaration = declarations[0];
+      if (!/^[a-z][a-z0-9_-]*$/.test(declaration.id)) throw new Error("shared declaration requires identity"); var fields = declaration.children;
+      var names = fields.map(function (field) { return field.name; }); if (fields.length === 0 || new Set(names).size !== names.length) {
+        throw new Error("empty or duplicate shared fields"); } fields.forEach(function (field) { if (["part_of_speech", "grammatical_number"].indexOf(field.name) < 0
+          || !/^[a-z][a-z0-9_-]*$/.test(field.id) || field.children.length > 0) { throw new Error("unknown, nested or effect-bearing shared field"); } });
+      var lexemes = meaning.children.filter(function (node) { return node.name === "lexeme"; });
+      if (lexemes.length < 2) throw new Error("shared fields require multiple languages"); var languages = lexemes.map(function (node) { return node.id; });
+      if (languages.some(function (language) { return !/^[a-z][a-z0-9_-]*$/.test(language); })
+        || new Set(languages).size !== languages.length) throw new Error("duplicate language"); meaning.children.forEach(function (node) {
+        if (node !== declaration && node.name !== "lexeme" && containsMarker(node)) { throw new Error("invalid shared declaration scope"); } }); lexemes.forEach(function (lexeme) {
+        if (lexeme.children.length === 0) throw new Error("shared lexeme has no surfaces"); lexeme.children.forEach(function (surface) {
+          if (surface.name !== "surface") throw new Error("shared reference requires surface");
+          var references = surface.children.filter(function (node) { return node.name === referenceName; }); if (references.length !== 1 || references[0].id !== declaration.id
+            || references[0].children.length > 0) throw new Error("unknown, duplicate or recursive reference"); surface.children.forEach(function (field) {
+            if (field !== references[0] && (containsMarker(field) || names.indexOf(field.name) >= 0)) { throw new Error("shared field conflict or nested reference"); } });
+          var children = []; surface.children.forEach(function (field) {
+            if (field === references[0]) fields.forEach(function (shared) { var owned = copy(shared); owned.indent = field.indent; children.push(owned); });
+            else children.push(field); }); surface.children = children; }); }); meaning.children = meaning.children.filter(function (node) { return node !== declaration; }); });
+    return root; } function expandSharedLexemeFieldsText(text) { var source = String(text || ""); if (!/shared-lexeme-fields|use-lexeme-fields/.test(source)) return source;
+    parseLino(source); // Validate the whole document before exposing raw text to readers.
+    var lines = source.split("\n"); var replacements = []; for (var index = 0; index < lines.length; index += 1) {
+      var declaration = /^( *)shared-lexeme-fields +([a-z][a-z0-9_-]*)$/.exec(stripComment(lines[index]).trimEnd()); if (!declaration) continue;
+      var declarationDepth = declaration[1].length; var end = index + 1;
+      while (end < lines.length && (isBlankLine(lines[end]) || leadingSpaces(lines[end]) > declarationDepth)) end += 1; var fields = lines.slice(index + 1, end);
+      replacements.push({ start: index, end: end, lines: [] }); var scopeStart = index - 1; while (scopeStart >= 0 && (isBlankLine(lines[scopeStart])
+        || leadingSpaces(lines[scopeStart]) > declarationDepth - 2)) scopeStart -= 1; var scopeEnd = end; while (scopeEnd < lines.length && (isBlankLine(lines[scopeEnd])
+        || leadingSpaces(lines[scopeEnd]) > declarationDepth - 2)) scopeEnd += 1; for (var referenceIndex = scopeStart + 1; referenceIndex < scopeEnd; referenceIndex += 1) {
+        var reference = /^( *)use-lexeme-fields +([a-z][a-z0-9_-]*)$/.exec(stripComment(lines[referenceIndex]).trimEnd()); if (!reference) continue;
+        if (reference[2] !== declaration[2]) throw new Error("unknown textual reference"); var difference = reference[1].length - declarationDepth - 2;
+        if (difference < 0) throw new Error("invalid textual scope"); replacements.push({ start: referenceIndex, end: referenceIndex + 1,
+          lines: fields.map(function (line) { return isBlankLine(line) ? line : spaces(difference) + line; }) }); } }
+    replacements.sort(function (left, right) { return right.start - left.start; }); replacements.forEach(function (replacement) {
+      lines.splice.apply(lines, [replacement.start, replacement.end - replacement.start].concat(replacement.lines)); }); return lines.join("\n"); }
+  function validateSharedLexemeSource(text) { var lines = String(text || "").split(/\r?\n/); var hasShared = lines.some(function (line) {
+      return /^(shared-lexeme-fields|use-lexeme-fields)(?:\s|$)/.test(stripComment(line).trim()); }); if (!hasShared) return; var stack = []; lines.forEach(function (line) {
+      if (isBlankLine(line)) return; if (/^[ \t]*\t/.test(line)) throw new Error("shared source indentation requires spaces"); var content = stripComment(line).trim();
+      var indent = leadingSpaces(line); while (stack.length && stack[stack.length - 1].indent >= indent) stack.pop(); var head = content.split(/\s+/)[0];
+      var parent = stack.length ? stack[stack.length - 1].head : ""; if (head === "shared-lexeme-fields" || head === "use-lexeme-fields") {
+        if (!/^(shared-lexeme-fields|use-lexeme-fields) +[a-z][a-z0-9_-]*$/.test(content)) { throw new Error("invalid shared source identity"); }
+        if (head === "use-lexeme-fields" && (stack.length < 4 || parent !== "surface"
+          || stack[stack.length - 2].head !== "lexeme" || stack[stack.length - 4].head !== "meanings")) {
+          throw new Error("shared references require explicit surface source scope"); } } if (parent === "shared-lexeme-fields"
+        && !/^(part_of_speech|grammatical_number) +[a-z][a-z0-9_-]*$/.test(content)) { throw new Error("shared fields require bare semantic facet references"); }
+      stack.push({ head: head, indent: indent }); }); }
   function parseLino(text) {
+    validateSharedLexemeSource(text);
     var lines = expandConciseLexemes(text).split(/\r?\n/);
     var root = { name: "", id: "", value: "", children: [], indent: -1 };
     var stack = [root];
@@ -345,9 +380,8 @@
       parent.children.push(node);
       stack.push(node);
     }
-    return root.children.length === 1 ? root.children[0] : root;
+    return lowerSharedLexemeFields(root.children.length === 1 ? root.children[0] : root);
   }
-
   function parseLinoLine(content, indent) {
     var node = {
       name: "",
@@ -398,24 +432,20 @@
     node.value = node.id;
     return node;
   }
-
   function findChildren(node, name) {
     if (!node || !Array.isArray(node.children)) return [];
     return node.children.filter(function (child) {
       return child.name === name;
     });
   }
-
   function findChildValue(node, name) {
     var match = findChildren(node, name)[0];
     return match ? match.id : "";
   }
-
   function findChildValueAlias(node, primary, fallback) {
     var value = findChildValue(node, primary);
     return value || findChildValue(node, fallback);
   }
-
   // Project the ordered, uniform browser-handler bindings from seed data.
   // Executable symbols are stored as node names (`argument_prompt`,
   // `context_binding_writeProgram`, …) so the meaning-closure audit does not
@@ -455,7 +485,6 @@
       return handler.name;
     });
   }
-
   function extractInterfaceCapabilities(root) {
     if (!root) return [];
     var section = root.name === "interface_capabilities"
@@ -485,7 +514,6 @@
       return capability.key && capability.kind && capability.phrases.length > 0;
     });
   }
-
   function extractMultilingualResponses(node) {
     // The seed stores both a canonical `text` (kept stable so deterministic
     // tests can match it) and zero or more `variant` entries. Issue #27 adds
@@ -534,7 +562,6 @@
     }
     return responses;
   }
-
   function extractConcepts(root) {
     if (!root || !Array.isArray(root.children)) return [];
     // Concept files are flat — each top-level child is one record.
@@ -577,7 +604,6 @@
     }
     return concepts;
   }
-
   // Extract disambiguating context records (`concept-contexts.lino`).
   // Each context is anchored by a Wikidata Q-ID and carries per-language
   // localized labels plus a `|`-separated alias list (free-text phrases the
@@ -608,7 +634,6 @@
     }
     return out;
   }
-
   function extractFacts(root) {
     if (!root || !Array.isArray(root.children)) return [];
     var facts = [];
@@ -650,7 +675,6 @@
     }
     return facts;
   }
-
   // Mirrors ProjectStatement::parse: a complete decimal u8, including zero.
   function projectStatementWeight(value) {
     var text = String(value ?? "").replace(/^\p{White_Space}+|\p{White_Space}+$/gu, "");
@@ -658,7 +682,6 @@
     var weight = Number(text);
     return Number.isInteger(weight) && weight >= 0 && weight <= 255 ? weight : 50;
   }
-
   function extractProjectStatement(node) {
     if (!node || node.name !== "statement" || !node.id) return null;
     return {
@@ -667,7 +690,6 @@
       weight: projectStatementWeight(findChildValue(node, "weight")),
     };
   }
-
   function normalizeProjectAlias(value) {
     return String(value || "")
       .toLowerCase()
@@ -675,7 +697,6 @@
       .replace(/\s+/g, " ")
       .trim();
   }
-
   function extractProjects(root) {
     if (!root || !Array.isArray(root.children)) return [];
     var projects = [];
@@ -713,7 +734,6 @@
     }
     return projects;
   }
-
   function extractBrainstormSeeds(root) {
     var seeds = { triggers: [], categories: [], defaultCount: 0, countCardinal: "" };
     if (!root || !Array.isArray(root.children)) return seeds;
@@ -740,7 +760,6 @@
     }
     return seeds;
   }
-
   function extractPersonas(root) {
     var seeds = {
       triggers: [],
@@ -777,13 +796,11 @@
     }
     return seeds;
   }
-
   function extractCoreferenceSeeds(root) {
     var seeds = { pronouns: [], antecedents: [] };
     if (!root || !Array.isArray(root.children)) return seeds;
     var section = root.name === "coreference" ? root : findChildren(root, "coreference")[0];
     if (!section) return seeds;
-
     var pronouns = findChildren(section, "pronoun");
     for (var i = 0; i < pronouns.length; i += 1) {
       var pronoun = pronouns[i];
@@ -800,7 +817,6 @@
         }).filter(Boolean),
       });
     }
-
     var antecedents = findChildren(section, "antecedent");
     for (var j = 0; j < antecedents.length; j += 1) {
       var antecedent = antecedents[j];
@@ -815,10 +831,8 @@
         body: findChildValue(antecedent, "body"),
       });
     }
-
     return seeds;
   }
-
   function extractTools(node) {
     var tools = [];
     if (!node) return tools;
@@ -846,7 +860,6 @@
     }
     return tools;
   }
-
   function extractAgentInfo(node) {
     var info = {};
     if (!node) return info;
@@ -859,7 +872,6 @@
     }
     return info;
   }
-
   function extractLanguageRules(node) {
     var rules = [];
     if (!node) return rules;
@@ -885,7 +897,6 @@
     }
     return rules;
   }
-
   // Parse a `("a" "b" "c")` seed list into an array of strings. Mirrors
   // `parse_quoted_list` in `src/language.rs`.
   function parseQuotedList(value) {
@@ -899,7 +910,6 @@
     }
     return items;
   }
-
   function parseCodepoint(value) {
     if (!value) return 0;
     var str = String(value).trim();
@@ -908,7 +918,6 @@
     }
     return parseInt(str, 10) || 0;
   }
-
   // Extract the environment directory (`environments.lino`) so the demo can
   // show every supported interface and how to migrate memory between them.
   // Mirrors `src/seed.rs::environment_directory` so the two surfaces always
@@ -954,7 +963,6 @@
     }
     return directory;
   }
-
   function extractPromptPatterns(node) {
     var patterns = [];
     if (!node) return patterns;
@@ -971,7 +979,6 @@
     }
     return patterns;
   }
-
   // Extract the intent routing table (`intent-routing.lino`) used by the
   // worker to decide between greeting, identity, hello-world and unknown
   // intents in a fully data-driven way. The schema is mirrored from
@@ -1021,7 +1028,6 @@
     }
     return routing;
   }
-
   // Split a canonical `(a "b c" d)` reference list into its items. Each item is
   // a quoted scalar (which may contain spaces) or a bare whitespace-delimited
   // token. Falls back to the legacy `a|b|c` pipe packing for any value that is
@@ -1034,7 +1040,6 @@
     }
     return raw.split("|").map(trim).filter(Boolean);
   }
-
   function tokenizeRefList(body) {
     var tokens = [];
     var i = 0;
@@ -1074,20 +1079,16 @@
     }
     return tokens;
   }
-
   // Backwards-compatible alias retained for existing call sites.
   function splitList(value) {
     return splitRefList(value);
   }
-
   function trim(value) {
     return String(value || "").trim();
   }
-
   function toLower(value) {
     return trim(value).toLowerCase();
   }
-
   function fetchText(url) {
     if (typeof global.fetch !== "function") {
       return Promise.resolve("");
@@ -1104,7 +1105,6 @@
       return "";
     });
   }
-
   function loadAll(files) {
     var target = Array.isArray(files) && files.length ? files : defaultFiles();
     return Promise.all(
@@ -1224,7 +1224,7 @@
       seed.sourceRaw[item.file] = String(item.text || "");
       // Raw text is read line by line by some worker readers, so it is kept
       // with the concise lexeme form already written out long.
-      var text = expandConciseLexemes(item.text);
+      validateSharedLexemeSource(item.text); var text = expandSharedLexemeFieldsText(expandConciseLexemes(item.text));
       seed.raw[item.file] = text;
       if (!text) continue;
       var root = parseLino(text);

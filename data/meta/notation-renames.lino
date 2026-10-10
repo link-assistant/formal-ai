@@ -245,3 +245,18 @@ notation-renames
     views_uniques_clones_referrers_paths views-uniques-clones-referrers-paths
     web_research_final web-research-final
     web_research_query web-research-query
+  family source-owned-contracts
+    file_addition_position_unknown file-addition-position-unknown
+    file_addition_unverified file-addition-unverified
+    response_file_addition_position_unknown_en response-file-addition-position-unknown-en
+    response_file_addition_position_unknown_es response-file-addition-position-unknown-es
+    response_file_addition_position_unknown_hi response-file-addition-position-unknown-hi
+    response_file_addition_position_unknown_ru response-file-addition-position-unknown-ru
+    response_file_addition_position_unknown_zh response-file-addition-position-unknown-zh
+    response_file_addition_unverified_en response-file-addition-unverified-en
+    response_file_addition_unverified_es response-file-addition-unverified-es
+    response_file_addition_unverified_hi response-file-addition-unverified-hi
+    response_file_addition_unverified_ru response-file-addition-unverified-ru
+    response_file_addition_unverified_zh response-file-addition-unverified-zh
+    subject_pattern subject-pattern
+    workspace_discovery_grammar workspace-discovery-grammar
