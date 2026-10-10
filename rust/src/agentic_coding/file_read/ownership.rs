@@ -1,4 +1,4 @@
-//! Source-owned Read operands and policies; twin: js/agentic/file_read/ownership.mjs.
+//! Source-owned Read operands and policies; twin: `js/agentic/file_read/ownership.mjs`.
 use super::records::same_path;
 use super::{clean_file_token, looks_like_local_file_path};
 use crate::agentic_coding::planner::{AgenticPlan, Capability, tool_capability};

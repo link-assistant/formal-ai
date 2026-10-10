@@ -22,8 +22,6 @@ use super::file_path_shape::{is_dotted_number, peel_sentence_punctuation};
 use super::general_planner::has_file_write_intent;
 use super::planner::{AgenticPlan, Capability, PlannedToolCall, tool_capability};
 use super::progress::Progress;
-use super::shell_command_policy::sentences;
-use super::write_request;
 use crate::protocol::ChatMessage;
 use crate::seed;
 
@@ -396,38 +394,6 @@ pub(super) fn file_read_task_for(prompt: &str) -> Option<FileReadTask> {
     None
 }
 
-/// The first path a request names in the same sentence as a read cue.
-///
-/// Sentence scope is what separates a cue that is *about* the path from one that
-/// merely shares a prompt with it, the same scoping
-/// [`super::evidence_record`] uses to split a delivery obligation from the work
-/// it delivers, and [`super::shell_command`] uses to tell a named command from an
-/// ordered one (issue #907).
-/// Preserve lexical path punctuation during splitting, then recover original source bytes.
-pub(super) fn read_sentence_texts(prompt: &str) -> Vec<String> {
-    let mut protected_bytes = prompt.as_bytes().to_vec();
-    for token in write_request::tokens(prompt) {
-        let path = clean_file_token(token.text);
-        if !looks_like_local_file_path(&path) {
-            continue;
-        }
-        let Some(relative_start) = token.text.find(&path) else {
-            continue;
-        };
-        let start = token.start + relative_start;
-        for index in start..start + path.len() {
-            if protected_bytes[index] == b'.' {
-                protected_bytes[index] = b'_';
-            }
-        }
-    }
-    let protected = String::from_utf8(protected_bytes).unwrap_or_else(|_| prompt.to_owned());
-    sentences(&protected)
-        .into_iter()
-        .map(|sentence| prompt[sentence.span].trim().to_owned())
-        .collect()
-}
-
 fn read_paths_named_beside_their_cue(prompt: &str) -> Vec<String> {
     owned_read_paths(prompt, seed::ROLE_FILE_READ_ACTION_CUE)
 }
@@ -509,16 +475,6 @@ fn leading_cat_path(prompt: &str) -> Option<String> {
         .next()
         .map(clean_file_token)
         .filter(|path| !path.is_empty())
-}
-
-fn local_file_paths(prompt: &str) -> Vec<String> {
-    let mut paths = prompt
-        .split_whitespace()
-        .map(clean_file_token)
-        .filter(|token| looks_like_local_file_path(token))
-        .collect::<Vec<_>>();
-    paths.dedup();
-    paths
 }
 
 /// A path token as prose wrote it, stripped of the punctuation the sentence put
