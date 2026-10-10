@@ -158,6 +158,44 @@ impl ToolWorkspace {
                     }
                 }
             }
+            Some(Capability::Edit) => {
+                let edited = (|| -> Result<String, AgentError> {
+                    let path = path
+                        .as_deref()
+                        .ok_or_else(|| std::io::Error::other("Edit path is missing"))?;
+                    let old = argument(&args, &["oldString", "old_string", "old_str", "old"])
+                        .ok_or_else(|| std::io::Error::other("Edit anchor is missing"))?;
+                    let new = argument(&args, &["newString", "new_string", "new_str", "new"])
+                        .ok_or_else(|| std::io::Error::other("Edit replacement is missing"))?;
+                    let replace_all = match args.get("replaceAll") {
+                        None => false,
+                        Some(Value::Bool(value)) => *value,
+                        Some(_) => return Err(std::io::Error::other("Invalid replaceAll").into()),
+                    };
+                    if old.is_empty() {
+                        self.write_initial(path, &new)?;
+                        return Ok(new);
+                    }
+                    let current = self.read(path)?;
+                    let first = current.find(&old);
+                    if first.is_none() || (!replace_all && first != current.rfind(&old)) {
+                        return Err(
+                            std::io::Error::other("Edit anchor missing or ambiguous").into()
+                        );
+                    }
+                    let updated = if replace_all {
+                        current.replace(&old, &new)
+                    } else {
+                        current.replacen(&old, &new, 1)
+                    };
+                    self.write_initial(path, &updated)?;
+                    Ok(updated)
+                })();
+                match edited {
+                    Ok(actual) => json!({"success": true, "bytes": actual.len()}),
+                    Err(error) => json!({"is_error": true, "error": error.to_string()}),
+                }
+            }
             Some(Capability::Run) => self.run_shell(
                 &argument(&args, &["command", "cmd", "script", "shell_command"])
                     .expect("Run command"),
