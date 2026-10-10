@@ -10,8 +10,8 @@ on:
       - scripts/release-runtime-fixture.mjs
       - scripts/release-stage-transfer.mjs
       - rust/tests/web/release-runtime-fixture.test.mjs
-      - scripts/github-artifact-by-id.mjs
-      - rust/tests/web/github-artifact-by-id.test.mjs
+      - scripts/github-artifact-by-identifier.mjs
+      - rust/tests/web/github-artifact-by-identifier.test.mjs
     branches-ignore:
       - e2e/**
   workflow_dispatch:

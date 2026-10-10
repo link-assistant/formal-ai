@@ -6,7 +6,7 @@ import { resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
-import { downloadArtifact } from './github-artifact-by-id.mjs';
+import { downloadArtifact } from './github-artifact-by-identifier.mjs';
 import { seal, importBundle } from './release-stage-transfer.mjs';
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const marker = 'fixture-no-native-compiler';

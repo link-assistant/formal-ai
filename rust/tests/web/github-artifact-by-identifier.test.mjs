@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createHash} from 'node:crypto';
 import test from 'node:test';
-import {readArtifactZip,verifyArtifactArchive,downloadArtifact} from '../../../scripts/github-artifact-by-id.mjs';
+import {readArtifactZip,verifyArtifactArchive,downloadArtifact} from '../../../scripts/github-artifact-by-identifier.mjs';
 // Golden ZIP bytes were independently generated with Python zipfile.
 const fixtures={
   "normal": "UEsDBBQAAAAIAEM+Sl2O4o48FQAAABMAAAAMAAAAd2l0bmVzcy5qc29uS87PKynKz8lJTVEozyzJSy0u5gIAUEsBAhQDFAAAAAgAQz5KXY7ijjwVAAAAEwAAAAwAAAAAAAAAAAAAAIABAAAAAHdpdG5lc3MuanNvblBLBQYAAAAAAQABADoAAAA/AAAAAAA=",
