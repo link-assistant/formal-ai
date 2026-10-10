@@ -559,6 +559,10 @@ seed_registry
     bundle true
     lexicon response
     web true
+  seed multilingual-responses-agentic-workspace
+    bundle true
+    lexicon response
+    web true
   seed multilingual-responses-behavior-rules
     bundle true
     lexicon response
