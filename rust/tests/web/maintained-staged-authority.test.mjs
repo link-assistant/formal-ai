@@ -139,7 +139,26 @@ test('actual subprocess refuses missing immutable protocol and supplied host aut
   const {spawnSync}=await import('node:child_process');
   const event=path.join(directory,'event.json');fs.writeFileSync(event,JSON.stringify({repository:{full_name:'link-assistant/formal-ai'}}));
   const temporary=path.join(directory,'runner-temp');fs.mkdirSync(temporary);
-  const invoke=environment=>spawnSync(process.execPath,[path.join(directory,'scripts/release-source-freshness.mjs'),'before-sync'],{cwd:directory,env:{...process.env,GITHUB_ACTIONS:'true',GITHUB_EVENT_PATH:event,GITHUB_JOB:'auto_prepare-source',GITHUB_SHA:'a'.repeat(40),GITHUB_RUN_ID:'1',GITHUB_RUN_ATTEMPT:'1',RUNNER_TEMP:temporary,...environment},encoding:'utf8',timeout:10000});
+  const invoke = environment => spawnSync(
+    process.execPath,
+    [path.join(directory, 'scripts/release-source-freshness.mjs'), 'before-sync'],
+    {
+      cwd: directory,
+      env: {
+        ...process.env,
+        GITHUB_ACTIONS: 'true',
+        GITHUB_EVENT_PATH: event,
+        GITHUB_JOB: 'auto_prepare-source',
+        GITHUB_SHA: 'a'.repeat(40),
+        GITHUB_RUN_ID: '1',
+        GITHUB_RUN_ATTEMPT: '1',
+        RUNNER_TEMP: temporary,
+        ...environment
+      },
+      encoding: 'utf8',
+      timeout: 10000
+    }
+  );
   const missing=invoke({});assert.notEqual(missing.status,0);assert.match(missing.stderr,/_protocol/);for(const caller of ['auto-release','manual-release'])assert.equal(fs.existsSync(path.join(temporary,'formal-ai-release-freshness-1-1-'+caller+'.json')),false);
   const script=path.join(directory,'supplied-host.mjs');fs.writeFileSync(script,"import {main} from './scripts/release-source-freshness.mjs'; await main({...process.env});");
   const supplied=spawnSync(process.execPath,[script],{cwd:directory,env:{...process.env,GITHUB_ACTIONS:'true',GITHUB_EVENT_PATH:event,GITHUB_JOB:'auto_prepare-source'},encoding:'utf8',timeout:10000});

@@ -155,7 +155,16 @@ export function compileContract({
   assert.equal(bindings, 104);
   assert.equal(groups.size, 1);
   const retained=[];
-  if(retainedSourceProof!==undefined){assert.deepEqual(Object.keys(retainedSourceProof).sort(),['originalSource','packetSource']);assert.equal(retainedSourceProof.originalSource,canonical);assert.deepEqual(JSON.parse(retainedSourceProof.packetSource),packet);const prefix='experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/';retained.push({path:prefix+'original-release-workflow.yml',sha256:sha(canonical)},{path:prefix+'stage-source-coverage.json',sha256:sha(retainedSourceProof.packetSource)});}
+  if (retainedSourceProof !== undefined) {
+    assert.deepEqual(Object.keys(retainedSourceProof).sort(), ['originalSource', 'packetSource']);
+    assert.equal(retainedSourceProof.originalSource, canonical);
+    assert.deepEqual(JSON.parse(retainedSourceProof.packetSource), packet);
+    const prefix = 'experiments/formal_ai_subagent/evidence/specification-delivery-1188/dormant-staged-release/';
+    retained.push(
+      {path: prefix + 'original-release-workflow.yml', sha256: sha(canonical)},
+      {path: prefix + 'stage-source-coverage.json', sha256: sha(retainedSourceProof.packetSource)}
+    );
+  }
   const contract = Object.freeze({
     routes: Object.freeze(routes),
     writerGroup: [...groups][0],

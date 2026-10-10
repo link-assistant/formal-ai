@@ -29,7 +29,22 @@ export async function runFixture() {
  const result=spawnSync(process.execPath,[path.join(trusted,'scripts/release-source-freshness.mjs'),'before-sync'],{cwd:process.cwd(),env:process.env,encoding:'utf8',timeout:45000,maxBuffer:65536});
  requireFixtureRefusal(result);for(const state of states)assert.equal(fs.existsSync(state),false);
  const bytes=fs.readFileSync(path.join(trusted,'scripts/release-source-freshness.mjs'));
- const receipt={schema:'GuardedStagedSubprocessFixtureRefusalV1',run:process.env.GITHUB_RUN_ID,attempt:process.env.GITHUB_RUN_ATTEMPT,head:process.env.GITHUB_SHA,repository:process.env.GITHUB_REPOSITORY,job:process.env.GITHUB_JOB,sourceSha256:createHash('sha256').update(bytes).digest('hex'),operations:52,bindings:104,status:result.status,explicitRefusal:true,productionAuthority:false,ancestorAuthority:'Unknown',publication:false};
+ const receipt = {
+   schema: 'GuardedStagedSubprocessFixtureRefusalV1',
+   run: process.env.GITHUB_RUN_ID,
+   attempt: process.env.GITHUB_RUN_ATTEMPT,
+   head: process.env.GITHUB_SHA,
+   repository: process.env.GITHUB_REPOSITORY,
+   job: process.env.GITHUB_JOB,
+   sourceSha256: createHash('sha256').update(bytes).digest('hex'),
+   operations: 52,
+   bindings: 104,
+   status: result.status,
+   explicitRefusal: true,
+   productionAuthority: false,
+   ancestorAuthority: 'Unknown',
+   publication: false
+ };
  fs.mkdirSync('.release-fixture',{recursive:true});fs.writeFileSync('.release-fixture/staged-authority-refusal.json',JSON.stringify(receipt,null,2)+String.fromCharCode(10));
 }
 if(process.argv[1] && import.meta.url===pathToFileURL(fs.realpathSync(process.argv[1])).href)runFixture().catch(error=>{console.error(error.message);process.exitCode=1;});

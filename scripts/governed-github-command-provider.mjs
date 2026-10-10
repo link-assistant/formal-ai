@@ -29,7 +29,23 @@ export function registeredSourceProfile(sourcePaths) {
   const workflows=sourcePaths.filter(file=>/^\.github\/workflows\/[a-z0-9-]+\.yml$/u.test(file));assert.equal(workflows.length,2);
   if(sourcePaths.length===4)assert.deepEqual(sourcePaths.filter(file=>!workflows.includes(file)).sort(),[retained+'original-release-workflow.yml',retained+'stage-source-coverage.json'].sort());
   const root={children:new Map()};
-  for(const file of sourcePaths){const parts=file.split('/');let node=root;for(const [index,name] of parts.entries()){assert.ok(name && name!=='.' && name!=='..');let next=node.children.get(name);if(!next){next={children:new Map()};node.children.set(name,next);}if(index===parts.length-1){assert.equal(next.path,undefined);next.path=file;}node=next;}}
+  for (const file of sourcePaths) {
+    const parts = file.split('/');
+    let node = root;
+    for (const [index, name] of parts.entries()) {
+      assert.ok(name && name !== '.' && name !== '..');
+      let next = node.children.get(name);
+      if (!next) {
+        next = {children: new Map()};
+        node.children.set(name, next);
+      }
+      if (index === parts.length - 1) {
+        assert.equal(next.path, undefined);
+        next.path = file;
+      }
+      node = next;
+    }
+  }
   return {root,maximumRequests:sourcePaths.length===4?17:12,requiredRequests:sourcePaths.length===4?17:10,expectedSourceCount:sourcePaths.length};
 }
 export function createGovernedGithubCommandProvider({
