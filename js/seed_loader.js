@@ -1094,6 +1094,11 @@
     }
     return global.fetch(url).then(function (response) {
       if (!response || !response.ok) return "";
+      if (typeof response.arrayBuffer === "function") {
+        return response.arrayBuffer().then(function (bytes) {
+          return new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(bytes);
+        });
+      }
       return response.text();
     }, function () {
       return "";
@@ -1212,9 +1217,11 @@
       intentRouting: { intents: [], articlePrefixes: [], tracePrefixes: [] },
       environments: { environments: [], migrationDescription: "", flows: [] },
       raw: {},
+      sourceRaw: {},
     };
     for (var i = 0; i < results.length; i += 1) {
       var item = results[i];
+      seed.sourceRaw[item.file] = String(item.text || "");
       // Raw text is read line by line by some worker readers, so it is kept
       // with the concise lexeme form already written out long.
       var text = expandConciseLexemes(item.text);

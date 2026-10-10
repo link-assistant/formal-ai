@@ -51,3 +51,42 @@ test('declared loaded inventory rejects executable, duplicate and unsafe package
     assert.throws(()=>declaredWebSeedFiles(value));
   }
 });
+
+test('seed transport preserves original bytes beside the unchanged expanded reader view',async()=>{
+  const source='\ufeffmeaning\r\n  lexeme en "alpha" "beta"\r\n\r\n';
+  const bytes=Buffer.from(source);
+  const context=createBrowserContext({fetch:async()=>new Response(bytes)});
+  vm.runInContext(fs.readFileSync(new URL('js/seed_loader.js',root),'utf8'),context);
+  const seed=await context.FormalAiSeed.loadAll(['seed/transport-fixture.lino']);
+  assert.equal(seed.sourceRaw['seed/transport-fixture.lino'],source);
+  assert.deepEqual(Buffer.from(seed.sourceRaw['seed/transport-fixture.lino']),bytes);
+  assert.notEqual(seed.raw['seed/transport-fixture.lino'],source);
+  assert.match(seed.raw['seed/transport-fixture.lino'],/surface/u);
+  const client=memory();
+  const parsed=client.importFullMemory(client.exportFullMemory({seed:{raw:seed.sourceRaw},events:[]}));
+  assert.equal(parsed.seedFiles['seed/transport-fixture.lino'],source);
+});
+test('actual worker seed dump and full memory roundtrip preserve every declared original source',async()=>{
+  const {WorkerHost}=await import('../../../js/server/worker-host.mjs');
+  const replies=[];
+  const worker=new WorkerHost({postMessage:message=>replies.push(message)});
+  const expanded=await worker.run('SEED_RAW');
+  await worker.run('self.onmessage({data:{kind:"seed_dump",requestId:"source-roundtrip-control"}})');
+  const dumps=replies.filter(reply=>reply.kind==='seed_dump');
+  assert.equal(dumps.length,1);assert.equal(dumps[0].requestId,'source-roundtrip-control');
+  const raw=plain(dumps[0].raw);
+  const names=declaredWebSeedFiles(fs.readFileSync(new URL('js/seed-files.js',root),'utf8'));
+  assert.deepEqual(Object.keys(raw).sort(),names.slice().sort());
+  const client=memory();
+  const parsed=client.importFullMemory(client.exportFullMemory({seed:{raw},events:[]}));
+  for(const name of names){
+    const bytes=fs.readFileSync(new URL('data/'+name,root));
+    assert.deepEqual(Buffer.from(raw[name]),bytes,name);
+    assert.deepEqual(Buffer.from(parsed.seedFiles[name]),bytes,name);
+  }
+  const changed=names.filter(name=>expanded[name]!==raw[name]);
+  assert.ok(changed.length>0,'existing semantic readers still receive concise lexeme expansion');
+  for(const name of changed)assert.match(expanded[name],/surface/u,name);
+  assert.ok(replies.some(reply=>reply.kind==='engine_unavailable'),
+    'Node source control does not execute or certify a WASM engine');
+});

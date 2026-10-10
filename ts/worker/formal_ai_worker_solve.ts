@@ -1048,6 +1048,7 @@ function installWorkerHandlerRegistry(seedText) {
   }
 }
 
+let seedSourceTexts = {};
 let seedLoaded = false;
 let seedLoadPromise = null;
 async function loadSeed() {
@@ -1061,6 +1062,7 @@ async function loadSeed() {
     try {
       const seed = await self.FormalAiSeed.loadAll();
       SEED_RAW = (seed && seed.raw) || {};
+      seedSourceTexts = (seed && seed.sourceRaw) || {};
       installBrowserHandlerPrecedence(seed && seed.browserHandlerPrecedence);
       installWorkerHandlerRegistry(SEED_RAW["seed/handler-precedence.lino"]);
       await hydrateLinoSeedAndSourceCaches(SEED_RAW);
@@ -1290,7 +1292,7 @@ self.onmessage = async (event) => {
     postMessage({
       kind: "seed_dump",
       requestId: data.requestId,
-      raw: SEED_RAW,
+      raw: seedSourceTexts,
       responses: MULTILINGUAL_ANSWERS,
       concepts: CONCEPTS,
       conceptContexts: CONCEPT_CONTEXTS,
