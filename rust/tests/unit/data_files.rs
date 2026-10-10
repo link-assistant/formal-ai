@@ -7,6 +7,9 @@ use regex::Regex;
 use serde_json::{Map, Value};
 use walkdir::WalkDir;
 
+#[path = "data_files/technical_scalar.rs"]
+mod technical_scalar;
+
 const MAX_LINO_LINES: usize = 1_500;
 
 #[test]
@@ -230,7 +233,8 @@ fn seed_lino_values_never_pipe_pack_multi_values() {
                 continue;
             }
             assert!(
-                !value.contains('|'),
+                !value.contains('|')
+                    || technical_scalar::is_regex_template(&content, index, keyword, value),
                 "{}:{} packs the `{keyword}` multi-value with `|`; use a \
                  reference list `{keyword} (\"a\" \"b\")` instead: {line}",
                 path.display(),
