@@ -5,6 +5,14 @@ use crate::agentic_coding::{file_read, planner, progress::Progress, workspace_ch
 use crate::protocol::ChatMessage;
 use serde_json::{Value, json};
 
+/// Classify only Read kinds declared by the maintained goal ledger producer.
+fn source_need_is_read(need: &Value) -> bool {
+    matches!(
+        need["kind"].as_str(),
+        Some("read-destination" | "read-source")
+    )
+}
+
 /// Mirrors sourceNeedPreflight; actual host message ownership remains required.
 pub fn source_need_preflight(source: &str, messages: &[ChatMessage]) -> Option<Value> {
     if crate::normal_markov::quote_fault(source).is_some() {
@@ -56,7 +64,7 @@ pub fn source_need_preflight(source: &str, messages: &[ChatMessage]) -> Option<V
     let unresolved = ledger["needs"]
         .as_array()?
         .iter()
-        .filter(|need| !need["kind"].as_str().unwrap_or("").starts_with("read-"))
+        .filter(|need| !source_need_is_read(need))
         .cloned()
         .collect::<Vec<_>>();
     Some(

@@ -9,6 +9,11 @@ import { userRequestText } from "../content.mjs";
 import { sha256Hex } from "../crate/source_fetch.mjs";
 import { sourceGoalScope } from "./seeded-composition-hook.mjs";
 
+/** Classify only Read kinds declared by the maintained goal ledger producer. */
+export function sourceNeedIsRead(need) {
+  return need?.kind === 'read-destination' || need?.kind === 'read-source';
+}
+
 /** Resolve only existing request-derived Read Needs; unknown semantics stay unsolved. */
 export function sourceNeedPreflight(source, messages) {
   if (sourceGoalScope(source) === null) return null;
@@ -51,7 +56,7 @@ export function sourceNeedPreflight(source, messages) {
     request,
     ledger,
     prerequisites,
-    unresolvedNeeds: ledger.needs.filter(need => !need.kind.startsWith('read-')),
+    unresolvedNeeds: ledger.needs.filter(need => !sourceNeedIsRead(need)),
     independentClauses: ledger.clauses,
     semanticCoverage: 'unbound',
     declarationAuthority: 'conditional-request-classifier',
