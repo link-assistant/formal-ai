@@ -3,6 +3,7 @@ use super::literal_request::{
     LiteralWriteContract, instruction_view, owns_instruction_span, parse_write_contract,
 };
 use super::{GeneralPlanMode, compose_general_change_plan};
+use crate::agentic_coding::file_read::{bound_read_paths, pending_read_condition};
 use crate::agentic_coding::final_result::{FinalDisposition, FinalResult, ResolvedPlan, record};
 use crate::agentic_coding::planner::AgenticPlan;
 use crate::agentic_coding::positional_edit::unquoted_path_tokens;
@@ -331,6 +332,30 @@ fn goal_gap(goal: &Goal, result: &mut Option<FinalResult>) -> AgenticPlan {
         result,
     )
 }
+/// An unresolved mixed Read condition refuses before any literal effect.
+pub(in crate::agentic_coding) fn pending_read_gap(
+    request: &str,
+    result: &mut Option<FinalResult>,
+) -> Option<AgenticPlan> {
+    let declared = goal_ledger(request)?;
+    if quote_fault(request).is_some()
+        || super::super::quote_nesting::nested_quote_fault(request).is_some()
+    {
+        return None;
+    }
+    let goals = declared
+        .into_iter()
+        .filter(|goal| !source_context_declaration(&goal.node.clause))
+        .collect::<Vec<_>>();
+    let missing = goals
+        .iter()
+        .find(|goal| goal.kind == GoalKind::Unsupported)?;
+    (goals.iter().any(|goal| goal.kind == GoalKind::LiteralFile)
+        && pending_read_condition(request, "file_read_action_cue")
+        && !bound_read_paths(&missing.node.clause, "file_read_action_cue").is_empty())
+    .then(|| goal_gap(missing, result))
+}
+
 /// Literal-only scheduling stays authoritative; supported mixed actions retain all goals.
 pub(in crate::agentic_coding) fn plan_owned_goal_step(
     request: &str,
@@ -339,6 +364,9 @@ pub(in crate::agentic_coding) fn plan_owned_goal_step(
     plan_for: fn(&[ChatMessage], &[&str]) -> Option<ResolvedPlan>,
     result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
+    if let Some(gap) = pending_read_gap(request, result) {
+        return Some(gap);
+    }
     let declared_goals = goal_ledger(request)?;
     let has_context = declared_goals
         .iter()

@@ -271,11 +271,18 @@ fn plan_chat_step_routes(
     // words of the cue are never a request (issue #1095).
     if crate::rule_interpreter::handler_matches("conversation_control", &task)
         || is_continuation_cue(&task)
-        // An edit request's block is its payload: a `when … then` inside it is
-        // text being written, not a skill being taught (PR #1188 T57).
-        || (!has_authoritative_literal_write(&task)
-            && super::general_planner::compose_edit_request(&task).is_none()
-            && looks_like_skill_description(super::positional_edit::own_text(&task)))
+    {
+        return None;
+    }
+    if let Some(plan) = super::general_planner::pending_read_gap(&task, result) {
+        return Some(plan);
+    }
+    if
+    // An edit request's block is its payload: a `when … then` inside it is
+    // text being written, not a skill being taught (PR #1188 T57).
+    (!has_authoritative_literal_write(&task)
+        && super::general_planner::compose_edit_request(&task).is_none()
+        && looks_like_skill_description(super::positional_edit::own_text(&task)))
     {
         return None;
     }

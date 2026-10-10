@@ -2,7 +2,9 @@
 
 mod audit;
 mod ownership;
-pub(super) use ownership::{bound_read_paths, owned_read_paths, read_policy_blocks_plan};
+pub(super) use ownership::{
+    bound_read_paths, owned_read_paths, pending_read_condition, read_policy_blocks_plan,
+};
 mod exact;
 mod records;
 mod source;

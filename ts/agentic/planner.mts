@@ -1,4 +1,4 @@
-import { planGoalLedger, ownsCompleteEditRequest, instructionViewForRequest } from './planner/owned_goals.mjs';
+import { planGoalLedger, ownsCompleteEditRequest, instructionViewForRequest, pendingReadGap } from './planner/owned_goals.mjs';
 import { ownedSemanticAuthoringLead } from './crate/literal_authoring_contract.mjs';
 // Deterministic agentic planner: the next tool call or final answer from a
 // conversation and its advertised tools, without hidden neural state
@@ -243,10 +243,13 @@ async function planChatStepRoutes(messages, toolNames, received) {
   const effective = continuedAgentTask(messages, received) ?? received;
   const task = objectiveText(effective);
   traceRoute('agentic_task', task);
-  if (handlerMatches('conversation_control', task) || isContinuationCue(task)
+  if (handlerMatches('conversation_control', task) || isContinuationCue(task)) return null;
+  const prerequisiteGap = pendingReadGap(task);
+  if (prerequisiteGap !== null) return prerequisiteGap;
+  if (
     // An edit request's block is its payload: a `when … then` inside it is text
     // being written, not a skill being taught (PR #1188 T57).
-    || (!hasAuthoritativeLiteralWrite(task) && composeEditRequest(task) === null
+    (!hasAuthoritativeLiteralWrite(task) && composeEditRequest(task) === null
       && looksLikeSkillDescription(positionalEdit.ownText(task)))) {
     return null;
   }

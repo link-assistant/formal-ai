@@ -1,5 +1,6 @@
 import { cached, childrenNamed, parseLino, readText } from '../host.mjs';
 import { mentionsRole } from '../write_lexicon.mjs';
+import { boundReadPaths, pendingReadCondition } from '../file_read/ownership.mjs';
 import { normalizePrompt } from '../crate/engine.mjs';
 import { unquotedPathTokens } from '../positional_edit.mjs';
 // Source-owned mixed actions share the existing obligation nodes and request replay.
@@ -142,8 +143,21 @@ function goalGap(goal) {
     FinalDisposition.Gap, 'owned-goal-missing-contract');
 }
 
+/** An unresolved mixed Read condition refuses before any literal effect. */
+export function pendingReadGap(request) {
+  const declared = goalLedger(request);
+  if (declared === null || quoteFault(request) !== null || nestedQuoteFault(request) !== null) return null;
+  const goals = declared.filter(goal => !sourceContextDeclaration(goal.clause));
+  const missing = goals.find(goal => goal.kind === 'unsupported');
+  return missing !== undefined && goals.some(goal => goal.kind === 'literal_file')
+    && pendingReadCondition(request) && boundReadPaths(missing.clause, 'file_read_action_cue').length > 0
+    ? goalGap(missing) : null;
+}
+
 /** Mirrors `fn plan_owned_goal_step`: existing literal-only scheduling remains authoritative. */
 export async function planGoalLedger(request, messages, toolNames, planFor) {
+  const prerequisiteGap = pendingReadGap(request);
+  if (prerequisiteGap !== null) return prerequisiteGap;
   const declaredGoals = goalLedger(request);
   if (declaredGoals === null || quoteFault(request) !== null || nestedQuoteFault(request) !== null) return null;
   const hasContext = declaredGoals.some((goal) => sourceContextDeclaration(goal.clause));

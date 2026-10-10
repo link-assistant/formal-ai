@@ -28,7 +28,8 @@ pub(super) use content_shape::{
 };
 use literal_request::parse_write_request;
 pub(super) use owned_goals::{
-    instruction_view_for_request, owns_complete_edit_request, plan_owned_goal_step,
+    instruction_view_for_request, owns_complete_edit_request, pending_read_gap,
+    plan_owned_goal_step,
 };
 
 pub use super::write_request::compose_edit_request;

@@ -120,7 +120,7 @@ fn policy_starts(text: &str) -> bool {
             .iter()
             .any(|lead| crate::coding::catalog::contains_cjk(lead) && lower.starts_with(lead))
 }
-fn pending_read_condition(prompt: &str, role: &str) -> bool {
+pub(in crate::agentic_coding) fn pending_read_condition(prompt: &str, role: &str) -> bool {
     let sentences = instruction_sentence_texts(prompt);
     let unresolved = sentences.iter().any(|sentence| {
         path_spans(sentence).iter().any(|path| {

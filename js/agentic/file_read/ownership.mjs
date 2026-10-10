@@ -59,7 +59,7 @@ function policyStarts(text) {
   const lower=trimStart(text).toLowerCase();
   return policyLeadClause(lower)!==null || callerContextVocabulary().policy_leads.some(lead=>containsCjk(lead)&&lower.startsWith(lead));
 }
-function pendingReadCondition(prompt,role=READ_ROLE) {
+export function pendingReadCondition(prompt,role=READ_ROLE) {
   const sentences = instructionSentenceTexts(prompt);
   const unresolved = sentences.some(sentence => pathSpans(sentence).some(path => {
     const operandEnd = quotedSegmentSpans(sentence)
