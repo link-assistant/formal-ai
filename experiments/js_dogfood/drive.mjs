@@ -25,6 +25,7 @@ import { parseWriteContract, composeGeneralChangePlan } from '../../js/agentic/g
 import { planGeneralChangeStep } from '../../js/agentic/general_execution.mjs';
 import { planChatStep as maintainedPlanChatStep, planChatStepResolved as maintainedResolvedStep } from '../../js/agentic/planner.mjs';
 import { writesWholeFile } from '../../js/agentic/literal_write_guard.mjs';
+import { quotedSegmentSpans } from '../../js/agentic/crate/normal_markov.mjs';
 import { mentionsRole } from '../../js/agentic/crate/seed_meanings.mjs';
 import { normalizePrompt } from '../../js/agentic/crate/engine.mjs';
 import { collectionSummaryOwns } from '../../js/agentic/planner/collection_summary.mjs';
@@ -312,7 +313,13 @@ export async function drive(planChatStep, dir, prompt, {
   const explicitOverwrite = ownsCompleteLiteralRequest(prompt)
     && mentionsRole('file_overwrite_consent', prefix);
   const explicitAddition = ownedAdditiveLiteralFrame(prompt);
-  const createIntent = writesWholeFile(prompt) && !explicitOverwrite
+  // Quoted source and authored payload are data, never create instructions.
+  let creationInstruction = prompt;
+  for (const span of quotedSegmentSpans(prompt)) {
+    creationInstruction = creationInstruction.slice(0, span.start)
+      + ' '.repeat(span.end - span.start) + creationInstruction.slice(span.end);
+  }
+  const createIntent = writesWholeFile(creationInstruction) && !explicitOverwrite
     && !(explicitAddition !== null && explicitAddition.atEnd !== null);
   if (createIntent && createContract === null) {
     const refusal = await maintainedPlanChatStep(messages, tools);
@@ -393,12 +400,9 @@ export async function drive(planChatStep, dir, prompt, {
         return { transcript, answer: livePlan?.kind === 'final' ? livePlan.answer : null,
           stop: livePlan?.kind === 'final' ? 'final' : 'unbound-create-operation', toolsAdvertised: tools };
       }
-      const resolved = mixedGoals ? livePlan : null;
-      const expectedCalls = resolved?.kind === 'tool_calls' ? resolved.calls : createContracts.flatMap(frame => {
-        const plan = composeGeneralChangePlan(frame.request);
-        const expected = plan === null ? null : planGeneralChangeStep(messages, tools, plan);
-        return expected?.kind === 'tool_calls' ? expected.calls : [];
-      });
+      // Operation identity belongs to the maintained current source plan.
+      // Raw request frames still bind exclusive target and authored bytes.
+      const expectedCalls = livePlan.calls;
       const bound = calls.every(call => {
         const args = argsOf(call);
         const readPath = args?.filePath ?? args?.file_path ?? args?.path;
