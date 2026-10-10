@@ -4,7 +4,7 @@ The owner updated this arrangement on 2026-10-10; the 2026-10-09 arrangement is 
 
 ## Roles and capacity
 
-Keep the available slots busy. Current owner authorization (2026-10-10): up to 12 GPT-6.1-sol subagents, with 13 active agents including the coordinator. Reuse completed slots; do not create extra agents beyond this capacity. Never terminate an unfinished agent merely to replace it. Keep at least one CI watcher and at least two whole-ask Formal AI delivery agents active throughout. Other agents must regularly attempt their original tasks through Formal AI, retain failures, repair general capabilities and retry unchanged requests.
+Keep the available slots busy. Current owner authorization (2026-10-10): up to 12 GPT-6.1-sol subagents, with 13 active agents including the coordinator. Reuse completed slots; do not create extra agents beyond this capacity. Never terminate an unfinished agent merely to replace it. Keep at least one CI watcher and one whole-ask Formal AI delivery agent active throughout, with at least two dedicated Formal AI-only delivery agents active under the current PR arrangement. Other agents must regularly attempt their original tasks through Formal AI, retain failures, repair general capabilities and retry unchanged requests.
 
 Historical capacity (2026-10-09): this environment admitted four active agents including the coordinator, so three subagents ran concurrently and a fourth role waited for a completed slot. This historical capacity is not the current limit.
 
