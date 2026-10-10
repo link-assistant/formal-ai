@@ -33,7 +33,7 @@ Give every independent whole ask an explicit scratch directory and only the adap
 
 Do not rely on prompt instructions or an outer success marker as an execution boundary. Actual T4326 overwrote the version helper, wrote an unauthorized test, invoked local rustc and ran its produced binary despite scratch-only instructions. Treat that original ask as a failure. T2817 restored the exact original source and removed only the independently frozen unauthorized files through Formal AI; full source, binary bytes and tool trace are retained. No autonomous coding credit applies. The later T2827 independent guard-authoring ask also failed; the separately supplied generic driver repair passed22 original and8 new physical controls.
 
-An exact command allowlist authorizes that command; it is not an operating-system sandbox. Review the allowed program and its child commands, and verify actual repository scope, process status and source identities. Never run cargo, rustc, rust-script or generated native binaries locally. Leave native compilation and execution to CI.
+An exact command allowlist authorizes that command; it is not an operating-system sandbox. Review the allowed program and its child commands, and verify actual repository scope, process status and source identities. Never run cargo, rustc, rust-script or generated native binaries locally. Leave native compilation and execution to CI. Keep local disk use bounded: reuse the existing checkout and dependencies, avoid duplicate downloads, and preserve required originals and inverses in lossless content-deduplicated gzip archives. Check free space before large operations and remove only owned dispensable temporary files.
 
 ## Commits and push barriers
 
