@@ -14,6 +14,9 @@ use super::{
     parse_links_notation, parse_quoted, split_first_token,
 };
 
+const SEED_BODY_ENCODING_FIELD: &str = "seed_body_encoding";
+const SEED_LITERAL_LINE_ENCODING: &str = "literal-lf-v1";
+
 /// Build a single Links Notation bundle document.
 ///
 /// Contains the static seed plus the dynamic memory log plus arbitrary
@@ -26,7 +29,11 @@ pub fn export_bundle(seed_files: &[(&str, &str)], events: &[MemoryEvent]) -> Str
     out.push_str("  exported_at \"");
     out.push_str(&escape_value(&isoformat_now()));
     out.push_str("\"\n");
-    out.push_str("  seed_body_encoding \"literal-lf-v1\"\n");
+    push_optional_info(
+        &mut out,
+        SEED_BODY_ENCODING_FIELD,
+        Some(SEED_LITERAL_LINE_ENCODING),
+    );
     if !seed_files.is_empty() {
         out.push_str("  seed_files\n");
         for (name, contents) in seed_files {
@@ -181,7 +188,11 @@ pub fn export_full_memory(
     out.push_str("  exported_at \"");
     out.push_str(&escape_value(&exported_at));
     out.push_str("\"\n");
-    out.push_str("  seed_body_encoding \"literal-lf-v1\"\n");
+    push_optional_info(
+        &mut out,
+        SEED_BODY_ENCODING_FIELD,
+        Some(SEED_LITERAL_LINE_ENCODING),
+    );
     push_optional_info(&mut out, "version", info.version.as_deref());
     push_optional_info(&mut out, "url", info.url.as_deref());
     push_optional_info(&mut out, "user_agent", info.user_agent.as_deref());
@@ -273,8 +284,8 @@ fn parse_bundle_document(text: &str) -> ParsedBundle {
         let indent = line.bytes().take_while(|byte| *byte == b' ').count();
         indent == 2
             && split_first_token(&line[indent..]).is_some_and(|(key, value)| {
-                key == "seed_body_encoding"
-                    && parse_quoted(value).as_deref() == Some("literal-lf-v1")
+                key == SEED_BODY_ENCODING_FIELD
+                    && parse_quoted(value).as_deref() == Some(SEED_LITERAL_LINE_ENCODING)
             })
     });
     for line in text.split('\n').map(|line| {

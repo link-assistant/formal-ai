@@ -32,6 +32,9 @@
   var STORE_NAME = "events";
   var ROOT_HEADER = "demo_memory";
   var BUNDLE_HEADER = "formal_ai_bundle";
+  var SEED_BODY_ENCODING_FIELD = "seed_body_encoding";
+  var SEED_LITERAL_LINE_ENCODING = "literal-lf-v1";
+  var SEED_BODY_ENCODING_LINE = '  ' + SEED_BODY_ENCODING_FIELD + ' "' + SEED_LITERAL_LINE_ENCODING + '"';
   var LINK_STORE_SCHEMA_VERSION = "0.2.0";
   // Schema is intentionally additive. Older logs without "kind" still parse
   // as plain user/assistant turns. New "kind" values record reasoning steps,
@@ -727,7 +730,7 @@
     var preferences = settings.preferences || null;
     var lines = ["formal_ai_bundle"];
     lines.push('  exported_at "' + escapeValue(new Date().toISOString()) + '"');
-    lines.push('  seed_body_encoding "literal-lf-v1"');
+    lines.push(SEED_BODY_ENCODING_LINE);
     var preferredInfoFields = [
       "version",
       "url",
@@ -828,7 +831,7 @@
   // files). The parser is forgiving: unknown sub-sections are skipped, and a
   // truncated document still yields whatever events were recoverable.
   function parseBundleDocument(text) {
-    var preserveSeedBytes = /^  seed_body_encoding "literal-lf-v1"$/m.test(text);
+    var preserveSeedBytes = new RegExp("^" + SEED_BODY_ENCODING_LINE + "$", "m").test(text);
     var lines = preserveSeedBytes ? text.split("\n") : text.split(/\r?\n/);
     var info = {};
     var seedFiles = {};
