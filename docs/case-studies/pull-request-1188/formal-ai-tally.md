@@ -9,9 +9,9 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 
 | Who | Tasks | Passed | Failed | Partial | Fixed | Open | Not reproduced | Unresolved |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| **All** | 4428 | 2678 | 955 | 139 | 499 | 586 | 9 | 0 |
+| **All** | 4596 | 2794 | 998 | 148 | 499 | 638 | 9 | 0 |
 | CHAT-ROUTES | 13 | 10 | 3 | 0 | 3 | 0 | 0 | 0 |
-| CI-FIXER | 94 | 77 | 15 | 2 | 3 | 14 | 0 | 0 |
+| CI-FIXER | 116 | 91 | 19 | 6 | 3 | 22 | 0 | 0 |
 | CI-SPEED | 6 | 6 | 0 | 0 | 0 | 0 | 0 | 0 |
 | CIFIX | 314 | 309 | 5 | 0 | 5 | 0 | 0 | 0 |
 | CIFIX2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
@@ -21,7 +21,7 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 | DISCOVER | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 |
 | FINITE-GATE | 15 | 13 | 2 | 0 | 1 | 1 | 0 | 0 |
 | FIX-GAPS | 15 | 15 | 0 | 0 | 0 | 0 | 0 | 0 |
-| FORMAL-AI-ONLY | 345 | 119 | 94 | 20 | 54 | 60 | 0 | 0 |
+| FORMAL-AI-ONLY | 447 | 196 | 117 | 22 | 54 | 85 | 0 | 0 |
 | GENERALIZE | 16 | 16 | 0 | 0 | 0 | 0 | 0 | 0 |
 | LEAD | 18 | 16 | 0 | 1 | 1 | 0 | 0 | 0 |
 | LEXEMES | 4 | 3 | 1 | 0 | 1 | 0 | 0 | 0 |
@@ -34,14 +34,14 @@ regression test, pin, gap or row that carries it), still open, or not reproduced
 | REPO-RUNNERS | 89 | 78 | 5 | 6 | 11 | 0 | 0 | 0 |
 | REQ-AUDIT | 9 | 9 | 0 | 0 | 0 | 0 | 0 | 0 |
 | REQ-ROUTE | 12 | 7 | 5 | 0 | 4 | 0 | 1 | 0 |
-| ROOT | 518 | 361 | 136 | 21 | 76 | 78 | 3 | 0 |
+| ROOT | 531 | 374 | 136 | 21 | 76 | 78 | 3 | 0 |
 | ROUTE2 | 3 | 0 | 3 | 0 | 3 | 0 | 0 | 0 |
 | ROUTE3 | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | SCRIPTS-A | 5 | 4 | 1 | 0 | 1 | 0 | 0 | 0 |
 | SCRIPTS-B | 5 | 5 | 0 | 0 | 0 | 0 | 0 | 0 |
 | SPANISH | 3 | 2 | 1 | 0 | 1 | 0 | 0 | 0 |
 | SPEC-DELIVERY | 535 | 386 | 78 | 7 | 44 | 40 | 1 | 0 |
-| SPEC-PARITY | 448 | 210 | 62 | 2 | 32 | 32 | 0 | 0 |
+| SPEC-PARITY | 479 | 222 | 78 | 5 | 32 | 51 | 0 | 0 |
 | SPECIFICATION-DELIVERY | 125 | 77 | 48 | 0 | 0 | 48 | 0 | 0 |
 | TEACH-C | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |
 | TEACH-F | 1 | 0 | 1 | 0 | 1 | 0 | 0 | 0 |

@@ -1,0 +1,480 @@
+# The wording the JavaScript server answers with, keyed by language-neutral id.
+#
+# Each `text` is the exact string the Rust server writes for the same case
+# (the literals in rust/src/server.rs and the modules it calls), so a client
+# sees one message whichever server it reaches. The JavaScript server
+# (js/server/messages.mjs) holds no prose of its own - scripts/check-js-literals.mjs
+# keeps its natural-language literal count at zero - and the parity runner
+# (scripts/check-server-parity.mjs) compares both servers' bodies, so a Rust
+# literal that changes without this file fails CI. `{name}` is a placeholder.
+server_messages
+  message route_not_found
+    text "route not found"
+  message bearer_token_invalid
+    text "missing or invalid bearer token"
+  message mcp_origin_not_allowed
+    text "MCP origin is not allowed"
+  message mcp_sse_unsupported
+    text "MCP SSE streams are not supported"
+  message hello
+    text "hello"
+  message invalid_chat_request
+    text "invalid chat request: {error}"
+  message invalid_responses_request
+    text "invalid responses request: {error}"
+  message invalid_messages_request
+    text "invalid messages request: {error}"
+  message invalid_generate_content_request
+    text "invalid generateContent request: {error}"
+  message unsupported_model
+    text "unsupported model `{model}`; use `{canonical}` or a configured alias"
+  message memory_persist_failed
+    text "failed to persist memory: {error}"
+  message tool_call_refused
+    text "Tool calls and function execution are not allowed without explicit agent mode. Enable agent mode only for an isolated execution environment."
+  message serde_untagged_message_content
+    text "{field}: data did not match any variant of untagged enum MessageContent"
+  message serde_missing_field
+    text "missing field `{field}`"
+  message status_text_405
+    text "Method Not Allowed"
+  message status_text_500
+    text "Internal Server Error"
+  message server_shared_memory
+    text "formal-ai shared memory: {path}"
+  message server_listening
+    text "formal-ai server listening on {url}"
+  message worker_network_disabled
+    text "network disabled in unit tests"
+  message gemini_model_description
+    text "Formal AI symbolic solver exposed through the Gemini generateContent envelope."
+  message gemini_vertex_model_description
+    text "Formal AI symbolic solver exposed through the Vertex AI generateContent envelope."
+  message mcp_method_not_found
+    text "Method not found"
+  message mcp_tool_name_not_string
+    text "tool name must be a string"
+  message mcp_tool_not_found
+    text "Tool not found"
+  message mcp_prompt_not_string
+    text "prompt must be a string"
+  message mcp_workspace_creation_failed
+    text "computer-use workspace creation failed"
+  message mcp_invalid_utf8
+    text "stream did not contain valid UTF-8"
+  message telegram_invalid_update
+    text "invalid Telegram update JSON: {message}"
+  message telegram_text_only
+    text "I can only process Telegram text messages in this implementation. Send a text prompt or a message caption."
+  message telegram_attached_files
+    text "Attached files:"
+  message network_unknown_trace
+    text "unknown trace id"
+  message links_query_missing
+    text "request must provide a `query` string"
+  message links_query_invalid
+    text "invalid LinksQL query: {error}"
+  message links_query_match_missing
+    text "query must contain a MATCH clause"
+  message links_query_return_missing
+    text "query must contain a RETURN clause"
+  message links_query_return_order
+    text "RETURN must follow MATCH"
+  message links_query_return_empty
+    text "RETURN must name at least one variable"
+  message links_query_pattern_open
+    text "pattern must open with a node like (a)"
+  message links_query_edge_arrow
+    text "edge pattern must end with ->"
+  message links_query_node_invalid
+    text "invalid node pattern: {text}"
+  message links_query_node_variable
+    text "node pattern needs a variable name"
+  message links_query_edge_invalid
+    text "invalid edge pattern: {text}"
+  message links_query_filter_operator
+    text "filter needs `=` or CONTAINS: {clause}"
+  message links_query_filter_target
+    text "filter target must be `var.field`: {clause}"
+  message links_query_field_unknown
+    text "unknown field `{field}`"
+  message memory_schema_write_refused
+    text "refusing to write an incompatible persisted-memory schema"
+  message memory_upgrade_not_utf8
+    text "persisted memory is not valid UTF-8"
+  message memory_upgrade_empty
+    text "persisted memory is empty"
+  message memory_upgrade_schema_version_invalid
+    text "schema_version must be a quoted positive integer"
+  message memory_upgrade_schema_version_duplicate
+    text "persisted memory contains more than one schema_version marker"
+  message memory_upgrade_incompatible
+    text "memory schema is incompatible"
+  message memory_upgrade_path_invalid
+    text "persisted-memory migration requires a filesystem path"
+  message memory_upgrade_unavailable
+    text "no migration implementation matches the detected schema"
+  message memory_upgrade_path_collision
+    text "memory, lock, backup, and receipt paths must be distinct"
+  message memory_upgrade_validation_failed
+    text "staged memory did not pass target-schema and event-count validation"
+  message memory_upgrade_migrated_not_utf8
+    text "memory is not UTF-8"
+  message memory_upgrade_header_unrecognized
+    text "memory root header is not recognized"
+  message memory_upgrade_header_own_line
+    text "memory root header must occupy its own line"
+  message memory_upgrade_preflight_refused
+    text "persisted-memory preflight refused an incompatible file"
+  message memory_upgrade_migration_refused
+    text "persisted-memory migration refused to modify the file"
+  message memory_cli_unsupported
+    text "unsupported argument: {argument}"
+  message memory_record_failed
+    text "[memory] failed to record live chat exchange: {error}"
+  message memory_debug_init_failed
+    text "[memory] could not initialize {path}: {error}"
+  message memory_debug_read_failed
+    text "[memory] could not read {path}: {error}"
+  message conversation_unsafe_id
+    text "dialog id contains unsafe path characters"
+  message conversation_no_exchanges
+    text "dialog log contains no exchanges"
+  message conversation_include_invalid
+    text "include must be harness, server, or both"
+  message dialog_log_appended
+    text "[dialog-log] appended exchange to {path}"
+  message dialog_log_failed
+    text "[dialog-log] failed to record exchange: {error}"
+  message memory_recall_none_en
+    text 'No mentions of "{term}" found in memory.'
+  message memory_recall_none_ru
+    text 'Упоминаний "{term}" в памяти не найдено.'
+  message memory_recall_none_zh
+    text '在记忆中没有找到 "{term}"。'
+  message memory_recall_none_hi
+    text 'स्मृति में "{term}" नहीं मिला.'
+  message memory_recall_found_en
+    text 'Found {count} mention(s) of "{term}" across {conversations} conversation(s) in memory.'
+  message memory_recall_found_ru
+    text 'Найдено упоминаний "{term}" в памяти: {count} (бесед: {conversations}).'
+  message memory_recall_found_zh
+    text '在记忆中找到 "{term}" 的记录: {count} (对话: {conversations})。'
+  message memory_recall_found_hi
+    text 'स्मृति में "{term}" के उल्लेख मिले: {count} (बातचीत: {conversations}).'
+  message memory_recall_conversation
+    text "- conversation {label}"
+  message memory_recall_link_line
+    text "link{stamp}: {from} -> {to}"
+  message standing_requirement_turn
+    text "Standing requirement ({topic}): {rule}"
+  message standing_requirement_line
+    text "Learned standing requirement ({topic}): {rule}"
+  message memory_request_history_title
+    text "Current request"
+  message execution_unsupported_start_isolation
+    text "unsupported start isolation"
+  message execution_runner_pair_required
+    text "start isolation and runner must be configured together"
+  message execution_start_runner_empty
+    text "the start runner is empty"
+  message execution_unknown_backend
+    text "unknown execution backend"
+  message execution_no_box_language_contract
+    text "no box-language contract for"
+  message execution_unsafe_image
+    text "container image is not a safe Docker reference"
+  message execution_missing_closing_quote
+    text "missing closing quote"
+  message execution_browser_runtime_unavailable
+    text "browser runtime is unavailable to the native executor"
+  message execution_command_not_found
+    text "command not found"
+  message execution_os_error
+    text "{description} (os error {code})"
+  message execution_os_error_ENOENT
+    text "No such file or directory"
+  message execution_os_error_EACCES
+    text "Permission denied"
+  message execution_os_error_EPIPE
+    text "Broken pipe"
+  message execution_os_error_ENOEXEC
+    text "Exec format error"
+  message execution_os_error_ENOTDIR
+    text "Not a directory"
+  message execution_os_error_EISDIR
+    text "Is a directory"
+  message execution_os_error_E2BIG
+    text "Argument list too long"
+  message learning_no_event
+    text "no {kind} event"
+  message learning_verification_failed
+    text "rule verification did not pass: {status}"
+  message learning_missing_field
+    text "missing `{name}` in candidate"
+  message learning_invalid_slug
+    text "invalid {name} `{value}`"
+  message learning_proposal_summary
+    text "Learn `{modifier}` for `{base_task}` by rewriting to `{resolved_task}`; fixture `{fixture}` passed; benchmark `{suite}` is {status} ({passed}/{minimum})."
+  message dreaming_reason_deleted_conversation
+    text "event belongs to a conversation already marked deleted"
+  message dreaming_reason_duplicate
+    text "duplicate recomputable event; retained {id} with usage {usage}"
+  message dreaming_reason_covered_specific
+    text "specific task/test-run record reproducible from a retained meta-algorithm amendment"
+  message dreaming_reason_low_use
+    text "lowest-use recomputable event selected to satisfy the free-space target"
+  message dreaming_candidate_failure
+    text "Replay of {source} on topic {topic} diverged from the stored output; kept for refinement. Simulated: {simulated}"
+  message dreaming_trial
+    text "Trial synthesized from recurring structure {structure} on most-used topic {topic}"
+  message dreaming_pattern
+    text "Recurring structure {structure} observed {occurrences} time(s)"
+  message dreaming_replay_timeout
+    text "dreaming replay did not answer within {seconds} seconds"
+  message dreaming_background_failed
+    text "[dreaming] background run failed: {error}"
+  message learning_cycle_proposal_summary
+    text "Adopt {count} learned request-opener surface(s) for the '{variation}' frontier class ({languages}), derived from {support} recorded frontier prompts each and validated on {passed} held-out prompt(s) with {failed} failure(s)."
+  message program_execution_status_line_en
+    text "Execution status: {status} in {environment}."
+  message program_execution_status_line_ru
+    text "Статус выполнения: {status} в среде «{environment}»."
+  message program_execution_status_line_hi
+    text "निष्पादन स्थिति: {status} ({environment} में)।"
+  message program_execution_status_line_zh
+    text "执行状态：{status}（{environment}）。"
+  message program_execution_status_verified_en
+    text "compiled and ran"
+  message program_execution_status_unavailable_en
+    text "not compiled or run"
+  message program_execution_status_not_probed_en
+    text "not probed in this environment"
+  message program_execution_status_verified_ru
+    text "скомпилировано и запущено"
+  message program_execution_status_unavailable_ru
+    text "не скомпилировано и не запущено"
+  message program_execution_status_not_probed_ru
+    text "не проверялось в этой среде"
+  message program_execution_status_verified_hi
+    text "संकलित और चलाया गया"
+  message program_execution_status_unavailable_hi
+    text "संकलित या चलाया नहीं गया"
+  message program_execution_status_not_probed_hi
+    text "इस वातावरण में जाँचा नहीं गया"
+  message program_execution_status_verified_zh
+    text "已编译并运行"
+  message program_execution_status_unavailable_zh
+    text "未编译或运行"
+  message program_execution_status_not_probed_zh
+    text "未在本环境中探测"
+  message program_execution_output_verified_en
+    text "Output"
+  message program_execution_output_unavailable_en
+    text "Expected output after verification"
+  message program_execution_output_not_probed_en
+    text "Output, not observed in this environment"
+  message program_execution_output_verified_ru
+    text "Вывод"
+  message program_execution_output_unavailable_ru
+    text "Ожидаемый вывод после проверки"
+  message program_execution_output_not_probed_ru
+    text "Вывод, не наблюдавшийся в этой среде"
+  message program_execution_output_verified_hi
+    text "आउटपुट"
+  message program_execution_output_unavailable_hi
+    text "सत्यापन के बाद अपेक्षित आउटपुट"
+  message program_execution_output_not_probed_hi
+    text "आउटपुट, इस वातावरण में नहीं देखा गया"
+  message program_execution_output_verified_zh
+    text "输出"
+  message program_execution_output_unavailable_zh
+    text "验证后的预期输出"
+  message program_execution_output_not_probed_zh
+    text "输出，未在本环境中观察到"
+  message program_execution_rediscovered_en
+    text "Execution status: not run; this program was rediscovered from {page} and its output contract was checked by decomposition, not by executing it."
+  message program_execution_rediscovered_ru
+    text "Статус выполнения: не запускалась; программа заново найдена на странице {page}, её контракт вывода проверен разбором, а не запуском."
+  message program_execution_rediscovered_hi
+    text "निष्पादन स्थिति: चलाया नहीं गया; यह प्रोग्राम {page} से फिर से खोजा गया और इसके आउटपुट अनुबंध की जाँच विघटन से की गई, चलाकर नहीं।"
+  message program_execution_rediscovered_zh
+    text "执行状态：未运行；此程序从 {page} 重新发现，其输出约定通过分解检查，而非运行。"
+  message program_execution_rediscovered_es
+    text "Estado de ejecución: no ejecutado; este programa se redescubrió en {page} y su contrato de salida se comprobó por descomposición, no ejecutándolo."
+  message program_execution_check_command
+    text "Check command: `{command}`"
+  message program_execution_run_command
+    text "Run command: `{command}`"
+  message program_execution_notes_rust
+    text "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."
+  message program_execution_notes_python
+    text "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."
+  message program_execution_notes_javascript
+    text "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."
+  message program_execution_notes_typescript
+    text "The TypeScript seed is returned with this warning until a tsc-backed execution profile is available."
+  message program_execution_notes_go
+    text "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."
+  message program_execution_notes_c
+    text "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."
+  message program_execution_notes_cpp
+    text "The C++ seed is returned with this warning until a g++-backed execution profile is available."
+  message program_execution_notes_java
+    text "The Java seed is returned with this warning until a javac-backed execution profile is available."
+  message program_execution_notes_csharp
+    text "The C# seed is returned with this warning until a dotnet-backed execution profile is available."
+  message program_execution_notes_ruby
+    text "The Ruby seed is returned with this warning until a ruby-backed execution profile is available."
+  message program_execution_notes_scala
+    text "The Scala seed is returned with this warning until a scalac-backed execution profile is available."
+  message program_execution_notes_kotlin
+    text "The Kotlin seed is returned with this warning until a kotlinc-backed execution profile is available."
+  message program_execution_notes_php
+    text "1 iteration completed under the 1 minute execution budget; no timeout reduction was needed."
+  message program_execution_notes_laravel
+    text "Laravel Framework 13.26.1 on PHP 8.3.31: `composer create-project laravel/laravel`, then the command above printed the expected output exactly."
+  message authoring-model-required
+    text "authoring requires the Formal AI model"
+  message authoring-task-message-required
+    text "authoring task and message are required"
+  message authoring-pull-request-required
+    text "a canonical GitHub pull-request URL is required"
+  message authoring-artifacts-required
+    text "declared produced artifacts and matching destinations are required"
+  message authoring-relative-artifact-required
+    text "artifact paths must stay relative: "
+  message authoring-isolated-workspace-required
+    text "authoring workspace must be outside the destination repository"
+  message authoring-command-incomplete
+    text " did not complete: "
+  message authoring-server-unobserved
+    text "local authoring server readiness was not observed"
+  message authoring-session-server-required
+    text "authoring session requires an observed local server"
+  message authoring-session-incomplete
+    text "authoring session did not complete"
+  message authoring-stderr-rejected
+    text "authoring session stderr classification failed"
+  message authoring-session-unobserved
+    text "authoring stream reported no resumable session"
+  message authoring-session-label
+    text "formal-ai session "
+  message authoring-model-label
+    text "\nformal-ai model "
+  message authoring-artifact-content-unobserved
+    text "no artifact contains: "
+  message authoring-artifacts-unchanged
+    text "no artifact differs from both seed and destination"
+  message authoring-landed-bytes-unobserved
+    text "landed artifact bytes were not observed"
+  message authoring-committed-bytes-unchanged
+    text "authoring reproduced committed bytes"
+  message repository-caller-required
+    text "expected solve, swe-bench, coding-ladder or authoring"
+  message repository-caller-option-invalid
+    text "invalid repository caller option"
+  message repository-task-workspace-required
+    text "--task and structural --workspace are required"
+  message repository-relative-path-required
+    text "a relative workspace path is required"
+  message repository-path-outside-workspace
+    text "path escapes repository workspace: "
+  message repository-symlink-path-refused
+    text "symlink workspace path is refused: "
+  message repository-symlink-outside-workspace
+    text "symlink escapes repository workspace: "
+  message repository-process-limits-required
+    text "positive process limits are required"
+  message repository-process-output-limit
+    text "\nprocess output limit exceeded"
+  message repository-full-base-required
+    text "repository base must be a full forty-character commit"
+  message repository-origin-required
+    text "repository clone origin is required"
+  message repository-destination-exists
+    text "repository clone destination already exists"
+  message repository-network-grant-required
+    text "remote clone requires an explicit host network grant"
+  message repository-clone-failed
+    text "repository clone failed"
+  message repository-checkout-failed
+    text "repository checkout failed"
+  message repository-base-unobserved
+    text "repository base commit was not observed"
+  message repository-caller-unknown
+    text "unknown repository caller: "
+  message source-operation-non-file-source
+    text "non-file source"
+  message source-operation-source-changed-during-read
+    text "source changed during read"
+  message source-operation-nested-node-test-operation-unknown
+    text "nested Node test operation unknown"
+  message source-operation-extra-node-options
+    text "extra Node options"
+  message source-operation-foreign-module-path
+    text "foreign module path"
+  message source-operation-missing-command-executable
+    text "missing command executable"
+  message source-operation-different-accepted-node-executable
+    text "different accepted Node executable"
+  message source-operation-unknown-module-url-byte-profile
+    text "unknown module URL byte profile"
+  message source-operation-unsupported-acceptance-location
+    text "unsupported acceptance location"
+  message source-operation-operation-not-accepted
+    text "operation not accepted"
+  message source-operation-command-not-in-original-request
+    text "command not in original request"
+  message source-operation-unsupported-candidate-directory
+    text "unsupported candidate directory"
+  message source-operation-unowned-candidate-file
+    text "unowned candidate file"
+  message source-operation-unobserved-source-copy
+    text "unobserved source copy"
+  message source-operation-no-canonical-imports
+    text "no canonical imports"
+  message source-operation-ambiguous-import-url-profile
+    text "ambiguous import URL profile"
+  message source-operation-unknown-import-type
+    text "unknown import type"
+  message source-operation-canonical-symlink-normalization-mismatch
+    text "canonical symlink/normalization mismatch"
+  message source-operation-canonical-bytes-not-one-observed-source
+    text "canonical bytes not one observed source"
+  message source-operation-side-effect-import-has-no-source-call-authority
+    text "side-effect import has no source call authority"
+  message source-operation-unknown-source-export
+    text "unknown source export"
+  message source-operation-unobserved-export-declaration
+    text "unobserved export declaration"
+  message source-operation-unbounded-import-closure
+    text "unbounded import closure"
+  message source-operation-unknown-closure-module
+    text "unknown closure module"
+  message source-operation-unknown-dynamic-module-code-authority
+    text "unknown dynamic module/code authority"
+  message source-operation-unparsed-import-closure
+    text "unparsed import closure"
+  message source-operation-unknown-dependency-authority
+    text "unknown dependency authority"
+  message source-operation-ambiguous-dependency-url-profile
+    text "ambiguous dependency URL profile"
+  message source-operation-distinct-dependency-url
+    text "distinct dependency URL"
+  message source-operation-failed-process-transport
+    text "failed process transport"
+  message source-operation-missing-process-status
+    text "missing process status"
+  message source-operation-operation-predates-candidate
+    text "operation predates candidate"
+  message source-operation-candidate-changed-during-operation
+    text "candidate changed during operation"
+  message source-operation-candidate-drift-after-operation
+    text "candidate drift after operation"
+  message source-operation-caller-metadata-is-not-provider-receipt
+    text "caller metadata is not provider receipt"
+  message source-operation-foreign-provider-receipt
+    text "foreign provider receipt"
+  message source-operation-not-provider-issued
+    text "not provider-issued"
