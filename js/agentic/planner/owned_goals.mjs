@@ -72,6 +72,18 @@ function literalTail(request, contract) {
     && (grammarTail(request.slice(target.end)) || suffixOwned);
 }
 
+function completeEditFrame(request, spans) {
+  const ordered = [...spans].sort((left, right) => left[0] - right[0]);
+  const grammar = text => /^[ \t\r\n.!?。！？।;；]*$/u.test(text);
+  let end = 0;
+  for (const [start, next] of ordered) {
+    if (!Number.isInteger(start) || !Number.isInteger(next) || start < 0
+      || next < start || next > request.length || !grammar(request.slice(end, Math.max(end, start)))) return false;
+    end = Math.max(end, next);
+  }
+  return grammar(request.slice(end));
+}
+
 /** Mirrors fn goal_ledger: preserve raw UTF16 positions and the existing node's UTF8 source span. */
 export function goalLedger(request) {
   const contract = literalWriteOwnership(request);
@@ -98,13 +110,13 @@ export function goalLedger(request) {
     const span = { start, end: start + clause.length };
     const byteSpan = [encoder.encode(request.slice(0, span.start)).length, encoder.encode(request.slice(0, span.end)).length];
     const literal = literalWriteOwnership(clause);
-    const edit = literal === null ? composeEditClauses(clause) : null;
     const completeLiteral = literal !== null && literalTail(clause, literal) && !attributedActionPrefix(clause) && contractActionPrologue(clause, literal);
-    const kind = completeLiteral ? 'literal_file' : edit !== null && edit.spans !== null ? 'source_edit' : 'unsupported';
-    const target = literal?.target ?? edit?.edit[0] ?? null;
+    const edit = completeLiteral ? null : composeEditClauses(clause);
+    const kind = completeLiteral ? 'literal_file' : edit !== null && edit.spans !== null && (literal === null || completeEditFrame(clause, edit.spans)) ? 'source_edit' : 'unsupported';
+    const target = kind === 'source_edit' ? edit.edit[0] : literal?.target ?? edit?.edit[0] ?? null;
     const expectation = kind === 'literal_file' ? { kind: 'file_bytes', path: target, sha256: null }
       : { kind: 'underivable', reason: kind === 'source_edit' ? 'source-edit-preimage-required' : 'no_artifact_in_clause' };
-    return { clause, span, byteSpan, sourceUnit: 'utf16', kind, target, expected: literal?.content ?? null,
+    return { clause, span, byteSpan, sourceUnit: 'utf16', kind, target, expected: kind === 'literal_file' ? literal.content : null,
       node: leafNode(null, clause, byteSpan, 0, expectation) };
   });
   if (goals.length === 0 || goals.length === 1 && goals[0].kind !== 'unsupported') return null;

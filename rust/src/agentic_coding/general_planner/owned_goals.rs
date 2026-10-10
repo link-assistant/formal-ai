@@ -190,6 +190,27 @@ pub(in crate::agentic_coding) fn instruction_view_for_request(request: &str) -> 
         .and_then(|contract| instruction_view(request, &contract))
         .unwrap_or_else(|| request.to_owned())
 }
+fn complete_edit_frame(request: &str, spans: [(usize, usize); 2]) -> bool {
+    let mut ordered = spans;
+    ordered.sort_by_key(|span| span.0);
+    let grammar = |text: &str| {
+        text.chars()
+            .all(|character| " \t\r\n.!?。！？।;；".contains(character))
+    };
+    let mut end = 0;
+    for (start, next) in ordered {
+        if next < start
+            || next > request.len()
+            || !request.get(end..end.max(start)).is_some_and(grammar)
+            || request.get(start..next).is_none()
+        {
+            return false;
+        }
+        end = end.max(next);
+    }
+    request.get(end..).is_some_and(grammar)
+}
+
 fn goal_ledger(request: &str) -> Option<Vec<Goal>> {
     let contract = literal_write_ownership(request);
     if let Some(owner) = contract.as_ref()
@@ -233,15 +254,18 @@ fn goal_ledger(request: &str) -> Option<Vec<Goal>> {
         let clause = raw.trim();
         let start = sentence.span.start + raw.find(clause)?;
         let literal = literal_write_ownership(clause);
-        let edit = literal
-            .as_ref()
-            .map_or_else(|| compose_edit_clauses(clause), |_| None);
         let complete_literal = literal.as_ref().is_some_and(|contract| {
             literal_tail(clause, contract) && contract_action_prologue(clause, contract)
         }) && !attributed_action_prefix(clause);
+        let edit = (!complete_literal)
+            .then(|| compose_edit_clauses(clause))
+            .flatten();
         let kind = if complete_literal {
             GoalKind::LiteralFile
-        } else if edit.as_ref().is_some_and(|edit| edit.spans.is_some()) {
+        } else if edit.as_ref().is_some_and(|edit| {
+            edit.spans
+                .is_some_and(|spans| literal.is_none() || complete_edit_frame(clause, spans))
+        }) {
             GoalKind::SourceEdit
         } else {
             GoalKind::Unsupported
