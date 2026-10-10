@@ -6,7 +6,7 @@ import { boundReadPaths, pendingReadCondition } from '../file_read/ownership.mjs
 import { normalizePrompt } from '../crate/engine.mjs';
 import { unquotedPathTokens } from '../positional_edit.mjs';
 // Source-owned mixed actions share the existing obligation nodes and request replay.
-import { firstContentLeadEnd, firstRawPrefixLeadEnd, pinnedFirstLine, composeEditClauses, preferredBinding, tokens, firstActionCueStart, firstActionCueEnd, bareSurfaces, cleanPathToken, looksLikeFilePath } from '../write_request.mjs';
+import { firstContentLeadEnd, firstRawPrefixLeadEnd, pinnedFirstLine, composeEditClauses, preferredBinding, tokens, firstActionCueStart, firstActionCueEnd, bareSurfaces, cleanCueToken, cleanPathToken, looksLikeFilePath } from '../write_request.mjs';
 import { literalWriteOwnership, instructionView, composeGeneralChangePlan, parseWriteContract } from '../general_planner.mjs';
 import { sentences } from '../shell_command_policy.mjs';
 import { quotedSegmentSpans, quoteFault } from '../crate/normal_markov.mjs';
@@ -283,12 +283,19 @@ function contractActionPrologue(clause, contract) {
     || ['politeness_cue', 'enumeration_cue', 'file-edit-sequence-cue'].some((role) => bareSurfaces(role).some((surface) => normalizePrompt(surface) === prologue));
 }
 
+function declaredCreationPrologue(request, contract) {
+  const words = tokens(request.slice(0, contract.targetSpan.start));
+  if (words.length === 0 || !bareSurfaces('file_declared_noun').includes(cleanCueToken(words.at(-1).text))) return false;
+  const prefix = normalizePrompt(words.map(word => cleanCueToken(word.text)).join(' '));
+  return bareSurfaces('file_whole_write_action').some(surface => normalizePrompt(surface) === prefix);
+}
+
 /** Mirrors owned_declared_create_frame; classification does not grant filesystem authority. */
 export function ownedDeclaredCreateFrame(request) {
   const contract = parseWriteContract(request);
   if (contract === null || quoteFault(request) !== null || nestedQuoteFault(request) !== null
     || !literalTail(request, contract) || attributedActionPrefix(request)
-    || !contractActionPrologue(request, contract)) return null;
+    || !(contractActionPrologue(request, contract) || declaredCreationPrologue(request, contract))) return null;
   const view = instructionView(request, contract);
   if (view === null) return null;
   const normalized = normalizePrompt(view);

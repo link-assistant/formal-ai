@@ -1,5 +1,6 @@
 // Additive authoring over declared ordinary Read and replacement Write capabilities.
-import { declaredAdditionContract, ownedAdditiveLiteralFrame } from './planner/owned_goals.mjs';
+import { declaredAdditionContract, ownedAdditiveLiteralFrame, ownedDeclaredCreateFrame } from './planner/owned_goals.mjs';
+import { bareSurfaces, cleanCueToken, preferredBinding, tokens } from './write_request.mjs';
 import { Capability } from './capability.mjs';
 import { toolFor } from './capability_router.mjs';
 import { Progress } from './progress.mjs';
@@ -14,14 +15,24 @@ const refused = (task, target, disposition = FinalDisposition.Gap) => resolvedFi
 
 /** Mirrors plan_literal_addition_step; caller metadata cannot manufacture an append primitive. */
 export function planLiteralAdditionStep(task, messages, toolNames) {
-  if (declaredAdditionContract(task) === null) return null;
+  if (ownedDeclaredCreateFrame(task) !== null || declaredAdditionContract(task) === null) return null;
   const contract = ownedAdditiveLiteralFrame(task);
   if (contract === null) return null;
   const { target, content, atEnd } = contract;
-  if (atEnd === null) return resolvedFinalAnswer(
+  if (atEnd === null) {
+    const words = tokens(task), binding = preferredBinding(words);
+    const noun = binding !== null && binding.cue_precedes && binding.path === target
+      && bareSurfaces('file_declared_noun').includes(cleanCueToken(task.slice(binding.cue_start, binding.cue_end)));
+    const destination = noun && words.some(word => word.end <= binding.cue_start
+      && bareSurfaces('file_write_destination_cue').includes(cleanCueToken(word.text)));
+    const progress = Progress.scan(messages), read = toolFor(toolNames, Capability.Read);
+    if (destination && read !== null && !progress.attemptedWriteFor(target)
+      && progress.sourceReadFor(target) === null) return planOne(read, readArguments(target));
+    return resolvedFinalAnswer(
     renderSeededOutcome('file-addition-position-unknown', task, target) ?? target,
     FinalDisposition.Gap, 'literal-addition-position-unknown'
-  );
+    );
+  }
   const read = toolFor(toolNames, Capability.Read), write = toolFor(toolNames, Capability.Write);
   if (read === null || write === null) return refused(task, target);
   const progress = Progress.scan(messages);

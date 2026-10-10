@@ -10,7 +10,7 @@ use crate::agentic_coding::positional_edit::unquoted_path_tokens;
 use crate::agentic_coding::request_sequence::plan_bound_request_steps;
 use crate::agentic_coding::shell_command_policy::sentences;
 use crate::agentic_coding::write_request::{
-    bare_surfaces, clean_path_token, compose_edit_clauses, first_action_cue_end,
+    bare_surfaces, clean_cue_token, clean_path_token, compose_edit_clauses, first_action_cue_end,
     first_action_cue_start, first_raw_prefix_lead_end, looks_like_file_path, pinned_first_line,
     preferred_binding, tokens,
 };
@@ -760,6 +760,26 @@ fn contract_action_prologue(clause: &str, contract: &LiteralWriteContract) -> bo
         })
 }
 
+fn declared_creation_prologue(request: &str, contract: &LiteralWriteContract) -> bool {
+    let words = tokens(&request[..contract.target_span.start]);
+    let Some(last) = words.last() else {
+        return false;
+    };
+    if !bare_surfaces("file_declared_noun").contains(&clean_cue_token(&last.text)) {
+        return false;
+    }
+    let prefix = crate::engine::normalize_prompt(
+        &words
+            .iter()
+            .map(|word| clean_cue_token(&word.text))
+            .collect::<Vec<_>>()
+            .join(" "),
+    );
+    bare_surfaces("file_whole_write_action")
+        .iter()
+        .any(|surface| crate::engine::normalize_prompt(surface) == prefix)
+}
+
 /// Mirrors `ownedDeclaredCreateFrame`; classification does not grant filesystem authority.
 pub fn owned_declared_create_frame(request: &str) -> Option<(String, String)> {
     let contract = parse_write_contract(request)?;
@@ -767,7 +787,8 @@ pub fn owned_declared_create_frame(request: &str) -> Option<(String, String)> {
         || crate::agentic_coding::quote_nesting::nested_quote_fault(request).is_some()
         || !literal_tail(request, &contract)
         || attributed_action_prefix(request)
-        || !contract_action_prologue(request, &contract)
+        || !(contract_action_prologue(request, &contract)
+            || declared_creation_prologue(request, &contract))
     {
         return None;
     }

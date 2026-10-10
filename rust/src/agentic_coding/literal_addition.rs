@@ -1,12 +1,17 @@
 //! Mirrors the ordinary Read/full-content Write/independent Read additive protocol.
 use crate::agentic_coding::code_task::{render_seeded_change, render_seeded_outcome};
 use crate::agentic_coding::final_result::{FinalDisposition, FinalResult, record};
-use crate::agentic_coding::general_planner::owned_additive_literal_frame;
+use crate::agentic_coding::general_planner::{
+    owned_additive_literal_frame, owned_declared_create_frame,
+};
 use crate::agentic_coding::planner::{
     AgenticPlan, Capability, plan_one, tool_for, write_arguments,
 };
 use crate::agentic_coding::progress::Progress;
 use crate::agentic_coding::workspace_change::read_arguments;
+use crate::agentic_coding::write_request::{
+    bare_surfaces, clean_cue_token, preferred_binding, tokens,
+};
 use crate::protocol::ChatMessage;
 
 fn refused(
@@ -33,12 +38,35 @@ pub(super) fn plan_literal_addition_step(
     tool_names: &[&str],
     result: &mut Option<FinalResult>,
 ) -> Option<AgenticPlan> {
+    if owned_declared_create_frame(task).is_some() {
+        return None;
+    }
     let contract = super::general_planner::declared_addition_contract(task)?;
     let (target, content, position) = owned_additive_literal_frame(task)?;
     if contract != (target.clone(), content.clone()) {
         return None;
     }
     let Some(at_end) = position else {
+        let words = tokens(task);
+        let destination = preferred_binding(&words).is_some_and(|binding| {
+            binding.cue_precedes
+                && binding.path == target
+                && bare_surfaces("file_declared_noun")
+                    .contains(&clean_cue_token(&task[binding.cue_start..binding.cue_end]))
+                && words.iter().any(|word| {
+                    word.end <= binding.cue_start
+                        && bare_surfaces("file_write_destination_cue")
+                            .contains(&clean_cue_token(&word.text))
+                })
+        });
+        let progress = Progress::scan(messages);
+        if destination
+            && !progress.attempted_write_for(&target)
+            && progress.source_read_for(&target).is_none()
+            && let Some(read) = tool_for(tool_names, Capability::Read)
+        {
+            return Some(plan_one(read, read_arguments(&target)));
+        }
         return Some(record(
             AgenticPlan::Final(
                 render_seeded_outcome("file-addition-position-unknown", task, &target)
