@@ -1,3 +1,5 @@
+import {createRequire} from 'node:module';
+const YAML=createRequire(import.meta.url)('yaml');
 // PR #1188: package releases follow automated GitHub releases and remain dry on PRs.
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -80,16 +82,49 @@ test('npm publishes only on a real missing-version response; transport/auth erro
   }
 });
 
-test('both package workflows admit automated releases, check PRs, and attach installable artifacts', () => {
+test('both package workflows admit automated releases, check PRs, and deliver authoritative installable artifacts', () => {
   for (const name of ['publish-engine', 'publish-vscode']) {
-    const workflow = readFileSync(new URL('../../../.github/workflows/' + name + '.yml', import.meta.url), 'utf8');
-    assert.match(workflow, /workflow_run:\n\s+workflows: \["CI\/CD Pipeline"\]\n\s+types: \[completed\]\n\s+branches: \[main\]/);
-    assert.match(workflow, /pull_request:/);
-    assert.match(workflow, /head_repository.full_name == github.repository/);
-    assert.match(workflow, /run: node scripts\/resolve-package-release.mjs/);
-    assert.match(workflow, /git checkout --detach "refs\/tags\/\$PACKAGE_RELEASE_TAG"/);
-    assert.match(workflow, /if: needs.resolve.outputs.publish == 'true'[\s\S]+run: gh release upload/);
-    assert.doesNotMatch(workflow, /ref:.*workflow_run.head_sha/);
+    const source = readFileSync(new URL('../../../.github/workflows/' + name + '.yml', import.meta.url), 'utf8');
+    assert.match(source, /pull_request:/);
+    assert.match(source, /head_repository.full_name == github.repository/);
+    assert.match(source, /git checkout --detach "refs\/tags\/\$PACKAGE_RELEASE_TAG"/);
+    assert.doesNotMatch(source, /ref:.*workflow_run.head_sha/);
+    if (name === 'publish-engine') {
+      assert.match(source, /workflow_run:\n\s+workflows: \["CI\/CD Pipeline"\]\n\s+types: \[completed\]\n\s+branches: \[main\]/);
+      assert.match(source, /run: node scripts\/resolve-package-release.mjs/);
+      assert.match(source, /if: needs.resolve.outputs.publish == 'true'[\s\S]+run: gh release upload/);
+    } else {
+      const workflow = YAML.parse(source);
+      assert.deepEqual(workflow.on.workflow_run.workflows, ['CI/CD Pipeline', 'Desktop Release']);
+      assert.deepEqual(workflow.on.workflow_run.types, ['completed']);
+      assert.deepEqual(workflow.on.workflow_run.branches, ['main']);
+      assert.equal(workflow.jobs.resolve.steps.find(step => step.id === 'release').run,
+        'node scripts/release-extension-transfer.mjs resolve');
+      assert.ok(workflow.jobs.publish.steps.some(step => step.name === 'Run existing extension checks'));
+      const publication = workflow.jobs['authoritative-publication'];
+      assert.deepEqual(publication.needs, ['resolve', 'publish']);
+      assert.match(publication.if, /needs.publish.result == 'success'/);
+      assert.match(publication.if, /needs.resolve.outputs.publish == 'true'/);
+      const steps = publication.steps, transfer = steps.findIndex(step => step.id === 'transfer');
+      assert.ok(transfer >= 0);
+      assert.match(steps[transfer].run, /node _protocol\/scripts\/release-extension-transfer.mjs receive/);
+      assert.equal(steps[transfer + 1].with.ref, '\u0024{{ steps.transfer.outputs.source-commit }}');
+      assert.equal(steps[transfer + 1].with['persist-credentials'], false);
+      for (const name of ['Publish Marketplace', 'Publish Open VSX', 'Install published Marketplace extension in a clean profile']) {
+        const step = steps.find(step => step.name === name);
+        assert.ok(step);
+        assert.match(step.if, /needs.resolve.outputs.publish == 'true'/);
+        assert.match(step.if, /needs.publish.outputs.changed == 'true'/);
+      }
+      assert.doesNotMatch(source, /gh release upload/);
+      const driver = readFileSync(new URL('../../../scripts/release-extension-github.mjs', import.meta.url), 'utf8');
+      assert.match(driver, /transferFromAuthenticatedGithub/);
+      assert.match(driver, /attestation/);
+      const policy = readFileSync(new URL('../../../scripts/release-extension-policy.mjs', import.meta.url), 'utf8');
+      assert.match(policy, /runInvocationURI/);
+      assert.match(policy, /source_tree/);
+      assert.match(policy, /checksum/);
+    }
   }
 });
 
