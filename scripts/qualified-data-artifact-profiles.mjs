@@ -1,6 +1,7 @@
 // Pure data archive profiles. They confer no source, import, or publication authority.
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
+import {projectionRegistry} from './lib/native-session-projections.mjs';
 import {collectNativeResponseRecords} from './lib/native-response-capture.mjs';
 const sha = bytes => createHash('sha256').update(bytes).digest('hex');
 const compiled = new WeakSet();
@@ -105,4 +106,26 @@ export function verifyDataArtifactProfile(profileValue, entries, archiveBytes) {
   return Object.freeze({schema: 'qualified-data-artifact-members/v1', kind: profileValue.kind,
     authority: 'not-granted', zipSha256: sha(archiveBytes), inflatedBytes: total,
     members: Object.freeze(rows.map(Object.freeze)), profileInputs: profileValue.inputs});
+}
+
+/** Separate finite session archive policy, derived from the pinned native producer registry. */
+export function nativeSessionArchiveProfile(producerBytes) {
+ assert.ok(Buffer.isBuffer(producerBytes));
+ const paths=projectionRegistry(producerBytes.toString('utf8'));
+ return profile('native-session', [...paths.map(path=>'generated/'+path),'producer-receipt.json','build.stdout.bin','build.stderr.bin','producer.stdout.bin','producer.stderr.bin'], {producerSha256:sha(producerBytes),selected:paths.length});
+}
+/** Only profiles compiled by this source module may select decoder limits. */
+export function dataArtifactDecodePolicy(profileValue) {
+ assert.ok(compiled.has(profileValue),'source-derived compiled data profile required');
+ return Object.freeze({entryLimit:profileValue.entryLimit,...profileValue.limits});
+}
+
+/** Source-selected count-only probe permits CRC-safe decoding before a captured report chooses exact process names. It cannot verify final membership. */
+export function nativeCaptureArchiveEnvelope(selectionBytes) {
+ assert.ok(Buffer.isBuffer(selectionBytes) && selectionBytes.length<=1024*1024);
+ const selection=JSON.parse(selectionBytes);assert.equal(selection.schema,'native-response-capture-selection/v1');
+ assert.ok(Array.isArray(selection.cases)&&selection.cases.length>0&&selection.cases.length<=512);
+ assert.equal(new Set(selection.cases).size,selection.cases.length);
+ for(const id of selection.cases)assert.match(id,/^rust\/tests\/(unit|integration|source)\/[\w/.-]+\.rs::[A-Za-z_][A-Za-z_0-9]*$/u);
+ return profile('native-capture-envelope',Array.from({length:4*selection.cases.length+2},(_,index)=>'probe/'+index),{selectionSha256:sha(selectionBytes),selected:selection.cases.length});
 }

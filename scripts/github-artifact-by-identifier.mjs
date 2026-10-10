@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Immutable Actions artifact download: authenticated ID metadata and full ZIP digest.
 import assert from 'node:assert/strict';
+import {dataArtifactDecodePolicy} from './qualified-data-artifact-profiles.mjs';
 import fs from 'node:fs';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
@@ -12,14 +13,21 @@ const limit=16*1024*1024;
 const crc=bytes=>{let value=0xffffffff;for(const byte of bytes){value^=byte;for(let bit=0;bit<8;bit++)value=(value>>>1)^((value&1)?0xedb88320:0);}return (value^0xffffffff)>>>0;};
 /** Conservative single-disk ZIP32 reader. Unknown formats refuse before any write. */
 export function readArtifactZip(bytes) {
- assert.ok(Buffer.isBuffer(bytes));assert.ok(bytes.length>=22&&bytes.length<=limit);
+ return readZip(bytes,{entryLimit:256,archiveBytes:limit,memberBytes:limit,inflatedBytes:limit});
+}
+/** Separate branded data profile; existing default policy remains unchanged. */
+export function readQualifiedDataArtifactZip(bytes,profileValue) {
+ return readZip(bytes,dataArtifactDecodePolicy(profileValue));
+}
+function readZip(bytes,policy) {
+ assert.ok(Buffer.isBuffer(bytes));assert.ok(bytes.length>=22&&bytes.length<=policy.archiveBytes);
  let end=-1;
  for(let offset=bytes.length-22;offset>=Math.max(0,bytes.length-65557);offset--)
   if(bytes.readUInt32LE(offset)===0x06054b50&&offset+22+bytes.readUInt16LE(offset+20)===bytes.length){end=offset;break;}
  assert.ok(end>=0,'missing ZIP end');
  assert.equal(bytes.readUInt16LE(end+4),0);assert.equal(bytes.readUInt16LE(end+6),0);
  const count=bytes.readUInt16LE(end+10);assert.equal(bytes.readUInt16LE(end+8),count);
- assert.ok(count>0&&count<=256,'ZIP entry limit');
+ assert.ok(count>0&&count<=policy.entryLimit,'ZIP entry limit');
  const size=bytes.readUInt32LE(end+12),start=bytes.readUInt32LE(end+16);
  assert.equal(start+size,end,'ZIP central boundary');
  const entries=[],names=new Set(),ranges=[];let offset=start,total=0;
@@ -45,8 +53,8 @@ export function readArtifactZip(bytes) {
   assert.equal(localName,nameLength);assert.ok(bytes.subarray(local+30,local+30+localName).equals(nameBytes));
   const begin=local+30+localName+localExtra,finish=begin+compressed;assert.ok(finish<=start);
   if(!(flags&8)){assert.equal(bytes.readUInt32LE(local+14),checksum);assert.equal(bytes.readUInt32LE(local+18),compressed);assert.equal(bytes.readUInt32LE(local+22),length);}
-  assert.ok(length<=limit&&compressed<=limit);total+=length;assert.ok(total<=limit,'ZIP inflated limit');
-  const content=method===0?bytes.subarray(begin,finish):inflateRawSync(bytes.subarray(begin,finish),{maxOutputLength:limit});
+  assert.ok(length<=policy.memberBytes&&compressed<=policy.archiveBytes);total+=length;assert.ok(total<=policy.inflatedBytes,'ZIP inflated limit');
+  const content=method===0?bytes.subarray(begin,finish):inflateRawSync(bytes.subarray(begin,finish),{maxOutputLength:policy.memberBytes});
   assert.equal(content.length,length);assert.equal(crc(content),checksum,'ZIP CRC mismatch');
   if(directory)assert.equal(length,0);
   let recordEnd=finish;
