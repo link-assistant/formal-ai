@@ -61,9 +61,35 @@ function checkDesktop(workflow){
   'Package desktop app (macOS ad-hoc)','Smoke test macOS release artifacts','Smoke test Linux/Windows release artifacts','Collect artifacts and checksums','Attest build provenance','Upload assets to release'])step(build,name);
  order(cli,['Verify native receipt, bytes and startup before packaging','Package the CLI archive','Smoke test CLI archive','Collect CLI checksum fragment','Attest build provenance','Upload CLI archive to release']);
 }
+function checkBrowserCoverage(workflow) {
+ const producer=workflow.jobs['browser-coverage-shard'],collector=workflow.jobs['browser-coverage'];
+ assert.equal(producer['timeout-minutes'],15);assert.equal(collector['timeout-minutes'],15);
+ assert.equal(producer.strategy['fail-fast'],false);assert.deepEqual(producer.strategy.matrix.shard,[1,2,3,4,5,6]);
+ assert.deepEqual(producer.needs,['detect-changes']);assert.deepEqual(collector.needs,['detect-changes','browser-coverage-shard']);
+ for(const job of [producer,collector]) {
+  assert.ok(job.if.includes('!cancelled()'));assert.ok(job.if.includes("github.event_name == 'workflow_dispatch'"));
+  for(const output of ['any-code-changed','workflow-changed'])assert.ok(job.if.includes(`needs.detect-changes.outputs.${output} == 'true'`));
+ }
+ const installer=step(producer,'Setup the pinned web dependency installer');assert.equal(installer.uses,'oven-sh/setup-bun@v2');assert.equal(installer.with['bun-version-file'],'.bun-version');
+ assert.equal(step(producer,'Install actual locked UI test dependencies').run,'bun install --frozen-lockfile --ignore-scripts');
+ const measure=step(producer,'Measure the complete assigned browser test inventory');
+ assert.equal(measure.run.trim(),'npm run coverage:web -- run ${{ matrix.shard }} coverage/browser-shard-${{ matrix.shard }}');
+ const receipt=upload(producer,'browser-coverage-shard-${{ matrix.shard }}');assert.equal(receipt.if,'always()');assert.equal(receipt.with.path,'coverage/browser-shard-${{ matrix.shard }}/');
+ order(producer,['Install actual locked UI test dependencies','Measure the complete assigned browser test inventory','Retain exact browser coverage and completion receipts']);
+ const complete=step(collector,'Every browser shard measured its complete test slice');
+ assert.equal(complete.run,'bash scripts/check-shard-results.sh');assert.equal(complete.env.JOBS,'browser-coverage-shard');assert.equal(complete.env.NEEDS_JSON,'${{ toJSON(needs) }}');
+ const download=step(collector,'Download every browser coverage shard');assert.ok(String(download.uses).startsWith('actions/download-artifact@'));
+ assert.equal(download.with.pattern,'browser-coverage-shard-*');assert.equal(download.with['merge-multiple'],false);assert.equal(download.with.path,'coverage/browser-shards');
+ assert.equal(step(collector,'Collect the complete source-bound browser coverage').run,'npm run coverage:web -- collect coverage/browser-shards');
+ assert.equal(step(collector,'Check browser coverage ratchet').run,'rust-script scripts/check-coverage-ratchet.rs --only browser');
+ order(collector,['Every browser shard measured its complete test slice','Download every browser coverage shard','Collect the complete source-bound browser coverage','Check browser coverage ratchet']);
+}
 function checkCoverage(workflow){
- const names=['detect-changes','coverage-build','coverage-shard','coverage','browser-coverage'];assert.deepEqual(Object.keys(workflow.jobs),names);
- for(const name of names)cap(workflow.jobs[name]);
+ const originalNames=['detect-changes','coverage-build','coverage-shard','coverage','browser-coverage'];
+ const browserProducer='browser-coverage-shard';
+ assert.deepEqual(Object.keys(workflow.jobs).filter(name=>name!==browserProducer),originalNames);
+ const names=[...originalNames.slice(0,-1),browserProducer,originalNames.at(-1)];assert.deepEqual(Object.keys(workflow.jobs),names);
+ for(const name of names)cap(workflow.jobs[name]);checkBrowserCoverage(workflow);
  const producer=workflow.jobs['coverage-build'],shard=workflow.jobs['coverage-shard'],reducer=workflow.jobs.coverage;
  assert.equal(producer['timeout-minutes'],30);
  const compiled=step(producer,'Build the instrumented test executables');assert.equal(compiled.env.TEST_BUDGET_SECONDS,1260);
@@ -120,6 +146,24 @@ const coverageRefusals=[
  ['change gating weakened',w=>{w.jobs['coverage-build'].if='true';}]
 ];
 for(const [name,mutate]of coverageRefusals)test('refuse changed instrumented coverage source: '+name,()=>{const changed=structuredClone(coverage);mutate(changed);assert.throws(()=>checkCoverage(changed));});
+
+const browserCoverageRefusals=[
+ ['missing original coverage job',w=>{delete w.jobs['coverage-shard'];}],
+ ['foreign coverage job',w=>{w.jobs.unproved={};}],
+ ['missing browser producer',w=>{delete w.jobs['browser-coverage-shard'];}],
+ ['incomplete browser shard inventory',w=>{w.jobs['browser-coverage-shard'].strategy.matrix.shard.pop();}],
+ ['duplicate browser shard',w=>{w.jobs['browser-coverage-shard'].strategy.matrix.shard[5]=5;}],
+ ['browser fail-fast cancellation',w=>{w.jobs['browser-coverage-shard'].strategy['fail-fast']=true;}],
+ ['missing locked producer bootstrap',w=>{step(w.jobs['browser-coverage-shard'],'Install actual locked UI test dependencies').run='bun install';}],
+ ['missing raw receipt refusal',w=>{upload(w.jobs['browser-coverage-shard'],'browser-coverage-shard-${{ matrix.shard }}').with['if-no-files-found']='warn';}],
+ ['missing required collector dependency',w=>{w.jobs['browser-coverage'].needs=['detect-changes'];}],
+ ['collector completion guard skipped',w=>{step(w.jobs['browser-coverage'],'Every browser shard measured its complete test slice').run='true';}],
+ ['collector receipt folders flattened',w=>{step(w.jobs['browser-coverage'],'Download every browser coverage shard').with['merge-multiple']=true;}],
+ ['collector runs a new measurement',w=>{step(w.jobs['browser-coverage'],'Collect the complete source-bound browser coverage').run='npm run coverage:web';}],
+ ['browser ratchet waived',w=>{step(w.jobs['browser-coverage'],'Check browser coverage ratchet').run='true';}],
+ ['browser change gating waived',w=>{w.jobs['browser-coverage-shard'].if='true';}]
+];
+for(const [name,mutate]of browserCoverageRefusals)test('refuse incomplete source-bound browser coverage: '+name,()=>{const changed=structuredClone(coverage);mutate(changed);assert.throws(()=>checkCoverage(changed));});
 
 function checkAttestations(workflow){
  const expected={build:'desktop/release/formal-ai-desktop-*\ndesktop/release/latest*.yml',cli:'formal-ai-cli-${{ matrix.target }}.${{ matrix.archive }}',vscode:'vscode/formal-ai-vscode-*.vsix',finalize:'release-evidence/formal-ai-*.json'};
