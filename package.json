@@ -7,7 +7,7 @@
     "serve:js": "node js/server/main.mjs",
     "check:server-parity": "node scripts/check-server-parity.mjs --list",
     "test:web": "node --test --test-concurrency=1 rust/tests/web/*.test.mjs",
-    "coverage:web": "node --test --experimental-test-coverage --test-reporter=lcov --test-reporter-destination=coverage/browser-lcov.info --test-reporter=spec --test-reporter-destination=stdout rust/tests/web/*.test.mjs",
+    "coverage:web": "node scripts/run-browser-coverage.mjs",
     "coverage:ratchet": "rust-script scripts/check-coverage-ratchet.rs",
     "desktop:dev": "npm --prefix desktop run dev",
     "desktop:build": "npm --prefix desktop run build",

@@ -61,11 +61,29 @@ fn coverage_jobs_enforce_and_publish_the_ratchet() {
         "coverage must be published in both a human-readable and a machine-readable form"
     );
 
+    let browser_shards = job_block(&workflow, "browser-coverage-shard");
+    assert!(
+        browser_shards.contains("shard: [1, 2, 3, 4, 5, 6]")
+            && browser_shards.contains("fail-fast: false")
+            && browser_shards.contains("npm run coverage:web -- run")
+            && browser_shards.contains("browser-coverage-shard-${{ matrix.shard }}")
+            && browser_shards.contains("if-no-files-found: error"),
+        "all six browser slices must execute and retain complete individual receipts"
+    );
+
     let browser = job_block(&workflow, "browser-coverage");
     assert!(
         browser.contains("npm run coverage:web"),
         "the browser denominator is measured by the tests/web suite"
     );
+    assert!(
+        browser.contains("JOBS: browser-coverage-shard")
+            && browser.contains("bash scripts/check-shard-results.sh")
+            && browser.contains("merge-multiple: false")
+            && browser.contains("npm run coverage:web -- collect coverage/browser-shards"),
+        "the original browser verdict rejects missing, failed or cancelled slices before the unchanged ratchet"
+    );
+
     assert!(
         browser.contains("rust-script scripts/check-coverage-ratchet.rs --only browser"),
         "the browser denominator is ratcheted too, separately from rust"
@@ -76,7 +94,8 @@ fn coverage_jobs_enforce_and_publish_the_ratchet() {
         "browser coverage must be published in both forms as well"
     );
     assert!(
-        browser.contains("needs: [detect-changes]") && browser.contains("!cancelled()"),
+        browser.contains("needs: [detect-changes, browser-coverage-shard]")
+            && browser.contains("!cancelled()"),
         "browser-coverage follows the same change-gating contract as the other jobs"
     );
 }
@@ -97,6 +116,7 @@ fn coverage_workflow_keeps_the_timeout_and_change_gating_contract() {
             "coverage-build",
             "coverage-shard",
             "coverage",
+            "browser-coverage-shard",
             "browser-coverage"
         ]
     );
@@ -118,6 +138,7 @@ fn coverage_workflow_keeps_the_timeout_and_change_gating_contract() {
         // Issue #895: the browser denominator. `node --test` over tests/web/
         // needs no cargo build, so the budget is dominated by checkout plus the
         // rust-script install for the ratchet gate.
+        ("browser-coverage-shard", 15),
         ("browser-coverage", 15),
     ] {
         let job = job_block(&workflow, job_name);

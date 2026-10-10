@@ -507,11 +507,15 @@ jobs:
   # denominators are ratcheted separately and never averaged: a Rust percentage
   # and a browser percentage count different things, and one number covering
   # both would be a number nobody can act on.
-  browser-coverage:
-    name: Browser Code Coverage
+  browser-coverage-shard:
+    name: Browser coverage shard ${{ matrix.shard }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: [detect-changes]
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4, 5, 6]
     if: |
       !cancelled() && (
         github.event_name == 'workflow_dispatch' ||
@@ -540,8 +544,71 @@ jobs:
         timeout-minutes: 1
         run: bash scripts/sync-seed.sh
 
-      - name: Generate browser coverage
-        run: npm run coverage:web
+      - name: Measure the complete assigned browser test inventory
+        run: >-
+          npm run coverage:web -- run ${{ matrix.shard }}
+          coverage/browser-shard-${{ matrix.shard }}
+
+      - name: Retain exact browser coverage and completion receipts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: browser-coverage-shard-${{ matrix.shard }}
+          path: coverage/browser-shard-${{ matrix.shard }}/
+          if-no-files-found: error
+          retention-days: 1
+
+  browser-coverage:
+    name: Browser Code Coverage
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [detect-changes, browser-coverage-shard]
+    if: |
+      !cancelled() && (
+        github.event_name == 'workflow_dispatch' ||
+        needs.detect-changes.outputs.any-code-changed == 'true' ||
+        needs.detect-changes.outputs.workflow-changed == 'true'
+      )
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Every browser shard measured its complete test slice
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+          JOBS: browser-coverage-shard
+          CHECK: Browser coverage
+        run: bash scripts/check-shard-results.sh
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install rust-script
+        run: bash scripts/install-rust-script.sh
+
+      - name: Provision the real agentic search adapter
+        run: bash scripts/install-agentic-search-tools.sh
+      - name: Regenerate canonical seed projection for browser consumers
+        timeout-minutes: 1
+        run: bash scripts/sync-seed.sh
+
+      - name: Download every browser coverage shard
+        uses: actions/download-artifact@v8
+        env:
+          NODE_OPTIONS: --disable-warning=DEP0005
+        with:
+          pattern: browser-coverage-shard-*
+          merge-multiple: false
+          path: coverage/browser-shards
+
+      - name: Collect the complete source-bound browser coverage
+        run: npm run coverage:web -- collect coverage/browser-shards
 
       - name: Check browser coverage ratchet
         run: rust-script scripts/check-coverage-ratchet.rs --only browser
