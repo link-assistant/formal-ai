@@ -2,6 +2,7 @@
 
 use std::fs;
 
+use super::staged_release_operations::release_operation_workflow;
 use super::workflow_fixtures::{ci_surface, desktop_release_workflow};
 
 fn read(path: &str) -> String {
@@ -96,7 +97,7 @@ fn parallel_e2e_jobs_do_not_race_to_save_the_bun_cache() {
 
 #[test]
 fn both_release_paths_smoke_test_the_registry_artifact() {
-    let workflow = read(".github/workflows/release.yml");
+    let workflow = release_operation_workflow();
     let invocation = "scripts/smoke-test-published-crate.sh";
 
     assert_eq!(
