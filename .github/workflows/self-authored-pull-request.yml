@@ -14,6 +14,12 @@ name: Self-authored pull request
 # The task contract, the re-run guard and the base-branch rule are documented in
 # the action and in `docs/case-studies/issue-1085/ci-evidence/`.
 on:
+  release:
+    types: [published]
+  workflow_run:
+    workflows: ["CI/CD Pipeline"]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
     inputs:
       issue:
@@ -47,6 +53,9 @@ jobs:
     if: github.event_name != 'issues' || github.event.label.name == 'formal-ai-solve'
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    concurrency:
+      group: formal-ai-repository-writes
+      queue: max
     # Scoped to this job, not the workflow: the job pushes the bot branch,
     # opens and comments on the pull request, and comments on the task issue.
     # `actions: write` lets the job dispatch the bot pull request's checks
@@ -66,7 +75,7 @@ jobs:
       - uses: actions/checkout@v7
         with:
           fetch-depth: 0
-          ref: ${{ github.head_ref || github.ref }}
+          ref: ${{ (github.event_name == 'release' || github.event_name == 'workflow_run') && github.event.repository.default_branch || github.head_ref || github.ref }}
 
       # Issue #1187 R1: the one credential resolver -- GitHub App, then
       # AUTOMATION_TOKEN, then github.token. Nothing is mandatory; the layer
@@ -78,7 +87,27 @@ jobs:
           automation-token: ${{ secrets.AUTOMATION_TOKEN }}
         id: automation
 
+      # Source classification is not evidence that a contribution was reviewed or merged.
+      - name: Bind an independently published release to the default author source
+        id: release-context
+        if: github.event_name == 'release' || github.event_name == 'workflow_run'
+        env:
+          GH_TOKEN: ${{ steps.automation.outputs.token }}
+          EVENT: ${{ github.event_name }}
+          REPOSITORY: ${{ github.repository }}
+          RELEASE_ACTION: ${{ github.event.action }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RUN_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          RUN_REPOSITORY: ${{ github.event.workflow_run.head_repository.full_name }}
+          RUN_HEAD: ${{ github.event.workflow_run.head_sha }}
+          RUN_ID: ${{ github.event.workflow_run.id }}
+          RUN_ATTEMPT: ${{ github.event.workflow_run.run_attempt }}
+          RUN_WORKFLOW_ID: ${{ github.event.workflow_run.workflow_id }}
+          RUN_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
+        run: node scripts/resolve-self-authored-release.mjs
+
       - uses: ./.github/actions/cache-cargo-registry
+        if: github.event_name != 'release' && github.event_name != 'workflow_run' || steps.release-context.outputs.active == 'true'
         with:
           prefix: self-authored-
 
@@ -88,6 +117,7 @@ jobs:
       # may push workflow files, so the action's workflow-file guard and its
       # "pushed with GITHUB_TOKEN" notice keep their meaning.
       - uses: ./.github/actions/author-with-formal-ai
+        if: github.event_name != 'release' && github.event_name != 'workflow_run' || steps.release-context.outputs.active == 'true'
         id: author
         env:
           GH_TOKEN: ${{ steps.automation.outputs.token }}
@@ -95,6 +125,8 @@ jobs:
         with:
           issue: ${{ inputs.issue }}
           formal-ai-source: source
+          base-branch: ${{ steps.release-context.outputs.branch }}
+          starting-ref: ${{ steps.release-context.outputs.branch }}
 
       # Issue #1187 R2: at layer `default` the push came from github.token,
       # so every `pull_request` check would wait for a maintainer's approval.
