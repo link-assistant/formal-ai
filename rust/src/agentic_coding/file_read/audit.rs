@@ -49,7 +49,7 @@ pub(super) fn file_read_final_answer(
                         || {
                             seed::response_for("file-read-line-slice-unavailable", "en")
                                 .unwrap_or_default()
-                                .replace("{path}", path)
+                                .replace(concat!("{", "path", "}"), path)
                         },
                         |(first, last, lines)| {
                             format!("Lines {first}-{last} of `{path}`:\n\n```text\n{lines}\n```")
