@@ -19,9 +19,19 @@
 import {createHash} from 'node:crypto';
 import { appendDefinition, projectAppendContracts } from '../../js/agentic/append_contract.mjs';
 import { atomicRecordAppend } from './atomic-record-append.mjs';
+import { exclusiveCreate } from './exclusive-create.mjs';
+import { ownsCompleteLiteralRequest, ownedAdditiveLiteralFrame, ownedDeclaredCreateFrame, goalLedger } from '../../js/agentic/planner/owned_goals.mjs';
+import { parseWriteContract, composeGeneralChangePlan } from '../../js/agentic/general_planner.mjs';
+import { planGeneralChangeStep } from '../../js/agentic/general_execution.mjs';
+import { planChatStep as maintainedPlanChatStep, planChatStepResolved as maintainedResolvedStep } from '../../js/agentic/planner.mjs';
+import { writesWholeFile } from '../../js/agentic/literal_write_guard.mjs';
+import { mentionsRole } from '../../js/agentic/crate/seed_meanings.mjs';
+import { normalizePrompt } from '../../js/agentic/crate/engine.mjs';
+import { collectionSummaryOwns } from '../../js/agentic/planner/collection_summary.mjs';
+import { bareSurfaces } from '../../js/agentic/write_request.mjs';
 import { shellCapture } from './shell-capture.mjs';
 import { grepCapture } from './grep-capture.mjs';
-import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync, writeSync } from 'node:fs';
+import { lstatSync, realpathSync, existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, symlinkSync, writeFileSync, writeSync } from 'node:fs';
 import { dirname, isAbsolute, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
@@ -237,6 +247,98 @@ export async function drive(planChatStep, dir, prompt, {
     { role: 'user', content: prompt },
   ];
   const transcript = [];
+  // Private live request binding: no caller tool argument can grant creation.
+  const ownedCreate = ownedDeclaredCreateFrame(prompt);
+  const declaredGoals = goalLedger(prompt);
+  const collectionGoals = Array.isArray(declaredGoals) && collectionSummaryOwns(declaredGoals)
+    ? declaredGoals.slice(1) : declaredGoals;
+  const firstUnsupported = Array.isArray(collectionGoals) ? collectionGoals.findIndex(goal => goal.kind === 'unsupported') : -1;
+  const missingClause = firstUnsupported < 0 ? null : normalizePrompt(collectionGoals[firstUnsupported].clause);
+  const independentMissing = missingClause !== null && bareSurfaces('enumeration_cue').some(cue => {
+    const normalized = normalizePrompt(cue);
+    return missingClause.startsWith(normalized) && /[\s,，:：]/u.test(missingClause[normalized.length] ?? '');
+  });
+  const supportedGoals = Array.isArray(collectionGoals) && firstUnsupported > 0 && independentMissing
+    ? collectionGoals.slice(0, firstUnsupported) : collectionGoals;
+  const mixedGoals = Array.isArray(supportedGoals) && supportedGoals.some(goal => goal.kind === 'source_edit');
+  const collection = Array.isArray(supportedGoals) && supportedGoals.length > 0
+    && supportedGoals.every(goal => ['literal_file', 'source_edit'].includes(goal.kind)
+      && goal.sourceUnit === 'utf16' && prompt.slice(goal.span.start, goal.span.end) === goal.clause)
+    ? supportedGoals.filter(goal => goal.kind === 'literal_file').map(goal => {
+      const frame = ownedDeclaredCreateFrame(goal.clause);
+      return frame !== null && frame.target === goal.target && frame.content === goal.expected
+        ? Object.freeze({ ...frame, request: goal.clause }) : null;
+    }) : null;
+  const createContracts = ownedCreate !== null
+    ? [Object.freeze({ ...ownedCreate, request: prompt })]
+    : collection !== null && collection.every(frame => frame !== null)
+      && new Set(collection.map(frame => frame.target)).size === collection.length ? collection : [];
+  const createContract = createContracts[0] ?? null;
+  const createdTargets = new Set();
+  // Bounded path checks detect known replacement/aliases; they do not prove namespace atomicity.
+  function createdTargetIsCurrent(target) {
+    if (!createdTargets.has(target) || !sameWorkspace()) return false;
+    try {
+      const parts = target.split('/');
+      let path = createWorkspace.canonicalPath;
+      for (let index = 0; index < parts.length; index += 1) {
+        path += '/' + parts[index];
+        const item = lstatSync(path);
+        if (item.isSymbolicLink() || (index === parts.length - 1 ? !item.isFile() : !item.isDirectory())) return false;
+      }
+      return true;
+    } catch { return false; }
+  }
+  // This identity qualifies the workspace object, not immutable external ancestry.
+  function workspaceIdentity() {
+    try {
+      const value = lstatSync(dir, { bigint: true });
+      if (!value.isDirectory() || value.isSymbolicLink()) return null;
+      return Object.freeze({ dev: String(value.dev), ino: String(value.ino), canonicalPath: realpathSync(dir) });
+    } catch { return null; }
+  }
+  const createWorkspace = createContract === null ? null : workspaceIdentity();
+  const sameWorkspace = () => {
+    const current = workspaceIdentity();
+    return current !== null && createWorkspace !== null
+      && current.dev === createWorkspace.dev && current.ino === createWorkspace.ino
+      && current.canonicalPath === createWorkspace.canonicalPath;
+  };
+  if (createContract !== null && createWorkspace === null) {
+    return { transcript, answer: null, stop: 'unsupported-create-workspace', toolsAdvertised: tools };
+  }
+  const rawCreate = parseWriteContract(prompt);
+  const prefix = rawCreate === null ? '' : normalizePrompt(prompt.slice(0, rawCreate.targetSpan.start));
+  const explicitOverwrite = ownsCompleteLiteralRequest(prompt)
+    && mentionsRole('file_overwrite_consent', prefix);
+  const explicitAddition = ownedAdditiveLiteralFrame(prompt);
+  const createIntent = writesWholeFile(prompt) && !explicitOverwrite
+    && !(explicitAddition !== null && explicitAddition.atEnd !== null);
+  if (createIntent && createContract === null) {
+    const refusal = await maintainedPlanChatStep(messages, tools);
+    if (refusal?.kind === 'final') {
+      return { transcript, answer: refusal.answer, stop: 'final', toolsAdvertised: tools };
+    }
+    return { transcript, answer: null, stop: 'unowned-create-request', toolsAdvertised: tools };
+  }
+  function ownedCreation(call) {
+    if (createContract === null || call.tool !== 'write') return null;
+    const args = argsOf(call);
+    const allowed = new Set(['filePath', 'file_path', 'path', 'content']);
+    const aliases = ['filePath', 'file_path', 'path'];
+    const contract = createContracts.find(frame => aliases.some(key => Object.hasOwn(args ?? {}, key) && args[key] === frame.target));
+    if (mixedGoals && (contract === undefined || args?.content !== contract.content)) return null;
+    if (contract === undefined || args === null || typeof args !== 'object' || Array.isArray(args)
+        || Object.keys(args).some(key => !allowed.has(key))
+        || !aliases.some(key => Object.hasOwn(args, key))
+        || aliases.some(key => Object.hasOwn(args, key) && args[key] !== contract.target)
+        || args.content !== contract.content) {
+      return { content: toolFailure('UnboundDeclaredCreation'), is_error: true };
+    }
+    if (!sameWorkspace()) return { content: toolFailure('ChangedCreationWorkspace'), is_error: true };
+    return exclusiveCreate(createWorkspace.canonicalPath, contract.target, contract.content,
+      { dev: createWorkspace.dev, ino: createWorkspace.ino });
+  }
   for (let step = 0; step < steps; step += 1) {
     // The server's fall-through: no planned step means the solver answers and
     // the symbolic command reroute may still turn that answer into tool calls
@@ -245,7 +347,14 @@ export async function drive(planChatStep, dir, prompt, {
     const scoped = projectAppendContracts(messages, contracts);
     const plan = (await planChatStep(scoped, tools)) ?? (fallthrough ? await fallthrough(messages, tools) : null);
     if (!plan) return { transcript, answer: null, stop: 'no-plan', toolsAdvertised: tools };
-    if (plan.kind === 'final') return { transcript, answer: plan.answer, stop: 'final', toolsAdvertised: tools };
+    if (plan.kind === 'final') {
+      if (createContract !== null) {
+        const ownedFinal = await maintainedResolvedStep(messages, tools);
+        if (ownedFinal?.kind !== 'final') return { transcript, answer: null, stop: 'unbound-create-operation', toolsAdvertised: tools };
+        return { transcript, answer: ownedFinal.answer, stop: 'final', toolsAdvertised: tools };
+      }
+      return { transcript, answer: plan.answer, stop: 'final', toolsAdvertised: tools };
+    }
     // Snapshot the complete batch before validation; getters cannot change executed arguments.
     const calls = plan.calls.map(call => Object.freeze({ tool: call.tool, arguments: call.arguments }));
     if (!atomicRecordAppend && calls.some(call => call.tool === 'write'
@@ -275,13 +384,54 @@ export async function drive(planChatStep, dir, prompt, {
     const toolCalls = calls.map((call, index) => ({
       id: `c${step}_${index}`, type: 'function', function: { name: call.tool, arguments: call.arguments },
     }));
+    if (createContract !== null && !sameWorkspace()) {
+      return { transcript, answer: null, stop: 'changed-create-workspace', toolsAdvertised: tools };
+    }
+    if (createContract !== null) {
+      const livePlan = await maintainedResolvedStep(messages, tools);
+      if (livePlan === null || livePlan.kind !== 'tool_calls') {
+        return { transcript, answer: livePlan?.kind === 'final' ? livePlan.answer : null,
+          stop: livePlan?.kind === 'final' ? 'final' : 'unbound-create-operation', toolsAdvertised: tools };
+      }
+      const resolved = mixedGoals ? livePlan : null;
+      const expectedCalls = resolved?.kind === 'tool_calls' ? resolved.calls : createContracts.flatMap(frame => {
+        const plan = composeGeneralChangePlan(frame.request);
+        const expected = plan === null ? null : planGeneralChangeStep(messages, tools, plan);
+        return expected?.kind === 'tool_calls' ? expected.calls : [];
+      });
+      const bound = calls.every(call => {
+        const args = argsOf(call);
+        const readPath = args?.filePath ?? args?.file_path ?? args?.path;
+        const creationRead = call.tool === 'read' && createContracts.some(frame => frame.target === readPath);
+        const verificationFrames = call.tool === 'bash' ? createContracts.filter(frame => composeGeneralChangePlan(frame.request)?.verification_command === args?.command) : [];
+        if (creationRead && !createdTargetIsCurrent(readPath)) return false;
+        if (verificationFrames.some(frame => !createdTargetIsCurrent(frame.target))) return false;
+        if (mixedGoals && expectedCalls.some(owned => owned.tool === call.tool && owned.arguments === call.arguments)) return true;
+        if (call.tool === 'write') {
+          if (!mixedGoals) return true;
+          const args = argsOf(call);
+          return createContracts.some(frame => args?.content === frame.content
+            && ['filePath', 'file_path', 'path'].some(key => Object.hasOwn(args ?? {}, key) && args[key] === frame.target));
+        }
+        if (call.tool === 'read') {
+          const args = argsOf(call);
+          return args !== null && typeof args === 'object' && !Array.isArray(args)
+            && Object.keys(args).every(key => ['filePath', 'file_path', 'path'].includes(key))
+            && Object.values(args).length > 0 && Object.values(args).every(path => createContracts.some(frame => frame.target === path));
+        }
+        return call.tool === 'bash' && expectedCalls.some(owned => owned.tool === call.tool && owned.arguments === call.arguments);
+      });
+      if (!bound) return { transcript, answer: null, stop: 'unbound-create-operation', toolsAdvertised: tools };
+    }
     messages.push({ role: 'assistant', content: '', tool_calls: toolCalls });
     calls.forEach((call, index) => {
       const observationSources = qualifiesObservation(call, allowedCommands)
         ? observedSourceBytes() : null;
-      const receipt = sourceSession
+      const creation = ownedCreation(call);
+      if (creation?.source_creation?.success === true) createdTargets.add(creation.source_creation.path);
+      const receipt = creation ?? (sourceSession
         ? sourceSession.executeResult(call, messages, () => executeResult(dir, call))
-        : executeResult(dir, call);
+        : executeResult(dir, call));
       const operationObservation = observationSources === null ? null
         : issueObservation(prompt, dir, call, receipt, observationSources);
       const { content: result, ...metadata } = receipt;
@@ -294,6 +444,9 @@ export async function drive(planChatStep, dir, prompt, {
 
 /** What the driver prints when a session ends with no answer: never a bare `null`. */
 export function unanswered(stop, steps, calls) {
+  if (stop === 'unowned-create-request') return '(no execution: the request does not establish one complete declared-create contract)';
+  if (stop === 'unsupported-create-workspace') return '(no execution: the workspace does not establish the required canonical directory object)';
+  if (stop === 'changed-create-workspace') return '(no execution: the bound workspace directory object changed before the operation)';
   if (stop === 'steps') return `(no answer: the ${steps}-step budget ran out after ${calls} tool calls, before the task finished; run again with a larger --steps)`;
   return `(no answer: the planner planned no step after ${calls} tool calls)`;
 }
