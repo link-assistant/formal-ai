@@ -149,6 +149,8 @@ impl GeneralChangePlan {
 /// This removes an agent-harness preamble. Requests without a marker are unchanged.
 #[must_use]
 pub fn objective_text(request: &str) -> &str {
+    let request =
+        super::file_read::read_request_envelope(request).map_or(request, |(text, _, _)| text);
     first_raw_prefix_lead_end(request, seed::ROLE_REQUEST_OBJECTIVE_LEAD)
         .filter(|(start, _)| line_anchored(request, *start))
         .filter(|(start, _)| {

@@ -9,7 +9,7 @@ import { callerContextVocabulary, policyLeadClause } from '../crate/seed_caller_
 import { mentionsRole, wordsForRole } from '../crate/seed_meanings.mjs';
 import { isAlphanumeric, isWhitespace, trim, trimStart } from '../crate/rust_str.mjs';
 import { tokens } from '../write_request.mjs';
-import { cleanFileToken, looksLikeLocalFilePath } from '../file_read.mjs';
+import { cleanFileToken, looksLikeLocalFilePath, fileReadTaskFor } from '../file_read.mjs';
 import { sentences } from '../shell_command_policy.mjs';
 import { samePath } from './records.mjs';
 const FUNCTION_ROLES = ['request_function_word', 'enumeration_cue'];
@@ -55,11 +55,35 @@ function pathSpans(text) {
     return relative<0?[]:[{path,start:token.start+relative,end:token.start+relative+path.length}];
   });
 }
+
+/** Consume paired path punctuation without changing source coordinates or quoted instruction authority. */
+function balancedPathText(text) {
+  const characters=text.split('');
+  const quotations=quotedSegmentSpans(text);
+  for(const operand of pathSpans(text)) {
+    if(quotations.some(span=>operand.start>=span.start&&operand.end<=span.end&&span.text!==operand.path))continue;
+    let start=operand.start,end=operand.end;
+    while(start>0&&end<text.length&&['"',"'",String.fromCharCode(96)].includes(text[start-1])&&text[start-1]===text[end]) {
+      start-=1;end+=1;
+    }
+    const consumed=[];
+    while(start>0&&end<text.length) {
+      const closing={'(':')','[':']','{':'}'}[text[start-1]];
+      if(!closing||text[end]!==closing)break;
+      consumed.push(start-1,end);start-=1;end+=1;
+    }
+    if('()[]{}'.includes(text[start-1]??' ' )||'()[]{}'.includes(text[end]??' '))continue;
+    for(const index of consumed)characters[index]=' ';
+  }
+  return characters.join('');
+}
+
 function policyStarts(text) {
   const lower=trimStart(text).toLowerCase();
   return policyLeadClause(lower)!==null || callerContextVocabulary().policy_leads.some(lead=>containsCjk(lead)&&lower.startsWith(lead));
 }
 export function pendingReadCondition(prompt,role=READ_ROLE) {
+  if(balancedPathText(prompt)!==prompt&&modePathsForClause(prompt)===null)return true;
   const sentences = instructionSentenceTexts(prompt);
   const unresolved = sentences.some(sentence => pathSpans(sentence).some(path => {
     const operandEnd = quotedSegmentSpans(sentence)
@@ -163,11 +187,13 @@ export function boundReadPaths(prompt,role) {
 }
 /** Mirrors `fn owned_read_paths` in rust/src/agentic_coding/file_read/ownership.rs. */
 export function ownedReadPaths(prompt,role) {
+  prompt = readRequestEnvelope(prompt)?.text ?? prompt;
   const paths=boundReadPaths(prompt,role);
   return unboundEffectOperation(prompt)||pendingReadCondition(prompt,role)?[]:paths;
 }
 /** Refuse planned file reads whose immutable policy scope is violated or unproved. */
 export function readPolicyBlocksPlan(prompt,plan) {
+  prompt = readRequestEnvelope(prompt)?.text ?? prompt;
   const scopes=negativeReadObjects(prompt);
   const unboundOperation=unboundEffectOperation(prompt)||pendingReadCondition(prompt);
   if(scopes.length===0&&!unboundOperation)return false;
@@ -186,6 +212,7 @@ export function readPolicyBlocksPlan(prompt,plan) {
 }
 
 function modePathsForClause(prompt) {
+  prompt=balancedPathText(prompt);
   const root = parseLino(readText('data/seed/meanings-file-write.lino'));
   const contract = childrenNamed(root, 'file-read-mode-contract')[0];
   if (!contract) return null;
@@ -230,6 +257,7 @@ function modePathsForClause(prompt) {
 
 /** Paired literal quotations keep global authority before clause splitting. */
 function instructionSentenceTexts(prompt) {
+  prompt=balancedPathText(prompt);
   const characters = prompt.split('');
   for (const span of quotedSegmentSpans(prompt)) {
     const path = cleanFileToken(span.text);
@@ -259,4 +287,16 @@ function readPrecedesOwnedAuthoring(prompt, tail) {
       return match !== null && match[0].length === tail.length;
     } catch { return false; }
   });
+}
+
+/** A fully consumed Read form may own one complete double-quoted request envelope. */
+export function readRequestEnvelope(request) {
+  if (request[0] !== '"' || quoteFault(request) !== null) return null;
+  const spans = quotedSegmentSpans(request);
+  if (spans.length !== 1 || spans[0].start !== 0 || spans[0].end !== request.length) return null;
+  const text = spans[0].text;
+  if (modePathsForClause(text) === null) return null;
+  const producer = fileReadTaskFor(text);
+  if (producer?.kind !== 'direct' || producer.mode.kind !== 'full') return null;
+  return { text, start: 1, end: request.length - 1, sourceUnit: 'utf16' };
 }

@@ -111,6 +111,63 @@ fn path_spans(text: &str) -> Vec<PathSpan> {
         })
         .collect()
 }
+
+/// Consume paired path punctuation while retaining byte coordinates and quoted instruction authority.
+fn balanced_path_text(text: &str) -> String {
+    let mut bytes = text.as_bytes().to_vec();
+    let quotations = crate::normal_markov::quoted_segment_spans(text);
+    for operand in path_spans(text) {
+        if quotations.iter().any(|span| {
+            operand.span.start >= span.start
+                && operand.span.end <= span.end
+                && span.text != operand.path
+        }) {
+            continue;
+        }
+        let mut start = operand.span.start;
+        let mut end = operand.span.end;
+        while start > 0
+            && end < text.len()
+            && matches!(text.as_bytes()[start - 1], b'"' | b'\'' | 96)
+            && text.as_bytes()[start - 1] == text.as_bytes()[end]
+        {
+            start -= 1;
+            end += 1;
+        }
+        let mut consumed = Vec::new();
+        while start > 0 && end < text.len() {
+            let closing = match text.as_bytes()[start - 1] {
+                b'(' => b')',
+                b'[' => b']',
+                b'{' => b'}',
+                _ => break,
+            };
+            if text.as_bytes()[end] != closing {
+                break;
+            }
+            consumed.push(start - 1);
+            consumed.push(end);
+            start -= 1;
+            end += 1;
+        }
+        let wrappers = b"()[]{}";
+        if start
+            .checked_sub(1)
+            .is_some_and(|index| wrappers.contains(&text.as_bytes()[index]))
+            || text
+                .as_bytes()
+                .get(end)
+                .is_some_and(|byte| wrappers.contains(byte))
+        {
+            continue;
+        }
+        for index in consumed {
+            bytes[index] = b' ';
+        }
+    }
+    String::from_utf8(bytes).expect("Only ASCII path punctuation was replaced")
+}
+
 fn policy_starts(text: &str) -> bool {
     let lower = text.trim_start().to_lowercase();
     let vocabulary = seed::caller_context_vocabulary();
@@ -121,6 +178,9 @@ fn policy_starts(text: &str) -> bool {
             .any(|lead| crate::coding::catalog::contains_cjk(lead) && lower.starts_with(lead))
 }
 pub(in crate::agentic_coding) fn pending_read_condition(prompt: &str, role: &str) -> bool {
+    if balanced_path_text(prompt) != prompt && mode_paths_for_clause(prompt).is_none() {
+        return true;
+    }
     let sentences = instruction_sentence_texts(prompt);
     let unresolved = sentences.iter().any(|sentence| {
         path_spans(sentence).iter().any(|path| {
@@ -379,6 +439,7 @@ pub(in crate::agentic_coding) fn bound_read_paths(prompt: &str, role: &str) -> V
     }
 }
 pub(in crate::agentic_coding) fn owned_read_paths(prompt: &str, role: &str) -> Vec<String> {
+    let prompt = read_request_envelope(prompt).map_or(prompt, |(text, _, _)| text);
     let paths = bound_read_paths(prompt, role);
     if unbound_effect_operation(prompt) || pending_read_condition(prompt, role) {
         Vec::new()
@@ -387,6 +448,7 @@ pub(in crate::agentic_coding) fn owned_read_paths(prompt: &str, role: &str) -> V
     }
 }
 pub(in crate::agentic_coding) fn read_policy_blocks_plan(prompt: &str, plan: &AgenticPlan) -> bool {
+    let prompt = read_request_envelope(prompt).map_or(prompt, |(text, _, _)| text);
     let scopes = negative_read_objects(prompt);
     let unbound_operation =
         unbound_effect_operation(prompt) || pending_read_condition(prompt, READ_ROLE);
@@ -436,6 +498,8 @@ pub(in crate::agentic_coding) fn read_policy_blocks_plan(prompt: &str, plan: &Ag
 }
 
 fn mode_paths_for_clause(prompt: &str) -> Option<Vec<String>> {
+    let normalized = balanced_path_text(prompt);
+    let prompt = normalized.as_str();
     let parsed = crate::seed::parser::parse_lino(include_str!(
         "../../../embedded/data/seed/meanings-file-write.lino"
     ));
@@ -561,6 +625,8 @@ fn mode_paths_for_clause(prompt: &str) -> Option<Vec<String>> {
 
 /// Paired literal quotations retain global scope before clause splitting.
 fn instruction_sentence_texts(prompt: &str) -> Vec<String> {
+    let normalized = balanced_path_text(prompt);
+    let prompt = normalized.as_str();
     let mut bytes = prompt.as_bytes().to_vec();
     for span in crate::normal_markov::quoted_segment_spans(prompt) {
         let path = clean_file_token(&span.text);
@@ -637,4 +703,31 @@ fn read_precedes_owned_authoring(prompt: &str, tail: &str) -> bool {
                         .is_some_and(|matched| matched.as_str().len() == tail.len())
                 })
         })
+}
+
+/// Source-bound UTF8 counterpart of Read request envelope ownership.
+pub(in crate::agentic_coding) fn read_request_envelope(
+    request: &str,
+) -> Option<(&str, usize, usize)> {
+    if !request.starts_with('"') || crate::normal_markov::quote_fault(request).is_some() {
+        return None;
+    }
+    let spans = crate::normal_markov::quoted_segment_spans(request);
+    if spans.len() != 1 || spans[0].start != 0 || spans[0].end != request.len() {
+        return None;
+    }
+    let start = 1;
+    let end = request.len().checked_sub(1)?;
+    let text = request.get(start..end)?;
+    mode_paths_for_clause(text)?;
+    if !matches!(
+        super::file_read_task_for(text)?,
+        super::FileReadTask::Direct {
+            mode: super::FileReadMode::Full,
+            ..
+        }
+    ) {
+        return None;
+    }
+    Some((text, start, end))
 }

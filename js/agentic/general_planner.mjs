@@ -1,3 +1,4 @@
+import { readRequestEnvelope } from './file_read/ownership.mjs';
 import { rawLowercaseSpan } from './write_request/lowercase_spans.mjs';
 import { generalChangePlanRecordHeader } from './append_contract.mjs';
 // Deterministic fallback planner for repository change requests
@@ -139,6 +140,7 @@ export function plannedNotExecutedAnswer(plan) {
  * @param {string} request
  */
 export function objectiveText(request) {
+  request = readRequestEnvelope(request)?.text ?? request;
   const lead = firstRawPrefixLeadEnd(request, 'request_objective_lead');
   if (!lead || !lineAnchored(request, lead[0])
     || quotedSegmentSpans(request).some((segment) => lead[0] >= segment.start && lead[0] < segment.end)) return request;
