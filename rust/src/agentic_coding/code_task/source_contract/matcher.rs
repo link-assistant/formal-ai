@@ -7,41 +7,9 @@ pub(super) fn match_source_description(
     if !super::source_whitespace_supported(task) {
         return None;
     }
-    let integer_expression =
-        regex::Regex::new(r"^(pub )?fn ([A-Za-z_][A-Za-z_0-9]*)\(\) -> i64 \{\n    (-?\d+)\n\}\n$")
-            .ok()?;
-    let division_expression = regex::Regex::new(r"^(pub )?fn ([A-Za-z_][A-Za-z_0-9]*)\(([A-Za-z_][A-Za-z_0-9]*): (f64)\) -> (f64) \{\n    ([A-Za-z_][A-Za-z_0-9]*) / (-?[0-9]+\.[0-9]+)\n\}\n$").ok()?;
-    let integer = integer_expression.captures(&artifact.content);
-    let division = division_expression.captures(&artifact.content);
-    let (declaration, kind, value) = if let Some(ref declaration) = integer {
-        declaration[3].parse::<i64>().ok()?;
-        (declaration, "integer", declaration.get(3)?.as_str())
-    } else {
-        let declaration = division.as_ref()?;
-        if declaration[3] != declaration[6]
-            || !super::super::identifier_domain::rust_identifier_is_valid(&declaration[3])
-        {
-            return None;
-        }
-        let value = declaration[7].parse::<f64>().ok()?;
-        if !value.is_finite() || value == 0.0 {
-            return None;
-        }
-        (declaration, "float-division", declaration.get(7)?.as_str())
-    };
-    if declaration.get(1).is_none()
-        || !super::super::identifier_domain::rust_identifier_is_valid(&declaration[2])
-    {
-        return None;
-    }
-    let mut slots = vec![
-        ("path", artifact.path.as_str()),
-        ("identifier", &declaration[2]),
-        ("value", value),
-    ];
-    if integer.is_none() {
-        slots.push(("parameter-type", &declaration[4]));
-    }
+    let (kind, declared) = super::declaration::source_declaration_slots(&artifact.content)?;
+    let mut slots = declared.into_iter().collect::<Vec<_>>();
+    slots.push(("path", artifact.path.clone()));
     let parsed = crate::seed::parser::parse_lino(include_str!(
         "../../../../embedded/data/seed/source-authoring-grammar.lino"
     ));
@@ -52,6 +20,7 @@ pub(super) fn match_source_description(
             form.children
                 .iter()
                 .find(|node| node.name == name)
+                .or_else(|| root.children.iter().find(|node| node.name == name))
                 .map(|node| node.id.as_str())
         };
         if field("kind") != Some(kind) {
@@ -78,12 +47,11 @@ pub(super) fn match_source_description(
         if missing || seen.len() != slots.len() {
             continue;
         }
-        let expression = match regex::RegexBuilder::new(&pattern)
+        let Ok(expression) = regex::RegexBuilder::new(&pattern)
             .case_insensitive(true)
             .build()
-        {
-            Ok(expression) => expression,
-            Err(_) => continue,
+        else {
+            continue;
         };
         let Some(matched) = expression.captures(task) else {
             continue;
@@ -95,7 +63,7 @@ pub(super) fn match_source_description(
             let expected = slots
                 .iter()
                 .find(|(name, _)| *name == role)
-                .map(|(_, value)| *value);
+                .map(|(_, value)| value.as_str());
             matched.get(index + 1).map(|capture| capture.as_str()) != expected
         }) {
             continue;
@@ -104,14 +72,9 @@ pub(super) fn match_source_description(
             let capture = matched.get(index + 1).expect("one capture for each bound slot");
             serde_json::json!({"role":role,"span":[capture.start(),capture.end()],"text":capture.as_str()})
         }).collect::<Vec<_>>();
-        let mut output = serde_json::json!({
-            "path": artifact.path,
-            "identifier": &declaration[2],
-            "value": value,
-            "content": artifact.content
-        });
-        if integer.is_none() {
-            output["parameter-type"] = serde_json::json!(&declaration[4]);
+        let mut output = serde_json::json!({"content": artifact.content});
+        for (role, value) in &slots {
+            output[*role] = serde_json::json!(value);
         }
         return Some(
             serde_json::json!({"unit":"utf8","full":[0,task.len()],"language":language,"kind":kind,"captures":captures,

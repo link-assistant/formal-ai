@@ -367,22 +367,22 @@ fn requested_identifier(task: &str, path: &str, kind: RustItemKind) -> Option<St
     {
         return Some(name);
     }
-    if kind == RustItemKind::Function {
-        if let Some(meaning) = seed::lexicon().first_role_match("program_kind", &normalized) {
-            for surface in meaning.words() {
-                let pattern = format!(
-                    r"(?:^|[^A-Za-z_0-9]){}[ \u0009-\u000D]+([A-Za-z_][A-Za-z_0-9]*)",
-                    regex::escape(surface)
-                );
-                let expression = regex::RegexBuilder::new(&pattern)
-                    .case_insensitive(true)
-                    .build()
-                    .ok()?;
-                if let Some(captured) = expression.captures(task) {
-                    if valid_identifier(&captured[1]) {
-                        return Some(captured[1].to_owned());
-                    }
-                }
+    if kind == RustItemKind::Function
+        && let Some(meaning) = seed::lexicon().first_role_match("program_kind", &normalized)
+    {
+        for surface in meaning.words() {
+            let pattern = format!(
+                r"(?:^|[^A-Za-z_0-9]){}[ \u0009-\u000D]+([A-Za-z_][A-Za-z_0-9]*)",
+                regex::escape(surface)
+            );
+            let expression = regex::RegexBuilder::new(&pattern)
+                .case_insensitive(true)
+                .build()
+                .ok()?;
+            if let Some(captured) = expression.captures(task)
+                && valid_identifier(&captured[1])
+            {
+                return Some(captured[1].to_owned());
             }
         }
     }
@@ -518,7 +518,7 @@ pub(super) fn plan_verified_generated_source_step(
         } else {
             Some(super::final_result::record(
                 AgenticPlan::Final(render_seeded_outcome(
-                    "coding_source_authoring_contract_missing",
+                    "coding-source-authoring-contract-missing",
                     task,
                     "",
                 )?),
@@ -528,41 +528,38 @@ pub(super) fn plan_verified_generated_source_step(
             ))
         };
     }
-    let artifact = match rust_source_for_task(task) {
-        Some(artifact) => artifact,
-        None => {
-            let literal = super::general_planner::compose_general_change_plan(task);
-            let semantic = literal.as_ref().is_some_and(|plan| {
-                let body = plan.content.to_lowercase();
-                plan.mode == super::general_planner::GeneralPlanMode::LiteralFile
-                    && crate::seed::lexicon()
-                        .first_role_match("program_language_alias", &body)
-                        .is_some_and(|meaning| meaning.slug == "program_language_rust")
-                    && crate::seed::lexicon()
-                        .first_role_match("program_kind", &body)
-                        .is_some_and(|meaning| meaning.slug == "function")
-            });
-            if !semantic {
-                return None;
-            }
-            return Some(super::final_result::record(
-                AgenticPlan::Final(render_seeded_outcome(
-                    "coding_source_authoring_contract_missing",
-                    task,
-                    "",
-                )?),
-                super::final_result::FinalDisposition::Gap,
-                "source-description-goal-coverage-unbound",
-                result,
-            ));
+    let Some(artifact) = rust_source_for_task(task) else {
+        let literal = super::general_planner::compose_general_change_plan(task);
+        let semantic = literal.as_ref().is_some_and(|plan| {
+            let body = plan.content.to_lowercase();
+            plan.mode == super::general_planner::GeneralPlanMode::LiteralFile
+                && crate::seed::lexicon()
+                    .first_role_match("program_language_alias", &body)
+                    .is_some_and(|meaning| meaning.slug == "program_language_rust")
+                && crate::seed::lexicon()
+                    .first_role_match("program_kind", &body)
+                    .is_some_and(|meaning| meaning.slug == "function")
+        });
+        if !semantic {
+            return None;
         }
+        return Some(super::final_result::record(
+            AgenticPlan::Final(render_seeded_outcome(
+                "coding-source-authoring-contract-missing",
+                task,
+                "",
+            )?),
+            super::final_result::FinalDisposition::Gap,
+            "source-description-goal-coverage-unbound",
+            result,
+        ));
     };
     if !source_contract::source_whitespace_supported(raw_task)
         || source_contract::source_description_contract(task, &artifact).is_none()
     {
         return Some(super::final_result::record(
             AgenticPlan::Final(render_seeded_outcome(
-                "coding_source_authoring_contract_missing",
+                "coding-source-authoring-contract-missing",
                 task,
                 "",
             )?),

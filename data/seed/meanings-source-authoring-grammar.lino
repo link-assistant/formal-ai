@@ -2,25 +2,27 @@ meanings
   source-authoring-grammar
     defined-by relation
     definition "Finite source-description forms bind an entire authoring operation and its destination to a generated declaration in the same language grammar."
-    precondition "Every byte of the request is consumed by one registered full form; path, identifier, technical type and numeric value match the declaration exactly; identifier and numeric domains are valid; explicit quoted literal ownership is handled before this contract."
+    precondition "Every byte of the request is consumed by one registered full form; destination, identifier, exact technical type and every string or integer operand bind the complete supported declaration; identifiers and numeric domains are valid; explicit quoted literal ownership is handled before this contract."
     effect "Produces conditional source spans and a declaration correspondence. Additional read-first, no-write, registration, deployment or future-work clauses do not match a source-only form and retain their independent authority. No import initialization, caller effects or compilation result is certified."
-    source "js/agentic/code_task.mjs sha256=2feb348085e1b5b45a6484f71bf719cdab06c6868d0b4ea1f3afeecfa1fe0f20"
-    source "rust/src/agentic_coding/code_task.rs sha256=ff8c8b70fa7c6491f0e919fca4eec70acc79806c34c52df6249113b8c7dd3cf9"
+    source "js/agentic/code_task.mjs sha256=43fec02955a3e87b358ca6d6a4e7b03d4e59b45f72c6e6d092abc5b399940a67"
+    source "rust/src/agentic_coding/code_task.rs sha256=f2dac4f34ccf0a1ecbbe68816b2499b2c0da6de89956746df5c1990f9eef1360"
     unit "request offsets are UTF16 in JavaScript and UTF8 in Rust"
     example "A renamed public zero-argument i64 function or a named f64 division function can match a whole source-authoring form."
-    source "js/agentic/code_task/source_contract/matcher.mjs sha256=2ff1bef0ffc630981fac5a06e9690bb57d72414e0812e4778eed963848b586c5"
-    source "rust/src/agentic_coding/code_task/source_contract/matcher.rs sha256=28fcc8ce3a8d69c63565bec8c553d6023ab8ccb2baea796a8edc850b0e87328b"
-    source "data/seed/source-authoring-grammar.lino sha256=c7a3222d4a252e71b2b5afb8a1a65c4c35201c87111d4bd3d3281b10607c235d"
+    source "js/agentic/code_task/source_contract/declaration.mjs sha256=0be2df9d06b98942750879a3b6c143e6f1e317f18a2772c9581d9f48dc7f5475"
+    source "rust/src/agentic_coding/code_task/source_contract/declaration.rs sha256=237d9e4361f69f10e0d6f2daa5f04abca0eb3c062a739d78d0c064ffd057700d"
+    source "js/agentic/code_task/source_contract/matcher.mjs sha256=629841bc4ffad1520e42b1fb6a07fd0daf9727c13308b32f31990753cf1a3c1e"
+    source "rust/src/agentic_coding/code_task/source_contract/matcher.rs sha256=56966a7b9d44fc9a752ea7d7a1eb366c2ced735f1db2fc1c0a185fd478df826a"
+    source "data/seed/source-authoring-grammar.lino sha256=4aa5f2e25eee49be10117b96ddae4e90c16bfb21a71774107a0d240b1c48ac78"
     lexeme en
-      word "source authoring grammar"
+      words "source authoring grammar"
     lexeme ru
-      word "грамматика создания исходного кода"
+      words "грамматика создания исходного кода"
     lexeme hi
-      word "स्रोत लेखन व्याकरण"
+      words "स्रोत लेखन व्याकरण"
     lexeme zh
-      word "源码编写语法"
+      words "源码编写语法"
     lexeme es
-      word "gramática de creación de código fuente"
+      words "gramática de creación de código fuente"
   float-division
     defined-by relation
     definition "One public Rust function takes one f64 parameter and returns that same parameter divided by an explicitly requested decimal f64 literal."
@@ -29,15 +31,15 @@ meanings
     unit "IEEE754 binary64 operand and denominator"
     example "A requested divisor changes the generated expression only when the source and request contracts agree."
     lexeme en
-      word "floating point division"
+      words "floating point division"
     lexeme ru
-      word "деление чисел с плавающей точкой"
+      words "деление чисел с плавающей точкой"
     lexeme hi
-      word "फ्लोटिंग पॉइंट विभाजन"
+      words "फ्लोटिंग पॉइंट विभाजन"
     lexeme zh
-      word "浮点除法"
+      words "浮点除法"
     lexeme es
-      word "división de punto flotante"
+      words "división de punto flotante"
   source-registration-composition
     defined-by relation
     definition "A registered finite form composes a fully source-qualified declaration operation with an explicit module registration action and its separately owned destination."
@@ -46,40 +48,40 @@ meanings
     unit "JavaScript UTF16 spans and Rust UTF8 spans reference the complete original request; composition whitespace is ASCII."
     example "A renamed integer declaration or finite nonzero f64 division can be registered through a compatible seeded connective; a deployment or unknown future-work tail is retained and refuses premature delivery."
     source "js/agentic/code_task/source_contract/registration_contract.mjs sha256=f6d32c67a6825a5dd043d00c4565f41b5600e7b5bcb97a36a508aad973495e63"
-    source "rust/src/agentic_coding/code_task/source_contract/registration_contract.rs sha256=ad61d2e0f70d8bea6e701ea2cc6a8ed2fbcd048d6a9dc324acfb2c275dad346c"
-    source "data/seed/source-authoring-grammar.lino sha256=c7a3222d4a252e71b2b5afb8a1a65c4c35201c87111d4bd3d3281b10607c235d"
+    source "rust/src/agentic_coding/code_task/source_contract/registration_contract.rs sha256=3de194f1a65543cd4193bdef60a355e5b7b091b72f7a8d2732ed8c4328942880"
+    source "data/seed/source-authoring-grammar.lino sha256=4aa5f2e25eee49be10117b96ddae4e90c16bfb21a71774107a0d240b1c48ac78"
     lexeme en
-      word "source and module registration composition"
+      words "source and module registration composition"
     lexeme ru
-      word "составление исходного кода и регистрации модуля"
+      words "составление исходного кода и регистрации модуля"
     lexeme hi
-      word "स्रोत और मॉड्यूल पंजीकरण संयोजन"
+      words "स्रोत और मॉड्यूल पंजीकरण संयोजन"
     lexeme zh
-      word "源码与模块注册组合"
+      words "源码与模块注册组合"
     lexeme es
-      word "composición de fuente y registro de módulo"
-  coding_source_authoring_contract_missing
+      words "composición de fuente y registro de módulo"
+  coding-source-authoring-contract-missing
     defined-by code
-    role coding_source_authoring_contract_missing
+    role coding-source-authoring-contract-missing
     definition "A source-owned gap diagnosis when a recognized authoring request lacks a complete binding from all requested work to supported source and integration operations."
     precondition "Explicit edit and quoted literal ownership routes are considered first. The recognized semantic Rust declaration or registration request does not establish a complete supported source-description or composition contract for every required operation."
     effect "Renders the seed-owned localized final answer with Gap disposition and source-description-goal-coverage-unbound origin. It does not certify source writing, registration, compilation or deployment, and cannot be delivered as a grounded Finding. Independent operations retain their own effect and verification obligations."
     unit "not applicable"
     example "Missing source authoring contract: complete request remains unbound."
-    source "js/agentic/code_task.mjs sha256=2feb348085e1b5b45a6484f71bf719cdab06c6868d0b4ea1f3afeecfa1fe0f20 handler=plan_verified_generated_source_step/planVerifiedGeneratedSourceStep"
-    source "rust/src/agentic_coding/code_task.rs sha256=ff8c8b70fa7c6491f0e919fca4eec70acc79806c34c52df6249113b8c7dd3cf9 handler=plan_verified_generated_source_step/planVerifiedGeneratedSourceStep"
-    source "data/seed/multilingual-responses-agentic-tools.lino sha256=2871c52d94ff808d922ae38454565dcff839ef569d6dffc807301155e8854ef6 record=response_coding_source_authoring_contract_missing_en"
-    source "data/seed/multilingual-responses-agentic-tools.lino sha256=2871c52d94ff808d922ae38454565dcff839ef569d6dffc807301155e8854ef6 record=response_coding_source_authoring_contract_missing_ru"
-    source "data/seed/multilingual-responses-agentic-tools.lino sha256=2871c52d94ff808d922ae38454565dcff839ef569d6dffc807301155e8854ef6 record=response_coding_source_authoring_contract_missing_hi"
-    source "data/seed/multilingual-responses-agentic-tools.lino sha256=2871c52d94ff808d922ae38454565dcff839ef569d6dffc807301155e8854ef6 record=response_coding_source_authoring_contract_missing_zh"
-    source "data/seed/multilingual-responses-agentic-tools.lino sha256=2871c52d94ff808d922ae38454565dcff839ef569d6dffc807301155e8854ef6 record=response_coding_source_authoring_contract_missing_es"
+    source "js/agentic/code_task.mjs sha256=43fec02955a3e87b358ca6d6a4e7b03d4e59b45f72c6e6d092abc5b399940a67 handler=plan_verified_generated_source_step/planVerifiedGeneratedSourceStep"
+    source "rust/src/agentic_coding/code_task.rs sha256=f2dac4f34ccf0a1ecbbe68816b2499b2c0da6de89956746df5c1990f9eef1360 handler=plan_verified_generated_source_step/planVerifiedGeneratedSourceStep"
+    source "data/seed/multilingual-responses-agentic-tools.lino sha256=72d766234aec9ea8651c9df160513ba9c44ef52b73060b5b1e70fc092cf72bd0 record=response-coding-source-authoring-contract-missing-en"
+    source "data/seed/multilingual-responses-agentic-tools.lino sha256=72d766234aec9ea8651c9df160513ba9c44ef52b73060b5b1e70fc092cf72bd0 record=response-coding-source-authoring-contract-missing-ru"
+    source "data/seed/multilingual-responses-agentic-tools.lino sha256=72d766234aec9ea8651c9df160513ba9c44ef52b73060b5b1e70fc092cf72bd0 record=response-coding-source-authoring-contract-missing-hi"
+    source "data/seed/multilingual-responses-agentic-tools.lino sha256=72d766234aec9ea8651c9df160513ba9c44ef52b73060b5b1e70fc092cf72bd0 record=response-coding-source-authoring-contract-missing-zh"
+    source "data/seed/multilingual-responses-agentic-tools.lino sha256=72d766234aec9ea8651c9df160513ba9c44ef52b73060b5b1e70fc092cf72bd0 record=response-coding-source-authoring-contract-missing-es"
     lexeme en
-      word "missing source authoring contract"
+      words "missing source authoring contract"
     lexeme ru
-      word "отсутствующий контракт создания исходного кода"
+      words "отсутствующий контракт создания исходного кода"
     lexeme hi
-      word "अनुपलब्ध स्रोत निर्माण अनुबंध"
+      words "अनुपलब्ध स्रोत निर्माण अनुबंध"
     lexeme zh
-      word "缺失的源代码编写契约"
+      words "缺失的源代码编写契约"
     lexeme es
-      word "contrato de creación de código fuente ausente"
+      words "contrato de creación de código fuente ausente"

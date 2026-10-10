@@ -1,27 +1,14 @@
-import { rustIdentifierIsValid } from '../identifier_domain.mjs';
+import { sourceDeclarationSlots } from './declaration.mjs';
 import { sourceWhitespaceSupported } from '../source_contract.mjs';
 import { childrenNamed, parseLino, readText } from '../../host.mjs';
 export function matchSourceDescription(task, artifact) {
   const root = parseLino(readText('data/seed/source-authoring-grammar.lino') ?? '');
-  const forms = childrenNamed(root, 'form').map(form => Object.fromEntries(['language', 'kind', 'pattern'].map(name => [name, childrenNamed(form, name)[0]?.id])));
+  const forms = childrenNamed(root, 'form').map(form => Object.fromEntries(['language', 'kind', 'pattern'].map(name => [name, childrenNamed(form, name)[0]?.id ?? childrenNamed(root, name)[0]?.id])));
   if (!sourceWhitespaceSupported(task)) return null;
-  const integer = /^(pub )?fn ([A-Za-z_][A-Za-z_0-9]*)\(\) -> i64 \{\n    (-?\d+)\n\}\n$/.exec(artifact.content);
-  const division = /^(pub )?fn ([A-Za-z_][A-Za-z_0-9]*)\(([A-Za-z_][A-Za-z_0-9]*): (f64)\) -> (f64) \{\n    \3 \/ (-?[0-9]+\.[0-9]+)\n\}\n$/.exec(artifact.content);
-  if (integer === null && division === null) return null;
-  const declaration = integer ?? division;
-  if (declaration[1] === undefined || !rustIdentifierIsValid(declaration[2])) return null;
-  const value = integer === null ? division[6] : integer[3];
-  if (integer !== null) {
-    const numeric = BigInt(value);
-    if (numeric < -(1n << 63n) || numeric >= 1n << 63n) return null;
-  } else if (!rustIdentifierIsValid(division[3]) || !Number.isFinite(Number(value)) || Number(value) === 0) return null;
-  const kind = integer === null ? 'float-division' : 'integer';
-  const slots = {
-    path: artifact.path,
-    identifier: declaration[2],
-    value,
-    ...(integer === null ? { 'parameter-type': division[4] } : {})
-  };
+  const declaration = sourceDeclarationSlots(artifact.content);
+  if (declaration === null) return null;
+  const { kind } = declaration;
+  const slots = { path: artifact.path, ...declaration.slots };
   const escaped = text => text.replace(/[.*+?^\x24{}()|[\]\\]/g, '\\$&');
   for (const form of forms) {
     if (form.kind !== kind || typeof form.pattern !== 'string' || typeof form.language !== 'string') continue;

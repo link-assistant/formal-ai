@@ -1379,23 +1379,23 @@ multilingual_responses
     intent general-plan-append-action
     language es
     text "anexar el plan compuesto a {plan_path}"
-  response response_coding_source_authoring_contract_missing_en
-    intent coding_source_authoring_contract_missing
+  response response-coding-source-authoring-contract-missing-en
+    intent coding-source-authoring-contract-missing
     language en
     text "Missing source authoring contract: complete request remains unbound."
-  response response_coding_source_authoring_contract_missing_ru
-    intent coding_source_authoring_contract_missing
+  response response-coding-source-authoring-contract-missing-ru
+    intent coding-source-authoring-contract-missing
     language ru
     text "Отсутствует контракт создания исходного кода: полный запрос остаётся несвязанным."
-  response response_coding_source_authoring_contract_missing_hi
-    intent coding_source_authoring_contract_missing
+  response response-coding-source-authoring-contract-missing-hi
+    intent coding-source-authoring-contract-missing
     language hi
     text "स्रोत निर्माण अनुबंध उपलब्ध नहीं है: पूरा अनुरोध अभी भी बाध्य नहीं है।"
-  response response_coding_source_authoring_contract_missing_zh
-    intent coding_source_authoring_contract_missing
+  response response-coding-source-authoring-contract-missing-zh
+    intent coding-source-authoring-contract-missing
     language zh
     text "缺少源代码编写契约：完整请求仍未绑定。"
-  response response_coding_source_authoring_contract_missing_es
-    intent coding_source_authoring_contract_missing
+  response response-coding-source-authoring-contract-missing-es
+    intent coding-source-authoring-contract-missing
     language es
     text "Falta el contrato de creación del código fuente: la solicitud completa sigue sin vincularse."

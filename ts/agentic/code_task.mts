@@ -261,19 +261,19 @@ export function planVerifiedGeneratedSourceStep(rawTask, messages, toolNames) {
   if (literal?.mode === 'literal_file' && ownsLiteralBody(task, literal.content)) return null;
   const compound = sourceRegistrationContract(task, rustSourceForTask);
   if (compound !== null) return compound.wholeRequestConsumed ? null : resolvedFinalAnswer(
-    renderSeededOutcome('coding_source_authoring_contract_missing', task, ''),
+    renderSeededOutcome('coding-source-authoring-contract-missing', task, ''),
     FinalDisposition.Gap, 'source-registration-goal-coverage-unbound');
   const artifact = rustSourceForTask(task);
   if (artifact === null) {
     const body = literal?.mode === 'literal_file' ? literal.content.toLowerCase() : '';
     if (sourceRoleMatch('program_language_alias', body)?.slug === 'program_language_rust'
       && sourceRoleMatch('program_kind', body)?.slug === 'function') return resolvedFinalAnswer(
-        renderSeededOutcome('coding_source_authoring_contract_missing', task, ''),
+        renderSeededOutcome('coding-source-authoring-contract-missing', task, ''),
         FinalDisposition.Gap, 'source-description-goal-coverage-unbound');
     return null;
   }
   if (!sourceWhitespaceSupported(rawTask) || sourceDescriptionContract(task, artifact) === null) return resolvedFinalAnswer(
-    renderSeededOutcome('coding_source_authoring_contract_missing', task, ''),
+    renderSeededOutcome('coding-source-authoring-contract-missing', task, ''),
     FinalDisposition.Gap, 'source-description-goal-coverage-unbound');
   return planGeneratedSourceStep(task, messages, toolNames);
 }

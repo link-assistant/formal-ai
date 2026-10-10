@@ -1,3 +1,4 @@
+mod declaration;
 mod matcher;
 mod registration_contract;
 use super::GeneratedSource;

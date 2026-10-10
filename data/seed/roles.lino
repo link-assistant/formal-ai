@@ -167,6 +167,8 @@ roles
     kind meaning
   coding-source-artifact-kind
     kind meaning
+  coding-source-authoring-contract-missing
+    kind meaning
   coding_artifact_kind
     kind predicate
   coding_assertion_equality_cue

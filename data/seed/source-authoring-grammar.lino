@@ -1,11 +1,11 @@
 source-authoring-grammar
+  kind float-division
   form 1
     language en
     kind integer
     pattern "^\\s*(?:Create|Write)\\s+(?:a\\s+)?(?:new\\s+)?(?:file\\s+)?{path}\\s+(?:in this repository\\s+)?containing\\s+(?:a\\s+)?(?:single\\s+)?public\\s+Rust\\s+function\\s+(?:named\\s+)?{identifier}\\s+(?:returning|that returns)\\s+{value}[\\s.!?]*$"
   form 2
     language en
-    kind float-division
     pattern "^\\s*(?:Create|Write)\\s+(?:a\\s+)?(?:new\\s+)?(?:file\\s+)?{path}\\s+(?:in this repository\\s+)?containing\\s+(?:a\\s+)?(?:single\\s+)?public\\s+Rust\\s+function\\s+(?:named\\s+)?{identifier}\\s+that takes an {parameter-type} and returns it divided by\\s+{value}[\\s.!?]*$"
   form 3
     language ru
@@ -25,24 +25,31 @@ source-authoring-grammar
     pattern "^\\s*Crea\\s+(?:un\\s+)?archivo\\s+{path}\\s+que contiene una función pública Rust llamada\\s+{identifier}\\s+que devuelve\\s+{value}[\\s.!?]*$"
   form 7
     language ru
-    kind float-division
     pattern "^\\s*Создай\\s+файл\\s+{path}\\s+с\\s+(?:одной\\s+)?публичной\\s+функцией\\s+на\\s+Rust\\s+с\\s+именем\\s+{identifier},\\s+которая\\s+принимает\\s+{parameter-type}\\s+и\\s+делит\\s+его\\s+на\\s+{value}[\\s.!?]*$"
   form 8
     language zh
-    kind float-division
     pattern "^\\s*(?:在这个仓库中)?创建文件\\s+{path}，其中包含一个名为\\s+{identifier}\\s+的公共\\s+Rust\\s+函数，接受\\s+{parameter-type}\\s+并返回它除以\\s+{value}[\\s。！？]*$"
   form 9
     language hi
-    kind float-division
     pattern "^\\s*(?:इस रिपॉजिटरी में\\s+)?{path}\\s+फ़ाइल बनाएँ जिसमें\\s+{identifier}\\s+नाम का एक सार्वजनिक\\s+Rust\\s+फ़ंक्शन हो जो\\s+{parameter-type}\\s+लेता है और उसे\\s+{value}\\s+से विभाजित करके लौटाता है[\\s।!?]*$"
   form 10
     language es
-    kind float-division
     pattern "^\\s*Crea\\s+(?:un\\s+)?archivo\\s+{path}\\s+que contiene una función pública Rust llamada\\s+{identifier}\\s+que toma un {parameter-type} y lo devuelve dividido por\\s+{value}[\\s.!?]*$"
   form 11
     language en
-    kind float-division
     pattern "^\\s*(?:Create|Write)\\s+{path}\\s+with\\s+a\\s+public\\s+function\\s+{identifier}\\s+dividing\\s+an\\s+{parameter-type}\\s+by\\s+{value}[\\s.!?]*$"
+  form 12
+    language en
+    kind string-constant
+    pattern "^\\s*(?:Create|Write)\\s+(?:a\\s+)?(?:new\\s+)?(?:Rust test\\s+)?(?:file\\s+)?{path}\\s+(?:in this repository\\s+)?containing\\s+(?:(?:a|one)\\s+)?(?:single\\s+)?public\\s+Rust\\s+constant\\s+{identifier}\\s+of type\\s+{constant-type}\\s+with the value\\s+{value}[\\s.!?]*$"
+  form 13
+    language en
+    kind equality-test
+    pattern "^\\s*(?:Create|Write)\\s+(?:a\\s+)?(?:new\\s+)?(?:Rust test\\s+)?(?:file\\s+)?{path}\\s+(?:in this repository\\s+)?containing\\s+(?:(?:a|one)\\s+)?(?:single\\s+)?Rust\\s+test\\s+named\\s+{identifier}\\s+(?:that asserts|asserting)\\s+{left}\\s+equals\\s+{right}[\\s.!?]*$"
+  form 14
+    language en
+    kind addition-test
+    pattern "^\\s*(?:Create|Write)\\s+(?:a\\s+)?(?:new\\s+)?(?:Rust test\\s+)?(?:file\\s+)?{path}\\s+(?:in this repository\\s+)?containing\\s+(?:(?:a|one)\\s+)?(?:single\\s+)?Rust\\s+test\\s+named\\s+{identifier}\\s+(?:that asserts|asserting)\\s+{left}\\s+plus\\s+{right}\\s+equals\\s+{expected}[\\s.!?]*$"
   composition en
     pattern "^{source-clause}[ \\t\\n\\r\\x0b\\x0c]*,?[ \\t\\n\\r\\x0b\\x0c]+and[ \\t\\n\\r\\x0b\\x0c]+{registration-action}[ \\t\\n\\r\\x0b\\x0c]+in[ \\t\\n\\r\\x0b\\x0c]+{registration-path}(?:[ \\t\\n\\r\\x0b\\x0c]+so it is part of the crate)?[ \\t\\n\\r\\x0b\\x0c.!?]*$"
   composition ru

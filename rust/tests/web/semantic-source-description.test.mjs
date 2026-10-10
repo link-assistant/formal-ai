@@ -108,7 +108,7 @@ test('missing source contracts retain grounded multilingual Gap provenance', asy
   const { renderSeededOutcome, planVerifiedGeneratedSourceStep } = await import('../../../js/agentic/code_task.mjs');
   const { canDeliverFinal } = await import('../../../js/agentic/final_result.mjs');
   for (const request of requests) {
-    const text = renderSeededOutcome('coding_source_authoring_contract_missing', request, '');
+    const text = renderSeededOutcome('coding-source-authoring-contract-missing', request, '');
     assert.equal(typeof text, 'string');
     assert(text.length > 0);
     const plan = planVerifiedGeneratedSourceStep(request + ' Then deploy it.', [], tools);
