@@ -32,8 +32,11 @@ test('U15: every owner message is collected verbatim and mapped to its rows', ()
   assert.match(output, /up to date/u);
 });
 
-test('U22: at most three subagents, none stopped early, every started task delivered', () => {
+test('U22: current twelve-subagent capacity retains dated limits and completed work', () => {
   assert.match(PREAMBLE, /At most three subagents at once/u);
+  assert.match(PREAMBLE, /Historical limit: At most three subagents at once/u);
+  assert.match(PREAMBLE, /up to 12 GPT-6\.1-sol subagents, 13 active agents including the coordinator/u);
+  assert.match(PREAMBLE, /reuse completed slots without extra agents/u);
   assert.match(PREAMBLE, /Never stop a running agent early; every started task is delivered in full/u);
   // The task stopped on 2026-10-08 (SPANISH) was resumed and delivered: the
   // response-language debt it was started for is zero.
@@ -64,6 +67,13 @@ test('U26: the CI fixer continuously monitors and uses the coordinated batch bar
   assert.match(task, /before reading HEAD/u);
   const arrangement = read('docs/case-studies/pull-request-1188/multi-agent-workflow.md');
   assert.match(arrangement, /four active agents including the coordinator/u);
+  assert.match(arrangement, /Historical capacity \(2026-10-09\)/u);
+  assert.match(arrangement, /up to 12 GPT-6\.1-sol subagents, with 13 active agents including the coordinator/u);
+  assert.match(arrangement, /at least one CI watcher and one whole-ask Formal AI delivery agent active throughout/u);
+  assert.match(arrangement, /coordinator is the sole repository writer/u);
+  assert.match(arrangement, /exclude every incomplete next cohort from staging and pushing/u);
+  assert.match(arrangement, /zero autonomous authorship or amplification credit/u);
+  assert.match(arrangement, /unsupported native ports are not automated translation proof/u);
   assert.match(arrangement, /must never implement the requirement itself manually/u);
   assert.match(arrangement, /retry the original request unchanged/u);
 });
