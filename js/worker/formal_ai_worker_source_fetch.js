@@ -5,7 +5,7 @@ async function sourceWalkFetchCapture(url, { online = true } = {}) {
   if (cached) return { ...cached, cached: true };
   const seeded = await sourceWalkSeedCapture(url);
   if (seeded) return seeded;
-  if (!online) return { ok: false, url, failureKind: "offline_cache_miss", error: answerFor("source_capture_offline_cache_miss", "en").replace("{url}", () => String(url)) };
+  if (!online) return { ok: false, url, failureKind: "offline_cache_miss", error: answerFor("source-capture-offline-cache-miss", "en").replace("{url}", () => String(url)) };
   if (typeof fetch !== "function") return { ok: false, url, error: "fetch_unavailable" };
   try {
     const response = await fetch(url, { method: "GET", mode: "cors" });

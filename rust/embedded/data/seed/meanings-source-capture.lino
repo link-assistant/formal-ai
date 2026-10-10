@@ -1,9 +1,23 @@
 meanings
-  source_capture_offline_cache_miss
+  source-capture-offline-cache-miss
     defined-by relation
     precondition "The source fetcher is offline, and neither its cache nor the indexed seed registry supplies a capture for the requested URL."
     effect "Return the typed OfflineCacheMiss refusal for that URL before invoking transport.get; report no cached capture and supply no invented source bytes."
     source "rust/src/source_fetch.rs::CachedSourceClient::fetch and FetchError::OfflineCacheMiss"
-    source-sha256 "f70af5bc6aee79bcd521a6d76bac0fbe7c8b92fed3fa8888e6b9f22122833c9d"
-    response "data/seed/multilingual-responses-concept-lookup.lino::response_source_capture_offline_cache_miss_en"
-    response-sha256 "5d9df9f0c477c2429fdb121b4e8a4cb0f04228b954deb60f9227812ac8471d69"
+    source-sha256 "f3aabba765cd55635965a422736da4fe8d36e366525e2dc3a8ee3ff69a8bcf54"
+    response "data/seed/multilingual-responses-concept-lookup.lino::source-capture-offline-cache-miss-en"
+    response-sha256 "f4b8d6df7bb9a396e7c6b8bdc8e7164f278172b116e342f748a13a17fbaa3d45"
+    source "js/worker/formal_ai_worker_source_fetch.js::sourceWalkFetchCapture offline branch"
+    source-sha256 "03216967985f2da944b20b970a11dc25add4de765cae8f73e129d26f128c7c48"
+    unit "not applicable"
+    example "offline request for a URL absent from cache and the indexed seed registry"
+    lexeme en
+      word "offline source capture cache miss"
+    lexeme ru
+      word "отсутствие копии источника в офлайн-кэше"
+    lexeme hi
+      word "ऑफ़लाइन स्रोत की कैश प्रति अनुपलब्ध"
+    lexeme zh
+      word "离线来源缓存缺失"
+    lexeme es
+      word "captura de fuente sin copia en caché sin conexión"

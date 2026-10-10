@@ -159,7 +159,7 @@ impl Display for FetchError {
             Self::InvalidUrl(url) => write!(formatter, "unsupported source URL: {url}"),
             Self::OfflineCacheMiss(url) => {
                 let template =
-                    crate::seed::localized_response("source_capture_offline_cache_miss", "en")
+                    crate::seed::localized_response("source-capture-offline-cache-miss", "en")
                         .ok_or(std::fmt::Error)?;
                 formatter.write_str(&template.replace(concat!("{", "url", "}"), url))
             }

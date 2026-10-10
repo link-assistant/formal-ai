@@ -199,7 +199,23 @@ multilingual_responses
     intent source-qualified-definition-unresolved
     language zh
     text "没有{source}对{term}的已验证定义：{status}。"
-  response response_source_capture_offline_cache_miss_en
-    intent source_capture_offline_cache_miss
+  response source-capture-offline-cache-miss-en
+    intent source-capture-offline-cache-miss
     language en
     text "no cached capture for {url}"
+  response source-capture-offline-cache-miss-ru
+    intent source-capture-offline-cache-miss
+    language ru
+    text "нет сохранённой копии источника для {url}"
+  response source-capture-offline-cache-miss-hi
+    intent source-capture-offline-cache-miss
+    language hi
+    text "कैश में {url} की कोई प्रति नहीं है"
+  response source-capture-offline-cache-miss-zh
+    intent source-capture-offline-cache-miss
+    language zh
+    text "缓存中没有 {url} 的来源副本"
+  response source-capture-offline-cache-miss-es
+    intent source-capture-offline-cache-miss
+    language es
+    text "no hay una captura en caché para {url}"
