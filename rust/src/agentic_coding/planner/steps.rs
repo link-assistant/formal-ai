@@ -118,6 +118,22 @@ pub(super) enum SourceOrOwnedGoalStep {
     Claimed(Option<AgenticPlan>),
 }
 
+/// Preserve continuation refusal before mandatory prerequisite gaps.
+pub(super) fn plan_request_preflight(
+    task: &str,
+    result: &mut Option<FinalResult>,
+) -> SourceOrOwnedGoalStep {
+    if crate::rule_interpreter::handler_matches("conversation_control", task)
+        || super::is_continuation_cue(task)
+    {
+        return SourceOrOwnedGoalStep::Claimed(None);
+    }
+    crate::agentic_coding::general_planner::pending_read_gap(task, result)
+        .map_or(SourceOrOwnedGoalStep::Unclaimed, |plan| {
+            SourceOrOwnedGoalStep::Claimed(Some(plan))
+        })
+}
+
 /// Preserve verified source priority and owned-goal refusal before later routes.
 pub(super) fn plan_source_or_owned_goal_step(
     task: &str,
@@ -153,7 +169,8 @@ pub(super) fn plan_source_or_owned_goal_step(
                 )
             })
             .or_else(|| crate::computer_use::plan_agentic_step(messages, tool_names))
-            .map(|plan| SourceOrOwnedGoalStep::Claimed(Some(plan)))
-            .unwrap_or(SourceOrOwnedGoalStep::Unclaimed)
+            .map_or(SourceOrOwnedGoalStep::Unclaimed, |plan| {
+                SourceOrOwnedGoalStep::Claimed(Some(plan))
+            })
     }
 }

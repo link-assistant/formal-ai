@@ -236,6 +236,17 @@ function stopRepeatedFailure(plan, messages) {
   return finalAnswer(toolResult.renderFailure(repeated.tool, failure.detail, prompt));
 }
 
+/** Preserve continuation refusal before mandatory prerequisite gaps. */
+function planRequestPreflight(task) {
+  if (handlerMatches('conversation_control', task) || isContinuationCue(task)) {
+    return { claimed: true, plan: null };
+  }
+  const prerequisiteGap = pendingReadGap(task);
+  return prerequisiteGap !== null
+    ? { claimed: true, plan: prerequisiteGap }
+    : { claimed: false, plan: null };
+}
+
 /** Mirrors `fn plan_chat_step_routes` in rust/src/agentic_coding/planner.rs. */
 async function planChatStepRoutes(messages, toolNames, received) {
   checkedRoutePrecedence();
@@ -243,9 +254,8 @@ async function planChatStepRoutes(messages, toolNames, received) {
   const effective = continuedAgentTask(messages, received) ?? received;
   const task = objectiveText(effective);
   traceRoute('agentic_task', task);
-  if (handlerMatches('conversation_control', task) || isContinuationCue(task)) return null;
-  const prerequisiteGap = pendingReadGap(task);
-  if (prerequisiteGap !== null) return prerequisiteGap;
+  const preflight = planRequestPreflight(task);
+  if (preflight.claimed) return preflight.plan;
   if (
     // An edit request's block is its payload: a `when … then` inside it is text
     // being written, not a skill being taught (PR #1188 T57).
