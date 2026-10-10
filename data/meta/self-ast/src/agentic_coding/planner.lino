@@ -2,9 +2,9 @@ self_ast_census
   target src/agentic_coding/planner.rs
   language rust
   fidelity full_ast
-  byte_len 47868
-  line_count 991
-  content_id source_module_9a9d0ed618f3c726
+  byte_len 47746
+  line_count 988
+  content_id source_module_3b9cd05b7669dc9d
   symbol_count 20
   symbols
     module continuation 5 5
@@ -20,41 +20,41 @@ self_ast_census
     function plan_chat_step 175 177
     function plan_chat_step_resolved 179 186
     function plan_chat_step_inner 188 231
-    function plan_chat_step_routes 233 355
-    function plan_settled_routes 371 886
-    function plan_shell_command_arm 895 915
-    function plan_shell_step 918 953
-    function plan_one 955 960
-    function write_arguments 968 976
-    function fetch_arguments 985 991
+    function plan_chat_step_routes 233 352
+    function plan_settled_routes 368 883
+    function plan_shell_command_arm 892 912
+    function plan_shell_step 915 950
+    function plan_one 952 957
+    function write_arguments 965 973
+    function fetch_arguments 982 988
   ast
     engine meta_language
     projection abstract_syntax
     text_preserved true
     clean true
-    total_link_count 20433
-    named_node_count 3975
+    total_link_count 20323
+    named_node_count 3951
     distinct_node_kinds 72
     node_kinds
-      arguments 297
+      arguments 294
       array_type 14
       assignment_expression 1
       attribute 6
       attribute_item 6
-      binary_expression 14
-      block 101
+      binary_expression 13
+      block 100
       boolean_literal 4
-      call_expression 297
+      call_expression 294
       closure_expression 20
       closure_parameters 20
-      crate 9
+      crate 8
       declaration_list 1
       doc_comment 61
       else_clause 3
       enum_item 2
       enum_variant 16
       enum_variant_list 2
-      expression_statement 149
+      expression_statement 147
       field_declaration 2
       field_declaration_list 1
       field_expression 55
@@ -62,8 +62,8 @@ self_ast_census
       function_item 13
       function_modifiers 2
       generic_type 13
-      identifier 1225
-      if_expression 75
+      identifier 1220
+      if_expression 74
       impl_item 1
       index_expression 1
       inner_doc_comment_marker 2
@@ -87,18 +87,18 @@ self_ast_census
       parameters 13
       parenthesized_expression 1
       primitive_type 17
-      reference_expression 44
+      reference_expression 42
       reference_type 36
-      return_expression 70
-      scoped_identifier 282
+      return_expression 69
+      scoped_identifier 281
       scoped_use_list 9
       self 4
       self_parameter 2
       source_file 1
-      string_content 49
-      string_literal 50
+      string_content 48
+      string_literal 49
       struct_item 1
-      super 87
+      super 86
       token_tree 21
       try_expression 4
       tuple_struct_pattern 57
