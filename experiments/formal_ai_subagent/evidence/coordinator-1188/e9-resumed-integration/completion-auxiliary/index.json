@@ -1,0 +1,66 @@
+{
+  "schema": "completion-auxiliary-lossless-archive/v1",
+  "cut": "completed root3452–3458 only; historical packet manifests individually bound; future3459+ excluded",
+  "members": 478,
+  "shards": [
+    {
+      "path": "members-0000.jsonl",
+      "records": 478,
+      "bytes": 160182,
+      "sha256": "883918d4229acb8b62bc7a66e474e9f91e37b16ccd3f1f3a05f902ac3faa4890"
+    },
+    {
+      "path": "blob-manifest-0000.jsonl",
+      "records": 383,
+      "bytes": 66479,
+      "sha256": "7c9f2574d598b714bbd0b77e9491610aacd3a829cfedb4a2aa413fff592316e0"
+    }
+  ],
+  "selection": {
+    "path": "selection-original.json.gz",
+    "sha256": "3e54371ecfa1f6cbdd9d73534d908069993f03eea56b4e86b347dfc721742b30",
+    "bytes": 26556,
+    "originalSha256": "64fb437927fdd55a94207fe7b2f5f03f71307531ce8dd03019101db1b0caa1ea",
+    "originalBytes": 134290,
+    "decoder": "gzip",
+    "roundTripVerified": true
+  },
+  "knownLosses": [
+    {
+      "task": "T4904",
+      "artifact": "V8 original capture",
+      "status": "LOSS_REPORTED",
+      "exactPath": null,
+      "reconstructed": false
+    },
+    {
+      "task": "T4940",
+      "artifact": "first original JSON and original program",
+      "status": "LOSS_REPORTED",
+      "exactPath": null,
+      "reconstructed": false
+    },
+    {
+      "task": "T4997",
+      "artifact": "V8 original capture",
+      "status": "LOSS_REPORTED",
+      "exactPath": null,
+      "reconstructed": false
+    },
+    {
+      "task": "root first commit failure",
+      "artifact": "separated original stdout/stderr",
+      "status": "SEPARATION_UNAVAILABLE",
+      "exactPath": null,
+      "reconstructed": false,
+      "completeCombinedToolTranscriptReportedByRoot": true,
+      "originalRawJsonSaved": false,
+      "capturedAsStandaloneRawFile": false
+    }
+  ],
+  "firstCommitStreamSeparation": "combined stdout available only in root tool transcript; no separate original raw stdout/stderr/json saved; not reconstructed",
+  "repositoryEffects": false,
+  "semanticPassCredit": false,
+  "nativeExecution": false,
+  "suppliedProgramAutonomyCredit": 0
+}
