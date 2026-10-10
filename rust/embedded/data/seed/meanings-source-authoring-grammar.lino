@@ -70,11 +70,11 @@ meanings
     example "Missing source authoring contract: complete request remains unbound."
     source "js/agentic/code_task.mjs sha256=43fec02955a3e87b358ca6d6a4e7b03d4e59b45f72c6e6d092abc5b399940a67 handler=plan_verified_generated_source_step/planVerifiedGeneratedSourceStep"
     source "rust/src/agentic_coding/code_task.rs sha256=f2dac4f34ccf0a1ecbbe68816b2499b2c0da6de89956746df5c1990f9eef1360 handler=plan_verified_generated_source_step/planVerifiedGeneratedSourceStep"
-    source "data/seed/multilingual-responses-agentic-tools.lino sha256=72d766234aec9ea8651c9df160513ba9c44ef52b73060b5b1e70fc092cf72bd0 record=response-coding-source-authoring-contract-missing-en"
-    source "data/seed/multilingual-responses-agentic-tools.lino sha256=72d766234aec9ea8651c9df160513ba9c44ef52b73060b5b1e70fc092cf72bd0 record=response-coding-source-authoring-contract-missing-ru"
-    source "data/seed/multilingual-responses-agentic-tools.lino sha256=72d766234aec9ea8651c9df160513ba9c44ef52b73060b5b1e70fc092cf72bd0 record=response-coding-source-authoring-contract-missing-hi"
-    source "data/seed/multilingual-responses-agentic-tools.lino sha256=72d766234aec9ea8651c9df160513ba9c44ef52b73060b5b1e70fc092cf72bd0 record=response-coding-source-authoring-contract-missing-zh"
-    source "data/seed/multilingual-responses-agentic-tools.lino sha256=72d766234aec9ea8651c9df160513ba9c44ef52b73060b5b1e70fc092cf72bd0 record=response-coding-source-authoring-contract-missing-es"
+    source "data/seed/multilingual-responses-agentic-continuation.lino sha256=ea77c9397126802f1a72032d531cdfa0e117eb2d9fd38619012534b842a6eb0f record=response-coding-source-authoring-contract-missing-en"
+    source "data/seed/multilingual-responses-agentic-continuation.lino sha256=ea77c9397126802f1a72032d531cdfa0e117eb2d9fd38619012534b842a6eb0f record=response-coding-source-authoring-contract-missing-ru"
+    source "data/seed/multilingual-responses-agentic-continuation.lino sha256=ea77c9397126802f1a72032d531cdfa0e117eb2d9fd38619012534b842a6eb0f record=response-coding-source-authoring-contract-missing-hi"
+    source "data/seed/multilingual-responses-agentic-continuation.lino sha256=ea77c9397126802f1a72032d531cdfa0e117eb2d9fd38619012534b842a6eb0f record=response-coding-source-authoring-contract-missing-zh"
+    source "data/seed/multilingual-responses-agentic-continuation.lino sha256=ea77c9397126802f1a72032d531cdfa0e117eb2d9fd38619012534b842a6eb0f record=response-coding-source-authoring-contract-missing-es"
     lexeme en
       words "missing source authoring contract"
     lexeme ru
